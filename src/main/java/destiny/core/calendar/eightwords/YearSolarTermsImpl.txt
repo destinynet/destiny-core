@@ -1,0 +1,131 @@
+/*
+ * @author smallufo
+ * @date 2004/11/29
+ * @time 下午 08:16:48
+ */
+package destiny.calendar.eightwords;
+
+import java.io.Serializable;
+
+import destiny.astrology.Coordinate;
+import destiny.astrology.Planet;
+import destiny.astrology.StarPositionIF;
+import destiny.astrology.StarTransitIF;
+import destiny.calendar.Location;
+import destiny.calendar.Time;
+import destiny.core.chinese.StemBranch;
+
+/**
+ * 可以設定換年點
+ * <BR>
+ * 此 class 目前已經不使用 , 改以 YearMonthSolarTermsStarPositionImpl 來實作
+ * @see destiny.calendar.eightwords.YearMonthSolarTermsStarPositionImpl
+ */
+public class YearSolarTermsImpl extends AbstractYearBoundaryChangeable implements YearIF , Serializable
+{
+  private StarPositionIF starPositionImpl;
+  /**
+   * @param ChangeYearDegree 換年的度數，從春分(0) 經夏至(90) 到秋分(180) 不考慮換年。
+   * <BR> 否則會丟出 RuntimeException !
+   * <BR> 因此，ChangeYearDegree 必須介於秋分(180,含) 經冬至 (270) 至春分(360,不含) 間
+   * <BR> 也就是說，如果 ChangeYearDegree < 180 , 則丟出 RuntimeException
+   */
+  public YearSolarTermsImpl(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl)
+  {
+    super(starPositionImpl,ChangeYearDegree);
+    
+    if (starPositionImpl == null || starTransitImpl == null)
+      throw new RuntimeException("starPositionImpl and starTransitImpl cannot be null");
+    
+    this.starPositionImpl = starPositionImpl;
+    if (ChangeYearDegree < 180)
+      throw new RuntimeException("Cannot set ChangeYearDrgree smaller than 180 ");
+  }
+  
+  
+  public StemBranch getYear(Time lmt, Location location)
+  {
+    if (lmt == null || location == null)
+      throw new RuntimeException("lmt and location cannot be null !");
+    
+    StemBranch resultStemBranch;
+    //西元 1984 年為 甲子年
+    int index;
+    if (lmt.isAD())
+      index =  (lmt.getYear() - 1984 ) % 60;
+    else
+      index = (1-lmt.getYear() - 1984) % 60;
+    
+    Time gmt = new Time(lmt , 0-location.getMinuteOffset()*60);
+    starPositionImpl.setCoordinate(Coordinate.ECLIPTIC);
+    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt ).getLongitude();
+    if (solarLongitude < 180)
+      //立春(0)過後，到秋分之間(180)，確定不會換年
+      resultStemBranch = StemBranch.get(index);
+    else
+    {
+      // 360 > solarLongitude >= 180
+      
+      //取得 lmt 當年 1/1 凌晨零分的度數
+      Time startOfYear = new Time(lmt.isAD() , lmt.getYear() , 1 , 1 , 0 , 0-location.getMinuteOffset() , 0);
+      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear ).getLongitude();
+      
+      //System.out.println("changeYearDegree = " + changeYearDegree + " , degreeOfStartOfYear = " + degreeOfStartOfYear);
+      double changeYearDegree = getChangeYearDegree();
+      if (changeYearDegree >= degreeOfStartOfYear )
+      {
+        //System.out.println("StemBranch.getIndex = " + StemBranch.get(index));
+        if (solarLongitude >= changeYearDegree)
+          resultStemBranch = StemBranch.get(index);
+        else if (changeYearDegree > solarLongitude && solarLongitude >= degreeOfStartOfYear)
+        {
+          Time tempTime = new Time(gmt , 0-180*24*60*60);
+          if (tempTime.isBefore(startOfYear))
+            resultStemBranch = StemBranch.get(index-1);
+          else
+            resultStemBranch = StemBranch.get(index);
+        }          
+        else 
+          resultStemBranch = StemBranch.get(index);
+      }
+      else
+      {
+        // degreeOfStartOfYear > changeYearDegree >= 秋分 (180)
+        if ( solarLongitude >= degreeOfStartOfYear )
+        {
+          Time tempTime = new Time(gmt , 0-180*24*60*60);
+          if (tempTime.isBefore(startOfYear))
+            resultStemBranch = StemBranch.get(index);
+          else
+            resultStemBranch = StemBranch.get(index+1);
+        }
+        else 
+        {
+          if (solarLongitude >= changeYearDegree)
+            resultStemBranch = StemBranch.get(index+1);
+          else
+            resultStemBranch = StemBranch.get(index);
+        }
+      }
+            
+    }
+    //告知 AbstractYearBoundaryChangeable , 此剋的 年干（以方便稍後推算月干） 
+    this.setYearStem(resultStemBranch.getStem());
+    return resultStemBranch;
+  } //getYear
+
+  /**
+   * @param deree 設定太陽過黃道多少度 換年。一般而言是 立春（315），但是有人會使用冬至（270）換年
+   * 本實作僅接受 180(含) 到 360(不含) 之間的值
+   */
+  @Override
+  public void setChangeYearDegree(double degree)
+  {
+    if (degree < 180)
+      throw new RuntimeException("Cannot set ChangeYearDrgree smaller than 180 ");
+    super.setChangeYearDegree(degree);
+  }
+
+  
+
+}

@@ -1,0 +1,153 @@
+/*
+ * @author smallufo
+ * @date 2004/11/25
+ * @time 下午 07:49:45
+ */
+package destiny.calendar.eightwords;
+
+import java.io.Serializable;
+
+import destiny.astrology.Coordinate;
+import destiny.astrology.Planet;
+import destiny.astrology.StarPositionIF;
+import destiny.astrology.swissephImpl.StarPositionImpl;
+import destiny.astrology.swissephImpl.StarTransitImpl;
+import destiny.calendar.Location;
+import destiny.calendar.SolarTerms;
+import destiny.calendar.SolarTermsBean;
+import destiny.calendar.Time;
+import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.StemBranch;
+
+/**
+ * 此 Class 現在已經不使用，改以 使用 YearMonthSolarTermsStarPositionImpl「定氣法」計算地支
+ * 計算太陽在黃道帶 0 , 15 , 30 ... 345 度的時刻
+ * @see destiny.calendar.eightwords.YearMonthSolarTermsStarPositionImpl 
+ */
+public class MonthSolarPositionImpl extends AbstractYearBoundaryChangeable implements MonthIF , Serializable
+{
+  /** 南半球月令是否對沖 */
+  private boolean southernHemisphereOpposition = false;
+  /** 是否依據『赤緯』來界定南北半球 */
+  private HemisphereBy hemisphereBy = HemisphereBy.EQUATOR;
+  
+  private StarPositionIF positionImpl;
+
+  public MonthSolarPositionImpl(StarPositionIF positionImpl )
+  {
+    if (positionImpl == null)
+      throw new RuntimeException("positionImpl cannot be null !");
+    this.positionImpl = positionImpl;
+  }
+  
+  public StemBranch getMonth(Time lmt, Location location)
+  {
+    if (lmt == null || location == null)
+      throw new RuntimeException("lmt or location cannot be null !");
+    
+    EarthlyBranches result月支 ;
+    //先算出太陽在黃經上的度數
+    Time gmt = new Time(lmt , 0-location.getMinuteOffset()*60);
+    
+    //System.out.println("SolarLongitude : " + positionImpl.getPosition(Stars.SUN , gmt , Coordinate.ECLIPTIC).getLongitude() );
+    
+    SolarTermsBean solarTermsBean = new SolarTermsBean(new StarTransitImpl() , new StarPositionImpl());
+    SolarTerms MonthST = solarTermsBean.getSolarTermsFromGMT(gmt);
+    
+    //System.out.println("節氣: " +  MonthST);
+    
+    int MonthIndex = (SolarTerms.getIndex(MonthST)/2)+2 ;
+    if (MonthIndex >= 12)
+      MonthIndex = MonthIndex - 12;
+    EarthlyBranches 月支 = EarthlyBranches.getEarthlyBranches(MonthIndex);
+    if (southernHemisphereOpposition)
+    {
+      /*
+       * 解決南半球月支正沖的問題
+       */
+      if (hemisphereBy == HemisphereBy.EQUATOR ) //如果是依據赤道來區分南北半球
+      {
+        if (!location.isNorth())
+          result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6);
+        else
+          result月支 = 月支;
+      }
+      else
+      {
+        /*
+         * 考慮 hemisphereByTropic 這個值
+         * 如果 hemisphereByTropic == true , 就必須計算 太陽在「赤緯」的度數
+         */
+        positionImpl.setCoordinate(Coordinate.EQUATORIAL);
+        double solarEquatorialDegree = positionImpl.getPosition(Planet.SUN , gmt).getLatitude();
+        
+        if (solarEquatorialDegree >=0)
+        {
+          //如果太陽在赤北緯
+          if (location.isNorth())
+          {
+            //地點在北半球
+            if (location.getLatitude() >= solarEquatorialDegree)
+              result月支 = 月支;
+            else
+              result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6); //所在地緯度低於 太陽赤緯，取對沖月份
+          }
+          else
+          {
+            //地點在南半球 , 取正沖
+            result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6);
+          }
+        }
+        else
+        {
+          //太陽在赤南緯
+          if (!location.isNorth())
+          {
+            //地點在南半球
+            if (location.getLatitude() <= solarEquatorialDegree)
+              result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6); //所在地緯度高於 太陽赤南緯，真正的南半球
+            else
+              result月支 = 月支; //雖在南半球，但緯度低於太陽赤南緯，視為北半球
+          }
+          else
+          {
+            //地點在北半球，月支不變
+            result月支 = 月支;
+          }
+        }
+      } 
+    }
+    else
+      result月支 = 月支;
+
+    return StemBranch.get(this.getMonthStem(lmt , location , result月支) , result月支);
+  } //getMonth()
+
+  public HemisphereBy getHemisphereBy()
+  {
+    return hemisphereBy;
+  }
+  
+  /**
+   * 南半球的判定方法，要依劇緯度 還是 回歸線？
+   * <BR> 舉例，夏至時，太陽在北回歸線，北回歸線過嘉義，則此時，嘉義以南是否算南半球？
+   * <BR> 內定是 false
+   */
+  public void setHemisphereBy(HemisphereBy value)
+  {
+    this.hemisphereBy = value;
+  }
+  
+  public boolean isSouthernHemisphereOpposition()
+  {
+    return southernHemisphereOpposition;
+  }
+  
+  /**
+   * 南半球月支是否對沖 , 內定是 '否'
+   */
+  public void setSouthernHemisphereOpposition(boolean value)
+  {
+    this.southernHemisphereOpposition = value;
+  }
+}

@@ -1,0 +1,149 @@
+/*
+ * @author smallufo
+ * @date 2005/3/11
+ * @time と 04:55:04
+ */
+package destiny.calendar.eightwords;
+
+import destiny.astrology.Coordinate;
+import destiny.astrology.Planet;
+import destiny.astrology.StarPositionIF;
+import destiny.calendar.Location;
+import destiny.calendar.Time;
+import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.HeavenlyStems;
+
+/**
+ *  やのるやの传翴璶― る
+ * <BR>
+ *  abstract class ヘ玡竒ノぃ, э YearMonthSolarTermsStarPositionImpl ㄓ龟
+ * @see destiny.calendar.eightwords.YearMonthSolarTermsStarPositionImpl
+ */
+public abstract class AbstractYearBoundaryChangeable
+{
+  //private StarTransitIF starTransitImpl;
+  
+  /**  や  */
+  private static ThreadLocal<HeavenlyStems> yearStemHolder = new ThreadLocal<HeavenlyStems>();
+  /** 传翴 , 硄盽琌ミ琄翴 (315) 传 */
+  private static ThreadLocal<Double> changeYearDegreeHolder = new ThreadLocal<Double>(); 
+  private static ThreadLocal<StarPositionIF> positionImplHolder = new ThreadLocal<StarPositionIF>(); // StarTransitIF 龟
+  
+  public AbstractYearBoundaryChangeable(StarPositionIF positionImpl , double degree)
+  {
+    if (positionImpl == null)
+      throw new RuntimeException("positionImpl cannot be null !");
+    
+    synchronized(this)
+    {
+      changeYearDegreeHolder.set(new Double(degree));
+      positionImplHolder.set(positionImpl);
+    }
+  }
+  
+  public AbstractYearBoundaryChangeable()
+  {
+  }
+  
+  public void setChangeYearDegree(double degree)
+  {
+    synchronized(this)
+    {
+      changeYearDegreeHolder.set(new Double(degree));
+    }
+  }
+  
+  protected double getChangeYearDegree()
+  {
+    synchronized (this)
+    {
+      return (changeYearDegreeHolder.get()).doubleValue();
+    }
+  }
+  
+  protected void setYearStem(HeavenlyStems yearStem)
+  {
+    synchronized(this)
+    {
+      yearStemHolder.set(yearStem);
+    }
+  }
+  
+  private HeavenlyStems getYearStem()
+  {
+    synchronized(this)
+    {
+      return yearStemHolder.get();  
+    }
+  }
+  
+  private StarPositionIF getPositionImpl()
+  {
+    synchronized(this)
+    {
+      return positionImplHolder.get();
+    }
+  }
+  
+  /**
+   * @param lmt
+   * @param るや
+   * @return 眔る
+   */
+  protected HeavenlyStems getMonthStem(Time lmt , Location location , EarthlyBranches るや)
+  {
+    if (changeYearDegreeHolder.get() == null)
+      throw new RuntimeException("State Error , changeYearDegree should have been set.");
+    if (yearStemHolder.get() == null)
+      throw new RuntimeException("State Error , yearStem should have been set.");
+    
+    double changeYearDegree = this.getChangeYearDegree();
+    HeavenlyStems  = this.getYearStem();
+    
+    HeavenlyStems る = null;
+    
+    //System.out.println(" = " +  + " , るや == " + るや + " , changeYearDegree = " + changeYearDegree);
+    
+    switch (HeavenlyStems.getIndex())
+    {
+      case 0 : case 5 : る = るや.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)   ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+2 ) ) ; break;  
+      case 1 : case 6 : る = るや.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+2 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+4 ) ) ; break;
+      case 2 : case 7 : る = るや.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+4 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+6 ) ) ; break;
+      case 3 : case 8 : る = るや.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+6 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+8 ) ) ; break;
+      case 4 : case 9 : る = るや.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+8 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(るや)+10) ) ; break;
+      default : throw new RuntimeException(" == null !!! Wrong");
+    }
+    
+    if (changeYearDegree != 315)
+    {
+      StarPositionIF positionImpl = getPositionImpl();
+      if (positionImpl == null)
+        throw new RuntimeException("Call state error ! starTransitImpl should be set.");
+      
+      Time gmt = new Time(lmt , 0-location.getMinuteOffset()*60);
+        
+      positionImpl.setCoordinate(Coordinate.ECLIPTIC);
+      if (changeYearDegree < 315)
+      {
+        //System.out.println("changeYearDegree < 315 , value = " + changeYearDegree);
+        //传翴ミ琄玡
+        
+        double lmtSunDegree = positionImpl.getPosition(Planet.SUN , gmt ).getLongitude();
+        //System.out.println("LMT = " + lmt + " degree = " + lmtSunDegree);
+        if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree)
+        {
+          // t <---ミ琄---- LMT -----传翴
+          る = HeavenlyStems.getHeavenlyStems(る.getIndex() - 2);
+        }
+      }
+      else if (changeYearDegree > 315)
+      {
+        //传翴ミ琄 , 临⊿代刚
+        double lmtSunDegree = positionImpl.getPosition(Planet.SUN , gmt ).getLongitude();
+        if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
+          る = HeavenlyStems.getHeavenlyStems(る.getIndex() + 2);
+      }
+    }      
+    return る;
+  }//getMonthStem
+}
