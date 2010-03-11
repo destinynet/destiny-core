@@ -12,6 +12,11 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>destiny-core</name>
   <url>http://destiny.xfiles.to</url>
+  <scm>
+  	<connection>scm:git:git://smallufo@smallufo.com/home/smallufo/projects/destiny-core</connection>
+  	<developerConnection>scm:git:git://smallufo@smallufo.com/home/smallufo/projects/destiny-core</developerConnection>
+  	<url>scm:git:git://smallufo@smallufo.com/home/smallufo/projects/destiny-core</url>
+  </scm>
   <dependencies>
     <dependency>
     	<groupId>commons-codec</groupId>
