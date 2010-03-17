@@ -7,16 +7,8 @@
     <groupId>destiny</groupId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>destiny</groupId>
   <artifactId>destiny-core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>destiny-core</name>
-  <url>http://destiny.xfiles.to</url>
-  <scm>
-  	<connection>scm:git:git://smallufo@smallufo.com/home/smallufo/projects/destiny-core</connection>
-  	<developerConnection>scm:git:git://smallufo@smallufo.com/home/smallufo/projects/destiny-core</developerConnection>
-  	<url>scm:git:git://smallufo@smallufo.com/home/smallufo/projects/destiny-core</url>
-  </scm>
+  <name>Destiny Core API (astrology , calendar , 8words , dataType ...) and interfaces without implementations</name>
   <dependencies>
     <dependency>
     	<groupId>commons-codec</groupId>
@@ -31,4 +23,11 @@
     	<scope>test</scope>
     </dependency>
   </dependencies>
+  <distributionManagement>
+  	<repository>
+  		<id>nexus</id>
+  		<name>nexus</name>
+  		<url>http://smallufo.com:8081/nexus/content/repositories/releases/</url>
+  	</repository>
+  </distributionManagement>
 </project>
