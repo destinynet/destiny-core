@@ -2,11 +2,11 @@
 package destiny.core.calendar.eightwords.fourwords;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,15 +22,19 @@ public class FourWordsImpl implements FourWordsIF , Serializable
   private final static Map<FourWordsKey , String> map = Collections.synchronizedMap(new HashMap<FourWordsKey , String>());
   static
   {
-    URL url = FourWordsImpl.class.getResource("1440.txt");
-    File file;
+    InputStream is = FourWordsImpl.class.getResourceAsStream("1440.txt");
+    Reader reader = new InputStreamReader(is);
+    
+    //URL url = FourWordsImpl.class.getResource("1440.txt");
+    //File file;
     BufferedReader bReader = null;
     
     try
     {
-      file = new File(url.toURI());
-      FileReader fReader = new FileReader(file);
-      bReader = new BufferedReader(fReader);
+      //file = new File(url.toURI());
+      //FileReader fReader = new FileReader(file);
+      //bReader = new BufferedReader(fReader);
+      bReader = new BufferedReader(reader);
       
       String line = null;
       while ((line = bReader.readLine()) != null)
