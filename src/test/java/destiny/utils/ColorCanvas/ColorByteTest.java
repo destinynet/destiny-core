@@ -95,7 +95,7 @@ public class ColorByteTest extends TestCase
     cb2 = new ColorByte((byte)1 , "red" , "blue" , new Font("細明體" , Font.PLAIN , 16) , new URL("http://xfiles.to") , null );
     assertTrue(!cb1.isSameProperties(cb2));
     
-    //網址不同
+    //網址不同 , 但是網址不納入比對 (耗時)，因此會視為相同
     cb1 = new ColorByte((byte)1 , "red" , "blue" , new Font("細明體" , Font.PLAIN , 16) , new URL("http://xfiles.to" ) , null );
     cb2 = new ColorByte((byte)1 , "red" , "blue" , new Font("細明體" , Font.PLAIN , 16) , new URL("http://xfiles.to/") , null );
     assertTrue(!cb1.isSameProperties(cb2));

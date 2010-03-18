@@ -142,12 +142,12 @@ public class ColorByte
    */
   public boolean isSameProperties(ColorByte cb)
   {
-    //url 的 equals 要 resolve domain name , 不採用
+    //url 的 equals 要 resolve domain name , 改以 url.toExternalForm() 來比對
     if (
         ( ( (this.foreColor == null) && (cb.foreColor == null)) || ( (this.foreColor != null ) && this.foreColor.equals(cb.foreColor)) ) &&
         ( ( (this.backColor == null) && (cb.backColor == null)) || ( (this.backColor != null ) && this.backColor.equals(cb.backColor)) ) && 
         ( ( (this.font      == null) && (cb.font      == null)) || ( (this.font      != null ) && this.font.equals(cb.font)          ) ) && 
-        //( ( (this.url       == null) && (cb.url       == null)) || ( (this.url       != null ) && this.url.equals(cb.url)            ) ) &&
+        ( ( (this.url       == null) && (cb.url       == null)) || ( (this.url       != null ) && (cb.url       != null ) && this.url.toString().equals(cb.url.toExternalForm())            ) ) &&
         ( ( (this.title     == null) && (cb.title     == null)) || ( (this.title     != null ) && this.title.equals(cb.title)        ) ) 
        )
       return true;

@@ -15,7 +15,6 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.Aspect.Importance;
-import destiny.astrology.AspectApplySeparateIF.AspectType;
 import destiny.astrology.classical.AspectEffectiveClassical;
 import destiny.astrology.classical.EssentialUtils;
 
@@ -125,9 +124,11 @@ public class CollectionOfLightBean implements Serializable
        *   改以「被夾的星，需同時與兩顆星，APPLYING 交角」（這會嚴格許多，待驗證）
        * 
        */
+      /*
       if (AspectType.APPLYING == aspectApplySeparateImpl.getAspectType(horoscopeContext, planet , p1, Aspect.getAngles(Importance.HIGH)) &&
           AspectType.APPLYING == aspectApplySeparateImpl.getAspectType(horoscopeContext, planet , p2, Aspect.getAngles(Importance.HIGH))
           )
+      */
       {
         //System.out.println(p1 + " 以及 " + p2 + " 也形成交角");
         
