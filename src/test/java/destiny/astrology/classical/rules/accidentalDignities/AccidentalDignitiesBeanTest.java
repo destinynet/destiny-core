@@ -13,9 +13,9 @@ public class AccidentalDignitiesBeanTest extends TestCase
   {
     AccidentalDignitiesBean bean = new AccidentalDignitiesBean();
     
+    assert(bean.getRules().size() > 1);
     for(Applicable each : bean.getRules())
     {
-      //System.out.println(each.getName());
       assertNotSame('!' , each.getName().charAt(0));
     }
   }

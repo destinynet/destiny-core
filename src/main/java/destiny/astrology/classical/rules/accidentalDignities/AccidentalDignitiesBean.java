@@ -38,6 +38,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   
   protected AccidentalDignitiesBean()
   {
+    rules = getDefaultRules();
   }
   
   public AccidentalDignitiesBean(RelativeTransitIF relativeTransitImpl , DayNightDifferentiator dayNightImpl , RetrogradeIF retrogradeImpl , AspectEffectiveClassical aspectEffectiveClassical , AspectApplySeparateIF aspectApplySeparateImpl)
