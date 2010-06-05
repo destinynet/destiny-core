@@ -4,8 +4,8 @@
  */ 
 package destiny.core.calendar.eightwords;
 
-import destiny.core.chinese.StemBranch;
 import junit.framework.TestCase;
+import destiny.core.chinese.StemBranch;
 
 public class EightWordsNullableTest extends TestCase
 {

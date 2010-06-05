@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-
 public class HeavenlyStemsTest extends TestCase
 {
   public void testSorting()

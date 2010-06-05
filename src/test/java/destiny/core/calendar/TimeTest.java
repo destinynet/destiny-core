@@ -9,7 +9,6 @@ import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
-
 public class TimeTest extends TestCase
 {
   private Time time;

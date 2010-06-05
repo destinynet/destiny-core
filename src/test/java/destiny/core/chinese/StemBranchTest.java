@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-
 public class StemBranchTest extends TestCase
 {
   public void testStemBranch()

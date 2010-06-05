@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-
 public class EarthlyBranchesTest extends TestCase
 {
   public void testGetEarthlyBranchesFromInt()

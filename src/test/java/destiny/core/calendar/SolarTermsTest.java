@@ -13,7 +13,6 @@ public class SolarTermsTest extends TestCase
 
   public void testGetIndex()
   {
-    
     assertEquals( 0 , SolarTerms.getIndex(SolarTerms.立春));
     assertEquals( 1 , SolarTerms.getIndex(SolarTerms.雨水));
     assertEquals( 2 , SolarTerms.getIndex(SolarTerms.驚蟄));

@@ -13,7 +13,6 @@ import destiny.core.calendar.Time;
 
 public class MidnightLmtImplTest extends TestCase
 {
-
   public void testGetNextMidnight()
   {
     MidnightLmtImpl impl = new MidnightLmtImpl();

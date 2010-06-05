@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 
 public class YinYangTest extends TestCase
 {
-
   public void testYinYang()
   {
     assertEquals("陽" , YinYang.陽.toString());

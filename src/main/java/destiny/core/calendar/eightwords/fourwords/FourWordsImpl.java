@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,17 +24,11 @@ public class FourWordsImpl implements FourWordsIF , Serializable
   static
   {
     InputStream is = FourWordsImpl.class.getResourceAsStream("1440.txt");
-    Reader reader = new InputStreamReader(is);
-    
-    //URL url = FourWordsImpl.class.getResource("1440.txt");
-    //File file;
+    Reader reader;
     BufferedReader bReader = null;
-    
     try
     {
-      //file = new File(url.toURI());
-      //FileReader fReader = new FileReader(file);
-      //bReader = new BufferedReader(fReader);
+      reader = new InputStreamReader(is , "UTF-8");
       bReader = new BufferedReader(reader);
       
       String line = null;
@@ -52,7 +47,11 @@ public class FourWordsImpl implements FourWordsIF , Serializable
         map.put(key, value);
       }
     }
-    catch (Exception e)
+    catch (UnsupportedEncodingException e1)
+    {
+      e1.printStackTrace();
+    }
+    catch (IOException e)
     {
       e.printStackTrace();
     }
@@ -67,7 +66,7 @@ public class FourWordsImpl implements FourWordsIF , Serializable
         e.printStackTrace();
       }
     }
-  }
+  } // static
   
   public FourWordsImpl()
   {
