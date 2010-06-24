@@ -1,5 +1,5 @@
 /** 2009/10/20 下午10:53:51 by smallufo */
-package destiny.utils.test;
+package destiny.utils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
