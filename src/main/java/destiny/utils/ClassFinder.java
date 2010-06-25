@@ -20,9 +20,14 @@ public class ClassFinder
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       if (classLoader == null)
         throw new ClassNotFoundException("Can't get class loader.");
-
+      
       String path = packageName.replace('.', '/');
-      URL url = classLoader.getResource(path);
+      //FIXME : 追蹤這個議題 http://stackoverflow.com/questions/3112255/how-to-make-maven-add-directory-entries-when-packaging 
+      URL url = classLoader.getResource(path);             // ClassLoader.getResource() ，絕對不可以加上 "/"
+      URL url2 = ClassFinder.class.getResource("/"+path); // Class.getResource() 一定要加上 "/"
+      System.out.println("url = " + url);
+      System.out.println("url2 = " + url2);
+      
       if (url == null)
         throw new ClassNotFoundException("No resource for " + path);
 
