@@ -3,12 +3,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>destinyMaven</artifactId>
+    <artifactId>destiny</artifactId>
     <groupId>destiny</groupId>
     <version>0.0.1</version>
   </parent>
   <artifactId>destiny-core</artifactId>
-  <name>Destiny Core API (astrology , calendar , 8words , dataType ...) and interfaces without implementations</name>
+  <name>destiny-core</name>
   <dependencies>
     <dependency>
     	<groupId>commons-codec</groupId>
@@ -18,11 +18,4 @@
     	<scope>compile</scope>
     </dependency>
   </dependencies>
-  <distributionManagement>
-  	<repository>
-  		<id>nexus</id>
-  		<name>nexus</name>
-  		<url>http://smallufo.com:8081/nexus/content/repositories/releases</url>
-  	</repository>
-  </distributionManagement>
 </project>
