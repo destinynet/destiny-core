@@ -73,6 +73,7 @@ public class PlanetTest extends TestCase
     */
     
     //從 reflection 產生 太陽
+    @SuppressWarnings("rawtypes")
     Class clazz = Planet.class;
     List<Star> list = Arrays.asList((Star[])clazz.asSubclass(clazz).getDeclaredField("values").get(null));
     Star sunInList = list.get(0);
@@ -100,6 +101,19 @@ public class PlanetTest extends TestCase
       assertNotNull(planet);
       assertNotNull(planet.toString());
     }
+  }
+  
+  public void testCompare()
+  {
+    assertTrue(Planet.SUN.compareTo(Planet.MOON) < 0);
+    assertTrue(Planet.MOON.compareTo(Planet.MERCURY) < 0);
+    assertTrue(Planet.MERCURY.compareTo(Planet.VENUS) < 0);
+    assertTrue(Planet.VENUS.compareTo(Planet.MARS) < 0);
+    assertTrue(Planet.MARS.compareTo(Planet.JUPITER) < 0);
+    assertTrue(Planet.JUPITER.compareTo(Planet.SATURN) < 0);
+    assertTrue(Planet.SATURN.compareTo(Planet.URANUS) < 0);
+    assertTrue(Planet.URANUS.compareTo(Planet.NEPTUNE) < 0);
+    assertTrue(Planet.NEPTUNE.compareTo(Planet.PLUTO) < 0);
   }
 
 }
