@@ -202,10 +202,7 @@ public class HourSolarTransImpl implements HourIF , Serializable
           resultGmt = new Time(nextNadir , oneUnit3 * ((targetEb.getIndex()-1)*2+1) );        
       }    
     }
-    if (resultGmt != null)
-      return Time.getLMTfromGMT(resultGmt, location);
-    else
-      throw new RuntimeException(getClass().getSimpleName() + " getLmtNextStartOf error : lmt = " + lmt + " , loc = " + location + " , 地支 = " + targetEb);
+    return Time.getLMTfromGMT(resultGmt, location);
   }
 
   public String getTitle(Locale locale)

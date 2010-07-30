@@ -9,7 +9,7 @@ import java.util.Set;
 public class ClassFinder
 {
   /** 列出此 packageName 之下的所有 classes , 如果沒有，則傳回 null */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public static Set<Class> getClasses(String packageName , boolean recursive) throws ClassNotFoundException
   {
     Set<Class> classes = Collections.synchronizedSet(new HashSet<Class>());

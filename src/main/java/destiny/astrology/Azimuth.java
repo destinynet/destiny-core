@@ -50,5 +50,11 @@ public class Azimuth implements java.io.Serializable
   public void setTrueAltitude(double trueAltitude)
   {
     this.trueAltitude = trueAltitude;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "Azimuth [degree=" + degree + ", trueAltitude=" + trueAltitude + ", apparentAltitude=" + apparentAltitude + "]";
   } 
 }

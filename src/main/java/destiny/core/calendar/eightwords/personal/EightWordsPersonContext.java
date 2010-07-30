@@ -69,8 +69,21 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
   /** 運 :「時辰」的 span 倍數，內定 365x12，即：一時辰走一年 */
   private double fortuneHourSpan = 365*12;
   
-  /** ThreadLoacl 物件，存放 Map<Integer , Time> , Integer 為往前/後 地幾個「節」，而 Time 則為其 GMT 值 ，作為推算大運時所使用 */
-  private static ThreadLocal<Map<Integer,Time>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<Integer,Time>>();
+  /** 
+   * ThreadLoacl 物件，存放 Map<Integer , Time> , Integer 為往前/後 地幾個「節」，而 Time 則為其 GMT 值 ，作為推算大運時所使用
+   * 
+   * 2010/7/30 重新設計此 ThreadLocal , 本來是 ThreadLocal<Map<Integer,Time>> , 
+   * 但是一個 thread 很有可能 new 出多個 EightWordsPersonContext , 而此 threadLocal 物件並沒有紀錄 EightWordsPersonContext 的特徵 
+   * 因此將此 threadLocal 物件另外包一層 Map , key 為 EightWordsPersonContext
+   */
+  private static ThreadLocal<Map<EightWordsPersonContext,Map<Integer,Time>>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<EightWordsPersonContext,Map<Integer,Time>>>()
+  {
+    @Override
+    protected Map<EightWordsPersonContext , Map<Integer, Time>> initialValue()
+    {
+      return Collections.synchronizedMap(new HashMap<EightWordsPersonContext,Map<Integer,Time>>());
+    }
+  };
   
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法 */
   private FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
@@ -94,7 +107,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
     Time gmt = Time.getGMTfromLMT(lmt, location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
     
-    targetMajorSolarTermsGmtHolder.set(null);
+    //System.out.println("map size = " + targetMajorSolarTermsGmtHolder.get().size());
   }
  
   
@@ -187,9 +200,6 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
    * */
   public double getTargetMajorSolarTermsSeconds(int index)
   {
-    if (targetMajorSolarTermsGmtHolder.get() == null)
-      targetMajorSolarTermsGmtHolder.set(Collections.synchronizedMap(new HashMap<Integer,Time>()));
-    
     if (index==0)
       throw new RuntimeException("index cannot be 0 !");
     
@@ -209,8 +219,11 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
       i=-1;
     
     
-    Map<Integer,Time> hashMap = targetMajorSolarTermsGmtHolder.get();
-    Time targetGmt = hashMap.get(new Integer(index));
+    //Map<Integer,Time> hashMap = targetMajorSolarTermsGmtHolder.get();
+    Map<EightWordsPersonContext , Map<Integer,Time>> hashMap = targetMajorSolarTermsGmtHolder.get();
+    if (hashMap.get(this) == null)
+      hashMap.put(this, new HashMap<Integer , Time>());
+    Time targetGmt = hashMap.get(this).get(new Integer(index));
     
     if (targetGmt == null)
     {
@@ -229,14 +242,16 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
             targetGmt = this.starTransitImpl.getNextTransit(Planet.SUN , stepMajorSolarTerms.getZodiacDegree() , Coordinate.ECLIPTIC , stepGmt , true);
             //以隔天計算現在節氣
             stepGmt = new Time(targetGmt , 24*60*60);
-        
-            hashMap.put(new Integer(i) , targetGmt);
+            
+            Map<Integer,Time> m = hashMap.get(this);
+            m.put(new Integer(i) , targetGmt);
+            hashMap.put(this, m);
             targetMajorSolarTermsGmtHolder.set(hashMap);
           }
           else
           {
             //之前計算過
-            targetGmt = hashMap.get(new Integer(i));
+            targetGmt = hashMap.get(this).get(new Integer(i));
             stepGmt = new Time(targetGmt , 24*60*60);
           }
           
@@ -263,13 +278,15 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
             //以前一天計算現在節氣
             stepGmt = new Time(targetGmt , -24*60*60);
             
-            hashMap.put(new Integer(i) , targetGmt);
+            Map<Integer,Time> m = hashMap.get(this);
+            m.put(new Integer(i) , targetGmt);
+            hashMap.put(this , m);
             targetMajorSolarTermsGmtHolder.set(hashMap);
           }
           else
           {
             //之前計算過
-            targetGmt = hashMap.get(new Integer(i));
+            targetGmt = hashMap.get(this).get(new Integer(i));
             stepGmt = new Time(targetGmt , -24*60*60);        
           }
           
@@ -381,5 +398,102 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
   public String toString()
   {
     return "EightWordsPersonContext [gender=" + gender + ", lmt=" + lmt + ", location=" + location + "]";
+  }
+
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((currentSolarTerms == null) ? 0 : currentSolarTerms
+        .hashCode());
+    result = prime * result + ((eightWords == null) ? 0 : eightWords.hashCode());
+    long temp;
+    temp = Double.doubleToLongBits(fortuneDaySpan);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    result = prime * result + ((fortuneDirectionImpl == null) ? 0 : fortuneDirectionImpl
+        .hashCode());
+    temp = Double.doubleToLongBits(fortuneHourSpan);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    temp = Double.doubleToLongBits(fortuneMonthSpan);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+    result = prime * result + ((lmt == null) ? 0 : lmt.hashCode());
+    result = prime * result + ((location == null) ? 0 : location.hashCode());
+    result = prime * result + ((solarTermsImpl == null) ? 0 : solarTermsImpl
+        .hashCode());
+    result = prime * result + ((starTransitImpl == null) ? 0 : starTransitImpl
+        .hashCode());
+    return result;
+  }
+
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    EightWordsPersonContext other = (EightWordsPersonContext) obj;
+    if (currentSolarTerms != other.currentSolarTerms)
+      return false;
+    if (eightWords == null)
+    {
+      if (other.eightWords != null)
+        return false;
+    }
+    else if (!eightWords.equals(other.eightWords))
+      return false;
+    if (Double.doubleToLongBits(fortuneDaySpan) != Double
+        .doubleToLongBits(other.fortuneDaySpan))
+      return false;
+    if (fortuneDirectionImpl == null)
+    {
+      if (other.fortuneDirectionImpl != null)
+        return false;
+    }
+    else if (!fortuneDirectionImpl.equals(other.fortuneDirectionImpl))
+      return false;
+    if (Double.doubleToLongBits(fortuneHourSpan) != Double
+        .doubleToLongBits(other.fortuneHourSpan))
+      return false;
+    if (Double.doubleToLongBits(fortuneMonthSpan) != Double
+        .doubleToLongBits(other.fortuneMonthSpan))
+      return false;
+    if (gender != other.gender)
+      return false;
+    if (lmt == null)
+    {
+      if (other.lmt != null)
+        return false;
+    }
+    else if (!lmt.equals(other.lmt))
+      return false;
+    if (location == null)
+    {
+      if (other.location != null)
+        return false;
+    }
+    else if (!location.equals(other.location))
+      return false;
+    if (solarTermsImpl == null)
+    {
+      if (other.solarTermsImpl != null)
+        return false;
+    }
+    else if (!solarTermsImpl.equals(other.solarTermsImpl))
+      return false;
+    if (starTransitImpl == null)
+    {
+      if (other.starTransitImpl != null)
+        return false;
+    }
+    else if (!starTransitImpl.equals(other.starTransitImpl))
+      return false;
+    return true;
   }
 }

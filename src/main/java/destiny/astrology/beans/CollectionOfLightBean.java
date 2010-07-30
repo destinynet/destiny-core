@@ -9,12 +9,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import destiny.astrology.Aspect;
+import destiny.astrology.Aspect.Importance;
 import destiny.astrology.AspectApplySeparateIF;
 import destiny.astrology.DayNightDifferentiator;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.RelativeTransitIF;
-import destiny.astrology.Aspect.Importance;
 import destiny.astrology.classical.AspectEffectiveClassical;
 import destiny.astrology.classical.EssentialUtils;
 
@@ -47,6 +47,7 @@ public class CollectionOfLightBean implements Serializable
   private AspectEffectiveClassical aspectEffectiveClassical;
   
   /** 判斷入相位，或是出相位 */
+  @SuppressWarnings("unused")
   private AspectApplySeparateIF aspectApplySeparateImpl;
   
   /** 判斷日夜 */

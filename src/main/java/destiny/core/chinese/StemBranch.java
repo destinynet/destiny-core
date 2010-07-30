@@ -7,8 +7,8 @@ import java.io.Serializable;
  */
 public class StemBranch implements Comparable<StemBranch> , Serializable
 {
-  private HeavenlyStems   stem;   //天干
-  private EarthlyBranches branch; //地支
+  private final HeavenlyStems   stem;   //天干
+  private final EarthlyBranches branch; //地支
   
   // 0[甲子] ~ 59[癸亥]
   private transient static StemBranch[] StemBranchArray = new StemBranch[60];

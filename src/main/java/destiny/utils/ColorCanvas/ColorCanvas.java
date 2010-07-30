@@ -460,7 +460,7 @@ public class ColorCanvas
     int index = 0;      //目前走到的索引    
     int precursor = 0;  //先鋒
     StringBuffer sb = new StringBuffer(); //存放目前的結果
-    sb.append("<pre>");
+    //sb.append("<pre>");
     /**
      * 之前做法：會在這裡塞一行
      * ColorByte[] content = this.getContent();
@@ -525,7 +525,7 @@ public class ColorCanvas
     //把最後的 cursor 走完
     sb.append(buildHtml(list));
     list.clear();
-    sb.append("</pre>");
+    //sb.append("</pre>");
     return sb.toString();
   }//getHtmlOutput
   
@@ -591,7 +591,8 @@ public class ColorCanvas
   {
     StringBuffer sb = new StringBuffer();
     sb.append("<font");
-    sb.append(" style=\"");
+    //sb.append(" style=\"");
+    sb.append(" style=\"white-space: pre; ");
     
     if (cb.getForeColor() != null)
       sb.append("color:"+cb.getForeColor().toString()+"; ");

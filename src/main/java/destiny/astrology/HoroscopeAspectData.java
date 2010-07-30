@@ -121,7 +121,7 @@ public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Se
     if(thisP0.getClass().getName().equals(thatP0.getClass().getName()) && thisP0.equals(thatP0))
     {
       if(thisP1.getClass().getName().equals(thatP1.getClass().getName()))
-        return  ((Comparable)thisP1).compareTo(thatP1);
+        return  ((Comparable<Point>)thisP1).compareTo(thatP1);
       else
         return pointComp.compare(thisP1, thatP1);
     }
