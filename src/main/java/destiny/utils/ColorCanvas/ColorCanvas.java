@@ -216,15 +216,15 @@ public class ColorCanvas
 
   /**
    * 在第 x row , 第 y column , 開始，寫入 彩色文字
-   * @param str				要輸入的字串  
+   * @param str	       要輸入的字串  
    * @param x         row index
-   * @param y 				column index
+   * @param y         column index
    * @param foreColor 前景顏色字串，以 16 進位表示，例如 "FFFFCC"
    * @param backColor 背景顏色字串，以 16 進位表示，例如 "FFFFCC"
-   * @param font 			字型，例如： new Font("細明體" , Font.PLAIN , 16)
+   * @param font      字型，例如： new Font("細明體" , Font.PLAIN , 16)
    * @param url       網址物件 , new URL("http://www.google.com.tw")
    * @param title     Title
-   * @param wrap			是否換行
+   * @param wrap      是否換行
    */
   public void setText(String str , int x , int y , String foreColor , String backColor , Font font , URL url , String title , boolean wrap)
   {    
