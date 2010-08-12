@@ -243,6 +243,7 @@ public class ColorCanvas
         //檢查是否會太長 , 如果太長，丟出錯誤訊息
         if (index+strLen-1 >= this.content.length)
           throw new RuntimeException("setText() 超出 Canvas 長度");
+      //FIXME : 處理換行問題
     }
     else
     {
