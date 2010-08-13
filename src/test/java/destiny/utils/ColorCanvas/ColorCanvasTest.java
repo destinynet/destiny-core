@@ -12,4 +12,11 @@ public class ColorCanvasTest extends TestCase
     System.out.println(cc.getHtmlOutput());
   }
 
+  
+  public void testExtensible()
+  {
+    ColorCanvas cc = new ColorCanvas(1 , 10 , "　");
+    cc.setText("一二a三aabbcc", 1, 1);
+    System.out.println(cc.getHtmlOutput());
+  }
 }

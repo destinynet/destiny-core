@@ -213,6 +213,54 @@ public class ColorCanvas
   {
     this.setText(str , x , y , foreColor , backColor , null , null , title , false);    
   }
+  
+  /**
+   * <pre>
+   * 2010/08/13 Added :
+   * 要從 str 中製造出 寬度 為 width 的字串
+   * 假設 str = "一二三四五aabbcc" , 強迫寬度為 10 , 就要取前五個字
+   * 原始字串的 bytearray 為：
+   * [-28, -72, -128, -28, -70, -116, -28, -72, -119, -27, -101, -101, -28, -70, -108, 97, 97, 98, 98, 99, 99]
+   *  (    一      ）（     二      ）（    三      ）（    四       ）（    五     ） a   a   b   b   c   c
+   *  舊的演算法 :
+   *  byte[] byteArray = str.getBytes();
+   *  str = new String(byteArray , 0 , (this.width-y+1));
+   *  如果按照此演算法，只取前 10 bytes , 則只會取到「四」的第一個 byte (-27) , 並不完整！
+   *  必須想辦法，讓他取到「五」的第三個 byte (-108)
+   *  
+   *  新的演算法：把 str 拆成 char[] , 一個一個累加
+   *  </pre>
+   */
+  private String getStringFromBytes(String str , int width)
+  {
+    char[] chars = str.toCharArray();
+    int nowWidth=0;
+    StringBuffer sb = new StringBuffer();
+    for(int i=0 ; i < chars.length ; i++)
+    {
+      Character c = new Character(chars[i]);
+      String s = c.toString();
+      if (s.getBytes().length == 3)
+      {
+        //中文字 
+        
+        //如果加上字元所佔寬度(2)大於 width , 就不 append 了 
+        if (nowWidth +2 > width)
+          break;
+        sb = sb.append(s);
+        //雖然 bytes 長度是 3 , 但是寬度只佔 2
+        nowWidth +=2;
+      }
+      else
+      {
+        if (nowWidth +1 > width)
+          break;
+        sb = sb.append(s);
+        nowWidth ++;
+      }
+    }
+    return sb.toString();
+  }
 
   /**
    * 在第 x row , 第 y column , 開始，寫入 彩色文字
@@ -229,10 +277,12 @@ public class ColorCanvas
   public void setText(String str , int x , int y , String foreColor , String backColor , Font font , URL url , String title , boolean wrap)
   {    
     int index = (x-1) * width + (y-1);
-    int strLen=0;
+    int strWidth=0;
     try
     {
-      strLen = str.getBytes("Big5").length;
+      //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
+      //byte[] bytes = str.getBytes("Big5");      
+      strWidth = str.getBytes("Big5").length;
     }
     catch (UnsupportedEncodingException ignored)
     {}
@@ -241,19 +291,21 @@ public class ColorCanvas
       //如果要換行 , 檢查是否是 extensible , 如果不 extensible , 就檢查是否太長
       if (!extensible)        
         //檢查是否會太長 , 如果太長，丟出錯誤訊息
-        if (index+strLen-1 >= this.content.length)
+        if (index+strWidth-1 >= this.content.length)
           throw new RuntimeException("setText() 超出 Canvas 長度");
       //FIXME : 處理換行問題
     }
     else
     {
       //如果不換行（切字）
-      if ( (y+strLen-1) >= (this.width+1))
+      //int a = y+strWidth-1;
+      //System.out.println("a = " + a + " , width = " + width);
+      if ( (y+strWidth-1) > (this.width))
       {
         //超出，切字
-        //str = str.substring(0,this.width - y +1);
-        byte[] byteArray = str.getBytes();        
-        str = new String(byteArray , 0 , (this.width-y+1));
+        //byte[] byteArray = str.getBytes();        
+        //str = new String(byteArray , 0 , (this.width-y+1));
+        str = getStringFromBytes(str , (this.width-y+1));
       }
     }
     
