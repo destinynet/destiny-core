@@ -155,4 +155,10 @@ public class ColorByte
       return false;
   }
 
+  @Override
+  public String toString()
+  {
+    return "ColorByte [b=" + b + "]";
+  }
+
 }//Class

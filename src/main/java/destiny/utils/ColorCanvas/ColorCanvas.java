@@ -293,7 +293,18 @@ public class ColorCanvas
         //檢查是否會太長 , 如果太長，丟出錯誤訊息
         if (index+strWidth-1 >= this.content.length)
           throw new RuntimeException("setText() 超出 Canvas 長度");
-      //FIXME : 處理換行問題
+        else
+        {
+          //FIXME : 太長，處理換行問題
+          //ColorByte[] content 必須要加長 (高度, height 增加) 
+          
+          //先算出多出多寬的字？
+          int reminder = (index+strWidth-1) - content.length;
+          //需要多少 Rows
+          int additionalRows = reminder / this.width +1;
+          ColorByte[] newContent = new ColorByte[content.length + additionalRows*width];
+          
+        }
     }
     else
     {
@@ -433,6 +444,7 @@ public class ColorCanvas
       {
         ColorByte cb = cbs[j];
         //走訪此行每個 ColorByte 是否一樣，如果一樣，代表此行為空行
+        //FIXME : 這無法處理「全形中文空白背景」，因為一個全形中文被拆成兩個 ColorByte , 其 properties 一定不一樣！
         if (!(firstCB.isSameProperties(cb) && firstCB.getByte()==cb.getByte()))
         {
           targetLine = i+1; //此行(row)找到不一樣的字元了，所以要加入 Line，得從下一行開始
@@ -444,11 +456,42 @@ public class ColorCanvas
         break;
       targetLine = i;
     }
+    //System.out.println("targetLine = " + targetLine);
     if ( targetLine > this.height)
       throw new RuntimeException("錯誤，欲新加入一行，但是最後一行已經有資料了，無法再往下加一行了");
         
     this.setText(str , targetLine , 1 , foreColor , backColor , font , url , null , wrap);
   }//addLine
+  
+  /**
+   * 附加一串字，到 content 的尾端「之後」，亦即，加高 content 
+   */
+  public void appendLine(String str , String foreColor , String backColor , String fill , Font font , URL url )
+  {
+    int strWidth=0;
+    try
+    {
+      //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
+      //byte[] bytes = str.getBytes("Big5");      
+      strWidth = str.getBytes("Big5").length;
+    }
+    catch (UnsupportedEncodingException ignored)
+    {}
+    
+    //ColorByte[] content 必須要加長 (高度, height 增加) 
+    
+    //需要多少 Rows
+    int additionalRows = strWidth / this.width +1;
+    
+    ColorCanvas appendedCanvas = new ColorCanvas(additionalRows , width , fill , foreColor , backColor);
+    appendedCanvas.addLine(str, foreColor, backColor, font, url, true);
+    
+    this.height += additionalRows;
+    ColorByte[] newContent = new ColorByte[content.length + additionalRows*width];
+    System.arraycopy(content, 0, newContent, 0, content.length);
+    System.arraycopy(appendedCanvas.getContent() , 0 , newContent , content.length , appendedCanvas.getContent().length);
+    content = newContent;
+  }
   
   /**
    * 讀取這個 ColorCanvas 的 content 資料
