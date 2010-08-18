@@ -24,7 +24,7 @@ public class ColorCanvas
   
   private int height; // x
   private int width;  // y
-  private boolean extensible; //是否可以拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
+  //private boolean extensible; //是否可以拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
   
   private ColorByte[] content;
   
@@ -32,7 +32,7 @@ public class ColorCanvas
   
   
   /**
-   * 產生新的畫布，內定背景以空白鍵塗滿, 以及不能延長
+   * 產生新的畫布，內定背景以空白鍵塗滿
    * @param height
    * @param width
    */
@@ -40,7 +40,6 @@ public class ColorCanvas
   {
     this.height = height;
     this.width = width;
-    this.extensible = false;
     content = new ColorByte[width*height];
     for (int i=0 ; i < content.length ; i++)
     {
@@ -48,23 +47,6 @@ public class ColorCanvas
     }    
   }
   
-  /**
-   * 產生新的畫布，內定背景以空白鍵塗滿
-   * @param height
-   * @param width
-   * @param extensible 是否可以 自動拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
-   */
-  public ColorCanvas(int height , int width, boolean extensible)
-  {
-    this.height = height;
-    this.width = width;
-    this.extensible = extensible;
-    content = new ColorByte[width*height];
-    for (int i=0 ; i < content.length ; i++)
-    {
-      content[i] = new ColorByte(' ');
-    }    
-  }
   
   /**
    * 產生新的畫布，內定以 bgChar 字元填滿整個畫面
@@ -73,17 +55,14 @@ public class ColorCanvas
    * @param bgChar 內定以 bgChar 字元填滿整個畫面
    * @param extensible 是否可以 自動拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
    */
-  public ColorCanvas(int height , int width , char bgChar, boolean extensible)
+  public ColorCanvas(int height , int width , char bgChar)
   {
     this.height = height;
     this.width = width;
-    this.extensible = extensible;
     
     content = new ColorByte[width*height];
     for (int i=0 ; i < content.length ; i++)
-    {
       content[i] = new ColorByte(bgChar);
-    }    
   }//constructor
   
   /**
@@ -290,23 +269,14 @@ public class ColorCanvas
     {}
     if (wrap)
     {
-      //如果要換行 , 檢查是否是 extensible , 如果不 extensible , 就檢查是否太長
-      if (!extensible)        
-        //檢查是否會太長 , 如果太長，丟出錯誤訊息
-        if (index+strWidth-1 >= this.content.length)
-          throw new RuntimeException("setText() 超出 Canvas 長度");
-        else
-        {
-          //FIXME : 太長，處理換行問題
-          //ColorByte[] content 必須要加長 (高度, height 增加) 
-          
-          //先算出多出多寬的字？
-          int reminder = (index+strWidth-1) - content.length;
-          //需要多少 Rows
-          int additionalRows = reminder / this.width +1;
-          ColorByte[] newContent = new ColorByte[content.length + additionalRows*width];
-          
-        }
+      //如果要換行 , 就檢查是否太長
+      //檢查是否會太長 , 如果太長，丟出錯誤訊息
+      if (index+strWidth-1 >= this.content.length)
+        throw new RuntimeException("setText() 超出 Canvas 長度");
+      else
+      {
+        //TODO : 太長，處理換行問題
+      }
     }
     else
     {
@@ -498,7 +468,12 @@ public class ColorCanvas
   /** 附加一行「空行」到 content 尾端「之後」，亦即，加高 content */
   public void appendEmptyLine()
   {
-    
+    ColorCanvas appendedCanvas = new ColorCanvas(1 , width , " " , null , null);
+    this.height ++;
+    ColorByte[] newContent = new ColorByte[content.length + 1*width];
+    System.arraycopy(content, 0, newContent, 0, content.length);
+    System.arraycopy(appendedCanvas.getContent() , 0 , newContent , content.length , appendedCanvas.getContent().length);
+    content = newContent;
   }
   
   /**
