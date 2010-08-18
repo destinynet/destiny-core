@@ -93,6 +93,7 @@ public class ColorCanvas
    * @param fill
    * @param extensible 是否可以 自動拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
    */
+  /* @Deprecated
   public ColorCanvas(int height , int width , ColorByte fill, boolean extensible)
   {
     this.height = height;
@@ -105,6 +106,7 @@ public class ColorCanvas
       content[i] = fill;
     }
   }
+  */
   
   /** 生新的畫布，以 fill 'String' 填滿整個畫面 ，不指定前景背景顏色 */
   public ColorCanvas(int height , int width , String fill )
@@ -491,6 +493,12 @@ public class ColorCanvas
     System.arraycopy(content, 0, newContent, 0, content.length);
     System.arraycopy(appendedCanvas.getContent() , 0 , newContent , content.length , appendedCanvas.getContent().length);
     content = newContent;
+  }
+  
+  /** 附加一行「空行」到 content 尾端「之後」，亦即，加高 content */
+  public void appendEmptyLine()
+  {
+    
   }
   
   /**
