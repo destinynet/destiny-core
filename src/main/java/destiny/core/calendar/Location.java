@@ -106,7 +106,7 @@ public class Location implements Serializable
     // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
     locMap.put(Locale.CHINA   , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , TimeZone.getTimeZone("Asia/Shanghai")));
     // zh_HK , 香港
-    locMap.put(new Locale("zh" , "HK"), new Location(EastWest.EAST , 114 , 12 , NorthSouth.NORTH , 22 , 16 , TimeZone.getTimeZone("Asia/Hong_Kong")));
+    locMap.put(new Locale("zh" , "HK"), new Location(EastWest.EAST , 114 , 9 , 0, NorthSouth.NORTH , 22 , 17 , 2.4, TimeZone.getTimeZone("Asia/Hong_Kong")));
     // zh_MO , 澳門
     locMap.put(new Locale("zh" , "MO"), new Location(EastWest.EAST , 113 , 35 , NorthSouth.NORTH , 22 , 14 , TimeZone.getTimeZone("Asia/Macao")));
     // zh_SG , 新加坡
