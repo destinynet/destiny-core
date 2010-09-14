@@ -13,6 +13,7 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  * 一些加解密的工具
+ * 這是整個 destiny-core 內，唯一使用到 3rd-party library 的 class
  */
 public class Cryptor implements Serializable
 {
