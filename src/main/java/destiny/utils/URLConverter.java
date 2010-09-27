@@ -45,6 +45,7 @@ public class URLConverter implements Serializable
           href.indexOf(".org") != -1 || 
           href.indexOf(".tw") != -1 || 
           href.indexOf(".to") != -1 || 
+          href.indexOf(".ly") != -1 ||
           href.indexOf(".cc") != -1)
       {
 

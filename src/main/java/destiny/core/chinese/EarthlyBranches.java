@@ -22,7 +22,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   
   protected char Name;
   
-  protected static EarthlyBranches[] EarthlyBranchesArray = 
+  protected final static EarthlyBranches[] EarthlyBranchesArray = 
     new EarthlyBranches[] { 子 , 丑 , 寅 , 卯 , 辰 , 巳 , 午 , 未 , 申 , 酉 , 戌 , 亥};
   
   EarthlyBranches(char c)

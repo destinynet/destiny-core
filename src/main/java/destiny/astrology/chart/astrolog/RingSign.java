@@ -65,7 +65,7 @@ public class RingSign extends AbstractRing
     for (int signIndex = 0; signIndex < 12; signIndex++)
     {
       double 第一象限度數 = signs[signIndex].getDegree() + 15 - degDesc;
-      InputStream is = getClass().getResourceAsStream("Sign." + signs[signIndex].toString(Locale.ENGLISH) + ".gif");
+      InputStream is = getClass().getResourceAsStream(("Sign." + signs[signIndex].toString(Locale.ENGLISH) + ".gif").intern());
       try
       {
         BufferedImage signImg = ImageIO.read(is);
