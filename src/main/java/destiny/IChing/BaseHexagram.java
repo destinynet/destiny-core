@@ -1,0 +1,82 @@
+/**
+ * @author smallufo
+ * Created on 2010/6/24 at 上午4:38:39
+ */
+package destiny.IChing;
+
+import java.io.Serializable;
+
+import destiny.core.chinese.YinYang;
+import destiny.core.chinese.YinYangIF;
+
+/** 因為 enum Hexagram 無法被繼承 , 所以才做出這個中介/adapter class , 提供給其他 class 繼承 */
+public class BaseHexagram implements HexagramIF , Serializable
+{
+  private Hexagram hexagram;
+  
+  public BaseHexagram(Hexagram hexagram)
+  {
+    this.hexagram = hexagram;
+  }
+  
+  public BaseHexagram(YinYangIF[] yinyangs)
+  {
+    if(yinyangs.length != 6)
+      throw new RuntimeException("BaseHexagram yinyangs length not equal 6!");
+    this.hexagram = Hexagram.getHexagram(yinyangs);
+  }
+
+  @Override
+  public YinYangIF getLine(int index)
+  {
+    return hexagram.getLine(index);
+  }
+
+  @Override
+  public Symbol getLowerSymbol()
+  {
+    return hexagram.getLowerSymbol();
+  }
+
+  @Override
+  public Symbol getUpperSymbol()
+  {
+    return hexagram.getUpperSymbol();
+  }
+
+  @Override
+  public YinYang[] getYinYangs()
+  {
+    return hexagram.getYinYangs();
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((hexagram == null) ? 0 : hexagram.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    BaseHexagram other = (BaseHexagram) obj;
+    if (hexagram == null)
+    {
+      if (other.hexagram != null)
+        return false;
+    }
+    else if (!hexagram.equals(other.hexagram))
+      return false;
+    return true;
+  }
+  
+}
