@@ -13,6 +13,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 public class LocaleUtils implements Serializable
 {
 
@@ -55,6 +57,13 @@ public class LocaleUtils implements Serializable
       
     //前面都找不到，最後，把 basename 傳回去 
     return localeStringMap.get(null); //第七項
+  }
+  
+  public static Locale getBestMatchingLocale(Locale locale)
+  {
+    //TODO : 未來該把此 TAIWAN , CHINA , ENGLISH 做更彈性的調整。
+    Set<Locale> supported = ImmutableSet.of(Locale.TAIWAN , Locale.CHINA , Locale.ENGLISH);
+    return getBestMatchingLocale(locale , supported);
   }
   
   /**
