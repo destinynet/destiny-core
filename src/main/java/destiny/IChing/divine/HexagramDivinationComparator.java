@@ -4,12 +4,10 @@
  */
 package destiny.IChing.divine;
 
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 
 import destiny.IChing.Hexagram;
 import destiny.IChing.HexagramIF;
@@ -20,82 +18,79 @@ import destiny.IChing.HexagramSequenceIF;
  */
 public class HexagramDivinationComparator implements Comparator<HexagramIF> , HexagramSequenceIF
 {
-  private final static Map<Hexagram , Integer> map = Collections.synchronizedMap(new HashMap<Hexagram , Integer>());
-  static
-  {
-    map.put(Hexagram.乾, 1);
-    map.put(Hexagram.姤, 2);
-    map.put(Hexagram.遯, 3);
-    map.put(Hexagram.否, 4);
-    map.put(Hexagram.觀, 5);
-    map.put(Hexagram.剝, 6);
-    map.put(Hexagram.晉, 7);
-    map.put(Hexagram.大有, 8);
+  private final static BiMap<Hexagram,Integer> map = new ImmutableBiMap.Builder<Hexagram , Integer>()
+    .put(Hexagram.乾, 1)
+    .put(Hexagram.姤, 2)
+    .put(Hexagram.遯, 3)
+    .put(Hexagram.否, 4)
+    .put(Hexagram.觀, 5)
+    .put(Hexagram.剝, 6)
+    .put(Hexagram.晉, 7)
+    .put(Hexagram.大有, 8)
     
-    map.put(Hexagram.兌, 9);
-    map.put(Hexagram.困, 10);
-    map.put(Hexagram.萃, 11);
-    map.put(Hexagram.咸, 12);
-    map.put(Hexagram.蹇, 13);
-    map.put(Hexagram.謙, 14);
-    map.put(Hexagram.小過, 15);
-    map.put(Hexagram.歸妹, 16);
+    .put(Hexagram.兌, 9)
+    .put(Hexagram.困, 10)
+    .put(Hexagram.萃, 11)
+    .put(Hexagram.咸, 12)
+    .put(Hexagram.蹇, 13)
+    .put(Hexagram.謙, 14)
+    .put(Hexagram.小過, 15)
+    .put(Hexagram.歸妹, 16)
     
-    map.put(Hexagram.離, 17);
-    map.put(Hexagram.旅, 18);
-    map.put(Hexagram.鼎, 19);
-    map.put(Hexagram.未濟, 20);
-    map.put(Hexagram.蒙, 21);
-    map.put(Hexagram.渙, 22);
-    map.put(Hexagram.訟, 23);
-    map.put(Hexagram.同人, 24);
+    .put(Hexagram.離, 17)
+    .put(Hexagram.旅, 18)
+    .put(Hexagram.鼎, 19)
+    .put(Hexagram.未濟, 20)
+    .put(Hexagram.蒙, 21)
+    .put(Hexagram.渙, 22)
+    .put(Hexagram.訟, 23)
+    .put(Hexagram.同人, 24)
     
-    map.put(Hexagram.震, 25);
-    map.put(Hexagram.豫, 26);
-    map.put(Hexagram.解, 27);
-    map.put(Hexagram.恆, 28);
-    map.put(Hexagram.升, 29);
-    map.put(Hexagram.井, 30);
-    map.put(Hexagram.大過, 31);
-    map.put(Hexagram.隨, 32);
+    .put(Hexagram.震, 25)
+    .put(Hexagram.豫, 26)
+    .put(Hexagram.解, 27)
+    .put(Hexagram.恆, 28)
+    .put(Hexagram.升, 29)
+    .put(Hexagram.井, 30)
+    .put(Hexagram.大過, 31)
+    .put(Hexagram.隨, 32)
     
-    map.put(Hexagram.巽, 33);
-    map.put(Hexagram.小畜, 34);
-    map.put(Hexagram.家人, 35);
-    map.put(Hexagram.益, 36);
-    map.put(Hexagram.無妄, 37);
-    map.put(Hexagram.噬嗑, 38);
-    map.put(Hexagram.頤, 39);
-    map.put(Hexagram.蠱, 40);
+    .put(Hexagram.巽, 33)
+    .put(Hexagram.小畜, 34)
+    .put(Hexagram.家人, 35)
+    .put(Hexagram.益, 36)
+    .put(Hexagram.無妄, 37)
+    .put(Hexagram.噬嗑, 38)
+    .put(Hexagram.頤, 39)
+    .put(Hexagram.蠱, 40)
     
-    map.put(Hexagram.坎, 41);
-    map.put(Hexagram.節, 42);
-    map.put(Hexagram.屯, 43);
-    map.put(Hexagram.既濟, 44);
-    map.put(Hexagram.革, 45);
-    map.put(Hexagram.豐, 46);
-    map.put(Hexagram.明夷, 47);
-    map.put(Hexagram.師, 48);
+    .put(Hexagram.坎, 41)
+    .put(Hexagram.節, 42)
+    .put(Hexagram.屯, 43)
+    .put(Hexagram.既濟, 44)
+    .put(Hexagram.革, 45)
+    .put(Hexagram.豐, 46)
+    .put(Hexagram.明夷, 47)
+    .put(Hexagram.師, 48)
     
-    map.put(Hexagram.艮, 49);
-    map.put(Hexagram.賁, 50);
-    map.put(Hexagram.大畜, 51);
-    map.put(Hexagram.損, 52);
-    map.put(Hexagram.睽, 53);
-    map.put(Hexagram.履, 54);
-    map.put(Hexagram.中孚, 55);
-    map.put(Hexagram.漸, 56);
+    .put(Hexagram.艮, 49)
+    .put(Hexagram.賁, 50)
+    .put(Hexagram.大畜, 51)
+    .put(Hexagram.損, 52)
+    .put(Hexagram.睽, 53)
+    .put(Hexagram.履, 54)
+    .put(Hexagram.中孚, 55)
+    .put(Hexagram.漸, 56)
     
-    map.put(Hexagram.坤, 57);
-    map.put(Hexagram.復, 58);
-    map.put(Hexagram.臨, 59);
-    map.put(Hexagram.泰, 60);
-    map.put(Hexagram.大壯, 61);
-    map.put(Hexagram.夬, 62);
-    map.put(Hexagram.需, 63);
-    map.put(Hexagram.比, 64);
-  }
-  
+    .put(Hexagram.坤, 57)
+    .put(Hexagram.復, 58)
+    .put(Hexagram.臨, 59)
+    .put(Hexagram.泰, 60)
+    .put(Hexagram.大壯, 61)
+    .put(Hexagram.夬, 62)
+    .put(Hexagram.需, 63)
+    .put(Hexagram.比, 64).build();
+
   public HexagramDivinationComparator()
   {
   }
@@ -126,7 +121,10 @@ public class HexagramDivinationComparator implements Comparator<HexagramIF> , He
     if (index <=0 )
       index = 64-(0-index) % 64;
 
-    Iterator<Entry<Hexagram , Integer>> it = map.entrySet().iterator();
+    return map.inverse().get(index);
+    
+    /*
+    Iterator<Entry<Hexagram , Integer>> it = mapOld.entrySet().iterator();
     while(it.hasNext())
     {
       Entry<Hexagram , Integer> entry = it.next();
@@ -134,6 +132,7 @@ public class HexagramDivinationComparator implements Comparator<HexagramIF> , He
         return entry.getKey();
     }
     return null;
+    */
   }
   
 }

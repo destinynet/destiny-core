@@ -14,7 +14,7 @@ import destiny.utils.LocaleUtils;
 
 public class LocationDecorator
 {
-  private static Map<Locale , Decorator<Location>> implMap = Collections.synchronizedMap(new HashMap<Locale , Decorator<Location>>());
+  private final static Map<Locale , Decorator<Location>> implMap = Collections.synchronizedMap(new HashMap<Locale , Decorator<Location>>());
   static
   {
     implMap.put(Locale.TAIWAN , new LocationDecoratorTaiwan());

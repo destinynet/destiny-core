@@ -5,10 +5,7 @@
  */
 package destiny.IChing;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -95,90 +92,7 @@ public class HexagramDefaultComparator implements Comparator<HexagramIF> , Hexag
     .put(Hexagram.小過, 62)
     .put(Hexagram.既濟, 63)
     .put(Hexagram.未濟, 64).build();
-
-
-  private final static Map<Hexagram , Integer> mapOld = Collections.synchronizedMap(new HashMap<Hexagram , Integer>());
-  static
-  {
-    mapOld.put(Hexagram.乾, 1);
-    mapOld.put(Hexagram.坤, 2);
-    mapOld.put(Hexagram.屯, 3);
-    mapOld.put(Hexagram.蒙, 4);
-    mapOld.put(Hexagram.需, 5);
-    mapOld.put(Hexagram.訟, 6);
-    mapOld.put(Hexagram.師, 7);
     
-    mapOld.put(Hexagram.比, 8);
-    mapOld.put(Hexagram.小畜, 9);
-    mapOld.put(Hexagram.履, 10);
-    mapOld.put(Hexagram.泰, 11);
-    mapOld.put(Hexagram.否, 12);
-    
-    mapOld.put(Hexagram.同人, 13);
-    mapOld.put(Hexagram.大有, 14);
-    mapOld.put(Hexagram.謙, 15);
-    mapOld.put(Hexagram.豫, 16);
-    mapOld.put(Hexagram.隨, 17);
-    
-    mapOld.put(Hexagram.蠱, 18);
-    mapOld.put(Hexagram.臨, 19);
-    mapOld.put(Hexagram.觀, 20);
-    mapOld.put(Hexagram.噬嗑, 21);
-    mapOld.put(Hexagram.賁, 22);
-    
-    mapOld.put(Hexagram.剝, 23);
-    mapOld.put(Hexagram.復, 24);
-    mapOld.put(Hexagram.無妄, 25);
-    mapOld.put(Hexagram.大畜, 26);
-    mapOld.put(Hexagram.頤, 27);
-    
-    mapOld.put(Hexagram.大過, 28);
-    mapOld.put(Hexagram.坎, 29);
-    mapOld.put(Hexagram.離, 30);
-    
-    mapOld.put(Hexagram.咸, 31);
-    mapOld.put(Hexagram.恆, 32);
-    mapOld.put(Hexagram.遯, 33);
-    mapOld.put(Hexagram.大壯, 34);
-    
-    mapOld.put(Hexagram.晉, 35);
-    mapOld.put(Hexagram.明夷, 36);
-    mapOld.put(Hexagram.家人, 37);
-    mapOld.put(Hexagram.睽, 38);
-    
-    mapOld.put(Hexagram.蹇, 39);
-    mapOld.put(Hexagram.解, 40);
-    mapOld.put(Hexagram.損, 41);
-    mapOld.put(Hexagram.益, 42);
-    mapOld.put(Hexagram.夬, 43);
-    mapOld.put(Hexagram.姤, 44);
-    mapOld.put(Hexagram.萃, 45);
-    
-    mapOld.put(Hexagram.升, 46);
-    mapOld.put(Hexagram.困, 47);
-    mapOld.put(Hexagram.井, 48);
-    mapOld.put(Hexagram.革, 49);
-    mapOld.put(Hexagram.鼎, 50);
-    mapOld.put(Hexagram.震, 51);
-    
-    mapOld.put(Hexagram.艮, 52);
-    mapOld.put(Hexagram.漸, 53);
-    mapOld.put(Hexagram.歸妹, 54);
-    mapOld.put(Hexagram.豐, 55);
-    mapOld.put(Hexagram.旅, 56);
-    mapOld.put(Hexagram.巽, 57);
-    
-    mapOld.put(Hexagram.兌, 58);
-    mapOld.put(Hexagram.渙, 59);
-    mapOld.put(Hexagram.節, 60);
-    mapOld.put(Hexagram.中孚, 61);
-    
-    mapOld.put(Hexagram.小過, 62);
-    mapOld.put(Hexagram.既濟, 63);
-    mapOld.put(Hexagram.未濟, 64);
-  }
-  
-  
   public HexagramDefaultComparator()
   {}
 
