@@ -5,9 +5,8 @@
 package destiny.astrology;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * 「現代占星術」中，考量星體的交角容許度，內定實作 <br/>
@@ -22,20 +21,22 @@ public class AspectOrbsPlanetDefaultImpl implements AspectOrbsPlanetIF , Seriali
     return p1.toString()+"-"+p2.toString()+"-"+aspect.toString();
   }
   
-  private static Map<String,Double> aspectMap = Collections.synchronizedMap(new HashMap<String,Double>());
-  static 
-  {
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.CONJUNCTION), 12.0);
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.OPPOSITION), 12.0);
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.TRINE), 8.0);
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SQUARE), 8.0);
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SEXTILE), 5.0);
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SEMISQUARE), 2.5);
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SESQUIQUADRATE), 2.5 );
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SEMISEXTILE), 2.0);
-    aspectMap.put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.QUINCUNX), 2.5);
-  }
-
+  private final static ImmutableMap<String , Double> aspectMap = new ImmutableMap.Builder<String , Double>()
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.CONJUNCTION), 12.0)
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.OPPOSITION), 12.0)
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.TRINE), 8.0)
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SQUARE), 8.0)
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SEXTILE), 5.0)
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SEMISQUARE), 2.5)
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SESQUIQUADRATE), 2.5 )
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.SEMISEXTILE), 2.0)
+    .put(getCompositedKey(Planet.SUN, Planet.MOON, Aspect.QUINCUNX), 2.5)
+    .build();
+  
+  /**
+   * @param aspect 欲取得容許度之交角
+   * @return 交角容許度，如果傳回 小於零，代表找不到其值
+   */
   @Override
   public double getPlanetAspectOrb(Point p1, Point p2, Aspect aspect)
   {

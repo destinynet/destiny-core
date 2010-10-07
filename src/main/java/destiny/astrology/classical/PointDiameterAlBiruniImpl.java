@@ -5,10 +5,9 @@
 package destiny.astrology.classical;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
@@ -20,6 +19,21 @@ import destiny.astrology.Point;
  */
 public class PointDiameterAlBiruniImpl implements PointDiameterIF , Serializable
 {
+  private final static ImmutableMap<Planet,Double> planetOrbsMap = new ImmutableMap.Builder<Planet , Double>()
+    .put(Planet.SUN, 15.0)
+    .put(Planet.MOON, 12.0)
+    .put(Planet.MERCURY, 7.0)
+    .put(Planet.VENUS, 7.0)
+    .put(Planet.MARS, 8.0)
+    .put(Planet.JUPITER , 9.0)
+    .put(Planet.SATURN , 9.0)
+    .put(Planet.URANUS, 5.0)
+    .put(Planet.NEPTUNE, 5.0)
+    .put(Planet.PLUTO, 5.0)
+    .build();
+  
+  
+  /*
   private final static Map<Point , Double> planetOrbsMap = Collections.synchronizedMap(new HashMap<Point , Double>());
   static
   {
@@ -34,6 +48,7 @@ public class PointDiameterAlBiruniImpl implements PointDiameterIF , Serializable
     planetOrbsMap.put(Planet.NEPTUNE, 5.0);
     planetOrbsMap.put(Planet.PLUTO, 5.0);
   }
+  */
   
   @Override
   public String getTitle(Locale locale)

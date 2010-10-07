@@ -66,7 +66,9 @@ public enum Aspect implements LocaleStringIF
   /** 重要度 */
   private Importance importance; 
   
-  private static Map<Importance , List<Aspect>> importanceAngles = Collections.synchronizedMap(new HashMap<Importance , List<Aspect>>());
+  
+  
+  private final static Map<Importance , List<Aspect>> importanceAngles = Collections.synchronizedMap(new HashMap<Importance , List<Aspect>>());
   static
   {
     for (Importance eachImportance : Importance.values())

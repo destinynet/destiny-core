@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableMap;
+
 import destiny.astrology.Asteroid;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
@@ -27,26 +29,24 @@ public class RingPoints extends AbstractRing
 {
   private Map<Point, Color>        pointColorMap   = Collections.synchronizedMap(new HashMap<Point, Color>());
 
-  private static Map<Point, Color> defaultColorMap = Collections.synchronizedMap(new HashMap<Point, Color>());
-  static
-  {
-    defaultColorMap.put(Planet.SUN, Color.RED);
-    defaultColorMap.put(Planet.MOON, Color.BLUE);
-    defaultColorMap.put(Planet.MERCURY, Color.GREEN);
-    defaultColorMap.put(Planet.VENUS, Color.GREEN);
-    defaultColorMap.put(Planet.MARS, Color.RED);
-    defaultColorMap.put(Planet.JUPITER, Color.RED);
-    defaultColorMap.put(Planet.SATURN, Color.YELLOW);
-    defaultColorMap.put(Planet.URANUS, Color.GREEN);
-    defaultColorMap.put(Planet.NEPTUNE, Color.BLUE);
-    defaultColorMap.put(Planet.PLUTO, Color.BLUE);
-    defaultColorMap.put(Asteroid.CERES, Color.PINK);
-    defaultColorMap.put(Asteroid.PALLAS, Color.PINK);
-    defaultColorMap.put(Asteroid.JUNO, Color.PINK);
-    defaultColorMap.put(Asteroid.VESTA, Color.PINK);
-    defaultColorMap.put(Asteroid.CHIRON, Color.PINK);
-    defaultColorMap.put(Asteroid.PHOLUS, Color.PINK);
-  }
+  private final static ImmutableMap<Point , Color> defaultColorMap = new ImmutableMap.Builder<Point , Color>()
+    .put(Planet.SUN, Color.RED)
+    .put(Planet.MOON, Color.BLUE)
+    .put(Planet.MERCURY, Color.GREEN)
+    .put(Planet.VENUS, Color.GREEN)
+    .put(Planet.MARS, Color.RED)
+    .put(Planet.JUPITER, Color.RED)
+    .put(Planet.SATURN, Color.YELLOW)
+    .put(Planet.URANUS, Color.GREEN)
+    .put(Planet.NEPTUNE, Color.BLUE)
+    .put(Planet.PLUTO, Color.BLUE)
+    .put(Asteroid.CERES, Color.PINK)
+    .put(Asteroid.PALLAS, Color.PINK)
+    .put(Asteroid.JUNO, Color.PINK)
+    .put(Asteroid.VESTA, Color.PINK)
+    .put(Asteroid.CHIRON, Color.PINK)
+    .put(Asteroid.PHOLUS, Color.PINK)
+    .build();
 
   /** 要繪製的星體 */
   private Set<Point>               shownPoints     = Collections.synchronizedSet(new HashSet<Point>());
@@ -55,7 +55,7 @@ public class RingPoints extends AbstractRing
   {
     super(h, innerFrom, outerTo);
     this.shownPoints = shownPoints;
-    pointColorMap = defaultColorMap;
+    this.pointColorMap = new HashMap<Point , Color>(defaultColorMap);
   }
 
   /** 設定 整組的 星體顏色 */

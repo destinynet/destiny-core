@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+
 import destiny.astrology.LunarNode;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
@@ -23,6 +25,19 @@ import destiny.astrology.ZodiacSign;
 public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
 {
   /** 存放星體在黃道帶上幾度得到 Exaltation (廟 , +4) 的度數 */
+  private final static ImmutableMap<Point,Double> starExaltationMap = new ImmutableMap.Builder<Point, Double>()
+    .put(Planet.SUN    ,  19.0) // 太陽在戌宮 19度 exalted.
+    .put(Planet.MOON   ,  33.0) // 月亮在酉宮 03度 exalted.
+    .put(Planet.MERCURY, 165.0) // 水星在巳工 15度 exalted.
+    .put(Planet.VENUS  , 357.0) // 金星在亥宮 27度 exalted.
+    .put(Planet.MARS   , 298.0) // 火星在丑宮 28度 exalted.
+    .put(Planet.JUPITER, 105.0) // 木星在未宮 15度 exalted.
+    .put(Planet.SATURN , 201.0) // 土星在辰宮 21度 exalted.
+    .put(LunarNode.NORTH_TRUE ,  63.0) //北交點在 申宮 03度 exalted.
+    .put(LunarNode.SOUTH_TRUE , 243.0) //南交點在 寅宮 03度 exalted.
+    .build();
+
+  /*
   private static Map<Point , Double> starExaltationMap = Collections.synchronizedMap(new HashMap<Point , Double>());
   static
   {
@@ -34,10 +49,9 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
     starExaltationMap.put(Planet.JUPITER, 105.0); // 木星在未宮 15度 exalted.
     starExaltationMap.put(Planet.SATURN , 201.0); // 土星在辰宮 21度 exalted.
     starExaltationMap.put(LunarNode.NORTH_TRUE ,  63.0); //北交點在 申宮 03度 exalted.
-    starExaltationMap.put(LunarNode.NORTH_MEAN ,  63.0);
     starExaltationMap.put(LunarNode.SOUTH_TRUE , 243.0); //南交點在 寅宮 03度 exalted.
-    starExaltationMap.put(LunarNode.SOUTH_MEAN , 243.0);
   }
+  */
   
   /** 
    * 放星體在黃道帶上幾度得到 Fall (落 , -4) 的度數

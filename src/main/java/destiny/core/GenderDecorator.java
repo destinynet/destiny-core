@@ -4,22 +4,19 @@
  */ 
 package destiny.core;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import destiny.utils.Decorator;
 import destiny.utils.LocaleUtils;
 
 public class GenderDecorator
 {
-  private static Map<Locale , Decorator<Gender>> implMap = Collections.synchronizedMap(new HashMap<Locale , Decorator<Gender>>());
-  static
-  {
-    implMap.put(Locale.TAIWAN , new GenderDecoratorChinese());
-    implMap.put(Locale.ENGLISH, new GenderDecoratorEnglish());
-  }
+  private final static ImmutableMap<Locale , Decorator<Gender>> implMap = new ImmutableMap.Builder<Locale , Decorator<Gender>>()
+    .put(Locale.TAIWAN , new GenderDecoratorChinese())
+    .put(Locale.ENGLISH, new GenderDecoratorEnglish())
+    .build();
   
   public static String getOutputString(Gender gender , Locale locale)
   {

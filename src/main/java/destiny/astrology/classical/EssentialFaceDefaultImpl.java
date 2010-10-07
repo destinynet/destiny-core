@@ -5,8 +5,8 @@
 package destiny.astrology.classical;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 import destiny.astrology.Planet;
 import destiny.astrology.Star;
@@ -29,7 +29,59 @@ import destiny.astrology.ZodiacSign;
 public class EssentialFaceDefaultImpl implements EssentialFaceIF , Serializable
 {
   /** 因為間距固定 10度 , 所以 list 不用儲存度數 */
-  private static List<Star> starList = new ArrayList<Star>();
+  private final static ImmutableList<Star> starList = new ImmutableList.Builder<Star>()
+    //戌
+    .add(Planet.MARS)
+    .add(Planet.SUN)
+    .add(Planet.VENUS)
+    //酉
+    .add(Planet.MERCURY)
+    .add(Planet.MOON)
+    .add(Planet.SATURN)
+    //申
+    .add(Planet.JUPITER)
+    .add(Planet.MARS)
+    .add(Planet.SUN)
+    //未
+    .add(Planet.VENUS)
+    .add(Planet.MERCURY)
+    .add(Planet.MOON)
+    //午
+    .add(Planet.SATURN)
+    .add(Planet.JUPITER)
+    .add(Planet.MARS)
+    //巳
+    .add(Planet.SUN)
+    .add(Planet.VENUS)
+    .add(Planet.MERCURY)
+    //辰
+    .add(Planet.MOON)
+    .add(Planet.SATURN)
+    .add(Planet.JUPITER)
+    //卯
+    .add(Planet.MARS)
+    .add(Planet.SUN)
+    .add(Planet.VENUS)
+    //寅
+    .add(Planet.MERCURY)
+    .add(Planet.MOON)
+    .add(Planet.SATURN)
+    //丑
+    .add(Planet.JUPITER)
+    .add(Planet.MARS)
+    .add(Planet.SUN)
+    //子
+    .add(Planet.VENUS)
+    .add(Planet.MERCURY)
+    .add(Planet.MOON)
+    //亥
+    .add(Planet.SATURN)
+    .add(Planet.JUPITER)
+    .add(Planet.MARS)
+    .build();
+  
+  /*
+  private final static List<Star> starList = new ArrayList<Star>();
   static
   {
     //戌
@@ -81,6 +133,7 @@ public class EssentialFaceDefaultImpl implements EssentialFaceIF , Serializable
     starList.add(Planet.JUPITER);
     starList.add(Planet.MARS);
   }
+  */
 
   @Override
   public Star getFaceStar(double degree)

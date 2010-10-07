@@ -5,9 +5,8 @@
 package destiny.astrology.classical;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import destiny.astrology.DayNight;
 import destiny.astrology.Element;
@@ -28,24 +27,19 @@ import destiny.astrology.ZodiacSign;
  */
 public class EssentialTriplicityDefaultImpl implements EssentialTriplicityIF , Serializable
 {
-  private static Map<Element , Planet> dayMap = Collections.synchronizedMap(new HashMap<Element , Planet>());
-  static
-  {
-    dayMap.put(Element.FIRE  , Planet.SUN);
-    dayMap.put(Element.EARTH , Planet.VENUS);
-    dayMap.put(Element.AIR   , Planet.SATURN);
-    dayMap.put(Element.WATER , Planet.MARS);
-  }
+  private final static ImmutableMap<Element,Planet> dayMap = new ImmutableMap.Builder<Element , Planet>()
+    .put(Element.FIRE  , Planet.SUN)
+    .put(Element.EARTH , Planet.VENUS)
+    .put(Element.AIR   , Planet.SATURN)
+    .put(Element.WATER , Planet.MARS)
+    .build();
   
-  private static Map<Element , Planet> nightMap = Collections.synchronizedMap(new HashMap<Element , Planet>());
-  static
-  {
-    nightMap.put(Element.FIRE  , Planet.JUPITER);
-    nightMap.put(Element.EARTH , Planet.MOON);
-    nightMap.put(Element.AIR   , Planet.MERCURY);
-    nightMap.put(Element.WATER , Planet.MARS);
-  }
-  
+  private final static ImmutableMap<Element,Planet> nightMap = new ImmutableMap.Builder<Element , Planet>()
+    .put(Element.FIRE  , Planet.JUPITER)
+    .put(Element.EARTH , Planet.MOON)
+    .put(Element.AIR   , Planet.MERCURY)
+    .put(Element.WATER , Planet.MARS)
+    .build();
   
   @Override
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */ 

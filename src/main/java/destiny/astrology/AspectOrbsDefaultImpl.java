@@ -5,9 +5,8 @@
 package destiny.astrology;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 /** 
  * 「現代占星術」的交角容許度，內定實作
@@ -15,30 +14,27 @@ import java.util.Map;
  * */
 public class AspectOrbsDefaultImpl implements AspectOrbsIF , Serializable
 {
-  private static Map<Aspect , Double> aspectOrbsMap = Collections.synchronizedMap(new HashMap<Aspect , Double>());
-  static
-  {
-    aspectOrbsMap.put(Aspect.CONJUNCTION, 11.0); //0
-    aspectOrbsMap.put(Aspect.SEMISEXTILE , 1.5); //30
-    aspectOrbsMap.put(Aspect.DECILE , 1.0); //36
-    aspectOrbsMap.put(Aspect.NOVILE , 1.0); //40
-    aspectOrbsMap.put(Aspect.SEMISQUARE , 2.0); //45
-    aspectOrbsMap.put(Aspect.SEPTILE , 1.5); // 360x1/7
-    aspectOrbsMap.put(Aspect.SEXTILE , 4.5); //60
-    aspectOrbsMap.put(Aspect.QUINTILE , 2.0); //72
-    aspectOrbsMap.put(Aspect.BINOVILE , 1.0); //80
-    aspectOrbsMap.put(Aspect.SQUARE , 7.5); //90
-    aspectOrbsMap.put(Aspect.BISEPTILE , 1.5 ); // 360x2/7
-    aspectOrbsMap.put(Aspect.SESQUIQUINTLE , 1.5); //108
-    aspectOrbsMap.put(Aspect.TRINE , 7.5 ); //120
-    aspectOrbsMap.put(Aspect.SESQUIQUADRATE , 2.0); //135
-    aspectOrbsMap.put(Aspect.BIQUINTILE , 2.0); //144
-    aspectOrbsMap.put(Aspect.QUINCUNX , 2.0); //150
-    aspectOrbsMap.put(Aspect.TRISEPTILE , 1.5); //360x3/7
-    aspectOrbsMap.put(Aspect.QUATRONOVILE , 1.0 ); //160
-    aspectOrbsMap.put(Aspect.OPPOSITION , 11.0); //180
-  }
-  
+  private final static ImmutableMap<Aspect , Double> aspectOrbsMap = new ImmutableMap.Builder<Aspect , Double>()
+    .put(Aspect.CONJUNCTION, 11.0) //0
+    .put(Aspect.SEMISEXTILE , 1.5) //30
+    .put(Aspect.DECILE , 1.0) //36
+    .put(Aspect.NOVILE , 1.0) //40
+    .put(Aspect.SEMISQUARE , 2.0) //45
+    .put(Aspect.SEPTILE , 1.5) // 360x1/7
+    .put(Aspect.SEXTILE , 4.5) //60
+    .put(Aspect.QUINTILE , 2.0) //72
+    .put(Aspect.BINOVILE , 1.0) //80
+    .put(Aspect.SQUARE , 7.5) //90
+    .put(Aspect.BISEPTILE , 1.5 ) // 360x2/7
+    .put(Aspect.SESQUIQUINTLE , 1.5) //108
+    .put(Aspect.TRINE , 7.5 ) //120
+    .put(Aspect.SESQUIQUADRATE , 2.0) //135
+    .put(Aspect.BIQUINTILE , 2.0) //144
+    .put(Aspect.QUINCUNX , 2.0) //150
+    .put(Aspect.TRISEPTILE , 1.5) //360x3/7
+    .put(Aspect.QUATRONOVILE , 1.0 ) //160
+    .put(Aspect.OPPOSITION , 11.0) //180
+    .build();
 
   @Override
   public double getAspectOrb(Aspect aspect)

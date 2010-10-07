@@ -4,22 +4,19 @@
  */ 
 package destiny.astrology;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import destiny.utils.LocaleUtils;
 
 public class ZodiacDegreeDecorator
 {
-  private static Map<Locale , ZodiacDegreeDecoratorIF> implMap = Collections.synchronizedMap(new HashMap<Locale , ZodiacDegreeDecoratorIF>());
-  static
-  {
-    implMap.put(Locale.TAIWAN , new ZodiacDegreeDecoratorTradChinese());
-    implMap.put(Locale.US     , new ZodiacDegreeDecoratorEnglish());
-  }
-  
+  private final static ImmutableMap<Locale , ZodiacDegreeDecoratorIF> implMap = new ImmutableMap.Builder<Locale , ZodiacDegreeDecoratorIF>()
+    .put(Locale.TAIWAN , new ZodiacDegreeDecoratorTradChinese())
+    .put(Locale.US     , new ZodiacDegreeDecoratorEnglish())
+    .build();
+
   public static String getOutputString(double degree , Locale locale)
   {
     Locale matched = LocaleUtils.getBestMatchingLocale(locale , implMap.keySet());
