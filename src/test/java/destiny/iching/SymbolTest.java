@@ -2,15 +2,13 @@
  * @author smallufo
  * Created on 2005/1/19 at 下午 06:27:55
  */
-package destiny.IChing;
+package destiny.iching;
 
 import java.util.Arrays;
 
+import junit.framework.TestCase;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.YinYang;
-
-
-import junit.framework.TestCase;
 
 public class SymbolTest extends TestCase
 {

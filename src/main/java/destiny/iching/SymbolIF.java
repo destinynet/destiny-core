@@ -3,7 +3,7 @@
  * @date 2002/8/13
  * @time 下午 05:38:34
  */
-package destiny.IChing;
+package destiny.iching;
 
 import destiny.core.chinese.YinYang;
 

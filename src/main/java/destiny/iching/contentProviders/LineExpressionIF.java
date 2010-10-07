@@ -1,9 +1,9 @@
 /** 2009/7/13 上午 4:03:01 by smallufo */
-package destiny.IChing.contentProviders;
+package destiny.iching.contentProviders;
 
 import java.util.Locale;
 
-import destiny.IChing.HexagramIF;
+import destiny.iching.HexagramIF;
 
 /** 384爻辭 + 用九/用六 兩個 extra */
 public interface LineExpressionIF

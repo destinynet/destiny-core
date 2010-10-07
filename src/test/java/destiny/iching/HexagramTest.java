@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2010/6/23 at 下午7:32:33
  */
-package destiny.IChing;
+package destiny.iching;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;

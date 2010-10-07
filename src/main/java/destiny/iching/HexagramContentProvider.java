@@ -1,5 +1,5 @@
 /** 2009/6/18 by smallufo */
-package destiny.IChing;
+package destiny.iching;
 
 import java.util.Collection;
 import java.util.Locale;

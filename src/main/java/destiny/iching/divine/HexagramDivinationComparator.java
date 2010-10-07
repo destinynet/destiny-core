@@ -2,16 +2,16 @@
  * @author smallufo
  * @date 2002/8/19 , @date 2009/6/23 改寫
  */
-package destiny.IChing.divine;
+package destiny.iching.divine;
 
 import java.util.Comparator;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 
-import destiny.IChing.Hexagram;
-import destiny.IChing.HexagramIF;
-import destiny.IChing.HexagramSequenceIF;
+import destiny.iching.Hexagram;
+import destiny.iching.HexagramIF;
+import destiny.iching.HexagramSequenceIF;
 
 /**
  * 京房卦序：乾為天,天風姤,天山遯,天地否...

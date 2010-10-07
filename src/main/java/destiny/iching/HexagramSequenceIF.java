@@ -3,7 +3,7 @@
  * @date 2002/8/19 , @date 2009/6/23 改以 HexagramIF 計算
  * @time 下午 11:04:01
  */
-package destiny.IChing;
+package destiny.iching;
 /**
  * 取得卦的排列順序 , 1 <= int <= 64
  * <BR>只有 HexagramDefaultComparator(周易卦序) 以及

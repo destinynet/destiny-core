@@ -3,7 +3,7 @@
  * @date 2003/1/13
  * @time 下午 05:01:39
  */
-package destiny.IChing;
+package destiny.iching;
 
 import java.io.Serializable;
 

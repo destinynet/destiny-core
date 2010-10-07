@@ -2,18 +2,18 @@
  * @author smallufo 
  * Created on 2007/2/11 at 上午 3:50:01
  */ 
-package destiny.IChing.mume;
+package destiny.iching.mume;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 
-import destiny.IChing.HexagramIF;
-import destiny.IChing.Symbol;
-import destiny.IChing.contentProviders.HexagramNameFullIF;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.YinYang;
+import destiny.iching.HexagramIF;
+import destiny.iching.Symbol;
+import destiny.iching.contentProviders.HexagramNameFullIF;
 import destiny.utils.ColorCanvas.ColorCanvas;
 
 /**

@@ -3,7 +3,7 @@
  * @date 2005/1/21
  * @time 上午 11:02:28
  */
-package destiny.IChing.divine;
+package destiny.iching.divine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -12,8 +12,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import destiny.IChing.Hexagram;
-import destiny.IChing.HexagramSequenceIF;
+import destiny.iching.Hexagram;
+import destiny.iching.HexagramSequenceIF;
+import destiny.iching.divine.HexagramDivinationComparator;
 
 public class HexagramDivinationComparatorTest
 {

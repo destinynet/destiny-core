@@ -1,5 +1,5 @@
 /** 2009/6/23 上午 1:56:39 by smallufo */
-package destiny.IChing;
+package destiny.iching;
 
 import destiny.core.chinese.YinYangIF;
 

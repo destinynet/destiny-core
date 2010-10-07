@@ -2,7 +2,7 @@
  * @author smallufo 
  * Created on 2007/3/8 at 上午 3:44:36
  */ 
-package destiny.IChing;
+package destiny.iching;
 
 import destiny.core.chinese.YinYang;
 import destiny.core.chinese.YinYangIF;

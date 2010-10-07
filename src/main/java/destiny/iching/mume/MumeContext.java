@@ -2,13 +2,13 @@
  * @author smallufo 
  * Created on 2007/2/10 at 上午 8:42:33
  */
-package destiny.IChing.mume;
+package destiny.iching.mume;
 
 import java.io.Serializable;
 
-import destiny.IChing.Hexagram;
-import destiny.IChing.HexagramIF;
 import destiny.core.chinese.YinYang;
+import destiny.iching.Hexagram;
+import destiny.iching.HexagramIF;
 
 /**
  * 梅花易 , 梅花的學名為 Prunus(李屬) mume(梅種)

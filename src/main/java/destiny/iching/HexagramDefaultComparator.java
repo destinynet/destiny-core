@@ -3,7 +3,7 @@
  * @date 2002/8/19 , @date 2009/6/23 改寫
  * @time 下午 04:36:40
  */
-package destiny.IChing;
+package destiny.iching;
 import java.io.Serializable;
 import java.util.Comparator;
 

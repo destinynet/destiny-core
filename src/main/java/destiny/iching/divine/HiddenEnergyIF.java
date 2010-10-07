@@ -3,10 +3,10 @@
  * @date 2002/8/20
  * @time 下午 04:04:28
  */
-package destiny.IChing.divine;
+package destiny.iching.divine;
 
-import destiny.IChing.HexagramIF;
 import destiny.core.chinese.StemBranch;
+import destiny.iching.HexagramIF;
 
 /** 伏神介面 */
 public interface HiddenEnergyIF

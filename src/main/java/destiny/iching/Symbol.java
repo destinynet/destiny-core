@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2002/8/13 at 下午 01:08:17
  */
-package destiny.IChing;
+package destiny.iching;
 
 import java.io.Serializable;
 

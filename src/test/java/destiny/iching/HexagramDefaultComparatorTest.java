@@ -3,7 +3,7 @@
  * @date 2005/1/21
  * @time 上午 10:45:47
  */
-package destiny.IChing;
+package destiny.iching;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;

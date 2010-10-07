@@ -1,9 +1,9 @@
 /** 2009/7/13 上午 4:28:41 by smallufo */
-package destiny.IChing.contentProviders;
+package destiny.iching.contentProviders;
 
 import java.util.Locale;
 
-import destiny.IChing.HexagramIF;
+import destiny.iching.HexagramIF;
 
 public interface ImageIF
 {

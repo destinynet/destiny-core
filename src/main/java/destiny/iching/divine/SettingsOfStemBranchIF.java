@@ -3,10 +3,10 @@
  * @date 2002/8/19
  * @time 下午 10:25:17
  */
-package destiny.IChing.divine;
+package destiny.iching.divine;
 
-import destiny.IChing.HexagramIF;
 import destiny.core.chinese.StemBranch;
+import destiny.iching.HexagramIF;
 
 /** 納甲法的設定介面 */
 public interface SettingsOfStemBranchIF
