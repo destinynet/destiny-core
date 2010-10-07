@@ -79,61 +79,6 @@ public class EssentialFaceDefaultImpl implements EssentialFaceIF , Serializable
     .add(Planet.JUPITER)
     .add(Planet.MARS)
     .build();
-  
-  /*
-  private final static List<Star> starList = new ArrayList<Star>();
-  static
-  {
-    //戌
-    starList.add(Planet.MARS);
-    starList.add(Planet.SUN);
-    starList.add(Planet.VENUS);
-    //酉
-    starList.add(Planet.MERCURY);
-    starList.add(Planet.MOON);
-    starList.add(Planet.SATURN);
-    //申
-    starList.add(Planet.JUPITER);
-    starList.add(Planet.MARS);
-    starList.add(Planet.SUN);
-    //未
-    starList.add(Planet.VENUS);
-    starList.add(Planet.MERCURY);
-    starList.add(Planet.MOON);
-    //午
-    starList.add(Planet.SATURN);
-    starList.add(Planet.JUPITER);
-    starList.add(Planet.MARS);
-    //巳
-    starList.add(Planet.SUN);
-    starList.add(Planet.VENUS);
-    starList.add(Planet.MERCURY);
-    //辰
-    starList.add(Planet.MOON);
-    starList.add(Planet.SATURN);
-    starList.add(Planet.JUPITER);
-    //卯
-    starList.add(Planet.MARS);
-    starList.add(Planet.SUN);
-    starList.add(Planet.VENUS);
-    //寅
-    starList.add(Planet.MERCURY);
-    starList.add(Planet.MOON);
-    starList.add(Planet.SATURN);
-    //丑
-    starList.add(Planet.JUPITER);
-    starList.add(Planet.MARS);
-    starList.add(Planet.SUN);
-    //子
-    starList.add(Planet.VENUS);
-    starList.add(Planet.MERCURY);
-    starList.add(Planet.MOON);
-    //亥
-    starList.add(Planet.SATURN);
-    starList.add(Planet.JUPITER);
-    starList.add(Planet.MARS);
-  }
-  */
 
   @Override
   public Star getFaceStar(double degree)

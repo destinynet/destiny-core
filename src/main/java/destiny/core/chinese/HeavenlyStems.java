@@ -17,17 +17,17 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   壬('壬'),
   癸('癸');
   
-  private char Name;
+  private char name;
   
   protected final static HeavenlyStems[] HeavenlyStemsArray =
     { 甲 , 乙 , 丙 , 丁 , 戊 ,
       己 , 庚 , 辛 , 壬 , 癸 };
   
-  private final static List<HeavenlyStems> HeavenlyStemsList = Arrays.asList(HeavenlyStemsArray);
+  private final static List<HeavenlyStems> heavenlyStemsList = Arrays.asList(HeavenlyStemsArray);
 
   private HeavenlyStems(char c)
   {
-    this.Name = c;
+    this.name = c;
   }
   
   /** 從五行 以及 陰陽 建立天干 */
@@ -97,7 +97,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
     HeavenlyStems result = null;
     for (int i=0 ; i < HeavenlyStemsArray.length ; i++)
     {
-      if ( HeavenlyStemsArray[i].Name == c)
+      if ( HeavenlyStemsArray[i].name == c)
       {
         result = HeavenlyStemsArray[i];
         break;
@@ -112,11 +112,14 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   /** 甲[0] ... 癸[9] */
   public static int getIndex(HeavenlyStems hs)
   {
-    int result = HeavenlyStemsList.indexOf(hs);
+    return heavenlyStemsList.indexOf(hs);
+    /*
+    int result = heavenlyStemsList.indexOf(hs);
     if (result != -1)
       return result;
     else
       throw new RuntimeException("Cannot find HeavenlyStems : " + hs + " in HeavenlyStems .");
+    */
   }
   
   /** 甲[0] ... 癸[9] */
@@ -144,7 +147,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   @Override 
   public String toString()
   {
-    return String.valueOf(Name);
+    return String.valueOf(name);
   }
   
   /**

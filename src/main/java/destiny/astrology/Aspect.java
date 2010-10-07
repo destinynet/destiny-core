@@ -4,13 +4,12 @@
  */ 
 package destiny.astrology;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import destiny.utils.LocaleStringIF;
 
@@ -56,7 +55,7 @@ public enum Aspect implements LocaleStringIF
   /** 180 , 沖 */
   OPPOSITION    ("Aspect.OPPOSITION"    ,180 , Importance.HIGH);
   
-  /** 重要度 */
+  /** 重要度 : HIGH , MEDIUM , LOW */
   public enum Importance {HIGH,MEDIUM,LOW};
   
   private final static String resource = "destiny.astrology.Astrology";
@@ -66,8 +65,15 @@ public enum Aspect implements LocaleStringIF
   /** 重要度 */
   private Importance importance; 
   
+  // 原來是 Map<Importance , List<Aspect>> , 改以 ListMultimap 來做
+  private final static ListMultimap<Importance , Aspect> importanceAngles = LinkedListMultimap.create();
+  static
+  {
+    for (Aspect eachAngle : Aspect.values())
+      importanceAngles.get(eachAngle.getImportance()).add(eachAngle);
+  }
   
-  
+  /*
   private final static Map<Importance , List<Aspect>> importanceAngles = Collections.synchronizedMap(new HashMap<Importance , List<Aspect>>());
   static
   {
@@ -77,6 +83,7 @@ public enum Aspect implements LocaleStringIF
     for (Aspect eachAngle : Aspect.values())
       importanceAngles.get(eachAngle.getImportance()).add(eachAngle);
   }
+  */
   
   private Aspect(String nameKey , double degree , Importance importance)
   {
@@ -108,7 +115,10 @@ public enum Aspect implements LocaleStringIF
     return importance;
   }
   
-  /** 取得某類重要度 (高/中/低) 的角度列表 */
+  /**
+   * 取得某類重要度 (高/中/低) 的角度列表
+   * <br/>
+   * TODO : 這裡應該改傳回 Iterator 比較好？ */
   public static List<Aspect> getAngles(Importance importance)
   {
     return importanceAngles.get(importance);

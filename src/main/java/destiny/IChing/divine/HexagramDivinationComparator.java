@@ -122,17 +122,6 @@ public class HexagramDivinationComparator implements Comparator<HexagramIF> , He
       index = 64-(0-index) % 64;
 
     return map.inverse().get(index);
-    
-    /*
-    Iterator<Entry<Hexagram , Integer>> it = mapOld.entrySet().iterator();
-    while(it.hasNext())
-    {
-      Entry<Hexagram , Integer> entry = it.next();
-      if (entry.getValue().intValue() == index)
-        return entry.getKey();
-    }
-    return null;
-    */
   }
   
 }

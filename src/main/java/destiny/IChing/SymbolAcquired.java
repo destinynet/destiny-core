@@ -10,7 +10,16 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * 後天八卦 
+ * <pre>
+ * 後天八卦
+ *  
+ * 巽4 | 離9 | 坤2
+ * ----+-----+----
+ * 震3 |     | 兌7
+ * ----+-----+----
+ * 艮8 | 坎1 | 乾6
+ * 
+ * </pre>
  */
 public class SymbolAcquired implements Comparator<Symbol>
 {

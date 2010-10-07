@@ -10,7 +10,15 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * <pre>
  * 先天八卦
+ * 
+ * 兌2 | 乾1 | 巽5
+ * ----+-----+----
+ * 離3 |     | 坎6
+ * ----+-----+----
+ * 震4 | 坤8 | 艮7
+ * </pre>
  */
 public class SymbolCongenital implements Comparator<Symbol>
 {
