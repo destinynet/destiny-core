@@ -1,13 +1,12 @@
 package destiny.core.calendar;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+
+import com.google.common.collect.ImmutableMap;
 
 import destiny.utils.AlignUtil;
 import destiny.utils.LocaleUtils;
@@ -37,86 +36,83 @@ public class Location implements Serializable
 
   private double altitudeMeter = 0; //高度（公尺）
 
-  private static Map<Locale , Location> locMap = Collections.synchronizedMap(new HashMap<Locale , Location>());
-  static
-  {
+  private final static ImmutableMap<Locale , Location> locMap = new ImmutableMap.Builder<Locale , Location>()
     // de , 柏林
-    locMap.put(Locale.GERMAN  , new Location(EastWest.EAST , 13 , 24 , NorthSouth.NORTH , 52 , 31 , TimeZone.getTimeZone("Europe/Berlin")));
+    .put(Locale.GERMAN  , new Location(EastWest.EAST , 13 , 24 , NorthSouth.NORTH , 52 , 31 , TimeZone.getTimeZone("Europe/Berlin")))
     // de_DE , 柏林
-    locMap.put(Locale.GERMANY , new Location(EastWest.EAST , 13 , 24 , NorthSouth.NORTH , 52 , 31 , TimeZone.getTimeZone("Europe/Berlin")));
+    .put(Locale.GERMANY , new Location(EastWest.EAST , 13 , 24 , NorthSouth.NORTH , 52 , 31 , TimeZone.getTimeZone("Europe/Berlin")))
     
     // en , 紐約
-    locMap.put(Locale.ENGLISH , new Location(EastWest.WEST , 73 , 58 , NorthSouth.NORTH , 40 , 47 , TimeZone.getTimeZone("America/New_York")));
+    .put(Locale.ENGLISH , new Location(EastWest.WEST , 73 , 58 , NorthSouth.NORTH , 40 , 47 , TimeZone.getTimeZone("America/New_York")))
     // en_AU , 雪梨
-    locMap.put(new Locale("en" , "AU") , new Location(EastWest.EAST , 151 , 12 , 40 , NorthSouth.SOUTH , 33 , 51 , 36 , TimeZone.getTimeZone("Australia/Sydney")));
+    .put(new Locale("en" , "AU") , new Location(EastWest.EAST , 151 , 12 , 40 , NorthSouth.SOUTH , 33 , 51 , 36 , TimeZone.getTimeZone("Australia/Sydney")))
     // en_BW , 波札那 Botswana 
-    locMap.put(new Locale("en" , "BW") , new Location(EastWest.EAST , 25 , 55 , NorthSouth.SOUTH , 24 , 40 , TimeZone.getTimeZone("Africa/Gaborone")));
+    .put(new Locale("en" , "BW") , new Location(EastWest.EAST , 25 , 55 , NorthSouth.SOUTH , 24 , 40 , TimeZone.getTimeZone("Africa/Gaborone")))
     // en_CA , 多倫多
-    locMap.put(Locale.CANADA, new Location(EastWest.WEST , 79 , 24 , NorthSouth.NORTH , 43 , 40 , TimeZone.getTimeZone("America/Toronto")));
+    .put(Locale.CANADA, new Location(EastWest.WEST , 79 , 24 , NorthSouth.NORTH , 43 , 40 , TimeZone.getTimeZone("America/Toronto")))
     // en_DK , 丹麥 哥本哈根 Copenhagen
-    locMap.put(new Locale("en" , "DK") , new Location(EastWest.EAST , 12 , 34 , NorthSouth.NORTH , 55 , 43 , TimeZone.getTimeZone("Europe/Copenhagen")));
+    .put(new Locale("en" , "DK") , new Location(EastWest.EAST , 12 , 34 , NorthSouth.NORTH , 55 , 43 , TimeZone.getTimeZone("Europe/Copenhagen")))
     // en_GB , 倫敦
-    locMap.put(Locale.UK , new Location(EastWest.WEST , 0 , 7 , NorthSouth.NORTH , 51 , 30 , TimeZone.getTimeZone("Europe/London")));
+    .put(Locale.UK , new Location(EastWest.WEST , 0 , 7 , NorthSouth.NORTH , 51 , 30 , TimeZone.getTimeZone("Europe/London")))
     // en_HK , 香港    
-    locMap.put(new Locale("en" , "HK"), new Location(EastWest.EAST , 114 , 12 , NorthSouth.NORTH , 22 , 16 , TimeZone.getTimeZone("Asia/Hong_Kong")));
+    .put(new Locale("en" , "HK"), new Location(EastWest.EAST , 114 , 12 , NorthSouth.NORTH , 22 , 16 , TimeZone.getTimeZone("Asia/Hong_Kong")))
     // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
-    locMap.put(new Locale("en" , "IE"), new Location(EastWest.WEST , 6.2592 , NorthSouth.NORTH , 53.3472 , TimeZone.getTimeZone("Europe/Dublin")));
+    .put(new Locale("en" , "IE"), new Location(EastWest.WEST , 6.2592 , NorthSouth.NORTH , 53.3472 , TimeZone.getTimeZone("Europe/Dublin")))
     // en_MY , 馬來西亞 , 吉隆坡
-    locMap.put(new Locale("en" , "MY"), new Location(EastWest.EAST , 101 , 42 , NorthSouth.NORTH , 3 , 8 , TimeZone.getTimeZone("Asia/Kuala_Lumpur")));
+    .put(new Locale("en" , "MY"), new Location(EastWest.EAST , 101 , 42 , NorthSouth.NORTH , 3 , 8 , TimeZone.getTimeZone("Asia/Kuala_Lumpur")))
     // en_NZ , 紐西蘭 , 奧克蘭 Auckland (最大城市)
-    locMap.put(new Locale("en" , "NZ"), new Location(EastWest.EAST , 174 , 45 , NorthSouth.SOUTH , 36 , 52 , TimeZone.getTimeZone("Pacific/Auckland")));
+    .put(new Locale("en" , "NZ"), new Location(EastWest.EAST , 174 , 45 , NorthSouth.SOUTH , 36 , 52 , TimeZone.getTimeZone("Pacific/Auckland")))
     // en_PH , 菲律賓 , 馬尼拉
-    locMap.put(new Locale("en" , "PH"), new Location(EastWest.EAST , 121 , 0 , NorthSouth.NORTH , 14 , 35 , TimeZone.getTimeZone("Asia/Manila")));
+    .put(new Locale("en" , "PH"), new Location(EastWest.EAST , 121 , 0 , NorthSouth.NORTH , 14 , 35 , TimeZone.getTimeZone("Asia/Manila")))
     // en_SG , 新加坡
-    locMap.put(new Locale("en" , "SG"), new Location(EastWest.EAST , 103 , 51 , NorthSouth.NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")));
+    .put(new Locale("en" , "SG"), new Location(EastWest.EAST , 103 , 51 , NorthSouth.NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
     // en_US , 紐約
-    locMap.put(Locale.US , new Location(EastWest.WEST , 73 , 58 , NorthSouth.NORTH , 40 , 47 , TimeZone.getTimeZone("America/New_York")));
+    .put(Locale.US , new Location(EastWest.WEST , 73 , 58 , NorthSouth.NORTH , 40 , 47 , TimeZone.getTimeZone("America/New_York")))
     // en_ZA , 南非 , 約翰尼斯堡
-    locMap.put(new Locale("en" , "ZA"), new Location(EastWest.EAST , 27 , 54 , NorthSouth.SOUTH , 26 , 8 , TimeZone.getTimeZone("Africa/Johannesburg")));
+    .put(new Locale("en" , "ZA"), new Location(EastWest.EAST , 27 , 54 , NorthSouth.SOUTH , 26 , 8 , TimeZone.getTimeZone("Africa/Johannesburg")))
     // en_ZW , 辛巴威 , 哈拉雷
-    locMap.put(new Locale("en" , "ZW"), new Location(EastWest.EAST , 31 , 3 , NorthSouth.SOUTH , 17 , 50 , TimeZone.getTimeZone("Africa/Harare")));
+    .put(new Locale("en" , "ZW"), new Location(EastWest.EAST , 31 , 3 , NorthSouth.SOUTH , 17 , 50 , TimeZone.getTimeZone("Africa/Harare")))
 
     // fr , 巴黎
-    locMap.put(Locale.FRENCH , new Location(EastWest.EAST , 2 , 20 , NorthSouth.NORTH , 48 , 52 , TimeZone.getTimeZone("Europe/Paris")));
+    .put(Locale.FRENCH , new Location(EastWest.EAST , 2 , 20 , NorthSouth.NORTH , 48 , 52 , TimeZone.getTimeZone("Europe/Paris")))
     // fr_FR , 巴黎
-    locMap.put(Locale.FRANCE , new Location(EastWest.EAST , 2 , 20 , NorthSouth.NORTH , 48 , 52 , TimeZone.getTimeZone("Europe/Paris")));
+    .put(Locale.FRANCE , new Location(EastWest.EAST , 2 , 20 , NorthSouth.NORTH , 48 , 52 , TimeZone.getTimeZone("Europe/Paris")))
 
     // it , 羅馬
-    locMap.put(Locale.ITALIAN , new Location(EastWest.EAST , 12 , 29 , NorthSouth.NORTH , 41 , 54 , TimeZone.getTimeZone("Europe/Rome")));
+    .put(Locale.ITALIAN , new Location(EastWest.EAST , 12 , 29 , NorthSouth.NORTH , 41 , 54 , TimeZone.getTimeZone("Europe/Rome")))
     // it_IT , 羅馬
-    locMap.put(Locale.ITALY   , new Location(EastWest.EAST , 12 , 29 , NorthSouth.NORTH , 41 , 54 , TimeZone.getTimeZone("Europe/Rome")));
+    .put(Locale.ITALY   , new Location(EastWest.EAST , 12 , 29 , NorthSouth.NORTH , 41 , 54 , TimeZone.getTimeZone("Europe/Rome")))
     
     
     // ja , 東京
-    locMap.put(Locale.JAPANESE , new Location(EastWest.EAST , 139 , 46 , 0 , NorthSouth.NORTH , 35 , 40 , 50, TimeZone.getTimeZone("Asia/Tokyo")));
+    .put(Locale.JAPANESE , new Location(EastWest.EAST , 139 , 46 , 0 , NorthSouth.NORTH , 35 , 40 , 50, TimeZone.getTimeZone("Asia/Tokyo")))
     // ja_JP , 東京
-    locMap.put(Locale.JAPAN    , new Location(EastWest.EAST , 139 , 45 , 0 , NorthSouth.NORTH , 35 , 40 , 0, TimeZone.getTimeZone("Asia/Tokyo")));
+    .put(Locale.JAPAN    , new Location(EastWest.EAST , 139 , 45 , 0 , NorthSouth.NORTH , 35 , 40 , 0, TimeZone.getTimeZone("Asia/Tokyo")))
     
     // ko , 首爾
-    locMap.put(Locale.KOREAN , new Location(EastWest.EAST , 127 , 0 , NorthSouth.NORTH , 37 , 32 , TimeZone.getTimeZone("Asia/Seoul")));
+    .put(Locale.KOREAN , new Location(EastWest.EAST , 127 , 0 , NorthSouth.NORTH , 37 , 32 , TimeZone.getTimeZone("Asia/Seoul")))
     // ko_KR , 首爾
-    locMap.put(Locale.KOREA  , new Location(EastWest.EAST , 127 , 0 , NorthSouth.NORTH , 37 , 32 , TimeZone.getTimeZone("Asia/Seoul")));
+    .put(Locale.KOREA  , new Location(EastWest.EAST , 127 , 0 , NorthSouth.NORTH , 37 , 32 , TimeZone.getTimeZone("Asia/Seoul")))
     
     
     // zh , 北京
-    //locMap.put(Locale.CHINESE , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , TimeZone.getTimeZone("Asia/Shanghai")));
-    locMap.put(Locale.CHINESE , new Location(116.397 , 39.9075 , TimeZone.getTimeZone("Asia/Harbin")));
+    //.put(Locale.CHINESE , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , TimeZone.getTimeZone("Asia/Shanghai")))
+    .put(Locale.CHINESE , new Location(116.397 , 39.9075 , TimeZone.getTimeZone("Asia/Harbin")))
     
     
     // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
-    locMap.put(Locale.CHINA   , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , TimeZone.getTimeZone("Asia/Shanghai")));
+    .put(Locale.CHINA   , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , TimeZone.getTimeZone("Asia/Shanghai")))
     // zh_HK , 香港
-    locMap.put(new Locale("zh" , "HK"), new Location(EastWest.EAST , 114 , 9 , 0, NorthSouth.NORTH , 22 , 17 , 2.4, TimeZone.getTimeZone("Asia/Hong_Kong")));
+    .put(new Locale("zh" , "HK"), new Location(EastWest.EAST , 114 , 9 , 0, NorthSouth.NORTH , 22 , 17 , 2.4, TimeZone.getTimeZone("Asia/Hong_Kong")))
     // zh_MO , 澳門
-    locMap.put(new Locale("zh" , "MO"), new Location(EastWest.EAST , 113 , 35 , NorthSouth.NORTH , 22 , 14 , TimeZone.getTimeZone("Asia/Macao")));
+    .put(new Locale("zh" , "MO"), new Location(EastWest.EAST , 113 , 35 , NorthSouth.NORTH , 22 , 14 , TimeZone.getTimeZone("Asia/Macao")))
     // zh_SG , 新加坡
-    locMap.put(new Locale("zh" , "SG"), new Location(EastWest.EAST , 103 , 51 , NorthSouth.NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")));
+    .put(new Locale("zh" , "SG"), new Location(EastWest.EAST , 103 , 51 , NorthSouth.NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
     
     // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北
-    //locMap.put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , NorthSouth.NORTH , 25 , 3 , TimeZone.getTimeZone("Asia/Taipei")));
-    locMap.put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , 30.0 , NorthSouth.NORTH , 25 , 2 , 20 , TimeZone.getTimeZone("Asia/Taipei")));
-  }
-  
+    //.put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , NorthSouth.NORTH , 25 , 3 , TimeZone.getTimeZone("Asia/Taipei")))
+    .put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , 30.0 , NorthSouth.NORTH , 25 , 2 , 20 , TimeZone.getTimeZone("Asia/Taipei")))
+    .build();
 
   /** 從 Browser 傳入 locale , 找出該 Locale 內定的 Location */
   public Location(Locale locale)

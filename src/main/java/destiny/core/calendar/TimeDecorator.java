@@ -4,23 +4,20 @@
  */ 
 package destiny.core.calendar;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import destiny.utils.Decorator;
 import destiny.utils.LocaleUtils;
 
 public class TimeDecorator
 {
-  private static Map<Locale , Decorator<Time>> implMap = Collections.synchronizedMap(new HashMap<Locale , Decorator<Time>>());
-  static
-  {
-    implMap.put(Locale.TAIWAN , new TimeDecoratorChinese());
-    implMap.put(Locale.ENGLISH , new TimeDecoratorEnglish());
-    implMap.put(Locale.JAPAN, new TimeDecoratorJapanese());
-  }
+  private final static ImmutableMap<Locale , Decorator<Time>> implMap = new ImmutableMap.Builder<Locale , Decorator<Time>>()
+    .put(Locale.TAIWAN , new TimeDecoratorChinese())
+    .put(Locale.ENGLISH , new TimeDecoratorEnglish())
+    .put(Locale.JAPAN, new TimeDecoratorJapanese())
+    .build();
   
   public static String getOutputString(Time time , Locale locale)
   {

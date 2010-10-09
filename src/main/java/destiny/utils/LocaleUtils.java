@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -62,7 +61,7 @@ public class LocaleUtils implements Serializable
   public static Locale getBestMatchingLocale(Locale locale)
   {
     //TODO : 未來該把此 TAIWAN , CHINA , ENGLISH 做更彈性的調整。
-    Set<Locale> supported = ImmutableSet.of(Locale.TAIWAN , Locale.CHINA , Locale.ENGLISH);
+    ImmutableSet<Locale> supported = ImmutableSet.of(Locale.TAIWAN , Locale.CHINA , Locale.ENGLISH);
     return getBestMatchingLocale(locale , supported);
   }
   
@@ -79,19 +78,11 @@ public class LocaleUtils implements Serializable
    * 7. 內訂(純 basename)
    * </pre>
    */
-  public static Locale getBestMatchingLocale(Locale locale , Set<Locale> locales)
+  public static Locale getBestMatchingLocale(Locale locale , Iterable<Locale> locales)
   {
     Locale defaultLocale = Locale.getDefault();
     if (locale == null)
       locale = defaultLocale;
-    
-    List<Locale> sixLocales = Collections.synchronizedList(new LinkedList<Locale>());
-    sixLocales.add(locale); //第一項
-    sixLocales.add(new Locale(locale.getLanguage() , locale.getCountry())); //第二項
-    sixLocales.add(new Locale(locale.getLanguage())); //第三項
-    sixLocales.add(defaultLocale); //第四項
-    sixLocales.add(new Locale(defaultLocale.getLanguage() , defaultLocale.getCountry())); //第五項
-    sixLocales.add(new Locale(defaultLocale.getLanguage())); //第六項
     
     //符合第一項 : 語言/國家/變數 都符合
     //System.out.println("完全比對 :");
