@@ -4,7 +4,7 @@
  */
 package destiny.utils;
 
-public interface ReIndexable<T>
+public interface ReIndexable
 {
   public void reIndex();
 }
