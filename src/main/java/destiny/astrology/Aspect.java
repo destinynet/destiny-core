@@ -4,12 +4,13 @@
  */ 
 package destiny.astrology;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
-
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
 
 import destiny.utils.LocaleStringIF;
 
@@ -65,15 +66,18 @@ public enum Aspect implements LocaleStringIF
   /** 重要度 */
   private Importance importance; 
   
-  // 原來是 Map<Importance , List<Aspect>> , 改以 ListMultimap 來做
+  //原來是 Map<Importance , List<Aspect>> , 改以 ListMultimap 來做
+  //FIXME : HoroscopeAspectsCalculatorModern.aspects [class=com.google.common.collect.LinkedListMultimap$1] <----- field that is not serializable
+
+  /*
   private final static ListMultimap<Importance , Aspect> importanceAngles = LinkedListMultimap.create();
   static
   {
     for (Aspect eachAngle : Aspect.values())
       importanceAngles.get(eachAngle.getImportance()).add(eachAngle);
   }
+  */
   
-  /*
   private final static Map<Importance , List<Aspect>> importanceAngles = Collections.synchronizedMap(new HashMap<Importance , List<Aspect>>());
   static
   {
@@ -83,7 +87,6 @@ public enum Aspect implements LocaleStringIF
     for (Aspect eachAngle : Aspect.values())
       importanceAngles.get(eachAngle.getImportance()).add(eachAngle);
   }
-  */
   
   private Aspect(String nameKey , double degree , Importance importance)
   {
