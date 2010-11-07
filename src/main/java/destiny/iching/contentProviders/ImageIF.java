@@ -10,7 +10,7 @@ public interface ImageIF
   /** 取得卦的象曰 */
   public String getHexagramImage(HexagramIF hexagram , Locale locale);
   
-  /** 取得爻的象曰 */
+  /** 取得爻的象曰 , lineIndex 亦可直接傳 7 進來 */
   public String getLineImage(HexagramIF hexagram , int lineIndex , Locale locale);
   
   /** 用九/用六的象曰 */
