@@ -13,7 +13,12 @@ public interface ExpressionIF
   /** 取得卦辭 */
   public String getHexagramExpression(HexagramIF hexagram , Locale locale);
   
-  /** 取得爻辭 */
+  /**
+   * @param hexagram
+   * @param lineIndex 0~7 (0 的話則為針對卦辭)
+   * @param locale
+   * @return 取得爻辭
+   */
   public String getLineExpression(HexagramIF hexagram , int lineIndex , Locale locale);
   
   /** 取得 用六/用九 的爻辭 */
