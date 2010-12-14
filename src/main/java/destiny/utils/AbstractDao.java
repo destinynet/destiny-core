@@ -10,6 +10,8 @@ public interface AbstractDao<T>
   public T update(T t);
   public void delete(T t);
   
+  public Class<T> getClassType();
+  
   public T flush(T t);
   public void refresh(T t);
   
