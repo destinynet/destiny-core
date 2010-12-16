@@ -4,6 +4,8 @@
  */
 package destiny.utils;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import destiny.utils.ClassUtils.PERMISSION;
@@ -18,5 +20,11 @@ public class ClassUtilsTest
     {
       System.out.println(s);
     }
+  }
+
+  @Test
+  public void testIsWritable() throws Exception
+  {
+    assertTrue(!ClassUtils.isWritable(ColorCanvas.class , "width"));
   }
 }

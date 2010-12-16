@@ -11,12 +11,36 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import com.google.common.collect.ImmutableSet;
 
 public class LocaleUtils implements Serializable
 {
 
+  /** 將 string 以 _ 切開，傳回 Locale 物件 */
+  public static Locale getLocale(String string)
+  {
+    StringTokenizer st = new StringTokenizer(string , "_");
+    String lang = null;
+    String country = null;
+    String variant = null;
+    
+    lang = st.nextToken();
+    
+    if(st.hasMoreTokens())
+      country = st.nextToken();
+    else
+      return new Locale(lang);
+    
+    if(st.hasMoreTokens())
+      variant = st.nextToken();
+    else
+      return new Locale(lang , country);
+    
+    return new Locale(lang , country , variant);
+  }
+  
   /**
    * <pre>
    * 在 localeStringMap 中，給予特定的 locale，找出其值(String)
