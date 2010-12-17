@@ -27,6 +27,7 @@ public class ClassUtils implements Serializable
    .add("javax.persistence.EmbeddedId")
    .build();
   
+  
   // How to get annotations of a member variable ?
   // http://stackoverflow.com/questions/4453159/how-to-get-annotations-of-a-member-variable
   /**
@@ -79,6 +80,7 @@ public class ClassUtils implements Serializable
     return false;
   }
   
+  /** 取得某種 type 的 property list */
   public static List<String> getProperties(Class<?> clazz , PERMISSION type)
   {
     Set<String> set = new TreeSet<String>();
@@ -145,6 +147,6 @@ public class ClassUtils implements Serializable
       resultList.add(s);
     
     return resultList;
-    
   }
+
 }
