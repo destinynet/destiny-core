@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class ClassUtils implements Serializable
 {
-  public enum PERMISSION { READABLE , WRITABLE , READWRITABLE }
+  public enum PERMISSION { READABLE , WRITABLE , BOTH , OR}
   
   private final static Set<String> idSet = new ImmutableSet.Builder<String>()
    .add("javax.persistence.Id")
@@ -94,6 +94,7 @@ public class ClassUtils implements Serializable
         //System.out.println(pd.getName() + " : getPropertyType = " + pd.getPropertyType());
         if ( pd.getPropertyType() != Class.class)
         {
+          //System.out.println("type = " + type); 
           switch(type)
           {
             case READABLE : //可讀 
@@ -108,11 +109,14 @@ public class ClassUtils implements Serializable
                 set.add(pd.getName());
               break;
             }
-            case READWRITABLE : //可讀+可寫
+            case BOTH : //可讀+可寫
             {
               if (pd.getReadMethod() != null && pd.getWriteMethod() != null)
                 set.add(pd.getName());
+              break;
             }
+            case OR : //未指定
+              set.add(pd.getName());
           }
           //System.out.println(pd.getName()  + " : " + pd.getPropertyType() + " : " + (pd.getReadMethod() == null ? "null" : pd.getReadMethod().getName()) + " , " + (pd.getWriteMethod() == null ? "null" : pd.getWriteMethod().getName()) );  
         }

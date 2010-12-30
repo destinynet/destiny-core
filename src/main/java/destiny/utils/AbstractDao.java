@@ -13,6 +13,7 @@ public interface AbstractDao<T>
   public Class<T> getClassType();
   
   public T flush(T t);
+  public T merge(T t);
   public void refresh(T t);
   
   public long getCount();
