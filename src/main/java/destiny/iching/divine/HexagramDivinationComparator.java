@@ -108,12 +108,6 @@ public class HexagramDivinationComparator implements Comparator<HexagramIF> , He
   }
 
   @Override
-  public int compare(HexagramIF h1, HexagramIF h2)
-  {
-    return getIndex(h1)-getIndex(h2);
-  }
-
-  @Override
   public Hexagram getHexagram(int index)
   {
     if (index > 64)
@@ -124,5 +118,10 @@ public class HexagramDivinationComparator implements Comparator<HexagramIF> , He
 
     return map.inverse().get(index);
   }
-  
+
+  @Override
+  public int compare(HexagramIF h1, HexagramIF h2)
+  {
+    return getIndex(h1)-getIndex(h2);
+  }
 }
