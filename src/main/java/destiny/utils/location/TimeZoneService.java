@@ -27,7 +27,9 @@ public class TimeZoneService implements Serializable
     {
       try
       {
-        return impl.getTimeZone(longitude, latitude);
+        TimeZone tz = impl.getTimeZone(longitude, latitude);
+//        System.out.println("TimeZoneService : impl = " + impl + " , tz = " + tz);
+        return tz;
       }
       catch (IOException e)
       {
