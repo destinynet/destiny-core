@@ -560,7 +560,7 @@ public class ColorCanvas
           //如果到達了邊界 , 強制段行
           list.add(content[precursor]);
           sb.append(buildHtml(list));
-          sb.append("<br/>");
+          sb.append("<br />");
           list.clear();
           precursor++;
           index = precursor;
@@ -586,7 +586,7 @@ public class ColorCanvas
         {
           //如果到達邊界 , 則，將「一個」 ColoyByte 送入製作成 HTML
           sb.append(buildHtml(list));
-          sb.append("<br/>");
+          sb.append("<br />");
           list.clear();
           index ++;
           precursor++;
