@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import destiny.astrology.chart.BufferedImageTools;
+import destiny.utils.image.BufferedImageTools;
 
 public class RunGif
 {

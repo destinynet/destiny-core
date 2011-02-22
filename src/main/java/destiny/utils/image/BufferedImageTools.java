@@ -2,7 +2,7 @@
  * @author smallufo 
  * Created on 2008/12/10 at 上午 12:35:33
  */ 
-package destiny.astrology.chart;
+package destiny.utils.image;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
