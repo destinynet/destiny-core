@@ -9,6 +9,7 @@ public interface AbstractDao<T>
   public T save(T t);
   public T update(T t);
   public void delete(T t);
+  public void evict(Serializable id);
   
   public Class<T> getClassType();
   
