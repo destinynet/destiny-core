@@ -4,12 +4,14 @@
  */ 
 package destiny.astrology;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
-public class LunarPointsTest extends TestCase
+public class LunarPointsTest
 {
+  //@Test
   public void testLunarPoints()
   {
     for(LunarPoint each : LunarPoint.values)

@@ -7,7 +7,7 @@ import java.util.Locale;
 /**
  * 從經緯度尋找附近的地名
  */
-public interface NearbyLocationIF
+public interface ReverseGeocodingIF
 {
   public String getNearbyLocation(double longitude , double latitude , Locale locale) throws IOException;
 }

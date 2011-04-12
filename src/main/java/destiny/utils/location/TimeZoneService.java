@@ -1,41 +1,12 @@
-/** 2009/11/4 上午5:24:12 by smallufo */
+/**
+ * @author smallufo
+ * Created on 2011/4/12 at 上午10:41:20
+ */
 package destiny.utils.location;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
 import java.util.TimeZone;
 
-
-/** 從不同的 TimeZoneIF 實作，來判斷最恰當的答案 */
-public class TimeZoneService implements Serializable
+public interface TimeZoneService
 {
-  private List<TimeZoneIF> timeZoneImpls;
-  
-  protected TimeZoneService()
-  {
-  }
-  
-  public TimeZoneService(List<TimeZoneIF> timeZoneImpls)
-  {
-    this.timeZoneImpls = timeZoneImpls;
-  }
-  
-  public TimeZone getTimeZone(double longitude , double latitude)
-  {
-    for(TimeZoneIF impl : timeZoneImpls)
-    {
-      try
-      {
-        TimeZone tz = impl.getTimeZone(longitude, latitude);
-//        System.out.println("TimeZoneService : impl = " + impl + " , tz = " + tz);
-        return tz;
-      }
-      catch (IOException e)
-      {
-      }
-    }
-    return TimeZone.getTimeZone("GMT");
-  }
+  public TimeZone getTimeZone(double longitude , double latitude);
 }
-
