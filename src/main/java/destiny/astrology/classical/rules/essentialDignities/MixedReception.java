@@ -4,8 +4,6 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.DayNightDifferentiator;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
@@ -13,6 +11,7 @@ import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
+import destiny.utils.Tuple;
 
 /**
  * 廟旺互容 <br/>
@@ -25,12 +24,11 @@ public final class MixedReception extends Rule
   
   public MixedReception(DayNightDifferentiator dayNightDifferentiatorImpl)
   {
-    super("MixedReception");
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  public Tuple<String , Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);
@@ -47,8 +45,8 @@ public final class MixedReception extends Rule
       //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
       if (!utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
       {
-        addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
-        return true;  
+        //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
+        return new Tuple<String , Object[]>("commentRuler" , new Object[] {planet , sign , thisSignRuler , sign2});  
       }
     }
     
@@ -63,12 +61,12 @@ public final class MixedReception extends Rule
         //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
         if (!utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
         {
-          addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
-          return true;          
+          //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
+          return new Tuple<String , Object[]>("commentExaltation" , new Object[] {planet , sign , thisSignRuler , sign2});
         }
       }  
     }
-    return false;
+    return null;
   }
 
 }

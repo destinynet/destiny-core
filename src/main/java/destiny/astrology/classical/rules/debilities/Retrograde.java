@@ -4,27 +4,25 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 public final class Retrograde extends Rule
 {
   public Retrograde()
   {
-    super("Retrograde");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (horoscopeContext.getPosition(planet).getSpeedLongitude() < 0)
     {
-      addComment(Locale.TAIWAN , planet + " 逆行");
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 逆行");
+      return new Tuple<String , Object[]>("comment" , new Object[]{planet});
     }
-    return false;
+    return null;
   }
 
 }

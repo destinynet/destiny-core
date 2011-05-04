@@ -4,11 +4,10 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** Moon decreasing in light. */
 public final class Moon_Decrease_Light extends Rule
@@ -16,11 +15,10 @@ public final class Moon_Decrease_Light extends Rule
 
   public Moon_Decrease_Light()
   {
-    super("Moon_Decrease_Light");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.MOON)
     {
@@ -29,11 +27,11 @@ public final class Moon_Decrease_Light extends Rule
       
       if ( Horoscope.isOriental(planetDegree , sunDegree))
       {
-        addComment(Locale.TAIWAN , planet + " 在太陽東邊（月減光/下弦月）");
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 在太陽東邊（月減光/下弦月）");
+        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
       }
     }
-    return false;
+    return null;
   }
 
 }

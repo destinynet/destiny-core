@@ -12,6 +12,10 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
 
+/**
+ * 集合 essentialDignities , accidentalDignities , debilitiesBean 
+ * 列出所有 Rules
+ */
 public class RulesBean implements Serializable
 {
   EssentialDignitiesIF essentialDignitiesImpl;// = new EssentialDignitiesBean();

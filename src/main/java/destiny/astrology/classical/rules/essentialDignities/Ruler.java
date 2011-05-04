@@ -4,8 +4,6 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.DayNightDifferentiator;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
@@ -13,6 +11,7 @@ import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
+import destiny.utils.Tuple;
 
 /** A planet in its own sign , or mutual reception with another planet by sign */
 public final class Ruler extends Rule
@@ -21,12 +20,11 @@ public final class Ruler extends Rule
   
   public Ruler(DayNightDifferentiator dayNightDifferentiatorImpl)
   {
-    super("Ruler");
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
   
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  public Tuple<String , Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -34,8 +32,8 @@ public final class Ruler extends Rule
     // Ruler (旺)
     if (planet == essentialImpl.getPoint(sign, Dignity.RULER) )
     {
-      addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Ruler");
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Ruler");
+      return new Tuple<String , Object[]>("commentBasic" , new Object[]{planet , sign});
     }
     /**
      * Ruler 互容 , mutual reception <br/> 
@@ -56,11 +54,11 @@ public final class Ruler extends Rule
         //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
         if (!utils.isBothInBadSituation(planet , sign , signRuler , sign2))
         {
-          addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成互容");
-          return true;  
+          //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成互容");
+          return new Tuple<String , Object[]>("commentReception" , new Object[]{planet , sign , signRuler , sign2});  
         }
       }
     }
-    return false;
+    return null;
   }
 }

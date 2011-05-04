@@ -4,23 +4,22 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.Aspect;
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
-/** Partile conjunction with Jupiter or Venus. */
+/** Partile conjunction with Jupiter or Venus. 
+ * 和金星或木星合相，交角 1 度內 */
 public final class Partile_Conj_Jupiter_Venus extends Rule
 {
   public Partile_Conj_Jupiter_Venus()
   {
-    super("Partile_Conj_Jupiter_Venus");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLongitude();
@@ -28,15 +27,15 @@ public final class Partile_Conj_Jupiter_Venus extends Rule
     
     if (planet != Planet.JUPITER && Horoscope.getAngle(planetDegree , jupiterDeg) <= 1) 
     {
-      addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.CONJUNCTION);
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.CONJUNCTION);
+      return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.JUPITER , Aspect.CONJUNCTION});
     }
     else if (planet != Planet.VENUS && Horoscope.getAngle(planetDegree , venusDeg) <= 1)
     {
-      addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.CONJUNCTION);
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.CONJUNCTION);
+      return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.VENUS , Aspect.CONJUNCTION});
     }
-    return false;
+    return null;
   }
 
 }

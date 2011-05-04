@@ -4,22 +4,20 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** Moon increasing in light (月增光/上弦月) , or occidental of the Sun. */
 public final class Moon_Increase_Light extends Rule
 {
   public Moon_Increase_Light()
   {
-    super("Moon_Increase_Light");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLongitude();
@@ -28,11 +26,11 @@ public final class Moon_Increase_Light extends Rule
     {
       if ( Horoscope.isOccidental(planetDegree , sunDegree))
       {
-        addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
-        return true;
+        // addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
+        return new Tuple<String , Object[]>("comment" , new Object[] {planet});
       }
     }
-    return false;
+    return null;
   }
 
 }

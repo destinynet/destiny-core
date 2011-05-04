@@ -4,27 +4,24 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** A planet in itw own term. */
 public final class Term extends Rule
 {
   public Term()
   {
-    super("Term");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (planet == essentialImpl.getTermsPoint(horoscopeContext.getPosition(planet).getLongitude()))
     {
-      addComment(Locale.TAIWAN , planet + " 位於其 Term : " + horoscopeContext.getPosition(planet).getLongitude());
-      return true;
+      return new Tuple<String , Object[]>("comment" , new Object[]{planet , horoscopeContext.getPosition(planet).getLongitude()});
     }
-    return false;
+    return null;
   }
 }

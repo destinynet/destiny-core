@@ -4,8 +4,6 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.DayNightDifferentiator;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
@@ -13,6 +11,7 @@ import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
+import destiny.utils.Tuple;
 
 /** 
  * TODO : Mutual Deception , 互相陷害 <br/>
@@ -27,12 +26,11 @@ public final class MutualDeception extends EssentialRule implements Applicable
   
   public MutualDeception(DayNightDifferentiator dayNightDifferentiatorImpl)
   {
-    super("MutualDeception");
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);
@@ -49,8 +47,8 @@ public final class MutualDeception extends EssentialRule implements Applicable
       //已經確定互容，要計算互陷/落
       if (utils.isBothInBadSituation(planet , sign , signRuler , sign2))
       {
-        addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成 Ruler 互陷");
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成 Ruler 互陷");
+        return new Tuple<String , Object[]>("comment1" , new Object[]{planet , sign , signRuler , sign2});
       }
     }
     
@@ -65,8 +63,8 @@ public final class MutualDeception extends EssentialRule implements Applicable
         //已確定 Exaltation 互容，要確認互陷
         if (utils.isBothInBadSituation(planet , sign , signExaltation , sign2))
         {
-          addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成 Exaltation 互陷");
-          return true;  
+          //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成 Exaltation 互陷");
+          return new Tuple<String , Object[]>("comment2" , new Object[]{planet , sign , signExaltation , sign2});  
         }
       }
     }
@@ -80,8 +78,8 @@ public final class MutualDeception extends EssentialRule implements Applicable
       //已確定互容，要確定互陷
       if (utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
       {
-        addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互陷");
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互陷");
+        return new Tuple<String , Object[]>("comment3" , new Object[]{planet , sign , thisSignRuler , sign2});
       }
     }
     
@@ -96,12 +94,12 @@ public final class MutualDeception extends EssentialRule implements Applicable
         //已確定互容，要確認互陷
         if (utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
         {
-          addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互陷");
-          return true;          
+          //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互陷");
+          return new Tuple<String , Object[]>("comment4" , new Object[]{planet , sign , thisSignExaltation , sign2});          
         }
       }
     }
-    return false;
+    return null;
   }
 
 }

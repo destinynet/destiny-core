@@ -4,10 +4,9 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** 
  * 喜樂宮 Joy House. 
@@ -23,11 +22,10 @@ public final class JoyHouse extends Rule
 {
   public JoyHouse()
   {
-    super("JoyHouse");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     int planetHouse = horoscopeContext.getHouse(planet);
     
@@ -40,10 +38,10 @@ public final class JoyHouse extends Rule
         (planet == Planet.SATURN && planetHouse == 12)
        )
     {
-      addComment(Locale.TAIWAN , planet + " 落入第 " + planetHouse + " 宮 , 為其喜樂宮 (Joy House)");
-      return true;
+      //planet + " 落入第 " + planetHouse + " 宮 , 為其喜樂宮 (Joy House)"
+      return new Tuple<String , Object[]>("comment" , new Object[] {planet , planetHouse});
     }
-    return false;
+    return null;
   }
 
 }

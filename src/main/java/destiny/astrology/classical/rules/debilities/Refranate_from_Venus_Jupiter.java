@@ -3,8 +3,6 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.AspectApplySeparateIF;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
@@ -12,6 +10,7 @@ import destiny.astrology.Point;
 import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.RetrogradeIF;
 import destiny.astrology.beans.RefranationBean;
+import destiny.utils.Tuple;
 
 public class Refranate_from_Venus_Jupiter extends Rule
 {
@@ -26,33 +25,29 @@ public class Refranate_from_Venus_Jupiter extends Rule
   
   public Refranate_from_Venus_Jupiter(AspectApplySeparateIF aspectApplySeparateImpl , RelativeTransitIF relativeTransitImpl , RetrogradeIF retrogradeImpl)
   {
-    super("Refranate_from_Venus_Jupiter");
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.relativeTransitImpl = relativeTransitImpl;
     this.retrogradeImpl = retrogradeImpl;
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
-    //太陽 / 月亮不會逆行
+  //太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
-      return false;
+      return null;
     
     Point otherPoint;
     RefranationBean bean;
     
-    //只要其中一個成立，就將其設為 true
-    boolean oneOk = false;
-
     if (planet != Planet.VENUS)
     {
       otherPoint = Planet.VENUS;
       bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
       if (bean.isRefranate())
       {
-        addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
-        oneOk = true;
+        //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
+        return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
       }
     }
     
@@ -62,11 +57,11 @@ public class Refranate_from_Venus_Jupiter extends Rule
       bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
       if (bean.isRefranate())
       {
-        addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
-        oneOk = true;
+        //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
+        return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
       }
     }
-    return oneOk;
+    return null;
   }
 
 }

@@ -4,23 +4,21 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.Aspect;
 import destiny.astrology.AspectEffectiveModern;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** Partile square Mars or Saturn. */
 public final class Partile_Square_Mars_Saturn extends Rule
 {
   public Partile_Square_Mars_Saturn()
   {
-    super("Partile_Square_Mars_Saturn");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLongitude();
@@ -28,15 +26,15 @@ public final class Partile_Square_Mars_Saturn extends Rule
     
     if ( planet != Planet.MARS && AspectEffectiveModern.isEffective( planetDegree , marsDeg , Aspect.SQUARE , 1.0))
     {
-      addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.SQUARE);
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.SQUARE);
+      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.MARS , Aspect.SQUARE});
     }
     else if ( planet != Planet.SATURN && AspectEffectiveModern.isEffective( planetDegree , saturnDeg , Aspect.SQUARE, 1.0))
     {
-      addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.SQUARE);
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.SQUARE);
+      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.SATURN , Aspect.SQUARE});
     }
-    return false;
+    return null;
   }
 
 }

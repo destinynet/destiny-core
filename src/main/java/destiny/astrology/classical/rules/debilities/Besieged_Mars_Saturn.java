@@ -4,13 +4,12 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
+import destiny.utils.Tuple;
 
 /** 
  * Besieged between Mars and Saturn. 
@@ -28,12 +27,16 @@ public final class Besieged_Mars_Saturn extends Rule
   
   public Besieged_Mars_Saturn(RelativeTransitIF relativeTransitImpl)
   {
-    super("Besieged_Mars_Saturn");
+    this.relativeTransitImpl = relativeTransitImpl;
+  }
+
+  public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl)
+  {
     this.relativeTransitImpl = relativeTransitImpl;
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS)
     {
@@ -41,16 +44,11 @@ public final class Besieged_Mars_Saturn extends Rule
       //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
       if (besiegedBean.isBesieged(planet, Planet.MARS , Planet.SATURN , Time.getGMTfromLMT(horoscopeContext.getLmt() , horoscopeContext.getLocation())  , true , true))
       {
-        addComment(Locale.TAIWAN , planet + " 被 " + Planet.MARS + " 以及 " + Planet.SATURN +" 夾制 (Besieged)");
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 被 " + Planet.MARS + " 以及 " + Planet.SATURN +" 夾制 (Besieged)");
+        return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.MARS , Planet.SATURN});
       }
     }
-    return false;
-  }
-
-  public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl)
-  {
-    this.relativeTransitImpl = relativeTransitImpl;
+    return null;
   }
 
 }

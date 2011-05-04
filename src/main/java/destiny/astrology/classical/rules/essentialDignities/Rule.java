@@ -15,9 +15,9 @@ public abstract class Rule extends AbstractRule implements Applicable
   /** 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面 */
   protected EssentialIF essentialImpl = new EssentialDefaultImpl();
   
-  public Rule(String name)
+  public Rule()
   {
-    super(name , resource);
+    super(resource);
   }
 
   public EssentialIF getEssentialImpl()

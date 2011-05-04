@@ -4,8 +4,6 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.DayNightDifferentiator;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
@@ -13,6 +11,7 @@ import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
+import destiny.utils.Tuple;
 
 /** A planet in its exaltation , or mutial reception with another planet by exaltation */
 public final class Exaltation extends Rule
@@ -21,12 +20,11 @@ public final class Exaltation extends Rule
   
   public Exaltation(DayNightDifferentiator dayNightDifferentiatorImpl)
   {
-    super("Exaltation");
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
   
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  public Tuple<String , Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -34,8 +32,8 @@ public final class Exaltation extends Rule
     //Exaltation (廟)
     if (planet == essentialImpl.getPoint(sign, Dignity.EXALTATION))
     {
-      addComment(Locale.TAIWAN , planet + " 位於其 Exaltation 的星座 " + sign);
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 位於其 Exaltation 的星座 " + sign);
+      return new Tuple<String , Object[]>("commentBasic" , new Object[]{planet , sign});
     }
     // Exaltation 互容 , mutual reception
     else 
@@ -54,14 +52,14 @@ public final class Exaltation extends Rule
           //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
           if (!utils.isBothInBadSituation(planet , sign , signExaltation , sign2))
           {
-            addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成互容");
-            return true;  
+            //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成互容");
+            return new Tuple<String , Object[]>("commentReception" , new Object[]{planet , sign , signExaltation , sign2});  
           }
         }        
       }
     }
 
-    return false;
+    return null;
   }
 
 }

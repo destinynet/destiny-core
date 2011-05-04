@@ -4,29 +4,31 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 public final class House_6_8 extends Rule
 {
 
   public House_6_8()
   {
-    super("House_6_8");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (horoscopeContext.getHouse(planet) == 6 ||
         horoscopeContext.getHouse(planet) ==8)
     {
-      addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
+      return new Tuple<String , Object[]>("comment" , new Object[]{planet , 6});
     }
-    return false;
+    else if (horoscopeContext.getHouse(planet) ==8)
+    {
+      return new Tuple<String , Object[]>("comment" , new Object[]{planet , 8});
+    }
+    return null;
   }
 
 }

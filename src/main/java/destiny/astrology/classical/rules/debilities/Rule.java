@@ -10,9 +10,9 @@ public abstract class Rule extends AbstractRule implements Applicable
 {
   private final static String resource = "destiny.astrology.classical.rules.debilities.Debilities";
   
-  public Rule(String nameKey)
+  public Rule()
   {
-    super(nameKey, resource);
+    super(resource);
   }
 
 }

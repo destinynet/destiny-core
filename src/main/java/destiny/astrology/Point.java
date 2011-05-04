@@ -9,6 +9,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import destiny.utils.LocaleStringIF;
+
 /**
  * 抽象class , 代表星盤上的一「點」，可能是實星（行星 Planet , 小行星 Asteroid , 恆星 FixedStar ），
  * 虛星 (漢堡星 Hamburger) , 也可能只是交點 (例如：黃白交點 LunarPoints)
@@ -31,7 +33,7 @@ import java.util.ResourceBundle;
  *                   North/South   PERIGEE (近)/APOGEE (遠)
  * </pre>
  */
-public abstract class Point implements Serializable
+public abstract class Point implements Serializable , LocaleStringIF
 {
   
   private String resource;
@@ -68,6 +70,7 @@ public abstract class Point implements Serializable
   }
   
   /** toString 直接取名稱 (name) */
+  @Override
   public String toString(Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);

@@ -4,11 +4,10 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** Mercury, or Venus oriental to the Sun. */
 public final class Oriental extends Rule
@@ -16,11 +15,10 @@ public final class Oriental extends Rule
 
   public Oriental()
   {
-    super("Oriental");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.MERCURY || planet == Planet.VENUS)
     {
@@ -29,11 +27,11 @@ public final class Oriental extends Rule
       
       if (Horoscope.isOriental(planetDegree , sunDegree))
       {
-        addComment(Locale.TAIWAN , planet + " 在太陽東邊");
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 在太陽東邊");
+        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
       }
     }
-    return false;
+    return null;
   }
 
 }

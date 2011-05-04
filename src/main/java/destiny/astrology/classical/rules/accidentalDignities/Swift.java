@@ -4,30 +4,28 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.AverageDailyMotionMap;
+import destiny.utils.Tuple;
 
 /** Swift in motion (faster than average). */
 public final class Swift extends Rule
 {
   public Swift()
   {
-    super("Swift");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if ( AverageDailyMotionMap.get(planet) != null &&
         horoscopeContext.getPosition(planet).getSpeedLongitude() > AverageDailyMotionMap.get(planet))
     {
-      addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還快");
-      return true;
+      //addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還快");
+      return new Tuple<String , Object[]>("comment" , new Object[] {planet});
     }
-    return false;
+    return null;
   }
 
 }

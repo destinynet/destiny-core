@@ -13,7 +13,7 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 
 /**
- * 星盤的 Context
+ * 星盤的 Context， 除了基本的時間地點之外，還包括各種計算的介面 (星體位置 / 分宮法 ...)
  */
 public class HoroscopeContext implements Serializable
 {

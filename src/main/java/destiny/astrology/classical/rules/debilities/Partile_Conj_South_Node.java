@@ -4,14 +4,13 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.Aspect;
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.LunarNode;
 import destiny.astrology.NodeType;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** Partile conjunction with Dragon's Tail (Moon's South Node). */
 public final class Partile_Conj_South_Node extends Rule
@@ -22,11 +21,20 @@ public final class Partile_Conj_South_Node extends Rule
   
   public Partile_Conj_South_Node()
   {
-    super("Partile_Conj_South_Node");
+  }
+
+  public NodeType getNodeType()
+  {
+    return nodeType;
+  }
+
+  public void setNodeType(NodeType nodeType)
+  {
+    this.nodeType = nodeType;
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double southDeg;
@@ -39,26 +47,16 @@ public final class Partile_Conj_South_Node extends Rule
     {
       if (nodeType == NodeType.TRUE)
       {
-        addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
+        return new Tuple<String , Object[]>("comment" , new Object[]{planet, LunarNode.SOUTH_TRUE , Aspect.CONJUNCTION});
       }
       else
       {
-        addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_MEAN + " 形成 " + Aspect.CONJUNCTION);
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_MEAN + " 形成 " + Aspect.CONJUNCTION);
+        return new Tuple<String , Object[]>("comment" , new Object[]{planet, LunarNode.SOUTH_MEAN , Aspect.CONJUNCTION});
       }
     }
-    return false;
-  }
-
-  public NodeType getNodeType()
-  {
-    return nodeType;
-  }
-
-  public void setNodeType(NodeType nodeType)
-  {
-    this.nodeType = nodeType;
+    return null;
   }
 
 }

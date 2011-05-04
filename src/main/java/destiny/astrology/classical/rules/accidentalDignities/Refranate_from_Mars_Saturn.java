@@ -3,8 +3,6 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import java.util.Locale;
-
 import destiny.astrology.AspectApplySeparateIF;
 import destiny.astrology.AspectApplySeparateImpl;
 import destiny.astrology.HoroscopeContext;
@@ -14,6 +12,7 @@ import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.RetrogradeIF;
 import destiny.astrology.beans.RefranationBean;
 import destiny.astrology.classical.AspectEffectiveClassical;
+import destiny.utils.Tuple;
 
 /**
  * 在與火星或土星形成交角之前，臨陣退縮，代表避免厄運
@@ -31,7 +30,6 @@ public final class Refranate_from_Mars_Saturn extends Rule
   
   public Refranate_from_Mars_Saturn(AspectApplySeparateIF aspectApplySeparateImpl , RelativeTransitIF relativeTransitImpl , RetrogradeIF retrogradeImpl , AspectEffectiveClassical aspectEffectiveClassical)
   {
-    super("Refranate_from_Mars_Saturn");
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.relativeTransitImpl = relativeTransitImpl;
     this.retrogradeImpl = retrogradeImpl;
@@ -39,17 +37,15 @@ public final class Refranate_from_Mars_Saturn extends Rule
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
-    //太陽 / 月亮不會逆行
+  //太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
-      return false;
+      return null;
     
     Point otherPoint;
     RefranationBean bean;
     
-    //只要其中一個成立，就將其設為 true
-    boolean oneOk = false;
     
     if (planet != Planet.MARS)
     {
@@ -57,8 +53,8 @@ public final class Refranate_from_Mars_Saturn extends Rule
       bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
       if (bean.isRefranate())
       {
-        addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
-        oneOk = true;
+        //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
+        return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , bean.getApplyingAspect()} );
       }
     }
     
@@ -68,11 +64,11 @@ public final class Refranate_from_Mars_Saturn extends Rule
       bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
       if (bean.isRefranate())
       {
-        addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
-        oneOk = true;
+        //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
+        return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , bean.getApplyingAspect()} );
       }
     }
-    return oneOk;
+    return null;
   }
 
 }

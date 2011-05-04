@@ -4,23 +4,20 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import java.util.Locale;
-
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
+import destiny.utils.Tuple;
 
 /** Mars, Jupiter, or Saturn occidental to the Sun. */
 public final class Occidental extends Rule
 {
-
   public Occidental()
   {
-    super("Occidental");
   }
 
   @Override
-  public boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.MARS || planet == Planet.JUPITER || planet == Planet.SATURN)
     {
@@ -28,11 +25,11 @@ public final class Occidental extends Rule
       double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLongitude();
       if (Horoscope.isOccidental(planetDegree , sunDegree))
       {
-        addComment(Locale.TAIWAN , planet + " 在太陽西邊");
-        return true;
+        //addComment(Locale.TAIWAN , planet + " 在太陽西邊");
+        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
       }  
     }
-    return false;
+    return null;
   }
 
 }
