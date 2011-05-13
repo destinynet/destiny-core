@@ -77,6 +77,8 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
     {
       if (commentParameters[i] instanceof LocaleStringIF)
         newCommentParameters[i] = ((LocaleStringIF) commentParameters[i]).toString(locale);
+      else if (commentParameters[i] instanceof Double)
+        newCommentParameters[i] = ((Double)commentParameters[i]).toString().substring(0, 5); //避免 double 輸出太長
       else
         newCommentParameters[i] = commentParameters[i];
     }
