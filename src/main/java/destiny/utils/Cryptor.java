@@ -13,17 +13,17 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  * 一些加解密的工具
- * 這是整個 destiny-core 內，唯一使用到 3rd-party library 的 class
+ * 這是整個 destiny-core 內，唯一使用到 3rd-party library 的 class (org.apache.commons.codec.binary.Base64)
  * 測試一下，隨便加入一行
  */
 public class Cryptor implements Serializable
 {
-  /** 加密 */
-  public final static String getDesEncodedString(String DESKEY , String raw)
+  /** DES 加密 , key 為 8 bytes (64 bits) */
+  public final static String getDesEncodedString(String DES_KEY , String raw)
   {
     try
     {
-      Key key = new SecretKeySpec(DESKEY.getBytes() , "DES");
+      Key key = new SecretKeySpec(DES_KEY.getBytes() , "DES");
       Cipher cipher;
       cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
 
@@ -47,7 +47,7 @@ public class Cryptor implements Serializable
     return null;
   }
   
-  public final static String getDesDecodedString(String DESKEY , String encodedString)
+  public final static String getDesDecodedString(String DES_KEY , String encodedString)
   {
     int rest = encodedString.length() % 4;
     int padding = 0;
@@ -62,7 +62,7 @@ public class Cryptor implements Serializable
     encodedString = encodedString.replace('_', '/');
     try
     {
-      Key key = new SecretKeySpec(DESKEY.getBytes() , "DES");
+      Key key = new SecretKeySpec(DES_KEY.getBytes() , "DES");
       Cipher cipher;
 
       cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
