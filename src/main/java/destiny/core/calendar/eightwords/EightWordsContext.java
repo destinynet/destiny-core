@@ -12,7 +12,7 @@ import destiny.core.chinese.StemBranch;
  * @author smallufo
  * TODO : 當地時間/轉換成東經120度 排八字
  */
-public class EightWordsContext implements Serializable
+public class EightWordsContext implements EightWordsIF , Serializable
 {
   private YearMonthIF yearMonthImpl;          // 換年, 以及月支計算的實作
   private DayIF       dayImpl;                // 計算日干支的介面
@@ -40,6 +40,7 @@ public class EightWordsContext implements Serializable
    * 計算八字 , 不用轉換，直接以 LMT 來計算即可！
    * TODO : 當地時間是否轉換成中原時間
    */
+  @Override
   public EightWords getEightWords(Time lmt, Location location)
   {
     /*
