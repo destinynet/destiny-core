@@ -3,6 +3,7 @@ package destiny.core;
 import java.io.Serializable;
 import java.util.Locale;
 
+/** 性別 */
 public enum Gender implements Serializable
 {
   男(true),
