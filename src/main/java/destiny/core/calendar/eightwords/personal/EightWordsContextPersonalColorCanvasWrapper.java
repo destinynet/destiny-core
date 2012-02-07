@@ -9,6 +9,7 @@ import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeDecoratorChinese;
 import destiny.core.calendar.eightwords.EightWords;
+import destiny.core.calendar.eightwords.EightWordsContext;
 import destiny.core.calendar.eightwords.EightWordsContextColorCanvasWrapper;
 import destiny.core.calendar.eightwords.fourwords.FourWordsIF;
 import destiny.core.calendar.eightwords.fourwords.FourWordsImpl;
@@ -98,6 +99,11 @@ public class EightWordsContextPersonalColorCanvasWrapper extends EightWordsConte
     else
       nextStemBranch = eightWords.getMonth().getPrevious();
 
+    // 前一個大運，開始的歲數
+    int prevStart = 0;
+    // 前一個大運，結束的歲數
+    int prevEnd = 0;
+    
     for (int i=1 ; i <= 9 ; i++)
     {
       int startFortune;
@@ -140,8 +146,29 @@ public class EightWordsContextPersonalColorCanvasWrapper extends EightWordsConte
         }
         default : //虛歲
         {
-          startFortune = (int) (Math.abs(startFortuneSeconds) * fortuneMonthSpan / (365.2563*24*60*60)) +1;
-          endFortune   = (int) (Math.abs(endFortuneSeconds)   * fortuneMonthSpan / (365.2563*24*60*60)) +1;
+          // 取得 起運/終運 時的八字
+          EightWordsContext eightWordsContext = new EightWordsContext(personContext.getYearMonthImpl() , 
+              personContext.getDayImpl() , personContext.getHourImpl() , 
+              personContext.getMidnightImpl() , personContext.isChangeDayAfterZi());
+          
+          EightWords startFortune8w = eightWordsContext.getEightWords(startFortuneLmt, personContext.getLocation());
+          EightWords endFortune8w   = eightWordsContext.getEightWords(endFortuneLmt, personContext.getLocation());
+
+          // 計算年干與本命年干的距離
+          startFortune = startFortune8w.getYear().differs(eightWords.getYear())+1;
+          //System.out.println("differs result , startFortune = " + startFortune + " , prevStart = " + prevStart);
+          while (startFortune < prevStart)
+            startFortune +=60;
+          prevStart = startFortune;
+          //System.out.println(startFortune8w.getYear()+"["+startFortune8w.getYear().getIndex()+"] to " + eightWords.getYear()+"["+eightWords.getYear().getIndex()+"] is "+ startFortune);
+          
+          endFortune = endFortune8w.getYear().differs(eightWords.getYear())+1;
+          while (endFortune < prevEnd)
+            endFortune += 60;
+          prevEnd = endFortune;
+
+          //startFortune = (int) (Math.abs(startFortuneSeconds) * fortuneMonthSpan / (365.2563*24*60*60)) +1;
+          //endFortune   = (int) (Math.abs(endFortuneSeconds)   * fortuneMonthSpan / (365.2563*24*60*60)) +1;
         }
       }
 

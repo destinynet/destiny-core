@@ -132,6 +132,12 @@ public class EightWordsContext implements EightWordsIF , Serializable
     this.dayImpl = impl;
   }
 
+  /** 取得日柱的實作 */
+  public DayIF getDayImpl()
+  {
+    return this.dayImpl;
+  }
+  
   /**
    * 設定換時柱的方法
    */

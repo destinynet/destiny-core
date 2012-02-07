@@ -49,9 +49,9 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
    * @param Index
    * @return
    */
-  public final static StemBranch get(int Index)
+  public final static StemBranch get(int index)
   {
-    return StemBranchArray[normalize(Index)];
+    return StemBranchArray[normalize(index)];
   }
   
   public static StemBranch get(HeavenlyStems 天干 , EarthlyBranches 地支)
@@ -89,14 +89,20 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
       return get(stemBranch.charAt(0) , stemBranch.charAt(1));
   }
   
-  private final static int normalize(int Index)
+  private final static int normalize(int index)
   {
-    if (Index >= 60)
-      return (normalize(Index-60));
-    else if (Index < 0)
-      return (normalize(Index+60));
+    if (index >= 60)
+      return (normalize(index-60));
+    else if (index < 0)
+      return (normalize(index+60));
     else
-      return Index;
+      return index;
+  }
+  
+  /** 取得干支的差距，例如 "乙丑" 距離 "甲子" 的差距為 "1" , 通常是用於計算「需歲」 (尚需加一) */
+  public int differs(StemBranch sb)
+  {
+    return getIndex(this) - sb.getIndex();
   }
   
   public boolean equals(Object o)
