@@ -11,8 +11,6 @@ import destiny.core.calendar.TimeDecoratorChinese;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
 import destiny.core.calendar.eightwords.EightWordsContextColorCanvasWrapper;
-import destiny.core.calendar.eightwords.fourwords.FourWordsIF;
-import destiny.core.calendar.eightwords.fourwords.FourWordsImpl;
 import destiny.core.chinese.StemBranch;
 import destiny.utils.Decorator;
 import destiny.utils.ColorCanvas.AlignUtil;
@@ -41,12 +39,9 @@ public class EightWordsContextPersonalColorCanvasWrapper extends EightWordsConte
   
   private final Decorator<Time> timeDecorator = new TimeDecoratorChinese();
   
-  /** 四字斷終生 */
-  private static FourWordsIF  fourWordsImpl = new FourWordsImpl();
-
   public EightWordsContextPersonalColorCanvasWrapper(EightWordsPersonContext personContext , String locationName , HiddenStemsIF hiddenStemsImpl , String linkUrl)
   {
-    super(personContext , personContext.getLmt() , personContext.getLocation() , locationName , hiddenStemsImpl , linkUrl , fourWordsImpl);
+    super(personContext , personContext.getLmt() , personContext.getLocation() , locationName , hiddenStemsImpl , linkUrl);
     this.personContext = personContext;
     this.hiddenStemsImpl = hiddenStemsImpl;
     //this.timeDecorator = new TimeDecoratorChinese();

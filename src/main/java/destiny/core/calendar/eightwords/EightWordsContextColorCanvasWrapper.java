@@ -14,7 +14,6 @@ import destiny.core.calendar.GoogleMapsUrlBuilder;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.LocationUrlBuilder;
 import destiny.core.calendar.Time;
-import destiny.core.calendar.eightwords.fourwords.FourWordsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
 import destiny.core.calendar.eightwords.personal.Reactions;
@@ -47,14 +46,14 @@ public class EightWordsContextColorCanvasWrapper
   private String linkUrl;
   
   /** 四字斷終生 */
-  private FourWordsIF fourWordsImpl;
+  // private FourWordsIF fourWordsImpl;
   
   /** 輸出模式 */
   public enum OutputMode {HTML , TEXT};
   private OutputMode outputMode = OutputMode.HTML;
   
   public EightWordsContextColorCanvasWrapper(EightWordsContext context, Time lmt, Location location , String locationName , 
-      HiddenStemsIF hiddenStemsImpl , String linkUrl , FourWordsIF fourWordsImpl)
+      HiddenStemsIF hiddenStemsImpl , String linkUrl)
   {
     this.context = context;
     this.lmt = lmt;
@@ -62,7 +61,7 @@ public class EightWordsContextColorCanvasWrapper
     this.locationName = locationName;
     this.hiddenStemsImpl = hiddenStemsImpl;
     this.linkUrl = linkUrl;
-    this.fourWordsImpl = fourWordsImpl;
+    // this.fourWordsImpl = fourWordsImpl;
   }
 
   /** 設定地支藏干的實作 */
@@ -178,8 +177,8 @@ public class EightWordsContextColorCanvasWrapper
         e.printStackTrace();
       }  
     }
-    EightWords eightWords = context.getEightWords(lmt , location);
-    cc.setText("四字斷終生：" + fourWordsImpl.getResult(eightWords), 8, 1 , "#0000FF" , "#FFFF00" , fourWordsImpl.getResult(eightWords));
+    //EightWords eightWords = context.getEightWords(lmt , location);
+    //cc.setText("四字斷終生：" + fourWordsImpl.getResult(eightWords), 8, 1 , "#0000FF" , "#FFFF00" , fourWordsImpl.getResult(eightWords));
     return cc;
   }
   
