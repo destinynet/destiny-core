@@ -8,10 +8,11 @@
 package destiny.utils.ColorCanvas;
 
 import java.awt.Font;
+import java.io.Serializable;
 import java.net.URL;
 
 
-public class ColorByte
+public class ColorByte implements Serializable
 {
   private byte b;
   private String foreColor; //前景色

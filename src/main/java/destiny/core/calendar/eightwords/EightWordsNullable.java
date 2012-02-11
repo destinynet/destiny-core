@@ -86,10 +86,10 @@ public class EightWordsNullable implements Serializable
     {
       EightWordsNullable ew = (EightWordsNullable) o;
       return 
-      (   (((year ==null)&&(ew.year ==null)) || year .equals(ew.year )) && 
-          (((month==null)&&(ew.month==null)) || month.equals(ew.month)) && 
-          (((day  ==null)&&(ew.day  ==null)) || day  .equals(ew.day  )) && 
-          (((hour ==null)&&(ew.hour ==null)) || hour .equals(ew.hour ))
+      (   (((year ==null)&&(ew.year ==null)) || (year  != null && year .equals(ew.year ))) && 
+          (((month==null)&&(ew.month==null)) || (month != null && month.equals(ew.month))) && 
+          (((day  ==null)&&(ew.day  ==null)) || (day   != null && day  .equals(ew.day  ))) && 
+          (((hour ==null)&&(ew.hour ==null)) || (hour  != null && hour .equals(ew.hour )))
           );
     }
     else return false;

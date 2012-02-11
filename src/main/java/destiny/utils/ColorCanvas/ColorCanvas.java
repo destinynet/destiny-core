@@ -6,6 +6,7 @@
 package destiny.utils.ColorCanvas;
 
 import java.awt.Font;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
  * <BR> x3y1 x3y2 x3y3 
  * <BR>
  */
-public class ColorCanvas
+public class ColorCanvas implements Serializable
 {
   private ColorCanvas parent = null;
   

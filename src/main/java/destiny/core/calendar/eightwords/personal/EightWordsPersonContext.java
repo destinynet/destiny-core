@@ -230,13 +230,13 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
       if (!reverse)
       {
         //順推
-        if (hashMap.get(new Integer(index-1)) != null)
+        if (hashMap.get(this).get(new Integer(index-1)) != null)
           i=index-1;
         
         while (i <= index)
         {
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
-          if (hashMap.get(new Integer(i)) == null)
+          if (hashMap.get(this).get(new Integer(i)) == null)
           {
             //沒有計算過
             targetGmt = this.starTransitImpl.getNextTransit(Planet.SUN , stepMajorSolarTerms.getZodiacDegree() , Coordinate.ECLIPTIC , stepGmt , true);
@@ -263,14 +263,14 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
       else
       {
         //逆推
-        if (hashMap.get(new Integer(index+1)) != null)
+        if (hashMap.get(this).get(new Integer(index+1)) != null)
           i=index+1;
         
         while (i >= index)
         {
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
           
-          if (hashMap.get(new Integer(i)) == null)
+          if (hashMap.get(this).get(new Integer(i)) == null)
           {
             //沒有計算過
             
