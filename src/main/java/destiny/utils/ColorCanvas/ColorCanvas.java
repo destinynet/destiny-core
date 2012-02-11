@@ -123,7 +123,8 @@ public class ColorCanvas implements Serializable
       }
       catch (UnsupportedEncodingException ignored)
       {}
-      totalBytesLength += byteArray.length;
+      if (byteArray != null)
+        totalBytesLength += byteArray.length;
     }
     
     // 將 fill 轉成 bytes array
@@ -138,11 +139,12 @@ public class ColorCanvas implements Serializable
       }
       catch (UnsupportedEncodingException ignored)
       {}
-      for (int j=0 ; j < byteArray.length ; j++)
+      if (byteArray != null)
       {
-        bytes[index+j] = byteArray[j];        
-      }
+        for (int j=0 ; j < byteArray.length ; j++)
+          bytes[index+j] = byteArray[j];        
       index = index + byteArray.length;
+      }
     }
     
     index = 0;
@@ -309,12 +311,14 @@ public class ColorCanvas implements Serializable
       {}
       
       int indexLine = ((index/this.width))+1;
-      int precursorLine;
-      if ( (index+bytes.length) % this.width == 0) //剛好到行尾
-        precursorLine = indexLine;
-      else
-        precursorLine =  ( ((index+bytes.length) / this.width)) +1;
-      
+      int precursorLine = 0; 
+
+      if (bytes != null)
+        if ( (index+bytes.length) % this.width == 0) //剛好到行尾
+          precursorLine = indexLine;
+        else
+          precursorLine =  ( ((index+bytes.length) / this.width)) +1;
+        
       if (indexLine != precursorLine)
       {
         //代表有切行的可能，必須把這個 Char 移到下一行，而目前這行的結尾，以空白鍵填入

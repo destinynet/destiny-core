@@ -99,7 +99,7 @@ public class Chart implements Serializable
        地盤.getStartDegree(getMountain()) ) / 2;
     
     double midDirection;
-    if (midMountain == 180)
+    if (midMountain == 180.0)
       midDirection = 0;
     else
       midDirection =(

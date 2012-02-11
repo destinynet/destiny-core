@@ -23,7 +23,6 @@ public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializab
   
   public EssentialDignitiesBean(DayNightDifferentiator dayNightImpl)
   {
-    System.err.println("EssentialDignitiesBean init");
     this.dayNightImpl = dayNightImpl;
     rules = getDefaultRules();
   }

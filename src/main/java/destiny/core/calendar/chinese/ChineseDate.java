@@ -44,6 +44,11 @@ public class ChineseDate
     return month;
   }
   
+  public void setYear(StemBranch year)
+  {
+    this.year = year;
+  }
+  
   public StemBranch getYear()
   {
     return year;

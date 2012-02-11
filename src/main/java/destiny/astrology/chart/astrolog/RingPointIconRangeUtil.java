@@ -17,7 +17,7 @@ public class RingPointIconRangeUtil implements Serializable
   private double radius;
   private double innerFrom;
   private double outerTo;
-  private BufferedImage planetImg;
+  private transient BufferedImage planetImg;
   
   /** 該 icon 「未重新排列前」，佔據的度數，比較小的值 */
   private double rangeFrom;

@@ -26,7 +26,7 @@ public class PointConnectionUtil implements Serializable
 
   private Stroke        stroke;
 
-  private BufferedImage resultImage;
+  private transient BufferedImage resultImage;
 
   public PointConnectionUtil(double x1, double y1, double x2, double y2, Stroke stroke)
   {

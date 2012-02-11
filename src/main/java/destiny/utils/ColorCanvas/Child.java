@@ -5,8 +5,10 @@
  */
 package destiny.utils.ColorCanvas;
 
+import java.io.Serializable;
 
-public class Child
+
+public class Child implements Serializable
 {
   private ColorCanvas colorCanvas;
   private int x;
