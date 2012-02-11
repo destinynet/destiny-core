@@ -4,10 +4,11 @@
  */
 package destiny.utils.screen;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Canvas
+public class Canvas implements Serializable
 {
   private int width;
   private int height;
