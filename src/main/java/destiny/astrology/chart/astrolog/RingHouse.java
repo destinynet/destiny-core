@@ -77,7 +77,15 @@ public class RingHouse extends AbstractRing
       }
       catch (IOException e)
       {
-        e.printStackTrace();
+      }
+      finally {
+        try
+        {
+          is.close();
+        }
+        catch (IOException e)
+        {
+        }
       }
     }
     return result;

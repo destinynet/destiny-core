@@ -55,6 +55,16 @@ public class ProcessorIconWatermark implements Processor , Serializable
     catch (IOException e)
     {
     }
+    finally
+    {
+      try
+      {
+        logoIs.close();
+      }
+      catch (IOException e)
+      {
+      }
+    }
   }
 
 }

@@ -13,9 +13,9 @@ import javax.imageio.ImageIO;
 
 import destiny.astrology.Asteroid;
 import destiny.astrology.LunarNode;
+import destiny.astrology.LunarNode.NorthSouth;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
-import destiny.astrology.LunarNode.NorthSouth;
 import destiny.astrology.chart.PointImageResourceReader;
 
 public class PointImageResourceReaderImpl implements PointImageResourceReader
@@ -41,16 +41,29 @@ public class PointImageResourceReaderImpl implements PointImageResourceReader
     {
       is = getClass().getResourceAsStream("Asteroid." + point.toString(Locale.ENGLISH) + ".gif");
     }
-    try
+    
+    BufferedImage img = null;
+    if (is != null)
     {
-      BufferedImage img = ImageIO.read(is);
-      return img;
+      try
+      {
+        img = ImageIO.read(is);
+      }
+      catch (IOException e)
+      {
+      }
+      finally
+      {
+        try
+        {
+          is.close();
+        }
+        catch (IOException e)
+        {
+        }
+      }  
     }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-    return null;
+    return img;
   }
 
 }
