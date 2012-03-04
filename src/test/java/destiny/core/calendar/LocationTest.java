@@ -60,12 +60,6 @@ public class LocationTest extends TestCase
     expected = "+1213012.34+25 312.34 12.3456 CTT";
     assertEquals(expected , location.getDebugString());
     
-    location = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(-480));
-    expected = "+1213012.34+25 312.34-480 12.3456";
-    
-    location = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 0 , TimeZoneUtils.getTimeZone(-480));
-    expected = "+1213012.34+25 312.34-480 0.0";
-    
     location = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 0 , TimeZoneUtils.getTimeZone(-60));
     expected = "+1213012.34+25 312.34 0.0 Etc/GMT+1";
     assertEquals(expected , location.getDebugString());
@@ -73,221 +67,44 @@ public class LocationTest extends TestCase
     location = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , -1000 , TimeZoneUtils.getTimeZone(-60));
     expected = "+1213012.34+25 312.34 -1000.0 Etc/GMT+1";
     assertEquals(expected , location.getDebugString());
+    
+    //設定 minuteOffset
+    location.setMinuteOffset(0);
+    expected = "+1213012.34+25 312.34 -1000.0 Etc/GMT+1 0";
+    assertEquals(expected , location.getDebugString());
+    
+    //設定 minuteOffset
+    location.setMinuteOffset(-480);
+    expected = "+1213012.34+25 312.34 -1000.0 Etc/GMT+1 -480";
+    assertEquals(expected , location.getDebugString());
   }
   
-  public void testLocationFromStaticMethod()
+  /**
+   * 2012/03 之後的格式 , 尾方為 altitude TimeZone [minuteOffset]
+   */
+  public void testLocationFromDebugString_format2012()
   {
     Location location , expected;
     
-    location = Location.get("+1213012.34+25 312.34 480 12.3456");
+    location = new Location("+1213012.34+25 312.34 12.3456 Asia/Taipei");
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
     assertEquals(expected , location);
     
-    location = Location.get("+1213012.34+25 312.34+480 12.3456");
+    //強制設定 minuteOffset = 0
+    location.setMinuteOffset(0);
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
+    expected.setMinuteOffset(0);
     assertEquals(expected , location);
     
-    location = Location.get("+  1 212.34+25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2  0.0+25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 0.0 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 20.0  +25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 0.0 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 212.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 2    0 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 0.0 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 259.99 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 59.99 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 23.0   480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 2  3.0 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 12.3456 , TimeZoneUtils.getTimeZone(480));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 2  3.0  60 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 12.3456 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 2  3.0  60 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 2  3.0  60 -1.23");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , -1.23 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-
-    location = Location.get("+  1 2    9+ 1 2  3.0   0 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZone.getTimeZone("GMT"));
-    assertEquals(expected , location);
-    
-    
-    location = Location.get("+  1 2    9+ 1 2  3.0 -60 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZoneUtils.getTimeZone(-60));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 2  3.0-360 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZoneUtils.getTimeZone(-360));
-    assertEquals(expected , location);
-    
-    location = Location.get("+  1 2    9+ 1 2  3.0-360 -1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , -1 , TimeZoneUtils.getTimeZone(-360));
-    assertEquals(expected , location);
-    
-    location = Location.get("-  1 2    9- 1 2  3.0-360 -1");
-    expected = new Location(EastWest.WEST , 1 , 2 , 9.0 , NorthSouth.SOUTH , 1 , 2 , 3.0 , -1 , TimeZoneUtils.getTimeZone(-360));
-    assertEquals(expected , location);
-    
-    location = Location.get("+1213012.34+25 312.34  60 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = Location.get("+1213012.34+25 312.34  60 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = Location.get("+1213012.34+25 312.34   0 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("GMT"));
-    assertEquals(expected , location);
-    
-    location = Location.get("+1213012.34+25 312.34  -0 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("GMT"));
-    assertEquals(expected , location);
-    
-    
-    location = Location.get("+1213012.34+25 312.34-480 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(-480));
-    assertEquals(expected , location);
-    
-    location = Location.get("+1213012.34+25 312.34 -60 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(-60));
-    assertEquals(expected , location);
-    
-  }
-  
-  public void testLocationFromDebugString()
-  {
-    Location location , expected;
-    
-    location = new Location("+1213012.34+25 312.34 480 12.3456");
+    location = new Location("+1213012.34+25 312.34 12.3456 Asia/Taipei 60");
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
+    expected.setMinuteOffset(60);
     assertEquals(expected , location);
     
-    location = new Location("+1213012.34+25 312.34+480 12.3456");
+    location = new Location("+1213012.34+25 312.34 12.3456 Asia/Taipei -480");
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
+    expected.setMinuteOffset(-480);
     assertEquals(expected , location);
-    
-    location = new Location("+  1 212.34+25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2  0.0+25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 0.0 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 20.0  +25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 0.0 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+25 312.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 212.34 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2    0 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 0.0 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 259.99 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 59.99 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 23.0   480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2  3.0 480 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2  3.0  60 12.3456");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 12.3456 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2  3.0  60 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2  3.0  60 -1.23");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , -1.23 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-
-    location = new Location("+  1 2    9+ 1 2  3.0   0 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZone.getTimeZone("GMT"));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2  3.0 -60 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZoneUtils.getTimeZone(-60));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2  3.0-360 1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , 1 , TimeZoneUtils.getTimeZone(-360));
-    assertEquals(expected , location);
-    
-    location = new Location("+  1 2    9+ 1 2  3.0-360 -1");
-    expected = new Location(EastWest.EAST , 1 , 2 , 9.0 , NorthSouth.NORTH , 1 , 2 , 3.0 , -1 , TimeZoneUtils.getTimeZone(-360));
-    assertEquals(expected , location);
-    
-    location = new Location("-  1 2    9- 1 2  3.0-360 -1");
-    expected = new Location(EastWest.WEST , 1 , 2 , 9.0 , NorthSouth.SOUTH , 1 , 2 , 3.0 , -1 , TimeZoneUtils.getTimeZone(-360));
-    assertEquals(expected , location);
-    
-    location = new Location("+1213012.34+25 312.34  60 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = new Location("+1213012.34+25 312.34  60 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(60));
-    assertEquals(expected , location);
-    
-    location = new Location("+1213012.34+25 312.34   0 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("GMT"));
-    assertEquals(expected , location);
-    
-    location = new Location("+1213012.34+25 312.34  -0 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("GMT"));
-    assertEquals(expected , location);
-    
-    
-    location = new Location("+1213012.34+25 312.34-480 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(-480));
-    assertEquals(expected , location);
-    
-    location = new Location("+1213012.34+25 312.34 -60 12.3456");
-    expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(-60));
-    assertEquals(expected , location);
-    
   }
   
   public void testLocationEastWestDoubleNorthSouthDoubleInt()

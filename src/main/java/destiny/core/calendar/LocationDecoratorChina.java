@@ -22,9 +22,12 @@ public class LocationDecoratorChina implements Decorator<Location>
     sb.append((location.getNorthSouth()==NorthSouth.NORTH ? "北纬" : "南纬") + " ");
     sb.append(location.getLatitudeDegree() + "度");
     sb.append(location.getLatitudeMinute() + "分");
-    sb.append(location.getLatitudeSecond() + "秒");
-    sb.append(" 时差 " + (location.getTimeZone().getRawOffset() / (60000*60)) + " 小时 ");
+    sb.append(location.getLatitudeSecond() + "秒.");
     sb.append("高度 " + location.getAltitudeMeter() + " 米");
+    sb.append(" 时区 " + location.getTimeZone().getID());
+    if (location.isMinuteOffsetSet())
+      sb.append(" 时差 " + location.getMinuteOffset() + " 分钟.");
+    
     return sb.toString();
   }
 

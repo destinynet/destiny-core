@@ -427,32 +427,48 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   }
   
 
-  /** 從 LMT 轉換到 GMT */
+  /** 從 LMT 轉換到 GMT 
+   * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
+   * */
   public static Time getGMTfromLMT(Time lmt , Location loc)
   {
-    TimeZone localZone = loc.getTimeZone();
-    GregorianCalendar cal = new GregorianCalendar(localZone);
-    
-    cal.set(lmt.getYear() , lmt.getMonth()-1 , lmt.getDay() , lmt.getHour() , lmt.getMinute() , (int)lmt.getSecond());
-    double secondsOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-    
-    Time gmt = new Time(lmt , 0-secondsOffset);
-    return gmt;
+    if (loc.isMinuteOffsetSet())
+    {
+      return new Time(lmt , 0-loc.getMinuteOffset()*60);
+    }
+    else
+    {
+      TimeZone localZone = loc.getTimeZone();
+      GregorianCalendar cal = new GregorianCalendar(localZone);
+      
+      cal.set(lmt.getYear() , lmt.getMonth()-1 , lmt.getDay() , lmt.getHour() , lmt.getMinute() , (int)lmt.getSecond());
+      double secondsOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
+      
+      return new Time(lmt , 0-secondsOffset);  
+    }
   }
 
-  /** 從 GMT 轉換成 LMT */
+  /** 從 GMT 轉換成 LMT
+   * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
+   *  */
   public final static Time getLMTfromGMT(Time gmt , Location loc)
   {
-    TimeZone gmtZone = TimeZone.getTimeZone("GMT");
-    GregorianCalendar cal = new GregorianCalendar(gmtZone);
+    if (loc.isMinuteOffsetSet())
+    {
+      return new Time(gmt , loc.getMinuteOffset()*60);
+    }
+    else
+    {
+      TimeZone gmtZone = TimeZone.getTimeZone("GMT");
+      GregorianCalendar cal = new GregorianCalendar(gmtZone);
 
-    cal.set(gmt.getYear(), gmt.getMonth()-1 , gmt.getDay() , gmt.getHour() , gmt.getMinute() , (int)gmt.getSecond());
-    
-    TimeZone localTz = loc.getTimeZone();
-    double secondsOffset = localTz.getOffset(cal.getTimeInMillis()) / 1000;
-    
-    Time lmt = new Time(gmt , secondsOffset);
-    return lmt;
+      cal.set(gmt.getYear(), gmt.getMonth()-1 , gmt.getDay() , gmt.getHour() , gmt.getMinute() , (int)gmt.getSecond());
+      
+      TimeZone localTz = loc.getTimeZone();
+      double secondsOffset = localTz.getOffset(cal.getTimeInMillis()) / 1000;
+      
+      return new Time(gmt , secondsOffset);      
+    }
   }
   
   @Override

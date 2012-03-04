@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
 import destiny.utils.AlignUtil;
@@ -32,6 +33,10 @@ public class Location implements Serializable
   /** 時區 */
   private TimeZone timeZone = TimeZone.getDefault();
 
+  /** 2012/3/4 補加上 : 
+   * 與 GMT 的時差 , 優先權高於 timeZone !
+   */
+  private Integer minuteOffset = null;
   //private int minuteOffset = 8*60 ; //與 GMT 時差 , 內定為 8.0 小時x60分
 
   private double altitudeMeter = 0; //高度（公尺）
@@ -237,11 +242,17 @@ public class Location implements Serializable
   /** 
    * 利用 debug String 建立 Location , 缺點：「秒」只限制在小數點下兩位數
    * 
-   * 新款格式
-   * 012345678901234567890123456789012
-   * +DDDMMSSSSS+DDMMSSSSS TimeZone A~
+   * 2012/3 之後 , 新款格式 : 新增 minuteOffset 欄位
+   * 012345678901234567890123~
+   * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ minuteOffset
    * 
-   * 舊款格式 
+   * prior 2012/3 格式
+   * 012345678901234567890123456789012
+   * +DDDMMSSSSS+DDMMSSSSS Alt~ Timezone
+   * 範例:
+   * +12130  0.0+25 3  0.0 0.0 Asia/Taipei
+   * 
+   * 舊款格式 (2012/3之後不支援)
    * 0123456789012345678901234567
    * +DDDMMSSSSS+DDMMSSSSS+OOO A~
    * 
@@ -279,6 +290,7 @@ public class Location implements Serializable
     
     StringTokenizer st = new StringTokenizer(altitudeAndTimezone , " ");
     String firstToken = st.nextToken();
+    // 2012/3 之後 , restToken 可能還會 append minuteOffset
     String restTokens = altitudeAndTimezone.substring( altitudeAndTimezone.indexOf(firstToken)+firstToken.length()+1).trim();
     //System.out.println("firstToken = '" + firstToken + "' , rest = '" + restTokens+"'");
     
@@ -296,90 +308,32 @@ public class Location implements Serializable
     {
       //新款
       this.altitudeMeter = Double.parseDouble(firstToken);
-      this.timeZone = TimeZone.getTimeZone(restTokens);
+      st = new StringTokenizer(restTokens , " ");
+      if (st.countTokens() == 1)
+        this.timeZone = TimeZone.getTimeZone(restTokens);
+      else
+      {
+        // 2012/3 格式 : timeZone 之後，還附加 minuteOffset
+        this.timeZone = TimeZone.getTimeZone(st.nextToken());
+        this.minuteOffset = Integer.valueOf(st.nextToken());
+      }
     }
 
   }
   
-  /** 
-   * <pre>
-   * 利用 debug String 建立 Location , 缺點：「秒」只限制在小數點下兩位數 
-   * 
-   * 新款格式
-   * 01234567890123456789012345678901234567
-   * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ 
-   * 範例 :
-   * +1213012.34+25 312.34 12.3456 Asia/Taipei 
-   * 
-   * 舊款格式 
-   * 
-   * 0123456789012345678901234567
-   * +DDDMMSSSSS+DDMMSSSSS+OOO A~
-   * 範例 :
-   * +1213012.34+25 312.34 480 12.3456
-   * 
-   * 分辨方法：如果能以空白切三段，就是新的，否則就是舊的。
-   * 
-   * </pre>
-   */
   public static Location get(String s)
   {
-    Location loc = new Location();
-    try
-    {
-      char ew = s.charAt(0);
-      if (ew == '+')
-        loc.setEastWest(EastWest.EAST);
-      else if (ew == '-')
-        loc.setEastWest(EastWest.WEST);
-      
-      loc.setLongitudeDegree(Integer.valueOf(s.substring(1, 4).trim()).intValue());
-      loc.setLongitudeMinute(Integer.valueOf(s.substring(4, 6).trim()).intValue());
-      loc.setLongitudeSecond(Double.valueOf(s.substring(6, 11).trim()).doubleValue());
-      
-      char ns = s.charAt(11);
-      if (ns == '+')
-        loc.setNorthSouth(NorthSouth.NORTH);
-      else if (ns == '-')
-        loc.setNorthSouth(NorthSouth.SOUTH);
-
-      loc.setLatitudeDegree(Integer.valueOf(s.substring(12, 14).trim()).intValue());
-      loc.setLatitudeMinute(Integer.valueOf(s.substring(14, 16).trim()).intValue());
-      loc.setLatitudeSecond(Double.valueOf(s.substring(16, 21).trim()).doubleValue());
-      
-      //包含了 高度以及時區
-      String altitudeAndTimezone = s.substring(21);
-      //System.out.println("altitudeAndTimezone = '" + altitudeAndTimezone+"'");
-      
-      StringTokenizer st = new StringTokenizer(altitudeAndTimezone , " ");
-      String firstToken = st.nextToken();
-      String restTokens = altitudeAndTimezone.substring( altitudeAndTimezone.indexOf(firstToken)+firstToken.length()+1).trim();
-      //System.out.println("firstToken = '" + firstToken + "' , rest = '" + restTokens+"'");
-      
-      //檢查 restTokens 是否能轉為 double，如果能的話，代表是舊款 , 否則就是新款
-      try
-      {
-        loc.setAltitudeMeter(Double.parseDouble(restTokens));
-        //parse 成功，代表舊款
-        if (firstToken.charAt(0) == '+')
-          loc.setTimeZone(TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken.substring(1))));
-        else
-          loc.setTimeZone(TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken)));
-      }
-      catch(NumberFormatException e)
-      {
-        //新款
-        loc.setAltitudeMeter(Double.parseDouble(firstToken));
-        loc.setTimeZone(TimeZone.getTimeZone(restTokens));
-      }
-    }
-    catch(RuntimeException ignored)
-    {
-    }
-    return loc;
+    return new Location(s);
   }
   
-  
+  /**
+   * 2012/03 格式：
+   * 012345678901234567890123456789012345678901234567890
+   * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ [minuteOffset]
+   * 範例 :
+   * +1213012.34+25 312.34 12.3456 Asia/Taipei 480
+   * 尾方的 minuteOffset 為 optional , 如果有的話，會 override Asia/Taipei 的 minuteOffset
+   */
   public String getDebugString()
   {
     StringBuffer sb = new StringBuffer();
@@ -396,6 +350,8 @@ public class Location implements Serializable
     sb.append(" " + this.altitudeMeter);
     //舊：sb.append(AlignUtil.alignRight(this.minuteOffset, 4 , ' '));
     sb.append(' ' + timeZone.getID());
+    if (minuteOffset != null)
+      sb.append(" " + minuteOffset);
     
     return sb.toString();
   }
@@ -616,23 +572,37 @@ public class Location implements Serializable
       if (other.timeZone != null)
         return false;
     }
-    //else if (!timeZone.equals(other.timeZone))
-    else if (getTimeZone().getRawOffset() != other.getTimeZone().getRawOffset())
+    else if (!timeZone.equals(other.timeZone))
       return false;
-    return true;
+    
+    return Objects.equal(minuteOffset, other.minuteOffset);
   }
 
+  /** 查詢， minuteOffset 是否被設定 (非null) */
+  public boolean isMinuteOffsetSet()
+  {
+    return minuteOffset!=null;
+  }
+  
   // 與 GMT 的時差 (分鐘) 
   public int getMinuteOffset()
   {
-    return this.timeZone.getRawOffset() / (60*1000);
+    if (minuteOffset != null)
+      return minuteOffset.intValue();
+    else
+      return this.timeZone.getRawOffset() / (60*1000);
   }
 
   // 設定與 GMT 的時差 (分鐘)
+  /**
+   * 2012/3/4 發現： 不能直接將 minuteOffset 換成 timezone , 因為 timezone 會受歷史因素/DST的影響
+   * 有時強制指定 minuteOffset , 結果被轉成不正確的 TZ , 反而會受到歷史因素或是DST的影響
+   */
   public void setMinuteOffset(int minuteOffset)
   {
-    System.out.println("Location : tz 本來是 " + timeZone.getID() + " , 現在要被設為 " + TimeZoneUtils.getTimeZone(minuteOffset).getID());
-    this.timeZone = TimeZoneUtils.getTimeZone(minuteOffset);
+    this.minuteOffset = Integer.valueOf(minuteOffset);
+//    System.out.println("Location : tz 本來是 " + timeZone.getID() + " , 現在要被設為 " + TimeZoneUtils.getTimeZone(minuteOffset).getID());
+//    this.timeZone = TimeZoneUtils.getTimeZone(minuteOffset);
   }
   
 }

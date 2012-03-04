@@ -23,8 +23,12 @@ public class LocationDecoratorTaiwan implements Decorator<Location>
     sb.append(location.getLatitudeDegree() + "度 ");
     sb.append(location.getLatitudeMinute() + "分 ");
     sb.append(location.getLatitudeSecond() + "秒.");
-    sb.append(" 時差 " + (location.getTimeZone().getRawOffset() / 60000) + " 分鐘  ");
     sb.append("高度 " + location.getAltitudeMeter() + " 公尺.");
+    sb.append(" 時區 " + location.getTimeZone().getID());
+    if (location.isMinuteOffsetSet())
+      sb.append(" 時差 " + location.getMinuteOffset() + " 分鐘.");
+      //sb.append(" 時差 " + (location.getTimeZone().getRawOffset() / 60000) + " 分鐘  ");
+    
     return sb.toString();
   }
 
