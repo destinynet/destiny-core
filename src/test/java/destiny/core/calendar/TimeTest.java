@@ -506,6 +506,11 @@ public class TimeTest extends TestCase
     time = new Time(true , 1752 , 9 , 2 , 0 , 0 , 0);
     assertEquals(2361209.5 , time.getGmtJulDay() , 0);
     
+    time = new Time(true , 1582 , 10 , 15 , 0 , 0 , 0);
+    assertEquals(2299160.5 , time.getGmtJulDay() , 0);
+    
+    //=========================== Julian 切換到 Gregorian ==============
+    
     time = new Time(true , 1582 , 10 , 4 , 0 , 0 , 0);
     assertEquals(2299159.5 , time.getGmtJulDay() , 0);
     
@@ -539,5 +544,4 @@ public class TimeTest extends TestCase
     time = new Time(false , 4713 , 1 , 1 , 12 , 0 , 0);
     assertEquals(0 , time.getGmtJulDay() , 0);
   }
-
 }

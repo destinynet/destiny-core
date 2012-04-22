@@ -18,8 +18,7 @@ public final class House_6_8 extends Rule
   @Override
   protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
-    if (horoscopeContext.getHouse(planet) == 6 ||
-        horoscopeContext.getHouse(planet) ==8)
+    if (horoscopeContext.getHouse(planet) == 6)
     {
       //addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
       return new Tuple<String , Object[]>("comment" , new Object[]{planet , 6});
