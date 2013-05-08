@@ -18,7 +18,8 @@ import java.text.AttributedString;
 import destiny.astrology.Horoscope;
 
 /**
- * 繪製一張命盤
+ * 繪製一張命盤 , 嘗試打浮水印
+ * 測試中 , 勿用
  */
 public class ChartImage extends BufferedImage
 {
