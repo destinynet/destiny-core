@@ -23,8 +23,12 @@ public interface HexagramIF
   
   /** 取得上卦 */
   public Symbol getUpperSymbol();
+  
   /** 取得下卦 */
   public Symbol getLowerSymbol();
+
+  /** 取得 010101 的表示法 */
+  public String getBinaryCode();
   
   /** 以下三個 method , 屬於「梅花易」常用的詞彙，經仔細思考，還是決定不放入最基本的 methods 中 */
   //互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */

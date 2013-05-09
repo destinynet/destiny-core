@@ -49,6 +49,15 @@ public class BaseHexagram implements HexagramIF , Serializable
   {
     return hexagram.getYinYangs();
   }
+  
+  @Override
+  public String getBinaryCode()
+  {
+    StringBuffer sb = new StringBuffer();
+    for(YinYang yy : getYinYangs())
+      sb.append(yy.getBooleanValue() ? '1' : '0');
+    return sb.toString();
+  }
 
   @Override
   public int hashCode()

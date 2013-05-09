@@ -226,5 +226,14 @@ public enum Hexagram implements HexagramIF , Serializable
     return Hexagram.getHexagram(new YinYang[] {upper.getYinYang(3) , upper.getYinYang(2) , upper.getYinYang(1) , lower.getYinYang(3) , lower.getYinYang(2) , lower.getYinYang(1)});
   }
 
+  @Override
+  public String getBinaryCode()
+  {
+    StringBuffer sb = new StringBuffer();
+    for(YinYang yy : getYinYangs())
+      sb.append(yy.getBooleanValue() ? '1' : '0');
+    return sb.toString();
+  }
+
 
 }
