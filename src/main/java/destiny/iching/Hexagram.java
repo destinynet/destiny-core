@@ -206,6 +206,21 @@ public enum Hexagram implements HexagramIF , Serializable
   {
     return lower;
   }
+  
+  /** @return 第 line 爻動的話，變卦是什麼卦 */
+  public Hexagram getHexagram(int line)
+  {
+    YinYang[] yys = new YinYang[6];
+    for(int i=0 ; i<6 ; i++)
+    {
+      YinYang yy = getYinYangs()[i];
+      if (line-1 == i)
+        yys[i] = yy.getOpposite();
+      else
+        yys[i] = yy;
+    }
+    return Hexagram.getHexagram(yys);
+  }
 
   /** @return 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */
   public HexagramIF getMiddleSpanHexagram()

@@ -16,6 +16,13 @@ import org.junit.Test;
 public class HexagramTest
 {
   @Test
+  public void testGetHexagramLine()
+  {
+    Hexagram src = Hexagram.乾;
+    assertSame(Hexagram.姤 , src.getHexagram(1));
+  }
+  
+  @Test
   public void testHexagram()
   {
     Set<Hexagram> set = new HashSet<Hexagram>();
