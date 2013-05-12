@@ -10,11 +10,10 @@
 
 package destiny.utils;
 
-import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UBBCodeConverter implements Serializable
+public class UBBCodeConverter 
 {
   String       u_s;
   String       u_s1;

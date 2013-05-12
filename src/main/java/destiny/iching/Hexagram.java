@@ -250,5 +250,29 @@ public enum Hexagram implements HexagramIF , Serializable
     return sb.toString();
   }
 
+  /** 從 "010101" 取得一個卦 */
+  public HexagramIF getFromBinaryString(String code)
+  {
+    if (code == null || code.length() < 6)
+      return Hexagram.乾;
+    boolean[] bools = new boolean[6];
+    try
+    {
+      for(int i=0 ; i<6 ; i++)
+      {
+        char c = code.toCharArray()[i];
+        if (c == '0')
+          bools[i] = false;
+        else
+          bools[i] = true;
+      }
+      return Hexagram.getHexagram(bools);  
+    }
+    catch(Exception e)
+    {
+      return Hexagram.乾;
+    }
+  }
+
 
 }

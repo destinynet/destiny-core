@@ -53,10 +53,7 @@ public class BaseHexagram implements HexagramIF , Serializable
   @Override
   public String getBinaryCode()
   {
-    StringBuffer sb = new StringBuffer();
-    for(YinYang yy : getYinYangs())
-      sb.append(yy.getBooleanValue() ? '1' : '0');
-    return sb.toString();
+    return hexagram.getBinaryCode();
   }
 
   @Override
@@ -86,6 +83,12 @@ public class BaseHexagram implements HexagramIF , Serializable
     else if (!hexagram.equals(other.hexagram))
       return false;
     return true;
+  }
+
+  @Override
+  public HexagramIF getFromBinaryString(String code)
+  {
+    return hexagram.getFromBinaryString(code);
   }
   
 }
