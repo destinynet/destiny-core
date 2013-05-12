@@ -30,9 +30,6 @@ public interface HexagramIF
   /** 取得 010101 的表示法 */
   public String getBinaryCode();
   
-  /** 從 "010101" 取得一個卦 */
-  public HexagramIF getFromBinaryString(String code);
-  
   /** 以下三個 method , 屬於「梅花易」常用的詞彙，經仔細思考，還是決定不放入最基本的 methods 中 */
   //互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */
   //public HexagramIF getMiddleSpanHexagram();
