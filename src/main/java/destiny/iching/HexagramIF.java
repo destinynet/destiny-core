@@ -27,6 +27,12 @@ public interface HexagramIF
   /** 取得下卦 */
   public Symbol getLowerSymbol();
 
+  /**
+   * 第 line 爻動的話，變卦是什麼
+   * @param line [1~6]
+   */
+  public Hexagram getHexagram(int... line);
+  
   /** 取得 010101 的表示法 */
   public String getBinaryCode();
   

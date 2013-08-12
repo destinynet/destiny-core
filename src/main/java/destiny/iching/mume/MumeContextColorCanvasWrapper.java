@@ -99,15 +99,15 @@ public class MumeContextColorCanvasWrapper implements Serializable
     else
       mainCanvas.setText("〤", 9-mumeContext.getMotivate() ,17 );
     
-    ColorCanvas 互卦Canvas = new ColorCanvas(8, 12 , "　");
-    互卦Canvas.setText("【互　卦】", 1, 1);
-    互卦Canvas.add(getColorCanvas(mumeContext.getHexagram().getMiddleSpanHexagram()), 2, 1);
-    mainCanvas.add(互卦Canvas , 1 , 21);
-    
     ColorCanvas 變卦Canvas = new ColorCanvas(8, 12 , "　");
     變卦Canvas.setText("【變　卦】", 1, 1);
     變卦Canvas.add(getColorCanvas(  mumeContext.getTargetHexagram()), 2, 1);
-    mainCanvas.add(變卦Canvas , 1 , 35);
+    mainCanvas.add(變卦Canvas , 1 , 21);
+    
+    ColorCanvas 互卦Canvas = new ColorCanvas(8, 12 , "　");
+    互卦Canvas.setText("【互　卦】", 1, 1);
+    互卦Canvas.add(getColorCanvas(mumeContext.getHexagram().getMiddleSpanHexagram()), 2, 1);
+    mainCanvas.add(互卦Canvas , 1 , 35);
     
     ColorCanvas 錯卦Canvas = new ColorCanvas(8, 12 , "　");
     錯卦Canvas.setText("【錯　卦】", 1, 1);

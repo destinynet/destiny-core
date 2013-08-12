@@ -70,6 +70,12 @@ public enum EarthlyBranches implements EarthlyBranchesIF
       throw new RuntimeException("No such EarthlyBranches '"+c+"'");
   }
   
+  /** 取得對沖 的地支 */
+  public EarthlyBranches getOpposite()
+  {
+    return EarthlyBranches.getEarthlyBranches(getIndex()+6);
+  }
+  
   /**
    * 子[0] ~ 亥[11]
    */

@@ -109,5 +109,11 @@ public class BaseHexagram implements HexagramIF , Serializable
       return Hexagram.乾;
     }
   }
-  
+
+  @Override
+  public Hexagram getHexagram(int... lines)
+  {
+    return hexagram.getHexagram(lines);
+  }
+
 }

@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import destiny.iching.HexagramIF;
 
+/** 卦 或 爻 的象曰 */ 
 public interface ImageIF
 {
   /** 取得卦的象曰 */

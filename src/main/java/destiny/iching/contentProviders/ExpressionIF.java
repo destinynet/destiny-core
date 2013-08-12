@@ -8,6 +8,9 @@ import java.util.Locale;
 
 import destiny.iching.HexagramIF;
 
+/**
+ * 卦 或 爻 的辭
+ */
 public interface ExpressionIF
 {
   /** 取得卦辭 */

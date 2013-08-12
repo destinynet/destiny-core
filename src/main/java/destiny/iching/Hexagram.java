@@ -207,20 +207,32 @@ public enum Hexagram implements HexagramIF , Serializable
     return lower;
   }
   
-  /** @return 第 line 爻動的話，變卦是什麼卦 */
-  public Hexagram getHexagram(int line)
+  /**
+   * 第 line 爻動的話，變卦是什麼
+   * @param line [1~6]
+   */
+  @Override
+  public Hexagram getHexagram(int... lines)
   {
     YinYang[] yys = new YinYang[6];
     for(int i=0 ; i<6 ; i++)
     {
       YinYang yy = getYinYangs()[i];
-      if (line-1 == i)
+      if (contains(lines , i+1))
         yys[i] = yy.getOpposite();
       else
         yys[i] = yy;
     }
     return Hexagram.getHexagram(yys);
   }
+  
+  public static <T> boolean contains( final int[] lines, final int i ) 
+  {
+    for (int e : lines )
+        if ( e == i   )
+            return true;
+    return false;
+}
 
   /** @return 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */
   public HexagramIF getMiddleSpanHexagram()
