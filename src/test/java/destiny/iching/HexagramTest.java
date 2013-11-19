@@ -16,6 +16,21 @@ import org.junit.Test;
 public class HexagramTest
 {
   @Test
+  public void testGetTargetHexagram()
+  {
+    Hexagram src = Hexagram.乾;
+    assertSame(Hexagram.乾 , src.getHexagram());
+    assertSame(Hexagram.乾 , src.getHexagram(0));
+    assertSame(Hexagram.姤 , src.getHexagram(1));
+    assertSame(Hexagram.遯 , src.getHexagram(1 , 2));
+    assertSame(Hexagram.否 , src.getHexagram(1 , 2 , 3));
+    assertSame(Hexagram.觀 , src.getHexagram(1 , 2 , 3 , 4));
+    assertSame(Hexagram.剝 , src.getHexagram(1 , 2 , 3 , 4 , 5));
+    assertSame(Hexagram.坤 , src.getHexagram(1 , 2 , 3 , 4 , 5 , 6));
+    assertSame(Hexagram.坤 , src.getHexagram(1 , 2 , 3 , 4 , 5 , 6 , 7));
+  }
+  
+  @Test
   public void testGetHexagramLine()
   {
     Hexagram src = Hexagram.乾;

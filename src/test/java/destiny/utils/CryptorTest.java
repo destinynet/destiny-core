@@ -13,6 +13,22 @@ public class CryptorTest
   private final static String DES_KEY = "2ed9e917";
   
   @Test
+  public void testCodeLength()
+  {
+    String uuid = UUID.randomUUID().toString();
+    String token1 = Cryptor.getDesEncodedString(DES_KEY, uuid);
+    
+    String md5 = Cryptor.MD5(uuid);
+    String token2 = Cryptor.getDesEncodedString(DES_KEY, md5);
+    
+    System.out.println("uuid   = " + uuid);
+    System.out.println("token1 = " + token1);
+    System.out.println("md5    = " + md5);
+    System.out.println("token2 = " + token2);
+    System.out.println("decoded= " + Cryptor.getDesDecodedString(DES_KEY, token2));
+  }
+  
+  @Test
   public void testEncodeDecodeDes()
   {
     System.out.println(Cryptor.getDesEncodedString(DES_KEY, "1"));

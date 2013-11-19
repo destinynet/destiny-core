@@ -207,20 +207,22 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    */
   private void checkDate()
   {
-    if (this.isAd() == true && year ==1582 && month==10 && (day>=5 && day<=14))
+    if (this.isAd()  && year ==1582 && month==10 && (day>=5 && day<=14))
       throw new RuntimeException("Invalid time! Date between 1582/10/5(inclusive) and 1582/10/14(inclusive) is invalid.");
-    if (getGmtJulDay() >= gregorianStartJulianDay )
-      this.gregorian = true;
-    else
-      this.gregorian = false;
+    this.gregorian = getGmtJulDay() >= gregorianStartJulianDay;
+//    if (getGmtJulDay() >= gregorianStartJulianDay )
+//      this.gregorian = true;
+//    else
+//      this.gregorian = false;
   }
   
   public Time(double julianDay)
   {
-    if (julianDay >= gregorianStartJulianDay)
-      gregorian=true;
-    else
-      gregorian=false;
+    gregorian = (julianDay >= gregorianStartJulianDay);
+//    if (julianDay >= gregorianStartJulianDay)
+//      gregorian=true;
+//    else
+//      gregorian=false;
     IDate dt=swe_revjul(julianDay, gregorian);
     if (dt.year <= 0)
     {
@@ -338,12 +340,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   public boolean isBefore(Time targetTime)
   {
     // 時間的比對前後順序不需考慮是否真是 GMT , 兩個同時區的 LMT 以 GMT 抓出 Julian Day 仍可比對先後順序 
-    return this.getGmtJulDay() < targetTime.getGmtJulDay() ? true : false;
+    //return this.getGmtJulDay() < targetTime.getGmtJulDay() ? true : false;
+    return this.getGmtJulDay() < targetTime.getGmtJulDay();
   }
   
   public boolean isAfter(Time targetTime)
   {
-    return this.getGmtJulDay() > targetTime.getGmtJulDay() ? true : false;
+    //return this.getGmtJulDay() > targetTime.getGmtJulDay() ? true : false;
+    return this.getGmtJulDay() > targetTime.getGmtJulDay();
   }
   
   private void normalize()
@@ -402,7 +406,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     this.year = t2.getYear();
     this.ad = t2.isAd();
     //this.Gregorian = t2.isGregorian();
-    if (ad==false)
+    if (!ad)
       this.gregorian = getCalendarType(-(t2.getYear()-1) , t2.getMonth() , t2.getDay() , t2.getHour() , t2.getMinute() , t2.getSecond());
     else
       this.gregorian = getCalendarType(t2.getYear() , t2.getMonth() , t2.getDay() , t2.getHour() , t2.getMinute() , t2.getSecond());
@@ -451,7 +455,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   /** 從 GMT 轉換成 LMT
    * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
    *  */
-  public final static Time getLMTfromGMT(Time gmt , Location loc)
+  public static Time getLMTfromGMT(Time gmt , Location loc)
   {
     if (loc.isMinuteOffsetSet())
     {
@@ -580,14 +584,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     int SecondCode = (int)(SecondBits ^ (SecondBits >>> 32));
     
     int hash=17;
-    hash = hash * 31 + (ad == true ? 1 :0 );
+    hash = hash * 31 + (ad ? 1 :0 );
     hash = hash * 31 + year;
     hash = hash * 31 + month;
     hash = hash * 31 + day;
     hash = hash * 31 + hour;
     hash = hash * 31 + minute;
     hash = hash * 31 + SecondCode;
-    hash = hash * 31 + (gregorian == true ? 1 : 0);
+    hash = hash * 31 + (gregorian ? 1 : 0);
     return hash;
   }
   
