@@ -20,14 +20,14 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   亥('亥');
   
   
-  protected char Name;
+  protected char name;
   
   protected final static EarthlyBranches[] EarthlyBranchesArray = 
     new EarthlyBranches[] { 子 , 丑 , 寅 , 卯 , 辰 , 巳 , 午 , 未 , 申 , 酉 , 戌 , 亥};
   
   EarthlyBranches(char c)
   {
-    this.Name = c;
+    this.name = c;
   }
 
   /**
@@ -58,7 +58,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
     EarthlyBranches result = null;
     for (int i=0 ; i < EarthlyBranchesArray.length ; i++)
     {
-      if (EarthlyBranchesArray[i].Name == c )
+      if (EarthlyBranchesArray[i].name == c )
       {
         result = EarthlyBranchesArray[i];
         break;
@@ -118,6 +118,6 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   @Override
   public String toString()
   {
-    return String.valueOf(Name);
+    return String.valueOf(name);
   }
 }
