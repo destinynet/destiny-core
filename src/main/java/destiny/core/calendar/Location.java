@@ -1,17 +1,16 @@
 package destiny.core.calendar;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableMap;
+import destiny.utils.AlignUtil;
+import destiny.utils.LocaleUtils;
+import destiny.utils.location.TimeZoneUtils;
+
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
-
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableMap;
-
-import destiny.utils.AlignUtil;
-import destiny.utils.LocaleUtils;
-import destiny.utils.location.TimeZoneUtils;
 
 
 /**
@@ -123,7 +122,9 @@ public class Location implements Serializable
   public Location(Locale locale)
   {
     Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet());
+    System.out.println("from locale " + locale + " , matchedLocale = " + matchedLocale );
     Location matchedLocation = locMap.get(matchedLocale);
+    System.out.println("matchedLocation = " + matchedLocation);
     this.eastWest = matchedLocation.eastWest;
     this.longitudeDegree = matchedLocation.longitudeDegree;
     this.longitudeMinute = matchedLocation.longitudeMinute;

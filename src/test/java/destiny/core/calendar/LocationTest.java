@@ -4,31 +4,35 @@
  */ 
 package destiny.core.calendar;
 
-import java.util.TimeZone;
-
-import junit.framework.TestCase;
 import destiny.core.calendar.Location.EastWest;
 import destiny.core.calendar.Location.NorthSouth;
 import destiny.utils.location.TimeZoneUtils;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class LocationTest extends TestCase
-{
+import java.util.TimeZone;
+
+public class LocationTest {
+
+  @Test
   public void testNorthSouth()
   {
-    assertSame(NorthSouth.NORTH , NorthSouth.getNorthSouth('N'));
-    assertSame(NorthSouth.NORTH , NorthSouth.getNorthSouth('n'));
-    assertSame(NorthSouth.SOUTH , NorthSouth.getNorthSouth('S'));
-    assertSame(NorthSouth.SOUTH , NorthSouth.getNorthSouth('s'));
+    Assert.assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('N'));
+    Assert.assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('n'));
+    Assert.assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('S'));
+    Assert.assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('s'));
   }
   
+  @Test
   public void testEastWest()
   {
-    assertSame(EastWest.EAST , EastWest.getEastWest('E'));
-    assertSame(EastWest.EAST , EastWest.getEastWest('e'));
-    assertSame(EastWest.WEST , EastWest.getEastWest('W'));
-    assertSame(EastWest.WEST , EastWest.getEastWest('w'));
+    Assert.assertSame(EastWest.EAST, EastWest.getEastWest('E'));
+    Assert.assertSame(EastWest.EAST, EastWest.getEastWest('e'));
+    Assert.assertSame(EastWest.WEST, EastWest.getEastWest('W'));
+    Assert.assertSame(EastWest.WEST, EastWest.getEastWest('w'));
   }
   
+  @Test
   public void testLocation()
   {
     Location actual;
@@ -36,88 +40,92 @@ public class LocationTest extends TestCase
     
     actual = new Location(-12,23,45.0 , -23,34,56.0 , TimeZoneUtils.getTimeZone(120));
     expected = new Location(EastWest.WEST , 12 , 23 , 45.0 , NorthSouth.SOUTH , 23 , 34 , 56.0 , TimeZoneUtils.getTimeZone(120));
-    assertEquals(expected , actual);
+    Assert.assertEquals(expected, actual);
     
     actual = new Location(12,23,45.0 , -23,34,56.0 , TimeZoneUtils.getTimeZone(120));
     expected = new Location(EastWest.EAST, 12 , 23 , 45.0 , NorthSouth.SOUTH , 23 , 34 , 56.0 , TimeZoneUtils.getTimeZone(120));
-    assertEquals(expected , actual);
+    Assert.assertEquals(expected, actual);
     
     
     actual = new Location(-12,23,45.0 , 23,34,56.0 , TimeZoneUtils.getTimeZone(120));
     expected = new Location(EastWest.WEST , 12 , 23 , 45.0 , NorthSouth.NORTH, 23 , 34 , 56.0 , TimeZoneUtils.getTimeZone(120));
-    assertEquals(expected , actual);
+    Assert.assertEquals(expected, actual);
     
     actual = new Location(12,23,45.0 , 23,34,56.0 , TimeZoneUtils.getTimeZone(120));
     expected = new Location(EastWest.EAST , 12 , 23 , 45.0 , NorthSouth.NORTH , 23 , 34 , 56.0 , TimeZoneUtils.getTimeZone(120));
-    assertEquals(expected , actual);
+    Assert.assertEquals(expected, actual);
   }
   
+  @Test
   public void testLocationDebugString()
   {
     Location location ;
     String expected ;
     location = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZoneUtils.getTimeZone(480));
     expected = "+1213012.34+25 312.34 12.3456 CTT";
-    assertEquals(expected , location.getDebugString());
+    Assert.assertEquals(expected, location.getDebugString());
     
     location = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 0 , TimeZoneUtils.getTimeZone(-60));
     expected = "+1213012.34+25 312.34 0.0 Etc/GMT+1";
-    assertEquals(expected , location.getDebugString());
+    Assert.assertEquals(expected, location.getDebugString());
     
     location = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , -1000 , TimeZoneUtils.getTimeZone(-60));
     expected = "+1213012.34+25 312.34 -1000.0 Etc/GMT+1";
-    assertEquals(expected , location.getDebugString());
+    Assert.assertEquals(expected, location.getDebugString());
     
     //設定 minuteOffset
     location.setMinuteOffset(0);
     expected = "+1213012.34+25 312.34 -1000.0 Etc/GMT+1 0";
-    assertEquals(expected , location.getDebugString());
+    Assert.assertEquals(expected, location.getDebugString());
     
     //設定 minuteOffset
     location.setMinuteOffset(-480);
     expected = "+1213012.34+25 312.34 -1000.0 Etc/GMT+1 -480";
-    assertEquals(expected , location.getDebugString());
+    Assert.assertEquals(expected, location.getDebugString());
   }
   
   /**
    * 2012/03 之後的格式 , 尾方為 altitude TimeZone [minuteOffset]
    */
+  @Test
   public void testLocationFromDebugString_format2012()
   {
     Location location , expected;
     
     location = new Location("+1213012.34+25 312.34 12.3456 Asia/Taipei");
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
-    assertEquals(expected , location);
+    Assert.assertEquals(expected, location);
     
     //強制設定 minuteOffset = 0
     location.setMinuteOffset(0);
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
     expected.setMinuteOffset(0);
-    assertEquals(expected , location);
+    Assert.assertEquals(expected, location);
     
     location = new Location("+1213012.34+25 312.34 12.3456 Asia/Taipei 60");
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
     expected.setMinuteOffset(60);
-    assertEquals(expected , location);
+    Assert.assertEquals(expected, location);
     
     location = new Location("+1213012.34+25 312.34 12.3456 Asia/Taipei -480");
     expected = new Location(EastWest.EAST , 121 , 30 , 12.34 , NorthSouth.NORTH , 25 , 03 , 12.34 , 12.3456 , TimeZone.getTimeZone("Asia/Taipei"));
     expected.setMinuteOffset(-480);
-    assertEquals(expected , location);
+    Assert.assertEquals(expected, location);
   }
   
+  @Test
   public void testLocationEastWestDoubleNorthSouthDoubleInt()
   {
     Location location ;
     location = new Location(EastWest.EAST , 121.51 ,NorthSouth.NORTH , 25.33 , TimeZone.getTimeZone("Asia/Taipei")) ;
-    assertEquals(121 , location.getLongitudeDegree());
-    assertEquals(30 , location.getLongitudeMinute());
-    assertEquals(36.0 , location.getLongitudeSecond());
+    Assert.assertEquals(121, location.getLongitudeDegree());
+    Assert.assertEquals(30, location.getLongitudeMinute());
+    Assert.assertEquals(36.0, location.getLongitudeSecond() , 0.0);
     
-    assertEquals(25 , location.getLatitudeDegree());
-    assertEquals(19, location.getLatitudeMinute());
-    assertEquals(48.0 , location.getLatitudeSecond());
+    Assert.assertEquals(25, location.getLatitudeDegree());
+    Assert.assertEquals(19, location.getLatitudeMinute());
+    Assert.assertEquals(48.0, location.getLatitudeSecond() , 0.0);
   }
+
 
 }
