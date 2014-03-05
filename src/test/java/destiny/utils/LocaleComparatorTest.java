@@ -2,9 +2,7 @@ package destiny.utils;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by smallufo on 2014-03-05.
@@ -38,6 +36,27 @@ public class LocaleComparatorTest {
     list = Arrays.asList(locales);
     list.sort(new LocaleComparator(Locale.FRENCH));
     System.out.println(list);
+  }
 
+  @Test
+  public void testLangMap() throws Exception {
+    Map<Locale , String> map = new HashMap<Locale , String>(){{
+      put(Locale.TRADITIONAL_CHINESE, "導演");
+      put(Locale.SIMPLIFIED_CHINESE,  "导演");
+      put(Locale.ENGLISH, "Director");
+    }};
+
+    Locale locale;
+    locale = Locale.TRADITIONAL_CHINESE;
+    assert ("導演".equals(map.get(map.keySet().stream().sorted(new LocaleComparator(locale)).findFirst().get())));
+
+    locale = Locale.SIMPLIFIED_CHINESE;
+    assert ("导演".equals(map.get(map.keySet().stream().sorted(new LocaleComparator(locale)).findFirst().get())));
+
+    locale = Locale.ENGLISH;
+    assert ("Director".equals(map.get(map.keySet().stream().sorted(new LocaleComparator(locale)).findFirst().get())));
+
+    locale = Locale.FRANCE;
+    assert ("Director".equals(map.get(map.keySet().stream().sorted(new LocaleComparator(locale)).findFirst().get())));
   }
 }
