@@ -10,7 +10,11 @@ public class Triple<A, B, C> extends Tuple<A, B>
     super(a, b);
     this.c = c;
   }
-  
+
+  public static <A,B,C> Triple<A,B,C> of(A a , B b , C c) {
+    return new Triple<A,B,C>(a,b,c);
+  }
+
   public C getThird()
   {
     return c;

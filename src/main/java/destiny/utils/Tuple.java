@@ -13,7 +13,11 @@ public class Tuple<A, B> implements Serializable
     this.a = a;
     this.b = b;
   }
-  
+
+  public static <A,B> Tuple<A,B> of(A a , B b) {
+    return new Tuple<A,B>(a,b);
+  }
+
   public A getFirst()
   {
     return a;
