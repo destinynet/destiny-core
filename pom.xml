@@ -11,6 +11,11 @@
   <name>destiny-core</name>
   <dependencies>
     <dependency>
+      <groupId>destiny</groupId>
+      <artifactId>destiny-resources</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
     	<groupId>commons-codec</groupId>
     	<artifactId>commons-codec</artifactId>
     	<version>1.4</version>
@@ -21,6 +26,14 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>LATEST</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
     </dependency>
   </dependencies>
   <build>
