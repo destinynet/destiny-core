@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>destiny-parent</artifactId>
     <groupId>destiny</groupId>
+    <artifactId>destiny-parent</artifactId>
     <version>0.0.1</version>
   </parent>
   <artifactId>destiny-core</artifactId>
@@ -16,6 +16,11 @@
     	<version>1.4</version>
     	<type>jar</type>
     	<scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>LATEST</version>
     </dependency>
   </dependencies>
   <build>

@@ -448,7 +448,7 @@ public class Location implements Serializable
   {
     EAST("Location.EAST") , WEST("Location.WEST");
     
-    private final static String resource = "destiny.core.calendar.Location";
+    private final static String resource = destiny.core.calendar.Location.class.getName();//"destiny.core.calendar.Location";
     private String nameKey;
 
     private EastWest(String nameKey)
