@@ -4,12 +4,12 @@
  */
 package destiny.iching.graph;
 
-import java.awt.Color;
-
+import destiny.core.chart.Constants.WIDTH_HEIGHT;
 import destiny.iching.Hexagram;
-import destiny.iching.graph.BaseHexagramChart.WIDTH_HEIGHT;
 import destiny.iching.graph.ProcessorSideSymbol.Side;
 import destiny.utils.image.Processor;
+
+import java.awt.*;
 
 public class PairMergeChart extends AbstractPairHexagramChart
 {

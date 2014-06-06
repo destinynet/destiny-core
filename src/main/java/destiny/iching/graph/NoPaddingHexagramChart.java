@@ -4,12 +4,15 @@
  */
 package destiny.iching.graph;
 
-import java.awt.Color;
-
 import destiny.iching.HexagramIF;
 
+import java.awt.*;
+
+import static destiny.core.chart.Constants.GOLDEN_RATIO;
+import static destiny.core.chart.Constants.WIDTH_HEIGHT;
+
 /**
- * 無外框的單一易卦圖，以黃金比例呈現
+ * 無外框的單一易卦圖
  */
 public class NoPaddingHexagramChart extends BaseHexagramChart
 {

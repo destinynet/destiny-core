@@ -4,8 +4,8 @@
  */
 package destiny.iching.graph;
 
+import destiny.core.chart.Constants;
 import destiny.iching.Hexagram;
-import destiny.iching.graph.BaseHexagramChart.WIDTH_HEIGHT;
 import junit.framework.TestCase;
 
 import javax.imageio.ImageIO;
@@ -20,7 +20,7 @@ public class TestGoldenPaddingChart extends TestCase
     long t0 = System.currentTimeMillis();
     
     Hexagram hex = Hexagram.未濟;
-    GoldenPaddingChart c = new GoldenPaddingChart(hex, WIDTH_HEIGHT.HEIGHT, 1000, Color.WHITE, Color.BLACK);
+    GoldenPaddingChart c = new GoldenPaddingChart(hex, Constants.WIDTH_HEIGHT.HEIGHT, 1000, Color.WHITE, Color.BLACK);
     
     System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
     

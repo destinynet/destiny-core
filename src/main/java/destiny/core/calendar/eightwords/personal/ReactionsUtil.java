@@ -5,11 +5,11 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /** 天干/地支/十神 的工具箱 */
@@ -90,11 +90,11 @@ public class ReactionsUtil
    */
   public final List<Reactions> getReactions( EarthlyBranches actor , HeavenlyStems actee)
   {
-    List<Reactions> result = new ArrayList<Reactions>();
+    List<Reactions> result = new ArrayList();
     List<HeavenlyStems> hiddenStems = this.hiddenStemsImpl.getHiddenStems(actor);
     for (int i = 0 ; i < hiddenStems.size() ; i++)
     {
-      HeavenlyStems eachHiddenStems = (HeavenlyStems) hiddenStems.get(i);
+      HeavenlyStems eachHiddenStems = hiddenStems.get(i);
       result.add(this.getReaction(eachHiddenStems , actee));
     }
     return result;

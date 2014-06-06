@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
+import static destiny.core.chart.Constants.GOLDEN_RATIO;
+
 /** 在卦的下方寫上短卦名 */
 public class ProcessorName implements Processor , Serializable
 {
@@ -37,7 +39,7 @@ public class ProcessorName implements Processor , Serializable
     g.setColor(chart.fore);
     
     // 下方卦名，例如「乾」「坤」「屯」..
-    int bottomFontSize = (int) (paddingY / BaseHexagramChart.GOLDEN_RATIO);
+    int bottomFontSize = (int) (paddingY / GOLDEN_RATIO);
     g.setFont(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, bottomFontSize));
     g.drawString(name 
         , width/2 - name.length()*bottomFontSize/2

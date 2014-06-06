@@ -4,11 +4,13 @@
  */ 
 package destiny.core.calendar.eightwords;
 
-import java.io.Serializable;
-
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 八字資料結構，可以包含 null 值
@@ -79,7 +81,17 @@ public class EightWordsNullable implements Serializable
   public EarthlyBranches getMonthBranch() { return ( month == null ) ? null : month.getBranch(); }
   public EarthlyBranches getDayBranch()   { return ( day   == null ) ? null : day.getBranch();   }
   public EarthlyBranches getHourBranch()  { return ( hour  == null ) ? null : hour.getBranch();  }
-  
+
+  /** 取得四柱 */
+  public List<StemBranch> getStemBranches() {
+    return new ArrayList() {{
+      add(year);
+      add(month);
+      add(day);
+      add(hour);
+    }};
+  }
+
   public boolean equals(Object o)
   {
     if ((o != null) && (o.getClass().equals(this.getClass())))

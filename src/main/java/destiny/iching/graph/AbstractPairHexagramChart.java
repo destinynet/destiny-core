@@ -6,7 +6,6 @@ package destiny.iching.graph;
 
 import destiny.font.FontRepository;
 import destiny.iching.HexagramIF;
-import destiny.iching.graph.BaseHexagramChart.WIDTH_HEIGHT;
 import destiny.utils.image.Processor;
 
 import java.awt.*;
@@ -14,6 +13,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
+
+import static destiny.core.chart.Constants.GOLDEN_RATIO;
+import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 
 /**
  * 橫向兩個卦
@@ -54,11 +56,11 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
   {
     super(
           (which == WIDTH_HEIGHT.WIDTH  ? value :
-             (type == Type.GOLDEN) ? (int)(value * BaseHexagramChart.GOLDEN_RATIO) :
-                                     (int)(value / BaseHexagramChart.GOLDEN_RATIO)*2 ) 
+             (type == Type.GOLDEN) ? (int)(value * GOLDEN_RATIO) :
+                                     (int)(value / GOLDEN_RATIO)*2 )
         , (which == WIDTH_HEIGHT.HEIGHT ? value :
-             (type == Type.GOLDEN) ? (int)(value / BaseHexagramChart.GOLDEN_RATIO) :
-                                     (int)(value / 2 * BaseHexagramChart.GOLDEN_RATIO))
+             (type == Type.GOLDEN) ? (int)(value / GOLDEN_RATIO) :
+                                     (int)(value / 2 * GOLDEN_RATIO))
         , BufferedImage.TYPE_INT_ARGB);
     
     this.src = src;
@@ -68,7 +70,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
     this.bg = bg;
     this.fore = fore;
     
-    this.srcChart = new GoldenPaddingChart(src , WIDTH_HEIGHT.HEIGHT  
+    this.srcChart = new GoldenPaddingChart(src , WIDTH_HEIGHT.HEIGHT
         , height
         , bg , fore);
     
@@ -130,7 +132,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
         g.setFont(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, (int) rowHigh));
         g.setStroke(new BasicStroke((float) (rowHigh / 8.0)));
         
-        double radius = (rowHigh / BaseHexagramChart.GOLDEN_RATIO) / 2;
+        double radius = (rowHigh / GOLDEN_RATIO) / 2;
         if (src.getLine(i).getYinYang().getBooleanValue())
         {
           // 陽變陰 , 畫圓

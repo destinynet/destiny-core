@@ -4,9 +4,12 @@
  */
 package destiny.iching.graph;
 
-import java.awt.Color;
-
 import destiny.iching.HexagramIF;
+
+import java.awt.*;
+
+import static destiny.core.chart.Constants.GOLDEN_RATIO;
+import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 
 /**
  * 一個「本卦」的圖形，設計成黃金比例的卡片
@@ -20,17 +23,17 @@ public class GoldenPaddingChart extends BaseHexagramChart
   public GoldenPaddingChart(HexagramIF hex, WIDTH_HEIGHT which , int value, Color bg, Color fore)
   {
     super(hex
-        , (which == WIDTH_HEIGHT.WIDTH  ? value : (int)(value / GOLDEN_RATIO)) 
-        , (which == WIDTH_HEIGHT.HEIGHT ? value : (int)(value * GOLDEN_RATIO)) 
+        , (which == WIDTH_HEIGHT.WIDTH  ? value : (int)(value / GOLDEN_RATIO))
+        , (which == WIDTH_HEIGHT.HEIGHT ? value : (int)(value * GOLDEN_RATIO))
         , bg, fore
-        , (which == WIDTH_HEIGHT.WIDTH ? (value * GOLDEN_RATIO - value)/2 : (value - value/GOLDEN_RATIO)/2 )
-        , (which == WIDTH_HEIGHT.WIDTH ? value * (2-GOLDEN_RATIO)/2 : (value / GOLDEN_RATIO) * (2-GOLDEN_RATIO) /2 )
-        , (which == WIDTH_HEIGHT.WIDTH ? (value * GOLDEN_RATIO - value)/2 : (value - value/GOLDEN_RATIO)/2 )
-        , (which == WIDTH_HEIGHT.WIDTH ? value * (2-GOLDEN_RATIO)/2 : (value / GOLDEN_RATIO) * (2-GOLDEN_RATIO) /2 )
+        , (which == WIDTH_HEIGHT.WIDTH ? (value * GOLDEN_RATIO - value)/2 : (value - value/ GOLDEN_RATIO)/2 )
+        , (which == WIDTH_HEIGHT.WIDTH ? value * (2- GOLDEN_RATIO)/2 : (value / GOLDEN_RATIO) * (2- GOLDEN_RATIO) /2 )
+        , (which == WIDTH_HEIGHT.WIDTH ? (value * GOLDEN_RATIO - value)/2 : (value - value/ GOLDEN_RATIO)/2 )
+        , (which == WIDTH_HEIGHT.WIDTH ? value * (2- GOLDEN_RATIO)/2 : (value / GOLDEN_RATIO) * (2- GOLDEN_RATIO) /2 )
         );
     
-    this.paddingX = getWidth()  * (2-GOLDEN_RATIO) / 2;
-    this.paddingY = getHeight() * (2-GOLDEN_RATIO) / 2;
+    this.paddingX = getWidth()  * (2- GOLDEN_RATIO) / 2;
+    this.paddingY = getHeight() * (2- GOLDEN_RATIO) / 2;
   }
 
 }

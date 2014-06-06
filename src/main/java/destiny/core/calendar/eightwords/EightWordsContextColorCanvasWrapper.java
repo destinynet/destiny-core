@@ -4,16 +4,7 @@
  */
 package destiny.core.calendar.eightwords;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Locale;
-
-import destiny.core.calendar.DstUtils;
-import destiny.core.calendar.GoogleMapsUrlBuilder;
-import destiny.core.calendar.Location;
-import destiny.core.calendar.LocationUrlBuilder;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.*;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
 import destiny.core.calendar.eightwords.personal.Reactions;
@@ -22,6 +13,11 @@ import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.utils.ColorCanvas.AlignUtil;
 import destiny.utils.ColorCanvas.ColorCanvas;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
@@ -269,7 +265,7 @@ public class EightWordsContextColorCanvasWrapper
     for (int i=0 ; i<reactions.size() ; i++)
     {
       Reactions eachReaction = reactions.get(i);
-      resultCanvas.setText(ReactionsUtil.getHeavenlyStems(天干,eachReaction).toString() , 1 , 5-2*i , "gray");
+      resultCanvas.setText(ReactionsUtil.getHeavenlyStems(天干,eachReaction).toString() , 1 , 5-2*i , "gray"); // 天干
       resultCanvas.setText(eachReaction.toString().substring(0 , 1) , 2 , 5-2*i , "gray");
       resultCanvas.setText(eachReaction.toString().substring(1 , 2) , 3 , 5-2*i , "gray");
 

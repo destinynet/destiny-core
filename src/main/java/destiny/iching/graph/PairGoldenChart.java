@@ -4,12 +4,14 @@
  */
 package destiny.iching.graph;
 
-import java.awt.Color;
-
 import destiny.iching.HexagramIF;
-import destiny.iching.graph.BaseHexagramChart.WIDTH_HEIGHT;
 import destiny.iching.graph.ProcessorSideSymbol.Side;
 import destiny.utils.image.Processor;
+
+import java.awt.*;
+
+import static destiny.core.chart.Constants.GOLDEN_RATIO;
+import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 
 /** 黃金比例的矩形雙卦象 */
 public class PairGoldenChart extends AbstractPairHexagramChart
@@ -33,7 +35,7 @@ public class PairGoldenChart extends AbstractPairHexagramChart
   protected double getArrowX(double radius)
   {
     double paddingX = getPaddingX();
-    return width - height / BaseHexagramChart.GOLDEN_RATIO + paddingX - radius*2;
+    return width - height / GOLDEN_RATIO + paddingX - radius*2;
   }
   
   /** 繪製側邊文字 , 可能是八卦類像文字（天澤火雷...） */
@@ -50,7 +52,7 @@ public class PairGoldenChart extends AbstractPairHexagramChart
   /** 單一卦象的寬度 */
   private double getSingleHexagramWidth()
   {
-    return height / BaseHexagramChart.GOLDEN_RATIO;
+    return height / GOLDEN_RATIO;
   }
   
   /** 單一卦象的 paddingX */

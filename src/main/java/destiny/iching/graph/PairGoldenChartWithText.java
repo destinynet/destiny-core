@@ -4,10 +4,10 @@
  */
 package destiny.iching.graph;
 
+import destiny.core.chart.Constants.WIDTH_HEIGHT;
 import destiny.font.FontRepository;
 import destiny.iching.HexagramIF;
 import destiny.iching.contentProviders.ExpressionIF;
-import destiny.iching.graph.BaseHexagramChart.WIDTH_HEIGHT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

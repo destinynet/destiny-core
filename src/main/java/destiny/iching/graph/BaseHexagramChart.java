@@ -13,15 +13,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
+import static destiny.core.chart.Constants.GOLDEN_RATIO;
+
 /** 可任意指定寬高的單一卦象圖 ，純粹六條槓，沒有文字，沒有寬高比例綁定，可自定 padding */
 public class BaseHexagramChart extends BufferedImage implements Serializable
 {
-  protected final static double GOLDEN_RATIO = 1.618;
-//  public final static String FONT_LIHEI = "LiHei Pro";
-//  private static Font LiHeiProFont = null;
-  
-  public enum WIDTH_HEIGHT { WIDTH , HEIGHT }
-  
   protected Color              bg           = Color.WHITE;
   protected Color              fore         = Color.BLACK;
   
@@ -56,29 +52,6 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
     this.paddingBottom = paddingBottom;
     this.paddingLeft = paddingLeft;
     
-    //System.out.println("padding top = " + paddingTop + " , right = " + paddingRight);
-    
-//    if (LiHeiProFont == null)
-//    {
-//      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//
-//      try {
-//        String fName = "LiHeiPro.ttf";
-//        InputStream is = FontRepository.class.getResourceAsStream(fName);
-//        LiHeiProFont = Font.createFont(Font.TRUETYPE_FONT, is);
-//        ge.registerFont(LiHeiProFont);
-//      }
-//      catch (Exception e)
-//      {
-//        LiHeiProFont = new Font("serif" , Font.PLAIN , 24);
-//        e.printStackTrace();
-//      }
-//      logger.debug("load font : {} , attributes = {}" , LiHeiProFont , LiHeiProFont.getAttributes());
-//      Font[] fonts = ge.getAllFonts();
-//      for(Font f : fonts)
-//        logger.debug("registered font : fontName = {} , family = {} " , f.getFontName() , f.getFamily());
-//    }
-    
     Graphics2D g = this.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -91,7 +64,7 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
     g.setColor(fore);
     
     // 計算[半個]陰爻的寬度
-    double half_width = (width - (paddingLeft+paddingRight))/GOLDEN_RATIO/2;
+    double half_width = (width - (paddingLeft+paddingRight))/ GOLDEN_RATIO/2;
     
     // 從上（六爻）畫到下（初爻），貼齊 upper padding
     for (int i=6 ; i >= 1 ; i--)
