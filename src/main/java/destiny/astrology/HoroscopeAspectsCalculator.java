@@ -5,15 +5,7 @@
 package destiny.astrology;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** 利用 HoroscopeAspectsCalculatorIF , 計算命盤之中，星體所呈現的交角，及其容許度 */
 public class HoroscopeAspectsCalculator implements Serializable
@@ -77,10 +69,10 @@ public class HoroscopeAspectsCalculator implements Serializable
 
 
   //FIXME : 為了解決 Collection<Point> 不吃 Collection<Planet> 所做的骯髒解法，目前只能這樣做，唉～
-  public Collection<HoroscopeAspectData> getAspectDataSet(List<Planet> planets, List<Aspect> angles)
-  {
-    List<Point> points = new ArrayList<Point>(planets);
-    return getAspectDataSet(points , angles);
-  }
+//  public Collection<HoroscopeAspectData> getAspectDataSet(List<Planet> planets, List<Aspect> angles)
+//  {
+//    List<Point> points = new ArrayList<Point>(planets);
+//    return getAspectDataSet(points , angles);
+//  }
   
 }

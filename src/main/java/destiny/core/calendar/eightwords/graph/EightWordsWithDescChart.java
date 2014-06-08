@@ -67,7 +67,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
 
 
     float hiddenStemY = mainChartY + mainChart.getHeight() + fontSize;
-    g.setFont(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, fontSize));
+    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, fontSize));
     for(int i=0 ; i<list.size() ; i++) {
 
       g.setColor(Color.GRAY);

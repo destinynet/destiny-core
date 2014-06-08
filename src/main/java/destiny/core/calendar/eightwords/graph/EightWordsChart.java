@@ -56,9 +56,6 @@ public class EightWordsChart extends BufferedImage implements Serializable {
 
     int fontSize = getFontSize();
 
-//    System.out.println("cellWidth = " + cellWidth + " , cellHeight = " + cellHeight);
-//    System.out.println("fontSize = " + fontSize);
-
     g.setFont(getFont());
 
     List<StemBranch> stemBranchList = eightWordsNullable.getStemBranches();
@@ -88,7 +85,7 @@ public class EightWordsChart extends BufferedImage implements Serializable {
   } // constructor
 
   public Font getFont() {
-    return new Font(FontRepository.FONT_LIHEI , Font.PLAIN, getFontSize());
+    return new Font(FontRepository.getFontLiHei() , Font.PLAIN, getFontSize());
   }
 
   public float getCellWidth() {

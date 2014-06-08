@@ -30,4 +30,20 @@ public class EightWordsChartTest {
     System.out.println("takes " + (t1-t0) + " millis");
   }
 
+  @Test
+  public void testChart2() throws IOException {
+    long t0 = System.currentTimeMillis();
+
+    EightWordsChart c = new EightWordsChart(Constants.WIDTH_HEIGHT.WIDTH , 600 , Color.WHITE , Color.BLACK , Color.BLUE
+      , new EightWordsNullable(StemBranch.get("甲子") , StemBranch.get("乙丑") , StemBranch.get("丙寅") , StemBranch.get("丁卯")), Direction.R2L);
+
+    System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
+
+    File pngFile = new File("/Users/smallufo/temp/chart2.png");
+    ImageIO.write(c, "png", pngFile);
+    long t1 = System.currentTimeMillis();
+
+    System.out.println("takes " + (t1-t0) + " millis");
+  }
+
 }

@@ -40,7 +40,7 @@ public class ProcessorName implements Processor , Serializable
     
     // 下方卦名，例如「乾」「坤」「屯」..
     int bottomFontSize = (int) (paddingY / GOLDEN_RATIO);
-    g.setFont(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, bottomFontSize));
+    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, bottomFontSize));
     g.drawString(name 
         , width/2 - name.length()*bottomFontSize/2
         , (int) (height - paddingY/2+bottomFontSize/2) );

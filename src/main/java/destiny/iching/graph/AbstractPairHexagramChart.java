@@ -129,7 +129,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
         double oxY = srcChart.paddingY + rowHigh*(12.5-2*i);
         
         g.setColor(Color.RED);
-        g.setFont(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, (int) rowHigh));
+        g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, (int) rowHigh));
         g.setStroke(new BasicStroke((float) (rowHigh / 8.0)));
         
         double radius = (rowHigh / GOLDEN_RATIO) / 2;

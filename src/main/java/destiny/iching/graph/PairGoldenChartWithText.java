@@ -42,13 +42,13 @@ public class PairGoldenChartWithText extends PairGoldenChart
     GoldenPaddingChart dstChart = getDstChart();
     
     int fontSize = (int) (srcChart.getRowHeight()*0.7);
-    g.setFont(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, fontSize));
+    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, fontSize));
     
     float srcTextX = (float) srcChart.paddingLeft;
     float dstTextX = (float) (width - dstChart.width + dstChart.paddingLeft);
     
     double rowHeight = (float) srcChart.getRowHeight();
-    FontMetrics fontMetrics = g.getFontMetrics(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, fontSize));
+    FontMetrics fontMetrics = g.getFontMetrics(new Font(FontRepository.getFontLiHei() , Font.PLAIN, fontSize));
     
     for(int i=6 ; i>=1 ; i--)
     {

@@ -50,7 +50,7 @@ public class ProcessorSideSymbol implements Processor , Serializable
     
     g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g.setColor(chart.fore);
-    g.setFont(new Font(FontRepository.FONT_LIHEI , Font.PLAIN, (int) rowHigh));
+    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, (int) rowHigh));
     
     // 上卦
     g.drawString( getString(hexagram.getUpperSymbol()) , (int) fontX , (int) (chart.paddingTop + rowHigh*3) );
