@@ -34,7 +34,7 @@ public class ProcessorTextWatermark implements Processor , Serializable
     Font kaiFont = new Font("標楷體", Font.PLAIN , 90); 
     as.addAttribute(TextAttribute.FONT, kaiFont, 4, 7); 
     g.drawString(as.getIterator() , 300 , 600 );
-    
+    g.dispose();
   }
 
 }

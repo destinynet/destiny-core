@@ -158,6 +158,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
         g.draw(new Line2D.Double(arrowX , arrowY , arrowX-radius , arrowY+radius));
       } // 有變爻
     } // 6 to 1
+    g.dispose();
   } // constructor
   
   /** OX 的 X 座標 */

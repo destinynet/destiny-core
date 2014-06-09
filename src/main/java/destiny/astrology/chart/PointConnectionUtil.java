@@ -4,16 +4,13 @@
  */
 package destiny.astrology.chart;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import destiny.astrology.Utils;
+
+import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
-
-import destiny.astrology.Utils;
 
 /** 傳入兩點座標，傳回兩點連線的圖形 */
 public class PointConnectionUtil implements Serializable
@@ -106,6 +103,7 @@ public class PointConnectionUtil implements Serializable
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g2d.draw(l2d);
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+    g2d.dispose();
   }
 
   public BufferedImage getResultImage()

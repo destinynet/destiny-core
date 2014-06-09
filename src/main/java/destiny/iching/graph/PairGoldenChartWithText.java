@@ -97,7 +97,7 @@ public class PairGoldenChartWithText extends PairGoldenChart
     int watermarkWidth = fontMetrics.stringWidth(watermark);
     float watermarkX = width/2 - watermarkWidth/2;
     g.drawString(watermark , watermarkX , height-fontSize);
-    
+    g.dispose();
   } // constructor
 
 }

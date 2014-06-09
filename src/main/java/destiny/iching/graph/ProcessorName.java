@@ -44,6 +44,7 @@ public class ProcessorName implements Processor , Serializable
     g.drawString(name 
         , width/2 - name.length()*bottomFontSize/2
         , (int) (height - paddingY/2+bottomFontSize/2) );
+    g.dispose();
   }
 
 }

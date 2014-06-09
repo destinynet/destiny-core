@@ -88,6 +88,7 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
         g.fill(new Rectangle2D.Double(rightX , rightY , half_width , rowHigh));
       }
     }
+    g.dispose();
   } // constructor
 
   public double getRowHeight()

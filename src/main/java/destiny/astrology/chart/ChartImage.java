@@ -4,18 +4,13 @@
  */
 package destiny.astrology.chart;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import destiny.astrology.Horoscope;
+
+import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.text.AttributedString;
-
-import destiny.astrology.Horoscope;
 
 /**
  * 繪製一張命盤 , 嘗試打浮水印
@@ -172,6 +167,7 @@ public class ChartImage extends BufferedImage
     g.setColor(fore);
     Ellipse2D.Double 地盤環 = new Ellipse2D.Double(center - center * ringLand, center - center * ringLand, width * ringLand, width * ringLand);
     g.draw(地盤環);
+    g.dispose();
   }
   
   /**

@@ -31,6 +31,7 @@ public class ImageUtilities
     BufferedImage bufferedImage = new BufferedImage(image.getWidth(c), image.getHeight(c), BufferedImage.TYPE_INT_RGB);
     Graphics2D g2d = bufferedImage.createGraphics();
     g2d.drawImage(image, 0, 0, c);
+    g2d.dispose();
     return (bufferedImage);
   }
 

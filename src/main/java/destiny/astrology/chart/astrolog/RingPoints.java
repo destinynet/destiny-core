@@ -4,25 +4,19 @@
  */
 package destiny.astrology.chart.astrolog;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
-
 import destiny.astrology.Asteroid;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.astrology.chart.AbstractRing;
 import destiny.astrology.chart.Style;
+
+import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.*;
 
 /** 繪製各個星體的「點」的圓環。一個星體只有一個「點」 */
 public class RingPoints extends AbstractRing
@@ -93,6 +87,7 @@ public class RingPoints extends AbstractRing
         g2d.setColor(Color.WHITE); //沒有內定色，就畫白色
       g2d.draw(l2d);
 
+      g2d.dispose();
       result.put(第一象限度數, bi);
     }
     return result;

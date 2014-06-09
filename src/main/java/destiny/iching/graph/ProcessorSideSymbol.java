@@ -57,6 +57,7 @@ public class ProcessorSideSymbol implements Processor , Serializable
     
     // 下卦
     g.drawString( getString(hexagram.getLowerSymbol()) , (int) fontX , (int) (chart.paddingTop + rowHigh*9) );
+    g.dispose();
   }
 
   private String getString(Symbol symbol)

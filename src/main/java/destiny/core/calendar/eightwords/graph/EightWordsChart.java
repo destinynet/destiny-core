@@ -82,6 +82,7 @@ public class EightWordsChart extends BufferedImage implements Serializable {
         }
       } // 干支
     } // 四柱
+    g.dispose();
   } // constructor
 
   public Font getFont() {

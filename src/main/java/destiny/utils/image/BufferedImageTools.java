@@ -124,6 +124,7 @@ public class BufferedImageTools implements Serializable
       e.printStackTrace();
     }
     finally {
+      bufferedImage.getGraphics().dispose();
       if (ios != null) {
         try {
           ios.flush();

@@ -116,5 +116,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
 //    g.drawLine(0 , bottom , getWidth() , bottom);
 //    int trueHeight = (bottom - top);
 //    System.out.println("width = " + getWidth() + " , height = " + trueHeight + " , ratio = " + ((double)trueHeight/getWidth()));
+
+    g.dispose();
   }
 }

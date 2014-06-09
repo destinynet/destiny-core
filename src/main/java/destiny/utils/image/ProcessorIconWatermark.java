@@ -4,14 +4,12 @@
  */
 package destiny.utils.image;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-
-import javax.imageio.ImageIO;
 
 public class ProcessorIconWatermark implements Processor , Serializable
 {
@@ -32,7 +30,6 @@ public class ProcessorIconWatermark implements Processor , Serializable
   {
     int imgW = img.getWidth();
     int imgH = img.getHeight();
-    
 
     InputStream logoIs= getClass().getResourceAsStream("logo1.png");
     BufferedImage logoImage;
@@ -50,6 +47,7 @@ public class ProcessorIconWatermark implements Processor , Serializable
         Graphics2D g = img.createGraphics();
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
         g.drawImage(logoImage , null , newX , newY );
+        g.dispose();
       }
     }
     catch (IOException e)

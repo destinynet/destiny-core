@@ -4,33 +4,18 @@
  */
 package destiny.astrology.chart.astrolog;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import destiny.astrology.Aspect;
-import destiny.astrology.Horoscope;
-import destiny.astrology.HoroscopeAspectData;
-import destiny.astrology.HoroscopeAspectsCalculator;
-import destiny.astrology.HoroscopeAspectsCalculatorModern;
-import destiny.astrology.LunarNode;
-import destiny.astrology.Planet;
+import destiny.astrology.*;
 import destiny.astrology.Point;
 import destiny.astrology.chart.EmitLineProperties;
 import destiny.astrology.chart.PointConnection;
 import destiny.astrology.chart.Ring;
+
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.util.*;
+import java.util.List;
 
 public class AstrologChart extends BufferedImage
 {
@@ -197,5 +182,7 @@ public class AstrologChart extends BufferedImage
         g.draw(innerRing);
       }
     }
+
+    g.dispose();
   }
 }
