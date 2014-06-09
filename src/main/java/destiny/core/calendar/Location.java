@@ -122,9 +122,7 @@ public class Location implements Serializable
   public Location(Locale locale)
   {
     Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet());
-    System.out.println("from locale " + locale + " , matchedLocale = " + matchedLocale );
     Location matchedLocation = locMap.get(matchedLocale);
-    System.out.println("matchedLocation = " + matchedLocation);
     this.eastWest = matchedLocation.eastWest;
     this.longitudeDegree = matchedLocation.longitudeDegree;
     this.longitudeMinute = matchedLocation.longitudeMinute;

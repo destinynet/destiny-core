@@ -4,8 +4,9 @@
  */ 
 package destiny.utils.image;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -13,9 +14,6 @@ import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
 
 public class BufferedImageTools implements Serializable
 {
@@ -114,11 +112,28 @@ public class BufferedImageTools implements Serializable
    * 將 BufferedImage 轉成 byte array
    * @throws IOException 
    */
-  public static byte[] getArray(BufferedImage bufferedImage , String type) throws IOException
+  public static byte[] getArray(BufferedImage bufferedImage , String type)
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
-    ImageIO.write(bufferedImage, type , ios);
+    ImageOutputStream ios = null;
+    try {
+      ios = ImageIO.createImageOutputStream(baos);
+      ImageIO.write(bufferedImage, type , ios);
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    finally {
+      if (ios != null) {
+        try {
+          ios.flush();
+          ios.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
     return baos.toByteArray();
   }
 }
