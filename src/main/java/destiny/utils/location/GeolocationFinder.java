@@ -1,11 +1,11 @@
 /**
  * Created by smallufo at 2009/3/17 下午 9:44:34
  */
-package destiny.data;
-
-import java.util.Locale;
+package destiny.utils.location;
 
 import destiny.core.calendar.Location;
+
+import java.util.Locale;
 
 public interface GeolocationFinder
 {

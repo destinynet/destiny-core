@@ -1,7 +1,7 @@
 /** 2009/10/21 上午2:44:14 by smallufo */
 package destiny.utils.location;
 
-import java.io.IOException;
+import java.util.Optional;
 import java.util.TimeZone;
 
 /**
@@ -10,6 +10,6 @@ import java.util.TimeZone;
 public interface TimeZoneIF
 {
   /** 從經緯度查詢 timezone */
-  public TimeZone getTimeZone(double longitude , double latitude) throws IOException;
+  public Optional<TimeZone> getTimeZone(double longitude , double latitude);
 }
 

@@ -114,8 +114,7 @@ public class Location implements Serializable
     .put(new Locale("zh" , "SG"), new Location(EastWest.EAST , 103 , 51 , NorthSouth.NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
     
     // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北
-    //.put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , NorthSouth.NORTH , 25 , 3 , TimeZone.getTimeZone("Asia/Taipei")))
-    .put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , 30.0 , NorthSouth.NORTH , 25 , 2 , 20 , TimeZone.getTimeZone("Asia/Taipei")))
+    .put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , 03.6 , NorthSouth.NORTH , 25 , 2 , 20.4 , TimeZone.getTimeZone("Asia/Taipei")))
     .build();
 
   /** 從 Browser 傳入 locale , 找出該 Locale 內定的 Location */
