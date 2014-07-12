@@ -69,7 +69,7 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
     // 從上（六爻）畫到下（初爻），貼齊 upper padding
     for (int i=6 ; i >= 1 ; i--)
     {
-      if (hex.getLine(i).getYinYang().getBooleanValue())
+      if (hex.getLine(i) == true)
       {
         // 陽爻，畫出橫槓
         double x = paddingLeft ;

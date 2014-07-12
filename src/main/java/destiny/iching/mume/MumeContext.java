@@ -4,11 +4,10 @@
  */
 package destiny.iching.mume;
 
-import java.io.Serializable;
-
-import destiny.core.chinese.YinYang;
 import destiny.iching.Hexagram;
 import destiny.iching.HexagramIF;
+
+import java.io.Serializable;
 
 /**
  * 梅花易 , 梅花的學名為 Prunus(李屬) mume(梅種)
@@ -35,11 +34,11 @@ public class MumeContext implements Serializable
    */
   public HexagramIF getTargetHexagram()
   {
-    YinYang[] yinyangs = new YinYang[6];
+    boolean[] yinyangs = new boolean[6];
     for (int i = 1; i <= 6; i++)
-      yinyangs[i - 1]  = hexagram.getLine(i).getYinYang();
+      yinyangs[i - 1]  = hexagram.getLine(i);
 
-    yinyangs[motivate - 1] = hexagram.getLine(motivate).getYinYang().getOpposite();
+    yinyangs[motivate - 1] = !hexagram.getLine(motivate);
     return Hexagram.getHexagram(yinyangs);
   }
 

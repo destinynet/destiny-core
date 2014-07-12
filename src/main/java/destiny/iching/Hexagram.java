@@ -4,10 +4,9 @@
  */
 package destiny.iching;
 
-import java.io.Serializable;
-
-import destiny.core.chinese.YinYang;
 import destiny.core.chinese.YinYangIF;
+
+import java.io.Serializable;
 
 public enum Hexagram implements HexagramIF , Serializable
 {
@@ -110,7 +109,7 @@ public enum Hexagram implements HexagramIF , Serializable
 
   /**
    * 由卦序傳回卦
-   * @param hexagramIndex 1 <= 卦序 <= 64
+   * @param index 1 <= 卦序 <= 64
    * @param sequence 實作 getIndex(Hexagram) 的介面
    */
   public static Hexagram getHexagram(int index , HexagramSequenceIF sequence)
@@ -124,74 +123,63 @@ public enum Hexagram implements HexagramIF , Serializable
   }
   
   /** 從 陰陽 YinYang 實體的 array 傳回 HexagramIF */
-  public static Hexagram getHexagram(YinYang[] yinyangs)
-  {
-    if (yinyangs == null)
-      throw new RuntimeException("yinyangs is NULL !");
-    if (yinyangs.length != 6)
-      throw new RuntimeException("yinyangs length not equal 6 !");
-    
-    Symbol upper = Symbol.getSymbol(new YinYangIF[] {yinyangs[3] , yinyangs[4] , yinyangs[5]});
-    Symbol lower = Symbol.getSymbol(new YinYangIF[] {yinyangs[0] , yinyangs[1] , yinyangs[2]});
-    return getHexagram(upper , lower);
-  }
-  
   public static Hexagram getHexagram(YinYangIF[] yinyangs)
   {
     if (yinyangs == null)
       throw new RuntimeException("yinyangs is NULL !");
     if (yinyangs.length != 6)
       throw new RuntimeException("yinyangs length not equal 6 !");
-    
-    Symbol upper = Symbol.getSymbol(new boolean[] {yinyangs[3].getYinYang().getBooleanValue() , yinyangs[4].getYinYang().getBooleanValue() , yinyangs[5].getYinYang().getBooleanValue()});
-    Symbol lower = Symbol.getSymbol(new boolean[] {yinyangs[0].getYinYang().getBooleanValue() , yinyangs[1].getYinYang().getBooleanValue() , yinyangs[2].getYinYang().getBooleanValue()});
+
+    Symbol upper = Symbol.getSymbol(new boolean[] {yinyangs[3].getBooleanValue() , yinyangs[4].getBooleanValue() , yinyangs[5].getBooleanValue()});
+    Symbol lower = Symbol.getSymbol(new boolean[] {yinyangs[0].getBooleanValue() , yinyangs[1].getBooleanValue() , yinyangs[2].getBooleanValue()});
     return getHexagram(upper , lower);
   }
-  
 
   /**
    * 由六爻的 boolean array 尋找卦象
-   * 
-   * @param lineBoolean [0~5]
+   *
+   * @param booleans [0~5]
    *          六爻陰陽，由初爻至上爻
    * @return 卦的實體(Hexagram)
    */
-  public static HexagramIF getHexagram(boolean[] bools)
+  public static Hexagram getHexagram(boolean[] booleans)
   {
-    if (bools.length != 6)
-      throw new RuntimeException("bools length is not 6 , the length is " + bools.length);
-    Symbol lower = Symbol.getSymbol(new boolean[] {bools[0] , bools[1] , bools[2]});
-    Symbol upper = Symbol.getSymbol(new boolean[] {bools[3] , bools[4] , bools[5]});
-    
+    if (booleans == null)
+      throw new RuntimeException("null array !");
+    if (booleans.length != 6)
+      throw new RuntimeException("booleans length is not 6 , the length is " + booleans.length);
+    Symbol lower = Symbol.getSymbol(new boolean[] {booleans[0] , booleans[1] , booleans[2]});
+    Symbol upper = Symbol.getSymbol(new boolean[] {booleans[3] , booleans[4] , booleans[5]});
+
     return Hexagram.getHexagram(upper, lower);
   }
   
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6 */
   @Override
-  public YinYangIF getLine(int index)
+  public boolean getLine(int index)
   {
     switch(index)
     {
-      case 1 : return lower.getYinYang(1);
-      case 2 : return lower.getYinYang(2);
-      case 3 : return lower.getYinYang(3);
-      case 4 : return upper.getYinYang(1);
-      case 5 : return upper.getYinYang(2);
-      case 6 : return upper.getYinYang(3);
+      case 1 : return lower.getBooleanValue(1);
+      case 2 : return lower.getBooleanValue(2);
+      case 3 : return lower.getBooleanValue(3);
+      case 4 : return upper.getBooleanValue(1);
+      case 5 : return upper.getBooleanValue(2);
+      case 6 : return upper.getBooleanValue(3);
     }
     throw new RuntimeException("index out of range , 1 <= index <= 6 ");
   }
 
   @Override
-  public YinYang[] getYinYangs()
+  public boolean[] getYinYangs()
   {
-    YinYang[] yy = new YinYang[6];
-    yy[0] = lower.getYinYang(1);
-    yy[1] = lower.getYinYang(2);
-    yy[2] = lower.getYinYang(3);
-    yy[3] = upper.getYinYang(1);
-    yy[4] = upper.getYinYang(2);
-    yy[5] = upper.getYinYang(3);
+    boolean[] yy = new boolean[6];
+    yy[0] = lower.getBooleanValue(1);
+    yy[1] = lower.getBooleanValue(2);
+    yy[2] = lower.getBooleanValue(3);
+    yy[3] = upper.getBooleanValue(1);
+    yy[4] = upper.getBooleanValue(2);
+    yy[5] = upper.getBooleanValue(3);
     return yy;
   }
 
@@ -209,56 +197,47 @@ public enum Hexagram implements HexagramIF , Serializable
   
   /**
    * 第 line 爻動的話，變卦是什麼
-   * @param line [1~6]
+   * @param lines [1~6]
    */
   @Override
-  public Hexagram getHexagram(int... lines)
+  public HexagramIF getHexagram(int... lines)
   {
-    YinYang[] yys = new YinYang[6];
-    for(int i=0 ; i<6 ; i++)
-    {
-      YinYang yy = getYinYangs()[i];
-      if (contains(lines , i+1))
-        yys[i] = yy.getOpposite();
-      else
-        yys[i] = yy;
+    boolean[] booleans = getYinYangs();
+    for (int index : lines) {
+      if (index >=1 && index <=6)
+        booleans[index-1] = !booleans[index-1];
     }
-    return Hexagram.getHexagram(yys);
+    return Hexagram.getHexagram(booleans);
   }
-  
-  public static <T> boolean contains( final int[] lines, final int i ) 
-  {
-    for (int e : lines )
-        if ( e == i   )
-            return true;
-    return false;
-}
 
   /** @return 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */
   public HexagramIF getMiddleSpanHexagram()
   {
-    return Hexagram.getHexagram(new YinYang[] {lower.getYinYang(2) , lower.getYinYang(3) , upper.getYinYang(1) , lower.getYinYang(3) , upper.getYinYang(1) , upper.getYinYang(2)});
+    return Hexagram.getHexagram(new boolean[] {lower.getBooleanValue(2) , lower.getBooleanValue(3) , upper.getBooleanValue(1) , lower.getBooleanValue(3) , upper.getBooleanValue(1) , upper.getBooleanValue(2)});
   }
 
   /** @return 錯卦 , 一卦六爻全變 , 交錯之意 , 故取名 Interlaced Hexagram */
   public HexagramIF getInterlacedHexagram()
   {
-    return Hexagram.getHexagram(new YinYang[] {lower.getYinYang(1).getOpposite() , lower.getYinYang(2).getOpposite() , lower.getYinYang(3).getOpposite() ,
-                                                upper.getYinYang(1).getOpposite() , upper.getYinYang(2).getOpposite() , upper.getYinYang(3).getOpposite()} );
+    return Hexagram.getHexagram(new boolean[] {
+      !lower.getBooleanValue(1) , !lower.getBooleanValue(2) , !lower.getBooleanValue(3) ,
+      !upper.getBooleanValue(1) , !upper.getBooleanValue(2) , !upper.getBooleanValue(3)} );
   }
 
   /** @return 綜卦 , 上下顛倒 , 故取名 Reversed Hexagram */
   public HexagramIF getReversedHexagram()
   {
-    return Hexagram.getHexagram(new YinYang[] {upper.getYinYang(3) , upper.getYinYang(2) , upper.getYinYang(1) , lower.getYinYang(3) , lower.getYinYang(2) , lower.getYinYang(1)});
+    return Hexagram.getHexagram(new boolean[] {
+      upper.getBooleanValue(3) , upper.getBooleanValue(2) , upper.getBooleanValue(1) ,
+      lower.getBooleanValue(3) , lower.getBooleanValue(2) , lower.getBooleanValue(1)});
   }
 
   @Override
   public String getBinaryCode()
   {
     StringBuffer sb = new StringBuffer();
-    for(YinYang yy : getYinYangs())
-      sb.append(yy.getBooleanValue() ? '1' : '0');
+    for(boolean yy : getYinYangs())
+      sb.append(yy == true ? '1' : '0');
     return sb.toString();
   }
 }

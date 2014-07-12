@@ -121,7 +121,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
     
     for(int i=6 ; i >= 1 ; i--)
     {
-      if (src.getLine(i).getYinYang().getBooleanValue() != dst.getLine(i).getYinYang().getBooleanValue())
+      if (src.getLine(i) != dst.getLine(i))
       {
         // 有變爻
         // 圈叉的 Y 座標
@@ -133,7 +133,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
         g.setStroke(new BasicStroke((float) (rowHigh / 8.0)));
         
         double radius = (rowHigh / GOLDEN_RATIO) / 2;
-        if (src.getLine(i).getYinYang().getBooleanValue())
+        if (src.getLine(i))
         {
           // 陽變陰 , 畫圓
           // 從左上角，寬高分別是 radius * 2

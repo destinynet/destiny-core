@@ -41,7 +41,7 @@ public class ReactionsUtil
   {
     if (actor.getFiveElement().isProducingTo(actee.getFiveElement()) )
     {
-      if (actor.getYinYang() == actee.getYinYang())
+      if (actor.getBooleanValue() == actee.getBooleanValue())
         return Reactions.偏印;
       else
         return Reactions.正印;
@@ -49,7 +49,7 @@ public class ReactionsUtil
     
     if (actor.getFiveElement().isDominatorOf(actee.getFiveElement()))
     {
-      if (actor.getYinYang() == actee.getYinYang())
+      if (actor.getBooleanValue() == actee.getBooleanValue())
         return Reactions.七殺;
       else
         return Reactions.正官;
@@ -57,7 +57,7 @@ public class ReactionsUtil
     
     if (actor.getFiveElement().isDominatedBy(actee.getFiveElement()))
     {
-      if (actor.getYinYang() == actee.getYinYang())
+      if (actor.getBooleanValue() == actee.getBooleanValue())
         return Reactions.偏財;
       else
         return Reactions.正財;
@@ -65,7 +65,7 @@ public class ReactionsUtil
     
     if (actor.getFiveElement().equals(actee.getFiveElement()))
     {
-      if (actor.getYinYang() == actee.getYinYang())
+      if (actor.getBooleanValue() == actee.getBooleanValue())
         return Reactions.比肩;
       else
         return Reactions.劫財;
@@ -73,7 +73,7 @@ public class ReactionsUtil
       
     if (actor.getFiveElement().isProducedBy(actee.getFiveElement()))
     {
-      if (actor.getYinYang() == actee.getYinYang())
+      if (actor.getBooleanValue() == actee.getBooleanValue())
         return Reactions.食神;
       else
         return Reactions.傷官;
@@ -113,23 +113,23 @@ public class ReactionsUtil
       case 比肩:
         return actor;
       case 劫財:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement() , actor.getYinYang().getOpposite());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement() , !actor.getBooleanValue());
       case 正印:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProducer() , actor.getYinYang().getOpposite());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProducer() , !actor.getBooleanValue());
       case 偏印:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProducer() , actor.getYinYang());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProducer() , actor.getBooleanValue());
       case 食神:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProduct() , actor.getYinYang());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProduct() , actor.getBooleanValue());
       case 傷官:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProduct() , actor.getYinYang().getOpposite());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProduct() , !actor.getBooleanValue());
       case 正官:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominator() , actor.getYinYang().getOpposite());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominator() , !actor.getBooleanValue());
       case 七殺:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominator() , actor.getYinYang());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominator() , actor.getBooleanValue());
       case 正財:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominateOver() , actor.getYinYang().getOpposite());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominateOver() , !actor.getBooleanValue());
       case 偏財:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominateOver() , actor.getYinYang());
+        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominateOver() , actor.getBooleanValue());
     }
     throw new RuntimeException("RuntimeException while ReactionsUtil.getHeavenlyStems("+actor + "," + reactions+")");
   }

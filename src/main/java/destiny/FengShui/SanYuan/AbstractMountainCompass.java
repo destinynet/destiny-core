@@ -5,12 +5,11 @@
  */
 package destiny.FengShui.SanYuan;
 
-import java.util.ArrayList;
-
 import destiny.astrology.Utils;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
-import destiny.core.chinese.YinYang;
+
+import java.util.ArrayList;
 
 /**
  * 存放 24 山的資料
@@ -105,25 +104,25 @@ public abstract class AbstractMountainCompass extends AbstractCompass
    * 未－－內藏丁、乙、己，己知丁乙屬陰，故未屬陰。
    * </pre> 
    */
-  public YinYang getYinYang(Mountain m)
+  public boolean getYinYang(Mountain m)
   {
     if (m == Mountain.乾 || m == Mountain.坤 || m == Mountain.巽 || m == Mountain.艮 )
-      return YinYang.陽;
+      return true;
     else if (m.getValue() instanceof HeavenlyStems)
     {
       // 陽干傳回陽 , 陰干傳回陰
-      return ((HeavenlyStems)(m.getValue())).getYinYang();
+      return ((HeavenlyStems)(m.getValue())).getBooleanValue();
     }
     else if (m.getValue() instanceof EarthlyBranches)
     {
       int index = EarthlyBranches.getIndex( (EarthlyBranches)m.getValue() );
       if ( index == 2 || index == 5 || index == 8 || index == 11 ) //寅巳申亥
-        return YinYang.陽;
+        return true;
       else
-        return YinYang.陰;
+        return false;
     }
     else
-      return null;
+      throw new RuntimeException("Cannot find YinYang from " + m);
   }
   
 }

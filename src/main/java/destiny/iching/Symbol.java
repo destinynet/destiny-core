@@ -4,12 +4,11 @@
  */
 package destiny.iching;
 
-import java.io.Serializable;
-
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.FiveElementIF;
-import destiny.core.chinese.YinYang;
 import destiny.core.chinese.YinYangIF;
+
+import java.io.Serializable;
 
 
 /**
@@ -17,21 +16,21 @@ import destiny.core.chinese.YinYangIF;
  */
 public enum Symbol implements Serializable , SymbolIF , FiveElementIF
 {
-  乾('乾', new YinYang[] {YinYang.陽 , YinYang.陽 , YinYang.陽 } ),
-  兌('兌', new YinYang[] {YinYang.陽 , YinYang.陽 , YinYang.陰 } ),
-  離('離', new YinYang[] {YinYang.陽 , YinYang.陰 , YinYang.陽 } ),
-  震('震', new YinYang[] {YinYang.陽 , YinYang.陰 , YinYang.陰 } ),
-  巽('巽', new YinYang[] {YinYang.陰 , YinYang.陽 , YinYang.陽 } ),
-  坎('坎', new YinYang[] {YinYang.陰 , YinYang.陽 , YinYang.陰 } ),
-  艮('艮', new YinYang[] {YinYang.陰 , YinYang.陰 , YinYang.陽 } ),
-  坤('坤', new YinYang[] {YinYang.陰 , YinYang.陰 , YinYang.陰 } );
+  乾('乾', new boolean[] {true  , true  , true  } ),
+  兌('兌', new boolean[] {true  , true  , false } ),
+  離('離', new boolean[] {true  , false , true  } ),
+  震('震', new boolean[] {true  , false , false } ),
+  巽('巽', new boolean[] {false , true  , true  } ),
+  坎('坎', new boolean[] {false , true  , false } ),
+  艮('艮', new boolean[] {false , false , true  } ),
+  坤('坤', new boolean[] {false , false , false } );
   
   private char name;
-  private YinYang[] yinYangs = new YinYang[3];
+  private boolean[] yinYangs = new boolean[3];
   
   private static final Symbol[] symbolArray = {乾 , 兌 , 離 , 震 , 巽 , 坎 , 艮 , 坤};
   
-  private Symbol(char name , YinYang[] yinYangs)
+  private Symbol(char name , boolean[] yinYangs)
   {
     this.name = name;
     this.yinYangs = yinYangs;
@@ -58,17 +57,18 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   {
     return name;
   }
-  
+
   /**
    * 實作 SymbolIF
    * 取得一個卦的第幾爻
    * index 值為 1,2,或3
    */
-  public YinYang getYinYang(int index)
-  {
+  @Override
+  public boolean getBooleanValue(int index) {
     return yinYangs[index-1];
   }
-  
+
+
   /**
    * 「由下而上」 三個陰陽 , 查詢卦象為何
    */
@@ -76,9 +76,9 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   {
     for (int i=0 ; i< symbolArray.length ; i++)
     {
-      if ( (line[0].getYinYang() == symbolArray[i].yinYangs[0] ) && 
-           (line[1].getYinYang() == symbolArray[i].yinYangs[1] ) &&
-           (line[2].getYinYang() == symbolArray[i].yinYangs[2] ) )
+      if ( (line[0].getBooleanValue() == symbolArray[i].yinYangs[0] ) &&
+           (line[1].getBooleanValue() == symbolArray[i].yinYangs[1] ) &&
+           (line[2].getBooleanValue() == symbolArray[i].yinYangs[2] ) )
       {
         return symbolArray[i];
       }
@@ -93,9 +93,9 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   {
     for (int i=0 ; i< symbolArray.length ; i++)
     {
-      if ( (YinYang.getYinYang(lines[0]) == symbolArray[i].yinYangs[0] ) && 
-           (YinYang.getYinYang(lines[1]) == symbolArray[i].yinYangs[1] ) &&
-           (YinYang.getYinYang(lines[2]) == symbolArray[i].yinYangs[2] ) )
+      if ( (lines[0] == symbolArray[i].yinYangs[0] ) &&
+           (lines[1] == symbolArray[i].yinYangs[1] ) &&
+           (lines[2] == symbolArray[i].yinYangs[2] ) )
       {
         return symbolArray[i];
       }

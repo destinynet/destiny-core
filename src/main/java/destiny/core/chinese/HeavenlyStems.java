@@ -31,45 +31,44 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   }
   
   /** 從五行 以及 陰陽 建立天干 */
-  public final static HeavenlyStems getHeavenlyStems(FiveElement fiveElement , YinYang yinYang)
-  {
+  public final static HeavenlyStems getHeavenlyStems(FiveElement fiveElement , boolean yinYang) {
     if (fiveElement == FiveElement.木)
     {
-      if (yinYang == YinYang.陽)
+      if (yinYang == true)
         return 甲;
       else
         return 乙;
     }
     else if (fiveElement == FiveElement.火)
     {
-      if (yinYang == YinYang.陽)
+      if (yinYang == true)
         return 丙;
       else
         return 丁;
     }
     else if (fiveElement == FiveElement.土)
     {
-      if (yinYang == YinYang.陽)
+      if (yinYang == true)
         return 戊;
       else
         return 己;
     }
     else if (fiveElement == FiveElement.金)
     {
-      if (yinYang == YinYang.陽)
+      if (yinYang == true)
         return 庚;
       else
         return 辛;
     }
-    else 
+    else
     {
-      if (yinYang == YinYang.陽)
+      if (yinYang == true)
         return 壬;
       else
         return 癸;
     }
   }
-  
+
   /**
    * 抓取天干的 index , 為 0-based <BR>
    * 0 為 甲 <BR>
@@ -171,15 +170,11 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
         throw new RuntimeException("HeavenlyStems Error : cannot getFiveElements() : " + toString());
     }
   }//getFiveElements()
-  
-  /**
-  * 實作 YinYangIF
-  */
-  public YinYang getYinYang()
-  {
-    if (getIndex(this) % 2 == 0)
-      return YinYang.陽;
-    else
-      return YinYang.陰;
+
+  @Override
+  public boolean getBooleanValue() {
+    return (getIndex(this) % 2 == 0);
   }
+
+
 }

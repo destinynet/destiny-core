@@ -29,7 +29,7 @@ public class HexagramDefaultComparatorTest
       Hexagram h = impl.getHexagram(hex);
       for(int line=1 ; line<=6 ; line++)
       {
-        sb.append(h.getLine(line).getYinYang().getBooleanValue());
+        sb.append(h.getLine(line));
         sb.append(',');
       }
       sb.append("},");

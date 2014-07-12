@@ -6,7 +6,6 @@
 package destiny.FengShui.SanYuan;
 
 import junit.framework.TestCase;
-import destiny.core.chinese.YinYang;
 
 public class EarthlyCompassTest extends TestCase
 {
@@ -46,30 +45,30 @@ public class EarthlyCompassTest extends TestCase
     //325度是屬於 (亥) 
     assertSame(Mountain.亥 , e.getMountain(325));
     
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.子));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.丑));
+    assertSame(false , e.getYinYang(Mountain.子));
+    assertSame(false , e.getYinYang(Mountain.丑));
     //寅(陽) 
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.寅));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.卯));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.辰));
+    assertSame(true  , e.getYinYang(Mountain.寅));
+    assertSame(false , e.getYinYang(Mountain.卯));
+    assertSame(false , e.getYinYang(Mountain.辰));
     //巳(陽)
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.巳));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.午));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.未));
+    assertSame(true  , e.getYinYang(Mountain.巳));
+    assertSame(false , e.getYinYang(Mountain.午));
+    assertSame(false , e.getYinYang(Mountain.未));
 
 
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.乾));
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.坤));
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.艮));
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.巽));
+    assertSame(true  , e.getYinYang(Mountain.乾));
+    assertSame(true  , e.getYinYang(Mountain.坤));
+    assertSame(true  , e.getYinYang(Mountain.艮));
+    assertSame(true  , e.getYinYang(Mountain.巽));
     
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.甲));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.乙));
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.丙));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.丁));
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.庚));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.辛));
-    assertSame(YinYang.陽 , e.getYinYang(Mountain.壬));
-    assertSame(YinYang.陰 , e.getYinYang(Mountain.癸));
+    assertSame(true  , e.getYinYang(Mountain.甲));
+    assertSame(false , e.getYinYang(Mountain.乙));
+    assertSame(true  , e.getYinYang(Mountain.丙));
+    assertSame(false , e.getYinYang(Mountain.丁));
+    assertSame(true  , e.getYinYang(Mountain.庚));
+    assertSame(false , e.getYinYang(Mountain.辛));
+    assertSame(true  , e.getYinYang(Mountain.壬));
+    assertSame(false , e.getYinYang(Mountain.癸));
   }
 }

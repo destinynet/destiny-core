@@ -7,6 +7,7 @@ package destiny.core.chinese;
 
 import java.util.Random;
 
+@Deprecated
 public enum YinYang implements YinYangIF
 {
   陽(true , '陽'),
@@ -22,12 +23,6 @@ public enum YinYang implements YinYangIF
     this.c     = c;
   }
 
-  @Override
-  public YinYang getYinYang()
-  {
-    return this;
-  }
-  
   public static YinYang getYinYang(boolean value)
   {
     if (value)
@@ -59,7 +54,8 @@ public enum YinYang implements YinYangIF
     else
       return 陽;
   }
-  
+
+  @Override
   public boolean getBooleanValue()
   {
     return this.booleanValue;

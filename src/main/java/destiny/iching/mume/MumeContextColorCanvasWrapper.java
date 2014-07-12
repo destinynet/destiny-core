@@ -4,17 +4,16 @@
  */ 
 package destiny.iching.mume;
 
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Locale;
-
 import destiny.core.calendar.eightwords.EightWords;
-import destiny.core.chinese.YinYang;
 import destiny.iching.HexagramIF;
 import destiny.iching.Symbol;
 import destiny.iching.contentProviders.HexagramNameFullIF;
 import destiny.utils.ColorCanvas.ColorCanvas;
+
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Locale;
 
 /**
  * 將 梅花易的 Context (MumeContext) 包裝成彩色 ColorCanvas
@@ -94,7 +93,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
     mainCanvas.add(本卦canvas, 1, 5);
     
     //變爻
-    if ( mumeContext.getHexagram().getLine(mumeContext.getMotivate()).getYinYang() == YinYang.陽)
+    if ( mumeContext.getHexagram().getLine(mumeContext.getMotivate()) == true)
       mainCanvas.setText("◎", 9-mumeContext.getMotivate() ,17 );
     else
       mainCanvas.setText("〤", 9-mumeContext.getMotivate() ,17 );
@@ -152,7 +151,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
     ColorCanvas cc = new ColorCanvas(3,12,"　",color,null);
     for (int i=3 ; i >=1 ; i--)
     {
-      if (s.getYinYang(i).getYinYang() == YinYang.陽)
+      if (s.getBooleanValue(i) == true)
         cc.setText("▅▅▅▅▅", 4-i, 1);
       else
         cc.setText("▅▅　▅▅", 4-i, 1);

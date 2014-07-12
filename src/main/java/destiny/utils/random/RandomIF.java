@@ -6,8 +6,6 @@ package destiny.utils.random;
 
 import java.io.IOException;
 
-import destiny.core.chinese.YinYangIF;
-
 public interface RandomIF
 {
   /**
@@ -21,5 +19,5 @@ public interface RandomIF
   
   /** 取得 count 個陰陽 
    * @throws IOException */
-  public YinYangIF[] getYinYangs(int count) throws IOException;
+  public boolean[] getYinYangs(int count) throws IOException;
 }

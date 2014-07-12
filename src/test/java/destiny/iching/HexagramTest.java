@@ -4,32 +4,15 @@
  */
 package destiny.iching;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class HexagramTest
 {
-  @Test
-  public void testGetTargetHexagram()
-  {
-    Hexagram src = Hexagram.乾;
-    assertSame(Hexagram.乾 , src.getHexagram());
-    assertSame(Hexagram.乾 , src.getHexagram(0));
-    assertSame(Hexagram.姤 , src.getHexagram(1));
-    assertSame(Hexagram.遯 , src.getHexagram(1 , 2));
-    assertSame(Hexagram.否 , src.getHexagram(1 , 2 , 3));
-    assertSame(Hexagram.觀 , src.getHexagram(1 , 2 , 3 , 4));
-    assertSame(Hexagram.剝 , src.getHexagram(1 , 2 , 3 , 4 , 5));
-    assertSame(Hexagram.坤 , src.getHexagram(1 , 2 , 3 , 4 , 5 , 6));
-    assertSame(Hexagram.坤 , src.getHexagram(1 , 2 , 3 , 4 , 5 , 6 , 7));
-  }
-  
   @Test
   public void testGetHexagramLine()
   {
@@ -51,6 +34,32 @@ public class HexagramTest
       assertNotNull(h.getLowerSymbol());
     }
     assertSame(64 , set.size());
+  }
+
+  /**
+   * 測試 hexagram with 多個動爻
+   */
+  @Test
+  public void testHexagramWithMotivLines() {
+    assertEquals(Hexagram.姤 , Hexagram.乾.getHexagram(1));
+
+    assertEquals(Hexagram.遯 , Hexagram.乾.getHexagram(1 , 2));
+    assertEquals(Hexagram.遯 , Hexagram.乾.getHexagram(2 , 1));
+
+    assertEquals(Hexagram.否 , Hexagram.乾.getHexagram(1 , 2 , 3));
+    assertEquals(Hexagram.否 , Hexagram.乾.getHexagram(3 , 2 , 1));
+    assertEquals(Hexagram.否 , Hexagram.乾.getHexagram(2 , 3 , 1));
+
+    assertEquals(Hexagram.觀 , Hexagram.乾.getHexagram(1 , 2 , 3 , 4));
+    assertEquals(Hexagram.剝 , Hexagram.乾.getHexagram(1 , 2 , 3 , 4 , 5));
+    assertEquals(Hexagram.坤 , Hexagram.乾.getHexagram(1 , 2 , 3 , 4 , 5 , 6));
+
+    assertEquals(Hexagram.復 , Hexagram.坤.getHexagram(1));
+    assertEquals(Hexagram.臨 , Hexagram.坤.getHexagram(1 , 2));
+    assertEquals(Hexagram.泰 , Hexagram.坤.getHexagram(1 , 2 , 3));
+    assertEquals(Hexagram.大壯 , Hexagram.坤.getHexagram(1 , 2 , 3 , 4));
+    assertEquals(Hexagram.夬 , Hexagram.坤.getHexagram(1 , 2 , 3 , 4 , 5));
+    assertEquals(Hexagram.乾 , Hexagram.坤.getHexagram(1 , 2 , 3 , 4 , 5, 6));
   }
   
   /** 測試互卦 */

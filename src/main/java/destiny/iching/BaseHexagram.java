@@ -6,9 +6,6 @@ package destiny.iching;
 
 import java.io.Serializable;
 
-import destiny.core.chinese.YinYang;
-import destiny.core.chinese.YinYangIF;
-
 /** 因為 enum Hexagram 無法被繼承 , 所以才做出這個中介/adapter class , 提供給其他 class 繼承 */
 public class BaseHexagram implements HexagramIF , Serializable
 {
@@ -19,7 +16,7 @@ public class BaseHexagram implements HexagramIF , Serializable
     this.hexagram = hexagram;
   }
   
-  public BaseHexagram(YinYangIF[] yinyangs)
+  public BaseHexagram(boolean[] yinyangs)
   {
     if(yinyangs.length != 6)
       throw new RuntimeException("BaseHexagram yinyangs length not equal 6!");
@@ -27,7 +24,7 @@ public class BaseHexagram implements HexagramIF , Serializable
   }
 
   @Override
-  public YinYangIF getLine(int index)
+  public boolean getLine(int index)
   {
     return hexagram.getLine(index);
   }
@@ -45,7 +42,7 @@ public class BaseHexagram implements HexagramIF , Serializable
   }
 
   @Override
-  public YinYang[] getYinYangs()
+  public boolean[] getYinYangs()
   {
     return hexagram.getYinYangs();
   }
@@ -111,7 +108,7 @@ public class BaseHexagram implements HexagramIF , Serializable
   }
 
   @Override
-  public Hexagram getHexagram(int... lines)
+  public HexagramIF getHexagram(int... lines)
   {
     return hexagram.getHexagram(lines);
   }

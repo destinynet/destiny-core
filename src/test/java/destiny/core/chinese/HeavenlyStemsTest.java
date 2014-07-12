@@ -5,9 +5,9 @@
  */
 package destiny.core.chinese;
 
-import java.util.Arrays;
-
 import junit.framework.TestCase;
+
+import java.util.Arrays;
 
 public class HeavenlyStemsTest extends TestCase
 {
@@ -30,16 +30,16 @@ public class HeavenlyStemsTest extends TestCase
 
   public void testGetYinYang()
   {
-    assertEquals(YinYang.陽 , HeavenlyStems.甲.getYinYang());
-    assertEquals(YinYang.陰 , HeavenlyStems.乙.getYinYang());
-    assertEquals(YinYang.陽 , HeavenlyStems.丙.getYinYang());
-    assertEquals(YinYang.陰 , HeavenlyStems.丁.getYinYang());
-    assertEquals(YinYang.陽 , HeavenlyStems.戊.getYinYang());
-    assertEquals(YinYang.陰 , HeavenlyStems.己.getYinYang());
-    assertEquals(YinYang.陽 , HeavenlyStems.庚.getYinYang());
-    assertEquals(YinYang.陰 , HeavenlyStems.辛.getYinYang());
-    assertEquals(YinYang.陽 , HeavenlyStems.壬.getYinYang());
-    assertEquals(YinYang.陰 , HeavenlyStems.癸.getYinYang());
+    assertEquals(true  , HeavenlyStems.甲.getBooleanValue());
+    assertEquals(false , HeavenlyStems.乙.getBooleanValue());
+    assertEquals(true  , HeavenlyStems.丙.getBooleanValue());
+    assertEquals(false , HeavenlyStems.丁.getBooleanValue());
+    assertEquals(true  , HeavenlyStems.戊.getBooleanValue());
+    assertEquals(false , HeavenlyStems.己.getBooleanValue());
+    assertEquals(true  , HeavenlyStems.庚.getBooleanValue());
+    assertEquals(false , HeavenlyStems.辛.getBooleanValue());
+    assertEquals(true  , HeavenlyStems.壬.getBooleanValue());
+    assertEquals(false , HeavenlyStems.癸.getBooleanValue());
   }
 
   public void testGetFiveElements()
@@ -76,16 +76,16 @@ public class HeavenlyStemsTest extends TestCase
 
   public void testGetHeavenlyStems()
   {
-    assertSame(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(FiveElement.木 , YinYang.陽));
-    assertSame(HeavenlyStems.乙 , HeavenlyStems.getHeavenlyStems(FiveElement.木 , YinYang.陰));
-    assertSame(HeavenlyStems.丙 , HeavenlyStems.getHeavenlyStems(FiveElement.火 , YinYang.陽));
-    assertSame(HeavenlyStems.丁 , HeavenlyStems.getHeavenlyStems(FiveElement.火 , YinYang.陰));
-    assertSame(HeavenlyStems.戊 , HeavenlyStems.getHeavenlyStems(FiveElement.土 , YinYang.陽));
-    assertSame(HeavenlyStems.己 , HeavenlyStems.getHeavenlyStems(FiveElement.土 , YinYang.陰));
-    assertSame(HeavenlyStems.庚 , HeavenlyStems.getHeavenlyStems(FiveElement.金 , YinYang.陽));
-    assertSame(HeavenlyStems.辛 , HeavenlyStems.getHeavenlyStems(FiveElement.金 , YinYang.陰));
-    assertSame(HeavenlyStems.壬 , HeavenlyStems.getHeavenlyStems(FiveElement.水 , YinYang.陽));
-    assertSame(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems(FiveElement.水 , YinYang.陰));
+    assertSame(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(FiveElement.木 , true));
+    assertSame(HeavenlyStems.乙 , HeavenlyStems.getHeavenlyStems(FiveElement.木 , false));
+    assertSame(HeavenlyStems.丙 , HeavenlyStems.getHeavenlyStems(FiveElement.火 , true));
+    assertSame(HeavenlyStems.丁 , HeavenlyStems.getHeavenlyStems(FiveElement.火 , false));
+    assertSame(HeavenlyStems.戊 , HeavenlyStems.getHeavenlyStems(FiveElement.土 , true));
+    assertSame(HeavenlyStems.己 , HeavenlyStems.getHeavenlyStems(FiveElement.土 , false));
+    assertSame(HeavenlyStems.庚 , HeavenlyStems.getHeavenlyStems(FiveElement.金 , true));
+    assertSame(HeavenlyStems.辛 , HeavenlyStems.getHeavenlyStems(FiveElement.金 , false));
+    assertSame(HeavenlyStems.壬 , HeavenlyStems.getHeavenlyStems(FiveElement.水 , true));
+    assertSame(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems(FiveElement.水 , false));
   }
 
   public void testSort()

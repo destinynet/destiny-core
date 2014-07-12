@@ -4,11 +4,9 @@
  */
 package destiny.utils.random;
 
-import destiny.core.chinese.YinYangIF;
-
 public interface RandomService
 {
   public int[] getIntegers(int count , int min , int max) ;
   
-  public YinYangIF[] getYinYangs(int count) ;
+  public boolean[] getYinYangs(int count) ;
 }

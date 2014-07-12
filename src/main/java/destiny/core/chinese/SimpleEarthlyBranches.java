@@ -82,17 +82,12 @@ public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF ,
     }
     throw new Error("Error while calling EarthlyBranches.getFiveElement() , EarthlyBranches = " + eb.toString());
   }
-  
-  /**
-   * 實作 YinYangIF
-   */
-  public YinYang getYinYang()
-  {
-    if ( EarthlyBranches.getIndex(eb) % 2 == 0)
-      return YinYang.陽; //子寅辰...
-    else
-      return YinYang.陰; //丑卯巳...
+
+  @Override
+  public boolean getBooleanValue() {
+    return ( EarthlyBranches.getIndex(eb) % 2 == 0);
   }
+
 
   /**
    * 實作 EarthlyBranchesIF

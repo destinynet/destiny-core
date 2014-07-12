@@ -4,11 +4,10 @@
  */
 package destiny.iching;
 
-import java.util.Arrays;
-
-import junit.framework.TestCase;
 import destiny.core.chinese.FiveElement;
-import destiny.core.chinese.YinYang;
+import junit.framework.TestCase;
+
+import java.util.Arrays;
 
 public class SymbolTest extends TestCase
 {
@@ -61,14 +60,14 @@ public class SymbolTest extends TestCase
   
   public void testGetSymbol()
   {
-    assertSame(Symbol.乾 , Symbol.getSymbol(new YinYang[] {YinYang.陽 , YinYang.陽 , YinYang.陽}));
-    assertSame(Symbol.兌 , Symbol.getSymbol(new YinYang[] {YinYang.陽 , YinYang.陽 , YinYang.陰}));
-    assertSame(Symbol.離 , Symbol.getSymbol(new YinYang[] {YinYang.陽 , YinYang.陰 , YinYang.陽}));
-    assertSame(Symbol.震 , Symbol.getSymbol(new YinYang[] {YinYang.陽 , YinYang.陰 , YinYang.陰}));
-    assertSame(Symbol.巽 , Symbol.getSymbol(new YinYang[] {YinYang.陰 , YinYang.陽 , YinYang.陽}));
-    assertSame(Symbol.坎 , Symbol.getSymbol(new YinYang[] {YinYang.陰 , YinYang.陽 , YinYang.陰}));
-    assertSame(Symbol.艮 , Symbol.getSymbol(new YinYang[] {YinYang.陰 , YinYang.陰 , YinYang.陽}));
-    assertSame(Symbol.坤 , Symbol.getSymbol(new YinYang[] {YinYang.陰 , YinYang.陰 , YinYang.陰}));
+    assertSame(Symbol.乾 , Symbol.getSymbol(new boolean[] {true  , true  , true }));
+    assertSame(Symbol.兌 , Symbol.getSymbol(new boolean[] {true  , true  , false}));
+    assertSame(Symbol.離 , Symbol.getSymbol(new boolean[] {true  , false , true }));
+    assertSame(Symbol.震 , Symbol.getSymbol(new boolean[] {true  , false , false}));
+    assertSame(Symbol.巽 , Symbol.getSymbol(new boolean[] {false , true  , true }));
+    assertSame(Symbol.坎 , Symbol.getSymbol(new boolean[] {false , true  , false}));
+    assertSame(Symbol.艮 , Symbol.getSymbol(new boolean[] {false , false , true }));
+    assertSame(Symbol.坤 , Symbol.getSymbol(new boolean[] {false , false , false}));
   }
   
   public void testGetFiveElement()

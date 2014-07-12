@@ -4,9 +4,6 @@
  */ 
 package destiny.iching;
 
-import destiny.core.chinese.YinYang;
-import destiny.core.chinese.YinYangIF;
-
 /**
  * 一個最基本的「卦」的資料，只有 取得 各爻陰陽 getLine(int index) / 取得六爻陰陽 getLines()  / 上卦 getUpperSymbol() / 下卦 getLowerSymbol() / 等介面
  */
@@ -16,10 +13,10 @@ public interface HexagramIF
   //public <T extends BaseLine> BaseLine getLine(int index);
   
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6 */
-  public YinYangIF getLine(int index);
+  public boolean getLine(int index);
   
   /** 取得全部的陰陽 */
-  public YinYang[] getYinYangs();
+  public boolean[] getYinYangs();
   
   /** 取得上卦 */
   public Symbol getUpperSymbol();
@@ -31,7 +28,7 @@ public interface HexagramIF
    * 第 line 爻動的話，變卦是什麼
    * @param line [1~6]
    */
-  public Hexagram getHexagram(int... line);
+  public HexagramIF getHexagram(int... line);
   
   /** 取得 010101 的表示法 */
   public String getBinaryCode();

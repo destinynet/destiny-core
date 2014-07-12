@@ -42,18 +42,18 @@ public class SimpleEarthlyBranchesTest extends TestCase
 
   public void testGetYinYang()
   {
-    assertSame(YinYang.陽 , SimpleEarthlyBranches.子.getYinYang());
-    assertSame(YinYang.陰 , SimpleEarthlyBranches.丑.getYinYang());
-    assertSame(YinYang.陽 , SimpleEarthlyBranches.寅.getYinYang());
-    assertSame(YinYang.陰 , SimpleEarthlyBranches.卯.getYinYang());
-    assertSame(YinYang.陽 , SimpleEarthlyBranches.辰.getYinYang());
-    assertSame(YinYang.陰 , SimpleEarthlyBranches.巳.getYinYang());
-    assertSame(YinYang.陽 , SimpleEarthlyBranches.午.getYinYang());
-    assertSame(YinYang.陰 , SimpleEarthlyBranches.未.getYinYang());
-    assertSame(YinYang.陽 , SimpleEarthlyBranches.申.getYinYang());
-    assertSame(YinYang.陰 , SimpleEarthlyBranches.酉.getYinYang());
-    assertSame(YinYang.陽 , SimpleEarthlyBranches.戌.getYinYang());
-    assertSame(YinYang.陰 , SimpleEarthlyBranches.亥.getYinYang());
+    assertSame(true  , SimpleEarthlyBranches.子.getBooleanValue());
+    assertSame(false , SimpleEarthlyBranches.丑.getBooleanValue());
+    assertSame(true  , SimpleEarthlyBranches.寅.getBooleanValue());
+    assertSame(false , SimpleEarthlyBranches.卯.getBooleanValue());
+    assertSame(true  , SimpleEarthlyBranches.辰.getBooleanValue());
+    assertSame(false , SimpleEarthlyBranches.巳.getBooleanValue());
+    assertSame(true  , SimpleEarthlyBranches.午.getBooleanValue());
+    assertSame(false , SimpleEarthlyBranches.未.getBooleanValue());
+    assertSame(true  , SimpleEarthlyBranches.申.getBooleanValue());
+    assertSame(false , SimpleEarthlyBranches.酉.getBooleanValue());
+    assertSame(true  , SimpleEarthlyBranches.戌.getBooleanValue());
+    assertSame(false , SimpleEarthlyBranches.亥.getBooleanValue());
   }
 
 }

@@ -54,7 +54,7 @@ public class PairGoldenChartWithText extends PairGoldenChart
     {
       float textY = (float) (srcChart.paddingTop + rowHeight*(13.7-2*i));
       
-      if (src.getLine(i).getYinYang().getBooleanValue() != dst.getLine(i).getYinYang().getBooleanValue())
+      if (src.getLine(i) != dst.getLine(i))
       {
         // 有變爻 , 文字顏色較深
         g.setColor(Color.decode("#666666"));

@@ -7,11 +7,10 @@
  */
 package destiny.FengShui.SanYuan;
 
-import java.io.Serializable;
-
-import destiny.core.chinese.YinYang;
 import destiny.iching.Symbol;
 import destiny.iching.SymbolAcquired;
+
+import java.io.Serializable;
 
 /**
  * 三元盤的 presentation model 
@@ -149,7 +148,7 @@ public class Chart implements Serializable
     boolean isConverse = false;
     if (原始卦 == null)
     {
-      if (地盤.getYinYang(m) == YinYang.陽)
+      if (地盤.getYinYang(m) == true)
         isConverse = false;
       else
         isConverse = true;
@@ -163,7 +162,7 @@ public class Chart implements Serializable
        * index = 2 => 人元
        */
       double degree = 後天八卦盤.getStartDegree(原始卦) + index*15 +1; //最後的 +1 是確保結果能坐落於該山中
-      if (地盤.getYinYang( (Mountain) (地盤.getMountain(degree)) ) == YinYang.陽)
+      if (地盤.getYinYang( (Mountain) (地盤.getMountain(degree)) ) == true)
         isConverse = false;
       else
         isConverse = true;

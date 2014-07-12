@@ -4,12 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.DayNight;
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.ZodiacSign;
-import destiny.core.chinese.YinYang;
+import destiny.astrology.*;
 import destiny.utils.Tuple;
 
 /** 
@@ -45,7 +40,7 @@ public final class Out_of_Sect extends Rule
     
     if ( dayNight == DayNight.DAY && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS))
     {
-      if (horoscopeContext.getHouse(planet) >= 7 && sign.getYinYang() == YinYang.陽)
+      if (horoscopeContext.getHouse(planet) >= 7 && sign.getBooleanValue() == true )
       {
         //addComment(Locale.TAIWAN , "夜星 " + planet + " 於白天在地平面上，落入陽性星座 " + sign.toString(Locale.TAIWAN) + " 座，不得時");
         return new Tuple<String , Object[]>("commentNight" , new Object[]{planet , sign});
@@ -53,7 +48,7 @@ public final class Out_of_Sect extends Rule
     }
     else if (dayNight == DayNight.NIGHT && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN))
     {
-      if (horoscopeContext.getHouse(planet) >= 7 && sign.getYinYang() == YinYang.陰)
+      if (horoscopeContext.getHouse(planet) >= 7 && sign.getBooleanValue() == false)
       {
         //addComment(Locale.TAIWAN , "晝星 " + planet + " 於夜晚在地平面上，落入陰性星座 " + sign.toString(Locale.TAIWAN) + " 座，不得時");
         return new Tuple<String , Object[]>("commentDay" , new Object[]{planet , sign});
