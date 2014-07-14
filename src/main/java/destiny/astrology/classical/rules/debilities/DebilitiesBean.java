@@ -8,10 +8,10 @@ import destiny.astrology.*;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.astrology.classical.AspectEffectiveClassical;
 import destiny.astrology.classical.DebilitiesIF;
+import destiny.astrology.classical.RefranationIF;
 import destiny.astrology.classical.rules.RuleIF;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,9 +37,15 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
 
   @Inject
   private BesiegedBean besiegedBean;
-  
+
+  @Inject
+  private RefranationIF refranationImpl;
+
   private List<Applicable> rules = new ArrayList<Applicable>();
-  
+
+  private DebilitiesBean() {
+  }
+
   public DebilitiesBean(RelativeTransitIF relativeTransitImpl , DayNightDifferentiator dayNightImpl , RetrogradeIF retrogradeImpl , AspectEffectiveClassical aspectEffectiveClassical , BesiegedBean besiegedBean)
   {
     this.relativeTransitImpl = relativeTransitImpl;
@@ -47,9 +53,14 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
     this.retrogradeImpl = retrogradeImpl;
     this.aspectApplySeparateImpl = new AspectApplySeparateImpl(aspectEffectiveClassical);
     this.besiegedBean = besiegedBean;
+  }
+
+  @PostConstruct
+  public void init() {
     this.rules = getDefaultRules();
   }
-  
+
+
   @Override
   public List<RuleIF> getDebilities(Planet planet, HoroscopeContext horoscopeContext)
   {
@@ -87,10 +98,11 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
     list.add(new Conj_Algol());
     list.add(new Out_of_Sect(dayNightImpl));
     list.add(new MutualDeception(dayNightImpl));
-    list.add(new Refranate_from_Venus_Jupiter(aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl ));
+    list.add(new Refranate_from_Venus_Jupiter(refranationImpl));
     return list;
   }
-  
+
+  @Override
   public List<Applicable> getRules()
   {
     return this.rules;

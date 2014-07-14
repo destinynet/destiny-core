@@ -8,6 +8,7 @@ import destiny.astrology.*;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.astrology.classical.AccidentalDignitiesIF;
 import destiny.astrology.classical.AspectEffectiveClassical;
+import destiny.astrology.classical.RefranationIF;
 import destiny.astrology.classical.rules.RuleIF;
 
 import java.io.Serializable;
@@ -31,7 +32,9 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   private AspectApplySeparateIF aspectApplySeparateImpl;// = new AspectApplySeparateImpl(aspectEffectiveClassical);
 
   private BesiegedBean besiegedBean;
-  
+
+  private RefranationIF refranationImpl;
+
   private List<Applicable> rules = new ArrayList<Applicable>();
   
   protected AccidentalDignitiesBean()
@@ -44,7 +47,8 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
       RetrogradeIF retrogradeImpl , 
       AspectEffectiveClassical aspectEffectiveClassical , 
       AspectApplySeparateIF aspectApplySeparateImpl ,
-      BesiegedBean besiegedBean)
+      BesiegedBean besiegedBean ,
+      RefranationIF refranationImpl)
   {
     this.relativeTransitImpl = relativeTransitImpl;
     this.dayNightImpl = dayNightImpl;
@@ -52,6 +56,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     this.aspectEffectiveClassical = aspectEffectiveClassical;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.besiegedBean = besiegedBean;
+    this.refranationImpl = refranationImpl;
     
     rules = getDefaultRules();
   }
@@ -95,7 +100,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     list.add(new Besieged_Jupiter_Venus(besiegedBean));
     list.add(new Translation_of_Light( relativeTransitImpl , aspectApplySeparateImpl , besiegedBean));
     list.add(new Collection_of_Light ( relativeTransitImpl , aspectEffectiveClassical , aspectApplySeparateImpl , dayNightImpl , besiegedBean));
-    list.add(new Refranate_from_Mars_Saturn(aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl , aspectEffectiveClassical));
+    list.add(new Refranate_from_Mars_Saturn(refranationImpl));
     return list;
   }
 

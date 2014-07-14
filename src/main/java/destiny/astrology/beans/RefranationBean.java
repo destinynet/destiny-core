@@ -4,19 +4,12 @@
  */ 
 package destiny.astrology.beans;
 
-import java.io.Serializable;
-
-import destiny.astrology.Aspect;
-import destiny.astrology.AspectApplySeparateIF;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.RelativeTransitIF;
-import destiny.astrology.RetrogradeIF;
-import destiny.astrology.Star;
+import destiny.astrology.*;
 import destiny.astrology.Aspect.Importance;
 import destiny.astrology.AspectApplySeparateIF.AspectType;
 import destiny.core.calendar.Time;
+
+import java.io.Serializable;
 
 /**
  * <pre>
@@ -30,8 +23,11 @@ import destiny.core.calendar.Time;
  * 2. 本星即將 apply 他星，而在 perfect 前，他星逆行，代表對方退縮。
  * 
  * TODO : 應該加上演算法：如果星體順轉逆（或逆轉順），並且逃離了 aspect 的有效範圍，才是真的「臨陣脫逃」
+ *
+ * 2014-07-15 replaced by RefranationIF / RefranationImpl
  * </pre>
  */
+@Deprecated
 public class RefranationBean implements Serializable
 {
   /** 本星 */

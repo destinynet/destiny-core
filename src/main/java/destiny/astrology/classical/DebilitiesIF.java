@@ -4,11 +4,12 @@
  */ 
 package destiny.astrology.classical;
 
-import java.util.List;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
+import destiny.astrology.classical.rules.debilities.Applicable;
+
+import java.util.List;
 
 /**
  * 取得某行星 Planet 的 Debilities 衰弱程度 <BR>
@@ -17,4 +18,6 @@ import destiny.astrology.classical.rules.RuleIF;
 public interface DebilitiesIF
 {
   public List<RuleIF> getDebilities(Planet planet , HoroscopeContext horoscopeContext);
+
+  public List<Applicable> getRules();
 }

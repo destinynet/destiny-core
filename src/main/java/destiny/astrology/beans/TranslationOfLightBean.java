@@ -59,6 +59,7 @@ public class TranslationOfLightBean implements Serializable
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.planet = planet;
     this.horoscopeContext = horoscopeContext;
+
     calculate();
   }
   

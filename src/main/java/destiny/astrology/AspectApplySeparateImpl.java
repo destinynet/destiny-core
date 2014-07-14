@@ -3,10 +3,10 @@
  */
 package destiny.astrology;
 
+import destiny.core.calendar.Time;
+
 import java.io.Serializable;
 import java.util.Collection;
-
-import destiny.core.calendar.Time;
 
 public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializable
 {
