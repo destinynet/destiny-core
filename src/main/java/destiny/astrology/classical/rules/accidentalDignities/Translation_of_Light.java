@@ -8,6 +8,7 @@ import destiny.astrology.AspectApplySeparateIF;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.RelativeTransitIF;
+import destiny.astrology.beans.BesiegedBean;
 import destiny.astrology.beans.TranslationOfLightBean;
 import destiny.utils.Tuple;
 
@@ -16,17 +17,20 @@ public class Translation_of_Light extends Rule
   private RelativeTransitIF relativeTransitImpl;
   
   private AspectApplySeparateIF aspectApplySeparateImpl;
+
+  private BesiegedBean besiegedBean;
   
-  public Translation_of_Light(RelativeTransitIF relativeTransitImpl , AspectApplySeparateIF aspectApplySeparateImpl)
+  public Translation_of_Light(RelativeTransitIF relativeTransitImpl , AspectApplySeparateIF aspectApplySeparateImpl , BesiegedBean besiegedBean)
   {
     this.relativeTransitImpl = relativeTransitImpl;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
+    this.besiegedBean = besiegedBean;
   }
 
   @Override
   protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
-    TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , relativeTransitImpl , aspectApplySeparateImpl);
+    TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);
     if (bean.isTranslatingLight())
     {
       double deg = horoscopeContext.getHoroscope().getAngle(bean.getFromPlanet(), bean.getToPlanet());

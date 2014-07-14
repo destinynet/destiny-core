@@ -15,13 +15,9 @@ public class TrueSolarTermsBean
   private int minute;
   private double second;
 
-  private TrueSolarTimeIF trueSolarTime;
-  
-  public TrueSolarTermsBean(Time gmtTime , TrueSolarTimeIF impl)
+  public TrueSolarTermsBean(Time gmtTime , TrueSolarTimeIF trueSolarTimeImpl)
   {
-    this.trueSolarTime = impl;
-    
-    double resultSeconds = trueSolarTime.getTrueSolarTimeInSecond(gmtTime);
+    double resultSeconds = trueSolarTimeImpl.getTrueSolarTimeInSecond(gmtTime);
     
     double doubleMinute = Math.abs(resultSeconds/60.0);
     

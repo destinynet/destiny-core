@@ -4,18 +4,13 @@
  */ 
 package destiny.astrology.beans;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import destiny.astrology.Aspect;
 import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
 import destiny.core.calendar.Time;
+import destiny.utils.Tuple;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * <pre>
@@ -27,18 +22,24 @@ import destiny.core.calendar.Time;
  */
 public class BesiegedBean implements Serializable
 {
-  private RelativeTransitIF relativeTransitImpl;
+  private final NearestTransitBean nearestTransitBean;
   
   /** 之前形成的交角 */
   private Aspect aspectPrior;
   
   /** 之後形成的交角 */
   private Aspect aspectAfter;
-  
-  public BesiegedBean(RelativeTransitIF impl)
-  {
-    this.relativeTransitImpl = impl;
+
+  public BesiegedBean(NearestTransitBean nearestTransitBean) {
+    this.nearestTransitBean = nearestTransitBean;
   }
+
+  //  public BesiegedBean(RelativeTransitIF impl)
+//  {
+//    this.relativeTransitImpl = impl;
+//  }
+
+
 
   /**
    * @param planet 計算此顆行星，被哪兩顆行星所夾角
@@ -218,16 +219,17 @@ public class BesiegedBean implements Serializable
     Planet priorPlanet = null;
     for (Planet eachOther : otherPlanets)
     {
-      NearestTransitBean ntb = new NearestTransitBean(relativeTransitImpl , planet , eachOther , gmt , angles , false);
-      //Time resultTime = rtb.getNearestRelativeTransitTime(planet , eachOther , gmt , angles , false);
-      Time resultTime = ntb.getResultTime();
+      Tuple<Time , Double> tuple = nearestTransitBean.getResult(planet , eachOther , gmt , angles , false);
+      //NearestTransitBean ntb = new NearestTransitBean(relativeTransitImpl , planet , eachOther , gmt , angles , false);
+      Time resultTime = tuple.getFirst();
+      //Time resultTime = ntb.getResultTime();
       if (resultTime != null) // result 有可能為 null , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
       {
         if (otherPlanetsNearestTimeBackward == null)
         {
           otherPlanetsNearestTimeBackward = resultTime;
           priorPlanet = eachOther;
-          aspectPrior = Aspect.getAspect(ntb.getResultAngle());
+          aspectPrior = Aspect.getAspect(tuple.getSecond());
         }
         else
         {
@@ -235,7 +237,7 @@ public class BesiegedBean implements Serializable
           {
             otherPlanetsNearestTimeBackward = resultTime;
             priorPlanet = eachOther;
-            aspectPrior = Aspect.getAspect(ntb.getResultAngle());
+            aspectPrior = Aspect.getAspect(tuple.getSecond());
           }
         }        
       }
@@ -252,16 +254,17 @@ public class BesiegedBean implements Serializable
     Planet afterPlanet = null; 
     for (Planet eachOther : otherPlanets)
     {
-      NearestTransitBean ntb = new NearestTransitBean(relativeTransitImpl , planet , eachOther , gmt , angles , true);
-      //Time resultTime = rtb.getNearestRelativeTransitTime(planet , eachOther , gmt, angles , true);
-      Time resultTime = ntb.getResultTime();
+      Tuple<Time , Double> tuple = nearestTransitBean.getResult(planet , eachOther , gmt , angles , true);
+      //NearestTransitBean ntb = new NearestTransitBean(relativeTransitImpl , planet , eachOther , gmt , angles , true);
+      //Time resultTime = ntb.getResultTime();
+      Time resultTime = tuple.getFirst();
       if (resultTime != null) // result 有可能為 null , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
       {
         if (otherPlanetsNearestTimeForward == null)
         {
           otherPlanetsNearestTimeForward = resultTime;
           afterPlanet = eachOther;
-          aspectAfter = Aspect.getAspect(ntb.getResultAngle());
+          aspectAfter = Aspect.getAspect(tuple.getSecond());
         }
         else
         {
@@ -269,7 +272,7 @@ public class BesiegedBean implements Serializable
           {
             otherPlanetsNearestTimeForward = resultTime;
             afterPlanet = eachOther;
-            aspectAfter = Aspect.getAspect(ntb.getResultAngle());
+            aspectAfter = Aspect.getAspect(tuple.getSecond());
           }
         }
       }

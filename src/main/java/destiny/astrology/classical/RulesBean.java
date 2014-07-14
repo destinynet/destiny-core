@@ -4,13 +4,13 @@
  */ 
 package destiny.astrology.classical;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 集合 essentialDignities , accidentalDignities , debilitiesBean 
@@ -18,14 +18,10 @@ import destiny.astrology.classical.rules.RuleIF;
  */
 public class RulesBean implements Serializable
 {
-  EssentialDignitiesIF essentialDignitiesImpl;// = new EssentialDignitiesBean();
-  AccidentalDignitiesIF accidentalDignitiesImpl;// = new AccidentalDignitiesBean();
-  DebilitiesIF debilitiesBean;//= new DebilitiesBean();
-  
-  protected RulesBean()
-  {
-  }
-  
+  EssentialDignitiesIF essentialDignitiesImpl;
+  AccidentalDignitiesIF accidentalDignitiesImpl;
+  DebilitiesIF debilitiesBean;
+
   public RulesBean(EssentialDignitiesIF essentialDignitiesImpl , AccidentalDignitiesIF accidentalDignitiesImpl , DebilitiesIF debilitiesBean)
   {
     this.essentialDignitiesImpl = essentialDignitiesImpl;
@@ -35,12 +31,12 @@ public class RulesBean implements Serializable
   
   public List<RuleIF> getRules(Planet planet, HoroscopeContext horoscopeContext)
   {
-    List<RuleIF> resultList = new ArrayList<RuleIF>();
-    List<RuleIF> essentalDignitiesRules = essentialDignitiesImpl.getEssentialDignities(planet, horoscopeContext);
+    List<RuleIF> resultList = new ArrayList<>();
+    List<RuleIF> essentialDignitiesRules = essentialDignitiesImpl.getEssentialDignities(planet, horoscopeContext);
     List<RuleIF> accidentalDignitiesRules = accidentalDignitiesImpl.getAccidentalDignities(planet, horoscopeContext);
     List<RuleIF> debilitiesRules = debilitiesBean.getDebilities(planet, horoscopeContext);
     
-    resultList.addAll(essentalDignitiesRules);
+    resultList.addAll(essentialDignitiesRules);
     resultList.addAll(accidentalDignitiesRules);
     resultList.addAll(debilitiesRules);
     

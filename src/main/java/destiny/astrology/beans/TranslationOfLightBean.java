@@ -4,16 +4,12 @@
  */ 
 package destiny.astrology.beans;
 
-import java.io.Serializable;
-import java.util.List;
-
-import destiny.astrology.Aspect;
-import destiny.astrology.AspectApplySeparateIF;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
+import destiny.astrology.*;
 import destiny.astrology.Aspect.Importance;
 import destiny.astrology.AspectApplySeparateIF.AspectType;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * <pre>
@@ -50,23 +46,22 @@ public class TranslationOfLightBean implements Serializable
   
   /** 包夾的兩顆星 (fromPlanet / toPlanet) ，是否形成交角。如果沒有交角，則為 null ; 如果有交角，則該兩顆星是「入相位」還是「出相位」 */  
   private AspectType besigingPlanetsAspectType = null;
-  
-  public TranslationOfLightBean(Planet planet , 
-                                HoroscopeContext horoscopeContext , 
-                                RelativeTransitIF relativeTransitImpl , AspectApplySeparateIF aspectApplySeparateImpl )
+
+  /**
+   * @param planet 計算此星是否有傳送光線
+   * @param horoscopeContext
+   * @param aspectApplySeparateImpl
+   * @param besiegedBean
+   */
+  public TranslationOfLightBean(Planet planet, HoroscopeContext horoscopeContext, AspectApplySeparateIF aspectApplySeparateImpl, BesiegedBean besiegedBean)
   {
-    this.besiegedBean = new BesiegedBean(relativeTransitImpl);
+    this.besiegedBean = besiegedBean;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.planet = planet;
     this.horoscopeContext = horoscopeContext;
     calculate();
   }
   
-  /**
-   * @param planet 計算此星是否有傳送光線
-   * @param horoscopeContext
-   * @return
-   */
   private void calculate()
   {
     /** 不考慮合相的交角 */

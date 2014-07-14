@@ -6,10 +6,11 @@ package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * Besieged between Mars and Saturn. 
@@ -19,28 +20,20 @@ import destiny.utils.Tuple;
  */
 public final class Besieged_Mars_Saturn extends Rule
 {
-  /** 計算兩星交角的介面 */
-  private RelativeTransitIF relativeTransitImpl;
-  
   /** 計算兩星夾角的工具箱 */
-  BesiegedBean besiegedBean;
+  private final BesiegedBean besiegedBean;
   
-  public Besieged_Mars_Saturn(RelativeTransitIF relativeTransitImpl)
+  public Besieged_Mars_Saturn(BesiegedBean besiegedBean)
   {
-    this.relativeTransitImpl = relativeTransitImpl;
+    this.besiegedBean = besiegedBean;
   }
 
-  public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl)
-  {
-    this.relativeTransitImpl = relativeTransitImpl;
-  }
 
   @Override
   protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS)
     {
-      besiegedBean = new BesiegedBean(relativeTransitImpl);
       //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
       if (besiegedBean.isBesieged(planet, Planet.MARS , Planet.SATURN , Time.getGMTfromLMT(horoscopeContext.getLmt() , horoscopeContext.getLocation())  , true , true))
       {

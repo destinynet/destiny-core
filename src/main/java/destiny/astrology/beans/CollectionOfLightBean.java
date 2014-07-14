@@ -4,19 +4,14 @@
  */ 
 package destiny.astrology.beans;
 
+import destiny.astrology.*;
+import destiny.astrology.Aspect.Importance;
+import destiny.astrology.classical.AspectEffectiveClassical;
+import destiny.astrology.classical.EssentialUtils;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-
-import destiny.astrology.Aspect;
-import destiny.astrology.Aspect.Importance;
-import destiny.astrology.AspectApplySeparateIF;
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
-import destiny.astrology.classical.AspectEffectiveClassical;
-import destiny.astrology.classical.EssentialUtils;
 
 /**
  * <pre>
@@ -32,8 +27,6 @@ import destiny.astrology.classical.EssentialUtils;
  */
 public class CollectionOfLightBean implements Serializable
 {
-  private BesiegedBean besiegedBean;
-  
   /** 計算此行星是否收集光線，如果有的話，是以何種形式 ( CollectType ) 收集光線 */
   private Planet planet;
   
@@ -52,6 +45,8 @@ public class CollectionOfLightBean implements Serializable
   
   /** 判斷日夜 */
   private DayNightDifferentiator dayNightDifferentiatorImpl;
+
+  private BesiegedBean besiegedBean;
   
   /** 蒐集光線的演算法 */
   private CollectType collectType = null;
@@ -67,12 +62,13 @@ public class CollectionOfLightBean implements Serializable
       CollectType collectType , RelativeTransitIF relativeTransitImpl, 
       AspectEffectiveClassical aspectEffectiveClassical ,  
       AspectApplySeparateIF aspectApplySeparateImpl ,
-      DayNightDifferentiator dayNightDifferentiatorImpl)
+      DayNightDifferentiator dayNightDifferentiatorImpl ,
+      BesiegedBean besiegedBean)
   {
     this.planet = planet;
     this.horoscopeContext = horoscopeContext;
     this.collectType = collectType;
-    this.besiegedBean = new BesiegedBean(relativeTransitImpl);
+    this.besiegedBean = besiegedBean;
     this.aspectEffectiveClassical = aspectEffectiveClassical;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
@@ -86,11 +82,12 @@ public class CollectionOfLightBean implements Serializable
       RelativeTransitIF relativeTransitImpl, 
       AspectEffectiveClassical aspectEffectiveClassical , 
       AspectApplySeparateIF aspectApplySeparateImpl , 
-      DayNightDifferentiator dayNightDifferentiatorImpl)
+      DayNightDifferentiator dayNightDifferentiatorImpl ,
+      BesiegedBean besiegedBean)
   {
     this.planet = planet;
     this.horoscopeContext = horoscopeContext;
-    this.besiegedBean = new BesiegedBean(relativeTransitImpl);
+    this.besiegedBean = besiegedBean;
     this.aspectEffectiveClassical = aspectEffectiveClassical;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;

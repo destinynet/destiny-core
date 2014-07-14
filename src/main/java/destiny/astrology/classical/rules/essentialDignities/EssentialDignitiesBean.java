@@ -4,20 +4,20 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import destiny.astrology.DayNightDifferentiator;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.EssentialDignitiesIF;
 import destiny.astrology.classical.rules.RuleIF;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializable
 {
   /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作 */
-  private DayNightDifferentiator dayNightImpl;// = new DayNightDifferentiatorImpl();
+  private DayNightDifferentiator dayNightImpl;
   
   private List<Applicable> rules = new ArrayList<Applicable>();
   

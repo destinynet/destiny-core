@@ -6,7 +6,6 @@ package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
@@ -18,28 +17,21 @@ import destiny.utils.Tuple;
  */
 public class Besieged_Jupiter_Venus extends Rule
 {
-  /** 計算兩星交角的介面*/
-  private RelativeTransitIF relativeTransitImpl;
-  
+
   /** 計算兩星夾角的工具箱 */
   BesiegedBean besiegedBean;
   
-  public Besieged_Jupiter_Venus(RelativeTransitIF relativeTransitImpl)
+  public Besieged_Jupiter_Venus(BesiegedBean besiegedBean)
   {
-    this.relativeTransitImpl = relativeTransitImpl;
+    this.besiegedBean = besiegedBean;
   }
 
-  public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl)
-  {
-    this.relativeTransitImpl = relativeTransitImpl;
-  }
 
   @Override
   protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.MARS || planet == Planet.SATURN)
     {
-      besiegedBean = new BesiegedBean(relativeTransitImpl);
       if (besiegedBean.isBesieged(planet, Planet.VENUS , Planet.JUPITER , Time.getGMTfromLMT(horoscopeContext.getLmt() , horoscopeContext.getLocation())  , true , false))
       {
         //planet + " 被 " + Planet.VENUS + " 以及 " + Planet.JUPITER + " 夾輔 (善意 Besieged)"

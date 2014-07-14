@@ -5,16 +5,17 @@
  */
 package destiny.astrology.beans;
 
+import destiny.astrology.Aspect;
+import destiny.astrology.RelativeTransitIF;
+import destiny.astrology.Star;
+import destiny.core.calendar.Time;
+
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import destiny.astrology.Aspect;
-import destiny.astrology.RelativeTransitIF;
-import destiny.astrology.Star;
-import destiny.core.calendar.Time;
 
 
 /**
@@ -23,9 +24,10 @@ import destiny.core.calendar.Time;
 public class RelativeTransitBean implements Serializable
 {
   /** 內定採用 SwissEph 的 RelativeTransitIF 實作 */
+  @Inject
   private RelativeTransitIF relativeTransitImpl;// = new RelativeTransitImpl();
   
-  protected RelativeTransitBean()
+  private RelativeTransitBean()
   {
   }
   

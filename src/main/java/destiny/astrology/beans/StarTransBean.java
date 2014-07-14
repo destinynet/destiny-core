@@ -5,14 +5,15 @@
  */
 package destiny.astrology.beans;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import destiny.astrology.RiseTransIF;
 import destiny.astrology.Star;
 import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -20,11 +21,12 @@ import destiny.core.calendar.Time;
  */
 public class StarTransBean
 {
-  private RiseTransIF riseTrans ;
+  @Inject
+  private RiseTransIF riseTransImpl;
   
   public StarTransBean(RiseTransIF impl)
   {
-    this.riseTrans = impl;
+    this.riseTransImpl = impl;
   }
   
   public StarTransBean()
@@ -55,7 +57,7 @@ public class StarTransBean
     Time resultGmtTime;
     while (fromGmtTime.isBefore(toGmtTime))
     {
-      resultGmtTime = riseTrans.getGmtTransTime(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+      resultGmtTime = riseTransImpl.getGmtTransTime(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
       System.out.println("resultGmtTime = " + resultGmtTime); 
       if (!resultGmtTime.isBefore(toGmtTime))
         break;

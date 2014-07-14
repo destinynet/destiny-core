@@ -4,19 +4,23 @@
  */ 
 package destiny.astrology.classical.rules;
 
+import destiny.astrology.HoroscopeContext;
+import destiny.astrology.Planet;
+import destiny.utils.LocaleStringIF;
+import destiny.utils.Tuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.utils.LocaleStringIF;
-import destiny.utils.Tuple;
-
 public abstract class AbstractRule implements RuleIF , Serializable , LocaleStringIF
 {
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   protected String resource;
   
   private Locale locale =  Locale.getDefault();
@@ -38,6 +42,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   @Override
   public final boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
   {
+    logger.info("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
     Tuple<String , Object[]> result = getResult(planet, horoscopeContext);
     if (result == null)
       return false;

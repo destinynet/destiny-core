@@ -4,19 +4,15 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import destiny.astrology.AspectApplySeparateIF;
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
-import destiny.astrology.RetrogradeIF;
+import destiny.astrology.*;
+import destiny.astrology.beans.BesiegedBean;
 import destiny.astrology.classical.AccidentalDignitiesIF;
 import destiny.astrology.classical.AspectEffectiveClassical;
 import destiny.astrology.classical.rules.RuleIF;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializable
 {
@@ -33,6 +29,8 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   
   /** 判斷入相位或是出相位 */
   private AspectApplySeparateIF aspectApplySeparateImpl;// = new AspectApplySeparateImpl(aspectEffectiveClassical);
+
+  private BesiegedBean besiegedBean;
   
   private List<Applicable> rules = new ArrayList<Applicable>();
   
@@ -45,13 +43,15 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
       DayNightDifferentiator dayNightImpl , 
       RetrogradeIF retrogradeImpl , 
       AspectEffectiveClassical aspectEffectiveClassical , 
-      AspectApplySeparateIF aspectApplySeparateImpl)
+      AspectApplySeparateIF aspectApplySeparateImpl ,
+      BesiegedBean besiegedBean)
   {
     this.relativeTransitImpl = relativeTransitImpl;
     this.dayNightImpl = dayNightImpl;
     this.retrogradeImpl = retrogradeImpl;
     this.aspectEffectiveClassical = aspectEffectiveClassical;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
+    this.besiegedBean = besiegedBean;
     
     rules = getDefaultRules();
   }
@@ -92,9 +92,9 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     list.add(new Partile_Conj_Spica());
     list.add(new JoyHouse());
     list.add(new Hayz(dayNightImpl));
-    list.add(new Besieged_Jupiter_Venus(relativeTransitImpl));
-    list.add(new Translation_of_Light( relativeTransitImpl , aspectApplySeparateImpl));
-    list.add(new Collection_of_Light ( relativeTransitImpl , aspectEffectiveClassical , aspectApplySeparateImpl , dayNightImpl));
+    list.add(new Besieged_Jupiter_Venus(besiegedBean));
+    list.add(new Translation_of_Light( relativeTransitImpl , aspectApplySeparateImpl , besiegedBean));
+    list.add(new Collection_of_Light ( relativeTransitImpl , aspectEffectiveClassical , aspectApplySeparateImpl , dayNightImpl , besiegedBean));
     list.add(new Refranate_from_Mars_Saturn(aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl , aspectEffectiveClassical));
     return list;
   }
