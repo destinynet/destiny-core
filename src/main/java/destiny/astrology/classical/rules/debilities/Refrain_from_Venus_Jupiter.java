@@ -9,12 +9,12 @@ import destiny.astrology.classical.RefranationIF;
 import destiny.utils.Triple;
 import destiny.utils.Tuple;
 
-public class Refranate_from_Venus_Jupiter extends Rule
+public class Refrain_from_Venus_Jupiter extends Rule
 {
   private RefranationIF refranationImpl;
 
 
-  public Refranate_from_Venus_Jupiter(RefranationIF refranationImpl) {
+  public Refrain_from_Venus_Jupiter(RefranationIF refranationImpl) {
     this.refranationImpl = refranationImpl;
   }
 

@@ -96,7 +96,7 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
     list.add(new Conj_Algol());
     list.add(new Out_of_Sect(dayNightImpl));
     list.add(new MutualDeception(dayNightImpl));
-    list.add(new Refranate_from_Venus_Jupiter(refranationImpl));
+    list.add(new Refrain_from_Venus_Jupiter(refranationImpl));
     return list;
   }
 

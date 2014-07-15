@@ -90,7 +90,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     list.add(new Besieged_Jupiter_Venus(besiegedBean));
     list.add(new Translation_of_Light( translationOfLightImpl ));
     list.add(new Collection_of_Light(collectionOfLightImpl));
-    list.add(new Refranate_from_Mars_Saturn(refranationImpl));
+    list.add(new Refrain_from_Mars_Saturn(refranationImpl));
     return list;
   }
 
