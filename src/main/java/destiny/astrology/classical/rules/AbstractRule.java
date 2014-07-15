@@ -42,7 +42,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   @Override
   public final boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
   {
-    logger.info("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
+    logger.debug("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
     Tuple<String , Object[]> result = getResult(planet, horoscopeContext);
     if (result == null)
       return false;

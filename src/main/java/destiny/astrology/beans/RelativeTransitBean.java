@@ -27,7 +27,7 @@ public class RelativeTransitBean implements Serializable
   @Inject
   private RelativeTransitIF relativeTransitImpl;// = new RelativeTransitImpl();
   
-  private RelativeTransitBean()
+  protected RelativeTransitBean()
   {
   }
   

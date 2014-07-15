@@ -22,6 +22,9 @@ public class RulesBean implements Serializable
   AccidentalDignitiesIF accidentalDignitiesImpl;
   DebilitiesIF debilitiesBean;
 
+  protected RulesBean() {
+  }
+
   public RulesBean(EssentialDignitiesIF essentialDignitiesImpl , AccidentalDignitiesIF accidentalDignitiesImpl , DebilitiesIF debilitiesBean)
   {
     this.essentialDignitiesImpl = essentialDignitiesImpl;

@@ -5,15 +5,15 @@
  */
 package destiny.core.calendar.eightwords;
 
-import java.io.Serializable;
-import java.util.Locale;
-
 import destiny.astrology.Planet;
 import destiny.astrology.RiseTransIF;
 import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
+
+import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * <PRE>
@@ -207,7 +207,7 @@ public class HourSolarTransImpl implements HourIF , Serializable
 
   public String getTitle(Locale locale)
   {
-    return "日過天頂天底平均切分";
+    return "真太陽時";
   }
 
   public String getDescription(Locale locale)

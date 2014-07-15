@@ -5,12 +5,12 @@
  */
 package destiny.core.calendar.eightwords;
 
-import java.io.Serializable;
-import java.util.Locale;
-
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
+
+import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
@@ -115,7 +115,7 @@ public class HourLmtImpl implements HourIF , Serializable
 
   public String getTitle(Locale locale)
   {
-    return "以當地平均時間來區隔時辰";
+    return "以當地標準鐘錶時間區隔時辰";
   }
 
 
