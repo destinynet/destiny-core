@@ -7,7 +7,6 @@ package destiny.astrology.classical;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
-import destiny.astrology.classical.rules.debilities.Applicable;
 
 import java.util.List;
 
@@ -19,5 +18,4 @@ public interface DebilitiesIF
 {
   public List<RuleIF> getDebilities(Planet planet , HoroscopeContext horoscopeContext);
 
-  public List<Applicable> getRules();
 }

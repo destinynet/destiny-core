@@ -7,18 +7,14 @@ import destiny.astrology.*;
 import destiny.core.calendar.Time;
 import destiny.utils.Triple;
 
-import javax.inject.Inject;
 import java.io.Serializable;
 
 public class RefranationImpl implements RefranationIF , Serializable {
 
-  @Inject
   private final AspectApplySeparateIF aspectApplySeparateImpl;
 
-  @Inject
   private final RelativeTransitIF relativeTransitImpl;
 
-  @Inject
   private final RetrogradeIF retrogradeImpl;
 
   public RefranationImpl(AspectApplySeparateIF aspectApplySeparateImpl, RelativeTransitIF relativeTransitImpl, RetrogradeIF retrogradeImpl) {
@@ -92,5 +88,5 @@ public class RefranationImpl implements RefranationIF , Serializable {
     }
 
     return Triple.of(refranate , refranator , applyingAspect);
-  } // resultOf()
+  } // getResult()
 }

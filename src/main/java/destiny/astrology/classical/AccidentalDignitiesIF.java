@@ -4,15 +4,14 @@
  */ 
 package destiny.astrology.classical;
 
-import java.util.List;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
 
+import java.util.List;
+
 /**
- * 取得某行星 Planet 的 Accidental Dignities 強度 <BR>
- * 內定實作是 AccidentalDignityDefaultImpl
+ * 取得某行星 Planet 的 Accidental Dignities 強度
  */
 public interface AccidentalDignitiesIF
 {

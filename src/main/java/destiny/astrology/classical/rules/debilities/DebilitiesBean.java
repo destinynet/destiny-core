@@ -43,8 +43,6 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
 
   private List<Applicable> rules = new ArrayList<Applicable>();
 
-  private DebilitiesBean() {
-  }
 
   public DebilitiesBean(RelativeTransitIF relativeTransitImpl , DayNightDifferentiator dayNightImpl , RetrogradeIF retrogradeImpl , AspectEffectiveClassical aspectEffectiveClassical , BesiegedBean besiegedBean)
   {
@@ -102,7 +100,6 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
     return list;
   }
 
-  @Override
   public List<Applicable> getRules()
   {
     return this.rules;
@@ -113,5 +110,5 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
     this.rules = rules;
   }
 
-  
+
 }

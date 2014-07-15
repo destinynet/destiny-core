@@ -7,44 +7,51 @@ package destiny.astrology.classical.rules.accidentalDignities;
 import destiny.astrology.AspectApplySeparateIF;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
-import destiny.astrology.beans.BesiegedBean;
-import destiny.astrology.beans.TranslationOfLightBean;
+import destiny.astrology.classical.TranslationOfLightIF;
 import destiny.utils.Tuple;
+import destiny.utils.Tuple4;
 
 public class Translation_of_Light extends Rule
 {
-  private RelativeTransitIF relativeTransitImpl;
-  
-  private AspectApplySeparateIF aspectApplySeparateImpl;
 
-  private BesiegedBean besiegedBean;
-  
-  public Translation_of_Light(RelativeTransitIF relativeTransitImpl , AspectApplySeparateIF aspectApplySeparateImpl , BesiegedBean besiegedBean)
-  {
-    this.relativeTransitImpl = relativeTransitImpl;
-    this.aspectApplySeparateImpl = aspectApplySeparateImpl;
-    this.besiegedBean = besiegedBean;
+  private TranslationOfLightIF translationOfLightImpl;
+
+  public Translation_of_Light(TranslationOfLightIF translationOfLightImpl) {
+    this.translationOfLightImpl = translationOfLightImpl;
   }
+
+//  private RelativeTransitIF relativeTransitImpl;
+//
+//  private AspectApplySeparateIF aspectApplySeparateImpl;
+//
+//  private BesiegedBean besiegedBean;
+//
+//  public Translation_of_Light(RelativeTransitIF relativeTransitImpl , AspectApplySeparateIF aspectApplySeparateImpl , BesiegedBean besiegedBean)
+//  {
+//    this.relativeTransitImpl = relativeTransitImpl;
+//    this.aspectApplySeparateImpl = aspectApplySeparateImpl;
+//    this.besiegedBean = besiegedBean;
+//  }
 
   @Override
   protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
-    TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);
-    if (bean.isTranslatingLight())
+    Tuple4<Boolean , Planet , Planet , AspectApplySeparateIF.AspectType> t = translationOfLightImpl.getResult(planet, horoscopeContext);
+    //TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);
+    if (t.getFirst() == true)
     {
-      double deg = horoscopeContext.getHoroscope().getAngle(bean.getFromPlanet(), bean.getToPlanet());
+      double deg = horoscopeContext.getHoroscope().getAngle(t.getSecond() , t.getThird());
       //StringBuffer sb = new StringBuffer(" 從 " + bean.getFromPlanet() + " 傳遞光線到 " + bean.getToPlanet() + " , " + bean.getFromPlanet()+" 與 " + bean.getToPlanet() + 
           //" 交角 " + deg + " 度");
-      if (bean.getBesigingPlanetsAspectType() != null)
+      if (t.getFourth() != null)
       {
         //sb.append("(" + (bean.getBesigingPlanetsAspectType() == AspectType.APPLYING ? "入" : "出") + "相位)");
-        return new Tuple<String , Object[]>("commentAspect" , new Object[]{planet , bean.getFromPlanet() , bean.getToPlanet() , deg , bean.getBesigingPlanetsAspectType()});
+        return new Tuple<String , Object[]>("commentAspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg , t.getFourth()});
       }
       else
       {
         //sb.append("(未形成交角)");
-        return new Tuple<String , Object[]>("commentUnaspect" , new Object[]{planet , bean.getFromPlanet() , bean.getToPlanet() , deg });
+        return new Tuple<String , Object[]>("commentUnaspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg });
       }
         
     }
