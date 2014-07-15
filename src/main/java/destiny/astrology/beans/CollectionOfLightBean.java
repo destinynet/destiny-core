@@ -24,7 +24,10 @@ import java.util.List;
  *     
  * 表第三個行星使得兩個徵象星能互相接觸.
  * </pre>
+ *
+ * 2014-07-15 @Deprecated , replaced by CollectionOfLightIF / CollectionOfLightImpl
  */
+@Deprecated
 public class CollectionOfLightBean implements Serializable
 {
   /** 計算此行星是否收集光線，如果有的話，是以何種形式 ( CollectType ) 收集光線 */

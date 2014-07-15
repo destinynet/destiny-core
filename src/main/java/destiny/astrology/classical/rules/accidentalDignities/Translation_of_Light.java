@@ -20,19 +20,6 @@ public class Translation_of_Light extends Rule
     this.translationOfLightImpl = translationOfLightImpl;
   }
 
-//  private RelativeTransitIF relativeTransitImpl;
-//
-//  private AspectApplySeparateIF aspectApplySeparateImpl;
-//
-//  private BesiegedBean besiegedBean;
-//
-//  public Translation_of_Light(RelativeTransitIF relativeTransitImpl , AspectApplySeparateIF aspectApplySeparateImpl , BesiegedBean besiegedBean)
-//  {
-//    this.relativeTransitImpl = relativeTransitImpl;
-//    this.aspectApplySeparateImpl = aspectApplySeparateImpl;
-//    this.besiegedBean = besiegedBean;
-//  }
-
   @Override
   protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {

@@ -6,10 +6,7 @@ package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
 import destiny.astrology.beans.BesiegedBean;
-import destiny.astrology.classical.AccidentalDignitiesIF;
-import destiny.astrology.classical.AspectEffectiveClassical;
-import destiny.astrology.classical.RefranationIF;
-import destiny.astrology.classical.TranslationOfLightIF;
+import destiny.astrology.classical.*;
 import destiny.astrology.classical.rules.RuleIF;
 
 import javax.annotation.PostConstruct;
@@ -31,10 +28,6 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   @Inject
   private AspectEffectiveClassical aspectEffectiveClassical;// = new AspectEffectiveClassical();
   
-  /** 計算星體逆行的介面，目前只支援 Planet , 目前的實作只支援 Planet , Asteroid , Moon's Node (只有 True Node。 Mean 不會逆行！) */
-  @Inject
-  private RetrogradeIF retrogradeImpl;// = new RetrogradeImpl();
-  
   /** 判斷入相位或是出相位 */
   @Inject
   private AspectApplySeparateIF aspectApplySeparateImpl;// = new AspectApplySeparateImpl(aspectEffectiveClassical);
@@ -48,24 +41,10 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   @Inject
   private TranslationOfLightIF translationOfLightImpl;
 
-  private List<Applicable> rules = new ArrayList<Applicable>();
+  @Inject
+  private CollectionOfLightIF collectionOfLightImpl;
 
-  public AccidentalDignitiesBean(RelativeTransitIF relativeTransitImpl , 
-      DayNightDifferentiator dayNightImpl , 
-      RetrogradeIF retrogradeImpl , 
-      AspectEffectiveClassical aspectEffectiveClassical , 
-      AspectApplySeparateIF aspectApplySeparateImpl ,
-      BesiegedBean besiegedBean ,
-      RefranationIF refranationImpl)
-  {
-    this.relativeTransitImpl = relativeTransitImpl;
-    this.dayNightImpl = dayNightImpl;
-    this.retrogradeImpl = retrogradeImpl;
-    this.aspectEffectiveClassical = aspectEffectiveClassical;
-    this.aspectApplySeparateImpl = aspectApplySeparateImpl;
-    this.besiegedBean = besiegedBean;
-    this.refranationImpl = refranationImpl;
-  }
+  private List<Applicable> rules = new ArrayList<Applicable>();
 
   @PostConstruct
   public void init() {
@@ -110,7 +89,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     list.add(new Hayz(dayNightImpl));
     list.add(new Besieged_Jupiter_Venus(besiegedBean));
     list.add(new Translation_of_Light( translationOfLightImpl ));
-    list.add(new Collection_of_Light ( relativeTransitImpl , aspectEffectiveClassical , aspectApplySeparateImpl , dayNightImpl , besiegedBean));
+    list.add(new Collection_of_Light(collectionOfLightImpl));
     list.add(new Refranate_from_Mars_Saturn(refranationImpl));
     return list;
   }
