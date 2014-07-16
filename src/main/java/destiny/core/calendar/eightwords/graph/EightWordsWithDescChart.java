@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords.graph;
 
+import destiny.core.Gender;
 import destiny.core.calendar.eightwords.EightWordsNullable;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
@@ -20,6 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 八字盤 with 十神文字
@@ -30,7 +32,8 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF hiddenStemsImpl  = new HiddenStemsStandardImpl();
 
-  public EightWordsWithDescChart(int width , Color bg, Color fore, Color dayStemColor, EightWordsNullable eightWordsNullable, EightWordsChart.Direction direction) {
+  public EightWordsWithDescChart(int width , Color bg, Color fore, Optional<Gender> genderOptional
+    , EightWordsNullable eightWordsNullable, EightWordsChart.Direction direction) {
     super(width, width, BufferedImage.TYPE_INT_ARGB);
 
     Graphics2D g = this.createGraphics();
@@ -40,8 +43,11 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
     g.fillRect(0, 0, getWidth(), getHeight());
     g.setColor(fore);
 
+    Color dayStemColor = genderOptional.isPresent()? (genderOptional.get().isMale() ? Color.BLUE : Color.RED) : fore;
+
     // 主要的八個字
-    EightWordsChart mainChart = new EightWordsChart(Constants.WIDTH_HEIGHT.WIDTH , width , bg , fore , dayStemColor, eightWordsNullable , direction);
+    EightWordsChart mainChart = new EightWordsChart(Constants.WIDTH_HEIGHT.WIDTH , width , bg , fore
+      , dayStemColor , eightWordsNullable , direction);
 
     // 字體大小，為「八字圖片」中，每個字體寬度的三分之一
     int fontSize = mainChart.getFontSize()/3;
@@ -78,15 +84,19 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
 
       if (ebReactions.size() >= 1) {
         float fontX = i*mainChart.getCellWidth() + (mainChart.getCellWidth()-mainChart.getFontSize())/2 + fontSize;
-        // 日主上方不用寫字
+
         if ((direction == EightWordsChart.Direction.R2L && i != 1) ||
             (direction == EightWordsChart.Direction.L2R && i != 2)
           ) {
           // 非日主上方，就要寫上十神
           g.drawString(hsReactions.toString().substring(0,1) , fontX , mainChartY-fontSize);
           g.drawString(hsReactions.toString().substring(1,2) , fontX , mainChartY);
+        } else {
+          // 日主上方，寫上男女
+          if (genderOptional.isPresent())
+            g.drawString(genderOptional.get().toString() , fontX , mainChartY);
         }
-
+        //第一個藏干，放中間
         g.drawString(ReactionsUtil.getHeavenlyStems(dayStem,ebReactions.get(0)).toString() , fontX , hiddenStemY);
         // 十神
         g.drawString(ebReactions.get(0).toString().substring(0,1) , fontX , hiddenStemY+fontSize);
@@ -94,6 +104,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
       }
       if (ebReactions.size() >= 2) {
         float fontX = i*mainChart.getCellWidth() + (mainChart.getCellWidth()-mainChart.getFontSize())/2 + fontSize*2;
+        //第二個藏干，放右邊
         g.drawString(ReactionsUtil.getHeavenlyStems(dayStem,ebReactions.get(1)).toString() , fontX , hiddenStemY);
         // 十神
         g.drawString(ebReactions.get(1).toString().substring(0,1) , fontX , hiddenStemY+fontSize);
@@ -101,6 +112,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
       }
       if (ebReactions.size() == 3) {
         float fontX = i*mainChart.getCellWidth() + (mainChart.getCellWidth()-mainChart.getFontSize())/2;
+        //第三個藏干，放左邊
         g.drawString(ReactionsUtil.getHeavenlyStems(dayStem,ebReactions.get(2)).toString() , fontX , hiddenStemY);
         // 十神
         g.drawString(ebReactions.get(2).toString().substring(0,1) , fontX , hiddenStemY+fontSize);
