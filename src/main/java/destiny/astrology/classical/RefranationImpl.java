@@ -9,20 +9,20 @@ import destiny.utils.Triple;
 
 import java.io.Serializable;
 
+
 public class RefranationImpl implements RefranationIF , Serializable {
 
-  private final AspectApplySeparateIF aspectApplySeparateImpl;
+  private AspectApplySeparateIF aspectApplySeparateImpl;
 
-  private final RelativeTransitIF relativeTransitImpl;
+  private RelativeTransitIF relativeTransitImpl;
 
-  private final RetrogradeIF retrogradeImpl;
+  private RetrogradeIF retrogradeImpl;
 
   public RefranationImpl(AspectApplySeparateIF aspectApplySeparateImpl, RelativeTransitIF relativeTransitImpl, RetrogradeIF retrogradeImpl) {
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.relativeTransitImpl = relativeTransitImpl;
     this.retrogradeImpl = retrogradeImpl;
   }
-
 
   @Override
   public Triple<Boolean, Point, Aspect> resultOf(HoroscopeContext context, Planet planet, Point otherPoint) {

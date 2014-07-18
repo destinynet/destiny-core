@@ -12,6 +12,7 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
 
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -29,7 +30,8 @@ public class HourSolarTransImpl implements HourIF , Serializable
   private double atmosphericTemperature = 0;
   private boolean isDiscCenter = true;
   private boolean hasRefraction = true;
-  
+
+  @Inject
   private RiseTransIF riseTransImpl;
   
   protected HourSolarTransImpl()
@@ -38,12 +40,9 @@ public class HourSolarTransImpl implements HourIF , Serializable
   
   public HourSolarTransImpl(RiseTransIF riseTransImpl)
   {
-    if (riseTransImpl == null)
-      throw new RuntimeException("riseTransImpl and location cannot be null !");
-    
     this.riseTransImpl = riseTransImpl;
   }
-  
+
   public void setDiscCenter(boolean isDiscCenter)
   {
     this.isDiscCenter = isDiscCenter;

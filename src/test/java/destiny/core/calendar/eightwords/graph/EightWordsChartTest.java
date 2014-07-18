@@ -15,7 +15,7 @@ import static destiny.core.calendar.eightwords.graph.EightWordsChart.*;
 public class EightWordsChartTest {
 
   @Test
-  public void testChart() throws IOException {
+  public void testChart1() throws IOException {
     long t0 = System.currentTimeMillis();
 
     EightWordsChart c = new EightWordsChart(Constants.WIDTH_HEIGHT.WIDTH , 600 , Color.WHITE , Color.BLACK , Color.BLUE
@@ -23,7 +23,7 @@ public class EightWordsChartTest {
 
     System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
 
-    File pngFile = new File("/Users/smallufo/temp/chart.png");
+    File pngFile = new File("/Users/smallufo/temp/chart1.png");
     ImageIO.write(c, "png", pngFile);
     long t1 = System.currentTimeMillis();
 

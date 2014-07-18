@@ -36,13 +36,16 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   private BesiegedBean besiegedBean;
 
   @Inject
-  private RefranationIF refranationImpl;
-
-  @Inject
   private TranslationOfLightIF translationOfLightImpl;
 
   @Inject
   private CollectionOfLightIF collectionOfLightImpl;
+
+  private final RefranationIF refranationImpl;
+
+  public AccidentalDignitiesBean(RefranationIF refranationImpl) {
+    this.refranationImpl = refranationImpl;
+  }
 
   private List<Applicable> rules = new ArrayList<Applicable>();
 

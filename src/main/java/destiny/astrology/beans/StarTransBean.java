@@ -11,7 +11,6 @@ import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +20,11 @@ import java.util.List;
  */
 public class StarTransBean
 {
-  @Inject
-  private RiseTransIF riseTransImpl;
+  private final RiseTransIF riseTransImpl;
   
-  public StarTransBean(RiseTransIF impl)
+  public StarTransBean(RiseTransIF riseTransImpl)
   {
-    this.riseTransImpl = impl;
-  }
-  
-  public StarTransBean()
-  {
+    this.riseTransImpl = riseTransImpl;
   }
   
   /**

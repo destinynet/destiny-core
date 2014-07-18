@@ -5,14 +5,15 @@
  */
 package destiny.core.calendar.eightwords;
 
-import java.io.Serializable;
-import java.util.Locale;
-
 import destiny.astrology.Planet;
 import destiny.astrology.RiseTransIF;
 import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+
+import javax.inject.Inject;
+import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * 以太陽過天底的時間來決定『子正』
@@ -24,13 +25,14 @@ public class MidnightSolarTransImpl implements MidnightIF , Serializable
   private boolean isDiscCenter = true;
   private boolean hasRefraction = true;
 
+  @Inject
   private RiseTransIF riseTransImpl;
+
+  protected MidnightSolarTransImpl() {
+  }
   
   public MidnightSolarTransImpl(RiseTransIF riseTransImpl)
   {
-    if (riseTransImpl == null)
-      throw new RuntimeException("riseTransImpl cannot be null !");
-    
     this.riseTransImpl = riseTransImpl;
   }
   
