@@ -10,6 +10,7 @@ import destiny.astrology.Star;
 import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,8 @@ public class StarTransBean
    * @param hasRefraction 是否考量濛氣差 , 通常設為 true
    * @return List <Time> in LMT
    */
-  public List<Time> getPeriodStarRiseTransTime(Time fromLmtTime , Time toLmtTime , Star star , TransPoint point , Location location ,
+  @NotNull
+  public List<Time> getPeriodStarRiseTransTime(@NotNull Time fromLmtTime , @NotNull Time toLmtTime , Star star , TransPoint point , @NotNull Location location ,
       double atmosphericPressure, double atmosphericTemperature, boolean isDiscCenter, boolean hasRefraction)
   {
     Time fromGmtTime = Time.getGMTfromLMT(fromLmtTime, location);

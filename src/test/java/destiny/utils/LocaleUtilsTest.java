@@ -9,11 +9,15 @@ import java.util.Locale;
 import java.util.Set;
 
 import junit.framework.TestCase;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LocaleUtilsTest extends TestCase
 {
+  @NotNull
   private Set<Locale> locales = new HashSet<Locale>();
   private Locale locale;
+  @Nullable
   private Locale matched;
 
   public void testGetBestMatchingLocale1()

@@ -18,6 +18,8 @@ import destiny.astrology.Utils;
 import destiny.astrology.chart.AbstractRing;
 import destiny.astrology.chart.PointConnectionUtil;
 import destiny.astrology.chart.Style;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 繪製「點」到「星體icon」的連線
@@ -28,6 +30,7 @@ public class RingPointToIcon extends AbstractRing
   private double         radius;
   private RingPointIcons ringIcons;
   private Set<Point>     shownPoints;
+  @NotNull
   private Stroke         strokeNormal = new BasicStroke(1.0f);
 
   public RingPointToIcon(Horoscope h, double center, double radius, double innerFrom, double outerTo, RingPointIcons ringIcons, Set<Point> shownPoints)
@@ -85,6 +88,7 @@ public class RingPointToIcon extends AbstractRing
   }
 
   /** 不需要繪製內環 */
+  @Nullable
   @Override
   public Style getInnerRingStyle()
   {

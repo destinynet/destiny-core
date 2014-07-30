@@ -9,6 +9,7 @@ import destiny.astrology.Point;
 import destiny.astrology.chart.EmitLineProperties;
 import destiny.astrology.chart.PointConnection;
 import destiny.astrology.chart.Ring;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -22,6 +23,7 @@ public class AstrologChart extends BufferedImage
   Color              bg           = Color.BLACK;
   Color              fore         = Color.WHITE;
   double             center;
+  @NotNull
   private Stroke     strokeNormal = new BasicStroke(1.0f);
 
   private List<Ring> rings        = Collections.synchronizedList(new ArrayList<Ring>());
@@ -56,8 +58,7 @@ public class AstrologChart extends BufferedImage
 
     
     //繪製行星
-    for (Planet planet : Planet.values)
-      shownPoints.add(planet);
+    Collections.addAll(shownPoints, Planet.values);
     
     //繪製北交點
     shownPoints.add(LunarNode.NORTH_MEAN);

@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableBiMap;
 import destiny.iching.Hexagram;
 import destiny.iching.HexagramIF;
 import destiny.iching.HexagramSequenceIF;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 京房卦序：乾為天,天風姤,天山遯,天地否...
@@ -101,7 +102,7 @@ public class HexagramDivinationComparator implements Comparator<HexagramIF> , He
    * @return 傳回六爻卦序, 乾=1 , 姤=2 , 遯=3 , 否=4 ...
    */
   @Override
-  public int getIndex(HexagramIF hexagram)
+  public int getIndex(@NotNull HexagramIF hexagram)
   {
     Hexagram h = Hexagram.getHexagram(hexagram.getUpperSymbol(), hexagram.getLowerSymbol());
     return map.get(h);
@@ -120,7 +121,7 @@ public class HexagramDivinationComparator implements Comparator<HexagramIF> , He
   }
 
   @Override
-  public int compare(HexagramIF h1, HexagramIF h2)
+  public int compare(@NotNull HexagramIF h1, @NotNull HexagramIF h2)
   {
     return getIndex(h1)-getIndex(h2);
   }

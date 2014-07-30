@@ -7,6 +7,8 @@ package destiny.astrology.classical.rules.accidentalDignities;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Cazimi (within 17 minutes of the Sun). */
 public final class Cazimi extends Rule
@@ -15,8 +17,9 @@ public final class Cazimi extends Rule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet != Planet.SUN)
     {

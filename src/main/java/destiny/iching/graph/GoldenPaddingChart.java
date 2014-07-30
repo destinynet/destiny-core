@@ -5,6 +5,7 @@
 package destiny.iching.graph;
 
 import destiny.iching.HexagramIF;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -20,7 +21,7 @@ public class GoldenPaddingChart extends BaseHexagramChart
   protected double paddingX;
   protected double paddingY;
   
-  public GoldenPaddingChart(HexagramIF hex, WIDTH_HEIGHT which , int value, Color bg, Color fore)
+  public GoldenPaddingChart(@NotNull HexagramIF hex, WIDTH_HEIGHT which , int value, Color bg, Color fore)
   {
     super(hex
         , (which == WIDTH_HEIGHT.WIDTH  ? value : (int)(value / GOLDEN_RATIO))

@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology.chart;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Set;
@@ -25,5 +27,6 @@ public interface Ring
   public Set<PointConnection> getPointConnections();
   
   /** 取得繪製內環的樣式 , 如果傳回 null , 代表不繪製內環 */
+  @Nullable
   public Style getInnerRingStyle();
 }

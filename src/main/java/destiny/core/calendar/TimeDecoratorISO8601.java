@@ -7,6 +7,7 @@ package destiny.core.calendar;
 import java.io.Serializable;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 public class TimeDecoratorISO8601 implements Decorator<Time> , Serializable
 {
@@ -17,8 +18,9 @@ public class TimeDecoratorISO8601 implements Decorator<Time> , Serializable
   /** 
    * 格式 : 2001-01-02T01:02:03
    */
+  @NotNull
   @Override
-  public String getOutputString(Time time)
+  public String getOutputString(@NotNull Time time)
   {
     return time.getYear()+"-"
     +(time.getMonth()<10?"0":"")+time.getMonth() +"-"

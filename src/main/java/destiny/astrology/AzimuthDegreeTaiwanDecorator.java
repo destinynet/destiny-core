@@ -5,6 +5,7 @@
 package destiny.astrology;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 地平方位角 的簡易描述
@@ -12,10 +13,11 @@ import destiny.utils.Decorator;
  */
 public class AzimuthDegreeTaiwanDecorator implements Decorator<Double>
 {
+  @NotNull
   @Override
-  public String getOutputString(Double d)
+  public String getOutputString(@NotNull Double d)
   {
-    double value = d.doubleValue();
+    double value = d;
     if (value <= 0.5 || value >= 359.5)
       return "正北方";
     else if (value >= 89.5 && value <= 90.5)

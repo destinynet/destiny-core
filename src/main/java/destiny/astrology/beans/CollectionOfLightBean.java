@@ -8,6 +8,8 @@ import destiny.astrology.*;
 import destiny.astrology.Aspect.Importance;
 import destiny.astrology.classical.AspectEffectiveClassical;
 import destiny.astrology.classical.EssentialUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -34,8 +36,8 @@ public class CollectionOfLightBean implements Serializable
   private Planet planet;
   
   /** 收集光線的形式 */
-  public enum CollectType {DIGNITIES , DEBILITIES , ALL};
-  
+  public enum CollectType {DIGNITIES , DEBILITIES , ALL}
+
   private HoroscopeContext horoscopeContext;
   
   /** 古典占星的交角判定 */
@@ -52,11 +54,13 @@ public class CollectionOfLightBean implements Serializable
   private BesiegedBean besiegedBean;
   
   /** 蒐集光線的演算法 */
+  @Nullable
   private CollectType collectType = null;
   
   /** 是否蒐集光線 */
   private boolean collectionLight = false;
   /** 從哪兩顆星蒐集光線 */
+  @NotNull
   private Planet[] fromPlanets = new Planet[2];
   
   /** 已經指明詢問是否符合某種 「光線蒐集模式 : CollectType 」*/
@@ -196,6 +200,7 @@ public class CollectionOfLightBean implements Serializable
   }
 
   /** 如果沒有收集光線，其值將為 null */
+  @Nullable
   public List<Planet> getFromPlanets()
   {
     if (fromPlanets[0] == null || fromPlanets[1] == null)
@@ -204,6 +209,7 @@ public class CollectionOfLightBean implements Serializable
   }
 
   /** 收集光線的形式 */
+  @Nullable
   public CollectType getCollectType()
   {
     return collectType;

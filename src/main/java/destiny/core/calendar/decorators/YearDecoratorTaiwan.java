@@ -7,9 +7,11 @@ package destiny.core.calendar.decorators;
 import java.io.Serializable;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 public class YearDecoratorTaiwan implements Decorator<Integer> , Serializable
 {
+  @NotNull
   @Override
   public String getOutputString(Integer year)
   {

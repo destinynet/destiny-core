@@ -4,10 +4,11 @@
  */ 
 package destiny.astrology;
 
+import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import destiny.utils.LocaleStringIF;
 
 /**
  * 橢圓軌道的四個點：近點（Perihelion/Perigee）、遠點（Aphelion/Apogee），上升點（Acscending/North Node），下降點（Descending/South Node）
@@ -39,7 +40,7 @@ public enum Apsis implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

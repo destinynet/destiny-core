@@ -7,6 +7,8 @@ package destiny.iching;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.FiveElementIF;
 import destiny.core.chinese.YinYangIF;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -39,11 +41,13 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   /**
    * 取得八個卦
    */
+  @NotNull
   public static Symbol[] getSymbols()
   {
     return symbolArray;
   }
   
+  @NotNull
   public String toString()
   {
     return String.valueOf(name);
@@ -74,13 +78,11 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
    */
   public static Symbol getSymbol(YinYangIF[] line)
   {
-    for (int i=0 ; i< symbolArray.length ; i++)
-    {
-      if ( (line[0].getBooleanValue() == symbolArray[i].yinYangs[0] ) &&
-           (line[1].getBooleanValue() == symbolArray[i].yinYangs[1] ) &&
-           (line[2].getBooleanValue() == symbolArray[i].yinYangs[2] ) )
-      {
-        return symbolArray[i];
+    for (Symbol aSymbolArray : symbolArray) {
+      if ((line[0].getBooleanValue() == aSymbolArray.yinYangs[0]) &&
+        (line[1].getBooleanValue() == aSymbolArray.yinYangs[1]) &&
+        (line[2].getBooleanValue() == aSymbolArray.yinYangs[2])) {
+        return aSymbolArray;
       }
     }
     throw new RuntimeException("Cannot find Symbol for " + line[0] + " , " + line[1] + " , " + line[2]);
@@ -91,13 +93,11 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
    */
   public static Symbol getSymbol(boolean[] lines)
   {
-    for (int i=0 ; i< symbolArray.length ; i++)
-    {
-      if ( (lines[0] == symbolArray[i].yinYangs[0] ) &&
-           (lines[1] == symbolArray[i].yinYangs[1] ) &&
-           (lines[2] == symbolArray[i].yinYangs[2] ) )
-      {
-        return symbolArray[i];
+    for (Symbol aSymbolArray : symbolArray) {
+      if ((lines[0] == aSymbolArray.yinYangs[0]) &&
+        (lines[1] == aSymbolArray.yinYangs[1]) &&
+        (lines[2] == aSymbolArray.yinYangs[2])) {
+        return aSymbolArray;
       }
     }
     throw new RuntimeException("Cannot find Symbol for " + lines[0] + " , " + lines[1] + " , " + lines[2]);
@@ -114,6 +114,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   /**
    * implements FiveElementIF 
    */
+  @Nullable
   public FiveElement getFiveElement()
   {
     switch ( this )

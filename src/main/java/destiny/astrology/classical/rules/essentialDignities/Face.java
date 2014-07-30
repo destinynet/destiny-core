@@ -7,6 +7,8 @@ package destiny.astrology.classical.rules.essentialDignities;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A planet in its own Chaldean decanate or face. */
 public final class Face extends Rule
@@ -15,8 +17,9 @@ public final class Face extends Rule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == essentialImpl.getFacePoint(horoscopeContext.getPosition(planet).getLongitude()))
     {

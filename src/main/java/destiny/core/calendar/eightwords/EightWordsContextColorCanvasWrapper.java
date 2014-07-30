@@ -13,6 +13,8 @@ import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.utils.ColorCanvas.AlignUtil;
 import destiny.utils.ColorCanvas.ColorCanvas;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,6 +38,7 @@ public class EightWordsContextColorCanvasWrapper
   protected String locationName = "";
   
   /** TODO : IoC Google Maps URL Builder */
+  @NotNull
   private LocationUrlBuilder urlBuilder = new GoogleMapsUrlBuilder();
   
   /** 網址連結 */
@@ -45,7 +48,8 @@ public class EightWordsContextColorCanvasWrapper
   // private FourWordsIF fourWordsImpl;
   
   /** 輸出模式 */
-  public enum OutputMode {HTML , TEXT};
+  public enum OutputMode {HTML , TEXT}
+
   private OutputMode outputMode = OutputMode.HTML;
   
   public EightWordsContextColorCanvasWrapper(EightWordsContext context, Time lmt, Location location , String locationName , 
@@ -69,6 +73,7 @@ public class EightWordsContextColorCanvasWrapper
   /**
    * 取得 MetaData (國曆 農曆 經度 緯度 等資料)
    */
+  @NotNull
   protected ColorCanvas getMetaDataColorCanvas()
   {
     ColorCanvas cc = new ColorCanvas(8,44,"　");
@@ -152,7 +157,7 @@ public class EightWordsContextColorCanvasWrapper
     }
     
     cc.setText("日光節約：" , 4 , 19 , "999999");
-    boolean isDst = DstUtils.getDstSecondOffset(lmt, location).getFirst().booleanValue();
+    boolean isDst = DstUtils.getDstSecondOffset(lmt, location).getFirst();
     String dstString= isDst ? "有" : "無";
     cc.setText(dstString , 4 , 29 , (isDst ? "FF0000" : "999999") , "" , null);
       
@@ -181,6 +186,7 @@ public class EightWordsContextColorCanvasWrapper
   /**
    * 取得八字彩色盤 (不含「人」的資料)
    */
+  @Nullable
   protected ColorCanvas getEightWordsColorCanvas()
   {
     EightWords eightWords = context.getEightWords(lmt, location);
@@ -257,7 +263,8 @@ public class EightWordsContextColorCanvasWrapper
   } //toString()
   
   
-  protected ColorCanvas 地支藏干(EarthlyBranches 地支 , HeavenlyStems 天干)
+  @NotNull
+  protected ColorCanvas 地支藏干(EarthlyBranches 地支 , @NotNull HeavenlyStems 天干)
   {
     ReactionsUtil reactionsUtil = new ReactionsUtil(this.hiddenStemsImpl);
     ColorCanvas resultCanvas = new ColorCanvas(3, 6 , "　");

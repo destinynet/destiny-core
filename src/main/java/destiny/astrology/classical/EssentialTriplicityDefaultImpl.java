@@ -13,6 +13,7 @@ import destiny.astrology.Element;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Essential Triplicity 實作 , 參考 Ptolemy's Table : <br>
@@ -43,7 +44,7 @@ public class EssentialTriplicityDefaultImpl implements EssentialTriplicityIF , S
   
   @Override
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */ 
-  public Point getTriplicityPoint(ZodiacSign sign, DayNight dayNight)
+  public Point getTriplicityPoint(@NotNull ZodiacSign sign, @NotNull DayNight dayNight)
   {
     switch (dayNight)
     {

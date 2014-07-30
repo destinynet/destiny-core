@@ -12,6 +12,8 @@ import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A planet in its own sign , or mutual reception with another planet by sign */
 public final class Ruler extends Rule
@@ -23,8 +25,9 @@ public final class Ruler extends Rule
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
   
+  @Nullable
   @Override
-  public Tuple<String , Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  public Tuple<String , Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);

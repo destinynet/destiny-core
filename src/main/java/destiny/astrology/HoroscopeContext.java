@@ -4,13 +4,15 @@
  */ 
 package destiny.astrology;
 
+import destiny.core.calendar.Location;
+import destiny.core.calendar.Time;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 
 /**
  * 星盤的 Context， 除了基本的時間地點之外，還包括各種計算的介面 (星體位置 / 分宮法 ...)
@@ -18,12 +20,15 @@ import destiny.core.calendar.Time;
 public class HoroscopeContext implements Serializable
 {
   /** 當地時間 */
+  @NotNull
   private final Time lmt;
   
   /** 地點 */
+  @NotNull
   private final Location location;
   
   /** GMT 時間 */
+  @NotNull
   private final Time gmt;
   
   /** 分宮法 */
@@ -78,7 +83,7 @@ public class HoroscopeContext implements Serializable
   */
   
   /** 最完整的 constructor */
-  public HoroscopeContext(Time lmt , Location location , HouseSystem houseSystem , 
+  public HoroscopeContext(@NotNull Time lmt , @NotNull Location location , HouseSystem houseSystem ,
       Coordinate coordinate , Centric centric , double temperature , double pressure , 
       StarPositionWithAzimuthIF positionWithAzimuthImpl , HouseCuspIF houseCuspImpl , 
       ApsisWithAzimuthIF apsisWithAzimuthImpl, NodeType nodeType)
@@ -100,7 +105,8 @@ public class HoroscopeContext implements Serializable
   }
   
   /** 建立新的 HoroscopeContext 物件 , 其中 lmt 以 newLmt 取代 */
-  public static HoroscopeContext getNewLmtHoroscope(Time newLmt , HoroscopeContext horoscopeContext)
+  @NotNull
+  public static HoroscopeContext getNewLmtHoroscope(@NotNull Time newLmt , @NotNull HoroscopeContext horoscopeContext)
   {
     return new HoroscopeContext(newLmt , horoscopeContext.getLocation() , horoscopeContext.getHouseSystem() , 
         horoscopeContext.getCoordinate() , horoscopeContext.getCentric() , horoscopeContext.getTemperature() , horoscopeContext.getPressure() ,
@@ -109,6 +115,7 @@ public class HoroscopeContext implements Serializable
   }
   
   /** 取得星體的位置以及地平方位角 */
+  @Nullable
   public PositionWithAzimuth getPosition(Point point)
   {
     starPositionWithAzimuthImpl.setLocation(location);
@@ -125,6 +132,7 @@ public class HoroscopeContext implements Serializable
     return position;
   }
   
+  @NotNull
   private List<Star> getPointList()
   {
     List<Star> stars = new ArrayList<Star>();
@@ -146,6 +154,7 @@ public class HoroscopeContext implements Serializable
   
   
   /** 取得星盤 Horoscope */
+  @NotNull
   public Horoscope getHoroscope()
   {
     return new Horoscope(this , houseCuspImpl.getHouseCusps(Time.getGMTfromLMT(lmt, location), location, houseSystem));
@@ -166,6 +175,7 @@ public class HoroscopeContext implements Serializable
    * <b>此 method 僅供測試或是 debug 使用，平常最好不要用 ！</b><br/>
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
    */
+  @NotNull
   public List<Point> getHousePoints(int index)
   {
     if (index < 1)
@@ -187,7 +197,7 @@ public class HoroscopeContext implements Serializable
   }
   
   /** 取得某星 位於什麼星座 */
-  public ZodiacSign getZodiacSign(Point point)
+  public ZodiacSign getZodiacSign(@Nullable Point point)
   {
     if (point == null)
       throw new RuntimeException("嘗試計算 null 所在的星座!");
@@ -195,16 +205,19 @@ public class HoroscopeContext implements Serializable
     return ZodiacSign.getZodiacSign(position.getLongitude());
   }
   
+  @NotNull
   public Time getGmt()
   {
     return Time.getGMTfromLMT(lmt, location);
   }
   
+  @NotNull
   public Time getLmt()
   {
     return lmt;
   }
 
+  @NotNull
   public Location getLocation()
   {
     return location;

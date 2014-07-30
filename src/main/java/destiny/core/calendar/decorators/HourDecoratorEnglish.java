@@ -7,11 +7,12 @@ package destiny.core.calendar.decorators;
 import java.io.Serializable;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 public class HourDecoratorEnglish implements Decorator<Integer> , Serializable
 {
   @Override
-  public String getOutputString(Integer hour)
+  public String getOutputString(@NotNull Integer hour)
   {
     return hour.toString();
   }

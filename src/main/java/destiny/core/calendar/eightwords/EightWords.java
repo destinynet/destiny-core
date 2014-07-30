@@ -3,6 +3,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -18,7 +19,7 @@ public class EightWords extends EightWordsNullable
 {
 
   /** Constructor , 任何一柱都不可以為 null */
-  public EightWords( StemBranch year , StemBranch month , StemBranch day , StemBranch hour)
+  public EightWords( @Nullable StemBranch year , StemBranch month , StemBranch day , StemBranch hour)
   {
     if (year == null || month == null || day == null || hour == null)
       throw new RuntimeException("year / month / day / hour cannot be null !");

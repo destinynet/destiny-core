@@ -4,24 +4,13 @@
  */ 
 package destiny.astrology.chart.astrolog;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Stroke;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import destiny.astrology.Aspect;
-import destiny.astrology.Horoscope;
-import destiny.astrology.HoroscopeAspectData;
+import destiny.astrology.*;
 import destiny.astrology.Point;
-import destiny.astrology.Utils;
 import destiny.astrology.chart.AbstractRing;
 import destiny.astrology.chart.PointConnection;
+
+import java.awt.*;
+import java.util.*;
 
 public class RingAspectLines extends AbstractRing
 {
@@ -112,9 +101,7 @@ public class RingAspectLines extends AbstractRing
         strokeWidth = 2.0f;
       }
         
-      
-      Stroke stroke = new BasicStroke(strokeWidth , BasicStroke.CAP_BUTT , BasicStroke.JOIN_BEVEL , 10 , floats , 0);
-      pc.style.stroke = stroke;
+      pc.style.stroke = new BasicStroke(strokeWidth , BasicStroke.CAP_BUTT , BasicStroke.JOIN_BEVEL , 10 , floats , 0);
       
       result.add(pc);
     }

@@ -5,6 +5,8 @@
  */
 package destiny.core.chinese;
 
+import org.jetbrains.annotations.Nullable;
+
 /** 實作 五行 getFiveElement() 以及 陰陽 getYinYang() 以及取得地支順序 getIndex() 的地支 */
 public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF , YinYangIF
 {
@@ -22,6 +24,7 @@ public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF ,
   亥(EarthlyBranches.亥);
   
   
+  @Nullable
   private EarthlyBranches eb = null;
   
   private SimpleEarthlyBranches(EarthlyBranches eb)

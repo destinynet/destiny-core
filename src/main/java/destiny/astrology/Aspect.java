@@ -4,15 +4,11 @@
  */ 
 package destiny.astrology;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
 
 /** 交角 , Aspect */
 public enum Aspect implements LocaleStringIF
@@ -57,8 +53,8 @@ public enum Aspect implements LocaleStringIF
   OPPOSITION    ("Aspect.OPPOSITION"    ,180 , Importance.HIGH);
   
   /** 重要度 : HIGH , MEDIUM , LOW */
-  public enum Importance {HIGH,MEDIUM,LOW};
-  
+  public enum Importance {HIGH,MEDIUM,LOW}
+
   private final static String resource = "destiny.astrology.Astrology";
   
   private String nameKey;
@@ -96,6 +92,7 @@ public enum Aspect implements LocaleStringIF
   }
   
   /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null */
+  @Nullable
   public static Aspect getAspect(String value)
   {
     for (Aspect aspect : Aspect.values())
@@ -129,6 +126,7 @@ public enum Aspect implements LocaleStringIF
   
   
   /** 從 double 度數，找回符合的 Aspect */
+  @Nullable
   public static Aspect getAspect(double degree)
   {
     if (degree >=360 )
@@ -155,7 +153,7 @@ public enum Aspect implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

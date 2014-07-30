@@ -4,6 +4,8 @@
  */ 
 package destiny.utils.security;
 
+import org.jetbrains.annotations.NotNull;
+
 /****************************************************************************
  * JCrypt.java
  *
@@ -418,6 +420,7 @@ public class JCrypt
       return(a);
    }
 
+   @NotNull
    private static int [] des_set_key(byte key[])
    {
       int schedule[] = new int[ITERATIONS * 2];
@@ -511,6 +514,7 @@ public class JCrypt
       return(L);
    }
 
+   @NotNull
    private static final int [] body(int schedule[], int Eswap0, int Eswap1)
    {
       int left = 0;
@@ -561,7 +565,8 @@ public class JCrypt
       return(out);
    }
 
-   public static final String crypt(String salt, String original)
+   @NotNull
+   public static final String crypt(@NotNull String salt, @NotNull String original)
    {
       while(salt.length() < 2)
          salt += "A";
@@ -620,7 +625,7 @@ public class JCrypt
       return(buffer.toString());
    }
 
-   public static void main(String args[])
+   public static void main(@NotNull String args[])
    {
       if(args.length >= 2)
       {

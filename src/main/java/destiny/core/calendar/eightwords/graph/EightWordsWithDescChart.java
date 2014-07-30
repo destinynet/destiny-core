@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2014-06-04.
+ * Created by smallufo on 2014-07-31.
  */
 package destiny.core.calendar.eightwords.graph;
 
@@ -14,6 +14,7 @@ import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
 import destiny.font.FontRepository;
 import destiny.utils.Triple;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -30,10 +31,11 @@ import java.util.Optional;
 public class EightWordsWithDescChart extends BufferedImage implements Serializable {
 
   /** 地支藏干的實作，內定採用標準設定 */
+  @NotNull
   private HiddenStemsIF hiddenStemsImpl  = new HiddenStemsStandardImpl();
 
-  public EightWordsWithDescChart(int width , Color bg, Color fore, Optional<Gender> genderOptional
-    , EightWordsNullable eightWordsNullable, EightWordsChart.Direction direction) {
+  public EightWordsWithDescChart(int width , Color bg, Color fore, @NotNull Optional<Gender> genderOptional
+    , @NotNull EightWordsNullable eightWordsNullable, EightWordsChart.Direction direction) {
     super(width, width, BufferedImage.TYPE_INT_ARGB);
 
     Graphics2D g = this.createGraphics();

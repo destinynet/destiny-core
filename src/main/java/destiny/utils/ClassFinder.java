@@ -1,5 +1,8 @@
 package destiny.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Collections;
@@ -9,8 +12,9 @@ import java.util.Set;
 public class ClassFinder
 {
   /** 列出此 packageName 之下的所有 classes , 如果沒有，則傳回 null */
+  @Nullable
   @SuppressWarnings("rawtypes")
-  public static Set<Class> getClasses(String packageName , boolean recursive) throws ClassNotFoundException
+  public static Set<Class> getClasses(@NotNull String packageName , boolean recursive) throws ClassNotFoundException
   {
     Set<Class> classes = Collections.synchronizedSet(new HashSet<Class>());
     // Get a File object for the package
@@ -60,7 +64,7 @@ public class ClassFinder
           catch(NoClassDefFoundError ignored)
           {
           }
-          catch(ClassNotFoundException ingored)
+          catch(ClassNotFoundException ignored)
           {
           }
         }

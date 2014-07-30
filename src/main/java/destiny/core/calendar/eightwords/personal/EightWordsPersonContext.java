@@ -7,11 +7,6 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import destiny.astrology.Coordinate;
 import destiny.astrology.Planet;
 import destiny.astrology.StarTransitIF;
@@ -20,13 +15,14 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.Time;
-import destiny.core.calendar.eightwords.DayIF;
-import destiny.core.calendar.eightwords.EightWords;
-import destiny.core.calendar.eightwords.EightWordsContext;
-import destiny.core.calendar.eightwords.HourIF;
-import destiny.core.calendar.eightwords.MidnightIF;
-import destiny.core.calendar.eightwords.YearMonthIF;
+import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 個人命例 的八字資料 Context , 多出性別欄位 以及計算流年大運等 method
@@ -223,20 +219,20 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
     Map<EightWordsPersonContext , Map<Integer,Time>> hashMap = targetMajorSolarTermsGmtHolder.get();
     if (hashMap.get(this) == null)
       hashMap.put(this, new HashMap<Integer , Time>());
-    Time targetGmt = hashMap.get(this).get(new Integer(index));
+    Time targetGmt = hashMap.get(this).get(index);
     
     if (targetGmt == null)
     {
       if (!reverse)
       {
         //順推
-        if (hashMap.get(this).get(new Integer(index-1)) != null)
+        if (hashMap.get(this).get(index - 1) != null)
           i=index-1;
         
         while (i <= index)
         {
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
-          if (hashMap.get(this).get(new Integer(i)) == null)
+          if (hashMap.get(this).get(i) == null)
           {
             //沒有計算過
             targetGmt = this.starTransitImpl.getNextTransit(Planet.SUN , stepMajorSolarTerms.getZodiacDegree() , Coordinate.ECLIPTIC , stepGmt , true);
@@ -244,14 +240,14 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
             stepGmt = new Time(targetGmt , 24*60*60);
             
             Map<Integer,Time> m = hashMap.get(this);
-            m.put(new Integer(i) , targetGmt);
+            m.put(i, targetGmt);
             hashMap.put(this, m);
             targetMajorSolarTermsGmtHolder.set(hashMap);
           }
           else
           {
             //之前計算過
-            targetGmt = hashMap.get(this).get(new Integer(i));
+            targetGmt = hashMap.get(this).get(i);
             stepGmt = new Time(targetGmt , 24*60*60);
           }
           
@@ -263,14 +259,14 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
       else
       {
         //逆推
-        if (hashMap.get(this).get(new Integer(index+1)) != null)
+        if (hashMap.get(this).get(index + 1) != null)
           i=index+1;
         
         while (i >= index)
         {
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
           
-          if (hashMap.get(this).get(new Integer(i)) == null)
+          if (hashMap.get(this).get(i) == null)
           {
             //沒有計算過
             
@@ -279,14 +275,14 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
             stepGmt = new Time(targetGmt , -24*60*60);
             
             Map<Integer,Time> m = hashMap.get(this);
-            m.put(new Integer(i) , targetGmt);
+            m.put(i, targetGmt);
             hashMap.put(this , m);
             targetMajorSolarTermsGmtHolder.set(hashMap);
           }
           else
           {
             //之前計算過
-            targetGmt = hashMap.get(this).get(new Integer(i));
+            targetGmt = hashMap.get(this).get(i);
             stepGmt = new Time(targetGmt , -24*60*60);        
           }
           
@@ -430,7 +426,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
 
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;

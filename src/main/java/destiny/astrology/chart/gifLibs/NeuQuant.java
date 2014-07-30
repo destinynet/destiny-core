@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology.chart.gifLibs;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 /* NeuQuant Neural-Net Quantization Algorithm
@@ -101,12 +103,16 @@ public class NeuQuant implements Serializable {
  //   typedef int pixel[4];                /* BGRc */
  protected int[][] network; /* the network itself - [netsize][4] */
 
+ @NotNull
  protected int[] netindex = new int[256];
  /* for network lookup - really 256 */
 
+ @NotNull
  protected int[] bias = new int[netsize];
  /* bias and freq arrays for learning */
+ @NotNull
  protected int[] freq = new int[netsize];
+ @NotNull
  protected int[] radpower = new int[initrad];
  /* radpower for precomputation */
 
@@ -131,6 +137,7 @@ public class NeuQuant implements Serializable {
   }
  }
  
+ @NotNull
  public byte[] colorMap() {
   byte[] map = new byte[3 * netsize];
   int[] index = new int[netsize];
@@ -342,6 +349,7 @@ public class NeuQuant implements Serializable {
   }
   return (best);
  }
+ @NotNull
  public byte[] process() {
   learn();
   unbiasnet();

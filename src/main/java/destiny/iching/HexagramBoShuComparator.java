@@ -9,6 +9,7 @@ import java.util.Comparator;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 帛書卦序
@@ -94,7 +95,7 @@ public class HexagramBoShuComparator implements Comparator<HexagramIF> , Hexagra
     .put(Hexagram.益, 64).build();
   
   @Override
-  public int getIndex(HexagramIF hexagram)
+  public int getIndex(@NotNull HexagramIF hexagram)
   {
     Hexagram h = Hexagram.getHexagram(hexagram.getUpperSymbol(), hexagram.getLowerSymbol());
     return map.get(h);
@@ -113,7 +114,7 @@ public class HexagramBoShuComparator implements Comparator<HexagramIF> , Hexagra
   }
 
   @Override
-  public int compare(HexagramIF h1, HexagramIF h2)
+  public int compare(@NotNull HexagramIF h1, @NotNull HexagramIF h2)
   {
     return getIndex(h1)-getIndex(h2);
   }

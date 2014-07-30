@@ -11,6 +11,7 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 換日 的實作
@@ -21,7 +22,7 @@ public class DayImpl implements DayIF , Serializable
   {
   }
 
-  public StemBranch getDay(Time lmt, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi)
+  public StemBranch getDay(@Nullable Time lmt, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt and location cannot be null !");

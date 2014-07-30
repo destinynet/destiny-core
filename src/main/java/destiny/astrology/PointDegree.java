@@ -4,6 +4,9 @@
  */
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 /**
@@ -22,7 +25,7 @@ public class PointDegree implements Serializable
   }
   
   /** 此星體在某星座幾度 , deg 必須小於 30 , 否則丟出 RuntimeException */
-  public PointDegree(Point s , ZodiacSign sign , double deg)
+  public PointDegree(Point s , @NotNull ZodiacSign sign , double deg)
   {
     this.point = s;
     if (deg < 0 || deg >= 30)
@@ -41,7 +44,7 @@ public class PointDegree implements Serializable
   }
   
   /** 取得此度數對於此星座，是幾度 */
-  public double getDegreeOf(ZodiacSign sign)
+  public double getDegreeOf(@NotNull ZodiacSign sign)
   {
     return degree-sign.getDegree();
   }
@@ -52,6 +55,7 @@ public class PointDegree implements Serializable
     return ZodiacSign.getZodiacSign(degree);
   }
   
+  @NotNull
   @Override
   public String toString()
   {
@@ -71,7 +75,7 @@ public class PointDegree implements Serializable
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;

@@ -10,6 +10,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities). */
 public final class Triplicity extends Rule
@@ -22,8 +24,9 @@ public final class Triplicity extends Rule
     this.dayNightImpl = dayNightImpl;
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);

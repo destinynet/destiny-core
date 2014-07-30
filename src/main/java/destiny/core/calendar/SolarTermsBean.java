@@ -14,6 +14,7 @@ import destiny.astrology.Planet;
 import destiny.astrology.Position;
 import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 節氣工具箱 
@@ -70,7 +71,8 @@ public class SolarTermsBean implements SolarTermsIF , Serializable
    * 注意，此方法因為經過 Julian Day 的轉換，精確度比 GMT 差了 約萬分之一秒
    * @return List < SolarTermsTime >
    */
-  public List<SolarTermsTime> getLocalPeriodSolarTerms(Time fromLmt , Time toLmt , Location location)
+  @NotNull
+  public List<SolarTermsTime> getLocalPeriodSolarTerms(@NotNull Time fromLmt , @NotNull Time toLmt , @NotNull Location location)
   {
     Time fromGmtTime = Time.getGMTfromLMT(fromLmt, location);
     Time   toGmtTime = Time.getGMTfromLMT(toLmt , location);
@@ -93,7 +95,8 @@ public class SolarTermsBean implements SolarTermsIF , Serializable
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    * @return List <SolarTermsTime>
    */
-  public List<SolarTermsTime> getPeriodSolarTerms(Time fromGmtTime , Time toGmtTime )
+  @NotNull
+  public List<SolarTermsTime> getPeriodSolarTerms(@NotNull Time fromGmtTime , @NotNull Time toGmtTime )
   {
     SolarTerms nowST = getSolarTermsFromGMT(fromGmtTime);
 

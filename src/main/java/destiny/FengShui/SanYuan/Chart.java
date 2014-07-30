@@ -9,6 +9,8 @@ package destiny.FengShui.SanYuan;
 
 import destiny.iching.Symbol;
 import destiny.iching.SymbolAcquired;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -34,10 +36,13 @@ public class Chart implements Serializable
    */
   private Symbol view = Symbol.坎; 
   
+  @NotNull
   private ChartBlock[] chartBlockArray = new ChartBlock[10]; // 0 不用
   //private ChartBlock[][] chartCoordinate = new ChartBlock[3][3];
 
+  @NotNull
   private EarthlyCompass 地盤 = new EarthlyCompass();
+  @NotNull
   private AdquiredSymbolCompass 後天八卦盤 = new AdquiredSymbolCompass();
   
   /**
@@ -133,6 +138,7 @@ public class Chart implements Serializable
   /**
    * 查詢某卦方位裡面的資料結構 (ChartBlock) , 如果查的是 null , 則傳回中宮
    */
+  @Nullable
   public ChartBlock getChartBlock(Symbol s)
   {
     for(ChartBlock chartBlock : chartBlockArray)
@@ -143,12 +149,12 @@ public class Chart implements Serializable
     throw new RuntimeException("Cannot find ChartBlock " + s);
   }
   
-  private boolean isConverse(Symbol 原始卦 , Symbol 飛佈卦 , Mountain m)
+  private boolean isConverse(@Nullable Symbol 原始卦 , Symbol 飛佈卦 , Mountain m)
   {
     boolean isConverse = false;
     if (原始卦 == null)
     {
-      if (地盤.getYinYang(m) == true)
+      if (地盤.getYinYang(m))
         isConverse = false;
       else
         isConverse = true;
@@ -162,7 +168,7 @@ public class Chart implements Serializable
        * index = 2 => 人元
        */
       double degree = 後天八卦盤.getStartDegree(原始卦) + index*15 +1; //最後的 +1 是確保結果能坐落於該山中
-      if (地盤.getYinYang( (Mountain) (地盤.getMountain(degree)) ) == true)
+      if (地盤.getYinYang((Mountain) (地盤.getMountain(degree))))
         isConverse = false;
       else
         isConverse = true;
@@ -173,7 +179,7 @@ public class Chart implements Serializable
   /**
    * 將 int 值侷限在 1 到 9 之間
    */
-  private final static int normalize(int value)
+  private static int normalize(int value)
   {
     if (value > 9 )
       return normalize( value-9);
@@ -189,7 +195,7 @@ public class Chart implements Serializable
    */
   private void fillMountain(int start , boolean converse)
   {
-    if (converse == false)
+    if (!converse)
     {
       //順飛
       for (int i=1 ; i <=9 ; i++)
@@ -213,7 +219,7 @@ public class Chart implements Serializable
    */
   private void fillDirection(int start , boolean converse)
   {
-    if (converse == false)
+    if (!converse)
     {
       //順飛
       for (int i=1 ; i <=9 ; i++)

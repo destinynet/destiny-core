@@ -5,6 +5,7 @@
 package destiny.astrology.chart;
 
 import destiny.astrology.Horoscope;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
@@ -23,7 +24,7 @@ public class ChartImage extends BufferedImage
   Color fore = Color.WHITE;
   int   center;
 
-  public ChartImage(Horoscope horoscope , int width)
+  public ChartImage(@NotNull Horoscope horoscope , int width)
   {
     super(width, width, BufferedImage.TYPE_INT_RGB);
     
@@ -173,7 +174,7 @@ public class ChartImage extends BufferedImage
   /**
    * 打符水印
    */
-  private void drawSignature(Graphics2D g)
+  private void drawSignature(@NotNull Graphics2D g)
   {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     String funpText = "funP推推王";

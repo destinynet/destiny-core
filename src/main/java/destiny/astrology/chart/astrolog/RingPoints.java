@@ -11,6 +11,7 @@ import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.astrology.chart.AbstractRing;
 import destiny.astrology.chart.Style;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -94,6 +95,7 @@ public class RingPoints extends AbstractRing
   }
 
   /** 不繪製內圈 */
+  @Nullable
   @Override
   public Style getInnerRingStyle()
   {

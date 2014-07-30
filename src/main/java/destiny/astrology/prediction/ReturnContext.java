@@ -4,21 +4,12 @@
  */ 
 package destiny.astrology.prediction;
 
-import java.io.Serializable;
-
-import destiny.astrology.ApsisWithAzimuthIF;
-import destiny.astrology.Centric;
-import destiny.astrology.Coordinate;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.HouseCuspIF;
-import destiny.astrology.HouseSystem;
-import destiny.astrology.NodeType;
-import destiny.astrology.Planet;
-import destiny.astrology.StarPositionWithAzimuthIF;
-import destiny.astrology.StarTransitIF;
-import destiny.astrology.Utils;
+import destiny.astrology.*;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /** 
  * 返照法演算法 , 可以計算 Planet 的返照
@@ -96,6 +87,7 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable
   
   
   /** 對外主要的 method , 取得 return 盤 */
+  @NotNull
   public HoroscopeContext getReturnHoroscope()
   {
     Time convergentGmt = getConvergentTime( Time.getGMTfromLMT(natalLmt , natalLoc) , Time.getGMTfromLMT(nowLmt , nowLoc));
@@ -119,16 +111,16 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable
    * 傳回值也是GMT！
    */
   @Override
-  public Time getConvergentTime(Time natalGmtTime, Time nowGmtTime)
+  public Time getConvergentTime(@NotNull Time natalGmtTime, @NotNull Time nowGmtTime)
   {
     if (precession)
       starPositionWithAzimuthImpl.setCoordinate(Coordinate.SIDEREAL);
     //先計算出生盤中，該星體的黃道位置
     double natalPlanetDegree = starPositionWithAzimuthImpl.getPosition(planet , natalGmtTime).getLongitude();
     
-    Coordinate coordinate = (precession == true) ? Coordinate.SIDEREAL : Coordinate.ECLIPTIC;
+    Coordinate coordinate = (precession) ? Coordinate.SIDEREAL : Coordinate.ECLIPTIC;
     //再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
-    if (converse == false) //順推
+    if (!converse) //順推
     {
       Time resultGmt = starTransitImpl.getNextTransit(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , nowGmtTime, false); //false 代表逆推，往before算
       return resultGmt;  

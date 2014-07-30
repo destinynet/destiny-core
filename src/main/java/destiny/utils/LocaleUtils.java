@@ -4,21 +4,18 @@
  */ 
 package destiny.utils;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
+import java.util.*;
 
 public class LocaleUtils implements Serializable
 {
 
   /** 將 string 以 _ 切開，傳回 Locale 物件 */
+  @Nullable
   public static Locale getLocale(String string)
   {
     StringTokenizer st = new StringTokenizer(string , "_");
@@ -55,7 +52,7 @@ public class LocaleUtils implements Serializable
    * 7. 內訂(純 basename)
    * </pre>
    */
-  public static String getString(Map<Locale,String> localeStringMap , Locale locale)
+  public static String getString(@NotNull Map<Locale,String> localeStringMap , @Nullable Locale locale)
   {
     if (locale == null)
       throw new NullPointerException("locale cannot be null");
@@ -69,19 +66,18 @@ public class LocaleUtils implements Serializable
     sixLocales.add(defaultLocale); //第四項
     sixLocales.add(new Locale(defaultLocale.getLanguage() , defaultLocale.getCountry())); //第五項
     sixLocales.add(new Locale(defaultLocale.getLanguage())); //第六項
-    
-    Iterator<Locale> it = sixLocales.iterator();
-    while(it.hasNext())
-    {
-      Locale eachLocale = it.next();
-      if (localeStringMap.containsKey(eachLocale))
+
+    for (Locale eachLocale : sixLocales) {
+      if (localeStringMap.containsKey(eachLocale)) {
         return localeStringMap.get(eachLocale);
+      }
     }
       
     //前面都找不到，最後，把 basename 傳回去 
     return localeStringMap.get(null); //第七項
   }
   
+  @Nullable
   public static Locale getBestMatchingLocale(Locale locale)
   {
     //TODO : 未來該把此 TAIWAN , CHINA , ENGLISH 做更彈性的調整。
@@ -102,7 +98,8 @@ public class LocaleUtils implements Serializable
    * 7. 內訂(純 basename)
    * </pre>
    */
-  public static Locale getBestMatchingLocale(Locale locale , Iterable<Locale> locales)
+  @Nullable
+  public static Locale getBestMatchingLocale(@Nullable Locale locale , @NotNull Iterable<Locale> locales)
   {
     Locale defaultLocale = Locale.getDefault();
     if (locale == null)

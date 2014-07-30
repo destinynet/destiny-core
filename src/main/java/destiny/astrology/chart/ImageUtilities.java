@@ -4,6 +4,8 @@
  */
 package destiny.astrology.chart;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -24,7 +26,8 @@ public class ImageUtilities
    * Create Image from a file, then turn that into a BufferedImage.
    */
 
-  public static BufferedImage getBufferedImage(String imageFile, Component c)
+  @NotNull
+  public static BufferedImage getBufferedImage(String imageFile, @NotNull Component c)
   {
     Image image = c.getToolkit().getImage(imageFile);
     waitForImage(image, c);
@@ -50,7 +53,7 @@ public class ImageUtilities
     {
       tracker.waitForAll();
     }
-    catch (InterruptedException ie)
+    catch (InterruptedException ignored)
     {
     }
     return (!tracker.isErrorAny());
@@ -61,7 +64,7 @@ public class ImageUtilities
    * loading. Just a simple application of MediaTracker.
    */
 
-  public static boolean waitForImages(Image[] images, Component c)
+  public static boolean waitForImages(@NotNull Image[] images, Component c)
   {
     MediaTracker tracker = new MediaTracker(c);
     for (int i = 0; i < images.length; i++)
@@ -70,7 +73,7 @@ public class ImageUtilities
     {
       tracker.waitForAll();
     }
-    catch (InterruptedException ie)
+    catch (InterruptedException ignored)
     {
     }
     return (!tracker.isErrorAny());

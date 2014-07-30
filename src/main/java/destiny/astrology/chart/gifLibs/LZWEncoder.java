@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology.chart.gifLibs;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -49,7 +51,9 @@ class LZWEncoder implements Serializable {
  int maxcode; // maximum code, given n_bits
  int maxmaxcode = 1 << BITS; // should NEVER generate this code
 
+ @NotNull
  int[] htab = new int[HSIZE];
+ @NotNull
  int[] codetab = new int[HSIZE];
 
  int hsize = HSIZE; // for dynamic table sizing
@@ -95,6 +99,7 @@ class LZWEncoder implements Serializable {
  int cur_accum = 0;
  int cur_bits = 0;
 
+ @NotNull
  int masks[] =
   {
    0x0000,
@@ -119,6 +124,7 @@ class LZWEncoder implements Serializable {
  int a_count;
 
  // Define the storage for the packet accumulator
+ @NotNull
  byte[] accum = new byte[256];
 
  //----------------------------------------------------------------------------
@@ -131,7 +137,7 @@ class LZWEncoder implements Serializable {
  
  // Add a character to the end of the current packet, and if it is 254
  // characters, flush the packet to disk.
- void char_out(byte c, OutputStream outs) throws IOException {
+ void char_out(byte c, @NotNull OutputStream outs) throws IOException {
   accum[a_count++] = c;
   if (a_count >= 254)
    flush_char(outs);
@@ -140,7 +146,7 @@ class LZWEncoder implements Serializable {
  // Clear out the hash table
 
  // table clear for block compress
- void cl_block(OutputStream outs) throws IOException {
+ void cl_block(@NotNull OutputStream outs) throws IOException {
   cl_hash(hsize);
   free_ent = ClearCode + 2;
   clear_flg = true;
@@ -154,7 +160,7 @@ class LZWEncoder implements Serializable {
    htab[i] = -1;
  }
  
- void compress(int init_bits, OutputStream outs) throws IOException {
+ void compress(int init_bits, @NotNull OutputStream outs) throws IOException {
   int fcode;
   int i /* = 0 */;
   int c;
@@ -225,7 +231,7 @@ class LZWEncoder implements Serializable {
  }
  
  //----------------------------------------------------------------------------
- void encode(OutputStream os) throws IOException {
+ void encode(@NotNull OutputStream os) throws IOException {
   os.write(initCodeSize); // write "initial code size" byte
 
   remaining = imgW * imgH; // reset navigation variables
@@ -237,7 +243,7 @@ class LZWEncoder implements Serializable {
  }
  
  // Flush the packet to disk, and reset the accumulator
- void flush_char(OutputStream outs) throws IOException {
+ void flush_char(@NotNull OutputStream outs) throws IOException {
   if (a_count > 0) {
    outs.write(a_count);
    outs.write(accum, 0, a_count);
@@ -263,7 +269,7 @@ class LZWEncoder implements Serializable {
   return pix & 0xff;
  }
  
- void output(int code, OutputStream outs) throws IOException {
+ void output(int code, @NotNull OutputStream outs) throws IOException {
   cur_accum &= masks[cur_bits];
 
   if (cur_bits > 0)

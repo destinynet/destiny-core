@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2014-07-15.
+ * Created by smallufo on 2014-07-31.
  */
 package destiny.astrology.classical;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface CollectionOfLightIF {
 
   /** 收集光線的形式 */
-  public enum CollectType {DIGNITIES , DEBILITIES , ALL};
+  public enum CollectType {DIGNITIES , DEBILITIES , ALL}
 
   /**
    * 指定某種「光線蒐集模式」

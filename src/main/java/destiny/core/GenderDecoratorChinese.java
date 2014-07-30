@@ -5,9 +5,11 @@
 package destiny.core;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 public class GenderDecoratorChinese implements Decorator<Gender>
 {
+  @NotNull
   @Override
   public String getOutputString(Gender gender)
   {

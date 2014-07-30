@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import destiny.astrology.Horoscope;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractRing implements Ring , Serializable
 {
@@ -43,12 +44,14 @@ public abstract class AbstractRing implements Ring , Serializable
   }
 
 
+  @Nullable
   @Override
   public Map<Double, BufferedImage> getBfferedImages()
   {
     return null;
   }
 
+  @Nullable
   @Override
   public Set<PointConnection> getPointConnections()
   {
@@ -56,6 +59,7 @@ public abstract class AbstractRing implements Ring , Serializable
   }
 
   /** 內定 , 白色實線 內環 */
+  @Nullable
   @Override
   public Style getInnerRingStyle()
   {
@@ -65,6 +69,7 @@ public abstract class AbstractRing implements Ring , Serializable
     return style;
   }
 
+  @Nullable
   @Override
   public EmitLineProperties[] getEmitLineProperties()
   {

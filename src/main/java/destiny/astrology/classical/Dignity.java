@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 行星落入星座的 , 旺 廟 陷 落 
@@ -39,7 +40,7 @@ public enum Dignity implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

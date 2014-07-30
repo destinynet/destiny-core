@@ -4,15 +4,13 @@
  */ 
 package destiny.astrology;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import destiny.astrology.classical.AspectEffectiveClassical;
 import destiny.astrology.classical.PointDiameterIF;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
+import java.util.*;
 
 /** 古典占星術，列出一張星盤中呈現交角的星體以及角度 的實作 */
 public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalculatorIF , Serializable
@@ -45,8 +43,9 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
     this.horoscope = horoscope;
   }
   
+  @Nullable
   @Override
-  public Map<Point , Aspect> getPointAspect(Point point, Collection<Point> points)
+  public Map<Point , Aspect> getPointAspect(Point point, @NotNull Collection<Point> points)
   {
     if (this.horoscope == null)
       throw new RuntimeException(getClass().getName() + " : horoscope is null ! call setHoroscope(horoscope) first !");
@@ -80,12 +79,14 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
   }
 
 
+  @NotNull
   @Override
   public String getTitle(Locale locale)
   {
     return "古典占星術 : " + classical.getPointDiameterImpl().getTitle(locale);
   }
   
+  @NotNull
   @Override
   public String getDescription(Locale locale)
   {

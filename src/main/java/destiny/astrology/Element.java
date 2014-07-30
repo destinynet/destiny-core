@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 四大元素 : 火 Fire , 土 Earth , 風 Air , 水 Water
@@ -39,7 +40,7 @@ public enum Element implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

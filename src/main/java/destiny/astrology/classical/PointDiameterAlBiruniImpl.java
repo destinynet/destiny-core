@@ -4,13 +4,13 @@
  */ 
 package destiny.astrology.classical;
 
-import java.io.Serializable;
-import java.util.Locale;
-
 import com.google.common.collect.ImmutableMap;
-
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * 古典占星術，Al-Biruni 的交角 <br/>
@@ -50,12 +50,14 @@ public class PointDiameterAlBiruniImpl implements PointDiameterIF , Serializable
   }
   */
   
+  @NotNull
   @Override
   public String getTitle(Locale locale)
   {
     return "Al-Biruni";
   }
   
+  @NotNull
   @Override
   public String getDescription(Locale locale)
   {
@@ -66,7 +68,7 @@ public class PointDiameterAlBiruniImpl implements PointDiameterIF , Serializable
   public double getDiameter(Point point)
   {
     if (planetOrbsMap.get(point) != null)
-      return planetOrbsMap.get(point).doubleValue();
+      return planetOrbsMap.get(point);
     else
       return 2.0;
   }

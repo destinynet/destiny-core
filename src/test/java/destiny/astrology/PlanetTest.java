@@ -4,14 +4,9 @@
  */ 
 package destiny.astrology;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
 import junit.framework.TestCase;
+
+import java.util.*;
 
 public class PlanetTest extends TestCase
 {
@@ -51,8 +46,7 @@ public class PlanetTest extends TestCase
   
   /** 透過 reflection 產生 太陽 , 與直接產生的太陽，比對 equality 以及 same */
   @SuppressWarnings("unchecked")
-  public void testPlanetEqualReflection() throws Exception, SecurityException, IllegalAccessException, NoSuchFieldException
-  {
+  public void testPlanetEqualReflection() throws Exception {
     Planet sun = Planet.SUN;
     
     /*

@@ -1,5 +1,7 @@
 package destiny.core.calendar;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -13,7 +15,7 @@ public class Utils implements Serializable
   * http://scienceworld.wolfram.com/astronomy/LocalSiderealTime.html
   * Practical Astronomy with Your Calculator, 3rd ed , Page 20
   */
-  public static Calendar getLST(Calendar LMTCal , 
+  public static Calendar getLST(@NotNull Calendar LMTCal ,
                                          int LongitudeDegree , int LongitudeMinute, double LongitudeSecond )
   {
     int GMTLMTOffset =  LMTCal.getTimeZone().getOffset( LMTCal.getTimeInMillis() );
@@ -37,7 +39,7 @@ public class Utils implements Serializable
   * http://scienceworld.wolfram.com/astronomy/LocalSiderealTime.html
   * Practical Astronomy with Your Calculator, 3rd ed , Page 20
   */
-  public static Calendar getLST(Calendar LMTCal ,
+  public static Calendar getLST(@NotNull Calendar LMTCal ,
                                 int LongitudeDegree , int LongitudeMinute )
   {
     return getLST(LMTCal , LongitudeDegree , LongitudeMinute , 0 );

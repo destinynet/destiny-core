@@ -4,6 +4,8 @@
  */
 package destiny.iching;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.Map;
 
 public class HexagramSimple implements Serializable
 {
+  @NotNull
   private static Map<Boolean[] , Integer> map = new HashMap<Boolean[] , Integer>();
   static
   {

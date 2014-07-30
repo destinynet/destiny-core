@@ -7,6 +7,8 @@ package destiny.astrology.classical.rules.accidentalDignities;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** In the 7th, 4th, or 11th (Good Daemon's) houses. */
 public final class House_4_7_11 extends Rule
@@ -15,8 +17,9 @@ public final class House_4_7_11 extends Rule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     int planetHouse = horoscopeContext.getHouse(planet);
     if ( planetHouse == 4 || planetHouse == 7 || planetHouse == 11)

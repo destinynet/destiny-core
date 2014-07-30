@@ -1,5 +1,8 @@
 package destiny.core.chinese;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 /**
@@ -7,10 +10,13 @@ import java.io.Serializable;
  */
 public class StemBranch implements Comparable<StemBranch> , Serializable
 {
+  @Nullable
   private final HeavenlyStems   stem;   //天干
+  @Nullable
   private final EarthlyBranches branch; //地支
   
   // 0[甲子] ~ 59[癸亥]
+  @NotNull
   private transient static StemBranch[] StemBranchArray = new StemBranch[60];
   static
   {
@@ -24,7 +30,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
     while(n<60);
   }
   
-  private StemBranch(HeavenlyStems 天干 , EarthlyBranches 地支) 
+  private StemBranch(@Nullable HeavenlyStems 天干 , @Nullable EarthlyBranches 地支)
   {
     this.stem = 天干;
     this.branch = 地支;
@@ -46,15 +52,16 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   
   /**
    * 0[甲子] ~ 59[癸亥]
-   * @param Index
+   * @param index
    * @return
    */
-  public final static StemBranch get(int index)
+  public static StemBranch get(int index)
   {
     return StemBranchArray[normalize(index)];
   }
   
-  public static StemBranch get(HeavenlyStems 天干 , EarthlyBranches 地支)
+  @Nullable
+  public static StemBranch get(@Nullable HeavenlyStems 天干 , @Nullable EarthlyBranches 地支)
   {
     if (天干 != null && 地支 != null)
       if ( (HeavenlyStems.getIndex(天干) % 2 )  != (EarthlyBranches.getIndex(地支) %2 ) )
@@ -76,12 +83,14 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
     return new StemBranch(天干 , 地支);
   }
   
-  public final static StemBranch get(char heavenlyStems , char earthlyBranches)
+  @Nullable
+  public static StemBranch get(char heavenlyStems , char earthlyBranches)
   {
     return get(HeavenlyStems.getHeavenlyStems(heavenlyStems) , EarthlyBranches.getEarthlyBranches(earthlyBranches));
   }
   
-  public final static StemBranch get(String stemBranch)
+  @Nullable
+  public static StemBranch get(@NotNull String stemBranch)
   {
     if (stemBranch.length() != 2)
       throw new RuntimeException("The length of " + stemBranch + " must equal to 2 !");
@@ -89,7 +98,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
       return get(stemBranch.charAt(0) , stemBranch.charAt(1));
   }
   
-  private final static int normalize(int index)
+  private static int normalize(int index)
   {
     if (index >= 60)
       return (normalize(index-60));
@@ -100,12 +109,12 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   }
   
   /** 取得干支的差距，例如 "乙丑" 距離 "甲子" 的差距為 "1" , 通常是用於計算「需歲」 (尚需加一) */
-  public int differs(StemBranch sb)
+  public int differs(@NotNull StemBranch sb)
   {
     return getIndex(this) - sb.getIndex();
   }
   
-  public boolean equals(Object o)
+  public boolean equals(@Nullable Object o)
   {
     if ((o != null) && (o.getClass().equals(this.getClass())))
     {
@@ -130,7 +139,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
    * @param sb 取得某組干支的順序
    * @return 0[甲子] ~ 59[癸亥]
    */
-  public final static int getIndex(StemBranch sb)
+  public static int getIndex(@NotNull StemBranch sb)
   {
     int index=-1;
     for (int i = 0 ; i < StemBranchArray.length ; i ++)
@@ -149,6 +158,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
     return getIndex(this);
   }
   
+  @NotNull
   public String toString()
   {
     return stem.toString()+branch.toString();
@@ -175,6 +185,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   /**
    * @return 天干
    */
+  @Nullable
   public HeavenlyStems getStem()
   {
     return stem;
@@ -183,6 +194,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   /**
    * @return 地支
    */
+  @Nullable
   public EarthlyBranches getBranch()
   {
     return branch;

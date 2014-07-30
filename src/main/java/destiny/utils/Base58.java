@@ -3,6 +3,8 @@
  */
 package destiny.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ public class Base58 implements Serializable
 {
   private static final char[] BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".toCharArray();
 
+  @NotNull
   public static String numberToAlpha(long number)
   {
     char[] buffer = new char[20];
@@ -25,7 +28,7 @@ public class Base58 implements Serializable
     return new String(buffer, 0, index);
   }
 
-  public static long alphaToNumber(String text)
+  public static long alphaToNumber(@NotNull String text)
   {
     char[] chars = text.toCharArray();
     long result = 0;

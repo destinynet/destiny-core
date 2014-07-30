@@ -11,10 +11,12 @@ import java.awt.Stroke;
 import destiny.astrology.Horoscope;
 import destiny.astrology.chart.AbstractRing;
 import destiny.astrology.chart.EmitLineProperties;
+import org.jetbrains.annotations.NotNull;
 
 /** 從圓心，放射到十二宮，的線條 */
 public class RingHouseEmit extends AbstractRing
 {
+  @NotNull
   private Stroke strokeNormal = new BasicStroke(1.0f);
   
   public RingHouseEmit(Horoscope h, double innerFrom, double outerTo)
@@ -22,6 +24,7 @@ public class RingHouseEmit extends AbstractRing
     super(h, innerFrom, outerTo);
   }
 
+  @NotNull
   @Override
   public EmitLineProperties[] getEmitLineProperties()
   {

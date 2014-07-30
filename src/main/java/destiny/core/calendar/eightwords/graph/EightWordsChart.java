@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords.graph;
 import destiny.core.calendar.eightwords.EightWordsNullable;
 import destiny.core.chinese.StemBranch;
 import destiny.font.FontRepository;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -22,7 +23,7 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 public class EightWordsChart extends BufferedImage implements Serializable {
 
   /** 排列方向：右到左，還是左到右 */
-  public enum Direction {R2L , L2R};
+  public enum Direction {R2L , L2R}
 
   private final Direction direction;
 
@@ -35,7 +36,7 @@ public class EightWordsChart extends BufferedImage implements Serializable {
    * @param eightWordsNullable 八個字
    * @param direction 排列方向：右到左，還是左到右
    */
-  public EightWordsChart(WIDTH_HEIGHT which, int value, Color bg, Color fore, Color dayStemColor, EightWordsNullable eightWordsNullable, Direction direction) {
+  public EightWordsChart(WIDTH_HEIGHT which, int value, Color bg, Color fore, Color dayStemColor, @NotNull EightWordsNullable eightWordsNullable, Direction direction) {
     super(
         (which == WIDTH_HEIGHT.WIDTH  ? value : (int)(value * GOLDEN_RATIO))
       , (which == WIDTH_HEIGHT.HEIGHT ? value : (int)(value / GOLDEN_RATIO))
@@ -85,6 +86,7 @@ public class EightWordsChart extends BufferedImage implements Serializable {
     g.dispose();
   } // constructor
 
+  @NotNull
   public Font getFont() {
     return new Font(FontRepository.getFontLiHei() , Font.PLAIN, getFontSize());
     //return new Font(FontRepository.getFontNotoMedium() , Font.PLAIN, getFontSize());

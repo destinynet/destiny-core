@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology.chart;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.Serializable;
@@ -18,6 +20,7 @@ public class PointConnection implements Serializable
   public double x2=0,y2=0;
   
   /** 線條的 style */
+  @NotNull
   public Style style = new Style(new BasicStroke(1.0f) , Color.WHITE);
 
   public PointConnection(double x1 , double y1 , double x2 , double y2)

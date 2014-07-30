@@ -4,6 +4,8 @@
  */
 package destiny.utils.image;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -17,7 +19,7 @@ public class ProcessorTextWatermark implements Processor , Serializable
 {
 
   @Override
-  public void process(BufferedImage img)
+  public void process(@NotNull BufferedImage img)
   {
     Graphics2D g = img.createGraphics();
     

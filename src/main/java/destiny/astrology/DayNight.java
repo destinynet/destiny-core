@@ -9,5 +9,5 @@ public enum DayNight
   /** 日 */
   DAY,
   /** 夜 */
-  NIGHT;
+  NIGHT
 }

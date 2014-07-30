@@ -9,8 +9,8 @@ import destiny.astrology.Planet;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** 
  * Besieged between Mars and Saturn. 
@@ -29,8 +29,9 @@ public final class Besieged_Mars_Saturn extends Rule
   }
 
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS)
     {
@@ -38,7 +39,7 @@ public final class Besieged_Mars_Saturn extends Rule
       if (besiegedBean.isBesieged(planet, Planet.MARS , Planet.SATURN , Time.getGMTfromLMT(horoscopeContext.getLmt() , horoscopeContext.getLocation())  , true , true))
       {
         //addComment(Locale.TAIWAN , planet + " 被 " + Planet.MARS + " 以及 " + Planet.SATURN +" 夾制 (Besieged)");
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.MARS , Planet.SATURN});
+        return new Tuple<>("comment" , new Object[] {planet , Planet.MARS , Planet.SATURN});
       }
     }
     return null;

@@ -12,6 +12,7 @@ import destiny.astrology.Aspect;
 import destiny.astrology.AspectEffectiveIF;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Point;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <pre>
@@ -54,7 +55,7 @@ public class AspectEffectiveClassical implements AspectEffectiveIF , Serializabl
    * @param angles 判定的角度，例如 [0,60,90,120,180]
    * @return 兩顆星是否形成有效交角
    */
-  public boolean isEffective(Point p1 , double deg1, Point p2 , double deg2 , double[] angles)
+  public boolean isEffective(Point p1 , double deg1, Point p2 , double deg2 , @NotNull double[] angles)
   {
     for(double eachAngle : angles)
     {
@@ -69,14 +70,14 @@ public class AspectEffectiveClassical implements AspectEffectiveIF , Serializabl
   
   /** 兩星體是否形成有效交角 */
   @Override
-  public boolean isEffective(Point p1 , double deg1 , Point p2 , double deg2 , Aspect aspect)
+  public boolean isEffective(Point p1 , double deg1 , Point p2 , double deg2 , @NotNull Aspect aspect)
   {
     return isEffective(p1, deg1, p2, deg2, new double[] {aspect.getDegree()});
   }
   
   /** 兩星體是否形成某些交角 */
   @Override
-  public boolean isEffective(Point p1 , double deg1 , Point p2 , double deg2 , Aspect... aspects)
+  public boolean isEffective(Point p1 , double deg1 , Point p2 , double deg2 , @NotNull Aspect... aspects)
   {
     double[] angles = new double[aspects.length];
     for(int i=0 ; i < angles.length ; i++)
@@ -86,7 +87,7 @@ public class AspectEffectiveClassical implements AspectEffectiveIF , Serializabl
 
   /** 兩星體是否形成某些交角 */
   @Override
-  public boolean isEffective(Point p1 , double deg1 , Point p2 , double deg2 , Collection<Aspect> aspects)
+  public boolean isEffective(Point p1 , double deg1 , Point p2 , double deg2 , @NotNull Collection<Aspect> aspects)
   {
     double[] angles = new double[aspects.size()];
     Iterator<Aspect> it = aspects.iterator();

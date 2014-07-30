@@ -9,6 +9,8 @@ import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** In Detriment. */
 public final class Detriment extends EssentialRule
@@ -17,8 +19,9 @@ public final class Detriment extends EssentialRule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);

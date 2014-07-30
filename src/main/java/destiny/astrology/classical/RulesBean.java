@@ -7,6 +7,7 @@ package destiny.astrology.classical;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class RulesBean implements Serializable
     this.debilitiesBean = debilitiesBean;
   }
   
+  @NotNull
   public List<RuleIF> getRules(Planet planet, HoroscopeContext horoscopeContext)
   {
     List<RuleIF> resultList = new ArrayList<>();

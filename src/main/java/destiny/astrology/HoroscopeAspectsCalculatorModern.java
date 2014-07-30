@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,7 +40,7 @@ public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalcula
   }
 
   @Override
-  public Map<Point , Aspect> getPointAspect(Point point , Collection<Point> points)
+  public Map<Point , Aspect> getPointAspect(Point point , @NotNull Collection<Point> points)
   {
     if (this.horoscope == null)
       throw new RuntimeException(getClass().getName() + " : horoscope is null ! call setHoroscope(horoscope) first !");
@@ -48,24 +50,22 @@ public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalcula
     for(Point eachPoint : points)
     {
       double eachDeg = horoscope.getPositionWithAzimuth(eachPoint).getLongitude();
-      for(Aspect eachAspect : aspects)
-      {
-        /** 直接比對度數，不考慮星體 */
-        if (point != eachPoint && modern.isEffective(starDeg , eachDeg , eachAspect))
-        {
-          result.put(eachPoint , eachAspect);
-        }
-      }
+      /** 直接比對度數，不考慮星體 */
+      aspects.stream().filter(eachAspect -> point != eachPoint && modern.isEffective(starDeg, eachDeg, eachAspect)).forEach(eachAspect -> {
+        result.put(eachPoint, eachAspect);
+      });
     }
     return result;
   }
 
+  @NotNull
   @Override
   public String getTitle(Locale locale)
   {
     return "現代占星術";
   }
   
+  @NotNull
   @Override
   public String getDescription(Locale locale)
   {

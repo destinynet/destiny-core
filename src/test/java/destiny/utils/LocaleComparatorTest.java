@@ -4,9 +4,6 @@ import org.junit.Test;
 
 import java.util.*;
 
-/**
- * Created by smallufo on 2014-03-05.
- */
 public class LocaleComparatorTest {
 
   @Test

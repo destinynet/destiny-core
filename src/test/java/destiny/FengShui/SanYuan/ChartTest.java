@@ -2,6 +2,7 @@ package destiny.FengShui.SanYuan;
 
 import junit.framework.TestCase;
 import destiny.iching.Symbol;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author smallufo
@@ -11,6 +12,7 @@ import destiny.iching.Symbol;
 public class ChartTest extends TestCase
 {
   private Chart chart;
+  @Nullable
   private ChartBlock cb;
 
   /**

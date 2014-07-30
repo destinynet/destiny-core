@@ -8,6 +8,7 @@ import destiny.astrology.*;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.astrology.classical.*;
 import destiny.astrology.classical.rules.RuleIF;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -54,6 +55,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     this.rules = getDefaultRules();
   }
   
+  @NotNull
   @Override
   public List<RuleIF> getAccidentalDignities(Planet planet, HoroscopeContext horoscopeContext)
   {
@@ -67,6 +69,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     return resultList;
   }
   
+  @NotNull
   private List<Applicable> getDefaultRules()
   {
     List<Applicable> list = new ArrayList<Applicable>();

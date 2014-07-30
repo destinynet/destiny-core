@@ -11,7 +11,7 @@ public class TimeZoneUtils implements Serializable
    * 從時差（分鐘）找出 TimeZone , 要找最短的
    * @param minuteOffset
    */
-  public final static TimeZone getTimeZone(int minuteOffset)
+  public static TimeZone getTimeZone(int minuteOffset)
   {
     String shortest = "GMT                            ";
     for(String tz : TimeZone.getAvailableIDs(minuteOffset*60*1000))

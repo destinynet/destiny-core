@@ -4,6 +4,8 @@
  */
 package destiny.test;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Proxy;
 
 /**
@@ -12,6 +14,7 @@ import java.lang.reflect.Proxy;
  */
 public class SumFactory
 {
+  @NotNull
   @SuppressWarnings("rawtypes")
   public ISum createSum(Integer val1, Integer val2)
   {

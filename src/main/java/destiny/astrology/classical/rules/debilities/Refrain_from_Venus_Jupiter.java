@@ -3,11 +3,14 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.*;
-import destiny.astrology.beans.RefranationBean;
+import destiny.astrology.Aspect;
+import destiny.astrology.HoroscopeContext;
+import destiny.astrology.Planet;
+import destiny.astrology.Point;
 import destiny.astrology.classical.RefranationIF;
 import destiny.utils.Triple;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.Nullable;
 
 public class Refrain_from_Venus_Jupiter extends Rule
 {
@@ -34,6 +37,7 @@ public class Refrain_from_Venus_Jupiter extends Rule
 //    this.retrogradeImpl = retrogradeImpl;
 //  }
 
+  @Nullable
   @Override
   protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
@@ -42,14 +46,13 @@ public class Refrain_from_Venus_Jupiter extends Rule
       return null;
     
     Point otherPoint;
-    RefranationBean bean;
-    
+
     if (planet != Planet.VENUS)
     {
       otherPoint = Planet.VENUS;
       Triple<Boolean , Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
       //bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
-      if (t.getFirst() == true)
+      if (t.getFirst())
       {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
@@ -62,7 +65,7 @@ public class Refrain_from_Venus_Jupiter extends Rule
       otherPoint = Planet.JUPITER;
       Triple<Boolean , Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
       //bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
-      if (t.getFirst() == true)
+      if (t.getFirst())
       {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});

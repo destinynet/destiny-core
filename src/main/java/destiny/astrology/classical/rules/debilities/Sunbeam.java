@@ -7,6 +7,8 @@ package destiny.astrology.classical.rules.debilities;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Under the Sunbeans (between 8.5 and 17 from Sol). */
 public final class Sunbeam extends Rule
@@ -16,8 +18,9 @@ public final class Sunbeam extends Rule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet != Planet.SUN)
     {

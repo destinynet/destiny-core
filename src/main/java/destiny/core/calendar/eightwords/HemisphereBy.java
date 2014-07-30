@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
 
 /** 界定南北半球的方法 , 赤道 還是 赤緯 */
 public enum HemisphereBy implements LocaleStringIF
@@ -33,7 +34,7 @@ public enum HemisphereBy implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

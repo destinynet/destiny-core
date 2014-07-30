@@ -1,6 +1,8 @@
 /** 2009/11/21 上午1:30:38 by smallufo */
 package destiny.core.calendar;
 
+import org.jetbrains.annotations.NotNull;
+
 @Deprecated
 public interface DstIF
 {
@@ -13,6 +15,7 @@ public interface DstIF
     YES_DontKnow    //有日光節約時間，不知是否有扣除（視為「未扣除」）
   }
   
+  @NotNull
   public Dst getDst();
   
   public void setDst(Dst dst);

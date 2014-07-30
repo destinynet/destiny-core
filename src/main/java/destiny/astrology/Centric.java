@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
 
 /** 中心系統 */
 public enum Centric implements LocaleStringIF
@@ -37,7 +38,7 @@ public enum Centric implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

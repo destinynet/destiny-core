@@ -4,6 +4,9 @@
  */ 
 package destiny.utils.image;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
@@ -20,7 +23,8 @@ public class BufferedImageTools implements Serializable
   /**
    * 直接設定長寬為多少
    */
-  public static BufferedImage getImage(BufferedImage bufferedImage , int newWidth, int newHeight)
+  @NotNull
+  public static BufferedImage getImage(@NotNull BufferedImage bufferedImage , int newWidth, int newHeight)
   {
     /** png 的 type 為 0 , 將無法 resize , 必須將輸出 type 設成 TYPE_INT_RGB */
     int type = (bufferedImage.getType() == 0) ? BufferedImage.TYPE_INT_RGB : bufferedImage.getType();
@@ -32,7 +36,8 @@ public class BufferedImageTools implements Serializable
   /**
    * 按照比例縮放原圖
    */
-  public static BufferedImage getScaledImage(BufferedImage bufferedImage , double scale)
+  @Nullable
+  public static BufferedImage getScaledImage(@NotNull BufferedImage bufferedImage , double scale)
   {
     /** png 的 type 為 0 , 將無法 resize , 必須將輸出 type 設成 TYPE_INT_RGB */
     int type = (bufferedImage.getType() == 0) ? BufferedImage.TYPE_INT_RGB : bufferedImage.getType();
@@ -63,7 +68,8 @@ public class BufferedImageTools implements Serializable
   /**
    * 設定最大長度或寬度 , 取得等比例縮放的圖片 
    */
-  public static BufferedImage getFittingImage(BufferedImage bufferedImage , int maxLength)
+  @NotNull
+  public static BufferedImage getFittingImage(@NotNull BufferedImage bufferedImage , int maxLength)
   {
     int width = bufferedImage.getWidth();
     int height = bufferedImage.getHeight();
@@ -88,7 +94,8 @@ public class BufferedImageTools implements Serializable
   /**
    * 取得正方形的圖片
    */
-  public static BufferedImage getSquareImage(BufferedImage bufferedImage , int length)
+  @NotNull
+  public static BufferedImage getSquareImage(@NotNull BufferedImage bufferedImage , int length)
   {
     int width = bufferedImage.getWidth();
     int height = bufferedImage.getHeight();
@@ -112,7 +119,7 @@ public class BufferedImageTools implements Serializable
    * 將 BufferedImage 轉成 byte array
    * @throws IOException 
    */
-  public static byte[] getArray(BufferedImage bufferedImage , String type)
+  public static byte[] getArray(@NotNull BufferedImage bufferedImage , String type)
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ImageOutputStream ios = null;

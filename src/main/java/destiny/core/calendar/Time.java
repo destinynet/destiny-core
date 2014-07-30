@@ -4,15 +4,17 @@
  */
 package destiny.core.calendar;
 
+import destiny.utils.AlignUtil;
+import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import destiny.utils.AlignUtil;
-import destiny.utils.LocaleStringIF;
 
 /**
  * 代表 『時間』 的物件
@@ -147,7 +149,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    * 0123456789A1234567
    * +YYYYMMDDHHMMSS.SS
    * */
-  public Time(String s)
+  public Time(@NotNull String s)
   {
     char ad = s.charAt(0);
     if (ad == '+')
@@ -157,16 +159,17 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     else
       throw new RuntimeException("AD not correct : " + ad);
     
-    this.year = Integer.valueOf(s.substring(1, 5).trim()).intValue();
-    this.month = Integer.valueOf(s.substring(5,7).trim()).intValue();
-    this.day = Integer.valueOf(s.substring(7,9).trim()).intValue();
-    this.hour = Integer.valueOf(s.substring(9,11).trim()).intValue();
-    this.minute = Integer.valueOf(s.substring(11,13).trim()).intValue();
+    this.year = Integer.valueOf(s.substring(1, 5).trim());
+    this.month = Integer.valueOf(s.substring(5, 7).trim());
+    this.day = Integer.valueOf(s.substring(7, 9).trim());
+    this.hour = Integer.valueOf(s.substring(9, 11).trim());
+    this.minute = Integer.valueOf(s.substring(11, 13).trim());
     this.second = Double.valueOf(s.substring(13));
     checkDate();
   }
   
   /** 傳回最精簡的文字表示法 , 可以餵進去 {@link #Time(String)} 裡面*/
+  @NotNull
   public String getDebugString()
   {
     StringBuffer sb = new StringBuffer();
@@ -184,6 +187,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    * 取得此時間的 timestamp
    * TODO : 要確認 1582 之前是否正常 
    * */
+  @NotNull
   public Timestamp getTimestamp()
   {
     Calendar cal = new GregorianCalendar(year, month-1 , day, hour , minute , (int) second);
@@ -194,7 +198,8 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    * 從 Timestamp 取得 Time 物件
    * TODO : 要確認 1582 之前是否正常
    */
-  public static Time getTime(Timestamp ts)
+  @NotNull
+  public static Time getTime(@NotNull Timestamp ts)
   {
     Calendar cal = new GregorianCalendar();
     cal.setTimeInMillis(ts.getTime());
@@ -268,7 +273,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   /**
    * 建立一個和原本 Time 相差 diffSeconds 秒的時間
    */
-  public Time(Time originTime , double diffSeconds)
+  public Time(@NotNull Time originTime , double diffSeconds)
   {
     double oldJulDay = originTime.getGmtJulDay();
     /** TODO : 解決 Round-off error 的問題 */
@@ -318,7 +323,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    */
   public int getNormalizedYear() 
   {
-    if (ad == false)
+    if (!ad)
       return -(year-1);
     else
       return year;
@@ -337,14 +342,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   public double getSecond() { return this.second; }
   public boolean isGregorian() { return gregorian; }
   
-  public boolean isBefore(Time targetTime)
+  public boolean isBefore(@NotNull Time targetTime)
   {
     // 時間的比對前後順序不需考慮是否真是 GMT , 兩個同時區的 LMT 以 GMT 抓出 Julian Day 仍可比對先後順序 
     //return this.getGmtJulDay() < targetTime.getGmtJulDay() ? true : false;
     return this.getGmtJulDay() < targetTime.getGmtJulDay();
   }
   
-  public boolean isAfter(Time targetTime)
+  public boolean isAfter(@NotNull Time targetTime)
   {
     //return this.getGmtJulDay() > targetTime.getGmtJulDay() ? true : false;
     return this.getGmtJulDay() > targetTime.getGmtJulDay();
@@ -434,7 +439,8 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   /** 從 LMT 轉換到 GMT 
    * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
    * */
-  public static Time getGMTfromLMT(Time lmt , Location loc)
+  @NotNull
+  public static Time getGMTfromLMT(@NotNull Time lmt , @NotNull Location loc)
   {
     if (loc.isMinuteOffsetSet())
     {
@@ -455,7 +461,8 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   /** 從 GMT 轉換成 LMT
    * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
    *  */
-  public static Time getLMTfromGMT(Time gmt , Location loc)
+  @NotNull
+  public static Time getLMTfromGMT(@NotNull Time gmt , @NotNull Location loc)
   {
     if (loc.isMinuteOffsetSet())
     {
@@ -505,7 +512,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   */
 
   @Override
-  public boolean equals(Object o)
+  public boolean equals(@Nullable Object o)
   {
     if ((o != null) && (o.getClass().equals(this.getClass())))
     {
@@ -571,7 +578,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    * @param target 目標時刻
    * @return 相差秒數，如果目標時刻早於 (prior to) 目前時刻，傳回正值。否則傳回負值
    */
-  public double diffSeconds(Time target)
+  public double diffSeconds(@NotNull Time target)
   {
     double diffDays = this.getGmtJulDay() - target.getGmtJulDay();
     return diffDays*86400; //24*60*60
@@ -599,13 +606,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   // Erzeugt aus einem jd/calType Jahr, Monat, Tag und Stunde.        //
   // It does NOT change any global variables.                         //
   //////////////////////////////////////////////////////////////////////
-  private synchronized IDate swe_revjul (double jd, boolean calType) 
+  @NotNull
+  private synchronized IDate swe_revjul (double jd, boolean calType)
   {
     IDate dt=new IDate();
     double u0,u1,u2,u3,u4;
 
     u0 = jd + 32082.5;
-    if (calType == true) 
+    if (calType)
     {
       u1 = u0 + Math.floor (u0/36525.0) - Math.floor (u0/146100.0) - 38.0;
       if (jd >= 1830691.5) 

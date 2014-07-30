@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,7 +63,7 @@ public class Horoscope implements Serializable
    * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度
    * 例如兩星交角 175 度 , Aspect = 沖 (180) , 則 誤差 5 度
    */  
-  public double getAspectError(Point p1 , Point p2 , Aspect aspect)
+  public double getAspectError(Point p1 , Point p2 , @NotNull Aspect aspect)
   {
     double angle = getAngle(p1 , p2); //其值必定小於等於 180度
     return Math.abs( aspect.getDegree() - angle);
@@ -70,7 +72,7 @@ public class Horoscope implements Serializable
   /**
    * @return 計算黃道帶上兩個度數的交角 , 其值必定小於等於 180度 
    */
-  public final static double getAngle(double from , double to)
+  public static double getAngle(double from , double to)
   {
     if ( from - to >=180)
       return (360-from + to);
@@ -83,7 +85,7 @@ public class Horoscope implements Serializable
   }
   
   /** @return 計算 from 是否在 to 的東邊 (度數小，為東邊) , true 就是東邊 , false 就是西邊(含對沖/合相) */
-  public final static boolean isOriental(double from , double to)
+  public static boolean isOriental(double from , double to)
   {
     if (from < to && to - from < 180)
       return true;
@@ -94,7 +96,7 @@ public class Horoscope implements Serializable
   }
   
   /** @return 計算 from 是否在 to 的西邊 (度數大，為西邊) , true 就是西邊 , false 就是東邊(含對沖/合相) */
-  public final static boolean isOccidental(double from , double to)
+  public static boolean isOccidental(double from , double to)
   {
     if (from < to && to - from > 180)
       return true;
@@ -112,7 +114,7 @@ public class Horoscope implements Serializable
   /**
    * 取得一連串星體的位置（含地平方位角）
    */
-  public Map<Star , PositionWithAzimuth> getPositionWithAzimuth(List<Star> stars)
+  public Map<Star , PositionWithAzimuth> getPositionWithAzimuth(@NotNull List<Star> stars)
   {
     Map<Star , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<Star , PositionWithAzimuth>());
     for(Star star : stars)

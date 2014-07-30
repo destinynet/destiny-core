@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class EightWordsNullable implements Serializable
 {
+  @Nullable
   protected StemBranch year  = null;
   protected StemBranch month = null;
   protected StemBranch day   = null;

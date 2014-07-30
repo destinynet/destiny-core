@@ -4,7 +4,10 @@
  */
 package destiny.test;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface ISum
 {
+  @NotNull
   public Integer sum();
 }

@@ -5,6 +5,9 @@
  */
 package destiny.iching;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -48,6 +51,7 @@ public class SymbolAcquired implements Comparator<Symbol>
   /** 
    * 由後天八卦卦序取得 Symbol
    */
+  @Nullable
   public static Symbol getSymbol(int index)
   {
     if (index == 5)
@@ -61,7 +65,8 @@ public class SymbolAcquired implements Comparator<Symbol>
   /**
    * 以順時針方向取得一卦
    */
-  public static Symbol getClockwiseSymbol(Symbol s)
+  @Nullable
+  public static Symbol getClockwiseSymbol(@NotNull Symbol s)
   {
     switch (s)
     {
@@ -80,7 +85,8 @@ public class SymbolAcquired implements Comparator<Symbol>
   /**
    * 取得對沖之卦
    */
-  public static Symbol getOppositeSymbol(Symbol s)
+  @Nullable
+  public static Symbol getOppositeSymbol(@NotNull Symbol s)
   {
     switch (s)
     {

@@ -8,6 +8,7 @@ import destiny.astrology.DayNightDifferentiator;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
 
 /** EssentialIF 的工具箱 */
 public class EssentialUtils
@@ -26,7 +27,7 @@ public class EssentialUtils
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br/>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」 
    * */
-  public boolean isReceivingFromDignities(Point receiver , Point receivee , HoroscopeContext horoscopeContext)
+  public boolean isReceivingFromDignities(Point receiver , Point receivee , @NotNull HoroscopeContext horoscopeContext)
   {
     ZodiacSign receiveeSign = horoscopeContext.getZodiacSign(receivee);
     //比對 Ruler
@@ -63,7 +64,7 @@ public class EssentialUtils
   }
   
   /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall) */
-  public boolean isReceivingFromDebilities(Point receiver , Point receivee , HoroscopeContext horoscopeContext)
+  public boolean isReceivingFromDebilities(Point receiver , Point receivee , @NotNull HoroscopeContext horoscopeContext)
   {
     ZodiacSign receiveeSign = horoscopeContext.getZodiacSign(receivee);
     if (essentialImpl.getPoint(receiveeSign , Dignity.DETRIMENT) == receiver)
@@ -74,7 +75,7 @@ public class EssentialUtils
   }
   
   /** Ruler 互訪 , 還沒確認是 優質互容 */
-  public boolean isBothRulerVisit(Point planet , HoroscopeContext horoscopeContext)
+  public boolean isBothRulerVisit(Point planet , @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);

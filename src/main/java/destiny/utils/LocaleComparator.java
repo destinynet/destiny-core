@@ -2,6 +2,8 @@ package destiny.utils;
 
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Locale;
@@ -18,7 +20,7 @@ public class LocaleComparator implements Comparator<Locale>, Serializable {
   }
 
   @Override
-  public int compare(Locale locale1, Locale locale2) {
+  public int compare(@NotNull Locale locale1, @NotNull Locale locale2) {
     int result;
     if (Objects.equals(locale1, locale2))
       result = 0;

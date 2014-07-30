@@ -1,6 +1,9 @@
 package destiny.core.chinese;
 
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * 地支系統
  * */
@@ -53,14 +56,13 @@ public enum EarthlyBranches implements EarthlyBranchesIF
     return EarthlyBranchesArray[index];
   }
   
+  @Nullable
   public static EarthlyBranches getEarthlyBranches(char c)
   {
     EarthlyBranches result = null;
-    for (int i=0 ; i < EarthlyBranchesArray.length ; i++)
-    {
-      if (EarthlyBranchesArray[i].name == c )
-      {
-        result = EarthlyBranchesArray[i];
+    for (EarthlyBranches aEarthlyBranchesArray : EarthlyBranchesArray) {
+      if (aEarthlyBranchesArray.name == c) {
+        result = aEarthlyBranchesArray;
         break;
       }
     }
@@ -79,7 +81,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   /**
    * 子[0] ~ 亥[11]
    */
-  public static int getIndex(EarthlyBranches eb)
+  public static int getIndex(@NotNull EarthlyBranches eb)
   {
     int index = -1;
     for (int i=0 ; i < EarthlyBranchesArray.length ; i++)
@@ -115,6 +117,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   }
   */
   
+  @NotNull
   @Override
   public String toString()
   {

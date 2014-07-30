@@ -9,6 +9,8 @@ import destiny.astrology.Aspect;
 import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.Star;
 import destiny.core.calendar.Time;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -42,7 +44,8 @@ public class RelativeTransitBean implements Serializable
   /** 
    * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
    */
-  public Time getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , List<Aspect> aspects , boolean isForward )
+  @Nullable
+  public Time getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , @NotNull List<Aspect> aspects , boolean isForward )
   {
     double[] doubleAngles = new double[aspects.size()];
     for(int i=0 ; i < aspects.size() ; i++)
@@ -53,7 +56,8 @@ public class RelativeTransitBean implements Serializable
   /** 
    * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
    */
-  public Time getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , double[] angles , boolean isForward )
+  @Nullable
+  public Time getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , @NotNull double[] angles , boolean isForward )
   {
     Time resultTime = null;
     /** 
@@ -112,7 +116,8 @@ public class RelativeTransitBean implements Serializable
    * 從 fromGmtTime 到 toGmtTime 之間，transitStar 對 relativeStar 形成 angle 交角的時間
    * @return List < Map < angle , Time > >
    */
-  public List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , Time fromGmtTime , Time toGmtTime , double angle)
+  @NotNull
+  public List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , @NotNull Time fromGmtTime , @NotNull Time toGmtTime , double angle)
   {
     List<Time> resultList = new ArrayList<Time>();
     while (fromGmtTime.isBefore(toGmtTime))

@@ -11,6 +11,7 @@ import java.util.List;
 
 import destiny.astrology.Utils;
 import destiny.iching.Symbol;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -18,6 +19,7 @@ import destiny.iching.Symbol;
  */
 public class AdquiredSymbolCompass extends AbstractSymbol implements Serializable
 {
+  @NotNull
   protected static List<Symbol> SymbolList = new ArrayList<Symbol>();
   static
   {

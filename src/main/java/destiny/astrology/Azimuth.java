@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * 地平方位角 , 地平座標系統 (Horizontal Coordinate System) 
  */
@@ -52,6 +54,7 @@ public class Azimuth implements java.io.Serializable
     this.trueAltitude = trueAltitude;
   }
 
+  @NotNull
   @Override
   public String toString()
   {

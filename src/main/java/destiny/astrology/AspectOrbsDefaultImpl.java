@@ -4,9 +4,9 @@
  */ 
 package destiny.astrology;
 
-import java.io.Serializable;
-
 import com.google.common.collect.ImmutableMap;
+
+import java.io.Serializable;
 
 /** 
  * 「現代占星術」的交角容許度，內定實作
@@ -39,7 +39,7 @@ public class AspectOrbsDefaultImpl implements AspectOrbsIF , Serializable
   @Override
   public double getAspectOrb(Aspect aspect)
   {
-    return aspectOrbsMap.get(aspect).doubleValue();
+    return aspectOrbsMap.get(aspect);
   }
 
 }

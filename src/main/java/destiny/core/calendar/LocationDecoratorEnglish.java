@@ -7,25 +7,27 @@ package destiny.core.calendar;
 import destiny.core.calendar.Location.EastWest;
 import destiny.core.calendar.Location.NorthSouth;
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 public class LocationDecoratorEnglish implements Decorator<Location>
 {
 
+  @NotNull
   @Override
-  public String getOutputString(Location location)
+  public String getOutputString(@NotNull Location location)
   {
     StringBuffer sb = new StringBuffer();
     sb.append(location.getEastWest()==EastWest.EAST ? "East " : "West ");
-    sb.append(location.getLongitudeDegree() + " ° ");
-    sb.append(location.getLongitudeMinute() + " ' ");
-    sb.append(location.getLongitudeSecond() + " \" , ");
+    sb.append(location.getLongitudeDegree()).append(" ° ");
+    sb.append(location.getLongitudeMinute()).append(" ' ");
+    sb.append(location.getLongitudeSecond()).append(" \" , ");
 
     sb.append(location.getNorthSouth()==NorthSouth.NORTH ? "North " : "South ");
-    sb.append(location.getLatitudeDegree() + " ° ");
-    sb.append(location.getLatitudeMinute() + " ' ");
-    sb.append(location.getLatitudeSecond() + " \".");
-    sb.append(" GMT offset " + (location.getTimeZone().getRawOffset() / (60000*60)) + " hours , ");
-    sb.append("Alt " + location.getAltitudeMeter() + " m.");
+    sb.append(location.getLatitudeDegree()).append(" ° ");
+    sb.append(location.getLatitudeMinute()).append(" ' ");
+    sb.append(location.getLatitudeSecond()).append(" \".");
+    sb.append(" GMT offset ").append(location.getTimeZone().getRawOffset() / (60000 * 60)).append(" hours , ");
+    sb.append("Alt ").append(location.getAltitudeMeter()).append(" m.");
     return sb.toString();
   }
 

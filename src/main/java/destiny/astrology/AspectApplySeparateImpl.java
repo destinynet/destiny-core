@@ -4,6 +4,8 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Time;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -22,8 +24,9 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
    * 判斷兩顆星體是否形成某交角 , 如果是的話 , 傳回 入相位或是出相位 ; 如果沒有形成交角 , 傳回 null
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
    */
+  @Nullable
   @Override
-  public AspectType getAspectType(HoroscopeContext horoscopeContext, Point p1, Point p2, Aspect aspect)
+  public AspectType getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Aspect aspect)
   {
     double deg1 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p1).getLongitude();
     double deg2 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p2).getLongitude();
@@ -55,8 +58,9 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
       return null; //這兩顆星沒有形成交角
   }
 
+  @Nullable
   @Override
-  public AspectType getAspectType(HoroscopeContext horoscopeContext, Point p1, Point p2, Collection<Aspect> aspects)
+  public AspectType getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Collection<Aspect> aspects)
   {
     AspectType aspectType = null;
     for(Aspect aspect : aspects)

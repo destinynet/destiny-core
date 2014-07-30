@@ -5,6 +5,8 @@
 package destiny.iching;
 
 import destiny.core.chinese.YinYangIF;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -96,6 +98,7 @@ public enum Hexagram implements HexagramIF , Serializable
     this.lower = lower;
   }
 
+  @NotNull
   public static Hexagram getHexagram(Symbol upper , Symbol lower)
   {
     for(Hexagram h : values())
@@ -112,7 +115,7 @@ public enum Hexagram implements HexagramIF , Serializable
    * @param index 1 <= 卦序 <= 64
    * @param sequence 實作 getIndex(Hexagram) 的介面
    */
-  public static Hexagram getHexagram(int index , HexagramSequenceIF sequence)
+  public static Hexagram getHexagram(int index , @NotNull HexagramSequenceIF sequence)
   {
     if (index > 64)
       return getHexagram(index % 64 , sequence);
@@ -123,7 +126,8 @@ public enum Hexagram implements HexagramIF , Serializable
   }
   
   /** 從 陰陽 YinYang 實體的 array 傳回 HexagramIF */
-  public static Hexagram getHexagram(YinYangIF[] yinyangs)
+  @NotNull
+  public static Hexagram getHexagram(@Nullable YinYangIF[] yinyangs)
   {
     if (yinyangs == null)
       throw new RuntimeException("yinyangs is NULL !");
@@ -142,7 +146,8 @@ public enum Hexagram implements HexagramIF , Serializable
    *          六爻陰陽，由初爻至上爻
    * @return 卦的實體(Hexagram)
    */
-  public static Hexagram getHexagram(boolean[] booleans)
+  @NotNull
+  public static Hexagram getHexagram(@Nullable boolean[] booleans)
   {
     if (booleans == null)
       throw new RuntimeException("null array !");
@@ -170,6 +175,7 @@ public enum Hexagram implements HexagramIF , Serializable
     throw new RuntimeException("index out of range , 1 <= index <= 6 ");
   }
 
+  @NotNull
   @Override
   public boolean[] getYinYangs()
   {
@@ -199,8 +205,9 @@ public enum Hexagram implements HexagramIF , Serializable
    * 第 line 爻動的話，變卦是什麼
    * @param lines [1~6]
    */
+  @NotNull
   @Override
-  public HexagramIF getHexagram(int... lines)
+  public HexagramIF getHexagram(@NotNull int... lines)
   {
     boolean[] booleans = getYinYangs();
     for (int index : lines) {
@@ -211,12 +218,14 @@ public enum Hexagram implements HexagramIF , Serializable
   }
 
   /** @return 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */
+  @NotNull
   public HexagramIF getMiddleSpanHexagram()
   {
     return Hexagram.getHexagram(new boolean[] {lower.getBooleanValue(2) , lower.getBooleanValue(3) , upper.getBooleanValue(1) , lower.getBooleanValue(3) , upper.getBooleanValue(1) , upper.getBooleanValue(2)});
   }
 
   /** @return 錯卦 , 一卦六爻全變 , 交錯之意 , 故取名 Interlaced Hexagram */
+  @NotNull
   public HexagramIF getInterlacedHexagram()
   {
     return Hexagram.getHexagram(new boolean[] {
@@ -225,6 +234,7 @@ public enum Hexagram implements HexagramIF , Serializable
   }
 
   /** @return 綜卦 , 上下顛倒 , 故取名 Reversed Hexagram */
+  @NotNull
   public HexagramIF getReversedHexagram()
   {
     return Hexagram.getHexagram(new boolean[] {
@@ -232,12 +242,13 @@ public enum Hexagram implements HexagramIF , Serializable
       lower.getBooleanValue(3) , lower.getBooleanValue(2) , lower.getBooleanValue(1)});
   }
 
+  @NotNull
   @Override
   public String getBinaryCode()
   {
     StringBuffer sb = new StringBuffer();
     for(boolean yy : getYinYangs())
-      sb.append(yy == true ? '1' : '0');
+      sb.append(yy ? '1' : '0');
     return sb.toString();
   }
 }

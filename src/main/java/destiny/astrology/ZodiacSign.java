@@ -6,6 +6,7 @@ package destiny.astrology;
 
 import destiny.core.chinese.YinYangIF;
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -79,7 +80,7 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF
   }
 
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }
@@ -90,7 +91,7 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF
     return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(abbrKey);
   }
 
-  public String getAbbreviation(Locale locale)
+  public String getAbbreviation(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(abbrKey);
   }

@@ -8,6 +8,8 @@ package destiny.core.calendar.eightwords;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -17,7 +19,8 @@ import java.util.Locale;
  */
 public class HourLmtImpl implements HourIF , Serializable
 {
-  public EarthlyBranches getHour(Time lmt, Location location)
+  @NotNull
+  public EarthlyBranches getHour(@Nullable Time lmt, @Nullable Location location)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt and location cannot be null !");
@@ -41,7 +44,8 @@ public class HourLmtImpl implements HourIF , Serializable
   }
 
   
-  public Time getLmtNextStartOf(Time lmt, Location location, EarthlyBranches eb)
+  @NotNull
+  public Time getLmtNextStartOf(@Nullable Time lmt, @Nullable Location location, @Nullable EarthlyBranches eb)
   {
     if (lmt == null || location == null || eb == null)
       throw new RuntimeException("lmt and location and eb cannot be null !");
@@ -113,12 +117,14 @@ public class HourLmtImpl implements HourIF , Serializable
   }
 
 
+  @NotNull
   public String getTitle(Locale locale)
   {
     return "以當地標準鐘錶時間區隔時辰";
   }
 
 
+  @NotNull
   public String getDescription(Locale locale)
   {
     return "兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時";

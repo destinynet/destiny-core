@@ -1,6 +1,8 @@
 package destiny.astrology;
 
-/** 
+import org.jetbrains.annotations.NotNull;
+
+/**
  * Point 的位置 , 不限定 Star,
  * Point(南北交點) 也會有 Position
  */
@@ -28,6 +30,7 @@ public class Position implements java.io.Serializable
     this.speedDistance  = speedDistance ;
   }
   
+  @NotNull
   @Override
   public String toString()
   {

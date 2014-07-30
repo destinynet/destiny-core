@@ -6,6 +6,7 @@ package destiny.iching.graph;
 
 import destiny.font.FontRepository;
 import destiny.utils.image.Processor;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -26,7 +27,7 @@ public class ProcessorName implements Processor , Serializable
   }
 
   @Override
-  public void process(BufferedImage img)
+  public void process(@NotNull BufferedImage img)
   {
     int width = img.getWidth();
     int height = img.getHeight();

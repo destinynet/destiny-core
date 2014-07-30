@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 分宮法 , Zodiac House Systems
@@ -42,7 +43,7 @@ public enum HouseSystem implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

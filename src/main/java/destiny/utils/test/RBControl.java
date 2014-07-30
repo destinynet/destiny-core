@@ -4,6 +4,9 @@
  */
 package destiny.utils.test;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -19,12 +22,12 @@ public class RBControl
     test(Locale.CANADA);
   }
 
-  private static void test(Locale locale)
+  private static void test(@NotNull Locale locale)
   {
     ResourceBundle rb = ResourceBundle.getBundle("destiny.utils.test.RBControl", locale, new ResourceBundle.Control()
     {
       @Override
-      public List<Locale> getCandidateLocales(String baseName, Locale locale)
+      public List<Locale> getCandidateLocales(@Nullable String baseName, @NotNull Locale locale)
       {
         if (baseName == null)
           throw new NullPointerException();

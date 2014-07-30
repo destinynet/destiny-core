@@ -5,6 +5,8 @@
  */
 package destiny.core.chinese;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Random;
 
 @Deprecated
@@ -23,6 +25,7 @@ public enum YinYang implements YinYangIF
     this.c     = c;
   }
 
+  @NotNull
   public static YinYang getYinYang(boolean value)
   {
     if (value)
@@ -31,12 +34,14 @@ public enum YinYang implements YinYangIF
       return 陰;
   }
   
+  @NotNull
   public static YinYang getYinYang(char c)
   {
     return (c =='0' || c == '陰') ? 陰 : 陽;
   }
   
   /** 若陰，則傳回陽 ; 若陽，則傳回陰 */
+  @NotNull
   public YinYang getOpposite()
   {
     if (this == 陽)
@@ -46,6 +51,7 @@ public enum YinYang implements YinYangIF
   }
   
   /** 亂數取得 陰或陽 */
+  @NotNull
   public static YinYang getRandomValue()
   {
     Random random = new Random();
@@ -66,6 +72,7 @@ public enum YinYang implements YinYangIF
     return this.c;
   }
   
+  @NotNull
   @Override
   public String toString()
   {

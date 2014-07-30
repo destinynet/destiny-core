@@ -6,10 +6,12 @@ package destiny.astrology;
 
 import static org.junit.Assert.assertTrue;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 public class PointComparatorTest
 {
+  @NotNull
   private PointComparator pc = new PointComparator();
   
   @Test

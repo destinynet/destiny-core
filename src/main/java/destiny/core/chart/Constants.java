@@ -1,7 +1,7 @@
 package destiny.core.chart;
 
 /**
- * Created by smallufo on 2014-06-04.
+ * Created by smallufo on 2014-07-31.
  */
 public class Constants {
 

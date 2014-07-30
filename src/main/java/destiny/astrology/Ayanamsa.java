@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Ayanamsha is a Sanskrit word and is to be pronounced with the third "a" long, so: "Ayana-amsha". 
@@ -52,7 +53,7 @@ public enum Ayanamsa implements LocaleStringIF
   }
   
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

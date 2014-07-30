@@ -7,6 +7,8 @@ package destiny.astrology.classical.rules.debilities;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Combust the Sun (between 17' and 8.5 from Sol). */
 public final class Combustion extends Rule
@@ -15,8 +17,9 @@ public final class Combustion extends Rule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet != Planet.SUN)
     {

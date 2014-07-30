@@ -4,16 +4,18 @@
  */ 
 package destiny.core.calendar.decorators;
 
-import java.io.Serializable;
-
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
 
 public class MonthDecoratorChinese implements Decorator<Integer> , Serializable
 {
+  @Nullable
   @Override
   public String getOutputString(Integer month)
   {
-    switch(month.intValue())
+    switch(month)
     {
       case  1 : return "一月";
       case  2 : return "二月";

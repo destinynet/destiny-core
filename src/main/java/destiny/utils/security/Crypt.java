@@ -1,4 +1,7 @@
 package destiny.utils.security;
+
+import org.jetbrains.annotations.NotNull;
+
 /****************************************************************************
  * Java-based implementation of the unix crypt(3) command
  *
@@ -373,6 +376,7 @@ public class Crypt {
     return a;
   }
 
+  @NotNull
   private static int [] des_set_key(byte key[]) {
     int schedule[] = new int [ITERATIONS * 2];
     
@@ -457,6 +461,7 @@ public class Crypt {
     return L;
   }
   
+  @NotNull
   private static final int [] body(int schedule[], int Eswap0, int Eswap1) {
     int left = 0;
     int right = 0;
@@ -507,7 +512,8 @@ public class Crypt {
 
   public static final String alphabet = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-  public static final String crypt(String salt, String original) {
+  @NotNull
+  public static final String crypt(@NotNull String salt, @NotNull String original) {
     // wwb -- Should do some sanity checks: salt needs to be 2 chars, in alpha.
     while(salt.length() < 2)
       salt += "A";

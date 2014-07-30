@@ -1,6 +1,8 @@
 /** 2009/12/7 下午8:23:21 by smallufo */
 package destiny.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Triple<A, B, C> extends Tuple<A, B>
 {
   private final C c;
@@ -11,6 +13,7 @@ public class Triple<A, B, C> extends Tuple<A, B>
     this.c = c;
   }
 
+  @NotNull
   public static <A,B,C> Triple<A,B,C> of(A a , B b , C c) {
     return new Triple(a,b,c);
   }

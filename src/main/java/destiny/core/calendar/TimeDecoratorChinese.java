@@ -7,6 +7,7 @@ package destiny.core.calendar;
 import java.io.Serializable;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 簡單的中文輸出 , 總共輸出 38位元 <BR/>
@@ -21,27 +22,28 @@ public class TimeDecoratorChinese implements Decorator<Time> , Serializable
   {
   }
   
-  public String getOutputString(Time time)
+  @NotNull
+  public String getOutputString(@NotNull Time time)
   {
     StringBuffer sb = new StringBuffer();
     sb.append("西元");
-    if (time.isAd() == false)
+    if (!time.isAd())
       sb.append("前" );
     else
       sb.append("　");
-    sb.append(alignRight(time.getYear() , 4) +"年");
-    sb.append((time.getMonth() < 10 ? "0" : "" )+ time.getMonth()+"月");
-    sb.append((time.getDay() < 10 ? "0" : "")+time.getDay()+"日");
+    sb.append(alignRight(time.getYear(), 4)).append("年");
+    sb.append(time.getMonth() < 10 ? "0" : "").append(time.getMonth()).append("月");
+    sb.append(time.getDay() < 10 ? "0" : "").append(time.getDay()).append("日");
     sb.append("　");
-    sb.append((time.getHour() < 10 ? "0" : "") +time.getHour()+"時");
-    sb.append((time.getMinute() < 10 ? "0" : "" ) + time.getMinute()+"分");
+    sb.append(time.getHour() < 10 ? "0" : "").append(time.getHour()).append("時");
+    sb.append(time.getMinute() < 10 ? "0" : "").append(time.getMinute()).append("分");
     if (time.getSecond() - (int)time.getSecond() ==0)
     {
       //整數
       if (time.getSecond() < 10)
-        sb.append(" 0" + String.valueOf(time.getSecond()).substring(0,1) + ".00");
+        sb.append(" 0").append(String.valueOf(time.getSecond()).substring(0, 1)).append(".00");
       else
-        sb.append(" " + String.valueOf(time.getSecond()).substring(0,2)+".00");
+        sb.append(" ").append(String.valueOf(time.getSecond()).substring(0, 2)).append(".00");
     }
     else
     {
@@ -49,16 +51,16 @@ public class TimeDecoratorChinese implements Decorator<Time> , Serializable
       if (time.getSecond() < 10)
       {
         if (String.valueOf(time.getSecond()).length() >= 4)
-          sb.append(" 0" + String.valueOf(time.getSecond()).substring(0,4));
+          sb.append(" 0").append(String.valueOf(time.getSecond()).substring(0, 4));
         else
-          sb.append(" 0" + String.valueOf(time.getSecond()) + "0"); //長度一定等於3
+          sb.append(" 0").append(String.valueOf(time.getSecond())).append("0"); //長度一定等於3
       }
       else
       {
         if (String.valueOf(time.getSecond()).length() >= 5)
-          sb.append(" " + String.valueOf(time.getSecond()).substring(0,5));
+          sb.append(" ").append(String.valueOf(time.getSecond()).substring(0, 5));
         else
-          sb.append(" " + String.valueOf(time.getSecond()) + "0"); //長度一定等於4
+          sb.append(" ").append(String.valueOf(time.getSecond())).append("0"); //長度一定等於4
       }
     }
     sb.append("秒");

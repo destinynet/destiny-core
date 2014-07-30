@@ -4,6 +4,8 @@
  */
 package destiny.test;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -18,7 +20,7 @@ public class Handler implements InvocationHandler
   }
 
   @Override
-  public Object invoke(Object obj, Method method, Object[] args) throws Throwable
+  public Object invoke(@NotNull Object obj, @NotNull Method method, Object[] args) throws Throwable
   {
     System.out.println("obj class = " + obj.getClass().getName());
     try
@@ -28,7 +30,7 @@ public class Handler implements InvocationHandler
     catch (Exception e)
     {
       //e.printStackTrace();
-      return new Integer(0);
+      return 0;
     }
   }
 }

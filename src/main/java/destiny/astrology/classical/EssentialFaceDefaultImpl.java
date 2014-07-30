@@ -12,6 +12,7 @@ import destiny.astrology.Planet;
 import destiny.astrology.Star;
 import destiny.astrology.Utils;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Essential Face 內定實作 , , 參考 Ptolemy's Table , 以三分法 . Al-Biruni 利用 Chaldean order 排列，從戌宮零度開始， 火 -> 日 -> 金 -> 水 -> 月 -> 土 -> 木 ，依序下去，每星佔 10度 <br>
@@ -88,7 +89,7 @@ public class EssentialFaceDefaultImpl implements EssentialFaceIF , Serializable
   }
 
   @Override
-  public Star getFaceStar(ZodiacSign sign, double degree)
+  public Star getFaceStar(@NotNull ZodiacSign sign, double degree)
   {
     return getFaceStar(sign.getDegree() + degree);
   }

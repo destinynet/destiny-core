@@ -4,9 +4,13 @@
  */ 
 package destiny.astrology.chart.astrolog;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Stroke;
+import destiny.astrology.Horoscope;
+import destiny.astrology.chart.AbstractRing;
+import destiny.astrology.chart.EmitLineProperties;
+import org.jetbrains.annotations.NotNull;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,16 +18,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
-import destiny.astrology.Horoscope;
-import destiny.astrology.chart.AbstractRing;
-import destiny.astrology.chart.EmitLineProperties;
-
 /** 地盤環 */
 public class RingHouse extends AbstractRing
 {
   
+  @NotNull
   private Stroke strokeNormal = new BasicStroke(1.0f);
   
   public RingHouse(Horoscope h , double innerFrom , double outerTo)
@@ -31,6 +30,7 @@ public class RingHouse extends AbstractRing
     super(h , innerFrom , outerTo);
   }
   
+  @NotNull
   @Override
   public EmitLineProperties[] getEmitLineProperties()
   {
@@ -75,7 +75,7 @@ public class RingHouse extends AbstractRing
         BufferedImage numberImage = ImageIO.read(is);
         result.put(第一象限度數, numberImage);
       }
-      catch (IOException e)
+      catch (IOException ignored)
       {
       }
       finally {
@@ -83,7 +83,7 @@ public class RingHouse extends AbstractRing
         {
           is.close();
         }
-        catch (IOException e)
+        catch (IOException ignored)
         {
         }
       }

@@ -10,6 +10,8 @@
 
 package destiny.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,8 +26,8 @@ public class UBBCodeConverter
 
   public UBBCodeConverter()
   {
-    u_s = new String("haha");
-    u_s1 = new String("haha");
+    u_s = "haha";
+    u_s1 = "haha";
   }
 
   public String getAll(String s)
@@ -67,7 +69,8 @@ public class UBBCodeConverter
     return s1;
   }
 
-  public String replace(String s, String s1, String s2)
+  @NotNull
+  public String replace(@NotNull String s, @NotNull String s1, String s2)
   {
     String s3 = "";
     int i = s1.length();
@@ -100,7 +103,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -124,7 +127,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -147,7 +150,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -171,7 +174,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -195,7 +198,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -218,7 +221,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -242,7 +245,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -266,7 +269,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -289,7 +292,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -312,7 +315,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -335,7 +338,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -358,7 +361,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -381,7 +384,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -404,7 +407,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -427,7 +430,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -450,7 +453,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -473,7 +476,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -496,7 +499,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -520,7 +523,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -543,13 +546,14 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
   }
 
-  public String ReLi2(String s)
+  @NotNull
+  public String ReLi2(@NotNull String s)
   {
     return replace(s, "[*]", "<li>");
   }
@@ -573,7 +577,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -598,7 +602,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -623,7 +627,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -646,7 +650,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -670,7 +674,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -694,7 +698,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -721,7 +725,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -747,7 +751,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -773,7 +777,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -800,7 +804,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -824,7 +828,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;
@@ -847,7 +851,7 @@ public class UBBCodeConverter
         u_m.find();
       }
     }
-    catch (Exception exception)
+    catch (Exception ignored)
     {
     }
     return u_s;

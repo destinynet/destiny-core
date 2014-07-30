@@ -1,4 +1,7 @@
 package destiny.core.chinese;
+
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author smallufo
  * @date 2002/8/26
@@ -15,6 +18,7 @@ public class Characteristics
   private EarthlyBranches 日支;
   private EarthlyBranches 時支;
   
+  @NotNull
   public EarthlyBranches[] 空亡 = new EarthlyBranches[2];
   public String[] 六獸 = new String[6];
   public EarthlyBranches 驛馬 ;

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Random;
 import java.util.UUID;
 
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 
 public class CryptorTest
@@ -86,6 +87,7 @@ public class CryptorTest
   {
     private String key;
     private String raw;
+    @Nullable
     private String result;
     
     public CryptorThread(String key , String raw)
@@ -105,6 +107,7 @@ public class CryptorTest
       return raw;
     }
     
+    @Nullable
     public String getResult()
     {
       return result;

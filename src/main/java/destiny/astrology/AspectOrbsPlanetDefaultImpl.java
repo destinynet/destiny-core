@@ -4,9 +4,10 @@
  */ 
 package destiny.astrology;
 
-import java.io.Serializable;
-
 import com.google.common.collect.ImmutableMap;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /**
  * 「現代占星術」中，考量星體的交角容許度，內定實作 <br/>
@@ -16,7 +17,8 @@ import com.google.common.collect.ImmutableMap;
 public class AspectOrbsPlanetDefaultImpl implements AspectOrbsPlanetIF , Serializable
 {
   /** key 為 "p1-p2-aspect" 或是 "p2-p1-aspect" 的組合，以 '-' 串接 */
-  private static String getCompositedKey(Point p1 , Point p2 , Aspect aspect)
+  @NotNull
+  private static String getCompositedKey(@NotNull Point p1 , @NotNull Point p2 , @NotNull Aspect aspect)
   {
     return p1.toString()+"-"+p2.toString()+"-"+aspect.toString();
   }
@@ -38,18 +40,18 @@ public class AspectOrbsPlanetDefaultImpl implements AspectOrbsPlanetIF , Seriali
    * @return 交角容許度，如果傳回 小於零，代表找不到其值
    */
   @Override
-  public double getPlanetAspectOrb(Point p1, Point p2, Aspect aspect)
+  public double getPlanetAspectOrb(@NotNull Point p1, @NotNull Point p2, @NotNull Aspect aspect)
   {
     String key = getCompositedKey(p1, p2, aspect);
     Double value = aspectMap.get(key);
     if (value != null)
-      return value.doubleValue();
+      return value;
     else
     {
       key = getCompositedKey(p2, p1, aspect); //行星交換 , 再試一個 key
       value = aspectMap.get(key);
       if (value != null)
-        return value.doubleValue();
+        return value;
       else
         return -1; //如果沒有值，傳回 -1
     }

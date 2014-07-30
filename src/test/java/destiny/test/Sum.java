@@ -4,6 +4,8 @@
  */
 package destiny.test;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Sum implements ISum
 {
   public Integer value1;
@@ -15,8 +17,9 @@ public class Sum implements ISum
     value2 = val2;
   }
 
+  @NotNull
   public Integer sum()
   {
-    return new Integer(value1.intValue() + value2.intValue());
+    return value1.intValue() + value2.intValue();
   }
 }

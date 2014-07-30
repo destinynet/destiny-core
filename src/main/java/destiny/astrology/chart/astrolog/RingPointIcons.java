@@ -4,26 +4,17 @@
  */
 package destiny.astrology.chart.astrolog;
 
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import destiny.astrology.Asteroid;
-import destiny.astrology.Horoscope;
-import destiny.astrology.LunarNode;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.Utils;
+import destiny.astrology.*;
 import destiny.astrology.chart.AbstractRing;
 import destiny.astrology.chart.OrientalComparator;
 import destiny.astrology.chart.PointImageResourceReader;
 import destiny.astrology.chart.Style;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.awt.image.BufferedImage;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RingPointIcons extends AbstractRing
 {
@@ -33,6 +24,7 @@ public class RingPointIcons extends AbstractRing
   /** 圓心 */
   private double                   center;
 
+  @NotNull
   private PointImageResourceReader starImageResourcereader = new PointImageResourceReaderImpl();
 
   /** 要繪製的星體 */
@@ -119,7 +111,7 @@ public class RingPointIcons extends AbstractRing
   }
 
   /** 將行星 icon 所佔的弧角，做 overlap 檢查，並且分出 cluster , 傳回每顆星體重新排列後，位於幾度(第一象限算起) */
-  private Map<Point, Double> getRearrangedPointPosition(Map<Point, Double[]> pointIconRangeMap, Map<Point, Double> pointOriginDegMap)
+  private Map<Point, Double> getRearrangedPointPosition(@NotNull Map<Point, Double[]> pointIconRangeMap, @NotNull Map<Point, Double> pointOriginDegMap)
   {
     List<Set<Point>> clusters = Collections.synchronizedList(new ArrayList<Set<Point>>());
 
@@ -185,10 +177,7 @@ public class RingPointIcons extends AbstractRing
       {
         clusters.removeAll(occurringClusters);
         Set<Point> combiningNewCluster = Collections.synchronizedSet(new TreeSet<Point>(new OrientalComparator(h)));
-        for (Set<Point> cluster : occurringClusters)
-        {
-          combiningNewCluster.addAll(cluster);
-        }
+        occurringClusters.forEach(combiningNewCluster::addAll);
         clusters.add(combiningNewCluster);
       }
     }
@@ -325,7 +314,7 @@ public class RingPointIcons extends AbstractRing
   } //clusterRange
 
   /** 找出此 cluster range 的中心點 */
-  private double getClusterRangeCenter(Set<Point> cluster, Map<Point, Double[]> pointIconRangeMap)
+  private double getClusterRangeCenter(@NotNull Set<Point> cluster, @NotNull Map<Point, Double[]> pointIconRangeMap)
   {
     //range : 找出最東 , 以及最西 的兩點 , 相減即可
 
@@ -362,14 +351,10 @@ public class RingPointIcons extends AbstractRing
   }
 
   /** 查詢這顆行星，出現在哪些 clusters 中 , 傳回去 */
-  private Set<Set<Point>> getClusters(Point point, List<Set<Point>> clusters)
+  private Set<Set<Point>> getClusters(Point point, @NotNull List<Set<Point>> clusters)
   {
     Set<Set<Point>> result = Collections.synchronizedSet(new HashSet<Set<Point>>());
-    for (Set<Point> cluster : clusters)
-    {
-      if (cluster.contains(point))
-        result.add(cluster);
-    }
+    result.addAll(clusters.stream().filter(cluster -> cluster.contains(point)).collect(Collectors.toList()));
     return result;
   }
 
@@ -386,6 +371,7 @@ public class RingPointIcons extends AbstractRing
   }
 
   /** 不畫內圈，傳回 null */
+  @Nullable
   @Override
   public Style getInnerRingStyle()
   {

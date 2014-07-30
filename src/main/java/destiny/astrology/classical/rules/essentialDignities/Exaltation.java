@@ -12,6 +12,8 @@ import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** A planet in its exaltation , or mutial reception with another planet by exaltation */
 public final class Exaltation extends Rule
@@ -23,8 +25,9 @@ public final class Exaltation extends Rule
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
   
+  @Nullable
   @Override
-  public Tuple<String , Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  public Tuple<String , Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);

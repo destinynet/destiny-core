@@ -4,6 +4,9 @@
  */
 package destiny.utils.screen;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,9 @@ public class Canvas implements Serializable
   
   private byte[] content;
   
+  @Nullable
   private Canvas parent = null;
+  @NotNull
   private List<Child> children = new ArrayList<Child>();
   
   public Canvas(int width , int height)
@@ -44,7 +49,7 @@ public class Canvas implements Serializable
   /**
    * 新增子 Canvas
    */
-  public void add(Canvas c , int x , int y)
+  public void add(@NotNull Canvas c , int x , int y)
   {
     c.setParent(this);
     children.add(new Child(c , x, y));
@@ -53,6 +58,7 @@ public class Canvas implements Serializable
   /**
    * 取得目前 Canvas 的 Container
    */
+  @Nullable
   public Canvas getParent()
   {
     return this.parent;
@@ -77,9 +83,8 @@ public class Canvas implements Serializable
     else
     {
       sum = sum + width*height;
-      for (int i=0 ; i<children.size() ; i++)
-      {
-        sum = sum + ((Child)children.get(i)).getCanvas().getSize();
+      for (Child aChildren : children) {
+        sum = sum + (aChildren).getCanvas().getSize();
       }
     }  
     return sum;
@@ -88,7 +93,7 @@ public class Canvas implements Serializable
   /**
    * 設定橫向字元
    */
-  public void setText(byte[] b , int x , int y)
+  public void setText(@NotNull byte[] b , int x , int y)
   {
     /**
      * [x,y] = content[ (y-1)*width + x -1 ]
@@ -102,12 +107,13 @@ public class Canvas implements Serializable
   /**
    * 設定橫向字元
    */
-  public void setText(String s , int x , int y)
+  public void setText(@NotNull String s , int x , int y)
   {
     byte[] b = s.getBytes();
     this.setText(b , x , y);
   }
   
+  @Nullable
   public byte[] getContent()
   {
     byte[] result = null;
@@ -119,16 +125,14 @@ public class Canvas implements Serializable
     else
     {
       //有 children
-      for (int i=0 ; i < children.size() ; i++)
-      {
-        Child child = (Child)children.get(i);
+      for (Child aChildren : children) {
+        Child child = (Child) aChildren;
         byte[] childContent = child.getCanvas().getContent();
-        for (int j=0 ; j < childContent.length ; j++)
-        {
+        for (int j = 0; j < childContent.length; j++) {
           //走訪childContent , 必須計算 childContent 每個 byte 在 parent 的座標 , 並且複製過去
-          int childX = j-((j/child.getCanvas().getWidth()))*child.getCanvas().getWidth() + 1;
-          int childY = (j/child.getCanvas().getWidth()) + 1;
-          this.content[ (child.getY()+(childY-1)-1)*this.width + (child.getX()+(childX-1))-1] = childContent[j];
+          int childX = j - ((j / child.getCanvas().getWidth())) * child.getCanvas().getWidth() + 1;
+          int childY = (j / child.getCanvas().getWidth()) + 1;
+          this.content[(child.getY() + (childY - 1) - 1) * this.width + (child.getX() + (childX - 1)) - 1] = childContent[j];
         }
       }//for
       result = this.content ;
@@ -136,6 +140,7 @@ public class Canvas implements Serializable
     return result;
   }//getByte()
   
+  @NotNull
   public String toString()
   {
     StringBuffer sb = new StringBuffer();

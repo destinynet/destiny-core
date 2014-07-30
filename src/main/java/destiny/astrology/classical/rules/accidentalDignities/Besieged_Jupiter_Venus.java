@@ -9,6 +9,8 @@ import destiny.astrology.Planet;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 夾輔 : 被金星木星包夾 , 是很幸運的情形<br/>
@@ -27,8 +29,9 @@ public class Besieged_Jupiter_Venus extends Rule
   }
 
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.MARS || planet == Planet.SATURN)
     {

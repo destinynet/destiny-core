@@ -9,5 +9,5 @@ package destiny.astrology;
  */
 public enum NodeType
 {
-  TRUE,MEAN;
+  TRUE,MEAN
 }

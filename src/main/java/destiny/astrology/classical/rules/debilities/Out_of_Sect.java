@@ -6,6 +6,8 @@ package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.*;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** 
  * 判斷不得時 (Out of sect) : 白天 , 夜星位於地平面上，落入陽性星座；或是晚上，晝星在地平面上，落入陰性星座
@@ -32,15 +34,16 @@ public final class Out_of_Sect extends Rule
     this.dayNightImpl = dayNightImpl;
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
     DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
     
     if ( dayNight == DayNight.DAY && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS))
     {
-      if (horoscopeContext.getHouse(planet) >= 7 && sign.getBooleanValue() == true )
+      if (horoscopeContext.getHouse(planet) >= 7 && sign.getBooleanValue())
       {
         //addComment(Locale.TAIWAN , "夜星 " + planet + " 於白天在地平面上，落入陽性星座 " + sign.toString(Locale.TAIWAN) + " 座，不得時");
         return new Tuple<String , Object[]>("commentNight" , new Object[]{planet , sign});
@@ -48,7 +51,7 @@ public final class Out_of_Sect extends Rule
     }
     else if (dayNight == DayNight.NIGHT && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN))
     {
-      if (horoscopeContext.getHouse(planet) >= 7 && sign.getBooleanValue() == false)
+      if (horoscopeContext.getHouse(planet) >= 7 && !sign.getBooleanValue())
       {
         //addComment(Locale.TAIWAN , "晝星 " + planet + " 於夜晚在地平面上，落入陰性星座 " + sign.toString(Locale.TAIWAN) + " 座，不得時");
         return new Tuple<String , Object[]>("commentDay" , new Object[]{planet , sign});

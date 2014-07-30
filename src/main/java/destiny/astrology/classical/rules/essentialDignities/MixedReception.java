@@ -12,6 +12,8 @@ import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 廟旺互容 <br/>
@@ -27,8 +29,9 @@ public final class MixedReception extends Rule
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
 
+  @Nullable
   @Override
-  public Tuple<String , Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  public Tuple<String , Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);

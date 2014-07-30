@@ -8,6 +8,7 @@ import destiny.astrology.*;
 import destiny.astrology.Aspect.Importance;
 import destiny.astrology.AspectApplySeparateIF.AspectType;
 import destiny.core.calendar.Time;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -55,9 +56,11 @@ public class RefranationBean implements Serializable
   private boolean refranate;
   
   /** 「先」臨陣脫逃者，是誰，這裡強調「先」，因為有可能在 Perfect 交角之前，雙方都臨陣脫逃。*/
+  @Nullable
   private Point refranator = null;
   
   /** 此兩星正在 apply 哪個交角 */
+  @Nullable
   private Aspect applyingAspect = null;
   
   /**
@@ -144,12 +147,14 @@ public class RefranationBean implements Serializable
   }
 
   /** 如果有臨陣脫逃，是哪顆星「先」逃 (並不代表另一顆星一定不會逃) */
+  @Nullable
   public Point getRefranator()
   {
     return refranator;
   }
   
   /** @return 此兩星正在 applying 哪個交角，如果沒有，則為 null */
+  @Nullable
   public Aspect getApplyingAspect()
   {
     return applyingAspect;

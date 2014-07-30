@@ -10,6 +10,8 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 一些加解密的工具
@@ -19,7 +21,8 @@ import org.apache.commons.codec.binary.Base64;
 public class Cryptor implements Serializable
 {
   /** DES 加密 , key 為 8 bytes (64 bits) */
-  public final static String getDesEncodedString(String DES_KEY , String raw)
+  @Nullable
+  public final static String getDesEncodedString(@NotNull String DES_KEY , @NotNull String raw)
   {
     try
     {
@@ -47,7 +50,8 @@ public class Cryptor implements Serializable
     return null;
   }
   
-  public final static String getDesDecodedString(String DES_KEY , String encodedString)
+  @Nullable
+  public final static String getDesDecodedString(@NotNull String DES_KEY , @NotNull String encodedString)
   {
     int rest = encodedString.length() % 4;
     int padding = 0;
@@ -81,7 +85,7 @@ public class Cryptor implements Serializable
 
   }
   
-  public final static String MD5(String text)
+  public final static String MD5(@NotNull String text)
   {
     String md5Text = "";
     try

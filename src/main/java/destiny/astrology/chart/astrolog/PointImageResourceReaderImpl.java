@@ -4,23 +4,24 @@
  */ 
 package destiny.astrology.chart.astrolog;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-
-import javax.imageio.ImageIO;
-
 import destiny.astrology.Asteroid;
 import destiny.astrology.LunarNode;
 import destiny.astrology.LunarNode.NorthSouth;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.astrology.chart.PointImageResourceReader;
+import org.jetbrains.annotations.Nullable;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 
 public class PointImageResourceReaderImpl implements PointImageResourceReader
 {
 
+  @Nullable
   @Override
   public BufferedImage getBufferedImage(Point point)
   {
@@ -49,7 +50,7 @@ public class PointImageResourceReaderImpl implements PointImageResourceReader
       {
         img = ImageIO.read(is);
       }
-      catch (IOException e)
+      catch (IOException ignored)
       {
       }
       finally
@@ -58,7 +59,7 @@ public class PointImageResourceReaderImpl implements PointImageResourceReader
         {
           is.close();
         }
-        catch (IOException e)
+        catch (IOException ignored)
         {
         }
       }  

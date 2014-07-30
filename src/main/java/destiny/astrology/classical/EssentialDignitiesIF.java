@@ -9,6 +9,7 @@ import java.util.List;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
+import org.jetbrains.annotations.NotNull;
 
 /** 
  * 取得某行星 Planet 的 Essential Dignities 強度 <BR>
@@ -16,5 +17,6 @@ import destiny.astrology.classical.rules.RuleIF;
  */
 public interface EssentialDignitiesIF
 {
+  @NotNull
   public List<RuleIF> getEssentialDignities(Planet planet , HoroscopeContext horoscopeContext);
 }

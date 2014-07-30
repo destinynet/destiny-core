@@ -13,6 +13,7 @@ import destiny.astrology.Point;
 import destiny.astrology.PointDegree;
 import destiny.astrology.Utils;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Essential Terms , 內定實作 , 參考 Ptolemy's Table , 以五分法
@@ -109,7 +110,7 @@ public class EssentialTermsDefaultImpl implements EssentialTermsIF , Serializabl
   }
 
   @Override
-  public Point getTermsStar(ZodiacSign sign, double degree)
+  public Point getTermsStar(@NotNull ZodiacSign sign, double degree)
   {
     return getTermsStar(sign.getDegree() + degree);
   }

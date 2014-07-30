@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology.chart;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.Color;
 import java.awt.Stroke;
 import java.io.Serializable;
@@ -12,9 +14,11 @@ import java.io.Serializable;
 public class Style implements Serializable
 {
   /** stroke */
+  @Nullable
   public Stroke stroke = null;
   
   /** 顏色 */
+  @Nullable
   public Color color = null;
   
   public Style()

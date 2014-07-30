@@ -17,6 +17,8 @@ import destiny.astrology.Point;
 import destiny.astrology.PointDegree;
 import destiny.astrology.Utils;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 取得星座 ( ZodiacSign ) 的 : 旺 Rulership , 廟 Exaltation , 陷 Detriment , 落 Fail <br/>
@@ -57,6 +59,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
    * 放星體在黃道帶上幾度得到 Fall (落 , -4) 的度數
    * 前面 starExaltationMap 中，每個星體的度數 +180度即為「落」 
    * */ 
+  @NotNull
   private static Map<Point , Double> starFallMap = new HashMap<Point , Double>();
   static
   {
@@ -65,7 +68,8 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   }
   
   /** 星座 + 強弱度 的組合 key , 中間以減號 (-) 串接 */
-  private static String getCompositeKey(ZodiacSign sign , Dignity dignity)
+  @NotNull
+  private static String getCompositeKey(@NotNull ZodiacSign sign , @NotNull Dignity dignity)
   {
     return sign.toString()+'-'+dignity.toString();
   }
@@ -107,8 +111,9 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   {
   }
   
+  @Nullable
   @Override
-  public Point getPoint(ZodiacSign sign, Dignity dignity)
+  public Point getPoint(@NotNull ZodiacSign sign, @NotNull Dignity dignity)
   {
     switch (dignity)
     {
@@ -120,7 +125,8 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
     }
   }
   
-  private Point findPoint(ZodiacSign sign , Map<Point , Double> map)
+  @Nullable
+  private Point findPoint(ZodiacSign sign , @NotNull Map<Point , Double> map)
   {
     for(Map.Entry<Point, Double> mapEntry : map.entrySet())
     {
@@ -133,6 +139,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   /**
    * 取得在此星座得到「Exaltation , 廟 +4」的星體及度數
    */
+  @Nullable
   public PointDegree getExaltationStarDegree(ZodiacSign sign)
   {
     Point point = findPoint(sign , starExaltationMap);
@@ -145,6 +152,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   /**
    * 取得在此星座得到「Fall , 落 -4」的星體及度數
    */
+  @Nullable
   public PointDegree getFallStarDegree(ZodiacSign sign)
   {
     Point point = findPoint(sign , starFallMap);

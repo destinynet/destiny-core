@@ -4,12 +4,15 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 
 public class ZodiacDegreeDecoratorEnglish implements ZodiacDegreeDecoratorIF
 {
   private double deg;
 
+  @NotNull
   @Override
   public String getOutputString(double degree)
   {
@@ -19,6 +22,7 @@ public class ZodiacDegreeDecoratorEnglish implements ZodiacDegreeDecoratorIF
     return sign.toString(Locale.US)+getDeg()+"Deg "+getMin()+"Min "+getSec()+"Sec";
   }
 
+  @NotNull
   @Override
   public String getSimpOutString(double degree)
   {

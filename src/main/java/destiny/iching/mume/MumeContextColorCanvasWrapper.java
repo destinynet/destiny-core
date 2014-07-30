@@ -9,6 +9,8 @@ import destiny.iching.HexagramIF;
 import destiny.iching.Symbol;
 import destiny.iching.contentProviders.HexagramNameFullIF;
 import destiny.utils.ColorCanvas.ColorCanvas;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -34,6 +36,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
   }
   
 
+  @NotNull
   @Override
   public String toString()
   {
@@ -93,7 +96,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
     mainCanvas.add(本卦canvas, 1, 5);
     
     //變爻
-    if ( mumeContext.getHexagram().getLine(mumeContext.getMotivate()) == true)
+    if (mumeContext.getHexagram().getLine(mumeContext.getMotivate()))
       mainCanvas.setText("◎", 9-mumeContext.getMotivate() ,17 );
     else
       mainCanvas.setText("〤", 9-mumeContext.getMotivate() ,17 );
@@ -122,7 +125,8 @@ public class MumeContextColorCanvasWrapper implements Serializable
     return c.getHtmlOutput();
   }
   
-  private ColorCanvas getColorCanvas(HexagramIF hexagram)
+  @NotNull
+  private ColorCanvas getColorCanvas(@NotNull HexagramIF hexagram)
   {
     ColorCanvas cc = new ColorCanvas(7 , 12 , "　");
     
@@ -137,7 +141,8 @@ public class MumeContextColorCanvasWrapper implements Serializable
     return cc;
   }
 
-  private ColorCanvas getColorCanvas(Symbol s)
+  @Nullable
+  private ColorCanvas getColorCanvas(@NotNull Symbol s)
   {
     String color = null; //卦的顏色
     switch(s.getFiveElement())
@@ -151,7 +156,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
     ColorCanvas cc = new ColorCanvas(3,12,"　",color,null);
     for (int i=3 ; i >=1 ; i--)
     {
-      if (s.getBooleanValue(i) == true)
+      if (s.getBooleanValue(i))
         cc.setText("▅▅▅▅▅", 4-i, 1);
       else
         cc.setText("▅▅　▅▅", 4-i, 1);

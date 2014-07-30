@@ -12,10 +12,10 @@ public class TestSum
   public void testRun()
   {
     ISum s;
-    s = new SumFactory().createSum(null, new Integer(2));
+    s = new SumFactory().createSum(null, 2);
     System.out.println("Returns (null+2): "+s.sum());
    
-    s = new SumFactory().createSum(new Integer(3), new Integer(2));
+    s = new SumFactory().createSum(3, 2);
     System.out.println("Returns (3+2): "+s.sum());
   }
 }

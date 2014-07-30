@@ -4,22 +4,18 @@
  */
 package destiny.utils;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import destiny.utils.ClassUtils.PERMISSION;
 import destiny.utils.ColorCanvas.ColorCanvas;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class ClassUtilsTest
 {
   @Test
   public void testGetProperties() throws Exception
   {
-    for(String s : ClassUtils.getProperties(ColorCanvas.class , PERMISSION.READABLE))
-    {
-      System.out.println(s);
-    }
+    ClassUtils.getProperties(ColorCanvas.class, PERMISSION.READABLE).forEach(System.out::println);
   }
 
   @Test

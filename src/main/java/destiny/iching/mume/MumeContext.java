@@ -6,6 +6,7 @@ package destiny.iching.mume;
 
 import destiny.iching.Hexagram;
 import destiny.iching.HexagramIF;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -23,7 +24,7 @@ public class MumeContext implements Serializable
    * @param motivate
    *          動爻
    */
-  public MumeContext(HexagramIF hexagram, int motivate)
+  public MumeContext(@NotNull HexagramIF hexagram, int motivate)
   {
     this.hexagram = Hexagram.getHexagram(hexagram.getYinYangs());
     this.motivate = motivate;
@@ -48,7 +49,7 @@ public class MumeContext implements Serializable
   }
 
   /** 設定本卦 */
-  public void setHexagram(HexagramIF hexagram)
+  public void setHexagram(@NotNull HexagramIF hexagram)
   {
     this.hexagram = Hexagram.getHexagram(hexagram.getYinYangs());
   }

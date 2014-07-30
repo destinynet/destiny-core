@@ -7,6 +7,7 @@ package destiny.iching.graph;
 import destiny.font.FontRepository;
 import destiny.iching.HexagramIF;
 import destiny.utils.image.Processor;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -23,7 +24,7 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 public abstract class AbstractPairHexagramChart extends BufferedImage implements Serializable
 {
   // 是否繪製輔助線條
-  public boolean drawRulers = false;
+  private boolean drawRulers = false;
   
   private GoldenPaddingChart srcChart;
   private GoldenPaddingChart dstChart;
@@ -36,8 +37,8 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
   
   public enum Type {MERGED , GOLDEN}
   
-  protected Color bg;
-  protected Color fore = Color.BLACK;
+  private Color bg;
+  private Color fore = Color.BLACK;
   
   /**
    * @param src     本卦
@@ -50,8 +51,8 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
    * @param bg
    */
   public AbstractPairHexagramChart(
-      HexagramIF src , String srcName ,
-      HexagramIF dst , String dstName , 
+      @NotNull HexagramIF src , String srcName ,
+      @NotNull HexagramIF dst , String dstName ,
       Type type , WIDTH_HEIGHT which, int value , Color bg , Color fore)
   {
     super(

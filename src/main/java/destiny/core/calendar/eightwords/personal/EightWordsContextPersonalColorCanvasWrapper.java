@@ -15,6 +15,7 @@ import destiny.core.chinese.StemBranch;
 import destiny.utils.Decorator;
 import destiny.utils.ColorCanvas.AlignUtil;
 import destiny.utils.ColorCanvas.ColorCanvas;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -30,16 +31,18 @@ public class EightWordsContextPersonalColorCanvasWrapper extends EightWordsConte
   
   private ColorCanvas cc;
 
-  public enum OutputMode {HTML , TEXT};
+  public enum OutputMode {HTML , TEXT}
+
   private OutputMode outputMode = OutputMode.HTML;
   
   /** 輸出大運的模式 */
-  public enum FortuneOutputFormat {西元 , 民國 , 實歲 , 虛歲};
+  public enum FortuneOutputFormat {西元 , 民國 , 實歲 , 虛歲}
+
   private FortuneOutputFormat fortuneOutputFormat = FortuneOutputFormat.虛歲;
   
   private final Decorator<Time> timeDecorator = new TimeDecoratorChinese();
   
-  public EightWordsContextPersonalColorCanvasWrapper(EightWordsPersonContext personContext , String locationName , HiddenStemsIF hiddenStemsImpl , String linkUrl)
+  public EightWordsContextPersonalColorCanvasWrapper(@NotNull EightWordsPersonContext personContext , String locationName , HiddenStemsIF hiddenStemsImpl , String linkUrl)
   {
     super(personContext , personContext.getLmt() , personContext.getLocation() , locationName , hiddenStemsImpl , linkUrl);
     this.personContext = personContext;
@@ -79,7 +82,7 @@ public class EightWordsContextPersonalColorCanvasWrapper extends EightWordsConte
     ColorCanvas 大運橫 = new ColorCanvas(8,70,"　" , null , null);
 
     //forward : 大運是否順行
-    boolean isForward = personContext.isFortuneDirectionForward() ? true : false;
+    boolean isForward = personContext.isFortuneDirectionForward();
 
     //首先取得到下/上個節氣的秒數
     //double toMajorSolarTermsSeconds = context.getTargetMajorSolarTermsSeconds( isForward == true ? 1 : -1 );

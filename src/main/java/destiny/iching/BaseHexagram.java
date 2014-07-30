@@ -4,6 +4,9 @@
  */
 package destiny.iching;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 /** 因為 enum Hexagram 無法被繼承 , 所以才做出這個中介/adapter class , 提供給其他 class 繼承 */
@@ -16,7 +19,7 @@ public class BaseHexagram implements HexagramIF , Serializable
     this.hexagram = hexagram;
   }
   
-  public BaseHexagram(boolean[] yinyangs)
+  public BaseHexagram(@NotNull boolean[] yinyangs)
   {
     if(yinyangs.length != 6)
       throw new RuntimeException("BaseHexagram yinyangs length not equal 6!");
@@ -41,12 +44,14 @@ public class BaseHexagram implements HexagramIF , Serializable
     return hexagram.getUpperSymbol();
   }
 
+  @NotNull
   @Override
   public boolean[] getYinYangs()
   {
     return hexagram.getYinYangs();
   }
   
+  @NotNull
   @Override
   public String getBinaryCode()
   {
@@ -63,7 +68,7 @@ public class BaseHexagram implements HexagramIF , Serializable
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;
@@ -83,7 +88,8 @@ public class BaseHexagram implements HexagramIF , Serializable
   }
 
   /** 從 "010101" 取得一個卦 */
-  public static HexagramIF getFromBinaryString(String code)
+  @NotNull
+  public static HexagramIF getFromBinaryString(@Nullable String code)
   {
     if (code == null || code.length() < 6)
       return Hexagram.乾;
@@ -107,6 +113,7 @@ public class BaseHexagram implements HexagramIF , Serializable
     }
   }
 
+  @NotNull
   @Override
   public HexagramIF getHexagram(int... lines)
   {

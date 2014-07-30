@@ -5,11 +5,12 @@
  */
 package destiny.FengShui.SanYuan;
 
-import java.io.Serializable;
-
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.iching.Symbol;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /** 山 */
 public class Mountain implements Serializable
@@ -41,6 +42,7 @@ public class Mountain implements Serializable
   public final static Mountain 亥 = new Mountain(EarthlyBranches.亥);
   public final static Mountain 壬 = new Mountain(HeavenlyStems  .壬);
   
+  @NotNull
   private final static Mountain[] ountainArray ;
   static
   {
@@ -60,12 +62,13 @@ public class Mountain implements Serializable
     return value;
   }
   
+  @NotNull
   public static Mountain[] getMountains()
   {
     return ountainArray;
   }
   
-  public static int getIndex(Mountain m)
+  public static int getIndex(@NotNull Mountain m)
   {
     int index = -1;
     for (int i=0 ; i < ountainArray.length ; i++)
@@ -83,12 +86,12 @@ public class Mountain implements Serializable
     return ountainArray[ normalize(Mountain.getIndex(this)+12) ];
   }
   
-  public static Mountain getOppositeMountain(Mountain m)
+  public static Mountain getOppositeMountain(@NotNull Mountain m)
   {
     return ountainArray[ normalize(Mountain.getIndex(m)+12) ];
   }
   
-  private final static int normalize(int value)
+  private static int normalize(int value)
   {
     if (value > 23 )
       return normalize( value-24);

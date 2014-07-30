@@ -8,6 +8,7 @@ package destiny.FengShui.SanYuan;
 import java.io.Serializable;
 
 import destiny.iching.Symbol;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 在三元盤中，每個 Chart 都有九個 Block
@@ -81,6 +82,7 @@ public class ChartBlock implements Serializable
    */
   public int getPeriod() { return period; }
 
+  @NotNull
   @Override
   public String toString()
   {

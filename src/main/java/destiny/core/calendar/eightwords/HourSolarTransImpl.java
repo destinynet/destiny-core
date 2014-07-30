@@ -11,6 +11,8 @@ import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -53,8 +55,9 @@ public class HourSolarTransImpl implements HourIF , Serializable
     this.hasRefraction = hasRefraction;
   }
 
+  @NotNull
   @Override
-  public EarthlyBranches getHour(Time lmt, Location location)
+  public EarthlyBranches getHour(@Nullable Time lmt, @Nullable Location location)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt and location cannot be null !");
@@ -115,8 +118,9 @@ public class HourSolarTransImpl implements HourIF , Serializable
     }    
   }
 
+  @NotNull
   @Override
-  public Time getLmtNextStartOf(Time lmt, Location location, EarthlyBranches targetEb)
+  public Time getLmtNextStartOf(@NotNull Time lmt, @NotNull Location location, @NotNull EarthlyBranches targetEb)
   {
     Time resultGmt = null;
     Time gmt = Time.getGMTfromLMT(lmt, location);
@@ -204,11 +208,13 @@ public class HourSolarTransImpl implements HourIF , Serializable
     return Time.getLMTfromGMT(resultGmt, location);
   }
 
+  @NotNull
   public String getTitle(Locale locale)
   {
     return "真太陽時";
   }
 
+  @NotNull
   public String getDescription(Locale locale)
   {
     return "利用太陽過天底 到天頂之間，劃分十二等份，再從太陽過天頂到天底，平均劃分十二等份，依此來切割 12 時辰";

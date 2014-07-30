@@ -18,6 +18,8 @@ import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <pre>
@@ -29,7 +31,9 @@ import destiny.core.chinese.StemBranch;
  */
 public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serializable
 {
+  @Nullable
   private StarPositionIF starPositionImpl;
+  @Nullable
   private StarTransitIF starTransitImpl;
   
   /** 南半球月令是否對沖 */
@@ -39,6 +43,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
   /** 換年的度數 , 通常是立春點 (315) 換年*/
   private double changeYearDegree;
   /** 存放『年干』 */
+  @Nullable
   private HeavenlyStems 年干;
   
   public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl)
@@ -52,7 +57,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     this.setting(ChangeYearDegree , starPositionImpl , starTransitImpl);
   }
   
-  private void setting(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl)
+  private void setting(double ChangeYearDegree , @Nullable StarPositionIF starPositionImpl , @Nullable StarTransitIF starTransitImpl)
   {
     if (starPositionImpl == null || starTransitImpl == null)
       throw new RuntimeException("starPositionImpl and starTransitImpl cannot be null");
@@ -66,7 +71,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
   }
   
   /** 取得 年干支 */
-  public StemBranch getYear(Time lmt, Location location)
+  public StemBranch getYear(@Nullable Time lmt, @Nullable Location location)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt or location cannot be null !");
@@ -142,7 +147,8 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
   }
 
   /** 取得 月干支 */
-  public StemBranch getMonth(Time lmt, Location location)
+  @Nullable
+  public StemBranch getMonth(@Nullable Time lmt, @Nullable Location location)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt or location cannot be null !");
@@ -277,7 +283,8 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
    * @param lmt
    * @param 月支
    */
-  private HeavenlyStems getMonthStem(Time lmt , Location location , EarthlyBranches 月支)
+  @Nullable
+  private HeavenlyStems getMonthStem(@NotNull Time lmt , @NotNull Location location , @NotNull EarthlyBranches 月支)
   {
     HeavenlyStems 月干 = null;
     

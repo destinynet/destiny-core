@@ -1,11 +1,9 @@
-/**
- * Created by smallufo on 2014-07-15.
- */
 package destiny.astrology.classical;
 
 import destiny.astrology.*;
 import destiny.core.calendar.Time;
 import destiny.utils.Triple;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -24,8 +22,9 @@ public class RefranationImpl implements RefranationIF , Serializable {
     this.retrogradeImpl = retrogradeImpl;
   }
 
+  @NotNull
   @Override
-  public Triple<Boolean, Point, Aspect> resultOf(HoroscopeContext context, Planet planet, Point otherPoint) {
+  public Triple<Boolean, Point, Aspect> resultOf(@NotNull HoroscopeContext context, Planet planet, Point otherPoint) {
 
     /** 此星 (planet) 與其他星 (otherPoint)，是否會出現 refranation 的情形 */
     boolean refranate = false;

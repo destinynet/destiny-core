@@ -4,6 +4,8 @@
  */
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public final class Asteroid extends Star implements Comparable<Asteroid>
   }
 
   @Override
-  public int compareTo(Asteroid o)
+  public int compareTo(@NotNull Asteroid o)
   {
     if (this.equals(o))
       return 0;

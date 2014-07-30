@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,8 +13,8 @@ import java.util.List;
 
 public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
 {
-  public enum NorthSouth {NORTH , SOUTH};
-  
+  public enum NorthSouth {NORTH , SOUTH}
+
   private NorthSouth northSouth = NorthSouth.NORTH;
   
   private NodeType nodeType= NodeType.MEAN ;
@@ -26,6 +28,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * StarPositionImpl.getPosition(LunarNode.NORTH_TRUE, gmt);
    * </pre>
    */
+  @NotNull
   public static LunarNode NORTH_TRUE = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.TRUE);
 
   /**
@@ -35,6 +38,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * StarPositionImpl.getPosition(LunarNode.NORTH_MEAN, gmt);
    * </pre>
    */
+  @NotNull
   public static LunarNode NORTH_MEAN = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.MEAN);
   
   /**
@@ -44,6 +48,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * StarPositionImpl.getPosition(LunarNode.SOUTH_TRUE, gmt);
    * </pre>
    */
+  @NotNull
   public static LunarNode SOUTH_TRUE = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.TRUE);
   
   /**
@@ -53,9 +58,11 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * StarPositionImpl.getPosition(LunarNode.SOUTH_MEAN, gmt);
    * </pre>
    */
+  @NotNull
   public static LunarNode SOUTH_MEAN = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.MEAN);
 
   //public static LunarNode[] values = {NORTH_TRUE , NORTH_MEAN , SOUTH_TRUE , SOUTH_MEAN};
+  @NotNull
   public static LunarNode[] values = { NORTH_MEAN , SOUTH_MEAN};
   
   protected LunarNode(String nameKey, String abbrKey , NorthSouth northSouth , NodeType nodeType)

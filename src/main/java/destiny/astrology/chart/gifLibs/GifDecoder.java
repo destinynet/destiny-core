@@ -4,6 +4,9 @@
  */ 
 package destiny.astrology.chart.gifLibs;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -58,6 +61,7 @@ public class GifDecoder implements Serializable {
    */
   public static final int STATUS_OPEN_ERROR = 2;
 
+  @Nullable
   protected BufferedInputStream in;
   protected int status;
 
@@ -67,8 +71,11 @@ public class GifDecoder implements Serializable {
   protected int gctSize; // size of global color table
   protected int loopCount = 1; // iterations; 0 = repeat forever
 
+  @Nullable
   protected int[] gct; // global color table
+  @Nullable
   protected int[] lct; // local color table
+  @Nullable
   protected int[] act; // active color table
 
   protected int bgIndex; // background color index
@@ -83,8 +90,10 @@ public class GifDecoder implements Serializable {
   protected int ix, iy, iw, ih; // current image rectangle
   protected Rectangle lastRect; // last image rect
   protected BufferedImage image; // current frame
+  @Nullable
   protected BufferedImage lastImage; // previous frame
 
+  @NotNull
   protected byte[] block = new byte[256]; // current data block
   protected int blockSize = 0; // block size
 
@@ -145,6 +154,7 @@ public class GifDecoder implements Serializable {
    *
    * @return BufferedImage containing first frame, or null if none.
    */
+  @Nullable
   public BufferedImage getImage() {
     return getFrame(0);
   }
@@ -255,6 +265,7 @@ public class GifDecoder implements Serializable {
    *
    * @return BufferedImage representation of frame, or null if n is invalid.
    */
+  @Nullable
   public BufferedImage getFrame(int n) {
     BufferedImage im = null;
     if ((n >= 0) && (n < frameCount)) {
@@ -268,6 +279,7 @@ public class GifDecoder implements Serializable {
    *
    * @return GIF image dimensions
    */
+  @NotNull
   public Dimension getFrameSize() {
     return new Dimension(width, height);
   }
@@ -278,7 +290,7 @@ public class GifDecoder implements Serializable {
    * @param BufferedInputStream containing GIF file.
    * @return read status code (0 = no errors)
    */
-  public int read(BufferedInputStream is) {
+  public int read(@Nullable BufferedInputStream is) {
     init();
     if (is != null) {
       in = is;
@@ -305,7 +317,7 @@ public class GifDecoder implements Serializable {
    * @param InputStream containing GIF file.
    * @return read status code (0 = no errors)
    */
-  public int read(InputStream is) {
+  public int read(@Nullable InputStream is) {
     init();
     if (is != null) {
       if (!(is instanceof BufferedInputStream))
@@ -550,6 +562,7 @@ public class GifDecoder implements Serializable {
    * @param ncolors int number of colors to read
    * @return int array containing 256 colors (packed ARGB with full alpha)
    */
+  @Nullable
   protected int[] readColorTable(int ncolors) {
     int nbytes = 3 * ncolors;
     int[] tab = null;

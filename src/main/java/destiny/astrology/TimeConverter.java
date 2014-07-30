@@ -1,5 +1,7 @@
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -16,7 +18,7 @@ public class TimeConverter
   * TimeZone TZ = TimeZone.getTimeZone("Asia/Taipei");
   * Calendar result = TimeConverter.toGMT(LMT , TZ);
   */
-  public static Calendar toGMT(Calendar LMT , TimeZone TZ)
+  public static Calendar toGMT(@NotNull Calendar LMT , @NotNull TimeZone TZ)
   {
     Calendar result = Calendar.getInstance();
     result.setTimeInMillis(LMT.getTimeInMillis() - TZ.getOffset(LMT.getTimeInMillis()));

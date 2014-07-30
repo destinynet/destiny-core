@@ -8,6 +8,7 @@ import destiny.core.chart.Constants.WIDTH_HEIGHT;
 import destiny.font.FontRepository;
 import destiny.iching.HexagramIF;
 import destiny.iching.contentProviders.ExpressionIF;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +28,9 @@ public class PairGoldenChartWithText extends PairGoldenChart
    * [經文] 黃金比例的雙卦象 , 顯示爻辭，動爻加深
    */
   public PairGoldenChartWithText(
-      ExpressionIF expImpl ,
-      HexagramIF src, String srcName,
-      HexagramIF dst, String dstName, 
+      @NotNull ExpressionIF expImpl ,
+      @NotNull HexagramIF src, String srcName,
+      @NotNull HexagramIF dst, String dstName,
       WIDTH_HEIGHT which, int value, Color bg, Color fore)
   {
     super(src, srcName, dst, dstName, which, value, bg, fore);

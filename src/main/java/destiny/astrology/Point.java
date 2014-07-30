@@ -10,6 +10,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import destiny.utils.LocaleStringIF;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 抽象class , 代表星盤上的一「點」，可能是實星（行星 Planet , 小行星 Asteroid , 恆星 FixedStar ），
@@ -51,7 +53,7 @@ public abstract class Point implements Serializable , LocaleStringIF
   }
   
   /** 名稱 */
-  public String getName(Locale locale)
+  public String getName(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }
@@ -71,13 +73,13 @@ public abstract class Point implements Serializable , LocaleStringIF
   
   /** toString 直接取名稱 (name) */
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }
 
   /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes */
-  public String getAbbreviation(Locale locale)
+  public String getAbbreviation(@NotNull Locale locale)
   {
     if (abbrKey != null)
     {
@@ -108,7 +110,8 @@ public abstract class Point implements Serializable , LocaleStringIF
   /**
    * 處理縮寫
    */
-  private String getAbbr(Locale locale , String value)
+  @NotNull
+  private String getAbbr(@Nullable Locale locale , @NotNull String value)
   {
     if ( locale!= null && locale.getLanguage().equals("zh") && locale.getCountry().equals("TW") )
     {
@@ -140,7 +143,7 @@ public abstract class Point implements Serializable , LocaleStringIF
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;

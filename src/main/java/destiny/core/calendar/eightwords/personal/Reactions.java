@@ -5,6 +5,8 @@
 package destiny.core.calendar.eightwords.personal;
 
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * 十神 , 天干之間互相的互動關係 : 比間，劫財，正財...
  */
@@ -29,6 +31,7 @@ public enum Reactions
   }
   
   /** 比肩.getPairReaction() == 劫財 */
+  @NotNull
   public Reactions getPairReaction()
   {
     switch (this)

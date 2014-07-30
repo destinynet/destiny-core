@@ -7,6 +7,7 @@ import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author smallufo
@@ -40,6 +41,7 @@ public class EightWordsContext implements EightWordsIF , Serializable
    * 計算八字 , 不用轉換，直接以 LMT 來計算即可！
    * TODO : 當地時間是否轉換成中原時間
    */
+  @Nullable
   @Override
   public EightWords getEightWords(Time lmt, Location location)
   {

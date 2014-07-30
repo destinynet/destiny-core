@@ -4,6 +4,9 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -27,7 +30,7 @@ public class HoroscopeAspectsCalculator implements Serializable
     return getAspectDataSet(Arrays.asList(points) , null);
   }
   
-  public Collection<HoroscopeAspectData> getAspectDataSet(Collection<Point> points)
+  public Collection<HoroscopeAspectData> getAspectDataSet(@NotNull Collection<Point> points)
   {
     //List<Point> pointList = new ArrayList<Point>(points);
     return getAspectDataSet(points , null);
@@ -38,30 +41,20 @@ public class HoroscopeAspectsCalculator implements Serializable
    * 計算 points 之間所形成的交角 . aspects 為要計算的交角 , 如果 aspects 為 null , 代表不過濾任何交角 <br/>
    * 如果沒有形成任何交角（不太可能 , 除非 points 很少 ），則傳回 size = 0 之 Set
    *  */
-  public Collection<HoroscopeAspectData> getAspectDataSet(Collection<Point> points , Collection<Aspect> aspects)
+  public Collection<HoroscopeAspectData> getAspectDataSet(@NotNull Collection<Point> points , @Nullable Collection<Aspect> aspects)
   {
     Set<HoroscopeAspectData> dataSet = Collections.synchronizedSet(new HashSet<HoroscopeAspectData>());
-    
-    Iterator<Point> it = points.iterator();
-    
-    while(it.hasNext())
-    {
-      Point point = it.next();
-      Map<Point , Aspect>  map = calculator.getPointAspect(point, points);
-      if (map != null)
-      {
-        Iterator<Map.Entry<Point , Aspect>> it2 = map.entrySet().iterator();
-        while (it2.hasNext())
-        {
-          Map.Entry<Point , Aspect> entry = it2.next();
 
+    for (Point point : points) {
+      Map<Point, Aspect> map = calculator.getPointAspect(point, points);
+      if (map != null) {
+        for (Map.Entry<Point, Aspect> entry : map.entrySet()) {
           //處理過濾交角的事宜
-          if (aspects == null || aspects.size() == 0 ||  (aspects != null  && aspects.contains(entry.getValue())) )
-          {
-            HoroscopeAspectData data = new HoroscopeAspectData(point , entry.getKey() , entry.getValue() , horoscope.getAspectError(point , entry.getKey() , entry.getValue()));
+          if (aspects == null || aspects.size() == 0 || (aspects != null && aspects.contains(entry.getValue()))) {
+            HoroscopeAspectData data = new HoroscopeAspectData(point, entry.getKey(), entry.getValue(), horoscope.getAspectError(point, entry.getKey(), entry.getValue()));
             dataSet.add(data);
           }
-        }        
+        }
       } // map != null
     }
     return dataSet;

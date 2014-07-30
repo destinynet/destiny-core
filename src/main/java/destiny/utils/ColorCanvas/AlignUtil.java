@@ -4,6 +4,8 @@
  */ 
 package destiny.utils.ColorCanvas;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * 對齊的工具箱, 如果小於 1 , 則塞「前」
  */
@@ -124,6 +126,7 @@ public class AlignUtil
   /**
    * 產生全形空白
    */
+  @NotNull
   private static String generateDoubleSpace(int length)
   {
     StringBuffer sb = new StringBuffer();
@@ -150,18 +153,18 @@ public class AlignUtil
     StringBuffer sb = new StringBuffer(String.valueOf(value));
     int valueLength = sb.length();
     
-    if (valueLength == width)
+    if (valueLength == 4)
       return sb.toString();
-    else if (valueLength < width)
+    else if (valueLength < 4)
     {
-      int doubleByteSpaces =  ( width - valueLength ) /2;
+      int doubleByteSpaces =  ( 4 - valueLength ) /2;
       
       for (int i=0 ; i < doubleByteSpaces ; i++)
       {
         sb.insert(0, "　");
       }
       
-      if ((width-valueLength) % 2 == 1)
+      if ((4 -valueLength) % 2 == 1)
         sb.insert(doubleByteSpaces , ' ');
       
       return sb.toString();
@@ -169,7 +172,7 @@ public class AlignUtil
     else
     {
       //sb.length() > width
-      return sb.substring(0, width);
+      return sb.substring(0, 4);
     }
   }
   

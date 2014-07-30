@@ -10,6 +10,8 @@ import destiny.astrology.Planet;
 import destiny.astrology.classical.TranslationOfLightIF;
 import destiny.utils.Tuple;
 import destiny.utils.Tuple4;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Translation_of_Light extends Rule
 {
@@ -20,12 +22,13 @@ public class Translation_of_Light extends Rule
     this.translationOfLightImpl = translationOfLightImpl;
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     Tuple4<Boolean , Planet , Planet , AspectApplySeparateIF.AspectType> t = translationOfLightImpl.getResult(planet, horoscopeContext);
     //TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);
-    if (t.getFirst() == true)
+    if (t.getFirst())
     {
       double deg = horoscopeContext.getHoroscope().getAngle(t.getSecond() , t.getThird());
       //StringBuffer sb = new StringBuffer(" 從 " + bean.getFromPlanet() + " 傳遞光線到 " + bean.getToPlanet() + " , " + bean.getFromPlanet()+" 與 " + bean.getToPlanet() + 

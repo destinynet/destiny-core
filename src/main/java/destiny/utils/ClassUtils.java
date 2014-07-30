@@ -4,6 +4,9 @@
  */
 package destiny.utils;
 
+import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.NotNull;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -15,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.google.common.collect.ImmutableSet;
+import java.util.stream.Collectors;
 
 public class ClassUtils implements Serializable
 {
@@ -33,7 +35,7 @@ public class ClassUtils implements Serializable
   /**
    * 判斷是否是 JPA 的 id
    */
-  public static boolean isId(Class<?> clazz , String propertyName)
+  public static boolean isId(@NotNull Class<?> clazz , String propertyName)
   {
     for(Field field : clazz.getDeclaredFields())
     {
@@ -81,7 +83,8 @@ public class ClassUtils implements Serializable
   }
   
   /** 取得某種 type 的 property list */
-  public static List<String> getProperties(Class<?> clazz , PERMISSION type)
+  @NotNull
+  public static List<String> getProperties(Class<?> clazz , @NotNull PERMISSION type)
   {
     Set<String> set = new TreeSet<String>();
     try
@@ -147,8 +150,7 @@ public class ClassUtils implements Serializable
     }
     
     //剩下的隨便放
-    for(String s : set)
-      resultList.add(s);
+    resultList.addAll(set.stream().collect(Collectors.toList()));
     
     return resultList;
   }

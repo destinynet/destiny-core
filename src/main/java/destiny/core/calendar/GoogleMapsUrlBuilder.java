@@ -4,6 +4,9 @@
  */ 
 package destiny.core.calendar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,7 +21,8 @@ public class GoogleMapsUrlBuilder implements LocationUrlBuilder , Serializable
    * 參考資料 
    * http://mapki.com/wiki/Google_Map_Parameters
    */
-  public URL getUrl(Location location)
+  @Nullable
+  public URL getUrl(@NotNull Location location)
   {
     StringBuffer sb = new StringBuffer();
     sb.append("http://maps.google.com/maps?");

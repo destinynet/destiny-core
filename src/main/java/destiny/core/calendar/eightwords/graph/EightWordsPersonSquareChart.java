@@ -1,9 +1,10 @@
 /**
- * Created by smallufo on 2014-06-06.
+ * Created by smallufo on 2014-07-31.
  */
 package destiny.core.calendar.eightwords.graph;
 
 import destiny.core.calendar.eightwords.personal.EightWordsPersonContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.Optional;
  */
 public class EightWordsPersonSquareChart extends EightWordsWithDescChart{
 
-  public EightWordsPersonSquareChart(int width, EightWordsPersonContext context, EightWordsChart.Direction direction) {
+  public EightWordsPersonSquareChart(int width, @NotNull EightWordsPersonContext context, EightWordsChart.Direction direction) {
     super(width, Color.WHITE, Color.BLACK, Optional.of(context.getGender()) , context.getEightWords(), direction);
   }
 }

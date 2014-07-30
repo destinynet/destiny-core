@@ -4,6 +4,8 @@
  */
 package destiny.astrology;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +37,7 @@ public final class Planet extends Star implements Comparable<Planet>
   }
   
   /** 從 "sun" 取得 Planet.SUN  ... , 限英文 */
+  @Nullable
   public static Planet get(String value)
   {
     for(Planet planet : values)

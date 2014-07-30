@@ -4,6 +4,8 @@
  */
 package destiny.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +19,8 @@ public class URLConverter implements Serializable
   {
   }
 
-  public String convert(String initialText)
+  @NotNull
+  public String convert(@NotNull String initialText)
   {
     StringBuffer result = new StringBuffer(initialText.length());
 
@@ -39,14 +42,14 @@ public class URLConverter implements Serializable
       }
 
       //TO DO: add more top domains   
-      if (href.indexOf(".com") != -1 || 
+      if (href.contains(".com") ||
           //href.indexOf(".COM") != -1 || 
-          href.indexOf(".net") != -1 || 
-          href.indexOf(".org") != -1 || 
-          href.indexOf(".tw") != -1 || 
-          href.indexOf(".to") != -1 || 
-          href.indexOf(".ly") != -1 ||
-          href.indexOf(".cc") != -1)
+        href.contains(".net") ||
+        href.contains(".org") ||
+        href.contains(".tw") ||
+        href.contains(".to") ||
+        href.contains(".ly") ||
+        href.contains(".cc"))
       {
 
         if (!href.startsWith("http://") && !href.startsWith("HTTP://"))

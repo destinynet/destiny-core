@@ -7,11 +7,13 @@ package destiny.core.calendar.decorators;
 import java.io.Serializable;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
 
 public class MinuteDecoratorChinese implements Decorator<Integer> , Serializable
 {
+  @NotNull
   @Override
-  public String getOutputString(Integer minute)
+  public String getOutputString(@NotNull Integer minute)
   {
     return minute.toString()+"分";
   }

@@ -8,6 +8,8 @@ import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Moon decreasing in light. */
 public final class Moon_Decrease_Light extends Rule
@@ -17,8 +19,9 @@ public final class Moon_Decrease_Light extends Rule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.MOON)
     {

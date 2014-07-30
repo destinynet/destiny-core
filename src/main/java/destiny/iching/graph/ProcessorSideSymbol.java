@@ -8,6 +8,7 @@ import destiny.font.FontRepository;
 import destiny.iching.HexagramIF;
 import destiny.iching.Symbol;
 import destiny.utils.image.Processor;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,8 +22,8 @@ public class ProcessorSideSymbol implements Processor , Serializable
   private HexagramIF hexagram;
   
   // 八卦的符號文字（天 澤 火 雷...），要在左邊還是右邊
-  public enum Side {LEFT , RIGHT};
-  
+  public enum Side {LEFT , RIGHT}
+
   private Side side;
   
   private BaseHexagramChart chart;
@@ -35,7 +36,7 @@ public class ProcessorSideSymbol implements Processor , Serializable
   }
 
   @Override
-  public void process(BufferedImage img)
+  public void process(@NotNull BufferedImage img)
   {
     int width  = img.getWidth();
     double rowHigh = chart.getRowHeight();
@@ -60,7 +61,8 @@ public class ProcessorSideSymbol implements Processor , Serializable
     g.dispose();
   }
 
-  private String getString(Symbol symbol)
+  @NotNull
+  private String getString(@NotNull Symbol symbol)
   {
     switch (symbol)
     {

@@ -5,6 +5,7 @@
 package destiny.iching.graph;
 
 import destiny.iching.HexagramIF;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
   private Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 可任意指定寬高的單一卦象圖 , 以及指定四邊的 padding */
-  public BaseHexagramChart(HexagramIF hex , int width , int height , Color bg , Color fore
+  public BaseHexagramChart(@NotNull HexagramIF hex , int width , int height , Color bg , Color fore
       , double paddingTop , double paddingRight , double paddingBottom , double paddingLeft)
   {
     super(width , height , BufferedImage.TYPE_INT_ARGB);
@@ -69,7 +70,7 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
     // 從上（六爻）畫到下（初爻），貼齊 upper padding
     for (int i=6 ; i >= 1 ; i--)
     {
-      if (hex.getLine(i) == true)
+      if (hex.getLine(i))
       {
         // 陽爻，畫出橫槓
         double x = paddingLeft ;

@@ -7,6 +7,9 @@
  */
 package destiny.utils.ColorCanvas;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.Font;
 import java.io.Serializable;
 import java.net.URL;
@@ -15,7 +18,9 @@ import java.net.URL;
 public class ColorByte implements Serializable
 {
   private byte b;
+  @Nullable
   private String foreColor; //前景色
+  @Nullable
   private String backColor; //背景色
   private Font font;
   private URL url;
@@ -24,6 +29,7 @@ public class ColorByte implements Serializable
   /**
    * @return Returns the backColor.
    */
+  @Nullable
   public String getBackColor()
   {
     return backColor;
@@ -45,6 +51,7 @@ public class ColorByte implements Serializable
   /**
    * @return Returns the foreColor.
    */
+  @Nullable
   public String getForeColor()
   {
     return foreColor;
@@ -89,7 +96,8 @@ public class ColorByte implements Serializable
    * @param color
    * @return
    */
-  private String validateColor(String color)
+  @Nullable
+  private String validateColor(@Nullable String color)
   {
     if (color != null &&  
         (
@@ -141,7 +149,7 @@ public class ColorByte implements Serializable
    * @param cb
    * @return
    */
-  public boolean isSameProperties(ColorByte cb)
+  public boolean isSameProperties(@NotNull ColorByte cb)
   {
     //url 的 equals 要 resolve domain name , 改以 url.toExternalForm() 來比對
     if (
@@ -156,6 +164,7 @@ public class ColorByte implements Serializable
       return false;
   }
 
+  @NotNull
   @Override
   public String toString()
   {

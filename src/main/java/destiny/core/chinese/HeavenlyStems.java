@@ -1,5 +1,8 @@
 package destiny.core.chinese;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,38 +34,39 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   }
   
   /** 從五行 以及 陰陽 建立天干 */
+  @NotNull
   public final static HeavenlyStems getHeavenlyStems(FiveElement fiveElement , boolean yinYang) {
     if (fiveElement == FiveElement.木)
     {
-      if (yinYang == true)
+      if (yinYang)
         return 甲;
       else
         return 乙;
     }
     else if (fiveElement == FiveElement.火)
     {
-      if (yinYang == true)
+      if (yinYang)
         return 丙;
       else
         return 丁;
     }
     else if (fiveElement == FiveElement.土)
     {
-      if (yinYang == true)
+      if (yinYang)
         return 戊;
       else
         return 己;
     }
     else if (fiveElement == FiveElement.金)
     {
-      if (yinYang == true)
+      if (yinYang)
         return 庚;
       else
         return 辛;
     }
     else
     {
-      if (yinYang == true)
+      if (yinYang)
         return 壬;
       else
         return 癸;
@@ -91,6 +95,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
     return HeavenlyStemsArray[index];
   }
   
+  @Nullable
   public static HeavenlyStems getHeavenlyStems(char c)
   {
     HeavenlyStems result = null;
@@ -143,7 +148,8 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   }
   */
   
-  @Override 
+  @NotNull
+  @Override
   public String toString()
   {
     return String.valueOf(name);
@@ -152,6 +158,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   /**
    * 實作 FiveElementsIF 的 getFiveElements()
    */
+  @NotNull
   public FiveElement getFiveElement()
   {
     switch(getIndex(this))

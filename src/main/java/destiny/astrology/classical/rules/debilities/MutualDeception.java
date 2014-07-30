@@ -12,6 +12,8 @@ import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** 
  * TODO : Mutual Deception , 互相陷害 <br/>
@@ -29,8 +31,9 @@ public final class MutualDeception extends EssentialRule implements Applicable
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);

@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -23,7 +25,7 @@ public class PointComparator implements Comparator<Point> , Serializable
   
   @SuppressWarnings("unchecked")
   @Override
-  public int compare(Point p1, Point p2)
+  public int compare(@NotNull Point p1, @NotNull Point p2)
   {
     Class<? extends Point> p1class = p1.getClass();
     Class<? extends Point> p2class = p2.getClass();

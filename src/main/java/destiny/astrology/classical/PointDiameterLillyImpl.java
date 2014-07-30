@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 古典占星術，William Lilly 的交角 <br/>
@@ -49,12 +50,14 @@ public class PointDiameterLillyImpl implements PointDiameterIF , Serializable
   }
   */
 
+  @NotNull
   @Override
   public String getTitle(Locale locale)
   {
     return "William Lilly";
   }
 
+  @NotNull
   @Override
   public String getDescription(Locale locale)
   {
@@ -65,7 +68,7 @@ public class PointDiameterLillyImpl implements PointDiameterIF , Serializable
   public double getDiameter(Point point)
   {
     if (planetOrbsMap.get(point) != null)
-      return planetOrbsMap.get(point).doubleValue();
+      return planetOrbsMap.get(point);
     else
       return 2.0;
   }

@@ -4,6 +4,9 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
@@ -14,6 +17,7 @@ import java.util.TreeSet;
 /** 存放星體交角的資料結構 */
 public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Serializable
 {
+  @NotNull
   private PointComparator pointComp = new PointComparator();
   
   /** 存放形成交角的兩顆星體 */
@@ -33,6 +37,7 @@ public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Se
     this.orb = orb; 
   }
   
+  @NotNull
   @Override
   public String toString()
   {
@@ -46,6 +51,7 @@ public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Se
   }
   
   /** 傳入一個 point , 取得另一個 point , 如果沒有，則傳回 null */
+  @Nullable
   public Point getAnotherPoint(Point thisPoint)
   {
     Iterator<Point> itp = twoPoints.iterator();
@@ -81,7 +87,7 @@ public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Se
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;
@@ -109,7 +115,7 @@ public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Se
 
   @SuppressWarnings("unchecked")
   @Override
-  public int compareTo(HoroscopeAspectData o)
+  public int compareTo(@NotNull HoroscopeAspectData o)
   {
     Iterator<Point> it1 = twoPoints.iterator();
     Iterator<Point> it2 = o.twoPoints.iterator();

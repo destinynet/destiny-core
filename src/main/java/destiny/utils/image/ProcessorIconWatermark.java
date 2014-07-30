@@ -4,6 +4,8 @@
  */
 package destiny.utils.image;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -26,7 +28,7 @@ public class ProcessorIconWatermark implements Processor , Serializable
   }
   
   @Override
-  public void process(BufferedImage img)
+  public void process(@NotNull BufferedImage img)
   {
     int imgW = img.getWidth();
     int imgH = img.getHeight();
@@ -50,7 +52,7 @@ public class ProcessorIconWatermark implements Processor , Serializable
         g.dispose();
       }
     }
-    catch (IOException e)
+    catch (IOException ignored)
     {
     }
     finally
@@ -59,7 +61,7 @@ public class ProcessorIconWatermark implements Processor , Serializable
       {
         logoIs.close();
       }
-      catch (IOException e)
+      catch (IOException ignored)
       {
       }
     }

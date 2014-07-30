@@ -1,6 +1,9 @@
 /** 2009/11/26 上午10:39:35 by smallufo */
 package destiny.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 public class Tuple<A, B> implements Serializable
@@ -14,8 +17,9 @@ public class Tuple<A, B> implements Serializable
     this.b = b;
   }
 
+  @NotNull
   public static <A,B> Tuple<A,B> of(A a , B b) {
-    return new Tuple<A,B>(a,b);
+    return new Tuple<>(a,b);
   }
 
   public A getFirst()
@@ -45,7 +49,7 @@ public class Tuple<A, B> implements Serializable
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;

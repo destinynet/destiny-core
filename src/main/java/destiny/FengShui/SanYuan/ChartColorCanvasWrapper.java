@@ -1,11 +1,13 @@
 /** 2009/12/15 上午2:56:48 by smallufo */
 package destiny.FengShui.SanYuan;
 
-import java.io.Serializable;
-
 import destiny.iching.Symbol;
 import destiny.iching.SymbolAcquired;
 import destiny.utils.ColorCanvas.ColorCanvas;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
 
 /**
  * 將 Chart 包裝成 ColorCanvas 
@@ -13,9 +15,10 @@ import destiny.utils.ColorCanvas.ColorCanvas;
 public class ChartColorCanvasWrapper implements Serializable
 {
   private Chart chart;
+  @NotNull
   private ChartBlock[][] chartCoordinate = new ChartBlock[3][3];
   
-  public ChartColorCanvasWrapper(Chart chart)
+  public ChartColorCanvasWrapper(@NotNull Chart chart)
   {
     this.chart = chart;
     
@@ -48,6 +51,7 @@ public class ChartColorCanvasWrapper implements Serializable
     chartCoordinate[2][2] = chart.getChartBlock(tempSymbol);    //右下
   }
   
+  @NotNull
   public ColorCanvas getColorCanvas()
   {
     /* 56 x 25
@@ -153,7 +157,8 @@ public class ChartColorCanvasWrapper implements Serializable
   }
   
   /** 將數字 1~9 轉成中文 */
-  private final static String getChineseString(int i)
+  @NotNull
+  private static String getChineseString(int i)
   {
     switch (i)
     {
@@ -171,7 +176,8 @@ public class ChartColorCanvasWrapper implements Serializable
   }
   
 
-  private final static String getSymbolString(Symbol s)
+  @NotNull
+  private static String getSymbolString(@Nullable Symbol s)
   {
     if (s == null)
       return "中";

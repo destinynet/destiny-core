@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
+import org.jetbrains.annotations.Nullable;
 
 /** 四字斷終生 的 key */
 public class FourWordsKey implements Serializable
@@ -59,7 +60,7 @@ public class FourWordsKey implements Serializable
   }
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;

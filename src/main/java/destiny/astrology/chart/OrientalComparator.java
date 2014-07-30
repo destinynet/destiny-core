@@ -8,6 +8,7 @@ import java.util.Comparator;
 
 import destiny.astrology.Horoscope;
 import destiny.astrology.Point;
+import org.jetbrains.annotations.NotNull;
 
 /** 看看兩個 Point , 誰比較在「東方」 */
 public class OrientalComparator implements Comparator<Point>
@@ -20,7 +21,7 @@ public class OrientalComparator implements Comparator<Point>
   }
 
   @Override
-  public int compare(Point p1, Point p2)
+  public int compare(@NotNull Point p1, Point p2)
   {
     /**
      * 如果兩個相等，要傳回 0 , 否則 contains() 會傳回 false , 即使兩個 point 是同個 reference !!! 

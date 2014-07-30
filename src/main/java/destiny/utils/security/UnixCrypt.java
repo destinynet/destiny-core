@@ -16,6 +16,8 @@
  */
 package destiny.utils.security;
 
+import org.jetbrains.annotations.NotNull;
+
 public class UnixCrypt
 {
   //
@@ -428,6 +430,7 @@ public class UnixCrypt
       return(a);
    }
 
+   @NotNull
    private static int [] des_set_key(byte key[])
    {
       int schedule[] = new int[ITERATIONS * 2];
@@ -521,6 +524,7 @@ public class UnixCrypt
       return(L);
    }
 
+   @NotNull
    private static final int [] body(int schedule[], int Eswap0, int Eswap1)
    {
       int left = 0;
@@ -581,7 +585,8 @@ public class UnixCrypt
    * @return A string consisting of the 2-character salt followed by the
    * encrypted password.
    */
-   public static final String crypt(String salt, String original)
+   @NotNull
+   public static final String crypt(@NotNull String salt, @NotNull String original)
    {
       while(salt.length() < 2)
          salt += "A";
@@ -647,7 +652,8 @@ public class UnixCrypt
    * @return A string consisting of the 2-character salt followed by the
    * encrypted password.
    */
-  public static final String crypt(String original)
+  @NotNull
+  public static final String crypt(@NotNull String original)
   {
     java.util.Random randomGenerator = new java.util.Random();
     int numSaltChars = saltChars.length;
@@ -668,7 +674,7 @@ public class UnixCrypt
    * otherwise aquired).
    * @return <B>true</B> if the password should be considered correct.
    */
-  public final static boolean matches(String encryptedPassword, String enteredPassword)
+  public final static boolean matches(@NotNull String encryptedPassword, @NotNull String enteredPassword)
   {
     String salt = encryptedPassword.substring(0, 3);
     String newCrypt = crypt(salt, enteredPassword);

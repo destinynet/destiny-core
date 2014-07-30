@@ -93,14 +93,16 @@ public class HeavenlyStemsTest extends TestCase
     HeavenlyStems[] HSArray = new HeavenlyStems[] { HeavenlyStems.丁, HeavenlyStems.癸, HeavenlyStems.甲, HeavenlyStems.戊, HeavenlyStems.辛 };
     System.out.println("排序前:");
 
-    for (int i = 0; i < HSArray.length; i++)
-      System.out.print(HSArray[i] + "\t");
+    for (HeavenlyStems aHSArray1 : HSArray) {
+      System.out.print(aHSArray1 + "\t");
+    }
 
     Arrays.sort(HSArray);
 
     System.out.println("\n排序後");
-    for (int i = 0; i < HSArray.length; i++)
-      System.out.print(HSArray[i] + "\t");
+    for (HeavenlyStems aHSArray : HSArray) {
+      System.out.print(aHSArray + "\t");
+    }
   }
 
   public void _testHashCode()

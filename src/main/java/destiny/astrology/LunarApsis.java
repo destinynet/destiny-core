@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,8 +13,8 @@ import java.util.List;
 
 public final class LunarApsis extends LunarPoint implements Comparable<LunarApsis>
 {
-  public static enum MeanOscu {MEAN , OSCU};
-  
+  public static enum MeanOscu {MEAN , OSCU}
+
   /** 只會用到 PERIHELION , APHELION */
   private Apsis apsis;
   
@@ -57,6 +59,7 @@ public final class LunarApsis extends LunarPoint implements Comparable<LunarApsi
    */
   public final static LunarApsis PERIGEE_OSCU = new LunarApsis("LunarApsis.PERIGEE" , "LunarApsis.PERIGEE_ABBR" , Apsis.PERIHELION , MeanOscu.OSCU);
   
+  @NotNull
   public static LunarApsis[] values = {APOGEE_MEAN , APOGEE_OSCU , PERIGEE_MEAN , PERIGEE_OSCU};
   
   protected LunarApsis(String nameKey, String abbrKey , Apsis apsis , MeanOscu meanOscu)

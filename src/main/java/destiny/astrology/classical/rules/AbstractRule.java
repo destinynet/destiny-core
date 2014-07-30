@@ -8,6 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.LocaleStringIF;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   /** 名稱key */
   protected String nameKey;
   
+  @Nullable
   private String commentKey=null;
   
   /** 裡面的 objects 不能直接拿來作為 MessageFormat 的 參數，要先經過 getCommentParameters(locale) 處理，取得應該替換 正確的字串 */ 
@@ -57,6 +60,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
    * String 為 ResourceBundle 取得的 key , 前面要 prepend '[rule_name].'
    * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
    */
+  @Nullable
   protected abstract Tuple<String , Object[]> getResult(Planet planet , HoroscopeContext horoscopeContext);
   
   /** 名稱 */
@@ -68,13 +72,14 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   
   /** 名稱 */
   @Override
-  public String getName(Locale locale)
+  public String getName(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }
 
   /** 設定註解參數 , 檢查參數是否是 LocaleStringIF , 如果是的話 , 就轉為適當的 locale
    * ex : {0} 位於第 {1} 宮 , 就要處理 {0} {1} , 填入 commentParameters */
+  @NotNull
   private Object[] getCommentParemeters(Locale locale)
   {
     Object[] newCommentParameters = new Object[commentParameters.length];
@@ -91,6 +96,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   }
   
   /** 取得註解 */
+  @Nullable
   @Override
   public String getComment()
   {
@@ -98,8 +104,9 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   }
   
   /** 取得某 Locale 之下的註解 */ 
+  @Nullable
   @Override
-  public String getComment(Locale locale)
+  public String getComment(@NotNull Locale locale)
   {
     try
     {
@@ -123,7 +130,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   }
 
   @Override
-  public String toString(Locale locale)
+  public String toString(@NotNull Locale locale)
   {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }

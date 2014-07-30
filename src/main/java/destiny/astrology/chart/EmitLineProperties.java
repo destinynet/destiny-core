@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology.chart;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 
 /**
@@ -18,5 +20,6 @@ public class EmitLineProperties implements Serializable
   /** 第一象限，的角度 */
   public double angle = 0;
   
+  @NotNull
   public Style style = new Style();
 }

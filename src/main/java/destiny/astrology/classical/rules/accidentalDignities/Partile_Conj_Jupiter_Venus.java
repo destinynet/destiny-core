@@ -9,6 +9,8 @@ import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Partile conjunction with Jupiter or Venus. 
  * 和金星或木星合相，交角 1 度內 */
@@ -18,8 +20,9 @@ public final class Partile_Conj_Jupiter_Venus extends Rule
   {
   }
 
+  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLongitude();

@@ -4,6 +4,9 @@
  */ 
 package destiny.astrology.chart.gifLibs;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -40,17 +43,24 @@ public class AnimatedGifEncoder implements Serializable {
 
  protected int width; // image size
  protected int height;
+ @Nullable
  protected Color transparent = null; // transparent color if given
  protected int transIndex; // transparent index in color table
  protected int repeat = -1; // no repeat
  protected int delay = 0; // frame delay (hundredths)
  protected boolean started = false; // ready to output frames
+ @Nullable
  protected OutputStream out;
+ @Nullable
  protected BufferedImage image; // current frame
+ @Nullable
  protected byte[] pixels; // BGR byte array from frame
+ @Nullable
  protected byte[] indexedPixels; // converted frame indexed to palette
  protected int colorDepth; // number of bit planes
+ @Nullable
  protected byte[] colorTab; // RGB palette
+ @NotNull
  protected boolean[] usedEntry = new boolean[256]; // active palette entries
  protected int palSize = 7; // color table size (bits-1)
  protected int dispose = -1; // disposal code (-1 = use default)
@@ -121,7 +131,7 @@ public class AnimatedGifEncoder implements Serializable {
   * @param im BufferedImage containing frame to write.
   * @return true if successful.
   */
- public boolean addFrame(BufferedImage im) {
+ public boolean addFrame(@Nullable BufferedImage im) {
   if ((im == null) || !started) {
    return false;
   }
@@ -240,7 +250,7 @@ public class AnimatedGifEncoder implements Serializable {
   * @param os OutputStream on which GIF images are written.
   * @return false if initial write failed.
   */
- public boolean start(OutputStream os) {
+ public boolean start(@Nullable OutputStream os) {
   if (os == null) return false;
   boolean ok = true;
   closeStream = false;
@@ -259,7 +269,7 @@ public class AnimatedGifEncoder implements Serializable {
   * @param file String containing output file name.
   * @return false if open or initial write failed.
   */
- public boolean start(String file) {
+ public boolean start(@NotNull String file) {
   boolean ok = true;
   try {
    out = new BufferedOutputStream(new FileOutputStream(file));
@@ -311,7 +321,7 @@ public class AnimatedGifEncoder implements Serializable {
   * Returns index of palette color closest to c
   *
   */
- protected int findClosest(Color c) {
+ protected int findClosest(@NotNull Color c) {
   if (colorTab == null) return -1;
   int r = c.getRed();
   int g = c.getGreen();
@@ -471,7 +481,7 @@ public class AnimatedGifEncoder implements Serializable {
  /**
   * Writes string to output stream
   */
- protected void writeString(String s) throws IOException {
+ protected void writeString(@NotNull String s) throws IOException {
   for (int i = 0; i < s.length(); i++) {
    out.write((byte) s.charAt(i));
   }

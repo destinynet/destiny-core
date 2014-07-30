@@ -4,8 +4,14 @@
  */
 package destiny.astrology.chart.astrolog;
 
-import java.awt.BasicStroke;
-import java.awt.Stroke;
+import destiny.astrology.Horoscope;
+import destiny.astrology.ZodiacSign;
+import destiny.astrology.chart.AbstractRing;
+import destiny.astrology.chart.EmitLineProperties;
+import org.jetbrains.annotations.NotNull;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,16 +20,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
-import destiny.astrology.Horoscope;
-import destiny.astrology.ZodiacSign;
-import destiny.astrology.chart.AbstractRing;
-import destiny.astrology.chart.EmitLineProperties;
-
 /** 星座環 */
 public class RingSign extends AbstractRing
 {
+  @NotNull
   private Stroke    strokeBold = new BasicStroke(2.0f);
 
   public RingSign(Horoscope h , double innerFrom , double outerTo)
@@ -31,6 +31,7 @@ public class RingSign extends AbstractRing
     super(h , innerFrom , outerTo);
   }
 
+  @NotNull
   @Override
   public EmitLineProperties[] getEmitLineProperties()
   {
@@ -72,7 +73,7 @@ public class RingSign extends AbstractRing
 
         result.put(第一象限度數, signImg);
       }
-      catch (IOException e)
+      catch (IOException ignored)
       {
       }
       finally {
@@ -80,7 +81,7 @@ public class RingSign extends AbstractRing
         {
           is.close();
         }
-        catch (IOException e)
+        catch (IOException ignored)
         {
         }
       }

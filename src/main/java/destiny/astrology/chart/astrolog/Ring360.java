@@ -11,11 +11,14 @@ import java.awt.Stroke;
 import destiny.astrology.Horoscope;
 import destiny.astrology.chart.AbstractRing;
 import destiny.astrology.chart.EmitLineProperties;
+import org.jetbrains.annotations.NotNull;
 
 /** 360度環 */
 public class Ring360 extends AbstractRing
 {
+  @NotNull
   private Stroke strokeBold = new BasicStroke(2.0f);
+  @NotNull
   private Stroke strokeNormal = new BasicStroke(1.0f);
   
   public Ring360(Horoscope h , double innerFrom , double outerTo)
@@ -23,6 +26,7 @@ public class Ring360 extends AbstractRing
     super(h , innerFrom , outerTo);
   }
   
+  @NotNull
   @Override
   public EmitLineProperties[] getEmitLineProperties()
   {

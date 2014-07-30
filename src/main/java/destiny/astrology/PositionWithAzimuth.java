@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * 星體的位置，加上地平方位角
  */
@@ -11,7 +13,7 @@ public class PositionWithAzimuth extends Position implements java.io.Serializabl
 {
   private Azimuth azimuth;
 
-  public PositionWithAzimuth(Position position , Azimuth azimuth)
+  public PositionWithAzimuth(@NotNull Position position , Azimuth azimuth)
   {
     super(position.getLongitude(), position.getLatitude() , position.getDistance() , 
         position.getSpeedLongitude(), position.getSpeedLatitude(), position.getSpeedDistance());

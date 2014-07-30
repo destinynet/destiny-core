@@ -7,13 +7,16 @@ package destiny.core.calendar.decorators;
 import java.io.Serializable;
 
 import destiny.utils.Decorator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MonthDecoratorEnglish implements Decorator<Integer> , Serializable
 {
+  @Nullable
   @Override
-  public String getOutputString(Integer month)
+  public String getOutputString(@NotNull Integer month)
   {
-    switch(month.intValue())
+    switch(month)
     {
       case  1 : return "January";
       case  2 : return "February";

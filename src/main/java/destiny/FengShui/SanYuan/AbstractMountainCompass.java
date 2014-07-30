@@ -8,6 +8,7 @@ package destiny.FengShui.SanYuan;
 import destiny.astrology.Utils;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,8 @@ import java.util.ArrayList;
  */
 public abstract class AbstractMountainCompass extends AbstractCompass
 {
-  protected static ArrayList<Mountain> MountainList = new ArrayList<Mountain>();
+  @NotNull
+  private static final ArrayList<Mountain> MountainList = new ArrayList<>();
   static
   {
     MountainList.add(Mountain.子);
@@ -104,7 +106,7 @@ public abstract class AbstractMountainCompass extends AbstractCompass
    * 未－－內藏丁、乙、己，己知丁乙屬陰，故未屬陰。
    * </pre> 
    */
-  public boolean getYinYang(Mountain m)
+  public boolean getYinYang(@NotNull Mountain m)
   {
     if (m == Mountain.乾 || m == Mountain.坤 || m == Mountain.巽 || m == Mountain.艮 )
       return true;

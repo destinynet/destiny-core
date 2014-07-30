@@ -8,6 +8,7 @@ import destiny.astrology.RelativeTransitIF;
 import destiny.astrology.Star;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -127,7 +128,8 @@ public class NearestTransitBean implements Serializable
    * A : 取得 下一個(Forward)/或上一個(Backward) 形成交角的時刻 (GMT)
    * B : /** 取得所形成的交角度數 (可能大於 180)
    */
-  public Tuple<Time , Double> getResult( Star transitStar , Star relativeStar , Time fromGmtTime , double[] angles , boolean isForward) {
+  @NotNull
+  public Tuple<Time , Double> getResult( Star transitStar , Star relativeStar , Time fromGmtTime , @NotNull double[] angles , boolean isForward) {
 
 
     //下一個/或上一個 形成交角的時刻 (GMT)

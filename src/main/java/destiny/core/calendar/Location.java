@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableMap;
 import destiny.utils.AlignUtil;
 import destiny.utils.LocaleUtils;
 import destiny.utils.location.TimeZoneUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -26,7 +28,7 @@ public class Location implements Serializable
 
   private NorthSouth northSouth = NorthSouth.NORTH;
   private int     latitudeDegree = 25;
-  private int     latitudeMinute = 03;
+  private int     latitudeMinute = 3;
   private double  latitudeSecond = 0;
   
   /** 時區 */
@@ -35,6 +37,7 @@ public class Location implements Serializable
   /** 2012/3/4 補加上 : 
    * 與 GMT 的時差 , 優先權高於 timeZone !
    */
+  @Nullable
   private Integer minuteOffset = null;
   //private int minuteOffset = 8*60 ; //與 GMT 時差 , 內定為 8.0 小時x60分
 
@@ -256,7 +259,7 @@ public class Location implements Serializable
    * 
    * 分辨方法：如果能以空白切三段，就是新的，否則就是舊的。
    */
-  public Location(String s)
+  public Location(@NotNull String s)
   {
     char ew = s.charAt(0);
     if (ew == '+')
@@ -266,9 +269,9 @@ public class Location implements Serializable
     else
       throw new RuntimeException("EW not correct : " + ew);
     
-    this.longitudeDegree = Integer.valueOf(s.substring(1, 4).trim()).intValue();
-    this.longitudeMinute = Integer.valueOf(s.substring(4, 6).trim()).intValue();
-    this.longitudeSecond = Double.valueOf(s.substring(6, 11).trim()).doubleValue();
+    this.longitudeDegree = Integer.valueOf(s.substring(1, 4).trim());
+    this.longitudeMinute = Integer.valueOf(s.substring(4, 6).trim());
+    this.longitudeSecond = Double.valueOf(s.substring(6, 11).trim());
     
     char ns = s.charAt(11);
     if (ns == '+')
@@ -278,9 +281,9 @@ public class Location implements Serializable
     else
       throw new RuntimeException("ns not correct : " + ns);
     
-    this.latitudeDegree = Integer.valueOf(s.substring(12, 14).trim()).intValue();
-    this.latitudeMinute = Integer.valueOf(s.substring(14, 16).trim()).intValue();
-    this.latitudeSecond = Double.valueOf(s.substring(16, 21).trim()).doubleValue();
+    this.latitudeDegree = Integer.valueOf(s.substring(12, 14).trim());
+    this.latitudeMinute = Integer.valueOf(s.substring(14, 16).trim());
+    this.latitudeSecond = Double.valueOf(s.substring(16, 21).trim());
     
     //包含了 高度以及時區
     String altitudeAndTimezone = s.substring(21);
@@ -319,7 +322,8 @@ public class Location implements Serializable
 
   }
   
-  public static Location get(String s)
+  @NotNull
+  public static Location get(@NotNull String s)
   {
     return new Location(s);
   }
@@ -332,6 +336,7 @@ public class Location implements Serializable
    * +1213012.34+25 312.34 12.3456 Asia/Taipei 480
    * 尾方的 minuteOffset 為 optional , 如果有的話，會 override Asia/Taipei 的 minuteOffset
    */
+  @NotNull
   public String getDebugString()
   {
     StringBuffer sb = new StringBuffer();
@@ -345,11 +350,11 @@ public class Location implements Serializable
     sb.append(AlignUtil.alignRight(this.latitudeMinute, 2 , ' '));
     sb.append(AlignUtil.alignRight(this.latitudeSecond, 5 , ' '));
     
-    sb.append(" " + this.altitudeMeter);
+    sb.append(" ").append(this.altitudeMeter);
     //舊：sb.append(AlignUtil.alignRight(this.minuteOffset, 4 , ' '));
-    sb.append(' ' + timeZone.getID());
+    sb.append(' ').append(timeZone.getID());
     if (minuteOffset != null)
-      sb.append(" " + minuteOffset);
+      sb.append(" ").append(minuteOffset);
     
     return sb.toString();
   }
@@ -396,12 +401,12 @@ public class Location implements Serializable
     return result;
   }
 
-  public boolean isEast() { return eastWest==EastWest.EAST ? true : false; }
+  public boolean isEast() { return eastWest == EastWest.EAST; }
   public int getLongitudeDegree() { return this.longitudeDegree ; }
   public int getLongitudeMinute() { return this.longitudeMinute ; }
   public double getLongitudeSecond() { return this.longitudeSecond ; }
 
-  public boolean isNorth() { return northSouth==NorthSouth.NORTH ? true : false; }
+  public boolean isNorth() { return northSouth == NorthSouth.NORTH; }
   public int getLatitudeDegree() { return this.latitudeDegree ; }
   public int getLatitudeMinute() { return this.latitudeMinute ; }
   public double getLatitudeSecond() { return this.latitudeSecond ; }
@@ -459,12 +464,13 @@ public class Location implements Serializable
       return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
     }
     
-    public String toString(Locale locale)
+    public String toString(@NotNull Locale locale)
     {
       return ResourceBundle.getBundle(resource , locale).getString(nameKey);
     }
     
-    public final static EastWest getEastWest(char c)
+    @NotNull
+    public static EastWest getEastWest(char c)
     {
       if (c == 'E' || c == 'e')
         return EAST;
@@ -491,12 +497,13 @@ public class Location implements Serializable
       return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
     }
     
-    public String toString(Locale locale)
+    public String toString(@NotNull Locale locale)
     {
       return ResourceBundle.getBundle(resource , locale).getString(nameKey);
     }
     
-    public final static NorthSouth getNorthSouth(char c)
+    @NotNull
+    public static NorthSouth getNorthSouth(char c)
     {
       if (c == 'N' || c == 'n')
         return NORTH;
@@ -530,7 +537,7 @@ public class Location implements Serializable
 
 
   @Override
-  public boolean equals(Object obj)
+  public boolean equals(@Nullable Object obj)
   {
     if (this == obj)
       return true;
@@ -586,7 +593,7 @@ public class Location implements Serializable
   public int getMinuteOffset()
   {
     if (minuteOffset != null)
-      return minuteOffset.intValue();
+      return minuteOffset;
     else
       return this.timeZone.getRawOffset() / (60*1000);
   }
@@ -598,7 +605,7 @@ public class Location implements Serializable
    */
   public void setMinuteOffset(int minuteOffset)
   {
-    this.minuteOffset = Integer.valueOf(minuteOffset);
+    this.minuteOffset = minuteOffset;
 //    System.out.println("Location : tz 本來是 " + timeZone.getID() + " , 現在要被設為 " + TimeZoneUtils.getTimeZone(minuteOffset).getID());
 //    this.timeZone = TimeZoneUtils.getTimeZone(minuteOffset);
   }

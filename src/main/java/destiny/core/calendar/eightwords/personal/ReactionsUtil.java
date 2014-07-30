@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords.personal;
 
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,8 @@ public class ReactionsUtil
    * @param actee 被作用者（日干）
    * @return 天干十神
    */
-  public final Reactions getReaction( HeavenlyStems actor , HeavenlyStems actee)
+  @NotNull
+  public final Reactions getReaction( @NotNull HeavenlyStems actor , @NotNull HeavenlyStems actee)
   {
     if (actor.getFiveElement().isProducingTo(actee.getFiveElement()) )
     {
@@ -88,14 +90,13 @@ public class ReactionsUtil
    * @param actee 被作用者（日干）
    * @return 地支十神 List <Reactions>
    */
-  public final List<Reactions> getReactions( EarthlyBranches actor , HeavenlyStems actee)
+  @NotNull
+  public final List<Reactions> getReactions( EarthlyBranches actor , @NotNull HeavenlyStems actee)
   {
     List<Reactions> result = new ArrayList();
     List<HeavenlyStems> hiddenStems = this.hiddenStemsImpl.getHiddenStems(actor);
-    for (int i = 0 ; i < hiddenStems.size() ; i++)
-    {
-      HeavenlyStems eachHiddenStems = hiddenStems.get(i);
-      result.add(this.getReaction(eachHiddenStems , actee));
+    for (HeavenlyStems eachHiddenStems : hiddenStems) {
+      result.add(this.getReaction(eachHiddenStems, actee));
     }
     return result;
   }
@@ -106,7 +107,8 @@ public class ReactionsUtil
    * @param reactions 相對關係
    * @return 傳回目標天干 
    */
-  public final static HeavenlyStems getHeavenlyStems(HeavenlyStems actor , Reactions reactions)
+  @NotNull
+  public static HeavenlyStems getHeavenlyStems(@NotNull HeavenlyStems actor , @NotNull Reactions reactions)
   {
     switch (reactions)
     {

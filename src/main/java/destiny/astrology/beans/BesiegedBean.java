@@ -8,6 +8,7 @@ import destiny.astrology.Aspect;
 import destiny.astrology.Planet;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.*;
@@ -48,6 +49,7 @@ public class BesiegedBean implements Serializable
    * @param aspects 欲計算的交角 array
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
+  @NotNull
   public List<Planet>  getBesiegingPlanets(Planet planet , Time gmt , boolean onlyClassicalPlanets , Aspect[] aspects)
   {
     return getBesiegingPlanets(planet , gmt , onlyClassicalPlanets , Arrays.asList(aspects));
@@ -60,7 +62,8 @@ public class BesiegedBean implements Serializable
    * @param aspects 欲計算的交角 Collection
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
-  public List<Planet>  getBesiegingPlanets(Planet planet , Time gmt , boolean onlyClassicalPlanets , Collection<Aspect> aspects)
+  @NotNull
+  public List<Planet>  getBesiegingPlanets(Planet planet , Time gmt , boolean onlyClassicalPlanets , @NotNull Collection<Aspect> aspects)
   {
     List<Planet> otherPlanets = new ArrayList<Planet>();
     for(Planet each : Planet.values)
@@ -84,7 +87,8 @@ public class BesiegedBean implements Serializable
    * @param aspects 欲計算的交角 array
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
-  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , Collection<Planet> otherPlanets , Aspect[] aspects)
+  @NotNull
+  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , @NotNull Collection<Planet> otherPlanets , @NotNull Aspect[] aspects)
   {
     double[] angles = new double[aspects.length];
     for(int i=0 ; i<angles.length ; i++)
@@ -149,6 +153,7 @@ public class BesiegedBean implements Serializable
    * @param isClassical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
    * @return 第一顆星是「之前」形成交角的星 ; 第二顆星是「之後」會形成交角的星
    */
+  @NotNull
   public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , boolean isClassical)
   {
     List<Planet> otherPlanets = new ArrayList<Planet>();
@@ -185,7 +190,8 @@ public class BesiegedBean implements Serializable
    * @param searchingAspects 欲計算的交角
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
-  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , Collection<Planet> otherPlanets , Collection<Aspect> searchingAspects)
+  @NotNull
+  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , @NotNull Collection<Planet> otherPlanets , @NotNull Collection<Aspect> searchingAspects)
   {
     double[] angles = new double[searchingAspects.size()];
     Iterator<Aspect> it = searchingAspects.iterator();
@@ -208,7 +214,8 @@ public class BesiegedBean implements Serializable
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    * TODO : 目前的交角都只考慮「perfect」準確交角（一般行星三分容許度，日月17分），並未考慮容許度（即 applying），未來要改進
    */
-  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , Collection<Planet> otherPlanets , double[] angles)
+  @NotNull
+  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , @NotNull Collection<Planet> otherPlanets , double[] angles)
   {
     if (otherPlanets.contains(planet))
       otherPlanets.remove(planet);

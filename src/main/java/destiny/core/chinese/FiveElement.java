@@ -4,6 +4,9 @@
  */ 
 package destiny.core.chinese;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 public enum FiveElement implements FiveElementIF , Serializable
@@ -21,26 +24,26 @@ public enum FiveElement implements FiveElementIF , Serializable
     this.name = c;
   }
   
+  @NotNull
   @Override
   public String toString()
   {
     return String.valueOf(name);
   }
   
+  @NotNull
   public FiveElement getFiveElement()
   {
     return this;
   }
   
-  public boolean equals(FiveElementIF f)
+  public boolean equals(@NotNull FiveElementIF f)
   {
-    if (f.getFiveElement() == this)
-      return true;
-    else
-      return false;
+    return f.getFiveElement() == this;
   }
   
   /** 取得此五行所生的五行（木生火） */
+  @Nullable
   public FiveElement getProduct()
   {
     switch (this)
@@ -62,15 +65,13 @@ public enum FiveElement implements FiveElementIF , Serializable
 
   
   /** 此五行是否生另一五行 */
-  public boolean isProducingTo(FiveElementIF f)
+  public boolean isProducingTo(@NotNull FiveElementIF f)
   {
-    if (f.getFiveElement().getProducer() == this)
-      return true;
-    else
-      return false;
+    return f.getFiveElement().getProducer() == this;
   }
 
   /** 取得哪個五行生此五行 （生木者為水） */
+  @Nullable
   public FiveElement getProducer()
   {
     switch (this)
@@ -92,16 +93,14 @@ public enum FiveElement implements FiveElementIF , Serializable
   
   
   /** 此五行是否被另一五行所生 */
-  public boolean isProducedBy(FiveElementIF f)
+  public boolean isProducedBy(@NotNull FiveElementIF f)
   {
-    if (f.getFiveElement().getProduct() == this)
-      return true;
-    else
-      return false;
+    return f.getFiveElement().getProduct() == this;
   }
   
   
   /** 取得此五行所剋之五行 （木克土） */
+  @Nullable
   public FiveElement getDominateOver()
   {
     switch (this)
@@ -123,15 +122,13 @@ public enum FiveElement implements FiveElementIF , Serializable
   
   
   /** 此五行是否剋另一五行 , Dominator : 支配者 */
-  public boolean isDominatorOf(FiveElementIF f)
+  public boolean isDominatorOf(@NotNull FiveElementIF f)
   {
-    if (f.getFiveElement().getDominator() == this)
-      return true;
-    else
-      return false;
+    return f.getFiveElement().getDominator() == this;
   }
   
   /** 取得此五行被哪個五行剋 （木被金剋） */
+  @Nullable
   public FiveElement getDominator()
   {
     switch (this)
@@ -152,12 +149,9 @@ public enum FiveElement implements FiveElementIF , Serializable
   }//beatenBy()
   
   /** 此五行是否被另一五行所剋 */
-  public boolean isDominatedBy(FiveElementIF f)
+  public boolean isDominatedBy(@NotNull FiveElementIF f)
   {
-    if (f.getFiveElement().getDominateOver() == this)
-      return true;
-    else
-      return false;
+    return f.getFiveElement().getDominateOver() == this;
   }
   
 }
