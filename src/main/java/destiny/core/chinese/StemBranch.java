@@ -86,7 +86,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   @Nullable
   public static StemBranch get(char heavenlyStems , char earthlyBranches)
   {
-    return get(HeavenlyStems.getHeavenlyStems(heavenlyStems) , EarthlyBranches.getEarthlyBranches(earthlyBranches));
+    return get(HeavenlyStems.getHeavenlyStems(heavenlyStems).get() , EarthlyBranches.getEarthlyBranches(earthlyBranches).get());
   }
   
   @Nullable

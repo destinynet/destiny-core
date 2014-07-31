@@ -4,12 +4,15 @@
  */
 package destiny.core.chinese;
 
+import org.junit.Test;
+
 import java.util.Arrays;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class EarthlyBranchesTest extends TestCase
+public class EarthlyBranchesTest
 {
+  @Test
   public void testGetEarthlyBranchesFromInt()
   {
     assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches(-1));
@@ -27,24 +30,25 @@ public class EarthlyBranchesTest extends TestCase
     assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches(11));
     assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches(12));
   }
-  
+
+  @Test
   public void testGetEarthlyBranchesFromChar()
   {
-    assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches('子'));
-    assertSame(EarthlyBranches.丑 , EarthlyBranches.getEarthlyBranches('丑'));
-    assertSame(EarthlyBranches.寅 , EarthlyBranches.getEarthlyBranches('寅'));
-    assertSame(EarthlyBranches.卯 , EarthlyBranches.getEarthlyBranches('卯'));
-    assertSame(EarthlyBranches.辰 , EarthlyBranches.getEarthlyBranches('辰'));
-    assertSame(EarthlyBranches.巳 , EarthlyBranches.getEarthlyBranches('巳'));
-    assertSame(EarthlyBranches.午 , EarthlyBranches.getEarthlyBranches('午'));
-    assertSame(EarthlyBranches.未 , EarthlyBranches.getEarthlyBranches('未'));
-    assertSame(EarthlyBranches.申 , EarthlyBranches.getEarthlyBranches('申'));
-    assertSame(EarthlyBranches.酉 , EarthlyBranches.getEarthlyBranches('酉'));
-    assertSame(EarthlyBranches.戌 , EarthlyBranches.getEarthlyBranches('戌'));
-    assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('亥'));
+    assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches('子').get());
+    assertSame(EarthlyBranches.丑 , EarthlyBranches.getEarthlyBranches('丑').get());
+    assertSame(EarthlyBranches.寅 , EarthlyBranches.getEarthlyBranches('寅').get());
+    assertSame(EarthlyBranches.卯 , EarthlyBranches.getEarthlyBranches('卯').get());
+    assertSame(EarthlyBranches.辰 , EarthlyBranches.getEarthlyBranches('辰').get());
+    assertSame(EarthlyBranches.巳 , EarthlyBranches.getEarthlyBranches('巳').get());
+    assertSame(EarthlyBranches.午 , EarthlyBranches.getEarthlyBranches('午').get());
+    assertSame(EarthlyBranches.未 , EarthlyBranches.getEarthlyBranches('未').get());
+    assertSame(EarthlyBranches.申 , EarthlyBranches.getEarthlyBranches('申').get());
+    assertSame(EarthlyBranches.酉 , EarthlyBranches.getEarthlyBranches('酉').get());
+    assertSame(EarthlyBranches.戌 , EarthlyBranches.getEarthlyBranches('戌').get());
+    assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('亥').get());
     try
     {
-      assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('無'));
+      assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('無').get());
       fail("An exception should ba raised");
     }
     catch(RuntimeException e)
@@ -52,7 +56,8 @@ public class EarthlyBranchesTest extends TestCase
       assertTrue(true);
     }
   }
-  
+
+  @Test
   public void testGetIndexStatic()
   {
     assertSame(0 , EarthlyBranches.getIndex(EarthlyBranches.子));
@@ -68,7 +73,8 @@ public class EarthlyBranchesTest extends TestCase
     assertSame(10, EarthlyBranches.getIndex(EarthlyBranches.戌));
     assertSame(11, EarthlyBranches.getIndex(EarthlyBranches.亥));
   }
-  
+
+  @Test
   public void testGetIndexDynamic()
   {
     assertSame(0 , EarthlyBranches.子.getIndex());
@@ -85,7 +91,8 @@ public class EarthlyBranchesTest extends TestCase
     assertSame(11, EarthlyBranches.亥.getIndex());
     
   }
-  
+
+  @Test
   public void testSorting()
   {
     EarthlyBranches[] EBArray = new EarthlyBranches[] 
@@ -95,12 +102,13 @@ public class EarthlyBranchesTest extends TestCase
      { EarthlyBranches.子 , EarthlyBranches.卯 , EarthlyBranches.午 , EarthlyBranches.酉};
     assertTrue(Arrays.equals(expected , EBArray));
   }
-  
+
+  @Test
   public void testEarthlyBranches()
   {
     assertEquals("子" , EarthlyBranches.子.toString());
-    assertEquals(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches('子'));
-    assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches('子'));
+    assertEquals(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches('子').get());
+    assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches('子').get());
     assertEquals(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches(0));
     assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches(0));
     assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches(12));
@@ -108,8 +116,8 @@ public class EarthlyBranchesTest extends TestCase
     assertSame(EarthlyBranches.子 , EarthlyBranches.getEarthlyBranches(-24));
     
     assertEquals("亥" , EarthlyBranches.亥.toString());
-    assertEquals(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('亥'));
-    assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('亥'));
+    assertEquals(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('亥').get());
+    assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches('亥').get());
     assertEquals(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches(11));
     assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches(11));
     assertSame(EarthlyBranches.亥 , EarthlyBranches.getEarthlyBranches(23));

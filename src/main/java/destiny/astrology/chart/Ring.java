@@ -21,7 +21,7 @@ public interface Ring
   public EmitLineProperties[] getEmitLineProperties();
   
   /** 第幾度要放置什麼影像 */
-  public Map<Double , BufferedImage> getBfferedImages();
+  public Map<Double , BufferedImage> getBufferedImages();
   
   /** 繪製線條 (交角線條) */
   public Set<PointConnection> getPointConnections();

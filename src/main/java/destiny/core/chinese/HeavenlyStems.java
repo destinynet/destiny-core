@@ -1,10 +1,10 @@
 package destiny.core.chinese;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /** 天干系統 */
 public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF , YinYangIF
@@ -95,8 +95,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
     return HeavenlyStemsArray[index];
   }
   
-  @Nullable
-  public static HeavenlyStems getHeavenlyStems(char c)
+  public static Optional<HeavenlyStems> getHeavenlyStems(char c)
   {
     HeavenlyStems result = null;
     for (int i=0 ; i < HeavenlyStemsArray.length ; i++)
@@ -108,9 +107,9 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
       }
     }
     if (result != null)
-      return result;
+      return Optional.of(result);
     else
-      throw new RuntimeException("No such HeavenlyStems '"+c+"'");
+      return Optional.empty();
   }
   
   /** 甲[0] ... 癸[9] */

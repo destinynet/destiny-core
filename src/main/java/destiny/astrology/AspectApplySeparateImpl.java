@@ -5,10 +5,10 @@ package destiny.astrology;
 
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Optional;
 
 public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializable
 {
@@ -24,9 +24,8 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
    * 判斷兩顆星體是否形成某交角 , 如果是的話 , 傳回 入相位或是出相位 ; 如果沒有形成交角 , 傳回 null
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
    */
-  @Nullable
   @Override
-  public AspectType getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Aspect aspect)
+  public Optional<AspectType> getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Aspect aspect)
   {
     double deg1 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p1).getLongitude();
     double deg2 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p2).getLongitude();
@@ -50,23 +49,22 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
       //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error_next + " 度");
       
       if (error_next <= error)
-        return AspectType.APPLYING;
+        return Optional.of(AspectType.APPLYING);
       else
-        return AspectType.SEPARATING;
+        return Optional.of(AspectType.SEPARATING);
     }
     else
-      return null; //這兩顆星沒有形成交角
+      return Optional.empty(); //這兩顆星沒有形成交角
   }
 
-  @Nullable
   @Override
-  public AspectType getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Collection<Aspect> aspects)
+  public Optional<AspectType> getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Collection<Aspect> aspects)
   {
-    AspectType aspectType = null;
+    Optional<AspectType> aspectType = Optional.empty();
     for(Aspect aspect : aspects)
     {
       aspectType = getAspectType(horoscopeContext, p1, p2, aspect); 
-      if ( aspectType != null)
+      if ( aspectType.isPresent())
         break;
     }
     //System.out.println(p1 + " 與 " + p2 +" 的 AspectType 為 " + aspectType);

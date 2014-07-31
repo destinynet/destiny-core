@@ -54,7 +54,7 @@ public class RingSign extends AbstractRing
 
   /** 星座符號 , 最好能設定顏色 */
   @Override
-  public Map<Double, BufferedImage> getBfferedImages()
+  public Map<Double, BufferedImage> getBufferedImages()
   {
     Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<Double, BufferedImage>());
     

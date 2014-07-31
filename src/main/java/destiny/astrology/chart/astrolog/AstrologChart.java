@@ -127,7 +127,7 @@ public class AstrologChart extends BufferedImage
       g.setStroke(strokeNormal);
 
       //繪製符號
-      Map<Double, BufferedImage> images = ring.getBfferedImages();
+      Map<Double, BufferedImage> images = ring.getBufferedImages();
       if (images != null)
       {
         for (Double deg : images.keySet())

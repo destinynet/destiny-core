@@ -4,15 +4,14 @@
  */ 
 package destiny.astrology.chart;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
+import destiny.astrology.Horoscope;
+import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
-
-import destiny.astrology.Horoscope;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractRing implements Ring , Serializable
 {
@@ -46,7 +45,7 @@ public abstract class AbstractRing implements Ring , Serializable
 
   @Nullable
   @Override
-  public Map<Double, BufferedImage> getBfferedImages()
+  public Map<Double, BufferedImage> getBufferedImages()
   {
     return null;
   }

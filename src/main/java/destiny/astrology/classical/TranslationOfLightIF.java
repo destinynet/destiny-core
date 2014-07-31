@@ -8,6 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple4;
 
+import java.util.Optional;
+
 public interface TranslationOfLightIF {
-  public Tuple4<Boolean , Planet , Planet , AspectApplySeparateIF.AspectType> getResult(Planet planet, HoroscopeContext horoscopeContext);
+  public Tuple4<Boolean , Planet , Planet , Optional<AspectApplySeparateIF.AspectType>> getResult(Planet planet, HoroscopeContext horoscopeContext);
 }

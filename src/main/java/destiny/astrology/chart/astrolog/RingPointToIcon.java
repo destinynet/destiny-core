@@ -43,7 +43,7 @@ public class RingPointToIcon extends AbstractRing
   }
 
   @Override
-  public Map<Double, BufferedImage> getBfferedImages()
+  public Map<Double, BufferedImage> getBufferedImages()
   {
     //取得西落點是黃道幾度
     double degDesc = h.getCuspDegree(7);

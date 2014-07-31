@@ -5,12 +5,16 @@
  */
 package destiny.core.chinese;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Arrays;
 
-public class HeavenlyStemsTest extends TestCase
+import static org.junit.Assert.*;
+
+
+public class HeavenlyStemsTest
 {
+  @Test
   public void testSorting()
   {
     HeavenlyStems[] HSArray = new HeavenlyStems[]
@@ -21,13 +25,16 @@ public class HeavenlyStemsTest extends TestCase
     Arrays.sort(HSArray);
     assertTrue(Arrays.equals(expected , HSArray));
   }
-  
+
+  @Test
   public void testValueOf()
   {
     assertEquals(HeavenlyStems.甲 , HeavenlyStems.valueOf("甲"));
+    assertSame  (HeavenlyStems.甲 , HeavenlyStems.valueOf("甲"));
     assertEquals(HeavenlyStems.癸 , HeavenlyStems.valueOf("癸"));
   }
 
+  @Test
   public void testGetYinYang()
   {
     assertEquals(true  , HeavenlyStems.甲.getBooleanValue());
@@ -42,6 +49,7 @@ public class HeavenlyStemsTest extends TestCase
     assertEquals(false , HeavenlyStems.癸.getBooleanValue());
   }
 
+  @Test
   public void testGetFiveElements()
   {
     assertEquals(FiveElement.木 , HeavenlyStems.甲.getFiveElement());
@@ -56,24 +64,26 @@ public class HeavenlyStemsTest extends TestCase
     assertEquals(FiveElement.水 , HeavenlyStems.癸.getFiveElement());
   }
 
+  @Test
   public void testHeavenlyStems()
   {
-    assertEquals(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems('甲'));
-    assertSame(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems('甲'));
+    assertEquals(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems('甲').get());
+    assertSame(HeavenlyStems.甲   , HeavenlyStems.getHeavenlyStems('甲').get());
     assertEquals(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(0));
     assertEquals(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(10));
     assertEquals(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(-10));
     assertEquals(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(20));
     assertEquals(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(-20));
 
-    assertEquals(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems('癸'));
-    assertSame(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems('癸'));
+    assertEquals(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems('癸').get());
+    assertSame(HeavenlyStems.癸   , HeavenlyStems.getHeavenlyStems('癸').get());
     assertEquals(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems(9));
     assertEquals(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems(19));
     assertEquals(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems(-1));
     assertEquals(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems(-11));
   }
 
+  @Test
   public void testGetHeavenlyStems()
   {
     assertSame(HeavenlyStems.甲 , HeavenlyStems.getHeavenlyStems(FiveElement.木 , true));
@@ -88,6 +98,7 @@ public class HeavenlyStemsTest extends TestCase
     assertSame(HeavenlyStems.癸 , HeavenlyStems.getHeavenlyStems(FiveElement.水 , false));
   }
 
+  @Test
   public void testSort()
   {
     HeavenlyStems[] HSArray = new HeavenlyStems[] { HeavenlyStems.丁, HeavenlyStems.癸, HeavenlyStems.甲, HeavenlyStems.戊, HeavenlyStems.辛 };
@@ -105,6 +116,7 @@ public class HeavenlyStemsTest extends TestCase
     }
   }
 
+  @Test
   public void _testHashCode()
   {
     System.out.println(HeavenlyStems.甲.hashCode());

@@ -57,7 +57,7 @@ public class RingHouse extends AbstractRing
   }
 
   @Override
-  public Map<Double, BufferedImage> getBfferedImages()
+  public Map<Double, BufferedImage> getBufferedImages()
   {
     Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<Double, BufferedImage>());
     

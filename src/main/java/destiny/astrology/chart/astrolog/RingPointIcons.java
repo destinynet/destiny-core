@@ -25,7 +25,7 @@ public class RingPointIcons extends AbstractRing
   private double                   center;
 
   @NotNull
-  private PointImageResourceReader starImageResourcereader = new PointImageResourceReaderImpl();
+  private PointImageResourceReader pointImageResourceReader = new PointImageResourceReaderImpl();
 
   /** 要繪製的星體 */
   private Set<Point>               shownPoints             = Collections.synchronizedSet(new HashSet<Point>());
@@ -60,7 +60,7 @@ public class RingPointIcons extends AbstractRing
   }
 
   @Override
-  public Map<Double, BufferedImage> getBfferedImages()
+  public Map<Double, BufferedImage> getBufferedImages()
   {
     //取得西落點是黃道幾度
     double degDesc = h.getCuspDegree(7);
@@ -78,7 +78,7 @@ public class RingPointIcons extends AbstractRing
       double planetDegree = h.getPositionWithAzimuth(point).getLongitude();
       double 原始第一象限度數 = planetDegree - degDesc;
 
-      BufferedImage iconImg = starImageResourcereader.getBufferedImage(point);
+      BufferedImage iconImg = pointImageResourceReader.getBufferedImage(point);
       RingPointIconRangeUtil util = new RingPointIconRangeUtil(center, radius, getInnerFrom(), getOuterTo(), iconImg, 原始第一象限度數);
 
       //System.out.println(point + " 位於 " + Utils.getNormalizeDegree(原始第一象限度數) + "\n");
@@ -96,7 +96,7 @@ public class RingPointIcons extends AbstractRing
     {
       Point point = entry.getKey();
       Double newPos = entry.getValue();
-      BufferedImage iconImg = starImageResourcereader.getBufferedImage(point);
+      BufferedImage iconImg = pointImageResourceReader.getBufferedImage(point);
       result.put(newPos, iconImg);
     }
     return result;
@@ -106,7 +106,7 @@ public class RingPointIcons extends AbstractRing
   public Map<Point, Double> getRearrangedIconCenterMap()
   {
     if (rearrangedIconCenterMap == null)
-      getBfferedImages();
+      getBufferedImages();
     return rearrangedIconCenterMap;
   }
 

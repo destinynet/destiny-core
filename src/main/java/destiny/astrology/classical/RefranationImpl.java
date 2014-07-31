@@ -6,6 +6,7 @@ import destiny.utils.Triple;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 
 public class RefranationImpl implements RefranationIF , Serializable {
@@ -33,31 +34,24 @@ public class RefranationImpl implements RefranationIF , Serializable {
     Point refranator = null;
 
     /** 此兩星正在 apply 哪個交角 */
-    Aspect applyingAspect = null;
+    Optional<Aspect> applyingAspect = Aspect.getAngles(Aspect.Importance.HIGH).stream().filter(aspect -> {
+      Optional<AspectApplySeparateIF.AspectType> aspectType = aspectApplySeparateImpl.getAspectType(context , planet , otherPoint , aspect);
+      return (aspectType.isPresent() && aspectType.get() == AspectApplySeparateIF.AspectType.APPLYING);
+    }).findFirst();
 
-    //計算兩星是否 apply 哪個交角
-    for(Aspect aspect : Aspect.getAngles(Aspect.Importance.HIGH))
-    {
-      AspectApplySeparateIF.AspectType aspectType = aspectApplySeparateImpl.getAspectType(context , planet , otherPoint , aspect);
-      if (aspectType == AspectApplySeparateIF.AspectType.APPLYING)
-      {
-        applyingAspect = aspect;
-        break;
-      }
-    }
 
     //System.out.println("形成逼近的交角 applyingAspect = " + applyingAspect);
 
-    if (applyingAspect == null) //沒有 apply任何交角 , 或是正在 separating
+    if (!applyingAspect.isPresent()) //沒有 apply任何交角 , 或是正在 separating
       return Triple.of(false , null , null);
 
     //兩星目前正在接近 applyingAspect 此角度
 
     Time perfectAspectGmt = null;
-    Time perfectAspectGmt1 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , applyingAspect.getDegree() , context.getGmt() , true);
-    if (applyingAspect.getDegree() != 0 && applyingAspect.getDegree() != 180) //額外計算 「補角」（360-degree）的時刻
+    Time perfectAspectGmt1 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , applyingAspect.get().getDegree() , context.getGmt() , true);
+    if (applyingAspect.get().getDegree() != 0 && applyingAspect.get().getDegree() != 180) //額外計算 「補角」（360-degree）的時刻
     {
-      Time perfectAspectGmt2 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , 360-applyingAspect.getDegree() , context.getGmt() , true);
+      Time perfectAspectGmt2 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , 360-applyingAspect.get().getDegree() , context.getGmt() , true);
       if (perfectAspectGmt1.isAfter(perfectAspectGmt2))
         perfectAspectGmt = perfectAspectGmt2;
       else
@@ -86,6 +80,6 @@ public class RefranationImpl implements RefranationIF , Serializable {
       refranator = otherPoint;
     }
 
-    return Triple.of(refranate , refranator , applyingAspect);
+    return Triple.of(refranate , refranator , applyingAspect.get());
   } // getResult()
 }

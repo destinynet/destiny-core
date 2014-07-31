@@ -2,7 +2,8 @@ package destiny.core.chinese;
 
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * 地支系統
@@ -56,8 +57,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
     return EarthlyBranchesArray[index];
   }
   
-  @Nullable
-  public static EarthlyBranches getEarthlyBranches(char c)
+  public static Optional<EarthlyBranches> getEarthlyBranches(char c)
   {
     EarthlyBranches result = null;
     for (EarthlyBranches aEarthlyBranchesArray : EarthlyBranchesArray) {
@@ -67,9 +67,9 @@ public enum EarthlyBranches implements EarthlyBranchesIF
       }
     }
     if (result != null)
-      return result;
+      return Optional.of(result);
     else
-      throw new RuntimeException("No such EarthlyBranches '"+c+"'");
+      return Optional.empty();
   }
   
   /** 取得對沖 的地支 */

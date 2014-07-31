@@ -11,6 +11,8 @@ import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.List;
  */
 public class StarTransBean
 {
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   private final RiseTransIF riseTransImpl;
   
   public StarTransBean(RiseTransIF riseTransImpl)
@@ -54,7 +58,8 @@ public class StarTransBean
     while (fromGmtTime.isBefore(toGmtTime))
     {
       resultGmtTime = riseTransImpl.getGmtTransTime(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-      System.out.println("resultGmtTime = " + resultGmtTime); 
+      logger.debug("resultGmtTime = {}" , resultGmtTime);
+
       if (!resultGmtTime.isBefore(toGmtTime))
         break;
 
