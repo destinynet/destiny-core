@@ -27,7 +27,7 @@ public final class Combustion extends Rule
           horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) <= 8.5)
       {
         //addComment(Locale.TAIWAN , planet + " 被太陽焦傷 (Combustion)");
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+        return new Tuple<>("comment" , new Object[]{planet});
       }
     }
     return null;

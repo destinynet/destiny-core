@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class ProcessorIconWatermark implements Processor , Serializable
 {
   /** 不透明度 , 1>= op >=0 ，數值越高就越清楚  */
-  float opacity = 0.5f;
+  private float opacity = 0.5f;
   
   public ProcessorIconWatermark()
   {

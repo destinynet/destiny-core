@@ -118,10 +118,8 @@ public abstract class AbstractMountainCompass extends AbstractCompass
     else if (m.getValue() instanceof EarthlyBranches)
     {
       int index = EarthlyBranches.getIndex( (EarthlyBranches)m.getValue() );
-      if ( index == 2 || index == 5 || index == 8 || index == 11 ) //寅巳申亥
-        return true;
-      else
-        return false;
+      //寅巳申亥
+      return index == 2 || index == 5 || index == 8 || index == 11;
     }
     else
       throw new RuntimeException("Cannot find YinYang from " + m);

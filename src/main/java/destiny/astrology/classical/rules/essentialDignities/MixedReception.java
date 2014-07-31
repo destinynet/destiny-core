@@ -49,7 +49,7 @@ public final class MixedReception extends Rule
       if (!utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
       {
         //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
-        return new Tuple<String , Object[]>("commentRuler" , new Object[] {planet , sign , thisSignRuler , sign2});  
+        return new Tuple<>("commentRuler" , new Object[] {planet , sign , thisSignRuler , sign2});
       }
     }
     
@@ -65,7 +65,7 @@ public final class MixedReception extends Rule
         if (!utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
-          return new Tuple<String , Object[]>("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2});
+          return new Tuple<>("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2});
         }
       }  
     }

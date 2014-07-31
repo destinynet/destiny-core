@@ -28,7 +28,7 @@ public final class Sunbeam extends Rule
           horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) <= 17)
       {
         //addComment(Locale.TAIWAN , planet + " 被太陽曬傷 (Sunbeam)");
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+        return new Tuple<>("comment" , new Object[]{planet});
       }
     }
     return null;

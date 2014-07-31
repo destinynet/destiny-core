@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class SymbolCongenital implements Comparator<Symbol>
 {
-  protected final static Symbol[] 先天八卦 = new Symbol[] 
+  private final static Symbol[] 先天八卦 = new Symbol[]
     { Symbol.乾 , Symbol.兌 , Symbol.離 , Symbol.震 , 
       Symbol.巽 , Symbol.坎 , Symbol.艮 , Symbol.坤 };
     

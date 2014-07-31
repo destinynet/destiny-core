@@ -37,7 +37,7 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
 
   private final RefranationIF refranationImpl;
 
-  private List<Applicable> rules = new ArrayList<Applicable>();
+  private List<Applicable> rules = new ArrayList<>();
 
 
   public DebilitiesBean(RefranationIF refranationImpl)
@@ -62,7 +62,7 @@ public class DebilitiesBean implements DebilitiesIF , Serializable
   @NotNull
   private List<Applicable> getDefaultRules()
   {
-    List<Applicable> list = new ArrayList<Applicable>();
+    List<Applicable> list = new ArrayList<>();
     list.add(new Detriment());
     list.add(new Fall());
     list.add(new Peregrine(dayNightImpl));

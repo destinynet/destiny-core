@@ -23,7 +23,7 @@ public final class Retrograde extends Rule
     if (horoscopeContext.getPosition(planet).getSpeedLongitude() < 0)
     {
       //addComment(Locale.TAIWAN , planet + " 逆行");
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+      return new Tuple<>("comment" , new Object[]{planet});
     }
     return null;
   }

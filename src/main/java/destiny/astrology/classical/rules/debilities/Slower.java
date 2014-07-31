@@ -25,7 +25,7 @@ public final class Slower extends Rule
         horoscopeContext.getPosition(planet).getSpeedLongitude() < AverageDailyMotionMap.get(planet))
     {
       //addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還慢");
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+      return new Tuple<>("comment" , new Object[]{planet});
     }
     return null;
   }

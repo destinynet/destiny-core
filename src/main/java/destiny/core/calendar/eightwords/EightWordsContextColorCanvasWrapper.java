@@ -35,7 +35,7 @@ public class EightWordsContextColorCanvasWrapper
   /** 地點 */
   private Location          location         = new Location();
   /** 地點的名稱 */
-  protected String locationName = "";
+  private String locationName = "";
   
   /** TODO : IoC Google Maps URL Builder */
   @NotNull

@@ -41,7 +41,7 @@ public final class Refrain_from_Mars_Saturn extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , bean.getApplyingAspect()} );
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , t.getThird()} );
+        return new Tuple<>("comment" , new Object[] {planet , otherPoint , t.getThird()} );
       }
     }
     
@@ -53,7 +53,7 @@ public final class Refrain_from_Mars_Saturn extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , bean.getApplyingAspect()} );
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , t.getThird()} );
+        return new Tuple<>("comment" , new Object[] {planet , otherPoint , t.getThird()} );
       }
     }
     return null;

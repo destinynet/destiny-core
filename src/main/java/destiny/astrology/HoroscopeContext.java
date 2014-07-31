@@ -135,7 +135,7 @@ public class HoroscopeContext implements Serializable
   @NotNull
   private List<Star> getPointList()
   {
-    List<Star> stars = new ArrayList<Star>();
+    List<Star> stars = new ArrayList<>();
     for (Planet planet : Planet.values) //行星
       stars.add(planet);
     for (LunarNode lunarNode : LunarNode.values) //月亮南北交點
@@ -183,7 +183,7 @@ public class HoroscopeContext implements Serializable
     if (index > 12)
       return getHousePoints(index - 12);
     
-    List<Point> resultList = new ArrayList<Point>();
+    List<Point> resultList = new ArrayList<>();
     for (Point eachPoint : getPointList())
     {
       double longitude = getPosition(eachPoint).getLongitude();

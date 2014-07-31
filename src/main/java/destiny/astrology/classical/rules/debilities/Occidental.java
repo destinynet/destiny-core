@@ -29,7 +29,7 @@ public final class Occidental extends Rule
       if (Horoscope.isOccidental(planetDegree , sunDegree))
       {
         //addComment(Locale.TAIWAN , planet + " 在太陽西邊");
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+        return new Tuple<>("comment" , new Object[]{planet});
       }  
     }
     return null;

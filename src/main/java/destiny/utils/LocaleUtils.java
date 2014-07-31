@@ -59,7 +59,7 @@ public class LocaleUtils implements Serializable
     
     Locale defaultLocale = Locale.getDefault();
     
-    List<Locale> sixLocales = Collections.synchronizedList(new LinkedList<Locale>());
+    List<Locale> sixLocales = Collections.synchronizedList(new LinkedList<>());
     sixLocales.add(locale); //第一項
     sixLocales.add(new Locale(locale.getLanguage() , locale.getCountry())); //第二項
     sixLocales.add(new Locale(locale.getLanguage())); //第三項

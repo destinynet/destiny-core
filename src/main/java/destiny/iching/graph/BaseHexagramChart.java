@@ -28,9 +28,9 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
   protected int height;
   
   protected double paddingTop;
-  protected double paddingRight;
-  protected double paddingBottom;
-  protected double paddingLeft;
+  private double paddingRight;
+  double paddingBottom;
+  double paddingLeft;
   
   // 每條 row 的高度
   protected double rowHigh;

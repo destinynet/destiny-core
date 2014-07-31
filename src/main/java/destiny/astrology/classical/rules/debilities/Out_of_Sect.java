@@ -46,7 +46,7 @@ public final class Out_of_Sect extends Rule
       if (horoscopeContext.getHouse(planet) >= 7 && sign.getBooleanValue())
       {
         //addComment(Locale.TAIWAN , "夜星 " + planet + " 於白天在地平面上，落入陽性星座 " + sign.toString(Locale.TAIWAN) + " 座，不得時");
-        return new Tuple<String , Object[]>("commentNight" , new Object[]{planet , sign});
+        return new Tuple<>("commentNight" , new Object[]{planet , sign});
       }
     }
     else if (dayNight == DayNight.NIGHT && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN))
@@ -54,7 +54,7 @@ public final class Out_of_Sect extends Rule
       if (horoscopeContext.getHouse(planet) >= 7 && !sign.getBooleanValue())
       {
         //addComment(Locale.TAIWAN , "晝星 " + planet + " 於夜晚在地平面上，落入陰性星座 " + sign.toString(Locale.TAIWAN) + " 座，不得時");
-        return new Tuple<String , Object[]>("commentDay" , new Object[]{planet , sign});
+        return new Tuple<>("commentDay" , new Object[]{planet , sign});
       }
     }
     return null;

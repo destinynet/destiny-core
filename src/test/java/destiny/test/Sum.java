@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Sum implements ISum
 {
-  public Integer value1;
-  public Integer value2;
+  private Integer value1;
+  private Integer value2;
 
   public Sum(Integer val1, Integer val2)
   {

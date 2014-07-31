@@ -43,7 +43,7 @@ public class HoroscopeAspectsCalculator implements Serializable
    *  */
   public Collection<HoroscopeAspectData> getAspectDataSet(@NotNull Collection<Point> points , @Nullable Collection<Aspect> aspects)
   {
-    Set<HoroscopeAspectData> dataSet = Collections.synchronizedSet(new HashSet<HoroscopeAspectData>());
+    Set<HoroscopeAspectData> dataSet = Collections.synchronizedSet(new HashSet<>());
 
     for (Point point : points) {
       Map<Point, Aspect> map = calculator.getPointAspect(point, points);

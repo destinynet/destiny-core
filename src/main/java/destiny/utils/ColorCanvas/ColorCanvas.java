@@ -35,7 +35,7 @@ public class ColorCanvas implements Serializable
   private ColorByte[] content;
   
   @NotNull
-  private List<Child> children = new ArrayList<Child>();
+  private List<Child> children = new ArrayList<>();
   
   
   /**
@@ -367,9 +367,9 @@ public class ColorCanvas implements Serializable
   
   public int getWidth() { return this.width;}
   
-  public int getHeight() { return this.height; }
+  int getHeight() { return this.height; }
   
-  protected void setParent(ColorCanvas cc)
+  void setParent(ColorCanvas cc)
   {
     this.parent = cc;
   }

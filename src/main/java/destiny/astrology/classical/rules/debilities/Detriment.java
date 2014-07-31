@@ -29,7 +29,7 @@ public final class Detriment extends EssentialRule
     if (planet == essentialImpl.getPoint(sign, Dignity.DETRIMENT))
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Detriment");
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , sign});
+      return new Tuple<>("comment" , new Object[]{planet , sign});
     }
     return null;
   }

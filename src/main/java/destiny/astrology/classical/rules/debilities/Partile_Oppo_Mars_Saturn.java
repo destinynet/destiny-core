@@ -30,12 +30,12 @@ public final class Partile_Oppo_Mars_Saturn extends Rule
     if ( planet != Planet.MARS && AspectEffectiveModern.isEffective( planetDegree , marsDeg , Aspect.OPPOSITION , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.OPPOSITION);
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.MARS , Aspect.OPPOSITION});
+      return new Tuple<>("comment" , new Object[]{planet , Planet.MARS , Aspect.OPPOSITION});
     }
     else if ( planet != Planet.SATURN && AspectEffectiveModern.isEffective( planetDegree , saturnDeg , Aspect.OPPOSITION, 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.OPPOSITION);
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.SATURN , Aspect.OPPOSITION});
+      return new Tuple<>("comment" , new Object[]{planet , Planet.SATURN , Aspect.OPPOSITION});
     }
     return null;
   }

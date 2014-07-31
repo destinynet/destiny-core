@@ -20,16 +20,18 @@ import java.util.List;
 
 public class AstrologChart extends BufferedImage
 {
-  Color              bg           = Color.BLACK;
-  Color              fore         = Color.WHITE;
-  double             center;
+  private Color              bg           = Color.BLACK;
+  private Color              fore         = Color.WHITE;
+
+  private double             center;
+
   @NotNull
   private Stroke     strokeNormal = new BasicStroke(1.0f);
 
-  private List<Ring> rings        = Collections.synchronizedList(new ArrayList<Ring>());
+  private List<Ring> rings        = Collections.synchronizedList(new ArrayList<>());
 
   /** 要繪製的星體 */
-  private Set<Point> shownPoints  = Collections.synchronizedSet(new HashSet<Point>());
+  private Set<Point> shownPoints  = Collections.synchronizedSet(new HashSet<>());
   
   private HoroscopeAspectsCalculator calculator;
 
@@ -65,7 +67,7 @@ public class AstrologChart extends BufferedImage
 
     
     calculator = new HoroscopeAspectsCalculator(horoscope , new HoroscopeAspectsCalculatorModern());
-    Set<Aspect> aspects = new HashSet<Aspect>();
+    Set<Aspect> aspects = new HashSet<>();
     aspects.addAll(Aspect.getAngles(Aspect.Importance.HIGH));
     Collection<HoroscopeAspectData> aspectDatas = calculator.getAspectDataSet( shownPoints , aspects);
     

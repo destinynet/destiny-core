@@ -83,9 +83,7 @@ public class EssentialUtils
     Point signRuler = essentialImpl.getPoint(sign, Dignity.RULER);
     ZodiacSign sign2 = horoscopeContext.getZodiacSign(signRuler);
     Point planet2 = essentialImpl.getPoint(sign2, Dignity.RULER);
-    if (planet == planet2)
-      return true;
-    return false;
+    return planet == planet2;
   }
   
   /** 如果其中一顆星處於 Dignity.DETRIMENT 或是 Dignity.FALL , 則為 true */

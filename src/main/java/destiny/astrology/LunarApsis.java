@@ -62,7 +62,7 @@ public final class LunarApsis extends LunarPoint implements Comparable<LunarApsi
   @NotNull
   public static LunarApsis[] values = {APOGEE_MEAN , APOGEE_OSCU , PERIGEE_MEAN , PERIGEE_OSCU};
   
-  protected LunarApsis(String nameKey, String abbrKey , Apsis apsis , MeanOscu meanOscu)
+  private LunarApsis(String nameKey, String abbrKey, Apsis apsis, MeanOscu meanOscu)
   {
     super(nameKey, abbrKey, resource);
     this.meanOscu = meanOscu;

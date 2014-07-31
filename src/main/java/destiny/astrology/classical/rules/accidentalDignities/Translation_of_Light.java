@@ -38,12 +38,12 @@ public class Translation_of_Light extends Rule
       if (t.getFourth().isPresent())
       {
         //sb.append("(" + (bean.getBesigingPlanetsAspectType() == AspectType.APPLYING ? "入" : "出") + "相位)");
-        return new Tuple<String , Object[]>("commentAspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg , t.getFourth().get()});
+        return new Tuple<>("commentAspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg , t.getFourth().get()});
       }
       else
       {
         //sb.append("(未形成交角)");
-        return new Tuple<String , Object[]>("commentUnaspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg });
+        return new Tuple<>("commentUnaspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg });
       }
         
     }

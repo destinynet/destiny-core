@@ -76,7 +76,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   /**
    * 「由下而上」 三個陰陽 , 查詢卦象為何
    */
-  public static Symbol getSymbol(YinYangIF[] line)
+  private static Symbol getSymbol(YinYangIF[] line)
   {
     for (Symbol aSymbolArray : symbolArray) {
       if ((line[0].getBooleanValue() == aSymbolArray.yinYangs[0]) &&

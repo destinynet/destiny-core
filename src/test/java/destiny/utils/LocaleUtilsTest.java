@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public class LocaleUtilsTest extends TestCase
 {
   @NotNull
-  private Set<Locale> locales = new HashSet<Locale>();
+  private Set<Locale> locales = new HashSet<>();
   private Locale locale;
   @Nullable
   private Locale matched;

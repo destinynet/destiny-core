@@ -30,7 +30,7 @@ public final class Partile_Conj_Spica extends Rule
     if (AspectEffectiveModern.isEffective(planetDegree , spicaDeg , Aspect.CONJUNCTION , 1))
     {
       // addComment(Locale.TAIWAN , planet + " 與 " + FixedStar.SPICA + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , FixedStar.SPICA , Aspect.CONJUNCTION});
+      return new Tuple<>("comment" , new Object[] {planet , FixedStar.SPICA , Aspect.CONJUNCTION});
     }
     return null;
   }

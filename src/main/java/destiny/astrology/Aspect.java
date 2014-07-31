@@ -74,11 +74,11 @@ public enum Aspect implements LocaleStringIF
   }
   */
   
-  private final static Map<Importance , List<Aspect>> importanceAngles = Collections.synchronizedMap(new HashMap<Importance , List<Aspect>>());
+  private final static Map<Importance , List<Aspect>> importanceAngles = Collections.synchronizedMap(new HashMap<>());
   static
   {
     for (Importance eachImportance : Importance.values())
-      importanceAngles.put(eachImportance, new ArrayList<Aspect>());
+      importanceAngles.put(eachImportance, new ArrayList<>());
     
     for (Aspect eachAngle : Aspect.values())
       importanceAngles.get(eachAngle.getImportance()).add(eachAngle);
@@ -110,7 +110,7 @@ public enum Aspect implements LocaleStringIF
   }
   
   /** 取得重要度 */
-  public Importance getImportance()
+  Importance getImportance()
   {
     return importance;
   }

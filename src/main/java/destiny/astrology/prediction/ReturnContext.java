@@ -100,9 +100,8 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable
     double pressure = 1013.25;
     NodeType nodeType = NodeType.MEAN;
 
-    HoroscopeContext ctx = new HoroscopeContext(convergentLmt , nowLoc , houseSystem , coordinate , centric , temperature , pressure , 
+    return new HoroscopeContext(convergentLmt , nowLoc , houseSystem , coordinate , centric , temperature , pressure ,
         starPositionWithAzimuthImpl , houseCuspImpl , apsisWithAzimuthImpl , nodeType);
-    return ctx;
   }
   
   
@@ -122,16 +121,14 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable
     //再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
     if (!converse) //順推
     {
-      Time resultGmt = starTransitImpl.getNextTransit(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , nowGmtTime, false); //false 代表逆推，往before算
-      return resultGmt;  
+      return starTransitImpl.getNextTransit(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , nowGmtTime, false); //false 代表逆推，往before算
     }
     else // converse == true , 逆推
     { 
       //從出生時間往前(before)推
       Time beforeNatalGmtTime = new Time(natalGmtTime , 0-(nowGmtTime.diffSeconds(natalGmtTime))); 
       //要確認最後一個參數，到底是要用 true , 還是 false , 要找相關定義 , 我覺得這裡應該是順推
-      Time resultGmt = starTransitImpl.getNextTransit(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , beforeNatalGmtTime, true); //true 代表順推 , 往 after 算
-      return resultGmt;
+      return starTransitImpl.getNextTransit(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , beforeNatalGmtTime, true); //true 代表順推 , 往 after 算
     }
     
   }

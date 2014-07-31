@@ -25,7 +25,7 @@ public final class Cazimi extends Rule
     {
       if (horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) < 17.0/60 )
       {
-        return new Tuple<String, Object[]>("comment" , new Object[] {planet});
+        return new Tuple<>("comment" , new Object[] {planet});
       }
     }
     return null;

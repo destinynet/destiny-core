@@ -19,12 +19,12 @@ public class Characteristics
   private EarthlyBranches 時支;
   
   @NotNull
-  public EarthlyBranches[] 空亡 = new EarthlyBranches[2];
-  public String[] 六獸 = new String[6];
-  public EarthlyBranches 驛馬 ;
-  public EarthlyBranches 桃花 ;
-  public EarthlyBranches[] 天乙貴人 = new EarthlyBranches[2];
-  public EarthlyBranches 羊刃 ;
+  private EarthlyBranches[] 空亡 = new EarthlyBranches[2];
+  private String[] 六獸 = new String[6];
+  private EarthlyBranches 驛馬 ;
+  private EarthlyBranches 桃花 ;
+  private EarthlyBranches[] 天乙貴人 = new EarthlyBranches[2];
+  private EarthlyBranches 羊刃 ;
   
   public Characteristics()
   {

@@ -16,13 +16,13 @@ import java.text.AttributedString;
 /**
  * 繪製一張命盤 , 嘗試打浮水印
  * 測試中 , 勿用
- * @deprecated
- */
-public class ChartImage extends BufferedImage
+  */
+@Deprecated
+class ChartImage extends BufferedImage
 {
-  Color bg   = Color.BLACK;
-  Color fore = Color.WHITE;
-  int   center;
+  private Color bg   = Color.BLACK;
+  private Color fore = Color.WHITE;
+  private int   center;
 
   public ChartImage(@NotNull Horoscope horoscope , int width)
   {

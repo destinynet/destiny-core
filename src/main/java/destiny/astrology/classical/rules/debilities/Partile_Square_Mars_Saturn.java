@@ -30,12 +30,12 @@ public final class Partile_Square_Mars_Saturn extends Rule
     if ( planet != Planet.MARS && AspectEffectiveModern.isEffective( planetDegree , marsDeg , Aspect.SQUARE , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.SQUARE);
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.MARS , Aspect.SQUARE});
+      return new Tuple<>("comment" , new Object[]{planet , Planet.MARS , Aspect.SQUARE});
     }
     else if ( planet != Planet.SATURN && AspectEffectiveModern.isEffective( planetDegree , saturnDeg , Aspect.SQUARE, 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.SQUARE);
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.SATURN , Aspect.SQUARE});
+      return new Tuple<>("comment" , new Object[]{planet , Planet.SATURN , Aspect.SQUARE});
     }
     return null;
   }

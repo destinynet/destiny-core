@@ -31,7 +31,7 @@ public final class Moon_Decrease_Light extends Rule
       if ( Horoscope.isOriental(planetDegree , sunDegree))
       {
         //addComment(Locale.TAIWAN , planet + " 在太陽東邊（月減光/下弦月）");
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+        return new Tuple<>("comment" , new Object[]{planet});
       }
     }
     return null;

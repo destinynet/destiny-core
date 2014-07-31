@@ -59,7 +59,7 @@ public class RingHouse extends AbstractRing
   @Override
   public Map<Double, BufferedImage> getBufferedImages()
   {
-    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<Double, BufferedImage>());
+    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<>());
     
     //取得西落點是黃道幾度
     double degDesc = h.getCuspDegree(7);

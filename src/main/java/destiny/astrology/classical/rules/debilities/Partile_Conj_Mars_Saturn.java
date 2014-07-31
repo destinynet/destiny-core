@@ -31,12 +31,12 @@ public final class Partile_Conj_Mars_Saturn extends Rule
     if (planet != Planet.MARS && Horoscope.getAngle(planetDegree , marsDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.MARS , Aspect.CONJUNCTION});
+      return new Tuple<>("comment" , new Object[]{planet , Planet.MARS , Aspect.CONJUNCTION});
     }
     else if (planet != Planet.SATURN && Horoscope.getAngle(planetDegree , saturnDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , Planet.SATURN, Aspect.CONJUNCTION});
+      return new Tuple<>("comment" , new Object[]{planet , Planet.SATURN, Aspect.CONJUNCTION});
     }
     return null;
   }

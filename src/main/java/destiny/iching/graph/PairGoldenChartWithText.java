@@ -75,13 +75,13 @@ public class PairGoldenChartWithText extends PairGoldenChart
       {
         while (srcTextX + expWidth > rightMargin)
         {
-          logger.debug("右邊 [{}] 超過 {} : {} " , new Object[] {srcTextX + expWidth , rightMargin , srcExp} );
+          logger.debug("右邊 [{}] 超過 {} : {} " , srcTextX + expWidth, rightMargin, srcExp);
           srcExp = srcExp.substring(0,srcExp.length()-1);
           expWidth = fontMetrics.stringWidth(srcExp);
         }
         srcExp = srcExp + "…";
       }
-      logger.debug("[{}] px :  第 {} 爻 : {}" , new Object[] {expWidth , i , srcExp } );
+      logger.debug("[{}] px :  第 {} 爻 : {}" , expWidth, i, srcExp);
 
       // 印出本卦爻辭
       g.drawString(srcExp , srcTextX , textY);

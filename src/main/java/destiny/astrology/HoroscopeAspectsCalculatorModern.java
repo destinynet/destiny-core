@@ -44,7 +44,7 @@ public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalcula
   {
     if (this.horoscope == null)
       throw new RuntimeException(getClass().getName() + " : horoscope is null ! call setHoroscope(horoscope) first !");
-    Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<Point , Aspect>());
+    Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<>());
     double starDeg = horoscope.getPositionWithAzimuth(point).getLongitude();
     
     for(Point eachPoint : points)

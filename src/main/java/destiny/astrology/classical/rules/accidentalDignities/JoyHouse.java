@@ -42,7 +42,7 @@ public final class JoyHouse extends Rule
        )
     {
       //planet + " 落入第 " + planetHouse + " 宮 , 為其喜樂宮 (Joy House)"
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , planetHouse});
+      return new Tuple<>("comment" , new Object[] {planet , planetHouse});
     }
     return null;
   }

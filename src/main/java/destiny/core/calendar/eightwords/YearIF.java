@@ -10,7 +10,7 @@ import destiny.core.calendar.Time;
 import destiny.core.chinese.StemBranch;
 
 /** 取得年干支的介面 */
-public interface YearIF
+interface YearIF
 {
   /**
    * @param lmt 傳入當地手錶時間

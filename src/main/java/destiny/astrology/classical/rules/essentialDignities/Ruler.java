@@ -36,7 +36,7 @@ public final class Ruler extends Rule
     if (planet == essentialImpl.getPoint(sign, Dignity.RULER) )
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Ruler");
-      return new Tuple<String , Object[]>("commentBasic" , new Object[]{planet , sign});
+      return new Tuple<>("commentBasic" , new Object[]{planet , sign});
     }
     /**
      * Ruler 互容 , mutual reception <br/> 
@@ -58,7 +58,7 @@ public final class Ruler extends Rule
         if (!utils.isBothInBadSituation(planet , sign , signRuler , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成互容");
-          return new Tuple<String , Object[]>("commentReception" , new Object[]{planet , sign , signRuler , sign2});  
+          return new Tuple<>("commentReception" , new Object[]{planet , sign , signRuler , sign2});
         }
       }
     }

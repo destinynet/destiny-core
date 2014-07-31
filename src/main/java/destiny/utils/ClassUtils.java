@@ -86,7 +86,7 @@ public class ClassUtils implements Serializable
   @NotNull
   public static List<String> getProperties(Class<?> clazz , @NotNull PERMISSION type)
   {
-    Set<String> set = new TreeSet<String>();
+    Set<String> set = new TreeSet<>();
     try
     {
       BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
@@ -130,7 +130,7 @@ public class ClassUtils implements Serializable
       e.printStackTrace();
     }
     
-    List<String> resultList = new ArrayList<String>();
+    List<String> resultList = new ArrayList<>();
     
     //排序 , id , key , user 放前面
     if(set.contains("id"))

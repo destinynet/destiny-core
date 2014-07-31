@@ -21,7 +21,7 @@ public class Besieged_Jupiter_Venus extends Rule
 {
 
   /** 計算兩星夾角的工具箱 */
-  BesiegedBean besiegedBean;
+  private BesiegedBean besiegedBean;
   
   public Besieged_Jupiter_Venus(BesiegedBean besiegedBean)
   {

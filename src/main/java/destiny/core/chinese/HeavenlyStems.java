@@ -22,7 +22,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   
   private char name;
   
-  protected final static HeavenlyStems[] HeavenlyStemsArray =
+  private final static HeavenlyStems[] HeavenlyStemsArray =
     { 甲 , 乙 , 丙 , 丁 , 戊 ,
       己 , 庚 , 辛 , 壬 , 癸 };
   
@@ -35,7 +35,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   
   /** 從五行 以及 陰陽 建立天干 */
   @NotNull
-  public final static HeavenlyStems getHeavenlyStems(FiveElement fiveElement , boolean yinYang) {
+  public static HeavenlyStems getHeavenlyStems(FiveElement fiveElement , boolean yinYang) {
     if (fiveElement == FiveElement.木)
     {
       if (yinYang)
@@ -98,11 +98,9 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   public static Optional<HeavenlyStems> getHeavenlyStems(char c)
   {
     HeavenlyStems result = null;
-    for (int i=0 ; i < HeavenlyStemsArray.length ; i++)
-    {
-      if ( HeavenlyStemsArray[i].name == c)
-      {
-        result = HeavenlyStemsArray[i];
+    for (HeavenlyStems aHeavenlyStemsArray : HeavenlyStemsArray) {
+      if (aHeavenlyStemsArray.name == c) {
+        result = aHeavenlyStemsArray;
         break;
       }
     }

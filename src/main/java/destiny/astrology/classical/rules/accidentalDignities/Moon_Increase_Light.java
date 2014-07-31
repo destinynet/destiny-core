@@ -30,7 +30,7 @@ public final class Moon_Increase_Light extends Rule
       if ( Horoscope.isOccidental(planetDegree , sunDegree))
       {
         // addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet});
+        return new Tuple<>("comment" , new Object[] {planet});
       }
     }
     return null;

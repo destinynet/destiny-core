@@ -89,7 +89,6 @@ public class EightWordsChart extends BufferedImage implements Serializable {
   @NotNull
   public Font getFont() {
     return new Font(FontRepository.getFontLiHei() , Font.PLAIN, getFontSize());
-    //return new Font(FontRepository.getFontNotoMedium() , Font.PLAIN, getFontSize());
   }
 
   public float getCellWidth() {

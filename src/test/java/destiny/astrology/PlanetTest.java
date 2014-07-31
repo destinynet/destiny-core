@@ -25,7 +25,7 @@ public class PlanetTest extends TestCase
     Planet sun = Planet.SUN;
     Planet sun2 = Planet.SUN;
     
-    Set<Point> points = new HashSet<Point>();
+    Set<Point> points = new HashSet<>();
     points.add(sun2);
     
     Iterator<Point> pointsIt = points.iterator();

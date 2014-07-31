@@ -16,7 +16,7 @@ public class ClassFinder
   @SuppressWarnings("rawtypes")
   public static Set<Class> getClasses(@NotNull String packageName , boolean recursive) throws ClassNotFoundException
   {
-    Set<Class> classes = Collections.synchronizedSet(new HashSet<Class>());
+    Set<Class> classes = Collections.synchronizedSet(new HashSet<>());
     // Get a File object for the package
     File directory = null;
     try

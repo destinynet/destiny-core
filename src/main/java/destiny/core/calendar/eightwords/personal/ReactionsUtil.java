@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /** 天干/地支/十神 的工具箱 */
@@ -95,9 +96,7 @@ public class ReactionsUtil
   {
     List<Reactions> result = new ArrayList();
     List<HeavenlyStems> hiddenStems = this.hiddenStemsImpl.getHiddenStems(actor);
-    for (HeavenlyStems eachHiddenStems : hiddenStems) {
-      result.add(this.getReaction(eachHiddenStems, actee));
-    }
+    result.addAll(hiddenStems.stream().map(eachHiddenStems -> this.getReaction(eachHiddenStems, actee)).collect(Collectors.toList()));
     return result;
   }
   

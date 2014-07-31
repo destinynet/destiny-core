@@ -21,7 +21,7 @@ public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializab
   /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作 */
   private DayNightDifferentiator dayNightImpl;
   
-  private List<Applicable> rules = new ArrayList<Applicable>();
+  private List<Applicable> rules = new ArrayList<>();
   
   public EssentialDignitiesBean(DayNightDifferentiator dayNightImpl)
   {
@@ -41,7 +41,7 @@ public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializab
   @NotNull
   private List<Applicable> getDefaultRules()
   {
-    List<Applicable> list = new ArrayList<Applicable>();
+    List<Applicable> list = new ArrayList<>();
     list.add(new Ruler(dayNightImpl));
     list.add(new Exaltation(dayNightImpl));
     list.add(new MixedReception(dayNightImpl));

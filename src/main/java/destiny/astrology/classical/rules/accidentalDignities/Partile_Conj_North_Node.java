@@ -49,12 +49,12 @@ public final class Partile_Conj_North_Node extends Rule
       if (nodeType == NodeType.TRUE)
       {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.NORTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet , LunarNode.NORTH_TRUE , Aspect.CONJUNCTION});
+        return new Tuple<>("comment" , new Object[] {planet , LunarNode.NORTH_TRUE , Aspect.CONJUNCTION});
       }
       else
       {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.NORTH_MEAN + " 形成 " + Aspect.CONJUNCTION);
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet , LunarNode.NORTH_MEAN , Aspect.CONJUNCTION});
+        return new Tuple<>("comment" , new Object[] {planet , LunarNode.NORTH_MEAN , Aspect.CONJUNCTION});
       }
     }
     return null;

@@ -28,7 +28,7 @@ public class RingPointIcons extends AbstractRing
   private PointImageResourceReader pointImageResourceReader = new PointImageResourceReaderImpl();
 
   /** 要繪製的星體 */
-  private Set<Point>               shownPoints             = Collections.synchronizedSet(new HashSet<Point>());
+  private Set<Point>               shownPoints             = Collections.synchronizedSet(new HashSet<>());
 
   /** 重新排列整理過後的 icon 中心點 */
   private Map<Point, Double>       rearrangedIconCenterMap;
@@ -65,13 +65,13 @@ public class RingPointIcons extends AbstractRing
     //取得西落點是黃道幾度
     double degDesc = h.getCuspDegree(7);
 
-    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<Double, BufferedImage>());
+    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<>());
 
     //存放「原始」，每顆星體的中心度數
-    Map<Point, Double> pointOriginDegMap = Collections.synchronizedMap(new HashMap<Point, Double>());
+    Map<Point, Double> pointOriginDegMap = Collections.synchronizedMap(new HashMap<>());
 
     //存放每顆行星的 icon , 佔據的度數 , 前者為 Double[0] 為 from , Double[1] 為 to
-    Map<Point, Double[]> pointIconRangeMap = Collections.synchronizedMap(new HashMap<Point, Double[]>());
+    Map<Point, Double[]> pointIconRangeMap = Collections.synchronizedMap(new HashMap<>());
 
     for (Point point : shownPoints)
     {
@@ -113,7 +113,7 @@ public class RingPointIcons extends AbstractRing
   /** 將行星 icon 所佔的弧角，做 overlap 檢查，並且分出 cluster , 傳回每顆星體重新排列後，位於幾度(第一象限算起) */
   private Map<Point, Double> getRearrangedPointPosition(@NotNull Map<Point, Double[]> pointIconRangeMap, @NotNull Map<Point, Double> pointOriginDegMap)
   {
-    List<Set<Point>> clusters = Collections.synchronizedList(new ArrayList<Set<Point>>());
+    List<Set<Point>> clusters = Collections.synchronizedList(new ArrayList<>());
 
     for (Map.Entry<Point, Double[]> entry : pointIconRangeMap.entrySet())
     {
@@ -124,14 +124,14 @@ public class RingPointIcons extends AbstractRing
       if (clusters.size() == 0)
       {
         //沒有 cluster , 成立一個新的，把自己丟進去
-        Set<Point> newCluster = Collections.synchronizedSet(new TreeSet<Point>(new OrientalComparator(h)));
+        Set<Point> newCluster = Collections.synchronizedSet(new TreeSet<>(new OrientalComparator(h)));
         newCluster.add(point);
         clusters.add(newCluster);
         //System.out.println("空 clusters , 成立新 cluster , 放入 " + point);
       }
       else
       {
-        Set<Point> newCluster = Collections.synchronizedSet(new TreeSet<Point>(new OrientalComparator(h)));
+        Set<Point> newCluster = Collections.synchronizedSet(new TreeSet<>(new OrientalComparator(h)));
 
         boolean overlapped = false;
         for (Set<Point> cluster : clusters)
@@ -176,7 +176,7 @@ public class RingPointIcons extends AbstractRing
       if (occurringClusters.size() > 1)
       {
         clusters.removeAll(occurringClusters);
-        Set<Point> combiningNewCluster = Collections.synchronizedSet(new TreeSet<Point>(new OrientalComparator(h)));
+        Set<Point> combiningNewCluster = Collections.synchronizedSet(new TreeSet<>(new OrientalComparator(h)));
         occurringClusters.forEach(combiningNewCluster::addAll);
         clusters.add(combiningNewCluster);
       }
@@ -188,7 +188,7 @@ public class RingPointIcons extends AbstractRing
      */
 
     // 存放重新排列過的星體 icons
-    Map<Point, Double> newPointIconRangeMap = Collections.synchronizedMap(new HashMap<Point, Double>());
+    Map<Point, Double> newPointIconRangeMap = Collections.synchronizedMap(new HashMap<>());
 
     //檢查「星體數量大於1」的 cluster, 所佔的範圍
     for (Set<Point> cluster : clusters)
@@ -206,7 +206,7 @@ public class RingPointIcons extends AbstractRing
         double clusterRangeCenter = getClusterRangeCenter(cluster, pointIconRangeMap);
         //System.err.println("\n cluster : " + cluster + " 的中心度數是 : " + clusterRangeCenter);
 
-        List<Point> pointList = Collections.synchronizedList(new ArrayList<Point>(cluster));
+        List<Point> pointList = Collections.synchronizedList(new ArrayList<>(cluster));
 
         // 每個icon之間，最少需間隔多少弧角 , 採用動態調整，如果聚集越多，則 gap 要越大
         double gap = pointList.size() / 2;
@@ -353,7 +353,7 @@ public class RingPointIcons extends AbstractRing
   /** 查詢這顆行星，出現在哪些 clusters 中 , 傳回去 */
   private Set<Set<Point>> getClusters(Point point, @NotNull List<Set<Point>> clusters)
   {
-    Set<Set<Point>> result = Collections.synchronizedSet(new HashSet<Set<Point>>());
+    Set<Set<Point>> result = Collections.synchronizedSet(new HashSet<>());
     result.addAll(clusters.stream().filter(cluster -> cluster.contains(point)).collect(Collectors.toList()));
     return result;
   }

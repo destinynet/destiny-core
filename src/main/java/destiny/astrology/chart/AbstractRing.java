@@ -23,7 +23,7 @@ public abstract class AbstractRing implements Ring , Serializable
   /** 百分比 (0~1) */
   protected double outerTo;
   
-  public AbstractRing(Horoscope h , double innerFrom , double outerTo)
+  protected AbstractRing(Horoscope h, double innerFrom, double outerTo)
   {
     this.h = h;
     this.innerFrom = innerFrom;

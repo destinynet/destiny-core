@@ -24,11 +24,11 @@ public final class House_6_8 extends Rule
     if (horoscopeContext.getHouse(planet) == 6)
     {
       //addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , 6});
+      return new Tuple<>("comment" , new Object[]{planet , 6});
     }
     else if (horoscopeContext.getHouse(planet) ==8)
     {
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , 8});
+      return new Tuple<>("comment" , new Object[]{planet , 8});
     }
     return null;
   }

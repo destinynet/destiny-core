@@ -22,7 +22,7 @@ import java.util.*;
 /** 繪製各個星體的「點」的圓環。一個星體只有一個「點」 */
 public class RingPoints extends AbstractRing
 {
-  private Map<Point, Color>        pointColorMap   = Collections.synchronizedMap(new HashMap<Point, Color>());
+  private Map<Point, Color>        pointColorMap   = Collections.synchronizedMap(new HashMap<>());
 
   private final static ImmutableMap<Point , Color> defaultColorMap = new ImmutableMap.Builder<Point , Color>()
     .put(Planet.SUN, Color.RED)
@@ -44,13 +44,13 @@ public class RingPoints extends AbstractRing
     .build();
 
   /** 要繪製的星體 */
-  private Set<Point>               shownPoints     = Collections.synchronizedSet(new HashSet<Point>());
+  private Set<Point>               shownPoints     = Collections.synchronizedSet(new HashSet<>());
 
   public RingPoints(Horoscope h, double innerFrom, double outerTo, Set<Point> shownPoints)
   {
     super(h, innerFrom, outerTo);
     this.shownPoints = shownPoints;
-    this.pointColorMap = new HashMap<Point , Color>(defaultColorMap);
+    this.pointColorMap = new HashMap<>(defaultColorMap);
   }
 
   /** 設定 整組的 星體顏色 */
@@ -71,7 +71,7 @@ public class RingPoints extends AbstractRing
     //取得西落點是黃道幾度
     double degDesc = h.getCuspDegree(7);
 
-    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<Double, BufferedImage>());
+    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<>());
     for (Point point : shownPoints)
     {
       double pointDegree = h.getPositionWithAzimuth(point).getLongitude();

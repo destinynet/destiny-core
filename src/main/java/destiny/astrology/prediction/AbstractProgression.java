@@ -63,7 +63,7 @@ public abstract class AbstractProgression implements LinearIF , Conversable , Se
   {
     double diffSeconds = nowTime.diffSeconds(natalTime);
     Time resultTime;
-    if (converse == true)
+    if (converse)
       resultTime = new Time(natalTime , - (diffSeconds / getDenominator())*getNumerator());
     else
       resultTime = new Time(natalTime ,   (diffSeconds / getDenominator())*getNumerator());

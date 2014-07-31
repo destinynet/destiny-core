@@ -24,7 +24,7 @@ public final class Face extends Rule
     if (planet == essentialImpl.getFacePoint(horoscopeContext.getPosition(planet).getLongitude()))
     {
       //addComment(Locale.TAIWAN , planet + " 位於其 Chaldean decanate or face : "+ horoscopeContext.getPosition(planet).getLongitude());
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , horoscopeContext.getPosition(planet).getLongitude()});
+      return new Tuple<>("comment" , new Object[] {planet , horoscopeContext.getPosition(planet).getLongitude()});
     }
     return null;
   }

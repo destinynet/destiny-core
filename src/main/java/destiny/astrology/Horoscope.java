@@ -116,7 +116,7 @@ public class Horoscope implements Serializable
    */
   public Map<Star , PositionWithAzimuth> getPositionWithAzimuth(@NotNull List<Star> stars)
   {
-    Map<Star , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<Star , PositionWithAzimuth>());
+    Map<Star , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
     for(Star star : stars)
       resultMap.put(star, context.getPosition(star));
       //resultMap.put(star, positionMap.get(star));
@@ -128,7 +128,7 @@ public class Horoscope implements Serializable
    */
   public Map<Planet , PositionWithAzimuth> getPlanetPositionWithAzimuth()
   {
-    Map<Planet , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<Planet , PositionWithAzimuth>());
+    Map<Planet , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
     for(Planet planet : Planet.values)
       resultMap.put(planet , context.getPosition(planet));
       //resultMap.put(planet, positionMap.get(planet));
@@ -140,7 +140,7 @@ public class Horoscope implements Serializable
    */
   public Map<Asteroid , PositionWithAzimuth> getAsteroidPositionWithAzimuth()
   {
-    Map<Asteroid , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<Asteroid , PositionWithAzimuth>());
+    Map<Asteroid , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
     for(Asteroid asteroid : Asteroid.values)
       resultMap.put(asteroid , context.getPosition(asteroid));
       //resultMap.put(asteroid, positionMap.get(asteroid));
@@ -152,7 +152,7 @@ public class Horoscope implements Serializable
    */
   public Map<Hamburger , PositionWithAzimuth> getHamburgerPositionWithAzimuth()
   {
-    Map<Hamburger , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<Hamburger , PositionWithAzimuth>());
+    Map<Hamburger , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
     for(Hamburger hamburger : Hamburger.values)
       resultMap.put(hamburger , context.getPosition(hamburger));
       //resultMap.put(hamburger, positionMap.get(hamburger));

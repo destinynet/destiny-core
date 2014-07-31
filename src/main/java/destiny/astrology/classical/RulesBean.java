@@ -19,9 +19,9 @@ import java.util.List;
  */
 public class RulesBean implements Serializable
 {
-  EssentialDignitiesIF essentialDignitiesImpl;
-  AccidentalDignitiesIF accidentalDignitiesImpl;
-  DebilitiesIF debilitiesBean;
+  private EssentialDignitiesIF essentialDignitiesImpl;
+  private AccidentalDignitiesIF accidentalDignitiesImpl;
+  private DebilitiesIF debilitiesBean;
 
   protected RulesBean() {
   }

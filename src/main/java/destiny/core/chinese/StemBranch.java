@@ -139,7 +139,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
    * @param sb 取得某組干支的順序
    * @return 0[甲子] ~ 59[癸亥]
    */
-  public static int getIndex(@NotNull StemBranch sb)
+  private static int getIndex(@NotNull StemBranch sb)
   {
     int index=-1;
     for (int i = 0 ; i < StemBranchArray.length ; i ++)

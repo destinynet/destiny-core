@@ -100,10 +100,7 @@ public class BaseHexagram implements HexagramIF , Serializable
       for(int i=0 ; i<6 ; i++)
       {
         char c = code.toCharArray()[i];
-        if (c == '0')
-          bools[i] = false;
-        else
-          bools[i] = true;
+        bools[i] = (c != '0');
       }
       return Hexagram.getHexagram(bools);  
     }

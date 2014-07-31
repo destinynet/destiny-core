@@ -23,7 +23,7 @@ public class HexagramTest
   @Test
   public void testHexagram()
   {
-    Set<Hexagram> set = new HashSet<Hexagram>();
+    Set<Hexagram> set = new HashSet<>();
     
     for(Hexagram h :Hexagram.values())
     {

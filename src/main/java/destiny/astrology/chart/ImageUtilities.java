@@ -67,8 +67,9 @@ public class ImageUtilities
   public static boolean waitForImages(@NotNull Image[] images, Component c)
   {
     MediaTracker tracker = new MediaTracker(c);
-    for (int i = 0; i < images.length; i++)
-      tracker.addImage(images[i], 0);
+    for (Image image : images) {
+      tracker.addImage(image, 0);
+    }
     try
     {
       tracker.waitForAll();

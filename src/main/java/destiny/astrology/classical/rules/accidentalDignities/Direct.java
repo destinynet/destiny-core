@@ -26,7 +26,7 @@ public final class Direct extends Rule
       if(horoscopeContext.getPosition(planet).getSpeedLongitude() > 0)
       {
         //addComment(Locale.TAIWAN , planet + " 是 DIRECT 移動 (順行)");
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet});
+        return new Tuple<>("comment" , new Object[] {planet});
       }
     }
     return null;

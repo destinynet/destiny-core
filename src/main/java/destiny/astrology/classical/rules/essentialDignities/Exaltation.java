@@ -36,7 +36,7 @@ public final class Exaltation extends Rule
     if (planet == essentialImpl.getPoint(sign, Dignity.EXALTATION))
     {
       //addComment(Locale.TAIWAN , planet + " 位於其 Exaltation 的星座 " + sign);
-      return new Tuple<String , Object[]>("commentBasic" , new Object[]{planet , sign});
+      return new Tuple<>("commentBasic" , new Object[]{planet , sign});
     }
     // Exaltation 互容 , mutual reception
     else 
@@ -56,7 +56,7 @@ public final class Exaltation extends Rule
           if (!utils.isBothInBadSituation(planet , sign , signExaltation , sign2))
           {
             //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成互容");
-            return new Tuple<String , Object[]>("commentReception" , new Object[]{planet , sign , signExaltation , sign2});  
+            return new Tuple<>("commentReception" , new Object[]{planet , sign , signExaltation , sign2});
           }
         }        
       }

@@ -52,7 +52,7 @@ public class StarTransBean
     Time fromGmtTime = Time.getGMTfromLMT(fromLmtTime, location);
     Time toGmtTime   = Time.getGMTfromLMT(toLmtTime, location);
     
-    List<Time> resultList = new ArrayList<Time>();
+    List<Time> resultList = new ArrayList<>();
     
     Time resultGmtTime;
     while (fromGmtTime.isBefore(toGmtTime))

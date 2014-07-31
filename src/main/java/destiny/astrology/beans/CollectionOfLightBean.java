@@ -167,8 +167,8 @@ public class CollectionOfLightBean implements Serializable
               this.fromPlanets[0] = p1;
               this.fromPlanets[1] = p2;
             }
-            else
-              return;
+            else {
+            }
           }
           else if (this.collectType == CollectType.DEBILITIES)
           {
@@ -179,8 +179,8 @@ public class CollectionOfLightBean implements Serializable
               this.fromPlanets[0] = p1;
               this.fromPlanets[1] = p2;
             }
-            else
-              return;
+            else {
+            }
           }
           else if (this.collectType == CollectType.ALL)
           {

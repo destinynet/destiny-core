@@ -48,7 +48,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     this.refranationImpl = refranationImpl;
   }
 
-  private List<Applicable> rules = new ArrayList<Applicable>();
+  private List<Applicable> rules = new ArrayList<>();
 
   @PostConstruct
   public void init() {
@@ -59,8 +59,8 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   @Override
   public List<RuleIF> getAccidentalDignities(Planet planet, HoroscopeContext horoscopeContext)
   {
-    List<RuleIF> resultList = new ArrayList<RuleIF>();
-    
+    List<RuleIF> resultList = new ArrayList<>();
+
     for(Applicable each : rules)
     {
       if(each.isApplicable(planet, horoscopeContext))
@@ -72,7 +72,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   @NotNull
   private List<Applicable> getDefaultRules()
   {
-    List<Applicable> list = new ArrayList<Applicable>();
+    List<Applicable> list = new ArrayList<>();
     list.add(new House_1_10());
     list.add(new House_4_7_11());
     list.add(new House_2_5());

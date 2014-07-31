@@ -21,7 +21,7 @@ public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Se
   private PointComparator pointComp = new PointComparator();
   
   /** 存放形成交角的兩顆星體 */
-  private Set<Point> twoPoints = Collections.synchronizedSet(new TreeSet<Point>( pointComp ));
+  private Set<Point> twoPoints = Collections.synchronizedSet(new TreeSet<>( pointComp ));
   
   /** 兩星所形成的交角 */
   private Aspect aspect;

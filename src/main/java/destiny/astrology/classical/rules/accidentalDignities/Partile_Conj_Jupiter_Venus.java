@@ -31,12 +31,12 @@ public final class Partile_Conj_Jupiter_Venus extends Rule
     if (planet != Planet.JUPITER && Horoscope.getAngle(planetDegree , jupiterDeg) <= 1) 
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.JUPITER , Aspect.CONJUNCTION});
+      return new Tuple<>("comment" , new Object[] {planet , Planet.JUPITER , Aspect.CONJUNCTION});
     }
     else if (planet != Planet.VENUS && Horoscope.getAngle(planetDegree , venusDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.VENUS , Aspect.CONJUNCTION});
+      return new Tuple<>("comment" , new Object[] {planet , Planet.VENUS , Aspect.CONJUNCTION});
     }
     return null;
   }

@@ -15,8 +15,7 @@ public class Utils implements Serializable
   * http://scienceworld.wolfram.com/astronomy/LocalSiderealTime.html
   * Practical Astronomy with Your Calculator, 3rd ed , Page 20
   */
-  public static Calendar getLST(@NotNull Calendar LMTCal ,
-                                         int LongitudeDegree , int LongitudeMinute, double LongitudeSecond )
+  private static Calendar getLST(@NotNull Calendar LMTCal, int LongitudeDegree, int LongitudeMinute, double LongitudeSecond)
   {
     int GMTLMTOffset =  LMTCal.getTimeZone().getOffset( LMTCal.getTimeInMillis() );
     //台北，傳回 28800000 (8hrs)

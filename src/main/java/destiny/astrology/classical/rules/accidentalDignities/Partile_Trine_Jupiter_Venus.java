@@ -30,12 +30,12 @@ public final class Partile_Trine_Jupiter_Venus extends Rule
     if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective( planetDegree , jupiterDeg , Aspect.TRINE , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.TRINE);
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.JUPITER , Aspect.TRINE});
+      return new Tuple<>("comment" , new Object[] {planet , Planet.JUPITER , Aspect.TRINE});
     }
     else if (planet != Planet.VENUS && AspectEffectiveModern.isEffective( planetDegree , venusDeg , Aspect.TRINE , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.TRINE);
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.VENUS , Aspect.TRINE});
+      return new Tuple<>("comment" , new Object[] {planet , Planet.VENUS , Aspect.TRINE});
     }
     
     return null;

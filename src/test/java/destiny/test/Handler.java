@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 public class Handler implements InvocationHandler
 {
 
-  public Sum trueSum;
+  private Sum trueSum;
 
   public Handler(Sum sum)
   {

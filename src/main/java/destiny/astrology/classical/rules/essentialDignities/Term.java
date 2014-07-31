@@ -23,7 +23,7 @@ public final class Term extends Rule
   {
     if (planet == essentialImpl.getTermsPoint(horoscopeContext.getPosition(planet).getLongitude()))
     {
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , horoscopeContext.getPosition(planet).getLongitude()});
+      return new Tuple<>("comment" , new Object[]{planet , horoscopeContext.getPosition(planet).getLongitude()});
     }
     return null;
   }

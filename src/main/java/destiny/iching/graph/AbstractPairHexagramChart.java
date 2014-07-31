@@ -23,9 +23,7 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
  */
 public abstract class AbstractPairHexagramChart extends BufferedImage implements Serializable
 {
-  // 是否繪製輔助線條
-  private boolean drawRulers = false;
-  
+
   private GoldenPaddingChart srcChart;
   private GoldenPaddingChart dstChart;
   
@@ -36,10 +34,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
   protected int height;
   
   public enum Type {MERGED , GOLDEN}
-  
-  private Color bg;
-  private Color fore = Color.BLACK;
-  
+
   /**
    * @param src     本卦
    * @param srcName
@@ -68,9 +63,7 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
     this.dst = dst;
     this.width = getWidth();
     this.height = getHeight();
-    this.bg = bg;
-    this.fore = fore;
-    
+
     this.srcChart = new GoldenPaddingChart(src , WIDTH_HEIGHT.HEIGHT
         , height
         , bg , fore);
@@ -103,7 +96,8 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
     
     // 右半邊為變卦
     g.drawImage(dstChart, width - dstChart.width , 0 , null);
-    
+
+    boolean drawRulers = false;
     if (drawRulers)
     {
       // 繪製輔助線條

@@ -77,7 +77,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
     @Override
     protected Map<EightWordsPersonContext , Map<Integer, Time>> initialValue()
     {
-      return Collections.synchronizedMap(new HashMap<EightWordsPersonContext,Map<Integer,Time>>());
+      return Collections.synchronizedMap(new HashMap<>());
     }
   };
   
@@ -218,7 +218,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
     //Map<Integer,Time> hashMap = targetMajorSolarTermsGmtHolder.get();
     Map<EightWordsPersonContext , Map<Integer,Time>> hashMap = targetMajorSolarTermsGmtHolder.get();
     if (hashMap.get(this) == null)
-      hashMap.put(this, new HashMap<Integer , Time>());
+      hashMap.put(this, new HashMap<>());
     Time targetGmt = hashMap.get(this).get(index);
     
     if (targetGmt == null)

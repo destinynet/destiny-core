@@ -30,7 +30,7 @@ public final class Conj_Algol extends Rule
     if (AspectEffectiveModern.isEffective(planetDegree , algolDeg , Aspect.CONJUNCTION , 5))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + FixedStar.ALGOL + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , FixedStar.ALGOL , Aspect.CONJUNCTION});
+      return new Tuple<>("comment" , new Object[]{planet , FixedStar.ALGOL , Aspect.CONJUNCTION});
     }
     return null;
   }

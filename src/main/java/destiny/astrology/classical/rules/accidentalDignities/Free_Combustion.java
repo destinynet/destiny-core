@@ -26,7 +26,7 @@ public final class Free_Combustion extends Rule
       if (horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) > 17)
       {
         //addComment(Locale.TAIWAN , planet + " 遠離太陽焦傷");
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet});
+        return new Tuple<>("comment" , new Object[] {planet});
       }
     }
     return null;

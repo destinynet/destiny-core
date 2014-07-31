@@ -511,7 +511,7 @@ public class GifDecoder implements Serializable {
   protected void init() {
     status = STATUS_OK;
     frameCount = 0;
-    frames = new ArrayList<GifFrame>();
+    frames = new ArrayList<>();
     gct = null;
     lct = null;
   }

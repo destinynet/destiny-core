@@ -18,7 +18,7 @@ public class DstUtils implements Serializable
     GregorianCalendar cal = new GregorianCalendar(lmt.getYear() , lmt.getMonth()-1 , lmt.getDay() , lmt.getHour() , lmt.getMinute() , (int)lmt.getSecond());
     boolean dst = tz.inDaylightTime(cal.getTime());
     double secondOffset = tz.getOffset(cal.getTimeInMillis()) / 1000;
-    return new Tuple<Boolean , Double>(Boolean.valueOf(dst) , Double.valueOf(secondOffset));
+    return new Tuple<>(Boolean.valueOf(dst) , Double.valueOf(secondOffset));
   }
 }
 

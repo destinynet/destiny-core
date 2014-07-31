@@ -5,13 +5,13 @@
  */
 package destiny.FengShui.SanYuan;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import destiny.astrology.Utils;
 import destiny.iching.Symbol;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class AdquiredSymbolCompass extends AbstractSymbol implements Serializable
 {
   @NotNull
-  protected static List<Symbol> SymbolList = new ArrayList<Symbol>();
+  private static List<Symbol> SymbolList = new ArrayList<Symbol>();
   static
   {
     SymbolList.add(Symbol.坎);

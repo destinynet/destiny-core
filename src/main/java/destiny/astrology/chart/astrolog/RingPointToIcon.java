@@ -49,7 +49,7 @@ public class RingPointToIcon extends AbstractRing
     double degDesc = h.getCuspDegree(7);
 
     /** 星體的位置 */
-    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<Double, BufferedImage>());
+    Map<Double, BufferedImage> result = Collections.synchronizedMap(new HashMap<>());
 
     /** 「重新排列過的」icon 中心點的位置 */
     Map<Point, Double> iconCenterDegreeMap = ringIcons.getRearrangedIconCenterMap();

@@ -29,7 +29,7 @@ public final class Fall extends EssentialRule
     if (planet == essentialImpl.getPoint(sign, Dignity.FALL))
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Fall");
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , sign});
+      return new Tuple<>("comment" , new Object[]{planet , sign});
     }
     return null;
   }

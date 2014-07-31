@@ -31,7 +31,7 @@ public final class Oriental extends Rule
       if (Horoscope.isOriental(planetDegree , sunDegree))
       {
         //addComment(Locale.TAIWAN , planet + " 在太陽東邊");
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+        return new Tuple<>("comment" , new Object[]{planet});
       }
     }
     return null;

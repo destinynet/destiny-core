@@ -56,7 +56,7 @@ public class Refrain_from_Venus_Jupiter extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , t.getThird()});
+        return new Tuple<>("comment" , new Object[]{planet , otherPoint , t.getThird()});
       }
     }
     
@@ -69,7 +69,7 @@ public class Refrain_from_Venus_Jupiter extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , t.getThird()});
+        return new Tuple<>("comment" , new Object[]{planet , otherPoint , t.getThird()});
       }
     }
     return null;

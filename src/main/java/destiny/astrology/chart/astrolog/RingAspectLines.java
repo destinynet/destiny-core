@@ -21,7 +21,7 @@ public class RingAspectLines extends AbstractRing
   private Collection<HoroscopeAspectData> aspectDataSet;
   
   // 什麼交角要用什麼顏色
-  private Map<Aspect , Color> aspectColorMap = Collections.synchronizedMap(new HashMap<Aspect , Color>());
+  private Map<Aspect , Color> aspectColorMap = Collections.synchronizedMap(new HashMap<>());
   
   /** 最內圈 , 繪製星體交角的線條 */
   public RingAspectLines(Horoscope h, double center , double radius , double innerFrom, double outerTo , Collection<HoroscopeAspectData> aspectDataSet)
@@ -44,7 +44,7 @@ public class RingAspectLines extends AbstractRing
     //取得西落點是黃道幾度
     double degDesc = h.getCuspDegree(7);
     
-    Set<PointConnection> result = Collections.synchronizedSet(new HashSet<PointConnection>());
+    Set<PointConnection> result = Collections.synchronizedSet(new HashSet<>());
     
     for(HoroscopeAspectData aspectData : aspectDataSet)
     {

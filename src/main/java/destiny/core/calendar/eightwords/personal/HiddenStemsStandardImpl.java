@@ -23,32 +23,32 @@ import destiny.core.chinese.HeavenlyStems;
  * */
 public class HiddenStemsStandardImpl implements HiddenStemsIF , Serializable
 {
-  private final static Map<EarthlyBranches , List<HeavenlyStems>> map = Collections.synchronizedMap(new HashMap<EarthlyBranches , List<HeavenlyStems>>());
+  private final static Map<EarthlyBranches , List<HeavenlyStems>> map = Collections.synchronizedMap(new HashMap<>());
   static
   {
-    map.put(EarthlyBranches.子, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.癸})));
+    map.put(EarthlyBranches.子, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.癸})));
     
-    map.put(EarthlyBranches.丑, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.己 , HeavenlyStems.癸 , HeavenlyStems.辛})));
+    map.put(EarthlyBranches.丑, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.己 , HeavenlyStems.癸 , HeavenlyStems.辛})));
     
-    map.put(EarthlyBranches.寅, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.甲 , HeavenlyStems.丙 , HeavenlyStems.戊})));
+    map.put(EarthlyBranches.寅, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.甲 , HeavenlyStems.丙 , HeavenlyStems.戊})));
     
-    map.put(EarthlyBranches.卯, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.乙})));
+    map.put(EarthlyBranches.卯, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.乙})));
     
-    map.put(EarthlyBranches.辰, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.戊 , HeavenlyStems.乙 , HeavenlyStems.癸})));
+    map.put(EarthlyBranches.辰, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.戊 , HeavenlyStems.乙 , HeavenlyStems.癸})));
     
-    map.put(EarthlyBranches.巳, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.丙 , HeavenlyStems.戊 , HeavenlyStems.庚})));
+    map.put(EarthlyBranches.巳, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.丙 , HeavenlyStems.戊 , HeavenlyStems.庚})));
     
-    map.put(EarthlyBranches.午, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.丁 , HeavenlyStems.己})));
+    map.put(EarthlyBranches.午, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.丁 , HeavenlyStems.己})));
     
-    map.put(EarthlyBranches.未, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.己 , HeavenlyStems.丁 , HeavenlyStems.乙})));
+    map.put(EarthlyBranches.未, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.己 , HeavenlyStems.丁 , HeavenlyStems.乙})));
     
-    map.put(EarthlyBranches.申, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.庚 , HeavenlyStems.壬 , HeavenlyStems.戊})));
+    map.put(EarthlyBranches.申, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.庚 , HeavenlyStems.壬 , HeavenlyStems.戊})));
     
-    map.put(EarthlyBranches.酉, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.辛})));
+    map.put(EarthlyBranches.酉, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.辛})));
     
-    map.put(EarthlyBranches.戌, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.戊 , HeavenlyStems.辛 , HeavenlyStems.丁})));
+    map.put(EarthlyBranches.戌, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.戊 , HeavenlyStems.辛 , HeavenlyStems.丁})));
     
-    map.put(EarthlyBranches.亥, new ArrayList<HeavenlyStems>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.壬 , HeavenlyStems.甲})));
+    map.put(EarthlyBranches.亥, new ArrayList<>( Arrays.asList(new HeavenlyStems[] {HeavenlyStems.壬 , HeavenlyStems.甲})));
   }
   
   public List<HeavenlyStems> getHiddenStems(EarthlyBranches branch)

@@ -25,7 +25,7 @@ public final class House_4_7_11 extends Rule
     if ( planetHouse == 4 || planetHouse == 7 || planetHouse == 11)
     {
       //planet + " 位於第 " + planetHouse + " 宮 (Good Daemon's) House
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , planetHouse});
+      return new Tuple<>("comment" , new Object[] {planet , planetHouse});
     }
     return null;
   }

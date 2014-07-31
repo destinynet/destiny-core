@@ -24,7 +24,7 @@ public final class House_2_5 extends Rule
     int planetHouse = horoscopeContext.getHouse(planet); 
     if ( planetHouse == 2 || planetHouse == 5)
     {
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , planetHouse});
+      return new Tuple<>("comment" , new Object[] {planet , planetHouse});
     }
     return null;
   }

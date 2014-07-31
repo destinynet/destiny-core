@@ -47,7 +47,7 @@ public final class Peregrine extends EssentialRule
           !(dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   )
       {
         //addComment(Locale.TAIWAN , planet + " 處於 Peregrine 狀態.");
-        return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+        return new Tuple<>("comment" , new Object[]{planet});
       }
     }
     return null;

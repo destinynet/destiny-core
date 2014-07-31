@@ -65,7 +65,7 @@ public class BesiegedBean implements Serializable
   @NotNull
   public List<Planet>  getBesiegingPlanets(Planet planet , Time gmt , boolean onlyClassicalPlanets , @NotNull Collection<Aspect> aspects)
   {
-    List<Planet> otherPlanets = new ArrayList<Planet>();
+    List<Planet> otherPlanets = new ArrayList<>();
     for(Planet each : Planet.values)
     {
       if (each != planet)
@@ -105,7 +105,7 @@ public class BesiegedBean implements Serializable
    */
   public boolean isBesieged(Planet planet , Planet p1 , Planet p2 , Time gmt , boolean isClassical , boolean isOnlyHardAspects)
   {
-    List<Planet> otherPlanets = new ArrayList<Planet>();
+    List<Planet> otherPlanets = new ArrayList<>();
     for(Planet each : Planet.values)
     {
       if (each != planet)
@@ -118,14 +118,14 @@ public class BesiegedBean implements Serializable
       otherPlanets.remove(Planet.PLUTO);
     }
     
-    Collection<Aspect> searchingAspects = Collections.synchronizedList(new ArrayList<Aspect>());
+    Collection<Aspect> searchingAspects = Collections.synchronizedList(new ArrayList<>());
     searchingAspects.add(Aspect.CONJUNCTION);// 0
     searchingAspects.add(Aspect.SQUARE);     // 90
     searchingAspects.add(Aspect.OPPOSITION); // 180
     searchingAspects.add(Aspect.SEXTILE);  // 60
     searchingAspects.add(Aspect.TRINE);    // 120
     
-    Collection<Aspect> constrainingAspects = Collections.synchronizedList(new ArrayList<Aspect>());
+    Collection<Aspect> constrainingAspects = Collections.synchronizedList(new ArrayList<>());
     constrainingAspects.addAll(searchingAspects);
     if (isOnlyHardAspects) 
     { 
@@ -156,7 +156,7 @@ public class BesiegedBean implements Serializable
   @NotNull
   public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , boolean isClassical)
   {
-    List<Planet> otherPlanets = new ArrayList<Planet>();
+    List<Planet> otherPlanets = new ArrayList<>();
     for(Planet each : Planet.values)
     {
       if (each != planet)
@@ -171,7 +171,7 @@ public class BesiegedBean implements Serializable
     
     Collection<Aspect> majorAspects = Aspect.getAngles(Aspect.Importance.HIGH);
     Collection<Aspect> mediumAspects = Aspect.getAngles(Aspect.Importance.MEDIUM);
-    Collection<Aspect> searchingAspects = new ArrayList<Aspect>();
+    Collection<Aspect> searchingAspects = new ArrayList<>();
     if(isClassical)
       searchingAspects.addAll(majorAspects);
     else
@@ -191,7 +191,7 @@ public class BesiegedBean implements Serializable
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
   @NotNull
-  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , @NotNull Collection<Planet> otherPlanets , @NotNull Collection<Aspect> searchingAspects)
+  List<Planet> getBesiegingPlanets(Planet planet, Time gmt, @NotNull Collection<Planet> otherPlanets, @NotNull Collection<Aspect> searchingAspects)
   {
     double[] angles = new double[searchingAspects.size()];
     Iterator<Aspect> it = searchingAspects.iterator();
@@ -215,7 +215,7 @@ public class BesiegedBean implements Serializable
    * TODO : 目前的交角都只考慮「perfect」準確交角（一般行星三分容許度，日月17分），並未考慮容許度（即 applying），未來要改進
    */
   @NotNull
-  public List<Planet> getBesiegingPlanets(Planet planet , Time gmt , @NotNull Collection<Planet> otherPlanets , double[] angles)
+  List<Planet> getBesiegingPlanets(Planet planet, Time gmt, @NotNull Collection<Planet> otherPlanets, double[] angles)
   {
     if (otherPlanets.contains(planet))
       otherPlanets.remove(planet);
@@ -286,7 +286,7 @@ public class BesiegedBean implements Serializable
     }
     //System.out.println(planet + " : 之後 , 與 " + afterPlanet + " 形成交角，於 " + otherPlanetsNearestTimeForward);
     
-    List<Planet> resultList = new ArrayList<Planet>();
+    List<Planet> resultList = new ArrayList<>();
     resultList.add(priorPlanet);
     resultList.add(afterPlanet);
     

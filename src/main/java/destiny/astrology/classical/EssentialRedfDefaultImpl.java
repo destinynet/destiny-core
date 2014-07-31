@@ -60,7 +60,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
    * 前面 starExaltationMap 中，每個星體的度數 +180度即為「落」 
    * */ 
   @NotNull
-  private static Map<Point , Double> starFallMap = new HashMap<Point , Double>();
+  private static Map<Point , Double> starFallMap = new HashMap<>();
   static
   {
     for(Point eachPoint : starExaltationMap.keySet())
@@ -75,7 +75,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   }
   
   /** key 為 Sign-Dignity , 中間以 '-' 串接 */
-  private static Map<String , Point> essentialDignitiesMap = Collections.synchronizedMap(new HashMap<String , Point>());
+  private static Map<String , Point> essentialDignitiesMap = Collections.synchronizedMap(new HashMap<>());
   static 
   {
     /** 設定 Rulershop (旺 , +5) */

@@ -23,7 +23,7 @@ public final class House_12 extends Rule
     if (horoscopeContext.getHouse(planet)==12)
     {
       //addComment(Locale.TAIWAN , planet + " 位於 12 宮");
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet});
+      return new Tuple<>("comment" , new Object[]{planet});
     }
     return null;
   }

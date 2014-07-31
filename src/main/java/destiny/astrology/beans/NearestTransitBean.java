@@ -143,7 +143,7 @@ public class NearestTransitBean implements Serializable
      * 相交 240 度也是 120 度
      * 所以要重算一次角度
      */
-    Set<Double> realAngles = Collections.synchronizedSet(new HashSet<Double>());
+    Set<Double> realAngles = Collections.synchronizedSet(new HashSet<>());
     for (double angle : angles)
     {
       realAngles.add(angle);

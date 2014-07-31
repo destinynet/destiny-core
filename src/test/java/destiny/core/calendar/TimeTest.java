@@ -5,21 +5,24 @@
  */
 package destiny.core.calendar;
 
+import org.junit.Test;
+
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class TimeTest extends TestCase
+public class TimeTest
 {
   private Time time;
-  Time origin;
-  Time actual ;
-  Time expected ;
+  private Time origin;
+  private Time actual ;
+  private Time expected ;
 
   /**  
    * 已知：
    * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
    */
+  @Test
   public void testGetGMTfromLMT()
   {
     Location loc = new Location(121.30 , 25.03 , TimeZone.getTimeZone("Asia/Taipei"));
@@ -70,6 +73,7 @@ public class TimeTest extends TestCase
    * 已知：
    * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
    */
+  @Test
   public void testGetLMTfromGMT()
   {
     Location loc = new Location(121.30 , 25.03 , TimeZone.getTimeZone("Asia/Taipei"));
@@ -107,6 +111,7 @@ public class TimeTest extends TestCase
   }
   
   /** 測試從 "+20000102000000.00" 建立時間 */
+  @Test
   public void testTimeFromString()
   {
     actual = new Time("+20000203040506.789");
@@ -117,7 +122,8 @@ public class TimeTest extends TestCase
     expected = new Time(false , 2001 , 2 , 3 , 4 , 5 , 6.789);
     assertEquals(expected , actual);
   }
-  
+
+  @Test
   public void testTimeDebugString()
   {
     expected = new Time(true , 2001 , 2 , 3 , 4 , 5 , 6.789);
@@ -133,6 +139,7 @@ public class TimeTest extends TestCase
    * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar
    * 測試 10/5~10/14 之間的錯誤日期 
    */
+  @Test
   public void testInvalidTime()
   {
     try
@@ -159,6 +166,7 @@ public class TimeTest extends TestCase
   /**
    * 測試由 Time 的 diff Seconds 再建立一個 Time
    */
+  @Test
   public void testTimeDiffSeconds1()
   {
     /** 西元兩千年 */
@@ -184,6 +192,7 @@ public class TimeTest extends TestCase
   }
   
   /** 測試 1582/10/4 --- 1582/10/15 的日期轉換 , 以「日」為單位來 diff , 先避掉 Round-off error */
+  @Test
   public void testTimeDiffSeconds2()
   {
     origin = new Time(1582,10,15,0,0,0);
@@ -198,6 +207,7 @@ public class TimeTest extends TestCase
   }
   
   /** 測試 1582/10/15 子初的日期轉換 , 以「秒」為單位來 diff , 要能解決 Round-off error */
+  @Test
   public void testTimeDiffSeconds3()
   {
     origin = new Time(1582,10,15,0,0,0);
@@ -212,6 +222,7 @@ public class TimeTest extends TestCase
   }
   
   /** 測試 1582/10/4 子夜 的日期轉換 , 以「秒」為單位來 diff , 要能解決 Round-off error */
+  @Test
   public void testTimeDiffSeconds4()
   {
     origin = new Time(1582,10,4,23,59,59);
@@ -228,6 +239,7 @@ public class TimeTest extends TestCase
   /**
    * 測試由 Julian Day 建立 Time 
    */
+  @Test
   public void testTimeFromJulianDay()
   {
     //曆法交界日期
@@ -273,6 +285,7 @@ public class TimeTest extends TestCase
   /**
    * 測試 Time.normalize() 進位（退位）是否正確
    **/
+  @Test
   public void testNormalize()
   {
     Time t1 , t2;
@@ -453,6 +466,7 @@ public class TimeTest extends TestCase
   /**
    * 測試 Julian Day 是否正確
    */
+  @Test
   public void testGetGmtJulDay()
   {
     double actual;

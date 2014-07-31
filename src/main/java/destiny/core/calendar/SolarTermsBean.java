@@ -102,7 +102,7 @@ public class SolarTermsBean implements SolarTermsIF , Serializable
 
     int nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nowST.getZodiacDegree()+15);
     
-    List<SolarTermsTime> resultList = new ArrayList<SolarTermsTime>();
+    List<SolarTermsTime> resultList = new ArrayList<>();
     
     while( fromGmtTime.isBefore(toGmtTime))
     {

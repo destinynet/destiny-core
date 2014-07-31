@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.net.URL;
 
 
-public class ColorByte implements Serializable
+class ColorByte implements Serializable
 {
   private byte b;
   @Nullable

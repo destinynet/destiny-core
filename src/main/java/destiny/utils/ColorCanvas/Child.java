@@ -8,7 +8,7 @@ package destiny.utils.ColorCanvas;
 import java.io.Serializable;
 
 
-public class Child implements Serializable
+class Child implements Serializable
 {
   private ColorCanvas colorCanvas;
   private int x;

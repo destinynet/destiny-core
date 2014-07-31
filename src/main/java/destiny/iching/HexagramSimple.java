@@ -14,7 +14,7 @@ import java.util.Map;
 public class HexagramSimple implements Serializable
 {
   @NotNull
-  private static Map<Boolean[] , Integer> map = new HashMap<Boolean[] , Integer>();
+  private static Map<Boolean[] , Integer> map = new HashMap<>();
   static
   {
     map.put(new Boolean[] {true,true,true,true,true,true,},1);

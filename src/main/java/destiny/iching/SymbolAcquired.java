@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class SymbolAcquired implements Comparator<Symbol>
 {
-  protected final static Symbol[] 後天八卦 = new Symbol[] 
+  private final static Symbol[] 後天八卦 = new Symbol[]
     { Symbol.坎 , Symbol.坤 , Symbol.震 , Symbol.巽 , 
       Symbol.乾 , Symbol.兌 , Symbol.艮 , Symbol.離 };
   

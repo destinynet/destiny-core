@@ -52,26 +52,22 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
 
     if (point instanceof Planet)
     {
-      Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<Point , Aspect>());
+      Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<>());
       double planetDeg = horoscope.getPositionWithAzimuth(point).getLongitude();
-      
-      for(Point eachPoint : points)
-      {
-        if (eachPoint instanceof Planet && eachPoint != point) 
-        {
-          //行星才比對
-          double eachPlanetDeg = horoscope.getPositionWithAzimuth(eachPoint).getLongitude();
 
-          for(Aspect eachAspect : Aspect.getAngles(Aspect.Importance.HIGH))
-          {
-            //只比對 0 , 60 , 90 , 120 , 180 五個度數
-            if (classical.isEffective((Planet)point , planetDeg , (Planet)eachPoint , eachPlanetDeg , eachAspect))
-            {
-              result.put(eachPoint , eachAspect);
-            }
+      //行星才比對
+      //只比對 0 , 60 , 90 , 120 , 180 五個度數
+      points.stream().filter(eachPoint -> eachPoint instanceof Planet && eachPoint != point).forEach(eachPoint -> {
+        //行星才比對
+        double eachPlanetDeg = horoscope.getPositionWithAzimuth(eachPoint).getLongitude();
+
+        for (Aspect eachAspect : Aspect.getAngles(Aspect.Importance.HIGH)) {
+          //只比對 0 , 60 , 90 , 120 , 180 五個度數
+          if (classical.isEffective((Planet) point, planetDeg, (Planet) eachPoint, eachPlanetDeg, eachAspect)) {
+            result.put(eachPoint, eachAspect);
           }
         }
-      }
+      });
       return result;      
     }
     //非行星不計算

@@ -36,7 +36,7 @@ public final class Triplicity extends Rule
          (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   ) 
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 "+dayNight.toString()+" 之 Triplicity");
-      return new Tuple<String , Object[]>("comment" , new Object[]{planet , sign , dayNight});
+      return new Tuple<>("comment" , new Object[]{planet , sign , dayNight});
     }
     return null;
   }

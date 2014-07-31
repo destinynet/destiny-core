@@ -32,7 +32,7 @@ public final class Collection_of_Light extends Rule
     {
       List<Planet> twoPlanets = t.getSecond();
       // planet + " 從 " + twoPlanets.get(0) + " 以及 " + twoPlanets.get(1) + " 收集光線" + " , " + twoPlanets.get(0) +" 與 " + twoPlanets.get(1) + " 交角 " +  horoscopeContext.getHoroscope().getAngle(twoPlanets.get(0) , twoPlanets.get(1)) + " 度."
-      return new Tuple<String , Object[]>("comment" ,
+      return new Tuple<>("comment" ,
           new Object[] {planet , twoPlanets.get(0) , twoPlanets.get(1) ,
           horoscopeContext.getHoroscope().getAngle(twoPlanets.get(0) , twoPlanets.get(1))});
     }

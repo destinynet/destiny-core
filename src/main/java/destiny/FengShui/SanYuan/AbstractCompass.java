@@ -7,7 +7,7 @@ package destiny.FengShui.SanYuan;
 
 import java.io.Serializable;
 
-public abstract class AbstractCompass implements Serializable
+abstract class AbstractCompass implements Serializable
 {
   /**
    * 取得某個此輪初始元素的起始度數

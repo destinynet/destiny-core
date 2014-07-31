@@ -4,14 +4,16 @@
  */ 
 package destiny.astrology;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import org.junit.Test;
 
 import java.util.Locale;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+
 public class LunarPointsTest
 {
-  //@Test
+  @Test
   public void testLunarPoints()
   {
     for(LunarPoint each : LunarPoint.values)

@@ -65,7 +65,7 @@ public class RelativeTransitBean implements Serializable
      * 相交 240 度也是 120 度
      * 所以要重算一次角度
      */
-    Set<Double> realAngles = new HashSet<Double>();
+    Set<Double> realAngles = new HashSet<>();
     for (double angle : angles)
     {
       realAngles.add(angle);
@@ -119,7 +119,7 @@ public class RelativeTransitBean implements Serializable
   @NotNull
   public List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , @NotNull Time fromGmtTime , @NotNull Time toGmtTime , double angle)
   {
-    List<Time> resultList = new ArrayList<Time>();
+    List<Time> resultList = new ArrayList<>();
     while (fromGmtTime.isBefore(toGmtTime))
     {
       fromGmtTime = relativeTransitImpl.getRelativeTransit( transitStar , relativeStar , angle , fromGmtTime , true );

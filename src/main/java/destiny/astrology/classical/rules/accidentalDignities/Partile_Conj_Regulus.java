@@ -30,7 +30,7 @@ public final class Partile_Conj_Regulus extends Rule
     if (AspectEffectiveModern.isEffective(planetDegree , regulusDeg , Aspect.CONJUNCTION , 1))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + FixedStar.REGULUS + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<String , Object[]>("comment" , new Object[] {planet , FixedStar.REGULUS , Aspect.CONJUNCTION});
+      return new Tuple<>("comment" , new Object[] {planet , FixedStar.REGULUS , Aspect.CONJUNCTION});
     }
     return null;
   }

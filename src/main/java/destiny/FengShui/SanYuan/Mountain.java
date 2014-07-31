@@ -52,7 +52,7 @@ public class Mountain implements Serializable
     };
   } 
   
-  protected Mountain(Object o)
+  private Mountain(Object o)
   {
     this.value = o;
   }
@@ -68,7 +68,7 @@ public class Mountain implements Serializable
     return ountainArray;
   }
   
-  public static int getIndex(@NotNull Mountain m)
+  private static int getIndex(@NotNull Mountain m)
   {
     int index = -1;
     for (int i=0 ; i < ountainArray.length ; i++)
