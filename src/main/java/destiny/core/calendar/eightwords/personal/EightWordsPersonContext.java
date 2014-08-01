@@ -17,6 +17,7 @@ import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -52,6 +53,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
   private Gender gender;
   
   /** 此人的八字 */
+  @Nullable
   private EightWords eightWords;
   /** 現在（LMT）的節/氣 */
   private SolarTerms currentSolarTerms;
@@ -72,6 +74,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
    * 但是一個 thread 很有可能 new 出多個 EightWordsPersonContext , 而此 threadLocal 物件並沒有紀錄 EightWordsPersonContext 的特徵 
    * 因此將此 threadLocal 物件另外包一層 Map , key 為 EightWordsPersonContext
    */
+  @NotNull
   private static ThreadLocal<Map<EightWordsPersonContext,Map<Integer,Time>>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<EightWordsPersonContext,Map<Integer,Time>>>()
   {
     @Override
@@ -86,8 +89,8 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
 
   /** constructor */
   public EightWordsPersonContext(YearMonthIF yearMonth , DayIF day, HourIF hour, MidnightIF midnight , boolean changeDayAfterZi ,
-      SolarTermsIF solarTermsImpl , StarTransitIF starTransitImpl , 
-      Time lmt , Location location , Gender gender , double fortuneMonthSpan , FortuneDirectionIF fortuneDirectionImpl)
+      @NotNull SolarTermsIF solarTermsImpl , StarTransitIF starTransitImpl ,
+      @NotNull Time lmt , @NotNull Location location , Gender gender , double fortuneMonthSpan , FortuneDirectionIF fortuneDirectionImpl)
   {
     super(yearMonth, day, hour, midnight , changeDayAfterZi);
     this.solarTermsImpl = solarTermsImpl;
@@ -120,6 +123,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
   }
   
   /** 取得出生時刻的八字 */
+  @Nullable
   public EightWords getEightWords()
   {
     return this.eightWords;
@@ -303,7 +307,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
    * @param reverse 是否逆推
    * @return 下一個「節」（如果 reverse == true，則傳回上一個「節」）
    */
-  private SolarTerms getNextMajorSolarTerms(SolarTerms currentSolarTerms , boolean reverse)
+  private SolarTerms getNextMajorSolarTerms(@NotNull SolarTerms currentSolarTerms , boolean reverse)
   {
     int currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms);
     if (currentSolarTermsIndex % 2 == 0)  //立春 , 驚蟄 , 清明 ...
@@ -328,7 +332,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
    * @param targetGmt 目標時刻 (in GMT)
    * @return 月大運干支
    */
-  public StemBranch getStemBranchOfFortunrMonth(Time targetGmt)
+  public StemBranch getStemBranchOfFortunrMonth(@NotNull Time targetGmt)
   {
     return this.getStemBranchOfFortune(targetGmt , this.fortuneMonthSpan);    
   }
@@ -338,7 +342,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
    * @param targetGmt 目標時刻 (in GMT)
    * @return 日大運干支
    */
-  public StemBranch getStemBranchOfFortuneDay(Time targetGmt)
+  public StemBranch getStemBranchOfFortuneDay(@NotNull Time targetGmt)
   {
     return this.getStemBranchOfFortune(targetGmt , this.fortuneDaySpan);
   }
@@ -348,7 +352,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
    * @param targetGmt 目標時刻 (in GMT)
    * @return 時大運干支
    */
-  public StemBranch getStemBranchOfFortuneHour(Time targetGmt)
+  public StemBranch getStemBranchOfFortuneHour(@NotNull Time targetGmt)
   {
     return this.getStemBranchOfFortune(targetGmt , this.fortuneHourSpan);
   }
@@ -359,7 +363,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
    * @param span 放大倍數
    * @return 干支
    */
-  private StemBranch getStemBranchOfFortune(Time targetGmt , double span)
+  private StemBranch getStemBranchOfFortune(@NotNull Time targetGmt , double span)
   {
     Time gmt = Time.getGMTfromLMT(lmt, location);
     StemBranch resultStemBranch = this.getEightWords().getMonth();
@@ -390,6 +394,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
   }
 
 
+  @NotNull
   @Override
   public String toString()
   {

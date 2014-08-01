@@ -10,22 +10,23 @@ import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public final class Retrograde extends Rule
 {
   public Retrograde()
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (horoscopeContext.getPosition(planet).getSpeedLongitude() < 0)
     {
       //addComment(Locale.TAIWAN , planet + " 逆行");
-      return new Tuple<>("comment" , new Object[]{planet});
+      return Optional.of(Tuple.of("comment" , new Object[]{planet}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

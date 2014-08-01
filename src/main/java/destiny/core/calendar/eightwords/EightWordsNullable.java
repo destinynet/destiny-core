@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -20,10 +21,14 @@ public class EightWordsNullable implements Serializable
 {
   @Nullable
   protected StemBranch year  = null;
+  @Nullable
   protected StemBranch month = null;
+  @Nullable
   protected StemBranch day   = null;
+  @Nullable
   protected StemBranch hour  = null;
   
+  @NotNull
   private String NULL_CHAR ="　"; //空白字元，使用全形的空白, 在 toString() 時使用
   
   //null constructor 建立一個四支全為 null 的八字
@@ -43,7 +48,7 @@ public class EightWordsNullable implements Serializable
   /**
    * 以 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 可以為 null
    */
-  public EightWordsNullable( String year , String month , String day , String hour)
+  public EightWordsNullable( @Nullable String year , @Nullable String month , @Nullable String day , @Nullable String hour)
   {
     if (year != null)
     {
@@ -74,17 +79,26 @@ public class EightWordsNullable implements Serializable
     }
   }
   
+  @Nullable
   public HeavenlyStems getYearStem()  { return ( year  == null ) ? null : year.getStem();  }
+  @Nullable
   public HeavenlyStems getMonthStem() { return ( month == null ) ? null : month.getStem(); }
+  @Nullable
   public HeavenlyStems getDayStem()   { return ( day   == null ) ? null : day.getStem();   }
+  @Nullable
   public HeavenlyStems getHourStem()  { return ( hour  == null ) ? null : hour.getStem();  }
   
+  @Nullable
   public EarthlyBranches getYearBranch()  { return ( year  == null ) ? null : year.getBranch();  }
+  @Nullable
   public EarthlyBranches getMonthBranch() { return ( month == null ) ? null : month.getBranch(); }
+  @Nullable
   public EarthlyBranches getDayBranch()   { return ( day   == null ) ? null : day.getBranch();   }
+  @Nullable
   public EarthlyBranches getHourBranch()  { return ( hour  == null ) ? null : hour.getBranch();  }
 
   /** 取得四柱 */
+  @NotNull
   public List<StemBranch> getStemBranches() {
     return new ArrayList() {{
       add(year);
@@ -94,7 +108,7 @@ public class EightWordsNullable implements Serializable
     }};
   }
 
-  public boolean equals(Object o)
+  public boolean equals(@Nullable Object o)
   {
     if ((o != null) && (o.getClass().equals(this.getClass())))
     {
@@ -120,6 +134,7 @@ public class EightWordsNullable implements Serializable
   }
   
   
+  @Nullable
   public String toString()
   {
     return 
@@ -128,7 +143,7 @@ public class EightWordsNullable implements Serializable
       ((hour==null) ? NULL_CHAR : skipNull(hour.getBranch())) + ((day==null) ? NULL_CHAR : skipNull(day.getBranch())) + ((month==null) ? NULL_CHAR : skipNull(month.getBranch())) + ((year==null) ? NULL_CHAR : skipNull(year.getBranch())) ;
   }
   
-  private String skipNull(Object o)
+  private String skipNull(@Nullable Object o)
   {
     if (o == null)
       return NULL_CHAR;
@@ -137,12 +152,16 @@ public class EightWordsNullable implements Serializable
   }
   
   /** 取得 年干支 */
+  @Nullable
   public StemBranch getYear()  { return year; }
   /** 取得 月干支 */
+  @Nullable
   public StemBranch getMonth() { return month; }
   /** 取得 日干支 */
+  @Nullable
   public StemBranch getDay()   { return day; }
   /** 取得 時干支 */
+  @Nullable
   public StemBranch getHour()  { return hour; }
   
   public void setYear (StemBranch value) { year  = value; }
@@ -151,13 +170,13 @@ public class EightWordsNullable implements Serializable
   public void setHour (StemBranch value) { hour  = value; }
   
   /** 以字串的 ("甲子") 來設定年干支 */
-  public void setYear (String value) { year  = (value==null ) ? null : StemBranch.get(value); }
+  public void setYear (@Nullable String value) { year  = (value==null ) ? null : StemBranch.get(value); }
   /** 以字串的 ("甲子") 來設定月干支 */
-  public void setMonth(String value) { month = (value==null ) ? null : StemBranch.get(value); }
+  public void setMonth(@Nullable String value) { month = (value==null ) ? null : StemBranch.get(value); }
   /** 以字串的 ("甲子") 來設定日干支 */
-  public void setDay  (String value) { day   = (value==null ) ? null : StemBranch.get(value); }
+  public void setDay  (@Nullable String value) { day   = (value==null ) ? null : StemBranch.get(value); }
   /** 以字串的 ("甲子") 來設定時干支 */
-  public void setHour (String value) { hour  = (value==null ) ? null : StemBranch.get(value); }
+  public void setHour (@Nullable String value) { hour  = (value==null ) ? null : StemBranch.get(value); }
   
   
 }

@@ -4,16 +4,13 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** A planet in its own sign , or mutual reception with another planet by sign */
 public final class Ruler extends Rule
@@ -25,9 +22,8 @@ public final class Ruler extends Rule
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
   
-  @Nullable
   @Override
-  public Tuple<String , Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  public Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -36,7 +32,7 @@ public final class Ruler extends Rule
     if (planet == essentialImpl.getPoint(sign, Dignity.RULER) )
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Ruler");
-      return new Tuple<>("commentBasic" , new Object[]{planet , sign});
+      return Optional.of(Tuple.of("commentBasic" , new Object[]{planet , sign}));
     }
     /**
      * Ruler 互容 , mutual reception <br/> 
@@ -58,10 +54,10 @@ public final class Ruler extends Rule
         if (!utils.isBothInBadSituation(planet , sign , signRuler , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成互容");
-          return new Tuple<>("commentReception" , new Object[]{planet , sign , signRuler , sign2});
+          return Optional.of(Tuple.of("commentReception" , new Object[]{planet , sign , signRuler , sign2}));
         }
       }
     }
-    return null;
+    return Optional.empty();
   }
 }

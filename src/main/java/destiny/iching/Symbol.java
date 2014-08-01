@@ -76,6 +76,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   /**
    * 「由下而上」 三個陰陽 , 查詢卦象為何
    */
+  @NotNull
   private static Symbol getSymbol(YinYangIF[] line)
   {
     for (Symbol aSymbolArray : symbolArray) {
@@ -91,6 +92,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   /**
    * 「由下而上」 三個陰陽 , 查詢卦象為何
    */
+  @NotNull
   public static Symbol getSymbol(boolean[] lines)
   {
     for (Symbol aSymbolArray : symbolArray) {
@@ -106,6 +108,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   /**
    * 由 三個陰陽 , 查詢卦象為何 , 比較標準的命名方式
    */
+  @NotNull
   public static Symbol valueOf(YinYangIF[] yinYangs)
   {
     return getSymbol(yinYangs);

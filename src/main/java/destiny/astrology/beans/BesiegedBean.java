@@ -9,6 +9,7 @@ import destiny.astrology.Planet;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
@@ -26,9 +27,11 @@ public class BesiegedBean implements Serializable
   private final NearestTransitBean nearestTransitBean;
   
   /** 之前形成的交角 */
+  @Nullable
   private Aspect aspectPrior;
   
   /** 之後形成的交角 */
+  @Nullable
   private Aspect aspectAfter;
 
   public BesiegedBean(NearestTransitBean nearestTransitBean) {
@@ -215,7 +218,7 @@ public class BesiegedBean implements Serializable
    * TODO : 目前的交角都只考慮「perfect」準確交角（一般行星三分容許度，日月17分），並未考慮容許度（即 applying），未來要改進
    */
   @NotNull
-  List<Planet> getBesiegingPlanets(Planet planet, Time gmt, @NotNull Collection<Planet> otherPlanets, double[] angles)
+  List<Planet> getBesiegingPlanets(Planet planet, Time gmt, @NotNull Collection<Planet> otherPlanets, @NotNull double[] angles)
   {
     if (otherPlanets.contains(planet))
       otherPlanets.remove(planet);

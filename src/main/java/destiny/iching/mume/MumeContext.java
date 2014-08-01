@@ -33,6 +33,7 @@ public class MumeContext implements Serializable
   /**
    * @return 變卦
    */
+  @NotNull
   public HexagramIF getTargetHexagram()
   {
     boolean[] yinyangs = new boolean[6];

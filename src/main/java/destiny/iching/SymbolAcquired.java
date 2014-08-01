@@ -65,7 +65,7 @@ public class SymbolAcquired implements Comparator<Symbol>
   /**
    * 以順時針方向取得一卦
    */
-  @Nullable
+  @NotNull
   public static Symbol getClockwiseSymbol(@NotNull Symbol s)
   {
     switch (s)
@@ -78,14 +78,14 @@ public class SymbolAcquired implements Comparator<Symbol>
       case 兌: return Symbol.乾;
       case 艮: return Symbol.震;
       case 離: return Symbol.坤;
-      default : return null;
     }
+    throw new RuntimeException("impossible");
   }
   
   /**
    * 取得對沖之卦
    */
-  @Nullable
+  @NotNull
   public static Symbol getOppositeSymbol(@NotNull Symbol s)
   {
     switch (s)
@@ -98,8 +98,8 @@ public class SymbolAcquired implements Comparator<Symbol>
       case 兌: return Symbol.震;
       case 艮: return Symbol.坤;
       case 離: return Symbol.坎;
-      default : return null;
     }
+    throw new RuntimeException("impossible");
   }
   
   public int compare(Symbol s1 , Symbol s2)

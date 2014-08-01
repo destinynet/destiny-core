@@ -18,10 +18,13 @@ import java.net.URL;
 class ColorByte implements Serializable
 {
   private byte b;
+
   @Nullable
   private String foreColor; //前景色
+
   @Nullable
   private String backColor; //背景色
+
   private Font font;
   private URL url;
   private String title;

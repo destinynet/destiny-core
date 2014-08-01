@@ -9,9 +9,9 @@ import destiny.astrology.Planet;
 import destiny.astrology.classical.CollectionOfLightIF;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class Collection_of_Light extends Rule
 {
@@ -21,9 +21,8 @@ public final class Collection_of_Light extends Rule
     this.collectionOfLightImpl = collectionOfLightImpl;
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //目前只將「收集好光 (DIGNITIES) 」視為 Collection of Light ，而「蒐集穢光 (DEBILITIES) 」不納入考慮 
     //CollectionOfLightBean bean = new CollectionOfLightBean(planet , horoscopeContext , CollectionOfLightBean.CollectType.DIGNITIES , relativeTransitImpl, aspectEffectiveClassicalImpl , aspectApplySeparateImpl , dayNightDifferentiatorImpl , besiegedBean);
@@ -32,11 +31,11 @@ public final class Collection_of_Light extends Rule
     {
       List<Planet> twoPlanets = t.getSecond();
       // planet + " 從 " + twoPlanets.get(0) + " 以及 " + twoPlanets.get(1) + " 收集光線" + " , " + twoPlanets.get(0) +" 與 " + twoPlanets.get(1) + " 交角 " +  horoscopeContext.getHoroscope().getAngle(twoPlanets.get(0) , twoPlanets.get(1)) + " 度."
-      return new Tuple<>("comment" ,
+      return Optional.of(Tuple.of("comment" ,
           new Object[] {planet , twoPlanets.get(0) , twoPlanets.get(1) ,
-          horoscopeContext.getHoroscope().getAngle(twoPlanets.get(0) , twoPlanets.get(1))});
+          horoscopeContext.getHoroscope().getAngle(twoPlanets.get(0) , twoPlanets.get(1))}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

@@ -7,6 +7,7 @@ package destiny.iching.graph;
 import destiny.iching.HexagramIF;
 import destiny.iching.graph.ProcessorSideSymbol.Side;
 import destiny.utils.image.Processor;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -17,8 +18,8 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 public class PairGoldenChart extends AbstractPairHexagramChart
 {
   public PairGoldenChart(
-      HexagramIF src, String srcName , 
-      HexagramIF dst, String dstName ,
+      @NotNull HexagramIF src, String srcName ,
+      @NotNull HexagramIF dst, String dstName ,
       WIDTH_HEIGHT which, int value , Color bg , Color fore)
   {
     super(src, srcName, dst, dstName, Type.GOLDEN, which, value , bg , fore);

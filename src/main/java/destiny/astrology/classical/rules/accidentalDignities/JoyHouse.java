@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** 
  * 喜樂宮 Joy House. 
@@ -26,9 +27,8 @@ public final class JoyHouse extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     int planetHouse = horoscopeContext.getHouse(planet);
     
@@ -42,9 +42,9 @@ public final class JoyHouse extends Rule
        )
     {
       //planet + " 落入第 " + planetHouse + " 宮 , 為其喜樂宮 (Joy House)"
-      return new Tuple<>("comment" , new Object[] {planet , planetHouse});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , planetHouse}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

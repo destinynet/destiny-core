@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public final class House_6_8 extends Rule
 {
@@ -17,20 +18,19 @@ public final class House_6_8 extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (horoscopeContext.getHouse(planet) == 6)
     {
       //addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
-      return new Tuple<>("comment" , new Object[]{planet , 6});
+      return Optional.of(Tuple.of("comment" , new Object[]{planet , 6}));
     }
     else if (horoscopeContext.getHouse(planet) ==8)
     {
-      return new Tuple<>("comment" , new Object[]{planet , 8});
+      return Optional.of(Tuple.of("comment" , new Object[]{planet , 8}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

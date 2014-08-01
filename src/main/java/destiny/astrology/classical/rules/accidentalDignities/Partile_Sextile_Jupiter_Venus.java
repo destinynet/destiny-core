@@ -10,7 +10,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Partile sextile Jupiter or Venus. */
 public final class Partile_Sextile_Jupiter_Venus extends Rule
@@ -19,9 +20,8 @@ public final class Partile_Sextile_Jupiter_Venus extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected java.util.Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLongitude();
@@ -30,14 +30,14 @@ public final class Partile_Sextile_Jupiter_Venus extends Rule
     if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective( planetDegree , jupiterDeg , Aspect.SEXTILE , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.SEXTILE);
-      return new Tuple<>("comment" , new Object[] {planet , Planet.JUPITER , Aspect.SEXTILE});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , Planet.JUPITER , Aspect.SEXTILE}));
     }
     else if (planet != Planet.VENUS && AspectEffectiveModern.isEffective( planetDegree , venusDeg , Aspect.SEXTILE , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.SEXTILE);
-      return new Tuple<>("comment" , new Object[] {planet , Planet.VENUS , Aspect.SEXTILE});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , Planet.VENUS , Aspect.SEXTILE}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

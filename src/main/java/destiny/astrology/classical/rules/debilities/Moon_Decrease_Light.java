@@ -9,7 +9,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Moon decreasing in light. */
 public final class Moon_Decrease_Light extends Rule
@@ -19,9 +20,8 @@ public final class Moon_Decrease_Light extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.MOON)
     {
@@ -31,10 +31,10 @@ public final class Moon_Decrease_Light extends Rule
       if ( Horoscope.isOriental(planetDegree , sunDegree))
       {
         //addComment(Locale.TAIWAN , planet + " 在太陽東邊（月減光/下弦月）");
-        return new Tuple<>("comment" , new Object[]{planet});
+        return Optional.of(Tuple.of("comment" , new Object[]{planet}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
 }

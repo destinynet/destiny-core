@@ -9,7 +9,8 @@ import destiny.astrology.Planet;
 import destiny.astrology.classical.AverageDailyMotionMap;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public final class Slower extends Rule
 {
@@ -17,17 +18,16 @@ public final class Slower extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (AverageDailyMotionMap.get(planet) != null &&
         horoscopeContext.getPosition(planet).getSpeedLongitude() < AverageDailyMotionMap.get(planet))
     {
       //addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還慢");
-      return new Tuple<>("comment" , new Object[]{planet});
+      return Optional.of(Tuple.of("comment" , new Object[]{planet}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

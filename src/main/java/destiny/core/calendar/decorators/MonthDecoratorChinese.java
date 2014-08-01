@@ -5,15 +5,15 @@
 package destiny.core.calendar.decorators;
 
 import destiny.utils.Decorator;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
 public class MonthDecoratorChinese implements Decorator<Integer> , Serializable
 {
-  @Nullable
+
   @Override
-  public String getOutputString(Integer month)
+  public String getOutputString(@NotNull Integer month)
   {
     switch(month)
     {
@@ -30,7 +30,7 @@ public class MonthDecoratorChinese implements Decorator<Integer> , Serializable
       case 11 : return "十一月";
       case 12 : return "十二月";
     }
-    return null;
+    return "";
   }
 
 }

@@ -77,8 +77,7 @@ public class LocaleUtils implements Serializable
     return localeStringMap.get(null); //第七項
   }
   
-  @Nullable
-  public static Locale getBestMatchingLocale(Locale locale)
+  public static Optional<Locale> getBestMatchingLocale(Locale locale)
   {
     //TODO : 未來該把此 TAIWAN , CHINA , ENGLISH 做更彈性的調整。
     ImmutableSet<Locale> supported = ImmutableSet.of(Locale.TAIWAN , Locale.CHINA , Locale.ENGLISH);
@@ -98,8 +97,7 @@ public class LocaleUtils implements Serializable
    * 7. 內訂(純 basename)
    * </pre>
    */
-  @Nullable
-  public static Locale getBestMatchingLocale(@Nullable Locale locale , @NotNull Iterable<Locale> locales)
+  public static Optional<Locale> getBestMatchingLocale(@Nullable Locale locale , @NotNull Iterable<Locale> locales)
   {
     Locale defaultLocale = Locale.getDefault();
     if (locale == null)
@@ -113,7 +111,7 @@ public class LocaleUtils implements Serializable
       if(locale.getLanguage().equalsIgnoreCase(each.getLanguage()) &&
           locale.getCountry().equalsIgnoreCase(each.getCountry()) &&
           locale.getVariant().equalsIgnoreCase(each.getVariant()))
-        return each;
+        return Optional.of(each);
     }
     
     //符合第二項 : 語言/國家 符合即可
@@ -123,7 +121,7 @@ public class LocaleUtils implements Serializable
       //System.out.println("\t比對" + locale + " 與 " + each);
       if(locale.getLanguage().equalsIgnoreCase(each.getLanguage()) && 
           locale.getCountry().equalsIgnoreCase(each.getCountry()))
-        return each;
+        return Optional.of(each);
     }
     
     //符合第三項 : 只有語言符合
@@ -132,7 +130,7 @@ public class LocaleUtils implements Serializable
     {
       //System.out.println("\t比對" + locale + " 與 " + each);
       if(locale.getLanguage().equalsIgnoreCase(each.getLanguage()))
-        return each;
+        return Optional.of(each);
     }
     
     //符合第四項 : 與系統內定Locale 的 語言/國家/變數 都符合
@@ -143,7 +141,7 @@ public class LocaleUtils implements Serializable
       if(defaultLocale.getLanguage().equalsIgnoreCase(each.getLanguage()) &&
           defaultLocale.getCountry().equalsIgnoreCase(each.getCountry()) &&
           defaultLocale.getVariant().equalsIgnoreCase(each.getVariant()))
-        return each;
+        return Optional.of(each);
     }
     
     //符合第五項 : 與系統內定Locale 的 語言/國家 符合即可
@@ -153,7 +151,7 @@ public class LocaleUtils implements Serializable
       //System.out.println("\t比對系統的 " + defaultLocale + " 與 " + each);
       if(defaultLocale.getLanguage().equalsIgnoreCase(each.getLanguage()) && 
           defaultLocale.getCountry().equalsIgnoreCase(each.getCountry()))
-        return each;
+        return Optional.of(each);
     }
     
     //符合第六項 : 與系統內定Locale 的語言符合即可
@@ -162,10 +160,10 @@ public class LocaleUtils implements Serializable
     {
       //System.out.println("\t比對系統的 " + defaultLocale + " 與 " + each);
       if(defaultLocale.getLanguage().equalsIgnoreCase(each.getLanguage()))
-        return each;
+        return Optional.of(each);
     }
     
     //都找不到
-    return null;
+    return Optional.empty();
   }
 }

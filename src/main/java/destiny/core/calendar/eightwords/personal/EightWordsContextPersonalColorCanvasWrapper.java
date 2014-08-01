@@ -56,6 +56,7 @@ public class EightWordsContextPersonalColorCanvasWrapper extends EightWordsConte
   }
 
   /** 取得八字命盤 */
+  @NotNull
   @Override
   public String toString()
   {

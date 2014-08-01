@@ -4,15 +4,12 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.DayNight;
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Peregrine. */
 public final class Peregrine extends EssentialRule
@@ -25,9 +22,8 @@ public final class Peregrine extends EssentialRule
     this.dayNightImpl = dayNightImpl;
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     //取得此 Planet 在什麼星座
@@ -47,10 +43,10 @@ public final class Peregrine extends EssentialRule
           !(dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   )
       {
         //addComment(Locale.TAIWAN , planet + " 處於 Peregrine 狀態.");
-        return new Tuple<>("comment" , new Object[]{planet});
+        return Optional.of(Tuple.of("comment" , new Object[]{planet}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
 }

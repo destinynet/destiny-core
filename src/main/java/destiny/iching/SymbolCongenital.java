@@ -6,7 +6,6 @@
 package destiny.iching;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -54,7 +53,7 @@ public class SymbolCongenital implements Comparator<Symbol>
   /**
    * 以順時針方向取得一卦
    */
-  @Nullable
+  @NotNull
   public static Symbol getClockwiseSymbol(@NotNull Symbol s)
   {
     switch (s)
@@ -67,11 +66,11 @@ public class SymbolCongenital implements Comparator<Symbol>
       case 坎: return Symbol.艮;
       case 艮: return Symbol.坤;
       case 坤: return Symbol.震;
-      default : return null;
     }
+    throw new RuntimeException("impossible");
   }
   
-  @Nullable
+  @NotNull
   public static Symbol getOppositeSymbol(@NotNull Symbol s)
   {
     switch (s)
@@ -84,8 +83,8 @@ public class SymbolCongenital implements Comparator<Symbol>
       case 坎: return Symbol.離;
       case 艮: return Symbol.兌;
       case 坤: return Symbol.乾;
-      default : return null;
     }
+    throw new RuntimeException("impossible");
   }
   
   public int compare(Symbol s1 , Symbol s2)

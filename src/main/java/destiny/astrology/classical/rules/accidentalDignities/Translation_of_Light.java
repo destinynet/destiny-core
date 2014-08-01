@@ -11,7 +11,6 @@ import destiny.astrology.classical.TranslationOfLightIF;
 import destiny.utils.Tuple;
 import destiny.utils.Tuple4;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -24,9 +23,8 @@ public class Translation_of_Light extends Rule
     this.translationOfLightImpl = translationOfLightImpl;
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     Tuple4<Boolean , Planet , Planet , Optional<AspectApplySeparateIF.AspectType>> t = translationOfLightImpl.getResult(planet, horoscopeContext);
     //TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);
@@ -38,16 +36,16 @@ public class Translation_of_Light extends Rule
       if (t.getFourth().isPresent())
       {
         //sb.append("(" + (bean.getBesigingPlanetsAspectType() == AspectType.APPLYING ? "入" : "出") + "相位)");
-        return new Tuple<>("commentAspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg , t.getFourth().get()});
+        return Optional.of(Tuple.of("commentAspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg , t.getFourth().get()}));
       }
       else
       {
         //sb.append("(未形成交角)");
-        return new Tuple<>("commentUnaspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg });
+        return Optional.of(Tuple.of("commentUnaspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg }));
       }
         
     }
-    return null;
+    return Optional.empty();
   }
 
 }

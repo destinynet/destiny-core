@@ -149,7 +149,7 @@ public class Chart implements Serializable
     throw new RuntimeException("Cannot find ChartBlock " + s);
   }
   
-  private boolean isConverse(@Nullable Symbol 原始卦 , Symbol 飛佈卦 , Mountain m)
+  private boolean isConverse(@Nullable Symbol 原始卦 , Symbol 飛佈卦 , @NotNull Mountain m)
   {
     boolean isConverse = false;
     if (原始卦 == null)

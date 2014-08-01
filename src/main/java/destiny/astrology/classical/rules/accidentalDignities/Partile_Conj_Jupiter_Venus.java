@@ -10,7 +10,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Partile conjunction with Jupiter or Venus. 
  * 和金星或木星合相，交角 1 度內 */
@@ -20,9 +21,8 @@ public final class Partile_Conj_Jupiter_Venus extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLongitude();
@@ -31,14 +31,14 @@ public final class Partile_Conj_Jupiter_Venus extends Rule
     if (planet != Planet.JUPITER && Horoscope.getAngle(planetDegree , jupiterDeg) <= 1) 
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<>("comment" , new Object[] {planet , Planet.JUPITER , Aspect.CONJUNCTION});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , Planet.JUPITER , Aspect.CONJUNCTION}));
     }
     else if (planet != Planet.VENUS && Horoscope.getAngle(planetDegree , venusDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.CONJUNCTION);
-      return new Tuple<>("comment" , new Object[] {planet , Planet.VENUS , Aspect.CONJUNCTION});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , Planet.VENUS , Aspect.CONJUNCTION}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

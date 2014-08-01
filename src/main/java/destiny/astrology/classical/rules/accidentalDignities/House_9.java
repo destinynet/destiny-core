@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** In the 9th house. */
 public final class House_9 extends Rule
@@ -17,16 +18,15 @@ public final class House_9 extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected java.util.Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     int planetHouse = horoscopeContext.getHouse(planet);
     if ( planetHouse == 9)
     {
-      return new Tuple<>("comment" , new Object[] {planet , planetHouse});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , planetHouse}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

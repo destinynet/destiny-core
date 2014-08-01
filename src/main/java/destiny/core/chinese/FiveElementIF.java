@@ -4,7 +4,10 @@
  */ 
 package destiny.core.chinese;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface FiveElementIF
 {
+  @Nullable
   public FiveElement getFiveElement();
 }

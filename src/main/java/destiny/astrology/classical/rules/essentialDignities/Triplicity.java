@@ -4,14 +4,11 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import destiny.astrology.DayNight;
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities). */
 public final class Triplicity extends Rule
@@ -24,9 +21,8 @@ public final class Triplicity extends Rule
     this.dayNightImpl = dayNightImpl;
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -36,8 +32,8 @@ public final class Triplicity extends Rule
          (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   ) 
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 "+dayNight.toString()+" 之 Triplicity");
-      return new Tuple<>("comment" , new Object[]{planet , sign , dayNight});
+      return Optional.of(Tuple.of("comment" , new Object[]{planet , sign , dayNight}));
     }
-    return null;
+    return Optional.empty();
   }
 }

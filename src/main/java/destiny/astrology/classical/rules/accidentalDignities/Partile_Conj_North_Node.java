@@ -4,15 +4,11 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.Aspect;
-import destiny.astrology.Horoscope;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.LunarNode;
-import destiny.astrology.NodeType;
-import destiny.astrology.Planet;
+import destiny.astrology.*;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Partile conjunction with Dragon's Head (Moon's North Node). */
 public final class Partile_Conj_North_Node extends Rule
@@ -34,9 +30,8 @@ public final class Partile_Conj_North_Node extends Rule
     this.nodeType = nodeType;
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double northDeg;
@@ -49,15 +44,15 @@ public final class Partile_Conj_North_Node extends Rule
       if (nodeType == NodeType.TRUE)
       {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.NORTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
-        return new Tuple<>("comment" , new Object[] {planet , LunarNode.NORTH_TRUE , Aspect.CONJUNCTION});
+        return Optional.of(Tuple.of("comment" , new Object[] {planet , LunarNode.NORTH_TRUE , Aspect.CONJUNCTION}));
       }
       else
       {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.NORTH_MEAN + " 形成 " + Aspect.CONJUNCTION);
-        return new Tuple<>("comment" , new Object[] {planet , LunarNode.NORTH_MEAN , Aspect.CONJUNCTION});
+        return Optional.of(Tuple.of("comment" , new Object[] {planet , LunarNode.NORTH_MEAN , Aspect.CONJUNCTION}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
 }

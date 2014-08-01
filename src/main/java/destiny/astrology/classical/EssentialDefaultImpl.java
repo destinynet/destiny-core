@@ -9,6 +9,7 @@ import java.io.Serializable;
 import destiny.astrology.DayNight;
 import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.Nullable;
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities */
 public class EssentialDefaultImpl implements EssentialIF , Serializable 
@@ -22,6 +23,7 @@ public class EssentialDefaultImpl implements EssentialIF , Serializable
   {
   }
   
+  @Nullable
   @Override
   /** Rulership / Exaltation / Detriment / Fall */
   public Point getPoint(ZodiacSign sign, Dignity dignity)

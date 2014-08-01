@@ -4,10 +4,10 @@
  */ 
 package destiny.utils;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public interface Decorator<T>
 {
-  @Nullable
+  @NotNull
   public String getOutputString(T t);
 }

@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** A planet in its own Chaldean decanate or face. */
 public final class Face extends Rule
@@ -17,15 +18,14 @@ public final class Face extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == essentialImpl.getFacePoint(horoscopeContext.getPosition(planet).getLongitude()))
     {
       //addComment(Locale.TAIWAN , planet + " 位於其 Chaldean decanate or face : "+ horoscopeContext.getPosition(planet).getLongitude());
-      return new Tuple<>("comment" , new Object[] {planet , horoscopeContext.getPosition(planet).getLongitude()});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , horoscopeContext.getPosition(planet).getLongitude()}));
     }
-    return null;
+    return Optional.empty();
   }
 }

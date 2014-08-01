@@ -5,6 +5,7 @@
  */
 package destiny.core.chinese;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** 實作 五行 getFiveElement() 以及 陰陽 getYinYang() 以及取得地支順序 getIndex() 的地支 */
@@ -32,6 +33,7 @@ public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF ,
     this.eb = eb;
   }
   
+  @NotNull
   public FiveElement getFiveElement()
   {
     switch (eb)
@@ -61,7 +63,8 @@ public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF ,
    * 是否還要再做一個 static FiveElement getFiveElement(SimpleEarthlyBranches eb) ... ??
    * Java 5 中的 enum 無法被繼承 , 真是麻煩... 
    */
-  public static FiveElement getFiveElement(EarthlyBranches eb)
+  @NotNull
+  public static FiveElement getFiveElement(@NotNull EarthlyBranches eb)
   {
     switch (eb)
     {

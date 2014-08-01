@@ -123,7 +123,7 @@ public class Location implements Serializable
   /** 從 Browser 傳入 locale , 找出該 Locale 內定的 Location */
   public Location(Locale locale)
   {
-    Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet());
+    Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet()).orElse(Locale.getDefault());
     Location matchedLocation = locMap.get(matchedLocale);
     this.eastWest = matchedLocation.eastWest;
     this.longitudeDegree = matchedLocation.longitudeDegree;

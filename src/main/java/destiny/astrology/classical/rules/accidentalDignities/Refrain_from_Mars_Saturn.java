@@ -10,7 +10,8 @@ import destiny.astrology.Point;
 import destiny.astrology.classical.RefranationIF;
 import destiny.utils.Triple;
 import destiny.utils.Tuple;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * 在與火星或土星形成交角之前，臨陣退縮，代表避免厄運
@@ -23,13 +24,12 @@ public final class Refrain_from_Mars_Saturn extends Rule
     this.refranationImpl = refranationImpl;
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     // 太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
-      return null;
+      return Optional.empty();
     
     Point otherPoint;
 
@@ -41,7 +41,7 @@ public final class Refrain_from_Mars_Saturn extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , bean.getApplyingAspect()} );
-        return new Tuple<>("comment" , new Object[] {planet , otherPoint , t.getThird()} );
+        return Optional.of(Tuple.of("comment" , new Object[] {planet , otherPoint , t.getThird()}));
       }
     }
     
@@ -53,10 +53,10 @@ public final class Refrain_from_Mars_Saturn extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[] {planet , otherPoint , bean.getApplyingAspect()} );
-        return new Tuple<>("comment" , new Object[] {planet , otherPoint , t.getThird()} );
+        return Optional.of(Tuple.of("comment" , new Object[] {planet , otherPoint , t.getThird()}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
 }

@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public abstract class AbstractRule implements RuleIF , Serializable , LocaleStringIF
@@ -46,12 +47,12 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   public final boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
   {
     logger.debug("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
-    Tuple<String , Object[]> result = getResult(planet, horoscopeContext);
-    if (result == null)
+    Optional<Tuple<String , Object[]>> result = getResult(planet, horoscopeContext);
+    if (!result.isPresent())
       return false;
     
-    commentKey = result.getFirst();
-    commentParameters = result.getSecond();
+    commentKey = result.get().getFirst();
+    commentParameters = result.get().getSecond();
     return true;
   }
   
@@ -60,8 +61,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
    * String 為 ResourceBundle 取得的 key , 前面要 prepend '[rule_name].'
    * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
    */
-  @Nullable
-  protected abstract Tuple<String , Object[]> getResult(Planet planet , HoroscopeContext horoscopeContext);
+  protected abstract Optional<Tuple<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext);
   
   /** 名稱 */
   @Override

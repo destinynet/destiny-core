@@ -8,6 +8,7 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.utils.Triple;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <pre>
@@ -25,5 +26,6 @@ import destiny.utils.Triple;
  */
 public interface RefranationIF {
 
+  @NotNull
   public Triple<Boolean , Point, Aspect> resultOf(HoroscopeContext context , Planet planet , Point otherPoint);
 }

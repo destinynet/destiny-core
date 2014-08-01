@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** A planet in itw own term. */
 public final class Term extends Rule
@@ -17,14 +18,13 @@ public final class Term extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == essentialImpl.getTermsPoint(horoscopeContext.getPosition(planet).getLongitude()))
     {
-      return new Tuple<>("comment" , new Object[]{planet , horoscopeContext.getPosition(planet).getLongitude()});
+      return Optional.of(Tuple.of("comment" , new Object[]{planet , horoscopeContext.getPosition(planet).getLongitude()}));
     }
-    return null;
+    return Optional.empty();
   }
 }

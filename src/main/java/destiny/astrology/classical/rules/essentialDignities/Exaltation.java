@@ -4,16 +4,13 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** A planet in its exaltation , or mutial reception with another planet by exaltation */
 public final class Exaltation extends Rule
@@ -25,9 +22,8 @@ public final class Exaltation extends Rule
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
   
-  @Nullable
   @Override
-  public Tuple<String , Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  public Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -36,7 +32,7 @@ public final class Exaltation extends Rule
     if (planet == essentialImpl.getPoint(sign, Dignity.EXALTATION))
     {
       //addComment(Locale.TAIWAN , planet + " 位於其 Exaltation 的星座 " + sign);
-      return new Tuple<>("commentBasic" , new Object[]{planet , sign});
+      return Optional.of(Tuple.of("commentBasic" , new Object[]{planet , sign}));
     }
     // Exaltation 互容 , mutual reception
     else 
@@ -56,13 +52,13 @@ public final class Exaltation extends Rule
           if (!utils.isBothInBadSituation(planet , sign , signExaltation , sign2))
           {
             //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成互容");
-            return new Tuple<>("commentReception" , new Object[]{planet , sign , signExaltation , sign2});
+            return Optional.of(Tuple.of("commentReception" , new Object[]{planet , sign , signExaltation , sign2}));
           }
         }        
       }
     }
 
-    return null;
+    return Optional.empty();
   }
 
 }

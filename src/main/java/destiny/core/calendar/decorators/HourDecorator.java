@@ -4,12 +4,12 @@
  */ 
 package destiny.core.calendar.decorators;
 
-import java.util.Locale;
-
 import com.google.common.collect.ImmutableMap;
-
 import destiny.utils.Decorator;
 import destiny.utils.LocaleUtils;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 public class HourDecorator
 {
@@ -19,11 +19,11 @@ public class HourDecorator
     .put(Locale.ENGLISH , new HourDecoratorEnglish())
     .build();
   
+  @NotNull
   public static String getOutputString(int value ,  Locale locale)
   {
-    Locale matched = LocaleUtils.getBestMatchingLocale(locale , implMap.keySet());
-    if (matched == null)
-      matched = (Locale) implMap.keySet().toArray()[0];
-    return implMap.get(matched).getOutputString(value); 
+    return implMap.get(
+      LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
+    ).getOutputString(value);
   }
 }

@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** In the 2nd or 5th house. */
 public final class House_2_5 extends Rule
@@ -17,16 +18,15 @@ public final class House_2_5 extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     int planetHouse = horoscopeContext.getHouse(planet); 
     if ( planetHouse == 2 || planetHouse == 5)
     {
-      return new Tuple<>("comment" , new Object[] {planet , planetHouse});
+      return Optional.of(Tuple.of("comment" , new Object[] {planet , planetHouse}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

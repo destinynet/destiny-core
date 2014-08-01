@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Combust the Sun (between 17' and 8.5 from Sol). */
 public final class Combustion extends Rule
@@ -17,9 +18,8 @@ public final class Combustion extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet != Planet.SUN)
     {
@@ -27,10 +27,10 @@ public final class Combustion extends Rule
           horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) <= 8.5)
       {
         //addComment(Locale.TAIWAN , planet + " 被太陽焦傷 (Combustion)");
-        return new Tuple<>("comment" , new Object[]{planet});
+        return Optional.of(Tuple.of("comment" , new Object[]{planet}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
 }

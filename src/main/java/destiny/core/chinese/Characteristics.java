@@ -20,9 +20,11 @@ public class Characteristics
   
   @NotNull
   private EarthlyBranches[] 空亡 = new EarthlyBranches[2];
+  @NotNull
   private String[] 六獸 = new String[6];
   private EarthlyBranches 驛馬 ;
   private EarthlyBranches 桃花 ;
+  @NotNull
   private EarthlyBranches[] 天乙貴人 = new EarthlyBranches[2];
   private EarthlyBranches 羊刃 ;
   
@@ -43,6 +45,7 @@ public class Characteristics
     
   }
   
+  @NotNull
   public String[] get六獸()
   {
     if ((日干 == HeavenlyStems.甲)||(日干 == HeavenlyStems.乙))
@@ -100,6 +103,7 @@ public class Characteristics
     return 桃花;
   }
   
+  @NotNull
   public EarthlyBranches[] get天乙貴人()
   {
     if (日干 == HeavenlyStems.甲 || 日干 == HeavenlyStems.戊 || 日干 == HeavenlyStems.庚)
@@ -147,6 +151,7 @@ public class Characteristics
     return 羊刃;
   }
   
+  @NotNull
   public EarthlyBranches[] get空亡(int index)
   {
     switch (index)
@@ -161,7 +166,7 @@ public class Characteristics
   }
   
   
-  private void EmptyEnergies(HeavenlyStems 天干, EarthlyBranches 地支)
+  private void EmptyEnergies(HeavenlyStems 天干, @NotNull EarthlyBranches 地支)
   {
     if (HeavenlyStems.getIndex(天干) - EarthlyBranches.getIndex(地支) ==0)
     {

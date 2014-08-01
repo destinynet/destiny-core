@@ -22,7 +22,7 @@ public class DayImpl implements DayIF , Serializable
   {
   }
 
-  public StemBranch getDay(@Nullable Time lmt, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi)
+  public StemBranch getDay(@Nullable Time lmt, @Nullable Location location, @Nullable MidnightIF midnightImpl, @Nullable HourIF hourImpl, boolean changeDayAfterZi)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt and location cannot be null !");

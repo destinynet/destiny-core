@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Free from combustion and the Sun's rays. 只要脫離了太陽左右 17度，就算 Free Combustion !? */
 public final class Free_Combustion extends Rule
@@ -17,18 +18,17 @@ public final class Free_Combustion extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet != Planet.SUN)
     {
       if (horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) > 17)
       {
         //addComment(Locale.TAIWAN , planet + " 遠離太陽焦傷");
-        return new Tuple<>("comment" , new Object[] {planet});
+        return Optional.of(Tuple.of("comment" , new Object[] {planet}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 }

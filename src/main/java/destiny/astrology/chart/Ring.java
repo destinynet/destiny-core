@@ -18,12 +18,15 @@ public interface Ring
   public double getOuterTo();
   
   /** 要繪製輻射線的度數，以第一象限計算 */
+  @Nullable
   public EmitLineProperties[] getEmitLineProperties();
   
   /** 第幾度要放置什麼影像 */
+  @Nullable
   public Map<Double , BufferedImage> getBufferedImages();
   
   /** 繪製線條 (交角線條) */
+  @Nullable
   public Set<PointConnection> getPointConnections();
   
   /** 取得繪製內環的樣式 , 如果傳回 null , 代表不繪製內環 */

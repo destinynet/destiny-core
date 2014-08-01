@@ -4,12 +4,12 @@
  */ 
 package destiny.core;
 
-import java.util.Locale;
-
 import com.google.common.collect.ImmutableMap;
-
 import destiny.utils.Decorator;
 import destiny.utils.LocaleUtils;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 public class GenderDecorator
 {
@@ -18,11 +18,11 @@ public class GenderDecorator
     .put(Locale.ENGLISH, new GenderDecoratorEnglish())
     .build();
   
+  @NotNull
   public static String getOutputString(Gender gender , Locale locale)
   {
-    Locale matched = LocaleUtils.getBestMatchingLocale(locale , implMap.keySet());
-    if (matched == null)
-      matched = (Locale) implMap.keySet().toArray()[0];
-    return implMap.get(matched).getOutputString(gender);
+    return implMap.get(
+      LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
+    ).getOutputString(gender);
   }
 }

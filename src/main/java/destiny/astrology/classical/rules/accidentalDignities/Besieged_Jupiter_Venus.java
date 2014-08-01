@@ -10,7 +10,8 @@ import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * 夾輔 : 被金星木星包夾 , 是很幸運的情形<br/>
@@ -29,19 +30,18 @@ public class Besieged_Jupiter_Venus extends Rule
   }
 
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.MARS || planet == Planet.SATURN)
     {
       if (besiegedBean.isBesieged(planet, Planet.VENUS , Planet.JUPITER , Time.getGMTfromLMT(horoscopeContext.getLmt() , horoscopeContext.getLocation())  , true , false))
       {
         //planet + " 被 " + Planet.VENUS + " 以及 " + Planet.JUPITER + " 夾輔 (善意 Besieged)"
-        return new Tuple<String , Object[]>("comment" , new Object[] {planet , Planet.VENUS , Planet.JUPITER});
+        return Optional.of(Tuple.of("comment" , new Object[] {planet , Planet.VENUS , Planet.JUPITER}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
 }

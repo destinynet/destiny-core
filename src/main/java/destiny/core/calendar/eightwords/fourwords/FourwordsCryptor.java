@@ -4,24 +4,28 @@ package destiny.core.calendar.eightwords.fourwords;
 import java.io.Serializable;
 
 import destiny.utils.Cryptor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FourwordsCryptor implements Serializable
 {
   private String desKey;
   
-  public FourwordsCryptor(String key)
+  public FourwordsCryptor(@NotNull String key)
   {
     this.desKey = Cryptor.MD5(key).substring(0,8);
     //System.out.println("key = " + desKey);
   }
   
-  public String getEncodedString(String raw)
+  @Nullable
+  public String getEncodedString(@NotNull String raw)
   {
     return Cryptor.getDesEncodedString(desKey, raw);
   }
 
 
-  public String getDecodedString(String encodedString)
+  @Nullable
+  public String getDecodedString(@NotNull String encodedString)
   {
     return Cryptor.getDesDecodedString(desKey, encodedString);
   }

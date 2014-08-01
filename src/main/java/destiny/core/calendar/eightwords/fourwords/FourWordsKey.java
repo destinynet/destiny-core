@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** 四字斷終生 的 key */
@@ -42,6 +43,7 @@ public class FourWordsKey implements Serializable
     return hourBranch;
   }
 
+  @NotNull
   @Override
   public String toString()
   {

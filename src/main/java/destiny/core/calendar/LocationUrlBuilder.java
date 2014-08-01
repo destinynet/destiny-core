@@ -4,6 +4,8 @@
  */ 
 package destiny.core.calendar;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.net.URL;
 
 /**
@@ -11,5 +13,6 @@ import java.net.URL;
  */
 public interface LocationUrlBuilder
 {
+  @Nullable
   public URL getUrl(Location location);
 }

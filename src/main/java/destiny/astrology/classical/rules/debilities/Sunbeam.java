@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** Under the Sunbeans (between 8.5 and 17 from Sol). */
 public final class Sunbeam extends Rule
@@ -18,9 +19,8 @@ public final class Sunbeam extends Rule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet != Planet.SUN)
     {
@@ -28,10 +28,10 @@ public final class Sunbeam extends Rule
           horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) <= 17)
       {
         //addComment(Locale.TAIWAN , planet + " 被太陽曬傷 (Sunbeam)");
-        return new Tuple<>("comment" , new Object[]{planet});
+        return Optional.of(Tuple.of("comment" , new Object[]{planet}));
       }
     }
-    return null;
+    return Optional.empty();
   }
 
 }

@@ -23,6 +23,7 @@ public class Triple<A, B, C> extends Tuple<A, B>
     return c;
   }
 
+  @NotNull
   @Override
   public String toString()
   {

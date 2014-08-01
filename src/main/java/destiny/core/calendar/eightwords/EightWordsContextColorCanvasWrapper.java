@@ -245,6 +245,7 @@ public class EightWordsContextColorCanvasWrapper
   /**
    * 傳回八字命盤
    */
+  @NotNull
   @Override
   public String toString()
   {

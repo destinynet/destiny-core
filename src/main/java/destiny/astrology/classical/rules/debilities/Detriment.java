@@ -10,7 +10,8 @@ import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /** In Detriment. */
 public final class Detriment extends EssentialRule
@@ -19,9 +20,8 @@ public final class Detriment extends EssentialRule
   {
   }
 
-  @Nullable
   @Override
-  protected Tuple<String, Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -29,9 +29,9 @@ public final class Detriment extends EssentialRule
     if (planet == essentialImpl.getPoint(sign, Dignity.DETRIMENT))
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Detriment");
-      return new Tuple<>("comment" , new Object[]{planet , sign});
+      return Optional.of(Tuple.of("comment" , new Object[]{planet , sign}));
     }
-    return null;
+    return Optional.empty();
   }
 
 }

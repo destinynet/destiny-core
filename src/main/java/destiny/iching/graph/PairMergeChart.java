@@ -8,14 +8,15 @@ import destiny.core.chart.Constants.WIDTH_HEIGHT;
 import destiny.iching.Hexagram;
 import destiny.iching.graph.ProcessorSideSymbol.Side;
 import destiny.utils.image.Processor;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 public class PairMergeChart extends AbstractPairHexagramChart
 {
   public PairMergeChart(
-      Hexagram src, String srcName , 
-      Hexagram dst, String dstName ,
+      @NotNull Hexagram src, String srcName ,
+      @NotNull Hexagram dst, String dstName ,
       WIDTH_HEIGHT which, int value , Color bg , Color fore)
   {
     super(src, srcName, dst, dstName, Type.MERGED, which, value, bg , fore);

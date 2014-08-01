@@ -4,16 +4,13 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * 廟旺互容 <br/>
@@ -29,9 +26,8 @@ public final class MixedReception extends Rule
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
   }
 
-  @Nullable
   @Override
-  public Tuple<String , Object[]> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  public Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);
@@ -49,7 +45,7 @@ public final class MixedReception extends Rule
       if (!utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
       {
         //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
-        return new Tuple<>("commentRuler" , new Object[] {planet , sign , thisSignRuler , sign2});
+        return Optional.of(Tuple.of("commentRuler" , new Object[] {planet , sign , thisSignRuler , sign2}));
       }
     }
     
@@ -65,11 +61,11 @@ public final class MixedReception extends Rule
         if (!utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
-          return new Tuple<>("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2});
+          return Optional.of(Tuple.of("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2}));
         }
       }  
     }
-    return null;
+    return Optional.empty();
   }
 
 }
