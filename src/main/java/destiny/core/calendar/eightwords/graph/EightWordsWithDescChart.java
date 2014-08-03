@@ -11,7 +11,7 @@ import destiny.core.calendar.eightwords.personal.Reactions;
 import destiny.core.calendar.eightwords.personal.ReactionsUtil;
 import destiny.core.chart.Constants;
 import destiny.core.chinese.HeavenlyStems;
-import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.StemBranchNullable;
 import destiny.font.FontRepository;
 import destiny.utils.Triple;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +63,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
     HeavenlyStems dayStem = eightWordsNullable.getDayStem();
 
     // Tuple < 干支 , 天干(相對於日干)的十神 , 地支藏干(相對於日干)的十神 >
-    List<Triple<StemBranch , Reactions , List<Reactions>>> list = new ArrayList();
+    List<Triple<StemBranchNullable, Reactions , List<Reactions>>> list = new ArrayList();
 
     eightWordsNullable.getStemBranches().forEach(sb -> {
       List<Reactions> reactions = reactionsUtil.getReactions(sb.getBranch() , dayStem);

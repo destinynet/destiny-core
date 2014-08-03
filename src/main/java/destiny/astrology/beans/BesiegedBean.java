@@ -141,7 +141,7 @@ public class BesiegedBean implements Serializable
     
     List<Planet> besiegingPlanets = getBesiegingPlanets(planet , gmt , otherPlanets , searchingAspects);
     logger.info("包夾 {} 的是 {}({}) 以及 {}({})"
-      , planet , besiegingPlanets.get(0) , aspectPrior , besiegingPlanets.get(1) , aspectAfter);
+      , planet , besiegingPlanets.get(0) , aspectPrior.get() , besiegingPlanets.get(1) , aspectAfter.get());
     if (besiegingPlanets.contains(p1) && besiegingPlanets.contains(p2))
     {
       if(constrainingAspects.contains(aspectPrior.get()) && constrainingAspects.contains(aspectAfter.get()))

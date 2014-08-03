@@ -8,23 +8,23 @@ import java.io.Serializable;
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
-public class StemBranch implements Comparable<StemBranch> , Serializable
+public class StemBranch extends StemBranchNullable implements Comparable<StemBranch> , Serializable
 {
-  @Nullable
-  private final HeavenlyStems   stem;   //天干
-
-  @Nullable
-  private final EarthlyBranches branch; //地支
+//  @Nullable
+//  private final HeavenlyStems   stem;   //天干
+//
+//  @Nullable
+//  private final EarthlyBranches branch; //地支
   
   // 0[甲子] ~ 59[癸亥]
   @NotNull
-  private transient static StemBranch[] StemBranchArray = new StemBranch[60];
+  private transient static StemBranch[] stemBranchArray = new StemBranch[60];
   static
   {
     int n=0;
     do
     {
-      StemBranchArray[n]= new StemBranch (HeavenlyStems.getHeavenlyStems( n % 10 ) , 
+      stemBranchArray[n]= new StemBranch (HeavenlyStems.getHeavenlyStems( n % 10 ) ,
                                           EarthlyBranches.getEarthlyBranches( n % 12 ) );
       n++;
     }
@@ -33,11 +33,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   
   private StemBranch(@Nullable HeavenlyStems 天干 , @Nullable EarthlyBranches 地支)
   {
-    this.stem = 天干;
-    this.branch = 地支;
-    if (天干 != null && 地支 != null)
-      if ( (HeavenlyStems.getIndex(天干) % 2 )  != (EarthlyBranches.getIndex(地支) %2 ) )
-        throw new RuntimeException("Stem/Branch combination illegal ! " + 天干 + " cannot be combined with " + 地支 );
+    super(天干 , 地支);
   }
   
   /*
@@ -57,7 +53,7 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
    */
   public static StemBranch get(int index)
   {
-    return StemBranchArray[normalize(index)];
+    return stemBranchArray[normalize(index)];
   }
   
   public static StemBranch get(@NotNull HeavenlyStems 天干 , @NotNull EarthlyBranches 地支)
@@ -70,19 +66,19 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
     switch (hIndex - eIndex) {
       case 0:
       case -10:
-        return StemBranchArray[eIndex];
+        return get(eIndex);
       case 2:
       case -8:
-        return StemBranchArray[eIndex + 12];
+        return get(eIndex + 12);
       case 4:
       case -6:
-        return StemBranchArray[eIndex + 24];
+        return get(eIndex + 24);
       case 6:
       case -4:
-        return StemBranchArray[eIndex + 36];
+        return get(eIndex + 36);
       case 8:
       case -2:
-        return StemBranchArray[eIndex + 48];
+        return get(eIndex + 48);
       default:
         throw new RuntimeException("Invalid 天干/地支 Combination!");
     }
@@ -146,9 +142,9 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   private static int getIndex(@NotNull StemBranch sb)
   {
     int index=-1;
-    for (int i = 0 ; i < StemBranchArray.length ; i ++)
+    for (int i = 0 ; i < stemBranchArray.length ; i ++)
     {
-      if (sb.equals(StemBranchArray[i]) )
+      if (sb.equals(stemBranchArray[i]) )
         index = i;
     }
     return index;
@@ -189,19 +185,19 @@ public class StemBranch implements Comparable<StemBranch> , Serializable
   /**
    * @return 天干
    */
-  @Nullable
+  @NotNull
   public HeavenlyStems getStem()
   {
-    return stem;
+    return stem.get();
   }
   
   /**
    * @return 地支
    */
-  @Nullable
+  @NotNull
   public EarthlyBranches getBranch()
   {
-    return branch;
+    return branch.get();
   }
 
   /** 取得下一組干支 , 甲子 傳回 乙丑 */

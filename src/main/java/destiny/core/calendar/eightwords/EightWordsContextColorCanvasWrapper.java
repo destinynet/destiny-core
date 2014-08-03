@@ -191,7 +191,7 @@ public class EightWordsContextColorCanvasWrapper
   protected ColorCanvas getEightWordsColorCanvas()
   {
     EightWords eightWords = context.getEightWords(lmt, location);
-    ColorCanvas 八字 = new ColorCanvas(10, 36, "　", null, null);
+    ColorCanvas 八字 = new ColorCanvas(10, 36, "　", Optional.empty(), Optional.empty());
 
     八字.setText("時", 1, 3);
     八字.setText("柱", 2, 3);

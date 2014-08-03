@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords.graph;
 
 import destiny.core.calendar.eightwords.EightWordsNullable;
-import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.StemBranchNullable;
 import destiny.font.FontRepository;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +21,8 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
  * 純粹八個字（干支可能為空）的圖
  */
 public class EightWordsChart extends BufferedImage implements Serializable {
+
+
 
   /** 排列方向：右到左，還是左到右 */
   public enum Direction {R2L , L2R}
@@ -59,27 +61,25 @@ public class EightWordsChart extends BufferedImage implements Serializable {
 
     g.setFont(getFont());
 
-    List<StemBranch> stemBranchList = eightWordsNullable.getStemBranches();
+    List<StemBranchNullable> stemBranchList = eightWordsNullable.getStemBranches();
     if (direction == Direction.R2L)
       Collections.reverse(stemBranchList);
 
     for(int i=0 ; i<4 ; i++) {
-      StemBranch sb = stemBranchList.get(i);
+      StemBranchNullable sb = stemBranchList.get(i);
 
       for (int j = 1 ; j <= 2 ; j++) {
         float textY = (float) (cellHeight*(j-0.2));
         float textX = cellWidth*i + (cellWidth-fontSize)/2;
 
         g.setColor(fore);
-        if (sb != null) {
-          if (j % 2 == 1) {
-            if ((direction == Direction.R2L && i == 1) ||  (direction == Direction.L2R && i == 2))
-              g.setColor(dayStemColor); // 日主
-            g.drawString(sb.getStem().toString(), textX, textY);
-          }
-          else {
-            g.drawString(sb.getBranch().toString(), textX, textY);
-          }
+        if (j % 2 == 1) {
+          if ((direction == Direction.R2L && i == 1) || (direction == Direction.L2R && i == 2))
+            g.setColor(dayStemColor); // 日主
+          g.drawString(String.valueOf(sb.getStem()), textX, textY);
+        }
+        else {
+          g.drawString(String.valueOf(sb.getBranch()), textX, textY);
         }
       } // 干支
     } // 四柱

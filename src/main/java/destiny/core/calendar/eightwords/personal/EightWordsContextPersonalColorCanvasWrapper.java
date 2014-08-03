@@ -12,10 +12,12 @@ import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
 import destiny.core.calendar.eightwords.EightWordsContextColorCanvasWrapper;
 import destiny.core.chinese.StemBranch;
-import destiny.utils.Decorator;
 import destiny.utils.ColorCanvas.AlignUtil;
 import destiny.utils.ColorCanvas.ColorCanvas;
+import destiny.utils.Decorator;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 
 /**
@@ -80,7 +82,7 @@ public class EightWordsContextPersonalColorCanvasWrapper extends EightWordsConte
 
 
     ColorCanvas 大運直 = new ColorCanvas(9,24,"　" );
-    ColorCanvas 大運橫 = new ColorCanvas(8,70,"　" , null , null);
+    ColorCanvas 大運橫 = new ColorCanvas(8,70,"　" , Optional.empty() , Optional.empty());
 
     //forward : 大運是否順行
     boolean isForward = personContext.isFortuneDirectionForward();
