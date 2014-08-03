@@ -188,7 +188,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   @NotNull
   public HeavenlyStems getStem()
   {
-    return stem.get();
+    return stem;
   }
   
   /**
@@ -197,7 +197,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   @NotNull
   public EarthlyBranches getBranch()
   {
-    return branch.get();
+    return branch;
   }
 
   /** 取得下一組干支 , 甲子 傳回 乙丑 */

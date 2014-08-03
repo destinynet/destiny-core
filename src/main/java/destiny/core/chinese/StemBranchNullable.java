@@ -14,9 +14,11 @@ import java.util.Optional;
  */
 public class StemBranchNullable implements Serializable {
 
-  protected final Optional<HeavenlyStems> stem;   //天干
+  @Nullable
+  protected final HeavenlyStems stem;   //天干
 
-  protected final Optional<EarthlyBranches> branch; //地支
+  @Nullable
+  protected final EarthlyBranches branch; //地支
 
   // 0[甲子] ~ 59[癸亥]
   @NotNull
@@ -36,14 +38,14 @@ public class StemBranchNullable implements Serializable {
   }
 
   public StemBranchNullable() {
-    stem = Optional.empty();
-    branch = Optional.empty();
+    stem = null;
+    branch = null;
   }
 
 
   public StemBranchNullable(@Nullable HeavenlyStems stem, @Nullable EarthlyBranches branch) {
-    this.stem = Optional.ofNullable(stem);
-    this.branch = Optional.ofNullable(branch);
+    this.stem = stem;
+    this.branch = branch;
     if (stem != null && branch != null)
       if ((HeavenlyStems.getIndex(stem) % 2) != (EarthlyBranches.getIndex(branch) % 2))
         throw new RuntimeException("Stem/Branch combination illegal ! " + stem + " cannot be combined with " + branch);
@@ -107,20 +109,20 @@ public class StemBranchNullable implements Serializable {
 
   @Nullable
   public HeavenlyStems getStem() {
-    return stem.orElse(null);
+    return stem;
   }
 
   public Optional<HeavenlyStems> getStemOptional() {
-    return stem;
+    return Optional.ofNullable(stem);
   }
 
   @Nullable
   public EarthlyBranches getBranch() {
-    return branch.orElse(null);
+    return branch;
   }
 
   public Optional<EarthlyBranches> getBranchOptional() {
-    return branch;
+    return Optional.ofNullable(branch);
   }
 
 
