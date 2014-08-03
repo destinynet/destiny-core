@@ -4,22 +4,27 @@
  */ 
 package destiny.astrology;
 
-import junit.framework.TestCase;
+
+import org.junit.Test;
 
 import java.util.*;
 
-public class PlanetTest extends TestCase
+import static org.junit.Assert.*;
+
+public class PlanetTest
 {
   /** 測試從 "sun" 取得 Planet.SUN */
+  @Test
   public void testGetPlanetFromString()
   {
-    assertSame(Planet.SUN , Planet.get("sun"));
-    assertSame(Planet.SUN , Planet.get("SUN"));
-    assertSame(Planet.SUN , Planet.get("Sun"));
-    assertNull(Planet.get("xxx"));
+    assertSame(Planet.SUN , Planet.get("sun").get());
+    assertSame(Planet.SUN , Planet.get("SUN").get());
+    assertSame(Planet.SUN , Planet.get("Sun").get());
+    assertTrue(!Planet.get("xxx").isPresent());
   }
   
   /** 將 太陽 up-case 再 down-cast , 比對 equality 以及 same */
+  @Test
   public void testPlanetEqual() 
   {
     Planet sun = Planet.SUN;
@@ -46,6 +51,7 @@ public class PlanetTest extends TestCase
   
   /** 透過 reflection 產生 太陽 , 與直接產生的太陽，比對 equality 以及 same */
   @SuppressWarnings("unchecked")
+  @Test
   public void testPlanetEqualReflection() throws Exception {
     Planet sun = Planet.SUN;
     
@@ -76,7 +82,8 @@ public class PlanetTest extends TestCase
     assertSame(sunInList , sun);
     
   }
-  
+
+  @Test
   public void testPlanet() 
   {
     assertEquals("太陽" , Planet.SUN.getName(Locale.TAIWAN));
@@ -85,9 +92,9 @@ public class PlanetTest extends TestCase
     Locale locale = Locale.ENGLISH;
     assertEquals("Sun" , Planet.SUN.getName(locale));
     assertEquals("Su" , Planet.SUN.getAbbreviation(locale));
-    
   }
-  
+
+  @Test
   public void testPlanets()
   {
     for (Planet planet : Planet.values)
@@ -96,7 +103,8 @@ public class PlanetTest extends TestCase
       assertNotNull(planet.toString());
     }
   }
-  
+
+  @Test
   public void testCompare()
   {
     assertTrue(Planet.SUN.compareTo(Planet.MOON) < 0);

@@ -26,43 +26,31 @@ public class PointImageResourceReaderImpl implements PointImageResourceReader
   public BufferedImage getBufferedImage(Point point)
   {
     InputStream is = null;
-    if (point instanceof Planet)
-    {
+    if (point instanceof Planet) {
       is = getClass().getResourceAsStream("Planet." + point.toString(Locale.ENGLISH) + ".gif");
     }
-    else if (point instanceof LunarNode)
-    {
+    else if (point instanceof LunarNode) {
       LunarNode node = (LunarNode) point;
       if (node.getNorthSouth() == NorthSouth.NORTH)
         is = getClass().getResourceAsStream("Node.North.gif");
       else
         is = getClass().getResourceAsStream("Node.South.gif");
     }
-    else if (point instanceof Asteroid)
-    {
+    else if (point instanceof Asteroid) {
       is = getClass().getResourceAsStream("Asteroid." + point.toString(Locale.ENGLISH) + ".gif");
     }
-    
+
     BufferedImage img = null;
-    if (is != null)
-    {
-      try
-      {
+    if (is != null) {
+      try {
         img = ImageIO.read(is);
-      }
-      catch (IOException ignored)
-      {
-      }
-      finally
-      {
-        try
-        {
+      } catch (IOException ignored) {
+      } finally {
+        try {
           is.close();
+        } catch (IOException ignored) {
         }
-        catch (IOException ignored)
-        {
-        }
-      }  
+      }
     }
     return img;
   }

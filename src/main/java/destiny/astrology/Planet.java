@@ -4,12 +4,11 @@
  */
 package destiny.astrology;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Optional;
+import java.util.stream.Stream;
 
 
 public final class Planet extends Star implements Comparable<Planet>
@@ -37,15 +36,15 @@ public final class Planet extends Star implements Comparable<Planet>
   }
   
   /** 從 "sun" 取得 Planet.SUN  ... , 限英文 */
-  @Nullable
-  public static Planet get(String value)
+  public static Optional<Planet> get(String value)
   {
-    for(Planet planet : values)
-    {
-      if (planet.getName(Locale.ENGLISH).equalsIgnoreCase(value))
-        return planet;
-    }
-    return null;
+    return Stream.of(values).filter(planet -> planet.getName(Locale.ENGLISH).equalsIgnoreCase(value)).findFirst();
+//    for(Planet planet : values)
+//    {
+//      if (planet.getName(Locale.ENGLISH).equalsIgnoreCase(value))
+//        return planet;
+//    }
+//    return null;
   }
 
   @Override

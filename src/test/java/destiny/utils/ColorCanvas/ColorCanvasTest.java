@@ -1,9 +1,12 @@
 package destiny.utils.ColorCanvas;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ColorCanvasTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class ColorCanvasTest
 {
+  @Test
   public void testColorCanvas()
   {
     ColorCanvas cc = new ColorCanvas(1 , 10 , "　");
@@ -15,15 +18,17 @@ public class ColorCanvasTest extends TestCase
     cc.setText(  "aabbccdd一二", 1, 1);
     assertEquals("aabbccdd一" , cc.toString().trim());
   }
-  
+
+  @Test
   public void testAddLine()
   {
     ColorCanvas cc = new ColorCanvas(2 , 10 , " "); //FIXME addLine() 只能測試背景是「非中文」的字元
     cc.setText("一二三四五", 1, 1);
-    cc.addLine("六七八九十", null, null, null, null, false);
+    cc.addLine("六七八九十", null , null , null, null, false);
     assertEquals("一二三四五\n六七八九十\n" , cc.toString());
   }
-  
+
+  @Test
   public void testAppendLine()
   {
     ColorCanvas cc = new ColorCanvas(2 , 10 , " "); 

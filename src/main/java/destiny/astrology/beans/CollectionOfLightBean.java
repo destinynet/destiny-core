@@ -59,6 +59,7 @@ public class CollectionOfLightBean implements Serializable
   
   /** 是否蒐集光線 */
   private boolean collectionLight = false;
+
   /** 從哪兩顆星蒐集光線 */
   @NotNull
   private Planet[] fromPlanets = new Planet[2];

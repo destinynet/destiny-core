@@ -9,7 +9,8 @@ import destiny.astrology.Planet;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
@@ -24,15 +25,15 @@ import java.util.*;
  */
 public class BesiegedBean implements Serializable
 {
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   private final NearestTransitBean nearestTransitBean;
   
   /** 之前形成的交角 */
-  @Nullable
-  private Aspect aspectPrior;
+  private Optional<Aspect> aspectPrior;
   
   /** 之後形成的交角 */
-  @Nullable
-  private Aspect aspectAfter;
+  private Optional<Aspect> aspectAfter;
 
   public BesiegedBean(NearestTransitBean nearestTransitBean) {
     this.nearestTransitBean = nearestTransitBean;
@@ -139,10 +140,11 @@ public class BesiegedBean implements Serializable
     
     
     List<Planet> besiegingPlanets = getBesiegingPlanets(planet , gmt , otherPlanets , searchingAspects);
-    // System.out.println("包夾 " + planet + " 的是 " + besiegingPlanets.get(0) + "("+aspectPrior+") 以及 " + besiegingPlanets.get(1) + "("+aspectAfter+")");
+    logger.info("包夾 {} 的是 {}({}) 以及 {}({})"
+      , planet , besiegingPlanets.get(0) , aspectPrior , besiegingPlanets.get(1) , aspectAfter);
     if (besiegingPlanets.contains(p1) && besiegingPlanets.contains(p2))
     {
-      if(constrainingAspects.contains(aspectPrior) && constrainingAspects.contains(aspectAfter))
+      if(constrainingAspects.contains(aspectPrior.get()) && constrainingAspects.contains(aspectAfter.get()))
         return true;
     }
     return false;

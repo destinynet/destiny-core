@@ -32,7 +32,6 @@ public class HoroscopeAspectsCalculator implements Serializable
   
   public Collection<HoroscopeAspectData> getAspectDataSet(@NotNull Collection<Point> points)
   {
-    //List<Point> pointList = new ArrayList<Point>(points);
     return getAspectDataSet(points , null);
   }
 
@@ -60,12 +59,4 @@ public class HoroscopeAspectsCalculator implements Serializable
     return dataSet;
   }
 
-
-  //FIXME : 為了解決 Collection<Point> 不吃 Collection<Planet> 所做的骯髒解法，目前只能這樣做，唉～
-//  public Collection<HoroscopeAspectData> getAspectDataSet(List<Planet> planets, List<Aspect> angles)
-//  {
-//    List<Point> points = new ArrayList<Point>(planets);
-//    return getAspectDataSet(points , angles);
-//  }
-  
 }

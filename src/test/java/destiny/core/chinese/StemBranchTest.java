@@ -5,12 +5,30 @@
  */
 package destiny.core.chinese;
 
+import org.junit.Test;
+
 import java.util.Arrays;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class StemBranchTest extends TestCase
+public class StemBranchTest
 {
+  @Test
+  public void testGet() {
+    assertSame(StemBranch.get("甲子") , StemBranch.get(HeavenlyStems.甲 , EarthlyBranches.子));
+    assertSame(StemBranch.get("乙丑") , StemBranch.get(HeavenlyStems.乙 , EarthlyBranches.丑));
+    assertSame(StemBranch.get("丙寅") , StemBranch.get(HeavenlyStems.丙 , EarthlyBranches.寅));
+    assertSame(StemBranch.get("丁卯") , StemBranch.get(HeavenlyStems.丁 , EarthlyBranches.卯));
+
+    try {
+      StemBranch.get(HeavenlyStems.甲 , EarthlyBranches.丑);
+      fail();
+    } catch (RuntimeException e) {
+      assertTrue(true);
+    }
+  }
+
+  @Test
   public void testStemBranch()
   {
     StemBranch sb1 = StemBranch.get('甲','子');
@@ -35,7 +53,8 @@ public class StemBranchTest extends TestCase
     assertSame(sb5 , sb7);
     assertSame(sb6 , sb7);
   }
-  
+
+  @Test
   public void testSorting()
   {
     StemBranch[] SBArray1 = new StemBranch[]
@@ -55,7 +74,8 @@ public class StemBranchTest extends TestCase
     Arrays.sort(SBArray1);
     assertTrue(Arrays.equals(expected , SBArray1));
   }
-  
+
+  @Test
   public void testGetNext()
   {
     StemBranch sb = StemBranch.get("甲子");
@@ -64,7 +84,8 @@ public class StemBranchTest extends TestCase
     sb = StemBranch.get("癸亥");
     assertSame(sb.getNext() , StemBranch.get("甲子"));
   }
-  
+
+  @Test
   public void testGetPrevious()
   {
     StemBranch sb = StemBranch.get("甲子");

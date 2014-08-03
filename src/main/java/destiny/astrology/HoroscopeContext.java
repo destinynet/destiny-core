@@ -8,11 +8,14 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * 星盤的 Context， 除了基本的時間地點之外，還包括各種計算的介面 (星體位置 / 分宮法 ...)
@@ -57,31 +60,13 @@ public class HoroscopeContext implements Serializable
   
   /** TrueNode / Mean Node */
   private final NodeType nodeType;
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 星 (Star) 與 位置(Position)＋地平方位角(Azimuth) ==>  (PositionWithAzimuth) 的 Map , 作為 cache 層 */
   //private Map<Point , PositionWithAzimuth> positionMap = new HashMap<Point , PositionWithAzimuth>();
 
-  /** 最簡易的 constructor , 其餘的 member variables 則使用內定  */
-  /*
-  public HoroscopeContext(Time lmt , Location location)
-  {
-    this.lmt = lmt;
-    this.location = location;
-    this.gmt = Time.getGMTfromLMT(lmt, location);
-    
-    AzimuthIF azimuthImpl = new AzimuthImpl();
-    this.starPositionWithAzimuthImpl = new StarPositionWithAzimuthImpl(azimuthImpl);
-    this.apsisWithAzimuthImpl = new ApsisWithAzimuthImpl(azimuthImpl);
-    this.houseCuspImpl = new HouseCuspImpl();
-    this.houseSystem = HouseSystem.PLACIDUS;
-    this.nodeType = NodeType.MEAN;
-    this.centric = Centric.GEO;
-    this.coordinate = Coordinate.ECLIPTIC;
-    this.pressure = 1013.25;
-    this.temperature = 20;
-  }
-  */
-  
+
   /** 最完整的 constructor */
   public HoroscopeContext(@NotNull Time lmt , @NotNull Location location , HouseSystem houseSystem ,
       Coordinate coordinate , Centric centric , double temperature , double pressure , 
@@ -115,27 +100,19 @@ public class HoroscopeContext implements Serializable
   }
   
   /** 取得星體的位置以及地平方位角 */
-  @Nullable
   public PositionWithAzimuth getPosition(Point point)
   {
     starPositionWithAzimuthImpl.setLocation(location);
     starPositionWithAzimuthImpl.setCoordinate(coordinate);
     starPositionWithAzimuthImpl.setCentric(centric);
     
-    PositionWithAzimuth position = null;
-    if (point instanceof Star)
-    {
-      Star star = (Star) point;
-      position = starPositionWithAzimuthImpl.getPositionWithAzimuth(star, gmt, location, temperature, pressure);
-    }
-    //if (point instanceof Planet) System.out.println("lmt = " + lmt + "\tHoroscopeContext.getPosition("+point+") = " + ZodiacDegreeDecorator.getSimpOutputString(position.getLongitude() , Locale.TAIWAN));
-    return position;
+    return starPositionWithAzimuthImpl.getPositionWithAzimuth((Star) point, gmt, location, temperature, pressure);
   }
   
   @NotNull
   private List<Star> getPointList()
   {
-    List<Star> stars = new ArrayList<>();
+    List<Star> stars = new ArrayList();
     for (Planet planet : Planet.values) //行星
       stars.add(planet);
     for (LunarNode lunarNode : LunarNode.values) //月亮南北交點
@@ -182,17 +159,17 @@ public class HoroscopeContext implements Serializable
       return getHousePoints(index + 12);
     if (index > 12)
       return getHousePoints(index - 12);
-    
-    List<Point> resultList = new ArrayList<>();
-    for (Point eachPoint : getPointList())
-    {
-      double longitude = getPosition(eachPoint).getLongitude();
-      if (getHoroscope().getHouse(longitude) == index)
-        resultList.add(eachPoint);
-    }
-    DegreeComparator comparator = new DegreeComparator(this);
-    Collections.sort(resultList , comparator);
-    //System.out.println("lmt = " + lmt + " , 取得第 " + index + " 宮的星體 : " + resultList);
+
+    List<Point> resultList = getPointList().stream().filter(
+      eachPoint -> getHoroscope().getHouse(getPosition(eachPoint).getLongitude()) == index
+    )
+      .sorted(new DegreeComparator(this))
+      .collect(toList());
+
+
+//    DegreeComparator comparator = new DegreeComparator(this);
+//    Collections.sort(resultList , comparator);
+    logger.info("取得第 {} 宮的星體 : {}" , index , resultList);
     return resultList;
   }
   

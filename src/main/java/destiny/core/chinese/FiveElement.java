@@ -5,7 +5,6 @@
 package destiny.core.chinese;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -43,7 +42,6 @@ public enum FiveElement implements FiveElementIF , Serializable
   }
   
   /** 取得此五行所生的五行（木生火） */
-  @Nullable
   public FiveElement getProduct()
   {
     switch (this)
@@ -59,7 +57,7 @@ public enum FiveElement implements FiveElementIF , Serializable
       case 水:
         return 木;
       default:
-        return null;
+        throw new RuntimeException("impossible");
     }
   }//produceTo()
 
@@ -71,7 +69,6 @@ public enum FiveElement implements FiveElementIF , Serializable
   }
 
   /** 取得哪個五行生此五行 （生木者為水） */
-  @Nullable
   public FiveElement getProducer()
   {
     switch (this)
@@ -87,7 +84,7 @@ public enum FiveElement implements FiveElementIF , Serializable
       case 水:
         return 金;
       default:
-        return null;
+        throw new RuntimeException("impossible");
     }
   }//producedBy()
   
@@ -99,8 +96,7 @@ public enum FiveElement implements FiveElementIF , Serializable
   }
   
   
-  /** 取得此五行所剋之五行 （木克土） */
-  @Nullable
+  /** 取得此五行所剋之五行 （木剋土） */
   public FiveElement getDominateOver()
   {
     switch (this)
@@ -116,7 +112,7 @@ public enum FiveElement implements FiveElementIF , Serializable
       case 水:
         return 火;
       default:
-        return null;
+        throw new RuntimeException("impossible");
     }
   }//beatTo()
   
@@ -128,7 +124,6 @@ public enum FiveElement implements FiveElementIF , Serializable
   }
   
   /** 取得此五行被哪個五行剋 （木被金剋） */
-  @Nullable
   public FiveElement getDominator()
   {
     switch (this)
@@ -144,7 +139,7 @@ public enum FiveElement implements FiveElementIF , Serializable
       case 水:
         return 土;
       default:
-        return null;
+        throw new RuntimeException("impossible");
     }
   }//beatenBy()
   

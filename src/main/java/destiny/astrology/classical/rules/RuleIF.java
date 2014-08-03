@@ -4,19 +4,19 @@
  */ 
 package destiny.astrology.classical.rules;
 
-import java.util.Locale;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
+import java.util.Optional;
 
 public interface RuleIF
 {
   public boolean isApplicable(Planet planet , HoroscopeContext horoscopeContext);
   public String getName();
   public String getName(Locale locale);
-  @Nullable
-  public String getComment();
-  @Nullable
-  public String getComment(Locale locale);
+
+  public Optional<String> getComment();
+
+  public Optional<String> getComment(Locale locale);
 }

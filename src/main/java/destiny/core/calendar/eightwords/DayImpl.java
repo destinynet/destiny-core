@@ -5,13 +5,13 @@
  */
 package destiny.core.calendar.eightwords;
 
-import java.io.Serializable;
-
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.StemBranch;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /**
  * 換日 的實作
@@ -22,13 +22,10 @@ public class DayImpl implements DayIF , Serializable
   {
   }
 
-  public StemBranch getDay(@Nullable Time lmt, @Nullable Location location, @Nullable MidnightIF midnightImpl, @Nullable HourIF hourImpl, boolean changeDayAfterZi)
+  @Override
+  public StemBranch getDay(@NotNull Time lmt, Location location, @NotNull MidnightIF midnightImpl, @NotNull HourIF hourImpl, boolean changeDayAfterZi)
   {
-    if (lmt == null || location == null)
-      throw new RuntimeException("lmt and location cannot be null !");
-    if (midnightImpl == null || hourImpl == null)
-      throw new RuntimeException("midnightImpl and hourImpl cannot be null !");
-    
+
     //Time gmt = Time.getGMTfromLMT(lmt, location);
     
     int LmtJulDay = (int) (lmt.getGmtJulDay()+0.5); 

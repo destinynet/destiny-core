@@ -8,12 +8,13 @@ package destiny.utils.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Font;
+import java.awt.*;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 具備彩色/字型的 Canvas , 能夠輸出成 HTML , 座標系統為 1-based，如下： <BR>
@@ -24,8 +25,7 @@ import java.util.List;
  */
 public class ColorCanvas implements Serializable
 {
-  @Nullable
-  private ColorCanvas parent = null;
+  private Optional<ColorCanvas> parent = Optional.empty();
   
   private int height; // x
   private int width;  // y
@@ -35,7 +35,7 @@ public class ColorCanvas implements Serializable
   private ColorByte[] content;
   
   @NotNull
-  private List<Child> children = new ArrayList<>();
+  private List<Child> children = new ArrayList<Child>();
   
   
   /**
@@ -60,7 +60,6 @@ public class ColorCanvas implements Serializable
    * @param height
    * @param width
    * @param bgChar 內定以 bgChar 字元填滿整個畫面
-   * @param extensible 是否可以 自動拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
    */
   public ColorCanvas(int height , int width , char bgChar)
   {
@@ -101,11 +100,11 @@ public class ColorCanvas implements Serializable
     this.width = width;
     content = new ColorByte[width*height];
     
-    this.fillContent(fill , null , null);
+    this.fillContent(fill , Optional.empty() , Optional.empty());
   }
   
   /** 生新的畫布，以 fill 'String' 填滿整個畫面 ，指定前景及背景顏色 */
-  public ColorCanvas(int height , int width , @NotNull String fill , String foreColor , String backColor)
+  public ColorCanvas(int height , int width , @NotNull String fill , Optional<String> foreColor , Optional<String> backColor)
   {
     this.height = height;
     this.width = width;
@@ -115,7 +114,7 @@ public class ColorCanvas implements Serializable
     
   }
   
-  private void fillContent(@NotNull String fill , String foreColor , String backColor)
+  private void fillContent(@NotNull String fill , Optional<String> foreColor , Optional<String> backColor)
   {
     char[] strChars = fill.toCharArray();
     
@@ -154,7 +153,7 @@ public class ColorCanvas implements Serializable
       for (int j=1 ; j <= width ; j++)
       {
         index = (i-1)*width+ j-1;
-        content[index] = new ColorByte( bytes[(j-1)%bytes.length]  , foreColor , backColor , null , null , null);
+        content[index] = new ColorByte( bytes[(j-1)%bytes.length]  , foreColor , backColor , Optional.empty() , Optional.empty() , Optional.empty());
       }
     }
   }
@@ -167,7 +166,7 @@ public class ColorCanvas implements Serializable
    */
   public void setText(@NotNull String str , int x , int y )
   {
-    this.setText(str , x , y , null , null , null , null , null , false);    
+    this.setText(str , x , y , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , false);
   }
   
   /**
@@ -179,72 +178,31 @@ public class ColorCanvas implements Serializable
    */
   public void setText(@NotNull String str , int x , int y , boolean wrap)
   {
-    this.setText(str , x , y , null , null , null , null , null , wrap);
+    this.setText(str , x , y , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , wrap);
   }//setText
   
 
   /**
    * 在第 x row , 第 y column , 開始，寫入 Text 純文字 , 有設定前景色
    */
-  public void setText(@NotNull String str , int x , int y , String foreColor)
+  public void setText(@NotNull String str , int x , int y , @NotNull String foreColor)
   {
-    this.setText(str , x , y , foreColor , null , null , null , null , false);    
+    this.setText(str , x , y , Optional.of(foreColor) , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , false);
   }
 
   /**
    * 在第 x row , 第 y column , 開始，寫入 Text , 有設定前景色，背景色，以及 title
    */
-  public void setText(@NotNull String str , int x , int y , String foreColor , String backColor , String title)
-  {
-    this.setText(str , x , y , foreColor , backColor , null , null , title , false);    
+  public void setText(@NotNull String str , int x , int y ,
+                      @NotNull String foreColor , @Nullable String backColor , @Nullable String title) {
+    this.setText(str , x , y , Optional.of(foreColor) , Optional.ofNullable(backColor) , Optional.empty() , Optional.empty() , Optional.ofNullable(title) , false);
   }
-  
-  /**
-   * <pre>
-   * 2010/08/13 Added :
-   * 要從 str 中製造出 寬度 為 width 的字串
-   * 假設 str = "一二三四五aabbcc" , 強迫寬度為 10 , 就要取前五個字
-   * 原始字串的 bytearray 為：
-   * [-28, -72, -128, -28, -70, -116, -28, -72, -119, -27, -101, -101, -28, -70, -108, 97, 97, 98, 98, 99, 99]
-   *  (    一      ）（     二      ）（    三      ）（    四       ）（    五     ） a   a   b   b   c   c
-   *  舊的演算法 :
-   *  byte[] byteArray = str.getBytes();
-   *  str = new String(byteArray , 0 , (this.width-y+1));
-   *  如果按照此演算法，只取前 10 bytes , 則只會取到「四」的第一個 byte (-27) , 並不完整！
-   *  必須想辦法，讓他取到「五」的第三個 byte (-108)
-   *  
-   *  新的演算法：把 str 拆成 char[] , 一個一個累加
-   *  </pre>
-   */
-  @NotNull
-  private String getStringFromBytes(@NotNull String str , int width)
-  {
-    char[] chars = str.toCharArray();
-    int nowWidth=0;
-    StringBuffer sb = new StringBuffer();
-    for (char aChar : chars) {
-      Character c = new Character(aChar);
-      String s = c.toString();
-      if (s.getBytes().length == 3) {
-        //中文字 
 
-        //如果加上字元所佔寬度(2)大於 width , 就不 append 了 
-        if (nowWidth + 2 > width) {
-          break;
-        }
-        sb = sb.append(s);
-        //雖然 bytes 長度是 3 , 但是寬度只佔 2
-        nowWidth += 2;
-      }
-      else {
-        if (nowWidth + 1 > width) {
-          break;
-        }
-        sb = sb.append(s);
-        nowWidth++;
-      }
-    }
-    return sb.toString();
+
+  public void setText(@NotNull String str , int x , int y , @Nullable String foreColor , @Nullable String backColor ,
+                      @Nullable Font font , @Nullable URL url , @Nullable String title , boolean wrap) {
+    setText(str , x , y , Optional.ofNullable(foreColor) , Optional.ofNullable(backColor)
+      , Optional.ofNullable(font) , Optional.ofNullable(url) , Optional.ofNullable(title) , wrap);
   }
 
   /**
@@ -259,7 +217,8 @@ public class ColorCanvas implements Serializable
    * @param title     Title
    * @param wrap      是否換行
    */
-  public void setText(@NotNull String str , int x , int y , @Nullable String foreColor , @Nullable String backColor , @Nullable Font font , @Nullable URL url , String title , boolean wrap)
+  public void setText(@NotNull String str , int x , int y , Optional<String> foreColor , Optional<String> backColor
+    ,  Optional<Font> font , Optional<URL> url , Optional<String> title , boolean wrap)
   {    
     int index = (x-1) * width + (y-1);
     int strWidth=0;
@@ -332,25 +291,25 @@ public class ColorCanvas implements Serializable
       }
       for (int j = index; j < index + bytes.length; j++) {
         //如果新加入的背景色為空，檢查原字元的背景色
-        if (backColor == null) {
+        if (!backColor.isPresent()) {
           if (content[j].getBackColor() != null) {
             backColor = content[j].getBackColor();
           }
         }
         //如果新加入的前景色為空，檢查原字元的前景色
-        if (foreColor == null) {
+        if (!foreColor.isPresent()) {
           if (content[j].getForeColor() != null) {
             foreColor = content[j].getForeColor();
           }
         }
         //如果新加入的字型為空，則檢查原字元的字型
-        if (font == null) {
+        if (!font.isPresent()) {
           if (content[j].getFont() != null) {
             font = content[j].getFont();
           }
         }
         //如果新加入的 URL 為空，則檢查原字元的網址
-        if (url == null) {
+        if (!url.isPresent()) {
           if (content[j].getUrl() != null) {
             url = content[j].getUrl();
           }
@@ -364,18 +323,66 @@ public class ColorCanvas implements Serializable
       }
     }
   }//setText()
+
+
+  /**
+   * <pre>
+   * 2010/08/13 Added :
+   * 要從 str 中製造出 寬度 為 width 的字串
+   * 假設 str = "一二三四五aabbcc" , 強迫寬度為 10 , 就要取前五個字
+   * 原始字串的 bytearray 為：
+   * [-28, -72, -128, -28, -70, -116, -28, -72, -119, -27, -101, -101, -28, -70, -108, 97, 97, 98, 98, 99, 99]
+   *  (    一      ）（     二      ）（    三      ）（    四       ）（    五     ） a   a   b   b   c   c
+   *  舊的演算法 :
+   *  byte[] byteArray = str.getBytes();
+   *  str = new String(byteArray , 0 , (this.width-y+1));
+   *  如果按照此演算法，只取前 10 bytes , 則只會取到「四」的第一個 byte (-27) , 並不完整！
+   *  必須想辦法，讓他取到「五」的第三個 byte (-108)
+   *
+   *  新的演算法：把 str 拆成 char[] , 一個一個累加
+   *  </pre>
+   */
+  @NotNull
+  private String getStringFromBytes(@NotNull String str , int width)
+  {
+    char[] chars = str.toCharArray();
+    int nowWidth=0;
+    StringBuffer sb = new StringBuffer();
+    for (char aChar : chars) {
+      Character c = aChar;
+      String s = c.toString();
+      if (s.getBytes().length == 3) {
+        //中文字
+
+        //如果加上字元所佔寬度(2)大於 width , 就不 append 了
+        if (nowWidth + 2 > width) {
+          break;
+        }
+        sb = sb.append(s);
+        //雖然 bytes 長度是 3 , 但是寬度只佔 2
+        nowWidth += 2;
+      }
+      else {
+        if (nowWidth + 1 > width) {
+          break;
+        }
+        sb = sb.append(s);
+        nowWidth++;
+      }
+    }
+    return sb.toString();
+  }
   
   public int getWidth() { return this.width;}
   
   int getHeight() { return this.height; }
   
-  void setParent(ColorCanvas cc)
+  void setParent(@NotNull ColorCanvas cc)
   {
-    this.parent = cc;
+    this.parent = Optional.of(cc);
   }
   
-  @Nullable
-  public ColorCanvas getParent()
+  private Optional<ColorCanvas> getParent()
   {
     return this.parent;
   }
@@ -411,7 +418,7 @@ public class ColorCanvas implements Serializable
    * @param url
    * @param wrap
    */
-  public void addLine(@NotNull String str , String foreColor , String backColor , Font font , URL url , boolean wrap)
+  public void addLine(@NotNull String str , @Nullable String foreColor , @Nullable String backColor , @Nullable Font font , @Nullable URL url , boolean wrap)
   {
     /*
      * 必須先取出來，第幾行開始為空
@@ -446,13 +453,15 @@ public class ColorCanvas implements Serializable
     if ( targetLine > this.height)
       throw new RuntimeException("錯誤，欲新加入一行，但是最後一行已經有資料了，無法再往下加一行了");
         
-    this.setText(str , targetLine , 1 , foreColor , backColor , font , url , null , wrap);
+    this.setText(str , targetLine , 1 , Optional.ofNullable(foreColor) , Optional.ofNullable(backColor)
+      , Optional.ofNullable(font) , Optional.ofNullable(url) , Optional.empty() , wrap);
   }//addLine
   
   /**
    * 附加一串字，到 content 的尾端「之後」，亦即，加高 content 
    */
-  public void appendLine(@NotNull String str , String foreColor , String backColor , @NotNull String fill , Font font , URL url )
+  public void appendLine(@NotNull String str , @Nullable String foreColor , @Nullable String backColor , @NotNull String fill
+    , @Nullable Font font , @Nullable URL url )
   {
     int strWidth=0;
     try
@@ -469,9 +478,9 @@ public class ColorCanvas implements Serializable
     //需要多少 Rows
     int additionalRows = strWidth / this.width +1;
     
-    ColorCanvas appendedCanvas = new ColorCanvas(additionalRows , width , fill , foreColor , backColor);
+    ColorCanvas appendedCanvas = new ColorCanvas(additionalRows , width , fill , Optional.ofNullable(foreColor) , Optional.ofNullable(backColor));
     appendedCanvas.addLine(str, foreColor, backColor, font, url, true);
-    
+
     this.height += additionalRows;
     ColorByte[] newContent = new ColorByte[content.length + additionalRows*width];
     System.arraycopy(content, 0, newContent, 0, content.length);
@@ -532,7 +541,7 @@ public class ColorCanvas implements Serializable
             this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1] = childContent[j];
           }
           else {
-            String tempBgColor = this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1].getBackColor();
+            Optional<String> tempBgColor = this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1].getBackColor();
             this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1] = childContent[j];
             this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1].setBackColor(tempBgColor);
           }
@@ -637,16 +646,16 @@ public class ColorCanvas implements Serializable
     ColorByte cb = list.get(0);
     
     boolean hasUrl;
-    hasUrl = cb.getUrl() != null;
+    hasUrl = cb.getUrl().isPresent();
  
     boolean hasFont;
-    hasFont = (cb.getFont() != null) || (cb.getForeColor() != null) || (cb.getBackColor() != null) || (cb.getTitle() != null);
+    hasFont = (cb.getFont().isPresent()) || (cb.getForeColor().isPresent()) || (cb.getBackColor().isPresent()) || (cb.getTitle().isPresent());
     
     if (hasUrl && !hasFont) //只有網址
     {
       try
       {
-        tempSb.append("<a href=\""+ cb.getUrl() +"\" target=\"_blank\">"+ new String(byteArray , "Big5") +"</a>");
+        tempSb.append("<a href=\""+ cb.getUrl().get() +"\" target=\"_blank\">"+ new String(byteArray , "Big5") +"</a>");
       }
       catch (UnsupportedEncodingException ignored)
       {
@@ -658,7 +667,7 @@ public class ColorCanvas implements Serializable
     }
     else if (hasUrl && hasFont) //有網址也有字型
     {
-      tempSb.append("<a href=\""+ cb.getUrl() +"\" target=\"_blank\">");
+      tempSb.append("<a href=\""+ cb.getUrl().get() +"\" target=\"_blank\">");
       tempSb.append(buildFontHtml(cb, byteArray));
       tempSb.append("</a>");
     }
@@ -683,26 +692,19 @@ public class ColorCanvas implements Serializable
     sb.append("<font");
     //sb.append(" style=\"");
     sb.append(" style=\"white-space: pre; ");
-    
-    if (cb.getForeColor() != null)
-      sb.append("color:"+cb.getForeColor().toString()+"; ");
-    if (cb.getBackColor() != null)
-      sb.append("background-color:"+cb.getBackColor().toString()+"; ");
-    if (cb.getFont() != null)
-    {
-      sb.append("font-family:"+cb.getFont().getFamily()+"; ");
-      //sb.append("font-size:" + cb.getFont().getSize()+"px; ");
-    }
-      
+
+    cb.getForeColor().ifPresent( foreColor -> sb.append("color:"+foreColor+"; ") );
+    cb.getBackColor().ifPresent( backColor -> sb.append("background-color:"+backColor+"; "));
+    cb.getFont().ifPresent( font -> sb.append("font-family:"+font.getFamily()+"; ") );
+
     sb.append("\"");
     
     //檢查是否有 title
-    if (cb.getTitle() != null)
-    {
+    cb.getTitle().ifPresent( title -> {
       sb.append(" title=\"");
-      sb.append(cb.getTitle());
+      sb.append(cb.getTitle().get());
       sb.append("\"");
-    }
+    });
 
     sb.append(">");
     try

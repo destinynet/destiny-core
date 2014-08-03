@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * 將 梅花易的 Context (MumeContext) 包裝成彩色 ColorCanvas
@@ -45,7 +46,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
     
     try
     {
-      siteCanvas.setText("Destiny 命理網", 1, 1, null , null , null, new URL("http://destiny.xfiles.to"), "Destiny命理網", false);
+      siteCanvas.setText("Destiny 命理網", 1, 1, Optional.empty() , Optional.empty() , Optional.empty(), Optional.of(new URL("http://destiny.xfiles.to")), Optional.of("Destiny命理網"), false);
     }
     catch (MalformedURLException ignored)
     {
@@ -144,7 +145,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
   @Nullable
   private ColorCanvas getColorCanvas(@NotNull Symbol s)
   {
-    String color = null; //卦的顏色
+    String color; //卦的顏色
     switch(s.getFiveElement())
     {
       case 木: color = "GREEN"; break;
@@ -152,8 +153,9 @@ public class MumeContextColorCanvasWrapper implements Serializable
       case 土: color = "CC6633"; break;
       case 金: color = "999999"; break;
       case 水: color = "BLACK"; break;
+      default: throw new RuntimeException("impossible");
     }
-    ColorCanvas cc = new ColorCanvas(3,12,"　",color,null);
+    ColorCanvas cc = new ColorCanvas(3,12,"　", Optional.of(color) , Optional.empty());
     for (int i=3 ; i >=1 ; i--)
     {
       if (s.getBooleanValue(i))

@@ -8,37 +8,36 @@
 package destiny.utils.ColorCanvas;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.awt.Font;
+import java.awt.*;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.Optional;
 
 
 class ColorByte implements Serializable
 {
   private byte b;
 
-  @Nullable
-  private String foreColor; //前景色
+  private Optional<String> foreColor = Optional.empty(); //前景色
 
-  @Nullable
-  private String backColor; //背景色
+  private Optional<String> backColor = Optional.empty(); //背景色
 
-  private Font font;
-  private URL url;
-  private String title;
+  private Optional<Font> font = Optional.empty();
+
+  private Optional<URL> url = Optional.empty();
+
+  private Optional<String> title = Optional.empty();
   
   /**
    * @return Returns the backColor.
    */
-  @Nullable
-  public String getBackColor()
+  public Optional<String> getBackColor()
   {
     return backColor;
   }
     
-  public void setBackColor(String color)
+  public void setBackColor(Optional<String> color)
   {
     this.backColor = this.validateColor(color);
   }
@@ -46,7 +45,7 @@ class ColorByte implements Serializable
   /**
    * @return Returns the font.
    */
-  public Font getFont()
+  public Optional<Font> getFont()
   {
     return font;
   }
@@ -54,8 +53,7 @@ class ColorByte implements Serializable
   /**
    * @return Returns the foreColor.
    */
-  @Nullable
-  public String getForeColor()
+  public Optional<String> getForeColor()
   {
     return foreColor;
   }
@@ -63,7 +61,7 @@ class ColorByte implements Serializable
   /**
    * @return Returns the url.
    */
-  public URL getUrl()
+  public Optional<URL> getUrl()
   {
     return url;
   }
@@ -71,14 +69,15 @@ class ColorByte implements Serializable
   /**
    * @return Returns the title
    */
-  public String getTitle()
+  public Optional<String> getTitle()
   {
     return title;
   }
 
   public ColorByte() {}
   
-  public ColorByte(byte b , String foreColor , String backColor , Font font , URL url , String title)
+  public ColorByte(byte b , Optional<String> foreColor , Optional<String> backColor
+    , Optional<Font> font , Optional<URL> url , Optional<String> title)
   {
     this.b = b;
     this.foreColor = validateColor(foreColor);
@@ -99,19 +98,18 @@ class ColorByte implements Serializable
    * @param color
    * @return
    */
-  @Nullable
-  private String validateColor(@Nullable String color)
+  private Optional<String> validateColor(Optional<String> color)
   {
-    if (color != null &&  
+    if (color.isPresent() &&
         (
-            (color.getBytes().length == 3 || color.getBytes().length == 6 ) ||
-            (color.startsWith("#") && (color.getBytes().length == 4 || color.getBytes().length == 7))
+            (color.get().getBytes().length == 3 || color.get().getBytes().length == 6 ) ||
+            (color.get().startsWith("#") && (color.get().getBytes().length == 4 || color.get().getBytes().length == 7))
         )
        )
     {
-      byte[] colorBytes = color.getBytes();
+      byte[] colorBytes = color.get().getBytes();
       boolean isRGB = true;
-      int start = color.startsWith("#") ? 1 : 0;
+      int start = color.get().startsWith("#") ? 1 : 0;
       for ( int i = start ; i < colorBytes.length ; i++)
       {
         if (!(  ( (colorBytes[i] >= 48 ) && ( colorBytes[i] <= 57  ) )
@@ -124,9 +122,9 @@ class ColorByte implements Serializable
       }//loop 6 bytes
       if (isRGB)
       {
-        color = color.toUpperCase();
+        color = Optional.of(color.get().toUpperCase());
         if (start == 0)
-          color = "#".concat(color);  
+          color = Optional.of("#".concat(color.get()));
       }        
     }        
     return color;
@@ -154,13 +152,14 @@ class ColorByte implements Serializable
    */
   public boolean isSameProperties(@NotNull ColorByte cb)
   {
+    //System.out.println("font = " + font + " , cb.font = " + cb.font);
     //url 的 equals 要 resolve domain name , 改以 url.toExternalForm() 來比對
     if (
-        ( ( (this.foreColor == null) && (cb.foreColor == null)) || ( (this.foreColor != null ) && this.foreColor.equals(cb.foreColor)) ) &&
-        ( ( (this.backColor == null) && (cb.backColor == null)) || ( (this.backColor != null ) && this.backColor.equals(cb.backColor)) ) && 
-        ( ( (this.font      == null) && (cb.font      == null)) || ( (this.font      != null ) && this.font.equals(cb.font)          ) ) && 
-        ( ( (this.url       == null) && (cb.url       == null)) || ( (this.url       != null ) && (cb.url       != null ) && this.url.toString().equals(cb.url.toExternalForm())            ) ) &&
-        ( ( (this.title     == null) && (cb.title     == null)) || ( (this.title     != null ) && this.title.equals(cb.title)        ) ) 
+        ( ( (!this.foreColor.isPresent()) && (!cb.foreColor.isPresent())) || ( (this.foreColor.isPresent() ) && this.foreColor.equals(cb.foreColor)) ) &&
+        ( ( (!this.backColor.isPresent()) && (!cb.backColor.isPresent())) || ( (this.backColor.isPresent() ) && this.backColor.get().equals(cb.backColor.get())) ) &&
+        ( ( (!this.font.isPresent()     ) && (!cb.font.isPresent())     ) || ( (this.font.isPresent()      ) && this.font.equals(cb.font)          ) ) &&
+        ( ( (!this.url.isPresent()      ) && (!cb.url.isPresent())      ) || ( (this.url.isPresent()       ) && (cb.url.isPresent() ) && this.url.get().toString().equals(cb.url.get().toExternalForm())) ) &&
+        ( ( (!this.title.isPresent()    ) && (!cb.title.isPresent()     ) || ( (this.title.isPresent()     ) && this.title.get().equals(cb.title.get()))) )
        )
       return true;
     else

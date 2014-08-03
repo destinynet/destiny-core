@@ -4,20 +4,21 @@
  */ 
 package destiny.astrology;
 
-import java.util.Locale;
-
 import junit.framework.TestCase;
+
+import java.util.Locale;
 
 public class AspectTest extends TestCase
 {
 
   public void testGetAspectFromString()
   {
-    assertSame(Aspect.CONJUNCTION , Aspect.getAspect("Conjunction"));
-    assertSame(Aspect.OPPOSITION , Aspect.getAspect("Opposition"));
-    assertSame(Aspect.SQUARE , Aspect.getAspect("SQUARE"));
-    assertSame(Aspect.TRINE , Aspect.getAspect("TrInE"));
-    assertSame(Aspect.SEXTILE , Aspect.getAspect("sextile"));
+    assertSame(Aspect.CONJUNCTION , Aspect.getAspect("Conjunction").get());
+    assertSame(Aspect.OPPOSITION , Aspect.getAspect("Opposition").get());
+    assertSame(Aspect.SQUARE , Aspect.getAspect("SQUARE").get());
+    assertSame(Aspect.TRINE , Aspect.getAspect("TrInE").get());
+    assertSame(Aspect.SEXTILE , Aspect.getAspect("sextile").get());
+    assertTrue(!Aspect.getAspect("xxx").isPresent());
   }
   
   public void testToString()
@@ -94,42 +95,42 @@ public class AspectTest extends TestCase
   
   public void testGetAspect()
   {
-    assertSame(Aspect.getAspect(0) , Aspect.CONJUNCTION);
-    assertSame(Aspect.getAspect(60) , Aspect.SEXTILE);
-    assertSame(Aspect.getAspect(90) , Aspect.SQUARE);
-    assertSame(Aspect.getAspect(120) , Aspect.TRINE);
-    assertSame(Aspect.getAspect(150) , Aspect.QUINCUNX);
-    assertSame(Aspect.getAspect(180) , Aspect.OPPOSITION);
-    assertSame(Aspect.getAspect(210) , Aspect.QUINCUNX);
-    assertSame(Aspect.getAspect(240) , Aspect.TRINE);
-    assertSame(Aspect.getAspect(270) , Aspect.SQUARE);
-    assertSame(Aspect.getAspect(300) , Aspect.SEXTILE);
-    assertSame(Aspect.getAspect(360) , Aspect.CONJUNCTION);
+    assertSame(Aspect.getAspect(0)  .get(), Aspect.CONJUNCTION);
+    assertSame(Aspect.getAspect(60) .get(), Aspect.SEXTILE);
+    assertSame(Aspect.getAspect(90) .get(), Aspect.SQUARE);
+    assertSame(Aspect.getAspect(120).get() , Aspect.TRINE);
+    assertSame(Aspect.getAspect(150).get() , Aspect.QUINCUNX);
+    assertSame(Aspect.getAspect(180).get() , Aspect.OPPOSITION);
+    assertSame(Aspect.getAspect(210).get() , Aspect.QUINCUNX);
+    assertSame(Aspect.getAspect(240).get() , Aspect.TRINE);
+    assertSame(Aspect.getAspect(270).get() , Aspect.SQUARE);
+    assertSame(Aspect.getAspect(300).get() , Aspect.SEXTILE);
+    assertSame(Aspect.getAspect(360).get() , Aspect.CONJUNCTION);
     
-    assertSame(Aspect.getAspect(360) , Aspect.CONJUNCTION);
-    assertSame(Aspect.getAspect(420) , Aspect.SEXTILE);
-    assertSame(Aspect.getAspect(450) , Aspect.SQUARE);
-    assertSame(Aspect.getAspect(480) , Aspect.TRINE);
-    assertSame(Aspect.getAspect(510) , Aspect.QUINCUNX);
-    assertSame(Aspect.getAspect(540) , Aspect.OPPOSITION);
-    assertSame(Aspect.getAspect(570) , Aspect.QUINCUNX);
-    assertSame(Aspect.getAspect(600) , Aspect.TRINE);
-    assertSame(Aspect.getAspect(630) , Aspect.SQUARE);
-    assertSame(Aspect.getAspect(660) , Aspect.SEXTILE);
-    assertSame(Aspect.getAspect(720) , Aspect.CONJUNCTION);
+    assertSame(Aspect.getAspect(360).get() , Aspect.CONJUNCTION);
+    assertSame(Aspect.getAspect(420).get() , Aspect.SEXTILE);
+    assertSame(Aspect.getAspect(450).get() , Aspect.SQUARE);
+    assertSame(Aspect.getAspect(480).get() , Aspect.TRINE);
+    assertSame(Aspect.getAspect(510).get() , Aspect.QUINCUNX);
+    assertSame(Aspect.getAspect(540).get() , Aspect.OPPOSITION);
+    assertSame(Aspect.getAspect(570).get() , Aspect.QUINCUNX);
+    assertSame(Aspect.getAspect(600).get() , Aspect.TRINE);
+    assertSame(Aspect.getAspect(630).get() , Aspect.SQUARE);
+    assertSame(Aspect.getAspect(660).get() , Aspect.SEXTILE);
+    assertSame(Aspect.getAspect(720).get() , Aspect.CONJUNCTION);
     
     
-    assertSame(Aspect.getAspect(0) , Aspect.CONJUNCTION);
-    assertSame(Aspect.getAspect(-60) , Aspect.SEXTILE);
-    assertSame(Aspect.getAspect(-90) , Aspect.SQUARE);
-    assertSame(Aspect.getAspect(-120) , Aspect.TRINE);
-    assertSame(Aspect.getAspect(-150) , Aspect.QUINCUNX);
-    assertSame(Aspect.getAspect(-180) , Aspect.OPPOSITION);
-    assertSame(Aspect.getAspect(-210) , Aspect.QUINCUNX);
-    assertSame(Aspect.getAspect(-240) , Aspect.TRINE);
-    assertSame(Aspect.getAspect(-270) , Aspect.SQUARE);
-    assertSame(Aspect.getAspect(-300) , Aspect.SEXTILE);
-    assertSame(Aspect.getAspect(-360) , Aspect.CONJUNCTION);
+    assertSame(Aspect.getAspect(0)   .get() , Aspect.CONJUNCTION);
+    assertSame(Aspect.getAspect(-60) .get() , Aspect.SEXTILE);
+    assertSame(Aspect.getAspect(-90) .get() , Aspect.SQUARE);
+    assertSame(Aspect.getAspect(-120).get() , Aspect.TRINE);
+    assertSame(Aspect.getAspect(-150).get() , Aspect.QUINCUNX);
+    assertSame(Aspect.getAspect(-180).get() , Aspect.OPPOSITION);
+    assertSame(Aspect.getAspect(-210).get() , Aspect.QUINCUNX);
+    assertSame(Aspect.getAspect(-240).get() , Aspect.TRINE);
+    assertSame(Aspect.getAspect(-270).get() , Aspect.SQUARE);
+    assertSame(Aspect.getAspect(-300).get() , Aspect.SEXTILE);
+    assertSame(Aspect.getAspect(-360).get() , Aspect.CONJUNCTION);
   }
 
 }

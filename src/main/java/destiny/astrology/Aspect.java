@@ -6,9 +6,9 @@ package destiny.astrology;
 
 import destiny.utils.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /** 交角 , Aspect */
 public enum Aspect implements LocaleStringIF
@@ -92,15 +92,9 @@ public enum Aspect implements LocaleStringIF
   }
   
   /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null */
-  @Nullable
-  public static Aspect getAspect(String value)
+  public static Optional<Aspect> getAspect(String value)
   {
-    for (Aspect aspect : Aspect.values())
-    {
-      if (aspect.toString(Locale.ENGLISH).equalsIgnoreCase(value))
-        return aspect;
-    }
-    return null;
+    return Stream.of(Aspect.values()).filter( a-> a.toString(Locale.ENGLISH).equalsIgnoreCase(value)).findFirst();
   }
   
   /** 取得度數 */
@@ -126,8 +120,7 @@ public enum Aspect implements LocaleStringIF
   
   
   /** 從 double 度數，找回符合的 Aspect */
-  @Nullable
-  public static Aspect getAspect(double degree)
+  public static Optional<Aspect> getAspect(double degree)
   {
     if (degree >=360 )
       return getAspect(degree - 360);
@@ -141,9 +134,9 @@ public enum Aspect implements LocaleStringIF
     for(Aspect aspect : values())
     {
       if (Math.abs(aspect.degree - degree) < 0.01)
-        return aspect;
+        return Optional.of(aspect);
     }
-    return null;
+    return Optional.empty();
   }
   
   @Override

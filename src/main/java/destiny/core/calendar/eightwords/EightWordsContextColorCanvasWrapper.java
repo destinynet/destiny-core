@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
@@ -106,7 +107,7 @@ public class EightWordsContextColorCanvasWrapper
     ColorCanvas 地點名稱 = new ColorCanvas(1,44, "　");
     地點名稱.setText("地點：", 1 , 1);
     //地點名稱.setText(locationName , 1 , 7);
-    地點名稱.setText(locationName , 1 , 7 , null , null , null , url , null , false);
+    地點名稱.setText(locationName , 1 , 7 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
     int minuteOffset = (int) (DstUtils.getDstSecondOffset(lmt, location).getSecond() / 60);
     地點名稱.setText(" GMT時差："+AlignUtil.alignRight(minuteOffset,6)+"分鐘", 1, 25 , "999999");
     cc.add(地點名稱 , 2 , 1);
@@ -128,7 +129,7 @@ public class EightWordsContextColorCanvasWrapper
     lonText.append("分");
     lonText.append(AlignUtil.alignRight(location.getLongitudeSecond(),4));
     lonText.append("秒");
-    經度.setText(lonText.toString(), 1, 1 , null , null , null , url , null , false);
+    經度.setText(lonText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
     cc.add(經度 , 3 , 1);
     
     ColorCanvas 緯度 = new ColorCanvas(1, 20 , "　");
@@ -141,7 +142,7 @@ public class EightWordsContextColorCanvasWrapper
     latText.append("分");
     latText.append(AlignUtil.alignRight(location.getLatitudeSecond(),4));
     latText.append("秒");
-    緯度.setText(latText.toString(), 1, 1 , null , null , null , url , null , false);
+    緯度.setText(latText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
     cc.add(緯度 , 3 , 25);
     
     cc.setText("換日："+ (context.isChangeDayAfterZi() ? "子初換日" : "子正換日"), 4, 1 , "999999" );
@@ -171,7 +172,7 @@ public class EightWordsContextColorCanvasWrapper
         //網址長度可能是奇數
         if (linkUrl.length() % 2 == 1)
           linkUrl = linkUrl + ' ';
-        cc.setText(linkUrl, 7, 11 , "999999" , null , null , new URL(linkUrl) , null , false);
+        cc.setText(linkUrl, 7, 11 , Optional.of("999999") , Optional.empty() , Optional.empty() , Optional.of(new URL(linkUrl)) , Optional.empty() , false);
       }
       catch (MalformedURLException e)
       {

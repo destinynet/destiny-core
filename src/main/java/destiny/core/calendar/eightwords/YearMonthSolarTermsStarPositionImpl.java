@@ -4,22 +4,18 @@
  */ 
 package destiny.core.calendar.eightwords;
 
-import java.io.Serializable;
-
 import destiny.astrology.Coordinate;
 import destiny.astrology.Planet;
 import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
-import destiny.core.calendar.DstUtils;
-import destiny.core.calendar.Location;
-import destiny.core.calendar.SolarTerms;
-import destiny.core.calendar.SolarTermsBean;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.*;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
 
 /**
  * <pre>
@@ -230,7 +226,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
 
   
   /**
-   * @param deree 設定太陽過黃道多少度 換年。一般而言是 立春（315），但是有人會使用冬至（270）換年
+   * @param degree 設定太陽過黃道多少度 換年。一般而言是 立春（315），但是有人會使用冬至（270）換年
    * 本實作僅接受 180(含) 到 360(不含) 之間的值
    */
   public void setChangeYearDegree(double degree)
@@ -283,11 +279,10 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
    * @param lmt
    * @param 月支
    */
-  @Nullable
   private HeavenlyStems getMonthStem(@NotNull Time lmt , @NotNull Location location , @NotNull EarthlyBranches 月支)
   {
-    HeavenlyStems 月干 = null;
-    
+    HeavenlyStems 月干;
+
     if (年干 == null)
       this.getYear(lmt , location);  //如果年干還沒算，則強迫去算一次 年干支，其結果會儲存在 this.年干 內
     
@@ -298,7 +293,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       case 丙 : case 辛 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+4 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+6 ) ) ; break;
       case 丁 : case 壬 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+6 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+8 ) ) ; break;
       case 戊 : case 癸 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+8 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+10) ) ; break;
-      
+      default : throw new RuntimeException("impossible");
     }
     
     if (changeYearDegree != 315)

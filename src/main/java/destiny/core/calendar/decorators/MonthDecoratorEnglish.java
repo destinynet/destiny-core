@@ -4,15 +4,13 @@
  */ 
 package destiny.core.calendar.decorators;
 
-import java.io.Serializable;
-
 import destiny.utils.Decorator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
 
 public class MonthDecoratorEnglish implements Decorator<Integer> , Serializable
 {
-  @Nullable
   @Override
   public String getOutputString(@NotNull Integer month)
   {
@@ -30,8 +28,8 @@ public class MonthDecoratorEnglish implements Decorator<Integer> , Serializable
       case 10 : return "October";
       case 11 : return "November";
       case 12 : return "December";
+      default : throw new RuntimeException("impossible");
     }
-    return null;
   }
 
 }

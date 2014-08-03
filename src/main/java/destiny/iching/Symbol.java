@@ -8,7 +8,6 @@ import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.FiveElementIF;
 import destiny.core.chinese.YinYangIF;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -117,7 +116,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   /**
    * implements FiveElementIF 
    */
-  @Nullable
+  @NotNull
   public FiveElement getFiveElement()
   {
     switch ( this )
@@ -127,7 +126,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
       case 震 : case 巽 : return FiveElement.木 ;
       case 坎 :          return FiveElement.水 ;
       case 艮 : case 坤 : return FiveElement.土 ;
-      default   : return null;
+      default   : throw new RuntimeException("impossible");
     }
   }
 }

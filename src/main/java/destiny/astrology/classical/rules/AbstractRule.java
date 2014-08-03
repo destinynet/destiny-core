@@ -96,29 +96,27 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   }
   
   /** 取得註解 */
-  @Nullable
   @Override
-  public String getComment()
+  public Optional<String> getComment()
   {
     return getComment(locale);
   }
   
   /** 取得某 Locale 之下的註解 */ 
-  @Nullable
   @Override
-  public String getComment(@NotNull Locale locale)
+  public Optional<String> getComment(@NotNull Locale locale)
   {
     try
     {
       String pattern = ResourceBundle.getBundle(resource , locale).getString(nameKey+"."+this.commentKey);
       String result = MessageFormat.format(pattern, getCommentParemeters(locale));
       //System.err.println("result = " + result);
-      return result;  
+      return Optional.of(result);
     }
     catch(MissingResourceException e)
     {
       e.printStackTrace();
-      return null;
+      return Optional.empty();
     }
   }
   
