@@ -491,7 +491,7 @@ public class ColorCanvas implements Serializable
   /** 附加一行「空行」到 content 尾端「之後」，亦即，加高 content */
   public void appendEmptyLine()
   {
-    ColorCanvas appendedCanvas = new ColorCanvas(1 , width , " " , null , null);
+    ColorCanvas appendedCanvas = new ColorCanvas(1 , width , " " , Optional.empty() , Optional.empty());
     this.height ++;
     ColorByte[] newContent = new ColorByte[content.length + 1*width];
     System.arraycopy(content, 0, newContent, 0, content.length);
@@ -537,7 +537,7 @@ public class ColorCanvas implements Serializable
           }
 
           //檢查 '子' content 是否有背景色，如果背景色是 null , 則 '父'content 必須保留其背景色
-          if (childContent[j].getBackColor() != null) {
+          if (childContent[j].getBackColor().isPresent()) {
             this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1] = childContent[j];
           }
           else {

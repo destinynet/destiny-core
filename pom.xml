@@ -7,14 +7,20 @@
     <groupId>destiny</groupId>
     <artifactId>destiny-parent</artifactId>
     <version>0.0.1</version>
+    <relativePath>../destiny-parent/pom.xml</relativePath>
   </parent>
+
   <artifactId>destiny-core</artifactId>
   <name>destiny-core</name>
+
   <dependencies>
     <dependency>
-      <groupId>destiny</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>destiny-resources</artifactId>
-      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>destiny-tools</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -23,11 +29,7 @@
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>LATEST</version>
-    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -39,7 +41,6 @@
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
-      <version>1</version>
     </dependency>
     <dependency>
       <groupId>com.intellij</groupId>

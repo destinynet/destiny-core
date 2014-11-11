@@ -129,7 +129,7 @@ public class BesiegedBean implements Serializable
     searchingAspects.add(Aspect.SEXTILE);  // 60
     searchingAspects.add(Aspect.TRINE);    // 120
     
-    Collection<Aspect> constrainingAspects = Collections.synchronizedList(new ArrayList<>());
+    Collection<Aspect> constrainingAspects = Collections.synchronizedList(new ArrayList<Aspect>());
     constrainingAspects.addAll(searchingAspects);
     if (isOnlyHardAspects) 
     { 
@@ -140,7 +140,7 @@ public class BesiegedBean implements Serializable
     
     
     List<Planet> besiegingPlanets = getBesiegingPlanets(planet , gmt , otherPlanets , searchingAspects);
-    logger.info("包夾 {} 的是 {}({}) 以及 {}({})"
+    logger.debug("包夾 {} 的是 {}({}) 以及 {}({})"
       , planet , besiegingPlanets.get(0) , aspectPrior.get() , besiegingPlanets.get(1) , aspectAfter.get());
     if (besiegingPlanets.contains(p1) && besiegingPlanets.contains(p2))
     {
