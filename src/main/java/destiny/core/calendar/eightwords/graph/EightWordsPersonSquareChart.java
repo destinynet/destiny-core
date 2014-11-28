@@ -10,9 +10,11 @@ import java.awt.*;
 import java.util.Optional;
 
 /**
+ * 接收 EightWordsPersonContext
+ *
  * 一個「人」的簡易八字盤（正方形），沒有流年，沒有日期
  */
-public class EightWordsPersonSquareChart extends EightWordsWithDescChart{
+public class EightWordsPersonSquareChart extends EightWordsWithDescChart {
 
   public EightWordsPersonSquareChart(int width, @NotNull EightWordsPersonContext context, EightWordsChart.Direction direction) {
     super(width, Color.WHITE, Color.BLACK, Optional.of(context.getGender()) , context.getEightWords(), direction);

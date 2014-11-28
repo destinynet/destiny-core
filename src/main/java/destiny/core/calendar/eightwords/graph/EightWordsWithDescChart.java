@@ -25,8 +25,23 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 八字盤 with 十神文字
+ * 八字盤 with 十神文字 , 性別為 optional .
+ * 若傳入性別，男生日主為藍色，女生日主為紅色
+ *
  * 正方形圖片
+ *
+ *   +-------------------------+
+ *   |   x     x     x     x   |
+ *   |   x     x     x     x   |
+ *   |                         |
+ *   |  HHH   DDD   MMM   YYY  |
+ *   |                         |
+ *   |  HHH   DDD   MMM   YYY  |
+ *   |                         |
+ *   |   y     y     y     y   | \
+ *   |  xxx   xxx   xxx   xxx  |  } Desc
+ *   |  xxx   xxx   xxx   xxx  | /
+ *   +-------------------------+
  */
 public class EightWordsWithDescChart extends BufferedImage implements Serializable {
 
@@ -63,7 +78,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
     HeavenlyStems dayStem = eightWordsNullable.getDayStem();
 
     // Tuple < 干支 , 天干(相對於日干)的十神 , 地支藏干(相對於日干)的十神 >
-    List<Triple<StemBranchNullable, Reactions , List<Reactions>>> list = new ArrayList();
+    List<Triple<StemBranchNullable, Reactions , List<Reactions>>> list = new ArrayList<>();
 
     eightWordsNullable.getStemBranches().forEach(sb -> {
       List<Reactions> reactions = reactionsUtil.getReactions(sb.getBranch() , dayStem);

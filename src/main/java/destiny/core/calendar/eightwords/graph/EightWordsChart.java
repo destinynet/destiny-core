@@ -18,11 +18,15 @@ import static destiny.core.chart.Constants.GOLDEN_RATIO;
 import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 
 /**
- * 純粹八個字（干支可能為空）的圖
+ * 純粹八個字（干支可能為空）的圖 , 黃金比例
+ *
+ *   +-------------------------+
+ *   |  HHH   DDD   MMM   YYY  |
+ *   |                         |
+ *   |  HHH   DDD   MMM   YYY  |
+ *   +-------------------------+
  */
 public class EightWordsChart extends BufferedImage implements Serializable {
-
-
 
   /** 排列方向：右到左，還是左到右 */
   public enum Direction {R2L , L2R}
