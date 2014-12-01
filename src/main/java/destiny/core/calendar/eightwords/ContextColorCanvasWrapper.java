@@ -25,7 +25,7 @@ import java.util.Optional;
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
  */
-public class EightWordsContextColorCanvasWrapper
+public class ContextColorCanvasWrapper
 {
   /** 八字 Context */
   private EightWordsContext context;
@@ -53,8 +53,7 @@ public class EightWordsContextColorCanvasWrapper
 
   private OutputMode outputMode = OutputMode.HTML;
   
-  public EightWordsContextColorCanvasWrapper(EightWordsContext context, Time lmt, Location location , String locationName , 
-      HiddenStemsIF hiddenStemsImpl , String linkUrl)
+  public ContextColorCanvasWrapper(EightWordsContext context, Time lmt, Location location, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl)
   {
     this.context = context;
     this.lmt = lmt;
@@ -77,7 +76,7 @@ public class EightWordsContextColorCanvasWrapper
   @NotNull
   protected ColorCanvas getMetaDataColorCanvas()
   {
-    ColorCanvas cc = new ColorCanvas(8,44,"　");
+    ColorCanvas cc = new ColorCanvas(8,52,"　");
     
     ColorCanvas 西元資訊 = new ColorCanvas(1,36, "　");
     StringBuffer timeData = new StringBuffer();
@@ -153,7 +152,8 @@ public class EightWordsContextColorCanvasWrapper
       if (yearMonthImpl instanceof YearMonthSolarTermsStarPositionImpl)
       {
         YearMonthSolarTermsStarPositionImpl impl = (YearMonthSolarTermsStarPositionImpl) yearMonthImpl;
-        cc.setText("南半球月令："+ (impl.isSouthernHemisphereOpposition() ? "對沖" : "不對沖"), 4, 25 , "999999");
+        cc.setText("南半球" , 4 , 35 , "FF0000");
+        cc.setText(      "月令："+ (impl.isSouthernHemisphereOpposition() ? "對沖" : "不對沖"), 4, 41 , "999999");
       }
     }
     

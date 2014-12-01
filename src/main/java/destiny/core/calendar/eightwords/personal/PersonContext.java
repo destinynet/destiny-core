@@ -38,7 +38,7 @@ import java.util.Map;
  * <BR> 一分鐘抵 10/120 天 , 一秒鐘抵 10/(120x60) 天 == 10x24x60x60/120x60 秒 = 120秒
  * <BR>
  */
-public class EightWordsPersonContext extends EightWordsContext implements Serializable
+public class PersonContext extends EightWordsContext implements Serializable
 {
   /** 實作計算節氣的介面 */
   private SolarTermsIF solarTermsImpl; 
@@ -68,17 +68,17 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
   private double fortuneHourSpan = 365*12;
   
   /** 
-   * ThreadLoacl 物件，存放 Map<Integer , Time> , Integer 為往前/後 地幾個「節」，而 Time 則為其 GMT 值 ，作為推算大運時所使用
+   * ThreadLocal 物件，存放 Map<Integer , Time> , Integer 為往前/後 地幾個「節」，而 Time 則為其 GMT 值 ，作為推算大運時所使用
    * 
    * 2010/7/30 重新設計此 ThreadLocal , 本來是 ThreadLocal<Map<Integer,Time>> , 
    * 但是一個 thread 很有可能 new 出多個 EightWordsPersonContext , 而此 threadLocal 物件並沒有紀錄 EightWordsPersonContext 的特徵 
    * 因此將此 threadLocal 物件另外包一層 Map , key 為 EightWordsPersonContext
    */
   @NotNull
-  private static ThreadLocal<Map<EightWordsPersonContext,Map<Integer,Time>>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<EightWordsPersonContext,Map<Integer,Time>>>()
+  private static ThreadLocal<Map<PersonContext,Map<Integer,Time>>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<PersonContext,Map<Integer,Time>>>()
   {
     @Override
-    protected Map<EightWordsPersonContext , Map<Integer, Time>> initialValue()
+    protected Map<PersonContext, Map<Integer, Time>> initialValue()
     {
       return Collections.synchronizedMap(new HashMap<>());
     }
@@ -88,9 +88,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
   private FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
 
   /** constructor */
-  public EightWordsPersonContext(YearMonthIF yearMonth , DayIF day, HourIF hour, MidnightIF midnight , boolean changeDayAfterZi ,
-      @NotNull SolarTermsIF solarTermsImpl , StarTransitIF starTransitImpl ,
-      @NotNull Time lmt , @NotNull Location location , Gender gender , double fortuneMonthSpan , FortuneDirectionIF fortuneDirectionImpl)
+  public PersonContext(YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl)
   {
     super(yearMonth, day, hour, midnight , changeDayAfterZi);
     this.solarTermsImpl = solarTermsImpl;
@@ -220,7 +218,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
     
     
     //Map<Integer,Time> hashMap = targetMajorSolarTermsGmtHolder.get();
-    Map<EightWordsPersonContext , Map<Integer,Time>> hashMap = targetMajorSolarTermsGmtHolder.get();
+    Map<PersonContext, Map<Integer,Time>> hashMap = targetMajorSolarTermsGmtHolder.get();
     if (hashMap.get(this) == null)
       hashMap.put(this, new HashMap<>());
     Time targetGmt = hashMap.get(this).get(index);
@@ -439,7 +437,7 @@ public class EightWordsPersonContext extends EightWordsContext implements Serial
       return false;
     if (getClass() != obj.getClass())
       return false;
-    EightWordsPersonContext other = (EightWordsPersonContext) obj;
+    PersonContext other = (PersonContext) obj;
     if (currentSolarTerms != other.currentSolarTerms)
       return false;
     if (eightWords == null)

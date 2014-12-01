@@ -156,7 +156,7 @@ class ColorByte implements Serializable
     //url 的 equals 要 resolve domain name , 改以 url.toExternalForm() 來比對
     if (
         ( ( (!this.foreColor.isPresent()) && (!cb.foreColor.isPresent())) || ( (this.foreColor.isPresent() ) && this.foreColor.equals(cb.foreColor)) ) &&
-        ( ( (!this.backColor.isPresent()) && (!cb.backColor.isPresent())) || ( (this.backColor.isPresent() ) && this.backColor.get().equals(cb.backColor.get())) ) &&
+        ( ( (!this.backColor.isPresent()) && (!cb.backColor.isPresent())) || ( (this.backColor.isPresent() ) && this.backColor.orElse(null).equals(cb.backColor.orElse(null))) ) &&
         ( ( (!this.font.isPresent()     ) && (!cb.font.isPresent())     ) || ( (this.font.isPresent()      ) && this.font.equals(cb.font)          ) ) &&
         ( ( (!this.url.isPresent()      ) && (!cb.url.isPresent())      ) || ( (this.url.isPresent()       ) && (cb.url.isPresent() ) && this.url.get().toString().equals(cb.url.get().toExternalForm())) ) &&
         ( ( (!this.title.isPresent()    ) && (!cb.title.isPresent()     ) || ( (this.title.isPresent()     ) && this.title.get().equals(cb.title.get()))) )

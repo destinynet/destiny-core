@@ -20,7 +20,7 @@ public class FortuneDirectionDefaultImpl implements FortuneDirectionIF , Seriali
   }
   
   /** 大運的順逆，內定演算法：陽男陰女順行；陰男陽女逆行 */
-  public boolean isForward(@NotNull EightWordsPersonContext personContext)
+  public boolean isForward(@NotNull PersonContext personContext)
   {
     if ( (personContext.getGender() == Gender.男 && personContext.getEightWords().getYear().getStem().getBooleanValue()) ||
          (personContext.getGender() == Gender.女 && !personContext.getEightWords().getYear().getStem().getBooleanValue()))
