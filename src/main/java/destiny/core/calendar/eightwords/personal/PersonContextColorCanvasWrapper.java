@@ -7,6 +7,7 @@ import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeDecoratorChinese;
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
+import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.StemBranch;
 import destiny.utils.ColorCanvas.AlignUtil;
@@ -34,10 +35,15 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   private final Decorator<Time> timeDecorator = new TimeDecoratorChinese();
 
-  public PersonContextColorCanvasWrapper(@NotNull PersonContextModel model, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl) {
-    super(model.getPersonContext(), model.getPersonContext().getLmt() , model.getPersonContext().getLocation() , locationName , hiddenStemsImpl , linkUrl);
+  private final Direction direction;
+
+  public PersonContextColorCanvasWrapper(@NotNull PersonContextModel model,
+                                         String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl , Direction direction) {
+    super(model.getPersonContext(), model.getPersonContext().getLmt() ,
+      model.getPersonContext().getLocation() , locationName , hiddenStemsImpl , linkUrl, direction);
     this.viewModel = model;
     this.hiddenStemsImpl = hiddenStemsImpl;
+    this.direction = direction;
   }
 
   public void setOutputMode(OutputMode mode)

@@ -10,7 +10,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import static destiny.core.calendar.eightwords.graph.EightWordsChart.Direction;
+import destiny.core.calendar.eightwords.Direction;
 
 public class EightWordsChartTest {
 

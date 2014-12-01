@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords.graph;
 
 import destiny.core.Gender;
+import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWordsNullable;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
@@ -50,7 +51,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
   private HiddenStemsIF hiddenStemsImpl  = new HiddenStemsStandardImpl();
 
   public EightWordsWithDescChart(int width , Color bg, Color fore, @NotNull Optional<Gender> genderOptional
-    , @NotNull EightWordsNullable eightWordsNullable, EightWordsChart.Direction direction) {
+    , @NotNull EightWordsNullable eightWordsNullable, Direction direction) {
     super(width, width, BufferedImage.TYPE_INT_ARGB);
 
     Graphics2D g = this.createGraphics();
@@ -85,7 +86,7 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
       list.add(Triple.of(sb, reactionsUtil.getReaction(sb.getStem(), dayStem), reactions));
     });
 
-    if (direction == EightWordsChart.Direction.R2L)
+    if (direction == Direction.R2L)
       Collections.reverse(list);
 
 
@@ -102,8 +103,8 @@ public class EightWordsWithDescChart extends BufferedImage implements Serializab
       if (ebReactions.size() >= 1) {
         float fontX = i*mainChart.getCellWidth() + (mainChart.getCellWidth()-mainChart.getFontSize())/2 + fontSize;
 
-        if ((direction == EightWordsChart.Direction.R2L && i != 1) ||
-            (direction == EightWordsChart.Direction.L2R && i != 2)
+        if ((direction == Direction.R2L && i != 1) ||
+            (direction == Direction.L2R && i != 2)
           ) {
           // 非日主上方，就要寫上十神
           g.drawString(hsReactions.toString().substring(0,1) , fontX , mainChartY-fontSize);

@@ -1,5 +1,6 @@
 package destiny.core.calendar.eightwords.graph;
 
+import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWordsNullable;
 import destiny.core.chinese.StemBranch;
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class EightWordsWithDescChartTest {
 
     EightWordsWithDescChart c = new EightWordsWithDescChart(600 , Color.WHITE , Color.BLACK , Optional.empty()
       , new EightWordsNullable(StemBranch.get("甲午") , StemBranch.get("庚午") , StemBranch.get("戊申") , StemBranch.get("辛酉"))
-      , EightWordsChart.Direction.R2L);
+      , Direction.R2L);
 
     System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
 
@@ -35,7 +36,7 @@ public class EightWordsWithDescChartTest {
 
     EightWordsWithDescChart c = new EightWordsWithDescChart(600 , Color.WHITE , Color.BLACK , Optional.empty()
       , new EightWordsNullable(StemBranch.get("甲午") , StemBranch.get("庚午") , StemBranch.get("戊申") , StemBranch.get("辛酉"))
-      , EightWordsChart.Direction.L2R);
+      , Direction.L2R);
 
     System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
 

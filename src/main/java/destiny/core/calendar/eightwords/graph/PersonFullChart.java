@@ -5,10 +5,7 @@ package destiny.core.calendar.eightwords.graph;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeDecoratorChinese;
-import destiny.core.calendar.eightwords.EightWords;
-import destiny.core.calendar.eightwords.HourLmtImpl;
-import destiny.core.calendar.eightwords.YearMonthIF;
-import destiny.core.calendar.eightwords.YearMonthSolarTermsStarPositionImpl;
+import destiny.core.calendar.eightwords.*;
 import destiny.core.calendar.eightwords.personal.*;
 import destiny.core.chart.Constants;
 import destiny.core.chinese.HeavenlyStems;
@@ -55,7 +52,7 @@ public class PersonFullChart extends BufferedImage implements Serializable {
   private Color bg;
   private ReactionsUtil reactionsUtil = new ReactionsUtil(new HiddenStemsStandardImpl());
 
-  public PersonFullChart(PersonContextModel model, int width, Color bg, Color fore, EightWordsChart.Direction direction) {
+  public PersonFullChart(PersonContextModel model, int width, Color bg, Color fore, Direction direction) {
     super(width, (int) (width * Constants.GOLDEN_RATIO),  BufferedImage.TYPE_INT_ARGB);
     this.model = model;
 
@@ -94,7 +91,7 @@ public class PersonFullChart extends BufferedImage implements Serializable {
 
     for (int i=1 ; i <= model.getFortuneDatas().size() ; i++) {
       int x;
-      if (direction == EightWordsChart.Direction.L2R)
+      if (direction == Direction.L2R)
         x = (int) (threeCylindersWidth * (i-1));
       else
         x = (int) (width - threeCylindersWidth * i);
@@ -130,7 +127,8 @@ public class PersonFullChart extends BufferedImage implements Serializable {
     TimeDecoratorChinese timeDecorator = new TimeDecoratorChinese();
 
     g.drawString(timeDecorator.getOutputString(context.getLmt())+"　　　　　性別：男性" , x , lineHeight );
-    g.drawString("地點："+ model.getLocationName()+"　　　　　 GMT時差：　 "+ model.getGmtMinuteOffset()+"分鐘" , x , lineHeight*2);
+    g.drawString("地點："+ model.getLocationName() , x , lineHeight*2);
+    g.drawString("GMT時差："+ model.getGmtMinuteOffset()+"分鐘" , x + fontSize* 21 , lineHeight*2);
     Location location = context.getLocation();
     StringBuffer sb = new StringBuffer();
     sb.append(location.getEastWest() == Location.EastWest.EAST ? "東經" : "西經").append(" ");

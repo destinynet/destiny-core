@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords.graph;
 
+import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWordsNullable;
 import destiny.core.chinese.StemBranchNullable;
 import destiny.font.FontRepository;
@@ -28,11 +29,6 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
  */
 public class EightWordsChart extends BufferedImage implements Serializable {
 
-  /** 排列方向：右到左，還是左到右 */
-  public enum Direction {R2L , L2R}
-
-  private final Direction direction;
-
   /**
    * @param which 寬度還是高度
    * @param value 寬度或高度的值
@@ -47,7 +43,6 @@ public class EightWordsChart extends BufferedImage implements Serializable {
         (which == WIDTH_HEIGHT.WIDTH  ? value : (int)(value * GOLDEN_RATIO))
       , (which == WIDTH_HEIGHT.HEIGHT ? value : (int)(value / GOLDEN_RATIO))
       , BufferedImage.TYPE_INT_ARGB);
-    this.direction = direction;
 
     Graphics2D g = this.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);

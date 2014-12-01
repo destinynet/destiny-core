@@ -11,6 +11,7 @@ import destiny.core.calendar.eightwords.personal.Reactions;
 import destiny.core.calendar.eightwords.personal.ReactionsUtil;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.StemBranch;
 import destiny.utils.ColorCanvas.AlignUtil;
 import destiny.utils.ColorCanvas.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
@@ -18,9 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
@@ -52,8 +51,13 @@ public class ContextColorCanvasWrapper
   public enum OutputMode {HTML , TEXT}
 
   private OutputMode outputMode = OutputMode.HTML;
+
+  /** 輸出方向，由左至右，還是由右至左 */
+  private final Direction direction;
+
+  private final ReactionsUtil reactionsUtil;
   
-  public ContextColorCanvasWrapper(EightWordsContext context, Time lmt, Location location, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl)
+  public ContextColorCanvasWrapper(EightWordsContext context, Time lmt, Location location, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl, Direction direction)
   {
     this.context = context;
     this.lmt = lmt;
@@ -62,6 +66,9 @@ public class ContextColorCanvasWrapper
     this.hiddenStemsImpl = hiddenStemsImpl;
     this.linkUrl = linkUrl;
     // this.fourWordsImpl = fourWordsImpl;
+    this.direction = direction;
+
+    reactionsUtil = new ReactionsUtil(this.hiddenStemsImpl);
   }
 
   /** 設定地支藏干的實作 */
@@ -186,6 +193,18 @@ public class ContextColorCanvasWrapper
   
   /**
    * 取得八字彩色盤 (不含「人」的資料)
+<pre>
+　時　　　　日　　　　月　　　　年　　　　　　　　　
+　柱　　　　柱　　　　柱　　　　柱　　　　　　　　　
+　：　　　　：　　　　：　　　　：　　　　　　　　　
+　比　　　　　　　　　食　　　　傷　　　　　　　　　
+　肩　　　　　　　　　神　　　　官　　　　　　　　　
+　癸　　　　癸　　　　乙　　　　甲　　　　　　　　　
+　亥　　　　卯　　　　亥　　　　午　　　　　　　　　
+　甲壬　　　　乙　　　甲壬　　　己丁　　　　　　　　
+　傷劫　　　　食　　　傷劫　　　七偏　　　　　　　　
+　官財　　　　神　　　官財　　　殺財　　　　　　　
+</pre>
    */
   @Nullable
   protected ColorCanvas getEightWordsColorCanvas()
@@ -193,54 +212,54 @@ public class ContextColorCanvasWrapper
     EightWords eightWords = context.getEightWords(lmt, location);
     ColorCanvas 八字 = new ColorCanvas(10, 36, "　", Optional.empty(), Optional.empty());
 
-    八字.setText("時", 1, 3);
-    八字.setText("柱", 2, 3);
-    八字.setText("：", 3, 3);
-    八字.setText("日", 1, 13);
-    八字.setText("柱", 2, 13);
-    八字.setText("：", 3, 13);
-    八字.setText("月", 1, 23);
-    八字.setText("柱", 2, 23);
-    八字.setText("：", 3, 23);
-    八字.setText("年", 1, 33);
-    八字.setText("柱", 2, 33);
-    八字.setText("：", 3, 33);
+    List<ColorCanvas> pillars = new ArrayList<>();
+    pillars.add(getOnePillar(eightWords.getYear()  , "年" , eightWords.getDayStem()));
+    pillars.add(getOnePillar(eightWords.getMonth() , "月" , eightWords.getDayStem()));
+    pillars.add(getOnePillar(eightWords.getDay()   , "日" , eightWords.getDayStem()));
+    pillars.add(getOnePillar(eightWords.getHour()  , "時" , eightWords.getDayStem()));
 
-    ReactionsUtil reactionsUtil = new ReactionsUtil(this.hiddenStemsImpl);
+    if (direction == Direction.R2L)
+      Collections.reverse(pillars);
 
-    八字.setText(eightWords.getHour().getStem().toString(), 6, 3, "red", null, eightWords.getHour().getStem().toString() + "時");
-    八字.setText(eightWords.getHour().getBranch().toString(), 7, 3, "red", null, eightWords.getHour().toString() + "時");
-
-    String 時干對日主 = reactionsUtil.getReaction(eightWords.getHour().getStem(), eightWords.getDay().getStem()).toString();
-    八字.setText(時干對日主.substring(0, 1), 4, 3, "gray");
-    八字.setText(時干對日主.substring(1, 2), 5, 3, "gray");
-
-    // 日干支
-    八字.setText(eightWords.getDay().getStem().toString(), 6, 13, "red", null, eightWords.getDay().getStem().toString() + "日");
-    八字.setText(eightWords.getDay().getBranch().toString(), 7, 13, "red", null, eightWords.getDay().toString() + "日");
-
-    // 月干支
-    八字.setText(eightWords.getMonth().getStem().toString(), 6, 23, "red", null, eightWords.getMonth().getStem().toString() + "月");
-    八字.setText(eightWords.getMonth().getBranch().toString(), 7, 23, "red", null, eightWords.getMonth().toString() + "月");
-
-    String 月干對日主 = reactionsUtil.getReaction(eightWords.getMonth().getStem(), eightWords.getDay().getStem()).toString();
-    八字.setText(月干對日主.substring(0, 1), 4, 23, "gray");
-    八字.setText(月干對日主.substring(1, 2), 5, 23, "gray");
-
-    // 年干支
-    八字.setText(eightWords.getYear().getStem().toString(), 6, 33, "red", null, eightWords.getYear().getStem().toString() + "年");
-    八字.setText(eightWords.getYear().getBranch().toString(), 7, 33, "red", null, eightWords.getYear().toString() + "年");
-
-    String 年干對日主 = reactionsUtil.getReaction(eightWords.getYear().getStem(), eightWords.getDay().getStem()).toString();
-    八字.setText(年干對日主.substring(0, 1), 4, 33, "gray");
-    八字.setText(年干對日主.substring(1, 2), 5, 33, "gray");
-
-    八字.add(地支藏干(eightWords.getHour().getBranch(), eightWords.getDay().getStem()), 8, 1);
-    八字.add(地支藏干(eightWords.getDay().getBranch(), eightWords.getDay().getStem()), 8, 11);
-    八字.add(地支藏干(eightWords.getMonth().getBranch(), eightWords.getDay().getStem()), 8, 21);
-    八字.add(地支藏干(eightWords.getYear().getBranch(), eightWords.getDay().getStem()), 8, 31);
+    for (int i=1 ; i<=4 ; i++) {
+      八字.add(pillars.get(i-1) , 1 ,  (i-1)*10+1 );
+    }
 
     return 八字;    
+  }
+
+  /** 取得「一柱」的 ColorCanvas , 10 x 6
+<pre>
+　時　
+　柱　
+　：　
+　比　
+　肩　
+　癸　
+　亥　
+　甲壬
+　傷劫
+　官財
+</pre>
+   * @param stemBranch
+   * @param pillarName "年" or "月" or "日" or "時"
+   */
+  private ColorCanvas getOnePillar(StemBranch stemBranch , String pillarName , HeavenlyStems dayStem) {
+    ColorCanvas pillar = new ColorCanvas(10, 6, "　", Optional.empty(), Optional.empty());
+    pillar.setText(pillarName , 1 , 3);
+    pillar.setText("柱", 2, 3);
+    pillar.setText("：", 3, 3);
+
+    pillar.setText(stemBranch.getStem()  .toString(), 6, 3, "red", null, stemBranch.getStem().toString() + pillarName);
+    pillar.setText(stemBranch.getBranch().toString(), 7, 3, "red", null, stemBranch.toString() + pillarName);
+
+    if (!"日".equals(pillarName)) {
+      String 干對日主 = reactionsUtil.getReaction(stemBranch.getStem(), dayStem).toString();
+      pillar.setText(干對日主.substring(0, 1), 4, 3, "gray");
+      pillar.setText(干對日主.substring(1, 2), 5, 3, "gray");
+    }
+    pillar.add(地支藏干(stemBranch.getBranch(), dayStem), 8, 1);
+    return pillar;
   }
 
   /**
@@ -250,7 +269,7 @@ public class ContextColorCanvasWrapper
   @Override
   public String toString()
   {
-    ColorCanvas cc = new ColorCanvas(19,44,"　");
+    ColorCanvas cc = new ColorCanvas(19,52,"　");
     cc.add(getMetaDataColorCanvas() , 1 , 1);
     cc.add(getEightWordsColorCanvas() , 10 , 1);
     switch(this.outputMode)
