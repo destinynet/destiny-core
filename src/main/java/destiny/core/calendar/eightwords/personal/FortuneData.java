@@ -34,6 +34,11 @@ public class FortuneData implements Serializable {
     this.endFortune = endFortune;
   }
 
+  @Override
+  public String toString() {
+    return "{" + startFortune + " " + stemBranch +'}';
+  }
+
   public StemBranch getStemBranch() {
     return stemBranch;
   }

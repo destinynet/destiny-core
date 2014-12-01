@@ -15,12 +15,15 @@ import destiny.utils.ColorCanvas.ColorCanvas;
 import destiny.utils.Decorator;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   /** 預先儲存已經計算好的結果 */
-  private final PersonContextModel viewModel;
+  private final PersonContextModel model;
 
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF hiddenStemsImpl;
@@ -41,7 +44,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
                                          String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl , Direction direction) {
     super(model.getPersonContext(), model.getPersonContext().getLmt() ,
       model.getPersonContext().getLocation() , locationName , hiddenStemsImpl , linkUrl, direction);
-    this.viewModel = model;
+    this.model = model;
     this.hiddenStemsImpl = hiddenStemsImpl;
     this.direction = direction;
   }
@@ -56,7 +59,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   @Override
   public String toString()
   {
-    PersonContext personContext = viewModel.getPersonContext();
+    PersonContext personContext = model.getPersonContext();
 
     cc = new ColorCanvas(30,70,"　");
 
@@ -80,26 +83,41 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     ColorCanvas 大運直 = new ColorCanvas(9,24,"　" );
     ColorCanvas 大運橫 = new ColorCanvas(8,70,"　" , Optional.empty() , Optional.empty());
 
-    for (int i=1 ; i <= viewModel.getFortuneDatas().size() ; i++) {
-      FortuneData fortuneData = viewModel.getFortuneDatas().get(i-1);
+    List<FortuneData> dataList = new ArrayList<>();
+    dataList.addAll(model.getFortuneDatas());
+
+    if (direction == Direction.R2L) {
+      Collections.reverse(dataList);
+    }
+
+    for (int i=1 ; i <= dataList.size() ; i++) {
+      FortuneData fortuneData = dataList.get(i-1);
       int startFortune = fortuneData.getStartFortune();
       int   endFortune = fortuneData.getEndFortune();
-      StemBranch nextStemBranch = fortuneData.getStemBranch();
+      StemBranch stemBranch = fortuneData.getStemBranch();
       Time startFortuneLmt = fortuneData.getStartFortuneLmt();
       Time   endFortuneLmt = fortuneData.getEndFortuneLmt();
 
       大運直.setText(AlignUtil.alignRight(startFortune, 6) , i , 1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       大運直.setText("→" , i , 9 , "green" );
       大運直.setText(AlignUtil.alignRight(endFortune , 6) , i , 13 , "green" , null , "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt));
-      大運直.setText(nextStemBranch.toString() , i , 21 , "green");
+      大運直.setText(stemBranch.toString() , i , 21 , "green");
 
-      大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , 73-8*i , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
-      Reactions reaction = reactionsUtil.getReaction(nextStemBranch.getStem() , eightWords.getDay().getStem());
-      大運橫.setText(reaction.toString().substring(0,1) , 2 , 75-8*i , "gray");
-      大運橫.setText(reaction.toString().substring(1,2) , 3 , 75-8*i , "gray");
-      大運橫.setText(nextStemBranch.getStem()  .toString() , 4 , 75-8*i , "red");
-      大運橫.setText(nextStemBranch.getBranch().toString() , 5 , 75-8*i , "red");
-      大運橫.add(地支藏干(nextStemBranch.getBranch() , eightWords.getDay().getStem()) , 6 , 73-8*i);
+//      大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , 73-8*i , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
+//      Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , eightWords.getDay().getStem());
+//      大運橫.setText(reaction.toString().substring(0, 1), 2, 75 - 8 * i, "gray");
+//      大運橫.setText(reaction.toString().substring(1,2) , 3 , 75-8*i , "gray");
+//      大運橫.setText(stemBranch.getStem()  .toString() , 4 , 75-8*i , "red");
+//      大運橫.setText(stemBranch.getBranch().toString(), 5, 75 - 8 * i, "red");
+//      大運橫.add(地支藏干(stemBranch.getBranch() , eightWords.getDay().getStem()) , 6 , 73-8*i);
+
+      大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , (i-1)*8+1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
+      Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , eightWords.getDay().getStem());
+      大運橫.setText(reaction.toString().substring(0, 1), 2, (i-1)*8+3, "gray");
+      大運橫.setText(reaction.toString().substring(1,2) , 3 , (i-1)*8+3 , "gray");
+      大運橫.setText(stemBranch.getStem()  .toString() , 4 , (i-1)*8+3 , "red");
+      大運橫.setText(stemBranch.getBranch().toString(), 5, (i-1)*8+3, "red");
+      大運橫.add(地支藏干(stemBranch.getBranch() , eightWords.getDay().getStem()) , 6 , (i-1)*8+1);
     }
 
     cc.setText("大運（"+fortuneOutputFormat +"）", 8, 55);
@@ -107,8 +125,8 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     cc.add(大運橫 , 20 , 1);
 
     ColorCanvas 節氣 = new ColorCanvas(2 , cc.getWidth() ,  "　");
-    SolarTerms prevMajorSolarTerms = viewModel.getPrevMajorSolarTerms();
-    SolarTerms nextMajorSolarTerms = viewModel.getNextMajorSolarTerms();
+    SolarTerms prevMajorSolarTerms = model.getPrevMajorSolarTerms();
+    SolarTerms nextMajorSolarTerms = model.getNextMajorSolarTerms();
 
 
     Time prevMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(-1) );
