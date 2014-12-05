@@ -12,6 +12,7 @@ import destiny.core.chinese.StemBranch;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -162,7 +163,7 @@ public class PersonContextModel implements Serializable {
   }
 
   public List<FortuneData> getFortuneDatas() {
-    return fortuneDatas;
+    return Collections.unmodifiableList(fortuneDatas);
   }
 
   public SolarTerms getPrevMajorSolarTerms() {

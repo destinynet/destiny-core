@@ -83,12 +83,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     ColorCanvas 大運直 = new ColorCanvas(9,24,"　" );
     ColorCanvas 大運橫 = new ColorCanvas(8,70,"　" , Optional.empty() , Optional.empty());
 
-    List<FortuneData> dataList = new ArrayList<>();
-    dataList.addAll(model.getFortuneDatas());
-
-    if (direction == Direction.R2L) {
-      Collections.reverse(dataList);
-    }
+    List<FortuneData> dataList = new ArrayList<>(model.getFortuneDatas());
 
     for (int i=1 ; i <= dataList.size() ; i++) {
       FortuneData fortuneData = dataList.get(i-1);
@@ -102,14 +97,18 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       大運直.setText("→" , i , 9 , "green" );
       大運直.setText(AlignUtil.alignRight(endFortune , 6) , i , 13 , "green" , null , "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt));
       大運直.setText(stemBranch.toString() , i , 21 , "green");
+    }
 
-//      大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , 73-8*i , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
-//      Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , eightWords.getDay().getStem());
-//      大運橫.setText(reaction.toString().substring(0, 1), 2, 75 - 8 * i, "gray");
-//      大運橫.setText(reaction.toString().substring(1,2) , 3 , 75-8*i , "gray");
-//      大運橫.setText(stemBranch.getStem()  .toString() , 4 , 75-8*i , "red");
-//      大運橫.setText(stemBranch.getBranch().toString(), 5, 75 - 8 * i, "red");
-//      大運橫.add(地支藏干(stemBranch.getBranch() , eightWords.getDay().getStem()) , 6 , 73-8*i);
+
+    if (direction == Direction.R2L) {
+      Collections.reverse(dataList);
+    }
+
+    for (int i=1 ; i <= dataList.size() ; i++) {
+      FortuneData fortuneData = dataList.get(i-1);
+      int startFortune = fortuneData.getStartFortune();
+      StemBranch stemBranch = fortuneData.getStemBranch();
+      Time startFortuneLmt = fortuneData.getStartFortuneLmt();
 
       大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , (i-1)*8+1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , eightWords.getDay().getStem());
