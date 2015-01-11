@@ -1,3 +1,7 @@
+/**
+ * @author smallufo
+ * Created on 2003/3/19 at 上午 12:35:41
+ */
 package destiny.core.calendar;
 
 import com.google.common.base.Objects;
@@ -14,11 +18,6 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-
-/**
- * @author smallufo
- * Created on 2003/3/19 at 上午 12:35:41
- */
 public class Location implements Serializable
 {
   private EastWest eastWest = EastWest.EAST;
@@ -116,8 +115,8 @@ public class Location implements Serializable
     // zh_SG , 新加坡
     .put(new Locale("zh" , "SG"), new Location(EastWest.EAST , 103 , 51 , NorthSouth.NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
     
-    // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北
-    .put(Locale.TAIWAN , new Location(EastWest.EAST , 121 , 31 , 03.6 , NorthSouth.NORTH , 25 , 2 , 20.4 , TimeZone.getTimeZone("Asia/Taipei")))
+    // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北 (121.5176 , 25.039)
+    .put(Locale.TAIWAN, new Location(EastWest.EAST, 121, 31, 03.6, NorthSouth.NORTH, 25, 2, 20.4, TimeZone.getTimeZone("Asia/Taipei")))
     .build();
 
   /** 從 Browser 傳入 locale , 找出該 Locale 內定的 Location */
