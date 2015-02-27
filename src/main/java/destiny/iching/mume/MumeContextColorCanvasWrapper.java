@@ -46,12 +46,12 @@ public class MumeContextColorCanvasWrapper implements Serializable
     
     try
     {
-      siteCanvas.setText("Destiny 命理網", 1, 1, Optional.empty() , Optional.empty() , Optional.empty(), Optional.of(new URL("http://destiny.xfiles.to")), Optional.of("Destiny命理網"), false);
+      siteCanvas.setText("Destiny 命理網", 1, 1, Optional.empty() , Optional.empty() , Optional.empty(), Optional.of(new URL("http://destiny.to")), Optional.of("Destiny命理網"), false);
     }
     catch (MalformedURLException ignored)
     {
     }
-    siteCanvas.setText(" http://destiny.xfiles.to ", 1, 17);
+    siteCanvas.setText(" http://destiny.to ", 1, 17);
     siteCanvas.setText("梅花易數線上排盤" + "　" + metaData , 2, 1);
     c.add(siteCanvas, 1, 1);
     ColorCanvas dateCanvas = new ColorCanvas(1 , 38 , "　");

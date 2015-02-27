@@ -46,6 +46,7 @@
       <groupId>com.intellij</groupId>
       <artifactId>annotations</artifactId>
     </dependency>
+
   </dependencies>
   <build>
     <plugins>

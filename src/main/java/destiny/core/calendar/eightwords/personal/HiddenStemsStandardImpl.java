@@ -5,21 +5,16 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
+
+import java.io.Serializable;
+import java.util.*;
 
 
 /** 地支藏干標準實作 
  * 潘文欽有另一套說法： 
- * http://destiny.xfiles.to/ubbthreads/files/1704571-%E8%97%8F%E5%B9%B2.jpg
+ * http://destiny.to/ubbthreads/files/1704571-%E8%97%8F%E5%B9%B2.jpg
  * */
 public class HiddenStemsStandardImpl implements HiddenStemsIF , Serializable
 {

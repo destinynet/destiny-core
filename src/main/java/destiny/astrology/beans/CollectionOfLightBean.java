@@ -19,7 +19,7 @@ import java.util.List;
  * <pre>
  * Collection of Light 之定義以及演算法 : 
  * TODO : (2008-11-07 修正 新增考慮：) 根據此文的定義
- * http://destiny.xfiles.to/ubbthreads/ubbthreads.php/posts/6999
+ * http://destiny.to/ubbthreads/ubbthreads.php/posts/6999
  * (1) 當兩個徵象星彼此沒有交角,
  * (2) 但這兩個行星都與第三個行星有入相位
  *     (即第三個行星是三個中運行最慢的). 

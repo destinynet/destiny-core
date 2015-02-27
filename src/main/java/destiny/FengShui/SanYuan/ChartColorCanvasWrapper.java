@@ -112,7 +112,7 @@ public class ChartColorCanvasWrapper implements Serializable
     chartCanvas.setText("├────────┴────────┴────────┤" , 25 , 1 );
     chartCanvas.setText("│　XX運，XX山XX向。觀點：背29朝33　　　　　　　　　　│" , 26 , 1 );
     chartCanvas.setText("│　　　　　　　　　　　　　　　　　　　　　　　　　　│" , 27 , 1 );
-    chartCanvas.setText("│　Destiny 命理網　熱情製作 http://destiny.xfiles.to │" , 28 , 1 );
+    chartCanvas.setText("│　　Destiny 命理網　熱情製作 http://destiny.to　　　│" , 28 , 1 );
     chartCanvas.setText("└──────────────────────────┘" , 29 , 1 );
 
     chartCanvas.setText(getChineseString(chart.getPeriod()) , 26 , 5); // XX運
