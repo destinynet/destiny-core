@@ -9,6 +9,6 @@ import java.util.Optional;
  */
 public interface ReverseGeocodingIF
 {
-  public Optional<String> getNearbyLocation(double longitude , double latitude , Locale locale);
+  public Optional<String> getNearbyLocation(double lng, double lat, Locale locale);
 }
 
