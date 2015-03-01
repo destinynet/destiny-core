@@ -9,9 +9,7 @@ import java.util.TimeZone;
  */
 public interface TimeZoneIF
 {
-  /** 從經緯度查詢 timezone
-   * @param lng
-   * @param lat*/
+  /** 從經緯度查詢 timezone */
   public Optional<TimeZone> getTimeZone(double lng, double lat);
 }
 
