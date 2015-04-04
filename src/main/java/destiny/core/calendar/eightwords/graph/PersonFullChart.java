@@ -126,7 +126,15 @@ public class PersonFullChart extends BufferedImage implements Serializable {
     g.setColor(generalMetaColor);
     TimeDecoratorChinese timeDecorator = new TimeDecoratorChinese();
 
-    g.drawString(timeDecorator.getOutputString(context.getLmt())+"　　　　　性別：男性" , x , lineHeight );
+    //g.drawString(timeDecorator.getOutputString(context.getLmt())+"　　　　　性別："+context.getGender().name()+"性" , x , lineHeight );
+    g.drawString(timeDecorator.getOutputString(context.getLmt())+"　　　　　性別：" , x , lineHeight );
+    switch (context.getGender()) {
+      case 男: g.setColor(Color.BLUE);break;
+      case 女: g.setColor(Color.RED);break;
+      default: g.setColor(generalMetaColor);
+    }
+    g.drawString(context.getGender().name()+"性" , fontSize*29 , lineHeight);
+    g.setColor(generalMetaColor);
     g.drawString("地點："+ model.getLocationName() , x , lineHeight*2);
     g.drawString("GMT時差："+ model.getGmtMinuteOffset()+"分鐘" , x + fontSize* 21 , lineHeight*2);
     Location location = context.getLocation();
