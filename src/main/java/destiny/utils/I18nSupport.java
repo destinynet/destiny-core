@@ -9,5 +9,5 @@ import java.util.Locale;
 public interface I18nSupport
 {
   /** 取得資料庫中(或其他來源) 支援的 Locales */
-  public Iterable<Locale> getSupportedLocales();
+  Iterable<Locale> getSupportedLocales();
 }
