@@ -141,29 +141,23 @@ public class StemBranchNullable implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
+    if (this == o)
       return true;
-    }
-    if (!(o instanceof StemBranchNullable)) {
+    if (!(o instanceof StemBranchNullable))
       return false;
-    }
 
     StemBranchNullable that = (StemBranchNullable) o;
 
-    if (!branch.equals(that.branch)) {
+    if (stem != that.stem)
       return false;
-    }
-    if (!stem.equals(that.stem)) {
-      return false;
-    }
+    return branch == that.branch;
 
-    return true;
   }
 
   @Override
   public int hashCode() {
-    int result = stem.hashCode();
-    result = 31 * result + branch.hashCode();
+    int result = stem != null ? stem.hashCode() : 0;
+    result = 31 * result + (branch != null ? branch.hashCode() : 0);
     return result;
   }
 }
