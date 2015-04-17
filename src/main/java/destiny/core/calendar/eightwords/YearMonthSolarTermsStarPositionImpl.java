@@ -27,51 +27,48 @@ import java.io.Serializable;
  */
 public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serializable
 {
-  @Nullable
-  private StarPositionIF starPositionImpl;
-  @Nullable
-  private StarTransitIF starTransitImpl;
+  private final StarPositionIF starPositionImpl;
+
+  private final StarTransitIF starTransitImpl;
   
   /** 南半球月令是否對沖 */
   private boolean southernHemisphereOpposition = false;
+
   /** 是否依據『赤緯』來界定南北半球 */
   private HemisphereBy hemisphereBy = HemisphereBy.EQUATOR;
+
   /** 換年的度數 , 通常是立春點 (315) 換年*/
   private double changeYearDegree;
+
   /** 存放『年干』 */
   @Nullable
   private HeavenlyStems 年干;
   
   public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl)
   {
-    this.setting(ChangeYearDegree , starPositionImpl , starTransitImpl);
+    this.starPositionImpl = starPositionImpl;
+    this.starTransitImpl = starTransitImpl;
+    this.setting(ChangeYearDegree);
   }
   
   public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl , boolean southernHemisphereOpposition)
   {
-    this.southernHemisphereOpposition = southernHemisphereOpposition;
-    this.setting(ChangeYearDegree , starPositionImpl , starTransitImpl);
-  }
-  
-  private void setting(double ChangeYearDegree , @Nullable StarPositionIF starPositionImpl , @Nullable StarTransitIF starTransitImpl)
-  {
-    if (starPositionImpl == null || starTransitImpl == null)
-      throw new RuntimeException("starPositionImpl and starTransitImpl cannot be null");
-    
     this.starPositionImpl = starPositionImpl;
     this.starTransitImpl = starTransitImpl;
-    
+    this.southernHemisphereOpposition = southernHemisphereOpposition;
+    this.setting(ChangeYearDegree);
+  }
+  
+  private void setting(double ChangeYearDegree)
+  {
     if (ChangeYearDegree < 180)
       throw new RuntimeException("Cannot set ChangeYearDrgree smaller than 180 ");
     this.changeYearDegree = ChangeYearDegree;
   }
   
   /** 取得 年干支 */
-  public StemBranch getYear(@Nullable Time lmt, @Nullable Location location)
+  public StemBranch getYear(@NotNull Time lmt, @NotNull Location location)
   {
-    if (lmt == null || location == null)
-      throw new RuntimeException("lmt or location cannot be null !");
-    
     StemBranch resultStemBranch;
     //西元 1984 年為 甲子年
     int index;
@@ -144,11 +141,8 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
 
   /** 取得 月干支 */
   @Nullable
-  public StemBranch getMonth(@Nullable Time lmt, @Nullable Location location)
+  public StemBranch getMonth(@NotNull Time lmt, @NotNull Location location)
   {
-    if (lmt == null || location == null)
-      throw new RuntimeException("lmt or location cannot be null !");
-    
     EarthlyBranches result月支 ;
     //先算出太陽在黃經上的度數
     Time gmt = Time.getGMTfromLMT(lmt, location);

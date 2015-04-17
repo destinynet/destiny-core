@@ -75,7 +75,8 @@ public class PersonContext extends EightWordsContext implements Serializable
    * 因此將此 threadLocal 物件另外包一層 Map , key 為 EightWordsPersonContext
    */
   @NotNull
-  private static ThreadLocal<Map<PersonContext,Map<Integer,Time>>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<PersonContext,Map<Integer,Time>>>()
+  //FIXME private static ThreadLocal<Map<PersonContext,Map<Integer,Time>>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<PersonContext,Map<Integer,Time>>>()
+  private transient ThreadLocal<Map<PersonContext,Map<Integer,Time>>> targetMajorSolarTermsGmtHolder = new ThreadLocal<Map<PersonContext,Map<Integer,Time>>>()
   {
     @Override
     protected Map<PersonContext, Map<Integer, Time>> initialValue()

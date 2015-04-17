@@ -17,5 +17,5 @@ interface YearIF
    * @param location 傳入當地經緯度等資料
    * @return 年干支（天干地支皆傳回）
    */
-  public StemBranch getYear(Time lmt , Location location);
+  StemBranch getYear(Time lmt , Location location);
 }

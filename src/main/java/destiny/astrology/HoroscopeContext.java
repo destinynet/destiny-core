@@ -7,7 +7,6 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,10 +173,7 @@ public class HoroscopeContext implements Serializable
   }
   
   /** 取得某星 位於什麼星座 */
-  public ZodiacSign getZodiacSign(@Nullable Point point)
-  {
-    if (point == null)
-      throw new RuntimeException("嘗試計算 null 所在的星座!");
+  public ZodiacSign getZodiacSign(@NotNull Point point) {
     PositionWithAzimuth position = getPosition(point);
     return ZodiacSign.getZodiacSign(position.getLongitude());
   }
