@@ -41,6 +41,11 @@ public class PointConnectionUtil implements Serializable
     int width = (int) Math.ceil(Math.abs(x1 - x2));
     int height = (int) Math.ceil(Math.abs(y1 - y2));
 
+    if (width <= 0)
+      width = 1;
+    if (height <= 0)
+      height = 1;
+
     //BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     resultImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g2d = resultImage.createGraphics();
