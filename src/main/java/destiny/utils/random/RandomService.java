@@ -4,9 +4,9 @@
  */
 package destiny.utils.random;
 
-public interface RandomService
-{
-  public int[] getIntegers(int count , int min , int max) ;
-  
-  public boolean[] getYinYangs(int count) ;
+public interface RandomService {
+
+  int[] getIntegers(int count, int min, int max);
+
+  boolean[] getYinYangs(int count);
 }

@@ -5,7 +5,6 @@
 package destiny.core.chinese;
 
 /** 取得此元素的陰陽值 : getYinYang() */
-public interface YinYangIF
-{
-  public boolean getBooleanValue();
+public interface YinYangIF {
+  boolean getBooleanValue();
 }

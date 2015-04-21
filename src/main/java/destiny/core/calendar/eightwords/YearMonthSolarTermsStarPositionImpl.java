@@ -140,7 +140,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
   }
 
   /** 取得 月干支 */
-  @Nullable
+  @NotNull
   public StemBranch getMonth(@NotNull Time lmt, @NotNull Location location)
   {
     EarthlyBranches result月支 ;

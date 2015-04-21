@@ -55,7 +55,8 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   {
     return stemBranchArray[normalize(index)];
   }
-  
+
+  @NotNull
   public static StemBranch get(@NotNull HeavenlyStems 天干 , @NotNull EarthlyBranches 地支)
   {
     if ( (HeavenlyStems.getIndex(天干) % 2 )  != (EarthlyBranches.getIndex(地支) %2 ) )
