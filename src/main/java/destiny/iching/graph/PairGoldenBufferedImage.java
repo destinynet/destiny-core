@@ -15,12 +15,9 @@ import static destiny.core.chart.Constants.GOLDEN_RATIO;
 import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 
 /** 黃金比例的矩形雙卦象 */
-public class PairGoldenChart extends AbstractPairHexagramChart
+public class PairGoldenBufferedImage extends AbstractPairBufferImage
 {
-  public PairGoldenChart(
-      @NotNull HexagramIF src, String srcName ,
-      @NotNull HexagramIF dst, String dstName ,
-      WIDTH_HEIGHT which, int value , Color bg , Color fore)
+  public PairGoldenBufferedImage(@NotNull HexagramIF src, String srcName, @NotNull HexagramIF dst, String dstName, WIDTH_HEIGHT which, int value, Color bg, Color fore)
   {
     super(src, srcName, dst, dstName, Type.GOLDEN, which, value , bg , fore);
   }

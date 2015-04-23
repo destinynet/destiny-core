@@ -1,28 +1,28 @@
 /**
  * @author smallufo
- * Created on 2013/5/12 at 上午10:22:25
+ * Created on 2013/5/9 at 下午11:51:07
  */
 package destiny.iching.graph;
 
 import destiny.iching.Hexagram;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
-public class TestBaseHexagramChart extends TestCase
+public class NoPaddingHexagramChartTest
 {
-  public void testChart() throws IOException
+  @Test
+  public void testChart() throws Exception
   {
     long t0 = System.currentTimeMillis();
-    Hexagram h;
-    h = Hexagram.未濟;
-
-    // 原始圖案，沒有任何文字
-    BaseHexagramChart c = new BaseHexagramChart(h, 370, 600, Color.WHITE, Color.BLACK
-        , 0 ,0 ,0,0);
+    
+    Hexagram h = Hexagram.未濟;
+    
+//    NoPaddingHexagramChart c = new NoPaddingHexagramChart(h, WIDTH_HEIGHT.HEIGHT, 100
+//        , Color.decode("#FF9999") , Color.BLACK);
+    NoPaddingBufferedImage c = new NoPaddingBufferedImage(h, 100 , 272 , Color.WHITE , Color.BLACK);
     System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
     
     File pngFile = new File("/Users/smallufo/temp/chart.png");
@@ -30,6 +30,5 @@ public class TestBaseHexagramChart extends TestCase
     long t1 = System.currentTimeMillis();
     
     System.out.println("takes " + (t1-t0) + " millis");
-    
   }
 }

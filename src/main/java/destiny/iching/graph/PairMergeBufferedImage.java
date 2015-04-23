@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public class PairMergeChart extends AbstractPairHexagramChart
+/**
+ * 兩個卦象直接並排，不考慮 黃金比例
+ */
+public class PairMergeBufferedImage extends AbstractPairBufferImage
 {
-  public PairMergeChart(
-      @NotNull Hexagram src, String srcName ,
-      @NotNull Hexagram dst, String dstName ,
-      WIDTH_HEIGHT which, int value , Color bg , Color fore)
+  public PairMergeBufferedImage(@NotNull Hexagram src, String srcName, @NotNull Hexagram dst, String dstName, WIDTH_HEIGHT which, int value, Color bg, Color fore)
   {
     super(src, srcName, dst, dstName, Type.MERGED, which, value, bg , fore);
   }

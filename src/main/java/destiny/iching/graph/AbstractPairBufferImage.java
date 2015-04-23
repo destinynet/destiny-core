@@ -20,12 +20,36 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 
 /**
  * 橫向兩個卦
+┌─────────────────────────────┐
+│                             │
+│                             │
+│     ██████        ██████    │
+│                             │
+│     ██  ██        ██  ██    │
+│                             │
+│     ██████        ██████    │
+│                             │
+│     ██  ██  x --> ██████    │
+│                             │
+│     ██████  O --> ██  ██    │
+│                             │
+│     ██  ██        ██  ██    │
+│                             │
+│                             │
+└─────────────────────────────┘
+              ↑    ↑
+              │  getArrowX()
+              │
+              └─ getOxX()
+
+ 具備 「OX」的 x 軸座標 : getOxX()
+ 以及 取得箭頭頂點的 X 座標 getArrowX()
  */
-public abstract class AbstractPairHexagramChart extends BufferedImage implements Serializable
+public abstract class AbstractPairBufferImage extends BufferedImage implements Serializable
 {
 
-  private GoldenPaddingChart srcChart;
-  private GoldenPaddingChart dstChart;
+  private GoldenPaddingBufferedImage srcChart;
+  private GoldenPaddingBufferedImage dstChart;
   
   protected HexagramIF src;
   protected HexagramIF dst;
@@ -45,11 +69,9 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
    * @param value   (寬或高) 其值為多少
    * @param bg
    */
-  public AbstractPairHexagramChart(
-      @NotNull HexagramIF src , String srcName ,
-      @NotNull HexagramIF dst , String dstName ,
-      Type type , WIDTH_HEIGHT which, int value , Color bg , Color fore)
+  public AbstractPairBufferImage(@NotNull HexagramIF src, String srcName, @NotNull HexagramIF dst, String dstName, Type type, WIDTH_HEIGHT which, int value, Color bg, Color fore)
   {
+
     super(
           (which == WIDTH_HEIGHT.WIDTH  ? value :
              (type == Type.GOLDEN) ? (int)(value * GOLDEN_RATIO) :
@@ -58,17 +80,18 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
              (type == Type.GOLDEN) ? (int)(value / GOLDEN_RATIO) :
                                      (int)(value / 2 * GOLDEN_RATIO))
         , BufferedImage.TYPE_INT_ARGB);
+
     
     this.src = src;
     this.dst = dst;
     this.width = getWidth();
     this.height = getHeight();
 
-    this.srcChart = new GoldenPaddingChart(src , WIDTH_HEIGHT.HEIGHT
+    this.srcChart = new GoldenPaddingBufferedImage(src , WIDTH_HEIGHT.HEIGHT
         , height
         , bg , fore);
     
-    this.dstChart = new GoldenPaddingChart(dst , WIDTH_HEIGHT.HEIGHT
+    this.dstChart = new GoldenPaddingBufferedImage(dst , WIDTH_HEIGHT.HEIGHT
         , height
         , bg , fore);
     
@@ -165,12 +188,12 @@ public abstract class AbstractPairHexagramChart extends BufferedImage implements
   /** 繪製側邊文字 , 可能是八卦類像文字（天澤火雷...） */
   protected abstract void drawSide();
   
-  public GoldenPaddingChart getSrcChart()
+  public GoldenPaddingBufferedImage getSrcChart()
   {
     return srcChart;
   }
 
-  public GoldenPaddingChart getDstChart()
+  public GoldenPaddingBufferedImage getDstChart()
   {
     return dstChart;
   }

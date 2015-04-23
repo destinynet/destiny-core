@@ -15,13 +15,35 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 /**
  * 一個「本卦」的圖形，設計成黃金比例的卡片
  * 若寬為 1 , 高為 1.618
+ * 內部的「卦的寬度」則是 0.618
+ * 內部的「卦的高度」則是 1.618 x 0.618 = 1
+
+         1
+┌────────────────┐
+│                │
+│      0.618     │
+│     ██████     │
+│                │
+│     ██  ██     │
+│                │
+│     ██████     │
+│h=1.618x0.618=1 │  1.618
+│     ██  ██     │
+│                │
+│     ██████     │
+│                │
+│     ██  ██     │
+│                │
+│                │
+└────────────────┘
+
  */
-public class GoldenPaddingChart extends BaseHexagramChart 
+public class GoldenPaddingBufferedImage extends BaseBufferedImage
 {
   protected double paddingX;
   protected double paddingY;
   
-  public GoldenPaddingChart(@NotNull HexagramIF hex, WIDTH_HEIGHT which , int value, Color bg, Color fore)
+  public GoldenPaddingBufferedImage(@NotNull HexagramIF hex, WIDTH_HEIGHT which, int value, Color bg, Color fore)
   {
     super(hex
         , (which == WIDTH_HEIGHT.WIDTH  ? value : (int)(value / GOLDEN_RATIO))

@@ -26,9 +26,9 @@ public class ProcessorSideSymbol implements Processor , Serializable
 
   private Side side;
   
-  private BaseHexagramChart chart;
+  private BaseBufferedImage chart;
   
-  public ProcessorSideSymbol(HexagramIF hexagram , Side side , BaseHexagramChart chart)
+  public ProcessorSideSymbol(HexagramIF hexagram , Side side , BaseBufferedImage chart)
   {
     this.hexagram = hexagram;
     this.side = side;

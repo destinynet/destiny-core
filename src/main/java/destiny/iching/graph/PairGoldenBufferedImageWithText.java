@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.util.Locale;
 
-public class PairGoldenChartWithText extends PairGoldenChart
+public class PairGoldenBufferedImageWithText extends PairGoldenBufferedImage
 {
   private Logger logger = LoggerFactory.getLogger(getClass());
   
-  public PairGoldenChartWithText()
+  public PairGoldenBufferedImageWithText()
   {
     super(null, null, null, null, WIDTH_HEIGHT.WIDTH , TYPE_INT_ARGB, null, null);
   }
@@ -27,11 +27,7 @@ public class PairGoldenChartWithText extends PairGoldenChart
   /**
    * [經文] 黃金比例的雙卦象 , 顯示爻辭，動爻加深
    */
-  public PairGoldenChartWithText(
-      @NotNull ExpressionIF expImpl ,
-      @NotNull HexagramIF src, String srcName,
-      @NotNull HexagramIF dst, String dstName,
-      WIDTH_HEIGHT which, int value, Color bg, Color fore)
+  public PairGoldenBufferedImageWithText(@NotNull ExpressionIF expImpl, @NotNull HexagramIF src, String srcName, @NotNull HexagramIF dst, String dstName, WIDTH_HEIGHT which, int value, Color bg, Color fore)
   {
     super(src, srcName, dst, dstName, which, value, bg, fore);
     
@@ -39,8 +35,8 @@ public class PairGoldenChartWithText extends PairGoldenChart
     g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     
-    GoldenPaddingChart srcChart = getSrcChart();
-    GoldenPaddingChart dstChart = getDstChart();
+    GoldenPaddingBufferedImage srcChart = getSrcChart();
+    GoldenPaddingBufferedImage dstChart = getDstChart();
     
     int fontSize = (int) (srcChart.getRowHeight()*0.7);
     g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, fontSize));

@@ -1,72 +1,51 @@
 /**
- * @author smallufo
- * Created on 2013/5/12 at 上午10:04:59
+ * Created by smallufo on 2015-04-23.
  */
 package destiny.iching.graph;
 
 import destiny.iching.HexagramIF;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
 import static destiny.core.chart.Constants.GOLDEN_RATIO;
 
-/** 可任意指定寬高的單一卦象圖 ，純粹六條槓，沒有文字，沒有寬高比例綁定，可自定 padding */
-public class BaseHexagramChart extends BufferedImage implements Serializable
-{
-  protected Color              bg           = Color.WHITE;
-  protected Color              fore         = Color.BLACK;
-  
-  protected HexagramIF hexagram;
-  
-  protected int width;
-  protected int height;
-  
-  protected double paddingTop;
-  private double paddingRight;
-  double paddingBottom;
-  double paddingLeft;
-  
-  // 每條 row 的高度
-  protected double rowHigh;
-  
-  private Logger logger = LoggerFactory.getLogger(getClass());
-  
+/**
+ * 可任意指定寬高的單一卦象圖 ，純粹六條槓，沒有文字，沒有寬高比例綁定，可自定 top / right / bottom / left padding
+┌────────┐
+│ ██████ │
+│        │
+│ ██  ██ │
+│        │
+│ ██████ │
+│        │
+│ ██  ██ │
+│        │
+│ ██████ │
+│        │
+│ ██  ██ │
+└────────┘
+ * */
+public class BaseHexagramGraphic implements Serializable {
+
   /** 可任意指定寬高的單一卦象圖 , 以及指定四邊的 padding */
-  public BaseHexagramChart(@NotNull HexagramIF hex , int width , int height , Color bg , Color fore
-      , double paddingTop , double paddingRight , double paddingBottom , double paddingLeft)
-  {
-    super(width , height , BufferedImage.TYPE_INT_ARGB);
-    this.hexagram = hex;
-    this.width = width;
-    this.height = height;
-    this.bg = bg;
-    this.fore = fore;
-    
-    this.paddingTop = paddingTop;
-    this.paddingRight = paddingRight;
-    this.paddingBottom = paddingBottom;
-    this.paddingLeft = paddingLeft;
-    
-    Graphics2D g = this.createGraphics();
+  public static void render(@NotNull Graphics2D g , @NotNull HexagramIF hex, int width, int height, Color bg, Color fore,
+                           double paddingTop, double paddingRight, double paddingBottom, double paddingLeft) {
     g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    
+
     g.setColor(bg);
     g.fillRect(0, 0, width, height);
-    
-    this.rowHigh = getRowHeight();
-    
+
+    double rowHigh = getRowHeight(height , paddingTop , paddingBottom);
+
     g.setColor(fore);
-    
+
     // 計算[半個]陰爻的寬度
     double half_width = (width - (paddingLeft+paddingRight))/ GOLDEN_RATIO/2;
-    
+
     // 從上（六爻）畫到下（初爻），貼齊 upper padding
     for (int i=6 ; i >= 1 ; i--)
     {
@@ -89,11 +68,12 @@ public class BaseHexagramChart extends BufferedImage implements Serializable
         g.fill(new Rectangle2D.Double(rightX , rightY , half_width , rowHigh));
       }
     }
-    g.dispose();
-  } // constructor
-
-  public double getRowHeight()
-  {
-    return (height - paddingTop - paddingBottom)/11.0; 
   }
+
+  protected static double getRowHeight(int height , double paddingTop , double paddingBottom) {
+    return (height - paddingTop - paddingBottom)/11.0;
+  }
+
+
+
 }

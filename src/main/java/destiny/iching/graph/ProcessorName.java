@@ -18,9 +18,9 @@ import static destiny.core.chart.Constants.GOLDEN_RATIO;
 public class ProcessorName implements Processor , Serializable
 {
   private String name;
-  private BaseHexagramChart chart;
+  private BaseBufferedImage chart;
   
-  public ProcessorName(String name , BaseHexagramChart chart)
+  public ProcessorName(String name , BaseBufferedImage chart)
   {
     this.name = name;
     this.chart = chart;
