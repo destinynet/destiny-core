@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
-public class AstrologChart extends BufferedImage
+public class AstrologChart //extends BufferedImage
 {
   private Color              bg           = Color.BLACK;
   private Color              fore         = Color.WHITE;
@@ -35,12 +35,13 @@ public class AstrologChart extends BufferedImage
   
   private HoroscopeAspectsCalculator calculator;
 
-  public AstrologChart(Horoscope horoscope, int width)
+
+  public AstrologChart(Horoscope horoscope, int width , @NotNull Graphics2D g)
   {
-    super(width, width, BufferedImage.TYPE_INT_RGB);
+    //super(width, width, BufferedImage.TYPE_INT_RGB);
 
     center = width / 2;
-    Graphics2D g = this.createGraphics();
+
     // g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     // 填滿背景
     g.setColor(bg);
@@ -154,8 +155,8 @@ public class AstrologChart extends BufferedImage
           g.fill(rect);
           */
 
-          
-          g.drawImage(image, null, (int) newX, (int) newY);
+          g.drawImage(image , (int) newX , (int) newY , null);
+          //g.drawImage(image, null, (int) newX, (int) newY);
         }
       }
       
@@ -185,7 +186,5 @@ public class AstrologChart extends BufferedImage
         g.draw(innerRing);
       }
     }
-
-    g.dispose();
   }
 }
