@@ -6,7 +6,7 @@ package destiny.utils.image;
 
 import java.awt.image.BufferedImage;
 
-public interface Processor
-{
-  public void process(BufferedImage img);
+public interface Processor {
+
+  void process(BufferedImage img);
 }

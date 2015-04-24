@@ -101,11 +101,11 @@ public class PersonFullChart extends BufferedImage implements Serializable {
   } // constructor
 
   /**
-   *           width
+   *           w
    * +-------------------------+
    * | 西元 xxx      性別 :男性  |  meta
    * | 地點 xxx      GMT :     |
-   * | 東經 xxx 北緯 xxx        |  width/1.618/2
+   * | 東經 xxx 北緯 xxx        |  w/1.618/2
    * | 換日 / DST / link / ... |
    * +-------------------------+
    */

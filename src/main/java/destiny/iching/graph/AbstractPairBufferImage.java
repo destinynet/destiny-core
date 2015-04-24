@@ -7,7 +7,6 @@ package destiny.iching.graph;
 import destiny.font.FontRepository;
 import destiny.iching.HexagramIF;
 import destiny.utils.image.Processor;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -37,8 +36,8 @@ import static destiny.core.chart.Constants.WIDTH_HEIGHT;
 │                             │
 │                             │
 └─────────────────────────────┘
-              ↑    ↑
-              │  getArrowX()
+              ↑   ↑
+              │   └─ getArrowX()
               │
               └─ getOxX()
 
@@ -54,8 +53,8 @@ public abstract class AbstractPairBufferImage extends BufferedImage implements S
   protected HexagramIF src;
   protected HexagramIF dst;
   
-  protected int width;
-  protected int height;
+  protected int w;
+  protected int h;
   
   public enum Type {MERGED , GOLDEN}
 
@@ -69,7 +68,7 @@ public abstract class AbstractPairBufferImage extends BufferedImage implements S
    * @param value   (寬或高) 其值為多少
    * @param bg
    */
-  public AbstractPairBufferImage(@NotNull HexagramIF src, String srcName, @NotNull HexagramIF dst, String dstName, Type type, WIDTH_HEIGHT which, int value, Color bg, Color fore)
+  public AbstractPairBufferImage(HexagramIF src, String srcName, HexagramIF dst, String dstName, Type type, WIDTH_HEIGHT which, int value, Color bg, Color fore)
   {
 
     super(
@@ -84,16 +83,12 @@ public abstract class AbstractPairBufferImage extends BufferedImage implements S
     
     this.src = src;
     this.dst = dst;
-    this.width = getWidth();
-    this.height = getHeight();
+    this.w = getWidth();
+    this.h = getHeight();
 
-    this.srcChart = new GoldenPaddingBufferedImage(src , WIDTH_HEIGHT.HEIGHT
-        , height
-        , bg , fore);
-    
-    this.dstChart = new GoldenPaddingBufferedImage(dst , WIDTH_HEIGHT.HEIGHT
-        , height
-        , bg , fore);
+    this.srcChart = new GoldenPaddingBufferedImage(src, WIDTH_HEIGHT.HEIGHT, h, bg, fore);
+
+    this.dstChart = new GoldenPaddingBufferedImage(dst, WIDTH_HEIGHT.HEIGHT, h, bg, fore);
     
     
     
@@ -112,13 +107,13 @@ public abstract class AbstractPairBufferImage extends BufferedImage implements S
     g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setColor(bg);
-    g.fillRect(0, 0, width, height);
+    g.fillRect(0, 0, w, h);
     
     // 左半邊為本卦
     g.drawImage(srcChart, 0 , 0 , null);
     
     // 右半邊為變卦
-    g.drawImage(dstChart, width - dstChart.width , 0 , null);
+    g.drawImage(dstChart, w - dstChart.width , 0 , null);
 
     boolean drawRulers = false;
     if (drawRulers)
@@ -128,12 +123,12 @@ public abstract class AbstractPairBufferImage extends BufferedImage implements S
       // 本卦右邊的直線
       g.draw(new Line2D.Double(srcChart.width , 0 , srcChart.width , getHeight()));
       // 變卦左邊的直線
-      g.draw(new Line2D.Double(width - dstChart.width , 0 , width - dstChart.width , getHeight()));
+      g.draw(new Line2D.Double(w - dstChart.width , 0 , w - dstChart.width , getHeight()));
     }
     
-    double rowHigh = srcChart.getRowHeight();// HexagramChart.getRowHigh(height);
+    double rowHigh = srcChart.getRowHeight();// HexagramChart.getRowHigh(h);
     
-    //double paddingY = HexagramChart.getPaddingY(height);
+    //double paddingY = HexagramChart.getPaddingY(h);
 
     double oxX = getOxX();
     

@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 public class AlignUtil
 {
   /**
-   * 將 int 轉成 String , 前後 塞入適當的空白字元，使其寬度變為 width
-   * 如果 int 比 width 長，則從最前面摘掉字元
+   * 將 int 轉成 String , 前後 塞入適當的空白字元，使其寬度變為 w
+   * 如果 int 比 w 長，則從最前面摘掉字元
    */
   public static String alignCenter(int value , int width)
   {
@@ -76,14 +76,14 @@ public class AlignUtil
     }
     else
     {
-      //sb.length() > width
+      //sb.length() > w
       return sb.substring(valueLength-width);
     }
   } //alignCenter
   
   /**
-   * 將 int 轉成 String , 前面塞入適當的空白字元，使其寬度變為 width
-   * 如果 int 比 width 長，則從最前面摘掉字元
+   * 將 int 轉成 String , 前面塞入適當的空白字元，使其寬度變為 w
+   * 如果 int 比 w 長，則從最前面摘掉字元
    */
   public static String alignRight(int value , int width)
   {
@@ -117,7 +117,7 @@ public class AlignUtil
     }
     else
     {
-      //sb.length() > width
+      //sb.length() > w
       return sb.substring(valueLength-width);
     }
   } //alignRight
@@ -145,8 +145,8 @@ public class AlignUtil
 
   
   /**
-   * 將 double 轉成 String , 前面塞入適當的空白字元，使其寬度變為 width
-   * 如果 double 比 width 長，則從最後面摘掉字元
+   * 將 double 轉成 String , 前面塞入適當的空白字元，使其寬度變為 w
+   * 如果 double 比 w 長，則從最後面摘掉字元
    */
   public static String alignRight(double value , int width)
   {
@@ -171,7 +171,7 @@ public class AlignUtil
     }
     else
     {
-      //sb.length() > width
+      //sb.length() > w
       return sb.substring(0, 4);
     }
   }

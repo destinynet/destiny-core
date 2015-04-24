@@ -21,6 +21,6 @@ public class ClassUtilsTest
   @Test
   public void testIsWritable() throws Exception
   {
-    assertTrue(!ClassUtils.isWritable(ColorCanvas.class , "width"));
+    assertTrue(!ClassUtils.isWritable(ColorCanvas.class , "w"));
   }
 }

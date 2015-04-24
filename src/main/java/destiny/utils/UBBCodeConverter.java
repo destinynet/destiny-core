@@ -97,7 +97,7 @@ public class UBBCodeConverter
       result = u_m.find();
       while (result)
       {
-        //u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3), "<a href=\"" + u_m.group(2) + "\" target=\"_blank\" title=\"開新視窗瀏覽\"><img src=" + u_m.group(2) + " border=0 onload=\"javascript:if(this.width>screen.width-333)this.width=screen.width-333;\" this.alt='點擊查看全圖'\" onmouseover=\"if(this.alt) this.style.cursor='hand';\"></a>");
+        //u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3), "<a href=\"" + u_m.group(2) + "\" target=\"_blank\" title=\"開新視窗瀏覽\"><img src=" + u_m.group(2) + " border=0 onload=\"javascript:if(this.w>screen.w-333)this.w=screen.w-333;\" this.alt='點擊查看全圖'\" onmouseover=\"if(this.alt) this.style.cursor='hand';\"></a>");
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3), "<img src=" + u_m.group(2) + " border=0>");
         u_s1 = u_s;
         u_m.find();
@@ -571,7 +571,7 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7) + u_m.group(8) + u_m.group(9), "<table width=" + u_m.group(2) + " style=\"filter:shadow(color=" + u_m
+            .group(7) + u_m.group(8) + u_m.group(9), "<table w=" + u_m.group(2) + " style=\"filter:shadow(color=" + u_m
             .group(4) + ", direction=" + u_m.group(6) + ")\">" + u_m.group(8) + "</table>");
         u_s1 = u_s;
         u_m.find();
@@ -596,7 +596,7 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7) + u_m.group(8) + u_m.group(9), "<table width=" + u_m.group(2) + " style=\"filter:glow(color=" + u_m
+            .group(7) + u_m.group(8) + u_m.group(9), "<table w=" + u_m.group(2) + " style=\"filter:glow(color=" + u_m
             .group(4) + ", strength=" + u_m.group(6) + ")\">" + u_m.group(8) + "</table>");
         u_s1 = u_s;
         u_m.find();
@@ -621,7 +621,7 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7) + u_m.group(8) + u_m.group(9), "<table width=" + u_m.group(2) + " style=\"filter:blur(Add=0,direction=" + u_m
+            .group(7) + u_m.group(8) + u_m.group(9), "<table w=" + u_m.group(2) + " style=\"filter:blur(Add=0,direction=" + u_m
             .group(4) + ", strength=" + u_m.group(6) + ")\">" + u_m.group(8) + "</table>");
         u_s1 = u_s;
         u_m.find();
@@ -717,10 +717,10 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7), "<a href=\"" + u_m.group(6) + "\" target=\"_blank\" title=\"全螢幕播放\">全螢幕播放</a><br><OBJECT codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=4,0,2,0 classid=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 width=" + u_m
-            .group(2) + " height=" + u_m.group(4) + "><PARAM NAME=movie VALUE=\"" + u_m.group(6) + "\"><PARAM NAME=quality VALUE=high><embed src=\"" + u_m
-            .group(6) + "\" quality=high pluginspage='<img align=absmiddle src=pic/url.gif border=0><a target=_blank href=http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'>http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'</a> type='application/x-shockwave-flash' width=" + u_m
-            .group(2) + " height=" + u_m.group(4) + ">http://</embed></OBJECT>");
+            .group(7), "<a href=\"" + u_m.group(6) + "\" target=\"_blank\" title=\"全螢幕播放\">全螢幕播放</a><br><OBJECT codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=4,0,2,0 classid=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 w=" + u_m
+            .group(2) + " h=" + u_m.group(4) + "><PARAM NAME=movie VALUE=\"" + u_m.group(6) + "\"><PARAM NAME=quality VALUE=high><embed src=\"" + u_m
+            .group(6) + "\" quality=high pluginspage='<img align=absmiddle src=pic/url.gif border=0><a target=_blank href=http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'>http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'</a> type='application/x-shockwave-flash' w=" + u_m
+            .group(2) + " h=" + u_m.group(4) + ">http://</embed></OBJECT>");
         u_s1 = u_s;
         u_m.find();
       }
@@ -744,9 +744,9 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7), "<object classid=clsid:166B1BCA-3F9C-11CF-8075-444553540000 codebase=http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=7,0,2,0 width=" + u_m
-            .group(2) + " height=" + u_m.group(4) + "><param name=src value=" + u_m.group(6) + "><embed src=\\3 pluginspage=http://www.macromedia.com/shockwave/download/ width=" + u_m
-            .group(2) + " height=" + u_m.group(4) + "></embed></object>");
+            .group(7), "<object classid=clsid:166B1BCA-3F9C-11CF-8075-444553540000 codebase=http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=7,0,2,0 w=" + u_m
+            .group(2) + " h=" + u_m.group(4) + "><param name=src value=" + u_m.group(6) + "><embed src=\\3 pluginspage=http://www.macromedia.com/shockwave/download/ w=" + u_m
+            .group(2) + " h=" + u_m.group(4) + "></embed></object>");
         u_s1 = u_s;
         u_m.find();
       }
@@ -770,8 +770,8 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7), "<OBJECT classid=clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA class=OBJECT id=RAOCX width=" + u_m.group(2) + " height=" + u_m
-            .group(4) + "><PARAM NAME=SRC VALUE=" + u_m.group(6) + "><PARAM NAME=CONSOLE VALUE=Clip1><PARAM NAME=CONTROLS VALUE=imagewindow><PARAM NAME=AUTOSTART VALUE=true></OBJECT><br><OBJECT classid=CLSID:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA height=30 id=video2 width=" + u_m
+            .group(7), "<OBJECT classid=clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA class=OBJECT id=RAOCX w=" + u_m.group(2) + " h=" + u_m
+            .group(4) + "><PARAM NAME=SRC VALUE=" + u_m.group(6) + "><PARAM NAME=CONSOLE VALUE=Clip1><PARAM NAME=CONTROLS VALUE=imagewindow><PARAM NAME=AUTOSTART VALUE=true></OBJECT><br><OBJECT classid=CLSID:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA h=30 id=video2 w=" + u_m
             .group(2) + "><PARAM NAME=SRC VALUE=" + u_m.group(6) + "><PARAM NAME=AUTOSTART VALUE=-1><PARAM NAME=CONTROLS VALUE=controlpanel><PARAM NAME=CONSOLE VALUE=Clip1></OBJECT>");
         u_s1 = u_s;
         u_m.find();
@@ -796,10 +796,10 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7), "<object align=middle classid=CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95 class=OBJECT id=MediaPlayer width=" + u_m
-            .group(2) + " height=" + u_m.group(4) + " ><param name=ShowStatusBar value=-1><param name=Filename value=" + u_m
+            .group(7), "<object align=middle classid=CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95 class=OBJECT id=MediaPlayer w=" + u_m
+            .group(2) + " h=" + u_m.group(4) + " ><param name=ShowStatusBar value=-1><param name=Filename value=" + u_m
             .group(6) + "><embed type=application/x-oleobject codebase=http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701 flename=mp src=" + u_m
-            .group(6) + " width=" + u_m.group(2) + " height=" + u_m.group(4) + "></embed></object>");
+            .group(6) + " w=" + u_m.group(2) + " h=" + u_m.group(4) + "></embed></object>");
         u_s1 = u_s;
         u_m.find();
       }
@@ -823,7 +823,7 @@ public class UBBCodeConverter
       while (result)
       {
         u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5) + u_m.group(6) + u_m
-            .group(7), "<embed src=" + u_m.group(6) + " width=" + u_m.group(2) + " height=" + u_m.group(4) + " autoplay=true loop=false controller=true playeveryframe=false cache=false scale=TOFIT bgcolor=#000000 kioskmode=false targetcache=false pluginspage=http://www.apple.com/quicktime/>");
+            .group(7), "<embed src=" + u_m.group(6) + " w=" + u_m.group(2) + " h=" + u_m.group(4) + " autoplay=true loop=false controller=true playeveryframe=false cache=false scale=TOFIT bgcolor=#000000 kioskmode=false targetcache=false pluginspage=http://www.apple.com/quicktime/>");
         u_s1 = u_s;
         u_m.find();
       }

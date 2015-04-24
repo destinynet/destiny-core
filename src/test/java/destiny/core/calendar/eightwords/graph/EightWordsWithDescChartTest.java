@@ -21,7 +21,7 @@ public class EightWordsWithDescChartTest {
       , new EightWordsNullable(StemBranch.get("甲午") , StemBranch.get("庚午") , StemBranch.get("戊申") , StemBranch.get("辛酉"))
       , Direction.R2L);
 
-    System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
+    System.out.println("w = " + c.getWidth() + " , h = " + c.getHeight());
 
     File pngFile = new File("/Users/smallufo/temp/chartWithDescR2L.png");
     ImageIO.write(c, "png", pngFile);
@@ -38,7 +38,7 @@ public class EightWordsWithDescChartTest {
       , new EightWordsNullable(StemBranch.get("甲午") , StemBranch.get("庚午") , StemBranch.get("戊申") , StemBranch.get("辛酉"))
       , Direction.L2R);
 
-    System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
+    System.out.println("w = " + c.getWidth() + " , h = " + c.getHeight());
 
     File pngFile = new File("/Users/smallufo/temp/chartWithDescL2R.png");
     ImageIO.write(c, "png", pngFile);

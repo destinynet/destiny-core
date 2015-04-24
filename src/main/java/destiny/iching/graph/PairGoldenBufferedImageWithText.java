@@ -42,7 +42,7 @@ public class PairGoldenBufferedImageWithText extends PairGoldenBufferedImage
     g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, fontSize));
     
     float srcTextX = (float) srcChart.paddingLeft;
-    float dstTextX = (float) (width - dstChart.width + dstChart.paddingLeft);
+    float dstTextX = (float) (w - dstChart.width + dstChart.paddingLeft);
     
     double rowHeight = (float) srcChart.getRowHeight();
     FontMetrics fontMetrics = g.getFontMetrics(new Font(FontRepository.getFontLiHei() , Font.PLAIN, fontSize));
@@ -66,7 +66,7 @@ public class PairGoldenBufferedImageWithText extends PairGoldenBufferedImage
       
       // 計算是否超過右邊邊界
       int expWidth = fontMetrics.stringWidth(srcExp);
-      double rightMargin = width - dstChart.width + dstChart.paddingLeft*0.8;
+      double rightMargin = w - dstChart.width + dstChart.paddingLeft*0.8;
       if (srcTextX + expWidth > rightMargin)
       {
         while (srcTextX + expWidth > rightMargin)
@@ -92,8 +92,8 @@ public class PairGoldenBufferedImageWithText extends PairGoldenBufferedImage
     String watermark = "destiny.pro 命理網";
     //FontMetrics fontMetrics = g.getFontMetrics(new Font(BaseHexagramChart.FONT_LIHEI , Font.PLAIN, fontSize));
     int watermarkWidth = fontMetrics.stringWidth(watermark);
-    float watermarkX = width/2 - watermarkWidth/2;
-    g.drawString(watermark , watermarkX , height-fontSize);
+    float watermarkX = w /2 - watermarkWidth/2;
+    g.drawString(watermark , watermarkX , h -fontSize);
     g.dispose();
   } // constructor
 

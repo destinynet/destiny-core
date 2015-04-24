@@ -33,7 +33,7 @@ public class PairGoldenBufferedImage extends AbstractPairBufferImage
   protected double getArrowX(double radius)
   {
     double paddingX = getPaddingX();
-    return width - height / GOLDEN_RATIO + paddingX - radius*2;
+    return w - h / GOLDEN_RATIO + paddingX - radius*2;
   }
   
   /** 繪製側邊文字 , 可能是八卦類像文字（天澤火雷...） */
@@ -50,7 +50,7 @@ public class PairGoldenBufferedImage extends AbstractPairBufferImage
   /** 單一卦象的寬度 */
   private double getSingleHexagramWidth()
   {
-    return height / GOLDEN_RATIO;
+    return h / GOLDEN_RATIO;
   }
   
   /** 單一卦象的 paddingX */

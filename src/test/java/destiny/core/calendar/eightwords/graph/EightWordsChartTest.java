@@ -21,7 +21,7 @@ public class EightWordsChartTest {
     EightWordsChart c = new EightWordsChart(Constants.WIDTH_HEIGHT.WIDTH , 600 , Color.WHITE , Color.BLACK , Color.BLUE
       , new EightWordsNullable(StemBranch.get("甲子") , StemBranch.get("乙丑") , StemBranch.get("丙寅") , StemBranch.get("丁卯")), Direction.R2L);
 
-    System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
+    System.out.println("w = " + c.getWidth() + " , h = " + c.getHeight());
 
     File pngFile = new File("/Users/smallufo/temp/chart1.png");
     ImageIO.write(c, "png", pngFile);
@@ -37,7 +37,7 @@ public class EightWordsChartTest {
     EightWordsChart c = new EightWordsChart(Constants.WIDTH_HEIGHT.WIDTH , 600 , Color.WHITE , Color.BLACK , Color.BLUE
       , new EightWordsNullable(StemBranch.get("甲子") , StemBranch.get("乙丑") , StemBranch.get("丙寅") , StemBranch.get("丁卯")), Direction.R2L);
 
-    System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
+    System.out.println("w = " + c.getWidth() + " , h = " + c.getHeight());
 
     File pngFile = new File("/Users/smallufo/temp/chart2.png");
     ImageIO.write(c, "png", pngFile);

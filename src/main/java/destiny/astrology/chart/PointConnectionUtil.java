@@ -46,7 +46,7 @@ public class PointConnectionUtil implements Serializable
     if (height <= 0)
       height = 1;
 
-    //BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    //BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     resultImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g2d = resultImage.createGraphics();
 
@@ -56,7 +56,7 @@ public class PointConnectionUtil implements Serializable
      * RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
      * g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER ,
      * 1.0f)); g2d.setPaint(Color.BLACK); //對黑色透明 Rectangle2D.Double rect = new
-     * Rectangle2D.Double(0,0,width,height); g2d.fill(rect);
+     * Rectangle2D.Double(0,0,w,h); g2d.fill(rect);
      */
 
     //星體「點」，到「重新排列過的星體 icon 中點」的 線條角度

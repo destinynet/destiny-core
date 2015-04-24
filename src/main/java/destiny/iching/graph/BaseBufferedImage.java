@@ -5,7 +5,6 @@
 package destiny.iching.graph;
 
 import destiny.iching.HexagramIF;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +49,7 @@ public class BaseBufferedImage extends BufferedImage implements Serializable
   protected Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 可任意指定寬高的單一卦象圖 , 以及指定四邊的 padding */
-  public BaseBufferedImage(@NotNull HexagramIF hex, int width, int height, Color bg, Color fore, double paddingTop, double paddingRight, double paddingBottom, double paddingLeft)
+  public BaseBufferedImage(HexagramIF hex, int width, int height, Color bg, Color fore, double paddingTop, double paddingRight, double paddingBottom, double paddingLeft)
   {
     super(width , height , BufferedImage.TYPE_INT_ARGB);
 

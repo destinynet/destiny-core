@@ -38,7 +38,7 @@ public class AstrologChart //extends BufferedImage
 
   public AstrologChart(Horoscope horoscope, int width , @NotNull Graphics2D g)
   {
-    //super(width, width, BufferedImage.TYPE_INT_RGB);
+    //super(w, w, BufferedImage.TYPE_INT_RGB);
 
     center = width / 2;
 

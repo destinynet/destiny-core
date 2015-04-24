@@ -7,8 +7,8 @@ package destiny.utils;
 public class AlignUtil
 {
   /**
-   * 將 int 轉成 String , 前面塞入適當的 fill 字元，使其寬度變為 width , 
-   * 如果 int 比 width 長，則從最前面摘掉字元
+   * 將 int 轉成 String , 前面塞入適當的 fill 字元，使其寬度變為 w ,
+   * 如果 int 比 w 長，則從最前面摘掉字元
    */
   public static String alignRight(int value , int width , char fill)
   {
@@ -34,14 +34,14 @@ public class AlignUtil
     }
     else
     {
-      //sb.length() > width
+      //sb.length() > w
       return sb.substring(valueLength-width);
     }
   } //alignRight
 
   /** 
-   * 將 double 轉成 String , 前面塞入適當的 fill 字元，使其寬度變為 width
-   * 如果 double 比 width 長，則從最「後面」摘掉字元 (因為這是小數點)
+   * 將 double 轉成 String , 前面塞入適當的 fill 字元，使其寬度變為 w
+   * 如果 double 比 w 長，則從最「後面」摘掉字元 (因為這是小數點)
    */
   public static String alignRight(double value , int width , char fill)
   {
@@ -67,7 +67,7 @@ public class AlignUtil
     }
     else
     {
-      //sb.length() > width
+      //sb.length() > w
       return sb.substring(0 , width);
     }
   }

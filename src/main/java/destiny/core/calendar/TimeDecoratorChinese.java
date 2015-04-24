@@ -90,7 +90,7 @@ public class TimeDecoratorChinese implements Decorator<Time> , Serializable
     }
     else
     {
-      //sb.length() > width
+      //sb.length() > w
       return sb.substring(valueLength-width);
     }
   }

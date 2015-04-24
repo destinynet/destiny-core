@@ -26,7 +26,7 @@ public class GoldenPaddingChartTest
 
     GoldenPaddingBufferedImage c = new GoldenPaddingBufferedImage(hex, Constants.WIDTH_HEIGHT.HEIGHT, 1000, Color.WHITE, Color.BLACK);
     
-    System.out.println("width = " + c.getWidth() + " , height = " + c.getHeight());
+    System.out.println("w = " + c.getWidth() + " , h = " + c.getHeight());
     
     File pngFile = new File("/Users/smallufo/temp/chart.png");
     ImageIO.write (c, "png", pngFile);

@@ -73,19 +73,19 @@ public class ColorCanvas implements Serializable
   
   /**
    * 產生新的畫布，內定以 fill ColorByte 填滿整個畫面
-   * @param height
-   * @param width
+   * @param h
+   * @param w
    * @param fill
    * @param extensible 是否可以 自動拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
    */
   /* @Deprecated
-  public ColorCanvas(int height , int width , ColorByte fill, boolean extensible)
+  public ColorCanvas(int h , int w , ColorByte fill, boolean extensible)
   {
-    this.height = height;
-    this.width = width;
+    this.h = h;
+    this.w = w;
     this.extensible = extensible;
     
-    content = new ColorByte[width*height];
+    content = new ColorByte[w*h];
     for (int i=0 ; i < content.length ; i++)
     {
       content[i] = fill;
@@ -245,12 +245,12 @@ public class ColorCanvas implements Serializable
     {
       //如果不換行（切字）
       //int a = y+strWidth-1;
-      //System.out.println("a = " + a + " , width = " + width);
+      //System.out.println("a = " + a + " , w = " + w);
       if ( (y+strWidth-1) > (this.width))
       {
         //超出，切字
         //byte[] byteArray = str.getBytes();        
-        //str = new String(byteArray , 0 , (this.width-y+1));
+        //str = new String(byteArray , 0 , (this.w-y+1));
         str = getStringFromBytes(str , (this.width-y+1));
       }
     }
@@ -328,14 +328,14 @@ public class ColorCanvas implements Serializable
   /**
    * <pre>
    * 2010/08/13 Added :
-   * 要從 str 中製造出 寬度 為 width 的字串
+   * 要從 str 中製造出 寬度 為 w 的字串
    * 假設 str = "一二三四五aabbcc" , 強迫寬度為 10 , 就要取前五個字
    * 原始字串的 bytearray 為：
    * [-28, -72, -128, -28, -70, -116, -28, -72, -119, -27, -101, -101, -28, -70, -108, 97, 97, 98, 98, 99, 99]
    *  (    一      ）（     二      ）（    三      ）（    四       ）（    五     ） a   a   b   b   c   c
    *  舊的演算法 :
    *  byte[] byteArray = str.getBytes();
-   *  str = new String(byteArray , 0 , (this.width-y+1));
+   *  str = new String(byteArray , 0 , (this.w-y+1));
    *  如果按照此演算法，只取前 10 bytes , 則只會取到「四」的第一個 byte (-27) , 並不完整！
    *  必須想辦法，讓他取到「五」的第三個 byte (-108)
    *
@@ -354,7 +354,7 @@ public class ColorCanvas implements Serializable
       if (s.getBytes().length == 3) {
         //中文字
 
-        //如果加上字元所佔寬度(2)大於 width , 就不 append 了
+        //如果加上字元所佔寬度(2)大於 w , 就不 append 了
         if (nowWidth + 2 > width) {
           break;
         }
@@ -473,7 +473,7 @@ public class ColorCanvas implements Serializable
     catch (UnsupportedEncodingException ignored)
     {}
     
-    //ColorByte[] content 必須要加長 (高度, height 增加) 
+    //ColorByte[] content 必須要加長 (高度, h 增加)
     
     //需要多少 Rows
     int additionalRows = strWidth / this.width +1;

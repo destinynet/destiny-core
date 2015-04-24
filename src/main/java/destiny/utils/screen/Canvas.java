@@ -96,7 +96,7 @@ public class Canvas implements Serializable
   public void setText(@NotNull byte[] b , int x , int y)
   {
     /**
-     * [x,y] = content[ (y-1)*width + x -1 ]
+     * [x,y] = content[ (y-1)*w + x -1 ]
      */
     for (int i=0 ; i < b.length ; i++)
     {

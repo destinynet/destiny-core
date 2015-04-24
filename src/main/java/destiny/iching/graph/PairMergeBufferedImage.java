@@ -31,7 +31,7 @@ public class PairMergeBufferedImage extends AbstractPairBufferImage
   @Override
   protected double getArrowX(double radius)
   {
-    return width/2 + getPaddingX() - radius*2;
+    return w /2 + getPaddingX() - radius*2;
   }
   
   /** 繪製側邊文字 , 可能是八卦類像文字（天澤火雷...） */
