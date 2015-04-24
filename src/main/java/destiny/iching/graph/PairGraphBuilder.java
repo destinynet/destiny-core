@@ -47,6 +47,9 @@ import static destiny.core.chart.Constants.GOLDEN_RATIO;
  */
 public class PairGraphBuilder {
 
+  /** 整張圖 */
+  protected Graphics2D fullG;
+
   /** Golden + Padding */
   protected Graphics2D srcGraph;
 
@@ -80,6 +83,7 @@ public class PairGraphBuilder {
   private java.util.Set<GraphicsProcessor> processors = new HashSet<>();
 
   public PairGraphBuilder(Graphics2D g , HexagramIF src , HexagramIF dst , Type type, Constants.WIDTH_HEIGHT which, int value , Color bg , Color fore) {
+    this.fullG = g;
     this.src = src;
     this.dst = dst;
     this.type = type;
@@ -181,8 +185,10 @@ public class PairGraphBuilder {
   } // PairGraphBuilder()
 
   public PairGraphBuilder withGraphicsProcessor(GraphicsProcessor p) {
-    this.processors.add(p);
+    p.process(this);
     return this;
+//    this.processors.add(p);
+//    return this;
   }
 
   protected double getRowHigh() {
@@ -203,8 +209,8 @@ public class PairGraphBuilder {
     return Tuple4.of(t, r, b, l);
   }
 
-  public void build() {
-    for(GraphicsProcessor p : processors)
-      p.process(this);
-  }
+//  public void build() {
+//    for(GraphicsProcessor p : processors)
+//      p.process(this);
+//  }
 }
