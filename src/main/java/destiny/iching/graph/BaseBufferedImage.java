@@ -45,7 +45,7 @@ public class BaseBufferedImage extends BufferedImage implements Serializable
   
   // 每條 row 的高度
   protected double rowHigh;
-  
+
   protected Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 可任意指定寬高的單一卦象圖 , 以及指定四邊的 padding */
@@ -65,11 +65,13 @@ public class BaseBufferedImage extends BufferedImage implements Serializable
     this.paddingBottom = paddingBottom;
     this.paddingLeft = paddingLeft;
 
+    this.rowHigh = getRowHeight();
+
     Graphics2D g = this.createGraphics();
 
     BaseHexagramGraphic.render(g, hex, width, height, bg, fore, paddingTop, paddingRight, paddingBottom, paddingLeft);
 
-    g.dispose();
+    //g.dispose();
   } // constructor
 
   public double getRowHeight()

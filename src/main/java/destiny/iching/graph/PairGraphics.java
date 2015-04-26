@@ -12,13 +12,11 @@ import destiny.utils.Tuple4;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.util.HashSet;
 
 import static destiny.core.chart.Constants.GOLDEN_RATIO;
 
 
 /**
- * reference {@link AbstractPairBufferImage}
  * 橫向兩個卦
 ┌─────────────────────────────┐
 │                             │
@@ -45,7 +43,7 @@ import static destiny.core.chart.Constants.GOLDEN_RATIO;
  具備 「OX」的 x 軸座標 : getOxX()
  以及 取得箭頭頂點的 X 座標 getArrowX()
  */
-public class PairGraphBuilder {
+public class PairGraphics {
 
   /** 整張圖 */
   protected Graphics2D fullG;
@@ -65,6 +63,7 @@ public class PairGraphBuilder {
   protected final int width;
   protected final int height;
 
+  /** 本卦 / 變卦 的 paddings */
   protected final double paddingT;
   protected final double paddingR;
   protected final double paddingB;
@@ -80,9 +79,7 @@ public class PairGraphBuilder {
   protected final Color bg;
   protected final Color fore;
 
-  private java.util.Set<GraphicsProcessor> processors = new HashSet<>();
-
-  public PairGraphBuilder(Graphics2D g , HexagramIF src , HexagramIF dst , Type type, Constants.WIDTH_HEIGHT which, int value , Color bg , Color fore) {
+  public PairGraphics(Graphics2D g, HexagramIF src, HexagramIF dst, Type type, Constants.WIDTH_HEIGHT which, int value, Color bg, Color fore) {
     this.fullG = g;
     this.src = src;
     this.dst = dst;
@@ -133,14 +130,17 @@ public class PairGraphBuilder {
     // 繪製右半部的變卦
     BaseHexagramGraphic.render(dstGraph , dst , singleW , singleH , bg , fore , paddingT , paddingR , paddingB , paddingL);
 
-    boolean drawRulers = true;
-    if (drawRulers) {
-      // 繪製輔助線條
-      g.setColor(Color.decode("#999999"));
-      // 本卦右邊的直線
-      g.draw(new Line2D.Double(singleW, 0, singleW, height));
-      // 變卦左邊的直線
-      g.draw(new Line2D.Double(width - singleW, 0, width - singleW, height));
+    boolean debug = false;
+    if (debug) {
+      // 畫出左右兩卦的 border
+      //g.setColor(Color.decode("#999999"));
+      g.setColor(Color.PINK);
+
+      // 本卦
+      g.drawRect(0,0, singleW , singleH);
+
+      // 變卦
+      g.drawRect(width - singleW , 0 , singleW , singleH);
     }
 
     double oxX = singleW - paddingR/2.0;
@@ -182,16 +182,14 @@ public class PairGraphBuilder {
         g.draw(new Line2D.Double(arrowX, arrowY, arrowX - radius, arrowY + radius));
       } // 有變爻
     } // 6 to 1
-  } // PairGraphBuilder()
+  } // PairGraphics()
 
-  public PairGraphBuilder withGraphicsProcessor(GraphicsProcessor p) {
+  public <T extends PairGraphics> T withGraphicsProcessor(GraphicsProcessor p) {
     p.process(this);
-    return this;
-//    this.processors.add(p);
-//    return this;
+    return (T)this;
   }
 
-  protected double getRowHigh() {
+  protected double getRowHeight() {
     return (singleH - paddingT - paddingB) / 11.0;
   }
 
@@ -208,9 +206,4 @@ public class PairGraphBuilder {
     double l = (which == Constants.WIDTH_HEIGHT.WIDTH ? value * (2 - GOLDEN_RATIO) / 2 : (value / GOLDEN_RATIO) * (2 - GOLDEN_RATIO) / 2);
     return Tuple4.of(t, r, b, l);
   }
-
-//  public void build() {
-//    for(GraphicsProcessor p : processors)
-//      p.process(this);
-//  }
 }

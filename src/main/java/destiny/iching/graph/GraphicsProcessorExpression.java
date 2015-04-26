@@ -12,37 +12,37 @@ import java.awt.*;
 import java.util.Locale;
 
 /**
- * 畫出爻辭
+ * 畫出爻辭 (Line Expression)
  */
-public class GraphicsProcessorText implements GraphicsProcessor {
+public class GraphicsProcessorExpression implements GraphicsProcessor {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   private final ExpressionIF expImpl;
 
-  public GraphicsProcessorText(ExpressionIF expImpl) {this.expImpl = expImpl;}
+  public GraphicsProcessorExpression(ExpressionIF expImpl) {this.expImpl = expImpl;}
 
 
   @Override
-  public void process(PairGraphBuilder builder) {
+  public void process(PairGraphics pairGraphics) {
 
-    Graphics2D g = builder.fullG;
+    Graphics2D g = pairGraphics.fullG;
 
-    int fontSize = (int) (builder.getRowHigh()*0.7);
+    int fontSize = (int) (pairGraphics.getRowHeight()*0.7);
     g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, fontSize));
 
 
-    float srcTextX = (float) builder.paddingL;
-    float dstTextX = (float) (builder.width - builder.singleW + builder.singlePaddingX);
+    float srcTextX = (float) pairGraphics.paddingL;
+    float dstTextX = (float) (pairGraphics.width - pairGraphics.singleW + pairGraphics.singlePaddingX);
 
-    double rowHeight = builder.getRowHigh();
+    double rowHeight = pairGraphics.getRowHeight();
     FontMetrics fontMetrics = g.getFontMetrics(new Font(FontRepository.getFontLiHei(), Font.PLAIN, fontSize));
 
     for(int i=6 ; i>=1 ; i--)
     {
-      float textY = (float) (builder.paddingT + rowHeight*(13.7-2*i));
+      float textY = (float) (pairGraphics.paddingT + rowHeight*(13.7-2*i));
 
-      if (builder.src.getLine(i) != builder.dst.getLine(i))
+      if (pairGraphics.src.getLine(i) != pairGraphics.dst.getLine(i))
       {
         // 有變爻 , 文字顏色較深
         g.setColor(Color.decode("#666666"));
@@ -53,11 +53,11 @@ public class GraphicsProcessorText implements GraphicsProcessor {
         g.setColor(Color.decode("#aaaaaa"));
       }
 
-      String srcExp = expImpl.getLineExpression(builder.src, i, Locale.TAIWAN);
+      String srcExp = expImpl.getLineExpression(pairGraphics.src, i, Locale.TAIWAN);
 
       // 計算是否超過右邊邊界
       int expWidth = fontMetrics.stringWidth(srcExp);
-      double rightMargin = builder.width - builder.singleW + builder.singlePaddingX*0.8;
+      double rightMargin = pairGraphics.width - pairGraphics.singleW + pairGraphics.singlePaddingX*0.8;
       if (srcTextX + expWidth > rightMargin)
       {
         while (srcTextX + expWidth > rightMargin)
@@ -74,7 +74,7 @@ public class GraphicsProcessorText implements GraphicsProcessor {
       g.drawString(srcExp , srcTextX , textY);
 
       // 印出變卦爻辭
-      String dstExp = expImpl.getLineExpression(builder.dst, i, Locale.TAIWAN);
+      String dstExp = expImpl.getLineExpression(pairGraphics.dst, i, Locale.TAIWAN);
       g.drawString(dstExp , dstTextX , textY);
     } // line 6 to 1
 

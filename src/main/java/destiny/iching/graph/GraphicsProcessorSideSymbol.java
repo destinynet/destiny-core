@@ -24,32 +24,32 @@ public class GraphicsProcessorSideSymbol implements GraphicsProcessor {
   }
 
   @Override
-  public void process(PairGraphBuilder builder) {
+  public void process(PairGraphics pairGraphics) {
     double fontX = 0;
 
-    double rowHigh = builder.getRowHigh();
+    double rowHeight = pairGraphics.getRowHeight();
 
     Graphics g = null;
 
     switch (side)
     {
       case L:
-        g = builder.srcGraph;
-        fontX = builder.singlePaddingX / 2 - rowHigh / 2;
+        g = pairGraphics.srcGraph;
+        fontX = pairGraphics.singlePaddingX / 2 - rowHeight / 2;
         break;
       case R:
-        g = builder.dstGraph;
-        fontX = builder.singleW - builder.singlePaddingX / 2 - rowHigh / 2;
+        g = pairGraphics.dstGraph;
+        fontX = pairGraphics.singleW - pairGraphics.singlePaddingX / 2 - rowHeight / 2;
         break;
     }
 
-    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, (int) rowHigh));
+    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, (int) rowHeight));
 
     // 上卦
-    g.drawString( getString(hexagram.getUpperSymbol()) , (int) fontX , (int) (builder.singlePaddingY + rowHigh*3) );
+    g.drawString( getString(hexagram.getUpperSymbol()) , (int) fontX , (int) (pairGraphics.singlePaddingY + rowHeight*3) );
 
     // 下卦
-    g.drawString(getString(hexagram.getLowerSymbol()), (int) fontX, (int) (builder.singlePaddingY + rowHigh * 9));
+    g.drawString(getString(hexagram.getLowerSymbol()), (int) fontX, (int) (pairGraphics.singlePaddingY + rowHeight * 9));
   }
 
 

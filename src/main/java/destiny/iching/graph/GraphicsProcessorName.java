@@ -22,23 +22,23 @@ public class GraphicsProcessorName implements GraphicsProcessor , Serializable {
   }
 
   @Override
-  public void process(PairGraphBuilder builder) {
+  public void process(PairGraphics pairGraphics) {
     // 下方卦名，例如「乾」「坤」「屯」..
 
-    int bottomFontSize = (int) (builder.singlePaddingY / GOLDEN_RATIO);
+    int bottomFontSize = (int) (pairGraphics.singlePaddingY / GOLDEN_RATIO);
 
-    int width = builder.singleW;
-    int height = builder.singleH;
-    double paddingY = builder.paddingB;
+    int width = pairGraphics.singleW;
+    int height = pairGraphics.singleH;
+    double paddingY = pairGraphics.paddingB;
 
     Graphics g = null;
     switch (side) {
       case L :
-        g = builder.srcGraph;
+        g = pairGraphics.srcGraph;
 
         break;
       case R :
-        g = builder.dstGraph;
+        g = pairGraphics.dstGraph;
         break;
     }
 

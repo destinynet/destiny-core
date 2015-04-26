@@ -10,5 +10,5 @@ public interface GraphicsProcessor {
     L, R
   }
 
-  void process(PairGraphBuilder builder);
+  void process(PairGraphics pairGraphics);
 }
