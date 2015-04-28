@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2014-11-28.
+ * Created by smallufo on 2015-04-29.
  */
 package destiny.core.calendar.eightwords.graph;
 
@@ -13,66 +13,58 @@ import destiny.core.chinese.StemBranch;
 import destiny.font.FontRepository;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.Serializable;
 import java.util.Locale;
 import java.util.Optional;
 
 /**
  * 直式八字命盤，下方九條大運
  * 寬度若為1 , 高度為 1.618
- *   +-------------------------+
- *   | 西元 xxx      性別 :男性  |  meta
- *   | 地點 xxx      GMT :     |
- *   | 東經 xxx 北緯 xxx        |
- *   | 換日 / DST / link / ... |
- *   +-------------------------+
- *   |   x     x     x     x   | squareChart
- *   |   x     x     x     x   |
- *   |                         |
- *   |  HHH   DDD   MMM   YYY  |
- *   |                         |
- *   |  HHH   DDD   MMM   YYY  |
- *   |                         |
- *   |   y     y     y     y   |
- *   |  xxx   xxx   xxx   xxx  |
- *   |  xxx   xxx   xxx   xxx  |
- *   +-------------------------+
- *   |   y     y     y     y   |
- *   | xxx xxx xxx xxx xxx xxx |
- *   | xxx xxx xxx xxx xxx xxx | 九條流年大運
- *   +-------------------------+
- *
+ * +-------------------------+
+ * | 西元 xxx      性別 :男性  |  meta
+ * | 地點 xxx      GMT :     |
+ * | 東經 xxx 北緯 xxx        |
+ * | 換日 / DST / link / ... |
+ * +-------------------------+
+ * |   x     x     x     x   | squareChart
+ * |   x     x     x     x   |
+ * |                         |
+ * |  HHH   DDD   MMM   YYY  |
+ * |                         |
+ * |  HHH   DDD   MMM   YYY  |
+ * |                         |
+ * |   y     y     y     y   |
+ * |  xxx   xxx   xxx   xxx  |
+ * |  xxx   xxx   xxx   xxx  |
+ * +-------------------------+
+ * |   y     y     y     y   |
+ * | xxx xxx xxx xxx xxx xxx |
+ * | xxx xxx xxx xxx xxx xxx | 九條流年大運
+ * +-------------------------+
  */
-public class PersonFullChart extends BufferedImage implements Serializable {
+public class PersonFullGraphics {
 
-  /** 預先儲存已經計算好的結果 */
-  private final PersonContextModel model;
+  private static ReactionsUtil reactionsUtil = new ReactionsUtil(new HiddenStemsStandardImpl());
 
-  private Color bg;
-  private ReactionsUtil reactionsUtil = new ReactionsUtil(new HiddenStemsStandardImpl());
-
-  public PersonFullChart(PersonContextModel model, int width, Color bg, Color fore, Direction direction) {
-    super(width, (int) (width * Constants.GOLDEN_RATIO),  BufferedImage.TYPE_INT_ARGB);
-    this.model = model;
-
-    this.bg = bg;
+  public static void render(Graphics2D g, PersonContextModel model, int width, Color bg, Color fore, Direction direction) {
+    int height = getHeight(width);
 
     PersonContext context = model.getPersonContext();
-    Graphics2D g = this.createGraphics();
+
     g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setColor(bg);
-    g.fillRect(0, 0, getWidth(), getHeight());
+    g.fillRect(0, 0, width, height);
     g.setColor(fore);
 
-    // 上方的 meta data chart
-    BufferedImage metaImage = getMetaImage(width , context);
-    g.drawImage(metaImage , 0 , 0 , null);
+    // 上方的 meta data graphics
+    int metaHeight = getMetaHeight(width);
+    Graphics2D metaGraphics = (Graphics2D) g.create(0, 0, width, metaHeight);
+    renderMeta(metaGraphics, width, context, model);
 
-    // 中間的squareChart
-    PersonSquareChart squareChart = new PersonSquareChart(width , context.getEightWords() , Optional.of(context.getGender()) , direction);
-    g.drawImage(squareChart , 0 , metaImage.getHeight() , null);
+    // 中間的squareGraphics
+    Graphics2D personSquareGraphics = (Graphics2D) g.create(0 , metaHeight , width , width); // square , width = height
+    EightWordsWithDescGraphics.render(personSquareGraphics, width, bg , fore , context.getEightWords(), Optional.of(context.getGender()), direction);
+
 
     // 九個大運，每個大運最多三柱 ( cylinder )，
     float threeCylindersWidth = width/9;
@@ -81,9 +73,9 @@ public class PersonFullChart extends BufferedImage implements Serializable {
     // 字體寬度，就是剩餘寬度除以三
     float fontWidth = (threeCylindersWidth - (padding * 2)) / 3;
 
-    float y = metaImage.getHeight() + squareChart.getHeight() + fontWidth*1;
+    float y = metaHeight + width + fontWidth*1;
 
-    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, (int) fontWidth));
+    g.setFont(new Font(FontRepository.getFontLiHei(), Font.PLAIN, (int) fontWidth));
 
     //forward : 大運是否順行
     boolean isForward = context.isFortuneDirectionForward();
@@ -96,12 +88,17 @@ public class PersonFullChart extends BufferedImage implements Serializable {
       else
         x = (int) (width - threeCylindersWidth * i);
 
-      g.drawImage(getThreeCylinders(threeCylindersWidth , model.getFortuneDatas().get(i-1) , eightWords) , x , (int) y , null);
+      Graphics2D threeCylindersGraph = (Graphics2D) g.create(x , (int)y , (int)threeCylindersWidth , (int) getThreeCylindersHeight(threeCylindersWidth));
+      renderThreeCylinders(threeCylindersGraph , threeCylindersWidth , model.getFortuneDatas().get(i-1) , eightWords , bg);
     }
-  } // constructor
+  }
+
+  public static int getHeight(int width) {
+    return (int) (width * Constants.GOLDEN_RATIO);
+  }
 
   /**
-   *           w
+   *            w
    * +-------------------------+
    * | 西元 xxx      性別 :男性  |  meta
    * | 地點 xxx      GMT :     |
@@ -109,24 +106,22 @@ public class PersonFullChart extends BufferedImage implements Serializable {
    * | 換日 / DST / link / ... |
    * +-------------------------+
    */
-  private BufferedImage getMetaImage(float width , PersonContext context) {
-    BufferedImage img = new BufferedImage( (int) width , (int) (width / Constants.GOLDEN_RATIO/2), BufferedImage.TYPE_INT_ARGB);
+  private static void renderMeta(Graphics2D g, float width, PersonContext context , PersonContextModel model) {
+    int height = getMetaHeight((int) width);
 
-    Graphics2D g = img.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     // meta data 標準色
     Color generalMetaColor = Color.BLACK;
 
-    float lineHeight = (float) (img.getHeight() / 7 * 0.9);
+    float lineHeight = (float) (height / 7 * 0.9);
     float fontSize = (float) (lineHeight*0.8);
     float x = lineHeight/2;
-    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, (int) fontSize));
+    g.setFont(new Font(FontRepository.getFontLiHei(), Font.PLAIN, (int) fontSize));
     g.setColor(generalMetaColor);
     TimeDecoratorChinese timeDecorator = new TimeDecoratorChinese();
 
-    //g.drawString(timeDecorator.getOutputString(context.getLmt())+"　　　　　性別："+context.getGender().name()+"性" , x , lineHeight );
     g.drawString(timeDecorator.getOutputString(context.getLmt())+"　　　　　性別：" , x , lineHeight );
     switch (context.getGender()) {
       case 男: g.setColor(Color.BLUE);break;
@@ -193,27 +188,24 @@ public class PersonFullChart extends BufferedImage implements Serializable {
       g.setColor(Color.RED);
     }
     g.drawString(context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE) , x + fontSize * 5 , lineHeight*6);
-
-    return img;
   }
 
-  /** 取得大運（內含最多三個藏干） */
-  private BufferedImage getThreeCylinders(float width , FortuneData fortuneData , EightWords eightWords) {
+  private static int getMetaHeight(int width) {
+    return (int) (width / Constants.GOLDEN_RATIO / 2);
+  }
 
-    StemBranch stemBranch = fortuneData.getStemBranch();
-
-    BufferedImage img = new BufferedImage( (int) width , (int) width / 3 * 8 , BufferedImage.TYPE_INT_ARGB);
-
-    Graphics2D g = img.createGraphics();
+  private static void renderThreeCylinders(Graphics2D g , float width , FortuneData fortuneData , EightWords eightWords , Color bg) {
     g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setColor(bg);
-    g.fillRect(0, 0, img.getWidth(), img.getHeight());
+
+    int height = (int) getThreeCylindersHeight(width);
+    g.fillRect(0, 0, (int) width, height);
 
     float fontSize = (float) (width * 0.85 / 3);
     float padding = (float) (width * 0.05);
 
-    g.setFont(new Font(FontRepository.getFontLiHei() , Font.PLAIN, (int) fontSize));
+    g.setFont(new Font(FontRepository.getFontLiHei(), Font.PLAIN, (int) fontSize));
 
     // 流年上方的字（歲數/西元/民國）
     g.setColor(Color.PINK);
@@ -222,6 +214,8 @@ public class PersonFullChart extends BufferedImage implements Serializable {
     // 天干十神
     g.setColor(Color.LIGHT_GRAY);
     HeavenlyStems dayStem = eightWords.getDay().getStem();
+
+    StemBranch stemBranch = fortuneData.getStemBranch();
 
     Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , dayStem);
     g.drawString(reaction.toString().substring(0,1) , padding + fontSize   , fontSize*2);
@@ -237,7 +231,7 @@ public class PersonFullChart extends BufferedImage implements Serializable {
     java.util.List<Reactions> reactions = reactionsUtil.getReactions(stemBranch.getBranch() , dayStem);
     if (reactions.size() >= 1 ) {
       Reactions eachReaction = reactions.get(0);
-      HeavenlyStems hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem,eachReaction); // 地支藏干
+      HeavenlyStems hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem, eachReaction); // 地支藏干
       g.drawString(hiddenStem.toString() , padding + fontSize   , fontSize*6);
       g.drawString(eachReaction.toString().substring(0 , 1) , padding + fontSize , fontSize * 7);
       g.drawString(eachReaction.toString().substring(1 , 2) , padding + fontSize , fontSize * 8);
@@ -256,7 +250,10 @@ public class PersonFullChart extends BufferedImage implements Serializable {
       g.drawString(eachReaction.toString().substring(0, 1) , padding , fontSize * 7);
       g.drawString(eachReaction.toString().substring(1 , 2) , padding , fontSize * 8);
     }
-    return img;
+  }
+
+  private static float getThreeCylindersHeight(float threeCylindersWidth) {
+    return threeCylindersWidth / 3 * 8;
   }
 
 }

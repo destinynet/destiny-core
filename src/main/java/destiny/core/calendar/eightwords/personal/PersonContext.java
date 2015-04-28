@@ -16,7 +16,6 @@ import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +49,7 @@ public class PersonContext extends EightWordsContext {
 
 
   /** 此人的八字 */
-  @Nullable
+  @NotNull
   private EightWords eightWords;
 
   /** 現在（LMT）的節/氣 */
@@ -92,22 +91,25 @@ public class PersonContext extends EightWordsContext {
   }
 
   /** 取得出生時刻 */
+  @NotNull
   public Time getLmt() {
     return lmt;
   }
 
   /** 取得出生地點 */
+  @NotNull
   public Location getLocation() {
     return location;
   }
 
   /** 取得出生時刻的八字 */
-  @Nullable
+  @NotNull
   public EightWords getEightWords() {
     return this.eightWords;
   }
 
   /** 性別 */
+  @NotNull
   public Gender getGender() {
     return gender;
   }

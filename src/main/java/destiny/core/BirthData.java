@@ -6,8 +6,10 @@ package destiny.core;
 
 import destiny.core.calendar.*;
 
+import java.io.Serializable;
+
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
-public class BirthData implements GenderIF , TimeIF , DateIF , HmsIF , LocationIF
+public class BirthData implements GenderIF , TimeIF , DateIF , HmsIF , LocationIF , Serializable
 {
   private Gender gender;
   private Time time;

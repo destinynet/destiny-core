@@ -73,7 +73,4 @@ public class BaseHexagramGraphic implements Serializable {
   protected static double getRowHeight(int height , double paddingTop , double paddingBottom) {
     return (height - paddingTop - paddingBottom)/11.0;
   }
-
-
-
 }
