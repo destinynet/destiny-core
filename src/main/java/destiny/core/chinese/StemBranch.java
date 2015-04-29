@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
@@ -48,8 +50,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   */
   
   /**
-   * 0[甲子] ~ 59[癸亥]
-   * @param index
+   * @param index 0[甲子] ~ 59[癸亥]
    */
   public static StemBranch get(int index)
   {
@@ -157,6 +158,10 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   public int getIndex()
   {
     return getIndex(this);
+  }
+
+  public static Iterator<StemBranch> iterator() {
+    return Arrays.stream(stemBranchArray).iterator();
   }
   
   @NotNull
