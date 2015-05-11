@@ -6,7 +6,7 @@ package destiny.utils.location;
 
 import java.util.TimeZone;
 
-public interface TimeZoneService
-{
-  public TimeZone getTimeZone(double longitude , double latitude);
+public interface TimeZoneService {
+
+  TimeZone getTimeZone(double longitude, double latitude);
 }
