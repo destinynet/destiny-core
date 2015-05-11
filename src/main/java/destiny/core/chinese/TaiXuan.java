@@ -1,11 +1,9 @@
 /**
  * Created by smallufo on 2015-05-12.
  */
-package destiny.core;
+package destiny.core.chinese;
 
 import com.google.common.collect.ImmutableMap;
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -14,6 +12,7 @@ import java.util.Map;
  * 太玄數
  *
  * 甲己子午九，乙庚丑未八，丙辛寅申七，丁壬卯酉六，戊癸辰戌五，巳亥單四數
+ * 深入探討資料： @see <a href="http://tieba.baidu.com/p/2236977909">http://tieba.baidu.com/p/2236977909</a>
  */
 public class TaiXuan implements Serializable {
 

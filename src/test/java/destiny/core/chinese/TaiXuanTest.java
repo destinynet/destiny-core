@@ -1,10 +1,8 @@
 /**
  * Created by smallufo on 2015-05-12.
  */
-package destiny.core;
+package destiny.core.chinese;
 
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
 import org.junit.Test;
 
 public class TaiXuanTest {

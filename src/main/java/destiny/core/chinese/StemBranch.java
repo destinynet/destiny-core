@@ -33,7 +33,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
     while(n<60);
   }
   
-  private StemBranch(@Nullable HeavenlyStems 天干 , @Nullable EarthlyBranches 地支)
+  private StemBranch(@NotNull HeavenlyStems 天干 , @NotNull EarthlyBranches 地支)
   {
     super(天干 , 地支);
   }
@@ -174,8 +174,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
    */
   public int compareTo(StemBranch o)
   {
-    StemBranch sb = (StemBranch) o ;
-    return (getIndex(this) - getIndex(sb));
+    return (getIndex(this) - getIndex(o));
     
     /**
     StemBranch sb = (StemBranch)o;
@@ -217,5 +216,8 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   {
     return get(getIndex(this)-1);
   }
-  
+
+  public static Iterable<StemBranch> iterable() {
+    return Arrays.asList(stemBranchArray);
+  }
 }
