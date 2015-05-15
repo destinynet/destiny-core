@@ -77,6 +77,26 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   {
     return EarthlyBranches.getEarthlyBranches(getIndex()+6);
   }
+
+  /** 取得 六合 的地支 */
+  public EarthlyBranches getCombined() {
+    switch (this) {
+      case 子 : return 丑;
+      case 丑 : return 子;
+      case 寅 : return 亥;
+      case 卯 : return 戌;
+      case 辰 : return 酉;
+      case 巳 : return 申;
+
+      case 午 : return 未;
+      case 未 : return 午;
+      case 申 : return 巳;
+      case 酉 : return 辰;
+      case 戌 : return 卯;
+      case 亥 : return 寅;
+      default: throw new AssertionError();
+    }
+  }
   
   /**
    * 子[0] ~ 亥[11]
@@ -99,6 +119,8 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   {
     return getIndex(this);
   }
+
+
 
   
   /**
