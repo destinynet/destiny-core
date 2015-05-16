@@ -167,7 +167,7 @@ public class PersonFullGraphics {
       hasDst = "有";
     } else
       hasDst = "無";
-    g.drawString(hasDst , x + fontSize*15 , lineHeight*4);
+    g.drawString(hasDst, x + fontSize * 15, lineHeight * 4);
 
     if (location.getNorthSouth() == Location.NorthSouth.SOUTH ) {
       YearMonthIF yearMonthImpl = context.getYearMonthImpl();
@@ -188,7 +188,13 @@ public class PersonFullGraphics {
     if (context.getHourImpl() instanceof HourLmtImpl) {
       g.setColor(Color.RED);
     }
-    g.drawString(context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE) , x + fontSize * 5 , lineHeight*6);
+    g.drawString(context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE), x + fontSize * 5, lineHeight * 6);
+
+    g.setColor(generalMetaColor);
+
+    StemBranch 命宮 = context.getRisingStemBranch(context.getLmt(), location);
+    g.drawString("命宮：" + 命宮.toString() + "（"+context.getRisingSignImpl().getRisingSignName()+"）", x, lineHeight * 7);
+
   }
 
   private static int getMetaHeight(int width) {

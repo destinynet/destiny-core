@@ -5,6 +5,7 @@ import destiny.core.calendar.Time;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.StemBranchUtils;
 
 import java.io.Serializable;
 
@@ -171,5 +172,14 @@ public class EightWordsContext implements EightWordsIF , Serializable
    */
   public RisingSignIF getRisingSignImpl() {
     return risingSignImpl;
+  }
+
+  /**
+   * 計算命宮干支
+   */
+  public StemBranch getRisingStemBranch(Time lmt , Location location) {
+    EightWords ew = getEightWords(lmt , location);
+    EarthlyBranches risingBranch = risingSignImpl.getRisingSign(lmt , location).getBranch();
+    return StemBranch.get(StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch), risingBranch);
   }
 }

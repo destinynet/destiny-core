@@ -173,16 +173,27 @@ public class ContextColorCanvasWrapper {
     cc.setText(dstString , 4 , 29 , (isDst ? "FF0000" : "999999") , "" , null);
       
     cc.setText("子正是："+ context.getMidnightImpl().getTitle(Locale.TRADITIONAL_CHINESE) , 5 , 1 , "999999" , null , context.getMidnightImpl().getDescription(Locale.TRADITIONAL_CHINESE));
-    cc.setText("時辰劃分：" + context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE)  , 6 , 1 , "999999" , null , context.getHourImpl().getDescription(Locale.TRADITIONAL_CHINESE));
+    cc.setText("時辰劃分：" + context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, "999999", null, context.getHourImpl().getDescription(Locale.TRADITIONAL_CHINESE));
+
+
+
+    // 命宮
+    int risingLine = 7;
+    StemBranch 命宮 = context.getRisingStemBranch(lmt , location);
+    cc.setText("命宮：", risingLine , 1 , "999999" , null , "命宮");
+    cc.setText(命宮.toString() , risingLine , 7 , "FF0000" , null , 命宮.toString());
+    cc.setText("（"+context.getRisingSignImpl().getRisingSignName()+"）" , risingLine , 11 , "999999");
+
+    int linkLine = 8;
     if (linkUrl != null)
     {
-      cc.setText("命盤連結  ", 7, 1 , "999999");
+      cc.setText("命盤連結  ", linkLine, 1 , "999999");
       try
       {
         //網址長度可能是奇數
         if (linkUrl.length() % 2 == 1)
           linkUrl = linkUrl + ' ';
-        cc.setText(linkUrl, 7, 11 , Optional.of("999999") , Optional.empty() , Optional.empty() , Optional.of(new URL(linkUrl)) , Optional.empty() , false);
+        cc.setText(linkUrl, linkLine, 11 , Optional.of("999999") , Optional.empty() , Optional.empty() , Optional.of(new URL(linkUrl)) , Optional.empty() , false);
       } catch (MalformedURLException e) {
         logger.error("MalformedURLException : linkUrl = {}", linkUrl);
       }

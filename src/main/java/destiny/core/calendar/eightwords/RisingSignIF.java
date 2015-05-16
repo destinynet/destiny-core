@@ -12,11 +12,6 @@ import destiny.core.calendar.Time;
  */
 public interface RisingSignIF {
 
-  enum method {
-    ASTRO,  // 以占星的角度計算上升星座
-    TRAD    // 以傳統的演算法計算命宮（不精確）
-  }
-
   ZodiacSign getRisingSign(Time lmt, Location location);
 
   String getRisingSignName();
