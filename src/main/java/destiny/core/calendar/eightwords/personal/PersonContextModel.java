@@ -3,12 +3,15 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
+import destiny.astrology.ZodiacSign;
 import destiny.core.calendar.DstUtils;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
+import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.StemBranchUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +44,9 @@ public class PersonContextModel implements Serializable {
   /** 下一個「節」 */
   private final SolarTerms nextMajorSolarTerms;
 
+  /** 命宮 */
+  private final StemBranch risingStemBranch;
+
   public PersonContextModel(PersonContext context, int fortunes, FortuneOutputFormat fortuneOutputFormat , String locationName) {
     this.personContext = context;
     this.locationName = locationName;
@@ -55,6 +61,18 @@ public class PersonContextModel implements Serializable {
     boolean isForward = personContext.isFortuneDirectionForward();
 
     EightWords eightWords = personContext.getEightWords();
+
+    // 命宮
+    ZodiacSign risingSign = context.getRisingSignImpl().getRisingSign(context.getLmt(), context.getLocation());
+    // 命宮地支
+    EarthlyBranches risingBranch = risingSign.getBranch();
+    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
+    risingStemBranch = StemBranch.get(
+      StemBranchUtils.getMonthStem(eightWords.getYearStem() , risingBranch) ,
+      risingBranch
+    );
+
+
 
     //下個大運的干支
     StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
@@ -111,7 +129,7 @@ public class PersonContextModel implements Serializable {
           // 取得 起運/終運 時的八字
           EightWordsContext eightWordsContext = new EightWordsContext(personContext.getYearMonthImpl() ,
               personContext.getDayImpl() , personContext.getHourImpl() ,
-              personContext.getMidnightImpl() , personContext.isChangeDayAfterZi());
+              personContext.getMidnightImpl() , personContext.isChangeDayAfterZi(), context.getRisingSignImpl());
 
           EightWords startFortune8w = eightWordsContext.getEightWords(startFortuneLmt, personContext.getLocation());
           EightWords endFortune8w   = eightWordsContext.getEightWords(endFortuneLmt, personContext.getLocation());

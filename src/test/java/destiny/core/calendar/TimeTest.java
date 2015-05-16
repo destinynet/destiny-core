@@ -18,6 +18,12 @@ public class TimeTest
   private Time actual ;
   private Time expected ;
 
+  @Test
+  public void testTime() {
+    Time t = new Time();
+    System.out.println("time = " + t);
+  }
+
   /**  
    * 已知：
    * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日

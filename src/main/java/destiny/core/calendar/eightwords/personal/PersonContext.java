@@ -73,9 +73,14 @@ public class PersonContext extends EightWordsContext {
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法 */
   private FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
 
+
+
   /** constructor */
-  public PersonContext(YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl) {
-    super(yearMonth, day, hour, midnight, changeDayAfterZi);
+  public PersonContext(YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi,
+                       @NotNull SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl,
+                       @NotNull Time lmt, @NotNull Location location, Gender gender, double fortuneMonthSpan,
+                       FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
+    super(yearMonth, day, hour, midnight, changeDayAfterZi, risingSignImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
     this.fortuneMonthSpan = fortuneMonthSpan;

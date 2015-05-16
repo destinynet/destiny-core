@@ -73,15 +73,29 @@ public class EightWords extends EightWordsNullable
   @SuppressWarnings("unused")
   private EightWords()
   {}
-   
+
+  @NotNull
   @Override public HeavenlyStems getYearStem()  { return year.getStem();  }
+
+  @NotNull
   @Override public HeavenlyStems getMonthStem() { return month.getStem(); }
+
+  @NotNull
   @Override public HeavenlyStems getDayStem()   { return day.getStem();   }
+
+  @NotNull
   @Override public HeavenlyStems getHourStem()  { return hour.getStem();  }
-   
+
+  @NotNull
   @Override public EarthlyBranches getYearBranch()  { return year.getBranch();  }
+
+  @NotNull
   @Override public EarthlyBranches getMonthBranch() { return month.getBranch(); }
+
+  @NotNull
   @Override public EarthlyBranches getDayBranch()   { return day.getBranch();   }
+
+  @NotNull
   @Override public EarthlyBranches getHourBranch()  { return hour.getBranch();  }
 
   @NotNull

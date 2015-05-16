@@ -21,13 +21,16 @@ public class EightWordsContext implements EightWordsIF , Serializable
   private MidnightIF midnightImpl;            // 計算「子正」的介面
   private boolean    changeDayAfterZi = true; // 子初是否換日，內定是：true (換日)
 
-  public EightWordsContext(YearMonthIF yearMonth , DayIF day, HourIF hour, MidnightIF midnight , boolean changeDayAfterZi)
+  private RisingSignIF risingSignImpl;        // 命宮
+
+  public EightWordsContext(YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, RisingSignIF risingSignImpl)
   {
     this.yearMonthImpl = yearMonth;
     this.dayImpl = day;
     this.hourImpl = hour;
     this.midnightImpl = midnight;
     this.changeDayAfterZi = changeDayAfterZi;
+    this.risingSignImpl = risingSignImpl;
   }
 
   /** 子初是否換日 */
@@ -35,7 +38,8 @@ public class EightWordsContext implements EightWordsIF , Serializable
   {
     return changeDayAfterZi;
   }
-  
+
+
   /**
    * 計算八字 , 不用轉換，直接以 LMT 來計算即可！
    * TODO : 當地時間是否轉換成中原時間
@@ -160,5 +164,12 @@ public class EightWordsContext implements EightWordsIF , Serializable
   public HourIF getHourImpl()
   {
     return hourImpl;
+  }
+
+  /**
+   * 取得命宮的計算方法
+   */
+  public RisingSignIF getRisingSignImpl() {
+    return risingSignImpl;
   }
 }

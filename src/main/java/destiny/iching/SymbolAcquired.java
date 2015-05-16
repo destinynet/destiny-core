@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <pre>
@@ -47,18 +48,56 @@ public class SymbolAcquired implements Comparator<Symbol>
       tempIndex ++ ;
     return tempIndex;
   }
-  
-  /** 
+
+  /**
    * 由後天八卦卦序取得 Symbol
+   * TODO : 讓其可以支援 0 以及 >=9 的情況
+   * 492
+   * 357
+   * 816
+   * index = 0 : Exception !
+   * index = 1 , 後天卦 = 坎
+   * index = 2 , 後天卦 = 坤
+   * index = 3 , 後天卦 = 震
+   * index = 4 , 後天卦 = 巽
+   * index = 5 , 後天卦 = null
+   * index = 6 , 後天卦 = 乾
+   * index = 7 , 後天卦 = 兌
+   * index = 8 , 後天卦 = 艮
+   * index = 9 , 後天卦 = 離
+   * index > 9 : Exception !
    */
   @Nullable
-  public static Symbol getSymbol(int index)
+  public static Symbol getSymbolNullable(int index)
   {
     if (index == 5)
       return null;
     else if (index > 5 )
       index--;
     return 後天八卦[index-1];
+  }
+
+  /**
+   * 2015-05-12 : 傳入後天卦的卦序，傳回八純卦
+   * 巽4 | 離9 | 坤2
+   * ----+-----+----
+   * 震3 |  5  | 兌7
+   * ----+-----+----
+   * 艮8 | 坎1 | 乾6
+   * 若傳入 5 , 則傳回 Optional.empty()
+   * 若傳入 0 則傳回離卦
+   * 傳入 10 , 則傳回坎卦 (10 % 9 = 1)
+   */
+  public static Optional<Symbol> getSymbol(int index) {
+    int reminder = index % 9;
+    if (reminder == 5)
+      return Optional.empty();
+    else if (reminder == 0)
+      return Optional.of(Symbol.離);
+    else if (reminder > 5)
+      return Optional.of(後天八卦[reminder-2]);
+    else
+      return Optional.of(後天八卦[reminder-1]);
   }
   
   
@@ -79,7 +118,7 @@ public class SymbolAcquired implements Comparator<Symbol>
       case 艮: return Symbol.震;
       case 離: return Symbol.坤;
     }
-    throw new RuntimeException("impossible");
+    throw new IllegalArgumentException("impossible");
   }
   
   /**
@@ -99,7 +138,7 @@ public class SymbolAcquired implements Comparator<Symbol>
       case 艮: return Symbol.坤;
       case 離: return Symbol.坎;
     }
-    throw new RuntimeException("impossible");
+    throw new IllegalArgumentException("impossible");
   }
   
   public int compare(Symbol s1 , Symbol s2)

@@ -16,17 +16,17 @@ import destiny.core.calendar.Time;
 public interface StarPositionIF
 {
   /** 設定觀測地點，對於 Centric.TOPO 有用 */
-  public void setLocation(Location location);
+  void setLocation(Location location);
   
   /** 設定座標系統 : 黃道/赤道/恆星 */
-  public void setCoordinate(Coordinate coordinate);
+  void setCoordinate(Coordinate coordinate);
   
   /** 設定中心系統 : 地心/日心/地表/質心 */
-  public void setCentric(Centric centric);
+  void setCentric(Centric centric);
   
-  /** 取得星體的位置 , 時間是 GMT*/
-  public Position getPosition(Star star , Time gmt);
+  /** 取得星體的位置 , 時間是 GMT */
+  Position getPosition(Star star , Time gmt);
   
   /** 取得星體的位置 , 包含當地時間以及座標 */
-  public Position getPosition(Star star , Time lmt , Location location);
+  Position getPosition(Star star , Time lmt , Location location);
 }

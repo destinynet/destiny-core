@@ -44,10 +44,14 @@ public class SymbolCongenital implements Comparator<Symbol>
   
   /**
    * 由先天八卦卦序取得 Symbol
+   * 0->坤 , 1->乾 , 2->兌 , ... , 8->坤 , 繼續循環 9->乾...
    */
   public static Symbol getSymbol(int index)
   {
-    return (先天八卦List.get(index-1));
+    int remainder = index % 8;
+    if (remainder == 0)
+      remainder = 8;
+    return (先天八卦List.get(remainder-1));
   }
   
   /**

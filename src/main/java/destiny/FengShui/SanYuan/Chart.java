@@ -3,7 +3,7 @@
  * @date 2002/9/25
  * @time 上午 02:27:05
  * 
- * 2009/12/15 把與視覺相關的 ColorCanvas 移出到 ChartColorCanvasWrapper , 讓此 Chart 純粹只有資料結構
+ * 2009/12/15 把與視覺相關的 ColorCanvas 移出到 {@link destiny.FengShui.SanYuan.ChartColorCanvasWrapper} , 讓此 Chart 純粹只有資料結構
  */
 package destiny.FengShui.SanYuan;
 
@@ -17,8 +17,7 @@ import java.io.Serializable;
 /**
  * 三元盤的 presentation model 
  */
-public class Chart implements Serializable
-{
+public class Chart implements Serializable {
   /**
    * 元運 , 其值只能為 1~9
    */
@@ -37,13 +36,14 @@ public class Chart implements Serializable
   private Symbol view = Symbol.坎; 
   
   @NotNull
-  private ChartBlock[] chartBlockArray = new ChartBlock[10]; // 0 不用
+  private ChartBlock[] blocks = new ChartBlock[10]; // 0 不用
   //private ChartBlock[][] chartCoordinate = new ChartBlock[3][3];
 
   @NotNull
   private EarthlyCompass 地盤 = new EarthlyCompass();
+
   @NotNull
-  private AdquiredSymbolCompass 後天八卦盤 = new AdquiredSymbolCompass();
+  private AcquiredSymbolCompass 後天八卦盤 = new AcquiredSymbolCompass();
   
   /**
    * Constructor , 設定年運以及座山 , 內訂觀點為坎
@@ -58,36 +58,33 @@ public class Chart implements Serializable
   /**
    * constructor , 設定年運、座山，以及底邊方向
    */
-  public Chart(int period , Mountain mountain , Symbol view)
-  {
+  public Chart(int period, Mountain mountain, Symbol view) {
     this.period = period;
     this.mountain = mountain;
     this.view = view;
     calculate();
   }
   
-  private void calculate()
-  {
+  private void calculate() {
     /** 
      * 先將chartBlockList initialize 
-     * 設定其宮位 , 該元運置於 chartBlockArray[1] , 順推
+     * 設定其宮位 , 該元運置於 blocks[1] , 順推
      */
     int 元運 = getPeriod();
-    for (int i=1 ; i<=9 ; i++)
-    {
-      chartBlockArray[i] = new ChartBlock(normalize(元運++));
+    for (int i = 1; i <= 9; i++) {
+      blocks[i] = new ChartBlock(normalize(元運++));
     }
 
-                                                // |-----------------|
-    //設定方向（以卦來表示），尚未實作轉盤      // | 9巽 | 5離 | 7坤 |
-    chartBlockArray[9].setSymbol(Symbol.巽);    // |[0,0]|[0,1]|[0,2]|
-    chartBlockArray[8].setSymbol(Symbol.震);    // |-----|-----|-----|
-    chartBlockArray[4].setSymbol(Symbol.艮);    // | 8震 |  1  | 3兌 |
-    chartBlockArray[5].setSymbol(Symbol.離);    // |[1,0]|[1,1]|[1,2]|
-    chartBlockArray[6].setSymbol(Symbol.坎);    // |-----|-----|-----|
-    chartBlockArray[7].setSymbol(Symbol.坤);    // | 4艮 | 6坎 | 2乾 |
-    chartBlockArray[3].setSymbol(Symbol.兌);    // |[2,0]|[2,1]|[2,2]|
-    chartBlockArray[2].setSymbol(Symbol.乾);    // |-----------------|
+    //                                    |-----------------|
+    //設定方向（以卦來表示），尚未實作轉盤   // | 9巽 | 5離 | 7坤 |
+    blocks[9].setSymbol(Symbol.巽);    // |[0,0]|[0,1]|[0,2]|
+    blocks[8].setSymbol(Symbol.震);    // |-----|-----|-----|
+    blocks[4].setSymbol(Symbol.艮);    // | 8震 |  1  | 3兌 |
+    blocks[5].setSymbol(Symbol.離);    // |[1,0]|[1,1]|[1,2]|
+    blocks[6].setSymbol(Symbol.坎);    // |-----|-----|-----|
+    blocks[7].setSymbol(Symbol.坤);    // | 4艮 | 6坎 | 2乾 |
+    blocks[3].setSymbol(Symbol.兌);    // |[2,0]|[2,1]|[2,2]|
+    blocks[2].setSymbol(Symbol.乾);    // |-----------------|
 
     //決定座山/向 是位於哪一卦中
     //詢問此山/向 的中心點度數為：
@@ -113,25 +110,24 @@ public class Chart implements Serializable
     Symbol 飛佈山盤卦 = (Symbol) 後天八卦盤.getSymbol(midMountain );
     Symbol 飛佈向盤卦 = (Symbol) 後天八卦盤.getSymbol(midDirection);
     
-    //搜尋 chartBlockArray[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
-    int MountainStart  = 0;
-    int DirectionStart = 0;
-    for (int i=1 ; i <=9 ; i++)
-    {
-      if (chartBlockArray[i].getSymbol() == 飛佈山盤卦 )
-        MountainStart = chartBlockArray[i].getPeriod();
-      if (chartBlockArray[i].getSymbol() == 飛佈向盤卦 )
-        DirectionStart = chartBlockArray[i].getPeriod();
+    //搜尋 blocks[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
+    int mountainStart  = 0;
+    int directionStart = 0;
+    for (int i=1 ; i <=9 ; i++) {
+      if (blocks[i].getSymbol() == 飛佈山盤卦 )
+        mountainStart = blocks[i].getPeriod();
+      if (blocks[i].getSymbol() == 飛佈向盤卦 )
+        directionStart = blocks[i].getPeriod();
     }
-    
-    
-    Symbol 原始山盤卦 = SymbolAcquired.getSymbol(MountainStart);
-    Symbol 原始向盤卦 = SymbolAcquired.getSymbol(DirectionStart) ;
+
+    // TODO : 以後改用 SymbolAcquired.getSymbol : Optional<Symbol>  的演算法
+    Symbol 原始山盤卦 = SymbolAcquired.getSymbolNullable(mountainStart);
+    Symbol 原始向盤卦 = SymbolAcquired.getSymbolNullable(directionStart) ;
     
     //填入山盤
-    fillMountain (MountainStart  , isConverse(原始山盤卦 , 飛佈山盤卦 , getMountain()) );
+    fillMountain (mountainStart  , isConverse(原始山盤卦 , 飛佈山盤卦 , getMountain()) );
     //填入向盤
-    fillDirection(DirectionStart , isConverse(原始向盤卦 , 飛佈向盤卦 , getMountain().getOppositeMountain())  );
+    fillDirection(directionStart , isConverse(原始向盤卦 , 飛佈向盤卦 , getMountain().getOppositeMountain())  );
   } //calculate()
   
   
@@ -141,7 +137,7 @@ public class Chart implements Serializable
   @Nullable
   public ChartBlock getChartBlock(Symbol s)
   {
-    for(ChartBlock chartBlock : chartBlockArray)
+    for(ChartBlock chartBlock : blocks)
     {
       if (chartBlock != null && chartBlock.getSymbol() == s)
         return chartBlock;
@@ -200,7 +196,7 @@ public class Chart implements Serializable
       //順飛
       for (int i=1 ; i <=9 ; i++)
       {
-        chartBlockArray[i].setMountain( normalize(start + i + 8));
+        blocks[i].setMountain(normalize(start + i + 8));
       }
     }
     else
@@ -208,7 +204,7 @@ public class Chart implements Serializable
       //逆飛
       for (int i=1 ; i <=9 ; i++)
       {
-        chartBlockArray[i].setMountain( normalize(start - i + 10));
+        blocks[i].setMountain(normalize(start - i + 10));
       }
     }
   }//fillMountain
@@ -224,7 +220,7 @@ public class Chart implements Serializable
       //順飛
       for (int i=1 ; i <=9 ; i++)
       {
-        chartBlockArray[i].setDirection( normalize(start + i + 8));
+        blocks[i].setDirection(normalize(start + i + 8));
       }
     }
     else
@@ -232,7 +228,7 @@ public class Chart implements Serializable
       //逆飛
       for (int i=1 ; i <=9 ; i++)
       {
-        chartBlockArray[i].setDirection( normalize(start - i + 10));
+        blocks[i].setDirection(normalize(start - i + 10));
       }
     }
   }//fillMountain

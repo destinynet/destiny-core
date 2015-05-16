@@ -111,7 +111,7 @@ public class HoroscopeContext implements Serializable
   @NotNull
   private List<Star> getPointList()
   {
-    List<Star> stars = new ArrayList();
+    List<Star> stars = new ArrayList<>();
     for (Planet planet : Planet.values) //行星
       stars.add(planet);
     for (LunarNode lunarNode : LunarNode.values) //月亮南北交點

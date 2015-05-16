@@ -31,15 +31,14 @@ public enum SolarTerms
   private String name;
   private int zodiacDegree;
 
-  private final static SolarTerms[] SolarTermsArray = 
+  private final static SolarTerms[] SOLAR_TERMS_ARRAY =
     { 立春 , 雨水 , 驚蟄 , 春分 , 清明 , 榖雨 ,
       立夏 , 小滿 , 芒種 , 夏至 , 小暑 , 大暑 ,
       立秋 , 處暑 , 白露 , 秋分 , 寒露 , 霜降 ,
       立冬 , 小雪 , 大雪 , 冬至 , 小寒 , 大寒
     };
-    
-  SolarTerms(String name , int zodiacDegree)
-  {
+
+  SolarTerms(String name, int zodiacDegree) {
     this.name = name;
     this.zodiacDegree = zodiacDegree;
   }
@@ -51,9 +50,9 @@ public enum SolarTerms
   public static int getIndex(SolarTerms solarTerm)
   {
     int result = 0;
-    for (int i=0 ; i<SolarTermsArray.length ; i++)
+    for (int i=0 ; i< SOLAR_TERMS_ARRAY.length ; i++)
     {
-      if ( solarTerm == SolarTermsArray[i] )
+      if ( solarTerm == SOLAR_TERMS_ARRAY[i] )
         result = i;
     }
     return result;
@@ -65,7 +64,7 @@ public enum SolarTerms
     index ++;
     if (index >= 24)
       index = index - 24;
-    return SolarTermsArray[index];
+    return SOLAR_TERMS_ARRAY[index];
   }
   
   public SolarTerms previous()
@@ -74,7 +73,7 @@ public enum SolarTerms
     index --;
     if (index < 0)
       index = index + 24;
-    return SolarTermsArray[index];
+    return SOLAR_TERMS_ARRAY[index];
   }
   
   /** 取得節氣的名稱 */
@@ -92,14 +91,24 @@ public enum SolarTerms
    * @param solarTermsIndex 節氣的索引 
    * @return 0 傳回立春 , 1 傳回 雨水 , ... , 23 傳回 大寒 , 接著連續 24 傳回立春
    */
-  public static SolarTerms get(int solarTermsIndex)
-  {
+  public static SolarTerms get(int solarTermsIndex) {
     if (solarTermsIndex >= 24)
       return SolarTerms.get(solarTermsIndex - 24);
     else if (solarTermsIndex < 0)
       return SolarTerms.get(solarTermsIndex + 24);
     else
-      return SolarTermsArray[solarTermsIndex];
+      return SOLAR_TERMS_ARRAY[solarTermsIndex];
+  }
+
+  /**
+   * 此「節氣」是否是「節」
+   * 立春 => true
+   * 雨水 => false
+   * 驚蟄 => true
+   * ...
+   */
+  public boolean isMajor() {
+    return SolarTerms.getIndex(this) % 2 == 0;
   }
   
 }

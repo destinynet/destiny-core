@@ -15,7 +15,7 @@ public interface HoroscopeIF
    * 取得某時刻 在某地 的 星盤 , 裡面包含 Planet , Asteroid , Hamburger 三種星體的位置(含地平方位角 Azimuth)
    */
   @NotNull
-  public Horoscope getHoroscope(Time gmt , Location location , HouseSystem houseSystem ,
+  Horoscope getHoroscope(Time gmt , Location location , HouseSystem houseSystem ,
       Coordinate coordinate , double temperature , double pressure , 
       StarPositionWithAzimuthIF positionWithAzimuthImpl ) ;
 }

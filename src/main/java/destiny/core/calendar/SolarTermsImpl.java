@@ -5,26 +5,22 @@
  */
 package destiny.core.calendar;
 
+import destiny.astrology.*;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import destiny.astrology.Coordinate;
-import destiny.astrology.Planet;
-import destiny.astrology.Position;
-import destiny.astrology.StarPositionIF;
-import destiny.astrology.StarTransitIF;
-import org.jetbrains.annotations.NotNull;
-
 /**
- * 節氣工具箱 
+ * 節氣實作
  */
-public class SolarTermsBean implements SolarTermsIF , Serializable
+public class SolarTermsImpl implements SolarTermsIF , Serializable
 { 
   private StarTransitIF starTransitImpl;
   private StarPositionIF starPositionImpl;
   
-  public SolarTermsBean()
+  public SolarTermsImpl()
   {
   }
   
@@ -39,7 +35,7 @@ public class SolarTermsBean implements SolarTermsIF , Serializable
   }
   
   
-  public SolarTermsBean(StarTransitIF StarTransitImpl , StarPositionIF starPositionImpl)
+  public SolarTermsImpl(StarTransitIF StarTransitImpl, StarPositionIF starPositionImpl)
   {
     this.starTransitImpl = StarTransitImpl;
     this.starPositionImpl = starPositionImpl;

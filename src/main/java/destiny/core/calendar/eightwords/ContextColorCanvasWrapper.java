@@ -16,6 +16,8 @@ import destiny.utils.ColorCanvas.AlignUtil;
 import destiny.utils.ColorCanvas.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,8 +26,9 @@ import java.util.*;
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
  */
-public class ContextColorCanvasWrapper
-{
+public class ContextColorCanvasWrapper {
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   /** 八字 Context */
   private EightWordsContext context;
   /** 地支藏干的實作，內定採用標準設定 */
@@ -180,11 +183,9 @@ public class ContextColorCanvasWrapper
         if (linkUrl.length() % 2 == 1)
           linkUrl = linkUrl + ' ';
         cc.setText(linkUrl, 7, 11 , Optional.of("999999") , Optional.empty() , Optional.empty() , Optional.of(new URL(linkUrl)) , Optional.empty() , false);
+      } catch (MalformedURLException e) {
+        logger.error("MalformedURLException : linkUrl = {}", linkUrl);
       }
-      catch (MalformedURLException e)
-      {
-        e.printStackTrace();
-      }  
     }
     //EightWords eightWords = context.getEightWords(lmt , location);
     //cc.setText("四字斷終生：" + fourWordsImpl.getResult(eightWords), 8, 1 , "#0000FF" , "#FFFF00" , fourWordsImpl.getResult(eightWords));

@@ -147,8 +147,8 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     //先算出太陽在黃經上的度數
     Time gmt = Time.getGMTfromLMT(lmt, location);
     
-    SolarTermsBean solarTermsBean = new SolarTermsBean(this.starTransitImpl , this.starPositionImpl);
-    SolarTerms MonthST = solarTermsBean.getSolarTermsFromGMT(gmt);
+    SolarTermsImpl solarTermsImpl = new SolarTermsImpl(this.starTransitImpl , this.starPositionImpl);
+    SolarTerms MonthST = solarTermsImpl.getSolarTermsFromGMT(gmt);
     
     //System.out.println("節氣: " +  MonthST);
     

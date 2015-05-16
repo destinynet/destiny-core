@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 後天八卦於羅盤上的位置
  */
-public class AdquiredSymbolCompass extends AbstractSymbol implements Serializable
+public class AcquiredSymbolCompass extends AbstractSymbol implements Serializable
 {
   @NotNull
   private static List<Symbol> SymbolList = new ArrayList<Symbol>();

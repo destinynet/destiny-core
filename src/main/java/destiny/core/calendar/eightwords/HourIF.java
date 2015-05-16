@@ -20,7 +20,7 @@ public interface HourIF extends Descriptive
    * @return 時辰（只有地支）
    */
   @NotNull
-  public EarthlyBranches getHour(Time lmt , Location location);
+  EarthlyBranches getHour(Time lmt , Location location);
   
   /**
    * @param lmt 傳入當地手錶時間
@@ -29,6 +29,6 @@ public interface HourIF extends Descriptive
    * @return 下一個時辰開始的時刻
    */
   @NotNull
-  public Time getLmtNextStartOf(Time lmt , Location location , EarthlyBranches eb);
+  Time getLmtNextStartOf(Time lmt , Location location , EarthlyBranches eb);
   
 }

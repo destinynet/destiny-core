@@ -25,7 +25,9 @@ public class EightWordsGraphics {
    * |  HHH   DDD   MMM   YYY  |
    * +-------------------------+
    */
-  public static void render(Graphics2D g, Constants.WIDTH_HEIGHT which, int value, Color bg, Color fore, Color dayStemColor, @NotNull EightWordsNullable eightWordsNullable, Direction direction) {
+  public static void render(Graphics2D g, Constants.WIDTH_HEIGHT which, int value, Color bg, Color fore,
+                            Color dayStemColor, @NotNull EightWordsNullable eightWordsNullable,
+                            Direction direction) {
     int w = getWidth(which , value);
     int h = getHeight(which , value);
 

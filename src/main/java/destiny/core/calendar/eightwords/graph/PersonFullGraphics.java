@@ -45,7 +45,8 @@ public class PersonFullGraphics {
 
   private static ReactionsUtil reactionsUtil = new ReactionsUtil(new HiddenStemsStandardImpl());
 
-  public static void render(Graphics2D g, PersonContextModel model, int width, Color bg, Color fore, Direction direction) {
+  public static void render(Graphics2D g, PersonContextModel model, int width, Color bg, Color fore,
+                            Direction direction) {
     int height = getHeight(width);
 
     PersonContext context = model.getPersonContext();

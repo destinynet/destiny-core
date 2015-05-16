@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -33,8 +34,8 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   protected double second;
   
   /**
-   * Julian Canendar    終止於西元 1582/10/4  , 該日的 Julian Day 是 2299159.5
-   * Gregorian Calendar 開始於西元 1582/10/15 , 該日的 Julian Day 是 2299160.5 
+   * Julian Calendar    終止於西元 1582-10-04 , 該日的 Julian Day 是 2299159.5
+   * Gregorian Calendar 開始於西元 1582-10-15 , 該日的 Julian Day 是 2299160.5
    * */
   private static double gregorianStartJulianDay=2299160.5;
   
@@ -46,17 +47,17 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   protected boolean gregorian = true ;
   
   /**
-   * 內定的 contructor , 設為現在的系統時間 */
+   * 內定的 constructor , 設為現在的系統時間 */
   public Time()
   {
     this.ad = true;
-    GregorianCalendar cal = new GregorianCalendar();
-    this.year = cal.get(Calendar.YEAR);
-    this.month = cal.get(Calendar.MONTH) +1;
-    this.day = cal.get(Calendar.DAY_OF_MONTH);
-    this.hour = cal.get(Calendar.HOUR_OF_DAY);
-    this.minute = cal.get(Calendar.MINUTE);
-    this.second = cal.get(Calendar.SECOND);
+    LocalDateTime ldt = LocalDateTime.now();
+    this.year = ldt.getYear();
+    this.month = ldt.getMonthValue();
+    this.day = ldt.getDayOfMonth();
+    this.hour = ldt.getHour();
+    this.minute = ldt.getMinute();
+    this.second = ldt.getSecond();
   }
   
 
@@ -309,6 +310,18 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    * @return 是否是西元「後」, 西元前為 false , 西元後為 true (default)
    */
   //public boolean isAD() { return this.AD; }
+
+  public LocalDateTime toLocalDateTime() {
+
+    if (year > 1582) {
+      return LocalDateTime.of(year , month , day , hour , minute , (int) second);
+    } else {
+      int y = (ad ? year : year+1);
+      // TODO : Java8 的 LocalDate 並非 GregorianCalendar . 是 "proleptic" Gregorian Calendar . 不考慮 cutover
+      // 要考慮是否要在此作轉換
+      return LocalDateTime.of(y , month , day , hour , minute , (int) second);
+    }
+  }
   
   
   
@@ -442,19 +455,18 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   @NotNull
   public static Time getGMTfromLMT(@NotNull Time lmt , @NotNull Location loc)
   {
-    if (loc.isMinuteOffsetSet())
-    {
-      return new Time(lmt , 0-loc.getMinuteOffset()*60);
+    if (loc.isMinuteOffsetSet()) {
+      return new Time(lmt, 0 - loc.getMinuteOffset() * 60);
     }
-    else
-    {
+    else {
       TimeZone localZone = loc.getTimeZone();
       GregorianCalendar cal = new GregorianCalendar(localZone);
-      
-      cal.set(lmt.getYear() , lmt.getMonth()-1 , lmt.getDay() , lmt.getHour() , lmt.getMinute() , (int)lmt.getSecond());
+
+      cal.set(lmt.getYear(), lmt.getMonth() - 1, lmt.getDay(), lmt.getHour(), lmt.getMinute(), (int) lmt.getSecond());
       double secondsOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-      
-      return new Time(lmt , 0-secondsOffset);  
+      return new Time(lmt, 0 - secondsOffset);
+
+      //LocalDateTime ldt = LocalDateTime.of(lmt.year , lmt.month , lmt.day , lmt.hour , lmt.minute , (int) lmt.second);
     }
   }
 

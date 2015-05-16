@@ -12,7 +12,7 @@ public class AdquiredSombolCompassTest extends TestCase
 {
   public void testAdquiredSymbolCompass()
   {
-    AdquiredSymbolCompass asc = new AdquiredSymbolCompass();
+    AcquiredSymbolCompass asc = new AcquiredSymbolCompass();
 
     assertEquals(337.5 , asc.getStartDegree(Symbol.坎));
     assertEquals(22.5 , asc.getStartDegree(Symbol.艮));
