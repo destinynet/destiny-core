@@ -5,6 +5,7 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.*;
+import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
 import destiny.core.calendar.eightwords.personal.Reactions;
@@ -86,7 +87,7 @@ public class ContextColorCanvasWrapper {
   @NotNull
   protected ColorCanvas getMetaDataColorCanvas()
   {
-    ColorCanvas cc = new ColorCanvas(8,52,"　");
+    ColorCanvas cc = new ColorCanvas(9,52,"　");
     
     ColorCanvas 西元資訊 = new ColorCanvas(1,36, "　");
     StringBuffer timeData = new StringBuffer();
@@ -110,6 +111,9 @@ public class ContextColorCanvasWrapper {
     timeData.append("秒");
     西元資訊.setText(timeData.toString(), 1, 1);
     cc.add(西元資訊 , 1 , 1 );
+
+    ChineseDate chineseDate = context.getChineseDate(lmt , location);
+    cc.setText("農曆：("+chineseDate.getCycle() + "循環)" + chineseDate , 2 , 1);
     
     URL url = urlBuilder.getUrl(location);
     
@@ -119,7 +123,7 @@ public class ContextColorCanvasWrapper {
     地點名稱.setText(locationName , 1 , 7 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
     int minuteOffset = (int) (DstUtils.getDstSecondOffset(lmt, location).getSecond() / 60);
     地點名稱.setText(" GMT時差："+AlignUtil.alignRight(minuteOffset,6)+"分鐘", 1, 25 , "999999");
-    cc.add(地點名稱 , 2 , 1);
+    cc.add(地點名稱 , 3 , 1);
     
     
     /*
@@ -139,7 +143,7 @@ public class ContextColorCanvasWrapper {
     lonText.append(AlignUtil.alignRight(location.getLongitudeSecond(),4));
     lonText.append("秒");
     經度.setText(lonText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
-    cc.add(經度 , 3 , 1);
+    cc.add(經度 , 4 , 1);
     
     ColorCanvas 緯度 = new ColorCanvas(1, 20 , "　");
     StringBuffer latText = new StringBuffer();
@@ -152,9 +156,9 @@ public class ContextColorCanvasWrapper {
     latText.append(AlignUtil.alignRight(location.getLatitudeSecond(),4));
     latText.append("秒");
     緯度.setText(latText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
-    cc.add(緯度 , 3 , 25);
+    cc.add(緯度 , 4 , 25);
     
-    cc.setText("換日："+ (context.isChangeDayAfterZi() ? "子初換日" : "子正換日"), 4, 1 , "999999" );
+    cc.setText("換日："+ (context.isChangeDayAfterZi() ? "子初換日" : "子正換日"), 5, 1 , "999999" );
     //如果是南半球，則添加南半球月支是否對沖
     if (location.getNorthSouth() == Location.NorthSouth.SOUTH)
     {
@@ -162,29 +166,29 @@ public class ContextColorCanvasWrapper {
       if (yearMonthImpl instanceof YearMonthSolarTermsStarPositionImpl)
       {
         YearMonthSolarTermsStarPositionImpl impl = (YearMonthSolarTermsStarPositionImpl) yearMonthImpl;
-        cc.setText("南半球" , 4 , 35 , "FF0000");
-        cc.setText(      "月令："+ (impl.isSouthernHemisphereOpposition() ? "對沖" : "不對沖"), 4, 41 , "999999");
+        cc.setText("南半球" , 5 , 35 , "FF0000");
+        cc.setText(      "月令："+ (impl.isSouthernHemisphereOpposition() ? "對沖" : "不對沖"), 5, 41 , "999999");
       }
     }
     
-    cc.setText("日光節約：" , 4 , 19 , "999999");
+    cc.setText("日光節約：" , 5 , 19 , "999999");
     boolean isDst = DstUtils.getDstSecondOffset(lmt, location).getFirst();
     String dstString= isDst ? "有" : "無";
-    cc.setText(dstString , 4 , 29 , (isDst ? "FF0000" : "999999") , "" , null);
+    cc.setText(dstString , 5 , 29 , (isDst ? "FF0000" : "999999") , "" , null);
       
-    cc.setText("子正是："+ context.getMidnightImpl().getTitle(Locale.TRADITIONAL_CHINESE) , 5 , 1 , "999999" , null , context.getMidnightImpl().getDescription(Locale.TRADITIONAL_CHINESE));
-    cc.setText("時辰劃分：" + context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, "999999", null, context.getHourImpl().getDescription(Locale.TRADITIONAL_CHINESE));
+    cc.setText("子正是："+ context.getMidnightImpl().getTitle(Locale.TRADITIONAL_CHINESE) , 6 , 1 , "999999" , null , context.getMidnightImpl().getDescription(Locale.TRADITIONAL_CHINESE));
+    cc.setText("時辰劃分：" + context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, "999999", null, context.getHourImpl().getDescription(Locale.TRADITIONAL_CHINESE));
 
 
 
     // 命宮
-    int risingLine = 7;
+    int risingLine = 8;
     StemBranch 命宮 = context.getRisingStemBranch(lmt , location);
     cc.setText("命宮：", risingLine , 1 , "999999" , null , "命宮");
     cc.setText(命宮.toString() , risingLine , 7 , "FF0000" , null , 命宮.toString());
     cc.setText("（"+context.getRisingSignImpl().getRisingSignName()+"）" , risingLine , 11 , "999999");
 
-    int linkLine = 8;
+    int linkLine = 9;
     if (linkUrl != null)
     {
       cc.setText("命盤連結  ", linkLine, 1 , "999999");
@@ -281,9 +285,9 @@ public class ContextColorCanvasWrapper {
   @Override
   public String toString()
   {
-    ColorCanvas cc = new ColorCanvas(19,52,"　");
+    ColorCanvas cc = new ColorCanvas(20,52,"　");
     cc.add(getMetaDataColorCanvas() , 1 , 1);
-    cc.add(getEightWordsColorCanvas() , 10 , 1);
+    cc.add(getEightWordsColorCanvas() , 11 , 1);
     switch(this.outputMode)
     {
       case TEXT:

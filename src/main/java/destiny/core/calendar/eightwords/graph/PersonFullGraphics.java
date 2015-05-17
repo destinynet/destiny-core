@@ -5,6 +5,7 @@ package destiny.core.calendar.eightwords.graph;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeDecoratorChinese;
+import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.calendar.eightwords.personal.*;
 import destiny.core.chart.Constants;
@@ -116,7 +117,8 @@ public class PersonFullGraphics {
     // meta data 標準色
     Color generalMetaColor = Color.BLACK;
 
-    float lineHeight = (float) (height / 7 * 0.9);
+    // 總共 8 lines
+    float lineHeight = (float) (height / 8 * 0.9);
     float fontSize = (float) (lineHeight*0.8);
     float x = lineHeight/2;
     g.setFont(new Font(FontRepository.getFontLiHei(), Font.PLAIN, (int) fontSize));
@@ -131,8 +133,13 @@ public class PersonFullGraphics {
     }
     g.drawString(context.getGender().name()+"性" , fontSize*29 , lineHeight);
     g.setColor(generalMetaColor);
-    g.drawString("地點："+ model.getLocationName() , x , lineHeight*2);
-    g.drawString("GMT時差："+ model.getGmtMinuteOffset()+"分鐘" , x + fontSize* 21 , lineHeight*2);
+
+    // 農曆
+    ChineseDate chineseDate = model.getChineseDate();
+    g.drawString("農曆：" + "("+chineseDate.getCycle() + "循環)" + chineseDate , x , lineHeight*2);
+
+    g.drawString("地點："+ model.getLocationName() , x , lineHeight*3);
+    g.drawString("GMT時差："+ model.getGmtMinuteOffset()+"分鐘" , x + fontSize* 21 , lineHeight*3);
     Location location = context.getLocation();
     StringBuffer sb = new StringBuffer();
     sb.append(location.getEastWest() == Location.EastWest.EAST ? "東經" : "西經").append(" ");
@@ -145,9 +152,9 @@ public class PersonFullGraphics {
     sb.append(location.getLatitudeMinute()).append("分 ");
     sb.append(location.getLatitudeSecond()).append("秒");
 
-    g.drawString(sb.toString() , x , lineHeight*3);
+    g.drawString(sb.toString() , x , lineHeight*4);
 
-    g.drawString("換日：" , x , lineHeight*4);
+    g.drawString("換日：" , x , lineHeight*5);
     String changeDay;
     if (!context.isChangeDayAfterZi()) {
       // 子正換日
@@ -156,44 +163,45 @@ public class PersonFullGraphics {
     } else
       changeDay = "子初換日";
 
-    g.drawString(changeDay , x + fontSize*3 , lineHeight*4);
+    g.drawString(changeDay , x + fontSize*3 , lineHeight*5);
 
     g.setColor(generalMetaColor);
 
-    g.drawString("日光節約：" , x + fontSize*10 , lineHeight*4);
+    g.drawString("日光節約：" , x + fontSize*10 , lineHeight*5);
     String hasDst;
     if (model.isDst()) {
       g.setColor(Color.RED);
       hasDst = "有";
     } else
       hasDst = "無";
-    g.drawString(hasDst, x + fontSize * 15, lineHeight * 4);
+    g.drawString(hasDst, x + fontSize * 15, lineHeight * 5);
 
     if (location.getNorthSouth() == Location.NorthSouth.SOUTH ) {
       YearMonthIF yearMonthImpl = context.getYearMonthImpl();
       if (yearMonthImpl instanceof YearMonthSolarTermsStarPositionImpl) {
         YearMonthSolarTermsStarPositionImpl impl = (YearMonthSolarTermsStarPositionImpl) yearMonthImpl;
         g.setColor(Color.RED);
-        g.drawString("南半球" , x + fontSize * 20 , lineHeight*4);
+        g.drawString("南半球" , x + fontSize * 20 , lineHeight*5);
         g.setColor(generalMetaColor);
-        g.drawString("月令：" + (impl.isSouthernHemisphereOpposition() ? "對沖" : "不對沖") , x + fontSize * 23 , lineHeight*4);
+        g.drawString("月令：" + (impl.isSouthernHemisphereOpposition() ? "對沖" : "不對沖") , x + fontSize * 23 , lineHeight*5);
       }
     }
 
     g.setColor(generalMetaColor);
 
-    g.drawString("子正是：" + context.getMidnightImpl().getTitle(Locale.TRADITIONAL_CHINESE) , x , lineHeight*5);
+    g.drawString("子正是：" + context.getMidnightImpl().getTitle(Locale.TRADITIONAL_CHINESE) , x , lineHeight*6);
 
-    g.drawString("時辰劃分：" , x , lineHeight * 6);
+    g.drawString("時辰劃分：" , x , lineHeight * 7);
     if (context.getHourImpl() instanceof HourLmtImpl) {
       g.setColor(Color.RED);
     }
-    g.drawString(context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE), x + fontSize * 5, lineHeight * 6);
+    g.drawString(context.getHourImpl().getTitle(Locale.TRADITIONAL_CHINESE), x + fontSize * 5, lineHeight * 7);
 
     g.setColor(generalMetaColor);
 
-    StemBranch 命宮 = context.getRisingStemBranch(context.getLmt(), location);
-    g.drawString("命宮：" + 命宮.toString() + "（"+context.getRisingSignImpl().getRisingSignName()+"）", x, lineHeight * 7);
+    StemBranch 命宮 = model.getRisingStemBranch();
+
+    g.drawString("命宮：" + 命宮.toString() + "（"+context.getRisingSignImpl().getRisingSignName()+"）", x, lineHeight * 8);
 
   }
 

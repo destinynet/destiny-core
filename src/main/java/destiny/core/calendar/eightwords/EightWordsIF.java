@@ -14,6 +14,6 @@ import org.jetbrains.annotations.Nullable;
 public interface EightWordsIF
 {
   @Nullable
-  public EightWords getEightWords(Time lmt, Location location);
+  EightWords getEightWords(Time lmt, Location location);
   
 }

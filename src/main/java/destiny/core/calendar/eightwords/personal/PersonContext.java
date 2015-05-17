@@ -13,6 +13,7 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
@@ -76,11 +77,8 @@ public class PersonContext extends EightWordsContext {
 
 
   /** constructor */
-  public PersonContext(YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi,
-                       @NotNull SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl,
-                       @NotNull Time lmt, @NotNull Location location, Gender gender, double fortuneMonthSpan,
-                       FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
-    super(yearMonth, day, hour, midnight, changeDayAfterZi, risingSignImpl);
+  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
+    super(chineseDateImpl, yearMonth, day, hour, midnight, changeDayAfterZi, risingSignImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
     this.fortuneMonthSpan = fortuneMonthSpan;

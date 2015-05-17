@@ -61,7 +61,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   {
     PersonContext personContext = model.getPersonContext();
 
-    cc = new ColorCanvas(30,70,"　");
+    cc = new ColorCanvas(32,70,"　");
 
     ColorCanvas metaDataColorCanvas = getMetaDataColorCanvas();
 
@@ -71,13 +71,13 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     cc.setText(personContext.getGender().toString() , 1, 65); // '男' or '女'
     cc.setText("性" , 1 , 67);
 
-    cc.setText("八字：" , 9 , 1);
+    cc.setText("八字：" , 10 , 1);
 
     EightWords eightWords = personContext.getEightWords();
 
     ReactionsUtil reactionsUtil = new ReactionsUtil(this.hiddenStemsImpl);
 
-    cc.add(getEightWordsColorCanvas() , 9 , 9); // 純粹八字盤
+    cc.add(getEightWordsColorCanvas() , 11 , 9); // 純粹八字盤
 
 
     ColorCanvas 大運直 = new ColorCanvas(9,24,"　" );
@@ -119,9 +119,9 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       大運橫.add(地支藏干(stemBranch.getBranch() , eightWords.getDay().getStem()) , 6 , (i-1)*8+1);
     }
 
-    cc.setText("大運（"+fortuneOutputFormat +"）", 8, 55);
-    cc.add(大運直, 9, 47);
-    cc.add(大運橫 , 20 , 1);
+    cc.setText("大運（"+fortuneOutputFormat +"）", 10, 55);
+    cc.add(大運直, 11, 47);
+    cc.add(大運橫, 22, 1);
 
     ColorCanvas 節氣 = new ColorCanvas(2 , cc.getWidth() ,  "　");
     SolarTerms prevMajorSolarTerms = model.getPrevMajorSolarTerms();
@@ -138,7 +138,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     節氣.setText("：" , 2, 5);
     節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime) , 2,7);
 
-    cc.add(節氣 , 29 , 1);
+    cc.add(節氣 , 31 , 1);
 
     switch(this.outputMode)
     {

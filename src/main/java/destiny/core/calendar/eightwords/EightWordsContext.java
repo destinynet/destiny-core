@@ -2,10 +2,13 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.chinese.ChineseDate;
+import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.HeavenlyStems;
 import destiny.core.chinese.StemBranch;
 import destiny.core.chinese.StemBranchUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -15,6 +18,7 @@ import java.io.Serializable;
  */
 public class EightWordsContext implements EightWordsIF , Serializable
 {
+  private ChineseDateIF chineseDateImpl;      // 農曆計算
   private YearMonthIF yearMonthImpl;          // 換年, 以及月支計算的實作
   private DayIF       dayImpl;                // 計算日干支的介面
   private HourIF      hourImpl;               // 計算時支的介面
@@ -24,8 +28,9 @@ public class EightWordsContext implements EightWordsIF , Serializable
 
   private RisingSignIF risingSignImpl;        // 命宮
 
-  public EightWordsContext(YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, RisingSignIF risingSignImpl)
+  public EightWordsContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, RisingSignIF risingSignImpl)
   {
+    this.chineseDateImpl = chineseDateImpl;
     this.yearMonthImpl = yearMonth;
     this.dayImpl = day;
     this.hourImpl = hour;
@@ -40,11 +45,17 @@ public class EightWordsContext implements EightWordsIF , Serializable
     return changeDayAfterZi;
   }
 
+  /** 取得農曆 */
+  public ChineseDate getChineseDate(Time lmt ,Location location) {
+    return chineseDateImpl.getChineseDate(lmt);
+  }
+
 
   /**
    * 計算八字 , 不用轉換，直接以 LMT 來計算即可！
    * TODO : 當地時間是否轉換成中原時間
    */
+  @NotNull
   @Override
   public EightWords getEightWords(Time lmt, Location location)
   {
@@ -107,7 +118,7 @@ public class EightWordsContext implements EightWordsIF , Serializable
         時干 = HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(時支) + 8);
         break;
       default:
-        throw new RuntimeException("Wrong");
+        throw new AssertionError("Error");
     }
 
     return new EightWords(year , month , day , StemBranch.get(時干, 時支) );
@@ -174,12 +185,21 @@ public class EightWordsContext implements EightWordsIF , Serializable
     return risingSignImpl;
   }
 
+  /** 取得陰陽曆轉換的實作 */
+  public ChineseDateIF getChineseDateImpl() {
+    return chineseDateImpl;
+  }
+
   /**
    * 計算命宮干支
    */
   public StemBranch getRisingStemBranch(Time lmt , Location location) {
     EightWords ew = getEightWords(lmt , location);
+    // 命宮地支
     EarthlyBranches risingBranch = risingSignImpl.getRisingSign(lmt , location).getBranch();
-    return StemBranch.get(StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch), risingBranch);
+    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
+    HeavenlyStems risingStem = StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch);
+    // 組合成干支
+    return StemBranch.get(risingStem, risingBranch);
   }
 }

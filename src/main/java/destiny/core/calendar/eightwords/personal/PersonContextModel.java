@@ -3,15 +3,13 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import destiny.astrology.ZodiacSign;
 import destiny.core.calendar.DstUtils;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
-import destiny.core.chinese.EarthlyBranches;
 import destiny.core.chinese.StemBranch;
-import destiny.core.chinese.StemBranchUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,6 +22,9 @@ import java.util.List;
 public class PersonContextModel implements Serializable {
 
   private final PersonContext personContext;
+
+  /** 農曆 */
+  private final ChineseDate chineseDate;
 
   private String locationName = "";
 
@@ -47,8 +48,10 @@ public class PersonContextModel implements Serializable {
   /** 命宮 */
   private final StemBranch risingStemBranch;
 
-  public PersonContextModel(PersonContext context, int fortunes, FortuneOutputFormat fortuneOutputFormat , String locationName) {
+  public PersonContextModel(PersonContext context, int fortunes, FortuneOutputFormat fortuneOutputFormat, String locationName) {
     this.personContext = context;
+
+    this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());
     this.locationName = locationName;
     this.dst = DstUtils.getDstSecondOffset(context.getLmt(), context.getLocation()).getFirst();
 
@@ -62,17 +65,9 @@ public class PersonContextModel implements Serializable {
 
     EightWords eightWords = personContext.getEightWords();
 
-    // 命宮
-    ZodiacSign risingSign = context.getRisingSignImpl().getRisingSign(context.getLmt(), context.getLocation());
-    // 命宮地支
-    EarthlyBranches risingBranch = risingSign.getBranch();
-    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-    risingStemBranch = StemBranch.get(
-      StemBranchUtils.getMonthStem(eightWords.getYearStem() , risingBranch) ,
-      risingBranch
-    );
 
-
+    // 命宮干支
+    risingStemBranch = context.getRisingStemBranch(context.getLmt() , context.getLocation());
 
     //下個大運的干支
     StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
@@ -127,7 +122,7 @@ public class PersonContextModel implements Serializable {
         default : //虛歲
         {
           // 取得 起運/終運 時的八字
-          EightWordsContext eightWordsContext = new EightWordsContext(personContext.getYearMonthImpl() ,
+          EightWordsContext eightWordsContext = new EightWordsContext(context.getChineseDateImpl() , personContext.getYearMonthImpl() ,
               personContext.getDayImpl() , personContext.getHourImpl() ,
               personContext.getMidnightImpl() , personContext.isChangeDayAfterZi(), context.getRisingSignImpl());
 
@@ -176,6 +171,10 @@ public class PersonContextModel implements Serializable {
     return personContext;
   }
 
+  public ChineseDate getChineseDate() {
+    return chineseDate;
+  }
+
   public int getGmtMinuteOffset() {
     return gmtMinuteOffset;
   }
@@ -195,6 +194,12 @@ public class PersonContextModel implements Serializable {
   public String getLocationName() {
     return locationName;
   }
+
+  /** 取得命宮 */
+  public StemBranch getRisingStemBranch() {
+    return risingStemBranch;
+  }
+
 
   public boolean isDst() {
     return dst;
