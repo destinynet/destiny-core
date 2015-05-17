@@ -6,17 +6,21 @@
 package destiny.core.calendar.chinese;
 
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /**
- * 農曆的表示法
+ * 農曆日期的表示法（無時辰）
  * epoch : -2636/2/15
  */
-public class ChineseDate {
+public class ChineseDate implements Serializable {
 
   /** 第幾輪 */
   private int cycle;
 
   /** 年干支 */
+  @NotNull
   private StemBranch year;
 
   /** 月 */
@@ -52,6 +56,7 @@ public class ChineseDate {
     this.year = year;
   }
 
+  @NotNull
   public StemBranch getYear() {
     return year;
   }

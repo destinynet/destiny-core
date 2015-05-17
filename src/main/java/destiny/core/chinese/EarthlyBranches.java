@@ -115,8 +115,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   /**
    * 子[0] ~ 亥[11]
    */
-  public int getIndex()
-  {
+  public int getIndex() {
     return getIndex(this);
   }
 
