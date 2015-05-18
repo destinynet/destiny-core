@@ -21,6 +21,8 @@ public class PalmImplTest {
 
   PalmIF impl = new PalmImpl();
 
+  PositiveIF defaultImpl = new PositiveGenderImpl();
+
   /**
    * 如西元2001年2月4日12點（當天為立春）出生之男，換算為陰曆則為辛巳年正月十二日午時，
    * 先將大拇指點在巳（天文宮）上，巳上起正月，正月還是在巳（天文宮）上，
@@ -32,7 +34,7 @@ public class PalmImplTest {
    */
   @Test
   public void testGetPalm_Male() throws Exception {
-    Palm palm = impl.getPalm(Gender.男 , 巳 , false, 1 , 12 , 午);
+    Palm palm = impl.getPalm(Gender.男 , 巳 , false, 1 , 12 , 午 , defaultImpl);
 
     assertSame(巳 , palm.getYear());
     assertSame(巳 , palm.getMonth());
@@ -51,7 +53,7 @@ public class PalmImplTest {
   @Test
   public void testGetPalm_Female() throws Exception {
     PalmIF impl = new PalmImpl();
-    Palm palm = impl.getPalm(Gender.女 , 戌 , false, 9 , 24 , 戌);
+    Palm palm = impl.getPalm(Gender.女 , 戌 , false, 9 , 24 , 戌 , defaultImpl);
 
     assertSame(戌 , palm.getYear());
     assertSame(寅 , palm.getMonth());
@@ -65,7 +67,7 @@ public class PalmImplTest {
    */
   @Test
   public void testGetMajorFortunes_Male() {
-    Map<Integer , EarthlyBranches> map = impl.getPalm(Gender.男, 子, false, 3, 8 , 辰).getMajorFortunes(10);
+    Map<Integer , EarthlyBranches> map = impl.getPalm(Gender.男, 子, false, 3, 8 , 辰 , defaultImpl).getMajorFortunes(10);
     assertEquals(寅, map.get(1));
     assertEquals(卯 , map.get(11));
     assertEquals(辰 , map.get(21));
@@ -77,7 +79,7 @@ public class PalmImplTest {
    */
   @Test
   public void testGetMajorFortunes_Female() {
-    Map<Integer , EarthlyBranches> map = impl.getPalm(Gender.女, 子, false, 3, 8 , 辰).getMajorFortunes(10);
+    Map<Integer , EarthlyBranches> map = impl.getPalm(Gender.女, 子, false, 3, 8 , 辰 , defaultImpl).getMajorFortunes(10);
     assertEquals(戌 , map.get(1));
     assertEquals(酉 , map.get(11));
     assertEquals(申 , map.get(21));
@@ -90,10 +92,10 @@ public class PalmImplTest {
    */
   @Test
   public void testGetMinorFortunes_Male() {
-    assertSame(酉, impl.getPalm(Gender.男, 子, false, 3, 8, 辰).getMinorFortunes(1));
-    assertSame(戌, impl.getPalm(Gender.男, 子, false, 3, 8, 辰).getMinorFortunes(2));
-    assertSame(亥, impl.getPalm(Gender.男, 子, false, 3, 8, 辰).getMinorFortunes(3));
-    assertSame(子, impl.getPalm(Gender.男, 子, false, 3, 8, 辰).getMinorFortunes(4));
+    assertSame(酉, impl.getPalm(Gender.男, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(1));
+    assertSame(戌, impl.getPalm(Gender.男, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(2));
+    assertSame(亥, impl.getPalm(Gender.男, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(3));
+    assertSame(子, impl.getPalm(Gender.男, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(4));
   }
 
   /**
@@ -103,10 +105,10 @@ public class PalmImplTest {
    */
   @Test
   public void testGetMinorFortunes_Female() {
-    assertSame(卯, impl.getPalm(Gender.女, 子, false, 3, 8, 辰).getMinorFortunes(1));
-    assertSame(寅, impl.getPalm(Gender.女, 子, false, 3, 8, 辰).getMinorFortunes(2));
-    assertSame(丑, impl.getPalm(Gender.女, 子, false, 3, 8, 辰).getMinorFortunes(3));
-    assertSame(子, impl.getPalm(Gender.女, 子, false, 3, 8, 辰).getMinorFortunes(4));
+    assertSame(卯, impl.getPalm(Gender.女, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(1));
+    assertSame(寅, impl.getPalm(Gender.女, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(2));
+    assertSame(丑, impl.getPalm(Gender.女, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(3));
+    assertSame(子, impl.getPalm(Gender.女, 子, false, 3, 8, 辰 , defaultImpl).getMinorFortunes(4));
   }
 
 
@@ -116,8 +118,9 @@ public class PalmImplTest {
    */
   @Test
   public void testRising_Male() {
-    Palm palm = impl.getPalm(Gender.男 , 巳 , false, 1 , 12 , 午);
-    System.out.println("palm = " + palm);
+    Palm palm = impl.getPalm(Gender.男 , 巳 , false, 1 , 12 , 午 , defaultImpl);
+    assertSame(未 , palm.getBranch(Palm.House.命));
+
   }
 
   /**
@@ -126,16 +129,26 @@ public class PalmImplTest {
    */
   @Test
   public void testRising_Female() {
-    Palm palm = impl.getPalm(Gender.女 , 子 , false, 3 , 8 , 辰);
-    assertSame(子 , impl.getRising(palm , 辰));
+    Palm palm = impl.getPalm(Gender.女 , 子 , false, 3 , 8 , 辰 , defaultImpl);
+    assertSame(子 , palm.getBranch(Palm.House.命));
   }
 
 
   @Test
   public void testRising() {
-    Palm palm = impl.getPalm(Gender.男 , 未 , false , 4 , 1 , 子);
-    assertSame(丑 , impl.getRising(palm, 子));
+    Palm palm = impl.getPalm(Gender.男 , 未 , false , 4 , 1 , 子 , defaultImpl);
+    assertSame(丑 , palm.getBranch(Palm.House.命));
+  }
 
-
+  /**
+   * 陽男陰女順
+   * 陰男陽女逆
+   * 測試資料
+   * http://curtisyen74.pixnet.net/blog/post/19456721-達摩掌金排盤
+   */
+  @Test
+  public void testAlternativePositive_1() {
+    System.out.println("palm1 = " + impl.getPalm(Gender.女 , 申 , false , 8 , 20 , 戌 , defaultImpl));
+    System.out.println("palm2 = " + impl.getPalm(Gender.女 , 申 , false , 8 , 20 , 戌 , new PositiveGenderYinYangImpl()));
   }
 }

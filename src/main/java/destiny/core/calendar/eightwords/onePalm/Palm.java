@@ -87,6 +87,11 @@ public class Palm implements Serializable {
     return houseMap.get(branch);
   }
 
+  /** 與上面相反，取得此宮位於什麼地支 */
+  public EarthlyBranches getBranch(House house) {
+    return houseMap.inverse().get(house);
+  }
+
   /**
    * 大運從掌中年上起月，男順、女逆，輪數至本生月起運。本生月所在宮為一運，下一宮為二運，而一運管10年。
    *

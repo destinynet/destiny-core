@@ -129,7 +129,7 @@ public class PalmGraphics {
     }
 
     // 在每個 cell 左邊中間，列出 house 名稱 (命宮...)
-    g.setColor(fore);
+    g.setColor(Color.BLUE);
     fontSize = (int) (cellH / 6);
     g.setFont(new Font(FontRepository.getFontLiHei(), Font.PLAIN, fontSize));
     float houseX = (float) (x + fontSize * 0.2);

@@ -13,16 +13,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * FIXME : http://curtisyen74.pixnet.net/blog/post/19456721
- * 陽男陰女，順時鐘方向數；陰男陽女，逆時鐘方向數。
- * 陽：民國年個位數為奇數。 (地支陽)
- * 陰：民國年個位數為偶數。 (地支陰)
+ *
  */
 public interface PalmIF {
 
   /** 本命盤 */
-  default Palm getPalm(Gender gender, EarthlyBranches yearBranch, boolean leap, int month, int day, EarthlyBranches hourBranch) {
-    int positive = (gender==Gender.男 ? 1 : -1) ;
+  default Palm getPalm(Gender gender, EarthlyBranches yearBranch, boolean leap, int month, int day, EarthlyBranches hourBranch , PositiveIF positiveImpl) {
+    int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     int realMonth = month ;
     if (leap && day > 15)  // 若為閏月，15日以後算下個月
@@ -50,16 +47,16 @@ public interface PalmIF {
   }
 
   /** 本命盤 */
-  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour) {
+  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour , PositiveIF positiveImpl) {
     return getPalm(gender ,
       chineseDateHour.getYear().getBranch() , chineseDateHour.isLeapMonth() , chineseDateHour.getMonth() ,
       chineseDateHour.getDay() ,
-      chineseDateHour.getHourBranch()
+      chineseDateHour.getHourBranch() ,
+      positiveImpl
     );
   }
 
   /**
-   *
    * 大運從掌中年上起月，男順、女逆，輪數至本生月起運。本生月所在宮為一運，下一宮為二運，而一運管10年。
    *
    *
@@ -82,21 +79,5 @@ public interface PalmIF {
     }
     return map;
   }
-
-  /**
-   * 計算命宮
-   * 以「時」的宮位為起點，男順女逆，數至「卯」，其所在的宮位就是命宮
-   * 例如，女命，辰時在亥宮。   辰到卯， 相隔 11 .  而從亥宮逆數 11 , 到子宮，則為命宮
-   */
-  default EarthlyBranches getRising(Palm palm , EarthlyBranches hour) {
-    int positive = (palm.getGender()==Gender.男 ? 1 : -1) ;
-
-    int gap = EarthlyBranches.卯.getIndex() - hour.getIndex();
-    if (gap < 0)
-      gap = gap + 12;
-
-    return EarthlyBranches.getEarthlyBranches(palm.getHour().getIndex() + gap * positive);
-  }
-
 
 }
