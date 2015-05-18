@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar.eightwords.onePalm;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import destiny.core.Gender;
 import destiny.core.calendar.chinese.ChineseDateHour;
 import destiny.core.chinese.EarthlyBranches;
@@ -10,6 +12,12 @@ import destiny.core.chinese.EarthlyBranches;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * FIXME : http://curtisyen74.pixnet.net/blog/post/19456721
+ * 陽男陰女，順時鐘方向數；陰男陽女，逆時鐘方向數。
+ * 陽：民國年個位數為奇數。 (地支陽)
+ * 陰：民國年個位數為偶數。 (地支陰)
+ */
 public interface PalmIF {
 
   /** 本命盤 */
@@ -29,7 +37,16 @@ public interface PalmIF {
     // 日上起時
     EarthlyBranches hour = EarthlyBranches.getEarthlyBranches(dayBranch.getIndex() + ((hourBranch.getIndex())* positive));
 
-    return new Palm(gender, yearBranch , monthBranch , dayBranch , hour);
+    // 命宮
+    int gap = EarthlyBranches.卯.getIndex() - hourBranch.getIndex();
+    if (gap < 0)
+      gap = gap + 12;
+    EarthlyBranches risingBranch = EarthlyBranches.getEarthlyBranches(hour.getIndex() + gap * positive);
+    BiMap<EarthlyBranches , Palm.House> houseMap = HashBiMap.create(12);
+    for(int i=0 ; i<12 ; i++) {
+      houseMap.put(EarthlyBranches.getEarthlyBranches(risingBranch.getIndex() + i), Palm.House.values()[i]);
+    }
+    return new Palm(gender, yearBranch , monthBranch , dayBranch , hour , houseMap);
   }
 
   /** 本命盤 */
@@ -78,7 +95,8 @@ public interface PalmIF {
     if (gap < 0)
       gap = gap + 12;
 
-    EarthlyBranches rising = EarthlyBranches.getEarthlyBranches(palm.getHour().getIndex() + gap * positive);
-    return rising;
+    return EarthlyBranches.getEarthlyBranches(palm.getHour().getIndex() + gap * positive);
   }
+
+
 }

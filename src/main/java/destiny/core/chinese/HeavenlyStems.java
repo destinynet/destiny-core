@@ -180,5 +180,8 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
     return (getIndex(this) % 2 == 0);
   }
 
+  public static Iterable<HeavenlyStems> iterable() {
+    return Arrays.asList(HeavenlyStemsArray);
+  }
 
 }

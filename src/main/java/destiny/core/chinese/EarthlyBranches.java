@@ -3,6 +3,7 @@ package destiny.core.chinese;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -143,5 +144,9 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   public String toString()
   {
     return String.valueOf(name);
+  }
+
+  public static Iterable<EarthlyBranches> iterable() {
+    return Arrays.asList(EarthlyBranchesArray);
   }
 }
