@@ -82,6 +82,19 @@ public class Palm implements Serializable {
     return pillarMap.get(branch);
   }
 
+  /**
+   * 取得此柱，在哪個地支
+   */
+  public EarthlyBranches getBranch(Pillar pillar) {
+    switch (pillar) {
+      case 年 : return getYear();
+      case 月 : return getMonth();
+      case 日 : return getDay();
+      case 時 : return getHour();
+      default : throw new AssertionError(pillar.toString());
+    }
+  }
+
   /** 取得此地支，是什麼宮 */
   public House getHouse(EarthlyBranches branch) {
     return houseMap.get(branch);
