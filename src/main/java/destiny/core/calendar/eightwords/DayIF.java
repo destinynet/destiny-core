@@ -10,8 +10,7 @@ import destiny.core.calendar.Time;
 import destiny.core.chinese.StemBranch;
 
 /** 取得日干支的介面 */
-public interface DayIF
-{
+public interface DayIF {
   /**
    * @param lmt 當地時間
    * @param location 當地地點
@@ -20,5 +19,5 @@ public interface DayIF
    * @param changeDayAfterZi 子時過後是否換日
    * @return 日辰干支
    */
-  public StemBranch getDay(Time lmt , Location location , MidnightIF midnightImpl , HourIF hourImpl , boolean changeDayAfterZi);
+  StemBranch getDay(Time lmt , Location location , MidnightIF midnightImpl , HourIF hourImpl , boolean changeDayAfterZi);
 }

@@ -4,9 +4,15 @@
  */
 package destiny.core.calendar.chinese;
 
+import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.eightwords.DayIF;
+import destiny.core.calendar.eightwords.HourIF;
+import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
@@ -14,6 +20,8 @@ import java.time.LocalDate;
  * 從 Time(LMT) / Location 取得 ChineseDate
  */
 public interface ChineseDateIF {
+
+  Logger logger = LoggerFactory.getLogger(ChineseDateIF.class);
 
   // =============== 陽曆轉陰曆 ===============
 
@@ -27,6 +35,12 @@ public interface ChineseDateIF {
   default ChineseDate getChineseDate(Time time) {
     return getChineseDate(time.toLocalDateTime().toLocalDate());
   }
+
+  /**
+   * 最完整的「陽曆轉陰曆」演算法
+   * 必須另外帶入 地點、日干支紀算法、時辰劃分法、子正計算方式、是否子初換日 5個參數
+   */
+  ChineseDate getChineseDate(Time lmt , Location location , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl ,  boolean changeDayAfterZi);
 
   // =============== 陰曆轉陽曆 ===============
   LocalDate getYangDate(int cycle, StemBranch year, boolean leap, int month, int day);

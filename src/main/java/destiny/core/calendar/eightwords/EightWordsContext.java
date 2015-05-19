@@ -76,7 +76,7 @@ public class EightWordsContext implements EightWordsIF , Serializable
 
     EarthlyBranches 時支 = this.hourImpl.getHour(lmt, location);
 
-    HeavenlyStems 時干 = null;
+    HeavenlyStems 時干;
 
     Time nextZi = hourImpl.getLmtNextStartOf(lmt, location, EarthlyBranches.子);
 
