@@ -47,7 +47,7 @@ public class EightWordsContext implements EightWordsIF , Serializable
 
   /** 取得農曆 */
   public ChineseDate getChineseDate(Time lmt ,Location location) {
-    return chineseDateImpl.getChineseDate(lmt);
+    return chineseDateImpl.getChineseDate(lmt , location, dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
   }
 
 

@@ -13,6 +13,11 @@ public class ChineseDateHour extends ChineseDate {
 
   private final EarthlyBranches hourBranch;
 
+  public ChineseDateHour(ChineseDate chineseDate , EarthlyBranches hour) {
+    super(chineseDate.getCycle() , chineseDate.getYear() , chineseDate.getMonth() , chineseDate.isLeapMonth() , chineseDate.getDay());
+    this.hourBranch = hour;
+  }
+
   public ChineseDateHour(int cycle, StemBranch year, int month, boolean leapMonth, int day , EarthlyBranches hour) {
     super(cycle, year, month, leapMonth, day);
     this.hourBranch = hour;

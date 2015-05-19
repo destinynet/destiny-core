@@ -6,7 +6,14 @@ package destiny.core.calendar.eightwords.onePalm;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import destiny.core.Gender;
+import destiny.core.calendar.Location;
+import destiny.core.calendar.Time;
+import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateHour;
+import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.eightwords.DayIF;
+import destiny.core.calendar.eightwords.HourIF;
+import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.chinese.EarthlyBranches;
 
 import java.util.Map;
@@ -18,7 +25,8 @@ import java.util.TreeMap;
 public interface PalmIF {
 
   /** 本命盤 */
-  default Palm getPalm(Gender gender, EarthlyBranches yearBranch, boolean leap, int month, int day, EarthlyBranches hourBranch , PositiveIF positiveImpl) {
+  default Palm getPalm(Gender gender, EarthlyBranches yearBranch, boolean leap, int month, int day, EarthlyBranches hourBranch ,
+                       PositiveIF positiveImpl) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     int realMonth = month ;
@@ -54,6 +62,17 @@ public interface PalmIF {
       chineseDateHour.getHourBranch() ,
       positiveImpl
     );
+  }
+
+  /**
+   * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
+   */
+  default Palm getPalm(Gender gender , Time lmt , Location loc , PositiveIF positiveImpl , ChineseDateIF chineseDateImpl ,
+                       DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl , boolean changeDayAfterZi) {
+    ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
+    EarthlyBranches hourBranch = hourImpl.getHour(lmt , loc);
+    ChineseDateHour chineseDateHour = new ChineseDateHour(cDate , hourBranch);
+    return getPalm(gender , chineseDateHour , positiveImpl);
   }
 
   /**

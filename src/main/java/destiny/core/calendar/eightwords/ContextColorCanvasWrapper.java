@@ -125,12 +125,7 @@ public class ContextColorCanvasWrapper {
     地點名稱.setText(" GMT時差："+AlignUtil.alignRight(minuteOffset,6)+"分鐘", 1, 25 , "999999");
     cc.add(地點名稱 , 3 , 1);
     
-    
-    /*
-    ColorCanvas 農曆資訊 = new ColorCanvas(1,34, "　");
-    農曆資訊.setText("農曆：" , 1 , 1);
-    cc.add(農曆資訊 , 2 , 1);
-    */
+
     
     ColorCanvas 經度 = new ColorCanvas(1, 24 , "　");
     StringBuffer lonText = new StringBuffer();

@@ -3,14 +3,13 @@
  */
 package destiny.core.calendar.eightwords.onePalm;
 
-import destiny.core.Descriptive;
 import destiny.core.Gender;
 import destiny.core.chinese.EarthlyBranches;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-public class PositiveGenderImpl implements PositiveIF , Descriptive , Serializable {
+public class PositiveGenderImpl implements PositiveIF , Serializable {
 
   @Override
   public boolean isPositive(Gender gender, EarthlyBranches yearBranch) {

@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar.eightwords.onePalm;
 
-import destiny.core.Descriptive;
 import destiny.core.Gender;
 import destiny.core.chinese.EarthlyBranches;
 
@@ -16,7 +15,7 @@ import java.util.Locale;
  * 陽：民國年個位數為奇數。 (地支陽)
  * 陰：民國年個位數為偶數。 (地支陰)
  */
-public class PositiveGenderYinYangImpl implements PositiveIF, Descriptive, Serializable {
+public class PositiveGenderYinYangImpl implements PositiveIF, Serializable {
 
   @Override
   public boolean isPositive(Gender gender, EarthlyBranches yearBranch) {
@@ -28,12 +27,12 @@ public class PositiveGenderYinYangImpl implements PositiveIF, Descriptive, Seria
 
   @Override
   public String getTitle(Locale locale) {
-    return "陽男音女順；陰男陽女逆";
+    return "陽男陰女順；陰男陽女逆";
   }
 
   @Override
   public String getDescription(Locale locale) {
-    return "陽男音女順；陰男陽女逆";
+    return "陽男陰女順；陰男陽女逆。";
 
   }
 
