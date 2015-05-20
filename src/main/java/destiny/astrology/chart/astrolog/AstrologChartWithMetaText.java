@@ -41,7 +41,6 @@ public class AstrologChartWithMetaText extends AstrologChart {
 
     Location loc = context.getLocation();
     String locString = String.format("%d%s%d'%.3g\" %d%s%d'%.3g\"", loc.getLongitudeDegree(), loc.getEastWest().toString(Locale.ENGLISH).charAt(0), loc.getLongitudeMinute(), loc.getLongitudeSecond()
-
       , loc.getLatitudeDegree(), loc.getNorthSouth().toString(Locale.ENGLISH).charAt(0), loc.getLatitudeMinute(), loc.getLatitudeSecond());
     g.drawString(locString , fontSize , height - fontSize );
   }

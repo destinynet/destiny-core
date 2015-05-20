@@ -46,13 +46,23 @@ public class Palm implements Serializable {
     this.month = month;
     this.day = day;
     this.hour = hour;
+    this.houseMap = houseMap;
 
     pillarMap.put(year, Pillar.年);
     pillarMap.put(month, Pillar.月);
     pillarMap.put(day, Pillar.日);
     pillarMap.put(hour, Pillar.時);
+  }
 
-    this.houseMap = houseMap;
+  protected Palm(Palm other) {
+    this.gender = other.gender;
+    this.year = other.year;
+    this.month = other.month;
+    this.day = other.day;
+    this.hour = other.hour;
+    this.houseMap = other.houseMap;
+
+    this.pillarMap.putAll(other.pillarMap);
   }
 
   public Gender getGender() {
