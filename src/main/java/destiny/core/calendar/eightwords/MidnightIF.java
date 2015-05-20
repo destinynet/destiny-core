@@ -15,5 +15,5 @@ public interface MidnightIF extends Descriptive
 {
   /** 取得下一個「子正」的時刻 */
   @NotNull
-  public Time getNextMidnight(Time lmt , Location location);
+  Time getNextMidnight(Time lmt , Location location);
 }

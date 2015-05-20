@@ -5,4 +5,9 @@ package destiny.core.calendar.eightwords.onePalm;
 
 import java.io.Serializable;
 
-public class PalmImpl implements PalmIF , Serializable {}
+public class PalmImpl implements PalmIF , Serializable {
+
+  public PalmImpl() {
+
+  }
+}
