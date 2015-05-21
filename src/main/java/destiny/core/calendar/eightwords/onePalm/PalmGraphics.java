@@ -127,10 +127,12 @@ public class PalmGraphics {
       , loc.getLatitudeDegree(), loc.getNorthSouth().toString(Locale.ENGLISH).charAt(0), loc.getLatitudeMinute(), loc.getLatitudeSecond());
     g.drawString("地點：" + locString , 1 , fontH*6);
 
-    g.drawString("順逆：" + palm.getPositiveImpl().getTitle(Locale.TAIWAN) , 1 , fontH * 7);
-    g.drawString("時辰劃分：" + palm.getHourImpl().getTitle(Locale.TAIWAN) , 1 , fontH * 8);
-    g.drawString("子正是：" + palm.getMidnightImpl().getTitle(Locale.TAIWAN) , 1 , fontH * 9);
-    g.drawString("換日：" + (palm.isChangeDayAfterZi() ? "子初換日" : "子正換日") , 1 , fontH * 10);
+    g.drawString("地名：" + palm.getPlace() , 1 , fontH*7);
+
+    g.drawString("順逆：" + palm.getPositiveImpl().getTitle(Locale.TAIWAN) , 1 , fontH * 8);
+    g.drawString("時辰劃分：" + palm.getHourImpl().getTitle(Locale.TAIWAN) , 1 , fontH * 9);
+    g.drawString("子正是：" + palm.getMidnightImpl().getTitle(Locale.TAIWAN) , 1 , fontH * 10);
+    g.drawString("換日：" + (palm.isChangeDayAfterZi() ? "子初換日" : "子正換日") , 1 , fontH * 11);
   }
 
   /**

@@ -17,6 +17,8 @@ public class PalmWithMeta extends Palm {
 
   private final Location loc;
 
+  private final String place;
+
   private final ChineseDateIF chineseDateImpl;
 
   private final DayIF dayImpl;
@@ -29,11 +31,12 @@ public class PalmWithMeta extends Palm {
 
   private final boolean changeDayAfterZi;
 
-  public PalmWithMeta(Palm palm, Time lmt, Location loc, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+  public PalmWithMeta(Palm palm, Time lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
     super(palm);
 
     this.lmt = lmt;
     this.loc = loc;
+    this.place = place;
     this.chineseDateImpl = chineseDateImpl;
     this.dayImpl = dayImpl;
     this.positiveImpl = positiveImpl;
@@ -48,6 +51,10 @@ public class PalmWithMeta extends Palm {
 
   public Location getLoc() {
     return loc;
+  }
+
+  public String getPlace() {
+    return place;
   }
 
   public PositiveIF getPositiveImpl() {
