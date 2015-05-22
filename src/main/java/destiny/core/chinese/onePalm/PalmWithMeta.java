@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2015-05-20.
  */
-package destiny.core.calendar.eightwords.onePalm;
+package destiny.core.chinese.onePalm;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
