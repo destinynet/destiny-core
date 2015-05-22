@@ -34,22 +34,22 @@ public interface PalmIF {
       realMonth++;
 
     // 年上起月
-    EarthlyBranches monthBranch = EarthlyBranches.getEarthlyBranches(yearBranch.getIndex() + ((realMonth-1) * positive));
+    EarthlyBranches monthBranch = yearBranch.next((realMonth-1)*positive);
 
     // 月上起日
-    EarthlyBranches dayBranch = EarthlyBranches.getEarthlyBranches(monthBranch.getIndex() + (day-1)* positive);
+    EarthlyBranches dayBranch = monthBranch.next((day-1)* positive);
 
     // 日上起時
-    EarthlyBranches hour = EarthlyBranches.getEarthlyBranches(dayBranch.getIndex() + ((hourBranch.getIndex())* positive));
+    EarthlyBranches hour = dayBranch.next((hourBranch.getIndex())* positive);
 
     // 命宮
     int gap = EarthlyBranches.卯.getIndex() - hourBranch.getIndex();
     if (gap < 0)
       gap = gap + 12;
-    EarthlyBranches risingBranch = EarthlyBranches.getEarthlyBranches(hour.getIndex() + gap * positive);
+    EarthlyBranches risingBranch = hour.next(gap * positive);
     BiMap<EarthlyBranches , Palm.House> houseMap = HashBiMap.create(12);
     for(int i=0 ; i<12 ; i++) {
-      houseMap.put(EarthlyBranches.getEarthlyBranches(risingBranch.getIndex() + i), Palm.House.values()[i]);
+      houseMap.put(risingBranch.next(i), Palm.House.values()[i]);
     }
     return new Palm(gender, yearBranch , monthBranch , dayBranch , hour , houseMap);
   }
@@ -91,12 +91,12 @@ public interface PalmIF {
     int positive = (gender==Gender.男 ? 1 : -1) ;
 
     // 年上起月
-    EarthlyBranches monthBranch = EarthlyBranches.getEarthlyBranches(yearBranch.getIndex() + ((month-1) * positive));
+    EarthlyBranches monthBranch = yearBranch.next((month - 1) * positive);
 
     Map<Integer , EarthlyBranches> map = new TreeMap<>();
 
     for(int i = 1 ; i <= count ; i++) {
-      map.put((i-1)* 10 + 1 , EarthlyBranches.getEarthlyBranches(monthBranch.getIndex() + (i-1)*positive ));
+      map.put((i-1)* 10 + 1 , monthBranch.next((i-1)*positive));
     }
     return map;
   }

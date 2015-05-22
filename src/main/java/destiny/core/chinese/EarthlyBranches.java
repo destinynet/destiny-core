@@ -57,6 +57,23 @@ public enum EarthlyBranches implements EarthlyBranchesIF
       return getEarthlyBranches(index-12);
     return EarthlyBranchesArray[index];
   }
+
+  /**
+   * 取得下 n 個地支為何
+   * n = 0 : 傳回自己
+   */
+  public EarthlyBranches next(int n) {
+    return getEarthlyBranches(getIndex(this) + n);
+  }
+
+  /**
+   * 取得前 n 個地支為何
+   * n = 0 : 傳回自己
+   */
+  public EarthlyBranches prev(int n) {
+    return next(0-n);
+  }
+
   
   public static Optional<EarthlyBranches> getEarthlyBranches(char c)
   {
