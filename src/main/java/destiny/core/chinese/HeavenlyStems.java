@@ -94,7 +94,25 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
       return (getHeavenlyStems(index-10));
     return HeavenlyStemsArray[index];
   }
-  
+
+
+  /**
+   * 取得下 n 個天干為何
+   * n = 0 : 傳回自己
+   */
+  public HeavenlyStems next(int n) {
+    return getHeavenlyStems(getIndex(this) + n);
+  }
+
+  /**
+   * 取得前 n 個天干為何
+   * n = 0 : 傳回自己
+   */
+  public HeavenlyStems prev(int n) {
+    return next(0-n);
+  }
+
+
   public static Optional<HeavenlyStems> getHeavenlyStems(char c)
   {
     HeavenlyStems result = null;
@@ -122,6 +140,8 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
       throw new RuntimeException("Cannot find HeavenlyStems : " + hs + " in HeavenlyStems .");
     */
   }
+
+
   
   /** 甲[0] ... 癸[9] */
   public int getIndex()
@@ -171,7 +191,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
       case 8:      case 9:
         return FiveElement.水;
       default:
-        throw new RuntimeException("HeavenlyStems Error : cannot getFiveElements() : " + toString());
+        throw new AssertionError("HeavenlyStems Error : cannot getFiveElements() : " + toString());
     }
   }//getFiveElements()
 
