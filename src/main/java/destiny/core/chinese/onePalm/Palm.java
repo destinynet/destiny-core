@@ -34,6 +34,7 @@ public class Palm implements Serializable {
 
   public enum Pillar { 年 , 月 , 日 , 時}
 
+  /** 12個宮位，每個宮位，各有哪些「柱」 */
   private final Multimap<EarthlyBranches , Pillar> pillarMap = HashMultimap.create();
 
   public enum House {命 , 財帛 , 兄弟 , 田宅 , 男女 , 奴僕 , 配偶 , 疾厄 , 遷移 , 官祿 , 福德 , 相貌}
@@ -90,6 +91,16 @@ public class Palm implements Serializable {
    */
   public Collection<Pillar> getPillars(EarthlyBranches branch) {
     return pillarMap.get(branch);
+  }
+
+  /**
+   * 取得哪些宮位有「柱」坐落其中，列出來
+   * @return
+   */
+  public Map<EarthlyBranches , Collection<Pillar>> getNonEmptyPillars() {
+    return pillarMap.asMap().entrySet().stream()
+      .filter(entry -> entry.getValue().size() > 0)
+      .collect(Collectors.toMap(entry -> entry.getKey() , entry -> entry.getValue()));
   }
 
   /**

@@ -15,7 +15,7 @@ public class Triple<A, B, C> extends Tuple<A, B>
 
   @NotNull
   public static <A,B,C> Triple<A,B,C> of(A a , B b , C c) {
-    return new Triple(a,b,c);
+    return new Triple<>(a,b,c);
   }
 
   public C getThird()

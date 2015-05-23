@@ -11,8 +11,39 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class StemBranchTest
-{
+public class StemBranchTest {
+
+  @Test
+  public void testNext() {
+    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").next(0));
+    assertSame(StemBranch.get("乙丑") , StemBranch.get("甲子").next(1));
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("甲子").next(59));
+    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").next(60));
+    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").next(600));
+
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").next(0));
+    assertSame(StemBranch.get("甲子") , StemBranch.get("癸亥").next(1));
+    assertSame(StemBranch.get("壬戌") , StemBranch.get("癸亥").next(59));
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").next(60));
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").next(600));
+  }
+
+  @Test
+  public void testPrev() {
+    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").prev(0));
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("甲子").prev(1));
+    assertSame(StemBranch.get("乙丑") , StemBranch.get("甲子").prev(59));
+    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").prev(60));
+    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").prev(600));
+
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").prev(0));
+    assertSame(StemBranch.get("壬戌") , StemBranch.get("癸亥").prev(1));
+    assertSame(StemBranch.get("甲子") , StemBranch.get("癸亥").prev(59));
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").prev(60));
+    assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").prev(600));
+  }
+
+
   @Test
   public void testGet() {
     assertSame(StemBranch.get("甲子") , StemBranch.get(HeavenlyStems.甲 , EarthlyBranches.子));

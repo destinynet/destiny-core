@@ -57,6 +57,32 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
     return stemBranchArray[normalize(index)];
   }
 
+  /**
+   * 取得下 n 組干支組合
+   * n = 0 : 傳回自己
+   */
+  public StemBranch next(int n) {
+    return get(getIndex(this) + n);
+  }
+
+  /**
+   * 取得前 n 組干支組合
+   * n = 0 : 傳回自己
+   */
+  public StemBranch prev(int n) {
+    return next(0-n);
+  }
+
+  /** 取得下一組干支 , 甲子 傳回 乙丑 */
+  public StemBranch getNext() {
+    return next(1);
+  }
+
+  /** 取得上一組干支 , 甲子 傳回 癸亥 */
+  public StemBranch getPrevious() {
+    return prev(1);
+  }
+
   @NotNull
   public static StemBranch get(@NotNull HeavenlyStems 天干 , @NotNull EarthlyBranches 地支)
   {
@@ -151,7 +177,10 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
     }
     return index;
   }//getIndex()
-  
+
+
+
+
   /**
    * @return 0[甲子] ~ 59[癸亥]
    */
@@ -205,17 +234,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
     return branch;
   }
 
-  /** 取得下一組干支 , 甲子 傳回 乙丑 */
-  public StemBranch getNext()
-  {
-    return get(getIndex(this)+1);
-  }
-  
-  /** 取得上一組干支 , 甲子 傳回 癸亥 */
-  public StemBranch getPrevious()
-  {
-    return get(getIndex(this)-1);
-  }
+
 
   public static Iterable<StemBranch> iterable() {
     return Arrays.asList(stemBranchArray);
