@@ -4,11 +4,14 @@
  */ 
 package destiny.core.calendar.eightwords;
 
-import junit.framework.TestCase;
 import destiny.core.chinese.StemBranch;
+import org.junit.Test;
 
-public class EightWordsTest extends TestCase
+import static org.junit.Assert.*;
+
+public class EightWordsTest
 {
+  @Test
   public void testEqualsSame()
   {
     EightWords expected=new EightWords("甲子","甲子","甲子","甲子");
@@ -18,6 +21,7 @@ public class EightWordsTest extends TestCase
   }
   
   /** 測試傳入 null 到 EightWords 的 constructor 中 */
+  @Test
   public void testNullInconstructor1()
   {
     try
@@ -38,6 +42,7 @@ public class EightWordsTest extends TestCase
   }
   
   /** 測試傳入 null 到 EightWords 的 constructor 中 , 與前例不同在於 , 前例傳的是干支 , 本例傳的是字串 */
+  @Test
   public void testNullInconstructor2()
   {
     try
@@ -56,7 +61,8 @@ public class EightWordsTest extends TestCase
       assertTrue(true);
     }
   }
-  
+
+  @Test
   public void testNullStemBranch()
   {
     EightWords eightWordsFull = new EightWords(StemBranch.get("甲子"),StemBranch.get("乙丑"),StemBranch.get("丙寅"),StemBranch.get("丁卯"));

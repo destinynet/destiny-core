@@ -1,17 +1,20 @@
 package destiny.FengShui.SanYuan;
 
-import junit.framework.TestCase;
 import destiny.iching.Symbol;
 import org.jetbrains.annotations.Nullable;
+import org.junit.Test;
+
+import static org.junit.Assert.assertSame;
 
 /**
  * @author smallufo
  * @date 2002/9/25
  * @time 上午 11:22:16
  */
-public class ChartTest extends TestCase
+public class ChartTest
 {
   private Chart chart;
+
   @Nullable
   private ChartBlock cb;
 
@@ -27,6 +30,7 @@ public class ChartTest extends TestCase
    * 59  77  32
    * 一  三  八
    */
+  @Test
   public void testChart1()
   {
     chart = new Chart(7 , Mountain.午 , Symbol.坎);
@@ -84,6 +88,7 @@ public class ChartTest extends TestCase
    * 59  77  32
    * 一  三  八
    */
+  @Test
   public void testChart2()
   {
     chart = new Chart(7 , Mountain.午 , Symbol.乾);
@@ -143,6 +148,7 @@ public class ChartTest extends TestCase
    * 四  六  二
    * 
    */
+  @Test
   public void testChart3()
   {
     chart = new Chart(1 , Mountain.丙 , Symbol.乾);

@@ -4,12 +4,15 @@
  */ 
 package destiny.astrology.classical;
 
-import junit.framework.TestCase;
 import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
+import org.junit.Test;
 
-public class EssentialFaceDefaultImplTest extends TestCase
+import static org.junit.Assert.assertTrue;
+
+public class EssentialFaceDefaultImplTest
 {
+  @Test
   public void testGetStarDouble()
   {
     EssentialFaceIF impl = new EssentialFaceDefaultImpl();
@@ -75,6 +78,7 @@ public class EssentialFaceDefaultImplTest extends TestCase
     
   }
 
+  @Test
   public void testGetStarZodiacSignDouble()
   {
     EssentialFaceIF impl = new EssentialFaceDefaultImpl();

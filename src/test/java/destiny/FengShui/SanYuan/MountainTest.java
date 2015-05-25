@@ -5,10 +5,13 @@
  */
 package destiny.FengShui.SanYuan;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class MountainTest extends TestCase
+import static org.junit.Assert.assertSame;
+
+public class MountainTest
 {
+  @Test
   public void testMountain()
   {
     assertSame(Mountain.午 , Mountain.getOppositeMountain(Mountain.子));

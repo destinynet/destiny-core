@@ -1,9 +1,12 @@
 package destiny.core;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class GenderTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class GenderTest
 {
+  @Test
   public void testToString()
   {
     Gender gender = Gender.男;

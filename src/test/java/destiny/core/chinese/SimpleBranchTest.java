@@ -4,12 +4,19 @@
  */ 
 package destiny.core.chinese;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import static destiny.core.chinese.SimpleBranch.*;
+import static org.junit.Assert.assertSame;
 
-public class SimpleBranchTest extends TestCase
+public class SimpleBranchTest
 {
+  @Test
+  public void testGet() {
+    assertSame(SimpleBranch.子, SimpleBranch.get(Branch.子));
+  }
+
+  @Test
   public void testGetFiveElement()
   {
     assertSame(FiveElement.水 , 子.getFiveElement());
@@ -26,6 +33,7 @@ public class SimpleBranchTest extends TestCase
     assertSame(FiveElement.水 , 亥.getFiveElement());
   }
 
+  @Test
   public void testGetFiveElementEarthlyBranches()
   {
     assertSame(FiveElement.水 , getFiveElement(Branch.子));
@@ -42,6 +50,7 @@ public class SimpleBranchTest extends TestCase
     assertSame(FiveElement.水 , getFiveElement(Branch.亥));
   }
 
+  @Test
   public void testGetYinYang()
   {
     assertSame(true  , 子.getBooleanValue());

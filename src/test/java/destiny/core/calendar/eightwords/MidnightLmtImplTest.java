@@ -5,14 +5,17 @@
  */
 package destiny.core.calendar.eightwords;
 
-import java.util.TimeZone;
-
-import junit.framework.TestCase;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import org.junit.Test;
 
-public class MidnightLmtImplTest extends TestCase
+import java.util.TimeZone;
+
+import static org.junit.Assert.assertEquals;
+
+public class MidnightLmtImplTest
 {
+  @Test
   public void testGetNextMidnight()
   {
     MidnightLmtImpl impl = new MidnightLmtImpl();

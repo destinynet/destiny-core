@@ -5,33 +5,37 @@
  */
 package destiny.FengShui.SanYuan;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class EarthlyCompassTest extends TestCase
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+public class EarthlyCompassTest
 {
+  @Test
   public void testEarthlyCompass()
   {
     EarthlyCompass e = new EarthlyCompass();
     
     //子山開始度數 (352.5)
-    assertEquals(352.5 , e.getStartDegree( Mountain.子));
-    assertEquals(7.5 , e.getEndDegree(Mountain.子));
+    assertEquals(352.5 , e.getStartDegree( Mountain.子) , 0);
+    assertEquals(7.5 , e.getEndDegree(Mountain.子) , 0);
     
     //卯山開始度數 ( 82.5)
-    assertEquals(82.5 , e.getStartDegree( Mountain.卯));
-    assertEquals(97.5 , e.getEndDegree( Mountain.卯));
+    assertEquals(82.5 , e.getStartDegree( Mountain.卯) , 0);
+    assertEquals(97.5 , e.getEndDegree( Mountain.卯) , 0);
     
     //癸山開始度數 (  7.5)
-    assertEquals(7.5 , e.getStartDegree( Mountain.癸));
-    assertEquals(22.5 , e.getEndDegree( Mountain.癸));
+    assertEquals(7.5 , e.getStartDegree( Mountain.癸) , 0);
+    assertEquals(22.5 , e.getEndDegree( Mountain.癸) , 0);
     
     //午山開始度數 (172.5)
-    assertEquals(172.5 , e.getStartDegree( Mountain.午));
-    assertEquals(187.5 , e.getEndDegree( Mountain.午));
+    assertEquals(172.5 , e.getStartDegree( Mountain.午) , 0);
+    assertEquals(187.5 , e.getEndDegree( Mountain.午) , 0);
     
     //乾山開始度數 (307.5)
-    assertEquals(307.5 , e.getStartDegree( Mountain.乾));
-    assertEquals(322.5 , e.getEndDegree( Mountain.乾));
+    assertEquals(307.5 , e.getStartDegree( Mountain.乾), 0);
+    assertEquals(322.5 , e.getEndDegree( Mountain.乾) , 0);
     
     
     //359度是屬於 (子) 

@@ -4,12 +4,15 @@
  */ 
 package destiny.astrology.classical;
 
+import org.junit.Test;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class DignityTest extends TestCase
+public class DignityTest
 {
+  @Test
   public void testDignity()
   {
     assertEquals("旺" , Dignity.RULER.toString(Locale.TAIWAN));

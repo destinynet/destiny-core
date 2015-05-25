@@ -28,7 +28,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   
   private final static List<Stem> STEM_LIST = Arrays.asList(STEM_ARRAY);
 
-  private Stem(char c)
+  Stem(char c)
   {
     this.name = c;
   }

@@ -4,12 +4,16 @@
  */ 
 package destiny.core.calendar.eightwords;
 
+import org.junit.Test;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
-public class HemisphereByTest extends TestCase
+public class HemisphereByTest
 {
+  @Test
   public void testHemisphereBy()
   {
     for(HemisphereBy each : HemisphereBy.values())

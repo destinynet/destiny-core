@@ -4,13 +4,16 @@
  */ 
 package destiny.astrology;
 
+import org.junit.Test;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class QualityTest extends TestCase
+public class QualityTest
 {
 
+  @Test
   public void testToString()
   {
     assertEquals("基本" , Quality.CARDINAL.toString());
@@ -18,6 +21,7 @@ public class QualityTest extends TestCase
     assertEquals("變動" , Quality.MUTABLE.toString());
   }
 
+  @Test
   public void testToStringLocale()
   {
     assertEquals("基本" , Quality.CARDINAL.toString(Locale.TAIWAN));

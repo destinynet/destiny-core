@@ -4,14 +4,17 @@
  */ 
 package destiny.astrology.classical;
 
-import junit.framework.TestCase;
 import destiny.astrology.DayNight;
 import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
+import org.junit.Test;
 
-public class EssentialTriplicityDefaultImplTest extends TestCase
+import static org.junit.Assert.assertSame;
+
+public class EssentialTriplicityDefaultImplTest
 {
 
+  @Test
   public void testGetStar()
   {
     EssentialTriplicityIF impl = new EssentialTriplicityDefaultImpl();

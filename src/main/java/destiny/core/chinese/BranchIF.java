@@ -4,7 +4,9 @@
  */ 
 package destiny.core.chinese;
 
-interface BranchIF
+interface BranchIF<T>
 {
-  int getIndex();
+  Branch getBranch();
+
+  int getAheadOf(T other);
 }

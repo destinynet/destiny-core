@@ -4,12 +4,16 @@
  */ 
 package destiny.astrology;
 
+import org.junit.Test;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
-public class ApsisTest extends TestCase
+public class ApsisTest
 {
+  @Test
   public void testApsis()
   {
     for (Apsis each : Apsis.values())

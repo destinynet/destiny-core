@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * 地支系統
  * */
-public enum Branch implements BranchIF
+public enum Branch implements BranchIF<Branch>
 {
   子('子'),
   丑('丑'),
@@ -41,9 +41,6 @@ public enum Branch implements BranchIF
    * 1 為 丑  <BR>
    * ...      <BR>
    * 11 為 亥 <BR>
-   * 
-   * @param index
-   * @return
    */
   public static Branch getEarthlyBranches(int index)
   {
@@ -130,12 +127,18 @@ public enum Branch implements BranchIF
     return index;
   }
 
+  @Override
+  public Branch getBranch() {
+    return this;
+  }
+
   /**
    * 子[0] ~ 亥[11]
    */
   public int getIndex() {
     return getIndex(this);
   }
+
 
   /**
    * 此地支「領先」另一個地支多少距離
@@ -144,6 +147,7 @@ public enum Branch implements BranchIF
    * ...
    * 子領先亥 1
    * */
+  @Override
   public int getAheadOf(Branch other) {
     int steps = getIndex() - other.getIndex();
     if (steps >= 0)
@@ -179,4 +183,6 @@ public enum Branch implements BranchIF
   public static Iterable<Branch> iterable() {
     return Arrays.asList(BRANCH_ARRAY);
   }
+
+
 }

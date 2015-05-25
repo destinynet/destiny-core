@@ -4,12 +4,15 @@
  */ 
 package destiny.astrology;
 
+import org.junit.Test;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class TransPointTest extends TestCase
+public class TransPointTest
 {
+  @Test
   public void testTransPoint()
   {
     Locale locale;

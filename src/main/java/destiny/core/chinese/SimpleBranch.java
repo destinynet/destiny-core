@@ -6,10 +6,9 @@
 package destiny.core.chinese;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** 實作 五行 getFiveElement() 以及 陰陽 getYinYang() 以及取得地支順序 getIndex() 的地支 */
-public enum SimpleBranch implements BranchIF, FiveElementIF , YinYangIF
+public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinYangIF
 {
   子(Branch.子),
   丑(Branch.丑),
@@ -25,12 +24,16 @@ public enum SimpleBranch implements BranchIF, FiveElementIF , YinYangIF
   亥(Branch.亥);
   
   
-  @Nullable
-  private Branch eb = null;
+  @NotNull
+  private final Branch eb;
   
-  private SimpleBranch(Branch eb)
+  SimpleBranch(Branch eb)
   {
     this.eb = eb;
+  }
+
+  public static SimpleBranch get(Branch b) {
+    return SimpleBranch.valueOf(b.name());
   }
   
   @NotNull
@@ -56,7 +59,7 @@ public enum SimpleBranch implements BranchIF, FiveElementIF , YinYangIF
       case 酉:
         return FiveElement.金;
     }
-    throw new Error("Error while calling EarthlyBranches.getFiveElement() , EarthlyBranches = " + eb.toString());
+    throw new AssertionError("getFiveElement() of " + eb);
   }
   
   /**
@@ -86,7 +89,7 @@ public enum SimpleBranch implements BranchIF, FiveElementIF , YinYangIF
       case 酉:
         return FiveElement.金;
     }
-    throw new Error("Error while calling EarthlyBranches.getFiveElement() , EarthlyBranches = " + eb.toString());
+    throw new AssertionError("getFiveElement() of " + eb);
   }
 
   @Override
@@ -95,12 +98,13 @@ public enum SimpleBranch implements BranchIF, FiveElementIF , YinYangIF
   }
 
 
-  /**
-   * 實作 EarthlyBranchesIF
-   */
-  public int getIndex()
-  {
-    return eb.getIndex();
+  @Override
+  public int getAheadOf(SimpleBranch other) {
+    return eb.getAheadOf(other.eb);
   }
 
+  @Override
+  public Branch getBranch() {
+    return eb;
+  }
 }

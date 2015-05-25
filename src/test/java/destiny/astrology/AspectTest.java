@@ -4,13 +4,16 @@
  */ 
 package destiny.astrology;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Locale;
 
-public class AspectTest extends TestCase
+import static org.junit.Assert.*;
+
+public class AspectTest
 {
 
+  @Test
   public void testGetAspectFromString()
   {
     assertSame(Aspect.CONJUNCTION , Aspect.getAspect("Conjunction").get());
@@ -20,7 +23,8 @@ public class AspectTest extends TestCase
     assertSame(Aspect.SEXTILE , Aspect.getAspect("sextile").get());
     assertTrue(!Aspect.getAspect("xxx").isPresent());
   }
-  
+
+  @Test
   public void testToString()
   {
     assertEquals("合" , Aspect.CONJUNCTION.toString());
@@ -43,7 +47,8 @@ public class AspectTest extends TestCase
     assertEquals("九分之四分相" , Aspect.QUATRONOVILE.toString());
     assertEquals("沖" , Aspect.OPPOSITION.toString());
   }
-  
+
+  @Test
   public void testToStringLocale()
   {
     Locale locale = Locale.ENGLISH;
@@ -67,7 +72,8 @@ public class AspectTest extends TestCase
     assertEquals("QuatroNovile"  , Aspect.QUATRONOVILE.toString(locale));
     assertEquals("Opposition"    , Aspect.OPPOSITION.toString(locale));
   }
-  
+
+  @Test
   public void testGetAngles()
   {
     assertTrue(Aspect.getAngles(Aspect.Importance.HIGH).contains(Aspect.CONJUNCTION));
@@ -92,7 +98,8 @@ public class AspectTest extends TestCase
     assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.TRISEPTILE));
     assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.QUATRONOVILE));
   }
-  
+
+  @Test
   public void testGetAspect()
   {
     assertSame(Aspect.getAspect(0)  .get(), Aspect.CONJUNCTION);

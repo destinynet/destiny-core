@@ -4,10 +4,13 @@
  */ 
 package destiny.astrology;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class UtilsTest extends TestCase
+import static org.junit.Assert.assertTrue;
+
+public class UtilsTest
 {
+  @Test
   public void testGetNormalizeDegree()
   {
     //測試大於零的度數

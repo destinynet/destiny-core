@@ -1,24 +1,28 @@
 /** 2009/10/20 下午10:53:51 by smallufo */
 package destiny.utils;
 
+import org.junit.Test;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotEquals;
 
-public class TimezoneTest extends TestCase
+public class TimezoneTest
 {
-  public void _testTimeZone()
+  @Test
+  public void testTimeZone()
   {
     TimeZone tp = TimeZone.getTimeZone("Asia/Taipei");
     TimeZone sh = TimeZone.getTimeZone("Asia/Shanghai");
     
-    assertEquals(tp , sh);
+    assertNotEquals(tp, sh);
   }
-  
-  public void _testGetAvailableIds()
+
+  @Test
+  public void testGetAvailableIds()
   {
     for(String tz : TimeZone.getAvailableIDs(8*60*60*1000))
     {
@@ -28,8 +32,9 @@ public class TimezoneTest extends TestCase
           timezone.getDisplayName(Locale.ENGLISH));
     }    
   }
-  
-  public void _testSingapore()
+
+  @Test
+  public void testSingapore()
   {
     TimeZone tz = TimeZone.getTimeZone("Asia/Singapore");
     System.out.println(tz);
@@ -63,8 +68,9 @@ public class TimezoneTest extends TestCase
     
 
   }
-  
-  public void _testTaiwan()
+
+  @Test
+  public void testTaiwan()
   {
     TimeZone tp = TimeZone.getTimeZone("Asia/Taipei");
     System.out.println(tp);
@@ -97,6 +103,7 @@ public class TimezoneTest extends TestCase
   /**  
    * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
    * */
+  @Test
   public void testTaiwan63()
   {
     TimeZone tp = TimeZone.getTimeZone("Asia/Taipei");

@@ -4,14 +4,18 @@
  */ 
 package destiny.astrology.classical;
 
-import junit.framework.TestCase;
 import destiny.astrology.Planet;
 import destiny.astrology.PointDegree;
 import destiny.astrology.ZodiacSign;
+import org.junit.Test;
 
-public class EssentialRedfDefaultImplTest extends TestCase
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+public class EssentialRedfDefaultImplTest
 {
   /** 測試 Ruler (旺) */
+  @Test
   public void testRuler()
   {
     EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
@@ -31,6 +35,7 @@ public class EssentialRedfDefaultImplTest extends TestCase
   }
   
   /** 測試 Detriment (陷) , 其值為對沖星座之Ruler */
+  @Test
   public void testDetriment()
   {
     EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
@@ -50,6 +55,7 @@ public class EssentialRedfDefaultImplTest extends TestCase
   }
 
   /** 測試 Exaltation (廟) */
+  @Test
   public void testExaltation()
   {
     EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
@@ -69,6 +75,7 @@ public class EssentialRedfDefaultImplTest extends TestCase
   }
   
   /** 測試 Fall (落) , 其值為對沖星座之Exaltation之星體 */
+  @Test
   public void testFall()
   {
     EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
@@ -91,6 +98,7 @@ public class EssentialRedfDefaultImplTest extends TestCase
   /**
    * 測試星座的 Exaltation 星體及度數
    */
+  @Test
   public void testGetExaltationStarDegree()
   {
     EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
@@ -107,7 +115,8 @@ public class EssentialRedfDefaultImplTest extends TestCase
     assertEquals( null                                                        , impl.getExaltationStarDegree(ZodiacSign.AQUARIUS   ));
     assertEquals( new PointDegree(Planet.VENUS   , ZodiacSign.PISCES      , 27), impl.getExaltationStarDegree(ZodiacSign.PISCES     ));
   }
-  
+
+  @Test
   public void testGetFallStarDegree()
   {
     EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();

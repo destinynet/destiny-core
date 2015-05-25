@@ -5,12 +5,16 @@
 package destiny.astrology.classical;
 
 import destiny.astrology.Planet;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class AspectEffectiveClassicalTest extends TestCase
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class AspectEffectiveClassicalTest
 {
 
   /** 測試注入 PlanetOrbsDefaultImpl 的實作 */
+  @Test
   public void testIsEffective_PlanetOrbsDefaultImpl()
   {
     AspectEffectiveClassical impl = new AspectEffectiveClassical();

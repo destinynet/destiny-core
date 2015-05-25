@@ -4,10 +4,13 @@
  */ 
 package destiny.utils.ColorCanvas;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class AlignUtilTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class AlignUtilTest
 {
+  @Test
   public void testAlignCenter()
   {
     int value;
@@ -39,7 +42,8 @@ public class AlignUtilTest extends TestCase
     value=12345;
     assertEquals("　 12345　 " , AlignUtil.alignCenter(value, 11));
   }
-  
+
+  @Test
   public void testAlignRight_1()
   {
     int value=1;
@@ -47,7 +51,8 @@ public class AlignUtilTest extends TestCase
     assertEquals("　 1" , AlignUtil.alignRight(value, 4));
     assertEquals("　　 1" , AlignUtil.alignRight(value, 6));
   }
-  
+
+  @Test
   public void testAlignRight_12()
   {
     int value=12;
@@ -55,7 +60,8 @@ public class AlignUtilTest extends TestCase
     assertEquals("　12" , AlignUtil.alignRight(value, 4));
     assertEquals("　　12" , AlignUtil.alignRight(value, 6));
   }
-  
+
+  @Test
   public void testAlignRight_0()
   {
     int value=0;

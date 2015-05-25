@@ -1,11 +1,14 @@
 /** 2009/10/21 上午12:05:46 by smallufo */
 package destiny.core.calendar.eightwords.fourwords;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class FourwordsCryptorTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class FourwordsCryptorTest
 {
 
+  @Test
   public void testGetEncodedString()
   {
     FourwordsCryptor c = new FourwordsCryptor("fourwords");
@@ -14,6 +17,7 @@ public class FourwordsCryptorTest extends TestCase
     assertEquals("v0vLe_x7oMg" , c.getEncodedString("3"));
   }
 
+  @Test
   public void testGetDecodedString()
   {
     FourwordsCryptor c = new FourwordsCryptor("fourwords");

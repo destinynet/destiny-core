@@ -5,17 +5,21 @@
  */
 package destiny.FengShui.SanYuan;
 
-import junit.framework.TestCase;
 import destiny.iching.Symbol;
+import org.junit.Test;
 
-public class AdquiredSombolCompassTest extends TestCase
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+public class AcquiredSymbolCompassTest
 {
-  public void testAdquiredSymbolCompass()
+  @Test
+  public void testAcquiredSymbolCompass()
   {
     AcquiredSymbolCompass asc = new AcquiredSymbolCompass();
 
-    assertEquals(337.5 , asc.getStartDegree(Symbol.坎));
-    assertEquals(22.5 , asc.getStartDegree(Symbol.艮));
+    assertEquals(337.5 , asc.getStartDegree(Symbol.坎) , 0);
+    assertEquals(22.5 , asc.getStartDegree(Symbol.艮) , 0);
 
     assertSame(Symbol.坎 , asc.getSymbol(0));
     assertSame(Symbol.艮 , asc.getSymbol(30));

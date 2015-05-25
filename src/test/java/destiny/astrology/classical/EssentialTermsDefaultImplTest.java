@@ -6,11 +6,14 @@ package destiny.astrology.classical;
 
 import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class EssentialTermsDefaultImplTest extends TestCase
+import static org.junit.Assert.assertTrue;
+
+public class EssentialTermsDefaultImplTest
 {
 
+  @Test
   public void testGetStarDouble()
   {
     EssentialTermsIF impl = new EssentialTermsDefaultImpl();
@@ -55,6 +58,7 @@ public class EssentialTermsDefaultImplTest extends TestCase
     assertTrue(impl.getTermsStar(-359) == Planet.JUPITER);
   }
 
+  @Test
   public void testGetStarZodiacSignDouble()
   {
     EssentialTermsIF impl = new EssentialTermsDefaultImpl();

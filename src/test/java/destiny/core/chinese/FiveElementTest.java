@@ -4,10 +4,13 @@
  */ 
 package destiny.core.chinese;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class FiveElementTest extends TestCase
+import static org.junit.Assert.*;
+
+public class FiveElementTest
 {
+  @Test
   public void testToString()
   {
     assertEquals(FiveElement.木.toString() , "木");
@@ -17,6 +20,7 @@ public class FiveElementTest extends TestCase
     assertEquals(FiveElement.水.toString() , "水");
   }
 
+  @Test
   public void testGetFiveElement()
   {
     assertEquals(FiveElement.木.getFiveElement() , FiveElement.木);
@@ -26,6 +30,7 @@ public class FiveElementTest extends TestCase
     assertEquals(FiveElement.水.getFiveElement() , FiveElement.水);
   }
 
+  @Test
   public void testSame()
   {
     assertSame(FiveElement.木.getFiveElement() , FiveElement.木);
@@ -33,9 +38,9 @@ public class FiveElementTest extends TestCase
     assertSame(FiveElement.土.getFiveElement() , FiveElement.土);
     assertSame(FiveElement.金.getFiveElement() , FiveElement.金);
     assertSame(FiveElement.水.getFiveElement() , FiveElement.水);
-
   }
 
+  @Test
   public void testGetProduct()
   {
     assertSame(FiveElement.木.getProduct() , FiveElement.火);
@@ -45,6 +50,7 @@ public class FiveElementTest extends TestCase
     assertSame(FiveElement.水.getProduct() , FiveElement.木);
   }
 
+  @Test
   public void testIsProducingTo()
   {
     assertTrue(FiveElement.木.isProducingTo(FiveElement.火));
@@ -54,6 +60,7 @@ public class FiveElementTest extends TestCase
     assertTrue(FiveElement.水.isProducingTo(FiveElement.木));
   }
 
+  @Test
   public void testGetProducer()
   {
     assertSame(FiveElement.木.getProducer() , FiveElement.水);
@@ -63,6 +70,7 @@ public class FiveElementTest extends TestCase
     assertSame(FiveElement.水.getProducer() , FiveElement.金);
   }
 
+  @Test
   public void testIsProducedBy()
   {
     assertTrue(FiveElement.木.isProducedBy(FiveElement.水));
@@ -72,6 +80,7 @@ public class FiveElementTest extends TestCase
     assertTrue(FiveElement.水.isProducedBy(FiveElement.金));
   }
 
+  @Test
   public void testGetDominateOver()
   {
     assertSame(FiveElement.木.getDominateOver() , FiveElement.土);
@@ -81,6 +90,7 @@ public class FiveElementTest extends TestCase
     assertSame(FiveElement.水.getDominateOver() , FiveElement.火);
   }
 
+  @Test
   public void testIsDominatorOf()
   {
     assertTrue(FiveElement.木.isDominatorOf(FiveElement.土));
@@ -90,6 +100,7 @@ public class FiveElementTest extends TestCase
     assertTrue(FiveElement.水.isDominatorOf(FiveElement.火));
   }
 
+  @Test
   public void testGetDominator()
   {
     assertSame(FiveElement.木.getDominator() , FiveElement.金);
@@ -99,6 +110,7 @@ public class FiveElementTest extends TestCase
     assertSame(FiveElement.水.getDominator() , FiveElement.土);
   }
 
+  @Test
   public void testIsBeatenBy()
   {
     assertTrue(FiveElement.木.isDominatedBy(FiveElement.金));

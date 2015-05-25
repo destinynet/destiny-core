@@ -5,13 +5,17 @@
 package destiny.iching;
 
 import destiny.core.chinese.FiveElement;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Arrays;
 
-public class SymbolTest extends TestCase
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+public class SymbolTest
 {
   /** 測試先天八卦排序 */
+  @Test
   public void testSortingCongenital()
   {
     Symbol[] s = new Symbol[] { Symbol.兌 , Symbol.艮 , Symbol.坎 , Symbol.乾 , Symbol.離 , Symbol.巽 , Symbol.坤 , Symbol.震 };
@@ -25,6 +29,7 @@ public class SymbolTest extends TestCase
   }
   
   /** 後天八卦排序 */
+  @Test
   public void testSortingAcquired()
   {
     Symbol[] s = new Symbol[] { Symbol.兌 , Symbol.艮 , Symbol.坎 , Symbol.乾 , Symbol.離 , Symbol.巽 , Symbol.坤 , Symbol.震 };
@@ -38,6 +43,7 @@ public class SymbolTest extends TestCase
   }
   
   /** 測試後天八卦順時針轉 */
+  @Test
   public void testSymbolAcquiredClockwise()
   {
     /* 後天 離卦 順時針下一卦為 坤 */
@@ -57,7 +63,8 @@ public class SymbolTest extends TestCase
     /* 後天 巽卦 順時針下一卦為 離 */
     assertSame(Symbol.離 , SymbolAcquired.getClockwiseSymbol(Symbol.巽) );
   }
-  
+
+  @Test
   public void testGetSymbol()
   {
     assertSame(Symbol.乾 , Symbol.getSymbol(new boolean[] {true  , true  , true }));
@@ -69,7 +76,8 @@ public class SymbolTest extends TestCase
     assertSame(Symbol.艮 , Symbol.getSymbol(new boolean[] {false , false , true }));
     assertSame(Symbol.坤 , Symbol.getSymbol(new boolean[] {false , false , false}));
   }
-  
+
+  @Test
   public void testGetFiveElement()
   {
     assertSame(FiveElement.金 , Symbol.乾.getFiveElement());

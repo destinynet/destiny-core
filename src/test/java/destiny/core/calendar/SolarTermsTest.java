@@ -5,12 +5,16 @@
  */
 package destiny.core.calendar;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 
-public class SolarTermsTest extends TestCase
+public class SolarTermsTest
 {
 
+  @Test
   public void testGetIndex()
   {
     assertEquals( 0 , SolarTerms.getIndex(SolarTerms.立春));
@@ -40,6 +44,7 @@ public class SolarTermsTest extends TestCase
     
   }
 
+  @Test
   public void testNext()
   {
     assertSame(SolarTerms.雨水 , SolarTerms.立春.next());
@@ -68,7 +73,8 @@ public class SolarTermsTest extends TestCase
     assertSame(SolarTerms.立春 , SolarTerms.大寒.next());
   }
 
-  
+
+  @Test
   public void testPrevious()
   {
     assertSame(SolarTerms.大寒 , SolarTerms.立春.previous());
@@ -96,7 +102,8 @@ public class SolarTermsTest extends TestCase
     assertSame(SolarTerms.冬至 , SolarTerms.小寒.previous());
     assertSame(SolarTerms.小寒 , SolarTerms.大寒.previous());
   }
-  
+
+  @Test
   public void testGet()
   {
     assertSame(SolarTerms.立春 , SolarTerms.get(-24));
