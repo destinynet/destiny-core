@@ -5,8 +5,8 @@ package destiny.core.chinese;
 
 import org.junit.Test;
 
-import static destiny.core.chinese.EarthlyBranches.*;
-import static destiny.core.chinese.HeavenlyStems.*;
+import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.Stem.*;
 import static org.junit.Assert.assertSame;
 
 public class StemBranchUtilsTest {

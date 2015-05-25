@@ -9,8 +9,8 @@ import destiny.astrology.Planet;
 import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
 import destiny.core.calendar.*;
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +42,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
 
   /** 存放『年干』 */
   @Nullable
-  private HeavenlyStems 年干;
+  private Stem 年干;
   
   public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl)
   {
@@ -143,7 +143,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
   @NotNull
   public StemBranch getMonth(@NotNull Time lmt, @NotNull Location location)
   {
-    EarthlyBranches result月支 ;
+    Branch result月支 ;
     //先算出太陽在黃經上的度數
     Time gmt = Time.getGMTfromLMT(lmt, location);
     
@@ -155,7 +155,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     int MonthIndex = (SolarTerms.getIndex(MonthST)/2)+2 ;
     if (MonthIndex >= 12)
       MonthIndex = MonthIndex - 12;
-    EarthlyBranches 月支 = EarthlyBranches.getEarthlyBranches(MonthIndex);
+    Branch 月支 = Branch.getEarthlyBranches(MonthIndex);
     if (southernHemisphereOpposition)
     {
       /*
@@ -164,7 +164,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       if (hemisphereBy == HemisphereBy.EQUATOR ) //如果是依據赤道來區分南北半球
       {
         if (!location.isNorth())
-          result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6);
+          result月支 = Branch.getEarthlyBranches(MonthIndex + 6);
         else
           result月支 = 月支;
       }
@@ -185,12 +185,12 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
             if (location.getLatitude() >= solarEquatorialDegree)
               result月支 = 月支;
             else
-              result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6); //所在地緯度低於 太陽赤緯，取對沖月份
+              result月支 = Branch.getEarthlyBranches(MonthIndex + 6); //所在地緯度低於 太陽赤緯，取對沖月份
           }
           else
           {
             //地點在南半球 , 取正沖
-            result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6);
+            result月支 = Branch.getEarthlyBranches(MonthIndex + 6);
           }
         }
         else
@@ -200,7 +200,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
           {
             //地點在南半球
             if (location.getLatitude() <= solarEquatorialDegree)
-              result月支 = EarthlyBranches.getEarthlyBranches(MonthIndex+6); //所在地緯度高於 太陽赤南緯，真正的南半球
+              result月支 = Branch.getEarthlyBranches(MonthIndex + 6); //所在地緯度高於 太陽赤南緯，真正的南半球
             else
               result月支 = 月支; //雖在南半球，但緯度低於太陽赤南緯，視為北半球
           }
@@ -273,20 +273,20 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
    * @param lmt
    * @param 月支
    */
-  private HeavenlyStems getMonthStem(@NotNull Time lmt , @NotNull Location location , @NotNull EarthlyBranches 月支)
+  private Stem getMonthStem(@NotNull Time lmt , @NotNull Location location , @NotNull Branch 月支)
   {
-    HeavenlyStems 月干;
+    Stem 月干;
 
     if (年干 == null)
       this.getYear(lmt , location);  //如果年干還沒算，則強迫去算一次 年干支，其結果會儲存在 this.年干 內
     
     switch(年干)
     {
-      case 甲 : case 己 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)   ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+2 ) ) ; break;  
-      case 乙 : case 庚 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+2 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+4 ) ) ; break;
-      case 丙 : case 辛 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+4 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+6 ) ) ; break;
-      case 丁 : case 壬 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+6 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+8 ) ) ; break;
-      case 戊 : case 癸 : 月干 = 月支.getIndex() >=2 ? (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+8 ) ) : (HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(月支)+10) ) ; break;
+      case 甲 : case 己 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支)) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 2) ) ; break;
+      case 乙 : case 庚 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 2) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 4) ) ; break;
+      case 丙 : case 辛 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 4) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 6) ) ; break;
+      case 丁 : case 壬 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 6) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 8) ) ; break;
+      case 戊 : case 癸 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 8) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 10) ) ; break;
       default : throw new RuntimeException("impossible");
     }
     
@@ -307,7 +307,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree)
         {
           // t <---立春---- LMT -----換年點
-          月干 = HeavenlyStems.getHeavenlyStems(月干.getIndex() - 2);
+          月干 = Stem.getHeavenlyStems(月干.getIndex() - 2);
         }
       }
       else if (changeYearDegree > 315)
@@ -315,7 +315,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         //換年點在立春後 , 還沒測試
         double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt ).getLongitude();
         if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
-          月干 = HeavenlyStems.getHeavenlyStems(月干.getIndex() + 2);
+          月干 = Stem.getHeavenlyStems(月干.getIndex() + 2);
       }
     }      
     return 月干;

@@ -7,7 +7,7 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,32 +20,32 @@ import java.util.Locale;
 public class HourLmtImpl implements HourIF , Serializable
 {
   @NotNull
-  public EarthlyBranches getHour(@Nullable Time lmt, @Nullable Location location)
+  public Branch getHour(@Nullable Time lmt, @Nullable Location location)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt and location cannot be null !");
     
     switch (lmt.getHour())
     {
-      case 23 : case  0 : return EarthlyBranches.子; 
-      case  1 : case  2 : return EarthlyBranches.丑;
-      case  3 : case  4 : return EarthlyBranches.寅;
-      case  5 : case  6 : return EarthlyBranches.卯;
-      case  7 : case  8 : return EarthlyBranches.辰;
-      case  9 : case 10 : return EarthlyBranches.巳;
-      case 11 : case 12 : return EarthlyBranches.午;
-      case 13 : case 14 : return EarthlyBranches.未;
-      case 15 : case 16 : return EarthlyBranches.申;
-      case 17 : case 18 : return EarthlyBranches.酉;
-      case 19 : case 20 : return EarthlyBranches.戌;
-      case 21 : case 22 : return EarthlyBranches.亥;
+      case 23 : case  0 : return Branch.子;
+      case  1 : case  2 : return Branch.丑;
+      case  3 : case  4 : return Branch.寅;
+      case  5 : case  6 : return Branch.卯;
+      case  7 : case  8 : return Branch.辰;
+      case  9 : case 10 : return Branch.巳;
+      case 11 : case 12 : return Branch.午;
+      case 13 : case 14 : return Branch.未;
+      case 15 : case 16 : return Branch.申;
+      case 17 : case 18 : return Branch.酉;
+      case 19 : case 20 : return Branch.戌;
+      case 21 : case 22 : return Branch.亥;
     }
     throw new RuntimeException("HourPureClockImpl : Cannot find EarthlyBeanches for this LMT : " + lmt.toString());
   }
 
   
   @NotNull
-  public Time getLmtNextStartOf(@Nullable Time lmt, @Nullable Location location, @Nullable EarthlyBranches eb)
+  public Time getLmtNextStartOf(@Nullable Time lmt, @Nullable Location location, @Nullable Branch eb)
   {
     if (lmt == null || location == null || eb == null)
       throw new RuntimeException("lmt and location and eb cannot be null !");

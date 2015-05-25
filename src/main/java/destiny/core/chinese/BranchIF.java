@@ -4,7 +4,7 @@
  */ 
 package destiny.core.chinese;
 
-interface EarthlyBranchesIF
+interface BranchIF
 {
   int getIndex();
 }

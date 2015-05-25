@@ -9,7 +9,7 @@ import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.calendar.eightwords.personal.*;
 import destiny.core.chart.Constants;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import destiny.font.FontRepository;
 
@@ -228,7 +228,7 @@ public class PersonFullGraphics {
 
     // 天干十神
     g.setColor(Color.LIGHT_GRAY);
-    HeavenlyStems dayStem = eightWords.getDay().getStem();
+    Stem dayStem = eightWords.getDay().getStem();
 
     StemBranch stemBranch = fortuneData.getStemBranch();
 
@@ -246,21 +246,21 @@ public class PersonFullGraphics {
     java.util.List<Reactions> reactions = reactionsUtil.getReactions(stemBranch.getBranch() , dayStem);
     if (reactions.size() >= 1 ) {
       Reactions eachReaction = reactions.get(0);
-      HeavenlyStems hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem, eachReaction); // 地支藏干
+      Stem hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem, eachReaction); // 地支藏干
       g.drawString(hiddenStem.toString() , padding + fontSize   , fontSize*6);
       g.drawString(eachReaction.toString().substring(0 , 1) , padding + fontSize , fontSize * 7);
       g.drawString(eachReaction.toString().substring(1 , 2) , padding + fontSize , fontSize * 8);
     }
     if (reactions.size() >= 2 ) {
       Reactions eachReaction = reactions.get(1);
-      HeavenlyStems hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem,eachReaction); // 地支藏干
+      Stem hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem,eachReaction); // 地支藏干
       g.drawString(hiddenStem.toString() , padding + fontSize*2   , fontSize*6);
       g.drawString(eachReaction.toString().substring(0 , 1) , padding + fontSize*2 , fontSize * 7);
       g.drawString(eachReaction.toString().substring(1 , 2) , padding + fontSize*2 , fontSize * 8);
     }
     if (reactions.size() == 3 ) {
       Reactions eachReaction = reactions.get(2);
-      HeavenlyStems hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem, eachReaction); // 地支藏干
+      Stem hiddenStem = ReactionsUtil.getHeavenlyStems(dayStem, eachReaction); // 地支藏干
       g.drawString(hiddenStem.toString() , padding    , fontSize*6);
       g.drawString(eachReaction.toString().substring(0, 1) , padding , fontSize * 7);
       g.drawString(eachReaction.toString().substring(1 , 2) , padding , fontSize * 8);

@@ -3,20 +3,20 @@
  */
 package destiny.core.chinese.onePalm;
 
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 
 /** 由地支，取得解釋 */
 public interface BranchDescIF {
 
   /** 取得某宮位的簡介 */
-  String getHouseIntro(EarthlyBranches house);
+  String getHouseIntro(Branch house);
 
   /** 取得某柱（座落於某宮）的解釋 */
-  String getContent(Palm.Pillar pillar , EarthlyBranches house);
+  String getContent(Palm.Pillar pillar , Branch house);
 
   /** 取得「時柱」的詩詞 */
-  String getPoem(EarthlyBranches hourBranch);
+  String getPoem(Branch hourBranch);
 
   /** 取得「時柱」的解釋 */
-  String getContent(EarthlyBranches hourBranch);
+  String getContent(Branch hourBranch);
 }

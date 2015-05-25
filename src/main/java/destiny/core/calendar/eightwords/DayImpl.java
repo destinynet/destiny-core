@@ -7,7 +7,7 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class DayImpl implements DayIF , Serializable
     
     
     Time nextMidnight = midnightImpl.getNextMidnight(lmt , location);
-    Time 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , EarthlyBranches.子);
+    Time 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
     
     if (nextMidnight.getHour() >=12 )
     {
@@ -41,7 +41,7 @@ public class DayImpl implements DayIF , Serializable
       if (nextMidnight.getDay()==lmt.getDay())
       {
         // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-        Time midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnight , location , EarthlyBranches.子);
+        Time midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnight , location , Branch.子);
         if (changeDayAfterZi && 下個子初時刻.getDay() == midnightNextZi.getDay())
           index++;
       } 

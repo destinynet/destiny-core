@@ -10,7 +10,7 @@ import destiny.astrology.RiseTransIF;
 import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +57,7 @@ public class HourSolarTransImpl implements HourIF , Serializable
 
   @NotNull
   @Override
-  public EarthlyBranches getHour(@Nullable Time lmt, @Nullable Location location)
+  public Branch getHour(@Nullable Time lmt, @Nullable Location location)
   {
     if (lmt == null || location == null)
       throw new RuntimeException("lmt and location cannot be null !");
@@ -78,19 +78,19 @@ public class HourSolarTransImpl implements HourIF , Serializable
       double diffSeconds = (nextMeridian.diffSeconds(previousNadir)); //從子正到午正，總共幾秒
       double oneUnitSeconds = diffSeconds/12;
       if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds)))
-        return EarthlyBranches.子;
+        return Branch.子;
       else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*3)))
-        return EarthlyBranches.丑;
+        return Branch.丑;
       else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*5)))
-        return EarthlyBranches.寅;
+        return Branch.寅;
       else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*7)))
-        return EarthlyBranches.卯;
+        return Branch.卯;
       else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*9)))
-        return EarthlyBranches.辰;
+        return Branch.辰;
       else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*11)))
-        return EarthlyBranches.巳;
+        return Branch.巳;
       else
-        return EarthlyBranches.午;
+        return Branch.午;
         
     }
     else
@@ -102,25 +102,25 @@ public class HourSolarTransImpl implements HourIF , Serializable
       double diffSeconds = (nextNadir.diffSeconds(previousMeridian));
       double oneUnitSeconds = diffSeconds/12;
       if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds)))
-        return EarthlyBranches.午;
+        return Branch.午;
       else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*3)))
-        return EarthlyBranches.未;
+        return Branch.未;
       else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*5)))
-        return EarthlyBranches.申;
+        return Branch.申;
       else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*7)))
-        return EarthlyBranches.酉;
+        return Branch.酉;
       else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*9)))
-        return EarthlyBranches.戌;
+        return Branch.戌;
       else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*11)))
-        return EarthlyBranches.亥;
+        return Branch.亥;
       else
-        return EarthlyBranches.子;
+        return Branch.子;
     }    
   }
 
   @NotNull
   @Override
-  public Time getLmtNextStartOf(@NotNull Time lmt, @NotNull Location location, @NotNull EarthlyBranches targetEb)
+  public Time getLmtNextStartOf(@NotNull Time lmt, @NotNull Location location, @NotNull Branch targetEb)
   {
     Time resultGmt = null;
     Time gmt = Time.getGMTfromLMT(lmt, location);
@@ -136,13 +136,13 @@ public class HourSolarTransImpl implements HourIF , Serializable
       double diffSeconds2 = nextNadir.diffSeconds(nextMeridian); //從午正到下一個子正，總共幾秒
       double oneUnit2 = diffSeconds2 / 12;
       
-      EarthlyBranches currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
-      if (targetEb.getIndex() > currentEb.getIndex() || targetEb == EarthlyBranches.子)
+      Branch currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
+      if (targetEb.getIndex() > currentEb.getIndex() || targetEb == Branch.子)
       {
         //代表現在所處的時辰，未超過欲求的時辰 
-        if (targetEb == EarthlyBranches.丑 || targetEb == EarthlyBranches.寅 || targetEb == EarthlyBranches.卯 || targetEb == EarthlyBranches.辰 || targetEb == EarthlyBranches.巳 ||targetEb == EarthlyBranches.午 )
+        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
           resultGmt = new Time(previousNadir , oneUnit1 * ((targetEb.getIndex()-1)*2+1) );
-        else if (targetEb == EarthlyBranches.未 || targetEb == EarthlyBranches.申 || targetEb == EarthlyBranches.酉 || targetEb == EarthlyBranches.戌 || targetEb == EarthlyBranches.亥 )
+        else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
           resultGmt = new Time(nextMeridian , oneUnit2 * ((targetEb.getIndex()-7)*2+1)  );
         else
           resultGmt = new Time(nextMeridian , oneUnit2 * 11); // eb ==子時
@@ -156,9 +156,9 @@ public class HourSolarTransImpl implements HourIF , Serializable
         Time nextNextNadir = riseTransImpl.getGmtTransTime(nextNextMeridian , Planet.SUN , TransPoint.NADIR ,location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
         double diffSeconds4 = nextNextNadir.diffSeconds(nextNextMeridian);
         double oneUnit4 = diffSeconds4 / 12;
-        if (targetEb == EarthlyBranches.丑 || targetEb == EarthlyBranches.寅 || targetEb == EarthlyBranches.卯 || targetEb == EarthlyBranches.辰 || targetEb == EarthlyBranches.巳 ||targetEb == EarthlyBranches.午 )
+        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
           resultGmt = new Time(nextNadir , oneUnit3 * ((targetEb.getIndex()-1)*2+1) );
-        else if (targetEb == EarthlyBranches.未 || targetEb == EarthlyBranches.申 || targetEb == EarthlyBranches.酉 || targetEb == EarthlyBranches.戌 || targetEb == EarthlyBranches.亥 )
+        else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
           resultGmt = new Time(nextNextMeridian , oneUnit4 * ((targetEb.getIndex()-7)*2+1) );
         else
           throw new RuntimeException("Runtime Exception : 沒有子時的情況"); //沒有子時的情況
@@ -176,15 +176,15 @@ public class HourSolarTransImpl implements HourIF , Serializable
       double diffSeconds2 = nextNadir.diffSeconds(previousMeridian); //從 下一個子正 到 上一個午正，總共幾秒
       double oneUnit2 = diffSeconds2 / 12;
       
-      EarthlyBranches currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
+      Branch currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
 
       if( (currentEb.getIndex() >=6 && currentEb.getIndex() <= 11) &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
-          ((targetEb.getIndex() >=6 && targetEb.getIndex() > currentEb.getIndex()) ||  targetEb ==EarthlyBranches.子) //而且現在所處的時辰，未超過欲求的時辰 
+          ((targetEb.getIndex() >=6 && targetEb.getIndex() > currentEb.getIndex()) ||  targetEb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
         )
       {
-          if (targetEb == EarthlyBranches.未 || targetEb == EarthlyBranches.申 || targetEb == EarthlyBranches.酉 || targetEb == EarthlyBranches.戌 || targetEb == EarthlyBranches.亥 )
+          if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
             resultGmt = new Time(previousMeridian , oneUnit2 * ((targetEb.getIndex()-7)*2 +1 ) );
-          else if (targetEb == EarthlyBranches.丑 || targetEb == EarthlyBranches.寅 || targetEb == EarthlyBranches.卯 || targetEb == EarthlyBranches.辰 || targetEb == EarthlyBranches.巳 ||targetEb == EarthlyBranches.午 )
+          else if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
             resultGmt = new Time(nextNadir , oneUnit1 * ((targetEb.getIndex()-1)*2+1));
           else
             resultGmt = new Time(previousMeridian , oneUnit2 * 11); //晚子時之始
@@ -197,9 +197,9 @@ public class HourSolarTransImpl implements HourIF , Serializable
         Time nextNextNadir = riseTransImpl.getGmtTransTime(nextMeridian , Planet.SUN , TransPoint.NADIR ,location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
         double diffSeconds4 = nextNextNadir.diffSeconds(nextMeridian);
         double oneUnit4 = diffSeconds4 / 12;
-        if (targetEb == EarthlyBranches.未 || targetEb == EarthlyBranches.申 || targetEb == EarthlyBranches.酉 || targetEb == EarthlyBranches.戌 || targetEb == EarthlyBranches.亥 )
+        if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
           resultGmt = new Time(nextMeridian , oneUnit4 * ((targetEb.getIndex()-7)*2+1));
-        else if (targetEb == EarthlyBranches.子) 
+        else if (targetEb == Branch.子)
           resultGmt = new Time(nextMeridian , oneUnit4 * 11);
         else //丑寅卯辰巳午
           resultGmt = new Time(nextNadir , oneUnit3 * ((targetEb.getIndex()-1)*2+1) );        

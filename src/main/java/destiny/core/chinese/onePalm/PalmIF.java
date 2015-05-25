@@ -14,7 +14,7 @@ import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,7 +25,7 @@ import java.util.TreeMap;
 public interface PalmIF {
 
   /** 本命盤 */
-  default Palm getPalm(Gender gender, EarthlyBranches yearBranch, boolean leap, int month, int day, EarthlyBranches hourBranch ,
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int month, int day, Branch hourBranch ,
                        PositiveIF positiveImpl) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
@@ -34,20 +34,20 @@ public interface PalmIF {
       realMonth++;
 
     // 年上起月
-    EarthlyBranches monthBranch = yearBranch.next((realMonth-1)*positive);
+    Branch monthBranch = yearBranch.next((realMonth-1)*positive);
 
     // 月上起日
-    EarthlyBranches dayBranch = monthBranch.next((day-1)* positive);
+    Branch dayBranch = monthBranch.next((day-1)* positive);
 
     // 日上起時
-    EarthlyBranches hour = dayBranch.next((hourBranch.getIndex())* positive);
+    Branch hour = dayBranch.next((hourBranch.getIndex())* positive);
 
     // 命宮
-    int gap = EarthlyBranches.卯.getIndex() - hourBranch.getIndex();
+    int gap = Branch.卯.getIndex() - hourBranch.getIndex();
     if (gap < 0)
       gap = gap + 12;
-    EarthlyBranches risingBranch = hour.next(gap * positive);
-    BiMap<EarthlyBranches , Palm.House> houseMap = HashBiMap.create(12);
+    Branch risingBranch = hour.next(gap * positive);
+    BiMap<Branch, Palm.House> houseMap = HashBiMap.create(12);
     for(int i=0 ; i<12 ; i++) {
       houseMap.put(risingBranch.next(i), Palm.House.values()[i]);
     }
@@ -70,7 +70,7 @@ public interface PalmIF {
   default PalmWithMeta getPalm(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl , ChineseDateIF chineseDateImpl ,
                        DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl , boolean changeDayAfterZi) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
-    EarthlyBranches hourBranch = hourImpl.getHour(lmt , loc);
+    Branch hourBranch = hourImpl.getHour(lmt , loc);
     ChineseDateHour chineseDateHour = new ChineseDateHour(cDate , hourBranch);
     Palm palm = getPalm(gender , chineseDateHour , positiveImpl);
 
@@ -87,13 +87,13 @@ public interface PalmIF {
    * Map 的 key 為「運的開始」: 1 , 11 , 21 , 31 ...
    * @param count : 要算多少組大運
    * */
-  default Map<Integer , EarthlyBranches> getMajorFortunes(Gender gender , EarthlyBranches yearBranch , int month , int count) {
+  default Map<Integer , Branch> getMajorFortunes(Gender gender , Branch yearBranch , int month , int count) {
     int positive = (gender==Gender.男 ? 1 : -1) ;
 
     // 年上起月
-    EarthlyBranches monthBranch = yearBranch.next((month - 1) * positive);
+    Branch monthBranch = yearBranch.next((month - 1) * positive);
 
-    Map<Integer , EarthlyBranches> map = new TreeMap<>();
+    Map<Integer , Branch> map = new TreeMap<>();
 
     for(int i = 1 ; i <= count ; i++) {
       map.put((i-1)* 10 + 1 , monthBranch.next((i-1)*positive));

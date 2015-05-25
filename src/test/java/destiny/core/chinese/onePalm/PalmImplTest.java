@@ -4,13 +4,13 @@
 package destiny.core.chinese.onePalm;
 
 import destiny.core.Gender;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Map;
 
-import static destiny.core.chinese.EarthlyBranches.*;
+import static destiny.core.chinese.Branch.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -47,7 +47,7 @@ public class PalmImplTest {
     assertSame(辰 , palm.getBranch(Palm.Pillar.日));
     assertSame(戌 , palm.getBranch(Palm.Pillar.時));
 
-    Map<EarthlyBranches , Collection<Palm.Pillar>> map = palm.getNonEmptyPillars();
+    Map<Branch, Collection<Palm.Pillar>> map = palm.getNonEmptyPillars();
     assertSame(1 , map.get(戌).size());
     assertSame(1 , map.get(辰).size());
     assertSame(2 , map.get(巳).size());
@@ -78,7 +78,7 @@ public class PalmImplTest {
    */
   @Test
   public void testGetMajorFortunes_Male() {
-    Map<Integer, EarthlyBranches> map = impl.getPalm(Gender.男, 子, false, 3, 8, 辰, defaultImpl).getMajorFortunes(10);
+    Map<Integer, Branch> map = impl.getPalm(Gender.男, 子, false, 3, 8, 辰, defaultImpl).getMajorFortunes(10);
     assertEquals(寅, map.get(1));
     assertEquals(卯, map.get(11));
     assertEquals(辰, map.get(21));
@@ -90,7 +90,7 @@ public class PalmImplTest {
    */
   @Test
   public void testGetMajorFortunes_Female() {
-    Map<Integer, EarthlyBranches> map = impl.getPalm(Gender.女, 子, false, 3, 8, 辰, defaultImpl).getMajorFortunes(10);
+    Map<Integer, Branch> map = impl.getPalm(Gender.女, 子, false, 3, 8, 辰, defaultImpl).getMajorFortunes(10);
     assertEquals(戌, map.get(1));
     assertEquals(酉, map.get(11));
     assertEquals(申, map.get(21));

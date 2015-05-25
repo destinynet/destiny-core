@@ -5,9 +5,9 @@ package destiny.core.chinese.onePalm;
 
 import destiny.core.Descriptive;
 import destiny.core.Gender;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 
 public interface PositiveIF extends Descriptive {
 
-  boolean isPositive(Gender gender, EarthlyBranches yearBranch);
+  boolean isPositive(Gender gender, Branch yearBranch);
 }

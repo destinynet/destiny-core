@@ -3,8 +3,8 @@
  */
 package destiny.core.calendar.eightwords;
 
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranchNullable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,22 +68,22 @@ public class EightWordsNullable implements Serializable {
   }
 
   @Nullable
-  public HeavenlyStems getYearStem()  { return year.getStemOptional().orElse(null);  }
+  public Stem getYearStem()  { return year.getStemOptional().orElse(null);  }
   @Nullable
-  public HeavenlyStems getMonthStem() { return month.getStemOptional().orElse(null); }
+  public Stem getMonthStem() { return month.getStemOptional().orElse(null); }
   @Nullable
-  public HeavenlyStems getDayStem()   { return day.getStemOptional().orElse(null);  }
+  public Stem getDayStem()   { return day.getStemOptional().orElse(null);  }
   @Nullable
-  public HeavenlyStems getHourStem()  { return hour.getStemOptional().orElse(null);  }
+  public Stem getHourStem()  { return hour.getStemOptional().orElse(null);  }
 
   @Nullable
-  public EarthlyBranches getYearBranch()  { return year.getBranchOptional().orElse(null);  }
+  public Branch getYearBranch()  { return year.getBranchOptional().orElse(null);  }
   @Nullable
-  public EarthlyBranches getMonthBranch() { return month.getBranchOptional().orElse(null); }
+  public Branch getMonthBranch() { return month.getBranchOptional().orElse(null); }
   @Nullable
-  public EarthlyBranches getDayBranch()   { return day.getBranchOptional().orElse(null);   }
+  public Branch getDayBranch()   { return day.getBranchOptional().orElse(null);   }
   @Nullable
-  public EarthlyBranches getHourBranch()  { return hour.getBranchOptional().orElse(null); }
+  public Branch getHourBranch()  { return hour.getBranchOptional().orElse(null); }
 
   /** 取得四柱 */
   @NotNull

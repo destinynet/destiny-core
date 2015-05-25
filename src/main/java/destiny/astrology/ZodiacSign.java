@@ -6,7 +6,7 @@ package destiny.astrology;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import destiny.core.chinese.YinYangIF;
 import destiny.utils.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static destiny.core.chinese.EarthlyBranches.*;
+import static destiny.core.chinese.Branch.*;
 
 /** 黃道十二宮 */
 public enum ZodiacSign implements LocaleStringIF , YinYangIF
@@ -61,7 +61,7 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF
   /** 黃道起始度數 */
   private int degree;
 
-  private static BiMap<ZodiacSign , EarthlyBranches> map = new ImmutableBiMap.Builder<ZodiacSign , EarthlyBranches>()
+  private static BiMap<ZodiacSign , Branch> map = new ImmutableBiMap.Builder<ZodiacSign , Branch>()
       .put(ARIES , 戌)
       .put(TAURUS , 酉)
       .put(GEMINI , 申)
@@ -167,14 +167,14 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF
   /**
    * @return 取得星座的地支名稱 (牡羊 : 戌)
    */
-  public EarthlyBranches getBranch() {
+  public Branch getBranch() {
     return map.get(this);
   }
 
   /**
    * 從地支，找星座
    */
-  public static ZodiacSign getZodiacSign(EarthlyBranches branch) {
+  public static ZodiacSign getZodiacSign(Branch branch) {
     return map.inverse().get(branch);
   }
 

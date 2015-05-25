@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * 地支系統
  * */
-public enum EarthlyBranches implements EarthlyBranchesIF
+public enum Branch implements BranchIF
 {
   子('子'),
   丑('丑'),
@@ -27,10 +27,10 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   
   private char name;
   
-  private final static EarthlyBranches[] EarthlyBranchesArray =
-    new EarthlyBranches[] { 子 , 丑 , 寅 , 卯 , 辰 , 巳 , 午 , 未 , 申 , 酉 , 戌 , 亥};
+  private final static Branch[] BRANCH_ARRAY =
+    new Branch[] { 子 , 丑 , 寅 , 卯 , 辰 , 巳 , 午 , 未 , 申 , 酉 , 戌 , 亥};
   
-  EarthlyBranches(char c)
+  Branch(char c)
   {
     this.name = c;
   }
@@ -45,7 +45,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
    * @param index
    * @return
    */
-  public static EarthlyBranches getEarthlyBranches(int index)
+  public static Branch getEarthlyBranches(int index)
   {
     /**
      * 如果 index < 0  , 則 加 12 , recursive 再傳一次<BR>
@@ -55,14 +55,14 @@ public enum EarthlyBranches implements EarthlyBranchesIF
       return getEarthlyBranches(index+12);
     else if (index >=12)
       return getEarthlyBranches(index-12);
-    return EarthlyBranchesArray[index];
+    return BRANCH_ARRAY[index];
   }
 
   /**
    * 取得下 n 個地支為何
    * n = 0 : 傳回自己
    */
-  public EarthlyBranches next(int n) {
+  public Branch next(int n) {
     return getEarthlyBranches(getIndex(this) + n);
   }
 
@@ -70,17 +70,17 @@ public enum EarthlyBranches implements EarthlyBranchesIF
    * 取得前 n 個地支為何
    * n = 0 : 傳回自己
    */
-  public EarthlyBranches prev(int n) {
+  public Branch prev(int n) {
     return next(0-n);
   }
 
   
-  public static Optional<EarthlyBranches> getEarthlyBranches(char c)
+  public static Optional<Branch> getEarthlyBranches(char c)
   {
-    EarthlyBranches result = null;
-    for (EarthlyBranches aEarthlyBranchesArray : EarthlyBranchesArray) {
-      if (aEarthlyBranchesArray.name == c) {
-        result = aEarthlyBranchesArray;
+    Branch result = null;
+    for (Branch aBranchArray : BRANCH_ARRAY) {
+      if (aBranchArray.name == c) {
+        result = aBranchArray;
         break;
       }
     }
@@ -91,13 +91,13 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   }
   
   /** 取得對沖 的地支 */
-  public EarthlyBranches getOpposite()
+  public Branch getOpposite()
   {
-    return EarthlyBranches.getEarthlyBranches(getIndex()+6);
+    return Branch.getEarthlyBranches(getIndex() + 6);
   }
 
   /** 取得 六合 的地支 */
-  public EarthlyBranches getCombined() {
+  public Branch getCombined() {
     switch (this) {
       case 子 : return 丑;
       case 丑 : return 子;
@@ -119,12 +119,12 @@ public enum EarthlyBranches implements EarthlyBranchesIF
   /**
    * 子[0] ~ 亥[11]
    */
-  public static int getIndex(@NotNull EarthlyBranches eb)
+  public static int getIndex(@NotNull Branch eb)
   {
     int index = -1;
-    for (int i=0 ; i < EarthlyBranchesArray.length ; i++)
+    for (int i=0 ; i < BRANCH_ARRAY.length ; i++)
     {
-      if ( eb.equals(EarthlyBranchesArray[i]) )
+      if ( eb.equals(BRANCH_ARRAY[i]) )
         index = i;
     }
     return index;
@@ -137,7 +137,20 @@ public enum EarthlyBranches implements EarthlyBranchesIF
     return getIndex(this);
   }
 
-
+  /**
+   * 此地支「領先」另一個地支多少距離
+   * 子領先子 0
+   * 子領先丑 11
+   * ...
+   * 子領先亥 1
+   * */
+  public int getAheadOf(Branch other) {
+    int steps = getIndex() - other.getIndex();
+    if (steps >= 0)
+      return steps;
+    else
+      return steps+12;
+  }
 
   
   /**
@@ -163,7 +176,7 @@ public enum EarthlyBranches implements EarthlyBranchesIF
     return String.valueOf(name);
   }
 
-  public static Iterable<EarthlyBranches> iterable() {
-    return Arrays.asList(EarthlyBranchesArray);
+  public static Iterable<Branch> iterable() {
+    return Arrays.asList(BRANCH_ARRAY);
   }
 }

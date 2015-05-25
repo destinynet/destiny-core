@@ -4,8 +4,8 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import destiny.core.chinese.StemBranchUtils;
 import org.jetbrains.annotations.NotNull;
@@ -72,13 +72,13 @@ public class EightWordsContext implements EightWordsIF , Serializable
     StemBranch month = yearMonthImpl.getMonth(lmt, location);
 
     StemBranch day =dayImpl.getDay(lmt, location, midnightImpl, hourImpl, changeDayAfterZi);
-    HeavenlyStems 臨時日干 = day.getStem();
+    Stem 臨時日干 = day.getStem();
 
-    EarthlyBranches 時支 = this.hourImpl.getHour(lmt, location);
+    Branch 時支 = this.hourImpl.getHour(lmt, location);
 
-    HeavenlyStems 時干;
+    Stem 時干;
 
-    Time nextZi = hourImpl.getLmtNextStartOf(lmt, location, EarthlyBranches.子);
+    Time nextZi = hourImpl.getLmtNextStartOf(lmt, location, Branch.子);
 
     /** 如果「子正」才換日 */
     if (!changeDayAfterZi)
@@ -93,29 +93,29 @@ public class EightWordsContext implements EightWordsIF , Serializable
        * </pre>
        */
       if (day != dayImpl.getDay(nextZi, location, midnightImpl, hourImpl, changeDayAfterZi))
-        臨時日干 = HeavenlyStems.getHeavenlyStems(臨時日干.getIndex() + 1);
+        臨時日干 = Stem.getHeavenlyStems(臨時日干.getIndex() + 1);
 
-    switch (HeavenlyStems.getIndex(臨時日干))
+    switch (Stem.getIndex(臨時日干))
     {
       case 0:
       case 5:
-        時干 = HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(時支));
+        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支));
         break;
       case 1:
       case 6:
-        時干 = HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(時支) + 2);
+        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 2);
         break;
       case 2:
       case 7:
-        時干 = HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(時支) + 4);
+        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 4);
         break;
       case 3:
       case 8:
-        時干 = HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(時支) + 6);
+        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 6);
         break;
       case 4:
       case 9:
-        時干 = HeavenlyStems.getHeavenlyStems(EarthlyBranches.getIndex(時支) + 8);
+        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 8);
         break;
       default:
         throw new AssertionError("Error");
@@ -196,9 +196,9 @@ public class EightWordsContext implements EightWordsIF , Serializable
   public StemBranch getRisingStemBranch(Time lmt , Location location) {
     EightWords ew = getEightWords(lmt , location);
     // 命宮地支
-    EarthlyBranches risingBranch = risingSignImpl.getRisingSign(lmt , location).getBranch();
+    Branch risingBranch = risingSignImpl.getRisingSign(lmt , location).getBranch();
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-    HeavenlyStems risingStem = StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch);
+    Stem risingStem = StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch);
     // 組合成干支
     return StemBranch.get(risingStem, risingBranch);
   }

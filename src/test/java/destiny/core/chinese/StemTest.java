@@ -9,12 +9,38 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static destiny.core.chinese.HeavenlyStems.*;
+import static destiny.core.chinese.Stem.*;
 import static org.junit.Assert.*;
 
 
-public class HeavenlyStemsTest
+public class StemTest
 {
+  @Test
+  public void testGetAheadOf() {
+    assertSame(0 , 甲.getAheadOf(甲));
+    assertSame(1 , 甲.getAheadOf(癸));
+    assertSame(2 , 甲.getAheadOf(壬));
+    assertSame(3 , 甲.getAheadOf(辛));
+    assertSame(4 , 甲.getAheadOf(庚));
+    assertSame(5 , 甲.getAheadOf(己));
+    assertSame(6 , 甲.getAheadOf(戊));
+    assertSame(7 , 甲.getAheadOf(丁));
+    assertSame(8 , 甲.getAheadOf(丙));
+    assertSame(9 , 甲.getAheadOf(乙));
+
+
+    assertSame(0, 癸.getAheadOf(癸));
+    assertSame(1, 癸.getAheadOf(壬));
+    assertSame(2, 癸.getAheadOf(辛));
+    assertSame(3, 癸.getAheadOf(庚));
+    assertSame(4, 癸.getAheadOf(己));
+    assertSame(5, 癸.getAheadOf(戊));
+    assertSame(6, 癸.getAheadOf(丁));
+    assertSame(7, 癸.getAheadOf(丙));
+    assertSame(8, 癸.getAheadOf(乙));
+    assertSame(9, 癸.getAheadOf(甲));
+  }
+
   @Test
   public void testNext() {
     assertSame(甲 , 甲.next(0));
@@ -49,9 +75,9 @@ public class HeavenlyStemsTest
   @Test
   public void testSorting()
   {
-    HeavenlyStems[] HSArray = new HeavenlyStems[]
+    Stem[] HSArray = new Stem[]
       {丁, 癸, 甲, 戊, 辛};
-    HeavenlyStems[] expected = new HeavenlyStems[]
+    Stem[] expected = new Stem[]
       {甲, 丁, 戊, 辛, 癸};
 
     Arrays.sort(HSArray);
@@ -133,17 +159,17 @@ public class HeavenlyStemsTest
   @Test
   public void testSort()
   {
-    HeavenlyStems[] HSArray = new HeavenlyStems[] { 丁, 癸, 甲, 戊, 辛 };
+    Stem[] HSArray = new Stem[] { 丁, 癸, 甲, 戊, 辛 };
     System.out.println("排序前:");
 
-    for (HeavenlyStems aHSArray1 : HSArray) {
+    for (Stem aHSArray1 : HSArray) {
       System.out.print(aHSArray1 + "\t");
     }
 
     Arrays.sort(HSArray);
 
     System.out.println("\n排序後");
-    for (HeavenlyStems aHSArray : HSArray) {
+    for (Stem aHSArray : HSArray) {
       System.out.print(aHSArray + "\t");
     }
   }

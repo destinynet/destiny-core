@@ -8,7 +8,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
 /** 時辰的分界點實作 , SwissEph 的實作是 HourSolarTransImpl */
@@ -20,7 +20,7 @@ public interface HourIF extends Descriptive
    * @return 時辰（只有地支）
    */
   @NotNull
-  EarthlyBranches getHour(Time lmt , Location location);
+  Branch getHour(Time lmt , Location location);
   
   /**
    * @param lmt 傳入當地手錶時間
@@ -29,6 +29,6 @@ public interface HourIF extends Descriptive
    * @return 下一個時辰開始的時刻
    */
   @NotNull
-  Time getLmtNextStartOf(Time lmt , Location location , EarthlyBranches eb);
+  Time getLmtNextStartOf(Time lmt , Location location , Branch eb);
   
 }

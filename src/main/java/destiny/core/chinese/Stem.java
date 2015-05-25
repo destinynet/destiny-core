@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 /** 天干系統 */
-public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF , YinYangIF
+public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
 {
   甲('甲'),
   乙('乙'),
@@ -22,20 +22,20 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   
   private char name;
   
-  private final static HeavenlyStems[] HeavenlyStemsArray =
+  private final static Stem[] STEM_ARRAY =
     { 甲 , 乙 , 丙 , 丁 , 戊 ,
       己 , 庚 , 辛 , 壬 , 癸 };
   
-  private final static List<HeavenlyStems> heavenlyStemsList = Arrays.asList(HeavenlyStemsArray);
+  private final static List<Stem> STEM_LIST = Arrays.asList(STEM_ARRAY);
 
-  private HeavenlyStems(char c)
+  private Stem(char c)
   {
     this.name = c;
   }
   
   /** 從五行 以及 陰陽 建立天干 */
   @NotNull
-  public static HeavenlyStems getHeavenlyStems(FiveElement fiveElement , boolean yinYang) {
+  public static Stem getHeavenlyStems(FiveElement fiveElement , boolean yinYang) {
     if (fiveElement == FiveElement.木)
     {
       if (yinYang)
@@ -82,7 +82,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
    * @param index
    * @return
    */
-  public static HeavenlyStems getHeavenlyStems(int index)
+  public static Stem getHeavenlyStems(int index)
   {
     /**
      * 如果 index < 0  , 則 加 10 , recursive 再傳一次<BR>
@@ -92,7 +92,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
       return getHeavenlyStems(index+10);
     else if (index >=10 )
       return (getHeavenlyStems(index-10));
-    return HeavenlyStemsArray[index];
+    return STEM_ARRAY[index];
   }
 
 
@@ -100,7 +100,7 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
    * 取得下 n 個天干為何
    * n = 0 : 傳回自己
    */
-  public HeavenlyStems next(int n) {
+  public Stem next(int n) {
     return getHeavenlyStems(getIndex(this) + n);
   }
 
@@ -108,17 +108,17 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
    * 取得前 n 個天干為何
    * n = 0 : 傳回自己
    */
-  public HeavenlyStems prev(int n) {
+  public Stem prev(int n) {
     return next(0-n);
   }
 
 
-  public static Optional<HeavenlyStems> getHeavenlyStems(char c)
+  public static Optional<Stem> getHeavenlyStems(char c)
   {
-    HeavenlyStems result = null;
-    for (HeavenlyStems aHeavenlyStemsArray : HeavenlyStemsArray) {
-      if (aHeavenlyStemsArray.name == c) {
-        result = aHeavenlyStemsArray;
+    Stem result = null;
+    for (Stem aStemArray : STEM_ARRAY) {
+      if (aStemArray.name == c) {
+        result = aStemArray;
         break;
       }
     }
@@ -129,9 +129,9 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
   }
   
   /** 甲[0] ... 癸[9] */
-  public static int getIndex(HeavenlyStems hs)
+  public static int getIndex(Stem hs)
   {
-    return heavenlyStemsList.indexOf(hs);
+    return STEM_LIST.indexOf(hs);
     /*
     int result = heavenlyStemsList.indexOf(hs);
     if (result != -1)
@@ -139,6 +139,21 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
     else
       throw new RuntimeException("Cannot find HeavenlyStems : " + hs + " in HeavenlyStems .");
     */
+  }
+
+  /**
+   * 取得此天干，領先另一個天干，多少距離
+   * 甲 領先 甲 0 步
+   * 甲 領先 乙 9 步
+   * ...
+   * 甲 領先 癸 1 步
+   */
+  public int getAheadOf(Stem other) {
+    int steps = getIndex() - other.getIndex();
+    if (steps >=0 )
+      return steps;
+    else
+      return steps + 10;
   }
 
 
@@ -200,8 +215,8 @@ public enum HeavenlyStems implements Comparable<HeavenlyStems> , FiveElementIF ,
     return (getIndex(this) % 2 == 0);
   }
 
-  public static Iterable<HeavenlyStems> iterable() {
-    return Arrays.asList(HeavenlyStemsArray);
+  public static Iterable<Stem> iterable() {
+    return Arrays.asList(STEM_ARRAY);
   }
 
 }

@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.liuren.golden;
 
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,18 +13,34 @@ import java.util.List;
  */
 public class GoldenMouth implements Serializable {
 
-  /** 將神（太陽星座） */
-  private EarthlyBranches monthSign;
+  /** 地分 */
+  private Branch selected;
+
+  /** 月將（太陽星座） */
+  private Branch monthSign;
 
   /** 貴神 */
-  private List<EarthlyBranches> benefactors;
+  private List<Branch> benefactors;
 
+  /** 時辰 */
+  private Branch hour;
+
+
+  /**
+   * 取得「將神」 : 從時辰開始，順數至「地分」
+   */
+  public Branch getJohnson() {
+    // 從「地分」領先「時辰」多少
+    int steps = selected.getAheadOf(hour);
+    // 接下來，將月將 加上此 step
+    return monthSign.next(steps);
+  }
 
   /** 取得「月將」的中文稱謂
    *
    * @see <a href="http://zh.wikipedia.org/wiki/十二月將">十二月將</a>
    * */
-  public static String getName(EarthlyBranches branch) {
+  public static String getName(Branch branch) {
     switch (branch) {
       case 子 : return "神後";
       case 丑 : return "大吉";

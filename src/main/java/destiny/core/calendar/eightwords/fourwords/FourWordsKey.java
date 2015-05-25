@@ -3,8 +3,8 @@ package destiny.core.calendar.eightwords.fourwords;
 
 import java.io.Serializable;
 
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,15 +12,15 @@ import org.jetbrains.annotations.Nullable;
 public class FourWordsKey implements Serializable
 {
   /** 日干 */
-  private HeavenlyStems dayStem;
+  private Stem dayStem;
   
   /** 月支 */
-  private EarthlyBranches monthBranch;
+  private Branch monthBranch;
   
   /** 時支 */
-  private EarthlyBranches hourBranch;
+  private Branch hourBranch;
 
-  public FourWordsKey(HeavenlyStems dayStem, EarthlyBranches monthBranch, EarthlyBranches hourBranch)
+  public FourWordsKey(Stem dayStem, Branch monthBranch, Branch hourBranch)
   {
     super();
     this.dayStem = dayStem;
@@ -28,17 +28,17 @@ public class FourWordsKey implements Serializable
     this.hourBranch = hourBranch;
   }
 
-  public HeavenlyStems getDayStem()
+  public Stem getDayStem()
   {
     return dayStem;
   }
 
-  public EarthlyBranches getMonthBranch()
+  public Branch getMonthBranch()
   {
     return monthBranch;
   }
 
-  public EarthlyBranches getHourBranch()
+  public Branch getHourBranch()
   {
     return hourBranch;
   }

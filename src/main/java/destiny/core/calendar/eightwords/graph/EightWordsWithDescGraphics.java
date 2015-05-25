@@ -11,7 +11,7 @@ import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
 import destiny.core.calendar.eightwords.personal.Reactions;
 import destiny.core.calendar.eightwords.personal.ReactionsUtil;
 import destiny.core.chart.Constants;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranchNullable;
 import destiny.font.FontRepository;
 import destiny.utils.Triple;
@@ -69,7 +69,7 @@ public class EightWordsWithDescGraphics {
 
     // 地支藏干
     ReactionsUtil reactionsUtil = new ReactionsUtil(hiddenStemsImpl);
-    HeavenlyStems dayStem = eightWordsNullable.getDayStem();
+    Stem dayStem = eightWordsNullable.getDayStem();
 
     // Tuple < 干支 , 天干(相對於日干)的十神 , 地支藏干(相對於日干)的十神 >
     java.util.List<Triple<StemBranchNullable, Reactions, java.util.List<Reactions>>> list = new ArrayList<>();

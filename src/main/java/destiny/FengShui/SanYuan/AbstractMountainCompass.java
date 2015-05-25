@@ -6,8 +6,8 @@
 package destiny.FengShui.SanYuan;
 
 import destiny.astrology.Utils;
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -110,14 +110,14 @@ public abstract class AbstractMountainCompass extends AbstractCompass
   {
     if (m == Mountain.乾 || m == Mountain.坤 || m == Mountain.巽 || m == Mountain.艮 )
       return true;
-    else if (m.getValue() instanceof HeavenlyStems)
+    else if (m.getValue() instanceof Stem)
     {
       // 陽干傳回陽 , 陰干傳回陰
-      return ((HeavenlyStems)(m.getValue())).getBooleanValue();
+      return ((Stem)(m.getValue())).getBooleanValue();
     }
-    else if (m.getValue() instanceof EarthlyBranches)
+    else if (m.getValue() instanceof Branch)
     {
-      int index = EarthlyBranches.getIndex( (EarthlyBranches)m.getValue() );
+      int index = Branch.getIndex((Branch) m.getValue());
       //寅巳申亥
       return index == 2 || index == 5 || index == 8 || index == 11;
     }

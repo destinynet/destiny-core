@@ -7,7 +7,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import destiny.core.Gender;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import destiny.utils.Tuple;
 
 import java.io.Serializable;
@@ -24,24 +24,24 @@ public class Palm implements Serializable {
 
   private final Gender gender;
 
-  private final EarthlyBranches year;
+  private final Branch year;
 
-  private final EarthlyBranches month;
+  private final Branch month;
 
-  private final EarthlyBranches day;
+  private final Branch day;
 
-  private final EarthlyBranches hour;
+  private final Branch hour;
 
   public enum Pillar { 年 , 月 , 日 , 時}
 
   /** 12個宮位，每個宮位，各有哪些「柱」 */
-  private final Multimap<EarthlyBranches , Pillar> pillarMap = HashMultimap.create();
+  private final Multimap<Branch, Pillar> pillarMap = HashMultimap.create();
 
   public enum House {命 , 財帛 , 兄弟 , 田宅 , 男女 , 奴僕 , 配偶 , 疾厄 , 遷移 , 官祿 , 福德 , 相貌}
 
-  public final BiMap<EarthlyBranches , House> houseMap;
+  public final BiMap<Branch, House> houseMap;
 
-  public Palm(Gender gender, EarthlyBranches year, EarthlyBranches month, EarthlyBranches day, EarthlyBranches hour , BiMap<EarthlyBranches , House> houseMap) {
+  public Palm(Gender gender, Branch year, Branch month, Branch day, Branch hour , BiMap<Branch, House> houseMap) {
     this.gender = gender;
     this.year = year;
     this.month = month;
@@ -70,26 +70,26 @@ public class Palm implements Serializable {
     return gender;
   }
 
-  public EarthlyBranches getYear() {
+  public Branch getYear() {
     return year;
   }
 
-  public EarthlyBranches getMonth() {
+  public Branch getMonth() {
     return month;
   }
 
-  public EarthlyBranches getDay() {
+  public Branch getDay() {
     return day;
   }
 
-  public EarthlyBranches getHour() {
+  public Branch getHour() {
     return hour;
   }
 
   /**
    * 取得在某一地支宮位，包含了哪些「柱」 (年/月/日/時)
    */
-  public Collection<Pillar> getPillars(EarthlyBranches branch) {
+  public Collection<Pillar> getPillars(Branch branch) {
     return pillarMap.get(branch);
   }
 
@@ -97,7 +97,7 @@ public class Palm implements Serializable {
    * 取得哪些宮位有「柱」坐落其中，列出來
    * @return
    */
-  public Map<EarthlyBranches , Collection<Pillar>> getNonEmptyPillars() {
+  public Map<Branch, Collection<Pillar>> getNonEmptyPillars() {
     return pillarMap.asMap().entrySet().stream()
       .filter(entry -> entry.getValue().size() > 0)
       .collect(Collectors.toMap(entry -> entry.getKey() , entry -> entry.getValue()));
@@ -106,7 +106,7 @@ public class Palm implements Serializable {
   /**
    * 取得此柱，在哪個地支
    */
-  public EarthlyBranches getBranch(Pillar pillar) {
+  public Branch getBranch(Pillar pillar) {
     switch (pillar) {
       case 年 : return getYear();
       case 月 : return getMonth();
@@ -117,12 +117,12 @@ public class Palm implements Serializable {
   }
 
   /** 取得此地支，是什麼宮 */
-  public House getHouse(EarthlyBranches branch) {
+  public House getHouse(Branch branch) {
     return houseMap.get(branch);
   }
 
   /** 與上面相反，取得此宮位於什麼地支 */
-  public EarthlyBranches getBranch(House house) {
+  public Branch getBranch(House house) {
     return houseMap.inverse().get(house);
   }
 
@@ -133,13 +133,13 @@ public class Palm implements Serializable {
    * Map 的 key 為「運的開始」: 1 , 11 , 21 , 31 ...
    * @param count : 要算多少組大運
    */
-  public Map<Integer , EarthlyBranches> getMajorFortunes(int count) {
+  public Map<Integer , Branch> getMajorFortunes(int count) {
     int positive = (gender==Gender.男 ? 1 : -1) ;
 
     return IntStream.range(1 , count+1).boxed()
       .map(i -> Tuple.of(
           (i - 1) * 10 + 1,
-          EarthlyBranches.getEarthlyBranches(month.getIndex() + (i - 1) * positive)
+          Branch.getEarthlyBranches(month.getIndex() + (i - 1) * positive)
         )
       )
       .collect(Collectors.toMap(Tuple::getFirst, Tuple::getSecond, (a, b) -> a, TreeMap::new));
@@ -149,13 +149,13 @@ public class Palm implements Serializable {
    * 小運從掌中年上起月，月上起日，男順、女逆，輪數至本生日起運。本生日所在宮為一歲運，下一宮為二歲運。
    * @param age 虛歲 , 從 1 開始
    */
-  public EarthlyBranches getMinorFortunes(int age) {
+  public Branch getMinorFortunes(int age) {
     int positive = (gender==Gender.男 ? 1 : -1) ;
-    return EarthlyBranches.getEarthlyBranches(day.getIndex() + (age-1)* positive);
+    return Branch.getEarthlyBranches(day.getIndex() + (age - 1) * positive);
   }
 
   /** 取得地支對應的「星」 (子 -> 天貴星) */
-  public static String getStar(EarthlyBranches branch) {
+  public static String getStar(Branch branch) {
     switch (branch) {
       case 子 : return "天貴";
       case 丑 : return "天厄";
@@ -174,7 +174,7 @@ public class Palm implements Serializable {
   }
 
   /** 取得地支對應的「道」 (子 -> 佛道) */
-  public static String getDao(EarthlyBranches branch) {
+  public static String getDao(Branch branch) {
     switch (branch) {
       case 子 : return "佛";
       case 丑 : return "鬼";

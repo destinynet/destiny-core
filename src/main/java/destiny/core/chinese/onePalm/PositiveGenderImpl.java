@@ -4,7 +4,7 @@
 package destiny.core.chinese.onePalm;
 
 import destiny.core.Gender;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -12,7 +12,7 @@ import java.util.Locale;
 public class PositiveGenderImpl implements PositiveIF , Serializable {
 
   @Override
-  public boolean isPositive(Gender gender, EarthlyBranches yearBranch) {
+  public boolean isPositive(Gender gender, Branch yearBranch) {
     return (gender == Gender.男);
   }
 

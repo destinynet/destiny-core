@@ -15,10 +15,10 @@ import java.util.Optional;
 public class StemBranchNullable implements Serializable {
 
   @Nullable
-  protected final HeavenlyStems stem;   //天干
+  protected final Stem stem;   //天干
 
   @Nullable
-  protected final EarthlyBranches branch; //地支
+  protected final Branch branch; //地支
 
   // 0[甲子] ~ 59[癸亥]
   @NotNull
@@ -29,8 +29,8 @@ public class StemBranchNullable implements Serializable {
     do
     {
       stemBranchArray[n]= new StemBranchNullable (
-        HeavenlyStems  .getHeavenlyStems  ( n % 10 ) ,
-        EarthlyBranches.getEarthlyBranches( n % 12 )
+        Stem.getHeavenlyStems(n % 10) ,
+        Branch.getEarthlyBranches(n % 12)
       );
       n++;
     }
@@ -43,11 +43,11 @@ public class StemBranchNullable implements Serializable {
   }
 
 
-  public StemBranchNullable(@Nullable HeavenlyStems stem, @Nullable EarthlyBranches branch) {
+  public StemBranchNullable(@Nullable Stem stem, @Nullable Branch branch) {
     this.stem = stem;
     this.branch = branch;
     if (stem != null && branch != null)
-      if ((HeavenlyStems.getIndex(stem) % 2) != (EarthlyBranches.getIndex(branch) % 2))
+      if ((Stem.getIndex(stem) % 2) != (Branch.getIndex(branch) % 2))
         throw new RuntimeException("Stem/Branch combination illegal ! " + stem + " cannot be combined with " + branch);
   }
 
@@ -60,14 +60,14 @@ public class StemBranchNullable implements Serializable {
     return stemBranchArray[normalize(index)];
   }
 
-  public static StemBranchNullable get(@Nullable HeavenlyStems 天干 , @Nullable EarthlyBranches 地支)
+  public static StemBranchNullable get(@Nullable Stem 天干 , @Nullable Branch 地支)
   {
     if (天干 != null && 地支 != null) {
-      if ((HeavenlyStems.getIndex(天干) % 2) != (EarthlyBranches.getIndex(地支) % 2))
+      if ((Stem.getIndex(天干) % 2) != (Branch.getIndex(地支) % 2))
         throw new RuntimeException("Stem/Branch combination illegal ! " + 天干 + " cannot be combined with " + 地支);
 
-      int hIndex = HeavenlyStems.getIndex(天干);
-      int eIndex = EarthlyBranches.getIndex(地支);
+      int hIndex = Stem.getIndex(天干);
+      int eIndex = Branch.getIndex(地支);
       switch (hIndex - eIndex) {
         case 0:
         case -10:
@@ -108,27 +108,27 @@ public class StemBranchNullable implements Serializable {
   }
 
   @Nullable
-  public HeavenlyStems getStem() {
+  public Stem getStem() {
     return stem;
   }
 
-  public Optional<HeavenlyStems> getStemOptional() {
+  public Optional<Stem> getStemOptional() {
     return Optional.ofNullable(stem);
   }
 
   @Nullable
-  public EarthlyBranches getBranch() {
+  public Branch getBranch() {
     return branch;
   }
 
-  public Optional<EarthlyBranches> getBranchOptional() {
+  public Optional<Branch> getBranchOptional() {
     return Optional.ofNullable(branch);
   }
 
 
   public static StemBranchNullable get(char heavenlyStems , char earthlyBranches)
   {
-    return get(HeavenlyStems.getHeavenlyStems(heavenlyStems).get() , EarthlyBranches.getEarthlyBranches(earthlyBranches).get());
+    return get(Stem.getHeavenlyStems(heavenlyStems).get() , Branch.getEarthlyBranches(earthlyBranches).get());
   }
 
   public static StemBranchNullable get(@NotNull String stemBranch)

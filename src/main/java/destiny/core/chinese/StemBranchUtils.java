@@ -8,7 +8,7 @@ public class StemBranchUtils {
   /**
    * 五虎遁月
    */
-  public final static HeavenlyStems getMonthStem(HeavenlyStems yearStem , EarthlyBranches monthBranch) {
-    return HeavenlyStems.getHeavenlyStems((yearStem.getIndex() % 5)*2 + (monthBranch.getIndex() >=2 ? monthBranch.getIndex() : monthBranch.getIndex()+ 12));
+  public final static Stem getMonthStem(Stem yearStem , Branch monthBranch) {
+    return Stem.getHeavenlyStems((yearStem.getIndex() % 5) * 2 + (monthBranch.getIndex() >= 2 ? monthBranch.getIndex() : monthBranch.getIndex() + 12));
   }
 }

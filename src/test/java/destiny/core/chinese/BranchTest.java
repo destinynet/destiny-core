@@ -8,11 +8,40 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static destiny.core.chinese.EarthlyBranches.*;
+import static destiny.core.chinese.Branch.*;
 import static org.junit.Assert.*;
 
-public class EarthlyBranchesTest
+public class BranchTest
 {
+
+  @Test
+  public void testGetAheadOf() {
+    assertSame(0  , 子.getAheadOf(子));
+    assertSame(1  , 子.getAheadOf(亥));
+    assertSame(2  , 子.getAheadOf(戌));
+    assertSame(3  , 子.getAheadOf(酉));
+    assertSame(4  , 子.getAheadOf(申));
+    assertSame(5  , 子.getAheadOf(未));
+    assertSame(6  , 子.getAheadOf(午));
+    assertSame(7  , 子.getAheadOf(巳));
+    assertSame(8  , 子.getAheadOf(辰));
+    assertSame(9  , 子.getAheadOf(卯));
+    assertSame(10 , 子.getAheadOf(寅));
+    assertSame(11 , 子.getAheadOf(丑));
+
+    assertSame(0  , 亥.getAheadOf(亥));
+    assertSame(1  , 亥.getAheadOf(戌));
+    assertSame(2  , 亥.getAheadOf(酉));
+    assertSame(3  , 亥.getAheadOf(申));
+    assertSame(4  , 亥.getAheadOf(未));
+    assertSame(5  , 亥.getAheadOf(午));
+    assertSame(6  , 亥.getAheadOf(巳));
+    assertSame(7  , 亥.getAheadOf(辰));
+    assertSame(8  , 亥.getAheadOf(卯));
+    assertSame(9  , 亥.getAheadOf(寅));
+    assertSame(10 , 亥.getAheadOf(丑));
+    assertSame(11 , 亥.getAheadOf(子));
+  }
 
   @Test
   public void testNext() {
@@ -129,10 +158,10 @@ public class EarthlyBranchesTest
   @Test
   public void testSorting()
   {
-    EarthlyBranches[] EBArray = new EarthlyBranches[] 
+    Branch[] EBArray = new Branch[]
      { 午 , 酉 , 子 , 卯};
     Arrays.sort(EBArray);
-    EarthlyBranches[] expected = new EarthlyBranches[] 
+    Branch[] expected = new Branch[]
      { 子 , 卯 , 午 , 酉};
     assertTrue(Arrays.equals(expected , EBArray));
   }

@@ -9,26 +9,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** 實作 五行 getFiveElement() 以及 陰陽 getYinYang() 以及取得地支順序 getIndex() 的地支 */
-public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF , YinYangIF
+public enum SimpleBranch implements BranchIF, FiveElementIF , YinYangIF
 {
-  子(EarthlyBranches.子),
-  丑(EarthlyBranches.丑),
-  寅(EarthlyBranches.寅),
-  卯(EarthlyBranches.卯),
-  辰(EarthlyBranches.辰),
-  巳(EarthlyBranches.巳),
-  午(EarthlyBranches.午),
-  未(EarthlyBranches.未),
-  申(EarthlyBranches.申),
-  酉(EarthlyBranches.酉),
-  戌(EarthlyBranches.戌),
-  亥(EarthlyBranches.亥);
+  子(Branch.子),
+  丑(Branch.丑),
+  寅(Branch.寅),
+  卯(Branch.卯),
+  辰(Branch.辰),
+  巳(Branch.巳),
+  午(Branch.午),
+  未(Branch.未),
+  申(Branch.申),
+  酉(Branch.酉),
+  戌(Branch.戌),
+  亥(Branch.亥);
   
   
   @Nullable
-  private EarthlyBranches eb = null;
+  private Branch eb = null;
   
-  private SimpleEarthlyBranches(EarthlyBranches eb)
+  private SimpleBranch(Branch eb)
   {
     this.eb = eb;
   }
@@ -64,7 +64,7 @@ public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF ,
    * Java 5 中的 enum 無法被繼承 , 真是麻煩... 
    */
   @NotNull
-  public static FiveElement getFiveElement(@NotNull EarthlyBranches eb)
+  public static FiveElement getFiveElement(@NotNull Branch eb)
   {
     switch (eb)
     {
@@ -91,7 +91,7 @@ public enum SimpleEarthlyBranches implements EarthlyBranchesIF , FiveElementIF ,
 
   @Override
   public boolean getBooleanValue() {
-    return ( EarthlyBranches.getIndex(eb) % 2 == 0);
+    return ( Branch.getIndex(eb) % 2 == 0);
   }
 
 

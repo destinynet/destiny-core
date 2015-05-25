@@ -1,7 +1,7 @@
 package destiny.core.calendar.eightwords;
  
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,28 +75,28 @@ public class EightWords extends EightWordsNullable
   {}
 
   @NotNull
-  @Override public HeavenlyStems getYearStem()  { return year.getStem();  }
+  @Override public Stem getYearStem()  { return year.getStem();  }
 
   @NotNull
-  @Override public HeavenlyStems getMonthStem() { return month.getStem(); }
+  @Override public Stem getMonthStem() { return month.getStem(); }
 
   @NotNull
-  @Override public HeavenlyStems getDayStem()   { return day.getStem();   }
+  @Override public Stem getDayStem()   { return day.getStem();   }
 
   @NotNull
-  @Override public HeavenlyStems getHourStem()  { return hour.getStem();  }
+  @Override public Stem getHourStem()  { return hour.getStem();  }
 
   @NotNull
-  @Override public EarthlyBranches getYearBranch()  { return year.getBranch();  }
+  @Override public Branch getYearBranch()  { return year.getBranch();  }
 
   @NotNull
-  @Override public EarthlyBranches getMonthBranch() { return month.getBranch(); }
+  @Override public Branch getMonthBranch() { return month.getBranch(); }
 
   @NotNull
-  @Override public EarthlyBranches getDayBranch()   { return day.getBranch();   }
+  @Override public Branch getDayBranch()   { return day.getBranch();   }
 
   @NotNull
-  @Override public EarthlyBranches getHourBranch()  { return hour.getBranch();  }
+  @Override public Branch getHourBranch()  { return hour.getBranch();  }
 
   @NotNull
   public StemBranch getYear() {

@@ -5,7 +5,7 @@ package destiny.core.chinese.onePalm;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import destiny.core.chinese.EarthlyBranches;
+import destiny.core.chinese.Branch;
 import destiny.font.FontRepository;
 import destiny.utils.Tuple;
 
@@ -86,7 +86,7 @@ public class PalmGraphics {
     }
 
 
-    for(EarthlyBranches branch : EarthlyBranches.iterable()) {
+    for(Branch branch : Branch.iterable()) {
       drawCell(g , branch , cellW , cellH , fore , palm);
     }
   }
@@ -119,7 +119,7 @@ public class PalmGraphics {
     String gmt = String.format("%04d-%02d-%02d %02d:%02d", t2.getYear(), t2.getMonth(), t2.getDay(), t2.getHour(), t2.getMinute());
     g.drawString("GMT:" + gmt , 1 , fontH*4);
 
-    EarthlyBranches hour = palm.getHourImpl().getHour(t1 , palm.getLoc());
+    Branch hour = palm.getHourImpl().getHour(t1 , palm.getLoc());
     g.drawString("農曆：" + palm.getChineseDate() + hour + "時" , 1 , fontH * 5);
 
     Location loc = palm.getLoc();
@@ -138,7 +138,7 @@ public class PalmGraphics {
   /**
    * 繪製單一 cell
    */
-  private static void drawCell(Graphics2D g , EarthlyBranches branch , float cellW , float cellH , Color fore , Palm palm) {
+  private static void drawCell(Graphics2D g , Branch branch , float cellW , float cellH , Color fore , Palm palm) {
     Tuple<Float , Float> t = getCellCoordinate(branch , cellW , cellH);
     float x = t.getFirst();
     float y = t.getSecond();
@@ -205,7 +205,7 @@ public class PalmGraphics {
    * |     |     |     |     |
    * +-----+-----+-----+-----+
    */
-  private static Tuple<Float , Float> getCellCoordinate(EarthlyBranches branch , float cellW , float cellH) {
+  private static Tuple<Float , Float> getCellCoordinate(Branch branch , float cellW , float cellH) {
     switch (branch) {
       case 子 : return Tuple.of(cellW * 2 , cellH * 3);
       case 丑 : return Tuple.of(cellW * 1 , cellH * 3);

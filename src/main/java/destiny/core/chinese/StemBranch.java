@@ -26,14 +26,14 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
     int n=0;
     do
     {
-      stemBranchArray[n]= new StemBranch (HeavenlyStems.getHeavenlyStems( n % 10 ) ,
-                                          EarthlyBranches.getEarthlyBranches( n % 12 ) );
+      stemBranchArray[n]= new StemBranch (Stem.getHeavenlyStems(n % 10) ,
+                                          Branch.getEarthlyBranches(n % 12) );
       n++;
     }
     while(n<60);
   }
   
-  private StemBranch(@NotNull HeavenlyStems 天干 , @NotNull EarthlyBranches 地支)
+  private StemBranch(@NotNull Stem 天干 , @NotNull Branch 地支)
   {
     super(天干 , 地支);
   }
@@ -84,13 +84,13 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   }
 
   @NotNull
-  public static StemBranch get(@NotNull HeavenlyStems 天干 , @NotNull EarthlyBranches 地支)
+  public static StemBranch get(@NotNull Stem 天干 , @NotNull Branch 地支)
   {
-    if ( (HeavenlyStems.getIndex(天干) % 2 )  != (EarthlyBranches.getIndex(地支) %2 ) )
+    if ( (Stem.getIndex(天干) % 2 )  != (Branch.getIndex(地支) %2 ) )
         throw new RuntimeException("Stem/Branch combination illegal ! " + 天干 + " cannot be combined with " + 地支 );
 
-    int hIndex = HeavenlyStems.getIndex(天干);
-    int eIndex = EarthlyBranches.getIndex(地支);
+    int hIndex = Stem.getIndex(天干);
+    int eIndex = Branch.getIndex(地支);
     switch (hIndex - eIndex) {
       case 0:
       case -10:
@@ -115,7 +115,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   @Nullable
   public static StemBranch get(char heavenlyStems , char earthlyBranches)
   {
-    return get(HeavenlyStems.getHeavenlyStems(heavenlyStems).get() , EarthlyBranches.getEarthlyBranches(earthlyBranches).get());
+    return get(Stem.getHeavenlyStems(heavenlyStems).get() , Branch.getEarthlyBranches(earthlyBranches).get());
   }
   
   public static StemBranch get(@NotNull String stemBranch)
@@ -220,7 +220,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
    * @return 天干
    */
   @NotNull
-  public HeavenlyStems getStem()
+  public Stem getStem()
   {
     return stem;
   }
@@ -229,7 +229,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
    * @return 地支
    */
   @NotNull
-  public EarthlyBranches getBranch()
+  public Branch getBranch()
   {
     return branch;
   }

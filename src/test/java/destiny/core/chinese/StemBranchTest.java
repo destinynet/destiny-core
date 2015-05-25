@@ -46,13 +46,13 @@ public class StemBranchTest {
 
   @Test
   public void testGet() {
-    assertSame(StemBranch.get("甲子") , StemBranch.get(HeavenlyStems.甲 , EarthlyBranches.子));
-    assertSame(StemBranch.get("乙丑") , StemBranch.get(HeavenlyStems.乙 , EarthlyBranches.丑));
-    assertSame(StemBranch.get("丙寅") , StemBranch.get(HeavenlyStems.丙 , EarthlyBranches.寅));
-    assertSame(StemBranch.get("丁卯") , StemBranch.get(HeavenlyStems.丁 , EarthlyBranches.卯));
+    assertSame(StemBranch.get("甲子") , StemBranch.get(Stem.甲 , Branch.子));
+    assertSame(StemBranch.get("乙丑") , StemBranch.get(Stem.乙 , Branch.丑));
+    assertSame(StemBranch.get("丙寅") , StemBranch.get(Stem.丙 , Branch.寅));
+    assertSame(StemBranch.get("丁卯") , StemBranch.get(Stem.丁 , Branch.卯));
 
     try {
-      StemBranch.get(HeavenlyStems.甲 , EarthlyBranches.丑);
+      StemBranch.get(Stem.甲 , Branch.丑);
       fail();
     } catch (RuntimeException e) {
       assertTrue(true);
@@ -72,7 +72,7 @@ public class StemBranchTest {
     
     assertSame(sb3 , sb4);
     
-    StemBranch sb5 = StemBranch.get(HeavenlyStems.甲 , EarthlyBranches.子);
+    StemBranch sb5 = StemBranch.get(Stem.甲 , Branch.子);
     assertSame(sb4 , sb5);
     
     StemBranch sb6 = StemBranch.get('甲' , '子');
@@ -90,7 +90,7 @@ public class StemBranchTest {
   {
     StemBranch[] SBArray1 = new StemBranch[]
       { StemBranch.get(10),
-        StemBranch.get(HeavenlyStems.甲 , EarthlyBranches.午),
+        StemBranch.get(Stem.甲 , Branch.午),
         StemBranch.get(50),
         StemBranch.get('甲' , '子'),
         StemBranch.get(20)

@@ -5,8 +5,8 @@
  */
 package destiny.FengShui.SanYuan;
 
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import destiny.iching.Symbol;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,30 +17,30 @@ public class Mountain implements Serializable
 {
   private Object value;
   
-  public final static Mountain 子 = new Mountain(EarthlyBranches.子);
-  public final static Mountain 癸 = new Mountain(HeavenlyStems  .癸);
-  public final static Mountain 丑 = new Mountain(EarthlyBranches.丑);
+  public final static Mountain 子 = new Mountain(Branch.子);
+  public final static Mountain 癸 = new Mountain(Stem.癸);
+  public final static Mountain 丑 = new Mountain(Branch.丑);
   public final static Mountain 艮 = new Mountain(Symbol         .艮);
-  public final static Mountain 寅 = new Mountain(EarthlyBranches.寅);
-  public final static Mountain 甲 = new Mountain(HeavenlyStems  .甲);
-  public final static Mountain 卯 = new Mountain(EarthlyBranches.卯);
-  public final static Mountain 乙 = new Mountain(HeavenlyStems  .乙);
-  public final static Mountain 辰 = new Mountain(EarthlyBranches.辰);
+  public final static Mountain 寅 = new Mountain(Branch.寅);
+  public final static Mountain 甲 = new Mountain(Stem.甲);
+  public final static Mountain 卯 = new Mountain(Branch.卯);
+  public final static Mountain 乙 = new Mountain(Stem.乙);
+  public final static Mountain 辰 = new Mountain(Branch.辰);
   public final static Mountain 巽 = new Mountain(Symbol         .巽);
-  public final static Mountain 巳 = new Mountain(EarthlyBranches.巳);
-  public final static Mountain 丙 = new Mountain(HeavenlyStems  .丙);
-  public final static Mountain 午 = new Mountain(EarthlyBranches.午);
-  public final static Mountain 丁 = new Mountain(HeavenlyStems  .丁);
-  public final static Mountain 未 = new Mountain(EarthlyBranches.未);
+  public final static Mountain 巳 = new Mountain(Branch.巳);
+  public final static Mountain 丙 = new Mountain(Stem.丙);
+  public final static Mountain 午 = new Mountain(Branch.午);
+  public final static Mountain 丁 = new Mountain(Stem.丁);
+  public final static Mountain 未 = new Mountain(Branch.未);
   public final static Mountain 坤 = new Mountain(Symbol         .坤);
-  public final static Mountain 申 = new Mountain(EarthlyBranches.申);
-  public final static Mountain 庚 = new Mountain(HeavenlyStems  .庚);
-  public final static Mountain 酉 = new Mountain(EarthlyBranches.酉);
-  public final static Mountain 辛 = new Mountain(HeavenlyStems  .辛);
-  public final static Mountain 戌 = new Mountain(EarthlyBranches.戌);
+  public final static Mountain 申 = new Mountain(Branch.申);
+  public final static Mountain 庚 = new Mountain(Stem.庚);
+  public final static Mountain 酉 = new Mountain(Branch.酉);
+  public final static Mountain 辛 = new Mountain(Stem.辛);
+  public final static Mountain 戌 = new Mountain(Branch.戌);
   public final static Mountain 乾 = new Mountain(Symbol         .乾);
-  public final static Mountain 亥 = new Mountain(EarthlyBranches.亥);
-  public final static Mountain 壬 = new Mountain(HeavenlyStems  .壬);
+  public final static Mountain 亥 = new Mountain(Branch.亥);
+  public final static Mountain 壬 = new Mountain(Stem.壬);
   
   @NotNull
   private final static Mountain[] ountainArray ;

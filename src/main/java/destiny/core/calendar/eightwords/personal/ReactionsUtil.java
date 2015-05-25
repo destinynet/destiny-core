@@ -5,8 +5,8 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class ReactionsUtil
    * @return 天干十神
    */
   @NotNull
-  public final Reactions getReaction( @NotNull HeavenlyStems actor , @NotNull HeavenlyStems actee)
+  public final Reactions getReaction( @NotNull Stem actor , @NotNull Stem actee)
   {
     if (actor.getFiveElement().isProducingTo(actee.getFiveElement()) )
     {
@@ -92,10 +92,10 @@ public class ReactionsUtil
    * @return 地支十神 List <Reactions>
    */
   @NotNull
-  public final List<Reactions> getReactions( EarthlyBranches actor , @NotNull HeavenlyStems actee)
+  public final List<Reactions> getReactions( Branch actor , @NotNull Stem actee)
   {
     List<Reactions> result = new ArrayList();
-    List<HeavenlyStems> hiddenStems = this.hiddenStemsImpl.getHiddenStems(actor);
+    List<Stem> hiddenStems = this.hiddenStemsImpl.getHiddenStems(actor);
     result.addAll(hiddenStems.stream().map(eachHiddenStems -> this.getReaction(eachHiddenStems, actee)).collect(Collectors.toList()));
     return result;
   }
@@ -107,30 +107,30 @@ public class ReactionsUtil
    * @return 傳回目標天干 
    */
   @NotNull
-  public static HeavenlyStems getHeavenlyStems(@NotNull HeavenlyStems actor , @NotNull Reactions reactions)
+  public static Stem getHeavenlyStems(@NotNull Stem actor , @NotNull Reactions reactions)
   {
     switch (reactions)
     {
       case 比肩:
         return actor;
       case 劫財:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement() , !actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement(), !actor.getBooleanValue());
       case 正印:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProducer() , !actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getProducer(), !actor.getBooleanValue());
       case 偏印:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProducer() , actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getProducer(), actor.getBooleanValue());
       case 食神:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProduct() , actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getProduct(), actor.getBooleanValue());
       case 傷官:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getProduct() , !actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getProduct(), !actor.getBooleanValue());
       case 正官:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominator() , !actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getDominator(), !actor.getBooleanValue());
       case 七殺:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominator() , actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getDominator(), actor.getBooleanValue());
       case 正財:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominateOver() , !actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getDominateOver(), !actor.getBooleanValue());
       case 偏財:
-        return HeavenlyStems.getHeavenlyStems(actor.getFiveElement().getDominateOver() , actor.getBooleanValue());
+        return Stem.getHeavenlyStems(actor.getFiveElement().getDominateOver(), actor.getBooleanValue());
     }
     throw new RuntimeException("RuntimeException while ReactionsUtil.getHeavenlyStems("+actor + "," + reactions+")");
   }

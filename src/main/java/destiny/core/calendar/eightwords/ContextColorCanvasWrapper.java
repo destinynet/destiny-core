@@ -10,8 +10,8 @@ import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
 import destiny.core.calendar.eightwords.personal.Reactions;
 import destiny.core.calendar.eightwords.personal.ReactionsUtil;
-import destiny.core.chinese.EarthlyBranches;
-import destiny.core.chinese.HeavenlyStems;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import destiny.utils.ColorCanvas.AlignUtil;
 import destiny.utils.ColorCanvas.ColorCanvas;
@@ -255,7 +255,7 @@ public class ContextColorCanvasWrapper {
    * @param stemBranch
    * @param pillarName "年" or "月" or "日" or "時"
    */
-  private ColorCanvas getOnePillar(StemBranch stemBranch , String pillarName , HeavenlyStems dayStem) {
+  private ColorCanvas getOnePillar(StemBranch stemBranch , String pillarName , Stem dayStem) {
     ColorCanvas pillar = new ColorCanvas(10, 6, "　", Optional.empty(), Optional.empty());
     pillar.setText(pillarName , 1 , 3);
     pillar.setText("柱", 2, 3);
@@ -296,7 +296,7 @@ public class ContextColorCanvasWrapper {
   
   
   @NotNull
-  protected ColorCanvas 地支藏干(EarthlyBranches 地支 , @NotNull HeavenlyStems 天干)
+  protected ColorCanvas 地支藏干(Branch 地支 , @NotNull Stem 天干)
   {
     ReactionsUtil reactionsUtil = new ReactionsUtil(this.hiddenStemsImpl);
     ColorCanvas resultCanvas = new ColorCanvas(3, 6 , "　");

@@ -9,14 +9,14 @@ public class TaiXuanTest {
 
   @Test
   public void testGetStem() throws Exception {
-    for (HeavenlyStems stem : HeavenlyStems.values()) {
+    for (Stem stem : Stem.values()) {
       System.out.println(stem + " -> " + TaiXuan.get(stem));
     }
   }
 
   @Test
   public void testGetBranch() throws Exception {
-    for (EarthlyBranches branch : EarthlyBranches.values())
+    for (Branch branch : Branch.values())
       System.out.println(branch + " -> " + TaiXuan.get(branch));
   }
 }
