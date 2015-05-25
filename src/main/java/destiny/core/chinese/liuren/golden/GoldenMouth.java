@@ -3,7 +3,10 @@
  */
 package destiny.core.chinese.liuren.golden;
 
+import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
+import destiny.core.chinese.StemBranch;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,27 +16,59 @@ import java.util.List;
  */
 public class GoldenMouth implements Serializable {
 
+  /** 八字 */
+  private final EightWords ew;
+
   /** 地分 */
-  private Branch selected;
+  private final Branch selected;
 
   /** 月將（太陽星座） */
-  private Branch monthSign;
+  private final Branch monthSign;
 
   /** 貴神 */
   private List<Branch> benefactors;
 
-  /** 時辰 */
-  private Branch hour;
-
+  public GoldenMouth(EightWords ew, Branch selected, Branch monthSign) {
+    this.ew = ew;
+    this.selected = selected;
+    this.monthSign = monthSign;
+  }
 
   /**
    * 取得「將神」 : 從時辰開始，順數至「地分」
    */
   public Branch getJohnson() {
     // 從「地分」領先「時辰」多少
-    int steps = selected.getAheadOf(hour);
+    int steps = selected.getAheadOf(ew.getHourBranch());
     // 接下來，將月將 加上此 step
     return monthSign.next(steps);
+  }
+
+  /**
+   * 取得「人元」 : 演算法如同「五鼠遁時」法
+   * 甲己還是甲 乙庚丙作初
+   * 丙辛起戊子 丁壬庚子辰
+   * 戊癸壬子頭 時元從子推
+   */
+  public Stem getHuman() {
+    switch (ew.getDayStem()) {
+      case 甲:
+      case 己:
+        return StemBranch.get(Stem.甲 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
+      case 乙:
+      case 庚:
+        return StemBranch.get(Stem.丙 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
+      case 丙:
+      case 辛:
+        return StemBranch.get(Stem.戊 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
+      case 丁:
+      case 壬:
+        return StemBranch.get(Stem.庚 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
+      case 戊:
+      case 癸:
+        return StemBranch.get(Stem.壬 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
+      default: throw new AssertionError("error");
+    }
   }
 
   /** 取得「月將」的中文稱謂
