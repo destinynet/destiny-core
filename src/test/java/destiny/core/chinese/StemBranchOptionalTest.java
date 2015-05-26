@@ -86,8 +86,8 @@ public class StemBranchOptionalTest {
   public void testNext() {
     //assertEquals(new StemBranchOptional(Optional.of(甲), Optional.of(子)), StemBranchOptional.get(Optional.of(甲), Optional.of(子)));
     assertSame(
-      StemBranchOptional.get(Optional.of(乙), Optional.of(丑)),
-      StemBranchOptional.get(Optional.of(甲), Optional.of(子)).nextOpt(1).get()
+      StemBranchOptional.get(乙, 丑),
+      StemBranchOptional.get(甲, 子).nextOpt(1).get()
     );
   }
 

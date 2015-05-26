@@ -7,6 +7,7 @@ import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class GoldenMouth implements Serializable {
 
   /** 八字 */
+  @NotNull
   private final EightWords ew;
 
   /** 地分 */
@@ -51,6 +53,8 @@ public class GoldenMouth implements Serializable {
    * 戊癸壬子頭 時元從子推
    */
   public Stem getHuman() {
+    assert (ew.getDayStem() != null);
+
     switch (ew.getDayStem()) {
       case 甲:
       case 己:

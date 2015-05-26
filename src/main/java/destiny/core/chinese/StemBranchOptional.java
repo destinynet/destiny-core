@@ -16,7 +16,7 @@ public class StemBranchOptional {
   @NotNull
   protected final Optional<Branch> branch;
 
-    // 0[甲子] ~ 59[癸亥]
+  // 0[甲子] ~ 59[癸亥]
   private transient static StemBranchOptional[] ARRAY = new StemBranchOptional[60];
   static {
     int n = 0;
@@ -118,7 +118,7 @@ public class StemBranchOptional {
     return StemBranchOptional.getIndex(this);
   }
 
-  public Optional<StemBranchOptional> nextOpt(int n) {
+  public Optional<? extends StemBranchOptional> nextOpt(int n) {
     return getIndex(this).map(i -> get(i+n));
   }
 

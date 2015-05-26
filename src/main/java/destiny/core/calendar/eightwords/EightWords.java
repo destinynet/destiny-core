@@ -21,10 +21,6 @@ public class EightWords extends EightWordsNullable
   public EightWords(@NotNull StemBranch year , @NotNull StemBranch month , @NotNull StemBranch day , @NotNull StemBranch hour)
   {
     super(year , month , day , hour);
-//    this.year  = year;
-//    this.month = month;
-//    this.day   = day;
-//    this.hour  = hour;
   }
    
   /**
@@ -37,34 +33,13 @@ public class EightWords extends EightWordsNullable
       StemBranch.get(month.toCharArray()[0] , month.toCharArray()[1]),
       StemBranch.get(day.toCharArray()[0] , day.toCharArray()[1]) ,
       StemBranch.get(hour.toCharArray()[0] , hour.toCharArray()[1])
-      );
-//    if (year == null || month == null || day == null || hour == null)
-//      throw new RuntimeException("year / month / day / hour cannot be null !");
-//    char y1 = year.toCharArray()[0];
-//    char y2 = year.toCharArray()[1];
-//    char m1 = month.toCharArray()[0];
-//    char m2 = month.toCharArray()[1];
-//    char d1 = day.toCharArray()[0];
-//    char d2 = day.toCharArray()[1];
-//    char h1 = hour.toCharArray()[0];
-//    char h2 = hour.toCharArray()[1];
-//
-//    this.year  = StemBranch.get(y1 , y2);
-//    this.month = StemBranch.get(m1 , m2);
-//    this.day   = StemBranch.get(d1 , d2);
-//    this.hour  = StemBranch.get(h1 , h2);
+    );
   }
    
   /** 從 EightWordsNullable 建立 EightWords , 其中 EightWordsNullable 任何一柱都不可以為 null , 否則會出現 RuntimeException */
   public EightWords(EightWordsNullable nullable)
   {
     super(nullable.getYear() , nullable.getMonth() , nullable.getDay() , nullable.getHour());
-//    if (nullable.getYear()==null || nullable.getMonth()==null || nullable.getDay()==null || nullable.getHour()==null)
-//      throw new RuntimeException("year / month / day / hour cannot be null !");
-//    this.year  = nullable.getYear();
-//    this.month = nullable.getMonth();
-//    this.day   = nullable.getDay();
-//    this.hour  = nullable.getHour();
   }
    
   /**
@@ -148,42 +123,4 @@ public class EightWords extends EightWordsNullable
       hour.getStemOptional().get()  + day.getStemOptional().get()  + month.getStemOptional().get()   + year.getStemOptional().get() + "\n" +
       hour.getBranchOptional().get() + day.getBranchOptional().get() + month.getBranchOptional().get() + year.getBranchOptional().get() ;
   }
-//
-//  @Override
-//  /** 設定年干支 , 不可為 null */
-//  public void setYear (@NotNull StemBranch branch)
-//  {
-//    year  = branch;
-//  }
-//
-//  @Override
-//  /** 設定月干支 , 不可為 null */
-//  public void setMonth(@NotNull StemBranch branch)
-//  {
-//    month = branch;
-//  }
-//
-//  @Override
-//  /** 設定日干支 , 不可為 null */
-//  public void setDay  (@NotNull StemBranch branch)
-//  {
-//    day   = branch;
-//  }
-//
-//  @Override
-//  /** 設定時干支 , 不可為 null */
-//  public void setHour (@NotNull StemBranch branch)
-//  {
-//    hour  = branch;
-//  }
-//
-//  /** 以字串的 ("甲子") 來設定年干支 */
-//  public void setYear (String value) { year  = StemBranch.get(value); }
-//  /** 以字串的 ("甲子") 來設定月干支 */
-//  public void setMonth(String value) { month = StemBranch.get(value); }
-//  /** 以字串的 ("甲子") 來設定日干支 */
-//  public void setDay  (String value) { day   = StemBranch.get(value); }
-//  /** 以字串的 ("甲子") 來設定時干支 */
-//  public void setHour (String value) { hour  = StemBranch.get(value); }
- 
 }
