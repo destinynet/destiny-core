@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
-import destiny.core.chinese.StemBranchNullable;
+import destiny.core.chinese.StemBranchOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,21 +19,21 @@ import java.util.List;
 public class EightWordsNullable implements Serializable {
 
   @NotNull
-  protected StemBranchNullable year;
+  protected StemBranchOptional year;
 
   @NotNull
-  protected StemBranchNullable month;
+  protected StemBranchOptional month;
 
   @NotNull
-  protected StemBranchNullable day;
+  protected StemBranchOptional day;
 
   @NotNull
-  protected StemBranchNullable hour;
+  protected StemBranchOptional hour;
 
   @NotNull
   private final static String NULL_CHAR ="　"; //空白字元，使用全形的空白, 在 toString() 時使用
 
-  public EightWordsNullable(@NotNull StemBranchNullable year, @NotNull StemBranchNullable month, @NotNull StemBranchNullable day, @NotNull StemBranchNullable hour) {
+  public EightWordsNullable(@NotNull StemBranchOptional year, @NotNull StemBranchOptional month, @NotNull StemBranchOptional day, @NotNull StemBranchOptional hour) {
     this.year = year;
     this.month = month;
     this.day = day;
@@ -41,29 +41,29 @@ public class EightWordsNullable implements Serializable {
   }
 
   public EightWordsNullable() {
-    this.year  = StemBranchNullable.empty();
-    this.month = StemBranchNullable.empty();
-    this.day   = StemBranchNullable.empty();
-    this.hour  = StemBranchNullable.empty();
+    this.year  = StemBranchOptional.empty();
+    this.month = StemBranchOptional.empty();
+    this.day   = StemBranchOptional.empty();
+    this.hour  = StemBranchOptional.empty();
   }
 
   @NotNull
-  public StemBranchNullable getYear() {
+  public StemBranchOptional getYear() {
     return year;
   }
 
   @NotNull
-  public StemBranchNullable getMonth() {
+  public StemBranchOptional getMonth() {
     return month;
   }
 
   @NotNull
-  public StemBranchNullable getDay() {
+  public StemBranchOptional getDay() {
     return day;
   }
 
   @NotNull
-  public StemBranchNullable getHour() {
+  public StemBranchOptional getHour() {
     return hour;
   }
 
@@ -87,8 +87,8 @@ public class EightWordsNullable implements Serializable {
 
   /** 取得四柱 */
   @NotNull
-  public List<StemBranchNullable> getStemBranches() {
-    return new ArrayList<StemBranchNullable>() {{
+  public List<StemBranchOptional> getStemBranches() {
+    return new ArrayList<StemBranchOptional>() {{
       add(year);
       add(month);
       add(day);
@@ -148,19 +148,19 @@ public class EightWordsNullable implements Serializable {
     return result;
   }
 
-  public void setYear(@NotNull StemBranchNullable year) {
+  public void setYear(@NotNull StemBranchOptional year) {
     this.year = year;
   }
 
-  public void setMonth(@NotNull StemBranchNullable month) {
+  public void setMonth(@NotNull StemBranchOptional month) {
     this.month = month;
   }
 
-  public void setDay(@NotNull StemBranchNullable day) {
+  public void setDay(@NotNull StemBranchOptional day) {
     this.day = day;
   }
 
-  public void setHour(@NotNull StemBranchNullable hour) {
+  public void setHour(@NotNull StemBranchOptional hour) {
     this.hour = hour;
   }
 }

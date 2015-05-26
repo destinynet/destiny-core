@@ -14,6 +14,17 @@ import static org.junit.Assert.*;
 public class StemBranchTest {
 
   @Test
+  public void testGetAheadOf() {
+    assertSame(0 , StemBranch.get("甲子").getAheadOf(StemBranch.get("甲子")));
+    assertSame(1 , StemBranch.get("甲子").getAheadOf(StemBranch.get("癸亥")));
+    assertSame(59 , StemBranch.get("甲子").getAheadOf(StemBranch.get("乙丑")));
+
+    assertSame(0 , StemBranch.get("癸亥").getAheadOf(StemBranch.get("癸亥")));
+    assertSame(1 , StemBranch.get("癸亥").getAheadOf(StemBranch.get("壬戌")));
+    assertSame(59 , StemBranch.get("癸亥").getAheadOf(StemBranch.get("甲子")));
+  }
+
+  @Test
   public void testNext() {
     assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").next(0));
     assertSame(StemBranch.get("乙丑") , StemBranch.get("甲子").next(1));

@@ -75,28 +75,28 @@ public class EightWords extends EightWordsNullable
   {}
 
   @NotNull
-  @Override public Stem getYearStem()  { return year.getStem();  }
+  @Override public Stem getYearStem()  { return year.getStemOptional().get();  }
 
   @NotNull
-  @Override public Stem getMonthStem() { return month.getStem(); }
+  @Override public Stem getMonthStem() { return month.getStemOptional().get(); }
 
   @NotNull
-  @Override public Stem getDayStem()   { return day.getStem();   }
+  @Override public Stem getDayStem()   { return day.getStemOptional().get();   }
 
   @NotNull
-  @Override public Stem getHourStem()  { return hour.getStem();  }
+  @Override public Stem getHourStem()  { return hour.getStemOptional().get();  }
 
   @NotNull
-  @Override public Branch getYearBranch()  { return year.getBranch();  }
+  @Override public Branch getYearBranch()  { return year.getBranchOptional().get();  }
 
   @NotNull
-  @Override public Branch getMonthBranch() { return month.getBranch(); }
+  @Override public Branch getMonthBranch() { return month.getBranchOptional().get(); }
 
   @NotNull
-  @Override public Branch getDayBranch()   { return day.getBranch();   }
+  @Override public Branch getDayBranch()   { return day.getBranchOptional().get();   }
 
   @NotNull
-  @Override public Branch getHourBranch()  { return hour.getBranch();  }
+  @Override public Branch getHourBranch()  { return hour.getBranchOptional().get();  }
 
   @NotNull
   public StemBranch getYear() {
@@ -145,8 +145,8 @@ public class EightWords extends EightWordsNullable
   {
     return
       "\n"+
-      hour.getStem()   + day.getStem()   + month.getStem()   + year.getStem() + "\n" +
-      hour.getBranch() + day.getBranch() + month.getBranch() + year.getBranch() ;
+      hour.getStemOptional().get()  + day.getStemOptional().get()  + month.getStemOptional().get()   + year.getStemOptional().get() + "\n" +
+      hour.getBranchOptional().get() + day.getBranchOptional().get() + month.getBranchOptional().get() + year.getBranchOptional().get() ;
   }
 //
 //  @Override

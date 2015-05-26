@@ -6,12 +6,12 @@ package destiny.core.calendar.eightwords.graph;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWordsNullable;
 import destiny.core.chart.Constants;
-import destiny.core.chinese.StemBranchNullable;
+import destiny.core.chinese.StemBranchOptional;
 import destiny.font.FontRepository;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.*;
+import java.util.Collections;
 
 import static destiny.core.chart.Constants.GOLDEN_RATIO;
 
@@ -46,12 +46,12 @@ public class EightWordsGraphics {
 
     g.setFont(getFont(h));
 
-    java.util.List<StemBranchNullable> stemBranchList = eightWordsNullable.getStemBranches();
+    java.util.List<StemBranchOptional> stemBranchList = eightWordsNullable.getStemBranches();
     if (direction == Direction.R2L)
       Collections.reverse(stemBranchList);
 
     for (int i = 0; i < 4; i++) {
-      StemBranchNullable sb = stemBranchList.get(i);
+      StemBranchOptional sb = stemBranchList.get(i);
 
       for (int j = 1; j <= 2; j++) {
         float textY = (float) (cellHeight * (j - 0.2));
@@ -61,10 +61,10 @@ public class EightWordsGraphics {
         if (j % 2 == 1) {
           if ((direction == Direction.R2L && i == 1) || (direction == Direction.L2R && i == 2))
             g.setColor(dayStemColor); // 日主
-          g.drawString(String.valueOf(sb.getStem()), textX, textY);
+          g.drawString(String.valueOf(sb.getStemOptional().get()), textX, textY);
         }
         else {
-          g.drawString(String.valueOf(sb.getBranch()), textX, textY);
+          g.drawString(String.valueOf(sb.getBranchOptional().get()), textX, textY);
         }
       } // 干支
     } // 四柱

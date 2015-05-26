@@ -6,43 +6,40 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Optional;
 
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
-public class StemBranch extends StemBranchNullable implements Comparable<StemBranch> , Serializable
+public class StemBranch extends StemBranchOptional implements Comparable<StemBranch> , Serializable
 {
 //  @Nullable
-//  private final HeavenlyStems   stem;   //天干
+//  private final HeavenlyStems   stem;   //stem
 //
 //  @Nullable
-//  private final EarthlyBranches branch; //地支
+//  private final EarthlyBranches branch; //branch
   
   // 0[甲子] ~ 59[癸亥]
   @NotNull
-  private transient static StemBranch[] stemBranchArray = new StemBranch[60];
-  static
-  {
-    int n=0;
-    do
-    {
-      stemBranchArray[n]= new StemBranch (Stem.getHeavenlyStems(n % 10) ,
-                                          Branch.getEarthlyBranches(n % 12) );
+  private transient static StemBranch[] ARRAY = new StemBranch[60];
+
+  static {
+    int n = 0;
+    do {
+      ARRAY[n] = new StemBranch(Stem.getHeavenlyStems(n % 10), Branch.getEarthlyBranches(n % 12));
       n++;
-    }
-    while(n<60);
+    } while (n < 60);
   }
-  
-  private StemBranch(@NotNull Stem 天干 , @NotNull Branch 地支)
-  {
-    super(天干 , 地支);
+
+  StemBranch(@NotNull Stem stem, @NotNull Branch branch) {
+    super(Optional.of(stem), Optional.of(branch));
   }
   
   /*
-  public StemBranch(char 天干 , char 地支) 
+  public StemBranch(char stem , char branch)
   {
-    this.stem = HeavenlyStems.getHeavenlyStems(天干);
-    this.branch = EarthlyBranches.getEarthlyBranches(地支);
+    this.stem = HeavenlyStems.getHeavenlyStems(stem);
+    this.branch = EarthlyBranches.getEarthlyBranches(branch);
 
     if ( (HeavenlyStems.getIndex(this.stem) % 2 )  != (EarthlyBranches.getIndex(this.branch) %2 ) )
           throw new RuntimeException("Stem/Branch combination illegal ! " + stem + " cannot be combined with " + branch );    
@@ -54,7 +51,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
    */
   public static StemBranch get(int index)
   {
-    return stemBranchArray[normalize(index)];
+    return ARRAY[normalize(index)];
   }
 
   /**
@@ -84,13 +81,13 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   }
 
   @NotNull
-  public static StemBranch get(@NotNull Stem 天干 , @NotNull Branch 地支)
+  public static StemBranch get(@NotNull Stem stem, @NotNull Branch branch)
   {
-    if ( (Stem.getIndex(天干) % 2 )  != (Branch.getIndex(地支) %2 ) )
-        throw new RuntimeException("Stem/Branch combination illegal ! " + 天干 + " cannot be combined with " + 地支 );
+    if ( (Stem.getIndex(stem) % 2 )  != (Branch.getIndex(branch) %2 ) )
+        throw new RuntimeException("Stem/Branch combination illegal ! " + stem + " cannot be combined with " + branch);
 
-    int hIndex = Stem.getIndex(天干);
-    int eIndex = Branch.getIndex(地支);
+    int hIndex = Stem.getIndex(stem);
+    int eIndex = Branch.getIndex(branch);
     switch (hIndex - eIndex) {
       case 0:
       case -10:
@@ -108,7 +105,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
       case -2:
         return get(eIndex + 48);
       default:
-        throw new RuntimeException("Invalid 天干/地支 Combination!");
+        throw new AssertionError("Invalid stem/branch Combination!");
     }
   }
   
@@ -136,10 +133,21 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
       return index;
   }
   
-  /** 取得干支的差距，例如 "乙丑" 距離 "甲子" 的差距為 "1" , 通常是用於計算「需歲」 (尚需加一) */
+  /** 取得干支的差距，例如 "乙丑" 距離 "甲子" 的差距為 "1" , 通常是用於計算「虛歲」 (尚需加一) */
   public int differs(@NotNull StemBranch sb)
   {
     return getIndex(this) - sb.getIndex();
+  }
+
+  /**
+   * 取得此干支，領先另一組，多少步. 其值一定為正值
+   *
+   * 「甲子」領先「癸亥」 1
+   * 「甲子」領先「乙丑」59
+   */
+  public int getAheadOf(StemBranch other) {
+    int steps = getIndex() - other.getIndex();
+    return (steps >=0 ? steps : steps+60);
   }
   
   public boolean equals(@Nullable Object o)
@@ -169,10 +177,9 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
    */
   private static int getIndex(@NotNull StemBranch sb)
   {
-    int index=-1;
-    for (int i = 0 ; i < stemBranchArray.length ; i ++)
-    {
-      if (sb.equals(stemBranchArray[i]) )
+    int index = -1;
+    for (int i = 0; i < ARRAY.length; i++) {
+      if (sb.equals(ARRAY[i]))
         index = i;
     }
     return index;
@@ -190,7 +197,7 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   }
 
   public static Iterator<StemBranch> iterator() {
-    return Arrays.stream(stemBranchArray).iterator();
+    return Arrays.stream(ARRAY).iterator();
   }
   
   @NotNull
@@ -217,26 +224,26 @@ public class StemBranch extends StemBranchNullable implements Comparable<StemBra
   }//compareTo()
  
   /**
-   * @return 天干
+   * @return stem
    */
   @NotNull
   public Stem getStem()
   {
-    return stem;
+    return stem.get();
   }
   
   /**
-   * @return 地支
+   * @return branch
    */
   @NotNull
   public Branch getBranch()
   {
-    return branch;
+    return branch.get();
   }
 
 
 
   public static Iterable<StemBranch> iterable() {
-    return Arrays.asList(stemBranchArray);
+    return Arrays.asList(ARRAY);
   }
 }

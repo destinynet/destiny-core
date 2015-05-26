@@ -142,7 +142,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   }
 
   /**
-   * 取得此天干，領先另一個天干，多少距離
+   * 取得此天干，領先另一個天干，多少距離. 其值一定為正值
    * 甲 領先 甲 0 步
    * 甲 領先 乙 9 步
    * ...
@@ -150,10 +150,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
    */
   public int getAheadOf(Stem other) {
     int steps = getIndex() - other.getIndex();
-    if (steps >=0 )
-      return steps;
-    else
-      return steps + 10;
+    return (steps >=0 ? steps : steps+10);
   }
 
 

@@ -141,7 +141,7 @@ public enum Branch implements BranchIF<Branch>
 
 
   /**
-   * 此地支「領先」另一個地支多少距離
+   * 此地支「領先」另一個地支多少距離. 其值一定為正值
    * 子領先子 0
    * 子領先丑 11
    * ...
@@ -150,10 +150,7 @@ public enum Branch implements BranchIF<Branch>
   @Override
   public int getAheadOf(Branch other) {
     int steps = getIndex() - other.getIndex();
-    if (steps >= 0)
-      return steps;
-    else
-      return steps+12;
+    return (steps >=0 ? steps : steps + 12);
   }
 
   

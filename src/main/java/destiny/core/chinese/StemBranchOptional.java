@@ -11,11 +11,12 @@ import java.util.Optional;
 public class StemBranchOptional {
 
   @NotNull
-  protected final Optional<Stem> stemOpt;
+  protected final Optional<Stem> stem;
 
   @NotNull
-  protected final Optional<Branch> branchOpt;
+  protected final Optional<Branch> branch;
 
+    // 0[甲子] ~ 59[癸亥]
   private transient static StemBranchOptional[] ARRAY = new StemBranchOptional[60];
   static {
     int n = 0;
@@ -29,11 +30,16 @@ public class StemBranchOptional {
   }
 
 
-  private StemBranchOptional(@NotNull Optional<Stem> stemOpt, @NotNull Optional<Branch> branchOpt) {
+  StemBranchOptional(@NotNull Optional<Stem> stemOpt, @NotNull Optional<Branch> branchOpt) {
     check(stemOpt , branchOpt);
-    this.stemOpt = stemOpt;
-    this.branchOpt = branchOpt;
+    this.stem = stemOpt;
+    this.branch = branchOpt;
   }
+
+  public static StemBranchOptional empty() {
+    return new StemBranchOptional(Optional.empty() , Optional.empty());
+  }
+
 
   /**
    * 0[甲子] ~ 59[癸亥]
@@ -82,8 +88,12 @@ public class StemBranchOptional {
     }
   }
 
-  public static StemBranchOptional get(char heavenlyStems, char earthlyBranches) {
-    return get(Optional.of(Stem.getHeavenlyStems(heavenlyStems).get()), Optional.of(Branch.getEarthlyBranches(earthlyBranches).get()));
+  public static StemBranchOptional get(Stem stem, Branch branch) {
+    return get(Optional.ofNullable(stem) , Optional.ofNullable(branch));
+  }
+
+  public static StemBranchOptional get(char stem, char branch) {
+    return get(Optional.of(Stem.getHeavenlyStems(stem).get()), Optional.of(Branch.getEarthlyBranches(branch).get()));
   }
 
   public static StemBranchOptional get(@NotNull String stemBranch) {
@@ -93,6 +103,24 @@ public class StemBranchOptional {
       return get(stemBranch.charAt(0), stemBranch.charAt(1));
   }
 
+  private static Optional<Integer> getIndex(StemBranchOptional sb) {
+    if (sb.stem.isPresent() && sb.branch.isPresent()) {
+      for(int i=0 ; i < ARRAY.length ; i++) {
+        if (sb.equals(ARRAY[i])) {
+          return Optional.of(i);
+        }
+      }
+    }
+    return Optional.empty();
+  }
+
+  public Optional<Integer> getIndexOpt() {
+    return StemBranchOptional.getIndex(this);
+  }
+
+  public Optional<StemBranchOptional> nextOpt(int n) {
+    return getIndex(this).map(i -> get(i+n));
+  }
 
   private static void check(@NotNull Optional<Stem> stemOpt, @NotNull Optional<Branch> branchOpt) {
     if (stemOpt.isPresent() && branchOpt.isPresent()) {
@@ -102,9 +130,19 @@ public class StemBranchOptional {
   }
 
 
+  @NotNull
+  public Optional<Stem> getStemOptional() {
+    return stem;
+  }
+
+  @NotNull
+  public Optional<Branch> getBranchOptional() {
+    return branch;
+  }
+
   @Override
   public String toString() {
-    return "[" + stemOpt + ' ' + branchOpt + ']';
+    return "[" + stem + ' ' + branch + ']';
   }
 
   @Override
@@ -114,11 +152,13 @@ public class StemBranchOptional {
     if (!(o instanceof StemBranchOptional))
       return false;
     StemBranchOptional that = (StemBranchOptional) o;
-    return Objects.equals(stemOpt, that.stemOpt) && Objects.equals(branchOpt, that.branchOpt);
+    return Objects.equals(stem, that.stem) && Objects.equals(branch, that.branch);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(stemOpt, branchOpt);
+    return Objects.hash(stem, branch);
   }
+
+
 }

@@ -12,7 +12,7 @@ import destiny.core.calendar.eightwords.personal.Reactions;
 import destiny.core.calendar.eightwords.personal.ReactionsUtil;
 import destiny.core.chart.Constants;
 import destiny.core.chinese.Stem;
-import destiny.core.chinese.StemBranchNullable;
+import destiny.core.chinese.StemBranchOptional;
 import destiny.font.FontRepository;
 import destiny.utils.Triple;
 import org.jetbrains.annotations.NotNull;
@@ -72,11 +72,11 @@ public class EightWordsWithDescGraphics {
     Stem dayStem = eightWordsNullable.getDayStem();
 
     // Tuple < 干支 , 天干(相對於日干)的十神 , 地支藏干(相對於日干)的十神 >
-    java.util.List<Triple<StemBranchNullable, Reactions, java.util.List<Reactions>>> list = new ArrayList<>();
+    java.util.List<Triple<StemBranchOptional, Reactions, java.util.List<Reactions>>> list = new ArrayList<>();
 
     eightWordsNullable.getStemBranches().forEach(sb -> {
-      java.util.List<Reactions> reactions = reactionsUtil.getReactions(sb.getBranch(), dayStem);
-      list.add(Triple.of(sb, reactionsUtil.getReaction(sb.getStem(), dayStem), reactions));
+      java.util.List<Reactions> reactions = reactionsUtil.getReactions(sb.getBranchOptional().get(), dayStem);
+      list.add(Triple.of(sb, reactionsUtil.getReaction(sb.getStemOptional().get(), dayStem), reactions));
     });
 
     if (direction == Direction.R2L)
