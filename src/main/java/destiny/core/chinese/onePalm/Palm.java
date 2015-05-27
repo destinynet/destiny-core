@@ -139,7 +139,7 @@ public class Palm implements Serializable {
     return IntStream.range(1 , count+1).boxed()
       .map(i -> Tuple.of(
           (i - 1) * 10 + 1,
-          Branch.getEarthlyBranches(month.getIndex() + (i - 1) * positive)
+          Branch.get(month.getIndex() + (i - 1) * positive)
         )
       )
       .collect(Collectors.toMap(Tuple::getFirst, Tuple::getSecond, (a, b) -> a, TreeMap::new));
@@ -151,7 +151,7 @@ public class Palm implements Serializable {
    */
   public Branch getMinorFortunes(int age) {
     int positive = (gender==Gender.男 ? 1 : -1) ;
-    return Branch.getEarthlyBranches(day.getIndex() + (age - 1) * positive);
+    return Branch.get(day.getIndex() + (age - 1) * positive);
   }
 
   /** 取得地支對應的「星」 (子 -> 天貴星) */

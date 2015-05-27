@@ -76,8 +76,7 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF
       .put(PISCES , 亥)
       .build();
 
-  private ZodiacSign(String nameKey , String abbrKey , Element element , Quality quality , boolean yinYang , int degree)
-  {
+  ZodiacSign(String nameKey, String abbrKey, Element element, Quality quality, boolean yinYang, int degree) {
     this.nameKey = nameKey;
     this.abbrKey = abbrKey;
     this.element = element;

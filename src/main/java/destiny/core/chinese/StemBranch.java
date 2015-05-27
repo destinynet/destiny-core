@@ -19,7 +19,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   static {
     int n = 0;
     do {
-      ARRAY[n] = new StemBranch(Stem.getHeavenlyStems(n % 10), Branch.getEarthlyBranches(n % 12));
+      ARRAY[n] = new StemBranch(Stem.getHeavenlyStems(n % 10), Branch.get(n % 12));
       n++;
     } while (n < 60);
   }
@@ -98,7 +98,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   
   public static StemBranch get(char heavenlyStems , char earthlyBranches)
   {
-    return get(Stem.getHeavenlyStems(heavenlyStems).get() , Branch.getEarthlyBranches(earthlyBranches).get());
+    return get(Stem.getHeavenlyStems(heavenlyStems).get() , Branch.get(earthlyBranches).get());
   }
   
   public static StemBranch get(@NotNull String stemBranch)
@@ -201,6 +201,5 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   public static Iterable<StemBranch> iterable() {
     return Arrays.asList(ARRAY);
   }
-
 
 }

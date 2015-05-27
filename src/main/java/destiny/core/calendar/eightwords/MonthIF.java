@@ -26,5 +26,5 @@ public interface MonthIF
   /**
    * 南半球月支是否對沖 , 內定是 '否'
    */
-  public void setSouthernHemisphereOpposition(boolean value);
+  void setSouthernHemisphereOpposition(boolean value);
 }

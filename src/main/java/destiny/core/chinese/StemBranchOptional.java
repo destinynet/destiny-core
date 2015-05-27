@@ -23,7 +23,7 @@ public class StemBranchOptional {
     do {
       ARRAY[n] = new StemBranchOptional(
         Optional.of(Stem.getHeavenlyStems(n % 10)),
-        Optional.of(Branch.getEarthlyBranches(n % 12))
+        Optional.of(Branch.get(n % 12))
       );
       n++;
     } while (n < 60);
@@ -93,7 +93,7 @@ public class StemBranchOptional {
   }
 
   public static StemBranchOptional get(char stem, char branch) {
-    return get(Optional.of(Stem.getHeavenlyStems(stem).get()), Optional.of(Branch.getEarthlyBranches(branch).get()));
+    return get(Optional.of(Stem.getHeavenlyStems(stem).get()), Optional.of(Branch.get(branch).get()));
   }
 
   public static StemBranchOptional get(@NotNull String stemBranch) {

@@ -12,5 +12,5 @@ import destiny.core.calendar.Time;
  */
 public interface DayNightDifferentiator
 {
-  public DayNight getDayNight(Time lmt , Location location);
+  DayNight getDayNight(Time lmt , Location location);
 }

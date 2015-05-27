@@ -78,40 +78,40 @@ public class BranchTest
   @Test
   public void testGetEarthlyBranchesFromInt()
   {
-    assertSame(亥 , getEarthlyBranches(-1));
-    assertSame(子 , getEarthlyBranches(0));
-    assertSame(丑 , getEarthlyBranches(1));
-    assertSame(寅 , getEarthlyBranches(2));
-    assertSame(卯 , getEarthlyBranches(3));
-    assertSame(辰 , getEarthlyBranches(4));
-    assertSame(巳 , getEarthlyBranches(5));
-    assertSame(午 , getEarthlyBranches(6));
-    assertSame(未 , getEarthlyBranches(7));
-    assertSame(申 , getEarthlyBranches(8));
-    assertSame(酉 , getEarthlyBranches(9));
-    assertSame(戌 , getEarthlyBranches(10));
-    assertSame(亥 , getEarthlyBranches(11));
-    assertSame(子 , getEarthlyBranches(12));
+    assertSame(亥 , get(-1));
+    assertSame(子 , get(0));
+    assertSame(丑 , get(1));
+    assertSame(寅 , get(2));
+    assertSame(卯 , get(3));
+    assertSame(辰 , get(4));
+    assertSame(巳 , get(5));
+    assertSame(午 , get(6));
+    assertSame(未 , get(7));
+    assertSame(申 , get(8));
+    assertSame(酉 , get(9));
+    assertSame(戌 , get(10));
+    assertSame(亥 , get(11));
+    assertSame(子 , get(12));
   }
 
   @Test
   public void testGetEarthlyBranchesFromChar()
   {
-    assertSame(子 , getEarthlyBranches('子').get());
-    assertSame(丑 , getEarthlyBranches('丑').get());
-    assertSame(寅 , getEarthlyBranches('寅').get());
-    assertSame(卯 , getEarthlyBranches('卯').get());
-    assertSame(辰 , getEarthlyBranches('辰').get());
-    assertSame(巳 , getEarthlyBranches('巳').get());
-    assertSame(午 , getEarthlyBranches('午').get());
-    assertSame(未 , getEarthlyBranches('未').get());
-    assertSame(申 , getEarthlyBranches('申').get());
-    assertSame(酉 , getEarthlyBranches('酉').get());
-    assertSame(戌 , getEarthlyBranches('戌').get());
-    assertSame(亥 , getEarthlyBranches('亥').get());
+    assertSame(子 , get('子').get());
+    assertSame(丑 , get('丑').get());
+    assertSame(寅 , get('寅').get());
+    assertSame(卯 , get('卯').get());
+    assertSame(辰 , get('辰').get());
+    assertSame(巳 , get('巳').get());
+    assertSame(午 , get('午').get());
+    assertSame(未 , get('未').get());
+    assertSame(申 , get('申').get());
+    assertSame(酉 , get('酉').get());
+    assertSame(戌 , get('戌').get());
+    assertSame(亥 , get('亥').get());
     try
     {
-      assertSame(亥 , getEarthlyBranches('無').get());
+      assertSame(亥 , get('無').get());
       fail("An exception should ba raised");
     }
     catch(RuntimeException e)
@@ -170,22 +170,22 @@ public class BranchTest
   public void testEarthlyBranches()
   {
     assertEquals("子" , 子.toString());
-    assertEquals(子 , getEarthlyBranches('子').get());
-    assertSame(子 , getEarthlyBranches('子').get());
-    assertEquals(子 , getEarthlyBranches(0));
-    assertSame(子 , getEarthlyBranches(0));
-    assertSame(子 , getEarthlyBranches(12));
-    assertSame(子 , getEarthlyBranches(-12));
-    assertSame(子 , getEarthlyBranches(-24));
+    assertEquals(子 , get('子').get());
+    assertSame(子 , get('子').get());
+    assertEquals(子 , get(0));
+    assertSame(子 , get(0));
+    assertSame(子 , get(12));
+    assertSame(子 , get(-12));
+    assertSame(子 , get(-24));
     
     assertEquals("亥" , 亥.toString());
-    assertEquals(亥 , getEarthlyBranches('亥').get());
-    assertSame(亥 , getEarthlyBranches('亥').get());
-    assertEquals(亥 , getEarthlyBranches(11));
-    assertSame(亥 , getEarthlyBranches(11));
-    assertSame(亥 , getEarthlyBranches(23));
-    assertSame(亥 , getEarthlyBranches(-1));
-    assertSame(亥 , getEarthlyBranches(-13));
+    assertEquals(亥 , get('亥').get());
+    assertSame(亥 , get('亥').get());
+    assertEquals(亥 , get(11));
+    assertSame(亥 , get(11));
+    assertSame(亥 , get(23));
+    assertSame(亥 , get(-1));
+    assertSame(亥 , get(-13));
     
   }
 }

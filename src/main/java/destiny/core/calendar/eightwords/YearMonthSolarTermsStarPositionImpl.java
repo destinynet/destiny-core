@@ -147,15 +147,15 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     //先算出太陽在黃經上的度數
     Time gmt = Time.getGMTfromLMT(lmt, location);
     
-    SolarTermsImpl solarTermsImpl = new SolarTermsImpl(this.starTransitImpl , this.starPositionImpl);
+    SolarTermsIF solarTermsImpl = new SolarTermsImpl(this.starTransitImpl , this.starPositionImpl);
     SolarTerms MonthST = solarTermsImpl.getSolarTermsFromGMT(gmt);
     
     //System.out.println("節氣: " +  MonthST);
     
-    int MonthIndex = (SolarTerms.getIndex(MonthST)/2)+2 ;
-    if (MonthIndex >= 12)
-      MonthIndex = MonthIndex - 12;
-    Branch 月支 = Branch.getEarthlyBranches(MonthIndex);
+    int monthIndex = (SolarTerms.getIndex(MonthST)/2)+2 ;
+    if (monthIndex >= 12)
+      monthIndex = monthIndex - 12;
+    Branch 月支 = Branch.get(monthIndex);
     if (southernHemisphereOpposition)
     {
       /*
@@ -164,7 +164,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       if (hemisphereBy == HemisphereBy.EQUATOR ) //如果是依據赤道來區分南北半球
       {
         if (!location.isNorth())
-          result月支 = Branch.getEarthlyBranches(MonthIndex + 6);
+          result月支 = Branch.get(monthIndex + 6);
         else
           result月支 = 月支;
       }
@@ -185,12 +185,12 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
             if (location.getLatitude() >= solarEquatorialDegree)
               result月支 = 月支;
             else
-              result月支 = Branch.getEarthlyBranches(MonthIndex + 6); //所在地緯度低於 太陽赤緯，取對沖月份
+              result月支 = Branch.get(monthIndex + 6); //所在地緯度低於 太陽赤緯，取對沖月份
           }
           else
           {
             //地點在南半球 , 取正沖
-            result月支 = Branch.getEarthlyBranches(MonthIndex + 6);
+            result月支 = Branch.get(monthIndex + 6);
           }
         }
         else
@@ -200,7 +200,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
           {
             //地點在南半球
             if (location.getLatitude() <= solarEquatorialDegree)
-              result月支 = Branch.getEarthlyBranches(MonthIndex + 6); //所在地緯度高於 太陽赤南緯，真正的南半球
+              result月支 = Branch.get(monthIndex + 6); //所在地緯度高於 太陽赤南緯，真正的南半球
             else
               result月支 = 月支; //雖在南半球，但緯度低於太陽赤南緯，視為北半球
           }

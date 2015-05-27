@@ -27,7 +27,7 @@ public enum Branch implements BranchIF<Branch>
   
   private char name;
   
-  private final static Branch[] BRANCH_ARRAY =
+  private final static Branch[] ARRAY =
     new Branch[] { 子 , 丑 , 寅 , 卯 , 辰 , 巳 , 午 , 未 , 申 , 酉 , 戌 , 亥};
   
   Branch(char c)
@@ -42,17 +42,17 @@ public enum Branch implements BranchIF<Branch>
    * ...      <BR>
    * 11 為 亥 <BR>
    */
-  public static Branch getEarthlyBranches(int index)
+  public static Branch get(int index)
   {
     /**
      * 如果 index < 0  , 則 加 12 , recursive 再傳一次<BR>
      * 如果 index >=12 , 則 減 12 , recursive 再傳一次<BR> 
      */
     if (index < 0 )
-      return getEarthlyBranches(index+12);
+      return get(index + 12);
     else if (index >=12)
-      return getEarthlyBranches(index-12);
-    return BRANCH_ARRAY[index];
+      return get(index - 12);
+    return ARRAY[index];
   }
 
   /**
@@ -60,7 +60,7 @@ public enum Branch implements BranchIF<Branch>
    * n = 0 : 傳回自己
    */
   public Branch next(int n) {
-    return getEarthlyBranches(getIndex(this) + n);
+    return get(getIndex(this) + n);
   }
 
   /**
@@ -72,10 +72,10 @@ public enum Branch implements BranchIF<Branch>
   }
 
   
-  public static Optional<Branch> getEarthlyBranches(char c)
+  public static Optional<Branch> get(char c)
   {
     Branch result = null;
-    for (Branch aBranchArray : BRANCH_ARRAY) {
+    for (Branch aBranchArray : ARRAY) {
       if (aBranchArray.name == c) {
         result = aBranchArray;
         break;
@@ -90,7 +90,7 @@ public enum Branch implements BranchIF<Branch>
   /** 取得對沖 的地支 */
   public Branch getOpposite()
   {
-    return Branch.getEarthlyBranches(getIndex() + 6);
+    return Branch.get(getIndex() + 6);
   }
 
   /** 取得 六合 的地支 */
@@ -119,9 +119,8 @@ public enum Branch implements BranchIF<Branch>
   public static int getIndex(@NotNull Branch eb)
   {
     int index = -1;
-    for (int i=0 ; i < BRANCH_ARRAY.length ; i++)
-    {
-      if ( eb.equals(BRANCH_ARRAY[i]) )
+    for (int i = 0; i < ARRAY.length; i++) {
+      if (eb.equals(ARRAY[i]))
         index = i;
     }
     return index;
@@ -178,7 +177,7 @@ public enum Branch implements BranchIF<Branch>
   }
 
   public static Iterable<Branch> iterable() {
-    return Arrays.asList(BRANCH_ARRAY);
+    return Arrays.asList(ARRAY);
   }
 
 

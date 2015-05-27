@@ -7,10 +7,10 @@ import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.StemBranchUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 六壬金口訣，核心資料結構
@@ -28,22 +28,25 @@ public class GoldenMouth implements Serializable {
   private final Branch monthSign;
 
   /** 貴神 */
-  private List<Branch> benefactors;
+  private final StemBranch benefactor;
 
-  public GoldenMouth(EightWords ew, Branch selected, Branch monthSign) {
+  public GoldenMouth(EightWords ew, Branch selected, Branch monthSign, StemBranch benefactor) {
     this.ew = ew;
     this.selected = selected;
     this.monthSign = monthSign;
+    this.benefactor = benefactor;
   }
 
   /**
    * 取得「將神」 : 從時辰開始，順數至「地分」
    */
-  public Branch getJohnson() {
+  public StemBranch getJohnson() {
     // 從「地分」領先「時辰」多少
     int steps = selected.getAheadOf(ew.getHourBranch());
     // 接下來，將月將 加上此 step
-    return monthSign.next(steps);
+    Branch branch = monthSign.next(steps);
+    Stem stem = StemBranchUtils.getHourStem(ew.getDayStem() , monthSign.next(steps));
+    return StemBranch.get(stem , branch);
   }
 
   /**
@@ -53,26 +56,7 @@ public class GoldenMouth implements Serializable {
    * 戊癸壬子頭 時元從子推
    */
   public Stem getHuman() {
-    assert (ew.getDayStem() != null);
-
-    switch (ew.getDayStem()) {
-      case 甲:
-      case 己:
-        return StemBranch.get(Stem.甲 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
-      case 乙:
-      case 庚:
-        return StemBranch.get(Stem.丙 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
-      case 丙:
-      case 辛:
-        return StemBranch.get(Stem.戊 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
-      case 丁:
-      case 壬:
-        return StemBranch.get(Stem.庚 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
-      case 戊:
-      case 癸:
-        return StemBranch.get(Stem.壬 , Branch.子).next(selected.getAheadOf(Branch.子)).getStem();
-      default: throw new AssertionError("error");
-    }
+    return StemBranchUtils.getHourStem(ew.getDayStem() , selected);
   }
 
   /** 取得「月將」的中文稱謂
@@ -96,4 +80,5 @@ public class GoldenMouth implements Serializable {
       default: throw new AssertionError("error : " + branch);
     }
   }
+
 }
