@@ -27,7 +27,6 @@ import static destiny.core.chinese.Branch.*;
  */
 public class TianyiHeartMirrorImpl implements TianyiIF, Descriptive, Serializable {
 
-
   @Override
   public Branch getFirstTianyi(Stem stem, DayNight dayNight) {
     switch (stem) {

@@ -14,35 +14,37 @@ import destiny.core.chinese.liuren.GeneralSeqIF;
 
 public interface GoldenMouthIF {
 
-  default GoldenMouth getGoldenMouth(Branch 地分, Time lmt , Location loc , MonthBranchIF monthBranchImpl ,
+  default GoldenMouth getGoldenMouth(Branch direction, Time lmt , Location loc , MonthBranchIF monthBranchImpl ,
                                      DayNightDifferentiator dayNightImpl ,
                                      TianyiIF tianyiImpl , ClockwiseIF clockwiseImpl , GeneralSeqIF seq,
-                                     EightWordsIF eightWordsImpl , StarPositionIF starPositionImpl ) {
+                                     EightWordsIF eightWordsImpl ) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
 
-    ZodiacSign sign = ZodiacSign.getZodiacSign(starPositionImpl.getPosition(Planet.SUN, lmt, loc).getLongitude());
     Branch 月將 = monthBranchImpl.getBranch(lmt , loc);
+    System.out.println("月將 = " + 月將);
 
     Clockwise clockwise = clockwiseImpl.getClockwise(lmt , loc) ;
-    int direction = clockwiseImpl.getClockwise(lmt , loc) == Clockwise.CLOCKWISE ? 1 : -1;
 
     DayNight dayNight = dayNightImpl.getDayNight(lmt , loc);
 
     // 天乙貴人(起點)
     Branch 天乙貴人 = tianyiImpl.getFirstTianyi(ew.getDayStem() , dayNight);
 
-    int gap = 0;
+    int steps = 0;
     switch (clockwise) {
-      case CLOCKWISE: gap = 天乙貴人.getAheadOf(地分); break;
-      case COUNTER  : gap = 地分.getAheadOf(天乙貴人); break;
+      case CLOCKWISE: steps = direction.getAheadOf(天乙貴人); break;
+      case COUNTER  : steps = 天乙貴人.getAheadOf(direction); break;
     }
 
+    System.out.println("天乙貴人 (日干"+ ew.getDayStem()+" + " + dayNight + " ) = " + 天乙貴人 + " , direction = " + direction + " , 順逆 = " + clockwise + " , 間隔 = " + steps);
+
     // 貴神
-    Branch 貴神地支 = General.貴人.next(gap , seq).getStemBranch().getBranch();
+    Branch 貴神地支 = General.貴人.next(steps , seq).getStemBranch().getBranch();
     Stem 貴神天干 = StemBranchUtils.getHourStem(ew.getDayStem() , 貴神地支);
+    System.out.println("從 " + General.貴人 + " 開始走 " + steps + "步 , 得到 : " + General.貴人.next(steps , seq) + " , 地支為 " + 貴神地支);
     StemBranch 貴神 = StemBranch.get(貴神天干 , 貴神地支);
 
-    return new GoldenMouth(ew , 地分, sign.getBranch() , 貴神);
+    return new GoldenMouth(ew , direction, 月將 , 貴神);
 
   }
 }

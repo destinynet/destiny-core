@@ -10,7 +10,7 @@ import destiny.core.calendar.Time;
 /**
  * 計算八字的介面
  */
-public interface EightWordsIF
-{
+public interface EightWordsIF {
+
   EightWords getEightWords(Time lmt, Location location);
 }

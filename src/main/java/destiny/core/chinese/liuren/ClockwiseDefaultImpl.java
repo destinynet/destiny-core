@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2015-05-27.
  */
-package destiny.core.chinese.impls;
+package destiny.core.chinese.liuren;
 
 import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
