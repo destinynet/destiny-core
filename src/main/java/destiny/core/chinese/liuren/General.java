@@ -43,6 +43,21 @@ public enum General {
     this.fiveElement = fiveElement;
   }
 
+  public char getShortName() {
+    return shortName;
+  }
+
+  public StemBranch getStemBranch() {
+    return stemBranch;
+  }
+
+  public boolean isPositive() {
+    return positive;
+  }
+
+  public FiveElement getFiveElement() {
+    return fiveElement;
+  }
 
   public General next(int n, GeneralSeqIF seq) {
     return seq.next(this , n);
