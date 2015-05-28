@@ -227,6 +227,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     }
   }
 
+  /** 取得「空亡」的兩個地支 */
   public Collection<Branch> getEmpties() {
     return StemBranch.getEmpties(this);
   }

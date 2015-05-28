@@ -7,7 +7,6 @@ import destiny.astrology.Planet;
 import destiny.astrology.Position;
 import destiny.astrology.StarPositionIF;
 import destiny.astrology.ZodiacSign;
-import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
@@ -16,7 +15,7 @@ import destiny.core.chinese.MonthMasterIF;
 import java.io.Serializable;
 import java.util.Locale;
 
-public class MonthMasterStarPositionImpl implements MonthMasterIF, Descriptive , Serializable {
+public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable {
 
   private final StarPositionIF starPositionImpl;
 

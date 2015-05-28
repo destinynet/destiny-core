@@ -3,14 +3,12 @@
  */
 package destiny.core.chinese.liuren;
 
-import destiny.core.Descriptive;
-
 import java.io.Serializable;
 import java.util.Locale;
 
 import static destiny.core.chinese.liuren.General.*;
 
-public class GeneralZhaoSeqImpl implements GeneralSeqIF , Descriptive, Serializable {
+public class GeneralZhaoSeqImpl implements GeneralSeqIF , Serializable {
 
   private final static General[] ARRAY = new General[] {
     貴人 , 青龍 , 六合 , 勾陳 ,

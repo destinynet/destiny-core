@@ -4,7 +4,6 @@
 package destiny.core.chinese.impls;
 
 import destiny.astrology.DayNight;
-import destiny.core.Descriptive;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.TianyiIF;
@@ -25,7 +24,7 @@ import static destiny.core.chinese.Branch.*;
  * 六辛日旦治勝光（午），暮治功曹（寅）；
  * 壬癸日旦治太乙（巳），暮治太沖（卯）
  */
-public class TianyiHeartMirrorImpl implements TianyiIF, Descriptive, Serializable {
+public class TianyiHeartMirrorImpl implements TianyiIF, Serializable {
 
   @Override
   public Branch getFirstTianyi(Stem stem, DayNight dayNight) {

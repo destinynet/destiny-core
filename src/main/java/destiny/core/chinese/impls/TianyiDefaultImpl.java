@@ -4,7 +4,6 @@
 package destiny.core.chinese.impls;
 
 import destiny.astrology.DayNight;
-import destiny.core.Descriptive;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.TianyiIF;
@@ -15,7 +14,7 @@ import java.util.Locale;
 import static destiny.astrology.DayNight.DAY;
 import static destiny.core.chinese.Branch.*;
 
-public class TianyiDefaultImpl implements TianyiIF, Descriptive, Serializable {
+public class TianyiDefaultImpl implements TianyiIF, Serializable {
 
   /**
    * 《協紀辨方書》 《蠡海集》

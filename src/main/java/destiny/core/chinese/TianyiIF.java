@@ -5,6 +5,7 @@ package destiny.core.chinese;
 
 import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
+import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.DayIF;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  * CU Draconis (CU Dra / 10 Draconis / HD 121130)
  * 天龍座10，又名天龍座CU
  * */
-public interface TianyiIF {
+public interface TianyiIF extends Descriptive {
 
   /**
    * 取得天干的天乙貴人、分晝夜

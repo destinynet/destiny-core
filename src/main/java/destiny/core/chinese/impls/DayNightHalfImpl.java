@@ -4,14 +4,13 @@
 package destiny.core.chinese.impls;
 
 import destiny.astrology.*;
-import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-public class DayNightHalfImpl implements DayNightDifferentiator , Descriptive , Serializable {
+public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
 
   private final RiseTransIF riseTransImpl;
 

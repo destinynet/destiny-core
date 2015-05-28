@@ -5,7 +5,6 @@ package destiny.core.chinese.liuren;
 
 import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
-import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.DayIF;
@@ -19,9 +18,10 @@ import java.io.Serializable;
 import java.util.Locale;
 
 /**
+ * 推算貴神
  * 甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順
  */
-public class ClockwiseAnotherImpl implements ClockwiseIF, Descriptive, Serializable {
+public class ClockwiseAnotherImpl implements ClockwiseIF, Serializable {
 
   private final DayIF dayImpl;
 

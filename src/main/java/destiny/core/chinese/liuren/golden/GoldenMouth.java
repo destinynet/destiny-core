@@ -10,6 +10,7 @@ import destiny.core.chinese.StemBranch;
 import destiny.core.chinese.StemBranchUtils;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * 六壬金口訣，核心資料結構
@@ -80,6 +81,13 @@ public class GoldenMouth implements Serializable {
    */
   public EightWords getEightWords() {
     return ew;
+  }
+
+  /**
+   * 取得「日」的空亡
+   */
+  public Collection<Branch> getDayEmpties() {
+    return ew.getDay().getEmpties();
   }
 
 }

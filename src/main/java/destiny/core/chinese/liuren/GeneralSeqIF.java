@@ -3,7 +3,9 @@
  */
 package destiny.core.chinese.liuren;
 
-public interface GeneralSeqIF {
+import destiny.core.Descriptive;
+
+public interface GeneralSeqIF extends Descriptive {
 
   /** 取得下 n 個天將 , n 若等於 0  , 則傳回自己 */
   General next(General from , int n);

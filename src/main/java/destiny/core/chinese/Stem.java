@@ -102,16 +102,8 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   }
   
   /** 甲[0] ... 癸[9] */
-  public static int getIndex(Stem hs)
-  {
+  public static int getIndex(Stem hs) {
     return STEM_LIST.indexOf(hs);
-    /*
-    int result = heavenlyStemsList.indexOf(hs);
-    if (result != -1)
-      return result;
-    else
-      throw new RuntimeException("Cannot find HeavenlyStems : " + hs + " in HeavenlyStems .");
-    */
   }
 
   /**

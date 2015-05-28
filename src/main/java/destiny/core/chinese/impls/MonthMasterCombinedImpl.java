@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.impls;
 
-import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.YearMonthIF;
@@ -13,7 +12,7 @@ import destiny.core.chinese.MonthMasterIF;
 import java.io.Serializable;
 import java.util.Locale;
 
-public class MonthMasterCombinedImpl implements MonthMasterIF, Descriptive , Serializable {
+public class MonthMasterCombinedImpl implements MonthMasterIF, Serializable {
 
   private final YearMonthIF yearMonthImpl;
 
