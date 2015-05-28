@@ -3,7 +3,8 @@
  */
 package destiny.core.chinese.liuren.golden;
 
-import destiny.astrology.*;
+import destiny.astrology.DayNight;
+import destiny.astrology.DayNightDifferentiator;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.EightWords;
@@ -11,21 +12,14 @@ import destiny.core.calendar.eightwords.EightWordsIF;
 import destiny.core.chinese.*;
 import destiny.core.chinese.liuren.General;
 import destiny.core.chinese.liuren.GeneralSeqIF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface GoldenMouthIF {
 
-  default GoldenMouth getGoldenMouth(Branch direction, Time lmt , Location loc , MonthBranchIF monthBranchImpl ,
-                                     DayNightDifferentiator dayNightImpl ,
-                                     TianyiIF tianyiImpl , ClockwiseIF clockwiseImpl , GeneralSeqIF seq,
-                                     EightWordsIF eightWordsImpl ) {
-    EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
+  Logger logger = LoggerFactory.getLogger(GoldenMouthIF.class);
 
-    Branch 月將 = monthBranchImpl.getBranch(lmt , loc);
-    System.out.println("月將 = " + 月將);
-
-    Clockwise clockwise = clockwiseImpl.getClockwise(lmt , loc) ;
-
-    DayNight dayNight = dayNightImpl.getDayNight(lmt , loc);
+  default GoldenMouth getGoldenMouth(Branch direction , EightWords ew , Branch 月將 , TianyiIF tianyiImpl , DayNight dayNight , Clockwise clockwise , GeneralSeqIF seq) {
 
     // 天乙貴人(起點)
     Branch 天乙貴人 = tianyiImpl.getFirstTianyi(ew.getDayStem() , dayNight);
@@ -36,15 +30,30 @@ public interface GoldenMouthIF {
       case COUNTER  : steps = 天乙貴人.getAheadOf(direction); break;
     }
 
-    System.out.println("天乙貴人 (日干"+ ew.getDayStem()+" + " + dayNight + " ) = " + 天乙貴人 + " , direction = " + direction + " , 順逆 = " + clockwise + " , 間隔 = " + steps);
+    logger.info("天乙貴人 (日干 {} + {} ) = {} . 地分 = {} , 順逆 = {} , steps = {}" , ew.getDayStem() , dayNight , 天乙貴人 , direction , clockwise , steps);
 
     // 貴神
     Branch 貴神地支 = General.貴人.next(steps , seq).getStemBranch().getBranch();
     Stem 貴神天干 = StemBranchUtils.getHourStem(ew.getDayStem() , 貴神地支);
-    System.out.println("從 " + General.貴人 + " 開始走 " + steps + "步 , 得到 : " + General.貴人.next(steps , seq) + " , 地支為 " + 貴神地支);
+    logger.info("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}" , General.貴人 , steps , General.貴人.next(steps , seq) , 貴神地支 , 貴神天干);
     StemBranch 貴神 = StemBranch.get(貴神天干 , 貴神地支);
 
     return new GoldenMouth(ew , direction, 月將 , 貴神);
+  }
 
+  default GoldenMouth getGoldenMouth(Branch direction, Time lmt , Location loc , MonthMasterIF monthBranchImpl ,
+                                     DayNightDifferentiator dayNightImpl ,
+                                     TianyiIF tianyiImpl , ClockwiseIF clockwiseImpl , GeneralSeqIF seq,
+                                     EightWordsIF eightWordsImpl ) {
+    EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
+
+    Branch 月將 = monthBranchImpl.getBranch(lmt , loc);
+    logger.info("月將 = {}" , 月將);
+
+    Clockwise clockwise = clockwiseImpl.getClockwise(lmt , loc) ;
+
+    DayNight dayNight = dayNightImpl.getDayNight(lmt , loc);
+
+    return getGoldenMouth(direction , ew , 月將 , tianyiImpl , dayNight , clockwise , seq);
   }
 }

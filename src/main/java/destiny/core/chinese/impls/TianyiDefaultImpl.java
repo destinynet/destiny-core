@@ -70,6 +70,6 @@ public class TianyiDefaultImpl implements TianyiIF, Descriptive, Serializable {
 
   @Override
   public String getDescription(Locale locale) {
-    return "《協紀辨方書》、《蠡海集》、《六壬類聚》、《果老星宗》、《考原》 推導天乙貴人的方法：甲戊庚牛羊(甲羊戊庚牛) … 六辛逢馬虎";
+    return "《協紀辨方書》、《蠡海集》、《六壬類聚》、《果老星宗》、《考原》 推導天乙貴人的方法：甲羊戊庚牛 … 六辛逢馬虎";
   }
 }

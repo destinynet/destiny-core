@@ -62,7 +62,7 @@ public class TianyiHeartMirrorImpl implements TianyiIF, Descriptive, Serializabl
 
   @Override
   public String getDescription(Locale locale) {
-    return "《大六壬心鏡》、《六壬景右神定經》、《六壬大全》、《大六壬指南》推導天乙貴人：甲戊庚游大小吉，乙己神傳晝夜分…";
+    return "《大六壬心鏡》、《六壬景右神定經》、《六壬大全》、《大六壬指南》推導天乙貴人：甲戊庚牛羊 … 六辛逢馬虎…";
   }
 
 }

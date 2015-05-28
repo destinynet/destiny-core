@@ -9,9 +9,69 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.Stem.*;
 import static org.junit.Assert.*;
 
 public class StemBranchTest {
+
+  @Test
+  public void testGetEmpties() {
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 子)).contains(戌));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 子)).contains(亥));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 酉)).contains(戌));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 酉)).contains(亥));
+    assertTrue(StemBranch.get(甲 , 子).getEmpties().contains(戌));
+    assertTrue(StemBranch.get(甲 , 子).getEmpties().contains(亥));
+    assertTrue(StemBranch.get(癸 , 酉).getEmpties().contains(戌));
+    assertTrue(StemBranch.get(癸 , 酉).getEmpties().contains(亥));
+
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 戌)).contains(申));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 戌)).contains(酉));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(壬, 午)).contains(申));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(壬, 午)).contains(酉));
+    assertTrue(StemBranch.get(甲 , 戌).getEmpties().contains(申));
+    assertTrue(StemBranch.get(甲 , 戌).getEmpties().contains(酉));
+    assertTrue(StemBranch.get(壬 , 午).getEmpties().contains(申));
+    assertTrue(StemBranch.get(壬 , 午).getEmpties().contains(酉));
+
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 申)).contains(午));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 申)).contains(未));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 巳)).contains(午));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 巳)).contains(未));
+    assertTrue(StemBranch.get(甲 , 申).getEmpties().contains(午));
+    assertTrue(StemBranch.get(甲 , 申).getEmpties().contains(未));
+    assertTrue(StemBranch.get(癸 , 巳).getEmpties().contains(午));
+    assertTrue(StemBranch.get(癸 , 巳).getEmpties().contains(未));
+
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 午)).contains(辰));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 午)).contains(巳));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(壬, 寅)).contains(辰));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(壬, 寅)).contains(巳));
+    assertTrue(StemBranch.get(甲 , 午).getEmpties().contains(辰));
+    assertTrue(StemBranch.get(甲 , 午).getEmpties().contains(巳));
+    assertTrue(StemBranch.get(壬 , 寅).getEmpties().contains(辰));
+    assertTrue(StemBranch.get(壬 , 寅).getEmpties().contains(巳));
+
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 辰)).contains(寅));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 辰)).contains(卯));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 丑)).contains(寅));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 丑)).contains(卯));
+    assertTrue(StemBranch.get(甲 , 辰).getEmpties().contains(寅));
+    assertTrue(StemBranch.get(甲 , 辰).getEmpties().contains(卯));
+    assertTrue(StemBranch.get(癸 , 丑).getEmpties().contains(寅));
+    assertTrue(StemBranch.get(癸 , 丑).getEmpties().contains(卯));
+
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 寅)).contains(子));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(甲, 寅)).contains(丑));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 亥)).contains(子));
+    assertTrue(StemBranch.getEmpties(StemBranch.get(癸, 亥)).contains(丑));
+    assertTrue(StemBranch.get(甲 , 寅).getEmpties().contains(子));
+    assertTrue(StemBranch.get(甲 , 寅).getEmpties().contains(丑));
+    assertTrue(StemBranch.get(癸 , 亥).getEmpties().contains(子));
+    assertTrue(StemBranch.get(癸 , 亥).getEmpties().contains(丑));
+  }
+
 
   @Test
   public void testGetAheadOf() {
@@ -57,13 +117,13 @@ public class StemBranchTest {
 
   @Test
   public void testGet() {
-    assertSame(StemBranch.get("甲子") , StemBranch.get(Stem.甲 , Branch.子));
-    assertSame(StemBranch.get("乙丑") , StemBranch.get(Stem.乙 , Branch.丑));
-    assertSame(StemBranch.get("丙寅") , StemBranch.get(Stem.丙 , Branch.寅));
-    assertSame(StemBranch.get("丁卯") , StemBranch.get(Stem.丁 , Branch.卯));
+    assertSame(StemBranch.get("甲子") , StemBranch.get(甲 , 子));
+    assertSame(StemBranch.get("乙丑") , StemBranch.get(Stem.乙 , 丑));
+    assertSame(StemBranch.get("丙寅") , StemBranch.get(Stem.丙 , 寅));
+    assertSame(StemBranch.get("丁卯") , StemBranch.get(Stem.丁 , 卯));
 
     try {
-      StemBranch.get(Stem.甲 , Branch.丑);
+      StemBranch.get(甲 , 丑);
       fail();
     } catch (RuntimeException e) {
       assertTrue(true);
@@ -83,7 +143,7 @@ public class StemBranchTest {
     
     assertSame(sb3 , sb4);
     
-    StemBranch sb5 = StemBranch.get(Stem.甲 , Branch.子);
+    StemBranch sb5 = StemBranch.get(甲 , 子);
     assertSame(sb4 , sb5);
     
     StemBranch sb6 = StemBranch.get('甲' , '子');
@@ -101,7 +161,7 @@ public class StemBranchTest {
   {
     StemBranch[] SBArray1 = new StemBranch[]
       { StemBranch.get(10),
-        StemBranch.get(Stem.甲 , Branch.午),
+        StemBranch.get(甲 , 午),
         StemBranch.get(50),
         StemBranch.get('甲' , '子'),
         StemBranch.get(20)

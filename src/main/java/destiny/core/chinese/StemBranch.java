@@ -3,9 +3,9 @@ package destiny.core.chinese;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Optional;
+import java.util.*;
+
+import static destiny.core.chinese.Branch.*;
 
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
@@ -73,24 +73,24 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     if ( (Stem.getIndex(stem) % 2 )  != (Branch.getIndex(branch) %2 ) )
         throw new RuntimeException("Stem/Branch combination illegal ! " + stem + " cannot be combined with " + branch);
 
-    int hIndex = Stem.getIndex(stem);
-    int eIndex = Branch.getIndex(branch);
-    switch (hIndex - eIndex) {
+    int sIndex = Stem.getIndex(stem);
+    int bIndex = Branch.getIndex(branch);
+    switch (sIndex - bIndex) {
       case 0:
       case -10:
-        return get(eIndex);
+        return get(bIndex);
       case 2:
       case -8:
-        return get(eIndex + 12);
+        return get(bIndex + 12);
       case 4:
       case -6:
-        return get(eIndex + 24);
+        return get(bIndex + 24);
       case 6:
       case -4:
-        return get(eIndex + 36);
+        return get(bIndex + 36);
       case 8:
       case -2:
-        return get(eIndex + 48);
+        return get(bIndex + 48);
       default:
         throw new AssertionError("Invalid stem/branch Combination!");
     }
@@ -200,6 +200,35 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
 
   public static Iterable<StemBranch> iterable() {
     return Arrays.asList(ARRAY);
+  }
+
+  /** 取得「空亡」的兩個地支 */
+  public static Collection<Branch> getEmpties(StemBranch sb) {
+    int shift = sb.getStem().getIndex() - sb.getBranch().getIndex();
+    switch (shift) {
+      case 0 :
+        return Arrays.asList(戌 , 亥);
+      case 2 :
+      case -10 :
+        return Arrays.asList(申 , 酉);
+      case 4 :
+      case -8 :
+        return Arrays.asList(午 , 未);
+      case 6 :
+      case -6 :
+        return Arrays.asList(辰 , 巳);
+      case 8 :
+      case -4 :
+        return Arrays.asList(寅 , 卯);
+      case 10 :
+      case -2:
+        return Arrays.asList(子 , 丑);
+      default: throw new AssertionError("Cannot find 空亡 from " + sb);
+    }
+  }
+
+  public Collection<Branch> getEmpties() {
+    return StemBranch.getEmpties(this);
   }
 
 }

@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2015-05-27.
  */
-package destiny.core.chinese.liuren.golden;
+package destiny.core.chinese.impls;
 
 import destiny.astrology.Planet;
 import destiny.astrology.Position;
@@ -11,15 +11,16 @@ import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
+import destiny.core.chinese.MonthMasterIF;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-public class MonthBranchStarPositionImpl implements MonthBranchIF , Descriptive , Serializable {
+public class MonthMasterStarPositionImpl implements MonthMasterIF, Descriptive , Serializable {
 
   private final StarPositionIF starPositionImpl;
 
-  public MonthBranchStarPositionImpl(StarPositionIF starPositionImpl) {this.starPositionImpl = starPositionImpl;}
+  public MonthMasterStarPositionImpl(StarPositionIF starPositionImpl) {this.starPositionImpl = starPositionImpl;}
 
   @Override
   public String getTitle(Locale locale) {

@@ -1,22 +1,23 @@
 /**
  * Created by smallufo on 2015-05-27.
  */
-package destiny.core.chinese.liuren.golden;
+package destiny.core.chinese.impls;
 
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.Branch;
+import destiny.core.chinese.MonthMasterIF;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-public class MonthBranchCombinedImpl implements MonthBranchIF , Descriptive , Serializable {
+public class MonthMasterCombinedImpl implements MonthMasterIF, Descriptive , Serializable {
 
   private final YearMonthIF yearMonthImpl;
 
-  public MonthBranchCombinedImpl(YearMonthIF yearMonthImpl) {this.yearMonthImpl = yearMonthImpl;}
+  public MonthMasterCombinedImpl(YearMonthIF yearMonthImpl) {this.yearMonthImpl = yearMonthImpl;}
 
   @Override
   public String getTitle(Locale locale) {

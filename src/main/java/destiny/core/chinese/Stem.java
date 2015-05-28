@@ -22,11 +22,11 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   
   private char name;
   
-  private final static Stem[] STEM_ARRAY =
+  private final static Stem[] ARRAY =
     { 甲 , 乙 , 丙 , 丁 , 戊 ,
       己 , 庚 , 辛 , 壬 , 癸 };
   
-  private final static List<Stem> STEM_LIST = Arrays.asList(STEM_ARRAY);
+  private final static List<Stem> STEM_LIST = Arrays.asList(ARRAY);
 
   Stem(char c)
   {
@@ -36,40 +36,13 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   /** 從五行 以及 陰陽 建立天干 */
   @NotNull
   public static Stem getHeavenlyStems(FiveElement fiveElement , boolean yinYang) {
-    if (fiveElement == FiveElement.木)
-    {
-      if (yinYang)
-        return 甲;
-      else
-        return 乙;
-    }
-    else if (fiveElement == FiveElement.火)
-    {
-      if (yinYang)
-        return 丙;
-      else
-        return 丁;
-    }
-    else if (fiveElement == FiveElement.土)
-    {
-      if (yinYang)
-        return 戊;
-      else
-        return 己;
-    }
-    else if (fiveElement == FiveElement.金)
-    {
-      if (yinYang)
-        return 庚;
-      else
-        return 辛;
-    }
-    else
-    {
-      if (yinYang)
-        return 壬;
-      else
-        return 癸;
+    switch (fiveElement) {
+      case 木 : return yinYang ? 甲 : 乙;
+      case 火 : return yinYang ? 丙 : 丁;
+      case 土 : return yinYang ? 戊 : 己;
+      case 金 : return yinYang ? 庚 : 辛;
+      case 水 : return yinYang ? 壬 : 癸;
+      default: throw new AssertionError(fiveElement + "+" + yinYang);
     }
   }
 
@@ -92,7 +65,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
       return getHeavenlyStems(index+10);
     else if (index >=10 )
       return (getHeavenlyStems(index-10));
-    return STEM_ARRAY[index];
+    return ARRAY[index];
   }
 
 
@@ -116,7 +89,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   public static Optional<Stem> getHeavenlyStems(char c)
   {
     Stem result = null;
-    for (Stem aStemArray : STEM_ARRAY) {
+    for (Stem aStemArray : ARRAY) {
       if (aStemArray.name == c) {
         result = aStemArray;
         break;
@@ -213,7 +186,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   }
 
   public static Iterable<Stem> iterable() {
-    return Arrays.asList(STEM_ARRAY);
+    return Arrays.asList(ARRAY);
   }
 
 }
