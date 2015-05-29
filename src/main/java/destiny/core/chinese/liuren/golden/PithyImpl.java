@@ -5,4 +5,4 @@ package destiny.core.chinese.liuren.golden;
 
 import java.io.Serializable;
 
-public class GoldenMouthImpl implements GoldenMouthIF , Serializable {}
+public class PithyImpl implements PithyIF, Serializable {}

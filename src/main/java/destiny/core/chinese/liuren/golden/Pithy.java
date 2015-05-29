@@ -14,8 +14,9 @@ import java.util.Collection;
 
 /**
  * 六壬金口訣，核心資料結構
+ * 口訣 : Pithy
  */
-public class GoldenMouth implements Serializable {
+public class Pithy implements Serializable {
 
   /** 八字 */
   private final EightWords ew;
@@ -29,7 +30,7 @@ public class GoldenMouth implements Serializable {
   /** 貴神 */
   private final StemBranch benefactor;
 
-  public GoldenMouth(EightWords ew, Branch direction, Branch monthSign, StemBranch benefactor) {
+  public Pithy(EightWords ew, Branch direction, Branch monthSign, StemBranch benefactor) {
     this.ew = ew;
     this.direction = direction;
     this.monthSign = monthSign;

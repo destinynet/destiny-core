@@ -15,11 +15,11 @@ import destiny.core.chinese.liuren.GeneralSeqIF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface GoldenMouthIF {
+public interface PithyIF {
 
-  Logger logger = LoggerFactory.getLogger(GoldenMouthIF.class);
+  Logger logger = LoggerFactory.getLogger(PithyIF.class);
 
-  default GoldenMouth getGoldenMouth(Branch direction , EightWords ew , Branch 月將 , TianyiIF tianyiImpl , DayNight dayNight , Clockwise clockwise , GeneralSeqIF seq) {
+  default Pithy getPithy(Branch direction, EightWords ew, Branch 月將, TianyiIF tianyiImpl, DayNight dayNight, Clockwise clockwise, GeneralSeqIF seq) {
 
     // 天乙貴人(起點)
     Branch 天乙貴人 = tianyiImpl.getFirstTianyi(ew.getDayStem() , dayNight);
@@ -38,13 +38,10 @@ public interface GoldenMouthIF {
     logger.info("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}" , General.貴人 , steps , General.貴人.next(steps , seq) , 貴神地支 , 貴神天干);
     StemBranch 貴神 = StemBranch.get(貴神天干 , 貴神地支);
 
-    return new GoldenMouth(ew , direction, 月將 , 貴神);
+    return new Pithy(ew , direction, 月將 , 貴神);
   }
 
-  default GoldenMouth getGoldenMouth(Branch direction, Time lmt , Location loc , MonthMasterIF monthBranchImpl ,
-                                     DayNightDifferentiator dayNightImpl ,
-                                     TianyiIF tianyiImpl , ClockwiseIF clockwiseImpl , GeneralSeqIF seq,
-                                     EightWordsIF eightWordsImpl ) {
+  default Pithy getPithy(Branch direction, Time lmt, Location loc, MonthMasterIF monthBranchImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seq, EightWordsIF eightWordsImpl) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
 
     Branch 月將 = monthBranchImpl.getBranch(lmt , loc);
@@ -54,6 +51,6 @@ public interface GoldenMouthIF {
 
     DayNight dayNight = dayNightImpl.getDayNight(lmt , loc);
 
-    return getGoldenMouth(direction , ew , 月將 , tianyiImpl , dayNight , clockwise , seq);
+    return getPithy(direction, ew, 月將, tianyiImpl, dayNight, clockwise, seq);
   }
 }

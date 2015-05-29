@@ -10,5 +10,5 @@ import java.util.Locale;
 public interface GeolocationFinder
 {
   /** 給定一個地址，找出相對應的經緯度等資料 */
-  public Location getLocation(String place , Locale locale);
+  Location getLocation(String place , Locale locale);
 }

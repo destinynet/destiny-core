@@ -5,10 +5,11 @@ package destiny.core.chinese;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class StemBranchOptional {
+public class StemBranchOptional implements Serializable {
 
   @NotNull
   protected final Optional<Stem> stem;
