@@ -91,4 +91,15 @@ public class Pithy implements Serializable {
     return ew.getDay().getEmpties();
   }
 
+
+  @Override
+  public String toString() {
+    return "[Pithy " +
+      "八字=" + ew +
+      ", 地分=" + direction +
+      ", 人元=" + getHuman() +
+      ", 月將=" + monthSign +
+      ", 貴神=" + benefactor +
+      ']';
+  }
 }

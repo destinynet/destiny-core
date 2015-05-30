@@ -322,7 +322,13 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
       return LocalDateTime.of(y , month , day , hour , minute , (int) second);
     }
   }
-  
+
+  /**
+   * TODO : 檢查 1582 的轉換
+   */
+  public static Time from(LocalDateTime ldt) {
+    return new Time(ldt.getYear() > 1 , ldt.getYear() , ldt.getMonthValue() , ldt.getDayOfMonth() , ldt.getHour() , ldt.getMinute() , ldt.getSecond());
+  }
   
   
   /** 取得西元年份，注意，這裡的傳回值不可能小於等於0 */
