@@ -4,6 +4,7 @@
 package destiny.core.chinese;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,11 +12,11 @@ import java.util.Optional;
 
 public class StemBranchOptional implements Serializable {
 
-  @NotNull
-  protected final Optional<Stem> stem;
+  @Nullable
+  protected final Stem stem;
 
-  @NotNull
-  protected final Optional<Branch> branch;
+  @Nullable
+  protected final Branch branch;
 
   // 0[甲子] ~ 59[癸亥]
   private transient static StemBranchOptional[] ARRAY = new StemBranchOptional[60];
@@ -33,8 +34,8 @@ public class StemBranchOptional implements Serializable {
 
   StemBranchOptional(@NotNull Optional<Stem> stemOpt, @NotNull Optional<Branch> branchOpt) {
     check(stemOpt , branchOpt);
-    this.stem = stemOpt;
-    this.branch = branchOpt;
+    this.stem = stemOpt.orElse(null);
+    this.branch = branchOpt.orElse(null);
   }
 
   public static StemBranchOptional empty() {
@@ -105,7 +106,7 @@ public class StemBranchOptional implements Serializable {
   }
 
   private static Optional<Integer> getIndex(StemBranchOptional sb) {
-    if (sb.stem.isPresent() && sb.branch.isPresent()) {
+    if (sb.stem != null && sb.branch != null) {
       for(int i=0 ; i < ARRAY.length ; i++) {
         if (sb.equals(ARRAY[i])) {
           return Optional.of(i);
@@ -133,12 +134,12 @@ public class StemBranchOptional implements Serializable {
 
   @NotNull
   public Optional<Stem> getStemOptional() {
-    return stem;
+    return Optional.ofNullable(stem);
   }
 
   @NotNull
   public Optional<Branch> getBranchOptional() {
-    return branch;
+    return Optional.ofNullable(branch);
   }
 
   @Override

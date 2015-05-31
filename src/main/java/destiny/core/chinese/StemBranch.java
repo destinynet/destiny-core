@@ -170,7 +170,8 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   @NotNull
   public String toString()
   {
-    return stem.get().toString()+branch.get().toString();
+    assert (stem != null && branch != null);
+    return stem.toString()+branch.toString();
   }
 
   /**
@@ -186,7 +187,8 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   @NotNull
   public Stem getStem()
   {
-    return stem.get();
+    assert stem != null;
+    return stem;
   }
   
   /**
@@ -195,7 +197,8 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   @NotNull
   public Branch getBranch()
   {
-    return branch.get();
+    assert branch != null;
+    return branch;
   }
 
   public static Iterable<StemBranch> iterable() {
