@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2015-05-20.
+ * Created by smallufo on 2015-05-31.
  */
 package destiny.core.chinese.onePalm;
 
@@ -11,7 +11,11 @@ import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 
-public class PalmWithMeta extends Palm {
+import java.io.Serializable;
+
+public class PalmWithMeta implements Serializable {
+
+  private final Palm palm;
 
   private final Time lmt;
 
@@ -31,18 +35,21 @@ public class PalmWithMeta extends Palm {
 
   private final boolean changeDayAfterZi;
 
-  public PalmWithMeta(Palm palm, Time lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
-    super(palm);
-
+  public PalmWithMeta(Palm palm, Time lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+    this.palm = palm;
     this.lmt = lmt;
     this.loc = loc;
     this.place = place;
     this.chineseDateImpl = chineseDateImpl;
     this.dayImpl = dayImpl;
     this.positiveImpl = positiveImpl;
-    this.hourImpl = hourImpl;
+    hourImpl = impl;
     this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
+  }
+
+  public Palm getPalm() {
+    return palm;
   }
 
   public Time getLmt() {
@@ -55,6 +62,14 @@ public class PalmWithMeta extends Palm {
 
   public String getPlace() {
     return place;
+  }
+
+  public ChineseDateIF getChineseDateImpl() {
+    return chineseDateImpl;
+  }
+
+  public DayIF getDayImpl() {
+    return dayImpl;
   }
 
   public PositiveIF getPositiveImpl() {
@@ -74,6 +89,6 @@ public class PalmWithMeta extends Palm {
   }
 
   public ChineseDate getChineseDate() {
-    return chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
+    return chineseDateImpl.getChineseDate(lmt, loc, dayImpl, hourImpl, midnightImpl, changeDayAfterZi);
   }
 }
