@@ -15,18 +15,21 @@ public class GeneralSeqDefaultImplTest {
 
   @Test
   public void testGet() {
-    assertSame(貴人 , get(丑));
-    assertSame(螣蛇 , get(巳));
-    assertSame(朱雀 , get(午));
-    assertSame(六合 , get(卯));
-    assertSame(勾陳 , get(辰));
-    assertSame(青龍 , get(寅));
-    assertSame(天空 , get(戌));
-    assertSame(白虎 , get(申));
-    assertSame(太常 , get(未));
-    assertSame(玄武 , get(亥));
-    assertSame(太陰 , get(酉));
-    assertSame(天后 , get(子));
+
+    GeneralStemBranchIF liuren = new GeneralStemBranchLiuren();
+
+    assertSame(貴人 , get(丑 , liuren));
+    assertSame(螣蛇 , get(巳 , liuren));
+    assertSame(朱雀 , get(午 , liuren));
+    assertSame(六合 , get(卯 , liuren));
+    assertSame(勾陳 , get(辰 , liuren));
+    assertSame(青龍 , get(寅 , liuren));
+    assertSame(天空 , get(戌 , liuren));
+    assertSame(白虎 , get(申 , liuren));
+    assertSame(太常 , get(未 , liuren));
+    assertSame(玄武 , get(亥 , liuren));
+    assertSame(太陰 , get(酉 , liuren));
+    assertSame(天后 , get(子 , liuren));
   }
 
   @Test

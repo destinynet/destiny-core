@@ -14,6 +14,7 @@ import destiny.core.chinese.StemBranch;
 import destiny.core.chinese.TianyiIF;
 import destiny.core.chinese.liuren.General;
 import destiny.core.chinese.liuren.GeneralSeqIF;
+import destiny.core.chinese.liuren.GeneralStemBranchIF;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -43,7 +44,10 @@ public class PithyWithMeta implements Serializable {
   /** 12天將順序 */
   private final GeneralSeqIF seqImpl;
 
-  public PithyWithMeta(Pithy pithy, Gender gender, String question, LocationWithName locationWithName, MonthMasterIF monthMasterImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seqImpl) {
+  /** 12天將干支 */
+  private final GeneralStemBranchIF generalStemBranchImpl;
+
+  public PithyWithMeta(Pithy pithy, Gender gender, String question, LocationWithName locationWithName, MonthMasterIF monthMasterImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seqImpl, GeneralStemBranchIF generalStemBranchImpl) {
     this.pithy = pithy;
     this.gender = gender;
     this.question = question;
@@ -53,6 +57,7 @@ public class PithyWithMeta implements Serializable {
     this.tianyiImpl = tianyiImpl;
     this.clockwiseImpl = clockwiseImpl;
     this.seqImpl = seqImpl;
+    this.generalStemBranchImpl = generalStemBranchImpl;
   }
 
 
@@ -65,10 +70,10 @@ public class PithyWithMeta implements Serializable {
     sb.append(ew.getHourBranch()).append(ew.getDayBranch()).append(ew.getMonthBranch()).append(ew.getYearBranch()).append("\n");
     sb.append("\n");
     sb.append("月將：").append(pithy.getMonthSign()).append("（").append(monthMasterImpl.getTitle(Locale.TAIWAN)).append("）").append("\n");
+    sb.append("晝夜：").append(pithy.getDayNight() == DayNight.DAY ? "日" : "夜").append("\n\n");
     sb.append("人元：").append(pithy.getHuman()).append("\n");
-    sb.append("晝夜：").append(pithy.getDayNight() == DayNight.DAY ? "日" : "夜").append("\n");
     StemBranch 貴神 = pithy.getBenefactor();
-    sb.append("貴神：").append(貴神).append("（").append(General.get(貴神.getBranch())).append("）").append("\n");
+    sb.append("貴神：").append(貴神).append("（").append(General.get(貴神.getBranch() , generalStemBranchImpl)).append("）").append("\n");
     StemBranch 將神 = pithy.getJohnson();
     sb.append("將神：").append(將神).append("（").append(MonthMasterIF.getName(將神.getBranch())).append("）").append("\n");
     sb.append("地分：").append(pithy.getDirection()).append("\n\n");
