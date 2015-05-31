@@ -85,7 +85,8 @@ public class PithyWithMeta implements Serializable {
     sb.append("晝夜設定：").append(dayNightImpl.getTitle(Locale.TAIWAN)).append("\n");
     sb.append("天乙貴人：").append(tianyiImpl.getTitle(Locale.TAIWAN)).append("\n");
     sb.append("順逆設定：").append(clockwiseImpl.getTitle(Locale.TAIWAN)).append("\n");
-    sb.append("十二天將：").append(seqImpl.getTitle(Locale.TAIWAN)).append("\n");
+    sb.append("天將順序：").append(seqImpl.getTitle(Locale.TAIWAN)).append("\n");
+    sb.append("天將干支：").append(generalStemBranchImpl.getTitle(Locale.TAIWAN)).append("\n");
 
     return sb.toString();
   }
