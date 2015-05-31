@@ -3,8 +3,11 @@
  */
 package destiny.core.chinese.liuren;
 
+import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+
+import java.util.Arrays;
 
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.FiveElement.*;
@@ -41,6 +44,11 @@ public enum General {
     this.stemBranch = stemBranch;
     this.positive = positive;
     this.fiveElement = fiveElement;
+  }
+
+  public static General get(Branch branch) {
+    return Arrays.asList(values()).stream().filter(g -> g.getStemBranch().getBranch() == branch)
+      .findFirst().orElseThrow(() -> new AssertionError(branch));
   }
 
   public char getShortName() {

@@ -38,7 +38,7 @@ public interface PithyIF {
     logger.info("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}" , General.貴人 , steps , General.貴人.next(steps , seq) , 貴神地支 , 貴神天干);
     StemBranch 貴神 = StemBranch.get(貴神天干 , 貴神地支);
 
-    return new Pithy(ew , direction, 月將 , 貴神);
+    return new Pithy(ew , direction, 月將 , dayNight, 貴神);
   }
 
   default Pithy getPithy(Branch direction, Time lmt, Location loc, MonthMasterIF monthBranchImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seq, EightWordsIF eightWordsImpl) {

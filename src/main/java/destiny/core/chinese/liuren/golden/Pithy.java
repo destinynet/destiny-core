@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.liuren.golden;
 
+import destiny.astrology.DayNight;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
@@ -27,13 +28,16 @@ public class Pithy implements Serializable {
   /** 月將（太陽星座） */
   private final Branch monthSign;
 
+  private final DayNight dayNight;
+
   /** 貴神 */
   private final StemBranch benefactor;
 
-  public Pithy(EightWords ew, Branch direction, Branch monthSign, StemBranch benefactor) {
+  public Pithy(EightWords ew, Branch direction, Branch monthSign, DayNight dayNight, StemBranch benefactor) {
     this.ew = ew;
     this.direction = direction;
     this.monthSign = monthSign;
+    this.dayNight = dayNight;
     this.benefactor = benefactor;
   }
 
@@ -45,6 +49,11 @@ public class Pithy implements Serializable {
    */
   public Stem getHuman() {
     return StemBranchUtils.getHourStem(ew.getDayStem() , direction);
+  }
+
+  /** 取得「晝夜」*/
+  public DayNight getDayNight() {
+    return dayNight;
   }
 
   /** 取得「貴神」 */
@@ -69,6 +78,13 @@ public class Pithy implements Serializable {
     return StemBranch.get(stem , branch);
   }
 
+
+  /**
+   * 取得「月將」
+   */
+  public Branch getMonthSign() {
+    return monthSign;
+  }
 
   /**
    * 取得「地分」
