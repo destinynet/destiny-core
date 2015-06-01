@@ -18,7 +18,7 @@ public class TrueSolarTermsBean
 
   public TrueSolarTermsBean(Time gmtTime , @NotNull TrueSolarTimeIF trueSolarTimeImpl)
   {
-    double resultSeconds = trueSolarTimeImpl.getTrueSolarTimeInSecond(gmtTime);
+    double resultSeconds = trueSolarTimeImpl.getEquationSecs(gmtTime);
     
     double doubleMinute = Math.abs(resultSeconds/60.0);
     

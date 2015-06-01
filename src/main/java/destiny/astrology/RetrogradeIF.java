@@ -12,5 +12,5 @@ import destiny.core.calendar.Time;
 public interface RetrogradeIF
 {
   /** 下次停滯的時間為何時 (GMT) */
-  public Time getNextStationary(Star star , Time fromGmtTime , boolean isForward);
+  Time getNextStationary(Star star , Time fromGmtTime , boolean isForward);
 }

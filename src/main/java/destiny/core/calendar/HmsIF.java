@@ -7,9 +7,9 @@ package destiny.core.calendar;
 /** 具備 時(Hour) , 分(Minute) , 秒 (Second) 的資料結構的介面 */
 public interface HmsIF
 {
-  public int getHour();
+  int getHour();
   
-  public int getMinute();
+  int getMinute();
   
-  public double getSecond();
+  double getSecond();
 }
