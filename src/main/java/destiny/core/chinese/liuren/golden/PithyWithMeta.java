@@ -21,6 +21,11 @@ import java.util.Locale;
 
 public class PithyWithMeta implements Serializable {
 
+  /** 起課方式 */
+  public enum Method {RANDOM , MANUAL}
+
+  private Method method;
+
   private final Pithy pithy;
 
   private final Gender gender;
@@ -47,7 +52,8 @@ public class PithyWithMeta implements Serializable {
   /** 12天將干支 */
   private final GeneralStemBranchIF generalStemBranchImpl;
 
-  public PithyWithMeta(Pithy pithy, Gender gender, String question, LocationWithName locationWithName, MonthMasterIF monthMasterImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seqImpl, GeneralStemBranchIF generalStemBranchImpl) {
+  public PithyWithMeta(Pithy pithy, Method method , Gender gender, String question, LocationWithName locationWithName, MonthMasterIF monthMasterImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seqImpl, GeneralStemBranchIF generalStemBranchImpl) {
+    this.method = method;
     this.pithy = pithy;
     this.gender = gender;
     this.question = question;
@@ -76,12 +82,15 @@ public class PithyWithMeta implements Serializable {
     sb.append("貴神：").append(貴神).append("（").append(General.get(貴神.getBranch() , generalStemBranchImpl)).append("）").append("\n");
     StemBranch 將神 = pithy.getJohnson();
     sb.append("將神：").append(將神).append("（").append(MonthMasterIF.getName(將神.getBranch())).append("）").append("\n");
-    sb.append("地分：").append(pithy.getDirection()).append("\n\n");
+    sb.append("地分：").append(pithy.getDirection());
+    sb.append("\n\n");
 
     sb.append("性別：").append(gender).append("\n");
     sb.append("問題：").append(question).append("\n");
     sb.append("地點：").append(locationWithName.getName()).append("\n");
 
+    if (method != null)
+      sb.append("起課方式：").append(method == Method.RANDOM ? "電腦起課" : "手動起課").append("\n");
     sb.append("晝夜設定：").append(dayNightImpl.getTitle(Locale.TAIWAN)).append("\n");
     sb.append("天乙貴人：").append(tianyiImpl.getTitle(Locale.TAIWAN)).append("\n");
     sb.append("順逆設定：").append(clockwiseImpl.getTitle(Locale.TAIWAN)).append("\n");
@@ -126,5 +135,6 @@ public class PithyWithMeta implements Serializable {
   public GeneralSeqIF getSeqImpl() {
     return seqImpl;
   }
+
 
 }

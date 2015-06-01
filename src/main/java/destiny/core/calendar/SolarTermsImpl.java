@@ -19,6 +19,9 @@ public class SolarTermsImpl implements SolarTermsIF , Serializable
 { 
   private StarTransitIF starTransitImpl;
   private StarPositionIF starPositionImpl;
+
+  protected SolarTermsImpl() {
+  }
   
   public SolarTermsImpl(StarTransitIF StarTransitImpl, StarPositionIF starPositionImpl)
   {
