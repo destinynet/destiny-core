@@ -37,4 +37,5 @@ public class LocationWithName implements Serializable {
       ", name='" + name + '\'' +
       ']';
   }
+
 }
