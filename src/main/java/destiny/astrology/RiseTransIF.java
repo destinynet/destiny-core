@@ -29,6 +29,16 @@ public interface RiseTransIF {
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction);
 
   /**
+   * 承上 , 來源、目標時間都是 LMG
+   */
+  default Time getLmtTransTime(Time fromLmtTime , Star star , TransPoint point , Location location ,
+      double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
+    Time fromGmtTime = Time.getGMTfromLMT(fromLmtTime, location);
+    Time resultGmt = getGmtTransTime(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    return Time.getLMTfromGMT(resultGmt , location);
+  }
+
+  /**
    * 取得某段時間（LMT）之內，某星體的通過某 Point 的時刻（LMT）
    * @param fromLmtTime 開始時間
    * @param toLmtTime 結束時間

@@ -8,16 +8,14 @@ import destiny.astrology.DayNightDifferentiator;
 import destiny.core.Gender;
 import destiny.core.calendar.LocationWithName;
 import destiny.core.calendar.eightwords.EightWords;
-import destiny.core.chinese.ClockwiseIF;
-import destiny.core.chinese.MonthMasterIF;
-import destiny.core.chinese.StemBranch;
-import destiny.core.chinese.TianyiIF;
+import destiny.core.chinese.*;
 import destiny.core.chinese.liuren.General;
 import destiny.core.chinese.liuren.GeneralSeqIF;
 import destiny.core.chinese.liuren.GeneralStemBranchIF;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class PithyWithMeta implements Serializable {
 
@@ -76,7 +74,10 @@ public class PithyWithMeta implements Serializable {
     sb.append(ew.getHourBranch()).append(ew.getDayBranch()).append(ew.getMonthBranch()).append(ew.getYearBranch()).append("\n");
     sb.append("\n");
     sb.append("月將：").append(pithy.getMonthSign()).append("（").append(monthMasterImpl.getTitle(Locale.TAIWAN)).append("）").append("\n");
-    sb.append("晝夜：").append(pithy.getDayNight() == DayNight.DAY ? "日" : "夜").append("\n\n");
+    sb.append("晝夜：").append(pithy.getDayNight() == DayNight.DAY ? "日" : "夜").append("\n");
+    sb.append("年空：").append(ew.getYear().getEmpties().stream().map(Branch::toString).collect(Collectors.joining("、"))).append("\n");
+    sb.append("日空：").append(ew.getDay().getEmpties().stream().map(Branch::toString).collect(Collectors.joining("、"))).append("\n");
+    sb.append("\n");
     sb.append("人元：").append(pithy.getHuman()).append("\n");
     StemBranch 貴神 = pithy.getBenefactor();
     sb.append("貴神：").append(貴神).append("（").append(General.get(貴神.getBranch() , generalStemBranchImpl)).append("）").append("\n");

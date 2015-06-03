@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.TimeZone;
@@ -21,7 +22,10 @@ public class TimeTest
   @Test
   public void testTime() {
     Time t = new Time();
-    System.out.println("time = " + t);
+    t.setSecond(12.1234);
+    String s = String.format("%02d月%02d日 %02d時 %02d分 ", t.getMonth(), t.getDay(), t.getHour(), t.getMinute())
+      + StringUtils.leftPad(String.format("%3.2f秒" , t.getSecond()) , 6 , '0');
+    System.out.println("time = " + s);
   }
 
   /**  
