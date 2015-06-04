@@ -7,13 +7,19 @@ package destiny.core.calendar;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import static org.junit.Assert.*;
 
 public class TimeTest
 {
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   private Time time;
   private Time origin;
   private Time actual ;
@@ -24,8 +30,19 @@ public class TimeTest
     Time t = new Time();
     t.setSecond(12.1234);
     String s = String.format("%02d月%02d日 %02d時 %02d分 ", t.getMonth(), t.getDay(), t.getHour(), t.getMinute())
-      + StringUtils.leftPad(String.format("%3.2f秒" , t.getSecond()) , 6 , '0');
+      + StringUtils.leftPad(String.format("%3.2f秒", t.getSecond()), 6, '0');
     System.out.println("time = " + s);
+  }
+
+  @Test
+  public void testDateEquals() {
+    Time t1 = new Time();
+    Time t2 = new Time(t1 , 100.0);
+
+    LocalDate ld1 = t1.toLocalDateTime().toLocalDate();
+    LocalDate ld2 = t2.toLocalDateTime().toLocalDate();
+
+    logger.info("ld1 same ld2 ? {} . ld1 equals ld2 ? {} . Objects.equals ? {}" , ld1.isEqual(ld2) , ld1.equals(ld2) , Objects.equals(ld1 , ld2));
   }
 
   /**  
