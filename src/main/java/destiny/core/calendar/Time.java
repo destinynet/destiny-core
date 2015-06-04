@@ -367,11 +367,21 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     //return this.getGmtJulDay() < targetTime.getGmtJulDay() ? true : false;
     return this.getGmtJulDay() < targetTime.getGmtJulDay();
   }
-  
+
   public boolean isAfter(@NotNull Time targetTime)
   {
     //return this.getGmtJulDay() > targetTime.getGmtJulDay() ? true : false;
     return this.getGmtJulDay() > targetTime.getGmtJulDay();
+  }
+
+  /** 目前此 time 是否介於 t1 與 t2 中間 */
+  public boolean isBetween(Time t1 , Time t2) {
+    double d = getGmtJulDay();
+    double d1 = t1.getGmtJulDay();
+    double d2 = t2.getGmtJulDay();
+    return
+      (d2 > d1 && d > d1 && d2 > d) ||
+      (d1 > d2 && d > d2 && d1 > d);
   }
   
   private void normalize()
