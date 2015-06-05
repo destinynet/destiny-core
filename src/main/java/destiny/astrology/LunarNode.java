@@ -44,7 +44,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
   /**
    * 真實南交點，計算方法，以下兩者結果相同
    * <pre>
-   * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENGING , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
+   * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENDING , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
    * StarPositionImpl.getPosition(LunarNode.SOUTH_TRUE, gmt);
    * </pre>
    */
@@ -54,7 +54,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
   /**
    * 平均南交點，計算方法，以下兩者結果相同
    * <pre>
-   * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENGING , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
+   * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENDING , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarNode.SOUTH_MEAN, gmt);
    * </pre>
    */

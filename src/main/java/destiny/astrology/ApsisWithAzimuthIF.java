@@ -4,10 +4,10 @@
  */ 
 package destiny.astrology;
 
-import java.util.Map;
-
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+
+import java.util.Map;
 
 /**
  * 計算星球南北交點 
@@ -15,6 +15,6 @@ import destiny.core.calendar.Time;
  */
 public interface ApsisWithAzimuthIF extends ApsisIF
 {
-  public Map<Apsis,PositionWithAzimuth> getPositionsWithAzimuths(Star star , Time gmt , Coordinate coordinate , NodeType nodeType , Location location , double temperature , double pressure);
-  public PositionWithAzimuth            getPositionWithAzimuth  (Star star , Apsis apsis , Time gmt , Coordinate coordinate ,  NodeType nodeType , Location location , double temperature , double pressure);
+  Map<Apsis,PositionWithAzimuth> getPositionsWithAzimuths(Star star , Time gmt , Coordinate coordinate , NodeType nodeType , Location location , double temperature , double pressure);
+  PositionWithAzimuth            getPositionWithAzimuth  (Star star , Apsis apsis , Time gmt , Coordinate coordinate ,  NodeType nodeType , Location location , double temperature , double pressure);
 }

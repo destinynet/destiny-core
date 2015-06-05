@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * 橢圓軌道的四個點：近點（Perihelion/Perigee）、遠點（Aphelion/Apogee），上升點（Acscending/North Node），下降點（Descending/South Node）
+ * 橢圓軌道的四個點：近點（Perihelion/Perigee）、遠點（Aphelion/Apogee），上升點（Ascending/North Node），下降點（Descending/South Node）
  */
 public enum Apsis implements LocaleStringIF
 {
@@ -22,7 +22,7 @@ public enum Apsis implements LocaleStringIF
   /** 北交點/上升點 */
   ASCENDING("Apsis.ASCENDING"),
   /** 南交點/下降點 */
-  DESCENGING("Apsis.DESCENGING");
+  DESCENDING("Apsis.DESCENDING");
   
   private final static String resource = "destiny.astrology.Star";
   
