@@ -15,7 +15,7 @@ import static destiny.astrology.DayNight.DAY;
 import static destiny.core.chinese.Branch.*;
 
 /**
- * 《淵海子平》《六壬視斯》《六壬大占》《大六壬金口訣》
+ * 《淵海子平》《六壬視斯》《六壬大占》《大六壬金口訣》(部份版本用此法)
  * <p>
  * 《六壬視斯》說歌曰：甲戊兼牛羊，乙己鼠猴鄉，丙丁豬雞位，壬癸兔蛇藏，庚辛逢虎馬，永定貴人方。
  * 並釋說：“日用上一字，夜用下一字。

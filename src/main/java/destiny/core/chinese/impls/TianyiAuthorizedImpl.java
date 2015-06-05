@@ -14,7 +14,7 @@ import java.util.Locale;
 import static destiny.astrology.DayNight.DAY;
 import static destiny.core.chinese.Branch.*;
 
-public class TianyiDefaultImpl implements TianyiIF, Serializable {
+public class TianyiAuthorizedImpl implements TianyiIF, Serializable {
 
   /**
    * 《協紀辨方書》 《蠡海集》
