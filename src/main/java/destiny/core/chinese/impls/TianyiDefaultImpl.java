@@ -39,24 +39,28 @@ public class TianyiDefaultImpl implements TianyiIF, Serializable {
     switch (stem) {
       case 甲:
         return dayNight == DAY ? 未 : 丑;
+      case 戊:
+      case 庚:
+        return dayNight == DAY ? 丑 : 未;
+
       case 乙:
         return dayNight == DAY ? 申 : 子;
+      case 己:
+        return dayNight == DAY ? 子 : 申;
+
       case 丙:
         return dayNight == DAY ? 酉 : 亥;
       case 丁:
         return dayNight == DAY ? 亥 : 酉;
-      case 戊:
-        return dayNight == DAY ? 丑 : 未;
-      case 己:
-        return dayNight == DAY ? 子 : 申;
-      case 庚:
-        return dayNight == DAY ? 丑 : 未;
-      case 辛:
-        return dayNight == DAY ? 寅 : 午;
+
       case 壬:
         return dayNight == DAY ? 卯 : 巳;
       case 癸:
         return dayNight == DAY ? 巳 : 卯;
+
+      case 辛:
+        return dayNight == DAY ? 寅 : 午;
+
       default:
         throw new AssertionError(stem + " at " + dayNight);
     }

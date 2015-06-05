@@ -20,8 +20,9 @@ import java.util.Locale;
 /**
  * 推算貴神
  * 甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順
+ * XinRenKui Reverse
  */
-public class ClockwiseAnotherImpl implements ClockwiseIF, Serializable {
+public class ClockwiseXinRenKuiReverseImpl implements ClockwiseIF, Serializable {
 
   private final DayIF dayImpl;
 
@@ -33,7 +34,7 @@ public class ClockwiseAnotherImpl implements ClockwiseIF, Serializable {
 
   private final DayNightDifferentiator differentiator;
 
-  public ClockwiseAnotherImpl(DayIF dayImpl, MidnightIF midnightImpl, HourIF impl, boolean changeDayAfterZi, DayNightDifferentiator differentiator) {
+  public ClockwiseXinRenKuiReverseImpl(DayIF dayImpl, MidnightIF midnightImpl, HourIF impl, boolean changeDayAfterZi, DayNightDifferentiator differentiator) {
     this.dayImpl = dayImpl;
     this.midnightImpl = midnightImpl;
     hourImpl = impl;

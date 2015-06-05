@@ -16,12 +16,14 @@ import java.util.Locale;
 /**
  * 推算貴神
  * 固定「晝順夜逆」
+ * Clockwise Day Clockwise / Night Counter
+ * dayNightFixedImpl
  */
-public class ClockwiseDefaultImpl implements ClockwiseIF , Serializable {
+public class ClockwiseDayNightFixedImpl implements ClockwiseIF , Serializable {
 
   private final DayNightDifferentiator differentiator;
 
-  public ClockwiseDefaultImpl(DayNightDifferentiator differentiator) {this.differentiator = differentiator;}
+  public ClockwiseDayNightFixedImpl(DayNightDifferentiator differentiator) {this.differentiator = differentiator;}
 
   @Override
   public Clockwise getClockwise(Time lmt, Location loc) {
