@@ -63,7 +63,7 @@ public class TianyiOceanImpl implements TianyiIF, Serializable {
 
   @Override
   public String getDescription(Locale locale) {
-    return "《淵海子平》、《六壬視斯》、《六壬大占》、《大六壬金口訣》推導貴人法：甲戊兼牛羊 … 庚辛逢馬虎";
+    return "《淵海子平》、《六壬視斯》、《六壬大占》推導貴人法：甲戊兼牛羊 … 庚辛逢馬虎";
   }
 
 }

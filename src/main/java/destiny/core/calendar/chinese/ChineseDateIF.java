@@ -45,5 +45,9 @@ public interface ChineseDateIF {
   // =============== 陰曆轉陽曆 ===============
   LocalDate getYangDate(int cycle, StemBranch year, boolean leap, int month, int day);
 
+  default LocalDate getYangDate(ChineseDate cdate) {
+    return getYangDate(cdate.getCycle() , cdate.getYear() , cdate.isLeapMonth() , cdate.getMonth() , cdate.getDay());
+  }
+
 
 }
