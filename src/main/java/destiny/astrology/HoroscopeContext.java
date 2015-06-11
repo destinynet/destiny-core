@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * 星盤的 Context， 除了基本的時間地點之外，還包括各種計算的介面 (星體位置 / 分宮法 ...)
+ * TODO : 2015-06-11 附註： mutable object , 應該做另一個 immutable 的版本
  */
 public class HoroscopeContext implements Serializable
 {
@@ -62,10 +63,6 @@ public class HoroscopeContext implements Serializable
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   
-  /** 星 (Star) 與 位置(Position)＋地平方位角(Azimuth) ==>  (PositionWithAzimuth) 的 Map , 作為 cache 層 */
-  //private Map<Point , PositionWithAzimuth> positionMap = new HashMap<Point , PositionWithAzimuth>();
-
-
   /** 最完整的 constructor */
   public HoroscopeContext(@NotNull Time lmt , @NotNull Location location , HouseSystem houseSystem ,
       Coordinate coordinate , Centric centric , double temperature , double pressure , 

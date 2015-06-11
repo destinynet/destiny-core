@@ -13,5 +13,5 @@ import destiny.core.calendar.Time;
  */
 public interface StarPositionWithAzimuthIF extends StarPositionIF
 {
-  public PositionWithAzimuth getPositionWithAzimuth(Star star , Time gmt , Location location , double temperature , double pressure);
+  PositionWithAzimuth getPositionWithAzimuth(Star star , Time gmt , Location location , double temperature , double pressure);
 }

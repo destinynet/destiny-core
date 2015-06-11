@@ -201,6 +201,10 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     return branch;
   }
 
+  public static List<StemBranch> getList() {
+    return Arrays.asList(ARRAY);
+  }
+
   public static Iterable<StemBranch> iterable() {
     return Arrays.asList(ARRAY);
   }

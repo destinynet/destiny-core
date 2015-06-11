@@ -75,6 +75,14 @@ public class ChineseDate implements Serializable {
     return year.toString()+"年"+(leapMonth?"閏":"")+toChinese(month)+"月"+toChinese(day)+"日";
   }
 
+  /**
+   * 從 cycle + 年干支 , 取得西元年份
+   * 注意：只論 cycle + 年干支 , 以農曆為準 , 不考慮「西元過年」至「農曆過年」之間的 gap , 仍將其視為「西元」的前一年
+   */
+  public int getWestYear() {
+    return -2636 + (cycle -1)* 60 + year.getIndex();
+  }
+
   private String toChinese(int num) {
     if (num < 10) {
       return digitToChinese(num);

@@ -9,6 +9,9 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * 2015-06-11 重寫此介面，讓此介面成為 immutable
+ */
 public interface HoroscopeIF
 {
   /**
