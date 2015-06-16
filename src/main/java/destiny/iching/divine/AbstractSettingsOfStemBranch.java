@@ -5,20 +5,9 @@
 package destiny.iching.divine;
 
 import java.io.Serializable;
-import java.util.Locale;
 
-import destiny.core.Descriptive;
-
-public abstract class AbstractSettingsOfStemBranch implements SettingsOfStemBranchIF, Descriptive , Serializable
+@Deprecated
+public abstract class AbstractSettingsOfStemBranch implements SettingsOfStemBranchIF, Serializable
 {
-  public String getTitle(Locale locale)
-  {
-    return "";
-  }
-
-  public String getDescription(Locale locale)
-  {
-    return "";
-  }
 
 }

@@ -9,10 +9,7 @@ public class StemBranchUtils {
    * 五虎遁年起月(干)
    */
   public static Stem getMonthStem(Stem yearStem , Branch monthBranch) {
-    return Stem.getHeavenlyStems(
-      (yearStem.getIndex() % 5) * 2 +
-      (monthBranch.getIndex() >= 2 ? monthBranch.getIndex() : monthBranch.getIndex() + 12)
-    );
+    return Stem.get((yearStem.getIndex() % 5) * 2 + (monthBranch.getIndex() >= 2 ? monthBranch.getIndex() : monthBranch.getIndex() + 12));
   }
 
   /**

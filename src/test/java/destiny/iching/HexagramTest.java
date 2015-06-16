@@ -4,15 +4,53 @@
  */
 package destiny.iching;
 
+import destiny.utils.Tuple;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
 
 public class HexagramTest
 {
+  @Test
+  public void testGetTuple() {
+    List<Integer> list;
+    Tuple<HexagramIF, HexagramIF> tuple;
+    list = Arrays.asList(7, 7, 7, 7, 7, 7);
+    tuple = Hexagram.getHexagrams(list);
+    assertEquals(Hexagram.乾, tuple.getFirst());
+    assertEquals(Hexagram.乾, tuple.getSecond());
+
+    list = Arrays.asList(9, 9, 9, 9, 9, 9);
+    tuple = Hexagram.getHexagrams(list);
+    assertEquals(Hexagram.乾, tuple.getFirst());
+    assertEquals(Hexagram.坤, tuple.getSecond());
+
+    list = Arrays.asList(9, 9, 9, 6, 6, 6);
+    tuple = Hexagram.getHexagrams(list);
+    assertEquals(Hexagram.泰, tuple.getFirst());
+    assertEquals(Hexagram.否, tuple.getSecond());
+
+    list = Arrays.asList(6, 6, 6, 9, 9, 9);
+    tuple = Hexagram.getHexagrams(list);
+    assertEquals(Hexagram.否, tuple.getFirst());
+    assertEquals(Hexagram.泰, tuple.getSecond());
+
+    list = Arrays.asList(6, 9 , 6 , 9 , 6 , 9);
+    tuple = Hexagram.getHexagrams(list);
+    assertEquals(Hexagram.未濟, tuple.getFirst());
+    assertEquals(Hexagram.既濟, tuple.getSecond());
+
+    list = Arrays.asList(9 , 6 , 9 , 6 , 9 , 6);
+    tuple = Hexagram.getHexagrams(list);
+    assertEquals(Hexagram.既濟, tuple.getFirst());
+    assertEquals(Hexagram.未濟, tuple.getSecond());
+  }
+
   @Test
   public void testGetHexagramLine()
   {

@@ -19,7 +19,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   static {
     int n = 0;
     do {
-      ARRAY[n] = new StemBranch(Stem.getHeavenlyStems(n % 10), Branch.get(n % 12));
+      ARRAY[n] = new StemBranch(Stem.get(n % 10), Branch.get(n % 12));
       n++;
     } while (n < 60);
   }

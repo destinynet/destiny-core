@@ -10,6 +10,11 @@ import java.util.stream.IntStream;
 
 public interface RandomService {
 
+  /**
+   * @param count 要傳回的整數數量
+   * @param min   最小的整數值 (包含)
+   * @param max   最大的整數值 (包含)
+   */
   int[] getIntegers(int count, int min, int max);
 
   default List<Integer> getIntegerList(int count, int min, int max) {

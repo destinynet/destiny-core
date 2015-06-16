@@ -5,10 +5,12 @@
 package destiny.iching;
 
 import destiny.core.chinese.YinYangIF;
+import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public enum Hexagram implements HexagramIF , Serializable
 {
@@ -127,15 +129,15 @@ public enum Hexagram implements HexagramIF , Serializable
   
   /** 從 陰陽 YinYang 實體的 array 傳回 HexagramIF */
   @NotNull
-  public static Hexagram getHexagram(@Nullable YinYangIF[] yinyangs)
+  public static Hexagram getHexagram(YinYangIF[] yinyangs)
   {
     if (yinyangs == null)
       throw new RuntimeException("yinyangs is NULL !");
     if (yinyangs.length != 6)
       throw new RuntimeException("yinyangs length not equal 6 !");
 
-    Symbol upper = Symbol.getSymbol(new boolean[] {yinyangs[3].getBooleanValue() , yinyangs[4].getBooleanValue() , yinyangs[5].getBooleanValue()});
-    Symbol lower = Symbol.getSymbol(new boolean[] {yinyangs[0].getBooleanValue() , yinyangs[1].getBooleanValue() , yinyangs[2].getBooleanValue()});
+    Symbol upper = Symbol.getSymbol(yinyangs[3].getBooleanValue(), yinyangs[4].getBooleanValue(), yinyangs[5].getBooleanValue());
+    Symbol lower = Symbol.getSymbol(yinyangs[0].getBooleanValue(), yinyangs[1].getBooleanValue(), yinyangs[2].getBooleanValue());
     return getHexagram(upper , lower);
   }
 
@@ -147,16 +149,34 @@ public enum Hexagram implements HexagramIF , Serializable
    * @return 卦的實體(Hexagram)
    */
   @NotNull
-  public static Hexagram getHexagram(@Nullable boolean[] booleans)
-  {
+  public static Hexagram getHexagram(boolean[] booleans) {
     if (booleans == null)
       throw new RuntimeException("null array !");
     if (booleans.length != 6)
       throw new RuntimeException("booleans length is not 6 , the length is " + booleans.length);
-    Symbol lower = Symbol.getSymbol(new boolean[] {booleans[0] , booleans[1] , booleans[2]});
-    Symbol upper = Symbol.getSymbol(new boolean[] {booleans[3] , booleans[4] , booleans[5]});
+    Symbol lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2]);
+    Symbol upper = Symbol.getSymbol(booleans[3], booleans[4], booleans[5]);
 
     return Hexagram.getHexagram(upper, lower);
+  }
+
+  @NotNull
+  public static Hexagram getHexagram(@NotNull List<Boolean> booleans) {
+    if (booleans.size() != 6)
+      throw new AssertionError("booleans length is not 6 . content : " + booleans);
+    Symbol lower = Symbol.getSymbol(booleans.get(0) , booleans.get(1) , booleans.get(2));
+    Symbol upper = Symbol.getSymbol(booleans.get(3) , booleans.get(4) , booleans.get(5));
+    return Hexagram.getHexagram(upper , lower);
+  }
+
+  /**
+   * @return 從 六爻 (6,7,8 or 9) 取得本卦以及變卦
+   */
+  @NotNull
+  public static Tuple<HexagramIF , HexagramIF> getHexagrams(@NotNull List<Integer> lines) {
+    List<Boolean> src = lines.stream().map(i -> i % 2 == 1).collect(Collectors.toList());
+    List<Boolean> dst = lines.stream().map(i -> (i == 6 || i == 7)).collect(Collectors.toList());
+    return Tuple.of(getHexagram(src) , getHexagram(dst));
   }
   
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6 */

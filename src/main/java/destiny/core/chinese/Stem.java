@@ -55,16 +55,16 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
    * @param index
    * @return
    */
-  public static Stem getHeavenlyStems(int index)
+  public static Stem get(int index)
   {
     /**
      * 如果 index < 0  , 則 加 10 , recursive 再傳一次<BR>
      * 如果 index >=10 , 則 減 10 , recursive 再傳一次<BR> 
      */
     if (index < 0)
-      return getHeavenlyStems(index+10);
+      return get(index + 10);
     else if (index >=10 )
-      return (getHeavenlyStems(index-10));
+      return (get(index - 10));
     return ARRAY[index];
   }
 
@@ -74,7 +74,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
    * n = 0 : 傳回自己
    */
   public Stem next(int n) {
-    return getHeavenlyStems(getIndex(this) + n);
+    return get(getIndex(this) + n);
   }
 
   /**
@@ -124,6 +124,11 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   public int getIndex()
   {
     return getIndex(this);
+  }
+
+  /** 甲[1] ... 癸[10] */
+  public int getIndexFromOne() {
+    return getIndex(this)+1;
   }
   
   /**

@@ -24,7 +24,7 @@ public class StemBranchOptional implements Serializable {
     int n = 0;
     do {
       ARRAY[n] = new StemBranchOptional(
-        Optional.of(Stem.getHeavenlyStems(n % 10)),
+        Optional.of(Stem.get(n % 10)),
         Optional.of(Branch.get(n % 12))
       );
       n++;

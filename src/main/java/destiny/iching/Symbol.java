@@ -92,7 +92,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
    * 「由下而上」 三個陰陽 , 查詢卦象為何
    */
   @NotNull
-  public static Symbol getSymbol(boolean[] lines)
+  public static Symbol getSymbol(boolean... lines)
   {
     for (Symbol aSymbolArray : symbolArray) {
       if ((lines[0] == aSymbolArray.yinYangs[0]) &&

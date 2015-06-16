@@ -127,18 +127,18 @@ public class StemTest
   {
     assertEquals(甲 , getHeavenlyStems('甲').get());
     assertSame(甲   , getHeavenlyStems('甲').get());
-    assertEquals(甲 , getHeavenlyStems(0));
-    assertEquals(甲 , getHeavenlyStems(10));
-    assertEquals(甲 , getHeavenlyStems(-10));
-    assertEquals(甲 , getHeavenlyStems(20));
-    assertEquals(甲 , getHeavenlyStems(-20));
+    assertEquals(甲 , get(0));
+    assertEquals(甲 , get(10));
+    assertEquals(甲 , get(-10));
+    assertEquals(甲 , get(20));
+    assertEquals(甲 , get(-20));
 
     assertEquals(癸 , getHeavenlyStems('癸').get());
     assertSame(癸   , getHeavenlyStems('癸').get());
-    assertEquals(癸 , getHeavenlyStems(9));
-    assertEquals(癸 , getHeavenlyStems(19));
-    assertEquals(癸 , getHeavenlyStems(-1));
-    assertEquals(癸 , getHeavenlyStems(-11));
+    assertEquals(癸 , get(9));
+    assertEquals(癸 , get(19));
+    assertEquals(癸 , get(-1));
+    assertEquals(癸 , get(-11));
   }
 
   @Test

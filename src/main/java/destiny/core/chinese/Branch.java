@@ -126,6 +126,9 @@ public enum Branch implements BranchIF<Branch>
     return index;
   }
 
+
+
+
   @Override
   public Branch getBranch() {
     return this;
@@ -136,6 +139,13 @@ public enum Branch implements BranchIF<Branch>
    */
   public int getIndex() {
     return getIndex(this);
+  }
+
+/**
+   * 子[1] ~ 亥[12]
+   */
+  public int getIndexFromOne() {
+    return getIndex() +1;
   }
 
 

@@ -282,11 +282,11 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     
     switch(年干)
     {
-      case 甲 : case 己 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支)) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 2) ) ; break;
-      case 乙 : case 庚 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 2) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 4) ) ; break;
-      case 丙 : case 辛 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 4) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 6) ) ; break;
-      case 丁 : case 壬 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 6) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 8) ) ; break;
-      case 戊 : case 癸 : 月干 = 月支.getIndex() >=2 ? (Stem.getHeavenlyStems(Branch.getIndex(月支) + 8) ) : (Stem.getHeavenlyStems(Branch.getIndex(月支) + 10) ) ; break;
+      case 甲 : case 己 : 月干 = 月支.getIndex() >=2 ? (Stem.get(Branch.getIndex(月支)) ) : (Stem.get(Branch.getIndex(月支) + 2) ) ; break;
+      case 乙 : case 庚 : 月干 = 月支.getIndex() >=2 ? (Stem.get(Branch.getIndex(月支) + 2) ) : (Stem.get(Branch.getIndex(月支) + 4) ) ; break;
+      case 丙 : case 辛 : 月干 = 月支.getIndex() >=2 ? (Stem.get(Branch.getIndex(月支) + 4) ) : (Stem.get(Branch.getIndex(月支) + 6) ) ; break;
+      case 丁 : case 壬 : 月干 = 月支.getIndex() >=2 ? (Stem.get(Branch.getIndex(月支) + 6) ) : (Stem.get(Branch.getIndex(月支) + 8) ) ; break;
+      case 戊 : case 癸 : 月干 = 月支.getIndex() >=2 ? (Stem.get(Branch.getIndex(月支) + 8) ) : (Stem.get(Branch.getIndex(月支) + 10) ) ; break;
       default : throw new RuntimeException("impossible");
     }
     
@@ -307,7 +307,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree)
         {
           // t <---立春---- LMT -----換年點
-          月干 = Stem.getHeavenlyStems(月干.getIndex() - 2);
+          月干 = Stem.get(月干.getIndex() - 2);
         }
       }
       else if (changeYearDegree > 315)
@@ -315,7 +315,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         //換年點在立春後 , 還沒測試
         double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt ).getLongitude();
         if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
-          月干 = Stem.getHeavenlyStems(月干.getIndex() + 2);
+          月干 = Stem.get(月干.getIndex() + 2);
       }
     }      
     return 月干;

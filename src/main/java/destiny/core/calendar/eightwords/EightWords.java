@@ -41,7 +41,17 @@ public class EightWords extends EightWordsNullable
   {
     super(nullable.getYear() , nullable.getMonth() , nullable.getDay() , nullable.getHour());
   }
-   
+
+  /** 直接用八個干支建立八字 */
+  public EightWords(Stem yearStem , Branch yearBranch , Stem monthStem , Branch monthBranch , Stem dayStem , Branch dayBranch , Stem hourStem , Branch hourBranch) {
+    super(
+      StemBranch.get(yearStem, yearBranch),
+      StemBranch.get(monthStem , monthBranch) ,
+      StemBranch.get(dayStem , dayBranch) ,
+      StemBranch.get(hourStem , hourBranch)
+    );
+  }
+
   /**
    * null Constructor , 避免誤用而建構出有 null 的四柱
    */

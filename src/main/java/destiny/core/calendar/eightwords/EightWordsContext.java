@@ -93,29 +93,29 @@ public class EightWordsContext implements EightWordsIF , Serializable
        * </pre>
        */
       if (day != dayImpl.getDay(nextZi, location, midnightImpl, hourImpl, changeDayAfterZi))
-        臨時日干 = Stem.getHeavenlyStems(臨時日干.getIndex() + 1);
+        臨時日干 = Stem.get(臨時日干.getIndex() + 1);
 
     switch (Stem.getIndex(臨時日干))
     {
       case 0:
       case 5:
-        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支));
+        時干 = Stem.get(Branch.getIndex(時支));
         break;
       case 1:
       case 6:
-        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 2);
+        時干 = Stem.get(Branch.getIndex(時支) + 2);
         break;
       case 2:
       case 7:
-        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 4);
+        時干 = Stem.get(Branch.getIndex(時支) + 4);
         break;
       case 3:
       case 8:
-        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 6);
+        時干 = Stem.get(Branch.getIndex(時支) + 6);
         break;
       case 4:
       case 9:
-        時干 = Stem.getHeavenlyStems(Branch.getIndex(時支) + 8);
+        時干 = Stem.get(Branch.getIndex(時支) + 8);
         break;
       default:
         throw new AssertionError("Error");

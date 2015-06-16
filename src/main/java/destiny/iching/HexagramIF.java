@@ -15,7 +15,7 @@ public interface HexagramIF
   //public <T extends BaseLine> BaseLine getLine(int index);
   
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6 */
-  public boolean getLine(int index);
+  boolean getLine(int index);
   
   /** 取得全部的陰陽 */
   @NotNull
