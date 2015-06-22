@@ -11,5 +11,5 @@ package destiny.core.calendar.eightwords.personal;
 public interface FortuneDirectionIF
 {
   /** 大運是否順行 */
-  public boolean isForward(PersonContext personContext);
+  boolean isForward(PersonContext personContext);
 }

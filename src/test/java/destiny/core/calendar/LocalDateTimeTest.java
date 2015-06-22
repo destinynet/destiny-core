@@ -4,11 +4,14 @@
 package destiny.core.calendar;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.JulianFields;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -17,6 +20,15 @@ import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
 
 public class LocalDateTimeTest {
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
+  @Test
+  public void testOutput() {
+    logger.info("{}" , LocalDate.of(2012 , 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM-dd")));
+    logger.info("{}" , LocalDate.of(2012 , 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM")));
+  }
+
 
   /**
    * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar

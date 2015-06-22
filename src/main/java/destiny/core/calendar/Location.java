@@ -238,6 +238,23 @@ public class Location implements Serializable
     
     this.timeZone = timeZone;
   }
+
+  /** 更省略的 constructor */
+  public Location(double longitude, double latitude , int minuteOffset)
+  {
+    this.eastWest = (longitude >= 0 ) ? EastWest.EAST : EastWest.WEST;
+    this.longitudeDegree = (int) Math.abs(longitude);
+    this.longitudeMinute = (int) ((Math.abs(longitude) - longitudeDegree) * 60);
+    this.longitudeSecond = Math.abs(longitude)*3600 - longitudeDegree*3600 - longitudeMinute*60;
+
+    this.northSouth = (latitude >=0 ) ? NorthSouth.NORTH : NorthSouth.SOUTH;
+    this.latitudeDegree = (int) Math.abs(latitude);
+    this.latitudeMinute = (int) ((Math.abs(latitude) - latitudeDegree) * 60);
+    this.latitudeSecond = Math.abs(latitude)*3600 - latitudeDegree*3600 - latitudeMinute*60;
+
+    this.minuteOffset = minuteOffset;
+  }
+
   
   /** 
    * 利用 debug String 建立 Location , 缺點：「秒」只限制在小數點下兩位數

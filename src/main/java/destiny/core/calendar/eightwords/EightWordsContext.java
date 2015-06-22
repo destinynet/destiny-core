@@ -123,15 +123,7 @@ public class EightWordsContext implements EightWordsIF , Serializable
 
     return new EightWords(year , month , day , StemBranch.get(時干, 時支) );
   }
-  
-  /**
-   * 設定年月的實作
-   */
-  public void setYearMonthImpl(YearMonthIF impl)
-  {
-    this.yearMonthImpl = impl;
-  }
-  
+
   /**
    * @return 取得年月的實作
    */
@@ -140,13 +132,6 @@ public class EightWordsContext implements EightWordsIF , Serializable
     return this.yearMonthImpl;
   }
 
-  /**
-   * 設定換日柱的方法
-   */
-  public void setDayImpl(DayIF impl)
-  {
-    this.dayImpl = impl;
-  }
 
   /** 取得日柱的實作 */
   public DayIF getDayImpl()
@@ -154,14 +139,6 @@ public class EightWordsContext implements EightWordsIF , Serializable
     return this.dayImpl;
   }
   
-  /**
-   * 設定換時柱的方法
-   */
-  public void setHourImpl(HourIF impl)
-  {
-    this.hourImpl = impl;
-  }
-
   /**
    * 取得子正 (MidnightIF) 的實作方法
    */

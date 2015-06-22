@@ -6,11 +6,14 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 計算八字的介面
  */
 public interface EightWordsIF {
 
+  @NotNull
   EightWords getEightWords(Time lmt, Location location);
+
 }

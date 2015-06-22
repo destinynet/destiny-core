@@ -77,8 +77,11 @@ public class PersonContext extends EightWordsContext {
 
 
   /** constructor */
-  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
-    super(chineseDateImpl, yearMonth, day, hour, midnight, changeDayAfterZi, risingSignImpl);
+  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl,
+                       MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl,
+                       StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, Gender gender,
+                       double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
+    super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
     this.fortuneMonthSpan = fortuneMonthSpan;
@@ -92,6 +95,7 @@ public class PersonContext extends EightWordsContext {
     Time gmt = Time.getGMTfromLMT(lmt, location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
   }
+
 
   /** 取得出生時刻 */
   @NotNull
