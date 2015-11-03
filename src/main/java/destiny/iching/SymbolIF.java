@@ -13,11 +13,11 @@ public interface SymbolIF
   /**
    * 傳回八卦名
    */
-  public char getName();
+  char getName();
 
   /**
    * 取得一個卦的第幾爻
    * index 值為 0,1 or 2
    */
-  public boolean getBooleanValue(int index);
+  boolean getBooleanValue(int index);
 }

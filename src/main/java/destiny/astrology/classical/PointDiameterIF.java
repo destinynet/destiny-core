@@ -14,5 +14,5 @@ import destiny.core.Descriptive;
 public interface PointDiameterIF extends Descriptive
 {
   /** 如果不是行星，則光芒直徑一律視為 2.0 */
-  public double getDiameter(Point point);
+  double getDiameter(Point point);
 }

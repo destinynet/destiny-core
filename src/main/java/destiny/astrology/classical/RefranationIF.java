@@ -27,5 +27,5 @@ import org.jetbrains.annotations.NotNull;
 public interface RefranationIF {
 
   @NotNull
-  public Triple<Boolean , Point, Aspect> resultOf(HoroscopeContext context , Planet planet , Point otherPoint);
+  Triple<Boolean , Point, Aspect> resultOf(HoroscopeContext context , Planet planet , Point otherPoint);
 }

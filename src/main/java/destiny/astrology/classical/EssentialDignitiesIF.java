@@ -4,12 +4,12 @@
  */ 
 package destiny.astrology.classical;
 
-import java.util.List;
-
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /** 
  * 取得某行星 Planet 的 Essential Dignities 強度 <BR>
@@ -18,5 +18,5 @@ import org.jetbrains.annotations.NotNull;
 public interface EssentialDignitiesIF
 {
   @NotNull
-  public List<RuleIF> getEssentialDignities(Planet planet , HoroscopeContext horoscopeContext);
+  List<RuleIF> getEssentialDignities(Planet planet , HoroscopeContext horoscopeContext);
 }

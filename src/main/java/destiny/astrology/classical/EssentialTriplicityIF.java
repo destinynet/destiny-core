@@ -16,6 +16,6 @@ import destiny.astrology.ZodiacSign;
 public interface EssentialTriplicityIF
 {
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */
-  public Point getTriplicityPoint(ZodiacSign sign  , DayNight dayNight);
+  Point getTriplicityPoint(ZodiacSign sign  , DayNight dayNight);
 
 }

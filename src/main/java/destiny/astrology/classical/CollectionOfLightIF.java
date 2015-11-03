@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface CollectionOfLightIF {
 
   /** 收集光線的形式 */
-  public enum CollectType {DIGNITIES , DEBILITIES , ALL}
+  enum CollectType {DIGNITIES , DEBILITIES , ALL}
 
   /**
    * 指定某種「光線蒐集模式」
@@ -23,7 +23,7 @@ public interface CollectionOfLightIF {
    * @param collectType @NotNull 詢問是否符合某種 「光線蒐集模式 : CollectType 」
    * @return
    */
-  public Tuple<Boolean, List<Planet>> getResult(Planet planet, HoroscopeContext horoscopeContext, CollectType collectType);
+  Tuple<Boolean, List<Planet>> getResult(Planet planet, HoroscopeContext horoscopeContext, CollectType collectType);
 
   /**
    * 不指定「光線蒐集模式」，若呈現任何一種，就傳回來
@@ -33,5 +33,5 @@ public interface CollectionOfLightIF {
    */
   //public Triple<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, HoroscopeContext horoscopeContext);
 
-  public Triple<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, HoroscopeContext horoscopeContext , Optional<CollectType> collectTypeOptional);
+  Triple<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, HoroscopeContext horoscopeContext , Optional<CollectType> collectTypeOptional);
 }

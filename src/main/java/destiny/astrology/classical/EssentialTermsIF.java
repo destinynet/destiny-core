@@ -14,8 +14,8 @@ import destiny.astrology.ZodiacSign;
 public interface EssentialTermsIF
 {
   /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360 */
-  public Point getTermsStar(double degree);
+  Point getTermsStar(double degree);
   
   /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30 */
-  public Point getTermsStar(ZodiacSign sign , double degree);
+  Point getTermsStar(ZodiacSign sign , double degree);
 }

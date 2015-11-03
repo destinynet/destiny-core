@@ -19,24 +19,24 @@ public interface HexagramIF
   
   /** 取得全部的陰陽 */
   @NotNull
-  public boolean[] getYinYangs();
+  boolean[] getYinYangs();
   
   /** 取得上卦 */
-  public Symbol getUpperSymbol();
+  Symbol getUpperSymbol();
   
   /** 取得下卦 */
-  public Symbol getLowerSymbol();
+  Symbol getLowerSymbol();
 
   /**
    * 第 line 爻動的話，變卦是什麼
    * @param line [1~6]
    */
   @NotNull
-  public HexagramIF getHexagram(int... line);
+  HexagramIF getHexagram(int... line);
   
   /** 取得 010101 的表示法 */
   @NotNull
-  public String getBinaryCode();
+  String getBinaryCode();
   
   /** 以下三個 method , 屬於「梅花易」常用的詞彙，經仔細思考，還是決定不放入最基本的 methods 中 */
   //互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */

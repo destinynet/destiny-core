@@ -17,5 +17,5 @@ public interface EssentialRedfIF
 {
   /** 取得黃道帶上某星座，其 Dignity 之 廟旺陷落 各是何星 */
   @Nullable
-  public Point getPoint(ZodiacSign sign , Dignity dignity);
+  Point getPoint(ZodiacSign sign , Dignity dignity);
 }

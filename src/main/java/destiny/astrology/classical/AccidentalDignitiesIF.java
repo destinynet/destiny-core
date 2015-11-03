@@ -17,5 +17,5 @@ import java.util.List;
 public interface AccidentalDignitiesIF
 {
   @NotNull
-  public List<RuleIF> getAccidentalDignities(Planet planet , HoroscopeContext horoscopeContext);
+  List<RuleIF> getAccidentalDignities(Planet planet , HoroscopeContext horoscopeContext);
 }

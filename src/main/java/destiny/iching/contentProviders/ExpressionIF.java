@@ -4,9 +4,9 @@
  */
 package destiny.iching.contentProviders;
 
-import java.util.Locale;
-
 import destiny.iching.HexagramIF;
+
+import java.util.Locale;
 
 /**
  * 卦 或 爻 的辭
@@ -14,7 +14,7 @@ import destiny.iching.HexagramIF;
 public interface ExpressionIF
 {
   /** 取得卦辭 */
-  public String getHexagramExpression(HexagramIF hexagram , Locale locale);
+  String getHexagramExpression(HexagramIF hexagram , Locale locale);
   
   /**
    * @param hexagram
@@ -22,8 +22,8 @@ public interface ExpressionIF
    * @param locale
    * @return 取得爻辭
    */
-  public String getLineExpression(HexagramIF hexagram , int lineIndex , Locale locale);
+  String getLineExpression(HexagramIF hexagram , int lineIndex , Locale locale);
   
   /** 取得 用六/用九 的爻辭 */
-  public String getExtraExpression(HexagramIF hexagram , Locale locale);
+  String getExtraExpression(HexagramIF hexagram , Locale locale);
 }

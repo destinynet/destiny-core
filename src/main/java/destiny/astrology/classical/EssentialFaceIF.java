@@ -14,8 +14,8 @@ import destiny.astrology.ZodiacSign;
 public interface EssentialFaceIF
 {
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360 */
-  public Star getFaceStar(double degree);
+  Star getFaceStar(double degree);
   
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30 */
-  public Star getFaceStar(ZodiacSign sign , double degree);
+  Star getFaceStar(ZodiacSign sign , double degree);
 }

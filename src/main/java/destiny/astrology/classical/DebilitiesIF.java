@@ -18,6 +18,6 @@ import java.util.List;
 public interface DebilitiesIF
 {
   @NotNull
-  public List<RuleIF> getDebilities(Planet planet , HoroscopeContext horoscopeContext);
+  List<RuleIF> getDebilities(Planet planet , HoroscopeContext horoscopeContext);
 
 }

@@ -15,21 +15,21 @@ import destiny.astrology.ZodiacSign;
 public interface EssentialIF
 {
   /** 取得黃道帶上某星座，其 Dignity 之 廟旺陷落 各是何星 */
-  public Point getPoint(ZodiacSign sign , Dignity dignity);
+  Point getPoint(ZodiacSign sign , Dignity dignity);
   
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */
-  public Point getTriplicityPoint(ZodiacSign sign  , DayNight dayNight);
+  Point getTriplicityPoint(ZodiacSign sign  , DayNight dayNight);
   
   /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360 */
-  public Point getTermsPoint(double degree);
+  Point getTermsPoint(double degree);
   
   /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30 */
-  public Point getTermsPoint(ZodiacSign sign , double degree);
+  Point getTermsPoint(ZodiacSign sign , double degree);
   
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360 */
-  public Point getFacePoint(double degree);
+  Point getFacePoint(double degree);
   
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30 */
-  public Point getFacePoint(ZodiacSign sign , double degree);
+  Point getFacePoint(ZodiacSign sign , double degree);
   
 }
