@@ -6,7 +6,7 @@ package destiny.core.calendar;
 
 import destiny.core.calendar.Location.EastWest;
 import destiny.core.calendar.Location.NorthSouth;
-import destiny.utils.location.TimeZoneUtils;
+import destiny.tools.location.TimeZoneUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

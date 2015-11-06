@@ -1,7 +1,7 @@
 /**
  * Created by smallufo at 2009/3/17 下午 9:44:34
  */
-package destiny.utils.location;
+package destiny.tools.location;
 
 import destiny.core.calendar.Location;
 

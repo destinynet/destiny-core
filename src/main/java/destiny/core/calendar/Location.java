@@ -8,7 +8,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import destiny.utils.AlignUtil;
 import destiny.utils.LocaleUtils;
-import destiny.utils.location.TimeZoneUtils;
+import destiny.tools.location.TimeZoneUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

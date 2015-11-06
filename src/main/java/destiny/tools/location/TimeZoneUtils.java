@@ -1,5 +1,5 @@
 /** 2009/10/31 上午5:19:43 by smallufo */
-package destiny.utils.location;
+package destiny.tools.location;
 
 import java.io.Serializable;
 import java.util.TimeZone;
