@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2008/5/2 at 上午 1:22:15
  */
-package destiny.utils.random;
+package destiny.tools.random;
 
 import java.io.IOException;
 import java.util.List;

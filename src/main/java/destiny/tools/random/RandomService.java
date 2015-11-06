@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2011/4/10 at 下午11:21:13
  */
-package destiny.utils.random;
+package destiny.tools.random;
 
 import java.util.List;
 import java.util.stream.Collectors;
