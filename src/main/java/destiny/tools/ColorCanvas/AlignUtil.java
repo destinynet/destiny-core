@@ -2,7 +2,7 @@
  * @author smallufo 
  * Created on 2007/3/23 at 下午 11:21:25
  */ 
-package destiny.utils.ColorCanvas;
+package destiny.tools.ColorCanvas;
 
 import org.jetbrains.annotations.NotNull;
 

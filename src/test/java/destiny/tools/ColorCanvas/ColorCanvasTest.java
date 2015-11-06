@@ -1,4 +1,4 @@
-package destiny.utils.ColorCanvas;
+package destiny.tools.ColorCanvas;
 
 import org.junit.Test;
 

@@ -2,7 +2,7 @@
  * @author smallufo 
  * Created on 2007/3/24 at 上午 12:04:18
  */ 
-package destiny.utils.ColorCanvas;
+package destiny.tools.ColorCanvas;
 
 import org.junit.Test;
 

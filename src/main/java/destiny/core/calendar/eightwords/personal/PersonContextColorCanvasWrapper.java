@@ -10,8 +10,8 @@ import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.StemBranch;
-import destiny.utils.ColorCanvas.AlignUtil;
-import destiny.utils.ColorCanvas.ColorCanvas;
+import destiny.tools.ColorCanvas.AlignUtil;
+import destiny.tools.ColorCanvas.ColorCanvas;
 import destiny.utils.Decorator;
 import org.jetbrains.annotations.NotNull;
 

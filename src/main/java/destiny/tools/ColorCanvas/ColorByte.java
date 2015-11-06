@@ -5,7 +5,7 @@
  * @date 2004/8/13
  * @time 下午 06:08:03
  */
-package destiny.utils.ColorCanvas;
+package destiny.tools.ColorCanvas;
 
 import org.jetbrains.annotations.NotNull;
 

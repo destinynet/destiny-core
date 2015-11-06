@@ -3,7 +3,7 @@ package destiny.FengShui.SanYuan;
 
 import destiny.iching.Symbol;
 import destiny.iching.SymbolAcquired;
-import destiny.utils.ColorCanvas.ColorCanvas;
+import destiny.tools.ColorCanvas.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

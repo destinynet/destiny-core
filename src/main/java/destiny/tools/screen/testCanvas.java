@@ -1,4 +1,4 @@
-package destiny.utils.screen;
+package destiny.tools.screen;
 
 /**
  * @author smallufo

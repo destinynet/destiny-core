@@ -8,7 +8,7 @@ import destiny.core.calendar.eightwords.EightWords;
 import destiny.iching.HexagramIF;
 import destiny.iching.Symbol;
 import destiny.iching.contentProviders.HexagramNameFullIF;
-import destiny.utils.ColorCanvas.ColorCanvas;
+import destiny.tools.ColorCanvas.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

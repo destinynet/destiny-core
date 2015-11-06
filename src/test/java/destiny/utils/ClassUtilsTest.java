@@ -5,7 +5,7 @@
 package destiny.utils;
 
 import destiny.utils.ClassUtils.PERMISSION;
-import destiny.utils.ColorCanvas.ColorCanvas;
+import destiny.tools.ColorCanvas.ColorCanvas;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

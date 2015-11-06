@@ -3,7 +3,7 @@
  * @date 2004/8/13
  * @time 下午 07:27:07
  */
-package destiny.utils.ColorCanvas;
+package destiny.tools.ColorCanvas;
 
 import java.io.Serializable;
 

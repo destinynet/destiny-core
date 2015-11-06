@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2002/8/28 at 下午 11:30:06
  */
-package destiny.utils.screen;
+package destiny.tools.screen;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

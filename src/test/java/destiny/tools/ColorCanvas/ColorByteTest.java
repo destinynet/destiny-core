@@ -3,7 +3,7 @@
  * @date 2005/4/4
  * @time 下午 03:05:36
  */
-package destiny.utils.ColorCanvas;
+package destiny.tools.ColorCanvas;
 
 import org.junit.Test;
 
