@@ -14,10 +14,10 @@
   <name>destiny-core</name>
 
   <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>destiny-tools</artifactId>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>${project.groupId}</groupId>-->
+      <!--<artifactId>destiny-tools</artifactId>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>org.slf4j</groupId>
