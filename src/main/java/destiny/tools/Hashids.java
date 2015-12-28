@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2015-04-21.
  */
-package destiny.utils;
+package destiny.tools;
 
 import java.util.*;
 import java.util.regex.Matcher;

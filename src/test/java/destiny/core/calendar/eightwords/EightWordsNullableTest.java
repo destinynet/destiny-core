@@ -2,7 +2,7 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranchOptional;
-import destiny.utils.Hashids;
+import destiny.tools.Hashids;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
