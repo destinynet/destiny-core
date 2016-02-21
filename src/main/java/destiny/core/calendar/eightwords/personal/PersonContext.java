@@ -79,7 +79,7 @@ public class PersonContext extends EightWordsContext {
   /** constructor */
   public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl,
                        MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl,
-                       StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, Gender gender,
+                       @NotNull StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, @NotNull Gender gender,
                        double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
     super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl);
     this.solarTermsImpl = solarTermsImpl;
@@ -370,7 +370,7 @@ public class PersonContext extends EightWordsContext {
       return false;
     if (gender != that.gender)
       return false;
-    if (eightWords != null ? !eightWords.equals(that.eightWords) : that.eightWords != null)
+    if (!eightWords.equals(that.eightWords))
       return false;
     if (currentSolarTerms != that.currentSolarTerms)
       return false;
@@ -387,7 +387,7 @@ public class PersonContext extends EightWordsContext {
     result = 31 * result + lmt.hashCode();
     result = 31 * result + location.hashCode();
     result = 31 * result + gender.hashCode();
-    result = 31 * result + (eightWords != null ? eightWords.hashCode() : 0);
+    result = 31 * result + (eightWords.hashCode());
     result = 31 * result + (currentSolarTerms != null ? currentSolarTerms.hashCode() : 0);
     temp = Double.doubleToLongBits(fortuneMonthSpan);
     result = 31 * result + (int) (temp ^ (temp >>> 32));

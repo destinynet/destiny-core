@@ -6,6 +6,7 @@ package destiny.astrology.beans;
 
 import destiny.astrology.Aspect;
 import destiny.astrology.Planet;
+import destiny.astrology.RelativeTransitIF;
 import destiny.core.calendar.Time;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
@@ -27,24 +28,17 @@ public class BesiegedBean implements Serializable
 {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  private final NearestTransitBean nearestTransitBean;
-  
+  private final RelativeTransitIF relativeTransitImpl;
+
   /** 之前形成的交角 */
   private Optional<Aspect> aspectPrior;
   
   /** 之後形成的交角 */
   private Optional<Aspect> aspectAfter;
 
-  public BesiegedBean(NearestTransitBean nearestTransitBean) {
-    this.nearestTransitBean = nearestTransitBean;
+  public BesiegedBean(RelativeTransitIF relativeTransitImpl) {
+    this.relativeTransitImpl = relativeTransitImpl;
   }
-
-  //  public BesiegedBean(RelativeTransitIF impl)
-//  {
-//    this.relativeTransitImpl = impl;
-//  }
-
-
 
   /**
    * @param planet 計算此顆行星，被哪兩顆行星所夾角
@@ -231,10 +225,9 @@ public class BesiegedBean implements Serializable
     Planet priorPlanet = null;
     for (Planet eachOther : otherPlanets)
     {
-      Tuple<Time , Double> tuple = nearestTransitBean.getResult(planet , eachOther , gmt , angles , false);
-      //NearestTransitBean ntb = new NearestTransitBean(relativeTransitImpl , planet , eachOther , gmt , angles , false);
+      Tuple<Time , Double> tuple = relativeTransitImpl.getNearestRelativeTransitTime(planet, eachOther, gmt, false, angles);
+
       Time resultTime = tuple.getFirst();
-      //Time resultTime = ntb.getResultTime();
       if (resultTime != null) // result 有可能為 null , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
       {
         if (otherPlanetsNearestTimeBackward == null)
@@ -266,9 +259,7 @@ public class BesiegedBean implements Serializable
     Planet afterPlanet = null; 
     for (Planet eachOther : otherPlanets)
     {
-      Tuple<Time , Double> tuple = nearestTransitBean.getResult(planet , eachOther , gmt , angles , true);
-      //NearestTransitBean ntb = new NearestTransitBean(relativeTransitImpl , planet , eachOther , gmt , angles , true);
-      //Time resultTime = ntb.getResultTime();
+      Tuple<Time , Double> tuple = relativeTransitImpl.getNearestRelativeTransitTime(planet , eachOther , gmt , true , angles);
       Time resultTime = tuple.getFirst();
       if (resultTime != null) // result 有可能為 null , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
       {

@@ -12,14 +12,17 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
  * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近 (可能 backward , 也可能 forward) 的是哪一次
  */
+@Deprecated
 public class NearestTransitBean implements Serializable
 {
   /** 內定採用 SwissEph 的 RelativeTransitIF 實作 */
@@ -126,12 +129,18 @@ public class NearestTransitBean implements Serializable
   /**
    * @return
    * A : 取得 下一個(Forward)/或上一個(Backward) 形成交角的時刻 (GMT)
-   * B : /** 取得所形成的交角度數 (可能大於 180)
+   * B : 取得所形成的交角度數 (可能大於 180)
    */
+
   @NotNull
   public Tuple<Time , Double> getResult( Star transitStar , Star relativeStar , Time fromGmtTime , @NotNull double[] angles , boolean isForward) {
+    return relativeTransitImpl.getNearestRelativeTransitTime(transitStar, relativeStar, fromGmtTime,
+      Arrays.stream(angles).boxed().collect(Collectors.toList()),
+      isForward);
+  }
 
-
+  @NotNull
+  public Tuple<Time , Double> getResultOld( Star transitStar , Star relativeStar , Time fromGmtTime , @NotNull double[] angles , boolean isForward) {
     //下一個/或上一個 形成交角的時刻 (GMT)
     Time resultTime = null;
 

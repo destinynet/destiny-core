@@ -111,8 +111,7 @@ public enum Aspect implements LocaleStringIF
   
   /**
    * 取得某類重要度 (高/中/低) 的角度列表
-   * <br/>
-   * TODO : 這裡應該改傳回 Iterator 比較好？ */
+   */
   public static List<Aspect> getAngles(Importance importance)
   {
     return importanceAngles.get(importance);
