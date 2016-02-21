@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2009/3/1 at 上午 4:41:12
  */
-package destiny.utils;
+package destiny.tools;
 
 import java.util.Optional;
 

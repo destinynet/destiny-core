@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2011/2/28 at 下午4:44:12
  */
-package destiny.utils;
+package destiny.tools;
 
 public interface UrlShorterService {
 
