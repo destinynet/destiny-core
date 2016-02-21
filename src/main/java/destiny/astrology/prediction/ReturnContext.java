@@ -112,12 +112,10 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable
   @Override
   public Time getConvergentTime(@NotNull Time natalGmtTime, @NotNull Time nowGmtTime)
   {
-    if (precession)
-      starPositionWithAzimuthImpl.setCoordinate(Coordinate.SIDEREAL);
-    //先計算出生盤中，該星體的黃道位置
-    double natalPlanetDegree = starPositionWithAzimuthImpl.getPosition(planet , natalGmtTime).getLongitude();
-    
     Coordinate coordinate = (precession) ? Coordinate.SIDEREAL : Coordinate.ECLIPTIC;
+    //先計算出生盤中，該星體的黃道位置
+    double natalPlanetDegree = starPositionWithAzimuthImpl.getPosition(planet , natalGmtTime , Centric.GEO , coordinate).getLongitude();
+
     //再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
     if (!converse) //順推
     {

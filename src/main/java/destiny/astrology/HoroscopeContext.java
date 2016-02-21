@@ -99,10 +99,10 @@ public class HoroscopeContext implements Serializable
   public PositionWithAzimuth getPosition(Point point)
   {
     starPositionWithAzimuthImpl.setLocation(location);
-    starPositionWithAzimuthImpl.setCoordinate(coordinate);
-    starPositionWithAzimuthImpl.setCentric(centric);
+//    starPositionWithAzimuthImpl.setCoordinate(coordinate);
+//    starPositionWithAzimuthImpl.setCentric(centric);
     
-    return starPositionWithAzimuthImpl.getPositionWithAzimuth((Star) point, gmt, location, temperature, pressure);
+    return starPositionWithAzimuthImpl.getPositionWithAzimuth((Star) point, gmt, location, temperature, pressure, centric, coordinate);
   }
   
   @NotNull
