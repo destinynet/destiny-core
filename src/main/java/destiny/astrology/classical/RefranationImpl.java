@@ -47,11 +47,11 @@ public class RefranationImpl implements RefranationIF , Serializable {
 
     //兩星目前正在接近 applyingAspect 此角度
 
-    Time perfectAspectGmt = null;
-    Time perfectAspectGmt1 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , applyingAspect.get().getDegree() , context.getGmt() , true);
+    Time perfectAspectGmt;
+    Time perfectAspectGmt1 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , applyingAspect.get().getDegree() , context.getGmt() , true).get();
     if (applyingAspect.get().getDegree() != 0 && applyingAspect.get().getDegree() != 180) //額外計算 「補角」（360-degree）的時刻
     {
-      Time perfectAspectGmt2 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , 360-applyingAspect.get().getDegree() , context.getGmt() , true);
+      Time perfectAspectGmt2 = relativeTransitImpl.getRelativeTransit(planet , (Star)otherPoint , 360-applyingAspect.get().getDegree() , context.getGmt() , true).get();
       if (perfectAspectGmt1.isAfter(perfectAspectGmt2))
         perfectAspectGmt = perfectAspectGmt2;
       else

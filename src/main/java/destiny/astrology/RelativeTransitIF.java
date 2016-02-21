@@ -29,7 +29,7 @@ public interface RelativeTransitIF
    * 傳回的 Time 是 GMT
    * </pre>
    */
-  Time getRelativeTransit(Star transitStar , Star relativeStar , double angle , Time startGmtTime , boolean isForward);
+  Optional<Time> getRelativeTransit(Star transitStar , Star relativeStar , double angle , Time startGmtTime , boolean isForward);
 
   /**
    * 從 fromGmt 到 toGmt 之間，transitStar 對 relativeStar 形成 angle 交角的時間
@@ -41,11 +41,14 @@ public interface RelativeTransitIF
     List<Time> resultList = new ArrayList<>();
     while (fromGmt.isBefore(toGmt))
     {
-      fromGmt = getRelativeTransit( transitStar , relativeStar , angle , fromGmt, true );
-      if (!fromGmt.isBefore(toGmt))
-        break;
-      resultList.add(fromGmt);
-      fromGmt = new Time(  (fromGmt.getGmtJulDay() + 0.000001 ) );
+      Optional<Time> timeOptional = getRelativeTransit( transitStar , relativeStar , angle , fromGmt, true);
+      if (timeOptional.isPresent()) {
+        fromGmt = timeOptional.get();
+        if (!fromGmt.isBefore(toGmt))
+          break;
+        resultList.add(fromGmt);
+        fromGmt = new Time(  (fromGmt.getGmtJulDay() + 0.000001 ) );
+      }
     }
     return resultList;
   }
@@ -81,30 +84,28 @@ public interface RelativeTransitIF
     Time resultTime = null;
     Double resultAngle = null;
     for (double angle : realAngles) {
-      Time temp = null;
-      try {
-        temp = getRelativeTransit(transitStar, relativeStar, angle, fromGmtTime, isForward);
-      } catch (RuntimeException ignored) {
-      }
+      Optional<Time> temp = getRelativeTransit(transitStar, relativeStar, angle, fromGmtTime, isForward);
 
       if (resultTime == null) {
-        resultTime = temp;
+        resultTime = temp.orElse(null);
         resultAngle = angle;
       }
       else {
-        if (temp != null) {
+
+        if (temp.isPresent()) {
+          Time t = temp.get();
           //目前已經有一個結果，比較看看現在算出的，和之前的，哪個比較近
           if (isForward) {
             //順推
-            if (temp.isBefore(resultTime)) {
-              resultTime = temp;
+            if (t.isBefore(resultTime)) {
+              resultTime = t;
               resultAngle = angle;
             }
           }
           else {
             //逆推
-            if (temp.isAfter(resultTime)) {
-              resultTime = temp;
+            if (t.isAfter(resultTime)) {
+              resultTime = t;
               resultAngle = angle;
             }
           }
