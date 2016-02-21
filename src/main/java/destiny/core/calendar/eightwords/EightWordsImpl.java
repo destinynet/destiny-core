@@ -57,7 +57,7 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
     Time nextZi = hourImpl.getLmtNextStartOf(lmt, location, Branch.子);
 
     /** 如果「子正」才換日 */
-    if (!changeDayAfterZi)
+    if (!changeDayAfterZi) {
       /**
        * <pre>
        *  而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
@@ -70,6 +70,8 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
        */
       if (day != dayImpl.getDay(nextZi, location, midnightImpl, hourImpl, changeDayAfterZi))
         臨時日干 = Stem.get(臨時日干.getIndex() + 1);
+    }
+
 
     switch (Stem.getIndex(臨時日干))
     {
@@ -98,5 +100,25 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
     }
 
     return new EightWords(year , month , day , StemBranch.get(時干, 時支) );
+  }
+
+  public YearMonthIF getYearMonthImpl() {
+    return yearMonthImpl;
+  }
+
+  public DayIF getDayImpl() {
+    return dayImpl;
+  }
+
+  public HourIF getHourImpl() {
+    return hourImpl;
+  }
+
+  public MidnightIF getMidnightImpl() {
+    return midnightImpl;
+  }
+
+  public boolean isChangeDayAfterZi() {
+    return changeDayAfterZi;
   }
 }

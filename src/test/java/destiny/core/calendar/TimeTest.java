@@ -172,7 +172,7 @@ public class TimeTest
     try
     {
       origin = new Time(1582 , 10 , 5 , 0 , 0 , 0);
-      fail("Should throw new RuntimeExcepton");
+      fail("Should throw new RuntimeException");
     }
     catch(RuntimeException expected)
     {
@@ -182,7 +182,7 @@ public class TimeTest
     try
     {
       origin = new Time(1582 , 10 , 14 , 0 , 0 , 0);
-      fail("Should throw new RuntimeExcepton");
+      fail("Should throw new RuntimeException");
     }
     catch(RuntimeException expected)
     {
@@ -498,12 +498,13 @@ public class TimeTest
   {
     double actual;
     double expected;
-    
+
+
     time = new Time(false , 4713 , 1 , 1 , 12 , 0 , 0);
     actual = time.getGmtJulDay();
     expected = 0;
     assertEquals(expected , actual , 0);
-    
+
     time = new Time(true , 1900 , 1 , 1, 0 , 0 , 0);
     actual = time.getGmtJulDay();
     expected = 2415020.5;
@@ -549,7 +550,7 @@ public class TimeTest
     
     time = new Time(true , 1582 , 10 , 15 , 0 , 0 , 0);
     assertEquals(2299160.5 , time.getGmtJulDay() , 0);
-    
+
     //=========================== Julian 切換到 Gregorian ==============
     
     time = new Time(true , 1582 , 10 , 4 , 0 , 0 , 0);
