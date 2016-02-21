@@ -5,7 +5,6 @@
 package destiny.astrology;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -107,7 +106,6 @@ public class Horoscope implements Serializable
   }
   
   /** 取得一顆星體 Point / Star 在星盤上的角度 */
-  @Nullable
   public PositionWithAzimuth getPositionWithAzimuth(Point point)
   {
     return context.getPosition(point);

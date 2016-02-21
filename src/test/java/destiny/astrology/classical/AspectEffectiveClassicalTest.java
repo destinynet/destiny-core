@@ -21,9 +21,13 @@ public class AspectEffectiveClassicalTest
     impl.setPlanetOrbsImpl(new PointDiameterAlBiruniImpl());
     // 日月容許度 13.5
     assertTrue (impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.5 , 90));
+    assertTrue (impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.5 , Aspect.SQUARE));
     assertFalse(impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.6 , 90));
+    assertFalse(impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.6 , Aspect.SQUARE));
     assertTrue (impl.isEffective(Planet.SUN, 113.5 , Planet.MOON, 10 , 90));
+    assertTrue (impl.isEffective(Planet.SUN, 113.5 , Planet.MOON, 10 , Aspect.SQUARE));
     assertFalse(impl.isEffective(Planet.SUN, 113.6 , Planet.MOON, 10 , 90));
+    assertFalse(impl.isEffective(Planet.SUN, 113.6 , Planet.MOON, 10 , Aspect.SQUARE));
 
     assertTrue (impl.isEffective(Planet.SUN, 340 , Planet.MOON, 113.5 , 120));
     assertFalse(impl.isEffective(Planet.SUN, 340 , Planet.MOON, 113.6 , 120));

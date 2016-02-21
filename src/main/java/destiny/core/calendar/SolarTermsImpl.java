@@ -39,8 +39,7 @@ public class SolarTermsImpl implements SolarTermsIF , Serializable
   public SolarTerms getSolarTermsFromGMT(Time gmt)
   {
     // Step 1: Calculate the Longitude of SUN
-    starPositionImpl.setCoordinate(Coordinate.ECLIPTIC);
-    Position sp = starPositionImpl.getPosition(Planet.SUN , gmt);
+    Position sp = starPositionImpl.getPosition(Planet.SUN , gmt , Centric.GEO , Coordinate.ECLIPTIC);
     //System.out.println("Utils.getSolarTermsFromGMT() : Longitude = " + sp.Longitude);
     // Step 2
     int SolarTermsArray = (int)(sp.getLongitude()/15)+3 ;

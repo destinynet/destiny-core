@@ -4,10 +4,7 @@
  */ 
 package destiny.core.calendar.eightwords;
 
-import destiny.astrology.Coordinate;
-import destiny.astrology.Planet;
-import destiny.astrology.StarPositionIF;
-import destiny.astrology.StarTransitIF;
+import destiny.astrology.*;
 import destiny.core.calendar.*;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
@@ -16,6 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+
+import static destiny.astrology.Centric.GEO;
+import static destiny.astrology.Coordinate.ECLIPTIC;
+import static destiny.astrology.Coordinate.EQUATORIAL;
 
 /**
  * <pre>
@@ -80,9 +81,8 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     double gmtSecondsOffset = DstUtils.getDstSecondOffset(lmt, location).getSecond();
     
     Time gmt = new Time(lmt , 0-gmtSecondsOffset);
-    starPositionImpl.setCoordinate(Coordinate.ECLIPTIC);
-    
-    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt).getLongitude();
+
+    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
     if (solarLongitude < 180)
       //立春(0)過後，到秋分之間(180)，確定不會換年
       resultStemBranch = StemBranch.get(index);
@@ -93,7 +93,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       //取得 lmt 當年 1/1 凌晨零分的度數
       //Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , (int) (0-gmtMinuteOffset) , 0);
       Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , 0 , 0-gmtSecondsOffset);
-      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear).getLongitude();
+      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear , GEO , ECLIPTIC).getLongitude();
       
       //System.out.println("changeYearDegree = " + changeYearDegree + " , degreeOfStartOfYear = " + degreeOfStartOfYear);
 
@@ -173,8 +173,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         /*
          * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
          */
-        starPositionImpl.setCoordinate(Coordinate.EQUATORIAL);
-        double solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN , gmt).getLatitude();
+        double solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , EQUATORIAL).getLatitude();
         
         if (solarEquatorialDegree >=0)
         {
@@ -270,8 +269,6 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
    * 甲寅之上好追求。
    * </b>
    * </pre>
-   * @param lmt
-   * @param 月支
    */
   private Stem getMonthStem(@NotNull Time lmt , @NotNull Location location , @NotNull Branch 月支)
   {
@@ -302,7 +299,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         //System.out.println("changeYearDegree < 315 , value = " + changeYearDegree);
         //換年點在立春前
         
-        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt ).getLongitude();
+        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
         //System.out.println("LMT = " + lmt + " degree = " + lmtSunDegree);
         if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree)
         {
@@ -313,7 +310,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       else if (changeYearDegree > 315)
       {
         //換年點在立春後 , 還沒測試
-        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt ).getLongitude();
+        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
         if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
           月干 = Stem.get(月干.getIndex() + 2);
       }

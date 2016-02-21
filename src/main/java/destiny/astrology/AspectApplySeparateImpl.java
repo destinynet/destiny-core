@@ -21,7 +21,7 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
   }
   
   /**
-   * 判斷兩顆星體是否形成某交角 , 如果是的話 , 傳回 入相位或是出相位 ; 如果沒有形成交角 , 傳回 null
+   * 判斷兩顆星體是否形成某交角 , 如果是的話 , 傳回 入相位或是出相位 ; 如果沒有形成交角 , 傳回 empty
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
    */
   @Override

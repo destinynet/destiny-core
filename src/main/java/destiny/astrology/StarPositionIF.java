@@ -27,6 +27,9 @@ public interface StarPositionIF {
   /** 取得星體的位置 , 時間是 GMT */
   Position getPosition(Star star, Time gmt);
 
+  /** 取得星體的位置 , 時間是 GMT */
+  Position getPosition(Star star, Time gmt , Centric centric , Coordinate coordinate);
+
   /** 取得星體的位置 , 包含當地時間以及座標 */
   Position getPosition(Star star, Time lmt, Location location);
 }

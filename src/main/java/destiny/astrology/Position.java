@@ -2,11 +2,13 @@ package destiny.astrology;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * Point 的位置 , 不限定 Star,
  * Point(南北交點) 也會有 Position
  */
-public class Position implements java.io.Serializable
+public class Position implements Serializable
 {
   /** 座標系統 赤道/黃道/恆星 */
   // private Coordinate coordinate;

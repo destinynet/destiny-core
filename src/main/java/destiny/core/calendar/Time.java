@@ -305,6 +305,11 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
       this.normalize();
     }
   }
+
+  /** 加上幾秒 , 傳回新的 time 物件 */
+  public Time addSeconds(double value) {
+    return new Time(this , value);
+  }
     
   /**
    * @return 是否是西元「後」, 西元前為 false , 西元後為 true (default)
