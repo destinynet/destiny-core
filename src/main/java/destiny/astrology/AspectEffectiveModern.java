@@ -7,7 +7,6 @@ package destiny.astrology;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * <pre>
@@ -37,7 +36,7 @@ public class AspectEffectiveModern implements Serializable , AspectEffectiveIF
   {
     this.aspectOrbsPlanetImpl = impl;
   }
-  
+
   /** 直接比對度數是否形成交角，不考慮星體 */
   public boolean isEffective(double deg1, double deg2 , @NotNull Aspect aspect)
   {
@@ -51,7 +50,6 @@ public class AspectEffectiveModern implements Serializable , AspectEffectiveIF
     return Math.abs(angle - aspect.getDegree()) <= orb;
   }
 
-  
   /** 有些版本有考慮星體，例如：太陽月亮的交角，會有較高的容許度 */
   @Override
   public boolean isEffective(Point p1 , double deg1 , Point p2 , double deg2 , @NotNull Aspect aspect)
@@ -63,27 +61,5 @@ public class AspectEffectiveModern implements Serializable , AspectEffectiveIF
     return Math.abs(angle - aspect.getDegree()) <= orb;
   }
 
-  /** 考慮個別星體交角容許度的實作 */
-  @Override
-  public boolean isEffective(Point p1, double deg1, Point p2, double deg2, @NotNull Aspect... aspects)
-  {
-    for(Aspect aspect : aspects)
-    {
-      if (isEffective(p1, deg1, p2, deg2, aspect))
-        return true;
-    }
-    return false;
-  }
 
-  /** 考慮個別星體交角容許度的實作 */
-  @Override
-  public boolean isEffective(Point p1, double deg1, Point p2, double deg2, @NotNull Collection<Aspect> aspects)
-  {
-    for(Aspect aspect : aspects)
-    {
-      if (isEffective(p1, deg1, p2, deg2, aspect))
-        return true;
-    }
-    return false;
-  }
 }
