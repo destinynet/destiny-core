@@ -7,7 +7,7 @@ package destiny.astrology.classical;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import destiny.utils.LocaleStringIF;
+import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
 
 /**

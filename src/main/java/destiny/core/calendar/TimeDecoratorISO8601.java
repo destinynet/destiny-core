@@ -6,7 +6,7 @@ package destiny.core.calendar;
 
 import java.io.Serializable;
 
-import destiny.utils.Decorator;
+import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 public class TimeDecoratorISO8601 implements Decorator<Time> , Serializable

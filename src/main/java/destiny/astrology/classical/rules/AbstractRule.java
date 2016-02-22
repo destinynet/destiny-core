@@ -6,7 +6,7 @@ package destiny.astrology.classical.rules;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.LocaleStringIF;
+import destiny.tools.LocaleStringIF;
 import destiny.utils.Tuple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

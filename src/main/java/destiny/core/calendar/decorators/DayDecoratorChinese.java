@@ -6,7 +6,7 @@ package destiny.core.calendar.decorators;
 
 import java.io.Serializable;
 
-import destiny.utils.Decorator;
+import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 public class DayDecoratorChinese implements Decorator<Integer> , Serializable

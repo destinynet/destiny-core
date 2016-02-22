@@ -4,7 +4,7 @@
  */ 
 package destiny.core.calendar.decorators;
 
-import destiny.utils.Decorator;
+import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;

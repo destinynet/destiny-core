@@ -8,7 +8,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.YinYangIF;
-import destiny.utils.LocaleStringIF;
+import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;

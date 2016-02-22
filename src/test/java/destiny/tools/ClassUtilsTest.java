@@ -2,9 +2,10 @@
  * @author smallufo
  * Created on 2010/12/15 at 下午4:08:15
  */
-package destiny.utils;
+package destiny.tools;
 
-import destiny.utils.ClassUtils.PERMISSION;
+import destiny.tools.ClassUtils;
+import destiny.tools.ClassUtils.PERMISSION;
 import destiny.tools.ColorCanvas.ColorCanvas;
 import org.junit.Test;
 

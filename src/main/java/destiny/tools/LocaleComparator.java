@@ -1,4 +1,4 @@
-package destiny.utils;
+package destiny.tools;
 
 
 
@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Created by smallufo on 2014-03-05.
+ * Created by smallufo on 2016-02-22.
  */
 public class LocaleComparator implements Comparator<Locale>, Serializable {
   private final Locale locale;

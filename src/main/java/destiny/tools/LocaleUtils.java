@@ -2,7 +2,7 @@
  * @author smallufo 
  * Created on 2008/1/15 at 上午 11:59:10
  */ 
-package destiny.utils;
+package destiny.tools;
 
 import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;

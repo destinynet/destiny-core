@@ -12,7 +12,7 @@ import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.StemBranch;
 import destiny.tools.ColorCanvas.AlignUtil;
 import destiny.tools.ColorCanvas.ColorCanvas;
-import destiny.utils.Decorator;
+import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

@@ -5,8 +5,8 @@
 package destiny.astrology;
 
 import com.google.common.collect.ImmutableMap;
-import destiny.utils.Decorator;
-import destiny.utils.LocaleUtils;
+import destiny.tools.Decorator;
+import destiny.tools.LocaleUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;

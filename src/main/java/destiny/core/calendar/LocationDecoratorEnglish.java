@@ -6,7 +6,7 @@ package destiny.core.calendar;
 
 import destiny.core.calendar.Location.EastWest;
 import destiny.core.calendar.Location.NorthSouth;
-import destiny.utils.Decorator;
+import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 public class LocationDecoratorEnglish implements Decorator<Location>

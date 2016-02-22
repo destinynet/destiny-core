@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology;
 
-import destiny.utils.Decorator;
+import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 public class AzimuthDegreeEnglishDecorator implements Decorator<Double>

@@ -7,7 +7,7 @@ package destiny.core.calendar.eightwords;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import destiny.utils.LocaleStringIF;
+import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
 
 /** 界定南北半球的方法 , 赤道 還是 赤緯 */

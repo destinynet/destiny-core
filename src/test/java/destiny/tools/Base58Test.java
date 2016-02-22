@@ -2,11 +2,12 @@
  * @author smallufo
  * Created on 2011/3/11 at 上午4:09:32
  */
-package destiny.utils;
+package destiny.tools;
+
+import destiny.tools.Base58;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
 
 
 public class Base58Test

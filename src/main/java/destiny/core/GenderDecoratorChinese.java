@@ -4,7 +4,7 @@
  */ 
 package destiny.core;
 
-import destiny.utils.Decorator;
+import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 public class GenderDecoratorChinese implements Decorator<Gender>
