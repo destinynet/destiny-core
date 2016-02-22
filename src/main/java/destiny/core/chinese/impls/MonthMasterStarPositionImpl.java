@@ -3,10 +3,7 @@
  */
 package destiny.core.chinese.impls;
 
-import destiny.astrology.Planet;
-import destiny.astrology.Position;
-import destiny.astrology.StarPositionIF;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
@@ -33,7 +30,7 @@ public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable
 
   @Override
   public Branch getBranch(Time lmt, Location location) {
-    Position pos = starPositionImpl.getPosition(Planet.SUN , lmt , location);
+    Position pos = starPositionImpl.getPosition(Planet.SUN , lmt , location , Centric.GEO , Coordinate.ECLIPTIC);
     return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
   }
 }
