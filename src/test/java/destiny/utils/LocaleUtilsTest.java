@@ -4,6 +4,7 @@
  */ 
 package destiny.utils;
 
+import destiny.tools.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 

@@ -2,8 +2,9 @@
  * @author smallufo 
  * Created on 2007/2/16 at 上午 1:00:13
  */
-package destiny.utils;
+package destiny.tools;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -41,25 +42,14 @@ public class URLConverter implements Serializable
         continue;
       }
 
-      //TO DO: add more top domains   
-      if (href.contains(".com") ||
-          //href.indexOf(".COM") != -1 || 
-        href.contains(".net") ||
-        href.contains(".org") ||
-        href.contains(".tw") ||
-        href.contains(".to") ||
-        href.contains(".ly") ||
-        href.contains(".cc"))
-      {
-
-        if (!href.startsWith("http://") && !href.startsWith("HTTP://"))
-        {
+      // TODO: add more top domains
+      if (StringUtils.indexOfAny(href.toLowerCase() , ".com" , ".net" , ".org" , ".to" , ".tw" ,".ly" , ".cc" , ".us") != -1) {
+        if (!href.startsWith("http://") && !href.startsWith("HTTP://")) {
           // add on the http:// if necessary  
           m.appendReplacement(result, "<a href=\"" + "http://" + href + "\" target=\"_blank\">" + href + "</a>");
         }
         else
           m.appendReplacement(result, "<a href=\"" + href + "\" target=\"_blank\">" + href + "</a>");
-
       }
     }
     m.appendTail(result);

@@ -2,7 +2,9 @@
  * @author smallufo 
  * Created on 2008/2/20 at 上午 12:35:35
  */ 
-package destiny.utils;
+package destiny.tools;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class AlignUtil
 {
@@ -12,31 +14,8 @@ public class AlignUtil
    */
   public static String alignRight(int value , int width , char fill)
   {
-    StringBuffer sb = new StringBuffer();
-    
-    sb.append(String.valueOf(Math.abs(value)));
-    int valueLength;
-    if (value < 0)
-      sb.insert(0, "-");
-    valueLength = sb.length();
-    
-    if (valueLength == width)
-      return sb.toString();
-    else if (valueLength < width)
-    {
-      int whiteSpaces =  width-valueLength ;
-      
-      for (int i=0 ; i < whiteSpaces ; i++)
-      {
-        sb.insert(0, fill);
-      }
-      return sb.toString();
-    }
-    else
-    {
-      //sb.length() > w
-      return sb.substring(valueLength-width);
-    }
+    String strValue = String.valueOf(value);
+    return StringUtils.leftPad(strValue , width , fill);
   } //alignRight
 
   /** 
@@ -45,7 +24,7 @@ public class AlignUtil
    */
   public static String alignRight(double value , int width , char fill)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     
     sb.append(String.valueOf(Math.abs(value)));
     int valueLength;

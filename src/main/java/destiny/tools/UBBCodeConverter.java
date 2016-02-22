@@ -8,7 +8,7 @@
  * Source File Name:   DataFilter.java
  */
 
-package destiny.utils;
+package destiny.tools;
 
 import org.jetbrains.annotations.NotNull;
 

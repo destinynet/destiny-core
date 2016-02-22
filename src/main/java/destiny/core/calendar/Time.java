@@ -4,7 +4,7 @@
  */
 package destiny.core.calendar;
 
-import destiny.utils.AlignUtil;
+import destiny.tools.AlignUtil;
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
