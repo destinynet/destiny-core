@@ -18,31 +18,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DebilitiesBean implements DebilitiesIF , Serializable
-{
-  /** 計算兩星交角的介面 , 內定採用 SwissEph 的實作 */
-  @Inject
-  private RelativeTransitIF relativeTransitImpl;
-  
+public class DebilitiesBean implements DebilitiesIF , Serializable {
+
   /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作 */
   @Inject
   private DayNightDifferentiator dayNightImpl;
-  
-  /** 判斷入相位，或是出相位 的實作 , 內定採用古典占星 */
-  @Inject
-  private AspectApplySeparateIF aspectApplySeparateImpl;
 
   @Inject
   private BesiegedBean besiegedBean;
 
-  private final RefranationIF refranationImpl;
+  @Inject
+  private RefranationIF refranationImpl;
 
   private List<Applicable> rules = new ArrayList<>();
 
-
-  public DebilitiesBean(RefranationIF refranationImpl)
+  public DebilitiesBean()
   {
-    this.refranationImpl = refranationImpl;
   }
 
   @PostConstruct

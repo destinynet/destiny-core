@@ -18,29 +18,26 @@ import java.util.stream.Collectors;
 
 public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializable
 {
-  /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作 */
+  /** 計算白天黑夜的實作  */
   private DayNightDifferentiator dayNightImpl;
   
   private List<Applicable> rules = new ArrayList<>();
-  
-  public EssentialDignitiesBean(DayNightDifferentiator dayNightImpl)
-  {
+
+  public EssentialDignitiesBean(DayNightDifferentiator dayNightImpl) {
     this.dayNightImpl = dayNightImpl;
     rules = getDefaultRules();
   }
-  
+
   @NotNull
   @Override
-  public List<RuleIF> getEssentialDignities(Planet planet, HoroscopeContext horoscopeContext)
-  {
+  public List<RuleIF> getEssentialDignities(Planet planet, HoroscopeContext horoscopeContext) {
     return rules.stream().filter(each -> each.isApplicable(planet, horoscopeContext)).collect(Collectors.toList());
   }
   
   
   /** 內定的 Rules */
   @NotNull
-  private List<Applicable> getDefaultRules()
-  {
+  private List<Applicable> getDefaultRules() {
     List<Applicable> list = new ArrayList<>();
     list.add(new Ruler(dayNightImpl));
     list.add(new Exaltation(dayNightImpl));
@@ -61,8 +58,7 @@ public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializab
     this.rules = rules;
   }
 
-  public void setDayNightImpl(DayNightDifferentiator dayNightImpl)
-  {
+  public void setDayNightImpl(DayNightDifferentiator dayNightImpl) {
     this.dayNightImpl = dayNightImpl;
   }
 

@@ -22,17 +22,10 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   /** 計算兩星體呈現某交角的時間 , 內定採用 SwissEph 的實作 */
   @Inject
   private RelativeTransitIF relativeTransitImpl;// = new RelativeTransitImpl();
-  
+
   /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作 */
   @Inject
-  private DayNightDifferentiator dayNightImpl;// = new DayNightDifferentiatorImpl();
-
-  @Inject
-  private AspectEffectiveClassical aspectEffectiveClassical;// = new AspectEffectiveClassical();
-  
-  /** 判斷入相位或是出相位 */
-  @Inject
-  private AspectApplySeparateIF aspectApplySeparateImpl;// = new AspectApplySeparateImpl(aspectEffectiveClassical);
+  private DayNightDifferentiator dayNightImpl;
 
   @Inject
   private BesiegedBean besiegedBean;
@@ -43,10 +36,10 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   @Inject
   private CollectionOfLightIF collectionOfLightImpl;
 
-  private final RefranationIF refranationImpl;
+  @Inject
+  private RefranationIF refranationImpl;
 
-  public AccidentalDignitiesBean(RefranationIF refranationImpl) {
-    this.refranationImpl = refranationImpl;
+  public AccidentalDignitiesBean() {
   }
 
   private List<Applicable> rules = new ArrayList<>();
@@ -69,8 +62,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   }
   
   @NotNull
-  private List<Applicable> getDefaultRules()
-  {
+  private List<Applicable> getDefaultRules() {
     List<Applicable> list = new ArrayList<>();
     list.add(new House_1_10());
     list.add(new House_4_7_11());
@@ -99,23 +91,19 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     return list;
   }
 
-  public List<Applicable> getRules()
-  {
+  public List<Applicable> getRules() {
     return rules;
   }
 
-  public void setRules(List<Applicable> rules)
-  {
+  public void setRules(List<Applicable> rules) {
     this.rules = rules;
   }
 
-  public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl)
-  {
+  public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl) {
     this.relativeTransitImpl = relativeTransitImpl;
   }
 
-  public void setDayNightImpl(DayNightDifferentiator dayNightImpl)
-  {
+  public void setDayNightImpl(DayNightDifferentiator dayNightImpl) {
     this.dayNightImpl = dayNightImpl;
   }
 
