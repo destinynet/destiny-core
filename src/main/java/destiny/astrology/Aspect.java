@@ -8,6 +8,7 @@ import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** 交角 , Aspect */
@@ -60,41 +61,21 @@ public enum Aspect implements LocaleStringIF
   private String nameKey;
   private double degree;
   /** 重要度 */
-  private Importance importance; 
-  
-  //原來是 Map<Importance , List<Aspect>> , 改以 ListMultimap 來做
-  //FIXME : HoroscopeAspectsCalculatorModern.aspects [class=com.google.common.collect.LinkedListMultimap$1] <----- field that is not serializable
+  private Importance importance;
 
-  /*
-  private final static ListMultimap<Importance , Aspect> importanceAngles = LinkedListMultimap.create();
-  static
-  {
-    for (Aspect eachAngle : Aspect.values())
-      importanceAngles.get(eachAngle.getImportance()).add(eachAngle);
-  }
-  */
+  private final static Map<Importance , List<Aspect>> importanceAngles =
+    Arrays.stream(Aspect.values())
+      .collect(Collectors.groupingBy(Aspect::getImportance));
   
-  private final static Map<Importance , List<Aspect>> importanceAngles = Collections.synchronizedMap(new HashMap<>());
-  static
-  {
-    for (Importance eachImportance : Importance.values())
-      importanceAngles.put(eachImportance, new ArrayList<>());
-    
-    for (Aspect eachAngle : Aspect.values())
-      importanceAngles.get(eachAngle.getImportance()).add(eachAngle);
-  }
-  
-  private Aspect(String nameKey , double degree , Importance importance)
-  {
+  Aspect(String nameKey , double degree , Importance importance) {
     this.nameKey = nameKey;
     this.degree = degree;
     this.importance = importance;
   }
   
   /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null */
-  public static Optional<Aspect> getAspect(String value)
-  {
-    return Stream.of(Aspect.values()).filter( a-> a.toString(Locale.ENGLISH).equalsIgnoreCase(value)).findFirst();
+  public static Optional<Aspect> getAspect(String value) {
+    return Stream.of(Aspect.values()).filter(a -> a.toString(Locale.ENGLISH).equalsIgnoreCase(value)).findFirst();
   }
   
   /** 取得度數 */
@@ -112,8 +93,7 @@ public enum Aspect implements LocaleStringIF
   /**
    * 取得某類重要度 (高/中/低) 的角度列表
    */
-  public static List<Aspect> getAngles(Importance importance)
-  {
+  public static List<Aspect> getAngles(Importance importance) {
     return importanceAngles.get(importance);
   }
   
