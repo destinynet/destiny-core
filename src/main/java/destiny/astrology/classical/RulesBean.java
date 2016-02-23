@@ -10,8 +10,9 @@ import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 集合 essentialDignities , accidentalDignities , debilitiesBean 
@@ -26,25 +27,22 @@ public class RulesBean implements Serializable
   protected RulesBean() {
   }
 
-  public RulesBean(EssentialDignitiesIF essentialDignitiesImpl , AccidentalDignitiesIF accidentalDignitiesImpl , DebilitiesIF debilitiesBean)
-  {
+  public RulesBean(EssentialDignitiesIF essentialDignitiesImpl , AccidentalDignitiesIF accidentalDignitiesImpl , DebilitiesIF debilitiesBean) {
     this.essentialDignitiesImpl = essentialDignitiesImpl;
     this.accidentalDignitiesImpl = accidentalDignitiesImpl;
     this.debilitiesBean = debilitiesBean;
   }
   
   @NotNull
-  public List<RuleIF> getRules(Planet planet, HoroscopeContext horoscopeContext)
-  {
-    List<RuleIF> resultList = new ArrayList<>();
-    List<RuleIF> essentialDignitiesRules = essentialDignitiesImpl.getEssentialDignities(planet, horoscopeContext);
-    List<RuleIF> accidentalDignitiesRules = accidentalDignitiesImpl.getAccidentalDignities(planet, horoscopeContext);
-    List<RuleIF> debilitiesRules = debilitiesBean.getDebilities(planet, horoscopeContext);
-    
-    resultList.addAll(essentialDignitiesRules);
-    resultList.addAll(accidentalDignitiesRules);
-    resultList.addAll(debilitiesRules);
-    
-    return resultList;
+  public List<RuleIF> getRules(Planet planet, HoroscopeContext horoscopeContext) {
+
+    return Stream.of(
+      essentialDignitiesImpl.getEssentialDignities(planet, horoscopeContext).stream(),
+      accidentalDignitiesImpl.getAccidentalDignities(planet, horoscopeContext).stream(),
+      debilitiesBean.getDebilities(planet, horoscopeContext).stream()
+    )
+      //.reduce(Stream.empty(), Stream::concat)
+      .flatMap(x -> x)
+      .collect(Collectors.toList());
   }
 }
