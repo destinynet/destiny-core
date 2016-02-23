@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializable
 {
@@ -54,19 +55,17 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   public void init() {
     this.rules = getDefaultRules();
   }
-  
+
+  public DayNightDifferentiator getDayNightImpl() {
+    return dayNightImpl;
+  }
+
   @NotNull
   @Override
-  public List<RuleIF> getAccidentalDignities(Planet planet, HoroscopeContext horoscopeContext)
-  {
-    List<RuleIF> resultList = new ArrayList<>();
-
-    for(Applicable each : rules)
-    {
-      if(each.isApplicable(planet, horoscopeContext))
-        resultList.add(each);
-    }
-    return resultList;
+  public List<RuleIF> getAccidentalDignities(Planet planet, HoroscopeContext horoscopeContext) {
+    return rules.stream()
+      .filter(each -> each.isApplicable(planet, horoscopeContext))
+      .collect(Collectors.toList());
   }
   
   @NotNull

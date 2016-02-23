@@ -31,8 +31,10 @@ public class PointDiameterAlBiruniImpl implements PointDiameterIF , Serializable
     .put(Planet.NEPTUNE, 5.0)
     .put(Planet.PLUTO, 5.0)
     .build();
-  
-  
+
+  public PointDiameterAlBiruniImpl() {
+  }
+
   /*
   private final static Map<Point , Double> planetOrbsMap = Collections.synchronizedMap(new HashMap<Point , Double>());
   static

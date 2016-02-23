@@ -14,7 +14,6 @@ import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -33,12 +32,7 @@ public class HourSolarTransImpl implements HourIF , Serializable
   private boolean isDiscCenter = true;
   private boolean hasRefraction = true;
 
-  @Inject
-  private RiseTransIF riseTransImpl;
-  
-  protected HourSolarTransImpl()
-  {
-  }
+  private final RiseTransIF riseTransImpl;
   
   public HourSolarTransImpl(RiseTransIF riseTransImpl)
   {
