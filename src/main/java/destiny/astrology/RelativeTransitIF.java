@@ -7,7 +7,8 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -67,7 +68,7 @@ public interface RelativeTransitIF
   /**
    * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
    */
-  default Tuple<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , Collection<Double> angles , boolean isForward ) {
+  default Pair<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , Collection<Double> angles , boolean isForward ) {
     /**
      * 相交 270 度也算 90 度
      * 相交 240 度也是 120 度
@@ -115,10 +116,10 @@ public interface RelativeTransitIF
 
     if (resultAngle != null && resultAngle > 180)
       resultAngle = 360-resultAngle;
-    return Tuple.of(resultTime , resultAngle);
+    return ImmutablePair.of(resultTime, resultAngle);
   }
 
-  default Tuple<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , boolean isForward , double... angles) {
+  default Pair<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , boolean isForward , double... angles) {
     return getNearestRelativeTransitTime(transitStar, relativeStar, fromGmtTime, Arrays.stream(angles).boxed().collect(Collectors.toList()), isForward);
   }
 

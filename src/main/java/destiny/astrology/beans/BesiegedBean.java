@@ -8,7 +8,7 @@ import destiny.astrology.Aspect;
 import destiny.astrology.Planet;
 import destiny.astrology.RelativeTransitIF;
 import destiny.core.calendar.Time;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,16 +225,16 @@ public class BesiegedBean implements Serializable
     Planet priorPlanet = null;
     for (Planet eachOther : otherPlanets)
     {
-      Tuple<Time , Double> tuple = relativeTransitImpl.getNearestRelativeTransitTime(planet, eachOther, gmt, false, angles);
+      Pair<Time , Double> tuple = relativeTransitImpl.getNearestRelativeTransitTime(planet, eachOther, gmt, false, angles);
 
-      Time resultTime = tuple.getFirst();
+      Time resultTime = tuple.getLeft();
       if (resultTime != null) // result 有可能為 null , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
       {
         if (otherPlanetsNearestTimeBackward == null)
         {
           otherPlanetsNearestTimeBackward = resultTime;
           priorPlanet = eachOther;
-          aspectPrior = Aspect.getAspect(tuple.getSecond());
+          aspectPrior = Aspect.getAspect(tuple.getRight());
         }
         else
         {
@@ -242,7 +242,7 @@ public class BesiegedBean implements Serializable
           {
             otherPlanetsNearestTimeBackward = resultTime;
             priorPlanet = eachOther;
-            aspectPrior = Aspect.getAspect(tuple.getSecond());
+            aspectPrior = Aspect.getAspect(tuple.getRight());
           }
         }        
       }
@@ -259,15 +259,15 @@ public class BesiegedBean implements Serializable
     Planet afterPlanet = null; 
     for (Planet eachOther : otherPlanets)
     {
-      Tuple<Time , Double> tuple = relativeTransitImpl.getNearestRelativeTransitTime(planet , eachOther , gmt , true , angles);
-      Time resultTime = tuple.getFirst();
+      Pair<Time , Double> tuple = relativeTransitImpl.getNearestRelativeTransitTime(planet , eachOther , gmt , true , angles);
+      Time resultTime = tuple.getLeft();
       if (resultTime != null) // result 有可能為 null , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
       {
         if (otherPlanetsNearestTimeForward == null)
         {
           otherPlanetsNearestTimeForward = resultTime;
           afterPlanet = eachOther;
-          aspectAfter = Aspect.getAspect(tuple.getSecond());
+          aspectAfter = Aspect.getAspect(tuple.getRight());
         }
         else
         {
@@ -275,7 +275,7 @@ public class BesiegedBean implements Serializable
           {
             otherPlanetsNearestTimeForward = resultTime;
             afterPlanet = eachOther;
-            aspectAfter = Aspect.getAspect(tuple.getSecond());
+            aspectAfter = Aspect.getAspect(tuple.getRight());
           }
         }
       }

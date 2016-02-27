@@ -5,8 +5,8 @@ package destiny.astrology.classical;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.Triple;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ public interface CollectionOfLightIF {
    * @param collectType @NotNull 詢問是否符合某種 「光線蒐集模式 : CollectType 」
    * @return
    */
-  Tuple<Boolean, List<Planet>> getResult(Planet planet, HoroscopeContext horoscopeContext, CollectType collectType);
+  Pair<Boolean, List<Planet>> getResult(Planet planet, HoroscopeContext horoscopeContext, CollectType collectType);
 
   /**
    * 不指定「光線蒐集模式」，若呈現任何一種，就傳回來
