@@ -6,7 +6,8 @@ package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -19,16 +20,16 @@ public final class House_6_8 extends Rule
   }
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (horoscopeContext.getHouse(planet) == 6)
     {
       //addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
-      return Optional.of(Tuple.of("comment" , new Object[]{planet , 6}));
+      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, 6}));
     }
     else if (horoscopeContext.getHouse(planet) ==8)
     {
-      return Optional.of(Tuple.of("comment" , new Object[]{planet , 8}));
+      return Optional.of(ImmutablePair.of("comment" , new Object[]{planet , 8}));
     }
     return Optional.empty();
   }

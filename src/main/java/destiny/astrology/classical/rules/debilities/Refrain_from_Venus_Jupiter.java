@@ -9,7 +9,8 @@ import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.astrology.classical.RefranationIF;
 import destiny.utils.Triple;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class Refrain_from_Venus_Jupiter extends Rule
 //  }
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext)
   {
     //太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
@@ -56,7 +57,7 @@ public class Refrain_from_Venus_Jupiter extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
-        return Optional.of(Tuple.of("comment" , new Object[]{planet , otherPoint , t.getThird()}));
+        return Optional.of(ImmutablePair.of("comment", new Object[]{planet, otherPoint, t.getThird()}));
       }
     }
     
@@ -69,7 +70,7 @@ public class Refrain_from_Venus_Jupiter extends Rule
       {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
-        return Optional.of(Tuple.of("comment" , new Object[]{planet , otherPoint , t.getThird()}));
+        return Optional.of(ImmutablePair.of("comment" , new Object[]{planet , otherPoint , t.getThird()}));
       }
     }
     return Optional.empty();

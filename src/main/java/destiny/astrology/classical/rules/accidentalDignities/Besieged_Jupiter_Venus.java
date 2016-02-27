@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -31,14 +32,14 @@ public class Besieged_Jupiter_Venus extends Rule
 
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.MARS || planet == Planet.SATURN)
     {
       if (besiegedBean.isBesieged(planet, Planet.VENUS , Planet.JUPITER , Time.getGMTfromLMT(horoscopeContext.getLmt() , horoscopeContext.getLocation())  , true , false))
       {
         //planet + " 被 " + Planet.VENUS + " 以及 " + Planet.JUPITER + " 夾輔 (善意 Besieged)"
-        return Optional.of(Tuple.of("comment" , new Object[] {planet , Planet.VENUS , Planet.JUPITER}));
+        return Optional.of(ImmutablePair.of("comment", new Object[]{planet, Planet.VENUS, Planet.JUPITER}));
       }
     }
     return Optional.empty();

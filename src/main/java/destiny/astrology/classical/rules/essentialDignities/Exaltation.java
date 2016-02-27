@@ -7,7 +7,8 @@ package destiny.astrology.classical.rules.essentialDignities;
 import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -23,7 +24,7 @@ public final class Exaltation extends Rule
   }
   
   @Override
-  public Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  public Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -32,7 +33,7 @@ public final class Exaltation extends Rule
     if (planet == essentialImpl.getPoint(sign, Dignity.EXALTATION))
     {
       //addComment(Locale.TAIWAN , planet + " 位於其 Exaltation 的星座 " + sign);
-      return Optional.of(Tuple.of("commentBasic" , new Object[]{planet , sign}));
+      return Optional.of(ImmutablePair.of("commentBasic", new Object[]{planet, sign}));
     }
     // Exaltation 互容 , mutual reception
     else 
@@ -52,7 +53,7 @@ public final class Exaltation extends Rule
           if (!utils.isBothInBadSituation(planet , sign , signExaltation , sign2))
           {
             //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成互容");
-            return Optional.of(Tuple.of("commentReception" , new Object[]{planet , sign , signExaltation , sign2}));
+            return Optional.of(ImmutablePair.of("commentReception" , new Object[]{planet , sign , signExaltation , sign2}));
           }
         }        
       }

@@ -8,7 +8,8 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.beans.BesiegedBean;
 import destiny.core.calendar.Time;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -31,7 +32,7 @@ public final class Besieged_Mars_Saturn extends Rule
 
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS)
     {
@@ -39,7 +40,7 @@ public final class Besieged_Mars_Saturn extends Rule
       if (besiegedBean.isBesieged(planet, Planet.MARS , Planet.SATURN , Time.getGMTfromLMT(horoscopeContext.getLmt() , horoscopeContext.getLocation())  , true , true))
       {
         //addComment(Locale.TAIWAN , planet + " 被 " + Planet.MARS + " 以及 " + Planet.SATURN +" 夾制 (Besieged)");
-        return Optional.of(Tuple.of("comment" , new Object[] {planet , Planet.MARS , Planet.SATURN}));
+        return Optional.of(ImmutablePair.of("comment", new Object[]{planet, Planet.MARS, Planet.SATURN}));
       }
     }
     return Optional.empty();

@@ -5,7 +5,8 @@
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -26,7 +27,7 @@ public final class Hayz extends Rule
   }
 
   @Override
-  public Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  public Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -36,7 +37,7 @@ public final class Hayz extends Rule
       if (planetHouse >= 7 && sign.getBooleanValue())
       {
         //addComment(Locale.TAIWAN , "晝星 " + planet + " 於白天在地平面上，落入 " + sign.toString(Locale.TAIWAN) + " 座，得時");
-        return Optional.of(Tuple.of("commentDay" , new Object[]{planet , sign}));
+        return Optional.of(ImmutablePair.of("commentDay" , new Object[]{planet , sign}));
       }
     } 
     else if (dayNight == DayNight.NIGHT && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS))
@@ -44,7 +45,7 @@ public final class Hayz extends Rule
       if (planetHouse >= 7 && !sign.getBooleanValue())
       {
         //addComment(Locale.TAIWAN , "夜星 " + planet + " 於夜晚在地平面上，落入 " + sign.toString(Locale.TAIWAN) + " 座，得時");
-        return Optional.of(Tuple.of("commentNight" , new Object[]{planet , sign}));
+        return Optional.of(ImmutablePair.of("commentNight" , new Object[]{planet , sign}));
       }
     }
     return Optional.empty();

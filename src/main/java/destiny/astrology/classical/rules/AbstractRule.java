@@ -7,7 +7,7 @@ package destiny.astrology.classical.rules;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.tools.LocaleStringIF;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -47,12 +47,12 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   public final boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
   {
     logger.debug("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
-    Optional<Tuple<String , Object[]>> result = getResult(planet, horoscopeContext);
+    Optional<Pair<String , Object[]>> result = getResult(planet, horoscopeContext);
     if (!result.isPresent())
       return false;
     
-    commentKey = result.get().getFirst();
-    commentParameters = result.get().getSecond();
+    commentKey = result.get().getLeft();
+    commentParameters = result.get().getRight();
     return true;
   }
   
@@ -61,7 +61,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
    * String 為 ResourceBundle 取得的 key , 前面要 prepend '[rule_name].'
    * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
    */
-  protected abstract Optional<Tuple<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext);
+  protected abstract Optional<Pair<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext);
   
   /** 名稱 */
   @Override

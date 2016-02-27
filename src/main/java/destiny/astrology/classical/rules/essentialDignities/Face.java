@@ -6,7 +6,8 @@ package destiny.astrology.classical.rules.essentialDignities;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -19,12 +20,12 @@ public final class Face extends Rule
   }
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet == essentialImpl.getFacePoint(horoscopeContext.getPosition(planet).getLongitude()))
     {
       //addComment(Locale.TAIWAN , planet + " 位於其 Chaldean decanate or face : "+ horoscopeContext.getPosition(planet).getLongitude());
-      return Optional.of(Tuple.of("comment" , new Object[] {planet , horoscopeContext.getPosition(planet).getLongitude()}));
+      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, horoscopeContext.getPosition(planet).getLongitude()}));
     }
     return Optional.empty();
   }

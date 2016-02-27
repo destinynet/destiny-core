@@ -6,7 +6,8 @@ package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -19,13 +20,13 @@ public final class House_4_7_11 extends Rule
   }
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     int planetHouse = horoscopeContext.getHouse(planet);
     if ( planetHouse == 4 || planetHouse == 7 || planetHouse == 11)
     {
       //planet + " 位於第 " + planetHouse + " 宮 (Good Daemon's) House
-      return Optional.of(Tuple.of("comment" , new Object[] {planet , planetHouse}));
+      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, planetHouse}));
     }
     return Optional.empty();
   }

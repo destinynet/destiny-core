@@ -8,7 +8,8 @@ import destiny.astrology.Aspect;
 import destiny.astrology.AspectEffectiveModern;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -21,7 +22,7 @@ public final class Partile_Oppo_Mars_Saturn extends Rule
   }
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLongitude();
@@ -30,12 +31,12 @@ public final class Partile_Oppo_Mars_Saturn extends Rule
     if ( planet != Planet.MARS && AspectEffectiveModern.isEffective( planetDegree , marsDeg , Aspect.OPPOSITION , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.OPPOSITION);
-      return Optional.of(Tuple.of("comment" , new Object[]{planet , Planet.MARS , Aspect.OPPOSITION}));
+      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, Planet.MARS, Aspect.OPPOSITION}));
     }
     else if ( planet != Planet.SATURN && AspectEffectiveModern.isEffective( planetDegree , saturnDeg , Aspect.OPPOSITION, 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.OPPOSITION);
-      return Optional.of(Tuple.of("comment" , new Object[]{planet , Planet.SATURN , Aspect.OPPOSITION}));
+      return Optional.of(ImmutablePair.of("comment" , new Object[]{planet , Planet.SATURN , Aspect.OPPOSITION}));
     }
     return Optional.empty();
   }

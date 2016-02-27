@@ -7,7 +7,8 @@ package destiny.astrology.classical.rules.accidentalDignities;
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ public final class Moon_Increase_Light extends Rule
   }
 
   @Override
-  protected Optional<Tuple<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLongitude();
@@ -30,7 +31,7 @@ public final class Moon_Increase_Light extends Rule
       if ( Horoscope.isOccidental(planetDegree , sunDegree))
       {
         // addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
-        return Optional.of(Tuple.of("comment" , new Object[] {planet}));
+        return Optional.of(ImmutablePair.of("comment", new Object[]{planet}));
       }
     }
     return Optional.empty();
