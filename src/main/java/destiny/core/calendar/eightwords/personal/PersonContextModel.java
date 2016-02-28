@@ -53,9 +53,9 @@ public class PersonContextModel implements Serializable {
 
     this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());
     this.locationName = locationName;
-    this.dst = DstUtils.getDstSecondOffset(context.getLmt(), context.getLocation()).getFirst();
+    this.dst = DstUtils.getDstSecondOffset(context.getLmt(), context.getLocation()).getLeft();
 
-    gmtMinuteOffset = (int) (DstUtils.getDstSecondOffset(context.getLmt(), context.getLocation()).getSecond() / 60);
+    gmtMinuteOffset = (int) (DstUtils.getDstSecondOffset(context.getLmt(), context.getLocation()).getRight() / 60);
 
     // 首先取得到下/上個節氣的秒數
     double fortuneMonthSpan = personContext.getFortuneMonthSpan();

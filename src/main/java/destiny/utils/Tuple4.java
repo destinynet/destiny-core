@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class Tuple4<A , B , C , D> extends Triple<A , B , C>  {
   private final D d;
 
-  public Tuple4(A a, B b, C c, D d) {
+  protected Tuple4(A a, B b, C c, D d) {
     super(a, b, c);
     this.d = d;
   }

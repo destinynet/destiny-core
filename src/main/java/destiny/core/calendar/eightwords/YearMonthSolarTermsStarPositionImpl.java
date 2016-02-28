@@ -78,7 +78,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     else
       index = (1-lmt.getYear() - 1984) % 60;
     
-    double gmtSecondsOffset = DstUtils.getDstSecondOffset(lmt, location).getSecond();
+    double gmtSecondsOffset = DstUtils.getDstSecondOffset(lmt, location).getRight();
     
     Time gmt = new Time(lmt , 0-gmtSecondsOffset);
 

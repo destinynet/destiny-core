@@ -23,7 +23,7 @@ public class LongitudeTimeBean {
 
   public static Time getLocalTime(Time lmt, Location location) {
     double absLong = Math.abs(location.getLongitude());
-    double secondsOffset = DstUtils.getDstSecondOffset(lmt, location).getSecond();
+    double secondsOffset = DstUtils.getDstSecondOffset(lmt, location).getRight();
     double zoneSecondOffset = Math.abs(secondsOffset);
     double longitudeSecondOffset = absLong * 4 * 60; // 經度與GMT的時差 (秒) , 一分鐘四度
 
