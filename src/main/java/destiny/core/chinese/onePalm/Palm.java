@@ -8,7 +8,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import destiny.core.Gender;
 import destiny.core.chinese.Branch;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -137,12 +138,9 @@ public class Palm implements Serializable {
     int positive = (gender==Gender.男 ? 1 : -1) ;
 
     return IntStream.range(1 , count+1).boxed()
-      .map(i -> Tuple.of(
-          (i - 1) * 10 + 1,
-          Branch.get(month.getIndex() + (i - 1) * positive)
-        )
+      .map(i -> ImmutablePair.of((i - 1) * 10 + 1, Branch.get(month.getIndex() + (i - 1) * positive))
       )
-      .collect(Collectors.toMap(Tuple::getFirst, Tuple::getSecond, (a, b) -> a, TreeMap::new));
+      .collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (a, b) -> a, TreeMap::new));
   }
 
   /**

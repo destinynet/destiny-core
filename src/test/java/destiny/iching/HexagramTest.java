@@ -4,7 +4,7 @@
  */
 package destiny.iching;
 
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -19,36 +19,36 @@ public class HexagramTest
   @Test
   public void testGetTuple() {
     List<Integer> list;
-    Tuple<HexagramIF, HexagramIF> tuple;
+    Pair<HexagramIF, HexagramIF> tuple;
     list = Arrays.asList(7, 7, 7, 7, 7, 7);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.乾, tuple.getFirst());
-    assertEquals(Hexagram.乾, tuple.getSecond());
+    assertEquals(Hexagram.乾, tuple.getLeft());
+    assertEquals(Hexagram.乾, tuple.getRight());
 
     list = Arrays.asList(9, 9, 9, 9, 9, 9);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.乾, tuple.getFirst());
-    assertEquals(Hexagram.坤, tuple.getSecond());
+    assertEquals(Hexagram.乾, tuple.getLeft());
+    assertEquals(Hexagram.坤, tuple.getRight());
 
     list = Arrays.asList(9, 9, 9, 6, 6, 6);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.泰, tuple.getFirst());
-    assertEquals(Hexagram.否, tuple.getSecond());
+    assertEquals(Hexagram.泰, tuple.getLeft());
+    assertEquals(Hexagram.否, tuple.getRight());
 
     list = Arrays.asList(6, 6, 6, 9, 9, 9);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.否, tuple.getFirst());
-    assertEquals(Hexagram.泰, tuple.getSecond());
+    assertEquals(Hexagram.否, tuple.getLeft());
+    assertEquals(Hexagram.泰, tuple.getRight());
 
     list = Arrays.asList(6, 9 , 6 , 9 , 6 , 9);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.未濟, tuple.getFirst());
-    assertEquals(Hexagram.既濟, tuple.getSecond());
+    assertEquals(Hexagram.未濟, tuple.getLeft());
+    assertEquals(Hexagram.既濟, tuple.getRight());
 
     list = Arrays.asList(9 , 6 , 9 , 6 , 9 , 6);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.既濟, tuple.getFirst());
-    assertEquals(Hexagram.未濟, tuple.getSecond());
+    assertEquals(Hexagram.既濟, tuple.getLeft());
+    assertEquals(Hexagram.未濟, tuple.getRight());
   }
 
   @Test

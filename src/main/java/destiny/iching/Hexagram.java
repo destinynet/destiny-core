@@ -5,7 +5,8 @@
 package destiny.iching;
 
 import destiny.core.chinese.YinYangIF;
-import destiny.utils.Tuple;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -94,17 +95,14 @@ public enum Hexagram implements HexagramIF , Serializable
   private Symbol upper;
   private Symbol lower;
 
-  private Hexagram(Symbol upper , Symbol lower)
-  {
+  Hexagram(Symbol upper, Symbol lower) {
     this.upper = upper;
     this.lower = lower;
   }
 
   @NotNull
-  public static Hexagram getHexagram(Symbol upper , Symbol lower)
-  {
-    for(Hexagram h : values())
-    {
+  public static Hexagram getHexagram(Symbol upper, Symbol lower) {
+    for (Hexagram h : values()) {
       if (h.getUpperSymbol() == upper && h.getLowerSymbol() == lower)
         return h;
     }
@@ -117,20 +115,18 @@ public enum Hexagram implements HexagramIF , Serializable
    * @param index 1 <= 卦序 <= 64
    * @param sequence 實作 getIndex(Hexagram) 的介面
    */
-  public static Hexagram getHexagram(int index , @NotNull HexagramSequenceIF sequence)
-  {
+  public static Hexagram getHexagram(int index, @NotNull HexagramSequenceIF sequence) {
     if (index > 64)
-      return getHexagram(index % 64 , sequence);
-    if (index <=0 )
-      return getHexagram(index + 64 , sequence);
-    
+      return getHexagram(index % 64, sequence);
+    if (index <= 0)
+      return getHexagram(index + 64, sequence);
+
     return sequence.getHexagram(index);
   }
   
   /** 從 陰陽 YinYang 實體的 array 傳回 HexagramIF */
   @NotNull
-  public static Hexagram getHexagram(YinYangIF[] yinyangs)
-  {
+  public static Hexagram getHexagram(YinYangIF[] yinyangs) {
     if (yinyangs == null)
       throw new RuntimeException("yinyangs is NULL !");
     if (yinyangs.length != 6)
@@ -138,7 +134,7 @@ public enum Hexagram implements HexagramIF , Serializable
 
     Symbol upper = Symbol.getSymbol(yinyangs[3].getBooleanValue(), yinyangs[4].getBooleanValue(), yinyangs[5].getBooleanValue());
     Symbol lower = Symbol.getSymbol(yinyangs[0].getBooleanValue(), yinyangs[1].getBooleanValue(), yinyangs[2].getBooleanValue());
-    return getHexagram(upper , lower);
+    return getHexagram(upper, lower);
   }
 
   /**
@@ -173,10 +169,10 @@ public enum Hexagram implements HexagramIF , Serializable
    * @return 從 六爻 (6,7,8 or 9) 取得本卦以及變卦
    */
   @NotNull
-  public static Tuple<HexagramIF , HexagramIF> getHexagrams(@NotNull List<Integer> lines) {
+  public static Pair<HexagramIF , HexagramIF> getHexagrams(@NotNull List<Integer> lines) {
     List<Boolean> src = lines.stream().map(i -> i % 2 == 1).collect(Collectors.toList());
     List<Boolean> dst = lines.stream().map(i -> (i == 6 || i == 7)).collect(Collectors.toList());
-    return Tuple.of(getHexagram(src) , getHexagram(dst));
+    return ImmutablePair.of(getHexagram(src), getHexagram(dst));
   }
   
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6 */
