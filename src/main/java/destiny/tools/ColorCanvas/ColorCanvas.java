@@ -31,17 +31,17 @@ public class ColorCanvas implements Serializable
   private int width;  // y
   //private boolean extensible; //是否可以拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
   
-  @Nullable
+  @NotNull
   private ColorByte[] content;
   
   @NotNull
-  private List<Child> children = new ArrayList<Child>();
+  private List<Child> children = new ArrayList<>();
   
   
   /**
    * 產生新的畫布，內定背景以空白鍵塗滿
-   * @param height
-   * @param width
+   * @param height  高度
+   * @param width   寬度
    */
   public ColorCanvas(int height , int width)
   {
@@ -57,9 +57,9 @@ public class ColorCanvas implements Serializable
   
   /**
    * 產生新的畫布，內定以 bgChar 字元填滿整個畫面
-   * @param height
-   * @param width
-   * @param bgChar 內定以 bgChar 字元填滿整個畫面
+   * @param height  高度
+   * @param width   寬度
+   * @param bgChar  內定以 bgChar 字元填滿整個畫面
    */
   public ColorCanvas(int height , int width , char bgChar)
   {
@@ -140,14 +140,11 @@ public class ColorCanvas implements Serializable
       } catch (UnsupportedEncodingException ignored) {
       }
       if (byteArray != null) {
-        for (int j = 0; j < byteArray.length; j++) {
-          bytes[index + j] = byteArray[j];
-        }
+        System.arraycopy(byteArray, 0, bytes, index + 0, byteArray.length);
         index = index + byteArray.length;
       }
     }
-    
-    index = 0;
+
     for (int i=1 ; i <= height ; i++)
     {
       for (int j=1 ; j <= width ; j++)
@@ -500,12 +497,10 @@ public class ColorCanvas implements Serializable
   }
   
   /**
-   * 讀取這個 ColorCanvas 的 content 資料
-   * @return
+   * @return 讀取這個 ColorCanvas 的 content 資料
    */
-  @Nullable
-  private ColorByte[] getContent()
-  {
+  @NotNull
+  private ColorByte[] getContent() {
     return this.content;
   }
   
@@ -562,7 +557,10 @@ public class ColorCanvas implements Serializable
   {
     int index = 0;      //目前走到的索引    
     int precursor = 0;  //先鋒
-    StringBuffer sb = new StringBuffer(); //存放目前的結果
+    StringBuilder sb = new StringBuilder(); //存放目前的結果
+    sb.append("<div style=\"");
+    sb.append("white-space: pre; ");
+    sb.append("\">");
     //sb.append("<pre>");
     /**
      * 之前做法：會在這裡塞一行
@@ -573,7 +571,7 @@ public class ColorCanvas implements Serializable
      * 所以，這裡就不需要再去 getContent() 一次
      */
     
-    List<ColorByte> list = new ArrayList<ColorByte>();
+    List<ColorByte> list = new ArrayList<>();
     while (precursor < content.length )
     {      
       if (content[index].isSameProperties(content[precursor]))
@@ -608,7 +606,7 @@ public class ColorCanvas implements Serializable
         //檢查是否到達邊界
         if( (index +1) % this.width == 0 && (index != content.length-1))
         {
-          //如果到達邊界 , 則，將「一個」 ColoyByte 送入製作成 HTML
+          //如果到達邊界 , 則，將「一個」 ColorByte 送入製作成 HTML
           sb.append(buildHtml(list));
           sb.append("<br />");
           list.clear();
@@ -629,6 +627,7 @@ public class ColorCanvas implements Serializable
     sb.append(buildHtml(list));
     list.clear();
     //sb.append("</pre>");
+    sb.append("</div>");
     return sb.toString();
   }//getHtmlOutput
   
@@ -636,7 +635,7 @@ public class ColorCanvas implements Serializable
   @NotNull
   private String buildHtml(@NotNull List<ColorByte> list)
   {
-    StringBuffer tempSb = new StringBuffer();
+    StringBuilder tempSb = new StringBuilder();
     byte[] byteArray = new byte[list.size()];
     for (int i=0 ; i < list.size() ; i++)
     {
@@ -686,14 +685,13 @@ public class ColorCanvas implements Serializable
   }
   
   @NotNull
-  private StringBuffer buildFontHtml(@NotNull ColorByte cb, @NotNull byte[] byteArray)
-  {
+  private StringBuffer buildFontHtml(@NotNull ColorByte cb, @NotNull byte[] byteArray) {
     StringBuffer sb = new StringBuffer();
-    sb.append("<font");
-    //sb.append(" style=\"");
-    sb.append(" style=\"white-space: pre; ");
+    sb.append("<span ");
+    sb.append("style=\"");
+//    sb.append("white-space: pre; ");
 
-    cb.getForeColor().ifPresent( foreColor -> sb.append("color:"+foreColor+"; ") );
+    cb.getForeColor().ifPresent(foreColor -> sb.append("color:"+foreColor+"; ") );
     cb.getBackColor().ifPresent( backColor -> sb.append("background-color:"+backColor+"; "));
     cb.getFont().ifPresent( font -> sb.append("font-family:"+font.getFamily()+"; ") );
 
@@ -707,13 +705,11 @@ public class ColorCanvas implements Serializable
     });
 
     sb.append(">");
-    try
-    {
-      sb.append(new String(byteArray , "Big5"));
+    try {
+      sb.append(new String(byteArray, "Big5"));
+    } catch (UnsupportedEncodingException ignored) {
     }
-    catch (UnsupportedEncodingException ignored)
-    {}
-    sb.append("</font>");
+    sb.append("</span>");
     return sb;
   }//buildFontHtml()
   
@@ -727,7 +723,7 @@ public class ColorCanvas implements Serializable
   @Override
   public String toString()
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     ColorByte[] cbs = this.getContentWithChildren(); 
     for (int i=1 ; i<=height ; i++)
     {
