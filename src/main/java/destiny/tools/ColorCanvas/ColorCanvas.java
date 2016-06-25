@@ -408,14 +408,9 @@ public class ColorCanvas implements Serializable
   
   /**
    * 新增一行字，到本 Canvas 「有字的最底端」
-   * @param str
-   * @param foreColor
-   * @param backColor
-   * @param font
-   * @param url
-   * @param wrap
    */
-  public void addLine(@NotNull String str , @Nullable String foreColor , @Nullable String backColor , @Nullable Font font , @Nullable URL url , boolean wrap)
+  public void addLine(@NotNull String str , @Nullable String foreColor , @Nullable String backColor ,
+                      @Nullable Font font , @Nullable URL url , boolean wrap)
   {
     /*
      * 必須先取出來，第幾行開始為空
