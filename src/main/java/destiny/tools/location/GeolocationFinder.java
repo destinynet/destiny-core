@@ -7,8 +7,11 @@ import destiny.core.calendar.Location;
 
 import java.util.Locale;
 
-public interface GeolocationFinder
-{
+/**
+ * 以 {@link GeocodingIF} 取代
+ */
+public interface GeolocationFinder {
+
   /** 給定一個地址，找出相對應的經緯度等資料 */
-  Location getLocation(String place , Locale locale);
+  Location getLocation(String place, Locale locale);
 }
