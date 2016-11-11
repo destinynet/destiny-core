@@ -16,6 +16,7 @@ import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.StemBranch;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,6 +149,29 @@ public class PersonContext extends EightWordsContext {
     return currentSolarTerms;
   }
 
+
+  /**
+   * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
+   */
+  public Pair<Pair<SolarTerms , Double> , Pair<SolarTerms , Double>> getMajorSolarTermsBetween() {
+    Time gmt = Time.getGMTfromLMT(lmt, location);
+
+    // 現在（亦即：上一個節）的節氣
+    SolarTerms prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
+    Time prevGmt = this.starTransitImpl.getNextTransit(Planet.SUN, prevMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, gmt, false);
+    Double d1 = gmt.diffSeconds(prevGmt);
+
+
+    // 下一個節氣
+    SolarTerms nextMajorSolarTerms = this.getNextMajorSolarTerms(prevMajorSolarTerms, false);
+    Time nextGmt = this.starTransitImpl.getNextTransit(Planet.SUN, nextMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, gmt, true);
+    Double d2 = nextGmt.diffSeconds(gmt);
+
+    logger.debug(" prevGmt = {}" , prevGmt);
+    logger.debug("(now)Gmt = {}" , gmt);
+    logger.debug(" nextGmt = {}" , nextGmt);
+    return Pair.of(Pair.of(prevMajorSolarTerms , d1) , Pair.of(nextMajorSolarTerms , d2));
+  }
 
   /**
    * 距離下 N 個「節」有幾秒 , 如果 index 為負，代表計算之前的「節」。 index 不能等於 0

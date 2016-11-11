@@ -12,6 +12,8 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -20,8 +22,9 @@ import java.util.Locale;
 /**
  * 以太陽過天底的時間來決定『子正』
  */
-public class MidnightSolarTransImpl implements MidnightIF , Serializable
-{
+public class MidnightSolarTransImpl implements MidnightIF , Serializable {
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
   private double atmosphericPressure = 1013.25;
   private double atmosphericTemperature = 0;
   private boolean isDiscCenter = true;
@@ -47,6 +50,7 @@ public class MidnightSolarTransImpl implements MidnightIF , Serializable
     
     /** 太陽過當地天底 (NADIR) 的時間 */ 
     Time gmt = Time.getGMTfromLMT(lmt, location);
+
     Time gmtResult = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
     return Time.getLMTfromGMT(gmtResult, location);
   }
