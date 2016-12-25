@@ -10,8 +10,7 @@ import static destiny.core.chinese.Branch.*;
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
-public class StemBranch extends StemBranchOptional implements Comparable<StemBranch> , Serializable
-{
+public class StemBranch extends StemBranchOptional implements Comparable<StemBranch> , Serializable {
   // 0[甲子] ~ 59[癸亥]
   @NotNull
   private transient static StemBranch[] ARRAY = new StemBranch[60];
@@ -24,7 +23,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     } while (n < 60);
   }
 
-  StemBranch(@NotNull Stem stem, @NotNull Branch branch) {
+  private StemBranch(@NotNull Stem stem, @NotNull Branch branch) {
     super(Optional.of(stem), Optional.of(branch));
   }
   

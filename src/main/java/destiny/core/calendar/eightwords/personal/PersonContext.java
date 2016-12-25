@@ -156,13 +156,15 @@ public class PersonContext extends EightWordsContext {
   public Pair<Pair<SolarTerms , Double> , Pair<SolarTerms , Double>> getMajorSolarTermsBetween() {
     Time gmt = Time.getGMTfromLMT(lmt, location);
 
-    // 現在（亦即：上一個節）的節氣
+    // 現在（亦即：上一個節）的「節」
     SolarTerms prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
+    if (!prevMajorSolarTerms.isMajor()) // 如果是「中氣」的話
+      prevMajorSolarTerms = prevMajorSolarTerms.previous(); // 再往前取一個 , 即可得到「節」
     Time prevGmt = this.starTransitImpl.getNextTransit(Planet.SUN, prevMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, gmt, false);
     Double d1 = gmt.diffSeconds(prevGmt);
 
 
-    // 下一個節氣
+    // 下一個「節」
     SolarTerms nextMajorSolarTerms = this.getNextMajorSolarTerms(prevMajorSolarTerms, false);
     Time nextGmt = this.starTransitImpl.getNextTransit(Planet.SUN, nextMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, gmt, true);
     Double d2 = nextGmt.diffSeconds(gmt);
