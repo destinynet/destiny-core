@@ -43,9 +43,13 @@ public class LocalDateTimeTest {
     for (int i = 1; i <= 15; i++) {
       ld = ld.minusDays(1);
       zdt = ld.atTime(0 , 0).atZone(zone);
-      out.print(ld + " , jd = " + ld.getLong(JulianFields.JULIAN_DAY));
-      //out.print(" , zdt's jd = " + zdt.getLong(JulianFields.JULIAN_DAY));
-      out.println();
+      StringBuilder sb = new StringBuilder();
+      sb.append(ld);
+      sb.append(" , jd = ");
+      sb.append(ld.getLong(JulianFields.JULIAN_DAY));
+      Time t = Time.from(ld.atStartOfDay());
+      sb.append(" , julianDay = ").append(t.getGmtJulDay());
+      out.println(sb);
     }
   }
 
