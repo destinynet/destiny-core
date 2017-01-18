@@ -17,10 +17,20 @@ public interface ApsisIF
   /**
    * 取得全部 Apsis (近點,遠點,北交,南交) 在某刻 (GMT) 的座標 , 通常 Star 會帶入 Planet.MOON
    */
-  Map<Apsis,Position> getPositions(Star star , Time gmt , Coordinate coordinate , NodeType nodeType);
-  
+  Map<Apsis,Position> getPositions(Star star , double gmtJulDay , Coordinate coordinate , NodeType nodeType);
+
+  default Map<Apsis,Position> getPositions(Star star , Time gmt , Coordinate coordinate , NodeType nodeType) {
+    return getPositions(star , gmt.getGmtJulDay() , coordinate , nodeType);
+  }
+
+  Position            getPosition(Star star , Apsis apsis , double gmtJulDay , Coordinate coordinate , NodeType nodeType);
+
   /**
    * 取得某 Apsis 在某刻 (GMT) 的座標 
    */
-  Position            getPosition(Star star , Apsis apsis , Time gmt , Coordinate coordinate , NodeType nodeType);
+  default Position            getPosition(Star star , Apsis apsis , Time gmt , Coordinate coordinate , NodeType nodeType) {
+    return getPosition(star , apsis , gmt.getGmtJulDay() , coordinate , nodeType);
+  }
+
+
 }

@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/5/27 at 上午 2:18:45
- */ 
+ */
 package destiny.astrology;
 
 import destiny.tools.LocaleStringIF;
@@ -13,35 +13,28 @@ import java.util.ResourceBundle;
 /**
  * 橢圓軌道的四個點：近點（Perihelion/Perigee）、遠點（Aphelion/Apogee），上升點（Ascending/North Node），下降點（Descending/South Node）
  */
-public enum Apsis implements LocaleStringIF
-{
+public enum Apsis implements LocaleStringIF {
   /** 近點 */
-  PERIHELION("Apsis.PERIHELION"),
-  /** 遠點 */
-  APHELION("Apsis.APHELION"),
-  /** 北交點/上升點 */
-  ASCENDING("Apsis.ASCENDING"),
-  /** 南交點/下降點 */
+  PERIHELION("Apsis.PERIHELION"), /** 遠點 */
+  APHELION("Apsis.APHELION"), /** 北交點/上升點 */
+  ASCENDING("Apsis.ASCENDING"), /** 南交點/下降點 */
   DESCENDING("Apsis.DESCENDING");
-  
+
   private final static String resource = "destiny.astrology.Star";
-  
+
   private String nameKey;
-  
-  private Apsis(String nameKey)
-  {
+
+  private Apsis(String nameKey) {
     this.nameKey = nameKey;
   }
-  
+
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
 }
