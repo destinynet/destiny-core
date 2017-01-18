@@ -27,8 +27,16 @@ public interface StarPositionIF {
    * @param coordinate ECLIPTIC / EQUATORIAL / SIDEREAL
    * @return 座標
    */
-  Position getPosition(Star star, Time gmt , Centric centric , Coordinate coordinate);
+  default Position getPosition(Star star, Time gmt , Centric centric , Coordinate coordinate) {
+    double gmtJulDay = gmt.getGmtJulDay();
+    return getPosition(star , gmtJulDay , centric , coordinate);
+  }
+
+  Position getPosition(Star star, double gmtJulDay , Centric centric , Coordinate coordinate);
 
   /** 取得星體的位置 , 包含當地時間以及座標 */
-  Position getPosition(Star star, Time lmt, Location location , Centric centric , Coordinate coordinate);
+  default Position getPosition(Star star, Time lmt, Location location , Centric centric , Coordinate coordinate) {
+    Time gmt = Time.getGMTfromLMT(lmt, location);
+    return getPosition(star , gmt , centric , coordinate);
+  }
 }
