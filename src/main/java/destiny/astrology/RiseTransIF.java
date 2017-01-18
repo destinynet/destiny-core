@@ -25,11 +25,16 @@ public interface RiseTransIF {
   /**
    * 來源、目標時間都是 GMT
    */
-  Time getGmtTransTime(Time fromGmtTime , Star star , TransPoint point , Location location ,
+  Time getGmtTransTime(double fromGmtJulDay , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction);
 
+  default Time getGmtTransTime(Time fromGmtTime , Star star , TransPoint point , Location location ,
+      double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
+    return getGmtTransTime(fromGmtTime.getGmtJulDay() , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+  }
+
   /**
-   * 承上 , 來源、目標時間都是 LMG
+   * 承上 , 來源、目標時間都是 LMT
    */
   default Time getLmtTransTime(Time fromLmtTime , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {

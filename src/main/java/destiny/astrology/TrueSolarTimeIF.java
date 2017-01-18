@@ -21,7 +21,11 @@ public interface TrueSolarTimeIF {
    * 均時差 = 真太陽時 - LMT
    * 真太陽時 = LMT + 均時差
    */
-  double getEquationSecs(Time gmtTime);
+  double getEquationSecs(double gmtJulDay);
+
+  default double getEquationSecs(Time gmtTime) {
+    return getEquationSecs(gmtTime.getGmtJulDay());
+  }
 
   /** 取得 LMT 時刻所對應的 真太陽時 */
   default Time getTrueSolarTime(Time lmt , Location location) {
