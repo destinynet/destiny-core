@@ -41,20 +41,25 @@ public interface RelativeTransitIF {
    * 傳回的是 GMT 時刻
    */
   @NotNull
-  default List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , @NotNull Time fromGmt, @NotNull Time toGmt, double angle) {
+  default List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
     List<Time> resultList = new ArrayList<>();
-    while (fromGmt.isBefore(toGmt))
+    while (fromJulDay < toJulDay)
     {
-      Optional<Time> timeOptional = getRelativeTransit( transitStar , relativeStar , angle , fromGmt, true);
+      Optional<Time> timeOptional = getRelativeTransit( transitStar , relativeStar , angle , fromJulDay , true);
       if (timeOptional.isPresent()) {
-        fromGmt = timeOptional.get();
-        if (!fromGmt.isBefore(toGmt))
+        fromJulDay = timeOptional.get().getGmtJulDay();
+        if (fromJulDay > toJulDay)
           break;
-        resultList.add(fromGmt);
-        fromGmt = new Time(  (fromGmt.getGmtJulDay() + 0.000001 ) );
+        resultList.add(timeOptional.get());
+        fromJulDay = fromJulDay +0.000001;
       }
     }
     return resultList;
+  }
+
+  @NotNull
+  default List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , @NotNull Time fromGmt, @NotNull Time toGmt, double angle) {
+    return getPeriodRelativeTransitTimes(transitStar ,relativeStar ,fromGmt.getGmtJulDay() , toGmt.getGmtJulDay() , angle);
   }
 
   /** 承上，此為計算 LMT , 回傳也是 LMT */
