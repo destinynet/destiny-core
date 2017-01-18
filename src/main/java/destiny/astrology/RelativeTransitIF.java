@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
  * Swiss ephemeris 的實作是 RelativeTransitImpl
  * </pre> 
  */
-public interface RelativeTransitIF
-{
+public interface RelativeTransitIF {
   /**
    * <pre>
    * 計算兩星下一個/上一個交角。
@@ -30,7 +29,11 @@ public interface RelativeTransitIF
    * 傳回的 Time 是 GMT
    * </pre>
    */
-  Optional<Time> getRelativeTransit(Star transitStar , Star relativeStar , double angle , Time startGmtTime , boolean isForward);
+  Optional<Time> getRelativeTransit(Star transitStar , Star relativeStar , double angle , double gmtJulDay , boolean isForward);
+
+  default Optional<Time> getRelativeTransit(Star transitStar , Star relativeStar , double angle , Time startGmtTime , boolean isForward) {
+    return getRelativeTransit(transitStar ,relativeStar , angle , startGmtTime.getGmtJulDay() , isForward);
+  }
 
   /**
    * 從 fromGmt 到 toGmt 之間，transitStar 對 relativeStar 形成 angle 交角的時間
