@@ -17,13 +17,22 @@ import java.util.stream.Collectors;
 public interface SolarTermsIF {
   
   /** 計算某時刻當下的節氣 */
-  SolarTerms getSolarTermsFromGMT(Time gmt);
+  SolarTerms getSolarTermsFromGMT(double gmtJulDay);
+
+  /** 承上， Time 版本 */
+  default SolarTerms getSolarTermsFromGMT(Time gmt) {
+    return getSolarTermsFromGMT(gmt.getGmtJulDay());
+  }
 
   /**
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    * @return List <SolarTermsTime>
    */
-  List<SolarTermsTime> getPeriodSolarTerms(@NotNull Time fromGmtTime , @NotNull Time toGmtTime );
+  List<SolarTermsTime> getPeriodSolarTerms(double fromGmt , double toGmt );
+
+  default List<SolarTermsTime> getPeriodSolarTerms(@NotNull Time fromGmtTime , @NotNull Time toGmtTime ) {
+    return getPeriodSolarTerms(fromGmtTime.getGmtJulDay() , toGmtTime.getGmtJulDay());
+  }
 
   /**
    * 計算從某時(fromLmtTime) 到某時(toLmtTime) 之間的節氣 , in LMT

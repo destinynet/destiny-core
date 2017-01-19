@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2008/1/17 at 上午 1:21:46
- */ 
+ */
 package destiny.core.calendar;
 
 import destiny.core.calendar.Location.EastWest;
@@ -9,12 +9,11 @@ import destiny.core.calendar.Location.NorthSouth;
 import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
-public class LocationDecoratorTaiwan implements Decorator<Location>
-{
+public class LocationDecoratorTaiwan implements Decorator<Location> {
+
   @NotNull
   @Override
-  public String getOutputString(@NotNull Location location)
-  {
+  public String getOutputString(@NotNull Location location) {
     StringBuffer sb = new StringBuffer();
     sb.append(location.getEastWest() == EastWest.EAST ? "東經" : "西經").append(" ");
     sb.append(location.getLongitudeDegree()).append("度 ");
@@ -29,8 +28,8 @@ public class LocationDecoratorTaiwan implements Decorator<Location>
     sb.append(" 時區 ").append(location.getTimeZone().getID());
     if (location.isMinuteOffsetSet())
       sb.append(" 時差 ").append(location.getMinuteOffset()).append(" 分鐘.");
-      //sb.append(" 時差 " + (location.getTimeZone().getRawOffset() / 60000) + " 分鐘  ");
-    
+    //sb.append(" 時差 " + (location.getTimeZone().getRawOffset() / 60000) + " 分鐘  ");
+
     return sb.toString();
   }
 

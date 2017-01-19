@@ -36,10 +36,9 @@ public class SolarTermsImpl implements SolarTermsIF , Serializable
    * 2. 比對此度數 , 將此度數除以 15 取整數
    * 3. 將以上的值代入 SolarTermsArray[int] 即是答案
    */
-  public SolarTerms getSolarTermsFromGMT(Time gmt)
-  {
+  public SolarTerms getSolarTermsFromGMT(double gmtJulDay) {
     // Step 1: Calculate the Longitude of SUN
-    Position sp = starPositionImpl.getPosition(Planet.SUN , gmt , Centric.GEO , Coordinate.ECLIPTIC);
+    Position sp = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , Centric.GEO , Coordinate.ECLIPTIC);
     //System.out.println("Utils.getSolarTermsFromGMT() : Longitude = " + sp.Longitude);
     // Step 2
     int SolarTermsArray = (int)(sp.getLongitude()/15)+3 ;
@@ -54,20 +53,20 @@ public class SolarTermsImpl implements SolarTermsIF , Serializable
    */
   @NotNull
   @Override
-  public List<SolarTermsTime> getPeriodSolarTerms(@NotNull Time fromGmtTime , @NotNull Time toGmtTime )
-  {
-    SolarTerms nowST = getSolarTermsFromGMT(fromGmtTime);
+  public List<SolarTermsTime> getPeriodSolarTerms(double fromGmt , double toGmt) {
+    SolarTerms nowST = getSolarTermsFromGMT(fromGmt);
 
     int nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nowST.getZodiacDegree()+15);
     
     List<SolarTermsTime> resultList = new ArrayList<>();
     
-    while( fromGmtTime.isBefore(toGmtTime))
+    while( fromGmt < toGmt)
     {
       SolarTermsTime solarTermsTime;
-      fromGmtTime = starTransitImpl.getNextTransit(Planet.SUN , nextZodiacDegree , Coordinate.ECLIPTIC , fromGmtTime , true );
+      Time fromGmtTime = starTransitImpl.getNextTransit(Planet.SUN , nextZodiacDegree , Coordinate.ECLIPTIC , fromGmt , true );
+      fromGmt = fromGmtTime.getGmtJulDay();
       
-      if (!fromGmtTime.isBefore(toGmtTime))
+      if (fromGmt > toGmt)
         break;
       nowST = nowST.next();
       solarTermsTime = new SolarTermsTime(nowST , fromGmtTime);

@@ -32,10 +32,7 @@ public class LocationWithName implements Serializable {
 
   @Override
   public String toString() {
-    return "[ " +
-      "location=" + location +
-      ", name='" + name + '\'' +
-      ']';
+    return "[ " + "location=" + location + ", name='" + name + '\'' + ']';
   }
 
 }

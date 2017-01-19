@@ -1,8 +1,7 @@
 package destiny.core.calendar;
 
 
-public enum SolarTerms
-{
+public enum SolarTerms {
   立春("立春",315),
   雨水("雨水",330),
   驚蟄("驚蟄",345),
@@ -27,7 +26,7 @@ public enum SolarTerms
   冬至("冬至",270),
   小寒("小寒",285),
   大寒("大寒",300);
-  
+
   private String name;
   private int zodiacDegree;
 
@@ -42,53 +41,48 @@ public enum SolarTerms
     this.name = name;
     this.zodiacDegree = zodiacDegree;
   }
-  
+
   /**
    * @param solarTerm 節氣
    * @return 傳回 index , 立春為 0 , 雨水為 1 , ... , 大寒 為 23
    */
-  public static int getIndex(SolarTerms solarTerm)
-  {
+  public static int getIndex(SolarTerms solarTerm) {
     int result = 0;
-    for (int i=0 ; i< SOLAR_TERMS_ARRAY.length ; i++)
-    {
-      if ( solarTerm == SOLAR_TERMS_ARRAY[i] )
+    for (int i = 0; i < SOLAR_TERMS_ARRAY.length; i++) {
+      if (solarTerm == SOLAR_TERMS_ARRAY[i])
         result = i;
     }
     return result;
   }
-  
-  public SolarTerms next()
-  {
+
+  public SolarTerms next() {
     int index = SolarTerms.getIndex(this);
-    index ++;
+    index++;
     if (index >= 24)
       index = index - 24;
     return SOLAR_TERMS_ARRAY[index];
   }
-  
-  public SolarTerms previous()
-  {
+
+  public SolarTerms previous() {
     int index = SolarTerms.getIndex(this);
-    index --;
+    index--;
     if (index < 0)
       index = index + 24;
     return SOLAR_TERMS_ARRAY[index];
   }
-  
+
   /** 取得節氣的名稱 */
   public String getName() { return name; }
-  
+
   public int getZodiacDegree() { return zodiacDegree; }
-  
-  
-  public String toString()
-  {
+
+
+  public String toString() {
     return name;
   }
 
   /**
-   * @param solarTermsIndex 節氣的索引 
+   * @param solarTermsIndex 節氣的索引
    * @return 0 傳回立春 , 1 傳回 雨水 , ... , 23 傳回 大寒 , 接著連續 24 傳回立春
    */
   public static SolarTerms get(int solarTermsIndex) {
@@ -110,5 +104,5 @@ public enum SolarTerms
   public boolean isMajor() {
     return SolarTerms.getIndex(this) % 2 == 0;
   }
-  
+
 }
