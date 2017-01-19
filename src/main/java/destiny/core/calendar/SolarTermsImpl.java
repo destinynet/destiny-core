@@ -15,16 +15,14 @@ import java.util.List;
 /**
  * 節氣實作
  */
-public class SolarTermsImpl implements SolarTermsIF , Serializable
-{ 
+public class SolarTermsImpl implements SolarTermsIF , Serializable {
   private StarTransitIF starTransitImpl;
   private StarPositionIF starPositionImpl;
 
   protected SolarTermsImpl() {
   }
   
-  public SolarTermsImpl(StarTransitIF StarTransitImpl, StarPositionIF starPositionImpl)
-  {
+  public SolarTermsImpl(StarTransitIF StarTransitImpl, StarPositionIF starPositionImpl) {
     this.starTransitImpl = StarTransitImpl;
     this.starPositionImpl = starPositionImpl;
   }

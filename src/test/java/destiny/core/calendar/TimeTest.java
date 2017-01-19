@@ -508,6 +508,36 @@ public class TimeTest
   }
 
   /**
+   * https://docs.kde.org/trunk5/en/kdeedu/kstars/ai-julianday.html
+   *
+   * Julian day epoch 測試
+   * 已知： epoch 位於
+   * January 1, 4713 BC 中午 :  proleptic Julian calendar
+   * November 24, 4714 BC    : proleptic Gregorian calendar
+   */
+  @Test
+  public void testJulDayZero() {
+    double startJul = Time.getGmtJulDay(false , false , 4713, 1 , 1 , 12 , 0 , 0);
+    assertEquals(0 , startJul , 0.0);
+
+    double startGre = Time.getGmtJulDay(false , true , 4714, 11 , 24 , 12 , 0 , 0);
+    assertEquals(0 , startGre , 0.0);
+  }
+
+  /**
+   * 已知
+   * astro julian day number 開始於
+   * November 24, 4714 BC 當天中午  : proleptic Gregorian calendar
+   *
+   * epoch (1970-01-01 0:00) 為 2440587.5
+   */
+  @Test
+  public void test1970Epoch() {
+    double value = Time.getGmtJulDay(true , true , 1970 , 1 , 1 , 0, 0, 0);
+    assertEquals(2440587.5 , value , 0.0);
+  }
+
+  /**
    * 測試 Julian Day 是否正確
    */
   @Test

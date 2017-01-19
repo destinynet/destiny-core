@@ -525,39 +525,34 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
    * @return Julian Day
    */
   public double getGmtJulDay() {
-    double thisHour = hour + ((double)minute) / 60 +  second / 3600;
-
-    double jd;
-    double u, u0, u1, u2;
-    
-    u = getNormalizedYear();
-    
-    if (month < 3)
-    {
-      u -= 1;
-    }
-    u0 = u + 4712.0;
-    u1 = month + 1.0;
-    if (u1 < 4)
-    {
-      u1 += 12.0;
-    }
-    jd = Math.floor(u0 * 365.25) + Math.floor(30.6 * u1 + 0.000001) + day + thisHour / 24.0 - 63.5;
-    if (gregorian)
-    {
-      u2 = Math.floor(Math.abs(u) / 100) - Math.floor(Math.abs(u) / 400);
-      if (u < 0.0)
-      {
-        u2 = -u2;
-      }
-      jd = jd - u2 + 2;
-      if ((u < 0.0) && (u / 100 == Math.floor(u / 100))
-          && (u / 400 != Math.floor(u / 400)))
-      {
-        jd -= 1;
-      }
-    }
-    return jd;    
+    return getGmtJulDay(ad , gregorian , year , month , day , hour , minute , second);
+//    double thisHour = hour + ((double) minute) / 60 + second / 3600;
+//
+//    double jd;
+//    double u, u0, u1, u2;
+//
+//    u = getNormalizedYear();
+//
+//    if (month < 3) {
+//      u -= 1;
+//    }
+//    u0 = u + 4712.0;
+//    u1 = month + 1.0;
+//    if (u1 < 4) {
+//      u1 += 12.0;
+//    }
+//    jd = Math.floor(u0 * 365.25) + Math.floor(30.6 * u1 + 0.000001) + day + thisHour / 24.0 - 63.5;
+//    if (gregorian) {
+//      u2 = Math.floor(Math.abs(u) / 100) - Math.floor(Math.abs(u) / 400);
+//      if (u < 0.0) {
+//        u2 = -u2;
+//      }
+//      jd = jd - u2 + 2;
+//      if ((u < 0.0) && (u / 100 == Math.floor(u / 100)) && (u / 400 != Math.floor(u / 400))) {
+//        jd -= 1;
+//      }
+//    }
+//    return jd;
   }
 
   public static double getGmtJulDay(boolean isAd , boolean isGregorian , int year , int month , int day , int hour , int minute , double second) {
@@ -660,39 +655,34 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   {
     this.year = year;
   }
-  
 
-  public void setMonth(int month)
-  {
+
+  public void setMonth(int month) {
     this.month = month;
-    if (this.month>12 || this.month <=0)
+    if (this.month > 12 || this.month <= 0)
       normalize();
   }
 
-  public void setDay(int day)
-  {
+  public void setDay(int day) {
     this.day = day;
     normalize();
   }
 
-  public void setHour(int hour)
-  {
+  public void setHour(int hour) {
     this.hour = hour;
-    if (this.hour >=60 || this.hour < 0 )
+    if (this.hour >= 60 || this.hour < 0)
       normalize();
   }
 
-  public void setMinute(int minute)
-  {
+  public void setMinute(int minute) {
     this.minute = minute;
-    if (this.minute >=60 || this.minute < 0 )
+    if (this.minute >= 60 || this.minute < 0)
       normalize();
   }
 
-  public void setSecond(double second)
-  {
+  public void setSecond(double second) {
     this.second = second;
-    if (this.second >=60 || this.second < 0 )
+    if (this.second >= 60 || this.second < 0)
       normalize();
   }
 

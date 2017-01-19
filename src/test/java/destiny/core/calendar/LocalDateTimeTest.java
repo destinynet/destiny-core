@@ -23,6 +23,8 @@ public class LocalDateTimeTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+
+
   @Test
   public void testOutput() {
     logger.info("{}" , LocalDate.of(2012 , 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM-dd")));
@@ -42,10 +44,9 @@ public class LocalDateTimeTest {
 
     for (int i = 1; i <= 15; i++) {
       ld = ld.minusDays(1);
-      zdt = ld.atTime(0 , 0).atZone(zone);
       StringBuilder sb = new StringBuilder();
       sb.append(ld);
-      sb.append(" , jd = ");
+      sb.append(" , JulianFields.JULIAN_DAY = ");
       sb.append(ld.getLong(JulianFields.JULIAN_DAY));
       Time t = Time.from(ld.atStartOfDay());
       sb.append(" , julianDay = ").append(t.getGmtJulDay());
