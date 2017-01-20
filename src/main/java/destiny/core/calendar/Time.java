@@ -270,11 +270,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
 //      this.gregorian = false;
   }
 
-  /** 加上幾秒 , 傳回新的 time 物件 */
-  public Time addSeconds(double value) {
-    return new Time(this , value);
-  }
-    
+
   public LocalDateTime toLocalDateTime() {
 
     if (year > 1582) {

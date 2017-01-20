@@ -7,6 +7,8 @@ package destiny.astrology;
 
 import destiny.core.calendar.Time;
 
+import java.time.LocalDateTime;
+
 /**
  * <pre>
  * 計算某星 Transit 的介面
@@ -17,9 +19,20 @@ import destiny.core.calendar.Time;
 public interface StarTransitIF
 {
   //TODO : 計算星體 Transit 到黃道某點的時間，僅限於 Planet , Asteroid , Moon's Node
-  Time getNextTransit(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward);
+  double getNextTransit(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward);
+
+  default Time getNextTransit(Star star, double degree, Coordinate coordinate , LocalDateTime fromGmt, boolean isForward) {
+    double julDay = Time.getGmtJulDay(fromGmt);
+    double gmtJulDay = getNextTransit(star , degree , coordinate , julDay , isForward);
+    return new Time(gmtJulDay);
+  }
+
+  default Time getNextTransitTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
+    double gmtJulDay = getNextTransit(star , degree , coordinate , fromGmt , isForward);
+    return new Time(gmtJulDay);
+  }
 
   default Time getNextTransit(Star star, double degree, Coordinate coordinate , Time fromGmtTime , boolean isForward) {
-    return getNextTransit(star , degree , coordinate , fromGmtTime.getGmtJulDay() , isForward);
+    return getNextTransitTime(star , degree , coordinate , fromGmtTime.getGmtJulDay() , isForward);
   }
 }
