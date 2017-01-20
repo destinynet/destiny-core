@@ -555,6 +555,25 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
 //    return jd;
   }
 
+  /**
+   * @param gmt proleptic Gregorian (包含 0 year)
+   */
+  public static double getGmtJulDay(LocalDateTime gmt) {
+    int year = gmt.getYear() > 0 ? gmt.getYear() : -(gmt.getYear()-1);
+    boolean isAd = gmt.getYear() > 0;
+    return getGmtJulDay(isAd , true , year , gmt.getMonthValue() , gmt.getDayOfMonth() , gmt.getHour() , gmt.getMinute() , gmt.getSecond());
+  }
+
+  /**
+   * @param gmt proleptic Julian (包含 0 year)
+   */
+  public static double getGmtJulDay(JulianDateTime gmt) {
+    int year = gmt.getYear();
+    boolean isAd = gmt.getProlepticYear() > 0;
+    return getGmtJulDay(isAd , false , year , gmt.getMonth() , gmt.getDayOfMonth() ,
+      gmt.getHour() , gmt.getMinute() , gmt.getSecond());
+  }
+
   public static double getGmtJulDay(boolean isAd , boolean isGregorian , int year , int month , int day , int hour , int minute , double second) {
     double thisHour = hour + ((double)minute) / 60 +  second / 3600;
     double jd;

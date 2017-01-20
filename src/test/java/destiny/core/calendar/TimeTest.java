@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -535,6 +536,19 @@ public class TimeTest
   public void test1970Epoch() {
     double value = Time.getGmtJulDay(true , true , 1970 , 1 , 1 , 0, 0, 0);
     assertEquals(2440587.5 , value , 0.0);
+
+    value = Time.getGmtJulDay(LocalDateTime.of(1970 , 1 , 1 , 0 , 0 , 0));
+    assertEquals(2440587.5 , value , 0.0);
+  }
+
+  /**
+   * proleptic Gregorian
+   */
+  @Test
+  public void test_getJulDayFromGregorian() {
+    assertEquals(2457774 , Time.getGmtJulDay(LocalDateTime.of(2017 , 1 , 20 , 12 , 0 , 0)) , 0.0);
+
+    assertEquals(2457774 , Time.getGmtJulDay(JulianDateTime.of(2017,1, 7 , 12 , 0) ) , 0.0);
   }
 
   /**
