@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,11 @@ public interface RiseTransIF {
    */
   Time getGmtTransTime(double fromGmtJulDay , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction);
+
+  default Time getGmtTransTime(LocalDateTime fromGmtTime , Star star , TransPoint point , Location location ,
+                               double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
+    return getGmtTransTime(Time.getGmtJulDay(fromGmtTime) , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+  }
 
   default Time getGmtTransTime(Time fromGmtTime , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {

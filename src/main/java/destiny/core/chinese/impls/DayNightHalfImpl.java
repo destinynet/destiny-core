@@ -17,17 +17,14 @@ public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
   public DayNightHalfImpl(RiseTransIF riseTransImpl) {this.riseTransImpl = riseTransImpl;}
 
   @Override
-  public DayNight getDayNight(Time lmt, Location location) {
-
-    Time gmt = Time.getGMTfromLMT(lmt, location);
-
+  public DayNight getDayNight(double gmtJulDay, Location location) {
     double atmosphericPressure = 1013.25;
     double atmosphericTemperature = 0;
     boolean isDiscCenter = true;
     boolean hasRefraction = true;
 
-    Time nextMeridian = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
-    Time nextNadir    = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+    Time nextMeridian = riseTransImpl.getGmtTransTime(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+    Time nextNadir    = riseTransImpl.getGmtTransTime(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
 
     if (nextNadir.isAfter(nextMeridian)) {
       //子正到午正（上半天）
@@ -38,6 +35,7 @@ public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
       return DayNight.NIGHT;
     }
   }
+
 
   @Override
   public String getTitle(Locale locale) {
