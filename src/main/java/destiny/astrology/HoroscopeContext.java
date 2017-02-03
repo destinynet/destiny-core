@@ -130,7 +130,7 @@ public class HoroscopeContext implements Serializable
   @NotNull
   public Horoscope getHoroscope()
   {
-    return new Horoscope(this , houseCuspImpl.getHouseCusps(Time.getGMTfromLMT(lmt, location), location, houseSystem));
+    return new Horoscope(this , houseCuspImpl.getHouseCusps(Time.getGMTfromLMT(lmt, location), location, houseSystem, coordinate));
   }
 
   /** 

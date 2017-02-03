@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords;
 
+import destiny.astrology.Coordinate;
 import destiny.astrology.ZodiacSign;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
@@ -12,7 +13,7 @@ import destiny.core.calendar.Time;
  */
 public interface RisingSignIF {
 
-  ZodiacSign getRisingSign(Time lmt, Location location);
+  ZodiacSign getRisingSign(Time lmt, Location location , Coordinate coordinate);
 
   String getRisingSignName();
 
