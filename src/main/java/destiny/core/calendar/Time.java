@@ -466,6 +466,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   /**
    * 從 GMT 轉換成 LMT
    * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
+   * TODO : 移除 GregorianCalendar
    *  */
   @NotNull
   public static Time getLMTfromGMT(@NotNull Time gmt, @NotNull Location loc) {

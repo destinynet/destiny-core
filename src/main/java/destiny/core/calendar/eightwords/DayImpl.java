@@ -23,13 +23,22 @@ public class DayImpl implements DayIF , Serializable
   }
 
   @Override
-  public StemBranch getDay(@NotNull Time lmt, Location location, @NotNull MidnightIF midnightImpl, @NotNull HourIF hourImpl, boolean changeDayAfterZi)
-  {
+  public StemBranch getDay(double gmtJulDay, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
+    int lmtJulDay = (int) (gmtJulDay+0.5);
+    int index = (lmtJulDay-11) % 60;
+
+    midnightImpl.getNextMidnight(gmtJulDay , location);
+    //FIXME TODO
+    return null;
+  }
+
+  @Override
+  public StemBranch getDay(@NotNull Time lmt, Location location, @NotNull MidnightIF midnightImpl, @NotNull HourIF hourImpl, boolean changeDayAfterZi) {
 
     //Time gmt = Time.getGMTfromLMT(lmt, location);
     
-    int LmtJulDay = (int) (lmt.getGmtJulDay()+0.5); 
-    int index = (LmtJulDay-11) % 60;
+    int lmtJulDay = (int) (lmt.getGmtJulDay()+0.5);
+    int index = (lmtJulDay-11) % 60;
     
     
     Time nextMidnight = midnightImpl.getNextMidnight(lmt , location);

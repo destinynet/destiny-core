@@ -11,6 +11,17 @@ import destiny.core.chinese.StemBranch;
 
 /** 取得日干支的介面 */
 public interface DayIF {
+
+  /**
+   * @param gmtJulDay GMT時間
+   * @param location 當地地點
+   * @param midnightImpl 實作「子正」的 class
+   * @param hourImpl 實作時辰劃分的 class
+   * @param changeDayAfterZi 子時過後是否換日
+   * @return 日辰干支
+   */
+  StemBranch getDay(double gmtJulDay, Location location , MidnightIF midnightImpl , HourIF hourImpl , boolean changeDayAfterZi);
+
   /**
    * @param lmt 當地時間
    * @param location 當地地點

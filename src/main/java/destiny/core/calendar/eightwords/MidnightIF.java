@@ -10,10 +10,29 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+
 /** 定義「子正」的介面，是要以當地手錶 0時 為子正，亦或是太陽過當地天底 ... 或是其他實作 */
-public interface MidnightIF extends Descriptive
-{
-  /** 取得下一個「子正」的時刻 */
+public interface MidnightIF extends Descriptive {
+
+  /** 取得下一個「子正」的 GMT 時刻 */
+  double getNextMidnight(double gmtJulDay , @NotNull Location loc);
+
+  /** 取得下一個「子正」的 LMT 時刻 */
+  default LocalDateTime getNextMidnight(LocalDateTime lmt , Location loc) {
+    LocalDateTime gmtLdt = Time.getGmtFromLmt(lmt , loc);
+    double gmtJulDay = Time.getGmtJulDay(gmtLdt);
+    double gmtResult = getNextMidnight(gmtJulDay , loc);
+    Time gmt = new Time(gmtResult);
+    return Time.getLMTfromGMT(gmt , loc).toLocalDateTime();
+  }
+
+  /** 取得下一個「子正」的 LMT 時刻 */
   @NotNull
-  Time getNextMidnight(Time lmt , Location location);
+  default Time getNextMidnight(Time lmt, @NotNull Location location) {
+    double gmtJulDay = Time.getGMTfromLMT(lmt , location).getGmtJulDay();
+    double gmtResult = getNextMidnight(gmtJulDay , location);
+    Time gmt = new Time(gmtResult);
+    return Time.getLMTfromGMT(gmt , location);
+  }
 }

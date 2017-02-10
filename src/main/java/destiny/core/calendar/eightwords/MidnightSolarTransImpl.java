@@ -11,7 +11,6 @@ import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,20 +39,15 @@ public class MidnightSolarTransImpl implements MidnightIF , Serializable {
   {
     this.riseTransImpl = riseTransImpl;
   }
-  
-  /** 以太陽過當地天底的時間來決定 「子正」 */
-  @NotNull
-  public Time getNextMidnight(@Nullable Time lmt, @Nullable Location location)
-  {
-    if (lmt == null || location == null)
-      throw new RuntimeException("lmt and location cannot be null !");
-    
-    /** 太陽過當地天底 (NADIR) 的時間 */ 
-    Time gmt = Time.getGMTfromLMT(lmt, location);
 
-    Time gmtResult = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-    return Time.getLMTfromGMT(gmtResult, location);
+  /** 以太陽過當地天底的時間來決定 「子正」 , 回傳 GMT 時刻 */
+  @Override
+  public double getNextMidnight(double gmtJulDay, @NotNull Location location) {
+    Time gmtResult = riseTransImpl.getGmtTransTime(gmtJulDay , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+
+    return gmtResult.getGmtJulDay();
   }
+
 
   /**
    * @param atmosphericPressure 大氣壓力 in mPar，內定 1013.25 
