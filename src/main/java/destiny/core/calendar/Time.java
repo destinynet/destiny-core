@@ -445,6 +445,9 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     }
   }
 
+  /**
+   * TODO : 取消 GregorianCalendar
+   */
   public static LocalDateTime getGmtFromLmt(LocalDateTime lmt , @NotNull Location loc) {
     if (loc.isMinuteOffsetSet()) {
       int secOffset = loc.getMinuteOffset() * 60;

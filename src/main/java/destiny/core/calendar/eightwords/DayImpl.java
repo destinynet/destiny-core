@@ -27,7 +27,8 @@ public class DayImpl implements DayIF , Serializable
     int lmtJulDay = (int) (gmtJulDay+0.5);
     int index = (lmtJulDay-11) % 60;
 
-    midnightImpl.getNextMidnight(gmtJulDay , location);
+    double nextMidnightGmt = midnightImpl.getNextMidnight(gmtJulDay , location);
+
     //FIXME TODO
     return null;
   }
@@ -41,16 +42,16 @@ public class DayImpl implements DayIF , Serializable
     int index = (lmtJulDay-11) % 60;
     
     
-    Time nextMidnight = midnightImpl.getNextMidnight(lmt , location);
+    Time nextMidnightLmt = midnightImpl.getNextMidnight(lmt , location);
     Time 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
     
-    if (nextMidnight.getHour() >=12 )
+    if (nextMidnightLmt.getHour() >=12 )
     {
       //子正，在 LMT 零時之前
-      if (nextMidnight.getDay()==lmt.getDay())
+      if (nextMidnightLmt.getDay()==lmt.getDay())
       {
         // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-        Time midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnight , location , Branch.子);
+        Time midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
         if (changeDayAfterZi && 下個子初時刻.getDay() == midnightNextZi.getDay())
           index++;
       } 
@@ -61,10 +62,10 @@ public class DayImpl implements DayIF , Serializable
     else
     {
       //子正，在 LMT 零時之後（含）
-      if (nextMidnight.getDay() == lmt.getDay()) 
+      if (nextMidnightLmt.getDay() == lmt.getDay())
       {
         // lmt 落於當地 零時 到 子正的這段期間
-        if (下個子初時刻.isBefore(nextMidnight))
+        if (下個子初時刻.isBefore(nextMidnightLmt))
         {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
           index--;

@@ -11,16 +11,31 @@ import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+
 /** 時辰的分界點實作 , SwissEph 的實作是 HourSolarTransImpl */
-public interface HourIF extends Descriptive
-{
+public interface HourIF extends Descriptive {
+
+  @NotNull
+  Branch getHour(double gmtJulDay , Location location);
+
+  @NotNull
+  default Branch getHour(LocalDateTime lmt , Location location) {
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getHour(gmtJulDay, location);
+  }
+
   /**
    * @param lmt 傳入當地手錶時間
    * @param location 當地的經緯度等資料
    * @return 時辰（只有地支）
    */
   @NotNull
-  Branch getHour(Time lmt , Location location);
+  default Branch getHour(Time lmt , Location location) {
+    double gmtJulDay = Time.getGMTfromLMT(lmt , location).getGmtJulDay();
+    return getHour(gmtJulDay , location);
+  }
   
   /**
    * @param lmt 傳入當地手錶時間

@@ -12,7 +12,8 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -25,8 +26,9 @@ import java.util.Locale;
  * 依此來切割 12 時辰
  * </PRE>
  */
-public class HourSolarTransImpl implements HourIF , Serializable
-{
+public class HourSolarTransImpl implements HourIF , Serializable {
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   private double atmosphericPressure = 1013.25;
   private double atmosphericTemperature = 0;
   private boolean isDiscCenter = true;
@@ -51,65 +53,58 @@ public class HourSolarTransImpl implements HourIF , Serializable
 
   @NotNull
   @Override
-  public Branch getHour(@Nullable Time lmt, @Nullable Location location)
-  {
-    if (lmt == null || location == null)
-      throw new RuntimeException("lmt and location cannot be null !");
-    
-    Time gmt = Time.getGMTfromLMT(lmt, location);
-    
-    Time nextMeridian = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-    //System.out.println("HourSolarTransImpl : nextMeridian (GMT) = " + nextMeridian);
-    Time nextNadir    = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-    //System.out.println("HourSolarTransImpl : nextNadir    (GMT) = " + nextNadir);
-    
-    if (nextNadir.isAfter(nextMeridian))
-    {
+  public Branch getHour(double gmtJulDay, Location location) {
+
+    double nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    double nextNadir    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+
+    if (nextNadir > nextMeridian) {
       //子正到午正（上半天）
-      Time thirteenHoursAgo = new Time(gmt.isAd() , gmt.getYear() , gmt.getMonth() , gmt.getDay() , gmt.getHour()-13 , gmt.getMinute() , gmt.getSecond());
-      Time previousNadir = riseTransImpl.getGmtTransTime(thirteenHoursAgo , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-      
-      double diffSeconds = (nextMeridian.diffSeconds(previousNadir)); //從子正到午正，總共幾秒
-      double oneUnitSeconds = diffSeconds/12;
-      if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds)))
+      double thirteenHoursAgo = gmtJulDay - (13/24.0);
+      double previousNadir = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+
+      logger.debug("gmtJulDay = {} , 上一個子正 = {}" , gmtJulDay , new Time(previousNadir));
+
+      double diffDays = (nextMeridian - previousNadir); // 從子正到午正，總共幾秒
+      double oneUnitDays = diffDays/12.0;
+      logger.debug("diffDays = {} , oneUnitDays = {}" , diffDays , oneUnitDays);
+      if (gmtJulDay < previousNadir + oneUnitDays)
         return Branch.子;
-      else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*3)))
+      else if (gmtJulDay < previousNadir + oneUnitDays*3)
         return Branch.丑;
-      else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*5)))
+      else if (gmtJulDay < previousNadir + oneUnitDays*5)
         return Branch.寅;
-      else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*7)))
+      else if (gmtJulDay < previousNadir + oneUnitDays*7)
         return Branch.卯;
-      else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*9)))
+      else if (gmtJulDay < previousNadir + oneUnitDays*9)
         return Branch.辰;
-      else if (gmt.isBefore(new Time(previousNadir , oneUnitSeconds*11)))
+      else if (gmtJulDay < previousNadir + oneUnitDays*11)
         return Branch.巳;
       else
         return Branch.午;
-        
-    }
-    else
-    {
+    } else {
       //午正到子正（下半天）
-      Time thirteenHoursAgo = new Time(gmt.isAd() , gmt.getYear() , gmt.getMonth() , gmt.getDay() , gmt.getHour()-13 , gmt.getMinute() , gmt.getSecond());
-      Time previousMeridian = riseTransImpl.getGmtTransTime(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-      
-      double diffSeconds = (nextNadir.diffSeconds(previousMeridian));
-      double oneUnitSeconds = diffSeconds/12;
-      if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds)))
+      double thirteenHoursAgo = gmtJulDay - (13/24.0);
+      double previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+
+      double diffDays = (nextNadir - previousMeridian);
+      double oneUnitDays = diffDays/(12.0);
+
+      if (gmtJulDay < previousMeridian + oneUnitDays)
         return Branch.午;
-      else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*3)))
+      else if (gmtJulDay < previousMeridian + oneUnitDays*3)
         return Branch.未;
-      else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*5)))
+      else if (gmtJulDay < previousMeridian + oneUnitDays*5)
         return Branch.申;
-      else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*7)))
+      else if (gmtJulDay < previousMeridian + oneUnitDays*7)
         return Branch.酉;
-      else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*9)))
+      else if (gmtJulDay < previousMeridian + oneUnitDays*9)
         return Branch.戌;
-      else if (gmt.isBefore(new Time(previousMeridian , oneUnitSeconds*11)))
+      else if (gmtJulDay < previousMeridian + oneUnitDays*11)
         return Branch.亥;
       else
         return Branch.子;
-    }    
+    }
   }
 
   @NotNull

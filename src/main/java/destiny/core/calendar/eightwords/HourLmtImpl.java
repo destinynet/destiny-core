@@ -17,16 +17,23 @@ import java.util.Locale;
 /**
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
  */
-public class HourLmtImpl implements HourIF , Serializable
-{
+public class HourLmtImpl implements HourIF , Serializable {
+
   @NotNull
-  public Branch getHour(@Nullable Time lmt, @Nullable Location location)
-  {
-    if (lmt == null || location == null)
-      throw new RuntimeException("lmt and location cannot be null !");
-    
-    switch (lmt.getHour())
-    {
+  @Override
+  public Branch getHour(double gmtJulDay, Location location) {
+    Time gmt = new Time(gmtJulDay);
+    int lmtHour = Time.getLMTfromGMT(gmt , location).getHour();
+    return getHour(lmtHour);
+  }
+
+//  @NotNull
+//  public Branch getHour(@NotNull Time lmt, @NotNull Location location) {
+//    return getHour(lmt.getHour());
+//  }
+
+  private Branch getHour(int lmtHour) {
+    switch (lmtHour) {
       case 23 : case  0 : return Branch.子;
       case  1 : case  2 : return Branch.丑;
       case  3 : case  4 : return Branch.寅;
@@ -40,10 +47,10 @@ public class HourLmtImpl implements HourIF , Serializable
       case 19 : case 20 : return Branch.戌;
       case 21 : case 22 : return Branch.亥;
     }
-    throw new RuntimeException("HourPureClockImpl : Cannot find EarthlyBeanches for this LMT : " + lmt.toString());
+    throw new RuntimeException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : " + lmtHour);
   }
 
-  
+
   @NotNull
   public Time getLmtNextStartOf(@Nullable Time lmt, @Nullable Location location, @Nullable Branch eb)
   {
