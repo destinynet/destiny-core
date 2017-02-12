@@ -272,14 +272,16 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
 
 
   public LocalDateTime toLocalDateTime() {
+    int intSecond = (int) second;
+    int nanoSeconds = (int) ((second - intSecond) * 1_000_000_000);
 
     if (year > 1582) {
-      return LocalDateTime.of(year , month , day , hour , minute , (int) second);
+      return LocalDateTime.of(year , month , day , hour , minute , intSecond , nanoSeconds);
     } else {
       int y = (ad ? year : year+1);
       // TODO : Java8 的 LocalDate 並非 GregorianCalendar . 是 "proleptic" Gregorian Calendar . 不考慮 cutover
       // 要考慮是否要在此作轉換
-      return LocalDateTime.of(y , month , day , hour , minute , (int) second);
+      return LocalDateTime.of(y , month , day , hour , minute , intSecond , nanoSeconds);
     }
   }
 

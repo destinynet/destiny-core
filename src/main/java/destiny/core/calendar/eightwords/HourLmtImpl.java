@@ -9,10 +9,12 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Locale;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
@@ -50,12 +52,92 @@ public class HourLmtImpl implements HourIF , Serializable {
     throw new RuntimeException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : " + lmtHour);
   }
 
+  @Override
+  public double getGmtNextStartOf(double gmtJulDay, Location location, Branch eb) {
+    Time gmt = new Time(gmtJulDay);
+    Time lmt = Time.getLMTfromGMT(gmt , location);
 
-  @NotNull
-  public Time getLmtNextStartOf(@Nullable Time lmt, @Nullable Location location, @Nullable Branch eb)
+    Time resultLmt = getLmtNextStartOf(lmt , location , eb);
+    return Time.getGMTfromLMT(resultLmt , location).getGmtJulDay();
+  }
+
+  /**
+   * 要實作，不然會有一些 round-off 的問題
+   */
+  @Override
+  public LocalDateTime getLmtNextStartOf(LocalDateTime lmt, Location location, Branch eb) {
+    switch (eb.getIndex()) {
+      case 0 : //欲求下一個子時時刻
+        if (lmt.getHour() >= 23)
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(23).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).withHour(23).withMinute(0).withSecond(0).withNano(0);
+      case 1: //欲求下一個丑時的時刻
+        if (lmt.getHour() < 1)
+          return LocalDateTime.from(lmt).withHour(1).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(1).withMinute(0).withSecond(0).withNano(0);
+      case 2: //欲求下一個寅時的時刻
+        if (lmt.getHour() < 3)
+          return LocalDateTime.from(lmt).withHour(3).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(3).withMinute(0).withSecond(0).withNano(0);
+      case 3: //欲求下一個卯時的時刻
+        if (lmt.getHour() < 5)
+          return LocalDateTime.from(lmt).withHour(5).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(5).withMinute(0).withSecond(0).withNano(0);
+      case 4: //欲求下一個辰時的時刻
+        if (lmt.getHour() < 7)
+          return LocalDateTime.from(lmt).withHour(7).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(7).withMinute(0).withSecond(0).withNano(0);
+      case 5: //欲求下一個巳時的時刻
+        if (lmt.getHour() < 9)
+          return LocalDateTime.from(lmt).withHour(9).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(9).withMinute(0).withSecond(0).withNano(0);
+      case 6: //欲求下一個午時的時刻
+        if (lmt.getHour() < 11)
+          return LocalDateTime.from(lmt).withHour(11).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(11).withMinute(0).withSecond(0).withNano(0);
+      case 7: //欲求下一個未時的時刻
+        if (lmt.getHour() < 13)
+          return LocalDateTime.from(lmt).withHour(13).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(13).withMinute(0).withSecond(0).withNano(0);
+      case 8: //欲求下一個申時的時刻
+        if (lmt.getHour() < 15)
+          return LocalDateTime.from(lmt).withHour(15).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(15).withMinute(0).withSecond(0).withNano(0);
+      case 9: //欲求下一個酉時的時刻
+        if (lmt.getHour() < 17)
+          return LocalDateTime.from(lmt).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(17).withMinute(0).withSecond(0).withNano(0);
+      case 10: //欲求下一個戌時的時刻
+        if (lmt.getHour() < 19)
+          return LocalDateTime.from(lmt).withHour(19).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(19).withMinute(0).withSecond(0).withNano(0);
+      case 11: //欲求下一個亥時的時刻
+        if (lmt.getHour() < 21)
+          return LocalDateTime.from(lmt).withHour(21).withMinute(0).withSecond(0).withNano(0);
+        else
+          return LocalDateTime.from(lmt).plus(1 , DAYS).withHour(21).withMinute(0).withSecond(0).withNano(0);
+      default:
+        throw new RuntimeException("Cannot get next start time of " + eb + " , LMT = " + lmt);
+    }
+  }
+
+  /**
+   * 要實作，不然會有一些 round-off 的問題
+   */
+  @Override
+  public Time getLmtNextStartOf(Time lmt, Location location, Branch eb)
   {
-    if (lmt == null || location == null || eb == null)
-      throw new RuntimeException("lmt and location and eb cannot be null !");
     switch (eb.getIndex())
     {
       case 0 : //欲求下一個子時時刻

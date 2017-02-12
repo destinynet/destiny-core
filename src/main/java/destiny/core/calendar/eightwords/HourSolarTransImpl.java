@@ -107,95 +107,178 @@ public class HourSolarTransImpl implements HourIF , Serializable {
     }
   }
 
-  @NotNull
   @Override
-  public Time getLmtNextStartOf(@NotNull Time lmt, @NotNull Location location, @NotNull Branch targetEb)
-  {
-    Time resultGmt = null;
-    Time gmt = Time.getGMTfromLMT(lmt, location);
-    Time nextMeridian = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-    Time nextNadir    = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-    if (nextNadir.isAfter(nextMeridian))
-    {
-      //LMT 位於子正到午正（上半天）
-      Time twelveHoursAgo = new Time(gmt.isAd() , gmt.getYear() , gmt.getMonth() , gmt.getDay() , gmt.getHour()-12 , gmt.getMinute() , gmt.getSecond());
-      Time previousNadir = riseTransImpl.getGmtTransTime(twelveHoursAgo , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-      double diffSeconds1 = nextMeridian.diffSeconds(previousNadir); //從子正到午正，總共幾秒
-      double oneUnit1 = diffSeconds1 / 12;
-      double diffSeconds2 = nextNadir.diffSeconds(nextMeridian); //從午正到下一個子正，總共幾秒
-      double oneUnit2 = diffSeconds2 / 12;
-      
-      Branch currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
-      if (targetEb.getIndex() > currentEb.getIndex() || targetEb == Branch.子)
-      {
-        //代表現在所處的時辰，未超過欲求的時辰 
-        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
-          resultGmt = new Time(previousNadir , oneUnit1 * ((targetEb.getIndex()-1)*2+1) );
-        else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
-          resultGmt = new Time(nextMeridian , oneUnit2 * ((targetEb.getIndex()-7)*2+1)  );
-        else
-          resultGmt = new Time(nextMeridian , oneUnit2 * 11); // eb ==子時
-      }
-      else
-      {
-        //欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰 
-        Time nextNextMeridian = riseTransImpl.getGmtTransTime(nextNadir , Planet.SUN , TransPoint.MERIDIAN    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-        double diffSeconds3 = nextNextMeridian.diffSeconds(nextNadir);
-        double oneUnit3 = diffSeconds3 / 12;
-        Time nextNextNadir = riseTransImpl.getGmtTransTime(nextNextMeridian , Planet.SUN , TransPoint.NADIR ,location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-        double diffSeconds4 = nextNextNadir.diffSeconds(nextNextMeridian);
-        double oneUnit4 = diffSeconds4 / 12;
-        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
-          resultGmt = new Time(nextNadir , oneUnit3 * ((targetEb.getIndex()-1)*2+1) );
-        else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
-          resultGmt = new Time(nextNextMeridian , oneUnit4 * ((targetEb.getIndex()-7)*2+1) );
-        else
-          throw new RuntimeException("Runtime Exception : 沒有子時的情況"); //沒有子時的情況
-      }
-    }
-    else
-    {
-      //LMT 位於 午正到子正（下半天）
-      Time thirteenHoursAgo = new Time(gmt.isAd() , gmt.getYear() , gmt.getMonth() , gmt.getDay() , gmt.getHour()-13 , gmt.getMinute() , gmt.getSecond());
-      Time previousMeridian = riseTransImpl.getGmtTransTime(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-      //System.out.println("LMT 下半天， previousMeridian = " + previousMeridian + " , nextNadir = " + nextNadir);
-      
-      double diffSeconds1 = nextMeridian.diffSeconds(nextNadir); //從 下一個子正 到 下一個午正，總共幾秒
-      double oneUnit1 = diffSeconds1 / 12;
-      double diffSeconds2 = nextNadir.diffSeconds(previousMeridian); //從 下一個子正 到 上一個午正，總共幾秒
-      double oneUnit2 = diffSeconds2 / 12;
-      
-      Branch currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
+  public double getGmtNextStartOf(double gmtJulDay, Location location, Branch targetEb) {
+    double resultGmt;
+    double nextMeridianGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    double nextNadirGmt    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
 
-      if( (currentEb.getIndex() >=6 && currentEb.getIndex() <= 11) &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
-          ((targetEb.getIndex() >=6 && targetEb.getIndex() > currentEb.getIndex()) ||  targetEb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
-        )
-      {
-          if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
-            resultGmt = new Time(previousMeridian , oneUnit2 * ((targetEb.getIndex()-7)*2 +1 ) );
-          else if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
-            resultGmt = new Time(nextNadir , oneUnit1 * ((targetEb.getIndex()-1)*2+1));
-          else
-            resultGmt = new Time(previousMeridian , oneUnit2 * 11); //晚子時之始
+    if (nextNadirGmt > nextMeridianGmt) {
+      //LMT 位於子正到午正（上半天）
+      double twelveHoursAgo = gmtJulDay-0.5;
+      double previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+
+      double oneUnit1 = (nextMeridianGmt - previousNadir) / 12.0; // 單位為 day
+      double oneUnit2 = (nextNadirGmt - nextMeridianGmt) / 12.0;
+
+      Branch currentEb = getHour(gmtJulDay , location); // 取得目前在哪個時辰之中
+      if (targetEb.getIndex() > currentEb.getIndex() || targetEb == Branch.子) {
+        //代表現在所處的時辰，未超過欲求的時辰
+        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 || targetEb == Branch.午) {
+          resultGmt = previousNadir + oneUnit1 * ((targetEb.getIndex() - 1) * 2 + 1);
+        }
+        else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥) {
+          resultGmt = nextMeridianGmt + oneUnit2 * ((targetEb.getIndex() - 7) * 2 + 1);
+        }
+        else {
+          resultGmt = nextMeridianGmt + oneUnit2 * 11; // eb == 子時
+        }
+      } else {
+        //欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰
+        double nextNextMeridianGmt = riseTransImpl.getGmtTransJulDay(nextNadirGmt , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+        double oneUnit3 = (nextNextMeridianGmt - nextNadirGmt) / 12.0;
+        double nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+        double oneUnit4 = (nextNextNadir - nextNextMeridianGmt) / 12.0;
+        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 ) {
+          resultGmt = nextNadirGmt + oneUnit3 * ((targetEb.getIndex() - 1) * 2 + 1);
+        } else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 ) {
+          resultGmt = nextNextMeridianGmt + oneUnit4 * ((targetEb.getIndex()-7)*2+1);
+        } else {
+          throw new RuntimeException("Runtime Exception : 沒有子時的情況"); //沒有子時的情況
+        }
       }
-      else
-      {
-        //欲求的時辰，早於現在所處的時辰
-        double diffSeconds3 = nextMeridian.diffSeconds(nextNadir);
-        double oneUnit3 = diffSeconds3 / 12;
-        Time nextNextNadir = riseTransImpl.getGmtTransTime(nextMeridian , Planet.SUN , TransPoint.NADIR ,location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-        double diffSeconds4 = nextNextNadir.diffSeconds(nextMeridian);
-        double oneUnit4 = diffSeconds4 / 12;
-        if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
-          resultGmt = new Time(nextMeridian , oneUnit4 * ((targetEb.getIndex()-7)*2+1));
-        else if (targetEb == Branch.子)
-          resultGmt = new Time(nextMeridian , oneUnit4 * 11);
-        else //丑寅卯辰巳午
-          resultGmt = new Time(nextNadir , oneUnit3 * ((targetEb.getIndex()-1)*2+1) );        
-      }    
+
+    } else {
+      //LMT 位於 午正到子正（下半天）
+      double thirteenHoursAgo = gmtJulDay - 13/24.0;
+      double previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+
+      double oneUnit1 = (nextMeridianGmt - nextNadirGmt) / 12.0; //從 下一個子正 到 下一個午正，總共幾天
+      double oneUnit2 = (nextNadirGmt - previousMeridian) / 12.0; //從 下一個子正 到 上一個午正，總共幾秒
+
+      Branch currentEb = this.getHour(gmtJulDay , location); // 取得目前在哪個時辰中
+      if ((currentEb.getIndex() >= 6 && currentEb.getIndex() <= 11) &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
+          ((targetEb.getIndex() >= 6 && targetEb.getIndex() > currentEb.getIndex()) || targetEb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
+        ) {
+        if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥) {
+          resultGmt = previousMeridian + oneUnit2 * ((targetEb.getIndex() - 7) * 2 + 1);
+        }
+        else if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 || targetEb == Branch.午) {
+          resultGmt = nextNadirGmt + oneUnit1 * ((targetEb.getIndex() - 1) * 2 + 1);
+        }
+        else {
+          resultGmt = previousMeridian + oneUnit2 * 11; // 晚子時之始
+        }
+      }
+      else {
+        // 欲求的時辰，早於現在所處的時辰
+        double oneUnit3 = (nextMeridianGmt - nextNadirGmt) / 12.0;
+        double nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridianGmt , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+        double oneUnit4 = (nextNextNadir - nextMeridianGmt) / 12.0;
+        if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 ) {
+          resultGmt = nextMeridianGmt + oneUnit4 * ((targetEb.getIndex()-7)*2+1);
+        } else if (targetEb == Branch.子) {
+          resultGmt = nextMeridianGmt + oneUnit4 * 11;
+        } else {
+          //丑寅卯辰巳午
+          resultGmt = nextNadirGmt + oneUnit3 * ((targetEb.getIndex() - 1) * 2 + 1);
+        }
+      }
     }
-    return Time.getLMTfromGMT(resultGmt, location);
+    logger.debug("resultGmt = {}" , resultGmt);
+    return resultGmt;
   }
+
+//  @NotNull
+//  @Override
+//  public Time getLmtNextStartOf(@NotNull Time lmt, @NotNull Location location, @NotNull Branch targetEb)
+//  {
+//    Time resultGmt = null;
+//    Time gmt = Time.getGMTfromLMT(lmt, location);
+//    Time nextMeridian = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+//    Time nextNadir    = riseTransImpl.getGmtTransTime(gmt , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+//    if (nextNadir.isAfter(nextMeridian))
+//    {
+//      //LMT 位於子正到午正（上半天）
+//      Time twelveHoursAgo = new Time(gmt.isAd() , gmt.getYear() , gmt.getMonth() , gmt.getDay() , gmt.getHour()-12 , gmt.getMinute() , gmt.getSecond());
+//      Time previousNadir = riseTransImpl.getGmtTransTime(twelveHoursAgo , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+//      double diffSeconds1 = nextMeridian.diffSeconds(previousNadir); //從子正到午正，總共幾秒
+//      double oneUnit1 = diffSeconds1 / 12.0;
+//      double diffSeconds2 = nextNadir.diffSeconds(nextMeridian); //從午正到下一個子正，總共幾秒
+//      double oneUnit2 = diffSeconds2 / 12.0;
+//
+//      Branch currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
+//      if (targetEb.getIndex() > currentEb.getIndex() || targetEb == Branch.子)
+//      {
+//        //代表現在所處的時辰，未超過欲求的時辰
+//        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
+//          resultGmt = new Time(previousNadir , oneUnit1 * ((targetEb.getIndex()-1)*2+1) );
+//        else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
+//          resultGmt = new Time(nextMeridian , oneUnit2 * ((targetEb.getIndex()-7)*2+1)  );
+//        else
+//          resultGmt = new Time(nextMeridian , oneUnit2 * 11); // eb ==子時
+//      }
+//      else
+//      {
+//        //欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰
+//        Time nextNextMeridian = riseTransImpl.getGmtTransTime(nextNadir , Planet.SUN , TransPoint.MERIDIAN    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+//        double diffSeconds3 = nextNextMeridian.diffSeconds(nextNadir);
+//        double oneUnit3 = diffSeconds3 / 12.0;
+//        Time nextNextNadir = riseTransImpl.getGmtTransTime(nextNextMeridian , Planet.SUN , TransPoint.NADIR ,location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+//        double diffSeconds4 = nextNextNadir.diffSeconds(nextNextMeridian);
+//        double oneUnit4 = diffSeconds4 / 12.0;
+//        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
+//          resultGmt = new Time(nextNadir , oneUnit3 * ((targetEb.getIndex()-1)*2+1) );
+//        else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
+//          resultGmt = new Time(nextNextMeridian , oneUnit4 * ((targetEb.getIndex()-7)*2+1) );
+//        else
+//          throw new RuntimeException("Runtime Exception : 沒有子時的情況"); //沒有子時的情況
+//      }
+//    }
+//    else
+//    {
+//      //LMT 位於 午正到子正（下半天）
+//      Time thirteenHoursAgo = new Time(gmt.isAd() , gmt.getYear() , gmt.getMonth() , gmt.getDay() , gmt.getHour()-13 , gmt.getMinute() , gmt.getSecond());
+//      Time previousMeridian = riseTransImpl.getGmtTransTime(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN    , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+//      //System.out.println("LMT 下半天， previousMeridian = " + previousMeridian + " , nextNadir = " + nextNadir);
+//
+//      double diffSeconds1 = nextMeridian.diffSeconds(nextNadir); //從 下一個子正 到 下一個午正，總共幾秒
+//      double oneUnit1 = diffSeconds1 / 12.0;
+//      double diffSeconds2 = nextNadir.diffSeconds(previousMeridian); //從 下一個子正 到 上一個午正，總共幾秒
+//      double oneUnit2 = diffSeconds2 / 12.0;
+//
+//      Branch currentEb = this.getHour(lmt , location); //取得目前在哪個時辰之中
+//
+//      if( (currentEb.getIndex() >=6 && currentEb.getIndex() <= 11) &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
+//          ((targetEb.getIndex() >=6 && targetEb.getIndex() > currentEb.getIndex()) ||  targetEb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
+//        )
+//      {
+//          if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
+//            resultGmt = new Time(previousMeridian , oneUnit2 * ((targetEb.getIndex()-7)*2 +1 ) );
+//          else if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 )
+//            resultGmt = new Time(nextNadir , oneUnit1 * ((targetEb.getIndex()-1)*2+1));
+//          else
+//            resultGmt = new Time(previousMeridian , oneUnit2 * 11); //晚子時之始
+//      }
+//      else
+//      {
+//        //欲求的時辰，早於現在所處的時辰
+//        double diffSeconds3 = nextMeridian.diffSeconds(nextNadir);
+//        double oneUnit3 = diffSeconds3 / 12.0;
+//        Time nextNextNadir = riseTransImpl.getGmtTransTime(nextMeridian , Planet.SUN , TransPoint.NADIR ,location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+//        double diffSeconds4 = nextNextNadir.diffSeconds(nextMeridian);
+//        double oneUnit4 = diffSeconds4 / 12.0;
+//        if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 )
+//          resultGmt = new Time(nextMeridian , oneUnit4 * ((targetEb.getIndex()-7)*2+1));
+//        else if (targetEb == Branch.子)
+//          resultGmt = new Time(nextMeridian , oneUnit4 * 11);
+//        else //丑寅卯辰巳午
+//          resultGmt = new Time(nextNadir , oneUnit3 * ((targetEb.getIndex()-1)*2+1) );
+//      }
+//    }
+//    logger.info("resultGmt = {} , julDay = {}" , resultGmt , resultGmt.getGmtJulDay());
+//    return Time.getLMTfromGMT(resultGmt, location);
+//  }
 
   @NotNull
   public String getTitle(Locale locale)
