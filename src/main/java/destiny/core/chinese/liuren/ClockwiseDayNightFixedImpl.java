@@ -6,11 +6,11 @@ package destiny.core.chinese.liuren;
 import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.chinese.Clockwise;
 import destiny.core.chinese.ClockwiseIF;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 /**
@@ -26,7 +26,7 @@ public class ClockwiseDayNightFixedImpl implements ClockwiseIF , Serializable {
   public ClockwiseDayNightFixedImpl(DayNightDifferentiator differentiator) {this.differentiator = differentiator;}
 
   @Override
-  public Clockwise getClockwise(Time lmt, Location loc) {
+  public Clockwise getClockwise(LocalDateTime lmt, Location loc) {
     DayNight dayNight = differentiator.getDayNight(lmt , loc);
     return (dayNight == DayNight.DAY ? Clockwise.CLOCKWISE : Clockwise.COUNTER);
   }

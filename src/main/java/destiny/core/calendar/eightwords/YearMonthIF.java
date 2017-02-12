@@ -7,7 +7,6 @@ package destiny.core.calendar.eightwords;
 /**
  * 年月應該要一起考慮，所以設計這個 Interface
  */
-public interface YearMonthIF extends YearIF , MonthIF
-{
+public interface YearMonthIF extends YearIF , MonthIF {
 
 }

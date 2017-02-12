@@ -7,11 +7,11 @@ import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +35,7 @@ public interface TianyiIF extends Descriptive {
       .collect(Collectors.toList());
   }
 
-  default Branch getTianyi(Time lmt, Location loc, DayIF dayImpl, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi, DayNightDifferentiator differentiator) {
+  default Branch getTianyi(LocalDateTime lmt, Location loc, DayIF dayImpl, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi, DayNightDifferentiator differentiator) {
     StemBranch day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi);
     DayNight dayNight = differentiator.getDayNight(lmt , loc);
     return getFirstTianyi(day.getStem(), dayNight);

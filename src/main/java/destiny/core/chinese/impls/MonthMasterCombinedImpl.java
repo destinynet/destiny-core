@@ -28,6 +28,7 @@ public class MonthMasterCombinedImpl implements MonthMasterIF, Serializable {
     return "純粹以八字月支六合取月將";
   }
 
+
   @Override
   public Branch getBranch(Time lmt, Location location) {
     Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();

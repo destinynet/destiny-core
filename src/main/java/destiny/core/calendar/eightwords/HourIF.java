@@ -10,15 +10,11 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
 /** 時辰的分界點實作 , SwissEph 的實作是 HourSolarTransImpl */
 public interface HourIF extends Descriptive {
-
-  static Logger logger = LoggerFactory.getLogger(HourIF.class);
 
   @NotNull
   Branch getHour(double gmtJulDay , Location location);
@@ -71,7 +67,6 @@ public interface HourIF extends Descriptive {
   default Time getLmtNextStartOf(Time lmt , Location location , Branch eb) {
     double gmtJulDay = Time.getGMTfromLMT(lmt , location).getGmtJulDay();
     double gmtResult = getGmtNextStartOf(gmtJulDay , location , eb);
-    logger.debug("gmtResult = {}" , gmtResult);
     Time gmtTime = new Time(gmtResult);
     return Time.getLMTfromGMT(gmtTime , location);
   }

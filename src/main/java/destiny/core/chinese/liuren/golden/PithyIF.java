@@ -42,6 +42,7 @@ public interface PithyIF {
     return new Pithy(ew , direction, 月將 , dayNight, 貴神);
   }
 
+
   default Pithy getPithy(Branch direction, Time lmt, Location loc, MonthMasterIF monthBranchImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
 

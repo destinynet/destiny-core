@@ -6,7 +6,6 @@ package destiny.core.chinese.liuren;
 import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
@@ -15,6 +14,7 @@ import destiny.core.chinese.ClockwiseIF;
 import destiny.core.chinese.StemBranch;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 /**
@@ -43,9 +43,10 @@ public class ClockwiseXinRenKuiReverseImpl implements ClockwiseIF, Serializable 
   }
 
   @Override
-  public Clockwise getClockwise(Time lmt, Location loc) {
+  public Clockwise getClockwise(LocalDateTime lmt, Location loc) {
     StemBranch day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi);
     DayNight dayNight = differentiator.getDayNight(lmt, loc);
+
     switch (day.getStem()) {
       case 甲:
       case 乙:
@@ -60,7 +61,7 @@ public class ClockwiseXinRenKuiReverseImpl implements ClockwiseIF, Serializable 
       case 癸:
         return (dayNight == DayNight.DAY ? Clockwise.COUNTER : Clockwise.CLOCKWISE);
     }
-    return null;
+    throw new RuntimeException("Error");
   }
 
   @Override

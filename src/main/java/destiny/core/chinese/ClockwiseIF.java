@@ -7,7 +7,13 @@ import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 
+import java.time.LocalDateTime;
+
 public interface ClockwiseIF extends Descriptive {
 
-  Clockwise getClockwise(Time lmt, Location loc);
+  Clockwise getClockwise(LocalDateTime lmt, Location loc);
+
+  default Clockwise getClockwise(Time lmt, Location loc) {
+    return getClockwise(lmt.toLocalDateTime() , loc);
+  }
 }
