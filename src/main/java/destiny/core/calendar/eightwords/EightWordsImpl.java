@@ -4,13 +4,13 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class EightWordsImpl implements EightWordsIF , Serializable {
 
@@ -34,7 +34,7 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
    */
   @NotNull
   @Override
-  public EightWords getEightWords(Time lmt, Location location) {
+  public EightWords getEightWords(LocalDateTime lmt, Location location) {
     /*
     //校正 Location 的 GMT 時差
     TimeZone tz = location.getTimeZone();
@@ -44,19 +44,16 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
     */
 
     StemBranch year = yearMonthImpl.getYear(lmt, location);
-
     StemBranch month = yearMonthImpl.getMonth(lmt, location);
-
     StemBranch day =dayImpl.getDay(lmt, location, midnightImpl, hourImpl, changeDayAfterZi);
     Stem 臨時日干 = day.getStem();
-
     Branch 時支 = this.hourImpl.getHour(lmt, location);
 
     Stem 時干;
 
-    Time nextZi = hourImpl.getLmtNextStartOf(lmt, location, Branch.子);
+    LocalDateTime nextZi = hourImpl.getLmtNextStartOf(lmt, location, Branch.子);
 
-    /** 如果「子正」才換日 */
+    // 如果「子正」才換日
     if (!changeDayAfterZi) {
       /**
        * <pre>
@@ -72,9 +69,7 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
         臨時日干 = Stem.get(臨時日干.getIndex() + 1);
     }
 
-
-    switch (Stem.getIndex(臨時日干))
-    {
+    switch (Stem.getIndex(臨時日干)) {
       case 0:
       case 5:
         時干 = Stem.get(Branch.getIndex(時支));
@@ -98,7 +93,6 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
       default:
         throw new AssertionError("Error");
     }
-
     return new EightWords(year , month , day , StemBranch.get(時干, 時支) );
   }
 

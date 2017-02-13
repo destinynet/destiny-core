@@ -29,8 +29,8 @@ import static destiny.astrology.Coordinate.EQUATORIAL;
  * <BR>具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  * </pre>
  */
-public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serializable
-{
+public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serializable {
+
   private final StarPositionIF starPositionImpl;
 
   private final StarTransitIF starTransitImpl;
@@ -47,27 +47,24 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
   /** 存放『年干』 */
   @Nullable
   private Stem 年干;
-  
-  public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl)
-  {
+
+  public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl) {
     this.starPositionImpl = starPositionImpl;
     this.starTransitImpl = starTransitImpl;
     this.setting(ChangeYearDegree);
   }
-  
-  public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree , StarPositionIF starPositionImpl , StarTransitIF starTransitImpl , boolean southernHemisphereOpposition)
-  {
+
+  public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl, boolean southernHemisphereOpposition) {
     this.starPositionImpl = starPositionImpl;
     this.starTransitImpl = starTransitImpl;
     this.southernHemisphereOpposition = southernHemisphereOpposition;
     this.setting(ChangeYearDegree);
   }
-  
-  private void setting(double ChangeYearDegree)
-  {
-    if (ChangeYearDegree < 180)
-      throw new RuntimeException("Cannot set ChangeYearDrgree smaller than 180 ");
-    this.changeYearDegree = ChangeYearDegree;
+
+  private void setting(double changeYearDegree) {
+    if (changeYearDegree < 180)
+      throw new RuntimeException("Cannot set changeYearDegree smaller than 180 ");
+    this.changeYearDegree = changeYearDegree;
   }
 
 
@@ -147,78 +144,78 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     // 儲存年干 , 方便稍後推算月干
     this.年干 = resultStemBranch.getStem();
     return resultStemBranch;
-  }
+  } // 年干支 , LocalDateTime 版本
 
   /** 取得 年干支 */
-  public StemBranch getYear(Time lmt, Location location) {
-    StemBranch resultStemBranch;
-    //西元 1984 年為 甲子年
-    int index;
-    if (lmt.isAd())
-      index =  (lmt.getYear() - 1984 ) % 60;
-    else
-      index = (1-lmt.getYear() - 1984) % 60;
-
-    double gmtSecondsOffset = DstUtils.getDstSecondOffset(lmt, location).getRight();
-
-    Time gmt = new Time(lmt , 0-gmtSecondsOffset);
-
-    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
-    if (solarLongitude < 180)
-      //立春(0)過後，到秋分之間(180)，確定不會換年
-      resultStemBranch = StemBranch.get(index);
-    else
-    {
-      // 360 > solarLongitude >= 180
-
-      //取得 lmt 當年 1/1 凌晨零分的度數
-      //Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , (int) (0-gmtMinuteOffset) , 0);
-      Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , 0 , 0-gmtSecondsOffset);
-      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear , GEO , ECLIPTIC).getLongitude();
-
-      //System.out.println("changeYearDegree = " + changeYearDegree + " , degreeOfStartOfYear = " + degreeOfStartOfYear);
-
-      if (changeYearDegree >= degreeOfStartOfYear )
-      {
-        //System.out.println("StemBranch.getIndex = " + StemBranch.get(index));
-        if (solarLongitude >= changeYearDegree)
-          resultStemBranch = StemBranch.get(index);
-        else if (changeYearDegree > solarLongitude && solarLongitude >= degreeOfStartOfYear)
-        {
-          Time tempTime = new Time(gmt , 0-180*24*60*60);
-          if (tempTime.isBefore(startOfYear))
-            resultStemBranch = StemBranch.get(index-1);
-          else
-            resultStemBranch = StemBranch.get(index);
-        }
-        else
-          resultStemBranch = StemBranch.get(index);
-      }
-      else
-      {
-        // degreeOfStartOfYear > changeYearDegree >= 秋分 (180)
-        if ( solarLongitude >= degreeOfStartOfYear )
-        {
-          Time tempTime = new Time(gmt , 0-180*24*60*60);
-          if (tempTime.isBefore(startOfYear))
-            resultStemBranch = StemBranch.get(index);
-          else
-            resultStemBranch = StemBranch.get(index+1);
-        }
-        else
-        {
-          if (solarLongitude >= changeYearDegree)
-            resultStemBranch = StemBranch.get(index+1);
-          else
-            resultStemBranch = StemBranch.get(index);
-        }
-      }
-
-    }
-    // 儲存年干 , 方便稍後推算月干
-    this.年干 = resultStemBranch.getStem();
-    return resultStemBranch;
-  } // getYear
+//  public StemBranch getYear(Time lmt, Location location) {
+//    StemBranch resultStemBranch;
+//    //西元 1984 年為 甲子年
+//    int index;
+//    if (lmt.isAd())
+//      index =  (lmt.getYear() - 1984 ) % 60;
+//    else
+//      index = (1-lmt.getYear() - 1984) % 60;
+//
+//    double gmtSecondsOffset = DstUtils.getDstSecondOffset(lmt, location).getRight();
+//
+//    Time gmt = new Time(lmt , 0-gmtSecondsOffset);
+//
+//    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
+//    if (solarLongitude < 180)
+//      //立春(0)過後，到秋分之間(180)，確定不會換年
+//      resultStemBranch = StemBranch.get(index);
+//    else
+//    {
+//      // 360 > solarLongitude >= 180
+//
+//      //取得 lmt 當年 1/1 凌晨零分的度數
+//      //Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , (int) (0-gmtMinuteOffset) , 0);
+//      Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , 0 , 0-gmtSecondsOffset);
+//      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear , GEO , ECLIPTIC).getLongitude();
+//
+//      //System.out.println("changeYearDegree = " + changeYearDegree + " , degreeOfStartOfYear = " + degreeOfStartOfYear);
+//
+//      if (changeYearDegree >= degreeOfStartOfYear )
+//      {
+//        //System.out.println("StemBranch.getIndex = " + StemBranch.get(index));
+//        if (solarLongitude >= changeYearDegree)
+//          resultStemBranch = StemBranch.get(index);
+//        else if (changeYearDegree > solarLongitude && solarLongitude >= degreeOfStartOfYear)
+//        {
+//          Time tempTime = new Time(gmt , 0-180*24*60*60);
+//          if (tempTime.isBefore(startOfYear))
+//            resultStemBranch = StemBranch.get(index-1);
+//          else
+//            resultStemBranch = StemBranch.get(index);
+//        }
+//        else
+//          resultStemBranch = StemBranch.get(index);
+//      }
+//      else
+//      {
+//        // degreeOfStartOfYear > changeYearDegree >= 秋分 (180)
+//        if ( solarLongitude >= degreeOfStartOfYear )
+//        {
+//          Time tempTime = new Time(gmt , 0-180*24*60*60);
+//          if (tempTime.isBefore(startOfYear))
+//            resultStemBranch = StemBranch.get(index);
+//          else
+//            resultStemBranch = StemBranch.get(index+1);
+//        }
+//        else
+//        {
+//          if (solarLongitude >= changeYearDegree)
+//            resultStemBranch = StemBranch.get(index+1);
+//          else
+//            resultStemBranch = StemBranch.get(index);
+//        }
+//      }
+//
+//    }
+//    // 儲存年干 , 方便稍後推算月干
+//    this.年干 = resultStemBranch.getStem();
+//    return resultStemBranch;
+//  } // getYear , Time 版本
 
 
   /**

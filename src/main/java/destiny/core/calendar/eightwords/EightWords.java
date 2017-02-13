@@ -14,20 +14,17 @@ import org.jetbrains.annotations.NotNull;
  * @author smallufo
  * 2002/8/25 下午 11:22:48
  */
-public class EightWords extends EightWordsNullable
-{
+public class EightWords extends EightWordsNullable {
  
   /** Constructor , 任何一柱都不可以為 null */
-  public EightWords(@NotNull StemBranch year , @NotNull StemBranch month , @NotNull StemBranch day , @NotNull StemBranch hour)
-  {
-    super(year , month , day , hour);
+  public EightWords(@NotNull StemBranch year, @NotNull StemBranch month, @NotNull StemBranch day, @NotNull StemBranch hour) {
+    super(year, month, day, hour);
   }
    
   /**
    * 以 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null
    */
-  public EightWords( String year , String month , String day , String hour)
-  {
+  public EightWords( String year , String month , String day , String hour) {
     super(
       StemBranch.get(year.toCharArray()[0] , year.toCharArray()[1]) ,
       StemBranch.get(month.toCharArray()[0] , month.toCharArray()[1]),
@@ -37,8 +34,7 @@ public class EightWords extends EightWordsNullable
   }
    
   /** 從 EightWordsNullable 建立 EightWords , 其中 EightWordsNullable 任何一柱都不可以為 null , 否則會出現 RuntimeException */
-  public EightWords(EightWordsNullable nullable)
-  {
+  public EightWords(EightWordsNullable nullable) {
     super(nullable.getYear() , nullable.getMonth() , nullable.getDay() , nullable.getHour());
   }
 
@@ -102,22 +98,20 @@ public class EightWords extends EightWordsNullable
   public StemBranch getHour() {
     return (StemBranch) hour;
   }
-   
+
   @Override
-  public boolean equals(Object o)
-  {
-    if ((o != null) && (o.getClass().equals(this.getClass())))
-    {
+  public boolean equals(Object o) {
+    if ((o != null) && (o.getClass().equals(this.getClass()))) {
       EightWords ew = (EightWords) o;
       return (year.equals(ew.year) && month.equals(ew.month) && day.equals(ew.day) && hour.equals(ew.hour));
     }
-    else return false;
+    else
+      return false;
   }
- 
+
   @Override
-  public int hashCode()
-  {
-    int hash = 13 ;
+  public int hashCode() {
+    int hash = 13;
     hash = hash * 17 + year.hashCode();
     hash = hash * 17 + month.hashCode();
     hash = hash * 17 + day.hashCode();
