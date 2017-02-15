@@ -43,7 +43,7 @@ public class EssentialUtils
       return true;
     }
     //比對 Triplicity
-    if (essentialImpl.getTriplicityPoint(receiveeSign, dayNightDifferentiatorImpl.getDayNight(horoscopeContext.getLmt() , horoscopeContext.getLocation())) == receiver)
+    if (essentialImpl.getTriplicityPoint(receiveeSign, dayNightDifferentiatorImpl.getDayNight(horoscopeContext.getLmt().toLocalDateTime() , horoscopeContext.getLocation())) == receiver)
     {
       //System.out.println(receiver + " 透過 TRIPLICITY 接納 " + receivee);
       return true;

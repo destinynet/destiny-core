@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class HoroscopeContext implements Serializable
 {
   /** 當地時間 */
   @NotNull
-  private final Time lmt;
+  private final LocalDateTime lmt;
   
   /** 地點 */
   @NotNull
@@ -32,7 +33,7 @@ public class HoroscopeContext implements Serializable
   
   /** GMT 時間 */
   @NotNull
-  private final Time gmt;
+  private final LocalDateTime gmt;
   
   /** 分宮法 */
   private HouseSystem houseSystem;
@@ -64,14 +65,15 @@ public class HoroscopeContext implements Serializable
   private Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 最完整的 constructor */
-  public HoroscopeContext(@NotNull Time lmt , @NotNull Location location , HouseSystem houseSystem ,
+  public HoroscopeContext(@NotNull LocalDateTime lmt , @NotNull Location location , HouseSystem houseSystem ,
       Coordinate coordinate , Centric centric , double temperature , double pressure , 
       StarPositionWithAzimuthIF positionWithAzimuthImpl , HouseCuspIF houseCuspImpl , 
       ApsisWithAzimuthIF apsisWithAzimuthImpl, NodeType nodeType)
   {
     this.lmt = lmt;
     this.location = location;
-    this.gmt = Time.getGMTfromLMT(lmt, location);
+    //this.gmt = Time.getGMTfromLMT(lmt, location);
+    this.gmt = Time.getGmtFromLmt(lmt , location);
     this.houseSystem = houseSystem;
     this.coordinate = coordinate;
     this.centric = centric;
@@ -87,7 +89,7 @@ public class HoroscopeContext implements Serializable
   
   /** 建立新的 HoroscopeContext 物件 , 其中 lmt 以 newLmt 取代 */
   @NotNull
-  public static HoroscopeContext getNewLmtHoroscope(@NotNull Time newLmt , @NotNull HoroscopeContext horoscopeContext)
+  public static HoroscopeContext getNewLmtHoroscope(@NotNull LocalDateTime newLmt , @NotNull HoroscopeContext horoscopeContext)
   {
     return new HoroscopeContext(newLmt , horoscopeContext.getLocation() , horoscopeContext.getHouseSystem() , 
         horoscopeContext.getCoordinate() , horoscopeContext.getCentric() , horoscopeContext.getTemperature() , horoscopeContext.getPressure() ,
@@ -130,7 +132,7 @@ public class HoroscopeContext implements Serializable
   @NotNull
   public Horoscope getHoroscope()
   {
-    return new Horoscope(this , houseCuspImpl.getHouseCusps(Time.getGMTfromLMT(lmt, location), location, houseSystem, coordinate));
+    return new Horoscope(this , houseCuspImpl.getHouseCusps(lmt, location, houseSystem, coordinate));
   }
 
   /** 
@@ -165,7 +167,7 @@ public class HoroscopeContext implements Serializable
 
 //    DegreeComparator comparator = new DegreeComparator(this);
 //    Collections.sort(resultList , comparator);
-    logger.info("取得第 {} 宮的星體 : {}" , index , resultList);
+    logger.debug("取得第 {} 宮的星體 : {}" , index , resultList);
     return resultList;
   }
   
@@ -178,13 +180,13 @@ public class HoroscopeContext implements Serializable
   @NotNull
   public Time getGmt()
   {
-    return Time.getGMTfromLMT(lmt, location);
+    return Time.from(gmt);
   }
   
   @NotNull
   public Time getLmt()
   {
-    return lmt;
+    return Time.from(lmt);
   }
 
   @NotNull

@@ -28,7 +28,7 @@ public final class Triplicity extends Rule
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
 
-    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
+    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt().toLocalDateTime(), horoscopeContext.getLocation());
     if(  (dayNight == DayNight.DAY   && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY )) ||  
          (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   ) 
     {

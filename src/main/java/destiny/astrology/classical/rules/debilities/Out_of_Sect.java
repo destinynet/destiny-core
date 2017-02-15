@@ -40,7 +40,7 @@ public final class Out_of_Sect extends Rule
   protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
-    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
+    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt().toLocalDateTime(), horoscopeContext.getLocation());
     
     if ( dayNight == DayNight.DAY && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS))
     {

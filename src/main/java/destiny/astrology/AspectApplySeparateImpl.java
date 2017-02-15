@@ -39,7 +39,7 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
       Time lmt = horoscopeContext.getLmt(); //目前時間
       Time oneSecondLater = new Time(lmt , 1); //一秒之後
       
-      HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater,  horoscopeContext);
+      HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater.toLocalDateTime(),  horoscopeContext);
       
       double deg1_next = hc2.getHoroscope().getPositionWithAzimuth(p1).getLongitude();
       double deg2_next = hc2.getHoroscope().getPositionWithAzimuth(p2).getLongitude();

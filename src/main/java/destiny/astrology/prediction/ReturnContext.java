@@ -100,7 +100,7 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable
     double pressure = 1013.25;
     NodeType nodeType = NodeType.MEAN;
 
-    return new HoroscopeContext(convergentLmt , nowLoc , houseSystem , coordinate , centric , temperature , pressure ,
+    return new HoroscopeContext(convergentLmt.toLocalDateTime() , nowLoc , houseSystem , coordinate , centric , temperature , pressure ,
         starPositionWithAzimuthImpl , houseCuspImpl , apsisWithAzimuthImpl , nodeType);
   }
   

@@ -21,7 +21,8 @@ public interface PithyIF {
 
   Logger logger = LoggerFactory.getLogger(PithyIF.class);
 
-  default Pithy getPithy(Branch direction, EightWords ew, Branch 月將, TianyiIF tianyiImpl, DayNight dayNight, Clockwise clockwise, GeneralSeqIF seq , GeneralStemBranchIF generalStemBranchImpl) {
+  default Pithy getPithy(Branch direction, EightWords ew, Branch 月將, TianyiIF tianyiImpl, DayNight dayNight,
+                         Clockwise clockwise, GeneralSeqIF seq , GeneralStemBranchIF generalStemBranchImpl) {
 
     // 天乙貴人(起點)
     Branch 天乙貴人 = tianyiImpl.getFirstTianyi(ew.getDayStem() , dayNight);
@@ -32,22 +33,24 @@ public interface PithyIF {
       case COUNTER  : steps = 天乙貴人.getAheadOf(direction); break;
     }
 
-    logger.info("天乙貴人 (日干 {} + {} ) = {} . 地分 = {} , 順逆 = {} , steps = {}" , ew.getDayStem() , dayNight , 天乙貴人 , direction , clockwise , steps);
+    logger.debug("天乙貴人 (日干 {} + {} ) = {} . 地分 = {} , 順逆 = {} , steps = {}" , ew.getDayStem() , dayNight , 天乙貴人 , direction , clockwise , steps);
 
     // 貴神
     Branch 貴神地支 = General.貴人.next(steps , seq).getStemBranch(generalStemBranchImpl).getBranch();
     Stem 貴神天干 = StemBranchUtils.getHourStem(ew.getDayStem() , 貴神地支);
-    logger.info("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}" , General.貴人 , steps , General.貴人.next(steps , seq) , 貴神地支 , 貴神天干);
+    logger.debug("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}" , General.貴人 , steps , General.貴人.next(steps , seq) , 貴神地支 , 貴神天干);
     StemBranch 貴神 = StemBranch.get(貴神天干 , 貴神地支);
 
     return new Pithy(ew , direction, 月將 , dayNight, 貴神);
   }
 
-  default Pithy getPithy(Branch direction, LocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
+  default Pithy getPithy(Branch direction, LocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl,
+                         DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl,
+                         GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
 
     Branch 月將 = monthBranchImpl.getBranch(lmt , loc);
-    logger.info("月將 = {}" , 月將);
+    logger.debug("月將 = {}" , 月將);
 
     Clockwise clockwise = clockwiseImpl.getClockwise(lmt , loc) ;
 
