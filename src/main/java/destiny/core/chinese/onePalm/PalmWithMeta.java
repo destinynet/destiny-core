@@ -4,7 +4,6 @@
 package destiny.core.chinese.onePalm;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.DayIF;
@@ -12,12 +11,13 @@ import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class PalmWithMeta implements Serializable {
 
   private final Palm palm;
 
-  private final Time lmt;
+  private final LocalDateTime lmt;
 
   private final Location loc;
 
@@ -35,7 +35,7 @@ public class PalmWithMeta implements Serializable {
 
   private final boolean changeDayAfterZi;
 
-  public PalmWithMeta(Palm palm, Time lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+  public PalmWithMeta(Palm palm, LocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
     this.palm = palm;
     this.lmt = lmt;
     this.loc = loc;
@@ -43,16 +43,18 @@ public class PalmWithMeta implements Serializable {
     this.chineseDateImpl = chineseDateImpl;
     this.dayImpl = dayImpl;
     this.positiveImpl = positiveImpl;
-    hourImpl = impl;
+    this.hourImpl = impl;
     this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
   }
+
+
 
   public Palm getPalm() {
     return palm;
   }
 
-  public Time getLmt() {
+  public LocalDateTime getLmt() {
     return lmt;
   }
 

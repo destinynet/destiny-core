@@ -16,6 +16,7 @@ import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.chinese.Branch;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -67,13 +68,20 @@ public interface PalmIF {
   /**
    * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
    */
-  default PalmWithMeta getPalmWithMeta(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl , ChineseDateIF chineseDateImpl ,
-                       DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl , boolean changeDayAfterZi) {
+  default PalmWithMeta getPalmWithMeta(Gender gender , LocalDateTime lmt , Location loc , String place , PositiveIF positiveImpl ,
+                                       ChineseDateIF chineseDateImpl , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl ,
+                                       boolean changeDayAfterZi) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     Branch hourBranch = hourImpl.getHour(lmt , loc);
     ChineseDateHour chineseDateHour = new ChineseDateHour(cDate , hourBranch);
     Palm palm = getPalm(gender , chineseDateHour , positiveImpl);
     return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi);
+  }
+
+  default PalmWithMeta getPalmWithMeta(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl ,
+                                       ChineseDateIF chineseDateImpl , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl ,
+                                       boolean changeDayAfterZi) {
+    return getPalmWithMeta(gender , lmt.toLocalDateTime() , loc , place , positiveImpl , chineseDateImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
   }
 
   /**
