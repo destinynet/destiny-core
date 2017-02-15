@@ -6,7 +6,6 @@ package destiny.core.chinese.liuren.golden;
 import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsIF;
 import destiny.core.chinese.*;
@@ -44,8 +43,7 @@ public interface PithyIF {
     return new Pithy(ew , direction, 月將 , dayNight, 貴神);
   }
 
-
-  default Pithy getPithy(Branch direction, Time lmt, Location loc, MonthMasterIF monthBranchImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
+  default Pithy getPithy(Branch direction, LocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
 
     Branch 月將 = monthBranchImpl.getBranch(lmt , loc);
@@ -58,8 +56,4 @@ public interface PithyIF {
     return getPithy(direction, ew, 月將, tianyiImpl, dayNight, clockwise, seq , generalStemBranchImpl);
   }
 
-  default Pithy getPithy(Branch direction, LocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl, DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl, GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
-    // TODO 實作 LocalDateTime 版本
-    return null;
-  }
 }

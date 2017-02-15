@@ -42,7 +42,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   public PersonContextColorCanvasWrapper(@NotNull PersonContextModel model,
                                          String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl , Direction direction) {
-    super(model.getPersonContext(), model.getPersonContext().getLmt() ,
+    super(model.getPersonContext(), model.getPersonContext().getLmt().toLocalDateTime() ,
       model.getPersonContext().getLocation() , locationName , hiddenStemsImpl , linkUrl, direction);
     this.model = model;
     this.hiddenStemsImpl = hiddenStemsImpl;

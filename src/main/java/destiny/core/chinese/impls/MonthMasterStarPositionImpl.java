@@ -5,11 +5,11 @@ package destiny.core.chinese.impls;
 
 import destiny.astrology.*;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.MonthMasterIF;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable {
@@ -29,7 +29,7 @@ public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable
   }
 
   @Override
-  public Branch getBranch(Time lmt, Location location) {
+  public Branch getBranch(LocalDateTime lmt, Location location) {
     Position pos = starPositionImpl.getPosition(Planet.SUN , lmt , location , Centric.GEO , Coordinate.ECLIPTIC);
     return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
   }

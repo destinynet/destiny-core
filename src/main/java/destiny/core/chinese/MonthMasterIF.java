@@ -7,6 +7,8 @@ import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 
+import java.time.LocalDateTime;
+
 /**
  * 取「月將」 (不是月令干支！)
  * 一般而言就是太陽星座（過中氣）
@@ -16,7 +18,11 @@ import destiny.core.calendar.Time;
 public interface MonthMasterIF extends Descriptive {
 
   /** 取得「月將」的方法 */
-  Branch getBranch(Time lmt , Location location);
+  Branch getBranch(LocalDateTime lmt , Location location);
+
+  default Branch getBranch(Time lmt , Location location) {
+    return getBranch(lmt.toLocalDateTime() , location);
+  }
 
   /** 取得「月將」的中文稱謂
    *

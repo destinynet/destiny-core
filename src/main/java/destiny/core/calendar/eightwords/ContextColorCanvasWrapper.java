@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.chrono.IsoEra;
 import java.util.*;
 
 /**
@@ -35,7 +37,7 @@ public class ContextColorCanvasWrapper {
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF     hiddenStemsImpl  = new HiddenStemsStandardImpl();
   /** 當地時間 */
-  private Time              lmt              = new Time();
+  private LocalDateTime     lmt              = LocalDateTime.now();
   /** 地點 */
   private Location          location         = new Location();
   /** 地點的名稱 */
@@ -61,8 +63,7 @@ public class ContextColorCanvasWrapper {
 
   private final ReactionsUtil reactionsUtil;
   
-  public ContextColorCanvasWrapper(EightWordsContext context, Time lmt, Location location, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl, Direction direction)
-  {
+  public ContextColorCanvasWrapper(EightWordsContext context, LocalDateTime lmt, Location location, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl, Direction direction) {
     this.context = context;
     this.lmt = lmt;
     this.location = location;
@@ -92,16 +93,16 @@ public class ContextColorCanvasWrapper {
     ColorCanvas 西元資訊 = new ColorCanvas(1,36, "　");
     StringBuffer timeData = new StringBuffer();
     timeData.append("西元：");
-    if(lmt.isBeforeChrist())
+    if(lmt.toLocalDate().getEra() == IsoEra.BCE)
       timeData.append("前");
     else
       timeData.append("　");
       
     timeData.append(AlignUtil.alignRight(lmt.getYear(),4));
     timeData.append("年");
-    timeData.append(AlignUtil.alignRight(lmt.getMonth(),2));
+    timeData.append(AlignUtil.alignRight(lmt.getMonthValue(),2));
     timeData.append("月");
-    timeData.append(AlignUtil.alignRight(lmt.getDay(),2));
+    timeData.append(AlignUtil.alignRight(lmt.getDayOfMonth(),2));
     timeData.append("日");
     timeData.append(AlignUtil.alignRight(lmt.getHour(),2));
     timeData.append("時");
@@ -218,8 +219,7 @@ public class ContextColorCanvasWrapper {
 </pre>
    */
   @Nullable
-  protected ColorCanvas getEightWordsColorCanvas()
-  {
+  protected ColorCanvas getEightWordsColorCanvas() {
     EightWords eightWords = context.getEightWords(lmt, location);
     ColorCanvas 八字 = new ColorCanvas(10, 36, "　", Optional.empty(), Optional.empty());
 

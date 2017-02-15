@@ -33,10 +33,6 @@ public interface ChineseDateIF {
     return getChineseDate(localDate.getYear() , localDate.getMonthValue() , localDate.getDayOfMonth());
   }
 
-  default ChineseDate getChineseDate(Time time) {
-    return getChineseDate(time.toLocalDateTime().toLocalDate());
-  }
-
   /**
    * 最完整的「陽曆轉陰曆」演算法
    * 必須另外帶入 地點、日干支紀算法、時辰劃分法、子正計算方式、是否子初換日 5個參數

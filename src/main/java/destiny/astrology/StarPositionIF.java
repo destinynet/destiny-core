@@ -53,6 +53,12 @@ public interface StarPositionIF {
   }
 
   /** 取得星體的位置 , 包含當地時間以及座標 */
+  default Position getPosition(Star star, LocalDateTime lmt, Location location , Centric centric , Coordinate coordinate) {
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    return getPosition(star , gmt , centric , coordinate);
+  }
+
+  /** 取得星體的位置 , 包含當地時間以及座標 , Time 版本 */
   default Position getPosition(Star star, Time lmt, Location location , Centric centric , Coordinate coordinate) {
     Time gmt = Time.getGMTfromLMT(lmt, location);
     return getPosition(star , gmt , centric , coordinate);

@@ -4,12 +4,12 @@
 package destiny.core.chinese.impls;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.MonthMasterIF;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 public class MonthMasterCombinedImpl implements MonthMasterIF, Serializable {
@@ -30,7 +30,7 @@ public class MonthMasterCombinedImpl implements MonthMasterIF, Serializable {
 
 
   @Override
-  public Branch getBranch(Time lmt, Location location) {
+  public Branch getBranch(LocalDateTime lmt, Location location) {
     Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();
     return monthBranch.getCombined();
   }

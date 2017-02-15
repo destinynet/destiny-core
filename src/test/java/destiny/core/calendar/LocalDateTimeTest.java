@@ -11,13 +11,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.JulianFields;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class LocalDateTimeTest {
 
@@ -92,6 +95,19 @@ public class LocalDateTimeTest {
       out.print("[GC]" + gc.get(Calendar.YEAR) + "-" + (gc.get(Calendar.MONTH)+1)+"-"+gc.get(Calendar.DAY_OF_MONTH) + " \t-> ");
       out.println("[LocalDate]"+ld);
     }
+  }
+
+  @Test
+  public void testEra() {
+    LocalDate ld;
+
+    // 西元元年 , 第一天
+    ld = LocalDate.of(1 , 1 , 1);
+    assertSame(IsoEra.CE , ld.getEra());
+
+    // 往前一天 , 變成 BCE
+    ld = ld.minus(1 , ChronoUnit.DAYS);
+    assertSame(IsoEra.BCE , ld.getEra());
   }
 
 }
