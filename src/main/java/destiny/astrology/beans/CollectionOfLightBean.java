@@ -51,7 +51,9 @@ public class CollectionOfLightBean implements Serializable
   /** 判斷日夜 */
   private DayNightDifferentiator dayNightDifferentiatorImpl;
 
-  private BesiegedBean besiegedBean;
+  //private BesiegedBean besiegedBean;
+
+  private BesiegedIF besiegedImpl;
   
   /** 蒐集光線的演算法 */
   @Nullable
@@ -71,12 +73,12 @@ public class CollectionOfLightBean implements Serializable
       AspectEffectiveClassical aspectEffectiveClassical ,  
       AspectApplySeparateIF aspectApplySeparateImpl ,
       DayNightDifferentiator dayNightDifferentiatorImpl ,
-      BesiegedBean besiegedBean)
+      BesiegedIF besiegedImpl)
   {
     this.planet = planet;
     this.horoscopeContext = horoscopeContext;
     this.collectType = collectType;
-    this.besiegedBean = besiegedBean;
+    this.besiegedImpl = besiegedImpl;
     this.aspectEffectiveClassical = aspectEffectiveClassical;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
@@ -91,11 +93,11 @@ public class CollectionOfLightBean implements Serializable
       AspectEffectiveClassical aspectEffectiveClassical , 
       AspectApplySeparateIF aspectApplySeparateImpl , 
       DayNightDifferentiator dayNightDifferentiatorImpl ,
-      BesiegedBean besiegedBean)
+      BesiegedIF besiegedImpl)
   {
     this.planet = planet;
     this.horoscopeContext = horoscopeContext;
-    this.besiegedBean = besiegedBean;
+    this.besiegedImpl = besiegedImpl;
     this.aspectEffectiveClassical = aspectEffectiveClassical;
     this.aspectApplySeparateImpl = aspectApplySeparateImpl;
     this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
@@ -106,7 +108,7 @@ public class CollectionOfLightBean implements Serializable
   
   private void calculate()
   {
-    List<Planet> twoPlanets = besiegedBean.getBesiegingPlanets(planet, horoscopeContext.getGmt() , true , Aspect.getAngles(Importance.HIGH));
+    List<Planet> twoPlanets = besiegedImpl.getBesiegingPlanets(planet, horoscopeContext.getGmt().toLocalDateTime() , true , Aspect.getAngles(Importance.HIGH));
     if (twoPlanets.get(0) == null || twoPlanets.get(1) == null)
       return;
     Planet p1 = twoPlanets.get(0);

@@ -99,8 +99,7 @@ public enum Aspect implements LocaleStringIF
   
   
   /** 從 double 度數，找回符合的 Aspect */
-  public static Optional<Aspect> getAspect(double degree)
-  {
+  public static Optional<Aspect> getAspect(double degree) {
     if (degree >=360 )
       return getAspect(degree - 360);
     

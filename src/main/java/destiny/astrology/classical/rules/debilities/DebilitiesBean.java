@@ -25,7 +25,7 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
   private DayNightDifferentiator dayNightImpl;
 
   @Inject
-  private BesiegedBean besiegedBean;
+  private BesiegedIF besiegedImpl;
 
   @Inject
   private RefranationIF refranationImpl;
@@ -68,7 +68,7 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
     list.add(new Sunbeam());
     list.add(new Partile_Conj_Mars_Saturn());
     list.add(new Partile_Conj_South_Node());
-    list.add(new Besieged_Mars_Saturn(besiegedBean));
+    list.add(new Besieged_Mars_Saturn(besiegedImpl));
     list.add(new Partile_Oppo_Mars_Saturn());
     list.add(new Partile_Square_Mars_Saturn());
     list.add(new Conj_Algol());

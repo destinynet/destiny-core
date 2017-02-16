@@ -24,6 +24,7 @@ import java.util.*;
  * 至於被包夾的好壞，要看星性以及更進一步的交角 Apply / Separate 決定
  * </pre>
  */
+@Deprecated
 public class BesiegedBean implements Serializable
 {
   private Logger logger = LoggerFactory.getLogger(getClass());

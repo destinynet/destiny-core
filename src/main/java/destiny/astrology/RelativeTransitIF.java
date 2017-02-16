@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,11 @@ public interface RelativeTransitIF {
    * </pre>
    */
   Optional<Time> getRelativeTransit(Star transitStar , Star relativeStar , double angle , double gmtJulDay , boolean isForward);
+
+  default Optional<Time> getRelativeTransit(Star transitStar , Star relativeStar , double angle , LocalDateTime startGmtTime , boolean isForward) {
+    double gmtJulDay = Time.getGmtJulDay(startGmtTime);
+    return getRelativeTransit(transitStar ,relativeStar , angle , gmtJulDay , isForward);
+  }
 
   default Optional<Time> getRelativeTransit(Star transitStar , Star relativeStar , double angle , Time startGmtTime , boolean isForward) {
     return getRelativeTransit(transitStar ,relativeStar , angle , startGmtTime.getGmtJulDay() , isForward);
@@ -58,6 +64,13 @@ public interface RelativeTransitIF {
   }
 
   @NotNull
+  default List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , LocalDateTime fromGmt, LocalDateTime toGmt, double angle) {
+    double fromGmtJulDay = Time.getGmtJulDay(fromGmt);
+    double toGmtJulDay = Time.getGmtJulDay(toGmt);
+    return getPeriodRelativeTransitTimes(transitStar ,relativeStar , fromGmtJulDay , toGmtJulDay , angle);
+  }
+
+  @NotNull
   default List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , @NotNull Time fromGmt, @NotNull Time toGmt, double angle) {
     return getPeriodRelativeTransitTimes(transitStar ,relativeStar ,fromGmt.getGmtJulDay() , toGmt.getGmtJulDay() , angle);
   }
@@ -72,11 +85,20 @@ public interface RelativeTransitIF {
     ).collect(Collectors.toList());
   }
 
+  /** 承上 , LMT 的 LocalDateTime 版本 */
+  default List<Time> getLocalPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , LocalDateTime fromLmt, LocalDateTime toLmt, Location location , double angle)  {
+    LocalDateTime fromGmt = Time.getGmtFromLmt(fromLmt , location);
+    LocalDateTime   toGmt = Time.getGmtFromLmt(  toLmt , location);
+    return getPeriodRelativeTransitTimes(transitStar , relativeStar , fromGmt , toGmt , angle).stream().map(
+      gmt -> Time.getLMTfromGMT(gmt , location)
+    ).collect(Collectors.toList());
+  }
+
 
   /**
    * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
    */
-  default Pair<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , Collection<Double> angles , boolean isForward ) {
+  default Pair<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
     /**
      * 相交 270 度也算 90 度
      * 相交 240 度也是 120 度
@@ -93,7 +115,7 @@ public interface RelativeTransitIF {
     Time resultTime = null;
     Double resultAngle = null;
     for (double angle : realAngles) {
-      Optional<Time> temp = getRelativeTransit(transitStar, relativeStar, angle, fromGmtTime, isForward);
+      Optional<Time> temp = getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, isForward);
 
       if (resultTime == null) {
         resultTime = temp.orElse(null);
@@ -127,8 +149,13 @@ public interface RelativeTransitIF {
     return ImmutablePair.of(resultTime, resultAngle);
   }
 
+  default Pair<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , LocalDateTime fromGmt, Collection<Double> angles , boolean isForward ) {
+    double fromGmtJulDay = Time.getGmtJulDay(fromGmt);
+    return getNearestRelativeTransitTime(transitStar , relativeStar , fromGmtJulDay , angles , isForward);
+  }
+
   default Pair<Time , Double> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , Time fromGmtTime , boolean isForward , double... angles) {
-    return getNearestRelativeTransitTime(transitStar, relativeStar, fromGmtTime, Arrays.stream(angles).boxed().collect(Collectors.toList()), isForward);
+    return getNearestRelativeTransitTime(transitStar, relativeStar, fromGmtTime.getGmtJulDay(), Arrays.stream(angles).boxed().collect(Collectors.toList()), isForward);
   }
 
 }

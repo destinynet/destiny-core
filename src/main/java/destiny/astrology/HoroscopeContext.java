@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -72,7 +73,6 @@ public class HoroscopeContext implements Serializable
   {
     this.lmt = lmt;
     this.location = location;
-    //this.gmt = Time.getGMTfromLMT(lmt, location);
     this.gmt = Time.getGmtFromLmt(lmt , location);
     this.houseSystem = houseSystem;
     this.coordinate = coordinate;
@@ -108,22 +108,14 @@ public class HoroscopeContext implements Serializable
   }
   
   @NotNull
-  private List<Star> getPointList()
-  {
+  private List<Star> getPointList() {
     List<Star> stars = new ArrayList<>();
-    for (Planet planet : Planet.values) //行星
-      stars.add(planet);
-    for (LunarNode lunarNode : LunarNode.values) //月亮南北交點
-      stars.add(lunarNode);
-    for (LunarApsis lunarApsis : LunarApsis.values) //近地點,遠地點
-      stars.add(lunarApsis);
-    for (Asteroid asteroid : Asteroid.values) //小行星
-      stars.add(asteroid);
-    for (Hamburger hamburger : Hamburger.values) //漢堡星
-      stars.add(hamburger);
-    for (FixedStar fixedStar : FixedStar.values) //恆星
-      stars.add(fixedStar);
-    
+    Collections.addAll(stars, Planet.values);//行星
+    Collections.addAll(stars, LunarNode.values);//月亮南北交點
+    Collections.addAll(stars, LunarApsis.values);//近地點,遠地點
+    Collections.addAll(stars, Asteroid.values);//小行星
+    Collections.addAll(stars, Hamburger.values);//漢堡星
+    Collections.addAll(stars, FixedStar.values);//恆星
     return stars;
   }
   

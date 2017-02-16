@@ -5,8 +5,10 @@
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
-import destiny.astrology.beans.BesiegedBean;
-import destiny.astrology.classical.*;
+import destiny.astrology.classical.AccidentalDignitiesIF;
+import destiny.astrology.classical.CollectionOfLightIF;
+import destiny.astrology.classical.RefranationIF;
+import destiny.astrology.classical.TranslationOfLightIF;
 import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,9 +30,6 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   private DayNightDifferentiator dayNightImpl;
 
   @Inject
-  private BesiegedBean besiegedBean;
-
-  @Inject
   private TranslationOfLightIF translationOfLightImpl;
 
   @Inject
@@ -38,6 +37,9 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
 
   @Inject
   private RefranationIF refranationImpl;
+
+  @Inject
+  private BesiegedIF besiegedImpl;
 
   public AccidentalDignitiesBean() {
   }
@@ -84,7 +86,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     list.add(new Partile_Conj_Spica());
     list.add(new JoyHouse());
     list.add(new Hayz(dayNightImpl));
-    list.add(new Besieged_Jupiter_Venus(besiegedBean));
+    list.add(new Besieged_Jupiter_Venus(besiegedImpl));
     list.add(new Translation_of_Light( translationOfLightImpl ));
     list.add(new Collection_of_Light(collectionOfLightImpl));
     list.add(new Refrain_from_Mars_Saturn(refranationImpl));
