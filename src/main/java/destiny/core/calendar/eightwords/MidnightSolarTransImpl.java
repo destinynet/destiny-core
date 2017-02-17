@@ -9,7 +9,6 @@ import destiny.astrology.Planet;
 import destiny.astrology.RiseTransIF;
 import destiny.astrology.TransPoint;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +42,8 @@ public class MidnightSolarTransImpl implements MidnightIF , Serializable {
   /** 以太陽過當地天底的時間來決定 「子正」 , 回傳 GMT 時刻 */
   @Override
   public double getNextMidnight(double gmtJulDay, @NotNull Location location) {
-    Time gmtResult = riseTransImpl.getGmtTransTime(gmtJulDay , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-
-    return gmtResult.getGmtJulDay();
+    return riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR , location ,
+      atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
   }
 
 

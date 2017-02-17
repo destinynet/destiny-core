@@ -21,8 +21,4 @@ public interface DayNightDifferentiator extends Descriptive {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     return getDayNight(Time.getGmtJulDay(gmt), location);
   }
-
-  default DayNight getDayNight(Time lmt, Location location) {
-    return getDayNight(Time.getGMTfromLMT(lmt , location).getGmtJulDay() , location);
-  }
 }

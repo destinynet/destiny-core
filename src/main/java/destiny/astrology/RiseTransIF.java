@@ -7,11 +7,11 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,16 +29,25 @@ public interface RiseTransIF {
   double getGmtTransJulDay(double fromGmtJulDay , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction);
 
+  default LocalDateTime getGmtTrans(double fromGmtJulDay , Star star , TransPoint point , Location location ,
+                                    double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
+    double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    return new Time(resultGmt).toLocalDateTime();
+  }
+
+  default LocalDateTime getGmtTrans(LocalDateTime fromGmt , Star star , TransPoint point , Location location ,
+                                    double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
+    double fromGmtJulDay = Time.getGmtJulDay(fromGmt);
+    double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    return new Time(resultGmt).toLocalDateTime();
+  }
+
   default Time getGmtTransTime(double fromGmtJulDay , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
     double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
     return new Time(resultGmt);
   }
 
-  default Time getGmtTransTime(LocalDateTime fromGmtTime , Star star , TransPoint point , Location location ,
-                               double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
-    return getGmtTransTime(Time.getGmtJulDay(fromGmtTime) , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-  }
 
   default Time getGmtTransTime(Time fromGmtTime , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
@@ -68,25 +77,30 @@ public interface RiseTransIF {
    * @param hasRefraction 是否考量濛氣差 , 通常設為 true
    * @return List <Time> in LMT
    */
-  default List<Time> getPeriodStarRiseTransTime(@NotNull Time fromLmtTime , @NotNull Time toLmtTime , Star star , TransPoint point , @NotNull Location location ,
-      double atmosphericPressure, double atmosphericTemperature, boolean isDiscCenter, boolean hasRefraction) {
-    Time fromGmtTime = Time.getGMTfromLMT(fromLmtTime, location);
-    Time toGmtTime   = Time.getGMTfromLMT(toLmtTime, location);
+  default List<LocalDateTime> getPeriodStarRiseTransTime(LocalDateTime fromLmtTime ,
+                                                         LocalDateTime toLmtTime ,
+                                                         Star star , TransPoint point ,
+                                                         Location location ,
+                                                         double atmosphericPressure,
+                                                         double atmosphericTemperature,
+                                                         boolean isDiscCenter,
+                                                         boolean hasRefraction) {
+    LocalDateTime fromGmtTime = Time.getGmtFromLmt(fromLmtTime, location);
+    LocalDateTime toGmtTime   = Time.getGmtFromLmt(toLmtTime, location);
 
-    List<Time> resultList = new ArrayList<>();
+    List<LocalDateTime> resultList = new ArrayList<>();
 
-    Time resultGmtTime;
-    while (fromGmtTime.isBefore(toGmtTime))
-    {
-      resultGmtTime = getGmtTransTime(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    LocalDateTime resultGmtTime;
+    while (fromGmtTime.isBefore(toGmtTime)) {
+      resultGmtTime = getGmtTrans(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
       logger.debug("resultGmtTime = {}" , resultGmtTime);
 
       if (!resultGmtTime.isBefore(toGmtTime))
         break;
 
-      Time resultLMT = Time.getLMTfromGMT(resultGmtTime, location);
-      resultList.add(resultLMT);
-      fromGmtTime = new Time(resultGmtTime , 1);
+      LocalDateTime resultLmtLDT = Time.getLmtFromGmt(resultGmtTime , location);
+      resultList.add(resultLmtLDT);
+      fromGmtTime = LocalDateTime.from(resultGmtTime).plus(1, ChronoUnit.SECONDS);
     }
 
     return resultList;

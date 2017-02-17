@@ -5,9 +5,9 @@ package destiny.core.chinese.impls;
 
 import destiny.astrology.*;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
@@ -23,8 +23,9 @@ public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
     boolean isDiscCenter = true;
     boolean hasRefraction = true;
 
-    Time nextMeridian = riseTransImpl.getGmtTransTime(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
-    Time nextNadir    = riseTransImpl.getGmtTransTime(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+
+    LocalDateTime nextMeridian = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+    LocalDateTime nextNadir    = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
 
     if (nextNadir.isAfter(nextMeridian)) {
       //子正到午正（上半天）

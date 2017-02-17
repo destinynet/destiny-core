@@ -10,8 +10,6 @@ import destiny.core.calendar.Time;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -24,8 +22,6 @@ import java.util.stream.Collectors;
  * </pre> 
  */
 public interface RelativeTransitIF {
-
-  Logger logger2 = LoggerFactory.getLogger(RelativeTransitIF.class);
 
   /**
    * <pre>
