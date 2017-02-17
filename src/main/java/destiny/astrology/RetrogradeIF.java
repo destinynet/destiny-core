@@ -5,6 +5,8 @@ package destiny.astrology;
 
 import destiny.core.calendar.Time;
 
+import java.time.LocalDateTime;
+
 /**
  * 計算星體在黃道帶上 逆行 / Stationary (停滯) 的介面，目前 SwissEph 的實作只支援 Planet , Asteroid , Moon's Node (只有 True Node。 Mean 不會逆行！)
  * SwissEph 內定實作是 RetrogradeImpl
@@ -12,9 +14,12 @@ import destiny.core.calendar.Time;
 public interface RetrogradeIF {
 
   /** 下次停滯的時間為何時 (GMT) */
-  Time getNextStationary(Star star, double fromGmt, boolean isForward);
+  double getNextStationary(Star star, double fromGmt, boolean isForward);
 
-  default Time getNextStationary(Star star, Time fromGmtTime, boolean isForward) {
-    return getNextStationary(star, fromGmtTime.getGmtJulDay(), isForward);
+  /** 下次停滯的時間為何時 (GMT) */
+  default LocalDateTime getNextStationary(Star star, LocalDateTime fromGmtTime, boolean isForward) {
+    double fromGmtJulDay = Time.getGmtJulDay(fromGmtTime);
+    double resultGmt = getNextStationary(star , fromGmtJulDay , isForward);
+    return new Time(resultGmt).toLocalDateTime();
   }
 }

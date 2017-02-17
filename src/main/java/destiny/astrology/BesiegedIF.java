@@ -22,7 +22,7 @@ import java.util.*;
  */
 public interface BesiegedIF {
 
-  static Logger logger = LoggerFactory.getLogger(BesiegedIF.class);
+  Logger logger = LoggerFactory.getLogger(BesiegedIF.class);
 
   /**
    * 最 Generalized 的介面
@@ -81,10 +81,9 @@ public interface BesiegedIF {
     Collection<Aspect> majorAspects = Aspect.getAngles(Aspect.Importance.HIGH);
     Collection<Aspect> mediumAspects = Aspect.getAngles(Aspect.Importance.MEDIUM);
     Collection<Aspect> searchingAspects = new ArrayList<>();
-    if (isClassical)
-      searchingAspects.addAll(majorAspects);
-    else {
-      searchingAspects.addAll(majorAspects);
+
+    searchingAspects.addAll(majorAspects);
+    if (!isClassical) {
       searchingAspects.addAll(mediumAspects);
     }
     return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).getLeft();
@@ -93,6 +92,16 @@ public interface BesiegedIF {
   default List<Planet> getBesiegingPlanets(Planet planet , LocalDateTime gmt , boolean isClassical) {
     return getBesiegingPlanets(planet , Time.getGmtJulDay(gmt) , isClassical);
   }
+
+
+  @NotNull
+  default Triple<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, LocalDateTime gmt,
+                                                                                         @NotNull Collection<Planet> otherPlanets,
+                                                                                         @NotNull Collection<Aspect> searchingAspects) {
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getBesiegingPlanets(planet , gmtJulDay , otherPlanets , searchingAspects);
+  }
+
 
   default List<Planet> getBesiegingPlanets(Planet planet , LocalDateTime gmt , boolean onlyClassicalPlanets , @NotNull Collection<Aspect> aspects) {
     List<Planet> otherPlanets = new ArrayList<>();
@@ -117,15 +126,6 @@ public interface BesiegedIF {
 
 
 
-
-
-  @NotNull
-  default Triple<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, LocalDateTime gmt,
-                                                                                         @NotNull Collection<Planet> otherPlanets,
-                                                                                         @NotNull Collection<Aspect> searchingAspects) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
-    return getBesiegingPlanets(planet , gmtJulDay , otherPlanets , searchingAspects);
-  }
 
 
   /**
