@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -348,7 +350,22 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
       (d2 > d1 && d > d1 && d2 > d) ||
       (d1 > d2 && d > d2 && d1 > d);
   }
-  
+
+  /**
+   * @return t 是否介於 t1 與 t2 之間
+   */
+  public static boolean isBetween(LocalDateTime t , LocalDateTime t1 , LocalDateTime t2) {
+    // 演算法直接將 t , t1 , t2 視為 GMT 取 julDay 即可
+
+    double d = Time.getGmtJulDay(t);
+    double d1 = Time.getGmtJulDay(t1);
+    double d2 = Time.getGmtJulDay(t2);
+
+    return
+      (d2 > d1 && d > d1 && d2 > d) ||
+      (d1 > d2 && d > d2 && d1 > d);
+  }
+
   private void normalize() {
     long skips = 0; //進位
     if (second >= 60) {
@@ -448,7 +465,16 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   }
 
   /**
-   * TODO : 取消 GregorianCalendar
+   * LMT (with TimeZone) to GMT
+   */
+  public static LocalDateTime getGmtFromLmt(LocalDateTime lmt , TimeZone timeZone) {
+    ZonedDateTime ldtZoned = lmt.atZone(ZoneId.of(timeZone.getID()));
+    ZonedDateTime utcZoned = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"));
+    return utcZoned.toLocalDateTime();
+  }
+
+  /**
+   * LMT (with Location) to GMT
    */
   public static LocalDateTime getGmtFromLmt(LocalDateTime lmt , @NotNull Location loc) {
     if (loc.isMinuteOffsetSet()) {
@@ -456,14 +482,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
       return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
     }
     else {
-      TimeZone localZone = loc.getTimeZone();
-      GregorianCalendar cal = new GregorianCalendar(localZone);
+      return getGmtFromLmt(lmt , loc.getTimeZone());
 
-      cal.set(lmt.getYear(), lmt.getMonthValue() - 1, lmt.getDayOfMonth(), lmt.getHour(), lmt.getMinute(), lmt.getSecond());
-      double secondsDoubleOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-      long secOffset = (long) secondsDoubleOffset;
-      long nanoOffset = (long) ((secondsDoubleOffset - secOffset)* 1_000_000_000);
-      return lmt.plus(0-secOffset,ChronoUnit.SECONDS).plus(nanoOffset, ChronoUnit.NANOS);
+//      GregorianCalendar cal = new GregorianCalendar(localZone);
+//      cal.set(lmt.getYear(), lmt.getMonthValue() - 1, lmt.getDayOfMonth(), lmt.getHour(), lmt.getMinute(), lmt.getSecond());
+//      double secondsDoubleOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
+//      long secOffset = (long) secondsDoubleOffset;
+//      long nanoOffset = (long) ((secondsDoubleOffset - secOffset)* 1_000_000_000);
+//      return lmt.plus(0-secOffset,ChronoUnit.SECONDS).plus(nanoOffset, ChronoUnit.NANOS);
     }
   }
 

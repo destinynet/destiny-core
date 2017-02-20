@@ -54,6 +54,14 @@ public interface RiseTransIF {
     return getGmtTransTime(fromGmtTime.getGmtJulDay() , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
   }
 
+  default LocalDateTime getLmtTransTime(LocalDateTime fromLmtTime , Star star , TransPoint point , Location location ,
+      double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
+    LocalDateTime fromGmtTime = Time.getGmtFromLmt(fromLmtTime , location);
+    LocalDateTime resultGmt = getGmtTrans(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    LocalDateTime resultLmt = Time.getLmtFromGmt(resultGmt , location);
+    return resultLmt;
+  }
+
   /**
    * 承上 , 來源、目標時間都是 LMT
    */

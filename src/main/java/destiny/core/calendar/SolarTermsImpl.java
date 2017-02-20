@@ -9,24 +9,27 @@ import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 節氣實作
  */
-public class SolarTermsImpl implements SolarTermsIF , Serializable {
+public class SolarTermsImpl implements SolarTermsIF, Serializable {
+
   private StarTransitIF starTransitImpl;
+
   private StarPositionIF starPositionImpl;
 
   protected SolarTermsImpl() {
   }
-  
+
   public SolarTermsImpl(StarTransitIF StarTransitImpl, StarPositionIF starPositionImpl) {
     this.starTransitImpl = StarTransitImpl;
     this.starPositionImpl = starPositionImpl;
   }
-  
+
   /**
    * 計算某時刻當下的節氣
    * 步驟：
@@ -36,42 +39,43 @@ public class SolarTermsImpl implements SolarTermsIF , Serializable {
    */
   public SolarTerms getSolarTermsFromGMT(double gmtJulDay) {
     // Step 1: Calculate the Longitude of SUN
-    Position sp = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , Centric.GEO , Coordinate.ECLIPTIC);
+    Position sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC);
     //System.out.println("Utils.getSolarTermsFromGMT() : Longitude = " + sp.Longitude);
     // Step 2
-    int SolarTermsArray = (int)(sp.getLongitude()/15)+3 ;
-    if ( SolarTermsArray >= 24 )
+    int SolarTermsArray = (int) (sp.getLongitude() / 15) + 3;
+    if (SolarTermsArray >= 24)
       SolarTermsArray = SolarTermsArray - 24;
     return SolarTerms.get(SolarTermsArray);
   }
 
   /**
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
+   *
    * @return List <SolarTermsTime>
    */
   @NotNull
   @Override
-  public List<SolarTermsTime> getPeriodSolarTerms(double fromGmt , double toGmt) {
+  public List<SolarTermsTime> getPeriodSolarTerms(double fromGmt, double toGmt) {
     SolarTerms nowST = getSolarTermsFromGMT(fromGmt);
 
-    int nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nowST.getZodiacDegree()+15);
-    
+    int nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nowST.getZodiacDegree() + 15);
+
     List<SolarTermsTime> resultList = new ArrayList<>();
-    
-    while( fromGmt < toGmt)
-    {
+
+    while (fromGmt < toGmt) {
       SolarTermsTime solarTermsTime;
-      Time fromGmtTime = starTransitImpl.getNextTransitTime(Planet.SUN , nextZodiacDegree , Coordinate.ECLIPTIC , fromGmt , true );
-      fromGmt = fromGmtTime.getGmtJulDay();
-      
+
+      LocalDateTime fromGmtTime = starTransitImpl.getNextTransitLocalDateTime(Planet.SUN, nextZodiacDegree, Coordinate.ECLIPTIC, fromGmt, true);
+      fromGmt = Time.getGmtJulDay(fromGmtTime);
+
       if (fromGmt > toGmt)
         break;
       nowST = nowST.next();
-      solarTermsTime = new SolarTermsTime(nowST , fromGmtTime);
+      solarTermsTime = new SolarTermsTime(nowST, fromGmtTime);
       resultList.add(solarTermsTime);
-      nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nextZodiacDegree+15);
+      nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nextZodiacDegree + 15);
     }
-    
+
     return resultList;
   }
 

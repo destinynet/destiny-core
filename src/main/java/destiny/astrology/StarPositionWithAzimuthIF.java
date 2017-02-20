@@ -24,8 +24,4 @@ public interface StarPositionWithAzimuthIF extends StarPositionIF {
     return getPositionWithAzimuth(star , gmtJulDay , location , temperature , pressure , centric , coordinate);
   }
 
-  default PositionWithAzimuth getPositionWithAzimuth(Star star, Time gmt, Location location, double temperature, double pressure,
-                                             Centric centric, Coordinate coordinate) {
-    return getPositionWithAzimuth(star , gmt.getGmtJulDay() , location , temperature , pressure , centric , coordinate);
-  }
 }

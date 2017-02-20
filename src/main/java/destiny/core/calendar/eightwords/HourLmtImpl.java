@@ -55,10 +55,10 @@ public class HourLmtImpl implements HourIF , Serializable {
   @Override
   public double getGmtNextStartOf(double gmtJulDay, Location location, Branch eb) {
     Time gmt = new Time(gmtJulDay);
-    Time lmt = Time.getLMTfromGMT(gmt , location);
-
-    Time resultLmt = getLmtNextStartOf(lmt , location , eb);
-    return Time.getGMTfromLMT(resultLmt , location).getGmtJulDay();
+    LocalDateTime lmtLdt = gmt.toLocalDateTime();
+    LocalDateTime lmtResult = getLmtNextStartOf(lmtLdt , location , eb);
+    LocalDateTime gmtResult = Time.getGmtFromLmt(lmtResult , location);
+    return Time.getGmtJulDay(gmtResult);
   }
 
   /**

@@ -19,12 +19,22 @@ import java.time.LocalDateTime;
 public interface StarTransitIF
 {
   //TODO : 計算星體 Transit 到黃道某點的時間，僅限於 Planet , Asteroid , Moon's Node
+
+  /**
+   * 傳回 GMT 時刻
+   */
   double getNextTransit(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward);
+
 
   default Time getNextTransit(Star star, double degree, Coordinate coordinate , LocalDateTime fromGmt, boolean isForward) {
     double julDay = Time.getGmtJulDay(fromGmt);
     double gmtJulDay = getNextTransit(star , degree , coordinate , julDay , isForward);
     return new Time(gmtJulDay);
+  }
+
+  default LocalDateTime getNextTransitLocalDateTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
+    double gmtJulDay = getNextTransit(star , degree , coordinate , fromGmt , isForward);
+    return new Time(gmtJulDay).toLocalDateTime();
   }
 
   default Time getNextTransitTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
