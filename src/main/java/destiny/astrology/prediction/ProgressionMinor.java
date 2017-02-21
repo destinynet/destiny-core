@@ -11,8 +11,7 @@ import destiny.astrology.Constants;
  * 月限法為次要推運（Minor Progressions）。Zain並認為只查看次限法加上流年法是不足的，必須加上月限才可看出人生的起伏軌跡。
  * </pre>
  * */
-public class ProgressionMinor extends AbstractProgression
-{
+public class ProgressionMinor extends AbstractProgression {
   /** 一年有幾秒 */
   private double yearSeconds = Constants.SIDEREAL_YEAR;
   

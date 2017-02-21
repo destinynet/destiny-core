@@ -29,8 +29,7 @@ import destiny.astrology.Constants;
  * 以及流年星（Transits）對次限星所形成的相位關係。
  * </pre>
  */
-public class ProgressionSecondary extends AbstractProgression
-{
+public class ProgressionSecondary extends AbstractProgression {
   /** 一年有幾秒 */
   private double yearSeconds = Constants.SIDEREAL_YEAR;
   

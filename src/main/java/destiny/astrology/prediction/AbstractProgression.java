@@ -4,16 +4,14 @@
  */
 package destiny.astrology.prediction;
 
-import destiny.core.calendar.Time;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * Progression 抽象類別，具備 Progression 演算法的 template methods
  */
-public abstract class AbstractProgression implements LinearIF , Conversable , Serializable
-{
+public abstract class AbstractProgression implements LinearIF , Conversable , Serializable {
   /** 是否逆推，內定是順推 */
   private boolean converse = false;
 
@@ -35,40 +33,53 @@ public abstract class AbstractProgression implements LinearIF , Conversable , Se
     return converse;
   }
 
-  /** 
-   * 實作 Mappable 
+
+  /**
+   * 實作 Mappable
    * Template Method , 計算 nowTime 相對於 natalTime , 「收斂(converge)」到的時間<br/>
-   * 不限定是 GMT 或是 LMT , 但兩者要一樣的時區 
+   * 不限定是 GMT 或是 LMT , 但兩者要一樣的時區
    */
   @Override
-  public Time getConvergentTime(@NotNull Time natalTime , @NotNull Time nowTime)
-  {
-    double diffSeconds = nowTime.diffSeconds(natalTime);
-    Time resultTime;
+  public LocalDateTime getConvergentTime(LocalDateTime natalTime, LocalDateTime nowTime) {
+    Duration dur = Duration.between(natalTime, nowTime).abs();
+    LocalDateTime resultTime;
+
+    double secsDouble = (dur.getSeconds() / getNumerator()) * getDenominator();
+    long secs = (long) secsDouble;
+    long nanos = (long) ((secsDouble - secs) * 1_000_000_000);
+
     if (converse)
-      resultTime = new Time(natalTime , - (diffSeconds / getNumerator())*getDenominator());
+      resultTime = LocalDateTime.from(natalTime).minusSeconds(secs).minusNanos(nanos);
     else
-      resultTime = new Time(natalTime ,   (diffSeconds / getNumerator())*getDenominator());
+      resultTime = LocalDateTime.from(natalTime).plusSeconds(secs).plusNanos(nanos);
     return resultTime;
   }
-  
 
-  /** 
+
+
+  /**
    * 實作 LinearIF
    * Template Method , 計算從 nowTime 相對於 natalTime , 「發散(diverge)」到(未來的)哪個時間<br/>
-   * 不限定是 GMT 或是 LMT , 但兩者要一樣的時區 
+   * 不限定是 GMT 或是 LMT , 但兩者要一樣的時區
    */
   @Override
-  public Time getDivergentTime(@NotNull Time natalTime , @NotNull Time nowTime)
-  {
-    double diffSeconds = nowTime.diffSeconds(natalTime);
-    Time resultTime;
+  public LocalDateTime getDivergentTime(LocalDateTime natalTime, LocalDateTime nowTime) {
+    Duration dur = Duration.between(natalTime , nowTime);
+    long diffSeconds = dur.getSeconds();
+
+    double secDouble = (diffSeconds / getDenominator()) * getNumerator();
+    long secs = (long) secDouble;
+    long nanos = (long) ((secDouble - secs) * 1_000_000_000);
+
+    LocalDateTime resultTime;
     if (converse)
-      resultTime = new Time(natalTime , - (diffSeconds / getDenominator())*getNumerator());
+      resultTime = LocalDateTime.from(natalTime).minusSeconds(secs).minusNanos(nanos);
     else
-      resultTime = new Time(natalTime ,   (diffSeconds / getDenominator())*getNumerator());
+      resultTime = LocalDateTime.from(natalTime).plusSeconds(secs).plusNanos(nanos);
     return resultTime;
   }
-  
+
+
+
 
 }

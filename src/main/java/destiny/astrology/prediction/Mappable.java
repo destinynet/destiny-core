@@ -1,6 +1,6 @@
 package destiny.astrology.prediction;
 
-import destiny.core.calendar.Time;
+import java.time.LocalDateTime;
 
 /**
  * 推運，其實是 『可對應（收斂 , Converge）到某個日期』的推運法。<BR>
@@ -14,5 +14,6 @@ interface Mappable {
    * @param nowTime   通常是現在時間
    * @return 「收斂」到的時間
    */
-  Time getConvergentTime(Time natalTime , Time nowTime);
+  LocalDateTime getConvergentTime(LocalDateTime natalTime , LocalDateTime nowTime);
+
 }

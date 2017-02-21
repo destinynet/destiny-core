@@ -16,8 +16,7 @@ import destiny.astrology.Constants;
  * 例如：次限月亮每月約行一度，而參限月亮約一周行3.5～4度。
  * </pre> 
  */
-public class ProgressionTertiary extends AbstractProgression
-{
+public class ProgressionTertiary extends AbstractProgression {
   /** 一月有幾秒 */
   private double monthSeconds = Constants.SIDEREAL_MONTH;
   

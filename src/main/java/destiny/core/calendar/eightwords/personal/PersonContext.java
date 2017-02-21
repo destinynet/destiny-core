@@ -5,8 +5,6 @@ package destiny.core.calendar.eightwords.personal;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import destiny.astrology.Coordinate;
-import destiny.astrology.Planet;
 import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
@@ -21,9 +19,14 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static destiny.astrology.Coordinate.ECLIPTIC;
+import static destiny.astrology.Planet.SUN;
 
 public class PersonContext extends EightWordsContext {
 
@@ -160,14 +163,17 @@ public class PersonContext extends EightWordsContext {
     SolarTerms prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
     if (!prevMajorSolarTerms.isMajor()) // 如果是「中氣」的話
       prevMajorSolarTerms = prevMajorSolarTerms.previous(); // 再往前取一個 , 即可得到「節」
-    Time prevGmt = this.starTransitImpl.getNextTransit(Planet.SUN, prevMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, gmt, false);
-    Double d1 = gmt.diffSeconds(prevGmt);
+
+    LocalDateTime prevGmt = starTransitImpl.getNextTransitGmt(SUN , prevMajorSolarTerms.getZodiacDegree() , ECLIPTIC , gmt.toLocalDateTime() , false);
+    Duration dur1 = Duration.between(gmt.toLocalDateTime() , prevGmt).abs();
+    double d1 = dur1.getSeconds()+ dur1.getNano() / 1_000_000_000.0;
 
 
     // 下一個「節」
     SolarTerms nextMajorSolarTerms = this.getNextMajorSolarTerms(prevMajorSolarTerms, false);
-    Time nextGmt = this.starTransitImpl.getNextTransit(Planet.SUN, nextMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, gmt, true);
-    Double d2 = nextGmt.diffSeconds(gmt);
+    LocalDateTime nextGmt = starTransitImpl.getNextTransitGmt(SUN , nextMajorSolarTerms.getZodiacDegree(), ECLIPTIC, gmt.toLocalDateTime() , true);
+    Duration dur2 = Duration.between(gmt.toLocalDateTime() , nextGmt).abs();
+    double d2 = dur2.getSeconds() + dur2.getNano() / 1_000_000_000.0;
 
     logger.debug(" prevGmt = {}" , prevGmt);
     logger.debug("(now)Gmt = {}" , gmt);
@@ -222,7 +228,7 @@ public class PersonContext extends EightWordsContext {
           if (hashMap.get(i) == null) {
             logger.debug("順推 cache.get({}) miss" , i);
             //沒有計算過
-            targetGmt = this.starTransitImpl.getNextTransit(Planet.SUN, stepMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, stepGmt, true);
+            targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmt, true);
             //以隔天計算現在節氣
             stepGmt = new Time(targetGmt, 24 * 60 * 60);
 
@@ -252,7 +258,7 @@ public class PersonContext extends EightWordsContext {
           if (hashMap.get(i) == null) {
             //沒有計算過
 
-            targetGmt = this.starTransitImpl.getNextTransit(Planet.SUN, stepMajorSolarTerms.getZodiacDegree(), Coordinate.ECLIPTIC, stepGmt, false);
+            targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmt, false);
             //以前一天計算現在節氣
             stepGmt = new Time(targetGmt, -24 * 60 * 60);
             hashMap.put(i , targetGmt);
