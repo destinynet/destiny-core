@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import static java.lang.System.out;
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -60,21 +61,43 @@ public class LocalDateTimeTest {
   /**
    * 西元元年之前
    * <p>
-   * 0001-01-02 , era = CE , toEpochDay = -719161
-   * 0001-01-01 , era = CE , toEpochDay = -719162
-   * 0000-12-31 , era = BCE , toEpochDay = -719163
-   * 0000-12-30 , era = BCE , toEpochDay = -719164
-   * 0000-12-29 , era = BCE , toEpochDay = -719165
-   * 0000-12-28 , era = BCE , toEpochDay = -719166
+0001-01-02 : era = CE , year = 1 , year_of_era = 1 , toEpochDay = -719161
+0001-01-01 : era = CE , year = 1 , year_of_era = 1 , toEpochDay = -719162
+0000-12-31 : era = BCE , year = 0 , year_of_era = 1 , toEpochDay = -719163
+0000-12-30 : era = BCE , year = 0 , year_of_era = 1 , toEpochDay = -719164
+0000-12-29 : era = BCE , year = 0 , year_of_era = 1 , toEpochDay = -719165
+0000-12-28 : era = BCE , year = 0 , year_of_era = 1 , toEpochDay = -719166
+   * </p>
    */
   @Test
-  public void testBC() {
+  public void test_LocalDate_BC() {
     LocalDate ld = LocalDate.of(1 , 1 , 3);
     for(int i=1 ; i <= 6 ; i++) {
       ld = ld.minusDays(1);
-      out.println(ld + " , era = " + ld.getEra() + " , toEpochDay = " + ld.toEpochDay());
+      logger.info("{} : era = {} , year = {} , year_of_era = {} , toEpochDay = {} " ,
+        ld , ld.getEra() , ld.getYear() , ld.get(YEAR_OF_ERA) , ld.toEpochDay() );
     }
   }
+
+  /**
+   * 比對 year , 以及 year_of_era 的差異
+0001-01-02T00:00 : era = CE , year = 1 , year_of_era = 1
+0001-01-01T00:00 : era = CE , year = 1 , year_of_era = 1
+0000-12-31T00:00 : era = BCE , year = 0 , year_of_era = 1
+0000-12-30T00:00 : era = BCE , year = 0 , year_of_era = 1
+0000-12-29T00:00 : era = BCE , year = 0 , year_of_era = 1
+0000-12-28T00:00 : era = BCE , year = 0 , year_of_era = 1
+   */
+  @Test
+  public void test_LocalDateTime_BC() {
+    LocalDateTime ldt = LocalDateTime.of(1 , 1 , 3 , 0 , 0);
+    for(int i=1 ; i <= 6 ; i++) {
+      ldt = ldt.minusDays(1);
+      logger.info("{} : era = {} , year = {} , year_of_era = {}" ,
+        ldt , ldt.toLocalDate().getEra() , ldt.getYear() , ldt.get(YEAR_OF_ERA) );
+    }
+  }
+
 
   @Test
   public void testEpochSecond() {

@@ -34,10 +34,6 @@ public interface TrueSolarTimeIF {
     return getEquationSecs(gmtJulDay);
   }
 
-  default double getEquationSecs(Time gmtTime) {
-    return getEquationSecs(gmtTime.getGmtJulDay());
-  }
-
   /** 取得 LMT 時刻所對應的 真太陽時 */
   default LocalDateTime getTrueSolarTime(LocalDateTime lmt , Location location) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
@@ -46,8 +42,10 @@ public interface TrueSolarTimeIF {
     long eNano = (long) ((e - eSecs)*1_000_000_000);
     logger.debug("e = {} , eSecs = {} , eNano = {}" , e , eSecs , eNano);
     LocalDateTime gmtWithE = LocalDateTime.from(gmt).plusSeconds(eSecs).plusNanos(eNano);
+    logger.debug("gmt  = {}" , gmt);
+    logger.debug("gmtE = {}" , gmtWithE);
     LocalDateTime lmtWithE = Time.getLmtFromGmt(gmtWithE , location);
-    logger.debug("lmtE   = {}" , lmtWithE);
+    logger.debug("lmtE = {}" , lmtWithE);
 
     return LongitudeTimeBean.getLocalTime(lmtWithE, location);
   }

@@ -22,6 +22,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+
 /**
  * 代表 『時間』 的物件
  * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar
@@ -58,7 +60,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   public Time() {
     this.ad = true;
     LocalDateTime ldt = LocalDateTime.now();
-    this.year = ldt.getYear();
+    this.year = ldt.get(YEAR_OF_ERA);
     this.month = ldt.getMonthValue();
     this.day = ldt.getDayOfMonth();
     this.hour = ldt.getHour();
