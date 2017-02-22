@@ -517,24 +517,29 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     }
   }
 
+  /**
+   * TODO : remove GregorianCalendar
+   */
   public static LocalDateTime getLmtFromGmt(LocalDateTime gmt , @NotNull Location loc) {
     if (loc.isMinuteOffsetSet()) {
       int secOffset = loc.getMinuteOffset() * 60;
       return gmt.plus(secOffset , ChronoUnit.SECONDS);
     }
     else {
-      TimeZone gmtZone = TimeZone.getTimeZone("GMT");
-      GregorianCalendar cal = new GregorianCalendar(gmtZone);
+      ZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
+      ZonedDateTime ldtZoned = gmtZoned.withZoneSameInstant(loc.getTimeZone().toZoneId());
+      return ldtZoned.toLocalDateTime();
 
-      cal.set(gmt.getYear(), gmt.getMonthValue() - 1, gmt.getDayOfMonth(), gmt.getHour(), gmt.getMinute(), (int) gmt.getSecond());
-
-      TimeZone localZone = loc.getTimeZone();
-
-      double secondsDoubleOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-      long secOffset = (long) secondsDoubleOffset;
-      long nanoOffset = (long) ((secondsDoubleOffset - secOffset)* 1_000_000_000);
-
-      return gmt.plus(secOffset , ChronoUnit.SECONDS).plus(nanoOffset , ChronoUnit.SECONDS);
+//      TimeZone gmtZone = TimeZone.getTimeZone("GMT");
+//      GregorianCalendar cal = new GregorianCalendar(gmtZone);
+//      cal.set(gmt.getYear(), gmt.getMonthValue() - 1, gmt.getDayOfMonth(), gmt.getHour(), gmt.getMinute(), (int) gmt.getSecond());
+//
+//      TimeZone localZone = loc.getTimeZone();
+//      double secondsDoubleOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
+//      long secOffset = (long) secondsDoubleOffset;
+//      long nanoOffset = (long) ((secondsDoubleOffset - secOffset)* 1_000_000_000);
+//
+//      return gmt.plusSeconds(secOffset).plusNanos(nanoOffset);
     }
   }
   

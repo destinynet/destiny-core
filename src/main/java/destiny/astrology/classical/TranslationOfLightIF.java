@@ -11,5 +11,6 @@ import destiny.utils.Tuple4;
 import java.util.Optional;
 
 public interface TranslationOfLightIF {
-  Tuple4<Boolean , Planet , Planet , Optional<AspectApplySeparateIF.AspectType>> getResult(Planet planet, HoroscopeContext horoscopeContext);
+
+  Tuple4<Boolean, Planet, Planet, Optional<AspectApplySeparateIF.AspectType>> getResult(Planet planet, HoroscopeContext horoscopeContext);
 }

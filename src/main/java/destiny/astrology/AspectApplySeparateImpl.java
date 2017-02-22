@@ -3,10 +3,10 @@
  */
 package destiny.astrology;
 
-import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -35,11 +35,11 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
       double planetsAngle = Horoscope.getAngle(deg1, deg2);
       double error = Math.abs(planetsAngle - aspect.getDegree()); //目前與 aspect 的誤差
       //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error + " 度");
+
+      LocalDateTime lmt = horoscopeContext.getLmt(); //目前時間
+      LocalDateTime oneSecondLater = LocalDateTime.from(lmt).plusSeconds(1); // 一秒之後
       
-      Time lmt = horoscopeContext.getLmt(); //目前時間
-      Time oneSecondLater = new Time(lmt , 1); //一秒之後
-      
-      HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater.toLocalDateTime(),  horoscopeContext);
+      HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater,  horoscopeContext);
       
       double deg1_next = hc2.getHoroscope().getPositionWithAzimuth(p1).getLongitude();
       double deg2_next = hc2.getHoroscope().getPositionWithAzimuth(p2).getLongitude();

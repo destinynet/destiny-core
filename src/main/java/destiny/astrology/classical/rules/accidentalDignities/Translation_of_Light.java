@@ -29,18 +29,14 @@ public class Translation_of_Light extends Rule
   {
     Tuple4<Boolean , Planet , Planet , Optional<AspectApplySeparateIF.AspectType>> t = translationOfLightImpl.getResult(planet, horoscopeContext);
     //TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);
-    if (t.getFirst())
-    {
+    if (t.getFirst()) {
       double deg = horoscopeContext.getHoroscope().getAngle(t.getSecond() , t.getThird());
-      //StringBuffer sb = new StringBuffer(" 從 " + bean.getFromPlanet() + " 傳遞光線到 " + bean.getToPlanet() + " , " + bean.getFromPlanet()+" 與 " + bean.getToPlanet() + 
-          //" 交角 " + deg + " 度");
-      if (t.getFourth().isPresent())
-      {
+      //StringBuffer sb = new StringBuffer(" 從 " + bean.getFromPlanet() + " 傳遞光線到 " + bean.getToPlanet() + " , " + bean.getFromPlanet()+" 與 " + bean.getToPlanet() +" 交角 " + deg + " 度");
+      if (t.getFourth().isPresent()) {
         //sb.append("(" + (bean.getBesigingPlanetsAspectType() == AspectType.APPLYING ? "入" : "出") + "相位)");
         return Optional.of(ImmutablePair.of("commentAspect", new Object[]{planet, t.getSecond(), t.getThird(), deg, t.getFourth().get()}));
       }
-      else
-      {
+      else {
         //sb.append("(未形成交角)");
         return Optional.of(ImmutablePair.of("commentUnaspect" , new Object[]{planet , t.getSecond() , t.getThird() , deg }));
       }

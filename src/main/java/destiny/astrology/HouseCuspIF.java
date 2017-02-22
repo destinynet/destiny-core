@@ -22,10 +22,6 @@ public interface HouseCuspIF extends RisingSignIF {
    */
   double[] getHouseCusps(double gmtJulDay , Location loc , HouseSystem houseSystem, Coordinate coordinate);
 
-  default double[] getHouseCusps(Time gmt, Location location, HouseSystem houseSystem, Coordinate coordinate) {
-    double gmtJulDay = gmt.getGmtJulDay();
-    return getHouseCusps(gmtJulDay , location , houseSystem , coordinate);
-  }
 
   default double[] getHouseCusps(LocalDateTime lmt , Location location , HouseSystem houseSystem, Coordinate coordinate) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
@@ -52,16 +48,12 @@ public interface HouseCuspIF extends RisingSignIF {
     return getHouseSigns(gmtJulDay , location , houseSystem , coordinate)[1];
   }
 
-//  default ZodiacSign getRisingSign(Time gmt , Location location , HouseSystem houseSystem , Coordinate coordinate) {
-//    return getHouseSigns(gmt.getGmtJulDay() , location , houseSystem , coordinate)[1];
-//  }
-
-
   /**
    * @param house : 1 ~ 12
    */
-  default ZodiacSign getSign(int house , Time gmt , Location location , HouseSystem houseSystem , Coordinate coordinate) {
-    return getHouseSigns(gmt.getGmtJulDay() , location , houseSystem , coordinate)[house];
+  default ZodiacSign getSign(int house , LocalDateTime gmt , Location location , HouseSystem houseSystem , Coordinate coordinate) {
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getHouseSigns(gmtJulDay , location , houseSystem , coordinate)[house];
   }
 
 
@@ -76,10 +68,6 @@ public interface HouseCuspIF extends RisingSignIF {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     double gmtJulDay = Time.getGmtJulDay(gmt);
     return getHouseCusp(index , gmtJulDay , location , houseSystem , coordinate);
-  }
-
-  default double getHouseCusp(int index , Time gmt , Location location , HouseSystem houseSystem , Coordinate coordinate) {
-    return getHouseCusp(index , gmt.getGmtJulDay() , location , houseSystem , coordinate);
   }
 
   @Override

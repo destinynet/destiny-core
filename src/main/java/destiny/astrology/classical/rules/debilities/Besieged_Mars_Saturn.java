@@ -34,7 +34,7 @@ public final class Besieged_Mars_Saturn extends Rule {
   protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS) {
       //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
-      if (besiegedImpl.isBesieged(planet, Planet.MARS, Planet.SATURN, Time.getGMTfromLMT(horoscopeContext.getLmt(), horoscopeContext.getLocation()), true, true)) {
+      if (besiegedImpl.isBesieged(planet, Planet.MARS, Planet.SATURN, Time.getGmtFromLmt(horoscopeContext.getLmt(), horoscopeContext.getLocation()), true, true)) {
         //addComment(Locale.TAIWAN , planet + " 被 " + Planet.MARS + " 以及 " + Planet.SATURN +" 夾制 (Besieged)");
         return Optional.of(ImmutablePair.of("comment", new Object[]{planet, Planet.MARS, Planet.SATURN}));
       }

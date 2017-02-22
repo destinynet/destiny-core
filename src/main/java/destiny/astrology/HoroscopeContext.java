@@ -22,18 +22,14 @@ import static java.util.stream.Collectors.toList;
  * 星盤的 Context， 除了基本的時間地點之外，還包括各種計算的介面 (星體位置 / 分宮法 ...)
  * TODO : 2015-06-11 附註： mutable object , 應該做另一個 immutable 的版本
  */
-public class HoroscopeContext implements Serializable
-{
+public class HoroscopeContext implements Serializable {
   /** 當地時間 */
-  @NotNull
   private final LocalDateTime lmt;
   
   /** 地點 */
-  @NotNull
   private final Location location;
   
   /** GMT 時間 */
-  @NotNull
   private final LocalDateTime gmt;
   
   /** 分宮法 */
@@ -89,11 +85,10 @@ public class HoroscopeContext implements Serializable
   
   /** 建立新的 HoroscopeContext 物件 , 其中 lmt 以 newLmt 取代 */
   @NotNull
-  public static HoroscopeContext getNewLmtHoroscope(@NotNull LocalDateTime newLmt , @NotNull HoroscopeContext horoscopeContext)
-  {
-    return new HoroscopeContext(newLmt , horoscopeContext.getLocation() , horoscopeContext.getHouseSystem() , 
+  public static HoroscopeContext getNewLmtHoroscope(LocalDateTime newLmt , HoroscopeContext horoscopeContext) {
+    return new HoroscopeContext(newLmt , horoscopeContext.getLocation() , horoscopeContext.getHouseSystem() ,
         horoscopeContext.getCoordinate() , horoscopeContext.getCentric() , horoscopeContext.getTemperature() , horoscopeContext.getPressure() ,
-        horoscopeContext.getStarPositionWithAzimuthImpl() , horoscopeContext.getHouseCuspImpl() , 
+        horoscopeContext.getStarPositionWithAzimuthImpl() , horoscopeContext.getHouseCuspImpl() ,
         horoscopeContext.getApsisWithAzimuthImpl() , horoscopeContext.getNodeType());
   }
   
@@ -129,11 +124,10 @@ public class HoroscopeContext implements Serializable
 
   /** 
    * 取得某星位於第幾宮
-   * @param point
+   * @param point 某星
    * @return 1 <= point <= 12
    */
-  public int getHouse(Point point)
-  {
+  public int getHouse(Point point) {
     PositionWithAzimuth position = getPosition(point);
     return getHoroscope().getHouse(position.getLongitude());
   }
@@ -168,17 +162,15 @@ public class HoroscopeContext implements Serializable
     PositionWithAzimuth position = getPosition(point);
     return ZodiacSign.getZodiacSign(position.getLongitude());
   }
-  
+
   @NotNull
-  public Time getGmt()
-  {
-    return Time.from(gmt);
+  public LocalDateTime getLmt() {
+    return lmt;
   }
-  
+
   @NotNull
-  public Time getLmt()
-  {
-    return Time.from(lmt);
+  public LocalDateTime getGmt() {
+    return gmt;
   }
 
   @NotNull

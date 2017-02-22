@@ -20,6 +20,12 @@ public interface SolarTermsIF {
   /** 計算某時刻當下的節氣 */
   SolarTerms getSolarTermsFromGMT(double gmtJulDay);
 
+  /** 承上， LocalDateTime 版本 */
+  default SolarTerms getSolarTermsFromGMT(LocalDateTime gmt) {
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getSolarTermsFromGMT(gmtJulDay);
+  }
+
   /** 承上， Time 版本 */
   default SolarTerms getSolarTermsFromGMT(Time gmt) {
     return getSolarTermsFromGMT(gmt.getGmtJulDay());

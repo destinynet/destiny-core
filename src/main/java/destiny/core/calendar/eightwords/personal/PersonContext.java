@@ -157,22 +157,22 @@ public class PersonContext extends EightWordsContext {
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
   public Pair<Pair<SolarTerms , Double> , Pair<SolarTerms , Double>> getMajorSolarTermsBetween() {
-    Time gmt = Time.getGMTfromLMT(lmt, location);
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt.toLocalDateTime() , location);
 
     // 現在（亦即：上一個節）的「節」
     SolarTerms prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
     if (!prevMajorSolarTerms.isMajor()) // 如果是「中氣」的話
       prevMajorSolarTerms = prevMajorSolarTerms.previous(); // 再往前取一個 , 即可得到「節」
 
-    LocalDateTime prevGmt = starTransitImpl.getNextTransitGmt(SUN , prevMajorSolarTerms.getZodiacDegree() , ECLIPTIC , gmt.toLocalDateTime() , false);
-    Duration dur1 = Duration.between(gmt.toLocalDateTime() , prevGmt).abs();
+    LocalDateTime prevGmt = starTransitImpl.getNextTransitGmt(SUN , prevMajorSolarTerms.getZodiacDegree() , ECLIPTIC , gmt , false);
+    Duration dur1 = Duration.between(gmt, prevGmt).abs();
     double d1 = dur1.getSeconds()+ dur1.getNano() / 1_000_000_000.0;
 
 
     // 下一個「節」
     SolarTerms nextMajorSolarTerms = this.getNextMajorSolarTerms(prevMajorSolarTerms, false);
-    LocalDateTime nextGmt = starTransitImpl.getNextTransitGmt(SUN , nextMajorSolarTerms.getZodiacDegree(), ECLIPTIC, gmt.toLocalDateTime() , true);
-    Duration dur2 = Duration.between(gmt.toLocalDateTime() , nextGmt).abs();
+    LocalDateTime nextGmt = starTransitImpl.getNextTransitGmt(SUN , nextMajorSolarTerms.getZodiacDegree(), ECLIPTIC, gmt , true);
+    Duration dur2 = Duration.between(gmt, nextGmt).abs();
     double d2 = dur2.getSeconds() + dur2.getNano() / 1_000_000_000.0;
 
     logger.debug(" prevGmt = {}" , prevGmt);
@@ -314,7 +314,7 @@ public class PersonContext extends EightWordsContext {
    * @param targetGmt 目標時刻 (in GMT)
    * @return 月大運干支
    */
-  public StemBranch getStemBranchOfFortuneMonth(@NotNull Time targetGmt) {
+  public StemBranch getStemBranchOfFortuneMonth(LocalDateTime targetGmt) {
     return this.getStemBranchOfFortune(targetGmt, this.fortuneMonthSpan);
   }
 
@@ -324,7 +324,7 @@ public class PersonContext extends EightWordsContext {
    * @param targetGmt 目標時刻 (in GMT)
    * @return 日大運干支
    */
-  public StemBranch getStemBranchOfFortuneDay(@NotNull Time targetGmt) {
+  public StemBranch getStemBranchOfFortuneDay(LocalDateTime targetGmt) {
     return this.getStemBranchOfFortune(targetGmt, this.fortuneDaySpan);
   }
 
@@ -334,7 +334,7 @@ public class PersonContext extends EightWordsContext {
    * @param targetGmt 目標時刻 (in GMT)
    * @return 時大運干支
    */
-  public StemBranch getStemBranchOfFortuneHour(@NotNull Time targetGmt) {
+  public StemBranch getStemBranchOfFortuneHour(LocalDateTime targetGmt) {
     return this.getStemBranchOfFortune(targetGmt, this.fortuneHourSpan);
   }
 
@@ -345,13 +345,17 @@ public class PersonContext extends EightWordsContext {
    * @param span      放大倍數
    * @return 干支
    */
-  private StemBranch getStemBranchOfFortune(@NotNull Time targetGmt, double span) {
-    Time gmt = Time.getGMTfromLMT(lmt, location);
+  private StemBranch getStemBranchOfFortune(LocalDateTime targetGmt, double span) {
+    LocalDateTime gmt = Time.getGMTfromLMT(lmt, location).toLocalDateTime();
     StemBranch resultStemBranch = this.getEightWords().getMonth();
+
+    Duration dur = Duration.between(targetGmt , gmt).abs();
+    double diffSeconds = dur.getSeconds() + dur.getNano() / 1_000_000_000.0;
+
     if (targetGmt.isAfter(gmt) && isFortuneDirectionForward()) {
       logger.debug("大運順行");
       int index = 1;
-      while (getTargetMajorSolarTermsSeconds(index) * span < targetGmt.diffSeconds(gmt)) {
+      while (getTargetMajorSolarTermsSeconds(index) * span < diffSeconds) {
         resultStemBranch = resultStemBranch.getNext();
         index++;
       }
@@ -360,7 +364,7 @@ public class PersonContext extends EightWordsContext {
     if (targetGmt.isAfter(gmt) && !isFortuneDirectionForward()) {
       logger.debug("大運逆行");
       int index = -1;
-      while (Math.abs(getTargetMajorSolarTermsSeconds(index) * span) < targetGmt.diffSeconds(gmt)) {
+      while (Math.abs(getTargetMajorSolarTermsSeconds(index) * span) < diffSeconds) {
         resultStemBranch = resultStemBranch.getPrevious();
         index--;
       }

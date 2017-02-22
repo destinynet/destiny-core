@@ -4,11 +4,11 @@
  */ 
 package destiny.astrology;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * 分宮法 , Zodiac House Systems
@@ -31,7 +31,7 @@ public enum HouseSystem implements LocaleStringIF
   
   private String nameKey;
   
-  private HouseSystem(String nameKey)
+  HouseSystem(String nameKey)
   {
     this.nameKey = nameKey;
   }

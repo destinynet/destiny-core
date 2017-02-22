@@ -17,8 +17,8 @@ public interface RetrogradeIF {
   double getNextStationary(Star star, double fromGmt, boolean isForward);
 
   /** 下次停滯的時間為何時 (GMT) */
-  default LocalDateTime getNextStationary(Star star, LocalDateTime fromGmtTime, boolean isForward) {
-    double fromGmtJulDay = Time.getGmtJulDay(fromGmtTime);
+  default LocalDateTime getNextStationary(Star star, LocalDateTime fromGmt, boolean isForward) {
+    double fromGmtJulDay = Time.getGmtJulDay(fromGmt);
     double resultGmt = getNextStationary(star , fromGmtJulDay , isForward);
     return new Time(resultGmt).toLocalDateTime();
   }

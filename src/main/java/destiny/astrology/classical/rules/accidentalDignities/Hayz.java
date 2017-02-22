@@ -29,7 +29,7 @@ public final class Hayz extends Rule
   @Override
   public Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt().toLocalDateTime(), horoscopeContext.getLocation());
+    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
     int planetHouse = horoscopeContext.getHouse(planet);
     if ( dayNight == DayNight.DAY && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN))

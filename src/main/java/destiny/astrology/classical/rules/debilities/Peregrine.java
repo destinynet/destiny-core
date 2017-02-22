@@ -30,7 +30,7 @@ public final class Peregrine extends EssentialRule
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
     
-    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt().toLocalDateTime(), horoscopeContext.getLocation());
+    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
     if (planet != essentialImpl.getPoint(sign, Dignity.RULER) &&
         planet != essentialImpl.getPoint(sign, Dignity.EXALTATION) &&
         planet != essentialImpl.getPoint(sign, Dignity.DETRIMENT) &&

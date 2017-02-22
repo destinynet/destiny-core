@@ -67,7 +67,7 @@ public class PersonContextModel implements Serializable {
 
 
     // 命宮干支
-    risingStemBranch = context.getRisingStemBranch(context.getLmt() , context.getLocation());
+    risingStemBranch = context.getRisingStemBranch(context.getLmt().toLocalDateTime() , context.getLocation());
 
     //下個大運的干支
     StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();

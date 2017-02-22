@@ -65,8 +65,4 @@ public class EightWordsContext extends EightWordsImpl {
     return StemBranch.get(risingStem, risingBranch);
   }
 
-  /** 承上 , Time 版本 */
-  public StemBranch getRisingStemBranch(Time lmt, Location location) {
-    return getRisingStemBranch(lmt.toLocalDateTime() , location);
-  }
 }
