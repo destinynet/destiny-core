@@ -10,11 +10,16 @@ import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
 import destiny.core.chinese.StemBranch;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.chrono.IsoEra;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 
 /**
  * 將 PersonContext 要呈現的資料都預先計算好（流年、大運...等），方便未來 View 端直接存取。不用在 View 端計算。
@@ -84,43 +89,42 @@ public class PersonContextModel implements Serializable {
       int endFortune;
       double startFortuneSeconds = personContext.getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
       double   endFortuneSeconds = personContext.getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
-      Time startFortuneLmt = new Time(personContext.getLmt() , Math.abs(startFortuneSeconds) * fortuneMonthSpan);
-      Time   endFortuneLmt = new Time(personContext.getLmt() , Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
 
+      Pair<Long , Long> pair1 = Time.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
+      LocalDateTime startFortuneLmt = LocalDateTime.from(personContext.getLmt().toLocalDateTime()).plusSeconds(pair1.getLeft()).plusNanos(pair1.getRight());
+      Pair<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
+      LocalDateTime endFortuneLmt  = LocalDateTime.from(personContext.getLmt().toLocalDateTime()).plusSeconds(pair2.getLeft()).plusNanos(pair2.getRight());
 
       switch(fortuneOutputFormat)
       {
-        case 西元 :
-        {
-          startFortune = startFortuneLmt.getYear();
-          if (!startFortuneLmt.isAd())
+        case 西元 : {
+          startFortune = startFortuneLmt.get(YEAR_OF_ERA);
+          if (startFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) // 西元前
             startFortune= 0-startFortune;
-          endFortune = endFortuneLmt.getYear();
-          if (!endFortuneLmt.isAd())
+          endFortune = endFortuneLmt.get(YEAR_OF_ERA);
+          if (endFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) // 西元前
             endFortune = 0-endFortune;
           break;
         }
-        case 民國 :
-        {
+        case 民國 : {
           int year; //normalized 的 年份 , 有零 , 有負數
-          year = startFortuneLmt.getYear();
-          if (!startFortuneLmt.isAd()) //西元前
+          year = startFortuneLmt.get(YEAR_OF_ERA);
+          if (startFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) //西元前
             year = -(year-1);
           startFortune = year-1911;
-          year = endFortuneLmt.getYear();
-          if (!endFortuneLmt.isAd()) //西元前
+          year = endFortuneLmt.get(YEAR_OF_ERA);
+          if (endFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) //西元前
             year = -(year-1);
           endFortune = year-1911;
           break;
         }
-        case 實歲 :
-        {
+        case 實歲 : {
           startFortune = (int) (Math.abs(startFortuneSeconds) * fortuneMonthSpan / (365.2563*24*60*60)) ;
           endFortune   = (int) (Math.abs(endFortuneSeconds)   * fortuneMonthSpan / (365.2563*24*60*60)) ;
           break;
         }
-        default : //虛歲
-        {
+        default : {
+          //虛歲
           // 取得 起運/終運 時的八字
           EightWordsContext eightWordsContext = new EightWordsContext(context.getChineseDateImpl() , personContext.getYearMonthImpl() ,
               personContext.getDayImpl() , personContext.getHourImpl() ,
@@ -144,7 +148,7 @@ public class PersonContextModel implements Serializable {
         }
       }
 
-      FortuneData fortuneData = new FortuneData(nextStemBranch , startFortuneLmt , endFortuneLmt , startFortune , endFortune);
+      FortuneData fortuneData = new FortuneData(nextStemBranch , startFortuneLmt , endFortuneLmt, startFortune , endFortune);
       fortuneDatas.add(fortuneData);
 
       nextStemBranch = isForward ? nextStemBranch.getNext() : nextStemBranch.getPrevious();

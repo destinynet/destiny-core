@@ -505,7 +505,7 @@ public class ColorCanvas implements Serializable
    * 並且，將子 ColorCanvas 的 content 覆蓋過本 content
    * @return
    */
-  @Nullable
+  @NotNull
   private ColorByte[] getContentWithChildren()
   {
     if (this.children.size() == 0)

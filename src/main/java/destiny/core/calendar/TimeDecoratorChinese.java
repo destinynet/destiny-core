@@ -4,10 +4,11 @@
  */ 
 package destiny.core.calendar;
 
-import java.io.Serializable;
-
+import destiny.tools.ColorCanvas.AlignUtil;
 import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /**
  * 簡單的中文輸出 , 總共輸出 38位元 <BR/>
@@ -71,28 +72,8 @@ public class TimeDecoratorChinese implements Decorator<Time> , Serializable
   {
     StringBuffer sb = new StringBuffer(String.valueOf(value));
     int valueLength = sb.length();
-    
-    if (valueLength == width)
-      return sb.toString();
-    else if (valueLength < width)
-    {
-      int doubleByteSpaces =  ( width - valueLength ) /2;
-      
-      for (int i=0 ; i < doubleByteSpaces ; i++)
-      {
-        sb.insert(0, "　");
-      }
-      
-      if ((width-valueLength) % 2 == 1)
-        sb.insert(doubleByteSpaces , ' ');
-      
-      return sb.toString();
-    }
-    else
-    {
-      //sb.length() > w
-      return sb.substring(valueLength-width);
-    }
+
+    return AlignUtil.outputStringBuffer(valueLength , width , sb);
   }
 
 }

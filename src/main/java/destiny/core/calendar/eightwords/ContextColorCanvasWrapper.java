@@ -218,7 +218,6 @@ public class ContextColorCanvasWrapper {
 　官財　　　　神　　　官財　　　殺財　　　　　　　
 </pre>
    */
-  @Nullable
   protected ColorCanvas getEightWordsColorCanvas() {
     EightWords eightWords = context.getEightWords(lmt, location);
     ColorCanvas 八字 = new ColorCanvas(10, 36, "　", Optional.empty(), Optional.empty());

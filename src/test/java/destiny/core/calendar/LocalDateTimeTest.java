@@ -98,6 +98,18 @@ public class LocalDateTimeTest {
     }
   }
 
+  @Test
+  public void testEra_Compare() {
+    LocalDateTime now = LocalDateTime.now();
+    assertSame(IsoEra.CE , now.toLocalDate().getEra()); // 現在應該是西元後
+
+    LocalDateTime ce = LocalDateTime.of(1 , 1 , 1 , 0 , 0 , 0); // 西元第一秒
+    assertSame(IsoEra.CE , ce.toLocalDate().getEra());
+
+    LocalDateTime bce = LocalDateTime.from(ce).minusSeconds(1); // 西元前最後一秒
+    assertSame(IsoEra.BCE , bce.toLocalDate().getEra());
+  }
+
 
   @Test
   public void testEpochSecond() {

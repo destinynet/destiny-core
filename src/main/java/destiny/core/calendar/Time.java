@@ -6,6 +6,7 @@ package destiny.core.calendar;
 
 import destiny.tools.AlignUtil;
 import destiny.tools.LocaleStringIF;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -688,6 +689,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     double diffDays = this.getGmtJulDay() - target.getGmtJulDay();
     return diffDays * 86400; //24*60*60
   }
+
+  /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值 */
+  public static Pair<Long , Long> splitSecond(double seconds) {
+    long secs = (long) seconds;
+    long nano = (long) ((seconds - secs)* 1_000_000_000);
+    return Pair.of(secs , nano);
+  }
+
   
   @Override
   public int hashCode()
