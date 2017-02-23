@@ -69,7 +69,7 @@ public class PersonContext extends EightWordsContext {
   /** 運 :「時辰」的 span 倍數，內定 365x12，即：一時辰走一年 */
   private double fortuneHourSpan = 365 * 12;
 
-  Cache<PersonContext, Map<Integer, Time>> cache =
+  Cache<PersonContext, Map<Integer, LocalDateTime>> cache =
     CacheBuilder.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(10, TimeUnit.MINUTES)
@@ -194,8 +194,8 @@ public class PersonContext extends EightWordsContext {
     if (index < 0)
       reverse = true;
 
-    Time gmt = Time.getGMTfromLMT(lmt, location);
-    Time stepGmt = new Time(gmt, 0);
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt.toLocalDateTime() , location);
+    LocalDateTime stepGmt = LocalDateTime.from(gmt).plusSeconds(0);
     //現在的 節氣
     SolarTerms currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
     SolarTerms stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, reverse);
@@ -206,14 +206,14 @@ public class PersonContext extends EightWordsContext {
     else
       i = -1;
 
-    Map<Integer , Time> hashMap = cache.getIfPresent(this);
+    Map<Integer , LocalDateTime> hashMap = cache.getIfPresent(this);
 
     if (hashMap == null) {
       hashMap = new LinkedHashMap<>();
       cache.put(this , hashMap);
     }
 
-    Time targetGmt = null ;
+    LocalDateTime targetGmt = null ;
     if (hashMap.containsKey(index))
       targetGmt = hashMap.get(index);
 
@@ -230,7 +230,7 @@ public class PersonContext extends EightWordsContext {
             //沒有計算過
             targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmt, true);
             //以隔天計算現在節氣
-            stepGmt = new Time(targetGmt, 24 * 60 * 60);
+            stepGmt = LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
 
             hashMap.put(i , targetGmt);
             cache.put(this , hashMap);
@@ -239,7 +239,7 @@ public class PersonContext extends EightWordsContext {
             //之前計算過
             logger.debug("順推 cache.get({}) hit" , i);
             targetGmt = hashMap.get(i);
-            stepGmt = new Time(targetGmt, 24 * 60 * 60);
+            stepGmt = LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
           }
 
           currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmt);
@@ -260,14 +260,14 @@ public class PersonContext extends EightWordsContext {
 
             targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmt, false);
             //以前一天計算現在節氣
-            stepGmt = new Time(targetGmt, -24 * 60 * 60);
+            stepGmt = LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
             hashMap.put(i , targetGmt);
             cache.put(this , hashMap);
           }
           else {
             //之前計算過
             targetGmt = hashMap.get(i);
-            stepGmt = new Time(targetGmt, -24 * 60 * 60);
+            stepGmt = LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
           }
 
           currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmt);
@@ -277,7 +277,10 @@ public class PersonContext extends EightWordsContext {
       } //逆推
     }
 
-    return targetGmt.diffSeconds(gmt);
+    Duration dur = Duration.between(targetGmt , gmt);
+    long diffSecs = dur.getSeconds();
+    long diffNano = dur.getNano();
+    return diffSecs + diffNano / 1_000_000_000.0;
   } // getTargetMajorSolarTermsSeconds(int)
 
 
