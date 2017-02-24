@@ -4,6 +4,8 @@
  */
 package destiny.core.calendar;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.time.LocalDateTime;
 
 /**
@@ -18,21 +20,19 @@ public class LongitudeTimeBean {
    * @return 經度時間
    */
   public static LocalDateTime getLocalTime(LocalDateTime lmt, Location location) {
-    double absLong = Math.abs(location.getLongitude());
-    double secondsOffset = DstUtils.getDstSecondOffset(lmt, location).getRight();
+    double absLng = Math.abs(location.getLongitude());
+    double secondsOffset = Time.getDstSecondOffset(lmt, location).getRight();
     double zoneSecondOffset = Math.abs(secondsOffset);
-    double longitudeSecondOffset = absLong * 4 * 60; // 經度與GMT的時差 (秒) , 一分鐘四度
+    double longitudeSecondOffset = absLng * 4 * 60; // 經度與GMT的時差 (秒) , 一分鐘四度
 
     if (location.isEast()) {
       double seconds = longitudeSecondOffset - zoneSecondOffset;
-      long secsPart = (long) (seconds);
-      long nanoPart = (long) ((seconds - secsPart) * 1_000_000_000);
-      return LocalDateTime.from(lmt).plusSeconds(secsPart).plusNanos(nanoPart);
+      Pair<Long , Long> pair = Time.splitSecond(seconds);
+      return LocalDateTime.from(lmt).plusSeconds(pair.getLeft()).plusNanos(pair.getRight());
     } else {
       double seconds = zoneSecondOffset - longitudeSecondOffset;
-      long secsPart = (long) (seconds);
-      long nanoPart = (long) ((seconds - secsPart) * 1_000_000_000);
-      return LocalDateTime.from(lmt).plusSeconds(secsPart).plusNanos(nanoPart);
+      Pair<Long , Long> pair = Time.splitSecond(seconds);
+      return LocalDateTime.from(lmt).plusSeconds(pair.getLeft()).plusNanos(pair.getRight());
     }
   }
 

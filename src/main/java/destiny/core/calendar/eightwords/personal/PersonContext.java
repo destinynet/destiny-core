@@ -41,11 +41,9 @@ public class PersonContext extends EightWordsContext {
   private StarTransitIF starTransitImpl;
 
   /** 出生時刻 */
-  @NotNull
-  private Time lmt;
+  private LocalDateTime lmt;
 
   /** 出生地點 */
-  @NotNull
   private Location location;
 
   /** 性別 */
@@ -83,7 +81,7 @@ public class PersonContext extends EightWordsContext {
   /** constructor */
   public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl,
                        MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl,
-                       @NotNull StarTransitIF starTransitImpl, @NotNull Time lmt, @NotNull Location location, @NotNull Gender gender,
+                       @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, @NotNull Gender gender,
                        double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
     super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl);
     this.solarTermsImpl = solarTermsImpl;
@@ -96,7 +94,8 @@ public class PersonContext extends EightWordsContext {
     this.location = location;
     this.gender = gender;
     this.eightWords = this.getEightWords(lmt, location);
-    Time gmt = Time.getGMTfromLMT(lmt, location);
+    //Time gmt = Time.getGMTfromLMT(lmt, location);
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
   }
 
@@ -104,7 +103,7 @@ public class PersonContext extends EightWordsContext {
   /** 取得出生時刻 */
   @NotNull
   public Time getLmt() {
-    return lmt;
+    return Time.from(lmt);
   }
 
   /** 取得出生地點 */
@@ -157,7 +156,7 @@ public class PersonContext extends EightWordsContext {
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
   public Pair<Pair<SolarTerms , Double> , Pair<SolarTerms , Double>> getMajorSolarTermsBetween() {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt.toLocalDateTime() , location);
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
 
     // 現在（亦即：上一個節）的「節」
     SolarTerms prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
@@ -194,7 +193,7 @@ public class PersonContext extends EightWordsContext {
     if (index < 0)
       reverse = true;
 
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt.toLocalDateTime() , location);
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     LocalDateTime stepGmt = LocalDateTime.from(gmt).plusSeconds(0);
     //現在的 節氣
     SolarTerms currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
@@ -277,7 +276,7 @@ public class PersonContext extends EightWordsContext {
       } //逆推
     }
 
-    Duration dur = Duration.between(targetGmt , gmt);
+    Duration dur = Duration.between(gmt , targetGmt);
     long diffSecs = dur.getSeconds();
     long diffNano = dur.getNano();
     return diffSecs + diffNano / 1_000_000_000.0;
@@ -349,7 +348,7 @@ public class PersonContext extends EightWordsContext {
    * @return 干支
    */
   private StemBranch getStemBranchOfFortune(LocalDateTime targetGmt, double span) {
-    LocalDateTime gmt = Time.getGMTfromLMT(lmt, location).toLocalDateTime();
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt, location);
     StemBranch resultStemBranch = this.getEightWords().getMonth();
 
     Duration dur = Duration.between(targetGmt , gmt).abs();

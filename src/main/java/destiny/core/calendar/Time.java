@@ -6,6 +6,7 @@ package destiny.core.calendar;
 
 import destiny.tools.AlignUtil;
 import destiny.tools.LocaleStringIF;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -486,13 +488,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     }
     else {
       return getGmtFromLmt(lmt , loc.getTimeZone());
-
-//      GregorianCalendar cal = new GregorianCalendar(localZone);
-//      cal.set(lmt.getYear(), lmt.getMonthValue() - 1, lmt.getDayOfMonth(), lmt.getHour(), lmt.getMinute(), lmt.getSecond());
-//      double secondsDoubleOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-//      long secOffset = (long) secondsDoubleOffset;
-//      long nanoOffset = (long) ((secondsDoubleOffset - secOffset)* 1_000_000_000);
-//      return lmt.plus(0-secOffset,ChronoUnit.SECONDS).plus(nanoOffset, ChronoUnit.NANOS);
     }
   }
 
@@ -520,9 +515,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     }
   }
 
-  /**
-   * TODO : remove GregorianCalendar
-   */
   public static LocalDateTime getLmtFromGmt(LocalDateTime gmt , @NotNull Location loc) {
     if (loc.isMinuteOffsetSet()) {
       int secOffset = loc.getMinuteOffset() * 60;
@@ -532,18 +524,44 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
       ZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
       ZonedDateTime ldtZoned = gmtZoned.withZoneSameInstant(loc.getTimeZone().toZoneId());
       return ldtZoned.toLocalDateTime();
-
-//      TimeZone gmtZone = TimeZone.getTimeZone("GMT");
-//      GregorianCalendar cal = new GregorianCalendar(gmtZone);
-//      cal.set(gmt.getYear(), gmt.getMonthValue() - 1, gmt.getDayOfMonth(), gmt.getHour(), gmt.getMinute(), (int) gmt.getSecond());
-//
-//      TimeZone localZone = loc.getTimeZone();
-//      double secondsDoubleOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-//      long secOffset = (long) secondsDoubleOffset;
-//      long nanoOffset = (long) ((secondsDoubleOffset - secOffset)* 1_000_000_000);
-//
-//      return gmt.plusSeconds(secOffset).plusNanos(nanoOffset);
     }
+  }
+
+  /**
+   * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
+   */
+  public static int getSecondsOffset(LocalDateTime lmt, TimeZone tz) {
+    ZoneOffset offset = lmt.atZone(tz.toZoneId()).getOffset();
+    return offset.getTotalSeconds();
+  }
+
+  /**
+   * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
+   */
+  public static int getSecondsOffset(LocalDateTime lmt, Location loc) {
+    return getSecondsOffset(lmt , loc.getTimeZone());
+  }
+
+  /**
+   * @return 此時刻，此 TimeZone ，是否有日光節約時間
+   */
+  public static boolean isDst(LocalDateTime lmt , TimeZone tz) {
+    ZonedDateTime zdt = lmt.atZone(tz.toZoneId());
+    return zdt.getZone().getRules().isDaylightSavings(zdt.toInstant());
+  }
+
+  /**
+   * @return 此時刻，此 地點，是否有日光節約時間
+   */
+  public static boolean isDst(LocalDateTime lmt , Location loc) {
+    return isDst(lmt , loc.getTimeZone());
+  }
+
+  /**
+   * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
+   * */
+  public static Pair<Boolean, Integer> getDstSecondOffset(@NotNull LocalDateTime lmt, @NotNull Location loc) {
+    return ImmutablePair.of(Time.isDst(lmt , loc), Time.getSecondsOffset(lmt , loc));
   }
   
   @Override

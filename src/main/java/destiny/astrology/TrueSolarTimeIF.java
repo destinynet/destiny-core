@@ -8,6 +8,7 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.LongitudeTimeBean;
 import destiny.core.calendar.Time;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,11 +38,10 @@ public interface TrueSolarTimeIF {
   /** 取得 LMT 時刻所對應的 真太陽時 */
   default LocalDateTime getTrueSolarTime(LocalDateTime lmt , Location location) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    logger.debug("gmt = {}" , gmt);
     double e = getEquationSecs(gmt);
-    long eSecs = (long) e;
-    long eNano = (long) ((e - eSecs)*1_000_000_000);
-    logger.debug("e = {} , eSecs = {} , eNano = {}" , e , eSecs , eNano);
-    LocalDateTime gmtWithE = LocalDateTime.from(gmt).plusSeconds(eSecs).plusNanos(eNano);
+    Pair<Long , Long> pair = Time.splitSecond(e);
+    LocalDateTime gmtWithE = LocalDateTime.from(gmt).plusSeconds(pair.getLeft()).plusNanos(pair.getRight());
     logger.debug("gmt  = {}" , gmt);
     logger.debug("gmtE = {}" , gmtWithE);
     LocalDateTime lmtWithE = Time.getLmtFromGmt(gmtWithE , location);

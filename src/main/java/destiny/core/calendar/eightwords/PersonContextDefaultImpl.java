@@ -42,7 +42,7 @@ public class PersonContextDefaultImpl extends EightWordsImpl implements PersonCo
   @Override
   public PersonContext getPersonContext(Time lmt, Location location, Gender gender) {
     return new PersonContext(chineseDateImpl , yearMonthImpl , dayImpl , hourImpl , midnightImpl ,
-      changeDayAfterZi , solarTermsImpl , starTransitImpl , lmt , location , gender , 120.0 , fortuneDirectionImpl , risingSignImpl);
+      changeDayAfterZi , solarTermsImpl , starTransitImpl , lmt.toLocalDateTime() , location , gender , 120.0 , fortuneDirectionImpl , risingSignImpl);
   }
 
 }

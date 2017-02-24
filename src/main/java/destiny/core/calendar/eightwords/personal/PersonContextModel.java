@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import destiny.core.calendar.DstUtils;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
@@ -58,9 +57,9 @@ public class PersonContextModel implements Serializable {
 
     this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());
     this.locationName = locationName;
-    this.dst = DstUtils.getDstSecondOffset(context.getLmt().toLocalDateTime(), context.getLocation()).getLeft();
+    this.dst = Time.getDstSecondOffset(context.getLmt().toLocalDateTime(), context.getLocation()).getLeft();
 
-    gmtMinuteOffset = (int) (DstUtils.getDstSecondOffset(context.getLmt().toLocalDateTime(), context.getLocation()).getRight() / 60);
+    gmtMinuteOffset = (Time.getDstSecondOffset(context.getLmt().toLocalDateTime(), context.getLocation()).getRight() / 60);
 
     // 首先取得到下/上個節氣的秒數
     double fortuneMonthSpan = personContext.getFortuneMonthSpan();
