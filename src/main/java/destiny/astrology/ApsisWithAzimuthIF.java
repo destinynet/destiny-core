@@ -7,6 +7,7 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -17,13 +18,10 @@ public interface ApsisWithAzimuthIF extends ApsisIF {
 
   Map<Apsis, PositionWithAzimuth> getPositionsWithAzimuths(Star star, double gmtJulDay , Coordinate coordinate, NodeType nodeType, Location location, double temperature, double pressure);
 
-  default Map<Apsis, PositionWithAzimuth> getPositionsWithAzimuths(Star star, Time gmt, Coordinate coordinate, NodeType nodeType, Location location, double temperature, double pressure) {
-    return getPositionsWithAzimuths(star, gmt.getGmtJulDay(), coordinate, nodeType, location, temperature, pressure);
-  }
-
   PositionWithAzimuth getPositionWithAzimuth(Star star, Apsis apsis, double gmtJulDay , Coordinate coordinate, NodeType nodeType, Location location, double temperature, double pressure);
 
-  default PositionWithAzimuth getPositionWithAzimuth(Star star, Apsis apsis, Time gmt, Coordinate coordinate, NodeType nodeType, Location location, double temperature, double pressure) {
-    return getPositionWithAzimuth(star , apsis , gmt.getGmtJulDay() , coordinate , nodeType , location , temperature , pressure);
+  default PositionWithAzimuth getPositionWithAzimuth(Star star, Apsis apsis, LocalDateTime gmt, Coordinate coordinate, NodeType nodeType, Location location, double temperature, double pressure) {
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getPositionWithAzimuth(star , apsis , gmtJulDay , coordinate , nodeType , location , temperature , pressure);
   }
 }

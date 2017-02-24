@@ -26,13 +26,4 @@ public interface MidnightIF extends Descriptive {
     Time gmt = new Time(gmtResult);
     return Time.getLMTfromGMT(gmt , loc).toLocalDateTime();
   }
-
-  /** 取得下一個「子正」的 LMT 時刻 */
-  @NotNull
-  default Time getNextMidnight(Time lmt, @NotNull Location location) {
-    double gmtJulDay = Time.getGMTfromLMT(lmt , location).getGmtJulDay();
-    double gmtResult = getNextMidnight(gmtJulDay , location);
-    Time gmt = new Time(gmtResult);
-    return Time.getLMTfromGMT(gmt , location);
-  }
 }

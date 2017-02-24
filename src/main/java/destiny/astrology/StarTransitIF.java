@@ -25,25 +25,15 @@ public interface StarTransitIF
    */
   double getNextTransitGmt(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward);
 
-
-
   default LocalDateTime getNextTransitLocalDateTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
     double gmtJulDay = getNextTransitGmt(star , degree , coordinate , fromGmt , isForward);
     return new Time(gmtJulDay).toLocalDateTime();
   }
-
 
   default LocalDateTime getNextTransitGmt(Star star, double degree, Coordinate coordinate , LocalDateTime fromGmt, boolean isForward) {
     double julDay = Time.getGmtJulDay(fromGmt);
     return getNextTransitLocalDateTime(star , degree , coordinate , julDay , isForward);
   }
 
-  default Time getNextTransitTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
-    double gmtJulDay = getNextTransitGmt(star , degree , coordinate , fromGmt , isForward);
-    return new Time(gmtJulDay);
-  }
 
-  default Time getNextTransitGmt(Star star, double degree, Coordinate coordinate , Time fromGmtTime , boolean isForward) {
-    return getNextTransitTime(star , degree , coordinate , fromGmtTime.getGmtJulDay() , isForward);
-  }
 }

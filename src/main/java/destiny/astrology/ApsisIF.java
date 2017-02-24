@@ -6,6 +6,7 @@ package destiny.astrology;
 
 import destiny.core.calendar.Time;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -19,18 +20,14 @@ public interface ApsisIF
    */
   Map<Apsis,Position> getPositions(Star star , double gmtJulDay , Coordinate coordinate , NodeType nodeType);
 
-  default Map<Apsis,Position> getPositions(Star star , Time gmt , Coordinate coordinate , NodeType nodeType) {
-    return getPositions(star , gmt.getGmtJulDay() , coordinate , nodeType);
-  }
-
   Position            getPosition(Star star , Apsis apsis , double gmtJulDay , Coordinate coordinate , NodeType nodeType);
 
   /**
-   * 取得某 Apsis 在某刻 (GMT) 的座標 
+   * 取得某 Apsis 在某刻 (GMT) 的座標
    */
-  default Position            getPosition(Star star , Apsis apsis , Time gmt , Coordinate coordinate , NodeType nodeType) {
-    return getPosition(star , apsis , gmt.getGmtJulDay() , coordinate , nodeType);
+  default Position getPosition(Star star , Apsis apsis , LocalDateTime gmt , Coordinate coordinate , NodeType nodeType) {
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getPosition(star , apsis , gmtJulDay  , coordinate , nodeType);
   }
-
 
 }

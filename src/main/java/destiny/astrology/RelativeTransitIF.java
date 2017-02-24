@@ -49,28 +49,11 @@ public interface RelativeTransitIF {
    * 傳回的是 GMT 時刻
    */
   @NotNull
-  default List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
-    List<Time> resultList = new ArrayList<>();
-    while (fromJulDay < toJulDay)
-    {
-      Optional<Double> timeOptional = getRelativeTransit( transitStar , relativeStar , angle , fromJulDay , true);
-      if (timeOptional.isPresent()) {
-        fromJulDay = timeOptional.get();
-        if (fromJulDay > toJulDay)
-          break;
-        resultList.add(new Time(timeOptional.get()));
-        fromJulDay = fromJulDay +0.000001;
-      }
-    }
-    return resultList;
-  }
-
-  @NotNull
   default List<LocalDateTime> getPeriodRelativeTransitLDTs(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
     List<LocalDateTime> resultList = new ArrayList<>();
     while (fromJulDay < toJulDay)
     {
-      Optional<Double> timeOptional = getRelativeTransit( transitStar , relativeStar , angle , fromJulDay , true);
+      Optional<Double> timeOptional = getRelativeTransit(transitStar , relativeStar , angle , fromJulDay , true);
       if (timeOptional.isPresent()) {
         fromJulDay = timeOptional.get();
         if (fromJulDay > toJulDay)
@@ -89,21 +72,6 @@ public interface RelativeTransitIF {
     return getPeriodRelativeTransitLDTs(transitStar ,relativeStar , fromGmtJulDay , toGmtJulDay , angle);
   }
 
-
-  @NotNull
-  default List<Time> getPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , @NotNull Time fromGmt, @NotNull Time toGmt, double angle) {
-    return getPeriodRelativeTransitTimes(transitStar ,relativeStar ,fromGmt.getGmtJulDay() , toGmt.getGmtJulDay() , angle);
-  }
-
-  /** 承上，此為計算 LMT , 回傳也是 LMT */
-  @NotNull
-  default List<Time> getLocalPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , @NotNull Time fromLmt, @NotNull Time toLmt, Location location , double angle) {
-    Time fromGmt = Time.getGMTfromLMT(fromLmt , location );
-    Time   toGmt = Time.getGMTfromLMT(toLmt , location);
-    return getPeriodRelativeTransitTimes(transitStar , relativeStar , fromGmt , toGmt , angle).stream().map(
-      gmt -> Time.getLMTfromGMT(gmt , location)
-    ).collect(Collectors.toList());
-  }
 
   /** 承上 , LMT 的 LocalDateTime 版本 */
   default List<LocalDateTime> getLocalPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , LocalDateTime fromLmt, LocalDateTime toLmt, Location location , double angle)  {
@@ -190,7 +158,4 @@ public interface RelativeTransitIF {
     Optional<Pair<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , gmtJulDay , angles , isForward);
     return optionalPair.map(pair -> Pair.of(new Time(pair.getLeft()).toLocalDateTime() , pair.getRight()));
   }
-
-
-
 }

@@ -4,8 +4,7 @@
  */ 
 package destiny.astrology;
 
-public class Utils
-{
+public class Utils {
 
   /** 將度數 normalize 到 0(含)~360(不含) 的區間 */
   public static double getNormalizeDegree(double degree)

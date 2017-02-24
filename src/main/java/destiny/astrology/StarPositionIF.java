@@ -39,28 +39,10 @@ public interface StarPositionIF {
     return getPosition(star , gmtJulDay , centric , coordinate);
   }
 
-  /**
-   * 取得星體的位置 , 時間是 GMT
-   * @param star 星體
-   * @param gmt GMT
-   * @param centric GEO / TOPO / HELIO / BARY
-   * @param coordinate ECLIPTIC / EQUATORIAL / SIDEREAL
-   * @return 座標
-   */
-  default Position getPosition(Star star, Time gmt , Centric centric , Coordinate coordinate) {
-    double gmtJulDay = gmt.getGmtJulDay();
-    return getPosition(star , gmtJulDay , centric , coordinate);
-  }
-
-  /** 取得星體的位置 , 包含當地時間以及座標 */
+  /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 */
   default Position getPosition(Star star, LocalDateTime lmt, Location location , Centric centric , Coordinate coordinate) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     return getPosition(star , gmt , centric , coordinate);
   }
 
-  /** 取得星體的位置 , 包含當地時間以及座標 , Time 版本 */
-  default Position getPosition(Star star, Time lmt, Location location , Centric centric , Coordinate coordinate) {
-    Time gmt = Time.getGMTfromLMT(lmt, location);
-    return getPosition(star , gmt , centric , coordinate);
-  }
 }

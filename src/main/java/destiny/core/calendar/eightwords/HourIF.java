@@ -19,12 +19,6 @@ public interface HourIF extends Descriptive {
   @NotNull
   Branch getHour(double gmtJulDay , Location location);
 
-  @NotNull
-  default Branch getHour(LocalDateTime lmt , Location location) {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
-    return getHour(gmtJulDay, location);
-  }
 
   /**
    * @param lmt 傳入當地手錶時間
@@ -32,11 +26,11 @@ public interface HourIF extends Descriptive {
    * @return 時辰（只有地支）
    */
   @NotNull
-  default Branch getHour(Time lmt , Location location) {
-    double gmtJulDay = Time.getGMTfromLMT(lmt , location).getGmtJulDay();
-    return getHour(gmtJulDay , location);
+  default Branch getHour(LocalDateTime lmt , Location location) {
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getHour(gmtJulDay, location);
   }
-
 
   /**
    * @param gmtJulDay GMT 時間
@@ -47,6 +41,9 @@ public interface HourIF extends Descriptive {
   double getGmtNextStartOf(double gmtJulDay , Location location , Branch eb);
 
   /**
+   * @param lmt 傳入當地手錶時間
+   * @param location 當地的經緯度等資料
+   * @param eb 欲求之下一個地支開始時刻
    * @return 回傳 LMT 時刻
    */
   default LocalDateTime getLmtNextStartOf(LocalDateTime lmt , Location location , Branch eb) {
@@ -70,5 +67,5 @@ public interface HourIF extends Descriptive {
     Time gmtTime = new Time(gmtResult);
     return Time.getLMTfromGMT(gmtTime , location);
   }
-  
+
 }
