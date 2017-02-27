@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.time.chrono.IsoEra;
 import java.util.*;
 
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
  */
@@ -97,7 +99,7 @@ public class ContextColorCanvasWrapper {
     else
       timeData.append("　");
       
-    timeData.append(AlignUtil.alignRight(lmt.getYear(),4));
+    timeData.append(AlignUtil.alignRight(lmt.get(YEAR_OF_ERA),4));
     timeData.append("年");
     timeData.append(AlignUtil.alignRight(lmt.getMonthValue(),2));
     timeData.append("月");

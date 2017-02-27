@@ -160,6 +160,18 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     return sb.toString();
   }
 
+  public static String getDebugString(LocalDateTime time) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(time.getYear() >= 1 ? '+' : '-');
+    sb.append(AlignUtil.alignRight(time.get(YEAR_OF_ERA), 4, ' '));
+    sb.append(AlignUtil.alignRight(time.getMonthValue(), 2, ' '));
+    sb.append(AlignUtil.alignRight(time.getDayOfMonth(), 2, ' '));
+    sb.append(AlignUtil.alignRight(time.getHour(), 2, ' '));
+    sb.append(AlignUtil.alignRight(time.getMinute(), 2, ' '));
+    sb.append(time.getSecond());
+    return sb.toString();
+  }
+
   /** 
    * 取得此時間的 timestamp
    * TODO : 要確認 1582 之前是否正常 
