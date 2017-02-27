@@ -15,10 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.chrono.IsoEra;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -293,15 +291,22 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   public LocalDateTime toLocalDateTime() {
     int intSecond = (int) second;
     int nanoSeconds = (int) ((second - intSecond) * 1_000_000_000);
+    logger.debug("nanoSeconds = {}" , nanoSeconds);
 
-    if (year > 1582) {
-      return LocalDateTime.of(year , month , day , hour , minute , intSecond , nanoSeconds);
+    LocalDateTime result;
+    if (!ad) {
+      // Year 1 is preceded by year 0, then by year -1.
+      int y = -(year-1);
+      LocalDate ld = LocalDate.of(y , month , day).with(IsoEra.BCE);
+      LocalTime lt = LocalTime.of(hour , minute , intSecond , nanoSeconds);
+      result = LocalDateTime.of(ld, lt);
+      result = result.with(IsoEra.BCE);
     } else {
-      int y = (ad ? year : year+1);
-      // TODO : Java8 的 LocalDate 並非 GregorianCalendar . 是 "proleptic" Gregorian Calendar . 不考慮 cutover
-      // 要考慮是否要在此作轉換
-      return LocalDateTime.of(y , month , day , hour , minute , intSecond , nanoSeconds);
+      result = LocalDateTime.of(year , month , day , hour , minute , intSecond , nanoSeconds);
     }
+    logger.debug("result = {} , era = {}" , result , result.toLocalDate().getEra());
+
+    return result;
   }
 
   /**

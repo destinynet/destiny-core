@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2008/7/24 at 上午 4:13:26
- */ 
+ */
 package destiny.core;
 
 import destiny.core.calendar.*;
@@ -9,91 +9,79 @@ import destiny.core.calendar.*;
 import java.io.Serializable;
 
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
-public class BirthData implements GenderIF , TimeIF , DateIF , HmsIF , LocationIF , Serializable
-{
+public class BirthData implements GenderIF, TimeIF, DateIF, HmsIF, LocationIF, Serializable {
+
   private Gender gender;
+
   private Time time;
+
   private Location location;
-  
-  public BirthData(Gender gender , Time time , Location location)
-  {
+
+  public BirthData(Gender gender, Time time, Location location) {
     this.gender = gender;
     this.time = time;
     this.location = location;
   }
 
   @Override
-  public Gender getGender()
-  {
+  public Gender getGender() {
     return gender;
   }
 
-  public void setGender(Gender gender)
-  {
+  public void setGender(Gender gender) {
     this.gender = gender;
   }
 
   @Override
-  public Time getTime()
-  {
+  public Time getTime() {
     return time;
   }
 
-  public void setTime(Time time)
-  {
+  public void setTime(Time time) {
     this.time = time;
   }
 
   @Override
-  public Location getLocation()
-  {
+  public Location getLocation() {
     return location;
   }
 
-  public void setLocation(Location location)
-  {
+  public void setLocation(Location location) {
     this.location = location;
   }
 
   @Override
-  public boolean isAd()
-  {
+  public boolean isAd() {
     return time.isAd();
   }
 
   @Override
-  public int getYear()
-  {
+  public int getYear() {
     return time.getYear();
   }
-  
+
   @Override
-  public int getMonth()
-  {
+  public int getMonth() {
     return time.getMonth();
   }
 
   @Override
-  public int getDay()
-  {
+  public int getDay() {
     return time.getDay();
   }
 
   @Override
-  public int getHour()
-  {
+  public int getHour() {
     return time.getHour();
   }
 
   @Override
-  public int getMinute()
-  {
+  public int getMinute() {
     return time.getMinute();
   }
 
   @Override
-  public double getSecond()
-  {
+  public double getSecond() {
     return time.getSecond();
   }
 
