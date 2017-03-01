@@ -102,8 +102,8 @@ public class PersonContext extends EightWordsContext {
 
   /** 取得出生時刻 */
   @NotNull
-  public Time getLmt() {
-    return Time.from(lmt);
+  public LocalDateTime getLmt() {
+    return lmt;
   }
 
   /** 取得出生地點 */

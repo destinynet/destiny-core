@@ -167,6 +167,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     sb.append(AlignUtil.alignRight(time.getHour(), 2, ' '));
     sb.append(AlignUtil.alignRight(time.getMinute(), 2, ' '));
     sb.append(time.getSecond());
+    sb.append('.');
+    if (time.getNano() == 0) {
+      sb.append('0');
+    } else {
+      // 小數點部分
+      String decimal = String.valueOf(time.getNano() / 1_000_000_000.0);
+      sb.append(decimal.substring(2));
+    }
     return sb.toString();
   }
 

@@ -17,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.JulianFields;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import static java.lang.System.out;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
@@ -35,6 +36,17 @@ public class LocalDateTimeTest {
     logger.info("{}" , LocalDate.of(2012 , 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM")));
   }
 
+  @Test
+  public void testLocalDateTime1582() {
+    LocalDateTime ldt = LocalDateTime.of(1582, 10 , 16 , 0 , 0);
+    TimeZone tz = TimeZone.getTimeZone("UTC");
+    ZonedDateTime zdt = ldt.atZone(tz.toZoneId());
+    for(int i=0 ; i <10 ; i++) {
+      zdt = ZonedDateTime.from(zdt).minusDays(1);
+      //ld = LocalDate.from(ld).minusDays(1);
+      logger.info("zdt = {}" , zdt);
+    }
+  }
 
   /**
    * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar

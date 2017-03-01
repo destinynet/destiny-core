@@ -3,9 +3,9 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
+import destiny.core.calendar.LdtDecoratorChinese;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
-import destiny.core.calendar.TimeDecoratorChinese;
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWords;
@@ -13,6 +13,7 @@ import destiny.core.chinese.StemBranch;
 import destiny.tools.ColorCanvas.AlignUtil;
 import destiny.tools.ColorCanvas.ColorCanvas;
 import destiny.tools.Decorator;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -37,13 +38,13 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   private PersonContextModel.FortuneOutputFormat fortuneOutputFormat = PersonContextModel.FortuneOutputFormat.虛歲;
 
-  private final Decorator<Time> timeDecorator = new TimeDecoratorChinese();
+  private final Decorator<LocalDateTime> timeDecorator = new LdtDecoratorChinese();
 
   private final Direction direction;
 
   public PersonContextColorCanvasWrapper(@NotNull PersonContextModel model,
                                          String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl , Direction direction) {
-    super(model.getPersonContext(), model.getPersonContext().getLmt().toLocalDateTime() ,
+    super(model.getPersonContext(), model.getPersonContext().getLmt() ,
       model.getPersonContext().getLocation() , locationName , hiddenStemsImpl , linkUrl, direction);
     this.model = model;
     this.hiddenStemsImpl = hiddenStemsImpl;
@@ -94,9 +95,9 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       LocalDateTime startFortuneLmt = fortuneData.getStartFortuneLmt();
       LocalDateTime   endFortuneLmt = fortuneData.getEndFortuneLmt();
 
-      大運直.setText(AlignUtil.alignRight(startFortune, 6) , i , 1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(Time.from(startFortuneLmt)));
+      大運直.setText(AlignUtil.alignRight(startFortune, 6) , i , 1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       大運直.setText("→" , i , 9 , "green" );
-      大運直.setText(AlignUtil.alignRight(endFortune , 6) , i , 13 , "green" , null , "終運時刻：" + timeDecorator.getOutputString(Time.from(endFortuneLmt)));
+      大運直.setText(AlignUtil.alignRight(endFortune , 6) , i , 13 , "green" , null , "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt));
       大運直.setText(stemBranch.toString() , i , 21 , "green");
     }
 
@@ -111,7 +112,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       StemBranch stemBranch = fortuneData.getStemBranch();
       LocalDateTime startFortuneLmt = fortuneData.getStartFortuneLmt();
 
-      大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , (i-1)*8+1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(Time.from(startFortuneLmt)));
+      大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , (i-1)*8+1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , eightWords.getDay().getStem());
       大運橫.setText(reaction.toString().substring(0, 1), 2, (i-1)*8+3, "gray");
       大運橫.setText(reaction.toString().substring(1,2) , 3 , (i-1)*8+3 , "gray");
@@ -128,13 +129,16 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     SolarTerms prevMajorSolarTerms = model.getPrevMajorSolarTerms();
     SolarTerms nextMajorSolarTerms = model.getNextMajorSolarTerms();
 
-
-    Time prevMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(-1) );
+    Pair<Long , Long> pair1 = Time.splitSecond(personContext.getTargetMajorSolarTermsSeconds(-1));
+    LocalDateTime prevMajorSolarTermsTime = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair1.getLeft()).plusNanos(pair1.getRight());
+    //Time prevMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(-1) );
     節氣.setText(prevMajorSolarTerms.toString() , 1 , 1);
     節氣.setText("：" , 1, 5);
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime) , 1,7);
 
-    Time nextMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(1) );
+    Pair<Long , Long> pair2 = Time.splitSecond(personContext.getTargetMajorSolarTermsSeconds(1));
+    LocalDateTime nextMajorSolarTermsTime = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair2.getLeft()).plusNanos(pair2.getRight());
+    //Time nextMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(1) );
     節氣.setText(nextMajorSolarTerms.toString() , 2 , 1);
     節氣.setText("：" , 2, 5);
     節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime) , 2,7);

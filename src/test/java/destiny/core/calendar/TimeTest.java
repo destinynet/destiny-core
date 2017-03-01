@@ -11,10 +11,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import static destiny.core.calendar.Time.getDstSecondOffset;
@@ -40,16 +38,6 @@ public class TimeTest
     System.out.println("time = " + s);
   }
 
-  @Test
-  public void testDateEquals() {
-    Time t1 = new Time();
-    Time t2 = new Time(t1 , 100.0);
-
-    LocalDate ld1 = t1.toLocalDateTime().toLocalDate();
-    LocalDate ld2 = t2.toLocalDateTime().toLocalDate();
-
-    logger.info("ld1 same ld2 ? {} . ld1 equals ld2 ? {} . Objects.equals ? {}" , ld1.isEqual(ld2) , ld1.equals(ld2) , Objects.equals(ld1 , ld2));
-  }
 
   /**
    * 已知：
@@ -278,33 +266,6 @@ public class TimeTest
     }
   }
 
-  /**
-   * 測試由 Time 的 diff Seconds 再建立一個 Time
-   */
-  @Test
-  public void testTimeDiffSeconds1()
-  {
-    /** 西元兩千年 */
-    origin = new Time(2000 , 1, 1 , 0 , 0 , 0);
-
-    actual = new Time(origin , 1);
-    expected = new Time(2000, 1, 1 , 0 , 0 , 1);
-    assertEquals(expected , actual);
-
-    actual = new Time(origin , -1);
-    expected = new Time(1999, 12, 31 , 23 , 59 , 59);
-    assertEquals(expected , actual);
-
-    /** 西元元年 1/1 */
-    origin = new Time(true , 1 , 1 , 1, 0 , 0 , 0);
-    actual = new Time(origin , 1);
-    expected = new Time(true, 1 , 1 , 1 , 0 , 0 , 1);
-    assertEquals(expected , actual);
-    /** 減去一秒 , 變成西元前一年 , 12/31 23:59:59 */
-    actual = new Time(origin , -1);
-    expected = new Time(false, 1 , 12 , 31 , 23 , 59 , 59);
-    assertEquals(expected , actual);
-  }
 
   /** 測試 1582/10/4 --- 1582/10/15 的日期轉換 , 以「日」為單位來 diff , 先避掉 Round-off error */
   @Test

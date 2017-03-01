@@ -57,9 +57,9 @@ public class PersonContextModel implements Serializable {
 
     this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());
     this.locationName = locationName;
-    this.dst = Time.getDstSecondOffset(context.getLmt().toLocalDateTime(), context.getLocation()).getLeft();
+    this.dst = Time.getDstSecondOffset(context.getLmt(), context.getLocation()).getLeft();
 
-    gmtMinuteOffset = (Time.getDstSecondOffset(context.getLmt().toLocalDateTime(), context.getLocation()).getRight() / 60);
+    gmtMinuteOffset = (Time.getDstSecondOffset(context.getLmt(), context.getLocation()).getRight() / 60);
 
     // 首先取得到下/上個節氣的秒數
     double fortuneMonthSpan = personContext.getFortuneMonthSpan();
@@ -71,7 +71,7 @@ public class PersonContextModel implements Serializable {
 
 
     // 命宮干支
-    risingStemBranch = context.getRisingStemBranch(context.getLmt().toLocalDateTime() , context.getLocation());
+    risingStemBranch = context.getRisingStemBranch(context.getLmt(), context.getLocation());
 
     //下個大運的干支
     StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
@@ -90,9 +90,9 @@ public class PersonContextModel implements Serializable {
       double   endFortuneSeconds = personContext.getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
 
       Pair<Long , Long> pair1 = Time.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
-      LocalDateTime startFortuneLmt = LocalDateTime.from(personContext.getLmt().toLocalDateTime()).plusSeconds(pair1.getLeft()).plusNanos(pair1.getRight());
+      LocalDateTime startFortuneLmt = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair1.getLeft()).plusNanos(pair1.getRight());
       Pair<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
-      LocalDateTime endFortuneLmt  = LocalDateTime.from(personContext.getLmt().toLocalDateTime()).plusSeconds(pair2.getLeft()).plusNanos(pair2.getRight());
+      LocalDateTime endFortuneLmt  = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair2.getLeft()).plusNanos(pair2.getRight());
 
       switch(fortuneOutputFormat)
       {
