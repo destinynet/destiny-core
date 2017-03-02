@@ -187,6 +187,13 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     Calendar cal = new GregorianCalendar(year, month - 1, day, hour, minute, (int) second);
     return new Timestamp(cal.getTimeInMillis());
   }
+
+  @NotNull
+  public static Timestamp getTimestamp(LocalDateTime ldt) {
+    return Timestamp.valueOf(ldt);
+  }
+
+
   
   /**
    * 從 Timestamp 取得 Time 物件
