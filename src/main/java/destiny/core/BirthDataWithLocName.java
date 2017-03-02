@@ -5,7 +5,8 @@
 package destiny.core;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
+
+import java.time.LocalDateTime;
 
 public class BirthDataWithLocName extends BirthData {
 
@@ -14,7 +15,7 @@ public class BirthDataWithLocName extends BirthData {
 
   private String locationName = "";
 
-  public BirthDataWithLocName(String name, Gender gender, Time time, Location location) {
+  public BirthDataWithLocName(String name, Gender gender, LocalDateTime time, Location location) {
     super(gender, time, location);
     this.name = name;
   }

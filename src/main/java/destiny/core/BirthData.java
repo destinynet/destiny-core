@@ -7,17 +7,19 @@ package destiny.core;
 import destiny.core.calendar.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.chrono.IsoEra;
 
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
 public class BirthData implements GenderIF, TimeIF, DateIF, HmsIF, LocationIF, Serializable {
 
   private Gender gender;
 
-  private Time time;
+  private LocalDateTime time;
 
   private Location location;
 
-  public BirthData(Gender gender, Time time, Location location) {
+  public BirthData(Gender gender, LocalDateTime time, Location location) {
     this.gender = gender;
     this.time = time;
     this.location = location;
@@ -33,11 +35,11 @@ public class BirthData implements GenderIF, TimeIF, DateIF, HmsIF, LocationIF, S
   }
 
   @Override
-  public Time getTime() {
+  public LocalDateTime getTime() {
     return time;
   }
 
-  public void setTime(Time time) {
+  public void setTime(LocalDateTime time) {
     this.time = time;
   }
 
@@ -52,7 +54,7 @@ public class BirthData implements GenderIF, TimeIF, DateIF, HmsIF, LocationIF, S
 
   @Override
   public boolean isAd() {
-    return time.isAd();
+    return time.toLocalDate().getEra() == IsoEra.CE;
   }
 
   @Override
@@ -62,12 +64,12 @@ public class BirthData implements GenderIF, TimeIF, DateIF, HmsIF, LocationIF, S
 
   @Override
   public int getMonth() {
-    return time.getMonth();
+    return time.getMonthValue();
   }
 
   @Override
   public int getDay() {
-    return time.getDay();
+    return time.getDayOfMonth();
   }
 
   @Override

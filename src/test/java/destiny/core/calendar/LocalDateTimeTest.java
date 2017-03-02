@@ -29,6 +29,15 @@ public class LocalDateTimeTest {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
 
+  @Test
+  public void testWithValue() {
+    LocalDateTime ldt = LocalDateTime.now();
+    logger.info("before withYear , ldt = {}" , ldt);
+    LocalDateTime ldt2 = ldt.withYear(2000);
+    logger.info("after withYear , ldt = {}" , ldt);
+    logger.info("ldt2 = {}" , ldt2);
+  }
+
 
   @Test
   public void testOutput() {

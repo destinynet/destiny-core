@@ -5,14 +5,15 @@
 package destiny.core;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
+
+import java.time.LocalDateTime;
 
 public class BirthDataWithLocNameEmail extends BirthDataWithLocName
 {
   private String name;
   private String email;
   
-  public BirthDataWithLocNameEmail(String name, Gender gender, Time time, Location location)
+  public BirthDataWithLocNameEmail(String name, Gender gender, LocalDateTime time, Location location)
   {
     super(name, gender, time, location);
   }
