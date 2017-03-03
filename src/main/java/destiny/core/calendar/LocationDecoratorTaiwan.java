@@ -14,7 +14,7 @@ public class LocationDecoratorTaiwan implements Decorator<Location> {
   @NotNull
   @Override
   public String getOutputString(@NotNull Location location) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append(location.getEastWest() == EastWest.EAST ? "東經" : "西經").append(" ");
     sb.append(location.getLongitudeDegree()).append("度 ");
     sb.append(location.getLongitudeMinute()).append("分 ");

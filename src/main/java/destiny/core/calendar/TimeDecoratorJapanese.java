@@ -17,7 +17,7 @@ public class TimeDecoratorJapanese implements Decorator<LocalDateTime>, Serializ
   @NotNull
   @Override
   public String getOutputString(LocalDateTime time) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("西暦生年");
     if (time.toLocalDate().getEra() == IsoEra.BCE)
       sb.append("前" );

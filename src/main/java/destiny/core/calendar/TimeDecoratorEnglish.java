@@ -17,7 +17,7 @@ public class TimeDecoratorEnglish implements Decorator<LocalDateTime>, Serializa
   @NotNull
   @Override
   public String getOutputString(LocalDateTime time) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append(time.get(YEAR_OF_ERA) );
     if(time.toLocalDate().getEra() == IsoEra.CE)
       sb.append("AD");

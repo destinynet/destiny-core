@@ -143,7 +143,7 @@ public class Canvas implements Serializable
   @NotNull
   public String toString()
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i=0 ; i<height ; i++)
     {
       String s = new String(this.getContent(), i*width , width);

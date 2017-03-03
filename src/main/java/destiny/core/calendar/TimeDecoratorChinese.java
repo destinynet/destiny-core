@@ -29,7 +29,7 @@ public class TimeDecoratorChinese implements Decorator<LocalDateTime>, Serializa
   @NotNull
   @Override
   public String getOutputString(LocalDateTime time) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
 
     logger.debug("time = {} , era = {}" , time , time.toLocalDate().getEra());
 

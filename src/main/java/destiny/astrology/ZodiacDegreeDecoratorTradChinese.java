@@ -19,14 +19,14 @@ public class ZodiacDegreeDecoratorTradChinese implements ZodiacDegreeDecoratorIF
     ZodiacSign sign = ZodiacSign.getZodiacSign(degree);
     this.deg = degree-sign.getDegree();
     
-    StringBuffer sb = new StringBuffer();
-    sb.append(sign.toString(Locale.TAIWAN)+" ");
+    StringBuilder sb = new StringBuilder();
+    sb.append(sign.toString(Locale.TAIWAN)).append(" ");
     if (getDeg() < 10)
       sb.append("0");
-    sb.append(getDeg() + "度 ");
+    sb.append(getDeg()).append("度 ");
     if (getMin() < 10)
       sb.append("0");
-    sb.append(getMin() + "分 ");
+    sb.append(getMin()).append("分 ");
     if (getSec() < 10)
     {
       sb.append("0");
@@ -45,7 +45,7 @@ public class ZodiacDegreeDecoratorTradChinese implements ZodiacDegreeDecoratorIF
     ZodiacSign sign = ZodiacSign.getZodiacSign(degree);
     this.deg = degree-sign.getDegree();
     
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     if (getDeg() < 10)
       sb.append("0");
     sb.append(getDeg());

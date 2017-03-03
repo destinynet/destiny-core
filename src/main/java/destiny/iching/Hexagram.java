@@ -262,7 +262,7 @@ public enum Hexagram implements HexagramIF , Serializable
   @Override
   public String getBinaryCode()
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for(boolean yy : getYinYangs())
       sb.append(yy ? '1' : '0');
     return sb.toString();

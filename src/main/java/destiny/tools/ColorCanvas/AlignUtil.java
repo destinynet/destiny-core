@@ -16,7 +16,7 @@ public class AlignUtil
    */
   public static String alignCenter(int value , int width)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     if (value < 0) 
       sb.append("前");
     
@@ -131,7 +131,7 @@ public class AlignUtil
    */
   private static String generateDoubleSpace(int length)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     int doubleByteSpaces = length / 2;
     for (int i=0 ; i < doubleByteSpaces ; i++)
     {
@@ -152,7 +152,7 @@ public class AlignUtil
    */
   public static String alignRight(double value , int width)
   {
-    StringBuffer sb = new StringBuffer(String.valueOf(value));
+    StringBuilder sb = new StringBuilder(String.valueOf(value));
     int valueLength = sb.length();
     
     if (valueLength == 4)

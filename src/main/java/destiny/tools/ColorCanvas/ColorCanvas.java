@@ -140,7 +140,7 @@ public class ColorCanvas implements Serializable
       } catch (UnsupportedEncodingException ignored) {
       }
       if (byteArray != null) {
-        System.arraycopy(byteArray, 0, bytes, index + 0, byteArray.length);
+        System.arraycopy(byteArray, 0, bytes, index, byteArray.length);
         index = index + byteArray.length;
       }
     }
@@ -485,7 +485,7 @@ public class ColorCanvas implements Serializable
   {
     ColorCanvas appendedCanvas = new ColorCanvas(1 , width , " " , Optional.empty() , Optional.empty());
     this.height ++;
-    ColorByte[] newContent = new ColorByte[content.length + 1*width];
+    ColorByte[] newContent = new ColorByte[content.length + width];
     System.arraycopy(content, 0, newContent, 0, content.length);
     System.arraycopy(appendedCanvas.getContent() , 0 , newContent , content.length , appendedCanvas.getContent().length);
     content = newContent;
@@ -649,7 +649,7 @@ public class ColorCanvas implements Serializable
     {
       try
       {
-        tempSb.append("<a href=\""+ cb.getUrl().get() +"\" target=\"_blank\">"+ new String(byteArray , "Big5") +"</a>");
+        tempSb.append("<a href=\"").append(cb.getUrl().get()).append("\" target=\"_blank\">").append(new String(byteArray, "Big5")).append("</a>");
       }
       catch (UnsupportedEncodingException ignored)
       {
@@ -661,7 +661,7 @@ public class ColorCanvas implements Serializable
     }
     else if (hasUrl && hasFont) //有網址也有字型
     {
-      tempSb.append("<a href=\""+ cb.getUrl().get() +"\" target=\"_blank\">");
+      tempSb.append("<a href=\"").append(cb.getUrl().get()).append("\" target=\"_blank\">");
       tempSb.append(buildFontHtml(cb, byteArray));
       tempSb.append("</a>");
     }
@@ -686,9 +686,9 @@ public class ColorCanvas implements Serializable
     sb.append("style=\"");
 //    sb.append("white-space: pre; ");
 
-    cb.getForeColor().ifPresent(foreColor -> sb.append("color:"+foreColor+"; ") );
-    cb.getBackColor().ifPresent( backColor -> sb.append("background-color:"+backColor+"; "));
-    cb.getFont().ifPresent( font -> sb.append("font-family:"+font.getFamily()+"; ") );
+    cb.getForeColor().ifPresent(foreColor -> sb.append("color:").append(foreColor).append("; "));
+    cb.getBackColor().ifPresent( backColor -> sb.append("background-color:").append(backColor).append("; "));
+    cb.getFont().ifPresent( font -> sb.append("font-family:").append(font.getFamily()).append("; "));
 
     sb.append("\"");
     

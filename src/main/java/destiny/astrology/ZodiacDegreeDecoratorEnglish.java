@@ -29,7 +29,7 @@ public class ZodiacDegreeDecoratorEnglish implements ZodiacDegreeDecoratorIF
     ZodiacSign sign = ZodiacSign.getZodiacSign(degree);
     this.deg = degree-sign.getDegree();
     
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     if (getDeg() < 10)
       sb.append("0");
     sb.append(getDeg());

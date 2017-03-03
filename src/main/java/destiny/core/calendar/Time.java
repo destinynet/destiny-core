@@ -147,7 +147,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   /** 傳回最精簡的文字表示法 , 可以餵進去 {@link #Time(String)} 裡面*/
   @NotNull
   public String getDebugString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append(this.ad ? '+' : '-');
     sb.append(AlignUtil.alignRight(this.year, 4, ' '));
     sb.append(AlignUtil.alignRight(this.month, 2, ' '));

@@ -101,7 +101,7 @@ public class Palm implements Serializable {
   public Map<Branch, Collection<Pillar>> getNonEmptyPillars() {
     return pillarMap.asMap().entrySet().stream()
       .filter(entry -> entry.getValue().size() > 0)
-      .collect(Collectors.toMap(entry -> entry.getKey() , entry -> entry.getValue()));
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**

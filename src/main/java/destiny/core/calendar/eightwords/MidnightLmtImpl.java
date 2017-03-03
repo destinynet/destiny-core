@@ -8,7 +8,6 @@ package destiny.core.calendar.eightwords;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.time.LocalDate;

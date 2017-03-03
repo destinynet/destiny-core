@@ -350,7 +350,7 @@ public class Location implements Serializable
    */
   @NotNull
   public String getDebugString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append(eastWest == EAST ? '+' : '-');
     sb.append(AlignUtil.alignRight(this.longitudeDegree, 3 , ' '));
     sb.append(AlignUtil.alignRight(this.longitudeMinute, 2 , ' '));

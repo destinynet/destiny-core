@@ -1,7 +1,5 @@
 package destiny.astrology.prediction;
 
-import destiny.core.calendar.Time;
-
 import java.time.LocalDateTime;
 
 /** 

@@ -28,23 +28,23 @@ public class AzimuthDegreeTaiwanDecorator implements Decorator<Double>
       return "正西方";
     else
     {
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       if (value <=45)
-        sb.append("北偏東" + String.valueOf(value).substring(0, 4));
+        sb.append("北偏東").append(String.valueOf(value).substring(0, 4));
       else if (value > 45 && value < 90)
-        sb.append("東偏北" + String.valueOf(90-value).substring(0,4));
+        sb.append("東偏北").append(String.valueOf(90 - value).substring(0, 4));
       else if (value > 90 && value <= 135)
-        sb.append("東偏南" + String.valueOf(value-90).substring(0,4));
+        sb.append("東偏南").append(String.valueOf(value - 90).substring(0, 4));
       else if (value > 135 && value < 180)
-        sb.append("南偏東" + String.valueOf(180-value).substring(0,4));
+        sb.append("南偏東").append(String.valueOf(180 - value).substring(0, 4));
       else if (value > 180 && value <= 225)
-        sb.append("南偏西" + String.valueOf(value-180).substring(0,4));
+        sb.append("南偏西").append(String.valueOf(value - 180).substring(0, 4));
       else if (value > 225 && value < 270)
-        sb.append("西偏南" + String.valueOf(270-value).substring(0,4));
+        sb.append("西偏南").append(String.valueOf(270 - value).substring(0, 4));
       else if (value > 270 && value <= 315)
-        sb.append("西偏北" + String.valueOf(value-270).substring(0,4));
+        sb.append("西偏北").append(String.valueOf(value - 270).substring(0, 4));
       else
-        sb.append("北偏西" + String.valueOf(360-value).substring(0,4));
+        sb.append("北偏西").append(String.valueOf(360 - value).substring(0, 4));
       sb.append("度");
       return sb.toString();
     }

@@ -20,7 +20,7 @@ import java.util.List;
 public class AcquiredSymbolCompass extends AbstractSymbol implements Serializable
 {
   @NotNull
-  private static List<Symbol> SymbolList = new ArrayList<Symbol>();
+  private static List<Symbol> SymbolList = new ArrayList<>();
   static
   {
     SymbolList.add(Symbol.坎);

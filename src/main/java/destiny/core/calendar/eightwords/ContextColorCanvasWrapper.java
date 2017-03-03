@@ -92,7 +92,7 @@ public class ContextColorCanvasWrapper {
     ColorCanvas cc = new ColorCanvas(9,52,"　");
     
     ColorCanvas 西元資訊 = new ColorCanvas(1,36, "　");
-    StringBuffer timeData = new StringBuffer();
+    StringBuilder timeData = new StringBuilder();
     timeData.append("西元：");
     if(lmt.toLocalDate().getEra() == IsoEra.BCE)
       timeData.append("前");
@@ -130,7 +130,7 @@ public class ContextColorCanvasWrapper {
 
     
     ColorCanvas 經度 = new ColorCanvas(1, 24 , "　");
-    StringBuffer lonText = new StringBuffer();
+    StringBuilder lonText = new StringBuilder();
     lonText.append(location.getEastWest() == Location.EastWest.EAST ? "東" : "西");
     lonText.append("經：");
     lonText.append(AlignUtil.alignRight(location.getLongitudeDegree(),4));
@@ -143,7 +143,7 @@ public class ContextColorCanvasWrapper {
     cc.add(經度 , 4 , 1);
     
     ColorCanvas 緯度 = new ColorCanvas(1, 20 , "　");
-    StringBuffer latText = new StringBuffer();
+    StringBuilder latText = new StringBuilder();
     latText.append(location.getNorthSouth() == Location.NorthSouth.NORTH ? "北" : "南");
     latText.append("緯：");
     latText.append(AlignUtil.alignRight(location.getLatitudeDegree(),2));

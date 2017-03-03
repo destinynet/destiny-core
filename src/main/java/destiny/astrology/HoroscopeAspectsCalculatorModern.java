@@ -51,9 +51,9 @@ public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalcula
     {
       double eachDeg = horoscope.getPositionWithAzimuth(eachPoint).getLongitude();
       /** 直接比對度數，不考慮星體 */
-      aspects.stream().filter(eachAspect -> point != eachPoint && modern.isEffective(starDeg, eachDeg, eachAspect)).forEach(eachAspect -> {
-        result.put(eachPoint, eachAspect);
-      });
+      aspects.stream()
+        .filter(eachAspect -> point != eachPoint && modern.isEffective(starDeg, eachDeg, eachAspect))
+        .forEach(eachAspect -> result.put(eachPoint, eachAspect));
     }
     return result;
   }

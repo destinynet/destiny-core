@@ -14,7 +14,7 @@ public class LocationDecoratorEnglish implements Decorator<Location> {
   @NotNull
   @Override
   public String getOutputString(@NotNull Location location) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append(location.getEastWest() == EastWest.EAST ? "East " : "West ");
     sb.append(location.getLongitudeDegree()).append(" ° ");
     sb.append(location.getLongitudeMinute()).append(" ' ");

@@ -24,7 +24,7 @@ public class GoogleMapsUrlBuilder implements LocationUrlBuilder , Serializable
   @Nullable
   public URL getUrl(@NotNull Location location)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("http://maps.google.com/maps?");
     sb.append("ll=");
     //緯度

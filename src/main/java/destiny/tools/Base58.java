@@ -29,8 +29,7 @@ public class Base58 implements Serializable {
     char[] chars = text.toCharArray();
     long result = 0;
     long multiplier = 1;
-    for (int index = 0; index < chars.length; index++) {
-      char c = chars[index];
+    for (char c : chars) {
       int digit;
       if (c >= '1' && c <= '9') {
         digit = c - '1';
