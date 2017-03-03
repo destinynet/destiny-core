@@ -23,15 +23,11 @@ public class MidnightLmtImpl implements MidnightIF, Serializable {
 
   @Override
   public double getNextMidnight(double gmtJulDay, @NotNull Location loc) {
-    Time gmt = new Time(gmtJulDay);
-//    LocalDateTime resultLmt = gmt.toLocalDateTime().toLocalDate()
-//      .plus(1 , ChronoUnit.DAYS)
-//      .atTime(0 , 0 , 0);
-
-    Time lmt = Time.getLMTfromGMT(gmt, loc);
-    Time resultLmt = new Time(lmt.isAd(), lmt.getYear(), lmt.getMonth(), lmt.getDay() + 1, 0, 0, 0);
-    Time resultGmt = Time.getGMTfromLMT(resultLmt , loc);
-    return resultGmt.getGmtJulDay();
+    LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
+    LocalDateTime lmt = Time.getLmtFromGmt(gmt , loc);
+    LocalDateTime resultLmt = LocalDateTime.from(lmt).plusDays(1).withHour(0).withSecond(0).withSecond(0).withNano(0);
+    LocalDateTime resultGmt = Time.getGmtFromLmt(resultLmt , loc);
+    return Time.getGmtJulDay(resultGmt);
   }
 
   /**
@@ -44,16 +40,6 @@ public class MidnightLmtImpl implements MidnightIF, Serializable {
       .atTime(0 , 0 , 0);
   }
 
-  /**
-   * 2017-02-10 : 為了避免 Time 的 round-off error , 所以這裡仍保留實作
-   */
-  @NotNull
-  public Time getNextMidnight(@Nullable Time lmt, @Nullable Location location) {
-    if (lmt == null || location == null)
-      throw new RuntimeException("lmt and location cannot be null !");
-
-    return new Time(lmt.isAd(), lmt.getYear(), lmt.getMonth(), lmt.getDay() + 1, 0, 0, 0);
-  }
 
   @NotNull
   public String getTitle(Locale locale) {

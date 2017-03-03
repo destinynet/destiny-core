@@ -44,57 +44,6 @@ public class TimeTest
    * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
    */
   @Test
-  public void testGetGMTfromLMT()
-  {
-    Location loc = new Location(121.30 , 25.03 , TimeZone.getTimeZone("Asia/Taipei"));
-    Time gmt,lmt;
-
-    //日光節約時間前一秒
-    lmt = new Time(1974,3,31 , 23 ,  59 , 59);
-    gmt = Time.getGMTfromLMT(lmt, loc);
-    assertEquals(new Time(1974,3,31,15,59,59) , gmt);
-
-    //開始日光節約時間，時間調快一小時 , 變成 GMT+9
-    lmt = new Time(1974,4,1 , 0,0,0); //其實是沒有 0:00~1:00 這段時間的
-    gmt = Time.getGMTfromLMT(lmt, loc);
-    assertEquals(new Time(1974,3,31,15,0,0) , gmt); //所以 GMT 時間會「回溯」一小時。
-
-    //真正日光節約時間，開始於 1:00AM
-    lmt = new Time(1974,4,1 , 1,0,0);
-    gmt = Time.getGMTfromLMT(lmt, loc);
-    assertEquals(new Time(1974,3,31,16,0,0) , gmt); //真正銜接到「日光節約時間」前一秒
-
-
-    //日光節約時間結束前一秒 , GMT+9
-    lmt = new Time(1974,9,30 , 22,59,59);
-    gmt = Time.getGMTfromLMT(lmt, loc);
-    assertEquals(new Time(1974,9,30 , 13,59,59) , gmt);
-
-    lmt = Time.getLMTfromGMT(new Time(1974,9,30,14,0,0), loc);
-    System.err.println(lmt); //推估當時可能過了兩次 23:00-24:00 的時間，以調節和 GMT 的時差
-
-    //正式結束日光節約時間 , GMT+8
-    lmt = new Time(1974,9,30 , 23,0,0);
-    gmt = Time.getGMTfromLMT(lmt, loc);
-    assertEquals(new Time(1974,9,30 , 15,0,0) , gmt);
-
-    //GMT+8
-    lmt = new Time(1974,9,30 , 23,59,59);
-    gmt = Time.getGMTfromLMT(lmt, loc);
-    assertEquals(new Time(1974,9,30 , 15,59,59) , gmt);
-
-    //GMT+8
-    lmt = new Time(1974,10,1 , 0,0,0);
-    gmt = Time.getGMTfromLMT(lmt, loc);
-    assertEquals(new Time(1974,9,30 , 16,0,0) , gmt);
-  }
-
-
-  /**
-   * 已知：
-   * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
-   */
-  @Test
   public void testGetGmtFromLmt() {
     Location loc = new Location(121.30, 25.03, TimeZone.getTimeZone("Asia/Taipei"));
     LocalDateTime gmt, lmt;
@@ -128,48 +77,6 @@ public class TimeTest
     gmt = Time.getGmtFromLmt(lmt, loc);
     assertEquals(LocalDateTime.of(1974, 9, 30, 16, 0, 0), gmt);
   }
-
-  /**
-   * 已知：
-   * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
-   */
-  @Test
-  public void testGetLMTfromGMT()
-  {
-    Location loc = new Location(121.30 , 25.03 , TimeZone.getTimeZone("Asia/Taipei"));
-    Time gmt,lmt;
-
-    //日光節約時間前一秒
-    gmt = new Time(1974,3,31 , 15,  59 , 0);
-    lmt = Time.getLMTfromGMT(gmt, loc);
-    System.out.println(lmt);
-    assertEquals(new Time(1974,3,31,23,59,0) , lmt);
-
-    //開始日光節約時間
-    gmt = new Time(1974,3,31 , 16,  0 , 0);
-    lmt = Time.getLMTfromGMT(gmt, loc);
-    System.out.println(lmt);
-    assertEquals(new Time(1974,4,1,1,0,0) , lmt); //跳躍一小時
-
-    //日光節約時間結束前一秒
-    gmt = new Time(1974,9,30 , 14 , 59 , 59);
-    lmt = Time.getLMTfromGMT(gmt, loc);
-    System.out.println(lmt);
-    assertEquals(new Time(1974,9,30,23,59,59), lmt); //與下面重複
-
-    //日光節約時間結束前一秒
-    gmt = new Time(1974,9,30 , 15 , 59 , 59);
-    lmt = Time.getLMTfromGMT(gmt, loc);
-    System.out.println(lmt);
-    assertEquals(new Time(1974,9,30,23,59,59), lmt); //與上面重複
-
-    //日光節約時間結束
-    gmt = new Time(1974,9,30 , 16 , 0 , 0);
-    lmt = Time.getLMTfromGMT(gmt, loc);
-    System.out.println(lmt);
-    assertEquals(new Time(1974,10,1,0,0,0) , lmt);
-  }
-
 
   /**
    * 已知：

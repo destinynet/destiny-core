@@ -23,7 +23,7 @@ public interface MidnightIF extends Descriptive {
     LocalDateTime gmtLdt = Time.getGmtFromLmt(lmt , loc);
     double gmtJulDay = Time.getGmtJulDay(gmtLdt);
     double gmtResult = getNextMidnight(gmtJulDay , loc);
-    Time gmt = new Time(gmtResult);
-    return Time.getLMTfromGMT(gmt , loc).toLocalDateTime();
+    LocalDateTime gmt = new Time(gmtResult).toLocalDateTime();
+    return Time.getLmtFromGmt(gmt , loc);
   }
 }

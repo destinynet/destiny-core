@@ -24,15 +24,10 @@ public class HourLmtImpl implements HourIF , Serializable {
   @NotNull
   @Override
   public Branch getHour(double gmtJulDay, Location location) {
-    Time gmt = new Time(gmtJulDay);
-    int lmtHour = Time.getLMTfromGMT(gmt , location).getHour();
+    LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
+    int lmtHour = Time.getLmtFromGmt(gmt , location).getHour();
     return getHour(lmtHour);
   }
-
-//  @NotNull
-//  public Branch getHour(@NotNull Time lmt, @NotNull Location location) {
-//    return getHour(lmt.getHour());
-//  }
 
   private Branch getHour(int lmtHour) {
     switch (lmtHour) {
@@ -132,78 +127,6 @@ public class HourLmtImpl implements HourIF , Serializable {
     }
   }
 
-  /**
-   * 要實作，不然會有一些 round-off 的問題
-   */
-  @Override
-  public Time getLmtNextStartOf(Time lmt, Location location, Branch eb)
-  {
-    switch (eb.getIndex())
-    {
-      case 0 : //欲求下一個子時時刻
-        if (lmt.getHour() >= 23)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 23 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 23 , 0 , 0);
-      case 1 : //欲求下一個丑時的時刻
-        if (lmt.getHour()<1)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 1 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 1 , 0 , 0);
-      case 2 : //欲求下一個寅時的時刻
-        if (lmt.getHour()<3)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 3 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 3 , 0 , 0);
-      case 3 : //欲求下一個卯時的時刻
-        if (lmt.getHour()<5)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 5 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 5 , 0 , 0);
-      case 4 : //欲求下一個辰時的時刻
-        if (lmt.getHour()<7)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 7 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 7 , 0 , 0);
-      case 5 : //欲求下一個巳時的時刻
-        if (lmt.getHour()<9)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 9 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 9 , 0 , 0);
-      case 6 : //欲求下一個午時的時刻
-        if (lmt.getHour()<11)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 11 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 11 , 0 , 0);
-      case 7 : //欲求下一個未時的時刻
-        if (lmt.getHour()<13)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 13 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 13 , 0 , 0);
-      case 8 : //欲求下一個申時的時刻
-        if (lmt.getHour()<15)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 15 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 15 , 0 , 0);
-      case 9 : //欲求下一個酉時的時刻
-        if (lmt.getHour()<17)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 17 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 17 , 0 , 0);
-      case 10 : //欲求下一個戌時的時刻
-        if (lmt.getHour()<19)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 19 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 19 , 0 , 0);
-      case 11 : //欲求下一個亥時的時刻
-        if (lmt.getHour()<21)
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()   , 21 , 0 , 0);
-        else
-          return new Time(lmt.isAd() , lmt.getYear() , lmt.getMonth() , lmt.getDay()+1 , 21 , 0 , 0);
-      default :
-        throw new RuntimeException("Cannot get next start time of " + eb + " , LMT = " + lmt);
-    }
-  }
 
 
   @NotNull

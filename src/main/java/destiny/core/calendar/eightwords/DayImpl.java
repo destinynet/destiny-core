@@ -27,23 +27,20 @@ public class DayImpl implements DayIF , Serializable {
 
   @Override
   public StemBranch getDay(double gmtJulDay, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
-    Time gmt = new Time(gmtJulDay);
-    Time lmt = Time.getLMTfromGMT(gmt , location);
-    logger.info("lmt = {}" , lmt);
+    LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
+    LocalDateTime lmt = Time.getLmtFromGmt(gmt , location);
 
-    LocalDateTime lmtLdt = lmt.toLocalDateTime();
-
-    int lmtJulDay = (int) (lmt.getGmtJulDay()+0.5);
+    int lmtJulDay = (int) ( Time.getGmtJulDay(lmt)+0.5);
     logger.info("lmtJulDay = {}" , lmtJulDay);
 
     int index = (lmtJulDay-11) % 60;
 
-    LocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmtLdt, location);
-    LocalDateTime 下個子初時刻Ldt = hourImpl.getLmtNextStartOf(lmtLdt , location , Branch.子);
+    LocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location);
+    LocalDateTime 下個子初時刻Ldt = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
 
     if (nextMidnightLmt.getHour() >=12) {
       //子正，在 LMT 零時之前
-      if (nextMidnightLmt.getDayOfMonth() == lmtLdt.getDayOfMonth()) {
+      if (nextMidnightLmt.getDayOfMonth() == lmt.getDayOfMonth()) {
         // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
         LocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
         if (changeDayAfterZi && 下個子初時刻Ldt.getDayOfMonth() == midnightNextZi.getDayOfMonth())
@@ -54,7 +51,7 @@ public class DayImpl implements DayIF , Serializable {
       }
     } else {
       //子正，在 LMT 零時之後（含）
-      if (nextMidnightLmt.getDayOfMonth() == lmtLdt.getDayOfMonth()) {
+      if (nextMidnightLmt.getDayOfMonth() == lmt.getDayOfMonth()) {
         // lmt 落於當地 零時 到 子正的這段期間
         if (下個子初時刻Ldt.isBefore(nextMidnightLmt)) {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
@@ -66,7 +63,7 @@ public class DayImpl implements DayIF , Serializable {
         }
       } else {
         // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
-        if (changeDayAfterZi && lmtLdt.getDayOfMonth() != 下個子初時刻Ldt.getDayOfMonth() && 下個子初時刻Ldt.getHour() >=12) {
+        if (changeDayAfterZi && lmt.getDayOfMonth() != 下個子初時刻Ldt.getDayOfMonth() && 下個子初時刻Ldt.getHour() >=12) {
           // lmt 落於 子初之後 , 零時之前 , 而子初又是在零時之前（hour >=12 , 過濾掉極西的狀況)
           index++;
         }

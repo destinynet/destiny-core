@@ -50,22 +50,9 @@ public interface HourIF extends Descriptive {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     double gmtJulDay = Time.getGmtJulDay(gmt);
     double resultGmtJulDay = getGmtNextStartOf(gmtJulDay , location , eb);
-    Time resultGmtTime = new Time(resultGmtJulDay);
-    return Time.getLMTfromGMT(resultGmtTime , location).toLocalDateTime();
+    LocalDateTime resultGmtTime = new Time(resultGmtJulDay).toLocalDateTime();
+    return Time.getLmtFromGmt(resultGmtTime , location);
   }
 
-  /**
-   * @param lmt 傳入當地手錶時間
-   * @param location 當地的經緯度等資料
-   * @param eb 欲求之下一個地支開始時刻
-   * @return 下一個時辰開始的時刻
-   */
-  @NotNull
-  default Time getLmtNextStartOf(Time lmt , Location location , Branch eb) {
-    double gmtJulDay = Time.getGMTfromLMT(lmt , location).getGmtJulDay();
-    double gmtResult = getGmtNextStartOf(gmtJulDay , location , eb);
-    Time gmtTime = new Time(gmtResult);
-    return Time.getLMTfromGMT(gmtTime , location);
-  }
 
 }

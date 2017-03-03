@@ -365,29 +365,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   public double getSecond() { return this.second; }
   public boolean isGregorian() { return gregorian; }
   
-  public boolean isBefore(@NotNull Time targetTime)
-  {
-    // 時間的比對前後順序不需考慮是否真是 GMT , 兩個同時區的 LMT 以 GMT 抓出 Julian Day 仍可比對先後順序 
-    //return this.getGmtJulDay() < targetTime.getGmtJulDay() ? true : false;
-    return this.getGmtJulDay() < targetTime.getGmtJulDay();
-  }
-
-  public boolean isAfter(@NotNull Time targetTime)
-  {
-    //return this.getGmtJulDay() > targetTime.getGmtJulDay() ? true : false;
-    return this.getGmtJulDay() > targetTime.getGmtJulDay();
-  }
-
-  /** 目前此 time 是否介於 t1 與 t2 中間 */
-  public boolean isBetween(Time t1 , Time t2) {
-    double d = getGmtJulDay();
-    double d1 = t1.getGmtJulDay();
-    double d2 = t2.getGmtJulDay();
-    return
-      (d2 > d1 && d > d1 && d2 > d) ||
-      (d1 > d2 && d > d2 && d1 > d);
-  }
-
   /**
    * @return t 是否介於 t1 與 t2 之間
    */
@@ -481,26 +458,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   }
   
 
-  /** 從 LMT 轉換到 GMT 
-   * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
-   * */
-  @NotNull
-  public static Time getGMTfromLMT(@NotNull Time lmt, @NotNull Location loc) {
-    if (loc.isMinuteOffsetSet()) {
-      return new Time(lmt, 0 - loc.getMinuteOffset() * 60);
-    }
-    else {
-      TimeZone localZone = loc.getTimeZone();
-      GregorianCalendar cal = new GregorianCalendar(localZone);
-
-      cal.set(lmt.getYear(), lmt.getMonth() - 1, lmt.getDay(), lmt.getHour(), lmt.getMinute(), (int) lmt.getSecond());
-      double secondsOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-      return new Time(lmt, 0 - secondsOffset);
-
-      //LocalDateTime ldt = LocalDateTime.of(lmt.year , lmt.month , lmt.day , lmt.hour , lmt.minute , (int) lmt.second);
-    }
-  }
-
   /**
    * LMT (with TimeZone) to GMT
    */
@@ -523,28 +480,10 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     }
   }
 
-
-  /**
-   * 從 GMT 轉換成 LMT
-   * 2012/3/4 新增檢查 : loc 是否定義了 minuteOffset (優先權高於 timezone)
-   * TODO : 移除 GregorianCalendar
-   *  */
-  @NotNull
-  public static Time getLMTfromGMT(@NotNull Time gmt, @NotNull Location loc) {
-    if (loc.isMinuteOffsetSet()) {
-      return new Time(gmt, loc.getMinuteOffset() * 60);
-    }
-    else {
-      TimeZone gmtZone = TimeZone.getTimeZone("GMT");
-      GregorianCalendar cal = new GregorianCalendar(gmtZone);
-
-      cal.set(gmt.getYear(), gmt.getMonth() - 1, gmt.getDay(), gmt.getHour(), gmt.getMinute(), (int) gmt.getSecond());
-
-      TimeZone localZone = loc.getTimeZone();
-      double secondsOffset = localZone.getOffset(cal.getTimeInMillis()) / 1000;
-
-      return new Time(gmt, secondsOffset);
-    }
+  public static LocalDateTime getLmtFromGmt(LocalDateTime gmt, TimeZone timeZone) {
+    ZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
+    ZonedDateTime ldtZoned = gmtZoned.withZoneSameInstant(timeZone.toZoneId());
+    return ldtZoned.toLocalDateTime();
   }
 
   public static LocalDateTime getLmtFromGmt(LocalDateTime gmt , @NotNull Location loc) {
@@ -553,9 +492,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
       return gmt.plus(secOffset , ChronoUnit.SECONDS);
     }
     else {
-      ZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
-      ZonedDateTime ldtZoned = gmtZoned.withZoneSameInstant(loc.getTimeZone().toZoneId());
-      return ldtZoned.toLocalDateTime();
+      return getLmtFromGmt(gmt , loc.getTimeZone());
     }
   }
 

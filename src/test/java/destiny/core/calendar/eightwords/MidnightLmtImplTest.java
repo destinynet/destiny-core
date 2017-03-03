@@ -21,7 +21,7 @@ public class MidnightLmtImplTest {
     Location location = new Location(Location.EastWest.EAST, 121, 0, 0, Location.NorthSouth.NORTH, 25, 0, 0, TimeZone.getTimeZone("Asia/Taipei"));
     LocalDateTime expected, actual;
 
-    LocalDateTime lmt = LocalDateTime.of(2004 , 12, 6 , 14 , 10 , 0);
+    LocalDateTime lmt = LocalDateTime.of(2004, 12, 6, 14, 10, 0);
     actual = impl.getNextMidnight(lmt, location);
     expected = LocalDateTime.of(2004, 12, 7, 0, 0, 0);
     assertEquals(expected, actual);
