@@ -21,7 +21,7 @@ public enum StarType
   
   private String nameKey;
 
-  private StarType(String nameKey)
+  StarType(String nameKey)
   {
     this.nameKey = nameKey;
   }

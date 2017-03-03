@@ -14,8 +14,8 @@ public interface Conversable
   /**
    * 設定此推運是否要從出生時間「往前 (before) 推」
    */
-  public void setConverse(boolean value);
+  void setConverse(boolean value);
   
   /** 是否「逆推」 , true : 逆推*/
-  public boolean isConverse();
+  boolean isConverse();
 }

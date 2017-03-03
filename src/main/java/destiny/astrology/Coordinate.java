@@ -5,11 +5,11 @@
  */
 package destiny.astrology;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Zodiac selection <br/> 
@@ -28,7 +28,7 @@ public enum Coordinate implements LocaleStringIF
   
   private String nameKey;
     
-  private Coordinate(String nameKey)
+  Coordinate(String nameKey)
   {
     this.nameKey = nameKey;
   }

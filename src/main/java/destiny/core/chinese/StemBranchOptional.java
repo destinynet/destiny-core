@@ -50,7 +50,7 @@ public class StemBranchOptional implements Serializable {
     return ARRAY[normalize(index)];
   }
 
-  private static int normalize(int index)
+  protected static int normalize(int index)
   {
     if (index >= 60)
       return (normalize(index-60));

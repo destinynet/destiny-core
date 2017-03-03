@@ -31,7 +31,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   
   private static final Symbol[] symbolArray = {乾 , 兌 , 離 , 震 , 巽 , 坎 , 艮 , 坤};
   
-  private Symbol(char name , boolean[] yinYangs)
+  Symbol(char name, boolean[] yinYangs)
   {
     this.name = name;
     this.yinYangs = yinYangs;

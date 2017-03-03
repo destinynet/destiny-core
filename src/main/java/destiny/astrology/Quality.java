@@ -4,11 +4,11 @@
  */ 
 package destiny.astrology;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * 基本 Cardinal , 固定 Fixed , 變動 Mutable
@@ -28,7 +28,7 @@ public enum Quality implements LocaleStringIF
   
   private final static String resource = "destiny.astrology.Sign";
   
-  private Quality(String nameKey)
+  Quality(String nameKey)
   {
     this.nameKey = nameKey;
   }

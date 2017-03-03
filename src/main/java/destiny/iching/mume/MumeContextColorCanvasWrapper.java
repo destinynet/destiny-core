@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 public class MumeContextColorCanvasWrapper implements Serializable
 {
-  private ColorCanvas c;
+
   private MumeContext mumeContext;
   private String metaData;
   private String dateInfo =""; //日期/時間/地點經緯度 等資料
@@ -41,7 +41,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
   @Override
   public String toString()
   {
-    c = new ColorCanvas(12 , 74 , "　");
+    ColorCanvas c = new ColorCanvas(12, 74, "　");
     ColorCanvas siteCanvas = new ColorCanvas(2 , 74 , "　");
     
     try

@@ -13,7 +13,7 @@ import java.util.List;
 
 public final class LunarApsis extends LunarPoint implements Comparable<LunarApsis>
 {
-  public static enum MeanOscu {MEAN , OSCU}
+  public enum MeanOscu {MEAN , OSCU}
 
   /** 只會用到 PERIHELION , APHELION */
   private Apsis apsis;

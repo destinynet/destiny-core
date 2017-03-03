@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 public interface ZodiacDegreeDecoratorIF
 {
   @NotNull
-  public String getOutputString(double degree);
+  String getOutputString(double degree);
   
   @NotNull
-  public String getSimpOutString(double degree);
+  String getSimpOutString(double degree);
 }

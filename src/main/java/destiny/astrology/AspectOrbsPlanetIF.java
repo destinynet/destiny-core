@@ -20,5 +20,5 @@ public interface AspectOrbsPlanetIF
    * @param aspect 欲取得容許度之交角
    * @return 交角容許度，如果傳回 小於零，代表找不到其值
    */
-  public double getPlanetAspectOrb(Point p1 , Point p2 , Aspect aspect);
+  double getPlanetAspectOrb(Point p1, Point p2, Aspect aspect);
 }

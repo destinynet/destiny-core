@@ -7,5 +7,5 @@ package destiny.core.calendar.eightwords;
 /** 可以取得八字的介面 */
 public interface EightWordsNullableIF
 {
-  public EightWordsNullable getEightWordsNullable();
+  EightWordsNullable getEightWordsNullable();
 }

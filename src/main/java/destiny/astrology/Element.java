@@ -4,11 +4,11 @@
  */ 
 package destiny.astrology;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * 四大元素 : 火 Fire , 土 Earth , 風 Air , 水 Water
@@ -28,7 +28,7 @@ public enum Element implements LocaleStringIF
   
   private final static String resource = "destiny.astrology.Sign";
   
-  private Element(String nameKey)
+  Element(String nameKey)
   {
     this.nameKey = nameKey;
   }

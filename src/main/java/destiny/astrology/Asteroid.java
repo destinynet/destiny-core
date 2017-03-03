@@ -28,8 +28,8 @@ public final class Asteroid extends Star implements Comparable<Asteroid>
   public final static Asteroid PHOLUS = new Asteroid("Asteroid.PHOLUS", "Asteroid.PHOLUS_ABBR", 5145);
 
   public final static Asteroid[] values = {CERES , PALLAS , JUNO , VESTA , CHIRON , PHOLUS};
-  
-  private int index;
+
+  private final int index;
 
   Asteroid(String nameKey, String abbrKey, int index)
   {

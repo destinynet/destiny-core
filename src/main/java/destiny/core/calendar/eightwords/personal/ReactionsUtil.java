@@ -94,7 +94,7 @@ public class ReactionsUtil
   @NotNull
   public final List<Reactions> getReactions( Branch actor , @NotNull Stem actee)
   {
-    List<Reactions> result = new ArrayList();
+    List<Reactions> result = new ArrayList<>();
     List<Stem> hiddenStems = this.hiddenStemsImpl.getHiddenStems(actor);
     result.addAll(hiddenStems.stream().map(eachHiddenStems -> this.getReaction(eachHiddenStems, actee)).collect(Collectors.toList()));
     return result;

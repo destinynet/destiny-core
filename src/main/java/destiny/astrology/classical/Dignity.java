@@ -4,11 +4,11 @@
  */ 
 package destiny.astrology.classical;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * 行星落入星座的 , 旺 廟 陷 落 
@@ -28,7 +28,7 @@ public enum Dignity implements LocaleStringIF
   
   private final static String resource = "destiny.astrology.classical.Classical";
   
-  private Dignity(String nameKey)
+  Dignity(String nameKey)
   {
     this.nameKey = nameKey;
   }

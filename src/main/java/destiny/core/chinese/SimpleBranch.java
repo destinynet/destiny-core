@@ -37,29 +37,8 @@ public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinY
   }
   
   @NotNull
-  public FiveElement getFiveElement()
-  {
-    switch (eb)
-    {
-      case 亥:
-      case 子:
-        return FiveElement.水;
-      case 丑:
-      case 辰:
-      case 未:
-      case 戌:
-        return FiveElement.土;
-      case 寅:
-      case 卯:
-        return FiveElement.木;
-      case 巳:
-      case 午:
-        return FiveElement.火;
-      case 申:
-      case 酉:
-        return FiveElement.金;
-    }
-    throw new AssertionError("getFiveElement() of " + eb);
+  public FiveElement getFiveElement() {
+    return getFiveElement(eb);
   }
   
   /**

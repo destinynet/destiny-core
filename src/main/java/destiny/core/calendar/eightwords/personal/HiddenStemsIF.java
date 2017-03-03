@@ -14,5 +14,5 @@ import destiny.core.chinese.Stem;
 /** 地支藏干 */
 public interface HiddenStemsIF
 {
-  public List<Stem> getHiddenStems(Branch branch);
+  List<Stem> getHiddenStems(Branch branch);
 }

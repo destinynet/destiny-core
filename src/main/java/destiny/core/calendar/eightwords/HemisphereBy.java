@@ -22,7 +22,7 @@ public enum HemisphereBy implements LocaleStringIF
   
   private final static String resource = "destiny.core.calendar.eightwords.EightWords";
   
-  private HemisphereBy(String nameKey)
+  HemisphereBy(String nameKey)
   {
     this.nameKey = nameKey;
   }

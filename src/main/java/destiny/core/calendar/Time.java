@@ -534,16 +534,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   }
   
   @Override
-  public String toString()
-  {
-    return TimeDecorator.getOutputString(this, Locale.getDefault());
+  public String toString() {
+    return TimeDecorator.getOutputString(toLocalDateTime() , Locale.getDefault());
   }
   
-  public String toString(Locale locale)
-  {
-    return TimeDecorator.getOutputString(this, locale);
+  public String toString(Locale locale) {
+    return TimeDecorator.getOutputString(toLocalDateTime() , locale);
   }
-  
+
   /**
   public String toString()
   {

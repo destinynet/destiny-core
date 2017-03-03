@@ -108,16 +108,6 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
       return get(stemBranch.charAt(0) , stemBranch.charAt(1));
   }
   
-  private static int normalize(int index)
-  {
-    if (index >= 60)
-      return (normalize(index-60));
-    else if (index < 0)
-      return (normalize(index+60));
-    else
-      return index;
-  }
-  
   /** 取得干支的差距，例如 "乙丑" 距離 "甲子" 的差距為 "1" , 通常是用於計算「虛歲」 (尚需加一) */
   public int differs(@NotNull StemBranch sb)
   {

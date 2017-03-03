@@ -5,7 +5,6 @@
 package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.*;
-import destiny.astrology.beans.BesiegedBean;
 import destiny.astrology.classical.DebilitiesIF;
 import destiny.astrology.classical.RefranationIF;
 import destiny.astrology.classical.rules.RuleIF;

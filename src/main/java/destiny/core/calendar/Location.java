@@ -471,7 +471,7 @@ public class Location implements Serializable
 
     private String nameKey;
 
-    private EastWest(String nameKey) {
+    EastWest(String nameKey) {
       this.nameKey = nameKey;
     }
 
@@ -501,7 +501,7 @@ public class Location implements Serializable
 
     private String nameKey;
 
-    private NorthSouth(String nameKey) {
+    NorthSouth(String nameKey) {
       this.nameKey = nameKey;
     }
 

@@ -8,8 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
-public enum FiveElement implements FiveElementIF , Serializable
-{
+public enum FiveElement implements FiveElementIF , Serializable {
   木('木'),
   火('火'),
   土('土'),

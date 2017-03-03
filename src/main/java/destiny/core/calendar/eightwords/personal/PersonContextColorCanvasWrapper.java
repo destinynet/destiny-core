@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import destiny.core.calendar.LdtDecoratorChinese;
+import destiny.core.calendar.TimeDecoratorChinese;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
@@ -30,15 +30,13 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF hiddenStemsImpl;
 
-  private ColorCanvas cc;
-
   public enum OutputMode {HTML , TEXT}
 
   private OutputMode outputMode = OutputMode.HTML;
 
   private PersonContextModel.FortuneOutputFormat fortuneOutputFormat = PersonContextModel.FortuneOutputFormat.虛歲;
 
-  private final Decorator<LocalDateTime> timeDecorator = new LdtDecoratorChinese();
+  private final Decorator<LocalDateTime> timeDecorator = new TimeDecoratorChinese();
 
   private final Direction direction;
 
@@ -63,7 +61,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   {
     PersonContext personContext = model.getPersonContext();
 
-    cc = new ColorCanvas(32,70,"　");
+    ColorCanvas cc = new ColorCanvas(32, 70, "　");
 
     ColorCanvas metaDataColorCanvas = getMetaDataColorCanvas();
 

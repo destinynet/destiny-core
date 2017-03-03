@@ -4,11 +4,11 @@
  */ 
 package destiny.astrology;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Ayanamsha is a Sanskrit word and is to be pronounced with the third "a" long, so: "Ayana-amsha". 
@@ -41,8 +41,7 @@ public enum Ayanamsa implements LocaleStringIF
   private final static String resource = "destiny.astrology.Astrology";
   private String nameKey;
   
-  private Ayanamsa(String nameKey)
-  {
+  Ayanamsa(String nameKey) {
     this.nameKey = nameKey;
   }
   

@@ -24,7 +24,7 @@ public enum Apsis implements LocaleStringIF {
 
   private String nameKey;
 
-  private Apsis(String nameKey) {
+  Apsis(String nameKey) {
     this.nameKey = nameKey;
   }
 
