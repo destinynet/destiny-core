@@ -11,16 +11,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public class MonthDecorator
-{
+public class MonthDecorator {
   private final static ImmutableMap<Locale , Decorator<Integer>> implMap = new ImmutableMap.Builder<Locale , Decorator<Integer>>()
     .put(Locale.CHINESE , new MonthDecoratorChinese())
     .put(Locale.ENGLISH , new MonthDecoratorEnglish())
     .build();
   
   @NotNull
-  public static String getOutputString(int value ,  Locale locale)
-  {
+  public static String getOutputString(int value ,  Locale locale) {
     return implMap.get(
       LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
     ).getOutputString(value);

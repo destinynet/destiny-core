@@ -4,12 +4,12 @@
  */ 
 package destiny.astrology.classical;
 
-import java.io.Serializable;
-
 import destiny.astrology.DayNight;
 import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities */
 public class EssentialDefaultImpl implements EssentialIF , Serializable 

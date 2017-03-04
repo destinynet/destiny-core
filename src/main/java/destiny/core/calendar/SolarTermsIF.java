@@ -45,13 +45,6 @@ public interface SolarTermsIF {
   }
 
   /**
-   * @return 傳回某段時間內的節氣列表， GMT 時刻
-   */
-  default List<SolarTermsTime> getPeriodSolarTerms(@NotNull Time fromGmtTime , @NotNull Time toGmtTime ) {
-    return getPeriodSolarTerms(fromGmtTime.getGmtJulDay() , toGmtTime.getGmtJulDay());
-  }
-
-  /**
    * 計算從某時(fromLmtTime) 到某時(toLmtTime) 之間的節氣 , in LMT
    * @return List of <b>LMT</b> Time , 傳回 LMT 表示的節氣列表
    * 注意，此方法因為經過 Julian Day 的轉換，精確度比 GMT 差了 約萬分之一秒

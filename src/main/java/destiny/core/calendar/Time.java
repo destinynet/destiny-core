@@ -55,20 +55,32 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   protected boolean gregorian = true ;
 
   private static Logger logger = LoggerFactory.getLogger(Time.class);
-  
+
   /**
-   * 內定的 constructor , 設為現在的系統時間 */
-  public Time() {
-    this.ad = true;
-    LocalDateTime ldt = LocalDateTime.now();
-    this.year = ldt.get(YEAR_OF_ERA);
-    this.month = ldt.getMonthValue();
-    this.day = ldt.getDayOfMonth();
-    this.hour = ldt.getHour();
-    this.minute = ldt.getMinute();
-    this.second = ldt.getSecond();
+   *
+   * @param isAD CE : true / BC : false
+   * @param year 一定 > 0
+   */
+  public static LocalDateTime ofLocalDateTime(boolean isAD , int year , int month , int day , int hour , int minute , double second) {
+    if (year <=0 )
+      throw new RuntimeException("year("+year+") <= 0");
+
+    int prolepticYear = year; // 可能 <= 0
+    if (!isAD) {
+      prolepticYear = -(year - 1);
+    }
+
+    LocalDateTime result;
+    LocalDate localDate = LocalDate.of(prolepticYear , month , day);
+    Pair<Long , Long> pair = Time.splitSecond(second);
+    LocalTime localTime = LocalTime.of(hour , minute, pair.getLeft().intValue() , pair.getRight().intValue());
+    if (isAD) {
+      result = LocalDateTime.of(localDate , localTime);
+    } else {
+      result = LocalDateTime.of(localDate.with(IsoEra.BCE) , localTime);
+    }
+    return  result;
   }
-  
 
   /**
    * TODO : 解決所有 Julian Calendar 的問題
@@ -97,29 +109,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   public Time(int year, int month, int day) {
     this(year, month, day, 0, 0, 0);
   }
-  
-  public Time(int year , int month , int day , double doubleHour) {
-    if (year <= 0) {
-      this.ad = false;
-      this.year = -(year - 1); //取正值
-    }
-    else {
-      this.ad = true;
-      this.year = year;
-    }
-    this.month = month;
-    this.day = day;
-    checkDate();
-    this.hour = (int) doubleHour;
-    this.minute = (int) ((doubleHour - this.hour)*60)  ;
-    this.second = (doubleHour-this.hour)*3600 - this.minute*60;
-    this.normalize();
 
-    int h = (int) doubleHour;
-    int m = (int) ((doubleHour - h)*60)  ;
-    double s = (doubleHour-h)*3600 - m*60;
-  }
-  
   
   /** 
    * 利用一個字串 's' 來建立整個時間 , 格式如下： 
@@ -188,13 +178,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     return new Timestamp(cal.getTimeInMillis());
   }
 
-  @NotNull
-  public static Timestamp getTimestamp(LocalDateTime ldt) {
-    return Timestamp.valueOf(ldt);
-  }
-
-
-  
   /**
    * 從 Timestamp 取得 Time 物件
    * TODO : 要確認 1582 之前是否正常
@@ -308,20 +291,22 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     int nanoSeconds = (int) ((second - intSecond) * 1_000_000_000);
     logger.debug("nanoSeconds = {}" , nanoSeconds);
 
-    LocalDateTime result;
-    if (!ad) {
-      // Year 1 is preceded by year 0, then by year -1.
-      int y = -(year-1);
-      LocalDate ld = LocalDate.of(y , month , day).with(IsoEra.BCE);
-      LocalTime lt = LocalTime.of(hour , minute , intSecond , nanoSeconds);
-      result = LocalDateTime.of(ld, lt);
-      result = result.with(IsoEra.BCE);
-    } else {
-      result = LocalDateTime.of(year , month , day , hour , minute , intSecond , nanoSeconds);
-    }
-    logger.debug("result = {} , era = {}" , result , result.toLocalDate().getEra());
+    return Time.ofLocalDateTime(ad, year, month, day, hour, minute, second);
 
-    return result;
+//    LocalDateTime result;
+//    if (!ad) {
+//      // LocalDate : Year 1 is preceded by year 0, then by year -1.
+//      int y = -(year-1);
+//      LocalDate ld = LocalDate.ofLocalDateTime(y , month , day).with(IsoEra.BCE);
+//      LocalTime lt = LocalTime.ofLocalDateTime(hour , minute , intSecond , nanoSeconds);
+//      result = LocalDateTime.ofLocalDateTime(ld, lt);
+//      result = result.with(IsoEra.BCE);
+//    } else {
+//      result = LocalDateTime.ofLocalDateTime(year , month , day , hour , minute , intSecond , nanoSeconds);
+//    }
+//    logger.debug("result = {} , era = {}" , result , result.toLocalDate().getEra());
+//
+//    return result;
   }
 
   /**

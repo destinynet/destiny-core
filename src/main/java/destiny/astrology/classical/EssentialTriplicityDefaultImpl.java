@@ -4,16 +4,11 @@
  */ 
 package destiny.astrology.classical;
 
-import java.io.Serializable;
-
 import com.google.common.collect.ImmutableMap;
-
-import destiny.astrology.DayNight;
-import destiny.astrology.Element;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /**
  * Essential Triplicity 實作 , 參考 Ptolemy's Table : <br>

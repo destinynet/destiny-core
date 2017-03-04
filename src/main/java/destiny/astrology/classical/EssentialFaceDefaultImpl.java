@@ -4,21 +4,20 @@
  */ 
 package destiny.astrology.classical;
 
-import java.io.Serializable;
-
 import com.google.common.collect.ImmutableList;
-
 import destiny.astrology.Planet;
 import destiny.astrology.Star;
 import destiny.astrology.Utils;
 import destiny.astrology.ZodiacSign;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * Essential Face 內定實作 , , 參考 Ptolemy's Table , 以三分法 . Al-Biruni 利用 Chaldean order 排列，從戌宮零度開始， 火 -> 日 -> 金 -> 水 -> 月 -> 土 -> 木 ，依序下去，每星佔 10度 <br>
  * 另一種做法，是 Ptolemy 的定義： <br> 
  * 根據此網站說明： http://www.gotohoroscope.com/dictionary/astrological-F.html <br/>
- * A planet is said to be in its own face when located in a house that is distant from the Moon or the Sun by the same number of houses as the sign it rules is distant from the sign ruled by the Moon or Sun respectively. 
+ * A planet is said to be in its own face when located in a house that is distant from the Moon or the Sun by the same number of houses as the sign it rules is distant from the sign ruled by the Moon or Sun respectively.
  * 也就是說 : <br>
  * 水星若與日月呈現 30度角，則得 Face<br>
  * 金星若與日月呈現 60度角，則得 Face<br>

@@ -5,7 +5,6 @@
  */
 package destiny.core.calendar;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -28,15 +27,6 @@ public class TimeTest
   private Time origin;
   private Time actual ;
   private Time expected ;
-
-  @Test
-  public void testTime() {
-    Time t = new Time();
-    t.setSecond(12.1234);
-    String s = String.format("%02d月%02d日 %02d時 %02d分 ", t.getMonth(), t.getDay(), t.getHour(), t.getMinute())
-      + StringUtils.leftPad(String.format("%3.2f秒", t.getSecond()), 6, '0');
-    System.out.println("time = " + s);
-  }
 
 
   /**

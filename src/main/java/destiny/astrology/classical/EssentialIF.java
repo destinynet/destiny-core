@@ -10,7 +10,7 @@ import destiny.astrology.ZodiacSign;
 
 /** 
  * Facade Interface of Essential Dignities and Deblitities <br>
- * 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面 
+ * 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面
  */
 public interface EssentialIF
 {

@@ -13,11 +13,13 @@ import java.util.Locale;
 
 public class DayDecorator {
 
-  private final static ImmutableMap<Locale, Decorator<Integer>> implMap = new ImmutableMap.Builder<Locale, Decorator<Integer>>().put(Locale.CHINESE, new DayDecoratorChinese()).put(Locale.ENGLISH, new DayDecoratorEnglish()).build();
+  private final static ImmutableMap<Locale, Decorator<Integer>> implMap = new ImmutableMap.Builder<Locale, Decorator<Integer>>()
+    .put(Locale.CHINESE, new DayDecoratorChinese())
+    .put(Locale.ENGLISH, new DayDecoratorEnglish())
+    .build();
 
   @NotNull
   public static String getOutputString(int value, Locale locale) {
-
     return implMap.get(
       LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
     ).getOutputString(value);

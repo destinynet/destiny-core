@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.IsoEra;
 
-import static org.junit.Assert.assertEquals;
-
 public class TimeDecoratorChineseTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,17 +28,6 @@ public class TimeDecoratorChineseTest {
 
     time = LocalDateTime.of(LocalDate.of(2000 , 12 , 31).with(IsoEra.BCE) , LocalTime.of(23 , 59 , 59 , 999_000_000));
     logger.info("{} : {}" , time , decorator.getOutputString(time));
-  }
-
-  @Test
-  public void testDebugString() {
-    Time time = new Time(true, 2000, 1, 1, 0, 0, 0);
-
-    assertEquals(time.getDebugString() , Time.getDebugString(time.toLocalDateTime()));
-
-    time = new Time(false, 2000, 12, 31, 23, 59, 59.999);
-    assertEquals(time.getDebugString() , Time.getDebugString(time.toLocalDateTime()));
-
   }
 
 }
