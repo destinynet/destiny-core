@@ -16,7 +16,7 @@ public class StemBranchUtils {
    * 五鼠遁日起時(干)
    */
   public static Stem getHourStem(Stem dayStem , Branch hourBranch) {
-    // return Stem.getHeavenlyStems((dayStem.getIndex() % 5) *2 + hourBranch.getIndex());
+    // return Stem.get((dayStem.getIndex() % 5) *2 + hourBranch.getIndex());
     // 以下的解法，不用 expose index
     switch (dayStem) {
       case 甲:

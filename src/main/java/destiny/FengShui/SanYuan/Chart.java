@@ -147,7 +147,7 @@ public class Chart implements Serializable {
   
   private boolean isConverse(@Nullable Symbol 原始卦 , Symbol 飛佈卦 , @NotNull Mountain m)
   {
-    boolean isConverse = false;
+    boolean isConverse;
     if (原始卦 == null)
     {
       if (地盤.getYinYang(m))

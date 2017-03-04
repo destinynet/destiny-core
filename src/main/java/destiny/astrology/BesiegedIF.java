@@ -169,7 +169,10 @@ public interface BesiegedIF {
     Optional<Aspect> aspectAfter = triple.getRight();
 
     logger.debug("包夾 {} 的是 {}({}) 以及 {}({})", planet , besiegingPlanets.get(0) , aspectPrior , besiegingPlanets.get(1) , aspectAfter);
-    if (besiegingPlanets.contains(p1) && besiegingPlanets.contains(p2))
+    if (besiegingPlanets.contains(p1)
+      && besiegingPlanets.contains(p2)
+      && aspectPrior.isPresent()
+      && aspectAfter.isPresent())
     {
       if(constrainingAspects.contains(aspectPrior.get()) && constrainingAspects.contains(aspectAfter.get()))
         return true;
@@ -177,7 +180,4 @@ public interface BesiegedIF {
     return false;
   }
 
-  default boolean isBesieged(Planet planet , Planet p1 , Planet p2 , Time gmt , boolean isClassical , boolean isOnlyHardAspects) {
-    return isBesieged(planet , p1 , p2 , gmt.toLocalDateTime() , isClassical , isOnlyHardAspects);
-  }
 }

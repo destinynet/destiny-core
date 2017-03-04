@@ -19,9 +19,9 @@ public class LocaleUtils implements Serializable
   public static Locale getLocale(String string)
   {
     StringTokenizer st = new StringTokenizer(string , "_");
-    String lang = null;
-    String country = null;
-    String variant = null;
+    String lang;
+    String country;
+    String variant;
     
     lang = st.nextToken();
     

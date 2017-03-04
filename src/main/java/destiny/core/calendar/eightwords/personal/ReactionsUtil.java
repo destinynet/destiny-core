@@ -132,7 +132,7 @@ public class ReactionsUtil
       case 偏財:
         return Stem.getHeavenlyStems(actor.getFiveElement().getDominateOver(), actor.getBooleanValue());
     }
-    throw new RuntimeException("RuntimeException while ReactionsUtil.getHeavenlyStems("+actor + "," + reactions+")");
+    throw new RuntimeException("RuntimeException while ReactionsUtil.get("+actor + "," + reactions+")");
   }
   
   

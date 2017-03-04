@@ -86,7 +86,9 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   }
 
 
-  public static Optional<Stem> getHeavenlyStems(char c)
+
+
+  public static Optional<Stem> get(char c)
   {
     Stem result = null;
     for (Stem aStemArray : ARRAY) {

@@ -24,7 +24,7 @@ public class EightWords extends EightWordsNullable {
   /**
    * 以 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null
    */
-  public EightWords( String year , String month , String day , String hour) {
+  public EightWords(String year , String month , String day , String hour) {
     super(
       StemBranch.get(year.toCharArray()[0] , year.toCharArray()[1]) ,
       StemBranch.get(month.toCharArray()[0] , month.toCharArray()[1]),
@@ -56,28 +56,44 @@ public class EightWords extends EightWordsNullable {
   {}
 
   @NotNull
-  @Override public Stem getYearStem()  { return year.getStemOptional().get();  }
+  @Override public Stem getYearStem()  {
+    assert (year.getStemOptional().isPresent());
+    return year.getStemOptional().get();  }
 
   @NotNull
-  @Override public Stem getMonthStem() { return month.getStemOptional().get(); }
+  @Override public Stem getMonthStem() {
+    assert (month.getStemOptional().isPresent());
+    return month.getStemOptional().get(); }
 
   @NotNull
-  @Override public Stem getDayStem()   { return day.getStemOptional().get();   }
+  @Override public Stem getDayStem()   {
+    assert (day.getStemOptional().isPresent());
+    return day.getStemOptional().get();   }
 
   @NotNull
-  @Override public Stem getHourStem()  { return hour.getStemOptional().get();  }
+  @Override public Stem getHourStem()  {
+    assert (hour.getStemOptional().isPresent());
+    return hour.getStemOptional().get();  }
 
   @NotNull
-  @Override public Branch getYearBranch()  { return year.getBranchOptional().get();  }
+  @Override public Branch getYearBranch()  {
+    assert (year.getBranchOptional().isPresent());
+    return year.getBranchOptional().get();  }
 
   @NotNull
-  @Override public Branch getMonthBranch() { return month.getBranchOptional().get(); }
+  @Override public Branch getMonthBranch() {
+    assert (month.getBranchOptional().isPresent());
+    return month.getBranchOptional().get(); }
 
   @NotNull
-  @Override public Branch getDayBranch()   { return day.getBranchOptional().get();   }
+  @Override public Branch getDayBranch()   {
+    assert (day.getBranchOptional().isPresent());
+    return day.getBranchOptional().get();   }
 
   @NotNull
-  @Override public Branch getHourBranch()  { return hour.getBranchOptional().get();  }
+  @Override public Branch getHourBranch()  {
+    assert (hour.getBranchOptional().isPresent());
+    return hour.getBranchOptional().get();  }
 
   @NotNull
   public StemBranch getYear() {
@@ -122,6 +138,7 @@ public class EightWords extends EightWordsNullable {
   @Override
   public String toString()
   {
+    assert (hour.getStemOptional().isPresent());
     return
       "\n"+
       hour.getStemOptional().get()  + day.getStemOptional().get()  + month.getStemOptional().get()   + year.getStemOptional().get() + "\n" +

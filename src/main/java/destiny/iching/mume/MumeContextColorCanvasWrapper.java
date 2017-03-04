@@ -10,7 +10,6 @@ import destiny.iching.Symbol;
 import destiny.iching.contentProviders.HexagramNameFullIF;
 import destiny.tools.ColorCanvas.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -142,12 +141,9 @@ public class MumeContextColorCanvasWrapper implements Serializable
     return cc;
   }
 
-  @Nullable
-  private ColorCanvas getColorCanvas(@NotNull Symbol s)
-  {
+  private ColorCanvas getColorCanvas(@NotNull Symbol s) {
     String color; //卦的顏色
-    switch(s.getFiveElement())
-    {
+    switch(s.getFiveElement()) {
       case 木: color = "GREEN"; break;
       case 火: color = "RED"; break;
       case 土: color = "CC6633"; break;
@@ -156,8 +152,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
       default: throw new RuntimeException("impossible");
     }
     ColorCanvas cc = new ColorCanvas(3,12,"　", Optional.of(color) , Optional.empty());
-    for (int i=3 ; i >=1 ; i--)
-    {
+    for (int i=3 ; i >=1 ; i--) {
       if (s.getBooleanValue(i))
         cc.setText("▅▅▅▅▅", 4-i, 1);
       else

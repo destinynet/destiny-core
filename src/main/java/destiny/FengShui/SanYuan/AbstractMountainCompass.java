@@ -18,33 +18,33 @@ import java.util.ArrayList;
 public abstract class AbstractMountainCompass extends AbstractCompass
 {
   @NotNull
-  private static final ArrayList<Mountain> MountainList = new ArrayList<>();
+  private static final ArrayList<Mountain> mountainList = new ArrayList<>();
   static
   {
-    MountainList.add(Mountain.子);
-    MountainList.add(Mountain.癸);
-    MountainList.add(Mountain.丑);
-    MountainList.add(Mountain.艮);
-    MountainList.add(Mountain.寅);
-    MountainList.add(Mountain.甲);
-    MountainList.add(Mountain.卯);
-    MountainList.add(Mountain.乙);
-    MountainList.add(Mountain.辰);
-    MountainList.add(Mountain.巽);
-    MountainList.add(Mountain.巳);
-    MountainList.add(Mountain.丙);
-    MountainList.add(Mountain.午);
-    MountainList.add(Mountain.丁);
-    MountainList.add(Mountain.未);
-    MountainList.add(Mountain.坤);
-    MountainList.add(Mountain.申);
-    MountainList.add(Mountain.庚);
-    MountainList.add(Mountain.酉);
-    MountainList.add(Mountain.辛);
-    MountainList.add(Mountain.戌);
-    MountainList.add(Mountain.乾);
-    MountainList.add(Mountain.亥);
-    MountainList.add(Mountain.壬);
+    mountainList.add(Mountain.子);
+    mountainList.add(Mountain.癸);
+    mountainList.add(Mountain.丑);
+    mountainList.add(Mountain.艮);
+    mountainList.add(Mountain.寅);
+    mountainList.add(Mountain.甲);
+    mountainList.add(Mountain.卯);
+    mountainList.add(Mountain.乙);
+    mountainList.add(Mountain.辰);
+    mountainList.add(Mountain.巽);
+    mountainList.add(Mountain.巳);
+    mountainList.add(Mountain.丙);
+    mountainList.add(Mountain.午);
+    mountainList.add(Mountain.丁);
+    mountainList.add(Mountain.未);
+    mountainList.add(Mountain.坤);
+    mountainList.add(Mountain.申);
+    mountainList.add(Mountain.庚);
+    mountainList.add(Mountain.酉);
+    mountainList.add(Mountain.辛);
+    mountainList.add(Mountain.戌);
+    mountainList.add(Mountain.乾);
+    mountainList.add(Mountain.亥);
+    mountainList.add(Mountain.壬);
   }
   
   /**
@@ -66,7 +66,7 @@ public abstract class AbstractMountainCompass extends AbstractCompass
   @Override
   public double getStartDegree(Object o)
   {
-    return Utils.getNormalizeDegree(MountainList.indexOf(o) * getStepDegree() + getInitDegree() );
+    return Utils.getNormalizeDegree(mountainList.indexOf(o) * getStepDegree() + getInitDegree() );
   }
   
   /**
@@ -75,7 +75,7 @@ public abstract class AbstractMountainCompass extends AbstractCompass
   @Override
   public double getEndDegree(Object o)
   {
-    return Utils.getNormalizeDegree( (MountainList.indexOf(o)+1) * getStepDegree() + getInitDegree() );
+    return Utils.getNormalizeDegree( (mountainList.indexOf(o)+1) * getStepDegree() + getInitDegree() );
   }
   
   /**
@@ -88,7 +88,7 @@ public abstract class AbstractMountainCompass extends AbstractCompass
       index = index-24;
     else if (index < 0 )
       index = index+24;
-    return MountainList.get(index);
+    return mountainList.get(index);
   }
   
   

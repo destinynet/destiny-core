@@ -94,8 +94,10 @@ public class StemBranchOptional implements Serializable {
     return get(Optional.ofNullable(stem) , Optional.ofNullable(branch));
   }
 
-  public static StemBranchOptional get(char stem, char branch) {
-    return get(Optional.of(Stem.getHeavenlyStems(stem).get()), Optional.of(Branch.get(branch).get()));
+  public static StemBranchOptional get(char stemChar, char branchChar) {
+    Optional<Stem> stemOptional = Stem.get(stemChar);
+    Optional<Branch> branchOptional = Branch.get(branchChar);
+    return get(stemOptional , branchOptional);
   }
 
   public static StemBranchOptional get(@NotNull String stemBranch) {

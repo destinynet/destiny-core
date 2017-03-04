@@ -115,7 +115,7 @@ public abstract class Point implements Serializable , LocaleStringIF
   {
     if ( locale!= null && locale.getLanguage().equals("zh") && locale.getCountry().equals("TW") )
     {
-      byte[] byteArray=null;
+      byte[] byteArray;
       byte[] arr = new byte[2];
       try
       {

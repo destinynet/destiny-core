@@ -49,7 +49,7 @@ public class HoroscopeAspectsCalculator implements Serializable
       if (map != null) {
         for (Map.Entry<Point, Aspect> entry : map.entrySet()) {
           //處理過濾交角的事宜
-          if (aspects == null || aspects.size() == 0 || (aspects != null && aspects.contains(entry.getValue()))) {
+          if (aspects == null || aspects.size() == 0 || aspects.contains(entry.getValue())) {
             HoroscopeAspectData data = new HoroscopeAspectData(point, entry.getKey(), entry.getValue(), horoscope.getAspectError(point, entry.getKey(), entry.getValue()));
             dataSet.add(data);
           }

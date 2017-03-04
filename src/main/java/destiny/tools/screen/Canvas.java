@@ -116,7 +116,7 @@ public class Canvas implements Serializable
   @Nullable
   byte[] getContent()
   {
-    byte[] result = null;
+    byte[] result;
     //如果沒有 children , 就傳回自己的 content[]
     if ( this.children.size() == 0)
     {

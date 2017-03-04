@@ -95,9 +95,13 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     }
   }
   
-  public static StemBranch get(char heavenlyStems , char earthlyBranches)
-  {
-    return get(Stem.getHeavenlyStems(heavenlyStems).get() , Branch.get(earthlyBranches).get());
+  public static StemBranch get(char stemChar , char branchChar) {
+    Optional<Stem> stemOptional = Stem.get(stemChar);
+    Optional<Branch> branchOptional = Branch.get(branchChar);
+
+    return stemOptional
+      .map(stem1 -> StemBranch.get(stem1 , branchOptional.get()))
+      .orElseThrow(() -> new RuntimeException("Cannot get StemBranch("+stemChar+" , "+branchChar+")"));
   }
   
   public static StemBranch get(@NotNull String stemBranch)
