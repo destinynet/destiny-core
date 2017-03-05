@@ -109,32 +109,6 @@ public class TimeTest
     assertEquals(LocalDateTime.of(1974, 10, 1, 0, 0, 0), lmt);
   }
 
-
-  /** 測試從 "+20000102000000.00" 建立時間 */
-  @Test
-  public void testTimeFromString()
-  {
-    actual = new Time("+20000203040506.789");
-    expected = new Time(true , 2000 , 2 , 3 , 4 , 5 , 6.789);
-    assertEquals(expected , actual);
-
-    actual = new Time("-20010203040506.789");
-    expected = new Time(false , 2001 , 2 , 3 , 4 , 5 , 6.789);
-    assertEquals(expected , actual);
-  }
-
-  @Test
-  public void testTimeDebugString()
-  {
-    expected = new Time(true , 2001 , 2 , 3 , 4 , 5 , 6.789);
-    actual = new Time(expected.getDebugString());
-    assertEquals(expected , actual);
-
-    expected = new Time(true , 1 , 2 , 3 , 4 , 5 , 6.789);
-    actual = new Time(expected.getDebugString());
-    assertEquals(expected , actual);
-  }
-
   /**
    * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar
    * 測試 10/5~10/14 之間的錯誤日期
@@ -163,51 +137,6 @@ public class TimeTest
     }
   }
 
-
-  /** 測試 1582/10/4 --- 1582/10/15 的日期轉換 , 以「日」為單位來 diff , 先避掉 Round-off error */
-  @Test
-  public void testTimeDiffSeconds2()
-  {
-    origin = new Time(1582,10,15,0,0,0);
-    actual = new Time(origin , -1*24*60*60);
-    expected= new Time(1582,10,4,0,0,0);
-    assertEquals(expected , actual);
-
-    origin = new Time(1582,10,4,0,0,0);
-    actual = new Time(origin , 1*24*60*60);
-    expected= new Time(1582,10,15,0,0,0);
-    assertEquals(expected , actual);
-  }
-
-  /** 測試 1582/10/15 子初的日期轉換 , 以「秒」為單位來 diff , 要能解決 Round-off error */
-  @Test
-  public void testTimeDiffSeconds3()
-  {
-    origin = new Time(1582,10,15,0,0,0);
-    actual = new Time(origin , 1); //先往後加一秒，不會碰到切換點
-    expected= new Time(1582,10,15,0,0,1);
-    assertEquals(expected , actual);
-
-    origin = new Time(1582,10,15,0,0,0);
-    actual = new Time(origin , -1); //往前加一秒，會碰到 Gregorian/Julian 切換點
-    expected= new Time(1582,10,4,23,59,59);
-    assertEquals(expected.getGmtJulDay() , actual.getGmtJulDay() , 0.01);
-  }
-
-  /** 測試 1582/10/4 子夜 的日期轉換 , 以「秒」為單位來 diff , 要能解決 Round-off error */
-  @Test
-  public void testTimeDiffSeconds4()
-  {
-    origin = new Time(1582,10,4,23,59,59);
-    actual = new Time(origin , -1); //先往前減一秒，不會碰到切換點
-    expected= new Time(1582,10,4,23,59,58);
-    assertEquals(expected , actual);
-
-    origin = new Time(1582,10,4,23,59,59);
-    actual = new Time(origin , 1); //往後加一秒，會碰到 Gregorian/Julian 切換點
-    expected= new Time(1582,10,15,0,0,0);
-    assertEquals(expected , actual);
-  }
 
   /**
    * 測試由 Julian Day 建立 Time
@@ -465,6 +394,9 @@ public class TimeTest
   public void testJulDayZero() {
     double startJul = Time.getGmtJulDay(false , false , 4713, 1 , 1 , 12 , 0 , 0);
     assertEquals(0 , startJul , 0.0);
+
+    double startJulVer2 = Time.getGmtJulDay(JulianDateTime.of(-4712 , 1 , 1 , 12 , 0));
+    assertEquals(0 , startJulVer2 , 0.0);
 
     double startGre = Time.getGmtJulDay(false , true , 4714, 11 , 24 , 12 , 0 , 0);
     assertEquals(0 , startGre , 0.0);

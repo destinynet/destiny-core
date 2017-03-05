@@ -362,15 +362,14 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       if (starPositionImpl == null)
         throw new RuntimeException("Call state error ! starTransitImpl should be set.");
 
-      LocalDateTime gmtLdt = Time.getGmtFromLmt(lmt , location);
-      double gmt = Time.from(gmtLdt).getGmtJulDay();
-      //Time gmt = Time.getGMTfromLMT(lmt, location);
+      LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+      double gmtJulDay = Time.getGmtJulDay(gmt);
 
       if (changeYearDegree < 315) {
         //System.out.println("changeYearDegree < 315 , value = " + changeYearDegree);
         //換年點在立春前
 
-        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
+        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , GEO , ECLIPTIC).getLongitude();
         //System.out.println("LMT = " + lmt + " degree = " + lmtSunDegree);
         if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree) {
           // t <---立春---- LMT -----換年點
@@ -379,7 +378,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       }
       else if (changeYearDegree > 315) {
         //換年點在立春後 , 還沒測試
-        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
+        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , GEO , ECLIPTIC).getLongitude();
         if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
           月干 = Stem.get(月干.getIndex() + 2);
       }

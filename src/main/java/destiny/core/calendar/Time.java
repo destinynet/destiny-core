@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.JulianFields.JULIAN_DAY;
 
 /**
  * 代表 『時間』 的物件
@@ -238,39 +239,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
 
 
 
-  /**
-   * 建立一個和原本 Time 相差 diffSeconds 秒的時間
-   */
-  public Time(@NotNull Time originTime , double diffSeconds) {
-    double oldJulDay = originTime.getGmtJulDay();
-    /** TODO : 解決 Round-off error 的問題 */
-    double newJulDay = originTime.getGmtJulDay() + diffSeconds/(24*60*60);
-    if ((oldJulDay >= GREGORIAN_START_JULIAN_DAY && newJulDay < GREGORIAN_START_JULIAN_DAY) ||  //往前數，跨過了1582/10/15 之前
-        ( oldJulDay < GREGORIAN_START_JULIAN_DAY && newJulDay >= GREGORIAN_START_JULIAN_DAY))    //往後數，超越了1582/10/4子夜之後
-    {
-      Time time2 = new Time(newJulDay);
-      this.gregorian = time2.isGregorian();
-      this.ad = time2.isAd();
-      this.year = time2.getYear();
-      this.month = time2.getMonth();
-      this.day = time2.getDay();
-      this.hour = time2.getHour();
-      this.minute = time2.getMinute();
-      this.second = time2.getSecond();
-    }
-    else {
-      this.gregorian = originTime.isGregorian();
-      this.ad = originTime.isAd();
-      this.year = originTime.getYear();
-      this.month = originTime.getMonth();
-      this.day = originTime.getDay();
-      this.hour = originTime.getHour();
-      this.minute = originTime.getMinute();
-      this.second = originTime.getSecond() + diffSeconds;
-      this.normalize();
-    }
-  }
-
 
   /**
    * 檢查時間是否落入 1582/10/5~14 之間 , 如果有 , 就丟出 Exception
@@ -287,33 +255,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
 
 
   public LocalDateTime toLocalDateTime() {
-    int intSecond = (int) second;
-    int nanoSeconds = (int) ((second - intSecond) * 1_000_000_000);
-    logger.debug("nanoSeconds = {}" , nanoSeconds);
-
     return Time.ofLocalDateTime(ad, year, month, day, hour, minute, second);
-
-//    LocalDateTime result;
-//    if (!ad) {
-//      // LocalDate : Year 1 is preceded by year 0, then by year -1.
-//      int y = -(year-1);
-//      LocalDate ld = LocalDate.ofLocalDateTime(y , month , day).with(IsoEra.BCE);
-//      LocalTime lt = LocalTime.ofLocalDateTime(hour , minute , intSecond , nanoSeconds);
-//      result = LocalDateTime.ofLocalDateTime(ld, lt);
-//      result = result.with(IsoEra.BCE);
-//    } else {
-//      result = LocalDateTime.ofLocalDateTime(year , month , day , hour , minute , intSecond , nanoSeconds);
-//    }
-//    logger.debug("result = {} , era = {}" , result , result.toLocalDate().getEra());
-//
-//    return result;
   }
 
   /**
    * TODO : 檢查 1582 的轉換
    */
   public static Time from(LocalDateTime ldt) {
-    return new Time(ldt.getYear() > 1 , ldt.getYear() , ldt.getMonthValue() , ldt.getDayOfMonth() , ldt.getHour() , ldt.getMinute() , ldt.getSecond());
+    return new Time(ldt.toLocalDate().getEra() == IsoEra.CE , ldt.get(YEAR_OF_ERA) , ldt.getMonthValue() , ldt.getDayOfMonth() , ldt.getHour() , ldt.getMinute() , ldt.getSecond());
   }
   
   
@@ -330,6 +279,10 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     return getNormalizedYear(ad, year);
   }
 
+  /**
+   * @param year 傳入的年，一定大於 0
+   * @return proleptic year , 線性的 year : 西元前1年:0 , 西元前2年:-1 ...
+   */
   public static int getNormalizedYear(boolean ad , int year) {
     if (!ad)
       return -(year-1);
@@ -600,22 +553,42 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
 
   /**
    * @param gmt proleptic Gregorian (包含 0 year)
+   *                       getLong(JULIAN_DAY)   真正需要的值（左邊減 0.5）
+   *  | ISO date          |  Julian Day Number | Astronomical Julian Day |
+   *  | 1970-01-01T00:00  |         2,440,588  |         2,440,587.5     |
    */
   public static double getGmtJulDay(LocalDateTime gmt) {
-    int year = gmt.getYear() > 0 ? gmt.getYear() : -(gmt.getYear()-1);
-    boolean isAd = gmt.getYear() > 0;
-    double sec = gmt.getSecond() + gmt.getNano() / 1_000_000_000.0;
-    return getGmtJulDay(isAd , true , year , gmt.getMonthValue() , gmt.getDayOfMonth() , gmt.getHour() , gmt.getMinute() , sec);
+    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
+    long gmtJulDay_plusHalfDay = gmt.toLocalDate().getLong(JULIAN_DAY);
+
+    return inner_getJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
+//    int year = gmt.get(YEAR_OF_ERA);
+//    boolean isAd = gmt.toLocalDate().getEra() == IsoEra.CE;
+//    double sec = gmt.getSecond() + gmt.getNano() / 1_000_000_000.0;
+//    return getGmtJulDay(isAd , true , year , gmt.getMonthValue() , gmt.getDayOfMonth() , gmt.getHour() , gmt.getMinute() , sec);
   }
 
   /**
    * @param gmt proleptic Julian (包含 0 year)
+   *                       getLong(JULIAN_DAY)   真正需要的值（左邊減 0.5）
+   *  | ISO date          |  Julian Day Number | Astronomical Julian Day |
+   *  | 1970-01-01T00:00  |         2,440,588  |         2,440,587.5     |
    */
   public static double getGmtJulDay(JulianDateTime gmt) {
-    int year = gmt.getYear();
-    boolean isAd = gmt.getProlepticYear() > 0;
-    return getGmtJulDay(isAd , false , year , gmt.getMonth() , gmt.getDayOfMonth() ,
-      gmt.getHour() , gmt.getMinute() , gmt.getSecond());
+    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
+    long gmtJulDay_plusHalfDay = gmt.toLocalDate().getLong(JULIAN_DAY);
+
+    return inner_getJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
+  }
+
+  private static double inner_getJulDay(double gmtJulDay_plusHalfDay , LocalTime localTime) {
+    int hour = localTime.getHour();
+    int min = localTime.getMinute();
+    int sec = localTime.getSecond();
+    int nano = localTime.getNano();
+    double dayValue = hour/24.0 + min/1440.0 + sec / 86400.0 + nano/(1_000_000_000.0 * 86400);
+
+    return gmtJulDay_plusHalfDay + dayValue - 0.5;
   }
 
   public static double getGmtJulDay(boolean isAd , boolean isGregorian , int year , int month , int day , int hour , int minute , double second) {
@@ -648,16 +621,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     }
     return jd;
 
-  }
-
-  /**
-   * 取得目前時刻和目標時刻相差幾秒
-   * @param target 目標時刻
-   * @return 相差秒數，如果目標時刻早於 (prior to) 目前時刻，傳回正值。否則傳回負值
-   */
-  public double diffSeconds(@NotNull Time target) {
-    double diffDays = this.getGmtJulDay() - target.getGmtJulDay();
-    return diffDays * 86400; //24*60*60
   }
 
   /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值 */

@@ -93,11 +93,41 @@ public class LocalDateTimeTest {
   @Test
   public void test_LocalDate_BC() {
     LocalDate ld = LocalDate.of(1 , 1 , 3);
-    for(int i=1 ; i <= 6 ; i++) {
-      ld = ld.minusDays(1);
-      logger.info("{} : era = {} , year = {} , year_of_era = {} , toEpochDay = {} " ,
-        ld , ld.getEra() , ld.getYear() , ld.get(YEAR_OF_ERA) , ld.toEpochDay() );
-    }
+    // 西元 1年 1月 3日
+
+    ld = ld.minusDays(1);
+    // 西元 1年 1月 2日
+    assertSame(IsoEra.CE , ld.getEra());
+    assertEquals(1 , ld.getYear());
+    assertEquals(1 , ld.get(YEAR_OF_ERA));
+    assertEquals(1 , ld.getMonthValue());
+    assertEquals(-719161 , ld.toEpochDay());
+
+    ld = ld.minusDays(1);
+    // 西元 1年 1月 1日
+    assertSame(IsoEra.CE , ld.getEra());
+    assertEquals(1 , ld.getYear());
+    assertEquals(1 , ld.get(YEAR_OF_ERA));
+    assertEquals(1 , ld.getMonthValue());
+    assertEquals(-719162 , ld.toEpochDay());
+
+    ld = ld.minusDays(1);
+    // 西元前 1年 12月 31日
+    assertSame(IsoEra.BCE , ld.getEra());
+    assertEquals(0 , ld.getYear());         // year 是連續的，因此「西元前一年」， year = 0
+    assertEquals(1 , ld.get(YEAR_OF_ERA));  // year_of_era 一定大於0
+    assertEquals(12 , ld.getMonthValue());
+    assertEquals(-719163 , ld.toEpochDay());
+
+    ld = ld.minusDays(1);
+    // 西元前 1年 12月 30日
+    assertSame(IsoEra.BCE , ld.getEra());
+    assertEquals(0 , ld.getYear());         // year 是連續的，因此「西元前一年」， year = 0
+    assertEquals(1 , ld.get(YEAR_OF_ERA));  // year_of_era 一定大於0
+    assertEquals(12 , ld.getMonthValue());
+    assertEquals(-719164 , ld.toEpochDay());
+
+
   }
 
   /**

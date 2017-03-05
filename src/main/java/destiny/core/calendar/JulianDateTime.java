@@ -3,9 +3,14 @@
  */
 package destiny.core.calendar;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.threeten.extra.chrono.JulianDate;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.Month;
+
+import static java.time.temporal.ChronoField.*;
 
 /**
  * reference : {@link java.time.LocalDateTime}
@@ -22,37 +27,46 @@ public class JulianDateTime implements Serializable {
     this.time = time;
   }
 
+  /**
+   * @param year 可能小於等於0
+   */
   public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute , double second) {
     JulianDate date = JulianDate.of(year , month , dayOfMonth);
-    int intSecond = (int) second;
-    int nanoSecond = (int) ((second - intSecond) * 1_000_000_000);
-    LocalTime time = LocalTime.of(hour , minute , intSecond , nanoSecond);
+
+    Pair<Long , Long> pair = Time.splitSecond(second);
+    LocalTime time = LocalTime.of(hour , minute , pair.getLeft().intValue() , pair.getRight().intValue());
     return new JulianDateTime(date , time);
   }
 
+  /**
+   * @param year 可能小於等於0
+   */
   public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute) {
     return of(year , month , dayOfMonth , hour , minute , 0);
   }
 
+  /**
+   * @param year 可能小於等於0
+   */
   public static JulianDateTime of(int year, Month month, int dayOfMonth, int hour, int minute) {
     return of(year , month.getValue() , dayOfMonth , hour , minute , 0);
   }
 
   public int getProlepticYear() {
-    return date.getProlepticYear();
+    return date.get(YEAR);
   }
 
   /** 一定大於 0 */
   public int getYear() {
-    return date.getYearOfEra();
+    return date.get(YEAR_OF_ERA);
   }
 
   public int getMonth() {
-    return date.getMonth();
+    return date.get(MONTH_OF_YEAR);
   }
 
   public int getDayOfMonth() {
-    return date.getDayOfMonth();
+    return date.get(DAY_OF_MONTH);
   }
 
   public int getHour() {

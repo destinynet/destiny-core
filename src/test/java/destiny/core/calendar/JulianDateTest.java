@@ -1,51 +1,124 @@
 /**
- * Created by smallufo on 2017-01-19.
+ * Created by smallufo on 2017-03-06.
  */
 package destiny.core.calendar;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.extra.chrono.JulianDate;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import static java.time.temporal.ChronoField.YEAR;
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.JulianFields.JULIAN_DAY;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * 可以比對的資訊
+ * http://www.stevemorse.org/jcal/julian.html
+ */
 public class JulianDateTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
+
+  /**
+   * 取得今日的 epoch day , 不論是 JD 還是 LocalDate , 都應該相等
+   */
+  @Test
+  public void test_epochDay_equals() {
+    JulianDate jd = JulianDate.now();
+    logger.debug("now = {} , epochDay = {}", jd, jd.toEpochDay());
+
+    LocalDate ld = LocalDate.now();
+    assertEquals(ld.toEpochDay(), jd.toEpochDay());
+  }
 
   /**
    * Julian day epoch 測試
    * 已知： epoch 位於
    * January 1, 4713 BC 中午 :  proleptic Julian calendar
    * November 24, 4714 BC    : proleptic Gregorian calendar
-   *
    */
   @Test
   public void testAstroJulDayNumber() {
-    JulianDate jd = JulianDate.of(-4712 , 1 , 1);
-    LocalDate gd = LocalDate.of(-4713 , 11 , 24);
+    JulianDate jd = JulianDate.of(-4712, 1, 1);
+    LocalDate gd = LocalDate.of(-4713, 11, 24);
 
-    assertEquals(jd.toEpochDay() , gd.toEpochDay());
-    logger.info("start of julian day , epoch = {}" , jd.toEpochDay());
-
+    assertEquals(jd.toEpochDay(), gd.toEpochDay());
+    logger.info("start of julian day , epoch = {}", jd.toEpochDay());
   }
 
+
+  /**
+   * 西元 1 年 1 月 1 日，減一天
+   */
   @Test
-  public void testBC() {
-    JulianDate jd = JulianDate.of(1,1,1);
-    JulianDate jd2 = jd.minus(1 , ChronoUnit.DAYS);
-    assertEquals(1 , jd2.getYearOfEra());// 西元前一年 , 輸出為 1
-    assertEquals(0 , jd2.getProlepticYear());// 西元前一年 , 連續值為 0
-    logger.info("jd2 = {} . getYearOfEra = {} , getProlepticYear = {}" , jd2 , jd2.getYearOfEra() , jd2.getProlepticYear());
+  public void test_CE_to_BC() {
+    JulianDate jd = JulianDate.of(1, 1, 1);
+    jd.getLong(JULIAN_DAY);
+
+    JulianDate jd2 = jd.minus(1, ChronoUnit.DAYS);
+
+
+    assertEquals(1, jd2.get(YEAR_OF_ERA));// 西元前一年 , 輸出為 1 , YEAR_OF_ERA 一定大於 0
+    assertEquals(0, jd2.get(YEAR));       // 西元前一年 , 連續值為 0
+    logger.info("jd2 = {} . getYearOfEra = {} , getProlepticYear = {}", jd2, jd2.get(YEAR_OF_ERA), jd2.get(YEAR));
 
     // 西元1年1月1日，減一天 , 就是 0年12月31日 (proleptic)
-    JulianDate jd3 = JulianDate.create(0 , 12 , 31);
-    assertEquals(jd3 , jd2);
+    JulianDate jd3 = JulianDate.of(0, 12, 31);
+    assertEquals(jd3, jd2);
   }
 
+  /**
+   * 資料來自 {@link java.time.temporal.JulianFields#JULIAN_DAY}
+   * 實際天文計算的値，需要減 0.5
+   * <pre>
+   *  | ISO date          |  Julian Day Number | Astronomical Julian Day |
+   *  | 1970-01-01T00:00  |         2,440,588  |         2,440,587.5     |
+   *  | 1970-01-01T06:00  |         2,440,588  |         2,440,587.75    |
+   *  | 1970-01-01T12:00  |         2,440,588  |         2,440,588.0     |
+   *  | 1970-01-01T18:00  |         2,440,588  |         2,440,588.25    |
+   *  | 1970-01-02T00:00  |         2,440,589  |         2,440,588.5     |
+   *  | 1970-01-02T06:00  |         2,440,589  |         2,440,588.75    |
+   *  | 1970-01-02T12:00  |         2,440,589  |         2,440,589.0     |
+   * </pre>
+   */
+
+  @Test
+  public void testEpoch1970() {
+    LocalDate ld = LocalDate.of(1970, 1, 1);
+    logger.info("ld.jd = {}", ld.getLong(JULIAN_DAY));
+
+    JulianDate jd = JulianDate.of(1970, 1, 1);
+    logger.info("jd.jd = {}", jd.getLong(JULIAN_DAY));
+
+    ld = LocalDate.from(jd);
+    assertEquals(LocalDate.of(1970 , 1 , 14) , ld);
+  }
+
+  /**
+   * 西元 1970-01-01 的 Jul Greg 互相轉換 (相差14天)
+   * <pre>
+   *    Greg          Julian
+   * 1970-01-01     1969-12-19
+   *
+   * 1970-01-14     1970-01-01
+   * </pre>
+   */
+  @Test
+  public void testEpoch_Jul2Greg() {
+    LocalDate gd = LocalDate.of(1970, 1, 1);
+    // Greg -> Julian
+    assertEquals(JulianDate.of(1969, 12, 19), JulianDate.from(gd));
+
+    JulianDate jd = JulianDate.of(1970, 1, 1);
+    // Julian -> Greg
+    assertEquals(LocalDate.of(1970, 1, 14), LocalDate.from(jd));
+  }
+  
   /**
    * 測試 JulianDate 與 GregorianDate 的 epochDay
    *
@@ -165,11 +238,4 @@ public class JulianDateTest {
     assertEquals(JulianDate.of(2100,2,29).toEpochDay() , LocalDate.of(2100,3,14).toEpochDay());
   }
 
-
-  @Test
-  public void testFromEpochDay() {
-    JulianDate jd = JulianDate.ofEpochDay(LocalDate.of(2100,3,14).toEpochDay());
-    assertEquals(2, jd.getMonth() );
-    assertEquals(29, jd.getDayOfMonth() );
-  }
 }

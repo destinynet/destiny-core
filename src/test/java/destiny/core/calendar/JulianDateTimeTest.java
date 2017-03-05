@@ -6,7 +6,6 @@ package destiny.core.calendar;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-
 public class JulianDateTimeTest {
 
   @Test
