@@ -28,7 +28,7 @@ public class JulianDateTime implements Serializable {
   }
 
   /**
-   * @param year 可能小於等於0
+   * @param year maybe <= 0
    */
   public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute , double second) {
     JulianDate date = JulianDate.of(year , month , dayOfMonth);
@@ -39,14 +39,14 @@ public class JulianDateTime implements Serializable {
   }
 
   /**
-   * @param year 可能小於等於0
+   * @param year maybe <= 0
    */
   public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute) {
     return of(year , month , dayOfMonth , hour , minute , 0);
   }
 
   /**
-   * @param year 可能小於等於0
+   * @param year maybe <= 0
    */
   public static JulianDateTime of(int year, Month month, int dayOfMonth, int hour, int minute) {
     return of(year , month.getValue() , dayOfMonth , hour , minute , 0);
@@ -56,7 +56,7 @@ public class JulianDateTime implements Serializable {
     return date.get(YEAR);
   }
 
-  /** 一定大於 0 */
+  /** must be >= 0 */
   public int getYear() {
     return date.get(YEAR_OF_ERA);
   }

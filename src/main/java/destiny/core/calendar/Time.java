@@ -12,10 +12,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.extra.chrono.JulianDate;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.*;
+import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.IsoEra;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -82,6 +84,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     }
     return  result;
   }
+
 
   /**
    * TODO : 解決所有 Julian Calendar 的問題
@@ -190,6 +193,65 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     return new Time(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
   }
 
+
+  public static Pair<ChronoLocalDate , LocalTime> from(double julianDay) {
+    boolean isGregorian = false;
+
+    if (julianDay >= GREGORIAN_START_JULIAN_DAY) {
+      isGregorian = true;
+    }
+
+    double u0,u1,u2,u3,u4;
+
+    u0 = julianDay + 32082.5;
+
+    if (isGregorian) {
+      u1 = u0 + Math.floor(u0 / 36525.0) - Math.floor(u0 / 146100.0) - 38.0;
+      if (julianDay >= 1830691.5) {
+        u1 += 1;
+      }
+      u0 = u0 + Math.floor(u1 / 36525.0) - Math.floor(u1 / 146100.0) - 38.0;
+    }
+    u2 = Math.floor(u0 + 123.0);
+    u3 = Math.floor((u2 - 122.2) / 365.25);
+    u4 = Math.floor((u2 - Math.floor(365.25 * u3)) / 30.6001);
+    int month = (int) (u4 - 1.0);
+    if (month > 12) {
+      month -= 12;
+    }
+    int day = (int) (u2 - Math.floor(365.25 * u3) - Math.floor(30.6001 * u4));
+    int y = (int) (u3 + Math.floor((u4 - 2.0) / 12.0) - 4800);
+
+    boolean ad = true;
+    int year;
+
+    if (y <= 0) {
+      ad = false;
+      year = -(y - 1); // 取正值
+    }
+    else {
+      year = y;
+    }
+
+    double h = (julianDay - Math.floor(julianDay + 0.5) + 0.5) * 24.0;
+    int hour = (int) h;
+    int minute = (int) (h * 60 - hour * 60);
+    double second = h * 3600 - hour * 3600 - minute * 60;
+
+    Pair<Long , Long> pair = splitSecond(second);
+    int secsInt  = pair.getLeft().intValue();
+    int nanoInt = pair.getRight().intValue();
+
+    LocalTime localTime = LocalTime.of(hour , minute , secsInt , nanoInt);
+
+    if (isGregorian) {
+      // ad 一定為 true , 不用考慮負數年數
+      return Pair.of(LocalDate.of(year , month , day) , localTime);
+    } else {
+      int prolepticYear = getNormalizedYear(ad , year);
+      return Pair.of(JulianDate.of(prolepticYear , month , day) ,localTime);
+    }
+  }
   
   public Time(double julianDay) {
     this(julianDay , (julianDay >= GREGORIAN_START_JULIAN_DAY));
