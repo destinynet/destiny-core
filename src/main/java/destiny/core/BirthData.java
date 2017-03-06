@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.chrono.IsoEra;
 
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
-public class BirthData implements GenderIF, TimeIF, DateIF, HmsIF, LocationIF, Serializable {
+public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializable {
 
   private Gender gender;
 
@@ -72,17 +72,14 @@ public class BirthData implements GenderIF, TimeIF, DateIF, HmsIF, LocationIF, S
     return time.getDayOfMonth();
   }
 
-  @Override
   public int getHour() {
     return time.getHour();
   }
 
-  @Override
   public int getMinute() {
     return time.getMinute();
   }
 
-  @Override
   public double getSecond() {
     return time.getSecond();
   }

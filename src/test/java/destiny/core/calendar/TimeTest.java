@@ -709,4 +709,29 @@ public class TimeTest
     // 日光節約時間結束 , 隔天中午，時區回到 +9
     assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
   }
+
+  @Test
+  public void testBetween() {
+    LocalDateTime t1 = LocalDateTime.of(2017,3,6,19,0,1);
+    LocalDateTime t  = LocalDateTime.of(2017,3,6,19,0,2);
+    LocalDateTime t2 = LocalDateTime.of(2017,3,6,19,0,3);
+
+    assertTrue(Time.isBetween(t , t1 , t2));
+    assertTrue(Time.isBetween(t , t2 , t1));
+    assertFalse(Time.isBetween(t1 , t , t2));
+    assertFalse(Time.isBetween(t1 , t2 , t1));
+    assertFalse(Time.isBetween(t2 , t , t1));
+    assertFalse(Time.isBetween(t2 , t1 , t));
+
+    t1 = LocalDateTime.of(-2017,3,6,19,0,1);
+    t  = LocalDateTime.of(-2017,3,6,19,0,2);
+    t2 = LocalDateTime.of(-2017,3,6,19,0,3);
+
+    assertTrue(Time.isBetween(t , t1 , t2));
+    assertTrue(Time.isBetween(t , t2 , t1));
+    assertFalse(Time.isBetween(t1 , t , t2));
+    assertFalse(Time.isBetween(t1 , t2 , t1));
+    assertFalse(Time.isBetween(t2 , t , t1));
+    assertFalse(Time.isBetween(t2 , t1 , t));
+  }
 }

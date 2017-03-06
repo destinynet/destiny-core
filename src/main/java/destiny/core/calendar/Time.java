@@ -15,13 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.threeten.extra.chrono.JulianDate;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.IsoEra;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -32,7 +29,7 @@ import static java.time.temporal.JulianFields.JULIAN_DAY;
  * 代表 『時間』 的物件
  * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar
  */
-public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
+public class Time implements Serializable , LocaleStringIF , DateIF
 {
   /* 是否是西元「後」, 
   西元前為 false , 西元後為 true (default) */
@@ -137,21 +134,33 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     this.second = Double.valueOf(s.substring(13));
     checkDate();
   }
-  
-  /** 傳回最精簡的文字表示法 , 可以餵進去 {@link #Time(String)} 裡面*/
-  @NotNull
-  public String getDebugString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(this.ad ? '+' : '-');
-    sb.append(AlignUtil.alignRight(this.year, 4, ' '));
-    sb.append(AlignUtil.alignRight(this.month, 2, ' '));
-    sb.append(AlignUtil.alignRight(this.day, 2, ' '));
-    sb.append(AlignUtil.alignRight(this.hour, 2, ' '));
-    sb.append(AlignUtil.alignRight(this.minute, 2, ' '));
-    sb.append(this.second);
-    return sb.toString();
+
+
+  public static LocalDateTime fromDebugString(String s) {
+    boolean ad;
+    char plusMinus = s.charAt(0);
+    if (plusMinus == '+')
+      ad = true;
+    else if (plusMinus == '-')
+      ad = false;
+    else
+      throw new RuntimeException("AD not correct : " + plusMinus);
+
+    int year = Integer.valueOf(s.substring(1, 5).trim());
+    int month = Integer.valueOf(s.substring(5, 7).trim());
+    int day = Integer.valueOf(s.substring(7, 9).trim());
+    int hour = Integer.valueOf(s.substring(9, 11).trim());
+    int minute = Integer.valueOf(s.substring(11, 13).trim());
+    double second = Double.valueOf(s.substring(13));
+
+    Pair<Long , Long> pair = Time.splitSecond(second);
+
+    int prolepticYear = getNormalizedYear(ad , year);
+
+    return LocalDateTime.of(prolepticYear , month , day , hour , minute , pair.getLeft().intValue() , pair.getRight().intValue());
   }
 
+  /** 傳回最精簡的文字表示法 , 可以餵進去 {@link #fromDebugString(String)} 裡面*/
   public static String getDebugString(LocalDateTime time) {
     StringBuilder sb = new StringBuilder();
     sb.append(time.getYear() >= 1 ? '+' : '-');
@@ -172,42 +181,22 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
     return sb.toString();
   }
 
-  /** 
-   * 取得此時間的 timestamp
-   * TODO : 要確認 1582 之前是否正常 
-   * */
-  @NotNull
-  public Timestamp getTimestamp() {
-    Calendar cal = new GregorianCalendar(year, month - 1, day, hour, minute, (int) second);
-    return new Timestamp(cal.getTimeInMillis());
-  }
-
-  /**
-   * 從 Timestamp 取得 Time 物件
-   * TODO : 要確認 1582 之前是否正常
-   */
-  @NotNull
-  public static Time getTime(@NotNull Timestamp ts) {
-    Calendar cal = new GregorianCalendar();
-    cal.setTimeInMillis(ts.getTime());
-    return new Time(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
-  }
 
 
-  public static Pair<ChronoLocalDate , LocalTime> from(double julianDay) {
+  public static Pair<ChronoLocalDate , LocalTime> from(double gmtJulDay) {
     boolean isGregorian = false;
 
-    if (julianDay >= GREGORIAN_START_JULIAN_DAY) {
+    if (gmtJulDay >= GREGORIAN_START_JULIAN_DAY) {
       isGregorian = true;
     }
 
     double u0,u1,u2,u3,u4;
 
-    u0 = julianDay + 32082.5;
+    u0 = gmtJulDay + 32082.5;
 
     if (isGregorian) {
       u1 = u0 + Math.floor(u0 / 36525.0) - Math.floor(u0 / 146100.0) - 38.0;
-      if (julianDay >= 1830691.5) {
+      if (gmtJulDay >= 1830691.5) {
         u1 += 1;
       }
       u0 = u0 + Math.floor(u1 / 36525.0) - Math.floor(u1 / 146100.0) - 38.0;
@@ -233,7 +222,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
       year = y;
     }
 
-    double h = (julianDay - Math.floor(julianDay + 0.5) + 0.5) * 24.0;
+    double h = (gmtJulDay - Math.floor(gmtJulDay + 0.5) + 0.5) * 24.0;
     int hour = (int) h;
     int minute = (int) (h * 60 - hour * 60);
     double second = h * 3600 - hour * 3600 - minute * 60;
@@ -331,21 +320,16 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   /** 取得西元年份，注意，這裡的傳回值不可能小於等於0 */
   @Override
   public int getYear() { return this.year; }
-  
-  /**
-   * 取得不中斷的年份
-   * 西元前1年, 傳回 0
-   * 西元前2年, 傳回 -1
-   */
-  private int getNormalizedYear() {
-    return getNormalizedYear(ad, year);
-  }
 
   /**
+   * 取得不中斷的年份
    * @param year 傳入的年，一定大於 0
    * @return proleptic year , 線性的 year : 西元前1年:0 , 西元前2年:-1 ...
    */
   public static int getNormalizedYear(boolean ad , int year) {
+    if (year <= 0) {
+      throw new RuntimeException("year " + year + " must > 0");
+    }
     if (!ad)
       return -(year-1);
     else
@@ -357,27 +341,18 @@ public class Time implements Serializable , LocaleStringIF , DateIF , HmsIF
   
   @Override
   public int getDay() { return this.day; }
-  @Override
-  public int getHour() { return this.hour; }
-  @Override
-  public int getMinute() { return this.minute; }
-  @Override
-  public double getSecond() { return this.second; }
+
   public boolean isGregorian() { return gregorian; }
   
   /**
    * @return t 是否介於 t1 與 t2 之間
    */
   public static boolean isBetween(LocalDateTime t , LocalDateTime t1 , LocalDateTime t2) {
-    // 演算法直接將 t , t1 , t2 視為 GMT 取 julDay 即可
-
-    double d = Time.getGmtJulDay(t);
-    double d1 = Time.getGmtJulDay(t1);
-    double d2 = Time.getGmtJulDay(t2);
-
     return
-      (d2 > d1 && d > d1 && d2 > d) ||
-      (d1 > d2 && d > d2 && d1 > d);
+      (
+        (t2.isAfter(t1) && t.isAfter(t1) && t2.isAfter(t)) ||
+        (t1.isAfter(t2) && t.isAfter(t2) && t1.isAfter(t))
+      );
   }
 
   private void normalize() {
