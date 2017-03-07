@@ -11,6 +11,7 @@ import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.*;
+import java.util.Objects;
 
 import static java.time.temporal.ChronoField.*;
 
@@ -92,9 +93,9 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     if (temporal instanceof JulianDateTime) {
       return (JulianDateTime) temporal;
     }
-//    else if (temporal instanceof ZonedDateTime) {
-//      return ((ZonedDateTime) temporal).toLocalDateTime();
-//    }
+    else if (temporal instanceof ZonedJulianDateTime) {
+      return ((ZonedJulianDateTime) temporal).toLocalDateTime();
+    }
 //    else if (temporal instanceof OffsetDateTime) {
 //      return ((OffsetDateTime) temporal).toLocalDateTime();
 //    }
@@ -105,6 +106,12 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     } catch (DateTimeException ex) {
       throw new DateTimeException("Unable to obtain JulianDateTime from TemporalAccessor: " + temporal + " of type " + temporal.getClass().getName(), ex);
     }
+  }
+
+  public static JulianDateTime of(JulianDate date, LocalTime time) {
+    Objects.requireNonNull(date, "date");
+    Objects.requireNonNull(time, "time");
+    return new JulianDateTime(date, time);
   }
 
   /**
@@ -132,6 +139,18 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     return of(year , month.getValue() , dayOfMonth , hour , minute , 0);
   }
 
+  public static JulianDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
+    Objects.requireNonNull(offset, "offset");
+    NANO_OF_SECOND.checkValidValue(nanoOfSecond);
+    long localSecond = epochSecond + offset.getTotalSeconds();  // overflow caught later
+    long localEpochDay = Math.floorDiv(localSecond, SECONDS_PER_DAY);
+    int secsOfDay = (int) Math.floorMod(localSecond, SECONDS_PER_DAY);
+    LocalDate gDate = LocalDate.ofEpochDay(localEpochDay);
+    JulianDate date = JulianDate.from(gDate);
+    LocalTime time = LocalTime.ofNanoOfDay(secsOfDay * NANOS_PER_SECOND + nanoOfSecond);
+    return new JulianDateTime(date, time);
+  }
+
   public int getProlepticYear() {
     return date.get(YEAR);
   }
@@ -157,9 +176,13 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     return time.getMinute();
   }
 
-  public double getSecond() {
-    return time.getSecond() + (time.getNano() / 1_000_000_000.0);
+  public int getSecond() {
+    return time.getSecond();
   }
+
+  public int getNano() {
+        return time.getNano();
+    }
 
   public JulianDate toLocalDate() {
     return date;

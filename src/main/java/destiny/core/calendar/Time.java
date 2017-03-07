@@ -101,6 +101,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   }
 
 
+  @Deprecated
   public Time(int year, int month, int day, int hour, int minute, double second) {
     this(year > 0 ,
       (year <=0 ? (-(year-1)) : year) ,
@@ -117,25 +118,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
    * 0123456789A1234567
    * +YYYYMMDDHHMMSS.SS
    * */
-  public Time(@NotNull String s) {
-    char ad = s.charAt(0);
-    if (ad == '+')
-      this.ad = true;
-    else if (ad == '-')
-      this.ad = false;
-    else
-      throw new RuntimeException("AD not correct : " + ad);
-
-    this.year = Integer.valueOf(s.substring(1, 5).trim());
-    this.month = Integer.valueOf(s.substring(5, 7).trim());
-    this.day = Integer.valueOf(s.substring(7, 9).trim());
-    this.hour = Integer.valueOf(s.substring(9, 11).trim());
-    this.minute = Integer.valueOf(s.substring(11, 13).trim());
-    this.second = Double.valueOf(s.substring(13));
-    checkDate();
-  }
-
-
   public static LocalDateTime fromDebugString(String s) {
     boolean ad;
     char plusMinus = s.charAt(0);

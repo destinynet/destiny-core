@@ -8,10 +8,12 @@ import org.threeten.extra.chrono.JulianDate;
 import java.io.Serializable;
 import java.time.*;
 import java.time.chrono.ChronoZonedDateTime;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalUnit;
+import java.time.temporal.*;
+import java.time.zone.ZoneRules;
 import java.util.Objects;
+
+import static java.time.temporal.ChronoField.INSTANT_SECONDS;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 
 /**
  * see {@link java.time.ZonedDateTime}
@@ -39,6 +41,9 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
     this.zone = zone;
   }
 
+  public static ZonedJulianDateTime of(JulianDate date, LocalTime time, ZoneId zone) {
+        return of(JulianDateTime.of(date, time), zone);
+    }
 
   public static ZonedJulianDateTime of(JulianDateTime julianDateTime, ZoneId zone) {
     return ofLocal(julianDateTime, zone, null);
@@ -57,12 +62,44 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
     }
 
     LocalDate localDate = LocalDate.from(julianDateTime);
-    LocalDateTime ldt = LocalDateTime.of(localDate , julianDateTime.toLocalTime());
-    ZonedDateTime zdt = ZonedDateTime.ofLocal(ldt , zone , preferredOffset);
+    LocalDateTime ldt = LocalDateTime.of(localDate, julianDateTime.toLocalTime());
+    ZonedDateTime zdt = ZonedDateTime.ofLocal(ldt, zone, preferredOffset);
     ZoneOffset offset = zdt.getOffset();
 
     return new ZonedJulianDateTime(julianDateTime, offset, zone);
   }
+
+  private static ZonedJulianDateTime create(long epochSecond, int nanoOfSecond, ZoneId zone) {
+    ZoneRules rules = zone.getRules();
+    Instant instant = Instant.ofEpochSecond(epochSecond, nanoOfSecond);  // TODO: rules should be queryable by epochSeconds
+    ZoneOffset offset = rules.getOffset(instant);
+    JulianDateTime jdt = JulianDateTime.ofEpochSecond(epochSecond, nanoOfSecond, offset);
+    return new ZonedJulianDateTime(jdt, offset, zone);
+  }
+
+
+  public static ZonedJulianDateTime from(TemporalAccessor temporal) {
+    if (temporal instanceof ZonedJulianDateTime) {
+      return (ZonedJulianDateTime) temporal;
+    }
+    try {
+      ZoneId zone = ZoneId.from(temporal);
+      if (temporal.isSupported(INSTANT_SECONDS)) {
+        long epochSecond = temporal.getLong(INSTANT_SECONDS);
+        int nanoOfSecond = temporal.get(NANO_OF_SECOND);
+        return create(epochSecond, nanoOfSecond, zone);
+      }
+      else {
+        JulianDate date = JulianDate.from(temporal);
+        LocalTime time = LocalTime.from(temporal);
+        return of(date, time, zone);
+      }
+    } catch (DateTimeException ex) {
+      throw new DateTimeException("Unable to obtain ZonedDateTime from TemporalAccessor: " + temporal + " of type " + temporal.getClass().getName(), ex);
+    }
+  }
+
+
 
   @Override
   public JulianDateTime toLocalDateTime() {
@@ -79,6 +116,9 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
     return zone;
   }
 
+  /**
+   * see {@link ZonedDateTime#withEarlierOffsetAtOverlap}
+   */
   @Override
   public ZonedJulianDateTime withEarlierOffsetAtOverlap() {
     return null;
@@ -99,6 +139,7 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
     return null;
   }
 
+
   @Override
   public ZonedJulianDateTime with(TemporalField field, long newValue) {
     return null;
@@ -109,14 +150,71 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
     return null;
   }
 
+
+
   @Override
   public long until(Temporal endExclusive, TemporalUnit unit) {
-    return 0;
+    ZonedJulianDateTime end = ZonedJulianDateTime.from(endExclusive);
+    if (unit instanceof ChronoUnit) {
+      end = end.withZoneSameInstant(zone);
+      if (unit.isDateBased()) {
+        return dateTime.until(end.dateTime, unit);
+      }
+      else {
+        return toOffsetDateTime().until(end.toOffsetDateTime(), unit);
+      }
+    }
+    return unit.between(this, end);
+  }
+
+  /**
+   * TODO finish
+   */
+  public OffsetDateTime toOffsetDateTime() {
+//     return OffsetDateTime.of(dateTime, offset);
+    return null;
   }
 
   @Override
   public boolean isSupported(TemporalField field) {
     return false;
   }
+
+  /**
+   * Gets the hour-of-day field.
+   *
+   * @return the hour-of-day, from 0 to 23
+   */
+  public int getHour() {
+    return dateTime.getHour();
+  }
+
+  /**
+   * Gets the minute-of-hour field.
+   *
+   * @return the minute-of-hour, from 0 to 59
+   */
+  public int getMinute() {
+    return dateTime.getMinute();
+  }
+
+  /**
+   * Gets the second-of-minute field.
+   *
+   * @return the second-of-minute, from 0 to 59
+   */
+  public int getSecond() {
+    return dateTime.getSecond();
+  }
+
+  /**
+   * Gets the nano-of-second field.
+   *
+   * @return the nano-of-second, from 0 to 999,999,999
+   */
+  public int getNano() {
+    return dateTime.getNano();
+  }
+
 
 }
