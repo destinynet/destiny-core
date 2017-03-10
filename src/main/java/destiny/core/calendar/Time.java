@@ -113,7 +113,8 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   }
 
   
-  /** 
+  /**
+   * TODO : 註記 Gregorian or Julian
    * 利用一個字串 's' 來建立整個時間 , 格式如下： 
    * 0123456789A1234567
    * +YYYYMMDDHHMMSS.SS
