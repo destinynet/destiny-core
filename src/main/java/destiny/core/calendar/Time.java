@@ -198,6 +198,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   public Time(double julianDay) {
     this(julianDay , (julianDay >= GREGORIAN_START_JULIAN_DAY));
   }
+
   
   /**
    * 從 Julian Day 建立 Time
@@ -283,67 +284,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
         (t1.isAfter(t2) && t.isAfter(t2) && t1.isAfter(t))
       );
   }
-
-  private void normalize() {
-    long skips = 0; //進位
-    if (second >= 60) {
-      skips = (long) (second / 60);
-      second = second - skips * 60;
-    }
-    else if (second < 0) {
-      skips = (long) (second / 60) - 1;
-      if (second % 60 == 0)
-        skips++;
-      second = second - skips * 60;
-    }
-    minute += skips;
-
-    skips = 0;
-    if (minute >= 60) {
-      skips = (minute / 60);
-      minute = (int) (minute - skips * 60);
-    }
-    else if (minute < 0) {
-      skips = (minute / 60) - 1;
-      if (minute % 60 == 0)
-        skips++;
-      minute = (int) (minute - skips * 60);
-    }
-    hour += skips;
-
-    skips = 0;
-
-    if (hour >= 24) {
-      skips = (hour / 24);
-      hour = (int) (hour - skips * 24);
-    }
-    else if (hour < 0) {
-      skips = (hour / 24) - 1;
-      if (hour % 24 == 0)
-        skips++;
-      hour = (int) (hour - skips * 24);
-    }
-    double julday = this.getGmtJulDay();
-    julday += skips;
-
-
-    Time t2 = new Time(julday);
-
-//    this.second = t2.getSecond();
-//    this.minute = t2.getMinute();
-//    this.hour = t2.getHour();
-
-    this.day = t2.getDay();
-    this.month = t2.getMonth();
-    this.year = t2.getYear();
-    this.ad = t2.isAd();
-    //this.Gregorian = t2.isGregorian();
-    if (!ad)
-      this.gregorian = isGregorian(-(t2.getYear()-1) , t2.getMonth() , t2.getDay());
-    else
-      this.gregorian = isGregorian(t2.getYear() , t2.getMonth() , t2.getDay());
-    
-  }//normalize
 
   
   /**
@@ -488,33 +428,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
    */
   public double getGmtJulDay() {
     return getGmtJulDay(ad , gregorian , year , month , day , hour , minute , second);
-//    double thisHour = hour + ((double) minute) / 60 + second / 3600;
-//
-//    double jd;
-//    double u, u0, u1, u2;
-//
-//    u = getNormalizedYear();
-//
-//    if (month < 3) {
-//      u -= 1;
-//    }
-//    u0 = u + 4712.0;
-//    u1 = month + 1.0;
-//    if (u1 < 4) {
-//      u1 += 12.0;
-//    }
-//    jd = Math.floor(u0 * 365.25) + Math.floor(30.6 * u1 + 0.000001) + day + thisHour / 24.0 - 63.5;
-//    if (gregorian) {
-//      u2 = Math.floor(Math.abs(u) / 100) - Math.floor(Math.abs(u) / 400);
-//      if (u < 0.0) {
-//        u2 = -u2;
-//      }
-//      jd = jd - u2 + 2;
-//      if ((u < 0.0) && (u / 100 == Math.floor(u / 100)) && (u / 400 != Math.floor(u / 400))) {
-//        jd -= 1;
-//      }
-//    }
-//    return jd;
   }
 
   /**
@@ -620,7 +533,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   // It does NOT change any global variables.                         //
   //////////////////////////////////////////////////////////////////////
   @NotNull
-  private static synchronized IDate swe_revjul (double jd, boolean calType)
+  private static synchronized IDate swe_revjul(double jd, boolean calType)
   {
     IDate dt=new IDate();
     double u0,u1,u2,u3,u4;
@@ -657,35 +570,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   }
 
 
-  public void setMonth(int month) {
-    this.month = month;
-    if (this.month > 12 || this.month <= 0)
-      normalize();
-  }
-
-  public void setDay(int day) {
-    this.day = day;
-    normalize();
-  }
-
-  public void setHour(int hour) {
-    this.hour = hour;
-    if (this.hour >= 60 || this.hour < 0)
-      normalize();
-  }
-
-  public void setMinute(int minute) {
-    this.minute = minute;
-    if (this.minute >= 60 || this.minute < 0)
-      normalize();
-  }
-
-  public void setSecond(double second) {
-    this.second = second;
-    if (this.second >= 60 || this.second < 0)
-      normalize();
-  }
-
   /** 是否是西元前 , 西元前 傳回 true ; 西元後 傳回 false */
   public boolean isBeforeChrist()
   {
@@ -702,11 +586,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   public boolean isAd()
   {
     return ad;
-  }
-
-  public void setAd(boolean ad)
-  {
-    this.ad = ad;
   }
 
 
