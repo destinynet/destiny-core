@@ -14,7 +14,6 @@ import java.time.ZonedDateTime;
 import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.JulianFields;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -54,28 +53,6 @@ public class LocalDateTimeTest {
       zdt = ZonedDateTime.from(zdt).minusDays(1);
       //ld = LocalDate.from(ld).minusDays(1);
       logger.info("zdt = {}" , zdt);
-    }
-  }
-
-  /**
-   * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar
-   * 測試 10/5~10/14 之間的錯誤日期
-   */
-  @Test
-  public void testJulian2Gregorian() {
-    LocalDate ld = LocalDate.of(1582, 10, 17);
-    ZoneId zone = ZoneId.of("GMT");
-    ZonedDateTime zdt;
-
-    for (int i = 1; i <= 15; i++) {
-      ld = ld.minusDays(1);
-      StringBuilder sb = new StringBuilder();
-      sb.append(ld);
-      sb.append(" , JulianFields.JULIAN_DAY = ");
-      sb.append(ld.getLong(JulianFields.JULIAN_DAY));
-      Time t = Time.from(ld.atStartOfDay());
-      sb.append(" , julianDay = ").append(t.getGmtJulDay());
-      out.println(sb);
     }
   }
 

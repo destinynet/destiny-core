@@ -84,36 +84,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
 
 
   /**
-   * TODO : 解決所有 Julian Calendar 的問題
-   */
-  public Time(boolean isAD , int year , int month , int day , int hour , int minute , double second ) {
-    if (year <= 0)
-      throw new RuntimeException("Year cannot be less than or equal to 0 in this constructor!");
-    this.ad = isAD;
-    this.year = year;
-    this.month = month;
-    this.day = day;
-    this.hour = hour;
-    this.minute = minute;
-    this.second = second;
-    checkDate();
-    this.normalize();
-  }
-
-
-  @Deprecated
-  public Time(int year, int month, int day, int hour, int minute, double second) {
-    this(year > 0 ,
-      (year <=0 ? (-(year-1)) : year) ,
-      month , day , hour , minute , second);
-  }
-
-  public Time(int year, int month, int day) {
-    this(year, month, day, 0, 0, 0);
-  }
-
-  
-  /**
    * TODO : 註記 Gregorian or Julian
    * 利用一個字串 's' 來建立整個時間 , 格式如下： 
    * 0123456789A1234567
@@ -271,34 +241,10 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   }
 
 
-
-
-
-  /**
-   * 檢查時間是否落入 1582/10/5~14 之間 , 如果有 , 就丟出 Exception
-   */
-  private void checkDate() {
-    if (this.isAd() && year == 1582 && month == 10 && (day >= 5 && day <= 14))
-      throw new RuntimeException("Invalid time! Date between 1582/10/5(inclusive) and 1582/10/14(inclusive) is invalid.");
-    this.gregorian = getGmtJulDay() >= GREGORIAN_START_JULIAN_DAY;
-//    if (getGmtJulDay() >= GREGORIAN_START_JULIAN_DAY )
-//      this.gregorian = true;
-//    else
-//      this.gregorian = false;
-  }
-
-
   public LocalDateTime toLocalDateTime() {
     return Time.ofLocalDateTime(ad, year, month, day, hour, minute, second);
   }
 
-  /**
-   * TODO : 檢查 1582 的轉換
-   */
-  public static Time from(LocalDateTime ldt) {
-    return new Time(ldt.toLocalDate().getEra() == IsoEra.CE , ldt.get(YEAR_OF_ERA) , ldt.getMonthValue() , ldt.getDayOfMonth() , ldt.getHour() , ldt.getMinute() , ldt.getSecond());
-  }
-  
   
   /** 取得西元年份，注意，這裡的傳回值不可能小於等於0 */
   @Override
