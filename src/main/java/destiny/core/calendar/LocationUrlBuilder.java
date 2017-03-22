@@ -6,13 +6,14 @@ package destiny.core.calendar;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.net.URL;
-
 /**
  * 從 Location 傳回網址，可用於 Google Maps 或是 Yahoo Maps
  */
 public interface LocationUrlBuilder {
 
-  @Nullable
-  URL getUrl(Location location);
+  String getUrl(double lat , double lng);
+
+  default String getUrl(Location location) {
+    return getUrl(location.getLatitude() , location.getLongitude());
+  }
 }

@@ -4,7 +4,10 @@
  */
 package destiny.core.calendar.eightwords;
 
-import destiny.core.calendar.*;
+import destiny.core.calendar.GoogleMapsUrlBuilder;
+import destiny.core.calendar.Location;
+import destiny.core.calendar.LocationUrlBuilder;
+import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
@@ -19,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.chrono.IsoEra;
 import java.util.*;
@@ -117,13 +118,13 @@ public class ContextColorCanvasWrapper {
     ChineseDate chineseDate = context.getChineseDate(lmt , location);
     cc.setText("農曆：("+chineseDate.getCycle() + "循環)" + chineseDate , 2 , 1);
     
-    URL url = urlBuilder.getUrl(location);
+    String url = urlBuilder.getUrl(location);
     
     ColorCanvas 地點名稱 = new ColorCanvas(1,44, "　");
     地點名稱.setText("地點：", 1 , 1);
     //地點名稱.setText(locationName , 1 , 7);
-    地點名稱.setText(locationName , 1 , 7 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
-    int minuteOffset = (int) (Time.getDstSecondOffset(lmt, location).getRight() / 60);
+    地點名稱.setText(locationName , 1 , 7 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
+    int minuteOffset = Time.getDstSecondOffset(lmt, location).getRight() / 60;
     地點名稱.setText(" GMT時差："+AlignUtil.alignRight(minuteOffset,6)+"分鐘", 1, 25 , "999999");
     cc.add(地點名稱 , 3 , 1);
     
@@ -139,7 +140,7 @@ public class ContextColorCanvasWrapper {
     lonText.append("分");
     lonText.append(AlignUtil.alignRight(location.getLongitudeSecond(),4));
     lonText.append("秒");
-    經度.setText(lonText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
+    經度.setText(lonText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
     cc.add(經度 , 4 , 1);
     
     ColorCanvas 緯度 = new ColorCanvas(1, 20 , "　");
@@ -152,7 +153,7 @@ public class ContextColorCanvasWrapper {
     latText.append("分");
     latText.append(AlignUtil.alignRight(location.getLatitudeSecond(),4));
     latText.append("秒");
-    緯度.setText(latText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , Optional.of(url) , Optional.empty() , false);
+    緯度.setText(latText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
     cc.add(緯度 , 4 , 25);
     
     cc.setText("換日："+ (context.isChangeDayAfterZi() ? "子初換日" : "子正換日"), 5, 1 , "999999" );
@@ -189,15 +190,10 @@ public class ContextColorCanvasWrapper {
     if (linkUrl != null)
     {
       cc.setText("命盤連結  ", linkLine, 1 , "999999");
-      try
-      {
-        //網址長度可能是奇數
-        if (linkUrl.length() % 2 == 1)
-          linkUrl = linkUrl + ' ';
-        cc.setText(linkUrl, linkLine, 11 , Optional.of("999999") , Optional.empty() , Optional.empty() , Optional.of(new URL(linkUrl)) , Optional.empty() , false);
-      } catch (MalformedURLException e) {
-        logger.error("MalformedURLException : linkUrl = {}", linkUrl);
-      }
+      //網址長度可能是奇數
+      if (linkUrl.length() % 2 == 1)
+        linkUrl = linkUrl + ' ';
+      cc.setText(linkUrl, linkLine, 11 , Optional.of("999999") , Optional.empty() , Optional.empty() , linkUrl, Optional.empty() , false);
     }
     //EightWords eightWords = context.getEightWords(lmt , location);
     //cc.setText("四字斷終生：" + fourWordsImpl.getResult(eightWords), 8, 1 , "#0000FF" , "#FFFF00" , fourWordsImpl.getResult(eightWords));

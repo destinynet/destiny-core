@@ -150,7 +150,7 @@ public class ColorCanvas implements Serializable
       for (int j=1 ; j <= width ; j++)
       {
         index = (i-1)*width+ j-1;
-        content[index] = new ColorByte( bytes[(j-1)%bytes.length]  , foreColor , backColor , Optional.empty() , Optional.empty() , Optional.empty());
+        content[index] = new ColorByte( bytes[(j-1)%bytes.length], foreColor , backColor, Optional.empty() , null , Optional.empty());
       }
     }
   }
@@ -163,7 +163,13 @@ public class ColorCanvas implements Serializable
    */
   public void setText(@NotNull String str , int x , int y )
   {
-    this.setText(str , x , y , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , false);
+    this.setText(str , x , y
+      , Optional.empty()
+      , Optional.empty()
+      , Optional.empty()
+      , null
+      , Optional.empty()
+      , false);
   }
   
   /**
@@ -175,7 +181,7 @@ public class ColorCanvas implements Serializable
    */
   public void setText(@NotNull String str , int x , int y , boolean wrap)
   {
-    this.setText(str , x , y , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , wrap);
+    this.setText(str , x , y , Optional.empty() , Optional.empty() , Optional.empty() , null , Optional.empty() , wrap);
   }//setText
   
 
@@ -184,7 +190,13 @@ public class ColorCanvas implements Serializable
    */
   public void setText(@NotNull String str , int x , int y , @NotNull String foreColor)
   {
-    this.setText(str , x , y , Optional.of(foreColor) , Optional.empty() , Optional.empty() , Optional.empty() , Optional.empty() , false);
+    this.setText(str , x , y
+      , Optional.of(foreColor)
+      , Optional.empty()
+      , Optional.empty()
+      , null
+      , Optional.empty()
+      , false);
   }
 
   /**
@@ -192,14 +204,24 @@ public class ColorCanvas implements Serializable
    */
   public void setText(@NotNull String str , int x , int y ,
                       @NotNull String foreColor , @Nullable String backColor , @Nullable String title) {
-    this.setText(str , x , y , Optional.of(foreColor) , Optional.ofNullable(backColor) , Optional.empty() , Optional.empty() , Optional.ofNullable(title) , false);
+    this.setText(str , x , y
+      , Optional.of(foreColor)
+      , Optional.ofNullable(backColor)
+      , Optional.empty()
+      , null
+      , Optional.ofNullable(title)
+      , false);
   }
 
 
   public void setText(@NotNull String str , int x , int y , @Nullable String foreColor , @Nullable String backColor ,
                       @Nullable Font font , @Nullable URL url , @Nullable String title , boolean wrap) {
-    setText(str , x , y , Optional.ofNullable(foreColor) , Optional.ofNullable(backColor)
-      , Optional.ofNullable(font) , Optional.ofNullable(url) , Optional.ofNullable(title) , wrap);
+    setText(str , x , y
+      , Optional.ofNullable(foreColor)
+      , Optional.ofNullable(backColor)
+      , Optional.ofNullable(font)
+      , url == null ? null : url.toExternalForm()
+      , Optional.ofNullable(title) , wrap);
   }
 
   /**
@@ -210,12 +232,12 @@ public class ColorCanvas implements Serializable
    * @param foreColor 前景顏色字串，以 16 進位表示，例如 "FFFFCC"
    * @param backColor 背景顏色字串，以 16 進位表示，例如 "FFFFCC"
    * @param font      字型，例如： new Font("細明體" , Font.PLAIN , 16)
-   * @param url       網址物件 , new URL("http://www.google.com.tw")
+   * @param url       網址物件 , 例如 "http://www.google.com.tw"
    * @param title     Title
    * @param wrap      是否換行
    */
   public void setText(@NotNull String str , int x , int y , Optional<String> foreColor , Optional<String> backColor
-    ,  Optional<Font> font , Optional<URL> url , Optional<String> title , boolean wrap)
+    ,  Optional<Font> font , @Nullable String url , Optional<String> title , boolean wrap)
   {    
     int index = (x-1) * width + (y-1);
     int strWidth=0;
@@ -306,9 +328,9 @@ public class ColorCanvas implements Serializable
           }
         }
         //如果新加入的 URL 為空，則檢查原字元的網址
-        if (!url.isPresent()) {
+        if (url == null) {
           if (content[j].getUrl() != null) {
-            url = content[j].getUrl();
+            url = content[j].getUrl().orElse(null);
           }
         }
 
@@ -446,7 +468,7 @@ public class ColorCanvas implements Serializable
       throw new RuntimeException("錯誤，欲新加入一行，但是最後一行已經有資料了，無法再往下加一行了");
         
     this.setText(str , targetLine , 1 , Optional.ofNullable(foreColor) , Optional.ofNullable(backColor)
-      , Optional.ofNullable(font) , Optional.ofNullable(url) , Optional.empty() , wrap);
+      , Optional.ofNullable(font) , null , Optional.empty() , wrap);
   }//addLine
   
   /**

@@ -53,8 +53,11 @@ public class Location implements Serializable
     // de_DE , 柏林
     .put(Locale.GERMANY , new Location(EAST , 13 , 24 , NORTH , 52 , 31 , TimeZone.getTimeZone("Europe/Berlin")))
     
-    // en , 紐約
-    .put(Locale.ENGLISH , new Location(WEST , 73 , 58 , NORTH , 40 , 47 , TimeZone.getTimeZone("America/New_York")))
+    // en , 紐約 , 40.758899, -73.985131 , 時報廣場
+    .put(Locale.ENGLISH , new Location(-73.985131 , 40.758899 , TimeZone.getTimeZone("America/New_York")))
+    // en_US , 紐約
+    .put(Locale.US , new Location(-73.985131 , 40.758899, TimeZone.getTimeZone("America/New_York")))
+
     // en_AU , 雪梨
     .put(new Locale("en" , "AU") , new Location(EAST , 151 , 12 , 40 , SOUTH , 33 , 51 , 36 , TimeZone.getTimeZone("Australia/Sydney")))
     // en_BW , 波札那 Botswana 
@@ -77,8 +80,6 @@ public class Location implements Serializable
     .put(new Locale("en" , "PH"), new Location(EAST , 121 , 0 , NORTH , 14 , 35 , TimeZone.getTimeZone("Asia/Manila")))
     // en_SG , 新加坡
     .put(new Locale("en" , "SG"), new Location(EAST , 103 , 51 , NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
-    // en_US , 紐約
-    .put(Locale.US , new Location(WEST , 73 , 58 , NORTH , 40 , 47 , TimeZone.getTimeZone("America/New_York")))
     // en_ZA , 南非 , 約翰尼斯堡
     .put(new Locale("en" , "ZA"), new Location(EAST , 27 , 54 , SOUTH , 26 , 8 , TimeZone.getTimeZone("Africa/Johannesburg")))
     // en_ZW , 辛巴威 , 哈拉雷
@@ -120,8 +121,8 @@ public class Location implements Serializable
     // zh_SG , 新加坡
     .put(new Locale("zh" , "SG"), new Location(EAST , 103 , 51 , NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
     
-    // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (121.517675 , 25.039059)
-    .put(Locale.TAIWAN, new Location(EAST, 121, 31, 4.0, NORTH, 25, 2, 21.0 , TimeZone.getTimeZone("Asia/Taipei")))
+    // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
+    .put(Locale.TAIWAN, new Location(121.517668 , 25.039030 , TimeZone.getTimeZone("Asia/Taipei")))
     .build();
 
   /** 從 Browser 傳入 locale , 找出該 Locale 內定的 Location */

@@ -8,15 +8,15 @@
 package destiny.tools.ColorCanvas;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 
 
-class ColorByte implements Serializable
-{
+class ColorByte implements Serializable {
   private byte b;
 
   private Optional<String> foreColor = Optional.empty(); //前景色
@@ -25,7 +25,8 @@ class ColorByte implements Serializable
 
   private Optional<Font> font = Optional.empty();
 
-  private Optional<URL> url = Optional.empty();
+  @Nullable
+  private String url = null;
 
   private Optional<String> title = Optional.empty();
   
@@ -61,9 +62,9 @@ class ColorByte implements Serializable
   /**
    * @return Returns the url.
    */
-  public Optional<URL> getUrl()
+  public Optional<String> getUrl()
   {
-    return url;
+    return Optional.ofNullable(url);
   }
   
   /**
@@ -77,7 +78,7 @@ class ColorByte implements Serializable
   public ColorByte() {}
   
   public ColorByte(byte b , Optional<String> foreColor , Optional<String> backColor
-    , Optional<Font> font , Optional<URL> url , Optional<String> title)
+    , Optional<Font> font , @Nullable String url , Optional<String> title)
   {
     this.b = b;
     this.foreColor = validateColor(foreColor);
@@ -155,11 +156,12 @@ class ColorByte implements Serializable
     //System.out.println("font = " + font + " , cb.font = " + cb.font);
     //url 的 equals 要 resolve domain name , 改以 url.toExternalForm() 來比對
     if (
-        ( ( (!this.foreColor.isPresent()) && (!cb.foreColor.isPresent())) || ( (this.foreColor.isPresent() ) && this.foreColor.equals(cb.foreColor)) ) &&
-        ( ( (!this.backColor.isPresent()) && (!cb.backColor.isPresent())) || ( (this.backColor.isPresent() ) && this.backColor.orElse(null).equals(cb.backColor.orElse(null))) ) &&
-        ( ( (!this.font.isPresent()     ) && (!cb.font.isPresent())     ) || ( (this.font.isPresent()      ) && this.font.equals(cb.font)          ) ) &&
-        ( ( (!this.url.isPresent()      ) && (!cb.url.isPresent())      ) || ( (this.url.isPresent()       ) && (cb.url.isPresent() ) && this.url.get().toString().equals(cb.url.get().toExternalForm())) ) &&
-        ( ( (!this.title.isPresent()    ) && (!cb.title.isPresent()     ) || ( (this.title.isPresent()     ) && this.title.get().equals(cb.title.get()))) )
+        ( ( (!this.foreColor.isPresent()) && (!cb.foreColor.isPresent())) || ( (this.foreColor.isPresent() ) && this.foreColor.equals(cb.foreColor)) )
+          && ( ( (!this.backColor.isPresent()) && (!cb.backColor.isPresent())) || ( (this.backColor.isPresent() ) && this.backColor.orElse(null).equals(cb.backColor.orElse(null))) )
+          && ( ( (!this.font.isPresent()     ) && (!cb.font.isPresent())     ) || ( (this.font.isPresent()      ) && this.font.equals(cb.font)          ) )
+          && (Objects.equals(this.url , cb.url))
+          //&& ( ( (!this.url.isPresent()      ) && (!cb.url.isPresent())      ) || ( (this.url.isPresent()       ) && (cb.url.isPresent() ) && this.url.get().toString().equals(cb.url.get().toExternalForm())) )
+          && ( ( (!this.title.isPresent()    ) && (!cb.title.isPresent()     ) || ( (this.title.isPresent()     ) && this.title.get().equals(cb.title.get()))) )
        )
       return true;
     else

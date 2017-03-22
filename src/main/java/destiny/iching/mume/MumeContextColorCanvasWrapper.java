@@ -12,8 +12,6 @@ import destiny.tools.ColorCanvas.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -42,14 +40,9 @@ public class MumeContextColorCanvasWrapper implements Serializable
   {
     ColorCanvas c = new ColorCanvas(12, 74, "　");
     ColorCanvas siteCanvas = new ColorCanvas(2 , 74 , "　");
-    
-    try
-    {
-      siteCanvas.setText("Destiny 命理網", 1, 1, Optional.empty() , Optional.empty() , Optional.empty(), Optional.of(new URL("http://destiny.to")), Optional.of("Destiny命理網"), false);
-    }
-    catch (MalformedURLException ignored)
-    {
-    }
+
+    siteCanvas.setText("Destiny 命理網", 1, 1, Optional.empty() , Optional.empty() , Optional.empty(), "http://destiny.to", Optional.of("Destiny命理網"), false);
+
     siteCanvas.setText(" http://destiny.to ", 1, 17);
     siteCanvas.setText("梅花易數線上排盤" + "　" + metaData , 2, 1);
     c.add(siteCanvas, 1, 1);
