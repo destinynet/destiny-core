@@ -70,6 +70,47 @@ public class UBBCodeConverter
     return s1;
   }
 
+  /**
+   * 2017-03-23 新增 : 除了 [quote] 以外都處理
+   */
+  public String getAllExceptQuote(String s) {
+    String s1 = s;
+    s1 = ReImg(s1);
+    s1 = ReUrl(s1);
+    s1 = ReFly(s1);
+    s1 = ReEmail(s1);
+    s1 = ReBold(s1);
+    s1 = ReSlope(s1);
+    s1 = ReDownLine(s1);
+    s1 = ReMove(s1);
+    s1 = ReTxtUrl(s1);
+    s1 = ReTxtEmail(s1);
+    s1 = ReAlign(s1);
+    s1 = ReTxtSize(s1);
+    s1 = ReCode(s1);
+    s1 = ReSup(s1);
+    s1 = ReSub(s1);
+    s1 = ReDelLine(s1);
+    s1 = ReFliph(s1);
+    s1 = ReFlipv(s1);
+    s1 = ReShadow(s1);
+    s1 = ReGlow(s1);
+    s1 = ReBlur(s1);
+    s1 = ReSwf(s1);
+    s1 = ReRm(s1);
+    s1 = ReMp(s1);
+    s1 = ReQt(s1);
+    s1 = ReSk(s1);
+    s1 = ReSound(s1);
+    s1 = ReInvert(s1);
+    s1 = ReXray(s1);
+    s1 = ReLi(s1);
+    s1 = ReLi1(s1);
+    s1 = ReLi2(s1);
+    return s1;
+  }
+
+
   @NotNull
   public String replace(@NotNull String s, @NotNull String s1, String s2)
   {

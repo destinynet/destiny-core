@@ -525,7 +525,6 @@ public class ColorCanvas implements Serializable
    * 讀取這個 ColorCanvas 的 content 資料
    * 「以及」其子ColorCanvas 的 content 資料
    * 並且，將子 ColorCanvas 的 content 覆蓋過本 content
-   * @return
    */
   @NotNull
   private ColorByte[] getContentWithChildren()

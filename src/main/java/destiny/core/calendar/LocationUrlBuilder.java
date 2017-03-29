@@ -4,8 +4,6 @@
  */
 package destiny.core.calendar;
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * 從 Location 傳回網址，可用於 Google Maps 或是 Yahoo Maps
  */
