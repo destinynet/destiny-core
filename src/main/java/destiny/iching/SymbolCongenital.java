@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import static destiny.iching.Symbol.*;
+
 /**
  * <pre>
  * 先天八卦
@@ -22,15 +24,14 @@ import java.util.List;
  * 震4 | 坤8 | 艮7
  * </pre>
  */
-public class SymbolCongenital implements Comparator<Symbol>
-{
+public class SymbolCongenital implements Comparator<Symbol> {
   private final static Symbol[] 先天八卦 = new Symbol[]
-    { Symbol.乾 , Symbol.兌 , Symbol.離 , Symbol.震 , 
-      Symbol.巽 , Symbol.坎 , Symbol.艮 , Symbol.坤 };
+    { 乾 , 兌 , 離 , 震 ,
+      巽 , 坎 , 艮 , 坤 };
     
   private final static List<Symbol> 先天八卦List = Arrays.asList(先天八卦);
   
-  public SymbolCongenital()
+  SymbolCongenital()
   {}
   
   /**
@@ -46,8 +47,12 @@ public class SymbolCongenital implements Comparator<Symbol>
    * 由先天八卦卦序取得 Symbol
    * 0->坤 , 1->乾 , 2->兌 , ... , 8->坤 , 繼續循環 9->乾...
    */
-  public static Symbol getSymbol(int index)
-  {
+  public static Symbol getSymbol(int index) {
+    if (index <= 0)
+      return getSymbol(index + 8);
+    if (index > 8)
+      return getSymbol(index - 8);
+
     int remainder = index % 8;
     if (remainder == 0)
       remainder = 8;
@@ -62,31 +67,32 @@ public class SymbolCongenital implements Comparator<Symbol>
   {
     switch (s)
     {
-      case 乾: return Symbol.巽;
-      case 兌: return Symbol.乾;
-      case 離: return Symbol.兌;
-      case 震: return Symbol.離;
-      case 巽: return Symbol.坎;
-      case 坎: return Symbol.艮;
-      case 艮: return Symbol.坤;
-      case 坤: return Symbol.震;
+      case 乾: return 巽;
+      case 兌: return 乾;
+      case 離: return 兌;
+      case 震: return 離;
+      case 巽: return 坎;
+      case 坎: return 艮;
+      case 艮: return 坤;
+      case 坤: return 震;
     }
     throw new RuntimeException("impossible");
   }
-  
+
+  /**
+   * 對沖的卦
+   */
   @NotNull
-  public static Symbol getOppositeSymbol(@NotNull Symbol s)
-  {
-    switch (s)
-    {
-      case 乾: return Symbol.坤;
-      case 兌: return Symbol.艮;
-      case 離: return Symbol.坎;
-      case 震: return Symbol.巽;
-      case 巽: return Symbol.震;
-      case 坎: return Symbol.離;
-      case 艮: return Symbol.兌;
-      case 坤: return Symbol.乾;
+  public static Symbol getOppositeSymbol(@NotNull Symbol s) {
+    switch (s) {
+      case 乾: return 坤;
+      case 兌: return 艮;
+      case 離: return 坎;
+      case 震: return 巽;
+      case 巽: return 震;
+      case 坎: return 離;
+      case 艮: return 兌;
+      case 坤: return 乾;
     }
     throw new RuntimeException("impossible");
   }

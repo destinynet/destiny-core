@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static destiny.iching.Symbol.*;
+
 /**
  * <pre>
  * 後天八卦
@@ -25,15 +27,14 @@ import java.util.Optional;
  * 
  * </pre>
  */
-public class SymbolAcquired implements Comparator<Symbol>
-{
+public class SymbolAcquired implements Comparator<Symbol> {
   private final static Symbol[] 後天八卦 = new Symbol[]
-    { Symbol.坎 , Symbol.坤 , Symbol.震 , Symbol.巽 , 
-      Symbol.乾 , Symbol.兌 , Symbol.艮 , Symbol.離 };
+    { 坎 , 坤 , 震 , 巽 ,
+      乾 , 兌 , 艮 , 離 };
   
   private final static List<Symbol> 後天八卦List = Arrays.asList(後天八卦);
   
-  public SymbolAcquired()
+  SymbolAcquired()
   {}
   
   /**
@@ -41,8 +42,7 @@ public class SymbolAcquired implements Comparator<Symbol>
    * 坎1 , 坤2 , ... , 離 9
    * 因為沒有 5 , 所以得把 5 給跳過
    */
-  public static int getIndex(Symbol s)
-  {
+  public static int getIndex(Symbol s) {
     int tempIndex = (後天八卦List.indexOf(s) +1);
     if (tempIndex >=5 )
       tempIndex ++ ;
@@ -51,10 +51,12 @@ public class SymbolAcquired implements Comparator<Symbol>
 
   /**
    * 由後天八卦卦序取得 Symbol
-   * TODO : 讓其可以支援 0 以及 >=9 的情況
+   * 因為 '5' 為空，這裡不方便讓其支援 index = 0 以及 >=9 的情況
+   *
    * 492
    * 357
    * 816
+   *
    * index = 0 : Exception !
    * index = 1 , 後天卦 = 坎
    * index = 2 , 後天卦 = 坤
@@ -68,8 +70,7 @@ public class SymbolAcquired implements Comparator<Symbol>
    * index > 9 : Exception !
    */
   @Nullable
-  public static Symbol getSymbolNullable(int index)
-  {
+  public static Symbol getSymbolNullable(int index) {
     if (index == 5)
       return null;
     else if (index > 5 )
@@ -93,7 +94,7 @@ public class SymbolAcquired implements Comparator<Symbol>
     if (reminder == 5)
       return Optional.empty();
     else if (reminder == 0)
-      return Optional.of(Symbol.離);
+      return Optional.of(離);
     else if (reminder > 5)
       return Optional.of(後天八卦[reminder-2]);
     else
@@ -109,14 +110,14 @@ public class SymbolAcquired implements Comparator<Symbol>
   {
     switch (s)
     {
-      case 坎: return Symbol.艮;
-      case 坤: return Symbol.兌;
-      case 震: return Symbol.巽;
-      case 巽: return Symbol.離;
-      case 乾: return Symbol.坎;
-      case 兌: return Symbol.乾;
-      case 艮: return Symbol.震;
-      case 離: return Symbol.坤;
+      case 坎: return 艮;
+      case 坤: return 兌;
+      case 震: return 巽;
+      case 巽: return 離;
+      case 乾: return 坎;
+      case 兌: return 乾;
+      case 艮: return 震;
+      case 離: return 坤;
     }
     throw new IllegalArgumentException("impossible");
   }
@@ -129,14 +130,14 @@ public class SymbolAcquired implements Comparator<Symbol>
   {
     switch (s)
     {
-      case 坎: return Symbol.離;
-      case 坤: return Symbol.艮;
-      case 震: return Symbol.兌;
-      case 巽: return Symbol.乾;
-      case 乾: return Symbol.巽;
-      case 兌: return Symbol.震;
-      case 艮: return Symbol.坤;
-      case 離: return Symbol.坎;
+      case 坎: return 離;
+      case 坤: return 艮;
+      case 震: return 兌;
+      case 巽: return 乾;
+      case 乾: return 巽;
+      case 兌: return 震;
+      case 艮: return 坤;
+      case 離: return 坎;
     }
     throw new IllegalArgumentException("impossible");
   }

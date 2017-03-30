@@ -15,11 +15,11 @@ import java.io.Serializable;
 public class ChartColorCanvasWrapper implements Serializable
 {
   private Chart chart;
+
   @NotNull
   private ChartBlock[][] chartCoordinate = new ChartBlock[3][3];
   
-  public ChartColorCanvasWrapper(@NotNull Chart chart)
-  {
+  public ChartColorCanvasWrapper(@NotNull Chart chart) {
     this.chart = chart;
     
     //chartCoordinate[0][0] = chart.getChartBlock(Symbol.巽); // |  9  |  5  |  7  |

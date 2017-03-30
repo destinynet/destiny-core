@@ -5,47 +5,46 @@
  */
 package destiny.FengShui.SanYuan;
 
+import com.google.common.collect.Lists;
 import destiny.astrology.Utils;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 存放 24 山的資料
  */
-public abstract class AbstractMountainCompass extends AbstractCompass
-{
-  @NotNull
-  private static final ArrayList<Mountain> mountainList = new ArrayList<>();
-  static
-  {
-    mountainList.add(Mountain.子);
-    mountainList.add(Mountain.癸);
-    mountainList.add(Mountain.丑);
-    mountainList.add(Mountain.艮);
-    mountainList.add(Mountain.寅);
-    mountainList.add(Mountain.甲);
-    mountainList.add(Mountain.卯);
-    mountainList.add(Mountain.乙);
-    mountainList.add(Mountain.辰);
-    mountainList.add(Mountain.巽);
-    mountainList.add(Mountain.巳);
-    mountainList.add(Mountain.丙);
-    mountainList.add(Mountain.午);
-    mountainList.add(Mountain.丁);
-    mountainList.add(Mountain.未);
-    mountainList.add(Mountain.坤);
-    mountainList.add(Mountain.申);
-    mountainList.add(Mountain.庚);
-    mountainList.add(Mountain.酉);
-    mountainList.add(Mountain.辛);
-    mountainList.add(Mountain.戌);
-    mountainList.add(Mountain.乾);
-    mountainList.add(Mountain.亥);
-    mountainList.add(Mountain.壬);
-  }
+public abstract class AbstractMountainCompass extends AbstractCompass {
+
+  private final static List<Mountain> mountainList = Lists.newArrayList(
+    Mountain.子,
+    Mountain.癸,
+    Mountain.丑,
+    Mountain.艮,
+    Mountain.寅,
+    Mountain.甲,
+    Mountain.卯,
+    Mountain.乙,
+    Mountain.辰,
+    Mountain.巽,
+    Mountain.巳,
+    Mountain.丙,
+    Mountain.午,
+    Mountain.丁,
+    Mountain.未,
+    Mountain.坤,
+    Mountain.申,
+    Mountain.庚,
+    Mountain.酉,
+    Mountain.辛,
+    Mountain.戌,
+    Mountain.乾,
+    Mountain.亥,
+    Mountain.壬
+  );
+
   
   /**
    * 取得 "子" 山的起始度數 (地盤正針得傳回 352.5 度)

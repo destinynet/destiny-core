@@ -5,10 +5,11 @@
  */
 package destiny.FengShui.SanYuan;
 
-import java.io.Serializable;
-
 import destiny.iching.Symbol;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.Serializable;
 
 /**
  * 在三元盤中，每個 Chart 都有九個 Block
@@ -20,6 +21,7 @@ public class ChartBlock implements Serializable
    * 方向 , 以卦來表示
    * 如果為 null , 代表是中宮
    */
+  @Nullable
   private Symbol symbol;
   
   /**
@@ -53,6 +55,7 @@ public class ChartBlock implements Serializable
     this.period = period;
   }
   
+  @Nullable
   public Symbol getSymbol() { return symbol; }
   public void setSymbol(Symbol s) 
   { 
