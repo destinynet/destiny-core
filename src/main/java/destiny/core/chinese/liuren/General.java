@@ -42,8 +42,10 @@ public enum General {
   }
 
   public static General get(Branch branch , GeneralStemBranchIF stemBranchConfig) {
-    return Arrays.asList(values()).stream().filter(g -> stemBranchConfig.getStemBranch(g).getBranch() == branch)
-      .findFirst().orElseThrow(() -> new AssertionError(branch));
+    return Arrays.stream(values())
+      .filter(g -> stemBranchConfig.getStemBranch(g).getBranch() == branch)
+      .findFirst()
+      .orElseThrow(() -> new AssertionError(branch));
   }
 
   public char getShortName() {

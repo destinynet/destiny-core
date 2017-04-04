@@ -66,6 +66,7 @@ public class TimeZoneTest {
    * 因為這些並非 unique , 見 {@link ZoneId#of(String, Map)} 說明
    *
    * 但「並非所有 3-bytes」的 id 都無法轉到 ZoneID , 許多仍可轉換，例如 GMT , UTC 仍可用
+   * 參照 http://stackoverflow.com/a/41683097/298430
    */
   @Test
   public void test_TimeZone_to_ZoneId() {

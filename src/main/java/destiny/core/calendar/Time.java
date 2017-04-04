@@ -19,6 +19,7 @@ import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.IsoEra;
 import java.time.temporal.ChronoUnit;
+import java.time.zone.ZoneRulesException;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -304,9 +305,20 @@ public class Time implements Serializable , LocaleStringIF , DateIF
 
   /**
    * LMT (with TimeZone) to GMT
+   *
+   * ZoneId.of(string) 可能會出現 ZoneRulesException
+   * 例如 : ZoneRulesException: Unknown time-zone ID: CTT
+   * 因為某些 三字元的 zoneId 被 deprecated
+   * 參照
+   * http://stackoverflow.com/a/41683097/298430
    */
   public static LocalDateTime getGmtFromLmt(LocalDateTime lmt , TimeZone timeZone) {
-    ZonedDateTime ldtZoned = lmt.atZone(ZoneId.of(timeZone.getID()));
+    ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
+    try {
+      zoneId = ZoneId.of(timeZone.getID());
+    } catch (ZoneRulesException ignored) {
+    }
+    ZonedDateTime ldtZoned = lmt.atZone(zoneId);
     ZonedDateTime utcZoned = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"));
     return utcZoned.toLocalDateTime();
   }

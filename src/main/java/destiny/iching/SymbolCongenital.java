@@ -65,8 +65,7 @@ public class SymbolCongenital implements Comparator<Symbol> {
   @NotNull
   public static Symbol getClockwiseSymbol(@NotNull Symbol s)
   {
-    switch (s)
-    {
+    switch (s) {
       case 乾: return 巽;
       case 兌: return 乾;
       case 離: return 兌;

@@ -22,9 +22,11 @@ public interface HexagramIF
   boolean[] getYinYangs();
   
   /** 取得上卦 */
+  @NotNull
   Symbol getUpperSymbol();
   
   /** 取得下卦 */
+  @NotNull
   Symbol getLowerSymbol();
 
   /**

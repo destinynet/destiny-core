@@ -91,11 +91,14 @@ public enum Hexagram implements HexagramIF , Serializable
   小過(Symbol.震 , Symbol.艮),
   既濟(Symbol.坎 , Symbol.離),
   未濟(Symbol.離 , Symbol.坎);
-  
+
+  @NotNull
   private Symbol upper;
+
+  @NotNull
   private Symbol lower;
 
-  Hexagram(Symbol upper, Symbol lower) {
+  Hexagram(@NotNull Symbol upper, @NotNull Symbol lower) {
     this.upper = upper;
     this.lower = lower;
   }
@@ -126,9 +129,7 @@ public enum Hexagram implements HexagramIF , Serializable
   
   /** 從 陰陽 YinYang 實體的 array 傳回 HexagramIF */
   @NotNull
-  public static Hexagram getHexagram(YinYangIF[] yinyangs) {
-    if (yinyangs == null)
-      throw new RuntimeException("yinyangs is NULL !");
+  public static Hexagram getHexagram(@NotNull YinYangIF[] yinyangs) {
     if (yinyangs.length != 6)
       throw new RuntimeException("yinyangs length not equal 6 !");
 
@@ -145,9 +146,7 @@ public enum Hexagram implements HexagramIF , Serializable
    * @return 卦的實體(Hexagram)
    */
   @NotNull
-  public static Hexagram getHexagram(boolean[] booleans) {
-    if (booleans == null)
-      throw new RuntimeException("null array !");
+  public static Hexagram getHexagram(@NotNull boolean[] booleans) {
     if (booleans.length != 6)
       throw new RuntimeException("booleans length is not 6 , the length is " + booleans.length);
     Symbol lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2]);
@@ -188,7 +187,7 @@ public enum Hexagram implements HexagramIF , Serializable
       case 5 : return upper.getBooleanValue(2);
       case 6 : return upper.getBooleanValue(3);
     }
-    throw new RuntimeException("index out of range , 1 <= index <= 6 ");
+    throw new RuntimeException("index out of range , 1 <= index <= 6 : " + index);
   }
 
   @NotNull
@@ -205,15 +204,15 @@ public enum Hexagram implements HexagramIF , Serializable
     return yy;
   }
 
+  @NotNull
   @Override
-  public Symbol getUpperSymbol()
-  {
+  public Symbol getUpperSymbol() {
     return upper;
   }
 
+  @NotNull
   @Override
-  public Symbol getLowerSymbol()
-  {
+  public Symbol getLowerSymbol() {
     return lower;
   }
   
@@ -223,8 +222,7 @@ public enum Hexagram implements HexagramIF , Serializable
    */
   @NotNull
   @Override
-  public HexagramIF getHexagram(@NotNull int... lines)
-  {
+  public HexagramIF getHexagram(@NotNull int... lines) {
     boolean[] booleans = getYinYangs();
     for (int index : lines) {
       if (index >=1 && index <=6)
@@ -235,8 +233,7 @@ public enum Hexagram implements HexagramIF , Serializable
 
   /** @return 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名 */
   @NotNull
-  public HexagramIF getMiddleSpanHexagram()
-  {
+  public HexagramIF getMiddleSpanHexagram() {
     return Hexagram.getHexagram(new boolean[] {lower.getBooleanValue(2) , lower.getBooleanValue(3) , upper.getBooleanValue(1) , lower.getBooleanValue(3) , upper.getBooleanValue(1) , upper.getBooleanValue(2)});
   }
 
@@ -260,8 +257,7 @@ public enum Hexagram implements HexagramIF , Serializable
 
   @NotNull
   @Override
-  public String getBinaryCode()
-  {
+  public String getBinaryCode() {
     StringBuilder sb = new StringBuilder();
     for(boolean yy : getYinYangs())
       sb.append(yy ? '1' : '0');
