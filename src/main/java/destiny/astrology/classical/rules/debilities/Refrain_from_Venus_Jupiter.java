@@ -8,9 +8,9 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.astrology.classical.RefranationIF;
-import destiny.utils.Triple;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple3;
 
 import java.util.Optional;
 
@@ -40,37 +40,30 @@ public class Refrain_from_Venus_Jupiter extends Rule
 //  }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext)
-  {
+  protected Optional<Pair<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext) {
     //太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
       return Optional.empty();
     
     Point otherPoint;
 
-    if (planet != Planet.VENUS)
-    {
+    if (planet != Planet.VENUS) {
       otherPoint = Planet.VENUS;
-      Triple<Boolean , Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
-      //bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
-      if (t.getFirst())
-      {
+      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
+      if (t.v1()) {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
-        return Optional.of(ImmutablePair.of("comment", new Object[]{planet, otherPoint, t.getThird()}));
+        return Optional.of(ImmutablePair.of("comment", new Object[]{planet, otherPoint, t.v3()}));
       }
     }
     
-    if ( planet != Planet.JUPITER)
-    {
+    if ( planet != Planet.JUPITER) {
       otherPoint = Planet.JUPITER;
-      Triple<Boolean , Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
-      //bean = new RefranationBean(horoscopeContext , planet , otherPoint , aspectApplySeparateImpl , relativeTransitImpl , retrogradeImpl);
-      if (t.getFirst())
-      {
+      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
+      if (t.v1) {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
-        return Optional.of(ImmutablePair.of("comment" , new Object[]{planet , otherPoint , t.getThird()}));
+        return Optional.of(ImmutablePair.of("comment", new Object[]{planet, otherPoint, t.v3()}));
       }
     }
     return Optional.empty();

@@ -6,7 +6,7 @@ package destiny.astrology.classical;
 import destiny.astrology.AspectApplySeparateIF;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import destiny.utils.Tuple4;
+import org.jooq.lambda.tuple.Tuple4;
 
 import java.util.Optional;
 

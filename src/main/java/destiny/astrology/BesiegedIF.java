@@ -4,8 +4,8 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Time;
-import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public interface BesiegedIF {
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    * TODO : 目前的交角都只考慮「perfect」準確交角（一般行星三分容許度，日月17分），並未考慮容許度（即 applying），未來要改進
    */
-  Triple<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, double gmtJulDay,
+  Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, double gmtJulDay,
                                                                                  @NotNull Collection<Planet> otherPlanets,
                                                                                  @NotNull double[] angles);
 
@@ -46,7 +46,7 @@ public interface BesiegedIF {
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
   @NotNull
-  default Triple<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, double gmtJulDay,
+  default Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, double gmtJulDay,
                                                                                          @NotNull Collection<Planet> otherPlanets,
                                                                                          @NotNull Collection<Aspect> searchingAspects) {
     double[] angles = new double[searchingAspects.size()];
@@ -86,7 +86,7 @@ public interface BesiegedIF {
     if (!isClassical) {
       searchingAspects.addAll(mediumAspects);
     }
-    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).getLeft();
+    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).v1();
   }
 
   default List<Planet> getBesiegingPlanets(Planet planet , LocalDateTime gmt , boolean isClassical) {
@@ -95,7 +95,7 @@ public interface BesiegedIF {
 
 
   @NotNull
-  default Triple<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, LocalDateTime gmt,
+  default Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, LocalDateTime gmt,
                                                                                          @NotNull Collection<Planet> otherPlanets,
                                                                                          @NotNull Collection<Aspect> searchingAspects) {
     double gmtJulDay = Time.getGmtJulDay(gmt);
@@ -116,7 +116,7 @@ public interface BesiegedIF {
       otherPlanets.remove(Planet.NEPTUNE);
       otherPlanets.remove(Planet.PLUTO);
     }
-    return getBesiegingPlanets(planet , gmt , otherPlanets , aspects).getLeft();
+    return getBesiegingPlanets(planet , gmt , otherPlanets , aspects).v1();
   }
 
   default List<Planet>  getBesiegingPlanets(Planet planet , LocalDateTime gmt ,
@@ -162,11 +162,11 @@ public interface BesiegedIF {
     }
 
 
-    Triple<List<Planet> , Optional<Aspect> , Optional<Aspect>>  triple = getBesiegingPlanets(planet , gmt , otherPlanets , searchingAspects);
-    List<Planet> besiegingPlanets = triple.getLeft();
+    Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>>  triple = getBesiegingPlanets(planet , gmt , otherPlanets , searchingAspects);
+    List<Planet> besiegingPlanets = triple.v1();
 
-    Optional<Aspect> aspectPrior = triple.getMiddle();
-    Optional<Aspect> aspectAfter = triple.getRight();
+    Optional<Aspect> aspectPrior = triple.v2();
+    Optional<Aspect> aspectAfter = triple.v3();
 
     logger.debug("包夾 {} 的是 {}({}) 以及 {}({})", planet , besiegingPlanets.get(0) , aspectPrior , besiegingPlanets.get(1) , aspectAfter);
     if (besiegingPlanets.contains(p1)

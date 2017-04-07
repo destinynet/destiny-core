@@ -7,8 +7,8 @@ import destiny.astrology.Aspect;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
-import destiny.utils.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple3;
 
 /**
  * <pre>
@@ -27,5 +27,5 @@ import org.jetbrains.annotations.NotNull;
 public interface RefranationIF {
 
   @NotNull
-  Triple<Boolean , Point, Aspect> resultOf(HoroscopeContext context , Planet planet , Point otherPoint);
+  Tuple3<Boolean , Point, Aspect> resultOf(HoroscopeContext context , Planet planet , Point otherPoint);
 }

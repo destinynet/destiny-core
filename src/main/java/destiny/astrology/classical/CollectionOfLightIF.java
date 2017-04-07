@@ -6,7 +6,7 @@ package destiny.astrology.classical;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
+import org.jooq.lambda.tuple.Tuple3;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,5 +33,5 @@ public interface CollectionOfLightIF {
    */
   //public Triple<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, HoroscopeContext horoscopeContext);
 
-  Triple<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, HoroscopeContext horoscopeContext , Optional<CollectType> collectTypeOptional);
+  Tuple3<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, HoroscopeContext horoscopeContext , Optional<CollectType> collectTypeOptional);
 }
