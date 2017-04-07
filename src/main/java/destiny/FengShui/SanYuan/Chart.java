@@ -36,14 +36,14 @@ public class Chart implements Serializable {
   private Symbol view = Symbol.坎; 
   
   @NotNull
-  private ChartBlock[] blocks = new ChartBlock[10]; // 0 不用
+  private final ChartBlock[] blocks = new ChartBlock[10]; // 0 不用
   //private ChartBlock[][] chartCoordinate = new ChartBlock[3][3];
 
   @NotNull
-  private EarthlyCompass 地盤 = new EarthlyCompass();
+  private final EarthlyCompass 地盤 = new EarthlyCompass();
 
   @NotNull
-  private AcquiredSymbolCompass 後天八卦盤 = new AcquiredSymbolCompass();
+  private final AcquiredSymbolCompass 後天八卦盤 = new AcquiredSymbolCompass();
   
   /**
    * Constructor , 設定年運以及座山 , 內訂觀點為坎

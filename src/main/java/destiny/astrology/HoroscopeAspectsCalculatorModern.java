@@ -17,7 +17,7 @@ import java.util.Map;
 public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalculatorIF , Serializable
 {
   private Horoscope horoscope;
-  private AspectEffectiveModern modern;
+  private final AspectEffectiveModern modern;
   
   /** 現代占星術，內定只計算重要性為「高」的角度 */
   private Collection<Aspect> aspects = Aspect.getAngles(Aspect.Importance.HIGH);

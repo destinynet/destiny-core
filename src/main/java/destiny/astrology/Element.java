@@ -24,7 +24,7 @@ public enum Element implements LocaleStringIF
   /** 水 */
   WATER("Element.WATER");
   
-  private String nameKey;
+  private final String nameKey;
   
   private final static String resource = "destiny.astrology.Sign";
   

@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 public final class MixedReception extends Rule
 {
-  private DayNightDifferentiator dayNightDifferentiatorImpl;
+  private final DayNightDifferentiator dayNightDifferentiatorImpl;
   
   public MixedReception(DayNightDifferentiator dayNightDifferentiatorImpl)
   {

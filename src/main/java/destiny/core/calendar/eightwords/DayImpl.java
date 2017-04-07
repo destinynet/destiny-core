@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * 換日 的實作
  */
 public class DayImpl implements DayIF , Serializable {
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   public DayImpl()
   {

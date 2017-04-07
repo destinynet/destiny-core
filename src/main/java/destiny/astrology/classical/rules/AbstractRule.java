@@ -21,14 +21,14 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public abstract class AbstractRule implements RuleIF , Serializable , LocaleStringIF {
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  protected String resource;
+  private final String resource;
   
   private Locale locale =  Locale.getDefault();
   
   /** 名稱key */
-  protected String nameKey;
+  private final String nameKey;
   
   @Nullable
   private String commentKey=null;
@@ -36,7 +36,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   /** 裡面的 objects 不能直接拿來作為 MessageFormat 的 參數，要先經過 getCommentParameters(locale) 處理，取得應該替換 正確的字串 */ 
   private Object[] commentParameters;
 
-  public AbstractRule(String resource)
+  protected AbstractRule(String resource)
   {
     this.nameKey = getClass().getSimpleName();
     this.resource = resource;

@@ -8,7 +8,7 @@ package destiny.iching;
 /**
  * Symbol(八卦) 的介面 , 主要 methods : getName() , 及 getYinYang(0<=index<=2)
  */
-public interface SymbolIF
+interface SymbolIF
 {
   /**
    * 傳回八卦名

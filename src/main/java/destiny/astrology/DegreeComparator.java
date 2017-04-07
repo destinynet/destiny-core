@@ -8,7 +8,7 @@ import java.util.Comparator;
 
 public class DegreeComparator implements Comparator<Point>
 {
-  private HoroscopeContext context;
+  private final HoroscopeContext context;
   
   public DegreeComparator(HoroscopeContext context)
   {

@@ -470,7 +470,7 @@ public class Location implements Serializable
 
     private final static String resource = destiny.core.calendar.Location.class.getName();//"destiny.core.calendar.Location";
 
-    private String nameKey;
+    private final String nameKey;
 
     EastWest(String nameKey) {
       this.nameKey = nameKey;
@@ -500,7 +500,7 @@ public class Location implements Serializable
 
     private final static String resource = "destiny.core.calendar.Location";
 
-    private String nameKey;
+    private final String nameKey;
 
     NorthSouth(String nameKey) {
       this.nameKey = nameKey;

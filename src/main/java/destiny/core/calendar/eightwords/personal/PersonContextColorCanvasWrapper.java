@@ -28,7 +28,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   private final PersonContextModel model;
 
   /** 地支藏干的實作，內定採用標準設定 */
-  private HiddenStemsIF hiddenStemsImpl;
+  private final HiddenStemsIF hiddenStemsImpl;
 
   public enum OutputMode {HTML , TEXT}
 

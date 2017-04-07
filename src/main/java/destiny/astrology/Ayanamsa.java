@@ -39,7 +39,7 @@ public enum Ayanamsa implements LocaleStringIF
   B1950             ("Ayana.B1950");
   
   private final static String resource = "destiny.astrology.Astrology";
-  private String nameKey;
+  private final String nameKey;
   
   Ayanamsa(String nameKey) {
     this.nameKey = nameKey;

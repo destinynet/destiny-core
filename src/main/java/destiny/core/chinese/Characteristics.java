@@ -19,15 +19,14 @@ public class Characteristics
   private Branch 時支;
   
   @NotNull
-  private Branch[] 空亡 = new Branch[2];
+  private final Branch[] 空亡 = new Branch[2];
   @NotNull
-  private String[] 六獸 = new String[6];
+  private final String[] 六獸 = new String[6];
   private Branch 驛馬 ;
   private Branch 桃花 ;
   @NotNull
-  private Branch[] 天乙貴人 = new Branch[2];
-  private Branch 羊刃 ;
-  
+  private final Branch[] 天乙貴人 = new Branch[2];
+
   public Characteristics()
   {
   }
@@ -131,6 +130,7 @@ public class Characteristics
   
   public Branch get羊刃()
   {
+    Branch 羊刃;
     if (日干 == Stem.甲)
       羊刃 = Branch.卯;
     else if (日干 == Stem.乙)

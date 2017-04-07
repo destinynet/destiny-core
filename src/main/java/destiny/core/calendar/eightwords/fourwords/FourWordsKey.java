@@ -1,24 +1,24 @@
 /** 2009/10/12 上午3:27:09 by smallufo */
 package destiny.core.calendar.eightwords.fourwords;
 
-import java.io.Serializable;
-
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 /** 四字斷終生 的 key */
 public class FourWordsKey implements Serializable
 {
   /** 日干 */
-  private Stem dayStem;
+  private final Stem dayStem;
   
   /** 月支 */
-  private Branch monthBranch;
+  private final Branch monthBranch;
   
   /** 時支 */
-  private Branch hourBranch;
+  private final Branch hourBranch;
 
   public FourWordsKey(Stem dayStem, Branch monthBranch, Branch hourBranch)
   {

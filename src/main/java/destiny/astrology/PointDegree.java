@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 public class PointDegree implements Serializable
 {
-  private Point   point;
+  private final Point   point;
   private double degree;
 
   /** 此星體在黃道帶上幾度 */

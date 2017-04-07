@@ -16,7 +16,7 @@ import java.util.Optional;
 /** A planet in its own sign , or mutual reception with another planet by sign */
 public final class Ruler extends Rule
 {
-  private DayNightDifferentiator dayNightDifferentiatorImpl;
+  private final DayNightDifferentiator dayNightDifferentiatorImpl;
   
   public Ruler(DayNightDifferentiator dayNightDifferentiatorImpl)
   {

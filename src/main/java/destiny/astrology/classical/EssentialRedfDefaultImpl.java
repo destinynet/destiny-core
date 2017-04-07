@@ -4,21 +4,15 @@
  */ 
 package destiny.astrology.classical;
 
+import com.google.common.collect.ImmutableMap;
+import destiny.astrology.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-
-import destiny.astrology.LunarNode;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.PointDegree;
-import destiny.astrology.Utils;
-import destiny.astrology.ZodiacSign;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * 取得星座 ( ZodiacSign ) 的 : 旺 Rulership , 廟 Exaltation , 陷 Detriment , 落 Fail <br/>
@@ -60,7 +54,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
    * 前面 starExaltationMap 中，每個星體的度數 +180度即為「落」 
    * */ 
   @NotNull
-  private static Map<Point , Double> starFallMap = new HashMap<>();
+  private static final Map<Point , Double> starFallMap = new HashMap<>();
   static
   {
     for(Point eachPoint : starExaltationMap.keySet())
@@ -75,7 +69,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   }
   
   /** key 為 Sign-Dignity , 中間以 '-' 串接 */
-  private static Map<String , Point> essentialDignitiesMap = Collections.synchronizedMap(new HashMap<>());
+  private static final Map<String , Point> essentialDignitiesMap = Collections.synchronizedMap(new HashMap<>());
   static 
   {
     /** 設定 Rulershop (旺 , +5) */

@@ -15,7 +15,7 @@ import java.util.Optional;
 public final class Triplicity extends Rule
 {
   /** 計算白天黑夜的實作 */
-  private DayNightDifferentiator dayNightImpl;
+  private final DayNightDifferentiator dayNightImpl;
   
   public Triplicity(DayNightDifferentiator dayNightImpl)
   {

@@ -18,16 +18,16 @@ import java.util.TreeSet;
 public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Serializable
 {
   @NotNull
-  private PointComparator pointComp = new PointComparator();
+  private final PointComparator pointComp = new PointComparator();
   
   /** 存放形成交角的兩顆星體 */
-  private Set<Point> twoPoints = Collections.synchronizedSet(new TreeSet<>( pointComp ));
+  private final Set<Point> twoPoints = Collections.synchronizedSet(new TreeSet<>( pointComp ));
   
   /** 兩星所形成的交角 */
-  private Aspect aspect;
+  private final Aspect aspect;
   
   /** orb 不列入 equals / hashCode 計算 */
-  private double orb; 
+  private final double orb;
   
   public HoroscopeAspectData(Point p1 , Point p2 , Aspect aspect , double orb)
   {

@@ -25,7 +25,7 @@ public class URLConverter implements Serializable
   {
     StringBuffer result = new StringBuffer(initialText.length());
 
-    Pattern p = Pattern.compile("(@)?(href=')?(HREF=')?(HREF=\")?(href=\")?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?\\+\\%/\\.\\w]+)?" , Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    Pattern p = Pattern.compile("(@)?(href=')?(HREF=')?(HREF=\")?(href=\")?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\n\\-=?+%/.\\w]+)?" , Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
     Matcher m = p.matcher(initialText);
     while (m.find())

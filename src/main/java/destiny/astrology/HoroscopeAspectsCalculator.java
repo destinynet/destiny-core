@@ -13,9 +13,9 @@ import java.util.*;
 /** 利用 HoroscopeAspectsCalculatorIF , 計算命盤之中，星體所呈現的交角，及其容許度 */
 public class HoroscopeAspectsCalculator implements Serializable
 {
-  private Horoscope horoscope;
+  private final Horoscope horoscope;
   
-  private HoroscopeAspectsCalculatorIF calculator;
+  private final HoroscopeAspectsCalculatorIF calculator;
   
   public HoroscopeAspectsCalculator(Horoscope horoscope , HoroscopeAspectsCalculatorIF calculator)
   {

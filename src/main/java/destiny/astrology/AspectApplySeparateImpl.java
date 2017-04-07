@@ -13,7 +13,7 @@ import java.util.Optional;
 public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializable
 {
   /** 可以注入現代占星 ( AspectEffectiveModern ) 或是古典占星 ( AspectEffectiveClassical ) 的實作 */
-  private AspectEffectiveIF aspectEffectiveImpl;
+  private final AspectEffectiveIF aspectEffectiveImpl;
   
   public AspectApplySeparateImpl(AspectEffectiveIF aspectEffectiveImpl)
   {

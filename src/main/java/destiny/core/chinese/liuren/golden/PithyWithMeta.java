@@ -22,7 +22,7 @@ public class PithyWithMeta implements Serializable {
   /** 起課方式 */
   public enum Method {RANDOM , MANUAL}
 
-  private Method method;
+  private final Method method;
 
   private final Pithy pithy;
 

@@ -25,7 +25,7 @@ public final class Hamburger extends Star implements Comparable<Hamburger>
 
   public final static Hamburger[] values = {CUPIDO , HADES , ZEUS , KRONOS , APOLLON , ADMETOS , VULKANUS , POSEIDON};
   
-  protected Hamburger(String nameKey)
+  Hamburger(String nameKey)
   {
     super(nameKey , resource);
   }

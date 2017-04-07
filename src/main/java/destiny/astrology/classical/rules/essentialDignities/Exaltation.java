@@ -16,7 +16,7 @@ import java.util.Optional;
 /** A planet in its exaltation , or mutial reception with another planet by exaltation */
 public final class Exaltation extends Rule
 {
-  private DayNightDifferentiator dayNightDifferentiatorImpl;
+  private final DayNightDifferentiator dayNightDifferentiatorImpl;
   
   public Exaltation(DayNightDifferentiator dayNightDifferentiatorImpl)
   {

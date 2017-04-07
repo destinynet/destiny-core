@@ -22,62 +22,62 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   /**
    * Hours per day.
    */
-  static final int HOURS_PER_DAY = 24;
+  private static final int HOURS_PER_DAY = 24;
 
   /**
    * Minutes per hour.
    */
-  static final int MINUTES_PER_HOUR = 60;
+  private static final int MINUTES_PER_HOUR = 60;
 
   /**
    * Minutes per day.
    */
-  static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+  private static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
 
   /**
    * Seconds per minute.
    */
-  static final int SECONDS_PER_MINUTE = 60;
+  private static final int SECONDS_PER_MINUTE = 60;
 
   /**
    * Seconds per hour.
    */
-  static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+  private static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 
   /**
    * Seconds per day.
    */
-  static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+  private static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
 
   /**
    * Milliseconds per day.
    */
-  static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
+  private static final long MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L;
 
   /**
    * Microseconds per day.
    */
-  static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
+  private static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
 
   /**
    * Nanos per second.
    */
-  static final long NANOS_PER_SECOND = 1000_000_000L;
+  private static final long NANOS_PER_SECOND = 1000_000_000L;
 
   /**
    * Nanos per minute.
    */
-  static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
+  private static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
 
   /**
    * Nanos per hour.
    */
-  static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
+  private static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
 
   /**
    * Nanos per day.
    */
-  static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
+  private static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
 
   private final JulianDate date;
   private final LocalTime time;
@@ -88,7 +88,7 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     this.time = time;
   }
 
-  public static JulianDateTime from(TemporalAccessor temporal) {
+  private static JulianDateTime from(TemporalAccessor temporal) {
     if (temporal instanceof JulianDateTime) {
       return (JulianDateTime) temporal;
     }
@@ -263,23 +263,23 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     return unit.addTo(this, amountToAdd);
   }
 
-  public JulianDateTime plusNanos(long nanos) {
+  private JulianDateTime plusNanos(long nanos) {
     return plusWithOverflow(date, 0, 0, 0, nanos, 1);
   }
 
-  public JulianDateTime plusSeconds(long seconds) {
+  private JulianDateTime plusSeconds(long seconds) {
     return plusWithOverflow(date, 0, 0, seconds, 0, 1);
   }
 
-  public JulianDateTime plusMinutes(long minutes) {
+  private JulianDateTime plusMinutes(long minutes) {
     return plusWithOverflow(date, 0, minutes, 0, 0, 1);
   }
 
-  public JulianDateTime plusHours(long hours) {
+  private JulianDateTime plusHours(long hours) {
     return plusWithOverflow(date, hours, 0, 0, 0, 1);
   }
 
-  public JulianDateTime plusDays(long days) {
+  private JulianDateTime plusDays(long days) {
     JulianDate newDate = date.plus(days , ChronoUnit.DAYS);
     return with(newDate, time);
   }

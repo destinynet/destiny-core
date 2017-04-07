@@ -8,29 +8,29 @@ package destiny.tools.ColorCanvas;
 import java.io.Serializable;
 
 
-class Child implements Serializable
-{
-  private ColorCanvas colorCanvas;
-  private int x;
-  private int y;
+class Child implements Serializable {
 
-  public Child(ColorCanvas c , int x , int y)
-  {
+  private final ColorCanvas colorCanvas;
+
+  private final int x;
+
+  private final int y;
+
+  public Child(ColorCanvas c, int x, int y) {
     this.colorCanvas = c;
     this.x = x;
     this.y = y;
   }
-  
-  public void setParent(ColorCanvas c)
-  {
+
+  public void setParent(ColorCanvas c) {
     this.colorCanvas.setParent(c);
   }
-  
-  public ColorCanvas getCanvasCanvas()
-  {
+
+  public ColorCanvas getCanvasCanvas() {
     return this.colorCanvas;
   }
-  
+
   public int getX() { return this.x; }
+
   public int getY() { return this.y; }
 }

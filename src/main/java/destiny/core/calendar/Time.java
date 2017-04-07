@@ -34,13 +34,13 @@ public class Time implements Serializable , LocaleStringIF , DateIF
 {
   /* 是否是西元「後」, 
   西元前為 false , 西元後為 true (default) */
-  protected boolean ad = true; 
-  protected int year;
-  protected int month;
-  protected int day;
-  protected int hour;
-  protected int minute;
-  protected double second;
+  private boolean ad = true;
+  private int year;
+  private int month;
+  private final int day;
+  private final int hour;
+  private final int minute;
+  protected final double second;
   
   /**
    * Julian Calendar    終止於西元 1582-10-04 , 該日的 Julian Day 是 2299159.5
@@ -53,7 +53,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
    * Gregorian == TRUE <BR/>
    * Julian == FALSE
    * */
-  protected boolean gregorian = true ;
+  private boolean gregorian = true ;
 
   private static Logger logger = LoggerFactory.getLogger(Time.class);
 
@@ -207,7 +207,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
    *
    * inverse function to julday()
    */
-  public Time(double julianDay , boolean isGregorian) {
+  private Time(double julianDay, boolean isGregorian) {
     double u0,u1,u2,u3,u4;
 
     u0 = julianDay + 32082.5;
@@ -312,7 +312,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
    * 參照
    * http://stackoverflow.com/a/41683097/298430
    */
-  public static LocalDateTime getGmtFromLmt(LocalDateTime lmt , TimeZone timeZone) {
+  private static LocalDateTime getGmtFromLmt(LocalDateTime lmt, TimeZone timeZone) {
     ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
     try {
       zoneId = ZoneId.of(timeZone.getID());
@@ -336,7 +336,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
     }
   }
 
-  public static LocalDateTime getLmtFromGmt(LocalDateTime gmt, TimeZone timeZone) {
+  private static LocalDateTime getLmtFromGmt(LocalDateTime gmt, TimeZone timeZone) {
     ZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
     ZonedDateTime ldtZoned = gmtZoned.withZoneSameInstant(timeZone.toZoneId());
     return ldtZoned.toLocalDateTime();
@@ -355,7 +355,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   /**
    * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
    */
-  public static int getSecondsOffset(LocalDateTime lmt, TimeZone tz) {
+  private static int getSecondsOffset(LocalDateTime lmt, TimeZone tz) {
     ZoneOffset offset = lmt.atZone(tz.toZoneId()).getOffset();
     return offset.getTotalSeconds();
   }
@@ -370,7 +370,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   /**
    * @return 此時刻，此 TimeZone ，是否有日光節約時間
    */
-  public static boolean isDst(LocalDateTime lmt , TimeZone tz) {
+  private static boolean isDst(LocalDateTime lmt, TimeZone tz) {
     ZonedDateTime zdt = lmt.atZone(tz.toZoneId());
     return zdt.getZone().getRules().isDaylightSavings(zdt.toInstant());
   }
@@ -378,7 +378,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   /**
    * @return 此時刻，此 地點，是否有日光節約時間
    */
-  public static boolean isDst(LocalDateTime lmt , Location loc) {
+  private static boolean isDst(LocalDateTime lmt, Location loc) {
     return isDst(lmt , loc.getTimeZone());
   }
 

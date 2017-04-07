@@ -21,16 +21,16 @@ import java.util.Optional;
 public class EightWordsNullable implements Serializable {
 
   @NotNull
-  protected StemBranchOptional year;
+  StemBranchOptional year;
 
   @NotNull
-  protected StemBranchOptional month;
+  StemBranchOptional month;
 
   @NotNull
-  protected StemBranchOptional day;
+  StemBranchOptional day;
 
   @NotNull
-  protected StemBranchOptional hour;
+  StemBranchOptional hour;
 
   @NotNull
   private final static String NULL_CHAR ="　"; //空白字元，使用全形的空白, 在 toString() 時使用
@@ -173,7 +173,7 @@ public class EightWordsNullable implements Serializable {
   /**
    * 做法：將 年干、年支、月干、月支、日干、日支、時干、時支 分別取 index (1-based) , 若為 null 則取 0 , 再合併成一個 list
    */
-  public static List<Integer> getIntList(EightWordsNullable ewn) {
+  private static List<Integer> getIntList(EightWordsNullable ewn) {
     List<Integer> list = new ArrayList<>();
     list.add(ewn.getYear() .getStemOptional()  .map(Stem  ::getIndexFromOne).orElse(0));
     list.add(ewn.getYear() .getBranchOptional().map(Branch::getIndexFromOne).orElse(0));

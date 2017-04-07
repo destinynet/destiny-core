@@ -8,7 +8,7 @@ import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-public class Utils implements Serializable
+class Utils implements Serializable
 {
   /**
   * LST : Local Sidereal Time , 地方恆星時

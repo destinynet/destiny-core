@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class Refrain_from_Venus_Jupiter extends Rule
 {
-  private RefranationIF refranationImpl;
+  private final RefranationIF refranationImpl;
 
 
   public Refrain_from_Venus_Jupiter(RefranationIF refranationImpl) {

@@ -30,44 +30,44 @@ import static destiny.astrology.Planet.SUN;
 
 public class PersonContext extends EightWordsContext {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   /** 實作計算節氣的介面 */
   @NotNull
-  private SolarTermsIF solarTermsImpl;
+  private final SolarTermsIF solarTermsImpl;
 
   /** 星體運行到某點的介面 */
   @NotNull
-  private StarTransitIF starTransitImpl;
+  private final StarTransitIF starTransitImpl;
 
   /** 出生時刻 */
-  private LocalDateTime lmt;
+  private final LocalDateTime lmt;
 
   /** 出生地點 */
-  private Location location;
+  private final Location location;
 
   /** 性別 */
   @NotNull
-  private Gender gender;
+  private final Gender gender;
 
 
   /** 此人的八字 */
   @NotNull
-  private EightWords eightWords;
+  private final EightWords eightWords;
 
   /** 現在（LMT）的節/氣 */
-  private SolarTerms currentSolarTerms;
+  private final SolarTerms currentSolarTerms;
 
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年 */
   private double fortuneMonthSpan = 120;
 
   /** 運：「日」的 span 倍數，內定 365，即：一日走一年 */
-  private double fortuneDaySpan = 365;
+  private final double fortuneDaySpan = 365;
 
   /** 運 :「時辰」的 span 倍數，內定 365x12，即：一時辰走一年 */
-  private double fortuneHourSpan = 365 * 12;
+  private final double fortuneHourSpan = 365 * 12;
 
-  Cache<PersonContext, Map<Integer, LocalDateTime>> cache =
+  private final Cache<PersonContext, Map<Integer, LocalDateTime>> cache =
     CacheBuilder.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(10, TimeUnit.MINUTES)

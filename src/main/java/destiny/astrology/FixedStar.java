@@ -10,6 +10,7 @@ import java.util.List;
 
 
 /** 恆星 */
+@SuppressWarnings("WeakerAccess")
 public final class FixedStar extends Star implements Comparable<FixedStar>
 {
   private final static String resource = "destiny.astrology.Star";

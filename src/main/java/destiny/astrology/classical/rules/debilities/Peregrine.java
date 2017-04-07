@@ -16,7 +16,7 @@ import java.util.Optional;
 public final class Peregrine extends EssentialRule
 {
   /** 計算白天黑夜的實作 */
-  private DayNightDifferentiator dayNightImpl;
+  private final DayNightDifferentiator dayNightImpl;
   
   public Peregrine(DayNightDifferentiator dayNightImpl)
   {

@@ -25,7 +25,7 @@ public enum Branch implements BranchIF<Branch>
   亥('亥');
   
   
-  private char name;
+  private final char name;
   
   private final static Branch[] ARRAY =
     new Branch[] { 子 , 丑 , 寅 , 卯 , 辰 , 巳 , 午 , 未 , 申 , 酉 , 戌 , 亥};

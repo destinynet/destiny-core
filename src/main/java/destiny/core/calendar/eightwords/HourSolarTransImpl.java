@@ -27,10 +27,10 @@ import java.util.Locale;
  * </PRE>
  */
 public class HourSolarTransImpl implements HourIF , Serializable {
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private double atmosphericPressure = 1013.25;
-  private double atmosphericTemperature = 0;
+  private final double atmosphericPressure = 1013.25;
+  private final double atmosphericTemperature = 0;
   private boolean isDiscCenter = true;
   private boolean hasRefraction = true;
 

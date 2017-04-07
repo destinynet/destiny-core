@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
  */
 public class EightWordsContext extends EightWordsImpl {
 
-  private ChineseDateIF chineseDateImpl;      // 農曆計算
+  private final ChineseDateIF chineseDateImpl;      // 農曆計算
 
-  private RisingSignIF risingSignImpl;        // 命宮
+  private final RisingSignIF risingSignImpl;        // 命宮
 
   public EightWordsContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, RisingSignIF risingSignImpl) {
     super(yearMonth, day, hour, midnight, changeDayAfterZi);

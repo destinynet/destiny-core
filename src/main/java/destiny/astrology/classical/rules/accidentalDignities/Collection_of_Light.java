@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public final class Collection_of_Light extends Rule
 {
-  private CollectionOfLightIF collectionOfLightImpl;
+  private final CollectionOfLightIF collectionOfLightImpl;
 
   public Collection_of_Light(CollectionOfLightIF collectionOfLightImpl) {
     this.collectionOfLightImpl = collectionOfLightImpl;

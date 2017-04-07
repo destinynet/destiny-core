@@ -59,7 +59,7 @@ public class HoroscopeContext implements Serializable {
   /** TrueNode / Mean Node */
   private final NodeType nodeType;
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 最完整的 constructor */
   public HoroscopeContext(@NotNull LocalDateTime lmt , @NotNull Location location , HouseSystem houseSystem ,

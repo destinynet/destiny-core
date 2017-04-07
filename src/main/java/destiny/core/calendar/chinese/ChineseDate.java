@@ -24,13 +24,13 @@ public class ChineseDate implements Serializable {
   private StemBranch year;
 
   /** 月 */
-  private int month;
+  private final int month;
 
   /** 是否是潤月 */
   private boolean leapMonth = false;
 
   /** 日 */
-  private int day;
+  private final int day;
 
   public ChineseDate(int cycle, StemBranch year, int month, boolean leapMonth, int day) {
     this.cycle = cycle;

@@ -93,10 +93,10 @@ public enum Hexagram implements HexagramIF , Serializable
   未濟(Symbol.離 , Symbol.坎);
 
   @NotNull
-  private Symbol upper;
+  private final Symbol upper;
 
   @NotNull
-  private Symbol lower;
+  private final Symbol lower;
 
   Hexagram(@NotNull Symbol upper, @NotNull Symbol lower) {
     this.upper = upper;
@@ -156,7 +156,7 @@ public enum Hexagram implements HexagramIF , Serializable
   }
 
   @NotNull
-  public static Hexagram getHexagram(@NotNull List<Boolean> booleans) {
+  private static Hexagram getHexagram(@NotNull List<Boolean> booleans) {
     if (booleans.size() != 6)
       throw new AssertionError("booleans length is not 6 . content : " + booleans);
     Symbol lower = Symbol.getSymbol(booleans.get(0) , booleans.get(1) , booleans.get(2));

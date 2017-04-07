@@ -23,7 +23,7 @@ public enum Reactions
   正官("正官"),
   七殺("七殺");
 
-  private String value;
+  private final String value;
   
   Reactions(String value )
   {

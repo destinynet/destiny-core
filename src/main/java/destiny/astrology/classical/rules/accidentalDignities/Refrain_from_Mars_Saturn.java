@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 public final class Refrain_from_Mars_Saturn extends Rule
 {
-  private RefranationIF refranationImpl;
+  private final RefranationIF refranationImpl;
 
   public Refrain_from_Mars_Saturn(RefranationIF refranationImpl) {
     this.refranationImpl = refranationImpl;

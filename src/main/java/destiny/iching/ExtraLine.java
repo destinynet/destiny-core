@@ -10,12 +10,12 @@ import java.io.Serializable;
 /**
  * 用九用六，只有 乾、坤 兩卦才有
  */
-public class ExtraLine implements Serializable
+class ExtraLine implements Serializable
 {
   /** 爻辭 */
-  private String lineExpression;
+  private final String lineExpression;
   /** 爻象 */
-  private String lineImage;
+  private final String lineImage;
   
   public ExtraLine(String lineExpression , String lineImage)
   {

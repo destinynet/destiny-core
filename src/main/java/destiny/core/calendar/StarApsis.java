@@ -4,7 +4,7 @@
  */ 
 package destiny.core.calendar;
 
-public class StarApsis
+class StarApsis
 {
 
 }

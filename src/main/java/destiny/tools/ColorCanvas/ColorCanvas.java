@@ -28,14 +28,14 @@ public class ColorCanvas implements Serializable
   private Optional<ColorCanvas> parent = Optional.empty();
   
   private int height; // x
-  private int width;  // y
+  private final int width;  // y
   //private boolean extensible; //是否可以拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
   
   @NotNull
   private ColorByte[] content;
   
   @NotNull
-  private List<Child> children = new ArrayList<>();
+  private final List<Child> children = new ArrayList<>();
   
   
   /**
@@ -394,7 +394,7 @@ public class ColorCanvas implements Serializable
   
   public int getWidth() { return this.width;}
   
-  int getHeight() { return this.height; }
+  private int getHeight() { return this.height; }
   
   void setParent(@NotNull ColorCanvas cc)
   {

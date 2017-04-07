@@ -38,15 +38,15 @@ import java.util.ResourceBundle;
 public abstract class Point implements Serializable , LocaleStringIF
 {
   
-  private String resource;
+  private final String resource;
   
   /** 名稱key , nameKey 相等，則此 Point 視為 equals! */
-  private String nameKey;
+  private final String nameKey;
   
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ...*/
-  protected String abbrKey;
+  String abbrKey;
   
-  public Point(String nameKey , String resource)
+  Point(String nameKey, String resource)
   {
     this.nameKey = nameKey;
     this.resource = resource;
@@ -59,7 +59,7 @@ public abstract class Point implements Serializable , LocaleStringIF
   }
   
   /** 名稱 */
-  public String getName()
+  private String getName()
   {
     return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
   }

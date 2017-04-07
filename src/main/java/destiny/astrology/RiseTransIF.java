@@ -49,8 +49,7 @@ public interface RiseTransIF {
                                     double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
     LocalDateTime fromGmtTime = Time.getGmtFromLmt(fromLmtTime , location);
     LocalDateTime resultGmt = getGmtTrans(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-    LocalDateTime resultLmt = Time.getLmtFromGmt(resultGmt , location);
-    return resultLmt;
+    return Time.getLmtFromGmt(resultGmt , location);
   }
 
   /**

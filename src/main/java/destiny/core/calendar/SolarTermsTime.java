@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 public final class SolarTermsTime implements Serializable {
 
   /** 節氣 */
-  private SolarTerms solarTerms;
+  private final SolarTerms solarTerms;
 
   /** 可能是 GMT , 也可能是 LMT */
-  private LocalDateTime time;
+  private final LocalDateTime time;
 
   SolarTermsTime(SolarTerms solarTerms, LocalDateTime time) {
     this.solarTerms = solarTerms;

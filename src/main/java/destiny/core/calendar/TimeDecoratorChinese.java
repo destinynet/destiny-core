@@ -24,7 +24,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
  */
 public class TimeDecoratorChinese implements Decorator<LocalDateTime>, Serializable {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @NotNull
   @Override

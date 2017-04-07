@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 public class ClassUtils implements Serializable
 {
@@ -150,7 +149,7 @@ public class ClassUtils implements Serializable
     }
     
     //剩下的隨便放
-    resultList.addAll(set.stream().collect(Collectors.toList()));
+    resultList.addAll(new ArrayList<>(set));
     
     return resultList;
   }

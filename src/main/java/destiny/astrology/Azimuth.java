@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public final class Azimuth implements java.io.Serializable {
 
   /** 地平方位角 , 以北為 0度，東為90度，南為 180度，西為 270度 */
-  private double degree;
+  private final double degree;
 
   /** 真方位角 */
-  private double trueAltitude;
+  private final double trueAltitude;
 
   /** 視方位角 */
-  private double apparentAltitude;
+  private final double apparentAltitude;
 
   public Azimuth(double degree, double trueAltitude, double apparentAltitude) {
     this.degree = degree;
@@ -32,10 +32,6 @@ public final class Azimuth implements java.io.Serializable {
 
   public double getDegree() {
     return degree;
-  }
-
-  public void setDegree(double degree) {
-    this.degree = degree;
   }
 
   public double getTrueAltitude() {

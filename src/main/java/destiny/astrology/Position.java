@@ -12,13 +12,13 @@ public class Position implements Serializable
 {
   /** 座標系統 赤道/黃道/恆星 */
   // private Coordinate coordinate;
-  private double longitude;
-  private double latitude;
-  private double distance; //in AU
+  private final double longitude;
+  private final double latitude;
+  private final double distance; //in AU
 
-  private double speedLongitude; //speed in longitude (degree / day)
-  private double speedLatitude; //speed in latitude (degree / day)
-  private double speedDistance; //speed in distance (AU / day)
+  private final double speedLongitude; //speed in longitude (degree / day)
+  private final double speedLatitude; //speed in latitude (degree / day)
+  private final double speedDistance; //speed in distance (AU / day)
 
 
   public Position(double longitude      , double latitude      , double distance     ,

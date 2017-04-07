@@ -41,7 +41,7 @@ public class PersonContextModel implements Serializable {
   public enum FortuneOutputFormat {西元 , 民國 , 實歲 , 虛歲}
 
   /** 總共要輸出的大運 */
-  private List<FortuneData> fortuneDatas = new ArrayList<>();
+  private final List<FortuneData> fortuneDatas = new ArrayList<>();
 
   /** 上一個「節」 */
   private final SolarTerms prevMajorSolarTerms;

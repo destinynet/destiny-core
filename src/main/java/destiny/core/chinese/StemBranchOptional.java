@@ -13,10 +13,10 @@ import java.util.Optional;
 public class StemBranchOptional implements Serializable {
 
   @Nullable
-  protected final Stem stem;
+  final Stem stem;
 
   @Nullable
-  protected final Branch branch;
+  final Branch branch;
 
   // 0[甲子] ~ 59[癸亥]
   private transient static StemBranchOptional[] ARRAY = new StemBranchOptional[60];
@@ -50,7 +50,7 @@ public class StemBranchOptional implements Serializable {
     return ARRAY[normalize(index)];
   }
 
-  protected static int normalize(int index)
+  static int normalize(int index)
   {
     if (index >= 60)
       return (normalize(index-60));

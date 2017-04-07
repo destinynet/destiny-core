@@ -15,7 +15,7 @@ public enum FiveElement implements FiveElementIF , Serializable {
   金('金'),
   水('水');
   
-  private char name;
+  private final char name;
   
   FiveElement(char c)
   {

@@ -40,7 +40,7 @@ public class Palm implements Serializable {
 
   public enum House {命 , 財帛 , 兄弟 , 田宅 , 男女 , 奴僕 , 配偶 , 疾厄 , 遷移 , 官祿 , 福德 , 相貌}
 
-  public final BiMap<Branch, House> houseMap;
+  private final BiMap<Branch, House> houseMap;
 
   public Palm(Gender gender, Branch year, Branch month, Branch day, Branch hour , BiMap<Branch, House> houseMap) {
     this.gender = gender;

@@ -13,7 +13,7 @@ import static destiny.core.chinese.Branch.*;
 public class StemBranch extends StemBranchOptional implements Comparable<StemBranch> , Serializable {
   // 0[甲子] ~ 59[癸亥]
   @NotNull
-  private transient static StemBranch[] ARRAY = new StemBranch[60];
+  private final transient static StemBranch[] ARRAY = new StemBranch[60];
 
   static {
     int n = 0;

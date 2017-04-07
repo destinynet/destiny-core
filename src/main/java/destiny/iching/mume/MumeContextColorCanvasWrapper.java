@@ -26,7 +26,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
   private String metaData;
   private String dateInfo =""; //日期/時間/地點經緯度 等資料
   private EightWords eightWords; //八字
-  private HexagramNameFullIF hexagramNameFull;
+  private final HexagramNameFullIF hexagramNameFull;
   
   public MumeContextColorCanvasWrapper(HexagramNameFullIF hexagramNameFull)
   {
@@ -157,7 +157,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
   }
 
 
-  public MumeContext getMumeContext()
+  private MumeContext getMumeContext()
   {
     return mumeContext;
   }

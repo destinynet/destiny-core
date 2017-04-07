@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class Horoscope implements Serializable
 {
-  private HoroscopeContext context;
+  private final HoroscopeContext context;
   
   /** 星 (Star) 與 位置(Position)＋地平方位角(Azimuth) ==>  (PositionWithAzimuth) 的 Map , 作為 cache 層 */
   //private Map<Point , PositionWithAzimuth> positionMap = new HashMap<Point , PositionWithAzimuth>();

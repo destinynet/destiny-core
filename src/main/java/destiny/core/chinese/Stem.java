@@ -20,7 +20,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   壬('壬'),
   癸('癸');
   
-  private char name;
+  private final char name;
   
   private final static Stem[] ARRAY =
     { 甲 , 乙 , 丙 , 丁 , 戊 ,

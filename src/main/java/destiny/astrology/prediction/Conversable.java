@@ -9,7 +9,7 @@ package destiny.astrology.prediction;
  * Progression , Transit 都具備這種特徵 <br/>
  * Return 也有 Converse Solar/Lunar Return 盤
  */
-public interface Conversable
+interface Conversable
 {
   /**
    * 設定此推運是否要從出生時間「往前 (before) 推」

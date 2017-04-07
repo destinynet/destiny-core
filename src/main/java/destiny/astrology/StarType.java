@@ -19,7 +19,7 @@ public enum StarType
 
   private final static String resource = "destiny.astrology.Star";
   
-  private String nameKey;
+  private final String nameKey;
 
   StarType(String nameKey)
   {

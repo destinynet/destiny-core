@@ -41,7 +41,7 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
     this.zone = zone;
   }
 
-  public static ZonedJulianDateTime of(JulianDate date, LocalTime time, ZoneId zone) {
+  private static ZonedJulianDateTime of(JulianDate date, LocalTime time, ZoneId zone) {
         return of(JulianDateTime.of(date, time), zone);
     }
 
@@ -54,7 +54,7 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
    * 先把 JulianDate 轉成 LocalDate
    * 產生 LocalDateTime -> ZonedDateTime , 取得 Offset
    */
-  public static ZonedJulianDateTime ofLocal(JulianDateTime julianDateTime, ZoneId zone, ZoneOffset preferredOffset) {
+  private static ZonedJulianDateTime ofLocal(JulianDateTime julianDateTime, ZoneId zone, ZoneOffset preferredOffset) {
     Objects.requireNonNull(julianDateTime, "julianDateTime");
     Objects.requireNonNull(zone, "zone");
     if (zone instanceof ZoneOffset) {
@@ -78,7 +78,7 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
   }
 
 
-  public static ZonedJulianDateTime from(TemporalAccessor temporal) {
+  private static ZonedJulianDateTime from(TemporalAccessor temporal) {
     if (temporal instanceof ZonedJulianDateTime) {
       return (ZonedJulianDateTime) temporal;
     }
@@ -170,7 +170,7 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
   /**
    * TODO finish
    */
-  public OffsetDateTime toOffsetDateTime() {
+  private OffsetDateTime toOffsetDateTime() {
 //     return OffsetDateTime.of(dateTime, offset);
     return null;
   }

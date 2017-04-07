@@ -58,10 +58,10 @@ public enum Aspect implements LocaleStringIF
 
   private final static String resource = "destiny.astrology.Astrology";
   
-  private String nameKey;
-  private double degree;
+  private final String nameKey;
+  private final double degree;
   /** 重要度 */
-  private Importance importance;
+  private final Importance importance;
 
   private final static Map<Importance , List<Aspect>> importanceAngles =
     Arrays.stream(Aspect.values())

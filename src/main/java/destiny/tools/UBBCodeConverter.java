@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("MagicConstant")
+@SuppressWarnings({"MagicConstant", "WeakerAccess"})
 public class UBBCodeConverter
 {
   String       u_s;

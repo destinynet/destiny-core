@@ -29,7 +29,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static LunarNode NORTH_TRUE = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.TRUE);
+  public static final LunarNode NORTH_TRUE = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.TRUE);
 
   /**
    * 平均北交點，計算方法，以下兩者結果相同
@@ -39,7 +39,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static LunarNode NORTH_MEAN = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.MEAN);
+  public static final LunarNode NORTH_MEAN = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.MEAN);
   
   /**
    * 真實南交點，計算方法，以下兩者結果相同
@@ -49,7 +49,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static LunarNode SOUTH_TRUE = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.TRUE);
+  public static final LunarNode SOUTH_TRUE = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.TRUE);
   
   /**
    * 平均南交點，計算方法，以下兩者結果相同
@@ -59,13 +59,13 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static LunarNode SOUTH_MEAN = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.MEAN);
+  public static final LunarNode SOUTH_MEAN = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.MEAN);
 
   //public static LunarNode[] values = {NORTH_TRUE , NORTH_MEAN , SOUTH_TRUE , SOUTH_MEAN};
   @NotNull
-  public static LunarNode[] values = { NORTH_MEAN , SOUTH_MEAN};
+  public static final LunarNode[] values = { NORTH_MEAN , SOUTH_MEAN};
   
-  protected LunarNode(String nameKey, String abbrKey , NorthSouth northSouth , NodeType nodeType)
+  LunarNode(String nameKey, String abbrKey, NorthSouth northSouth, NodeType nodeType)
   {
     super(nameKey, abbrKey, resource);
     this.northSouth = northSouth;

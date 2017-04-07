@@ -24,7 +24,7 @@ public enum Dignity implements LocaleStringIF
   /** 陷 (-5) */
   DETRIMENT ("Dignity.DETRIMENT");
   
-  private String nameKey;
+  private final String nameKey;
   
   private final static String resource = "destiny.astrology.classical.Classical";
   

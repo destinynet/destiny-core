@@ -14,10 +14,10 @@ import java.io.Serializable;
  */
 public class ChartColorCanvasWrapper implements Serializable
 {
-  private Chart chart;
+  private final Chart chart;
 
   @NotNull
-  private ChartBlock[][] chartCoordinate = new ChartBlock[3][3];
+  private final ChartBlock[][] chartCoordinate = new ChartBlock[3][3];
   
   public ChartColorCanvasWrapper(@NotNull Chart chart) {
     this.chart = chart;

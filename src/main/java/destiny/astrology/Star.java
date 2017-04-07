@@ -33,13 +33,13 @@ public abstract class Star extends Point
 {
   protected Star[] values;
   
-  protected Star(String nameKey , String abbrKey , String resource)
+  Star(String nameKey, String abbrKey, String resource)
   {
     super(nameKey , resource);
     this.abbrKey = abbrKey;
   }
   
-  protected Star(String nameKey , String resource)
+  Star(String nameKey, String resource)
   {
     super(nameKey , resource);
   }

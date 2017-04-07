@@ -22,7 +22,7 @@ import java.util.Optional;
  */ 
 public final class MutualDeception extends EssentialRule implements Applicable
 {
-  private DayNightDifferentiator dayNightDifferentiatorImpl;
+  private final DayNightDifferentiator dayNightDifferentiatorImpl;
   
   public MutualDeception(DayNightDifferentiator dayNightDifferentiatorImpl)
   {

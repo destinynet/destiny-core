@@ -18,7 +18,7 @@ import java.util.Optional;
 public class Translation_of_Light extends Rule
 {
 
-  private TranslationOfLightIF translationOfLightImpl;
+  private final TranslationOfLightIF translationOfLightImpl;
 
   public Translation_of_Light(TranslationOfLightIF translationOfLightImpl) {
     this.translationOfLightImpl = translationOfLightImpl;

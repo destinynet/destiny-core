@@ -46,22 +46,22 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF
 
   private final static String resource = "destiny.astrology.Sign";
 
-  private String nameKey;
-  private String abbrKey;
+  private final String nameKey;
+  private final String abbrKey;
 
   /** 四正 (火/土/風/水) */
-  private Element element;
+  private final Element element;
 
   /** 三方 (基本/固定/變動) */
-  private Quality quality;
+  private final Quality quality;
 
   /** 陰陽 */
-  private boolean yinYang;
+  private final boolean yinYang;
 
   /** 黃道起始度數 */
-  private int degree;
+  private final int degree;
 
-  private static BiMap<ZodiacSign , Branch> map = new ImmutableBiMap.Builder<ZodiacSign , Branch>()
+  private static final BiMap<ZodiacSign , Branch> map = new ImmutableBiMap.Builder<ZodiacSign , Branch>()
       .put(ARIES , 戌)
       .put(TAURUS , 酉)
       .put(GEMINI , 申)

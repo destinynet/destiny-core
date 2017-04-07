@@ -33,21 +33,21 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   /** 計算星體到黃道幾度的時刻，的介面 */
   private StarTransitIF starTransitImpl;
   
-  private HouseCuspIF houseCuspImpl;
+  private final HouseCuspIF houseCuspImpl;
   
-  private ApsisWithAzimuthIF apsisWithAzimuthImpl;
+  private final ApsisWithAzimuthIF apsisWithAzimuthImpl;
   
   /** 出生時間 , LMT */
-  private LocalDateTime natalLmt;
+  private final LocalDateTime natalLmt;
   
   /** 出生地點 */
-  private Location natalLoc;
+  private final Location natalLoc;
   
   /** 欲計算的目標時間，通常是當下，now，以LMT型態 */
-  private LocalDateTime nowLmt;
+  private final LocalDateTime nowLmt;
   
   /** 現在所處的地點 */
-  private Location nowLoc;
+  private final Location nowLoc;
   
   /** 交角 , 通常是 0 , 代表回歸到原始度數 */
   private double orb = 0;

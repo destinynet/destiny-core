@@ -16,7 +16,7 @@ public final class LunarApsis extends LunarPoint implements Comparable<LunarApsi
   public enum MeanOscu {MEAN , OSCU}
 
   /** 只會用到 PERIHELION , APHELION */
-  private Apsis apsis;
+  private final Apsis apsis;
   
   private MeanOscu meanOscu = MeanOscu.MEAN;
   
@@ -60,7 +60,7 @@ public final class LunarApsis extends LunarPoint implements Comparable<LunarApsi
   public final static LunarApsis PERIGEE_OSCU = new LunarApsis("LunarApsis.PERIGEE" , "LunarApsis.PERIGEE_ABBR" , Apsis.PERIHELION , MeanOscu.OSCU);
   
   @NotNull
-  public static LunarApsis[] values = {APOGEE_MEAN , APOGEE_OSCU , PERIGEE_MEAN , PERIGEE_OSCU};
+  public static final LunarApsis[] values = {APOGEE_MEAN , APOGEE_OSCU , PERIGEE_MEAN , PERIGEE_OSCU};
   
   private LunarApsis(String nameKey, String abbrKey, Apsis apsis, MeanOscu meanOscu)
   {

@@ -7,13 +7,13 @@ package destiny.astrology.classical.rules.debilities;
 import destiny.astrology.classical.EssentialDefaultImpl;
 import destiny.astrology.classical.EssentialIF;
 
-public abstract class EssentialRule extends Rule
+abstract class EssentialRule extends Rule
 {
 
   /** 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面 */
-  protected EssentialIF essentialImpl = new EssentialDefaultImpl();
+  EssentialIF essentialImpl = new EssentialDefaultImpl();
   
-  public EssentialRule()
+  EssentialRule()
   {
     super();
   }

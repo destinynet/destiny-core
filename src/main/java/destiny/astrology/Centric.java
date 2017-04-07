@@ -23,7 +23,7 @@ public enum Centric implements LocaleStringIF {
 
   private final static String resource = "destiny.astrology.Astrology";
 
-  private String nameKey;
+  private final String nameKey;
 
   Centric(String nameKey) {
     this.nameKey = nameKey;

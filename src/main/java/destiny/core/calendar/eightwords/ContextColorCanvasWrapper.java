@@ -35,7 +35,7 @@ public class ContextColorCanvasWrapper {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   /** 八字 Context */
-  private EightWordsContext context;
+  private final EightWordsContext context;
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF     hiddenStemsImpl  = new HiddenStemsStandardImpl();
   /** 當地時間 */
@@ -47,7 +47,7 @@ public class ContextColorCanvasWrapper {
   
   /** TODO : IoC Google Maps URL Builder */
   @NotNull
-  private LocationUrlBuilder urlBuilder = new GoogleMapsUrlBuilder();
+  private final LocationUrlBuilder urlBuilder = new GoogleMapsUrlBuilder();
   
   /** 網址連結 */
   private String linkUrl;

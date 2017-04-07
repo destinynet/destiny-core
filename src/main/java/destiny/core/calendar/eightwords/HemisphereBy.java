@@ -18,7 +18,7 @@ public enum HemisphereBy implements LocaleStringIF
   /** 赤緯 */
   DECLINATION("HemisphereBy.DECLINATION");
   
-  private String nameKey;
+  private final String nameKey;
   
   private final static String resource = "destiny.core.calendar.eightwords.EightWords";
   

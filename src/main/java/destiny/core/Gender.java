@@ -9,7 +9,7 @@ public enum Gender implements Serializable
   男(true),
   女(false);
   
-  private boolean male;
+  private final boolean male;
   
   Gender(boolean value)
   {

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  * 內定實作為 托勒密表格 EssentialDefaultImpl <br/>
  * REDF 分別為 Rulership / Exaltation / Detriment / Fall 的第一個字母所組成
  */
-public interface EssentialRedfIF
+interface EssentialRedfIF
 {
   /** 取得黃道帶上某星座，其 Dignity 之 廟旺陷落 各是何星 */
   @Nullable

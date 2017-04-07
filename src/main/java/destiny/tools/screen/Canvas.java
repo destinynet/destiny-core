@@ -13,15 +13,15 @@ import java.util.List;
 
 public class Canvas implements Serializable
 {
-  private int width;
-  private int height;
+  private final int width;
+  private final int height;
   
-  private byte[] content;
+  private final byte[] content;
   
   @Nullable
   private Canvas parent = null;
   @NotNull
-  private List<Child> children = new ArrayList<>();
+  private final List<Child> children = new ArrayList<>();
   
   public Canvas(int width , int height)
   {
@@ -42,7 +42,7 @@ public class Canvas implements Serializable
     }
   }
   
-  int getWidth()  { return this.width;  }
+  private int getWidth()  { return this.width;  }
   public int getHeight() { return this.height; }
   //public byte[] getContent() { return this.content; }
   
@@ -75,7 +75,7 @@ public class Canvas implements Serializable
   /**
    * 取得目前 Canvas 的大小
    */
-  int getSize()
+  private int getSize()
   {
     int sum = 0;
     if (children.size() == 0)
@@ -114,7 +114,7 @@ public class Canvas implements Serializable
   }
   
   @Nullable
-  byte[] getContent()
+  private byte[] getContent()
   {
     byte[] result;
     //如果沒有 children , 就傳回自己的 content[]

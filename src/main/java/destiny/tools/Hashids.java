@@ -34,7 +34,7 @@ public class Hashids {
     this(salt, 0);
   }
 
-  public Hashids(String salt, int minHashLength) {
+  private Hashids(String salt, int minHashLength) {
     this(salt, minHashLength, DEFAULT_ALPHABET);
   }
 
@@ -191,7 +191,7 @@ public class Hashids {
    * @param hexa the hexa to encrypt
    * @return the encrypt string
    */
-  public String encodeHex(String hexa){
+  private String encodeHex(String hexa){
       if(!hexa.matches("^[0-9a-fA-F]+$"))
           return "";
 
@@ -214,7 +214,7 @@ public class Hashids {
    * @param hash the encrypt string
    * @return decryped numbers
    */
-  public String decodeHex(String hash){
+  private String decodeHex(String hash){
       String result = "";
       long[] numbers = this.decode(hash);
 

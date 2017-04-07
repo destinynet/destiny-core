@@ -27,7 +27,7 @@ public abstract class LunarPoint extends Star
     LunarApsis.APOGEE_MEAN  , LunarApsis.APOGEE_OSCU ,  //遠地點
     LunarApsis.PERIGEE_MEAN , LunarApsis.PERIGEE_OSCU}; //近地點
 
-  protected LunarPoint(String nameKey, String abbrKey, String resource)
+  LunarPoint(String nameKey, String abbrKey, String resource)
   {
     super(nameKey, abbrKey, resource);
   }

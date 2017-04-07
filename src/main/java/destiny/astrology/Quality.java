@@ -24,7 +24,7 @@ public enum Quality implements LocaleStringIF
   /** 變動 */
   MUTABLE("Quality.MUTABLE");
   
-  private String nameKey;
+  private final String nameKey;
   
   private final static String resource = "destiny.astrology.Sign";
   

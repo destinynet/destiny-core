@@ -27,8 +27,8 @@ public enum SolarTerms {
   小寒("小寒",285),
   大寒("大寒",300);
 
-  private String name;
-  private int zodiacDegree;
+  private final String name;
+  private final int zodiacDegree;
 
   private final static SolarTerms[] SOLAR_TERMS_ARRAY =
     { 立春 , 雨水 , 驚蟄 , 春分 , 清明 , 榖雨 ,

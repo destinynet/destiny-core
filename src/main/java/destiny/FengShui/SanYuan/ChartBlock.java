@@ -37,7 +37,7 @@ public class ChartBlock implements Serializable
   /**
    * 元運 , 一 ~ 九
    */
-  private int period;
+  private final int period;
 
   /**
    * constructor
