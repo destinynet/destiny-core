@@ -3,13 +3,12 @@
  */
 package destiny.core.calendar;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple2;
 import org.threeten.extra.chrono.JulianDate;
 
 import java.io.Serializable;
 import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
-import java.time.temporal.ChronoField;
 import java.time.temporal.*;
 import java.util.Objects;
 
@@ -120,8 +119,8 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute , double second) {
     JulianDate date = JulianDate.of(year , month , dayOfMonth);
 
-    Pair<Long , Long> pair = Time.splitSecond(second);
-    LocalTime time = LocalTime.of(hour , minute , pair.getLeft().intValue() , pair.getRight().intValue());
+    Tuple2<Long , Long> pair = Time.splitSecond(second);
+    LocalTime time = LocalTime.of(hour , minute , pair.v1().intValue() , pair.v2().intValue());
     return new JulianDateTime(date , time);
   }
 

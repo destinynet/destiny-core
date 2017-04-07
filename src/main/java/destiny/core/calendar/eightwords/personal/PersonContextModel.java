@@ -9,7 +9,7 @@ import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
 import destiny.core.chinese.StemBranch;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -89,10 +89,10 @@ public class PersonContextModel implements Serializable {
       double startFortuneSeconds = personContext.getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
       double   endFortuneSeconds = personContext.getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
 
-      Pair<Long , Long> pair1 = Time.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
-      LocalDateTime startFortuneLmt = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair1.getLeft()).plusNanos(pair1.getRight());
-      Pair<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
-      LocalDateTime endFortuneLmt  = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair2.getLeft()).plusNanos(pair2.getRight());
+      Tuple2<Long , Long> pair1 = Time.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
+      LocalDateTime startFortuneLmt = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+      Tuple2<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
+      LocalDateTime endFortuneLmt  = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
 
       switch(fortuneOutputFormat)
       {

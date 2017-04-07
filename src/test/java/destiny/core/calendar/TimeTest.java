@@ -5,7 +5,7 @@
  */
 package destiny.core.calendar;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple2;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,28 +126,28 @@ public class TimeTest
     // 測試 1582/10/4 --- 1582/10/15 的日期轉換
 
     // Gregorian 第一天 : 1582-10-15
-    assertEquals(LocalDate.of(1582, 10, 15), Time.from(2299160.5).getLeft());
-    Pair<ChronoLocalDate , LocalTime> pair = Time.from(2299160.75); // 加上 0.25 天
-    assertEquals(LocalTime.of(6,0,0) , pair.getRight());            // 應該是早上六點
+    assertEquals(LocalDate.of(1582, 10, 15), Time.from(2299160.5).v1());
+    Tuple2<ChronoLocalDate , LocalTime> pair = Time.from(2299160.75); // 加上 0.25 天
+    assertEquals(LocalTime.of(6,0,0) , pair.v2());            // 應該是早上六點
     pair = Time.from(2299161.0);                                    // 加上 0.5 天
-    assertEquals(LocalTime.of(12,0,0) , pair.getRight());           // 應該是中午12點
+    assertEquals(LocalTime.of(12,0,0) , pair.v2());           // 應該是中午12點
     pair = Time.from(2299161.25);                                   // 加上 0.75 天
-    assertEquals(LocalTime.of(18,0,0) , pair.getRight());           // 應該是晚上六點
+    assertEquals(LocalTime.of(18,0,0) , pair.v2());           // 應該是晚上六點
 
     // JD 往前一天 , 跳到 1582/10/4 (J)
-    assertEquals(JulianDate.of(1582, 10, 4), Time.from(2299159.5).getLeft());
+    assertEquals(JulianDate.of(1582, 10, 4), Time.from(2299159.5).v1());
 
     //西元元年一月一號 (J)
-    assertEquals(JulianDate.of(1,1,1), Time.from(1721423.5).getLeft());
+    assertEquals(JulianDate.of(1,1,1), Time.from(1721423.5).v1());
 
     //西元前一年十二月三十一號 (J)
-    assertEquals(JulianDate.of(0,12,31), Time.from(1721422.5).getLeft());
+    assertEquals(JulianDate.of(0,12,31), Time.from(1721422.5).v1());
 
     //西元前一年一月一號 (J)
-    assertEquals(JulianDate.of(0,1,1), Time.from(1721057.5).getLeft());
+    assertEquals(JulianDate.of(0,1,1), Time.from(1721057.5).v1());
 
     //西元前二年十二月三十一號 (J)
-    assertEquals(JulianDate.of(-1,12,31), Time.from(1721056.5).getLeft());
+    assertEquals(JulianDate.of(-1,12,31), Time.from(1721056.5).v1());
   }
 
 

@@ -8,7 +8,7 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.LongitudeTimeBean;
 import destiny.core.calendar.Time;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +40,8 @@ public interface TrueSolarTimeIF {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     logger.debug("gmt = {}" , gmt);
     double e = getEquationSecs(gmt);
-    Pair<Long , Long> pair = Time.splitSecond(e);
-    LocalDateTime gmtWithE = LocalDateTime.from(gmt).plusSeconds(pair.getLeft()).plusNanos(pair.getRight());
+    Tuple2<Long , Long> pair = Time.splitSecond(e);
+    LocalDateTime gmtWithE = LocalDateTime.from(gmt).plusSeconds(pair.v1()).plusNanos(pair.v2());
     logger.debug("gmt  = {}" , gmt);
     logger.debug("gmtE = {}" , gmtWithE);
     LocalDateTime lmtWithE = Time.getLmtFromGmt(gmtWithE , location);

@@ -4,7 +4,7 @@
  */
 package destiny.core.calendar;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.LocalDateTime;
 
@@ -27,12 +27,12 @@ public class LongitudeTimeBean {
 
     if (location.isEast()) {
       double seconds = longitudeSecondOffset - zoneSecondOffset;
-      Pair<Long , Long> pair = Time.splitSecond(seconds);
-      return LocalDateTime.from(lmt).plusSeconds(pair.getLeft()).plusNanos(pair.getRight());
+      Tuple2<Long , Long> pair = Time.splitSecond(seconds);
+      return LocalDateTime.from(lmt).plusSeconds(pair.v1()).plusNanos(pair.v2());
     } else {
       double seconds = zoneSecondOffset - longitudeSecondOffset;
-      Pair<Long , Long> pair = Time.splitSecond(seconds);
-      return LocalDateTime.from(lmt).plusSeconds(pair.getLeft()).plusNanos(pair.getRight());
+      Tuple2<Long , Long> pair = Time.splitSecond(seconds);
+      return LocalDateTime.from(lmt).plusSeconds(pair.v1()).plusNanos(pair.v2());
     }
   }
 

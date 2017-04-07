@@ -6,10 +6,8 @@ package destiny.core.calendar;
 
 import destiny.tools.AlignUtil;
 import destiny.tools.LocaleStringIF;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +24,7 @@ import java.util.TimeZone;
 
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 import static java.time.temporal.JulianFields.JULIAN_DAY;
+import static org.jooq.lambda.tuple.Tuple.tuple;
 
 /**
  * 代表 『時間』 的物件
@@ -74,8 +73,8 @@ public class Time implements Serializable , LocaleStringIF , DateIF
 
     LocalDateTime result;
     LocalDate localDate = LocalDate.of(prolepticYear , month , day);
-    Pair<Long , Long> pair = Time.splitSecond(second);
-    LocalTime localTime = LocalTime.of(hour , minute, pair.getLeft().intValue() , pair.getRight().intValue());
+    Tuple2<Long , Long> pair = Time.splitSecond(second);
+    LocalTime localTime = LocalTime.of(hour , minute, pair.v2().intValue() , pair.v2().intValue());
     if (isAD) {
       result = LocalDateTime.of(localDate , localTime);
     } else {
@@ -108,11 +107,11 @@ public class Time implements Serializable , LocaleStringIF , DateIF
     int minute = Integer.valueOf(s.substring(11, 13).trim());
     double second = Double.valueOf(s.substring(13));
 
-    Pair<Long , Long> pair = Time.splitSecond(second);
+    Tuple2<Long , Long> pair = Time.splitSecond(second);
 
     int prolepticYear = getNormalizedYear(ad , year);
 
-    return LocalDateTime.of(prolepticYear , month , day , hour , minute , pair.getLeft().intValue() , pair.getRight().intValue());
+    return LocalDateTime.of(prolepticYear , month , day , hour , minute , pair.v1().intValue() , pair.v2().intValue());
   }
 
   /** 傳回最精簡的文字表示法 , 可以餵進去 {@link #fromDebugString(String)} 裡面*/
@@ -138,7 +137,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
 
 
 
-  public static Pair<ChronoLocalDate , LocalTime> from(double gmtJulDay) {
+  public static Tuple2<ChronoLocalDate , LocalTime> from(double gmtJulDay) {
     boolean isGregorian = false;
 
     if (gmtJulDay >= GREGORIAN_START_JULIAN_DAY) {
@@ -182,18 +181,18 @@ public class Time implements Serializable , LocaleStringIF , DateIF
     int minute = (int) (h * 60 - hour * 60);
     double second = h * 3600 - hour * 3600 - minute * 60;
 
-    Pair<Long , Long> pair = splitSecond(second);
-    int secsInt  = pair.getLeft().intValue();
-    int nanoInt = pair.getRight().intValue();
+    Tuple2<Long , Long> pair = splitSecond(second);
+    int secsInt = pair.v1().intValue();
+    int nanoInt = pair.v2().intValue();
 
     LocalTime localTime = LocalTime.of(hour , minute , secsInt , nanoInt);
 
     if (isGregorian) {
       // ad 一定為 true , 不用考慮負數年數
-      return Pair.of(LocalDate.of(year , month , day) , localTime);
+      return tuple(LocalDate.of(year , month , day) , localTime);
     } else {
       int prolepticYear = getNormalizedYear(ad , year);
-      return Pair.of(JulianDate.of(prolepticYear , month , day) ,localTime);
+      return tuple(JulianDate.of(prolepticYear , month , day) ,localTime);
     }
   }
   
@@ -387,7 +386,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
    * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
    * */
   public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull LocalDateTime lmt, @NotNull Location loc) {
-    return Tuple.tuple(Time.isDst(lmt, loc), Time.getSecondsOffset(lmt, loc));
+    return tuple(Time.isDst(lmt, loc), Time.getSecondsOffset(lmt, loc));
   }
   
   @Override
@@ -516,10 +515,10 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   }
 
   /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值 */
-  public static Pair<Long , Long> splitSecond(double seconds) {
+  public static Tuple2<Long , Long> splitSecond(double seconds) {
     long secs = (long) seconds;
     long nano = (long) ((seconds - secs)* 1_000_000_000);
-    return Pair.of(secs , nano);
+    return tuple(secs , nano);
   }
 
   

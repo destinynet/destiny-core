@@ -6,17 +6,17 @@ package destiny.astrology.classical.rules;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public interface RuleIF extends Predicate<Pair<Planet, HoroscopeContext>> {
+public interface RuleIF extends Predicate<Tuple2<Planet, HoroscopeContext>> {
 
   @Override
-  default boolean test(Pair<Planet, HoroscopeContext> t) {
-    return isApplicable(t.getLeft() , t.getRight());
+  default boolean test(Tuple2<Planet, HoroscopeContext> t) {
+    return isApplicable(t.v1() , t.v2());
   }
 
   boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext);
