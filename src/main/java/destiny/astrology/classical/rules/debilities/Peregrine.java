@@ -6,9 +6,9 @@ package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public final class Peregrine extends EssentialRule
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     //取得此 Planet 在什麼星座
@@ -43,8 +43,7 @@ public final class Peregrine extends EssentialRule
       if( !(dayNight == DayNight.DAY   && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY )) &&  
           !(dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   )
       {
-        //addComment(Locale.TAIWAN , planet + " 處於 Peregrine 狀態.");
-        return Optional.of(ImmutablePair.of("comment", new Object[]{planet}));
+        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
       }
     }
     return Optional.empty();

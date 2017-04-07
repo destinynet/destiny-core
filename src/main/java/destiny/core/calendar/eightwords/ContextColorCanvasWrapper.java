@@ -124,7 +124,7 @@ public class ContextColorCanvasWrapper {
     地點名稱.setText("地點：", 1 , 1);
     //地點名稱.setText(locationName , 1 , 7);
     地點名稱.setText(locationName , 1 , 7 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
-    int minuteOffset = Time.getDstSecondOffset(lmt, location).getRight() / 60;
+    int minuteOffset = Time.getDstSecondOffset(lmt, location).v2() / 60;
     地點名稱.setText(" GMT時差："+AlignUtil.alignRight(minuteOffset,6)+"分鐘", 1, 25 , "999999");
     cc.add(地點名稱 , 3 , 1);
     
@@ -170,7 +170,7 @@ public class ContextColorCanvasWrapper {
     }
     
     cc.setText("日光節約：" , 5 , 19 , "999999");
-    boolean isDst = Time.getDstSecondOffset(lmt, location).getLeft();
+    boolean isDst = Time.getDstSecondOffset(lmt, location).v1();
     String dstString= isDst ? "有" : "無";
     cc.setText(dstString , 5 , 29 , (isDst ? "FF0000" : "999999") , "" , null);
       

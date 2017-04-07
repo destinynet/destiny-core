@@ -7,9 +7,9 @@ package destiny.astrology.classical.rules.essentialDignities;
 import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public final class Ruler extends Rule
   }
   
   @Override
-  public Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -33,7 +33,7 @@ public final class Ruler extends Rule
     if (planet == essentialImpl.getPoint(sign, Dignity.RULER) )
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Ruler");
-      return Optional.of(ImmutablePair.of("commentBasic", new Object[]{planet, sign}));
+      return Optional.of(Tuple.tuple("commentBasic", new Object[]{planet, sign}));
     }
     /**
      * Ruler 互容 , mutual reception <br/> 
@@ -55,7 +55,7 @@ public final class Ruler extends Rule
         if (!utils.isBothInBadSituation(planet , sign , signRuler , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成互容");
-          return Optional.of(ImmutablePair.of("commentReception" , new Object[]{planet , sign , signRuler , sign2}));
+          return Optional.of(Tuple.tuple("commentReception" , new Object[]{planet , sign , signRuler , sign2}));
         }
       }
     }

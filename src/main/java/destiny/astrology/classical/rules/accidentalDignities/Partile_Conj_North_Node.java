@@ -5,9 +5,9 @@
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public final class Partile_Conj_North_Node extends Rule
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double northDeg;
@@ -45,12 +45,12 @@ public final class Partile_Conj_North_Node extends Rule
       if (nodeType == NodeType.TRUE)
       {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.NORTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
-        return Optional.of(ImmutablePair.of("comment", new Object[]{planet, LunarNode.NORTH_TRUE, Aspect.CONJUNCTION}));
+        return Optional.of(Tuple.tuple("comment", new Object[]{planet, LunarNode.NORTH_TRUE, Aspect.CONJUNCTION}));
       }
       else
       {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.NORTH_MEAN + " 形成 " + Aspect.CONJUNCTION);
-        return Optional.of(ImmutablePair.of("comment" , new Object[] {planet , LunarNode.NORTH_MEAN , Aspect.CONJUNCTION}));
+        return Optional.of(Tuple.tuple("comment" , new Object[] {planet , LunarNode.NORTH_MEAN , Aspect.CONJUNCTION}));
       }
     }
     return Optional.empty();

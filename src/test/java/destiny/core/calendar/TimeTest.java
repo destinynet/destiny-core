@@ -21,6 +21,7 @@ import java.util.TimeZone;
 import static destiny.core.calendar.Time.getDstSecondOffset;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static org.jooq.lambda.tuple.Tuple.tuple;
 import static org.junit.Assert.*;
 
 public class TimeTest
@@ -209,141 +210,141 @@ public class TimeTest
     // 民國41年（西元1952年）	日光節約時間	3月1日至10月31日
     int year = 1952;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 2, 28, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 2, 28, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc));
 
     //民國42年至43年（西元1953-1954年）	日光節約時間	4月1日至10月31日
     year = 1953;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc));
 
     year = 1954;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 31, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 11, 1, 12, 0), loc));
 
     //民國44年至45年（西元1955-1956年）	日光節約時間	4月1日至9月30日
     year = 1955;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
     year = 1956;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
     // 民國46年至48年（西元1957-1959年）	夏令時間	4月1日至9月30日
     year = 1957;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
     year = 1958;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
     year = 1959;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
 
     // 民國49年至50年（西元1960-1961年）	夏令時間	6月1日至9月30日
     year = 1960;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 5, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 5, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 6, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 6, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
     year = 1961;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 5, 31, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 5, 31, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 6, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 6, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
 
     // 民國63年至64年（西元1974-1975年）	日光節約時間	4月1日至9月30日
     year = 1974;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 30, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 30, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
     year = 1975;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 30, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 3, 30, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 4, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
 
     // 民國68年（西元1979年）	日光節約時間	7月1日至9月30日
     year = 1979;
     // 日光節約時間，前一天中午 , GMT+8
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 6, 30, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 6, 30, 12, 0), loc));
     // 日光節約時間開始，當天中午 , 時區調快一小時
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 7, 1, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 7, 1, 12, 0), loc));
     // 日光節約時間結束當天中午，時區仍是 +9
-    assertEquals(Pair.of(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
+    assertEquals(tuple(TRUE, 9 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 9, 30, 12, 0), loc));
     // 日光節約時間結束 , 隔天中午，時區回到 +9
-    assertEquals(Pair.of(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
+    assertEquals(tuple(FALSE, 8 * 60 * 60), getDstSecondOffset(LocalDateTime.of(year, 10, 1, 12, 0), loc));
   }
 
   @Test

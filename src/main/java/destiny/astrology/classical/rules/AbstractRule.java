@@ -7,9 +7,9 @@ package destiny.astrology.classical.rules;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.tools.LocaleStringIF;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,7 @@ import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public abstract class AbstractRule implements RuleIF , Serializable , LocaleStringIF
-{
+public abstract class AbstractRule implements RuleIF , Serializable , LocaleStringIF {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   protected String resource;
@@ -47,12 +46,12 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   public final boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
   {
     logger.debug("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
-    Optional<Pair<String , Object[]>> result = getResult(planet, horoscopeContext);
+    Optional<Tuple2<String , Object[]>> result = getResult(planet, horoscopeContext);
     if (!result.isPresent())
       return false;
     
-    commentKey = result.get().getLeft();
-    commentParameters = result.get().getRight();
+    commentKey = result.get().v1();
+    commentParameters = result.get().v2();
     return true;
   }
   
@@ -61,7 +60,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
    * String 為 ResourceBundle 取得的 key , 前面要 prepend '[rule_name].'
    * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
    */
-  protected abstract Optional<Pair<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext);
+  protected abstract Optional<Tuple2<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext);
   
   /** 名稱 */
   @Override

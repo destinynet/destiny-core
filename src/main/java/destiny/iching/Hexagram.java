@@ -5,9 +5,9 @@
 package destiny.iching;
 
 import destiny.core.chinese.YinYangIF;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.util.List;
@@ -168,10 +168,10 @@ public enum Hexagram implements HexagramIF , Serializable
    * @return 從 六爻 (6,7,8 or 9) 取得本卦以及變卦
    */
   @NotNull
-  public static Pair<HexagramIF , HexagramIF> getHexagrams(@NotNull List<Integer> lines) {
+  public static Tuple2<HexagramIF , HexagramIF> getHexagrams(@NotNull List<Integer> lines) {
     List<Boolean> src = lines.stream().map(i -> i % 2 == 1).collect(Collectors.toList());
     List<Boolean> dst = lines.stream().map(i -> (i == 6 || i == 7)).collect(Collectors.toList());
-    return ImmutablePair.of(getHexagram(src), getHexagram(dst));
+    return Tuple.tuple(getHexagram(src), getHexagram(dst));
   }
   
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6 */

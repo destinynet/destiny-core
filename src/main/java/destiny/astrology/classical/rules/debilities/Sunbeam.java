@@ -6,13 +6,13 @@ package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
-/** Under the Sunbeans (between 8.5 and 17 from Sol). */
+/** Under the Sunbeams (between 8.5 and 17 from Sol). */
 public final class Sunbeam extends Rule
 {
 
@@ -21,7 +21,7 @@ public final class Sunbeam extends Rule
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if (planet != Planet.SUN)
     {
@@ -29,7 +29,7 @@ public final class Sunbeam extends Rule
           horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) <= 17)
       {
         //addComment(Locale.TAIWAN , planet + " 被太陽曬傷 (Sunbeam)");
-        return Optional.of(ImmutablePair.of("comment", new Object[]{planet}));
+        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
       }
     }
     return Optional.empty();

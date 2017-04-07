@@ -7,9 +7,9 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -89,7 +89,7 @@ public interface RelativeTransitIF {
    * 傳回的 pair , 左邊為 GMT 時間，右邊為角度
    *
    */
-  default Optional<Pair<Double , Double>> getNearestRelativeTransitGmtJulDay(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
+  default Optional<Tuple2<Double , Double>> getNearestRelativeTransitGmtJulDay(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
     /**
      * 相交 270 度也算 90 度
      * 相交 240 度也是 120 度
@@ -138,7 +138,7 @@ public interface RelativeTransitIF {
     if (resultAngle != null && resultAngle > 180)
       resultAngle = 360-resultAngle;
     if (resultGmtJulDay != null) {
-      return Optional.of(ImmutablePair.of(resultGmtJulDay, resultAngle));
+      return Optional.of(Tuple.tuple(resultGmtJulDay, resultAngle));
     } else {
       return Optional.empty();
     }
@@ -148,14 +148,14 @@ public interface RelativeTransitIF {
    * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
    * 承上 , LocalDateTime 版本
    */
-  default Optional<Pair<LocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
-    Optional<Pair<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , fromGmtJulDay , angles , isForward);
-    return optionalPair.map(pair -> Pair.of(new Time(pair.getLeft()).toLocalDateTime() , pair.getRight()));
+  default Optional<Tuple2<LocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
+    Optional<Tuple2<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , fromGmtJulDay , angles , isForward);
+    return optionalPair.map(pair -> Tuple.tuple(new Time(pair.v1()).toLocalDateTime() , pair.v2()));
   }
 
-  default Optional<Pair<LocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , LocalDateTime gmt , Collection<Double> angles , boolean isForward ) {
+  default Optional<Tuple2<LocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , LocalDateTime gmt , Collection<Double> angles , boolean isForward ) {
     double gmtJulDay = Time.getGmtJulDay(gmt);
-    Optional<Pair<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , gmtJulDay , angles , isForward);
-    return optionalPair.map(pair -> Pair.of(new Time(pair.getLeft()).toLocalDateTime() , pair.getRight()));
+    Optional<Tuple2<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , gmtJulDay , angles , isForward);
+    return optionalPair.map(pair -> Tuple.tuple(new Time(pair.v1()).toLocalDateTime() , pair.v2()));
   }
 }

@@ -6,10 +6,11 @@ package destiny.core.calendar;
 
 import destiny.tools.AlignUtil;
 import destiny.tools.LocaleStringIF;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.extra.chrono.JulianDate;
@@ -385,8 +386,8 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   /**
    * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
    * */
-  public static Pair<Boolean, Integer> getDstSecondOffset(@NotNull LocalDateTime lmt, @NotNull Location loc) {
-    return ImmutablePair.of(Time.isDst(lmt , loc), Time.getSecondsOffset(lmt , loc));
+  public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull LocalDateTime lmt, @NotNull Location loc) {
+    return Tuple.tuple(Time.isDst(lmt, loc), Time.getSecondsOffset(lmt, loc));
   }
   
   @Override

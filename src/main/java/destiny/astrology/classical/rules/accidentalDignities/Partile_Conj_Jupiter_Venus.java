@@ -8,9 +8,9 @@ import destiny.astrology.Aspect;
 import destiny.astrology.Horoscope;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -23,7 +23,7 @@ public final class Partile_Conj_Jupiter_Venus extends Rule
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLongitude();
@@ -32,12 +32,12 @@ public final class Partile_Conj_Jupiter_Venus extends Rule
     if (planet != Planet.JUPITER && Horoscope.getAngle(planetDegree , jupiterDeg) <= 1) 
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.CONJUNCTION);
-      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, Planet.JUPITER, Aspect.CONJUNCTION}));
+      return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.JUPITER, Aspect.CONJUNCTION}));
     }
     else if (planet != Planet.VENUS && Horoscope.getAngle(planetDegree , venusDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.CONJUNCTION);
-      return Optional.of(ImmutablePair.of("comment" , new Object[] {planet , Planet.VENUS , Aspect.CONJUNCTION}));
+      return Optional.of(Tuple.tuple("comment" , new Object[] {planet , Planet.VENUS , Aspect.CONJUNCTION}));
     }
     return Optional.empty();
   }

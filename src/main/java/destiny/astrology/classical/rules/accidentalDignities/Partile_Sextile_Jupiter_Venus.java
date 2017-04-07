@@ -8,9 +8,9 @@ import destiny.astrology.Aspect;
 import destiny.astrology.AspectEffectiveModern;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ public final class Partile_Sextile_Jupiter_Venus extends Rule
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
     double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLongitude();
@@ -31,12 +31,12 @@ public final class Partile_Sextile_Jupiter_Venus extends Rule
     if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective( planetDegree , jupiterDeg , Aspect.SEXTILE , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.SEXTILE);
-      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, Planet.JUPITER, Aspect.SEXTILE}));
+      return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.JUPITER, Aspect.SEXTILE}));
     }
     else if (planet != Planet.VENUS && AspectEffectiveModern.isEffective( planetDegree , venusDeg , Aspect.SEXTILE , 1.0))
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.SEXTILE);
-      return Optional.of(ImmutablePair.of("comment" , new Object[] {planet , Planet.VENUS , Aspect.SEXTILE}));
+      return Optional.of(Tuple.tuple("comment" , new Object[] {planet , Planet.VENUS , Aspect.SEXTILE}));
     }
     return Optional.empty();
   }

@@ -7,9 +7,9 @@ package destiny.astrology.classical.rules.essentialDignities;
 import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public final class MixedReception extends Rule
   }
 
   @Override
-  public Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);
@@ -46,7 +46,7 @@ public final class MixedReception extends Rule
       if (!utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
       {
         //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
-        return Optional.of(ImmutablePair.of("commentRuler", new Object[]{planet, sign, thisSignRuler, sign2}));
+        return Optional.of(Tuple.tuple("commentRuler", new Object[]{planet, sign, thisSignRuler, sign2}));
       }
     }
     
@@ -62,7 +62,7 @@ public final class MixedReception extends Rule
         if (!utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
-          return Optional.of(ImmutablePair.of("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2}));
+          return Optional.of(Tuple.tuple("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2}));
         }
       }  
     }

@@ -6,9 +6,9 @@ package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -19,10 +19,10 @@ public final class House_2_5 extends Rule {
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
     int planetHouse = horoscopeContext.getHouse(planet);
     if (planetHouse == 2 || planetHouse == 5) {
-      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, planetHouse}));
+      return Optional.of(Tuple.tuple("comment", new Object[]{planet, planetHouse}));
     }
     return Optional.empty();
   }

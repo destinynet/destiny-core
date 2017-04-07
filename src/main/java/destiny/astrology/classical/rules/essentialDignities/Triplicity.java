@@ -5,9 +5,9 @@
 package destiny.astrology.classical.rules.essentialDignities;
 
 import destiny.astrology.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -23,7 +23,7 @@ public final class Triplicity extends Rule
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -33,7 +33,7 @@ public final class Triplicity extends Rule
          (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   ) 
     {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 "+dayNight.toString()+" 之 Triplicity");
-      return Optional.of(ImmutablePair.of("comment", new Object[]{planet, sign, dayNight}));
+      return Optional.of(Tuple.tuple("comment", new Object[]{planet, sign, dayNight}));
     }
     return Optional.empty();
   }

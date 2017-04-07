@@ -4,7 +4,7 @@
  */
 package destiny.iching;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.jooq.lambda.tuple.Tuple2;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -19,36 +19,36 @@ public class HexagramTest
   @Test
   public void testGetTuple() {
     List<Integer> list;
-    Pair<HexagramIF, HexagramIF> tuple;
+    Tuple2<HexagramIF, HexagramIF> tuple;
     list = Arrays.asList(7, 7, 7, 7, 7, 7);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.乾, tuple.getLeft());
-    assertEquals(Hexagram.乾, tuple.getRight());
+    assertEquals(Hexagram.乾, tuple.v1());
+    assertEquals(Hexagram.乾, tuple.v2());
 
     list = Arrays.asList(9, 9, 9, 9, 9, 9);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.乾, tuple.getLeft());
-    assertEquals(Hexagram.坤, tuple.getRight());
+    assertEquals(Hexagram.乾, tuple.v1());
+    assertEquals(Hexagram.坤, tuple.v2());
 
     list = Arrays.asList(9, 9, 9, 6, 6, 6);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.泰, tuple.getLeft());
-    assertEquals(Hexagram.否, tuple.getRight());
+    assertEquals(Hexagram.泰, tuple.v1());
+    assertEquals(Hexagram.否, tuple.v2());
 
     list = Arrays.asList(6, 6, 6, 9, 9, 9);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.否, tuple.getLeft());
-    assertEquals(Hexagram.泰, tuple.getRight());
+    assertEquals(Hexagram.否, tuple.v1());
+    assertEquals(Hexagram.泰, tuple.v2());
 
     list = Arrays.asList(6, 9 , 6 , 9 , 6 , 9);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.未濟, tuple.getLeft());
-    assertEquals(Hexagram.既濟, tuple.getRight());
+    assertEquals(Hexagram.未濟, tuple.v1());
+    assertEquals(Hexagram.既濟, tuple.v2());
 
     list = Arrays.asList(9 , 6 , 9 , 6 , 9 , 6);
     tuple = Hexagram.getHexagrams(list);
-    assertEquals(Hexagram.既濟, tuple.getLeft());
-    assertEquals(Hexagram.未濟, tuple.getRight());
+    assertEquals(Hexagram.既濟, tuple.v1());
+    assertEquals(Hexagram.未濟, tuple.v2());
   }
 
   @Test

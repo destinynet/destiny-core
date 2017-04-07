@@ -7,9 +7,9 @@ package destiny.astrology.classical.rules.debilities;
 import destiny.astrology.*;
 import destiny.astrology.classical.Dignity;
 import destiny.astrology.classical.EssentialUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
@@ -30,7 +30,7 @@ public final class MutualDeception extends EssentialRule implements Applicable
   }
 
   @Override
-  protected Optional<Pair<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);
@@ -48,7 +48,7 @@ public final class MutualDeception extends EssentialRule implements Applicable
       if (utils.isBothInBadSituation(planet , sign , signRuler , sign2))
       {
         //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + signRuler + " 飛至 " + sign2 + " , 形成 Ruler 互陷");
-        return Optional.of(ImmutablePair.of("comment1", new Object[]{planet, sign, signRuler, sign2}));
+        return Optional.of(Tuple.tuple("comment1", new Object[]{planet, sign, signRuler, sign2}));
       }
     }
     
@@ -64,7 +64,7 @@ public final class MutualDeception extends EssentialRule implements Applicable
         if (utils.isBothInBadSituation(planet , sign , signExaltation , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + signExaltation + " 飛至 " + sign2 + " , 形成 Exaltation 互陷");
-          return Optional.of(ImmutablePair.of("comment2" , new Object[]{planet , sign , signExaltation , sign2}));
+          return Optional.of(Tuple.tuple("comment2" , new Object[]{planet , sign , signExaltation , sign2}));
         }
       }
     }
@@ -79,7 +79,7 @@ public final class MutualDeception extends EssentialRule implements Applicable
       if (utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
       {
         //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互陷");
-        return Optional.of(ImmutablePair.of("comment3" , new Object[]{planet , sign , thisSignRuler , sign2}));
+        return Optional.of(Tuple.tuple("comment3" , new Object[]{planet , sign , thisSignRuler , sign2}));
       }
     }
     
@@ -95,7 +95,7 @@ public final class MutualDeception extends EssentialRule implements Applicable
         if (utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
         {
           //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互陷");
-          return Optional.of(ImmutablePair.of("comment4" , new Object[]{planet , sign , thisSignExaltation , sign2}));
+          return Optional.of(Tuple.tuple("comment4" , new Object[]{planet , sign , thisSignExaltation , sign2}));
         }
       }
     }
