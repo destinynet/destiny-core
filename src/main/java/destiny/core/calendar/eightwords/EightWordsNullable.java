@@ -6,13 +6,13 @@ package destiny.core.calendar.eightwords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranchOptional;
+import destiny.tools.ChineseStringTools;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -32,14 +32,10 @@ public class EightWordsNullable implements Serializable {
   @NotNull
   StemBranchOptional hour;
 
-  @NotNull
-  private final static String NULL_CHAR ="　"; //空白字元，使用全形的空白, 在 toString() 時使用
-
-  public EightWordsNullable(@NotNull StemBranchOptional year, @NotNull StemBranchOptional month, @NotNull StemBranchOptional day, @NotNull StemBranchOptional hour) {
-    Objects.requireNonNull(year);
-    Objects.requireNonNull(month);
-    Objects.requireNonNull(day);
-    Objects.requireNonNull(hour);
+  public EightWordsNullable(@NotNull StemBranchOptional year,
+                            @NotNull StemBranchOptional month,
+                            @NotNull StemBranchOptional day,
+                            @NotNull StemBranchOptional hour) {
     this.year = year;
     this.month = month;
     this.day = day;
@@ -106,15 +102,15 @@ public class EightWordsNullable implements Serializable {
   @Override
   public String toString() {
     return "\n"
-      + hour .getStemOptional().map(Stem::toString).orElse(NULL_CHAR)
-      + day  .getStemOptional().map(Stem::toString).orElse(NULL_CHAR)
-      + month.getStemOptional().map(Stem::toString).orElse(NULL_CHAR)
-      + year .getStemOptional().map(Stem::toString).orElse(NULL_CHAR)
+      + hour .getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
+      + day  .getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
+      + month.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
+      + year .getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
       + "\n"
-      + hour .getBranchOptional().map(Branch::toString).orElse(NULL_CHAR)
-      + day  .getBranchOptional().map(Branch::toString).orElse(NULL_CHAR)
-      + month.getBranchOptional().map(Branch::toString).orElse(NULL_CHAR)
-      + year .getBranchOptional().map(Branch::toString).orElse(NULL_CHAR)
+      + hour .getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
+      + day  .getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
+      + month.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
+      + year .getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
       ;
   }
 

@@ -7,7 +7,7 @@ package destiny.astrology;
 import com.google.common.collect.ImmutableMap;
 import destiny.tools.Decorator;
 import destiny.tools.LocaleUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -19,7 +19,7 @@ public class AzimuthDegreeDecorator
     .put(Locale.ENGLISH , new AzimuthDegreeEnglishDecorator())
     .build();
   
-  @Nullable
+  @NotNull
   public static String getOutputString(Double value , Locale locale)
   {
     return implMap.get(

@@ -40,9 +40,17 @@ public class GeneralStemBranchLiuren implements GeneralStemBranchIF , Serializab
     return map.get(general);
   }
 
+  /**
+   * 從地支，找尋「天將」
+   * 因為 map value 為「干支」，因此需要 filter
+   * */
   @Override
   public General get(Branch branch) {
-    return map.inverse().get(branch);
+    return map.values().stream()
+      .filter(stemBranch -> stemBranch.getBranch() == branch)
+      .findAny()
+      .map(stemBranch -> map.inverse().get(stemBranch))
+      .orElseThrow(RuntimeException::new);
   }
 
   @Override

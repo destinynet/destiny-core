@@ -11,7 +11,7 @@ import static org.junit.Assert.assertSame;
 
 public class GeneralSeqDefaultImplTest {
 
-  private GeneralSeqIF seq = new GeneralSeqDefaultImpl();
+  private GeneralSeqIF seqDefault = new GeneralSeqDefaultImpl();
 
   @Test
   public void testGet() {
@@ -34,27 +34,29 @@ public class GeneralSeqDefaultImplTest {
 
   @Test
   public void testNext() {
-    assertSame(貴人, 貴人.next(-12, seq));
-    assertSame(螣蛇, 貴人.next(-11, seq));
-    assertSame(太陰, 貴人.next(-2, seq));
-    assertSame(天后, 貴人.next(-1, seq));
-    assertSame(貴人, 貴人.next(0, seq));
-    assertSame(螣蛇, 貴人.next(1, seq));
-    assertSame(朱雀, 貴人.next(2, seq));
-    assertSame(天后, 貴人.next(11, seq));
-    assertSame(貴人, 貴人.next(12, seq));
+    assertSame(貴人, 貴人.next(-12, seqDefault));
+    assertSame(螣蛇, 貴人.next(-11, seqDefault));
+    assertSame(太陰, 貴人.next(-2, seqDefault));
+    assertSame(天后, 貴人.next(-1, seqDefault));
+    assertSame(貴人, 貴人.next(0, seqDefault));
+    assertSame(螣蛇, 貴人.next(1, seqDefault));
+    assertSame(朱雀, 貴人.next(2, seqDefault));
+    assertSame(天后, 貴人.next(11, seqDefault));
+    assertSame(貴人, 貴人.next(12, seqDefault));
+    assertSame(螣蛇, 貴人.next(13, seqDefault));
   }
 
   @Test
   public void testPrev() {
-    assertSame(貴人 , 貴人.prev(-12 , seq));
-    assertSame(天后 , 貴人.prev(-11 , seq));
-    assertSame(朱雀 , 貴人.prev(-2 , seq));
-    assertSame(螣蛇 , 貴人.prev(-1 , seq));
-    assertSame(貴人 , 貴人.prev(0 , seq));
-    assertSame(天后 , 貴人.prev(1 , seq));
-    assertSame(太陰 , 貴人.prev(2 , seq));
-    assertSame(螣蛇 , 貴人.prev(11 , seq));
-    assertSame(貴人 , 貴人.prev(12 , seq));
+    assertSame(貴人 , 貴人.prev(-12 , seqDefault));
+    assertSame(天后 , 貴人.prev(-11 , seqDefault));
+    assertSame(朱雀 , 貴人.prev(-2 , seqDefault));
+    assertSame(螣蛇 , 貴人.prev(-1 , seqDefault));
+    assertSame(貴人 , 貴人.prev(0 , seqDefault));
+    assertSame(天后 , 貴人.prev(1 , seqDefault));
+    assertSame(太陰 , 貴人.prev(2 , seqDefault));
+    assertSame(螣蛇 , 貴人.prev(11 , seqDefault));
+    assertSame(貴人 , 貴人.prev(12 , seqDefault));
+    assertSame(天后 , 貴人.prev(13 , seqDefault));
   }
 }

@@ -8,8 +8,6 @@ import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;

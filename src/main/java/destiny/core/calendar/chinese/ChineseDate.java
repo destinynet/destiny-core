@@ -6,6 +6,7 @@
 package destiny.core.calendar.chinese;
 
 import destiny.core.chinese.StemBranch;
+import destiny.tools.ChineseStringTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -32,7 +33,7 @@ public class ChineseDate implements Serializable {
   /** 日 */
   private final int day;
 
-  public ChineseDate(int cycle, StemBranch year, int month, boolean leapMonth, int day) {
+  public ChineseDate(int cycle, @NotNull StemBranch year, int month, boolean leapMonth, int day) {
     this.cycle = cycle;
     this.year = year;
     this.month = month;
@@ -52,10 +53,6 @@ public class ChineseDate implements Serializable {
     return month;
   }
 
-  public void setYear(StemBranch year) {
-    this.year = year;
-  }
-
   @NotNull
   public StemBranch getYear() {
     return year;
@@ -63,10 +60,6 @@ public class ChineseDate implements Serializable {
 
   public int getCycle() {
     return cycle;
-  }
-
-  public void setCycle(int cycle) {
-    this.cycle = cycle;
   }
 
 
@@ -99,17 +92,6 @@ public class ChineseDate implements Serializable {
   }
 
   private String digitToChinese(int digit) {
-    switch (digit) {
-      case 1 : return "一";
-      case 2 : return "二";
-      case 3 : return "三";
-      case 4 : return "四";
-      case 5 : return "五";
-      case 6 : return "六";
-      case 7 : return "七";
-      case 8 : return "八";
-      case 9 : return "九";
-    }
-    throw new IllegalArgumentException("digitToChinese : " + digit);
+    return ChineseStringTools.digitToChinese(digit);
   }
 }

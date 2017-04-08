@@ -63,7 +63,7 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
 
         for (Aspect eachAspect : Aspect.getAngles(Aspect.Importance.HIGH)) {
           //只比對 0 , 60 , 90 , 120 , 180 五個度數
-          if (classical.isEffective((Planet) point, planetDeg, (Planet) eachPoint, eachPlanetDeg, eachAspect)) {
+          if (classical.isEffective(point, planetDeg, eachPoint, eachPlanetDeg, eachAspect)) {
             result.put(eachPoint, eachAspect);
           }
         }

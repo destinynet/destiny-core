@@ -73,8 +73,7 @@ public abstract class Point implements Serializable , LocaleStringIF
   
   /** toString 直接取名稱 (name) */
   @Override
-  public String toString(@NotNull Locale locale)
-  {
+  public String toString(@NotNull Locale locale) {
     return ResourceBundle.getBundle(resource , locale).getString(nameKey);
   }
 

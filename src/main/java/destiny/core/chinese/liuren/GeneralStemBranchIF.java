@@ -15,5 +15,6 @@ public interface GeneralStemBranchIF extends Descriptive {
 
   StemBranch getStemBranch(General general);
 
+  /** 從地支，找尋「天將」 */
   General get(Branch branch);
 }

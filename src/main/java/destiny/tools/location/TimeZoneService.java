@@ -12,7 +12,6 @@ import java.util.TimeZone;
 public interface TimeZoneService {
 
   /** 嘗試從經緯度，尋找 TimeZone */
-  @NotNull
   Optional<TimeZone> getTimeZoneOptional(double lng , double lat);
 
   /** 若找不到，傳回 GMT */

@@ -3,6 +3,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
+import destiny.tools.ChineseStringTools;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -24,7 +25,7 @@ public class EightWords extends EightWordsNullable {
   /**
    * 以 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null
    */
-  public EightWords(String year , String month , String day , String hour) {
+  public EightWords(@NotNull String year , @NotNull String month , @NotNull String day , @NotNull String hour) {
     super(
       StemBranch.get(year.toCharArray()[0] , year.toCharArray()[1]) ,
       StemBranch.get(month.toCharArray()[0] , month.toCharArray()[1]),
@@ -140,8 +141,15 @@ public class EightWords extends EightWordsNullable {
   {
     assert (hour.getStemOptional().isPresent());
     return
-      "\n"+
-      hour.getStemOptional().get()  + day.getStemOptional().get()  + month.getStemOptional().get()   + year.getStemOptional().get() + "\n" +
-      hour.getBranchOptional().get() + day.getBranchOptional().get() + month.getBranchOptional().get() + year.getBranchOptional().get() ;
+      "\n"
+        + hour.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
+        + day.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
+        + month.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
+        + year.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR) +
+        "\n" +
+        hour.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
+        + day.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
+        + month.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
+        + year.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR) ;
   }
 }

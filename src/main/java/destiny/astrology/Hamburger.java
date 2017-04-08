@@ -4,6 +4,8 @@
  */
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,8 +33,7 @@ public final class Hamburger extends Star implements Comparable<Hamburger>
   }
   
   @Override
-  public int compareTo(Hamburger o)
-  {
+  public int compareTo(@NotNull Hamburger o) {
     if (this.equals(o))
       return 0;
     

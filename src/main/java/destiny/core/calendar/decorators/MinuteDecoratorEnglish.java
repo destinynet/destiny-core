@@ -4,13 +4,14 @@
  */ 
 package destiny.core.calendar.decorators;
 
-import java.io.Serializable;
-
 import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 public class MinuteDecoratorEnglish  implements Decorator<Integer> , Serializable
 {
+  @NotNull
   @Override
   public String getOutputString(@NotNull Integer minute)
   {

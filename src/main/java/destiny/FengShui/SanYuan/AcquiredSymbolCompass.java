@@ -20,17 +20,17 @@ import java.util.List;
 public class AcquiredSymbolCompass extends AbstractSymbol implements Serializable
 {
   @NotNull
-  private static final List<Symbol> SymbolList = new ArrayList<>();
+  private static final List<Symbol> symbolList = new ArrayList<>();
   static
   {
-    SymbolList.add(Symbol.坎);
-    SymbolList.add(Symbol.艮);
-    SymbolList.add(Symbol.震);
-    SymbolList.add(Symbol.巽);
-    SymbolList.add(Symbol.離);
-    SymbolList.add(Symbol.坤);
-    SymbolList.add(Symbol.兌);
-    SymbolList.add(Symbol.乾);
+    symbolList.add(Symbol.坎);
+    symbolList.add(Symbol.艮);
+    symbolList.add(Symbol.震);
+    symbolList.add(Symbol.巽);
+    symbolList.add(Symbol.離);
+    symbolList.add(Symbol.坤);
+    symbolList.add(Symbol.兌);
+    symbolList.add(Symbol.乾);
   }
   
   /**
@@ -39,7 +39,7 @@ public class AcquiredSymbolCompass extends AbstractSymbol implements Serializabl
   @Override
   public double getStartDegree(Object o)
   {
-    return Utils.getNormalizeDegree(SymbolList.indexOf(o) * getStepDegree() + getInitDegree());
+    return Utils.getNormalizeDegree(symbolList.indexOf(o) * getStepDegree() + getInitDegree());
   }
   
   /**
@@ -48,7 +48,7 @@ public class AcquiredSymbolCompass extends AbstractSymbol implements Serializabl
   @Override
   public double getEndDegree(Object o)
   {
-    return Utils.getNormalizeDegree( (SymbolList.indexOf(o) +1 ) * getStepDegree() + getInitDegree());
+    return Utils.getNormalizeDegree( (symbolList.indexOf(o) +1 ) * getStepDegree() + getInitDegree());
   }
   
   /**
@@ -59,6 +59,6 @@ public class AcquiredSymbolCompass extends AbstractSymbol implements Serializabl
     int index = (int) ((degree + 360 - getInitDegree()) / getStepDegree()) ;
     if (index >= 8)
       index = index-8;
-    return SymbolList.get(index);
+    return symbolList.get(index);
   }
 }

@@ -48,10 +48,9 @@ public class ColorCanvas implements Serializable
     this.height = height;
     this.width = width;
     content = new ColorByte[width*height];
-    for (int i=0 ; i < content.length ; i++)
-    {
+    for (int i=0 ; i < content.length ; i++) {
       content[i] = new ColorByte(' ');
-    }    
+    }
   }
   
   
@@ -716,7 +715,7 @@ public class ColorCanvas implements Serializable
     //檢查是否有 title
     cb.getTitle().ifPresent( title -> {
       sb.append(" title=\"");
-      sb.append(cb.getTitle().get());
+      sb.append(cb.getTitle().orElse(""));
       sb.append("\"");
     });
 

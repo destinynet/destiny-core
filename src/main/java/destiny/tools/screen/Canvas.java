@@ -113,7 +113,7 @@ public class Canvas implements Serializable
     this.setText(b , x , y);
   }
   
-  @Nullable
+  @NotNull
   private byte[] getContent()
   {
     byte[] result;
@@ -126,13 +126,12 @@ public class Canvas implements Serializable
     {
       //有 children
       for (Child aChildren : children) {
-        Child child = (Child) aChildren;
-        byte[] childContent = child.getCanvas().getContent();
+        byte[] childContent = aChildren.getCanvas().getContent();
         for (int j = 0; j < childContent.length; j++) {
           //走訪childContent , 必須計算 childContent 每個 byte 在 parent 的座標 , 並且複製過去
-          int childX = j - ((j / child.getCanvas().getWidth())) * child.getCanvas().getWidth() + 1;
-          int childY = (j / child.getCanvas().getWidth()) + 1;
-          this.content[(child.getY() + (childY - 1) - 1) * this.width + (child.getX() + (childX - 1)) - 1] = childContent[j];
+          int childX = j - ((j / aChildren.getCanvas().getWidth())) * aChildren.getCanvas().getWidth() + 1;
+          int childY = (j / aChildren.getCanvas().getWidth()) + 1;
+          this.content[(aChildren.getY() + (childY - 1) - 1) * this.width + (aChildren.getX() + (childX - 1)) - 1] = childContent[j];
         }
       }//for
       result = this.content ;

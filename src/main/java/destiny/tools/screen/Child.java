@@ -1,5 +1,7 @@
 package destiny.tools.screen;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author smallufo
  * @date 2002/8/29
@@ -23,6 +25,7 @@ class Child {
     this.c.setParent(c);
   }
 
+  @NotNull
   public Canvas getCanvas() {
     return this.c;
   }

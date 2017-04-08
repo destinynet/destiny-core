@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings({"MagicConstant", "WeakerAccess"})
+@SuppressWarnings({"MagicConstant", "WeakerAccess", "ResultOfMethodCallIgnored"})
 public class UBBCodeConverter
 {
   String       u_s;
@@ -114,17 +114,17 @@ public class UBBCodeConverter
   @NotNull
   public String replace(@NotNull String s, @NotNull String s1, String s2)
   {
-    String s3 = "";
+    StringBuilder s3 = new StringBuilder();
     int i = s1.length();
     int j;
     while ((j = s.indexOf(s1)) != -1)
     {
-      s3 = s3 + s.substring(0, j);
-      s3 = s3 + s2;
+      s3.append(s.substring(0, j));
+      s3.append(s2);
       s = s.substring(j + i);
     }
-    s3 = s3 + s;
-    return s3;
+    s3.append(s);
+    return s3.toString();
   }
 
   public String ReImg(String s)

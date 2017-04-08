@@ -161,7 +161,7 @@ class ColorByte implements Serializable {
           && ( ( (!this.font.isPresent()     ) && (!cb.font.isPresent())     ) || ( (this.font.isPresent()      ) && this.font.equals(cb.font)          ) )
           && (Objects.equals(this.url , cb.url))
           //&& ( ( (!this.url.isPresent()      ) && (!cb.url.isPresent())      ) || ( (this.url.isPresent()       ) && (cb.url.isPresent() ) && this.url.get().toString().equals(cb.url.get().toExternalForm())) )
-          && ( ( (!this.title.isPresent()    ) && (!cb.title.isPresent()     ) || ( (this.title.isPresent()     ) && this.title.get().equals(cb.title.get()))) )
+          && ( ( (!this.title.isPresent()    ) && (!cb.title.isPresent()     ) || ( (this.title.isPresent()     ) && this.title.get().equals(cb.title.orElse(null)))) )
        )
       return true;
     else

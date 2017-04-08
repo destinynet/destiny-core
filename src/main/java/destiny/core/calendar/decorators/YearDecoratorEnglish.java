@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class YearDecoratorEnglish implements Decorator<Integer> , Serializable
 {
+  @NotNull
   @Override
   public String getOutputString(@NotNull Integer year)
   {

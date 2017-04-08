@@ -1,6 +1,5 @@
-package destiny.utils;
+package destiny.tools;
 
-import destiny.tools.LocaleComparator;
 import org.junit.Test;
 
 import java.util.*;

@@ -35,7 +35,7 @@ public class GeneralZhaoSeqImpl implements GeneralSeqIF , Serializable {
     if (index < 0)
       return get(index + 12);
     else if (index >= 12)
-      return get(index - 12);
+      return get(index % 12);
     else
       return ARRAY[index];
   }

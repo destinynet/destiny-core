@@ -94,14 +94,17 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
         throw new AssertionError("Invalid stem/branch Combination!");
     }
   }
-  
+
   public static StemBranch get(char stemChar , char branchChar) {
     Optional<Stem> stemOptional = Stem.get(stemChar);
     Optional<Branch> branchOptional = Branch.get(branchChar);
 
-    return stemOptional
-      .map(stem1 -> StemBranch.get(stem1 , branchOptional.get()))
+    return stemOptional.map(stem1 -> StemBranch.get(stem1 , branchOptional.orElseThrow(() -> new RuntimeException("Cannot find Branch: " + branchChar))))
       .orElseThrow(() -> new RuntimeException("Cannot get StemBranch("+stemChar+" , "+branchChar+")"));
+
+//    return stemOptional
+//      .map(stem1 -> StemBranch.get(stem1 , branchOptional.get()))
+//      .orElseThrow(() -> new RuntimeException("Cannot get StemBranch("+stemChar+" , "+branchChar+")"));
   }
   
   public static StemBranch get(@NotNull String stemBranch)
@@ -170,7 +173,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   /**
    * 實作 Comparable 的 compareTo()
    */
-  public int compareTo(StemBranch o) {
+  public int compareTo(@NotNull StemBranch o) {
     return (getIndex(this) - getIndex(o));
   }//compareTo()
  

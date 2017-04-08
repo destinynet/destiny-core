@@ -5,8 +5,6 @@
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;

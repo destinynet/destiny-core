@@ -46,14 +46,14 @@ public class Hashids {
       this.minHashLength = minHashLength;
     this.alphabet = alphabet;
 
-    String uniqueAlphabet = "";
+    StringBuilder uniqueAlphabet = new StringBuilder();
     for(int i = 0; i < this.alphabet.length(); i++){
-      if(!uniqueAlphabet.contains("" + this.alphabet.charAt(i))){
-        uniqueAlphabet += "" + this.alphabet.charAt(i);
+      if(!uniqueAlphabet.toString().contains("" + this.alphabet.charAt(i))){
+        uniqueAlphabet.append("").append(this.alphabet.charAt(i));
       }
     }
 
-    this.alphabet = uniqueAlphabet;
+    this.alphabet = uniqueAlphabet.toString();
 
     int minAlphabetLength = 16;
     if(this.alphabet.length() < minAlphabetLength){

@@ -47,7 +47,7 @@ public class ChartBlock implements Serializable
     this.period = period;
   }
   
-  public ChartBlock(Symbol symbol , int mountain , int direction , int period)
+  public ChartBlock(@Nullable Symbol symbol , int mountain , int direction , int period)
   {
     this.symbol = symbol ;
     this.mountain = mountain;
@@ -57,7 +57,8 @@ public class ChartBlock implements Serializable
   
   @Nullable
   public Symbol getSymbol() { return symbol; }
-  public void setSymbol(Symbol s) 
+
+  public void setSymbol(@Nullable Symbol s)
   { 
     symbol = s;
   }

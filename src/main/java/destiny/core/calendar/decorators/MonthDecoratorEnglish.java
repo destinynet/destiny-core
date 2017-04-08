@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 public class MonthDecoratorEnglish implements Decorator<Integer> , Serializable
 {
+  @NotNull
   @Override
   public String getOutputString(@NotNull Integer month)
   {

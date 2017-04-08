@@ -32,12 +32,14 @@ public class BaseHexagram implements HexagramIF , Serializable
     return hexagram.getLine(index);
   }
 
+  @NotNull
   @Override
   public Symbol getLowerSymbol()
   {
     return hexagram.getLowerSymbol();
   }
 
+  @NotNull
   @Override
   public Symbol getUpperSymbol()
   {

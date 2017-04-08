@@ -9,15 +9,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
+import static destiny.astrology.LunarNode.NorthSouth.NORTH;
+import static destiny.astrology.LunarNode.NorthSouth.SOUTH;
+import static destiny.astrology.NodeType.MEAN;
+import static destiny.astrology.NodeType.TRUE;
 
 
-public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
-{
+public final class LunarNode extends LunarPoint implements Comparable<LunarNode> {
+
   public enum NorthSouth {NORTH , SOUTH}
 
-  private NorthSouth northSouth = NorthSouth.NORTH;
-  
-  private NodeType nodeType= NodeType.MEAN ;
+  @NotNull
+  private final NorthSouth northSouth;
+
+  @NotNull
+  private final NodeType nodeType;
   
   private final static String resource = "destiny.astrology.Star";
   
@@ -29,7 +35,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static final LunarNode NORTH_TRUE = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.TRUE);
+  public static final LunarNode NORTH_TRUE = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NORTH , TRUE);
 
   /**
    * 平均北交點，計算方法，以下兩者結果相同
@@ -39,7 +45,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static final LunarNode NORTH_MEAN = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NorthSouth.NORTH , NodeType.MEAN);
+  public static final LunarNode NORTH_MEAN = new LunarNode("LunarNode.NORTH" , "LunarNode.NORTH_ABBR" , NORTH , MEAN);
   
   /**
    * 真實南交點，計算方法，以下兩者結果相同
@@ -49,7 +55,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static final LunarNode SOUTH_TRUE = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.TRUE);
+  public static final LunarNode SOUTH_TRUE = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , SOUTH , TRUE);
   
   /**
    * 平均南交點，計算方法，以下兩者結果相同
@@ -59,24 +65,26 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
    * </pre>
    */
   @NotNull
-  public static final LunarNode SOUTH_MEAN = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , NorthSouth.SOUTH , NodeType.MEAN);
+  public static final LunarNode SOUTH_MEAN = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , SOUTH , MEAN);
 
   //public static LunarNode[] values = {NORTH_TRUE , NORTH_MEAN , SOUTH_TRUE , SOUTH_MEAN};
   @NotNull
   public static final LunarNode[] values = { NORTH_MEAN , SOUTH_MEAN};
   
-  LunarNode(String nameKey, String abbrKey, NorthSouth northSouth, NodeType nodeType)
+  LunarNode(String nameKey, String abbrKey, @NotNull NorthSouth northSouth, @NotNull NodeType nodeType)
   {
     super(nameKey, abbrKey, resource);
     this.northSouth = northSouth;
     this.nodeType = nodeType;
   }
 
+  @NotNull
   public NodeType getNodeType()
   {
     return nodeType;
   }
 
+  @NotNull
   public NorthSouth getNorthSouth()
   {
     return northSouth;
@@ -84,7 +92,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
 
 
   @Override
-  public int compareTo(LunarNode o)
+  public int compareTo(@NotNull LunarNode o)
   {
     if (this.equals(o))
       return 0;

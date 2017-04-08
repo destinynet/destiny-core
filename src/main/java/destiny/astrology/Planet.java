@@ -4,6 +4,8 @@
  */
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +50,7 @@ public final class Planet extends Star implements Comparable<Planet>
   }
 
   @Override
-  public int compareTo(Planet o)
+  public int compareTo(@NotNull Planet o)
   {
     if (this.equals(o))
       return 0;

@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 public class DayDecoratorEnglish implements Decorator<Integer>, Serializable {
 
+  @NotNull
   @Override
   public String getOutputString(@NotNull Integer day) {
     return day.toString();

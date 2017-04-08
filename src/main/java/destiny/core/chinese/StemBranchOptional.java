@@ -134,12 +134,10 @@ public class StemBranchOptional implements Serializable {
   }
 
 
-  @NotNull
   public Optional<Stem> getStemOptional() {
     return Optional.ofNullable(stem);
   }
 
-  @NotNull
   public Optional<Branch> getBranchOptional() {
     return Optional.ofNullable(branch);
   }

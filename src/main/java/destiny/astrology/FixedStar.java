@@ -4,6 +4,8 @@
  */ 
 package destiny.astrology;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,8 +13,7 @@ import java.util.List;
 
 /** 恆星 */
 @SuppressWarnings("WeakerAccess")
-public final class FixedStar extends Star implements Comparable<FixedStar>
-{
+public final class FixedStar extends Star implements Comparable<FixedStar> {
   private final static String resource = "destiny.astrology.Star";
   
   /** Algol 大陵五 */
@@ -63,7 +64,7 @@ public final class FixedStar extends Star implements Comparable<FixedStar>
   }
   
   @Override
-  public int compareTo(FixedStar o)
+  public int compareTo(@NotNull FixedStar o)
   {
     if (this.equals(o))
       return 0;

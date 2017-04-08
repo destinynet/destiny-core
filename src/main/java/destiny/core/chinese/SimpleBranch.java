@@ -26,9 +26,8 @@ public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinY
   
   @NotNull
   private final Branch eb;
-  
-  SimpleBranch(Branch eb)
-  {
+
+  SimpleBranch(@NotNull Branch eb) {
     this.eb = eb;
   }
 

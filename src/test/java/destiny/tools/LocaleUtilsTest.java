@@ -2,9 +2,8 @@
  * @author smallufo 
  * Created on 2008/1/15 at 下午 12:01:56
  */ 
-package destiny.utils;
+package destiny.tools;
 
-import destiny.tools.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -13,7 +12,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class LocaleUtilsTest
 {
