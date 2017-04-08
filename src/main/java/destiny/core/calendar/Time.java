@@ -74,7 +74,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
     LocalDateTime result;
     LocalDate localDate = LocalDate.of(prolepticYear , month , day);
     Tuple2<Long , Long> pair = Time.splitSecond(second);
-    LocalTime localTime = LocalTime.of(hour , minute, pair.v2().intValue() , pair.v2().intValue());
+    LocalTime localTime = LocalTime.of(hour , minute, pair.v1().intValue() , pair.v2().intValue());
     if (isAD) {
       result = LocalDateTime.of(localDate , localTime);
     } else {

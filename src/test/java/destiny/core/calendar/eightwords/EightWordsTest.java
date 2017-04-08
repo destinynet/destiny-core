@@ -46,7 +46,7 @@ public class EightWordsTest {
     try {
       new EightWords(StemBranch.get("甲子"), StemBranch.get("乙丑"), null, StemBranch.get("丁卯"));
       fail("day's StemBranch is null , should throw RuntimeException !");
-    } catch (RuntimeException expected) {
+    } catch (Exception expected) {
       assertTrue(true);
     }
   }
