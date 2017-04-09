@@ -1,6 +1,7 @@
 package destiny.core.chinese;
 
 
+import destiny.tools.ArrayTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -42,17 +43,8 @@ public enum Branch implements BranchIF<Branch>
    * ...      <BR>
    * 11 為 亥 <BR>
    */
-  public static Branch get(int index)
-  {
-    /**
-     * 如果 index < 0  , 則 加 12 , recursive 再傳一次<BR>
-     * 如果 index >=12 , 則 減 12 , recursive 再傳一次<BR> 
-     */
-    if (index < 0 )
-      return get(index + 12);
-    else if (index >=12)
-      return get(index - 12);
-    return ARRAY[index];
+  public static Branch get(int index) {
+    return ArrayTools.get(ARRAY , index);
   }
 
   /**
@@ -116,8 +108,7 @@ public enum Branch implements BranchIF<Branch>
   /**
    * 子[0] ~ 亥[11]
    */
-  public static int getIndex(@NotNull Branch eb)
-  {
+  public static int getIndex(@NotNull Branch eb) {
     int index = -1;
     for (int i = 0; i < ARRAY.length; i++) {
       if (eb.equals(ARRAY[i]))

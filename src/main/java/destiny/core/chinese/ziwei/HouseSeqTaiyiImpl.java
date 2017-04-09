@@ -44,11 +44,21 @@ public class HouseSeqTaiyiImpl implements HouseSeqIF , Serializable {
     return get(getIndex(from) + n);
   }
 
+  @Override
+  public int getAheadOf(House h1, House h2) {
+    int index1 = getIndex(h1);
+    int index2 = getIndex(h2);
+    if (index1 < 0 || index2 < 0)
+      return -1;
+    int steps = index1 - index2;
+    return (steps >=0 ? steps : steps + 12);
+  }
+
   private static House get(int index) {
     return ArrayTools.get(ARRAY , index);
   }
 
-  private static int getIndex(House g) {
-    return list.indexOf(g);
+  private static int getIndex(House h) {
+    return list.indexOf(h);
   }
 }

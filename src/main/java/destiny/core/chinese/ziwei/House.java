@@ -41,4 +41,5 @@ public enum House {
   public House prev(int n , HouseSeqIF seq) {
     return seq.prev(this , n);
   }
+
 }

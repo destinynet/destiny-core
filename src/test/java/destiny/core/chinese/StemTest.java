@@ -123,15 +123,29 @@ public class StemTest
   }
 
   @Test
-  public void testHeavenlyStems()
-  {
+  public void testHeavenlyStems() {
     assertEquals(甲 , Stem.get('甲').get());
     assertSame(甲   , Stem.get('甲').get());
-    assertEquals(甲 , get(0));
-    assertEquals(甲 , get(10));
-    assertEquals(甲 , get(-10));
-    assertEquals(甲 , get(20));
-    assertEquals(甲 , get(-20));
+
+
+    assertSame(甲 , get(-20));
+    assertSame(甲 , get(-10));
+    assertSame(乙 , get(-9));
+    assertSame(壬 , get(-2));
+    assertSame(癸 , get(-1));
+    assertSame(甲 , get(0));
+    assertSame(乙 , get(1));
+    assertSame(丙 , get(2));
+    assertSame(丁 , get(3));
+    assertSame(戊 , get(4));
+    assertSame(己 , get(5));
+    assertSame(庚 , get(6));
+    assertSame(辛 , get(7));
+    assertSame(壬 , get(8));
+    assertSame(癸 , get(9));
+    assertSame(甲 , get(10));
+    assertSame(甲 , get(20));
+
 
     assertEquals(癸 , Stem.get('癸').get());
     assertSame(癸   , Stem.get('癸').get());

@@ -1,5 +1,6 @@
 package destiny.core.chinese;
 
+import destiny.tools.ArrayTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -55,17 +56,8 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
    * @param index
    * @return
    */
-  public static Stem get(int index)
-  {
-    /**
-     * 如果 index < 0  , 則 加 10 , recursive 再傳一次<BR>
-     * 如果 index >=10 , 則 減 10 , recursive 再傳一次<BR> 
-     */
-    if (index < 0)
-      return get(index + 10);
-    else if (index >=10 )
-      return (get(index - 10));
-    return ARRAY[index];
+  public static Stem get(int index) {
+    return ArrayTools.get(ARRAY , index);
   }
 
 

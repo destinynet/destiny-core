@@ -14,4 +14,11 @@ public interface HouseSeqIF extends Descriptive {
   default House prev(House from , int n) {
     return next(from , (0-n));
   }
+
+  /**
+   * 此 宮位 , 「領先」另一個宮位，幾步
+   * 此值一定為正值
+   * 如果某些情況（例如 「全書派」要找不存在的「相貌宮」） ，就會傳回 -1
+   */
+  int getAheadOf(House h1 , House h2);
 }
