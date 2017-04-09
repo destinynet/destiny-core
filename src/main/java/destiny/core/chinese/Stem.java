@@ -97,7 +97,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   
   /** 甲[0] ... 癸[9] */
   public static int getIndex(Stem hs) {
-    return STEM_LIST.indexOf(hs);
+    return Arrays.binarySearch(ARRAY , hs);
   }
 
   /**
@@ -177,7 +177,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   }
 
   public static Iterable<Stem> iterable() {
-    return Arrays.asList(ARRAY);
+    return STEM_LIST;
   }
 
 }

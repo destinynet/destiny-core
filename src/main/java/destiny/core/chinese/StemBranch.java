@@ -1,5 +1,6 @@
 package destiny.core.chinese;
 
+import destiny.tools.ArrayTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import static destiny.core.chinese.Branch.*;
 public class StemBranch extends StemBranchOptional implements Comparable<StemBranch> , Serializable {
   // 0[甲子] ~ 59[癸亥]
   @NotNull
-  private final transient static StemBranch[] ARRAY = new StemBranch[60];
+  private final static StemBranch[] ARRAY = new StemBranch[60];
 
   static {
     int n = 0;
@@ -23,6 +24,8 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     } while (n < 60);
   }
 
+  private final static List<StemBranch> list = Arrays.asList(ARRAY);
+
   private StemBranch(@NotNull Stem stem, @NotNull Branch branch) {
     super(Optional.of(stem), Optional.of(branch));
   }
@@ -30,9 +33,8 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   /**
    * @param index 0[甲子] ~ 59[癸亥]
    */
-  public static StemBranch get(int index)
-  {
-    return ARRAY[normalize(index)];
+  public static StemBranch get(int index) {
+    return ArrayTools.get(ARRAY , index);
   }
 
   /**
@@ -138,14 +140,9 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
    * @param sb 取得某組干支的順序
    * @return 0[甲子] ~ 59[癸亥]
    */
-  private static int getIndex(@NotNull StemBranch sb)
-  {
-    int index = -1;
-    for (int i = 0; i < ARRAY.length; i++) {
-      if (sb.equals(ARRAY[i]))
-        index = i;
-    }
-    return index;
+  private static int getIndex(@NotNull StemBranch sb) {
+    //return Arrays.binarySearch(ARRAY , sb);
+    return list.indexOf(sb);
   }//getIndex()
 
 

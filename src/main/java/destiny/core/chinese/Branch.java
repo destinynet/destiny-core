@@ -109,12 +109,7 @@ public enum Branch implements BranchIF<Branch>
    * 子[0] ~ 亥[11]
    */
   public static int getIndex(@NotNull Branch eb) {
-    int index = -1;
-    for (int i = 0; i < ARRAY.length; i++) {
-      if (eb.equals(ARRAY[i]))
-        index = i;
-    }
-    return index;
+    return Arrays.binarySearch(ARRAY , eb);
   }
 
 

@@ -182,7 +182,7 @@ public class Horoscope implements Serializable
       }
     }
     return 12;
-  } //getHouse()
+  } //getHouseBranch()
   
 
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese;
 
+import destiny.tools.ArrayTools;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,17 +48,7 @@ public class StemBranchOptional implements Serializable {
    * 0[甲子] ~ 59[癸亥]
    */
   private static StemBranchOptional get(int index) {
-    return ARRAY[normalize(index)];
-  }
-
-  static int normalize(int index)
-  {
-    if (index >= 60)
-      return (normalize(index-60));
-    else if (index < 0)
-      return (normalize(index+60));
-    else
-      return index;
+    return ArrayTools.get(ARRAY , index);
   }
 
   public static StemBranchOptional get(Optional<Stem> stemOpt, Optional<Branch> branchOpt) {

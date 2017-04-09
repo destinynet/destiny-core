@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 /**
- * 十二宮位
+ * 十二宮位 (遷移 or 相貌)
  */
 public enum House {
   命宮("命宮"),
@@ -23,7 +23,8 @@ public enum House {
   福德("福德"),
   父母("父母"),
 
-  相貌("相貌") // 太乙派使用
+  相貌("相貌"), // 太乙派使用
+
   ;
 
   private final String name;
