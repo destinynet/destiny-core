@@ -5,9 +5,9 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
-import destiny.core.chinese.Branch;
-import destiny.core.chinese.Stem;
-import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.*;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +51,26 @@ public interface ZiweiIF {
 
     int steps = mainHouse.getAheadOf(寅);
     return stemBranchOf寅.next(steps);
+  }
+
+  /** 承上 , 找到命宮的 干支 ，可以取得「納音、五行、第幾局」 */
+  default Tuple3<String , FiveElement , Integer> getNaYin(Stem year , int month , Branch hour) {
+    StemBranch mainHouse = getMainHouse(year , month , hour);
+
+    String 納音 = NaYin.getDesc(mainHouse);
+    // 五行
+    FiveElement fiveElement = NaYin.getFiveElement(mainHouse);
+    // 第幾局
+    int 局;
+    switch (fiveElement) {
+      case 水: 局 = 2; break;
+      case 土: 局 = 5; break;
+      case 木: 局 = 3; break;
+      case 火: 局 = 6; break;
+      case 金: 局 = 4; break;
+      default: throw new AssertionError("impossible");
+    }
+    return Tuple.tuple(納音 , fiveElement , 局);
   }
 
   /**
