@@ -30,26 +30,14 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
     return gender;
   }
 
-  public void setGender(Gender gender) {
-    this.gender = gender;
-  }
-
   @Override
   public LocalDateTime getTime() {
     return time;
   }
 
-  public void setTime(LocalDateTime time) {
-    this.time = time;
-  }
-
   @Override
   public Location getLocation() {
     return location;
-  }
-
-  public void setLocation(Location location) {
-    this.location = location;
   }
 
   @Override
@@ -81,7 +69,7 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
   }
 
   public double getSecond() {
-    return time.getSecond();
+    return time.getSecond() + time.getNano() / 1_000_000_000.0;
   }
 
 }

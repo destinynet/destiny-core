@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2017-03-04.
  */
-package destiny.utils;
+package destiny.tools;
 
 import org.junit.Test;
 import org.slf4j.Logger;

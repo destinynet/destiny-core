@@ -1,5 +1,5 @@
 /** 2009/10/20 下午10:53:51 by smallufo */
-package destiny.utils;
+package destiny.tools;
 
 import org.junit.Test;
 import org.slf4j.Logger;

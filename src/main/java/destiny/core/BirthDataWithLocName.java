@@ -32,8 +32,4 @@ public class BirthDataWithLocName extends BirthData {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
 }

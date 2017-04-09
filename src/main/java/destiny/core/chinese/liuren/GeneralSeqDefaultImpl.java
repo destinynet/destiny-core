@@ -3,7 +3,10 @@
  */
 package destiny.core.chinese.liuren;
 
+import destiny.tools.ArrayTools;
+
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Locale;
 
 import static destiny.core.chinese.liuren.General.*;
@@ -30,20 +33,11 @@ public class GeneralSeqDefaultImpl implements GeneralSeqIF , Serializable {
   }
 
   private static General get(int index) {
-    if (index < 0)
-      return get(index + 12);
-    else if (index >= 12)
-      return get(index % 12);
-    else
-      return ARRAY[index];
+    return ArrayTools.get(ARRAY , index);
   }
 
   private static int getIndex(General g) {
-    int index = -1;
-    for (int i = 0; i < ARRAY.length; i++) {
-      if (g == ARRAY[i])
-        index = i;
-    }
-    return index;
+    // 與原本 enum 排序相同，可以直接 binary search
+    return Arrays.binarySearch(ARRAY , g);
   }
 }

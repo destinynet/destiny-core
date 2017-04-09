@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2011/5/3 at 上午7:49:41
  */
-package destiny.utils;
+package destiny.tools;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class ResourceBundleTest {
 
   @Test
   public void testResource() {
-    ResourceBundle rb = ResourceBundle.getBundle("destiny.utils.testBundle", Locale.CANADA_FRENCH);
+    ResourceBundle rb = ResourceBundle.getBundle("destiny.tools.testBundle", Locale.CANADA_FRENCH);
     String pattern = rb.getString("hello");
     String result = MessageFormat.format(pattern, "smallufo", "test");
     assertEquals("哈囉 smallufo test" , result);
