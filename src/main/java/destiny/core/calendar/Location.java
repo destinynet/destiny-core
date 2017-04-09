@@ -4,7 +4,6 @@
  */
 package destiny.core.calendar;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import destiny.tools.AlignUtil;
 import destiny.tools.LocaleUtils;
@@ -23,8 +22,8 @@ import static destiny.core.calendar.Location.EastWest.WEST;
 import static destiny.core.calendar.Location.NorthSouth.NORTH;
 import static destiny.core.calendar.Location.NorthSouth.SOUTH;
 
-public class Location implements Serializable
-{
+public class Location implements Serializable {
+
   private EastWest eastWest = EAST;
   private int     longitudeDegree = 121;
   private int     longitudeMinute = 30;
@@ -35,94 +34,96 @@ public class Location implements Serializable
   private int     latitudeMinute = 3;
   private double  latitudeSecond = 0;
   
-  /** 時區 */
-  private TimeZone timeZone = TimeZone.getDefault();
+  /**
+   * TimeZone id , 例如 "Asia/Taipei"
+   * 2017-04-09 起， 用以取代 TimeZone field , 降低記憶體用量
+   * */
+  private String tzid = "Asia/Taipei";
 
-  /** 2012/3/4 補加上 : 
+  /** 2012-03-04 補加上 :
    * 與 GMT 的時差 , 優先權高於 timeZone !
    */
   @Nullable
   private Integer minuteOffset = null;
-  //private int minuteOffset = 8*60 ; //與 GMT 時差 , 內定為 8.0 小時x60分
 
   private double altitudeMeter = 0; //高度（公尺）
 
   private final static ImmutableMap<Locale , Location> locMap = new ImmutableMap.Builder<Locale , Location>()
     // de , 柏林
-    .put(Locale.GERMAN  , new Location(EAST , 13 , 24 , NORTH , 52 , 31 , TimeZone.getTimeZone("Europe/Berlin")))
+    .put(Locale.GERMAN  , new Location(EAST , 13 , 24 , NORTH , 52 , 31 , "Europe/Berlin"))
     // de_DE , 柏林
-    .put(Locale.GERMANY , new Location(EAST , 13 , 24 , NORTH , 52 , 31 , TimeZone.getTimeZone("Europe/Berlin")))
+    .put(Locale.GERMANY , new Location(EAST , 13 , 24 , NORTH , 52 , 31 , "Europe/Berlin"))
     
     // en , 紐約 , 40.758899, -73.985131 , 時報廣場
-    .put(Locale.ENGLISH , new Location(-73.985131 , 40.758899 , TimeZone.getTimeZone("America/New_York")))
+    .put(Locale.ENGLISH , new Location(-73.985131 , 40.758899 , "America/New_York"))
     // en_US , 紐約
-    .put(Locale.US , new Location(-73.985131 , 40.758899, TimeZone.getTimeZone("America/New_York")))
+    .put(Locale.US , new Location(-73.985131 , 40.758899, "America/New_York"))
 
     // en_AU , 雪梨
-    .put(new Locale("en" , "AU") , new Location(EAST , 151 , 12 , 40 , SOUTH , 33 , 51 , 36 , TimeZone.getTimeZone("Australia/Sydney")))
+    .put(new Locale("en" , "AU") , new Location(EAST , 151 , 12 , 40 , SOUTH , 33 , 51 , 36 , "Australia/Sydney"))
     // en_BW , 波札那 Botswana 
-    .put(new Locale("en" , "BW") , new Location(EAST , 25 , 55 , SOUTH , 24 , 40 , TimeZone.getTimeZone("Africa/Gaborone")))
+    .put(new Locale("en" , "BW") , new Location(EAST , 25 , 55 , SOUTH , 24 , 40 , "Africa/Gaborone"))
     // en_CA , 多倫多
-    .put(Locale.CANADA, new Location(WEST , 79 , 24 , NORTH , 43 , 40 , TimeZone.getTimeZone("America/Toronto")))
+    .put(Locale.CANADA, new Location(WEST , 79 , 24 , NORTH , 43 , 40 , "America/Toronto"))
     // en_DK , 丹麥 哥本哈根 Copenhagen
-    .put(new Locale("en" , "DK") , new Location(EAST , 12 , 34 , NORTH , 55 , 43 , TimeZone.getTimeZone("Europe/Copenhagen")))
+    .put(new Locale("en" , "DK") , new Location(EAST , 12 , 34 , NORTH , 55 , 43 , "Europe/Copenhagen"))
     // en_GB , 倫敦
-    .put(Locale.UK , new Location(WEST , 0 , 7 , NORTH , 51 , 30 , TimeZone.getTimeZone("Europe/London")))
+    .put(Locale.UK , new Location(WEST , 0 , 7 , NORTH , 51 , 30 , "Europe/London"))
     // en_HK , 香港    
-    .put(new Locale("en" , "HK"), new Location(EAST , 114 , 12 , NORTH , 22 , 16 , TimeZone.getTimeZone("Asia/Hong_Kong")))
+    .put(new Locale("en" , "HK"), new Location(EAST , 114 , 12 , NORTH , 22 , 16 , "Asia/Hong_Kong"))
     // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
-    .put(new Locale("en" , "IE"), new Location(WEST , 6.2592 , NORTH , 53.3472 , TimeZone.getTimeZone("Europe/Dublin")))
+    .put(new Locale("en" , "IE"), new Location(WEST , 6.2592 , NORTH , 53.3472 , 0, "Europe/Dublin", null))
     // en_MY , 馬來西亞 , 吉隆坡
-    .put(new Locale("en" , "MY"), new Location(EAST , 101 , 42 , NORTH , 3 , 8 , TimeZone.getTimeZone("Asia/Kuala_Lumpur")))
+    .put(new Locale("en" , "MY"), new Location(EAST , 101 , 42 , NORTH , 3 , 8 , "Asia/Kuala_Lumpur"))
     // en_NZ , 紐西蘭 , 奧克蘭 Auckland (最大城市)
-    .put(new Locale("en" , "NZ"), new Location(EAST , 174 , 45 , SOUTH , 36 , 52 , TimeZone.getTimeZone("Pacific/Auckland")))
+    .put(new Locale("en" , "NZ"), new Location(EAST , 174 , 45 , SOUTH , 36 , 52 , "Pacific/Auckland"))
     // en_PH , 菲律賓 , 馬尼拉
-    .put(new Locale("en" , "PH"), new Location(EAST , 121 , 0 , NORTH , 14 , 35 , TimeZone.getTimeZone("Asia/Manila")))
+    .put(new Locale("en" , "PH"), new Location(EAST , 121 , 0 , NORTH , 14 , 35 , "Asia/Manila"))
     // en_SG , 新加坡
-    .put(new Locale("en" , "SG"), new Location(EAST , 103 , 51 , NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
+    .put(new Locale("en" , "SG"), new Location(EAST , 103 , 51 , NORTH , 1 , 17 , "Asia/Singapore"))
     // en_ZA , 南非 , 約翰尼斯堡
-    .put(new Locale("en" , "ZA"), new Location(EAST , 27 , 54 , SOUTH , 26 , 8 , TimeZone.getTimeZone("Africa/Johannesburg")))
+    .put(new Locale("en" , "ZA"), new Location(EAST , 27 , 54 , SOUTH , 26 , 8 , "Africa/Johannesburg"))
     // en_ZW , 辛巴威 , 哈拉雷
-    .put(new Locale("en" , "ZW"), new Location(EAST , 31 , 3 , SOUTH , 17 , 50 , TimeZone.getTimeZone("Africa/Harare")))
+    .put(new Locale("en" , "ZW"), new Location(EAST , 31 , 3 , SOUTH , 17 , 50 , "Africa/Harare"))
 
     // fr , 巴黎
-    .put(Locale.FRENCH , new Location(EAST , 2 , 20 , NORTH , 48 , 52 , TimeZone.getTimeZone("Europe/Paris")))
+    .put(Locale.FRENCH , new Location(EAST , 2 , 20 , NORTH , 48 , 52 , "Europe/Paris"))
     // fr_FR , 巴黎
-    .put(Locale.FRANCE , new Location(EAST , 2 , 20 , NORTH , 48 , 52 , TimeZone.getTimeZone("Europe/Paris")))
+    .put(Locale.FRANCE , new Location(EAST , 2 , 20 , NORTH , 48 , 52 , "Europe/Paris"))
 
     // it , 羅馬
-    .put(Locale.ITALIAN , new Location(EAST , 12 , 29 , NORTH , 41 , 54 , TimeZone.getTimeZone("Europe/Rome")))
+    .put(Locale.ITALIAN , new Location(EAST , 12 , 29 , NORTH , 41 , 54 , "Europe/Rome"))
     // it_IT , 羅馬
-    .put(Locale.ITALY   , new Location(EAST , 12 , 29 , NORTH , 41 , 54 , TimeZone.getTimeZone("Europe/Rome")))
+    .put(Locale.ITALY   , new Location(EAST , 12 , 29 , NORTH , 41 , 54 , "Europe/Rome"))
     
     
     // ja , 東京
-    .put(Locale.JAPANESE , new Location(EAST , 139 , 46 , 0 , NORTH , 35 , 40 , 50, TimeZone.getTimeZone("Asia/Tokyo")))
+    .put(Locale.JAPANESE , new Location(EAST , 139 , 46 , 0 , NORTH , 35 , 40 , 50, "Asia/Tokyo"))
     // ja_JP , 東京
-    .put(Locale.JAPAN    , new Location(EAST , 139 , 45 , 0 , NORTH , 35 , 40 , 0, TimeZone.getTimeZone("Asia/Tokyo")))
+    .put(Locale.JAPAN    , new Location(EAST , 139 , 45 , 0 , NORTH , 35 , 40 , 0, "Asia/Tokyo"))
     
     // ko , 首爾
-    .put(Locale.KOREAN , new Location(EAST , 127 , 0 , NORTH , 37 , 32 , TimeZone.getTimeZone("Asia/Seoul")))
+    .put(Locale.KOREAN , new Location(EAST , 127 , 0 , NORTH , 37 , 32 , "Asia/Seoul"))
     // ko_KR , 首爾
-    .put(Locale.KOREA  , new Location(EAST , 127 , 0 , NORTH , 37 , 32 , TimeZone.getTimeZone("Asia/Seoul")))
+    .put(Locale.KOREA  , new Location(EAST , 127 , 0 , NORTH , 37 , 32 , "Asia/Seoul"))
     
     
     // zh , 北京
-    //.put(Locale.CHINESE , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , TimeZone.getTimeZone("Asia/Shanghai")))
-    .put(Locale.CHINESE , new Location(116.397 , 39.9075 , TimeZone.getTimeZone("Asia/Harbin")))
+    //.put(Locale.CHINESE , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , "Asia/Shanghai"))
+    .put(Locale.CHINESE , new Location(116.397 , 39.9075 , "Asia/Harbin"))
     
     
     // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
-    .put(Locale.CHINA   , new Location(EAST , 116 , 23 , NORTH , 39 , 55 , TimeZone.getTimeZone("Asia/Shanghai")))
+    .put(Locale.CHINA   , new Location(EAST , 116 , 23 , NORTH , 39 , 55 , "Asia/Shanghai"))
     // zh_HK , 香港
-    .put(new Locale("zh" , "HK"), new Location(EAST , 114 , 9 , 0, NORTH , 22 , 17 , 2.4, TimeZone.getTimeZone("Asia/Hong_Kong")))
+    .put(new Locale("zh" , "HK"), new Location(EAST , 114 , 9 , 0, NORTH , 22 , 17 , 2.4, "Asia/Hong_Kong"))
     // zh_MO , 澳門
-    .put(new Locale("zh" , "MO"), new Location(EAST , 113 , 35 , NORTH , 22 , 14 , TimeZone.getTimeZone("Asia/Macao")))
+    .put(new Locale("zh" , "MO"), new Location(EAST , 113 , 35 , NORTH , 22 , 14 , "Asia/Macao"))
     // zh_SG , 新加坡
-    .put(new Locale("zh" , "SG"), new Location(EAST , 103 , 51 , NORTH , 1 , 17 , TimeZone.getTimeZone("Asia/Singapore")))
+    .put(new Locale("zh" , "SG"), new Location(EAST , 103 , 51 , NORTH , 1 , 17 , "Asia/Singapore"))
     
     // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
-    .put(Locale.TAIWAN, new Location(121.517668 , 25.039030 , TimeZone.getTimeZone("Asia/Taipei")))
+    .put(Locale.TAIWAN, new Location(121.517668 , 25.039030 , "Asia/Taipei"))
     .build();
 
   /** 從 Browser 傳入 locale , 找出該 Locale 內定的 Location */
@@ -137,7 +138,7 @@ public class Location implements Serializable
     this.latitudeDegree = matchedLocation.latitudeDegree;
     this.latitudeMinute = matchedLocation.latitudeMinute;
     this.latitudeSecond = matchedLocation.latitudeSecond;
-    this.timeZone = matchedLocation.timeZone;
+    this.tzid = matchedLocation.tzid;
     this.altitudeMeter = matchedLocation.altitudeMeter;
   }
 
@@ -146,10 +147,17 @@ public class Location implements Serializable
   }
   
   
-  /** 最詳盡的 constructor */
+  /**
+   * 最詳盡的 constructor
+   *
+   * 參考 {@link #getDebugString()}
+   * 2012/03 格式：
+   * 012345678901234567890123456789012345678901234567890
+   * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ [minuteOffset]
+   * */
   public Location(EastWest eastWest , int lngDeg , int lngMin , double lngSec ,
                   NorthSouth northSouth , int latDeg , int latMin , double latSec ,
-                  double altitudeMeter , TimeZone timeZone) {
+                  double altitudeMeter , String timeZone , @Nullable Integer minuteOffset) {
     this.eastWest = eastWest;
     this.longitudeDegree = lngDeg;
     this.longitudeMinute = lngMin;
@@ -158,62 +166,62 @@ public class Location implements Serializable
     this.latitudeDegree = latDeg;
     this.latitudeMinute = latMin;
     this.latitudeSecond = latSec;
-    this.timeZone = timeZone;
+    this.tzid = timeZone;
     this.altitudeMeter = altitudeMeter;
+    this.minuteOffset = minuteOffset;
+  }
+
+  /** 省去 minuteOffset */
+  public Location(EastWest eastWest , int lngDeg , int lngMin , double lngSec ,
+                  NorthSouth northSouth , int latDeg , int latMin , double latSec ,
+                  double altitudeMeter , String timeZone) {
+    this(eastWest , lngDeg , lngMin , lngSec , northSouth , latDeg , latMin , latSec , altitudeMeter , timeZone , null);
+  }
+
+  /** 承上  , 以 TimeZone 傳入 , 儲存為 tzid */
+  public Location(EastWest eastWest , int lngDeg , int lngMin , double lngSec ,
+                  NorthSouth northSouth , int latDeg , int latMin , double latSec ,
+                  double altitudeMeter , TimeZone timeZone) {
+    this(eastWest , lngDeg , lngMin , lngSec , northSouth , latDeg , latMin , latSec , altitudeMeter , timeZone.getID());
   }
   
   /** 大家比較常用的，只有「度、分」。省略「秒」以及「高度」 */
   public Location(EastWest eastWest, int lngDeg, int lngMin,
                   NorthSouth northSouth, int latDeg, int latMin,
-                  TimeZone timeZone) {
-    this.eastWest = eastWest;
-    this.longitudeDegree = lngDeg;
-    this.longitudeMinute = lngMin;
-
-    this.northSouth = northSouth;
-    this.latitudeDegree = latDeg;
-    this.latitudeMinute = latMin;
-
-    this.timeZone = timeZone;
+                  String timeZone) {
+    this(eastWest , lngDeg , lngMin , 0, northSouth , latDeg , latMin , 0 , 0 , timeZone);
   }
 
   
   /** 省略高度 */
   public Location(EastWest eastWest , int lngDeg , int lngMin , double lngSec ,
                   NorthSouth northSouth , int latDeg , int latMin , double latSec ,
+                  String tzid ) {
+    this(eastWest , lngDeg , lngMin , lngSec , northSouth , latDeg , latMin , latSec , 0 , tzid);
+  }
+
+  /** 承上 , 以 TimeZone 傳入 */
+  public Location(EastWest eastWest , int lngDeg , int lngMin , double lngSec ,
+                  NorthSouth northSouth , int latDeg , int latMin , double latSec ,
                   TimeZone timeZone ) {
-    this.eastWest = eastWest;
-    this.longitudeDegree = lngDeg;
-    this.longitudeMinute = lngMin;
-    this.longitudeSecond = lngSec;
-
-    this.northSouth = northSouth;
-    this.latitudeDegree = latDeg;
-    this.latitudeMinute = latMin;
-    this.latitudeSecond = latSec;
-
-    this.timeZone = timeZone;
+    this(eastWest , lngDeg , lngMin , lngSec , northSouth , latDeg , latMin , latSec , 0 , timeZone.getID());
   }
   
   /** 比較省略的 constructor  , 去除東西經、南北緯 , 其值由 經度/緯度的正負去判斷 */
   public Location(int lngDeg , int lngMin , double lngSec ,
                   int latDeg , int latMin , double latSec ,
                   TimeZone timeZone) {
-    this.eastWest = (lngDeg >=0) ? EAST : WEST;
-    this.longitudeDegree = Math.abs(lngDeg);
-    this.longitudeMinute = lngMin;
-    this.longitudeSecond = lngSec;
-    
-    this.northSouth = (latDeg >=0) ? NORTH : SOUTH;
-    this.latitudeDegree = Math.abs(latDeg);
-    this.latitudeMinute = latMin;
-    this.latitudeSecond = latSec;
-    
-    this.timeZone = timeZone;
+    this(
+      (lngDeg >=0) ? EAST : WEST , Math.abs(lngDeg) , lngMin , lngSec ,
+      (latDeg >=0) ? NORTH : SOUTH , Math.abs(latDeg) , latMin , latSec ,
+      0 ,
+      timeZone.getID()
+    );
   }
   
   /** 較省略的 constructor , 度數以 double 取代 */
-  public Location(EastWest eastWest , double lng, NorthSouth northSouth , double lat , TimeZone timeZone) {
+  public Location(EastWest eastWest, double lng, NorthSouth northSouth, double lat,
+                  double altMeter, String zoneId, @Nullable Integer minuteOffset) {
     this.eastWest = eastWest;
     this.longitudeDegree = (int) Math.abs(lng);
     this.longitudeMinute = (int) ((Math.abs(lng) - longitudeDegree) * 60);
@@ -223,26 +231,45 @@ public class Location implements Serializable
     this.latitudeDegree = (int) Math.abs(lat);
     this.latitudeMinute = (int) ((Math.abs(lat) - latitudeDegree) * 60);
     this.latitudeSecond = Math.abs(lat)*3600 - latitudeDegree*3600 - latitudeMinute*60;
-    
-    this.timeZone = timeZone;
-  }
-  
-  /** 更省略的 constructor */
-  public Location(double lng, double lat , TimeZone timeZone) {
-    this.eastWest = (lng >= 0 ) ? EAST : WEST;
-    this.longitudeDegree = (int) Math.abs(lng);
-    this.longitudeMinute = (int) ((Math.abs(lng) - longitudeDegree) * 60);
-    this.longitudeSecond = Math.abs(lng)*3600 - longitudeDegree*3600 - longitudeMinute*60;
-    
-    this.northSouth = (lat >=0 ) ? NORTH : SOUTH;
-    this.latitudeDegree = (int) Math.abs(lat);
-    this.latitudeMinute = (int) ((Math.abs(lat) - latitudeDegree) * 60);
-    this.latitudeSecond = Math.abs(lat)*3600 - latitudeDegree*3600 - latitudeMinute*60;
-    
-    this.timeZone = timeZone;
+
+    this.altitudeMeter = altMeter;
+    this.tzid = zoneId;
+    this.minuteOffset = minuteOffset;
   }
 
+  
   /** 更省略的 constructor */
+  public Location(double lng, double lat , double altMeter , String tzid , @Nullable Integer minuteOffset) {
+    this(
+      (lng >= 0 ) ? EAST : WEST , lng ,
+      (lat >=0 ) ? NORTH : SOUTH , lat ,
+      altMeter, tzid, minuteOffset);
+  }
+
+  public Location(double lng, double lat ,  String tzid , @Nullable Integer minuteOffset) {
+    this(
+      (lng >= 0 ) ? EAST : WEST , lng ,
+      (lat >=0 ) ? NORTH : SOUTH , lat ,
+      0, tzid, minuteOffset);
+  }
+
+  public Location(double lng, double lat , double altMeter , String tzid) {
+    this(lng , lat , altMeter , tzid , null);
+  }
+
+  public Location(double lng, double lat , String tzid) {
+    this(lng , lat , 0 , tzid);
+  }
+
+  public Location(double lng, double lat , TimeZone timeZone , @Nullable Integer minuteOffset) {
+    this(lng , lat , timeZone.getID() , minuteOffset);
+  }
+
+  public Location(double lng, double lat , TimeZone timeZone) {
+    this(lng , lat , timeZone.getID() , null);
+  }
+
+  /** 沒有 tzid , 直接帶入 minuteOffset (優先度最高) */
   public Location(double lng, double lat , int minuteOffset) {
     this.eastWest = (lng >= 0 ) ? EAST : WEST;
     this.longitudeDegree = (int) Math.abs(lng);
@@ -317,18 +344,18 @@ public class Location implements Serializable
       this.altitudeMeter = Double.parseDouble(restTokens);
       //parse 成功，代表舊款
       if (firstToken.charAt(0) == '+')
-        this.timeZone = TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken.substring(1)));
+        this.tzid = TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken.substring(1))).getID();
       else
-        this.timeZone = TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken));
+        this.tzid = TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken)).getID();
     } catch (NumberFormatException e) {
       //新款
       this.altitudeMeter = Double.parseDouble(firstToken);
       st = new StringTokenizer(restTokens, " ");
       if (st.countTokens() == 1)
-        this.timeZone = TimeZone.getTimeZone(restTokens);
+        this.tzid = restTokens;
       else {
         // 2012/3 格式 : timeZone 之後，還附加 minuteOffset
-        this.timeZone = TimeZone.getTimeZone(st.nextToken());
+        this.tzid = st.nextToken();
         this.minuteOffset = Integer.valueOf(st.nextToken());
       }
     }
@@ -364,46 +391,39 @@ public class Location implements Serializable
     
     sb.append(" ").append(this.altitudeMeter);
     //舊：sb.append(AlignUtil.alignRight(this.minuteOffset, 4 , ' '));
-    sb.append(' ').append(timeZone.getID());
+    sb.append(' ').append(tzid);
     if (minuteOffset != null)
       sb.append(" ").append(minuteOffset);
     
     return sb.toString();
-  }
-  
-  /** 直接設定經度 */
-  public void setLongitude(double longitude) {
-    this.eastWest = longitude >= 0 ? EAST : WEST;
-    this.longitudeDegree = (int) Math.abs(longitude);
-    this.longitudeMinute = (int) ((Math.abs(longitude) - longitudeDegree) * 60);
-    this.longitudeSecond = Math.abs(longitude)*3600 - longitudeDegree*3600 - longitudeMinute*60; 
   }
 
   /**
    * @return 取得經度，in double，包含正負值
    */
   public double getLongitude() {
-    double result = longitudeDegree + ((double)longitudeMinute)/60 + longitudeSecond/3600;
-    if (eastWest == WEST)
-      result = 0-result;
-    return result;
+    return getLongitude(eastWest , longitudeDegree , longitudeMinute , longitudeSecond);
   }
 
-  /** 直接設定緯度 */
-  public void setLatitude(double latitude) {
-    this.northSouth = latitude >=0 ? NORTH : SOUTH;
-    this.latitudeDegree = (int) Math.abs(latitude);
-    this.latitudeMinute = (int) ((Math.abs(latitude) - latitudeDegree) * 60);
-    this.latitudeSecond = Math.abs(latitude)*3600 - latitudeDegree*3600 - latitudeMinute*60;
+  /** 將「經度」的 (東/西) 度、分、秒 轉為十進位 */
+  public static double getLongitude(EastWest eastWest , int lngDeg , int lngMin , double lngSec ) {
+    double result = lngDeg + ((double)lngMin / 60.0) + lngSec / 3600.0;
+    if (eastWest == WEST)
+      result = 0 - result;
+    return result;
   }
   
   /**
    * @return 取得緯度，in double，包含正負值
    */
   public double getLatitude() {
-    double result = latitudeDegree + ((double)latitudeMinute)/60 + latitudeSecond/3600;
+    return getLatitude(northSouth , latitudeDegree , latitudeMinute , latitudeSecond);
+  }
+
+  public static double getLatitude(NorthSouth northSouth , int latDeg , int latMin , double latSec ) {
+    double result = latDeg + ((double) latMin / 60.0) + latSec / 3600.0;
     if (northSouth == SOUTH)
-      result = 0-result;
+      result = 0 - result;
     return result;
   }
 
@@ -423,33 +443,11 @@ public class Location implements Serializable
 
   public double getLatitudeSecond() { return this.latitudeSecond; }
 
-  public void setLatitudeDegree(int latitudeDegree) { this.latitudeDegree = latitudeDegree; }
-
-  public void setLatitudeMinute(int latitudeMinute) { this.latitudeMinute = latitudeMinute; }
-
-  public void setLatitudeSecond(double latitudeSecond) { this.latitudeSecond = latitudeSecond; }
-
-  public void setLongitudeDegree(int longitudeDegree) { this.longitudeDegree = longitudeDegree; }
-
-  public void setLongitudeMinute(int longitudeMinute) { this.longitudeMinute = longitudeMinute; }
-
-  public void setLongitudeSecond(double longitudeSecond) { this.longitudeSecond = longitudeSecond; }
-
-  public TimeZone getTimeZone() { return timeZone; }
-
-  public void setTimeZone(TimeZone timeZone) { this.timeZone = timeZone; }
+  public TimeZone getTimeZone() { return TimeZone.getTimeZone(tzid); }
 
   public double getAltitudeMeter() { return this.altitudeMeter; }
 
-  public void setAltitudeMeter(double value) { this.altitudeMeter = value; }
-
-  /** 設定東經/西經 */
-  public void setEastWest(EastWest value) { this.eastWest = value; }
-
   public EastWest getEastWest() { return this.eastWest; }
-
-  /** 設定北緯/南緯 */
-  public void setNorthSouth(NorthSouth value) { this.northSouth = value; }
 
   public NorthSouth getNorthSouth() { return this.northSouth; }
 
@@ -527,71 +525,18 @@ public class Location implements Serializable
 
 
   @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((eastWest == null) ? 0 : eastWest.hashCode());
-    result = prime * result + latitudeDegree;
-    result = prime * result + latitudeMinute;
-    long temp;
-    temp = Double.doubleToLongBits(latitudeSecond);
-    result = prime * result + (int) (temp ^ (temp >>> 32));
-    result = prime * result + longitudeDegree;
-    result = prime * result + longitudeMinute;
-    temp = Double.doubleToLongBits(longitudeSecond);
-    result = prime * result + (int) (temp ^ (temp >>> 32));
-    result = prime * result + ((northSouth == null) ? 0 : northSouth.hashCode());
-    //result = prime * result + ((timeZone == null) ? 0 : timeZone.hashCode());
-    result = prime * result + timeZone.getRawOffset();
-    return result;
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof Location))
+      return false;
+    Location location = (Location) o;
+    return longitudeDegree == location.longitudeDegree && longitudeMinute == location.longitudeMinute && Double.compare(location.longitudeSecond, longitudeSecond) == 0 && latitudeDegree == location.latitudeDegree && latitudeMinute == location.latitudeMinute && Double.compare(location.latitudeSecond, latitudeSecond) == 0 && Double.compare(location.altitudeMeter, altitudeMeter) == 0 && eastWest == location.eastWest && northSouth == location.northSouth && java.util.Objects.equals(tzid, location.tzid) && java.util.Objects.equals(minuteOffset, location.minuteOffset);
   }
 
-
   @Override
-  public boolean equals(@Nullable Object obj)
-  {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Location other = (Location) obj;
-    if (eastWest == null)
-    {
-      if (other.eastWest != null)
-        return false;
-    }
-    else if (!eastWest.equals(other.eastWest))
-      return false;
-    if (latitudeDegree != other.latitudeDegree)
-      return false;
-    if (latitudeMinute != other.latitudeMinute)
-      return false;
-    if (Double.doubleToLongBits(latitudeSecond) != Double.doubleToLongBits(other.latitudeSecond))
-      return false;
-    if (longitudeDegree != other.longitudeDegree)
-      return false;
-    if (longitudeMinute != other.longitudeMinute)
-      return false;
-    if (Double.doubleToLongBits(longitudeSecond) != Double.doubleToLongBits(other.longitudeSecond))
-      return false;
-    if (northSouth == null)
-    {
-      if (other.northSouth != null)
-        return false;
-    }
-    else if (!northSouth.equals(other.northSouth))
-      return false;
-    if (timeZone == null)
-    {
-      if (other.timeZone != null)
-        return false;
-    }
-    else if (!timeZone.equals(other.timeZone))
-      return false;
-    
-    return Objects.equal(minuteOffset, other.minuteOffset);
+  public int hashCode() {
+    return java.util.Objects.hash(eastWest, longitudeDegree, longitudeMinute, longitudeSecond, northSouth, latitudeDegree, latitudeMinute, latitudeSecond, tzid, minuteOffset, altitudeMeter);
   }
 
   /** 查詢， minuteOffset 是否被設定 (非null) */
@@ -605,16 +550,6 @@ public class Location implements Serializable
     if (minuteOffset != null)
       return minuteOffset;
     else
-      return this.timeZone.getRawOffset() / (60 * 1000);
+      return TimeZone.getTimeZone(tzid).getRawOffset() / (60 * 1000);
   }
-
-  // 設定與 GMT 的時差 (分鐘)
-  /**
-   * 2012/3/4 發現： 不能直接將 minuteOffset 換成 timezone , 因為 timezone 會受歷史因素/DST的影響
-   * 有時強制指定 minuteOffset , 結果被轉成不正確的 TZ , 反而會受到歷史因素或是DST的影響
-   */
-  public void setMinuteOffset(int minuteOffset) {
-    this.minuteOffset = minuteOffset;
-  }
-  
 }

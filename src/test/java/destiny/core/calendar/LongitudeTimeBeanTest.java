@@ -10,7 +10,6 @@ import destiny.tools.location.TimeZoneUtils;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,7 +25,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeEast1() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.EAST, 121, 30, 0, NorthSouth.NORTH, 25, 03, 0, 0, TimeZone.getTimeZone("Asia/Taipei"));
+    location = new Location(EastWest.EAST, 121, 30, 0, NorthSouth.NORTH, 25, 03, 0, 0, "Asia/Taipei");
 
     expected = LocalDateTime.of(2007, 3, 14, 0, 6, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
@@ -36,7 +35,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeEast2() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.EAST, 130, 0, 0, NorthSouth.NORTH, 25, 03, 0, 0, TimeZone.getTimeZone("Asia/Taipei"));
+    location = new Location(EastWest.EAST, 130, 0, 0, NorthSouth.NORTH, 25, 03, 0, 0, "Asia/Taipei");
 
     expected = LocalDateTime.of(2007, 3, 14, 0, 40, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
@@ -46,7 +45,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeEast3() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.EAST, 115.5, NorthSouth.NORTH, 25.0, TimeZone.getTimeZone("Asia/Taipei"));
+    location = new Location(EastWest.EAST, 115.5, NorthSouth.NORTH, 25.0, 0, "Asia/Taipei", null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 42, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
   }
@@ -55,7 +54,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeEast4() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.EAST, 110, NorthSouth.NORTH, 25.0, TimeZone.getTimeZone("Asia/Taipei"));
+    location = new Location(EastWest.EAST, 110, NorthSouth.NORTH, 25.0, 0, "Asia/Taipei", null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 20, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
   }
@@ -64,7 +63,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeWest1() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 76.5, NorthSouth.NORTH, 25.0, TimeZoneUtils.getTimeZone(-300));
+    location = new Location(EastWest.WEST, 76.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 54, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
   }
@@ -73,7 +72,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeWest2() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 85, NorthSouth.NORTH, 25.0, TimeZoneUtils.getTimeZone(-300));
+    location = new Location(EastWest.WEST, 85, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 20, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
   }
@@ -82,7 +81,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeWest3() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 70.5, NorthSouth.NORTH, 25.0, TimeZoneUtils.getTimeZone(-300));
+    location = new Location(EastWest.WEST, 70.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 18, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
 
@@ -92,7 +91,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeWest4() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 65, NorthSouth.NORTH, 25.0, TimeZoneUtils.getTimeZone(-300));
+    location = new Location(EastWest.WEST, 65, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 40, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
   }
@@ -101,7 +100,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeEast() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.EAST, 5, NorthSouth.NORTH, 25.0, TimeZone.getTimeZone("GMT"));
+    location = new Location(EastWest.EAST, 5, NorthSouth.NORTH, 25.0, 0, "GMT", null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 20, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
   }
@@ -110,7 +109,7 @@ public class LongitudeTimeBeanTest {
   @Test
   public void testGetLocalTimeWest() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 5, NorthSouth.NORTH, 25.0, TimeZone.getTimeZone("GMT"));
+    location = new Location(EastWest.WEST, 5, NorthSouth.NORTH, 25.0, 0, "GMT", null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 40, 0);
     assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
   }

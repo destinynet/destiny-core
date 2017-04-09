@@ -12,6 +12,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TimeZoneTest {
 
@@ -45,7 +46,7 @@ public class TimeZoneTest {
   /**
    * zoneId count = 595
    *
-   * ZoneID 可以完全轉換到 TimeZone
+   * ZoneId 可以完全轉換到 TimeZone
    */
   @Test
   public void test_ZoneId_to_TimeZone() {
@@ -53,6 +54,7 @@ public class TimeZoneTest {
 
     for (String id : ZoneId.getAvailableZoneIds()) {
       TimeZone tz = TimeZone.getTimeZone(id);
+      assertNotNull(tz);
       logger.info("id = {} , \ttz.displayName = {}" , id , tz.getDisplayName(Locale.TAIWAN));
     }
   }

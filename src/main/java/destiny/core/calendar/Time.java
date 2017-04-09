@@ -318,6 +318,19 @@ public class Time implements Serializable , LocaleStringIF , DateIF
       zoneId = ZoneId.of(timeZone.getID());
     } catch (ZoneRulesException ignored) {
     }
+    return getGmtFromLmt(lmt , zoneId);
+  }
+
+  private static LocalDateTime getGmtFromLmt(LocalDateTime lmt , String zone_id) {
+    ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
+    try {
+      zoneId = ZoneId.of(zone_id);
+    } catch (ZoneRulesException ignored) {
+    }
+    return getGmtFromLmt(lmt , zoneId);
+  }
+
+  private static LocalDateTime getGmtFromLmt(LocalDateTime lmt , ZoneId zoneId) {
     ZonedDateTime ldtZoned = lmt.atZone(zoneId);
     ZonedDateTime utcZoned = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"));
     return utcZoned.toLocalDateTime();
@@ -397,24 +410,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   public String toString(Locale locale) {
     return TimeDecorator.getOutputString(toLocalDateTime() , locale);
   }
-
-  /**
-  public String toString()
-  {
-    StringBuffer sb = new StringBuffer();
-    if (gregorian)
-      sb.append("G");
-    else
-      sb.append("J");
-      
-    if (AD == false)
-      sb.append("(-) " );
-    else
-      sb.append("(+) ");
-    sb.append(this.year + "/"+ (this.month < 10 ? "0" : "" )+ this.month+"/"+ (this.day < 10 ? "0" : "" ) + this.day+" "+ (this.hour < 10 ? "0" : "") +this.hour+":"+ (this.minute < 10 ? "0" : "" ) + this.minute+":"+ ( this.second < 10  && this.second >=0 ? "0" : "" ) + this.second + "\t" + this.getGmtJulDay() );
-    return sb.toString();    
-  }
-  */
 
   @Override
   public boolean equals(@Nullable Object o) {
