@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
+import static destiny.core.chinese.ziwei.ZStar.天府;
+import static destiny.core.chinese.ziwei.ZStar.紫微;
 
 /** 紫微斗數 */
 public interface ZiweiIF {
@@ -73,86 +75,6 @@ public interface ZiweiIF {
     return Tuple.tuple(納音 , fiveElement , set);
   }
 
-  /**
-   * 從「寅宮」，「順數」幾步到「紫微星」？
-   * 也相等於：
-   * 從「寅宮」，「逆數」幾步到「天府星」？
-   */
-  default int getPurpleSteps(int set , int day) {
-    int multiple = day / set;
-    logger.info("{} / {} = {}" , day , set , multiple);
-    if (day % set > 0) {
-      multiple++;
-      logger.info("multiple ++ , new multiple = {}", multiple);
-    }
-
-    // 差數
-    int diff = multiple * set - day;
-
-    int steps;
-    if (diff % 2 == 1) {
-      // 奇數
-      steps = multiple - diff;
-    } else {
-      // 偶數
-      steps = multiple + diff;
-    }
-    return steps;
-  }
-
-  /**
-   * 得出命造五行局後，推判幾倍的命造五行局數可以大於生日數
-   * （例如：十六日生人木三局者則六倍，商數+1,得可大與生日數）；
-   * 下一步判斷得出來的倍數與生日數之差數（(商數+1）*五行局數-生日數)，再判斷此差數為奇數或偶數；
-   *    若差數為奇數，則以倍數減去差數得到一個新的數字；
-   *    若差數為偶數，則倍數與差數相加而得一新的數字，
-   * 下一步起寅宮並順時針數到上一步驟得出的數目，此一落宮點便是紫微星的位置；
-   *
-   * @param set 五行局
-   * @param day 生日
-   */
-  default Branch getPurpleStar(int set , int day) {
-    int steps = getPurpleSteps(set , day);
-    return 寅.next(steps-1);
-  }
-
-  /** 承上 , 求得紫微星 的天干 + 地支 */
-  default StemBranch getPurpleStar(Stem year , int set , int day) {
-    // 寅 的天干
-    Stem stemOf寅 = getStemOf寅(year);
-
-    // 紫微 地支
-    Branch purpleBranch = getPurpleStar(set , day);
-    // 左下角，寅宮 的 干支
-    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-
-    int steps = purpleBranch.getAheadOf(寅);
-    return stemBranchOf寅.next(steps);
-  }
-
-  /**
-   * 天府星 地支
-   */
-  default Branch getTienFuStar(int set , int day) {
-    int steps = getPurpleSteps(set , day);
-    return 寅.prev(steps-1);
-  }
-
-  /**
-   * 承上 , 天府星 的天干 + 地支
-   */
-  default StemBranch getTienFuStar(Stem year , int set , int day) {
-    // 寅 的天干
-    Stem stemOf寅 = getStemOf寅(year);
-
-    // 天府 地支
-    Branch tienFuBranch = getTienFuStar(set , day);
-    // 左下角，寅宮 的 干支
-    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-
-    int steps = tienFuBranch.getAheadOf(寅);
-    return stemBranchOf寅.next(steps);
-  }
 
   /**
    * 身宮
@@ -186,6 +108,132 @@ public interface ZiweiIF {
     int steps = houseBranch.getAheadOf(寅);
     return stemBranchOf寅.next(steps);
   }
+
+
+  /**
+   * 從「寅宮」，「順數」幾步到「紫微星」？
+   * 也相等於：
+   * 從「寅宮」，「逆數」幾步到「天府星」？
+   */
+  default int getPurpleSteps(int set , int day) {
+    int multiple = day / set;
+    logger.debug("{} / {} = {}" , day , set , multiple);
+    if (day % set > 0) {
+      multiple++;
+      logger.debug("multiple ++ , new multiple = {}", multiple);
+    }
+
+    // 差數
+    int diff = multiple * set - day;
+
+    int steps;
+    if (diff % 2 == 1) {
+      // 奇數
+      steps = multiple - diff;
+    } else {
+      // 偶數
+      steps = multiple + diff;
+    }
+    return steps;
+  }
+
+  /**
+   * 取得「紫微星」的「地支」
+   *
+   * 得出命造五行局後，推判幾倍的命造五行局數可以大於生日數
+   * （例如：十六日生人木三局者則六倍，商數+1,得可大與生日數）；
+   * 下一步判斷得出來的倍數與生日數之差數（(商數+1）*五行局數-生日數)，再判斷此差數為奇數或偶數；
+   *    若差數為奇數，則以倍數減去差數得到一個新的數字；
+   *    若差數為偶數，則倍數與差數相加而得一新的數字，
+   * 下一步起寅宮並順時針數到上一步驟得出的數目，此一落宮點便是紫微星的位置；
+   *
+   * @param set 五行局
+   * @param day 生日
+   */
+  default Branch getBranchOfPurpleStar(int set , int day) {
+    int steps = getPurpleSteps(set , day);
+    return 寅.next(steps-1);
+  }
+
+  /** 承上 , 求得紫微星 的天干 + 地支 */
+  default StemBranch getStemBranchBranchOfPurpleStar(Stem year , int set , int day) {
+    // 寅 的天干
+    Stem stemOf寅 = getStemOf寅(year);
+
+    // 紫微 地支
+    Branch purpleBranch = getBranchOfPurpleStar(set , day);
+    // 左下角，寅宮 的 干支
+    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+
+    int steps = purpleBranch.getAheadOf(寅);
+    return stemBranchOf寅.next(steps);
+  }
+
+  /**
+   * 天府星 地支
+   */
+  default Branch getBranchOfTianFuStar(int set , int day) {
+    int steps = getPurpleSteps(set , day);
+    return 寅.prev(steps-1);
+  }
+
+  /**
+   * 承上 , 天府星 的天干 + 地支
+   */
+  default StemBranch getStemBranchOfTianFuStar(Stem year , int set , int day) {
+    // 寅 的天干
+    Stem stemOf寅 = getStemOf寅(year);
+
+    // 天府 地支
+    Branch tianFuStar = getBranchOfTianFuStar(set , day);
+    // 左下角，寅宮 的 干支
+    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+
+    int steps = tianFuStar.getAheadOf(寅);
+    return stemBranchOf寅.next(steps);
+  }
+
+  /**
+   * 取得某個主星，位於宮位的地支
+   * @param star 14顆主星
+   */
+  default Branch getBranchOf(ZStar star , int set , int day) {
+    switch (star) {
+      case 紫微: return getBranchOfPurpleStar(set , day);
+      case 天機: return getBranchOf(紫微 , set , day).prev(1);
+      case 太陽: return getBranchOf(紫微 , set , day).prev(3);
+      case 武曲: return getBranchOf(紫微 , set , day).prev(4);
+      case 天同: return getBranchOf(紫微 , set , day).prev(5);
+      case 廉貞: return getBranchOf(紫微 , set , day).prev(8);
+
+      case 天府: return getBranchOfTianFuStar(set , day);
+      case 太陰: return getBranchOf(天府 , set , day).next(1);
+      case 貪狼: return getBranchOf(天府 , set , day).next(2);
+      case 巨門: return getBranchOf(天府 , set , day).next(3);
+      case 天相: return getBranchOf(天府 , set , day).next(4);
+      case 天梁: return getBranchOf(天府 , set , day).next(5);
+      case 七殺: return getBranchOf(天府 , set , day).next(6);
+      case 破軍: return getBranchOf(天府 , set , day).next(10);
+      default: throw new AssertionError("impossible . star = " + star + " , 局 = " + set + " , 日 = " + day);
+    }
+  }
+
+  /**
+   * 乘上，取得某個主星，位於宮位的干支
+   * @param star 14顆主星
+   */
+  default StemBranch getStemBranchOf(ZStar star , Stem year , int set , int day) {
+    // 寅 的天干
+    Stem stemOf寅 = getStemOf寅(year);
+
+    // 星星的地支
+    Branch branch = getBranchOf(star , set , day);
+    // 左下角，寅宮 的 干支
+    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+    int steps = branch.getAheadOf(寅);
+    return stemBranchOf寅.next(steps);
+  }
+
 
   // TODO : should be private after Java9
   default Stem getStemOf寅(Stem year) {

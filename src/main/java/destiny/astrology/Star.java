@@ -7,11 +7,11 @@ package destiny.astrology;
 
 /**
  * 代表「星體 (celestial bodies)」 的抽象 class , 星體包括： 
- * <li>恆星 FixedStar
- * <li>行星 Planet ,含日月,冥王星
- * <li>小行星 Asteroid
- * <li>漢堡派八虛星 Hamburger
- * <li>日月交點 ApsisMoon
+ * <li>恆星 {@link FixedStar}
+ * <li>行星 {@link Planet} ,含日月,冥王星
+ * <li>小行星 {@link Asteroid}
+ * <li>漢堡派八虛星 {@link Hamburger}
+ * <li>日月交點 {@link LunarPoint}
  * <pre>
  * 目前繼承圖如下 : 
  *                     Star

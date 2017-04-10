@@ -133,22 +133,45 @@ public class ZiweiImplTest {
     ZiweiIF impl = new ZiweiImpl();
 
     // 假設某個人出生日是23日，五行局為金四局 ==> 紫微在午
-    assertSame(午 , impl.getPurpleStar(4 , 23));
+    assertSame(午 , impl.getBranchOfPurpleStar(4 , 23));
 
     // 假設有一個人是24日生，金四局 ==> 紫微在未
-    assertSame(未 , impl.getPurpleStar(4 , 24));
+    assertSame(未 , impl.getBranchOfPurpleStar(4 , 24));
 
     // ex：有個人出生年月日是西元 1980年(民69庚申) 農曆 7月23日 丑時 (男) ==> 紫微在 甲申 , 天府也在甲申 (紫微、天府 同宮)
-    assertSame(StemBranch.get(甲 , 申) , impl.getPurpleStar(庚 , 3 , 23));
-    assertSame(StemBranch.get(甲 , 申) , impl.getTienFuStar(庚 , 3 , 23));
+    assertSame(StemBranch.get(甲 , 申) , impl.getStemBranchBranchOfPurpleStar(庚 , 3 , 23));
+    assertSame(StemBranch.get(甲 , 申) , impl.getStemBranchOfTianFuStar(庚 , 3 , 23));
 
     // 已知 : 2017(丁酉年)-04-10 (農曆 三月14日） 未時 , 土5局 , 紫微 在 癸卯 , 天府 在 癸丑
-    assertSame(StemBranch.get(癸 , 卯) , impl.getPurpleStar(丁 , 5 , 14));
-    assertSame(StemBranch.get(癸 , 丑) , impl.getTienFuStar(丁 , 5 , 14));
+    assertSame(StemBranch.get(癸 , 卯) , impl.getStemBranchBranchOfPurpleStar(丁 , 5 , 14));
+    assertSame(StemBranch.get(癸 , 丑) , impl.getStemBranchOfTianFuStar(丁 , 5 , 14));
 
 
     // 已知 : 2017(丁酉年)-04-10 (農曆 三月14日） 酉時 , 水2局 , 紫微、天府 都在戊申
-    assertSame(StemBranch.get(戊 , 申) , impl.getPurpleStar(丁 , 2 , 14));
-    assertSame(StemBranch.get(戊 , 申) , impl.getTienFuStar(丁 , 2 , 14));
+    assertSame(StemBranch.get(戊 , 申) , impl.getStemBranchBranchOfPurpleStar(丁 , 2 , 14));
+    assertSame(StemBranch.get(戊 , 申) , impl.getStemBranchOfTianFuStar(丁 , 2 , 14));
+  }
+
+  @Test
+  public void testHouseOf() {
+    ZiweiIF impl = new ZiweiImpl();
+
+    // 範例 : http://sweeteason.pixnet.net/blog/post/43447102
+    // ex：有個人出生年月日是西元 1980年(民69庚申) 農曆 7月23日 丑時 (男) , 木三局 ==> 紫微在 甲申 , 天府也在甲申 (紫微、天府 同宮)
+    assertSame(StemBranch.get(甲, 申), impl.getStemBranchOf(ZStar.紫微, 庚, 3, 23));
+    assertSame(StemBranch.get(癸, 未), impl.getStemBranchOf(ZStar.天機, 庚, 3, 23));
+    assertSame(StemBranch.get(辛, 巳), impl.getStemBranchOf(ZStar.太陽, 庚, 3, 23));
+    assertSame(StemBranch.get(庚, 辰), impl.getStemBranchOf(ZStar.武曲, 庚, 3, 23));
+    assertSame(StemBranch.get(己, 卯), impl.getStemBranchOf(ZStar.天同, 庚, 3, 23));
+    assertSame(StemBranch.get(戊, 子), impl.getStemBranchOf(ZStar.廉貞, 庚, 3, 23));
+
+    assertSame(StemBranch.get(甲, 申), impl.getStemBranchOf(ZStar.天府, 庚, 3, 23));
+    assertSame(StemBranch.get(乙, 酉), impl.getStemBranchOf(ZStar.太陰, 庚, 3, 23));
+    assertSame(StemBranch.get(丙, 戌), impl.getStemBranchOf(ZStar.貪狼, 庚, 3, 23));
+    assertSame(StemBranch.get(丁, 亥), impl.getStemBranchOf(ZStar.巨門, 庚, 3, 23));
+    assertSame(StemBranch.get(戊, 子), impl.getStemBranchOf(ZStar.天相, 庚, 3, 23));
+    assertSame(StemBranch.get(己, 丑), impl.getStemBranchOf(ZStar.天梁, 庚, 3, 23));
+    assertSame(StemBranch.get(戊, 寅), impl.getStemBranchOf(ZStar.七殺, 庚, 3, 23));
+    assertSame(StemBranch.get(壬, 午), impl.getStemBranchOf(ZStar.破軍, 庚, 3, 23));
   }
 }

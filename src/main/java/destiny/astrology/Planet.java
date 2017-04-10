@@ -38,15 +38,10 @@ public final class Planet extends Star implements Comparable<Planet>
   }
   
   /** 從 "sun" 取得 Planet.SUN  ... , 限英文 */
-  public static Optional<Planet> get(String value)
-  {
-    return Stream.of(values).filter(planet -> planet.getName(Locale.ENGLISH).equalsIgnoreCase(value)).findFirst();
-//    for(Planet planet : values)
-//    {
-//      if (planet.getName(Locale.ENGLISH).equalsIgnoreCase(value))
-//        return planet;
-//    }
-//    return null;
+  public static Optional<Planet> get(String value) {
+    return Stream.of(values)
+      .filter(planet -> planet.getName(Locale.ENGLISH).equalsIgnoreCase(value))
+      .findFirst();
   }
 
   @Override

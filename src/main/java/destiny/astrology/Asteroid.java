@@ -11,8 +11,7 @@ import java.util.List;
 
 
 
-public final class Asteroid extends Star implements Comparable<Asteroid>
-{
+public final class Asteroid extends Star implements Comparable<Asteroid> {
   private final static String resource = "destiny.astrology.Star";
   /** 穀神星 */
   public final static Asteroid CERES  = new Asteroid("Asteroid.CERES" , "Asteroid.CERES_ABBR" , 1);
