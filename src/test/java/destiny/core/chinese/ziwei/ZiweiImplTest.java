@@ -4,7 +4,9 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.chinese.Branch;
+import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+import org.jooq.lambda.tuple.Tuple3;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.ziwei.House.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class ZiweiImplTest {
@@ -102,6 +105,50 @@ public class ZiweiImplTest {
     // 丁酉年 3月14日，子時，身命同宮 , 都在 辰
     assertSame(辰 , impl.getMainHouseBranch(3 , Branch.子));
     assertSame(辰 , impl.getBodyHouse(3 , Branch.子));
+  }
 
+  /**
+   * 納音 五行局
+   *
+   * 已知：
+   * 丁酉年 (2017)
+   * 農曆三月、戌時 , 命宮在寅 , 水二局[天河水]
+   * 比對資料 : https://goo.gl/w4snjL
+   */
+  @Test
+  public void testGetNaYin() {
+    ZiweiIF impl = new ZiweiImpl();
+    Tuple3<String , FiveElement , Integer> t3 = impl.getNaYin(丁 , 3 , 戌);
+
+    assertEquals("天河水" , t3.v1());
+    assertSame(FiveElement.水 , t3.v2());
+    assertSame(2 , t3.v3());
+  }
+
+  /**
+   * 計算紫微星所在宮位 , 驗證資料見此教學頁面 http://bit.ly/2oo2hZz
+   */
+  @Test
+  public void testGetPurpleStar() {
+    ZiweiIF impl = new ZiweiImpl();
+
+    // 假設某個人出生日是23日，五行局為金四局 ==> 紫微在午
+    assertSame(午 , impl.getPurpleStar(4 , 23));
+
+    // 假設有一個人是24日生，金四局 ==> 紫微在未
+    assertSame(未 , impl.getPurpleStar(4 , 24));
+
+    // ex：有個人出生年月日是西元 1980年(民69庚申) 農曆 7月23日 丑時 (男) ==> 紫微在 甲申 , 天府也在甲申 (紫微、天府 同宮)
+    assertSame(StemBranch.get(甲 , 申) , impl.getPurpleStar(庚 , 3 , 23));
+    assertSame(StemBranch.get(甲 , 申) , impl.getTienFuStar(庚 , 3 , 23));
+
+    // 已知 : 2017(丁酉年)-04-10 (農曆 三月14日） 未時 , 土5局 , 紫微 在 癸卯 , 天府 在 癸丑
+    assertSame(StemBranch.get(癸 , 卯) , impl.getPurpleStar(丁 , 5 , 14));
+    assertSame(StemBranch.get(癸 , 丑) , impl.getTienFuStar(丁 , 5 , 14));
+
+
+    // 已知 : 2017(丁酉年)-04-10 (農曆 三月14日） 酉時 , 水2局 , 紫微、天府 都在戊申
+    assertSame(StemBranch.get(戊 , 申) , impl.getPurpleStar(丁 , 2 , 14));
+    assertSame(StemBranch.get(戊 , 申) , impl.getTienFuStar(丁 , 2 , 14));
   }
 }

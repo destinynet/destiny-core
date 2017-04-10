@@ -61,16 +61,97 @@ public interface ZiweiIF {
     // 五行
     FiveElement fiveElement = NaYin.getFiveElement(mainHouse);
     // 第幾局
-    int 局;
+    int set;
     switch (fiveElement) {
-      case 水: 局 = 2; break;
-      case 土: 局 = 5; break;
-      case 木: 局 = 3; break;
-      case 火: 局 = 6; break;
-      case 金: 局 = 4; break;
+      case 水: set = 2; break;
+      case 土: set = 5; break;
+      case 木: set = 3; break;
+      case 火: set = 6; break;
+      case 金: set = 4; break;
       default: throw new AssertionError("impossible");
     }
-    return Tuple.tuple(納音 , fiveElement , 局);
+    return Tuple.tuple(納音 , fiveElement , set);
+  }
+
+  /**
+   * 從「寅宮」，「順數」幾步到「紫微星」？
+   * 也相等於：
+   * 從「寅宮」，「逆數」幾步到「天府星」？
+   */
+  default int getPurpleSteps(int set , int day) {
+    int multiple = day / set;
+    logger.info("{} / {} = {}" , day , set , multiple);
+    if (day % set > 0) {
+      multiple++;
+      logger.info("multiple ++ , new multiple = {}", multiple);
+    }
+
+    // 差數
+    int diff = multiple * set - day;
+
+    int steps;
+    if (diff % 2 == 1) {
+      // 奇數
+      steps = multiple - diff;
+    } else {
+      // 偶數
+      steps = multiple + diff;
+    }
+    return steps;
+  }
+
+  /**
+   * 得出命造五行局後，推判幾倍的命造五行局數可以大於生日數
+   * （例如：十六日生人木三局者則六倍，商數+1,得可大與生日數）；
+   * 下一步判斷得出來的倍數與生日數之差數（(商數+1）*五行局數-生日數)，再判斷此差數為奇數或偶數；
+   *    若差數為奇數，則以倍數減去差數得到一個新的數字；
+   *    若差數為偶數，則倍數與差數相加而得一新的數字，
+   * 下一步起寅宮並順時針數到上一步驟得出的數目，此一落宮點便是紫微星的位置；
+   *
+   * @param set 五行局
+   * @param day 生日
+   */
+  default Branch getPurpleStar(int set , int day) {
+    int steps = getPurpleSteps(set , day);
+    return 寅.next(steps-1);
+  }
+
+  /** 承上 , 求得紫微星 的天干 + 地支 */
+  default StemBranch getPurpleStar(Stem year , int set , int day) {
+    // 寅 的天干
+    Stem stemOf寅 = getStemOf寅(year);
+
+    // 紫微 地支
+    Branch purpleBranch = getPurpleStar(set , day);
+    // 左下角，寅宮 的 干支
+    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+
+    int steps = purpleBranch.getAheadOf(寅);
+    return stemBranchOf寅.next(steps);
+  }
+
+  /**
+   * 天府星 地支
+   */
+  default Branch getTienFuStar(int set , int day) {
+    int steps = getPurpleSteps(set , day);
+    return 寅.prev(steps-1);
+  }
+
+  /**
+   * 承上 , 天府星 的天干 + 地支
+   */
+  default StemBranch getTienFuStar(Stem year , int set , int day) {
+    // 寅 的天干
+    Stem stemOf寅 = getStemOf寅(year);
+
+    // 天府 地支
+    Branch tienFuBranch = getTienFuStar(set , day);
+    // 左下角，寅宮 的 干支
+    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+
+    int steps = tienFuBranch.getAheadOf(寅);
+    return stemBranchOf寅.next(steps);
   }
 
   /**

@@ -4,6 +4,8 @@
  */
 package destiny.iching;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.FiveElementIF;
 import destiny.core.chinese.YinYangIF;
@@ -15,8 +17,7 @@ import java.io.Serializable;
 /**
  * 八卦基本符號以及其資料
  */
-public enum Symbol implements Serializable , SymbolIF , FiveElementIF
-{
+public enum Symbol implements Serializable , SymbolIF , FiveElementIF {
   乾('乾', new boolean[] {true  , true  , true  } ),
   兌('兌', new boolean[] {true  , true  , false } ),
   離('離', new boolean[] {true  , false , true  } ),
@@ -30,6 +31,18 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
   private boolean[] yinYangs = new boolean[3];
   
   private static final Symbol[] symbolArray = {乾 , 兌 , 離 , 震 , 巽 , 坎 , 艮 , 坤};
+
+  /** 先天八卦 -> 後天八卦 bi-mapping */
+  private final static BiMap<Symbol, Symbol> con2AcqMap =  new ImmutableBiMap.Builder<Symbol, Symbol>()
+      .put(乾 , 離)
+      .put(兌 , 巽)
+      .put(離 , 震)
+      .put(震 , 艮)
+      .put(巽 , 坤)
+      .put(坎 , 兌)
+      .put(艮 , 乾)
+      .put(坤 , 坎)
+      .build();
   
   Symbol(char name, boolean[] yinYangs)
   {
@@ -128,5 +141,14 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF
       case 艮 : case 坤 : return FiveElement.土 ;
       default   : throw new RuntimeException("impossible");
     }
+  }
+  /** 先天八卦 -> 後天八卦 */
+  public Symbol toAcquired() {
+    return con2AcqMap.get(this);
+  }
+
+  /** 後天八卦 -> 先天八卦 */
+  public Symbol toCongential() {
+    return con2AcqMap.inverse().get(this);
   }
 }
