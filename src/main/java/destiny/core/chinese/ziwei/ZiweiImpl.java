@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 public class ZiweiImpl implements ZiweiIF , Serializable {
 
+
   @Override
   public void calculate(Gender gender, LocalDateTime time, Location loc) {
 

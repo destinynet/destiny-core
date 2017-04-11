@@ -3,20 +3,23 @@
  */
 package destiny.core.chinese.ziwei;
 
+import com.google.common.collect.ImmutableMap;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.chinese.*;
 import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.function.Function;
 
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.ZStar.天府;
-import static destiny.core.chinese.ziwei.ZStar.紫微;
+import static destiny.core.chinese.ziwei.MainStar.*;
 
 /** 紫微斗數 */
 public interface ZiweiIF {
@@ -115,7 +118,7 @@ public interface ZiweiIF {
    * 也相等於：
    * 從「寅宮」，「逆數」幾步到「天府星」？
    */
-  default int getPurpleSteps(int set , int day) {
+  static int getPurpleSteps(int set , int day) {
     int multiple = day / set;
     logger.debug("{} / {} = {}" , day , set , multiple);
     if (day % set > 0) {
@@ -150,7 +153,7 @@ public interface ZiweiIF {
    * @param set 五行局
    * @param day 生日
    */
-  default Branch getBranchOfPurpleStar(int set , int day) {
+  static Branch getBranchOfPurpleStar(int set , int day) {
     int steps = getPurpleSteps(set , day);
     return 寅.next(steps-1);
   }
@@ -172,7 +175,7 @@ public interface ZiweiIF {
   /**
    * 天府星 地支
    */
-  default Branch getBranchOfTianFuStar(int set , int day) {
+  static Branch getBranchOfTianFuStar(int set , int day) {
     int steps = getPurpleSteps(set , day);
     return 寅.prev(steps-1);
   }
@@ -193,36 +196,43 @@ public interface ZiweiIF {
     return stemBranchOf寅.next(steps);
   }
 
+
+  /**
+   * 14顆主星 => 地支 的 function mapping
+   * TODO : should be private map in Java9
+   */
+  Map<MainStar , Function<Tuple2<Integer , Integer>, Branch>> mainStar2BranchMap =
+      ImmutableMap.<MainStar , Function<Tuple2<Integer , Integer> , Branch>>builder()
+        .put(紫微 , t2 -> getBranchOfPurpleStar(t2.v1() , t2.v2()))
+        .put(天機 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(1))
+        .put(太陽 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(3))
+        .put(武曲 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(4))
+        .put(天同 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(5))
+        .put(廉貞 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(8))
+
+        .put(天府 , t2 -> getBranchOfTianFuStar(t2.v1() , t2.v2()))
+        .put(太陰 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(1))
+        .put(貪狼 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(2))
+        .put(巨門 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(3))
+        .put(天相 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(4))
+        .put(天梁 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(5))
+        .put(七殺 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(6))
+        .put(破軍 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(10))
+      .build();
+
   /**
    * 取得某個主星，位於宮位的地支
    * @param star 14顆主星
    */
-  default Branch getBranchOf(ZStar star , int set , int day) {
-    switch (star) {
-      case 紫微: return getBranchOfPurpleStar(set , day);
-      case 天機: return getBranchOf(紫微 , set , day).prev(1);
-      case 太陽: return getBranchOf(紫微 , set , day).prev(3);
-      case 武曲: return getBranchOf(紫微 , set , day).prev(4);
-      case 天同: return getBranchOf(紫微 , set , day).prev(5);
-      case 廉貞: return getBranchOf(紫微 , set , day).prev(8);
-
-      case 天府: return getBranchOfTianFuStar(set , day);
-      case 太陰: return getBranchOf(天府 , set , day).next(1);
-      case 貪狼: return getBranchOf(天府 , set , day).next(2);
-      case 巨門: return getBranchOf(天府 , set , day).next(3);
-      case 天相: return getBranchOf(天府 , set , day).next(4);
-      case 天梁: return getBranchOf(天府 , set , day).next(5);
-      case 七殺: return getBranchOf(天府 , set , day).next(6);
-      case 破軍: return getBranchOf(天府 , set , day).next(10);
-      default: throw new AssertionError("impossible . star = " + star + " , 局 = " + set + " , 日 = " + day);
-    }
+  static Branch getBranchOf(MainStar star , int set , int day) {
+    return mainStar2BranchMap.get(star).apply(Tuple.tuple(set , day));
   }
 
   /**
-   * 乘上，取得某個主星，位於宮位的干支
+   * 承上，取得某個主星，位於宮位的干支
    * @param star 14顆主星
    */
-  default StemBranch getStemBranchOf(ZStar star , Stem year , int set , int day) {
+  default StemBranch getStemBranchOf(MainStar star , Stem year , int set , int day) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
@@ -233,6 +243,8 @@ public interface ZiweiIF {
     int steps = branch.getAheadOf(寅);
     return stemBranchOf寅.next(steps);
   }
+
+
 
 
   // TODO : should be private after Java9

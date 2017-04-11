@@ -13,8 +13,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 
-public final class Planet extends Star implements Comparable<Planet>
-{
+public final class Planet extends Star implements Comparable<Planet> {
   private final static String resource = "destiny.astrology.Star";
 
   public final static Planet SUN     = new Planet("Planet.SUN"    , "Planet.SUN_ABBR");
@@ -30,14 +29,13 @@ public final class Planet extends Star implements Comparable<Planet>
 
   public final static Planet[] values = {SUN , MOON , MERCURY , VENUS , MARS , JUPITER , SATURN , URANUS , NEPTUNE , PLUTO};
   public final static Planet[] classicalValues = {SUN , MOON , MERCURY , VENUS , MARS , JUPITER , SATURN};
-  
-  
-  public Planet(String nameKey , String abbrKey)
-  {
-    super(nameKey , abbrKey , resource);
+
+
+  public Planet(String nameKey, String abbrKey) {
+    super(nameKey, abbrKey, resource);
   }
   
-  /** 從 "sun" 取得 Planet.SUN  ... , 限英文 */
+  /** 從 "sun" 取得 {@link #SUN} 物件 ... , 限英文 , 不分大小寫 */
   public static Optional<Planet> get(String value) {
     return Stream.of(values)
       .filter(planet -> planet.getName(Locale.ENGLISH).equalsIgnoreCase(value))

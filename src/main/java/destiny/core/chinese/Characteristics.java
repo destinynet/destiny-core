@@ -2,13 +2,15 @@ package destiny.core.chinese;
 
 import org.jetbrains.annotations.NotNull;
 
+import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.Branch.巳;
+
 /**
  * @author smallufo
  * @date 2002/8/26
  * @time 下午 01:19:37
  */
-public class Characteristics
-{
+public class Characteristics {
   private Stem 年干;
   private Stem 月干;
   private Stem 日干;
@@ -74,30 +76,36 @@ public class Characteristics
     return 六獸;
   }
   
-  public Branch get驛馬()
-  {
-    if (日支 == Branch.申 || 日支 == Branch.子 || 日支 == Branch.辰)
-      驛馬 = Branch.寅;
-    else if (日支 == Branch.巳 || 日支 == Branch.酉 || 日支 == Branch.丑)
-      驛馬 = Branch.亥;
-    else if (日支 == Branch.寅 || 日支 == Branch.午 || 日支 == Branch.戌)
-      驛馬 = Branch.申;
-    else if (日支 == Branch.亥 || 日支 == Branch.卯 || 日支 == Branch.未)
-      驛馬 = Branch.巳;
-    
-    return 驛馬;
+  public Branch get驛馬() {
+    switch (BranchTools.trilogy(日支)) {
+      case 水: return 寅;
+      case 木: return 巳;
+      case 金: return 亥;
+      case 火: return 申;
+      default: throw new AssertionError(日支);
+    }
+//    if (日支 == 申 || 日支 == 子 || 日支 == 辰)
+//      驛馬 = 寅;
+//    else if (日支 == 巳 || 日支 == 酉 || 日支 == 丑)
+//      驛馬 = 亥;
+//    else if (日支 == 寅 || 日支 == 午 || 日支 == 戌)
+//      驛馬 = 申;
+//    else if (日支 == 亥 || 日支 == 卯 || 日支 == 未)
+//      驛馬 = 巳;
+//
+//    return 驛馬;
   }
   
   public Branch get桃花()
   {
-    if (日支 == Branch.申 || 日支 == Branch.子 || 日支 == Branch.辰)
-      桃花 = Branch.酉;
-    else if (日支 == Branch.巳 || 日支 == Branch.酉 || 日支 == Branch.丑)
-      桃花 = Branch.午;
-    else if (日支 == Branch.寅 || 日支 == Branch.午 || 日支 == Branch.戌)
-      桃花 = Branch.卯;
-    else if (日支 == Branch.亥 || 日支 == Branch.卯 || 日支 == Branch.未)
-      桃花 = Branch.子;
+    if (日支 == 申 || 日支 == 子 || 日支 == 辰)
+      桃花 = 酉;
+    else if (日支 == 巳 || 日支 == 酉 || 日支 == 丑)
+      桃花 = 午;
+    else if (日支 == 寅 || 日支 == 午 || 日支 == 戌)
+      桃花 = 卯;
+    else if (日支 == 亥 || 日支 == 卯 || 日支 == 未)
+      桃花 = 子;
     
     return 桃花;
   }
@@ -107,23 +115,23 @@ public class Characteristics
   {
     if (日干 == Stem.甲 || 日干 == Stem.戊 || 日干 == Stem.庚)
     {
-      天乙貴人[0] = Branch.丑;天乙貴人[1] = Branch.未;
+      天乙貴人[0] = 丑;天乙貴人[1] = 未;
     }
     else if (日干 == Stem.乙 || 日干 == Stem.己)
     {
-      天乙貴人[0] = Branch.子;天乙貴人[1] = Branch.申;
+      天乙貴人[0] = 子;天乙貴人[1] = 申;
     }
     else if (日干 == Stem.丙 || 日干 == Stem.丁)
     {
-      天乙貴人[0] = Branch.酉;天乙貴人[1] = Branch.亥;
+      天乙貴人[0] = 酉;天乙貴人[1] = 亥;
     }
     else if (日干 == Stem.辛)
     {
-      天乙貴人[0] = Branch.寅;天乙貴人[1] = Branch.午;
+      天乙貴人[0] = 寅;天乙貴人[1] = 午;
     }
     else if (日干 == Stem.壬 || 日干 == Stem.癸)
     {
-      天乙貴人[0] = Branch.卯;天乙貴人[1] = Branch.巳;
+      天乙貴人[0] = 卯;天乙貴人[1] = 巳;
     }
     return 天乙貴人;
   }
@@ -132,21 +140,21 @@ public class Characteristics
   {
     Branch 羊刃;
     if (日干 == Stem.甲)
-      羊刃 = Branch.卯;
+      羊刃 = 卯;
     else if (日干 == Stem.乙)
-      羊刃 = Branch.辰;
+      羊刃 = 辰;
     else if (日干 == Stem.丙 || 日干 == Stem.戊)
-      羊刃 = Branch.午;
+      羊刃 = 午;
     else if (日干 == Stem.丁 || 日干 == Stem.己)
-      羊刃 = Branch.未;
+      羊刃 = 未;
     else if (日干 == Stem.庚)
-      羊刃 = Branch.酉;
+      羊刃 = 酉;
     else if (日干 == Stem.辛)
-      羊刃 = Branch.戌;
+      羊刃 = 戌;
     else if (日干 == Stem.壬)
-      羊刃 = Branch.子;
+      羊刃 = 子;
     else
-      羊刃 = Branch.丑;
+      羊刃 = 丑;
     
     return 羊刃;
   }
@@ -168,35 +176,35 @@ public class Characteristics
   
   private void EmptyEnergies(Stem 天干, @NotNull Branch 地支)
   {
-    if (Stem.getIndex(天干) - Branch.getIndex(地支) ==0)
+    if (Stem.getIndex(天干) - getIndex(地支) ==0)
     {
-      空亡[0]= Branch.戌;
-      空亡[1]= Branch.亥;
+      空亡[0]= 戌;
+      空亡[1]= 亥;
     }
-    else if (( Stem.getIndex(天干) - Branch.getIndex(地支) == -10)|| (Stem.getIndex(天干) - Branch.getIndex(地支) == 2))
+    else if (( Stem.getIndex(天干) - getIndex(地支) == -10)|| (Stem.getIndex(天干) - getIndex(地支) == 2))
     {
-      空亡[0]= Branch.申;
-      空亡[1]= Branch.酉;
+      空亡[0]= 申;
+      空亡[1]= 酉;
     }
-    else if ((Stem.getIndex(天干) - Branch.getIndex(地支) == -8)|| (Stem.getIndex(天干) - Branch.getIndex(地支) == 4))
+    else if ((Stem.getIndex(天干) - getIndex(地支) == -8)|| (Stem.getIndex(天干) - getIndex(地支) == 4))
     {
-      空亡[0]= Branch.午;
-      空亡[1]= Branch.未;
+      空亡[0]= 午;
+      空亡[1]= 未;
     }
-    else if ((Stem.getIndex(天干) - Branch.getIndex(地支) == -6)|| (Stem.getIndex(天干) - Branch.getIndex(地支) == 6))
+    else if ((Stem.getIndex(天干) - getIndex(地支) == -6)|| (Stem.getIndex(天干) - getIndex(地支) == 6))
     {
-      空亡[0]= Branch.辰;
-      空亡[1]= Branch.巳;
+      空亡[0]= 辰;
+      空亡[1]= 巳;
     }
-    else if ((Stem.getIndex(天干) - Branch.getIndex(地支) == -4)|| (Stem.getIndex(天干) - Branch.getIndex(地支) == 8))
+    else if ((Stem.getIndex(天干) - getIndex(地支) == -4)|| (Stem.getIndex(天干) - getIndex(地支) == 8))
     {
-      空亡[0]= Branch.寅;
-      空亡[1]= Branch.卯;
+      空亡[0]= 寅;
+      空亡[1]= 卯;
     }
     else
     {
-      空亡[0]= Branch.子;
-      空亡[1]= Branch.丑;
+      空亡[0]= 子;
+      空亡[1]= 丑;
     }
     
   }

@@ -15,10 +15,10 @@ import destiny.iching.SymbolCongenital;
 public interface StarSymbolIF {
 
   /** 後天八卦 */
-  Symbol getSymbolAcquired(ZStar star);
+  Symbol getSymbolAcquired(MainStar star);
 
-  /** 先天八卦 : 先求後天八卦，再 map 回先天八卦 */
-  default Symbol getSymbolCongenital(ZStar star) {
+  /** 先天八卦 : 先求後天八卦，再 mainStar2BranchMap 回先天八卦 */
+  default Symbol getSymbolCongenital(MainStar star) {
     return getSymbolAcquired(star).toCongential();
   }
 }

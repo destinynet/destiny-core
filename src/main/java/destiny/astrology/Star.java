@@ -5,6 +5,8 @@
 package destiny.astrology;
 
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * 代表「星體 (celestial bodies)」 的抽象 class , 星體包括： 
  * <li>恆星 {@link FixedStar}
@@ -30,11 +32,9 @@ package destiny.astrology;
  * </pre>
  */
 public abstract class Star extends Point {
-  protected Star[] values;
-  
-  Star(String nameKey, String abbrKey, String resource) {
-    super(nameKey , resource);
-    this.abbrKey = abbrKey;
+
+  Star(String nameKey, @Nullable String abbrKey, String resource) {
+    super(nameKey , resource , abbrKey);
   }
   
   Star(String nameKey, String resource)

@@ -14,8 +14,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * 抽象class , 代表星盤上的一「點」，可能是實星（行星 Planet , 小行星 Asteroid , 恆星 FixedStar ），
- * 虛星 (漢堡星 Hamburger) , 也可能只是交點 (例如：黃白交點 LunarPoints)
+ * 抽象class , 代表星盤上的一「點」，可能是實星（行星 {@link Planet}, 小行星 {@link Asteroid}, 恆星 {@link FixedStar}），
+ * 虛星 (漢堡星 {@link Hamburger}) , 也可能只是交點 (例如：黃白交點 {@link LunarPoint})
  * 目前繼承圖如下：
  * <pre>
  *                     Point
@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  *                       |
  *   +---------+---------+--------+-----------------+
  *   |         |         |        |                 |      
- * Planet  Asteroid  FixedStar LunarPoints(A)   Hamburger  
+ * Planet  Asteroid  FixedStar LunarPoint(A)    Hamburger
  *  行星    小行星     恆星     日月交點         漢堡虛星  
  *                                |
  *                                |
@@ -35,8 +35,7 @@ import java.util.ResourceBundle;
  *                   North/South   PERIGEE (近)/APOGEE (遠)
  * </pre>
  */
-public abstract class Point implements Serializable , LocaleStringIF
-{
+public abstract class Point implements Serializable , LocaleStringIF {
   
   private final String resource;
   
@@ -44,30 +43,33 @@ public abstract class Point implements Serializable , LocaleStringIF
   private final String nameKey;
   
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ...*/
+  @Nullable
   String abbrKey;
-  
-  Point(String nameKey, String resource)
-  {
+
+  public Point(String nameKey, String resource) {
     this.nameKey = nameKey;
     this.resource = resource;
   }
-  
+
+  public Point(String nameKey, String resource , @Nullable String abbrKey) {
+    this.nameKey = nameKey;
+    this.resource = resource;
+    this.abbrKey = abbrKey;
+  }
+
   /** 名稱 */
-  public String getName(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String getName(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
   
   /** 名稱 */
-  private String getName()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  private String getName() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
   
   /** toString 直接取名稱 */
   @Override
-  public String toString()
-  {
+  public String toString() {
     return getName();
   }
   
@@ -78,31 +80,25 @@ public abstract class Point implements Serializable , LocaleStringIF
   }
 
   /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes */
-  public String getAbbreviation(@NotNull Locale locale)
-  {
-    if (abbrKey != null)
-    {
-      return ResourceBundle.getBundle(resource , locale).getString(abbrKey);
+  public String getAbbreviation(@NotNull Locale locale) {
+    if (abbrKey != null) {
+      return ResourceBundle.getBundle(resource, locale).getString(abbrKey);
     }
-    else
-    {
-      String name = ResourceBundle.getBundle(resource , locale).getString(nameKey);
-      return getAbbr(locale , name);
+    else {
+      String name = ResourceBundle.getBundle(resource, locale).getString(nameKey);
+      return getAbbr(locale, name);
     }
-      
   }
   
   /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes */
-  public String getAbbreviation()
-  {
-    if (abbrKey != null)
-    {
-      return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(abbrKey);
+  public String getAbbreviation() {
+    if (abbrKey != null) {
+      //System.out.print("get abbrKey of " + this +" , abbrKey = " + abbrKey);
+      return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(abbrKey);
     }
-    else
-    {
-      String name = ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
-      return getAbbr(Locale.getDefault() , name);
+    else {
+      String name = ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
+      return getAbbr(Locale.getDefault(), name);
     }
   }
   
@@ -112,29 +108,24 @@ public abstract class Point implements Serializable , LocaleStringIF
   @NotNull
   private String getAbbr(@Nullable Locale locale , @NotNull String value)
   {
-    if ( locale!= null && locale.getLanguage().equals("zh") && locale.getCountry().equals("TW") )
-    {
+    if (locale != null && locale.getLanguage().equals("zh") && locale.getCountry().equals("TW")) {
       byte[] byteArray;
       byte[] arr = new byte[2];
-      try
-      {
+      try {
         byteArray = String.valueOf(value.toCharArray()).getBytes("Big5");
-        
-        System.arraycopy(byteArray, 0 , arr , 0 , 2);
+
+        System.arraycopy(byteArray, 0, arr, 0, 2);
+      } catch (UnsupportedEncodingException ignored) {
       }
-      catch (UnsupportedEncodingException ignored)
-      {}
       return new String(arr);
     }
-    else
-    {
+    else {
       return value.substring(0, 2);
     }
   }
 
   @Override
-  public int hashCode()
-  {
+  public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((nameKey == null) ? 0 : nameKey.hashCode());
@@ -142,8 +133,7 @@ public abstract class Point implements Serializable , LocaleStringIF
   }
 
   @Override
-  public boolean equals(@Nullable Object obj)
-  {
+  public boolean equals(@Nullable Object obj) {
     if (this == obj)
       return true;
     if (obj == null)
@@ -151,8 +141,7 @@ public abstract class Point implements Serializable , LocaleStringIF
     if (getClass() != obj.getClass())
       return false;
     final Point other = (Point) obj;
-    if (nameKey == null)
-    {
+    if (nameKey == null) {
       if (other.nameKey != null)
         return false;
     }

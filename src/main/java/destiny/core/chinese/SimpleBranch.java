@@ -8,8 +8,7 @@ package destiny.core.chinese;
 import org.jetbrains.annotations.NotNull;
 
 /** 實作 五行 getFiveElement() 以及 陰陽 getYinYang() 以及取得地支順序 getIndex() 的地支 */
-public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinYangIF
-{
+public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinYangIF {
   子(Branch.子),
   丑(Branch.丑),
   寅(Branch.寅),
@@ -45,10 +44,8 @@ public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinY
    * Java 5 中的 enum 無法被繼承 , 真是麻煩... 
    */
   @NotNull
-  public static FiveElement getFiveElement(@NotNull Branch eb)
-  {
-    switch (eb)
-    {
+  public static FiveElement getFiveElement(@NotNull Branch eb) {
+    switch (eb) {
       case 亥:
       case 子:
         return FiveElement.水;
