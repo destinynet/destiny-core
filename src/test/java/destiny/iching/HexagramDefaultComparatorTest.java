@@ -5,12 +5,12 @@
  */
 package destiny.iching;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import org.junit.Test;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class HexagramDefaultComparatorTest
 {
@@ -18,13 +18,13 @@ public class HexagramDefaultComparatorTest
   @Test
   public void testOutput()
   {
-    // mainStar2BranchMap.put(new Boolean[]{true}, 1);
+    // map.put(new Boolean[]{true}, 1);
     HexagramSequenceIF impl = new HexagramDefaultComparator();
     for(int hex=1 ; hex<=64 ; hex++)
     {
       StringBuffer sb = new StringBuffer();
       
-      sb.append("mainStar2BranchMap.put(new Boolean[] {");
+      sb.append("map.put(new Boolean[] {");
       
       Hexagram h = impl.getHexagram(hex);
       for(int line=1 ; line<=6 ; line++)

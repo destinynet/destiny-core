@@ -18,12 +18,12 @@ import static destiny.core.chinese.Branch.*;
 @SuppressWarnings("Duplicates")
 public final class UnluckyStar extends ZStar {
 
-  public final static UnluckyStar 擎羊 = new UnluckyStar("擎羊");
-  public final static UnluckyStar 陀羅 = new UnluckyStar("陀羅");
-  public final static UnluckyStar 火星 = new UnluckyStar("火星");
-  public final static UnluckyStar 鈴星 = new UnluckyStar("鈴星");
-  public final static UnluckyStar 地劫 = new UnluckyStar("地劫");
-  public final static UnluckyStar 地空 = new UnluckyStar("地空");
+  public final static UnluckyStar 擎羊 = new UnluckyStar("擎羊"); // 甲
+  public final static UnluckyStar 陀羅 = new UnluckyStar("陀羅"); // 甲
+  public final static UnluckyStar 火星 = new UnluckyStar("火星"); // 甲
+  public final static UnluckyStar 鈴星 = new UnluckyStar("鈴星"); // 甲
+  public final static UnluckyStar 地劫 = new UnluckyStar("地劫"); // 乙
+  public final static UnluckyStar 地空 = new UnluckyStar("地空"); // 乙 (有時又稱天空)
 
   public final static UnluckyStar[] values = {擎羊 , 陀羅 , 火星 , 鈴星 , 地劫 , 地空};
 
@@ -83,4 +83,10 @@ public final class UnluckyStar extends ZStar {
       default: throw new AssertionError("年支 = " + year + " , 時支 = " + hour);
     }
   };
+
+  /** 地劫 : 時支 -> 地支 */
+  public final static Function<Branch , Branch> fun地劫 = hour -> Branch.get(hour.getIndex()-1);
+
+  /** 地空 : 時支 -> 地支 */
+  public final static Function<Branch , Branch> fun地空 = hour -> Branch.get(11-hour.getIndex());
 }

@@ -75,4 +75,36 @@ public class UnluckyStarTest {
     assertSame(卯 , fun鈴星.apply(巳 , 巳));
     assertSame(丑 , fun鈴星.apply(卯 , 卯));
   }
+
+  @Test
+  public void test地劫() {
+    assertSame(亥 , fun地劫.apply(子));
+    assertSame(子 , fun地劫.apply(丑));
+    assertSame(丑 , fun地劫.apply(寅));
+    assertSame(寅 , fun地劫.apply(卯));
+    assertSame(卯 , fun地劫.apply(辰));
+    assertSame(辰 , fun地劫.apply(巳));
+    assertSame(巳 , fun地劫.apply(午));
+    assertSame(午 , fun地劫.apply(未));
+    assertSame(未 , fun地劫.apply(申));
+    assertSame(申 , fun地劫.apply(酉));
+    assertSame(酉 , fun地劫.apply(戌));
+    assertSame(戌 , fun地劫.apply(亥));
+  }
+
+  @Test
+  public void test地空() {
+    assertSame(亥 , fun地空.apply(子));
+    assertSame(戌 , fun地空.apply(丑));
+    assertSame(酉 , fun地空.apply(寅));
+    assertSame(申 , fun地空.apply(卯));
+    assertSame(未 , fun地空.apply(辰));
+    assertSame(午 , fun地空.apply(巳));
+    assertSame(巳 , fun地空.apply(午));
+    assertSame(辰 , fun地空.apply(未));
+    assertSame(卯 , fun地空.apply(申));
+    assertSame(寅 , fun地空.apply(酉));
+    assertSame(丑 , fun地空.apply(戌));
+    assertSame(子 , fun地空.apply(亥));
+  }
 }
