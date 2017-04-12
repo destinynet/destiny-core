@@ -66,34 +66,34 @@ public class LuckyStarTest {
 
   @Test
   public void test左輔() {
-    assertSame(辰 , fun左輔.apply(子));
-    assertSame(巳 , fun左輔.apply(丑));
-    assertSame(午 , fun左輔.apply(寅));
-    assertSame(未 , fun左輔.apply(卯));
-    assertSame(申 , fun左輔.apply(辰));
-    assertSame(酉 , fun左輔.apply(巳));
-    assertSame(戌 , fun左輔.apply(午));
-    assertSame(亥 , fun左輔.apply(未));
-    assertSame(子 , fun左輔.apply(申));
-    assertSame(丑 , fun左輔.apply(酉));
-    assertSame(寅 , fun左輔.apply(戌));
-    assertSame(卯 , fun左輔.apply(亥));
+    assertSame(辰 , fun左輔.apply(寅));
+    assertSame(巳 , fun左輔.apply(卯));
+    assertSame(午 , fun左輔.apply(辰));
+    assertSame(未 , fun左輔.apply(巳));
+    assertSame(申 , fun左輔.apply(午));
+    assertSame(酉 , fun左輔.apply(未));
+    assertSame(戌 , fun左輔.apply(申));
+    assertSame(亥 , fun左輔.apply(酉));
+    assertSame(子 , fun左輔.apply(戌));
+    assertSame(丑 , fun左輔.apply(亥));
+    assertSame(寅 , fun左輔.apply(子));
+    assertSame(卯 , fun左輔.apply(丑));
   }
 
   @Test
   public void test右弼() {
-    assertSame(戌 , fun右弼.apply(子));
-    assertSame(酉 , fun右弼.apply(丑));
-    assertSame(申 , fun右弼.apply(寅));
-    assertSame(未 , fun右弼.apply(卯));
-    assertSame(午 , fun右弼.apply(辰));
-    assertSame(巳 , fun右弼.apply(巳));
-    assertSame(辰 , fun右弼.apply(午));
-    assertSame(卯 , fun右弼.apply(未));
-    assertSame(寅 , fun右弼.apply(申));
-    assertSame(丑 , fun右弼.apply(酉));
-    assertSame(子 , fun右弼.apply(戌));
-    assertSame(亥 , fun右弼.apply(亥));
+    assertSame(戌 , fun右弼.apply(寅));
+    assertSame(酉 , fun右弼.apply(卯));
+    assertSame(申 , fun右弼.apply(辰));
+    assertSame(未 , fun右弼.apply(巳));
+    assertSame(午 , fun右弼.apply(午));
+    assertSame(巳 , fun右弼.apply(未));
+    assertSame(辰 , fun右弼.apply(申));
+    assertSame(卯 , fun右弼.apply(酉));
+    assertSame(寅 , fun右弼.apply(戌));
+    assertSame(丑 , fun右弼.apply(亥));
+    assertSame(子 , fun右弼.apply(子));
+    assertSame(亥 , fun右弼.apply(丑));
   }
 
   @Test

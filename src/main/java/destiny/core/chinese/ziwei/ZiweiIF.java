@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static destiny.core.chinese.Branch.寅;
@@ -27,13 +28,13 @@ public interface ZiweiIF {
   static Logger logger = LoggerFactory.getLogger(ZiweiIF.class);
 
   /**
-   * 命宮
+   * 命宮 : g(月數 , 時支) -> 地支
    *
    * 假設我的出生月日是農曆 7/6 巳時，順數生月，那就是從寅宮開始順時針走七步 , 因為是農曆七月，所以經由 順數生月，所以我們找到了申宮
    *
    * 找到申宮之後再 逆數生時 找到了卯宮，所以卯就是你的命宮
    * */
-  default Branch getMainHouseBranch(int month , Branch hour) {
+  static Branch getMainHouseBranch(int month , Branch hour) {
     return 寅.next(month-1).prev(hour.getIndex());
   }
 
@@ -80,10 +81,10 @@ public interface ZiweiIF {
 
 
   /**
-   * 身宮
+   * 身宮 (月數 , 時支) -> 地支
    * 順數生月，順數生時 就可以找到身宮
    */
-  default Branch getBodyHouse(int month , Branch hour) {
+  static Branch getBodyHouse(int month , Branch hour) {
     return 寅.next(month-1).next(hour.getIndex());
   }
 
@@ -197,28 +198,7 @@ public interface ZiweiIF {
   }
 
 
-  /**
-   * 14顆主星 => 地支 的 function mapping
-   * TODO : should be private map in Java9
-   */
-  Map<MainStar , Function<Tuple2<Integer , Integer>, Branch>> mainStar2BranchMap =
-      ImmutableMap.<MainStar , Function<Tuple2<Integer , Integer> , Branch>>builder()
-        .put(紫微 , t2 -> getBranchOfPurpleStar(t2.v1() , t2.v2()))
-        .put(天機 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(1))
-        .put(太陽 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(3))
-        .put(武曲 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(4))
-        .put(天同 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(5))
-        .put(廉貞 , t2 -> getBranchOf(紫微 , t2.v1() , t2.v2()).prev(8))
 
-        .put(天府 , t2 -> getBranchOfTianFuStar(t2.v1() , t2.v2()))
-        .put(太陰 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(1))
-        .put(貪狼 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(2))
-        .put(巨門 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(3))
-        .put(天相 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(4))
-        .put(天梁 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(5))
-        .put(七殺 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(6))
-        .put(破軍 , t2 -> getBranchOf(天府 , t2.v1() , t2.v2()).next(10))
-      .build();
 
   /**
    * 取得某個主星，位於宮位的地支
@@ -244,22 +224,63 @@ public interface ZiweiIF {
     return stemBranchOf寅.next(steps);
   }
 
-
-
-
-  // TODO : should be private after Java9
+  /**
+   * 左下角，寅宮 的天干
+   * TODO : should be private after Java9
+   */
   default Stem getStemOf寅(Stem year) {
-    Stem stemOf寅;
     switch (year) {
-      case 甲: case 己: stemOf寅 = 丙; break;
-      case 乙: case 庚: stemOf寅 = 戊; break;
-      case 丙: case 辛: stemOf寅 = 庚; break;
-      case 丁: case 壬: stemOf寅 = 壬; break;
-      case 戊: case 癸: stemOf寅 = 甲; break;
+      case 甲: case 己: return 丙;
+      case 乙: case 庚: return 戊;
+      case 丙: case 辛: return 庚;
+      case 丁: case 壬: return 壬;
+      case 戊: case 癸: return 甲;
       default: throw new RuntimeException("impossible");
     }
-    return stemOf寅;
   }
+
+  /**
+   * 14顆主星
+   * (局數,生日) -> 地支
+   */
+  BiFunction<Integer, Integer, Branch> fun紫微 = ZiweiIF::getBranchOfPurpleStar;
+  BiFunction<Integer, Integer, Branch> fun天機 = (set, day) -> fun紫微.apply(set, day).prev(1);
+  BiFunction<Integer, Integer, Branch> fun太陽 = (set, day) -> fun紫微.apply(set, day).prev(3);
+  BiFunction<Integer, Integer, Branch> fun武曲 = (set, day) -> fun紫微.apply(set, day).prev(4);
+  BiFunction<Integer, Integer, Branch> fun天同 = (set, day) -> fun紫微.apply(set, day).prev(5);
+  BiFunction<Integer, Integer, Branch> fun廉貞 = (set, day) -> fun紫微.apply(set, day).prev(8);
+  BiFunction<Integer, Integer, Branch> fun天府 = ZiweiIF::getBranchOfTianFuStar;
+  BiFunction<Integer, Integer, Branch> fun太陰 = (set, day) -> fun天府.apply(set, day).next(1);
+  BiFunction<Integer, Integer, Branch> fun貪狼 = (set, day) -> fun天府.apply(set, day).next(2);
+  BiFunction<Integer, Integer, Branch> fun巨門 = (set, day) -> fun天府.apply(set, day).next(3);
+  BiFunction<Integer, Integer, Branch> fun天相 = (set, day) -> fun天府.apply(set, day).next(4);
+  BiFunction<Integer, Integer, Branch> fun天梁 = (set, day) -> fun天府.apply(set, day).next(5);
+  BiFunction<Integer, Integer, Branch> fun七殺 = (set, day) -> fun天府.apply(set, day).next(6);
+  BiFunction<Integer, Integer, Branch> fun破軍 = (set, day) -> fun天府.apply(set, day).next(10);
+
+
+  /**
+   * 14顆主星 => 地支 的 function mapping
+   * Tuple2<局數 , 生日>
+   * TODO : should be private map in Java9
+   */
+  Map<MainStar , Function<Tuple2<Integer , Integer>, Branch>> mainStar2BranchMap =
+      ImmutableMap.<MainStar , Function<Tuple2<Integer , Integer> , Branch>>builder()
+        .put(紫微, t2 -> fun紫微.apply(t2.v1(), t2.v2()))
+        .put(天機, t2 -> fun天機.apply(t2.v1(), t2.v2()))
+        .put(太陽, t2 -> fun太陽.apply(t2.v1(), t2.v2()))
+        .put(武曲, t2 -> fun武曲.apply(t2.v1(), t2.v2()))
+        .put(天同, t2 -> fun天同.apply(t2.v1(), t2.v2()))
+        .put(廉貞, t2 -> fun廉貞.apply(t2.v1(), t2.v2()))
+        .put(天府, t2 -> fun天府.apply(t2.v1(), t2.v2()))
+        .put(太陰, t2 -> fun太陰.apply(t2.v1(), t2.v2()))
+        .put(貪狼, t2 -> fun貪狼.apply(t2.v1(), t2.v2()))
+        .put(巨門, t2 -> fun巨門.apply(t2.v1(), t2.v2()))
+        .put(天相, t2 -> fun天相.apply(t2.v1(), t2.v2()))
+        .put(天梁, t2 -> fun天梁.apply(t2.v1(), t2.v2()))
+        .put(七殺, t2 -> fun七殺.apply(t2.v1(), t2.v2()))
+        .put(破軍, t2 -> fun破軍.apply(t2.v1(), t2.v2()))
+      .build();
 
   void calculate(Gender gender , LocalDateTime time , Location loc);
 }

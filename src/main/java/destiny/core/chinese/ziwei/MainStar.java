@@ -30,5 +30,4 @@ public final class MainStar extends ZStar {
     // resource key 存放於 destiny.core.chinese.ziwei.ZStar.properties 當中
     super(nameKey , ZStar.class.getName() , nameKey+"_ABBR");
   }
-
 }

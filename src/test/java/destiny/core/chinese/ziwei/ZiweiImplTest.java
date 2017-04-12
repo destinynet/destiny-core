@@ -36,7 +36,7 @@ public class ZiweiImplTest {
   @Test
   public void testGetMainHouseBranch() {
     ZiweiIF impl = new ZiweiImpl();
-    assertSame(午 , impl.getMainHouseBranch(3 , 戌));
+    assertSame(午 , ZiweiIF.getMainHouseBranch(3 , 戌));
 
     assertSame(StemBranch.get(丙 , 午) , impl.getMainHouse(丁 , 3 , 戌));
   }
@@ -101,12 +101,11 @@ public class ZiweiImplTest {
    * */
   @Test
   public void testBodyHouse() {
-    ZiweiIF impl = new ZiweiImpl();
-    assertSame(Branch.寅 , impl.getBodyHouse(3 , 戌));
+    assertSame(Branch.寅 , ZiweiIF.getBodyHouse(3 , 戌));
 
     // 丁酉年 3月14日，子時，身命同宮 , 都在 辰
-    assertSame(辰 , impl.getMainHouseBranch(3 , Branch.子));
-    assertSame(辰 , impl.getBodyHouse(3 , Branch.子));
+    assertSame(辰 , ZiweiIF.getMainHouseBranch(3 , Branch.子));
+    assertSame(辰 , ZiweiIF.getBodyHouse(3 , Branch.子));
   }
 
   /**

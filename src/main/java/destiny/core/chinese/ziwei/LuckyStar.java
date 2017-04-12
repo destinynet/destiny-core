@@ -39,10 +39,10 @@ public final class LuckyStar extends ZStar {
   public final static Function<Branch, Branch> fun文曲 = hour -> Branch.get(hour.getIndex() + 4);
 
   /** 左輔 : 月支 -> 地支 */
-  public final static Function<Branch, Branch> fun左輔 = month -> Branch.get(month.getIndex() + 4);
+  public final static Function<Branch, Branch> fun左輔 = month -> Branch.get(month.getIndex() + 2);
 
   /** 右弼 : 月支 -> 地支 */
-  public final static Function<Branch, Branch> fun右弼 = month -> Branch.get(10 - month.getIndex());
+  public final static Function<Branch, Branch> fun右弼 = month -> Branch.get(12 - month.getIndex());
 
   /** 天魁 : 年干 -> 地支 */
   public final static Function<Stem, Branch> fun天魁 = year -> {
