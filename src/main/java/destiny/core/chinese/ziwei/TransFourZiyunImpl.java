@@ -75,7 +75,7 @@ public class TransFourZiyunImpl extends TransFourAbstractImpl {
     // 「紫雲派」，與「全集」的差別，就只有「癸干：破巨陽貪」
     .put(tuple(癸 , 祿) , 破軍)
     .put(tuple(癸 , 權) , 巨門)
-    .put(tuple(癸 , 科) , 太陽)
+    .put(tuple(癸 , 科) , 太陽)  // 唯一與「全集」不同之處
     .put(tuple(癸 , 忌) , 貪狼)
 
     .build();
