@@ -6,11 +6,15 @@ package destiny.core.chinese.ziwei;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.ziwei.FuncType.HOUR_BRANCH;
+import static destiny.core.chinese.ziwei.FuncType.YEAR_BRANCH_HOUR_BRANCH;
+import static destiny.core.chinese.ziwei.FuncType.YEAR_STEM;
 
 /**
  * 六兇星
@@ -18,17 +22,26 @@ import static destiny.core.chinese.Branch.*;
 @SuppressWarnings("Duplicates")
 public final class UnluckyStar extends ZStar {
 
-  public final static UnluckyStar 擎羊 = new UnluckyStar("擎羊"); // 甲
-  public final static UnluckyStar 陀羅 = new UnluckyStar("陀羅"); // 甲
-  public final static UnluckyStar 火星 = new UnluckyStar("火星"); // 甲
-  public final static UnluckyStar 鈴星 = new UnluckyStar("鈴星"); // 甲
-  public final static UnluckyStar 地劫 = new UnluckyStar("地劫"); // 乙
-  public final static UnluckyStar 地空 = new UnluckyStar("地空"); // 乙 (有時又稱天空)
+  public final static UnluckyStar 擎羊 = new UnluckyStar("擎羊", YEAR_STEM); // 甲
+  public final static UnluckyStar 陀羅 = new UnluckyStar("陀羅", YEAR_STEM); // 甲
+  public final static UnluckyStar 火星 = new UnluckyStar("火星", YEAR_BRANCH_HOUR_BRANCH); // 甲
+  public final static UnluckyStar 鈴星 = new UnluckyStar("鈴星", YEAR_BRANCH_HOUR_BRANCH); // 甲
+  public final static UnluckyStar 地劫 = new UnluckyStar("地劫", HOUR_BRANCH); // 乙
+  public final static UnluckyStar 地空 = new UnluckyStar("地空", HOUR_BRANCH); // 乙 (有時又稱天空)
 
   public final static UnluckyStar[] values = {擎羊 , 陀羅 , 火星 , 鈴星 , 地劫 , 地空};
 
-  public UnluckyStar(String nameKey) {
+  @NotNull
+  private final FuncType funcType;
+
+  public UnluckyStar(String nameKey, @NotNull FuncType funcType) {
     super(nameKey, ZStar.class.getName() , nameKey+"_ABBR");
+    this.funcType = funcType;
+  }
+
+  @NotNull
+  public FuncType getFuncType() {
+    return funcType;
   }
 
   /** 擎羊 : 年干 -> 地支 */

@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.function.Function3;
 
 import java.util.function.BiFunction;
@@ -14,6 +15,7 @@ import java.util.function.Function;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.BranchTools.direction;
 import static destiny.core.chinese.BranchTools.trilogy;
+import static destiny.core.chinese.ziwei.FuncType.*;
 import static destiny.core.chinese.ziwei.LuckyStar.*;
 
 /**
@@ -22,45 +24,52 @@ import static destiny.core.chinese.ziwei.LuckyStar.*;
 @SuppressWarnings("Duplicates")
 public class MinorStar extends ZStar {
 
-  public final static MinorStar 天官 = new MinorStar("天官");
-  public final static MinorStar 天福 = new MinorStar("天福");
-  public final static MinorStar 天廚 = new MinorStar("天廚");
-  public final static MinorStar 天刑 = new MinorStar("天刑");
-  public final static MinorStar 天姚 = new MinorStar("天姚");
-  public final static MinorStar 解神 = new MinorStar("解神");
-  public final static MinorStar 天巫 = new MinorStar("天巫");
-  public final static MinorStar 天月 = new MinorStar("天月");
-  public final static MinorStar 陰煞 = new MinorStar("陰煞");
-  public final static MinorStar 台輔 = new MinorStar("台輔");
-  public final static MinorStar 封誥 = new MinorStar("封誥");
-  public final static MinorStar 天空 = new MinorStar("天空");
-  public final static MinorStar 天哭 = new MinorStar("天哭");
-  public final static MinorStar 天虛 = new MinorStar("天虛");
-  public final static MinorStar 龍池 = new MinorStar("龍池");
-  public final static MinorStar 鳳閣 = new MinorStar("鳳閣");
-  public final static MinorStar 紅鸞 = new MinorStar("紅鸞");
-  public final static MinorStar 天喜 = new MinorStar("天喜");
-  public final static MinorStar 孤辰 = new MinorStar("孤辰");
-  public final static MinorStar 寡宿 = new MinorStar("寡宿");
-  public final static MinorStar 蜚廉 = new MinorStar("蜚廉");
-  public final static MinorStar 破碎 = new MinorStar("破碎");
-  public final static MinorStar 華蓋 = new MinorStar("華蓋");
-  public final static MinorStar 咸池 = new MinorStar("咸池");
-
-  public final static MinorStar 天德 = new MinorStar("天德");
-  public final static MinorStar 月德 = new MinorStar("月德");
-
-  public final static MinorStar 天才 = new MinorStar("天才");
-  public final static MinorStar 天壽 = new MinorStar("天壽");
-  public final static MinorStar 三台 = new MinorStar("三台");
-  public final static MinorStar 八座 = new MinorStar("八座");
-  public final static MinorStar 恩光 = new MinorStar("恩光");
-  public final static MinorStar 天貴 = new MinorStar("天貴");
+  public final static MinorStar 天官 = new MinorStar("天官", YEAR_STEM);
+  public final static MinorStar 天福 = new MinorStar("天福", YEAR_STEM);
+  public final static MinorStar 天廚 = new MinorStar("天廚", YEAR_STEM);
+  public final static MinorStar 天刑 = new MinorStar("天刑", MONTH_BRANCH);
+  public final static MinorStar 天姚 = new MinorStar("天姚", MONTH_BRANCH);
+  public final static MinorStar 解神 = new MinorStar("解神", MONTH_BRANCH);
+  public final static MinorStar 天巫 = new MinorStar("天巫", MONTH_BRANCH);
+  public final static MinorStar 天月 = new MinorStar("天月", MONTH_BRANCH);
+  public final static MinorStar 陰煞 = new MinorStar("陰煞", MONTH_BRANCH);
+  public final static MinorStar 台輔 = new MinorStar("台輔", HOUR_BRANCH);
+  public final static MinorStar 封誥 = new MinorStar("封誥", HOUR_BRANCH);
+  public final static MinorStar 天空 = new MinorStar("天空", YEAR_BRANCH);
+  public final static MinorStar 天哭 = new MinorStar("天哭", YEAR_BRANCH);
+  public final static MinorStar 天虛 = new MinorStar("天虛", YEAR_BRANCH);
+  public final static MinorStar 龍池 = new MinorStar("龍池", YEAR_BRANCH);
+  public final static MinorStar 鳳閣 = new MinorStar("鳳閣", YEAR_BRANCH);
+  public final static MinorStar 紅鸞 = new MinorStar("紅鸞", YEAR_BRANCH);
+  public final static MinorStar 天喜 = new MinorStar("天喜", YEAR_BRANCH);
+  public final static MinorStar 孤辰 = new MinorStar("孤辰", YEAR_BRANCH);
+  public final static MinorStar 寡宿 = new MinorStar("寡宿", YEAR_BRANCH);
+  public final static MinorStar 蜚廉 = new MinorStar("蜚廉", YEAR_BRANCH);
+  public final static MinorStar 破碎 = new MinorStar("破碎", YEAR_BRANCH);
+  public final static MinorStar 華蓋 = new MinorStar("華蓋", YEAR_BRANCH);
+  public final static MinorStar 咸池 = new MinorStar("咸池", YEAR_BRANCH);
+  public final static MinorStar 天德 = new MinorStar("天德", YEAR_BRANCH);
+  public final static MinorStar 月德 = new MinorStar("月德", YEAR_BRANCH);
+  public final static MinorStar 天才 = new MinorStar("天才", YEAR_BRANCH_MONTH_NUM_HOUR_BRANCH);
+  public final static MinorStar 天壽 = new MinorStar("天壽", YEAR_BRANCH_MONTH_NUM_HOUR_BRANCH);
+  public final static MinorStar 三台 = new MinorStar("三台", MOON_BRANCH_DAY_NUM);
+  public final static MinorStar 八座 = new MinorStar("八座", MOON_BRANCH_DAY_NUM);
+  public final static MinorStar 恩光 = new MinorStar("恩光", HOUR_BRANCH_DAY_NUM);
+  public final static MinorStar 天貴 = new MinorStar("天貴", HOUR_BRANCH_DAY_NUM);
 
   public final static MinorStar[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴};
 
-  public MinorStar(String nameKey) {
+  @NotNull
+  private final FuncType funcType;
+
+  public MinorStar(String nameKey, FuncType funcType) {
     super(nameKey, ZStar.class.getName());
+    this.funcType = funcType;
+  }
+
+  @NotNull
+  public FuncType getFuncType() {
+    return funcType;
   }
 
   /** 天官 : 年干 -> 地支 */
