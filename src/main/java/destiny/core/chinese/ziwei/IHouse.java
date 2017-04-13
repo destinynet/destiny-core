@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.chinese.Branch;
-import destiny.core.chinese.Stem;
+import destiny.core.chinese.StemBranch;
 
 public interface  IHouse<T> {
 
@@ -12,5 +12,5 @@ public interface  IHouse<T> {
 
   Branch getBranch(T t);
 
-  Branch getBranch(Stem yearStem, Branch yearBranch, Branch monthBranch, int monthNum, int days, Branch hour, int set);
+  Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings);
 }

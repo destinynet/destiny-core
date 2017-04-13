@@ -308,26 +308,25 @@ public interface ZiweiIF {
       .build();
 
 
-  default Plate getPlate(Stem year , Branch monthBranch , int monthNum , int days , Branch hour , HouseSeqIF houseSeq , @NotNull Collection<ZStar> stars) {
-    StemBranch mainHouse = getMainHouse(year , monthNum , hour);
-    StemBranch bodyHouse = getBodyHouse(year , monthNum , hour);
+  default Plate getPlate(StemBranch year, Branch monthBranch , int monthNum , int days , Branch hour , HouseSeqIF houseSeq , @NotNull Collection<ZStar> stars , Settings settings) {
+    StemBranch mainHouse = getMainHouse(year.getStem() , monthNum , hour);
+    StemBranch bodyHouse = getBodyHouse(year.getStem() , monthNum , hour);
 
-
-    Tuple3<String , FiveElement , Integer> t3 = getNaYin(year , monthNum , hour);
+    Tuple3<String , FiveElement , Integer> t3 = getNaYin(year.getStem() , monthNum , hour);
     int set = t3.v3();
 
     Map<House , StemBranch> houseMap =
     Arrays.stream(houseSeq.getHouses())
-      .map( house -> Tuple.tuple(house , getHouse(year , monthNum, hour , house , houseSeq)))
+      .map( house -> Tuple.tuple(house , getHouse(year.getStem() , monthNum, hour , house , houseSeq)))
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
     // 寅 的天干
-    Stem stemOf寅 = getStemOf寅(year);
+    Stem stemOf寅 = getStemOf寅(year.getStem());
 
     Map<ZStar , StemBranch> starBranchMap =
     stars.stream()
       .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
-        .map(iHouse -> iHouse.getBranch(year, , monthBranch, monthNum, days, hour, set))
+        .map(iHouse -> iHouse.getBranch(year , monthBranch, monthNum, days, hour, set, settings))
         .map(branch -> Tuple.tuple(star , getStemBranchOf(branch , stemOf寅)))
       )
       .filter(Optional::isPresent)

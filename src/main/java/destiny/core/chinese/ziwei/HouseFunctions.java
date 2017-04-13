@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei;
 import com.google.common.collect.ImmutableMap;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
+import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Map;
@@ -15,6 +16,7 @@ import static destiny.core.chinese.ziwei.MainStar.*;
 import static destiny.core.chinese.ziwei.UnluckyStar.*;
 import static destiny.core.chinese.ziwei.ZiweiIF.*;
 
+@SuppressWarnings("Duplicates")
 public class HouseFunctions {
 
   public final static IHouse house紫微 = new IHouseMainStarImpl() {
@@ -193,34 +195,28 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house火星_全書 = new IHouseYearBranchImpl() {
+  public final static IHouse house火星 = new IHouseFireBellImpl() {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun火星_全書.apply(branch);
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+      switch (settings.getFireBell()) {
+        case 全書: return fun火星_全書.apply(year.getBranch());
+        case 全集: return fun火星_全集.apply(year.getBranch() , hour);
+        default: throw new AssertionError("error");
+      }
     }
   };
 
-
-  public final static IHouse house火星_全集 = new IHouseYearBranchHourBranchImpl() {
+  public final static IHouse house鈴星 = new IHouseFireBellImpl() {
     @Override
-    public Branch getBranch(Tuple2<Branch, Branch> t) {
-      return fun火星_全集.apply(t.v1() , t.v2());
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+      switch (settings.getFireBell()) {
+        case 全書: return fun鈴星_全書.apply(year.getBranch());
+        case 全集: return fun鈴星_全集.apply(year.getBranch() , hour);
+        default: throw new AssertionError("error");
+      }
     }
   };
 
-  public final static IHouse house鈴星_全書 = new IHouseYearBranchImpl() {
-    @Override
-    public Branch getBranch(Branch branch) {
-      return fun鈴星_全書.apply(branch);
-    }
-  };
-
-  public final static IHouse house鈴星_全集 = new IHouseYearBranchHourBranchImpl() {
-    @Override
-    public Branch getBranch(Tuple2<Branch, Branch> t) {
-      return fun鈴星_全集.apply(t.v1() , t.v2());
-    }
-  };
 
   public final static IHouse house地劫 = new IHouseHourBranchImpl() {
     @Override
@@ -266,8 +262,8 @@ public class HouseFunctions {
     // 六兇星
     .put(擎羊 , house擎羊)
     .put(陀羅 , house陀羅)
-    .put(火星 , house火星_全集)
-    .put(鈴星 , house鈴星_全集)
+    .put(火星 , house火星)
+    .put(鈴星 , house鈴星)
     .put(地劫 , house地劫)
     .put(地空 , house地空)
 

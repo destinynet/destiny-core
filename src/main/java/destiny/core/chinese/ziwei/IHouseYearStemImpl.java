@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
+import destiny.core.chinese.StemBranch;
 
 /** 年干 -> 地支 */
 public abstract class IHouseYearStemImpl implements IHouse<Stem> {
@@ -15,7 +16,7 @@ public abstract class IHouseYearStemImpl implements IHouse<Stem> {
   }
 
   @Override
-  public Branch getBranch(Stem yearStem, Branch yearBranch, Branch monthBranch, int monthNum, int days, Branch hour, int set) {
-    return getBranch(yearStem);
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+    return getBranch(year.getStem());
   }
 }
