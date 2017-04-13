@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 public enum FuncType {
+  SET_DAY_NUM,   // (局數,生日)
   HOUR_BRANCH,
   MONTH_BRANCH,
   YEAR_STEM,

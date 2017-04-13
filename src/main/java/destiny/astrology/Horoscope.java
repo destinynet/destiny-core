@@ -20,8 +20,8 @@ import java.util.Map;
  * 每個宮的宮首 (HouseCusp) 位於黃道幾度 , 資料結構存放於 cusps[13]
  * </pre>
  */
-public class Horoscope implements Serializable
-{
+public class Horoscope implements Serializable {
+
   private final HoroscopeContext context;
   
   /** 星 (Star) 與 位置(Position)＋地平方位角(Azimuth) ==>  (PositionWithAzimuth) 的 Map , 作為 cache 層 */

@@ -62,18 +62,18 @@ public class UnluckyStarTest {
 
   @Test
   public void test火星() {
-    assertSame(子 , fun火星.apply(午 , 亥));
-    assertSame(卯 , fun火星.apply(申 , 丑));
-    assertSame(辰 , fun火星.apply(丑 , 丑));
-    assertSame(寅 , fun火星.apply(未 , 巳));
+    assertSame(子 , fun火星_全集.apply(午 , 亥));
+    assertSame(卯 , fun火星_全集.apply(申 , 丑));
+    assertSame(辰 , fun火星_全集.apply(丑 , 丑));
+    assertSame(寅 , fun火星_全集.apply(未 , 巳));
   }
 
   @Test
   public void test鈴星() {
-    assertSame(丑 , fun鈴星.apply(戌 , 戌));
-    assertSame(午 , fun鈴星.apply(申 , 申));
-    assertSame(卯 , fun鈴星.apply(巳 , 巳));
-    assertSame(丑 , fun鈴星.apply(卯 , 卯));
+    assertSame(丑 , fun鈴星_全集.apply(戌 , 戌));
+    assertSame(午 , fun鈴星_全集.apply(申 , 申));
+    assertSame(卯 , fun鈴星_全集.apply(巳 , 巳));
+    assertSame(丑 , fun鈴星_全集.apply(卯 , 卯));
   }
 
   @Test

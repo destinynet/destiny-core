@@ -6,12 +6,10 @@ package destiny.core.chinese.ziwei;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
 import static destiny.core.chinese.Branch.*;
-import static destiny.core.chinese.ziwei.FuncType.*;
 
 /**
  * 八吉星
@@ -19,31 +17,22 @@ import static destiny.core.chinese.ziwei.FuncType.*;
 @SuppressWarnings("Duplicates")
 public final class LuckyStar extends ZStar {
 
-  public final static LuckyStar 文昌 = new LuckyStar("文昌", HOUR_BRANCH); // 甲
-  public final static LuckyStar 文曲 = new LuckyStar("文曲", HOUR_BRANCH); // 甲
-  public final static LuckyStar 左輔 = new LuckyStar("左輔", MONTH_BRANCH); // 甲
-  public final static LuckyStar 右弼 = new LuckyStar("右弼", MONTH_BRANCH); // 甲
-  public final static LuckyStar 天魁 = new LuckyStar("天魁", YEAR_STEM); // 甲
-  public final static LuckyStar 天鉞 = new LuckyStar("天鉞", YEAR_STEM); // 甲
-  public final static LuckyStar 祿存 = new LuckyStar("祿存", YEAR_STEM); // 甲
-  public final static LuckyStar 天馬 = new LuckyStar("天馬", YEAR_STEM); // 乙級星
+  public final static LuckyStar 文昌 = new LuckyStar("文昌"); // 甲
+  public final static LuckyStar 文曲 = new LuckyStar("文曲"); // 甲
+  public final static LuckyStar 左輔 = new LuckyStar("左輔"); // 甲
+  public final static LuckyStar 右弼 = new LuckyStar("右弼"); // 甲
+  public final static LuckyStar 天魁 = new LuckyStar("天魁"); // 甲
+  public final static LuckyStar 天鉞 = new LuckyStar("天鉞"); // 甲
+  public final static LuckyStar 祿存 = new LuckyStar("祿存"); // 甲
+  public final static LuckyStar 天馬 = new LuckyStar("天馬"); // 乙級星
 
   public final static LuckyStar[] values = {文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬};
 
-  @NotNull
-  private final FuncType funcType;
-
-  public LuckyStar(String nameKey, @NotNull FuncType funcType) {
+  public LuckyStar(String nameKey) {
     super(nameKey, ZStar.class.getName() , nameKey+"_ABBR");
-    this.funcType = funcType;
   }
 
-  @NotNull
-  public FuncType getFuncType() {
-    return funcType;
-  }
-
-   /** 文昌 : 時支 -> 地支 */
+  /** 文昌 : 時支 -> 地支 */
   public final static Function<Branch, Branch> fun文昌 = hour -> Branch.get(10 - hour.getIndex());
   /** 文曲 : 時支 -> 地支 */
   public final static Function<Branch, Branch> fun文曲 = hour -> Branch.get(hour.getIndex() + 4);
@@ -97,5 +86,7 @@ public final class LuckyStar extends ZStar {
       default: throw new AssertionError(month);
     }
   };
+
+
 
 }

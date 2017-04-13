@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.chinese.*;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
@@ -14,9 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
@@ -85,8 +90,21 @@ public interface ZiweiIF {
    * 身宮 (月數 , 時支) -> 地支
    * 順數生月，順數生時 就可以找到身宮
    */
-  static Branch getBodyHouse(int month , Branch hour) {
+  static Branch getBodyHouseBranch(int month , Branch hour) {
     return 寅.next(month-1).next(hour.getIndex());
+  }
+
+  /** 承上， 身宮 的干支 */
+  default StemBranch getBodyHouse(Stem year , int month , Branch hour) {
+    // 寅 的天干
+    Stem stemOf寅 = getStemOf寅(year);
+
+    Branch bodyHouse = getBodyHouseBranch(month , hour);
+    // 左下角，寅宮 的 干支
+    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+
+    int steps = bodyHouse.getAheadOf(寅);
+    return stemBranchOf寅.next(steps);
   }
 
   /**
@@ -166,12 +184,12 @@ public interface ZiweiIF {
     Stem stemOf寅 = getStemOf寅(year);
 
     // 紫微 地支
-    Branch purpleBranch = getBranchOfPurpleStar(set , day);
-    // 左下角，寅宮 的 干支
-    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-
-    int steps = purpleBranch.getAheadOf(寅);
-    return stemBranchOf寅.next(steps);
+    Branch branch = getBranchOfPurpleStar(set , day);
+    return getStemBranchOf(branch , stemOf寅);
+//    // 左下角，寅宮 的 干支
+//    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+//    int steps = branch.getAheadOf(寅);
+//    return stemBranchOf寅.next(steps);
   }
 
   /**
@@ -190,16 +208,14 @@ public interface ZiweiIF {
     Stem stemOf寅 = getStemOf寅(year);
 
     // 天府 地支
-    Branch tianFuStar = getBranchOfTianFuStar(set , day);
-    // 左下角，寅宮 的 干支
-    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+    Branch branch = getBranchOfTianFuStar(set , day);
+    return getStemBranchOf(branch , stemOf寅);
 
-    int steps = tianFuStar.getAheadOf(寅);
-    return stemBranchOf寅.next(steps);
+//    // 左下角，寅宮 的 干支
+//    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+//    int steps = branch.getAheadOf(寅);
+//    return stemBranchOf寅.next(steps);
   }
-
-
-
 
   /**
    * 取得某個主星，位於宮位的地支
@@ -219,6 +235,14 @@ public interface ZiweiIF {
 
     // 星星的地支
     Branch branch = getBranchOf(star , set , day);
+    return getStemBranchOf(branch , stemOf寅);
+//    // 左下角，寅宮 的 干支
+//    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
+//    int steps = branch.getAheadOf(寅);
+//    return stemBranchOf寅.next(steps);
+  }
+
+  default StemBranch getStemBranchOf(Branch branch , Stem stemOf寅) {
     // 左下角，寅宮 的 干支
     StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
     int steps = branch.getAheadOf(寅);
@@ -282,6 +306,39 @@ public interface ZiweiIF {
         .put(七殺, t2 -> fun七殺.apply(t2.v1(), t2.v2()))
         .put(破軍, t2 -> fun破軍.apply(t2.v1(), t2.v2()))
       .build();
+
+
+  default Plate getPlate(Stem year , Branch monthBranch , int monthNum , int days , Branch hour , HouseSeqIF houseSeq , @NotNull Collection<ZStar> stars) {
+    StemBranch mainHouse = getMainHouse(year , monthNum , hour);
+    StemBranch bodyHouse = getBodyHouse(year , monthNum , hour);
+
+
+    Tuple3<String , FiveElement , Integer> t3 = getNaYin(year , monthNum , hour);
+    int set = t3.v3();
+
+    Map<House , StemBranch> houseMap =
+    Arrays.stream(houseSeq.getHouses())
+      .map( house -> Tuple.tuple(house , getHouse(year , monthNum, hour , house , houseSeq)))
+      .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+
+    // 寅 的天干
+    Stem stemOf寅 = getStemOf寅(year);
+
+    Map<ZStar , StemBranch> starBranchMap =
+    stars.stream()
+      .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
+        .map(iHouse -> iHouse.getBranch(year, , monthBranch, monthNum, days, hour, set))
+        .map(branch -> Tuple.tuple(star , getStemBranchOf(branch , stemOf寅)))
+      )
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2))
+      ;
+
+
+    Plate plate = new Plate(mainHouse , bodyHouse, t3.v2(), set, houseMap, starBranchMap);
+    return plate;
+  }
 
   void calculate(Gender gender , LocalDateTime time , Location loc);
 }

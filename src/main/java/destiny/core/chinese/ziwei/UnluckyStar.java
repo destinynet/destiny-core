@@ -6,15 +6,11 @@ package destiny.core.chinese.ziwei;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static destiny.core.chinese.Branch.*;
-import static destiny.core.chinese.ziwei.FuncType.HOUR_BRANCH;
-import static destiny.core.chinese.ziwei.FuncType.YEAR_BRANCH_HOUR_BRANCH;
-import static destiny.core.chinese.ziwei.FuncType.YEAR_STEM;
 
 /**
  * 六兇星
@@ -22,26 +18,17 @@ import static destiny.core.chinese.ziwei.FuncType.YEAR_STEM;
 @SuppressWarnings("Duplicates")
 public final class UnluckyStar extends ZStar {
 
-  public final static UnluckyStar 擎羊 = new UnluckyStar("擎羊", YEAR_STEM); // 甲
-  public final static UnluckyStar 陀羅 = new UnluckyStar("陀羅", YEAR_STEM); // 甲
-  public final static UnluckyStar 火星 = new UnluckyStar("火星", YEAR_BRANCH_HOUR_BRANCH); // 甲
-  public final static UnluckyStar 鈴星 = new UnluckyStar("鈴星", YEAR_BRANCH_HOUR_BRANCH); // 甲
-  public final static UnluckyStar 地劫 = new UnluckyStar("地劫", HOUR_BRANCH); // 乙
-  public final static UnluckyStar 地空 = new UnluckyStar("地空", HOUR_BRANCH); // 乙 (有時又稱天空)
+  public final static UnluckyStar 擎羊 = new UnluckyStar("擎羊"); // 甲
+  public final static UnluckyStar 陀羅 = new UnluckyStar("陀羅"); // 甲
+  public final static UnluckyStar 火星 = new UnluckyStar("火星"); // 甲
+  public final static UnluckyStar 鈴星 = new UnluckyStar("鈴星"); // 甲
+  public final static UnluckyStar 地劫 = new UnluckyStar("地劫"); // 乙
+  public final static UnluckyStar 地空 = new UnluckyStar("地空"); // 乙 (有時又稱天空)
 
   public final static UnluckyStar[] values = {擎羊 , 陀羅 , 火星 , 鈴星 , 地劫 , 地空};
 
-  @NotNull
-  private final FuncType funcType;
-
-  public UnluckyStar(String nameKey, @NotNull FuncType funcType) {
+  public UnluckyStar(String nameKey) {
     super(nameKey, ZStar.class.getName() , nameKey+"_ABBR");
-    this.funcType = funcType;
-  }
-
-  @NotNull
-  public FuncType getFuncType() {
-    return funcType;
   }
 
   /** 擎羊 : 年干 -> 地支 */
@@ -74,8 +61,50 @@ public final class UnluckyStar extends ZStar {
     }
   };
 
-  /** 火星 : (年支、時支) -> 地支 */
-  public final static BiFunction<Branch , Branch , Branch> fun火星 = (year , hour) -> {
+  /**
+   * 參考資料
+   * https://destiny.to/ubbthreads/ubbthreads.php/topics/14679
+   *
+   *
+   * 全書和全集裡對火鈴的排法有所不同：
+   * 1. 全書是根據生年年支來安火鈴：
+   *   寅午戌人丑卯方  子申辰人寅戌揚
+   *   巳酉丑人卯戌位  亥卯未人酉戌房
+   *
+   */
+  /** 火星 (全書): 年支 -> 地支 */
+  public final static Function<Branch , Branch> fun火星_全書 = year -> {
+    switch (BranchTools.trilogy(year)) {
+      case 火: return 丑; // 寅午戌人[丑]卯方
+      case 水: return 寅; // 子申辰人[寅]戌揚
+      case 金: return 卯; // 巳酉丑人[卯]戌位
+      case 木: return 酉; // 亥卯未人[酉]戌房
+      default: throw new AssertionError(year);
+    }
+  };
+
+  /** 鈴星 (全書): 年支 -> 地支 */
+  public final static Function<Branch , Branch> fun鈴星_全書 = year -> {
+    switch (BranchTools.trilogy(year)) {
+      case 火: return 卯; // 寅午戌人丑[卯]方
+      case 水: return 戌; // 子申辰人寅[戌]揚
+      case 金: return 戌; // 巳酉丑人卯[戌]位
+      case 木: return 戌; // 亥卯未人酉[戌]房
+      default: throw new AssertionError(year);
+    }
+  };
+
+  /**
+   * 2. 全集則是根據生年年支及生時來安火鈴
+   *   申子辰人寅火戌鈴  寅午戌人丑火卯鈴
+   *   亥卯未人酉火戌鈴  巳酉丑人戌火卯鈴
+   *   接著有一段說明
+   *      凡命俱以生年十二支為主假如申子辰子時生人則寅宮起子時順數至本人生時安火星戌宮起
+   *      子時順數至本人生時安鈴星假如甲申年丑時生人則卯宮安火亥宮安鈴餘仿此
+   */
+
+  /** 火星 (全集): (年支、時支) -> 地支 */
+  public final static BiFunction<Branch , Branch , Branch> fun火星_全集 = (year , hour) -> {
     switch (BranchTools.trilogy(year)) {
       case 火: return Branch.get(hour.getIndex()+1);
       case 水: return Branch.get(hour.getIndex()+2);
@@ -85,8 +114,8 @@ public final class UnluckyStar extends ZStar {
     }
   };
 
-  /** 鈴星 : (年支、時支) -> 地支 */
-  public final static BiFunction<Branch , Branch , Branch> fun鈴星 = (year , hour ) -> {
+  /** 鈴星 (全集) : (年支、時支) -> 地支 */
+  public final static BiFunction<Branch , Branch , Branch> fun鈴星_全集 = (year , hour ) -> {
     switch (BranchTools.trilogy(year)) {
       case 火: return Branch.get(hour.getIndex()+3);
       case 水:

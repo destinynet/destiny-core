@@ -30,6 +30,11 @@ public class HouseSeqTaiyiImpl implements HouseSeqIF , Serializable {
   private final static List<House> list = Arrays.asList(ARRAY);
 
   @Override
+  public House[] getHouses() {
+    return ARRAY;
+  }
+
+  @Override
   public String getTitle(Locale locale) {
     return "太乙人道命法";
   }

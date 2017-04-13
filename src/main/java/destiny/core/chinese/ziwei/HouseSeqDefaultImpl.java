@@ -21,6 +21,11 @@ public class HouseSeqDefaultImpl implements HouseSeqIF , Serializable {
   };
 
   @Override
+  public House[] getHouses() {
+    return ARRAY;
+  }
+
+  @Override
   public String getTitle(Locale locale) {
     return "紫微斗數全書";
   }

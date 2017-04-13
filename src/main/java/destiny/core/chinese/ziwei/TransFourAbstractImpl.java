@@ -15,7 +15,7 @@ public abstract class TransFourAbstractImpl implements TransFour {
   protected abstract Map<Tuple2<Stem, Type> , ZStar> getTransMap();
 
   @Override
-  public ZStar getStarOf(Stem year, Type type) {
-    return getTransMap().get(tuple(year , type));
+  public ZStar getStarOf(Stem stem, Type type) {
+    return getTransMap().get(tuple(stem, type));
   }
 }

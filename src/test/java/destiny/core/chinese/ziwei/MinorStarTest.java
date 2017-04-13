@@ -198,7 +198,7 @@ public class MinorStarTest {
     assertSame(申 , fun天才.apply(酉 , 3 , 巳));
 
     // 身宮 在 (己)酉
-    assertSame(酉 , ZiweiIF.getBodyHouse(3 , 巳));
+    assertSame(酉 , ZiweiIF.getBodyHouseBranch(3 , 巳));
     // 天壽 在 (丙)午
     assertSame(午 , fun天壽.apply(酉 , 3 , 巳));
 

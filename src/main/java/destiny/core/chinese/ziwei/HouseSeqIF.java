@@ -8,6 +8,8 @@ import destiny.core.Descriptive;
 /** 12宮的順序 */
 public interface HouseSeqIF extends Descriptive {
 
+  House[] getHouses();
+
   /** 取得 下 n 個 宮位 是什麼。 若 n = 0 , 則傳回自己 */
   House next(House from , int n);
 
