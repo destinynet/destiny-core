@@ -7,7 +7,11 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 
 /** 月支 -> 地支 */
-public abstract class IHouseMonthBranchImpl implements IHouse<Branch> {
+public abstract class IHouseMonthBranchImpl extends IHouseAbstractImpl<Branch> {
+
+  protected IHouseMonthBranchImpl(ZStar star) {
+    super(star);
+  }
 
   @Override
   public FuncType getFuncType() {

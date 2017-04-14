@@ -10,8 +10,8 @@ public enum FuncType {
   YEAR_STEM,
   YEAR_BRANCH,
   YEAR_BRANCH_HOUR_BRANCH,  //  (年支,時支）
-  MOON_BRANCH_DAY_NUM,      //  (月支,日數)
-  HOUR_BRANCH_DAY_NUM,      //  (時支,日數)
+  MONTH_BRANCH_DAY_NUM,     //  (月支,日數)
+  DAY_NUM_HOUR_BRANCH,      //  (時支,日數)
   YEAR_BRANCH_MONTH_NUM_HOUR_BRANCH // (年支,月數,時支)
   ;
 

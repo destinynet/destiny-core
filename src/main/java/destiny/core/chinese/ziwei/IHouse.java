@@ -8,6 +8,8 @@ import destiny.core.chinese.StemBranch;
 
 public interface  IHouse<T> {
 
+  ZStar getStar();
+
   FuncType getFuncType();
 
   Branch getBranch(T t);

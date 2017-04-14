@@ -183,9 +183,9 @@ public class MinorStarTest {
     // 八座在 (乙)巳
     assertSame(巳 , fun八座.apply(辰 , 16));
     // 恩光在 (丁)未
-    assertSame(未 , fun恩光.apply(巳 , 16));
+    assertSame(未 , fun恩光.apply(16 , 巳));
     // 天貴在 (辛)亥
-    assertSame(亥 , fun天貴.apply(巳 , 16));
+    assertSame(亥 , fun天貴.apply(16 , 巳));
   }
 
   @Test

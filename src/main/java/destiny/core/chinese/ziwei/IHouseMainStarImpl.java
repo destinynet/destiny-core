@@ -14,7 +14,11 @@ import static destiny.core.chinese.ziwei.FuncType.SET_DAY_NUM;
  * 14 顆主星
  * (局數,生日)
  */
-public abstract class IHouseMainStarImpl implements IHouse<Tuple2<Integer, Integer>> {
+public abstract class IHouseMainStarImpl extends IHouseAbstractImpl<Tuple2<Integer, Integer>> {
+
+  protected IHouseMainStarImpl(ZStar star) {
+    super(star);
+  }
 
   @Override
   public FuncType getFuncType() {

@@ -305,11 +305,11 @@ public class MinorStar extends ZStar {
   /** 八座 : (月支,日數) -> 地支. 從「右弼」取初一，逆行，數到本日生 */
   public final static BiFunction<Branch , Integer , Branch> fun八座 = (month , day) -> fun右弼.apply(month).prev(day-1);
 
-  /** 恩光 : (時支,日數) -> 地支. 從「文昌」上取初一，順行，數到本日生，再後退一步 */
-  public final static BiFunction<Branch , Integer , Branch> fun恩光 = (hour , day) -> fun文昌.apply(hour).next(day-2);
+  /** 恩光 : (日數,時支) -> 地支. 從「文昌」上取初一，順行，數到本日生，再後退一步 */
+  public final static BiFunction<Integer , Branch , Branch> fun恩光 = (day , hour) -> fun文昌.apply(hour).next(day-2);
 
-  /** 天貴 : (時支,日數) -> 地支. 從「文曲」上取初一，順行，數到本日生，再後退一步
+  /** 天貴 : (日數,時支) -> 地支. 從「文曲」上取初一，順行，數到本日生，再後退一步
    * NOTE : 有的書寫「逆行」，跟據比對，應該是錯誤 */
-  public final static BiFunction<Branch , Integer , Branch> fun天貴 = (hour , day) -> fun文曲.apply(hour).next(day-2);
+  public final static BiFunction<Integer , Branch , Branch> fun天貴 = (day , hour) -> fun文曲.apply(hour).next(day-2);
 
 }

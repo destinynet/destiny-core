@@ -9,7 +9,11 @@ import destiny.core.chinese.StemBranch;
 /**
  * 時支 -> 地支
  */
-public abstract class IHouseHourBranchImpl implements IHouse<Branch> {
+public abstract class IHouseHourBranchImpl extends IHouseAbstractImpl<Branch> {
+
+  protected IHouseHourBranchImpl(ZStar star) {
+    super(star);
+  }
 
   @Override
   public FuncType getFuncType() {

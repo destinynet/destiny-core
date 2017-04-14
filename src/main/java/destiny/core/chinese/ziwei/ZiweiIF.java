@@ -308,7 +308,8 @@ public interface ZiweiIF {
       .build();
 
 
-  default Plate getPlate(StemBranch year, Branch monthBranch , int monthNum , int days , Branch hour , HouseSeqIF houseSeq , @NotNull Collection<ZStar> stars , Settings settings) {
+  default Plate getPlate(StemBranch year, Branch monthBranch , int monthNum , int days , Branch hour ,
+                         HouseSeqIF houseSeq , @NotNull Collection<ZStar> stars , Settings settings) {
     StemBranch mainHouse = getMainHouse(year.getStem() , monthNum , hour);
     StemBranch bodyHouse = getBodyHouse(year.getStem() , monthNum , hour);
 
@@ -316,9 +317,9 @@ public interface ZiweiIF {
     int set = t3.v3();
 
     Map<House , StemBranch> houseMap =
-    Arrays.stream(houseSeq.getHouses())
-      .map( house -> Tuple.tuple(house , getHouse(year.getStem() , monthNum, hour , house , houseSeq)))
-      .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+      Arrays.stream(houseSeq.getHouses())
+        .map( house -> Tuple.tuple(house , getHouse(year.getStem() , monthNum, hour , house , houseSeq)))
+        .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year.getStem());
@@ -326,14 +327,16 @@ public interface ZiweiIF {
     Map<ZStar , StemBranch> starBranchMap =
     stars.stream()
       .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
-        .map(iHouse -> iHouse.getBranch(year , monthBranch, monthNum, days, hour, set, settings))
-        .map(branch -> Tuple.tuple(star , getStemBranchOf(branch , stemOf寅)))
+        .map(iHouse -> {
+          Branch branch = iHouse.getBranch(year , monthBranch , monthNum , days , hour , set , settings);
+          StemBranch sb = getStemBranchOf(branch , stemOf寅);
+          return Tuple.tuple(star , sb);
+        })
       )
       .filter(Optional::isPresent)
       .map(Optional::get)
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2))
       ;
-
 
     Plate plate = new Plate(mainHouse , bodyHouse, t3.v2(), set, houseMap, starBranchMap);
     return plate;
