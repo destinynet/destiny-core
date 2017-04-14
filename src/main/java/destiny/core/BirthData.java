@@ -40,6 +40,10 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
     return location;
   }
 
+  public void setLocation(Location location) {
+    this.location = location;
+  }
+
   @Override
   public boolean isAd() {
     return time.toLocalDate().getEra() == IsoEra.CE;
