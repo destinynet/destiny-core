@@ -139,14 +139,14 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house左輔 = new IHouseHourBranchImpl(左輔) {
+  public final static IHouse house左輔 = new IHouseMonthBranchImpl(左輔) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun左輔.apply(branch);
     }
   };
   
-  public final static IHouse house右弼 = new IHouseHourBranchImpl(右弼) {
+  public final static IHouse house右弼 = new IHouseMonthBranchImpl(右弼) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun右弼.apply(branch);
@@ -174,10 +174,14 @@ public class HouseFunctions {
     }
   };
   
-  public final static IHouse house天馬 = new IHouseMonthBranchImpl(天馬) {
+  public final static IHouse house天馬 = new IHouseYearBranchMonthBranchImpl(天馬) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天馬.apply(branch);
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+      switch (settings.getHorse()) {
+        case 年馬: return fun天馬.apply(year.getBranch());
+        case 月馬: return fun天馬.apply(monthBranch);
+        default: throw new AssertionError("error");
+      }
     }
   };
   

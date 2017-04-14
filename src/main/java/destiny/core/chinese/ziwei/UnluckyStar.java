@@ -103,7 +103,7 @@ public final class UnluckyStar extends ZStar {
    *      子時順數至本人生時安鈴星假如甲申年丑時生人則卯宮安火亥宮安鈴餘仿此
    */
 
-  /** 火星 (全集): (年支、時支) -> 地支 */
+  /** 火星 (全集): (年支、時支) -> 地支 (子由使用)*/
   public final static BiFunction<Branch , Branch , Branch> fun火星_全集 = (year , hour) -> {
     switch (BranchTools.trilogy(year)) {
       case 火: return Branch.get(hour.getIndex()+1);
@@ -114,7 +114,7 @@ public final class UnluckyStar extends ZStar {
     }
   };
 
-  /** 鈴星 (全集) : (年支、時支) -> 地支 */
+  /** 鈴星 (全集) : (年支、時支) -> 地支 (子由使用) */
   public final static BiFunction<Branch , Branch , Branch> fun鈴星_全集 = (year , hour ) -> {
     switch (BranchTools.trilogy(year)) {
       case 火: return Branch.get(hour.getIndex()+3);

@@ -6,10 +6,15 @@ package destiny.core.chinese.ziwei;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.ziwei.Settings.FireBell;
 import org.jooq.lambda.tuple.Tuple3;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.*;
@@ -23,7 +28,34 @@ public class ZiweiImplTest {
 
   private HouseSeqIF seq = new HouseSeqDefaultImpl();
 
+  ZiweiIF impl = new ZiweiImpl();
+
   private Logger logger = LoggerFactory.getLogger(getClass());
+
+  /**
+   * 2017-04-14 亥時
+   * 民106丁酉年 , 三月18日，火六局，覆燈火
+   * 比對子由排盤結果 : http://imgur.com/EsUnXIK
+   */
+  @Test
+  public void testPlate1() {
+    Settings settings = new Settings(FireBell.全集, Settings.Horse.年馬);
+
+    List<ZStar> starList = new ArrayList<>();
+    starList.addAll(Arrays.asList(MainStar.values));
+    starList.addAll(Arrays.asList(LuckyStar.values));
+    starList.addAll(Arrays.asList(UnluckyStar.values));
+    starList.addAll(Arrays.asList(MinorStar.values));
+
+    Plate plate = impl.getPlate(StemBranch.get('丁','酉') , 辰 , 3 , 18 , 亥 , seq , starList,  settings);
+
+    logger.info("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
+    logger.info("宮位名稱 -> 地支 = {}" , plate.getHouseMap());
+    logger.info("星體 -> 宮位地支 = {}" , plate.getStarBranchMap());
+    logger.info("宮位名稱 -> 星體s = {}" , plate.getHouseStarMap());
+    logger.info("宮位地支 -> 星體s = {}" , plate.getBranchStarMap());
+
+  }
 
   /**
    * 測試命宮 (main)
@@ -35,7 +67,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetMainHouseBranch() {
-    ZiweiIF impl = new ZiweiImpl();
+
     assertSame(午 , ZiweiIF.getMainHouseBranch(3 , 戌));
 
     assertSame(StemBranch.get(丙 , 午) , impl.getMainHouse(丁 , 3 , 戌));
@@ -50,8 +82,6 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetHouseBranch() {
-    ZiweiIF impl = new ZiweiImpl();
-
     assertSame(午 , impl.getHouseBranch(3 , 戌 , 命宮 , seq));
     assertSame(巳 , impl.getHouseBranch(3 , 戌 , 兄弟 , seq));
     assertSame(辰 , impl.getHouseBranch(3 , 戌 , 夫妻 , seq));
@@ -76,8 +106,6 @@ public class ZiweiImplTest {
    */
   @Test
   public void testHouseWithStem() {
-    ZiweiIF impl = new ZiweiImpl();
-
     assertSame(StemBranch.get(丙 , 午) , impl.getHouse(丁 , 3 , 戌 , 命宮 , seq));
     assertSame(StemBranch.get(乙 , 巳) , impl.getHouse(丁 , 3 , 戌 , 兄弟 , seq));
     assertSame(StemBranch.get(甲 , 辰) , impl.getHouse(丁 , 3 , 戌 , 夫妻 , seq));
@@ -118,7 +146,6 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetNaYin() {
-    ZiweiIF impl = new ZiweiImpl();
     Tuple3<String , FiveElement , Integer> t3 = impl.getNaYin(丁 , 3 , 戌);
 
     assertEquals("天河水" , t3.v1());
@@ -131,8 +158,6 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetPurpleStar() {
-    ZiweiIF impl = new ZiweiImpl();
-
     // 假設某個人出生日是23日，五行局為金四局 ==> 紫微在午
     assertSame(午 , getBranchOfPurpleStar(4 , 23));
 
@@ -155,8 +180,6 @@ public class ZiweiImplTest {
 
   @Test
   public void testHouseOf() {
-    ZiweiIF impl = new ZiweiImpl();
-
     // 範例 : http://sweeteason.pixnet.net/blog/post/43447102
     // ex：有個人出生年月日是西元 1980年(民69庚申) 農曆 7月23日 丑時 (男) , 木三局 ==> 紫微在 甲申 , 天府也在甲申 (紫微、天府 同宮)
     assertSame(StemBranch.get(甲, 申), impl.getStemBranchOf(紫微, 庚, 3, 23));
