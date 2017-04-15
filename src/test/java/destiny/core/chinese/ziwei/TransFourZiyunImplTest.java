@@ -7,13 +7,13 @@ import org.junit.Test;
 
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.ziwei.MainStar.太陽;
-import static destiny.core.chinese.ziwei.TransFour.Type.*;
+import static destiny.core.chinese.ziwei.ITransFour.Value.*;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 public class TransFourZiyunImplTest {
 
-  TransFour impl = new TransFourZiyunImpl();
+  ITransFour impl = new TransFourZiyunImpl();
 
   @Test
   public void getStarOf() {
@@ -21,16 +21,16 @@ public class TransFourZiyunImplTest {
   }
 
   @Test
-  public void getTypeOf() {
-    assertSame(忌 , impl.getTypeOf(太陽 , 甲).orElse(null));
-    assertNull(impl.getTypeOf(太陽 , 乙).orElse(null));
-    assertNull(impl.getTypeOf(太陽 , 丙).orElse(null));
-    assertNull(impl.getTypeOf(太陽 , 丁).orElse(null));
-    assertNull(impl.getTypeOf(太陽 , 戊).orElse(null));
-    assertNull(impl.getTypeOf(太陽 , 己).orElse(null));
-    assertSame(祿 , impl.getTypeOf(太陽 , 庚).orElse(null));
-    assertSame(權 , impl.getTypeOf(太陽 , 辛).orElse(null));
-    assertNull(impl.getTypeOf(太陽 , 壬).orElse(null));
-    assertSame(科 , impl.getTypeOf(太陽 , 癸).orElse(null));
+  public void getValueOf() {
+    assertSame(忌 , impl.getValueOf(太陽 , 甲).orElse(null));
+    assertNull(impl.getValueOf(太陽 , 乙).orElse(null));
+    assertNull(impl.getValueOf(太陽 , 丙).orElse(null));
+    assertNull(impl.getValueOf(太陽 , 丁).orElse(null));
+    assertNull(impl.getValueOf(太陽 , 戊).orElse(null));
+    assertNull(impl.getValueOf(太陽 , 己).orElse(null));
+    assertSame(祿 , impl.getValueOf(太陽 , 庚).orElse(null));
+    assertSame(權 , impl.getValueOf(太陽 , 辛).orElse(null));
+    assertNull(impl.getValueOf(太陽 , 壬).orElse(null));
+    assertSame(科 , impl.getValueOf(太陽 , 癸).orElse(null));
   }
 }

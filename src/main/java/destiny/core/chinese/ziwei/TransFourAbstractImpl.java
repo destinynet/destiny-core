@@ -10,12 +10,12 @@ import java.util.Map;
 
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
-public abstract class TransFourAbstractImpl implements TransFour {
+public abstract class TransFourAbstractImpl implements ITransFour {
 
-  protected abstract Map<Tuple2<Stem, Type> , ZStar> getTransMap();
+  protected abstract Map<Tuple2<Stem, Value> , ZStar> getTransMap();
 
   @Override
-  public ZStar getStarOf(Stem stem, Type type) {
-    return getTransMap().get(tuple(stem, type));
+  public ZStar getStarOf(Stem stem, Value value) {
+    return getTransMap().get(tuple(stem, value));
   }
 }

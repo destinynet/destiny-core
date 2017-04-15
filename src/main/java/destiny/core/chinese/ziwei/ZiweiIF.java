@@ -15,13 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
@@ -53,7 +50,7 @@ public interface ZiweiIF {
    * 丁年 or 壬年生 = 壬寅宮
    * 戊年 or 癸年生 = 甲寅宮
    */
-  default StemBranch getMainHouse(Stem year , int month , Branch hour) {
+  static StemBranch getMainHouse(Stem year , int month , Branch hour) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
@@ -291,38 +288,10 @@ public interface ZiweiIF {
       .build();
 
 
-  default Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) {
-    StemBranch mainHouse = getMainHouse(year.getStem() , monthNum , hour);
-    StemBranch bodyHouse = getBodyHouse(year.getStem() , monthNum , hour);
+  Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) ;
 
-    Tuple3<String , FiveElement , Integer> t3 = getNaYin(year.getStem() , monthNum , hour);
-    int set = t3.v3();
 
-    Map<House , StemBranch> houseMap =
-      Arrays.stream(houseSeq.getHouses())
-        .map( house -> Tuple.tuple(house , getHouse(year.getStem() , monthNum, hour , house , houseSeq)))
-        .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
-    // 寅 的天干
-    Stem stemOf寅 = getStemOf寅(year.getStem());
-
-    Map<ZStar , StemBranch> starBranchMap =
-    stars.stream()
-      .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
-        .map(iHouse -> {
-          Branch branch = iHouse.getBranch(year , monthBranch , monthNum , days , hour , set , gender , settings);
-          StemBranch sb = getStemBranchOf(branch , stemOf寅);
-          return Tuple.tuple(star , sb);
-        })
-      )
-      .filter(Optional::isPresent)
-      .map(Optional::get)
-      .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2))
-      ;
-
-    Plate plate = new Plate(mainHouse , bodyHouse, t3.v2(), set, houseMap, starBranchMap);
-    return plate;
-  }
 
   void calculate(Gender gender , LocalDateTime time , Location loc);
 }

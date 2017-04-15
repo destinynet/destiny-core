@@ -22,7 +22,7 @@ import destiny.astrology.Point;
  * 一、命主
  * 　　在《全書》中，是以命宮的地支為主。而《全集》是以生年地支為主。
  *
- * 二、四化 ： 見 {@link TransFour}
+ * 二、四化 ： 見 {@link ITransFour}
  *
  * */
 public abstract class ZStar extends Point {

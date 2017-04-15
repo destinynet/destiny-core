@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.ziwei;
 
-import destiny.core.chinese.TianyiIF;
 import destiny.core.chinese.impls.TianyiAuthorizedImpl;
 import destiny.core.chinese.impls.TianyiLiurenPithyImpl;
 import destiny.core.chinese.impls.TianyiOceanImpl;
@@ -45,25 +44,30 @@ public class Settings implements Serializable {
   }
   private final HurtAngel hurtAngel;
 
-  public Settings(Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel) {
+
+  /** 四化設定 */
+  public enum TransFour {
+    DEFAULT ,   /** {@link TransFourDefaultImpl} */
+    NORTH   ,   /** {@link TransFourNorthImpl} */
+    SOUTH   ,   /** {@link TransFourSouthImpl} */
+    MIDDLE  ,   /** {@link TransFourMiddleImpl} */
+    DIVINE  ,   /** {@link TransFourDivineImpl} */
+    ZIYUN   ,   /** {@link TransFourZiyunImpl} */
+  }
+
+  private final TransFour transFour;
+
+
+  public Settings(Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour) {
     this.tianyi = tianyi;
     this.fireBell = fireBell;
     this.horse = horse;
     this.hurtAngel = hurtAngel;
+    this.transFour = transFour;
   }
 
   public Tianyi getTianyi() {
     return tianyi;
-  }
-
-  public TianyiIF getTianyiImpl() {
-    switch (tianyi) {
-      case ZIWEI_BOOK: return new TianyiZiweiBookImpl();
-      case AUTHORIZED: return new TianyiAuthorizedImpl();
-      case OCEAN: return new TianyiOceanImpl();
-      case LIUREN_PITHY: return new TianyiLiurenPithyImpl();
-      default: throw new AssertionError("error : " + tianyi);
-    }
   }
 
   public FireBell getFireBell() {
@@ -76,5 +80,9 @@ public class Settings implements Serializable {
 
   public HurtAngel getHurtAngel() {
     return hurtAngel;
+  }
+
+  public TransFour getTransFour() {
+    return transFour;
   }
 }

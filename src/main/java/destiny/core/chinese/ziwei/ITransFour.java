@@ -29,18 +29,20 @@ import java.util.stream.Collectors;
  *
  * 　　由此可知，某些重四化的流派，其四化的安法是以《全集》為主。至於尚有其它安法，則非是。
  * */
-public interface TransFour extends Descriptive {
+public interface ITransFour extends Descriptive {
 
-  enum Type {祿 , 權 , 科 , 忌}
+  enum Type {本命 , 大限 , 流年 , 流月 , 流日 , 流時}
+
+  enum Value {祿 , 權 , 科 , 忌}
 
   /** 取得「某天干（可能是本命年、大限、或是流年、流月、流日、流時）的某四化」是哪顆星 */
-  ZStar getStarOf(Stem stem , Type type);
+  ZStar getStarOf(Stem stem , Value value);
 
   /** 類似前者，但逆算：計算此星於此年，是否有四化，若有的話，其為何者 */
-  default Optional<Type> getTypeOf(ZStar star , Stem year) {
+  default Optional<Value> getValueOf(ZStar star , Stem year) {
     // 先把本年四化的四顆星都找出來
-    Map<ZStar , Type> map =
-      Arrays.stream(Type.values())
+    Map<ZStar , Value> map =
+      Arrays.stream(Value.values())
       .map(type -> Tuple.tuple(getStarOf(year , type) , type))
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 

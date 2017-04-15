@@ -13,7 +13,7 @@ import java.util.Map;
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.ziwei.LuckyStar.*;
 import static destiny.core.chinese.ziwei.MainStar.*;
-import static destiny.core.chinese.ziwei.TransFour.Type.*;
+import static destiny.core.chinese.ziwei.ITransFour.Value.*;
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
 /**
@@ -21,8 +21,8 @@ import static org.jooq.lambda.tuple.Tuple.tuple;
  */
 public class TransFourSouthImpl extends TransFourAbstractImpl {
 
-  private final static Map<Tuple2<Stem, Type> , ZStar> transMap
-    = new ImmutableMap.Builder<Tuple2<Stem, Type> , ZStar>()
+  private final static Map<Tuple2<Stem, Value> , ZStar> transMap
+    = new ImmutableMap.Builder<Tuple2<Stem, Value> , ZStar>()
     .put(tuple(甲 , 祿) , 廉貞)
     .put(tuple(甲 , 權) , 破軍)
     .put(tuple(甲 , 科) , 武曲)
@@ -79,7 +79,7 @@ public class TransFourSouthImpl extends TransFourAbstractImpl {
     .build();
 
   @Override
-  protected Map<Tuple2<Stem, Type>, ZStar> getTransMap() {
+  protected Map<Tuple2<Stem, Value>, ZStar> getTransMap() {
     return transMap;
   }
 

@@ -12,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /** 排盤結果 , 作為 DTO */
@@ -39,8 +36,15 @@ public class Plate implements Serializable {
 
   private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
 
+  /** 四化星 的列表 */
+  private final Map<ZStar , List<Tuple2<ITransFour.Type , ITransFour.Value>>> tranFours = new HashMap<>();
+
+  /**
+   * 本命盤
+   */
   public Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set,
-               Map<House, StemBranch> houseMap, Map<ZStar, StemBranch> starBranchMap) {
+               Map<House, StemBranch> houseMap, Map<ZStar, StemBranch> starBranchMap,
+               Map<ZStar, Tuple2<ITransFour.Type, ITransFour.Value>> tranFourMap) {
     this.mainHouse = mainHouse;
     this.bodyHouse = bodyHouse;
     this.fiveElement = fiveElement;
@@ -62,6 +66,10 @@ public class Plate implements Serializable {
       Set<ZStar> stars = branchStarMap.get(sb.getBranch());
       return new HouseData(house , sb , stars);
     }).collect(Collectors.toSet());
+
+    for(ZStar star : tranFourMap.keySet()) {
+      tranFours.put(star , Collections.singletonList(tranFourMap.get(star)));
+    }
   }
 
   public StemBranch getMainHouse() {
@@ -105,5 +113,10 @@ public class Plate implements Serializable {
   /** 取得每個宮位、詳細資料 , 按照 [命宮 , 兄弟 , 夫妻...] 排序下來 */
   public Set<HouseData> getHouseDataSet() {
     return new TreeSet<>(houseDataSet);
+  }
+
+  /** 取得 星體的四化列表 */
+  public Map<ZStar, List<Tuple2<ITransFour.Type, ITransFour.Value>>> getTranFours() {
+    return tranFours;
   }
 }

@@ -9,13 +9,13 @@ import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.ziwei.LuckyStar.右弼;
 import static destiny.core.chinese.ziwei.LuckyStar.左輔;
 import static destiny.core.chinese.ziwei.MainStar.*;
-import static destiny.core.chinese.ziwei.TransFour.Type.*;
+import static destiny.core.chinese.ziwei.ITransFour.Value.*;
 import static org.junit.Assert.assertSame;
 
 @SuppressWarnings("Duplicates")
 public class TransFourDefaultImplTest {
 
-  private TransFour impl = new TransFourDefaultImpl();
+  private ITransFour impl = new TransFourDefaultImpl();
 
   @Test
   public void getStarOf() {
@@ -31,16 +31,16 @@ public class TransFourDefaultImplTest {
   }
 
   @Test
-  public void getTypeOf() {
-    assertSame(祿 , impl.getTypeOf(廉貞 , 甲).orElse(null));
-    assertSame(null , impl.getTypeOf(廉貞 , 乙).orElse(null));
-    assertSame(忌, impl.getTypeOf(廉貞 , 丙).orElse(null));
-    assertSame(null, impl.getTypeOf(廉貞 , 丁).orElse(null));
-    assertSame(null, impl.getTypeOf(廉貞 , 戊).orElse(null));
-    assertSame(null, impl.getTypeOf(廉貞 , 己).orElse(null));
-    assertSame(null, impl.getTypeOf(廉貞 , 庚).orElse(null));
-    assertSame(null, impl.getTypeOf(廉貞 , 辛).orElse(null));
-    assertSame(null, impl.getTypeOf(廉貞 , 壬).orElse(null));
-    assertSame(null, impl.getTypeOf(廉貞 , 癸).orElse(null));
+  public void getValueOf() {
+    assertSame(祿 , impl.getValueOf(廉貞 , 甲).orElse(null));
+    assertSame(null , impl.getValueOf(廉貞 , 乙).orElse(null));
+    assertSame(忌, impl.getValueOf(廉貞 , 丙).orElse(null));
+    assertSame(null, impl.getValueOf(廉貞 , 丁).orElse(null));
+    assertSame(null, impl.getValueOf(廉貞 , 戊).orElse(null));
+    assertSame(null, impl.getValueOf(廉貞 , 己).orElse(null));
+    assertSame(null, impl.getValueOf(廉貞 , 庚).orElse(null));
+    assertSame(null, impl.getValueOf(廉貞 , 辛).orElse(null));
+    assertSame(null, impl.getValueOf(廉貞 , 壬).orElse(null));
+    assertSame(null, impl.getValueOf(廉貞 , 癸).orElse(null));
   }
 }
