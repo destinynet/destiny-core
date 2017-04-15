@@ -481,6 +481,34 @@ public class HouseFunctions {
     }
   };
 
+  public final static IHouse house天傷 = new IHouseHouseDepYearStemGenderImpl(天傷) {
+    @Override
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+      // 太乙派，沒有遷移宮
+      Branch 遷移宮地支 = ZiweiIF.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
+      switch (settings.getHurtAngel()) {
+        case FIXED  : return fun天傷_fixed交友.apply(遷移宮地支);
+        case YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
+        default:
+          throw new AssertionError("error");
+      }
+    }
+  };
+
+  public final static IHouse house天使 = new IHouseHouseDepYearStemGenderImpl(天使) {
+    @Override
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+      // 太乙派，沒有遷移宮
+      Branch 遷移宮地支 = ZiweiIF.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
+      switch (settings.getHurtAngel()) {
+        case FIXED  : return fun天使_fixed疾厄.apply(遷移宮地支);
+        case YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
+        default:
+          throw new AssertionError("error");
+      }
+    }
+  };
+
   // =======↑↑↑======= 以上      雜曜 =======↑↑↑=======
 
   // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
@@ -586,6 +614,7 @@ public class HouseFunctions {
     .add(house陰煞, house台輔, house封誥, house天空, house天哭, house天虛, house龍池, house鳳閣)
     .add(house紅鸞, house天喜, house孤辰, house寡宿, house蜚廉, house破碎, house華蓋, house咸池)
     .add(house天德, house月德, house天才, house天壽, house三台, house八座, house恩光, house天貴)
+    .add(house天傷, house天使)
 
     // 博士12神煞
     .add(house博士, house力士, house青龍, house小耗, house將軍, house奏書,

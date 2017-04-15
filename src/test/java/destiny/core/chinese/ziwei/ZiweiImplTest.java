@@ -22,6 +22,7 @@ import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.StemBranch.*;
 import static destiny.core.chinese.ziwei.House.*;
 import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.Settings.*;
 import static destiny.core.chinese.ziwei.ZiweiIF.getBranchOfPurpleStar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -41,7 +42,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(FireBell.全集, Settings.Horse.年馬);
+    Settings settings = new Settings(FireBell.全集, Horse.年馬, HurtAngel.YINYANG);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(MainStar.values));
@@ -59,7 +60,9 @@ public class ZiweiImplTest {
     logger.debug("宮位地支 -> 星體s = {}" , plate.getBranchStarMap());
     logger.debug("houseDataSet = {}" , plate.getHouseDataSet());
 
-    plate.getBranchStarMap().forEach((key, value) -> logger.info("{} : {}", key, value));
+    plate.getHouseDataSet().forEach(houseData -> {
+      logger.info("{} ({}) : {}" , houseData.getStemBranch() , houseData.getHouse() , houseData.getStars());
+    });
 
   }
 
@@ -88,18 +91,18 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetHouseBranch() {
-    assertSame(午 , impl.getHouseBranch(3 , 戌 , 命宮 , seq));
-    assertSame(巳 , impl.getHouseBranch(3 , 戌 , 兄弟 , seq));
-    assertSame(辰 , impl.getHouseBranch(3 , 戌 , 夫妻 , seq));
-    assertSame(卯 , impl.getHouseBranch(3 , 戌 , 子女 , seq));
-    assertSame(寅 , impl.getHouseBranch(3 , 戌 , 財帛 , seq));
-    assertSame(丑 , impl.getHouseBranch(3 , 戌 , 疾厄 , seq));
-    assertSame(子 , impl.getHouseBranch(3 , 戌 , 遷移 , seq));
-    assertSame(亥 , impl.getHouseBranch(3 , 戌 , 交友 , seq));
-    assertSame(戌 , impl.getHouseBranch(3 , 戌 , 官祿 , seq));
-    assertSame(酉 , impl.getHouseBranch(3 , 戌 , 田宅 , seq));
-    assertSame(申 , impl.getHouseBranch(3 , 戌 , 福德 , seq));
-    assertSame(未 , impl.getHouseBranch(3 , 戌 , 父母 , seq));
+    assertSame(午 , ZiweiIF.getHouseBranch(3 , 戌 , 命宮 , seq));
+    assertSame(巳 , ZiweiIF.getHouseBranch(3 , 戌 , 兄弟 , seq));
+    assertSame(辰 , ZiweiIF.getHouseBranch(3 , 戌 , 夫妻 , seq));
+    assertSame(卯 , ZiweiIF.getHouseBranch(3 , 戌 , 子女 , seq));
+    assertSame(寅 , ZiweiIF.getHouseBranch(3 , 戌 , 財帛 , seq));
+    assertSame(丑 , ZiweiIF.getHouseBranch(3 , 戌 , 疾厄 , seq));
+    assertSame(子 , ZiweiIF.getHouseBranch(3 , 戌 , 遷移 , seq));
+    assertSame(亥 , ZiweiIF.getHouseBranch(3 , 戌 , 交友 , seq));
+    assertSame(戌 , ZiweiIF.getHouseBranch(3 , 戌 , 官祿 , seq));
+    assertSame(酉 , ZiweiIF.getHouseBranch(3 , 戌 , 田宅 , seq));
+    assertSame(申 , ZiweiIF.getHouseBranch(3 , 戌 , 福德 , seq));
+    assertSame(未 , ZiweiIF.getHouseBranch(3 , 戌 , 父母 , seq));
   }
 
   /**

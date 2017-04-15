@@ -22,6 +22,8 @@ import static destiny.core.chinese.ziwei.LuckyStar.fun祿存;
  *
  * 亦即，這是 (年干,性別) -> 地支
  * 每次 function 都要 call {@link LuckyStar#fun祿存}
+ *
+ * TODO : 博士12神煞，是否要隨流年變化
  */
 public class DoctorStar extends ZStar {
 

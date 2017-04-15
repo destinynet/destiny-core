@@ -20,10 +20,21 @@ public class Settings implements Serializable {
     月馬   // 月馬
   }
 
+  /** {@link LuckyStar#天馬} */
   private final Horse horse;
 
-  public Settings(FireBell fireBell, Horse horse) {this.fireBell = fireBell;
+
+  /** {@link MinorStar#天傷}、 {@link MinorStar#天使} 計算方式 */
+  public enum HurtAngel {
+    FIXED,    /** 天傷固定於交友宮 {@link MinorStar#fun天傷_fixed交友} 、 天使固定疾厄宮 {@link MinorStar#fun天使_fixed疾厄} */
+    YINYANG   /** 陽順陰逆 {@link MinorStar#fun天傷_陽順陰逆} 、 {@link MinorStar#fun天使_陽順陰逆} */
+  }
+
+  private final HurtAngel hurtAngel;
+
+  public Settings(FireBell fireBell, Horse horse, HurtAngel hurtAngel) {this.fireBell = fireBell;
     this.horse = horse;
+    this.hurtAngel = hurtAngel;
   }
 
   public FireBell getFireBell() {
@@ -32,5 +43,9 @@ public class Settings implements Serializable {
 
   public Horse getHorse() {
     return horse;
+  }
+
+  public HurtAngel getHurtAngel() {
+    return hurtAngel;
   }
 }

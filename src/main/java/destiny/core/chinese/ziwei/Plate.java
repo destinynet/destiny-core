@@ -102,7 +102,7 @@ public class Plate implements Serializable {
     return houseDataSet.stream().collect(Collectors.toMap(HouseData::getHouse, HouseData::getStars));
   }
 
-  /** 取得每個宮位、詳細資料 */
+  /** 取得每個宮位、詳細資料 , 按照 [命宮 , 兄弟 , 夫妻...] 排序下來 */
   public Set<HouseData> getHouseDataSet() {
     return new TreeSet<>(houseDataSet);
   }

@@ -95,22 +95,18 @@ public interface ZiweiIF {
   }
 
   /** 承上， 身宮 的干支 */
-  default StemBranch getBodyHouse(Stem year , int month , Branch hour) {
+  static StemBranch getBodyHouse(Stem year , int month , Branch hour) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
-    Branch bodyHouse = getBodyHouseBranch(month , hour);
-    // 左下角，寅宮 的 干支
-    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-
-    int steps = bodyHouse.getAheadOf(寅);
-    return stemBranchOf寅.next(steps);
+    Branch branch = getBodyHouseBranch(month , hour);
+    return getStemBranchOf(branch , stemOf寅);
   }
 
   /**
    * 從命宮開始，逆時針，飛佈 兄弟、夫妻...
    */
-  default Branch getHouseBranch(int month , Branch hour , House house , HouseSeqIF seq) {
+  static Branch getHouseBranch(int month , Branch hour , House house , HouseSeqIF seq) {
     // 命宮 的地支
     Branch branchOfFirstHouse = getMainHouseBranch(month , hour);
     int steps = seq.getAheadOf(house , House.命宮);
@@ -124,12 +120,8 @@ public interface ZiweiIF {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
     // 先取得 該宮位的地支
-    Branch houseBranch = getHouseBranch(month , hour , house , seq);
-    // 左下角，寅宮 的 干支
-    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-
-    int steps = houseBranch.getAheadOf(寅);
-    return stemBranchOf寅.next(steps);
+    Branch branch = getHouseBranch(month , hour , house , seq);
+    return getStemBranchOf(branch , stemOf寅);
   }
 
 
@@ -186,10 +178,6 @@ public interface ZiweiIF {
     // 紫微 地支
     Branch branch = getBranchOfPurpleStar(set , day);
     return getStemBranchOf(branch , stemOf寅);
-//    // 左下角，寅宮 的 干支
-//    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-//    int steps = branch.getAheadOf(寅);
-//    return stemBranchOf寅.next(steps);
   }
 
   /**
@@ -210,11 +198,6 @@ public interface ZiweiIF {
     // 天府 地支
     Branch branch = getBranchOfTianFuStar(set , day);
     return getStemBranchOf(branch , stemOf寅);
-
-//    // 左下角，寅宮 的 干支
-//    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-//    int steps = branch.getAheadOf(寅);
-//    return stemBranchOf寅.next(steps);
   }
 
   /**
@@ -242,7 +225,7 @@ public interface ZiweiIF {
 //    return stemBranchOf寅.next(steps);
   }
 
-  default StemBranch getStemBranchOf(Branch branch , Stem stemOf寅) {
+  static StemBranch getStemBranchOf(Branch branch , Stem stemOf寅) {
     // 左下角，寅宮 的 干支
     StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
     int steps = branch.getAheadOf(寅);
@@ -253,7 +236,7 @@ public interface ZiweiIF {
    * 左下角，寅宮 的天干
    * TODO : should be private after Java9
    */
-  default Stem getStemOf寅(Stem year) {
+  static Stem getStemOf寅(Stem year) {
     switch (year) {
       case 甲: case 己: return 丙;
       case 乙: case 庚: return 戊;

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.Gender;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
@@ -11,13 +12,15 @@ import org.jooq.lambda.function.Function3;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static destiny.core.Gender.女;
+import static destiny.core.Gender.男;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.BranchTools.direction;
 import static destiny.core.chinese.BranchTools.trilogy;
 import static destiny.core.chinese.ziwei.LuckyStar.*;
 
 /**
- * 乙級星有總共有32顆
+ * 乙級星有總共有34顆
  */
 @SuppressWarnings("Duplicates")
 public class MinorStar extends ZStar {
@@ -55,7 +58,10 @@ public class MinorStar extends ZStar {
   public final static MinorStar 恩光 = new MinorStar("恩光"); // 吉
   public final static MinorStar 天貴 = new MinorStar("天貴"); // 吉
 
-  public final static MinorStar[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴};
+  public final static MinorStar 天使 = new MinorStar("天使"); //   兇 , 天使屬陰水 , 主災病
+  public final static MinorStar 天傷 = new MinorStar("天傷"); //   兇 , 天傷屬陽水 , 主虛耗
+
+  public final static MinorStar[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷};
 
   public MinorStar(String nameKey) {
     super(nameKey, ZStar.class.getName());
@@ -312,4 +318,27 @@ public class MinorStar extends ZStar {
    * NOTE : 有的書寫「逆行」，跟據比對，應該是錯誤 */
   public final static BiFunction<Integer , Branch , Branch> fun天貴 = (day , hour) -> fun文曲.apply(hour).next(day-2);
 
+  /** 天傷 : 兩種算法，第 1 種 : 固定於交友宮 (亦即：遷移宮地支-1) */
+  public final static Function<Branch , Branch> fun天傷_fixed交友 = (遷移宮地支) -> 遷移宮地支.prev(1);
+
+  /** 天使 : 兩種算法，第 1 種 : 固定於疾厄宮（亦即：遷移宮地支+1）*/
+  public final static Function<Branch , Branch> fun天使_fixed疾厄 = (遷移宮地支) -> 遷移宮地支.next(1);
+
+  /** 天傷 : 兩種算法，第 2 種 : 陽男陰女順行，安天傷於交友宮 (亦即：遷移宮地支-1) */
+  public final static Function3<Branch , Stem , Gender,  Branch> fun天傷_陽順陰逆 = (遷移宮地支 , 年干 , gender) -> {
+    if (年干.getBooleanValue() && gender == 男 || !年干.getBooleanValue() && gender == 女) {
+      return 遷移宮地支.prev(1);
+    } else {
+      return 遷移宮地支.next(1);
+    }
+  };
+
+  /** 天使 : 兩種算法，第 2 種 : 陽男陰女順行，安天使於疾厄宮 (亦即：遷移宮地支+1) */
+  public final static Function3<Branch , Stem , Gender , Branch> fun天使_陽順陰逆 = (遷移宮地支 , 年干 , gender) -> {
+    if (年干.getBooleanValue() && gender == 男 || !年干.getBooleanValue() && gender == 女) {
+      return 遷移宮地支.next(1);
+    } else {
+      return 遷移宮地支.prev(1);
+    }
+  };
 }
