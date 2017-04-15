@@ -69,7 +69,11 @@ public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinY
 
   @Override
   public boolean getBooleanValue() {
-    return ( Branch.getIndex(eb) % 2 == 0);
+    return getBooleanValue(this.getBranch());
+  }
+
+  public final static boolean getBooleanValue(Branch branch) {
+    return (Branch.getIndex(branch) % 2 == 0);
   }
 
 

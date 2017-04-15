@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.Gender;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.*;
+import static destiny.core.chinese.StemBranch.*;
 import static destiny.core.chinese.ziwei.House.*;
 import static destiny.core.chinese.ziwei.MainStar.*;
 import static destiny.core.chinese.ziwei.ZiweiIF.getBranchOfPurpleStar;
@@ -46,14 +48,18 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(LuckyStar.values));
     starList.addAll(Arrays.asList(UnluckyStar.values));
     starList.addAll(Arrays.asList(MinorStar.values));
+    starList.addAll(Arrays.asList(DoctorStar.values));
 
-    Plate plate = impl.getPlate(StemBranch.get('丁','酉') , 辰 , 3 , 18 , 亥 , seq , starList,  settings);
+    Plate plate = impl.getPlate(StemBranch.丁酉 , 辰 , 3 , 18 , 亥 , seq , starList, Gender.男, settings);
 
-    logger.info("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
-    logger.info("宮位名稱 -> 地支 = {}" , plate.getHouseMap());
-    logger.info("星體 -> 宮位地支 = {}" , plate.getStarBranchMap());
-    logger.info("宮位名稱 -> 星體s = {}" , plate.getHouseStarMap());
-    logger.info("宮位地支 -> 星體s = {}" , plate.getBranchStarMap());
+    logger.debug("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
+    logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
+    logger.debug("星體 -> 宮位地支 = {}" , plate.getStarMap());
+    logger.debug("宮位名稱 -> 星體s = {}" , plate.getHouseStarMap());
+    logger.debug("宮位地支 -> 星體s = {}" , plate.getBranchStarMap());
+    logger.debug("houseDataSet = {}" , plate.getHouseDataSet());
+
+    plate.getBranchStarMap().forEach((key, value) -> logger.info("{} : {}", key, value));
 
   }
 
@@ -106,18 +112,18 @@ public class ZiweiImplTest {
    */
   @Test
   public void testHouseWithStem() {
-    assertSame(StemBranch.get(丙 , 午) , impl.getHouse(丁 , 3 , 戌 , 命宮 , seq));
-    assertSame(StemBranch.get(乙 , 巳) , impl.getHouse(丁 , 3 , 戌 , 兄弟 , seq));
-    assertSame(StemBranch.get(甲 , 辰) , impl.getHouse(丁 , 3 , 戌 , 夫妻 , seq));
-    assertSame(StemBranch.get(癸 , 卯) , impl.getHouse(丁 , 3 , 戌 , 子女 , seq));
-    assertSame(StemBranch.get(壬 , 寅) , impl.getHouse(丁 , 3 , 戌 , 財帛 , seq));
-    assertSame(StemBranch.get(癸 , 丑) , impl.getHouse(丁 , 3 , 戌 , 疾厄 , seq));
-    assertSame(StemBranch.get(壬 , 子) , impl.getHouse(丁 , 3 , 戌 , 遷移 , seq));
-    assertSame(StemBranch.get(辛 , 亥) , impl.getHouse(丁 , 3 , 戌 , 交友 , seq));
-    assertSame(StemBranch.get(庚 , 戌) , impl.getHouse(丁 , 3 , 戌 , 官祿 , seq));
-    assertSame(StemBranch.get(己 , 酉) , impl.getHouse(丁 , 3 , 戌 , 田宅 , seq));
-    assertSame(StemBranch.get(戊 , 申) , impl.getHouse(丁 , 3 , 戌 , 福德 , seq));
-    assertSame(StemBranch.get(丁 , 未) , impl.getHouse(丁 , 3 , 戌 , 父母 , seq));
+    assertSame(丙午 , impl.getHouse(丁 , 3 , 戌 , 命宮 , seq));
+    assertSame(乙巳 , impl.getHouse(丁 , 3 , 戌 , 兄弟 , seq));
+    assertSame(甲辰 , impl.getHouse(丁 , 3 , 戌 , 夫妻 , seq));
+    assertSame(癸卯 , impl.getHouse(丁 , 3 , 戌 , 子女 , seq));
+    assertSame(壬寅 , impl.getHouse(丁 , 3 , 戌 , 財帛 , seq));
+    assertSame(癸丑 , impl.getHouse(丁 , 3 , 戌 , 疾厄 , seq));
+    assertSame(壬子 , impl.getHouse(丁 , 3 , 戌 , 遷移 , seq));
+    assertSame(辛亥 , impl.getHouse(丁 , 3 , 戌 , 交友 , seq));
+    assertSame(庚戌 , impl.getHouse(丁 , 3 , 戌 , 官祿 , seq));
+    assertSame(己酉 , impl.getHouse(丁 , 3 , 戌 , 田宅 , seq));
+    assertSame(戊申 , impl.getHouse(丁 , 3 , 戌 , 福德 , seq));
+    assertSame(丁未 , impl.getHouse(丁 , 3 , 戌 , 父母 , seq));
   }
 
   /**
@@ -182,20 +188,20 @@ public class ZiweiImplTest {
   public void testHouseOf() {
     // 範例 : http://sweeteason.pixnet.net/blog/post/43447102
     // ex：有個人出生年月日是西元 1980年(民69庚申) 農曆 7月23日 丑時 (男) , 木三局 ==> 紫微在 甲申 , 天府也在甲申 (紫微、天府 同宮)
-    assertSame(StemBranch.get(甲, 申), impl.getStemBranchOf(紫微, 庚, 3, 23));
-    assertSame(StemBranch.get(癸, 未), impl.getStemBranchOf(天機, 庚, 3, 23));
-    assertSame(StemBranch.get(辛, 巳), impl.getStemBranchOf(太陽, 庚, 3, 23));
-    assertSame(StemBranch.get(庚, 辰), impl.getStemBranchOf(武曲, 庚, 3, 23));
-    assertSame(StemBranch.get(己, 卯), impl.getStemBranchOf(天同, 庚, 3, 23));
-    assertSame(StemBranch.get(戊, 子), impl.getStemBranchOf(廉貞, 庚, 3, 23));
+    assertSame(甲申, impl.getStemBranchOf(紫微, 庚, 3, 23));
+    assertSame(癸未, impl.getStemBranchOf(天機, 庚, 3, 23));
+    assertSame(辛巳, impl.getStemBranchOf(太陽, 庚, 3, 23));
+    assertSame(庚辰, impl.getStemBranchOf(武曲, 庚, 3, 23));
+    assertSame(己卯, impl.getStemBranchOf(天同, 庚, 3, 23));
+    assertSame(戊子, impl.getStemBranchOf(廉貞, 庚, 3, 23));
 
-    assertSame(StemBranch.get(甲, 申), impl.getStemBranchOf(天府, 庚, 3, 23));
-    assertSame(StemBranch.get(乙, 酉), impl.getStemBranchOf(太陰, 庚, 3, 23));
-    assertSame(StemBranch.get(丙, 戌), impl.getStemBranchOf(貪狼, 庚, 3, 23));
-    assertSame(StemBranch.get(丁, 亥), impl.getStemBranchOf(巨門, 庚, 3, 23));
-    assertSame(StemBranch.get(戊, 子), impl.getStemBranchOf(天相, 庚, 3, 23));
-    assertSame(StemBranch.get(己, 丑), impl.getStemBranchOf(天梁, 庚, 3, 23));
-    assertSame(StemBranch.get(戊, 寅), impl.getStemBranchOf(七殺, 庚, 3, 23));
-    assertSame(StemBranch.get(壬, 午), impl.getStemBranchOf(破軍, 庚, 3, 23));
+    assertSame(甲申, impl.getStemBranchOf(天府, 庚, 3, 23));
+    assertSame(乙酉, impl.getStemBranchOf(太陰, 庚, 3, 23));
+    assertSame(丙戌, impl.getStemBranchOf(貪狼, 庚, 3, 23));
+    assertSame(丁亥, impl.getStemBranchOf(巨門, 庚, 3, 23));
+    assertSame(戊子, impl.getStemBranchOf(天相, 庚, 3, 23));
+    assertSame(己丑, impl.getStemBranchOf(天梁, 庚, 3, 23));
+    assertSame(戊寅, impl.getStemBranchOf(七殺, 庚, 3, 23));
+    assertSame(壬午, impl.getStemBranchOf(破軍, 庚, 3, 23));
   }
 }

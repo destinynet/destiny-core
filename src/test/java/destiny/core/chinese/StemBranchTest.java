@@ -8,12 +8,21 @@ package destiny.core.chinese;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.*;
+import static destiny.core.chinese.StemBranch.甲子;
 import static org.junit.Assert.*;
 
 public class StemBranchTest {
+
+  @Test
+  public void testList() {
+    String a = StemBranch.getList().stream().map(StemBranch::toString).collect(Collectors.joining(","));
+    System.out.println(a);
+  }
+
 
   @Test
   public void testGetEmpties() {
@@ -75,25 +84,25 @@ public class StemBranchTest {
 
   @Test
   public void testGetAheadOf() {
-    assertSame(0 , StemBranch.get("甲子").getAheadOf(StemBranch.get("甲子")));
-    assertSame(1 , StemBranch.get("甲子").getAheadOf(StemBranch.get("癸亥")));
-    assertSame(59 , StemBranch.get("甲子").getAheadOf(StemBranch.get("乙丑")));
+    assertSame(0 , 甲子.getAheadOf(甲子));
+    assertSame(1 , 甲子.getAheadOf(StemBranch.get("癸亥")));
+    assertSame(59 , 甲子.getAheadOf(StemBranch.get("乙丑")));
 
     assertSame(0 , StemBranch.get("癸亥").getAheadOf(StemBranch.get("癸亥")));
     assertSame(1 , StemBranch.get("癸亥").getAheadOf(StemBranch.get("壬戌")));
-    assertSame(59 , StemBranch.get("癸亥").getAheadOf(StemBranch.get("甲子")));
+    assertSame(59 , StemBranch.get("癸亥").getAheadOf(甲子));
   }
 
   @Test
   public void testNext() {
-    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").next(0));
-    assertSame(StemBranch.get("乙丑") , StemBranch.get("甲子").next(1));
-    assertSame(StemBranch.get("癸亥") , StemBranch.get("甲子").next(59));
-    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").next(60));
-    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").next(600));
+    assertSame(甲子 , 甲子.next(0));
+    assertSame(StemBranch.get("乙丑") , 甲子.next(1));
+    assertSame(StemBranch.get("癸亥") , 甲子.next(59));
+    assertSame(甲子 , 甲子.next(60));
+    assertSame(甲子 , 甲子.next(600));
 
     assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").next(0));
-    assertSame(StemBranch.get("甲子") , StemBranch.get("癸亥").next(1));
+    assertSame(甲子 , StemBranch.get("癸亥").next(1));
     assertSame(StemBranch.get("壬戌") , StemBranch.get("癸亥").next(59));
     assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").next(60));
     assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").next(600));
@@ -101,15 +110,15 @@ public class StemBranchTest {
 
   @Test
   public void testPrev() {
-    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").prev(0));
-    assertSame(StemBranch.get("癸亥") , StemBranch.get("甲子").prev(1));
-    assertSame(StemBranch.get("乙丑") , StemBranch.get("甲子").prev(59));
-    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").prev(60));
-    assertSame(StemBranch.get("甲子") , StemBranch.get("甲子").prev(600));
+    assertSame(甲子 , 甲子.prev(0));
+    assertSame(StemBranch.get("癸亥") , 甲子.prev(1));
+    assertSame(StemBranch.get("乙丑") , 甲子.prev(59));
+    assertSame(甲子 , 甲子.prev(60));
+    assertSame(甲子 , 甲子.prev(600));
 
     assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").prev(0));
     assertSame(StemBranch.get("壬戌") , StemBranch.get("癸亥").prev(1));
-    assertSame(StemBranch.get("甲子") , StemBranch.get("癸亥").prev(59));
+    assertSame(甲子 , StemBranch.get("癸亥").prev(59));
     assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").prev(60));
     assertSame(StemBranch.get("癸亥") , StemBranch.get("癸亥").prev(600));
   }
@@ -117,7 +126,7 @@ public class StemBranchTest {
 
   @Test
   public void testGet() {
-    assertSame(StemBranch.get("甲子") , StemBranch.get(甲 , 子));
+    assertSame(甲子 , StemBranch.get(甲 , 子));
     assertSame(StemBranch.get("乙丑") , StemBranch.get(Stem.乙 , 丑));
     assertSame(StemBranch.get("丙寅") , StemBranch.get(Stem.丙 , 寅));
     assertSame(StemBranch.get("丁卯") , StemBranch.get(Stem.丁 , 卯));
@@ -150,7 +159,7 @@ public class StemBranchTest {
     assertSame(sb4 , sb6);
     assertSame(sb5, sb6);
     
-    StemBranch sb7 = StemBranch.get("甲子");
+    StemBranch sb7 = 甲子;
     assertSame(sb4 , sb7);
     assertSame(sb5 , sb7);
     assertSame(sb6 , sb7);
@@ -180,20 +189,20 @@ public class StemBranchTest {
   @Test
   public void testGetNext()
   {
-    StemBranch sb = StemBranch.get("甲子");
+    StemBranch sb = 甲子;
     assertSame(sb.getNext() , StemBranch.get("乙丑"));
     
     sb = StemBranch.get("癸亥");
-    assertSame(sb.getNext() , StemBranch.get("甲子"));
+    assertSame(sb.getNext() , 甲子);
   }
 
   @Test
   public void testGetPrevious()
   {
-    StemBranch sb = StemBranch.get("甲子");
+    StemBranch sb = 甲子;
     assertSame(sb.getPrevious() , StemBranch.get("癸亥"));
     
     sb = StemBranch.get("乙丑");
-    assertSame(sb.getPrevious() , StemBranch.get("甲子"));
+    assertSame(sb.getPrevious() , 甲子);
   }
 }

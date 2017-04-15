@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableSet;
+import destiny.core.Gender;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static destiny.core.chinese.ziwei.DoctorStar.*;
 import static destiny.core.chinese.ziwei.LuckyStar.*;
 import static destiny.core.chinese.ziwei.MainStar.*;
 import static destiny.core.chinese.ziwei.MinorStar.*;
@@ -176,7 +178,7 @@ public class HouseFunctions {
   
   public final static IHouse house天馬 = new IHouseYearBranchMonthBranchImpl(天馬) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       switch (settings.getHorse()) {
         case 年馬: return fun天馬.apply(year.getBranch());
         case 月馬: return fun天馬.apply(monthBranch);
@@ -210,7 +212,7 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       switch (settings.getFireBell()) {
         case 全書: return fun火星_全書.apply(year.getBranch());
         case 全集: return fun火星_全集.apply(year.getBranch() , hour);
@@ -226,7 +228,7 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       switch (settings.getFireBell()) {
         case 全書: return fun鈴星_全書.apply(year.getBranch());
         case 全集: return fun鈴星_全集.apply(year.getBranch() , hour);
@@ -481,6 +483,93 @@ public class HouseFunctions {
 
   // =======↑↑↑======= 以上      雜曜 =======↑↑↑=======
 
+  // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
+
+  public final static IHouse house博士 = new IHouseYearStemGenderImpl(博士) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun博士.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house力士 = new IHouseYearStemGenderImpl(力士) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun力士.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house青龍 = new IHouseYearStemGenderImpl(青龍) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun青龍.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house小耗 = new IHouseYearStemGenderImpl(小耗) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun小耗.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house將軍 = new IHouseYearStemGenderImpl(將軍) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun將軍.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house奏書 = new IHouseYearStemGenderImpl(奏書) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun奏書.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house飛廉 = new IHouseYearStemGenderImpl(飛廉) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun飛廉.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house喜神 = new IHouseYearStemGenderImpl(喜神) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun喜神.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house病符 = new IHouseYearStemGenderImpl(病符) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun病符.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house大耗 = new IHouseYearStemGenderImpl(大耗) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun大耗.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house伏兵 = new IHouseYearStemGenderImpl(伏兵) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun伏兵.apply(t.v1() , t.v2());
+    }
+  };
+
+  public final static IHouse house官府 = new IHouseYearStemGenderImpl(官府) {
+    @Override
+    public Branch getBranch(Tuple2<Stem, Gender> t) {
+      return fun官府.apply(t.v1() , t.v2());
+    }
+  };
+
+  // =======↑↑↑======= 以上 博士12神煞 =======↑↑↑=======
 
   public final static Set<IHouse> set = new ImmutableSet.Builder<IHouse>()
     // 14主星
@@ -497,6 +586,10 @@ public class HouseFunctions {
     .add(house陰煞, house台輔, house封誥, house天空, house天哭, house天虛, house龍池, house鳳閣)
     .add(house紅鸞, house天喜, house孤辰, house寡宿, house蜚廉, house破碎, house華蓋, house咸池)
     .add(house天德, house月德, house天才, house天壽, house三台, house八座, house恩光, house天貴)
+
+    // 博士12神煞
+    .add(house博士, house力士, house青龍, house小耗, house將軍, house奏書,
+         house飛廉, house喜神, house病符, house大耗, house伏兵, house官府)
     .build();
 
   public final static Map<ZStar , IHouse> map = set.stream()

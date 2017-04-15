@@ -23,13 +23,12 @@ public enum Branch implements BranchIF<Branch> {
   酉('酉'),
   戌('戌'),
   亥('亥');
-  
-  
+
+
   private final char name;
-  
-  private final static Branch[] ARRAY =
-    new Branch[] { 子 , 丑 , 寅 , 卯 , 辰 , 巳 , 午 , 未 , 申 , 酉 , 戌 , 亥};
-  
+
+  private final static Branch[] ARRAY = {子, 丑, 寅, 卯, 辰, 巳, 午, 未, 申, 酉, 戌, 亥};
+
   Branch(char c)
   {
     this.name = c;
@@ -62,7 +61,7 @@ public enum Branch implements BranchIF<Branch> {
     return next(0-n);
   }
 
-  
+
   public static Optional<Branch> get(char c)
   {
     Branch result = null;
@@ -77,7 +76,7 @@ public enum Branch implements BranchIF<Branch> {
     else
       return Optional.empty();
   }
-  
+
   /** 取得對沖 的地支 */
   public Branch getOpposite()
   {
@@ -103,7 +102,7 @@ public enum Branch implements BranchIF<Branch> {
       default: throw new AssertionError();
     }
   }
-  
+
   /**
    * 子[0] ~ 亥[11]
    */
@@ -147,23 +146,7 @@ public enum Branch implements BranchIF<Branch> {
     return (steps >=0 ? steps : steps + 12);
   }
 
-  
-  /**
-   * 實作 Comparable
-   * */
-  /*
-  public int compareTo(Object o)
-  {
-    EarthlyBranches e = (EarthlyBranches) o;
-    if ( getIndex(this) < getIndex(e) )
-      return -1;
-    else if ( getIndex(this) == getIndex(e) )
-      return 0;
-    else
-      return 1;
-  }
-  */
-  
+
   @NotNull
   @Override
   public String toString()
@@ -174,6 +157,7 @@ public enum Branch implements BranchIF<Branch> {
   public static Iterable<Branch> iterable() {
     return Arrays.asList(ARRAY);
   }
+
 
 
 }

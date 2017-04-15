@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.Gender;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 
@@ -19,7 +20,7 @@ public abstract class IHouseMonthBranchImpl extends IHouseAbstractImpl<Branch> {
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Settings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
     return getBranch(monthBranch);
   }
 }

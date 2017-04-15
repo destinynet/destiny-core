@@ -7,22 +7,77 @@ import java.io.Serializable;
 import java.util.*;
 
 import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.Stem.*;
 
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
 public class StemBranch extends StemBranchOptional implements Comparable<StemBranch> , Serializable {
+
+  public final static StemBranch 甲子 = new StemBranch(甲 , 子);
+  public final static StemBranch 乙丑 = new StemBranch(乙 , 丑);
+  public final static StemBranch 丙寅 = new StemBranch(丙 , 寅);
+  public final static StemBranch 丁卯 = new StemBranch(丁 , 卯);
+  public final static StemBranch 戊辰 = new StemBranch(戊 , 辰);
+  public final static StemBranch 己巳 = new StemBranch(己 , 巳);
+  public final static StemBranch 庚午 = new StemBranch(庚 , 午);
+  public final static StemBranch 辛未 = new StemBranch(辛 , 未);
+  public final static StemBranch 壬申 = new StemBranch(壬 , 申);
+  public final static StemBranch 癸酉 = new StemBranch(癸 , 酉);
+  public final static StemBranch 甲戌 = new StemBranch(甲 , 戌);
+  public final static StemBranch 乙亥 = new StemBranch(乙 , 亥);
+  public final static StemBranch 丙子 = new StemBranch(丙 , 子);
+  public final static StemBranch 丁丑 = new StemBranch(丁 , 丑);
+  public final static StemBranch 戊寅 = new StemBranch(戊 , 寅);
+  public final static StemBranch 己卯 = new StemBranch(己 , 卯);
+  public final static StemBranch 庚辰 = new StemBranch(庚 , 辰);
+  public final static StemBranch 辛巳 = new StemBranch(辛 , 巳);
+  public final static StemBranch 壬午 = new StemBranch(壬 , 午);
+  public final static StemBranch 癸未 = new StemBranch(癸 , 未);
+  public final static StemBranch 甲申 = new StemBranch(甲 , 申);
+  public final static StemBranch 乙酉 = new StemBranch(乙 , 酉);
+  public final static StemBranch 丙戌 = new StemBranch(丙 , 戌);
+  public final static StemBranch 丁亥 = new StemBranch(丁 , 亥);
+  public final static StemBranch 戊子 = new StemBranch(戊 , 子);
+  public final static StemBranch 己丑 = new StemBranch(己 , 丑);
+  public final static StemBranch 庚寅 = new StemBranch(庚 , 寅);
+  public final static StemBranch 辛卯 = new StemBranch(辛 , 卯);
+  public final static StemBranch 壬辰 = new StemBranch(壬 , 辰);
+  public final static StemBranch 癸巳 = new StemBranch(癸 , 巳);
+  public final static StemBranch 甲午 = new StemBranch(甲 , 午);
+  public final static StemBranch 乙未 = new StemBranch(乙 , 未);
+  public final static StemBranch 丙申 = new StemBranch(丙 , 申);
+  public final static StemBranch 丁酉 = new StemBranch(丁 , 酉);
+  public final static StemBranch 戊戌 = new StemBranch(戊 , 戌);
+  public final static StemBranch 己亥 = new StemBranch(己 , 亥);
+  public final static StemBranch 庚子 = new StemBranch(庚 , 子);
+  public final static StemBranch 辛丑 = new StemBranch(辛 , 丑);
+  public final static StemBranch 壬寅 = new StemBranch(壬 , 寅);
+  public final static StemBranch 癸卯 = new StemBranch(癸 , 卯);
+  public final static StemBranch 甲辰 = new StemBranch(甲 , 辰);
+  public final static StemBranch 乙巳 = new StemBranch(乙 , 巳);
+  public final static StemBranch 丙午 = new StemBranch(丙 , 午);
+  public final static StemBranch 丁未 = new StemBranch(丁 , 未);
+  public final static StemBranch 戊申 = new StemBranch(戊 , 申);
+  public final static StemBranch 己酉 = new StemBranch(己 , 酉);
+  public final static StemBranch 庚戌 = new StemBranch(庚 , 戌);
+  public final static StemBranch 辛亥 = new StemBranch(辛 , 亥);
+  public final static StemBranch 壬子 = new StemBranch(壬 , 子);
+  public final static StemBranch 癸丑 = new StemBranch(癸 , 丑);
+  public final static StemBranch 甲寅 = new StemBranch(甲 , 寅);
+  public final static StemBranch 乙卯 = new StemBranch(乙 , 卯);
+  public final static StemBranch 丙辰 = new StemBranch(丙 , 辰);
+  public final static StemBranch 丁巳 = new StemBranch(丁 , 巳);
+  public final static StemBranch 戊午 = new StemBranch(戊 , 午);
+  public final static StemBranch 己未 = new StemBranch(己 , 未);
+  public final static StemBranch 庚申 = new StemBranch(庚 , 申);
+  public final static StemBranch 辛酉 = new StemBranch(辛 , 酉);
+  public final static StemBranch 壬戌 = new StemBranch(壬 , 戌);
+  public final static StemBranch 癸亥 = new StemBranch(癸 , 亥);
+
   // 0[甲子] ~ 59[癸亥]
   @NotNull
-  private final static StemBranch[] ARRAY = new StemBranch[60];
-
-  static {
-    int n = 0;
-    do {
-      ARRAY[n] = new StemBranch(Stem.get(n % 10), Branch.get(n % 12));
-      n++;
-    } while (n < 60);
-  }
+  private final static StemBranch[] ARRAY = {甲子,乙丑,丙寅,丁卯,戊辰,己巳,庚午,辛未,壬申,癸酉,甲戌,乙亥,丙子,丁丑,戊寅,己卯,庚辰,辛巳,壬午,癸未,甲申,乙酉,丙戌,丁亥,戊子,己丑,庚寅,辛卯,壬辰,癸巳,甲午,乙未,丙申,丁酉,戊戌,己亥,庚子,辛丑,壬寅,癸卯,甲辰,乙巳,丙午,丁未,戊申,己酉,庚戌,辛亥,壬子,癸丑,甲寅,乙卯,丙辰,丁巳,戊午,己未,庚申,辛酉,壬戌,癸亥};
 
   private final static List<StemBranch> list = Arrays.asList(ARRAY);
 

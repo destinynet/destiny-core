@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2017-04-12.
+ * Created by smallufo on 2017-04-15.
  */
 package destiny.core.chinese.ziwei;
 
@@ -14,19 +14,20 @@ import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.Stem.癸;
 import static destiny.core.chinese.ziwei.LuckyStar.*;
 import static destiny.core.chinese.ziwei.MainStar.*;
-import static destiny.core.chinese.ziwei.MainStar.太陰;
-import static destiny.core.chinese.ziwei.MainStar.貪狼;
 import static destiny.core.chinese.ziwei.TransFour.Type.*;
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
-/** 北派 , 神數 */
-public class TransFourNorthImpl extends TransFourAbstractImpl {
+/**
+ * 占驗門
+ * http://mestrong1978.pixnet.net/blog/post/96901556-紫微斗數-簡述
+ */
+public class TransFourDivineImpl extends TransFourAbstractImpl  {
 
   private final static Map<Tuple2<Stem, Type> , ZStar> transMap
     = new ImmutableMap.Builder<Tuple2<Stem, Type> , ZStar>()
     .put(tuple(甲 , 祿) , 廉貞)
     .put(tuple(甲 , 權) , 破軍)
-    .put(tuple(甲 , 科) , 武曲)
+    .put(tuple(甲 , 科) , 文曲)
     .put(tuple(甲 , 忌) , 太陽)
 
     .put(tuple(乙 , 祿) , 天機)
@@ -44,7 +45,6 @@ public class TransFourNorthImpl extends TransFourAbstractImpl {
     .put(tuple(丁 , 科) , 天機)
     .put(tuple(丁 , 忌) , 巨門)
 
-    // 戊 有差別
     .put(tuple(戊 , 祿) , 貪狼)
     .put(tuple(戊 , 權) , 太陰)
     .put(tuple(戊 , 科) , 右弼)
@@ -58,18 +58,19 @@ public class TransFourNorthImpl extends TransFourAbstractImpl {
     // 庚 有差別
     .put(tuple(庚 , 祿) , 太陽)
     .put(tuple(庚 , 權) , 武曲)
-    .put(tuple(庚 , 科) , 天同)
+    .put(tuple(庚 , 科) , 太陰)
     .put(tuple(庚 , 忌) , 天相)
 
+    // 辛 有差別
     .put(tuple(辛 , 祿) , 巨門)
     .put(tuple(辛 , 權) , 太陽)
-    .put(tuple(辛 , 科) , 文曲)
+    .put(tuple(辛 , 科) , 武曲)
     .put(tuple(辛 , 忌) , 文昌)
 
     // 壬 有差別
     .put(tuple(壬 , 祿) , 天梁)
     .put(tuple(壬 , 權) , 紫微)
-    .put(tuple(壬 , 科) , 左輔)
+    .put(tuple(壬 , 科) , 天府)
     .put(tuple(壬 , 忌) , 武曲)
 
     .put(tuple(癸 , 祿) , 破軍)
@@ -80,17 +81,17 @@ public class TransFourNorthImpl extends TransFourAbstractImpl {
     .build();
 
   @Override
-  protected Map<Tuple2<Stem, Type>, ZStar> getTransMap() {
-    return transMap;
-  }
-
-  @Override
   public String getTitle(Locale locale) {
-    return "北派";
+    return "占驗門";
   }
 
   @Override
   public String getDescription(Locale locale) {
-    return "北派、神數派";
+    return "占驗門";
+  }
+
+  @Override
+  protected Map<Tuple2<Stem, Type>, ZStar> getTransMap() {
+    return transMap;
   }
 }

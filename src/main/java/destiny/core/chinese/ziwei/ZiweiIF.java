@@ -308,8 +308,7 @@ public interface ZiweiIF {
       .build();
 
 
-  default Plate getPlate(StemBranch year, Branch monthBranch , int monthNum , int days , Branch hour ,
-                         HouseSeqIF houseSeq , @NotNull Collection<ZStar> stars , Settings settings) {
+  default Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) {
     StemBranch mainHouse = getMainHouse(year.getStem() , monthNum , hour);
     StemBranch bodyHouse = getBodyHouse(year.getStem() , monthNum , hour);
 
@@ -328,7 +327,7 @@ public interface ZiweiIF {
     stars.stream()
       .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
         .map(iHouse -> {
-          Branch branch = iHouse.getBranch(year , monthBranch , monthNum , days , hour , set , settings);
+          Branch branch = iHouse.getBranch(year , monthBranch , monthNum , days , hour , set , gender , settings);
           StemBranch sb = getStemBranchOf(branch , stemOf寅);
           return Tuple.tuple(star , sb);
         })

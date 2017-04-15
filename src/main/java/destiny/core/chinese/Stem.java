@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 /** 天干系統 */
-public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
-{
+public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF {
+
   甲('甲'),
   乙('乙'),
   丙('丙'),
@@ -22,10 +22,8 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF
   癸('癸');
   
   private final char name;
-  
-  private final static Stem[] ARRAY =
-    { 甲 , 乙 , 丙 , 丁 , 戊 ,
-      己 , 庚 , 辛 , 壬 , 癸 };
+
+  private final static Stem[] ARRAY = {甲, 乙, 丙, 丁, 戊, 己, 庚, 辛, 壬, 癸};
   
   private final static List<Stem> STEM_LIST = Arrays.asList(ARRAY);
 
