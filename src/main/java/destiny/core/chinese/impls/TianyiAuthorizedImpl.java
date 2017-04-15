@@ -3,15 +3,14 @@
  */
 package destiny.core.chinese.impls;
 
-import destiny.astrology.DayNight;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.TianyiIF;
+import destiny.core.chinese.YinYangIF;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-import static destiny.astrology.DayNight.DAY;
 import static destiny.core.chinese.Branch.*;
 
 public class TianyiAuthorizedImpl implements TianyiIF, Serializable {
@@ -35,34 +34,34 @@ public class TianyiAuthorizedImpl implements TianyiIF, Serializable {
    * 　　　　　丙豬丁雞辛遇馬，壬蛇癸兔屬陰方。
    */
   @Override
-  public Branch getFirstTianyi(Stem stem, DayNight dayNight) {
+  public Branch getFirstTianyi(Stem stem, YinYangIF yinYang) {
     switch (stem) {
       case 甲:
-        return dayNight == DAY ? 未 : 丑;
+        return yinYang.getBooleanValue() ? 未 : 丑;
       case 戊:
       case 庚:
-        return dayNight == DAY ? 丑 : 未;
+        return yinYang.getBooleanValue() ? 丑 : 未;
 
       case 乙:
-        return dayNight == DAY ? 申 : 子;
+        return yinYang.getBooleanValue() ? 申 : 子;
       case 己:
-        return dayNight == DAY ? 子 : 申;
+        return yinYang.getBooleanValue() ? 子 : 申;
 
       case 丙:
-        return dayNight == DAY ? 酉 : 亥;
+        return yinYang.getBooleanValue() ? 酉 : 亥;
       case 丁:
-        return dayNight == DAY ? 亥 : 酉;
+        return yinYang.getBooleanValue() ? 亥 : 酉;
 
       case 壬:
-        return dayNight == DAY ? 卯 : 巳;
+        return yinYang.getBooleanValue() ? 卯 : 巳;
       case 癸:
-        return dayNight == DAY ? 巳 : 卯;
+        return yinYang.getBooleanValue() ? 巳 : 卯;
 
       case 辛:
-        return dayNight == DAY ? 寅 : 午;
+        return yinYang.getBooleanValue() ? 寅 : 午;
 
       default:
-        throw new AssertionError(stem + " at " + dayNight);
+        throw new AssertionError(stem + " at " + yinYang);
     }
   }
 

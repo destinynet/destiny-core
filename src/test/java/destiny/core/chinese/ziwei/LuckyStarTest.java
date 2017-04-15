@@ -3,6 +3,8 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.chinese.TianyiIF;
+import destiny.core.chinese.impls.TianyiZiweiBookImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,30 +100,32 @@ public class LuckyStarTest {
 
   @Test
   public void test天魁() {
-    assertSame(丑 , fun天魁.apply(甲));
-    assertSame(子 , fun天魁.apply(乙));
-    assertSame(亥 , fun天魁.apply(丙));
-    assertSame(亥 , fun天魁.apply(丁));
-    assertSame(丑 , fun天魁.apply(戊));
-    assertSame(子 , fun天魁.apply(己));
-    assertSame(丑 , fun天魁.apply(庚));
-    assertSame(午 , fun天魁.apply(辛));
-    assertSame(卯 , fun天魁.apply(壬));
-    assertSame(卯 , fun天魁.apply(癸));
+    TianyiIF tianyiImpl = new TianyiZiweiBookImpl();
+    assertSame(丑 , fun天魁.apply(甲 , tianyiImpl));
+    assertSame(子 , fun天魁.apply(乙 , tianyiImpl));
+    assertSame(亥 , fun天魁.apply(丙 , tianyiImpl));
+    assertSame(亥 , fun天魁.apply(丁 , tianyiImpl));
+    assertSame(丑 , fun天魁.apply(戊 , tianyiImpl));
+    assertSame(子 , fun天魁.apply(己 , tianyiImpl));
+    assertSame(丑 , fun天魁.apply(庚 , tianyiImpl));
+    assertSame(午 , fun天魁.apply(辛 , tianyiImpl));
+    assertSame(卯 , fun天魁.apply(壬 , tianyiImpl));
+    assertSame(卯 , fun天魁.apply(癸 , tianyiImpl));
   }
 
   @Test
   public void test天鉞() {
-    assertSame(未 , fun天鉞.apply(甲));
-    assertSame(申 , fun天鉞.apply(乙));
-    assertSame(酉 , fun天鉞.apply(丙));
-    assertSame(酉 , fun天鉞.apply(丁));
-    assertSame(未 , fun天鉞.apply(戊));
-    assertSame(申 , fun天鉞.apply(己));
-    assertSame(未 , fun天鉞.apply(庚));
-    assertSame(寅 , fun天鉞.apply(辛));
-    assertSame(巳 , fun天鉞.apply(壬));
-    assertSame(巳 , fun天鉞.apply(癸));
+    TianyiIF tianyiImpl = new TianyiZiweiBookImpl();
+    assertSame(未 , fun天鉞.apply(甲 , tianyiImpl));
+    assertSame(申 , fun天鉞.apply(乙 , tianyiImpl));
+    assertSame(酉 , fun天鉞.apply(丙 , tianyiImpl));
+    assertSame(酉 , fun天鉞.apply(丁 , tianyiImpl));
+    assertSame(未 , fun天鉞.apply(戊 , tianyiImpl));
+    assertSame(申 , fun天鉞.apply(己 , tianyiImpl));
+    assertSame(未 , fun天鉞.apply(庚 , tianyiImpl));
+    assertSame(寅 , fun天鉞.apply(辛 , tianyiImpl));
+    assertSame(巳 , fun天鉞.apply(壬 , tianyiImpl));
+    assertSame(巳 , fun天鉞.apply(癸 , tianyiImpl));
   }
 
   @Test

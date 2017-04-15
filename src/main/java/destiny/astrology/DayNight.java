@@ -4,10 +4,22 @@
  */ 
 package destiny.astrology;
 
-public enum DayNight
-{
+import destiny.core.chinese.YinYangIF;
+
+public enum DayNight implements YinYangIF {
+
   /** 日 */
-  DAY,
+  DAY(true),
+
   /** 夜 */
-  NIGHT
+  NIGHT(false);
+
+  private final boolean value;
+
+  DayNight(boolean value) {this.value = value;}
+
+  @Override
+  public boolean getBooleanValue() {
+    return value;
+  }
 }

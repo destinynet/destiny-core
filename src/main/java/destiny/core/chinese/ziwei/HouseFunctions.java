@@ -8,6 +8,7 @@ import destiny.core.Gender;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.TianyiIF;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
@@ -155,17 +156,17 @@ public class HouseFunctions {
     }
   };
   
-  public final static IHouse house天魁 = new IHouseYearStemImpl(天魁) {
+  public final static IHouse house天魁 = new IHouseYearStemTianyiImpl(天魁) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun天魁.apply(stem);
+    public Branch getBranch(Tuple2<Stem, TianyiIF> tuple) {
+      return fun天魁.apply(tuple.v1() , tuple.v2());
     }
   };
   
-  public final static IHouse house天鉞 = new IHouseYearStemImpl(天鉞) {
+  public final static IHouse house天鉞 = new IHouseYearStemTianyiImpl(天鉞) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun天鉞.apply(stem);
+    public Branch getBranch(Tuple2<Stem, TianyiIF> tuple) {
+      return fun天鉞.apply(tuple.v1() , tuple.v2());
     }
   };
   

@@ -26,7 +26,7 @@ public interface TianyiIF extends Descriptive {
   /**
    * 取得天干的天乙貴人、分晝夜
    */
-  Branch getFirstTianyi(Stem stem, DayNight dayNight);
+  Branch getFirstTianyi(Stem stem, YinYangIF yinYangIF);
 
   /** 取得天干對應的天乙貴人，不分晝夜，一起傳回來 */
   default List<Branch> getTianyis(Stem stem) {

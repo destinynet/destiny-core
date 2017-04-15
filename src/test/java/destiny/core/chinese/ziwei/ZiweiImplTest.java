@@ -42,7 +42,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(FireBell.全集, Horse.年馬, HurtAngel.YINYANG);
+    Settings settings = new Settings(Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(MainStar.values));

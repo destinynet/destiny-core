@@ -4,11 +4,12 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.chinese.Branch;
-import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple2;
 
-import static destiny.core.chinese.ziwei.LuckyStar.fun天馬;
-
+/**
+ * (年支,月支) -> 地支
+ * 目前只有 {@link HouseFunctions#house天馬} 使用
+ */
 public abstract class IHouseYearBranchMonthBranchImpl extends IHouseAbstractImpl<Tuple2<Branch , Branch>> {
 
   protected IHouseYearBranchMonthBranchImpl(ZStar star) {

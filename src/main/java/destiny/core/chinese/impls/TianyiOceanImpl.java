@@ -3,15 +3,14 @@
  */
 package destiny.core.chinese.impls;
 
-import destiny.astrology.DayNight;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.TianyiIF;
+import destiny.core.chinese.YinYangIF;
 
 import java.io.Serializable;
 import java.util.Locale;
 
-import static destiny.astrology.DayNight.DAY;
 import static destiny.core.chinese.Branch.*;
 
 /**
@@ -29,30 +28,30 @@ public class TianyiOceanImpl implements TianyiIF, Serializable {
    * 庚辛逢馬虎，此是貴人方，命中如遇此，定作紫薇郎。
    */
   @Override
-  public Branch getFirstTianyi(Stem stem, DayNight dayNight) {
+  public Branch getFirstTianyi(Stem stem, YinYangIF yinYang) {
     switch (stem) {
       case 甲:
       case 戊:
-        return dayNight == DAY ? 丑 : 未;
+        return yinYang.getBooleanValue() ? 丑 : 未;
 
       case 乙:
       case 己:
-        return dayNight == DAY ? 子 : 申;
+        return yinYang.getBooleanValue() ? 子 : 申;
 
       case 丙:
       case 丁:
-        return dayNight == DAY ? 亥 : 酉;
+        return yinYang.getBooleanValue() ? 亥 : 酉;
 
       case 壬:
       case 癸:
-        return dayNight == DAY ? 卯 : 巳;
+        return yinYang.getBooleanValue() ? 卯 : 巳;
 
       case 庚:
       case 辛:
-        return dayNight == DAY ? 午 : 寅;
+        return yinYang.getBooleanValue() ? 午 : 寅;
 
       default:
-        throw new AssertionError(stem + " at " + dayNight);
+        throw new AssertionError(stem + " at " + yinYang);
     }
   }
 
