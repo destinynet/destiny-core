@@ -21,7 +21,7 @@ import static destiny.core.chinese.ziwei.StarLucky.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarMinor.*;
 import static destiny.core.chinese.ziwei.StarUnlucky.*;
-import static destiny.core.chinese.ziwei.ZiweiIF.*;
+import static destiny.core.chinese.ziwei.IZiwei.*;
 
 @SuppressWarnings("Duplicates")
 public class HouseFunctions {
@@ -486,7 +486,7 @@ public class HouseFunctions {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       // 太乙派，沒有遷移宮
-      Branch 遷移宮地支 = ZiweiIF.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
+      Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
       switch (settings.getHurtAngel()) {
         case FIXED  : return fun天傷_fixed交友.apply(遷移宮地支);
         case YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
@@ -500,7 +500,7 @@ public class HouseFunctions {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       // 太乙派，沒有遷移宮
-      Branch 遷移宮地支 = ZiweiIF.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
+      Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
       switch (settings.getHurtAngel()) {
         case FIXED  : return fun天使_fixed疾厄.apply(遷移宮地支);
         case YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);

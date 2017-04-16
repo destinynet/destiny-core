@@ -302,11 +302,11 @@ public class StarMinor extends ZStar {
   /** 天才 (年支 , 月數 , 時支) -> 地支
    * 天才由命宮起子, 順行至本生 「年支」安之.
    * */
-  public final static Function3<Branch , Integer , Branch , Branch> fun天才 = (Branch year, Integer month, Branch hour) -> ZiweiIF.getMainHouseBranch(month , hour).next(year.getIndex());
+  public final static Function3<Branch , Integer , Branch , Branch> fun天才 = (Branch year, Integer month, Branch hour) -> IZiwei.getMainHouseBranch(month , hour).next(year.getIndex());
 
   /** 天壽 (年支 , 月數 , 時支) -> 地支
    * 天壽由身宮起子, 順行至本生 「年支」安之 */
-  public final static Function3<Branch , Integer , Branch , Branch> fun天壽 = (Branch year, Integer month, Branch hour) -> ZiweiIF.getBodyHouseBranch(month , hour).next(year.getIndex());
+  public final static Function3<Branch , Integer , Branch , Branch> fun天壽 = (Branch year, Integer month, Branch hour) -> IZiwei.getBodyHouseBranch(month , hour).next(year.getIndex());
 
   /** 三台 : (月支,日數) -> 地支. 從「左輔」取初一，順行，數到本日生 */
   public final static BiFunction<Branch , Integer , Branch> fun三台 = (month , day) -> fun左輔.apply(month).next(day-1);

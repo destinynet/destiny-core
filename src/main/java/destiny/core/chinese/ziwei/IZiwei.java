@@ -18,14 +18,15 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static destiny.core.chinese.Branch.子;
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
 
 /** 紫微斗數 */
-public interface ZiweiIF {
+public interface IZiwei {
 
-  static Logger logger = LoggerFactory.getLogger(ZiweiIF.class);
+  static Logger logger = LoggerFactory.getLogger(IZiwei.class);
 
   /**
    * 命宮 : (月數 , 時支) -> 地支
@@ -246,13 +247,13 @@ public interface ZiweiIF {
    * 14顆主星
    * (局數,生日) -> 地支
    */
-  BiFunction<Integer, Integer, Branch> fun紫微 = ZiweiIF::getBranchOfPurpleStar;
+  BiFunction<Integer, Integer, Branch> fun紫微 = IZiwei::getBranchOfPurpleStar;
   BiFunction<Integer, Integer, Branch> fun天機 = (set, day) -> fun紫微.apply(set, day).prev(1);
   BiFunction<Integer, Integer, Branch> fun太陽 = (set, day) -> fun紫微.apply(set, day).prev(3);
   BiFunction<Integer, Integer, Branch> fun武曲 = (set, day) -> fun紫微.apply(set, day).prev(4);
   BiFunction<Integer, Integer, Branch> fun天同 = (set, day) -> fun紫微.apply(set, day).prev(5);
   BiFunction<Integer, Integer, Branch> fun廉貞 = (set, day) -> fun紫微.apply(set, day).prev(8);
-  BiFunction<Integer, Integer, Branch> fun天府 = ZiweiIF::getBranchOfTianFuStar;
+  BiFunction<Integer, Integer, Branch> fun天府 = IZiwei::getBranchOfTianFuStar;
   BiFunction<Integer, Integer, Branch> fun太陰 = (set, day) -> fun天府.apply(set, day).next(1);
   BiFunction<Integer, Integer, Branch> fun貪狼 = (set, day) -> fun天府.apply(set, day).next(2);
   BiFunction<Integer, Integer, Branch> fun巨門 = (set, day) -> fun天府.apply(set, day).next(3);
@@ -294,4 +295,17 @@ public interface ZiweiIF {
                  IHouseSeq houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
                  Map<ITransFour.Type , Stem> transFourTypes, Settings settings) ;
 
+  /** 計算流月命宮 */
+  default Branch getFlowMonth(Branch flowYear , Branch flowMonth , int birthMonth , Branch birthHour , IFlowMonth impl) {
+    return impl.getFlowMonth(flowYear , flowMonth, birthMonth , birthHour);
+  }
+
+  /** 流年斗君
+   * flowYear -> 流年 , anchor -> 錨 , 意為： 以此為當年度之「定錨」（亦為一月), 推算流月、甚至流日、流時
+   * */
+  static Branch getFlowYearAnchor(Branch flowYear , int birthMonth , Branch birthHour) {
+    return flowYear                     // 以流年地支為起點
+      .prev(birthMonth-1)               // 從1 逆數至「出生月」
+      .next(birthHour.getAheadOf(子));   // 再順數至「出生時」
+  }
 }

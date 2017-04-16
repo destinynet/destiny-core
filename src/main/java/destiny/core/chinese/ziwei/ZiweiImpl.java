@@ -17,14 +17,14 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ZiweiImpl implements ZiweiIF , Serializable {
+public class ZiweiImpl implements IZiwei, Serializable {
 
   @Override
   public Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
                         IHouseSeq houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
                         Map<ITransFour.Type , Stem> transFourTypes, Settings settings) {
-    StemBranch mainHouse = ZiweiIF.getMainHouse(year.getStem() , monthNum , hour);
-    StemBranch bodyHouse = ZiweiIF.getBodyHouse(year.getStem() , monthNum , hour);
+    StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , monthNum , hour);
+    StemBranch bodyHouse = IZiwei.getBodyHouse(year.getStem() , monthNum , hour);
 
     Tuple3<String , FiveElement , Integer> t3 = getNaYin(year.getStem() , monthNum , hour);
     int set = t3.v3();
@@ -35,14 +35,14 @@ public class ZiweiImpl implements ZiweiIF , Serializable {
         .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
     // 寅 的天干
-    Stem stemOf寅 = ZiweiIF.getStemOf寅(year.getStem());
+    Stem stemOf寅 = IZiwei.getStemOf寅(year.getStem());
 
     Map<ZStar , StemBranch> starBranchMap =
     stars.stream()
       .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
         .map(iHouse -> {
           Branch branch = iHouse.getBranch(year , monthBranch , monthNum , days , hour , set , gender , settings);
-          StemBranch sb = ZiweiIF.getStemBranchOf(branch , stemOf寅);
+          StemBranch sb = IZiwei.getStemBranchOf(branch , stemOf寅);
           return Tuple.tuple(star , sb);
         })
       )

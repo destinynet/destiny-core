@@ -20,11 +20,12 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.FiveElement.木;
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.StemBranch.*;
 import static destiny.core.chinese.ziwei.House.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
-import static destiny.core.chinese.ziwei.ZiweiIF.getBranchOfPurpleStar;
+import static destiny.core.chinese.ziwei.IZiwei.getBranchOfPurpleStar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -32,9 +33,62 @@ public class ZiweiImplTest {
 
   private IHouseSeq seq = new HouseSeqDefaultImpl();
 
-  ZiweiIF impl = new ZiweiImpl();
+  IZiwei impl = new ZiweiImpl();
 
   private Logger logger = LoggerFactory.getLogger(getClass());
+
+  /**
+   * 比對星橋 NCC-907 輸出結果
+   * 1989-08-26 辰時
+   * 農曆 己巳年 七月25日 辰時
+   * 木三局
+   * 比對資料 http://chineseypage.com/shop/ncc/ncc907.htm
+   * 命盤截圖 http://imgur.com/nnu8s7X
+   */
+  @Test
+  public void testPlate3() {
+    Settings settings = new Settings(Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT);
+
+    List<ZStar> starList = new ArrayList<>();
+    starList.addAll(Arrays.asList(StarMain.values));
+    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarUnlucky.values));
+    starList.addAll(Arrays.asList(StarMinor.values));
+    starList.addAll(Arrays.asList(StarDoctor.values));
+
+    Map<ITransFour.Type , Stem> transFourTypes = new ImmutableMap.Builder<ITransFour.Type , Stem>()
+      .put(ITransFour.Type.大限 , 甲)
+      .put(ITransFour.Type.流年 , 乙)
+      .put(ITransFour.Type.流月 , 丙)
+      .put(ITransFour.Type.流日 , 丁)
+      .put(ITransFour.Type.流時 , 戊)
+      .build();
+
+    Plate plate = impl.getPlate(己巳 , 申 , 7 , 25 , 辰 , seq , starList, Gender.女, transFourTypes , settings);
+
+    assertSame(戊辰 , plate.getMainHouse());
+    assertSame(丙子 , plate.getBodyHouse());
+    assertSame(木 , plate.getFiveElement());
+    assertSame(3 , plate.getSet());
+    logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
+    logger.debug("星體 -> 宮位地支 = {}" , plate.getStarMap());
+    logger.debug("宮位名稱 -> 星體s = {}" , plate.getHouseStarMap());
+    logger.debug("宮位地支 -> 星體s = {}" , plate.getBranchStarMap());
+    logger.debug("houseDataSet = {}" , plate.getHouseDataSet());
+
+    plate.getHouseDataSet().forEach(houseData -> {
+      logger.info("{} ({}) : {}" , houseData.getStemBranch() , houseData.getHouse() , houseData.getStars());
+    });
+
+    plate.getTranFours().forEach((star, tuple2s) -> {
+      logger.info("{} : {}" , star , tuple2s);
+    });
+
+    plate.getTransFourOf(天機).forEach(t -> {
+      logger.info("{} : {} -> {}" , 天機 , t.v1() , t.v2());
+    });
+  }
+
 
   /**
    * 1970-01-01
@@ -114,6 +168,34 @@ public class ZiweiImplTest {
   }
 
 
+  /**
+   * 根據此頁面範例 http://www.freehoro.net/ZWDS/Tutorial/PaiPan/19-0_Zi_Liu_NianDouJun.php
+   * 如某女士於陽曆1970年10月1日10時10分，為陰曆(庚戌)年9月2日巳時出生，是為陽女。
+   * 若現在為西元2012年陰曆過年後(歲次為壬辰)，則為虛歲43歲。
+   * 依子年斗君位於酉宮、流年支為辰作為條件，查表得知流年斗君位於丑宮。
+   */
+  @Test
+  public void test流年斗君1() {
+    assertSame(丑 , IZiwei.getFlowYearAnchor(辰 , 9 , 巳));
+  }
+
+  /**
+   * 根據此頁面範例 https://goo.gl/zwWsmO
+   * 農曆：(民國)56年11月×日辰時
+   * <p>
+   * 一個在2002年新暦2月25日・中六合彩的命例:
+   * 男:壬午年壬寅月甲子日36歳,大運乙巳
+   * 天府天馬同宮,雙祿在辰午二宮夾輔,壬年祿存在亥照會,祿馬同鄕主横財,「斗君子」. // ==> 流年午年 , 斗君在子
+   * <p>
+   * 農暦正月十四日命宮在丑,
+   * 甲子日廉貞在卯福徳宮化祿,
+   * 天盤財帛宮在大運流年雙化禄,
+   * 此日買中六合彩中齊六個字,發了一筆橫財。
+   */
+  @Test
+  public void test流年斗君2() {
+    assertSame(子 , IZiwei.getFlowYearAnchor(午 , 11 , 辰));
+  }
 
   /**
    * 測試命宮 (main)
@@ -126,9 +208,9 @@ public class ZiweiImplTest {
   @Test
   public void testGetMainHouseBranch() {
 
-    assertSame(午 , ZiweiIF.getMainHouseBranch(3 , 戌));
+    assertSame(午 , IZiwei.getMainHouseBranch(3 , 戌));
 
-    assertSame(丙午 , ZiweiIF.getMainHouse(丁 , 3 , 戌));
+    assertSame(丙午 , IZiwei.getMainHouse(丁 , 3 , 戌));
   }
 
   /**
@@ -140,18 +222,18 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetHouseBranch() {
-    assertSame(午 , ZiweiIF.getHouseBranch(3 , 戌 , 命宮 , seq));
-    assertSame(巳 , ZiweiIF.getHouseBranch(3 , 戌 , 兄弟 , seq));
-    assertSame(辰 , ZiweiIF.getHouseBranch(3 , 戌 , 夫妻 , seq));
-    assertSame(卯 , ZiweiIF.getHouseBranch(3 , 戌 , 子女 , seq));
-    assertSame(寅 , ZiweiIF.getHouseBranch(3 , 戌 , 財帛 , seq));
-    assertSame(丑 , ZiweiIF.getHouseBranch(3 , 戌 , 疾厄 , seq));
-    assertSame(子 , ZiweiIF.getHouseBranch(3 , 戌 , 遷移 , seq));
-    assertSame(亥 , ZiweiIF.getHouseBranch(3 , 戌 , 交友 , seq));
-    assertSame(戌 , ZiweiIF.getHouseBranch(3 , 戌 , 官祿 , seq));
-    assertSame(酉 , ZiweiIF.getHouseBranch(3 , 戌 , 田宅 , seq));
-    assertSame(申 , ZiweiIF.getHouseBranch(3 , 戌 , 福德 , seq));
-    assertSame(未 , ZiweiIF.getHouseBranch(3 , 戌 , 父母 , seq));
+    assertSame(午 , IZiwei.getHouseBranch(3 , 戌 , 命宮 , seq));
+    assertSame(巳 , IZiwei.getHouseBranch(3 , 戌 , 兄弟 , seq));
+    assertSame(辰 , IZiwei.getHouseBranch(3 , 戌 , 夫妻 , seq));
+    assertSame(卯 , IZiwei.getHouseBranch(3 , 戌 , 子女 , seq));
+    assertSame(寅 , IZiwei.getHouseBranch(3 , 戌 , 財帛 , seq));
+    assertSame(丑 , IZiwei.getHouseBranch(3 , 戌 , 疾厄 , seq));
+    assertSame(子 , IZiwei.getHouseBranch(3 , 戌 , 遷移 , seq));
+    assertSame(亥 , IZiwei.getHouseBranch(3 , 戌 , 交友 , seq));
+    assertSame(戌 , IZiwei.getHouseBranch(3 , 戌 , 官祿 , seq));
+    assertSame(酉 , IZiwei.getHouseBranch(3 , 戌 , 田宅 , seq));
+    assertSame(申 , IZiwei.getHouseBranch(3 , 戌 , 福德 , seq));
+    assertSame(未 , IZiwei.getHouseBranch(3 , 戌 , 父母 , seq));
   }
 
   /**
@@ -187,11 +269,11 @@ public class ZiweiImplTest {
    * */
   @Test
   public void testBodyHouse() {
-    assertSame(Branch.寅 , ZiweiIF.getBodyHouseBranch(3 , 戌));
+    assertSame(Branch.寅 , IZiwei.getBodyHouseBranch(3 , 戌));
 
     // 丁酉年 3月14日，子時，身命同宮 , 都在 辰
-    assertSame(辰 , ZiweiIF.getMainHouseBranch(3 , Branch.子));
-    assertSame(辰 , ZiweiIF.getBodyHouseBranch(3 , Branch.子));
+    assertSame(辰 , IZiwei.getMainHouseBranch(3 , Branch.子));
+    assertSame(辰 , IZiwei.getBodyHouseBranch(3 , Branch.子));
   }
 
   /**
