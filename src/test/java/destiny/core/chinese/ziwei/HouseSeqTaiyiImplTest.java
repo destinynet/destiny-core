@@ -11,7 +11,7 @@ import static org.junit.Assert.assertSame;
 
 public class HouseSeqTaiyiImplTest {
 
-  private HouseSeqIF impl = new HouseSeqTaiyiImpl();
+  private IHouseSeq impl = new HouseSeqTaiyiImpl();
 
   @Test
   public void next() {

@@ -18,7 +18,7 @@ import static destiny.core.chinese.ziwei.House.*;
  *
  * 多了 {@link House#相貌} , 但少了 {@link House#遷移}
  */
-public class HouseSeqTaiyiImpl implements HouseSeqIF , Serializable {
+public class HouseSeqTaiyiImpl implements IHouseSeq, Serializable {
 
   private final static House[] ARRAY = new House[] {
     命宮 , 兄弟 , 夫妻 ,

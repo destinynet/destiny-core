@@ -35,11 +35,11 @@ public enum House {
     return name;
   }
 
-  public House next(int n , HouseSeqIF seq) {
+  public House next(int n , IHouseSeq seq) {
     return seq.next(this , n);
   }
 
-  public House prev(int n , HouseSeqIF seq) {
+  public House prev(int n , IHouseSeq seq) {
     return seq.prev(this , n);
   }
 

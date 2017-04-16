@@ -13,18 +13,18 @@ import java.util.Locale;
 
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.LuckyStar.*;
+import static destiny.core.chinese.ziwei.StarLucky.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 @SuppressWarnings("Duplicates")
-public class LuckyStarTest {
+public class StarLuckyTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Test
   public void testToString() {
-    for(LuckyStar star : LuckyStar.values) {
+    for(StarLucky star : StarLucky.values) {
       assertNotNull(star.toString());
       assertNotNull(star.toString(Locale.TAIWAN));
       assertNotNull(star.toString(Locale.CHINA));

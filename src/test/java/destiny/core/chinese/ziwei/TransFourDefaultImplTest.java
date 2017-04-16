@@ -6,9 +6,9 @@ package destiny.core.chinese.ziwei;
 import org.junit.Test;
 
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.LuckyStar.右弼;
-import static destiny.core.chinese.ziwei.LuckyStar.左輔;
-import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.StarLucky.右弼;
+import static destiny.core.chinese.ziwei.StarLucky.左輔;
+import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.ITransFour.Value.*;
 import static org.junit.Assert.assertSame;
 

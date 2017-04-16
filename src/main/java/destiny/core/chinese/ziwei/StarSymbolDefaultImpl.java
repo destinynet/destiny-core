@@ -7,7 +7,7 @@ import destiny.iching.Symbol;
 
 import java.io.Serializable;
 
-import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.iching.Symbol.*;
 
 /**
@@ -17,10 +17,10 @@ import static destiny.iching.Symbol.*;
  *
  * 其餘系統參考這裡  http://skylight-hk.net/forum/forum.php?mod=viewthread&tid=607
  */
-public class StarSymbolDefaultImpl implements StarSymbolIF , Serializable {
+public class StarSymbolDefaultImpl implements IStarSymbol, Serializable {
 
   @Override
-  public Symbol getSymbolAcquired(MainStar star) {
+  public Symbol getSymbolAcquired(StarMain star) {
     if (star == 紫微 || star == 天府)
       return 艮;
     else if (star == 天機 || star == 巨門)

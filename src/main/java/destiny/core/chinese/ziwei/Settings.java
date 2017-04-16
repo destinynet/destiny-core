@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class Settings implements Serializable {
 
-  /** {@link LuckyStar#天魁} , {@link LuckyStar#天鉞} (貴人) 算法 */
+  /** {@link StarLucky#天魁} , {@link StarLucky#天鉞} (貴人) 算法 */
   public enum Tianyi {
     ZIWEI_BOOK,   /** 紫微斗數全書 {@link TianyiZiweiBookImpl} */
     AUTHORIZED ,  /** 協紀辨方書 {@link TianyiAuthorizedImpl} */
@@ -22,14 +22,14 @@ public class Settings implements Serializable {
 
   private final Tianyi tianyi;
 
-  /** {@link UnluckyStar#火星} ,  {@link UnluckyStar#鈴星} 設定 */
+  /** {@link StarUnlucky#火星} ,  {@link StarUnlucky#鈴星} 設定 */
   public enum FireBell {
     全集,  // (年支、時支) -> 地支
     全書   // 年支 -> 地支
   }
   private final FireBell fireBell;
 
-  /** {@link LuckyStar#天馬} */
+  /** {@link StarLucky#天馬} */
   public enum Horse {
     年馬,  /** 年馬 (子由使用) */
     月馬   /** 月馬  */
@@ -37,10 +37,10 @@ public class Settings implements Serializable {
   private final Horse horse;
 
 
-  /** {@link MinorStar#天傷}、 {@link MinorStar#天使} 計算方式 */
+  /** {@link StarMinor#天傷}、 {@link StarMinor#天使} 計算方式 */
   public enum HurtAngel {
-    FIXED,    /** 天傷固定於交友宮 {@link MinorStar#fun天傷_fixed交友} 、 天使固定疾厄宮 {@link MinorStar#fun天使_fixed疾厄} */
-    YINYANG   /** 陽順陰逆 {@link MinorStar#fun天傷_陽順陰逆} 、 {@link MinorStar#fun天使_陽順陰逆} */
+    FIXED,    /** 天傷固定於交友宮 {@link StarMinor#fun天傷_fixed交友} 、 天使固定疾厄宮 {@link StarMinor#fun天使_fixed疾厄} */
+    YINYANG   /** 陽順陰逆 {@link StarMinor#fun天傷_陽順陰逆} 、 {@link StarMinor#fun天使_陽順陰逆} */
   }
   private final HurtAngel hurtAngel;
 

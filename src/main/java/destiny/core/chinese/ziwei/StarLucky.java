@@ -18,20 +18,20 @@ import static destiny.core.chinese.Branch.*;
  * 八吉星
  */
 @SuppressWarnings("Duplicates")
-public final class LuckyStar extends ZStar {
+public final class StarLucky extends ZStar {
 
-  public final static LuckyStar 文昌 = new LuckyStar("文昌"); // 甲
-  public final static LuckyStar 文曲 = new LuckyStar("文曲"); // 甲
-  public final static LuckyStar 左輔 = new LuckyStar("左輔"); // 甲
-  public final static LuckyStar 右弼 = new LuckyStar("右弼"); // 甲
-  public final static LuckyStar 天魁 = new LuckyStar("天魁"); // 甲 , 丙火 , 天乙貴人 , 陽貴
-  public final static LuckyStar 天鉞 = new LuckyStar("天鉞"); // 甲 , 丁火 , 玉堂貴人 , 陰貴
-  public final static LuckyStar 祿存 = new LuckyStar("祿存"); // 甲
-  public final static LuckyStar 天馬 = new LuckyStar("天馬"); // 乙級星
+  public final static StarLucky 文昌 = new StarLucky("文昌"); // 甲
+  public final static StarLucky 文曲 = new StarLucky("文曲"); // 甲
+  public final static StarLucky 左輔 = new StarLucky("左輔"); // 甲
+  public final static StarLucky 右弼 = new StarLucky("右弼"); // 甲
+  public final static StarLucky 天魁 = new StarLucky("天魁"); // 甲 , 丙火 , 天乙貴人 , 陽貴
+  public final static StarLucky 天鉞 = new StarLucky("天鉞"); // 甲 , 丁火 , 玉堂貴人 , 陰貴
+  public final static StarLucky 祿存 = new StarLucky("祿存"); // 甲
+  public final static StarLucky 天馬 = new StarLucky("天馬"); // 乙級星
 
-  public final static LuckyStar[] values = {文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬};
+  public final static StarLucky[] values = {文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬};
 
-  public LuckyStar(String nameKey) {
+  public StarLucky(String nameKey) {
     super(nameKey, ZStar.class.getName() , nameKey+"_ABBR");
   }
 

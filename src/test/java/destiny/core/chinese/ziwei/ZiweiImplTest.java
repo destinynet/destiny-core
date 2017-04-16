@@ -23,14 +23,14 @@ import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.StemBranch.*;
 import static destiny.core.chinese.ziwei.House.*;
-import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.ZiweiIF.getBranchOfPurpleStar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class ZiweiImplTest {
 
-  private HouseSeqIF seq = new HouseSeqDefaultImpl();
+  private IHouseSeq seq = new HouseSeqDefaultImpl();
 
   ZiweiIF impl = new ZiweiImpl();
 
@@ -47,11 +47,11 @@ public class ZiweiImplTest {
     Settings settings = new Settings(Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT);
 
     List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(MainStar.values));
-    starList.addAll(Arrays.asList(LuckyStar.values));
-    starList.addAll(Arrays.asList(UnluckyStar.values));
-    starList.addAll(Arrays.asList(MinorStar.values));
-    starList.addAll(Arrays.asList(DoctorStar.values));
+    starList.addAll(Arrays.asList(StarMain.values));
+    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarUnlucky.values));
+    starList.addAll(Arrays.asList(StarMinor.values));
+    starList.addAll(Arrays.asList(StarDoctor.values));
 
     Map<ITransFour.Type , Stem> transFourTypes = new ImmutableMap.Builder<ITransFour.Type , Stem>()
       .put(ITransFour.Type.大限 , 甲)
@@ -93,11 +93,11 @@ public class ZiweiImplTest {
     Settings settings = new Settings(Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT);
 
     List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(MainStar.values));
-    starList.addAll(Arrays.asList(LuckyStar.values));
-    starList.addAll(Arrays.asList(UnluckyStar.values));
-    starList.addAll(Arrays.asList(MinorStar.values));
-    starList.addAll(Arrays.asList(DoctorStar.values));
+    starList.addAll(Arrays.asList(StarMain.values));
+    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarUnlucky.values));
+    starList.addAll(Arrays.asList(StarMinor.values));
+    starList.addAll(Arrays.asList(StarDoctor.values));
 
     Plate plate = impl.getPlate(丁酉 , 辰 , 3 , 18 , 亥 , seq , starList, Gender.男, new HashMap<>(), settings);
 

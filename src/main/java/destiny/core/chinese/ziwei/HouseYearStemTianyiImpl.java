@@ -20,9 +20,9 @@ import java.util.Map;
 
 /**
  * (年干,天乙貴人設定) -> 地支
- * 適用於 {@link LuckyStar#天魁} (陽貴人) , {@link LuckyStar#天鉞} (陰貴人)
+ * 適用於 {@link StarLucky#天魁} (陽貴人) , {@link StarLucky#天鉞} (陰貴人)
  */
-public abstract class IHouseYearStemTianyiImpl extends IHouseAbstractImpl<Tuple2<Stem, TianyiIF>> {
+public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<Stem, TianyiIF>> {
 
   private final Map<Settings.Tianyi, TianyiIF> map = new ImmutableMap.Builder<Settings.Tianyi, TianyiIF>()
     .put(Settings.Tianyi.ZIWEI_BOOK  , new TianyiZiweiBookImpl())
@@ -31,7 +31,7 @@ public abstract class IHouseYearStemTianyiImpl extends IHouseAbstractImpl<Tuple2
     .put(Settings.Tianyi.LIUREN_PITHY, new TianyiLiurenPithyImpl())
     .build();
 
-  protected IHouseYearStemTianyiImpl(ZStar star) {
+  protected HouseYearStemTianyiImpl(ZStar star) {
     super(star);
   }
 

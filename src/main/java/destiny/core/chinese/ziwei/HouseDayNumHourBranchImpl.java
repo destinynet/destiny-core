@@ -9,22 +9,24 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
-/**
- * (月支,日數) -> 地支
- */
-public abstract class IHouseMonthBranchDayNumImpl extends IHouseAbstractImpl<Tuple2<Branch, Integer>> {
+import static destiny.core.chinese.ziwei.FuncType.DAY_NUM_HOUR_BRANCH;
 
-  protected IHouseMonthBranchDayNumImpl(ZStar star) {
+/**
+ * (日數,時支) -> 地支
+ */
+public abstract class HouseDayNumHourBranchImpl extends HouseAbstractImpl<Tuple2<Integer , Branch>> {
+
+  protected HouseDayNumHourBranchImpl(ZStar star) {
     super(star);
   }
 
   @Override
   public FuncType getFuncType() {
-    return FuncType.MONTH_BRANCH_DAY_NUM;
+    return DAY_NUM_HOUR_BRANCH;
   }
 
   @Override
   public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
-    return getBranch(Tuple.tuple(monthBranch , days));
+    return getBranch(Tuple.tuple(days , hour));
   }
 }

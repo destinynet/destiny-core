@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei;
 import org.junit.Test;
 
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.ITransFour.Value.忌;
 import static destiny.core.chinese.ziwei.ITransFour.Value.科;
 import static org.junit.Assert.assertNull;

@@ -10,9 +10,9 @@ import org.jooq.lambda.tuple.Tuple2;
  * (年支,月支) -> 地支
  * 目前只有 {@link HouseFunctions#house天馬} 使用
  */
-public abstract class IHouseYearBranchMonthBranchImpl extends IHouseAbstractImpl<Tuple2<Branch , Branch>> {
+public abstract class HouseYearBranchMonthBranchImpl extends HouseAbstractImpl<Tuple2<Branch , Branch>> {
 
-  protected IHouseYearBranchMonthBranchImpl(ZStar star) {
+  protected HouseYearBranchMonthBranchImpl(ZStar star) {
     super(star);
   }
 

@@ -15,7 +15,7 @@ public class HouseSeqDefaultImplTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  HouseSeqIF impl = new HouseSeqDefaultImpl();
+  IHouseSeq impl = new HouseSeqDefaultImpl();
 
   @Test
   public void next() {

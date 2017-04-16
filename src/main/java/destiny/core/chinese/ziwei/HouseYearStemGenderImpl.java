@@ -10,9 +10,9 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
-public abstract class IHouseYearStemGenderImpl extends IHouseAbstractImpl<Tuple2<Stem, Gender>> {
+public abstract class HouseYearStemGenderImpl extends HouseAbstractImpl<Tuple2<Stem, Gender>> {
 
-  protected IHouseYearStemGenderImpl(ZStar star) {
+  protected HouseYearStemGenderImpl(ZStar star) {
     super(star);
   }
 

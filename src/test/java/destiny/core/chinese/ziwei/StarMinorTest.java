@@ -12,18 +12,18 @@ import java.util.Locale;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.丁;
 import static destiny.core.chinese.StemBranch.己酉;
-import static destiny.core.chinese.ziwei.MinorStar.*;
+import static destiny.core.chinese.ziwei.StarMinor.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 @SuppressWarnings("Duplicates")
-public class MinorStarTest {
+public class StarMinorTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Test
   public void testToString() {
-    for (MinorStar star : MinorStar.values) {
+    for (StarMinor star : StarMinor.values) {
       assertNotNull(star.toString());
       assertNotNull(star.toString(Locale.TAIWAN));
       assertNotNull(star.toString(Locale.CHINA));

@@ -11,7 +11,7 @@ import java.util.Locale;
 
 import static destiny.core.chinese.ziwei.House.*;
 
-public class HouseSeqDefaultImpl implements HouseSeqIF , Serializable {
+public class HouseSeqDefaultImpl implements IHouseSeq, Serializable {
 
   private final static House[] ARRAY = new House[] {
     命宮 , 兄弟 , 夫妻 ,

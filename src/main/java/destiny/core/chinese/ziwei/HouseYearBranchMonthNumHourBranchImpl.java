@@ -10,9 +10,9 @@ import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple3;
 
 /** (年支、月數、時支) -> 地支 */
-public abstract class IHouseYearBranchMonthNumHourBranchImpl extends IHouseAbstractImpl<Tuple3<Branch, Integer , Branch >> {
+public abstract class HouseYearBranchMonthNumHourBranchImpl extends HouseAbstractImpl<Tuple3<Branch, Integer , Branch >> {
 
-  protected IHouseYearBranchMonthNumHourBranchImpl(ZStar star) {
+  protected HouseYearBranchMonthNumHourBranchImpl(ZStar star) {
     super(star);
   }
 

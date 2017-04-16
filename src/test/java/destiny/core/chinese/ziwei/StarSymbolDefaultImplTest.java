@@ -5,7 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import org.junit.Test;
 
-import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.iching.Symbol.*;
 import static org.junit.Assert.assertSame;
 
@@ -13,7 +13,7 @@ public class StarSymbolDefaultImplTest {
 
   @Test
   public void getSymbolAcquired() throws Exception {
-    StarSymbolIF impl = new StarSymbolDefaultImpl();
+    IStarSymbol impl = new StarSymbolDefaultImpl();
 
     assertSame(艮, impl.getSymbolAcquired(紫微));
     assertSame(艮, impl.getSymbolAcquired(天府));

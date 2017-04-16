@@ -5,11 +5,11 @@ package destiny.core.chinese.ziwei;
 
 import java.io.Serializable;
 
-public abstract class IHouseAbstractImpl<T> implements IHouse<T> , Serializable {
+public abstract class HouseAbstractImpl<T> implements IHouse<T> , Serializable {
 
   private final ZStar star;
 
-  protected IHouseAbstractImpl(ZStar star) {
+  protected HouseAbstractImpl(ZStar star) {
     this.star = star;
   }
 

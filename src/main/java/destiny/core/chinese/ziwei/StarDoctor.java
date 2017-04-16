@@ -12,37 +12,37 @@ import org.jooq.lambda.tuple.Tuple3;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static destiny.core.chinese.ziwei.LuckyStar.fun祿存;
+import static destiny.core.chinese.ziwei.StarLucky.fun祿存;
 
 /**
  * 博士12神煞 , 丙級星
  *
- * 博士永遠跟著祿存走，也就是說 {@link LuckyStar#祿存} 的旁邊一定有博士，然後分別排列出力士、青龍、小耗……等星。
+ * 博士永遠跟著祿存走，也就是說 {@link StarLucky#祿存} 的旁邊一定有博士，然後分別排列出力士、青龍、小耗……等星。
  * 陽男陰女順排，陰男陽女逆排。
  *
  * 亦即，這是 (年干,性別) -> 地支
- * 每次 function 都要 call {@link LuckyStar#fun祿存}
+ * 每次 function 都要 call {@link StarLucky#fun祿存}
  *
  * TODO : 博士12神煞，是否要隨流年變化
  */
-public class DoctorStar extends ZStar {
+public class StarDoctor extends ZStar {
 
-  public final static DoctorStar 博士 = new DoctorStar("博士");
-  public final static DoctorStar 力士 = new DoctorStar("力士");
-  public final static DoctorStar 青龍 = new DoctorStar("青龍");
-  public final static DoctorStar 小耗 = new DoctorStar("小耗");
-  public final static DoctorStar 將軍 = new DoctorStar("將軍");
-  public final static DoctorStar 奏書 = new DoctorStar("奏書");
-  public final static DoctorStar 飛廉 = new DoctorStar("飛廉");
-  public final static DoctorStar 喜神 = new DoctorStar("喜神");
-  public final static DoctorStar 病符 = new DoctorStar("病符");
-  public final static DoctorStar 大耗 = new DoctorStar("大耗");
-  public final static DoctorStar 伏兵 = new DoctorStar("伏兵");
-  public final static DoctorStar 官府 = new DoctorStar("官府");
+  public final static StarDoctor 博士 = new StarDoctor("博士");
+  public final static StarDoctor 力士 = new StarDoctor("力士");
+  public final static StarDoctor 青龍 = new StarDoctor("青龍");
+  public final static StarDoctor 小耗 = new StarDoctor("小耗");
+  public final static StarDoctor 將軍 = new StarDoctor("將軍");
+  public final static StarDoctor 奏書 = new StarDoctor("奏書");
+  public final static StarDoctor 飛廉 = new StarDoctor("飛廉");
+  public final static StarDoctor 喜神 = new StarDoctor("喜神");
+  public final static StarDoctor 病符 = new StarDoctor("病符");
+  public final static StarDoctor 大耗 = new StarDoctor("大耗");
+  public final static StarDoctor 伏兵 = new StarDoctor("伏兵");
+  public final static StarDoctor 官府 = new StarDoctor("官府");
 
-  public final static DoctorStar[] values = {博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府};
+  public final static StarDoctor[] values = {博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府};
 
-  public DoctorStar(String nameKey) {
+  public StarDoctor(String nameKey) {
     super(nameKey,  ZStar.class.getName());
   }
 

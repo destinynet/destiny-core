@@ -11,13 +11,13 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertNotNull;
 
-public class MainStarTest {
+public class StarMainTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Test
   public void testToString() {
-    for(MainStar star : MainStar.values) {
+    for(StarMain star : StarMain.values) {
       assertNotNull(star.toString());
       assertNotNull(star.toString(Locale.TAIWAN));
       assertNotNull(star.toString(Locale.CHINA));

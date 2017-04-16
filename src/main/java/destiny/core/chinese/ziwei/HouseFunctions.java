@@ -16,108 +16,108 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static destiny.core.chinese.ziwei.DoctorStar.*;
-import static destiny.core.chinese.ziwei.LuckyStar.*;
-import static destiny.core.chinese.ziwei.MainStar.*;
-import static destiny.core.chinese.ziwei.MinorStar.*;
-import static destiny.core.chinese.ziwei.UnluckyStar.*;
+import static destiny.core.chinese.ziwei.StarDoctor.*;
+import static destiny.core.chinese.ziwei.StarLucky.*;
+import static destiny.core.chinese.ziwei.StarMain.*;
+import static destiny.core.chinese.ziwei.StarMinor.*;
+import static destiny.core.chinese.ziwei.StarUnlucky.*;
 import static destiny.core.chinese.ziwei.ZiweiIF.*;
 
 @SuppressWarnings("Duplicates")
 public class HouseFunctions {
 
-  public final static IHouse house紫微 = new IHouseMainStarImpl(紫微) {
+  public final static IHouse house紫微 = new HouseMainStarImpl(紫微) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun紫微.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house天機 = new IHouseMainStarImpl(天機) {
+  public final static IHouse house天機 = new HouseMainStarImpl(天機) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun天機.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house太陽 = new IHouseMainStarImpl(太陽) {
+  public final static IHouse house太陽 = new HouseMainStarImpl(太陽) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun太陽.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house武曲 = new IHouseMainStarImpl(武曲) {
+  public final static IHouse house武曲 = new HouseMainStarImpl(武曲) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun武曲.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house天同 = new IHouseMainStarImpl(天同) {
+  public final static IHouse house天同 = new HouseMainStarImpl(天同) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun天同.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house廉貞 = new IHouseMainStarImpl(廉貞) {
+  public final static IHouse house廉貞 = new HouseMainStarImpl(廉貞) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun廉貞.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house天府 = new IHouseMainStarImpl(天府) {
+  public final static IHouse house天府 = new HouseMainStarImpl(天府) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun天府.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house太陰 = new IHouseMainStarImpl(太陰) {
+  public final static IHouse house太陰 = new HouseMainStarImpl(太陰) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun太陰.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house貪狼 = new IHouseMainStarImpl(貪狼) {
+  public final static IHouse house貪狼 = new HouseMainStarImpl(貪狼) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun貪狼.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house巨門 = new IHouseMainStarImpl(巨門) {
+  public final static IHouse house巨門 = new HouseMainStarImpl(巨門) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun巨門.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house天相 = new IHouseMainStarImpl(天相) {
+  public final static IHouse house天相 = new HouseMainStarImpl(天相) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun天相.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house天梁 = new IHouseMainStarImpl(天梁) {
+  public final static IHouse house天梁 = new HouseMainStarImpl(天梁) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun天梁.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house七殺 = new IHouseMainStarImpl(七殺) {
+  public final static IHouse house七殺 = new HouseMainStarImpl(七殺) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun七殺.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house破軍 = new IHouseMainStarImpl(破軍) {
+  public final static IHouse house破軍 = new HouseMainStarImpl(破軍) {
     @Override
     public Branch getBranch(Tuple2<Integer, Integer> t) {
       return fun破軍.apply(t.v1() , t.v2());
@@ -128,56 +128,56 @@ public class HouseFunctions {
 
   // =======↓↓↓======= 以下  8 顆吉星 =======↓↓↓=======
   
-  public final static IHouse house文昌 = new IHouseHourBranchImpl(文昌) {
+  public final static IHouse house文昌 = new HouseHourBranchImpl(文昌) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun文昌.apply(branch);
     }
   };
 
-  public final static IHouse house文曲 = new IHouseHourBranchImpl(文曲) {
+  public final static IHouse house文曲 = new HouseHourBranchImpl(文曲) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun文曲.apply(branch);
     }
   };
 
-  public final static IHouse house左輔 = new IHouseMonthBranchImpl(左輔) {
+  public final static IHouse house左輔 = new HouseMonthBranchImpl(左輔) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun左輔.apply(branch);
     }
   };
   
-  public final static IHouse house右弼 = new IHouseMonthBranchImpl(右弼) {
+  public final static IHouse house右弼 = new HouseMonthBranchImpl(右弼) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun右弼.apply(branch);
     }
   };
   
-  public final static IHouse house天魁 = new IHouseYearStemTianyiImpl(天魁) {
+  public final static IHouse house天魁 = new HouseYearStemTianyiImpl(天魁) {
     @Override
     public Branch getBranch(Tuple2<Stem, TianyiIF> tuple) {
       return fun天魁.apply(tuple.v1() , tuple.v2());
     }
   };
   
-  public final static IHouse house天鉞 = new IHouseYearStemTianyiImpl(天鉞) {
+  public final static IHouse house天鉞 = new HouseYearStemTianyiImpl(天鉞) {
     @Override
     public Branch getBranch(Tuple2<Stem, TianyiIF> tuple) {
       return fun天鉞.apply(tuple.v1() , tuple.v2());
     }
   };
   
-  public final static IHouse house祿存 = new IHouseYearStemImpl(祿存) {
+  public final static IHouse house祿存 = new HouseYearStemImpl(祿存) {
     @Override
     public Branch getBranch(Stem stem) {
       return fun祿存.apply(stem);
     }
   };
   
-  public final static IHouse house天馬 = new IHouseYearBranchMonthBranchImpl(天馬) {
+  public final static IHouse house天馬 = new HouseYearBranchMonthBranchImpl(天馬) {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       switch (settings.getHorse()) {
@@ -192,21 +192,21 @@ public class HouseFunctions {
   
   // =======↓↓↓======= 以下  6 顆兇星 =======↓↓↓=======
 
-  public final static IHouse house擎羊 = new IHouseYearStemImpl(擎羊) {
+  public final static IHouse house擎羊 = new HouseYearStemImpl(擎羊) {
     @Override
     public Branch getBranch(Stem stem) {
       return fun擎羊.apply(stem);
     }
   };
 
-  public final static IHouse house陀羅 = new IHouseYearStemImpl(陀羅) {
+  public final static IHouse house陀羅 = new HouseYearStemImpl(陀羅) {
     @Override
     public Branch getBranch(Stem stem) {
       return fun陀羅.apply(stem);
     }
   };
 
-  public final static IHouse house火星 = new IHouseYearBranchHourBranchImpl(火星) {
+  public final static IHouse house火星 = new HouseYearBranchHourBranchImpl(火星) {
     @Override
     public Branch getBranch(Tuple2<Branch, Branch> objects) {
       throw new RuntimeException("error : " + objects);
@@ -222,7 +222,7 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house鈴星 = new IHouseYearBranchHourBranchImpl(鈴星) {
+  public final static IHouse house鈴星 = new HouseYearBranchHourBranchImpl(鈴星) {
     @Override
     public Branch getBranch(Tuple2<Branch, Branch> objects) {
       throw new RuntimeException("error : " + objects);
@@ -238,14 +238,14 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house地劫 = new IHouseHourBranchImpl(地劫) {
+  public final static IHouse house地劫 = new HouseHourBranchImpl(地劫) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun地劫.apply(branch);
     }
   };
 
-  public final static IHouse house地空 = new IHouseHourBranchImpl(地空) {
+  public final static IHouse house地空 = new HouseHourBranchImpl(地空) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun地空.apply(branch);
@@ -258,231 +258,231 @@ public class HouseFunctions {
 
 
   // =======↓↓↓======= 以下      雜曜 =======↓↓↓=======
-  public final static IHouse house天官 = new IHouseYearStemImpl(天官) {
+  public final static IHouse house天官 = new HouseYearStemImpl(天官) {
     @Override
     public Branch getBranch(Stem stem) {
       return fun天官.apply(stem);
     }
   };
 
-  public final static IHouse house天福 = new IHouseYearStemImpl(天福) {
+  public final static IHouse house天福 = new HouseYearStemImpl(天福) {
     @Override
     public Branch getBranch(Stem stem) {
       return fun天福.apply(stem);
     }
   };
 
-  public final static IHouse house天廚 = new IHouseYearStemImpl(天廚) {
+  public final static IHouse house天廚 = new HouseYearStemImpl(天廚) {
     @Override
     public Branch getBranch(Stem stem) {
       return fun天廚.apply(stem);
     }
   };
 
-  public final static IHouse house天刑 = new IHouseMonthBranchImpl(天刑) {
+  public final static IHouse house天刑 = new HouseMonthBranchImpl(天刑) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天刑.apply(branch);
     }
   };
 
-  public final static IHouse house天姚 = new IHouseMonthBranchImpl(天姚) {
+  public final static IHouse house天姚 = new HouseMonthBranchImpl(天姚) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天姚.apply(branch);
     }
   };
 
-  public final static IHouse house解神 = new IHouseMonthBranchImpl(解神) {
+  public final static IHouse house解神 = new HouseMonthBranchImpl(解神) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun解神.apply(branch);
     }
   };
 
-  public final static IHouse house天巫 = new IHouseMonthBranchImpl(天巫) {
+  public final static IHouse house天巫 = new HouseMonthBranchImpl(天巫) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天巫.apply(branch);
     }
   };
 
-  public final static IHouse house天月 = new IHouseMonthBranchImpl(天月) {
+  public final static IHouse house天月 = new HouseMonthBranchImpl(天月) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天月.apply(branch);
     }
   };
 
-  public final static IHouse house陰煞 = new IHouseMonthBranchImpl(陰煞) {
+  public final static IHouse house陰煞 = new HouseMonthBranchImpl(陰煞) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun陰煞.apply(branch);
     }
   };
 
-  public final static IHouse house台輔 = new IHouseHourBranchImpl(台輔) {
+  public final static IHouse house台輔 = new HouseHourBranchImpl(台輔) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun台輔.apply(branch);
     }
   };
 
-  public final static IHouse house封誥 = new IHouseHourBranchImpl(封誥) {
+  public final static IHouse house封誥 = new HouseHourBranchImpl(封誥) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun封誥.apply(branch);
     }
   };
 
-  public final static IHouse house天空 = new IHouseYearBranchImpl(天空) {
+  public final static IHouse house天空 = new HouseYearBranchImpl(天空) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天空.apply(branch);
     }
   };
 
-  public final static IHouse house天哭 = new IHouseYearBranchImpl(天哭) {
+  public final static IHouse house天哭 = new HouseYearBranchImpl(天哭) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天哭.apply(branch);
     }
   };
 
-  public final static IHouse house天虛 = new IHouseYearBranchImpl(天虛) {
+  public final static IHouse house天虛 = new HouseYearBranchImpl(天虛) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天虛.apply(branch);
     }
   };
 
-  public final static IHouse house龍池 = new IHouseYearBranchImpl(龍池) {
+  public final static IHouse house龍池 = new HouseYearBranchImpl(龍池) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun龍池.apply(branch);
     }
   };
 
-  public final static IHouse house鳳閣 = new IHouseYearBranchImpl(鳳閣) {
+  public final static IHouse house鳳閣 = new HouseYearBranchImpl(鳳閣) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun鳳閣.apply(branch);
     }
   };
 
-  public final static IHouse house紅鸞 = new IHouseYearBranchImpl(紅鸞) {
+  public final static IHouse house紅鸞 = new HouseYearBranchImpl(紅鸞) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun紅鸞.apply(branch);
     }
   };
 
-  public final static IHouse house天喜 = new IHouseYearBranchImpl(天喜) {
+  public final static IHouse house天喜 = new HouseYearBranchImpl(天喜) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天喜.apply(branch);
     }
   };
 
-  public final static IHouse house孤辰 = new IHouseYearBranchImpl(孤辰) {
+  public final static IHouse house孤辰 = new HouseYearBranchImpl(孤辰) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun孤辰.apply(branch);
     }
   };
 
-  public final static IHouse house寡宿 = new IHouseYearBranchImpl(寡宿) {
+  public final static IHouse house寡宿 = new HouseYearBranchImpl(寡宿) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun寡宿.apply(branch);
     }
   };
 
-  public final static IHouse house蜚廉 = new IHouseYearBranchImpl(蜚廉) {
+  public final static IHouse house蜚廉 = new HouseYearBranchImpl(蜚廉) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun蜚廉.apply(branch);
     }
   };
 
-  public final static IHouse house破碎 = new IHouseYearBranchImpl(破碎) {
+  public final static IHouse house破碎 = new HouseYearBranchImpl(破碎) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun破碎.apply(branch);
     }
   };
 
-  public final static IHouse house華蓋 = new IHouseYearBranchImpl(華蓋) {
+  public final static IHouse house華蓋 = new HouseYearBranchImpl(華蓋) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun華蓋.apply(branch);
     }
   };
 
-  public final static IHouse house咸池 = new IHouseYearBranchImpl(咸池) {
+  public final static IHouse house咸池 = new HouseYearBranchImpl(咸池) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun咸池.apply(branch);
     }
   };
 
-  public final static IHouse house天德 = new IHouseYearBranchImpl(天德) {
+  public final static IHouse house天德 = new HouseYearBranchImpl(天德) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun天德.apply(branch);
     }
   };
 
-  public final static IHouse house月德 = new IHouseYearBranchImpl(月德) {
+  public final static IHouse house月德 = new HouseYearBranchImpl(月德) {
     @Override
     public Branch getBranch(Branch branch) {
       return fun月德.apply(branch);
     }
   };
 
-  public final static IHouse house天才 = new IHouseYearBranchMonthNumHourBranchImpl(天才) {
+  public final static IHouse house天才 = new HouseYearBranchMonthNumHourBranchImpl(天才) {
     @Override
     public Branch getBranch(Tuple3<Branch, Integer, Branch> t) {
       return fun天才.apply(t.v1() , t.v2() , t.v3());
     }
   };
 
-  public final static IHouse house天壽 = new IHouseYearBranchMonthNumHourBranchImpl(天壽) {
+  public final static IHouse house天壽 = new HouseYearBranchMonthNumHourBranchImpl(天壽) {
     @Override
     public Branch getBranch(Tuple3<Branch, Integer, Branch> t) {
       return fun天壽.apply(t.v1() , t.v2() , t.v3());
     }
   };
 
-  public final static IHouse house三台 = new IHouseMonthBranchDayNumImpl(三台) {
+  public final static IHouse house三台 = new HouseMonthBranchDayNumImpl(三台) {
     @Override
     public Branch getBranch(Tuple2<Branch, Integer> t) {
       return fun三台.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house八座 = new IHouseMonthBranchDayNumImpl(八座) {
+  public final static IHouse house八座 = new HouseMonthBranchDayNumImpl(八座) {
     @Override
     public Branch getBranch(Tuple2<Branch, Integer> t) {
       return fun八座.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house恩光 = new IHouseDayNumHourBranchImpl(恩光) {
+  public final static IHouse house恩光 = new HouseDayNumHourBranchImpl(恩光) {
     @Override
     public Branch getBranch(Tuple2<Integer, Branch> t) {
       return fun恩光.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house天貴 = new IHouseDayNumHourBranchImpl(天貴) {
+  public final static IHouse house天貴 = new HouseDayNumHourBranchImpl(天貴) {
     @Override
     public Branch getBranch(Tuple2<Integer, Branch> t) {
       return fun天貴.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house天傷 = new IHouseHouseDepYearStemGenderImpl(天傷) {
+  public final static IHouse house天傷 = new HouseHouseDepYearStemGenderImpl(天傷) {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       // 太乙派，沒有遷移宮
@@ -496,7 +496,7 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house天使 = new IHouseHouseDepYearStemGenderImpl(天使) {
+  public final static IHouse house天使 = new HouseHouseDepYearStemGenderImpl(天使) {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
       // 太乙派，沒有遷移宮
@@ -514,84 +514,84 @@ public class HouseFunctions {
 
   // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
 
-  public final static IHouse house博士 = new IHouseYearStemGenderImpl(博士) {
+  public final static IHouse house博士 = new HouseYearStemGenderImpl(博士) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun博士.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house力士 = new IHouseYearStemGenderImpl(力士) {
+  public final static IHouse house力士 = new HouseYearStemGenderImpl(力士) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun力士.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house青龍 = new IHouseYearStemGenderImpl(青龍) {
+  public final static IHouse house青龍 = new HouseYearStemGenderImpl(青龍) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun青龍.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house小耗 = new IHouseYearStemGenderImpl(小耗) {
+  public final static IHouse house小耗 = new HouseYearStemGenderImpl(小耗) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun小耗.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house將軍 = new IHouseYearStemGenderImpl(將軍) {
+  public final static IHouse house將軍 = new HouseYearStemGenderImpl(將軍) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun將軍.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house奏書 = new IHouseYearStemGenderImpl(奏書) {
+  public final static IHouse house奏書 = new HouseYearStemGenderImpl(奏書) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun奏書.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house飛廉 = new IHouseYearStemGenderImpl(飛廉) {
+  public final static IHouse house飛廉 = new HouseYearStemGenderImpl(飛廉) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun飛廉.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house喜神 = new IHouseYearStemGenderImpl(喜神) {
+  public final static IHouse house喜神 = new HouseYearStemGenderImpl(喜神) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun喜神.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house病符 = new IHouseYearStemGenderImpl(病符) {
+  public final static IHouse house病符 = new HouseYearStemGenderImpl(病符) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun病符.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house大耗 = new IHouseYearStemGenderImpl(大耗) {
+  public final static IHouse house大耗 = new HouseYearStemGenderImpl(大耗) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun大耗.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house伏兵 = new IHouseYearStemGenderImpl(伏兵) {
+  public final static IHouse house伏兵 = new HouseYearStemGenderImpl(伏兵) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun伏兵.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house官府 = new IHouseYearStemGenderImpl(官府) {
+  public final static IHouse house官府 = new HouseYearStemGenderImpl(官府) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
       return fun官府.apply(t.v1() , t.v2());

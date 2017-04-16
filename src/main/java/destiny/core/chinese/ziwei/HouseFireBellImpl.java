@@ -7,11 +7,11 @@ import destiny.core.chinese.Branch;
 import org.jooq.lambda.tuple.Tuple2;
 
 /** (年支,時支) -> 地支
- * {@link UnluckyStar#火星} {@link UnluckyStar#鈴星} 專用
+ * {@link StarUnlucky#火星} {@link StarUnlucky#鈴星} 專用
  * */
-public abstract class IHouseFireBellImpl extends IHouseAbstractImpl<Tuple2<Branch , Branch>> {
+public abstract class HouseFireBellImpl extends HouseAbstractImpl<Tuple2<Branch , Branch>> {
 
-  protected IHouseFireBellImpl(ZStar star) {
+  protected HouseFireBellImpl(ZStar star) {
     super(star);
   }
 

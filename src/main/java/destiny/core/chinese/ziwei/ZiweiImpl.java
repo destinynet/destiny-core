@@ -21,7 +21,7 @@ public class ZiweiImpl implements ZiweiIF , Serializable {
 
   @Override
   public Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
-                        HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
+                        IHouseSeq houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
                         Map<ITransFour.Type , Stem> transFourTypes, Settings settings) {
     StemBranch mainHouse = ZiweiIF.getMainHouse(year.getStem() , monthNum , hour);
     StemBranch bodyHouse = ZiweiIF.getBodyHouse(year.getStem() , monthNum , hour);

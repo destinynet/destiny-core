@@ -17,56 +17,56 @@ import static destiny.core.Gender.男;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.BranchTools.direction;
 import static destiny.core.chinese.BranchTools.trilogy;
-import static destiny.core.chinese.ziwei.LuckyStar.*;
+import static destiny.core.chinese.ziwei.StarLucky.*;
 
 /**
  * 乙級星有總共有34顆
  */
 @SuppressWarnings("Duplicates")
-public class MinorStar extends ZStar {
+public class StarMinor extends ZStar {
 
-  public final static MinorStar 天官 = new MinorStar("天官"); // 吉
-  public final static MinorStar 天福 = new MinorStar("天福"); // 吉
-  public final static MinorStar 天廚 = new MinorStar("天廚");
-  public final static MinorStar 天刑 = new MinorStar("天刑"); //   兇
-  public final static MinorStar 天姚 = new MinorStar("天姚"); //   兇
-  public final static MinorStar 解神 = new MinorStar("解神"); // 吉
-  public final static MinorStar 天巫 = new MinorStar("天巫"); // 吉
-  public final static MinorStar 天月 = new MinorStar("天月"); //   兇
-  public final static MinorStar 陰煞 = new MinorStar("陰煞"); //   兇
-  public final static MinorStar 台輔 = new MinorStar("台輔"); // 吉
-  public final static MinorStar 封誥 = new MinorStar("封誥"); // 吉
-  public final static MinorStar 天空 = new MinorStar("天空"); //   兇
-  public final static MinorStar 天哭 = new MinorStar("天哭"); //   兇
-  public final static MinorStar 天虛 = new MinorStar("天虛"); //   兇
-  public final static MinorStar 龍池 = new MinorStar("龍池"); // 吉
-  public final static MinorStar 鳳閣 = new MinorStar("鳳閣"); // 吉
-  public final static MinorStar 紅鸞 = new MinorStar("紅鸞"); // 吉
-  public final static MinorStar 天喜 = new MinorStar("天喜"); // 吉
-  public final static MinorStar 孤辰 = new MinorStar("孤辰"); //   兇
-  public final static MinorStar 寡宿 = new MinorStar("寡宿"); //   兇
-  public final static MinorStar 蜚廉 = new MinorStar("蜚廉");
-  public final static MinorStar 破碎 = new MinorStar("破碎");
-  public final static MinorStar 華蓋 = new MinorStar("華蓋"); //   兇
-  public final static MinorStar 咸池 = new MinorStar("咸池"); //   兇
-  public final static MinorStar 天德 = new MinorStar("天德"); //   兇?
-  public final static MinorStar 月德 = new MinorStar("月德"); //   兇?
-  public final static MinorStar 天才 = new MinorStar("天才"); // 吉
-  public final static MinorStar 天壽 = new MinorStar("天壽"); // 吉
-  public final static MinorStar 三台 = new MinorStar("三台"); // 吉
-  public final static MinorStar 八座 = new MinorStar("八座"); // 吉
-  public final static MinorStar 恩光 = new MinorStar("恩光"); // 吉
-  public final static MinorStar 天貴 = new MinorStar("天貴"); // 吉
+  public final static StarMinor 天官 = new StarMinor("天官"); // 吉
+  public final static StarMinor 天福 = new StarMinor("天福"); // 吉
+  public final static StarMinor 天廚 = new StarMinor("天廚");
+  public final static StarMinor 天刑 = new StarMinor("天刑"); //   兇
+  public final static StarMinor 天姚 = new StarMinor("天姚"); //   兇
+  public final static StarMinor 解神 = new StarMinor("解神"); // 吉
+  public final static StarMinor 天巫 = new StarMinor("天巫"); // 吉
+  public final static StarMinor 天月 = new StarMinor("天月"); //   兇
+  public final static StarMinor 陰煞 = new StarMinor("陰煞"); //   兇
+  public final static StarMinor 台輔 = new StarMinor("台輔"); // 吉
+  public final static StarMinor 封誥 = new StarMinor("封誥"); // 吉
+  public final static StarMinor 天空 = new StarMinor("天空"); //   兇
+  public final static StarMinor 天哭 = new StarMinor("天哭"); //   兇
+  public final static StarMinor 天虛 = new StarMinor("天虛"); //   兇
+  public final static StarMinor 龍池 = new StarMinor("龍池"); // 吉
+  public final static StarMinor 鳳閣 = new StarMinor("鳳閣"); // 吉
+  public final static StarMinor 紅鸞 = new StarMinor("紅鸞"); // 吉
+  public final static StarMinor 天喜 = new StarMinor("天喜"); // 吉
+  public final static StarMinor 孤辰 = new StarMinor("孤辰"); //   兇
+  public final static StarMinor 寡宿 = new StarMinor("寡宿"); //   兇
+  public final static StarMinor 蜚廉 = new StarMinor("蜚廉");
+  public final static StarMinor 破碎 = new StarMinor("破碎");
+  public final static StarMinor 華蓋 = new StarMinor("華蓋"); //   兇
+  public final static StarMinor 咸池 = new StarMinor("咸池"); //   兇
+  public final static StarMinor 天德 = new StarMinor("天德"); //   兇?
+  public final static StarMinor 月德 = new StarMinor("月德"); //   兇?
+  public final static StarMinor 天才 = new StarMinor("天才"); // 吉
+  public final static StarMinor 天壽 = new StarMinor("天壽"); // 吉
+  public final static StarMinor 三台 = new StarMinor("三台"); // 吉
+  public final static StarMinor 八座 = new StarMinor("八座"); // 吉
+  public final static StarMinor 恩光 = new StarMinor("恩光"); // 吉
+  public final static StarMinor 天貴 = new StarMinor("天貴"); // 吉
 
-  public final static MinorStar 天使 = new MinorStar("天使"); //   兇 , 天使屬陰水 , 主災病
-  public final static MinorStar 天傷 = new MinorStar("天傷"); //   兇 , 天傷屬陽水 , 主虛耗
+  public final static StarMinor 天使 = new StarMinor("天使"); //   兇 , 天使屬陰水 , 主災病
+  public final static StarMinor 天傷 = new StarMinor("天傷"); //   兇 , 天傷屬陽水 , 主虛耗
 
   // TODO
-  public final static MinorStar 截空 = new MinorStar("截空"); //   兇
+  public final static StarMinor 截空 = new StarMinor("截空"); //   兇
 
-  public final static MinorStar[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷};
+  public final static StarMinor[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷};
 
-  public MinorStar(String nameKey) {
+  public StarMinor(String nameKey) {
     super(nameKey, ZStar.class.getName());
   }
 
@@ -182,7 +182,7 @@ public class MinorStar extends ZStar {
   /** 封誥 : 時支 -> 地支 */
   public final static Function<Branch , Branch> fun封誥 = hour -> Branch.get(hour.getIndex()+2);
 
-  /** 天空 : 年支 -> 地支. 注意其與 {@link UnluckyStar#fun地空} 是不同的星/演算法 */
+  /** 天空 : 年支 -> 地支. 注意其與 {@link StarUnlucky#fun地空} 是不同的星/演算法 */
   public final static Function<Branch , Branch> fun天空 = year -> Branch.get(year.getIndex() + 1);
 
   /** 天哭 : 年支 -> 地支 */

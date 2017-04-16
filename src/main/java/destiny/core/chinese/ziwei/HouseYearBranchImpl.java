@@ -7,22 +7,20 @@ import destiny.core.Gender;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 
-/**
- * 時支 -> 地支
- */
-public abstract class IHouseHourBranchImpl extends IHouseAbstractImpl<Branch> {
+/** 年支 -> 地支 */
+public abstract class HouseYearBranchImpl extends HouseAbstractImpl<Branch> {
 
-  protected IHouseHourBranchImpl(ZStar star) {
+  protected HouseYearBranchImpl(ZStar star) {
     super(star);
   }
 
   @Override
   public FuncType getFuncType() {
-    return FuncType.HOUR_BRANCH;
+    return FuncType.YEAR_BRANCH;
   }
 
   @Override
   public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
-    return getBranch(hour);
+    return getBranch(year.getBranch());
   }
 }

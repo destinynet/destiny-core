@@ -11,9 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.LuckyStar.文昌;
-import static destiny.core.chinese.ziwei.LuckyStar.文曲;
-import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.StarLucky.文昌;
+import static destiny.core.chinese.ziwei.StarLucky.文曲;
+import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.ITransFour.Value.*;
 import static org.jooq.lambda.tuple.Tuple.tuple;
 

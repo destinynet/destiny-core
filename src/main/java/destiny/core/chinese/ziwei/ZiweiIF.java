@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.MainStar.*;
+import static destiny.core.chinese.ziwei.StarMain.*;
 
 /** 紫微斗數 */
 public interface ZiweiIF {
@@ -101,7 +101,7 @@ public interface ZiweiIF {
   /**
    * 從命宮開始，逆時針，飛佈 兄弟、夫妻...
    */
-  static Branch getHouseBranch(int month , Branch hour , House house , HouseSeqIF seq) {
+  static Branch getHouseBranch(int month , Branch hour , House house , IHouseSeq seq) {
     // 命宮 的地支
     Branch branchOfFirstHouse = getMainHouseBranch(month , hour);
     int steps = seq.getAheadOf(house , House.命宮);
@@ -111,7 +111,7 @@ public interface ZiweiIF {
   /**
    * 承上 , 取得該宮位的「天干」＋「地支」組合
    */
-  default StemBranch getHouse(Stem year , int month , Branch hour , House house , HouseSeqIF seq) {
+  default StemBranch getHouse(Stem year , int month , Branch hour , House house , IHouseSeq seq) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
     // 先取得 該宮位的地支
@@ -199,7 +199,7 @@ public interface ZiweiIF {
    * 取得某個主星，位於宮位的地支
    * @param star 14顆主星
    */
-  static Branch getBranchOf(MainStar star , int set , int day) {
+  static Branch getBranchOf(StarMain star , int set , int day) {
     return mainStar2BranchMap.get(star).apply(Tuple.tuple(set , day));
   }
 
@@ -207,7 +207,7 @@ public interface ZiweiIF {
    * 承上，取得某個主星，位於宮位的干支
    * @param star 14顆主星
    */
-  default StemBranch getStemBranchOf(MainStar star , Stem year , int set , int day) {
+  default StemBranch getStemBranchOf(StarMain star , Stem year , int set , int day) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
@@ -267,8 +267,8 @@ public interface ZiweiIF {
    * Tuple2<局數 , 生日>
    * TODO : should be private map in Java9
    */
-  Map<MainStar , Function<Tuple2<Integer , Integer>, Branch>> mainStar2BranchMap =
-      ImmutableMap.<MainStar , Function<Tuple2<Integer , Integer> , Branch>>builder()
+  Map<StarMain, Function<Tuple2<Integer , Integer>, Branch>> mainStar2BranchMap =
+      ImmutableMap.<StarMain, Function<Tuple2<Integer , Integer> , Branch>>builder()
         .put(紫微, t2 -> fun紫微.apply(t2.v1(), t2.v2()))
         .put(天機, t2 -> fun天機.apply(t2.v1(), t2.v2()))
         .put(太陽, t2 -> fun太陽.apply(t2.v1(), t2.v2()))
@@ -291,7 +291,7 @@ public interface ZiweiIF {
    * @param transFourTypes : 欲求算的四化類型列表，例如「(大限,甲) , (流年,丁) , (流月,癸) ...」
    * */
   Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
-                 HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
+                 IHouseSeq houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
                  Map<ITransFour.Type , Stem> transFourTypes, Settings settings) ;
 
 }

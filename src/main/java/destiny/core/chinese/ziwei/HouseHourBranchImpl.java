@@ -5,23 +5,24 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
 import destiny.core.chinese.Branch;
-import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 
-/** 年干 -> 地支 */
-public abstract class IHouseYearStemImpl extends IHouseAbstractImpl<Stem> {
+/**
+ * 時支 -> 地支
+ */
+public abstract class HouseHourBranchImpl extends HouseAbstractImpl<Branch> {
 
-  protected IHouseYearStemImpl(ZStar star) {
+  protected HouseHourBranchImpl(ZStar star) {
     super(star);
   }
 
   @Override
   public FuncType getFuncType() {
-    return FuncType.YEAR_STEM;
+    return FuncType.HOUR_BRANCH;
   }
 
   @Override
   public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
-    return getBranch(year.getStem());
+    return getBranch(hour);
   }
 }

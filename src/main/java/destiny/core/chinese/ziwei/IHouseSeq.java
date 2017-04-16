@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei;
 import destiny.core.Descriptive;
 
 /** 12宮的順序 */
-public interface HouseSeqIF extends Descriptive {
+public interface IHouseSeq extends Descriptive {
 
   House[] getHouses();
 
