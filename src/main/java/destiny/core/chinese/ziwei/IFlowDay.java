@@ -3,9 +3,18 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.chinese.Branch;
+
 /**
- * 計算流日
+ * 計算流日命宮
+ * 兩種實作：
  *
- * 參考 : https://519843.blogspot.tw/2017/03/blog-post_29.html
+ * 「流日地支」         {@link FlowDayFixedImpl}
+ *
+ * 「流月命宮，順數日」   {@link FlowDayFlowMonthMainHouseDepImpl}
+ *
  */
-public interface IFlowDay {}
+public interface IFlowDay {
+
+  Branch getFlowDay(Branch flowDayBranch , int flowDayNum , Branch flowMonthMainHouse);
+}

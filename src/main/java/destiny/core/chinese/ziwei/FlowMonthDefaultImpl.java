@@ -8,7 +8,7 @@ import destiny.core.chinese.Branch;
 import java.io.Serializable;
 
 /**
- * 紫微斗數全集 , 流年斗君
+ * 紫微斗數全集 , 流年斗君 順數月
  *
  * 大多數北派 占驗派 還有部分南派 都用此法
  *
