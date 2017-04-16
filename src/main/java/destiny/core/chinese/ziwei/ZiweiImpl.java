@@ -4,7 +4,6 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
-import destiny.core.calendar.Location;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.Stem;
@@ -15,17 +14,15 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ZiweiImpl implements ZiweiIF , Serializable {
 
   @Override
-  public Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) {
+  public Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                        HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
+                        Map<ITransFour.Type , Stem> transFourTypes, Settings settings) {
     StemBranch mainHouse = ZiweiIF.getMainHouse(year.getStem() , monthNum , hour);
     StemBranch bodyHouse = ZiweiIF.getBodyHouse(year.getStem() , monthNum , hour);
 
@@ -54,16 +51,34 @@ public class ZiweiImpl implements ZiweiIF , Serializable {
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2))
       ;
 
-    Map<ZStar , Tuple2<ITransFour.Type , ITransFour.Value>> tranFourMap =
-      stars.stream().map(star -> Tuple.tuple(star , getTranFourImpl(settings.getTransFour()).getValueOf(star , year.getStem())))
-        .filter(t -> t.v2().isPresent())
-        .collect(Collectors.toMap(
-          Tuple2::v1,
-          tuple -> Tuple.tuple(ITransFour.Type.本命 , tuple.v2().orElse(null))) // 前面已經 filter 過了，其實這裡不可能為 null
-        );
+    // 欲計算的四化類型
+    Map<ITransFour.Type , Stem> calculatingMap = new HashMap<>();
+    calculatingMap.put(ITransFour.Type.本命 , year.getStem());
 
-    return new Plate(mainHouse , bodyHouse, t3.v2(), set, houseMap, starBranchMap , tranFourMap);
-  }
+    transFourTypes.entrySet().stream()
+      .filter(entry -> entry.getKey() != ITransFour.Type.本命) // 如果原本有傳入本命，移除之（因為可能帶入不正確的天干）
+      .forEachOrdered(e -> calculatingMap.put(e.getKey() , e.getValue()));
+
+    Map<ZStar , Map<ITransFour.Type , ITransFour.Value>> tranFourMap =
+      stars.stream().map(star -> {
+        Map<ITransFour.Type, ITransFour.Value> resultMap =
+          calculatingMap.entrySet().stream()
+            .map(e -> Tuple.tuple(
+              e.getKey() ,
+              getTranFourImpl(settings.getTransFour()).getValueOf(star , e.getValue())
+            ))
+            .filter(tuple -> tuple.v2().isPresent())
+            .collect(Collectors.toMap(
+              Tuple2::v1,
+              t -> t.v2().orElse(null),  // 其實這裡不會 null , 因為之前已經 filter 過了
+              (v1, v2) -> v1,
+              TreeMap::new
+            ));
+        return Tuple.tuple(star , resultMap);
+      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+    return new Plate(mainHouse , bodyHouse, t3.v2(), set, houseMap, starBranchMap, tranFourMap);
+  } // 計算本命盤
+
 
   private ITransFour getTranFourImpl(Settings.TransFour transFour) {
     switch (transFour) {
@@ -77,8 +92,4 @@ public class ZiweiImpl implements ZiweiIF , Serializable {
     }
   }
 
-  @Override
-  public void calculate(Gender gender, LocalDateTime time, Location loc) {
-
-  }
 }

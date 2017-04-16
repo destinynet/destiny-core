@@ -61,6 +61,9 @@ public class MinorStar extends ZStar {
   public final static MinorStar 天使 = new MinorStar("天使"); //   兇 , 天使屬陰水 , 主災病
   public final static MinorStar 天傷 = new MinorStar("天傷"); //   兇 , 天傷屬陽水 , 主虛耗
 
+  // TODO
+  public final static MinorStar 截空 = new MinorStar("截空"); //   兇
+
   public final static MinorStar[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷};
 
   public MinorStar(String nameKey) {

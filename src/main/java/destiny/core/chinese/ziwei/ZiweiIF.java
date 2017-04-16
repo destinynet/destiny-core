@@ -5,7 +5,6 @@ package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableMap;
 import destiny.core.Gender;
-import destiny.core.calendar.Location;
 import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -14,7 +13,6 @@ import org.jooq.lambda.tuple.Tuple3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -288,10 +286,12 @@ public interface ZiweiIF {
       .build();
 
 
-  Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) ;
+  /**
+   * 計算本命盤
+   * @param transFourTypes : 欲求算的四化類型列表，例如「(大限,甲) , (流年,丁) , (流月,癸) ...」
+   * */
+  Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                 HouseSeqIF houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
+                 Map<ITransFour.Type , Stem> transFourTypes, Settings settings) ;
 
-
-
-
-  void calculate(Gender gender , LocalDateTime time , Location loc);
 }

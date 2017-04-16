@@ -38,12 +38,12 @@ public interface ITransFour extends Descriptive {
   /** 取得「某天干（可能是本命年、大限、或是流年、流月、流日、流時）的某四化」是哪顆星 */
   ZStar getStarOf(Stem stem , Value value);
 
-  /** 類似前者，但逆算：計算此星於此年，是否有四化，若有的話，其為何者 */
-  default Optional<Value> getValueOf(ZStar star , Stem year) {
+  /** 類似前者，但逆算：計算此星於此干，是否有四化，若有的話，其為何者 */
+  default Optional<Value> getValueOf(ZStar star , Stem stem) {
     // 先把本年四化的四顆星都找出來
     Map<ZStar , Value> map =
       Arrays.stream(Value.values())
-      .map(type -> Tuple.tuple(getStarOf(year , type) , type))
+      .map(type -> Tuple.tuple(getStarOf(stem , type) , type))
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
     return Optional.ofNullable(map.getOrDefault(star , null));

@@ -37,18 +37,21 @@ public class Plate implements Serializable {
   private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
 
   /** 四化星 的列表 */
-  private final Map<ZStar , List<Tuple2<ITransFour.Type , ITransFour.Value>>> tranFours = new HashMap<>();
+  private final Map<ZStar , Map<ITransFour.Type , ITransFour.Value>> tranFourMap;// = new HashMap<>();
 
   /**
    * 本命盤
    */
-  public Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set,
-               Map<House, StemBranch> houseMap, Map<ZStar, StemBranch> starBranchMap,
-               Map<ZStar, Tuple2<ITransFour.Type, ITransFour.Value>> tranFourMap) {
+  public Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement,
+               int set,
+               Map<House, StemBranch> houseMap,
+               Map<ZStar, StemBranch> starBranchMap,
+               Map<ZStar, Map<ITransFour.Type, ITransFour.Value>> transFourMap) {
     this.mainHouse = mainHouse;
     this.bodyHouse = bodyHouse;
     this.fiveElement = fiveElement;
     this.set = set;
+    this.tranFourMap = transFourMap;
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -67,9 +70,6 @@ public class Plate implements Serializable {
       return new HouseData(house , sb , stars);
     }).collect(Collectors.toSet());
 
-    for(ZStar star : tranFourMap.keySet()) {
-      tranFours.put(star , Collections.singletonList(tranFourMap.get(star)));
-    }
   }
 
   public StemBranch getMainHouse() {
@@ -116,7 +116,16 @@ public class Plate implements Serializable {
   }
 
   /** 取得 星體的四化列表 */
-  public Map<ZStar, List<Tuple2<ITransFour.Type, ITransFour.Value>>> getTranFours() {
-    return tranFours;
+  public Map<ZStar, Map<ITransFour.Type, ITransFour.Value>> getTranFours() {
+    return tranFourMap;
+  }
+
+  /** 取得此顆星，的四化列表 */
+  public List<Tuple2<ITransFour.Type , ITransFour.Value>> getTransFourOf(ZStar star) {
+    return tranFourMap.get(star)
+      .entrySet()
+      .stream()
+      .map(e -> Tuple.tuple(e.getKey() , e.getValue()))
+      .collect(Collectors.toList());
   }
 }

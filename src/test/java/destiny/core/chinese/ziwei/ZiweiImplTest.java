@@ -3,9 +3,11 @@
  */
 package destiny.core.chinese.ziwei;
 
+import com.google.common.collect.ImmutableMap;
 import destiny.core.Gender;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.ziwei.Settings.FireBell;
 import destiny.core.chinese.ziwei.Settings.Horse;
 import destiny.core.chinese.ziwei.Settings.HurtAngel;
@@ -15,9 +17,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.*;
@@ -53,7 +53,15 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(MinorStar.values));
     starList.addAll(Arrays.asList(DoctorStar.values));
 
-    Plate plate = impl.getPlate(己酉 , 子 , 11 , 24 , 子 , seq , starList, Gender.男, settings);
+    Map<ITransFour.Type , Stem> transFourTypes = new ImmutableMap.Builder<ITransFour.Type , Stem>()
+      .put(ITransFour.Type.大限 , 甲)
+      .put(ITransFour.Type.流年 , 乙)
+      .put(ITransFour.Type.流月 , 丙)
+      .put(ITransFour.Type.流日 , 丁)
+      .put(ITransFour.Type.流時 , 戊)
+      .build();
+
+    Plate plate = impl.getPlate(己酉 , 子 , 11 , 24 , 子 , seq , starList, Gender.男, transFourTypes , settings);
 
     logger.info("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
@@ -68,6 +76,10 @@ public class ZiweiImplTest {
 
     plate.getTranFours().forEach((star, tuple2s) -> {
       logger.info("{} : {}" , star , tuple2s);
+    });
+
+    plate.getTransFourOf(天機).forEach(t -> {
+      logger.info("{} : {} -> {}" , 天機 , t.v1() , t.v2());
     });
   }
 
@@ -87,7 +99,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(MinorStar.values));
     starList.addAll(Arrays.asList(DoctorStar.values));
 
-    Plate plate = impl.getPlate(丁酉 , 辰 , 3 , 18 , 亥 , seq , starList, Gender.男, settings);
+    Plate plate = impl.getPlate(丁酉 , 辰 , 3 , 18 , 亥 , seq , starList, Gender.男, new HashMap<>(), settings);
 
     logger.debug("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
