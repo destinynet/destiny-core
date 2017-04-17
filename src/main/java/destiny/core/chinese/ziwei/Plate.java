@@ -39,20 +39,23 @@ public class Plate implements Serializable {
   /** 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    * */
-  private final Map<ZStar , Map<FlowType, ITransFour.Value>> tranFourMap;// = new HashMap<>();
+  private final Map<ZStar , Map<FlowType, ITransFour.Value>> transFourMap;// = new HashMap<>();
 
   private final Map<Branch, Map<FlowType, House>> branchFlowHouseMap;
 
   /**
    * 命盤
    */
-  private Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> tranFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap) {
+  private Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set,
+                Set<HouseData> houseDataSet,
+                Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap,
+                Map<Branch, Map<FlowType, House>> branchFlowHouseMap) {
     this.mainHouse = mainHouse;
     this.bodyHouse = bodyHouse;
     this.fiveElement = fiveElement;
     this.set = set;
     this.houseDataSet = houseDataSet;
-    this.tranFourMap = tranFourMap;
+    this.transFourMap = transFourMap;
     this.branchFlowHouseMap = branchFlowHouseMap;
   }
 
@@ -101,12 +104,14 @@ public class Plate implements Serializable {
 
   /** 取得 星體的四化列表 */
   public Map<ZStar, Map<FlowType, ITransFour.Value>> getTranFours() {
-    return tranFourMap;
+    return transFourMap;
   }
 
   /** 取得此顆星，的四化列表 */
   public List<Tuple2<FlowType, ITransFour.Value>> getTransFourOf(ZStar star) {
-    return tranFourMap.get(star)
+
+    return
+      transFourMap.getOrDefault(star , new HashMap<>())
       .entrySet()
       .stream()
       .map(e -> Tuple.tuple(e.getKey() , e.getValue()))
@@ -117,6 +122,7 @@ public class Plate implements Serializable {
   public Map<Branch, Map<FlowType, House>> getBranchFlowHouseMap() {
     return branchFlowHouseMap;
   }
+
 
   public static class Builder {
 
@@ -144,7 +150,7 @@ public class Plate implements Serializable {
      * 四化星 的列表
      * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
      */
-    private Map<ZStar, Map<FlowType, ITransFour.Value>> tranFourMap = new HashMap<>();
+    private Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap = new HashMap<>();
 
     /**
      * 每個地支，在每種流運，稱為什麼宮位
@@ -184,21 +190,31 @@ public class Plate implements Serializable {
         Set<ZStar> stars = branchStarMap.get(sb.getBranch());
         return new HouseData(house, sb, stars);
       }).collect(Collectors.toSet());
-    }
+    } // builder init
 
-    /** 四化 */
-    public Builder withTransFourMap(Map<ZStar, Map<FlowType, ITransFour.Value>> tranFourMap) {
-      this.tranFourMap = tranFourMap;
+
+    /** 添加 四化 */
+    public Builder appendTrans4Map(Map<Tuple2<ZStar , FlowType> , ITransFour.Value> map) {
+      map.forEach((tuple , value) -> {
+        ZStar star = tuple.v1();
+        FlowType flowType = tuple.v2();
+
+        this.transFourMap.computeIfPresent(star, (star1, flowTypeValueMap) -> {
+          flowTypeValueMap.putIfAbsent(flowType , value);
+          return flowTypeValueMap;
+        });
+        this.transFourMap.putIfAbsent(star , new TreeMap<FlowType , ITransFour.Value>(){{ put(flowType , value); }} );
+      });
       return this;
     }
 
     /**
      * with 大限宮位對照
      *
-     * @param flowMain 哪個大限
-     * @param map      地支「在該大限」與宮位的對照表
+     * @param flowBig 哪個大限
+     * @param map     地支「在該大限」與宮位的對照表
      */
-    public Builder withFlowMain(Branch flowMain , Map<Branch , House> map) {
+    public Builder withFlowBig(Branch flowBig , Map<Branch , House> map) {
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
           m.put(FlowType.大限 , map.get(branch));
@@ -240,9 +256,25 @@ public class Plate implements Serializable {
       return this;
     }
 
+    /**
+     * with 流日宮位對照
+     *
+     * @param flowDay 哪個流日
+     * @param map     地支「在該流日」與宮位的對照表
+     */
+    public Builder withFlowDay(Branch flowDay , Map<Branch , House> map) {
+      map.forEach((branch, house) -> {
+        branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
+          m.put(FlowType.流日 , map.get(branch));
+          return m;
+        });
+      });
+      return this;
+    }
+
 
     public Plate build() {
-      return new Plate(mainHouse , bodyHouse , fiveElement , set , houseDataSet , tranFourMap , branchFlowHouseMap);
+      return new Plate(mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap);
     }
 
 

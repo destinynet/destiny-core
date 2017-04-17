@@ -79,8 +79,15 @@ public class Settings implements Serializable {
   }
   private final FlowMonth flowMonth;
 
+  /** 流日設定 */
+  public enum FlowDay {
+    MONTH_DEP , /** {@link FlowDayFlowMonthMainHouseDepImpl} */
+    FIXED     , /** {@link FlowDayFixedImpl} */
+  }
+  private final FlowDay flowDay;
 
-  public Settings(HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, FlowYear flowYear, FlowMonth flowMonth) {
+
+  public Settings(HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay) {
     this.houseSeq = houseSeq;
     this.tianyi = tianyi;
     this.fireBell = fireBell;
@@ -89,6 +96,7 @@ public class Settings implements Serializable {
     this.transFour = transFour;
     this.flowYear = flowYear;
     this.flowMonth = flowMonth;
+    this.flowDay = flowDay;
   }
 
   public HouseSeq getHouseSeq() {
@@ -121,5 +129,9 @@ public class Settings implements Serializable {
 
   public FlowMonth getFlowMonth() {
     return flowMonth;
+  }
+
+  public FlowDay getFlowDay() {
+    return flowDay;
   }
 }
