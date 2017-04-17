@@ -20,19 +20,23 @@ import java.util.stream.Collectors;
 public class ZiweiImpl implements IZiwei, Serializable {
 
   @Override
-  public Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
-                        IHouseSeq houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
-                        Map<ITransFour.Type , Stem> transFourTypes, Settings settings) {
+  public Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                        @NotNull Collection<ZStar> stars, Gender gender,
+                        Map<FlowType, Stem> transFourTypes, Settings settings) {
     StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , monthNum , hour);
     StemBranch bodyHouse = IZiwei.getBodyHouse(year.getStem() , monthNum , hour);
+
+    IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
 
     Tuple3<String , FiveElement , Integer> t3 = getNaYin(year.getStem() , monthNum , hour);
     int set = t3.v3();
 
-    Map<House , StemBranch> houseMap =
-      Arrays.stream(houseSeq.getHouses())
-        .map( house -> Tuple.tuple(house , getHouse(year.getStem() , monthNum, hour , house , houseSeq)))
-        .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+    // 地支 -> 宮位 的 mapping
+    Map<StemBranch , House> branchHouseMap =
+      Arrays.stream(houseSeq.getHouses()).map(house -> {
+        StemBranch sb = getHouse(year.getStem() , monthNum, hour , house , houseSeq);
+        return Tuple.tuple(sb , house);
+      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
     // 寅 的天干
     Stem stemOf寅 = IZiwei.getStemOf寅(year.getStem());
@@ -51,18 +55,19 @@ public class ZiweiImpl implements IZiwei, Serializable {
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2))
       ;
 
-    // 欲計算的四化類型
-    Map<ITransFour.Type , Stem> calculatingMap = new HashMap<>();
-    calculatingMap.put(ITransFour.Type.本命 , year.getStem());
+    // 欲計算的 (運的類型,天干) 對照表
+    Map<FlowType, Stem> calculatingTransFourMap = new HashMap<>();
+    calculatingTransFourMap.put(FlowType.本命 , year.getStem());
 
     transFourTypes.entrySet().stream()
-      .filter(entry -> entry.getKey() != ITransFour.Type.本命) // 如果原本有傳入本命，移除之（因為可能帶入不正確的天干）
-      .forEachOrdered(e -> calculatingMap.put(e.getKey() , e.getValue()));
+      .filter(entry -> entry.getKey() != FlowType.本命) // 如果原本有傳入本命，移除之（因為可能帶入不正確的天干）
+      .forEachOrdered(e -> calculatingTransFourMap.put(e.getKey() , e.getValue()));
 
-    Map<ZStar , Map<ITransFour.Type , ITransFour.Value>> tranFourMap =
+    // 每顆星體，於每個[流運的類型] -> 四化結果 , 的對照表
+    Map<ZStar , Map<FlowType, ITransFour.Value>> transFourMap =
       stars.stream().map(star -> {
-        Map<ITransFour.Type, ITransFour.Value> resultMap =
-          calculatingMap.entrySet().stream()
+        Map<FlowType, ITransFour.Value> resultMap =
+          calculatingTransFourMap.entrySet().stream()
             .map(e -> Tuple.tuple(
               e.getKey() ,
               getTranFourImpl(settings.getTransFour()).getValueOf(star , e.getValue())
@@ -76,9 +81,91 @@ public class ZiweiImpl implements IZiwei, Serializable {
             ));
         return Tuple.tuple(star , resultMap);
       }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
-    return new Plate(mainHouse , bodyHouse, t3.v2(), set, houseMap, starBranchMap, tranFourMap);
-  } // 計算本命盤
 
+    return new Plate.Builder(monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap)
+      .withTransFourMap(transFourMap)
+      ;
+  } // 計算命盤
+
+  /** 計算 大限盤 */
+  @Override
+  public Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Map<FlowType, Stem> transFourTypes, Settings settings, Branch flowBranch) {
+    IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
+    Map<Branch , House> branchHouseMap =
+      Arrays.stream(Branch.values()).map( branch -> {
+        int steps = branch.getAheadOf(flowBranch);
+        House house = houseSeq.prev(House.命宮 , steps);
+        return Tuple.tuple(branch , house);
+      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+
+    return getPlate(year , monthBranch , monthNum , days , hour , stars , gender , transFourTypes , settings)
+      .withFlowMain(flowBranch , branchHouseMap);
+  }
+
+  /** 計算 流年盤 */
+  @Override
+  public Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Map<FlowType, Stem> transFourTypes, Settings settings, Branch flowBranch, Branch flowYear) {
+    IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
+    IFlowYear flowYearImpl = getFlowYearImpl(settings.getFlowYear());
+
+    Branch 流年命宮 = flowYearImpl.getFlowYear(flowYear , monthNum , hour);
+    Map<Branch , House> branchHouseMap =
+      Arrays.stream(Branch.values()).map(branch -> {
+        int steps = branch.getAheadOf(流年命宮);
+        House house = houseSeq.prev(House.命宮 , steps);
+        return Tuple.tuple(branch , house);
+      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+
+    return getPlate(year , monthBranch , monthNum , days , hour , stars , gender , transFourTypes , settings , flowBranch)
+      .withFlowYear(flowYear , branchHouseMap)
+      ;
+  }
+
+  /** 計算 流月盤 */
+  @Override
+  public Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                         @NotNull Collection<ZStar> stars, Gender gender,
+                         Map<FlowType, Stem> transFourTypes, Settings settings,
+                         Branch flowBranch , Branch flowYear , Branch flowMonth) {
+    IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
+    IFlowMonth flowMonthImpl = getFlowMonthImpl(settings.getFlowMonth());
+
+    Branch 流月命宮 = flowMonthImpl.getFlowMonth(flowYear , flowMonth , monthNum , hour);
+    Map<Branch , House> branchHouseMap =
+      Arrays.stream(Branch.values()).map(branch -> {
+        int steps = branch.getAheadOf(流月命宮);
+        House house = houseSeq.prev(House.命宮 , steps);
+        return Tuple.tuple(branch , house);
+      }).collect(Collectors.toMap(Tuple2::v1 , Tuple2::v2));
+
+    return getPlate(year , monthBranch , monthNum , days , hour , stars , gender , transFourTypes , settings , flowBranch , flowYear)
+      .withFlowMonth(flowMonth , branchHouseMap);
+  }
+
+  private IFlowMonth getFlowMonthImpl(Settings.FlowMonth flowMonth) {
+    switch (flowMonth) {
+      case DEFAULT: return new FlowMonthDefaultImpl();
+      case FIXED:   return new FlowMonthFixedImpl();
+      case YEAR_DEP: return new FlowMonthYearMainHouseDepImpl();
+      default: throw new AssertionError("Error : " + flowMonth);
+    }
+  }
+
+  private IFlowYear getFlowYearImpl(Settings.FlowYear flowYear) {
+    switch (flowYear) {
+      case DEFAULT: return new FlowYearDefaultImpl();
+      case ANCHOR:  return new FlowYearAnchorImpl();
+      default: throw new AssertionError("Error : " + flowYear);
+    }
+  }
+
+  private IHouseSeq getHouseSeq(Settings.HouseSeq houseSeq) {
+    switch (houseSeq) {
+      case DEFAULT: return new HouseSeqDefaultImpl();
+      case TAIYI:   return new HouseSeqTaiyiImpl();
+      default: throw new AssertionError("Error : " + houseSeq);
+    }
+  }
 
   private ITransFour getTranFourImpl(Settings.TransFour transFour) {
     switch (transFour) {

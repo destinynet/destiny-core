@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
  * */
 public interface ITransFour extends Descriptive {
 
-  enum Type {本命 , 大限 , 流年 , 流月 , 流日 , 流時}
-
   enum Value {祿 , 權 , 科 , 忌}
 
   /** 取得「某天干（可能是本命年、大限、或是流年、流月、流日、流時）的某四化」是哪顆星 */

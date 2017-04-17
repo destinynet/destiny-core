@@ -31,9 +31,9 @@ import static org.junit.Assert.assertSame;
 
 public class ZiweiImplTest {
 
-  private IHouseSeq seq = new HouseSeqDefaultImpl();
 
   IZiwei impl = new ZiweiImpl();
+  private IHouseSeq seq = new HouseSeqDefaultImpl();
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -47,7 +47,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate3() {
-    Settings settings = new Settings(Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT);
+    Settings settings = new Settings(Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -56,15 +56,15 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Map<ITransFour.Type , Stem> transFourTypes = new ImmutableMap.Builder<ITransFour.Type , Stem>()
-      .put(ITransFour.Type.大限 , 甲)
-      .put(ITransFour.Type.流年 , 乙)
-      .put(ITransFour.Type.流月 , 丙)
-      .put(ITransFour.Type.流日 , 丁)
-      .put(ITransFour.Type.流時 , 戊)
+    Map<FlowType, Stem> transFourTypes = new ImmutableMap.Builder<FlowType, Stem>()
+      .put(FlowType.大限 , 甲)
+      .put(FlowType.流年 , 乙)
+      .put(FlowType.流月 , 丙)
+      .put(FlowType.流日 , 丁)
+      .put(FlowType.流時 , 戊)
       .build();
 
-    Plate plate = impl.getPlate(己巳 , 申 , 7 , 25 , 辰 , seq , starList, Gender.女, transFourTypes , settings);
+    Plate plate = impl.getPlate(己巳 , 申 , 7 , 25 , 辰 , starList, Gender.女, transFourTypes , settings , Branch.午 , Branch.申, Branch.亥).build();
 
     assertSame(戊辰 , plate.getMainHouse());
     assertSame(丙子 , plate.getBodyHouse());
@@ -84,8 +84,8 @@ public class ZiweiImplTest {
       logger.info("{} : {}" , star , tuple2s);
     });
 
-    plate.getTransFourOf(天機).forEach(t -> {
-      logger.info("{} : {} -> {}" , 天機 , t.v1() , t.v2());
+    plate.getBranchFlowHouseMap().forEach( (branch , map) -> {
+      logger.info("{} : {}" , branch , map);
     });
   }
 
@@ -98,7 +98,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate2() {
-    Settings settings = new Settings(Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT);
+    Settings settings = new Settings(Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -107,15 +107,15 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Map<ITransFour.Type , Stem> transFourTypes = new ImmutableMap.Builder<ITransFour.Type , Stem>()
-      .put(ITransFour.Type.大限 , 甲)
-      .put(ITransFour.Type.流年 , 乙)
-      .put(ITransFour.Type.流月 , 丙)
-      .put(ITransFour.Type.流日 , 丁)
-      .put(ITransFour.Type.流時 , 戊)
+    Map<FlowType, Stem> transFourTypes = new ImmutableMap.Builder<FlowType, Stem>()
+      .put(FlowType.大限 , 甲)
+      .put(FlowType.流年 , 乙)
+      .put(FlowType.流月 , 丙)
+      .put(FlowType.流日 , 丁)
+      .put(FlowType.流時 , 戊)
       .build();
 
-    Plate plate = impl.getPlate(己酉 , 子 , 11 , 24 , 子 , seq , starList, Gender.男, transFourTypes , settings);
+    Plate plate = impl.getPlate(己酉 , 子 , 11 , 24 , 子 , starList, Gender.男, transFourTypes , settings).build();
 
     logger.info("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
@@ -144,7 +144,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT);
+    Settings settings = new Settings(Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -153,7 +153,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate plate = impl.getPlate(丁酉 , 辰 , 3 , 18 , 亥 , seq , starList, Gender.男, new HashMap<>(), settings);
+    Plate plate = impl.getPlate(丁酉 , 辰 , 3 , 18 , 亥 , starList, Gender.男, new HashMap<>(), settings).build();
 
     logger.debug("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());

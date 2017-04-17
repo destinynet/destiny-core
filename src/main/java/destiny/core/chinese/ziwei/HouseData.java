@@ -14,6 +14,8 @@ import java.util.Set;
  */
 public class HouseData implements Serializable , Comparable<HouseData> {
 
+  //private final Map<FlowType , House> houseMap;
+
   /** 宮位名稱 */
   private final House house;
 

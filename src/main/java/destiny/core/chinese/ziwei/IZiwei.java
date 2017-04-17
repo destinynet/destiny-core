@@ -291,9 +291,27 @@ public interface IZiwei {
    * 計算本命盤
    * @param transFourTypes : 欲求算的四化類型列表，例如「(大限,甲) , (流年,丁) , (流月,癸) ...」
    * */
-  Plate getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
-                 IHouseSeq houseSeq, @NotNull Collection<ZStar> stars, Gender gender,
-                 Map<ITransFour.Type , Stem> transFourTypes, Settings settings) ;
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                 @NotNull Collection<ZStar> stars, Gender gender,
+                 Map<FlowType, Stem> transFourTypes, Settings settings) ;
+
+  /** 計算 大限盤 */
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                         @NotNull Collection<ZStar> stars, Gender gender,
+                         Map<FlowType, Stem> transFourTypes, Settings settings ,
+                         Branch flowBranch) ;
+
+  /** 計算 流年盤 */
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                         @NotNull Collection<ZStar> stars, Gender gender,
+                         Map<FlowType, Stem> transFourTypes, Settings settings,
+                         Branch flowBranch , Branch flowYear) ;
+
+  /** 計算 流月盤 */
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+                         @NotNull Collection<ZStar> stars, Gender gender,
+                         Map<FlowType, Stem> transFourTypes, Settings settings,
+                         Branch flowBranch , Branch flowYear , Branch flowMonth) ;
 
   /** 計算流月命宮 */
   default Branch getFlowMonth(Branch flowYear , Branch flowMonth , int birthMonth , Branch birthHour , IFlowMonth impl) {
