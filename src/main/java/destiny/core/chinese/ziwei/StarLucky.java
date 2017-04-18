@@ -77,17 +77,27 @@ public final class StarLucky extends ZStar {
     }
   };
 
-  /** 天馬(月的驛馬) : 月支 -> 地支 . TODO : 也有「年」的版本 */
-  public final static Function<Branch , Branch> fun天馬 = month -> {
-    switch (BranchTools.trilogy(month)) {
+  /** 天馬(年的驛馬) : 地支 -> 地支 */
+  public final static Function<Branch , Branch> fun年馬_年支 = year -> {
+    switch (BranchTools.trilogy(year)) {
       case 火: return 申;
       case 木: return 巳;
       case 水: return 寅;
       case 金: return 亥;
-      default: throw new AssertionError(month);
+      default: throw new AssertionError(year);
     }
   };
 
+  /** 天馬(月的驛馬) : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun月馬_月數 = month -> {
+    switch (month) {
+      case 1:case 5:case 9: return 申;
+      case 2:case 6:case 10: return 巳;
+      case 3:case 7:case 11: return 寅;
+      case 4:case 8:case 12: return 亥;
+      default: throw new AssertionError(month);
+    }
+  };
 
 
 }

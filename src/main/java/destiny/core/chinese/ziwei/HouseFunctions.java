@@ -182,10 +182,10 @@ public class HouseFunctions {
   
   public final static IHouse house天馬 = new HouseYearBranchMonthBranchImpl(天馬) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
       switch (settings.getHorse()) {
-        case 年馬: return fun天馬.apply(year.getBranch());
-        case 月馬: return fun天馬.apply(monthBranch);
+        case 年馬: return fun年馬_年支.apply(year.getBranch());
+        case 月馬: return fun月馬_月數.apply(monthNum);
         default: throw new AssertionError("error");
       }
     }
@@ -216,7 +216,7 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
       switch (settings.getFireBell()) {
         case 全書: return fun火星_全書.apply(year.getBranch());
         case 全集: return fun火星_全集.apply(year.getBranch() , hour);
@@ -232,7 +232,7 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
       switch (settings.getFireBell()) {
         case 全書: return fun鈴星_全書.apply(year.getBranch());
         case 全集: return fun鈴星_全集.apply(year.getBranch() , hour);
@@ -488,7 +488,7 @@ public class HouseFunctions {
 
   public final static IHouse house天傷 = new HouseHouseDepYearStemGenderImpl(天傷) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
       // 太乙派，沒有遷移宮
       Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl() , solarTerms , new MainHouseDefaultImpl());
       switch (settings.getHurtAngel()) {
@@ -502,7 +502,7 @@ public class HouseFunctions {
 
   public final static IHouse house天使 = new HouseHouseDepYearStemGenderImpl(天使) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
 
       Branch 命宮地支 = null ;
       // 太乙派，沒有遷移宮

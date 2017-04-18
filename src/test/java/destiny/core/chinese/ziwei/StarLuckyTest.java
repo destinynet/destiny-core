@@ -144,17 +144,30 @@ public class StarLuckyTest {
 
   @Test
   public void test天馬() {
-    assertSame(寅 , fun天馬.apply(子));
-    assertSame(亥 , fun天馬.apply(丑));
-    assertSame(申 , fun天馬.apply(寅));
-    assertSame(巳 , fun天馬.apply(卯));
-    assertSame(寅 , fun天馬.apply(辰));
-    assertSame(亥 , fun天馬.apply(巳));
-    assertSame(申 , fun天馬.apply(午));
-    assertSame(巳 , fun天馬.apply(未));
-    assertSame(寅 , fun天馬.apply(申));
-    assertSame(亥 , fun天馬.apply(酉));
-    assertSame(申 , fun天馬.apply(戌));
-    assertSame(巳 , fun天馬.apply(亥));
+    assertSame(寅 , fun年馬_年支.apply(子));
+    assertSame(亥 , fun年馬_年支.apply(丑));
+    assertSame(申 , fun年馬_年支.apply(寅));
+    assertSame(巳 , fun年馬_年支.apply(卯));
+    assertSame(寅 , fun年馬_年支.apply(辰));
+    assertSame(亥 , fun年馬_年支.apply(巳));
+    assertSame(申 , fun年馬_年支.apply(午));
+    assertSame(巳 , fun年馬_年支.apply(未));
+    assertSame(寅 , fun年馬_年支.apply(申));
+    assertSame(亥 , fun年馬_年支.apply(酉));
+    assertSame(申 , fun年馬_年支.apply(戌));
+    assertSame(巳 , fun年馬_年支.apply(亥));
+
+    assertSame(寅 , fun月馬_月數.apply(11));
+    assertSame(亥 , fun月馬_月數.apply(12));
+    assertSame(申 , fun月馬_月數.apply(1));
+    assertSame(巳 , fun月馬_月數.apply(2));
+    assertSame(寅 , fun月馬_月數.apply(3));
+    assertSame(亥 , fun月馬_月數.apply(4));
+    assertSame(申 , fun月馬_月數.apply(5));
+    assertSame(巳 , fun月馬_月數.apply(6));
+    assertSame(寅 , fun月馬_月數.apply(7));
+    assertSame(亥 , fun月馬_月數.apply(8));
+    assertSame(申 , fun月馬_月數.apply(9));
+    assertSame(巳 , fun月馬_月數.apply(10));
   }
 }

@@ -50,7 +50,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     stars.stream()
       .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
         .map(iHouse -> {
-          Branch branch = iHouse.getBranch(year , monthBranch , monthNum, solarTerms , days, hour, set, gender, settings, mainHouseImpl);
+          Branch branch = iHouse.getBranch(year , monthBranch , monthNum, solarTerms , days, hour, set, gender, settings);
           StemBranch sb = IZiwei.getStemBranchOf(branch , stemOf寅);
           return Tuple.tuple(star , sb);
         })

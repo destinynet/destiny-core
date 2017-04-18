@@ -22,7 +22,7 @@ public abstract class HouseMonthBranchImpl extends HouseAbstractImpl<Branch> {
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
     return getBranch(monthBranch);
   }
 }
