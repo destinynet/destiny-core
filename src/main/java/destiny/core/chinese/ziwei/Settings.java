@@ -12,12 +12,16 @@ import java.io.Serializable;
 
 public class Settings implements Serializable {
 
-
+  public enum MonthType {
+    NUMBER ,      // 陰曆月數
+    SOLAR_TERMS   // 節氣
+  }
+  private final MonthType monthType;
 
   /** 命宮起法 */
   public enum MainHouse {
-    DEFAULT ,         /** 內定算法 */
-    SOLAR_TERMS_DEP   /** 不依五星要過節 */
+    DEFAULT ,         /** 內定算法       {@link MainHouseDefaultImpl} */
+    SOLAR_TERMS       /** 不依五星要過節  {@link MainHouseSolarTermsImpl} */
   }
   private final MainHouse mainHouse;
 
@@ -102,7 +106,8 @@ public class Settings implements Serializable {
   }
   private final FlowHour flowHour;
 
-  public Settings(MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
+  public Settings(MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
+    this.monthType = monthType;
     this.mainHouse = mainHouse;
     this.houseSeq = houseSeq;
     this.tianyi = tianyi;
@@ -114,6 +119,10 @@ public class Settings implements Serializable {
     this.flowMonth = flowMonth;
     this.flowDay = flowDay;
     this.flowHour = flowHour;
+  }
+
+  public MonthType getMonthType() {
+    return monthType;
   }
 
   public MainHouse getMainHouse() {

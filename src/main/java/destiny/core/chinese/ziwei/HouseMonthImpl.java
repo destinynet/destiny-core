@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2017-04-13.
+ * Created by smallufo on 2017-04-18.
  */
 package destiny.core.chinese.ziwei;
 
@@ -7,22 +7,25 @@ import destiny.core.Gender;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple3;
 
-/** 月支 -> 地支 */
-@Deprecated
-public abstract class HouseMonthBranchImpl extends HouseAbstractImpl<Branch> {
+/**
+ * (月數 or 節氣月支) -> 地支
+ */
+public abstract class HouseMonthImpl extends HouseAbstractImpl<Tuple3<Settings.MonthType , Integer , Branch>> {
 
-  protected HouseMonthBranchImpl(ZStar star) {
+  protected HouseMonthImpl(ZStar star) {
     super(star);
   }
 
   @Override
   public FuncType getFuncType() {
-    return FuncType.MONTH_BRANCH;
+    return FuncType.MONTH;
   }
 
   @Override
   public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
-    return getBranch(monthBranch);
+    return getBranch(Tuple.tuple(settings.getMonthType() , monthNum , monthBranch));
   }
 }

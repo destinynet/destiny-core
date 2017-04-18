@@ -30,7 +30,7 @@ public abstract class HouseYearBranchMonthNumHourBranchMainHouseImpl extends
     IMainHouse mainHouseImpl;
     switch (settings.getMainHouse()) {
       case DEFAULT: mainHouseImpl = new MainHouseDefaultImpl(); break;
-      case SOLAR_TERMS_DEP: mainHouseImpl = new MainHouseSolarTermsImpl(); break;
+      case SOLAR_TERMS: mainHouseImpl = new MainHouseSolarTermsImpl(); break;
       default: throw new AssertionError("Error : " + settings.getMainHouse());
     }
     return getBranch(Tuple.tuple(year.getBranch(), monthNum , hour , solarTerms , mainHouseImpl));

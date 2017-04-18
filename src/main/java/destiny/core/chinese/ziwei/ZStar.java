@@ -27,11 +27,34 @@ import destiny.astrology.Point;
  * */
 public abstract class ZStar extends Point {
 
-  public ZStar(String nameKey, String resource) {
-    super(nameKey, resource);
+  public enum Type {
+    主星 ,
+    年干 ,
+    年支 ,
+    月 ,
+    日 ,
+    時 ,
+    博士,
+    月日,   // 三台、八座
+    日時,   // 恩光、天貴
+    年月時, // 天才、天壽
+    宮位,   // 宮位決定 : 天使、天傷
   }
 
-  public ZStar(String nameKey, String resource , String abbrKey) {
+  private final Type type;
+
+
+  public ZStar(String nameKey, String resource, Type type) {
+    super(nameKey, resource);
+    this.type = type;
+  }
+
+  public ZStar(String nameKey, String resource, String abbrKey, Type type) {
     super(nameKey, resource , abbrKey);
+    this.type = type;
+  }
+
+  public Type getType() {
+    return type;
   }
 }

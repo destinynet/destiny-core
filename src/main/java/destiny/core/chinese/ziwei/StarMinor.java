@@ -20,6 +20,7 @@ import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.BranchTools.direction;
 import static destiny.core.chinese.BranchTools.trilogy;
 import static destiny.core.chinese.ziwei.StarLucky.*;
+import static destiny.core.chinese.ziwei.ZStar.Type.*;
 
 /**
  * 乙級星有總共有34顆
@@ -27,49 +28,49 @@ import static destiny.core.chinese.ziwei.StarLucky.*;
 @SuppressWarnings("Duplicates")
 public class StarMinor extends ZStar {
 
-  public final static StarMinor 天官 = new StarMinor("天官"); // 吉
-  public final static StarMinor 天福 = new StarMinor("天福"); // 吉
-  public final static StarMinor 天廚 = new StarMinor("天廚");
-  public final static StarMinor 天刑 = new StarMinor("天刑"); //   兇
-  public final static StarMinor 天姚 = new StarMinor("天姚"); //   兇
-  public final static StarMinor 解神 = new StarMinor("解神"); // 吉
-  public final static StarMinor 天巫 = new StarMinor("天巫"); // 吉
-  public final static StarMinor 天月 = new StarMinor("天月"); //   兇
-  public final static StarMinor 陰煞 = new StarMinor("陰煞"); //   兇
-  public final static StarMinor 台輔 = new StarMinor("台輔"); // 吉
-  public final static StarMinor 封誥 = new StarMinor("封誥"); // 吉
-  public final static StarMinor 天空 = new StarMinor("天空"); //   兇
-  public final static StarMinor 天哭 = new StarMinor("天哭"); //   兇
-  public final static StarMinor 天虛 = new StarMinor("天虛"); //   兇
-  public final static StarMinor 龍池 = new StarMinor("龍池"); // 吉
-  public final static StarMinor 鳳閣 = new StarMinor("鳳閣"); // 吉
-  public final static StarMinor 紅鸞 = new StarMinor("紅鸞"); // 吉
-  public final static StarMinor 天喜 = new StarMinor("天喜"); // 吉
-  public final static StarMinor 孤辰 = new StarMinor("孤辰"); //   兇
-  public final static StarMinor 寡宿 = new StarMinor("寡宿"); //   兇
-  public final static StarMinor 蜚廉 = new StarMinor("蜚廉");
-  public final static StarMinor 破碎 = new StarMinor("破碎");
-  public final static StarMinor 華蓋 = new StarMinor("華蓋"); //   兇
-  public final static StarMinor 咸池 = new StarMinor("咸池"); //   兇
-  public final static StarMinor 天德 = new StarMinor("天德"); //   兇?
-  public final static StarMinor 月德 = new StarMinor("月德"); //   兇?
-  public final static StarMinor 天才 = new StarMinor("天才"); // 吉
-  public final static StarMinor 天壽 = new StarMinor("天壽"); // 吉
-  public final static StarMinor 三台 = new StarMinor("三台"); // 吉
-  public final static StarMinor 八座 = new StarMinor("八座"); // 吉
-  public final static StarMinor 恩光 = new StarMinor("恩光"); // 吉
-  public final static StarMinor 天貴 = new StarMinor("天貴"); // 吉
+  public final static StarMinor 天官 = new StarMinor("天官" , 年干); // 吉
+  public final static StarMinor 天福 = new StarMinor("天福" , 年干); // 吉
+  public final static StarMinor 天廚 = new StarMinor("天廚" , 年干);
+  public final static StarMinor 天刑 = new StarMinor("天刑" , 月); //   兇
+  public final static StarMinor 天姚 = new StarMinor("天姚" , 月); //   兇
+  public final static StarMinor 解神 = new StarMinor("解神" , 月); // 吉
+  public final static StarMinor 天巫 = new StarMinor("天巫" , 月); // 吉
+  public final static StarMinor 天月 = new StarMinor("天月" , 月); //   兇
+  public final static StarMinor 陰煞 = new StarMinor("陰煞" , 月); //   兇
+  public final static StarMinor 台輔 = new StarMinor("台輔" , 時); // 吉
+  public final static StarMinor 封誥 = new StarMinor("封誥" , 時); // 吉
+  public final static StarMinor 天空 = new StarMinor("天空" , 年支); //   兇
+  public final static StarMinor 天哭 = new StarMinor("天哭" , 年支); //   兇
+  public final static StarMinor 天虛 = new StarMinor("天虛" , 年支); //   兇
+  public final static StarMinor 龍池 = new StarMinor("龍池" , 年支); // 吉
+  public final static StarMinor 鳳閣 = new StarMinor("鳳閣" , 年支); // 吉
+  public final static StarMinor 紅鸞 = new StarMinor("紅鸞" , 年支); // 吉
+  public final static StarMinor 天喜 = new StarMinor("天喜" , 年支); // 吉
+  public final static StarMinor 孤辰 = new StarMinor("孤辰" , 年支); //   兇
+  public final static StarMinor 寡宿 = new StarMinor("寡宿" , 年支); //   兇
+  public final static StarMinor 蜚廉 = new StarMinor("蜚廉" , 年支);
+  public final static StarMinor 破碎 = new StarMinor("破碎" , 年支);
+  public final static StarMinor 華蓋 = new StarMinor("華蓋" , 年支); //   兇
+  public final static StarMinor 咸池 = new StarMinor("咸池" , 年支); //   兇
+  public final static StarMinor 天德 = new StarMinor("天德" , 年支); //   兇?
+  public final static StarMinor 月德 = new StarMinor("月德" , 年支); //   兇?
+  public final static StarMinor 天才 = new StarMinor("天才" , 年月時); // 吉
+  public final static StarMinor 天壽 = new StarMinor("天壽" , 年月時); // 吉
+  public final static StarMinor 三台 = new StarMinor("三台" , 月日); // 吉
+  public final static StarMinor 八座 = new StarMinor("八座" , 月日); // 吉
+  public final static StarMinor 恩光 = new StarMinor("恩光" , 日時); // 吉
+  public final static StarMinor 天貴 = new StarMinor("天貴" , 日時); // 吉
 
-  public final static StarMinor 天使 = new StarMinor("天使"); //   兇 , 天使屬陰水 , 主災病
-  public final static StarMinor 天傷 = new StarMinor("天傷"); //   兇 , 天傷屬陽水 , 主虛耗
+  public final static StarMinor 天使 = new StarMinor("天使" , 宮位); //   兇 , 天使屬陰水 , 主災病
+  public final static StarMinor 天傷 = new StarMinor("天傷" , 宮位); //   兇 , 天傷屬陽水 , 主虛耗
 
   // TODO
-  public final static StarMinor 截空 = new StarMinor("截空"); //   兇
+  //public final static StarMinor 截空 = new StarMinor("截空"); //   兇
 
   public final static StarMinor[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷};
 
-  public StarMinor(String nameKey) {
-    super(nameKey, ZStar.class.getName());
+  public StarMinor(String nameKey , Type type) {
+    super(nameKey, ZStar.class.getName(), type);
   }
 
   /** 天官 : 年干 -> 地支 */
@@ -125,11 +126,32 @@ public class StarMinor extends ZStar {
   /** 天刑 : 月支 -> 地支 */
   public final static Function<Branch , Branch> fun天刑_月支 = month -> Branch.get(month.getIndex()+7);
 
+  /** 天刑(整合版) : (月數 或 月支) -> 地支 */
+  public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun天刑 = (type , monthNum , monthBranch) -> {
+    switch (type) {
+      case NUMBER: return fun天刑_月數.apply(monthNum);
+      case SOLAR_TERMS: return fun天刑_月支.apply(monthBranch);
+      default: throw new AssertionError("Error : " + type);
+    }
+  };
+
+
   /** 天姚 : 月數 -> 地支 */
   public final static Function<Integer , Branch> fun天姚_月數 = Branch::get;
 
   /** 天姚 : 月支 -> 地支 */
   public final static Function<Branch , Branch> fun天姚_月支 = month -> month.next(11);
+
+  /** 天姚(整合版) : (月數 或 月支) -> 地支 */
+  public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun天姚 = (type , monthNum , monthBranch) -> {
+    switch (type) {
+      case NUMBER: return fun天姚_月數.apply(monthNum);
+      case SOLAR_TERMS: return fun天姚_月支.apply(monthBranch);
+      default: throw new AssertionError("Error : " + type);
+    }
+  };
+
+
 
   /** 解神 : 月數 -> 地支 */
   public final static Function<Integer , Branch> fun解神_月數 = month -> {
@@ -157,6 +179,17 @@ public class StarMinor extends ZStar {
     }
   };
 
+  /** 解神(整合版) : (月數 或 月支) -> 地支 */
+  public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun解神 = (type , monthNum , monthBranch) -> {
+    switch (type) {
+      case NUMBER: return fun解神_月數.apply(monthNum);
+      case SOLAR_TERMS: return fun解神_月支.apply(monthBranch);
+      default: throw new AssertionError("Error : " + type);
+    }
+  };
+
+
+
   /** 天巫 : 月數 -> 地支 */
   public final static Function<Integer , Branch> fun天巫_月數 = month -> {
     switch (month) {
@@ -179,7 +212,18 @@ public class StarMinor extends ZStar {
     }
   };
 
-  /** 天鉞 : 月數 -> 地支 */
+  /** 天巫(整合版) : (月數 或 月支) -> 地支 */
+  public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun天巫 = (type , monthNum , monthBranch) -> {
+    switch (type) {
+      case NUMBER: return fun天巫_月數.apply(monthNum);
+      case SOLAR_TERMS: return fun天巫_月支.apply(monthBranch);
+      default: throw new AssertionError("Error : " + type);
+    }
+  };
+
+
+
+  /** 天月 : 月數 -> 地支 */
   public final static Function<Integer , Branch> fun天月_月數 = month -> {
     switch (month) {
       case 1: return 戌;
@@ -211,6 +255,18 @@ public class StarMinor extends ZStar {
     }
   };
 
+  /** 天月(整合版) : (月數 或 月支) -> 地支 */
+  public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun天月 = (type , monthNum , monthBranch) -> {
+    switch (type) {
+      case NUMBER: return fun天月_月數.apply(monthNum);
+      case SOLAR_TERMS: return fun天月_月支.apply(monthBranch);
+      default: throw new AssertionError("Error : " + type);
+    }
+  };
+
+
+
+
   /** 陰煞 : 月數 -> 地支 */
   public final static Function<Integer , Branch> fun陰煞_月數 = month -> {
     switch (month) {
@@ -236,6 +292,16 @@ public class StarMinor extends ZStar {
       default: throw new AssertionError(month);
     }
   };
+
+  /** 陰煞(整合版) : (月數 或 月支) -> 地支 */
+  public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun陰煞 = (type , monthNum , monthBranch) -> {
+    switch (type) {
+      case NUMBER: return fun陰煞_月數.apply(monthNum);
+      case SOLAR_TERMS: return fun陰煞_月支.apply(monthBranch);
+      default: throw new AssertionError("Error : " + type);
+    }
+  };
+
 
   /** 台輔 : 時支 -> 地支 */
   public final static Function<Branch , Branch> fun台輔 = hour -> Branch.get(hour.getIndex()+6);

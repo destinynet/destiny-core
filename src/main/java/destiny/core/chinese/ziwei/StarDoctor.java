@@ -43,7 +43,7 @@ public class StarDoctor extends ZStar {
   public final static StarDoctor[] values = {博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府};
 
   public StarDoctor(String nameKey) {
-    super(nameKey,  ZStar.class.getName());
+    super(nameKey,  ZStar.class.getName(), Type.博士);
   }
 
   private final static Function<Tuple3<Stem , Gender , Integer>, Branch> branchGender2Branch = (tuple3) -> {

@@ -144,21 +144,20 @@ public class HouseFunctions {
     }
   };
 
+  public final static IHouse house左輔 = new HouseMonthImpl(左輔) {
+    @Override
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun左輔.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
 
-  public final static IHouse house左輔 = new HouseMonthNumImpl(左輔) {
+  public final static IHouse house右弼 = new HouseMonthImpl(右弼) {
     @Override
-    public Branch getBranch(Integer month) {
-      return fun左輔_月數.apply(month);
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun右弼.apply(t3.v1() , t3.v2() , t3.v3());
     }
   };
-  
-  public final static IHouse house右弼 = new HouseMonthNumImpl(右弼) {
-    @Override
-    public Branch getBranch(Integer month) {
-      return fun右弼_月數.apply(month);
-    }
-  };
-  
+
   public final static IHouse house天魁 = new HouseYearStemTianyiImpl(天魁) {
     @Override
     public Branch getBranch(Tuple2<Stem, TianyiIF> tuple) {
@@ -179,18 +178,21 @@ public class HouseFunctions {
       return fun祿存.apply(stem);
     }
   };
-  
-  public final static IHouse house天馬 = new HouseYearBranchMonthBranchImpl(天馬) {
+
+  public final static IHouse house年馬 = new HouseYearBranchImpl(年馬) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
-      switch (settings.getHorse()) {
-        case 年馬: return fun年馬_年支.apply(year.getBranch());
-        case 月馬: return fun月馬_月數.apply(monthNum);
-        default: throw new AssertionError("error");
-      }
+    public Branch getBranch(Branch branch) {
+      return fun年馬_年支.apply(branch);
     }
   };
-  
+
+  public final static IHouse house月馬 = new HouseMonthImpl(月馬) {
+    @Override
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun月馬.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
   // =======↑↑↑======= 以上  8 顆吉星 =======↑↑↑=======
   
   // =======↓↓↓======= 以下  6 顆兇星 =======↓↓↓=======
@@ -282,45 +284,45 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house天刑 = new HouseMonthNumImpl(天刑) {
+  public final static IHouse house天刑 = new HouseMonthImpl(天刑) {
     @Override
-    public Branch getBranch(Integer monthNum) {
-      return fun天刑_月數.apply(monthNum);
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun天刑.apply(t3.v1() , t3.v2() , t3.v3());
     }
   };
 
-  public final static IHouse house天姚 = new HouseMonthNumImpl(天姚) {
+  public final static IHouse house天姚 = new HouseMonthImpl(天姚) {
     @Override
-    public Branch getBranch(Integer monthNum) {
-      return fun天姚_月數.apply(monthNum);
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun天姚.apply(t3.v1() , t3.v2() , t3.v3());
     }
   };
 
-  public final static IHouse house解神 = new HouseMonthNumImpl(解神) {
+  public final static IHouse house解神 = new HouseMonthImpl(解神) {
     @Override
-    public Branch getBranch(Integer monthNum) {
-      return fun解神_月數.apply(monthNum);
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun解神.apply(t3.v1() , t3.v2() , t3.v3());
     }
   };
 
-  public final static IHouse house天巫 = new HouseMonthNumImpl(天巫) {
+  public final static IHouse house天巫 = new HouseMonthImpl(天巫) {
     @Override
-    public Branch getBranch(Integer monthNum) {
-      return fun天巫_月數.apply(monthNum);
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun天巫.apply(t3.v1() , t3.v2() , t3.v3());
     }
   };
 
-  public final static IHouse house天月 = new HouseMonthNumImpl(天月) {
+  public final static IHouse house天月 = new HouseMonthImpl(天月) {
     @Override
-    public Branch getBranch(Integer monthNum) {
-      return fun天月_月數.apply(monthNum);
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun天月.apply(t3.v1() , t3.v2() , t3.v3());
     }
   };
 
-  public final static IHouse house陰煞 = new HouseMonthNumImpl(陰煞) {
+  public final static IHouse house陰煞 = new HouseMonthImpl(陰煞) {
     @Override
-    public Branch getBranch(Integer monthNum) {
-      return fun陰煞_月數.apply(monthNum);
+    public Branch getBranch(Tuple3<Settings.MonthType, Integer, Branch> t3) {
+      return fun陰煞.apply(t3.v1() , t3.v2() , t3.v3());
     }
   };
 
@@ -609,8 +611,8 @@ public class HouseFunctions {
     // 14主星
     .add(house紫微, house天機, house太陽, house武曲, house天同, house廉貞, house天府, house太陰, house貪狼, house巨門, house天相, house天梁, house七殺, house破軍)
 
-    // 八吉星
-    .add(house文昌, house文曲, house左輔, house右弼, house天魁, house天鉞, house祿存, house天馬)
+    /** 八吉星 ( {@link #house年馬} 與 {@link #house月馬} 其實就是 {@link StarLucky#年馬} 及 {@link StarLucky#月馬} )  */
+    .add(house文昌, house文曲, house左輔, house右弼, house天魁, house天鉞, house祿存, house年馬 , house月馬)
 
     // 六兇星
     .add(house擎羊, house陀羅, house火星, house鈴星, house地劫, house地空)

@@ -11,6 +11,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.ziwei.ZStar.Type.*;
 
 /**
  * 六兇星
@@ -18,17 +19,17 @@ import static destiny.core.chinese.Branch.*;
 @SuppressWarnings("Duplicates")
 public final class StarUnlucky extends ZStar {
 
-  public final static StarUnlucky 擎羊 = new StarUnlucky("擎羊"); // 甲
-  public final static StarUnlucky 陀羅 = new StarUnlucky("陀羅"); // 甲
-  public final static StarUnlucky 火星 = new StarUnlucky("火星"); // 甲
-  public final static StarUnlucky 鈴星 = new StarUnlucky("鈴星"); // 甲
-  public final static StarUnlucky 地劫 = new StarUnlucky("地劫"); // 乙
-  public final static StarUnlucky 地空 = new StarUnlucky("地空"); // 乙 (有時又稱天空)
+  public final static StarUnlucky 擎羊 = new StarUnlucky("擎羊" , 年干); // 甲
+  public final static StarUnlucky 陀羅 = new StarUnlucky("陀羅" , 年干); // 甲
+  public final static StarUnlucky 火星 = new StarUnlucky("火星" , 年支); // 甲
+  public final static StarUnlucky 鈴星 = new StarUnlucky("鈴星" , 年支); // 甲
+  public final static StarUnlucky 地劫 = new StarUnlucky("地劫" , 時); // 乙
+  public final static StarUnlucky 地空 = new StarUnlucky("地空" , 時); // 乙 (有時又稱天空)
 
   public final static StarUnlucky[] values = {擎羊 , 陀羅 , 火星 , 鈴星 , 地劫 , 地空};
 
-  public StarUnlucky(String nameKey) {
-    super(nameKey, ZStar.class.getName() , nameKey+"_ABBR");
+  public StarUnlucky(String nameKey , Type type) {
+    super(nameKey, ZStar.class.getName() , nameKey+"_ABBR", type);
   }
 
   /** 擎羊 : 年干 -> 地支 */

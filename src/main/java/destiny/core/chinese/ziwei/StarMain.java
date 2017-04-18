@@ -28,6 +28,6 @@ public final class StarMain extends ZStar {
 
   public StarMain(String nameKey) {
     // resource key 存放於 destiny.core.chinese.ziwei.ZStar.properties 當中
-    super(nameKey , ZStar.class.getName() , nameKey+"_ABBR");
+    super(nameKey , ZStar.class.getName() , nameKey+"_ABBR", Type.主星);
   }
 }

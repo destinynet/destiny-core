@@ -273,7 +273,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
   private IMainHouse getMainHouseImpl(Settings.MainHouse mainHouse) {
     switch (mainHouse) {
       case DEFAULT: return new MainHouseDefaultImpl();
-      case SOLAR_TERMS_DEP: return new MainHouseSolarTermsImpl();
+      case SOLAR_TERMS: return new MainHouseSolarTermsImpl();
       default: throw new AssertionError("Error : " + mainHouse);
     }
   }
