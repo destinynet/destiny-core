@@ -39,6 +39,7 @@ public abstract class ZStar extends Point {
     日時,   // 恩光、天貴
     年月時, // 天才、天壽
     宮位,   // 宮位決定 : 天使、天傷
+    長生,   // 長生12神煞
   }
 
   private final Type type;

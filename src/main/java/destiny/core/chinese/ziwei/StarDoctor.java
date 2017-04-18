@@ -45,6 +45,7 @@ public class StarDoctor extends ZStar {
     super(nameKey,  ZStar.class.getName(), Type.博士);
   }
 
+  // 年干、性別、步數
   private final static Function<Tuple3<Stem , Gender , Integer>, Branch> branchGender2Branch = (tuple3) -> {
     Stem yearStem = tuple3.v1();
     Branch 祿存地支 = fun祿存.apply(yearStem);
@@ -60,6 +61,7 @@ public class StarDoctor extends ZStar {
     }
   };
 
+  // 年干星系
   public final static BiFunction<Stem, Gender , Branch> fun博士 = (stem , gender) -> branchGender2Branch.apply(Tuple.tuple(stem , gender , 1));
   public final static BiFunction<Stem, Gender , Branch> fun力士 = (stem , gender) -> branchGender2Branch.apply(Tuple.tuple(stem , gender , 2));
   public final static BiFunction<Stem, Gender , Branch> fun青龍 = (stem , gender) -> branchGender2Branch.apply(Tuple.tuple(stem , gender , 3));
