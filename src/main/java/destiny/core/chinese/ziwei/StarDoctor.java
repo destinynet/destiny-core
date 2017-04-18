@@ -23,20 +23,19 @@ import static destiny.core.chinese.ziwei.StarLucky.fun祿存;
  * 亦即，這是 (年干,性別) -> 地支
  * 每次 function 都要 call {@link StarLucky#fun祿存}
  *
- * TODO : 博士12神煞，是否要隨流年變化
  */
 public class StarDoctor extends ZStar {
 
   public final static StarDoctor 博士 = new StarDoctor("博士");
   public final static StarDoctor 力士 = new StarDoctor("力士");
   public final static StarDoctor 青龍 = new StarDoctor("青龍");
-  public final static StarDoctor 小耗 = new StarDoctor("小耗");
+  public final static StarDoctor 小耗 = new StarDoctor("小耗"); // 又叫「地耗」
   public final static StarDoctor 將軍 = new StarDoctor("將軍");
   public final static StarDoctor 奏書 = new StarDoctor("奏書");
   public final static StarDoctor 飛廉 = new StarDoctor("飛廉");
   public final static StarDoctor 喜神 = new StarDoctor("喜神");
   public final static StarDoctor 病符 = new StarDoctor("病符");
-  public final static StarDoctor 大耗 = new StarDoctor("大耗");
+  public final static StarDoctor 大耗 = new StarDoctor("大耗"); // 又叫「天耗」
   public final static StarDoctor 伏兵 = new StarDoctor("伏兵");
   public final static StarDoctor 官府 = new StarDoctor("官府");
 

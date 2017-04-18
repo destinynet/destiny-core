@@ -9,7 +9,7 @@ import destiny.core.chinese.Branch;
  * 計算流日命宮
  * 兩種實作：
  *
- * 「流日地支」         {@link FlowDayFixedImpl}
+ * 「流日地支」         {@link FlowDayBranchImpl}
  *
  * 「流月命宮，順數日」   {@link FlowDayFlowMonthMainHouseDepImpl}
  *

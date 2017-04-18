@@ -220,7 +220,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
   private IFlowHour getFlowHourImpl(Settings.FlowHour flowHour) {
     switch (flowHour) {
       case DAY_DEP: return new FlowHourDayMainHouseDepImpl();
-      case FIXED  : return new FlowHourFixedImpl();
+      case FIXED  : return new FlowHourBranchImpl();
       default: throw new AssertionError("Error : " + flowHour);
     }
   }
@@ -228,7 +228,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
   private IFlowDay getFlowDayImpl(Settings.FlowDay flowDay) {
     switch (flowDay) {
       case MONTH_DEP: return new FlowDayFlowMonthMainHouseDepImpl();
-      case FIXED: return new FlowDayFixedImpl();
+      case FIXED: return new FlowDayBranchImpl();
       default: throw new AssertionError("Error : " + flowDay);
     }
   }
@@ -244,7 +244,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   private IFlowYear getFlowYearImpl(Settings.FlowYear flowYear) {
     switch (flowYear) {
-      case DEFAULT: return new FlowYearDefaultImpl();
+      case BRANCH: return new FlowYearBranchImpl();
       case ANCHOR:  return new FlowYearAnchorImpl();
       default: throw new AssertionError("Error : " + flowYear);
     }

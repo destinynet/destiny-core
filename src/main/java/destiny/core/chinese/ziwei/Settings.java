@@ -43,12 +43,12 @@ public class Settings implements Serializable {
 
   /** {@link StarUnlucky#火星} ,  {@link StarUnlucky#鈴星} 設定 */
   public enum FireBell {
-    全集,  // (年支、時支) -> 地支
-    全書   // 年支 -> 地支
+    全集,  /** {@link StarUnlucky#fun火星_全集} , {@link StarUnlucky#fun鈴星_全集} : (年支、時支) -> 地支 */
+    全書   /** {@link StarUnlucky#fun火星_全書} , {@link StarUnlucky#fun鈴星_全書} : 年支 -> 地支  */
   }
   private final FireBell fireBell;
 
-  /** {@link StarLucky#天馬} */
+  /** {@link StarLucky#年馬} 或是 {@link StarLucky#月馬} */
   public enum Horse {
     年馬,  /** 年馬 (子由使用)  {@link StarLucky#fun年馬_年支} */
     月馬   /** 月馬           {@link StarLucky#fun月馬_月數} */
@@ -78,31 +78,31 @@ public class Settings implements Serializable {
 
   /** 流年設定 */
   public enum FlowYear {
-    DEFAULT , /** {@link FlowYearDefaultImpl} */
-    ANCHOR  , /** {@link FlowYearAnchorImpl} */
+    BRANCH  , /** {@link FlowYearBranchImpl} : 流年地支 */
+    ANCHOR  , /** {@link FlowYearAnchorImpl} : 流年斗君 */
   }
   private final FlowYear flowYear;
 
 
   /** 流月設定 */
   public enum FlowMonth {
-    DEFAULT   ,  /** {@link FlowMonthDefaultImpl} */
-    FIXED     ,  /** {@link FlowMonthFixedImpl} */
-    YEAR_DEP  ,  /** {@link FlowMonthYearMainHouseDepImpl} */
+    DEFAULT   ,  /** {@link FlowMonthDefaultImpl}           : 流年斗君 順數月  */
+    FIXED     ,  /** {@link FlowMonthFixedImpl}             : 流月地支        */
+    YEAR_DEP  ,  /** {@link FlowMonthYearMainHouseDepImpl}  : 流年命宮，順數月  */
   }
   private final FlowMonth flowMonth;
 
   /** 流日設定 */
   public enum FlowDay {
-    MONTH_DEP , /** {@link FlowDayFlowMonthMainHouseDepImpl} */
-    FIXED     , /** {@link FlowDayFixedImpl} */
+    MONTH_DEP , /** {@link FlowDayFlowMonthMainHouseDepImpl} : 流月命宮，順數日 */
+    FIXED     , /** {@link FlowDayBranchImpl}                : 流日地支       */
   }
   private final FlowDay flowDay;
 
   /** 流時設定 */
   public enum FlowHour {
-    DAY_DEP , /** {@link FlowHourDayMainHouseDepImpl} */
-    FIXED     /** {@link FlowHourFixedImpl} */
+    DAY_DEP , /** {@link FlowHourDayMainHouseDepImpl}   : 流日命宮，順數時 */
+    FIXED     /** {@link FlowHourBranchImpl}            : 流時地支       */
   }
   private final FlowHour flowHour;
 

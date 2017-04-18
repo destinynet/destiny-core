@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * 說明頁面 : https://519843.blogspot.tw/2017/03/blog-post_29.html
  */
-public class FlowDayFixedImpl implements IFlowDay , Serializable {
+public class FlowDayBranchImpl implements IFlowDay , Serializable {
 
   @Override
   public Branch getFlowDay(Branch flowDayBranch, int flowDayNum, Branch flowMonthMainHouse) {

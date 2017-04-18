@@ -56,6 +56,7 @@ public class StarMinor extends ZStar {
   public final static StarMinor 月德 = new StarMinor("月德" , 年支); //   兇?
   public final static StarMinor 天才 = new StarMinor("天才" , 年月時); // 吉
   public final static StarMinor 天壽 = new StarMinor("天壽" , 年月時); // 吉
+
   public final static StarMinor 三台 = new StarMinor("三台" , 月日); // 吉
   public final static StarMinor 八座 = new StarMinor("八座" , 月日); // 吉
   public final static StarMinor 恩光 = new StarMinor("恩光" , 日時); // 吉

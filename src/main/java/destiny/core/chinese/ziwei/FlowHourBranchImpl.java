@@ -14,7 +14,7 @@ import java.io.Serializable;
  * 設定於 {@link Settings.FlowHour#FIXED}
  * 固定以該時辰當作命宮
  */
-public class FlowHourFixedImpl implements IFlowHour , Serializable {
+public class FlowHourBranchImpl implements IFlowHour , Serializable {
 
   @Override
   public Branch getFlowHour(Branch hour, Branch flowDayMainHour) {
