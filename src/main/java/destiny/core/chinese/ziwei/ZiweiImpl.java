@@ -31,7 +31,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
 
-    Branch 命宮 = mainHouseImpl.getMainHouse(monthNum , hour , solarTerms);
+    //Branch 命宮 = mainHouseImpl.getMainHouse(monthNum , hour , solarTerms);
 
     Tuple3<String , FiveElement , Integer> t3 = getNaYin(mainHouse);
     int set = t3.v3();
@@ -174,7 +174,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     Branch 流日命宮 = flowDayImpl.getFlowDay(flowDay.getBranch() , flowDayNum , 流月命宮);
 
     IFlowHour flowHourImpl = getFlowHourImpl(settings.getFlowHour());
-    Branch 流時命宮 = flowHourImpl.getFlowHour(hour , 流日命宮);
+    Branch 流時命宮 = flowHourImpl.getFlowHour(flowHour.getBranch() , 流日命宮);
 
     Map<Branch , House> branchHouseMap =
       Arrays.stream(Branch.values()).map(branch -> {

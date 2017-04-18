@@ -180,7 +180,8 @@ public class Plate implements Serializable {
           Map<FlowType , House> m = new HashMap<>();
           m.put(FlowType.本命 , branchHouseMap.get(e.getKey()));
           return Tuple.tuple(e.getKey().getBranch() , m);
-        }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+        })
+        .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
       branchFlowHouseMap.putAll(本命地支HouseMapping);
 
 

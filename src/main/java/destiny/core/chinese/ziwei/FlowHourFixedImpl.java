@@ -11,6 +11,7 @@ import java.io.Serializable;
 /**
  * 計算流時命宮
  *
+ * 設定於 {@link Settings.FlowHour#FIXED}
  * 固定以該時辰當作命宮
  */
 public class FlowHourFixedImpl implements IFlowHour , Serializable {

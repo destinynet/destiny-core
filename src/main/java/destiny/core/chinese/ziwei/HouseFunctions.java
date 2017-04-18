@@ -446,7 +446,6 @@ public class HouseFunctions {
   public final static IHouse house天才 = new HouseYearBranchMonthNumHourBranchMainHouseImpl(天才) {
     @Override
     public Branch getBranch(Tuple5<Branch, Integer, Branch , SolarTerms , IMainHouse> t) {
-      logger.info("fun天才 , mainHouseImpl = {}" , t.v5());
       return fun天才.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };

@@ -18,11 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static destiny.core.calendar.SolarTerms.大雪;
-import static destiny.core.calendar.SolarTerms.清明;
-import static destiny.core.calendar.SolarTerms.立秋;
+import static destiny.core.calendar.SolarTerms.*;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.FiveElement.木;
+import static destiny.core.chinese.FiveElement.水;
 import static destiny.core.chinese.Stem.丁;
 import static destiny.core.chinese.Stem.庚;
 import static destiny.core.chinese.StemBranch.*;
@@ -39,6 +38,48 @@ public class ZiweiImplTest {
   private IHouseSeq seq = new HouseSeqDefaultImpl();
 
   private Logger logger = LoggerFactory.getLogger(getClass());
+
+  /**
+   * 比對 紫微斗數實驗室 http://www.iziwei.com.cn
+   * 2000-03-03 午時
+   * 庚辰年 , 一月(戊寅月) 28日
+   * 天盘，水2局
+   * 命主廉贞，身主文昌
+   * 根據四化，此程式應該用的是 中州派 的四化 {@link TransFourMiddleImpl}
+   * */
+  @Test
+  public void testPlate4() {
+    Settings settings = new Settings(Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.MIDDLE,
+      Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP,
+      Settings.FlowHour.DAY_DEP);
+
+    List<ZStar> starList = new ArrayList<>();
+    starList.addAll(Arrays.asList(StarMain.values));
+    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarUnlucky.values));
+    starList.addAll(Arrays.asList(StarMinor.values));
+    starList.addAll(Arrays.asList(StarDoctor.values));
+
+    // 乙酉大限 , 2017(丁酉年) , 農曆 3月(甲辰月) 22日(乙亥日)  (陽曆4/18) , 晚上 丁亥 時
+    Plate plate = impl.getPlate(庚辰 , 寅 , 1 , 立春 , 28 , 午 , starList, Gender.男, settings ,
+      乙酉 , 丁酉 , 甲辰 , 乙亥 , 22 , 丁亥).build();
+    assertSame(甲申 , plate.getMainHouse());
+    assertSame(甲申 , plate.getBodyHouse());
+    assertSame(水 , plate.getFiveElement());
+    assertSame(2 , plate.getSet());
+
+    plate.getHouseDataSet().forEach(houseData -> {
+      logger.info("{}" , houseData);
+    });
+
+    plate.getTranFours().forEach((star, tuple2s) -> {
+      logger.info("{} : {}" , star , tuple2s);
+    });
+
+    plate.getBranchFlowHouseMap().forEach((branch , map) -> {
+      logger.info("{} -> {}" , branch , map);
+    });
+  }
 
   /**
    * 比對星橋 NCC-907 輸出結果
@@ -84,9 +125,7 @@ public class ZiweiImplTest {
       logger.debug("{} : {}" , branch , map);
     });
 
-    plate.getTransFourOf(天機).forEach(t -> {
-      logger.info("{} : {} -> {}" , 天機 , t.v1() , t.v2());
-    });
+
   }
 
 

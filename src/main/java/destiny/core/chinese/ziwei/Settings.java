@@ -46,8 +46,8 @@ public class Settings implements Serializable {
 
   /** {@link StarLucky#天馬} */
   public enum Horse {
-    年馬,  /** 年馬 (子由使用) */
-    月馬   /** 月馬  */
+    年馬,  /** 年馬 (子由使用)  {@link StarLucky#fun年馬_年支} */
+    月馬   /** 月馬           {@link StarLucky#fun月馬_月數} */
   }
   private final Horse horse;
 
