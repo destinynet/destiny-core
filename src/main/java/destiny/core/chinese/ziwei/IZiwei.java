@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableMap;
 import destiny.core.Gender;
+import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -36,8 +37,9 @@ public interface IZiwei {
    *
    * 找到申宮之後再 逆數生時 找到了卯宮，所以卯就是你的命宮
    * */
-  static Branch getMainHouseBranch(int month , Branch hour) {
-    return 寅.next(month-1).prev(hour.getIndex());
+  static Branch getMainHouseBranch(int month , Branch hour , SolarTerms solarTerms , IMainHouse mainHouseImpl) {
+    return mainHouseImpl.getMainHouse(month , hour , solarTerms);
+    //return 寅.next(month-1).prev(hour.getIndex());
   }
 
   /**
@@ -49,22 +51,20 @@ public interface IZiwei {
    * 丁年 or 壬年生 = 壬寅宮
    * 戊年 or 癸年生 = 甲寅宮
    */
-  static StemBranch getMainHouse(Stem year , int month , Branch hour) {
+  static StemBranch getMainHouse(Stem year , int month , Branch hour , SolarTerms solarTerms , IMainHouse mainHouseImpl) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
-    Branch mainHouse = getMainHouseBranch(month , hour);
+    Branch mainHouse = getMainHouseBranch(month , hour , solarTerms , mainHouseImpl);
     // 左下角，寅宮 的 干支
     StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
 
     int steps = mainHouse.getAheadOf(寅);
     return stemBranchOf寅.next(steps);
-  }
+  } // 取得命宮
 
   /** 承上 , 找到命宮的 干支 ，可以取得「納音、五行、第幾局」 */
-  default Tuple3<String , FiveElement , Integer> getNaYin(Stem year , int month , Branch hour) {
-    StemBranch mainHouse = getMainHouse(year , month , hour);
-
+  default Tuple3<String , FiveElement , Integer> getNaYin(StemBranch mainHouse) {
     String 納音 = NaYin.getDesc(mainHouse);
     // 五行
     FiveElement fiveElement = NaYin.getFiveElement(mainHouse);
@@ -80,6 +80,7 @@ public interface IZiwei {
     }
     return Tuple.tuple(納音 , fiveElement , set);
   }
+
 
 
   /**
@@ -102,9 +103,9 @@ public interface IZiwei {
   /**
    * 從命宮開始，逆時針，飛佈 兄弟、夫妻...
    */
-  static Branch getHouseBranch(int month , Branch hour , House house , IHouseSeq seq) {
+  static Branch getHouseBranch(int month, Branch hour, House house, IHouseSeq seq, SolarTerms solarTerms, IMainHouse mainHouseImpl) {
     // 命宮 的地支
-    Branch branchOfFirstHouse = getMainHouseBranch(month , hour);
+    Branch branchOfFirstHouse = getMainHouseBranch(month , hour , solarTerms , mainHouseImpl);
     int steps = seq.getAheadOf(house , House.命宮);
     return branchOfFirstHouse.prev(steps);
   }
@@ -112,11 +113,11 @@ public interface IZiwei {
   /**
    * 承上 , 取得該宮位的「天干」＋「地支」組合
    */
-  default StemBranch getHouse(Stem year , int month , Branch hour , House house , IHouseSeq seq) {
+  default StemBranch getHouse(Stem year, int month, Branch hour, House house, IHouseSeq seq, SolarTerms solarTerms, IMainHouse mainHouseImpl) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
     // 先取得 該宮位的地支
-    Branch branch = getHouseBranch(month , hour , house , seq);
+    Branch branch = getHouseBranch(month , hour , house , seq , solarTerms , mainHouseImpl);
     return getStemBranchOf(branch , stemOf寅);
   }
 
@@ -289,27 +290,31 @@ public interface IZiwei {
 
   /**
    * 計算本命盤  */
-  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
-                         @NotNull Collection<ZStar> stars, Gender gender, Settings settings) ;
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) ;
 
   /** 計算 大限盤 */
-  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour,
                          @NotNull Collection<ZStar> stars, Gender gender, Settings settings, StemBranch flowBig) ;
 
   /** 計算 流年盤 */
-  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour,
                          @NotNull Collection<ZStar> stars, Gender gender, Settings settings,
                          StemBranch flowBig, StemBranch flowYear) ;
 
   /** 計算 流月盤 */
-  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour,
                          @NotNull Collection<ZStar> stars, Gender gender, Settings settings,
                          StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth);
 
   /** 計算 流日盤 */
-  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour,
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour,
                          @NotNull Collection<ZStar> stars, Gender gender, Settings settings,
                          StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum);
+
+  /** 計算 流時盤 */
+  Plate.Builder getPlate(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour,
+                         @NotNull Collection<ZStar> stars, Gender gender, Settings settings,
+                         StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum , StemBranch flowHour);
 
   /** 計算流月命宮 */
   default Branch getFlowMonth(Branch flowYear , Branch flowMonth , int birthMonth , Branch birthHour , IFlowMonth impl) {

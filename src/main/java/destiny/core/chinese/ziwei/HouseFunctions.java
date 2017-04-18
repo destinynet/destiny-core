@@ -5,23 +5,25 @@ package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableSet;
 import destiny.core.Gender;
+import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import destiny.core.chinese.TianyiIF;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
+import org.jooq.lambda.tuple.Tuple5;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static destiny.core.chinese.ziwei.IZiwei.*;
 import static destiny.core.chinese.ziwei.StarDoctor.*;
 import static destiny.core.chinese.ziwei.StarLucky.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarMinor.*;
 import static destiny.core.chinese.ziwei.StarUnlucky.*;
-import static destiny.core.chinese.ziwei.IZiwei.*;
 
 @SuppressWarnings("Duplicates")
 public class HouseFunctions {
@@ -142,17 +144,18 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house左輔 = new HouseMonthBranchImpl(左輔) {
+
+  public final static IHouse house左輔 = new HouseMonthNumImpl(左輔) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun左輔.apply(branch);
+    public Branch getBranch(Integer month) {
+      return fun左輔_月數.apply(month);
     }
   };
   
-  public final static IHouse house右弼 = new HouseMonthBranchImpl(右弼) {
+  public final static IHouse house右弼 = new HouseMonthNumImpl(右弼) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun右弼.apply(branch);
+    public Branch getBranch(Integer month) {
+      return fun右弼_月數.apply(month);
     }
   };
   
@@ -179,7 +182,7 @@ public class HouseFunctions {
   
   public final static IHouse house天馬 = new HouseYearBranchMonthBranchImpl(天馬) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
       switch (settings.getHorse()) {
         case 年馬: return fun天馬.apply(year.getBranch());
         case 月馬: return fun天馬.apply(monthBranch);
@@ -213,7 +216,7 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
       switch (settings.getFireBell()) {
         case 全書: return fun火星_全書.apply(year.getBranch());
         case 全集: return fun火星_全集.apply(year.getBranch() , hour);
@@ -229,7 +232,7 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
       switch (settings.getFireBell()) {
         case 全書: return fun鈴星_全書.apply(year.getBranch());
         case 全集: return fun鈴星_全集.apply(year.getBranch() , hour);
@@ -279,45 +282,45 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house天刑 = new HouseMonthBranchImpl(天刑) {
+  public final static IHouse house天刑 = new HouseMonthNumImpl(天刑) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天刑.apply(branch);
+    public Branch getBranch(Integer monthNum) {
+      return fun天刑_月數.apply(monthNum);
     }
   };
 
-  public final static IHouse house天姚 = new HouseMonthBranchImpl(天姚) {
+  public final static IHouse house天姚 = new HouseMonthNumImpl(天姚) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天姚.apply(branch);
+    public Branch getBranch(Integer monthNum) {
+      return fun天姚_月數.apply(monthNum);
     }
   };
 
-  public final static IHouse house解神 = new HouseMonthBranchImpl(解神) {
+  public final static IHouse house解神 = new HouseMonthNumImpl(解神) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun解神.apply(branch);
+    public Branch getBranch(Integer monthNum) {
+      return fun解神_月數.apply(monthNum);
     }
   };
 
-  public final static IHouse house天巫 = new HouseMonthBranchImpl(天巫) {
+  public final static IHouse house天巫 = new HouseMonthNumImpl(天巫) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天巫.apply(branch);
+    public Branch getBranch(Integer monthNum) {
+      return fun天巫_月數.apply(monthNum);
     }
   };
 
-  public final static IHouse house天月 = new HouseMonthBranchImpl(天月) {
+  public final static IHouse house天月 = new HouseMonthNumImpl(天月) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天月.apply(branch);
+    public Branch getBranch(Integer monthNum) {
+      return fun天月_月數.apply(monthNum);
     }
   };
 
-  public final static IHouse house陰煞 = new HouseMonthBranchImpl(陰煞) {
+  public final static IHouse house陰煞 = new HouseMonthNumImpl(陰煞) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun陰煞.apply(branch);
+    public Branch getBranch(Integer monthNum) {
+      return fun陰煞_月數.apply(monthNum);
     }
   };
 
@@ -440,10 +443,11 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house天才 = new HouseYearBranchMonthNumHourBranchImpl(天才) {
+  public final static IHouse house天才 = new HouseYearBranchMonthNumHourBranchMainHouseImpl(天才) {
     @Override
-    public Branch getBranch(Tuple3<Branch, Integer, Branch> t) {
-      return fun天才.apply(t.v1() , t.v2() , t.v3());
+    public Branch getBranch(Tuple5<Branch, Integer, Branch , SolarTerms , IMainHouse> t) {
+      logger.info("fun天才 , mainHouseImpl = {}" , t.v5());
+      return fun天才.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
@@ -454,17 +458,17 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house三台 = new HouseMonthBranchDayNumImpl(三台) {
+  public final static IHouse house三台 = new HouseMonthDayNumImpl(三台) {
     @Override
-    public Branch getBranch(Tuple2<Branch, Integer> t) {
-      return fun三台.apply(t.v1() , t.v2());
+    public Branch getBranch(Tuple2<Integer, Integer> t) {
+      return fun三台_月數.apply(t.v1() , t.v2());
     }
   };
 
-  public final static IHouse house八座 = new HouseMonthBranchDayNumImpl(八座) {
+  public final static IHouse house八座 = new HouseMonthDayNumImpl(八座) {
     @Override
-    public Branch getBranch(Tuple2<Branch, Integer> t) {
-      return fun八座.apply(t.v1() , t.v2());
+    public Branch getBranch(Tuple2<Integer, Integer> t) {
+      return fun八座_月數.apply(t.v1() , t.v2());
     }
   };
 
@@ -484,9 +488,9 @@ public class HouseFunctions {
 
   public final static IHouse house天傷 = new HouseHouseDepYearStemGenderImpl(天傷) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
       // 太乙派，沒有遷移宮
-      Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
+      Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl() , solarTerms , new MainHouseDefaultImpl());
       switch (settings.getHurtAngel()) {
         case FIXED  : return fun天傷_fixed交友.apply(遷移宮地支);
         case YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
@@ -498,9 +502,11 @@ public class HouseFunctions {
 
   public final static IHouse house天使 = new HouseHouseDepYearStemGenderImpl(天使) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
+
+      Branch 命宮地支 = null ;
       // 太乙派，沒有遷移宮
-      Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl());
+      Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl() , solarTerms , new MainHouseDefaultImpl());
       switch (settings.getHurtAngel()) {
         case FIXED  : return fun天使_fixed疾厄.apply(遷移宮地支);
         case YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);

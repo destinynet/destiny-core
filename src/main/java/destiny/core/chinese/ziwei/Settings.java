@@ -12,6 +12,15 @@ import java.io.Serializable;
 
 public class Settings implements Serializable {
 
+
+
+  /** 命宮起法 */
+  public enum MainHouse {
+    DEFAULT ,         /** 內定算法 */
+    SOLAR_TERMS_DEP   /** 不依五星要過節 */
+  }
+  private final MainHouse mainHouse;
+
   /** 宮位名字 */
   public enum HouseSeq {
     DEFAULT ,   /** 內定 {@link HouseSeqDefaultImpl} */
@@ -86,8 +95,15 @@ public class Settings implements Serializable {
   }
   private final FlowDay flowDay;
 
+  /** 流時設定 */
+  public enum FlowHour {
+    DAY_DEP , /** {@link FlowHourDayMainHouseDepImpl} */
+    FIXED     /** {@link FlowHourFixedImpl} */
+  }
+  private final FlowHour flowHour;
 
-  public Settings(HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay) {
+  public Settings(MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
+    this.mainHouse = mainHouse;
     this.houseSeq = houseSeq;
     this.tianyi = tianyi;
     this.fireBell = fireBell;
@@ -97,6 +113,11 @@ public class Settings implements Serializable {
     this.flowYear = flowYear;
     this.flowMonth = flowMonth;
     this.flowDay = flowDay;
+    this.flowHour = flowHour;
+  }
+
+  public MainHouse getMainHouse() {
+    return mainHouse;
   }
 
   public HouseSeq getHouseSeq() {
@@ -133,5 +154,9 @@ public class Settings implements Serializable {
 
   public FlowDay getFlowDay() {
     return flowDay;
+  }
+
+  public FlowHour getFlowHour() {
+    return flowHour;
   }
 }

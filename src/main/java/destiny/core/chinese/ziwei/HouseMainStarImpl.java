@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
+import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
@@ -27,7 +28,7 @@ public abstract class HouseMainStarImpl extends HouseAbstractImpl<Tuple2<Integer
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
     return getBranch(Tuple.tuple(set , days));
   }
 }

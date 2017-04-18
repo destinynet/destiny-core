@@ -9,6 +9,7 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.io.Serializable;
 import java.util.Map;
 
+import static destiny.core.chinese.StemBranch.*;
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
 /**
@@ -27,73 +28,66 @@ public class NaYin implements Serializable {
   private final static Map<StemBranch, Tuple2<FiveElement, String>> map
     = new ImmutableMap.Builder<StemBranch, Tuple2<FiveElement, String>>()
   {{
-    put(StemBranch.get(Stem.甲 , Branch.子), tuple(FiveElement.金, "海中金"));
-    put(StemBranch.get(Stem.乙 , Branch.丑), tuple(FiveElement.金, "海中金"));
-    put(StemBranch.get(Stem.丙 , Branch.寅), tuple(FiveElement.火, "爐中火"));
-    put(StemBranch.get(Stem.丁 , Branch.卯), tuple(FiveElement.火, "爐中火"));
-    put(StemBranch.get(Stem.戊 , Branch.辰), tuple(FiveElement.木, "大林木"));
-    put(StemBranch.get(Stem.己 , Branch.巳), tuple(FiveElement.木, "大林木"));
-    put(StemBranch.get(Stem.庚 , Branch.午), tuple(FiveElement.土, "路旁土"));
-    put(StemBranch.get(Stem.辛 , Branch.未), tuple(FiveElement.土, "路旁土"));
-
-    put(StemBranch.get(Stem.壬 , Branch.申), tuple(FiveElement.金, "劍鋒金"));
-    put(StemBranch.get(Stem.癸 , Branch.酉), tuple(FiveElement.金, "劍鋒金"));
-    put(StemBranch.get(Stem.甲 , Branch.戌), tuple(FiveElement.火, "山頭火"));
-    put(StemBranch.get(Stem.乙 , Branch.亥), tuple(FiveElement.火, "山頭火"));
-    put(StemBranch.get(Stem.丙 , Branch.子), tuple(FiveElement.水, "澗下水"));
-    put(StemBranch.get(Stem.丁 , Branch.丑), tuple(FiveElement.水, "澗下水"));
-    put(StemBranch.get(Stem.戊 , Branch.寅), tuple(FiveElement.土, "城頭土"));
-    put(StemBranch.get(Stem.己 , Branch.卯), tuple(FiveElement.土, "城頭土"));
-
-    put(StemBranch.get(Stem.庚 , Branch.辰), tuple(FiveElement.金, "白臘金"));
-    put(StemBranch.get(Stem.辛 , Branch.巳), tuple(FiveElement.金, "白臘金"));
-    put(StemBranch.get(Stem.壬 , Branch.午), tuple(FiveElement.木, "楊柳木"));
-    put(StemBranch.get(Stem.癸 , Branch.未), tuple(FiveElement.木, "楊柳木"));
-    put(StemBranch.get(Stem.甲 , Branch.申), tuple(FiveElement.水, "井泉水"));
-    put(StemBranch.get(Stem.乙 , Branch.酉), tuple(FiveElement.水, "井泉水"));
-    put(StemBranch.get(Stem.丙 , Branch.戌), tuple(FiveElement.土, "屋上土"));
-    put(StemBranch.get(Stem.丁 , Branch.亥), tuple(FiveElement.土, "屋上土"));
-
-    put(StemBranch.get(Stem.戊 , Branch.子), tuple(FiveElement.火, "霹靂火"));
-    put(StemBranch.get(Stem.己 , Branch.丑), tuple(FiveElement.火, "霹靂火"));
-    put(StemBranch.get(Stem.庚 , Branch.寅), tuple(FiveElement.木, "松柏木"));
-    put(StemBranch.get(Stem.辛 , Branch.卯), tuple(FiveElement.木, "松柏木"));
-    put(StemBranch.get(Stem.壬 , Branch.辰), tuple(FiveElement.水, "長流水"));
-    put(StemBranch.get(Stem.癸 , Branch.巳), tuple(FiveElement.水, "長流水"));
-    put(StemBranch.get(Stem.甲 , Branch.午), tuple(FiveElement.金, "砂中金"));
-    put(StemBranch.get(Stem.乙 , Branch.未), tuple(FiveElement.金, "砂中金"));
-
-    put(StemBranch.get(Stem.丙 , Branch.申), tuple(FiveElement.火, "山下火"));
-    put(StemBranch.get(Stem.丁 , Branch.酉), tuple(FiveElement.火, "山下火"));
-    put(StemBranch.get(Stem.戊 , Branch.戌), tuple(FiveElement.木, "平地木"));
-    put(StemBranch.get(Stem.己 , Branch.亥), tuple(FiveElement.木, "平地木"));
-    put(StemBranch.get(Stem.庚 , Branch.子), tuple(FiveElement.土, "壁上土"));
-    put(StemBranch.get(Stem.辛 , Branch.丑), tuple(FiveElement.土, "壁上土"));
-    put(StemBranch.get(Stem.壬 , Branch.寅), tuple(FiveElement.金, "金箔金"));
-    put(StemBranch.get(Stem.癸 , Branch.卯), tuple(FiveElement.金, "金箔金"));
-
-    put(StemBranch.get(Stem.甲 , Branch.辰), tuple(FiveElement.火, "覆燈火"));
-    put(StemBranch.get(Stem.乙 , Branch.巳), tuple(FiveElement.火, "覆燈火"));
-    put(StemBranch.get(Stem.丙 , Branch.午), tuple(FiveElement.水, "天河水"));
-    put(StemBranch.get(Stem.丁 , Branch.未), tuple(FiveElement.水, "天河水"));
-    put(StemBranch.get(Stem.戊 , Branch.申), tuple(FiveElement.土, "大驛土"));
-    put(StemBranch.get(Stem.己 , Branch.酉), tuple(FiveElement.土, "大驛土"));
-    put(StemBranch.get(Stem.庚 , Branch.戌), tuple(FiveElement.金, "釵釧金"));
-    put(StemBranch.get(Stem.辛 , Branch.亥), tuple(FiveElement.金, "釵釧金"));
-
-    put(StemBranch.get(Stem.壬 , Branch.子), tuple(FiveElement.木, "桑柘木"));
-    put(StemBranch.get(Stem.癸 , Branch.丑), tuple(FiveElement.木, "桑柘木"));
-    put(StemBranch.get(Stem.甲 , Branch.寅), tuple(FiveElement.水, "大溪水"));
-    put(StemBranch.get(Stem.乙 , Branch.卯), tuple(FiveElement.水, "大溪水"));
-    put(StemBranch.get(Stem.丙 , Branch.辰), tuple(FiveElement.土, "砂中土"));
-    put(StemBranch.get(Stem.丁 , Branch.巳), tuple(FiveElement.土, "砂中土"));
-    put(StemBranch.get(Stem.戊 , Branch.午), tuple(FiveElement.火, "天上火"));
-    put(StemBranch.get(Stem.己 , Branch.未), tuple(FiveElement.火, "天上火"));
-
-    put(StemBranch.get(Stem.庚 , Branch.申), tuple(FiveElement.木, "石榴木"));
-    put(StemBranch.get(Stem.辛 , Branch.酉), tuple(FiveElement.木, "石榴木"));
-    put(StemBranch.get(Stem.壬 , Branch.戌), tuple(FiveElement.水, "大海水"));
-    put(StemBranch.get(Stem.癸 , Branch.亥), tuple(FiveElement.水, "大海水"));
+    put(甲子, tuple(FiveElement.金, "海中金"));
+    put(乙丑, tuple(FiveElement.金, "海中金"));
+    put(丙寅, tuple(FiveElement.火, "爐中火"));
+    put(丁卯, tuple(FiveElement.火, "爐中火"));
+    put(戊辰, tuple(FiveElement.木, "大林木"));
+    put(己巳, tuple(FiveElement.木, "大林木"));
+    put(庚午, tuple(FiveElement.土, "路旁土"));
+    put(辛未, tuple(FiveElement.土, "路旁土"));
+    put(壬申, tuple(FiveElement.金, "劍鋒金"));
+    put(癸酉, tuple(FiveElement.金, "劍鋒金"));
+    put(甲戌, tuple(FiveElement.火, "山頭火"));
+    put(乙亥, tuple(FiveElement.火, "山頭火"));
+    put(丙子, tuple(FiveElement.水, "澗下水"));
+    put(丁丑, tuple(FiveElement.水, "澗下水"));
+    put(戊寅, tuple(FiveElement.土, "城頭土"));
+    put(己卯, tuple(FiveElement.土, "城頭土"));
+    put(庚辰, tuple(FiveElement.金, "白臘金"));
+    put(辛巳, tuple(FiveElement.金, "白臘金"));
+    put(壬午, tuple(FiveElement.木, "楊柳木"));
+    put(癸未, tuple(FiveElement.木, "楊柳木"));
+    put(甲申, tuple(FiveElement.水, "井泉水"));
+    put(乙酉, tuple(FiveElement.水, "井泉水"));
+    put(丙戌, tuple(FiveElement.土, "屋上土"));
+    put(丁亥, tuple(FiveElement.土, "屋上土"));
+    put(戊子, tuple(FiveElement.火, "霹靂火"));
+    put(己丑, tuple(FiveElement.火, "霹靂火"));
+    put(庚寅, tuple(FiveElement.木, "松柏木"));
+    put(辛卯, tuple(FiveElement.木, "松柏木"));
+    put(壬辰, tuple(FiveElement.水, "長流水"));
+    put(癸巳, tuple(FiveElement.水, "長流水"));
+    put(甲午, tuple(FiveElement.金, "砂中金"));
+    put(乙未, tuple(FiveElement.金, "砂中金"));
+    put(丙申, tuple(FiveElement.火, "山下火"));
+    put(丁酉, tuple(FiveElement.火, "山下火"));
+    put(戊戌, tuple(FiveElement.木, "平地木"));
+    put(己亥, tuple(FiveElement.木, "平地木"));
+    put(庚子, tuple(FiveElement.土, "壁上土"));
+    put(辛丑, tuple(FiveElement.土, "壁上土"));
+    put(壬寅, tuple(FiveElement.金, "金箔金"));
+    put(癸卯, tuple(FiveElement.金, "金箔金"));
+    put(甲辰, tuple(FiveElement.火, "覆燈火"));
+    put(乙巳, tuple(FiveElement.火, "覆燈火"));
+    put(丙午, tuple(FiveElement.水, "天河水"));
+    put(丁未, tuple(FiveElement.水, "天河水"));
+    put(戊申, tuple(FiveElement.土, "大驛土"));
+    put(己酉, tuple(FiveElement.土, "大驛土"));
+    put(庚戌, tuple(FiveElement.金, "釵釧金"));
+    put(辛亥, tuple(FiveElement.金, "釵釧金"));
+    put(壬子, tuple(FiveElement.木, "桑柘木"));
+    put(癸丑, tuple(FiveElement.木, "桑柘木"));
+    put(甲寅, tuple(FiveElement.水, "大溪水"));
+    put(乙卯, tuple(FiveElement.水, "大溪水"));
+    put(丙辰, tuple(FiveElement.土, "砂中土"));
+    put(丁巳, tuple(FiveElement.土, "砂中土"));
+    put(戊午, tuple(FiveElement.火, "天上火"));
+    put(己未, tuple(FiveElement.火, "天上火"));
+    put(庚申, tuple(FiveElement.木, "石榴木"));
+    put(辛酉, tuple(FiveElement.木, "石榴木"));
+    put(壬戌, tuple(FiveElement.水, "大海水"));
+    put(癸亥, tuple(FiveElement.水, "大海水"));
   }}.build();
 
   public static FiveElement getFiveElement(StemBranch sb) {

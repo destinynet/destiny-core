@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2017-04-14.
+ * Created by smallufo on 2017-04-18.
  */
 package destiny.core.chinese.ziwei;
 
@@ -8,12 +8,15 @@ import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple3;
+import org.jooq.lambda.tuple.Tuple5;
 
-/** (年支、月數、時支) -> 地支 */
-public abstract class HouseYearBranchMonthNumHourBranchImpl extends HouseAbstractImpl<Tuple3<Branch, Integer , Branch >> {
+/**
+ * 只有 {@link StarMinor#天才} 在用 : {@link StarMinor#fun天才}
+ */
+public abstract class HouseYearBranchMonthNumHourBranchMainHouseImpl extends
+  HouseAbstractImpl<Tuple5<Branch, Integer , Branch , SolarTerms , IMainHouse>> {
 
-  protected HouseYearBranchMonthNumHourBranchImpl(ZStar star) {
+  protected HouseYearBranchMonthNumHourBranchMainHouseImpl(ZStar star) {
     super(star);
   }
 
@@ -24,6 +27,6 @@ public abstract class HouseYearBranchMonthNumHourBranchImpl extends HouseAbstrac
 
   @Override
   public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
-    return getBranch(Tuple.tuple(year.getBranch() , monthNum , hour));
+    return getBranch(Tuple.tuple(year.getBranch(), monthNum , hour , solarTerms , mainHouseImpl));
   }
 }

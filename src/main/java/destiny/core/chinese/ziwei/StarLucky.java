@@ -40,10 +40,17 @@ public final class StarLucky extends ZStar {
   /** 文曲 : 時支 -> 地支 */
   public final static Function<Branch, Branch> fun文曲 = hour -> Branch.get(hour.getIndex() + 4);
 
+  /** 左輔 : 月數 -> 地支 */
+  public final static Function<Integer, Branch> fun左輔_月數 = month -> Branch.get(month + 3);
+
   /** 左輔 : 月支 -> 地支 */
-  public final static Function<Branch, Branch> fun左輔 = month -> Branch.get(month.getIndex() + 2);
+  public final static Function<Branch, Branch> fun左輔_月支 = month -> Branch.get(month.getIndex() + 2);
+
+  /** 右弼 : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun右弼_月數 = month -> Branch.get(11 - month);
+
   /** 右弼 : 月支 -> 地支 */
-  public final static Function<Branch, Branch> fun右弼 = month -> Branch.get(12 - month.getIndex());
+  public final static Function<Branch, Branch> fun右弼_月支 = month -> Branch.get(12 - month.getIndex());
 
   /** 天魁 (陽貴人) : 年干 -> 地支
    * 第一種算法： 「甲戊庚牛羊，乙己鼠猴郷，丙丁豬雞位，六辛為馬虎，壬癸兔蛇藏，此是貴人方。」

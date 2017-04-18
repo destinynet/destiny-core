@@ -18,9 +18,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static destiny.core.calendar.SolarTerms.大雪;
+import static destiny.core.calendar.SolarTerms.清明;
+import static destiny.core.calendar.SolarTerms.立秋;
 import static destiny.core.chinese.Branch.*;
-import static destiny.core.chinese.FiveElement.*;
-import static destiny.core.chinese.Stem.*;
+import static destiny.core.chinese.FiveElement.木;
+import static destiny.core.chinese.Stem.丁;
+import static destiny.core.chinese.Stem.庚;
 import static destiny.core.chinese.StemBranch.*;
 import static destiny.core.chinese.ziwei.House.*;
 import static destiny.core.chinese.ziwei.IZiwei.getBranchOfPurpleStar;
@@ -46,7 +50,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate3() {
-    Settings settings = new Settings(Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP);
+    Settings settings = new Settings(Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -55,7 +59,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate plate = impl.getPlate(己巳 , 申 , 7 , 25 , 辰 , starList, Gender.女, settings ,
+    Plate plate = impl.getPlate(己巳 , 申 , 7 , 立秋 , 25 , 辰 , starList, Gender.女, settings ,
       甲午 , 丙申, 丁亥 , 辛卯 , 17).build();
 
     assertSame(戊辰 , plate.getMainHouse());
@@ -94,7 +98,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate2() {
-    Settings settings = new Settings(Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP);
+    Settings settings = new Settings(Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -104,7 +108,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarDoctor.values));
 
 
-    Plate plate = impl.getPlate(己酉 , 子 , 11 , 24 , 子 , starList, Gender.男, settings).build();
+    Plate plate = impl.getPlate(己酉 , 子 , 11, 大雪 , 24, 子, starList, Gender.男, settings).build();
 
     logger.info("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
@@ -133,7 +137,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP);
+    Settings settings = new Settings(Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT, Settings.FlowYear.DEFAULT, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -142,7 +146,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate plate = impl.getPlate(丁酉 , 辰 , 3 , 18 , 亥 , starList, Gender.男, settings).build();
+    Plate plate = impl.getPlate(丁酉 , 辰 , 3, 清明, 18, 亥, starList, Gender.男, settings).build();
 
     logger.debug("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
@@ -197,9 +201,9 @@ public class ZiweiImplTest {
   @Test
   public void testGetMainHouseBranch() {
 
-    assertSame(午 , IZiwei.getMainHouseBranch(3 , 戌));
+    assertSame(午 , IZiwei.getMainHouseBranch(3 , 戌 , 清明 , new MainHouseDefaultImpl()));
 
-    assertSame(丙午 , IZiwei.getMainHouse(丁 , 3 , 戌));
+    assertSame(丙午 , IZiwei.getMainHouse(丁 , 3 , 戌 , 清明 , new MainHouseDefaultImpl()));
   }
 
   /**
@@ -211,18 +215,18 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetHouseBranch() {
-    assertSame(午 , IZiwei.getHouseBranch(3 , 戌 , 命宮 , seq));
-    assertSame(巳 , IZiwei.getHouseBranch(3 , 戌 , 兄弟 , seq));
-    assertSame(辰 , IZiwei.getHouseBranch(3 , 戌 , 夫妻 , seq));
-    assertSame(卯 , IZiwei.getHouseBranch(3 , 戌 , 子女 , seq));
-    assertSame(寅 , IZiwei.getHouseBranch(3 , 戌 , 財帛 , seq));
-    assertSame(丑 , IZiwei.getHouseBranch(3 , 戌 , 疾厄 , seq));
-    assertSame(子 , IZiwei.getHouseBranch(3 , 戌 , 遷移 , seq));
-    assertSame(亥 , IZiwei.getHouseBranch(3 , 戌 , 交友 , seq));
-    assertSame(戌 , IZiwei.getHouseBranch(3 , 戌 , 官祿 , seq));
-    assertSame(酉 , IZiwei.getHouseBranch(3 , 戌 , 田宅 , seq));
-    assertSame(申 , IZiwei.getHouseBranch(3 , 戌 , 福德 , seq));
-    assertSame(未 , IZiwei.getHouseBranch(3 , 戌 , 父母 , seq));
+    assertSame(午 , IZiwei.getHouseBranch(3 , 戌 , 命宮 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(巳 , IZiwei.getHouseBranch(3 , 戌 , 兄弟 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(辰 , IZiwei.getHouseBranch(3 , 戌 , 夫妻 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(卯 , IZiwei.getHouseBranch(3 , 戌 , 子女 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(寅 , IZiwei.getHouseBranch(3 , 戌 , 財帛 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(丑 , IZiwei.getHouseBranch(3 , 戌 , 疾厄 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(子 , IZiwei.getHouseBranch(3 , 戌 , 遷移 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(亥 , IZiwei.getHouseBranch(3 , 戌 , 交友 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(戌 , IZiwei.getHouseBranch(3 , 戌 , 官祿 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(酉 , IZiwei.getHouseBranch(3 , 戌 , 田宅 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(申 , IZiwei.getHouseBranch(3 , 戌 , 福德 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(未 , IZiwei.getHouseBranch(3 , 戌 , 父母 , seq , 清明 , new MainHouseDefaultImpl()));
   }
 
   /**
@@ -235,18 +239,18 @@ public class ZiweiImplTest {
    */
   @Test
   public void testHouseWithStem() {
-    assertSame(丙午 , impl.getHouse(丁 , 3 , 戌 , 命宮 , seq));
-    assertSame(乙巳 , impl.getHouse(丁 , 3 , 戌 , 兄弟 , seq));
-    assertSame(甲辰 , impl.getHouse(丁 , 3 , 戌 , 夫妻 , seq));
-    assertSame(癸卯 , impl.getHouse(丁 , 3 , 戌 , 子女 , seq));
-    assertSame(壬寅 , impl.getHouse(丁 , 3 , 戌 , 財帛 , seq));
-    assertSame(癸丑 , impl.getHouse(丁 , 3 , 戌 , 疾厄 , seq));
-    assertSame(壬子 , impl.getHouse(丁 , 3 , 戌 , 遷移 , seq));
-    assertSame(辛亥 , impl.getHouse(丁 , 3 , 戌 , 交友 , seq));
-    assertSame(庚戌 , impl.getHouse(丁 , 3 , 戌 , 官祿 , seq));
-    assertSame(己酉 , impl.getHouse(丁 , 3 , 戌 , 田宅 , seq));
-    assertSame(戊申 , impl.getHouse(丁 , 3 , 戌 , 福德 , seq));
-    assertSame(丁未 , impl.getHouse(丁 , 3 , 戌 , 父母 , seq));
+    assertSame(丙午 , impl.getHouse(丁 , 3 , 戌 , 命宮 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(乙巳 , impl.getHouse(丁 , 3 , 戌 , 兄弟 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(甲辰 , impl.getHouse(丁 , 3 , 戌 , 夫妻 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(癸卯 , impl.getHouse(丁 , 3 , 戌 , 子女 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(壬寅 , impl.getHouse(丁 , 3 , 戌 , 財帛 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(癸丑 , impl.getHouse(丁 , 3 , 戌 , 疾厄 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(壬子 , impl.getHouse(丁 , 3 , 戌 , 遷移 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(辛亥 , impl.getHouse(丁 , 3 , 戌 , 交友 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(庚戌 , impl.getHouse(丁 , 3 , 戌 , 官祿 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(己酉 , impl.getHouse(丁 , 3 , 戌 , 田宅 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(戊申 , impl.getHouse(丁 , 3 , 戌 , 福德 , seq , 清明 , new MainHouseDefaultImpl()));
+    assertSame(丁未 , impl.getHouse(丁 , 3 , 戌 , 父母 , seq , 清明 , new MainHouseDefaultImpl()));
   }
 
   /**
@@ -261,7 +265,7 @@ public class ZiweiImplTest {
     assertSame(寅 , IZiwei.getBodyHouseBranch(3 , 戌));
 
     // 丁酉年 3月14日，子時，身命同宮 , 都在 辰
-    assertSame(辰 , IZiwei.getMainHouseBranch(3 , 子));
+    assertSame(辰 , IZiwei.getMainHouseBranch(3 , 子 , 大雪 , new MainHouseDefaultImpl()));
     assertSame(辰 , IZiwei.getBodyHouseBranch(3 , 子));
   }
 
@@ -269,17 +273,16 @@ public class ZiweiImplTest {
    * 納音 五行局
    *
    * 已知：
-   * 丁酉年 (2017)
-   * 農曆三月、戌時 , 命宮在寅 , 水二局[天河水]
+   * 壬寅命宮 => 水二局[天河水]
    * 比對資料 : https://goo.gl/w4snjL
    */
   @Test
   public void testGetNaYin() {
-    Tuple3<String , FiveElement , Integer> t3 = impl.getNaYin(丁 , 3 , 戌);
+    Tuple3<String , FiveElement , Integer> t3 = impl.getNaYin(壬寅);
 
-    assertEquals("天河水" , t3.v1());
-    assertSame(FiveElement.水 , t3.v2());
-    assertSame(2 , t3.v3());
+    assertEquals("金箔金" , t3.v1());
+//    assertSame(FiveElement.水 , t3.v2());
+//    assertSame(2 , t3.v3());
   }
 
   /**

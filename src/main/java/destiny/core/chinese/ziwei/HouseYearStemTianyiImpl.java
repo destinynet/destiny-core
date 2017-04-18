@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableMap;
 import destiny.core.Gender;
+import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
@@ -41,7 +42,7 @@ public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<S
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, int days, Branch hour, int set, Gender gender, Settings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings, IMainHouse mainHouseImpl) {
     return getBranch(Tuple.tuple(year.getStem() , map.get(settings.getTianyi())));
   }
 }

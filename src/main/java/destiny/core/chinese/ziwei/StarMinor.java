@@ -4,10 +4,12 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
+import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
 import org.jooq.lambda.function.Function3;
+import org.jooq.lambda.function.Function5;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -117,14 +119,33 @@ public class StarMinor extends ZStar {
     }
   };
 
+  /** 天刑 : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun天刑_月數 = month ->Branch.get(month + 8);
+
   /** 天刑 : 月支 -> 地支 */
-  public final static Function<Branch , Branch> fun天刑 = month -> Branch.get(month.getIndex()+7);
+  public final static Function<Branch , Branch> fun天刑_月支 = month -> Branch.get(month.getIndex()+7);
+
+  /** 天姚 : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun天姚_月數 = Branch::get;
 
   /** 天姚 : 月支 -> 地支 */
-  public final static Function<Branch , Branch> fun天姚 = month -> month.next(11);
+  public final static Function<Branch , Branch> fun天姚_月支 = month -> month.next(11);
+
+  /** 解神 : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun解神_月數 = month -> {
+    switch (month) {
+      case 1: case 2: return 申;
+      case 3: case 4: return 戌;
+      case 5: case 6: return 子;
+      case 7: case 8: return 寅;
+      case 9: case 10: return 辰;
+      case 11: case 12: return 午;
+      default: throw new AssertionError(month);
+    }
+  };
 
   /** 解神 : 月支 -> 地支 */
-  public final static Function<Branch , Branch> fun解神 = month -> {
+  public final static Function<Branch , Branch> fun解神_月支 = month -> {
     switch (month) {
       case 寅: case 卯: return 申;
       case 辰: case 巳: return 戌;
@@ -136,8 +157,19 @@ public class StarMinor extends ZStar {
     }
   };
 
+  /** 天巫 : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun天巫_月數 = month -> {
+    switch (month) {
+      case 1 :case 5 :case 9: return 巳;
+      case 2 :case 6 :case 10: return 申;
+      case 3 :case 7 :case 11: return 寅;
+      case 4 :case 8 :case 12: return 亥;
+      default: throw new AssertionError(month);
+    }
+  };
+
   /** 天巫 : 月支 -> 地支 */
-  public final static Function<Branch , Branch> fun天巫 = month -> {
+  public final static Function<Branch , Branch> fun天巫_月支 = month -> {
     switch (BranchTools.trilogy(month)) {
       case 火: return 巳;
       case 木: return 申;
@@ -147,8 +179,24 @@ public class StarMinor extends ZStar {
     }
   };
 
+  /** 天鉞 : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun天月_月數 = month -> {
+    switch (month) {
+      case 1: return 戌;
+      case 2: return 巳;
+      case 3: return 辰;
+      case 4: case 9: return 寅;
+      case 5: case 8: return 未;
+      case 6: return 卯;
+      case 7: return 亥;
+      case 10:case 12: return 午;
+      case 11: return 戌;
+      default: throw new AssertionError(month);
+    }
+  };
+
   /** 天月 : 月支 -> 地支 */
-  public final static Function<Branch , Branch> fun天月 = month -> {
+  public final static Function<Branch , Branch> fun天月_月支 = month -> {
     switch (month) {
       case 寅: return 戌;
       case 卯: return 巳;
@@ -163,8 +211,21 @@ public class StarMinor extends ZStar {
     }
   };
 
+  /** 陰煞 : 月數 -> 地支 */
+  public final static Function<Integer , Branch> fun陰煞_月數 = month -> {
+    switch (month) {
+      case 1: case 7 : return 寅;
+      case 2: case 8: return 子;
+      case 3: case 9: return 戌;
+      case 4: case 10: return 申;
+      case 5: case 11: return 午;
+      case 6: case 12: return 辰;
+      default: throw new AssertionError(month);
+    }
+  };
+
   /** 陰煞 : 月支 -> 地支 */
-  public final static Function<Branch , Branch> fun陰煞 = month -> {
+  public final static Function<Branch , Branch> fun陰煞_月支 = month -> {
     switch (month) {
       case 寅: case 申: return 寅;
       case 卯: case 酉: return 子;
@@ -302,17 +363,27 @@ public class StarMinor extends ZStar {
   /** 天才 (年支 , 月數 , 時支) -> 地支
    * 天才由命宮起子, 順行至本生 「年支」安之.
    * */
-  public final static Function3<Branch , Integer , Branch , Branch> fun天才 = (Branch year, Integer month, Branch hour) -> IZiwei.getMainHouseBranch(month , hour).next(year.getIndex());
+  public final static Function5<Branch , Integer , Branch , SolarTerms , IMainHouse , Branch > fun天才 =
+    (Branch year, Integer month, Branch hour , SolarTerms solarTerms , IMainHouse mainHouseImpl) ->
+      IZiwei.getMainHouseBranch(month , hour , solarTerms , mainHouseImpl).next(year.getIndex());
 
   /** 天壽 (年支 , 月數 , 時支) -> 地支
    * 天壽由身宮起子, 順行至本生 「年支」安之 */
-  public final static Function3<Branch , Integer , Branch , Branch> fun天壽 = (Branch year, Integer month, Branch hour) -> IZiwei.getBodyHouseBranch(month , hour).next(year.getIndex());
+  public final static Function3<Branch , Integer , Branch , Branch> fun天壽 = (Branch year, Integer month, Branch hour) ->
+    IZiwei.getBodyHouseBranch(month , hour).next(year.getIndex());
+
 
   /** 三台 : (月支,日數) -> 地支. 從「左輔」取初一，順行，數到本日生 */
-  public final static BiFunction<Branch , Integer , Branch> fun三台 = (month , day) -> fun左輔.apply(month).next(day-1);
+  public final static BiFunction<Integer , Integer , Branch> fun三台_月數 = (month , day) -> fun左輔_月數.apply(month).next(day-1);
+
+  /** 三台 : (月支,日數) -> 地支. 從「左輔」取初一，順行，數到本日生 */
+  public final static BiFunction<Branch , Integer , Branch> fun三台_月支 = (month , day) -> fun左輔_月支.apply(month).next(day-1);
+
+  /** 八座 : (月數,日數) -> 地支. 從「右弼」取初一，逆行，數到本日生 */
+  public final static BiFunction<Integer , Integer , Branch> fun八座_月數 = (month , day) -> fun右弼_月數.apply(month).prev(day-1);
 
   /** 八座 : (月支,日數) -> 地支. 從「右弼」取初一，逆行，數到本日生 */
-  public final static BiFunction<Branch , Integer , Branch> fun八座 = (month , day) -> fun右弼.apply(month).prev(day-1);
+  public final static BiFunction<Branch , Integer , Branch> fun八座_月支 = (month , day) -> fun右弼_月支.apply(month).prev(day-1);
 
   /** 恩光 : (日數,時支) -> 地支. 從「文昌」上取初一，順行，數到本日生，再後退一步 */
   public final static BiFunction<Integer , Branch , Branch> fun恩光 = (day , hour) -> fun文昌.apply(hour).next(day-2);

@@ -1,6 +1,10 @@
 package destiny.core.calendar;
 
 
+import destiny.tools.ArrayTools;
+
+import java.util.Arrays;
+
 public enum SolarTerms {
   立春("立春",315),
   雨水("雨水",330),
@@ -30,7 +34,7 @@ public enum SolarTerms {
   private final String name;
   private final int zodiacDegree;
 
-  private final static SolarTerms[] SOLAR_TERMS_ARRAY =
+  private final static SolarTerms[] VALUES =
     { 立春 , 雨水 , 驚蟄 , 春分 , 清明 , 榖雨 ,
       立夏 , 小滿 , 芒種 , 夏至 , 小暑 , 大暑 ,
       立秋 , 處暑 , 白露 , 秋分 , 寒露 , 霜降 ,
@@ -47,28 +51,15 @@ public enum SolarTerms {
    * @return 傳回 index , 立春為 0 , 雨水為 1 , ... , 大寒 為 23
    */
   public static int getIndex(SolarTerms solarTerm) {
-    int result = 0;
-    for (int i = 0; i < SOLAR_TERMS_ARRAY.length; i++) {
-      if (solarTerm == SOLAR_TERMS_ARRAY[i])
-        result = i;
-    }
-    return result;
+    return Arrays.binarySearch(VALUES , solarTerm);
   }
 
   public SolarTerms next() {
-    int index = SolarTerms.getIndex(this);
-    index++;
-    if (index >= 24)
-      index = index - 24;
-    return SOLAR_TERMS_ARRAY[index];
+    return get(SolarTerms.getIndex(this)+1);
   }
 
   public SolarTerms previous() {
-    int index = SolarTerms.getIndex(this);
-    index--;
-    if (index < 0)
-      index = index + 24;
-    return SOLAR_TERMS_ARRAY[index];
+    return get(SolarTerms.getIndex(this)-1);
   }
 
   /** 取得節氣的名稱 */
@@ -86,12 +77,7 @@ public enum SolarTerms {
    * @return 0 傳回立春 , 1 傳回 雨水 , ... , 23 傳回 大寒 , 接著連續 24 傳回立春
    */
   public static SolarTerms get(int solarTermsIndex) {
-    if (solarTermsIndex >= 24)
-      return SolarTerms.get(solarTermsIndex - 24);
-    else if (solarTermsIndex < 0)
-      return SolarTerms.get(solarTermsIndex + 24);
-    else
-      return SOLAR_TERMS_ARRAY[solarTermsIndex];
+    return ArrayTools.get(VALUES , solarTermsIndex);
   }
 
   /**

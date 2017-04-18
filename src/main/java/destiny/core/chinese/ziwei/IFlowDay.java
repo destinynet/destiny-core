@@ -16,5 +16,8 @@ import destiny.core.chinese.Branch;
  */
 public interface IFlowDay {
 
+  /**
+   * @param flowMonthMainHouse 流月命宮
+   */
   Branch getFlowDay(Branch flowDayBranch , int flowDayNum , Branch flowMonthMainHouse);
 }

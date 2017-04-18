@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
+import static destiny.core.calendar.SolarTerms.清明;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.丁;
 import static destiny.core.chinese.StemBranch.己酉;
@@ -35,51 +36,182 @@ public class StarMinorTest {
 
   @Test
   public void test天刑() {
-    assertSame(酉 , fun天刑.apply(寅));
-    assertSame(戌 , fun天刑.apply(卯));
-    assertSame(亥 , fun天刑.apply(辰));
-    assertSame(子 , fun天刑.apply(巳));
-    assertSame(丑 , fun天刑.apply(午));
-    assertSame(寅 , fun天刑.apply(未));
-    assertSame(卯 , fun天刑.apply(申));
-    assertSame(辰 , fun天刑.apply(酉));
-    assertSame(巳 , fun天刑.apply(戌));
-    assertSame(午 , fun天刑.apply(亥));
-    assertSame(未 , fun天刑.apply(子));
-    assertSame(申 , fun天刑.apply(丑));
+    assertSame(酉 , fun天刑_月支.apply(寅));
+    assertSame(戌 , fun天刑_月支.apply(卯));
+    assertSame(亥 , fun天刑_月支.apply(辰));
+    assertSame(子 , fun天刑_月支.apply(巳));
+    assertSame(丑 , fun天刑_月支.apply(午));
+    assertSame(寅 , fun天刑_月支.apply(未));
+    assertSame(卯 , fun天刑_月支.apply(申));
+    assertSame(辰 , fun天刑_月支.apply(酉));
+    assertSame(巳 , fun天刑_月支.apply(戌));
+    assertSame(午 , fun天刑_月支.apply(亥));
+    assertSame(未 , fun天刑_月支.apply(子));
+    assertSame(申 , fun天刑_月支.apply(丑));
+
+    assertSame(酉 , fun天刑_月數.apply(1));
+    assertSame(戌 , fun天刑_月數.apply(2));
+    assertSame(亥 , fun天刑_月數.apply(3));
+    assertSame(子 , fun天刑_月數.apply(4));
+    assertSame(丑 , fun天刑_月數.apply(5));
+    assertSame(寅 , fun天刑_月數.apply(6));
+    assertSame(卯 , fun天刑_月數.apply(7));
+    assertSame(辰 , fun天刑_月數.apply(8));
+    assertSame(巳 , fun天刑_月數.apply(9));
+    assertSame(午 , fun天刑_月數.apply(10));
+    assertSame(未 , fun天刑_月數.apply(11));
+    assertSame(申 , fun天刑_月數.apply(12));
   }
+
 
   @Test
   public void test天姚() {
-    assertSame(丑 , fun天姚.apply(寅));
-    assertSame(寅 , fun天姚.apply(卯));
-    assertSame(卯 , fun天姚.apply(辰));
-    assertSame(辰 , fun天姚.apply(巳));
-    assertSame(巳 , fun天姚.apply(午));
-    assertSame(午 , fun天姚.apply(未));
-    assertSame(未 , fun天姚.apply(申));
-    assertSame(申 , fun天姚.apply(酉));
-    assertSame(酉 , fun天姚.apply(戌));
-    assertSame(戌 , fun天姚.apply(亥));
-    assertSame(亥 , fun天姚.apply(子));
-    assertSame(子 , fun天姚.apply(丑));
+    assertSame(丑 , fun天姚_月支.apply(寅));
+    assertSame(寅 , fun天姚_月支.apply(卯));
+    assertSame(卯 , fun天姚_月支.apply(辰));
+    assertSame(辰 , fun天姚_月支.apply(巳));
+    assertSame(巳 , fun天姚_月支.apply(午));
+    assertSame(午 , fun天姚_月支.apply(未));
+    assertSame(未 , fun天姚_月支.apply(申));
+    assertSame(申 , fun天姚_月支.apply(酉));
+    assertSame(酉 , fun天姚_月支.apply(戌));
+    assertSame(戌 , fun天姚_月支.apply(亥));
+    assertSame(亥 , fun天姚_月支.apply(子));
+    assertSame(子 , fun天姚_月支.apply(丑));
+
+    assertSame(丑 , fun天姚_月數.apply(1));
+    assertSame(寅 , fun天姚_月數.apply(2));
+    assertSame(卯 , fun天姚_月數.apply(3));
+    assertSame(辰 , fun天姚_月數.apply(4));
+    assertSame(巳 , fun天姚_月數.apply(5));
+    assertSame(午 , fun天姚_月數.apply(6));
+    assertSame(未 , fun天姚_月數.apply(7));
+    assertSame(申 , fun天姚_月數.apply(8));
+    assertSame(酉 , fun天姚_月數.apply(9));
+    assertSame(戌 , fun天姚_月數.apply(10));
+    assertSame(亥 , fun天姚_月數.apply(11));
+    assertSame(子 , fun天姚_月數.apply(12));
   }
+
+
+  @Test
+  public void test解神() {
+    assertSame(申 , fun解神_月支.apply(寅));
+    assertSame(申 , fun解神_月支.apply(卯));
+    assertSame(戌 , fun解神_月支.apply(辰));
+    assertSame(戌 , fun解神_月支.apply(巳));
+    assertSame(子 , fun解神_月支.apply(午));
+    assertSame(子 , fun解神_月支.apply(未));
+    assertSame(寅 , fun解神_月支.apply(申));
+    assertSame(寅 , fun解神_月支.apply(酉));
+    assertSame(辰 , fun解神_月支.apply(戌));
+    assertSame(辰 , fun解神_月支.apply(亥));
+    assertSame(午 , fun解神_月支.apply(子));
+    assertSame(午 , fun解神_月支.apply(丑));
+
+    assertSame(申 , fun解神_月數.apply(1));
+    assertSame(申 , fun解神_月數.apply(2));
+    assertSame(戌 , fun解神_月數.apply(3));
+    assertSame(戌 , fun解神_月數.apply(4));
+    assertSame(子 , fun解神_月數.apply(5));
+    assertSame(子 , fun解神_月數.apply(6));
+    assertSame(寅 , fun解神_月數.apply(7));
+    assertSame(寅 , fun解神_月數.apply(8));
+    assertSame(辰 , fun解神_月數.apply(9));
+    assertSame(辰 , fun解神_月數.apply(10));
+    assertSame(午 , fun解神_月數.apply(11));
+    assertSame(午 , fun解神_月數.apply(12));
+  }
+
+
+  @Test
+  public void test天巫() {
+    assertSame(巳 , fun天巫_月支.apply(寅));
+    assertSame(申 , fun天巫_月支.apply(卯));
+    assertSame(寅 , fun天巫_月支.apply(辰));
+    assertSame(亥 , fun天巫_月支.apply(巳));
+    assertSame(巳 , fun天巫_月支.apply(午));
+    assertSame(申 , fun天巫_月支.apply(未));
+    assertSame(寅 , fun天巫_月支.apply(申));
+    assertSame(亥 , fun天巫_月支.apply(酉));
+    assertSame(巳 , fun天巫_月支.apply(戌));
+    assertSame(申 , fun天巫_月支.apply(亥));
+    assertSame(寅 , fun天巫_月支.apply(子));
+    assertSame(亥 , fun天巫_月支.apply(丑));
+
+    assertSame(巳 , fun天巫_月數.apply(1));
+    assertSame(申 , fun天巫_月數.apply(2));
+    assertSame(寅 , fun天巫_月數.apply(3));
+    assertSame(亥 , fun天巫_月數.apply(4));
+    assertSame(巳 , fun天巫_月數.apply(5));
+    assertSame(申 , fun天巫_月數.apply(6));
+    assertSame(寅 , fun天巫_月數.apply(7));
+    assertSame(亥 , fun天巫_月數.apply(8));
+    assertSame(巳 , fun天巫_月數.apply(9));
+    assertSame(申 , fun天巫_月數.apply(10));
+    assertSame(寅 , fun天巫_月數.apply(11));
+    assertSame(亥 , fun天巫_月數.apply(12));
+  }
+
 
   @Test
   public void test天月() {
-    assertSame(戌 , fun天月.apply(寅));
-    assertSame(巳 , fun天月.apply(卯));
-    assertSame(辰 , fun天月.apply(辰));
-    assertSame(寅 , fun天月.apply(巳));
-    assertSame(未 , fun天月.apply(午));
-    assertSame(卯 , fun天月.apply(未));
-    assertSame(亥 , fun天月.apply(申));
-    assertSame(未 , fun天月.apply(酉));
-    assertSame(寅 , fun天月.apply(戌));
-    assertSame(午 , fun天月.apply(亥));
-    assertSame(戌 , fun天月.apply(子));
-    assertSame(午 , fun天月.apply(丑));
+    assertSame(戌 , fun天月_月支.apply(寅));
+    assertSame(巳 , fun天月_月支.apply(卯));
+    assertSame(辰 , fun天月_月支.apply(辰));
+    assertSame(寅 , fun天月_月支.apply(巳));
+    assertSame(未 , fun天月_月支.apply(午));
+    assertSame(卯 , fun天月_月支.apply(未));
+    assertSame(亥 , fun天月_月支.apply(申));
+    assertSame(未 , fun天月_月支.apply(酉));
+    assertSame(寅 , fun天月_月支.apply(戌));
+    assertSame(午 , fun天月_月支.apply(亥));
+    assertSame(戌 , fun天月_月支.apply(子));
+    assertSame(午 , fun天月_月支.apply(丑));
+
+    assertSame(戌 , fun天月_月數.apply(1));
+    assertSame(巳 , fun天月_月數.apply(2));
+    assertSame(辰 , fun天月_月數.apply(3));
+    assertSame(寅 , fun天月_月數.apply(4));
+    assertSame(未 , fun天月_月數.apply(5));
+    assertSame(卯 , fun天月_月數.apply(6));
+    assertSame(亥 , fun天月_月數.apply(7));
+    assertSame(未 , fun天月_月數.apply(8));
+    assertSame(寅 , fun天月_月數.apply(9));
+    assertSame(午 , fun天月_月數.apply(10));
+    assertSame(戌 , fun天月_月數.apply(11));
+    assertSame(午 , fun天月_月數.apply(12));
   }
+
+  @Test
+  public void test陰煞() {
+    assertSame(寅 , fun陰煞_月支.apply(寅));
+    assertSame(子 , fun陰煞_月支.apply(卯));
+    assertSame(戌 , fun陰煞_月支.apply(辰));
+    assertSame(申 , fun陰煞_月支.apply(巳));
+    assertSame(午 , fun陰煞_月支.apply(午));
+    assertSame(辰 , fun陰煞_月支.apply(未));
+    assertSame(寅 , fun陰煞_月支.apply(申));
+    assertSame(子 , fun陰煞_月支.apply(酉));
+    assertSame(戌 , fun陰煞_月支.apply(戌));
+    assertSame(申 , fun陰煞_月支.apply(亥));
+    assertSame(午 , fun陰煞_月支.apply(子));
+    assertSame(辰 , fun陰煞_月支.apply(丑));
+
+    assertSame(寅 , fun陰煞_月數.apply(1));
+    assertSame(子 , fun陰煞_月數.apply(2));
+    assertSame(戌 , fun陰煞_月數.apply(3));
+    assertSame(申 , fun陰煞_月數.apply(4));
+    assertSame(午 , fun陰煞_月數.apply(5));
+    assertSame(辰 , fun陰煞_月數.apply(6));
+    assertSame(寅 , fun陰煞_月數.apply(7));
+    assertSame(子 , fun陰煞_月數.apply(8));
+    assertSame(戌 , fun陰煞_月數.apply(9));
+    assertSame(申 , fun陰煞_月數.apply(10));
+    assertSame(午 , fun陰煞_月數.apply(11));
+    assertSame(辰 , fun陰煞_月數.apply(12));
+  }
+
 
   @Test
   public void test天哭() {
@@ -181,9 +313,12 @@ public class StarMinorTest {
   public void test日系星() {
     // 2017-04-12 丁酉年 三月十六日 巳時,
     // 三台在 (己)酉
-    assertSame(酉 , fun三台.apply(辰 , 16));
+    assertSame(酉 , fun三台_月支.apply(辰 , 16));
+    assertSame(酉 , fun三台_月數.apply(3 , 16));
     // 八座在 (乙)巳
-    assertSame(巳 , fun八座.apply(辰 , 16));
+    assertSame(巳 , fun八座_月支.apply(辰 , 16));
+    assertSame(巳 , fun八座_月數.apply(3 , 16));
+
     // 恩光在 (丁)未
     assertSame(未 , fun恩光.apply(16 , 巳));
     // 天貴在 (辛)亥
@@ -195,9 +330,9 @@ public class StarMinorTest {
     // 2017-04-12 丁酉年 三月十六日 巳時
 
     // 命宮 在 (辛)亥
-    assertSame(亥 , IZiwei.getMainHouseBranch(3 , 巳));
+    assertSame(亥 , IZiwei.getMainHouseBranch(3 , 巳 , 清明 , new MainHouseDefaultImpl()));
     // 天才 在 (戊)申
-    assertSame(申 , fun天才.apply(酉 , 3 , 巳));
+    assertSame(申 , fun天才.apply(酉 , 3 , 巳 , 清明 , new MainHouseDefaultImpl()));
 
     // 身宮 在 (己)酉
     assertSame(酉 , IZiwei.getBodyHouseBranch(3 , 巳));

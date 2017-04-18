@@ -272,6 +272,22 @@ public class Plate implements Serializable {
       return this;
     }
 
+    /**
+     * with 流時宮位對照
+     *
+     * @param flowHour 哪個流時
+     * @param map      地支「在該流時」與宮位的對照表
+     */
+    public Builder withFlowHour(Branch flowHour , Map<Branch , House> map) {
+      map.forEach((branch, house) -> {
+        branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
+          m.put(FlowType.流時 , map.get(branch));
+          return m;
+        });
+      });
+      return this;
+    }
+
 
     public Plate build() {
       return new Plate(mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap);
