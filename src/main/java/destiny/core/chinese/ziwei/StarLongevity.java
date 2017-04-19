@@ -34,9 +34,9 @@ public class StarLongevity extends ZStar {
   public final static StarLongevity 胎   = new StarLongevity("胎");
   public final static StarLongevity 養   = new StarLongevity("養");
 
-  public final static StarLongevity[] VALUES = {長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養};
+  public final static StarLongevity[] values = {長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養};
 
-  private final static List<StarLongevity> list = Arrays.asList(VALUES);
+  private final static List<StarLongevity> list = Arrays.asList(values);
 
   public StarLongevity(String nameKey) {
     super(nameKey, ZStar.class.getName(), nameKey+"_ABBR", Type.長生);

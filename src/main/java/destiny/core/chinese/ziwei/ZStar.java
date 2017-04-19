@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.astrology.Point;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 紫微斗數的諸星
@@ -25,7 +26,7 @@ import destiny.astrology.Point;
  * 二、四化 ： 見 {@link ITransFour}
  *
  * */
-public abstract class ZStar extends Point {
+public abstract class ZStar extends Point implements Comparable<ZStar> {
 
   public enum Type {
     主星 ,
@@ -34,11 +35,12 @@ public abstract class ZStar extends Point {
     月 ,
     日 ,
     時 ,
-    博士,
     月日,   // 三台、八座
     日時,   // 恩光、天貴
     年月時, // 天才、天壽
     宮位,   // 宮位決定 : 天使、天傷
+    // 以下雜星
+    博士,   // 博士12神
     長生,   // 長生12神煞
   }
 
@@ -57,5 +59,15 @@ public abstract class ZStar extends Point {
 
   public Type getType() {
     return type;
+  }
+
+  @Override
+  public int compareTo(@NotNull ZStar o) {
+    int typeCompare = this.type.compareTo(o.type);
+    if (typeCompare != 0)
+      return typeCompare;
+    else {
+      return this.toString().compareTo(o.toString());
+    }
   }
 }

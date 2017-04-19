@@ -25,7 +25,7 @@ public class StarLongevityTest {
 
   @Test
   public void testToString() {
-    for(StarLongevity star : StarLongevity.VALUES) {
+    for(StarLongevity star : StarLongevity.values) {
       assertNotNull(star.toString());
       assertNotNull(star.toString(Locale.TAIWAN));
       assertNotNull(star.toString(Locale.CHINA));

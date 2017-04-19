@@ -6,10 +6,7 @@ package destiny.core.chinese.ziwei;
 import com.google.common.collect.ImmutableSet;
 import destiny.core.Gender;
 import destiny.core.calendar.SolarTerms;
-import destiny.core.chinese.Branch;
-import destiny.core.chinese.Stem;
-import destiny.core.chinese.StemBranch;
-import destiny.core.chinese.TianyiIF;
+import destiny.core.chinese.*;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 import org.jooq.lambda.tuple.Tuple5;
@@ -20,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static destiny.core.chinese.ziwei.IZiwei.*;
 import static destiny.core.chinese.ziwei.StarDoctor.*;
+import static destiny.core.chinese.ziwei.StarLongevity.*;
 import static destiny.core.chinese.ziwei.StarLucky.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarMinor.*;
@@ -607,6 +605,93 @@ public class HouseFunctions {
 
   // =======↑↑↑======= 以上 博士12神煞 =======↑↑↑=======
 
+  // =======↓↓↓======= 以下 長生12神煞 =======↓↓↓=======
+  public final static IHouse house長生 = new HouseFiveGenderYinYangImpl(長生) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun長生.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house沐浴 = new HouseFiveGenderYinYangImpl(沐浴) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun沐浴.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house冠帶 = new HouseFiveGenderYinYangImpl(冠帶) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun冠帶.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house臨官 = new HouseFiveGenderYinYangImpl(臨官) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun臨官.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house帝旺 = new HouseFiveGenderYinYangImpl(帝旺) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun帝旺.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house衰 = new HouseFiveGenderYinYangImpl(衰) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun衰.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house病 = new HouseFiveGenderYinYangImpl(病) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun病.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house死 = new HouseFiveGenderYinYangImpl(死) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun死.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house墓 = new HouseFiveGenderYinYangImpl(墓) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun墓.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house絕 = new HouseFiveGenderYinYangImpl(絕) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun絕.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house胎 = new HouseFiveGenderYinYangImpl(胎) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun胎.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+
+  public final static IHouse house養 = new HouseFiveGenderYinYangImpl(養) {
+    @Override
+    public Branch getBranch(Tuple3<FiveElement, Gender, YinYangIF> t3) {
+      return fun養.apply(t3.v1() , t3.v2() , t3.v3());
+    }
+  };
+  // =======↑↑↑======= 以上 長生12神煞 =======↑↑↑=======
+
+
   public final static Set<IHouse> set = new ImmutableSet.Builder<IHouse>()
     // 14主星
     .add(house紫微, house天機, house太陽, house武曲, house天同, house廉貞, house天府, house太陰, house貪狼, house巨門, house天相, house天梁, house七殺, house破軍)
@@ -627,6 +712,10 @@ public class HouseFunctions {
     // 博士12神煞
     .add(house博士, house力士, house青龍, house小耗, house將軍, house奏書,
          house飛廉, house喜神, house病符, house大耗, house伏兵, house官府)
+
+    // 長生12神煞
+    .add(house長生, house沐浴, house冠帶, house臨官, house帝旺, house衰,
+         house病  , house死  , house墓 , house絕  , house胎 , house養)
     .build();
 
   public final static Map<ZStar , IHouse> map = set.stream()

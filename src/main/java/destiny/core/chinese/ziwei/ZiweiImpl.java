@@ -33,7 +33,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     //Branch 命宮 = mainHouseImpl.getMainHouse(monthNum , hour , solarTerms);
 
-    Tuple3<String , FiveElement , Integer> t3 = getNaYin(mainHouse);
+    Tuple3<String , FiveElement , Integer> t3 = IZiwei.getNaYin(mainHouse);
     int set = t3.v3();
 
     // 地支 -> 宮位 的 mapping

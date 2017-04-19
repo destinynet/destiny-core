@@ -14,7 +14,8 @@ public enum FuncType {
   ,DAY_NUM_HOUR_BRANCH      // (時支,日數)
   ,YEAR_BRANCH_MONTH_NUM_HOUR_BRANCH // (年支,月數,時支)
   ,YEAR_STEM_GENDER         // (年干,性別)
-  ,HOUSE_DEP
+  ,HOUSE_DEP                // 與宮位相關
+  ,FIVE_GENDER_YINYANG      // (五行,性別,陰陽)
   ;
 
   FuncType() {}

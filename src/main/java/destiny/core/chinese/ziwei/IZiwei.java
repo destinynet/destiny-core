@@ -64,7 +64,7 @@ public interface IZiwei {
   } // 取得命宮
 
   /** 承上 , 找到命宮的 干支 ，可以取得「納音、五行、第幾局」 */
-  default Tuple3<String , FiveElement , Integer> getNaYin(StemBranch mainHouse) {
+  static Tuple3<String , FiveElement , Integer> getNaYin(StemBranch mainHouse) {
     String 納音 = NaYin.getDesc(mainHouse);
     // 五行
     FiveElement fiveElement = NaYin.getFiveElement(mainHouse);

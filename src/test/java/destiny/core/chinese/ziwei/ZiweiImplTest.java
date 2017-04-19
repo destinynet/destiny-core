@@ -59,6 +59,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarUnlucky.values));
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
+    starList.addAll(Arrays.asList(StarLongevity.values));
 
     // 乙酉大限 , 2017(丁酉年) , 農曆 3月(甲辰月) 22日(乙亥日)  (陽曆4/18) , 晚上 丁亥 時
     Plate plate = impl.getPlate(庚辰 , 寅 , 1 , 立春 , 28 , 午 , starList, Gender.男, settings ,
@@ -145,6 +146,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarUnlucky.values));
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
+    starList.addAll(Arrays.asList(StarLongevity.values));
 
 
     Plate plate = impl.getPlate(己酉 , 子 , 11, 大雪 , 24, 子, starList, Gender.男, settings).build();
@@ -317,7 +319,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testGetNaYin() {
-    Tuple3<String , FiveElement , Integer> t3 = impl.getNaYin(壬寅);
+    Tuple3<String , FiveElement , Integer> t3 = IZiwei.getNaYin(壬寅);
 
     assertEquals("金箔金" , t3.v1());
 //    assertSame(FiveElement.水 , t3.v2());
