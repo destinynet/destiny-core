@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2017-04-19.
+ * Created by smallufo on 2017-04-20.
  */
 package destiny.core.chinese.ziwei;
 
@@ -11,18 +11,22 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static destiny.core.chinese.ziwei.StarMinor.天官;
+import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.ziwei.StarLucky.天魁;
+import static destiny.core.chinese.ziwei.StarMain.*;
+import static destiny.core.chinese.ziwei.StarMinor.三台;
+import static destiny.core.chinese.ziwei.StarMinor.天巫;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 
-public class StrengthTest {
+public class StrengthMiddleImplTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+  IStrength impl = new StrengthMiddleImpl();
+
   @Test
   public void testListStarByType() {
-    IStrength impl = new StrengthImpl();
-
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
     starList.addAll(Arrays.asList(StarLucky.values));
@@ -31,7 +35,7 @@ public class StrengthTest {
     starList.addAll(Arrays.asList(StarDoctor.values));
     starList.addAll(Arrays.asList(StarLongevity.values));
 
-    Map<ZStar.Type, Set<ZStar>> map = starList.stream()
+    Map<Type, Set<ZStar>> map = starList.stream()
       .collect(
         Collectors.groupingBy(
           ZStar::getType,
@@ -47,11 +51,21 @@ public class StrengthTest {
 
 
   @Test
-  public void getStarMap() throws Exception {
-    IStrength impl = new StrengthImpl();
-
-    assertSame(2 , impl.getStrengthOf(天官 , Branch.卯).orElse(0));
-    assertFalse(impl.getStrengthOf(天官 , Branch.子).isPresent());
+  public void getMap() {
+    impl.getMapOf(紫微).forEach((k,v) -> {
+      logger.info("{} -> {}" , k , v);
+    });
   }
 
+  @Test
+  public void getStrength() {
+
+
+    assertSame(5, impl.getStrengthOf(紫微, 子).orElse(0));
+    assertSame(5, impl.getStrengthOf(破軍, Branch.亥).orElse(0));
+
+    assertSame(2, impl.getStrengthOf(天魁, 子).orElse(0));
+    assertSame(5, impl.getStrengthOf(三台, 子).orElse(0));
+    assertFalse(impl.getStrengthOf(天巫 , 子).isPresent());
+  }
 }
