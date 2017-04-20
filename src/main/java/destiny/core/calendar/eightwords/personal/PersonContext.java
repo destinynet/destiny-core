@@ -300,7 +300,7 @@ public class PersonContext extends EightWordsContext {
       else
         return currentSolarTerms;
     }
-    else //雨水 , 春分 , 榖雨 ...
+    else //雨水 , 春分 , 穀雨 ...
     {
       if (!reverse) //順推
         return currentSolarTerms.next();

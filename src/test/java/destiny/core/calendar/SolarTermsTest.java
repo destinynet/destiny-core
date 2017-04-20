@@ -21,7 +21,7 @@ public class SolarTermsTest {
     assertEquals(2, getIndex(驚蟄));
     assertEquals(3, getIndex(春分));
     assertEquals(4, getIndex(清明));
-    assertEquals(5, getIndex(榖雨));
+    assertEquals(5, getIndex(穀雨));
     assertEquals(6, getIndex(立夏));
     assertEquals(7, getIndex(小滿));
     assertEquals(8, getIndex(芒種));
@@ -49,8 +49,8 @@ public class SolarTermsTest {
     assertSame(驚蟄, 雨水.next());
     assertSame(春分, 驚蟄.next());
     assertSame(清明, 春分.next());
-    assertSame(榖雨, 清明.next());
-    assertSame(立夏, 榖雨.next());
+    assertSame(穀雨, 清明.next());
+    assertSame(立夏, 穀雨.next());
     assertSame(小滿, 立夏.next());
     assertSame(芒種, 小滿.next());
     assertSame(夏至, 芒種.next());
@@ -79,8 +79,8 @@ public class SolarTermsTest {
     assertSame(雨水, 驚蟄.previous());
     assertSame(驚蟄, 春分.previous());
     assertSame(春分, 清明.previous());
-    assertSame(清明, 榖雨.previous());
-    assertSame(榖雨, 立夏.previous());
+    assertSame(清明, 穀雨.previous());
+    assertSame(穀雨, 立夏.previous());
     assertSame(立夏, 小滿.previous());
     assertSame(小滿, 芒種.previous());
     assertSame(芒種, 夏至.previous());
@@ -109,7 +109,7 @@ public class SolarTermsTest {
     assertSame(驚蟄, get(2));
     assertSame(春分, get(3));
     assertSame(清明, get(4));
-    assertSame(榖雨, get(5));
+    assertSame(穀雨, get(5));
     assertSame(立夏, get(6));
     assertSame(小滿, get(7));
     assertSame(芒種, get(8));

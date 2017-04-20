@@ -11,7 +11,7 @@ public enum SolarTerms {
   驚蟄("驚蟄",345),
   春分("春分",  0),
   清明("清明", 15),
-  榖雨("榖雨", 30),
+  穀雨("穀雨", 30),
   立夏("立夏", 45),
   小滿("小滿", 60),
   芒種("芒種", 75),
@@ -35,7 +35,7 @@ public enum SolarTerms {
   private final int zodiacDegree;
 
   private final static SolarTerms[] VALUES =
-    { 立春 , 雨水 , 驚蟄 , 春分 , 清明 , 榖雨 ,
+    { 立春 , 雨水 , 驚蟄 , 春分 , 清明 , 穀雨,
       立夏 , 小滿 , 芒種 , 夏至 , 小暑 , 大暑 ,
       立秋 , 處暑 , 白露 , 秋分 , 寒露 , 霜降 ,
       立冬 , 小雪 , 大雪 , 冬至 , 小寒 , 大寒
