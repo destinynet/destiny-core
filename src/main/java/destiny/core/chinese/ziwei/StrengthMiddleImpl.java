@@ -13,11 +13,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.ziwei.StarLucky.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
+import static destiny.core.chinese.ziwei.StarUnlucky.地劫;
+import static destiny.core.chinese.ziwei.StarUnlucky.火星;
+import static destiny.core.chinese.ziwei.StarUnlucky.鈴星;
 
 /**
  * 中州派
  * 參考表格 http://www.dlzww.com/news/html/?517.html
+ *
+ * https://www.ptt.cc/man/Life/D3AF/M.1294834996.A.E89.html
  *
  * 亦即是此表格 https://goo.gl/ZHYgh9 中的綠色(南派)
  * */
@@ -46,6 +52,17 @@ public class StrengthMiddleImpl extends StrengthAbstractImpl {
     .put(天梁, 子, 1).put(天梁, 丑, 2).put(天梁, 寅, 1).put(天梁, 卯, 1).put(天梁, 辰, 2).put(天梁, 巳, 7).put(天梁, 午, 1).put(天梁, 未, 2).put(天梁, 申, 7).put(天梁, 酉, 3).put(天梁, 戌, 2).put(天梁, 亥, 7)
     .put(七殺, 子, 2).put(七殺, 丑, 1).put(七殺, 寅, 1).put(七殺, 卯, 7).put(七殺, 辰, 2).put(七殺, 巳, 5).put(七殺, 午, 2).put(七殺, 未, 2).put(七殺, 申, 1).put(七殺, 酉, 6).put(七殺, 戌, 1).put(七殺, 亥, 5)
     .put(破軍, 子, 1).put(破軍, 丑, 2).put(破軍, 寅, 7).put(破軍, 卯, 2).put(破軍, 辰, 2).put(破軍, 巳, 6).put(破軍, 午, 1).put(破軍, 未, 1).put(破軍, 申, 7).put(破軍, 酉, 7).put(破軍, 戌, 2).put(破軍, 亥, 5)
+
+    .put(地劫, 亥, 2) // 與 commonTable 不同之處
+
+    .put(文曲, 子, 1).put(文曲, 丑, 1).put(文曲, 寅, 5).put(文曲, 卯, 2).put(文曲, 辰, 1).put(文曲, 巳, 1).put(文曲, 午, 7).put(文曲, 未, 2).put(文曲, 申, 5).put(文曲, 酉, 1).put(文曲, 戌, 7).put(文曲, 亥, 2)
+    .put(文昌, 子, 2).put(文昌, 丑, 1).put(文昌, 寅, 7).put(文昌, 卯, 5).put(文昌, 辰, 2).put(文昌, 巳, 1).put(文昌, 午, 7).put(文昌, 未, 5).put(文昌, 申, 2).put(文昌, 酉, 1).put(文昌, 戌, 7).put(文昌, 亥, 2)
+
+    // 火星、鈴星、左輔、右弼 https://www.ptt.cc/man/Life/D3AF/M.1294834996.A.E89.html
+    .put(火星, 子, 5).put(火星, 丑, 2).put(火星, 寅, 1).put(火星, 卯, 5).put(火星, 辰, 6).put(火星, 巳, 2).put(火星, 午, 1).put(火星, 未, 6).put(火星, 申, 7).put(火星, 酉, 7).put(火星, 戌, 1).put(火星, 亥, 5)
+    .put(鈴星, 子, 7).put(鈴星, 丑, 7).put(鈴星, 寅, 1).put(鈴星, 卯, 1).put(鈴星, 辰, 2).put(鈴星, 巳, 2).put(鈴星, 午, 1).put(鈴星, 未, 2).put(鈴星, 申, 2).put(鈴星, 酉, 7).put(鈴星, 戌, 1).put(鈴星, 亥, 1)
+    .put(左輔, 子, 2).put(左輔, 丑, 1).put(左輔, 寅, 1).put(左輔, 卯, 7).put(左輔, 辰, 1).put(左輔, 巳, 5).put(左輔, 午, 2).put(左輔, 未, 1).put(左輔, 申, 5).put(左輔, 酉, 7).put(左輔, 戌, 1).put(左輔, 亥, 6)
+    .put(右弼, 子, 1).put(右弼, 丑, 1).put(右弼, 寅, 2).put(右弼, 卯, 7).put(右弼, 辰, 1).put(右弼, 巳, 5).put(右弼, 午, 2).put(右弼, 未, 1).put(右弼, 申, 6).put(右弼, 酉, 7).put(右弼, 戌, 1).put(右弼, 亥, 5)
 
     .build();
 

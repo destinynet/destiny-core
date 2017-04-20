@@ -63,7 +63,15 @@ public class ZiweiImpl implements IZiwei, Serializable {
     // 本命四化
     Map<Tuple2<ZStar , FlowType> , ITransFour.Value> trans4Map = getTrans4Map(stars , FlowType.本命 , year.getStem() , settings);
 
-    return new Plate.Builder(monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap)
+    // 星體強弱表
+    IStrength strengthImpl = getStrengthImpl(settings.getStrength());
+
+    Map<ZStar , Integer> starStrengthMap = stars.stream()
+      .map(star -> Tuple.tuple(star, strengthImpl.getStrengthOf(star, starBranchMap.get(star).getBranch())))
+      .filter(t -> t.v2().isPresent())
+      .collect(Collectors.toMap(Tuple2::v1, t2 -> t2.v2().orElse(0))); // 這裡其實不會傳 0 , 因為前面已經 filter 過了
+
+    return new Plate.Builder(monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap, starStrengthMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
@@ -275,6 +283,13 @@ public class ZiweiImpl implements IZiwei, Serializable {
       case DEFAULT: return new MainHouseDefaultImpl();
       case SOLAR_TERMS: return new MainHouseSolarTermsImpl();
       default: throw new AssertionError("Error : " + mainHouse);
+    }
+  }
+
+  private IStrength getStrengthImpl(Settings.Strength strength) {
+    switch (strength) {
+      case MIDDLE: return new StrengthMiddleImpl();
+      default: throw new AssertionError("Error : " + strength);
     }
   }
 

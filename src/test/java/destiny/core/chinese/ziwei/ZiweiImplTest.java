@@ -49,8 +49,7 @@ public class ZiweiImplTest {
    * */
   @Test
   public void testPlate4() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.MIDDLE,
-      Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP,
+    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.MIDDLE, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP,
       Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
@@ -80,6 +79,10 @@ public class ZiweiImplTest {
     plate.getBranchFlowHouseMap().forEach((branch , map) -> {
       logger.info("{} -> {}" , branch , map);
     });
+
+    plate.getStarStrengthMap().forEach((star , value) -> {
+      logger.info("{} 強度 {}" , star , value);
+    });
   }
 
   /**
@@ -92,7 +95,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate3() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -138,7 +141,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate2() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -178,7 +181,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));

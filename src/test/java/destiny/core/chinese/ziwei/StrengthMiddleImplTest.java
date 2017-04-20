@@ -16,6 +16,7 @@ import static destiny.core.chinese.ziwei.StarLucky.天魁;
 import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarMinor.三台;
 import static destiny.core.chinese.ziwei.StarMinor.天巫;
+import static destiny.core.chinese.ziwei.StarUnlucky.地劫;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 
@@ -54,6 +55,10 @@ public class StrengthMiddleImplTest {
   public void getMap() {
     impl.getMapOf(紫微).forEach((k,v) -> {
       logger.info("{} -> {}" , k , v);
+    });
+
+    impl.getMapOf(地劫).forEach((k,v) -> {
+      logger.info("{} : {} -> {}" , 地劫 , k , v);
     });
   }
 

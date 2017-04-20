@@ -43,13 +43,13 @@ public class Plate implements Serializable {
 
   private final Map<Branch, Map<FlowType, House>> branchFlowHouseMap;
 
+  /** 星體強弱表 */
+  private final Map<ZStar , Integer> starStrengthMap;
+
   /**
    * 命盤
    */
-  private Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set,
-                Set<HouseData> houseDataSet,
-                Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap,
-                Map<Branch, Map<FlowType, House>> branchFlowHouseMap) {
+  private Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap) {
     this.mainHouse = mainHouse;
     this.bodyHouse = bodyHouse;
     this.fiveElement = fiveElement;
@@ -57,6 +57,7 @@ public class Plate implements Serializable {
     this.houseDataSet = houseDataSet;
     this.transFourMap = transFourMap;
     this.branchFlowHouseMap = branchFlowHouseMap;
+    this.starStrengthMap = starStrengthMap;
   }
 
   public StemBranch getMainHouse() {
@@ -109,7 +110,6 @@ public class Plate implements Serializable {
 
   /** 取得此顆星，的四化列表 */
   public List<Tuple2<FlowType, ITransFour.Value>> getTransFourOf(ZStar star) {
-
     return
       transFourMap.getOrDefault(star , new HashMap<>())
       .entrySet()
@@ -123,6 +123,10 @@ public class Plate implements Serializable {
     return branchFlowHouseMap;
   }
 
+  /** 取得命盤的星體強弱表 */
+  public Map<ZStar, Integer> getStarStrengthMap() {
+    return starStrengthMap;
+  }
 
   public static class Builder {
 
@@ -157,13 +161,17 @@ public class Plate implements Serializable {
      */
     private Map<Branch , Map<FlowType , House>> branchFlowHouseMap = new TreeMap<>();
 
-    public Builder(int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap) {
+    /** 星體強弱表 */
+    private final Map<ZStar , Integer> starStrengthMap;
+
+    public Builder(int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
       this.birthMonthNum = birthMonthNum;
       this.birthHour = birthHour;
       this.mainHouse = mainHouse;
       this.bodyHouse = bodyHouse;
       this.fiveElement = fiveElement;
       this.set = set;
+      this.starStrengthMap = starStrengthMap;
 
       // 哪個地支 裡面 有哪些星體
       Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -291,7 +299,7 @@ public class Plate implements Serializable {
 
 
     public Plate build() {
-      return new Plate(mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap);
+      return new Plate(mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap);
     }
 
 

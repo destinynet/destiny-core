@@ -44,7 +44,7 @@ public class Settings implements Serializable {
   /** {@link StarUnlucky#火星} ,  {@link StarUnlucky#鈴星} 設定 */
   public enum FireBell {
     全集,  /** {@link StarUnlucky#fun火星_全集} , {@link StarUnlucky#fun鈴星_全集} : (年支、時支) -> 地支 */
-    全書   /** {@link StarUnlucky#fun火星_全書} , {@link StarUnlucky#fun鈴星_全書} : 年支 -> 地支  */
+    全書   /** {@link StarUnlucky#fun火星_全書} , {@link StarUnlucky#fun鈴星_全書} : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮 */
   }
   private final FireBell fireBell;
 
@@ -74,6 +74,12 @@ public class Settings implements Serializable {
     ZIYUN   ,   /** {@link TransFourZiyunImpl} */
   }
   private final TransFour transFour;
+
+
+  public enum Strength {
+    MIDDLE ,    /** {@link StrengthMiddleImpl} 中州派 */
+  }
+  private final Strength strength;
 
 
   /** 流年設定 */
@@ -106,7 +112,7 @@ public class Settings implements Serializable {
   }
   private final FlowHour flowHour;
 
-  public Settings(MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
+  public Settings(MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
     this.monthType = monthType;
     this.mainHouse = mainHouse;
     this.houseSeq = houseSeq;
@@ -115,6 +121,7 @@ public class Settings implements Serializable {
     this.horse = horse;
     this.hurtAngel = hurtAngel;
     this.transFour = transFour;
+    this.strength = strength;
     this.flowYear = flowYear;
     this.flowMonth = flowMonth;
     this.flowDay = flowDay;
@@ -151,6 +158,10 @@ public class Settings implements Serializable {
 
   public TransFour getTransFour() {
     return transFour;
+  }
+
+  public Strength getStrength() {
+    return strength;
   }
 
   public FlowYear getFlowYear() {
