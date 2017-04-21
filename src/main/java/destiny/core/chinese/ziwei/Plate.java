@@ -4,17 +4,22 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
+import destiny.core.calendar.Location;
+import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +28,21 @@ import java.util.stream.Collectors;
 public class Plate implements Serializable {
 
   private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
+
+  /** 出生資料 , 陰曆 */
+  private final ChineseDate chineseDate;
+
+  /** 出生資料 , 陽曆 , 精確到「分、秒」 */
+  @Nullable
+  private final LocalDateTime localDateTime;
+
+  /** 出生地點 */
+  @Nullable
+  private final Location location;
+
+  /** 地點名稱 */
+  @Nullable
+  private final String place;
 
   /** 性別 */
   private final Gender gender;
@@ -62,7 +82,11 @@ public class Plate implements Serializable {
   /**
    * 命盤
    */
-  private Plate(Gender gender, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
+  private Plate(ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
+    this.chineseDate = chineseDate;
+    this.localDateTime = localDateTime;
+    this.location = location;
+    this.place = place;
     this.gender = gender;
     this.mainHouse = mainHouse;
     this.bodyHouse = bodyHouse;
@@ -74,6 +98,26 @@ public class Plate implements Serializable {
     this.starStrengthMap = starStrengthMap;
     this.eightWordsSolar = eightWordsSolar;
     this.eightWordsLunar = eightWordsLunar;
+  }
+
+  public ChineseDate getChineseDate() {
+    return chineseDate;
+  }
+
+  public Optional<LocalDateTime> getLocalDateTime() {
+    return Optional.ofNullable(localDateTime);
+  }
+
+  public Optional<Location> getLocation() {
+    return Optional.ofNullable(location);
+  }
+
+  public Optional<String> getPlace() {
+    if (StringUtils.isBlank(place)) {
+      return Optional.empty();
+    } else {
+      return Optional.of(place);
+    }
   }
 
   public Gender getGender() {
@@ -121,6 +165,12 @@ public class Plate implements Serializable {
   /** 取得每個宮位、詳細資料 , 按照 [命宮 , 兄弟 , 夫妻...] 排序下來 */
   public Set<HouseData> getHouseDataSet() {
     return new TreeSet<>(houseDataSet);
+  }
+
+  /** 取得此地支的宮位資訊 */
+  @SuppressWarnings("ConstantConditions")
+  public HouseData getHouseDataOf(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch).findFirst().get();
   }
 
   /** 取得 星體的四化列表 */
@@ -215,6 +265,21 @@ public class Plate implements Serializable {
 
   public static class Builder {
 
+    /** 陰曆生日 */
+    private final ChineseDate chineseDate;
+
+    /** 陽曆出生日期 */
+    @Nullable
+    private LocalDateTime localDateTime = null;
+
+    /** 出生地點 */
+    @Nullable
+    private Location location = null;
+
+    /** 地點名稱 */
+    @Nullable
+    private String place = null;
+
     /** 性別 */
     private final Gender gender;
 
@@ -258,7 +323,8 @@ public class Plate implements Serializable {
     /** 星體強弱表 */
     private final Map<ZStar , Integer> starStrengthMap;
 
-    public Builder(Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+    public Builder(ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+      this.chineseDate = chineseDate;
       this.gender = gender;
       this.birthMonthNum = birthMonthNum;
       this.birthHour = birthHour;
@@ -296,6 +362,10 @@ public class Plate implements Serializable {
       }).collect(Collectors.toSet());
     } // builder init
 
+    public ChineseDate getChineseDate() {
+      return chineseDate;
+    }
+
     public Set<ZStar> getStars() {
       return starStrengthMap.keySet();
     }
@@ -306,6 +376,21 @@ public class Plate implements Serializable {
 
     public Branch getBirthHour() {
       return birthHour;
+    }
+
+    public Builder withLocalDateTime(LocalDateTime localDateTime) {
+      this.localDateTime = localDateTime;
+      return this;
+    }
+
+    public Builder withLocation(Location location) {
+      this.location = location;
+      return this;
+    }
+
+    public Builder withPlace(String place) {
+      this.place = place;
+      return this;
     }
 
     /** 添加 四化 */
@@ -421,7 +506,7 @@ public class Plate implements Serializable {
 
 
     public Plate build() {
-      return new Plate(gender, mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
+      return new Plate(chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
     }
 
 

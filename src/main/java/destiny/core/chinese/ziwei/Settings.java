@@ -12,6 +12,15 @@ import java.io.Serializable;
 
 public class Settings implements Serializable {
 
+  /** 閏月該如何處理 */
+  public enum LeapMonth {
+    THIS_MONTH  ,   // 一律當作本月
+    NEXT_MONTH  ,   // 一律當作下月
+    SPLIT_15    ,   // 15日(含)之前當本月，之後當下月
+  }
+  private final LeapMonth leapMonth;
+
+
   public enum MonthType {
     NUMBER ,      // 陰曆月數
     SOLAR_TERMS   // 節氣
@@ -112,7 +121,8 @@ public class Settings implements Serializable {
   }
   private final FlowHour flowHour;
 
-  public Settings(MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
+  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
+    this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
     this.houseSeq = houseSeq;
@@ -126,6 +136,10 @@ public class Settings implements Serializable {
     this.flowMonth = flowMonth;
     this.flowDay = flowDay;
     this.flowHour = flowHour;
+  }
+
+  public LeapMonth getLeapMonth() {
+    return leapMonth;
   }
 
   public MonthType getMonthType() {

@@ -51,7 +51,7 @@ public class ZiweiImplTest {
    * */
   @Test
   public void testPlate4() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.MIDDLE, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP,
+    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.MIDDLE, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP,
       Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
@@ -63,7 +63,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarLongevity.values));
 
     // 乙酉大限 , 2017(丁酉年) , 農曆 3月(甲辰月) 22日(乙亥日)  (陽曆4/18) , 晚上 丁亥 時
-    Plate.Builder builder = impl.getBirthPlate(庚辰 , 寅 , 1 , 立春 , 28 , 午 , starList, Gender.男, settings);
+    Plate.Builder builder = impl.getBirthPlate(庚辰 , 1, false, 寅 , 立春 , 28 , 午 , starList, Gender.男, settings);
 
     Plate plate = impl.getFlowHour(builder, settings , 乙酉 , 丁酉 , 甲辰 , 乙亥 , 22 , 丁亥).build();
     assertSame(甲申 , plate.getMainHouse());
@@ -98,7 +98,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate3() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -107,7 +107,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate.Builder builder = impl.getBirthPlate(己巳 , 申 , 7 , 立秋 , 25 , 辰 , starList, Gender.女, settings);
+    Plate.Builder builder = impl.getBirthPlate(己巳 , 7, false, 申 , 立秋 , 25 , 辰 , starList, Gender.女, settings);
     Plate plate = impl.getFlowDay(builder , settings , 甲午 , 丙申, 丁亥 , 辛卯 , 17 ).build();
 
     assertSame(戊辰 , plate.getMainHouse());
@@ -144,7 +144,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate2() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -155,7 +155,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarLongevity.values));
 
 
-    Plate plate = impl.getBirthPlate(己酉 , 子 , 11, 大雪 , 24, 子, starList, Gender.男, settings).build();
+    Plate plate = impl.getBirthPlate(己酉 , 11, false, 子 , 大雪 , 24, 子, starList, Gender.男, settings).build();
 
     logger.info("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
@@ -184,7 +184,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.NUMBER, Settings.MainHouse.DEFAULT, Settings.HouseSeq.DEFAULT, Tianyi.ZIWEI_BOOK, FireBell.全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.DEFAULT, Settings.Strength.MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -193,7 +193,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate plate = impl.getBirthPlate(丁酉 , 辰 , 3, 清明, 18, 亥, starList, Gender.男, settings).build();
+    Plate plate = impl.getBirthPlate(丁酉 , 3, false, 辰 , 清明, 18, 亥, starList, Gender.男, settings).build();
 
     logger.debug("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());

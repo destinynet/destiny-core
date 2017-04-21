@@ -31,6 +31,11 @@ public interface SolarTermsIF {
     return getSolarTermsFromGMT(gmt.getGmtJulDay());
   }
 
+  default SolarTerms getSolarTerms(LocalDateTime lmt , Location location) {
+    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    return getSolarTermsFromGMT(gmt);
+  }
+
   /**
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    * @return List <SolarTermsTime>

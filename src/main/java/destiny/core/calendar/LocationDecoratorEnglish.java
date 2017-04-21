@@ -18,12 +18,15 @@ public class LocationDecoratorEnglish implements Decorator<Location> {
     sb.append(location.getEastWest() == EastWest.EAST ? "East " : "West ");
     sb.append(location.getLongitudeDegree()).append(" ° ");
     sb.append(location.getLongitudeMinute()).append(" ' ");
-    sb.append(location.getLongitudeSecond()).append(" \" , ");
+    String dblStringLng = Double.toString(location.getLongitudeSecond()).substring(0,5);
+    sb.append(dblStringLng).append(" \" , ");
 
     sb.append(location.getNorthSouth() == NorthSouth.NORTH ? "North " : "South ");
     sb.append(location.getLatitudeDegree()).append(" ° ");
     sb.append(location.getLatitudeMinute()).append(" ' ");
-    sb.append(location.getLatitudeSecond()).append(" \".");
+
+    String dblStringLat = Double.toString(location.getLatitudeSecond()).substring(0,5);
+    sb.append(dblStringLat).append(" \".");
     sb.append(" GMT offset ").append(location.getTimeZone().getRawOffset() / (60000 * 60)).append(" hours , ");
     sb.append("Alt ").append(location.getAltitudeMeter()).append(" m.");
     return sb.toString();

@@ -18,12 +18,15 @@ public class LocationDecoratorChina implements Decorator<Location> {
     sb.append(location.getEastWest() == EastWest.EAST ? "东经" : "西经").append(" ");
     sb.append(location.getLongitudeDegree()).append("度");
     sb.append(location.getLongitudeMinute()).append("分");
-    sb.append(location.getLongitudeSecond()).append("秒, ");
+    String dblStringLng = Double.toString(location.getLongitudeSecond()).substring(0,5);
+    sb.append(dblStringLng).append("秒, ");
 
     sb.append(location.getNorthSouth() == NorthSouth.NORTH ? "北纬" : "南纬").append(" ");
     sb.append(location.getLatitudeDegree()).append("度");
     sb.append(location.getLatitudeMinute()).append("分");
-    sb.append(location.getLatitudeSecond()).append("秒.");
+
+    String dblStringLat = Double.toString(location.getLatitudeSecond()).substring(0,5);
+    sb.append(dblStringLat).append("秒.");
     sb.append("高度 ").append(location.getAltitudeMeter()).append(" 米");
     sb.append(" 时区 ").append(location.getTimeZone().getID());
     if (location.isMinuteOffsetSet())

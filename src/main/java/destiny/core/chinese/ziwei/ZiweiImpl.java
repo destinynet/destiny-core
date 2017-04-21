@@ -4,7 +4,15 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
+import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
+import destiny.core.calendar.SolarTermsIF;
+import destiny.core.calendar.chinese.ChineseDate;
+import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.eightwords.DayIF;
+import destiny.core.calendar.eightwords.HourIF;
+import destiny.core.calendar.eightwords.MidnightIF;
+import destiny.core.calendar.eightwords.MonthIF;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.Stem;
@@ -15,16 +23,18 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
 import java.io.Serializable;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 本命盤 */
   @Override
-  public Plate.Builder getBirthPlate(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms,
-                                     int days, Branch hour,
-                                     @NotNull Collection<ZStar> stars, Gender gender, Settings settings) {
+  public Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) {
     IMainHouse mainHouseImpl = getMainHouseImpl(settings.getMainHouse());
     StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , monthNum , hour , solarTerms , mainHouseImpl);
     StemBranch bodyHouse = IZiwei.getBodyHouse(year.getStem() , monthNum , hour);
@@ -69,11 +79,41 @@ public class ZiweiImpl implements IZiwei, Serializable {
       .filter(t -> t.v2().isPresent())
       .collect(Collectors.toMap(Tuple2::v1, t2 -> t2.v2().orElse(0))); // 這裡其實不會傳 0 , 因為前面已經 filter 過了
 
-    return new Plate.Builder(gender, monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap, starStrengthMap)
+    ChineseDate chineseDate = new ChineseDate(null , year , monthNum , leapMonth , days);
+
+    return new Plate.Builder(chineseDate, gender, monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap, starStrengthMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
 
+  /** 最完整的計算命盤方式 */
+  @Override
+  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, SolarTermsIF solarTermsImpl, MonthIF monthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+    ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , location , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
+    StemBranch year = cDate.getYear();
+    Branch monthBranch = monthImpl.getMonth(lmt , location).getBranch();
+    int monthNum = cDate.getMonth();
+    SolarTerms solarTerms = solarTermsImpl.getSolarTerms(lmt , location);
+    int days = cDate.getDay();
+    Branch hour = hourImpl.getHour(lmt , location);
+    if (cDate.isLeapMonth()) {
+      // 閏月
+      switch (settings.getLeapMonth()) {
+        case NEXT_MONTH: monthNum = monthNum+1; break;
+        case SPLIT_15: {
+          if (days > 15) {
+            monthNum = monthNum+1;
+            break;
+          }
+        }
+      }
+    }
+    return getBirthPlate(year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
+      .withLocalDateTime(lmt)
+      .withLocation(location)
+      .withPlace(place)
+      ;
+  }
 
   /** 計算 大限盤 */
   @Override
@@ -89,7 +129,6 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     // 大限四化
     Map<Tuple2<ZStar , FlowType> , ITransFour.Value> trans4Map = getTrans4Map(builder.getStars() , FlowType.大限 , flowBig.getStem() , settings);
-    logger.info("大限四化 map = {}" , trans4Map);
     return builder
       .withFlowBig(flowBig.getBranch() , branchHouseMap)
       .appendTrans4Map(trans4Map);
@@ -139,8 +178,6 @@ public class ZiweiImpl implements IZiwei, Serializable {
       .appendTrans4Map(trans4Map);
   }
 
-
-
   /** 計算 流日盤 */
   @Override
   public Plate.Builder getFlowDay(Plate.Builder builder, Settings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum) {
@@ -163,7 +200,6 @@ public class ZiweiImpl implements IZiwei, Serializable {
       .withFlowDay(flowDay.getBranch() ,branchHouseMap)
       .appendTrans4Map(trans4Map);
   }
-
 
   /** 流時盤 */
   @Override

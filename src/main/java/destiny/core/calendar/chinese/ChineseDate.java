@@ -8,6 +8,7 @@ package destiny.core.calendar.chinese;
 import destiny.core.chinese.StemBranch;
 import destiny.tools.ChineseStringTools;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -18,7 +19,8 @@ import java.io.Serializable;
 public class ChineseDate implements Serializable {
 
   /** 第幾輪 */
-  private int cycle;
+  @Nullable
+  private Integer cycle;
 
   /** 年干支 */
   @NotNull
@@ -33,7 +35,7 @@ public class ChineseDate implements Serializable {
   /** 日 */
   private final int day;
 
-  public ChineseDate(int cycle, @NotNull StemBranch year, int month, boolean leapMonth, int day) {
+  public ChineseDate(@Nullable Integer cycle, @NotNull StemBranch year, int month, boolean leapMonth, int day) {
     this.cycle = cycle;
     this.year = year;
     this.month = month;
@@ -59,7 +61,7 @@ public class ChineseDate implements Serializable {
   }
 
   public int getCycle() {
-    return cycle;
+    return cycle == null ? 0 : cycle;
   }
 
 
@@ -73,7 +75,7 @@ public class ChineseDate implements Serializable {
    * 注意：只論 cycle + 年干支 , 以農曆為準 , 不考慮「西元過年」至「農曆過年」之間的 gap , 仍將其視為「西元」的前一年
    */
   public int getWestYear() {
-    return -2636 + (cycle -1)* 60 + year.getIndex();
+    return -2636 + (getCycle() -1)* 60 + year.getIndex();
   }
 
   private String toChinese(int num) {
