@@ -63,8 +63,9 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarLongevity.values));
 
     // 乙酉大限 , 2017(丁酉年) , 農曆 3月(甲辰月) 22日(乙亥日)  (陽曆4/18) , 晚上 丁亥 時
-    Plate plate = impl.getPlate(庚辰 , 寅 , 1 , 立春 , 28 , 午 , starList, Gender.男, settings ,
-      乙酉 , 丁酉 , 甲辰 , 乙亥 , 22 , 丁亥).build();
+    Plate.Builder builder = impl.getBirthPlate(庚辰 , 寅 , 1 , 立春 , 28 , 午 , starList, Gender.男, settings);
+
+    Plate plate = impl.getFlowHour(builder, settings , 乙酉 , 丁酉 , 甲辰 , 乙亥 , 22 , 丁亥).build();
     assertSame(甲申 , plate.getMainHouse());
     assertSame(甲申 , plate.getBodyHouse());
     assertSame(水 , plate.getFiveElement());
@@ -106,8 +107,8 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate plate = impl.getPlate(己巳 , 申 , 7 , 立秋 , 25 , 辰 , starList, Gender.女, settings ,
-      甲午 , 丙申, 丁亥 , 辛卯 , 17).build();
+    Plate.Builder builder = impl.getBirthPlate(己巳 , 申 , 7 , 立秋 , 25 , 辰 , starList, Gender.女, settings);
+    Plate plate = impl.getFlowDay(builder , settings , 甲午 , 丙申, 丁亥 , 辛卯 , 17 ).build();
 
     assertSame(戊辰 , plate.getMainHouse());
     assertSame(丙子 , plate.getBodyHouse());
@@ -154,7 +155,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarLongevity.values));
 
 
-    Plate plate = impl.getPlate(己酉 , 子 , 11, 大雪 , 24, 子, starList, Gender.男, settings).build();
+    Plate plate = impl.getBirthPlate(己酉 , 子 , 11, 大雪 , 24, 子, starList, Gender.男, settings).build();
 
     logger.info("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());
@@ -192,7 +193,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate plate = impl.getPlate(丁酉 , 辰 , 3, 清明, 18, 亥, starList, Gender.男, settings).build();
+    Plate plate = impl.getBirthPlate(丁酉 , 辰 , 3, 清明, 18, 亥, starList, Gender.男, settings).build();
 
     logger.debug("命宮 = {} , 身宮 = {} . {}{}局" , plate.getMainHouse() , plate.getBodyHouse() , plate.getFiveElement() , plate.getSet());
     logger.debug("宮位名稱 -> 宮位資料 = {}" , plate.getHouseMap());

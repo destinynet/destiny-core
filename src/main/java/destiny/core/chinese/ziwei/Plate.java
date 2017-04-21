@@ -296,6 +296,17 @@ public class Plate implements Serializable {
       }).collect(Collectors.toSet());
     } // builder init
 
+    public Set<ZStar> getStars() {
+      return starStrengthMap.keySet();
+    }
+
+    public int getBirthMonthNum() {
+      return birthMonthNum;
+    }
+
+    public Branch getBirthHour() {
+      return birthHour;
+    }
 
     /** 添加 四化 */
     public Builder appendTrans4Map(Map<Tuple2<ZStar , FlowType> , ITransFour.Value> map) {
