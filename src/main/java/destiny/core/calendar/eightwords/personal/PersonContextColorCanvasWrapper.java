@@ -9,6 +9,7 @@ import destiny.core.calendar.TimeDecoratorChinese;
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWords;
+import destiny.core.calendar.eightwords.Reactions;
 import destiny.core.chinese.StemBranch;
 import destiny.tools.ColorCanvas.AlignUtil;
 import destiny.tools.ColorCanvas.ColorCanvas;

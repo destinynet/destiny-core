@@ -46,6 +46,8 @@ public class ZiweiImplTest {
    * 天盘，水2局
    * 命主廉贞，身主文昌
    * 根據四化，此程式應該用的是 中州派 的四化 {@link TransFourMiddleImpl}
+   *
+   * 本命盤截圖 http://imgur.com/a/g3D9X
    * */
   @Test
   public void testPlate4() {

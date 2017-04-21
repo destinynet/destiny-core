@@ -3,9 +3,12 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.Gender;
+import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
@@ -18,6 +21,11 @@ import java.util.stream.Collectors;
 /** 排盤結果 , 作為 DTO */
 
 public class Plate implements Serializable {
+
+  private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
+
+  /** 性別 */
+  private final Gender gender;
 
   /** 命宮 */
   private final StemBranch mainHouse;
@@ -34,22 +42,28 @@ public class Plate implements Serializable {
   /** 12個宮位，每個宮位內的資料 */
   private final Set<HouseData> houseDataSet;
 
-  private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
-
   /** 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    * */
   private final Map<ZStar , Map<FlowType, ITransFour.Value>> transFourMap;// = new HashMap<>();
 
+  /** 取得此地支，在各個流運類型， 宮位名稱 是什麼 */
   private final Map<Branch, Map<FlowType, House>> branchFlowHouseMap;
 
   /** 星體強弱表 */
   private final Map<ZStar , Integer> starStrengthMap;
 
+  /** 節氣八字 */
+  private final EightWords eightWordsSolar;
+
+  /** 陰曆八字 */
+  private final EightWords eightWordsLunar;
+
   /**
    * 命盤
    */
-  private Plate(StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap) {
+  private Plate(Gender gender, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
+    this.gender = gender;
     this.mainHouse = mainHouse;
     this.bodyHouse = bodyHouse;
     this.fiveElement = fiveElement;
@@ -58,6 +72,12 @@ public class Plate implements Serializable {
     this.transFourMap = transFourMap;
     this.branchFlowHouseMap = branchFlowHouseMap;
     this.starStrengthMap = starStrengthMap;
+    this.eightWordsSolar = eightWordsSolar;
+    this.eightWordsLunar = eightWordsLunar;
+  }
+
+  public Gender getGender() {
+    return gender;
   }
 
   public StemBranch getMainHouse() {
@@ -123,12 +143,80 @@ public class Plate implements Serializable {
     return branchFlowHouseMap;
   }
 
+  /** 本命盤中，此地支的宮位名稱是什麼 */
+  public Map<Branch , House> getBranchHouseMap() {
+    return getBranchFlowHouseMap().entrySet().stream()
+      .map(e -> Tuple.tuple(e.getKey() , e.getValue().get(FlowType.本命)))
+      .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+  }
+
   /** 取得命盤的星體強弱表 */
   public Map<ZStar, Integer> getStarStrengthMap() {
     return starStrengthMap;
   }
 
+  /** 取得在此地支宮位的主星 */
+  public List<ZStar> getMainStarsIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarMain)
+      .collect(Collectors.toList());
+  }
+
+  /** 吉星 */
+  public List<ZStar> getLuckyStarsIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarLucky)
+      .collect(Collectors.toList());
+  }
+
+  /** 凶星 */
+  public List<ZStar> getUnluckyStarsIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarUnlucky)
+      .collect(Collectors.toList());
+  }
+
+  /** 雜曜 */
+  public List<ZStar> getMinorStarsIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarMinor)
+      .collect(Collectors.toList());
+  }
+
+  /** 博士12神煞 */
+  public Optional<ZStar> getDoctorStarIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarDoctor)
+      .findFirst();
+  }
+
+  /** 長生12神煞 */
+  public Optional<ZStar> getLongevityStarIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarLongevity)
+      .findFirst();
+  }
+
+  /** 節氣八字 */
+  public Optional<EightWords> getEightWordsSolar() {
+    return Optional.ofNullable(eightWordsSolar);
+  }
+
+  /** 陰曆八字 */
+  public Optional<EightWords> getEightWordsLunar() {
+    return Optional.ofNullable(eightWordsLunar);
+  }
+
   public static class Builder {
+
+    /** 性別 */
+    private final Gender gender;
 
     /** 出生月份 */
     private final int birthMonthNum;
@@ -148,6 +236,12 @@ public class Plate implements Serializable {
     /** 五行第幾局 */
     private final int set;
 
+    /** 正確的八字（節氣推算）*/
+    private EightWords eightWordsSolar = null;
+
+    /** 陰曆的八字（不論節氣）*/
+    private EightWords eightWordsLunar = null;
+
     private final Set<HouseData> houseDataSet;
 
     /**
@@ -164,7 +258,8 @@ public class Plate implements Serializable {
     /** 星體強弱表 */
     private final Map<ZStar , Integer> starStrengthMap;
 
-    public Builder(int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+    public Builder(Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+      this.gender = gender;
       this.birthMonthNum = birthMonthNum;
       this.birthHour = birthHour;
       this.mainHouse = mainHouse;
@@ -297,9 +392,25 @@ public class Plate implements Serializable {
       return this;
     }
 
+    /**
+     * @param eightWords 節氣八字
+     */
+    public Builder withEightWordsSolar(@NotNull EightWords eightWords) {
+      this.eightWordsSolar = eightWords;
+      return this;
+    }
+
+    /**
+     * @param eightWords 陰曆八字
+     */
+    public Builder withEightWordsLunar(@NotNull EightWords eightWords) {
+      this.eightWordsLunar = eightWords;
+      return this;
+    }
+
 
     public Plate build() {
-      return new Plate(mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap);
+      return new Plate(gender, mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
     }
 
 

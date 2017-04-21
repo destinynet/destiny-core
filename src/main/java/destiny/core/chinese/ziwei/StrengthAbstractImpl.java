@@ -10,6 +10,7 @@ import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -122,4 +123,36 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
   /** 取得「某顆星」於 12地支的廟旺表 */
   @NotNull
   abstract Map<Branch, Integer> getImplMapOf(ZStar star);
+
+  /**
+   *
+   *                           1  2       3    4    5      6          7
+   * 南派依序分成               →廟、旺、    得地     、平和、   閒地      、陷    ，等六級。
+   * 北派依序分成（即紫微斗數全書）→廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
+   */
+  @Override
+  public String getString(int value , Locale locale) {
+    if (locale == Locale.CHINA) {
+      switch (value) {
+        case 1 : return "庙";
+        case 2 : return "旺";
+        case 3 : return "地";
+        case 4 : return "利";
+        case 5 : return "平";
+        case 6 : return "闲";
+        case 7 : return "陷";
+        default: throw new AssertionError("Error : " + value);
+      }
+    }
+    switch (value) {
+      case 1 : return "廟";
+      case 2 : return "旺";
+      case 3 : return "地";
+      case 4 : return "利";
+      case 5 : return "平";
+      case 6 : return "閒";
+      case 7 : return "陷";
+      default: throw new AssertionError("Error : " + value);
+    }
+  }
 }

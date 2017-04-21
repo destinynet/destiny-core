@@ -8,9 +8,7 @@ import destiny.core.chinese.Stem;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,8 +29,6 @@ import java.util.stream.Collectors;
  * */
 public interface ITransFour extends Descriptive {
 
-  enum Value {祿 , 權 , 科 , 忌}
-
   /** 取得「某天干（可能是本命年、大限、或是流年、流月、流日、流時）的某四化」是哪顆星 */
   ZStar getStarOf(Stem stem , Value value);
 
@@ -45,5 +41,14 @@ public interface ITransFour extends Descriptive {
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
     return Optional.ofNullable(map.getOrDefault(star , null));
+  }
+
+  enum Value {
+
+    祿 , 權 , 科 , 忌;
+
+    public String toString(Locale locale) {
+      return ResourceBundle.getBundle(ZStar.class.getName(), locale).getString(name());
+    }
   }
 }

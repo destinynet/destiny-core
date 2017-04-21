@@ -11,7 +11,6 @@ import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
-import destiny.core.calendar.eightwords.personal.Reactions;
 import destiny.core.calendar.eightwords.personal.ReactionsUtil;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;

@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.chinese.Branch;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,4 +21,7 @@ public interface IStrength {
   Map<Branch, Integer> getMapOf(ZStar star);
 
   Optional<Integer> getStrengthOf(ZStar star , Branch branch);
+
+  /** 將 1轉成「廟」 , 2轉成「旺」... */
+  String getString(int value , Locale locale);
 }

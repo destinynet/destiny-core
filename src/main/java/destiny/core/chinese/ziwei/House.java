@@ -3,6 +3,9 @@
  */
 package destiny.core.chinese.ziwei;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 /**
  * 十二宮位 (遷移 or 相貌)
  */
@@ -33,6 +36,10 @@ public enum House {
 
   public String getName() {
     return name;
+  }
+
+  public String toString(Locale locale) {
+    return ResourceBundle.getBundle(House.class.getName(), locale).getString(name());
   }
 
   public House next(int n , IHouseSeq seq) {

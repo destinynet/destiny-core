@@ -2,10 +2,13 @@
  * @author smallufo
  * Created on 2005/4/6 at 下午 04:07:42
  */
-package destiny.core.calendar.eightwords.personal;
+package destiny.core.calendar.eightwords;
 
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * 十神 , 天干之間互相的互動關係 : 比間，劫財，正財...
@@ -24,18 +27,16 @@ public enum Reactions
   七殺("七殺");
 
   private final String value;
-  
+
   Reactions(String value )
   {
     this.value = value;
   }
-  
+
   /** 比肩.getPairReaction() == 劫財 */
   @NotNull
-  public Reactions getPairReaction()
-  {
-    switch (this)
-    {
+  public Reactions getPairReaction() {
+    switch (this) {
       case 比肩: return 劫財;
       case 劫財: return 比肩;
       case 正印: return 偏印;
@@ -49,11 +50,19 @@ public enum Reactions
     }
     throw new RuntimeException("RuntimeException occurs when getPairReaction() of " + this.toString());
   }
-  
-
 
   public String toString()
   {
     return value;
   }
+
+  public String toString(Locale locale) {
+    return ResourceBundle.getBundle(Reactions.class.getName(), locale).getString(name());
+  }
+
+  /** 縮寫 */
+  public String getAbbreviation(Locale locale) {
+    return ResourceBundle.getBundle(Reactions.class.getName(), locale).getString(name()+"_ABBR");
+  }
+
 }

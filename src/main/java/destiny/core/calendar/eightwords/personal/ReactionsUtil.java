@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
+import destiny.core.calendar.eightwords.Reactions;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class ReactionsUtil
    * @return 天干十神
    */
   @NotNull
-  public final Reactions getReaction( @NotNull Stem actor , @NotNull Stem actee)
+  public final Reactions getReaction(@NotNull Stem actor , @NotNull Stem actee)
   {
     if (actor.getFiveElement().isProducingTo(actee.getFiveElement()) )
     {

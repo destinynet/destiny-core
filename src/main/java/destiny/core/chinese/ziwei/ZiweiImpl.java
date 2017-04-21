@@ -71,7 +71,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
       .filter(t -> t.v2().isPresent())
       .collect(Collectors.toMap(Tuple2::v1, t2 -> t2.v2().orElse(0))); // 這裡其實不會傳 0 , 因為前面已經 filter 過了
 
-    return new Plate.Builder(monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap, starStrengthMap)
+    return new Plate.Builder(gender, monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap, starStrengthMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
