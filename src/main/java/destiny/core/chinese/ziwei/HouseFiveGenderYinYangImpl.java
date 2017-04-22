@@ -37,8 +37,8 @@ public abstract class HouseFiveGenderYinYangImpl extends HouseAbstractImpl<Tuple
 
   private IMainHouse getMainHouseImpl(Settings.MainHouse mainHouse) {
     switch (mainHouse) {
-      case DEFAULT: return new MainHouseDefaultImpl();
-      case SOLAR_TERMS: return new MainHouseSolarTermsImpl();
+      case MAIN_HOUSE_DEFAULT: return new MainHouseDefaultImpl();
+      case MAIN_HOUSE_SOLAR: return new MainHouseSolarTermsImpl();
       default: throw new AssertionError("Error : " + mainHouse);
     }
   }

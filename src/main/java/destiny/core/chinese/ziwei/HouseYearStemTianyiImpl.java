@@ -26,10 +26,10 @@ import java.util.Map;
 public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<Stem, TianyiIF>> {
 
   private final Map<Settings.Tianyi, TianyiIF> map = new ImmutableMap.Builder<Settings.Tianyi, TianyiIF>()
-    .put(Settings.Tianyi.ZIWEI_BOOK  , new TianyiZiweiBookImpl())
-    .put(Settings.Tianyi.AUTHORIZED  , new TianyiAuthorizedImpl())
-    .put(Settings.Tianyi.OCEAN       , new TianyiOceanImpl())
-    .put(Settings.Tianyi.LIUREN_PITHY, new TianyiLiurenPithyImpl())
+    .put(Settings.Tianyi.TIANYI_ZIWEI_BOOK, new TianyiZiweiBookImpl())
+    .put(Settings.Tianyi.TIANYI_AUTHORIZED, new TianyiAuthorizedImpl())
+    .put(Settings.Tianyi.TIANYI_OCEAN, new TianyiOceanImpl())
+    .put(Settings.Tianyi.TIANYI_LIUREN_PITHY, new TianyiLiurenPithyImpl())
     .build();
 
   protected HouseYearStemTianyiImpl(ZStar star) {

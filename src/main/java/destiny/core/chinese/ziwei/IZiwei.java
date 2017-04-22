@@ -4,15 +4,13 @@
 package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableMap;
+import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.chinese.ChineseDateIF;
-import destiny.core.calendar.eightwords.DayIF;
-import destiny.core.calendar.eightwords.HourIF;
-import destiny.core.calendar.eightwords.MidnightIF;
-import destiny.core.calendar.eightwords.MonthIF;
+import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -301,7 +299,7 @@ public interface IZiwei {
   Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) ;
 
   /** 輸入現代化的資料，計算本命盤 */
-  Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, SolarTermsIF solarTermsImpl, MonthIF monthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi);
+  Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl);
 
   /** 計算 大限盤 */
   Plate.Builder getFlowBig(Plate.Builder builder , Settings settings, StemBranch flowBig) ;

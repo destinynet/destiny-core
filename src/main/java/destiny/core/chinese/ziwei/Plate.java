@@ -29,6 +29,9 @@ public class Plate implements Serializable {
 
   private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
 
+  /** 設定資料 */
+  private final Settings settings;
+
   /** 出生資料 , 陰曆 */
   private final ChineseDate chineseDate;
 
@@ -59,6 +62,9 @@ public class Plate implements Serializable {
   /** 五行第幾局 */
   private final int set;
 
+  /** 納音 */
+  private final String naYin;
+
   /** 12個宮位，每個宮位內的資料 */
   private final Set<HouseData> houseDataSet;
 
@@ -82,7 +88,8 @@ public class Plate implements Serializable {
   /**
    * 命盤
    */
-  private Plate(ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
+  private Plate(Settings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
+    this.settings = settings;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
     this.location = location;
@@ -92,12 +99,17 @@ public class Plate implements Serializable {
     this.bodyHouse = bodyHouse;
     this.fiveElement = fiveElement;
     this.set = set;
+    this.naYin = naYin;
     this.houseDataSet = houseDataSet;
     this.transFourMap = transFourMap;
     this.branchFlowHouseMap = branchFlowHouseMap;
     this.starStrengthMap = starStrengthMap;
     this.eightWordsSolar = eightWordsSolar;
     this.eightWordsLunar = eightWordsLunar;
+  }
+
+  public Settings getSettings() {
+    return settings;
   }
 
   public ChineseDate getChineseDate() {
@@ -132,10 +144,17 @@ public class Plate implements Serializable {
     return bodyHouse;
   }
 
+  /** 取得 納音 */
+  public String getNaYin() {
+    return naYin;
+  }
+
+  /** 五行 */
   public FiveElement getFiveElement() {
     return fiveElement;
   }
 
+  /** 第幾局 */
   public int getSet() {
     return set;
   }
@@ -265,6 +284,9 @@ public class Plate implements Serializable {
 
   public static class Builder {
 
+    /** 設定資料 */
+    private final Settings settings;
+
     /** 陰曆生日 */
     private final ChineseDate chineseDate;
 
@@ -301,6 +323,9 @@ public class Plate implements Serializable {
     /** 五行第幾局 */
     private final int set;
 
+    /** 納音 */
+    private final String naYin;
+
     /** 正確的八字（節氣推算）*/
     private EightWords eightWordsSolar = null;
 
@@ -323,7 +348,8 @@ public class Plate implements Serializable {
     /** 星體強弱表 */
     private final Map<ZStar , Integer> starStrengthMap;
 
-    public Builder(ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+    public Builder(Settings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, String naYin, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+      this.settings = settings;
       this.chineseDate = chineseDate;
       this.gender = gender;
       this.birthMonthNum = birthMonthNum;
@@ -332,6 +358,7 @@ public class Plate implements Serializable {
       this.bodyHouse = bodyHouse;
       this.fiveElement = fiveElement;
       this.set = set;
+      this.naYin = naYin;
       this.starStrengthMap = starStrengthMap;
 
       // 哪個地支 裡面 有哪些星體
@@ -506,7 +533,7 @@ public class Plate implements Serializable {
 
 
     public Plate build() {
-      return new Plate(chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
+      return new Plate(settings, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
     }
 
 

@@ -3,57 +3,145 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.Descriptive;
 import destiny.core.chinese.impls.TianyiAuthorizedImpl;
 import destiny.core.chinese.impls.TianyiLiurenPithyImpl;
 import destiny.core.chinese.impls.TianyiOceanImpl;
 import destiny.core.chinese.impls.TianyiZiweiBookImpl;
 
 import java.io.Serializable;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public class Settings implements Serializable {
 
   /** 閏月該如何處理 */
-  public enum LeapMonth {
-    THIS_MONTH  ,   // 一律當作本月
-    NEXT_MONTH  ,   // 一律當作下月
-    SPLIT_15    ,   // 15日(含)之前當本月，之後當下月
+  public enum LeapMonth implements Descriptive {
+    THIS_MONTH,   // 一律當作本月
+    NEXT_MONTH,   // 一律當作下月
+    SPLIT_15;   // 15日(含)之前當本月，之後當下月
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final LeapMonth leapMonth;
 
 
-  public enum MonthType {
-    NUMBER ,      // 陰曆月數
-    SOLAR_TERMS   // 節氣
+  public enum MonthType implements Descriptive {
+    MONTH_LUNAR,   // 陰曆盤
+    MONTH_SOLAR;   // 節氣盤
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final MonthType monthType;
 
   /** 命宮起法 */
-  public enum MainHouse {
-    DEFAULT ,         /** 內定算法       {@link MainHouseDefaultImpl} */
-    SOLAR_TERMS       /** 不依五星要過節  {@link MainHouseSolarTermsImpl} */
+  public enum MainHouse implements Descriptive {
+    MAIN_HOUSE_DEFAULT,   /** 內定算法       {@link MainHouseDefaultImpl} */
+    MAIN_HOUSE_SOLAR;     /** 不依五星要過節  {@link MainHouseSolarTermsImpl} */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final MainHouse mainHouse;
 
   /** 宮位名字 */
-  public enum HouseSeq {
-    DEFAULT ,   /** 內定 {@link HouseSeqDefaultImpl} */
-    TAIYI       /** 太乙 {@link HouseSeqTaiyiImpl} */
+  public enum HouseSeq implements Descriptive {
+    HOUSE_DEFAULT,   /** 內定 {@link HouseSeqDefaultImpl} */
+    HOUSE_TAIYI;     /** 太乙 {@link HouseSeqTaiyiImpl} */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final HouseSeq houseSeq;
 
   /** {@link StarLucky#天魁} , {@link StarLucky#天鉞} (貴人) 算法 */
-  public enum Tianyi {
-    ZIWEI_BOOK,   /** 紫微斗數全書 {@link TianyiZiweiBookImpl} */
-    AUTHORIZED ,  /** 協紀辨方書 {@link TianyiAuthorizedImpl} */
-    OCEAN,        /** 淵海子平  {@link TianyiOceanImpl} */
-    LIUREN_PITHY  /** 大六壬金口訣 {@link TianyiLiurenPithyImpl} */
+  public enum Tianyi implements Descriptive {
+    TIANYI_ZIWEI_BOOK,   /** 紫微斗數全書 {@link TianyiZiweiBookImpl} */
+    TIANYI_AUTHORIZED,   /** 協紀辨方書 {@link TianyiAuthorizedImpl} */
+    TIANYI_OCEAN,        /** 淵海子平  {@link TianyiOceanImpl} */
+    TIANYI_LIUREN_PITHY; /** 大六壬金口訣 {@link TianyiLiurenPithyImpl} */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return null;
+    }
   }
   private final Tianyi tianyi;
 
   /** {@link StarUnlucky#火星} ,  {@link StarUnlucky#鈴星} 設定 */
-  public enum FireBell {
-    全集,  /** {@link StarUnlucky#fun火星_全集} , {@link StarUnlucky#fun鈴星_全集} : (年支、時支) -> 地支 */
-    全書   /** {@link StarUnlucky#fun火星_全書} , {@link StarUnlucky#fun鈴星_全書} : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮 */
+  public enum FireBell implements Descriptive {
+    FIREBELL_全集,  /** {@link StarUnlucky#fun火星_全集} , {@link StarUnlucky#fun鈴星_全集} : (年支、時支) -> 地支 */
+    FIREBELL_全書;   /** {@link StarUnlucky#fun火星_全書} , {@link StarUnlucky#fun鈴星_全書} : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮 */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final FireBell fireBell;
 
@@ -74,19 +162,48 @@ public class Settings implements Serializable {
 
 
   /** 四化設定 */
-  public enum TransFour {
-    DEFAULT ,   /** {@link TransFourDefaultImpl} */
-    NORTH   ,   /** {@link TransFourNorthImpl} */
-    SOUTH   ,   /** {@link TransFourSouthImpl} */
-    MIDDLE  ,   /** {@link TransFourMiddleImpl} */
-    DIVINE  ,   /** {@link TransFourDivineImpl} */
-    ZIYUN   ,   /** {@link TransFourZiyunImpl} */
+  public enum TransFour implements Descriptive {
+    TRANSFOUR_DEFAULT,   /** {@link TransFourDefaultImpl} */
+    TRANSFOUR_NORTH,   /** {@link TransFourNorthImpl} */
+    TRANSFOUR_SOUTH,   /** {@link TransFourSouthImpl} */
+    TRANSFOUR_MIDDLE,   /** {@link TransFourMiddleImpl} */
+    TRANSFOUR_DIVINE,   /** {@link TransFourDivineImpl} */
+    TRANSFOUR_ZIYUN,;   /** {@link TransFourZiyunImpl} */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final TransFour transFour;
 
 
-  public enum Strength {
-    MIDDLE ,    /** {@link StrengthMiddleImpl} 中州派 */
+  /** 廟旺弱陷 */
+  public enum Strength implements Descriptive {
+    STRENGTH_MIDDLE,;    /** {@link StrengthMiddleImpl} 中州派 */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final Strength strength;
 

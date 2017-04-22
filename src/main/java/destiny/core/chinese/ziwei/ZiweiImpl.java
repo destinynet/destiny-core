@@ -3,16 +3,17 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
-import destiny.core.calendar.eightwords.DayIF;
-import destiny.core.calendar.eightwords.HourIF;
-import destiny.core.calendar.eightwords.MidnightIF;
-import destiny.core.calendar.eightwords.MonthIF;
+import destiny.core.calendar.eightwords.*;
+import destiny.core.calendar.eightwords.personal.FortuneDirectionDefaultImpl;
+import destiny.core.calendar.eightwords.personal.FortuneDirectionIF;
+import destiny.core.calendar.eightwords.personal.PersonContext;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.Stem;
@@ -35,6 +36,24 @@ public class ZiweiImpl implements IZiwei, Serializable {
   /** 本命盤 */
   @Override
   public Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) {
+
+    // 最終要計算的「月份」數字
+    int finalMonthNum;
+    if (leapMonth) {
+      // 閏月
+      switch (settings.getLeapMonth()) {
+        case NEXT_MONTH: finalMonthNum = monthNum+1; break;
+        case SPLIT_15: {
+          if (days > 15) {
+            finalMonthNum = monthNum+1;
+            break;
+          }
+        }
+        default: finalMonthNum = monthNum;
+      }
+    } else {
+      finalMonthNum = monthNum;
+    }
     IMainHouse mainHouseImpl = getMainHouseImpl(settings.getMainHouse());
     StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , monthNum , hour , solarTerms , mainHouseImpl);
     StemBranch bodyHouse = IZiwei.getBodyHouse(year.getStem() , monthNum , hour);
@@ -47,7 +66,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     // 地支 -> 宮位 的 mapping
     Map<StemBranch , House> branchHouseMap =
       Arrays.stream(houseSeq.getHouses()).map(house -> {
-        StemBranch sb = getHouse(year.getStem() , monthNum, hour , house , houseSeq , solarTerms , mainHouseImpl);
+        StemBranch sb = getHouse(year.getStem() , finalMonthNum, hour , house , houseSeq , solarTerms , mainHouseImpl);
         return Tuple.tuple(sb , house);
       }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
@@ -58,7 +77,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     stars.stream()
       .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
         .map(iHouse -> {
-          Branch branch = iHouse.getBranch(year , monthBranch , monthNum, solarTerms , days, hour, set, gender, settings);
+          Branch branch = iHouse.getBranch(year , monthBranch , finalMonthNum, solarTerms , days, hour, set, gender, settings);
           StemBranch sb = IZiwei.getStemBranchOf(branch , stemOf寅);
           return Tuple.tuple(star , sb);
         })
@@ -81,37 +100,33 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     ChineseDate chineseDate = new ChineseDate(null , year , monthNum , leapMonth , days);
 
-    return new Plate.Builder(chineseDate, gender, monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , branchHouseMap , starBranchMap, starStrengthMap)
+    return new Plate.Builder(settings, chineseDate, gender, monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
 
   /** 最完整的計算命盤方式 */
   @Override
-  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, SolarTermsIF solarTermsImpl, MonthIF monthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , location , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     StemBranch year = cDate.getYear();
-    Branch monthBranch = monthImpl.getMonth(lmt , location).getBranch();
+    Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();
     int monthNum = cDate.getMonth();
     SolarTerms solarTerms = solarTermsImpl.getSolarTerms(lmt , location);
     int days = cDate.getDay();
     Branch hour = hourImpl.getHour(lmt , location);
-    if (cDate.isLeapMonth()) {
-      // 閏月
-      switch (settings.getLeapMonth()) {
-        case NEXT_MONTH: monthNum = monthNum+1; break;
-        case SPLIT_15: {
-          if (days > 15) {
-            monthNum = monthNum+1;
-            break;
-          }
-        }
-      }
-    }
+
+    /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法 */
+    FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
+
+    PersonContext context = new PersonContext(chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl,
+      false, solarTermsImpl, starTransitImpl, lmt, location, gender, 120.0, fortuneDirectionImpl, risingSignImpl);
+
     return getBirthPlate(year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
       .withLocalDateTime(lmt)
       .withLocation(location)
       .withPlace(place)
+      .withEightWordsSolar(context.getEightWords())
       ;
   }
 
@@ -288,35 +303,35 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   private IHouseSeq getHouseSeq(Settings.HouseSeq houseSeq) {
     switch (houseSeq) {
-      case DEFAULT: return new HouseSeqDefaultImpl();
-      case TAIYI:   return new HouseSeqTaiyiImpl();
+      case HOUSE_DEFAULT: return new HouseSeqDefaultImpl();
+      case HOUSE_TAIYI:   return new HouseSeqTaiyiImpl();
       default: throw new AssertionError("Error : " + houseSeq);
     }
   }
 
   private ITransFour getTranFourImpl(Settings.TransFour transFour) {
     switch (transFour) {
-      case DEFAULT: return new TransFourDefaultImpl();
-      case NORTH: return new TransFourNorthImpl();
-      case SOUTH: return new TransFourSouthImpl();
-      case MIDDLE: return new TransFourMiddleImpl();
-      case DIVINE: return new TransFourDivineImpl();
-      case ZIYUN: return new TransFourZiyunImpl();
+      case TRANSFOUR_DEFAULT: return new TransFourDefaultImpl();
+      case TRANSFOUR_NORTH: return new TransFourNorthImpl();
+      case TRANSFOUR_SOUTH: return new TransFourSouthImpl();
+      case TRANSFOUR_MIDDLE: return new TransFourMiddleImpl();
+      case TRANSFOUR_DIVINE: return new TransFourDivineImpl();
+      case TRANSFOUR_ZIYUN: return new TransFourZiyunImpl();
       default: throw new AssertionError("Error : " + transFour);
     }
   }
 
   private IMainHouse getMainHouseImpl(Settings.MainHouse mainHouse) {
     switch (mainHouse) {
-      case DEFAULT: return new MainHouseDefaultImpl();
-      case SOLAR_TERMS: return new MainHouseSolarTermsImpl();
+      case MAIN_HOUSE_DEFAULT: return new MainHouseDefaultImpl();
+      case MAIN_HOUSE_SOLAR: return new MainHouseSolarTermsImpl();
       default: throw new AssertionError("Error : " + mainHouse);
     }
   }
 
   private IStrength getStrengthImpl(Settings.Strength strength) {
     switch (strength) {
-      case MIDDLE: return new StrengthMiddleImpl();
+      case STRENGTH_MIDDLE: return new StrengthMiddleImpl();
       default: throw new AssertionError("Error : " + strength);
     }
   }

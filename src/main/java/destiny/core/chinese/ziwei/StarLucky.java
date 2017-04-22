@@ -53,8 +53,8 @@ public final class StarLucky extends ZStar {
   /** 左輔(整合版) : (月數 或 月支) -> 地支 */
   public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun左輔 = (type , monthNum , monthBranch) -> {
     switch (type) {
-      case NUMBER: return fun左輔_月數.apply(monthNum);
-      case SOLAR_TERMS: return fun左輔_月支.apply(monthBranch);
+      case MONTH_LUNAR: return fun左輔_月數.apply(monthNum);
+      case MONTH_SOLAR: return fun左輔_月支.apply(monthBranch);
       default: throw new AssertionError("Error : " + type);
     }
   };
@@ -68,8 +68,8 @@ public final class StarLucky extends ZStar {
   /** 右弼(整合版) : (月數 或 月支) -> 地支 */
   public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun右弼 = (type , monthNum , monthBranch) -> {
     switch (type) {
-      case NUMBER: return fun右弼_月數.apply(monthNum);
-      case SOLAR_TERMS: return fun左輔_月支.apply(monthBranch);
+      case MONTH_LUNAR: return fun右弼_月數.apply(monthNum);
+      case MONTH_SOLAR: return fun左輔_月支.apply(monthBranch);
       default: throw new AssertionError("Error : " + type);
     }
   };
@@ -135,8 +135,8 @@ public final class StarLucky extends ZStar {
   /** 天馬(月的驛馬) (整合版) : (月數 或 月支) -> 地支 */
   public final static Function3<Settings.MonthType , Integer , Branch , Branch> fun月馬 = (type , monthNum , monthBranch) -> {
     switch (type) {
-      case NUMBER: return fun月馬_月數.apply(monthNum);
-      case SOLAR_TERMS: return fun月馬_月支.apply(monthBranch);
+      case MONTH_LUNAR: return fun月馬_月數.apply(monthNum);
+      case MONTH_SOLAR: return fun月馬_月支.apply(monthBranch);
       default: throw new AssertionError(type);
     }
   };
