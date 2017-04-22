@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords;
 
+import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
@@ -29,20 +30,23 @@ public class PersonContextDefaultImpl extends EightWordsImpl implements PersonCo
 
   private final FortuneDirectionIF fortuneDirectionImpl;
 
+  private final StarPositionIF starPositionImpl;
 
-  public PersonContextDefaultImpl(YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, ChineseDateIF chineseDateImpl, SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl, FortuneDirectionIF fortuneDirectionImpl) {
+
+  public PersonContextDefaultImpl(YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, ChineseDateIF chineseDateImpl, SolarTermsIF solarTermsImpl, StarTransitIF starTransitImpl, FortuneDirectionIF fortuneDirectionImpl, StarPositionIF starPositionImpl) {
     super(yearMonthImpl, dayImpl, hourImpl, midnightImpl, changeDayAfterZi);
     this.risingSignImpl = risingSignImpl;
     this.chineseDateImpl = chineseDateImpl;
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
     this.fortuneDirectionImpl = fortuneDirectionImpl;
+    this.starPositionImpl = starPositionImpl;
   }
 
   @Override
   public PersonContext getPersonContext(Time lmt, Location location, Gender gender) {
     return new PersonContext(chineseDateImpl , yearMonthImpl , dayImpl , hourImpl , midnightImpl ,
-      changeDayAfterZi , solarTermsImpl , starTransitImpl , lmt.toLocalDateTime() , location , gender , 120.0 , fortuneDirectionImpl , risingSignImpl);
+      changeDayAfterZi , solarTermsImpl , starTransitImpl , lmt.toLocalDateTime() , location , gender , 120.0 , fortuneDirectionImpl , risingSignImpl, starPositionImpl);
   }
 
 }

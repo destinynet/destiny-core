@@ -51,8 +51,8 @@ public class ZiweiImplTest {
    * */
   @Test
   public void testPlate4() {
-    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_MIDDLE, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP,
-      Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_MIDDLE, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP,
+      Settings.FlowHour.FLOW_HOUR_DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -98,7 +98,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate3() {
-    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_DEFAULT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_DEFAULT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP, Settings.FlowHour.FLOW_HOUR_DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -144,7 +144,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate2() {
-    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_DEFAULT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_DEFAULT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP, Settings.FlowHour.FLOW_HOUR_DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -184,7 +184,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(Settings.LeapMonth.THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.TRANSFOUR_DEFAULT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.BRANCH, Settings.FlowMonth.DEFAULT, Settings.FlowDay.MONTH_DEP, Settings.FlowHour.DAY_DEP);
+    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.TRANSFOUR_DEFAULT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP, Settings.FlowHour.FLOW_HOUR_DAY_DEP);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));

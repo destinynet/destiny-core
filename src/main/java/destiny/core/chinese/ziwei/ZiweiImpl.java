@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
@@ -42,8 +43,8 @@ public class ZiweiImpl implements IZiwei, Serializable {
     if (leapMonth) {
       // 閏月
       switch (settings.getLeapMonth()) {
-        case NEXT_MONTH: finalMonthNum = monthNum+1; break;
-        case SPLIT_15: {
+        case LEAP_NEXT_MONTH: finalMonthNum = monthNum+1; break;
+        case LEAP_SPLIT_15: {
           if (days > 15) {
             finalMonthNum = monthNum+1;
             break;
@@ -54,9 +55,20 @@ public class ZiweiImpl implements IZiwei, Serializable {
     } else {
       finalMonthNum = monthNum;
     }
+
+    if (monthNum != finalMonthNum) {
+      logger.warn("閏月設定為 : {} 造成原本月份為閏 {} 月，以月數 {} 計算之" , settings.getLeapMonth() , monthNum , finalMonthNum);
+    }
     IMainHouse mainHouseImpl = getMainHouseImpl(settings.getMainHouse());
-    StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , monthNum , hour , solarTerms , mainHouseImpl);
-    StemBranch bodyHouse = IZiwei.getBodyHouse(year.getStem() , monthNum , hour);
+    StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , finalMonthNum , hour , solarTerms , mainHouseImpl);
+    logger.debug("命宮在 : {}"  , mainHouse);
+    StemBranch bodyHouse = IZiwei.getBodyHouse(year.getStem() , finalMonthNum , hour);
+
+    // 取命主 : 命宮所在地支安星
+    ZStar mainStar = IZiwei.getMainStar(mainHouse.getBranch());
+
+    // 取身主 : 以出生年之地支安星
+    ZStar bodyStar = IZiwei.getBodyStar(year.getBranch());
 
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
 
@@ -100,14 +112,14 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     ChineseDate chineseDate = new ChineseDate(null , year , monthNum , leapMonth , days);
 
-    return new Plate.Builder(settings, chineseDate, gender, monthNum, hour, mainHouse , bodyHouse , t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap)
+    return new Plate.Builder(settings, chineseDate, gender, finalMonthNum, hour, mainHouse , bodyHouse , mainStar, bodyStar, t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
 
   /** 最完整的計算命盤方式 */
   @Override
-  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl) {
+  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , location , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     StemBranch year = cDate.getYear();
     Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();
@@ -120,7 +132,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
 
     PersonContext context = new PersonContext(chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl,
-      false, solarTermsImpl, starTransitImpl, lmt, location, gender, 120.0, fortuneDirectionImpl, risingSignImpl);
+      false, solarTermsImpl, starTransitImpl, lmt, location, gender, 120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl);
 
     return getBirthPlate(year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
       .withLocalDateTime(lmt)
@@ -270,33 +282,33 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   private IFlowHour getFlowHourImpl(Settings.FlowHour flowHour) {
     switch (flowHour) {
-      case DAY_DEP: return new FlowHourDayMainHouseDepImpl();
-      case FIXED  : return new FlowHourBranchImpl();
+      case FLOW_HOUR_DAY_DEP: return new FlowHourDayMainHouseDepImpl();
+      case FLOW_HOUR_FIXED: return new FlowHourBranchImpl();
       default: throw new AssertionError("Error : " + flowHour);
     }
   }
 
   private IFlowDay getFlowDayImpl(Settings.FlowDay flowDay) {
     switch (flowDay) {
-      case MONTH_DEP: return new FlowDayFlowMonthMainHouseDepImpl();
-      case FIXED: return new FlowDayBranchImpl();
+      case FLOW_DAY_MONTH_DEP: return new FlowDayFlowMonthMainHouseDepImpl();
+      case FLOW_DAY_FIXED: return new FlowDayBranchImpl();
       default: throw new AssertionError("Error : " + flowDay);
     }
   }
 
   private IFlowMonth getFlowMonthImpl(Settings.FlowMonth flowMonth) {
     switch (flowMonth) {
-      case DEFAULT: return new FlowMonthDefaultImpl();
-      case FIXED:   return new FlowMonthFixedImpl();
-      case YEAR_DEP: return new FlowMonthYearMainHouseDepImpl();
+      case FLOW_MONTH_DEFAULT: return new FlowMonthDefaultImpl();
+      case FLOW_MONTH_FIXED:   return new FlowMonthFixedImpl();
+      case FLOW_MONTH_YEAR_DEP: return new FlowMonthYearMainHouseDepImpl();
       default: throw new AssertionError("Error : " + flowMonth);
     }
   }
 
   private IFlowYear getFlowYearImpl(Settings.FlowYear flowYear) {
     switch (flowYear) {
-      case BRANCH: return new FlowYearBranchImpl();
-      case ANCHOR:  return new FlowYearAnchorImpl();
+      case FLOW_YEAR_BRANCH: return new FlowYearBranchImpl();
+      case FLOW_YEAR_ANCHOR:  return new FlowYearAnchorImpl();
       default: throw new AssertionError("Error : " + flowYear);
     }
   }

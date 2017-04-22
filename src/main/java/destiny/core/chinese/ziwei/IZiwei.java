@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableMap;
+import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
@@ -28,7 +29,12 @@ import java.util.function.Function;
 import static destiny.core.chinese.Branch.子;
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
+import static destiny.core.chinese.ziwei.StarLucky.文昌;
+import static destiny.core.chinese.ziwei.StarLucky.文曲;
+import static destiny.core.chinese.ziwei.StarLucky.祿存;
 import static destiny.core.chinese.ziwei.StarMain.*;
+import static destiny.core.chinese.ziwei.StarUnlucky.火星;
+import static destiny.core.chinese.ziwei.StarUnlucky.鈴星;
 
 /** 紫微斗數 */
 public interface IZiwei {
@@ -299,7 +305,7 @@ public interface IZiwei {
   Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) ;
 
   /** 輸入現代化的資料，計算本命盤 */
-  Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl);
+  Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl);
 
   /** 計算 大限盤 */
   Plate.Builder getFlowBig(Plate.Builder builder , Settings settings, StemBranch flowBig) ;
@@ -332,5 +338,34 @@ public interface IZiwei {
     return flowYear                     // 以流年地支為起點
       .prev(birthMonth-1)               // 從1 逆數至「出生月」
       .next(birthHour.getAheadOf(子));   // 再順數至「出生時」
+  }
+
+  /** 命主 : 命宮所在地支安星 */
+  static ZStar getMainStar(Branch branch) {
+    switch (branch) {
+      case 子: return 貪狼;
+      case 丑:case 亥: return 巨門;
+      case 寅:case 戌: return 祿存;
+      case 卯:case 酉: return 文曲;
+      case 辰:case 申: return 廉貞;
+      case 巳:case 未: return 武曲;
+      case 午:return 破軍;
+      default: throw new AssertionError("Error : " + branch);
+    }
+  }
+
+
+  /** 身主 : 以出生年之地支安星 */
+  static ZStar getBodyStar(Branch branch) {
+    switch (branch) {
+      case 子: return 火星;
+      case 丑:case 未: return 天相;
+      case 寅:case 申: return 天梁;
+      case 卯:case 酉: return 天同;
+      case 辰:case 戌: return 文昌;
+      case 巳:case 亥: return 天機;
+      case 午: return 鈴星;
+      default: throw new AssertionError("Error : " + branch);
+    }
   }
 }

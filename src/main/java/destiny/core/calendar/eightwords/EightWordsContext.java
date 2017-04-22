@@ -1,7 +1,6 @@
 package destiny.core.calendar.eightwords;
 
-import destiny.astrology.Coordinate;
-import destiny.astrology.HouseSystem;
+import destiny.astrology.*;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
@@ -20,11 +19,14 @@ public class EightWordsContext extends EightWordsImpl {
 
   private final ChineseDateIF chineseDateImpl;      // 農曆計算
 
-  private final RisingSignIF risingSignImpl;        // 命宮
+  private final RisingSignIF risingSignImpl;        // 命宮 (上升星座)
 
-  public EightWordsContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, RisingSignIF risingSignImpl) {
+  private final StarPositionIF starPositionImpl;    // 星體位置
+
+  public EightWordsContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
     super(yearMonth, day, hour, midnight, changeDayAfterZi);
     this.chineseDateImpl = chineseDateImpl;
+    this.starPositionImpl = starPositionImpl;
     this.yearMonthImpl = yearMonth;
     this.risingSignImpl = risingSignImpl;
   }
@@ -63,6 +65,11 @@ public class EightWordsContext extends EightWordsImpl {
     Stem risingStem = StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch);
     // 組合成干支
     return StemBranch.get(risingStem, risingBranch);
+  }
+
+  public Branch getBranchOf(Star star , LocalDateTime lmt , Location location) {
+    Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
+    return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
   }
 
 }

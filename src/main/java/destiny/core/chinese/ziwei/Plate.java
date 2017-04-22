@@ -56,6 +56,12 @@ public class Plate implements Serializable {
   /** 身宮 */
   private final StemBranch bodyHouse;
 
+  /** 命主 */
+  private final ZStar mainStar;
+
+  /** 身主 */
+  private final ZStar bodyStar;
+
   /** 五行 */
   private final FiveElement fiveElement;
 
@@ -76,6 +82,9 @@ public class Plate implements Serializable {
   /** 取得此地支，在各個流運類型， 宮位名稱 是什麼 */
   private final Map<Branch, Map<FlowType, House>> branchFlowHouseMap;
 
+  /** 計算的流運資料 */
+  private final Map<FlowType , Branch> flowBranchMap;
+
   /** 星體強弱表 */
   private final Map<ZStar , Integer> starStrengthMap;
 
@@ -88,7 +97,7 @@ public class Plate implements Serializable {
   /**
    * 命盤
    */
-  private Plate(Settings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
+  private Plate(Settings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, Branch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
     this.settings = settings;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -97,12 +106,15 @@ public class Plate implements Serializable {
     this.gender = gender;
     this.mainHouse = mainHouse;
     this.bodyHouse = bodyHouse;
+    this.mainStar = mainStar;
+    this.bodyStar = bodyStar;
     this.fiveElement = fiveElement;
     this.set = set;
     this.naYin = naYin;
     this.houseDataSet = houseDataSet;
     this.transFourMap = transFourMap;
     this.branchFlowHouseMap = branchFlowHouseMap;
+    this.flowBranchMap = flowBranchMap;
     this.starStrengthMap = starStrengthMap;
     this.eightWordsSolar = eightWordsSolar;
     this.eightWordsLunar = eightWordsLunar;
@@ -190,6 +202,11 @@ public class Plate implements Serializable {
   @SuppressWarnings("ConstantConditions")
   public HouseData getHouseDataOf(Branch branch) {
     return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch).findFirst().get();
+  }
+
+  /** 取得此命盤，包含哪些流運資訊 */
+  public Map<FlowType, Branch> getFlowBranchMap() {
+    return flowBranchMap;
   }
 
   /** 取得 星體的四化列表 */
@@ -282,6 +299,25 @@ public class Plate implements Serializable {
     return Optional.ofNullable(eightWordsLunar);
   }
 
+  /** 命主 */
+  public ZStar getMainStar() {
+    return mainStar;
+  }
+
+  /** 身主 */
+  public ZStar getBodyStar() {
+    return bodyStar;
+  }
+
+
+
+
+
+
+
+  /** ===================================================================================================== */
+
+
   public static class Builder {
 
     /** 設定資料 */
@@ -317,6 +353,12 @@ public class Plate implements Serializable {
     /** 身宮 */
     private final StemBranch bodyHouse;
 
+    /** 命主 */
+    private final ZStar mainStar;
+
+    /** 身主 */
+    private final ZStar bodyStar;
+
     /** 五行 */
     private final FiveElement fiveElement;
 
@@ -348,7 +390,10 @@ public class Plate implements Serializable {
     /** 星體強弱表 */
     private final Map<ZStar , Integer> starStrengthMap;
 
-    public Builder(Settings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, FiveElement fiveElement, int set, String naYin, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+    /** 計算流運資料 */
+    private Map<FlowType , Branch> flowBranchMap = new TreeMap<>();
+
+    public Builder(Settings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
       this.settings = settings;
       this.chineseDate = chineseDate;
       this.gender = gender;
@@ -356,6 +401,8 @@ public class Plate implements Serializable {
       this.birthHour = birthHour;
       this.mainHouse = mainHouse;
       this.bodyHouse = bodyHouse;
+      this.mainStar = mainStar;
+      this.bodyStar = bodyStar;
       this.fiveElement = fiveElement;
       this.set = set;
       this.naYin = naYin;
@@ -379,7 +426,6 @@ public class Plate implements Serializable {
         })
         .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
       branchFlowHouseMap.putAll(本命地支HouseMapping);
-
 
       houseDataSet = branchHouseMap.entrySet().stream().map(e -> {
         StemBranch sb = e.getKey();
@@ -442,6 +488,7 @@ public class Plate implements Serializable {
      * @param map     地支「在該大限」與宮位的對照表
      */
     public Builder withFlowBig(Branch flowBig , Map<Branch , House> map) {
+      this.flowBranchMap.put(FlowType.大限 , flowBig);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
           m.put(FlowType.大限 , map.get(branch));
@@ -458,6 +505,7 @@ public class Plate implements Serializable {
      * @param map      地支「在該流年」與宮位的對照表
      */
     public Builder withFlowYear(Branch flowYear , Map<Branch , House> map) {
+      this.flowBranchMap.put(FlowType.流年 , flowYear);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
           m.put(FlowType.流年 , map.get(branch));
@@ -474,6 +522,7 @@ public class Plate implements Serializable {
      * @param map       地支「在該流月」與宮位的對照表
      */
     public Builder withFlowMonth(Branch flowMonth , Map<Branch , House> map) {
+      this.flowBranchMap.put(FlowType.流月 , flowMonth);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
           m.put(FlowType.流月 , map.get(branch));
@@ -490,6 +539,7 @@ public class Plate implements Serializable {
      * @param map     地支「在該流日」與宮位的對照表
      */
     public Builder withFlowDay(Branch flowDay , Map<Branch , House> map) {
+      this.flowBranchMap.put(FlowType.流日 , flowDay);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
           m.put(FlowType.流日 , map.get(branch));
@@ -506,6 +556,7 @@ public class Plate implements Serializable {
      * @param map      地支「在該流時」與宮位的對照表
      */
     public Builder withFlowHour(Branch flowHour , Map<Branch , House> map) {
+      this.flowBranchMap.put(FlowType.流時 , flowHour);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
           m.put(FlowType.流時 , map.get(branch));
@@ -533,7 +584,7 @@ public class Plate implements Serializable {
 
 
     public Plate build() {
-      return new Plate(settings, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
+      return new Plate(settings, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
     }
 
 

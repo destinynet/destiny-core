@@ -5,6 +5,7 @@ package destiny.core.calendar.eightwords.personal;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
@@ -79,11 +80,8 @@ public class PersonContext extends EightWordsContext {
 
 
   /** constructor */
-  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl,
-                       MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl,
-                       @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, @NotNull Gender gender,
-                       double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl) {
-    super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl);
+  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+    super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl, starPositionImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
     this.fortuneMonthSpan = fortuneMonthSpan;

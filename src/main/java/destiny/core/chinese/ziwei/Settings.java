@@ -18,9 +18,9 @@ public class Settings implements Serializable {
 
   /** 閏月該如何處理 */
   public enum LeapMonth implements Descriptive {
-    THIS_MONTH,   // 一律當作本月
-    NEXT_MONTH,   // 一律當作下月
-    SPLIT_15;   // 15日(含)之前當本月，之後當下月
+    LEAP_THIS_MONTH,   // 一律當作本月
+    LEAP_NEXT_MONTH,   // 一律當作下月
+    LEAP_SPLIT_15;   // 15日(含)之前當本月，之後當下月
 
     @Override
     public String getTitle(Locale locale) {
@@ -209,32 +209,88 @@ public class Settings implements Serializable {
 
 
   /** 流年設定 */
-  public enum FlowYear {
-    BRANCH  , /** {@link FlowYearBranchImpl} : 流年地支 */
-    ANCHOR  , /** {@link FlowYearAnchorImpl} : 流年斗君 */
+  public enum FlowYear implements Descriptive {
+    FLOW_YEAR_BRANCH, /** {@link FlowYearBranchImpl} : 流年地支 */
+    FLOW_YEAR_ANCHOR,; /** {@link FlowYearAnchorImpl} : 流年斗君 */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final FlowYear flowYear;
 
 
   /** 流月設定 */
-  public enum FlowMonth {
-    DEFAULT   ,  /** {@link FlowMonthDefaultImpl}           : 流年斗君 順數月  */
-    FIXED     ,  /** {@link FlowMonthFixedImpl}             : 流月地支        */
-    YEAR_DEP  ,  /** {@link FlowMonthYearMainHouseDepImpl}  : 流年命宮，順數月  */
+  public enum FlowMonth implements Descriptive {
+    FLOW_MONTH_DEFAULT,   /** {@link FlowMonthDefaultImpl}           : 流年斗君 順數月  */
+    FLOW_MONTH_FIXED,     /** {@link FlowMonthFixedImpl}             : 流月地支        */
+    FLOW_MONTH_YEAR_DEP,; /** {@link FlowMonthYearMainHouseDepImpl}  : 流年命宮，順數月  */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final FlowMonth flowMonth;
 
   /** 流日設定 */
-  public enum FlowDay {
-    MONTH_DEP , /** {@link FlowDayFlowMonthMainHouseDepImpl} : 流月命宮，順數日 */
-    FIXED     , /** {@link FlowDayBranchImpl}                : 流日地支       */
+  public enum FlowDay implements Descriptive {
+    FLOW_DAY_MONTH_DEP, /** {@link FlowDayFlowMonthMainHouseDepImpl} : 流月命宮，順數日 */
+    FLOW_DAY_FIXED,;    /** {@link FlowDayBranchImpl}                : 流日地支       */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final FlowDay flowDay;
 
   /** 流時設定 */
-  public enum FlowHour {
-    DAY_DEP , /** {@link FlowHourDayMainHouseDepImpl}   : 流日命宮，順數時 */
-    FIXED     /** {@link FlowHourBranchImpl}            : 流時地支       */
+  public enum FlowHour implements Descriptive {
+    FLOW_HOUR_DAY_DEP, /** {@link FlowHourDayMainHouseDepImpl}   : 流日命宮，順數時 */
+    FLOW_HOUR_FIXED;   /** {@link FlowHourBranchImpl}            : 流時地支       */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final FlowHour flowHour;
 

@@ -3,11 +3,14 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
+import destiny.astrology.Planet;
+import destiny.astrology.StarPositionIF;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
+import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -49,10 +52,16 @@ public class PersonContextModel implements Serializable {
   /** 下一個「節」 */
   private final SolarTerms nextMajorSolarTerms;
 
-  /** 命宮 */
+  /** 命宮 (上升星座) */
   private final StemBranch risingStemBranch;
 
-  public PersonContextModel(PersonContext context, int fortunes, FortuneOutputFormat fortuneOutputFormat, String locationName) {
+  /** 太陽位置 */
+  private final Branch sunBranch;
+
+  /** 月亮位置 */
+  private final Branch moonBranch;
+
+  public PersonContextModel(PersonContext context, int fortunes, FortuneOutputFormat fortuneOutputFormat, String locationName, StarPositionIF starPositionImpl) {
     this.personContext = context;
 
     this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());
@@ -72,6 +81,9 @@ public class PersonContextModel implements Serializable {
 
     // 命宮干支
     risingStemBranch = context.getRisingStemBranch(context.getLmt(), context.getLocation());
+
+    sunBranch = context.getBranchOf(Planet.SUN, context.getLmt() , context.getLocation());
+    moonBranch = context.getBranchOf(Planet.MOON , context.getLmt() , context.getLocation());
 
     //下個大運的干支
     StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
@@ -127,7 +139,7 @@ public class PersonContextModel implements Serializable {
           // 取得 起運/終運 時的八字
           EightWordsContext eightWordsContext = new EightWordsContext(context.getChineseDateImpl() , personContext.getYearMonthImpl() ,
               personContext.getDayImpl() , personContext.getHourImpl() ,
-              personContext.getMidnightImpl() , personContext.isChangeDayAfterZi(), context.getRisingSignImpl());
+              personContext.getMidnightImpl() , personContext.isChangeDayAfterZi(), context.getRisingSignImpl(), starPositionImpl);
 
           EightWords startFortune8w = eightWordsContext.getEightWords(startFortuneLmt, personContext.getLocation());
           EightWords endFortune8w   = eightWordsContext.getEightWords(endFortuneLmt, personContext.getLocation());
@@ -198,11 +210,20 @@ public class PersonContextModel implements Serializable {
     return locationName;
   }
 
-  /** 取得命宮 */
+  /** 取得命宮 (上升星座) */
   public StemBranch getRisingStemBranch() {
     return risingStemBranch;
   }
 
+  /** 太陽 */
+  public Branch getSunBranch() {
+    return sunBranch;
+  }
+
+  /** 月亮 */
+  public Branch getMoonBranch() {
+    return moonBranch;
+  }
 
   public boolean isDst() {
     return dst;
