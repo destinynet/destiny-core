@@ -5,16 +5,19 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * 命盤中，一個宮位所包含的所有資訊
  */
 public class HouseData implements Serializable , Comparable<HouseData> {
-
-  //private final Map<FlowType , House> houseMap;
 
   /** 宮位名稱 */
   private final House house;
@@ -25,6 +28,9 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   /** 宮位裡面 有哪些星體 */
   private final Set<ZStar> stars;
 
+  /** 此宮位，在各個流運，叫什麼宮位 */
+  private final Map<FlowType , House> flowHouseMap;
+
   /**
    * 大限 從何時 到何時
    * 這裡用 long , 不用 int
@@ -34,10 +40,13 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   private final double rangeFrom;
   private final double rangeTo;
 
-  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, IZiwei.RangeType rangeType, double rangeFrom, double rangeTo) {
+  private transient static Logger logger = LoggerFactory.getLogger(HouseData.class);
+
+  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, IZiwei.RangeType rangeType, double rangeFrom, double rangeTo) {
     this.house = house;
     this.stemBranch = stemBranch;
     this.stars = stars;
+    this.flowHouseMap = flowHouseMap;
     this.rangeType = rangeType;
     this.rangeFrom = rangeFrom;
     this.rangeTo = rangeTo;
@@ -53,6 +62,13 @@ public class HouseData implements Serializable , Comparable<HouseData> {
 
   public Set<ZStar> getStars() {
     return stars;
+  }
+
+  /** 傳回各個流運的宮位名稱對照 , 不傳回本命 */
+  public Map<FlowType, House> getFlowHouseMapWithoutBirth() {
+    return flowHouseMap.entrySet().stream()
+      .filter(entry -> entry.getKey() != FlowType.本命)
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (h1, h2) -> h1, TreeMap::new) );
   }
 
   public IZiwei.RangeType getRangeType() {
