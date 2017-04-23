@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords.personal;
 
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
-import destiny.core.calendar.TimeDecoratorChinese;
+import destiny.core.calendar.TimeSecDecoratorChinese;
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWords;
@@ -37,7 +37,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   private PersonContextModel.FortuneOutputFormat fortuneOutputFormat = PersonContextModel.FortuneOutputFormat.虛歲;
 
-  private final Decorator<LocalDateTime> timeDecorator = new TimeDecoratorChinese();
+  private final Decorator<LocalDateTime> timeDecorator = new TimeSecDecoratorChinese();
 
   private final Direction direction;
 

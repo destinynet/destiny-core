@@ -404,11 +404,11 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   
   @Override
   public String toString() {
-    return TimeDecorator.getOutputString(toLocalDateTime() , Locale.getDefault());
+    return TimeSecDecorator.getOutputString(toLocalDateTime() , Locale.getDefault());
   }
   
   public String toString(Locale locale) {
-    return TimeDecorator.getOutputString(toLocalDateTime() , locale);
+    return TimeSecDecorator.getOutputString(toLocalDateTime() , locale);
   }
 
   @Override

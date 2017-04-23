@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.IsoEra;
 
-public class TimeDecoratorJapaneseTest {
+public class TimeSecDecoratorJapaneseTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Test
   public void testGetOutputString() {
-    TimeDecoratorJapanese decorator = new TimeDecoratorJapanese();
+    TimeSecDecoratorJapanese decorator = new TimeSecDecoratorJapanese();
 
     LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
     logger.info("{} : {}" , time , decorator.getOutputString(time));

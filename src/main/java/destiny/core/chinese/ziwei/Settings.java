@@ -297,10 +297,34 @@ public class Settings implements Serializable {
   }
   private final FlowHour flowHour;
 
+  /** 大限輸出格式 */
+  private final IZiwei.RangeType rangeType;
+
+  /** 大限計算方式 */
+  public enum BigRange implements Descriptive {
+    BIG_RANGE_FROM_MAIN,  /** 命宮起大限 {@link BigRangeFromMain} */
+    BIG_RANGE_SKIP_MAIN;  /** 命宮無大限 {@link BigRangeSkipMain} */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
+  }
+  private final BigRange bigRange;
+
   /** 八字排盤，右至左 or 左至右 */
   private final Direction direction;
 
-  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, Direction direction) {
+  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, IZiwei.RangeType rangeType, BigRange bigRange, Direction direction) {
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
@@ -315,6 +339,8 @@ public class Settings implements Serializable {
     this.flowMonth = flowMonth;
     this.flowDay = flowDay;
     this.flowHour = flowHour;
+    this.rangeType = rangeType;
+    this.bigRange = bigRange;
     this.direction = direction;
   }
 
@@ -372,6 +398,14 @@ public class Settings implements Serializable {
 
   public FlowHour getFlowHour() {
     return flowHour;
+  }
+
+  public IZiwei.RangeType getRangeType() {
+    return rangeType;
+  }
+
+  public BigRange getBigRange() {
+    return bigRange;
   }
 
   public Direction getDirection() {

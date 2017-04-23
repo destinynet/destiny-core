@@ -11,12 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-public class TimeDecorator {
+/** 只輸出到「分」 */
+public class TimeMinDecorator {
 
   private final static ImmutableMap<Locale , Decorator<LocalDateTime>> implMap = new ImmutableMap.Builder<Locale , Decorator<LocalDateTime>>()
-    .put(Locale.TAIWAN , new TimeDecoratorChinese())
-    .put(Locale.ENGLISH , new TimeDecoratorEnglish())
-    .put(Locale.JAPAN, new TimeDecoratorJapanese())
+    .put(Locale.TAIWAN , new TimeMinDecoratorChinese())
+    .put(Locale.ENGLISH , new TimeMinDecoratorEnglish())
+    .put(Locale.JAPAN, new TimeMinDecoratorJapanese())
     .build();
 
   @NotNull

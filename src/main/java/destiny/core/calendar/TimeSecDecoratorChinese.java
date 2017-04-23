@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar;
 
-import destiny.tools.ColorCanvas.AlignUtil;
 import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -12,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import static java.time.chrono.IsoEra.BCE;
-import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-
 /**
  * 簡單的中文輸出 , 總共輸出 38位元 <BR/>
  * <pre>
@@ -22,7 +18,7 @@ import static java.time.temporal.ChronoField.YEAR_OF_ERA;
  *西元前2000年12月31日　23時59分 59.99秒
  * </pre>
  */
-public class TimeDecoratorChinese implements Decorator<LocalDateTime>, Serializable {
+public class TimeSecDecoratorChinese implements Decorator<LocalDateTime>, Serializable {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -33,18 +29,8 @@ public class TimeDecoratorChinese implements Decorator<LocalDateTime>, Serializa
 
     logger.debug("time = {} , era = {}" , time , time.toLocalDate().getEra());
 
-    sb.append("西元");
-    if (time.toLocalDate().getEra() == BCE) {
-      sb.append("前" );
-    }
-    else
-      sb.append("　");
-    sb.append(alignRight(time.get(YEAR_OF_ERA), 4)).append("年");
-    sb.append(time.getMonthValue() < 10 ? "0" : "").append(time.getMonthValue()).append("月");
-    sb.append(time.getDayOfMonth() < 10 ? "0" : "").append(time.getDayOfMonth()).append("日");
-    sb.append("　");
-    sb.append(time.getHour() < 10 ? "0" : "").append(time.getHour()).append("時");
-    sb.append(time.getMinute() < 10 ? "0" : "").append(time.getMinute()).append("分");
+    TimeMinDecoratorChinese min = new TimeMinDecoratorChinese();
+    sb.append(min.getOutputString(time));
 
     sb.append(' ');
     if (time.getSecond() < 10) {
@@ -62,10 +48,4 @@ public class TimeDecoratorChinese implements Decorator<LocalDateTime>, Serializa
     return sb.toString();
   }
 
-  public static String alignRight(int value , int width) {
-    StringBuffer sb = new StringBuffer(String.valueOf(value));
-    int valueLength = sb.length();
-
-    return AlignUtil.outputStringBuffer(valueLength , width , sb);
-  }
 }

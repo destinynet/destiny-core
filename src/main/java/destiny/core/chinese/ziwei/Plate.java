@@ -381,7 +381,8 @@ public class Plate implements Serializable {
     /** 計算流運資料 */
     private Map<FlowType , StemBranch> flowBranchMap = new TreeMap<>();
 
-    public Builder(Settings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
+    /** 本命盤 */
+    public Builder(Settings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<Branch, Tuple2<Double, Double>> bigRangeMap) {
       this.settings = settings;
       this.chineseDate = chineseDate;
       this.gender = gender;
@@ -395,6 +396,7 @@ public class Plate implements Serializable {
       this.set = set;
       this.naYin = naYin;
       this.starStrengthMap = starStrengthMap;
+      //this.bigRangeMap = bigRangeMap;
 
       // 哪個地支 裡面 有哪些星體
       Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -419,7 +421,9 @@ public class Plate implements Serializable {
         StemBranch sb = e.getKey();
         House house = e.getValue();
         Set<ZStar> stars = branchStarMap.get(sb.getBranch());
-        return new HouseData(house, sb, stars);
+
+        Tuple2<Double , Double> fromTo = bigRangeMap.get(sb.getBranch());
+        return new HouseData(house, sb, stars, settings.getRangeType(), fromTo.v1() , fromTo.v2());
       }).collect(Collectors.toSet());
     } // builder init
 

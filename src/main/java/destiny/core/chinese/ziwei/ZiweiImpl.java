@@ -3,6 +3,8 @@
  */
 package destiny.core.chinese.ziwei;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import destiny.astrology.StarPositionIF;
 import destiny.astrology.StarTransitIF;
 import destiny.core.Gender;
@@ -82,6 +84,10 @@ public class ZiweiImpl implements IZiwei, Serializable {
         return Tuple.tuple(sb , house);
       }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
+    // 地支 <-> 宮位 的 雙向 mapping
+    BiMap<Branch , House> branchHouseBiMap = HashBiMap.create();
+    branchHouseMap.forEach((sb , house) -> branchHouseBiMap.put(sb.getBranch() , house));
+
     // 寅 的天干
     Stem stemOf寅 = IZiwei.getStemOf寅(year.getStem());
 
@@ -112,7 +118,16 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     ChineseDate chineseDate = new ChineseDate(null , year , monthNum , leapMonth , days);
 
-    return new Plate.Builder(settings, chineseDate, gender, finalMonthNum, hour, mainHouse , bodyHouse , mainStar, bodyStar, t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap)
+    // 大限 mapping
+    IBigRange bigRangeImpl = getBigRangeImpl(settings.getBigRange());
+
+    Map<Branch , Tuple2<Double , Double>> bigRangeMap = Arrays.stream(Branch.values())
+      .map(branch -> {
+        Tuple2<Double , Double> t2 = bigRangeImpl.getRange(branchHouseBiMap.get(branch), set, year.getStem(), gender, settings.getRangeType(), houseSeq);
+        return Tuple.tuple(branch , t2);
+      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+
+    return new Plate.Builder(settings, chineseDate, gender, finalMonthNum, hour, mainHouse , bodyHouse , mainStar, bodyStar, t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap, bigRangeMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
@@ -346,6 +361,14 @@ public class ZiweiImpl implements IZiwei, Serializable {
     switch (strength) {
       case STRENGTH_MIDDLE: return new StrengthMiddleImpl();
       default: throw new AssertionError("Error : " + strength);
+    }
+  }
+
+  private IBigRange getBigRangeImpl(Settings.BigRange bigRange) {
+    switch (bigRange) {
+      case BIG_RANGE_FROM_MAIN: return new BigRangeFromMain();
+      case BIG_RANGE_SKIP_MAIN: return new BigRangeSkipMain();
+      default: throw new AssertionError("Error : " + bigRange);
     }
   }
 
