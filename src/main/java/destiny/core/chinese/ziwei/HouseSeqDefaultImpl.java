@@ -3,15 +3,10 @@
  */
 package destiny.core.chinese.ziwei;
 
-import destiny.tools.ArrayTools;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Locale;
-
 import static destiny.core.chinese.ziwei.House.*;
 
-public class HouseSeqDefaultImpl implements IHouseSeq, Serializable {
+/** 南派 */
+public class HouseSeqDefaultImpl extends HouseSeqAbstractImpl {
 
   private final static House[] ARRAY = new House[] {
     命宮 , 兄弟 , 夫妻 ,
@@ -25,36 +20,4 @@ public class HouseSeqDefaultImpl implements IHouseSeq, Serializable {
     return ARRAY;
   }
 
-  @Override
-  public String getTitle(Locale locale) {
-    return "紫微斗數全書";
-  }
-
-  @Override
-  public String getDescription(Locale locale) {
-    return "命兄夫 子財疾 遷奴官 田福父";
-  }
-
-  @Override
-  public House next(House from, int n) {
-    return get(getIndex(from) + n);
-  }
-
-  @Override
-  public int getAheadOf(House h1, House h2) {
-    int index1 = getIndex(h1);
-    int index2 = getIndex(h2);
-    if (index1 < 0 || index2 < 0)
-      return -1;
-    int steps = index1 - index2;
-    return (steps >=0 ? steps : steps + 12);
-  }
-
-  private static House get(int index) {
-    return ArrayTools.get(ARRAY , index);
-  }
-
-  private static int getIndex(House h) {
-    return Arrays.binarySearch(ARRAY , h);
-  }
 }

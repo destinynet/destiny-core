@@ -83,21 +83,18 @@ public class Plate implements Serializable {
   private final Map<Branch, Map<FlowType, House>> branchFlowHouseMap;
 
   /** 計算的流運資料 */
-  private final Map<FlowType , Branch> flowBranchMap;
+  private final Map<FlowType , StemBranch> flowBranchMap;
 
   /** 星體強弱表 */
   private final Map<ZStar , Integer> starStrengthMap;
 
   /** 節氣八字 */
-  private final EightWords eightWordsSolar;
-
-  /** 陰曆八字 */
-  private final EightWords eightWordsLunar;
+  private final EightWords eightWords;
 
   /**
    * 命盤
    */
-  private Plate(Settings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, Branch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWordsSolar, EightWords eightWordsLunar) {
+  private Plate(Settings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
     this.settings = settings;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -116,8 +113,7 @@ public class Plate implements Serializable {
     this.branchFlowHouseMap = branchFlowHouseMap;
     this.flowBranchMap = flowBranchMap;
     this.starStrengthMap = starStrengthMap;
-    this.eightWordsSolar = eightWordsSolar;
-    this.eightWordsLunar = eightWordsLunar;
+    this.eightWords = eightWords;
   }
 
   public Settings getSettings() {
@@ -205,7 +201,7 @@ public class Plate implements Serializable {
   }
 
   /** 取得此命盤，包含哪些流運資訊 */
-  public Map<FlowType, Branch> getFlowBranchMap() {
+  public Map<FlowType, StemBranch> getFlowBranchMap() {
     return flowBranchMap;
   }
 
@@ -290,13 +286,8 @@ public class Plate implements Serializable {
   }
 
   /** 節氣八字 */
-  public Optional<EightWords> getEightWordsSolar() {
-    return Optional.ofNullable(eightWordsSolar);
-  }
-
-  /** 陰曆八字 */
-  public Optional<EightWords> getEightWordsLunar() {
-    return Optional.ofNullable(eightWordsLunar);
+  public Optional<EightWords> getEightWords() {
+    return Optional.ofNullable(eightWords);
   }
 
   /** 命主 */
@@ -369,10 +360,7 @@ public class Plate implements Serializable {
     private final String naYin;
 
     /** 正確的八字（節氣推算）*/
-    private EightWords eightWordsSolar = null;
-
-    /** 陰曆的八字（不論節氣）*/
-    private EightWords eightWordsLunar = null;
+    private EightWords eightWords = null;
 
     private final Set<HouseData> houseDataSet;
 
@@ -391,7 +379,7 @@ public class Plate implements Serializable {
     private final Map<ZStar , Integer> starStrengthMap;
 
     /** 計算流運資料 */
-    private Map<FlowType , Branch> flowBranchMap = new TreeMap<>();
+    private Map<FlowType , StemBranch> flowBranchMap = new TreeMap<>();
 
     public Builder(Settings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap) {
       this.settings = settings;
@@ -487,7 +475,7 @@ public class Plate implements Serializable {
      * @param flowBig 哪個大限
      * @param map     地支「在該大限」與宮位的對照表
      */
-    public Builder withFlowBig(Branch flowBig , Map<Branch , House> map) {
+    public Builder withFlowBig(StemBranch flowBig , Map<Branch , House> map) {
       this.flowBranchMap.put(FlowType.大限 , flowBig);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
@@ -504,7 +492,7 @@ public class Plate implements Serializable {
      * @param flowYear 哪個流年
      * @param map      地支「在該流年」與宮位的對照表
      */
-    public Builder withFlowYear(Branch flowYear , Map<Branch , House> map) {
+    public Builder withFlowYear(StemBranch flowYear , Map<Branch , House> map) {
       this.flowBranchMap.put(FlowType.流年 , flowYear);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
@@ -521,7 +509,7 @@ public class Plate implements Serializable {
      * @param flowMonth 哪個流月
      * @param map       地支「在該流月」與宮位的對照表
      */
-    public Builder withFlowMonth(Branch flowMonth , Map<Branch , House> map) {
+    public Builder withFlowMonth(StemBranch flowMonth , Map<Branch , House> map) {
       this.flowBranchMap.put(FlowType.流月 , flowMonth);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
@@ -538,7 +526,7 @@ public class Plate implements Serializable {
      * @param flowDay 哪個流日
      * @param map     地支「在該流日」與宮位的對照表
      */
-    public Builder withFlowDay(Branch flowDay , Map<Branch , House> map) {
+    public Builder withFlowDay(StemBranch flowDay , Map<Branch , House> map) {
       this.flowBranchMap.put(FlowType.流日 , flowDay);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
@@ -555,7 +543,7 @@ public class Plate implements Serializable {
      * @param flowHour 哪個流時
      * @param map      地支「在該流時」與宮位的對照表
      */
-    public Builder withFlowHour(Branch flowHour , Map<Branch , House> map) {
+    public Builder withFlowHour(StemBranch flowHour , Map<Branch , House> map) {
       this.flowBranchMap.put(FlowType.流時 , flowHour);
       map.forEach((branch, house) -> {
         branchFlowHouseMap.computeIfPresent(branch , (branch1 , m) -> {
@@ -569,22 +557,14 @@ public class Plate implements Serializable {
     /**
      * @param eightWords 節氣八字
      */
-    public Builder withEightWordsSolar(@NotNull EightWords eightWords) {
-      this.eightWordsSolar = eightWords;
-      return this;
-    }
-
-    /**
-     * @param eightWords 陰曆八字
-     */
-    public Builder withEightWordsLunar(@NotNull EightWords eightWords) {
-      this.eightWordsLunar = eightWords;
+    public Builder withEightWords(@NotNull EightWords eightWords) {
+      this.eightWords = eightWords;
       return this;
     }
 
 
     public Plate build() {
-      return new Plate(settings, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWordsSolar, eightWordsLunar);
+      return new Plate(settings, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords);
     }
 
 

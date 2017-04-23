@@ -138,7 +138,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
       .withLocalDateTime(lmt)
       .withLocation(location)
       .withPlace(place)
-      .withEightWordsSolar(context.getEightWords())
+      .withEightWords(context.getEightWords())
       ;
   }
 
@@ -157,7 +157,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     // 大限四化
     Map<Tuple2<ZStar , FlowType> , ITransFour.Value> trans4Map = getTrans4Map(builder.getStars() , FlowType.大限 , flowBig.getStem() , settings);
     return builder
-      .withFlowBig(flowBig.getBranch() , branchHouseMap)
+      .withFlowBig(flowBig , branchHouseMap)
       .appendTrans4Map(trans4Map);
   }
 
@@ -179,7 +179,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     Map<Tuple2<ZStar , FlowType> , ITransFour.Value> trans4Map = getTrans4Map(builder.getStars() , FlowType.流年 , flowYear.getStem() , settings);
 
     return getFlowBig(builder , settings , flowBig)
-      .withFlowYear(flowYear.getBranch() , branchHouseMap)
+      .withFlowYear(flowYear , branchHouseMap)
       .appendTrans4Map(trans4Map);
   }
 
@@ -201,7 +201,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     Map<Tuple2<ZStar , FlowType> , ITransFour.Value> trans4Map = getTrans4Map(builder.getStars() , FlowType.流月 , flowMonth.getStem() , settings);
 
     return getFlowYear(builder , settings , flowBig , flowYear)
-      .withFlowMonth(flowMonth.getBranch() , branchHouseMap)
+      .withFlowMonth(flowMonth , branchHouseMap)
       .appendTrans4Map(trans4Map);
   }
 
@@ -224,7 +224,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     // 流日四化
     Map<Tuple2<ZStar , FlowType> , ITransFour.Value> trans4Map = getTrans4Map(builder.getStars() , FlowType.流日 , flowDay.getStem() , settings);
     return getFlowMonth(builder , settings , flowBig , flowYear , flowMonth)
-      .withFlowDay(flowDay.getBranch() ,branchHouseMap)
+      .withFlowDay(flowDay ,branchHouseMap)
       .appendTrans4Map(trans4Map);
   }
 
@@ -251,7 +251,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     Map<Tuple2<ZStar , FlowType> , ITransFour.Value> trans4Map = getTrans4Map(builder.getStars() , FlowType.流時 , flowHour.getStem() , settings);
 
     return getFlowDay(builder , settings , flowBig , flowYear , flowMonth , flowDay , flowDayNum)
-      .withFlowHour(flowHour.getBranch() , branchHouseMap)
+      .withFlowHour(flowHour , branchHouseMap)
       .appendTrans4Map(trans4Map);
   }
 
@@ -317,6 +317,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     switch (houseSeq) {
       case HOUSE_DEFAULT: return new HouseSeqDefaultImpl();
       case HOUSE_TAIYI:   return new HouseSeqTaiyiImpl();
+      case HOUSE_ASTRO:   return new HouseSeqAstroImpl();
       default: throw new AssertionError("Error : " + houseSeq);
     }
   }

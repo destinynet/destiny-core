@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
+import destiny.core.calendar.eightwords.Direction;
 import destiny.core.chinese.impls.TianyiAuthorizedImpl;
 import destiny.core.chinese.impls.TianyiLiurenPithyImpl;
 import destiny.core.chinese.impls.TianyiOceanImpl;
@@ -83,7 +84,8 @@ public class Settings implements Serializable {
   /** 宮位名字 */
   public enum HouseSeq implements Descriptive {
     HOUSE_DEFAULT,   /** 內定 {@link HouseSeqDefaultImpl} */
-    HOUSE_TAIYI;     /** 太乙 {@link HouseSeqTaiyiImpl} */
+    HOUSE_TAIYI,     /** 太乙 {@link HouseSeqTaiyiImpl} */
+    HOUSE_ASTRO;     /** 星宗 {@link HouseSeqAstroImpl} */
 
     @Override
     public String getTitle(Locale locale) {
@@ -294,7 +296,10 @@ public class Settings implements Serializable {
   }
   private final FlowHour flowHour;
 
-  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour) {
+  /** 八字排盤，右至左 or 左至右 */
+  private final Direction direction;
+
+  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, Direction direction) {
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
@@ -309,6 +314,7 @@ public class Settings implements Serializable {
     this.flowMonth = flowMonth;
     this.flowDay = flowDay;
     this.flowHour = flowHour;
+    this.direction = direction;
   }
 
   public LeapMonth getLeapMonth() {
@@ -365,5 +371,9 @@ public class Settings implements Serializable {
 
   public FlowHour getFlowHour() {
     return flowHour;
+  }
+
+  public Direction getDirection() {
+    return direction;
   }
 }

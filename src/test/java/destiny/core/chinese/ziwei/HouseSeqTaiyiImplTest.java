@@ -4,6 +4,10 @@
 package destiny.core.chinese.ziwei;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
 
 import static destiny.core.chinese.ziwei.House.*;
 import static org.junit.Assert.assertEquals;
@@ -12,6 +16,13 @@ import static org.junit.Assert.assertSame;
 public class HouseSeqTaiyiImplTest {
 
   private IHouseSeq impl = new HouseSeqTaiyiImpl();
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
+  @Test
+  public void testString() {
+    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+  }
 
   @Test
   public void next() {

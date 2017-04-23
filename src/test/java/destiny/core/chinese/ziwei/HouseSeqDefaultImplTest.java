@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
+
 import static destiny.core.chinese.ziwei.House.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -17,6 +19,11 @@ public class HouseSeqDefaultImplTest {
 
   IHouseSeq impl = new HouseSeqDefaultImpl();
 
+
+  @Test
+  public void testString() {
+    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+  }
   @Test
   public void next() {
     assertSame(命宮, 命宮.next(-36, impl));
