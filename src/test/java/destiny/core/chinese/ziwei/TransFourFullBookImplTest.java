@@ -4,18 +4,29 @@
 package destiny.core.chinese.ziwei;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
 
 import static destiny.core.chinese.Stem.*;
+import static destiny.core.chinese.ziwei.ITransFour.Value.*;
 import static destiny.core.chinese.ziwei.StarLucky.右弼;
 import static destiny.core.chinese.ziwei.StarMain.*;
-import static destiny.core.chinese.ziwei.ITransFour.Value.*;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 @SuppressWarnings("Duplicates")
-public class TransFourSouthImplTest {
+public class TransFourFullBookImplTest {
 
-  ITransFour impl = new TransFourSouthImpl();
+  ITransFour impl = new TransFourFullBookImpl();
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
+  @Test
+  public void testTitle() {
+    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.CHINA));
+  }
 
   @Test
   public void getStarOf() {

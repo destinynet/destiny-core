@@ -86,11 +86,6 @@ public class TransFourZiyunImpl extends TransFourAbstractImpl {
   }
 
   @Override
-  public String getTitle(Locale locale) {
-    return "紫雲";
-  }
-
-  @Override
   public String getDescription(Locale locale) {
     return "紫雲派";
   }

@@ -85,11 +85,6 @@ public class TransFourNorthImpl extends TransFourAbstractImpl {
   }
 
   @Override
-  public String getTitle(Locale locale) {
-    return "北派";
-  }
-
-  @Override
   public String getDescription(Locale locale) {
     return "北派、神數派";
   }

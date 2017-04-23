@@ -58,7 +58,7 @@ public class TransFourDivineImpl extends TransFourAbstractImpl  {
     // 庚 有差別
     .put(tuple(庚 , 祿) , 太陽)
     .put(tuple(庚 , 權) , 武曲)
-    .put(tuple(庚 , 科) , 太陰)
+    .put(tuple(庚 , 科) , 天同)
     .put(tuple(庚 , 忌) , 天相)
 
     // 辛 有差別

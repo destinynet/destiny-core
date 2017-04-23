@@ -324,9 +324,9 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   private ITransFour getTranFourImpl(Settings.TransFour transFour) {
     switch (transFour) {
-      case TRANSFOUR_DEFAULT: return new TransFourDefaultImpl();
+      case TRANSFOUR_FULL_COLLECT: return new TransFourFullCollectImpl();
       case TRANSFOUR_NORTH: return new TransFourNorthImpl();
-      case TRANSFOUR_SOUTH: return new TransFourSouthImpl();
+      case TRANSFOUR_FULL_BOOK: return new TransFourFullBookImpl();
       case TRANSFOUR_MIDDLE: return new TransFourMiddleImpl();
       case TRANSFOUR_DIVINE: return new TransFourDivineImpl();
       case TRANSFOUR_ZIYUN: return new TransFourZiyunImpl();

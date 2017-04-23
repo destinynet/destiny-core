@@ -85,11 +85,6 @@ public class TransFourMiddleImpl extends TransFourAbstractImpl {
   }
 
   @Override
-  public String getTitle(Locale locale) {
-    return "中州派";
-  }
-
-  @Override
   public String getDescription(Locale locale) {
     return "中州派(王亭之)";
   }

@@ -4,6 +4,10 @@
 package destiny.core.chinese.ziwei;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
 
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.ziwei.StarLucky.右弼;
@@ -17,6 +21,13 @@ import static org.junit.Assert.assertSame;
 public class TransFourNorthImplTest {
 
   ITransFour impl = new TransFourNorthImpl();
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
+  @Test
+  public void testTitle() {
+    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.CHINA));
+  }
 
   @Test
   public void getStarOf() {

@@ -165,12 +165,12 @@ public class Settings implements Serializable {
 
   /** 四化設定 */
   public enum TransFour implements Descriptive {
-    TRANSFOUR_DEFAULT,   /** {@link TransFourDefaultImpl} */
-    TRANSFOUR_NORTH,   /** {@link TransFourNorthImpl} */
-    TRANSFOUR_SOUTH,   /** {@link TransFourSouthImpl} */
-    TRANSFOUR_MIDDLE,   /** {@link TransFourMiddleImpl} */
-    TRANSFOUR_DIVINE,   /** {@link TransFourDivineImpl} */
-    TRANSFOUR_ZIYUN,;   /** {@link TransFourZiyunImpl} */
+    TRANSFOUR_FULL_COLLECT, /** 全集 {@link TransFourFullCollectImpl} */
+    TRANSFOUR_FULL_BOOK,    /** 全書 {@link TransFourFullBookImpl} */
+    TRANSFOUR_NORTH,        /** 北派 {@link TransFourNorthImpl} */
+    TRANSFOUR_MIDDLE,       /** 中州 {@link TransFourMiddleImpl} */
+    TRANSFOUR_DIVINE,       /** 占驗 {@link TransFourDivineImpl} */
+    TRANSFOUR_ZIYUN,;       /** 紫雲 {@link TransFourZiyunImpl} */
 
     @Override
     public String getTitle(Locale locale) {
