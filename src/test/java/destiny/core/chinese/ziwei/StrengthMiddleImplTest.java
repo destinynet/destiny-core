@@ -27,6 +27,11 @@ public class StrengthMiddleImplTest {
   IStrength impl = new StrengthMiddleImpl();
 
   @Test
+  public void testTitle() {
+    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.CHINA));
+  }
+
+  @Test
   public void testListStarByType() {
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));

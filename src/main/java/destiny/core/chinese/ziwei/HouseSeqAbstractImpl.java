@@ -36,10 +36,10 @@ public abstract class HouseSeqAbstractImpl implements IHouseSeq , Serializable {
   @Override
   public String getTitle(Locale locale) {
     try {
-        return ResourceBundle.getBundle(ZiweiImpl.class.getName(), locale).getString(getClass().getSimpleName());
-      } catch (MissingResourceException e) {
-        return getClass().getSimpleName();
-      }
+      return ResourceBundle.getBundle(ZiweiImpl.class.getName(), locale).getString(getClass().getSimpleName());
+    } catch (MissingResourceException e) {
+      return getClass().getSimpleName();
+    }
   }
 
   @Override

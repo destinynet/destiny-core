@@ -33,9 +33,9 @@ public class StrengthMiddleImpl extends StrengthAbstractImpl {
    * 此顆星，於此地支中，強度為何
    * 1 最強 , 7 最弱
    *
-   *                           1  2       3    4    5      6          7
-   * 南派依序分成               →廟、旺、    得地     、平和、   閒地      、陷    ，等六級。
-   * 北派依序分成（即紫微斗數全書）→廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
+   *             1  2       3    4    5      6          7
+   * 南派依序分成 →廟、旺、    得地     、平和、   閒地       、陷    ，等六級。
+   * 北派依序分成 →廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
    * */
   private final static Table<ZStar , Branch , Integer> table = new ImmutableTable.Builder<ZStar, Branch, Integer>()
     .put(紫微, 子, 5).put(紫微, 丑, 1).put(紫微, 寅, 1).put(紫微, 卯, 2).put(紫微, 辰, 7).put(紫微, 巳, 2).put(紫微, 午, 1).put(紫微, 未, 1).put(紫微, 申, 2).put(紫微, 酉, 5).put(紫微, 戌, 6).put(紫微, 亥, 2)

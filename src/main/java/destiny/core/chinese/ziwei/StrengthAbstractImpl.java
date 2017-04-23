@@ -6,14 +6,12 @@ package destiny.core.chinese.ziwei;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import destiny.core.Descriptive;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.ziwei.StarLucky.*;
@@ -33,9 +31,9 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
    * http://only-cafe.myweb.hinet.net/destiny/index_des.htm
    * http://imgur.com/a/iBwP0 令东来修正版
    *
-   *                           1  2       3    4    5      6          7
-   * 南派依序分成               →廟、旺、    得地     、平和、   閒地      、陷    ，等六級。
-   * 北派依序分成（即紫微斗數全書）→廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
+   *             1  2       3    4    5      6          7
+   * 南派依序分成 →廟、旺、    得地     、平和、   閒地       、陷    ，等六級。
+   * 北派依序分成 →廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
    * */
 
   private static Table<ZStar , Branch , Integer> commonTable = new ImmutableTable.Builder<ZStar, Branch, Integer>()
@@ -154,5 +152,19 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
       case 7 : return "陷";
       default: throw new AssertionError("Error : " + value);
     }
+  }
+
+  @Override
+  public String getTitle(Locale locale) {
+    try {
+      return ResourceBundle.getBundle(ZiweiImpl.class.getName(), locale).getString(getClass().getSimpleName());
+    } catch (MissingResourceException e) {
+      return getClass().getSimpleName();
+    }
+  }
+
+  @Override
+  public String getDescription(Locale locale) {
+    return getTitle(locale);
   }
 }

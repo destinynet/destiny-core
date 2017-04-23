@@ -191,7 +191,8 @@ public class Settings implements Serializable {
 
   /** 廟旺弱陷 */
   public enum Strength implements Descriptive {
-    STRENGTH_MIDDLE,;    /** {@link StrengthMiddleImpl} 中州派 */
+    STRENGTH_MIDDLE,    /** {@link StrengthMiddleImpl} 中州派 */
+    STRENGTH_NORTH;     /** {@link StrengthNorthImpl} 北派 */
 
     @Override
     public String getTitle(Locale locale) {
