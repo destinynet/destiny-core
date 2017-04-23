@@ -30,6 +30,7 @@ public abstract class ZStar extends Point implements Comparable<ZStar> {
 
   public enum Type {
     主星 ,
+    年,    // 年的干支
     年干 ,
     年支 ,
     月 ,

@@ -7,6 +7,7 @@ public enum FuncType {
   SET_DAY_NUM   // (局數,生日)
   ,HOUR_BRANCH
   ,MONTH                    // (月數 or 月支)
+  ,YEAR                     // (年干支)
   ,YEAR_STEM
   ,YEAR_BRANCH
   ,YEAR_BRANCH_HOUR_BRANCH  // (年支,時支）

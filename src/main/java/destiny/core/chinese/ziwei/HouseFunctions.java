@@ -515,6 +515,36 @@ public class HouseFunctions {
     }
   };
 
+  public final static IHouse house陽空 = new HouseYearImpl(陽空) {
+    @Override
+    public Branch getBranch(StemBranch stemBranch) {
+      return fun陽空.apply(stemBranch);
+    }
+  };
+
+  public final static IHouse house陰空 = new HouseYearImpl(陰空) {
+    @Override
+    public Branch getBranch(StemBranch stemBranch) {
+      return fun陰空.apply(stemBranch);
+    }
+  };
+
+  /** 截空 : 正空 (截路) */
+  public final static IHouse house正空 = new HouseYearStemImpl(正空) {
+    @Override
+    public Branch getBranch(Stem stem) {
+      return fun正空_A.apply(stem);
+    }
+  };
+
+  /** 截空 : 傍空 (空亡) */
+  public final static IHouse house傍空 = new HouseYearStemImpl(傍空) {
+    @Override
+    public Branch getBranch(Stem stem) {
+      return fun傍空_A.apply(stem);
+    }
+  };
+
   // =======↑↑↑======= 以上      雜曜 =======↑↑↑=======
 
   // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
@@ -708,6 +738,8 @@ public class HouseFunctions {
     .add(house紅鸞, house天喜, house孤辰, house寡宿, house蜚廉, house破碎, house華蓋, house咸池)
     .add(house天德, house月德, house天才, house天壽, house三台, house八座, house恩光, house天貴)
     .add(house天傷, house天使)
+    .add(house陽空, house陰空)
+    .add(house正空, house傍空)
 
     // 博士12神煞
     .add(house博士, house力士, house青龍, house小耗, house將軍, house奏書,

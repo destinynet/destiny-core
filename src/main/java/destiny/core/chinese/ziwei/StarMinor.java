@@ -8,6 +8,7 @@ import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
+import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.function.Function3;
 import org.jooq.lambda.function.Function5;
 
@@ -65,10 +66,14 @@ public class StarMinor extends ZStar {
   public final static StarMinor 天使 = new StarMinor("天使" , 宮位); //   兇 , 天使屬陰水 , 主災病
   public final static StarMinor 天傷 = new StarMinor("天傷" , 宮位); //   兇 , 天傷屬陽水 , 主虛耗
 
-  // TODO
-  //public final static StarMinor 截空 = new StarMinor("截空"); //   兇
+  public final static StarMinor 陽空 = new StarMinor("陽空" , 年);
+  public final static StarMinor 陰空 = new StarMinor("陰空" , 年);
 
-  public final static StarMinor[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷};
+  public final static StarMinor 正空 = new StarMinor("正空" , 年干);  // 截空 陰陽相同
+  public final static StarMinor 傍空 = new StarMinor("傍空" , 年干);  // 截空 陰陽相反
+
+  public final static StarMinor[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎,
+    華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷 , 陽空 , 陰空 , 正空 , 傍空};
 
   public StarMinor(String nameKey , Type type) {
     super(nameKey, ZStar.class.getName(), type);
@@ -482,4 +487,125 @@ public class StarMinor extends ZStar {
       return 遷移宮地支.prev(1);
     }
   };
+
+  @SuppressWarnings("ConstantConditions")
+  public final static Function<StemBranch , Branch> fun陽空 = (stemBranch -> stemBranch.getEmpties()
+    .stream()
+    .filter(b -> b.getIndexFromOne() %2 == 1)
+    .findFirst()
+    .get()  // 必定會有
+  );
+
+  @SuppressWarnings("ConstantConditions")
+  public final static Function<StemBranch , Branch> fun陰空 = (stemBranch -> stemBranch.getEmpties()
+    .stream()
+    .filter(b -> b.getIndexFromOne() %2 == 0)
+    .findFirst()
+    .get()  // 必定會有
+  );
+
+
+  /**
+   * 截空
+   * 截空星的安法.截路字義上就是截斷路.就現今社會要截斷路.用重機械.挖土機.很簡單.
+   * 但是紫微斗數是在一千都年前所有的.在那一個時代能夠有能力截路的.就是大自然界的水.
+   * 所以截空星的位置.都會出現在命盤中.天干屬水的位置.也就是.壬.癸的位置.
+   * 例如.
+   * 甲年.己年生人.命盤一月為丙寅月.七月為壬申月.八月為癸酉月.所以
+   *    甲年生人截空就在壬申的位置.
+   *    己年生人就會在癸酉的位置.
+   * 但這其中.因為派別的關係.戊.癸.年生人就有不一樣.
+   * 我派是會出現在壬戌.和癸亥.這兩個位置.
+   * 有一派會出現在甲子.和乙丑.的位置.
+   *
+   * 截空星的用法.截空星是空宮位.例如進入疾厄宮.就會減低生病的機會.
+   *
+   * 甲己之年空申酉
+   * 乙庚之年午未求
+   * 丙辛生人空辰巳
+   * 丁壬寅卯深作憂
+   * 戊 生人空子丑!
+   *
+   * 甲or己年出生者，正截空在申宮，傍截空在酉宮。
+   * 乙or庚年出生者，正截空在午宮，傍截空在未宮。
+   * 丙or辛年出生者，正截空在辰宮，傍截空在巳宮。
+   * 丁or壬年出生者，正截空在寅宮，傍截空在卯宮。
+   * 戊or癸年出生者，正截空在子宮，傍截空在丑宮。
+   *
+   * 見此圖 ： http://imgur.com/peeBDQ5
+   * 戊癸年， A法空子丑， B法空戌亥
+   * (好像B法比較有道理)
+   */
+  public final static Function<Stem , Branch> fun正空_A = (stem -> {
+    switch (stem) {
+      case 甲: return 申;
+      case 己: return 酉;
+      case 乙: return 午;
+      case 庚: return 未;
+      case 丙: return 辰;
+      case 辛: return 巳;
+      case 丁: return 寅;
+      case 壬: return 卯;
+
+      case 戊: return 子;
+      case 癸: return 丑;
+      default: throw new AssertionError("Error : " + stem);
+    }
+  });
+
+  public final static Function<Stem , Branch> fun正空_B = (stem -> {
+    switch (stem) {
+      case 甲: return 申;
+      case 己: return 酉;
+      case 乙: return 午;
+      case 庚: return 未;
+      case 丙: return 辰;
+      case 辛: return 巳;
+      case 丁: return 寅;
+      case 壬: return 卯;
+
+      case 戊: return 戌;
+      case 癸: return 亥;
+      default: throw new AssertionError("Error : " + stem);
+    }
+  });
+
+
+
+  /** 傍空 : 陰陽相反 */
+  public final static Function<Stem , Branch> fun傍空_A = (stem -> {
+    switch (stem) {
+      case 甲: return 酉;
+      case 己: return 申;
+      case 乙: return 未;
+      case 庚: return 午;
+      case 丙: return 巳;
+      case 辛: return 辰;
+      case 丁: return 卯;
+      case 壬: return 寅;
+
+      case 戊: return 丑;
+      case 癸: return 子;
+      default: throw new AssertionError("Error : " + stem);
+    }
+  });
+
+  public final static Function<Stem , Branch> fun傍空_B = (stem -> {
+    switch (stem) {
+      case 甲: return 酉;
+      case 己: return 申;
+      case 乙: return 未;
+      case 庚: return 午;
+      case 丙: return 巳;
+      case 辛: return 辰;
+      case 丁: return 卯;
+      case 壬: return 寅;
+
+      case 戊: return 亥;
+      case 癸: return 戌;
+      default: throw new AssertionError("Error : " + stem);
+    }
+  });
+
+
 }
