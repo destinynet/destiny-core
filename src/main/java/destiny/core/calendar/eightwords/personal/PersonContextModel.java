@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
+import destiny.core.Gender;
+import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.EightWords;
@@ -11,6 +13,7 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,11 +22,18 @@ import java.util.List;
  */
 public class PersonContextModel implements Serializable {
 
+  private final Gender gender;
+
   private final EightWords eightWords;
   private final PersonContext personContext;
 
+  private final LocalDateTime lmt;
+
   /** 農曆 */
   private final ChineseDate chineseDate;
+
+
+  private final Location location;
 
   /** 地點名稱 */
   private String locationName = "";
@@ -52,10 +62,13 @@ public class PersonContextModel implements Serializable {
   private final Branch moonBranch;
 
 
-  public PersonContextModel(EightWords eightWords, PersonContext context, List<FortuneData> fortuneDatas, String locationName, ChineseDate chineseDate, boolean dst, int gmtMinuteOffset, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms) {
+  public PersonContextModel(Gender gender, EightWords eightWords, PersonContext context, LocalDateTime lmt, Location location, String locationName, ChineseDate chineseDate, boolean dst, int gmtMinuteOffset, List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms) {
+    this.gender = gender;
     this.eightWords = eightWords;
     this.personContext = context;
+    this.lmt = lmt;
     this.fortuneDatas = fortuneDatas;
+    this.location = location;
     this.chineseDate = chineseDate;
     this.locationName = locationName;
     this.dst = dst;
@@ -69,12 +82,21 @@ public class PersonContextModel implements Serializable {
     this.nextMajorSolarTerms = prevNextMajorSolarTerms.v2();
   } // constructor
 
+  public Gender getGender() {
+    return gender;
+  }
+
   public EightWords getEightWords() {
     return eightWords;
   }
 
+  @Deprecated
   public PersonContext getPersonContext() {
     return personContext;
+  }
+
+  public LocalDateTime getLmt() {
+    return lmt;
   }
 
   public ChineseDate getChineseDate() {
@@ -95,6 +117,10 @@ public class PersonContextModel implements Serializable {
 
   public SolarTerms getNextMajorSolarTerms() {
     return nextMajorSolarTerms;
+  }
+
+  public Location getLocation() {
+    return location;
   }
 
   public String getLocationName() {
