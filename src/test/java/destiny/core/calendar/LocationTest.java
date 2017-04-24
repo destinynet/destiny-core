@@ -9,8 +9,14 @@ import destiny.core.calendar.Location.NorthSouth;
 import destiny.tools.location.TimeZoneUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
 
 public class LocationTest {
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Test
   public void testNorthSouth()

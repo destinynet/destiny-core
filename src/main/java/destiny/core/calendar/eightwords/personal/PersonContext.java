@@ -14,10 +14,7 @@ import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
-import destiny.core.chinese.Branch;
-import destiny.core.chinese.Stem;
-import destiny.core.chinese.StemBranch;
-import destiny.core.chinese.StemBranchUtils;
+import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -26,12 +23,16 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.chrono.IsoEra;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static destiny.astrology.Coordinate.ECLIPTIC;
 import static destiny.astrology.Planet.SUN;
+import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 
 public class PersonContext extends EightWordsContext {
 
@@ -342,6 +343,99 @@ public class PersonContext extends EightWordsContext {
     }
   } // getNextMajorSolarTerms()
 
+
+  /**
+   * @param fortunes 計算 n柱 大運的資料
+   * @param fortuneOutput 輸出格式
+   */
+  public List<FortuneData> getFortuneDatas(int fortunes , FortuneOutput fortuneOutput) {
+    // forward : 大運是否順行
+    boolean isForward = isFortuneDirectionForward();
+
+    //下個大運的干支
+    StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
+    EightWords eightWords = getEightWords();
+
+    // 前一個大運，開始的歲數
+    int prevStart = 0;
+    // 前一個大運，結束的歲數
+    int prevEnd = 0;
+
+    List<FortuneData> fortuneDatas = new ArrayList<>();
+
+    // 計算九柱大運的相關資訊
+    for (int i=1 ; i<=fortunes ; i++) {
+      // 西元/民國/實歲/虛歲之值
+      int startFortune;
+      int endFortune;
+      double startFortuneSeconds = getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
+      double   endFortuneSeconds = getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
+
+      Tuple2<Long , Long> pair1 = Time.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
+      LocalDateTime startFortuneLmt = LocalDateTime.from(getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+      Tuple2<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
+      LocalDateTime endFortuneLmt  = LocalDateTime.from(getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
+
+      switch(fortuneOutput)
+      {
+        case 西元 : {
+          startFortune = startFortuneLmt.get(YEAR_OF_ERA);
+          if (startFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) // 西元前
+            startFortune= 0-startFortune;
+          endFortune = endFortuneLmt.get(YEAR_OF_ERA);
+          if (endFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) // 西元前
+            endFortune = 0-endFortune;
+          break;
+        }
+        case 民國 : {
+          int year; //normalized 的 年份 , 有零 , 有負數
+          year = startFortuneLmt.get(YEAR_OF_ERA);
+          if (startFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) //西元前
+            year = -(year-1);
+          startFortune = year-1911;
+          year = endFortuneLmt.get(YEAR_OF_ERA);
+          if (endFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) //西元前
+            year = -(year-1);
+          endFortune = year-1911;
+          break;
+        }
+        case 實歲 : {
+          startFortune = (int) (Math.abs(startFortuneSeconds) * fortuneMonthSpan / (365.2563*24*60*60)) ;
+          endFortune   = (int) (Math.abs(endFortuneSeconds)   * fortuneMonthSpan / (365.2563*24*60*60)) ;
+          break;
+        }
+        default : {
+          //虛歲
+          // 取得 起運/終運 時的八字
+          EightWordsContext eightWordsContext = new EightWordsContext(getChineseDateImpl() , getYearMonthImpl() ,
+              getDayImpl() , getHourImpl() ,
+              getMidnightImpl() , isChangeDayAfterZi(), getRisingSignImpl(), starPositionImpl);
+
+          EightWords startFortune8w = eightWordsContext.getEightWords(startFortuneLmt, getLocation());
+          EightWords endFortune8w   = eightWordsContext.getEightWords(endFortuneLmt, getLocation());
+
+          // 計算年干與本命年干的距離
+          startFortune = startFortune8w.getYear().differs(eightWords.getYear())+1;
+          //System.out.println("differs result , startFortune = " + startFortune + " , prevStart = " + prevStart);
+          while (startFortune < prevStart)
+            startFortune +=60;
+          prevStart = startFortune;
+          //System.out.println(startFortune8w.getYear()+"["+startFortune8w.getYear().getIndex()+"] to " + eightWords.getYear()+"["+eightWords.getYear().getIndex()+"] is "+ startFortune);
+
+          endFortune = endFortune8w.getYear().differs(eightWords.getYear())+1;
+          while (endFortune < prevEnd)
+            endFortune += 60;
+          prevEnd = endFortune;
+        }
+      }
+
+      FortuneData fortuneData = new FortuneData(nextStemBranch , startFortuneLmt , endFortuneLmt, startFortune , endFortune);
+      fortuneDatas.add(fortuneData);
+
+      nextStemBranch = isForward ? nextStemBranch.getNext() : nextStemBranch.getPrevious();
+    } // for 1 ~ fortunes)
+    return fortuneDatas;
+  }
 
   /** 取得農曆 */
   public ChineseDate getChineseDate() {
