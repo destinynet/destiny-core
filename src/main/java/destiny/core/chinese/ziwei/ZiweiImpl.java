@@ -123,7 +123,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     Map<Branch , Tuple2<Double , Double>> bigRangeMap = Arrays.stream(Branch.values())
       .map(branch -> {
-        Tuple2<Double , Double> t2 = bigRangeImpl.getRange(branchHouseBiMap.get(branch), set, year.getStem(), gender, settings.getRangeType(), houseSeq);
+        Tuple2<Double , Double> t2 = bigRangeImpl.getRange(branchHouseBiMap.get(branch), set, year.getStem(), gender, settings.getRangeOutput(), houseSeq);
         return Tuple.tuple(branch , t2);
       }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 

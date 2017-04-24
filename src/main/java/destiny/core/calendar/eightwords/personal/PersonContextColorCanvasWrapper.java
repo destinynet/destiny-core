@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords.personal;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeSecDecoratorChinese;
+import destiny.core.chinese.FortuneOutput;
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.EightWords;
@@ -35,7 +36,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   private OutputMode outputMode = OutputMode.HTML;
 
-  private PersonContextModel.FortuneOutputFormat fortuneOutputFormat = PersonContextModel.FortuneOutputFormat.虛歲;
+  private FortuneOutput fortuneOutput = FortuneOutput.虛歲;
 
   private final Decorator<LocalDateTime> timeDecorator = new TimeSecDecoratorChinese();
 
@@ -120,7 +121,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       大運橫.add(地支藏干(stemBranch.getBranch() , eightWords.getDay().getStem()) , 6 , (i-1)*8+1);
     }
 
-    cc.setText("大運（"+fortuneOutputFormat +"）", 10, 55);
+    cc.setText("大運（"+ fortuneOutput +"）", 10, 55);
     cc.add(大運直, 11, 47);
     cc.add(大運橫, 22, 1);
 
@@ -158,8 +159,8 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   /**
    * 設定大運輸出的格式
    */
-  public void setFortuneOutputFormat(PersonContextModel.FortuneOutputFormat fortuneOutputFormat)
+  public void setFortuneOutput(FortuneOutput fortuneOutput)
   {
-    this.fortuneOutputFormat = fortuneOutputFormat;
+    this.fortuneOutput = fortuneOutput;
   }
 }

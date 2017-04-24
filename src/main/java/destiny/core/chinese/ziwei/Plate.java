@@ -423,7 +423,7 @@ public class Plate implements Serializable {
         Set<ZStar> stars = branchStarMap.get(sb.getBranch());
 
         Tuple2<Double , Double> fromTo = bigRangeMap.get(sb.getBranch());
-        return new HouseData(house, sb, stars, branchFlowHouseMap.get(sb.getBranch()), settings.getRangeType(), fromTo.v1() , fromTo.v2());
+        return new HouseData(house, sb, stars, branchFlowHouseMap.get(sb.getBranch()), settings.getRangeOutput(), fromTo.v1() , fromTo.v2());
       }).collect(Collectors.toSet());
     } // builder init
 

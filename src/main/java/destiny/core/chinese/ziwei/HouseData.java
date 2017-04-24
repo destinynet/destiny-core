@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -36,18 +37,18 @@ public class HouseData implements Serializable , Comparable<HouseData> {
    * 這裡用 long , 不用 int
    * 是因為，可能以後會傳入 時間點 (幾月幾日幾點幾分幾秒...) , 則轉換成 julian day (去除小數部分)
    * */
-  private final IZiwei.RangeType rangeType;
+  private final FortuneOutput rangeOutput;
   private final double rangeFrom;
   private final double rangeTo;
 
   private transient static Logger logger = LoggerFactory.getLogger(HouseData.class);
 
-  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, IZiwei.RangeType rangeType, double rangeFrom, double rangeTo) {
+  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, FortuneOutput rangeOutput, double rangeFrom, double rangeTo) {
     this.house = house;
     this.stemBranch = stemBranch;
     this.stars = stars;
     this.flowHouseMap = flowHouseMap;
-    this.rangeType = rangeType;
+    this.rangeOutput = rangeOutput;
     this.rangeFrom = rangeFrom;
     this.rangeTo = rangeTo;
   }
@@ -71,8 +72,8 @@ public class HouseData implements Serializable , Comparable<HouseData> {
       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (h1, h2) -> h1, TreeMap::new) );
   }
 
-  public IZiwei.RangeType getRangeType() {
-    return rangeType;
+  public FortuneOutput getRangeOutput() {
+    return rangeOutput;
   }
 
   public double getRangeFrom() {

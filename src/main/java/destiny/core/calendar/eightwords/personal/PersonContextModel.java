@@ -8,6 +8,7 @@ import destiny.astrology.StarPositionIF;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
+import destiny.core.chinese.FortuneOutput;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
 import destiny.core.chinese.Branch;
@@ -40,9 +41,6 @@ public class PersonContextModel implements Serializable {
   /** 日光節約 */
   private final boolean dst;
 
-  /** 輸出大運的模式 */
-  public enum FortuneOutputFormat {西元 , 民國 , 實歲 , 虛歲}
-
   /** 總共要輸出的大運 */
   private final List<FortuneData> fortuneDatas = new ArrayList<>();
 
@@ -61,7 +59,7 @@ public class PersonContextModel implements Serializable {
   /** 月亮位置 */
   private final Branch moonBranch;
 
-  public PersonContextModel(PersonContext context, int fortunes, FortuneOutputFormat fortuneOutputFormat, String locationName, StarPositionIF starPositionImpl) {
+  public PersonContextModel(PersonContext context, int fortunes, FortuneOutput fortuneOutput, String locationName, StarPositionIF starPositionImpl) {
     this.personContext = context;
 
     this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());
@@ -106,7 +104,7 @@ public class PersonContextModel implements Serializable {
       Tuple2<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
       LocalDateTime endFortuneLmt  = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
 
-      switch(fortuneOutputFormat)
+      switch(fortuneOutput)
       {
         case 西元 : {
           startFortune = startFortuneLmt.get(YEAR_OF_ERA);

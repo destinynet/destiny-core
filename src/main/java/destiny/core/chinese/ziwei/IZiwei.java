@@ -41,11 +41,6 @@ public interface IZiwei {
 
   static Logger logger = LoggerFactory.getLogger(IZiwei.class);
 
-  enum RangeType {
-    歲 , 民國 , 西元
-  }
-
-
 
   /**
    * 命宮 : (月數 , 時支) -> 地支

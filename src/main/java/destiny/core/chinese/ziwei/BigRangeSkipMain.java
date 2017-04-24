@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
+import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.YinYangIF;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -18,14 +19,14 @@ import static destiny.core.chinese.ziwei.House.命宮;
 public class BigRangeSkipMain implements IBigRange , Serializable {
 
   @Override
-  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, IZiwei.RangeType rangeType, IHouseSeq houseSeq) {
-    switch (rangeType) {
-      case 歲: {
+  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput rangeOutput, IHouseSeq houseSeq) {
+    switch (rangeOutput) {
+      case 虛歲: {
         return getAgeRange(house , set , yinYang , gender , houseSeq)
           .map1(Integer::doubleValue)
           .map2(Integer::doubleValue);
       } // 虛歲
-      default: throw new AssertionError("Not Yet Implemented : " + rangeType);
+      default: throw new AssertionError("Not Yet Implemented : " + rangeOutput);
     }
   }
 

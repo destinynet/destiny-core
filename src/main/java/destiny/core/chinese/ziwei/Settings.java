@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
 import destiny.core.calendar.eightwords.Direction;
+import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.impls.TianyiAuthorizedImpl;
 import destiny.core.chinese.impls.TianyiLiurenPithyImpl;
 import destiny.core.chinese.impls.TianyiOceanImpl;
@@ -298,7 +299,7 @@ public class Settings implements Serializable {
   private final FlowHour flowHour;
 
   /** 大限輸出格式 */
-  private final IZiwei.RangeType rangeType;
+  private final FortuneOutput rangeOutput;
 
   /** 大限計算方式 */
   public enum BigRange implements Descriptive {
@@ -324,7 +325,7 @@ public class Settings implements Serializable {
   /** 八字排盤，右至左 or 左至右 */
   private final Direction direction;
 
-  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, IZiwei.RangeType rangeType, BigRange bigRange, Direction direction) {
+  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction) {
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
@@ -339,7 +340,7 @@ public class Settings implements Serializable {
     this.flowMonth = flowMonth;
     this.flowDay = flowDay;
     this.flowHour = flowHour;
-    this.rangeType = rangeType;
+    this.rangeOutput = rangeOutput;
     this.bigRange = bigRange;
     this.direction = direction;
   }
@@ -400,8 +401,8 @@ public class Settings implements Serializable {
     return flowHour;
   }
 
-  public IZiwei.RangeType getRangeType() {
-    return rangeType;
+  public FortuneOutput getRangeOutput() {
+    return rangeOutput;
   }
 
   public BigRange getBigRange() {
