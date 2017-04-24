@@ -21,5 +21,5 @@ public interface  IHouse<T> {
    * @param monthBranch 「節氣」的月令
    * @param monthNum 「單純陰曆」的月令
    */
-  Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings);
+  Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings);
 }

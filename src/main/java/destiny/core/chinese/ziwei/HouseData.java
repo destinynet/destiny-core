@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -41,9 +42,12 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   private final double rangeFrom;
   private final double rangeTo;
 
+  /** 六條小限 */
+  private final List<Double> smallRanges;
+
   private transient static Logger logger = LoggerFactory.getLogger(HouseData.class);
 
-  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, FortuneOutput rangeOutput, double rangeFrom, double rangeTo) {
+  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, FortuneOutput rangeOutput, double rangeFrom, double rangeTo, List<Double> smallRanges) {
     this.house = house;
     this.stemBranch = stemBranch;
     this.stars = stars;
@@ -51,6 +55,7 @@ public class HouseData implements Serializable , Comparable<HouseData> {
     this.rangeOutput = rangeOutput;
     this.rangeFrom = rangeFrom;
     this.rangeTo = rangeTo;
+    this.smallRanges = smallRanges;
   }
 
   public House getHouse() {
@@ -82,6 +87,11 @@ public class HouseData implements Serializable , Comparable<HouseData> {
 
   public double getRangeTo() {
     return rangeTo;
+  }
+
+  /** 六條小限 */
+  public List<Double> getSmallRanges() {
+    return smallRanges;
   }
 
   @Override

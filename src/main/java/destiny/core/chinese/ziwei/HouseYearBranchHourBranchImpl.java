@@ -23,7 +23,7 @@ public abstract class HouseYearBranchHourBranchImpl extends HouseAbstractImpl<Tu
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings) {
     return getBranch(Tuple.tuple(year.getBranch() , hour));
   }
 }

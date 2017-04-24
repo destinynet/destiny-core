@@ -7,10 +7,10 @@ import destiny.core.Gender;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.FortuneOutput;
-import destiny.core.chinese.ziwei.Settings.FireBell;
-import destiny.core.chinese.ziwei.Settings.Horse;
-import destiny.core.chinese.ziwei.Settings.HurtAngel;
-import destiny.core.chinese.ziwei.Settings.Tianyi;
+import destiny.core.chinese.ziwei.ZSettings.FireBell;
+import destiny.core.chinese.ziwei.ZSettings.Horse;
+import destiny.core.chinese.ziwei.ZSettings.HurtAngel;
+import destiny.core.chinese.ziwei.ZSettings.Tianyi;
 import org.jooq.lambda.tuple.Tuple3;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -53,8 +53,8 @@ public class ZiweiImplTest {
    * */
   @Test
   public void testPlate4() {
-    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_MIDDLE, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP,
-      Settings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, Settings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L);
+    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_MIDDLE, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP,
+      ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -100,7 +100,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate3() {
-    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_FULL_COLLECT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP, Settings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, Settings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L);
+    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -146,7 +146,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate2() {
-    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, Settings.TransFour.TRANSFOUR_FULL_COLLECT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP, Settings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, Settings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L);
+    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -186,7 +186,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    Settings settings = new Settings(Settings.LeapMonth.LEAP_THIS_MONTH, Settings.MonthType.MONTH_LUNAR, Settings.MainHouse.MAIN_HOUSE_DEFAULT, Settings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.YINYANG, Settings.TransFour.TRANSFOUR_FULL_COLLECT, Settings.Strength.STRENGTH_MIDDLE, Settings.FlowYear.FLOW_YEAR_BRANCH, Settings.FlowMonth.FLOW_MONTH_DEFAULT, Settings.FlowDay.FLOW_DAY_MONTH_DEP, Settings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, Settings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L);
+    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.YINYANG, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));

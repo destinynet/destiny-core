@@ -16,7 +16,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public class Settings implements Serializable {
+public class ZSettings implements Serializable {
 
   /** 閏月該如何處理 */
   public enum LeapMonth implements Descriptive {
@@ -27,7 +27,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -48,7 +48,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -69,7 +69,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -91,7 +91,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -114,7 +114,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -135,7 +135,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -176,7 +176,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -198,7 +198,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -220,7 +220,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -243,7 +243,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -264,7 +264,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -285,7 +285,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -309,7 +309,7 @@ public class Settings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(Settings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -325,7 +325,10 @@ public class Settings implements Serializable {
   /** 八字排盤，右至左 or 左至右 */
   private final Direction direction;
 
-  public Settings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction) {
+  /** 是否顯示小限 */
+  private final boolean showSmallRange;
+
+  public ZSettings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange) {
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
@@ -343,6 +346,7 @@ public class Settings implements Serializable {
     this.rangeOutput = rangeOutput;
     this.bigRange = bigRange;
     this.direction = direction;
+    this.showSmallRange = showSmallRange;
   }
 
   public LeapMonth getLeapMonth() {
@@ -411,5 +415,9 @@ public class Settings implements Serializable {
 
   public Direction getDirection() {
     return direction;
+  }
+
+  public boolean isShowSmallRange() {
+    return showSmallRange;
   }
 }

@@ -28,17 +28,14 @@ import org.jooq.lambda.tuple.Tuple3;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 本命盤 */
   @Override
-  public Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Settings settings) {
+  public Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) {
 
     // 最終要計算的「月份」數字
     int finalMonthNum;
@@ -127,14 +124,24 @@ public class ZiweiImpl implements IZiwei, Serializable {
         return Tuple.tuple(branch , t2);
       }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
-    return new Plate.Builder(settings, chineseDate, gender, finalMonthNum, hour, mainHouse , bodyHouse , mainStar, bodyStar, t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap, bigRangeMap)
+    // 小限 mapping
+    Map<Branch, List<Double>> branchSmallRangesMap = Arrays.stream(Branch.values())
+      .map(branch -> {
+        List<Double> doubles = ISmallRange.getRanges(branch , year.getBranch() , gender)
+          .stream()
+          .map(Double::valueOf)
+          .collect(Collectors.toList());
+        return Tuple.tuple(branch , doubles);
+      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+
+    return new Plate.Builder(settings, chineseDate, gender, finalMonthNum, hour, mainHouse , bodyHouse , mainStar, bodyStar, t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap, bigRangeMap , branchSmallRangesMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
 
   /** 最完整的計算命盤方式 */
   @Override
-  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, Settings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , location , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     StemBranch year = cDate.getYear();
     Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();
@@ -159,7 +166,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 計算 大限盤 */
   @Override
-  public Plate.Builder getFlowBig(Plate.Builder builder, Settings settings, StemBranch flowBig) {
+  public Plate.Builder getFlowBig(Plate.Builder builder, ZSettings settings, StemBranch flowBig) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
 
     Map<Branch , House> branchHouseMap =
@@ -178,7 +185,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 計算 流年盤 */
   @Override
-  public Plate.Builder getFlowYear(Plate.Builder builder, Settings settings, StemBranch flowBig, StemBranch flowYear) {
+  public Plate.Builder getFlowYear(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowYear flowYearImpl = getFlowYearImpl(settings.getFlowYear());
 
@@ -200,7 +207,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 計算 流月盤 */
   @Override
-  public Plate.Builder getFlowMonth(Plate.Builder builder, Settings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth) {
+  public Plate.Builder getFlowMonth(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowMonth flowMonthImpl = getFlowMonthImpl(settings.getFlowMonth());
 
@@ -222,7 +229,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 計算 流日盤 */
   @Override
-  public Plate.Builder getFlowDay(Plate.Builder builder, Settings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum) {
+  public Plate.Builder getFlowDay(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowMonth flowMonthImpl = getFlowMonthImpl(settings.getFlowMonth());
     Branch 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.getBranch() , flowMonth.getBranch() , builder.getBirthMonthNum() , builder.getBirthHour());
@@ -245,7 +252,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 流時盤 */
   @Override
-  public Plate.Builder getFlowHour(Plate.Builder builder, Settings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum, StemBranch flowHour) {
+  public Plate.Builder getFlowHour(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum, StemBranch flowHour) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowMonth flowMonthImpl = getFlowMonthImpl(settings.getFlowMonth());
     Branch 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.getBranch() , flowMonth.getBranch() , builder.getBirthMonthNum() , builder.getBirthHour());
@@ -277,7 +284,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-  private Map<Tuple2<ZStar , FlowType> , ITransFour.Value> getTrans4Map(Collection<ZStar> stars , FlowType flowType , Stem flowStem , Settings settings) {
+  private Map<Tuple2<ZStar , FlowType> , ITransFour.Value> getTrans4Map(Collection<ZStar> stars , FlowType flowType , Stem flowStem , ZSettings settings) {
     ITransFour transFourImpl = getTranFourImpl(settings.getTransFour());
     return stars.stream()
       .map(star -> {
@@ -295,7 +302,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
       );
   }
 
-  private IFlowHour getFlowHourImpl(Settings.FlowHour flowHour) {
+  protected IFlowHour getFlowHourImpl(ZSettings.FlowHour flowHour) {
     switch (flowHour) {
       case FLOW_HOUR_DAY_DEP: return new FlowHourDayMainHouseDepImpl();
       case FLOW_HOUR_FIXED: return new FlowHourBranchImpl();
@@ -303,7 +310,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     }
   }
 
-  private IFlowDay getFlowDayImpl(Settings.FlowDay flowDay) {
+  protected IFlowDay getFlowDayImpl(ZSettings.FlowDay flowDay) {
     switch (flowDay) {
       case FLOW_DAY_MONTH_DEP: return new FlowDayFlowMonthMainHouseDepImpl();
       case FLOW_DAY_FIXED: return new FlowDayBranchImpl();
@@ -311,7 +318,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     }
   }
 
-  private IFlowMonth getFlowMonthImpl(Settings.FlowMonth flowMonth) {
+  protected IFlowMonth getFlowMonthImpl(ZSettings.FlowMonth flowMonth) {
     switch (flowMonth) {
       case FLOW_MONTH_DEFAULT: return new FlowMonthDefaultImpl();
       case FLOW_MONTH_FIXED:   return new FlowMonthFixedImpl();
@@ -320,15 +327,15 @@ public class ZiweiImpl implements IZiwei, Serializable {
     }
   }
 
-  private IFlowYear getFlowYearImpl(Settings.FlowYear flowYear) {
+  protected IFlowYear getFlowYearImpl(ZSettings.FlowYear flowYear) {
     switch (flowYear) {
       case FLOW_YEAR_BRANCH: return new FlowYearBranchImpl();
-      case FLOW_YEAR_ANCHOR:  return new FlowYearAnchorImpl();
+      case FLOW_YEAR_ANCHOR: return new FlowYearAnchorImpl();
       default: throw new AssertionError("Error : " + flowYear);
     }
   }
 
-  private IHouseSeq getHouseSeq(Settings.HouseSeq houseSeq) {
+  protected IHouseSeq getHouseSeq(ZSettings.HouseSeq houseSeq) {
     switch (houseSeq) {
       case HOUSE_DEFAULT: return new HouseSeqDefaultImpl();
       case HOUSE_TAIYI:   return new HouseSeqTaiyiImpl();
@@ -337,7 +344,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     }
   }
 
-  private ITransFour getTranFourImpl(Settings.TransFour transFour) {
+  protected ITransFour getTranFourImpl(ZSettings.TransFour transFour) {
     switch (transFour) {
       case TRANSFOUR_FULL_COLLECT: return new TransFourFullCollectImpl();
       case TRANSFOUR_NORTH: return new TransFourNorthImpl();
@@ -349,7 +356,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     }
   }
 
-  private IMainHouse getMainHouseImpl(Settings.MainHouse mainHouse) {
+  protected IMainHouse getMainHouseImpl(ZSettings.MainHouse mainHouse) {
     switch (mainHouse) {
       case MAIN_HOUSE_DEFAULT: return new MainHouseDefaultImpl();
       case MAIN_HOUSE_SOLAR: return new MainHouseSolarTermsImpl();
@@ -357,14 +364,15 @@ public class ZiweiImpl implements IZiwei, Serializable {
     }
   }
 
-  private IStrength getStrengthImpl(Settings.Strength strength) {
+  protected IStrength getStrengthImpl(ZSettings.Strength strength) {
     switch (strength) {
       case STRENGTH_MIDDLE: return new StrengthMiddleImpl();
+      case STRENGTH_NORTH: return new StrengthNorthImpl();
       default: throw new AssertionError("Error : " + strength);
     }
   }
 
-  private IBigRange getBigRangeImpl(Settings.BigRange bigRange) {
+  protected IBigRange getBigRangeImpl(ZSettings.BigRange bigRange) {
     switch (bigRange) {
       case BIG_RANGE_FROM_MAIN: return new BigRangeFromMain();
       case BIG_RANGE_SKIP_MAIN: return new BigRangeSkipMain();

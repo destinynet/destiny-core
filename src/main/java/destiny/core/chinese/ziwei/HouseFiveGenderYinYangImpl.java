@@ -27,7 +27,7 @@ public abstract class HouseFiveGenderYinYangImpl extends HouseAbstractImpl<Tuple
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings) {
     IMainHouse mainHouseImpl = getMainHouseImpl(settings.getMainHouse());
     StemBranch 命宮 = IZiwei.getMainHouse(year.getStem() , monthNum , hour , solarTerms , mainHouseImpl);
     Tuple3<String , FiveElement , Integer> t3 = IZiwei.getNaYin(命宮);
@@ -35,7 +35,7 @@ public abstract class HouseFiveGenderYinYangImpl extends HouseAbstractImpl<Tuple
     return getBranch(Tuple.tuple(fiveElement , gender , year.getStem()));
   }
 
-  private IMainHouse getMainHouseImpl(Settings.MainHouse mainHouse) {
+  private IMainHouse getMainHouseImpl(ZSettings.MainHouse mainHouse) {
     switch (mainHouse) {
       case MAIN_HOUSE_DEFAULT: return new MainHouseDefaultImpl();
       case MAIN_HOUSE_SOLAR: return new MainHouseSolarTermsImpl();

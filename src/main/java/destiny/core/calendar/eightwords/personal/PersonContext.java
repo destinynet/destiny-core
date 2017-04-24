@@ -15,8 +15,9 @@ import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.StemBranch;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,7 +154,7 @@ public class PersonContext extends EightWordsContext {
   /**
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
-  public Pair<Pair<SolarTerms , Double> , Pair<SolarTerms , Double>> getMajorSolarTermsBetween() {
+  public Tuple2<Tuple2<SolarTerms , Double> , Tuple2<SolarTerms , Double>> getMajorSolarTermsBetween() {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
 
     // 現在（亦即：上一個節）的「節」
@@ -175,7 +176,7 @@ public class PersonContext extends EightWordsContext {
     logger.debug(" prevGmt = {}" , prevGmt);
     logger.debug("(now)Gmt = {}" , gmt);
     logger.debug(" nextGmt = {}" , nextGmt);
-    return Pair.of(Pair.of(prevMajorSolarTerms , d1) , Pair.of(nextMajorSolarTerms , d2));
+    return Tuple.tuple(Tuple.tuple(prevMajorSolarTerms, d1) , Tuple.tuple(nextMajorSolarTerms , d2));
   }
 
   /**

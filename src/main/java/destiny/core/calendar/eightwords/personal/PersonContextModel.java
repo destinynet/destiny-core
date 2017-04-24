@@ -59,7 +59,11 @@ public class PersonContextModel implements Serializable {
   /** 月亮位置 */
   private final Branch moonBranch;
 
-  public PersonContextModel(PersonContext context, int fortunes, FortuneOutput fortuneOutput, String locationName, StarPositionIF starPositionImpl) {
+  public PersonContextModel(PersonContext context,
+                            int fortunes,
+                            FortuneOutput fortuneOutput,
+                            String locationName,
+                            StarPositionIF starPositionImpl) {
     this.personContext = context;
 
     this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());

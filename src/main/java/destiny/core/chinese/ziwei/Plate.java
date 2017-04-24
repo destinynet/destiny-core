@@ -30,7 +30,7 @@ public class Plate implements Serializable {
   private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
 
   /** 設定資料 */
-  private final Settings settings;
+  private final ZSettings settings;
 
   /** 出生資料 , 陰曆 */
   private final ChineseDate chineseDate;
@@ -91,10 +91,12 @@ public class Plate implements Serializable {
   /** 節氣八字 */
   private final EightWords eightWords;
 
+
+
   /**
    * 命盤
    */
-  private Plate(Settings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
+  private Plate(ZSettings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
     this.settings = settings;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -116,7 +118,7 @@ public class Plate implements Serializable {
     this.eightWords = eightWords;
   }
 
-  public Settings getSettings() {
+  public ZSettings getSettings() {
     return settings;
   }
 
@@ -312,7 +314,7 @@ public class Plate implements Serializable {
   public static class Builder {
 
     /** 設定資料 */
-    private final Settings settings;
+    private final ZSettings settings;
 
     /** 陰曆生日 */
     private final ChineseDate chineseDate;
@@ -381,8 +383,18 @@ public class Plate implements Serializable {
     /** 計算流運資料 */
     private Map<FlowType , StemBranch> flowBranchMap = new TreeMap<>();
 
+
+
     /** 本命盤 */
-    public Builder(Settings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<Branch, Tuple2<Double, Double>> bigRangeMap) {
+    public Builder(ZSettings settings, ChineseDate chineseDate, Gender gender,
+                   int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse,
+                   ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set,
+                   String naYin,
+                   Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap,
+                   Map<ZStar, Integer> starStrengthMap,
+                   Map<Branch, Tuple2<Double, Double>> bigRangeMap ,
+                   Map<Branch, List<Double>> branchSmallRangesMap
+    ) {
       this.settings = settings;
       this.chineseDate = chineseDate;
       this.gender = gender;
@@ -423,7 +435,8 @@ public class Plate implements Serializable {
         Set<ZStar> stars = branchStarMap.get(sb.getBranch());
 
         Tuple2<Double , Double> fromTo = bigRangeMap.get(sb.getBranch());
-        return new HouseData(house, sb, stars, branchFlowHouseMap.get(sb.getBranch()), settings.getRangeOutput(), fromTo.v1() , fromTo.v2());
+        List<Double> smallRanges = branchSmallRangesMap.get(sb.getBranch());
+        return new HouseData(house, sb, stars, branchFlowHouseMap.get(sb.getBranch()), settings.getRangeOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
       }).collect(Collectors.toSet());
     } // builder init
 

@@ -25,11 +25,11 @@ import java.util.Map;
  */
 public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<Stem, TianyiIF>> {
 
-  private final Map<Settings.Tianyi, TianyiIF> map = new ImmutableMap.Builder<Settings.Tianyi, TianyiIF>()
-    .put(Settings.Tianyi.TIANYI_ZIWEI_BOOK, new TianyiZiweiBookImpl())
-    .put(Settings.Tianyi.TIANYI_AUTHORIZED, new TianyiAuthorizedImpl())
-    .put(Settings.Tianyi.TIANYI_OCEAN, new TianyiOceanImpl())
-    .put(Settings.Tianyi.TIANYI_LIUREN_PITHY, new TianyiLiurenPithyImpl())
+  private final Map<ZSettings.Tianyi, TianyiIF> map = new ImmutableMap.Builder<ZSettings.Tianyi, TianyiIF>()
+    .put(ZSettings.Tianyi.TIANYI_ZIWEI_BOOK, new TianyiZiweiBookImpl())
+    .put(ZSettings.Tianyi.TIANYI_AUTHORIZED, new TianyiAuthorizedImpl())
+    .put(ZSettings.Tianyi.TIANYI_OCEAN, new TianyiOceanImpl())
+    .put(ZSettings.Tianyi.TIANYI_LIUREN_PITHY, new TianyiLiurenPithyImpl())
     .build();
 
   protected HouseYearStemTianyiImpl(ZStar star) {
@@ -42,7 +42,7 @@ public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<S
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, Settings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings) {
     return getBranch(Tuple.tuple(year.getStem() , map.get(settings.getTianyi())));
   }
 }
