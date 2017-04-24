@@ -3,15 +3,14 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
-import destiny.astrology.Planet;
 import destiny.astrology.StarPositionIF;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
-import destiny.core.chinese.FortuneOutput;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContext;
 import destiny.core.chinese.Branch;
+import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -34,6 +33,7 @@ public class PersonContextModel implements Serializable {
   /** 農曆 */
   private final ChineseDate chineseDate;
 
+  /** 地點名稱 */
   private String locationName = "";
 
   private final int gmtMinuteOffset;
@@ -59,33 +59,55 @@ public class PersonContextModel implements Serializable {
   /** 月亮位置 */
   private final Branch moonBranch;
 
-  public PersonContextModel(PersonContext context,
-                            int fortunes,
+  /**
+   * TODO : 應該改以此 Constructor , 把所有該計算的先在外部計算完畢 , 避免 depend on PersonContext
+   */
+  public PersonContextModel(PersonContext personContext, ChineseDate chineseDate, int gmtMinuteOffset, boolean dst, SolarTerms prevMajorSolarTerms, SolarTerms nextMajorSolarTerms, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch) {
+    this.personContext = personContext;
+    this.chineseDate = chineseDate;
+    this.gmtMinuteOffset = gmtMinuteOffset;
+    this.dst = dst;
+    this.prevMajorSolarTerms = prevMajorSolarTerms;
+    this.nextMajorSolarTerms = nextMajorSolarTerms;
+    this.risingStemBranch = risingStemBranch;
+    this.sunBranch = sunBranch;
+    this.moonBranch = moonBranch;
+  }
+
+  public PersonContextModel(PersonContext context, int fortunes,
                             FortuneOutput fortuneOutput,
                             String locationName,
-                            StarPositionIF starPositionImpl) {
+                            StarPositionIF starPositionImpl,
+                            ChineseDate chineseDate,
+                            boolean dst,
+                            int gmtMinuteOffset,
+                            StemBranch risingStemBranch,
+                            Branch sunBranch,
+                            Branch moonBranch,
+                            Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms) {
     this.personContext = context;
-
-    this.chineseDate = context.getChineseDate(context.getLmt() , context.getLocation());
+    this.chineseDate = chineseDate;
     this.locationName = locationName;
-    this.dst = Time.getDstSecondOffset(context.getLmt(), context.getLocation()).v1();
-
-    gmtMinuteOffset = (Time.getDstSecondOffset(context.getLmt(), context.getLocation()).v2() / 60);
+    this.dst = dst;
+    this.gmtMinuteOffset = gmtMinuteOffset;
 
     // 首先取得到下/上個節氣的秒數
-    double fortuneMonthSpan = personContext.getFortuneMonthSpan();
+    double fortuneMonthSpan = context.getFortuneMonthSpan();
 
     // forward : 大運是否順行
-    boolean isForward = personContext.isFortuneDirectionForward();
+    boolean isForward = context.isFortuneDirectionForward();
 
-    EightWords eightWords = personContext.getEightWords();
+    EightWords eightWords = context.getEightWords();
 
 
     // 命宮干支
-    risingStemBranch = context.getRisingStemBranch(context.getLmt(), context.getLocation());
+    this.risingStemBranch = risingStemBranch;
+    this.sunBranch = sunBranch;
+    this.moonBranch = moonBranch;
 
-    sunBranch = context.getBranchOf(Planet.SUN, context.getLmt() , context.getLocation());
-    moonBranch = context.getBranchOf(Planet.MOON , context.getLmt() , context.getLocation());
+    this.prevMajorSolarTerms = prevNextMajorSolarTerms.v1();
+    this.nextMajorSolarTerms = prevNextMajorSolarTerms.v2();
+
 
     //下個大運的干支
     StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
@@ -100,13 +122,13 @@ public class PersonContextModel implements Serializable {
       // 西元/民國/實歲/虛歲之值
       int startFortune;
       int endFortune;
-      double startFortuneSeconds = personContext.getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
-      double   endFortuneSeconds = personContext.getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
+      double startFortuneSeconds = context.getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
+      double   endFortuneSeconds = context.getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
 
       Tuple2<Long , Long> pair1 = Time.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
-      LocalDateTime startFortuneLmt = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+      LocalDateTime startFortuneLmt = LocalDateTime.from(context.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
       Tuple2<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
-      LocalDateTime endFortuneLmt  = LocalDateTime.from(personContext.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
+      LocalDateTime endFortuneLmt  = LocalDateTime.from(context.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
 
       switch(fortuneOutput)
       {
@@ -139,12 +161,12 @@ public class PersonContextModel implements Serializable {
         default : {
           //虛歲
           // 取得 起運/終運 時的八字
-          EightWordsContext eightWordsContext = new EightWordsContext(context.getChineseDateImpl() , personContext.getYearMonthImpl() ,
-              personContext.getDayImpl() , personContext.getHourImpl() ,
-              personContext.getMidnightImpl() , personContext.isChangeDayAfterZi(), context.getRisingSignImpl(), starPositionImpl);
+          EightWordsContext eightWordsContext = new EightWordsContext(context.getChineseDateImpl() , context.getYearMonthImpl() ,
+              context.getDayImpl() , context.getHourImpl() ,
+              context.getMidnightImpl() , context.isChangeDayAfterZi(), context.getRisingSignImpl(), starPositionImpl);
 
-          EightWords startFortune8w = eightWordsContext.getEightWords(startFortuneLmt, personContext.getLocation());
-          EightWords endFortune8w   = eightWordsContext.getEightWords(endFortuneLmt, personContext.getLocation());
+          EightWords startFortune8w = eightWordsContext.getEightWords(startFortuneLmt, context.getLocation());
+          EightWords endFortune8w   = eightWordsContext.getEightWords(endFortuneLmt, context.getLocation());
 
           // 計算年干與本命年干的距離
           startFortune = startFortune8w.getYear().differs(eightWords.getYear())+1;
@@ -167,19 +189,7 @@ public class PersonContextModel implements Serializable {
       nextStemBranch = isForward ? nextStemBranch.getNext() : nextStemBranch.getPrevious();
     } // for 1 ~ fortunes)
 
-    SolarTerms currentSolarTerms = personContext.getCurrentSolarTerms();
 
-    int currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms);
-    if (currentSolarTermsIndex % 2 == 0)  //立春 , 驚蟄 , 清明 ...
-    {
-      prevMajorSolarTerms = currentSolarTerms;
-      nextMajorSolarTerms = currentSolarTerms.next().next();
-    }
-    else
-    {
-      prevMajorSolarTerms = currentSolarTerms.previous();
-      nextMajorSolarTerms = currentSolarTerms.next();
-    }
 
   } // constructor
 

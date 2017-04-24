@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 public class EightWordsImpl implements EightWordsIF , Serializable {
 
   YearMonthIF yearMonthImpl;          // 換年, 以及月支計算的實作
-  final DayIF       dayImpl;                // 計算日干支的介面
-  final HourIF      hourImpl;               // 計算時支的介面
+  protected final DayIF       dayImpl;                // 計算日干支的介面
+  protected final HourIF      hourImpl;               // 計算時支的介面
 
-  final MidnightIF midnightImpl;            // 計算「子正」的介面
+  protected final MidnightIF midnightImpl;            // 計算「子正」的介面
   boolean    changeDayAfterZi = true; // 子初是否換日，內定是：true (換日)
 
   public EightWordsImpl(YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {

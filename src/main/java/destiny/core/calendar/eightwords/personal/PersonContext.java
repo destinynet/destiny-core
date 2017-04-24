@@ -5,16 +5,19 @@ package destiny.core.calendar.eightwords.personal;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import destiny.astrology.StarPositionIF;
-import destiny.astrology.StarTransitIF;
+import destiny.astrology.*;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.StemBranchUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -81,7 +84,21 @@ public class PersonContext extends EightWordsContext {
 
 
   /** constructor */
-  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+  public PersonContext(ChineseDateIF chineseDateImpl,
+                       YearMonthIF yearMonth,
+                       DayIF dayImpl,
+                       HourIF hourImpl,
+                       MidnightIF midnight,
+                       boolean changeDayAfterZi,
+                       @NotNull SolarTermsIF solarTermsImpl,
+                       @NotNull StarTransitIF starTransitImpl,
+                       LocalDateTime lmt,
+                       Location location,
+                       @NotNull Gender gender,
+                       double fortuneMonthSpan,
+                       FortuneDirectionIF fortuneDirectionImpl,
+                       RisingSignIF risingSignImpl,
+                       StarPositionIF starPositionImpl) {
     super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl, starPositionImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
@@ -93,7 +110,6 @@ public class PersonContext extends EightWordsContext {
     this.location = location;
     this.gender = gender;
     this.eightWords = this.getEightWords(lmt, location);
-    //Time gmt = Time.getGMTfromLMT(lmt, location);
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
   }
@@ -150,6 +166,24 @@ public class PersonContext extends EightWordsContext {
     return currentSolarTerms;
   }
 
+  /** 上一個「節」、下一個「節」 */
+  public Tuple2<SolarTerms , SolarTerms> getPrevNextMajorSolarTerms() {
+    SolarTerms currentSolarTerms = getCurrentSolarTerms();
+    int currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms);
+    SolarTerms prevMajorSolarTerms;
+    SolarTerms nextMajorSolarTerms;
+    if (currentSolarTermsIndex % 2 == 0)  //立春 , 驚蟄 , 清明 ...
+    {
+      prevMajorSolarTerms = currentSolarTerms;
+      nextMajorSolarTerms = currentSolarTerms.next().next();
+    }
+    else
+    {
+      prevMajorSolarTerms = currentSolarTerms.previous();
+      nextMajorSolarTerms = currentSolarTerms.next();
+    }
+    return Tuple.tuple(prevMajorSolarTerms , nextMajorSolarTerms);
+  }
 
   /**
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
@@ -308,6 +342,39 @@ public class PersonContext extends EightWordsContext {
     }
   } // getNextMajorSolarTerms()
 
+
+  /** 取得農曆 */
+  public ChineseDate getChineseDate() {
+    return chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, isChangeDayAfterZi());
+  }
+
+  /**
+   * 計算命宮干支
+   */
+  public StemBranch getRisingStemBranch() {
+    EightWords ew = getEightWords(lmt, location);
+    // 命宮地支
+    Branch risingBranch = risingSignImpl.getRisingSign(lmt, location , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
+    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
+    Stem risingStem = StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch);
+    // 組合成干支
+    return StemBranch.get(risingStem, risingBranch);
+  }
+
+  public Branch getBranchOf(Star star) {
+    Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
+    return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
+  }
+
+  /** 是否有日光節約時間 */
+  public boolean isDst() {
+    return Time.getDstSecondOffset(lmt, location).v1();
+  }
+
+  /** 與 GMT 的時差 (分) */
+  public int getGmtMinuteOffset() {
+    return Time.getDstSecondOffset(lmt, location).v2() / 60;
+  }
 
   /**
    * 由 GMT 反推月大運

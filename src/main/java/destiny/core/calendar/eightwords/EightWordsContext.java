@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
  */
 public class EightWordsContext extends EightWordsImpl {
 
-  private final ChineseDateIF chineseDateImpl;      // 農曆計算
+  protected final ChineseDateIF chineseDateImpl;      // 農曆計算
 
-  private final RisingSignIF risingSignImpl;        // 命宮 (上升星座)
+  protected final RisingSignIF risingSignImpl;        // 命宮 (上升星座)
 
-  private final StarPositionIF starPositionImpl;    // 星體位置
+  protected final StarPositionIF starPositionImpl;    // 星體位置
 
   public EightWordsContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF day, HourIF hour, MidnightIF midnight, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
     super(yearMonth, day, hour, midnight, changeDayAfterZi);
