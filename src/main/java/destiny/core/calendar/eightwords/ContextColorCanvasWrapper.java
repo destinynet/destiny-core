@@ -114,7 +114,7 @@ public class ContextColorCanvasWrapper {
     西元資訊.setText(timeData.toString(), 1, 1);
     cc.add(西元資訊 , 1 , 1 );
 
-    ChineseDate chineseDate = context.getChineseDate(lmt , location);
+    ChineseDate chineseDate = context.getChineseDate();
     cc.setText("農曆：("+chineseDate.getCycle() + "循環)" + chineseDate , 2 , 1);
     
     String url = urlBuilder.getUrl(location);
@@ -180,7 +180,7 @@ public class ContextColorCanvasWrapper {
 
     // 命宮
     int risingLine = 8;
-    StemBranch 命宮 = context.getRisingStemBranch(lmt , location);
+    StemBranch 命宮 = context.getRisingStemBranch();
     cc.setText("命宮：", risingLine , 1 , "999999" , null , "命宮");
     cc.setText(命宮.toString() , risingLine , 7 , "FF0000" , null , 命宮.toString());
     cc.setText("（"+context.getRisingSignImpl().getRisingSignName()+"）" , risingLine , 11 , "999999");

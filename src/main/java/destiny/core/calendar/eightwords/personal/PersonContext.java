@@ -11,7 +11,6 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.Time;
-import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.*;
@@ -120,25 +119,6 @@ public class PersonContext extends EightWordsContext {
   }
 
 
-//  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, String locationName, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, FortuneOutput fortuneOutput) {
-//    super(lmt, location, eightWordsImpl, chineseDateImpl, yearMonth, dayImpl, hourImpl, midnightImpl, changeDayAfterZi, dayImpl, hourImpl, midnightImpl, changeDayAfterZi, risingSignImpl, starPositionImpl);
-//    this.solarTermsImpl = solarTermsImpl;
-//    this.starTransitImpl = starTransitImpl;
-//    this.locationName = locationName;
-//    this.fortuneMonthSpan = fortuneMonthSpan;
-//    this.fortuneDirectionImpl = fortuneDirectionImpl;
-//
-//    // LMT 的八字
-//    this.lmt = lmt;
-//    this.location = location;
-//    this.gender = gender;
-//    this.fortuneOutput = fortuneOutput;
-//
-//    this.eightWords = this.getEightWords(lmt, location);
-//    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-//    this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
-//  }
-
   public PersonContextModel getModel() {
     return new PersonContextModel(gender , eightWords , lmt , location , locationName ,
       getChineseDate() , isDst() ,
@@ -148,25 +128,6 @@ public class PersonContext extends EightWordsContext {
       getBranchOf(Planet.MOON) ,
       getPrevNextMajorSolarTerms()
     );
-  }
-
-
-  /** 取得出生時刻 */
-  @NotNull
-  public LocalDateTime getLmt() {
-    return lmt;
-  }
-
-  /** 取得出生地點 */
-  @NotNull
-  public Location getLocation() {
-    return location;
-  }
-
-  /** 取得出生時刻的八字 */
-  @NotNull
-  public EightWords getEightWords() {
-    return this.eightWords;
   }
 
   /** 性別 */
@@ -196,30 +157,6 @@ public class PersonContext extends EightWordsContext {
     return this.fortuneDirectionImpl.isForward(this);
   }
 
-
-  /** 現在的節氣 */
-  public SolarTerms getCurrentSolarTerms() {
-    return currentSolarTerms;
-  }
-
-  /** 上一個「節」、下一個「節」 */
-  public Tuple2<SolarTerms , SolarTerms> getPrevNextMajorSolarTerms() {
-    SolarTerms currentSolarTerms = getCurrentSolarTerms();
-    int currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms);
-    SolarTerms prevMajorSolarTerms;
-    SolarTerms nextMajorSolarTerms;
-    if (currentSolarTermsIndex % 2 == 0)  //立春 , 驚蟄 , 清明 ...
-    {
-      prevMajorSolarTerms = currentSolarTerms;
-      nextMajorSolarTerms = currentSolarTerms.next().next();
-    }
-    else
-    {
-      prevMajorSolarTerms = currentSolarTerms.previous();
-      nextMajorSolarTerms = currentSolarTerms.next();
-    }
-    return Tuple.tuple(prevMajorSolarTerms , nextMajorSolarTerms);
-  }
 
   /**
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
@@ -468,23 +405,6 @@ public class PersonContext extends EightWordsContext {
     return fortuneDatas;
   }
 
-  /** 取得農曆 */
-  public ChineseDate getChineseDate() {
-    return chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi);
-  }
-
-  /**
-   * 計算命宮干支
-   */
-  public StemBranch getRisingStemBranch() {
-    EightWords ew = eightWordsImpl.getEightWords(lmt, location);
-    // 命宮地支
-    Branch risingBranch = risingSignImpl.getRisingSign(lmt, location , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
-    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-    Stem risingStem = StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch);
-    // 組合成干支
-    return StemBranch.get(risingStem, risingBranch);
-  }
 
   public Branch getBranchOf(Star star) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);

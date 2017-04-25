@@ -61,16 +61,16 @@ public class EightWordsContext implements Serializable {
     this.risingSignImpl = risingSignImpl;
   }
 
-  public EightWordsContextModel getModel(LocalDateTime lmt, Location location) {
+  public EightWordsContextModel getModel() {
     //EightWords eightWords = eightWordsImpl.getEightWords(lmt , location);
     int gmtMinuteOffset = Time.getDstSecondOffset(lmt, location).v2() / 60;
     boolean dst = Time.getDstSecondOffset(lmt, location).v1();
 
-    Tuple2<SolarTerms , SolarTerms> prevNextMajorSolarTerms = getPrevNextMajorSolarTerms(lmt , location);
+    Tuple2<SolarTerms , SolarTerms> prevNextMajorSolarTerms = getPrevNextMajorSolarTerms();
 
-    ChineseDate chineseDate = getChineseDate(lmt , location);
+    ChineseDate chineseDate = getChineseDate();
 
-    StemBranch risingSign = getRisingStemBranch(lmt ,location);
+    StemBranch risingSign = getRisingStemBranch();
     Branch sunBranch = getBranchOf(Planet.SUN , lmt , location);
     Branch moonBranch = getBranchOf(Planet.MOON , lmt , location);
     return new EightWordsContextModel(eightWords , lmt , location , "LOCATION", gmtMinuteOffset , dst , chineseDate, prevNextMajorSolarTerms.v1() ,
@@ -87,7 +87,7 @@ public class EightWordsContext implements Serializable {
    * 節氣
    * TODO 演算法重複 {@link SolarTermsImpl#getSolarTermsFromGMT}
    */
-  public SolarTerms getCurrentSolarTerms(LocalDateTime lmt , Location location) {
+  public SolarTerms getCurrentSolarTerms() {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     double gmtJulDay = Time.getGmtJulDay(gmt);
     Position sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC);
@@ -95,10 +95,18 @@ public class EightWordsContext implements Serializable {
   }
 
 
+  public LocalDateTime getLmt() {
+    return lmt;
+  }
+
+  public Location getLocation() {
+    return location;
+  }
+
   /** 上一個「節」、下一個「節」
    * */
-  public Tuple2<SolarTerms , SolarTerms> getPrevNextMajorSolarTerms(LocalDateTime lmt , Location location) {
-    SolarTerms currentSolarTerms = getCurrentSolarTerms(lmt , location);
+  public Tuple2<SolarTerms , SolarTerms> getPrevNextMajorSolarTerms() {
+    SolarTerms currentSolarTerms = getCurrentSolarTerms();
     int currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms);
     SolarTerms prevMajorSolarTerms;
     SolarTerms nextMajorSolarTerms;
@@ -116,14 +124,10 @@ public class EightWordsContext implements Serializable {
   }
 
   /** 取得農曆 */
-  public ChineseDate getChineseDate(LocalDateTime lmt, Location location) {
+  public ChineseDate getChineseDate() {
     return chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi);
   }
 
-  /** 承上 , time 版本 */
-  public ChineseDate getChineseDate(Time lmt, Location location) {
-    return getChineseDate(lmt.toLocalDateTime() , location);
-  }
 
   public YearMonthIF getYearMonthImpl() {
     return yearMonthImpl;
@@ -152,13 +156,11 @@ public class EightWordsContext implements Serializable {
   /**
    * 計算命宮干支
    */
-  public StemBranch getRisingStemBranch(LocalDateTime lmt, Location location) {
-
-    EightWords ew = eightWordsImpl.getEightWords(lmt , location);
+  public StemBranch getRisingStemBranch() {
     // 命宮地支
     Branch risingBranch = risingSignImpl.getRisingSign(lmt, location , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-    Stem risingStem = StemBranchUtils.getMonthStem(ew.getYearStem(), risingBranch);
+    Stem risingStem = StemBranchUtils.getMonthStem(eightWords.getYearStem(), risingBranch);
     // 組合成干支
     return StemBranch.get(risingStem, risingBranch);
   }
