@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 public class EightWordsImpl implements EightWordsIF , Serializable {
 
-  YearMonthIF yearMonthImpl;          // 換年, 以及月支計算的實作
+  protected final YearMonthIF yearMonthImpl;          // 換年, 以及月支計算的實作
   protected final DayIF       dayImpl;                // 計算日干支的介面
   protected final HourIF      hourImpl;               // 計算時支的介面
 

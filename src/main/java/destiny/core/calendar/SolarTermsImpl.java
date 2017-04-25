@@ -40,12 +40,11 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
   public SolarTerms getSolarTermsFromGMT(double gmtJulDay) {
     // Step 1: Calculate the Longitude of SUN
     Position sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC);
-    //System.out.println("Utils.getSolarTermsFromGMT() : Longitude = " + sp.Longitude);
     // Step 2
-    int SolarTermsArray = (int) (sp.getLongitude() / 15) + 3;
-    if (SolarTermsArray >= 24)
-      SolarTermsArray = SolarTermsArray - 24;
-    return SolarTerms.get(SolarTermsArray);
+    int index = (int) (sp.getLongitude() / 15) + 3;
+    if (index >= 24)
+      index = index - 24;
+    return SolarTerms.get(index);
   }
 
   /**

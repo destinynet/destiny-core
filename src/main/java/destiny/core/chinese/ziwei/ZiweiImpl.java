@@ -17,10 +17,7 @@ import destiny.core.calendar.eightwords.*;
 import destiny.core.calendar.eightwords.personal.FortuneDirectionDefaultImpl;
 import destiny.core.calendar.eightwords.personal.FortuneDirectionIF;
 import destiny.core.calendar.eightwords.personal.PersonContext;
-import destiny.core.chinese.Branch;
-import destiny.core.chinese.FiveElement;
-import destiny.core.chinese.Stem;
-import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -154,7 +151,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
 
     PersonContext context = new PersonContext(chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl,
-      false, solarTermsImpl, starTransitImpl, lmt, location, gender, 120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl);
+      false, solarTermsImpl, starTransitImpl, lmt, location, place, gender, 120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl, FortuneOutput.西元);
 
     return getBirthPlate(year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
       .withLocalDateTime(lmt)

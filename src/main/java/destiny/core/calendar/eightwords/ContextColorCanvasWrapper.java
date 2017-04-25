@@ -34,7 +34,8 @@ public class ContextColorCanvasWrapper {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   /** 八字 Context */
-  private final EightWordsContext context;
+  protected final EightWordsContext context;
+
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF     hiddenStemsImpl  = new HiddenStemsStandardImpl();
   /** 當地時間 */
@@ -71,7 +72,6 @@ public class ContextColorCanvasWrapper {
     this.locationName = locationName;
     this.hiddenStemsImpl = hiddenStemsImpl;
     this.linkUrl = linkUrl;
-    // this.fourWordsImpl = fourWordsImpl;
     this.direction = direction;
 
     reactionsUtil = new ReactionsUtil(this.hiddenStemsImpl);

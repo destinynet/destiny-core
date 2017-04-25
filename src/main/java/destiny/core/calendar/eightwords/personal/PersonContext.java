@@ -52,6 +52,8 @@ public class PersonContext extends EightWordsContext {
   /** 出生地點 */
   private final Location location;
 
+  private final String locationName;
+
   /** 性別 */
   @NotNull
   private final Gender gender;
@@ -73,6 +75,9 @@ public class PersonContext extends EightWordsContext {
   /** 運 :「時辰」的 span 倍數，內定 365x12，即：一時辰走一年 */
   private final double fortuneHourSpan = 365 * 12;
 
+  /** 大運輸出格式 */
+  private final FortuneOutput fortuneOutput;
+
   private final Cache<PersonContext, Map<Integer, LocalDateTime>> cache =
     CacheBuilder.newBuilder()
       .maximumSize(100)
@@ -85,24 +90,11 @@ public class PersonContext extends EightWordsContext {
 
 
   /** constructor */
-  public PersonContext(ChineseDateIF chineseDateImpl,
-                       YearMonthIF yearMonth,
-                       DayIF dayImpl,
-                       HourIF hourImpl,
-                       MidnightIF midnight,
-                       boolean changeDayAfterZi,
-                       @NotNull SolarTermsIF solarTermsImpl,
-                       @NotNull StarTransitIF starTransitImpl,
-                       LocalDateTime lmt,
-                       Location location,
-                       @NotNull Gender gender,
-                       double fortuneMonthSpan,
-                       FortuneDirectionIF fortuneDirectionImpl,
-                       RisingSignIF risingSignImpl,
-                       StarPositionIF starPositionImpl) {
+  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, String locationName, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, FortuneOutput fortuneOutput) {
     super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl, starPositionImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
+    this.locationName = locationName;
     this.fortuneMonthSpan = fortuneMonthSpan;
     this.fortuneDirectionImpl = fortuneDirectionImpl;
 
@@ -110,9 +102,21 @@ public class PersonContext extends EightWordsContext {
     this.lmt = lmt;
     this.location = location;
     this.gender = gender;
+    this.fortuneOutput = fortuneOutput;
     this.eightWords = this.getEightWords(lmt, location);
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
+  }
+
+  public PersonContextModel getModel() {
+    return new PersonContextModel(gender , eightWords , lmt , location , locationName ,
+      getChineseDate() , isDst() ,
+      getGmtMinuteOffset() ,
+      getFortuneDatas(9 , fortuneOutput) , getRisingStemBranch() ,
+      getBranchOf(Planet.SUN) ,
+      getBranchOf(Planet.MOON) ,
+      getPrevNextMajorSolarTerms()
+    );
   }
 
 

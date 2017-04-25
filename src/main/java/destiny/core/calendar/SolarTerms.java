@@ -81,6 +81,16 @@ public enum SolarTerms {
   }
 
   /**
+   * @return 從黃經度數，取得節氣
+   */
+  public static SolarTerms getFromDegree(double degree) {
+    int index = (int)degree/15 +3;
+    if (index >= 24)
+      index = index - 24;
+    return get(index);
+  }
+
+  /**
    * 此「節氣」是否是「節」
    * 立春 => true
    * 雨水 => false

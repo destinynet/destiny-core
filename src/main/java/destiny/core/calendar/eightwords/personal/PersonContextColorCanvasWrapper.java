@@ -26,6 +26,8 @@ import java.util.Optional;
 
 public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
+  private final PersonContext personContext;
+
   /** 預先儲存已經計算好的結果 */
   private final PersonContextModel model;
 
@@ -42,9 +44,9 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   private final Direction direction;
 
-  public PersonContextColorCanvasWrapper(@NotNull PersonContextModel model,
-                                         String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl , Direction direction) {
-    super(model.getPersonContext(), model.getLmt() , model.getLocation() , locationName , hiddenStemsImpl , linkUrl, direction);
+  public PersonContextColorCanvasWrapper(PersonContext personContext, @NotNull PersonContextModel model, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl, Direction direction) {
+    super(personContext, model.getLmt() , model.getLocation() , locationName , hiddenStemsImpl , linkUrl, direction);
+    this.personContext = personContext;
     this.model = model;
     this.hiddenStemsImpl = hiddenStemsImpl;
     this.direction = direction;
@@ -60,7 +62,8 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   @Override
   public String toString()
   {
-    PersonContext context = model.getPersonContext();
+
+
 
     ColorCanvas cc = new ColorCanvas(32, 70, "　");
 
@@ -69,7 +72,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     cc.add(metaDataColorCanvas , 1 , 1); // 國曆 農曆 經度 緯度 短網址 等 MetaData
 
     cc.setText("性別：", 1, 59);
-    cc.setText(context.getGender().toString() , 1, 65); // '男' or '女'
+    cc.setText(model.getGender().toString() , 1, 65); // '男' or '女'
     cc.setText("性" , 1 , 67);
 
     cc.setText("八字：" , 10 , 1);
@@ -128,15 +131,15 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     SolarTerms prevMajorSolarTerms = model.getPrevMajorSolarTerms();
     SolarTerms nextMajorSolarTerms = model.getNextMajorSolarTerms();
 
-    Tuple2<Long , Long> pair1 = Time.splitSecond(context.getTargetMajorSolarTermsSeconds(-1));
-    LocalDateTime prevMajorSolarTermsTime = LocalDateTime.from(context.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+    Tuple2<Long , Long> pair1 = Time.splitSecond(personContext.getTargetMajorSolarTermsSeconds(-1));
+    LocalDateTime prevMajorSolarTermsTime = LocalDateTime.from(model.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
     //Time prevMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(-1) );
     節氣.setText(prevMajorSolarTerms.toString() , 1 , 1);
     節氣.setText("：" , 1, 5);
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime) , 1,7);
 
-    Tuple2<Long , Long> pair2 = Time.splitSecond(context.getTargetMajorSolarTermsSeconds(1));
-    LocalDateTime nextMajorSolarTermsTime = LocalDateTime.from(context.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
+    Tuple2<Long , Long> pair2 = Time.splitSecond(personContext.getTargetMajorSolarTermsSeconds(1));
+    LocalDateTime nextMajorSolarTermsTime = LocalDateTime.from(model.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
     //Time nextMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(1) );
     節氣.setText(nextMajorSolarTerms.toString() , 2 , 1);
     節氣.setText("：" , 2, 5);
