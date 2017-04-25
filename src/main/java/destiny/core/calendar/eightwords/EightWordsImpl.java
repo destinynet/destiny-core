@@ -8,6 +8,8 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -21,13 +23,16 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
   protected final MidnightIF midnightImpl;            // 計算「子正」的介面
   boolean    changeDayAfterZi = true; // 子初是否換日，內定是：true (換日)
 
-  public EightWordsImpl(YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
+  public EightWordsImpl(@NotNull YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
     this.yearMonthImpl = yearMonthImpl;
     this.dayImpl = dayImpl;
     this.hourImpl = hourImpl;
     this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
   }
+
 
   /**
    * 計算八字 , 不用轉換，直接以 LMT 來計算即可！
@@ -42,7 +47,6 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
     double secondOffset= (tz.getOffset(cal.getTimeInMillis())-tz.getRawOffset()) /1000.0;
     location.setMinuteOffset((int) (secondOffset / 60));
     */
-
     StemBranch year = yearMonthImpl.getYear(lmt, location);
     StemBranch month = yearMonthImpl.getMonth(lmt, location);
     StemBranch day =dayImpl.getDay(lmt, location, midnightImpl, hourImpl, changeDayAfterZi);

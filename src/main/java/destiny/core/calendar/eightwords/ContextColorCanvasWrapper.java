@@ -215,7 +215,7 @@ public class ContextColorCanvasWrapper {
 </pre>
    */
   protected ColorCanvas getEightWordsColorCanvas() {
-    EightWords eightWords = context.getEightWords(lmt, location);
+    EightWords eightWords = context.getEightWords();
     ColorCanvas 八字 = new ColorCanvas(10, 36, "　", Optional.empty(), Optional.empty());
 
     List<ColorCanvas> pillars = new ArrayList<>();

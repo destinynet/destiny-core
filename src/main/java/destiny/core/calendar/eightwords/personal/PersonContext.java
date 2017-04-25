@@ -59,10 +59,6 @@ public class PersonContext extends EightWordsContext {
   private final Gender gender;
 
 
-  /** 此人的八字 */
-  @NotNull
-  private final EightWords eightWords;
-
   /** 現在（LMT）的節/氣 */
   private final SolarTerms currentSolarTerms;
 
@@ -90,8 +86,24 @@ public class PersonContext extends EightWordsContext {
 
 
   /** constructor */
-  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl, MidnightIF midnight, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, String locationName, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, FortuneOutput fortuneOutput) {
-    super(chineseDateImpl, yearMonth, dayImpl, hourImpl, midnight, changeDayAfterZi, risingSignImpl, starPositionImpl);
+  public PersonContext(EightWordsIF eightWordsImpl ,
+                       ChineseDateIF chineseDateImpl,
+                       YearMonthIF yearMonthImpl,
+                       DayIF dayImpl,
+                       HourIF hourImpl,
+                       MidnightIF midnightImpl,
+                       boolean changeDayAfterZi,
+                       @NotNull SolarTermsIF solarTermsImpl,
+                       @NotNull StarTransitIF starTransitImpl,
+                       LocalDateTime lmt,
+                       Location location,
+                       String locationName,
+                       @NotNull Gender gender,
+                       double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl,
+                       RisingSignIF risingSignImpl,
+                       StarPositionIF starPositionImpl,
+                       FortuneOutput fortuneOutput) {
+    super(lmt , location , eightWordsImpl , yearMonthImpl, chineseDateImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi , risingSignImpl , starPositionImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
     this.locationName = locationName;
@@ -103,10 +115,29 @@ public class PersonContext extends EightWordsContext {
     this.location = location;
     this.gender = gender;
     this.fortuneOutput = fortuneOutput;
-    this.eightWords = this.getEightWords(lmt, location);
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
   }
+
+
+//  public PersonContext(ChineseDateIF chineseDateImpl, YearMonthIF yearMonth, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, LocalDateTime lmt, Location location, String locationName, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, FortuneOutput fortuneOutput) {
+//    super(lmt, location, eightWordsImpl, chineseDateImpl, yearMonth, dayImpl, hourImpl, midnightImpl, changeDayAfterZi, dayImpl, hourImpl, midnightImpl, changeDayAfterZi, risingSignImpl, starPositionImpl);
+//    this.solarTermsImpl = solarTermsImpl;
+//    this.starTransitImpl = starTransitImpl;
+//    this.locationName = locationName;
+//    this.fortuneMonthSpan = fortuneMonthSpan;
+//    this.fortuneDirectionImpl = fortuneDirectionImpl;
+//
+//    // LMT 的八字
+//    this.lmt = lmt;
+//    this.location = location;
+//    this.gender = gender;
+//    this.fortuneOutput = fortuneOutput;
+//
+//    this.eightWords = this.getEightWords(lmt, location);
+//    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+//    this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
+//  }
 
   public PersonContextModel getModel() {
     return new PersonContextModel(gender , eightWords , lmt , location , locationName ,
@@ -411,12 +442,8 @@ public class PersonContext extends EightWordsContext {
         default : {
           //虛歲
           // 取得 起運/終運 時的八字
-          EightWordsContext eightWordsContext = new EightWordsContext(getChineseDateImpl() , getYearMonthImpl() ,
-              getDayImpl() , getHourImpl() ,
-              getMidnightImpl() , isChangeDayAfterZi(), getRisingSignImpl(), starPositionImpl);
-
-          EightWords startFortune8w = eightWordsContext.getEightWords(startFortuneLmt, getLocation());
-          EightWords endFortune8w   = eightWordsContext.getEightWords(endFortuneLmt, getLocation());
+          EightWords startFortune8w = eightWordsImpl.getEightWords(startFortuneLmt, getLocation());
+          EightWords endFortune8w   = eightWordsImpl.getEightWords(endFortuneLmt, getLocation());
 
           // 計算年干與本命年干的距離
           startFortune = startFortune8w.getYear().differs(eightWords.getYear())+1;
@@ -443,14 +470,14 @@ public class PersonContext extends EightWordsContext {
 
   /** 取得農曆 */
   public ChineseDate getChineseDate() {
-    return chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, isChangeDayAfterZi());
+    return chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi);
   }
 
   /**
    * 計算命宮干支
    */
   public StemBranch getRisingStemBranch() {
-    EightWords ew = getEightWords(lmt, location);
+    EightWords ew = eightWordsImpl.getEightWords(lmt, location);
     // 命宮地支
     Branch risingBranch = risingSignImpl.getRisingSign(lmt, location , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干

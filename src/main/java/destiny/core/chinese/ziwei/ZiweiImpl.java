@@ -150,8 +150,10 @@ public class ZiweiImpl implements IZiwei, Serializable {
     /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法 */
     FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
 
-    PersonContext context = new PersonContext(chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl,
-      false, solarTermsImpl, starTransitImpl, lmt, location, place, gender, 120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl, FortuneOutput.西元);
+
+    EightWordsIF eightWordsImpl = new EightWordsImpl(yearMonthImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
+
+    PersonContext context = new PersonContext(eightWordsImpl , chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl, false, solarTermsImpl, starTransitImpl, lmt, location, place, gender, 120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl, FortuneOutput.西元);
 
     return getBirthPlate(year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
       .withLocalDateTime(lmt)

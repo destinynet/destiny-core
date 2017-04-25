@@ -14,12 +14,31 @@ import destiny.core.chinese.StemBranchUtils;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * 除了計算八字，另外新增輸出農曆以及命宮的方法
  */
-public class EightWordsContext extends EightWordsImpl {
+public class EightWordsContext implements Serializable {
+
+  protected final EightWords eightWords;
+
+  protected final LocalDateTime lmt;
+
+  protected final Location location;
+
+  protected final EightWordsIF eightWordsImpl;
+
+  protected final YearMonthIF yearMonthImpl;
+
+  protected final DayIF dayImpl;
+
+  protected final HourIF hourImpl;
+
+  protected final MidnightIF midnightImpl;
+
+  protected final boolean changeDayAfterZi;
 
   protected final ChineseDateIF chineseDateImpl;      // 農曆計算
 
@@ -27,22 +46,23 @@ public class EightWordsContext extends EightWordsImpl {
 
   protected final StarPositionIF starPositionImpl;    // 星體位置
 
-  public EightWordsContext(ChineseDateIF chineseDateImpl,
-                           YearMonthIF yearMonth,
-                           DayIF day,
-                           HourIF hour,
-                           MidnightIF midnight,
-                           boolean changeDayAfterZi,
-                           RisingSignIF risingSignImpl,
-                           StarPositionIF starPositionImpl) {
-    super(yearMonth, day, hour, midnight, changeDayAfterZi);
+  public EightWordsContext(LocalDateTime lmt, Location location, EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+    this.yearMonthImpl = yearMonthImpl;
+    this.eightWords = eightWordsImpl.getEightWords(lmt , location);
+    this.lmt = lmt;
+    this.location = location;
+    this.eightWordsImpl = eightWordsImpl;
     this.chineseDateImpl = chineseDateImpl;
+    this.dayImpl = dayImpl;
+    this.hourImpl = hourImpl;
+    this.midnightImpl = midnightImpl;
+    this.changeDayAfterZi = changeDayAfterZi;
     this.starPositionImpl = starPositionImpl;
     this.risingSignImpl = risingSignImpl;
   }
 
   public EightWordsContextModel getModel(LocalDateTime lmt, Location location) {
-    EightWords eightWords = getEightWords(lmt , location);
+    //EightWords eightWords = eightWordsImpl.getEightWords(lmt , location);
     int gmtMinuteOffset = Time.getDstSecondOffset(lmt, location).v2() / 60;
     boolean dst = Time.getDstSecondOffset(lmt, location).v1();
 
@@ -57,6 +77,10 @@ public class EightWordsContext extends EightWordsImpl {
       prevNextMajorSolarTerms.v2() ,
       risingSign ,
       sunBranch , moonBranch);
+  }
+
+  public EightWords getEightWords() {
+    return eightWords;
   }
 
   /**
@@ -93,12 +117,24 @@ public class EightWordsContext extends EightWordsImpl {
 
   /** 取得農曆 */
   public ChineseDate getChineseDate(LocalDateTime lmt, Location location) {
-    return chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, isChangeDayAfterZi());
+    return chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi);
   }
 
   /** 承上 , time 版本 */
   public ChineseDate getChineseDate(Time lmt, Location location) {
     return getChineseDate(lmt.toLocalDateTime() , location);
+  }
+
+  public YearMonthIF getYearMonthImpl() {
+    return yearMonthImpl;
+  }
+
+  public HourIF getHourImpl() {
+    return hourImpl;
+  }
+
+  public MidnightIF getMidnightImpl() {
+    return midnightImpl;
   }
 
   /**
@@ -117,7 +153,8 @@ public class EightWordsContext extends EightWordsImpl {
    * 計算命宮干支
    */
   public StemBranch getRisingStemBranch(LocalDateTime lmt, Location location) {
-    EightWords ew = getEightWords(lmt, location);
+
+    EightWords ew = eightWordsImpl.getEightWords(lmt , location);
     // 命宮地支
     Branch risingBranch = risingSignImpl.getRisingSign(lmt, location , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
@@ -131,4 +168,7 @@ public class EightWordsContext extends EightWordsImpl {
     return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
   }
 
+  public boolean isChangeDayAfterZi() {
+    return changeDayAfterZi;
+  }
 }
