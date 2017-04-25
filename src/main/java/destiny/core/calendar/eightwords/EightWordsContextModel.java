@@ -12,6 +12,9 @@ import destiny.core.chinese.StemBranch;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 一個八字命盤「額外」的計算結果 , 方便排盤輸出
+ */
 public class EightWordsContextModel implements Serializable {
 
   protected final EightWords eightWords;

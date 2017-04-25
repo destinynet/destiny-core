@@ -62,7 +62,6 @@ public class EightWordsContext implements Serializable {
   }
 
   public EightWordsContextModel getModel() {
-    //EightWords eightWords = eightWordsImpl.getEightWords(lmt , location);
     int gmtMinuteOffset = Time.getDstSecondOffset(lmt, location).v2() / 60;
     boolean dst = Time.getDstSecondOffset(lmt, location).v1();
 

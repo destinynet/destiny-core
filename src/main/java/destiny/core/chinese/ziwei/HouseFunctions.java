@@ -545,6 +545,23 @@ public class HouseFunctions {
     }
   };
 
+  /** 紅艷 */
+  public final static IHouse house紅艷 = new HouseYearStemImpl(紅艷) {
+    @Override
+    public Branch getBranch(Stem stem) {
+      throw new RuntimeException("Error");
+    }
+
+    @Override
+    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings) {
+      switch (settings.getRedBeauty()) {
+        case 甲乙相同: return fun紅艷_甲乙相同.apply(year.getStem());
+        case 甲乙相異: return fun紅艷_甲乙相異.apply(year.getStem());
+        default: throw new AssertionError("Error : " + settings.getBigRange());
+      }
+    }
+  };
+
   // =======↑↑↑======= 以上      雜曜 =======↑↑↑=======
 
   // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
@@ -740,6 +757,7 @@ public class HouseFunctions {
     .add(house天傷, house天使)
     .add(house陽空, house陰空)
     .add(house正空, house傍空)
+    .add(house紅艷)
 
     // 博士12神煞
     .add(house博士, house力士, house青龍, house小耗, house將軍, house奏書,

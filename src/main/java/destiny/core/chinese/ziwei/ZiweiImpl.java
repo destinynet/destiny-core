@@ -32,7 +32,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 本命盤 */
   @Override
-  public Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) {
+  public Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) {
 
     // 最終要計算的「月份」數字
     int finalMonthNum;
@@ -131,14 +131,14 @@ public class ZiweiImpl implements IZiwei, Serializable {
         return Tuple.tuple(branch , doubles);
       }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
-    return new Plate.Builder(settings, chineseDate, gender, finalMonthNum, hour, mainHouse , bodyHouse , mainStar, bodyStar, t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap, bigRangeMap , branchSmallRangesMap)
+    return new Builder(settings, chineseDate, gender, finalMonthNum, hour, mainHouse , bodyHouse , mainStar, bodyStar, t3.v2() , set , t3.v1(), branchHouseMap , starBranchMap, starStrengthMap, bigRangeMap , branchSmallRangesMap)
       .appendTrans4Map(trans4Map)
       ;
   } // 計算本命盤
 
   /** 最完整的計算命盤方式 */
   @Override
-  public Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+  public Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , location , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     StemBranch year = cDate.getYear();
     Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();
@@ -153,19 +153,21 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
     EightWordsIF eightWordsImpl = new EightWordsImpl(yearMonthImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
 
-    PersonContext context = new PersonContext(eightWordsImpl , chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl, false, solarTermsImpl, starTransitImpl, lmt, location, place, gender, 120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl, FortuneOutput.西元);
+    PersonContext context = new PersonContext(eightWordsImpl , chineseDateImpl, yearMonthImpl, dayImpl, hourImpl,
+      midnightImpl, false, solarTermsImpl, starTransitImpl, lmt, location, place, gender,
+      120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl, FortuneOutput.西元);
 
     return getBirthPlate(year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
       .withLocalDateTime(lmt)
       .withLocation(location)
       .withPlace(place)
-      .withEightWords(context.getEightWords())
+      //.withEightWords(context.getEightWords())
       ;
   }
 
   /** 計算 大限盤 */
   @Override
-  public Plate.Builder getFlowBig(Plate.Builder builder, ZSettings settings, StemBranch flowBig) {
+  public Builder getFlowBig(Builder builder, ZSettings settings, StemBranch flowBig) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
 
     Map<Branch , House> branchHouseMap =
@@ -184,7 +186,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 計算 流年盤 */
   @Override
-  public Plate.Builder getFlowYear(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear) {
+  public Builder getFlowYear(Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowYear flowYearImpl = getFlowYearImpl(settings.getFlowYear());
 
@@ -206,7 +208,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 計算 流月盤 */
   @Override
-  public Plate.Builder getFlowMonth(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth) {
+  public Builder getFlowMonth(Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowMonth flowMonthImpl = getFlowMonthImpl(settings.getFlowMonth());
 
@@ -228,7 +230,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 計算 流日盤 */
   @Override
-  public Plate.Builder getFlowDay(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum) {
+  public Builder getFlowDay(Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowMonth flowMonthImpl = getFlowMonthImpl(settings.getFlowMonth());
     Branch 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.getBranch() , flowMonth.getBranch() , builder.getBirthMonthNum() , builder.getBirthHour());
@@ -251,7 +253,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 流時盤 */
   @Override
-  public Plate.Builder getFlowHour(Plate.Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum, StemBranch flowHour) {
+  public Builder getFlowHour(Builder builder, ZSettings settings, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum, StemBranch flowHour) {
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
     IFlowMonth flowMonthImpl = getFlowMonthImpl(settings.getFlowMonth());
     Branch 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.getBranch() , flowMonth.getBranch() , builder.getBirthMonthNum() , builder.getBirthHour());

@@ -328,7 +328,14 @@ public class ZSettings implements Serializable {
   /** 是否顯示小限 */
   private final boolean showSmallRange;
 
-  public ZSettings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange) {
+  /** TODO : 紅艷 */
+  public enum RedBeauty {
+    甲乙相異 ,  /** {@link StarMinor#fun紅艷_甲乙相同} */
+    甲乙相同 ,  /** {@link StarMinor#fun紅艷_甲乙相異} */
+  }
+  private final RedBeauty redBeauty;
+
+  public ZSettings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange, RedBeauty redBeauty) {
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
@@ -347,6 +354,7 @@ public class ZSettings implements Serializable {
     this.bigRange = bigRange;
     this.direction = direction;
     this.showSmallRange = showSmallRange;
+    this.redBeauty = redBeauty;
   }
 
   public LeapMonth getLeapMonth() {
@@ -367,18 +375,6 @@ public class ZSettings implements Serializable {
 
   public Tianyi getTianyi() {
     return tianyi;
-  }
-
-  public FireBell getFireBell() {
-    return fireBell;
-  }
-
-  public Horse getHorse() {
-    return horse;
-  }
-
-  public HurtAngel getHurtAngel() {
-    return hurtAngel;
   }
 
   public TransFour getTransFour() {
@@ -420,4 +416,22 @@ public class ZSettings implements Serializable {
   public boolean isShowSmallRange() {
     return showSmallRange;
   }
+
+  public FireBell getFireBell() {
+    return fireBell;
+  }
+
+  public Horse getHorse() {
+    return horse;
+  }
+
+  public HurtAngel getHurtAngel() {
+    return hurtAngel;
+  }
+
+  public RedBeauty getRedBeauty() {
+    return redBeauty;
+  }
+
+
 }

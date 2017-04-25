@@ -80,7 +80,7 @@ public class PersonContext extends EightWordsContext {
       .build();
 
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法 */
-  private FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
+  private final FortuneDirectionIF fortuneDirectionImpl;
 
 
 
@@ -98,7 +98,8 @@ public class PersonContext extends EightWordsContext {
                        Location location,
                        String locationName,
                        @NotNull Gender gender,
-                       double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl,
+                       double fortuneMonthSpan,
+                       FortuneDirectionIF fortuneDirectionImpl,
                        RisingSignIF risingSignImpl,
                        StarPositionIF starPositionImpl,
                        FortuneOutput fortuneOutput) {

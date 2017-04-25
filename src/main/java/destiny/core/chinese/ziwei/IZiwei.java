@@ -303,28 +303,28 @@ public interface IZiwei {
 
   /**
    * 計算本命盤  */
-  Plate.Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) ;
+  Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) ;
 
   /** 輸入現代化的資料，計算本命盤 */
-  Plate.Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl);
+  Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl);
 
   /** 計算 大限盤 */
-  Plate.Builder getFlowBig(Plate.Builder builder , ZSettings settings, StemBranch flowBig) ;
+  Builder getFlowBig(Builder builder , ZSettings settings, StemBranch flowBig) ;
 
   /** 計算 流年盤 */
-  Plate.Builder getFlowYear(Plate.Builder builder , ZSettings settings, StemBranch flowBig, StemBranch flowYear) ;
+  Builder getFlowYear(Builder builder , ZSettings settings, StemBranch flowBig, StemBranch flowYear) ;
 
   /** 計算 流月盤 */
-  Plate.Builder getFlowMonth(Plate.Builder builder , ZSettings settings,
-                             StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth);
+  Builder getFlowMonth(Builder builder , ZSettings settings,
+                       StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth);
 
   /** 計算 流日盤 */
-  Plate.Builder getFlowDay(Plate.Builder builder , ZSettings settings,
-                           StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum);
+  Builder getFlowDay(Builder builder , ZSettings settings,
+                     StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum);
 
   /** 計算 流時盤 */
-  Plate.Builder getFlowHour(Plate.Builder builder , ZSettings settings,
-                            StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum , StemBranch flowHour);
+  Builder getFlowHour(Builder builder , ZSettings settings,
+                      StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum , StemBranch flowHour);
 
 
   /** 計算流月命宮 */

@@ -109,6 +109,9 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
 
   @Override
   public Optional<Integer> getStrengthOf(ZStar star, Branch branch) {
+    if (branch == null)
+      return Optional.empty();
+
     return Optional.ofNullable(
       getImplStrengthOf(star , branch)              // 先從特殊實作表格找起
       .orElseGet(() -> sortedTable.get(star , branch))  // 找不到再從 common 表格找

@@ -1,3 +1,7 @@
+/**
+ * @author smallufo
+ * 2002/8/25 下午 11:22:48
+ */
 package destiny.core.calendar.eightwords;
  
 import destiny.core.chinese.Branch;
@@ -8,12 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 
 /**
- * <PRE>
  * 八字資料結構 , 四柱任何一柱都不可以為 null
  * 2006/06/12 將此 class 繼承 EightWordsNullable
- * </PRE>
- * @author smallufo
- * 2002/8/25 下午 11:22:48
  */
 public class EightWords extends EightWordsNullable {
  

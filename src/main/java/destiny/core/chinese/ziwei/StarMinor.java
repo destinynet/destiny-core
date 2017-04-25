@@ -72,8 +72,10 @@ public class StarMinor extends ZStar {
   public final static StarMinor 正空 = new StarMinor("正空" , 年干);  // 截空 陰陽相同
   public final static StarMinor 傍空 = new StarMinor("傍空" , 年干);  // 截空 陰陽相反
 
+  public final static StarMinor 紅艷 = new StarMinor("紅艷" , 年干);
+
   public final static StarMinor[] values = {天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎,
-    華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷 , 陽空 , 陰空 , 正空 , 傍空};
+    華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷 , 陽空 , 陰空 , 正空 , 傍空 , 紅艷};
 
   public StarMinor(String nameKey , Type type) {
     super(nameKey, ZStar.class.getName(), type);
@@ -603,6 +605,45 @@ public class StarMinor extends ZStar {
 
       case 戊: return 亥;
       case 癸: return 戌;
+      default: throw new AssertionError("Error : " + stem);
+    }
+  });
+
+  /**
+   * 紅艷星
+   *
+   * 參考設定： http://imgur.com/a/oXhRC
+   * 甲、乙 採取不同設定
+   */
+  public final static Function<Stem , Branch> fun紅艷_甲乙相同 = (stem -> {
+    switch (stem) {
+      case 甲: return 午;
+      case 乙: return 申;
+      case 丙: return 寅;
+      case 丁: return 未;
+      case 戊: case 己: return 辰;
+      case 庚: return 戌;
+      case 辛: return 酉;
+      case 壬: return 子;
+      case 癸: return 申;
+      default: throw new AssertionError("Error : " + stem);
+    }
+  });
+
+  /**
+   * 紅艷星
+   * 採取「李韶堯」先生「人生哲學。命理探討系列。紫微斗數」一書設定
+   */
+  public final static Function<Stem , Branch> fun紅艷_甲乙相異 = (stem -> {
+    switch (stem) {
+      case 甲: case 乙: return 午;
+      case 丙: return 寅;
+      case 丁: return 未;
+      case 戊: case 己: return 辰;
+      case 庚: return 戌;
+      case 辛: return 酉;
+      case 壬: return 子;
+      case 癸: return 申;
       default: throw new AssertionError("Error : " + stem);
     }
   });

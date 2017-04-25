@@ -54,7 +54,7 @@ public class ZiweiImplTest {
   @Test
   public void testPlate4() {
     ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_MIDDLE, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP,
-      ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
+      ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false, ZSettings.RedBeauty.甲乙相異);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -65,7 +65,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarLongevity.values));
 
     // 乙酉大限 , 2017(丁酉年) , 農曆 3月(甲辰月) 22日(乙亥日)  (陽曆4/18) , 晚上 丁亥 時
-    Plate.Builder builder = impl.getBirthPlate(庚辰 , 1, false, 寅 , 立春 , 28 , 午 , starList, Gender.男, settings);
+    Builder builder = impl.getBirthPlate(庚辰 , 1, false, 寅 , 立春 , 28 , 午 , starList, Gender.男, settings);
 
     Plate plate = impl.getFlowHour(builder, settings , 乙酉 , 丁酉 , 甲辰 , 乙亥 , 22 , 丁亥).build();
     assertSame(甲申 , plate.getMainHouse());
@@ -100,7 +100,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate3() {
-    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
+    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false, ZSettings.RedBeauty.甲乙相異);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -109,7 +109,7 @@ public class ZiweiImplTest {
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
 
-    Plate.Builder builder = impl.getBirthPlate(己巳 , 7, false, 申 , 立秋 , 25 , 辰 , starList, Gender.女, settings);
+    Builder builder = impl.getBirthPlate(己巳 , 7, false, 申 , 立秋 , 25 , 辰 , starList, Gender.女, settings);
     Plate plate = impl.getFlowDay(builder , settings , 甲午 , 丙申, 丁亥 , 辛卯 , 17 ).build();
 
     assertSame(戊辰 , plate.getMainHouse());
@@ -146,7 +146,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate2() {
-    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
+    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.FIXED, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false, ZSettings.RedBeauty.甲乙相異);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -186,7 +186,7 @@ public class ZiweiImplTest {
    */
   @Test
   public void testPlate1() {
-    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.YINYANG, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false);
+    ZSettings settings = new ZSettings(ZSettings.LeapMonth.LEAP_THIS_MONTH, ZSettings.MonthType.MONTH_LUNAR, ZSettings.MainHouse.MAIN_HOUSE_DEFAULT, ZSettings.HouseSeq.HOUSE_DEFAULT, Tianyi.TIANYI_ZIWEI_BOOK, FireBell.FIREBELL_全集, Horse.年馬, HurtAngel.YINYANG, ZSettings.TransFour.TRANSFOUR_FULL_COLLECT, ZSettings.Strength.STRENGTH_MIDDLE, ZSettings.FlowYear.FLOW_YEAR_BRANCH, ZSettings.FlowMonth.FLOW_MONTH_DEFAULT, ZSettings.FlowDay.FLOW_DAY_MONTH_DEP, ZSettings.FlowHour.FLOW_HOUR_DAY_DEP, FortuneOutput.虛歲, ZSettings.BigRange.BIG_RANGE_FROM_MAIN, Direction.R2L, false, ZSettings.RedBeauty.甲乙相異);
 
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
