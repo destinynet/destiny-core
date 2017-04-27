@@ -18,10 +18,18 @@ import java.util.ResourceBundle;
 
 public class ZSettings implements Serializable {
 
+  /** 安紫微星法 */
+  public enum PurpleStar {
+    PURPLE_DEFAULT,         /** 正常算法          {@link PurpleStarBranchDefaultImpl} */
+    PURPLE_LEAP_ACCUM_DAYS  /** 閏月時累加上月日數  {@link PurpleStarBranchLeapImpl} */
+  }
+  private final PurpleStar purpleStar;
+
+
   /** 閏月該如何處理 */
   public enum LeapMonth implements Descriptive {
     LEAP_THIS_MONTH,   // 一律當作本月
-    LEAP_NEXT_MONTH,   // 一律當作下月
+    LEAP_NEXT_MONTH,   // 一律當作下月 (全書)
     LEAP_SPLIT_15;   // 15日(含)之前當本月，之後當下月
 
     @Override
@@ -335,7 +343,8 @@ public class ZSettings implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZSettings(LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange, RedBeauty redBeauty) {
+  public ZSettings(PurpleStar purpleStar, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange, RedBeauty redBeauty) {
+    this.purpleStar = purpleStar;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
@@ -355,6 +364,10 @@ public class ZSettings implements Serializable {
     this.direction = direction;
     this.showSmallRange = showSmallRange;
     this.redBeauty = redBeauty;
+  }
+
+  public PurpleStar getPurpleStar() {
+    return purpleStar;
   }
 
   public LeapMonth getLeapMonth() {

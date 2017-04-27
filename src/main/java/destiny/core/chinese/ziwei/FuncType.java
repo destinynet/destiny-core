@@ -4,7 +4,8 @@
 package destiny.core.chinese.ziwei;
 
 public enum FuncType {
-  SET_DAY_NUM   // (局數,生日)
+   MAIN_STAR       // 主星 , 可能要依據閏月調整
+  ,SET_DAY_NUM     // (局數,生日)
   ,HOUR_BRANCH
   ,MONTH                    // (月數 or 月支)
   ,YEAR                     // (年干支)

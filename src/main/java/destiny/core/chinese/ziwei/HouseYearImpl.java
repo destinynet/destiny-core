@@ -24,7 +24,7 @@ public abstract class HouseYearImpl extends HouseAbstractImpl<StemBranch> {
 
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings) {
     return getBranch(year);
   }
 }

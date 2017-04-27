@@ -74,13 +74,13 @@ public final class StarLucky extends ZStar {
     }
   };
 
-  /** 天魁 (陽貴人) : 年干 -> 地支
-   * 第一種算法： 「甲戊庚牛羊，乙己鼠猴郷，丙丁豬雞位，六辛為馬虎，壬癸兔蛇藏，此是貴人方。」
+  /**
+   * 天魁 (陽貴人) : 年干 -> 地支
    * */
-  public final static Function2<Stem, TianyiIF , Branch> fun天魁 = (year , tianyiImpl) -> tianyiImpl.getFirstTianyi(year , DayNight.DAY);
+  public final static Function2<Stem , TianyiIF , Branch> fun天魁 = (year , tianyiImpl) -> tianyiImpl.getFirstTianyi(year , DayNight.DAY);
 
-  /** 天鉞 (陰貴人) : 年干 -> 地支
-   * 第一種算法： 「甲戊庚牛羊，乙己鼠猴郷，丙丁豬雞位，六辛為馬虎，壬癸兔蛇藏，此是貴人方。」
+  /**
+   * 天鉞 (陰貴人) : 年干 -> 地支
    * */
   public final static Function2<Stem , TianyiIF , Branch> fun天鉞 = (year , tianyiImpl) -> tianyiImpl.getFirstTianyi(year , DayNight.NIGHT);
 

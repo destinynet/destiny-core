@@ -25,7 +25,7 @@ public abstract class HouseMonthImpl extends HouseAbstractImpl<Tuple3<ZSettings.
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings) {
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings) {
     return getBranch(Tuple.tuple(settings.getMonthType() , monthNum , monthBranch));
   }
 }

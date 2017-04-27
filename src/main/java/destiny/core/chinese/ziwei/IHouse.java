@@ -8,7 +8,7 @@ import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 
-public interface  IHouse<T> {
+public interface IHouse<T> {
 
   ZStar getStar();
 
@@ -17,9 +17,10 @@ public interface  IHouse<T> {
   Branch getBranch(T t);
 
   /**
-   *
-   * @param monthBranch 「節氣」的月令
-   * @param monthNum 「單純陰曆」的月令
+   * @param monthBranch   「節氣」的月令
+   * @param monthNum      「單純陰曆」的月令
+   * @param leap          是否是閏月
+   * @param prevMonthDays [陰曆] 上個月有幾日
    */
-  Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, ZSettings settings);
+  Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings);
 }

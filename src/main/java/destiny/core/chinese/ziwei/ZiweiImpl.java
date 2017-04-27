@@ -30,6 +30,12 @@ import java.util.stream.Collectors;
 
 public class ZiweiImpl implements IZiwei, Serializable {
 
+  private final IPrevMonthDays prevMonthDaysImpl;
+
+  public ZiweiImpl(IPrevMonthDays prevMonthDaysImpl) {
+    this.prevMonthDaysImpl = prevMonthDaysImpl;
+  }
+
   /** 本命盤 */
   @Override
   public Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) {
@@ -66,6 +72,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     // 取身主 : 以出生年之地支安星
     ZStar bodyStar = IZiwei.getBodyStar(year.getBranch());
 
+    // 12宮
     IHouseSeq houseSeq = getHouseSeq(settings.getHouseSeq());
 
     Tuple3<String , FiveElement , Integer> t3 = IZiwei.getNaYin(mainHouse);
@@ -85,11 +92,16 @@ public class ZiweiImpl implements IZiwei, Serializable {
     // 寅 的天干
     Stem stemOf寅 = IZiwei.getStemOf寅(year.getStem());
 
+    // 為了某些流派閏月的考量 , 須在此求出「上個月」有幾天 , 才能求出紫微星
+    // TODO : cycle 必須傳入
+    int prevMonthDays = (leapMonth ? 0 : prevMonthDaysImpl.getPrevMonthDays(77 , year , monthNum , true));
+
     Map<ZStar , StemBranch> starBranchMap =
     stars.stream()
       .map(star -> Optional.ofNullable(HouseFunctions.map.get(star))
         .map(iHouse -> {
-          Branch branch = iHouse.getBranch(year , monthBranch , finalMonthNum, solarTerms , days, hour, set, gender, settings);
+          Branch branch = iHouse.getBranch(year , monthBranch , finalMonthNum, solarTerms , days, hour, set,
+            gender, leapMonth, prevMonthDays, settings);
           StemBranch sb = IZiwei.getStemBranchOf(branch , stemOf寅);
           return Tuple.tuple(star , sb);
         })
@@ -301,6 +313,14 @@ public class ZiweiImpl implements IZiwei, Serializable {
           //, TreeMap::new
         )
       );
+  }
+
+  protected IPurpleStarBranch getPurpleStarImpl(ZSettings.PurpleStar purpleStar) {
+    switch (purpleStar) {
+      case PURPLE_DEFAULT: return new PurpleStarBranchDefaultImpl();
+      case PURPLE_LEAP_ACCUM_DAYS: return new PurpleStarBranchLeapImpl();
+      default: throw new AssertionError("Error : " + purpleStar);
+    }
   }
 
   protected IFlowHour getFlowHourImpl(ZSettings.FlowHour flowHour) {
