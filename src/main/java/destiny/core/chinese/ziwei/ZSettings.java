@@ -18,12 +18,26 @@ import java.util.ResourceBundle;
 
 public class ZSettings implements Serializable {
 
-  /** 安紫微星法 */
-  public enum PurpleStar {
-    PURPLE_DEFAULT,         /** 正常算法          {@link PurpleStarBranchDefaultImpl} */
-    PURPLE_LEAP_ACCUM_DAYS  /** 閏月時累加上月日數  {@link PurpleStarBranchLeapImpl} */
+  /** 閏月時，紫微如何處理 */
+  public enum LeapPurple implements Descriptive {
+    LEAP_PURPLE_DEFAULT,      /** 視為非閏月   {@link PurpleStarBranchDefaultImpl} */
+    LEAP_PURPLE_ACCUM_DAYS;   /** 累加日數     {@link PurpleStarBranchLeapImpl} */
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
-  private final PurpleStar purpleStar;
+  private final LeapPurple leapPurple;
 
 
   /** 閏月該如何處理 */
@@ -343,8 +357,8 @@ public class ZSettings implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZSettings(PurpleStar purpleStar, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange, RedBeauty redBeauty) {
-    this.purpleStar = purpleStar;
+  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange, RedBeauty redBeauty) {
+    this.leapPurple = leapPurple;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouse = mainHouse;
@@ -366,8 +380,8 @@ public class ZSettings implements Serializable {
     this.redBeauty = redBeauty;
   }
 
-  public PurpleStar getPurpleStar() {
-    return purpleStar;
+  public LeapPurple getLeapPurple() {
+    return leapPurple;
   }
 
   public LeapMonth getLeapMonth() {

@@ -19,9 +19,9 @@ import java.util.Map;
  */
 public abstract class HouseMainStarImpl extends HouseAbstractImpl<Tuple5<Integer, Integer, Boolean, Integer, IPurpleStarBranch>>{
 
-  private final static Map<ZSettings.PurpleStar , IPurpleStarBranch> map = new ImmutableMap.Builder<ZSettings.PurpleStar, IPurpleStarBranch>()
-    .put(ZSettings.PurpleStar.PURPLE_DEFAULT , new PurpleStarBranchDefaultImpl())
-    .put(ZSettings.PurpleStar.PURPLE_LEAP_ACCUM_DAYS , new PurpleStarBranchLeapImpl())
+  private final static Map<ZSettings.LeapPurple, IPurpleStarBranch> map = new ImmutableMap.Builder<ZSettings.LeapPurple, IPurpleStarBranch>()
+    .put(ZSettings.LeapPurple.LEAP_PURPLE_DEFAULT, new PurpleStarBranchDefaultImpl())
+    .put(ZSettings.LeapPurple.LEAP_PURPLE_ACCUM_DAYS, new PurpleStarBranchLeapImpl()) // 如果前一個月，有 30 天，才用此法
     .build();
 
   protected HouseMainStarImpl(ZStar star) {
@@ -35,6 +35,20 @@ public abstract class HouseMainStarImpl extends HouseAbstractImpl<Tuple5<Integer
 
   @Override
   public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings) {
-    return getBranch(Tuple.tuple(set , days , leap , prevMonthDays , map.get(settings.getPurpleStar())));
+    if (!leap) {
+      return getBranch(Tuple.tuple(set , days , leap , prevMonthDays , map.get(ZSettings.LeapPurple.LEAP_PURPLE_DEFAULT)));
+    } else {
+      // 閏月
+      if (days + prevMonthDays == 30) {
+        return getBranch(Tuple.tuple(set , 30 , leap , prevMonthDays , map.get(ZSettings.LeapPurple.LEAP_PURPLE_DEFAULT)));
+      } else {
+        return getBranch(Tuple.tuple(set , days , leap , prevMonthDays , map.get(settings.getLeapPurple())));
+      }
+    }
+//    if (prevMonthDays < 30)
+//      return getBranch(Tuple.tuple(set , days , leap , prevMonthDays , map.get(ZSettings.PurpleStar.PURPLE_DEFAULT)));
+//    else {
+//      return getBranch(Tuple.tuple(set , days , leap , prevMonthDays , map.get(settings.getPurpleStar())));
+//    }
   }
 }

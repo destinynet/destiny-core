@@ -5,6 +5,8 @@ package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.ImmutableMap;
 import destiny.core.chinese.Branch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -14,12 +16,21 @@ import static destiny.core.chinese.Branch.*;
 /**
  * 閏月排紫微星
  *
+ * 翰學居士 張寶丹 老師 , 高段紫微斗數 三本書
+ *
  * 參考此表格 :  http://imgur.com/87sHQOq
  */
 public class PurpleStarBranchLeapImpl implements IPurpleStarBranch , Serializable {
 
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   @Override
   public Branch getBranchOfPurpleStar(int set, int day, boolean leap, int prevMonthDays) {
+    if (day + prevMonthDays <= 30) {
+      logger.error("日數 = {} , 加上前一個月的天數 {}  , 小於 30 日，不適用此 「日數累加推算紫微」演算法" , day , prevMonthDays );
+      throw new RuntimeException("Error : 局數 = " + set + " , day = " + day + " , 閏月 = " + leap + " , 前一個月日數 = " + prevMonthDays);
+    }
+
     if (!leap) {
       return getBranchOfPurpleStar(set , day);
     } else {

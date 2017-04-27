@@ -14,10 +14,10 @@ import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
-import destiny.core.calendar.eightwords.personal.FortuneDirectionDefaultImpl;
-import destiny.core.calendar.eightwords.personal.FortuneDirectionIF;
-import destiny.core.calendar.eightwords.personal.PersonContext;
-import destiny.core.chinese.*;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.FiveElement;
+import destiny.core.chinese.Stem;
+import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -38,7 +38,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
 
   /** 本命盤 */
   @Override
-  public Builder getBirthPlate(StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) {
+  public Builder getBirthPlate(int cycle, StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) {
 
     // 最終要計算的「月份」數字
     int finalMonthNum;
@@ -93,8 +93,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
     Stem stemOf寅 = IZiwei.getStemOf寅(year.getStem());
 
     // 為了某些流派閏月的考量 , 須在此求出「上個月」有幾天 , 才能求出紫微星
-    // TODO : cycle 必須傳入
-    int prevMonthDays = (leapMonth ? 0 : prevMonthDaysImpl.getPrevMonthDays(77 , year , monthNum , true));
+    int prevMonthDays = (leapMonth ? prevMonthDaysImpl.getPrevMonthDays(cycle , year , monthNum , true) : 0);
 
     Map<ZStar , StemBranch> starBranchMap =
     stars.stream()
@@ -122,7 +121,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
       .filter(t -> t.v2().isPresent())
       .collect(Collectors.toMap(Tuple2::v1, t2 -> t2.v2().orElse(0))); // 這裡其實不會傳 0 , 因為前面已經 filter 過了
 
-    ChineseDate chineseDate = new ChineseDate(null , year , monthNum , leapMonth , days);
+    ChineseDate chineseDate = new ChineseDate(cycle , year , monthNum , leapMonth , days);
 
     // 大限 mapping
     IBigRange bigRangeImpl = getBigRangeImpl(settings.getBigRange());
@@ -152,6 +151,7 @@ public class ZiweiImpl implements IZiwei, Serializable {
   @Override
   public Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , location , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
+    int cycle = cDate.getCycle();
     StemBranch year = cDate.getYear();
     Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();
     int monthNum = cDate.getMonth();
@@ -159,21 +159,10 @@ public class ZiweiImpl implements IZiwei, Serializable {
     int days = cDate.getDay();
     Branch hour = hourImpl.getHour(lmt , location);
 
-    /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法 */
-    FortuneDirectionIF fortuneDirectionImpl = new FortuneDirectionDefaultImpl();
-
-
-    EightWordsIF eightWordsImpl = new EightWordsImpl(yearMonthImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
-
-    PersonContext context = new PersonContext(eightWordsImpl , chineseDateImpl, yearMonthImpl, dayImpl, hourImpl,
-      midnightImpl, false, solarTermsImpl, starTransitImpl, lmt, location, place, gender,
-      120.0, fortuneDirectionImpl, risingSignImpl, starPositionImpl, FortuneOutput.西元);
-
-    return getBirthPlate(year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
+    return getBirthPlate(cycle, year , monthNum, cDate.isLeapMonth() , monthBranch , solarTerms , days , hour , stars , gender , settings)
       .withLocalDateTime(lmt)
       .withLocation(location)
       .withPlace(place)
-      //.withEightWords(context.getEightWords())
       ;
   }
 
@@ -315,13 +304,6 @@ public class ZiweiImpl implements IZiwei, Serializable {
       );
   }
 
-  protected IPurpleStarBranch getPurpleStarImpl(ZSettings.PurpleStar purpleStar) {
-    switch (purpleStar) {
-      case PURPLE_DEFAULT: return new PurpleStarBranchDefaultImpl();
-      case PURPLE_LEAP_ACCUM_DAYS: return new PurpleStarBranchLeapImpl();
-      default: throw new AssertionError("Error : " + purpleStar);
-    }
-  }
 
   protected IFlowHour getFlowHourImpl(ZSettings.FlowHour flowHour) {
     switch (flowHour) {
