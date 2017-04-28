@@ -6,7 +6,6 @@ package destiny.core.chinese.ziwei;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import destiny.core.Descriptive;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
@@ -128,7 +127,7 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
   @Override
   public String getTitle(Locale locale) {
     try {
-      return ResourceBundle.getBundle(ZiweiImpl.class.getName(), locale).getString(getClass().getSimpleName());
+      return ResourceBundle.getBundle(StrengthAbstractImpl.class.getName(), locale).getString(getClass().getSimpleName());
     } catch (MissingResourceException e) {
       return getClass().getSimpleName();
     }

@@ -18,6 +18,7 @@ import static destiny.core.chinese.ziwei.StarMinor.三台;
 import static destiny.core.chinese.ziwei.StarMinor.天巫;
 import static destiny.core.chinese.ziwei.StarUnlucky.地劫;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 public class StrengthMiddleImplTest {
@@ -28,6 +29,8 @@ public class StrengthMiddleImplTest {
 
   @Test
   public void testTitle() {
+    assertNotNull(impl.getTitle(Locale.TAIWAN));
+    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE));
     logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.CHINA));
   }
 

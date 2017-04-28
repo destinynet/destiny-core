@@ -4,7 +4,6 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
-import destiny.core.calendar.eightwords.Direction;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.impls.TianyiAuthorizedImpl;
 import destiny.core.chinese.impls.TianyiLiurenPithyImpl;
@@ -344,12 +343,6 @@ public class ZSettings implements Serializable {
   }
   private final BigRange bigRange;
 
-  /** 八字排盤，右至左 or 左至右 */
-  private final Direction direction;
-
-  /** 是否顯示小限 */
-  private final boolean showSmallRange;
-
   /** TODO : 紅艷 */
   public enum RedBeauty {
     甲乙相異 ,  /** {@link StarMinor#fun紅艷_甲乙相同} */
@@ -357,7 +350,7 @@ public class ZSettings implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, Direction direction, boolean showSmallRange, RedBeauty redBeauty) {
+  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty) {
     this.leapPurple = leapPurple;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
@@ -375,8 +368,6 @@ public class ZSettings implements Serializable {
     this.flowHour = flowHour;
     this.rangeOutput = rangeOutput;
     this.bigRange = bigRange;
-    this.direction = direction;
-    this.showSmallRange = showSmallRange;
     this.redBeauty = redBeauty;
   }
 
@@ -436,13 +427,6 @@ public class ZSettings implements Serializable {
     return bigRange;
   }
 
-  public Direction getDirection() {
-    return direction;
-  }
-
-  public boolean isShowSmallRange() {
-    return showSmallRange;
-  }
 
   public FireBell getFireBell() {
     return fireBell;

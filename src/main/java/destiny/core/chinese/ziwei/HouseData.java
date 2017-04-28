@@ -3,6 +3,8 @@
  */
 package destiny.core.chinese.ziwei;
 
+import com.google.common.collect.Table;
+import destiny.core.chinese.Branch;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +35,7 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   /** 此宮位，在各個流運，叫什麼宮位 */
   private final Map<FlowType , House> flowHouseMap;
 
+
   /**
    * 大限 從何時 到何時
    * 這裡用 long , 不用 int
@@ -45,17 +48,39 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   /** 六條小限 */
   private final List<Double> smallRanges;
 
+  /** 宮干四化，此宮位，因為什麼星，各飛入哪個宮位(地支) */
+  private final Table<ITransFour.Value , ZStar , Branch> transFourFlyMap;
+
   private transient static Logger logger = LoggerFactory.getLogger(HouseData.class);
 
-  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, FortuneOutput rangeOutput, double rangeFrom, double rangeTo, List<Double> smallRanges) {
+  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, Table<ITransFour.Value, ZStar, Branch> transFourFlyMap, FortuneOutput rangeOutput, double rangeFrom, double rangeTo, List<Double> smallRanges) {
     this.house = house;
     this.stemBranch = stemBranch;
     this.stars = stars;
     this.flowHouseMap = flowHouseMap;
+    this.transFourFlyMap = transFourFlyMap;
     this.rangeOutput = rangeOutput;
     this.rangeFrom = rangeFrom;
     this.rangeTo = rangeTo;
     this.smallRanges = smallRanges;
+
+    logger.debug("宮位 : {} , 宮干自化 {}" , stemBranch , transFourFlyMap);
+  }
+
+  /** 宮干自化 列表 , 長度 0 , 1 or 2 */
+  public List<ITransFour.Value> getSelfTransFours() {
+    return transFourFlyMap.cellSet().stream()
+      .filter(cell -> cell.getValue() == stemBranch.getBranch())
+      .map(Table.Cell::getRowKey)
+      .collect(Collectors.toList());
+  }
+
+  /** 宮干 化入對宮 */
+  public List<ITransFour.Value> getOppositeTransFours() {
+    return transFourFlyMap.cellSet().stream()
+      .filter(cell -> cell.getValue() == stemBranch.getBranch().getOpposite())
+      .map(Table.Cell::getRowKey)
+      .collect(Collectors.toList());
   }
 
   public House getHouse() {

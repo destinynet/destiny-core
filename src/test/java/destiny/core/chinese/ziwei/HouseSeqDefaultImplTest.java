@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import static destiny.core.chinese.ziwei.House.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 public class HouseSeqDefaultImplTest {
@@ -22,6 +23,8 @@ public class HouseSeqDefaultImplTest {
 
   @Test
   public void testString() {
+    assertNotNull(impl.getTitle(Locale.TAIWAN));
+    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE));
     logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.SIMPLIFIED_CHINESE));
   }
   @Test

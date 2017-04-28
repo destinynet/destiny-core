@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei;
 
+import com.google.common.collect.Table;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
@@ -95,16 +96,17 @@ public class Builder implements Serializable {
   /** 八字命盤 */
   private PersonContextModel personModel;
 
+  /** 宮干四化 */
+  private final Map<StemBranch , Table<ITransFour.Value, ZStar, Branch>> flyMap;
+
   /** 本命盤 */
-  public Builder(ZSettings settings, ChineseDate chineseDate, Gender gender,
-                 int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse,
-                 ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set,
-                 String naYin,
+  public Builder(ZSettings settings, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour,
+                 StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar,
+                 FiveElement fiveElement, int set, String naYin,
                  Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap,
                  Map<ZStar, Integer> starStrengthMap,
-                 Map<Branch, Tuple2<Double, Double>> bigRangeMap ,
-                 Map<Branch, List<Double>> branchSmallRangesMap
-  ) {
+                 Map<Branch, Tuple2<Double, Double>> bigRangeMap, Map<Branch, List<Double>> branchSmallRangesMap,
+                 Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
     this.settings = settings;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -118,6 +120,7 @@ public class Builder implements Serializable {
     this.set = set;
     this.naYin = naYin;
     this.starStrengthMap = starStrengthMap;
+    this.flyMap = flyMap;
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -138,14 +141,17 @@ public class Builder implements Serializable {
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
     branchFlowHouseMap.putAll(本命地支HouseMapping);
 
+
+
     houseDataSet = branchHouseMap.entrySet().stream().map(e -> {
       StemBranch sb = e.getKey();
       House house = e.getValue();
       Set<ZStar> stars = branchStarMap.get(sb.getBranch());
 
+
       Tuple2<Double , Double> fromTo = bigRangeMap.get(sb.getBranch());
       List<Double> smallRanges = branchSmallRangesMap.get(sb.getBranch());
-      return new HouseData(house, sb, stars, branchFlowHouseMap.get(sb.getBranch()), settings.getRangeOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
+      return new HouseData(house, sb, stars, branchFlowHouseMap.get(sb.getBranch()), flyMap.get(sb), settings.getRangeOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
     }).collect(Collectors.toSet());
   } // builder init
 
@@ -280,23 +286,11 @@ public class Builder implements Serializable {
     return this;
   }
 
-//  /**
-//   * @param eightWords 節氣八字
-//   */
-//  public Builder withEightWords(@NotNull EightWords eightWords) {
-//    this.eightWords = eightWords;
-//    return this;
-//  }
-
   public Builder withPersonModel(PersonContextModel personModel) {
     this.personModel = personModel;
     return this;
   }
 
-
-//  public Plate build() {
-//    return new Plate(settings, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords);
-//  }
 
   public Plate build() {
     if (personModel == null) {

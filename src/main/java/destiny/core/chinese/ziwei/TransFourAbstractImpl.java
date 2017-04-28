@@ -25,7 +25,7 @@ public abstract class TransFourAbstractImpl implements ITransFour {
   @Override
   public String getTitle(Locale locale) {
     try {
-      return ResourceBundle.getBundle(ZiweiImpl.class.getName(), locale).getString(getClass().getSimpleName());
+      return ResourceBundle.getBundle(TransFourAbstractImpl.class.getName(), locale).getString(getClass().getSimpleName());
     } catch (MissingResourceException e) {
       return getClass().getSimpleName();
     }
