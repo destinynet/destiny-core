@@ -17,6 +17,23 @@ import destiny.core.chinese.FortuneOutput;
  */
 public class ZSettingsMore extends ZSettings {
 
+  /** 宮干四化「自化」 顯示選項 */
+  public enum SelfTransFour {
+    NONE  ,   /** 不顯示 */
+    TEXT  ,   /** 文字顯示 */
+    ARROW ,   /** 箭頭朝外 */
+  }
+  private final SelfTransFour selfTransFour;
+
+  /** 宮干四化「化入對宮」的顯示選項 */
+  public enum OppoTransFour {
+    NONE  ,   /** 不顯示 */
+    ARROW ,   /** 朝內(對宮) 箭頭 */
+  }
+  private final OppoTransFour oppoTransFour;
+
+
+
   /** 是否顯示小限 */
   private final boolean showSmallRange;
 
@@ -41,13 +58,24 @@ public class ZSettingsMore extends ZSettings {
   private final boolean changeDayAfterZi;
 
 
-  public ZSettingsMore(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty, boolean showSmallRange, Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
+  public ZSettingsMore(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
     super(leapPurple, leapMonth, monthType, mainHouse, houseSeq, tianyi, fireBell, horse, hurtAngel, transFour, strength, flowYear, flowMonth, flowDay, flowHour, rangeOutput, bigRange, redBeauty);
+    this.selfTransFour = selfTransFour;
+    this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;
     this.direction = direction;
     this.hourChoose = hourChoose;
     this.midnight = midnight;
     this.changeDayAfterZi = changeDayAfterZi;
+  }
+
+
+  public SelfTransFour getSelfTransFour() {
+    return selfTransFour;
+  }
+
+  public OppoTransFour getOppoTransFour() {
+    return oppoTransFour;
   }
 
   public boolean isShowSmallRange() {
