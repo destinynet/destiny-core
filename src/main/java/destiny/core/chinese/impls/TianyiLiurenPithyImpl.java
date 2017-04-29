@@ -9,7 +9,6 @@ import destiny.core.chinese.TianyiIF;
 import destiny.core.chinese.YinYangIF;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import static destiny.core.chinese.Branch.*;
 
@@ -58,16 +57,6 @@ public class TianyiLiurenPithyImpl implements TianyiIF, Serializable {
       default:
         throw new AssertionError(stem + " at " + yinYang);
     }
-  }
-
-  @Override
-  public String getTitle(Locale locale) {
-    return "《大六壬金口訣》";
-  }
-
-  @Override
-  public String getDescription(Locale locale) {
-    return "《大六壬心鏡》、《六壬景右神定經》、《六壬大全》、《大六壬指南》推導天乙貴人：甲戊庚牛羊 … 六辛逢馬虎…";
   }
 
 }

@@ -7,6 +7,7 @@ import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.HourLmtImpl;
 import destiny.core.calendar.eightwords.HourSolarTransImpl;
 import destiny.core.chinese.FortuneOutput;
+import destiny.core.chinese.TianyiIF;
 
 /**
  * 與紫微「計算」無關的設定
@@ -58,8 +59,11 @@ public class ZSettingsMore extends ZSettings {
   private final boolean changeDayAfterZi;
 
 
-  public ZSettingsMore(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
-    super(leapPurple, leapMonth, monthType, mainHouse, houseSeq, tianyi, fireBell, horse, hurtAngel, transFour, strength, flowYear, flowMonth, flowDay, flowHour, rangeOutput, bigRange, redBeauty);
+  public ZSettingsMore(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl,
+
+                       TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
+    super(leapPurple, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, horse, hurtAngel,
+      transFourImpl, strength , flowYear, flowMonth, flowDay, flowHour, rangeOutput, bigRange, redBeauty);
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;

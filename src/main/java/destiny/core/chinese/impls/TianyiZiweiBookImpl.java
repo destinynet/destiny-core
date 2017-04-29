@@ -9,7 +9,6 @@ import destiny.core.chinese.TianyiIF;
 import destiny.core.chinese.YinYangIF;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import static destiny.core.chinese.Branch.*;
 
@@ -52,13 +51,4 @@ public class TianyiZiweiBookImpl implements TianyiIF, Serializable {
     }
   }
 
-  @Override
-  public String getTitle(Locale locale) {
-    return "《紫微斗數全書》";
-  }
-
-  @Override
-  public String getDescription(Locale locale) {
-    return "《紫微斗數全書》：甲戊庚牛羊，乙己鼠猴鄉，丙丁豬雞位，壬癸兔蛇藏，六辛逢馬虎，此是貴人鄉";
-  }
 }

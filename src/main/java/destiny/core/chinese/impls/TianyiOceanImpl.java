@@ -9,7 +9,6 @@ import destiny.core.chinese.TianyiIF;
 import destiny.core.chinese.YinYangIF;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import static destiny.core.chinese.Branch.*;
 
@@ -55,14 +54,5 @@ public class TianyiOceanImpl implements TianyiIF, Serializable {
     }
   }
 
-  @Override
-  public String getTitle(Locale locale) {
-    return "《淵海子平》";
-  }
-
-  @Override
-  public String getDescription(Locale locale) {
-    return "《淵海子平》、《六壬視斯》、《六壬大占》推導貴人法：甲戊兼牛羊 … 庚辛逢馬虎";
-  }
 
 }

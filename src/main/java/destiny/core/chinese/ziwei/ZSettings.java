@@ -5,10 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
 import destiny.core.chinese.FortuneOutput;
-import destiny.core.chinese.impls.TianyiAuthorizedImpl;
-import destiny.core.chinese.impls.TianyiLiurenPithyImpl;
-import destiny.core.chinese.impls.TianyiOceanImpl;
-import destiny.core.chinese.impls.TianyiZiweiBookImpl;
+import destiny.core.chinese.TianyiIF;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -82,71 +79,19 @@ public class ZSettings implements Serializable {
   }
   private final MonthType monthType;
 
+
+
   /** 命宮起法 */
-  public enum MainHouse implements Descriptive {
-    MAIN_HOUSE_DEFAULT,   /** 內定算法       {@link MainHouseDefaultImpl} */
-    MAIN_HOUSE_SOLAR;     /** 不依五星要過節  {@link MainHouseSolarTermsImpl} */
+  protected final IMainHouse mainHouseImpl;
 
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final MainHouse mainHouse;
 
   /** 宮位名字 */
-  public enum HouseSeq implements Descriptive {
-    HOUSE_DEFAULT,   /** 內定 {@link HouseSeqDefaultImpl} */
-    HOUSE_TAIYI,     /** 太乙 {@link HouseSeqTaiyiImpl} */
-    HOUSE_ASTRO;     /** 星宗 {@link HouseSeqAstroImpl} */
+  protected final IHouseSeq houseSeqImpl;
 
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final HouseSeq houseSeq;
 
   /** {@link StarLucky#天魁} , {@link StarLucky#天鉞} (貴人) 算法 */
-  public enum Tianyi implements Descriptive {
-    TIANYI_ZIWEI_BOOK,   /** 紫微斗數全書 {@link TianyiZiweiBookImpl} */
-    TIANYI_AUTHORIZED,   /** 協紀辨方書 {@link TianyiAuthorizedImpl} */
-    TIANYI_OCEAN,        /** 淵海子平  {@link TianyiOceanImpl} */
-    TIANYI_LIUREN_PITHY; /** 大六壬金口訣 {@link TianyiLiurenPithyImpl} */
-
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return null;
-    }
-  }
-  private final Tianyi tianyi;
+  protected final TianyiIF tianyiImpl;
+  
 
   /** {@link StarUnlucky#火星} ,  {@link StarUnlucky#鈴星} 設定 */
   public enum FireBell implements Descriptive {
@@ -186,29 +131,7 @@ public class ZSettings implements Serializable {
 
 
   /** 四化設定 */
-  public enum TransFour implements Descriptive {
-    TRANSFOUR_FULL_COLLECT, /** 全集 {@link TransFourFullCollectImpl} */
-    TRANSFOUR_FULL_BOOK,    /** 全書 {@link TransFourFullBookImpl} */
-    TRANSFOUR_NORTH,        /** 北派 {@link TransFourNorthImpl} */
-    TRANSFOUR_MIDDLE,       /** 中州 {@link TransFourMiddleImpl} */
-    TRANSFOUR_DIVINE,       /** 占驗 {@link TransFourDivineImpl} */
-    TRANSFOUR_ZIYUN,;       /** 紫雲 {@link TransFourZiyunImpl} */
-
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final TransFour transFour;
+  protected final ITransFour transFourImpl;
 
 
   /** 廟旺弱陷 */
@@ -350,17 +273,17 @@ public class ZSettings implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, MainHouse mainHouse, HouseSeq houseSeq, Tianyi tianyi, FireBell fireBell, Horse horse, HurtAngel hurtAngel, TransFour transFour, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty) {
+  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty) {
     this.leapPurple = leapPurple;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
-    this.mainHouse = mainHouse;
-    this.houseSeq = houseSeq;
-    this.tianyi = tianyi;
+    this.mainHouseImpl = mainHouseImpl;
+    this.houseSeqImpl = houseSeqImpl;
+    this.tianyiImpl = tianyiImpl;
     this.fireBell = fireBell;
     this.horse = horse;
     this.hurtAngel = hurtAngel;
-    this.transFour = transFour;
+    this.transFourImpl = transFourImpl;
     this.strength = strength;
     this.flowYear = flowYear;
     this.flowMonth = flowMonth;
@@ -370,6 +293,7 @@ public class ZSettings implements Serializable {
     this.bigRange = bigRange;
     this.redBeauty = redBeauty;
   }
+
 
   public LeapPurple getLeapPurple() {
     return leapPurple;
@@ -383,20 +307,22 @@ public class ZSettings implements Serializable {
     return monthType;
   }
 
-  public MainHouse getMainHouse() {
-    return mainHouse;
+
+  public IMainHouse getMainHouseImpl() {
+    return mainHouseImpl;
   }
 
-  public HouseSeq getHouseSeq() {
-    return houseSeq;
+  public IHouseSeq getHouseSeqImpl() {
+    return houseSeqImpl;
   }
 
-  public Tianyi getTianyi() {
-    return tianyi;
+
+  public TianyiIF getTianyiImpl() {
+    return tianyiImpl;
   }
 
-  public TransFour getTransFour() {
-    return transFour;
+  public ITransFour getTransFourImpl() {
+    return transFourImpl;
   }
 
   public Strength getStrength() {

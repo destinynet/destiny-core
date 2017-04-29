@@ -9,7 +9,6 @@ import destiny.core.chinese.TianyiIF;
 import destiny.core.chinese.YinYangIF;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import static destiny.core.chinese.Branch.*;
 
@@ -65,13 +64,5 @@ public class TianyiAuthorizedImpl implements TianyiIF, Serializable {
     }
   }
 
-  @Override
-  public String getTitle(Locale locale) {
-    return "《協紀辨方書》";
-  }
 
-  @Override
-  public String getDescription(Locale locale) {
-    return "《協紀辨方書》、《蠡海集》、《六壬類聚》、《果老星宗》、《考原》 推導天乙貴人的方法：甲羊戊庚牛 … 六辛逢馬虎";
-  }
 }

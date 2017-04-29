@@ -12,8 +12,7 @@ import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,5 +38,23 @@ public interface TianyiIF extends Descriptive {
     StemBranch day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi);
     DayNight dayNight = differentiator.getDayNight(lmt , loc);
     return getFirstTianyi(day.getStem(), dayNight);
+  }
+
+  @Override
+  default String getTitle(Locale locale) {
+    try {
+      return ResourceBundle.getBundle(getClass().getName(), locale).getString("title");
+    } catch (MissingResourceException e) {
+      return getClass().getSimpleName();
+    }
+  }
+
+  @Override
+  default String getDescription(Locale locale) {
+    try {
+      return ResourceBundle.getBundle(getClass().getName(), locale).getString("description");
+    } catch (MissingResourceException e) {
+      return getClass().getSimpleName();
+    }
   }
 }

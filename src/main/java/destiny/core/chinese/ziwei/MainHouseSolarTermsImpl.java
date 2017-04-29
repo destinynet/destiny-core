@@ -23,4 +23,5 @@ public class MainHouseSolarTermsImpl implements IMainHouse , Serializable {
     int indexOf節 = solarTerms.ordinal() / 2 +1;
     return 寅.next(indexOf節 - 1).prev(hour.getIndex());
   }
+
 }

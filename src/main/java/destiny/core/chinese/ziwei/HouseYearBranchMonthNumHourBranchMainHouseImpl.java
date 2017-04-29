@@ -27,12 +27,13 @@ public abstract class HouseYearBranchMonthNumHourBranchMainHouseImpl extends
 
   @Override
   public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings) {
-    IMainHouse mainHouseImpl;
-    switch (settings.getMainHouse()) {
-      case MAIN_HOUSE_DEFAULT: mainHouseImpl = new MainHouseDefaultImpl(); break;
-      case MAIN_HOUSE_SOLAR: mainHouseImpl = new MainHouseSolarTermsImpl(); break;
-      default: throw new AssertionError("Error : " + settings.getMainHouse());
-    }
+
+    IMainHouse mainHouseImpl = settings.getMainHouseImpl();
+//    switch (settings.getMainHouse()) {
+//      case MAIN_HOUSE_DEFAULT: mainHouseImpl = new MainHouseDefaultImpl(); break;
+//      case MAIN_HOUSE_SOLAR: mainHouseImpl = new MainHouseSolarTermsImpl(); break;
+//      default: throw new AssertionError("Error : " + settings.getMainHouse());
+//    }
     return getBranch(Tuple.tuple(year.getBranch(), monthNum , hour , solarTerms , mainHouseImpl));
   }
 }
