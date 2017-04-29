@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords;
 import destiny.astrology.Coordinate;
 import destiny.astrology.HouseSystem;
 import destiny.astrology.ZodiacSign;
+import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 /**
  * 計算上升星座（八字命宮）
  */
-public interface RisingSignIF {
+public interface RisingSignIF extends Descriptive {
 
   ZodiacSign getRisingSign(double gmtJulDay, Location location , HouseSystem houseSystem , Coordinate coordinate);
 
@@ -27,7 +28,5 @@ public interface RisingSignIF {
     double gmtJulDay = Time.getGmtJulDay(gmt);
     return getRisingSign(gmtJulDay , location , houseSystem , coordinate);
   }
-
-  String getRisingSignName();
 
 }

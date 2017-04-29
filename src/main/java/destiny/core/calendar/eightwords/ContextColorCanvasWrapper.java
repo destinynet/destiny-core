@@ -183,7 +183,7 @@ public class ContextColorCanvasWrapper {
     StemBranch 命宮 = context.getRisingStemBranch();
     cc.setText("命宮：", risingLine , 1 , "999999" , null , "命宮");
     cc.setText(命宮.toString() , risingLine , 7 , "FF0000" , null , 命宮.toString());
-    cc.setText("（"+context.getRisingSignImpl().getRisingSignName()+"）" , risingLine , 11 , "999999");
+    cc.setText("（"+context.getRisingSignImpl().getTitle(Locale.TAIWAN)+"）" , risingLine , 11 , "999999");
 
     int linkLine = 9;
     if (linkUrl != null)

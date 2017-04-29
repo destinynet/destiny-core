@@ -3,10 +3,11 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.Descriptive;
 import destiny.core.chinese.Branch;
 
 /** 求出紫微星的地支 */
-public interface IPurpleStarBranch {
+public interface IPurpleStarBranch extends Descriptive {
 
   /**
    * @param set           局數

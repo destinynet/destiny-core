@@ -9,6 +9,7 @@ import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.RisingSignIF;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 /**
  * 取得宮首在「黃道」上幾度的介面<BR>
@@ -71,7 +72,13 @@ public interface HouseCuspIF extends RisingSignIF {
   }
 
   @Override
-  default String getRisingSignName() {
+  default String getTitle(Locale locale) {
     return "真實星體觀測";
   }
+
+  @Override
+  default String getDescription(Locale locale) {
+    return getTitle(locale);
+  }
+
 }
