@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public class ZSettings implements Serializable {
+public class ZContext implements Serializable {
 
 
   /** 紫微星，在閏月時，該如何處理 */
@@ -27,7 +27,7 @@ public class ZSettings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -48,7 +48,7 @@ public class ZSettings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -83,7 +83,7 @@ public class ZSettings implements Serializable {
     @Override
     public String getTitle(Locale locale) {
       try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
+        return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
       } catch (MissingResourceException e) {
         return name();
       }
@@ -142,14 +142,14 @@ public class ZSettings implements Serializable {
   protected final IBigRange bigRangeImpl;
 
 
-  /** TODO : 紅艷 */
+  /** 紅艷 */
   public enum RedBeauty {
     甲乙相異 ,  /** {@link StarMinor#fun紅艷_甲乙相同} */
     甲乙相同 ,  /** {@link StarMinor#fun紅艷_甲乙相異} */
   }
   private final RedBeauty redBeauty;
 
-  public ZSettings(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.purpleBranchImpl = purpleBranchImpl;
     this.leapMonth = leapMonth;
     this.monthType = monthType;

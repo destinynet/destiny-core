@@ -22,5 +22,5 @@ public interface IHouse<T> {
    * @param leap          是否是閏月
    * @param prevMonthDays [陰曆] 上個月有幾日
    */
-  Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings);
+  Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context);
 }

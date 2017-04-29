@@ -13,7 +13,7 @@ import org.jooq.lambda.tuple.Tuple3;
 /**
  * (月數 or 節氣月支) -> 地支
  */
-public abstract class HouseMonthImpl extends HouseAbstractImpl<Tuple3<ZSettings.MonthType , Integer , Branch>> {
+public abstract class HouseMonthImpl extends HouseAbstractImpl<Tuple3<ZContext.MonthType , Integer , Branch>> {
 
   protected HouseMonthImpl(ZStar star) {
     super(star);
@@ -25,7 +25,7 @@ public abstract class HouseMonthImpl extends HouseAbstractImpl<Tuple3<ZSettings.
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings) {
-    return getBranch(Tuple.tuple(settings.getMonthType() , monthNum , monthBranch));
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    return getBranch(Tuple.tuple(context.getMonthType() , monthNum , monthBranch));
   }
 }

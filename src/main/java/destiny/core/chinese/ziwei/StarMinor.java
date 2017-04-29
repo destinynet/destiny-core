@@ -135,7 +135,7 @@ public class StarMinor extends ZStar {
   public final static Function<Branch , Branch> fun天刑_月支 = month -> Branch.get(month.getIndex()+7);
 
   /** 天刑(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun天刑 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天刑 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun天刑_月數.apply(monthNum);
       case MONTH_SOLAR: return fun天刑_月支.apply(monthBranch);
@@ -151,7 +151,7 @@ public class StarMinor extends ZStar {
   public final static Function<Branch , Branch> fun天姚_月支 = month -> month.next(11);
 
   /** 天姚(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun天姚 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天姚 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun天姚_月數.apply(monthNum);
       case MONTH_SOLAR: return fun天姚_月支.apply(monthBranch);
@@ -188,7 +188,7 @@ public class StarMinor extends ZStar {
   };
 
   /** 解神(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun解神 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun解神 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun解神_月數.apply(monthNum);
       case MONTH_SOLAR: return fun解神_月支.apply(monthBranch);
@@ -221,7 +221,7 @@ public class StarMinor extends ZStar {
   };
 
   /** 天巫(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun天巫 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天巫 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun天巫_月數.apply(monthNum);
       case MONTH_SOLAR: return fun天巫_月支.apply(monthBranch);
@@ -264,7 +264,7 @@ public class StarMinor extends ZStar {
   };
 
   /** 天月(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun天月 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天月 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun天月_月數.apply(monthNum);
       case MONTH_SOLAR: return fun天月_月支.apply(monthBranch);
@@ -302,7 +302,7 @@ public class StarMinor extends ZStar {
   };
 
   /** 陰煞(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun陰煞 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun陰煞 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun陰煞_月數.apply(monthNum);
       case MONTH_SOLAR: return fun陰煞_月支.apply(monthBranch);

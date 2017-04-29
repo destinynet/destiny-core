@@ -51,7 +51,7 @@ public final class StarLucky extends ZStar {
   public final static Function<Branch, Branch> fun左輔_月支 = month -> Branch.get(month.getIndex() + 2);
 
   /** 左輔(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun左輔 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun左輔 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun左輔_月數.apply(monthNum);
       case MONTH_SOLAR: return fun左輔_月支.apply(monthBranch);
@@ -66,7 +66,7 @@ public final class StarLucky extends ZStar {
   public final static Function<Branch, Branch> fun右弼_月支 = month -> Branch.get(12 - month.getIndex());
 
   /** 右弼(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun右弼 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun右弼 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun右弼_月數.apply(monthNum);
       case MONTH_SOLAR: return fun左輔_月支.apply(monthBranch);
@@ -133,7 +133,7 @@ public final class StarLucky extends ZStar {
   };
 
   /** 天馬(月的驛馬) (整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZSettings.MonthType , Integer , Branch , Branch> fun月馬 = (type , monthNum , monthBranch) -> {
+  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun月馬 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun月馬_月數.apply(monthNum);
       case MONTH_SOLAR: return fun月馬_月支.apply(monthBranch);

@@ -152,27 +152,27 @@ public interface IZiwei {
 
   /**
    * 計算本命盤  */
-  Builder getBirthPlate(int cycle, StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZSettings settings) ;
+  Builder getBirthPlate(int cycle, StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
-  Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZSettingsMore settings, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl);
+  Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZContextMore context, ChineseDateIF chineseDateImpl, StarTransitIF starTransitImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl);
 
   /** 計算 大限盤 */
-  Builder getFlowBig(Builder builder , ZSettings settings, StemBranch flowBig) ;
+  Builder getFlowBig(Builder builder , ZContext context, StemBranch flowBig) ;
 
   /** 計算 流年盤 */
-  Builder getFlowYear(Builder builder , ZSettings settings, StemBranch flowBig, StemBranch flowYear) ;
+  Builder getFlowYear(Builder builder , ZContext context, StemBranch flowBig, StemBranch flowYear) ;
 
   /** 計算 流月盤 */
-  Builder getFlowMonth(Builder builder , ZSettings settings,
+  Builder getFlowMonth(Builder builder , ZContext context,
                        StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth);
 
   /** 計算 流日盤 */
-  Builder getFlowDay(Builder builder , ZSettings settings,
+  Builder getFlowDay(Builder builder , ZContext context,
                      StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum);
 
   /** 計算 流時盤 */
-  Builder getFlowHour(Builder builder , ZSettings settings,
+  Builder getFlowHour(Builder builder , ZContext context,
                       StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum , StemBranch flowHour);
 
 

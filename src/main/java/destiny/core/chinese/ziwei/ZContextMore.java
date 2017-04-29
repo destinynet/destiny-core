@@ -4,8 +4,8 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.calendar.eightwords.Direction;
-import destiny.core.calendar.eightwords.HourLmtImpl;
-import destiny.core.calendar.eightwords.HourSolarTransImpl;
+import destiny.core.calendar.eightwords.HourIF;
+import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
 
@@ -16,7 +16,7 @@ import destiny.core.chinese.TianyiIF;
  * 真太陽時(還是手錶平均時間)
  * 八字排列方向
  */
-public class ZSettingsMore extends ZSettings {
+public class ZContextMore extends ZContext {
 
   /** 宮干四化「自化」 顯示選項 */
   public enum SelfTransFour {
@@ -40,38 +40,30 @@ public class ZSettingsMore extends ZSettings {
   protected final Direction direction;
 
   /** 時辰劃分 */
-  public enum HourChoose {
-    TRUE_SOLAR ,  /** 真太陽時   {@link HourSolarTransImpl}  */
-    LMT           /** 地方平均時 {@link HourLmtImpl} */
-  }
-  private final HourChoose hourChoose;
+  protected final HourIF hourImpl;
+
+  /** 子正判定 */
+  protected final MidnightIF midnightImpl;
 
   /** 子正判定 */
   public enum Midnight {
     SOLAR_TRANS , /** 太陽過天底 (Natal)  */
     LMT           /** 當地手錶時間 */
   }
-  protected final Midnight midnight;
 
   /** 子初換日 (true) 或 子正換日 (false) */
   private final boolean changeDayAfterZi;
 
 
-  public ZSettingsMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType,
-                       IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell,
-                       Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl,
-                       IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl,
-                       FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty,
-                       SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange,
-                       Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
     super(purpleBranchImpl, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, horse, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, rangeOutput, bigRangeImpl, redBeauty);
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;
     this.direction = direction;
-    this.hourChoose = hourChoose;
-    this.midnight = midnight;
+    this.hourImpl = hourImpl;
+    this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
   }
 
@@ -92,12 +84,12 @@ public class ZSettingsMore extends ZSettings {
     return direction;
   }
 
-  public HourChoose getHourChoose() {
-    return hourChoose;
+  public HourIF getHourImpl() {
+    return hourImpl;
   }
 
-  public Midnight getMidnight() {
-    return midnight;
+  public MidnightIF getMidnightImpl() {
+    return midnightImpl;
   }
 
   public boolean isChangeDayAfterZi() {

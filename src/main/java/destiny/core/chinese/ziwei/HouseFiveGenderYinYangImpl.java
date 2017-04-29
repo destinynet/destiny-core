@@ -27,8 +27,8 @@ public abstract class HouseFiveGenderYinYangImpl extends HouseAbstractImpl<Tuple
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZSettings settings) {
-    IMainHouse impl = settings.getMainHouseImpl();
+  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    IMainHouse impl = context.getMainHouseImpl();
     StemBranch 命宮 = IZiwei.getMainHouse(year.getStem() , monthNum , hour , solarTerms , impl);
     Tuple3<String , FiveElement , Integer> t3 = IZiwei.getNaYin(命宮);
     FiveElement fiveElement = t3.v2();

@@ -29,7 +29,7 @@ public class Plate implements Serializable {
   private transient static Logger logger = LoggerFactory.getLogger(Plate.class);
 
   /** 設定資料 */
-  protected final ZSettings settings;
+  protected final ZContext context;
 
   /** 出生資料 , 陰曆 */
   protected final ChineseDate chineseDate;
@@ -96,8 +96,8 @@ public class Plate implements Serializable {
   /**
    * 命盤
    */
-  protected Plate(ZSettings settings, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
-    this.settings = settings;
+  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
+    this.context = context;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
     this.location = location;
@@ -118,8 +118,8 @@ public class Plate implements Serializable {
     this.eightWords = eightWords;
   }
 
-  public ZSettings getSettings() {
-    return settings;
+  public ZContext getContext() {
+    return context;
   }
 
   public ChineseDate getChineseDate() {
