@@ -7,8 +7,6 @@ import destiny.core.chinese.Branch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Locale;
-
 import static destiny.core.chinese.Branch.寅;
 
 /**
@@ -61,13 +59,4 @@ public class PurpleStarBranchDefaultImpl implements IPurpleStarBranch {
     return steps;
   }
 
-  @Override
-  public String getTitle(Locale locale) {
-    return ZSettings.LeapPurple.LEAP_PURPLE_DEFAULT.getTitle(locale);
-  }
-
-  @Override
-  public String getDescription(Locale locale) {
-    return ZSettings.LeapPurple.LEAP_PURPLE_DEFAULT.getDescription(locale);
-  }
 }

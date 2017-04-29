@@ -14,27 +14,9 @@ import java.util.ResourceBundle;
 
 public class ZSettings implements Serializable {
 
-  /** 閏月時，紫微如何處理 */
-  public enum LeapPurple implements Descriptive {
-    LEAP_PURPLE_DEFAULT,      /** 視為非閏月   {@link PurpleStarBranchDefaultImpl} */
-    LEAP_PURPLE_ACCUM_DAYS;   /** 累加日數     {@link PurpleStarBranchLeapImpl} */
 
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final LeapPurple leapPurple;
-
+  /** 紫微星，在閏月時，該如何處理 */
+  protected final IPurpleStarBranch purpleBranchImpl;
 
   /** 閏月該如何處理 */
   public enum LeapMonth implements Descriptive {
@@ -167,11 +149,8 @@ public class ZSettings implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl,
-                   TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl,
-                   IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl,
-                   IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
-    this.leapPurple = leapPurple;
+  public ZSettings(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+    this.purpleBranchImpl = purpleBranchImpl;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
     this.mainHouseImpl = mainHouseImpl;
@@ -191,9 +170,8 @@ public class ZSettings implements Serializable {
     this.redBeauty = redBeauty;
   }
 
-
-  public LeapPurple getLeapPurple() {
-    return leapPurple;
+  public IPurpleStarBranch getPurpleBranchImpl() {
+    return purpleBranchImpl;
   }
 
   public LeapMonth getLeapMonth() {

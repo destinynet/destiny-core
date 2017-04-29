@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.Locale;
 import java.util.Map;
 
 import static destiny.core.chinese.Branch.*;
@@ -21,7 +20,7 @@ import static destiny.core.chinese.Branch.*;
  *
  * 參考此表格 :  http://imgur.com/87sHQOq
  */
-public class PurpleStarBranchLeapImpl implements IPurpleStarBranch , Serializable {
+public class PurpleStarBranchLeapAccumDaysImpl implements IPurpleStarBranch , Serializable {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -215,13 +214,4 @@ public class PurpleStarBranchLeapImpl implements IPurpleStarBranch , Serializabl
     .put(60 , 亥 )
     .build();
 
-  @Override
-  public String getTitle(Locale locale) {
-    return ZSettings.LeapPurple.LEAP_PURPLE_ACCUM_DAYS.getTitle(locale);
-  }
-
-  @Override
-  public String getDescription(Locale locale) {
-    return ZSettings.LeapPurple.LEAP_PURPLE_ACCUM_DAYS.getDescription(locale);
-  }
 }

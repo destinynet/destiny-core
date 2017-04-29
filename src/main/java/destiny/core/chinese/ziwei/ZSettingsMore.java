@@ -33,8 +33,6 @@ public class ZSettingsMore extends ZSettings {
   }
   private final OppoTransFour oppoTransFour;
 
-
-
   /** 是否顯示小限 */
   private final boolean showSmallRange;
 
@@ -59,12 +57,14 @@ public class ZSettingsMore extends ZSettings {
   private final boolean changeDayAfterZi;
 
 
-  public ZSettingsMore(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl,
-                       IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel,
-                       ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl,
-                       IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl,
-                       RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
-    super(leapPurple, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, horse, hurtAngel,
+  public ZSettingsMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType,
+                       IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell,
+                       Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl,
+                       IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl,
+                       FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty,
+                       SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange,
+                       Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
+    super(purpleBranchImpl, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, horse, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, rangeOutput, bigRangeImpl, redBeauty);
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;

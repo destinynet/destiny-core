@@ -7,16 +7,27 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
+
 import static destiny.core.chinese.Branch.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class PurpleStarBranchLeapImplTest {
+public class PurpleStarBranchLeapAccumDaysImplTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+  PurpleStarBranchLeapAccumDaysImpl impl = new PurpleStarBranchLeapAccumDaysImpl();
+
+  @Test
+  public void testTitle() {
+    assertNotNull(impl.getTitle(Locale.TAIWAN));
+    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+    logger.info("tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.CHINA));
+  }
+
   @Test
   public void water2() throws Exception {
-    PurpleStarBranchLeapImpl impl = new PurpleStarBranchLeapImpl();
     assertEquals(巳, impl.water2(32));
     assertEquals(巳, impl.water2(33));
 
