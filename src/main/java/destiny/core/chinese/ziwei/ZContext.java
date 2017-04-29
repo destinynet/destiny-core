@@ -77,8 +77,8 @@ public class ZContext implements Serializable {
 
   /** {@link StarUnlucky#火星} ,  {@link StarUnlucky#鈴星} 設定 */
   public enum FireBell implements Descriptive {
-    FIREBELL_全集,  /** {@link StarUnlucky#fun火星_全集} , {@link StarUnlucky#fun鈴星_全集} : (年支、時支) -> 地支 */
-    FIREBELL_全書;   /** {@link StarUnlucky#fun火星_全書} , {@link StarUnlucky#fun鈴星_全書} : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮 */
+    FIREBELL_COLLECT,  /** {@link StarUnlucky#fun火星_全集} , {@link StarUnlucky#fun鈴星_全集} : (年支、時支) -> 地支 */
+    FIREBELL_BOOK;     /** {@link StarUnlucky#fun火星_全書} , {@link StarUnlucky#fun鈴星_全書} : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮 */
 
     @Override
     public String getTitle(Locale locale) {
@@ -101,7 +101,6 @@ public class ZContext implements Serializable {
     年馬,  /** 年馬 (子由使用)  {@link StarLucky#fun年馬_年支} */
     月馬   /** 月馬           {@link StarLucky#fun月馬_月數} */
   }
-  private final Horse horse;
 
 
   /** {@link StarMinor#天傷}、 {@link StarMinor#天使} 計算方式 */
@@ -149,7 +148,7 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.purpleBranchImpl = purpleBranchImpl;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
@@ -157,7 +156,6 @@ public class ZContext implements Serializable {
     this.houseSeqImpl = houseSeqImpl;
     this.tianyiImpl = tianyiImpl;
     this.fireBell = fireBell;
-    this.horse = horse;
     this.hurtAngel = hurtAngel;
     this.transFourImpl = transFourImpl;
     this.strengthImpl = strengthImpl;
@@ -229,14 +227,8 @@ public class ZContext implements Serializable {
     return bigRangeImpl;
   }
 
-
-
   public FireBell getFireBell() {
     return fireBell;
-  }
-
-  public Horse getHorse() {
-    return horse;
   }
 
   public HurtAngel getHurtAngel() {

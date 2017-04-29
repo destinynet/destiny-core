@@ -220,8 +220,8 @@ public class HouseFunctions {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
       switch (context.getFireBell()) {
-        case FIREBELL_全書: return fun火星_全書.apply(year.getBranch());
-        case FIREBELL_全集: return fun火星_全集.apply(year.getBranch() , hour);
+        case FIREBELL_BOOK: return fun火星_全書.apply(year.getBranch());
+        case FIREBELL_COLLECT: return fun火星_全集.apply(year.getBranch() , hour);
         default: throw new AssertionError("error");
       }
     }
@@ -236,8 +236,8 @@ public class HouseFunctions {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
       switch (context.getFireBell()) {
-        case FIREBELL_全書: return fun鈴星_全書.apply(year.getBranch());
-        case FIREBELL_全集: return fun鈴星_全集.apply(year.getBranch() , hour);
+        case FIREBELL_BOOK: return fun鈴星_全書.apply(year.getBranch());
+        case FIREBELL_COLLECT: return fun鈴星_全集.apply(year.getBranch() , hour);
         default: throw new AssertionError("error");
       }
     }
