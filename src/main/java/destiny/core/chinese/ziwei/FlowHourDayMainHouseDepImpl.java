@@ -10,7 +10,6 @@ import java.io.Serializable;
 /**
  * 計算流時命宮
  *
- *  設定於 {@link ZSettings.FlowHour#FLOW_HOUR_DAY_DEP}
  * 流時依據流日而來，以流日本宮為子時，順時鐘方向前進。
  */
 public class FlowHourDayMainHouseDepImpl implements IFlowHour , Serializable {

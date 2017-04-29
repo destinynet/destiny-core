@@ -59,11 +59,13 @@ public class ZSettingsMore extends ZSettings {
   private final boolean changeDayAfterZi;
 
 
-  public ZSettingsMore(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl,
-
-                       TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
+  public ZSettingsMore(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl,
+                       IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel,
+                       ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl,
+                       IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl,
+                       RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourChoose hourChoose, Midnight midnight, boolean changeDayAfterZi) {
     super(leapPurple, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, horse, hurtAngel,
-      transFourImpl, strength , flowYear, flowMonth, flowDay, flowHour, rangeOutput, bigRange, redBeauty);
+      transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, rangeOutput, bigRangeImpl, redBeauty);
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;

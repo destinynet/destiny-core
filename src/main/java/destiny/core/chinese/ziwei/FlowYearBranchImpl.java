@@ -14,4 +14,5 @@ public class FlowYearBranchImpl implements IFlowYear , Serializable {
   public Branch getFlowYear(Branch flowYearBranch , int birthMonth , Branch birthHour) {
     return flowYearBranch;
   }
+
 }

@@ -91,7 +91,7 @@ public class ZSettings implements Serializable {
 
   /** {@link StarLucky#天魁} , {@link StarLucky#天鉞} (貴人) 算法 */
   protected final TianyiIF tianyiImpl;
-  
+
 
   /** {@link StarUnlucky#火星} ,  {@link StarUnlucky#鈴星} 設定 */
   public enum FireBell implements Descriptive {
@@ -135,136 +135,30 @@ public class ZSettings implements Serializable {
 
 
   /** 廟旺弱陷 */
-  public enum Strength implements Descriptive {
-    STRENGTH_MIDDLE,    /** {@link StrengthMiddleImpl} 中州派 */
-    STRENGTH_NORTH;     /** {@link StrengthNorthImpl} 北派 */
-
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final Strength strength;
+  protected final IStrength strengthImpl;
 
 
   /** 流年設定 */
-  public enum FlowYear implements Descriptive {
-    FLOW_YEAR_BRANCH, /** {@link FlowYearBranchImpl} : 流年地支 */
-    FLOW_YEAR_ANCHOR,; /** {@link FlowYearAnchorImpl} : 流年斗君 */
-
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final FlowYear flowYear;
+  protected final IFlowYear flowYearImpl;
 
 
   /** 流月設定 */
-  public enum FlowMonth implements Descriptive {
-    FLOW_MONTH_DEFAULT,   /** {@link FlowMonthDefaultImpl}           : 流年斗君 順數月  */
-    FLOW_MONTH_FIXED,     /** {@link FlowMonthFixedImpl}             : 流月地支        */
-    FLOW_MONTH_YEAR_DEP,; /** {@link FlowMonthYearMainHouseDepImpl}  : 流年命宮，順數月  */
-
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final FlowMonth flowMonth;
+  protected final IFlowMonth flowMonthImpl;
 
   /** 流日設定 */
-  public enum FlowDay implements Descriptive {
-    FLOW_DAY_MONTH_DEP, /** {@link FlowDayFlowMonthMainHouseDepImpl} : 流月命宮，順數日 */
-    FLOW_DAY_FIXED,;    /** {@link FlowDayBranchImpl}                : 流日地支       */
+  protected final IFlowDay flowDayImpl;
 
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final FlowDay flowDay;
 
   /** 流時設定 */
-  public enum FlowHour implements Descriptive {
-    FLOW_HOUR_DAY_DEP, /** {@link FlowHourDayMainHouseDepImpl}   : 流日命宮，順數時 */
-    FLOW_HOUR_FIXED;   /** {@link FlowHourBranchImpl}            : 流時地支       */
+  protected final IFlowHour flowHourImpl;
 
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final FlowHour flowHour;
 
   /** 大限輸出格式 */
   private final FortuneOutput rangeOutput;
 
   /** 大限計算方式 */
-  public enum BigRange implements Descriptive {
-    BIG_RANGE_FROM_MAIN,  /** 命宮起大限 {@link BigRangeFromMain} */
-    BIG_RANGE_SKIP_MAIN;  /** 命宮無大限 {@link BigRangeSkipMain} */
+  protected final IBigRange bigRangeImpl;
 
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZSettings.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final BigRange bigRange;
 
   /** TODO : 紅艷 */
   public enum RedBeauty {
@@ -273,7 +167,10 @@ public class ZSettings implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl, Strength strength, FlowYear flowYear, FlowMonth flowMonth, FlowDay flowDay, FlowHour flowHour, FortuneOutput rangeOutput, BigRange bigRange, RedBeauty redBeauty) {
+  public ZSettings(LeapPurple leapPurple, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl,
+                   TianyiIF tianyiImpl, FireBell fireBell, Horse horse, HurtAngel hurtAngel, ITransFour transFourImpl,
+                   IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl,
+                   IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.leapPurple = leapPurple;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
@@ -284,13 +181,13 @@ public class ZSettings implements Serializable {
     this.horse = horse;
     this.hurtAngel = hurtAngel;
     this.transFourImpl = transFourImpl;
-    this.strength = strength;
-    this.flowYear = flowYear;
-    this.flowMonth = flowMonth;
-    this.flowDay = flowDay;
-    this.flowHour = flowHour;
+    this.strengthImpl = strengthImpl;
+    this.flowYearImpl = flowYearImpl;
+    this.flowMonthImpl = flowMonthImpl;
+    this.flowDayImpl = flowDayImpl;
+    this.flowHourImpl = flowHourImpl;
     this.rangeOutput = rangeOutput;
-    this.bigRange = bigRange;
+    this.bigRangeImpl = bigRangeImpl;
     this.redBeauty = redBeauty;
   }
 
@@ -325,33 +222,35 @@ public class ZSettings implements Serializable {
     return transFourImpl;
   }
 
-  public Strength getStrength() {
-    return strength;
+  public IStrength getStrengthImpl() {
+    return strengthImpl;
   }
 
-  public FlowYear getFlowYear() {
-    return flowYear;
+  public IFlowYear getFlowYearImpl() {
+    return flowYearImpl;
   }
 
-  public FlowMonth getFlowMonth() {
-    return flowMonth;
+  public IFlowMonth getFlowMonthImpl() {
+    return flowMonthImpl;
   }
 
-  public FlowDay getFlowDay() {
-    return flowDay;
+  public IFlowDay getFlowDayImpl() {
+    return flowDayImpl;
   }
 
-  public FlowHour getFlowHour() {
-    return flowHour;
+  public IFlowHour getFlowHourImpl() {
+    return flowHourImpl;
   }
 
   public FortuneOutput getRangeOutput() {
     return rangeOutput;
   }
 
-  public BigRange getBigRange() {
-    return bigRange;
+
+  public IBigRange getBigRangeImpl() {
+    return bigRangeImpl;
   }
+
 
 
   public FireBell getFireBell() {

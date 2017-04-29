@@ -11,7 +11,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class BigRangeFromMainTest {
 
@@ -19,6 +22,14 @@ public class BigRangeFromMainTest {
 
   IBigRange impl = new BigRangeFromMain();
   IHouseSeq seq = new HouseSeqDefaultImpl();
+
+  @Test
+  public void testString() {
+    assertNotNull(impl.getTitle(Locale.TAIWAN));
+    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+  }
+
 
   @Test
   public void getRange() throws Exception {

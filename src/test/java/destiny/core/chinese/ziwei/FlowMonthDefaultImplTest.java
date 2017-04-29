@@ -7,12 +7,25 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
+
 import static destiny.core.chinese.Branch.*;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 public class FlowMonthDefaultImplTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
+
+  IFlowMonth impl = new FlowMonthDefaultImpl();
+
+  @Test
+  public void testString() {
+    assertNotNull(impl.getTitle(Locale.TAIWAN));
+    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+  }
+
 
   /**
    * 參考資料
@@ -27,7 +40,7 @@ public class FlowMonthDefaultImplTest {
    */
   @Test
   public void getFlowMonth1() throws Exception {
-    IFlowMonth impl = new FlowMonthDefaultImpl();
+
     assertSame(戌 , impl.getFlowMonth(酉 , 戌, 8 , 子));
   }
 
@@ -47,8 +60,6 @@ public class FlowMonthDefaultImplTest {
    */
   @Test
   public void testFlowMonth2() throws Exception {
-    IFlowMonth impl = new FlowMonthDefaultImpl();
-
     // 午年斗君在子 , 寅月（一月），走0 步，所以流月命宮還是在子
     assertSame(子 , impl.getFlowMonth(午 , 寅 ,  11 , 辰 ));
   }

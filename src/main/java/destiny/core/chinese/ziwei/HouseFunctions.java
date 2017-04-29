@@ -559,7 +559,7 @@ public class HouseFunctions {
       switch (settings.getRedBeauty()) {
         case 甲乙相同: return fun紅艷_甲乙相同.apply(year.getStem());
         case 甲乙相異: return fun紅艷_甲乙相異.apply(year.getStem());
-        default: throw new AssertionError("Error : " + settings.getBigRange());
+        default: throw new AssertionError("Error : " + settings.getRedBeauty());
       }
     }
   };
