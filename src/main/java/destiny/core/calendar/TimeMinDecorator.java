@@ -16,6 +16,7 @@ public class TimeMinDecorator {
 
   private final static ImmutableMap<Locale , Decorator<LocalDateTime>> implMap = new ImmutableMap.Builder<Locale , Decorator<LocalDateTime>>()
     .put(Locale.TAIWAN , new TimeMinDecoratorChinese())
+    .put(Locale.CHINA , new TimeMinDecoratorChina())
     .put(Locale.ENGLISH , new TimeMinDecoratorEnglish())
     .put(Locale.JAPAN, new TimeMinDecoratorJapanese())
     .build();
