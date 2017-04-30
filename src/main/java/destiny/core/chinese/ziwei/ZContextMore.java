@@ -18,6 +18,8 @@ import destiny.core.chinese.TianyiIF;
  */
 public class ZContextMore extends ZContext {
 
+  private final String name;
+
   /** 宮干四化「自化」 顯示選項 */
   public enum SelfTransFour {
     NONE  ,   /** 不顯示 */
@@ -55,11 +57,10 @@ public class ZContextMore extends ZContext {
   private final boolean changeDayAfterZi;
 
 
-  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType,
-                      IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell,
-                      HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
     super(purpleBranchImpl, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, rangeOutput, bigRangeImpl, redBeauty);
+    this.name = name;
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;
@@ -69,6 +70,9 @@ public class ZContextMore extends ZContext {
     this.changeDayAfterZi = changeDayAfterZi;
   }
 
+  public String getName() {
+    return name;
+  }
 
   public SelfTransFour getSelfTransFour() {
     return selfTransFour;
