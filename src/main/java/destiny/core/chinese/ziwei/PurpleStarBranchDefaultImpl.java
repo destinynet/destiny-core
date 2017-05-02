@@ -7,6 +7,8 @@ import destiny.core.chinese.Branch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 import static destiny.core.chinese.Branch.寅;
 
 /**
@@ -21,7 +23,7 @@ import static destiny.core.chinese.Branch.寅;
  * 若差數為偶數，則倍數與差數相加而得一新的數字，
  * 下一步起寅宮並順時針數到上一步驟得出的數目，此一落宮點便是紫微星的位置；
  */
-public class PurpleStarBranchDefaultImpl implements IPurpleStarBranch {
+public class PurpleStarBranchDefaultImpl implements IPurpleStarBranch , Serializable {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 

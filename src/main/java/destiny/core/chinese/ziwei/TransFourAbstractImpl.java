@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei;
 import destiny.core.chinese.Stem;
 import org.jooq.lambda.tuple.Tuple2;
 
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -13,7 +14,7 @@ import java.util.ResourceBundle;
 
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
-public abstract class TransFourAbstractImpl implements ITransFour {
+public abstract class TransFourAbstractImpl implements ITransFour , Serializable {
 
   protected abstract Map<Tuple2<Stem, Value>, ZStar> getTransMap();
 

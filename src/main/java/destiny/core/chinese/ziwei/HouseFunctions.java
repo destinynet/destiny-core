@@ -493,8 +493,8 @@ public class HouseFunctions {
       // 太乙派，沒有遷移宮
       Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl() , solarTerms , new MainHouseDefaultImpl());
       switch (context.getHurtAngel()) {
-        case FIXED  : return fun天傷_fixed交友.apply(遷移宮地支);
-        case YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
+        case HURT_ANGEL_FIXED: return fun天傷_fixed交友.apply(遷移宮地支);
+        case HURT_ANGEL_YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
         default:
           throw new AssertionError("error");
       }
@@ -509,8 +509,8 @@ public class HouseFunctions {
       // 太乙派，沒有遷移宮
       Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl() , solarTerms , new MainHouseDefaultImpl());
       switch (context.getHurtAngel()) {
-        case FIXED  : return fun天使_fixed疾厄.apply(遷移宮地支);
-        case YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
+        case HURT_ANGEL_FIXED: return fun天使_fixed疾厄.apply(遷移宮地支);
+        case HURT_ANGEL_YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
         default:
           throw new AssertionError("error");
       }
@@ -557,8 +557,8 @@ public class HouseFunctions {
     @Override
     public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
       switch (context.getRedBeauty()) {
-        case 甲乙相同: return fun紅艷_甲乙相同.apply(year.getStem());
-        case 甲乙相異: return fun紅艷_甲乙相異.apply(year.getStem());
+        case RED_BEAUTY_SAME: return fun紅艷_甲乙相同.apply(year.getStem());
+        case RED_BEAUTY_DIFF: return fun紅艷_甲乙相異.apply(year.getStem());
         default: throw new AssertionError("Error : " + context.getRedBeauty());
       }
     }

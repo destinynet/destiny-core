@@ -19,14 +19,14 @@ import static destiny.core.chinese.ziwei.House.命宮;
 public class BigRangeSkipMain implements IBigRange , Serializable {
 
   @Override
-  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput rangeOutput, IHouseSeq houseSeq) {
-    switch (rangeOutput) {
+  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeq) {
+    switch (fortuneOutput) {
       case 虛歲: {
         return getAgeRange(house , set , yinYang , gender , houseSeq)
           .map1(Integer::doubleValue)
           .map2(Integer::doubleValue);
       } // 虛歲
-      default: throw new AssertionError("Not Yet Implemented : " + rangeOutput);
+      default: throw new AssertionError("Not Yet Implemented : " + fortuneOutput);
     }
   }
 

@@ -104,9 +104,20 @@ public class ZContext implements Serializable {
 
 
   /** {@link StarMinor#天傷}、 {@link StarMinor#天使} 計算方式 */
-  public enum HurtAngel {
-    FIXED,    /** 天傷固定於交友宮 {@link StarMinor#fun天傷_fixed交友} 、 天使固定疾厄宮 {@link StarMinor#fun天使_fixed疾厄} */
-    YINYANG   /** 陽順陰逆 {@link StarMinor#fun天傷_陽順陰逆} 、 {@link StarMinor#fun天使_陽順陰逆} */
+  public enum HurtAngel implements Descriptive {
+    HURT_ANGEL_FIXED,     /** 天傷固定於交友宮 {@link StarMinor#fun天傷_fixed交友} 、 天使固定疾厄宮 {@link StarMinor#fun天使_fixed疾厄} */
+    HURT_ANGEL_YINYANG;   /** 陽順陰逆 {@link StarMinor#fun天傷_陽順陰逆} 、 {@link StarMinor#fun天使_陽順陰逆} */
+
+
+    @Override
+    public String getTitle(Locale locale) {
+      return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final HurtAngel hurtAngel;
 
@@ -135,20 +146,30 @@ public class ZContext implements Serializable {
 
 
   /** 大限輸出格式 */
-  private final FortuneOutput rangeOutput;
+  private final FortuneOutput fortuneOutput;
 
   /** 大限計算方式 */
   protected final IBigRange bigRangeImpl;
 
 
   /** 紅艷 */
-  public enum RedBeauty {
-    甲乙相異 ,  /** {@link StarMinor#fun紅艷_甲乙相同} */
-    甲乙相同 ,  /** {@link StarMinor#fun紅艷_甲乙相異} */
+  public enum RedBeauty implements Descriptive {
+    RED_BEAUTY_DIFF,  /** {@link StarMinor#fun紅艷_甲乙相同} */
+    RED_BEAUTY_SAME,;  /** {@link StarMinor#fun紅艷_甲乙相異} */
+
+    @Override
+    public String getTitle(Locale locale) {
+      return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput rangeOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.purpleBranchImpl = purpleBranchImpl;
     this.leapMonth = leapMonth;
     this.monthType = monthType;
@@ -163,7 +184,7 @@ public class ZContext implements Serializable {
     this.flowMonthImpl = flowMonthImpl;
     this.flowDayImpl = flowDayImpl;
     this.flowHourImpl = flowHourImpl;
-    this.rangeOutput = rangeOutput;
+    this.fortuneOutput = fortuneOutput;
     this.bigRangeImpl = bigRangeImpl;
     this.redBeauty = redBeauty;
   }
@@ -218,8 +239,8 @@ public class ZContext implements Serializable {
     return flowHourImpl;
   }
 
-  public FortuneOutput getRangeOutput() {
-    return rangeOutput;
+  public FortuneOutput getFortuneOutput() {
+    return fortuneOutput;
   }
 
 

@@ -76,4 +76,9 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
     return time.getSecond() + time.getNano() / 1_000_000_000.0;
   }
 
+
+  @Override
+  public String toString() {
+    return "[BirthData " + "gender=" + gender + ", time=" + time + ", location=" + location + ']';
+  }
 }

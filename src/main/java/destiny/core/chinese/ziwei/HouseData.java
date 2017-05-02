@@ -41,7 +41,7 @@ public class HouseData implements Serializable , Comparable<HouseData> {
    * 這裡用 long , 不用 int
    * 是因為，可能以後會傳入 時間點 (幾月幾日幾點幾分幾秒...) , 則轉換成 julian day (去除小數部分)
    * */
-  private final FortuneOutput rangeOutput;
+  private final FortuneOutput fortuneOutput;
   private final double rangeFrom;
   private final double rangeTo;
 
@@ -53,13 +53,13 @@ public class HouseData implements Serializable , Comparable<HouseData> {
 
   private transient static Logger logger = LoggerFactory.getLogger(HouseData.class);
 
-  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, Table<ITransFour.Value, ZStar, Branch> transFourFlyMap, FortuneOutput rangeOutput, double rangeFrom, double rangeTo, List<Double> smallRanges) {
+  public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap, Table<ITransFour.Value, ZStar, Branch> transFourFlyMap, FortuneOutput fortuneOutput, double rangeFrom, double rangeTo, List<Double> smallRanges) {
     this.house = house;
     this.stemBranch = stemBranch;
     this.stars = stars;
     this.flowHouseMap = flowHouseMap;
     this.transFourFlyMap = transFourFlyMap;
-    this.rangeOutput = rangeOutput;
+    this.fortuneOutput = fortuneOutput;
     this.rangeFrom = rangeFrom;
     this.rangeTo = rangeTo;
     this.smallRanges = smallRanges;
@@ -102,8 +102,8 @@ public class HouseData implements Serializable , Comparable<HouseData> {
       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (h1, h2) -> h1, TreeMap::new) );
   }
 
-  public FortuneOutput getRangeOutput() {
-    return rangeOutput;
+  public FortuneOutput getFortuneOutput() {
+    return fortuneOutput;
   }
 
   public double getRangeFrom() {
