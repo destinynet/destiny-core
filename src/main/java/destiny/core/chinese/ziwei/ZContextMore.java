@@ -10,8 +10,7 @@ import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * 與紫微「計算」無關的設定
@@ -74,8 +73,17 @@ public class ZContextMore extends ZContext {
   /** 子初換日 (true) 或 子正換日 (false) */
   private final boolean changeDayAfterZi;
 
+  /** 顯示雜曜 */
+  private final boolean showMinors;
 
-  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutputput, IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+  /** 顯示博士12神煞 */
+  private final boolean showDoctors;
+
+  /** 顯示長生12神煞 */
+  private final boolean showLongevity;
+
+
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutputput, IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
     super(purpleBranchImpl, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutputput, bigRangeImpl, redBeauty);
     this.name = name;
@@ -86,6 +94,9 @@ public class ZContextMore extends ZContext {
     this.hourImpl = hourImpl;
     this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
+    this.showMinors = showMinors;
+    this.showDoctors = showDoctors;
+    this.showLongevity = showLongevity;
   }
 
   public String getName() {
@@ -118,5 +129,33 @@ public class ZContextMore extends ZContext {
 
   public boolean isChangeDayAfterZi() {
     return changeDayAfterZi;
+  }
+
+  public boolean isShowMinors() {
+    return showMinors;
+  }
+
+  public boolean isShowDoctors() {
+    return showDoctors;
+  }
+
+  public boolean isShowLongevity() {
+    return showLongevity;
+  }
+
+  public List<ZStar> getStars() {
+    List<ZStar> starList = new ArrayList<>();
+    starList.addAll(Arrays.asList(StarMain.values));
+    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarUnlucky.values));
+    if (showMinors)
+      starList.addAll(Arrays.asList(StarMinor.values));
+
+    if (showDoctors)
+      starList.addAll(Arrays.asList(StarDoctor.values));
+
+    if (showLongevity)
+      starList.addAll(Arrays.asList(StarLongevity.values));
+    return starList;
   }
 }

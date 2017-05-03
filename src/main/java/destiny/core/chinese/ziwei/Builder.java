@@ -15,6 +15,8 @@ import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -99,11 +101,14 @@ public class Builder implements Serializable {
   /** 宮干四化 */
   private final Map<StemBranch , Table<ITransFour.Value, ZStar, Branch>> flyMap;
 
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   /** 本命盤 */
   public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour,
                  StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar,
                  FiveElement fiveElement, int set, String naYin,
-                 Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap,
+                 Map<StemBranch, House> branchHouseMap,
+                 Map<ZStar, StemBranch> starBranchMap,
                  Map<ZStar, Integer> starStrengthMap,
                  Map<Branch, Tuple2<Double, Double>> bigRangeMap, Map<Branch, List<Double>> branchSmallRangesMap,
                  Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
@@ -131,6 +136,14 @@ public class Builder implements Serializable {
           Collectors.mapping(Map.Entry::getKey, Collectors.toSet())
         )
       );
+    logger.debug("branchStarMap = {}" , branchStarMap);
+
+    // TODO 可能有些 地支宮位裡面沒有星 , 因此建立出來的 Map 就無該 地支的 key 值 , 因此必須建立另一個 map , 確保裡面每個地支都存在，且 value 至少為 empty set
+
+    Map<Branch , Set<ZStar>> branchStarMap2 = Arrays.stream(Branch.values()).map(branch -> {
+      Set<ZStar> stars = branchStarMap.getOrDefault(branch , new HashSet<>());
+      return Tuple.tuple(branch , stars);
+    }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
     Map<Branch , Map<FlowType , House>> 本命地支HouseMapping =
       branchHouseMap.entrySet().stream().map(e -> {
@@ -146,12 +159,16 @@ public class Builder implements Serializable {
     houseDataSet = branchHouseMap.entrySet().stream().map(e -> {
       StemBranch sb = e.getKey();
       House house = e.getValue();
-      Set<ZStar> stars = branchStarMap.get(sb.getBranch());
+      Set<ZStar> stars = branchStarMap2.get(sb.getBranch());
 
 
       Tuple2<Double , Double> fromTo = bigRangeMap.get(sb.getBranch());
       List<Double> smallRanges = branchSmallRangesMap.get(sb.getBranch());
-      return new HouseData(house, sb, stars, branchFlowHouseMap.get(sb.getBranch()), flyMap.get(sb), context.getFortuneOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
+      return new HouseData(house, sb
+        , stars // FIXME maybe null !
+        , branchFlowHouseMap.get(sb.getBranch())
+        , flyMap.get(sb)
+        , context.getFortuneOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
     }).collect(Collectors.toSet());
   } // builder init
 
