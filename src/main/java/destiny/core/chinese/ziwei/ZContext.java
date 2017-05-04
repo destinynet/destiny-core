@@ -12,8 +12,10 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * 純粹「設定」，並不包含 生日、性別、出生地 等資訊
+ */
 public class ZContext implements Serializable {
-
 
   /** 紫微星，在閏月時，該如何處理 */
   protected final IPurpleStarBranch purpleBranchImpl;

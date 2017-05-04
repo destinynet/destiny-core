@@ -165,7 +165,7 @@ public class Builder implements Serializable {
       Tuple2<Double , Double> fromTo = bigRangeMap.get(sb.getBranch());
       List<Double> smallRanges = branchSmallRangesMap.get(sb.getBranch());
       return new HouseData(house, sb
-        , stars // FIXME maybe null !
+        , stars
         , branchFlowHouseMap.get(sb.getBranch())
         , flyMap.get(sb)
         , context.getFortuneOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
@@ -307,6 +307,8 @@ public class Builder implements Serializable {
     this.personModel = personModel;
     return this;
   }
+
+
 
 
   public Plate build() {

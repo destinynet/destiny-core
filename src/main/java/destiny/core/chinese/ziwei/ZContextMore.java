@@ -13,7 +13,9 @@ import destiny.core.chinese.TianyiIF;
 import java.util.*;
 
 /**
- * 與紫微「計算」無關的設定
+ * 純粹「設定」，並不包含 生日、性別、出生地 等資訊
+ *
+ * 另外附加 與紫微「計算」無關的設定
  * 例如
  * 是否顯示小限
  * 真太陽時(還是手錶平均時間)
@@ -157,5 +159,11 @@ public class ZContextMore extends ZContext {
     if (showLongevity)
       starList.addAll(Arrays.asList(StarLongevity.values));
     return starList;
+  }
+
+
+  @Override
+  public String toString() {
+    return "[ZContextMore " + "purpleBranchImpl=" + purpleBranchImpl + ", name='" + name + '\'' + ", selfTransFour=" + selfTransFour + ", oppoTransFour=" + oppoTransFour + ", showSmallRange=" + showSmallRange + ", mainHouseImpl=" + mainHouseImpl + ", direction=" + direction + ", houseSeqImpl=" + houseSeqImpl + ", hourImpl=" + hourImpl + ", midnightImpl=" + midnightImpl + ", tianyiImpl=" + tianyiImpl + ", changeDayAfterZi=" + changeDayAfterZi + ", showMinors=" + showMinors + ", showDoctors=" + showDoctors + ", showLongevity=" + showLongevity + ", transFourImpl=" + transFourImpl + ", strengthImpl=" + strengthImpl + ", flowYearImpl=" + flowYearImpl + ", flowMonthImpl=" + flowMonthImpl + ", flowDayImpl=" + flowDayImpl + ", flowHourImpl=" + flowHourImpl + ", bigRangeImpl=" + bigRangeImpl + ']';
   }
 }
