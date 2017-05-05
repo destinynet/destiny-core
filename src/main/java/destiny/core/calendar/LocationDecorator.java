@@ -18,10 +18,9 @@ public class LocationDecorator
     .put(Locale.CHINA  , new LocationDecoratorChina())
     .put(Locale.ENGLISH, new LocationDecoratorEnglish())
     .build();
-  
+
   @NotNull
-  public static String getOutputString(Location location , Locale locale)
-  {
+  public static String getOutputString(Location location , Locale locale) {
     return implMap.get(
       LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
     ).getOutputString(location);
