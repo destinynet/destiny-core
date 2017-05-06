@@ -79,7 +79,7 @@ public class Builder implements Serializable {
   private final Set<HouseData> houseDataSet;
 
   /** 干支 -> 宮位 的對照表 */
-  private final Map<StemBranch, House> branchHouseMap;
+  private final Map<StemBranch, House> stemBranchHouseMap;
 
   /**
    * 四化星 的列表
@@ -148,7 +148,7 @@ public class Builder implements Serializable {
       return Tuple.tuple(branch , stars);
     }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
-    this.branchHouseMap = branchHouseMap;
+    this.stemBranchHouseMap = branchHouseMap;
 
     Map<Branch , Map<FlowType , House>> 本命地支HouseMapping =
       branchHouseMap.entrySet().stream().map(e -> {
@@ -202,8 +202,14 @@ public class Builder implements Serializable {
     return gender;
   }
 
-  public Map<StemBranch, House> getBranchHouseMap() {
-    return branchHouseMap;
+  /** 傳回 干支 -> 宮位 的 mapping */
+  public Map<StemBranch, House> getStemBranchHouseMap() {
+    return stemBranchHouseMap;
+  }
+
+  /** 承上，只傳回「地支」 -> 宮位 的 mapping */
+  public Map<Branch , House> getBranchHouseMap() {
+    return getStemBranchHouseMap().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().getBranch() , Map.Entry::getValue));
   }
 
   public Branch getBirthHour() {

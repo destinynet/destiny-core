@@ -29,7 +29,6 @@ public interface IBigRange extends Descriptive {
     return Arrays.stream(Branch.values())
       .map(branch -> {
         Tuple2<Double , Double> t2 = getRange(branchHouseMap.get(branch), set, year.getStem(), gender, fortuneOutput , houseSeq);
-        logger.info("branch = {} , range tuple = {}" , branch , t2);
         return Tuple.tuple(branch , t2);
       }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
   }
@@ -37,6 +36,7 @@ public interface IBigRange extends Descriptive {
   /** 承上 , 計算每個地支的 大限 起訖 時刻，並且按照先後順序排列 (年齡 小 -> 大) */
   default Map<Branch , Tuple2<Double , Double>> getSortedBigRangeMap(Map<Branch , House> branchHouseMap , int set , StemBranch year , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
     Map<Branch , Tuple2<Double , Double>> map = getBigRangeMap(branchHouseMap , set , year, gender , fortuneOutput , houseSeq);
+    logger.debug("[unsorted] map = {}" , map);
 
     return map.entrySet().stream()
       .sorted(Map.Entry.comparingByValue())

@@ -159,6 +159,13 @@ public interface IZiwei {
   /** 計算 大限盤 */
   Builder getFlowBig(Builder builder , ZContext context, StemBranch flowBig) ;
 
+  default Builder getFlowBig(Builder builder , ZContext context, Branch flowBig) {
+    StemBranch year = builder.getChineseDate().getYear();
+    Stem stemOf寅 = getStemOf寅(year.getStem());
+    StemBranch sb = getStemBranchOf(flowBig , stemOf寅);
+    return getFlowBig(builder , context , sb);
+  }
+
   /** 計算 流年盤 */
   Builder getFlowYear(Builder builder , ZContext context, StemBranch flowBig, StemBranch flowYear) ;
 
