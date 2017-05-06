@@ -31,7 +31,7 @@ import static destiny.core.chinese.ziwei.StarUnlucky.鈴星;
 /** 紫微斗數 */
 public interface IZiwei {
 
-  static Logger logger = LoggerFactory.getLogger(IZiwei.class);
+  Logger logger = LoggerFactory.getLogger(IZiwei.class);
 
 
   /**
@@ -118,7 +118,7 @@ public interface IZiwei {
   /**
    * 承上 , 取得該宮位的「天干」＋「地支」組合
    */
-  default StemBranch getHouse(Stem year, int month, Branch hour, House house, IHouseSeq seq, SolarTerms solarTerms, IMainHouse mainHouseImpl) {
+  static StemBranch getHouse(Stem year, int month, Branch hour, House house, IHouseSeq seq, SolarTerms solarTerms, IMainHouse mainHouseImpl) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
     // 先取得 該宮位的地支

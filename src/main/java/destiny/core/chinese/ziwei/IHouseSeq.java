@@ -7,6 +7,16 @@ import destiny.core.Descriptive;
 
 /** 12宮的順序 */
 public interface IHouseSeq extends Descriptive {
+//
+//  /**
+//   * 地支 -> 宮位 的 mapping
+//   */
+//  default Map<StemBranch , House> getBranchHouseMap(Stem year , int finalMonthNum , Branch hour , SolarTerms solarTerms , IMainHouse mainHouseImpl) {
+//    return Arrays.stream(getHouses()).map(house -> {
+//        StemBranch sb = IZiwei.getHouse(year , finalMonthNum, hour , house , this , solarTerms , mainHouseImpl);
+//        return Tuple.tuple(sb , house);
+//      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+//  }
 
   /** 從「命宮」開始，依序取得 12宮 */
   House[] getHouses();

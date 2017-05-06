@@ -78,6 +78,9 @@ public class Builder implements Serializable {
 
   private final Set<HouseData> houseDataSet;
 
+  /** 干支 -> 宮位 的對照表 */
+  private final Map<StemBranch, House> branchHouseMap;
+
   /**
    * 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
@@ -145,6 +148,8 @@ public class Builder implements Serializable {
       return Tuple.tuple(branch , stars);
     }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
 
+    this.branchHouseMap = branchHouseMap;
+
     Map<Branch , Map<FlowType , House>> 本命地支HouseMapping =
       branchHouseMap.entrySet().stream().map(e -> {
         Map<FlowType , House> m = new HashMap<>();
@@ -170,7 +175,12 @@ public class Builder implements Serializable {
         , flyMap.get(sb)
         , context.getFortuneOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
     }).collect(Collectors.toSet());
+
   } // builder init
+
+  public ZContext getContext() {
+    return context;
+  }
 
   public ChineseDate getChineseDate() {
     return chineseDate;
@@ -182,6 +192,18 @@ public class Builder implements Serializable {
 
   public int getBirthMonthNum() {
     return birthMonthNum;
+  }
+
+  public int getSet() {
+    return set;
+  }
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public Map<StemBranch, House> getBranchHouseMap() {
+    return branchHouseMap;
   }
 
   public Branch getBirthHour() {
