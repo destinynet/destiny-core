@@ -5,10 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
 import destiny.core.Gender;
-import destiny.core.chinese.Branch;
-import destiny.core.chinese.FortuneOutput;
-import destiny.core.chinese.StemBranch;
-import destiny.core.chinese.YinYangIF;
+import destiny.core.chinese.*;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
@@ -34,11 +31,17 @@ public interface IBigRange extends Descriptive {
   }
 
   /** 承上 , 計算每個地支的 大限 起訖 時刻，並且按照先後順序排列 (年齡 小 -> 大) */
-  default Map<Branch , Tuple2<Double , Double>> getSortedFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
+  default Map<StemBranch , Tuple2<Double , Double>> getSortedFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
     Map<Branch , Tuple2<Double , Double>> map = getFlowBigMap(branchHouseMap , set , birthYear, gender , fortuneOutput , houseSeq);
     logger.debug("[unsorted] map = {}" , map);
 
+    Stem stemOf寅 = IZiwei.getStemOf寅(birthYear.getStem());
+
     return map.entrySet().stream()
+      .map(e -> {
+        StemBranch sb = IZiwei.getStemBranchOf(e.getKey() , stemOf寅);
+        return new AbstractMap.SimpleEntry<>(sb, e.getValue());
+      })
       .sorted(Map.Entry.comparingByValue())
       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
   }

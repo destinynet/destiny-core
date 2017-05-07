@@ -78,7 +78,7 @@ public class ChineseDate implements Serializable {
     return -2636 + (getCycle() -1)* 60 + year.getIndex();
   }
 
-  private String toChinese(int num) {
+  public static String toChinese(int num) {
     if (num < 10) {
       return digitToChinese(num);
     } else if (num == 10)
@@ -93,7 +93,7 @@ public class ChineseDate implements Serializable {
       return "三十";
   }
 
-  private String digitToChinese(int digit) {
+  public static String digitToChinese(int digit) {
     return ChineseStringTools.digitToChinese(digit);
   }
 }

@@ -107,7 +107,7 @@ public class Builder implements Serializable {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   /** 每個地支宮位，所代表的大限，從何時、到何時 */
-  private final Map<Branch , Tuple2<Double , Double>> flowBigMap;
+  private final Map<StemBranch , Tuple2<Double , Double>> flowBigMap;
 
   /** 本命盤 */
   public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour,
@@ -116,7 +116,7 @@ public class Builder implements Serializable {
                  Map<StemBranch, House> branchHouseMap,
                  Map<ZStar, StemBranch> starBranchMap,
                  Map<ZStar, Integer> starStrengthMap,
-                 Map<Branch, Tuple2<Double, Double>> flowBigMap,
+                 Map<StemBranch, Tuple2<Double, Double>> flowBigMap,
                  Map<Branch, List<Double>> branchSmallRangesMap,
                  Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
     this.context = context;
@@ -170,7 +170,7 @@ public class Builder implements Serializable {
       Set<ZStar> stars = branchStarMap2.get(sb.getBranch());
 
 
-      Tuple2<Double , Double> fromTo = flowBigMap.get(sb.getBranch());
+      Tuple2<Double , Double> fromTo = flowBigMap.get(sb);
       List<Double> smallRanges = branchSmallRangesMap.get(sb.getBranch());
       return new HouseData(house, sb
         , stars
@@ -208,7 +208,7 @@ public class Builder implements Serializable {
   /**
    * 取出 本命盤 , 排序過的 , 每個地支的 大限 起訖 時刻
    */
-  public Map<Branch, Tuple2<Double , Double>> getFlowBigMap() {
+  public Map<StemBranch, Tuple2<Double , Double>> getFlowBigMap() {
     return flowBigMap;
   }
 
