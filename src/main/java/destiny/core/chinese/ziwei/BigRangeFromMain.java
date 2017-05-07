@@ -30,10 +30,10 @@ public class BigRangeFromMain implements IBigRange , Serializable {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Override
-  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeq) {
+  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeqImpl) {
     switch (fortuneOutput) {
       case 虛歲: {
-        return getAgeRange(house , set , yinYang , gender , houseSeq)
+        return getAgeRange(house , set , yinYang , gender , houseSeqImpl)
           .map1(Integer::doubleValue)
           .map2(Integer::doubleValue);
       } // 虛歲

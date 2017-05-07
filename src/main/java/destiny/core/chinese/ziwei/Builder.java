@@ -106,6 +106,9 @@ public class Builder implements Serializable {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+  /** 每個地支宮位，所代表的大限，從何時、到何時 */
+  private final Map<Branch , Tuple2<Double , Double>> flowBigMap;
+
   /** 本命盤 */
   public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour,
                  StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar,
@@ -113,7 +116,8 @@ public class Builder implements Serializable {
                  Map<StemBranch, House> branchHouseMap,
                  Map<ZStar, StemBranch> starBranchMap,
                  Map<ZStar, Integer> starStrengthMap,
-                 Map<Branch, Tuple2<Double, Double>> bigRangeMap, Map<Branch, List<Double>> branchSmallRangesMap,
+                 Map<Branch, Tuple2<Double, Double>> flowBigMap,
+                 Map<Branch, List<Double>> branchSmallRangesMap,
                  Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
     this.context = context;
     this.chineseDate = chineseDate;
@@ -128,6 +132,7 @@ public class Builder implements Serializable {
     this.set = set;
     this.naYin = naYin;
     this.starStrengthMap = starStrengthMap;
+    this.flowBigMap = flowBigMap;
     this.flyMap = flyMap;
 
     // 哪個地支 裡面 有哪些星體
@@ -159,15 +164,13 @@ public class Builder implements Serializable {
       .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
     branchFlowHouseMap.putAll(本命地支HouseMapping);
 
-
-
     houseDataSet = branchHouseMap.entrySet().stream().map(e -> {
       StemBranch sb = e.getKey();
       House house = e.getValue();
       Set<ZStar> stars = branchStarMap2.get(sb.getBranch());
 
 
-      Tuple2<Double , Double> fromTo = bigRangeMap.get(sb.getBranch());
+      Tuple2<Double , Double> fromTo = flowBigMap.get(sb.getBranch());
       List<Double> smallRanges = branchSmallRangesMap.get(sb.getBranch());
       return new HouseData(house, sb
         , stars
@@ -200,6 +203,13 @@ public class Builder implements Serializable {
 
   public Gender getGender() {
     return gender;
+  }
+
+  /**
+   * 取出 本命盤 , 排序過的 , 每個地支的 大限 起訖 時刻
+   */
+  public Map<Branch, Tuple2<Double , Double>> getFlowBigMap() {
+    return flowBigMap;
   }
 
   /** 傳回 干支 -> 宮位 的 mapping */
