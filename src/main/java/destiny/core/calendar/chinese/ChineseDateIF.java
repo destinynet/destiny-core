@@ -11,11 +11,15 @@ import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 從 Time(LMT) / Location 取得 ChineseDate
@@ -51,4 +55,49 @@ public interface ChineseDateIF {
   }
 
 
+  // =============== 日期操作 ===============
+
+  /**
+   * @param days 下n日，若 n = 0 , 則傳回自己
+   *             若 n = -1 , 則傳回昨天
+   */
+  ChineseDate plusDays(ChineseDate chineseDate , int days);
+
+  /**
+   * 承上，往回推算
+   */
+  default ChineseDate minusDays(ChineseDate chineseDate , int days) {
+    return plusDays(chineseDate , -days);
+  }
+
+
+  /** 傳回「下個月」的初一 */
+  ChineseDate nextMonthStart(ChineseDate chineseDate);
+
+
+  /** 傳回「上個月」的初一 */
+  ChineseDate prevMonthStart(ChineseDate chineseDate);
+
+  /** 列出該年所有月份(以及是否是閏月) , 可能傳回 12 or 13月 (有閏月的話) */
+  default List<Tuple2<Integer , Boolean>> getMonthsOf(int cycle , StemBranch year) {
+    List<Tuple2<Integer , Boolean>> list = new ArrayList<>(13);
+    ChineseDate date = new ChineseDate(cycle , year , 1 , false , 1);
+
+    while(date.getYear() == year) {
+      list.add(Tuple.tuple(date.getMonth() , date.isLeapMonth()));
+      date = nextMonthStart(date);
+    }
+    return list;
+  }
+
+  /** 列出該月有幾日 */
+  default int getDaysOf(int cycle , StemBranch year , int month , boolean leap) {
+    // 以當月初一開始
+    ChineseDate date = new ChineseDate(cycle , year , month , leap , 1);
+    // 推算下個月初一
+    ChineseDate nextMonthStart = nextMonthStart(date);
+    // 再往前推算一日
+    ChineseDate monthEnd = minusDays(nextMonthStart , 1);
+    return monthEnd.getDay();
+  }
 }

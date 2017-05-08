@@ -163,9 +163,8 @@ public interface IZiwei {
   /** 計算 流年盤 */
   Builder getFlowYear(Builder builder , ZContext context, StemBranch flowBig, StemBranch flowYear) ;
 
-  /** 計算 流月盤 */
-  Builder getFlowMonth(Builder builder , ZContext context,
-                       StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth);
+  /** 計算 流月盤 TODO : 流月必須要考慮 「是否閏月」 , 可能要拆成 Integer + Boolean */
+  Builder getFlowMonth(Builder builder , ZContext context, StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth);
 
   /** 計算 流日盤 */
   Builder getFlowDay(Builder builder , ZContext context,
@@ -177,9 +176,9 @@ public interface IZiwei {
 
 
   /** 計算流月命宮 */
-  default Branch getFlowMonth(Branch flowYear , Branch flowMonth , int birthMonth , Branch birthHour , IFlowMonth impl) {
-    return impl.getFlowMonth(flowYear , flowMonth, birthMonth , birthHour);
-  }
+//  default Branch getFlowMonth(Branch flowYear , Branch flowMonth , int birthMonth , Branch birthHour , IFlowMonth impl) {
+//    return impl.getFlowMonth(flowYear , flowMonth, birthMonth , birthHour);
+//  }
 
   /** 流年斗君
    * flowYear -> 流年 , anchor -> 錨 , 意為： 以此為當年度之「定錨」（亦為一月), 推算流月、甚至流日、流時
