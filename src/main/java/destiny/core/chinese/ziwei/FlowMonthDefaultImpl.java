@@ -21,7 +21,7 @@ public class FlowMonthDefaultImpl implements IFlowMonth , Serializable {
   @Override
   public Branch getFlowMonth(Branch flowYear, Branch flowMonth, int birthMonth, Branch birthHour) {
     return IZiwei
-      .getFlowYearAnchor(flowYear , birthMonth , birthHour)
+      .getFlowYearAnchor(flowYear , birthMonth , birthHour) // 先計算流年斗君
       .next(flowMonth.getAheadOf(Branch.寅));// 順數至流月
   }
 }

@@ -17,14 +17,17 @@ import java.util.ResourceBundle;
  * 「 流年斗君，順數月」 {@link FlowMonthDefaultImpl}
  * 「 流月地支」        {@link FlowMonthFixedImpl}
  * 「 流年命宮，順數月」 {@link FlowMonthYearMainHouseDepImpl}
+ *
+ * 參考文件 : http://imgur.com/5dLNytD
  * */
 public interface IFlowMonth extends Descriptive {
 
   /**
-   * @param flowYear 流年
-   * @param flowMonth 欲求算的流月
+   * @param flowYear   流年
+   * @param flowMonth  欲求算的流月
    * @param birthMonth 「出生」的生月
-   * @param birthHour 「出生」的時辰
+   * @param birthHour  「出生」的時辰
+   * @return 流月「命宮」所在地支
    */
   Branch getFlowMonth(Branch flowYear, Branch flowMonth, int birthMonth, Branch birthHour);
 

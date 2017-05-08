@@ -16,7 +16,9 @@ import java.util.ResourceBundle;
  *
  * 「流日地支」         {@link FlowDayBranchImpl}
  *
- * 「流月命宮，順數日」   {@link FlowDayFlowMonthMainHouseDepImpl}
+ * 「流月命宮（亦作為該月一日），順數日」   {@link FlowDayFromFlowMonthMainHouseImpl}
+ *
+ * 「流月命宮（略過不當初一），順數日」 {@link FlowDaySkipFlowMonthMainHouseImpl}
  *
  */
 public interface IFlowDay extends Descriptive {

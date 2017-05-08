@@ -10,6 +10,8 @@ import java.io.Serializable;
 /**
  * 以流年命宮起為流月正月
  * 此種說法最有名的就是紫雲老師 還有少部分占驗派也採用
+ *
+ * 文件 http://imgur.com/5dLNytD
  * */
 public class FlowMonthYearMainHouseDepImpl implements IFlowMonth , Serializable {
 

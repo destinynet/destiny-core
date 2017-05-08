@@ -8,8 +8,9 @@ import destiny.core.chinese.Branch;
 import java.io.Serializable;
 
 /**
- * 計算流日：「流月命宮，順數日」 */
-public class FlowDayFlowMonthMainHouseDepImpl implements IFlowDay , Serializable {
+ * 計算流日：「流月命宮（同時當作該月一日），順數日」
+ * */
+public class FlowDayFromFlowMonthMainHouseImpl implements IFlowDay , Serializable {
 
   @Override
   public Branch getFlowDay(Branch flowDayBranch, int flowDayNum, Branch flowMonthMainHouse) {

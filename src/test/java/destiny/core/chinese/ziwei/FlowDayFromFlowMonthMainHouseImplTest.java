@@ -14,11 +14,11 @@ import static destiny.core.chinese.Branch.子;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
-public class FlowDayFlowMonthMainHouseDepImplTest {
+public class FlowDayFromFlowMonthMainHouseImplTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  IFlowDay impl = new FlowDayFlowMonthMainHouseDepImpl();
+  IFlowDay impl = new FlowDayFromFlowMonthMainHouseImpl();
 
   @Test
   public void testString() {

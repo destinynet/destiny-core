@@ -13,16 +13,12 @@ import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static destiny.core.chinese.Branch.子;
 import static destiny.core.chinese.Branch.寅;
@@ -163,21 +159,6 @@ public interface IZiwei {
   /** 計算 大限盤 */
   Builder getFlowBig(Builder builder , ZContext context, StemBranch flowBig) ;
 
-  /** 列出此大限中，包含哪十個流年 , 並且「虛歲」各別是幾歲 */
-  default List<Tuple2<StemBranch, Integer>> getYearsOfFlowBig(@NotNull Builder builder, ZContext context, Branch flowBig) {
-    IBigRange bigRangeImpl = context.getBigRangeImpl();
-    StemBranch birthYear = builder.getChineseDate().getYear();
-
-    // 先求出，虛歲，是幾歲到幾歲
-    Tuple2<Integer , Integer> range = bigRangeImpl.getRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() , birthYear.getStem() , builder.getGender() , FortuneOutput.虛歲 , context.getHouseSeqImpl())
-      .map((d1 , d2) -> Tuple.tuple(d1.intValue() , d2.intValue()));
-
-    // 再把虛歲轉換成干支
-    return IntStream.rangeClosed(range.v1() , range.v2()).boxed().map(age -> {
-      StemBranch sb = birthYear.next(age-1); // 虛歲要減一
-      return Tuple.tuple(sb , age);
-    }).collect(Collectors.toList());
-  }
 
   /** 計算 流年盤 */
   Builder getFlowYear(Builder builder , ZContext context, StemBranch flowBig, StemBranch flowYear) ;
