@@ -4,18 +4,17 @@
  */
 package destiny.iching;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
+
 /**
  * 帛書卦序
  */
-public class HexagramBoShuComparator implements Comparator<HexagramIF> , HexagramSequenceIF , Serializable
-{
+public class HexagramBoShuComparator extends AbstractHexagramSequence implements Comparator<HexagramIF> {
+
   private static final BiMap<Hexagram,Integer> map = new ImmutableBiMap.Builder<Hexagram , Integer>()
     .put(Hexagram.乾, 1)
     .put(Hexagram.否, 2)
@@ -93,24 +92,10 @@ public class HexagramBoShuComparator implements Comparator<HexagramIF> , Hexagra
     .put(Hexagram.渙, 62)
     .put(Hexagram.家人, 63)
     .put(Hexagram.益, 64).build();
-  
-  @Override
-  public int getIndex(@NotNull HexagramIF hexagram)
-  {
-    Hexagram h = Hexagram.getHexagram(hexagram.getUpperSymbol(), hexagram.getLowerSymbol());
-    return map.get(h);
-  }
 
   @Override
-  public Hexagram getHexagram(int index)
-  {
-    if (index > 64)
-      index = index % 64;
-    
-    if (index <=0 )
-      index = 64-(0-index) % 64;
-    
-    return map.inverse().get(index);
+  protected BiMap<Hexagram, Integer> getMap() {
+    return map;
   }
 
   @Override
