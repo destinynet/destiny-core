@@ -14,6 +14,7 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,13 +69,21 @@ public class ZiweiTools implements Serializable {
   }
 
   /**
+   * @param cycle     cycle
    * @param flowYear  流年
    * @param flowMonth 流月
-   * @return TODO 該流月的日子
+   * @param leap      是否閏月
+   * @return 該流月的日子 (陰曆＋陽曆）
    */
-  public static List<Tuple3<StemBranch , Integer , Boolean>> getDaysOfMonth(@NotNull Builder builder , ZContext context ,
-                                                                            StemBranch flowYear , Branch flowMonth) {
-    ChineseDate cDate = builder.getChineseDate();
-    return new ArrayList<>();
+  public static List<Tuple2<ChineseDate , LocalDate>> getDaysOfMonth(ChineseDateIF chineseDateImpl, int cycle, StemBranch flowYear , Integer flowMonth , boolean leap) {
+    int days = chineseDateImpl.getDaysOf(cycle , flowYear , flowMonth , leap);
+    List<Tuple2<ChineseDate, LocalDate>> list = new ArrayList<>(days);
+    for(int i=1 ; i <= days ; i++) {
+      ChineseDate yinDate = new ChineseDate(cycle , flowYear , flowMonth , leap , i);
+
+      LocalDate yangDate = chineseDateImpl.getYangDate(yinDate);
+      list.add(Tuple.tuple(yinDate , yangDate));
+    }
+    return list;
   }
 }
