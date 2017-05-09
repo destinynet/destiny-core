@@ -3,11 +3,10 @@
  */
 package destiny.core.chinese.ziwei;
 
+import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
-import destiny.core.chinese.Branch;
-import destiny.core.chinese.FortuneOutput;
-import destiny.core.chinese.StemBranch;
+import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -16,6 +15,7 @@ import org.jooq.lambda.tuple.Tuple3;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -73,17 +73,27 @@ public class ZiweiTools implements Serializable {
    * @param flowYear  流年
    * @param flowMonth 流月
    * @param leap      是否閏月
-   * @return 該流月的日子 (陰曆＋陽曆）
+   * @return 該流月的日子 (陰曆＋陽曆＋干支）
    */
-  public static List<Tuple2<ChineseDate , LocalDate>> getDaysOfMonth(ChineseDateIF chineseDateImpl, int cycle, StemBranch flowYear , Integer flowMonth , boolean leap) {
+  public static List<Tuple3<ChineseDate , LocalDate , StemBranch>> getDaysOfMonth(ChineseDateIF chineseDateImpl, int cycle, StemBranch flowYear , Integer flowMonth , boolean leap) {
     int days = chineseDateImpl.getDaysOf(cycle , flowYear , flowMonth , leap);
-    List<Tuple2<ChineseDate, LocalDate>> list = new ArrayList<>(days);
+    List<Tuple3<ChineseDate, LocalDate, StemBranch>> list = new ArrayList<>(days);
     for(int i=1 ; i <= days ; i++) {
       ChineseDate yinDate = new ChineseDate(cycle , flowYear , flowMonth , leap , i);
 
       LocalDate yangDate = chineseDateImpl.getYangDate(yinDate);
-      list.add(Tuple.tuple(yinDate , yangDate));
+      int lmtJulDay = (int) ( Time.getGmtJulDay(yangDate.atTime(0 , 0))+0.5);
+      int index = (lmtJulDay-11) % 60;
+      StemBranch sb = StemBranch.get(index);
+      list.add(Tuple.tuple(yinDate , yangDate , sb));
     }
     return list;
+  }
+
+  public static List<StemBranch> getHoursOfDay(StemBranch day) {
+    return Arrays.stream(Branch.values()).map(b -> {
+      Stem stem = StemBranchUtils.getHourStem(day.getStem() , b);
+      return StemBranch.get(stem , b);
+    }).collect(Collectors.toList());
   }
 }
