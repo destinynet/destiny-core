@@ -26,10 +26,10 @@ public abstract class HouseYearBranchMonthNumHourBranchMainHouseImpl extends
   }
 
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+  public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
 
     IMainHouse mainHouseImpl = context.getMainHouseImpl();
 
-    return getBranch(Tuple.tuple(year.getBranch(), monthNum , hour , solarTerms , mainHouseImpl));
+    return getBranch(Tuple.tuple(yinYear.getBranch(), monthNum , hour , solarTerms , mainHouseImpl));
   }
 }

@@ -9,8 +9,8 @@ public enum FuncType {
   ,HOUR_BRANCH
   ,MONTH                    // (月數 or 月支)
   ,YEAR                     // (年干支)
-  ,YEAR_STEM
-  ,YEAR_BRANCH
+  ,YEAR_STEM                // 年的天干 (可能來自陰曆、或節氣)
+  ,YEAR_BRANCH              // 年的地支 (可能來自陰曆、或節氣）
   ,YEAR_BRANCH_HOUR_BRANCH  // (年支,時支）
   ,MONTH_DAY_NUM            // (月數,日數)
   ,DAY_NUM_HOUR_BRANCH      // (時支,日數)

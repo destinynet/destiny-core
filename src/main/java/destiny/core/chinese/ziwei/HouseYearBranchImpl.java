@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2017-04-13.
+ * Created by smallufo on 2017-05-10.
  */
 package destiny.core.chinese.ziwei;
 
@@ -7,9 +7,18 @@ import destiny.core.Gender;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple3;
 
-/** 年支 -> 地支 */
-public abstract class HouseYearBranchImpl extends HouseAbstractImpl<Branch> {
+import static destiny.core.chinese.ziwei.FuncType.YEAR_BRANCH;
+
+/**
+ * 年支 -> 地支
+ * 其中的「年支」，可能是陰曆、也可能是節氣
+ * 鍾義明 的書籍特別提出，年系星，應該用立春分界 , 參考截圖 http://imgur.com/WVUxCc8
+ * Tuple3<類型 , 陰曆 , 節氣>
+ */
+public abstract class HouseYearBranchImpl extends HouseAbstractImpl<Tuple3<ZContext.YearType, StemBranch , StemBranch>> {
 
   protected HouseYearBranchImpl(ZStar star) {
     super(star);
@@ -17,11 +26,12 @@ public abstract class HouseYearBranchImpl extends HouseAbstractImpl<Branch> {
 
   @Override
   public FuncType getFuncType() {
-    return FuncType.YEAR_BRANCH;
+    return YEAR_BRANCH;
   }
 
+
   @Override
-  public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
-    return getBranch(year.getBranch());
+  public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    return getBranch(Tuple.tuple(context.getYearType() , yinYear , solarYear));
   }
 }

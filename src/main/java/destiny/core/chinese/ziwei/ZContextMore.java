@@ -85,9 +85,15 @@ public class ZContextMore extends ZContext {
   private final boolean showLongevity;
 
 
-  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutputput, IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
-    super(purpleBranchImpl, leapMonth, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
-      transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutputput, bigRangeImpl, redBeauty);
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType,
+                      IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell,
+                      HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl,
+                      IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput,
+                      IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour,
+                      OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl,
+                      MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
+    super(purpleBranchImpl, leapMonth, yearType, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
+      transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutput, bigRangeImpl, redBeauty);
     this.name = name;
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;

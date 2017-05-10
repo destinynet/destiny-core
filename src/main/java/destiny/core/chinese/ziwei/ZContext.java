@@ -43,6 +43,29 @@ public class ZContext implements Serializable {
   private final LeapMonth leapMonth;
 
 
+  /** 年系星系 */
+  public enum YearType implements Descriptive {
+    YEAR_LUNAR,   // 陰曆盤
+    YEAR_SOLAR;   // 節氣盤
+
+    @Override
+    public String getTitle(Locale locale) {
+      try {
+        return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
+      } catch (MissingResourceException e) {
+        return name();
+      }
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+      return getTitle(locale);
+    }
+  }
+  private final YearType yearType;
+
+
+  /** 月系星系 */
   public enum MonthType implements Descriptive {
     MONTH_LUNAR,   // 陰曆盤
     MONTH_SOLAR;   // 節氣盤
@@ -171,9 +194,10 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.purpleBranchImpl = purpleBranchImpl;
     this.leapMonth = leapMonth;
+    this.yearType = yearType;
     this.monthType = monthType;
     this.mainHouseImpl = mainHouseImpl;
     this.houseSeqImpl = houseSeqImpl;
@@ -197,6 +221,10 @@ public class ZContext implements Serializable {
 
   public LeapMonth getLeapMonth() {
     return leapMonth;
+  }
+
+  public YearType getYearType() {
+    return yearType;
   }
 
   public MonthType getMonthType() {

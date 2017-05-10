@@ -174,15 +174,15 @@ public class HouseFunctions {
   
   public final static IHouse house祿存 = new HouseYearStemImpl(祿存) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun祿存.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun祿存.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
   public final static IHouse house年馬 = new HouseYearBranchImpl(年馬) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun年馬_年支.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun年馬_年支.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
@@ -199,15 +199,15 @@ public class HouseFunctions {
 
   public final static IHouse house擎羊 = new HouseYearStemImpl(擎羊) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun擎羊.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun擎羊.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
   public final static IHouse house陀羅 = new HouseYearStemImpl(陀羅) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun陀羅.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun陀羅.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
@@ -218,10 +218,10 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
       switch (context.getFireBell()) {
-        case FIREBELL_BOOK: return fun火星_全書.apply(year.getBranch());
-        case FIREBELL_COLLECT: return fun火星_全集.apply(year.getBranch() , hour);
+        case FIREBELL_BOOK: return fun火星_全書.apply(yinYear.getBranch());
+        case FIREBELL_COLLECT: return fun火星_全集.apply(yinYear.getBranch() , hour);
         default: throw new AssertionError("error");
       }
     }
@@ -234,10 +234,10 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
       switch (context.getFireBell()) {
-        case FIREBELL_BOOK: return fun鈴星_全書.apply(year.getBranch());
-        case FIREBELL_COLLECT: return fun鈴星_全集.apply(year.getBranch() , hour);
+        case FIREBELL_BOOK: return fun鈴星_全書.apply(yinYear.getBranch());
+        case FIREBELL_COLLECT: return fun鈴星_全集.apply(yinYear.getBranch() , hour);
         default: throw new AssertionError("error");
       }
     }
@@ -265,22 +265,22 @@ public class HouseFunctions {
   // =======↓↓↓======= 以下      雜曜 =======↓↓↓=======
   public final static IHouse house天官 = new HouseYearStemImpl(天官) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun天官.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun天官.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
   public final static IHouse house天福 = new HouseYearStemImpl(天福) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun天福.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun天福.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
   public final static IHouse house天廚 = new HouseYearStemImpl(天廚) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun天廚.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun天廚.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
@@ -342,106 +342,106 @@ public class HouseFunctions {
 
   public final static IHouse house天空 = new HouseYearBranchImpl(天空) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天空.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun天空.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house天哭 = new HouseYearBranchImpl(天哭) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天哭.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun天哭.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house天虛 = new HouseYearBranchImpl(天虛) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天虛.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun天虛.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house龍池 = new HouseYearBranchImpl(龍池) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun龍池.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun龍池.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house鳳閣 = new HouseYearBranchImpl(鳳閣) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun鳳閣.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun鳳閣.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house紅鸞 = new HouseYearBranchImpl(紅鸞) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun紅鸞.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun紅鸞.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house天喜 = new HouseYearBranchImpl(天喜) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天喜.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun天喜.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house孤辰 = new HouseYearBranchImpl(孤辰) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun孤辰.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun孤辰.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house寡宿 = new HouseYearBranchImpl(寡宿) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun寡宿.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun寡宿.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house蜚廉 = new HouseYearBranchImpl(蜚廉) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun蜚廉.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun蜚廉.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house破碎 = new HouseYearBranchImpl(破碎) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun破碎.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun破碎.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house華蓋 = new HouseYearBranchImpl(華蓋) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun華蓋.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun華蓋.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house咸池 = new HouseYearBranchImpl(咸池) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun咸池.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun咸池.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house天德 = new HouseYearBranchImpl(天德) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun天德.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun天德.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
   public final static IHouse house月德 = new HouseYearBranchImpl(月德) {
     @Override
-    public Branch getBranch(Branch branch) {
-      return fun月德.apply(branch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun月德.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
     }
   };
 
@@ -489,12 +489,12 @@ public class HouseFunctions {
 
   public final static IHouse house天傷 = new HouseHouseDepYearStemGenderImpl(天傷) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
       // 太乙派，沒有遷移宮
       Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl() , solarTerms , new MainHouseDefaultImpl());
       switch (context.getHurtAngel()) {
         case HURT_ANGEL_FIXED: return fun天傷_fixed交友.apply(遷移宮地支);
-        case HURT_ANGEL_YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
+        case HURT_ANGEL_YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , yinYear.getStem() , gender);
         default:
           throw new AssertionError("error");
       }
@@ -503,14 +503,14 @@ public class HouseFunctions {
 
   public final static IHouse house天使 = new HouseHouseDepYearStemGenderImpl(天使) {
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
 
       Branch 命宮地支 = null ;
       // 太乙派，沒有遷移宮
       Branch 遷移宮地支 = IZiwei.getHouseBranch(monthNum, hour, House.遷移, new HouseSeqDefaultImpl() , solarTerms , new MainHouseDefaultImpl());
       switch (context.getHurtAngel()) {
         case HURT_ANGEL_FIXED: return fun天使_fixed疾厄.apply(遷移宮地支);
-        case HURT_ANGEL_YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , year.getStem() , gender);
+        case HURT_ANGEL_YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , yinYear.getStem() , gender);
         default:
           throw new AssertionError("error");
       }
@@ -534,31 +534,31 @@ public class HouseFunctions {
   /** 截空 : 正空 (截路) */
   public final static IHouse house正空 = new HouseYearStemImpl(正空) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun正空_A.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun正空_A.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
   /** 截空 : 傍空 (空亡) */
   public final static IHouse house傍空 = new HouseYearStemImpl(傍空) {
     @Override
-    public Branch getBranch(Stem stem) {
-      return fun傍空_A.apply(stem);
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> t) {
+      return fun傍空_A.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
   /** 紅艷 */
   public final static IHouse house紅艷 = new HouseYearStemImpl(紅艷) {
     @Override
-    public Branch getBranch(Stem stem) {
+    public Branch getBranch(Tuple3<ZContext.YearType, Stem, Stem> objects) {
       throw new RuntimeException("Error");
     }
 
     @Override
-    public Branch getBranch(StemBranch year, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
       switch (context.getRedBeauty()) {
-        case RED_BEAUTY_SAME: return fun紅艷_甲乙相同.apply(year.getStem());
-        case RED_BEAUTY_DIFF: return fun紅艷_甲乙相異.apply(year.getStem());
+        case RED_BEAUTY_SAME: return fun紅艷_甲乙相同.apply(context.getYearType() == ZContext.YearType.YEAR_LUNAR ? yinYear.getStem() : solarYear.getStem());
+        case RED_BEAUTY_DIFF: return fun紅艷_甲乙相異.apply(context.getYearType() == ZContext.YearType.YEAR_LUNAR ? yinYear.getStem() : solarYear.getStem());
         default: throw new AssertionError("Error : " + context.getRedBeauty());
       }
     }

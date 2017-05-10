@@ -150,8 +150,11 @@ public interface IZiwei {
 
 
   /**
-   * 計算本命盤  */
-  Builder getBirthPlate(int cycle, StemBranch year, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZContext context) ;
+   * 計算本命盤
+   * @param yinYear     陰曆的年干支
+   * @param solarYear   「節氣」的年干支
+   * @param monthBranch 「節氣」的月支 */
+  Builder getBirthPlate(int cycle, StemBranch yinYear, StemBranch solarYear, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
   Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZContextMore context, ChineseDateIF chineseDateImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);
