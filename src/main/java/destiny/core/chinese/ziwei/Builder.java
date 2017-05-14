@@ -71,7 +71,7 @@ public class Builder implements Serializable {
   private final int set;
 
   /** 納音 */
-  private final String naYin;
+  //private final String naYin;
 
   /** 正確的八字（節氣推算）*/
   private EightWords eightWords = null;
@@ -110,15 +110,7 @@ public class Builder implements Serializable {
   private final Map<StemBranch , Tuple2<Double , Double>> flowBigMap;
 
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour,
-                 StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar,
-                 FiveElement fiveElement, int set, String naYin,
-                 Map<StemBranch, House> branchHouseMap,
-                 Map<ZStar, StemBranch> starBranchMap,
-                 Map<ZStar, Integer> starStrengthMap,
-                 Map<StemBranch, Tuple2<Double, Double>> flowBigMap,
-                 Map<Branch, List<Double>> branchSmallRangesMap,
-                 Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Double, Double>> flowBigMap, Map<Branch, List<Double>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -130,7 +122,6 @@ public class Builder implements Serializable {
     this.bodyStar = bodyStar;
     this.fiveElement = fiveElement;
     this.set = set;
-    this.naYin = naYin;
     this.starStrengthMap = starStrengthMap;
     this.flowBigMap = flowBigMap;
     this.flyMap = flyMap;
@@ -351,9 +342,9 @@ public class Builder implements Serializable {
 
   public Plate build() {
     if (personModel == null) {
-      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords);
+      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords);
     } else {
-      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , naYin, houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords , personModel);
+      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords , personModel);
     }
   }
 

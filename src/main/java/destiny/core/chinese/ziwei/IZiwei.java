@@ -13,7 +13,7 @@ import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple3;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,9 +68,8 @@ public interface IZiwei {
     return stemBranchOf寅.next(steps);
   } // 取得命宮
 
-  /** 承上 , 找到命宮的 干支 ，可以取得「納音、五行、第幾局」 */
-  static Tuple3<String , FiveElement , Integer> getNaYin(StemBranch mainHouse) {
-    String 納音 = NaYin.getDesc(mainHouse);
+  /** 承上 , 找到命宮的 干支 ，可以取得「五行、第幾局」 */
+  static Tuple2<FiveElement , Integer> getMainDesc(StemBranch mainHouse) {
     // 五行
     FiveElement fiveElement = NaYin.getFiveElement(mainHouse);
     // 第幾局
@@ -83,9 +82,8 @@ public interface IZiwei {
       case 金: set = 4; break;
       default: throw new AssertionError("impossible");
     }
-    return Tuple.tuple(納音 , fiveElement , set);
+    return Tuple.tuple(fiveElement , set);
   }
-
 
 
   /**

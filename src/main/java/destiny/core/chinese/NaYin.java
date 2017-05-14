@@ -7,7 +7,9 @@ import com.google.common.collect.ImmutableMap;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import static destiny.core.chinese.StemBranch.*;
 import static org.jooq.lambda.tuple.Tuple.tuple;
@@ -95,7 +97,9 @@ public class NaYin implements Serializable {
   }
 
   /** 詳情 , 三個字 , 例如「海中金」 */
-  public static String getDesc(StemBranch sb) {
-    return map.get(sb).v2();
+  public static String getDesc(StemBranch sb, Locale locale) {
+    String resourceKey = map.get(sb).v2();
+    return ResourceBundle.getBundle(NaYin.class.getName() , locale).getString(resourceKey);
   }
+
 }

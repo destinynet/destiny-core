@@ -68,7 +68,7 @@ public class Plate implements Serializable {
   protected final int set;
 
   /** 納音 */
-  protected final String naYin;
+  //protected final String naYin;
 
   /** 12個宮位，每個宮位內的資料 */
   protected final Set<HouseData> houseDataSet;
@@ -96,7 +96,7 @@ public class Plate implements Serializable {
   /**
    * 命盤
    */
-  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, String naYin, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
+  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -109,7 +109,6 @@ public class Plate implements Serializable {
     this.bodyStar = bodyStar;
     this.fiveElement = fiveElement;
     this.set = set;
-    this.naYin = naYin;
     this.houseDataSet = houseDataSet;
     this.transFourMap = transFourMap;
     this.branchFlowHouseMap = branchFlowHouseMap;
@@ -152,11 +151,6 @@ public class Plate implements Serializable {
 
   public StemBranch getBodyHouse() {
     return bodyHouse;
-  }
-
-  /** 取得 納音 */
-  public String getNaYin() {
-    return naYin;
   }
 
   /** 五行 */

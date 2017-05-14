@@ -25,11 +25,15 @@ import static destiny.core.chinese.ziwei.StarUnlucky.火星;
 import static destiny.core.chinese.ziwei.StarUnlucky.鈴星;
 
 /**
- * 北派
+ * 全書派
  *
- * 亦即是此表格 https://goo.gl/ZHYgh9 中的紫色(北派)
+ * 亦即是此表格 https://goo.gl/ZHYgh9 中的紫色(北派) ,
+ * 根據太虛君拍的文檔（出自全書） http://imgur.com/Lwmf013 , 比對這是該頁面的紫色（北派）無誤
+ * 但太虛君稱，「全書」為南派 , 「全集」為北派
+ * 為求最保險的稱謂，稱此派為「全書派」 即可
+ *
  * */
-public class StrengthNorthImpl extends StrengthAbstractImpl {
+public class StrengthFullBookImpl extends StrengthAbstractImpl {
 
   /**
    * 此顆星，於此地支中，強度為何
