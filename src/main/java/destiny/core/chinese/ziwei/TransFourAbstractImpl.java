@@ -3,24 +3,23 @@
  */
 package destiny.core.chinese.ziwei;
 
+import com.google.common.collect.Table;
 import destiny.core.chinese.Stem;
-import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import static org.jooq.lambda.tuple.Tuple.tuple;
-
 public abstract class TransFourAbstractImpl implements ITransFour , Serializable {
 
-  protected abstract Map<Tuple2<Stem, Value>, ZStar> getTransMap();
+  //protected abstract Map<Tuple2<Stem, Value>, ZStar> getTransMap();
+  protected abstract Table<Stem, Value, ZStar> getTable();
 
   @Override
   public ZStar getStarOf(Stem stem, Value value) {
-    return getTransMap().get(tuple(stem, value));
+    return getTable().get(stem , value);
+    //return getTransMap().get(tuple(stem, value));
   }
 
   @Override
