@@ -23,7 +23,7 @@ public abstract class HouseMainStarImpl extends HouseAbstractImpl<Tuple5<Integer
   }
 
   @Override
-  public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
     if (!leap) {
       return getBranch(Tuple.tuple(set , days , leap , prevMonthDays , defaultImpl));
     } else {

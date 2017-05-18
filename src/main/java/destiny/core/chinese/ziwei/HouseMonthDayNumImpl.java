@@ -21,7 +21,7 @@ public abstract class HouseMonthDayNumImpl extends HouseAbstractImpl<Tuple2<Inte
 
 
   @Override
-  public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
     return getBranch(Tuple.tuple(monthNum , days));
   }
 }

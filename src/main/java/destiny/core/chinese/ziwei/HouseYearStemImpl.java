@@ -22,7 +22,7 @@ public abstract class HouseYearStemImpl extends HouseAbstractImpl<Tuple3<ZContex
   }
 
   @Override
-  public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
-    return getBranch(Tuple.tuple(context.getYearType() , yinYear.getStem() , solarYear.getStem()));
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    return getBranch(Tuple.tuple(context.getYearType() , lunarYear.getStem() , solarYear.getStem()));
   }
 }
