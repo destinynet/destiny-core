@@ -13,18 +13,11 @@ import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
-import static destiny.core.chinese.ziwei.FuncType.FIVE_GENDER_YINYANG;
-
 /** 長生 12 神煞 */
 public abstract class HouseFiveGenderYinYangImpl extends HouseAbstractImpl<Tuple3<FiveElement , Gender, YinYangIF>> {
 
   protected HouseFiveGenderYinYangImpl(ZStar star) {
     super(star);
-  }
-
-  @Override
-  public FuncType getFuncType() {
-    return FIVE_GENDER_YINYANG;
   }
 
   @Override

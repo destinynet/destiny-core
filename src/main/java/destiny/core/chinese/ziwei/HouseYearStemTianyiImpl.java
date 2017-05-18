@@ -23,11 +23,6 @@ public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<S
   }
 
   @Override
-  public FuncType getFuncType() {
-    return FuncType.YEAR_STEM;
-  }
-
-  @Override
   public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
     return getBranch(Tuple.tuple(yinYear.getStem() , context.getTianyiImpl()));
   }

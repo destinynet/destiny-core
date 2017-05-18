@@ -13,13 +13,11 @@ import java.util.ResourceBundle;
 
 public abstract class TransFourAbstractImpl implements ITransFour , Serializable {
 
-  //protected abstract Map<Tuple2<Stem, Value>, ZStar> getTransMap();
   protected abstract Table<Stem, Value, ZStar> getTable();
 
   @Override
   public ZStar getStarOf(Stem stem, Value value) {
     return getTable().get(stem , value);
-    //return getTransMap().get(tuple(stem, value));
   }
 
   @Override

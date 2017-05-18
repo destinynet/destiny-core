@@ -20,11 +20,6 @@ public abstract class HouseHouseDepYearStemGenderImpl extends HouseAbstractImpl<
   }
 
   @Override
-  public FuncType getFuncType() {
-    return FuncType.HOUSE_DEP;
-  }
-
-  @Override
   public Branch getBranch(Tuple3<Branch , Stem, Gender> o) {
     throw new RuntimeException("error");
   }

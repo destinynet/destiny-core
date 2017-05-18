@@ -15,11 +15,6 @@ public abstract class HouseFireBellImpl extends HouseAbstractImpl<Tuple2<Branch 
     super(star);
   }
 
-  @Override
-  public FuncType getFuncType() {
-    return FuncType.YEAR_BRANCH_HOUR_BRANCH;
-  }
-
   /** 火星、鈴星 不走這條路 */
   @Override
   public Branch getBranch(Tuple2<Branch, Branch> objects) {

@@ -19,11 +19,6 @@ public abstract class HouseMonthDayNumImpl extends HouseAbstractImpl<Tuple2<Inte
     super(star);
   }
 
-  @Override
-  public FuncType getFuncType() {
-    return FuncType.MONTH_DAY_NUM;
-  }
-
 
   @Override
   public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {

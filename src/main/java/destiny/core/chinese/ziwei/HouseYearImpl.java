@@ -17,11 +17,6 @@ public abstract class HouseYearImpl extends HouseAbstractImpl<StemBranch> {
     super(star);
   }
 
-  @Override
-  public FuncType getFuncType() {
-    return FuncType.YEAR;
-  }
-
 
   @Override
   public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {

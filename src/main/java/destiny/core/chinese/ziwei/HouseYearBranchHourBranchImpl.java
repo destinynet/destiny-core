@@ -18,11 +18,6 @@ public abstract class HouseYearBranchHourBranchImpl extends HouseAbstractImpl<Tu
   }
 
   @Override
-  public FuncType getFuncType() {
-    return FuncType.YEAR_BRANCH_HOUR_BRANCH;
-  }
-
-  @Override
   public Branch getBranch(StemBranch yinYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
     return getBranch(Tuple.tuple(yinYear.getBranch() , hour));
   }

@@ -10,8 +10,6 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple3;
 
-import static destiny.core.chinese.ziwei.FuncType.YEAR_BRANCH;
-
 /**
  * 年支 -> 地支
  * 其中的「年支」，可能是陰曆、也可能是節氣
@@ -22,11 +20,6 @@ public abstract class HouseYearBranchImpl extends HouseAbstractImpl<Tuple3<ZCont
 
   protected HouseYearBranchImpl(ZStar star) {
     super(star);
-  }
-
-  @Override
-  public FuncType getFuncType() {
-    return YEAR_BRANCH;
   }
 
 

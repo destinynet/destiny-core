@@ -10,8 +10,6 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
-import static destiny.core.chinese.ziwei.FuncType.DAY_NUM_HOUR_BRANCH;
-
 /**
  * (日數,時支) -> 地支
  */
@@ -19,11 +17,6 @@ public abstract class HouseDayNumHourBranchImpl extends HouseAbstractImpl<Tuple2
 
   protected HouseDayNumHourBranchImpl(ZStar star) {
     super(star);
-  }
-
-  @Override
-  public FuncType getFuncType() {
-    return DAY_NUM_HOUR_BRANCH;
   }
 
   @Override

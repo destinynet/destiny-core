@@ -12,6 +12,7 @@ import destiny.core.calendar.eightwords.personal.PersonContextModel;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -109,8 +111,14 @@ public class Builder implements Serializable {
   /** 每個地支宮位，所代表的大限，從何時、到何時 */
   private final Map<StemBranch , Tuple2<Double , Double>> flowBigMap;
 
+  /** 註解 builder */
+  private final List<Tuple2<String, Object[]>> notesBuilder;
+
+  /** 註解列表 */
+  private List<String> notes = new ArrayList<>();
+
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Double, Double>> flowBigMap, Map<Branch, List<Double>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Double, Double>> flowBigMap, Map<Branch, List<Double>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, List<Tuple2<String, Object[]>> notesBuilder) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -125,6 +133,7 @@ public class Builder implements Serializable {
     this.starStrengthMap = starStrengthMap;
     this.flowBigMap = flowBigMap;
     this.flyMap = flyMap;
+    this.notesBuilder = notesBuilder;
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -338,15 +347,31 @@ public class Builder implements Serializable {
   }
 
 
+  public Builder withNotes(@NotNull Class resourceBundleClazz , @NotNull Locale locale) {
+    this.notes = buildNotes(resourceBundleClazz , locale);
+    return this;
+  }
 
+  public Builder withNotes(@NotNull Class resourceBundleClazz) {
+    this.notes = buildNotes(resourceBundleClazz , Locale.getDefault());
+    return this;
+  }
+
+  private List<String> buildNotes(@NotNull Class resourceBundleClazz , @NotNull Locale locale) {
+    return notesBuilder.stream().map(t -> {
+      String pattern = ResourceBundle.getBundle(resourceBundleClazz.getName() , locale).getString(t.v1());
+      return MessageFormat.format(pattern , t.v2());
+    }).collect(Collectors.toList());
+  }
 
   public Plate build() {
     if (personModel == null) {
-      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords);
+      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes);
     } else {
-      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, eightWords , personModel);
+      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes , personModel);
     }
   }
+
 
 
 } // class Builder

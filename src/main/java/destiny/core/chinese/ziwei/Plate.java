@@ -6,7 +6,6 @@ package destiny.core.chinese.ziwei;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
-import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
@@ -87,16 +86,14 @@ public class Plate implements Serializable {
   /** 星體強弱表 */
   protected final Map<ZStar , Integer> starStrengthMap;
 
-  /** 節氣八字 */
-  @Deprecated
-  private final EightWords eightWords;
 
-
+  /** 註解列表 */
+  private final List<String> notes;
 
   /**
    * 命盤
    */
-  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, EightWords eightWords) {
+  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, List<String> notes) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -114,7 +111,7 @@ public class Plate implements Serializable {
     this.branchFlowHouseMap = branchFlowHouseMap;
     this.flowBranchMap = flowBranchMap;
     this.starStrengthMap = starStrengthMap;
-    this.eightWords = eightWords;
+    this.notes = notes;
   }
 
   public ZContext getContext() {
@@ -281,11 +278,6 @@ public class Plate implements Serializable {
       .findFirst();
   }
 
-  /** 節氣八字 */
-  public Optional<EightWords> getEightWords() {
-    return Optional.ofNullable(eightWords);
-  }
-
   /** 命主 */
   public ZStar getMainStar() {
     return mainStar;
@@ -297,4 +289,8 @@ public class Plate implements Serializable {
   }
 
 
+  /** 取得註解列表 */
+  public List<String> getNotes() {
+    return notes;
+  }
 }
