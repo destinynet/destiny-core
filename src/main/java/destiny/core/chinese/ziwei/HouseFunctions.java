@@ -181,8 +181,8 @@ public class HouseFunctions {
 
   public final static IHouse house年馬 = new HouseYearBranchImpl(年馬) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun年馬_年支.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun年馬_年支.apply(branch);
     }
   };
 
@@ -342,106 +342,106 @@ public class HouseFunctions {
 
   public final static IHouse house天空 = new HouseYearBranchImpl(天空) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun天空.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun天空.apply(branch);
     }
   };
 
   public final static IHouse house天哭 = new HouseYearBranchImpl(天哭) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun天哭.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun天哭.apply(branch);
     }
   };
 
   public final static IHouse house天虛 = new HouseYearBranchImpl(天虛) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun天虛.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun天虛.apply(branch);
     }
   };
 
   public final static IHouse house龍池 = new HouseYearBranchImpl(龍池) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun龍池.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun龍池.apply(branch);
     }
   };
 
   public final static IHouse house鳳閣 = new HouseYearBranchImpl(鳳閣) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun鳳閣.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun鳳閣.apply(branch);
     }
   };
 
   public final static IHouse house紅鸞 = new HouseYearBranchImpl(紅鸞) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun紅鸞.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun紅鸞.apply(branch);
     }
   };
 
   public final static IHouse house天喜 = new HouseYearBranchImpl(天喜) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun天喜.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun天喜.apply(branch);
     }
   };
 
   public final static IHouse house孤辰 = new HouseYearBranchImpl(孤辰) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun孤辰.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun孤辰.apply(branch);
     }
   };
 
   public final static IHouse house寡宿 = new HouseYearBranchImpl(寡宿) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun寡宿.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun寡宿.apply(branch);
     }
   };
 
   public final static IHouse house蜚廉 = new HouseYearBranchImpl(蜚廉) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun蜚廉.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun蜚廉.apply(branch);
     }
   };
 
   public final static IHouse house破碎 = new HouseYearBranchImpl(破碎) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun破碎.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun破碎.apply(branch);
     }
   };
 
   public final static IHouse house華蓋 = new HouseYearBranchImpl(華蓋) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun華蓋.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun華蓋.apply(branch);
     }
   };
 
   public final static IHouse house咸池 = new HouseYearBranchImpl(咸池) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun咸池.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun咸池.apply(branch);
     }
   };
 
   public final static IHouse house天德 = new HouseYearBranchImpl(天德) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun天德.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun天德.apply(branch);
     }
   };
 
   public final static IHouse house月德 = new HouseYearBranchImpl(月德) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, Branch, Branch> t) {
-      return fun月德.apply(t.v1== ZContext.YearType.YEAR_LUNAR ? t.v2().getBranch() : t.v3().getBranch());
+    public Branch getBranch(Branch branch) {
+      return fun月德.apply(branch);
     }
   };
 
@@ -519,15 +519,15 @@ public class HouseFunctions {
 
   public final static IHouse house陽空 = new HouseYearImpl(陽空) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
-      return fun陽空.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
+    public Branch getBranch(StemBranch sb) {
+      return fun陽空.apply(sb);
     }
   };
 
   public final static IHouse house陰空 = new HouseYearImpl(陰空) {
     @Override
-    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
-      return fun陰空.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
+    public Branch getBranch(StemBranch sb) {
+      return fun陰空.apply(sb);
     }
   };
 
