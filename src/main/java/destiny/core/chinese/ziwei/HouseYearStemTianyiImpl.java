@@ -15,6 +15,7 @@ import org.jooq.lambda.tuple.Tuple2;
 /**
  * (年干,天乙貴人設定) -> 地支
  * 適用於 {@link StarLucky#天魁} (陽貴人) , {@link StarLucky#天鉞} (陰貴人)
+ * 2017-05-20 新增 {@link ZContext.YearType} 的判斷
  */
 public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<Stem, TianyiIF>> {
 
@@ -24,6 +25,7 @@ public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<S
 
   @Override
   public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
-    return getBranch(Tuple.tuple(lunarYear.getStem() , context.getTianyiImpl()));
+    Stem yearStem = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getStem() : solarYear.getStem();
+    return getBranch(Tuple.tuple(yearStem, context.getTianyiImpl()));
   }
 }

@@ -213,15 +213,11 @@ public class HouseFunctions {
 
   public final static IHouse house火星 = new HouseYearBranchHourBranchImpl(火星) {
     @Override
-    public Branch getBranch(Tuple2<Branch, Branch> objects) {
-      throw new RuntimeException("error : " + objects);
-    }
-
-    @Override
     public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+      Branch yearBranch = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getBranch() : solarYear.getBranch();
       switch (context.getFireBell()) {
-        case FIREBELL_BOOK: return fun火星_全書.apply(lunarYear.getBranch());
-        case FIREBELL_COLLECT: return fun火星_全集.apply(lunarYear.getBranch() , hour);
+        case FIREBELL_BOOK: return fun火星_全書.apply(yearBranch);
+        case FIREBELL_COLLECT: return fun火星_全集.apply(yearBranch , hour);
         default: throw new AssertionError("error");
       }
     }
@@ -229,15 +225,11 @@ public class HouseFunctions {
 
   public final static IHouse house鈴星 = new HouseYearBranchHourBranchImpl(鈴星) {
     @Override
-    public Branch getBranch(Tuple2<Branch, Branch> objects) {
-      throw new RuntimeException("error : " + objects);
-    }
-
-    @Override
     public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+      Branch yearBranch = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getBranch() : solarYear.getBranch();
       switch (context.getFireBell()) {
-        case FIREBELL_BOOK: return fun鈴星_全書.apply(lunarYear.getBranch());
-        case FIREBELL_COLLECT: return fun鈴星_全集.apply(lunarYear.getBranch() , hour);
+        case FIREBELL_BOOK: return fun鈴星_全書.apply(yearBranch);
+        case FIREBELL_COLLECT: return fun鈴星_全集.apply(yearBranch , hour);
         default: throw new AssertionError("error");
       }
     }

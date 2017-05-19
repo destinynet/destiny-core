@@ -3,15 +3,14 @@
  */
 package destiny.core.chinese.ziwei;
 
-import destiny.core.Gender;
-import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
-import destiny.core.chinese.StemBranch;
-import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
-/** (年支,時支) -> 地支
- * 判斷 {@link ZContext.YearType}
+/**
+ *
+ * (年支,時支) -> 地支
+ *
+ * {@link HouseFunctions#house火星} {@link HouseFunctions#house鈴星}  使用
  * */
 public abstract class HouseYearBranchHourBranchImpl extends HouseAbstractImpl<Tuple2<Branch , Branch>> {
 
@@ -20,7 +19,9 @@ public abstract class HouseYearBranchHourBranchImpl extends HouseAbstractImpl<Tu
   }
 
   @Override
-  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
-    return getBranch(Tuple.tuple(lunarYear.getBranch() , hour));
+  public Branch getBranch(Tuple2<Branch, Branch> objects) {
+    throw new RuntimeException("error : " + objects);
   }
+
+
 }

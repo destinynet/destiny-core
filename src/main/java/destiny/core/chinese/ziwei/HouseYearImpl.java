@@ -21,6 +21,8 @@ public abstract class HouseYearImpl extends HouseAbstractImpl<StemBranch> {
 
   @Override
   public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
-    return getBranch( context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear : solarYear );
+    StemBranch year = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear : solarYear;
+
+    return getBranch(year);
   }
 }
