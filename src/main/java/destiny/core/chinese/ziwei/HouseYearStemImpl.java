@@ -8,21 +8,19 @@ import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple3;
 
 /**
  * 年干 系星
- * Tuple<類型 , 陰曆年干 , 節氣年干>
+ * 必須判斷 {@link ZContext.YearType}
  */
-public abstract class HouseYearStemImpl extends HouseAbstractImpl<Tuple3<ZContext.YearType , Stem, Stem>> {
+public abstract class HouseYearStemImpl extends HouseAbstractImpl<Stem> {
 
-  protected HouseYearStemImpl(ZStar star) {
+  HouseYearStemImpl(ZStar star) {
     super(star);
   }
 
   @Override
   public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
-    return getBranch(Tuple.tuple(context.getYearType() , lunarYear.getStem() , solarYear.getStem()));
+    return getBranch(context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getStem() : solarYear.getStem());
   }
 }

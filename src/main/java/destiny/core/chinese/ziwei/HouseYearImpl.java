@@ -10,11 +10,11 @@ import destiny.core.chinese.StemBranch;
 
 /**
  * 年干支 ，用於旬空兩顆星
- * 參數為 年的型態(lunar / solar) , 陰曆年干支、節氣年干支
+ * 必須判斷 {@link ZContext.YearType}
  */
 public abstract class HouseYearImpl extends HouseAbstractImpl<StemBranch> {
 
-  protected HouseYearImpl(ZStar star) {
+  HouseYearImpl(ZStar star) {
     super(star);
   }
 
