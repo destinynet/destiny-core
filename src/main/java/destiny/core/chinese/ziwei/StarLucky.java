@@ -69,7 +69,7 @@ public final class StarLucky extends ZStar {
   public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun右弼 = (type , monthNum , monthBranch) -> {
     switch (type) {
       case MONTH_LUNAR: return fun右弼_月數.apply(monthNum);
-      case MONTH_SOLAR: return fun左輔_月支.apply(monthBranch);
+      case MONTH_SOLAR: return fun右弼_月支.apply(monthBranch);
       default: throw new AssertionError("Error : " + type);
     }
   };

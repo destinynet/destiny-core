@@ -519,15 +519,15 @@ public class HouseFunctions {
 
   public final static IHouse house陽空 = new HouseYearImpl(陽空) {
     @Override
-    public Branch getBranch(StemBranch stemBranch) {
-      return fun陽空.apply(stemBranch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun陽空.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
   public final static IHouse house陰空 = new HouseYearImpl(陰空) {
     @Override
-    public Branch getBranch(StemBranch stemBranch) {
-      return fun陰空.apply(stemBranch);
+    public Branch getBranch(Tuple3<ZContext.YearType, StemBranch, StemBranch> t) {
+      return fun陰空.apply(t.v1() == ZContext.YearType.YEAR_LUNAR ? t.v2() : t.v3());
     }
   };
 
