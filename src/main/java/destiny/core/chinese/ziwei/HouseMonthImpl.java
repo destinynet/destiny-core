@@ -15,7 +15,7 @@ import org.jooq.lambda.tuple.Tuple3;
  */
 public abstract class HouseMonthImpl extends HouseAbstractImpl<Tuple3<ZContext.MonthType , Integer , Branch>> {
 
-  protected HouseMonthImpl(ZStar star) {
+  HouseMonthImpl(ZStar star) {
     super(star);
   }
 

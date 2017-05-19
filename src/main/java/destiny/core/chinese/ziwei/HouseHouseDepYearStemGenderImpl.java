@@ -15,7 +15,7 @@ import org.jooq.lambda.tuple.Tuple3;
  * */
 public abstract class HouseHouseDepYearStemGenderImpl extends HouseAbstractImpl<Tuple3<Branch , Stem, Gender>> {
 
-  protected HouseHouseDepYearStemGenderImpl(ZStar star) {
+  HouseHouseDepYearStemGenderImpl(ZStar star) {
     super(star);
   }
 

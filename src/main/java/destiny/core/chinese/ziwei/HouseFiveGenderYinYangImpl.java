@@ -16,7 +16,7 @@ import org.jooq.lambda.tuple.Tuple3;
 /** 長生 12 神煞 */
 public abstract class HouseFiveGenderYinYangImpl extends HouseAbstractImpl<Tuple3<FiveElement , Gender, YinYangIF>> {
 
-  protected HouseFiveGenderYinYangImpl(ZStar star) {
+  HouseFiveGenderYinYangImpl(ZStar star) {
     super(star);
   }
 

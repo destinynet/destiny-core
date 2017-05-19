@@ -15,7 +15,7 @@ import org.jooq.lambda.tuple.Tuple2;
  */
 public abstract class HouseMonthDayNumImpl extends HouseAbstractImpl<Tuple2<Integer, Integer>>{
 
-  protected HouseMonthDayNumImpl(ZStar star) {
+  HouseMonthDayNumImpl(ZStar star) {
     super(star);
   }
 

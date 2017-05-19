@@ -18,7 +18,7 @@ import org.jooq.lambda.tuple.Tuple2;
  */
 public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<Stem, TianyiIF>> {
 
-  protected HouseYearStemTianyiImpl(ZStar star) {
+  HouseYearStemTianyiImpl(ZStar star) {
     super(star);
   }
 

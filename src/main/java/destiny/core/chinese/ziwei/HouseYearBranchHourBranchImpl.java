@@ -10,10 +10,12 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
-/** (年支,時支) -> 地支 */
+/** (年支,時支) -> 地支
+ * 判斷 {@link ZContext.YearType}
+ * */
 public abstract class HouseYearBranchHourBranchImpl extends HouseAbstractImpl<Tuple2<Branch , Branch>> {
 
-  protected HouseYearBranchHourBranchImpl(ZStar star) {
+  HouseYearBranchHourBranchImpl(ZStar star) {
     super(star);
   }
 

@@ -18,7 +18,7 @@ public abstract class HouseMainStarImpl extends HouseAbstractImpl<Tuple5<Integer
 
   private final static IPurpleStarBranch defaultImpl = new PurpleStarBranchDefaultImpl();
 
-  protected HouseMainStarImpl(ZStar star) {
+  HouseMainStarImpl(ZStar star) {
     super(star);
   }
 

@@ -13,7 +13,7 @@ import destiny.core.chinese.StemBranch;
  */
 public abstract class HouseHourBranchImpl extends HouseAbstractImpl<Branch> {
 
-  protected HouseHourBranchImpl(ZStar star) {
+  HouseHourBranchImpl(ZStar star) {
     super(star);
   }
 

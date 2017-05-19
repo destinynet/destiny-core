@@ -15,7 +15,7 @@ import org.jooq.lambda.tuple.Tuple2;
  */
 public abstract class HouseDayNumHourBranchImpl extends HouseAbstractImpl<Tuple2<Integer , Branch>> {
 
-  protected HouseDayNumHourBranchImpl(ZStar star) {
+  HouseDayNumHourBranchImpl(ZStar star) {
     super(star);
   }
 

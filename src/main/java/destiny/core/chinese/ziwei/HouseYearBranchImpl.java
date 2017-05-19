@@ -16,7 +16,7 @@ import destiny.core.chinese.StemBranch;
  */
 public abstract class HouseYearBranchImpl extends HouseAbstractImpl<Branch> {
 
-  protected HouseYearBranchImpl(ZStar star) {
+  HouseYearBranchImpl(ZStar star) {
     super(star);
   }
 

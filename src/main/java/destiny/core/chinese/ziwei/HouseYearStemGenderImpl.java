@@ -11,9 +11,13 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
+/**
+ * 年干 + 性別
+ * 被用於 博士12神煞
+ */
 public abstract class HouseYearStemGenderImpl extends HouseAbstractImpl<Tuple2<Stem, Gender>> {
 
-  protected HouseYearStemGenderImpl(ZStar star) {
+  HouseYearStemGenderImpl(ZStar star) {
     super(star);
   }
 
