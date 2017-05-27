@@ -37,6 +37,9 @@ public class BigRangeFromMain implements IBigRange , Serializable {
           .map1(Integer::doubleValue)
           .map2(Integer::doubleValue);
       } // 虛歲
+      case 民國: {
+
+      }
       default: throw new AssertionError("Not Yet Implemented : " + fortuneOutput);
     }
   }

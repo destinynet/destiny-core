@@ -175,12 +175,6 @@ public interface IZiwei {
   Builder getFlowHour(Builder builder , ZContext context,
                       StemBranch flowBig, StemBranch flowYear, StemBranch flowMonth, StemBranch flowDay, int flowDayNum , StemBranch flowHour);
 
-
-  /** 計算流月命宮 */
-//  default Branch getFlowMonth(Branch flowYear , Branch flowMonth , int birthMonth , Branch birthHour , IFlowMonth impl) {
-//    return impl.getFlowMonth(flowYear , flowMonth, birthMonth , birthHour);
-//  }
-
   /** 流年斗君
    * flowYear -> 流年 , anchor -> 錨 , 意為： 以此為當年度之「定錨」（亦為一月), 推算流月、甚至流日、流時
    * */
