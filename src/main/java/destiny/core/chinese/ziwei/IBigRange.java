@@ -19,9 +19,39 @@ public interface IBigRange extends Descriptive {
 
   Logger logger = LoggerFactory.getLogger(IBigRange.class);
 
+  /** 取得此 house 的大限起訖時刻 , 傳回「虛歲」 (vAge) */
+  Tuple2<Integer , Integer> getVageRange(House house, int set, YinYangIF yinYang, Gender gender, IHouseSeq houseSeqImpl);
+
+  /** 計算每個地支 的 大限 起訖 虛歲 */
+  default Map<Branch , Tuple2<Integer , Integer>> getFlowBigVageMap(Map<Branch, House> branchHouseMap, int set, StemBranch birthYear, Gender gender, IHouseSeq houseSeq) {
+    return Arrays.stream(Branch.values())
+      .map(branch -> {
+        Tuple2<Integer , Integer> t2 = getVageRange(branchHouseMap.get(branch), set, birthYear.getStem(), gender, houseSeq);
+        return Tuple.tuple(branch , t2);
+      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+  }
+
+  /** 承上 , 計算每個地支的 大限 起訖 「虛歲」時刻，並且按照先後順序排列 (年齡 小 -> 大) */
+  default Map<StemBranch , Tuple2<Integer , Integer>> getSortedFlowBigVageMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , IHouseSeq houseSeq) {
+    Map<Branch , Tuple2<Integer , Integer>> map = getFlowBigVageMap(branchHouseMap , set , birthYear , gender , houseSeq);
+
+    Stem stemOf寅 = IZiwei.getStemOf寅(birthYear.getStem());
+
+    return map.entrySet().stream()
+      .map(e -> {
+        StemBranch sb = IZiwei.getStemBranchOf(e.getKey() , stemOf寅);
+        return new AbstractMap.SimpleEntry<>(sb, e.getValue());
+      })
+      .sorted(Map.Entry.comparingByValue())
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+  }
+
+
+  @Deprecated
   Tuple2<Double , Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeqImpl);
 
   /** 計算每個地支 的 大限 起訖 時刻 */
+  @Deprecated
   default Map<Branch , Tuple2<Double , Double>> getFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
     return Arrays.stream(Branch.values())
       .map(branch -> {
@@ -31,6 +61,7 @@ public interface IBigRange extends Descriptive {
   }
 
   /** 承上 , 計算每個地支的 大限 起訖 時刻，並且按照先後順序排列 (年齡 小 -> 大) */
+  @Deprecated
   default Map<StemBranch , Tuple2<Double , Double>> getSortedFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
     Map<Branch , Tuple2<Double , Double>> map = getFlowBigMap(branchHouseMap , set , birthYear, gender , fortuneOutput , houseSeq);
     logger.debug("[unsorted] map = {}" , map);

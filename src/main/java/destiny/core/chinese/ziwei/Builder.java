@@ -108,8 +108,8 @@ public class Builder implements Serializable {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  /** 每個地支宮位，所代表的大限，從何時、到何時 */
-  private final Map<StemBranch , Tuple2<Double , Double>> flowBigMap;
+  /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時 */
+  private final Map<StemBranch , Tuple2<Integer , Integer>> flowBigVageMap;
 
   /** 註解 builder */
   private final List<Tuple2<String, Object[]>> notesBuilder;
@@ -118,7 +118,10 @@ public class Builder implements Serializable {
   private List<String> notes = new ArrayList<>();
 
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Double, Double>> flowBigMap, Map<Branch, List<Double>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, List<Tuple2<String, Object[]>> notesBuilder) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse,
+                 ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set,
+                 Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap,
+                 Map<StemBranch, Tuple2<Integer , Integer>> flowBigVageMap, Map<Branch, List<Double>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, List<Tuple2<String, Object[]>> notesBuilder) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -131,7 +134,7 @@ public class Builder implements Serializable {
     this.fiveElement = fiveElement;
     this.set = set;
     this.starStrengthMap = starStrengthMap;
-    this.flowBigMap = flowBigMap;
+    this.flowBigVageMap = flowBigVageMap;
     this.flyMap = flyMap;
     this.notesBuilder = notesBuilder;
 
@@ -170,7 +173,7 @@ public class Builder implements Serializable {
       Set<ZStar> stars = branchStarMap2.get(sb.getBranch());
 
 
-      Tuple2<Double , Double> fromTo = flowBigMap.get(sb);
+      Tuple2<Integer , Integer> fromTo = flowBigVageMap.get(sb);
       List<Double> smallRanges = branchSmallRangesMap.get(sb.getBranch());
       return new HouseData(house, sb
         , stars
@@ -206,10 +209,10 @@ public class Builder implements Serializable {
   }
 
   /**
-   * 取出 本命盤 , 排序過的 , 每個地支的 大限 起訖 時刻
+   * 取出 本命盤 , 排序過的 , 每個地支的 大限 「虛歲」起訖 時刻
    */
-  public Map<StemBranch, Tuple2<Double , Double>> getFlowBigMap() {
-    return flowBigMap;
+  public Map<StemBranch, Tuple2<Integer , Integer>> getFlowBigMap() {
+    return flowBigVageMap;
   }
 
   /** 傳回 干支 -> 宮位 的 mapping */

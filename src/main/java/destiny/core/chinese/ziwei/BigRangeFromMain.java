@@ -29,6 +29,12 @@ public class BigRangeFromMain implements IBigRange , Serializable {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+
+  @Override
+  public Tuple2<Integer, Integer> getVageRange(House house, int set, YinYangIF yinYang, Gender gender, IHouseSeq houseSeqImpl) {
+    return getAgeRange(house , set , yinYang , gender , houseSeqImpl);
+  }
+
   @Override
   public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeqImpl) {
     switch (fortuneOutput) {

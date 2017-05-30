@@ -63,6 +63,9 @@ public class ZContextMore extends ZContext {
   /** 是否顯示小限 */
   private final boolean showSmallRange;
 
+  /** 是否顯示八字盤 */
+  protected final boolean showEightWords;
+
   /** 八字排盤，右至左 or 左至右 */
   protected final Direction direction;
 
@@ -85,19 +88,14 @@ public class ZContextMore extends ZContext {
   private final boolean showLongevity;
 
 
-  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType,
-                      IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell,
-                      HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl,
-                      IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput,
-                      IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour,
-                      OppoTransFour oppoTransFour, boolean showSmallRange, Direction direction, HourIF hourImpl,
-                      MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
     super(purpleBranchImpl, leapMonth, yearType, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutput, bigRangeImpl, redBeauty);
     this.name = name;
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;
+    this.showEightWords = showEightWords;
     this.direction = direction;
     this.hourImpl = hourImpl;
     this.midnightImpl = midnightImpl;
@@ -121,6 +119,10 @@ public class ZContextMore extends ZContext {
 
   public boolean isShowSmallRange() {
     return showSmallRange;
+  }
+
+  public boolean isShowEightWords() {
+    return showEightWords;
   }
 
   public Direction getDirection() {

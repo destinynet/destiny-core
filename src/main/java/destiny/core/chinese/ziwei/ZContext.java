@@ -45,8 +45,8 @@ public class ZContext implements Serializable {
 
   /** 年系星系 */
   public enum YearType implements Descriptive {
-    YEAR_LUNAR,   // 陰曆盤
-    YEAR_SOLAR;   // 節氣盤
+    YEAR_LUNAR,   // 初一為界
+    YEAR_SOLAR;   // 立春為界
 
     @Override
     public String getTitle(Locale locale) {
