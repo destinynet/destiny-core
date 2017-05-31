@@ -25,6 +25,28 @@ import java.util.stream.IntStream;
  */
 public class ZiweiTools implements Serializable {
 
+  /**
+   * 從「虛歲」轉換為哪些值
+   * @param vage 虛歲
+   * @param westBirthYear 西元出生年份
+   */
+  public static int getOutput(int vage , FortuneOutput output , int westBirthYear) {
+    switch (output) {
+      case 虛歲: return vage;
+      case 實歲: return vage-1;
+      case 西元: {
+        int trueAge = vage-1; // 先轉成 實歲
+        return westBirthYear+trueAge; // 再加上西元年份
+      }
+      case 民國: {
+        int trueAge = vage-1; // 先轉成 實歲
+        int westYear = westBirthYear + trueAge; // 再轉成西元
+        return westYear-1911; // 再轉成民國
+      }
+      default: throw new AssertionError("Error : " + output);
+    }
+  }
+
   /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,  */
   public static List<Tuple3<Integer , StemBranch, Integer>> getYearsOfFlowBig(@NotNull Builder builder, ZContext context, Branch flowBig) {
     IBigRange bigRangeImpl = context.getBigRangeImpl();

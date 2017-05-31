@@ -18,7 +18,6 @@ public enum FortuneOutput implements Descriptive {
   民國,
   實歲;
 
-
   @Override
   public String getTitle(Locale locale) {
     try {
