@@ -7,7 +7,6 @@ import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.SolarTermsIF;
-import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.*;
@@ -155,7 +154,7 @@ public interface IZiwei {
   Builder getBirthPlate(int cycle, StemBranch yinYear, StemBranch solarYear, int monthNum, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
-  Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZContextMore context, ChineseDateIF chineseDateImpl, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);
+  Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZContextMore context, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);
 
   /** 計算 大限盤 */
   Builder getFlowBig(Builder builder , ZContext context, StemBranch flowBig) ;

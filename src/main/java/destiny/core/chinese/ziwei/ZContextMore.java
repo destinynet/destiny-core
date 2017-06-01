@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
+import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.Direction;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
@@ -63,6 +64,9 @@ public class ZContextMore extends ZContext {
   /** 是否顯示小限 */
   private final boolean showSmallRange;
 
+  /** 民用曆法 or 天文曆法 */
+  protected final ChineseDateIF chineseDateImpl;
+
   /** 是否顯示八字盤 */
   protected final boolean showEightWords;
 
@@ -88,13 +92,14 @@ public class ZContextMore extends ZContext {
   private final boolean showLongevity;
 
 
-  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
     super(purpleBranchImpl, leapMonth, yearType, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutput, bigRangeImpl, redBeauty);
     this.name = name;
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;
+    this.chineseDateImpl = chineseDateImpl;
     this.showEightWords = showEightWords;
     this.direction = direction;
     this.hourImpl = hourImpl;
@@ -131,6 +136,10 @@ public class ZContextMore extends ZContext {
 
   public HourIF getHourImpl() {
     return hourImpl;
+  }
+
+  public ChineseDateIF getChineseDateImpl() {
+    return chineseDateImpl;
   }
 
   public MidnightIF getMidnightImpl() {

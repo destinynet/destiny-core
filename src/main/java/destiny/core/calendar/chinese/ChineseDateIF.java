@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.chinese;
 
+import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.DayIF;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * 從 Time(LMT) / Location 取得 ChineseDate
  */
-public interface ChineseDateIF {
+public interface ChineseDateIF extends Descriptive {
 
   Logger logger = LoggerFactory.getLogger(ChineseDateIF.class);
 
