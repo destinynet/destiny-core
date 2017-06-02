@@ -5,17 +5,25 @@
 package destiny.core;
 
 import destiny.core.calendar.Location;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+/**
+ * 生日資料
+ * + 使用者姓名
+ * + 地點名稱
+ */
 public class BirthDataWithLocName extends BirthData {
 
   /** 命造姓名 */
+  @Nullable
   private String name;
 
   private String locationName = "";
 
-  public BirthDataWithLocName(String name, Gender gender, LocalDateTime time, Location location) {
+  public BirthDataWithLocName(Gender gender, LocalDateTime time, Location location, String name) {
     super(gender, time, location);
     this.name = name;
   }
@@ -28,6 +36,11 @@ public class BirthDataWithLocName extends BirthData {
     this.locationName = locationName;
   }
 
+  public Optional<String> getNameOptional() {
+    return Optional.ofNullable(name);
+  }
+
+  @Nullable
   public String getName() {
     return name;
   }

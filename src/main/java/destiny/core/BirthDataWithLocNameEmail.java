@@ -15,7 +15,7 @@ public class BirthDataWithLocNameEmail extends BirthDataWithLocName {
   private String email;
 
   public BirthDataWithLocNameEmail(String name, Gender gender, LocalDateTime time, Location location) {
-    super(name, gender, time, location);
+    super(gender, time, location, name);
   }
 
   public String getEmail() {

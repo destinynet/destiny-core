@@ -112,7 +112,7 @@ public class Builder implements Serializable {
   private final Map<StemBranch , Tuple2<Integer , Integer>> flowBigVageMap;
 
   /** 註解 builder */
-  private final List<Tuple2<String, Object[]>> notesBuilder;
+  private final List<Tuple2<String, Object[]>> notesBuilder = new ArrayList<>();
 
   /** 註解列表 */
   private List<String> notes = new ArrayList<>();
@@ -120,8 +120,11 @@ public class Builder implements Serializable {
   /** 本命盤 */
   public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse,
                  ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set,
-                 Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap, Map<ZStar, Integer> starStrengthMap,
-                 Map<StemBranch, Tuple2<Integer , Integer>> flowBigVageMap, Map<Branch, List<Double>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, List<Tuple2<String, Object[]>> notesBuilder) {
+                 Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap,
+                 Map<ZStar, Integer> starStrengthMap,
+                 Map<StemBranch, Tuple2<Integer , Integer>> flowBigVageMap,
+                 Map<Branch, List<Double>> branchSmallRangesMap,
+                 Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -136,7 +139,6 @@ public class Builder implements Serializable {
     this.starStrengthMap = starStrengthMap;
     this.flowBigVageMap = flowBigVageMap;
     this.flyMap = flyMap;
-    this.notesBuilder = notesBuilder;
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -346,6 +348,11 @@ public class Builder implements Serializable {
 
   public Builder withPersonModel(PersonContextModel personModel) {
     this.personModel = personModel;
+    return this;
+  }
+
+  public Builder appendNotesBuilders(List<Tuple2<String , Object[]>> notesBuilders) {
+    this.notesBuilder.addAll(notesBuilders);
     return this;
   }
 
