@@ -30,6 +30,7 @@ public class PlateWithEightWords extends Plate {
     this.personModel = personModel;
   }
 
+
   public PersonContextModel getPersonModel() {
     return personModel;
   }

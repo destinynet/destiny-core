@@ -5,26 +5,22 @@
 package destiny.core;
 
 import destiny.core.calendar.Location;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
 public class BirthDataWithLocNameEmail extends BirthDataWithLocName {
 
-  private String name;
-
+  @Nullable
   private String email;
 
-  public BirthDataWithLocNameEmail(String name, Gender gender, LocalDateTime time, Location location) {
+  public BirthDataWithLocNameEmail(Gender gender, LocalDateTime time, Location location, String name) {
     super(gender, time, location, name);
   }
 
+  @Nullable
   public String getEmail() {
     return email;
-  }
-
-  @Override
-  public String getName() {
-    return name;
   }
 
 }

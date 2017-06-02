@@ -9,6 +9,7 @@ import destiny.core.calendar.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.chrono.IsoEra;
+import java.util.Objects;
 
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
 public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializable {
@@ -76,9 +77,23 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
     return time.getSecond() + time.getNano() / 1_000_000_000.0;
   }
 
-
   @Override
   public String toString() {
     return "[BirthData " + "gender=" + gender + ", time=" + time + ", location=" + location + ']';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof BirthData))
+      return false;
+    BirthData birthData = (BirthData) o;
+    return gender == birthData.gender && Objects.equals(time, birthData.time) && Objects.equals(location, birthData.location);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(gender, time, location);
   }
 }

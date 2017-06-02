@@ -8,6 +8,7 @@ import destiny.core.calendar.Location;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -23,7 +24,7 @@ public class BirthDataWithLocName extends BirthData {
 
   private String locationName = "";
 
-  public BirthDataWithLocName(Gender gender, LocalDateTime time, Location location, String name) {
+  public BirthDataWithLocName(Gender gender, LocalDateTime time, Location location, @Nullable String name) {
     super(gender, time, location);
     this.name = name;
   }
@@ -36,13 +37,24 @@ public class BirthDataWithLocName extends BirthData {
     this.locationName = locationName;
   }
 
-  public Optional<String> getNameOptional() {
+  public Optional<String> getName() {
     return Optional.ofNullable(name);
   }
 
-  @Nullable
-  public String getName() {
-    return name;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof BirthDataWithLocName))
+      return false;
+    if (!super.equals(o))
+      return false;
+    BirthDataWithLocName that = (BirthDataWithLocName) o;
+    return Objects.equals(name, that.name) && Objects.equals(locationName, that.locationName);
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), name, locationName);
+  }
 }
