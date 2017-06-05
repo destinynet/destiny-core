@@ -37,7 +37,12 @@ public class BirthDataWithLocName extends BirthData {
     this.locationName = locationName;
   }
 
-  public Optional<String> getName() {
+  @Nullable
+  public String getName() {
+    return name;
+  }
+
+  public Optional<String> getOptionalName() {
     return Optional.ofNullable(name);
   }
 

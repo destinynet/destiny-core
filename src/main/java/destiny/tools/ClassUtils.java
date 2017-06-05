@@ -40,10 +40,10 @@ public class ClassUtils implements Serializable
     {
       if (field.getName().equals(propertyName))
       {
-        //System.out.println("found " + field.getName());
+        //System.out.println("found " + field.getOptionalName());
         for(Annotation annotation : field.getDeclaredAnnotations())
         {
-          //System.out.println("\t anno : " + annotation.annotationType().getName());
+          //System.out.println("\t anno : " + annotation.annotationType().getOptionalName());
           return idSet.contains(annotation.annotationType().getName());
         }
       }
@@ -93,7 +93,7 @@ public class ClassUtils implements Serializable
       PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
       for(PropertyDescriptor pd : pds)
       {
-        //System.out.println(pd.getName() + " : getPropertyType = " + pd.getPropertyType());
+        //System.out.println(pd.getOptionalName() + " : getPropertyType = " + pd.getPropertyType());
         if ( pd.getPropertyType() != Class.class)
         {
           //System.out.println("type = " + type); 
@@ -120,7 +120,7 @@ public class ClassUtils implements Serializable
             case OR : //未指定
               set.add(pd.getName());
           }
-          //System.out.println(pd.getName()  + " : " + pd.getPropertyType() + " : " + (pd.getReadMethod() == null ? "null" : pd.getReadMethod().getName()) + " , " + (pd.getWriteMethod() == null ? "null" : pd.getWriteMethod().getName()) );  
+          //System.out.println(pd.getOptionalName()  + " : " + pd.getPropertyType() + " : " + (pd.getReadMethod() == null ? "null" : pd.getReadMethod().getOptionalName()) + " , " + (pd.getWriteMethod() == null ? "null" : pd.getWriteMethod().getOptionalName()) );
         }
       }
     }

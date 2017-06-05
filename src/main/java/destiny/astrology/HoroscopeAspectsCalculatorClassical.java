@@ -27,7 +27,7 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
   /** 設定交角容許度的實作，例如 ( PointDiameterAlBiruniImpl , 或是 PointDiameterLillyImpl ) */
   public void setPlanetOrbsImpl(PointDiameterIF planetOrbsImpl)
   {
-    //System.out.println(getClass().getName() + " 設定交角容許實作：" + planetOrbsImpl.getTitle());
+    //System.out.println(getClass().getOptionalName() + " 設定交角容許實作：" + planetOrbsImpl.getTitle());
     classical.setPlanetOrbsImpl(planetOrbsImpl);
   }
   

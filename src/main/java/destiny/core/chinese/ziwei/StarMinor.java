@@ -123,7 +123,8 @@ public class StarMinor extends ZStar {
       case 丙: return 子;
       case 己: return 申;
       case 庚: return 寅;
-      case 壬: case 癸: return 亥;
+      case 壬: return 酉;
+      case 癸: return 亥;
       default: throw new AssertionError(year);
     }
   };
