@@ -26,12 +26,44 @@ import static destiny.core.chinese.ziwei.StarLucky.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarUnlucky.火星;
 import static destiny.core.chinese.ziwei.StarUnlucky.鈴星;
+import static destiny.core.chinese.ziwei.ZContext.MonthAlgo.MONTH_LEAP_NEXT;
+import static destiny.core.chinese.ziwei.ZContext.MonthAlgo.MONTH_LEAP_SPLIT15;
+import static destiny.core.chinese.ziwei.ZContext.MonthAlgo.MONTH_SOLAR_TERMS;
 
 /** 紫微斗數 */
 public interface IZiwei {
 
   Logger logger = LoggerFactory.getLogger(IZiwei.class);
 
+  /**
+   * @param monthNum       陰曆月份
+   * @param leapMonth      是否閏月
+   * @param monthBranch    節氣月支
+   * @param monthAlgorithm 哪種演算法
+   * @param days           日數
+   * @return 取得最終要計算的「月份」數字
+   */
+  static int getFinalMonthNumber(int monthNum , boolean leapMonth , Branch monthBranch , int days , ZContext.MonthAlgo monthAlgorithm) {
+    if (monthAlgorithm == MONTH_SOLAR_TERMS) {
+      // 節氣盤的話，直接傳回 月支 數(相對於「寅」)
+      return monthBranch.getAheadOf(寅) + 1; // 別忘了 +1
+    } else {
+      int finalMonthNum = monthNum; // 內定為本月
+      if (leapMonth) {
+        // 若是閏月
+        if (monthAlgorithm == MONTH_LEAP_NEXT) {
+          // 且設定為「一律當下月」
+          finalMonthNum = monthNum+1;
+        } else if (monthAlgorithm == MONTH_LEAP_SPLIT15) {
+          // 且設定為「月半切割」
+          if (days > 15) {
+            finalMonthNum = monthNum+1;
+          }
+        }
+      }
+      return finalMonthNum;
+    }
+  }
 
   /**
    * 命宮 : (月數 , 時支) -> 地支
@@ -41,9 +73,8 @@ public interface IZiwei {
    *
    * 找到申宮之後再 逆數生時 找到了卯宮，所以卯就是你的命宮
    * */
-  static Branch getMainHouseBranch(int month , Branch hour , SolarTerms solarTerms , IMainHouse mainHouseImpl) {
-    return mainHouseImpl.getMainHouse(month , hour , solarTerms);
-    //return 寅.next(month-1).prev(hour.getIndex());
+  static Branch getMainHouseBranch(int finalMonthNum, Branch hour) {
+    return 寅.next(finalMonthNum - 1).prev(hour.getIndex());
   }
 
   /**
@@ -55,11 +86,11 @@ public interface IZiwei {
    * 丁年 or 壬年生 = 壬寅宮
    * 戊年 or 癸年生 = 甲寅宮
    */
-  static StemBranch getMainHouse(Stem year , int month , Branch hour , SolarTerms solarTerms , IMainHouse mainHouseImpl) {
+  static StemBranch getMainHouse(Stem year, int finalMonthNum, Branch hour) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
-    Branch mainHouse = getMainHouseBranch(month , hour , solarTerms , mainHouseImpl);
+    Branch mainHouse = getMainHouseBranch(finalMonthNum , hour);
     // 左下角，寅宮 的 干支
     StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
 
@@ -89,25 +120,25 @@ public interface IZiwei {
    * 身宮 (月數 , 時支) -> 地支
    * 順數生月，順數生時 就可以找到身宮
    */
-  static Branch getBodyHouseBranch(int month , Branch hour) {
-    return 寅.next(month-1).next(hour.getIndex());
+  static Branch getBodyHouseBranch(int finalMonthNum , Branch hour) {
+    return 寅.next(finalMonthNum-1).next(hour.getIndex());
   }
 
   /** 承上， 身宮 的干支 */
-  static StemBranch getBodyHouse(Stem year , int month , Branch hour) {
+  static StemBranch getBodyHouse(Stem year , int finalMonthNum , Branch hour) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
-    Branch branch = getBodyHouseBranch(month , hour);
+    Branch branch = getBodyHouseBranch(finalMonthNum , hour);
     return getStemBranchOf(branch , stemOf寅);
   }
 
   /**
    * 從命宮開始，逆時針，飛佈 兄弟、夫妻...
    */
-  static Branch getHouseBranch(int month, Branch hour, House house, IHouseSeq seq, SolarTerms solarTerms, IMainHouse mainHouseImpl) {
+  static Branch getHouseBranch(int month, Branch hour, House house, IHouseSeq seq) {
     // 命宮 的地支
-    Branch branchOfFirstHouse = getMainHouseBranch(month , hour , solarTerms , mainHouseImpl);
+    Branch branchOfFirstHouse = getMainHouseBranch(month , hour);
     int steps = seq.getAheadOf(house , House.命宮);
     return branchOfFirstHouse.prev(steps);
   }
@@ -115,11 +146,11 @@ public interface IZiwei {
   /**
    * 承上 , 取得該宮位的「天干」＋「地支」組合
    */
-  static StemBranch getHouse(Stem year, int month, Branch hour, House house, IHouseSeq seq, SolarTerms solarTerms, IMainHouse mainHouseImpl) {
+  static StemBranch getHouse(Stem year, int month, Branch hour, House house, IHouseSeq seq) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
     // 先取得 該宮位的地支
-    Branch branch = getHouseBranch(month , hour , house , seq , solarTerms , mainHouseImpl);
+    Branch branch = getHouseBranch(month , hour , house , seq);
     return getStemBranchOf(branch , stemOf寅);
   }
 

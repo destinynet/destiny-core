@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
-import static destiny.core.calendar.SolarTerms.清明;
 import static destiny.core.chinese.Branch.*;
 import static destiny.core.chinese.Stem.丁;
 import static destiny.core.chinese.StemBranch.己酉;
@@ -330,9 +329,9 @@ public class StarMinorTest {
     // 2017-04-12 丁酉年 三月十六日 巳時
 
     // 命宮 在 (辛)亥
-    assertSame(亥 , IZiwei.getMainHouseBranch(3 , 巳 , 清明 , new MainHouseDefaultImpl()));
+    assertSame(亥 , IZiwei.getMainHouseBranch(3 , 巳));
     // 天才 在 (戊)申
-    assertSame(申 , fun天才.apply(酉 , 3 , 巳 , 清明 , new MainHouseDefaultImpl()));
+    assertSame(申 , fun天才.apply(酉 , 3 , 巳 ));
 
     // 身宮 在 (己)酉
     assertSame(酉 , IZiwei.getBodyHouseBranch(3 , 巳));

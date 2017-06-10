@@ -4,13 +4,11 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Gender;
-import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.BranchTools;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.function.Function3;
-import org.jooq.lambda.function.Function5;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -136,13 +134,13 @@ public class StarMinor extends ZStar {
   public final static Function<Branch , Branch> fun天刑_月支 = month -> Branch.get(month.getIndex()+7);
 
   /** 天刑(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天刑 = (type , monthNum , monthBranch) -> {
-    switch (type) {
-      case MONTH_LUNAR: return fun天刑_月數.apply(monthNum);
-      case MONTH_SOLAR: return fun天刑_月支.apply(monthBranch);
-      default: throw new AssertionError("Error : " + type);
-    }
-  };
+//  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天刑 = (type , monthNum , monthBranch) -> {
+//    switch (type) {
+//      case MONTH_LUNAR: return fun天刑_月數.apply(monthNum);
+//      case MONTH_SOLAR: return fun天刑_月支.apply(monthBranch);
+//      default: throw new AssertionError("Error : " + type);
+//    }
+//  };
 
 
   /** 天姚 : 月數 -> 地支 */
@@ -152,13 +150,13 @@ public class StarMinor extends ZStar {
   public final static Function<Branch , Branch> fun天姚_月支 = month -> month.next(11);
 
   /** 天姚(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天姚 = (type , monthNum , monthBranch) -> {
-    switch (type) {
-      case MONTH_LUNAR: return fun天姚_月數.apply(monthNum);
-      case MONTH_SOLAR: return fun天姚_月支.apply(monthBranch);
-      default: throw new AssertionError("Error : " + type);
-    }
-  };
+//  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天姚 = (type , monthNum , monthBranch) -> {
+//    switch (type) {
+//      case MONTH_LUNAR: return fun天姚_月數.apply(monthNum);
+//      case MONTH_SOLAR: return fun天姚_月支.apply(monthBranch);
+//      default: throw new AssertionError("Error : " + type);
+//    }
+//  };
 
 
 
@@ -189,13 +187,13 @@ public class StarMinor extends ZStar {
   };
 
   /** 解神(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun解神 = (type , monthNum , monthBranch) -> {
-    switch (type) {
-      case MONTH_LUNAR: return fun解神_月數.apply(monthNum);
-      case MONTH_SOLAR: return fun解神_月支.apply(monthBranch);
-      default: throw new AssertionError("Error : " + type);
-    }
-  };
+//  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun解神 = (type , monthNum , monthBranch) -> {
+//    switch (type) {
+//      case MONTH_LUNAR: return fun解神_月數.apply(monthNum);
+//      case MONTH_SOLAR: return fun解神_月支.apply(monthBranch);
+//      default: throw new AssertionError("Error : " + type);
+//    }
+//  };
 
 
 
@@ -222,13 +220,13 @@ public class StarMinor extends ZStar {
   };
 
   /** 天巫(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天巫 = (type , monthNum , monthBranch) -> {
-    switch (type) {
-      case MONTH_LUNAR: return fun天巫_月數.apply(monthNum);
-      case MONTH_SOLAR: return fun天巫_月支.apply(monthBranch);
-      default: throw new AssertionError("Error : " + type);
-    }
-  };
+//  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天巫 = (type , monthNum , monthBranch) -> {
+//    switch (type) {
+//      case MONTH_LUNAR: return fun天巫_月數.apply(monthNum);
+//      case MONTH_SOLAR: return fun天巫_月支.apply(monthBranch);
+//      default: throw new AssertionError("Error : " + type);
+//    }
+//  };
 
 
 
@@ -265,13 +263,13 @@ public class StarMinor extends ZStar {
   };
 
   /** 天月(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天月 = (type , monthNum , monthBranch) -> {
-    switch (type) {
-      case MONTH_LUNAR: return fun天月_月數.apply(monthNum);
-      case MONTH_SOLAR: return fun天月_月支.apply(monthBranch);
-      default: throw new AssertionError("Error : " + type);
-    }
-  };
+//  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天月 = (type , monthNum , monthBranch) -> {
+//    switch (type) {
+//      case MONTH_LUNAR: return fun天月_月數.apply(monthNum);
+//      case MONTH_SOLAR: return fun天月_月支.apply(monthBranch);
+//      default: throw new AssertionError("Error : " + type);
+//    }
+//  };
 
 
 
@@ -303,13 +301,13 @@ public class StarMinor extends ZStar {
   };
 
   /** 陰煞(整合版) : (月數 或 月支) -> 地支 */
-  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun陰煞 = (type , monthNum , monthBranch) -> {
-    switch (type) {
-      case MONTH_LUNAR: return fun陰煞_月數.apply(monthNum);
-      case MONTH_SOLAR: return fun陰煞_月支.apply(monthBranch);
-      default: throw new AssertionError("Error : " + type);
-    }
-  };
+//  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun陰煞 = (type , monthNum , monthBranch) -> {
+//    switch (type) {
+//      case MONTH_LUNAR: return fun陰煞_月數.apply(monthNum);
+//      case MONTH_SOLAR: return fun陰煞_月支.apply(monthBranch);
+//      default: throw new AssertionError("Error : " + type);
+//    }
+//  };
 
 
   /** 台輔 : 時支 -> 地支 */
@@ -438,9 +436,9 @@ public class StarMinor extends ZStar {
   /** 天才 (年支 , 月數 , 時支) -> 地支
    * 天才由命宮起子, 順行至本生 「年支」安之.
    * */
-  public final static Function5<Branch , Integer , Branch , SolarTerms , IMainHouse , Branch > fun天才 =
-    (Branch year, Integer month, Branch hour , SolarTerms solarTerms , IMainHouse mainHouseImpl) ->
-      IZiwei.getMainHouseBranch(month , hour , solarTerms , mainHouseImpl).next(year.getIndex());
+  public final static Function3<Branch , Integer , Branch , Branch > fun天才 =
+    (Branch year, Integer month, Branch hour) ->
+      IZiwei.getMainHouseBranch(month , hour).next(year.getIndex());
 
   /** 天壽 (年支 , 月數 , 時支) -> 地支
    * 天壽由身宮起子, 順行至本生 「年支」安之 */

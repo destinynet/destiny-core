@@ -22,8 +22,8 @@ public interface IPurpleStarBranch extends Descriptive {
   Branch getBranchOfPurpleStar(int set, int day, boolean leap, int prevMonthDays);
 
   /** 傳入的不是閏月，因此傳遞回去的 prevMonthDays 也不重要，傳回 0 即可 */
-  default Branch getBranchOfPurpleStar(int set , int day) {
-    return getBranchOfPurpleStar(set , day , false, 0);
+  default Branch getBranchOfPurpleStar(int set, int day ) {
+    return getBranchOfPurpleStar(set, day, false, 0 );
   }
 
   @Override

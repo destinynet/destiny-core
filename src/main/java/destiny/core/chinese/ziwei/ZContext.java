@@ -20,11 +20,12 @@ public class ZContext implements Serializable {
   /** 紫微星，在閏月時，該如何處理 */
   protected final IPurpleStarBranch purpleBranchImpl;
 
-  /** 閏月該如何處理 */
-  public enum LeapMonth implements Descriptive {
-    LEAP_THIS_MONTH,   // 一律當作本月
-    LEAP_NEXT_MONTH,   // 一律當作下月 (全書)
-    LEAP_SPLIT_15;   // 15日(含)之前當本月，之後當下月
+  /** 月份演算法 */
+  public enum MonthAlgo implements Descriptive {
+    MONTH_FIXED_THIS,   // 不論有無閏月，一律固定當作本月
+    MONTH_LEAP_NEXT,    // 若閏月，一律當作下月 (全書)
+    MONTH_LEAP_SPLIT15, // 若閏月，15日(含)之前當本月，之後當下月
+    MONTH_SOLAR_TERMS;  // 節氣盤
 
     @Override
     public String getTitle(Locale locale) {
@@ -40,7 +41,13 @@ public class ZContext implements Serializable {
       return getTitle(locale);
     }
   }
-  private final LeapMonth leapMonth;
+
+  /** 命宮、身宮、紫微等14顆主星 對於月份，如何計算 */
+  private final MonthAlgo mainStarsAlgo;
+
+
+  /** 月系星，如何計算月份 */
+  private final MonthAlgo monthStarsAlgo;
 
 
   /** 年系星系 */
@@ -63,33 +70,6 @@ public class ZContext implements Serializable {
     }
   }
   private final YearType yearType;
-
-
-  /** 月系星系 */
-  public enum MonthType implements Descriptive {
-    MONTH_LUNAR,   // 陰曆盤
-    MONTH_SOLAR;   // 節氣盤
-
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-  private final MonthType monthType;
-
-
-
-  /** 命宮起法 */
-  protected final IMainHouse mainHouseImpl;
 
 
   /** 宮位名字 */
@@ -194,12 +174,11 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.purpleBranchImpl = purpleBranchImpl;
-    this.leapMonth = leapMonth;
+    this.mainStarsAlgo = mainStarsAlgo;
+    this.monthStarsAlgo = monthStarsAlgo;
     this.yearType = yearType;
-    this.monthType = monthType;
-    this.mainHouseImpl = mainHouseImpl;
     this.houseSeqImpl = houseSeqImpl;
     this.tianyiImpl = tianyiImpl;
     this.fireBell = fireBell;
@@ -219,21 +198,18 @@ public class ZContext implements Serializable {
     return purpleBranchImpl;
   }
 
-  public LeapMonth getLeapMonth() {
-    return leapMonth;
+  /** 14主星、命、身，如何計算月令 */
+  public MonthAlgo getMainStarsAlgo() {
+    return mainStarsAlgo;
+  }
+
+  /** 月系星，如何計算月令 */
+  public MonthAlgo getMonthStarsAlgo() {
+    return monthStarsAlgo;
   }
 
   public YearType getYearType() {
     return yearType;
-  }
-
-  public MonthType getMonthType() {
-    return monthType;
-  }
-
-
-  public IMainHouse getMainHouseImpl() {
-    return mainHouseImpl;
   }
 
   public IHouseSeq getHouseSeqImpl() {

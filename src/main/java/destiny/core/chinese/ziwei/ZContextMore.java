@@ -94,9 +94,8 @@ public class ZContextMore extends ZContext {
   private final boolean showLongevity;
 
 
-  public ZContextMore(IPurpleStarBranch purpleBranchImpl, LeapMonth leapMonth, YearType yearType, MonthType monthType, IMainHouse mainHouseImpl, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty,
-                      @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
-    super(purpleBranchImpl, leapMonth, yearType, monthType, mainHouseImpl , houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsMonthAlgo, MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
+    super(purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutput, bigRangeImpl, redBeauty);
     this.name = name;
     this.selfTransFour = selfTransFour;
@@ -184,6 +183,6 @@ public class ZContextMore extends ZContext {
 
   @Override
   public String toString() {
-    return "[ZContextMore " + "purpleBranchImpl=" + purpleBranchImpl + ", name='" + name + '\'' + ", selfTransFour=" + selfTransFour + ", oppoTransFour=" + oppoTransFour + ", showSmallRange=" + showSmallRange + ", mainHouseImpl=" + mainHouseImpl + ", direction=" + direction + ", houseSeqImpl=" + houseSeqImpl + ", hourImpl=" + hourImpl + ", midnightImpl=" + midnightImpl + ", tianyiImpl=" + tianyiImpl + ", changeDayAfterZi=" + changeDayAfterZi + ", showMinors=" + showMinors + ", showDoctors=" + showDoctors + ", showLongevity=" + showLongevity + ", transFourImpl=" + transFourImpl + ", strengthImpl=" + strengthImpl + ", flowYearImpl=" + flowYearImpl + ", flowMonthImpl=" + flowMonthImpl + ", flowDayImpl=" + flowDayImpl + ", flowHourImpl=" + flowHourImpl + ", bigRangeImpl=" + bigRangeImpl + ']';
+    return "[ZContextMore " + "purpleBranchImpl=" + purpleBranchImpl + ", name='" + name + '\'' + ", selfTransFour=" + selfTransFour + ", oppoTransFour=" + oppoTransFour + ", showSmallRange=" + showSmallRange + ", direction=" + direction + ", houseSeqImpl=" + houseSeqImpl + ", hourImpl=" + hourImpl + ", midnightImpl=" + midnightImpl + ", tianyiImpl=" + tianyiImpl + ", changeDayAfterZi=" + changeDayAfterZi + ", showMinors=" + showMinors + ", showDoctors=" + showDoctors + ", showLongevity=" + showLongevity + ", transFourImpl=" + transFourImpl + ", strengthImpl=" + strengthImpl + ", flowYearImpl=" + flowYearImpl + ", flowMonthImpl=" + flowMonthImpl + ", flowDayImpl=" + flowDayImpl + ", flowHourImpl=" + flowHourImpl + ", bigRangeImpl=" + bigRangeImpl + ']';
   }
 }

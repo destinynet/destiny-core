@@ -18,10 +18,11 @@ import static destiny.core.chinese.Branch.寅;
  * <p>
  * 找到申宮之後再 逆數生時 找到了卯宮，所以卯就是你的命宮
  */
+@Deprecated
 public class MainHouseDefaultImpl implements IMainHouse, Serializable {
 
   @Override
-  public Branch getMainHouse(int month, Branch hour, SolarTerms solarTerms) {
-    return 寅.next(month - 1).prev(hour.getIndex());
+  public Branch getMainHouse(int finalMonthNum, Branch hour, SolarTerms solarTerms) {
+    return 寅.next(finalMonthNum - 1).prev(hour.getIndex());
   }
 }

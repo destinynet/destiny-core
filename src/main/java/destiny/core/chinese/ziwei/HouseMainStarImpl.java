@@ -12,7 +12,7 @@ import org.jooq.lambda.tuple.Tuple5;
 
 /**
  * 14 顆主星
- * (局數,生日,是否閏月,前一個月幾天)
+ * (局數,生日,是否閏月,前一個月幾天,當下節氣地支)
  */
 public abstract class HouseMainStarImpl extends HouseAbstractImpl<Tuple5<Integer, Integer, Boolean, Integer, IPurpleStarBranch>>{
 
@@ -23,16 +23,16 @@ public abstract class HouseMainStarImpl extends HouseAbstractImpl<Tuple5<Integer
   }
 
   @Override
-  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
     if (!leap) {
-      return getBranch(Tuple.tuple(set , days , leap , prevMonthDays , defaultImpl));
+      return getBranch(Tuple.tuple(set , days , false , prevMonthDays , defaultImpl));
     } else {
       // 閏月
       if (days + prevMonthDays == 30) {
-        return getBranch(Tuple.tuple(set , 30 , leap , prevMonthDays , defaultImpl ));
+        return getBranch(Tuple.tuple(set , 30 , true , prevMonthDays , defaultImpl));
       } else {
         // 閏月，且「日數＋前一個月的月數」超過 30天，就啟用注入進來的演算法 . 可能會累加日數
-        return getBranch(Tuple.tuple(set , days , leap , prevMonthDays ,  context.getPurpleBranchImpl()  ));
+        return getBranch(Tuple.tuple(set , days , true , prevMonthDays , context.getPurpleBranchImpl() ));
       }
     }
   }

@@ -12,9 +12,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /** 取命宮地支 */
+@Deprecated
 public interface IMainHouse extends Descriptive {
 
-  Branch getMainHouse(int month , Branch hour , SolarTerms solarTerms);
+  Branch getMainHouse(int finalMonthNum , Branch hour , SolarTerms solarTerms);
 
   @Override
   default String getTitle(Locale locale) {

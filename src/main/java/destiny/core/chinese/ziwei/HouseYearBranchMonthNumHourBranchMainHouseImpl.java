@@ -8,24 +8,21 @@ import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple5;
+import org.jooq.lambda.tuple.Tuple3;
 
 /**
  * 只有 {@link StarMinor#天才} 在用 : {@link StarMinor#fun天才}
  */
 public abstract class HouseYearBranchMonthNumHourBranchMainHouseImpl extends
-  HouseAbstractImpl<Tuple5<Branch, Integer , Branch , SolarTerms , IMainHouse>> {
+  HouseAbstractImpl<Tuple3<Branch, Integer , Branch>> {
 
   HouseYearBranchMonthNumHourBranchMainHouseImpl(ZStar star) {
     super(star);
   }
 
   @Override
-  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int monthNum, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
-
-    IMainHouse mainHouseImpl = context.getMainHouseImpl();
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
     Branch yearBranch = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getBranch() : solarYear.getBranch();
-
-    return getBranch(Tuple.tuple(yearBranch, monthNum , hour , solarTerms , mainHouseImpl));
+    return getBranch(Tuple.tuple(yearBranch, finalMonthNumForMonthStars, hour));
   }
 }

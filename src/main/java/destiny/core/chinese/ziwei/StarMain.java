@@ -44,7 +44,6 @@ public final class StarMain extends ZStar {
   public final static Function5<Integer, Integer, Boolean , Integer, IPurpleStarBranch , Branch> fun武曲 = (set , days , leap , prevMonthDays , iPurpleBranch) -> fun紫微.apply(set , days , leap ,prevMonthDays , iPurpleBranch).prev(4);
   public final static Function5<Integer, Integer, Boolean , Integer, IPurpleStarBranch , Branch> fun天同 = (set , days , leap , prevMonthDays , iPurpleBranch) -> fun紫微.apply(set , days , leap ,prevMonthDays , iPurpleBranch).prev(5);
   public final static Function5<Integer, Integer, Boolean , Integer, IPurpleStarBranch , Branch> fun廉貞 = (set , days , leap , prevMonthDays , iPurpleBranch) -> fun紫微.apply(set , days , leap ,prevMonthDays , iPurpleBranch).prev(8);
-
   public final static Function5<Integer, Integer, Boolean , Integer, IPurpleStarBranch , Branch> fun天府 = (set , days , leap , prevMonthDays , iPurpleBranch) -> getOpposite(fun紫微.apply(set , days , leap , prevMonthDays , iPurpleBranch));
   public final static Function5<Integer, Integer, Boolean , Integer, IPurpleStarBranch , Branch> fun太陰 = (set , days , leap , prevMonthDays , iPurpleBranch) -> fun天府.apply(set , days , leap , prevMonthDays , iPurpleBranch).next(1);
   public final static Function5<Integer, Integer, Boolean , Integer, IPurpleStarBranch , Branch> fun貪狼 = (set , days , leap , prevMonthDays , iPurpleBranch) -> fun天府.apply(set , days , leap , prevMonthDays , iPurpleBranch).next(2);
