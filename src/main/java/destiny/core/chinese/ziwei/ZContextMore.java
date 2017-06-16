@@ -93,8 +93,14 @@ public class ZContextMore extends ZContext {
   /** 顯示長生12神煞 */
   private final boolean showLongevity;
 
+  /** 顯示 將前12星 */
+  private final boolean showGeneralFront;
 
-  public ZContextMore(IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsMonthAlgo, MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity) {
+  /** 顯示 歲前12星 */
+  private final boolean showYearFront;
+
+
+  public ZContextMore(IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsMonthAlgo, MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity, boolean showGeneralFront, boolean showYearFront) {
     super(purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutput, bigRangeImpl, redBeauty);
     this.name = name;
@@ -110,6 +116,8 @@ public class ZContextMore extends ZContext {
     this.showMinors = showMinors;
     this.showDoctors = showDoctors;
     this.showLongevity = showLongevity;
+    this.showGeneralFront = showGeneralFront;
+    this.showYearFront = showYearFront;
   }
 
   public Optional<String> getName() {
@@ -164,6 +172,14 @@ public class ZContextMore extends ZContext {
     return showLongevity;
   }
 
+  public boolean isShowGeneralFront() {
+    return showGeneralFront;
+  }
+
+  public boolean isShowYearFront() {
+    return showYearFront;
+  }
+
   public List<ZStar> getStars() {
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.values));
@@ -177,6 +193,12 @@ public class ZContextMore extends ZContext {
 
     if (showLongevity)
       starList.addAll(Arrays.asList(StarLongevity.values));
+
+    if (showGeneralFront)
+      starList.addAll(Arrays.asList(StarGeneralFront.values));
+
+    if (showYearFront)
+      starList.addAll(Arrays.asList(StarYearFront.values));
     return starList;
   }
 

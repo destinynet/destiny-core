@@ -278,6 +278,22 @@ public class Plate implements Serializable {
       .findFirst();
   }
 
+  /** 將前 12星 */
+  public Optional<ZStar> getGeneralFrontStarIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarGeneralFront)
+      .findFirst();
+  }
+
+  /** 歲前 12星 */
+  public Optional<ZStar> getYearFrontStarIn(Branch branch) {
+    return houseDataSet.stream().filter(houseData -> houseData.getStemBranch().getBranch() == branch)
+      .flatMap(houseData -> houseData.getStars().stream())
+      .filter(star -> star instanceof StarYearFront)
+      .findFirst();
+  }
+
   /** 命主 */
   public ZStar getMainStar() {
     return mainStar;

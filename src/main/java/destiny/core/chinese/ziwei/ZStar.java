@@ -43,6 +43,8 @@ public abstract class ZStar extends Point implements Comparable<ZStar> {
     // 以下雜星
     博士,   // 博士12神
     長生,   // 長生12神煞
+    將前,   // 將前12星
+    歲前,   // 歲前12星
   }
 
   private final Type type;

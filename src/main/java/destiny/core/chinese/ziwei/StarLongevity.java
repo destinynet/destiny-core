@@ -55,7 +55,7 @@ public class StarLongevity extends ZStar {
     }
   };
 
-  public final static Function4<FiveElement , Gender, YinYangIF , StarLongevity , Branch> fun = (五行 , gender , 陰陽 , 星體) -> {
+  private final static Function4<FiveElement , Gender, YinYangIF , StarLongevity , Branch> fun = (五行 , gender , 陰陽 , 星體) -> {
     // 第一個（長生）
     Branch head = func.apply(五行);
 

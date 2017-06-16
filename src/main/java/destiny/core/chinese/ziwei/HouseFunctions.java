@@ -16,11 +16,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static destiny.core.chinese.ziwei.StarDoctor.*;
+import static destiny.core.chinese.ziwei.StarGeneralFront.*;
 import static destiny.core.chinese.ziwei.StarLongevity.*;
 import static destiny.core.chinese.ziwei.StarLucky.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarMinor.*;
+import static destiny.core.chinese.ziwei.StarMinor.fun咸池;
+import static destiny.core.chinese.ziwei.StarMinor.fun天德;
+import static destiny.core.chinese.ziwei.StarMinor.fun華蓋;
+import static destiny.core.chinese.ziwei.StarMinor.咸池;
+import static destiny.core.chinese.ziwei.StarMinor.天德;
+import static destiny.core.chinese.ziwei.StarMinor.華蓋;
 import static destiny.core.chinese.ziwei.StarUnlucky.*;
+import static destiny.core.chinese.ziwei.StarYearFront.*;
 
 @SuppressWarnings("Duplicates")
 public class HouseFunctions {
@@ -581,10 +589,10 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house小耗 = new HouseYearStemGenderImpl(小耗) {
+  public final static IHouse house小耗 = new HouseYearStemGenderImpl(StarDoctor.小耗) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
-      return fun小耗.apply(t.v1() , t.v2());
+      return StarDoctor.fun小耗.apply(t.v1() , t.v2());
     }
   };
 
@@ -616,10 +624,10 @@ public class HouseFunctions {
     }
   };
 
-  public final static IHouse house病符 = new HouseYearStemGenderImpl(病符) {
+  public final static IHouse house病符 = new HouseYearStemGenderImpl(StarDoctor.病符) {
     @Override
     public Branch getBranch(Tuple2<Stem, Gender> t) {
-      return fun病符.apply(t.v1() , t.v2());
+      return StarDoctor.fun病符.apply(t.v1() , t.v2());
     }
   };
 
@@ -733,6 +741,171 @@ public class HouseFunctions {
   // =======↑↑↑======= 以上 長生12神煞 =======↑↑↑=======
 
 
+  // =======↓↓↓======= 以下 將前12星 =======↓↓↓=======
+  public final static IHouse house將前_將星 = new HouseYearBranchImpl(將星) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun將星.apply(branch);
+    }
+  };
+  public final static IHouse house將前_攀鞍 = new HouseYearBranchImpl(攀鞍) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun攀鞍.apply(branch);
+    }
+  };
+  public final static IHouse house將前_歲馹 = new HouseYearBranchImpl(歲馹) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun歲馹.apply(branch);
+    }
+  };
+  public final static IHouse house將前_息神 = new HouseYearBranchImpl(息神) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun息神.apply(branch);
+    }
+  };
+  public final static IHouse house將前_華蓋 = new HouseYearBranchImpl(StarGeneralFront.華蓋) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return StarGeneralFront.fun華蓋.apply(branch);
+    }
+  };
+  public final static IHouse house將前_劫煞 = new HouseYearBranchImpl(劫煞) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun劫煞.apply(branch);
+    }
+  };
+  public final static IHouse house將前_災煞 = new HouseYearBranchImpl(災煞) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun災煞.apply(branch);
+    }
+  };
+  public final static IHouse house將前_天煞 = new HouseYearBranchImpl(天煞) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun天煞.apply(branch);
+    }
+  };
+  public final static IHouse house將前_指背 = new HouseYearBranchImpl(指背) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun指背.apply(branch);
+    }
+  };
+  public final static IHouse house將前_咸池 = new HouseYearBranchImpl(StarGeneralFront.咸池) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return StarGeneralFront.fun咸池.apply(branch);
+    }
+  };
+  public final static IHouse house將前_月煞 = new HouseYearBranchImpl(月煞) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun月煞.apply(branch);
+    }
+  };
+  public final static IHouse house將前_亡神 = new HouseYearBranchImpl(亡神) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun亡神.apply(branch);
+    }
+  };
+
+  // =======↑↑↑======= 以上 將前12星 =======↑↑↑=======
+
+
+  // =======↓↓↓======= 以下 歲前12星 =======↓↓↓=======
+  public final static IHouse house歲前_歲建 = new HouseYearBranchImpl(歲建) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun歲建.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_晦氣 = new HouseYearBranchImpl(晦氣) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun晦氣.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_喪門 = new HouseYearBranchImpl(喪門) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun喪門.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_貫索 = new HouseYearBranchImpl(貫索) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun貫索.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_官符 = new HouseYearBranchImpl(官符) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun官符.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_小耗 = new HouseYearBranchImpl(StarYearFront.小耗) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return StarYearFront.fun小耗.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_歲破 = new HouseYearBranchImpl(歲破) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun歲破.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_龍德 = new HouseYearBranchImpl(龍德) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun龍德.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_白虎 = new HouseYearBranchImpl(白虎) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun白虎.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_天德 = new HouseYearBranchImpl(StarYearFront.天德) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return StarYearFront.fun天德.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_吊客 = new HouseYearBranchImpl(吊客) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return fun吊客.apply(branch);
+    }
+  };
+
+  public final static IHouse house歲前_病符 = new HouseYearBranchImpl(StarYearFront.病符) {
+    @Override
+    public Branch getBranch(Branch branch) {
+      return StarYearFront.fun病符.apply(branch);
+    }
+  };
+
+  // =======↑↑↑======= 以上 歲前12星 =======↑↑↑=======
+
+
   public final static Set<IHouse> set = new ImmutableSet.Builder<IHouse>()
     // 14主星
     .add(house紫微, house天機, house太陽, house武曲, house天同, house廉貞, house天府, house太陰, house貪狼, house巨門, house天相, house天梁, house七殺, house破軍)
@@ -760,6 +933,15 @@ public class HouseFunctions {
     // 長生12神煞
     .add(house長生, house沐浴, house冠帶, house臨官, house帝旺, house衰,
          house病  , house死  , house墓 , house絕  , house胎 , house養)
+
+    // 將前12星
+    .add(house將前_將星 , house將前_攀鞍 , house將前_歲馹 , house將前_息神 , house將前_華蓋 , house將前_劫煞 ,
+         house將前_災煞 , house將前_天煞 , house將前_指背 , house將前_咸池 , house將前_月煞 , house將前_亡神)
+
+    // 歲前12星
+    .add(
+      house歲前_歲建, house歲前_晦氣, house歲前_喪門, house歲前_貫索, house歲前_官符, house歲前_小耗,
+      house歲前_歲破, house歲前_龍德, house歲前_白虎, house歲前_天德, house歲前_吊客, house歲前_病符)
     .build();
 
   public final static Map<ZStar , IHouse> map = set.stream()

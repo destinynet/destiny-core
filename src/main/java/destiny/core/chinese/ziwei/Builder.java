@@ -7,7 +7,6 @@ import com.google.common.collect.Table;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
-import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.personal.PersonContextModel;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
@@ -72,12 +71,6 @@ public class Builder implements Serializable {
   /** 五行第幾局 */
   private final int set;
 
-  /** 納音 */
-  //private final String naYin;
-
-  /** 正確的八字（節氣推算）*/
-  private EightWords eightWords = null;
-
   private final Set<HouseData> houseDataSet;
 
   /** 干支 -> 宮位 的對照表 */
@@ -120,7 +113,8 @@ public class Builder implements Serializable {
   /** 本命盤 */
   public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse,
                  ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set,
-                 Map<StemBranch, House> branchHouseMap, Map<ZStar, StemBranch> starBranchMap,
+                 Map<StemBranch, House> branchHouseMap,
+                 Map<ZStar, Branch> starBranchMap,
                  Map<ZStar, Integer> starStrengthMap,
                  Map<StemBranch, Tuple2<Integer , Integer>> flowBigVageMap,
                  Map<Branch, List<Double>> branchSmallRangesMap,
@@ -292,6 +286,51 @@ public class Builder implements Serializable {
         return m;
       });
     });
+
+    // 以流年的 將前12星 取代本命盤中的位置
+    // 先檢查，本命盤中，是否已經存在任何 將前12星 , 若有，代表設定要計算
+    boolean showGeneralFront = houseDataSet.stream()
+      .flatMap(houseData -> houseData.getStars().stream())
+      .anyMatch(star -> star instanceof StarGeneralFront);
+
+    if (showGeneralFront) {
+      // 若有的話，就清除掉現有紀錄
+      houseDataSet.forEach(houseData -> houseData.getStars().removeIf(star -> star instanceof StarGeneralFront));
+
+      // 接著，以「流年」的將前12星，塞入
+      Arrays.stream(StarGeneralFront.values)
+        .map(star -> {
+          Branch b = StarGeneralFront.funMap.get(star).apply(flowYear.getBranch());
+          return Tuple.tuple(star , b);
+        }).forEach(t -> {
+          houseDataSet.stream()
+            .filter(houseData -> houseData.getStemBranch().getBranch() == t.v2()).findFirst()
+            .ifPresent(houseData -> houseData.getStars().add(t.v1()));
+      });
+    }
+
+    // 以流年的 歲前12星 取代本命盤中的位置
+    // 先檢查，本命盤中，是否已經存在任何 歲前12星。 若有，代表設定要計算
+    boolean showYearFront = houseDataSet.stream()
+      .flatMap(houseData -> houseData.getStars().stream())
+      .anyMatch(star -> star instanceof StarYearFront);
+
+    if (showYearFront) {
+      // 若有的話，就清除掉現有的紀錄
+      houseDataSet.forEach(houseData -> houseData.getStars().removeIf(star -> star instanceof StarYearFront));
+
+      // 接著，以「流年」的 歲前12星，塞入
+      Arrays.stream(StarYearFront.values)
+        .map(star -> {
+          Branch b = StarYearFront.funMap.get(star).apply(flowYear.getBranch());
+          return Tuple.tuple(star , b);
+        }).forEach(t -> {
+          houseDataSet.stream()
+            .filter(houseData -> houseData.getStemBranch().getBranch() == t.v2()).findFirst()
+            .ifPresent(houseData -> houseData.getStars().add(t.v1()));
+      });
+    }
+
     return this;
   }
 

@@ -12,7 +12,6 @@ import destiny.core.chinese.StemBranch;
  * 年支 -> 地支
  * 其中的「年支」，可能是陰曆、也可能是節氣
  * 鍾義明 的書籍特別提出，年系星，應該用立春分界 , 參考截圖 http://imgur.com/WVUxCc8
- * Tuple3<類型 , 陰曆 , 節氣>
  */
 public abstract class HouseYearBranchImpl extends HouseAbstractImpl<Branch> {
 
