@@ -24,6 +24,7 @@ public class PalmImplTest {
 
   PositiveIF defaultImpl = new PositiveGenderImpl();
 
+
   /**
    * 如西元2001年2月4日12點（當天為立春）出生之男，換算為陰曆則為辛巳年正月十二日午時，
    * 先將大拇指點在巳（天文宮）上，巳上起正月，正月還是在巳（天文宮）上，
