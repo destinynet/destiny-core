@@ -35,7 +35,9 @@ public class PalmWithMeta implements Serializable {
 
   private final boolean changeDayAfterZi;
 
-  public PalmWithMeta(Palm palm, LocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi) {
+  private final boolean trueRisingSign;
+
+  public PalmWithMeta(Palm palm, LocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean trueRisingSign) {
     this.palm = palm;
     this.lmt = lmt;
     this.loc = loc;
@@ -46,6 +48,7 @@ public class PalmWithMeta implements Serializable {
     this.hourImpl = impl;
     this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
+    this.trueRisingSign = trueRisingSign;
   }
 
 
@@ -88,6 +91,10 @@ public class PalmWithMeta implements Serializable {
 
   public boolean isChangeDayAfterZi() {
     return changeDayAfterZi;
+  }
+
+  public boolean isTrueRisingSign() {
+    return trueRisingSign;
   }
 
   public ChineseDate getChineseDate() {

@@ -123,7 +123,7 @@ public interface PalmIF {
       trueRising = Optional.empty();
     }
     Palm palm = getPalm(gender , chineseDateHour , positiveImpl , trueRising);
-    return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi);
+    return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi, trueRisingSign);
   }
 
   default PalmWithMeta getPalmWithMeta(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl ,
