@@ -22,6 +22,8 @@ public class BirthDataWithLocName extends BirthData {
   @Nullable
   private String name;
 
+  // 地點名稱
+  @Nullable
   private String locationName = "";
 
   public BirthDataWithLocName(Gender gender, LocalDateTime time, Location location, @Nullable String name) {
@@ -29,8 +31,19 @@ public class BirthDataWithLocName extends BirthData {
     this.name = name;
   }
 
+  public BirthDataWithLocName(Gender gender, LocalDateTime time, Location location, @Nullable String name , @Nullable String place) {
+    super(gender, time, location);
+    this.name = name;
+    this.locationName = place;
+  }
+
+  @Nullable
   public String getLocationName() {
     return locationName;
+  }
+
+  public Optional<String> getOptionalPlace() {
+    return Optional.ofNullable(locationName);
   }
 
   public void setLocationName(String locationName) {
