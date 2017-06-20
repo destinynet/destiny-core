@@ -33,8 +33,11 @@ public interface PalmIF {
 
   Logger logger = LoggerFactory.getLogger(PalmIF.class);
 
-  /** 本命盤，已經預先計算命宮 */
-  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int month, int day, Branch hourBranch , PositiveIF positiveImpl , Branch rising) {
+  /**
+   * 本命盤，已經預先計算命宮
+   * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
+   * */
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int month, int day, Branch hourBranch , PositiveIF positiveImpl , Branch rising , boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     int realMonth = month ;
@@ -52,13 +55,16 @@ public interface PalmIF {
 
     BiMap<Branch, Palm.House> houseMap = HashBiMap.create(12);
     for(int i=0 ; i<12 ; i++) {
-      houseMap.put(rising.next(i), Palm.House.values()[i]);
+      houseMap.put( clockwiseHouse ? rising.next(i) : rising.prev(i), Palm.House.values()[i]);
     }
     return new Palm(gender, yearBranch , monthBranch , dayBranch , hour , houseMap);
   }
 
-  /** 本命盤 , 沒有預先計算命宮 */
-  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int month, int day, Branch hourBranch , PositiveIF positiveImpl) {
+  /**
+   * 本命盤 , 沒有預先計算命宮
+   * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
+   * */
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int month, int day, Branch hourBranch, PositiveIF positiveImpl, boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     logger.trace("positive = {}" , positive);
@@ -87,7 +93,7 @@ public interface PalmIF {
     Branch rising = hour.next(steps * positive);
     BiMap<Branch, Palm.House> houseMap = HashBiMap.create(12);
     for(int i=0 ; i<12 ; i++) {
-      houseMap.put(rising.next(i), Palm.House.values()[i]);
+      houseMap.put(clockwiseHouse ? rising.next(i) : rising.prev(i), Palm.House.values()[i]);
     }
     return new Palm(gender, yearBranch , monthBranch , dayBranch , hour , houseMap);
   }
@@ -96,21 +102,20 @@ public interface PalmIF {
    * 本命盤
    * @param trueRising 是否已經預先計算好了真實的上升星座
    * */
-  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour , PositiveIF positiveImpl , Optional<Branch> trueRising) {
+  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour , PositiveIF positiveImpl , Optional<Branch> trueRising , boolean clockwiseHouse) {
     return trueRising
-      .map  (branch -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl, branch))
-      .orElseGet(() -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl));
+      .map  (branch -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl, branch , clockwiseHouse))
+      .orElseGet(() -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl, clockwiseHouse));
   }
 
   /**
    * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
    * @param trueRisingSign 真實星體命宮. 若為 false , 則為傳統一掌經起命宮
+   * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
    */
-  default PalmWithMeta getPalmWithMeta(Gender gender, LocalDateTime lmt, Location loc, String place,
-                                       PositiveIF positiveImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl,
-                                       HourIF hourImpl, MidnightIF midnightImpl,
-                                       RisingSignIF risingSignImpl,
-                                       boolean changeDayAfterZi, boolean trueRisingSign) {
+  default PalmWithMeta getPalmWithMeta(Gender gender, LocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
+                                       ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl,
+                                       RisingSignIF risingSignImpl, boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     Branch hourBranch = hourImpl.getHour(lmt , loc);
     ChineseDateHour chineseDateHour = new ChineseDateHour(cDate , hourBranch);
@@ -122,15 +127,15 @@ public interface PalmIF {
     } else {
       trueRising = Optional.empty();
     }
-    Palm palm = getPalm(gender , chineseDateHour , positiveImpl , trueRising);
+    Palm palm = getPalm(gender , chineseDateHour , positiveImpl , trueRising , clockwiseHouse);
     return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi, trueRisingSign);
   }
 
   default PalmWithMeta getPalmWithMeta(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl ,
                                        ChineseDateIF chineseDateImpl , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl ,
                                        RisingSignIF risingSignImpl,
-                                       boolean changeDayAfterZi) {
-    return getPalmWithMeta(gender , lmt.toLocalDateTime() , loc , place , positiveImpl , chineseDateImpl , dayImpl , hourImpl , midnightImpl , risingSignImpl, changeDayAfterZi, false);
+                                       boolean changeDayAfterZi , boolean trueRisingSign , boolean clockwiseHouse) {
+    return getPalmWithMeta(gender , lmt.toLocalDateTime() , loc , place , positiveImpl , chineseDateImpl , dayImpl , hourImpl , midnightImpl , risingSignImpl, changeDayAfterZi, trueRisingSign, clockwiseHouse);
   }
 
   /**
