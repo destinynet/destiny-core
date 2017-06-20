@@ -20,11 +20,11 @@ public class BirthDataWithLocName extends BirthData {
 
   /** 命造姓名 */
   @Nullable
-  private String name;
+  private String name = null;
 
   // 地點名稱
   @Nullable
-  private String locationName = "";
+  private String place = null;
 
   public BirthDataWithLocName(Gender gender, LocalDateTime time, Location location, @Nullable String name) {
     super(gender, time, location);
@@ -34,20 +34,20 @@ public class BirthDataWithLocName extends BirthData {
   public BirthDataWithLocName(Gender gender, LocalDateTime time, Location location, @Nullable String name , @Nullable String place) {
     super(gender, time, location);
     this.name = name;
-    this.locationName = place;
+    this.place = place;
   }
 
   @Nullable
-  public String getLocationName() {
-    return locationName;
+  public String getPlace() {
+    return place;
   }
 
   public Optional<String> getOptionalPlace() {
-    return Optional.ofNullable(locationName);
+    return Optional.ofNullable(place);
   }
 
-  public void setLocationName(String locationName) {
-    this.locationName = locationName;
+  public void setPlace(String place) {
+    this.place = place;
   }
 
   @Nullable
@@ -68,11 +68,11 @@ public class BirthDataWithLocName extends BirthData {
     if (!super.equals(o))
       return false;
     BirthDataWithLocName that = (BirthDataWithLocName) o;
-    return Objects.equals(name, that.name) && Objects.equals(locationName, that.locationName);
+    return Objects.equals(name, that.name) && Objects.equals(place, that.place);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), name, locationName);
+    return Objects.hash(super.hashCode(), name, place);
   }
 }
