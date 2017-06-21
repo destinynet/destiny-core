@@ -14,7 +14,8 @@ import java.util.List;
 /** 恆星 */
 @SuppressWarnings("WeakerAccess")
 public final class FixedStar extends Star implements Comparable<FixedStar> {
-  private final static String resource = "destiny.astrology.Star";
+
+  private final static String resource = Star.class.getName();
   
   /** Algol 大陵五 */
   public final static FixedStar ALGOL = new FixedStar("Fixed.ALGOL" , "Fixed.ALGOL_ABBR");

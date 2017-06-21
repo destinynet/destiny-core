@@ -25,7 +25,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
   @NotNull
   private final NodeType nodeType;
   
-  private final static String resource = "destiny.astrology.Star";
+  private final static String resource = Star.class.getName();
   
   /**
    * 真實北交點，計算方法，以下兩者結果相同

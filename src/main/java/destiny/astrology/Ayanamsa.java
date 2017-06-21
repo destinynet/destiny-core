@@ -14,8 +14,7 @@ import java.util.ResourceBundle;
  * Ayanamsha is a Sanskrit word and is to be pronounced with the third "a" long, so: "Ayana-amsha". 
  * "ayana" means "precession" and "amsha" means "component".
  */
-public enum Ayanamsa implements LocaleStringIF
-{
+public enum Ayanamsa implements LocaleStringIF {
   FAGAN_BRADLEY     ("Ayana.FAGAN_BRADLEY"),
   LAHIRI            ("Ayana.LAHIRI"),
   DELUCE            ("Ayana.DELUCE"),
@@ -39,6 +38,7 @@ public enum Ayanamsa implements LocaleStringIF
   B1950             ("Ayana.B1950");
   
   private final static String resource = "destiny.astrology.Astrology";
+
   private final String nameKey;
   
   Ayanamsa(String nameKey) {

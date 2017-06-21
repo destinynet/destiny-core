@@ -27,7 +27,7 @@ public final class LunarApsis extends LunarPoint implements Comparable<LunarApsi
   private final MeanOscu meanOscu;
   
   
-  private final static String resource = "destiny.astrology.Star";
+  private final static String resource = Star.class.getName();
   
   /** 
    * 平均遠地點 , 月孛 , 水之餘 , Black Moon , Lilith，計算方法，以下兩者結果相同 :

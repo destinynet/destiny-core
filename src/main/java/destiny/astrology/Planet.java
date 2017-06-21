@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 
 public final class Planet extends Star implements Comparable<Planet> {
-  private final static String resource = "destiny.astrology.Star";
+  private final static String resource = Star.class.getName();
 
   public final static Planet SUN     = new Planet("Planet.SUN"    , "Planet.SUN_ABBR");
   public final static Planet MOON    = new Planet("Planet.MOON"   , "Planet.MOON_ABBR");
@@ -43,11 +43,10 @@ public final class Planet extends Star implements Comparable<Planet> {
   }
 
   @Override
-  public int compareTo(@NotNull Planet o)
-  {
+  public int compareTo(@NotNull Planet o) {
     if (this.equals(o))
       return 0;
-    
+
     List<Planet> list = Arrays.asList(values);
     return list.indexOf(this) - list.indexOf(o);
   }

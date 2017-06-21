@@ -33,8 +33,7 @@ public abstract class LunarPoint extends Star {
    };
    */
 
-  LunarPoint(String nameKey, String abbrKey, String resource)
-  {
+  LunarPoint(String nameKey, String abbrKey, String resource) {
     super(nameKey, abbrKey, resource);
   }
 

@@ -19,138 +19,112 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class ClassUtils implements Serializable
-{
-  public enum PERMISSION { READABLE , WRITABLE , BOTH , OR}
-  
+public class ClassUtils implements Serializable {
+
+  public enum PERMISSION {READABLE, WRITABLE, BOTH, OR}
+
   private final static Set<String> idSet = new ImmutableSet.Builder<String>()
-   .add("javax.persistence.Id")
-   .add("javax.persistence.EmbeddedId")
-   .build();
-  
-  
+    .add("javax.persistence.Id")
+    .add("javax.persistence.EmbeddedId")
+    .build();
+
+
   // How to get annotations of a member variable ?
   // http://stackoverflow.com/questions/4453159/how-to-get-annotations-of-a-member-variable
+
   /**
    * 判斷是否是 JPA 的 id
    */
-  public static boolean isId(@NotNull Class<?> clazz , String propertyName)
-  {
-    for(Field field : clazz.getDeclaredFields())
-    {
-      if (field.getName().equals(propertyName))
-      {
-        //System.out.println("found " + field.getOptionalName());
-        for(Annotation annotation : field.getDeclaredAnnotations())
-        {
-          //System.out.println("\t anno : " + annotation.annotationType().getOptionalName());
+  public static boolean isId(@NotNull Class<?> clazz, String propertyName) {
+    for (Field field : clazz.getDeclaredFields()) {
+      if (field.getName().equals(propertyName)) {
+        for (Annotation annotation : field.getDeclaredAnnotations()) {
           return idSet.contains(annotation.annotationType().getName());
         }
       }
     }
     return false;
   }
-  
-  /** 
+
+  /**
    * 判斷能否更改其值
    */
-  public static boolean isWritable(Class<?> clazz , String propertyName)
-  {
+  public static boolean isWritable(Class<?> clazz, String propertyName) {
     BeanInfo beanInfo;
-    try
-    {
+    try {
       beanInfo = Introspector.getBeanInfo(clazz);
-      
+
       PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
-      for(PropertyDescriptor pd : pds)
-      {
-        if (pd.getName().equals(propertyName))
-        {
-          //System.out.println("found " + propertyName);
-          //System.out.println("read  : " + pd.getReadMethod());
-          //System.out.println("write : " + pd.getWriteMethod());
+      for (PropertyDescriptor pd : pds) {
+        if (pd.getName().equals(propertyName)) {
+
           return (pd.getWriteMethod() != null);
         }
       }
-    }
-    catch (IntrospectionException e)
-    {
+    } catch (IntrospectionException e) {
       e.printStackTrace();
     }
-    
+
     return false;
   }
-  
+
   /** 取得某種 type 的 property list */
   @NotNull
-  public static List<String> getProperties(Class<?> clazz , @NotNull PERMISSION type)
-  {
+  public static List<String> getProperties(Class<?> clazz, @NotNull PERMISSION type) {
     Set<String> set = new TreeSet<>();
-    try
-    {
+    try {
       BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
-      
+
       PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
-      for(PropertyDescriptor pd : pds)
-      {
-        //System.out.println(pd.getOptionalName() + " : getPropertyType = " + pd.getPropertyType());
-        if ( pd.getPropertyType() != Class.class)
-        {
-          //System.out.println("type = " + type); 
-          switch(type)
-          {
-            case READABLE : //可讀 
+      for (PropertyDescriptor pd : pds) {
+        if (pd.getPropertyType() != Class.class) {
+          switch (type) {
+            case READABLE: //可讀
             {
               if (pd.getReadMethod() != null)
                 set.add(pd.getName());
               break;
             }
-            case WRITABLE : //可寫
+            case WRITABLE: //可寫
             {
               if (pd.getWriteMethod() != null)
                 set.add(pd.getName());
               break;
             }
-            case BOTH : //可讀+可寫
+            case BOTH: //可讀+可寫
             {
               if (pd.getReadMethod() != null && pd.getWriteMethod() != null)
                 set.add(pd.getName());
               break;
             }
-            case OR : //未指定
+            case OR: //未指定
               set.add(pd.getName());
           }
-          //System.out.println(pd.getOptionalName()  + " : " + pd.getPropertyType() + " : " + (pd.getReadMethod() == null ? "null" : pd.getReadMethod().getOptionalName()) + " , " + (pd.getWriteMethod() == null ? "null" : pd.getWriteMethod().getOptionalName()) );
         }
       }
-    }
-    catch (IntrospectionException e)
-    {
+    } catch (IntrospectionException e) {
       e.printStackTrace();
     }
-    
+
     List<String> resultList = new ArrayList<>();
-    
+
     //排序 , id , key , user 放前面
-    if(set.contains("id"))
-    {
+    if (set.contains("id")) {
       resultList.add("id");
       set.remove("id");
     }
-    if(set.contains("key"))
-    {
+    if (set.contains("key")) {
       resultList.add("key");
       set.remove("key");
     }
-    if(set.contains("user"))
-    {
+    if (set.contains("user")) {
       resultList.add("user");
       set.remove("user");
     }
-    
+
     //剩下的隨便放
     resultList.addAll(new ArrayList<>(set));
-    
+
     return resultList;
   }
 
