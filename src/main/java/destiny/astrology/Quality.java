@@ -27,22 +27,19 @@ public enum Quality implements LocaleStringIF
   private final String nameKey;
   
   private final static String resource = "destiny.astrology.Sign";
-  
-  Quality(String nameKey)
-  {
+
+  Quality(String nameKey) {
     this.nameKey = nameKey;
   }
-  
+
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
 
 }

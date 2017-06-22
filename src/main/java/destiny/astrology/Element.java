@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/8/29 at 下午 2:42:41
- */ 
+ */
 package destiny.astrology;
 
 import destiny.tools.LocaleStringIF;
@@ -23,27 +23,24 @@ public enum Element implements LocaleStringIF
   AIR("Element.AIR"),
   /** 水 */
   WATER("Element.WATER");
-  
+
   private final String nameKey;
-  
+
   private final static String resource = "destiny.astrology.Sign";
-  
-  Element(String nameKey)
-  {
+
+  Element(String nameKey) {
     this.nameKey = nameKey;
   }
-  
+
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
-  
-  
+
+
 }
