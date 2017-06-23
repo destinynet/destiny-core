@@ -13,6 +13,8 @@ import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -42,7 +44,7 @@ public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
   }
 
   @Override
-  public Branch getMainHouse(LocalDateTime lmt, Location loc) {
+  public Tuple2<Branch , Branch> getMainHouse(LocalDateTime lmt, Location loc) {
     ChineseDateIF chineseDateImpl = context.getChineseDateImpl();
     HourIF hourImpl = context.getHourImpl();
     MidnightIF midnightImpl = context.getMidnightImpl();
@@ -63,7 +65,10 @@ public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
 
     // 命宮所參考的「年干」，同時依據「年系星」的類型來決定
     StemBranch year = context.getYearType() == YearType.YEAR_LUNAR ? lunarYear : solarYear;
-    StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , finalMonthNumForMainStars , hour);
-    return mainHouse.getBranch();
+
+    Branch mainHouse = IZiwei.getMainHouseBranch(finalMonthNumForMainStars , hour);
+    Branch bodyHouse = IZiwei.getBodyHouseBranch(finalMonthNumForMainStars , hour);
+
+    return Tuple.tuple(mainHouse , bodyHouse);
   }
 }

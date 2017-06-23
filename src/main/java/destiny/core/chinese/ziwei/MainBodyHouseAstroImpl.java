@@ -8,6 +8,8 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.eightwords.RisingSignIF;
 import destiny.core.chinese.Branch;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -28,11 +30,11 @@ public class MainBodyHouseAstroImpl implements IMainBodyHouse, Serializable {
   }
 
   @Override
-  public Branch getMainHouse(LocalDateTime lmt, Location loc) {
+  public Tuple2<Branch , Branch> getMainHouse(LocalDateTime lmt, Location loc) {
     Branch mainHouse = risingSignImpl.getRisingSign(lmt , loc , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     Position moonPos = starPositionImpl.getPosition(Planet.MOON , lmt , loc , Centric.GEO , Coordinate.ECLIPTIC);
     Branch bodyHouse = SolarTerms.getFromDegree(moonPos.getLongitude()).getBranch();
 
-    return mainHouse;
+    return Tuple.tuple(mainHouse , bodyHouse);
   }
 }

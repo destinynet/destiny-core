@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.chinese.Branch;
+import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -15,7 +16,8 @@ import java.util.ResourceBundle;
 /** 取命宮、身宮地支 */
 public interface IMainBodyHouse extends Descriptive {
 
-  Branch getMainHouse(LocalDateTime lmt , Location loc);
+  /** 前者為命宮、後者為身宮 */
+  Tuple2<Branch,Branch> getMainHouse(LocalDateTime lmt , Location loc);
 
   @Override
   default String getTitle(Locale locale) {
