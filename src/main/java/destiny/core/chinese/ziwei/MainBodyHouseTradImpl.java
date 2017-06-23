@@ -17,17 +17,24 @@ import destiny.core.chinese.StemBranch;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import static destiny.core.chinese.ziwei.ZContext.*;
+
 /**
  * 傳統紫微計算命宮
+ *
+ * 命宮計算依據，是「年干」以及「時支」
+ * 而「年干」要分「陰曆」或是「節氣」
+ * 因此必須傳入一大堆參數，才能計算出「陰曆」或是「節氣」的「年」
+ * 再由 {@link YearType} 來決定要挑哪一個
  */
-public class MainHouseTradImpl implements IMainHouse , Serializable {
+public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
 
   private final ZContextMore context;
   private final YearMonthIF yearMonthImpl;
   private final DayIF dayImpl;
   private final SolarTermsIF solarTermsImpl;
 
-  public MainHouseTradImpl(ZContextMore context, YearMonthIF yearMonthImpl, DayIF dayImpl, SolarTermsIF solarTermsImpl) {
+  public MainBodyHouseTradImpl(ZContextMore context, YearMonthIF yearMonthImpl, DayIF dayImpl, SolarTermsIF solarTermsImpl) {
     this.context = context;
     this.yearMonthImpl = yearMonthImpl;
     this.dayImpl = dayImpl;
@@ -55,7 +62,7 @@ public class MainHouseTradImpl implements IMainHouse , Serializable {
     final int finalMonthNumForMainStars = IZiwei.getFinalMonthNumber(lunarMonth, cDate.isLeapMonth() , monthBranch , days , context.getMainStarsAlgo());
 
     // 命宮所參考的「年干」，同時依據「年系星」的類型來決定
-    StemBranch year = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear : solarYear;
+    StemBranch year = context.getYearType() == YearType.YEAR_LUNAR ? lunarYear : solarYear;
     StemBranch mainHouse = IZiwei.getMainHouse(year.getStem() , finalMonthNumForMainStars , hour);
     return mainHouse.getBranch();
   }

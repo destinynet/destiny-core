@@ -12,15 +12,15 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-/** 取命宮地支 */
-public interface IMainHouse extends Descriptive {
+/** 取命宮、身宮地支 */
+public interface IMainBodyHouse extends Descriptive {
 
   Branch getMainHouse(LocalDateTime lmt , Location loc);
 
   @Override
   default String getTitle(Locale locale) {
     try {
-      return ResourceBundle.getBundle(IMainHouse.class.getName(), locale).getString(getClass().getSimpleName());
+      return ResourceBundle.getBundle(IMainBodyHouse.class.getName(), locale).getString(getClass().getSimpleName());
     } catch (MissingResourceException e) {
       return getClass().getSimpleName();
     }

@@ -8,11 +8,41 @@ package destiny.core.calendar;
 import org.junit.Test;
 
 import static destiny.core.calendar.SolarTerms.*;
+import static destiny.core.chinese.Branch.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 
 public class SolarTermsTest {
+
+  /** 節氣 -> 地支 */
+  @Test
+  public void testGetBranch() {
+    assertSame(寅 , 立春.getBranch());
+    assertSame(寅 , 雨水.getBranch());
+    assertSame(卯 , 驚蟄.getBranch());
+    assertSame(卯 , 春分.getBranch());
+    assertSame(辰 , 清明.getBranch());
+    assertSame(辰 , 穀雨.getBranch());
+    assertSame(巳 , 立夏.getBranch());
+    assertSame(巳 , 小滿.getBranch());
+    assertSame(午 , 芒種.getBranch());
+    assertSame(午 , 夏至.getBranch());
+    assertSame(未 , 小暑.getBranch());
+    assertSame(未 , 大暑.getBranch());
+    assertSame(申 , 立秋.getBranch());
+    assertSame(申 , 處暑.getBranch());
+    assertSame(酉 , 白露.getBranch());
+    assertSame(酉 , 秋分.getBranch());
+    assertSame(戌 , 寒露.getBranch());
+    assertSame(戌 , 霜降.getBranch());
+    assertSame(亥 , 立冬.getBranch());
+    assertSame(亥 , 小雪.getBranch());
+    assertSame(子 , 大雪.getBranch());
+    assertSame(子 , 冬至.getBranch());
+    assertSame(丑 , 小寒.getBranch());
+    assertSame(丑 , 大寒.getBranch());
+  }
 
   @Test
   public void testGetIndex() {
@@ -102,33 +132,33 @@ public class SolarTermsTest {
 
   @Test
   public void testGet() {
-    assertSame(立春, get(-24));
-    assertSame(大寒, get(-1));
-    assertSame(立春, get(0));
-    assertSame(雨水, get(1));
-    assertSame(驚蟄, get(2));
-    assertSame(春分, get(3));
-    assertSame(清明, get(4));
-    assertSame(穀雨, get(5));
-    assertSame(立夏, get(6));
-    assertSame(小滿, get(7));
-    assertSame(芒種, get(8));
-    assertSame(夏至, get(9));
-    assertSame(小暑, get(10));
-    assertSame(大暑, get(11));
-    assertSame(立秋, get(12));
-    assertSame(處暑, get(13));
-    assertSame(白露, get(14));
-    assertSame(秋分, get(15));
-    assertSame(寒露, get(16));
-    assertSame(霜降, get(17));
-    assertSame(立冬, get(18));
-    assertSame(小雪, get(19));
-    assertSame(大雪, get(20));
-    assertSame(冬至, get(21));
-    assertSame(小寒, get(22));
-    assertSame(大寒, get(23));
-    assertSame(立春, get(24));
+    assertSame(立春, SolarTerms.get(-24));
+    assertSame(大寒, SolarTerms.get(-1));
+    assertSame(立春, SolarTerms.get(0));
+    assertSame(雨水, SolarTerms.get(1));
+    assertSame(驚蟄, SolarTerms.get(2));
+    assertSame(春分, SolarTerms.get(3));
+    assertSame(清明, SolarTerms.get(4));
+    assertSame(穀雨, SolarTerms.get(5));
+    assertSame(立夏, SolarTerms.get(6));
+    assertSame(小滿, SolarTerms.get(7));
+    assertSame(芒種, SolarTerms.get(8));
+    assertSame(夏至, SolarTerms.get(9));
+    assertSame(小暑, SolarTerms.get(10));
+    assertSame(大暑, SolarTerms.get(11));
+    assertSame(立秋, SolarTerms.get(12));
+    assertSame(處暑, SolarTerms.get(13));
+    assertSame(白露, SolarTerms.get(14));
+    assertSame(秋分, SolarTerms.get(15));
+    assertSame(寒露, SolarTerms.get(16));
+    assertSame(霜降, SolarTerms.get(17));
+    assertSame(立冬, SolarTerms.get(18));
+    assertSame(小雪, SolarTerms.get(19));
+    assertSame(大雪, SolarTerms.get(20));
+    assertSame(冬至, SolarTerms.get(21));
+    assertSame(小寒, SolarTerms.get(22));
+    assertSame(大寒, SolarTerms.get(23));
+    assertSame(立春, SolarTerms.get(24));
 
   }
 }

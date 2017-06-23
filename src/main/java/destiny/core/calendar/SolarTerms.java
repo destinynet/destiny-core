@@ -1,9 +1,12 @@
 package destiny.core.calendar;
 
 
+import destiny.core.chinese.Branch;
 import destiny.tools.ArrayTools;
 
 import java.util.Arrays;
+
+import static destiny.core.chinese.Branch.寅;
 
 public enum SolarTerms {
   立春("立春",315),
@@ -99,6 +102,12 @@ public enum SolarTerms {
    */
   public boolean isMajor() {
     return SolarTerms.getIndex(this) % 2 == 0;
+  }
+
+  /** 取得地支 */
+  public Branch getBranch() {
+    int index = getIndex(this);
+    return 寅.next(index / 2);
   }
 
 }
