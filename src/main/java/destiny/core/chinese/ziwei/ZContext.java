@@ -17,6 +17,9 @@ import java.util.ResourceBundle;
  */
 public class ZContext implements Serializable {
 
+  /** 命宮、身宮 演算法 */
+  private final IMainBodyHouse mainBodyHouseImpl;
+
   /** 紫微星，在閏月時，該如何處理 */
   protected final IPurpleStarBranch purpleBranchImpl;
 
@@ -174,7 +177,8 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+    this.mainBodyHouseImpl = mainBodyHouseImpl;
     this.purpleBranchImpl = purpleBranchImpl;
     this.mainStarsAlgo = mainStarsAlgo;
     this.monthStarsAlgo = monthStarsAlgo;
@@ -192,6 +196,11 @@ public class ZContext implements Serializable {
     this.fortuneOutput = fortuneOutput;
     this.bigRangeImpl = bigRangeImpl;
     this.redBeauty = redBeauty;
+  }
+
+  /** 命宮、身宮 演算法 */
+  public IMainBodyHouse getMainBodyHouseImpl() {
+    return mainBodyHouseImpl;
   }
 
   public IPurpleStarBranch getPurpleBranchImpl() {

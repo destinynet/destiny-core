@@ -30,7 +30,7 @@ public class MainBodyHouseAstroImpl implements IMainBodyHouse, Serializable {
   }
 
   @Override
-  public Tuple2<Branch , Branch> getMainHouse(LocalDateTime lmt, Location loc) {
+  public Tuple2<Branch , Branch> getMainBodyHouse(LocalDateTime lmt, Location loc) {
     Branch mainHouse = risingSignImpl.getRisingSign(lmt , loc , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     Position moonPos = starPositionImpl.getPosition(Planet.MOON , lmt , loc , Centric.GEO , Coordinate.ECLIPTIC);
     Branch bodyHouse = SolarTerms.getFromDegree(moonPos.getLongitude()).getBranch();

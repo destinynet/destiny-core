@@ -11,6 +11,8 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
+import java.util.Optional;
+
 /**
  * 年干 + 性別
  * 被用於 {@link StarDoctor} : 博士12神煞
@@ -26,7 +28,7 @@ public abstract class HouseYearStemGenderImpl extends HouseAbstractImpl<Tuple2<S
   }
 
   @Override
-  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
     Stem yearStem = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getStem() : solarYear.getStem();
     return getBranch(Tuple.tuple(yearStem, gender));
   }

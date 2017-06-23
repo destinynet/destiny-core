@@ -10,6 +10,8 @@ import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple3;
 
+import java.util.Optional;
+
 /** (年支、月數、時支) -> 地支
  *
  * 只有  {@link StarMinor#天壽}
@@ -21,7 +23,7 @@ public abstract class HouseYearBranchMonthNumHourBranchImpl extends HouseAbstrac
   }
 
   @Override
-  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
     Branch yearBranch = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getBranch() : solarYear.getBranch();
     return getBranch(Tuple.tuple(yearBranch , finalMonthNumForMonthStars, hour));
   }

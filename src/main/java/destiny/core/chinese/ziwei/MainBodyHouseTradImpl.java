@@ -4,7 +4,6 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.DayIF;
@@ -31,25 +30,30 @@ import static destiny.core.chinese.ziwei.ZContext.*;
  */
 public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
 
-  private final ZContextMore context;
+  private final ChineseDateIF chineseDateImpl;
+  private final HourIF hourImpl;
+  private final MidnightIF midnightImpl;
+  private final boolean changeDayAfterZi;
   private final YearMonthIF yearMonthImpl;
   private final DayIF dayImpl;
-  private final SolarTermsIF solarTermsImpl;
+  private final MonthAlgo mainStarsAlgo;
+  private final YearType yearType;
 
-  public MainBodyHouseTradImpl(ZContextMore context, YearMonthIF yearMonthImpl, DayIF dayImpl, SolarTermsIF solarTermsImpl) {
-    this.context = context;
+  public MainBodyHouseTradImpl(ChineseDateIF chineseDateImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, YearMonthIF yearMonthImpl, DayIF dayImpl, MonthAlgo mainStarsAlgo, YearType yearType) {
+    this.hourImpl = hourImpl;
+    this.midnightImpl = midnightImpl;
+    this.changeDayAfterZi = changeDayAfterZi;
+    this.chineseDateImpl = chineseDateImpl;
     this.yearMonthImpl = yearMonthImpl;
     this.dayImpl = dayImpl;
-    this.solarTermsImpl = solarTermsImpl;
+    this.mainStarsAlgo = mainStarsAlgo;
+    this.yearType = yearType;
   }
 
   @Override
-  public Tuple2<Branch , Branch> getMainHouse(LocalDateTime lmt, Location loc) {
-    ChineseDateIF chineseDateImpl = context.getChineseDateImpl();
-    HourIF hourImpl = context.getHourImpl();
-    MidnightIF midnightImpl = context.getMidnightImpl();
+  public Tuple2<Branch , Branch> getMainBodyHouse(LocalDateTime lmt, Location loc) {
 
-    ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , context.isChangeDayAfterZi());
+    ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     StemBranch lunarYear = cDate.getYear();
 
     Branch monthBranch = yearMonthImpl.getMonth(lmt , loc).getBranch();
@@ -61,10 +65,10 @@ public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
     Branch hour = hourImpl.getHour(lmt , loc);
 
     // 最終要計算的「月份」數字 , for 主星
-    final int finalMonthNumForMainStars = IZiwei.getFinalMonthNumber(lunarMonth, cDate.isLeapMonth() , monthBranch , days , context.getMainStarsAlgo());
+    final int finalMonthNumForMainStars = IZiwei.getFinalMonthNumber(lunarMonth, cDate.isLeapMonth() , monthBranch , days , mainStarsAlgo);
 
     // 命宮所參考的「年干」，同時依據「年系星」的類型來決定
-    StemBranch year = context.getYearType() == YearType.YEAR_LUNAR ? lunarYear : solarYear;
+    StemBranch year = yearType == YearType.YEAR_LUNAR ? lunarYear : solarYear;
 
     Branch mainHouse = IZiwei.getMainHouseBranch(finalMonthNumForMainStars , hour);
     Branch bodyHouse = IZiwei.getBodyHouseBranch(finalMonthNumForMainStars , hour);

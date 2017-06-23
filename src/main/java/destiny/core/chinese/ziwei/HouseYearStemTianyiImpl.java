@@ -12,6 +12,8 @@ import destiny.core.chinese.TianyiIF;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
+import java.util.Optional;
+
 /**
  * (年干,天乙貴人設定) -> 地支
  * 適用於 {@link StarLucky#天魁} (陽貴人) , {@link StarLucky#天鉞} (陰貴人)
@@ -24,7 +26,7 @@ public abstract class HouseYearStemTianyiImpl extends HouseAbstractImpl<Tuple2<S
   }
 
   @Override
-  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+  public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
     Stem yearStem = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getStem() : solarYear.getStem();
     return getBranch(Tuple.tuple(yearStem, context.getTianyiImpl()));
   }

@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 public interface IMainBodyHouse extends Descriptive {
 
   /** 前者為命宮、後者為身宮 */
-  Tuple2<Branch,Branch> getMainHouse(LocalDateTime lmt , Location loc);
+  Tuple2<Branch,Branch> getMainBodyHouse(LocalDateTime lmt , Location loc);
 
   @Override
   default String getTitle(Locale locale) {

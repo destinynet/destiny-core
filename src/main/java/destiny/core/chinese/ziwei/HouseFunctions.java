@@ -12,6 +12,7 @@ import org.jooq.lambda.tuple.Tuple3;
 import org.jooq.lambda.tuple.Tuple5;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -221,7 +222,7 @@ public class HouseFunctions {
 
   public final static IHouse house火星 = new HouseYearBranchHourBranchImpl(火星) {
     @Override
-    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
       Branch yearBranch = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getBranch() : solarYear.getBranch();
       switch (context.getFireBell()) {
         case FIREBELL_BOOK: return fun火星_全書.apply(yearBranch);
@@ -233,7 +234,7 @@ public class HouseFunctions {
 
   public final static IHouse house鈴星 = new HouseYearBranchHourBranchImpl(鈴星) {
     @Override
-    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
       Branch yearBranch = context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getBranch() : solarYear.getBranch();
       switch (context.getFireBell()) {
         case FIREBELL_BOOK: return fun鈴星_全書.apply(yearBranch);
@@ -489,7 +490,7 @@ public class HouseFunctions {
 
   public final static IHouse house天傷 = new HouseHouseDepYearStemGenderImpl(天傷) {
     @Override
-    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
       // 太乙派，沒有遷移宮
       Branch 遷移宮地支 = IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, new HouseSeqDefaultImpl());
       switch (context.getHurtAngel()) {
@@ -503,7 +504,7 @@ public class HouseFunctions {
 
   public final static IHouse house天使 = new HouseHouseDepYearStemGenderImpl(天使) {
     @Override
-    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
 
       Branch 命宮地支 = null ;
       // 太乙派，沒有遷移宮
@@ -555,7 +556,7 @@ public class HouseFunctions {
     }
 
     @Override
-    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, ZContext context) {
+    public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
       switch (context.getRedBeauty()) {
         case RED_BEAUTY_SAME: return fun紅艷_甲乙相同.apply(context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getStem() : solarYear.getStem());
         case RED_BEAUTY_DIFF: return fun紅艷_甲乙相異.apply(context.getYearType() == ZContext.YearType.YEAR_LUNAR ? lunarYear.getStem() : solarYear.getStem());
