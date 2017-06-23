@@ -36,6 +36,6 @@ public class StarGeneralFrontTest {
     // 酉年，將星[1] 在酉 , 攀鞍[2] 在戌 , 亡神[12] 在 申
     assertSame(酉 , StarGeneralFront.fun將星.apply(酉));
     assertSame(戌 , StarGeneralFront.fun攀鞍.apply(酉));
-    assertSame(申 , StarGeneralFront.fun亡神.apply(申));
+    assertSame(申 , StarGeneralFront.fun亡神.apply(酉));
   }
 }

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Optional;
 
 import static destiny.core.chinese.Branch.子;
 import static destiny.core.chinese.Branch.寅;
@@ -90,12 +91,8 @@ public interface IZiwei {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
 
-    Branch mainHouse = getMainHouseBranch(finalMonthNum , hour);
-    // 左下角，寅宮 的 干支
-    StemBranch stemBranchOf寅 = StemBranch.get(stemOf寅 , 寅);
-
-    int steps = mainHouse.getAheadOf(寅);
-    return stemBranchOf寅.next(steps);
+    Branch branch = getMainHouseBranch(finalMonthNum , hour);
+    return getStemBranchOf(branch , stemOf寅);
   } // 取得命宮
 
   /** 承上 , 找到命宮的 干支 ，可以取得「五行、第幾局」 */
@@ -179,13 +176,15 @@ public interface IZiwei {
 
   /**
    * 計算本命盤
-   * @param yinYear     陰曆的年干支
-   * @param solarYear   「節氣」的年干支
-   * @param lunarMonth  陰曆的月份
-   * @param monthBranch 「節氣」的月支
+   *
+   * @param optionalMainBranch 預先計算過的命宮
+   * @param optionalBodyBranch 預先計算過的身宮
+   * @param lunarYear          陰曆的年干支
+   * @param solarYear          「節氣」的年干支
+   * @param lunarMonth         陰曆的月份
+   * @param monthBranch        「節氣」的月支
    */
-  Builder getBirthPlate(int cycle, StemBranch yinYear, StemBranch solarYear,
-                        int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZContext context) ;
+  Builder getBirthPlate(Optional<Branch> optionalMainBranch, Optional<Branch> optionalBodyBranch, int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
   Builder getBirthPlate(LocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZContextMore context, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);
