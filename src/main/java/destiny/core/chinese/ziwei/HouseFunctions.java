@@ -10,6 +10,8 @@ import destiny.core.chinese.*;
 import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 import org.jooq.lambda.tuple.Tuple5;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +35,8 @@ import static destiny.core.chinese.ziwei.StarYearFront.*;
 
 @SuppressWarnings("Duplicates")
 public class HouseFunctions {
+
+  private static Logger logger = LoggerFactory.getLogger(HouseFunctions.class);
 
   public final static IHouse house紫微 = new HouseMainStarImpl(紫微) {
     @Override
@@ -488,11 +492,18 @@ public class HouseFunctions {
     }
   };
 
+
   public final static IHouse house天傷 = new HouseHouseDepYearStemGenderImpl(天傷) {
     @Override
     public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
       // 太乙派，沒有遷移宮
-      Branch 遷移宮地支 = IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, new HouseSeqDefaultImpl());
+      IHouseSeq houseSeqImpl = new HouseSeqDefaultImpl();
+      int steps = houseSeqImpl.getAheadOf(House.遷移 , House.命宮);
+
+      Branch 遷移宮地支 = predefinedMainHouse
+        .map(mainHouse -> mainHouse.prev(steps))
+        .orElse(IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl));
+
       switch (context.getHurtAngel()) {
         case HURT_ANGEL_FIXED: return fun天傷_fixed交友.apply(遷移宮地支);
         case HURT_ANGEL_YINYANG: return fun天傷_陽順陰逆.apply(遷移宮地支 , lunarYear.getStem() , gender);
@@ -505,10 +516,13 @@ public class HouseFunctions {
   public final static IHouse house天使 = new HouseHouseDepYearStemGenderImpl(天使) {
     @Override
     public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
-
-      Branch 命宮地支 = null ;
       // 太乙派，沒有遷移宮
-      Branch 遷移宮地支 = IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, new HouseSeqDefaultImpl());
+      IHouseSeq houseSeqImpl = new HouseSeqDefaultImpl();
+      int steps = houseSeqImpl.getAheadOf(House.遷移 , House.命宮);
+      Branch 遷移宮地支 = predefinedMainHouse
+        .map(mainHouse -> mainHouse.prev(steps))
+        .orElse(IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl));
+
       switch (context.getHurtAngel()) {
         case HURT_ANGEL_FIXED: return fun天使_fixed疾厄.apply(遷移宮地支);
         case HURT_ANGEL_YINYANG: return fun天使_陽順陰逆.apply(遷移宮地支 , lunarYear.getStem() , gender);

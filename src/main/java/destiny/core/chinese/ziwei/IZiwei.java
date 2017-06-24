@@ -143,6 +143,7 @@ public interface IZiwei {
   /**
    * 承上 , 取得該宮位的「天干」＋「地支」組合
    */
+  @Deprecated
   static StemBranch getHouse(Stem year, int month, Branch hour, House house, IHouseSeq seq) {
     // 寅 的天干
     Stem stemOf寅 = getStemOf寅(year);
@@ -150,6 +151,7 @@ public interface IZiwei {
     Branch branch = getHouseBranch(month , hour , house , seq);
     return getStemBranchOf(branch , stemOf寅);
   }
+
 
   static StemBranch getStemBranchOf(Branch branch , Stem stemOf寅) {
     // 左下角，寅宮 的 干支
