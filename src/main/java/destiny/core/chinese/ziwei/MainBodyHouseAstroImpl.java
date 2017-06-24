@@ -5,7 +5,6 @@ package destiny.core.chinese.ziwei;
 
 import destiny.astrology.*;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.eightwords.RisingSignIF;
 import destiny.core.chinese.Branch;
 import org.jooq.lambda.tuple.Tuple;
@@ -33,7 +32,10 @@ public class MainBodyHouseAstroImpl implements IMainBodyHouse, Serializable {
   public Tuple2<Branch , Branch> getMainBodyHouse(LocalDateTime lmt, Location loc) {
     Branch mainHouse = risingSignImpl.getRisingSign(lmt , loc , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     Position moonPos = starPositionImpl.getPosition(Planet.MOON , lmt , loc , Centric.GEO , Coordinate.ECLIPTIC);
-    Branch bodyHouse = SolarTerms.getFromDegree(moonPos.getLongitude()).getBranch();
+
+    ZodiacSign zodiacSign = ZodiacSign.getZodiacSign(moonPos.getLongitude());
+
+    Branch bodyHouse = zodiacSign.getBranch();
 
     return Tuple.tuple(mainHouse , bodyHouse);
   }
