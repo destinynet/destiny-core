@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
-import destiny.core.calendar.chinese.IFinalMonthNumber;
+import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
 
@@ -25,11 +25,11 @@ public class ZContext implements Serializable {
   protected final IPurpleStarBranch purpleBranchImpl;
 
   /** 命宮、身宮、紫微等14顆主星 對於月份，如何計算 */
-  private final IFinalMonthNumber.MonthAlgo mainStarsAlgo;
+  private final MonthAlgo mainStarsAlgo;
 
 
   /** 月系星，如何計算月份 */
-  private final IFinalMonthNumber.MonthAlgo monthStarsAlgo;
+  private final MonthAlgo monthStarsAlgo;
 
 
   /** 年系星系 */
@@ -156,7 +156,7 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, IFinalMonthNumber.MonthAlgo mainStarsAlgo, IFinalMonthNumber.MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.mainBodyHouseImpl = mainBodyHouseImpl;
     this.purpleBranchImpl = purpleBranchImpl;
     this.mainStarsAlgo = mainStarsAlgo;
@@ -187,12 +187,12 @@ public class ZContext implements Serializable {
   }
 
   /** 14主星、命、身，如何計算月令 */
-  public IFinalMonthNumber.MonthAlgo getMainStarsAlgo() {
+  public MonthAlgo getMainStarsAlgo() {
     return mainStarsAlgo;
   }
 
   /** 月系星，如何計算月令 */
-  public IFinalMonthNumber.MonthAlgo getMonthStarsAlgo() {
+  public MonthAlgo getMonthStarsAlgo() {
     return monthStarsAlgo;
   }
 
