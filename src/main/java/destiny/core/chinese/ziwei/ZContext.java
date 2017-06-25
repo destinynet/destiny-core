@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
+import destiny.core.calendar.chinese.IFinalMonthNumber;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
 
@@ -23,34 +24,12 @@ public class ZContext implements Serializable {
   /** 紫微星，在閏月時，該如何處理 */
   protected final IPurpleStarBranch purpleBranchImpl;
 
-  /** 月份演算法 */
-  public enum MonthAlgo implements Descriptive {
-    MONTH_FIXED_THIS,   // 不論有無閏月，一律固定當作本月
-    MONTH_LEAP_NEXT,    // 若閏月，一律當作下月 (全書)
-    MONTH_LEAP_SPLIT15, // 若閏月，15日(含)之前當本月，之後當下月
-    MONTH_SOLAR_TERMS;  // 節氣盤
-
-    @Override
-    public String getTitle(Locale locale) {
-      try {
-        return ResourceBundle.getBundle(ZContext.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-      return getTitle(locale);
-    }
-  }
-
   /** 命宮、身宮、紫微等14顆主星 對於月份，如何計算 */
-  private final MonthAlgo mainStarsAlgo;
+  private final IFinalMonthNumber.MonthAlgo mainStarsAlgo;
 
 
   /** 月系星，如何計算月份 */
-  private final MonthAlgo monthStarsAlgo;
+  private final IFinalMonthNumber.MonthAlgo monthStarsAlgo;
 
 
   /** 年系星系 */
@@ -177,7 +156,7 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, IFinalMonthNumber.MonthAlgo mainStarsAlgo, IFinalMonthNumber.MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.mainBodyHouseImpl = mainBodyHouseImpl;
     this.purpleBranchImpl = purpleBranchImpl;
     this.mainStarsAlgo = mainStarsAlgo;
@@ -208,12 +187,12 @@ public class ZContext implements Serializable {
   }
 
   /** 14主星、命、身，如何計算月令 */
-  public MonthAlgo getMainStarsAlgo() {
+  public IFinalMonthNumber.MonthAlgo getMainStarsAlgo() {
     return mainStarsAlgo;
   }
 
   /** 月系星，如何計算月令 */
-  public MonthAlgo getMonthStarsAlgo() {
+  public IFinalMonthNumber.MonthAlgo getMonthStarsAlgo() {
     return monthStarsAlgo;
   }
 

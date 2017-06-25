@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
 import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.chinese.IFinalMonthNumber;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
@@ -98,7 +99,7 @@ public class ZContextMore extends ZContext {
   private final boolean showYearFront;
 
 
-  public ZContextMore(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsMonthAlgo, MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity, boolean showGeneralFront, boolean showYearFront) {
+  public ZContextMore(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, IFinalMonthNumber.MonthAlgo mainStarsMonthAlgo, IFinalMonthNumber.MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity, boolean showGeneralFront, boolean showYearFront) {
     super(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutput, bigRangeImpl, redBeauty);
     this.name = name;

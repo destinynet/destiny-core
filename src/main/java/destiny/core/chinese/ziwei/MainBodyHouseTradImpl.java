@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.chinese.IFinalMonthNumber;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
@@ -36,10 +37,10 @@ public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
   private final boolean changeDayAfterZi;
   private final YearMonthIF yearMonthImpl;
   private final DayIF dayImpl;
-  private final MonthAlgo mainStarsAlgo;
+  private final IFinalMonthNumber.MonthAlgo mainStarsAlgo;
   private final YearType yearType;
 
-  public MainBodyHouseTradImpl(ChineseDateIF chineseDateImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, YearMonthIF yearMonthImpl, DayIF dayImpl, MonthAlgo mainStarsAlgo, YearType yearType) {
+  public MainBodyHouseTradImpl(ChineseDateIF chineseDateImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, YearMonthIF yearMonthImpl, DayIF dayImpl, IFinalMonthNumber.MonthAlgo mainStarsAlgo, YearType yearType) {
     this.hourImpl = hourImpl;
     this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
@@ -65,7 +66,7 @@ public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
     Branch hour = hourImpl.getHour(lmt , loc);
 
     // 最終要計算的「月份」數字 , for 主星
-    final int finalMonthNumForMainStars = IZiwei.getFinalMonthNumber(lunarMonth, cDate.isLeapMonth() , monthBranch , days , mainStarsAlgo);
+    final int finalMonthNumForMainStars = IFinalMonthNumber.getFinalMonthNumber(lunarMonth, cDate.isLeapMonth() , monthBranch , days , mainStarsAlgo);
 
     // 命宮所參考的「年干」，同時依據「年系星」的類型來決定
     StemBranch year = yearType == YearType.YEAR_LUNAR ? lunarYear : solarYear;

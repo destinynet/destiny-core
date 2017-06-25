@@ -27,44 +27,11 @@ import static destiny.core.chinese.ziwei.StarLucky.*;
 import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarUnlucky.火星;
 import static destiny.core.chinese.ziwei.StarUnlucky.鈴星;
-import static destiny.core.chinese.ziwei.ZContext.MonthAlgo.MONTH_LEAP_NEXT;
-import static destiny.core.chinese.ziwei.ZContext.MonthAlgo.MONTH_LEAP_SPLIT15;
-import static destiny.core.chinese.ziwei.ZContext.MonthAlgo.MONTH_SOLAR_TERMS;
 
 /** 紫微斗數 */
 public interface IZiwei {
 
   Logger logger = LoggerFactory.getLogger(IZiwei.class);
-
-  /**
-   * @param monthNum       陰曆月份
-   * @param leapMonth      是否閏月
-   * @param monthBranch    節氣月支
-   * @param monthAlgorithm 哪種演算法
-   * @param days           日數
-   * @return 取得最終要計算的「月份」數字
-   */
-  static int getFinalMonthNumber(int monthNum , boolean leapMonth , Branch monthBranch , int days , ZContext.MonthAlgo monthAlgorithm) {
-    if (monthAlgorithm == MONTH_SOLAR_TERMS) {
-      // 節氣盤的話，直接傳回 月支 數(相對於「寅」)
-      return monthBranch.getAheadOf(寅) + 1; // 別忘了 +1
-    } else {
-      int finalMonthNum = monthNum; // 內定為本月
-      if (leapMonth) {
-        // 若是閏月
-        if (monthAlgorithm == MONTH_LEAP_NEXT) {
-          // 且設定為「一律當下月」
-          finalMonthNum = monthNum+1;
-        } else if (monthAlgorithm == MONTH_LEAP_SPLIT15) {
-          // 且設定為「月半切割」
-          if (days > 15) {
-            finalMonthNum = monthNum+1;
-          }
-        }
-      }
-      return finalMonthNum;
-    }
-  }
 
   /**
    * 命宮 : (月數 , 時支) -> 地支
