@@ -13,10 +13,9 @@ import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateHour;
 import destiny.core.calendar.chinese.ChineseDateIF;
-import destiny.core.calendar.eightwords.DayIF;
-import destiny.core.calendar.eightwords.HourIF;
-import destiny.core.calendar.eightwords.MidnightIF;
-import destiny.core.calendar.eightwords.RisingSignIF;
+import destiny.core.calendar.chinese.IFinalMonthNumber;
+import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo;
+import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.Branch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,56 +36,56 @@ public interface PalmIF {
    * 本命盤，已經預先計算命宮
    * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
    * */
-  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int month, int day, Branch hourBranch , PositiveIF positiveImpl , Branch rising , boolean clockwiseHouse) {
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch , PositiveIF positiveImpl , Branch rising , Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
-    int realMonth = month ;
-    if (leap && day > 15)  // 若為閏月，15日以後算下個月
-      realMonth++;
+    int finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
+
+//    int finalMonthNum = monthNum ;
+//    if (leap && dayNum > 15)  // 若為閏月，15日以後算下個月
+//      finalMonthNum++;
 
     // 年上起月
-    Branch monthBranch = yearBranch.next((realMonth-1)*positive);
+    Branch month = yearBranch.next((finalMonthNum-1)*positive);
 
     // 月上起日
-    Branch dayBranch = monthBranch.next((day-1)* positive);
+    Branch day = month.next((dayNum-1)* positive);
 
     // 日上起時
-    Branch hour = dayBranch.next((hourBranch.getIndex())* positive);
+    Branch hour = day.next((hourBranch.getIndex())* positive);
 
     BiMap<Branch, Palm.House> houseMap = HashBiMap.create(12);
     for(int i=0 ; i<12 ; i++) {
       houseMap.put( clockwiseHouse ? rising.next(i) : rising.prev(i), Palm.House.values()[i]);
     }
-    return new Palm(gender, yearBranch , monthBranch , dayBranch , hour , houseMap);
+    return new Palm(gender, yearBranch , month , day , hour , houseMap);
   }
 
   /**
    * 本命盤 , 沒有預先計算命宮
    * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
    * */
-  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int month, int day, Branch hourBranch, PositiveIF positiveImpl, boolean clockwiseHouse) {
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch, PositiveIF positiveImpl, Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     logger.trace("positive = {}" , positive);
 
-    int realMonth = month ;
-    if (leap && day > 15)  // 若為閏月，15日以後算下個月
-      realMonth++;
+    int finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
+
+//    int finalMonthNum = monthNum ;
+//    if (leap && dayNum > 15)  // 若為閏月，15日以後算下個月
+//      finalMonthNum++;
 
     logger.trace("yearBranch = {}", yearBranch);
 
     // 年上起月
-    Branch monthBranch = yearBranch.next((realMonth-1)*positive);
-
-    logger.trace("monthBranch = {}" , monthBranch);
+    Branch month = yearBranch.next((finalMonthNum-1)*positive);
 
     // 月上起日
-    Branch dayBranch = monthBranch.next((day-1)* positive);
-    logger.trace("dayBranch = {}" , dayBranch);
+    Branch day = month.next((dayNum-1)* positive);
 
     // 日上起時
-    Branch hour = dayBranch.next((hourBranch.getIndex())* positive);
-    logger.trace("hour = {}" , hour);
+    Branch hour = day.next((hourBranch.getIndex())* positive);
 
     // 命宮
     int steps = Branch.卯.getAheadOf(hourBranch);
@@ -95,27 +94,31 @@ public interface PalmIF {
     for(int i=0 ; i<12 ; i++) {
       houseMap.put(clockwiseHouse ? rising.next(i) : rising.prev(i), Palm.House.values()[i]);
     }
-    return new Palm(gender, yearBranch , monthBranch , dayBranch , hour , houseMap);
+    return new Palm(gender, yearBranch , month , day , hour , houseMap);
   }
 
   /**
    * 本命盤
-   * @param trueRising 是否已經預先計算好了真實的上升星座
-   * */
-  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour , PositiveIF positiveImpl , Optional<Branch> trueRising , boolean clockwiseHouse) {
+   *
+   * @param trueRising  是否已經預先計算好了真實的上升星座
+   * @param monthBranch 「節氣」的月支
+   */
+  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour , PositiveIF positiveImpl , Optional<Branch> trueRising , Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
     return trueRising
-      .map  (branch -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl, branch , clockwiseHouse))
-      .orElseGet(() -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl, clockwiseHouse));
+      .map  (rising -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl, rising , monthBranch, monthAlgo, clockwiseHouse))
+      .orElseGet(() -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl,          monthBranch, monthAlgo , clockwiseHouse));
   }
 
   /**
    * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
-   * @param trueRisingSign 真實星體命宮. 若為 false , 則為傳統一掌經起命宮
-   * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
+   * @param yearMonthImpl   八字年月的計算實作（主要是用於計算月令）
+   * @param trueRisingSign  真實星體命宮. 若為 false , 則為傳統一掌經起命宮
+   * @param clockwiseHouse  宮位飛佈，順時針(true) or 逆時針(false)
    */
   default PalmWithMeta getPalmWithMeta(Gender gender, LocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
                                        ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl,
-                                       RisingSignIF risingSignImpl, boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {
+                                       RisingSignIF risingSignImpl, YearMonthIF yearMonthImpl, MonthAlgo monthAlgo,
+                                       boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     Branch hourBranch = hourImpl.getHour(lmt , loc);
     ChineseDateHour chineseDateHour = new ChineseDateHour(cDate , hourBranch);
@@ -127,15 +130,18 @@ public interface PalmIF {
     } else {
       trueRising = Optional.empty();
     }
-    Palm palm = getPalm(gender , chineseDateHour , positiveImpl , trueRising , clockwiseHouse);
+
+    // 節氣的月支
+    Branch monthBranch = yearMonthImpl.getMonth(lmt , loc).getBranch();
+    Palm palm = getPalm(gender , chineseDateHour , positiveImpl , trueRising , monthBranch, monthAlgo , clockwiseHouse);
     return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi, trueRisingSign);
   }
 
   default PalmWithMeta getPalmWithMeta(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl ,
                                        ChineseDateIF chineseDateImpl , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl ,
-                                       RisingSignIF risingSignImpl,
-                                       boolean changeDayAfterZi , boolean trueRisingSign , boolean clockwiseHouse) {
-    return getPalmWithMeta(gender , lmt.toLocalDateTime() , loc , place , positiveImpl , chineseDateImpl , dayImpl , hourImpl , midnightImpl , risingSignImpl, changeDayAfterZi, trueRisingSign, clockwiseHouse);
+                                       RisingSignIF risingSignImpl, YearMonthIF yearMonthImpl,
+                                       boolean changeDayAfterZi , boolean trueRisingSign , boolean clockwiseHouse , MonthAlgo monthAlgo) {
+    return getPalmWithMeta(gender , lmt.toLocalDateTime() , loc , place , positiveImpl , chineseDateImpl , dayImpl , hourImpl , midnightImpl , risingSignImpl, yearMonthImpl, monthAlgo, changeDayAfterZi, trueRisingSign, clockwiseHouse);
   }
 
   /**
