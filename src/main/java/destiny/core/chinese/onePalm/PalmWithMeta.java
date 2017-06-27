@@ -6,6 +6,7 @@ package destiny.core.chinese.onePalm;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.chinese.IFinalMonthNumber;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
@@ -37,7 +38,9 @@ public class PalmWithMeta implements Serializable {
 
   private final boolean trueRisingSign;
 
-  public PalmWithMeta(Palm palm, LocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean trueRisingSign) {
+  private final IFinalMonthNumber.MonthAlgo monthAlgo;
+
+  public PalmWithMeta(Palm palm, LocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean trueRisingSign, IFinalMonthNumber.MonthAlgo monthAlgo) {
     this.palm = palm;
     this.lmt = lmt;
     this.loc = loc;
@@ -49,6 +52,7 @@ public class PalmWithMeta implements Serializable {
     this.midnightImpl = midnightImpl;
     this.changeDayAfterZi = changeDayAfterZi;
     this.trueRisingSign = trueRisingSign;
+    this.monthAlgo = monthAlgo;
   }
 
 
@@ -95,6 +99,10 @@ public class PalmWithMeta implements Serializable {
 
   public boolean isTrueRisingSign() {
     return trueRisingSign;
+  }
+
+  public IFinalMonthNumber.MonthAlgo getMonthAlgo() {
+    return monthAlgo;
   }
 
   public ChineseDate getChineseDate() {

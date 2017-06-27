@@ -41,10 +41,6 @@ public interface PalmIF {
 
     int finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
 
-//    int finalMonthNum = monthNum ;
-//    if (leap && dayNum > 15)  // 若為閏月，15日以後算下個月
-//      finalMonthNum++;
-
     // 年上起月
     Branch month = yearBranch.next((finalMonthNum-1)*positive);
 
@@ -75,6 +71,37 @@ public interface PalmIF {
 //    int finalMonthNum = monthNum ;
 //    if (leap && dayNum > 15)  // 若為閏月，15日以後算下個月
 //      finalMonthNum++;
+
+    logger.trace("yearBranch = {}", yearBranch);
+
+    // 年上起月
+    Branch month = yearBranch.next((finalMonthNum-1)*positive);
+
+    // 月上起日
+    Branch day = month.next((dayNum-1)* positive);
+
+    // 日上起時
+    Branch hour = day.next((hourBranch.getIndex())* positive);
+
+    // 命宮
+    int steps = Branch.卯.getAheadOf(hourBranch);
+    Branch rising = hour.next(steps * positive);
+    BiMap<Branch, Palm.House> houseMap = HashBiMap.create(12);
+    for(int i=0 ; i<12 ; i++) {
+      houseMap.put(clockwiseHouse ? rising.next(i) : rising.prev(i), Palm.House.values()[i]);
+    }
+    return new Palm(gender, yearBranch , month , day , hour , houseMap);
+  }
+
+  /** 沒帶入節氣資料 , 內定把月份計算採用 {@link MonthAlgo#MONTH_LEAP_SPLIT15} 的演算法 */
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch, PositiveIF positiveImpl, boolean clockwiseHouse) {
+    int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
+
+    logger.trace("positive = {}" , positive);
+
+    int finalMonthNum = monthNum ;
+    if (leap && dayNum > 15)  // 若為閏月，15日以後算下個月
+      finalMonthNum++;
 
     logger.trace("yearBranch = {}", yearBranch);
 
@@ -134,7 +161,7 @@ public interface PalmIF {
     // 節氣的月支
     Branch monthBranch = yearMonthImpl.getMonth(lmt , loc).getBranch();
     Palm palm = getPalm(gender , chineseDateHour , positiveImpl , trueRising , monthBranch, monthAlgo , clockwiseHouse);
-    return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi, trueRisingSign);
+    return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi, trueRisingSign, monthAlgo);
   }
 
   default PalmWithMeta getPalmWithMeta(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl ,

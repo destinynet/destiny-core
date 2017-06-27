@@ -7,6 +7,7 @@ import destiny.core.Descriptive;
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -24,7 +25,8 @@ public class ZContext implements Serializable {
   /** 紫微星，在閏月時，該如何處理 */
   protected final IPurpleStarBranch purpleBranchImpl;
 
-  /** 命宮、身宮、紫微等14顆主星 對於月份，如何計算 */
+  /** 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 {@link #mainBodyHouseImpl} 為占星實作 {@link MainBodyHouseAstroImpl} , 此值會被忽略 */
+  @Nullable
   private final MonthAlgo mainStarsAlgo;
 
 
@@ -156,7 +158,11 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl,
+                  @Nullable MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl,
+                  TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl,
+                  IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl,
+                  IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.mainBodyHouseImpl = mainBodyHouseImpl;
     this.purpleBranchImpl = purpleBranchImpl;
     this.mainStarsAlgo = mainStarsAlgo;
@@ -187,6 +193,7 @@ public class ZContext implements Serializable {
   }
 
   /** 14主星、命、身，如何計算月令 */
+  @Nullable
   public MonthAlgo getMainStarsAlgo() {
     return mainStarsAlgo;
   }

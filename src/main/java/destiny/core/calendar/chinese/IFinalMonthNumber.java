@@ -5,6 +5,7 @@ package destiny.core.calendar.chinese;
 
 import destiny.core.Descriptive;
 import destiny.core.chinese.Branch;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -26,7 +27,7 @@ public interface IFinalMonthNumber {
    * @param days           日數
    * @return 取得最終要計算的「月份」數字
    */
-  static int getFinalMonthNumber(int monthNum, boolean leapMonth, Branch monthBranch, int days, MonthAlgo monthAlgorithm) {
+  static int getFinalMonthNumber(int monthNum, boolean leapMonth, Branch monthBranch, int days, @Nullable MonthAlgo monthAlgorithm) {
     if (monthAlgorithm == MONTH_SOLAR_TERMS) {
       // 節氣盤的話，直接傳回 月支 數(相對於「寅」)
       return monthBranch.getAheadOf(寅) + 1; // 別忘了 +1

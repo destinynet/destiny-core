@@ -38,7 +38,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
   /** 南半球月令是否對沖 */
   private boolean southernHemisphereOpposition = false;
 
-  /** 是否依據『赤緯』來界定南北半球 */
+  /** 依據 赤道 {@link HemisphereBy#EQUATOR} , 還是 赤緯 {@link HemisphereBy#DECLINATION} 來界定南北半球 */
   private HemisphereBy hemisphereBy = HemisphereBy.EQUATOR;
 
   /** 換年的度數 , 通常是立春點 (315) 換年*/
