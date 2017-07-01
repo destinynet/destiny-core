@@ -34,7 +34,8 @@ public final class Planet extends Star implements Comparable<Planet> {
   public Planet(String nameKey, String abbrKey) {
     super(nameKey, abbrKey, resource);
   }
-  
+
+
   /** 從 "sun" 取得 {@link #SUN} 物件 ... , 限英文 , 不分大小寫 */
   public static Optional<Planet> get(String value) {
     return Stream.of(values)

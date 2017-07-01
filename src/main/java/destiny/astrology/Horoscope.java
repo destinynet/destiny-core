@@ -163,26 +163,21 @@ public class Horoscope implements Serializable {
   /**
    * 黃道幾度，落於第幾宮 ( 1 <= house <= 12 )
    */
-  public int getHouse(double degree)
-  {
-    for (int i=1 ; i<=11 ; i++)
-    {
-      if (Math.abs(cusps[i+1] - cusps[i]) < 180)
-      {
+  public int getHouse(double degree) {
+    for (int i = 1; i <= 11; i++) {
+      if (Math.abs(cusps[i + 1] - cusps[i]) < 180) {
         //沒有切換360度的問題
-        if (cusps[i]<=degree && degree <cusps[i+1])
+        if (cusps[i] <= degree && degree < cusps[i + 1])
           return i;
       }
-      else
-      {
+      else {
         //切換360度
-        if ((cusps[i] <= degree       && degree <(cusps[i+1]+360)) || 
-            (cusps[i] <= (degree+360) && degree < cusps[i+1])    )
+        if ((cusps[i] <= degree && degree < (cusps[i + 1] + 360)) || (cusps[i] <= (degree + 360) && degree < cusps[i + 1]))
           return i;
       }
     }
     return 12;
-  } //getHouseBranch()
+  } //getHouse()
   
 
 }
