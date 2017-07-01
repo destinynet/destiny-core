@@ -21,8 +21,8 @@ public final class Conj_Algol extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-    double algolDeg = horoscopeContext.getPosition(FixedStar.ALGOL).getLongitude();
+    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+    double algolDeg = horoscopeContext.getPosition(FixedStar.ALGOL).getLng();
     
     if (AspectEffectiveModern.isEffective(planetDegree , algolDeg , Aspect.CONJUNCTION , 5))
     {

@@ -22,9 +22,9 @@ public final class Term extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    if (planet == essentialImpl.getTermsPoint(horoscopeContext.getPosition(planet).getLongitude()))
+    if (planet == essentialImpl.getTermsPoint(horoscopeContext.getPosition(planet).getLng()))
     {
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, horoscopeContext.getPosition(planet).getLongitude()}));
+      return Optional.of(Tuple.tuple("comment", new Object[]{planet, horoscopeContext.getPosition(planet).getLng()}));
     }
     return Optional.empty();
   }

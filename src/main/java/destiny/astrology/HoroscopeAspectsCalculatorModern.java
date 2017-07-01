@@ -45,11 +45,11 @@ public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalcula
     if (this.horoscope == null)
       throw new RuntimeException(getClass().getName() + " : horoscope is null ! call setHoroscope(horoscope) first !");
     Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<>());
-    double starDeg = horoscope.getPositionWithAzimuth(point).getLongitude();
+    double starDeg = horoscope.getPositionWithAzimuth(point).getLng();
     
     for(Point eachPoint : points)
     {
-      double eachDeg = horoscope.getPositionWithAzimuth(eachPoint).getLongitude();
+      double eachDeg = horoscope.getPositionWithAzimuth(eachPoint).getLng();
       /** 直接比對度數，不考慮星體 */
       aspects.stream()
         .filter(eachAspect -> point != eachPoint && modern.isEffective(starDeg, eachDeg, eachAspect))

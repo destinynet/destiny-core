@@ -49,18 +49,13 @@ public class EssentialUtils
       return true;
     }
     //比對 Terms
-    if (essentialImpl.getTermsPoint(horoscopeContext.getPosition(receivee).getLongitude()) == receiver)
+    if (essentialImpl.getTermsPoint(horoscopeContext.getPosition(receivee).getLng()) == receiver)
     {
       //System.out.println(receiver + " 透過 TERMS 接納 " + receivee);
       return true;
     }
     //比對 Face
-    if (essentialImpl.getFacePoint(horoscopeContext.getPosition(receivee).getLongitude()) == receiver)
-    {
-      //System.out.println(receiver + " 透過 FACE 接納 " + receivee);
-      return true;
-    }
-    return false;
+    return essentialImpl.getFacePoint(horoscopeContext.getPosition(receivee).getLng()) == receiver;
   }
   
   /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall) */
@@ -69,9 +64,7 @@ public class EssentialUtils
     ZodiacSign receiveeSign = horoscopeContext.getZodiacSign(receivee);
     if (essentialImpl.getPoint(receiveeSign , Dignity.DETRIMENT) == receiver)
       return true;
-    if (essentialImpl.getPoint(receiveeSign , Dignity.FALL) == receiver)
-      return true;
-    return false;
+    return essentialImpl.getPoint(receiveeSign, Dignity.FALL) == receiver;
   }
   
   /** Ruler 互訪 , 還沒確認是 優質互容 */
@@ -89,29 +82,13 @@ public class EssentialUtils
   /** 如果其中一顆星處於 Dignity.DETRIMENT 或是 Dignity.FALL , 則為 true */
   public boolean isOneInBadSituation(Point p1 , ZodiacSign sign1 , Point p2 , ZodiacSign sign2)
   {
-    if ((p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT) || 
-         p1 == essentialImpl.getPoint(sign1, Dignity.FALL)) ||
-        (p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT) || 
-         p2 == essentialImpl.getPoint(sign2, Dignity.FALL))
-        )
-    {
-      return true;
-    }
-    return false;
+    return (p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT) || p1 == essentialImpl.getPoint(sign1, Dignity.FALL)) || (p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT) || p2 == essentialImpl.getPoint(sign2, Dignity.FALL));
   }
   
   /** 如果 兩顆星都處於 Dignity.DETRIMENT 或是 Dignity.FALL , 則為 true */
   public boolean isBothInBadSituation(Point p1 , ZodiacSign sign1 , Point p2 , ZodiacSign sign2)
   {
-    if ((p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT) || 
-         p1 == essentialImpl.getPoint(sign1, Dignity.FALL)) &&
-        (p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT) || 
-         p2 == essentialImpl.getPoint(sign2, Dignity.FALL))
-        )
-    {
-      return true;
-    }
-    return false;
+    return (p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT) || p1 == essentialImpl.getPoint(sign1, Dignity.FALL)) && (p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT) || p2 == essentialImpl.getPoint(sign2, Dignity.FALL));
   }
 
   public void setEssentialImpl(EssentialIF essentialImpl)

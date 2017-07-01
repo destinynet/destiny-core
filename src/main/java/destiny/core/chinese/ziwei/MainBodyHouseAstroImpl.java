@@ -33,7 +33,7 @@ public class MainBodyHouseAstroImpl implements IMainBodyHouse, Serializable {
     Branch mainHouse = risingSignImpl.getRisingSign(lmt , loc , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     Position moonPos = starPositionImpl.getPosition(Planet.MOON , lmt , loc , Centric.GEO , Coordinate.ECLIPTIC);
 
-    ZodiacSign zodiacSign = ZodiacSign.getZodiacSign(moonPos.getLongitude());
+    ZodiacSign zodiacSign = ZodiacSign.getZodiacSign(moonPos.getLng());
 
     Branch bodyHouse = zodiacSign.getBranch();
 

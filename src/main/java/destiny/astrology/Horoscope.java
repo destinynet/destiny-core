@@ -56,7 +56,7 @@ public class Horoscope implements Serializable {
    */
   public double getAngle(Point fromPoint , Point toPoint)
   {
-    return getAngle(context.getPosition(fromPoint).getLongitude() , context.getPosition(toPoint).getLongitude());
+    return getAngle(context.getPosition(fromPoint).getLng() , context.getPosition(toPoint).getLng());
   }
   
   /**

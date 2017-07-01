@@ -24,9 +24,9 @@ public final class Partile_Oppo_Mars_Saturn extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-    double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLongitude();
-    double saturnDeg = horoscopeContext.getPosition(Planet.SATURN).getLongitude();
+    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+    double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLng();
+    double saturnDeg = horoscopeContext.getPosition(Planet.SATURN).getLng();
     
     if ( planet != Planet.MARS && AspectEffectiveModern.isEffective( planetDegree , marsDeg , Aspect.OPPOSITION , 1.0))
     {

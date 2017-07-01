@@ -129,7 +129,7 @@ public class HoroscopeContext implements Serializable {
    */
   public int getHouse(Point point) {
     PositionWithAzimuth position = getPosition(point);
-    return getHoroscope().getHouse(position.getLongitude());
+    return getHoroscope().getHouse(position.getLng());
   }
   
   /**
@@ -145,7 +145,7 @@ public class HoroscopeContext implements Serializable {
       return getHousePoints(index - 12);
 
     List<Point> resultList = getPointList().stream().filter(
-      eachPoint -> getHoroscope().getHouse(getPosition(eachPoint).getLongitude()) == index
+      eachPoint -> getHoroscope().getHouse(getPosition(eachPoint).getLng()) == index
     )
       .sorted(new DegreeComparator(this))
       .collect(toList());
@@ -160,7 +160,7 @@ public class HoroscopeContext implements Serializable {
   /** 取得某星 位於什麼星座 */
   public ZodiacSign getZodiacSign(@NotNull Point point) {
     PositionWithAzimuth position = getPosition(point);
-    return ZodiacSign.getZodiacSign(position.getLongitude());
+    return ZodiacSign.getZodiacSign(position.getLng());
   }
 
   @NotNull

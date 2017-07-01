@@ -53,13 +53,13 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
     if (point instanceof Planet)
     {
       Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<>());
-      double planetDeg = horoscope.getPositionWithAzimuth(point).getLongitude();
+      double planetDeg = horoscope.getPositionWithAzimuth(point).getLng();
 
       //行星才比對
       //只比對 0 , 60 , 90 , 120 , 180 五個度數
       points.stream().filter(eachPoint -> eachPoint instanceof Planet && eachPoint != point).forEach(eachPoint -> {
         //行星才比對
-        double eachPlanetDeg = horoscope.getPositionWithAzimuth(eachPoint).getLongitude();
+        double eachPlanetDeg = horoscope.getPositionWithAzimuth(eachPoint).getLng();
 
         for (Aspect eachAspect : Aspect.getAngles(Aspect.Importance.HIGH)) {
           //只比對 0 , 60 , 90 , 120 , 180 五個度數

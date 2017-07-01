@@ -21,8 +21,8 @@ public final class Partile_Conj_Spica extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-    double spicaDeg = horoscopeContext.getPosition(FixedStar.SPICA).getLongitude();
+    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+    double spicaDeg = horoscopeContext.getPosition(FixedStar.SPICA).getLng();
     
     if (AspectEffectiveModern.isEffective(planetDegree , spicaDeg , Aspect.CONJUNCTION , 1))
     {

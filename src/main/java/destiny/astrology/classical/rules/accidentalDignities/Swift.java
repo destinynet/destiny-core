@@ -24,7 +24,7 @@ public final class Swift extends Rule
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
     if ( AverageDailyMotionMap.get(planet) != null &&
-        horoscopeContext.getPosition(planet).getSpeedLongitude() > AverageDailyMotionMap.get(planet))
+        horoscopeContext.getPosition(planet).getSpeedLng() > AverageDailyMotionMap.get(planet))
     {
       //addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還快");
       return Optional.of(Tuple.tuple("comment", new Object[]{planet}));

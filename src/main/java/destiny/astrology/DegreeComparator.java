@@ -21,7 +21,7 @@ public class DegreeComparator implements Comparator<Point> {
     pos1 = context.getPosition(p1);
     pos2 = context.getPosition(p2);
 
-    return (int) (pos1.getLongitude() - pos2.getLongitude());
+    return (int) (pos1.getLng() - pos2.getLng());
   }
 
 }

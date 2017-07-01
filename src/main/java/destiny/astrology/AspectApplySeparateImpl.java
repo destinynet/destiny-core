@@ -27,8 +27,8 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
   @Override
   public Optional<AspectType> getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Aspect aspect)
   {
-    double deg1 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p1).getLongitude();
-    double deg2 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p2).getLongitude();
+    double deg1 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p1).getLng();
+    double deg2 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p2).getLng();
     
     if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect))
     {
@@ -41,8 +41,8 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
       
       HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater,  horoscopeContext);
       
-      double deg1_next = hc2.getHoroscope().getPositionWithAzimuth(p1).getLongitude();
-      double deg2_next = hc2.getHoroscope().getPositionWithAzimuth(p2).getLongitude();
+      double deg1_next = hc2.getHoroscope().getPositionWithAzimuth(p1).getLng();
+      double deg2_next = hc2.getHoroscope().getPositionWithAzimuth(p2).getLng();
       double planetsAngle_next = Horoscope.getAngle(deg1_next , deg2_next);
       double error_next = Math.abs(planetsAngle_next - aspect.getDegree());
       

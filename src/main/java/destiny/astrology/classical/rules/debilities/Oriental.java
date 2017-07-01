@@ -26,8 +26,8 @@ public final class Oriental extends Rule
   {
     if (planet == Planet.MERCURY || planet == Planet.VENUS)
     {
-      double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-      double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLongitude();
+      double planetDegree = horoscopeContext.getPosition(planet).getLng();
+      double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLng();
       
       if (Horoscope.isOriental(planetDegree , sunDegree))
       {

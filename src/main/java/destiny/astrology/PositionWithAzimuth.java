@@ -14,7 +14,7 @@ public class PositionWithAzimuth extends Position {
   private Azimuth azimuth;
 
   public PositionWithAzimuth(@NotNull Position position, Azimuth azimuth) {
-    super(position.getLongitude(), position.getLatitude(), position.getDistance(), position.getSpeedLongitude(), position.getSpeedLatitude(), position.getSpeedDistance());
+    super(position.getLng(), position.getLat(), position.getDistance(), position.getSpeedLng(), position.getSpeedLat(), position.getSpeedDistance());
     this.azimuth = azimuth;
   }
 

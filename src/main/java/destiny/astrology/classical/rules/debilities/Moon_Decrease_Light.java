@@ -26,8 +26,8 @@ public final class Moon_Decrease_Light extends Rule
   {
     if (planet == Planet.MOON)
     {
-      double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-      double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLongitude();
+      double planetDegree = horoscopeContext.getPosition(planet).getLng();
+      double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLng();
       
       if ( Horoscope.isOriental(planetDegree , sunDegree))
       {

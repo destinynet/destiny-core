@@ -23,8 +23,8 @@ public final class Occidental extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-    double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLongitude();
+    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+    double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLng();
     
     if (planet == Planet.MERCURY || planet == Planet.VENUS)
     {

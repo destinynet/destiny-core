@@ -24,9 +24,9 @@ public final class Partile_Trine_Jupiter_Venus extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-    double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLongitude();
-    double venusDeg   = horoscopeContext.getPosition(Planet.VENUS).getLongitude();
+    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+    double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLng();
+    double venusDeg   = horoscopeContext.getPosition(Planet.VENUS).getLng();
     
     if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective( planetDegree , jupiterDeg , Aspect.TRINE , 1.0))
     {

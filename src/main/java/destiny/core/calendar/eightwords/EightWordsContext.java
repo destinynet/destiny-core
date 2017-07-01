@@ -13,8 +13,6 @@ import destiny.core.chinese.StemBranch;
 import destiny.core.chinese.StemBranchUtils;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -92,7 +90,7 @@ public class EightWordsContext implements Serializable {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     double gmtJulDay = Time.getGmtJulDay(gmt);
     Position sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC);
-    return SolarTerms.getFromDegree(sp.getLongitude());
+    return SolarTerms.getFromDegree(sp.getLng());
   }
 
 
@@ -168,7 +166,7 @@ public class EightWordsContext implements Serializable {
 
   public Branch getBranchOf(Star star , LocalDateTime lmt , Location location) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
-    return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
+    return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
   }
 
   public boolean isChangeDayAfterZi() {

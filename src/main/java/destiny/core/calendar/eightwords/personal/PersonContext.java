@@ -409,7 +409,7 @@ public class PersonContext extends EightWordsContext {
 
   public Branch getBranchOf(Star star) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
-    return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
+    return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
   }
 
   /** 是否有日光節約時間 */

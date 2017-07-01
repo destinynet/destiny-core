@@ -1,7 +1,5 @@
 package destiny.astrology;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 
 /**
@@ -12,36 +10,25 @@ public class Position implements Serializable {
 
   /** 座標系統 赤道/黃道/恆星 */
   // private Coordinate coordinate;
-  private final double longitude;
-  private final double latitude;
+  private final double lng;
+  private final double lat;
   private final double distance; //in AU
 
-  private final double speedLongitude; //speed in longitude (degree / day)
-  private final double speedLatitude; //speed in latitude (degree / day)
+  private final double speedLng; //speed in lng (degree / day)
+  private final double speedLat; //speed in lat (degree / day)
   private final double speedDistance; //speed in distance (AU / day)
 
 
   public Position(double lng, double lat, double distance, double speedLng, double speedLat, double speedDistance) {
-    this.longitude = Utils.getNormalizeDegree(lng);
-    this.latitude = lat;
+    this.lng = Utils.getNormalizeDegree(lng);
+    this.lat = lat;
     this.distance = distance;
-    this.speedLongitude = speedLng;
-    this.speedLatitude = speedLat;
+    this.speedLng = speedLng;
+    this.speedLat = speedLat;
     this.speedDistance = speedDistance;
   }
-  
-  @NotNull
-  @Override
-  public String toString()
-  {
-    return 
-    "Longitude:" + longitude + " " +
-    "Latitude:"  + latitude  + " " +
-    "Distance:"  + distance  + " " +
-    "SpeedLongitude:" + speedLongitude + " " +
-    "SpeedLatitude:"  + speedLatitude  + " " +
-    "SpeedDistance:"  + speedDistance;
-  }
+
+
 
   /**
    * @return Returns the distance.
@@ -52,19 +39,19 @@ public class Position implements Serializable {
   }
 
   /**
-   * @return Returns the latitude.
+   * @return Returns the lat.
    */
-  public double getLatitude() 
+  public double getLat()
   {
-    return latitude;
+    return lat;
   }
 
   /**
-   * @return Returns the longitude.
+   * @return Returns the lng.
    */
-  public double getLongitude() 
+  public double getLng()
   {
-    return longitude;
+    return lng;
   }
 
   /**
@@ -76,20 +63,24 @@ public class Position implements Serializable {
   }
 
   /**
-   * @return Returns the speedLatitude.
+   * @return Returns the speedLat.
    */
-  public double getSpeedLatitude() 
+  public double getSpeedLat()
   {
-    return speedLatitude;
+    return speedLat;
   }
 
   /**
-   * @return Returns the speedLongitude.
+   * @return Returns the speedLng.
    */
-  public double getSpeedLongitude() 
+  public double getSpeedLng()
   {
-    return speedLongitude;
+    return speedLng;
   }
 
 
+  @Override
+  public String toString() {
+    return "[Position " + "lng=" + lng + ", lat=" + lat + ", distance=" + distance + ", speedLng=" + speedLng + ", speedLat=" + speedLat + ", speedDistance=" + speedDistance + ']';
+  }
 }

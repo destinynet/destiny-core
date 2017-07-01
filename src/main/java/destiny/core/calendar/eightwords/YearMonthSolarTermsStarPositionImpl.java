@@ -86,7 +86,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     LocalDateTime gmt = LocalDateTime.from(lmt).minusSeconds(gmtSecondsOffsetInt).minusNanos(gmtNanoOffset);
 
 
-    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
+    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLng();
     if (solarLongitude < 180)
       //立春(0)過後，到秋分之間(180)，確定不會換年
       resultStemBranch = StemBranch.get(index);
@@ -98,7 +98,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       //Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , 0 , 0-gmtSecondsOffset);
       LocalDateTime startOfYear = LocalDateTime.from(lmt).withDayOfYear(1).withHour(0).withMinute(0).minusSeconds(gmtSecondsOffsetInt);
 
-      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear , GEO , ECLIPTIC).getLongitude();
+      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear , GEO , ECLIPTIC).getLng();
 
       //System.out.println("changeYearDegree = " + changeYearDegree + " , degreeOfStartOfYear = " + degreeOfStartOfYear);
 
@@ -160,7 +160,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
 //
 //    Time gmt = new Time(lmt , 0-gmtSecondsOffset);
 //
-//    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLongitude();
+//    double solarLongitude = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , ECLIPTIC).getLng();
 //    if (solarLongitude < 180)
 //      //立春(0)過後，到秋分之間(180)，確定不會換年
 //      resultStemBranch = StemBranch.get(index);
@@ -171,7 +171,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
 //      //取得 lmt 當年 1/1 凌晨零分的度數
 //      //Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , (int) (0-gmtMinuteOffset) , 0);
 //      Time startOfYear = new Time(lmt.isAd() , lmt.getYear() , 1 , 1 , 0 , 0 , 0-gmtSecondsOffset);
-//      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear , GEO , ECLIPTIC).getLongitude();
+//      double degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN , startOfYear , GEO , ECLIPTIC).getLng();
 //
 //      //System.out.println("changeYearDegree = " + changeYearDegree + " , degreeOfStartOfYear = " + degreeOfStartOfYear);
 //
@@ -252,7 +252,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         /*
          * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
          */
-        double solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , EQUATORIAL).getLatitude();
+        double solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN , gmt , GEO , EQUATORIAL).getLat();
 
         if (solarEquatorialDegree >=0) {
           //如果太陽在赤北緯
@@ -369,7 +369,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         //System.out.println("changeYearDegree < 315 , value = " + changeYearDegree);
         //換年點在立春前
 
-        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , GEO , ECLIPTIC).getLongitude();
+        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , GEO , ECLIPTIC).getLng();
         //System.out.println("LMT = " + lmt + " degree = " + lmtSunDegree);
         if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree) {
           // t <---立春---- LMT -----換年點
@@ -378,7 +378,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       }
       else if (changeYearDegree > 315) {
         //換年點在立春後 , 還沒測試
-        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , GEO , ECLIPTIC).getLongitude();
+        double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN , gmtJulDay , GEO , ECLIPTIC).getLng();
         if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
           月干 = Stem.get(月干.getIndex() + 2);
       }

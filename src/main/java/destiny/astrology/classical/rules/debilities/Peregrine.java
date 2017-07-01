@@ -26,7 +26,7 @@ public final class Peregrine extends EssentialRule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
+    double planetDegree = horoscopeContext.getPosition(planet).getLng();
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
     

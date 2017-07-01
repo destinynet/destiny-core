@@ -21,7 +21,7 @@ public final class Retrograde extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    if (horoscopeContext.getPosition(planet).getSpeedLongitude() < 0)
+    if (horoscopeContext.getPosition(planet).getSpeedLng() < 0)
     {
       //addComment(Locale.TAIWAN , planet + " 逆行");
       return Optional.of(Tuple.tuple("comment", new Object[]{planet}));

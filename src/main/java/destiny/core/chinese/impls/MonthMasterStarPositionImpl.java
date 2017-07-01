@@ -31,6 +31,6 @@ public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable
   @Override
   public Branch getBranch(LocalDateTime lmt, Location location) {
     Position pos = starPositionImpl.getPosition(Planet.SUN , lmt , location , Centric.GEO , Coordinate.ECLIPTIC);
-    return ZodiacSign.getZodiacSign(pos.getLongitude()).getBranch();
+    return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
   }
 }

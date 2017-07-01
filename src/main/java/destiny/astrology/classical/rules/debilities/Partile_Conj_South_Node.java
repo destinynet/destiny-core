@@ -35,12 +35,12 @@ public final class Partile_Conj_South_Node extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
+    double planetDegree = horoscopeContext.getPosition(planet).getLng();
     double southDeg;
     if (nodeType == NodeType.TRUE)
-      southDeg = horoscopeContext.getPosition(LunarNode.SOUTH_TRUE).getLongitude();
+      southDeg = horoscopeContext.getPosition(LunarNode.SOUTH_TRUE).getLng();
     else
-      southDeg = horoscopeContext.getPosition(LunarNode.SOUTH_MEAN).getLongitude();
+      southDeg = horoscopeContext.getPosition(LunarNode.SOUTH_MEAN).getLng();
     
     if ( Horoscope.getAngle(planetDegree , southDeg) <= 1)
     {

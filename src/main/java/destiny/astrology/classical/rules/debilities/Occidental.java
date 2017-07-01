@@ -25,8 +25,8 @@ public final class Occidental extends Rule
   {
     if (planet == Planet.MARS || planet == Planet.JUPITER || planet == Planet.SATURN)
     {
-      double planetDegree = horoscopeContext.getPosition(planet).getLongitude();
-      double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLongitude();
+      double planetDegree = horoscopeContext.getPosition(planet).getLng();
+      double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLng();
       if (Horoscope.isOccidental(planetDegree , sunDegree))
       {
         //addComment(Locale.TAIWAN , planet + " 在太陽西邊");
