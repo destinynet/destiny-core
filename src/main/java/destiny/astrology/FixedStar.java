@@ -58,18 +58,16 @@ public final class FixedStar extends Star implements Comparable<FixedStar> {
   
   public final static FixedStar[] values = {REGULUS , SPICA , ALGOL , ALDEBARAN , RIGEL , CAPELLA , BETELGEUSE , SIRIUS , CANOPUS , POLLUX , PROCYON ,
                                     PRAESEPE , ALPHARD , ARCTURUS , ANTARES , VEGA , ALTAIR , FOMALHAUT , DENEB};
-  
-  protected FixedStar(String nameKey , String abbrKey)
-  {
-    super(nameKey, abbrKey , resource);
+
+  protected FixedStar(String nameKey, String abbrKey) {
+    super(nameKey, abbrKey, resource);
   }
-  
+
   @Override
-  public int compareTo(@NotNull FixedStar o)
-  {
+  public int compareTo(@NotNull FixedStar o) {
     if (this.equals(o))
       return 0;
-    
+
     List<FixedStar> list = Arrays.asList(values);
     return list.indexOf(this) - list.indexOf(o);
   }

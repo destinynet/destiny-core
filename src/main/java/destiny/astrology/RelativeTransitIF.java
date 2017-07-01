@@ -51,15 +51,14 @@ public interface RelativeTransitIF {
   @NotNull
   default List<LocalDateTime> getPeriodRelativeTransitLDTs(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
     List<LocalDateTime> resultList = new ArrayList<>();
-    while (fromJulDay < toJulDay)
-    {
-      Optional<Double> timeOptional = getRelativeTransit(transitStar , relativeStar , angle , fromJulDay , true);
+    while (fromJulDay < toJulDay) {
+      Optional<Double> timeOptional = getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true);
       if (timeOptional.isPresent()) {
         fromJulDay = timeOptional.get();
         if (fromJulDay > toJulDay)
           break;
         resultList.add(new Time(timeOptional.get()).toLocalDateTime());
-        fromJulDay = fromJulDay +0.000001;
+        fromJulDay = fromJulDay + 0.000001;
       }
     }
     return resultList;

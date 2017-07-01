@@ -27,22 +27,19 @@ public enum Coordinate implements LocaleStringIF
   private final static String resource = "destiny.astrology.Astrology";
   
   private final String nameKey;
-    
-  Coordinate(String nameKey)
-  {
+
+  Coordinate(String nameKey) {
     this.nameKey = nameKey;
   }
-  
+
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
 
 }

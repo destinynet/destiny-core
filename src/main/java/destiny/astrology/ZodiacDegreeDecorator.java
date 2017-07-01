@@ -16,15 +16,14 @@ public class ZodiacDegreeDecorator
     .put(Locale.US     , new ZodiacDegreeDecoratorEnglish())
     .build();
 
-  public static String getOutputString(double degree , Locale locale)
-  {
+  public static String getOutputString(double degree , Locale locale) {
     return implMap.get(
       LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
     ).getOutputString(degree);
   }
-  
-  public static String getSimpOutputString(double degree , Locale locale)
-  {return implMap.get(
+
+  public static String getSimpOutputString(double degree , Locale locale) {
+    return implMap.get(
       LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
     ).getSimpOutString(degree);
   }

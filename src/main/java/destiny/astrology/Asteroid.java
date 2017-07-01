@@ -40,7 +40,7 @@ public final class Asteroid extends Star implements Comparable<Asteroid> {
   {
     if (this.equals(o))
       return 0;
-    
+
     List<Asteroid> list = Arrays.asList(values);
     return list.indexOf(this) - list.indexOf(o);
   }

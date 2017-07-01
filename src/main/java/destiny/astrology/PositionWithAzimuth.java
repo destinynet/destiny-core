@@ -23,8 +23,8 @@ public class PositionWithAzimuth extends Position {
     return azimuth;
   }
 
-  public void setAzimuth(Azimuth azimuth) {
-    this.azimuth = azimuth;
-  }
+//  public void setAzimuth(Azimuth azimuth) {
+//    this.azimuth = azimuth;
+//  }
 
 }

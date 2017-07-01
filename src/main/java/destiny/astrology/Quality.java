@@ -13,8 +13,7 @@ import java.util.ResourceBundle;
 /**
  * 基本 Cardinal , 固定 Fixed , 變動 Mutable
  */
-public enum Quality implements LocaleStringIF
-{
+public enum Quality implements LocaleStringIF {
   /** 基本 */
   CARDINAL("Quality.CARDINAL"),
   

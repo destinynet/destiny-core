@@ -17,8 +17,7 @@ import java.util.ResourceBundle;
 import static destiny.core.chinese.Branch.*;
 
 /** 黃道十二宮 */
-public enum ZodiacSign implements LocaleStringIF , YinYangIF
-{
+public enum ZodiacSign implements LocaleStringIF , YinYangIF {
   /** Aries 戌/牡羊 */
   ARIES      ("ZodiacSign.ARIES"       , "ZodiacSign.ARIES_ABBR"       , Element.FIRE  , Quality.CARDINAL , true  ,   0),
   /** Taurus 酉/金牛 */
@@ -92,68 +91,58 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF
   }
 
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
 
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
 
   /** 縮寫 */
-  public String getAbbreviation()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(abbrKey);
+  public String getAbbreviation() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(abbrKey);
   }
 
-  public String getAbbreviation(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(abbrKey);
+  public String getAbbreviation(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(abbrKey);
   }
 
   /** 取得對沖的星座 */
-  public ZodiacSign getOppositeSign()
-  {
+  public ZodiacSign getOppositeSign() {
     return ZodiacSign.values()[normalize(this.getIndex() + 6)];
   }
 
   /** 取得星座的 index , 為 0-based , 牡羊座為 0 , 金牛座為 1 , ... , 雙魚座為 11 */
-  public int getIndex()
-  {
-    for (int i=0 ; i < ZodiacSign.values().length ; i++)
+  public int getIndex() {
+    for (int i = 0; i < ZodiacSign.values().length; i++)
       if (this == ZodiacSign.values()[i])
         return i;
     throw new RuntimeException("Error!");
   }
 
-  private static int normalize(int value)
-  {
-    if (value > 11 )
-      return normalize( value-12);
+  private static int normalize(int value) {
+    if (value > 11)
+      return normalize(value - 12);
     else if (value < 0)
-      return normalize (value+12);
+      return normalize(value + 12);
     else
       return value;
   }
 
   /** 取得四大元素之一 */
-  public Element getElement()
-  {
+  public Element getElement() {
     return element;
   }
 
   /** 基本/固定/變動 */
-  public Quality getQuality()
-  {
+  public Quality getQuality() {
     return quality;
   }
 
   /** 取得黃道帶上的起始度數 */
-  public int getDegree()
-  {
+  public int getDegree() {
     return degree;
   }
 

@@ -13,8 +13,7 @@ import java.util.ResourceBundle;
 /**
  * 四大元素 : 火 Fire , 土 Earth , 風 Air , 水 Water
  */
-public enum Element implements LocaleStringIF
-{
+public enum Element implements LocaleStringIF {
   /** 火 */
   FIRE("Element.FIRE"),
   /** 土 */

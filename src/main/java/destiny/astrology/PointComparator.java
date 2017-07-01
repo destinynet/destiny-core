@@ -18,23 +18,20 @@ import java.util.List;
 public class PointComparator implements Comparator<Point> , Serializable
 {
   private final Class[] starClasses = {Planet.class , LunarNode.class , Asteroid.class , FixedStar.class , Hamburger.class};
-  
-  public PointComparator()
-  {
+
+  public PointComparator() {
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
-  public int compare(@NotNull Point p1, @NotNull Point p2)
-  {
+  public int compare(@NotNull Point p1, @NotNull Point p2) {
     Class<? extends Point> p1class = p1.getClass();
     Class<? extends Point> p2class = p2.getClass();
     if (p1class.getName().equals(p2class.getName()))
-      return ((Comparable<Point>)p1).compareTo(p2);
-    else
-    {
+      return ((Comparable<Point>) p1).compareTo(p2);
+    else {
       List<Class> starClassesList = Arrays.asList(starClasses);
-      return starClassesList.indexOf(p1class) - starClassesList.indexOf(p2class);  
+      return starClassesList.indexOf(p1class) - starClassesList.indexOf(p2class);
     }
   }
 

@@ -102,30 +102,25 @@ public enum Aspect implements LocaleStringIF
   public static Optional<Aspect> getAspect(double degree) {
     if (degree >=360 )
       return getAspect(degree - 360);
-    
+
     if (degree < 0)
       return getAspect(degree + 360);
-      
+
     if (degree > 180)
       return getAspect(360 - degree);
-    
-    for(Aspect aspect : values())
-    {
-      if (Math.abs(aspect.degree - degree) < 0.01)
-        return Optional.of(aspect);
-    }
-    return Optional.empty();
+
+    return Arrays.stream(values())
+      .filter(aspect -> Math.abs(aspect.degree - degree) < 0.01)
+      .findFirst();
   }
-  
+
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
 }

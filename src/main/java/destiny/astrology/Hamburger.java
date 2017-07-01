@@ -12,8 +12,7 @@ import java.util.List;
 
 
 /** 漢堡學派 Uranian Astrology */
-public final class Hamburger extends Star implements Comparable<Hamburger>
-{
+public final class Hamburger extends Star implements Comparable<Hamburger> {
   private final static String resource = Star.class.getName();
 
   public final static Hamburger CUPIDO   = new Hamburger("Hamburger.CUPIDO");

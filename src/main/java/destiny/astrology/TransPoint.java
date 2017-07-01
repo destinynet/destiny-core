@@ -14,14 +14,7 @@ import java.util.ResourceBundle;
 /**
  * 四個角點，天底、東昇點、天頂、西落
  */
-public enum TransPoint implements LocaleStringIF
-{
-  /*
-  public final static Point RISING = new Point("Point.RISING");
-  public final static Point MERIDIAN = new Point("Point.MERIDIAN");
-  public final static Point SETTING = new Point("Point.SETTING");
-  public final static Point NADIR = new Point("Point.NADIR");
-  */
+public enum TransPoint implements LocaleStringIF {
   /** 東昇 */
   RISING("TransPoint.RISING"),
   /** 天頂 */

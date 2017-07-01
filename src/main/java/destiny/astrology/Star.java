@@ -34,11 +34,10 @@ import org.jetbrains.annotations.Nullable;
 public abstract class Star extends Point {
 
   Star(String nameKey, @Nullable String abbrKey, String resource) {
-    super(nameKey , resource , abbrKey);
+    super(nameKey, resource, abbrKey);
   }
-  
-  Star(String nameKey, String resource)
-  {
-    super(nameKey , resource);
+
+  Star(String nameKey, String resource) {
+    super(nameKey, resource);
   }
 }

@@ -13,8 +13,8 @@ import java.util.ResourceBundle;
 /**
  * 分宮法 , Zodiac House Systems
  */
-public enum HouseSystem implements LocaleStringIF
-{
+public enum HouseSystem implements LocaleStringIF {
+
   PLACIDUS("HouseSystem.PLACIDUS"),
   KOCH("HouseSystem.KOCH"),
   /** 東昇/天頂 均等三等分*/
@@ -30,22 +30,19 @@ public enum HouseSystem implements LocaleStringIF
   private final static String resource = "destiny.astrology.Astrology";
   
   private final String nameKey;
-  
-  HouseSystem(String nameKey)
-  {
+
+  HouseSystem(String nameKey) {
     this.nameKey = nameKey;
   }
 
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
   
 }

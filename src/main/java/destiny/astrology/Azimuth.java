@@ -6,10 +6,12 @@ package destiny.astrology;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * 地平方位角 , 地平座標系統 (Horizontal Coordinate System) 
  */
-public final class Azimuth implements java.io.Serializable {
+public final class Azimuth implements Serializable {
 
   /** 地平方位角 , 以北為 0度，東為90度，南為 180度，西為 270度 */
   private final double degree;
