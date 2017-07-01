@@ -17,15 +17,15 @@ public class LngLatDecoratorChina implements Decorator<Location> {
   public String getOutputString(Location location) {
     StringBuilder sb = new StringBuilder();
     sb.append(location.getEastWest() == Location.EastWest.EAST ? "东经" : "西经").append(" ");
-    sb.append(location.getLongitudeDegree()).append("度");
-    sb.append(location.getLongitudeMinute()).append("分");
-    sb.append(formatter.format(location.getLongitudeSecond())).append("秒, ");
+    sb.append(location.getLngDeg()).append("度");
+    sb.append(location.getLngMin()).append("分");
+    sb.append(formatter.format(location.getLngSec())).append("秒, ");
 
     sb.append(location.getNorthSouth() == Location.NorthSouth.NORTH ? "北纬" : "南纬").append(" ");
-    sb.append(location.getLatitudeDegree()).append("度");
-    sb.append(location.getLatitudeMinute()).append("分");
+    sb.append(location.getLatDeg()).append("度");
+    sb.append(location.getLatMin()).append("分");
 
-    sb.append(formatter.format(location.getLatitudeSecond())).append("秒.");
+    sb.append(formatter.format(location.getLatSec())).append("秒.");
 
     return sb.toString();
   }

@@ -12,8 +12,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Locale;
-
 public class LocationTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -110,13 +108,13 @@ public class LocationTest {
   {
     Location location ;
     location = new Location(EastWest.EAST , 121.51 ,NorthSouth.NORTH , 25.33 , 0, "Asia/Taipei", null) ;
-    Assert.assertEquals(121, location.getLongitudeDegree());
-    Assert.assertEquals(30, location.getLongitudeMinute());
-    Assert.assertEquals(36.0, location.getLongitudeSecond() , 0.0);
+    Assert.assertEquals(121, location.getLngDeg());
+    Assert.assertEquals(30, location.getLngMin());
+    Assert.assertEquals(36.0, location.getLngSec() , 0.0);
     
-    Assert.assertEquals(25, location.getLatitudeDegree());
-    Assert.assertEquals(19, location.getLatitudeMinute());
-    Assert.assertEquals(48.0, location.getLatitudeSecond() , 0.0);
+    Assert.assertEquals(25, location.getLatDeg());
+    Assert.assertEquals(19, location.getLatMin());
+    Assert.assertEquals(48.0, location.getLatSec() , 0.0);
   }
 
 

@@ -18,14 +18,14 @@ public class LngLatDecoratorEnglish implements Decorator<Location> {
 
     StringBuilder sb = new StringBuilder();
     sb.append(location.getEastWest() == Location.EastWest.EAST ? "East " : "West ");
-    sb.append(location.getLongitudeDegree()).append("° ");
-    sb.append(location.getLongitudeMinute()).append("' ");
-    sb.append(formatter.format(location.getLongitudeSecond())).append("\" , ");
+    sb.append(location.getLngDeg()).append("° ");
+    sb.append(location.getLngMin()).append("' ");
+    sb.append(formatter.format(location.getLngSec())).append("\" , ");
 
     sb.append(location.getNorthSouth() == Location.NorthSouth.NORTH ? "North " : "South ");
-    sb.append(location.getLatitudeDegree()).append("° ");
-    sb.append(location.getLatitudeMinute()).append("' ");
-    sb.append(formatter.format(location.getLatitudeSecond())).append("\".");
+    sb.append(location.getLatDeg()).append("° ");
+    sb.append(location.getLatMin()).append("' ");
+    sb.append(formatter.format(location.getLatSec())).append("\".");
 
     return sb.toString();
   }

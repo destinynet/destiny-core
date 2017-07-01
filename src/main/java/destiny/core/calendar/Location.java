@@ -429,19 +429,19 @@ public class Location implements Serializable {
 
   public boolean isEast() { return eastWest == EAST; }
 
-  public int getLongitudeDegree() { return this.longitudeDegree; }
+  public int getLngDeg() { return this.longitudeDegree; }
 
-  public int getLongitudeMinute() { return this.longitudeMinute; }
+  public int getLngMin() { return this.longitudeMinute; }
 
-  public double getLongitudeSecond() { return this.longitudeSecond; }
+  public double getLngSec() { return this.longitudeSecond; }
 
   public boolean isNorth() { return northSouth == NORTH; }
 
-  public int getLatitudeDegree() { return this.latitudeDegree; }
+  public int getLatDeg() { return this.latitudeDegree; }
 
-  public int getLatitudeMinute() { return this.latitudeMinute; }
+  public int getLatMin() { return this.latitudeMinute; }
 
-  public double getLatitudeSecond() { return this.latitudeSecond; }
+  public double getLatSec() { return this.latitudeSecond; }
 
   public TimeZone getTimeZone() { return TimeZone.getTimeZone(tzid); }
 
