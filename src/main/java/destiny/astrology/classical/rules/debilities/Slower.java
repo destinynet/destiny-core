@@ -13,18 +13,14 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
-public final class Slower extends Rule
-{
-  public Slower()
-  {
+public final class Slower extends Rule {
+  public Slower() {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
-  {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
     if (AverageDailyMotionMap.get(planet) != null &&
-        horoscopeContext.getPosition(planet).getSpeedLng() < AverageDailyMotionMap.get(planet))
-    {
+        horoscopeContext.getPosition(planet).getSpeedLng() < AverageDailyMotionMap.get(planet)) {
       //addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還慢");
       return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
     }

@@ -7,10 +7,10 @@ import destiny.core.calendar.Location;
 
 import java.time.LocalDateTime;
 
-public interface IPosition<T> {
+public interface IPosition<T extends Point> {
 
-  Point getPoint();
+  T getPoint();
 
-  Position getPosition(LocalDateTime ldt , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl);
+  <U extends Position> U getPosition(LocalDateTime ldt , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl);
 
 }

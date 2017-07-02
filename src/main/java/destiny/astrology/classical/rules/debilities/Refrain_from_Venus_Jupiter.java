@@ -14,8 +14,7 @@ import org.jooq.lambda.tuple.Tuple3;
 
 import java.util.Optional;
 
-public class Refrain_from_Venus_Jupiter extends Rule
-{
+public class Refrain_from_Venus_Jupiter extends Rule {
   private final RefranationIF refranationImpl;
 
 

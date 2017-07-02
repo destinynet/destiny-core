@@ -5,15 +5,17 @@ package destiny.astrology;
 
 import java.io.Serializable;
 
-public abstract class AbstractPositionImpl<T> implements IPosition<T> , Serializable {
+public abstract class AbstractPositionImpl<T extends Point> implements IPosition<T> , Serializable {
 
-  private final Point point;
+  private final T t;
 
-  protected AbstractPositionImpl(Point point) {this.point = point;}
+  protected AbstractPositionImpl(T t) {
+    this.t = t;
+  }
 
   @Override
-  public Point getPoint() {
-    return point;
+  public T getPoint() {
+    return t;
   }
 
 

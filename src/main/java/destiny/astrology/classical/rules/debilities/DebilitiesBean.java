@@ -43,15 +43,13 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
 
   @NotNull
   @Override
-  public List<RuleIF> getDebilities(Planet planet, HoroscopeContext horoscopeContext)
-  {
+  public List<RuleIF> getDebilities(Planet planet, HoroscopeContext horoscopeContext) {
     return rules.stream().filter(each -> each.isApplicable(planet, horoscopeContext)).collect(Collectors.toList());
   }
 
   
   @NotNull
-  private List<Applicable> getDefaultRules()
-  {
+  private List<Applicable> getDefaultRules() {
     List<Applicable> list = new ArrayList<>();
     list.add(new Detriment());
     list.add(new Fall());
@@ -77,13 +75,11 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
     return list;
   }
 
-  public List<Applicable> getRules()
-  {
+  public List<Applicable> getRules() {
     return this.rules;
   }
-  
-  public void setRules(List<Applicable> rules)
-  {
+
+  public void setRules(List<Applicable> rules) {
     this.rules = rules;
   }
 

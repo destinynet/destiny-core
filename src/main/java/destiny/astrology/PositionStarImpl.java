@@ -15,7 +15,6 @@ public abstract class PositionStarImpl extends AbstractPositionImpl<Star> {
 
   @Override
   public Position getPosition(LocalDateTime ldt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
-    Star star = (Star) getPoint();
-    return starPositionImpl.getPosition(star , ldt , loc , centric , coordinate);
+    return starPositionImpl.getPosition(getPoint() , ldt , loc , centric , coordinate);
   }
 }

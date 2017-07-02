@@ -13,8 +13,7 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.Optional;
 
 /** Peregrine. */
-public final class Peregrine extends EssentialRule
-{
+public final class Peregrine extends EssentialRule {
   /** 計算白天黑夜的實作 */
   private final DayNightDifferentiator dayNightImpl;
   
@@ -24,8 +23,7 @@ public final class Peregrine extends EssentialRule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
-  {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
     double planetDegree = horoscopeContext.getPosition(planet).getLng();
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
@@ -37,12 +35,9 @@ public final class Peregrine extends EssentialRule
         planet != essentialImpl.getPoint(sign, Dignity.FALL) &&
         planet != essentialImpl.getTermsPoint(sign, planetDegree) &&
         planet != essentialImpl.getFacePoint(planetDegree)
-        )
-    {
+        ) {
       //判定日夜 Triplicity
-      if( !(dayNight == DayNight.DAY   && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY )) &&  
-          !(dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   )
-      {
+      if (!(dayNight == DayNight.DAY && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY)) && !(dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))) {
         return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
       }
     }

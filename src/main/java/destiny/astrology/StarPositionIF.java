@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  */
 public interface StarPositionIF {
 
-  /** 設定觀測地點，對於 Centric.TOPO 有用 */
+  /** 設定觀測地點，對於 {@link Centric#TOPO} 有用 . 2017-07-03 註記 : 此 method 無法移除*/
   void setLocation(Location location);
 
   Position getPosition(Star star, double gmtJulDay , Centric centric , Coordinate coordinate);

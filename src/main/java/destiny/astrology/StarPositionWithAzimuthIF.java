@@ -24,4 +24,5 @@ public interface StarPositionWithAzimuthIF extends StarPositionIF {
     return getPositionWithAzimuth(star , gmtJulDay , location , temperature , pressure , centric , coordinate);
   }
 
+
 }
