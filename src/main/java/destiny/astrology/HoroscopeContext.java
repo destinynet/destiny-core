@@ -95,7 +95,7 @@ public class HoroscopeContext implements Serializable {
   /** 取得星體的位置以及地平方位角 */
   public PositionWithAzimuth getPosition(Point point) {
     starPositionWithAzimuthImpl.setLocation(location);
-    return starPositionWithAzimuthImpl.getPosition((Star) point, gmt, location, temperature, pressure, centric, coordinate);
+    return starPositionWithAzimuthImpl.getPositionFromGmt((Star) point, gmt, location, centric, coordinate, temperature, pressure);
   }
   
   @NotNull

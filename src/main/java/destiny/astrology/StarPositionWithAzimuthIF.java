@@ -15,12 +15,11 @@ import java.time.LocalDateTime;
  */
 public interface StarPositionWithAzimuthIF extends StarPositionIF {
 
-  PositionWithAzimuth getPosition(Star star, double gmtJulDay, Location location, double temperature, double pressure, Centric centric, Coordinate coordinate);
+  PositionWithAzimuth getPosition(Star star, double gmtJulDay, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure);
 
-  default PositionWithAzimuth getPosition(Star star, LocalDateTime gmt, Location location, double temperature, double pressure,
-                                          Centric centric, Coordinate coordinate) {
+  default PositionWithAzimuth getPositionFromGmt(Star star, LocalDateTime gmt, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure) {
     double gmtJulDay = Time.getGmtJulDay(gmt);
-    return getPosition(star , gmtJulDay , location , temperature , pressure , centric , coordinate);
+    return getPosition(star , gmtJulDay , location , centric, coordinate, temperature , pressure);
   }
 
 
