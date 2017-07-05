@@ -23,6 +23,11 @@ public interface StarPositionIF {
 
   Position getPosition(Star star, double gmtJulDay , Centric centric , Coordinate coordinate);
 
+  /** 同樣是求 Position , 但多傳入地點、溫度、壓力 等資料 , 在此直接 discard 掉 */
+  default Position getPosition(Star star, double gmtJulDay, Location location, double temperature, double pressure, Centric centric, Coordinate coordinate) {
+    return getPosition(star , gmtJulDay , centric , coordinate);
+  }
+
   /**
    * @param gmt GMT 的 Gregorian 時刻
    */
@@ -30,6 +35,12 @@ public interface StarPositionIF {
     double gmtJulDay = Time.getGmtJulDay(gmt);
     return getPosition(star , gmtJulDay , centric , coordinate);
   }
+
+  default Position getPosition(Star star, LocalDateTime gmt , Centric centric , Coordinate coordinate , Location location , double temperature , double pressure){
+    double gmtJulDay = Time.getGmtJulDay(gmt);
+    return getPosition(star , gmtJulDay , location , temperature , pressure , centric , coordinate);
+  }
+
 
   /**
    * @param gmt GMT 的 Julian 時刻
@@ -42,7 +53,7 @@ public interface StarPositionIF {
   /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 */
   default Position getPosition(Star star, LocalDateTime lmt, Location location , Centric centric , Coordinate coordinate) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    return getPosition(star , gmt , centric , coordinate);
+    return getPosition(star , gmt , centric , coordinate , location , 0 , 0);
   }
 
 }

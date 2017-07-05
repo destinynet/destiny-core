@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public abstract class PositionStarImpl extends AbstractPositionImpl<Star> {
 
-  protected PositionStarImpl(Star star) {
+  PositionStarImpl(Star star) {
     super(star);
   }
 

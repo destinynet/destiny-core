@@ -11,5 +11,6 @@ public class PositionFunctions {
   private static Logger logger = LoggerFactory.getLogger(PositionFunctions.class);
 
   public final static IPosition posSun = new PositionStarImpl(Planet.SUN) {} ;
+  public final static IPosition posMoon = new PositionStarImpl(Planet.MOON) {} ;
 
 }

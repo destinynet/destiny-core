@@ -9,7 +9,7 @@ public abstract class AbstractPositionImpl<T extends Point> implements IPosition
 
   private final T t;
 
-  protected AbstractPositionImpl(T t) {
+  AbstractPositionImpl(T t) {
     this.t = t;
   }
 

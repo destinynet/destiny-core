@@ -18,13 +18,17 @@ public class PositionWithAzimuth extends Position {
     this.azimuth = azimuth;
   }
 
-
   public Azimuth getAzimuth() {
     return azimuth;
   }
 
-//  public void setAzimuth(Azimuth azimuth) {
-//    this.azimuth = azimuth;
-//  }
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
 
+    sb.append("[PositionWithAzimuth " + "lng=").append(lng).append(", lat=").append(lat).append(", distance=").append(distance).append(", speedLng=").append(speedLng).append(", speedLat=").append(speedLat).append(", speedDistance=").append(speedDistance);
+    sb.append(" , azimuth=").append(azimuth).append(']');
+
+    return sb.toString();
+  }
 }
