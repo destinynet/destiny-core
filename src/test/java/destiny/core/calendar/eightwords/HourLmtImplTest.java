@@ -23,7 +23,7 @@ public class HourLmtImplTest {
   public void getLmtNextStartOf() throws Exception {
     HourIF hourImpl = new HourLmtImpl();
 
-    Location loc = new Location(Locale.TAIWAN);
+    Location loc = Location.of(Locale.TAIWAN);
 
     LocalDateTime 子時前一秒 = LocalDateTime.of(2017, 2, 12, 22, 59, 0);
     assertEquals(LocalDateTime.of(2017, 2, 12, 23, 0), hourImpl.getLmtNextStartOf(子時前一秒, loc, Branch.子));

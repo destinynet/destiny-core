@@ -16,11 +16,11 @@ public class GoogleMapsUrlBuilderTest {
   @Test
   public void getUrl() throws Exception {
     GoogleMapsUrlBuilder builder = new GoogleMapsUrlBuilder();
-    Location location = new Location(Locale.TAIWAN);
+    Location location = Location.of(Locale.TAIWAN);
     String s = builder.getUrl(location.getLatitude() , location.getLongitude());
     logger.info("{}" , s);
 
-    logger.info("{}" , builder.getUrl(new Location(Locale.US)));
+    logger.info("{}" , builder.getUrl(Location.of(Locale.US)));
   }
 
 }

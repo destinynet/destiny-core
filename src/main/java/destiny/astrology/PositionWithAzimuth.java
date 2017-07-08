@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PositionWithAzimuth extends Position {
 
-  private Azimuth azimuth;
+  protected Azimuth azimuth;
 
   public PositionWithAzimuth(@NotNull Position position, Azimuth azimuth) {
     super(position.getLng(), position.getLat(), position.getDistance(), position.getSpeedLng(), position.getSpeedLat(), position.getSpeedDistance());

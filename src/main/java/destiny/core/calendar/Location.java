@@ -25,14 +25,14 @@ import static destiny.core.calendar.Location.NorthSouth.SOUTH;
 public class Location implements Serializable {
 
   private EastWest eastWest = EAST;
-  private int     longitudeDegree = 121;
-  private int     longitudeMinute = 30;
-  private double  longitudeSecond = 0;
+  private int lngDeg = 121;
+  private int lngMin = 30;
+  private double lngSec = 0;
 
   private NorthSouth northSouth = NORTH;
-  private int     latitudeDegree = 25;
-  private int     latitudeMinute = 3;
-  private double  latitudeSecond = 0;
+  private int latDeg = 25;
+  private int latMin = 3;
+  private double latSec = 0;
   
   /**
    * TimeZone id , 例如 "Asia/Taipei"
@@ -126,24 +126,12 @@ public class Location implements Serializable {
     .put(Locale.TAIWAN, new Location(121.517668 , 25.039030 , "Asia/Taipei"))
     .build();
 
-  /** 從 Browser 傳入 locale , 找出該 Locale 內定的 Location */
-  public Location(Locale locale) {
-    Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet()).orElse(Locale.getDefault());
-    Location matchedLocation = locMap.get(matchedLocale);
-    this.eastWest = matchedLocation.eastWest;
-    this.longitudeDegree = matchedLocation.longitudeDegree;
-    this.longitudeMinute = matchedLocation.longitudeMinute;
-    this.longitudeSecond = matchedLocation.longitudeSecond;
-    this.northSouth = matchedLocation.northSouth;
-    this.latitudeDegree = matchedLocation.latitudeDegree;
-    this.latitudeMinute = matchedLocation.latitudeMinute;
-    this.latitudeSecond = matchedLocation.latitudeSecond;
-    this.tzid = matchedLocation.tzid;
-    this.altitudeMeter = matchedLocation.altitudeMeter;
+  public Location() {
   }
 
-
-  public Location() {
+  public static Location of(Locale locale) {
+    Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet()).orElse(Locale.getDefault());
+    return locMap.get(matchedLocale);
   }
   
   
@@ -159,13 +147,13 @@ public class Location implements Serializable {
                   NorthSouth northSouth , int latDeg , int latMin , double latSec ,
                   double altitudeMeter , String timeZone , @Nullable Integer minuteOffset) {
     this.eastWest = eastWest;
-    this.longitudeDegree = lngDeg;
-    this.longitudeMinute = lngMin;
-    this.longitudeSecond = lngSec;
+    this.lngDeg = lngDeg;
+    this.lngMin = lngMin;
+    this.lngSec = lngSec;
     this.northSouth = northSouth;
-    this.latitudeDegree = latDeg;
-    this.latitudeMinute = latMin;
-    this.latitudeSecond = latSec;
+    this.latDeg = latDeg;
+    this.latMin = latMin;
+    this.latSec = latSec;
     this.tzid = timeZone;
     this.altitudeMeter = altitudeMeter;
     this.minuteOffset = minuteOffset;
@@ -223,14 +211,14 @@ public class Location implements Serializable {
   public Location(EastWest eastWest, double lng, NorthSouth northSouth, double lat,
                   double altMeter, String zoneId, @Nullable Integer minuteOffset) {
     this.eastWest = eastWest;
-    this.longitudeDegree = (int) Math.abs(lng);
-    this.longitudeMinute = (int) ((Math.abs(lng) - longitudeDegree) * 60);
-    this.longitudeSecond = Math.abs(lng)*3600 - longitudeDegree*3600 - longitudeMinute*60;
+    this.lngDeg = (int) Math.abs(lng);
+    this.lngMin = (int) ((Math.abs(lng) - lngDeg) * 60);
+    this.lngSec = Math.abs(lng)*3600 - lngDeg *3600 - lngMin *60;
     
     this.northSouth = northSouth;
-    this.latitudeDegree = (int) Math.abs(lat);
-    this.latitudeMinute = (int) ((Math.abs(lat) - latitudeDegree) * 60);
-    this.latitudeSecond = Math.abs(lat)*3600 - latitudeDegree*3600 - latitudeMinute*60;
+    this.latDeg = (int) Math.abs(lat);
+    this.latMin = (int) ((Math.abs(lat) - latDeg) * 60);
+    this.latSec = Math.abs(lat)*3600 - latDeg *3600 - latMin *60;
 
     this.altitudeMeter = altMeter;
     this.tzid = zoneId;
@@ -272,14 +260,14 @@ public class Location implements Serializable {
   /** 沒有 tzid , 直接帶入 minuteOffset (優先度最高) */
   public Location(double lng, double lat , int minuteOffset) {
     this.eastWest = (lng >= 0 ) ? EAST : WEST;
-    this.longitudeDegree = (int) Math.abs(lng);
-    this.longitudeMinute = (int) ((Math.abs(lng) - longitudeDegree) * 60);
-    this.longitudeSecond = Math.abs(lng)*3600 - longitudeDegree*3600 - longitudeMinute*60;
+    this.lngDeg = (int) Math.abs(lng);
+    this.lngMin = (int) ((Math.abs(lng) - lngDeg) * 60);
+    this.lngSec = Math.abs(lng)*3600 - lngDeg *3600 - lngMin *60;
 
     this.northSouth = (lat >=0 ) ? NORTH : SOUTH;
-    this.latitudeDegree = (int) Math.abs(lat);
-    this.latitudeMinute = (int) ((Math.abs(lat) - latitudeDegree) * 60);
-    this.latitudeSecond = Math.abs(lat)*3600 - latitudeDegree*3600 - latitudeMinute*60;
+    this.latDeg = (int) Math.abs(lat);
+    this.latMin = (int) ((Math.abs(lat) - latDeg) * 60);
+    this.latSec = Math.abs(lat)*3600 - latDeg *3600 - latMin *60;
 
     this.minuteOffset = minuteOffset;
   }
@@ -313,9 +301,9 @@ public class Location implements Serializable {
     else
       throw new RuntimeException("EW not correct : " + ew);
     
-    this.longitudeDegree = Integer.valueOf(s.substring(1, 4).trim());
-    this.longitudeMinute = Integer.valueOf(s.substring(4, 6).trim());
-    this.longitudeSecond = Double.valueOf(s.substring(6, 11).trim());
+    this.lngDeg = Integer.valueOf(s.substring(1, 4).trim());
+    this.lngMin = Integer.valueOf(s.substring(4, 6).trim());
+    this.lngSec = Double.valueOf(s.substring(6, 11).trim());
     
     char ns = s.charAt(11);
     if (ns == '+')
@@ -325,9 +313,9 @@ public class Location implements Serializable {
     else
       throw new RuntimeException("ns not correct : " + ns);
     
-    this.latitudeDegree = Integer.valueOf(s.substring(12, 14).trim());
-    this.latitudeMinute = Integer.valueOf(s.substring(14, 16).trim());
-    this.latitudeSecond = Double.valueOf(s.substring(16, 21).trim());
+    this.latDeg = Integer.valueOf(s.substring(12, 14).trim());
+    this.latMin = Integer.valueOf(s.substring(14, 16).trim());
+    this.latSec = Double.valueOf(s.substring(16, 21).trim());
     
     //包含了 高度以及時區
     String altitudeAndTimezone = s.substring(21);
@@ -380,14 +368,14 @@ public class Location implements Serializable {
   public String getDebugString() {
     StringBuilder sb = new StringBuilder();
     sb.append(eastWest == EAST ? '+' : '-');
-    sb.append(AlignUtil.alignRight(this.longitudeDegree, 3 , ' '));
-    sb.append(AlignUtil.alignRight(this.longitudeMinute, 2 , ' '));
-    sb.append(AlignUtil.alignRight(this.longitudeSecond, 5 , ' '));
+    sb.append(AlignUtil.alignRight(this.lngDeg, 3 , ' '));
+    sb.append(AlignUtil.alignRight(this.lngMin, 2 , ' '));
+    sb.append(AlignUtil.alignRight(this.lngSec, 5 , ' '));
     
     sb.append(northSouth == NORTH ? '+' : '-');
-    sb.append(AlignUtil.alignRight(this.latitudeDegree, 2 , ' '));
-    sb.append(AlignUtil.alignRight(this.latitudeMinute, 2 , ' '));
-    sb.append(AlignUtil.alignRight(this.latitudeSecond, 5 , ' '));
+    sb.append(AlignUtil.alignRight(this.latDeg, 2 , ' '));
+    sb.append(AlignUtil.alignRight(this.latMin, 2 , ' '));
+    sb.append(AlignUtil.alignRight(this.latSec, 5 , ' '));
     
     sb.append(" ").append(this.altitudeMeter);
     //舊：sb.append(AlignUtil.alignRight(this.minuteOffset, 4 , ' '));
@@ -402,7 +390,7 @@ public class Location implements Serializable {
    * @return 取得經度，in double，包含正負值
    */
   public double getLongitude() {
-    return getLongitude(eastWest , longitudeDegree , longitudeMinute , longitudeSecond);
+    return getLongitude(eastWest , lngDeg, lngMin, lngSec);
   }
 
   /** 將「經度」的 (東/西) 度、分、秒 轉為十進位 */
@@ -417,7 +405,7 @@ public class Location implements Serializable {
    * @return 取得緯度，in double，包含正負值
    */
   public double getLatitude() {
-    return getLatitude(northSouth , latitudeDegree , latitudeMinute , latitudeSecond);
+    return getLatitude(northSouth , latDeg, latMin, latSec);
   }
 
   public static double getLatitude(NorthSouth northSouth , int latDeg , int latMin , double latSec ) {
@@ -429,19 +417,19 @@ public class Location implements Serializable {
 
   public boolean isEast() { return eastWest == EAST; }
 
-  public int getLngDeg() { return this.longitudeDegree; }
+  public int getLngDeg() { return this.lngDeg; }
 
-  public int getLngMin() { return this.longitudeMinute; }
+  public int getLngMin() { return this.lngMin; }
 
-  public double getLngSec() { return this.longitudeSecond; }
+  public double getLngSec() { return this.lngSec; }
 
   public boolean isNorth() { return northSouth == NORTH; }
 
-  public int getLatDeg() { return this.latitudeDegree; }
+  public int getLatDeg() { return this.latDeg; }
 
-  public int getLatMin() { return this.latitudeMinute; }
+  public int getLatMin() { return this.latMin; }
 
-  public double getLatSec() { return this.latitudeSecond; }
+  public double getLatSec() { return this.latSec; }
 
   public TimeZone getTimeZone() { return TimeZone.getTimeZone(tzid); }
 
@@ -531,12 +519,12 @@ public class Location implements Serializable {
     if (!(o instanceof Location))
       return false;
     Location location = (Location) o;
-    return longitudeDegree == location.longitudeDegree && longitudeMinute == location.longitudeMinute && Double.compare(location.longitudeSecond, longitudeSecond) == 0 && latitudeDegree == location.latitudeDegree && latitudeMinute == location.latitudeMinute && Double.compare(location.latitudeSecond, latitudeSecond) == 0 && Double.compare(location.altitudeMeter, altitudeMeter) == 0 && eastWest == location.eastWest && northSouth == location.northSouth && java.util.Objects.equals(tzid, location.tzid) && java.util.Objects.equals(minuteOffset, location.minuteOffset);
+    return lngDeg == location.lngDeg && lngMin == location.lngMin && Double.compare(location.lngSec, lngSec) == 0 && latDeg == location.latDeg && latMin == location.latMin && Double.compare(location.latSec, latSec) == 0 && Double.compare(location.altitudeMeter, altitudeMeter) == 0 && eastWest == location.eastWest && northSouth == location.northSouth && java.util.Objects.equals(tzid, location.tzid) && java.util.Objects.equals(minuteOffset, location.minuteOffset);
   }
 
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(eastWest, longitudeDegree, longitudeMinute, longitudeSecond, northSouth, latitudeDegree, latitudeMinute, latitudeSecond, tzid, minuteOffset, altitudeMeter);
+    return java.util.Objects.hash(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, tzid, minuteOffset, altitudeMeter);
   }
 
   /** 查詢， minuteOffset 是否被設定 (非null) */

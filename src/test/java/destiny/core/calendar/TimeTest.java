@@ -205,7 +205,7 @@ public class TimeTest
    */
   @Test
   public void getDstSecondOffset_Taiwan() throws Exception {
-    Location loc = new Location(Locale.TAIWAN);
+    Location loc = Location.of(Locale.TAIWAN);
 
     // 民國41年（西元1952年）	日光節約時間	3月1日至10月31日
     int year = 1952;

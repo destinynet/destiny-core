@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
  * Swiss Ephemeris 的實作是 StarPositionImpl <br/>
  * 原廠還支援 月亮的 Apsis , 但我使用 ApsisIF 來實作
  */
-public interface StarPositionIF {
+public interface StarPositionIF<T extends Position> {
 
   /** 設定觀測地點，對於 {@link Centric#TOPO} 有用 . 2017-07-03 註記 : 此 method 無法移除*/
   void setLocation(Location location);
 
-  Position getPosition(Star star, double gmtJulDay , Centric centric , Coordinate coordinate);
+  T getPosition(Star star, double gmtJulDay , Centric centric , Coordinate coordinate);
 
   /** 同樣是求 Position , 但多傳入地點、溫度、壓力 等資料 , 在此直接 discard 掉 */
-  default Position getPosition(Star star, double gmtJulDay, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure) {
+  default T getPosition(Star star, double gmtJulDay, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure) {
     return getPosition(star , gmtJulDay , centric , coordinate);
   }
 
