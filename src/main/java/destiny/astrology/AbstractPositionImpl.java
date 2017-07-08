@@ -18,5 +18,4 @@ public abstract class AbstractPositionImpl<T extends Point> implements IPosition
     return t;
   }
 
-
 }

@@ -15,8 +15,8 @@ import static destiny.astrology.LunarApsis.MeanOscu.MEAN;
 import static destiny.astrology.LunarApsis.MeanOscu.OSCU;
 
 
-public final class LunarApsis extends LunarPoint implements Comparable<LunarApsis>
-{
+public final class LunarApsis extends LunarPoint implements Comparable<LunarApsis> {
+
   public enum MeanOscu {MEAN , OSCU}
 
   /** 只會用到 PERIHELION , APHELION */

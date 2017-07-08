@@ -11,6 +11,6 @@ public interface IPosition<T extends Point> {
 
   T getPoint();
 
-  <U extends Position> U getPosition(LocalDateTime ldt , Location loc , Centric centric , Coordinate coordinate , StarPositionIF<U> starPositionImpl);
+  Position getPosition(LocalDateTime ldt , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl);
 
 }
