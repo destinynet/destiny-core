@@ -4,10 +4,14 @@
 package destiny.astrology;
 
 import com.google.common.collect.ImmutableSet;
+import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PositionFunctions {
 
@@ -79,6 +83,16 @@ public class PositionFunctions {
   public final static Set<IPosition> posHamburgers = new ImmutableSet.Builder<IPosition>()
     .add(posCupido , posHades , posZeus , posKronos , posApollon , posAdmetos , posVulkanus , posPoseidon)
     .build();
+
+  public final static Map<Point , IPosition> pointPosMap = new ImmutableSet.Builder<IPosition>()
+    .addAll(posPlanets)
+    .addAll(posAsteroids)
+    .addAll(posFixedStars)
+    .addAll(posHamburgers)
+    .build().stream()
+    .map(iPosition -> Tuple.tuple(iPosition.getPoint() , iPosition))
+    .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+
 
 
 
