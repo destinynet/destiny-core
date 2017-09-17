@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.Horoscope;
+import destiny.astrology.Horoscope2;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public final class Occidental extends Rule
     
     if (planet == Planet.MERCURY || planet == Planet.VENUS)
     {
-      if ( Horoscope.isOccidental(planetDegree , sunDegree))
+      if ( Horoscope2.isOccidental(planetDegree , sunDegree))
       {
         //addComment(Locale.TAIWAN , planet + " 在太陽西邊");
         return Optional.of(Tuple.tuple("comment", new Object[]{planet}));

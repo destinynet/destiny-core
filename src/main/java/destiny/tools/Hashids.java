@@ -174,7 +174,7 @@ public class Hashids {
    * Decrypt string to numbers
    *
    * @param hash the encrypt string
-   * @return decryped numbers
+   * @return decrypted numbers
    */
   public long[] decode(String hash){
     long[] ret = {};

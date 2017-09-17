@@ -40,13 +40,13 @@ public class AspectEffectiveModern implements Serializable , AspectEffectiveIF
   /** 直接比對度數是否形成交角，不考慮星體 */
   public boolean isEffective(double deg1, double deg2 , @NotNull Aspect aspect)
   {
-    double angle = Horoscope.getAngle(deg1, deg2);
+    double angle = Horoscope2.getAngle(deg1, deg2);
     return Math.abs(angle - aspect.getDegree()) <= aspectOrbsImpl.getAspectOrb(aspect);
   }
   
   public static boolean isEffective(double deg1 , double deg2 , @NotNull Aspect aspect , double orb)
   {
-    double angle = Horoscope.getAngle(deg1, deg2);
+    double angle = Horoscope2.getAngle(deg1, deg2);
     return Math.abs(angle - aspect.getDegree()) <= orb;
   }
 
@@ -57,7 +57,7 @@ public class AspectEffectiveModern implements Serializable , AspectEffectiveIF
     double orb = aspectOrbsPlanetImpl.getPlanetAspectOrb( p1,  p2, aspect); //從「考量行星」的交角容許度實作找起
     if (orb < 0) //如果找不到，會傳回小於0的值
       orb = aspectOrbsImpl.getAspectOrb(aspect); //再從「不考慮行星」的交角容許度尋找
-    double angle = Horoscope.getAngle(deg1, deg2);
+    double angle = Horoscope2.getAngle(deg1, deg2);
     return Math.abs(angle - aspect.getDegree()) <= orb;
   }
 

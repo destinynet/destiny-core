@@ -32,7 +32,7 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
     
     if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect))
     {
-      double planetsAngle = Horoscope.getAngle(deg1, deg2);
+      double planetsAngle = Horoscope2.getAngle(deg1, deg2);
       double error = Math.abs(planetsAngle - aspect.getDegree()); //目前與 aspect 的誤差
       //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error + " 度");
 
@@ -43,7 +43,7 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
       
       double deg1_next = hc2.getHoroscope().getPositionWithAzimuth(p1).getLng();
       double deg2_next = hc2.getHoroscope().getPositionWithAzimuth(p2).getLng();
-      double planetsAngle_next = Horoscope.getAngle(deg1_next , deg2_next);
+      double planetsAngle_next = Horoscope2.getAngle(deg1_next , deg2_next);
       double error_next = Math.abs(planetsAngle_next - aspect.getDegree());
       
       //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error_next + " 度");

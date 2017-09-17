@@ -14,7 +14,7 @@ public abstract class PositionLunarPointImpl extends AbstractPositionImpl<LunarP
   }
 
   @Override
-  public Position getPosition(LocalDateTime ldt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
-    return starPositionImpl.getPosition(getPoint() , ldt , loc , centric , coordinate);
+  public Position getPosition(LocalDateTime lmt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
+    return starPositionImpl.getPosition(getPoint() , lmt, loc , centric , coordinate);
   }
 }

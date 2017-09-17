@@ -14,7 +14,7 @@ public abstract class PositionHamburgerImpl extends AbstractPositionImpl<Hamburg
   }
 
   @Override
-  public Position getPosition(LocalDateTime ldt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
-    return starPositionImpl.getPosition(getPoint() , ldt , loc , centric , coordinate);
+  public Position getPosition(LocalDateTime lmt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
+    return starPositionImpl.getPosition(getPoint() , lmt, loc , centric , coordinate);
   }
 }

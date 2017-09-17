@@ -40,7 +40,7 @@ public final class Partile_Conj_North_Node extends Rule
       northDeg = horoscopeContext.getPosition(LunarNode.NORTH_TRUE).getLng();
     else
       northDeg = horoscopeContext.getPosition(LunarNode.NORTH_MEAN).getLng();
-    if ( Horoscope.getAngle(planetDegree , northDeg) <=1 )
+    if ( Horoscope2.getAngle(planetDegree , northDeg) <=1 )
     {
       if (nodeType == NodeType.TRUE)
       {

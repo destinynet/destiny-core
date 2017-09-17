@@ -5,6 +5,7 @@
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.Horoscope;
+import destiny.astrology.Horoscope2;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public final class Moon_Increase_Light extends Rule
     
     if (planet == Planet.MOON)
     {
-      if ( Horoscope.isOccidental(planetDegree , sunDegree))
+      if ( Horoscope2.isOccidental(planetDegree , sunDegree))
       {
         // addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
         return Optional.of(Tuple.tuple("comment", new Object[]{planet}));

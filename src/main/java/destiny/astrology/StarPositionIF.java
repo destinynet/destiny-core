@@ -59,6 +59,6 @@ public interface StarPositionIF<T extends Position> {
 
   /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 */
   default Position getPosition(Star star, LocalDateTime lmt, Location location , Centric centric , Coordinate coordinate) {
-    return getPosition(star , lmt , location , centric , coordinate , 0 , 0);
+    return getPosition(star , lmt , location , centric , coordinate , 0 , 1013.25);
   }
 }

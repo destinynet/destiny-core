@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.Horoscope;
+import destiny.astrology.Horoscope2;
 import destiny.astrology.HoroscopeContext;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public final class Oriental extends Rule {
       double planetDegree = horoscopeContext.getPosition(planet).getLng();
       double sunDegree = horoscopeContext.getPosition(Planet.SUN).getLng();
 
-      if (Horoscope.isOriental(planetDegree, sunDegree)) {
+      if (Horoscope2.isOriental(planetDegree, sunDegree)) {
         //addComment(Locale.TAIWAN , planet + " 在太陽東邊");
         return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
       }

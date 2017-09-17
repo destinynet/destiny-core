@@ -38,7 +38,7 @@ public final class Partile_Conj_South_Node extends Rule {
     else
       southDeg = horoscopeContext.getPosition(LunarNode.SOUTH_MEAN).getLng();
 
-    if (Horoscope.getAngle(planetDegree, southDeg) <= 1) {
+    if (Horoscope2.getAngle(planetDegree, southDeg) <= 1) {
       if (nodeType == NodeType.TRUE) {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, LunarNode.SOUTH_TRUE, Aspect.CONJUNCTION}));

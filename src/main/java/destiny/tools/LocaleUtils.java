@@ -15,9 +15,8 @@ public class LocaleUtils implements Serializable
 {
 
   /** 將 string 以 _ 切開，傳回 Locale 物件 */
-  @Nullable
-  public static Locale getLocale(String string)
-  {
+  @NotNull
+  public static Locale getLocale(String string) {
     StringTokenizer st = new StringTokenizer(string , "_");
     String lang;
     String country;
@@ -52,10 +51,7 @@ public class LocaleUtils implements Serializable
    * 7. 內訂(純 basename)
    * </pre>
    */
-  public static String getString(@NotNull Map<Locale,String> localeStringMap , @Nullable Locale locale)
-  {
-    if (locale == null)
-      throw new NullPointerException("locale cannot be null");
+  public static String getString(@NotNull Map<Locale,String> localeStringMap , @NotNull Locale locale) {
     
     Locale defaultLocale = Locale.getDefault();
     
@@ -77,8 +73,7 @@ public class LocaleUtils implements Serializable
     return localeStringMap.get(null); //第七項
   }
   
-  public static Optional<Locale> getBestMatchingLocale(Locale locale)
-  {
+  public static Optional<Locale> getBestMatchingLocale(Locale locale) {
     //TODO : 未來該把此 TAIWAN , CHINA , ENGLISH 做更彈性的調整。
     ImmutableSet<Locale> supported = ImmutableSet.of(Locale.TAIWAN , Locale.CHINA , Locale.ENGLISH);
     return getBestMatchingLocale(locale , supported);
@@ -97,8 +92,7 @@ public class LocaleUtils implements Serializable
    * 7. 內訂(純 basename)
    * </pre>
    */
-  public static Optional<Locale> getBestMatchingLocale(@Nullable Locale locale , @NotNull Iterable<Locale> locales)
-  {
+  public static Optional<Locale> getBestMatchingLocale(@Nullable Locale locale , @NotNull Iterable<Locale> locales) {
     Locale defaultLocale = Locale.getDefault();
     if (locale == null)
       locale = defaultLocale;

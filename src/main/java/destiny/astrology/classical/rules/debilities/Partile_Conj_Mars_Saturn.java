@@ -4,10 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.Aspect;
-import destiny.astrology.Horoscope;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
+import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -29,12 +26,12 @@ public final class Partile_Conj_Mars_Saturn extends Rule
     double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLng();
     double saturnDeg = horoscopeContext.getPosition(Planet.SATURN).getLng();
     
-    if (planet != Planet.MARS && Horoscope.getAngle(planetDegree , marsDeg) <= 1)
+    if (planet != Planet.MARS && Horoscope2.getAngle(planetDegree , marsDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.CONJUNCTION);
       return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.MARS, Aspect.CONJUNCTION}));
     }
-    else if (planet != Planet.SATURN && Horoscope.getAngle(planetDegree , saturnDeg) <= 1)
+    else if (planet != Planet.SATURN && Horoscope2.getAngle(planetDegree , saturnDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.CONJUNCTION);
       return Optional.of(Tuple.tuple("comment" , new Object[]{planet , Planet.SATURN, Aspect.CONJUNCTION}));

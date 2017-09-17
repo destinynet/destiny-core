@@ -56,7 +56,7 @@ public class Horoscope implements Serializable {
    */
   public double getAngle(Point fromPoint , Point toPoint)
   {
-    return getAngle(context.getPosition(fromPoint).getLng() , context.getPosition(toPoint).getLng());
+    return Horoscope2.getAngle(context.getPosition(fromPoint).getLng() , context.getPosition(toPoint).getLng());
   }
   
   /**
@@ -67,42 +67,6 @@ public class Horoscope implements Serializable {
   {
     double angle = getAngle(p1 , p2); //其值必定小於等於 180度
     return Math.abs( aspect.getDegree() - angle);
-  }
-  
-  /**
-   * @return 計算黃道帶上兩個度數的交角 , 其值必定小於等於 180度 
-   */
-  public static double getAngle(double from , double to)
-  {
-    if ( from - to >=180)
-      return (360-from + to);
-    else if (from-to >=0)
-      return (from - to);
-    else if (from - to >= -180)
-      return (to - from);
-    else // (from - to < -180)
-      return (from + 360-to);
-  }
-  
-  /** @return 計算 from 是否在 to 的東邊 (度數小，為東邊) , true 就是東邊 , false 就是西邊(含對沖/合相) */
-  public static boolean isOriental(double from , double to)
-  {
-    if (from < to && to - from < 180)
-      return true;
-    else if (from > to && from - to > 180)
-      return true;
-
-    return false;
-  }
-  
-  /** @return 計算 from 是否在 to 的西邊 (度數大，為西邊) , true 就是西邊 , false 就是東邊(含對沖/合相) */
-  public static boolean isOccidental(double from , double to)
-  {
-    if (from < to && to - from > 180)
-      return true;
-    else if (from > to && from - to < 180)
-      return true;
-    return false;
   }
   
   /** 取得一顆星體 Point / Star 在星盤上的角度 */
