@@ -4,8 +4,6 @@
 package destiny.astrology;
 
 import com.google.common.collect.ImmutableSet;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +30,19 @@ public class PositionFunctions {
     .add(posSun , posMoon , posMercury , posVenus , posMars , posJupiter , posSaturn , posUranus , posNeptune , posPluto)
     .build();
 
-  public final static IPosition posLunarNorth = new PositionLunarPointImpl(LunarNode.NORTH_TRUE) {};
-  public final static IPosition posLunarSouth = new PositionLunarPointImpl(LunarNode.SOUTH_TRUE) {};
+  public final static IPosition posLunarNorth_TRUE = new PositionLunarPointImpl(LunarNode.NORTH_TRUE) {};
+  public final static IPosition posLunarNorth_MEAN = new PositionLunarPointImpl(LunarNode.NORTH_MEAN) {};
+  public final static IPosition posLunarSouth_TRUE = new PositionLunarPointImpl(LunarNode.SOUTH_TRUE) {};
+  public final static IPosition posLunarSouth_MEAN = new PositionLunarPointImpl(LunarNode.SOUTH_MEAN) {};
+
+  public final static Set<IPosition> posLunarNodes_TRUE = new ImmutableSet.Builder<IPosition>()
+    .add(posLunarNorth_TRUE, posLunarSouth_TRUE)
+    .build();
+
+  public final static Set<IPosition> posLunarNodes_MEAN = new ImmutableSet.Builder<IPosition>()
+    .add(posLunarNorth_MEAN, posLunarSouth_MEAN)
+    .build();
+
 
   public final static IPosition posCeres = new PositionAsteroidImpl(Asteroid.CERES) {};
   public final static IPosition posPallas = new PositionAsteroidImpl(Asteroid.PALLAS) {};
@@ -88,12 +97,9 @@ public class PositionFunctions {
     .addAll(posPlanets)
     .addAll(posAsteroids)
     .addAll(posFixedStars)
+    .addAll(posLunarNodes_TRUE)
+    .addAll(posLunarNodes_MEAN)
     .addAll(posHamburgers)
     .build().stream()
-    .map(iPosition -> Tuple.tuple(iPosition.getPoint() , iPosition))
-    .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
-
-
-
-
+    .collect(Collectors.toMap(IPosition::getPoint, iPos -> iPos));
 }

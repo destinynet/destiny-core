@@ -22,7 +22,8 @@ import static java.util.stream.Collectors.toList;
  * 星盤的 Context， 除了基本的時間地點之外，還包括各種計算的介面 (星體位置 / 分宮法 ...)
  * TODO : 2015-06-11 附註： mutable object , 應該做另一個 immutable 的版本
  */
-public class HoroscopeContext implements Serializable {
+@Deprecated
+public class HoroscopeContext implements Serializable, HoroscopeContextIF {
   /** 當地時間 */
   private final LocalDateTime lmt;
   
@@ -113,7 +114,7 @@ public class HoroscopeContext implements Serializable {
   
   /** 取得星盤 Horoscope */
   @NotNull
-  public Horoscope getHoroscope()
+  public HoroscopeIF getHoroscope()
   {
     return new Horoscope(this , houseCuspImpl.getHouseCusps(lmt, location, houseSystem, coordinate));
   }
@@ -159,6 +160,7 @@ public class HoroscopeContext implements Serializable {
     return ZodiacSign.getZodiacSign(position.getLng());
   }
 
+  @Override
   @NotNull
   public LocalDateTime getLmt() {
     return lmt;
@@ -169,6 +171,7 @@ public class HoroscopeContext implements Serializable {
     return gmt;
   }
 
+  @Override
   @NotNull
   public Location getLocation()
   {

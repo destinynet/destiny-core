@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static destiny.astrology.LunarNode.NorthSouth.NORTH;
 import static destiny.astrology.LunarNode.NorthSouth.SOUTH;
@@ -68,9 +69,10 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
   public static final LunarNode SOUTH_MEAN = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , SOUTH , MEAN);
 
   //public static LunarNode[] values = {NORTH_TRUE , NORTH_MEAN , SOUTH_TRUE , SOUTH_MEAN};
-  @NotNull
+  public static final LunarNode[] true_values = { NORTH_TRUE , SOUTH_TRUE};
+  public static final LunarNode[] mean_values = { NORTH_MEAN , SOUTH_MEAN};
   public static final LunarNode[] values = { NORTH_MEAN , SOUTH_MEAN};
-  
+
   LunarNode(String nameKey, String abbrKey, @NotNull NorthSouth northSouth, @NotNull NodeType nodeType)
   {
     super(nameKey, abbrKey, resource);
@@ -101,4 +103,21 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
     return list.indexOf(this) - list.indexOf(o);
   }
 
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof LunarNode))
+      return false;
+    if (!super.equals(o))
+      return false;
+    LunarNode lunarNode = (LunarNode) o;
+    return northSouth == lunarNode.northSouth && nodeType == lunarNode.nodeType;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), northSouth, nodeType);
+  }
 }

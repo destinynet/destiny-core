@@ -13,21 +13,6 @@ import java.io.Serializable;
  */
 public class HoroscopeContext2 implements Serializable {
 
-  /** 分宮法 */
-  private final HouseSystem houseSystem;
-
-  /** 座標系統 */
-  private final Coordinate coordinate;
-
-  /** 中心系統 */
-  private final Centric centric;
-
-  /** 溫度 */
-  private final double temperature;
-
-  /** 壓力 */
-  private final double pressure;
-
   /** 星體位置實作 */
   private final StarPositionWithAzimuthIF starPositionWithAzimuthImpl;
 
@@ -43,35 +28,10 @@ public class HoroscopeContext2 implements Serializable {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   public HoroscopeContext2(HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, StarPositionWithAzimuthIF starPositionWithAzimuthImpl, ApsisWithAzimuthIF apsisWithAzimuthImpl, HouseCuspIF houseCuspImpl, NodeType nodeType) {
-    this.houseSystem = houseSystem;
-    this.coordinate = coordinate;
-    this.centric = centric;
-    this.temperature = temperature;
-    this.pressure = pressure;
     this.starPositionWithAzimuthImpl = starPositionWithAzimuthImpl;
     this.apsisWithAzimuthImpl = apsisWithAzimuthImpl;
     this.houseCuspImpl = houseCuspImpl;
     this.nodeType = nodeType;
-  }
-
-  public HouseSystem getHouseSystem() {
-    return houseSystem;
-  }
-
-  public Coordinate getCoordinate() {
-    return coordinate;
-  }
-
-  public Centric getCentric() {
-    return centric;
-  }
-
-  public double getTemperature() {
-    return temperature;
-  }
-
-  public double getPressure() {
-    return pressure;
   }
 
   public StarPositionWithAzimuthIF getStarPositionWithAzimuthImpl() {

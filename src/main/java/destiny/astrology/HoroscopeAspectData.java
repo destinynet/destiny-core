@@ -4,15 +4,14 @@
  */ 
 package destiny.astrology;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /** 存放星體交角的資料結構 */
 public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Serializable
@@ -28,20 +27,26 @@ public class HoroscopeAspectData implements Comparable<HoroscopeAspectData> , Se
   
   /** orb 不列入 equals / hashCode 計算 */
   private final double orb;
-  
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
+
   public HoroscopeAspectData(Point p1 , Point p2 , Aspect aspect , double orb)
   {
     twoPoints.add(p1);
     twoPoints.add(p2);
+    if (twoPoints.size() <= 1) {
+      logger.warn("twoPoints size = {} , p1 = {} ({}) , p2 = {} ({}) . equals ? {}" , twoPoints.size() , p1 , p1.hashCode() , p2 , p2.hashCode() , p1.equals(p2));
+    }
     this.aspect = aspect;
     this.orb = orb; 
   }
   
   @NotNull
   @Override
-  public String toString()
-  {
-    return twoPoints.toString() + aspect.toString(Locale.TAIWAN) + " 誤差 " + String.valueOf(orb).substring(0,4) + " 度";
+  public String toString() {
+
+    return twoPoints.toString() + aspect.toString(Locale.TAIWAN) + " 誤差 " +
+      StringUtils.substring(String.valueOf(orb) , 0 , 4) + " 度";
   }
 
   

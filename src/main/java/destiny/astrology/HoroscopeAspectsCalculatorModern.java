@@ -5,30 +5,30 @@
 package destiny.astrology;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /** 現代占星術，計算一張星盤中，星體交角列表的實作 */
-public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalculatorIF , Serializable
-{
-  private Horoscope horoscope;
+public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalculatorIF , Serializable {
+
+  private HoroscopeIF horoscope;
   private final AspectEffectiveModern modern;
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 現代占星術，內定只計算重要性為「高」的角度 */
   private Collection<Aspect> aspects = Aspect.getAngles(Aspect.Importance.HIGH);
-  
+
   public HoroscopeAspectsCalculatorModern()
   {
     modern = new AspectEffectiveModern();
   }
 
   @Override
-  public void setHoroscope(Horoscope horoscope)
+  public void setHoroscope(HoroscopeIF horoscope)
   {
     this.horoscope = horoscope;
   }
@@ -39,21 +39,22 @@ public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalcula
     this.aspects = aspects;
   }
 
+  @NotNull
   @Override
-  public Map<Point , Aspect> getPointAspect(Point point , @NotNull Collection<Point> points)
-  {
+  public Map<Point , Aspect> getPointAspect(Point point , @NotNull Collection<Point> points) {
     if (this.horoscope == null)
       throw new RuntimeException(getClass().getName() + " : horoscope is null ! call setHoroscope(horoscope) first !");
     Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<>());
+
     double starDeg = horoscope.getPositionWithAzimuth(point).getLng();
     
-    for(Point eachPoint : points)
-    {
+    for(Point eachPoint : points) {
       double eachDeg = horoscope.getPositionWithAzimuth(eachPoint).getLng();
       /** 直接比對度數，不考慮星體 */
       aspects.stream()
         .filter(eachAspect -> point != eachPoint && modern.isEffective(starDeg, eachDeg, eachAspect))
         .forEach(eachAspect -> result.put(eachPoint, eachAspect));
+
     }
     return result;
   }

@@ -7,7 +7,6 @@ package destiny.astrology;
 import destiny.astrology.classical.AspectEffectiveClassical;
 import destiny.astrology.classical.PointDiameterIF;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.*;
@@ -15,7 +14,7 @@ import java.util.*;
 /** 古典占星術，列出一張星盤中呈現交角的星體以及角度 的實作 */
 public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalculatorIF , Serializable
 {
-  private Horoscope horoscope;
+  private HoroscopeIF horoscope;
   
   private final AspectEffectiveClassical classical;// = new AspectEffectiveClassical();
   
@@ -38,21 +37,19 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
   }
 
   @Override
-  public void setHoroscope(Horoscope horoscope)
+  public void setHoroscope(HoroscopeIF horoscope)
   {
     this.horoscope = horoscope;
   }
   
-  @Nullable
+  @NotNull
   @Override
-  public Map<Point , Aspect> getPointAspect(Point point, @NotNull Collection<Point> points)
-  {
+  public Map<Point , Aspect> getPointAspect(Point point, @NotNull Collection<Point> points) {
     if (this.horoscope == null)
       throw new RuntimeException(getClass().getName() + " : horoscope is null ! call setHoroscope(horoscope) first !");
 
-    if (point instanceof Planet)
-    {
-      Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<>());
+    Map<Point , Aspect> result = Collections.synchronizedMap(new HashMap<>());
+    if (point instanceof Planet) {
       double planetDeg = horoscope.getPositionWithAzimuth(point).getLng();
 
       //行星才比對
@@ -68,10 +65,9 @@ public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalc
           }
         }
       });
-      return result;      
     }
     //非行星不計算
-    return null;
+    return result;
   }
 
 

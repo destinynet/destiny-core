@@ -3,15 +3,39 @@
  */
 package destiny.astrology;
 
+import destiny.core.calendar.Location;
+import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Horoscope2 implements Serializable {
+public class Horoscope2 implements Serializable , HoroscopeIF , HoroscopeContextIF {
+
+  private final LocalDateTime lmt;
+  private final Location location;
+
+  /** 分宮法 */
+  private final HouseSystem houseSystem;
+
+  /** 座標系統 */
+  private final Coordinate coordinate;
+
+  /** 中心系統 */
+  private final Centric centric;
+
+  /** 溫度 */
+  private final double temperature;
+
+  /** 壓力 */
+  private final double pressure;
 
   private final Map<Point, PositionWithAzimuth> positionMap;
 
@@ -23,11 +47,40 @@ public class Horoscope2 implements Serializable {
   private transient static Logger logger = LoggerFactory.getLogger(Horoscope2.class);
 
 
-  public Horoscope2(Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
+  public Horoscope2(LocalDateTime lmt, Location location, HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
+    this.lmt = lmt;
+    this.location = location;
+    this.houseSystem = houseSystem;
+    this.coordinate = coordinate;
+    this.centric = centric;
+    this.temperature = temperature;
+    this.pressure = pressure;
     this.positionMap = positionMap;
     this.cuspDegreeMap = cuspDegreeMap;
   }
 
+  @Override
+  public HoroscopeIF getHoroscope() {
+    return this;
+  }
+
+  @NotNull
+  @Override
+  public LocalDateTime getLmt() {
+    return lmt;
+  }
+
+  @NotNull
+  @Override
+  public LocalDateTime getGmt() {
+    return Time.getGmtFromLmt(lmt , location);
+  }
+
+  @NotNull
+  @Override
+  public Location getLocation() {
+    return location;
+  }
 
   /**
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
@@ -43,6 +96,10 @@ public class Horoscope2 implements Serializable {
       .filter(e -> getHouse(e.getValue().getLng()) == index)
       .map(Map.Entry::getKey)
       .collect(Collectors.toList());
+  }
+
+  public Set<Point> getPoints() {
+    return positionMap.keySet();
   }
 
   /**
@@ -91,6 +148,11 @@ public class Horoscope2 implements Serializable {
   }
 
 
+  public Map<Point , PositionWithAzimuth> getPositionWithAzimuth(Class<? extends Point> clazz) {
+    return positionMap.entrySet().stream()
+      .filter(entry -> entry.getKey().getClass().equals(clazz))
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
 
   /**
    * 取得所有行星 {@link Planet} 的位置

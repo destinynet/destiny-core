@@ -6,18 +6,22 @@ package destiny.astrology;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
 
 /** 利用 HoroscopeAspectsCalculatorIF , 計算命盤之中，星體所呈現的交角，及其容許度 */
-public class HoroscopeAspectsCalculator implements Serializable
-{
-  private final Horoscope horoscope;
+public class HoroscopeAspectsCalculator implements Serializable {
+
+  private final HoroscopeIF horoscope;
   
   private final HoroscopeAspectsCalculatorIF calculator;
+
+  private Logger logger = LoggerFactory.getLogger(getClass());
   
-  public HoroscopeAspectsCalculator(Horoscope horoscope , HoroscopeAspectsCalculatorIF calculator)
+  public HoroscopeAspectsCalculator(HoroscopeIF horoscope , HoroscopeAspectsCalculatorIF calculator)
   {
     this.horoscope = horoscope;
     this.calculator = calculator;
@@ -46,15 +50,15 @@ public class HoroscopeAspectsCalculator implements Serializable
 
     for (Point point : points) {
       Map<Point, Aspect> map = calculator.getPointAspect(point, points);
-      if (map != null) {
-        for (Map.Entry<Point, Aspect> entry : map.entrySet()) {
-          //處理過濾交角的事宜
-          if (aspects == null || aspects.size() == 0 || aspects.contains(entry.getValue())) {
-            HoroscopeAspectData data = new HoroscopeAspectData(point, entry.getKey(), entry.getValue(), horoscope.getAspectError(point, entry.getKey(), entry.getValue()));
-            dataSet.add(data);
-          }
+      logger.debug("與 {} 形成所有交角的 pointAspect Map = {}" , point , map);
+      for (Map.Entry<Point, Aspect> entry : map.entrySet()) {
+        //處理過濾交角的事宜
+        if (aspects == null || aspects.size() == 0 || aspects.contains(entry.getValue())) {
+          HoroscopeAspectData data = new HoroscopeAspectData(point, entry.getKey(), entry.getValue(), horoscope.getAspectError(point, entry.getKey(), entry.getValue()));
+          logger.debug("data : twoPoints = {} 形成 {} 角 , 交角 {} 度" , data.getTwoPoints() , data.getAspect() , data.getOrb());
+          dataSet.add(data);
         }
-      } // map != null
+      }
     }
     return dataSet;
   }

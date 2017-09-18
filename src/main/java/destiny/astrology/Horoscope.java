@@ -7,10 +7,7 @@ package destiny.astrology;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Horoscope 只包含資料，不包含計算的介面 , 計算的介面交由 HoroscopeContext 處理
@@ -20,7 +17,8 @@ import java.util.Map;
  * 每個宮的宮首 (HouseCusp) 位於黃道幾度 , 資料結構存放於 cusps[13]
  * </pre>
  */
-public class Horoscope implements Serializable {
+@Deprecated
+public class Horoscope implements Serializable, HoroscopeIF {
 
   private final HoroscopeContext context;
   
@@ -38,10 +36,19 @@ public class Horoscope implements Serializable {
     this.context = context;
     this.cusps = cusps;
   }
-  
+
+  @Override
+  public Set<Point> getPoints() {
+    Set<Point> points = new HashSet<>();
+    points.addAll(Arrays.asList(Planet.values));
+    points.add(LunarNode.NORTH_MEAN);
+    return points;
+  }
+
   /**
    * 取得第幾宮的宮首落於黃道幾度。 1 <= cusp <= 12
    */
+  @Override
   public double getCuspDegree(int cusp)
   {
     if (cusp > 12)
@@ -54,7 +61,8 @@ public class Horoscope implements Serializable {
   /**
    * 取得單一 Horoscope 中 , 任兩顆星的交角
    */
-  public double getAngle(Point fromPoint , Point toPoint)
+  @Override
+  public double getAngle(Point fromPoint, Point toPoint)
   {
     return Horoscope2.getAngle(context.getPosition(fromPoint).getLng() , context.getPosition(toPoint).getLng());
   }
@@ -63,13 +71,15 @@ public class Horoscope implements Serializable {
    * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度
    * 例如兩星交角 175 度 , Aspect = 沖 (180) , 則 誤差 5 度
    */  
-  public double getAspectError(Point p1 , Point p2 , @NotNull Aspect aspect)
+  @Override
+  public double getAspectError(Point p1, Point p2, @NotNull Aspect aspect)
   {
     double angle = getAngle(p1 , p2); //其值必定小於等於 180度
     return Math.abs( aspect.getDegree() - angle);
   }
   
   /** 取得一顆星體 Point / Star 在星盤上的角度 */
+  @Override
   public PositionWithAzimuth getPositionWithAzimuth(Point point)
   {
     return context.getPosition(point);
@@ -78,6 +88,7 @@ public class Horoscope implements Serializable {
   /**
    * 取得一連串星體的位置（含地平方位角）
    */
+  @Override
   public Map<Star , PositionWithAzimuth> getPositionWithAzimuth(@NotNull List<Star> stars)
   {
     Map<Star , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
@@ -90,6 +101,7 @@ public class Horoscope implements Serializable {
   /**
    * 取得所有行星 (Planet) 的位置
    */
+  @Override
   public Map<Planet , PositionWithAzimuth> getPlanetPositionWithAzimuth()
   {
     Map<Planet , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
@@ -102,6 +114,7 @@ public class Horoscope implements Serializable {
   /**
    * 取得所有小行星 (Asteroid) 的位置
    */
+  @Override
   public Map<Asteroid , PositionWithAzimuth> getAsteroidPositionWithAzimuth()
   {
     Map<Asteroid , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
@@ -114,6 +127,7 @@ public class Horoscope implements Serializable {
   /**
    * 取得八個漢堡學派虛星 (Hamburger) 的位置
    */
+  @Override
   public Map<Hamburger , PositionWithAzimuth> getHamburgerPositionWithAzimuth()
   {
     Map<Hamburger , PositionWithAzimuth> resultMap = Collections.synchronizedMap(new HashMap<>());
@@ -127,6 +141,7 @@ public class Horoscope implements Serializable {
   /**
    * 黃道幾度，落於第幾宮 ( 1 <= house <= 12 )
    */
+  @Override
   public int getHouse(double degree) {
     for (int i = 1; i <= 11; i++) {
       if (Math.abs(cusps[i + 1] - cusps[i]) < 180) {
