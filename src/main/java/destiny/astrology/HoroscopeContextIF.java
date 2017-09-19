@@ -32,7 +32,7 @@ public interface HoroscopeContextIF extends Serializable {
   int getHouse(Point point);
 
   /** 取得星體的位置以及地平方位角 */
-  Position getPosition(Point point);
+  PositionWithAzimuth getPosition(Point point);
 
   /** 取得某星 位於什麼星座 */
   ZodiacSign getZodiacSign(Point point);

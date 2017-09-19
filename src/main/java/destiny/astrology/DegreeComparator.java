@@ -8,9 +8,9 @@ import java.util.Comparator;
 
 public class DegreeComparator implements Comparator<Point> {
 
-  private final HoroscopeContext context;
+  private final HoroscopeContextIF context;
 
-  public DegreeComparator(HoroscopeContext context) {
+  public DegreeComparator(HoroscopeContextIF context) {
     this.context = context;
   }
 

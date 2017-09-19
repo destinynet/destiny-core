@@ -65,7 +65,7 @@ public class EssentialUtils
   }
   
   /** Ruler 互訪 , 還沒確認是 優質互容 */
-  public boolean isBothRulerVisit(Point planet , @NotNull HoroscopeContext horoscopeContext)
+  public boolean isBothRulerVisit(Point planet , @NotNull HoroscopeContextIF horoscopeContext)
   {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
