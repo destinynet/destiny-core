@@ -4,10 +4,7 @@
  */ 
 package destiny.astrology.classical;
 
-import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Point;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
 
 /** EssentialIF 的工具箱 */
@@ -27,7 +24,7 @@ public class EssentialUtils
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br/>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」 
    * */
-  public boolean isReceivingFromDignities(Point receiver , Point receivee , @NotNull HoroscopeContext horoscopeContext)
+  public boolean isReceivingFromDignities(Point receiver , Point receivee , @NotNull HoroscopeContextIF horoscopeContext)
   {
     ZodiacSign receiveeSign = horoscopeContext.getZodiacSign(receivee);
     //比對 Ruler
@@ -59,7 +56,7 @@ public class EssentialUtils
   }
   
   /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall) */
-  public boolean isReceivingFromDebilities(Point receiver , Point receivee , @NotNull HoroscopeContext horoscopeContext)
+  public boolean isReceivingFromDebilities(Point receiver , Point receivee , @NotNull HoroscopeContextIF horoscopeContext)
   {
     ZodiacSign receiveeSign = horoscopeContext.getZodiacSign(receivee);
     if (essentialImpl.getPoint(receiveeSign , Dignity.DETRIMENT) == receiver)

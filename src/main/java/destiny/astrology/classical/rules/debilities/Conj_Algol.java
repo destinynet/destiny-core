@@ -18,7 +18,7 @@ public final class Conj_Algol extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     double planetDegree = horoscopeContext.getPosition(planet).getLng();
     double algolDeg = horoscopeContext.getPosition(FixedStar.ALGOL).getLng();
 

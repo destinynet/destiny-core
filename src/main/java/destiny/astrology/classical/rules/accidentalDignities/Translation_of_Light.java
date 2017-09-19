@@ -5,7 +5,7 @@
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.AspectApplySeparateIF;
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.TranslationOfLightIF;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class Translation_of_Light extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
   {
     Tuple4<Boolean , Planet , Planet , Optional<AspectApplySeparateIF.AspectType>> t = translationOfLightImpl.getResult(planet, horoscopeContext);
     //TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);

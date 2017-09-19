@@ -20,7 +20,7 @@ public final class Partile_Conj_Mars_Saturn extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
   {
     double planetDegree = horoscopeContext.getPosition(planet).getLng();
     double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLng();

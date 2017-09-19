@@ -82,6 +82,29 @@ public class Horoscope2 implements Serializable , HoroscopeIF , HoroscopeContext
     return location;
   }
 
+  @Override
+  public HouseSystem getHouseSystem() {
+    return houseSystem;
+  }
+
+  @Override
+  public Coordinate getCoordinate() {
+    return coordinate;
+  }
+
+  @Override
+  public Centric getCentric() {
+    return centric;
+  }
+
+  public double getTemperature() {
+    return temperature;
+  }
+
+  public double getPressure() {
+    return pressure;
+  }
+
   /**
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
    */
@@ -206,6 +229,27 @@ public class Horoscope2 implements Serializable , HoroscopeIF , HoroscopeContext
     return 12;
   } //getHouse()
 
+  @Override
+  public int getHouse(Point point) {
+    // TODO : nullable
+    PositionWithAzimuth position = positionMap.get(point);
+    return getHouse(position.getLng());
+  }
+
+  /** 取得星體的位置以及地平方位角 */
+  @Override
+  public PositionWithAzimuth getPosition(Point point) {
+    // TODO : nullable
+    return positionMap.get(point);
+  }
+
+  /** 取得某星 位於什麼星座 */
+  @Override
+  public ZodiacSign getZodiacSign(Point point) {
+    // TODO : nullable
+    PositionWithAzimuth position = getPosition(point);
+    return ZodiacSign.getZodiacSign(position.getLng());
+  }
 
   /**
    * ========================== 以下為 static utility methods ==========================

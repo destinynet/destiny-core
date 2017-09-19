@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.AverageDailyMotionMap;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ public final class Slower extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     if (AverageDailyMotionMap.get(planet) != null &&
         horoscopeContext.getPosition(planet).getSpeedLng() < AverageDailyMotionMap.get(planet)) {
       //addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還慢");

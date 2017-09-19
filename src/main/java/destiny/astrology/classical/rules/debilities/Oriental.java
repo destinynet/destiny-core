@@ -5,7 +5,7 @@
 package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.Horoscope2;
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -20,7 +20,7 @@ public final class Oriental extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     if (planet == Planet.MERCURY || planet == Planet.VENUS) {
       double planetDegree = horoscopeContext.getPosition(planet).getLng();
       double sunDegree = horoscopeContext.getPosition(Planet.SUN).getLng();

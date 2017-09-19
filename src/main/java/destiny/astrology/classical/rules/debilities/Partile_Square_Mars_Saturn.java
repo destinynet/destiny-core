@@ -4,10 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.Aspect;
-import destiny.astrology.AspectEffectiveModern;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
+import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -21,7 +18,7 @@ public final class Partile_Square_Mars_Saturn extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     double planetDegree = horoscopeContext.getPosition(planet).getLng();
     double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLng();
     double saturnDeg = horoscopeContext.getPosition(Planet.SATURN).getLng();

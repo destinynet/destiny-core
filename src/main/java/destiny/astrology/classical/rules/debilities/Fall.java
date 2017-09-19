@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
@@ -21,7 +21,7 @@ public final class Fall extends EssentialRule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     //取得此 Planet 在什麼星座
     ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
 

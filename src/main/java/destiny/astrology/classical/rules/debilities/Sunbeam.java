@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -19,7 +19,7 @@ public final class Sunbeam extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     if (planet != Planet.SUN) {
       if (horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) > 8.5 &&
           horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) <= 17) {

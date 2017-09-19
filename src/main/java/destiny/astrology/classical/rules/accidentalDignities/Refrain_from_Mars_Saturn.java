@@ -3,10 +3,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.Aspect;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
+import destiny.astrology.*;
 import destiny.astrology.classical.RefranationIF;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -26,7 +23,7 @@ public final class Refrain_from_Mars_Saturn extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, HoroscopeContextIF horoscopeContext)
   {
     // 太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)

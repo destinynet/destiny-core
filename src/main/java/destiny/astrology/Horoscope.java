@@ -157,6 +157,8 @@ public class Horoscope implements Serializable, HoroscopeIF {
     }
     return 12;
   } //getHouse()
-  
+
+
+
 
 }

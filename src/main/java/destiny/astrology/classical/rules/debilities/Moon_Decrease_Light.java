@@ -4,10 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.Horoscope;
-import destiny.astrology.Horoscope2;
-import destiny.astrology.HoroscopeContext;
-import destiny.astrology.Planet;
+import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -21,7 +18,7 @@ public final class Moon_Decrease_Light extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     if (planet == Planet.MOON) {
       double planetDegree = horoscopeContext.getPosition(planet).getLng();
       double sunDegree = horoscopeContext.getPosition(Planet.SUN).getLng();

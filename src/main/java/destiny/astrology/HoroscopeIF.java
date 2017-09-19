@@ -29,6 +29,5 @@ public interface HoroscopeIF {
 
   Map<Hamburger , PositionWithAzimuth> getHamburgerPositionWithAzimuth();
 
-  int getHouse(double degree) //getHouse()
-  ;
+  int getHouse(double degree);
 }

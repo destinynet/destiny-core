@@ -182,7 +182,8 @@ public class HoroscopeContext implements Serializable, HoroscopeContextIF {
   {
     this.houseSystem = houseSystem;
   }
-  
+
+  @Override
   public HouseSystem getHouseSystem()
   {
     return houseSystem;
@@ -193,6 +194,7 @@ public class HoroscopeContext implements Serializable, HoroscopeContextIF {
     this.coordinate = coordinate;
   }
 
+  @Override
   public Coordinate getCoordinate()
   {
     return coordinate;
@@ -227,7 +229,8 @@ public class HoroscopeContext implements Serializable, HoroscopeContextIF {
   {
     this.centric = centric;
   }
-  
+
+  @Override
   public Centric getCentric()
   {
     return centric;

@@ -14,10 +14,13 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
 {
   /** 可以注入現代占星 ( AspectEffectiveModern ) 或是古典占星 ( AspectEffectiveClassical ) 的實作 */
   private final AspectEffectiveIF aspectEffectiveImpl;
+
+  private final IHoroscope horoscopeImpl;
   
-  public AspectApplySeparateImpl(AspectEffectiveIF aspectEffectiveImpl)
+  public AspectApplySeparateImpl(AspectEffectiveIF aspectEffectiveImpl, IHoroscope horoscopeImpl)
   {
     this.aspectEffectiveImpl = aspectEffectiveImpl;
+    this.horoscopeImpl = horoscopeImpl;
   }
   
   /**
@@ -25,7 +28,7 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
    */
   @Override
-  public Optional<AspectType> getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Aspect aspect)
+  public Optional<AspectType> getAspectType(@NotNull HoroscopeContextIF horoscopeContext, Point p1, Point p2, @NotNull Aspect aspect)
   {
     double deg1 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p1).getLng();
     double deg2 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p2).getLng();
@@ -39,7 +42,10 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
       LocalDateTime lmt = horoscopeContext.getLmt(); //目前時間
       LocalDateTime oneSecondLater = LocalDateTime.from(lmt).plusSeconds(1); // 一秒之後
       
-      HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater,  horoscopeContext);
+      //HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater,  horoscopeContext);
+      Horoscope2 hc2 = horoscopeImpl.getHoroscope(oneSecondLater , horoscopeContext.getLocation() , horoscopeContext.getHoroscope().getPoints() ,
+        horoscopeContext.getHouseSystem() , horoscopeContext.getCentric() , horoscopeContext.getCoordinate());
+
       
       double deg1_next = hc2.getHoroscope().getPositionWithAzimuth(p1).getLng();
       double deg2_next = hc2.getHoroscope().getPositionWithAzimuth(p2).getLng();
@@ -58,7 +64,7 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
   }
 
   @Override
-  public Optional<AspectType> getAspectType(@NotNull HoroscopeContext horoscopeContext, Point p1, Point p2, @NotNull Collection<Aspect> aspects)
+  public Optional<AspectType> getAspectType(@NotNull HoroscopeContextIF horoscopeContext, Point p1, Point p2, @NotNull Collection<Aspect> aspects)
   {
     Optional<AspectType> aspectType = Optional.empty();
     for(Aspect aspect : aspects)

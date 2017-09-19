@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -18,7 +18,7 @@ public final class House_6_8 extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     if (horoscopeContext.getHouse(planet) == 6) {
       //addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
       return Optional.of(Tuple.tuple("comment", new Object[]{planet, 6}));

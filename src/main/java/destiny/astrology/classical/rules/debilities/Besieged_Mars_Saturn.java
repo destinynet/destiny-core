@@ -5,7 +5,7 @@
 package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.BesiegedIF;
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ public final class Besieged_Mars_Saturn extends Rule {
 
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContext horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS) {
       //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
       if (besiegedImpl.isBesieged(planet, Planet.MARS, Planet.SATURN, Time.getGmtFromLmt(horoscopeContext.getLmt(), horoscopeContext.getLocation()), true, true)) {

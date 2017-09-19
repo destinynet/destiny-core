@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   }
   
   @Override
-  public final boolean isApplicable(Planet planet, HoroscopeContext horoscopeContext)
+  public final boolean isApplicable(Planet planet, HoroscopeContextIF horoscopeContext)
   {
     logger.debug("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
     Optional<Tuple2<String , Object[]>> result = getResult(planet, horoscopeContext);
@@ -60,7 +60,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
    * String 為 ResourceBundle 取得的 key , 前面要 prepend '[rule_name].'
    * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
    */
-  protected abstract Optional<Tuple2<String, Object[]>> getResult(Planet planet, HoroscopeContext horoscopeContext);
+  protected abstract Optional<Tuple2<String, Object[]>> getResult(Planet planet, HoroscopeContextIF horoscopeContext);
   
   /** 名稱 */
   @Override
