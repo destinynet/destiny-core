@@ -133,6 +133,7 @@ public class HoroscopeContext implements Serializable, HoroscopeContextIF {
    * <b>此 method 僅供測試或是 debug 使用，平常最好不要用 ！</b><br/>
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
    */
+  @Override
   @NotNull
   public List<Point> getHousePoints(int index)
   {

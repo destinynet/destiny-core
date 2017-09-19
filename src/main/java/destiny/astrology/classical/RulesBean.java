@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +34,7 @@ public class RulesBean implements Serializable
   }
   
   @NotNull
-  public List<RuleIF> getRules(Planet planet, HoroscopeContext horoscopeContext) {
+  public List<RuleIF> getRules(Planet planet, HoroscopeContextIF horoscopeContext) {
 
     return Stream.of(
       essentialDignitiesImpl.getEssentialDignities(planet, horoscopeContext).stream(),

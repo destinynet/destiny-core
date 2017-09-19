@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
@@ -17,5 +17,5 @@ import java.util.List;
 public interface AccidentalDignitiesIF
 {
   @NotNull
-  List<RuleIF> getAccidentalDignities(Planet planet , HoroscopeContext horoscopeContext);
+  List<RuleIF> getAccidentalDignities(Planet planet , HoroscopeContextIF horoscopeContext);
 }

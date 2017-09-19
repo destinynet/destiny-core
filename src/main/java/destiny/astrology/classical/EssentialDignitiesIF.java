@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical;
 
-import destiny.astrology.HoroscopeContext;
+import destiny.astrology.HoroscopeContextIF;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +16,7 @@ import java.util.List;
  * 內定實作是 EssentialDignityDefaultImpl
  */
 public interface EssentialDignitiesIF {
+
   @NotNull
-  List<RuleIF> getEssentialDignities(Planet planet, HoroscopeContext horoscopeContext);
+  List<RuleIF> getEssentialDignities(Planet planet, HoroscopeContextIF horoscopeContext);
 }

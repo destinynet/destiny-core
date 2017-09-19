@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 2015-06-11 重寫此介面，讓此介面成為 immutable
@@ -27,6 +30,16 @@ public interface IHoroscope {
 //                          @NotNull Coordinate coordinate ,
 //                          double temperature , double pressure) ;
 
+  default Set<Point> getDefaultPoints() {
+    Set<Point> pointSet = new HashSet<>();
+    pointSet.addAll(Arrays.asList(Planet.values));
+    pointSet.addAll(Arrays.asList(Asteroid.values));
+    pointSet.addAll(Arrays.asList(Hamburger.values));
+    pointSet.addAll(Arrays.asList(FixedStar.values));
+    pointSet.addAll(Arrays.asList(LunarNode.mean_values));
+    return pointSet;
+  }
+
   Horoscope2 getHoroscope(LocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
                           @NotNull HouseSystem houseSystem ,
                           @NotNull Centric centric ,
@@ -38,5 +51,12 @@ public interface IHoroscope {
                           @NotNull Centric centric ,
                           @NotNull Coordinate coordinate ) {
     return getHoroscope(lmt , loc , points , houseSystem , centric , coordinate , 0 , 1013.25);
+  }
+
+  default Horoscope2 getHoroscope(LocalDateTime lmt , Location loc ,
+                          @NotNull HouseSystem houseSystem ,
+                          @NotNull Centric centric ,
+                          @NotNull Coordinate coordinate ) {
+    return getHoroscope(lmt , loc , getDefaultPoints() , houseSystem , centric , coordinate , 0 , 1013.25);
   }
 }

@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
  */
 public class ReturnContext implements DiscreteIF , Conversable , Serializable {
 
+
+  private final IHoroscope horoscopeImpl;
+
   /** 返照法所採用的行星 , 太陽/太陰 , 或是其他 */
   private Planet planet = Planet.SUN;
   
@@ -53,17 +56,9 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   private double orb = 0;
   
   /** 最完整的 constructor , 連是否逆推 , 是否考慮歲差，都要帶入 */
-  public ReturnContext(StarPositionWithAzimuthIF positionWithAzimuthImpl ,
-                       StarTransitIF starTransitImpl,
-                       HouseCuspIF houseCuspImpl ,
-                       ApsisWithAzimuthIF apsisWithAzimuthImpl ,
-                       LocalDateTime natalLmt , Location natalLoc ,
-                       LocalDateTime nowLmt , Location nowLoc ,
-                       Planet planet ,
-                       double orb ,
-                       boolean converse ,
-                       boolean precession)
+  public ReturnContext(IHoroscope horoscopeImpl, StarPositionWithAzimuthIF positionWithAzimuthImpl, StarTransitIF starTransitImpl, HouseCuspIF houseCuspImpl, ApsisWithAzimuthIF apsisWithAzimuthImpl, LocalDateTime natalLmt, Location natalLoc, LocalDateTime nowLmt, Location nowLoc, Planet planet, double orb, boolean converse, boolean precession)
   {
+    this.horoscopeImpl = horoscopeImpl;
     this.starPositionWithAzimuthImpl = positionWithAzimuthImpl;
     this.starTransitImpl = starTransitImpl;
     this.houseCuspImpl = houseCuspImpl;
@@ -100,7 +95,7 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   
   /** 對外主要的 method , 取得 return 盤 */
   @NotNull
-  public HoroscopeContext getReturnHoroscope() {
+  public HoroscopeContextIF getReturnHoroscope() {
     LocalDateTime natalGmt = Time.getGmtFromLmt(natalLmt , natalLoc);
     LocalDateTime nowGmt = Time.getGmtFromLmt(nowLmt , nowLoc);
 
@@ -114,7 +109,8 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
     double pressure = 1013.25;
     NodeType nodeType = NodeType.MEAN;
 
-    return new HoroscopeContext(convergentLmt , nowLoc , houseSystem , coordinate , centric , temperature , pressure , starPositionWithAzimuthImpl , houseCuspImpl , apsisWithAzimuthImpl , nodeType);
+    return horoscopeImpl.getHoroscope(convergentLmt , nowLoc , houseSystem , centric , coordinate );
+    //return new HoroscopeContext(convergentLmt , nowLoc , houseSystem , coordinate , centric , temperature , pressure , starPositionWithAzimuthImpl , houseCuspImpl , apsisWithAzimuthImpl , nodeType);
   }
   
   

@@ -108,6 +108,7 @@ public class Horoscope2 implements Serializable , HoroscopeIF , HoroscopeContext
   /**
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序
    */
+  @Override
   @NotNull
   public List<Point> getHousePoints(int index) {
     if (index < 1)

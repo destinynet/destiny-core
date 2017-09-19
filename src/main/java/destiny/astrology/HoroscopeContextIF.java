@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface HoroscopeContextIF extends Serializable {
 
@@ -41,4 +42,6 @@ public interface HoroscopeContextIF extends Serializable {
   Centric getCentric();
 
   Coordinate getCoordinate();
+
+  List<Point> getHousePoints(int index);
 }
