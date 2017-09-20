@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
@@ -34,12 +34,12 @@ public class RulesBean implements Serializable
   }
   
   @NotNull
-  public List<RuleIF> getRules(Planet planet, HoroscopeContextIF horoscopeContext) {
+  public List<RuleIF> getRules(Planet planet, Horoscope h) {
 
     return Stream.of(
-      essentialDignitiesImpl.getEssentialDignities(planet, horoscopeContext).stream(),
-      accidentalDignitiesImpl.getAccidentalDignities(planet, horoscopeContext).stream(),
-      debilitiesBean.getDebilities(planet, horoscopeContext).stream()
+      essentialDignitiesImpl.getEssentialDignities(planet, h).stream(),
+      accidentalDignitiesImpl.getAccidentalDignities(planet, h).stream(),
+      debilitiesBean.getDebilities(planet, h).stream()
     )
       //.reduce(Stream.empty(), Stream::concat)
       .flatMap(x -> x)

@@ -57,9 +57,9 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
 
   @NotNull
   @Override
-  public List<RuleIF> getAccidentalDignities(Planet planet, HoroscopeContextIF horoscopeContext) {
+  public List<RuleIF> getAccidentalDignities(Planet planet, Horoscope horoscope) {
     return rules.stream()
-      .filter(each -> each.isApplicable(planet, horoscopeContext))
+      .filter(each -> each.isApplicable(planet, horoscope))
       .collect(Collectors.toList());
   }
   

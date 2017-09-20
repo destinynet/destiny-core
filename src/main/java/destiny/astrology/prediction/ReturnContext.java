@@ -95,7 +95,7 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   
   /** 對外主要的 method , 取得 return 盤 */
   @NotNull
-  public HoroscopeContextIF getReturnHoroscope() {
+  public Horoscope getReturnHoroscope() {
     LocalDateTime natalGmt = Time.getGmtFromLmt(natalLmt , natalLoc);
     LocalDateTime nowGmt = Time.getGmtFromLmt(nowLmt , nowLoc);
 

@@ -28,16 +28,16 @@ public final class MixedReception extends Rule
   }
 
   @Override
-  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);
     
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
     
     Point thisSignRuler = essentialImpl.getPoint(sign, Dignity.RULER);
-    ZodiacSign sign2 = horoscopeContext.getZodiacSign(thisSignRuler);
+    ZodiacSign sign2 = h.getZodiacSign(thisSignRuler);
     Point thatSignExaltation = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
     if (planet == thatSignExaltation )
     {
@@ -53,7 +53,7 @@ public final class MixedReception extends Rule
     Point thisSignExaltation = essentialImpl.getPoint(sign, Dignity.EXALTATION);
     if (thisSignExaltation != null) //EXALTATION 可能為 null
     {
-      sign2 = horoscopeContext.getZodiacSign(thisSignExaltation);
+      sign2 = h.getZodiacSign(thisSignExaltation);
       Point thatSignRuler = essentialImpl.getPoint(sign2, Dignity.RULER);
       if (planet == thatSignRuler )
       {

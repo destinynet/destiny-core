@@ -40,23 +40,23 @@ public interface IHoroscope {
     return pointSet;
   }
 
-  Horoscope2 getHoroscope(LocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
-                          @NotNull HouseSystem houseSystem ,
-                          @NotNull Centric centric ,
-                          @NotNull Coordinate coordinate ,
-                          double temperature , double pressure) ;
+  Horoscope getHoroscope(LocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
+                         @NotNull HouseSystem houseSystem ,
+                         @NotNull Centric centric ,
+                         @NotNull Coordinate coordinate ,
+                         double temperature , double pressure) ;
 
-  default Horoscope2 getHoroscope(LocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
-                          @NotNull HouseSystem houseSystem ,
-                          @NotNull Centric centric ,
-                          @NotNull Coordinate coordinate ) {
+  default Horoscope getHoroscope(LocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
+                                 @NotNull HouseSystem houseSystem ,
+                                 @NotNull Centric centric ,
+                                 @NotNull Coordinate coordinate ) {
     return getHoroscope(lmt , loc , points , houseSystem , centric , coordinate , 0 , 1013.25);
   }
 
-  default Horoscope2 getHoroscope(LocalDateTime lmt , Location loc ,
-                          @NotNull HouseSystem houseSystem ,
-                          @NotNull Centric centric ,
-                          @NotNull Coordinate coordinate ) {
+  default Horoscope getHoroscope(LocalDateTime lmt , Location loc ,
+                                 @NotNull HouseSystem houseSystem ,
+                                 @NotNull Centric centric ,
+                                 @NotNull Coordinate coordinate ) {
     return getHoroscope(lmt , loc , getDefaultPoints() , houseSystem , centric , coordinate , 0 , 1013.25);
   }
 }

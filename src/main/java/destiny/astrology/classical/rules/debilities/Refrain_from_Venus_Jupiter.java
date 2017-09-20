@@ -36,7 +36,7 @@ public class Refrain_from_Venus_Jupiter extends Rule {
 //  }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, HoroscopeContextIF horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, Horoscope h) {
     //太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
       return Optional.empty();
@@ -45,7 +45,7 @@ public class Refrain_from_Venus_Jupiter extends Rule {
 
     if (planet != Planet.VENUS) {
       otherPoint = Planet.VENUS;
-      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
+      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
       if (t.v1()) {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});
@@ -55,7 +55,7 @@ public class Refrain_from_Venus_Jupiter extends Rule {
     
     if ( planet != Planet.JUPITER) {
       otherPoint = Planet.JUPITER;
-      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
+      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
       if (t.v1) {
         //addComment(Locale.TAIWAN, planet + " 在與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " 之前臨陣退縮(Refranation)");
         //return new Tuple<String , Object[]>("comment" , new Object[]{planet , otherPoint , bean.getApplyingAspect()});

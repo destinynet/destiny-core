@@ -28,28 +28,28 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
    */
   @Override
-  public Optional<AspectType> getAspectType(@NotNull HoroscopeContextIF horoscopeContext, Point p1, Point p2, @NotNull Aspect aspect)
+  public Optional<AspectType> getAspectType(@NotNull Horoscope h, Point p1, Point p2, @NotNull Aspect aspect)
   {
-    double deg1 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p1).getLng();
-    double deg2 = horoscopeContext.getHoroscope().getPositionWithAzimuth(p2).getLng();
+    double deg1 = h.getPositionWithAzimuth(p1).getLng();
+    double deg2 = h.getPositionWithAzimuth(p2).getLng();
     
     if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect))
     {
-      double planetsAngle = Horoscope2.getAngle(deg1, deg2);
+      double planetsAngle = Horoscope.getAngle(deg1, deg2);
       double error = Math.abs(planetsAngle - aspect.getDegree()); //目前與 aspect 的誤差
       //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error + " 度");
 
-      LocalDateTime lmt = horoscopeContext.getLmt(); //目前時間
+      LocalDateTime lmt = h.getLmt(); //目前時間
       LocalDateTime oneSecondLater = LocalDateTime.from(lmt).plusSeconds(1); // 一秒之後
       
       //HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater,  horoscopeContext);
-      Horoscope2 hc2 = horoscopeImpl.getHoroscope(oneSecondLater , horoscopeContext.getLocation() , horoscopeContext.getHoroscope().getPoints() ,
-        horoscopeContext.getHouseSystem() , horoscopeContext.getCentric() , horoscopeContext.getCoordinate());
+      Horoscope hc2 = horoscopeImpl.getHoroscope(oneSecondLater , h.getLocation() , h.getPoints() ,
+        h.getHouseSystem() , h.getCentric() , h.getCoordinate());
 
       
-      double deg1_next = hc2.getHoroscope().getPositionWithAzimuth(p1).getLng();
-      double deg2_next = hc2.getHoroscope().getPositionWithAzimuth(p2).getLng();
-      double planetsAngle_next = Horoscope2.getAngle(deg1_next , deg2_next);
+      double deg1_next = hc2.getPositionWithAzimuth(p1).getLng();
+      double deg2_next = hc2.getPositionWithAzimuth(p2).getLng();
+      double planetsAngle_next = Horoscope.getAngle(deg1_next , deg2_next);
       double error_next = Math.abs(planetsAngle_next - aspect.getDegree());
       
       //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error_next + " 度");
@@ -64,12 +64,12 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
   }
 
   @Override
-  public Optional<AspectType> getAspectType(@NotNull HoroscopeContextIF horoscopeContext, Point p1, Point p2, @NotNull Collection<Aspect> aspects)
+  public Optional<AspectType> getAspectType(@NotNull Horoscope h, Point p1, Point p2, @NotNull Collection<Aspect> aspects)
   {
     Optional<AspectType> aspectType = Optional.empty();
     for(Aspect aspect : aspects)
     {
-      aspectType = getAspectType(horoscopeContext, p1, p2, aspect); 
+      aspectType = getAspectType(h, p1, p2, aspect);
       if ( aspectType.isPresent())
         break;
     }

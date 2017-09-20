@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 
 /**
- * 計算 {@link Horoscope2} 所需的設定、 preference
+ * 計算 {@link Horoscope} 所需的設定、 preference
  */
 public class HoroscopeContext2 implements Serializable {
 

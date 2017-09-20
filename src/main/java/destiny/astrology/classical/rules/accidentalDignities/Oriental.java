@@ -19,14 +19,14 @@ public final class Oriental extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
-    double sunDegree    = horoscopeContext.getPosition(Planet.SUN).getLng();
+    double planetDegree = h.getPosition(planet).getLng();
+    double sunDegree    = h.getPosition(Planet.SUN).getLng();
     
     if (planet == Planet.MARS || planet == Planet.JUPITER || planet == Planet.SATURN)
     {
-      if ( Horoscope2.isOriental(planetDegree , sunDegree))
+      if ( Horoscope.isOriental(planetDegree , sunDegree))
       {
         // addComment(Locale.TAIWAN , planet + " 在太陽東邊");
         return Optional.of(Tuple.tuple("comment", new Object[]{planet}));

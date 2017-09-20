@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -20,9 +20,9 @@ public final class House_9 extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    int planetHouse = horoscopeContext.getHouse(planet);
+    int planetHouse = h.getHouse(planet);
     if ( planetHouse == 9)
     {
       return Optional.of(Tuple.tuple("comment", new Object[]{planet, planetHouse}));

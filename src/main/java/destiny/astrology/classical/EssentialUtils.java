@@ -24,9 +24,9 @@ public class EssentialUtils
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br/>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」 
    * */
-  public boolean isReceivingFromDignities(Point receiver , Point receivee , @NotNull HoroscopeContextIF horoscopeContext)
+  public boolean isReceivingFromDignities(Point receiver , Point receivee , @NotNull Horoscope h)
   {
-    ZodiacSign receiveeSign = horoscopeContext.getZodiacSign(receivee);
+    ZodiacSign receiveeSign = h.getZodiacSign(receivee);
     //比對 Ruler
     if (essentialImpl.getPoint(receiveeSign, Dignity.RULER) == receiver)
     {
@@ -40,38 +40,38 @@ public class EssentialUtils
       return true;
     }
     //比對 Triplicity
-    if (essentialImpl.getTriplicityPoint(receiveeSign, dayNightDifferentiatorImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation())) == receiver)
+    if (essentialImpl.getTriplicityPoint(receiveeSign, dayNightDifferentiatorImpl.getDayNight(h.getLmt(), h.getLocation())) == receiver)
     {
       //System.out.println(receiver + " 透過 TRIPLICITY 接納 " + receivee);
       return true;
     }
     //比對 Terms
-    if (essentialImpl.getTermsPoint(horoscopeContext.getPosition(receivee).getLng()) == receiver)
+    if (essentialImpl.getTermsPoint(h.getPosition(receivee).getLng()) == receiver)
     {
       //System.out.println(receiver + " 透過 TERMS 接納 " + receivee);
       return true;
     }
     //比對 Face
-    return essentialImpl.getFacePoint(horoscopeContext.getPosition(receivee).getLng()) == receiver;
+    return essentialImpl.getFacePoint(h.getPosition(receivee).getLng()) == receiver;
   }
   
   /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall) */
-  public boolean isReceivingFromDebilities(Point receiver , Point receivee , @NotNull HoroscopeContextIF horoscopeContext)
+  public boolean isReceivingFromDebilities(Point receiver , Point receivee , @NotNull Horoscope h)
   {
-    ZodiacSign receiveeSign = horoscopeContext.getZodiacSign(receivee);
+    ZodiacSign receiveeSign = h.getZodiacSign(receivee);
     if (essentialImpl.getPoint(receiveeSign , Dignity.DETRIMENT) == receiver)
       return true;
     return essentialImpl.getPoint(receiveeSign, Dignity.FALL) == receiver;
   }
   
   /** Ruler 互訪 , 還沒確認是 優質互容 */
-  public boolean isBothRulerVisit(Point planet , @NotNull HoroscopeContextIF horoscopeContext)
+  public boolean isBothRulerVisit(Point planet , @NotNull Horoscope h)
   {
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
     
     Point signRuler = essentialImpl.getPoint(sign, Dignity.RULER);
-    ZodiacSign sign2 = horoscopeContext.getZodiacSign(signRuler);
+    ZodiacSign sign2 = h.getZodiacSign(signRuler);
     Point planet2 = essentialImpl.getPoint(sign2, Dignity.RULER);
     return planet == planet2;
   }

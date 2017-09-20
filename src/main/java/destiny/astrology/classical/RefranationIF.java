@@ -24,5 +24,5 @@ import org.jooq.lambda.tuple.Tuple3;
 public interface RefranationIF {
 
   @NotNull
-  Tuple3<Boolean , Point, Aspect> resultOf(HoroscopeContextIF context , Planet planet , Point otherPoint);
+  Tuple3<Boolean , Point, Aspect> resultOf(Horoscope horoscope , Planet planet , Point otherPoint);
 }

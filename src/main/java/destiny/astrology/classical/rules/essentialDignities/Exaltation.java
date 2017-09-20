@@ -24,10 +24,10 @@ public final class Exaltation extends Rule
   }
   
   @Override
-  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
     
     //Exaltation (廟)
     if (planet == essentialImpl.getPoint(sign, Dignity.EXALTATION))
@@ -44,7 +44,7 @@ public final class Exaltation extends Rule
         EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
         utils.setEssentialImpl(essentialImpl);
         
-        ZodiacSign sign2 = horoscopeContext.getZodiacSign(signExaltation);
+        ZodiacSign sign2 = h.getZodiacSign(signExaltation);
         Point planet2 = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
         if (planet == planet2)
         {

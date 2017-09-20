@@ -23,12 +23,12 @@ public final class Triplicity extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
 
-    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
+    DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
     if(  (dayNight == DayNight.DAY   && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY )) ||  
          (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   ) 
     {

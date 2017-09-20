@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.ZodiacSign;
 import destiny.astrology.classical.Dignity;
@@ -21,9 +21,9 @@ public final class Detriment extends EssentialRule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
 
     if (planet == essentialImpl.getPoint(sign, Dignity.DETRIMENT)) {
       //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Detriment");

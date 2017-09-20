@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -12,14 +12,14 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public interface RuleIF extends Predicate<Tuple2<Planet, HoroscopeContextIF>> {
+public interface RuleIF extends Predicate<Tuple2<Planet, Horoscope>> {
 
   @Override
-  default boolean test(Tuple2<Planet, HoroscopeContextIF> t) {
+  default boolean test(Tuple2<Planet, Horoscope> t) {
     return isApplicable(t.v1() , t.v2());
   }
 
-  boolean isApplicable(Planet planet, HoroscopeContextIF horoscopeContext);
+  boolean isApplicable(Planet planet, Horoscope h);
 
   String getName();
 

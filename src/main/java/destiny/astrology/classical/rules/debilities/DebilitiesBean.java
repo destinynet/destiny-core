@@ -43,8 +43,8 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
 
   @NotNull
   @Override
-  public List<RuleIF> getDebilities(Planet planet, HoroscopeContextIF horoscopeContext) {
-    return rules.stream().filter(each -> each.isApplicable(planet, horoscopeContext)).collect(Collectors.toList());
+  public List<RuleIF> getDebilities(Planet planet, Horoscope horoscope) {
+    return rules.stream().filter(each -> each.isApplicable(planet, horoscope)).collect(Collectors.toList());
   }
 
   

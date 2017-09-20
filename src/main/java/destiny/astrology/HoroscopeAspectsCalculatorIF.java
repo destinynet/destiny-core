@@ -14,7 +14,7 @@ import java.util.Map;
 public interface HoroscopeAspectsCalculatorIF extends Descriptive {
 
   /** 設定星盤 */
-  void setHoroscope(HoroscopeIF horoscope);
+  void setHoroscope(Horoscope horoscope);
   
   /** 取得與 {@link Point} 形成交角的星體，以及其交角是哪種 ，如果沒形成任何交角，傳回 null */
   @NotNull

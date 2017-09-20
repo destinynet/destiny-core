@@ -24,10 +24,10 @@ public final class Ruler extends Rule
   }
   
   @Override
-  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
     
     // Ruler (旺)
     if (planet == essentialImpl.getPoint(sign, Dignity.RULER) )
@@ -46,7 +46,7 @@ public final class Ruler extends Rule
       utils.setEssentialImpl(essentialImpl);
 
       Point signRuler = essentialImpl.getPoint(sign, Dignity.RULER);
-      ZodiacSign sign2 = horoscopeContext.getZodiacSign(signRuler);
+      ZodiacSign sign2 = h.getZodiacSign(signRuler);
       Point planet2 = essentialImpl.getPoint(sign2, Dignity.RULER);
       if (planet == planet2)
       {

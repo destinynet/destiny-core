@@ -32,15 +32,15 @@ public final class Partile_Conj_North_Node extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+    double planetDegree = h.getPosition(planet).getLng();
     double northDeg;
     if (nodeType == NodeType.TRUE)
-      northDeg = horoscopeContext.getPosition(LunarNode.NORTH_TRUE).getLng();
+      northDeg = h.getPosition(LunarNode.NORTH_TRUE).getLng();
     else
-      northDeg = horoscopeContext.getPosition(LunarNode.NORTH_MEAN).getLng();
-    if ( Horoscope2.getAngle(planetDegree , northDeg) <=1 )
+      northDeg = h.getPosition(LunarNode.NORTH_MEAN).getLng();
+    if ( Horoscope.getAngle(planetDegree , northDeg) <=1 )
     {
       if (nodeType == NodeType.TRUE)
       {

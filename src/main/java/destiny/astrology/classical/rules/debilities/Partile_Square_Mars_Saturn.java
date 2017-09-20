@@ -18,10 +18,10 @@ public final class Partile_Square_Mars_Saturn extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
-    double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLng();
-    double saturnDeg = horoscopeContext.getPosition(Planet.SATURN).getLng();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    double planetDegree = h.getPosition(planet).getLng();
+    double marsDeg = h.getPosition(Planet.MARS).getLng();
+    double saturnDeg = h.getPosition(Planet.SATURN).getLng();
 
     if (planet != Planet.MARS && AspectEffectiveModern.isEffective(planetDegree, marsDeg, Aspect.SQUARE, 1.0)) {
       return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.MARS, Aspect.SQUARE}));

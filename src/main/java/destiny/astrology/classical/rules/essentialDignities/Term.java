@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.essentialDignities;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -19,9 +19,9 @@ public final class Term extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
-    if (planet == essentialImpl.getTermsPoint(horoscopeContext.getPosition(planet).getLng())) {
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, horoscopeContext.getPosition(planet).getLng()}));
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    if (planet == essentialImpl.getTermsPoint(h.getPosition(planet).getLng())) {
+      return Optional.of(Tuple.tuple("comment", new Object[]{planet, h.getPosition(planet).getLng()}));
     }
     return Optional.empty();
   }

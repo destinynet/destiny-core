@@ -6,7 +6,7 @@ package destiny.astrology.classical;
 
 import destiny.astrology.Aspect;
 import destiny.astrology.AspectEffectiveIF;
-import destiny.astrology.Horoscope2;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Point;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +46,7 @@ public class AspectEffectiveClassical implements AspectEffectiveIF , Serializabl
   }
 
   public boolean isEffective(Point p1 , double deg1, Point p2 , double deg2 , double angle) {
-    return Math.abs(Horoscope2.getAngle(deg1, deg2) - angle) <= (pointDiameterImpl.getDiameter(p1) + pointDiameterImpl.getDiameter(p2)) / 2;
+    return Math.abs(Horoscope.getAngle(deg1, deg2) - angle) <= (pointDiameterImpl.getDiameter(p1) + pointDiameterImpl.getDiameter(p2)) / 2;
   }
 
   /**

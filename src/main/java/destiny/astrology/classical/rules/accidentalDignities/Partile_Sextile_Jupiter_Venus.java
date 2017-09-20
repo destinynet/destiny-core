@@ -19,11 +19,11 @@ public final class Partile_Sextile_Jupiter_Venus extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
-    double jupiterDeg = horoscopeContext.getPosition(Planet.JUPITER).getLng();
-    double venusDeg   = horoscopeContext.getPosition(Planet.VENUS).getLng();
+    double planetDegree = h.getPosition(planet).getLng();
+    double jupiterDeg = h.getPosition(Planet.JUPITER).getLng();
+    double venusDeg   = h.getPosition(Planet.VENUS).getLng();
     
     if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective( planetDegree , jupiterDeg , Aspect.SEXTILE , 1.0))
     {

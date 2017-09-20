@@ -14,7 +14,7 @@ import java.util.*;
 /** 現代占星術，計算一張星盤中，星體交角列表的實作 */
 public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalculatorIF , Serializable {
 
-  private HoroscopeIF horoscope;
+  private Horoscope horoscope;
   private final AspectEffectiveModern modern;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -28,7 +28,7 @@ public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalcula
   }
 
   @Override
-  public void setHoroscope(HoroscopeIF horoscope)
+  public void setHoroscope(Horoscope horoscope)
   {
     this.horoscope = horoscope;
   }

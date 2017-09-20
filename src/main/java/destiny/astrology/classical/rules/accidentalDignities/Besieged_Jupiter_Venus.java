@@ -5,7 +5,7 @@
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.BesiegedIF;
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +30,9 @@ public class Besieged_Jupiter_Venus extends Rule {
 
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.MARS || planet == Planet.SATURN) {
-      if (besiegedImpl.isBesieged(planet, Planet.VENUS, Planet.JUPITER, Time.getGmtFromLmt(horoscopeContext.getLmt(), horoscopeContext.getLocation()), true, false)) {
+      if (besiegedImpl.isBesieged(planet, Planet.VENUS, Planet.JUPITER, Time.getGmtFromLmt(h.getLmt(), h.getLocation()), true, false)) {
         //planet + " 被 " + Planet.VENUS + " 以及 " + Planet.JUPITER + " 夾輔 (善意 Besieged)"
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.VENUS, Planet.JUPITER}));
       }

@@ -20,18 +20,18 @@ public final class Partile_Conj_Mars_Saturn extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
-    double marsDeg = horoscopeContext.getPosition(Planet.MARS).getLng();
-    double saturnDeg = horoscopeContext.getPosition(Planet.SATURN).getLng();
+    double planetDegree = h.getPosition(planet).getLng();
+    double marsDeg = h.getPosition(Planet.MARS).getLng();
+    double saturnDeg = h.getPosition(Planet.SATURN).getLng();
     
-    if (planet != Planet.MARS && Horoscope2.getAngle(planetDegree , marsDeg) <= 1)
+    if (planet != Planet.MARS && Horoscope.getAngle(planetDegree , marsDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.MARS + " 形成 " + Aspect.CONJUNCTION);
       return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.MARS, Aspect.CONJUNCTION}));
     }
-    else if (planet != Planet.SATURN && Horoscope2.getAngle(planetDegree , saturnDeg) <= 1)
+    else if (planet != Planet.SATURN && Horoscope.getAngle(planetDegree , saturnDeg) <= 1)
     {
       //addComment(Locale.TAIWAN , planet + " 與 " + Planet.SATURN + " 形成 " + Aspect.CONJUNCTION);
       return Optional.of(Tuple.tuple("comment" , new Object[]{planet , Planet.SATURN, Aspect.CONJUNCTION}));

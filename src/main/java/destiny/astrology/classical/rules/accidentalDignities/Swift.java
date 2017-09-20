@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.AverageDailyMotionMap;
 import org.jetbrains.annotations.NotNull;
@@ -21,10 +21,10 @@ public final class Swift extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
     if ( AverageDailyMotionMap.get(planet) != null &&
-        horoscopeContext.getPosition(planet).getSpeedLng() > AverageDailyMotionMap.get(planet))
+        h.getPosition(planet).getSpeedLng() > AverageDailyMotionMap.get(planet))
     {
       //addComment(Locale.TAIWAN , planet + " 每日移動速度比平均值還快");
       return Optional.of(Tuple.tuple("comment", new Object[]{planet}));

@@ -23,12 +23,12 @@ public final class Peregrine extends EssentialRule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    double planetDegree = h.getPosition(planet).getLng();
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
     
-    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
+    DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
     if (planet != essentialImpl.getPoint(sign, Dignity.RULER) &&
         planet != essentialImpl.getPoint(sign, Dignity.EXALTATION) &&
         planet != essentialImpl.getPoint(sign, Dignity.DETRIMENT) &&

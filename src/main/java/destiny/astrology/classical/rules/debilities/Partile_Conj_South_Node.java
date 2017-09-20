@@ -30,15 +30,15 @@ public final class Partile_Conj_South_Node extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    double planetDegree = h.getPosition(planet).getLng();
     double southDeg;
     if (nodeType == NodeType.TRUE)
-      southDeg = horoscopeContext.getPosition(LunarNode.SOUTH_TRUE).getLng();
+      southDeg = h.getPosition(LunarNode.SOUTH_TRUE).getLng();
     else
-      southDeg = horoscopeContext.getPosition(LunarNode.SOUTH_MEAN).getLng();
+      southDeg = h.getPosition(LunarNode.SOUTH_MEAN).getLng();
 
-    if (Horoscope2.getAngle(planetDegree, southDeg) <= 1) {
+    if (Horoscope.getAngle(planetDegree, southDeg) <= 1) {
       if (nodeType == NodeType.TRUE) {
         //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, LunarNode.SOUTH_TRUE, Aspect.CONJUNCTION}));

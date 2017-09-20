@@ -27,11 +27,11 @@ public final class Hayz extends Rule
   }
 
   @Override
-  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    DayNight dayNight = dayNightImpl.getDayNight(horoscopeContext.getLmt(), horoscopeContext.getLocation());
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
-    int planetHouse = horoscopeContext.getHouse(planet);
+    DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
+    ZodiacSign sign = h.getZodiacSign(planet);
+    int planetHouse = h.getHouse(planet);
     if ( dayNight == DayNight.DAY && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN))
     {
       if (planetHouse >= 7 && sign.getBooleanValue())

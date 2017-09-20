@@ -19,10 +19,10 @@ public final class Partile_Conj_Regulus extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
-    double regulusDeg = horoscopeContext.getPosition(FixedStar.REGULUS).getLng();
+    double planetDegree = h.getPosition(planet).getLng();
+    double regulusDeg = h.getPosition(FixedStar.REGULUS).getLng();
     
     if (AspectEffectiveModern.isEffective(planetDegree , regulusDeg , Aspect.CONJUNCTION , 1))
     {

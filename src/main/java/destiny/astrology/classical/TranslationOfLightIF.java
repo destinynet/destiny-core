@@ -4,7 +4,7 @@
 package destiny.astrology.classical;
 
 import destiny.astrology.AspectApplySeparateIF;
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jooq.lambda.tuple.Tuple4;
 
@@ -12,5 +12,5 @@ import java.util.Optional;
 
 public interface TranslationOfLightIF {
 
-  Tuple4<Boolean, Planet, Planet, Optional<AspectApplySeparateIF.AspectType>> getResult(Planet planet, HoroscopeContextIF horoscopeContext);
+  Tuple4<Boolean, Planet, Planet, Optional<AspectApplySeparateIF.AspectType>> getResult(Planet planet, Horoscope h);
 }

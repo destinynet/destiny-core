@@ -8,18 +8,18 @@ import java.util.Comparator;
 
 public class DegreeComparator implements Comparator<Point> {
 
-  private final HoroscopeContextIF context;
+  private final Horoscope horoscope;
 
-  public DegreeComparator(HoroscopeContextIF context) {
-    this.context = context;
+  public DegreeComparator(Horoscope horoscope) {
+    this.horoscope = horoscope;
   }
 
   @Override
   public int compare(Point p1, Point p2) {
     PositionWithAzimuth pos1;
     PositionWithAzimuth pos2;
-    pos1 = context.getPosition(p1);
-    pos2 = context.getPosition(p2);
+    pos1 = horoscope.getPosition(p1);
+    pos2 = horoscope.getPosition(p2);
 
     return (int) (pos1.getLng() - pos2.getLng());
   }

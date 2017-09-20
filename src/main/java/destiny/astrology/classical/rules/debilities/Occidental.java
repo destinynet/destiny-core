@@ -4,8 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.Horoscope2;
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -20,11 +19,11 @@ public final class Occidental extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     if (planet == Planet.MARS || planet == Planet.JUPITER || planet == Planet.SATURN) {
-      double planetDegree = horoscopeContext.getPosition(planet).getLng();
-      double sunDegree = horoscopeContext.getPosition(Planet.SUN).getLng();
-      if (Horoscope2.isOccidental(planetDegree, sunDegree)) {
+      double planetDegree = h.getPosition(planet).getLng();
+      double sunDegree = h.getPosition(Planet.SUN).getLng();
+      if (Horoscope.isOccidental(planetDegree, sunDegree)) {
         //addComment(Locale.TAIWAN , planet + " 在太陽西邊");
         return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
       }

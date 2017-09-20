@@ -18,9 +18,9 @@ public final class Conj_Algol extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
-    double planetDegree = horoscopeContext.getPosition(planet).getLng();
-    double algolDeg = horoscopeContext.getPosition(FixedStar.ALGOL).getLng();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    double planetDegree = h.getPosition(planet).getLng();
+    double algolDeg = h.getPosition(FixedStar.ALGOL).getLng();
 
     if (AspectEffectiveModern.isEffective(planetDegree, algolDeg, Aspect.CONJUNCTION, 5)) {
       //addComment(Locale.TAIWAN , planet + " 與 " + FixedStar.ALGOL + " 形成 " + Aspect.CONJUNCTION);

@@ -5,7 +5,7 @@
 package destiny.astrology.classical.rules.essentialDignities;
 
 import destiny.astrology.DayNightDifferentiator;
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.EssentialDignitiesIF;
 import destiny.astrology.classical.rules.RuleIF;
@@ -30,8 +30,8 @@ public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializab
 
   @NotNull
   @Override
-  public List<RuleIF> getEssentialDignities(Planet planet, HoroscopeContextIF horoscopeContext) {
-    return rules.stream().filter(each -> each.isApplicable(planet, horoscopeContext)).collect(Collectors.toList());
+  public List<RuleIF> getEssentialDignities(Planet planet, Horoscope h) {
+    return rules.stream().filter(each -> each.isApplicable(planet, h)).collect(Collectors.toList());
   }
   
   

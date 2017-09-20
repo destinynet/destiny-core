@@ -23,7 +23,7 @@ public final class Refrain_from_Mars_Saturn extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, Horoscope h)
   {
     // 太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
@@ -34,7 +34,7 @@ public final class Refrain_from_Mars_Saturn extends Rule
     if (planet != Planet.MARS)
     {
       otherPoint = Planet.MARS;
-      Tuple3<Boolean , Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
+      Tuple3<Boolean , Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
       if (t.v1())
       {
         //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");
@@ -45,7 +45,7 @@ public final class Refrain_from_Mars_Saturn extends Rule
     if ( planet != Planet.SATURN)
     {
       otherPoint = Planet.SATURN;
-      Tuple3<Boolean , Point, Aspect> t = refranationImpl.resultOf(horoscopeContext, planet, otherPoint);
+      Tuple3<Boolean , Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
       if (t.v1())
       {
         //addComment(Locale.TAIWAN, planet + " 逃過了與 " + otherPoint + " 形成 " + bean.getApplyingAspect() + " (Refranation)");

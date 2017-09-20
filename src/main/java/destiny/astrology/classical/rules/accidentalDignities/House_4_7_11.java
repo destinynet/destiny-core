@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -19,8 +19,8 @@ public final class House_4_7_11 extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
-    int planetHouse = horoscopeContext.getHouse(planet);
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    int planetHouse = h.getHouse(planet);
     if (planetHouse == 4 || planetHouse == 7 || planetHouse == 11) {
       //planet + " 位於第 " + planetHouse + " 宮 (Good Daemon's) House
       return Optional.of(Tuple.tuple("comment", new Object[]{planet, planetHouse}));

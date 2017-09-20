@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.essentialDignities;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -20,12 +20,12 @@ public final class Face extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    if (planet == essentialImpl.getFacePoint(horoscopeContext.getPosition(planet).getLng()))
+    if (planet == essentialImpl.getFacePoint(h.getPosition(planet).getLng()))
     {
       //addComment(Locale.TAIWAN , planet + " 位於其 Chaldean decanate or face : "+ horoscopeContext.getPosition(planet).getLng());
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, horoscopeContext.getPosition(planet).getLng()}));
+      return Optional.of(Tuple.tuple("comment", new Object[]{planet, h.getPosition(planet).getLng()}));
     }
     return Optional.empty();
   }

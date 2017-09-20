@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.HoroscopeContextIF;
+import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -20,11 +20,11 @@ public final class Cazimi extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext)
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
     if (planet != Planet.SUN)
     {
-      if (horoscopeContext.getHoroscope().getAngle(planet , Planet.SUN) < 17.0/60 )
+      if (h.getAngle(planet , Planet.SUN) < 17.0/60 )
       {
         return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
       }

@@ -15,13 +15,13 @@ import java.util.*;
 /** 利用 HoroscopeAspectsCalculatorIF , 計算命盤之中，星體所呈現的交角，及其容許度 */
 public class HoroscopeAspectsCalculator implements Serializable {
 
-  private final HoroscopeIF horoscope;
+  private final Horoscope horoscope;
   
   private final HoroscopeAspectsCalculatorIF calculator;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   
-  public HoroscopeAspectsCalculator(HoroscopeIF horoscope , HoroscopeAspectsCalculatorIF calculator)
+  public HoroscopeAspectsCalculator(Horoscope horoscope , HoroscopeAspectsCalculatorIF calculator)
   {
     this.horoscope = horoscope;
     this.calculator = calculator;

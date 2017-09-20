@@ -28,16 +28,16 @@ public final class MutualDeception extends EssentialRule implements Applicable {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull HoroscopeContextIF horoscopeContext) {
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
     utils.setEssentialImpl(essentialImpl);
 
     //取得此 Planet 在什麼星座
-    ZodiacSign sign = horoscopeContext.getZodiacSign(planet);
+    ZodiacSign sign = h.getZodiacSign(planet);
 
     //Ruler 互陷 或 互落
     Point signRuler = essentialImpl.getPoint(sign, Dignity.RULER);
-    ZodiacSign sign2 = horoscopeContext.getZodiacSign(signRuler);
+    ZodiacSign sign2 = h.getZodiacSign(signRuler);
     Point planet2 = essentialImpl.getPoint(sign2, Dignity.RULER);
     if (planet == planet2) {
       //已經確定互容，要計算互陷/落
@@ -50,7 +50,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
     //Exaltation 互陷 或 互落
     Point signExaltation = essentialImpl.getPoint(sign, Dignity.EXALTATION);
     if (signExaltation != null) {
-      sign2 = horoscopeContext.getZodiacSign(signExaltation);
+      sign2 = h.getZodiacSign(signExaltation);
       planet2 = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
       if (planet == planet2) {
         //已確定 Exaltation 互容，要確認互陷
@@ -63,7 +63,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
 
     // 「Ruler 到 Detriment , Exaltation 到 Fall 又互容」的互陷
     Point thisSignRuler = essentialImpl.getPoint(sign, Dignity.RULER);
-    sign2 = horoscopeContext.getZodiacSign(thisSignRuler);
+    sign2 = h.getZodiacSign(thisSignRuler);
     Point thatSignExaltation = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
     if (planet == thatSignExaltation) {
       //已確定互容，要確定互陷
@@ -77,7 +77,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
     Point thisSignExaltation = essentialImpl.getPoint(sign, Dignity.EXALTATION);
     if (thisSignExaltation != null) //EXALTATION 可能為 null
     {
-      sign2 = horoscopeContext.getZodiacSign(thisSignExaltation);
+      sign2 = h.getZodiacSign(thisSignExaltation);
       Point thatSignRuler = essentialImpl.getPoint(sign2, Dignity.RULER);
       if (planet == thatSignRuler) {
         //已確定互容，要確認互陷
