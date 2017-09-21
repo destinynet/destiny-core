@@ -26,7 +26,7 @@ public final class Slower extends Rule {
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
     return AverageDailyMotionMap.get(planet).flatMap(dailyDeg ->
-      h.getPositionOptional(planet).map(Position::getSpeedLng).flatMap(speedLng -> {
+      h.getPosition(planet).map(Position::getSpeedLng).flatMap(speedLng -> {
         if (speedLng < dailyDeg) {
           logger.debug("{} 每日移動速度比平均值還慢" , planet);
           return Optional.of(Tuple.tuple("comment", new Object[]{planet}));

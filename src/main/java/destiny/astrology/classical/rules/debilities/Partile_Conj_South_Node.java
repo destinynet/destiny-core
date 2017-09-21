@@ -31,9 +31,9 @@ public final class Partile_Conj_South_Node extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPositionOptional(planet).map(Position::getLng).flatMap(planetDegree -> {
+    return h.getPosition(planet).map(Position::getLng).flatMap(planetDegree -> {
       LunarNode south = LunarNode.of(LunarNode.NorthSouth.SOUTH, nodeType);
-      return h.getPositionOptional(south).map(Position::getLng).flatMap(southDeg -> {
+      return h.getPosition(south).map(Position::getLng).flatMap(southDeg -> {
         if (Horoscope.getAngle(planetDegree, southDeg) <= 1) {
           logger.debug("{} 與 {} 形成 {}", planet, south, Aspect.CONJUNCTION);
           return Optional.of(Tuple.tuple("comment", new Object[]{planet, south, Aspect.CONJUNCTION}));

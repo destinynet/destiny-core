@@ -20,8 +20,8 @@ public final class Conj_Algol extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPositionOptional(planet).map(Position::getLng).flatMap(planetDegree ->
-      h.getPositionOptional(FixedStar.ALGOL).map(Position::getLng).flatMap(algolDeg -> {
+    return h.getPosition(planet).map(Position::getLng).flatMap(planetDegree ->
+      h.getPosition(FixedStar.ALGOL).map(Position::getLng).flatMap(algolDeg -> {
         if (AspectEffectiveModern.isEffective(planetDegree, algolDeg, Aspect.CONJUNCTION, 5)) {
           logger.debug("{} 與 {} 形成 {}" , planet , FixedStar.ALGOL , Aspect.CONJUNCTION);
           return Optional.of(Tuple.tuple("comment", new Object[]{planet, FixedStar.ALGOL, Aspect.CONJUNCTION}));

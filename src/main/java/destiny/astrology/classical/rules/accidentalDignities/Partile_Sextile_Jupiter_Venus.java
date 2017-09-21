@@ -20,9 +20,9 @@ public final class Partile_Sextile_Jupiter_Venus extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPositionOptional(planet).map(Position::getLng).flatMap(planetDegree ->
-      h.getPositionOptional(Planet.JUPITER).map(Position::getLng).flatMap(jupiterDeg ->
-        h.getPositionOptional(Planet.VENUS).map(Position::getLng).flatMap(venusDeg -> {
+    return h.getPosition(planet).map(Position::getLng).flatMap(planetDegree ->
+      h.getPosition(Planet.JUPITER).map(Position::getLng).flatMap(jupiterDeg ->
+        h.getPosition(Planet.VENUS).map(Position::getLng).flatMap(venusDeg -> {
           if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective(planetDegree, jupiterDeg, Aspect.SEXTILE, 1.0)) {
             logger.debug("{} 與 {} 形成 {}", planet, Planet.JUPITER, Aspect.SEXTILE);
             return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.JUPITER, Aspect.SEXTILE}));

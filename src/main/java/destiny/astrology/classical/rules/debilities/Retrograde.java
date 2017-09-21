@@ -6,6 +6,7 @@ package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
+import destiny.astrology.Position;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -19,11 +20,17 @@ public final class Retrograde extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    if (h.getPosition(planet).getSpeedLng() < 0) {
-      //addComment(Locale.TAIWAN , planet + " 逆行");
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-    }
-    return Optional.empty();
+
+    return h.getPosition(planet)
+      .map(Position::getSpeedLng)
+      .filter(speedLng -> speedLng < 0)
+      .map(speedLng -> Tuple.tuple("comment", new Object[]{planet}));
+
+//    if (h.getPosition(planet).getSpeedLng() < 0) {
+//      logger.debug("{} 逆行" , planet);
+//      return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
+//    }
+//    return Optional.empty();
   }
 
 }

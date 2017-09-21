@@ -20,7 +20,7 @@ public interface CollectionOfLightIF {
    * 指定某種「光線蒐集模式」
    * @param planet
    * @param h
-   * @param collectType @NotNull 詢問是否符合某種 「光線蒐集模式 : CollectType 」
+   * @param collectType @NotNull 詢問是否符合某種 「光線蒐集模式」 : {@link CollectType}
    * @return
    */
   Tuple2<Boolean, List<Planet>> getResult(Planet planet, Horoscope h, CollectType collectType);
@@ -31,7 +31,5 @@ public interface CollectionOfLightIF {
    * @param h
    * @return
    */
-  //public Triple<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, HoroscopeContext horoscopeContext);
-
   Tuple3<Boolean , List<Planet> , Optional<CollectType>> getResult(Planet planet, Horoscope h , Optional<CollectType> collectTypeOptional);
 }

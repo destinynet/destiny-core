@@ -6,7 +6,6 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,21 +227,13 @@ public class Horoscope implements Serializable {
   }
 
   /** 取得星體的位置以及地平方位角 */
-  @Deprecated
-  @Nullable
-  public PositionWithAzimuth getPosition(Point point) {
-    // TODO : nullable
-    return positionMap.get(point);
-  }
-
-  /** 取得星體的位置以及地平方位角 */
-  public Optional<PositionWithAzimuth> getPositionOptional(Point point)  {
+  public Optional<PositionWithAzimuth> getPosition(Point point)  {
     return Optional.ofNullable(positionMap.get(point));
   }
 
   /** 取得某星 位於什麼星座 */
   public Optional<ZodiacSign> getZodiacSign(Point point) {
-    return getPositionOptional(point)
+    return getPosition(point)
       .map(pos -> ZodiacSign.getZodiacSign(pos.getLng()));
   }
 

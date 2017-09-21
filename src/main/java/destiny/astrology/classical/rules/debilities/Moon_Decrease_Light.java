@@ -4,14 +4,14 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.*;
+import destiny.astrology.Horoscope;
+import destiny.astrology.Planet;
+import destiny.astrology.Position;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
-
-import static java.util.Optional.empty;
 
 /** Moon decreasing in light. */
 public final class Moon_Decrease_Light extends Rule {
@@ -22,15 +22,12 @@ public final class Moon_Decrease_Light extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPositionOptional(planet)
-      .filter(pos -> planet == Planet.MOON).map(Position::getLng).flatMap(planetDegree ->
-        h.getPositionOptional(Planet.SUN).map(Position::getLng).flatMap(sunDegree -> {
-          if (Horoscope.isOriental(planetDegree, sunDegree)) {
-            logger.debug("{} 在太陽東邊（月減光/下弦月）");
-            return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-          }
-          return empty();
-        })
+    return h.getPosition(planet)
+      .filter(pos -> planet == Planet.MOON).map(Position::getLng).flatMap(moonDegree ->
+        h.getPosition(Planet.SUN)
+          .map(Position::getLng)
+          .filter(sunDegree -> Horoscope.isOriental(moonDegree, sunDegree))
+          .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
       );
 
 //    if (planet == Planet.MOON) {

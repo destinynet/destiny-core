@@ -22,16 +22,13 @@ public final class Oriental extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPositionOptional(planet)
+    return h.getPosition(planet)
       .filter(pos -> planet == Planet.MERCURY || planet == Planet.VENUS)
       .map(Position::getLng).flatMap(planetDegree ->
-        h.getPositionOptional(Planet.SUN).map(Position::getLng).flatMap(sunDegree -> {
-          if (Horoscope.isOriental(planetDegree, sunDegree)) {
-            logger.debug("{} 在太陽東邊", planet);
-            return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-          }
-          return Optional.empty();
-        })
+        h.getPosition(Planet.SUN)
+          .map(Position::getLng)
+          .filter(sunDegree -> Horoscope.isOriental(planetDegree, sunDegree))
+          .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
       );
 
 //    if (planet == Planet.MERCURY || planet == Planet.VENUS) {

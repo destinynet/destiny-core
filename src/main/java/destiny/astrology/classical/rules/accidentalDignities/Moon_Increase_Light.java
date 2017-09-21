@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/12/29 at 上午 5:22:44
- */ 
+ */
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
@@ -12,27 +12,33 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.Optional;
 
 /** Moon increasing in light (月增光/上弦月) , or occidental of the Sun. */
-public final class Moon_Increase_Light extends Rule
-{
-  public Moon_Increase_Light()
-  {
+public final class Moon_Increase_Light extends Rule {
+
+  public Moon_Increase_Light() {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
-  {
-    double planetDegree = h.getPosition(planet).getLng();
-    double sunDegree    = h.getPosition(Planet.SUN).getLng();
-    
-    if (planet == Planet.MOON)
-    {
-      if ( Horoscope.isOccidental(planetDegree , sunDegree))
-      {
-        // addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
-        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-      }
-    }
-    return Optional.empty();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+
+    return h.getPosition(planet)
+      .filter(pos -> planet == Planet.MOON).map(Position::getLng).flatMap(moonDegree ->
+        h.getPosition(Planet.SUN)
+          .map(Position::getLng)
+          .filter(sunDegree -> Horoscope.isOccidental(moonDegree, sunDegree))
+          .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
+    );
+
+//    double planetDegree = h.getPosition(planet).getLng();
+//    double sunDegree = h.getPosition(Planet.SUN).getLng();
+//
+//    if (planet == Planet.MOON) {
+//      if (Horoscope.isOccidental(planetDegree, sunDegree)) {
+//        // addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
+//        logger.debug("{} 在太陽西邊（月增光/上弦月）" , planet);
+//        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
+//      }
+//    }
+//    return Optional.empty();
   }
 
 }

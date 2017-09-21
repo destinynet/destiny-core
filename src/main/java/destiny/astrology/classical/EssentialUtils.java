@@ -52,7 +52,7 @@ public class EssentialUtils
         return true;
       }
 
-      return h.getPositionOptional(receivee).map(pos -> {
+      return h.getPosition(receivee).map(pos -> {
         double lngDegree = pos.getLng();
         //比對 Terms
         if (essentialImpl.getTermsPoint(lngDegree) == receiver) {
