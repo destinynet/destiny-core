@@ -13,6 +13,8 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+
 /**
  * 廟旺互容 <br/>
  * 舉例：水星到摩羯，火星到雙子 <br/>
@@ -20,53 +22,119 @@ import java.util.Optional;
  */
 public final class MixedReception extends Rule
 {
-  private final DayNightDifferentiator dayNightDifferentiatorImpl;
-  
-  public MixedReception(DayNightDifferentiator dayNightDifferentiatorImpl)
-  {
-    this.dayNightDifferentiatorImpl = dayNightDifferentiatorImpl;
+  private final EssentialUtils utils;
+
+  public MixedReception(DayNightDifferentiator dayNightDifferentiatorImpl) {
+    utils = new EssentialUtils(dayNightDifferentiatorImpl);
   }
 
   @Override
-  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
-  {
-    EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     utils.setEssentialImpl(essentialImpl);
+
+    Optional<Tuple2<String, Object[]>> result;
+
+    result = rulerExaltMutualReception(h , planet);
+    if (result.isPresent())
+      return result;
+
+    result = exaltRulerMutualReception(h , planet);
+    return result;
     
-    //取得此 Planet 在什麼星座
-    ZodiacSign sign = h.getZodiacSign(planet);
-    
-    Point thisSignRuler = essentialImpl.getPoint(sign, Dignity.RULER);
-    ZodiacSign sign2 = h.getZodiacSign(thisSignRuler);
-    Point thatSignExaltation = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
-    if (planet == thatSignExaltation )
-    {
-      //已確定互容，要排除互陷
-      //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
-      if (!utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
-      {
-        //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
-        return Optional.of(Tuple.tuple("commentRuler", new Object[]{planet, sign, thisSignRuler, sign2}));
-      }
-    }
-    
-    Point thisSignExaltation = essentialImpl.getPoint(sign, Dignity.EXALTATION);
-    if (thisSignExaltation != null) //EXALTATION 可能為 null
-    {
-      sign2 = h.getZodiacSign(thisSignExaltation);
-      Point thatSignRuler = essentialImpl.getPoint(sign2, Dignity.RULER);
-      if (planet == thatSignRuler )
-      {
-        //已確定互容，要排除互陷
-        //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
-        if (!utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
-        {
-          //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
-          return Optional.of(Tuple.tuple("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2}));
-        }
-      }  
-    }
-    return Optional.empty();
+//    //取得此 Planet 在什麼星座
+//    ZodiacSign sign = h.getZodiacSign(planet);
+//
+//    Point thisSignRuler = essentialImpl.getPoint(sign, Dignity.RULER);
+//    ZodiacSign sign2 = h.getZodiacSign(thisSignRuler);
+//    Point thatSignExaltation = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
+//    if (planet == thatSignExaltation )
+//    {
+//      //已確定互容，要排除互陷
+//      //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
+//      if (!utils.isBothInBadSituation(planet , sign , thisSignRuler , sign2))
+//      {
+//        //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
+//        return Optional.of(Tuple.tuple("commentRuler", new Object[]{planet, sign, thisSignRuler, sign2}));
+//      }
+//    }
+//
+//    Point thisSignExaltation = essentialImpl.getPoint(sign, Dignity.EXALTATION);
+//    if (thisSignExaltation != null) //EXALTATION 可能為 null
+//    {
+//      sign2 = h.getZodiacSign(thisSignExaltation);
+//      Point thatSignRuler = essentialImpl.getPoint(sign2, Dignity.RULER);
+//      if (planet == thatSignRuler )
+//      {
+//        //已確定互容，要排除互陷
+//        //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
+//        if (!utils.isBothInBadSituation(planet , sign , thisSignExaltation , sign2))
+//        {
+//          //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
+//          return Optional.of(Tuple.tuple("commentExaltation" , new Object[] {planet , sign , thisSignExaltation , sign2}));
+//        }
+//      }
+//    }
+//    return Optional.empty();
   }
 
+  /**
+   * 旺廟互容
+   * RULER / EXALTATION 互容
+   * planet 在此 horoscope 中，座落到 sign1 星座
+   * 而 sign1 星座的 RULER           星，飛到 sign2 星座
+   * 而 sign2 星座的 EXALTATION (planet2) 剛好等於 planet
+   */
+  private Optional<Tuple2<String, Object[]>> rulerExaltMutualReception(Horoscope h , Planet planet) {
+    //取得此 Planet 在什麼星座
+    return h.getZodiacSign(planet).flatMap(sign1 -> {
+      // planet 在 sign1 , 計算 sign1 的 RULER :
+      Point signRuler = essentialImpl.getPoint(sign1, Dignity.RULER);
+      return h.getZodiacSign(signRuler).flatMap(sign2 -> {
+        // sign1 的 ruler 飛到 sign2 , 計算 sign2 的 EXALTATION
+        Point planet2 = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
+        if (planet == planet2) {
+          //已確定互容，要排除互陷
+          //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
+          if (!utils.isBothInBadSituation(planet , sign1 , signRuler , sign2))
+          {
+            //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Ruler " + thisSignRuler + " 飛至 " + sign2 + " 形成旺廟互容");
+            return Optional.of(Tuple.tuple("commentRuler", new Object[]{planet, sign1, signRuler, sign2}));
+          }
+        }
+        return empty();
+      });
+    });
+  }
+
+  /**
+   * 廟旺互容
+   * EXALTATION / RULER 互容
+   * planet 在此 horoscope 中，座落到 sign1 星座
+   * 而 sign1 星座的 EXALTATION   星，飛到 sign2 星座
+   * 而 sign2 星座的 RULER (planet2) 剛好等於 planet
+   */
+  private Optional<Tuple2<String, Object[]>> exaltRulerMutualReception(Horoscope h , Planet planet) {
+    //取得此 Planet 在什麼星座
+    return h.getZodiacSign(planet).flatMap(sign1 -> {
+      // planet 在 sign1 , 計算 sign1 的 EXALTATION
+      Point thisSignExaltation = essentialImpl.getPoint(sign1, Dignity.EXALTATION);
+      // EXALTATION 可能為 null
+      if (thisSignExaltation != null ) {
+        return h.getZodiacSign(thisSignExaltation).flatMap(sign2 -> {
+          Point planet2 = essentialImpl.getPoint(sign2, Dignity.RULER);
+          if (planet == planet2) {
+            //已確定互容，要排除互陷
+            //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
+            if (!utils.isBothInBadSituation(planet , sign1 , thisSignExaltation , sign2))
+            {
+              //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
+              return Optional.of(Tuple.tuple("commentExaltation" , new Object[] {planet , sign1 , thisSignExaltation , sign2}));
+            }
+          }
+          return empty();
+        });
+      }
+      return empty();
+    });
+  }
 }

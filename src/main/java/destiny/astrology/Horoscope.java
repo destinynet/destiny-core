@@ -6,15 +6,13 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.AbstractMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Horoscope implements Serializable {
@@ -222,6 +220,7 @@ public class Horoscope implements Serializable {
     return 12;
   } //getHouse()
 
+  @Deprecated
   public int getHouse(Point point) {
     // TODO : nullable
     PositionWithAzimuth position = positionMap.get(point);
@@ -229,16 +228,22 @@ public class Horoscope implements Serializable {
   }
 
   /** 取得星體的位置以及地平方位角 */
+  @Deprecated
+  @Nullable
   public PositionWithAzimuth getPosition(Point point) {
     // TODO : nullable
     return positionMap.get(point);
   }
 
+  /** 取得星體的位置以及地平方位角 */
+  public Optional<PositionWithAzimuth> getPositionOptional(Point point)  {
+    return Optional.ofNullable(positionMap.get(point));
+  }
+
   /** 取得某星 位於什麼星座 */
-  public ZodiacSign getZodiacSign(Point point) {
-    // TODO : nullable
-    PositionWithAzimuth position = getPosition(point);
-    return ZodiacSign.getZodiacSign(position.getLng());
+  public Optional<ZodiacSign> getZodiacSign(Point point) {
+    return getPositionOptional(point)
+      .map(pos -> ZodiacSign.getZodiacSign(pos.getLng()));
   }
 
   /**

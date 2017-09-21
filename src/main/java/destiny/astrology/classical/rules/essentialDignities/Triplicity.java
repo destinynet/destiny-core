@@ -23,18 +23,16 @@ public final class Triplicity extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
-  {
-    //取得此 Planet 在什麼星座
-    ZodiacSign sign = h.getZodiacSign(planet);
-
-    DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
-    if(  (dayNight == DayNight.DAY   && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY )) ||  
-         (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   ) 
-    {
-      //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 "+dayNight.toString()+" 之 Triplicity");
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, sign, dayNight}));
-    }
-    return Optional.empty();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    return h.getZodiacSign(planet).flatMap(sign -> {
+      DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
+      if(  (dayNight == DayNight.DAY   && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY )) ||
+           (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   )
+      {
+        //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 "+dayNight.toString()+" 之 Triplicity");
+        return Optional.of(Tuple.tuple("comment", new Object[]{planet, sign, dayNight}));
+      }
+      return Optional.empty();
+    });
   }
 }

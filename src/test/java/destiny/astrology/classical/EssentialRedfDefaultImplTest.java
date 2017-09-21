@@ -12,14 +12,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-public class EssentialRedfDefaultImplTest
-{
+public class EssentialRedfDefaultImplTest {
+
+  EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
+
   /** 測試 Ruler (旺) */
   @Test
-  public void testRuler()
-  {
-    EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
-    
+  public void testRuler() {
     assertSame(Planet.MARS    , impl.getPoint(ZodiacSign.ARIES       , Dignity.RULER));
     assertSame(Planet.VENUS   , impl.getPoint(ZodiacSign.TAURUS      , Dignity.RULER));
     assertSame(Planet.MERCURY , impl.getPoint(ZodiacSign.GEMINI      , Dignity.RULER));
@@ -36,10 +35,7 @@ public class EssentialRedfDefaultImplTest
   
   /** 測試 Detriment (陷) , 其值為對沖星座之Ruler */
   @Test
-  public void testDetriment()
-  {
-    EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
-    
+  public void testDetriment() {
     assertSame(Planet.VENUS     , impl.getPoint(ZodiacSign.ARIES       , Dignity.DETRIMENT));
     assertSame(Planet.MARS      , impl.getPoint(ZodiacSign.TAURUS      , Dignity.DETRIMENT));
     assertSame(Planet.JUPITER   , impl.getPoint(ZodiacSign.GEMINI      , Dignity.DETRIMENT));
@@ -56,10 +52,7 @@ public class EssentialRedfDefaultImplTest
 
   /** 測試 Exaltation (廟) */
   @Test
-  public void testExaltation()
-  {
-    EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
-    
+  public void testExaltation() {
     assertSame(Planet.SUN     , impl.getPoint(ZodiacSign.ARIES       , Dignity.EXALTATION));
     assertSame(Planet.MOON    , impl.getPoint(ZodiacSign.TAURUS      , Dignity.EXALTATION));
     //assertSame(LunarNode.NORTH , impl.getPoint(ZodiacSign.GEMINI      , Dignity.EXALTATION));
@@ -76,9 +69,8 @@ public class EssentialRedfDefaultImplTest
   
   /** 測試 Fall (落) , 其值為對沖星座之Exaltation之星體 */
   @Test
-  public void testFall()
-  {
-    EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
+  public void testFall() {
+
     
     assertSame(Planet.SATURN    , impl.getPoint(ZodiacSign.ARIES       , Dignity.FALL));
     assertSame(null             , impl.getPoint(ZodiacSign.TAURUS      , Dignity.FALL));
@@ -99,9 +91,7 @@ public class EssentialRedfDefaultImplTest
    * 測試星座的 Exaltation 星體及度數
    */
   @Test
-  public void testGetExaltationStarDegree()
-  {
-    EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
+  public void testGetExaltationStarDegree() {
     assertEquals( new PointDegree(Planet.SUN     , ZodiacSign.ARIES       , 19), impl.getExaltationStarDegree(ZodiacSign.ARIES      ));
     assertEquals( new PointDegree(Planet.MOON    , ZodiacSign.TAURUS      ,  3), impl.getExaltationStarDegree(ZodiacSign.TAURUS     ));
     //assertEquals( new PointDegree(LunarNode.NORTH , ZodiacSign.GEMINI      ,  3), impl.getExaltationStarDegree(ZodiacSign.GEMINI     ));
@@ -117,9 +107,7 @@ public class EssentialRedfDefaultImplTest
   }
 
   @Test
-  public void testGetFallStarDegree()
-  {
-    EssentialRedfDefaultImpl impl = new EssentialRedfDefaultImpl();
+  public void testGetFallStarDegree() {
     assertEquals( new PointDegree(Planet.SATURN  , ZodiacSign.ARIES       , 21), impl.getFallStarDegree(ZodiacSign.ARIES      ));
     assertEquals( null                                                        , impl.getFallStarDegree(ZodiacSign.TAURUS     ));
     //assertEquals( new PointDegree(LunarNode.SOUTH , ZodiacSign.GEMINI      ,  3), impl.getFallStarDegree(ZodiacSign.GEMINI     ));

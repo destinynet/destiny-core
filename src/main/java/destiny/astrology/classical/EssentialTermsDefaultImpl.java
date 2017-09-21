@@ -4,22 +4,17 @@
  */ 
 package destiny.astrology.classical;
 
-import java.io.Serializable;
-
 import com.google.common.collect.ImmutableList;
-
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import destiny.astrology.PointDegree;
-import destiny.astrology.Utils;
-import destiny.astrology.ZodiacSign;
+import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 
 /**
  * Essential Terms , 內定實作 , 參考 Ptolemy's Table , 以五分法
  */
-public class EssentialTermsDefaultImpl implements EssentialTermsIF , Serializable
-{
+public class EssentialTermsDefaultImpl implements EssentialTermsIF , Serializable {
+
   private final static ImmutableList<PointDegree> degList = new ImmutableList.Builder<PointDegree>()
     //戌
     .add(new PointDegree(Planet.JUPITER , 6))
@@ -95,13 +90,12 @@ public class EssentialTermsDefaultImpl implements EssentialTermsIF , Serializabl
     .add(new PointDegree(Planet.SATURN , 359.999999999999)) //如果改成 360 , 會被 normalize 成 0 度
     .build();
 
+  @NotNull
   @Override
-  public Point getTermsStar(double degree)
-  {
+  public Point getTermsStar(double degree) {
     double normalizedDegree = Utils.getNormalizeDegree(degree);
     int signIndex = (int) normalizedDegree / 30;
-    for (int i=0 ; i<5 ; i++)
-    {
+    for (int i=0 ; i<5 ; i++) {
       PointDegree pointDegree = degList.get(signIndex*5+i);
       if (normalizedDegree < pointDegree.getDegree())
         return pointDegree.getPoint();
@@ -110,6 +104,7 @@ public class EssentialTermsDefaultImpl implements EssentialTermsIF , Serializabl
   }
 
   @Override
+  @NotNull
   public Point getTermsStar(@NotNull ZodiacSign sign, double degree)
   {
     return getTermsStar(sign.getDegree() + degree);

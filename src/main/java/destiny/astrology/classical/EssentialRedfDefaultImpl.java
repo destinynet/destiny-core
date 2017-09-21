@@ -31,6 +31,8 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
     .put(Planet.SATURN , 201.0) // 土星在辰宮 21度 exalted.
     .put(LunarNode.NORTH_TRUE ,  63.0) //北交點在 申宮 03度 exalted.
     .put(LunarNode.SOUTH_TRUE , 243.0) //南交點在 寅宮 03度 exalted.
+    .put(LunarNode.NORTH_MEAN ,  63.0) //北交點在 申宮 03度 exalted.
+    .put(LunarNode.SOUTH_MEAN , 243.0) //南交點在 寅宮 03度 exalted.
     .build();
 
   /*
@@ -72,7 +74,7 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   private static final Map<String , Point> essentialDignitiesMap = Collections.synchronizedMap(new HashMap<>());
   static 
   {
-    /** 設定 Rulershop (旺 , +5) */
+    /** 設定 Rulership (旺 , +5) */
     essentialDignitiesMap.put(getCompositeKey(ZodiacSign.ARIES       , Dignity.RULER), Planet.MARS);
     essentialDignitiesMap.put(getCompositeKey(ZodiacSign.TAURUS      , Dignity.RULER), Planet.VENUS);
     essentialDignitiesMap.put(getCompositeKey(ZodiacSign.GEMINI      , Dignity.RULER), Planet.MERCURY);
@@ -104,18 +106,19 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   public EssentialRedfDefaultImpl()
   {
   }
-  
+
+  /**
+   * @param dignity {@link Dignity#RULER} 與 {@link Dignity#DETRIMENT} 不會傳回 null , 但 {@link Dignity#EXALTATION} 與 {@link Dignity#FALL} 就有可能為 null
+   */
   @Nullable
   @Override
-  public Point getPoint(@NotNull ZodiacSign sign, @NotNull Dignity dignity)
-  {
-    switch (dignity)
-    {
+  public Point getPoint(@NotNull ZodiacSign sign, @NotNull Dignity dignity) {
+    switch (dignity) {
       /** 廟 , +4 */
-      case EXALTATION : return findPoint(sign , starExaltationMap);
+      case EXALTATION : return findPoint(sign , starExaltationMap); // nullable
       /** 落 , -4 */
-      case FALL : return findPoint(sign , starFallMap);
-      default : return essentialDignitiesMap.get(getCompositeKey(sign, dignity)); 
+      case FALL : return findPoint(sign , starFallMap); // nullable
+      default : return essentialDignitiesMap.get(getCompositeKey(sign, dignity)); // not null
     }
   }
   

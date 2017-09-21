@@ -7,6 +7,7 @@ package destiny.astrology.classical;
 import destiny.astrology.DayNight;
 import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -32,16 +33,15 @@ public class EssentialDefaultImpl implements EssentialIF , Serializable
   }
 
   @Override
-  /** Tripilicity of DAY/NIGHT */
-  public Point getTriplicityPoint(ZodiacSign sign, DayNight dayNight)
-  {
+  /** Triplicity of DAY/NIGHT */
+  public Point getTriplicityPoint(ZodiacSign sign, DayNight dayNight) {
     return triplicityImpl.getTriplicityPoint(sign, dayNight);
   }
 
+  /* Terms */
+  @NotNull
   @Override
-  /** Terms */
-  public Point getTermsPoint(double degree)
-  {
+  public Point getTermsPoint(double degree) {
     return termsImpl.getTermsStar(degree);
   }
 
@@ -53,10 +53,10 @@ public class EssentialDefaultImpl implements EssentialIF , Serializable
   }
 
   
-  @Override
   /** Face */
-  public Point getFacePoint(double degree)
-  {
+  @NotNull
+  @Override
+  public Point getFacePoint(double degree) {
     return faceImpl.getFaceStar(degree);
   }
 

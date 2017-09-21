@@ -80,16 +80,16 @@ public class EssentialFaceDefaultImpl implements EssentialFaceIF , Serializable
     .add(Planet.MARS)
     .build();
 
+  @NotNull
   @Override
-  public Star getFaceStar(double degree)
-  {
+  public Star getFaceStar(double degree) {
     int index = (int) (Utils.getNormalizeDegree(degree) / 10);
     return starList.get(index);
   }
 
+  @NotNull
   @Override
-  public Star getFaceStar(@NotNull ZodiacSign sign, double degree)
-  {
+  public Star getFaceStar(@NotNull ZodiacSign sign, double degree) {
     return getFaceStar(sign.getDegree() + degree);
   }
 

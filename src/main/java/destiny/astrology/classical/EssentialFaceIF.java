@@ -6,16 +6,19 @@ package destiny.astrology.classical;
 
 import destiny.astrology.Star;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 取得黃道帶上某點，其 Face 是哪顆星，目前參考資料只會回傳行星 Planet <br/>
  * 內定實作為 EssentialFaceDefaultImpl
  */
-public interface EssentialFaceIF
-{
+public interface EssentialFaceIF {
+
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360 */
+  @NotNull
   Star getFaceStar(double degree);
   
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30 */
+  @NotNull
   Star getFaceStar(ZodiacSign sign , double degree);
 }

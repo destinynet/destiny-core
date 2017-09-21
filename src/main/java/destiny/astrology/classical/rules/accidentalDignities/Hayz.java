@@ -27,28 +27,25 @@ public final class Hayz extends Rule
   }
 
   @Override
-  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
-  {
+  public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
-    ZodiacSign sign = h.getZodiacSign(planet);
-    int planetHouse = h.getHouse(planet);
-    if ( dayNight == DayNight.DAY && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN))
-    {
-      if (planetHouse >= 7 && sign.getBooleanValue())
-      {
-        //addComment(Locale.TAIWAN , "晝星 " + planet + " 於白天在地平面上，落入 " + sign.toString(Locale.TAIWAN) + " 座，得時");
-        return Optional.of(Tuple.tuple("commentDay", new Object[]{planet, sign}));
+
+    return h.getZodiacSign(planet).flatMap(sign -> {
+      int planetHouse = h.getHouse(planet);
+      if ( dayNight == DayNight.DAY && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN)) {
+        if (planetHouse >= 7 && sign.getBooleanValue()) {
+          //addComment(Locale.TAIWAN , "晝星 " + planet + " 於白天在地平面上，落入 " + sign.toString(Locale.TAIWAN) + " 座，得時");
+          return Optional.of(Tuple.tuple("commentDay", new Object[]{planet, sign}));
+        }
       }
-    } 
-    else if (dayNight == DayNight.NIGHT && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS))
-    {
-      if (planetHouse >= 7 && !sign.getBooleanValue())
-      {
-        //addComment(Locale.TAIWAN , "夜星 " + planet + " 於夜晚在地平面上，落入 " + sign.toString(Locale.TAIWAN) + " 座，得時");
-        return Optional.of(Tuple.tuple("commentNight" , new Object[]{planet , sign}));
+      else if (dayNight == DayNight.NIGHT && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS)) {
+        if (planetHouse >= 7 && !sign.getBooleanValue()) {
+          //addComment(Locale.TAIWAN , "夜星 " + planet + " 於夜晚在地平面上，落入 " + sign.toString(Locale.TAIWAN) + " 座，得時");
+          return Optional.of(Tuple.tuple("commentNight" , new Object[]{planet , sign}));
+        }
       }
-    }
-    return Optional.empty();
+      return Optional.empty();
+    });
   }
 
   public DayNightDifferentiator getDayNightImpl()

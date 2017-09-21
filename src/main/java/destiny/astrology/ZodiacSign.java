@@ -85,6 +85,7 @@ public enum ZodiacSign implements LocaleStringIF , YinYangIF {
   }
 
   /** 取得黃道帶上的某度，屬於哪個星座 */
+  @NotNull
   public static ZodiacSign getZodiacSign(double degree) {
     int index = (int) (Utils.getNormalizeDegree(degree) / 30);
     return values()[index];
