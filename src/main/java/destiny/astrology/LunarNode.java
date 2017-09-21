@@ -68,7 +68,7 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
   @NotNull
   public static final LunarNode SOUTH_MEAN = new LunarNode("LunarNode.SOUTH" , "LunarNode.SOUTH_ABBR" , SOUTH , MEAN);
 
-  //public static LunarNode[] values = {NORTH_TRUE , NORTH_MEAN , SOUTH_TRUE , SOUTH_MEAN};
+  private static final LunarNode[] inner_values = {NORTH_TRUE , NORTH_MEAN , SOUTH_TRUE , SOUTH_MEAN};
   public static final LunarNode[] true_values = { NORTH_TRUE , SOUTH_TRUE};
   public static final LunarNode[] mean_values = { NORTH_MEAN , SOUTH_MEAN};
   public static final LunarNode[] values = { NORTH_MEAN , SOUTH_MEAN};
@@ -78,6 +78,13 @@ public final class LunarNode extends LunarPoint implements Comparable<LunarNode>
     super(nameKey, abbrKey, resource);
     this.northSouth = northSouth;
     this.nodeType = nodeType;
+  }
+
+  @NotNull
+  public static LunarNode of(NorthSouth northSouth , NodeType nodeType) {
+    return Arrays.stream(inner_values)
+      .filter(lunarNode -> lunarNode.northSouth == northSouth && lunarNode.nodeType == nodeType)
+      .findFirst().orElseThrow(() -> new RuntimeException("Cannot find LunarNode from " + northSouth + " and " + nodeType));
   }
 
   @NotNull

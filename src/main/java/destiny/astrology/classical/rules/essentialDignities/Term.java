@@ -6,6 +6,8 @@ package destiny.astrology.classical.rules.essentialDignities;
 
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
+import destiny.astrology.Point;
+import destiny.astrology.Position;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -20,9 +22,16 @@ public final class Term extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    if (planet == essentialImpl.getTermsPoint(h.getPosition(planet).getLng())) {
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, h.getPosition(planet).getLng()}));
-    }
-    return Optional.empty();
+
+    return h.getPositionOptional(planet)
+      .map(Position::getLng)
+      .flatMap(lngDeg -> {
+        Point termPoint = essentialImpl.getTermsPoint(lngDeg);
+        if (planet == termPoint)
+          return Optional.of(Tuple.tuple("comment", new Object[]{planet, lngDeg}));
+        return Optional.empty();
+        }
+      );
+
   }
 }

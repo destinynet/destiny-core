@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/12/29 at 下午 11:56:41
- */ 
+ */
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
@@ -12,30 +12,30 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.Optional;
 
 /** Partile sextile Jupiter or Venus. */
-public final class Partile_Sextile_Jupiter_Venus extends Rule
-{
-  public Partile_Sextile_Jupiter_Venus()
-  {
+public final class Partile_Sextile_Jupiter_Venus extends Rule {
+
+  public Partile_Sextile_Jupiter_Venus() {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
-  {
-    double planetDegree = h.getPosition(planet).getLng();
-    double jupiterDeg = h.getPosition(Planet.JUPITER).getLng();
-    double venusDeg   = h.getPosition(Planet.VENUS).getLng();
-    
-    if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective( planetDegree , jupiterDeg , Aspect.SEXTILE , 1.0))
-    {
-      //addComment(Locale.TAIWAN , planet + " 與 " + Planet.JUPITER + " 形成 " + Aspect.SEXTILE);
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.JUPITER, Aspect.SEXTILE}));
-    }
-    else if (planet != Planet.VENUS && AspectEffectiveModern.isEffective( planetDegree , venusDeg , Aspect.SEXTILE , 1.0))
-    {
-      //addComment(Locale.TAIWAN , planet + " 與 " + Planet.VENUS + " 形成 " + Aspect.SEXTILE);
-      return Optional.of(Tuple.tuple("comment" , new Object[] {planet , Planet.VENUS , Aspect.SEXTILE}));
-    }
-    return Optional.empty();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+
+    return h.getPositionOptional(planet).map(Position::getLng).flatMap(planetDegree ->
+      h.getPositionOptional(Planet.JUPITER).map(Position::getLng).flatMap(jupiterDeg ->
+        h.getPositionOptional(Planet.VENUS).map(Position::getLng).flatMap(venusDeg -> {
+          if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective(planetDegree, jupiterDeg, Aspect.SEXTILE, 1.0)) {
+            logger.debug("{} 與 {} 形成 {}", planet, Planet.JUPITER, Aspect.SEXTILE);
+            return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.JUPITER, Aspect.SEXTILE}));
+          }
+          else if (planet != Planet.VENUS && AspectEffectiveModern.isEffective(planetDegree, venusDeg, Aspect.SEXTILE, 1.0)) {
+            logger.debug("{} 與 {} 形成 {}", planet, Planet.VENUS, Aspect.SEXTILE);
+            return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.VENUS, Aspect.SEXTILE}));
+          }
+          return Optional.empty();
+        })
+      )
+    );
+
   }
 
 }

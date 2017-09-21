@@ -5,11 +5,12 @@
 package destiny.astrology.classical;
 
 import com.google.common.collect.ImmutableMap;
-
 import destiny.astrology.Planet;
 
-public class AverageDailyMotionMap
-{
+import java.util.Optional;
+
+public class AverageDailyMotionMap {
+
   /** 這個網址有平均速度的列表 http://mithras93.tripod.com/lessons/lesson7/index.html 
    * 我則另外參考 Horary Astrology Plain and Simple , page 82 */
   private final static ImmutableMap<Planet,Double> averageDailyMotionMap = new ImmutableMap.Builder<Planet , Double>()
@@ -35,11 +36,15 @@ public class AverageDailyMotionMap
     averageDailyMotionMap.put(Planet.SATURN  ,  0.0 +  2.0/60 + 1.0/3600);
   }
   */
-  
-  
-  public static Double get(Planet planet)
-  {
-    return averageDailyMotionMap.get(planet);
+
+
+  /**
+   * 三王星 沒「每日速度」資料
+   */
+  public static Optional<Double> get(Planet planet) {
+    return Optional.ofNullable(averageDailyMotionMap.get(planet));
   }
+
+
 
 }

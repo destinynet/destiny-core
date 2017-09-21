@@ -17,7 +17,6 @@ public final class Partile_Conj_South_Node extends Rule {
   /** 內定採用 NodeType.MEAN */
   private NodeType nodeType = NodeType.MEAN;
 
-
   public Partile_Conj_South_Node() {
   }
 
@@ -31,24 +30,17 @@ public final class Partile_Conj_South_Node extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    double planetDegree = h.getPosition(planet).getLng();
-    double southDeg;
-    if (nodeType == NodeType.TRUE)
-      southDeg = h.getPosition(LunarNode.SOUTH_TRUE).getLng();
-    else
-      southDeg = h.getPosition(LunarNode.SOUTH_MEAN).getLng();
 
-    if (Horoscope.getAngle(planetDegree, southDeg) <= 1) {
-      if (nodeType == NodeType.TRUE) {
-        //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_TRUE + " 形成 " + Aspect.CONJUNCTION);
-        return Optional.of(Tuple.tuple("comment", new Object[]{planet, LunarNode.SOUTH_TRUE, Aspect.CONJUNCTION}));
-      }
-      else {
-        //addComment(Locale.TAIWAN , planet + " 與 " + LunarNode.SOUTH_MEAN + " 形成 " + Aspect.CONJUNCTION);
-        return Optional.of(Tuple.tuple("comment", new Object[]{planet, LunarNode.SOUTH_MEAN, Aspect.CONJUNCTION}));
-      }
-    }
-    return Optional.empty();
+    return h.getPositionOptional(planet).map(Position::getLng).flatMap(planetDegree -> {
+      LunarNode south = LunarNode.of(LunarNode.NorthSouth.SOUTH, nodeType);
+      return h.getPositionOptional(south).map(Position::getLng).flatMap(southDeg -> {
+        if (Horoscope.getAngle(planetDegree, southDeg) <= 1) {
+          logger.debug("{} 與 {} 形成 {}", planet, south, Aspect.CONJUNCTION);
+          return Optional.of(Tuple.tuple("comment", new Object[]{planet, south, Aspect.CONJUNCTION}));
+        }
+        return Optional.empty();
+      });
+    });
   }
 
 }

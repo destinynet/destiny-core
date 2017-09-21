@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class LunarNodeTest {
@@ -20,13 +21,22 @@ public class LunarNodeTest {
 
   @Test
   public void testToString() {
-    for(LunarNode each : LunarNode.values) {
+    for (LunarNode each : LunarNode.values) {
       assertNotNull(each.toString());
-      logger.info("{}" , each.toString());
+      logger.info("{}", each.toString());
     }
 
     Set<String> set = Arrays.stream(LunarNode.values).map(Point::toString).collect(Collectors.toSet());
     assertTrue(set.contains("北交點"));
     assertTrue(set.contains("南交點"));
+  }
+
+  @Test
+  public void testEquals() {
+    assertSame(LunarNode.NORTH_MEAN, LunarNode.of(LunarNode.NorthSouth.NORTH, NodeType.MEAN));
+    assertSame(LunarNode.NORTH_TRUE, LunarNode.of(LunarNode.NorthSouth.NORTH, NodeType.TRUE));
+
+    assertSame(LunarNode.SOUTH_MEAN, LunarNode.of(LunarNode.NorthSouth.SOUTH, NodeType.MEAN));
+    assertSame(LunarNode.SOUTH_TRUE, LunarNode.of(LunarNode.NorthSouth.SOUTH, NodeType.TRUE));
   }
 }

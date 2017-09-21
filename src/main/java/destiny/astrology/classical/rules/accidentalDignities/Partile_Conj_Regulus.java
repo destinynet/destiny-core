@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/12/30 at 上午 12:00:27
- */ 
+ */
 package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
@@ -12,24 +12,23 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.Optional;
 
 /** Partile conjunct Cor Leonis (Regulus) at 29deg50' Leo in January 2000. */
-public final class Partile_Conj_Regulus extends Rule
-{
-  public Partile_Conj_Regulus()
-  {
+public final class Partile_Conj_Regulus extends Rule {
+
+  public Partile_Conj_Regulus() {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
-  {
-    double planetDegree = h.getPosition(planet).getLng();
-    double regulusDeg = h.getPosition(FixedStar.REGULUS).getLng();
-    
-    if (AspectEffectiveModern.isEffective(planetDegree , regulusDeg , Aspect.CONJUNCTION , 1))
-    {
-      //addComment(Locale.TAIWAN , planet + " 與 " + FixedStar.REGULUS + " 形成 " + Aspect.CONJUNCTION);
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, FixedStar.REGULUS, Aspect.CONJUNCTION}));
-    }
-    return Optional.empty();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+
+    return h.getPositionOptional(planet).map(Position::getLng).flatMap(planetDegree ->
+      h.getPositionOptional(FixedStar.REGULUS).map(Position::getLng).flatMap(regulusDeg -> {
+        if (AspectEffectiveModern.isEffective(planetDegree, regulusDeg, Aspect.CONJUNCTION, 1)) {
+          logger.debug("{} 與 {} 形成 {}" , planet , FixedStar.REGULUS , Aspect.CONJUNCTION);
+          return Optional.of(Tuple.tuple("comment", new Object[]{planet, FixedStar.REGULUS, Aspect.CONJUNCTION}));
+        }
+        return Optional.empty();
+      })
+    );
   }
 
 }

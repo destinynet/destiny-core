@@ -21,7 +21,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public abstract class AbstractRule implements RuleIF , Serializable , LocaleStringIF {
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   private final String resource;
   

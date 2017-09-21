@@ -6,6 +6,7 @@ package destiny.astrology.classical.rules.debilities;
 
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
+import destiny.astrology.Position;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -20,16 +21,29 @@ public final class Oriental extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    if (planet == Planet.MERCURY || planet == Planet.VENUS) {
-      double planetDegree = h.getPosition(planet).getLng();
-      double sunDegree = h.getPosition(Planet.SUN).getLng();
 
-      if (Horoscope.isOriental(planetDegree, sunDegree)) {
-        //addComment(Locale.TAIWAN , planet + " 在太陽東邊");
-        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-      }
-    }
-    return Optional.empty();
+    return h.getPositionOptional(planet)
+      .filter(pos -> planet == Planet.MERCURY || planet == Planet.VENUS)
+      .map(Position::getLng).flatMap(planetDegree ->
+        h.getPositionOptional(Planet.SUN).map(Position::getLng).flatMap(sunDegree -> {
+          if (Horoscope.isOriental(planetDegree, sunDegree)) {
+            logger.debug("{} 在太陽東邊", planet);
+            return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
+          }
+          return Optional.empty();
+        })
+      );
+
+//    if (planet == Planet.MERCURY || planet == Planet.VENUS) {
+//      double planetDegree = h.getPosition(planet).getLng();
+//      double sunDegree = h.getPosition(Planet.SUN).getLng();
+//
+//      if (Horoscope.isOriental(planetDegree, sunDegree)) {
+//        logger.debug("{} 在太陽東邊", planet);
+//        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
+//      }
+//    }
+//    return Optional.empty();
   }
 
 }

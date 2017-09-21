@@ -11,6 +11,8 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+
 /** Partile square Mars or Saturn. */
 public final class Partile_Square_Mars_Saturn extends Rule {
 
@@ -19,17 +21,23 @@ public final class Partile_Square_Mars_Saturn extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    double planetDegree = h.getPosition(planet).getLng();
-    double marsDeg = h.getPosition(Planet.MARS).getLng();
-    double saturnDeg = h.getPosition(Planet.SATURN).getLng();
 
-    if (planet != Planet.MARS && AspectEffectiveModern.isEffective(planetDegree, marsDeg, Aspect.SQUARE, 1.0)) {
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.MARS, Aspect.SQUARE}));
-    }
-    else if (planet != Planet.SATURN && AspectEffectiveModern.isEffective(planetDegree, saturnDeg, Aspect.SQUARE, 1.0)) {
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.SATURN, Aspect.SQUARE}));
-    }
-    return Optional.empty();
+    return h.getPositionOptional(planet).map(Position::getLng).flatMap(planetDegree ->
+      h.getPositionOptional(Planet.MARS).map(Position::getLng).flatMap(marsDeg ->
+        h.getPositionOptional(Planet.SATURN).map(Position::getLng).flatMap(saturnDeg -> {
+          if (planet != Planet.MARS && AspectEffectiveModern.isEffective(planetDegree, marsDeg, Aspect.SQUARE, 1.0)) {
+            logger.debug("{} 與 {} 形成 {}" , planet , Planet.MARS , Aspect.SQUARE);
+            return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.MARS, Aspect.SQUARE}));
+          }
+          else if (planet != Planet.SATURN && AspectEffectiveModern.isEffective(planetDegree, saturnDeg, Aspect.SQUARE, 1.0)) {
+            logger.debug("{} 與 {} 形成 {}" , planet , Planet.SATURN , Aspect.SQUARE);
+            return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.SATURN, Aspect.SQUARE}));
+          }
+          return empty();
+        })
+      )
+    );
+
   }
 
 }
