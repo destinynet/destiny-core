@@ -11,7 +11,9 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
-/** Mars, Jupiter, or Saturn oriental of (rising before) the Sun. */
+/** Mars, Jupiter, or Saturn oriental of (rising before) the Sun.
+ * 火星、木星、土星 是否 東出 於 太陽
+ * */
 public final class Oriental extends Rule {
 
   public Oriental() {
@@ -28,17 +30,6 @@ public final class Oriental extends Rule {
           .filter(sunDegree -> Horoscope.isOriental(planetDegree, sunDegree))
           .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
     );
-
-//    double planetDegree = h.getPosition(planet).getLng();
-//    double sunDegree = h.getPosition(Planet.SUN).getLng();
-//
-//    if (planet == Planet.MARS || planet == Planet.JUPITER || planet == Planet.SATURN) {
-//      if (Horoscope.isOriental(planetDegree, sunDegree)) {
-//        logger.debug("{} 在太陽東邊" , planet);
-//        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-//      }
-//    }
-//    return Optional.empty();
   }
 
 }

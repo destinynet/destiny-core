@@ -13,7 +13,10 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
-/** Mercury, or Venus oriental to the Sun. */
+/**
+ * Mercury, or Venus oriental to the Sun.
+ * 金星、水星，是否 東出 於 太陽
+ * */
 public final class Oriental extends Rule {
 
   public Oriental() {
@@ -30,17 +33,6 @@ public final class Oriental extends Rule {
           .filter(sunDegree -> Horoscope.isOriental(planetDegree, sunDegree))
           .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
       );
-
-//    if (planet == Planet.MERCURY || planet == Planet.VENUS) {
-//      double planetDegree = h.getPosition(planet).getLng();
-//      double sunDegree = h.getPosition(Planet.SUN).getLng();
-//
-//      if (Horoscope.isOriental(planetDegree, sunDegree)) {
-//        logger.debug("{} 在太陽東邊", planet);
-//        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-//      }
-//    }
-//    return Optional.empty();
   }
 
 }

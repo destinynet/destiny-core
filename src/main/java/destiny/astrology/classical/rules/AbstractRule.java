@@ -8,7 +8,6 @@ import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +29,6 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   /** 名稱key */
   private final String nameKey;
   
-  @Nullable
-  private String commentKey=null;
-  
-  /** 裡面的 objects 不能直接拿來作為 MessageFormat 的 參數，要先經過 getCommentParameters(locale) 處理，取得應該替換 正確的字串 */ 
-  private Object[] commentParameters;
-
   protected AbstractRule(String resource)
   {
     this.nameKey = getClass().getSimpleName();
@@ -45,13 +38,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   @Override
   public final boolean isApplicable(Planet planet, Horoscope h) {
     logger.debug("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
-    Optional<Tuple2<String , Object[]>> result = getResult(planet, h);
-    if (!result.isPresent())
-      return false;
-    
-    commentKey = result.get().v1();
-    commentParameters = result.get().v2();
-    return true;
+    return getResult(planet, h).isPresent();
   }
   
   /**
