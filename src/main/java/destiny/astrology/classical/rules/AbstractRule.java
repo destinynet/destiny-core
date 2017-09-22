@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -91,27 +90,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
     }
     return newCommentParameters;
   }
-  
-  /** 取得註解 */
-  @Deprecated
-  @Override
-  public Optional<String> getComment() {
-    return getComment(locale);
-  }
-  
-  /** 取得某 Locale 之下的註解 */
-  @Deprecated
-  @Override
-  public Optional<String> getComment(@NotNull Locale locale) {
-    try {
-      String pattern = ResourceBundle.getBundle(resource, locale).getString(nameKey + "." + this.commentKey);
-      String result = MessageFormat.format(pattern, getCommentParameters(locale , this.commentParameters));
-      return Optional.of(result);
-    } catch (MissingResourceException e) {
-      e.printStackTrace();
-      return Optional.empty();
-    }
-  }
+
 
   /** 取得某 Locale 之下的註解 */
   @Override

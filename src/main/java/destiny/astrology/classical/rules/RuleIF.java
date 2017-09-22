@@ -26,12 +26,6 @@ public interface RuleIF extends Predicate<Tuple2<Planet, Horoscope>> {
 
   String getName(Locale locale);
 
-  @Deprecated
-  Optional<String> getComment();
-
-  @Deprecated
-  Optional<String> getComment(Locale locale);
-
   /** 取得某 Locale 之下的註解 */
   Optional<String> getComment(Planet planet , Horoscope h , @NotNull Locale locale);
 
