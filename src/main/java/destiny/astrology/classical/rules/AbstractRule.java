@@ -44,8 +44,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   }
   
   @Override
-  public final boolean isApplicable(Planet planet, Horoscope h)
-  {
+  public final boolean isApplicable(Planet planet, Horoscope h) {
     logger.debug("'{}' : isApplicable({})" , getClass().getSimpleName() ,  planet);
     Optional<Tuple2<String , Object[]>> result = getResult(planet, h);
     if (!result.isPresent())
@@ -80,11 +79,9 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   /** 設定註解參數 , 檢查參數是否是 LocaleStringIF , 如果是的話 , 就轉為適當的 locale
    * ex : {0} 位於第 {1} 宮 , 就要處理 {0} {1} , 填入 commentParameters */
   @NotNull
-  private Object[] getCommentParemeters(Locale locale)
-  {
+  private Object[] getCommentParameters(Locale locale , Object[] commentParameters) {
     Object[] newCommentParameters = new Object[commentParameters.length];
-    for(int i=0 ; i < commentParameters.length ; i++)
-    {
+    for (int i = 0; i < commentParameters.length; i++) {
       if (commentParameters[i] instanceof LocaleStringIF)
         newCommentParameters[i] = ((LocaleStringIF) commentParameters[i]).toString(locale);
       else if (commentParameters[i] instanceof Double)
@@ -96,31 +93,37 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   }
   
   /** 取得註解 */
+  @Deprecated
   @Override
-  public Optional<String> getComment()
-  {
+  public Optional<String> getComment() {
     return getComment(locale);
   }
   
-  /** 取得某 Locale 之下的註解 */ 
+  /** 取得某 Locale 之下的註解 */
+  @Deprecated
   @Override
-  public Optional<String> getComment(@NotNull Locale locale)
-  {
-    try
-    {
-      String pattern = ResourceBundle.getBundle(resource , locale).getString(nameKey+"."+this.commentKey);
-      String result = MessageFormat.format(pattern, getCommentParemeters(locale));
-      //System.err.println("result = " + result);
+  public Optional<String> getComment(@NotNull Locale locale) {
+    try {
+      String pattern = ResourceBundle.getBundle(resource, locale).getString(nameKey + "." + this.commentKey);
+      String result = MessageFormat.format(pattern, getCommentParameters(locale , this.commentParameters));
       return Optional.of(result);
-    }
-    catch(MissingResourceException e)
-    {
+    } catch (MissingResourceException e) {
       e.printStackTrace();
       return Optional.empty();
     }
   }
-  
-  
+
+  /** 取得某 Locale 之下的註解 */
+  @Override
+  public Optional<String> getComment(Planet planet, Horoscope h, @NotNull Locale locale) {
+    return getResult(planet, h).map(tuple -> {
+      String commentKey = tuple.v1();
+      Object[] commentParameters = tuple.v2();
+      String pattern = ResourceBundle.getBundle(resource, locale).getString(nameKey + "." + commentKey);
+      return MessageFormat.format(pattern, getCommentParameters(locale , commentParameters));
+    });
+  }
+
   @Override
   public String toString()
   {

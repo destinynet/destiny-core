@@ -14,14 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializable
-{
+public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializable {
+
   /** 計算白天黑夜的實作  */
   private DayNightDifferentiator dayNightImpl;
   
-  private List<Applicable> rules = new ArrayList<>();
+  private List<RuleIF> rules = new ArrayList<>();
 
   public EssentialDignitiesBean(DayNightDifferentiator dayNightImpl) {
     this.dayNightImpl = dayNightImpl;
@@ -30,15 +32,18 @@ public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializab
 
   @NotNull
   @Override
-  public List<RuleIF> getEssentialDignities(Planet planet, Horoscope h) {
-    return rules.stream().filter(each -> each.isApplicable(planet, h)).collect(Collectors.toList());
+  public List<String> getComments(Planet planet, Horoscope h , Locale locale) {
+    return rules.stream()
+      .map(ruleIF ->  ruleIF.getComment(planet , h , locale))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .collect(Collectors.toList());
   }
-  
-  
+
   /** 內定的 Rules */
   @NotNull
-  private List<Applicable> getDefaultRules() {
-    List<Applicable> list = new ArrayList<>();
+  private List<RuleIF> getDefaultRules() {
+    List<RuleIF> list = new ArrayList<>();
     list.add(new Ruler(dayNightImpl));
     list.add(new Exaltation(dayNightImpl));
     list.add(new MixedReception(dayNightImpl));
@@ -48,14 +53,10 @@ public class EssentialDignitiesBean implements EssentialDignitiesIF , Serializab
     return list;
   }
 
-  public List<Applicable> getRules()
-  {
+  @Override
+  @NotNull
+  public List<RuleIF> getRules() {
     return rules;
-  }
-
-  public void setRules(List<Applicable> rules)
-  {
-    this.rules = rules;
   }
 
   public void setDayNightImpl(DayNightDifferentiator dayNightImpl) {

@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializable
@@ -44,7 +46,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   public AccidentalDignitiesBean() {
   }
 
-  private List<Applicable> rules = new ArrayList<>();
+  private List<RuleIF> rules = new ArrayList<>();
 
   @PostConstruct
   public void init() {
@@ -57,15 +59,18 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
 
   @NotNull
   @Override
-  public List<RuleIF> getAccidentalDignities(Planet planet, Horoscope horoscope) {
+  public List<String> getComments(Planet planet, Horoscope h, Locale locale) {
     return rules.stream()
-      .filter(each -> each.isApplicable(planet, horoscope))
+      .map(ruleIF ->  ruleIF.getComment(planet , h , locale))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
       .collect(Collectors.toList());
   }
-  
+
+  /** 內定的 Rules */
   @NotNull
-  private List<Applicable> getDefaultRules() {
-    List<Applicable> list = new ArrayList<>();
+  private List<RuleIF> getDefaultRules() {
+    List<RuleIF> list = new ArrayList<>();
     list.add(new House_1_10());
     list.add(new House_4_7_11());
     list.add(new House_2_5());
@@ -93,12 +98,10 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     return list;
   }
 
-  public List<Applicable> getRules() {
+  @Override
+  @NotNull
+  public List<RuleIF> getRules() {
     return rules;
-  }
-
-  public void setRules(List<Applicable> rules) {
-    this.rules = rules;
   }
 
   public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl) {

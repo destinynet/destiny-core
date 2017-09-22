@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DebilitiesBean implements DebilitiesIF , Serializable {
@@ -29,7 +31,7 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
   @Inject
   private RefranationIF refranationImpl;
 
-  private List<Applicable> rules = new ArrayList<>();
+  private List<RuleIF> rules = new ArrayList<>();
 
   public DebilitiesBean()
   {
@@ -40,17 +42,20 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
     this.rules = getDefaultRules();
   }
 
-
   @NotNull
   @Override
-  public List<RuleIF> getDebilities(Planet planet, Horoscope horoscope) {
-    return rules.stream().filter(each -> each.isApplicable(planet, horoscope)).collect(Collectors.toList());
+  public List<String> getComments(Planet planet, Horoscope h, Locale locale) {
+    return rules.stream()
+      .map(ruleIF ->  ruleIF.getComment(planet , h , locale))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .collect(Collectors.toList());
   }
 
-  
+
   @NotNull
-  private List<Applicable> getDefaultRules() {
-    List<Applicable> list = new ArrayList<>();
+  private List<RuleIF> getDefaultRules() {
+    List<RuleIF> list = new ArrayList<>();
     list.add(new Detriment());
     list.add(new Fall());
     list.add(new Peregrine(dayNightImpl));
@@ -75,13 +80,10 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
     return list;
   }
 
-  public List<Applicable> getRules() {
-    return this.rules;
+  @Override
+  @NotNull
+  public List<RuleIF> getRules() {
+    return rules;
   }
-
-  public void setRules(List<Applicable> rules) {
-    this.rules = rules;
-  }
-
 
 }

@@ -10,6 +10,7 @@ import destiny.astrology.classical.rules.RuleIF;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 取得某行星 Planet 的 Essential Dignities 強度 <BR>
@@ -18,5 +19,8 @@ import java.util.List;
 public interface EssentialDignitiesIF {
 
   @NotNull
-  List<RuleIF> getEssentialDignities(Planet planet, Horoscope h);
+  List<String> getComments(Planet planet, Horoscope h, Locale locale);
+
+  @NotNull
+  List<RuleIF> getRules();
 }

@@ -13,7 +13,10 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Optional;
 
-/** Mars, Jupiter, or Saturn occidental to the Sun. */
+/**
+ * Mars, Jupiter, or Saturn occidental to the Sun.
+ * 火星、木星、或土星，在太陽西方
+ *  */
 public final class Occidental extends Rule {
 
   public Occidental() {
@@ -27,7 +30,7 @@ public final class Occidental extends Rule {
       .map(Position::getLng).flatMap(planetDegree ->
         h.getPosition(Planet.SUN)
           .map(Position::getLng)
-          .filter(sunDegree -> Horoscope.isOriental(planetDegree, sunDegree))
+          .filter(sunDegree -> Horoscope.isOccidental(planetDegree, sunDegree))
           .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
     );
 

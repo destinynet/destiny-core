@@ -482,7 +482,7 @@ public class Location implements Serializable {
   public enum NorthSouth {
     NORTH("Location.NORTH"), SOUTH("Location.SOUTH");
 
-    private final static String resource = "destiny.core.calendar.Location";
+    private final static String resource =  Location.class.getName();
 
     private final String nameKey;
 
