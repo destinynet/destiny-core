@@ -24,15 +24,15 @@ import static destiny.core.calendar.Location.NorthSouth.SOUTH;
 
 public class Location implements Serializable {
 
-  private EastWest eastWest = EAST;
-  private int lngDeg = 121;
-  private int lngMin = 30;
-  private double lngSec = 0;
+  private final EastWest eastWest;// = EAST;
+  private final int lngDeg;// = 121;
+  private final int lngMin;// = 30;
+  private final double lngSec;// = 0;
 
-  private NorthSouth northSouth = NORTH;
-  private int latDeg = 25;
-  private int latMin = 3;
-  private double latSec = 0;
+  private final NorthSouth northSouth;// = NORTH;
+  private final int latDeg; //= 25;
+  private final int latMin; // = 3;
+  private final double latSec;// = 0;
   
   /**
    * TimeZone id , 例如 "Asia/Taipei"
@@ -126,8 +126,6 @@ public class Location implements Serializable {
     .put(Locale.TAIWAN, new Location(121.517668 , 25.039030 , "Asia/Taipei"))
     .build();
 
-  public Location() {
-  }
 
   public static Location of(Locale locale) {
     Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet()).orElse(Locale.getDefault());

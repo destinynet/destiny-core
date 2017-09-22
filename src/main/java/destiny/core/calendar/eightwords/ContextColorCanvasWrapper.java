@@ -41,7 +41,7 @@ public class ContextColorCanvasWrapper {
   /** 當地時間 */
   private LocalDateTime     lmt              = LocalDateTime.now();
   /** 地點 */
-  private Location          location         = new Location();
+  private Location          location         = Location.of(Locale.TAIWAN);
   /** 地點的名稱 */
   private String locationName = "";
   
