@@ -19,14 +19,9 @@ public final class House_6_8 extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    if (h.getHouse(planet) == 6) {
-      //addComment(Locale.TAIWAN , planet + " 位於 6 或 8 宮");
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, 6}));
-    }
-    else if (h.getHouse(planet) == 8) {
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, 8}));
-    }
-    return Optional.empty();
+    return h.getHouse(planet)
+      .filter(house -> house == 6 || house == 8)
+      .map(house -> Tuple.tuple("comment", new Object[]{planet, house}));
   }
 
 }

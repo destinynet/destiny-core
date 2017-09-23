@@ -219,11 +219,12 @@ public class Horoscope implements Serializable {
     return 12;
   } //getHouse()
 
-  @Deprecated
-  public int getHouse(Point point) {
-    // TODO : nullable
-    PositionWithAzimuth position = positionMap.get(point);
-    return getHouse(position.getLng());
+  /**
+   * @param point 取得此星體在第幾宮
+   */
+  public Optional<Integer> getHouse(Point point) {
+    Optional<PositionWithAzimuth> pos = Optional.ofNullable(positionMap.get(point));
+    return pos.map(Position::getLng).map(this::getHouse);
   }
 
   /** 取得星體的位置以及地平方位角 */

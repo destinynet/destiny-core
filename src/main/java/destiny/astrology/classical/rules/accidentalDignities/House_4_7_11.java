@@ -20,12 +20,9 @@ public final class House_4_7_11 extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    int planetHouse = h.getHouse(planet);
-    if (planetHouse == 4 || planetHouse == 7 || planetHouse == 11) {
-      //planet + " 位於第 " + planetHouse + " 宮 (Good Daemon's) House
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, planetHouse}));
-    }
-    return Optional.empty();
+    return h.getHouse(planet)
+      .filter(house -> house == 4 || house == 7 || house == 11)
+      .map(house -> Tuple.tuple("comment", new Object[]{planet, house}));
   }
 
 }

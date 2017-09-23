@@ -20,14 +20,10 @@ public final class House_9 extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
-  {
-    int planetHouse = h.getHouse(planet);
-    if ( planetHouse == 9)
-    {
-      return Optional.of(Tuple.tuple("comment", new Object[]{planet, planetHouse}));
-    }
-    return Optional.empty();
+  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+    return h.getHouse(planet)
+      .filter(house -> house == 9)
+      .map(house -> Tuple.tuple("comment", new Object[]{planet , house}));
   }
 
 }
