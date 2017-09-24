@@ -28,12 +28,9 @@ public class Translation_of_Light extends Rule
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
     Tuple4<Boolean , Planet , Planet , Optional<AspectApplySeparateIF.AspectType>> t = translationOfLightImpl.getResult(planet, h);
-    //TranslationOfLightBean bean = new TranslationOfLightBean(planet , horoscopeContext , aspectApplySeparateImpl , besiegedBean);
     if (t.v1()) {
       double deg = h.getAngle(t.v2() , t.v3());
-      //StringBuffer sb = new StringBuffer(" 從 " + bean.getFromPlanet() + " 傳遞光線到 " + bean.getToPlanet() + " , " + bean.getFromPlanet()+" 與 " + bean.getToPlanet() +" 交角 " + deg + " 度");
       if (t.v4().isPresent()) {
-        //sb.append("(" + (bean.getBesigingPlanetsAspectType() == AspectType.APPLYING ? "入" : "出") + "相位)");
         return Optional.of(Tuple.tuple("commentAspect", new Object[]{planet, t.v2(), t.v3(), deg, t.v4().get()}));
       }
       else {

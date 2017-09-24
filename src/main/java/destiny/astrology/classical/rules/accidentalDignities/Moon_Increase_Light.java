@@ -27,18 +27,6 @@ public final class Moon_Increase_Light extends Rule {
           .filter(sunDegree -> Horoscope.isOccidental(moonDegree, sunDegree))
           .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
     );
-
-//    double planetDegree = h.getPosition(planet).getLng();
-//    double sunDegree = h.getPosition(Planet.SUN).getLng();
-//
-//    if (planet == Planet.MOON) {
-//      if (Horoscope.isOccidental(planetDegree, sunDegree)) {
-//        // addComment(Locale.TAIWAN , planet + " 在太陽西邊（月增光/上弦月）");
-//        logger.debug("{} 在太陽西邊（月增光/上弦月）" , planet);
-//        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-//      }
-//    }
-//    return Optional.empty();
   }
 
 }

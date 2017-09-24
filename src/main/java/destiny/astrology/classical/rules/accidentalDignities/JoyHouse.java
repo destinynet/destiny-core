@@ -43,20 +43,6 @@ public final class JoyHouse extends Rule {
       )
       .map(house -> Tuple.tuple("comment", new Object[]{planet, house}));
 
-//    int house = h.getHouse(planet);
-//    if ((planet == Planet.MERCURY && house == 1) ||
-//        (planet == Planet.MOON && house == 3) ||
-//        (planet == Planet.VENUS && house == 5) ||
-//        (planet == Planet.MARS && house == 6) ||
-//        (planet == Planet.SUN && house == 9) ||
-//        (planet == Planet.JUPITER && house == 11) ||
-//        (planet == Planet.SATURN && house == 12)
-//       )
-//    {
-//      //planet + " 落入第 " + planetHouse + " 宮 , 為其喜樂宮 (Joy House)"
-//      return Optional.of(Tuple.tuple("comment", new Object[]{planet, house}));
-//    }
-//    return Optional.empty();
   }
 
 }

@@ -22,7 +22,7 @@ public final class House_3 extends Rule {
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     return h.getHouse(planet)
       .filter(house -> house == 3)
-      .map(house -> Tuple.tuple("comment", new Object[]{planet}));
+      .map(house -> Tuple.tuple("comment", new Object[]{planet , house}));
   }
 
 }

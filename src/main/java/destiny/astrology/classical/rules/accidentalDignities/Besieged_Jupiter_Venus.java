@@ -31,7 +31,11 @@ public class Besieged_Jupiter_Venus extends Rule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.MARS || planet == Planet.SATURN) {
+    if ( planet == Planet.SUN
+      || planet == Planet.MOON
+      || planet == Planet.MERCURY
+      || planet == Planet.MARS
+      || planet == Planet.SATURN) {
       if (besiegedImpl.isBesieged(planet, Planet.VENUS, Planet.JUPITER, Time.getGmtFromLmt(h.getLmt(), h.getLocation()), true, false)) {
         //planet + " 被 " + Planet.VENUS + " 以及 " + Planet.JUPITER + " 夾輔 (善意 Besieged)"
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.VENUS, Planet.JUPITER}));

@@ -30,7 +30,7 @@ public interface BesiegedIF {
    * @param gmtJulDay GMT 時間
    * @param otherPlanets 其他行星
    * @param angles 欲計算的交角
-   * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
+   * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者 . 傳回的 List[Planet] 必定 size = 2
    * TODO : 目前的交角都只考慮「perfect」準確交角（一般行星三分容許度，日月17分），並未考慮容許度（即 applying），未來要改進
    */
   Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, double gmtJulDay,
@@ -103,15 +103,16 @@ public interface BesiegedIF {
   }
 
 
+  /**
+   * 傳回的 List[Planet] 必定 size = 2
+   */
   default List<Planet> getBesiegingPlanets(Planet planet , LocalDateTime gmt , boolean onlyClassicalPlanets , @NotNull Collection<Aspect> aspects) {
     List<Planet> otherPlanets = new ArrayList<>();
-    for(Planet each : Planet.values)
-    {
+    for (Planet each : Planet.values) {
       if (each != planet)
         otherPlanets.add(each);
     }
-    if (onlyClassicalPlanets)
-    {
+    if (onlyClassicalPlanets) {
       otherPlanets.remove(Planet.URANUS);
       otherPlanets.remove(Planet.NEPTUNE);
       otherPlanets.remove(Planet.PLUTO);
