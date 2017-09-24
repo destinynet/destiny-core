@@ -20,24 +20,11 @@ public final class Fall extends EssentialRule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
-    return h.getZodiacSign(planet).flatMap(sign -> {
-      if (planet == essentialImpl.getPoint(sign, Dignity.FALL)) {
-        //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Fall");
-        return Optional.of(Tuple.tuple("comment", new Object[]{planet, sign}));
-      }
-      return Optional.empty();
-    });
-
-//    //取得此 Planet 在什麼星座
-//    ZodiacSign sign = h.getZodiacSign(planet);
-//
-//    if (planet == essentialImpl.getPoint(sign, Dignity.FALL)) {
-//      //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 為其 Fall");
-//      return Optional.of(Tuple.tuple("comment", new Object[]{planet, sign}));
-//    }
-//    return Optional.empty();
+    return h.getZodiacSign(planet)
+      .filter(sign -> planet == essentialImpl.getPointOptional(sign, Dignity.FALL).orElse(null))
+      .map(sign -> Tuple.tuple("comment", new Object[]{planet, sign}));
   }
 
 }

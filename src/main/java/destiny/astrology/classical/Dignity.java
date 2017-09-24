@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/11/26 at 上午 5:40:57
- */ 
+ */
 package destiny.astrology.classical;
 
 import destiny.tools.LocaleStringIF;
@@ -13,8 +13,8 @@ import java.util.ResourceBundle;
 /**
  * 行星落入星座的 , 旺 廟 陷 落 
  */
-public enum Dignity implements LocaleStringIF
-{
+public enum Dignity implements LocaleStringIF {
+
   /** 旺 (+5) , 守護 */
   RULER     ("Dignity.RULER"),
   /** 廟 (+4) , 躍升 */
@@ -23,25 +23,23 @@ public enum Dignity implements LocaleStringIF
   FALL      ("Dignity.FALL"),
   /** 陷 (-5) */
   DETRIMENT ("Dignity.DETRIMENT");
-  
+
   private final String nameKey;
-  
+
   private final static String resource = "destiny.astrology.classical.Classical";
-  
+
   Dignity(String nameKey)
   {
     this.nameKey = nameKey;
   }
 
   @Override
-  public String toString()
-  {
-    return ResourceBundle.getBundle(resource , Locale.getDefault()).getString(nameKey);
+  public String toString() {
+    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   @Override
-  public String toString(@NotNull Locale locale)
-  {
-    return ResourceBundle.getBundle(resource , locale).getString(nameKey);
+  public String toString(@NotNull Locale locale) {
+    return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
 }

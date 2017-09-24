@@ -26,10 +26,12 @@ public class EssentialDefaultImpl implements EssentialIF , Serializable
   
   @Nullable
   @Override
-  /** Rulership / Exaltation / Detriment / Fall */
-  public Point getPoint(ZodiacSign sign, Dignity dignity)
-  {
-    return essentialRedfImpl.getPoint(sign, dignity);
+  /**
+   * @param dignity {@link Dignity#RULER} 與 {@link Dignity#DETRIMENT} 不會傳回 empty ,
+   *                                     但 {@link Dignity#EXALTATION} 與 {@link Dignity#FALL} 就有可能為 empty
+   * */
+  public Point getPoint(ZodiacSign sign, Dignity dignity) {
+    return essentialRedfImpl.getPoint(sign, dignity).orElse(null);
   }
 
   @Override

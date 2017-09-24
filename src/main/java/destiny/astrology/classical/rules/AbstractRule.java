@@ -46,7 +46,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
    * String 為 ResourceBundle 取得的 key , 前面要 prepend '[rule_name].'
    * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
    */
-  protected abstract Optional<Tuple2<String, Object[]>> getResult(Planet planet, Horoscope h);
+  protected abstract Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, Horoscope h);
   
   /** 名稱 */
   @Override

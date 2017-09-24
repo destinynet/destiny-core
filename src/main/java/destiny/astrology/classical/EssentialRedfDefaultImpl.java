@@ -7,12 +7,12 @@ package destiny.astrology.classical;
 import com.google.common.collect.ImmutableMap;
 import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 取得星座 ( ZodiacSign ) 的 : 旺 Rulership , 廟 Exaltation , 陷 Detriment , 落 Fail <br/>
@@ -30,8 +30,8 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
     .put(Planet.JUPITER, 105.0) // 木星在未宮 15度 exalted.
     .put(Planet.SATURN , 201.0) // 土星在辰宮 21度 exalted.
     .put(LunarNode.NORTH_TRUE ,  63.0) //北交點在 申宮 03度 exalted.
-    .put(LunarNode.SOUTH_TRUE , 243.0) //南交點在 寅宮 03度 exalted.
     .put(LunarNode.NORTH_MEAN ,  63.0) //北交點在 申宮 03度 exalted.
+    .put(LunarNode.SOUTH_TRUE , 243.0) //南交點在 寅宮 03度 exalted.
     .put(LunarNode.SOUTH_MEAN , 243.0) //南交點在 寅宮 03度 exalted.
     .build();
 
@@ -108,55 +108,40 @@ public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
   }
 
   /**
-   * @param dignity {@link Dignity#RULER} 與 {@link Dignity#DETRIMENT} 不會傳回 null , 但 {@link Dignity#EXALTATION} 與 {@link Dignity#FALL} 就有可能為 null
+   * @param dignity {@link Dignity#RULER} 與 {@link Dignity#DETRIMENT} 不會傳回 empty() ,
+   *                                    但 {@link Dignity#EXALTATION} 與 {@link Dignity#FALL} 就有可能為 empty()
    */
-  @Nullable
   @Override
-  public Point getPoint(@NotNull ZodiacSign sign, @NotNull Dignity dignity) {
+  public Optional<Point> getPoint(@NotNull ZodiacSign sign, @NotNull Dignity dignity) {
     switch (dignity) {
       /** 廟 , +4 */
-      case EXALTATION : return findPoint(sign , starExaltationMap); // nullable
+      case EXALTATION : return findPoint(sign , starExaltationMap); // maybe empty
       /** 落 , -4 */
-      case FALL : return findPoint(sign , starFallMap); // nullable
-      default : return essentialDignitiesMap.get(getCompositeKey(sign, dignity)); // not null
+      case FALL : return findPoint(sign , starFallMap); // maybe empty
+      default : return Optional.of(essentialDignitiesMap.get(getCompositeKey(sign, dignity))); // not null
     }
   }
   
-  @Nullable
-  private Point findPoint(ZodiacSign sign , @NotNull Map<Point , Double> map)
-  {
-    for(Map.Entry<Point, Double> mapEntry : map.entrySet())
-    {
-      if (sign ==ZodiacSign.getZodiacSign(mapEntry.getValue()))
-        return mapEntry.getKey();
+  private Optional<Point> findPoint(ZodiacSign sign, @NotNull Map<Point, Double> map) {
+    for (Map.Entry<Point, Double> mapEntry : map.entrySet()) {
+      if (sign == ZodiacSign.getZodiacSign(mapEntry.getValue()))
+        return Optional.of(mapEntry.getKey());
     }
-    return null;
+    return Optional.empty();
   }
   
   /**
    * 取得在此星座得到「Exaltation , 廟 +4」的星體及度數
    */
-  @Nullable
-  public PointDegree getExaltationStarDegree(ZodiacSign sign)
-  {
-    Point point = findPoint(sign , starExaltationMap);
-    if (point == null)
-      return null;
-    else
-      return new PointDegree(point , starExaltationMap.get(point));
+  public Optional<PointDegree> getExaltationStarDegree(ZodiacSign sign) {
+    return findPoint(sign, starExaltationMap).map(point -> new PointDegree(point, starExaltationMap.get(point)));
   }
   
   /**
    * 取得在此星座得到「Fall , 落 -4」的星體及度數
    */
-  @Nullable
-  public PointDegree getFallStarDegree(ZodiacSign sign)
-  {
-    Point point = findPoint(sign , starFallMap);
-    if (point == null)
-      return null;
-    else
-      return new PointDegree(point , starFallMap.get(point));
+  public Optional<PointDegree> getFallStarDegree(ZodiacSign sign) {
+    return findPoint(sign, starFallMap).map(point -> new PointDegree(point , starFallMap.get(point)));
   }
 
 }

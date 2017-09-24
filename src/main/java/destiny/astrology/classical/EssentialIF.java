@@ -10,6 +10,8 @@ import destiny.astrology.ZodiacSign;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 /** 
  * Facade Interface of Essential Dignities and Deblitities <br>
  * 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面
@@ -18,7 +20,16 @@ public interface EssentialIF {
 
   /** 取得黃道帶上某星座，其 Dignity 之 廟旺陷落 各是何星 */
   @Nullable
+  @Deprecated
   Point getPoint(ZodiacSign sign , Dignity dignity);
+
+  /**
+   * @param dignity {@link Dignity#RULER} 與 {@link Dignity#DETRIMENT} 不會傳回 empty ,
+   *                                     但 {@link Dignity#EXALTATION} 與 {@link Dignity#FALL} 就有可能為 empty
+   */
+  default Optional<Point> getPointOptional(ZodiacSign sign , Dignity dignity) {
+    return Optional.ofNullable(getPoint(sign , dignity));
+  }
   
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */
   Point getTriplicityPoint(ZodiacSign sign  , DayNight dayNight);
