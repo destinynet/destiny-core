@@ -7,6 +7,7 @@ package destiny.astrology;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +20,6 @@ public interface DayNightDifferentiator extends Descriptive {
 
   default DayNight getDayNight(LocalDateTime lmt, Location location) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    return getDayNight(Time.getGmtJulDay(gmt), location);
+    return getDayNight(TimeTools.getGmtJulDay(gmt), location);
   }
 }

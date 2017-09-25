@@ -62,31 +62,4 @@ public final class Exaltation extends Rule {
       })
     );
   }
-
-
-//  private Optional<Tuple2<String, Object[]>> exaltMutualReception(Horoscope h , Planet planet) {
-//    return h.getZodiacSign(planet).flatMap(sign1 -> {
-//      // planet 在 sign1 , 計算 sign1 的 Exaltation :
-//      Point signExaltation = essentialImpl.getPoint(sign1, Dignity.EXALTATION);
-//      if (signExaltation != null) {
-//        EssentialUtils utils = new EssentialUtils(dayNightDifferentiatorImpl);
-//        utils.setEssentialImpl(essentialImpl);
-//
-//        return h.getZodiacSign(signExaltation).flatMap(sign2 -> {
-//          Point planet2 = essentialImpl.getPoint(sign2, Dignity.EXALTATION);
-//          if (planet == planet2) {
-//            //已確定 Exaltation 互容，要排除互陷
-//            //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
-//            if (!utils.isBothInBadSituation(planet , sign1 , signExaltation , sign2)) {
-//              logger.info("{} 位於 {} , 與其 {} {} 飛至 {} , 形成廟廟互容" , planet , sign1 , Dignity.EXALTATION , signExaltation , sign2);
-//              return Optional.of(Tuple.tuple("commentReception" , new Object[]{planet , sign1 , signExaltation , sign2}));
-//            }
-//          }
-//          return Optional.empty();
-//        });
-//      }
-//      return Optional.empty();
-//    });
-//  }
-
 }

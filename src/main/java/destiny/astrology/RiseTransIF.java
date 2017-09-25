@@ -7,6 +7,7 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public interface RiseTransIF {
 
   default LocalDateTime getGmtTrans(LocalDateTime fromGmt , Star star , TransPoint point , Location location ,
                                     double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
-    double fromGmtJulDay = Time.getGmtJulDay(fromGmt);
+    double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
     return new Time(resultGmt).toLocalDateTime();
   }

@@ -6,6 +6,7 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.eightwords.RisingSignIF;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public interface HouseCuspIF extends RisingSignIF {
 
   default double[] getHouseCusps(LocalDateTime lmt , Location location , HouseSystem houseSystem, Coordinate coordinate) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getHouseCusps(gmtJulDay , location , houseSystem , coordinate);
   }
 
@@ -53,7 +54,7 @@ public interface HouseCuspIF extends RisingSignIF {
    * @param house : 1 ~ 12
    */
   default ZodiacSign getSign(int house , LocalDateTime gmt , Location location , HouseSystem houseSystem , Coordinate coordinate) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getHouseSigns(gmtJulDay , location , houseSystem , coordinate)[house];
   }
 
@@ -67,7 +68,7 @@ public interface HouseCuspIF extends RisingSignIF {
 
   default double getHouseCusp(int index , LocalDateTime lmt , Location location , HouseSystem houseSystem , Coordinate coordinate) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getHouseCusp(index , gmtJulDay , location , houseSystem , coordinate);
   }
 

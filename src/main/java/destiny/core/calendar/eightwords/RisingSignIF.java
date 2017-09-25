@@ -9,6 +9,7 @@ import destiny.astrology.ZodiacSign;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +26,7 @@ public interface RisingSignIF extends Descriptive {
    */
   default ZodiacSign getRisingSign(LocalDateTime lmt, Location location , HouseSystem houseSystem , Coordinate coordinate) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getRisingSign(gmtJulDay , location , houseSystem , coordinate);
   }
 

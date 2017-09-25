@@ -22,13 +22,8 @@ public interface SolarTermsIF {
 
   /** 承上， LocalDateTime 版本 */
   default SolarTerms getSolarTermsFromGMT(LocalDateTime gmt) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getSolarTermsFromGMT(gmtJulDay);
-  }
-
-  /** 承上， Time 版本 */
-  default SolarTerms getSolarTermsFromGMT(Time gmt) {
-    return getSolarTermsFromGMT(gmt.getGmtJulDay());
   }
 
   default SolarTerms getSolarTerms(LocalDateTime lmt , Location location) {
@@ -46,7 +41,7 @@ public interface SolarTermsIF {
    * @return 傳回某段時間內的節氣列表， GMT 時刻
    */
   default List<SolarTermsTime> getPeriodSolarTerms(@NotNull LocalDateTime fromGmtTime , @NotNull LocalDateTime toGmtTime ) {
-    return getPeriodSolarTerms(Time.getGmtJulDay(fromGmtTime) , Time.getGmtJulDay(toGmtTime));
+    return getPeriodSolarTerms(TimeTools.getGmtJulDay(fromGmtTime) , TimeTools.getGmtJulDay(toGmtTime));
   }
 
   /**

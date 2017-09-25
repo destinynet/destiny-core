@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +54,7 @@ public class HourLmtImpl implements HourIF , Serializable {
     LocalDateTime lmtLdt = gmt.toLocalDateTime();
     LocalDateTime lmtResult = getLmtNextStartOf(lmtLdt , location , eb);
     LocalDateTime gmtResult = Time.getGmtFromLmt(lmtResult , location);
-    return Time.getGmtJulDay(gmtResult);
+    return TimeTools.getGmtJulDay(gmtResult);
   }
 
   /**

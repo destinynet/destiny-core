@@ -8,6 +8,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public interface MidnightIF extends Descriptive {
   /** 取得下一個「子正」的 LMT 時刻 */
   default LocalDateTime getNextMidnight(LocalDateTime lmt , Location loc) {
     LocalDateTime gmtLdt = Time.getGmtFromLmt(lmt , loc);
-    double gmtJulDay = Time.getGmtJulDay(gmtLdt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmtLdt);
     double gmtResult = getNextMidnight(gmtJulDay , loc);
     LocalDateTime gmt = new Time(gmtResult).toLocalDateTime();
     return Time.getLmtFromGmt(gmt , loc);

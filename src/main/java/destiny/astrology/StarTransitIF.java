@@ -6,6 +6,7 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +32,7 @@ public interface StarTransitIF
   }
 
   default LocalDateTime getNextTransitGmt(Star star, double degree, Coordinate coordinate , LocalDateTime fromGmt, boolean isForward) {
-    double julDay = Time.getGmtJulDay(fromGmt);
+    double julDay = TimeTools.getGmtJulDay(fromGmt);
     return getNextTransitLocalDateTime(star , degree , coordinate , julDay , isForward);
   }
 

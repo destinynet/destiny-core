@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class DayImpl implements DayIF , Serializable {
     LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
     LocalDateTime lmt = Time.getLmtFromGmt(gmt , location);
 
-    int lmtJulDay = (int) ( Time.getGmtJulDay(lmt)+0.5);
+    int lmtJulDay = (int) ( TimeTools.getGmtJulDay(lmt)+0.5);
     logger.info("lmtJulDay = {}" , lmtJulDay);
 
     int index = (lmtJulDay-11) % 60;
@@ -74,7 +75,7 @@ public class DayImpl implements DayIF , Serializable {
 
   @Override
   public StemBranch getDay(LocalDateTime lmt, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
-    int lmtJulDay = (int)(Time.getGmtJulDay(lmt)+0.5);
+    int lmtJulDay = (int)(TimeTools.getGmtJulDay(lmt)+0.5);
     int index = (lmtJulDay-11) % 60;
 
     LocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt , location);

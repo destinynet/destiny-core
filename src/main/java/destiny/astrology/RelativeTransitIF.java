@@ -7,6 +7,7 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -39,7 +40,7 @@ public interface RelativeTransitIF {
   }
 
   default Optional<LocalDateTime> getRelativeTransit(Star transitStar , Star relativeStar , double angle , LocalDateTime fromGmt , boolean isForward) {
-    double gmtJulDay = Time.getGmtJulDay(fromGmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     return getRelativeTransitGmt(transitStar , relativeStar , angle , gmtJulDay , isForward);
   }
 
@@ -66,8 +67,8 @@ public interface RelativeTransitIF {
 
   @NotNull
   default List<LocalDateTime> getPeriodRelativeTransitLDTs(Star transitStar , Star relativeStar , LocalDateTime fromGmt, LocalDateTime toGmt, double angle) {
-    double fromGmtJulDay = Time.getGmtJulDay(fromGmt);
-    double toGmtJulDay = Time.getGmtJulDay(toGmt);
+    double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
+    double toGmtJulDay = TimeTools.getGmtJulDay(toGmt);
     return getPeriodRelativeTransitLDTs(transitStar ,relativeStar , fromGmtJulDay , toGmtJulDay , angle);
   }
 
@@ -153,7 +154,7 @@ public interface RelativeTransitIF {
   }
 
   default Optional<Tuple2<LocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , LocalDateTime gmt , Collection<Double> angles , boolean isForward ) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     Optional<Tuple2<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , gmtJulDay , angles , isForward);
     return optionalPair.map(pair -> Tuple.tuple(new Time(pair.v1()).toLocalDateTime() , pair.v2()));
   }

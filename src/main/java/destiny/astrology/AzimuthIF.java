@@ -5,7 +5,7 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +20,7 @@ public interface AzimuthIF {
 
   /** 承上 , LocalDateTime 版本 */
   default Azimuth getAzimuthFromEcliptic(Position eclipticPosition, LocalDateTime gmt, Location location, double temperature, double pressure) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getAzimuthFromEcliptic(eclipticPosition , gmtJulDay, location , temperature , pressure);
   }
 
@@ -29,7 +29,7 @@ public interface AzimuthIF {
 
   /** 承上 , LocalDateTime 版本 */
   default Azimuth getAzimuthFromEquator(Position equatorPosition, LocalDateTime gmt, Location location, double temperature, double pressure) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getAzimuthFromEquator(equatorPosition, gmtJulDay, location, temperature, pressure);
   }
 

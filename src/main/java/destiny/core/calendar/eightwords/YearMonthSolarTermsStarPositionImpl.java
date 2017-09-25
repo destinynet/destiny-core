@@ -227,7 +227,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
     //先算出太陽在黃經上的度數
 
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
 
     SolarTermsIF solarTermsImpl = new SolarTermsImpl(this.starTransitImpl , this.starPositionImpl);
     SolarTerms MonthST = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay);
@@ -363,7 +363,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
         throw new RuntimeException("Call state error ! starTransitImpl should be set.");
 
       LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-      double gmtJulDay = Time.getGmtJulDay(gmt);
+      double gmtJulDay = TimeTools.getGmtJulDay(gmt);
 
       if (changeYearDegree < 315) {
         //System.out.println("changeYearDegree < 315 , value = " + changeYearDegree);

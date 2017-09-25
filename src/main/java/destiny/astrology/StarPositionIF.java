@@ -5,9 +5,9 @@
  */
 package destiny.astrology;
 
-import destiny.core.calendar.JulianDateTime;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
 
@@ -32,23 +32,14 @@ public interface StarPositionIF<T extends Position> {
    * @param gmt GMT 的 Gregorian 時刻
    */
   default Position getPosition(Star star, LocalDateTime gmt , Centric centric , Coordinate coordinate){
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getPosition(star , gmtJulDay , centric , coordinate);
   }
 
   default Position getPosition(Star star, LocalDateTime gmt , Centric centric , Coordinate coordinate , Location location , double temperature , double pressure){
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getPosition(star , gmtJulDay , location , centric, coordinate, temperature , pressure);
   }
-
-  /**
-   * @param gmt GMT 的 Julian 時刻
-   */
-  default Position getPosition(Star star, JulianDateTime gmt , Centric centric , Coordinate coordinate){
-    double gmtJulDay = Time.getGmtJulDay(gmt);
-    return getPosition(star , gmtJulDay , centric , coordinate);
-  }
-
 
   /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 */
   default Position getPosition(Star star, LocalDateTime lmt, Location location , Centric centric , Coordinate coordinate , double temperature , double pressure) {

@@ -8,6 +8,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +29,7 @@ public interface HourIF extends Descriptive {
   @NotNull
   default Branch getHour(LocalDateTime lmt , Location location) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getHour(gmtJulDay, location);
   }
 
@@ -48,7 +49,7 @@ public interface HourIF extends Descriptive {
    */
   default LocalDateTime getLmtNextStartOf(LocalDateTime lmt , Location location , Branch eb) {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     double resultGmtJulDay = getGmtNextStartOf(gmtJulDay , location , eb);
     LocalDateTime resultGmtTime = new Time(resultGmtJulDay).toLocalDateTime();
     return Time.getLmtFromGmt(resultGmtTime , location);

@@ -65,7 +65,7 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
       SolarTermsTime solarTermsTime;
 
       LocalDateTime fromGmtTime = starTransitImpl.getNextTransitLocalDateTime(Planet.SUN, nextZodiacDegree, Coordinate.ECLIPTIC, fromGmt, true);
-      fromGmt = Time.getGmtJulDay(fromGmtTime);
+      fromGmt = TimeTools.getGmtJulDay(fromGmtTime);
 
       if (fromGmt > toGmt)
         break;

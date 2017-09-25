@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class MidnightLmtImpl implements MidnightIF, Serializable {
     LocalDateTime lmt = Time.getLmtFromGmt(gmt , loc);
     LocalDateTime resultLmt = LocalDateTime.from(lmt).plusDays(1).withHour(0).withSecond(0).withSecond(0).withNano(0);
     LocalDateTime resultGmt = Time.getGmtFromLmt(resultLmt , loc);
-    return Time.getGmtJulDay(resultGmt);
+    return TimeTools.getGmtJulDay(resultGmt);
   }
 
   /**

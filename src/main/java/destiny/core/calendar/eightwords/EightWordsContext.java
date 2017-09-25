@@ -1,10 +1,7 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.astrology.*;
-import destiny.core.calendar.Location;
-import destiny.core.calendar.SolarTerms;
-import destiny.core.calendar.SolarTermsImpl;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.*;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.chinese.Branch;
@@ -88,7 +85,7 @@ public class EightWordsContext implements Serializable {
    */
   public SolarTerms getCurrentSolarTerms() {
     LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     Position sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC);
     return SolarTerms.getFromDegree(sp.getLng());
   }

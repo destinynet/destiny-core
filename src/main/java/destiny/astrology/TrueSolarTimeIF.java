@@ -8,6 +8,7 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.LongitudeTimeBean;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public interface TrueSolarTimeIF {
   double getEquationSecs(double gmtJulDay);
 
   default double getEquationSecs(LocalDateTime gmtTime) {
-    double gmtJulDay = Time.getGmtJulDay(gmtTime);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmtTime);
     return getEquationSecs(gmtJulDay);
   }
 

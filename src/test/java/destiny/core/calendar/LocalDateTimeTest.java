@@ -44,14 +44,18 @@ public class LocalDateTimeTest {
     logger.info("{}" , LocalDate.of(2012 , 6, 21).format(DateTimeFormatter.ofPattern("uuuu-MM")));
   }
 
+  /**
+   * LocalDateTime 並未考慮 cutover 狀況
+   *
+   */
   @Test
   public void testLocalDateTime1582() {
     LocalDateTime ldt = LocalDateTime.of(1582, 10 , 16 , 0 , 0);
-    TimeZone tz = TimeZone.getTimeZone("UTC");
+    //TimeZone tz = TimeZone.getTimeZone("America/New_York");
+    TimeZone tz = TimeZone.getTimeZone("Asia/Taipei");
     ZonedDateTime zdt = ldt.atZone(tz.toZoneId());
     for(int i=0 ; i <10 ; i++) {
       zdt = ZonedDateTime.from(zdt).minusDays(1);
-      //ld = LocalDate.from(ld).minusDays(1);
       logger.info("zdt = {}" , zdt);
     }
   }

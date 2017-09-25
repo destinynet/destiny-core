@@ -30,7 +30,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
     Optional<Tuple2<String, Object[]>> result;
 

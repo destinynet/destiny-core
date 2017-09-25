@@ -23,14 +23,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static java.time.temporal.JulianFields.JULIAN_DAY;
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
 /**
  * 代表 『時間』 的物件
  * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar
  */
-public class Time implements Serializable , LocaleStringIF , DateIF
+public class Time implements Serializable , LocaleStringIF
 {
   /* 是否是西元「後」, 
   西元前為 false , 西元後為 true (default) */
@@ -109,7 +108,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
 
     Tuple2<Long , Long> pair = Time.splitSecond(second);
 
-    int prolepticYear = getNormalizedYear(ad , year);
+    int prolepticYear = TimeTools.getNormalizedYear(ad , year);
 
     return LocalDateTime.of(prolepticYear , month , day , hour , minute , pair.v1().intValue() , pair.v2().intValue());
   }
@@ -136,7 +135,9 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   }
 
 
-
+  /**
+   * 已經隱含了 1582-10-04 的 cutover 演算法
+   */
   public static Tuple2<ChronoLocalDate , LocalTime> from(double gmtJulDay) {
     boolean isGregorian = false;
 
@@ -191,7 +192,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
       // ad 一定為 true , 不用考慮負數年數
       return tuple(LocalDate.of(year , month , day) , localTime);
     } else {
-      int prolepticYear = getNormalizedYear(ad , year);
+      int prolepticYear = TimeTools.getNormalizedYear(ad , year);
       return tuple(JulianDate.of(prolepticYear , month , day) ,localTime);
     }
   }
@@ -248,33 +249,7 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   }
 
   
-  /** 取得西元年份，注意，這裡的傳回值不可能小於等於0 */
-  @Override
-  public int getYear() { return this.year; }
 
-  /**
-   * 取得不中斷的年份
-   * @param year 傳入的年，一定大於 0
-   * @return proleptic year , 線性的 year : 西元前1年:0 , 西元前2年:-1 ...
-   */
-  public static int getNormalizedYear(boolean ad , int year) {
-    if (year <= 0) {
-      throw new RuntimeException("year " + year + " must > 0");
-    }
-    if (!ad)
-      return -(year-1);
-    else
-      return year;
-  }
-
-  @Override
-  public int getMonth() { return this.month; }
-  
-  @Override
-  public int getDay() { return this.day; }
-
-  public boolean isGregorian() { return gregorian; }
-  
   /**
    * @return t 是否介於 t1 與 t2 之間
    */
@@ -427,62 +402,14 @@ public class Time implements Serializable , LocaleStringIF , DateIF
     }
     else return false;
   }
-  
-  /**
-   * 將目前的 Time 視為 GMT , 取得目前這個 Time 的 Julian Day Number
-   * <BR> Julian Day : 零時為 0.5 , 中午 12 時才是整數 （這是因為起點是中午十二點）
-   * @return Julian Day
-   */
-  public double getGmtJulDay() {
-    return getGmtJulDay(ad , gregorian , year , month , day , hour , minute , second);
-  }
 
-  /**
-   * @param gmt proleptic Gregorian (包含 0 year)
-   *                       getLong(JULIAN_DAY)   真正需要的值（左邊減 0.5）
-   *  | ISO date          |  Julian Day Number | Astronomical Julian Day |
-   *  | 1970-01-01T00:00  |         2,440,588  |         2,440,587.5     |
-   */
-  public static double getGmtJulDay(LocalDateTime gmt) {
-    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
-    long gmtJulDay_plusHalfDay = gmt.toLocalDate().getLong(JULIAN_DAY);
-
-    return inner_getJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
-//    int year = gmt.get(YEAR_OF_ERA);
-//    boolean isAd = gmt.toLocalDate().getEra() == IsoEra.CE;
-//    double sec = gmt.getSecond() + gmt.getNano() / 1_000_000_000.0;
-//    return getGmtJulDay(isAd , true , year , gmt.getMonthValue() , gmt.getDayOfMonth() , gmt.getHour() , gmt.getMinute() , sec);
-  }
-
-  /**
-   * @param gmt proleptic Julian (包含 0 year)
-   *                       getLong(JULIAN_DAY)   真正需要的值（左邊減 0.5）
-   *  | ISO date          |  Julian Day Number | Astronomical Julian Day |
-   *  | 1970-01-01T00:00  |         2,440,588  |         2,440,587.5     |
-   */
-  public static double getGmtJulDay(JulianDateTime gmt) {
-    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
-    long gmtJulDay_plusHalfDay = gmt.toLocalDate().getLong(JULIAN_DAY);
-
-    return inner_getJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
-  }
-
-  private static double inner_getJulDay(double gmtJulDay_plusHalfDay , LocalTime localTime) {
-    int hour = localTime.getHour();
-    int min = localTime.getMinute();
-    int sec = localTime.getSecond();
-    int nano = localTime.getNano();
-    double dayValue = hour/24.0 + min/1440.0 + sec / 86400.0 + nano/(1_000_000_000.0 * 86400);
-
-    return gmtJulDay_plusHalfDay + dayValue - 0.5;
-  }
 
   public static double getGmtJulDay(boolean isAd , boolean isGregorian , int year , int month , int day , int hour , int minute , double second) {
     double thisHour = hour + ((double)minute) / 60 +  second / 3600;
     double jd;
     double u, u0, u1, u2;
 
-    u = getNormalizedYear(isAd , year);
+    u = TimeTools.getNormalizedYear(isAd , year);
 
     if (month < 3)
     {
@@ -506,7 +433,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
       }
     }
     return jd;
-
   }
 
   /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值 */
@@ -587,15 +513,6 @@ public class Time implements Serializable , LocaleStringIF , DateIF
   {
     this.ad = !beforeChrist;
   }
-
-  /** 是否是西元後 , 西元後傳回 true , 西元前傳回 false */
-  @Override
-  public boolean isAd()
-  {
-    return ad;
-  }
-
-
 }
 
 class IDate implements java.io.Serializable

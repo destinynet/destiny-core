@@ -12,10 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.StringTokenizer;
-import java.util.TimeZone;
+import java.util.*;
 
 import static destiny.core.calendar.Location.EastWest.EAST;
 import static destiny.core.calendar.Location.EastWest.WEST;
@@ -530,7 +527,12 @@ public class Location implements Serializable {
   {
     return minuteOffset!=null;
   }
-  
+
+  public Optional<Integer> getMinuteOffsetOptional() {
+    return Optional.ofNullable(minuteOffset);
+  }
+
+
   // 與 GMT 的時差 (分鐘) 
   public int getMinuteOffset() {
     if (minuteOffset != null)

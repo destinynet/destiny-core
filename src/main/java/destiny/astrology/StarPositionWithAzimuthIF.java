@@ -6,6 +6,7 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ public interface StarPositionWithAzimuthIF extends StarPositionIF {
   PositionWithAzimuth getPosition(Star star, double gmtJulDay, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure);
 
   default PositionWithAzimuth getPositionFromGmt(Star star, LocalDateTime gmt, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getPosition(star , gmtJulDay , location , centric, coordinate, temperature , pressure);
   }
 

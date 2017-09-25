@@ -4,6 +4,7 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ public interface RetrogradeIF {
 
   /** 下次停滯的時間為何時 (GMT) */
   default LocalDateTime getNextStationary(Star star, LocalDateTime fromGmt, boolean isForward) {
-    double fromGmtJulDay = Time.getGmtJulDay(fromGmt);
+    double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     double resultGmt = getNextStationary(star , fromGmtJulDay , isForward);
     return new Time(resultGmt).toLocalDateTime();
   }

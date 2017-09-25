@@ -3,7 +3,7 @@
  */
 package destiny.astrology;
 
-import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple3;
 import org.slf4j.Logger;
@@ -90,7 +90,7 @@ public interface BesiegedIF {
   }
 
   default List<Planet> getBesiegingPlanets(Planet planet , LocalDateTime gmt , boolean isClassical) {
-    return getBesiegingPlanets(planet , Time.getGmtJulDay(gmt) , isClassical);
+    return getBesiegingPlanets(planet , TimeTools.getGmtJulDay(gmt) , isClassical);
   }
 
 
@@ -98,7 +98,7 @@ public interface BesiegedIF {
   default Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, LocalDateTime gmt,
                                                                                          @NotNull Collection<Planet> otherPlanets,
                                                                                          @NotNull Collection<Aspect> searchingAspects) {
-    double gmtJulDay = Time.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getBesiegingPlanets(planet , gmtJulDay , otherPlanets , searchingAspects);
   }
 

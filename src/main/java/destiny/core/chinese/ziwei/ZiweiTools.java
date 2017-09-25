@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.chinese.*;
@@ -104,7 +105,7 @@ public class ZiweiTools implements Serializable {
       ChineseDate yinDate = new ChineseDate(cycle , flowYear , flowMonth , leap , i);
 
       LocalDate yangDate = chineseDateImpl.getYangDate(yinDate);
-      int lmtJulDay = (int) ( Time.getGmtJulDay(yangDate.atTime(0 , 0))+0.5);
+      int lmtJulDay = (int) ( TimeTools.getGmtJulDay(yangDate.atTime(0 , 0))+0.5);
       int index = (lmtJulDay-11) % 60;
       StemBranch sb = StemBranch.get(index);
       list.add(Tuple.tuple(yinDate , yangDate , sb));
