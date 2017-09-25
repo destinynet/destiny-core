@@ -29,7 +29,7 @@ public final class Ruler extends Rule
     return h.getZodiacSign(planet)
       .flatMap(sign -> {
         // Ruler (旺)
-        if (planet == essentialImpl.getPointOptional(sign , Dignity.RULER).orElse(null)) {
+        if (planet == essentialImpl.getPoint(sign , Dignity.RULER).orElse(null)) {
           logger.debug("{} 位於 {} , 為其 {}" , planet , sign , Dignity.RULER);
           return Optional.of(Tuple.tuple("commentBasic", new Object[]{planet, sign}));
         } else {
@@ -55,11 +55,11 @@ public final class Ruler extends Rule
 
     //取得此 Planet 在什麼星座
     return h.getZodiacSign(planet).flatMap(sign1 ->
-      essentialImpl.getPointOptional(sign1 , Dignity.RULER).flatMap(signRuler -> {
+      essentialImpl.getPoint(sign1 , Dignity.RULER).flatMap(signRuler -> {
         // planet 在 sign1 , 計算 sign1 的 RULER , 為 signRuler
         return h.getZodiacSign(signRuler)
           .filter(sign2 ->
-            planet == essentialImpl.getPointOptional(sign2, Dignity.RULER).orElse(null)   // 已經確定 Ruler 互容，要排除互陷
+            planet == essentialImpl.getPoint(sign2, Dignity.RULER).orElse(null)   // 已經確定 Ruler 互容，要排除互陷
             && !utils.isBothInBadSituation(planet , sign1 , signRuler , sign2)            // 只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
           ).flatMap(sign2 -> {
             logger.debug("{} 位於 {} , 與其 Ruler {} 飛至 {} , 形成 旺旺互容" , planet , sign1 , signRuler , sign2);

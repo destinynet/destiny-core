@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.threeten</groupId>
       <artifactId>threeten-extra</artifactId>
-      <version>1.0</version>
+      <version>1.2</version>
     </dependency>
 
 

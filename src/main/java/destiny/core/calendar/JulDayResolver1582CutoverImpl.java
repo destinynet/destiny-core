@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoChronology;
 
 import static org.jooq.lambda.tuple.Tuple.tuple;
@@ -20,8 +21,9 @@ import static org.jooq.lambda.tuple.Tuple.tuple;
 /**
  * 1582-10-04 (含) 之前 , 傳回 {@link JulianChronology}
  * 1582-10-15 (含) 之後 , 傳回 {@link IsoChronology}
+ * 其切分時間點，與 Java 的 {@link java.util.GregorianCalendar} 相同
  */
-public class JulDay1582CutoverImpl implements IJulDay , Serializable {
+public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializable {
 
   /**
    * Julian Calendar    終止於西元 1582-10-04 , 該日的 Julian Day 是 2299159.5
@@ -29,13 +31,12 @@ public class JulDay1582CutoverImpl implements IJulDay , Serializable {
    * */
   private final static double GREGORIAN_START_JULIAN_DAY =2299160.5;
 
-  private static Logger logger = LoggerFactory.getLogger(JulDay1582CutoverImpl.class);
+  private static Logger logger = LoggerFactory.getLogger(JulDayResolver1582CutoverImpl.class);
 
   @Override
   public Tuple2<ChronoLocalDate, LocalTime> toDateAndTime(double gmtJulDay) {
     return fromGmtJulDay(gmtJulDay);
   }
-
 
 
   public static Tuple2<ChronoLocalDate , LocalTime> fromGmtJulDay(double gmtJulDay) {
@@ -97,6 +98,10 @@ public class JulDay1582CutoverImpl implements IJulDay , Serializable {
     }
   }
 
+  public static ChronoLocalDateTime fromGmtJulDay2(double gmtJulDay) {
+    Tuple2<ChronoLocalDate , LocalTime> t2 = fromGmtJulDay(gmtJulDay);
+    return t2.v1().atTime(t2.v2);
+  }
 
 
 }

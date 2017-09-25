@@ -28,6 +28,9 @@ public class DayImpl implements DayIF , Serializable {
 
   @Override
   public StemBranch getDay(double gmtJulDay, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
+
+
+
     LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
     LocalDateTime lmt = Time.getLmtFromGmt(gmt , location);
 
@@ -35,6 +38,7 @@ public class DayImpl implements DayIF , Serializable {
     logger.info("lmtJulDay = {}" , lmtJulDay);
 
     int index = (lmtJulDay-11) % 60;
+
 
     LocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location);
     LocalDateTime 下個子初時刻Ldt = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);

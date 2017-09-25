@@ -196,7 +196,8 @@ public class Time implements Serializable , LocaleStringIF
       return tuple(JulianDate.of(prolepticYear , month , day) ,localTime);
     }
   }
-  
+
+  @Deprecated
   public Time(double julianDay) {
     this(julianDay , (julianDay >= GREGORIAN_START_JULIAN_DAY));
   }

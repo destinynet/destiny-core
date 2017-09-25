@@ -12,7 +12,7 @@ import java.time.chrono.ChronoLocalDateTime;
 /**
  * 從 julian day 轉換成各個曆法表示的介面
  */
-public interface IJulDay {
+public interface JulDayResolver {
 
   Tuple2<ChronoLocalDate , LocalTime> toDateAndTime(double gmtJulDay);
 
