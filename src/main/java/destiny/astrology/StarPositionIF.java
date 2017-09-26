@@ -6,10 +6,9 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * 取得星體的位置。支援 Planet , Asteroid , Hamburger <br/>
@@ -31,25 +30,30 @@ public interface StarPositionIF<T extends Position> {
   /**
    * @param gmt GMT 的 Gregorian 時刻
    */
-  default Position getPosition(Star star, LocalDateTime gmt , Centric centric , Coordinate coordinate){
+  default Position getPosition(Star star, ChronoLocalDateTime gmt , Centric centric , Coordinate coordinate){
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getPosition(star , gmtJulDay , centric , coordinate);
   }
 
-  default Position getPosition(Star star, LocalDateTime gmt , Centric centric , Coordinate coordinate , Location location , double temperature , double pressure){
+
+  /**
+   * 取得星體的位置 , 已 GMT 時間計算 , 包含 溫度、壓力
+   */
+  default Position getPosition(Star star, ChronoLocalDateTime gmt , Centric centric , Coordinate coordinate , Location location , double temperature , double pressure){
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getPosition(star , gmtJulDay , location , centric, coordinate, temperature , pressure);
   }
 
-  /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 */
-  default Position getPosition(Star star, LocalDateTime lmt, Location location , Centric centric , Coordinate coordinate , double temperature , double pressure) {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+
+  /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 , 包含 溫度、壓力*/
+  default Position getPosition(Star star, ChronoLocalDateTime lmt, Location location , Centric centric , Coordinate coordinate , double temperature , double pressure) {
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location.getTimeZone().toZoneId());
     return getPosition(star , gmt , centric , coordinate , location , temperature , pressure);
   }
 
 
-  /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 */
-  default Position getPosition(Star star, LocalDateTime lmt, Location location , Centric centric , Coordinate coordinate) {
+  /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 , 「不包含」 溫度、壓力 */
+  default Position getPosition(Star star, ChronoLocalDateTime lmt, Location location , Centric centric , Coordinate coordinate) {
     return getPosition(star , lmt , location , centric , coordinate , 0 , 1013.25);
   }
 }

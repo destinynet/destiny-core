@@ -3,14 +3,23 @@
  */
 package destiny.core.calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.JulianFields.JULIAN_DAY;
 
 public class TimeTools implements Serializable {
+
+  private static Logger logger = LoggerFactory.getLogger(TimeTools.class);
 
   /**
    * astro julian day number 開始於
@@ -54,6 +63,48 @@ public class TimeTools implements Serializable {
     else
       return year;
   }
+
+
+  // ======================================== LMT -> GMT ========================================
+  public static ChronoLocalDateTime getGmtFromLmt(ChronoZonedDateTime zonedLmt) {
+    ZoneOffset zoneOffset = zonedLmt.getOffset();
+    int totalSeconds = zoneOffset.getTotalSeconds();
+    return zonedLmt.toLocalDateTime().minus(totalSeconds , ChronoUnit.SECONDS);
+  }
+
+  public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , ZoneId zoneId) {
+    return getGmtFromLmt(lmt.atZone(zoneId));
+  }
+
+  public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , Location loc) {
+    if (loc.isMinuteOffsetSet()) {
+      int secOffset = loc.getMinuteOffset() * 60;
+      return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
+    } else {
+      return getGmtFromLmt(lmt , loc.getTimeZone().toZoneId());
+    }
+  }
+
+
+  // ======================================== GMT -> LMT ========================================
+  public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , ZoneId zoneId) {
+    ChronoZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
+    return gmtZoned.withZoneSameInstant(zoneId).toLocalDateTime();
+  }
+
+  public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , Location loc) {
+    if (loc.isMinuteOffsetSet()) {
+      int secOffset = loc.getMinuteOffset() * 60;
+      return gmt.plus(secOffset , ChronoUnit.SECONDS).atZone(loc.getTimeZone().toZoneId()).toLocalDateTime();
+    }
+    else {
+      return getLmtFromGmt(gmt , loc.getTimeZone().toZoneId());
+    }
+  }
+
+
+
+  // ======================================== private methods ========================================
 
   private static double getGmtJulDay(long gmtJulDay_plusHalfDay , LocalTime localTime) {
     int hour = localTime.getHour();

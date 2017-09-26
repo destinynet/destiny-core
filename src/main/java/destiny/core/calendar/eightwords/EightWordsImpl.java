@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 public class EightWordsImpl implements EightWordsIF , Serializable {
 
@@ -55,7 +56,7 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
 
     Stem 時干;
 
-    LocalDateTime nextZi = hourImpl.getLmtNextStartOf(lmt, location, Branch.子);
+    ChronoLocalDateTime nextZi = hourImpl.getLmtNextStartOf(lmt, location, Branch.子);
 
     // 如果「子正」才換日
     if (!changeDayAfterZi) {

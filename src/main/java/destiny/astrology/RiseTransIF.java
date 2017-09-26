@@ -5,6 +5,7 @@
  */
 package destiny.astrology;
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +32,26 @@ public interface RiseTransIF {
   double getGmtTransJulDay(double fromGmtJulDay , Star star , TransPoint point , Location location ,
       double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction);
 
+  @Deprecated
   default LocalDateTime getGmtTrans(double fromGmtJulDay , Star star , TransPoint point , Location location ,
                                     double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
     double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
     return new Time(resultGmt).toLocalDateTime();
   }
 
+  @Deprecated
   default LocalDateTime getGmtTrans(LocalDateTime fromGmt , Star star , TransPoint point , Location location ,
                                     double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
     double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
     return new Time(resultGmt).toLocalDateTime();
+  }
+
+  default ChronoLocalDateTime getGmtTrans(ChronoLocalDateTime fromGmt , Star star , TransPoint point , Location location ,
+                                    double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
+    double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
+    double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    return JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(resultGmt);
   }
 
   /**

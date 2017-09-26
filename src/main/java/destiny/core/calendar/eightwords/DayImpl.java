@@ -5,8 +5,8 @@
  */
 package destiny.core.calendar.eightwords;
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
@@ -14,7 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 
 /**
  * 換日 的實作
@@ -26,29 +27,28 @@ public class DayImpl implements DayIF , Serializable {
   {
   }
 
+
   @Override
   public StemBranch getDay(double gmtJulDay, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
 
-
-
-    LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
-    LocalDateTime lmt = Time.getLmtFromGmt(gmt , location);
+    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+    ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmt , location);
 
     int lmtJulDay = (int) ( TimeTools.getGmtJulDay(lmt)+0.5);
-    logger.info("lmtJulDay = {}" , lmtJulDay);
+    logger.debug("lmtJulDay = {}" , lmtJulDay);
 
     int index = (lmtJulDay-11) % 60;
 
 
-    LocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location);
-    LocalDateTime 下個子初時刻Ldt = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
+    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnightNew(lmt, location);
+    ChronoLocalDateTime 下個子初時刻Ldt = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
 
-    if (nextMidnightLmt.getHour() >=12) {
+    if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >=12) {
       //子正，在 LMT 零時之前
-      if (nextMidnightLmt.getDayOfMonth() == lmt.getDayOfMonth()) {
+      if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-        LocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
-        if (changeDayAfterZi && 下個子初時刻Ldt.getDayOfMonth() == midnightNextZi.getDayOfMonth())
+        ChronoLocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
+        if (changeDayAfterZi && 下個子初時刻Ldt.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
           index++;
       } else {
         // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
@@ -56,7 +56,7 @@ public class DayImpl implements DayIF , Serializable {
       }
     } else {
       //子正，在 LMT 零時之後（含）
-      if (nextMidnightLmt.getDayOfMonth() == lmt.getDayOfMonth()) {
+      if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於當地 零時 到 子正的這段期間
         if (下個子初時刻Ldt.isBefore(nextMidnightLmt)) {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
@@ -68,7 +68,9 @@ public class DayImpl implements DayIF , Serializable {
         }
       } else {
         // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
-        if (changeDayAfterZi && lmt.getDayOfMonth() != 下個子初時刻Ldt.getDayOfMonth() && 下個子初時刻Ldt.getHour() >=12) {
+        if (changeDayAfterZi
+          && lmt.get(ChronoField.DAY_OF_MONTH) != 下個子初時刻Ldt.get(ChronoField.DAY_OF_MONTH)
+          && 下個子初時刻Ldt.get(ChronoField.HOUR_OF_DAY) >=12) {
           // lmt 落於 子初之後 , 零時之前 , 而子初又是在零時之前（hour >=12 , 過濾掉極西的狀況)
           index++;
         }
@@ -78,19 +80,20 @@ public class DayImpl implements DayIF , Serializable {
   } // getDay()
 
   @Override
-  public StemBranch getDay(LocalDateTime lmt, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
+  public StemBranch getDay(ChronoLocalDateTime lmt, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
+    // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
     int lmtJulDay = (int)(TimeTools.getGmtJulDay(lmt)+0.5);
     int index = (lmtJulDay-11) % 60;
 
-    LocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt , location);
-    LocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
+    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnightNew(lmt , location);
+    ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
 
-    if (nextMidnightLmt.getHour() >=12 ) {
+    if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >=12 ) {
       //子正，在 LMT 零時之前
-      if (nextMidnightLmt.getDayOfMonth() == lmt.getDayOfMonth()) {
+      if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-        LocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
-        if (changeDayAfterZi && 下個子初時刻.getDayOfMonth() == midnightNextZi.getDayOfMonth())
+        ChronoLocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
+        if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
           index++;
       } else {
         // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
@@ -98,7 +101,7 @@ public class DayImpl implements DayIF , Serializable {
       }
     } else {
       //子正，在 LMT 零時之後（含）
-      if (nextMidnightLmt.getDayOfMonth() == lmt.getDayOfMonth()) {
+      if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於當地 零時 到 子正的這段期間
         if (下個子初時刻.isBefore(nextMidnightLmt)) {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
@@ -110,7 +113,9 @@ public class DayImpl implements DayIF , Serializable {
         }
       } else {
         // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
-        if (changeDayAfterZi && lmt.getDayOfMonth() != 下個子初時刻.getDayOfMonth() && 下個子初時刻.getHour() >= 12)
+        if (changeDayAfterZi
+          && lmt.get(ChronoField.DAY_OF_MONTH) != 下個子初時刻.get(ChronoField.DAY_OF_MONTH)
+          && 下個子初時刻.get(ChronoField.HOUR_OF_DAY) >= 12)
           // lmt 落於 子初之後 , 零時之前 , 而子初又是在零時之前（hour >=12 , 過濾掉極西的狀況)
           index++;
       }

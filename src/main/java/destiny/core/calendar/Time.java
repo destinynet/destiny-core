@@ -16,6 +16,7 @@ import org.threeten.extra.chrono.JulianDate;
 import java.io.Serializable;
 import java.time.*;
 import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
 import java.time.temporal.ChronoUnit;
 import java.time.zone.ZoneRulesException;
@@ -288,22 +289,24 @@ public class Time implements Serializable , LocaleStringIF
    * 參照
    * http://stackoverflow.com/a/41683097/298430
    */
-  private static LocalDateTime getGmtFromLmt(LocalDateTime lmt, TimeZone timeZone) {
+  private static ChronoLocalDateTime getGmtFromLmt(LocalDateTime lmt, TimeZone timeZone) {
     ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
     try {
       zoneId = ZoneId.of(timeZone.getID());
     } catch (ZoneRulesException ignored) {
     }
-    return getGmtFromLmt(lmt , zoneId);
+    return TimeTools.getGmtFromLmt(lmt , timeZone.toZoneId());
+    //return getGmtFromLmt(lmt , zoneId);
   }
 
-  private static LocalDateTime getGmtFromLmt(LocalDateTime lmt , String zone_id) {
+  private static ChronoLocalDateTime getGmtFromLmt(LocalDateTime lmt , String zone_id) {
     ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
     try {
       zoneId = ZoneId.of(zone_id);
     } catch (ZoneRulesException ignored) {
     }
-    return getGmtFromLmt(lmt , zoneId);
+    return TimeTools.getGmtFromLmt(lmt , zoneId);
+    //return getGmtFromLmt(lmt , zoneId);
   }
 
   private static LocalDateTime getGmtFromLmt(LocalDateTime lmt , ZoneId zoneId) {
@@ -314,14 +317,16 @@ public class Time implements Serializable , LocaleStringIF
 
   /**
    * LMT (with Location) to GMT
+   * {@link TimeTools#getGmtFromLmt(ChronoLocalDateTime, Location)}
    */
+  @Deprecated
   public static LocalDateTime getGmtFromLmt(LocalDateTime lmt , @NotNull Location loc) {
     if (loc.isMinuteOffsetSet()) {
       int secOffset = loc.getMinuteOffset() * 60;
       return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
     }
     else {
-      return getGmtFromLmt(lmt , loc.getTimeZone());
+      return getGmtFromLmt(lmt , loc.getTimeZone().toZoneId());
     }
   }
 
@@ -331,6 +336,10 @@ public class Time implements Serializable , LocaleStringIF
     return ldtZoned.toLocalDateTime();
   }
 
+  /**
+   * {@link TimeTools#getLmtFromGmt(ChronoLocalDateTime, Location)}
+   */
+  @Deprecated
   public static LocalDateTime getLmtFromGmt(LocalDateTime gmt , @NotNull Location loc) {
     if (loc.isMinuteOffsetSet()) {
       int secOffset = loc.getMinuteOffset() * 60;

@@ -4,10 +4,9 @@
  */ 
 package destiny.astrology;
 
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Map;
 
 /**
@@ -26,7 +25,7 @@ public interface ApsisIF
   /**
    * 取得某 Apsis 在某刻 (GMT) 的座標
    */
-  default Position getPosition(Star star , Apsis apsis , LocalDateTime gmt , Coordinate coordinate , NodeType nodeType) {
+  default Position getPosition(Star star , Apsis apsis , ChronoLocalDateTime gmt , Coordinate coordinate , NodeType nodeType) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getPosition(star , apsis , gmtJulDay  , coordinate , nodeType);
   }

@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
@@ -40,6 +42,15 @@ public class MidnightLmtImpl implements MidnightIF, Serializable {
       .atTime(0 , 0 , 0);
   }
 
+  @Override
+  public ChronoLocalDateTime getNextMidnightNew(ChronoLocalDateTime lmt, Location loc) {
+    return lmt
+      .plus(1 , ChronoUnit.DAYS)
+      .with(ChronoField.HOUR_OF_DAY , 0)
+      .with(ChronoField.MINUTE_OF_HOUR , 0)
+      .with(ChronoField.SECOND_OF_MINUTE , 0)
+      .with(ChronoField.NANO_OF_SECOND , 0);
+  }
 
   @NotNull
   public String getTitle(Locale locale) {

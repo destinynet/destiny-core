@@ -14,10 +14,10 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public interface JulDayResolver {
 
-  Tuple2<ChronoLocalDate , LocalTime> toDateAndTime(double gmtJulDay);
+  Tuple2<ChronoLocalDate , LocalTime> getDateAndTime(double gmtJulDay);
 
-  default ChronoLocalDateTime toDateTime(double gmtJulDay) {
-    Tuple2<ChronoLocalDate, LocalTime>  dateAndTime = toDateAndTime(gmtJulDay);
+  default ChronoLocalDateTime getLocalDateTime(double gmtJulDay) {
+    Tuple2<ChronoLocalDate, LocalTime>  dateAndTime = getDateAndTime(gmtJulDay);
     ChronoLocalDate date = dateAndTime.v1();
     LocalTime time = dateAndTime.v2();
     return date.atTime(time);

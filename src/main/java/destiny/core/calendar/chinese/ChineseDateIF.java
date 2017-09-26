@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +33,19 @@ public interface ChineseDateIF extends Descriptive {
 
   // =============== 陽曆轉陰曆 ===============
 
+  /**
+   *
+   * @param year proleptic year , 可能 <= 0
+   */
   @NotNull
   ChineseDate getChineseDate(int year , int month , int day);
 
   default ChineseDate getChineseDate(LocalDate localDate) {
     return getChineseDate(localDate.getYear() , localDate.getMonthValue() , localDate.getDayOfMonth());
+  }
+
+  default ChineseDate getChineseDate(ChronoLocalDate localDate) {
+    return getChineseDate(localDate.get(ChronoField.YEAR) , localDate.get(ChronoField.MONTH_OF_YEAR) , localDate.get(ChronoField.DAY_OF_MONTH));
   }
 
   /**

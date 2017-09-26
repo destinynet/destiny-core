@@ -34,12 +34,12 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
   private static Logger logger = LoggerFactory.getLogger(JulDayResolver1582CutoverImpl.class);
 
   @Override
-  public Tuple2<ChronoLocalDate, LocalTime> toDateAndTime(double gmtJulDay) {
-    return fromGmtJulDay(gmtJulDay);
+  public Tuple2<ChronoLocalDate, LocalTime> getDateAndTime(double gmtJulDay) {
+    return getDateAndTimeStatic(gmtJulDay);
   }
 
 
-  public static Tuple2<ChronoLocalDate , LocalTime> fromGmtJulDay(double gmtJulDay) {
+  public static Tuple2<ChronoLocalDate , LocalTime> getDateAndTimeStatic(double gmtJulDay) {
     boolean isGregorian = false;
 
     if (gmtJulDay >= GREGORIAN_START_JULIAN_DAY) {
@@ -98,8 +98,8 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
     }
   }
 
-  public static ChronoLocalDateTime fromGmtJulDay2(double gmtJulDay) {
-    Tuple2<ChronoLocalDate , LocalTime> t2 = fromGmtJulDay(gmtJulDay);
+  public static ChronoLocalDateTime<? extends ChronoLocalDate> getLocalDateTimeStatic(double gmtJulDay) {
+    Tuple2<ChronoLocalDate , LocalTime> t2 = getDateAndTimeStatic(gmtJulDay);
     return t2.v1().atTime(t2.v2);
   }
 
