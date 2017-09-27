@@ -5,14 +5,14 @@
  */
 package destiny.astrology;
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,14 +34,30 @@ public interface RelativeTransitIF {
    */
   Optional<Double> getRelativeTransit(Star transitStar , Star relativeStar , double angle , double gmtJulDay , boolean isForward);
 
-  default Optional<LocalDateTime> getRelativeTransitGmt(Star transitStar , Star relativeStar , double angle , double gmtJulDay , boolean isForward) {
-    return getRelativeTransit(transitStar , relativeStar , angle , gmtJulDay , isForward)
-      .map(gmt_JulDay -> new Time(gmt_JulDay).toLocalDateTime());
+  default Optional<ChronoLocalDateTime> getRelativeTransit(Star transitStar , Star relativeStar , double angle , ChronoLocalDateTime fromGmt , boolean isForward) {
+    double gmtJulDay = TimeTools.getGmtJulDay(fromGmt);
+    return getRelativeTransit(transitStar , relativeStar , angle , gmtJulDay , isForward).map(JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
   }
 
-  default Optional<LocalDateTime> getRelativeTransit(Star transitStar , Star relativeStar , double angle , LocalDateTime fromGmt , boolean isForward) {
-    double gmtJulDay = TimeTools.getGmtJulDay(fromGmt);
-    return getRelativeTransitGmt(transitStar , relativeStar , angle , gmtJulDay , isForward);
+
+  /**
+   * 從 fromGmt 到 toGmt 之間，transitStar 對 relativeStar 形成 angle 交角的時間
+   * @return 傳回一連串的 gmtJulDays
+   */
+  default List<Double> getPeriodRelativeTransitGmtJulDays(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
+    List<Double> resultList = new ArrayList<>();
+    while (fromJulDay < toJulDay) {
+      Optional<Double> timeOptional = getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true);
+      if (timeOptional.isPresent()) {
+        fromJulDay = timeOptional.get();
+        if (fromJulDay > toJulDay)
+          break;
+
+        resultList.add(timeOptional.get());
+        fromJulDay = fromJulDay + 0.000001;
+      }
+    }
+    return resultList;
   }
 
   /**
@@ -50,36 +66,33 @@ public interface RelativeTransitIF {
    * 傳回的是 GMT 時刻
    */
   @NotNull
-  default List<LocalDateTime> getPeriodRelativeTransitLDTs(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
-    List<LocalDateTime> resultList = new ArrayList<>();
-    while (fromJulDay < toJulDay) {
-      Optional<Double> timeOptional = getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true);
-      if (timeOptional.isPresent()) {
-        fromJulDay = timeOptional.get();
-        if (fromJulDay > toJulDay)
-          break;
-        resultList.add(new Time(timeOptional.get()).toLocalDateTime());
-        fromJulDay = fromJulDay + 0.000001;
-      }
-    }
-    return resultList;
+  default List<ChronoLocalDateTime> getPeriodRelativeTransitGMTs(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
+    return getPeriodRelativeTransitGmtJulDays(transitStar , relativeStar , fromJulDay , toJulDay , angle)
+      .stream()
+      .map(JulDayResolver1582CutoverImpl::getLocalDateTimeStatic)
+      .collect(Collectors.toList());
   }
 
+  /** 傳回 GMT */
   @NotNull
-  default List<LocalDateTime> getPeriodRelativeTransitLDTs(Star transitStar , Star relativeStar , LocalDateTime fromGmt, LocalDateTime toGmt, double angle) {
+  default List<ChronoLocalDateTime> getPeriodRelativeTransitGMTs(Star transitStar , Star relativeStar , ChronoLocalDateTime fromGmt, ChronoLocalDateTime toGmt, double angle) {
     double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     double toGmtJulDay = TimeTools.getGmtJulDay(toGmt);
-    return getPeriodRelativeTransitLDTs(transitStar ,relativeStar , fromGmtJulDay , toGmtJulDay , angle);
+    return getPeriodRelativeTransitGMTs(transitStar ,relativeStar , fromGmtJulDay , toGmtJulDay , angle);
   }
 
 
   /** 承上 , LMT 的 LocalDateTime 版本 */
-  default List<LocalDateTime> getLocalPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , LocalDateTime fromLmt, LocalDateTime toLmt, Location location , double angle)  {
-    LocalDateTime fromGmt = Time.getGmtFromLmt(fromLmt , location);
-    LocalDateTime   toGmt = Time.getGmtFromLmt(  toLmt , location);
-    return getPeriodRelativeTransitLDTs(transitStar , relativeStar , fromGmt , toGmt , angle).stream().map(
-      gmt -> Time.getLmtFromGmt(gmt , location)
-    ).collect(Collectors.toList());
+  default List<ChronoLocalDateTime> getLocalPeriodRelativeTransitTimes(Star transitStar , Star relativeStar , ChronoLocalDateTime fromLmt, ChronoLocalDateTime toLmt, Location location , double angle)  {
+    ChronoLocalDateTime fromGmt = TimeTools.getGmtFromLmt(fromLmt , location);
+    ChronoLocalDateTime   toGmt = TimeTools.getGmtFromLmt(  toLmt , location);
+
+    return getPeriodRelativeTransitGmtJulDays(transitStar , relativeStar , TimeTools.getGmtJulDay(fromGmt) , TimeTools.getGmtJulDay(toGmt) , angle)
+      .stream()
+      .map(gmtJulDay -> {
+        ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+        return TimeTools.getLmtFromGmt(gmt , location);
+      }).collect(Collectors.toList());
   }
 
 
@@ -146,16 +159,22 @@ public interface RelativeTransitIF {
 
   /**
    * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
-   * 承上 , LocalDateTime 版本
+   * 傳回的是 GMT 時刻
    */
-  default Optional<Tuple2<LocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
-    Optional<Tuple2<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , fromGmtJulDay , angles , isForward);
-    return optionalPair.map(pair -> Tuple.tuple(new Time(pair.v1()).toLocalDateTime() , pair.v2()));
+  default Optional<Tuple2<ChronoLocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
+    Optional<Tuple2<Double , Double>> optionalPair = getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , fromGmtJulDay , angles , isForward);
+    return optionalPair.map(pair -> {
+      double resultGmtJulDay = pair.v1();
+      ChronoLocalDateTime gmtDateTime = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(resultGmtJulDay);
+      return Tuple.tuple(gmtDateTime , pair.v2());
+    });
   }
 
-  default Optional<Tuple2<LocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , LocalDateTime gmt , Collection<Double> angles , boolean isForward ) {
+  /**
+   * 承上 , 參數為 ChronoLocalDateTime
+   */
+  default Optional<Tuple2<ChronoLocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , ChronoLocalDateTime gmt , Collection<Double> angles , boolean isForward ) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
-    Optional<Tuple2<Double , Double>> optionalPair= getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , gmtJulDay , angles , isForward);
-    return optionalPair.map(pair -> Tuple.tuple(new Time(pair.v1()).toLocalDateTime() , pair.v2()));
+    return getNearestRelativeTransitTime(transitStar , relativeStar , gmtJulDay , angles , isForward);
   }
 }

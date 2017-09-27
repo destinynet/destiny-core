@@ -7,7 +7,6 @@ import destiny.astrology.*;
 import destiny.core.calendar.Location;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Locale;
 
 public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
@@ -24,10 +23,14 @@ public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
     boolean hasRefraction = true;
 
 
-    LocalDateTime nextMeridian = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
-    LocalDateTime nextNadir    = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+    double nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericPressure , isDiscCenter , hasRefraction);
+    double nextNadirJulDay    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericPressure , isDiscCenter , hasRefraction);
 
-    if (nextNadir.isAfter(nextMeridian)) {
+
+//    LocalDateTime nextMeridian = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+//    LocalDateTime nextNadir    = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+
+    if (nextNadirJulDay > nextMeridianJulDay) {
       //子正到午正（上半天）
       return DayNight.DAY;
     }

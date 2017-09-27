@@ -263,6 +263,15 @@ public class Time implements Serializable , LocaleStringIF
       );
   }
 
+  public static boolean isBetween(ChronoLocalDateTime t , ChronoLocalDateTime t1 , ChronoLocalDateTime t2) {
+    return
+      (
+        (t2.isAfter(t1) && t.isAfter(t1) && t2.isAfter(t)) ||
+        (t1.isAfter(t2) && t.isAfter(t2) && t1.isAfter(t))
+      );
+  }
+
+
   
   /**
    * 與 Gregorian Calendar 的啟始日比對 , 判斷輸入的日期是否是 Gregorian Calendar

@@ -41,14 +41,14 @@ public class DayImpl implements DayIF , Serializable {
 
 
     ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnightNew(lmt, location);
-    ChronoLocalDateTime 下個子初時刻Ldt = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
+    ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
 
     if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >=12) {
       //子正，在 LMT 零時之前
       if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
         ChronoLocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
-        if (changeDayAfterZi && 下個子初時刻Ldt.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
+        if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
           index++;
       } else {
         // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
@@ -58,7 +58,7 @@ public class DayImpl implements DayIF , Serializable {
       //子正，在 LMT 零時之後（含）
       if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於當地 零時 到 子正的這段期間
-        if (下個子初時刻Ldt.isBefore(nextMidnightLmt)) {
+        if (下個子初時刻.isBefore(nextMidnightLmt)) {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
           index--;
         } else {
@@ -69,8 +69,8 @@ public class DayImpl implements DayIF , Serializable {
       } else {
         // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
         if (changeDayAfterZi
-          && lmt.get(ChronoField.DAY_OF_MONTH) != 下個子初時刻Ldt.get(ChronoField.DAY_OF_MONTH)
-          && 下個子初時刻Ldt.get(ChronoField.HOUR_OF_DAY) >=12) {
+          && lmt.get(ChronoField.DAY_OF_MONTH) != 下個子初時刻.get(ChronoField.DAY_OF_MONTH)
+          && 下個子初時刻.get(ChronoField.HOUR_OF_DAY) >=12) {
           // lmt 落於 子初之後 , 零時之前 , 而子初又是在零時之前（hour >=12 , 過濾掉極西的狀況)
           index++;
         }
