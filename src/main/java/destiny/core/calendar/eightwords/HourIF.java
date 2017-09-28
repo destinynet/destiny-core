@@ -28,8 +28,7 @@ public interface HourIF extends Descriptive {
    */
   @NotNull
   default Branch getHour(ChronoLocalDateTime lmt , Location location) {
-    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
-    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
     return getHour(gmtJulDay, location);
   }
 

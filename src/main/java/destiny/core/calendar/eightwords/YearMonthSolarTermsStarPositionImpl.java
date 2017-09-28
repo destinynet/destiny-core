@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 
 import static destiny.astrology.Centric.GEO;
 import static destiny.astrology.Coordinate.ECLIPTIC;
@@ -69,14 +71,14 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
 
 
   @Override
-  public StemBranch getYear(LocalDateTime lmt, Location location) {
+  public StemBranch getYear(ChronoLocalDateTime lmt, Location location) {
     StemBranch resultStemBranch;
     //西元 1984 年為 甲子年
     int index;
-    if (lmt.getYear() > 0)
-      index =  (lmt.getYear() - 1984 ) % 60;
+    if (lmt.get(ChronoField.YEAR) > 0)
+      index =  (lmt.get(ChronoField.YEAR) - 1984 ) % 60;
     else
-      index = (1-lmt.getYear() - 1984) % 60;
+      index = (1-lmt.get(ChronoField.YEAR) - 1984) % 60;
 
     double gmtSecondsOffset = Time.getDstSecondOffset(lmt, location).v2();
 
@@ -222,11 +224,13 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
    * @return 取得月干支
    */
   @Override
-  public StemBranch getMonth(LocalDateTime lmt, Location location) {
+  public StemBranch getMonth(ChronoLocalDateTime lmt, Location location) {
     Branch result月支 ;
     //先算出太陽在黃經上的度數
 
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
+
+    //LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
 
     SolarTermsIF solarTermsImpl = new SolarTermsImpl(this.starTransitImpl , this.starPositionImpl);
@@ -343,7 +347,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
    * </b>
    * </pre>
    */
-  private Stem getMonthStem(@NotNull LocalDateTime lmt , @NotNull Location location , @NotNull Branch 月支) {
+  private Stem getMonthStem(@NotNull ChronoLocalDateTime lmt , @NotNull Location location , @NotNull Branch 月支) {
     Stem 月干;
 
     if (年干 == null)
@@ -362,8 +366,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF , Serial
       if (starPositionImpl == null)
         throw new RuntimeException("Call state error ! starTransitImpl should be set.");
 
-      LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-      double gmtJulDay = TimeTools.getGmtJulDay(gmt);
+      double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
 
       if (changeYearDegree < 315) {
         //System.out.println("changeYearDegree < 315 , value = " + changeYearDegree);

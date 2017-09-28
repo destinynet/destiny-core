@@ -4,7 +4,7 @@
 package destiny.core.calendar;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * 存放 一對 SolarTerms 以及 Time 的小 class
@@ -15,9 +15,9 @@ public final class SolarTermsTime implements Serializable {
   private final SolarTerms solarTerms;
 
   /** 可能是 GMT , 也可能是 LMT */
-  private final LocalDateTime time;
+  private final ChronoLocalDateTime time;
 
-  SolarTermsTime(SolarTerms solarTerms, LocalDateTime time) {
+  SolarTermsTime(SolarTerms solarTerms, ChronoLocalDateTime time) {
     this.solarTerms = solarTerms;
     this.time = time;
   }
@@ -26,7 +26,7 @@ public final class SolarTermsTime implements Serializable {
     return solarTerms;
   }
 
-  public LocalDateTime getTime() {
+  public ChronoLocalDateTime getTime() {
     return time;
   }
 

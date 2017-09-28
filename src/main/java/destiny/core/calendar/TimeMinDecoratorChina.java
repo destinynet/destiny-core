@@ -7,17 +7,19 @@ import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 
 import static destiny.core.calendar.TimeMinDecoratorChinese.alignRight;
 import static java.time.chrono.IsoEra.BCE;
+import static java.time.temporal.ChronoField.*;
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 
-public class TimeMinDecoratorChina implements Decorator<LocalDateTime>, Serializable {
+public class TimeMinDecoratorChina implements Decorator<ChronoLocalDateTime>, Serializable {
 
   @NotNull
   @Override
-  public String getOutputString(LocalDateTime time) {
+  public String getOutputString(ChronoLocalDateTime time) {
     StringBuilder sb = new StringBuilder();
 
     sb.append("西元");
@@ -27,11 +29,11 @@ public class TimeMinDecoratorChina implements Decorator<LocalDateTime>, Serializ
     else
       sb.append("　");
     sb.append(alignRight(time.get(YEAR_OF_ERA), 4)).append("年");
-    sb.append(time.getMonthValue() < 10 ? "0" : "").append(time.getMonthValue()).append("月");
-    sb.append(time.getDayOfMonth() < 10 ? "0" : "").append(time.getDayOfMonth()).append("日");
+    sb.append(time.get(MONTH_OF_YEAR) < 10 ? "0" : "").append(time.get(MONTH_OF_YEAR)).append("月");
+    sb.append(time.get(DAY_OF_MONTH) < 10 ? "0" : "").append(time.get(DAY_OF_MONTH)).append("日");
     sb.append("　");
-    sb.append(time.getHour() < 10 ? "0" : "").append(time.getHour()).append("时");
-    sb.append(time.getMinute() < 10 ? "0" : "").append(time.getMinute()).append("分");
+    sb.append(time.get(HOUR_OF_DAY) < 10 ? "0" : "").append(time.get(HOUR_OF_DAY)).append("时");
+    sb.append(time.get(MINUTE_OF_HOUR) < 10 ? "0" : "").append(time.get(MINUTE_OF_HOUR)).append("分");
 
     return sb.toString();
   }

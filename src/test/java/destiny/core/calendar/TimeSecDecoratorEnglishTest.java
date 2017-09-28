@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.IsoEra;
 
+import static org.junit.Assert.assertEquals;
+
 public class TimeSecDecoratorEnglishTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -24,10 +26,12 @@ public class TimeSecDecoratorEnglishTest {
     LocalDateTime time;
     time = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
     logger.info("{} : {}" , time , decorator.getOutputString(time));
+    assertEquals("2000AD 01/01 00:00:00.00" , decorator.getOutputString(time));
 
 
     time = LocalDateTime.of(LocalDate.of(2000 , 12 , 31).with(IsoEra.BCE) , LocalTime.of(23 , 59 , 59 , 999_000_000));
     logger.info("{} : {}" , time , decorator.getOutputString(time));
+    assertEquals("2000BC 12/31 23:59:59.99" , decorator.getOutputString(time));
   }
 
 }

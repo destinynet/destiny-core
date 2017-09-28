@@ -9,7 +9,7 @@ import org.jooq.lambda.tuple.Tuple3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
 
 /**
@@ -89,13 +89,13 @@ public interface BesiegedIF {
     return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).v1();
   }
 
-  default List<Planet> getBesiegingPlanets(Planet planet , LocalDateTime gmt , boolean isClassical) {
+  default List<Planet> getBesiegingPlanets(Planet planet , ChronoLocalDateTime gmt , boolean isClassical) {
     return getBesiegingPlanets(planet , TimeTools.getGmtJulDay(gmt) , isClassical);
   }
 
 
   @NotNull
-  default Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, LocalDateTime gmt,
+  default Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, ChronoLocalDateTime gmt,
                                                                                          @NotNull Collection<Planet> otherPlanets,
                                                                                          @NotNull Collection<Aspect> searchingAspects) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
@@ -106,7 +106,7 @@ public interface BesiegedIF {
   /**
    * 傳回的 List[Planet] 必定 size = 2
    */
-  default List<Planet> getBesiegingPlanets(Planet planet , LocalDateTime gmt , boolean onlyClassicalPlanets , @NotNull Collection<Aspect> aspects) {
+  default List<Planet> getBesiegingPlanets(Planet planet , ChronoLocalDateTime gmt , boolean onlyClassicalPlanets , @NotNull Collection<Aspect> aspects) {
     List<Planet> otherPlanets = new ArrayList<>();
     for (Planet each : Planet.values) {
       if (each != planet)
@@ -120,7 +120,7 @@ public interface BesiegedIF {
     return getBesiegingPlanets(planet , gmt , otherPlanets , aspects).v1();
   }
 
-  default List<Planet>  getBesiegingPlanets(Planet planet , LocalDateTime gmt ,
+  default List<Planet>  getBesiegingPlanets(Planet planet , ChronoLocalDateTime gmt ,
                                             boolean onlyClassicalPlanets , Aspect[] aspects) {
     return getBesiegingPlanets(planet , gmt , onlyClassicalPlanets , Arrays.asList(aspects));
   }
@@ -135,7 +135,7 @@ public interface BesiegedIF {
    * @param isOnlyHardAspects 是否只計算 「艱難交角」 : 0/90/180 ; 如果「false」的話，連 60/120 也算進去
    * @return 是否被包夾
    */
-  default boolean isBesieged(Planet planet , Planet p1 , Planet p2 , LocalDateTime gmt , boolean isClassical , boolean isOnlyHardAspects) {
+  default boolean isBesieged(Planet planet , Planet p1 , Planet p2 , ChronoLocalDateTime gmt , boolean isClassical , boolean isOnlyHardAspects) {
     List<Planet> otherPlanets = new ArrayList<>();
     for (Planet each : Planet.values) {
       if (each != planet)

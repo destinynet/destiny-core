@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,7 +41,7 @@ public interface IHoroscope {
     return pointSet;
   }
 
-  Horoscope getHoroscope(LocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
+  Horoscope getHoroscope(ChronoLocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
                          @NotNull HouseSystem houseSystem ,
                          @NotNull Centric centric ,
                          @NotNull Coordinate coordinate ,
@@ -53,7 +54,7 @@ public interface IHoroscope {
     return getHoroscope(lmt , loc , points , houseSystem , centric , coordinate , 0 , 1013.25);
   }
 
-  default Horoscope getHoroscope(LocalDateTime lmt , Location loc ,
+  default Horoscope getHoroscope(ChronoLocalDateTime lmt , Location loc ,
                                  @NotNull HouseSystem houseSystem ,
                                  @NotNull Centric centric ,
                                  @NotNull Coordinate coordinate ) {

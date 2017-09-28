@@ -7,11 +7,12 @@ package destiny.astrology.classical.rules.accidentalDignities;
 import destiny.astrology.BesiegedIF;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Optional;
 
 /**
@@ -36,7 +37,9 @@ public class Besieged_Jupiter_Venus extends Rule {
       || planet == Planet.MERCURY
       || planet == Planet.MARS
       || planet == Planet.SATURN) {
-      if (besiegedImpl.isBesieged(planet, Planet.VENUS, Planet.JUPITER, Time.getGmtFromLmt(h.getLmt(), h.getLocation()), true, false)) {
+      
+      ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(h.getLmt() , h.getLocation());
+      if (besiegedImpl.isBesieged(planet, Planet.VENUS, Planet.JUPITER, gmt, true, false)) {
         //planet + " 被 " + Planet.VENUS + " 以及 " + Planet.JUPITER + " 夾輔 (善意 Besieged)"
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.VENUS, Planet.JUPITER}));
       }

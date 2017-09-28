@@ -4,19 +4,20 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Horoscope implements Serializable {
 
-  private final LocalDateTime lmt;
+  private final ChronoLocalDateTime lmt;
   private final Location location;
 
   /** 分宮法 */
@@ -44,7 +45,7 @@ public class Horoscope implements Serializable {
   private transient static Logger logger = LoggerFactory.getLogger(Horoscope.class);
 
 
-  public Horoscope(LocalDateTime lmt, Location location, HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
+  public Horoscope(ChronoLocalDateTime lmt, Location location, HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
     this.lmt = lmt;
     this.location = location;
     this.houseSystem = houseSystem;
@@ -57,14 +58,16 @@ public class Horoscope implements Serializable {
   }
 
 
+  // TODO : remove casting
   @NotNull
   public LocalDateTime getLmt() {
-    return lmt;
+    return (LocalDateTime) lmt;
   }
 
+  // TODO : remove casting
   @NotNull
   public LocalDateTime getGmt() {
-    return Time.getGmtFromLmt(lmt , location);
+    return (LocalDateTime) TimeTools.getGmtFromLmt(lmt , location);
   }
 
   @NotNull

@@ -7,16 +7,16 @@ import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
 
-import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.ChronoField.*;
 
-public class TimeMinDecoratorEnglish implements Decorator<LocalDateTime>, Serializable {
+public class TimeMinDecoratorEnglish implements Decorator<ChronoLocalDateTime>, Serializable {
 
   @NotNull
   @Override
-  public String getOutputString(LocalDateTime time) {
+  public String getOutputString(ChronoLocalDateTime time) {
     StringBuilder sb = new StringBuilder();
     sb.append(time.get(YEAR_OF_ERA) );
     if(time.toLocalDate().getEra() == IsoEra.CE)
@@ -25,14 +25,14 @@ public class TimeMinDecoratorEnglish implements Decorator<LocalDateTime>, Serial
       sb.append("BC");
     sb.append(" ");
 
-    sb.append(time.getMonthValue() < 10 ? "0" : "").append(time.getMonthValue());
+    sb.append(time.get(MONTH_OF_YEAR) < 10 ? "0" : "").append(time.get(MONTH_OF_YEAR));
     sb.append("/");
-    sb.append(time.getDayOfMonth() < 10 ? "0" : "").append(time.getDayOfMonth());
+    sb.append(time.get(DAY_OF_MONTH) < 10 ? "0" : "").append(time.get(DAY_OF_MONTH));
     sb.append(" ");
 
-    sb.append(time.getHour() < 10 ? "0" : "").append(time.getHour());
+    sb.append(time.get(HOUR_OF_DAY) < 10 ? "0" : "").append(time.get(HOUR_OF_DAY));
     sb.append(":");
-    sb.append(time.getMinute() < 10 ? "0" : "").append(time.getMinute());
+    sb.append(time.get(MINUTE_OF_HOUR) < 10 ? "0" : "").append(time.get(MINUTE_OF_HOUR));
     return sb.toString();
   }
 }

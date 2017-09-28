@@ -5,18 +5,17 @@
  */
 package destiny.core.calendar.eightwords;
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
+
+import static java.time.temporal.ChronoField.*;
 
 /**
  * 純粹以地方平均時（手錶時間）來判定
@@ -25,31 +24,28 @@ public class MidnightLmtImpl implements MidnightIF, Serializable {
 
   @Override
   public double getNextMidnight(double gmtJulDay, @NotNull Location loc) {
-    LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
-    LocalDateTime lmt = Time.getLmtFromGmt(gmt , loc);
-    LocalDateTime resultLmt = LocalDateTime.from(lmt).plusDays(1).withHour(0).withSecond(0).withSecond(0).withNano(0);
-    LocalDateTime resultGmt = Time.getGmtFromLmt(resultLmt , loc);
+    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+    ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmt , loc);
+
+    ChronoLocalDateTime resultLmt = lmt.plus(1 , ChronoUnit.DAYS)
+      .with(HOUR_OF_DAY , 0)
+      .with(MINUTE_OF_HOUR , 0)
+      .with(SECOND_OF_MINUTE , 0)
+      .with(NANO_OF_SECOND , 0);
+    ChronoLocalDateTime resultGmt = TimeTools.getGmtFromLmt(resultLmt , loc);
     return TimeTools.getGmtJulDay(resultGmt);
   }
 
-  /**
-   * 2017-02-10 : 為了避免 Time 的 round-off error , 所以這裡仍保留實作
-   */
-  @Override
-  public LocalDateTime getNextMidnight(LocalDateTime lmt, Location loc) {
-    return LocalDate.of(lmt.getYear() , lmt.getMonth() , lmt.getDayOfMonth())
-      .plus(1 , ChronoUnit.DAYS)
-      .atTime(0 , 0 , 0);
-  }
+
 
   @Override
-  public ChronoLocalDateTime getNextMidnightNew(ChronoLocalDateTime lmt, Location loc) {
+  public ChronoLocalDateTime getNextMidnight(ChronoLocalDateTime lmt, Location loc) {
     return lmt
       .plus(1 , ChronoUnit.DAYS)
-      .with(ChronoField.HOUR_OF_DAY , 0)
-      .with(ChronoField.MINUTE_OF_HOUR , 0)
-      .with(ChronoField.SECOND_OF_MINUTE , 0)
-      .with(ChronoField.NANO_OF_SECOND , 0);
+      .with(HOUR_OF_DAY , 0)
+      .with(MINUTE_OF_HOUR , 0)
+      .with(SECOND_OF_MINUTE , 0)
+      .with(NANO_OF_SECOND , 0);
   }
 
   @NotNull

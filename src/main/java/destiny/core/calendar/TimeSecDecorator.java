@@ -9,11 +9,12 @@ import destiny.tools.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 
 /** 輸出到「秒」 */
 public class TimeSecDecorator {
-  private final static ImmutableMap<Locale , Decorator<LocalDateTime>> implMap = new ImmutableMap.Builder<Locale , Decorator<LocalDateTime>>()
+  private final static ImmutableMap<Locale , Decorator<ChronoLocalDateTime>> implMap = new ImmutableMap.Builder<Locale , Decorator<ChronoLocalDateTime>>()
     .put(Locale.TAIWAN , new TimeSecDecoratorChinese())
     .put(Locale.ENGLISH , new TimeSecDecoratorEnglish())
     .put(Locale.JAPAN, new TimeSecDecoratorJapanese())

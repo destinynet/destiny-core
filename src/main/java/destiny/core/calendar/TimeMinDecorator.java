@@ -8,13 +8,13 @@ import destiny.tools.Decorator;
 import destiny.tools.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 
 /** 只輸出到「分」 */
 public class TimeMinDecorator {
 
-  private final static ImmutableMap<Locale , Decorator<LocalDateTime>> implMap = new ImmutableMap.Builder<Locale , Decorator<LocalDateTime>>()
+  private final static ImmutableMap<Locale , Decorator<ChronoLocalDateTime>> implMap = new ImmutableMap.Builder<Locale , Decorator<ChronoLocalDateTime>>()
     .put(Locale.TAIWAN , new TimeMinDecoratorChinese())
     .put(Locale.CHINA , new TimeMinDecoratorChina())
     .put(Locale.ENGLISH , new TimeMinDecoratorEnglish())
@@ -22,7 +22,7 @@ public class TimeMinDecorator {
     .build();
 
   @NotNull
-  public static String getOutputString(LocalDateTime time , Locale locale)
+  public static String getOutputString(ChronoLocalDateTime time , Locale locale)
   {
     return implMap.get(
       LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])

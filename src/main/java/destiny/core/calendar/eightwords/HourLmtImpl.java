@@ -7,14 +7,13 @@ package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Locale;
 
 import static java.time.temporal.ChronoField.*;
@@ -28,8 +27,8 @@ public class HourLmtImpl implements HourIF, Serializable {
   @NotNull
   @Override
   public Branch getHour(double gmtJulDay, Location location) {
-    LocalDateTime gmt = new Time(gmtJulDay).toLocalDateTime();
-    int lmtHour = Time.getLmtFromGmt(gmt, location).getHour();
+    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+    int lmtHour = TimeTools.getLmtFromGmt(gmt , location).get(ChronoField.HOUR_OF_DAY);
     return getHour(lmtHour);
   }
 

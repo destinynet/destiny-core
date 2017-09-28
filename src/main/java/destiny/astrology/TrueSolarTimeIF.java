@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * 真太陽時計算介面 <br/>
@@ -31,24 +33,26 @@ public interface TrueSolarTimeIF {
    */
   double getEquationSecs(double gmtJulDay);
 
-  default double getEquationSecs(LocalDateTime gmtTime) {
+  default double getEquationSecs(ChronoLocalDateTime gmtTime) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmtTime);
     return getEquationSecs(gmtJulDay);
   }
 
   /** 取得 LMT 時刻所對應的 真太陽時 */
-  default LocalDateTime getTrueSolarTime(LocalDateTime lmt , Location location) {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+  default ChronoLocalDateTime getTrueSolarTime(ChronoLocalDateTime lmt , Location location) {
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     logger.debug("gmt = {}" , gmt);
     double e = getEquationSecs(gmt);
     Tuple2<Long , Long> pair = Time.splitSecond(e);
-    LocalDateTime gmtWithE = LocalDateTime.from(gmt).plusSeconds(pair.v1()).plusNanos(pair.v2());
+
+    ChronoLocalDateTime gmtWithE = gmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
     logger.debug("gmt  = {}" , gmt);
     logger.debug("gmtE = {}" , gmtWithE);
-    LocalDateTime lmtWithE = Time.getLmtFromGmt(gmtWithE , location);
+
+    ChronoLocalDateTime lmtWithE = TimeTools.getLmtFromGmt(gmtWithE , location);
     logger.debug("lmtE = {}" , lmtWithE);
 
-    return LongitudeTimeBean.getLocalTime(lmtWithE, location);
+    return LongitudeTimeBean.getLocalTime((LocalDateTime) lmtWithE, location);
   }
 
 }

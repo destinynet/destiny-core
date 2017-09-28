@@ -7,29 +7,32 @@ import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
-public class TimeSecDecoratorEnglish implements Decorator<LocalDateTime>, Serializable {
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+
+public class TimeSecDecoratorEnglish implements Decorator<ChronoLocalDateTime>, Serializable {
 
   @NotNull
   @Override
-  public String getOutputString(LocalDateTime time) {
+  public String getOutputString(ChronoLocalDateTime time) {
     StringBuilder sb = new StringBuilder();
 
     TimeMinDecoratorEnglish min = new TimeMinDecoratorEnglish();
     sb.append(min.getOutputString(time));
     sb.append(":");
 
-    if (time.getSecond() < 10) {
+    if (time.get(SECOND_OF_MINUTE) < 10) {
       sb.append("0");
     }
-    sb.append(time.getSecond());
+    sb.append(time.get(SECOND_OF_MINUTE));
 
-    if (time.getNano() == 0) {
+    if (time.get(NANO_OF_SECOND) == 0) {
       sb.append(".00");
     } else {
       sb.append(".");
-      sb.append(String.valueOf(time.getNano()).substring(0,2));
+      sb.append(String.valueOf(time.get(NANO_OF_SECOND)).substring(0,2));
     }
 
     return sb.toString();

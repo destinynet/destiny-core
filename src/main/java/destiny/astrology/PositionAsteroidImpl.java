@@ -5,7 +5,7 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 public abstract class PositionAsteroidImpl extends AbstractPositionImpl<Asteroid> {
 
@@ -14,7 +14,7 @@ public abstract class PositionAsteroidImpl extends AbstractPositionImpl<Asteroid
   }
 
   @Override
-  public Position getPosition(LocalDateTime lmt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
+  public Position getPosition(ChronoLocalDateTime lmt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
     return starPositionImpl.getPosition(getPoint() , lmt, loc , centric , coordinate);
   }
 }

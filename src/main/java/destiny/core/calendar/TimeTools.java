@@ -48,6 +48,14 @@ public class TimeTools implements Serializable {
     return getGmtJulDay(gmtJulDay_plusHalfDay , localTime);
   }
 
+  /**
+   * 直接從 LMT 傳回 gmt 的 jul day
+   */
+  public static double getGmtJulDay(ChronoLocalDateTime lmt , Location loc) {
+    ChronoLocalDateTime gmt = getGmtFromLmt(lmt , loc);
+    return getGmtJulDay(gmt);
+  }
+
 
   /**
    * 取得不中斷的年份 , 亦即 proleptic year
@@ -100,6 +108,11 @@ public class TimeTools implements Serializable {
     else {
       return getLmtFromGmt(gmt , loc.getTimeZone().toZoneId());
     }
+  }
+
+  public static ChronoLocalDateTime getLmtFromGmt(double gmtJulDay , Location location) {
+    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+    return getLmtFromGmt(gmt , location);
   }
 
 

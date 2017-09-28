@@ -339,30 +339,10 @@ public class Time implements Serializable , LocaleStringIF
     }
   }
 
-  private static LocalDateTime getLmtFromGmt(LocalDateTime gmt, TimeZone timeZone) {
-    ZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
-    ZonedDateTime ldtZoned = gmtZoned.withZoneSameInstant(timeZone.toZoneId());
-    return ldtZoned.toLocalDateTime();
-  }
-
-  /**
-   * {@link TimeTools#getLmtFromGmt(ChronoLocalDateTime, Location)}
-   */
-  @Deprecated
-  public static LocalDateTime getLmtFromGmt(LocalDateTime gmt , @NotNull Location loc) {
-    if (loc.isMinuteOffsetSet()) {
-      int secOffset = loc.getMinuteOffset() * 60;
-      return gmt.plus(secOffset , ChronoUnit.SECONDS);
-    }
-    else {
-      return getLmtFromGmt(gmt , loc.getTimeZone());
-    }
-  }
-
   /**
    * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
    */
-  private static int getSecondsOffset(LocalDateTime lmt, TimeZone tz) {
+  private static int getSecondsOffset(ChronoLocalDateTime lmt, TimeZone tz) {
     ZoneOffset offset = lmt.atZone(tz.toZoneId()).getOffset();
     return offset.getTotalSeconds();
   }
@@ -392,8 +372,8 @@ public class Time implements Serializable , LocaleStringIF
   /**
    * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
    * */
-  public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull LocalDateTime lmt, @NotNull Location loc) {
-    return tuple(Time.isDst(lmt, loc), Time.getSecondsOffset(lmt, loc));
+  public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull Location loc) {
+    return tuple(Time.isDst((LocalDateTime)lmt, loc), Time.getSecondsOffset((LocalDateTime)lmt, loc));
   }
   
   @Override

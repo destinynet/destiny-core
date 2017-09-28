@@ -10,7 +10,7 @@ import destiny.core.calendar.Time;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * 取得月干支的介面
@@ -22,7 +22,7 @@ public interface MonthIF {
    * @param location
    * @return 月干支
    */
-  StemBranch getMonth(LocalDateTime lmt , Location location);
+  StemBranch getMonth(ChronoLocalDateTime lmt , Location location);
 
   /**
    * @param lmt 傳入當地的手錶時間

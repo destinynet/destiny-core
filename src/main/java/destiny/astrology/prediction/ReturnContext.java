@@ -6,12 +6,13 @@ package destiny.astrology.prediction;
 
 import destiny.astrology.*;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /** 
  * 返照法演算法 , 可以計算 Planet 的返照
@@ -96,11 +97,11 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   /** 對外主要的 method , 取得 return 盤 */
   @NotNull
   public Horoscope getReturnHoroscope() {
-    LocalDateTime natalGmt = Time.getGmtFromLmt(natalLmt , natalLoc);
-    LocalDateTime nowGmt = Time.getGmtFromLmt(nowLmt , nowLoc);
+    ChronoLocalDateTime natalGmt = TimeTools.getGmtFromLmt(natalLmt , natalLoc);
+    ChronoLocalDateTime   nowGmt = TimeTools.getGmtFromLmt(nowLmt , nowLoc);
 
-    LocalDateTime convergentGmt = getConvergentTime(natalGmt , nowGmt);
-    LocalDateTime convergentLmt = Time.getLmtFromGmt(convergentGmt , nowLoc);
+    ChronoLocalDateTime convergentGmt = getConvergentTime(natalGmt , nowGmt);
+    ChronoLocalDateTime convergentLmt = TimeTools.getLmtFromGmt(convergentGmt , nowLoc);
 
     HouseSystem houseSystem = HouseSystem.PLACIDUS;
     Coordinate coordinate = Coordinate.ECLIPTIC;
@@ -119,7 +120,7 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
    * 傳回值也是GMT！
    */
   @Override
-  public LocalDateTime getConvergentTime(@NotNull LocalDateTime natalGmtTime, @NotNull LocalDateTime nowGmtTime) {
+  public LocalDateTime getConvergentTime(@NotNull ChronoLocalDateTime natalGmtTime, @NotNull ChronoLocalDateTime nowGmtTime) {
     Coordinate coordinate = (precession) ? Coordinate.SIDEREAL : Coordinate.ECLIPTIC;
     //先計算出生盤中，該星體的黃道位置
     double natalPlanetDegree = starPositionWithAzimuthImpl.getPosition(planet , natalGmtTime , Centric.GEO , coordinate).getLng();

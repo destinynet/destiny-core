@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +41,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   private FortuneOutput fortuneOutput = FortuneOutput.虛歲;
 
-  private final Decorator<LocalDateTime> timeDecorator = new TimeSecDecoratorChinese();
+  private final Decorator<ChronoLocalDateTime> timeDecorator = new TimeSecDecoratorChinese();
 
   private final Direction direction;
 

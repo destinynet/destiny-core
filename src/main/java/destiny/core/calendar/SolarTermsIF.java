@@ -8,7 +8,7 @@ package destiny.core.calendar;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +21,13 @@ public interface SolarTermsIF {
   SolarTerms getSolarTermsFromGMT(double gmtJulDay);
 
   /** 承上， LocalDateTime 版本 */
-  default SolarTerms getSolarTermsFromGMT(LocalDateTime gmt) {
+  default SolarTerms getSolarTermsFromGMT(ChronoLocalDateTime gmt) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getSolarTermsFromGMT(gmtJulDay);
   }
 
-  default SolarTerms getSolarTerms(LocalDateTime lmt , Location location) {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+  default SolarTerms getSolarTerms(ChronoLocalDateTime lmt , Location location) {
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     return getSolarTermsFromGMT(gmt);
   }
 
@@ -37,10 +37,12 @@ public interface SolarTermsIF {
    */
   List<SolarTermsTime> getPeriodSolarTerms(double fromGmt , double toGmt );
 
+
+
   /**
    * @return 傳回某段時間內的節氣列表， GMT 時刻
    */
-  default List<SolarTermsTime> getPeriodSolarTerms(@NotNull LocalDateTime fromGmtTime , @NotNull LocalDateTime toGmtTime ) {
+  default List<SolarTermsTime> getPeriodSolarTerms(@NotNull ChronoLocalDateTime fromGmtTime , @NotNull ChronoLocalDateTime toGmtTime ) {
     return getPeriodSolarTerms(TimeTools.getGmtJulDay(fromGmtTime) , TimeTools.getGmtJulDay(toGmtTime));
   }
 
@@ -50,13 +52,13 @@ public interface SolarTermsIF {
    * 注意，此方法因為經過 Julian Day 的轉換，精確度比 GMT 差了 約萬分之一秒
    * List < SolarTermsTime >
    */
-  default List<SolarTermsTime> getLocalPeriodSolarTerms(@NotNull LocalDateTime fromLmt , @NotNull LocalDateTime toLmt , @NotNull Location location) {
-    LocalDateTime fromGmt = Time.getGmtFromLmt(fromLmt , location);
-    LocalDateTime   toGmt = Time.getGmtFromLmt(  toLmt , location);
+  default List<SolarTermsTime> getLocalPeriodSolarTerms(@NotNull ChronoLocalDateTime fromLmt , @NotNull ChronoLocalDateTime toLmt , @NotNull Location location) {
+    double fromGmt = TimeTools.getGmtJulDay(fromLmt , location);
+    double   toGmt = TimeTools.getGmtJulDay(  toLmt , location);
 
     return getPeriodSolarTerms(fromGmt, toGmt).stream().map( stt -> {
-      LocalDateTime gmt = stt.getTime();
-      return new SolarTermsTime(stt.getSolarTerms() , Time.getLmtFromGmt(gmt , location));
+      ChronoLocalDateTime gmt = stt.getTime();
+      return new SolarTermsTime(stt.getSolarTerms() , TimeTools.getLmtFromGmt(gmt , location));
     }).collect(Collectors.toList());
   }
 

@@ -7,11 +7,12 @@ package destiny.astrology.classical.rules.debilities;
 import destiny.astrology.BesiegedIF;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Optional;
 
 /**
@@ -34,7 +35,8 @@ public final class Besieged_Mars_Saturn extends Rule {
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS) {
       //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
-      if (besiegedImpl.isBesieged(planet, Planet.MARS, Planet.SATURN, Time.getGmtFromLmt(h.getLmt(), h.getLocation()), true, true)) {
+      ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(h.getLmt() , h.getLocation());
+      if (besiegedImpl.isBesieged(planet, Planet.MARS, Planet.SATURN, gmt, true, true)) {
         //addComment(Locale.TAIWAN , planet + " 被 " + Planet.MARS + " 以及 " + Planet.SATURN +" 夾制 (Besieged)");
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.MARS, Planet.SATURN}));
       }

@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.IsoEra;
 
+import static org.junit.Assert.assertEquals;
+
 public class TimeSecDecoratorChineseTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -25,9 +27,11 @@ public class TimeSecDecoratorChineseTest {
     LocalDateTime time;
     time = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
     logger.info("{} : {}" , time , decorator.getOutputString(time));
+    assertEquals("西元　2000年01月01日　00時00分 00.00秒" , decorator.getOutputString(time));
 
     time = LocalDateTime.of(LocalDate.of(2000 , 12 , 31).with(IsoEra.BCE) , LocalTime.of(23 , 59 , 59 , 999_000_000));
     logger.info("{} : {}" , time , decorator.getOutputString(time));
+    assertEquals("西元前2000年12月31日　23時59分 59.99秒" , decorator.getOutputString(time));
   }
 
 }

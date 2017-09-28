@@ -52,11 +52,12 @@ public interface RiseTransIF {
   /**
    * 來源、目標時間都是 LMT
    */
-  default LocalDateTime getLmtTrans(LocalDateTime fromLmtTime , Star star , TransPoint point , Location location ,
+  default LocalDateTime getLmtTrans(ChronoLocalDateTime fromLmtTime , Star star , TransPoint point , Location location ,
                                     double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
-    LocalDateTime fromGmtTime = Time.getGmtFromLmt(fromLmtTime , location);
-    LocalDateTime resultGmt = getGmtTrans(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
-    return Time.getLmtFromGmt(resultGmt , location);
+    ChronoLocalDateTime fromGmtTime = TimeTools.getGmtFromLmt(fromLmtTime , location);
+
+    ChronoLocalDateTime resultGmt = getGmtTrans(fromGmtTime , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    return (LocalDateTime) TimeTools.getLmtFromGmt(resultGmt , location);
   }
 
 

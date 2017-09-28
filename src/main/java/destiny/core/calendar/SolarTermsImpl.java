@@ -9,7 +9,7 @@ import destiny.astrology.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,12 +64,13 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
     while (fromGmt < toGmt) {
       SolarTermsTime solarTermsTime;
 
-      LocalDateTime fromGmtTime = starTransitImpl.getNextTransitLocalDateTime(Planet.SUN, nextZodiacDegree, Coordinate.ECLIPTIC, fromGmt, true);
+      ChronoLocalDateTime fromGmtTime = starTransitImpl.getNextTransitLocalDateTime(Planet.SUN, nextZodiacDegree, Coordinate.ECLIPTIC, fromGmt, true);
       fromGmt = TimeTools.getGmtJulDay(fromGmtTime);
 
       if (fromGmt > toGmt)
         break;
       nowST = nowST.next();
+      // TODO : remove casting
       solarTermsTime = new SolarTermsTime(nowST, fromGmtTime);
       resultList.add(solarTermsTime);
       nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nextZodiacDegree + 15);

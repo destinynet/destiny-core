@@ -23,12 +23,12 @@ public class MidnightLmtImplTest {
     ChronoLocalDateTime expected, actual;
 
     LocalDateTime lmt = LocalDateTime.of(2004, 12, 6, 14, 10, 0);
-    actual = impl.getNextMidnightNew(lmt, location);
+    actual = impl.getNextMidnight(lmt, location);
     expected = LocalDateTime.of(2004, 12, 7, 0, 0, 0);
     assertEquals(expected, actual);
 
     lmt = LocalDateTime.of(2004, 12, 31, 0, 0, 0);
-    actual = impl.getNextMidnightNew(lmt, location);
+    actual = impl.getNextMidnight(lmt, location);
     expected = LocalDateTime.of(2005, 1, 1, 0, 0, 0);
     assertEquals(expected, actual);
   }

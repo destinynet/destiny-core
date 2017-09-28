@@ -5,13 +5,13 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 public interface IPosition<T extends Point> {
 
   T getPoint();
 
-  Position getPosition(LocalDateTime lmt , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl);
+  Position getPosition(ChronoLocalDateTime lmt , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl);
 
 //  default Position getPosition(double gmtJulDay , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl) {
 //    Tuple2<ChronoLocalDate , LocalTime> t2 =  Time.from(gmtJulDay);

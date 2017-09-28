@@ -40,7 +40,7 @@ public class DayImpl implements DayIF , Serializable {
     int index = (lmtJulDay-11) % 60;
 
 
-    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnightNew(lmt, location);
+    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location);
     ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
 
     if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >=12) {
@@ -85,7 +85,7 @@ public class DayImpl implements DayIF , Serializable {
     int lmtJulDay = (int)(TimeTools.getGmtJulDay(lmt)+0.5);
     int index = (lmtJulDay-11) % 60;
 
-    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnightNew(lmt , location);
+    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt , location);
     ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
 
     if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >=12 ) {

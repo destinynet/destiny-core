@@ -5,10 +5,11 @@
  */
 package destiny.astrology;
 
-import destiny.core.calendar.Time;
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.TimeTools;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * <pre>
@@ -26,14 +27,20 @@ public interface StarTransitIF
    */
   double getNextTransitGmt(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward);
 
-  default LocalDateTime getNextTransitLocalDateTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
+  /**
+   * 傳回 GMT
+   * */
+  default ChronoLocalDateTime getNextTransitLocalDateTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
     double gmtJulDay = getNextTransitGmt(star , degree , coordinate , fromGmt , isForward);
-    return new Time(gmtJulDay).toLocalDateTime();
+    return JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
   }
 
-  default LocalDateTime getNextTransitGmt(Star star, double degree, Coordinate coordinate , LocalDateTime fromGmt, boolean isForward) {
-    double julDay = TimeTools.getGmtJulDay(fromGmt);
-    return getNextTransitLocalDateTime(star , degree , coordinate , julDay , isForward);
+  /**
+   * 傳回 GMT
+   */
+  default LocalDateTime getNextTransitGmt(Star star, double degree, Coordinate coordinate , ChronoLocalDateTime fromGmt, boolean isForward) {
+    double gmtJulDay = TimeTools.getGmtJulDay(fromGmt);
+    return (LocalDateTime) getNextTransitLocalDateTime(star , degree , coordinate , gmtJulDay , isForward);
   }
 
 

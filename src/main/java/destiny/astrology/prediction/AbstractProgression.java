@@ -7,6 +7,8 @@ package destiny.astrology.prediction;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Progression 抽象類別，具備 Progression 演算法的 template methods
@@ -40,18 +42,18 @@ public abstract class AbstractProgression implements LinearIF , Conversable , Se
    * 不限定是 GMT 或是 LMT , 但兩者要一樣的時區
    */
   @Override
-  public LocalDateTime getConvergentTime(LocalDateTime natalTime, LocalDateTime nowTime) {
+  public ChronoLocalDateTime getConvergentTime(ChronoLocalDateTime natalTime, ChronoLocalDateTime nowTime) {
     Duration dur = Duration.between(natalTime, nowTime).abs();
-    LocalDateTime resultTime;
+    ChronoLocalDateTime resultTime;
 
     double secsDouble = (dur.getSeconds() / getNumerator()) * getDenominator();
     long secs = (long) secsDouble;
     long nanos = (long) ((secsDouble - secs) * 1_000_000_000);
 
     if (converse)
-      resultTime = LocalDateTime.from(natalTime).minusSeconds(secs).minusNanos(nanos);
+      resultTime =  natalTime.minus(secs , ChronoUnit.SECONDS).minus(nanos , ChronoUnit.NANOS);
     else
-      resultTime = LocalDateTime.from(natalTime).plusSeconds(secs).plusNanos(nanos);
+      resultTime =  natalTime.plus(secs , ChronoUnit.SECONDS).plus(nanos , ChronoUnit.NANOS);
     return resultTime;
   }
 

@@ -8,7 +8,7 @@ package destiny.core.calendar.eightwords;
 import destiny.core.calendar.Location;
 import destiny.core.chinese.StemBranch;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /** 取得年干支的介面 */
 interface YearIF {
@@ -19,6 +19,6 @@ interface YearIF {
    * @param location 傳入當地經緯度等資料
    * @return 年干支（天干地支皆傳回）
    */
-  StemBranch getYear(LocalDateTime lmt, Location location);
+  StemBranch getYear(ChronoLocalDateTime lmt, Location location);
 
 }
