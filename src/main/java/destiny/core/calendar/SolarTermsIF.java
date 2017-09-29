@@ -7,8 +7,11 @@ package destiny.core.calendar;
 
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +19,9 @@ import java.util.stream.Collectors;
  * 計算節氣的介面
  */
 public interface SolarTermsIF {
-  
+
+  Logger logger = LoggerFactory.getLogger(SolarTermsIF.class);
+
   /** 計算某時刻當下的節氣 */
   SolarTerms getSolarTermsFromGMT(double gmtJulDay);
 
@@ -58,6 +63,7 @@ public interface SolarTermsIF {
 
     return getPeriodSolarTerms(fromGmt, toGmt).stream().map( stt -> {
       ChronoLocalDateTime gmt = stt.getTime();
+      logger.info("節氣 : {} , 時間 : {} . nano = {} " , stt.getSolarTerms() , gmt , gmt.get(ChronoField.NANO_OF_SECOND));
       return new SolarTermsTime(stt.getSolarTerms() , TimeTools.getLmtFromGmt(gmt , location));
     }).collect(Collectors.toList());
   }

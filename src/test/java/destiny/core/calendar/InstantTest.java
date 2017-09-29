@@ -11,10 +11,13 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
+import java.util.function.Function;
 
 import static java.time.temporal.JulianFields.JULIAN_DAY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class InstantTest {
 
@@ -85,33 +88,65 @@ public class InstantTest {
 
     // 當天午夜
     Instant instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT);
-    long fakeJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
-    assertEquals(REAL_JUL_DAY_PLUS_HALF , fakeJulDay);
+    long halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF , halfAddedJulDay);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 , TimeTools.getJulDay(instant) , 0.0);        // jul day + 0
 
     // 當天 6:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT +  60 * 60 * 6);
-    fakeJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
-    assertEquals(REAL_JUL_DAY_PLUS_HALF , fakeJulDay);
+    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF , halfAddedJulDay);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.25, TimeTools.getJulDay(instant) , 0.0);  // jul day + 0.25
 
     // 當天中午 12:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT +  60 * 60 * 12);
-    fakeJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
-    assertEquals(REAL_JUL_DAY_PLUS_HALF , fakeJulDay);
+    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF , halfAddedJulDay);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.5, TimeTools.getJulDay(instant) , 0.0);   // jul day + 0.5
 
     // 當天下午 18:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT +  60 * 60 * 18);
-    fakeJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
-    assertEquals(REAL_JUL_DAY_PLUS_HALF , fakeJulDay);
+    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF , halfAddedJulDay);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.75, TimeTools.getJulDay(instant) , 0.0);   // jul day + 0.75
 
     // 當天下午 23:59
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 23 + 60 * 59 + 59);
-    fakeJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
-    assertEquals(REAL_JUL_DAY_PLUS_HALF , fakeJulDay);
+    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF , halfAddedJulDay);
 
     // 當天晚上 24:00 , julDay 就 +1
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 23 + 60 * 59 + 60);
-    fakeJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
-    assertEquals(REAL_JUL_DAY_PLUS_HALF+1 , fakeJulDay);
+    halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF+1 , halfAddedJulDay);
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 1, TimeTools.getJulDay(instant) , 0.0);   // jul day + 1
+  }
+
+  /**
+   * 1582-10-15
+   * Gregorian Cal 開始的 instant ，轉換到 LocalDateTime
+   */
+  @Test
+  public void testInstantToLocalDateTime() {
+
+    // Gregorian Cal 開始的 instant ，轉換到 LocalDateTime
+    Instant instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT);
+    JulDayResolver resolver = new JulDayResolver1582CutoverImpl();
+    ChronoLocalDateTime dateTime = TimeTools.getLocalDateTime(instant , resolver);
+    logger.info("dateTime , class = {} , value = {}" , dateTime.getClass() , dateTime);
+    assertTrue(dateTime instanceof LocalDateTime);
+    assertEquals(LocalDateTime.of(1582,10,15,0,0) , dateTime);
+
+    // Gregorian Cal 前一秒，變成 Julian Day 1582-10-4 23:59:59
+    instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT-1);
+
+    Function<Double , ChronoLocalDateTime> fun = resolver::getLocalDateTime;
+    dateTime = TimeTools.getLocalDateTime(instant , fun);
+
+    logger.info("dateTime , class = {} , value = {}" , dateTime.getClass() , dateTime);
+    assertTrue(dateTime instanceof JulianDateTime);
+    //JulianDateTime lastSec = JulianDateTime.of(1582,10,4,23,59,59);
+    assertEquals(JulianDateTime.of(1582,10,4,23,59,59) , dateTime);
 
   }
 

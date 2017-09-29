@@ -116,6 +116,15 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   /**
    * @param year maybe <= 0
    */
+  public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute , int second , int nano) {
+    JulianDate date = JulianDate.of(year , month , dayOfMonth);
+    LocalTime time = LocalTime.of(hour , minute , second , nano);
+    return new JulianDateTime(date , time);
+  }
+
+  /**
+   * @param year maybe <= 0
+   */
   public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute , double second) {
     JulianDate date = JulianDate.of(year , month , dayOfMonth);
 
@@ -382,5 +391,18 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     return ZonedJulianDateTime.of(this, zone);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof JulianDateTime))
+      return false;
+    JulianDateTime that = (JulianDateTime) o;
+    return Objects.equals(date, that.date) && Objects.equals(time, that.time);
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(date, time);
+  }
 }

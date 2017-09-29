@@ -136,9 +136,15 @@ public class ZonedJulianDateTime implements Temporal, ChronoZonedDateTime<Julian
 
   @Override
   public ZonedJulianDateTime withZoneSameInstant(ZoneId zone) {
-    return null;
+    Objects.requireNonNull(zone, "zone");
+    if (Objects.equals(this.zone , zone))
+      return this;
+    else {
+      long epochSecs = dateTime.toEpochSecond(offset);
+      int nanos = dateTime.getNano();
+      return create(epochSecs , nanos , zone);
+    }
   }
-
 
   @Override
   public ZonedJulianDateTime with(TemporalField field, long newValue) {

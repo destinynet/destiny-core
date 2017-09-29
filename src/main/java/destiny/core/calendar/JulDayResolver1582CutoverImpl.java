@@ -8,7 +8,6 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.extra.chrono.JulianChronology;
-import org.threeten.extra.chrono.JulianDate;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -100,7 +99,7 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
       return LocalDate.of(year , month , day).atTime(localTime);
     } else {
       int prolepticYear = TimeTools.getNormalizedYear(ad , year);
-      return JulianDate.of(prolepticYear , month , day).atTime(localTime);
+      return JulianDateTime.of(prolepticYear , month , day , localTime.getHour() , localTime.getMinute() , localTime.getSecond() , localTime.getNano());
     }
   }
 

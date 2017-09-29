@@ -14,12 +14,13 @@ import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.zone.ZoneRulesException;
 import java.util.TimeZone;
+import java.util.function.Function;
 
 import static java.time.temporal.JulianFields.JULIAN_DAY;
 
 public class TimeTools implements Serializable {
 
-  private final static ZoneId gmt = ZoneId.of("GMT");
+  private final static ZoneId GMT = ZoneId.of("GMT");
 
   /**
    * 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
@@ -28,6 +29,39 @@ public class TimeTools implements Serializable {
 
 
   private static Logger logger = LoggerFactory.getLogger(TimeTools.class);
+
+
+  // ======================================== GMT instant -> julian day ========================================
+
+  /**
+   * @param instant 從 「GMT」定義的 {@link Instant} 轉換成 Julian Day
+   */
+  public static double getJulDay(Instant instant) {
+    // 先取得「被加上 0.5 的」 julian day
+    ZonedDateTime zdt = instant.atZone(GMT);
+    long halfAddedJulDay = zdt.getLong(JULIAN_DAY);
+    LocalTime localTime = zdt.toLocalTime();
+    return getGmtJulDay(halfAddedJulDay , localTime);
+  }
+
+  /**
+   * @param instant 將 (GMT) instant 轉換為（GMT）的日期
+   */
+  public static ChronoLocalDateTime getLocalDateTime(Instant instant , Function<Double , ChronoLocalDateTime> resolver) {
+    double gmtJulDay = getJulDay(instant);
+    return resolver.apply(gmtJulDay);
+  }
+
+  /**
+   * @param instant 將 (GMT) instant 轉換為（GMT）的日期
+   *
+   */
+  public static ChronoLocalDateTime getLocalDateTime(Instant instant , JulDayResolver resolver) {
+    Function<Double , ChronoLocalDateTime> fun = resolver::getLocalDateTime;
+    return getLocalDateTime(instant , fun);
+  }
+
+  // ======================================== GMT DateTime -> julian day ========================================
 
   /**
    * astro julian day number 開始於
@@ -40,10 +74,12 @@ public class TimeTools implements Serializable {
    *
    */
   public static double getGmtJulDay(ChronoLocalDateTime gmt) {
-    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
-    long gmtJulDay_plusHalfDay = gmt.getLong(JULIAN_DAY);
+    Instant gmtInstant = gmt.toInstant(ZoneOffset.UTC);
+    return getJulDay(gmtInstant);
 
-    return getGmtJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
+    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
+//    long gmtJulDay_plusHalfDay = gmt.getLong(JULIAN_DAY);
+//    return getGmtJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
   }
 
 
@@ -58,24 +94,7 @@ public class TimeTools implements Serializable {
   }
 
 
-  /**
-   * @param instant 從 「GMT」定義的 {@link Instant} 轉換成 Julian Day
-   */
-  public static double getJulDay(Instant instant) {
-    // 先取得「被加上 0.5 的」 julian day
-    ZonedDateTime zdt = instant.atZone(gmt);
-    long fakeJulDay = zdt.getLong(JULIAN_DAY);
-    LocalTime localTime = zdt.toLocalTime();
-    return getGmtJulDay(fakeJulDay , localTime);
-  }
-
-  /**
-   * @param instant 將 instant 轉換為（GMT）的日期
-   */
-  public static ChronoLocalDateTime getLocalDateTime(Instant instant , JulDayResolver resolver) {
-    double gmtJulDay = getJulDay(instant);
-    return resolver.getLocalDateTime(gmtJulDay);
-  }
+  // ======================================== LMT DateTime -> julian day ========================================
 
 
   /**
@@ -87,20 +106,6 @@ public class TimeTools implements Serializable {
   }
 
 
-  /**
-   * 取得不中斷的年份 , 亦即 proleptic year
-   * @param year 傳入的年，一定大於 0
-   * @return proleptic year , 線性的 year : 西元前1年:0 , 西元前2年:-1 ...
-   */
-  public static int getNormalizedYear(boolean ad , int year) {
-    if (year <= 0) {
-      throw new RuntimeException("year " + year + " must > 0");
-    }
-    if (!ad)
-      return -(year-1);
-    else
-      return year;
-  }
 
 
   // ======================================== LMT -> GMT ========================================
@@ -143,9 +148,13 @@ public class TimeTools implements Serializable {
 
 
   // ======================================== GMT -> LMT ========================================
+
   public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , ZoneId zoneId) {
-    ChronoZonedDateTime gmtZoned = gmt.atZone(ZoneId.of("UTC"));
-    return gmtZoned.withZoneSameInstant(zoneId).toLocalDateTime();
+    ChronoZonedDateTime gmtZoned = gmt.atZone(GMT);
+    logger.debug("gmtZoned = {}" , gmtZoned);
+    ChronoZonedDateTime newZoned = gmtZoned.withZoneSameInstant(zoneId);
+    logger.debug("gmtZoned with {} = {}" , zoneId , newZoned);
+    return newZoned.toLocalDateTime();
   }
 
   public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , Location loc) {
@@ -165,15 +174,30 @@ public class TimeTools implements Serializable {
 
 
 
-  // ======================================== private methods ========================================
+  // ======================================== misc methods ========================================
 
-  private static double getGmtJulDay(long gmtJulDay_plusHalfDay , LocalTime localTime) {
+  /**
+   * 取得不中斷的年份 , 亦即 proleptic year
+   * @param year 傳入的年，一定大於 0
+   * @return proleptic year , 線性的 year : 西元前1年:0 , 西元前2年:-1 ...
+   */
+  public static int getNormalizedYear(boolean ad , int year) {
+    if (year <= 0) {
+      throw new RuntimeException("year " + year + " must > 0");
+    }
+    if (!ad)
+      return -(year-1);
+    else
+      return year;
+  }
+
+  private static double getGmtJulDay(long halfAddedJulDay , LocalTime localTime) {
     int hour = localTime.getHour();
     int min = localTime.getMinute();
     int sec = localTime.getSecond();
     int nano = localTime.getNano();
     double dayValue = hour/24.0 + min/1440.0 + sec / 86400.0 + nano/(1_000_000_000.0 * 86400);
 
-    return gmtJulDay_plusHalfDay + dayValue - 0.5;
+    return halfAddedJulDay - 0.5 + dayValue;
   }
 }
