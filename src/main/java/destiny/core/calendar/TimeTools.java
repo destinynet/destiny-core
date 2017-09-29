@@ -7,17 +7,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.zone.ZoneRulesException;
+import java.util.TimeZone;
 
 import static java.time.temporal.JulianFields.JULIAN_DAY;
 
 public class TimeTools implements Serializable {
+
+  private final static ZoneId gmt = ZoneId.of("GMT");
+
+  /**
+   * 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
+   */
+  long GREGORIAN_START_INSTANT = -12219292800L;
+
 
   private static Logger logger = LoggerFactory.getLogger(TimeTools.class);
 
@@ -38,6 +46,7 @@ public class TimeTools implements Serializable {
     return getGmtJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
   }
 
+
   /**
    * 承上， date + time 拆開來的版本
    */
@@ -47,6 +56,27 @@ public class TimeTools implements Serializable {
 
     return getGmtJulDay(gmtJulDay_plusHalfDay , localTime);
   }
+
+
+  /**
+   * @param instant 從 「GMT」定義的 {@link Instant} 轉換成 Julian Day
+   */
+  public static double getJulDay(Instant instant) {
+    // 先取得「被加上 0.5 的」 julian day
+    ZonedDateTime zdt = instant.atZone(gmt);
+    long fakeJulDay = zdt.getLong(JULIAN_DAY);
+    LocalTime localTime = zdt.toLocalTime();
+    return getGmtJulDay(fakeJulDay , localTime);
+  }
+
+  /**
+   * @param instant 將 instant 轉換為（GMT）的日期
+   */
+  public static ChronoLocalDateTime getLocalDateTime(Instant instant , JulDayResolver resolver) {
+    double gmtJulDay = getJulDay(instant);
+    return resolver.getLocalDateTime(gmtJulDay);
+  }
+
 
   /**
    * 直接從 LMT 傳回 gmt 的 jul day
@@ -91,6 +121,24 @@ public class TimeTools implements Serializable {
     } else {
       return getGmtFromLmt(lmt , loc.getTimeZone().toZoneId());
     }
+  }
+
+  /**
+   * LMT (with TimeZone) to GMT
+   *
+   * ZoneId.of(string) 可能會出現 ZoneRulesException
+   * 例如 : ZoneRulesException: Unknown time-zone ID: CTT
+   * 因為某些 三字元的 zoneId 被 deprecated
+   * 參照
+   * http://stackoverflow.com/a/41683097/298430
+   */
+  public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , TimeZone timeZone) {
+    ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
+    try {
+      zoneId = ZoneId.of(timeZone.getID());
+    } catch (ZoneRulesException ignored) {
+    }
+    return getGmtFromLmt(lmt , zoneId);
   }
 
 

@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar;
 
+import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,6 @@ import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoChronology;
-
-import static org.jooq.lambda.tuple.Tuple.tuple;
 
 /**
  * 1582-10-04 (含) 之前 , 傳回 {@link JulianChronology}
@@ -31,15 +30,22 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
    * */
   private final static double GREGORIAN_START_JULIAN_DAY =2299160.5;
 
+  /**
+   * 承上， 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
+   */
+  private final static long GREGORIAN_START_INSTANT = -12219292800L;
+
   private static Logger logger = LoggerFactory.getLogger(JulDayResolver1582CutoverImpl.class);
 
+
   @Override
-  public Tuple2<ChronoLocalDate, LocalTime> getDateAndTime(double gmtJulDay) {
-    return getDateAndTimeStatic(gmtJulDay);
+  public ChronoLocalDateTime getLocalDateTime(double gmtJulDay) {
+    return getLocalDateTimeStatic(gmtJulDay);
   }
 
 
-  public static Tuple2<ChronoLocalDate , LocalTime> getDateAndTimeStatic(double gmtJulDay) {
+
+  public static ChronoLocalDateTime getLocalDateTimeStatic(double gmtJulDay) {
     boolean isGregorian = false;
 
     if (gmtJulDay >= GREGORIAN_START_JULIAN_DAY) {
@@ -91,16 +97,16 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
 
     if (isGregorian) {
       // ad 一定為 true , 不用考慮負數年數
-      return tuple(LocalDate.of(year , month , day) , localTime);
+      return LocalDate.of(year , month , day).atTime(localTime);
     } else {
       int prolepticYear = TimeTools.getNormalizedYear(ad , year);
-      return tuple(JulianDate.of(prolepticYear , month , day) ,localTime);
+      return JulianDate.of(prolepticYear , month , day).atTime(localTime);
     }
   }
 
-  public static ChronoLocalDateTime<? extends ChronoLocalDate> getLocalDateTimeStatic(double gmtJulDay) {
-    Tuple2<ChronoLocalDate , LocalTime> t2 = getDateAndTimeStatic(gmtJulDay);
-    return t2.v1().atTime(t2.v2);
+  public static Tuple2<ChronoLocalDate , LocalTime> getDateTime(double gmtJulDay) {
+    ChronoLocalDateTime dateTime = getLocalDateTimeStatic(gmtJulDay);
+    return Tuple.tuple(dateTime.toLocalDate() , dateTime.toLocalTime());
   }
 
 

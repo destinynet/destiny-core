@@ -7,10 +7,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import destiny.astrology.*;
 import destiny.core.Gender;
-import destiny.core.calendar.Location;
-import destiny.core.calendar.SolarTerms;
-import destiny.core.calendar.SolarTermsIF;
-import destiny.core.calendar.Time;
+import destiny.core.calendar.*;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.*;
@@ -22,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -115,7 +113,7 @@ public class PersonContext extends EightWordsContext {
     this.location = location;
     this.gender = gender;
     this.fortuneOutput = fortuneOutput;
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
   }
 
@@ -163,7 +161,7 @@ public class PersonContext extends EightWordsContext {
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
   public Tuple2<Tuple2<SolarTerms , Double> , Tuple2<SolarTerms , Double>> getMajorSolarTermsBetween() {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
 
     // 現在（亦即：上一個節）的「節」
     SolarTerms prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
@@ -200,7 +198,7 @@ public class PersonContext extends EightWordsContext {
     if (index < 0)
       reverse = true;
 
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     LocalDateTime stepGmt = LocalDateTime.from(gmt).plusSeconds(0);
     //現在的 節氣
     SolarTerms currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
@@ -460,7 +458,7 @@ public class PersonContext extends EightWordsContext {
    * @return 干支
    */
   private StemBranch getStemBranchOfFortune(LocalDateTime targetGmt, double span) {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt, location);
+    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt, location);
     StemBranch resultStemBranch = this.getEightWords().getMonth();
 
     Duration dur = Duration.between(targetGmt , gmt).abs();

@@ -18,8 +18,6 @@ import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
-import java.time.temporal.ChronoUnit;
-import java.time.zone.ZoneRulesException;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -288,56 +286,6 @@ public class Time implements Serializable , LocaleStringIF
     return isGregorian;
   }
   
-
-  /**
-   * LMT (with TimeZone) to GMT
-   *
-   * ZoneId.of(string) 可能會出現 ZoneRulesException
-   * 例如 : ZoneRulesException: Unknown time-zone ID: CTT
-   * 因為某些 三字元的 zoneId 被 deprecated
-   * 參照
-   * http://stackoverflow.com/a/41683097/298430
-   */
-  private static ChronoLocalDateTime getGmtFromLmt(LocalDateTime lmt, TimeZone timeZone) {
-    ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
-    try {
-      zoneId = ZoneId.of(timeZone.getID());
-    } catch (ZoneRulesException ignored) {
-    }
-    return TimeTools.getGmtFromLmt(lmt , timeZone.toZoneId());
-    //return getGmtFromLmt(lmt , zoneId);
-  }
-
-  private static ChronoLocalDateTime getGmtFromLmt(LocalDateTime lmt , String zone_id) {
-    ZoneId zoneId = ZoneId.of("Asia/Taipei"); // 若無法 parse , 則採用 Asia/Taipei
-    try {
-      zoneId = ZoneId.of(zone_id);
-    } catch (ZoneRulesException ignored) {
-    }
-    return TimeTools.getGmtFromLmt(lmt , zoneId);
-    //return getGmtFromLmt(lmt , zoneId);
-  }
-
-  private static LocalDateTime getGmtFromLmt(LocalDateTime lmt , ZoneId zoneId) {
-    ZonedDateTime ldtZoned = lmt.atZone(zoneId);
-    ZonedDateTime utcZoned = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"));
-    return utcZoned.toLocalDateTime();
-  }
-
-  /**
-   * LMT (with Location) to GMT
-   * {@link TimeTools#getGmtFromLmt(ChronoLocalDateTime, Location)}
-   */
-  @Deprecated
-  public static LocalDateTime getGmtFromLmt(LocalDateTime lmt , @NotNull Location loc) {
-    if (loc.isMinuteOffsetSet()) {
-      int secOffset = loc.getMinuteOffset() * 60;
-      return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
-    }
-    else {
-      return getGmtFromLmt(lmt , loc.getTimeZone().toZoneId());
-    }
-  }
 
   /**
    * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）

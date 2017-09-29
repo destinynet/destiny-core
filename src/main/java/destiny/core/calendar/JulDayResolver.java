@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar;
 
+import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.LocalTime;
@@ -14,13 +15,11 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public interface JulDayResolver {
 
-  Tuple2<ChronoLocalDate , LocalTime> getDateAndTime(double gmtJulDay);
+  ChronoLocalDateTime getLocalDateTime(double gmtJulDay);
 
-  default ChronoLocalDateTime getLocalDateTime(double gmtJulDay) {
-    Tuple2<ChronoLocalDate, LocalTime>  dateAndTime = getDateAndTime(gmtJulDay);
-    ChronoLocalDate date = dateAndTime.v1();
-    LocalTime time = dateAndTime.v2();
-    return date.atTime(time);
+  default Tuple2<ChronoLocalDate , LocalTime> getDateAndTime(double gmtJulDay) {
+    ChronoLocalDateTime dateTime = getLocalDateTime(gmtJulDay);
+    return Tuple.tuple(dateTime.toLocalDate() , dateTime.toLocalTime());
   }
 
 }

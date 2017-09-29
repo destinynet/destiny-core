@@ -8,7 +8,6 @@ import destiny.tools.Decorator;
 import destiny.tools.LocaleUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 
@@ -21,7 +20,7 @@ public class TimeSecDecorator {
     .build();
 
   @NotNull
-  public static String getOutputString(LocalDateTime time , Locale locale) {
+  public static String getOutputString(ChronoLocalDateTime time , Locale locale) {
     return implMap.get(
       LocaleUtils.getBestMatchingLocale(locale, implMap.keySet()).orElse((Locale) implMap.keySet().toArray()[0])
     ).getOutputString(time);

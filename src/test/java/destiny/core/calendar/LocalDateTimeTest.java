@@ -7,10 +7,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -26,7 +23,6 @@ import static org.junit.Assert.assertSame;
 public class LocalDateTimeTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
-
 
   @Test
   public void testWithValue() {

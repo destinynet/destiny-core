@@ -84,8 +84,7 @@ public class EightWordsContext implements Serializable {
    * TODO 演算法重複 {@link SolarTermsImpl#getSolarTermsFromGMT}
    */
   public SolarTerms getCurrentSolarTerms() {
-    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
     Position sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC);
     return SolarTerms.getFromDegree(sp.getLng());
   }
