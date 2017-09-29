@@ -24,7 +24,7 @@ public class LocationDecoratorTaiwan implements Decorator<Location> {
 
     sb.append("高度 ").append(location.getAltitudeMeter()).append(" 公尺.");
     sb.append(" 時區 ").append(location.getTimeZone().getID());
-    if (location.isMinuteOffsetSet())
+    if (location.hasMinuteOffset())
       sb.append(" 時差 ").append(location.getMinuteOffset()).append(" 分鐘.");
 
     return sb.toString();

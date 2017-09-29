@@ -5,20 +5,15 @@
 package destiny.core.calendar;
 
 import destiny.tools.AlignUtil;
-import destiny.tools.LocaleStringIF;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.threeten.extra.chrono.JulianDate;
 
 import java.io.Serializable;
 import java.time.*;
-import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
@@ -28,31 +23,14 @@ import static org.jooq.lambda.tuple.Tuple.tuple;
  * 代表 『時間』 的物件
  * 1582/10/4 之後跳到 1582/10/15 , 之前是 Julian Calendar , 之後是 Gregorian Calendar
  */
-public class Time implements Serializable , LocaleStringIF
-{
-  /* 是否是西元「後」, 
-  西元前為 false , 西元後為 true (default) */
-  private boolean ad = true;
-  private int year;
-  private int month;
-  private final int day;
-  private final int hour;
-  private final int minute;
-  protected final double second;
-  
+public class Time implements Serializable {
+
   /**
    * Julian Calendar    終止於西元 1582-10-04 , 該日的 Julian Day 是 2299159.5
    * Gregorian Calendar 開始於西元 1582-10-15 , 該日的 Julian Day 是 2299160.5
    * */
   private final static double GREGORIAN_START_JULIAN_DAY =2299160.5;
   
-  /** 
-   * 內定是 Gregorian Calendar <BR/>
-   * Gregorian == TRUE <BR/>
-   * Julian == FALSE
-   * */
-  private boolean gregorian = true ;
-
   private static Logger logger = LoggerFactory.getLogger(Time.class);
 
   /**
@@ -135,122 +113,6 @@ public class Time implements Serializable , LocaleStringIF
 
 
   /**
-   * 已經隱含了 1582-10-04 的 cutover 演算法
-   */
-  public static Tuple2<ChronoLocalDate , LocalTime> from(double gmtJulDay) {
-    boolean isGregorian = false;
-
-    if (gmtJulDay >= GREGORIAN_START_JULIAN_DAY) {
-      isGregorian = true;
-    }
-
-    double u0,u1,u2,u3,u4;
-
-    u0 = gmtJulDay + 32082.5;
-
-    if (isGregorian) {
-      u1 = u0 + Math.floor(u0 / 36525.0) - Math.floor(u0 / 146100.0) - 38.0;
-      if (gmtJulDay >= 1830691.5) {
-        u1 += 1;
-      }
-      u0 = u0 + Math.floor(u1 / 36525.0) - Math.floor(u1 / 146100.0) - 38.0;
-    }
-    u2 = Math.floor(u0 + 123.0);
-    u3 = Math.floor((u2 - 122.2) / 365.25);
-    u4 = Math.floor((u2 - Math.floor(365.25 * u3)) / 30.6001);
-    int month = (int) (u4 - 1.0);
-    if (month > 12) {
-      month -= 12;
-    }
-    int day = (int) (u2 - Math.floor(365.25 * u3) - Math.floor(30.6001 * u4));
-    int y = (int) (u3 + Math.floor((u4 - 2.0) / 12.0) - 4800);
-
-    boolean ad = true;
-    int year;
-
-    if (y <= 0) {
-      ad = false;
-      year = -(y - 1); // 取正值
-    }
-    else {
-      year = y;
-    }
-
-    double h = (gmtJulDay - Math.floor(gmtJulDay + 0.5) + 0.5) * 24.0;
-    int hour = (int) h;
-    int minute = (int) (h * 60 - hour * 60);
-    double second = h * 3600 - hour * 3600 - minute * 60;
-
-    Tuple2<Long , Long> pair = splitSecond(second);
-    int secsInt = pair.v1().intValue();
-    int nanoInt = pair.v2().intValue();
-
-    LocalTime localTime = LocalTime.of(hour , minute , secsInt , nanoInt);
-
-    if (isGregorian) {
-      // ad 一定為 true , 不用考慮負數年數
-      return tuple(LocalDate.of(year , month , day) , localTime);
-    } else {
-      int prolepticYear = TimeTools.getNormalizedYear(ad , year);
-      return tuple(JulianDate.of(prolepticYear , month , day) ,localTime);
-    }
-  }
-
-  @Deprecated
-  public Time(double julianDay) {
-    this(julianDay , (julianDay >= GREGORIAN_START_JULIAN_DAY));
-  }
-
-  
-  /**
-   * 從 Julian Day 建立 Time
-   * http://www.astro.com/ftp/placalc/src/revjul.c
-   *
-   * inverse function to julday()
-   */
-  private Time(double julianDay, boolean isGregorian) {
-    double u0,u1,u2,u3,u4;
-
-    u0 = julianDay + 32082.5;
-    this.gregorian = isGregorian;
-    if (isGregorian) {
-      u1 = u0 + Math.floor(u0 / 36525.0) - Math.floor(u0 / 146100.0) - 38.0;
-      if (julianDay >= 1830691.5) { // 西元300年2月29日 (0AM)？
-        u1 += 1;
-      }
-      u0 = u0 + Math.floor(u1 / 36525.0) - Math.floor(u1 / 146100.0) - 38.0;
-    }
-    u2 = Math.floor(u0 + 123.0);
-    u3 = Math.floor((u2 - 122.2) / 365.25);
-    u4 = Math.floor((u2 - Math.floor(365.25 * u3)) / 30.6001);
-    this.month = (int) (u4 - 1.0);
-    if (this.month > 12) {
-      this.month -= 12;
-    }
-    this.day = (int) (u2 - Math.floor(365.25 * u3) - Math.floor(30.6001 * u4));
-    int y = (int) (u3 + Math.floor((u4 - 2.0) / 12.0) - 4800);
-    if (y <= 0) {
-      this.ad = false;
-      this.year = -(y - 1); // 取正值
-    }
-    else {
-      this.year = y;
-    }
-
-    double h = (julianDay - Math.floor(julianDay + 0.5) + 0.5) * 24.0;
-    this.hour = (int) h;
-    this.minute = (int) (h * 60 - hour * 60);
-    this.second = h * 3600 - hour * 3600 - minute * 60;
-  }
-
-
-  public LocalDateTime toLocalDateTime() {
-    return Time.ofLocalDateTime(ad, year, month, day, hour, minute, second);
-  }
-
-  
-
-  /**
    * @return t 是否介於 t1 與 t2 之間
    */
   public static boolean isBetween(LocalDateTime t , LocalDateTime t1 , LocalDateTime t2) {
@@ -270,21 +132,6 @@ public class Time implements Serializable , LocaleStringIF
   }
 
 
-  
-  /**
-   * 與 Gregorian Calendar 的啟始日比對 , 判斷輸入的日期是否是 Gregorian Calendar
-   */
-  private static boolean isGregorian(int year, int month, int day) {
-    IDate dt=swe_revjul(GREGORIAN_START_JULIAN_DAY,true);
-    boolean isGregorian= true;
-    if (dt.year > year ||
-        (dt.year == year && dt.month > month) ||
-        (dt.year == year && dt.month == month && dt.day > day)) 
-    {
-      isGregorian = false;
-    }
-    return isGregorian;
-  }
   
 
   /**
@@ -323,32 +170,7 @@ public class Time implements Serializable , LocaleStringIF
   public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull Location loc) {
     return tuple(Time.isDst((LocalDateTime)lmt, loc), Time.getSecondsOffset((LocalDateTime)lmt, loc));
   }
-  
-  @Override
-  public String toString() {
-    return TimeSecDecorator.getOutputString(toLocalDateTime() , Locale.getDefault());
-  }
-  
-  public String toString(Locale locale) {
-    return TimeSecDecorator.getOutputString(toLocalDateTime() , locale);
-  }
 
-  @Override
-  public boolean equals(@Nullable Object o) {
-    if ((o != null) && (o.getClass().equals(this.getClass()))) {
-      Time time = (Time) o;
-      return (this.ad == time.ad &&
-          this.year == time.year &&
-          this.month == time.month &&
-          this.day == time.day &&
-          this.hour == time.hour &&
-          this.minute == time.minute &&
-          this.second == time.second &&
-          this.gregorian == time.gregorian
-          );
-    }
-    else return false;
-  }
 
 
   public static double getGmtJulDay(boolean isAd , boolean isGregorian , int year , int month , int day , int hour , int minute , double second) {
@@ -389,25 +211,6 @@ public class Time implements Serializable , LocaleStringIF
     return tuple(secs , nano);
   }
 
-  
-  @Override
-  public int hashCode()
-  {
-    long SecondBits = Double.doubleToLongBits(second);
-    int SecondCode = (int)(SecondBits ^ (SecondBits >>> 32));
-    
-    int hash=17;
-    hash = hash * 31 + (ad ? 1 :0 );
-    hash = hash * 31 + year;
-    hash = hash * 31 + month;
-    hash = hash * 31 + day;
-    hash = hash * 31 + hour;
-    hash = hash * 31 + minute;
-    hash = hash * 31 + SecondCode;
-    hash = hash * 31 + (gregorian ? 1 : 0);
-    return hash;
-  }
-  
   //////////////////////////////////////////////////////////////////////
   // Erzeugt aus einem jd/calType Jahr, Monat, Tag und Stunde.        //
   // It does NOT change any global variables.                         //
@@ -442,24 +245,6 @@ public class Time implements Serializable , LocaleStringIF
     return dt;
   }
 
-
-
-  public void setYear(int year)
-  {
-    this.year = year;
-  }
-
-
-  /** 是否是西元前 , 西元前 傳回 true ; 西元後 傳回 false */
-  public boolean isBeforeChrist()
-  {
-    return !ad;
-  }
-
-  public void setBeforeChrist(boolean beforeChrist)
-  {
-    this.ad = !beforeChrist;
-  }
 }
 
 class IDate implements java.io.Serializable

@@ -164,13 +164,6 @@ public interface PalmIF {
     return new PalmWithMeta(palm , lmt , loc , place , chineseDateImpl , dayImpl , positiveImpl , hourImpl , midnightImpl , changeDayAfterZi, trueRisingSign, monthAlgo);
   }
 
-  default PalmWithMeta getPalmWithMeta(Gender gender , Time lmt , Location loc , String place , PositiveIF positiveImpl ,
-                                       ChineseDateIF chineseDateImpl , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl ,
-                                       RisingSignIF risingSignImpl, YearMonthIF yearMonthImpl,
-                                       boolean changeDayAfterZi , boolean trueRisingSign , boolean clockwiseHouse , MonthAlgo monthAlgo) {
-    return getPalmWithMeta(gender , lmt.toLocalDateTime() , loc , place , positiveImpl , chineseDateImpl , dayImpl , hourImpl , midnightImpl , risingSignImpl, yearMonthImpl, monthAlgo, changeDayAfterZi, trueRisingSign, clockwiseHouse);
-  }
-
   /**
    * 大運從掌中年上起月，男順、女逆，輪數至本生月起運。本生月所在宮為一運，下一宮為二運，而一運管10年。
    *

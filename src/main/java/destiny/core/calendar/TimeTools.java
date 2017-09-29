@@ -120,7 +120,7 @@ public class TimeTools implements Serializable {
   }
 
   public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , Location loc) {
-    if (loc.isMinuteOffsetSet()) {
+    if (loc.hasMinuteOffset()) {
       int secOffset = loc.getMinuteOffset() * 60;
       return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
     } else {
@@ -158,7 +158,7 @@ public class TimeTools implements Serializable {
   }
 
   public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , Location loc) {
-    if (loc.isMinuteOffsetSet()) {
+    if (loc.hasMinuteOffset()) {
       int secOffset = loc.getMinuteOffset() * 60;
       return gmt.plus(secOffset , ChronoUnit.SECONDS).atZone(loc.getTimeZone().toZoneId()).toLocalDateTime();
     }

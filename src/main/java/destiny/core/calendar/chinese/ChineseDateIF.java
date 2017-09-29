@@ -6,7 +6,6 @@ package destiny.core.calendar.chinese;
 
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
@@ -54,9 +53,6 @@ public interface ChineseDateIF extends Descriptive {
    */
   ChineseDate getChineseDate(LocalDateTime lmt , Location location , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl , boolean changeDayAfterZi);
 
-  default ChineseDate getChineseDate(Time lmt , Location location , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl ,  boolean changeDayAfterZi) {
-    return getChineseDate(lmt.toLocalDateTime() , location , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
-  }
 
   // =============== 陰曆轉陽曆 ===============
   LocalDate getYangDate(int cycle, StemBranch year, boolean leap, int month, int day);

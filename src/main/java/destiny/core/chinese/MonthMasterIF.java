@@ -20,10 +20,6 @@ public interface MonthMasterIF extends Descriptive {
   /** 取得「月將」的方法 */
   Branch getBranch(LocalDateTime lmt , Location location);
 
-  default Branch getBranch(Time lmt , Location location) {
-    return getBranch(lmt.toLocalDateTime() , location);
-  }
-
   /** 取得「月將」的中文稱謂
    *
    * @see <a href="http://zh.wikipedia.org/wiki/十二月將">十二月將</a>

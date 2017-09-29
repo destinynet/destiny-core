@@ -37,8 +37,9 @@ public class Location implements Serializable {
    * */
   private String tzid = "Asia/Taipei";
 
-  /** 2012-03-04 補加上 :
-   * 與 GMT 的時差 , 優先權高於 timeZone !
+  /**
+   * 2012-03-04 補加上 :
+   * 強制覆蓋與 GMT 的時差 , 優先權高於 {@link #tzid} !
    */
   @Nullable
   private Integer minuteOffset = null;
@@ -523,8 +524,7 @@ public class Location implements Serializable {
   }
 
   /** 查詢， minuteOffset 是否被設定 (非null) */
-  public boolean isMinuteOffsetSet()
-  {
+  public boolean hasMinuteOffset() {
     return minuteOffset!=null;
   }
 

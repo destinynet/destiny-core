@@ -22,7 +22,7 @@ public class LocationDecoratorChina implements Decorator<Location> {
 
     sb.append("高度 ").append(location.getAltitudeMeter()).append(" 米");
     sb.append(" 时区 ").append(location.getTimeZone().getID());
-    if (location.isMinuteOffsetSet())
+    if (location.hasMinuteOffset())
       sb.append(" 时差 ").append(location.getMinuteOffset()).append(" 分钟.");
 
     return sb.toString();

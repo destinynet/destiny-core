@@ -18,9 +18,4 @@ public interface EightWordsIF {
   @NotNull
   EightWords getEightWords(LocalDateTime lmt, Location location);
 
-  @NotNull
-  default EightWords getEightWords(Time lmt, Location location) {
-    return getEightWords(lmt.toLocalDateTime() , location);
-  }
-
 }

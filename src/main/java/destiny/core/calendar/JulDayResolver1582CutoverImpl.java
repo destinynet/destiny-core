@@ -43,7 +43,12 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
   }
 
 
-
+  /**
+   * 從 Julian Day 建立 {@link ChronoLocalDateTime} (GMT)
+   * http://www.astro.com/ftp/placalc/src/revjul.c
+   *
+   * inverse function to julday()
+   */
   public static ChronoLocalDateTime getLocalDateTimeStatic(double gmtJulDay) {
     boolean isGregorian = false;
 

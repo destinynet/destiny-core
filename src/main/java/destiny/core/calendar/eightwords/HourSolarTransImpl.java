@@ -8,8 +8,8 @@ package destiny.core.calendar.eightwords;
 import destiny.astrology.Planet;
 import destiny.astrology.RiseTransIF;
 import destiny.astrology.TransPoint;
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -61,24 +61,24 @@ public class HourSolarTransImpl implements HourIF , Serializable {
     if (nextNadir > nextMeridian) {
       //子正到午正（上半天）
       double thirteenHoursAgo = gmtJulDay - (13/24.0);
-      double previousNadir = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+      double previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.NADIR , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
 
-      logger.debug("gmtJulDay = {} , 上一個子正 = {}" , gmtJulDay , new Time(previousNadir));
+      logger.debug("gmtJulDay = {} , 上一個子正(GMT) = {}" , gmtJulDay , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(previousNadirGmt));
 
-      double diffDays = (nextMeridian - previousNadir); // 從子正到午正，總共幾秒
+      double diffDays = (nextMeridian - previousNadirGmt); // 從子正到午正，總共幾秒
       double oneUnitDays = diffDays/12.0;
       logger.debug("diffDays = {} , oneUnitDays = {}" , diffDays , oneUnitDays);
-      if (gmtJulDay < previousNadir + oneUnitDays)
+      if (gmtJulDay < previousNadirGmt + oneUnitDays)
         return Branch.子;
-      else if (gmtJulDay < previousNadir + oneUnitDays*3)
+      else if (gmtJulDay < previousNadirGmt + oneUnitDays*3)
         return Branch.丑;
-      else if (gmtJulDay < previousNadir + oneUnitDays*5)
+      else if (gmtJulDay < previousNadirGmt + oneUnitDays*5)
         return Branch.寅;
-      else if (gmtJulDay < previousNadir + oneUnitDays*7)
+      else if (gmtJulDay < previousNadirGmt + oneUnitDays*7)
         return Branch.卯;
-      else if (gmtJulDay < previousNadir + oneUnitDays*9)
+      else if (gmtJulDay < previousNadirGmt + oneUnitDays*9)
         return Branch.辰;
-      else if (gmtJulDay < previousNadir + oneUnitDays*11)
+      else if (gmtJulDay < previousNadirGmt + oneUnitDays*11)
         return Branch.巳;
       else
         return Branch.午;

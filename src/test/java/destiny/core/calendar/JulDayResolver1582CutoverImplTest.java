@@ -19,7 +19,10 @@ import static org.junit.Assert.*;
 public class JulDayResolver1582CutoverImplTest {
 
 
-
+  /**
+   * 從 julDay 傳回 LocalDate or JulianDate
+   * 可以藉由這裡比對 http://aa.usno.navy.mil/data/docs/JulianDate.php
+   */
   @Test
   public void julDay2DateTime_JulGreg_cutover() throws Exception {
 
@@ -47,6 +50,27 @@ public class JulDayResolver1582CutoverImplTest {
     assertSame(JulianEra.AD, localDate.getEra());
     assertEquals(JulianDate.of(1582,10,4) , localDate);
     assertEquals(LocalTime.MIDNIGHT , localTime);
+  }
+
+
+  /**
+   * 西元元年
+   * 從 julDay 傳回 LocalDate or JulianDate
+   * 可以藉由這裡比對 http://aa.usno.navy.mil/data/docs/JulianDate.php
+   */
+  @Test
+  public void testYear1() {
+    //西元元年一月一號 (J)
+    assertEquals(JulianDate.of(1,1,1), JulDayResolver1582CutoverImpl.getDateTime(1721423.5).v1());
+
+    //西元前一年十二月三十一號 (J)
+    assertEquals(JulianDate.of(0,12,31), JulDayResolver1582CutoverImpl.getDateTime(1721422.5).v1());
+
+    //西元前一年一月一號 (J)
+    assertEquals(JulianDate.of(0,1,1), JulDayResolver1582CutoverImpl.getDateTime(1721057.5).v1());
+
+    //西元前二年十二月三十一號 (J)
+    assertEquals(JulianDate.of(-1,12,31), JulDayResolver1582CutoverImpl.getDateTime(1721056.5).v1());
   }
 
   @Test
