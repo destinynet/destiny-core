@@ -3,6 +3,9 @@
  */
 package destiny.core.calendar;
 
+import destiny.tools.AlignUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +19,10 @@ import java.time.zone.ZoneRulesException;
 import java.util.TimeZone;
 import java.util.function.Function;
 
+import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.JulianFields.JULIAN_DAY;
+import static org.jooq.lambda.tuple.Tuple.tuple;
 
 public class TimeTools implements Serializable {
 
@@ -31,7 +37,9 @@ public class TimeTools implements Serializable {
   private static Logger logger = LoggerFactory.getLogger(TimeTools.class);
 
 
-  // ======================================== GMT instant -> julian day ========================================
+  /**
+   * ======================================== GMT {@link Instant} -> julian day {@link Double} ========================================
+   */
 
   /**
    * @param instant 從 「GMT」定義的 {@link Instant} 轉換成 Julian Day
@@ -39,6 +47,14 @@ public class TimeTools implements Serializable {
   public static double getJulDay(Instant instant) {
     // 先取得「被加上 0.5 的」 julian day
     ZonedDateTime zdt = instant.atZone(GMT);
+    long halfAddedJulDay = zdt.getLong(JULIAN_DAY);
+    LocalTime localTime = zdt.toLocalTime();
+    return getGmtJulDay(halfAddedJulDay , localTime);
+  }
+
+
+  public static double getJulDay(ChronoZonedDateTime zdt) {
+    // 先取得「被加上 0.5 的」 julian day
     long halfAddedJulDay = zdt.getLong(JULIAN_DAY);
     LocalTime localTime = zdt.toLocalTime();
     return getGmtJulDay(halfAddedJulDay , localTime);
@@ -61,7 +77,9 @@ public class TimeTools implements Serializable {
     return getLocalDateTime(instant , fun);
   }
 
-  // ======================================== GMT DateTime -> julian day ========================================
+  /**
+   * ======================================== GMT {@link ChronoLocalDateTime} -> julian day {@link Double} ========================================
+   */
 
   /**
    * astro julian day number 開始於
@@ -94,7 +112,9 @@ public class TimeTools implements Serializable {
   }
 
 
-  // ======================================== LMT DateTime -> julian day ========================================
+  /**
+   * ======================================== LMT {@link ChronoLocalDateTime} -> julian day {@link Double} ========================================
+   */
 
 
   /**
@@ -109,6 +129,12 @@ public class TimeTools implements Serializable {
 
 
   // ======================================== LMT -> GMT ========================================
+  public static ChronoZonedDateTime getGmtFromZonedDateTime(ChronoZonedDateTime zonedLmt) {
+    ZoneOffset zoneOffset = zonedLmt.getOffset();
+    int totalSeconds = zoneOffset.getTotalSeconds();
+    return zonedLmt.toLocalDateTime().minus(totalSeconds , ChronoUnit.SECONDS).atZone(GMT);
+  }
+
   public static ChronoLocalDateTime getGmtFromLmt(ChronoZonedDateTime zonedLmt) {
     ZoneOffset zoneOffset = zonedLmt.getOffset();
     int totalSeconds = zoneOffset.getTotalSeconds();
@@ -121,6 +147,9 @@ public class TimeTools implements Serializable {
 
   public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , Location loc) {
     if (loc.hasMinuteOffset()) {
+      assert loc.getMinuteOffsetOptional().isPresent();
+//      Tuple2<Integer , Integer> hoursAndMins = splitMinutes(loc.getMinuteOffsetOptional().get());
+//      ZoneOffset preferredOffset = ZoneOffset.ofHoursMinutes(hoursAndMins.v1() , hoursAndMins.v2());
       int secOffset = loc.getMinuteOffset() * 60;
       return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
     } else {
@@ -174,21 +203,111 @@ public class TimeTools implements Serializable {
 
 
 
+  // ======================================== DST 查詢 ========================================
+
+
+  /**
+   * @return 此時刻，此 TimeZone ，是否有日光節約時間
+   */
+  public static boolean isDst(ChronoLocalDateTime lmt, TimeZone tz) {
+    ChronoZonedDateTime zdt = lmt.atZone(tz.toZoneId());
+    return zdt.getZone().getRules().isDaylightSavings(zdt.toInstant());
+  }
+
+  public static boolean isDst(ChronoLocalDateTime lmt, Location loc) {
+    return isDst(lmt , loc.getTimeZone());
+  }
+
+  /**
+   * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
+   */
+  private static int getSecondsOffset(ChronoLocalDateTime lmt, TimeZone tz) {
+    ZoneOffset offset = lmt.atZone(tz.toZoneId()).getOffset();
+    return offset.getTotalSeconds();
+  }
+
+  /**
+   * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
+   */
+  public static int getSecondsOffset(ChronoLocalDateTime lmt, Location loc) {
+    return getSecondsOffset(lmt , loc.getTimeZone());
+  }
+
+  /**
+   * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
+   * */
+  public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull Location loc) {
+    return tuple(isDst(lmt, loc), getSecondsOffset(lmt, loc));
+  }
+
+
+
+
   // ======================================== misc methods ========================================
 
   /**
+   * @return t 是否 處於 t1 與 t2 之間
+   *
+   * 將這些 t , t1 , t2 視為 GMT , 轉成 jul day 來比較大小
+   */
+  public static boolean isBetween(ChronoLocalDateTime t , ChronoLocalDateTime t1 , ChronoLocalDateTime t2) {
+    double julDay = getGmtJulDay(t);
+    double julDay1 = getGmtJulDay(t1);
+    double julDay2 = getGmtJulDay(t2);
+
+    return (julDay2 > julDay && julDay > julDay1) || (julDay1 > julDay && julDay > julDay2);
+  }
+
+
+  public static String getDebugString(ChronoLocalDateTime time) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(time.get(YEAR_OF_ERA) >= 1 ? '+' : '-');
+    sb.append(AlignUtil.alignRight(time.get(YEAR_OF_ERA), 4, ' '));
+    sb.append(AlignUtil.alignRight(time.get(MONTH_OF_YEAR), 2, ' '));
+    sb.append(AlignUtil.alignRight(time.get(DAY_OF_MONTH), 2, ' '));
+    sb.append(AlignUtil.alignRight(time.get(HOUR_OF_DAY), 2, ' '));
+    sb.append(AlignUtil.alignRight(time.get(MINUTE_OF_HOUR), 2, ' '));
+    sb.append(time.get(SECOND_OF_MINUTE));
+    sb.append('.');
+    if (time.get(NANO_OF_SECOND) == 0) {
+      sb.append('0');
+    } else {
+      // 小數點部分
+      String decimal = String.valueOf(time.get(NANO_OF_SECOND) / 1_000_000_000.0);
+      sb.append(decimal.substring(2));
+    }
+    return sb.toString();
+  }
+
+  /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值 */
+  public static Tuple2<Long , Long> splitSecond(double seconds) {
+    long secs = (long) seconds;
+    long nano = (long) ((seconds - secs)* 1_000_000_000);
+    return tuple(secs , nano);
+  }
+
+  /**
+   * 將「分鐘」拆成「小時」與「分」
+   */
+  public static Tuple2<Integer , Integer> splitMinutes(int minutes) {
+    int hours = minutes / 60;
+    int mins = minutes % 60;
+    return tuple(hours , mins);
+  }
+
+  /**
    * 取得不中斷的年份 , 亦即 proleptic year
-   * @param year 傳入的年，一定大於 0
+   * @param yearOfEra 傳入的年，一定大於 0
    * @return proleptic year , 線性的 year : 西元前1年:0 , 西元前2年:-1 ...
    */
-  public static int getNormalizedYear(boolean ad , int year) {
-    if (year <= 0) {
-      throw new RuntimeException("year " + year + " must > 0");
+  public static int getNormalizedYear(boolean ad , int yearOfEra) {
+    if (yearOfEra <= 0) {
+      throw new RuntimeException("year " + yearOfEra + " must > 0");
     }
     if (!ad)
-      return -(year-1);
+      return -(yearOfEra-1);
     else
-      return year;
+      return yearOfEra;
   }
 
   private static double getGmtJulDay(long halfAddedJulDay , LocalTime localTime) {
@@ -200,4 +319,5 @@ public class TimeTools implements Serializable {
 
     return halfAddedJulDay - 0.5 + dayValue;
   }
+
 }

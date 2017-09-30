@@ -8,6 +8,7 @@ import destiny.core.calendar.Location;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,6 +36,11 @@ public class BirthDataWithLocName extends BirthData {
     super(gender, time, location);
     this.name = name;
     this.place = place;
+  }
+
+  public BirthDataWithLocName(Gender gender, ChronoLocalDateTime chronoLocalDateTime, Location location, String name) {
+    super(gender, (LocalDateTime)chronoLocalDateTime, location);
+    this.name = name;
   }
 
   @Nullable

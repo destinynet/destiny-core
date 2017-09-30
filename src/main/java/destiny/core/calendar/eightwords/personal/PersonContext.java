@@ -342,9 +342,9 @@ public class PersonContext extends EightWordsContext {
       double startFortuneSeconds = getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
       double   endFortuneSeconds = getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
 
-      Tuple2<Long , Long> pair1 = Time.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
+      Tuple2<Long , Long> pair1 = TimeTools.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
       LocalDateTime startFortuneLmt = LocalDateTime.from(getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
-      Tuple2<Long , Long> pair2 = Time.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
+      Tuple2<Long , Long> pair2 = TimeTools.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
       LocalDateTime endFortuneLmt  = LocalDateTime.from(getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
 
       switch(fortuneOutput)
@@ -412,12 +412,12 @@ public class PersonContext extends EightWordsContext {
 
   /** 是否有日光節約時間 */
   public boolean isDst() {
-    return Time.getDstSecondOffset(lmt, location).v1();
+    return TimeTools.getDstSecondOffset(lmt, location).v1();
   }
 
   /** 與 GMT 的時差 (分) */
   public int getGmtMinuteOffset() {
-    return Time.getDstSecondOffset(lmt, location).v2() / 60;
+    return TimeTools.getDstSecondOffset(lmt, location).v2() / 60;
   }
 
   /**

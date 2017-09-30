@@ -59,8 +59,8 @@ public class EightWordsContext implements Serializable {
   }
 
   public EightWordsContextModel getModel() {
-    int gmtMinuteOffset = Time.getDstSecondOffset(lmt, location).v2() / 60;
-    boolean dst = Time.getDstSecondOffset(lmt, location).v1();
+    int gmtMinuteOffset = TimeTools.getDstSecondOffset(lmt, location).v2() / 60;
+    boolean dst = TimeTools.getDstSecondOffset(lmt, location).v1();
 
     Tuple2<SolarTerms , SolarTerms> prevNextMajorSolarTerms = getPrevNextMajorSolarTerms();
 

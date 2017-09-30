@@ -11,6 +11,7 @@ import org.threeten.extra.chrono.JulianChronology;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
@@ -93,7 +94,7 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
     int minute = (int) (h * 60 - hour * 60);
     double second = h * 3600 - hour * 3600 - minute * 60;
 
-    Tuple2<Long , Long> pair = Time.splitSecond(second);
+    Tuple2<Long , Long> pair = TimeTools.splitSecond(second);
     int secsInt = pair.v1().intValue();
     int nanoInt = pair.v2().intValue();
 
@@ -113,5 +114,58 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
     return Tuple.tuple(dateTime.toLocalDate() , dateTime.toLocalTime());
   }
 
+  /**
+   * TODO : 註記 Gregorian or Julian
+   * 利用一個字串 's' 來建立整個時間 , 格式如下：
+   * 0123456789A1234567
+   * +YYYYMMDDHHMMSS.SS
+   * */
+  public static ChronoLocalDateTime fromDebugString(String s) {
+    boolean ad;
+    char plusMinus = s.charAt(0);
+    if (plusMinus == '+')
+      ad = true;
+    else if (plusMinus == '-')
+      ad = false;
+    else
+      throw new RuntimeException("AD not correct : " + plusMinus);
+
+    int yearOfEra = Integer.valueOf(s.substring(1, 5).trim());
+    int month = Integer.valueOf(s.substring(5, 7).trim());
+    int day = Integer.valueOf(s.substring(7, 9).trim());
+    int hour = Integer.valueOf(s.substring(9, 11).trim());
+    int minute = Integer.valueOf(s.substring(11, 13).trim());
+    double second = Double.valueOf(s.substring(13));
+    Tuple2<Long , Long> pair = TimeTools.splitSecond(second);
+    int prolepticYear = TimeTools.getNormalizedYear(ad , yearOfEra);
+
+    final boolean gregorian;
+
+    if (prolepticYear < 1582) {
+      gregorian = false;
+    } else if (prolepticYear > 1582) {
+      gregorian = true;
+    } else {
+      // prolepticYear == 1582
+      if (month < 10) {
+        gregorian = false;
+      } else if (month > 10) {
+        gregorian = true;
+      } else {
+        // month == 10
+        if (day <= 4)
+          gregorian = false;
+        else if (day >= 15)
+          gregorian = true;
+        else
+          throw new RuntimeException("Error Date : " + prolepticYear + "/"+month+"/" + day);
+      }
+    }
+
+    if (gregorian)
+      return LocalDateTime.of(prolepticYear , month , day , hour , minute , pair.v1().intValue() , pair.v2().intValue());
+    else
+      return JulianDateTime.of(prolepticYear , month , day , hour , minute , pair.v1().intValue() , pair.v2().intValue());
+  }
 
 }

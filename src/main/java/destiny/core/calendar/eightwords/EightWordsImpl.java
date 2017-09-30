@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 
 public class EightWordsImpl implements EightWordsIF , Serializable {
@@ -40,7 +39,7 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
    */
   @NotNull
   @Override
-  public EightWords getEightWords(LocalDateTime lmt, Location location) {
+  public EightWords getEightWords(ChronoLocalDateTime lmt, Location location) {
     /*
     //校正 Location 的 GMT 時差
     TimeZone tz = location.getTimeZone();

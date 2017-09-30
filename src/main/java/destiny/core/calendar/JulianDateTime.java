@@ -114,37 +114,37 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   }
 
   /**
-   * @param year maybe <= 0
+   * @param prolepticYear maybe <= 0
    */
-  public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute , int second , int nano) {
-    JulianDate date = JulianDate.of(year , month , dayOfMonth);
+  public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute , int second , int nano) {
+    JulianDate date = JulianDate.of(prolepticYear , month , dayOfMonth);
     LocalTime time = LocalTime.of(hour , minute , second , nano);
     return new JulianDateTime(date , time);
   }
 
   /**
-   * @param year maybe <= 0
+   * @param prolepticYear maybe <= 0
    */
-  public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute , double second) {
-    JulianDate date = JulianDate.of(year , month , dayOfMonth);
+  public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute , double second) {
+    JulianDate date = JulianDate.of(prolepticYear , month , dayOfMonth);
 
-    Tuple2<Long , Long> pair = Time.splitSecond(second);
+    Tuple2<Long , Long> pair = TimeTools.splitSecond(second);
     LocalTime time = LocalTime.of(hour , minute , pair.v1().intValue() , pair.v2().intValue());
     return new JulianDateTime(date , time);
   }
 
   /**
-   * @param year maybe <= 0
+   * @param prolepticYear maybe <= 0
    */
-  public static JulianDateTime of(int year, int month, int dayOfMonth, int hour, int minute) {
-    return of(year , month , dayOfMonth , hour , minute , 0);
+  public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute) {
+    return of(prolepticYear , month , dayOfMonth , hour , minute , 0);
   }
 
   /**
-   * @param year maybe <= 0
+   * @param prolepticYear maybe <= 0
    */
-  public static JulianDateTime of(int year, Month month, int dayOfMonth, int hour, int minute) {
-    return of(year , month.getValue() , dayOfMonth , hour , minute , 0);
+  public static JulianDateTime of(int prolepticYear, Month month, int dayOfMonth, int hour, int minute) {
+    return of(prolepticYear , month.getValue() , dayOfMonth , hour , minute , 0);
   }
 
   public static JulianDateTime ofEpochSecond(long epochSecond, int nanoOfSecond, ZoneOffset offset) {
@@ -404,5 +404,11 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   @Override
   public int hashCode() {
     return Objects.hash(date, time);
+  }
+
+
+  @Override
+  public String toString() {
+    return "[JulianDateTime " + "date=" + date + ", time=" + time + ']';
   }
 }

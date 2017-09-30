@@ -7,7 +7,6 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.LongitudeTimeBean;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ public interface TrueSolarTimeIF {
     ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     logger.debug("gmt = {}" , gmt);
     double e = getEquationSecs(gmt);
-    Tuple2<Long , Long> pair = Time.splitSecond(e);
+    Tuple2<Long , Long> pair = TimeTools.splitSecond(e);
 
     ChronoLocalDateTime gmtWithE = gmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
     logger.debug("gmt  = {}" , gmt);

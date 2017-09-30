@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords.personal;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeSecDecoratorChinese;
+import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper;
 import destiny.core.calendar.eightwords.Direction;
@@ -132,14 +133,14 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     SolarTerms prevMajorSolarTerms = model.getPrevMajorSolarTerms();
     SolarTerms nextMajorSolarTerms = model.getNextMajorSolarTerms();
 
-    Tuple2<Long , Long> pair1 = Time.splitSecond(personContext.getTargetMajorSolarTermsSeconds(-1));
+    Tuple2<Long , Long> pair1 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(-1));
     LocalDateTime prevMajorSolarTermsTime = LocalDateTime.from(model.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
     //Time prevMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(-1) );
     節氣.setText(prevMajorSolarTerms.toString() , 1 , 1);
     節氣.setText("：" , 1, 5);
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime) , 1,7);
 
-    Tuple2<Long , Long> pair2 = Time.splitSecond(personContext.getTargetMajorSolarTermsSeconds(1));
+    Tuple2<Long , Long> pair2 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(1));
     LocalDateTime nextMajorSolarTermsTime = LocalDateTime.from(model.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
     //Time nextMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(1) );
     節氣.setText(nextMajorSolarTerms.toString() , 2 , 1);
