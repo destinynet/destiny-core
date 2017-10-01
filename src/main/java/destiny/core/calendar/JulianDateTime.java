@@ -128,8 +128,8 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute , double second) {
     JulianDate date = JulianDate.of(prolepticYear , month , dayOfMonth);
 
-    Tuple2<Long , Long> pair = TimeTools.splitSecond(second);
-    LocalTime time = LocalTime.of(hour , minute , pair.v1().intValue() , pair.v2().intValue());
+    Tuple2<Integer , Integer> pair = TimeTools.splitSecond(second);
+    LocalTime time = LocalTime.of(hour , minute , pair.v1(), pair.v2());
     return new JulianDateTime(date , time);
   }
 
@@ -270,6 +270,11 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
       return with(date.plus(amountToAdd, unit), time);
     }
     return unit.addTo(this, amountToAdd);
+  }
+
+  @Override
+  public ChronoLocalDateTime<JulianDate> minus(long amountToSubtract, TemporalUnit unit) {
+    return plus(-amountToSubtract , unit);
   }
 
   private JulianDateTime plusNanos(long nanos) {

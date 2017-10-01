@@ -5,7 +5,6 @@ package destiny.core.chinese;
 
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 
 import java.time.LocalDateTime;
 

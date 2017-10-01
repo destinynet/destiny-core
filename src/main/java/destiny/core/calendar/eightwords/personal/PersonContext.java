@@ -342,9 +342,9 @@ public class PersonContext extends EightWordsContext {
       double startFortuneSeconds = getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
       double   endFortuneSeconds = getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
 
-      Tuple2<Long , Long> pair1 = TimeTools.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
+      Tuple2<Integer , Integer> pair1 = TimeTools.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
       LocalDateTime startFortuneLmt = LocalDateTime.from(getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
-      Tuple2<Long , Long> pair2 = TimeTools.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
+      Tuple2<Integer , Integer> pair2 = TimeTools.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
       LocalDateTime endFortuneLmt  = LocalDateTime.from(getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
 
       switch(fortuneOutput)

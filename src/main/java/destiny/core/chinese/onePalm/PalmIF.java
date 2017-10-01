@@ -9,7 +9,6 @@ import destiny.astrology.Coordinate;
 import destiny.astrology.HouseSystem;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateHour;
 import destiny.core.calendar.chinese.ChineseDateIF;

@@ -27,11 +27,11 @@ public class LongitudeTimeBean {
 
     if (location.isEast()) {
       double seconds = longitudeSecondOffset - zoneSecondOffset;
-      Tuple2<Long , Long> pair = TimeTools.splitSecond(seconds);
+      Tuple2<Integer , Integer> pair = TimeTools.splitSecond(seconds);
       return LocalDateTime.from(lmt).plusSeconds(pair.v1()).plusNanos(pair.v2());
     } else {
       double seconds = zoneSecondOffset - longitudeSecondOffset;
-      Tuple2<Long , Long> pair = TimeTools.splitSecond(seconds);
+      Tuple2<Integer , Integer> pair = TimeTools.splitSecond(seconds);
       return LocalDateTime.from(lmt).plusSeconds(pair.v1()).plusNanos(pair.v2());
     }
   }

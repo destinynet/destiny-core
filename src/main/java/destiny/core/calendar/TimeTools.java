@@ -53,11 +53,13 @@ public class TimeTools implements Serializable {
   }
 
 
+  /**
+   * 從「帶有 Zone」的時間，查詢當下的 julDay
+   * 必須先轉為 GMT
+   */
   public static double getJulDay(ChronoZonedDateTime zdt) {
-    // 先取得「被加上 0.5 的」 julian day
-    long halfAddedJulDay = zdt.getLong(JULIAN_DAY);
-    LocalTime localTime = zdt.toLocalTime();
-    return getGmtJulDay(halfAddedJulDay , localTime);
+    ChronoZonedDateTime gmt = zdt.withZoneSameInstant(GMT);
+    return getGmtJulDay(gmt.toLocalDateTime());
   }
 
   /**
@@ -94,10 +96,6 @@ public class TimeTools implements Serializable {
   public static double getGmtJulDay(ChronoLocalDateTime gmt) {
     Instant gmtInstant = gmt.toInstant(ZoneOffset.UTC);
     return getJulDay(gmtInstant);
-
-    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
-//    long gmtJulDay_plusHalfDay = gmt.getLong(JULIAN_DAY);
-//    return getGmtJulDay(gmtJulDay_plusHalfDay , gmt.toLocalTime());
   }
 
 
@@ -105,10 +103,7 @@ public class TimeTools implements Serializable {
    * 承上， date + time 拆開來的版本
    */
   public static double getGmtJulDay(ChronoLocalDate date, LocalTime localTime) {
-    // 先取得當日零時的 julDay值 , 其值為真正需要的值加了 0.5 . 因此最後需要減去 0.5
-    long gmtJulDay_plusHalfDay = date.getLong(JULIAN_DAY);
-
-    return getGmtJulDay(gmtJulDay_plusHalfDay , localTime);
+    return getGmtJulDay(date.atTime(localTime));
   }
 
 
@@ -280,9 +275,9 @@ public class TimeTools implements Serializable {
   }
 
   /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值 */
-  public static Tuple2<Long , Long> splitSecond(double seconds) {
-    long secs = (long) seconds;
-    long nano = (long) ((seconds - secs)* 1_000_000_000);
+  public static Tuple2<Integer , Integer> splitSecond(double seconds) {
+    int secs = (int) seconds;
+    int nano = (int) ((seconds - secs)* 1_000_000_000);
     return tuple(secs , nano);
   }
 

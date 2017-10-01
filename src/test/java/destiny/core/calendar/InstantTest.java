@@ -145,7 +145,6 @@ public class InstantTest {
 
     logger.info("dateTime , class = {} , value = {}" , dateTime.getClass() , dateTime);
     assertTrue(dateTime instanceof JulianDateTime);
-    //JulianDateTime lastSec = JulianDateTime.of(1582,10,4,23,59,59);
     assertEquals(JulianDateTime.of(1582,10,4,23,59,59) , dateTime);
 
   }

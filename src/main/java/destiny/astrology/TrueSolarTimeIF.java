@@ -42,7 +42,7 @@ public interface TrueSolarTimeIF {
     ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     logger.debug("gmt = {}" , gmt);
     double e = getEquationSecs(gmt);
-    Tuple2<Long , Long> pair = TimeTools.splitSecond(e);
+    Tuple2<Integer , Integer> pair = TimeTools.splitSecond(e);
 
     ChronoLocalDateTime gmtWithE = gmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
     logger.debug("gmt  = {}" , gmt);

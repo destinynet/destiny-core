@@ -49,6 +49,9 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
    * http://www.astro.com/ftp/placalc/src/revjul.c
    *
    * inverse function to julday()
+   * 1582-10-15 0:00 為界
+   * 之前，傳回 {@link JulianDateTime}
+   * 之後，傳回 {@link LocalDateTime}
    */
   public static ChronoLocalDateTime getLocalDateTimeStatic(double gmtJulDay) {
     boolean isGregorian = false;
@@ -94,9 +97,9 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
     int minute = (int) (h * 60 - hour * 60);
     double second = h * 3600 - hour * 3600 - minute * 60;
 
-    Tuple2<Long , Long> pair = TimeTools.splitSecond(second);
-    int secsInt = pair.v1().intValue();
-    int nanoInt = pair.v2().intValue();
+    Tuple2<Integer , Integer> pair = TimeTools.splitSecond(second);
+    int secsInt = pair.v1();
+    int nanoInt = pair.v2();
 
     LocalTime localTime = LocalTime.of(hour , minute , secsInt , nanoInt);
 
@@ -136,11 +139,15 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
     int hour = Integer.valueOf(s.substring(9, 11).trim());
     int minute = Integer.valueOf(s.substring(11, 13).trim());
     double second = Double.valueOf(s.substring(13));
-    Tuple2<Long , Long> pair = TimeTools.splitSecond(second);
+
+    return of(ad , yearOfEra , month , day , hour , minute , second).v1();
+  }
+
+  public static Tuple2<ChronoLocalDateTime, Boolean> of(boolean ad , int yearOfEra , int month , int day , int hour , int minute , double second) {
     int prolepticYear = TimeTools.getNormalizedYear(ad , yearOfEra);
 
-    final boolean gregorian;
-
+    boolean gregorian;
+    Tuple2<Integer , Integer> pair = TimeTools.splitSecond(second);
     if (prolepticYear < 1582) {
       gregorian = false;
     } else if (prolepticYear > 1582) {
@@ -161,11 +168,13 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
           throw new RuntimeException("Error Date : " + prolepticYear + "/"+month+"/" + day);
       }
     }
-
+    ChronoLocalDateTime ldt ;
     if (gregorian)
-      return LocalDateTime.of(prolepticYear , month , day , hour , minute , pair.v1().intValue() , pair.v2().intValue());
+      ldt = LocalDateTime.of(prolepticYear , month , day , hour , minute , pair.v1(), pair.v2());
     else
-      return JulianDateTime.of(prolepticYear , month , day , hour , minute , pair.v1().intValue() , pair.v2().intValue());
+      ldt = JulianDateTime.of(prolepticYear , month , day , hour , minute , pair.v1(), pair.v2());
+
+    return Tuple.tuple(ldt , gregorian);
   }
 
 }

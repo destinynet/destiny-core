@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.ziwei;
 
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;

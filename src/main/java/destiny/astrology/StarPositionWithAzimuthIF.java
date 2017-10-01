@@ -5,10 +5,8 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.Time;
 import destiny.core.calendar.TimeTools;
 
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 
 /**
