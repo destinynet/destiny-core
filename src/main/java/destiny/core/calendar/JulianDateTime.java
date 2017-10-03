@@ -88,7 +88,7 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     this.time = time;
   }
 
-  private static JulianDateTime from(TemporalAccessor temporal) {
+  public static JulianDateTime from(TemporalAccessor temporal) {
     if (temporal instanceof JulianDateTime) {
       return (JulianDateTime) temporal;
     }
@@ -151,7 +151,7 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     Objects.requireNonNull(offset, "offset");
     NANO_OF_SECOND.checkValidValue(nanoOfSecond);
     long localSecond = epochSecond + offset.getTotalSeconds();  // overflow caught later
-    long localEpochDay = Math.floorDiv(localSecond, SECONDS_PER_DAY);
+    long localEpochDay = Math.floorDiv(localSecond, (long)SECONDS_PER_DAY);
     int secsOfDay = (int) Math.floorMod(localSecond, SECONDS_PER_DAY);
     LocalDate gDate = LocalDate.ofEpochDay(localEpochDay);
     JulianDate date = JulianDate.from(gDate);

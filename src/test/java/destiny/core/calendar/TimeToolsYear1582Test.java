@@ -15,8 +15,7 @@ import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static destiny.core.calendar.TimeTools.getGmtJulDay;
-import static destiny.core.calendar.TimeTools.isBetween;
+import static destiny.core.calendar.TimeTools.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -164,5 +163,49 @@ public class TimeToolsYear1582Test {
     assertTrue(isBetween(d3J , d4G , d2G));
     assertTrue(isBetween(d3G , d2J , d4J));
     assertTrue(isBetween(d3G , d4J , d2J));
+  }
+
+  /** 測試 {@link TimeTools#isAfter(ChronoLocalDateTime, ChronoLocalDateTime)} 能否比對不同曆法之間的日期 */
+  @Test
+  public void testAfter() {
+    // 同曆法 (J)
+    assertTrue(isAfter(d2J , d1J));
+    assertTrue(isAfter(d3J , d2J));
+    assertTrue(isAfter(d4J , d3J));
+    // 同曆法 (G)
+    assertTrue(isAfter(d2G , d1G));
+    assertTrue(isAfter(d3G , d2G));
+    assertTrue(isAfter(d4G , d3G));
+
+    // 不同曆法
+    assertTrue(isAfter(d2G , d1J));
+    assertTrue(isAfter(d3G , d2J));
+    assertTrue(isAfter(d4G , d3J));
+
+    assertTrue(isAfter(d2J , d1G));
+    assertTrue(isAfter(d3J , d2G));
+    assertTrue(isAfter(d4J , d3G));
+  }
+
+  /** 測試 {@link TimeTools#isBefore(ChronoLocalDateTime, ChronoLocalDateTime)} 能否比對不同曆法之間的日期 */
+  @Test
+  public void testBefore() {
+    // 同曆法 (J)
+    assertTrue(isBefore(d1J , d2J));
+    assertTrue(isBefore(d2J , d3J));
+    assertTrue(isBefore(d3J , d4J));
+    // 同曆法 (G)
+    assertTrue(isBefore(d1G , d2G));
+    assertTrue(isBefore(d2G , d3G));
+    assertTrue(isBefore(d3G , d4G));
+
+    // 不同曆法
+    assertTrue(isBefore(d1J , d2G));
+    assertTrue(isBefore(d2J , d3G));
+    assertTrue(isBefore(d3J , d4G));
+
+    assertTrue(isBefore(d1G , d2J));
+    assertTrue(isBefore(d2G , d3J));
+    assertTrue(isBefore(d3G , d4J));
   }
 }

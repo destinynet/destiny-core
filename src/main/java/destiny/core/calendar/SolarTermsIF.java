@@ -63,7 +63,7 @@ public interface SolarTermsIF {
 
     return getPeriodSolarTerms(fromGmt, toGmt).stream().map( stt -> {
       ChronoLocalDateTime gmt = stt.getTime();
-      logger.trace("節氣 : {} , 時間 : {} . nano = {} " , stt.getSolarTerms() , gmt , gmt.get(ChronoField.NANO_OF_SECOND));
+      logger.trace("節氣 : {} , GMT時間 : {} . nano = {} " , stt.getSolarTerms() , gmt , gmt.get(ChronoField.NANO_OF_SECOND));
       return new SolarTermsTime(stt.getSolarTerms() , TimeTools.getLmtFromGmt(gmt , location));
     }).collect(Collectors.toList());
   }

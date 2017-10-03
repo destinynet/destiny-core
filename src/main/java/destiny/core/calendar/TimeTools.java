@@ -241,6 +241,23 @@ public class TimeTools implements Serializable {
   // ======================================== misc methods ========================================
 
   /**
+   * @return 確認 later 是否真的 after prior 的時刻
+   * 相當於 {@link ChronoLocalDateTime#isAfter(ChronoLocalDateTime)}
+   */
+  public static boolean isAfter(ChronoLocalDateTime later , ChronoLocalDateTime prior) {
+    double smaller = getGmtJulDay(prior);
+    double bigger = getGmtJulDay(later);
+    return bigger > smaller;
+  }
+
+  public static boolean isBefore(ChronoLocalDateTime prior , ChronoLocalDateTime later) {
+    double bigger = getGmtJulDay(later);
+    double smaller = getGmtJulDay(prior);
+    return smaller < bigger;
+  }
+
+
+  /**
    * @return t 是否 處於 t1 與 t2 之間
    *
    * 將這些 t , t1 , t2 視為 GMT , 轉成 jul day 來比較大小
@@ -249,7 +266,6 @@ public class TimeTools implements Serializable {
     double julDay = getGmtJulDay(t);
     double julDay1 = getGmtJulDay(t1);
     double julDay2 = getGmtJulDay(t2);
-
     return (julDay2 > julDay && julDay > julDay1) || (julDay1 > julDay && julDay > julDay2);
   }
 

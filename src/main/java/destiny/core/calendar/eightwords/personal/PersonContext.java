@@ -71,7 +71,7 @@ public class PersonContext extends EightWordsContext {
   /** 大運輸出格式 */
   private final FortuneOutput fortuneOutput;
 
-  private final Cache<PersonContext, Map<Integer, LocalDateTime>> cache =
+  private final Cache<PersonContext, Map<Integer, Double>> cache =
     CacheBuilder.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(10, TimeUnit.MINUTES)
@@ -162,20 +162,21 @@ public class PersonContext extends EightWordsContext {
    */
   public Tuple2<Tuple2<SolarTerms , Double> , Tuple2<SolarTerms , Double>> getMajorSolarTermsBetween() {
     ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
+    double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
 
     // 現在（亦即：上一個節）的「節」
     SolarTerms prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
     if (!prevMajorSolarTerms.isMajor()) // 如果是「中氣」的話
       prevMajorSolarTerms = prevMajorSolarTerms.previous(); // 再往前取一個 , 即可得到「節」
 
-    LocalDateTime prevGmt = starTransitImpl.getNextTransitGmt(SUN , prevMajorSolarTerms.getZodiacDegree() , ECLIPTIC , gmt , false);
+    ChronoLocalDateTime prevGmt = starTransitImpl.getNextTransitGmtDateTime(SUN , prevMajorSolarTerms.getZodiacDegree() , ECLIPTIC , gmtJulDay , false);
     Duration dur1 = Duration.between(gmt, prevGmt).abs();
     double d1 = dur1.getSeconds()+ dur1.getNano() / 1_000_000_000.0;
 
 
     // 下一個「節」
     SolarTerms nextMajorSolarTerms = this.getNextMajorSolarTerms(prevMajorSolarTerms, false);
-    LocalDateTime nextGmt = starTransitImpl.getNextTransitGmt(SUN , nextMajorSolarTerms.getZodiacDegree(), ECLIPTIC, gmt , true);
+    ChronoLocalDateTime nextGmt = starTransitImpl.getNextTransitGmtDateTime(SUN , nextMajorSolarTerms.getZodiacDegree(), ECLIPTIC, gmtJulDay , true);
     Duration dur2 = Duration.between(gmt, nextGmt).abs();
     double d2 = dur2.getSeconds() + dur2.getNano() / 1_000_000_000.0;
 
@@ -199,7 +200,8 @@ public class PersonContext extends EightWordsContext {
       reverse = true;
 
     ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
-    LocalDateTime stepGmt = LocalDateTime.from(gmt).plusSeconds(0);
+    double stepGmt = TimeTools.getGmtJulDay(gmt);
+    double stepGmtJulDay = TimeTools.getGmtJulDay(lmt , location);
     //現在的 節氣
     SolarTerms currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
     SolarTerms stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, reverse);
@@ -210,14 +212,15 @@ public class PersonContext extends EightWordsContext {
     else
       i = -1;
 
-    Map<Integer , LocalDateTime> hashMap = cache.getIfPresent(this);
+    Map<Integer , Double> hashMap = cache.getIfPresent(this);
+
 
     if (hashMap == null) {
       hashMap = new LinkedHashMap<>();
       cache.put(this , hashMap);
     }
 
-    LocalDateTime targetGmt = null ;
+    Double targetGmt = null ;
     if (hashMap.containsKey(index))
       targetGmt = hashMap.get(index);
 
@@ -232,9 +235,10 @@ public class PersonContext extends EightWordsContext {
           if (hashMap.get(i) == null) {
             logger.debug("順推 cache.get({}) miss" , i);
             //沒有計算過
-            targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmt, true);
+            targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmtJulDay, true);
             //以隔天計算現在節氣
-            stepGmt = LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
+            stepGmt = targetGmt + 1;  //LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
+
 
             hashMap.put(i , targetGmt);
             cache.put(this , hashMap);
@@ -243,7 +247,7 @@ public class PersonContext extends EightWordsContext {
             //之前計算過
             logger.debug("順推 cache.get({}) hit" , i);
             targetGmt = hashMap.get(i);
-            stepGmt = LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
+            stepGmt = targetGmt + 1;// LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
           }
 
           currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmt);
@@ -264,14 +268,14 @@ public class PersonContext extends EightWordsContext {
 
             targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmt, false);
             //以前一天計算現在節氣
-            stepGmt = LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
+            stepGmt = targetGmt - 1; // LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
             hashMap.put(i , targetGmt);
             cache.put(this , hashMap);
           }
           else {
             //之前計算過
             targetGmt = hashMap.get(i);
-            stepGmt = LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
+            stepGmt = targetGmt - 1; //LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
           }
 
           currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmt);
@@ -281,7 +285,7 @@ public class PersonContext extends EightWordsContext {
       } //逆推
     }
 
-    Duration dur = Duration.between(gmt , targetGmt);
+    Duration dur = Duration.between(gmt , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(targetGmt));
     long diffSecs = dur.getSeconds();
     long diffNano = dur.getNano();
     return diffSecs + diffNano / 1_000_000_000.0;

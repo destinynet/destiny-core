@@ -120,7 +120,9 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
    * 傳回值也是GMT！
    */
   @Override
-  public LocalDateTime getConvergentTime(@NotNull ChronoLocalDateTime natalGmtTime, @NotNull ChronoLocalDateTime nowGmtTime) {
+  public ChronoLocalDateTime getConvergentTime(@NotNull ChronoLocalDateTime natalGmtTime, @NotNull ChronoLocalDateTime nowGmtTime) {
+    double nowGmtJulDay = TimeTools.getGmtJulDay(nowGmtTime);
+
     Coordinate coordinate = (precession) ? Coordinate.SIDEREAL : Coordinate.ECLIPTIC;
     //先計算出生盤中，該星體的黃道位置
     double natalPlanetDegree = starPositionWithAzimuthImpl.getPosition(planet , natalGmtTime , Centric.GEO , coordinate).getLng();
@@ -128,16 +130,17 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
     //再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
     if (!converse) {
       //順推
-      return starTransitImpl.getNextTransitGmt(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , nowGmtTime, false); //false 代表逆推，往before算
+      return starTransitImpl.getNextTransitGmtDateTime(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , nowGmtJulDay, false); //false 代表逆推，往before算
     }
     else {
       // converse == true , 逆推
       //從出生時間往前(before)推
       Duration d = Duration.between(nowGmtTime , natalGmtTime).abs();
-      LocalDateTime beforeNatalGmtTime = LocalDateTime.from(natalGmtTime).minus(d);
+      //LocalDateTime beforeNatalGmtTime = LocalDateTime.from(natalGmtTime).minus(d);
+      double beforeNatalGmtJulDay = TimeTools.getGmtJulDay(nowGmtTime.minus(d));
       //Time beforeNatalGmtTime = new Time(natalGmtTime , 0-(nowGmtTime.diffSeconds(natalGmtTime)));
       //要確認最後一個參數，到底是要用 true , 還是 false , 要找相關定義 , 我覺得這裡應該是順推
-      return starTransitImpl.getNextTransitGmt(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , beforeNatalGmtTime, true); //true 代表順推 , 往 after 算
+      return starTransitImpl.getNextTransitGmtDateTime(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , beforeNatalGmtJulDay, true); //true 代表順推 , 往 after 算
     }
   }
 

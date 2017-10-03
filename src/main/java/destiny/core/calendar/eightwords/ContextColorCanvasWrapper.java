@@ -91,6 +91,7 @@ public class ContextColorCanvasWrapper {
     ColorCanvas 西元資訊 = new ColorCanvas(1,36, "　");
     StringBuilder timeData = new StringBuilder();
     timeData.append("西元：");
+    //logger.debug("lmt = {} , toLocalDate = {} : {}" , lmt , lmt.toLocalDate().getClass() , lmt.toLocalDate());
     if(lmt.toLocalDate().getEra() == IsoEra.BCE)
       timeData.append("前");
     else

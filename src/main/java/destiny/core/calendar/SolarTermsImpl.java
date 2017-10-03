@@ -64,13 +64,12 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
     while (fromGmt < toGmt) {
       SolarTermsTime solarTermsTime;
 
-      ChronoLocalDateTime fromGmtTime = starTransitImpl.getNextTransitLocalDateTime(Planet.SUN, nextZodiacDegree, Coordinate.ECLIPTIC, fromGmt, true);
+      ChronoLocalDateTime fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(Planet.SUN, nextZodiacDegree, Coordinate.ECLIPTIC, fromGmt, true);
       fromGmt = TimeTools.getGmtJulDay(fromGmtTime);
 
       if (fromGmt > toGmt)
         break;
       nowST = nowST.next();
-      // TODO : remove casting
       solarTermsTime = new SolarTermsTime(nowST, fromGmtTime);
       resultList.add(solarTermsTime);
       nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nextZodiacDegree + 15);

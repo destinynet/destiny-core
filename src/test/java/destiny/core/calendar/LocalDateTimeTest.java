@@ -7,12 +7,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import static java.lang.System.out;
@@ -148,17 +149,6 @@ public class LocalDateTimeTest {
 
   }
 
-
-  @Test
-  public void testOld() {
-    GregorianCalendar gc = new GregorianCalendar(1582 , 9-1 , 30);
-    for(int i = 1 ; i <= 10 ; i++) {
-      gc.add(Calendar.DAY_OF_YEAR , 1);
-      LocalDate ld = gc.toZonedDateTime().toLocalDate();
-      out.print("[GC]" + gc.get(Calendar.YEAR) + "-" + (gc.get(Calendar.MONTH)+1)+"-"+gc.get(Calendar.DAY_OF_MONTH) + " \t-> ");
-      out.println("[LocalDate]"+ld);
-    }
-  }
 
   @Test
   public void testEra() {
