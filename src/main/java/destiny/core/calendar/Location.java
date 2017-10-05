@@ -127,7 +127,8 @@ public class Location implements Serializable {
 
   public static Location of(Locale locale) {
     Locale matchedLocale = LocaleUtils.getBestMatchingLocale(locale, locMap.keySet()).orElse(Locale.getDefault());
-    return locMap.get(matchedLocale);
+    Location loc = locMap.get(matchedLocale);
+    return new Location(loc.eastWest , loc.lngDeg , loc.lngMin , loc.lngSec , loc.northSouth , loc.latDeg , loc.latMin , loc.latSec , loc.altitudeMeter , loc.tzid , loc.minuteOffset);
   }
   
   
@@ -141,7 +142,7 @@ public class Location implements Serializable {
    * */
   public Location(EastWest eastWest , int lngDeg , int lngMin , double lngSec ,
                   NorthSouth northSouth , int latDeg , int latMin , double latSec ,
-                  double altitudeMeter , String timeZone , @Nullable Integer minuteOffset) {
+                  double altitudeMeter , String tzid , @Nullable Integer minuteOffset) {
     this.eastWest = eastWest;
     this.lngDeg = lngDeg;
     this.lngMin = lngMin;
@@ -150,7 +151,7 @@ public class Location implements Serializable {
     this.latDeg = latDeg;
     this.latMin = latMin;
     this.latSec = latSec;
-    this.tzid = timeZone;
+    this.tzid = tzid;
     this.altitudeMeter = altitudeMeter;
     this.minuteOffset = minuteOffset;
   }

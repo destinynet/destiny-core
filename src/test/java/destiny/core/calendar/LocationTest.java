@@ -16,6 +16,7 @@ public class LocationTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+
   @Test
   public void testNorthSouth()
   {
