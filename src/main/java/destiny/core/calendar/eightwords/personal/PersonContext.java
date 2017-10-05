@@ -10,7 +10,9 @@ import destiny.core.Gender;
 import destiny.core.calendar.*;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
-import destiny.core.chinese.*;
+import destiny.core.chinese.Branch;
+import destiny.core.chinese.FortuneOutput;
+import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
@@ -200,7 +203,7 @@ public class PersonContext extends EightWordsContext {
       reverse = true;
 
     ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
-    double stepGmt = TimeTools.getGmtJulDay(gmt);
+    //double stepGmt = TimeTools.getGmtJulDay(gmt);
     double stepGmtJulDay = TimeTools.getGmtJulDay(lmt , location);
     //現在的 節氣
     SolarTerms currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
@@ -220,11 +223,11 @@ public class PersonContext extends EightWordsContext {
       cache.put(this , hashMap);
     }
 
-    Double targetGmt = null ;
+    Double targetGmtJulDay = null ;
     if (hashMap.containsKey(index))
-      targetGmt = hashMap.get(index);
+      targetGmtJulDay = hashMap.get(index);
 
-    if (targetGmt == null) {
+    if (targetGmtJulDay == null) {
       if (!reverse) {
         //順推
         if (hashMap.get(index - 1) != null)
@@ -235,22 +238,22 @@ public class PersonContext extends EightWordsContext {
           if (hashMap.get(i) == null) {
             logger.debug("順推 cache.get({}) miss" , i);
             //沒有計算過
-            targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmtJulDay, true);
+            targetGmtJulDay = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmtJulDay, true);
             //以隔天計算現在節氣
-            stepGmt = targetGmt + 1;  //LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
+            stepGmtJulDay = targetGmtJulDay + 1;  //LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
 
 
-            hashMap.put(i , targetGmt);
+            hashMap.put(i , targetGmtJulDay);
             cache.put(this , hashMap);
           }
           else {
             //之前計算過
             logger.debug("順推 cache.get({}) hit" , i);
-            targetGmt = hashMap.get(i);
-            stepGmt = targetGmt + 1;// LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
+            targetGmtJulDay = hashMap.get(i);
+            stepGmtJulDay = targetGmtJulDay + 1;// LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
           }
 
-          currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmt);
+          currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay);
           stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, false);
           i++;
         } // while (i <= index)
@@ -266,26 +269,27 @@ public class PersonContext extends EightWordsContext {
           if (hashMap.get(i) == null) {
             //沒有計算過
 
-            targetGmt = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmt, false);
+            targetGmtJulDay = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.getZodiacDegree(), ECLIPTIC, stepGmtJulDay, false);
             //以前一天計算現在節氣
-            stepGmt = targetGmt - 1; // LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
-            hashMap.put(i , targetGmt);
+            stepGmtJulDay = targetGmtJulDay - 1; // LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
+            hashMap.put(i , targetGmtJulDay);
             cache.put(this , hashMap);
           }
           else {
             //之前計算過
-            targetGmt = hashMap.get(i);
-            stepGmt = targetGmt - 1; //LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
+            targetGmtJulDay = hashMap.get(i);
+            stepGmtJulDay = targetGmtJulDay - 1; //LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
           }
 
-          currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmt);
+          currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay);
           stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, true);
           i--;
         } //while (i >= index)
       } //逆推
     }
 
-    Duration dur = Duration.between(gmt , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(targetGmt));
+    assert targetGmtJulDay != null;
+    Duration dur = Duration.between(gmt , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(targetGmtJulDay));
     long diffSecs = dur.getSeconds();
     long diffNano = dur.getNano();
     return diffSecs + diffNano / 1_000_000_000.0;
@@ -350,6 +354,9 @@ public class PersonContext extends EightWordsContext {
       LocalDateTime startFortuneLmt = LocalDateTime.from(getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
       Tuple2<Integer , Integer> pair2 = TimeTools.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
       LocalDateTime endFortuneLmt  = LocalDateTime.from(getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
+
+      LocalDate startFortuneLmtDate = startFortuneLmt.toLocalDate();
+      logger.trace("getFortuneDatas : {}.toLocalDate() = {} . era = {}" , startFortuneLmtDate.getClass().getSimpleName() , startFortuneLmtDate , startFortuneLmtDate.getEra());
 
       switch(fortuneOutput)
       {

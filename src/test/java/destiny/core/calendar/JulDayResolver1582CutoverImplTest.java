@@ -9,7 +9,9 @@ import org.threeten.extra.chrono.JulianDate;
 import org.threeten.extra.chrono.JulianEra;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
@@ -18,6 +20,17 @@ import static org.junit.Assert.*;
 
 public class JulDayResolver1582CutoverImplTest {
 
+  @Test
+  public void getLocalDateTimeStatic() {
+    LocalDateTime gregStart = LocalDateTime.of(1582, 10, 15, 0, 0);
+    ChronoLocalDateTime date1 = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gregStart.toInstant(ZoneOffset.UTC));
+
+    JulianDateTime julianEnd = JulianDateTime.of(1582, 10, 5, 0, 0); // 此日期其實不存在於 julian date
+    ChronoLocalDateTime date2 = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(julianEnd.toInstant(ZoneOffset.UTC));
+
+    assertTrue(date2 instanceof LocalDateTime);
+    assertEquals(date1, date2);
+  }
 
   /**
    * 從 julDay 傳回 LocalDate or JulianDate

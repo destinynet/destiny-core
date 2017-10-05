@@ -4,7 +4,10 @@
  */
 package destiny.core.calendar.eightwords;
 
-import destiny.core.calendar.*;
+import destiny.core.calendar.GoogleMapsUrlBuilder;
+import destiny.core.calendar.Location;
+import destiny.core.calendar.LocationUrlBuilder;
+import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.personal.HiddenStemsIF;
 import destiny.core.calendar.eightwords.personal.HiddenStemsStandardImpl;
@@ -19,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.time.chrono.IsoEra;
 import java.util.*;
 
 import static java.time.temporal.ChronoField.YEAR_OF_ERA;
@@ -91,8 +93,10 @@ public class ContextColorCanvasWrapper {
     ColorCanvas 西元資訊 = new ColorCanvas(1,36, "　");
     StringBuilder timeData = new StringBuilder();
     timeData.append("西元：");
-    //logger.debug("lmt = {} , toLocalDate = {} : {}" , lmt , lmt.toLocalDate().getClass() , lmt.toLocalDate());
-    if(lmt.toLocalDate().getEra() == IsoEra.BCE)
+    logger.debug("lmt = {} , toLocalDate = {} : {}" , lmt , lmt.toLocalDate().getClass() , lmt.toLocalDate());
+    //assert lmt.toLocalDate() instanceof LocalDate;
+
+    if(lmt.toLocalDate().getYear() <= 0)
       timeData.append("前");
     else
       timeData.append("　");

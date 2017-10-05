@@ -6,6 +6,7 @@ package destiny.core.calendar;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
+import java.time.Instant;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
@@ -16,6 +17,9 @@ import java.time.chrono.ChronoLocalDateTime;
 public interface JulDayResolver {
 
   ChronoLocalDateTime getLocalDateTime(double gmtJulDay);
+
+  /** 從 gmt instant 轉為 GMT Time */
+  ChronoLocalDateTime getLocalDateTime(Instant gmtInstant);
 
   default Tuple2<ChronoLocalDate , LocalTime> getDateAndTime(double gmtJulDay) {
     ChronoLocalDateTime dateTime = getLocalDateTime(gmtJulDay);

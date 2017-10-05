@@ -152,15 +152,13 @@ public class LocalDateTimeTest {
 
   @Test
   public void testEra() {
-    LocalDate ld;
+    LocalDate localDate;
 
-    // 西元元年 , 第一天
-    ld = LocalDate.of(1 , 1 , 1);
-    assertSame(IsoEra.CE , ld.getEra());
+    localDate = LocalDate.of(1 , 1 , 1);
+    assertSame(IsoEra.CE , localDate.getEra());
 
-    // 往前一天 , 變成 BCE
-    ld = ld.minus(1 , ChronoUnit.DAYS);
-    assertSame(IsoEra.BCE , ld.getEra());
+    localDate = localDate.minus(1 , ChronoUnit.DAYS);
+    assertSame(IsoEra.BCE , localDate.getEra());
   }
 
 }

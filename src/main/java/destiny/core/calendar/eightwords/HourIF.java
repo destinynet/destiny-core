@@ -48,8 +48,7 @@ public interface HourIF extends Descriptive {
    * @return 回傳 LMT 時刻
    */
   default ChronoLocalDateTime getLmtNextStartOf(ChronoLocalDateTime lmt , Location location , Branch eb) {
-    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
-    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
+    double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
     double resultGmtJulDay = getGmtNextStartOf(gmtJulDay , location , eb);
     ChronoLocalDateTime resultGmt =JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(resultGmtJulDay);
     return TimeTools.getLmtFromGmt(resultGmt , location);

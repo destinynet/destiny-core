@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 
 import static java.time.chrono.IsoEra.BCE;
 import static java.time.temporal.ChronoField.*;
+import static org.threeten.extra.chrono.JulianEra.BC;
 
 /**
  * 簡單的中文輸出 , 只到「分」<BR/>
@@ -34,7 +36,8 @@ public class TimeMinDecoratorChinese implements Decorator<ChronoLocalDateTime>, 
     logger.debug("time = {} , era = {}" , time , time.toLocalDate().getEra());
 
     sb.append("西元");
-    if (time.toLocalDate().getEra() == BCE) {
+    ChronoLocalDate localDate = time.toLocalDate();
+    if (localDate.getEra() == BCE || localDate.getEra() == BC) {
       sb.append("前" );
     }
     else

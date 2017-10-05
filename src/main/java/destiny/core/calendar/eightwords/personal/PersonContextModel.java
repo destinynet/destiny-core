@@ -29,7 +29,8 @@ public class PersonContextModel extends EightWordsContextModel {
   /** 總共要輸出的大運 */
   private final List<FortuneData> fortuneDatas;
 
-  public PersonContextModel(Gender gender, EightWords eightWords, LocalDateTime lmt, Location location, String locationName, ChineseDate chineseDate, boolean dst, int gmtMinuteOffset, List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms) {
+  public PersonContextModel(Gender gender, EightWords eightWords, LocalDateTime lmt, Location location, String locationName, ChineseDate chineseDate, boolean dst, int gmtMinuteOffset,
+                            List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms) {
     super(eightWords ,lmt , location, locationName, gmtMinuteOffset, dst, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
     this.gender = gender;
     this.fortuneDatas = fortuneDatas;

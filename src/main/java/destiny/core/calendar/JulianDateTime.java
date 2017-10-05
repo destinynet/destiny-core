@@ -152,7 +152,7 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     NANO_OF_SECOND.checkValidValue(nanoOfSecond);
     long localSecond = epochSecond + offset.getTotalSeconds();  // overflow caught later
     long localEpochDay = Math.floorDiv(localSecond, (long)SECONDS_PER_DAY);
-    int secsOfDay = (int) Math.floorMod(localSecond, SECONDS_PER_DAY);
+    int secsOfDay = (int) Math.floorMod(localSecond, (long)SECONDS_PER_DAY);
     LocalDate gDate = LocalDate.ofEpochDay(localEpochDay);
     JulianDate date = JulianDate.from(gDate);
     LocalTime time = LocalTime.ofNanoOfDay(secsOfDay * NANOS_PER_SECOND + nanoOfSecond);

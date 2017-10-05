@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.threeten.extra.chrono.JulianChronology;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoChronology;
@@ -24,6 +22,8 @@ import java.time.chrono.IsoChronology;
  */
 public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializable {
 
+  private final static ZoneId GMT = ZoneId.of("GMT");
+
   /**
    * Julian Calendar    終止於西元 1582-10-04 , 該日的 Julian Day 是 2299159.5
    * Gregorian Calendar 開始於西元 1582-10-15 , 該日的 Julian Day 是 2299160.5
@@ -33,7 +33,7 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
   /**
    * 承上， 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
    */
-  private final static long GREGORIAN_START_INSTANT = -12219292800L;
+  private final static long GREGORIAN_START_INSTANT = -12219292800000L;
 
   private static Logger logger = LoggerFactory.getLogger(JulDayResolver1582CutoverImpl.class);
 
@@ -43,6 +43,28 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
     return getLocalDateTimeStatic(gmtJulDay);
   }
 
+  @Override
+  public ChronoLocalDateTime getLocalDateTime(Instant gmtInstant) {
+
+    return getLocalDateTimeStatic(gmtInstant);
+  }
+
+  /**
+   * @param gmtInstant 從 Instant 轉為 日期、時間
+   */
+  public static ChronoLocalDateTime getLocalDateTimeStatic(Instant gmtInstant) {
+    long epochMilli = gmtInstant.toEpochMilli();
+    logger.trace("epochMilli = {}" , epochMilli);
+    boolean isGregorian = epochMilli >= GREGORIAN_START_INSTANT;
+    if (isGregorian)
+      return gmtInstant.atZone(GMT).toLocalDateTime();
+    else {
+      long epochSec = gmtInstant.getEpochSecond();
+      int nanoOfSec = gmtInstant.getNano();
+      logger.trace("epoch sec = {} , nanoOfSec = {} " , epochSec , nanoOfSec);
+      return JulianDateTime.ofEpochSecond(epochSec , nanoOfSec , ZoneOffset.UTC);
+    }
+  }
 
   /**
    * 從 Julian Day 建立 {@link ChronoLocalDateTime} (GMT)

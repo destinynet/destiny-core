@@ -411,6 +411,17 @@ public class Location implements Serializable {
     return result;
   }
 
+  /**
+   * 取得經緯度的十進位表示法，先緯度、再精度
+   */
+  public String getDecimal() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(getLatitude());
+    sb.append(',');
+    sb.append(getLongitude());
+    return sb.toString();
+  }
+
   public boolean isEast() { return eastWest == EAST; }
 
   public int getLngDeg() { return this.lngDeg; }

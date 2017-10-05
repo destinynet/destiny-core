@@ -140,7 +140,7 @@ public class InstantTest {
     // Gregorian Cal 前一秒，變成 Julian Day 1582-10-4 23:59:59
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT-1);
 
-    Function<Double , ChronoLocalDateTime> fun = resolver::getLocalDateTime;
+    Function<Instant , ChronoLocalDateTime> fun = resolver::getLocalDateTime;
     dateTime = TimeTools.getLocalDateTime(instant , fun);
 
     logger.info("dateTime , class = {} , value = {}" , dateTime.getClass() , dateTime);

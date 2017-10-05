@@ -62,20 +62,30 @@ public class TimeTools implements Serializable {
     return getGmtJulDay(gmt.toLocalDateTime());
   }
 
+
   /**
    * @param instant 將 (GMT) instant 轉換為（GMT）的日期
    */
-  public static ChronoLocalDateTime getLocalDateTime(Instant instant , Function<Double , ChronoLocalDateTime> resolver) {
-    double gmtJulDay = getJulDay(instant);
-    return resolver.apply(gmtJulDay);
+  public static ChronoLocalDateTime getLocalDateTime(Instant instant , Function<Instant , ChronoLocalDateTime> resolver) {
+    return resolver.apply(instant);
   }
+
+//  /**
+//   * @param instant 將 (GMT) instant 轉換為（GMT）的日期
+//   *                @param resolver : 可能會有 round-off 的問題
+//   */
+//  public static ChronoLocalDateTime getLocalDateTime(Instant instant , Function<Double , ChronoLocalDateTime> resolver) {
+//    double gmtJulDay = getJulDay(instant);
+//    return resolver.apply(gmtJulDay);
+//  }
+
 
   /**
    * @param instant 將 (GMT) instant 轉換為（GMT）的日期
    *
    */
   public static ChronoLocalDateTime getLocalDateTime(Instant instant , JulDayResolver resolver) {
-    Function<Double , ChronoLocalDateTime> fun = resolver::getLocalDateTime;
+    Function<Instant , ChronoLocalDateTime> fun = resolver::getLocalDateTime;
     return getLocalDateTime(instant , fun);
   }
 
@@ -143,8 +153,6 @@ public class TimeTools implements Serializable {
   public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , Location loc) {
     if (loc.hasMinuteOffset()) {
       assert loc.getMinuteOffsetOptional().isPresent();
-//      Tuple2<Integer , Integer> hoursAndMins = splitMinutes(loc.getMinuteOffsetOptional().get());
-//      ZoneOffset preferredOffset = ZoneOffset.ofHoursMinutes(hoursAndMins.v1() , hoursAndMins.v2());
       int secOffset = loc.getMinuteOffset() * 60;
       return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
     } else {
@@ -191,8 +199,8 @@ public class TimeTools implements Serializable {
     }
   }
 
-  public static ChronoLocalDateTime getLmtFromGmt(double gmtJulDay , Location location) {
-    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+  public static ChronoLocalDateTime getLmtFromGmt(double gmtJulDay , Location location , Function<Double , ChronoLocalDateTime> double2DateTimeFunction) {
+    ChronoLocalDateTime gmt = double2DateTimeFunction.apply(gmtJulDay);
     return getLmtFromGmt(gmt , location);
   }
 
