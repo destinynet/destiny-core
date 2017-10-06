@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar;
 
-import destiny.tools.AlignUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
@@ -20,7 +20,6 @@ import java.util.TimeZone;
 import java.util.function.Function;
 
 import static java.time.temporal.ChronoField.*;
-import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.JulianFields.JULIAN_DAY;
 import static org.jooq.lambda.tuple.Tuple.tuple;
 
@@ -281,11 +280,11 @@ public class TimeTools implements Serializable {
   public static String getDebugString(ChronoLocalDateTime time) {
     StringBuilder sb = new StringBuilder();
     sb.append(time.get(YEAR_OF_ERA) >= 1 ? '+' : '-');
-    sb.append(AlignUtil.alignRight(time.get(YEAR_OF_ERA), 4, ' '));
-    sb.append(AlignUtil.alignRight(time.get(MONTH_OF_YEAR), 2, ' '));
-    sb.append(AlignUtil.alignRight(time.get(DAY_OF_MONTH), 2, ' '));
-    sb.append(AlignUtil.alignRight(time.get(HOUR_OF_DAY), 2, ' '));
-    sb.append(AlignUtil.alignRight(time.get(MINUTE_OF_HOUR), 2, ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(time.get(YEAR_OF_ERA)), 4, ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(time.get(MONTH_OF_YEAR)), 2, ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(time.get(DAY_OF_MONTH)), 2, ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(time.get(HOUR_OF_DAY)), 2, ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(time.get(MINUTE_OF_HOUR)), 2, ' '));
     sb.append(time.get(SECOND_OF_MINUTE));
     sb.append('.');
     if (time.get(NANO_OF_SECOND) == 0) {

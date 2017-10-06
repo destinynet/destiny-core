@@ -16,7 +16,6 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.Optional;
 
 /**
- * TODO : Mutual Deception , 互相陷害 <br/>
  * 互容的變形，兩星都處與落陷，又互容→互相扯後腿<br/>
  * 例如： 水星到雙魚 , 木星到處女<br/>
  * 水星在雙魚為 Detriment/Fall , 雙魚的 Ruler 為木星 , 木星到處女為 Detriment

@@ -99,8 +99,9 @@ public interface RelativeTransitIF {
   /**
    * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
    *
-   * 傳回的 pair , 左邊為 GMT 時間，右邊為角度
+   * result 有可能為 empty , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
    *
+   * @return 傳回的 Tuple , 前者為 GMT 時間，後者為角度
    */
   default Optional<Tuple2<Double , Double>> getNearestRelativeTransitGmtJulDay(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
     /**
@@ -158,23 +159,13 @@ public interface RelativeTransitIF {
   }
 
   /**
-   * 求出 fromStar 下一次/上一次 與 relativeStar 形成 angles[] 的角度 , 最近的是哪一次
-   * 傳回的是 GMT 時刻
-   */
-  default Optional<Tuple2<ChronoLocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
-    Optional<Tuple2<Double , Double>> optionalPair = getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , fromGmtJulDay , angles , isForward);
-    return optionalPair.map(pair -> {
-      double resultGmtJulDay = pair.v1();
-      ChronoLocalDateTime gmtDateTime = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(resultGmtJulDay);
-      return Tuple.tuple(gmtDateTime , pair.v2());
-    });
+   * 承上 , Date Time 版本
+   * @return 傳回的 Tuple , 前者為 GMT 時間，後者為角度
+   * */
+  default Optional<Tuple2<Double , Double>> getNearestRelativeTransitGmtJulDay(Star transitStar , Star relativeStar , ChronoLocalDateTime fromGmt , Collection<Double> angles , boolean isForward ) {
+    double gmtJulDay = TimeTools.getGmtJulDay(fromGmt);
+    return getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , gmtJulDay , angles , isForward);
   }
 
-  /**
-   * 承上 , 參數為 ChronoLocalDateTime
-   */
-  default Optional<Tuple2<ChronoLocalDateTime , Double>> getNearestRelativeTransitTime(Star transitStar , Star relativeStar , ChronoLocalDateTime gmt , Collection<Double> angles , boolean isForward ) {
-    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
-    return getNearestRelativeTransitTime(transitStar , relativeStar , gmtJulDay , angles , isForward);
-  }
+
 }

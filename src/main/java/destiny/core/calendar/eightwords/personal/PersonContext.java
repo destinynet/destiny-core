@@ -20,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
-import java.time.chrono.IsoEra;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -355,28 +353,28 @@ public class PersonContext extends EightWordsContext {
       Tuple2<Integer , Integer> pair2 = TimeTools.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
       LocalDateTime endFortuneLmt  = LocalDateTime.from(getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
 
-      LocalDate startFortuneLmtDate = startFortuneLmt.toLocalDate();
-      logger.trace("getFortuneDatas : {}.toLocalDate() = {} . era = {}" , startFortuneLmtDate.getClass().getSimpleName() , startFortuneLmtDate , startFortuneLmtDate.getEra());
+      //LocalDate startFortuneLmtDate = startFortuneLmt.toLocalDate();
+      //logger.trace("getFortuneDatas : {}.toLocalDate() = {} . era = {}" , startFortuneLmtDate.getClass().getSimpleName() , startFortuneLmtDate , startFortuneLmtDate.getEra());
 
       switch(fortuneOutput)
       {
         case 西元 : {
           startFortune = startFortuneLmt.get(YEAR_OF_ERA);
-          if (startFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) // 西元前
+          if (startFortuneLmt.getYear() <= 0) // 西元前
             startFortune= 0-startFortune;
           endFortune = endFortuneLmt.get(YEAR_OF_ERA);
-          if (endFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) // 西元前
+          if (endFortuneLmt.getYear() <= 0) // 西元前
             endFortune = 0-endFortune;
           break;
         }
         case 民國 : {
           int year; //normalized 的 年份 , 有零 , 有負數
           year = startFortuneLmt.get(YEAR_OF_ERA);
-          if (startFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) //西元前
+          if (startFortuneLmt.getYear() <= 0) //西元前
             year = -(year-1);
           startFortune = year-1911;
           year = endFortuneLmt.get(YEAR_OF_ERA);
-          if (endFortuneLmt.toLocalDate().getEra() == IsoEra.BCE) //西元前
+          if (endFortuneLmt.getYear() <= 0) //西元前
             year = -(year-1);
           endFortune = year-1911;
           break;

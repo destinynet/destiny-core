@@ -24,6 +24,12 @@ public class LocaleUtilsTest
   private Optional<Locale> matched;
 
   @Test
+  public void testGetLocale() {
+    assertEquals(Locale.TAIWAN , LocaleUtils.getLocale("zh_TW"));
+    assertEquals(Locale.CHINA , LocaleUtils.getLocale("zh_CN"));
+  }
+
+  @Test
   public void testGetBestMatchingLocale1()
   {
     locales.add(new Locale("zh" , "TW" , "AAA"));

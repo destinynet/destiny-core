@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+
 public class UBBCodeConverterTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -18,6 +20,8 @@ public class UBBCodeConverterTest {
     String s2 = "123 \n" + "<br>[quote] 內文 [/quote] \n" + "<br>456";
     String s3 = "123 \n" + "<br>[quote] 內文<br>哈囉 [/quote] \n" + "<br>456";
     String s4 = "123 \n" + "<br>[quote] 內文\n哈囉 [/quote] \n" + "<br>456";
+    assertEquals("123 <hr noshade size=1 ><blockquote> 內文 </blockquote><hr noshade size=1> 456" , codeConverter.getAll(s1));
+
     logger.info("s1 : {}", codeConverter.getAll(s1));
     logger.info("s2 : {}", codeConverter.getAll(s2));
     logger.info("s3 : {}", codeConverter.getAll(s3));

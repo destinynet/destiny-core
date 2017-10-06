@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import destiny.tools.AlignUtil;
 import destiny.tools.LocaleUtils;
 import destiny.tools.location.TimeZoneUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -365,13 +366,13 @@ public class Location implements Serializable {
   public String getDebugString() {
     StringBuilder sb = new StringBuilder();
     sb.append(eastWest == EAST ? '+' : '-');
-    sb.append(AlignUtil.alignRight(this.lngDeg, 3 , ' '));
-    sb.append(AlignUtil.alignRight(this.lngMin, 2 , ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(this.lngDeg), 3 , ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(this.lngMin), 2 , ' '));
     sb.append(AlignUtil.alignRight(this.lngSec, 5 , ' '));
     
     sb.append(northSouth == NORTH ? '+' : '-');
-    sb.append(AlignUtil.alignRight(this.latDeg, 2 , ' '));
-    sb.append(AlignUtil.alignRight(this.latMin, 2 , ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(this.latDeg), 2 , ' '));
+    sb.append(StringUtils.leftPad(String.valueOf(this.latMin), 2 , ' '));
     sb.append(AlignUtil.alignRight(this.latSec, 5 , ' '));
     
     sb.append(" ").append(this.altitudeMeter);
