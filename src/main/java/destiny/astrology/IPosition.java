@@ -12,11 +12,4 @@ public interface IPosition<T extends Point> {
   T getPoint();
 
   Position getPosition(ChronoLocalDateTime lmt , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl);
-
-//  default Position getPosition(double gmtJulDay , Location loc , Centric centric , Coordinate coordinate , StarPositionIF starPositionImpl) {
-//    Tuple2<ChronoLocalDate , LocalTime> t2 =  Time.from(gmtJulDay);
-//    LocalDateTime gmt = LocalDateTime.of(LocalDate.from(t2.v1()) , t2.v2());
-//    return getPosition(gmt , loc , centric , coordinate , starPositionImpl);
-//  }
-
 }

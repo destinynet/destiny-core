@@ -18,8 +18,8 @@ import destiny.tools.Decorator;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple2;
 
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -95,8 +95,8 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       int startFortune = fortuneData.getStartFortune();
       int   endFortune = fortuneData.getEndFortune();
       StemBranch stemBranch = fortuneData.getStemBranch();
-      LocalDateTime startFortuneLmt = fortuneData.getStartFortuneLmt();
-      LocalDateTime   endFortuneLmt = fortuneData.getEndFortuneLmt();
+      ChronoLocalDateTime startFortuneLmt = fortuneData.getStartFortuneLmt();
+      ChronoLocalDateTime   endFortuneLmt = fortuneData.getEndFortuneLmt();
 
       大運直.setText(AlignUtil.alignRight(startFortune, 6) , i , 1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       大運直.setText("→" , i , 9 , "green" );
@@ -113,7 +113,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       FortuneData fortuneData = dataList.get(i-1);
       int startFortune = fortuneData.getStartFortune();
       StemBranch stemBranch = fortuneData.getStemBranch();
-      LocalDateTime startFortuneLmt = fortuneData.getStartFortuneLmt();
+      ChronoLocalDateTime startFortuneLmt = fortuneData.getStartFortuneLmt();
 
       大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , (i-1)*8+1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , eightWords.getDay().getStem());
@@ -133,15 +133,16 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     SolarTerms nextMajorSolarTerms = model.getNextMajorSolarTerms();
 
     Tuple2<Integer , Integer> pair1 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(-1));
-    LocalDateTime prevMajorSolarTermsTime = LocalDateTime.from(model.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
-    //Time prevMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(-1) );
+    ChronoLocalDateTime prevMajorSolarTermsTime = model.getLmt().plus(pair1.v1() , ChronoUnit.SECONDS).plus(pair1.v2() , ChronoUnit.NANOS);
+    //LocalDateTime prevMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+
     節氣.setText(prevMajorSolarTerms.toString() , 1 , 1);
     節氣.setText("：" , 1, 5);
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime) , 1,7);
 
     Tuple2<Integer , Integer> pair2 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(1));
-    LocalDateTime nextMajorSolarTermsTime = LocalDateTime.from(model.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
-    //Time nextMajorSolarTermsTime = new Time(personContext.getLmt() , personContext.getTargetMajorSolarTermsSeconds(1) );
+    ChronoLocalDateTime nextMajorSolarTermsTime = model.getLmt().plus(pair2.v1() , ChronoUnit.SECONDS).plus(pair2.v2() , ChronoUnit.NANOS);
+    //LocalDateTime nextMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
     節氣.setText(nextMajorSolarTerms.toString() , 2 , 1);
     節氣.setText("：" , 2, 5);
     節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime) , 2,7);

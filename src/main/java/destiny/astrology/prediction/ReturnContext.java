@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 
 /** 
@@ -42,13 +41,13 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   private final ApsisWithAzimuthIF apsisWithAzimuthImpl;
   
   /** 出生時間 , LMT */
-  private final LocalDateTime natalLmt;
+  private final ChronoLocalDateTime natalLmt;
   
   /** 出生地點 */
   private final Location natalLoc;
   
   /** 欲計算的目標時間，通常是當下，now，以LMT型態 */
-  private final LocalDateTime nowLmt;
+  private final ChronoLocalDateTime nowLmt;
   
   /** 現在所處的地點 */
   private final Location nowLoc;
@@ -57,7 +56,11 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   private double orb = 0;
   
   /** 最完整的 constructor , 連是否逆推 , 是否考慮歲差，都要帶入 */
-  public ReturnContext(IHoroscope horoscopeImpl, StarPositionWithAzimuthIF positionWithAzimuthImpl, StarTransitIF starTransitImpl, HouseCuspIF houseCuspImpl, ApsisWithAzimuthIF apsisWithAzimuthImpl, LocalDateTime natalLmt, Location natalLoc, LocalDateTime nowLmt, Location nowLoc, Planet planet, double orb, boolean converse, boolean precession)
+  public ReturnContext(IHoroscope horoscopeImpl, StarPositionWithAzimuthIF positionWithAzimuthImpl,
+                       StarTransitIF starTransitImpl, HouseCuspIF houseCuspImpl, ApsisWithAzimuthIF apsisWithAzimuthImpl,
+                       ChronoLocalDateTime natalLmt, Location natalLoc,
+                       ChronoLocalDateTime nowLmt, Location nowLoc,
+                       Planet planet, double orb, boolean converse, boolean precession)
   {
     this.horoscopeImpl = horoscopeImpl;
     this.starPositionWithAzimuthImpl = positionWithAzimuthImpl;
@@ -75,24 +78,6 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   }
 
 
-  
-  /** 較簡易的 constructor , 內定是 交角0度、「順推」、不考慮歲差 */
-  /*
-  public ReturnContext(StarPositionIF starPositionImpl ,StarTransitIF starTransitImpl,  Time natalLmt , Location natalLoc , Time nowLmt , Location nowLoc , Planet planet)
-  {
-    this.starPositionImpl = starPositionImpl;
-    this.starTransitImpl = starTransitImpl;
-    this.natalLmt = natalLmt;
-    this.natalLoc = natalLoc;
-    this.nowLmt = nowLmt;
-    this.nowLoc = nowLoc;
-    this.planet = planet;
-    this.orb = 0;
-    this.converse = false;
-    this.precession = false;
-  }
-  */
-  
   
   /** 對外主要的 method , 取得 return 盤 */
   @NotNull

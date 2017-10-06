@@ -6,7 +6,8 @@ package destiny.astrology;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -37,16 +38,12 @@ public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializ
     {
       double planetsAngle = Horoscope.getAngle(deg1, deg2);
       double error = Math.abs(planetsAngle - aspect.getDegree()); //目前與 aspect 的誤差
-      //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error + " 度");
 
-      LocalDateTime lmt = h.getLmt(); //目前時間
-      LocalDateTime oneSecondLater = LocalDateTime.from(lmt).plusSeconds(1); // 一秒之後
-      
-      //HoroscopeContext hc2 = HoroscopeContext.getNewLmtHoroscope(oneSecondLater,  horoscopeContext);
-      Horoscope hc2 = horoscopeImpl.getHoroscope(oneSecondLater , h.getLocation() , h.getPoints() ,
-        h.getHouseSystem() , h.getCentric() , h.getCoordinate());
+      ChronoLocalDateTime lmt = h.getLmt(); //目前時間
+      ChronoLocalDateTime oneSecondLater = lmt.plus(1 , ChronoUnit.SECONDS); // 一秒之後
 
-      
+      Horoscope hc2 = horoscopeImpl.getHoroscope(oneSecondLater , h.getLocation() , h.getPoints() , h.getHouseSystem() , h.getCentric() , h.getCoordinate() , h.getTemperature() , h.getPressure());
+
       double deg1_next = hc2.getPositionWithAzimuth(p1).getLng();
       double deg2_next = hc2.getPositionWithAzimuth(p2).getLng();
       double planetsAngle_next = Horoscope.getAngle(deg1_next , deg2_next);

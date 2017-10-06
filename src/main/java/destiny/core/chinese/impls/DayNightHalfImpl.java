@@ -17,18 +17,13 @@ public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
 
   @Override
   public DayNight getDayNight(double gmtJulDay, Location location) {
-    double atmosphericPressure = 1013.25;
     double atmosphericTemperature = 0;
+    double atmosphericPressure = 1013.25;
     boolean isDiscCenter = true;
     boolean hasRefraction = true;
 
-
-    double nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure , atmosphericPressure , isDiscCenter , hasRefraction);
-    double nextNadirJulDay    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure , atmosphericPressure , isDiscCenter , hasRefraction);
-
-
-//    LocalDateTime nextMeridian = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
-//    LocalDateTime nextNadir    = riseTransImpl.getGmtTrans(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericPressure, atmosphericTemperature, isDiscCenter, hasRefraction);
+    double nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+    double nextNadirJulDay    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
 
     if (nextNadirJulDay > nextMeridianJulDay) {
       //子正到午正（上半天）

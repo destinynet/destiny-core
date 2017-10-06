@@ -9,7 +9,7 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.MonthMasterIF;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 
 public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable {
@@ -29,7 +29,7 @@ public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable
   }
 
   @Override
-  public Branch getBranch(LocalDateTime lmt, Location location) {
+  public Branch getBranch(ChronoLocalDateTime lmt, Location location) {
     Position pos = starPositionImpl.getPosition(Planet.SUN , lmt , location , Centric.GEO , Coordinate.ECLIPTIC);
     return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
   }

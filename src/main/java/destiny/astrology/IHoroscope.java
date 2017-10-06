@@ -8,7 +8,6 @@ package destiny.astrology;
 import destiny.core.calendar.Location;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,18 +42,13 @@ public interface IHoroscope {
     return pointSet;
   }
 
-  Horoscope getHoroscope(ChronoLocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
+  Horoscope getHoroscope(ChronoLocalDateTime lmt , Location loc ,
+                         @NotNull Collection<Point> points ,
                          @NotNull HouseSystem houseSystem ,
                          @NotNull Centric centric ,
                          @NotNull Coordinate coordinate ,
                          double temperature , double pressure) ;
 
-  default Horoscope getHoroscope(LocalDateTime lmt , Location loc , @NotNull Collection<Point> points ,
-                                 @NotNull HouseSystem houseSystem ,
-                                 @NotNull Centric centric ,
-                                 @NotNull Coordinate coordinate ) {
-    return getHoroscope(lmt , loc , points , houseSystem , centric , coordinate , 0 , 1013.25);
-  }
 
   default Horoscope getHoroscope(ChronoLocalDateTime lmt , Location loc ,
                                  @NotNull HouseSystem houseSystem ,

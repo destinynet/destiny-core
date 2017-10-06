@@ -25,7 +25,7 @@ public interface SolarTermsIF {
   /** 計算某時刻當下的節氣 */
   SolarTerms getSolarTermsFromGMT(double gmtJulDay);
 
-  /** 承上， LocalDateTime 版本 */
+  /** 承上， ChronoLocalDateTime 版本 */
   default SolarTerms getSolarTermsFromGMT(ChronoLocalDateTime gmt) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
     return getSolarTermsFromGMT(gmtJulDay);

@@ -6,7 +6,7 @@ package destiny.core.calendar.eightwords.personal;
 import destiny.core.chinese.StemBranch;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /** 一柱大運的相關資訊。包含上方文字，干支... */
 public class FortuneData implements Serializable {
@@ -15,10 +15,10 @@ public class FortuneData implements Serializable {
   private final StemBranch stemBranch;
 
   /** 起運時刻 */
-  private final LocalDateTime startFortuneLmt;
+  private final ChronoLocalDateTime startFortuneLmt;
 
   /** 終運時刻 */
-  private final LocalDateTime endFortuneLmt;
+  private final ChronoLocalDateTime endFortuneLmt;
 
   /** 起運 : 西元/民國/實歲/虛歲之值 */
   private final int startFortune;
@@ -26,7 +26,10 @@ public class FortuneData implements Serializable {
   /** 終運 : 西元/民國/實歲/虛歲之值 */
   private final int endFortune;
 
-  FortuneData(StemBranch stemBranch, LocalDateTime startFortuneLmt, LocalDateTime endFortuneLmt, int startFortune, int endFortune) {
+  FortuneData(StemBranch stemBranch,
+              ChronoLocalDateTime startFortuneLmt,
+              ChronoLocalDateTime endFortuneLmt,
+              int startFortune, int endFortune) {
     this.stemBranch = stemBranch;
     this.startFortuneLmt = startFortuneLmt;
     this.endFortuneLmt = endFortuneLmt;
@@ -43,11 +46,11 @@ public class FortuneData implements Serializable {
     return stemBranch;
   }
 
-  public LocalDateTime getStartFortuneLmt() {
+  public ChronoLocalDateTime getStartFortuneLmt() {
     return startFortuneLmt;
   }
 
-  public LocalDateTime getEndFortuneLmt() {
+  public ChronoLocalDateTime getEndFortuneLmt() {
     return endFortuneLmt;
   }
 

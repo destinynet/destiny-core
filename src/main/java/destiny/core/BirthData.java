@@ -4,23 +4,27 @@
  */
 package destiny.core;
 
-import destiny.core.calendar.*;
+import destiny.core.calendar.DateIF;
+import destiny.core.calendar.Location;
+import destiny.core.calendar.LocationIF;
+import destiny.core.calendar.TimeIF;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.chrono.IsoEra;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Objects;
+
+import static java.time.temporal.ChronoField.*;
 
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
 public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializable {
 
   private Gender gender;
 
-  private LocalDateTime time;
+  private ChronoLocalDateTime time;
 
   private Location location;
 
-  public BirthData(Gender gender, LocalDateTime time, Location location) {
+  public BirthData(Gender gender, ChronoLocalDateTime time, Location location) {
     this.gender = gender;
     this.time = time;
     this.location = location;
@@ -32,7 +36,7 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
   }
 
   @Override
-  public LocalDateTime getTime() {
+  public ChronoLocalDateTime getTime() {
     return time;
   }
 
@@ -47,34 +51,34 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
 
   @Override
   public boolean isAd() {
-    return time.toLocalDate().getEra() == IsoEra.CE;
+    return time.get(YEAR) > 0;
   }
 
   @Override
   public int getYear() {
-    return time.getYear();
+    return time.get(YEAR_OF_ERA);
   }
 
   @Override
   public int getMonth() {
-    return time.getMonthValue();
+    return time.get(MONTH_OF_YEAR);
   }
 
   @Override
   public int getDay() {
-    return time.getDayOfMonth();
+    return time.get(DAY_OF_MONTH);
   }
 
   public int getHour() {
-    return time.getHour();
+    return time.get(HOUR_OF_DAY);
   }
 
   public int getMinute() {
-    return time.getMinute();
+    return time.get(MINUTE_OF_HOUR);
   }
 
   public double getSecond() {
-    return time.getSecond() + time.getNano() / 1_000_000_000.0;
+    return time.get(SECOND_OF_MINUTE) + time.get(NANO_OF_SECOND) / 1_000_000_000.0;
   }
 
   @Override

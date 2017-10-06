@@ -4,10 +4,10 @@
  */
 package destiny.core.calendar;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /** 某class 具有 Time 的資料結構 */
 public interface TimeIF {
 
-  LocalDateTime getTime();
+  ChronoLocalDateTime getTime();
 }

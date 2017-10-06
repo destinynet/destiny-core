@@ -23,13 +23,6 @@ public interface HouseCuspIF extends RisingSignIF {
    */
   double[] getHouseCusps(double gmtJulDay , Location loc , HouseSystem houseSystem, Coordinate coordinate);
 
-
-//  default double[] getHouseCusps(LocalDateTime lmt , Location location , HouseSystem houseSystem, Coordinate coordinate) {
-//    LocalDateTime gmt = Time.getGmtFromLmt(lmt , location);
-//    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
-//    return getHouseCusps(gmtJulDay , location , houseSystem , coordinate);
-//  }
-
   /**
    * 取得所有宮（1~12）的宮首，是什麼星座 . 傳回一個 length=13 的 array , array[0] 不使用。
    */
@@ -49,17 +42,7 @@ public interface HouseCuspIF extends RisingSignIF {
     return getHouseSigns(gmtJulDay , location , houseSystem , coordinate)[1];
   }
 
-  /**
-   * @param house : 1 ~ 12
-   */
-//  default ZodiacSign getSign(int house , LocalDateTime gmt , Location location , HouseSystem houseSystem , Coordinate coordinate) {
-//    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
-//    return getHouseSigns(gmtJulDay , location , houseSystem , coordinate)[house];
-//  }
 
-
-
-  
   /**
    * 取得第 index 宮的宮首在黃道幾度 , 為 1-based , 1 <= index <=12
    */

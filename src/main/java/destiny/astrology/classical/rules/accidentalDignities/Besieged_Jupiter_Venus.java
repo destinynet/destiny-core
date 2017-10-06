@@ -31,7 +31,7 @@ public class Besieged_Jupiter_Venus extends Rule {
 
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     if ( planet == Planet.SUN
       || planet == Planet.MOON
       || planet == Planet.MERCURY

@@ -338,4 +338,24 @@ public class TimeTools implements Serializable {
     return halfAddedJulDay - 0.5 + dayValue;
   }
 
+  /**
+   * 將 LMT 以及經度 轉換為當地真正的時間 , 不包含真太陽時(均時差) 的校正
+   * @return 經度時間
+   */
+  public static ChronoLocalDateTime getLongitudeTime(ChronoLocalDateTime lmt, Location location) {
+    double absLng = Math.abs(location.getLongitude());
+    double secondsOffset = getDstSecondOffset(lmt, location).v2();
+    double zoneSecondOffset = Math.abs(secondsOffset);
+    double longitudeSecondOffset = absLng * 4 * 60; // 經度與GMT的時差 (秒) , 一分鐘四度
+
+    if (location.isEast()) {
+      double seconds = longitudeSecondOffset - zoneSecondOffset;
+      Tuple2<Integer , Integer> pair = splitSecond(seconds);
+      return lmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
+    } else {
+      double seconds = zoneSecondOffset - longitudeSecondOffset;
+      Tuple2<Integer , Integer> pair = splitSecond(seconds);
+      return lmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
+    }
+  }
 }

@@ -6,13 +6,11 @@
 package destiny.astrology;
 
 import destiny.core.calendar.Location;
-import destiny.core.calendar.LongitudeTimeBean;
 import destiny.core.calendar.TimeTools;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -51,7 +49,7 @@ public interface TrueSolarTimeIF {
     ChronoLocalDateTime lmtWithE = TimeTools.getLmtFromGmt(gmtWithE , location);
     logger.debug("lmtE = {}" , lmtWithE);
 
-    return LongitudeTimeBean.getLocalTime((LocalDateTime) lmtWithE, location);
+    return TimeTools.getLongitudeTime(lmtWithE, location);
   }
 
 }

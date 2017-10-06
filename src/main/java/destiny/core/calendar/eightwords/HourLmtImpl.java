@@ -82,12 +82,6 @@ public class HourLmtImpl implements HourIF, Serializable {
     ChronoLocalDateTime lmtResult = getLmtNextStartOf(lmt, location, eb);
     ChronoLocalDateTime gmtResult = TimeTools.getGmtFromLmt(lmtResult, location);
     return TimeTools.getGmtJulDay(gmtResult);
-
-    //    Time gmt = new Time(gmtJulDay);
-    //    LocalDateTime lmtLdt = gmt.toLocalDateTime();
-    //    LocalDateTime lmtResult = getLmtNextStartOf(lmtLdt , location , eb);
-    //    LocalDateTime gmtResult = Time.getGmtFromLmt(lmtResult , location);
-    //    return TimeTools.getGmtJulDay(gmtResult);
   }
 
 

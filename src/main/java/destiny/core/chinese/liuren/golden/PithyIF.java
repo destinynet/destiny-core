@@ -15,7 +15,7 @@ import destiny.core.chinese.liuren.GeneralStemBranchIF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 public interface PithyIF {
 
@@ -44,7 +44,7 @@ public interface PithyIF {
     return new Pithy(ew , direction, 月將 , dayNight, 貴神);
   }
 
-  default Pithy getPithy(Branch direction, LocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl,
+  default Pithy getPithy(Branch direction, ChronoLocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl,
                          DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl,
                          GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);

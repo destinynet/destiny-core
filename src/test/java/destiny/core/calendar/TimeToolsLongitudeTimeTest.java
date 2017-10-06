@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 
-public class LongitudeTimeBeanTest {
+public class TimeToolsLongitudeTimeTest {
 
   LocalDateTime lmt;
 
@@ -28,7 +28,7 @@ public class LongitudeTimeBeanTest {
     location = new Location(EastWest.EAST, 121, 30, 0, NorthSouth.NORTH, 25, 03, 0, 0, "Asia/Taipei");
 
     expected = LocalDateTime.of(2007, 3, 14, 0, 6, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** 東經 130度 , 理應在東九區，但假設仍在東八區(時差480分)的話，應該加 40分鐘 */
@@ -38,7 +38,7 @@ public class LongitudeTimeBeanTest {
     location = new Location(EastWest.EAST, 130, 0, 0, NorthSouth.NORTH, 25, 03, 0, 0, "Asia/Taipei");
 
     expected = LocalDateTime.of(2007, 3, 14, 0, 40, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** 東經 115.5度 , 理應減 (120-115.5)x4 = 4.5x4 = 18分 */
@@ -47,7 +47,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.EAST, 115.5, NorthSouth.NORTH, 25.0, 0, "Asia/Taipei", null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 42, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** 東經 110度 , 理應在東七區，但假設仍在東八區(時差480分)的話，應該減 40分鐘 */
@@ -56,7 +56,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.EAST, 110, NorthSouth.NORTH, 25.0, 0, "Asia/Taipei", null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 20, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** 西經 76.5度 (西五區，負300分鐘) , 應該減 (76.5-75)x4 = 1.5x4=6分鐘 */
@@ -65,7 +65,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.WEST, 76.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 54, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** 西經 85度 , 理應在西六區 , 但如果仍在西五區(時差 -300分) , 應該減 40分   */
@@ -74,7 +74,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.WEST, 85, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 20, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** 西經 70.5度 (西五區 , 負300分鐘) , 應該加 (75-70.5)x4 = 4.5x4=18分鐘 */
@@ -83,7 +83,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.WEST, 70.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 18, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
 
   }
 
@@ -93,7 +93,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.WEST, 65, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 40, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** GMT 時區內 , 東經5度 , 加20分 */
@@ -102,7 +102,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.EAST, 5, NorthSouth.NORTH, 25.0, 0, "GMT", null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 20, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
   /** GMT 時區內 , 西經5度 , 減20分 */
@@ -111,7 +111,7 @@ public class LongitudeTimeBeanTest {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
     location = new Location(EastWest.WEST, 5, NorthSouth.NORTH, 25.0, 0, "GMT", null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 40, 0);
-    assertEquals(expected, LongitudeTimeBean.getLocalTime(lmt, location));
+    assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
 
 }

@@ -3,6 +3,7 @@
  */
 package destiny.astrology;
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
@@ -10,14 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Horoscope implements Serializable {
 
-  private final ChronoLocalDateTime lmt;
+  /**
+   * GMT's Julian Day
+   */
+  private final double gmtJulDay;
+
   private final Location location;
 
   /** 分宮法 */
@@ -45,8 +50,8 @@ public class Horoscope implements Serializable {
   private transient static Logger logger = LoggerFactory.getLogger(Horoscope.class);
 
 
-  public Horoscope(ChronoLocalDateTime lmt, Location location, HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
-    this.lmt = lmt;
+  public Horoscope(double gmtJulDay, Location location, HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
+    this.gmtJulDay = gmtJulDay;
     this.location = location;
     this.houseSystem = houseSystem;
     this.coordinate = coordinate;
@@ -57,18 +62,43 @@ public class Horoscope implements Serializable {
     this.cuspDegreeMap = cuspDegreeMap;
   }
 
-
-  // TODO : remove casting
-  @NotNull
-  public LocalDateTime getLmt() {
-    return (LocalDateTime) lmt;
+  public double getGmtJulDay() {
+    return gmtJulDay;
   }
 
-  // TODO : remove casting
+  /**
+   * @return 取得 GMT 時刻
+   */
   @NotNull
-  public LocalDateTime getGmt() {
-    return (LocalDateTime) TimeTools.getGmtFromLmt(lmt , location);
+  public ChronoLocalDateTime getGmt() {
+    return JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
   }
+
+  /**
+   * 承上，但帶入自訂的 reverse Julian Day converter
+   */
+  @NotNull
+  public ChronoLocalDateTime getGmt(Function<Double , ChronoLocalDateTime> revJulDayFunction) {
+    return revJulDayFunction.apply(gmtJulDay);
+  }
+
+  /**
+   * @return 取得 LMT 時刻
+   */
+  @NotNull
+  public ChronoLocalDateTime getLmt() {
+    return TimeTools.getGmtFromLmt(getGmt() , location);
+  }
+
+  /**
+   * 承上，但帶入自訂的 reverse Julian Day converter
+   */
+  @NotNull
+  public ChronoLocalDateTime getLmt(Function<Double , ChronoLocalDateTime> revJulDayFunction) {
+    return TimeTools.getGmtFromLmt(getGmt(revJulDayFunction) , location);
+  }
+
+
 
   @NotNull
   public Location getLocation() {

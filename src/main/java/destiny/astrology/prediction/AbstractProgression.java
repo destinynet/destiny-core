@@ -6,7 +6,6 @@ package destiny.astrology.prediction;
 
 import java.io.Serializable;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -65,7 +64,7 @@ public abstract class AbstractProgression implements LinearIF , Conversable , Se
    * 不限定是 GMT 或是 LMT , 但兩者要一樣的時區
    */
   @Override
-  public LocalDateTime getDivergentTime(LocalDateTime natalTime, LocalDateTime nowTime) {
+  public ChronoLocalDateTime getDivergentTime(ChronoLocalDateTime natalTime, ChronoLocalDateTime nowTime) {
     Duration dur = Duration.between(natalTime , nowTime);
     long diffSeconds = dur.getSeconds();
 
@@ -73,11 +72,13 @@ public abstract class AbstractProgression implements LinearIF , Conversable , Se
     long secs = (long) secDouble;
     long nanos = (long) ((secDouble - secs) * 1_000_000_000);
 
-    LocalDateTime resultTime;
-    if (converse)
-      resultTime = LocalDateTime.from(natalTime).minusSeconds(secs).minusNanos(nanos);
-    else
-      resultTime = LocalDateTime.from(natalTime).plusSeconds(secs).plusNanos(nanos);
+    ChronoLocalDateTime resultTime;
+    if (converse) {
+      resultTime = natalTime.minus(secs , ChronoUnit.SECONDS).minus(nanos , ChronoUnit.NANOS);
+    }
+    else {
+      resultTime = natalTime.plus(secs , ChronoUnit.SECONDS).plus(nanos , ChronoUnit.NANOS);
+    }
     return resultTime;
   }
 

@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -141,7 +142,7 @@ public interface PalmIF {
    * @param trueRisingSign  真實星體命宮. 若為 false , 則為傳統一掌經起命宮
    * @param clockwiseHouse  宮位飛佈，順時針(true) or 逆時針(false)
    */
-  default PalmWithMeta getPalmWithMeta(Gender gender, LocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
+  default PalmWithMeta getPalmWithMeta(Gender gender, ChronoLocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
                                        ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl,
                                        RisingSignIF risingSignImpl, YearMonthIF yearMonthImpl, MonthAlgo monthAlgo,
                                        boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {

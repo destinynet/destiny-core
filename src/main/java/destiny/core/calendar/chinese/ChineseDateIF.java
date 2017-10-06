@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public interface ChineseDateIF extends Descriptive {
    * 最完整的「陽曆轉陰曆」演算法
    * 必須另外帶入 地點、日干支紀算法、時辰劃分法、子正計算方式、是否子初換日 5個參數
    */
-  ChineseDate getChineseDate(LocalDateTime lmt , Location location , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl , boolean changeDayAfterZi);
+  ChineseDate getChineseDate(ChronoLocalDateTime lmt , Location location , DayIF dayImpl , HourIF hourImpl , MidnightIF midnightImpl , boolean changeDayAfterZi);
 
 
   // =============== 陰曆轉陽曆 ===============

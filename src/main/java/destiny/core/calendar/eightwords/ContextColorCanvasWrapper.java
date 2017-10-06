@@ -93,8 +93,6 @@ public class ContextColorCanvasWrapper {
     ColorCanvas 西元資訊 = new ColorCanvas(1,36, "　");
     StringBuilder timeData = new StringBuilder();
     timeData.append("西元：");
-    logger.debug("lmt = {} , toLocalDate = {} : {}" , lmt , lmt.toLocalDate().getClass() , lmt.toLocalDate());
-    //assert lmt.toLocalDate() instanceof LocalDate;
 
     if(lmt.toLocalDate().getYear() <= 0)
       timeData.append("前");

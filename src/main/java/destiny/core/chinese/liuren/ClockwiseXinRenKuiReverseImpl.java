@@ -14,7 +14,7 @@ import destiny.core.chinese.ClockwiseIF;
 import destiny.core.chinese.StemBranch;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 
 /**
@@ -43,7 +43,7 @@ public class ClockwiseXinRenKuiReverseImpl implements ClockwiseIF, Serializable 
   }
 
   @Override
-  public Clockwise getClockwise(LocalDateTime lmt, Location loc) {
+  public Clockwise getClockwise(ChronoLocalDateTime lmt, Location loc) {
     StemBranch day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi);
     DayNight dayNight = differentiator.getDayNight(lmt, loc);
 

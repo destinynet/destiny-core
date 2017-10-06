@@ -1,6 +1,6 @@
 package destiny.astrology.prediction;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /** 
  * 繼承自 Mappable , 只是此推運法是「線性收斂」的 : 只要時間不同，所收斂到的時間，也必定不相同<br/>
@@ -16,6 +16,6 @@ interface LinearIF extends Mappable {
    * @param nowTime   某時刻
    * @return nowTime 相對於 natalTime 輻射放大出去， 是此人的何時
    */
-  LocalDateTime getDivergentTime(LocalDateTime natalTime , LocalDateTime nowTime);
+  ChronoLocalDateTime getDivergentTime(ChronoLocalDateTime natalTime , ChronoLocalDateTime nowTime);
 
 }

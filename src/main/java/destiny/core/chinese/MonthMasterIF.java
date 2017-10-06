@@ -6,7 +6,7 @@ package destiny.core.chinese;
 import destiny.core.Descriptive;
 import destiny.core.calendar.Location;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * 取「月將」 (不是月令干支！)
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public interface MonthMasterIF extends Descriptive {
 
   /** 取得「月將」的方法 */
-  Branch getBranch(LocalDateTime lmt , Location location);
+  Branch getBranch(ChronoLocalDateTime lmt , Location location);
 
   /** 取得「月將」的中文稱謂
    *

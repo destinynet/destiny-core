@@ -10,7 +10,7 @@ import destiny.core.chinese.Clockwise;
 import destiny.core.chinese.ClockwiseIF;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 
 /**
@@ -26,7 +26,7 @@ public class ClockwiseDayNightFixedImpl implements ClockwiseIF , Serializable {
   public ClockwiseDayNightFixedImpl(DayNightDifferentiator differentiator) {this.differentiator = differentiator;}
 
   @Override
-  public Clockwise getClockwise(LocalDateTime lmt, Location loc) {
+  public Clockwise getClockwise(ChronoLocalDateTime lmt, Location loc) {
     DayNight dayNight = differentiator.getDayNight(lmt , loc);
     return (dayNight == DayNight.DAY ? Clockwise.CLOCKWISE : Clockwise.COUNTER);
   }

@@ -12,13 +12,13 @@ import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 public class PalmWithMeta implements Serializable {
 
   private final Palm palm;
 
-  private final LocalDateTime lmt;
+  private final ChronoLocalDateTime lmt;
 
   private final Location loc;
 
@@ -40,7 +40,7 @@ public class PalmWithMeta implements Serializable {
 
   private final IFinalMonthNumber.MonthAlgo monthAlgo;
 
-  public PalmWithMeta(Palm palm, LocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean trueRisingSign, IFinalMonthNumber.MonthAlgo monthAlgo) {
+  public PalmWithMeta(Palm palm, ChronoLocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean trueRisingSign, IFinalMonthNumber.MonthAlgo monthAlgo) {
     this.palm = palm;
     this.lmt = lmt;
     this.loc = loc;
@@ -61,7 +61,7 @@ public class PalmWithMeta implements Serializable {
     return palm;
   }
 
-  public LocalDateTime getLmt() {
+  public ChronoLocalDateTime getLmt() {
     return lmt;
   }
 

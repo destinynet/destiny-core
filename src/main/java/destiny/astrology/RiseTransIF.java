@@ -27,15 +27,17 @@ public interface RiseTransIF {
 
   /**
    * 來源、目標時間都是 GMT
+   *
+   * @param atmosphericTemperature 攝氏溫度
+   * @param atmosphericPressure    壓力 , 例如 1013.25
    */
-  double getGmtTransJulDay(double fromGmtJulDay , Star star , TransPoint point , Location location ,
-      double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction);
+  double getGmtTransJulDay(double fromGmtJulDay, Star star, TransPoint point, Location location, double atmosphericTemperature, double atmosphericPressure, boolean isDiscCenter, boolean hasRefraction);
 
 
   default ChronoLocalDateTime getGmtTrans(ChronoLocalDateTime fromGmt , Star star , TransPoint point , Location location ,
                                     double atmosphericPressure , double atmosphericTemperature , boolean isDiscCenter , boolean hasRefraction) {
     double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
-    double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+    double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
     return JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(resultGmt);
   }
 
@@ -70,7 +72,7 @@ public interface RiseTransIF {
     double resultGmtJulDay;
 
     while (fromGmtJulDay < toGmtJulDay) {
-      resultGmtJulDay = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericPressure , atmosphericTemperature , isDiscCenter , hasRefraction);
+      resultGmtJulDay = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
       logger.debug("resultGmtJulDay = {}" , resultGmtJulDay);
 
       if (resultGmtJulDay > toGmtJulDay)

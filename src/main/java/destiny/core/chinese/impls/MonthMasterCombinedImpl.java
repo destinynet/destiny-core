@@ -9,7 +9,7 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.MonthMasterIF;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 
 public class MonthMasterCombinedImpl implements MonthMasterIF, Serializable {
@@ -30,7 +30,7 @@ public class MonthMasterCombinedImpl implements MonthMasterIF, Serializable {
 
 
   @Override
-  public Branch getBranch(LocalDateTime lmt, Location location) {
+  public Branch getBranch(ChronoLocalDateTime lmt, Location location) {
     Branch monthBranch = yearMonthImpl.getMonth(lmt , location).getBranch();
     return monthBranch.getCombined();
   }
