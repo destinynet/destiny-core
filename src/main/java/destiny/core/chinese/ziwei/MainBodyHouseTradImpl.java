@@ -16,7 +16,7 @@ import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 import static destiny.core.chinese.ziwei.ZContext.YearType;
 
@@ -51,7 +51,7 @@ public class MainBodyHouseTradImpl implements IMainBodyHouse, Serializable {
   }
 
   @Override
-  public Tuple2<Branch , Branch> getMainBodyHouse(LocalDateTime lmt, Location loc) {
+  public Tuple2<Branch , Branch> getMainBodyHouse(ChronoLocalDateTime lmt, Location loc) {
 
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
 

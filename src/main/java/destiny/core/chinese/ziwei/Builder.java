@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class Builder implements Serializable {
 
   /** 陽曆出生日期 */
   @Nullable
-  private LocalDateTime localDateTime = null;
+  private ChronoLocalDateTime localDateTime = null;
 
   /** 出生地點 */
   @Nullable
@@ -225,7 +226,7 @@ public class Builder implements Serializable {
     return birthHour;
   }
 
-  public Builder withLocalDateTime(LocalDateTime localDateTime) {
+  public Builder withLocalDateTime(ChronoLocalDateTime localDateTime) {
     this.localDateTime = localDateTime;
     return this;
   }

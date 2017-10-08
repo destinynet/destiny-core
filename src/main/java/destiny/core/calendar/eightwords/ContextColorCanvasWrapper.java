@@ -22,9 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
-import static java.time.temporal.ChronoField.YEAR_OF_ERA;
+import static java.time.temporal.ChronoField.*;
 
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
@@ -38,7 +40,7 @@ public class ContextColorCanvasWrapper {
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF     hiddenStemsImpl  = new HiddenStemsStandardImpl();
   /** 當地時間 */
-  private LocalDateTime     lmt              = LocalDateTime.now();
+  private ChronoLocalDateTime lmt              = LocalDateTime.now();
   /** 地點 */
   private Location          location         = Location.of(Locale.TAIWAN);
   /** 地點的名稱 */
@@ -64,7 +66,7 @@ public class ContextColorCanvasWrapper {
 
   private final ReactionsUtil reactionsUtil;
   
-  public ContextColorCanvasWrapper(EightWordsContext context, LocalDateTime lmt, Location location, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl, Direction direction) {
+  public ContextColorCanvasWrapper(EightWordsContext context, ChronoLocalDateTime lmt, Location location, String locationName, HiddenStemsIF hiddenStemsImpl, String linkUrl, Direction direction) {
     this.context = context;
     this.lmt = lmt;
     this.location = location;
@@ -94,22 +96,22 @@ public class ContextColorCanvasWrapper {
     StringBuilder timeData = new StringBuilder();
     timeData.append("西元：");
 
-    if(lmt.toLocalDate().getYear() <= 0)
+    if(lmt.toLocalDate().get(ChronoField.YEAR) <= 0)
       timeData.append("前");
     else
       timeData.append("　");
       
     timeData.append(AlignUtil.alignRight(lmt.get(YEAR_OF_ERA),4));
     timeData.append("年");
-    timeData.append(AlignUtil.alignRight(lmt.getMonthValue(),2));
+    timeData.append(AlignUtil.alignRight(lmt.get(MONTH_OF_YEAR),2));
     timeData.append("月");
-    timeData.append(AlignUtil.alignRight(lmt.getDayOfMonth(),2));
+    timeData.append(AlignUtil.alignRight(lmt.get(DAY_OF_MONTH),2));
     timeData.append("日");
-    timeData.append(AlignUtil.alignRight(lmt.getHour(),2));
+    timeData.append(AlignUtil.alignRight(lmt.get(HOUR_OF_DAY),2));
     timeData.append("時");
-    timeData.append(AlignUtil.alignRight(lmt.getMinute(),2));
+    timeData.append(AlignUtil.alignRight(lmt.get(MINUTE_OF_HOUR),2));
     timeData.append("分");
-    timeData.append(AlignUtil.alignRight(lmt.getSecond(),4));
+    timeData.append(AlignUtil.alignRight(lmt.get(SECOND_OF_MINUTE),4));
     timeData.append("秒");
     西元資訊.setText(timeData.toString(), 1, 1);
     cc.add(西元資訊 , 1 , 1 );

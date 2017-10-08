@@ -87,7 +87,7 @@ public class Horoscope implements Serializable {
    */
   @NotNull
   public ChronoLocalDateTime getLmt() {
-    return TimeTools.getGmtFromLmt(getGmt() , location);
+    return TimeTools.getLmtFromGmt(getGmt() , location);
   }
 
   /**

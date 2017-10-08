@@ -1,7 +1,10 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.astrology.*;
-import destiny.core.calendar.*;
+import destiny.core.calendar.Location;
+import destiny.core.calendar.SolarTerms;
+import destiny.core.calendar.SolarTermsImpl;
+import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.chinese.Branch;
@@ -12,7 +15,7 @@ import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * 除了計算八字，另外新增輸出農曆以及命宮的方法
@@ -21,7 +24,7 @@ public class EightWordsContext implements Serializable {
 
   protected final EightWords eightWords;
 
-  protected final LocalDateTime lmt;
+  protected final ChronoLocalDateTime lmt;
 
   protected final Location location;
 
@@ -43,7 +46,7 @@ public class EightWordsContext implements Serializable {
 
   protected final StarPositionIF starPositionImpl;    // 星體位置
 
-  public EightWordsContext(LocalDateTime lmt, Location location, EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+  public EightWordsContext(ChronoLocalDateTime lmt, Location location, EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
     this.yearMonthImpl = yearMonthImpl;
     this.eightWords = eightWordsImpl.getEightWords(lmt , location);
     this.lmt = lmt;
@@ -90,7 +93,7 @@ public class EightWordsContext implements Serializable {
   }
 
 
-  public LocalDateTime getLmt() {
+  public ChronoLocalDateTime getLmt() {
     return lmt;
   }
 
@@ -160,7 +163,7 @@ public class EightWordsContext implements Serializable {
     return StemBranch.get(risingStem, risingBranch);
   }
 
-  public Branch getBranchOf(Star star , LocalDateTime lmt , Location location) {
+  public Branch getBranchOf(Star star , ChronoLocalDateTime lmt , Location location) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
     return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
   }

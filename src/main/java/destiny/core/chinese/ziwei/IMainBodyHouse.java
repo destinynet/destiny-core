@@ -8,7 +8,7 @@ import destiny.core.calendar.Location;
 import destiny.core.chinese.Branch;
 import org.jooq.lambda.tuple.Tuple2;
 
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 public interface IMainBodyHouse extends Descriptive {
 
   /** 前者為命宮、後者為身宮 */
-  Tuple2<Branch,Branch> getMainBodyHouse(LocalDateTime lmt , Location loc);
+  Tuple2<Branch,Branch> getMainBodyHouse(ChronoLocalDateTime lmt , Location loc);
 
   @Override
   default String getTitle(Locale locale) {

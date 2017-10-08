@@ -45,7 +45,7 @@ public class PersonContext extends EightWordsContext {
   private final StarTransitIF starTransitImpl;
 
   /** 出生時刻 */
-  private final LocalDateTime lmt;
+  private final ChronoLocalDateTime lmt;
 
   /** 出生地點 */
   private final Location location;
@@ -93,7 +93,7 @@ public class PersonContext extends EightWordsContext {
                        boolean changeDayAfterZi,
                        @NotNull SolarTermsIF solarTermsImpl,
                        @NotNull StarTransitIF starTransitImpl,
-                       LocalDateTime lmt,
+                       ChronoLocalDateTime lmt,
                        Location location,
                        String locationName,
                        @NotNull Gender gender,
@@ -349,8 +349,11 @@ public class PersonContext extends EightWordsContext {
       double   endFortuneSeconds = getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
 
       Tuple2<Integer , Integer> pair1 = TimeTools.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
+      //ChronoLocalDateTime startFortuneLmt = getLmt().plus(pair1.v1() , SECONDS).plus(pair1.v2() , NANOS);
       LocalDateTime startFortuneLmt = LocalDateTime.from(getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+
       Tuple2<Integer , Integer> pair2 = TimeTools.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
+      //ChronoLocalDateTime endFortuneLmt   = getLmt().plus(pair2.v1() , SECONDS).plus(pair2.v2 , NANOS);
       LocalDateTime endFortuneLmt  = LocalDateTime.from(getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
 
       //LocalDate startFortuneLmtDate = startFortuneLmt.toLocalDate();

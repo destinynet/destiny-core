@@ -12,6 +12,7 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * 利用上升星座，計算命宮
@@ -29,7 +30,7 @@ public class MainBodyHouseAstroImpl implements IMainBodyHouse, Serializable {
   }
 
   @Override
-  public Tuple2<Branch , Branch> getMainBodyHouse(LocalDateTime lmt, Location loc) {
+  public Tuple2<Branch , Branch> getMainBodyHouse(ChronoLocalDateTime lmt, Location loc) {
     Branch mainHouse = risingSignImpl.getRisingSign(lmt , loc , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     Position moonPos = starPositionImpl.getPosition(Planet.MOON , lmt , loc , Centric.GEO , Coordinate.ECLIPTIC);
 

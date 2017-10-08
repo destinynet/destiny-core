@@ -10,7 +10,7 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 /**
  * 一個八字命盤「額外」的計算結果 , 方便排盤輸出
@@ -19,7 +19,7 @@ public class EightWordsContextModel implements Serializable {
 
   protected final EightWords eightWords;
 
-  protected final LocalDateTime lmt;
+  protected final ChronoLocalDateTime lmt;
 
   protected final Location location;
 
@@ -50,7 +50,7 @@ public class EightWordsContextModel implements Serializable {
   private final Branch moonBranch;
 
 
-  public EightWordsContextModel(EightWords eightWords, LocalDateTime lmt, Location location, String locationName, int gmtMinuteOffset, boolean dst, ChineseDate chineseDate, SolarTerms prevMajorSolarTerms, SolarTerms nextMajorSolarTerms, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch) {
+  public EightWordsContextModel(EightWords eightWords, ChronoLocalDateTime lmt, Location location, String locationName, int gmtMinuteOffset, boolean dst, ChineseDate chineseDate, SolarTerms prevMajorSolarTerms, SolarTerms nextMajorSolarTerms, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch) {
     this.eightWords = eightWords;
     this.lmt = lmt;
     this.location = location;
@@ -69,7 +69,7 @@ public class EightWordsContextModel implements Serializable {
     return eightWords;
   }
 
-  public LocalDateTime getLmt() {
+  public ChronoLocalDateTime getLmt() {
     return lmt;
   }
 

@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +35,7 @@ public class Plate implements Serializable {
 
   /** 出生資料 , 陽曆 , 精確到「分、秒」 */
   @Nullable
-  protected final LocalDateTime localDateTime;
+  protected final ChronoLocalDateTime localDateTime;
 
   /** 出生地點 */
   @Nullable
@@ -93,7 +93,7 @@ public class Plate implements Serializable {
   /**
    * 命盤
    */
-  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable LocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, List<String> notes) {
+  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable ChronoLocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, List<String> notes) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -122,7 +122,7 @@ public class Plate implements Serializable {
     return chineseDate;
   }
 
-  public Optional<LocalDateTime> getLocalDateTime() {
+  public Optional<ChronoLocalDateTime> getLocalDateTime() {
     return Optional.ofNullable(localDateTime);
   }
 

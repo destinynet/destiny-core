@@ -13,7 +13,8 @@ import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -97,14 +98,14 @@ public class ZiweiTools implements Serializable {
    * @param leap      是否閏月
    * @return 該流月的日子 (陰曆＋陽曆＋干支）
    */
-  public static List<Tuple3<ChineseDate , LocalDate , StemBranch>> getDaysOfMonth(ChineseDateIF chineseDateImpl, int cycle, StemBranch flowYear , Integer flowMonth , boolean leap) {
+  public static List<Tuple3<ChineseDate , ChronoLocalDate , StemBranch>> getDaysOfMonth(ChineseDateIF chineseDateImpl, int cycle, StemBranch flowYear , Integer flowMonth , boolean leap) {
     int days = chineseDateImpl.getDaysOf(cycle , flowYear , flowMonth , leap);
-    List<Tuple3<ChineseDate, LocalDate, StemBranch>> list = new ArrayList<>(days);
+    List<Tuple3<ChineseDate, ChronoLocalDate, StemBranch>> list = new ArrayList<>(days);
     for(int i=1 ; i <= days ; i++) {
       ChineseDate yinDate = new ChineseDate(cycle , flowYear , flowMonth , leap , i);
 
-      LocalDate yangDate = chineseDateImpl.getYangDate(yinDate);
-      int lmtJulDay = (int) ( TimeTools.getGmtJulDay(yangDate.atTime(0 , 0))+0.5);
+      ChronoLocalDate yangDate = chineseDateImpl.getYangDate(yinDate);
+      int lmtJulDay = (int) ( TimeTools.getGmtJulDay(yangDate.atTime(LocalTime.MIDNIGHT))+0.5);
       int index = (lmtJulDay-11) % 60;
       StemBranch sb = StemBranch.get(index);
       list.add(Tuple.tuple(yinDate , yangDate , sb));

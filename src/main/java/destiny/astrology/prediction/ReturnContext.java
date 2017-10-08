@@ -121,9 +121,7 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
       // converse == true , 逆推
       //從出生時間往前(before)推
       Duration d = Duration.between(nowGmtTime , natalGmtTime).abs();
-      //LocalDateTime beforeNatalGmtTime = LocalDateTime.from(natalGmtTime).minus(d);
       double beforeNatalGmtJulDay = TimeTools.getGmtJulDay(nowGmtTime.minus(d));
-      //Time beforeNatalGmtTime = new Time(natalGmtTime , 0-(nowGmtTime.diffSeconds(natalGmtTime)));
       //要確認最後一個參數，到底是要用 true , 還是 false , 要找相關定義 , 我覺得這裡應該是順推
       return starTransitImpl.getNextTransitGmtDateTime(planet , Utils.getNormalizeDegree(natalPlanetDegree+orb) , coordinate , beforeNatalGmtJulDay, true); //true 代表順推 , 往 after 算
     }

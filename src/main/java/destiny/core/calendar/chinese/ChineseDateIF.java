@@ -33,7 +33,6 @@ public interface ChineseDateIF extends Descriptive {
   // =============== 陽曆轉陰曆 ===============
 
   /**
-   *
    * @param year proleptic year , 可能 <= 0
    */
   @NotNull
@@ -55,9 +54,9 @@ public interface ChineseDateIF extends Descriptive {
 
 
   // =============== 陰曆轉陽曆 ===============
-  LocalDate getYangDate(int cycle, StemBranch year, boolean leap, int month, int day);
+  ChronoLocalDate getYangDate(int cycle, StemBranch year, boolean leap, int month, int day);
 
-  default LocalDate getYangDate(ChineseDate cdate) {
+  default ChronoLocalDate getYangDate(ChineseDate cdate) {
     return getYangDate(cdate.getCycle() , cdate.getYear() , cdate.isLeapMonth() , cdate.getMonth() , cdate.getDay());
   }
 

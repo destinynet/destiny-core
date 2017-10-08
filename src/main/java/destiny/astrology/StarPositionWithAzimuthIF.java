@@ -22,5 +22,13 @@ public interface StarPositionWithAzimuthIF extends StarPositionIF {
     return getPosition(star , gmtJulDay , location , centric, coordinate, temperature , pressure);
   }
 
+  /**
+   * 內定 溫度 攝氏零度，壓力 1013.25
+   */
+  default PositionWithAzimuth getPositionFromGmt(Star star, ChronoLocalDateTime gmt, Location location, Centric centric, Coordinate coordinate) {
+    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
+    return getPosition(star , gmtJulDay , location , centric, coordinate, 0 , 1013.25);
+  }
+
 
 }
