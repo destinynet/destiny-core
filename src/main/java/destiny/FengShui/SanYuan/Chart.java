@@ -26,7 +26,7 @@ public class Chart implements Serializable {
   /**
    * 座山
    */
-  private Mountain mountain = Mountain.子; //內訂是子山
+  private Mountain mountain = Mountain.子; //內定是子山
   
   /**
    * 從哪個卦看去 ?
@@ -46,7 +46,7 @@ public class Chart implements Serializable {
   private final AcquiredSymbolCompass 後天八卦盤 = new AcquiredSymbolCompass();
   
   /**
-   * Constructor , 設定年運以及座山 , 內訂觀點為坎
+   * Constructor , 設定年運以及座山 , 內定觀點為坎
    */
   public Chart(int period , Mountain mountain)
   {
@@ -150,10 +150,7 @@ public class Chart implements Serializable {
     boolean isConverse;
     if (原始卦 == null)
     {
-      if (地盤.getYinYang(m))
-        isConverse = false;
-      else
-        isConverse = true;
+      isConverse = !地盤.getYinYang(m);
     }
     else
     {
@@ -164,10 +161,7 @@ public class Chart implements Serializable {
        * index = 2 => 人元
        */
       double degree = 後天八卦盤.getStartDegree(原始卦) + index*15 +1; //最後的 +1 是確保結果能坐落於該山中
-      if (地盤.getYinYang((Mountain) (地盤.getMountain(degree))))
-        isConverse = false;
-      else
-        isConverse = true;
+      isConverse = !地盤.getYinYang((Mountain) (地盤.getMountain(degree)));
     }
     return isConverse;
   }
