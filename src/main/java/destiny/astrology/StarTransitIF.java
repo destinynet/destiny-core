@@ -30,9 +30,9 @@ public interface StarTransitIF {
   /**
    * 傳回 GMT
    * */
-  default ChronoLocalDateTime getNextTransitGmtDateTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward , Function<Double , ChronoLocalDateTime> julDayConvertFun) {
+  default ChronoLocalDateTime getNextTransitGmtDateTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     double gmtJulDay = getNextTransitGmt(star , degree , coordinate , fromGmt , isForward);
-    return julDayConvertFun.apply(gmtJulDay);
+    return revJulDayFunc.apply(gmtJulDay);
   }
 
   /**

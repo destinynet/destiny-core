@@ -70,7 +70,7 @@ public class JulDayResolver1582CutoverImpl implements JulDayResolver, Serializab
    * 從 Julian Day 建立 {@link ChronoLocalDateTime} (GMT)
    * http://www.astro.com/ftp/placalc/src/revjul.c
    *
-   * inverse function to julday()
+   * reverse function to julday()
    * 1582-10-15 0:00 為界
    * 之前，傳回 {@link JulianDateTime}
    * 之後，傳回 {@link LocalDateTime}

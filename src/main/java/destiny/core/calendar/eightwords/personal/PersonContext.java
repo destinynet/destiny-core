@@ -287,10 +287,21 @@ public class PersonContext extends EightWordsContext {
     }
 
     assert targetGmtJulDay != null;
-    Duration dur = Duration.between(gmt , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(targetGmtJulDay));
-    long diffSecs = dur.getSeconds();
-    long diffNano = dur.getNano();
-    return diffSecs + diffNano / 1_000_000_000.0;
+
+    // 同義於 Duration.between(gmt , targetGmtJulDay)
+    double durDays = targetGmtJulDay - TimeTools.getGmtJulDay(gmt);
+    logger.trace("durDays = {} " , durDays);
+    return durDays * 86400;
+
+//    Duration dur = Duration.between(gmt , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(targetGmtJulDay));
+//    long diffSecs = dur.getSeconds();
+//    long diffNano = dur.getNano();
+//
+//    logger.debug("diffSecs = {} , diffNano = {}" , diffSecs , diffNano);
+//    double resultSecs = diffSecs + diffNano / 1_000_000_000.0;
+//    logger.info("resultSecs = {}" , resultSecs);
+//
+//    return resultSecs;
   } // getTargetMajorSolarTermsSeconds(int)
 
 

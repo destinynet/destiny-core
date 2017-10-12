@@ -78,8 +78,8 @@ public class Horoscope implements Serializable {
    * 承上，但帶入自訂的 reverse Julian Day converter
    */
   @NotNull
-  public ChronoLocalDateTime getGmt(Function<Double , ChronoLocalDateTime> revJulDayFunction) {
-    return revJulDayFunction.apply(gmtJulDay);
+  public ChronoLocalDateTime getGmt(Function<Double , ChronoLocalDateTime> revJulDayFunc) {
+    return revJulDayFunc.apply(gmtJulDay);
   }
 
   /**
@@ -94,8 +94,8 @@ public class Horoscope implements Serializable {
    * 承上，但帶入自訂的 reverse Julian Day converter
    */
   @NotNull
-  public ChronoLocalDateTime getLmt(Function<Double , ChronoLocalDateTime> revJulDayFunction) {
-    return TimeTools.getGmtFromLmt(getGmt(revJulDayFunction) , location);
+  public ChronoLocalDateTime getLmt(Function<Double , ChronoLocalDateTime> revJulDayFunc) {
+    return TimeTools.getGmtFromLmt(getGmt(revJulDayFunc) , location);
   }
 
 

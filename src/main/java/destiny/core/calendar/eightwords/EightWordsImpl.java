@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords;
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
@@ -13,6 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
+import java.util.function.Function;
+
+import static destiny.core.chinese.Branch.*;
 
 public class EightWordsImpl implements EightWordsIF , Serializable {
 
@@ -22,6 +26,8 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
 
   protected final MidnightIF midnightImpl;            // 計算「子正」的介面
   boolean    changeDayAfterZi = true; // 子初是否換日，內定是：true (換日)
+
+  private Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -55,7 +61,7 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
 
     Stem 時干;
 
-    ChronoLocalDateTime nextZi = hourImpl.getLmtNextStartOf(lmt, location, Branch.子);
+    ChronoLocalDateTime nextZi = hourImpl.getLmtNextStartOf(lmt, location, 子 , revJulDayFunc);
 
     // 如果「子正」才換日
     if (!changeDayAfterZi) {
@@ -76,23 +82,23 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
     switch (Stem.getIndex(臨時日干)) {
       case 0:
       case 5:
-        時干 = Stem.get(Branch.getIndex(時支));
+        時干 = Stem.get(getIndex(時支));
         break;
       case 1:
       case 6:
-        時干 = Stem.get(Branch.getIndex(時支) + 2);
+        時干 = Stem.get(getIndex(時支) + 2);
         break;
       case 2:
       case 7:
-        時干 = Stem.get(Branch.getIndex(時支) + 4);
+        時干 = Stem.get(getIndex(時支) + 4);
         break;
       case 3:
       case 8:
-        時干 = Stem.get(Branch.getIndex(時支) + 6);
+        時干 = Stem.get(getIndex(時支) + 6);
         break;
       case 4:
       case 9:
-        時干 = Stem.get(Branch.getIndex(時支) + 8);
+        時干 = Stem.get(getIndex(時支) + 8);
         break;
       default:
         throw new AssertionError("Error");

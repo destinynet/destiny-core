@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.Locale;
+import java.util.function.Function;
 
 import static java.time.temporal.ChronoField.*;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -23,6 +24,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
  */
 public class HourLmtImpl implements HourIF, Serializable {
+
+  private Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   @NotNull
   @Override
@@ -77,9 +80,9 @@ public class HourLmtImpl implements HourIF, Serializable {
   @Override
   public double getGmtNextStartOf(double gmtJulDay, Location location, Branch eb) {
 
-    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+    ChronoLocalDateTime gmt = revJulDayFunc.apply(gmtJulDay);
     ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmt, location);
-    ChronoLocalDateTime lmtResult = getLmtNextStartOf(lmt, location, eb);
+    ChronoLocalDateTime lmtResult = getLmtNextStartOf(lmt, location, eb , revJulDayFunc);
     ChronoLocalDateTime gmtResult = TimeTools.getGmtFromLmt(lmtResult, location);
     return TimeTools.getGmtJulDay(gmtResult);
   }
@@ -89,7 +92,7 @@ public class HourLmtImpl implements HourIF, Serializable {
    * 要實作，不然會有一些 round-off 的問題
    */
   @Override
-  public ChronoLocalDateTime getLmtNextStartOf(ChronoLocalDateTime lmt, Location location, Branch eb) {
+  public ChronoLocalDateTime getLmtNextStartOf(ChronoLocalDateTime lmt, Location location, Branch eb , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
 
     switch (eb.getIndex()) {
       case 0: //欲求下一個子時時刻

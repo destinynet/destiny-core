@@ -16,12 +16,15 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoField;
+import java.util.function.Function;
 
 /**
  * 換日 的實作
  */
 public class DayImpl implements DayIF , Serializable {
   private final Logger logger = LoggerFactory.getLogger(getClass());
+
+  private Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   public DayImpl()
   {
@@ -31,8 +34,7 @@ public class DayImpl implements DayIF , Serializable {
   @Override
   public StemBranch getDay(double gmtJulDay, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
 
-    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
-    ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmt , location);
+    ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmtJulDay , location , revJulDayFunc);
 
     int lmtJulDay = (int) ( TimeTools.getGmtJulDay(lmt)+0.5);
     logger.debug("lmtJulDay = {}" , lmtJulDay);
@@ -40,25 +42,17 @@ public class DayImpl implements DayIF , Serializable {
     int index = (lmtJulDay-11) % 60;
 
 
-    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location);
-    ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
+    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location , revJulDayFunc);
+    ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子 , revJulDayFunc);
 
     if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >=12) {
       //子正，在 LMT 零時之前
-      if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
-        // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-        ChronoLocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
-        if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
-          index++;
-      } else {
-        // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
-        index++;
-      }
+      index = getIndex(index , nextMidnightLmt , lmt , hourImpl , location , changeDayAfterZi , 下個子初時刻);
     } else {
       //子正，在 LMT 零時之後（含）
       if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於當地 零時 到 子正的這段期間
-        if (下個子初時刻.isBefore(nextMidnightLmt)) {
+        if (TimeTools.isBefore(下個子初時刻 , nextMidnightLmt)) {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
           index--;
         } else {
@@ -77,7 +71,22 @@ public class DayImpl implements DayIF , Serializable {
       }
     }
     return StemBranch.get(index);
-  } // getDay()
+  } // GMT 版本
+
+  private int getIndex(int index , ChronoLocalDateTime nextMidnightLmt , ChronoLocalDateTime lmt , HourIF hourImpl , Location location , boolean changeDayAfterZi , ChronoLocalDateTime 下個子初時刻) {
+    //子正，在 LMT 零時之前
+    if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
+      // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
+      ChronoLocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, location, Branch.子, revJulDayFunc);
+      if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
+        index++;
+    }
+    else {
+      // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
+      index++;
+    }
+    return index;
+  }
 
   @Override
   public StemBranch getDay(ChronoLocalDateTime lmt, Location location, MidnightIF midnightImpl, HourIF hourImpl, boolean changeDayAfterZi) {
@@ -85,25 +94,17 @@ public class DayImpl implements DayIF , Serializable {
     int lmtJulDay = (int)(TimeTools.getGmtJulDay(lmt)+0.5);
     int index = (lmtJulDay-11) % 60;
 
-    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt , location);
-    ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子);
+    ChronoLocalDateTime nextMidnightLmt = midnightImpl.getNextMidnight(lmt , location , revJulDayFunc);
+    ChronoLocalDateTime 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt , location , Branch.子 , revJulDayFunc);
 
     if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >=12 ) {
       //子正，在 LMT 零時之前
-      if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
-        // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-        ChronoLocalDateTime midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt , location , Branch.子);
-        if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
-          index++;
-      } else {
-        // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
-        index++;
-      }
+      index = getIndex(index , nextMidnightLmt , lmt , hourImpl , location , changeDayAfterZi , 下個子初時刻);
     } else {
       //子正，在 LMT 零時之後（含）
       if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於當地 零時 到 子正的這段期間
-        if (下個子初時刻.isBefore(nextMidnightLmt)) {
+        if (TimeTools.isBefore(下個子初時刻 , nextMidnightLmt)) {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
           index--;
         } else {
@@ -121,7 +122,7 @@ public class DayImpl implements DayIF , Serializable {
       }
     }
     return StemBranch.get(index);
-  } // LDT 版本
+  } // LMT 版本
 
 
 } //DayImpl()

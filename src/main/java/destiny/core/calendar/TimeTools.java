@@ -65,18 +65,9 @@ public class TimeTools implements Serializable {
   /**
    * @param instant 將 (GMT) instant 轉換為（GMT）的日期
    */
-  public static ChronoLocalDateTime getLocalDateTime(Instant instant , Function<Instant , ChronoLocalDateTime> resolver) {
-    return resolver.apply(instant);
+  public static ChronoLocalDateTime getLocalDateTime(Instant instant , Function<Instant , ChronoLocalDateTime> revJulDayFunc) {
+    return revJulDayFunc.apply(instant);
   }
-
-//  /**
-//   * @param instant 將 (GMT) instant 轉換為（GMT）的日期
-//   *                @param resolver : 可能會有 round-off 的問題
-//   */
-//  public static ChronoLocalDateTime getLocalDateTime(Instant instant , Function<Double , ChronoLocalDateTime> resolver) {
-//    double gmtJulDay = getJulDay(instant);
-//    return resolver.apply(gmtJulDay);
-//  }
 
 
   /**
@@ -198,8 +189,8 @@ public class TimeTools implements Serializable {
     }
   }
 
-  public static ChronoLocalDateTime getLmtFromGmt(double gmtJulDay , Location location , Function<Double , ChronoLocalDateTime> double2DateTimeFunction) {
-    ChronoLocalDateTime gmt = double2DateTimeFunction.apply(gmtJulDay);
+  public static ChronoLocalDateTime getLmtFromGmt(double gmtJulDay , Location location , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
+    ChronoLocalDateTime gmt = revJulDayFunc.apply(gmtJulDay);
     return getLmtFromGmt(gmt , location);
   }
 

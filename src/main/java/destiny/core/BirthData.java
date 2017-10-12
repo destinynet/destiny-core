@@ -83,7 +83,7 @@ public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializ
 
   @Override
   public String toString() {
-    return "[BirthData " + "gender=" + gender + ", time=" + time + ", location=" + location + ']';
+    return "[BirthData " + "gender=" + gender + ", time=" + time + ", location=" + location.getDecimal() + ']';
   }
 
   @Override

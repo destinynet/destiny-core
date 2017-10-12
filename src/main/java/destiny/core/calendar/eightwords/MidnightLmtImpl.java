@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
+import java.util.function.Function;
 
 import static java.time.temporal.ChronoField.*;
 
@@ -22,10 +23,11 @@ import static java.time.temporal.ChronoField.*;
  */
 public class MidnightLmtImpl implements MidnightIF, Serializable {
 
+  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+
   @Override
   public double getNextMidnight(double gmtJulDay, @NotNull Location loc) {
-    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
-    ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmt , loc);
+    ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmtJulDay , loc , revJulDayFunc);
 
     ChronoLocalDateTime resultLmt = lmt.plus(1 , ChronoUnit.DAYS)
       .with(HOUR_OF_DAY , 0)
@@ -39,7 +41,7 @@ public class MidnightLmtImpl implements MidnightIF, Serializable {
 
 
   @Override
-  public ChronoLocalDateTime getNextMidnight(ChronoLocalDateTime lmt, Location loc) {
+  public ChronoLocalDateTime getNextMidnight(ChronoLocalDateTime lmt, Location loc , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     return lmt
       .plus(1 , ChronoUnit.DAYS)
       .with(HOUR_OF_DAY , 0)

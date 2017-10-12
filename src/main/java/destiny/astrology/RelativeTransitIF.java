@@ -14,6 +14,7 @@ import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +35,13 @@ public interface RelativeTransitIF {
    */
   Optional<Double> getRelativeTransit(Star transitStar , Star relativeStar , double angle , double gmtJulDay , boolean isForward);
 
-  default Optional<ChronoLocalDateTime> getRelativeTransit(Star transitStar , Star relativeStar , double angle , ChronoLocalDateTime fromGmt , boolean isForward) {
+  default Optional<ChronoLocalDateTime> getRelativeTransit(Star transitStar , Star relativeStar , double angle , ChronoLocalDateTime fromGmt , boolean isForward , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     double gmtJulDay = TimeTools.getGmtJulDay(fromGmt);
-    return getRelativeTransit(transitStar , relativeStar , angle , gmtJulDay , isForward).map(JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
+    return getRelativeTransit(transitStar , relativeStar , angle , gmtJulDay , isForward).map(revJulDayFunc);
+  }
+
+  default Optional<ChronoLocalDateTime> getRelativeTransit(Star transitStar , Star relativeStar , double angle , ChronoLocalDateTime fromGmt , boolean isForward) {
+    return getRelativeTransit(transitStar , relativeStar , angle , fromGmt , isForward , JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
   }
 
 
@@ -66,7 +71,7 @@ public interface RelativeTransitIF {
    * 傳回的是 GMT 時刻
    */
   @NotNull
-  default List<ChronoLocalDateTime> getPeriodRelativeTransitGMTs(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle) {
+  default List<ChronoLocalDateTime> getPeriodRelativeTransitGMTs(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     return getPeriodRelativeTransitGmtJulDays(transitStar , relativeStar , fromJulDay , toJulDay , angle)
       .stream()
       .map(JulDayResolver1582CutoverImpl::getLocalDateTimeStatic)
@@ -75,10 +80,10 @@ public interface RelativeTransitIF {
 
   /** 傳回 GMT */
   @NotNull
-  default List<ChronoLocalDateTime> getPeriodRelativeTransitGMTs(Star transitStar , Star relativeStar , ChronoLocalDateTime fromGmt, ChronoLocalDateTime toGmt, double angle) {
+  default List<ChronoLocalDateTime> getPeriodRelativeTransitGMTs(Star transitStar , Star relativeStar , ChronoLocalDateTime fromGmt, ChronoLocalDateTime toGmt, double angle , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     double toGmtJulDay = TimeTools.getGmtJulDay(toGmt);
-    return getPeriodRelativeTransitGMTs(transitStar ,relativeStar , fromGmtJulDay , toGmtJulDay , angle);
+    return getPeriodRelativeTransitGMTs(transitStar ,relativeStar , fromGmtJulDay , toGmtJulDay , angle , revJulDayFunc);
   }
 
 

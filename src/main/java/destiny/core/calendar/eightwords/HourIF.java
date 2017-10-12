@@ -6,13 +6,13 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.core.Descriptive;
-import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.Branch;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.chrono.ChronoLocalDateTime;
+import java.util.function.Function;
 
 /** 時辰的分界點實作 , SwissEph 的實作是 HourSolarTransImpl */
 public interface HourIF extends Descriptive {
@@ -47,12 +47,11 @@ public interface HourIF extends Descriptive {
    * @param eb 欲求之下一個地支開始時刻
    * @return 回傳 LMT 時刻
    */
-  default ChronoLocalDateTime getLmtNextStartOf(ChronoLocalDateTime lmt , Location location , Branch eb) {
+  default ChronoLocalDateTime getLmtNextStartOf(ChronoLocalDateTime lmt , Location location , Branch eb , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
     double resultGmtJulDay = getGmtNextStartOf(gmtJulDay , location , eb);
-    ChronoLocalDateTime resultGmt =JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(resultGmtJulDay);
+    ChronoLocalDateTime resultGmt = revJulDayFunc.apply(resultGmtJulDay);
     return TimeTools.getLmtFromGmt(resultGmt , location);
   }
-
 
 }
