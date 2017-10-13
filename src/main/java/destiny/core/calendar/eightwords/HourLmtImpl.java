@@ -25,12 +25,12 @@ import static java.time.temporal.ChronoUnit.DAYS;
  */
 public class HourLmtImpl implements HourIF, Serializable {
 
-  private Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   @NotNull
   @Override
   public Branch getHour(double gmtJulDay, Location location) {
-    ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+    ChronoLocalDateTime gmt = revJulDayFunc.apply(gmtJulDay);
     int lmtHour = TimeTools.getLmtFromGmt(gmt , location).get(ChronoField.HOUR_OF_DAY);
     return getHour(lmtHour);
   }

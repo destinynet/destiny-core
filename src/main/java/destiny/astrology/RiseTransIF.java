@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -92,11 +93,11 @@ public interface RiseTransIF {
    * @param hasRefraction 是否考量濛氣差 , 通常設為 true
    * @return List <Time> in LMT
    */
-  default List<ChronoLocalDateTime> getPeriodStarRiseTransTime(ChronoLocalDateTime fromLmtTime, ChronoLocalDateTime toLmtTime, Star star, TransPoint point, Location location, double atmosphericTemperature, double atmosphericPressure, boolean isDiscCenter, boolean hasRefraction) {
+  default List<ChronoLocalDateTime> getPeriodStarRiseTransTime(ChronoLocalDateTime fromLmtTime, ChronoLocalDateTime toLmtTime, Star star, TransPoint point, Location location, double atmosphericTemperature, double atmosphericPressure, boolean isDiscCenter, boolean hasRefraction , Function<Double , ChronoLocalDateTime> revJulDayFunc ) {
     return getPeriodStarRiseTransGmtJulDay(fromLmtTime , toLmtTime , star , point , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction)
       .stream()
       .map(gmtJulDay -> {
-        ChronoLocalDateTime gmt = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+        ChronoLocalDateTime gmt = revJulDayFunc.apply(gmtJulDay);
         return TimeTools.getLmtFromGmt(gmt , location);
       }).collect(Collectors.toList());
   }

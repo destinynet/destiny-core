@@ -49,6 +49,8 @@ public class Horoscope implements Serializable {
 
   private transient static Logger logger = LoggerFactory.getLogger(Horoscope.class);
 
+  private final transient Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+
 
   public Horoscope(double gmtJulDay, Location location, HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
     this.gmtJulDay = gmtJulDay;
@@ -71,7 +73,7 @@ public class Horoscope implements Serializable {
    */
   @NotNull
   public ChronoLocalDateTime getGmt() {
-    return JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gmtJulDay);
+    return revJulDayFunc.apply(gmtJulDay);
   }
 
   /**

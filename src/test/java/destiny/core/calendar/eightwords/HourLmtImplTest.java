@@ -21,7 +21,7 @@ public class HourLmtImplTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   @Test
   public void getLmtNextStartOf() throws Exception {

@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * <PRE>
@@ -35,7 +37,9 @@ public class HourSolarTransImpl implements HourIF , Serializable {
   private boolean hasRefraction = true;
 
   private final RiseTransIF riseTransImpl;
-  
+
+  private Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+
   public HourSolarTransImpl(RiseTransIF riseTransImpl)
   {
     this.riseTransImpl = riseTransImpl;
@@ -63,7 +67,7 @@ public class HourSolarTransImpl implements HourIF , Serializable {
       double thirteenHoursAgo = gmtJulDay - (13/24.0);
       double previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.NADIR , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
 
-      logger.debug("gmtJulDay = {} , 上一個子正(GMT) = {}" , gmtJulDay , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(previousNadirGmt));
+      logger.debug("gmtJulDay = {} , 上一個子正(GMT) = {}" , gmtJulDay , revJulDayFunc.apply(previousNadirGmt));
 
       double diffDays = (nextMeridian - previousNadirGmt); // 從子正到午正，總共幾秒
       double oneUnitDays = diffDays/12.0;

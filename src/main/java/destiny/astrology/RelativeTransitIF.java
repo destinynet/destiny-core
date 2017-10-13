@@ -74,7 +74,7 @@ public interface RelativeTransitIF {
   default List<ChronoLocalDateTime> getPeriodRelativeTransitGMTs(Star transitStar , Star relativeStar , double fromJulDay , double toJulDay , double angle , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     return getPeriodRelativeTransitGmtJulDays(transitStar , relativeStar , fromJulDay , toJulDay , angle)
       .stream()
-      .map(JulDayResolver1582CutoverImpl::getLocalDateTimeStatic)
+      .map(revJulDayFunc)
       .collect(Collectors.toList());
   }
 

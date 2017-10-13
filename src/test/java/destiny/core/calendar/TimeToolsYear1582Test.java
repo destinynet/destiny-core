@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.extra.chrono.JulianDate;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -55,6 +52,27 @@ public class TimeToolsYear1582Test {
   private JulianDateTime d2J = JulianDateTime.of(1582, 10, 4, 0, 0);
   private JulianDateTime d3J = JulianDateTime.of(1582, 10, 5, 0, 0);  // cutover 開始
   private JulianDateTime d4J = JulianDateTime.of(1582, 10, 6, 0, 0);
+
+  /**
+   * 四組日期，用 {@link java.time.Duration} 來取得間距
+   */
+  @Test
+  public void testDuration() {
+    // 四對日期，沒有任何秒差，代表相等
+    assertEquals(0, Duration.between(d1G, d1J).getSeconds());
+    assertEquals(0, Duration.between(d2G, d2J).getSeconds());
+    assertEquals(0, Duration.between(d3G, d3J).getSeconds());
+    assertEquals(0, Duration.between(d4G, d4J).getSeconds());
+
+    // 相差一天
+    assertEquals(60*60*24, Duration.between(d1G, d2J).getSeconds());
+    assertEquals(60*60*24, Duration.between(d2G, d3J).getSeconds());
+    assertEquals(60*60*24, Duration.between(d3G, d4J).getSeconds());
+    // Duration 有負數
+    assertEquals(-60*60*24, Duration.between(d4G, d3J).getSeconds());
+    assertEquals(-60*60*24, Duration.between(d3G, d2J).getSeconds());
+    assertEquals(-60*60*24, Duration.between(d2G, d1J).getSeconds());
+  }
 
   /**
    * 四組日期的 jul day 應該相等

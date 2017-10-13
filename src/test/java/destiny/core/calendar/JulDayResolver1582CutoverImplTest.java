@@ -15,10 +15,13 @@ import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.IsoEra;
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
 public class JulDayResolver1582CutoverImplTest {
+
+  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   @Test
   public void getLocalDateTimeStatic() {
@@ -95,7 +98,7 @@ public class JulDayResolver1582CutoverImplTest {
     ChronoLocalDate localDate;
     LocalTime localTime;
 
-    ChronoLocalDateTime dateTime = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(firstDay);
+    ChronoLocalDateTime dateTime = revJulDayFunc.apply(firstDay);
     localDate = dateTime.toLocalDate();
     localTime = dateTime.toLocalTime();
     assertTrue(localDate instanceof JulianDate);
@@ -104,7 +107,7 @@ public class JulDayResolver1582CutoverImplTest {
     assertEquals(LocalTime.MIDNIGHT , localTime);
 
     // 往前一天，變成 「西元前」一年，12/31
-    dateTime = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(firstDay-1);
+    dateTime =  revJulDayFunc.apply(firstDay-1);
     localDate = dateTime.toLocalDate();
     localTime = dateTime.toLocalTime();
     assertTrue(localDate instanceof JulianDate);

@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MidnightLmtImplTest {
 
-  private Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   @Test
   public void testGetNextMidnight() {

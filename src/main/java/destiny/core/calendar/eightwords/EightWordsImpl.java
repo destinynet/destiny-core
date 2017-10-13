@@ -27,7 +27,7 @@ public class EightWordsImpl implements EightWordsIF , Serializable {
   protected final MidnightIF midnightImpl;            // 計算「子正」的介面
   boolean    changeDayAfterZi = true; // 子初是否換日，內定是：true (換日)
 
-  private Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
