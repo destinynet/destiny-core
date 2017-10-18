@@ -5,6 +5,7 @@
 package destiny.core.calendar.chinese;
 
 import destiny.core.Descriptive;
+import destiny.core.calendar.CalType;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
@@ -15,6 +16,7 @@ import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.extra.chrono.JulianDate;
 
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
@@ -33,17 +35,19 @@ public interface ChineseDateIF extends Descriptive {
   // =============== 陽曆轉陰曆 ===============
 
   /**
+   * @param calType
    * @param year proleptic year , 可能 <= 0
    */
   @NotNull
-  ChineseDate getChineseDate(int year , int month , int day);
+  ChineseDate getChineseDate(CalType calType, int year, int month, int day);
 
   default ChineseDate getChineseDate(LocalDate localDate) {
-    return getChineseDate(localDate.getYear() , localDate.getMonthValue() , localDate.getDayOfMonth());
+    return getChineseDate(CalType.GREGORIAN, localDate.getYear() , localDate.getMonthValue() , localDate.getDayOfMonth());
   }
 
   default ChineseDate getChineseDate(ChronoLocalDate localDate) {
-    return getChineseDate(localDate.get(ChronoField.YEAR) , localDate.get(ChronoField.MONTH_OF_YEAR) , localDate.get(ChronoField.DAY_OF_MONTH));
+    CalType calType = (localDate instanceof JulianDate) ? CalType.JULIAN : CalType.GREGORIAN;
+    return getChineseDate(calType, localDate.get(ChronoField.YEAR) , localDate.get(ChronoField.MONTH_OF_YEAR) , localDate.get(ChronoField.DAY_OF_MONTH));
   }
 
   /**
