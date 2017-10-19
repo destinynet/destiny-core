@@ -13,6 +13,9 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static destiny.astrology.Coordinate.ECLIPTIC;
+import static destiny.astrology.Planet.SUN;
+
 /**
  * 節氣實作
  */
@@ -39,7 +42,7 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
    */
   public SolarTerms getSolarTermsFromGMT(double gmtJulDay) {
     // Step 1: Calculate the Longitude of SUN
-    Position sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC);
+    Position sp = starPositionImpl.getPosition(SUN, gmtJulDay, Centric.GEO, ECLIPTIC);
     // Step 2
     int index = (int) (sp.getLng() / 15) + 3;
     if (index >= 24)
@@ -64,7 +67,7 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
     while (fromGmt < toGmt) {
       SolarTermsTime solarTermsTime;
 
-      ChronoLocalDateTime fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(Planet.SUN, nextZodiacDegree, Coordinate.ECLIPTIC, fromGmt, true);
+      ChronoLocalDateTime fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(SUN, nextZodiacDegree, ECLIPTIC, fromGmt, true);
       fromGmt = TimeTools.getGmtJulDay(fromGmtTime);
 
       if (fromGmt > toGmt)
@@ -74,9 +77,15 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
       resultList.add(solarTermsTime);
       nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nextZodiacDegree + 15);
     }
-
     return resultList;
   }
 
-
+  /**
+   * @return 計算，從 某時刻開始，的下一個（或上一個）節氣的時間點為何
+   */
+  @Override
+  public double getSolarTermsTime(SolarTerms solarTerms, double fromGmtJulDay, boolean isForward) {
+    int zodiacDegree = solarTerms.getZodiacDegree();
+    return starTransitImpl.getNextTransitGmt(SUN , zodiacDegree , ECLIPTIC , fromGmtJulDay , isForward);
+  }
 }

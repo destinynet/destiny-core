@@ -31,10 +31,21 @@ public interface SolarTermsIF {
     return getSolarTermsFromGMT(gmtJulDay);
   }
 
+  /**
+   * 承上 , LMT + Location 版本
+   */
   default SolarTerms getSolarTerms(ChronoLocalDateTime lmt , Location location) {
     ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     return getSolarTermsFromGMT(gmt);
   }
+
+
+  /**
+   * @return 計算，從 某時刻開始，的下一個（或上一個）節氣的時間點為何
+   */
+  double getSolarTermsTime(SolarTerms solarTerms , double fromGmtJulDay , boolean isForward);
+
+
 
   /**
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
