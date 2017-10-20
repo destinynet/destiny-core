@@ -5,7 +5,6 @@
  */
 package destiny.astrology;
 
-import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
 import org.slf4j.Logger;
@@ -39,19 +38,19 @@ public interface RiseTransIF {
   /**
    * 來源、目標時間都是 GMT
    */
-  default ChronoLocalDateTime getGmtTrans(ChronoLocalDateTime fromGmt, Star star, TransPoint point, Location location, double atmosphericTemperature, double atmosphericPressure, boolean isDiscCenter, boolean hasRefraction) {
+  default ChronoLocalDateTime getGmtTrans(ChronoLocalDateTime fromGmt, Star star, TransPoint point, Location location, double atmosphericTemperature, double atmosphericPressure, boolean isDiscCenter, boolean hasRefraction , Function<Double , ChronoLocalDateTime> revJulDayFunc ) {
     double fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     double resultGmt = getGmtTransJulDay(fromGmtJulDay , star , point , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
-    return JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(resultGmt);
+    return revJulDayFunc.apply(resultGmt);
   }
 
   /**
    * 來源、目標時間都是 LMT
    */
-  default ChronoLocalDateTime getLmtTrans(ChronoLocalDateTime fromLmtTime, Star star, TransPoint point, Location location, double atmosphericTemperature, double atmosphericPressure, boolean isDiscCenter, boolean hasRefraction) {
+  default ChronoLocalDateTime getLmtTrans(ChronoLocalDateTime fromLmtTime, Star star, TransPoint point, Location location, double atmosphericTemperature, double atmosphericPressure, boolean isDiscCenter, boolean hasRefraction , Function<Double , ChronoLocalDateTime> revJulDayFunc ) {
     ChronoLocalDateTime fromGmtTime = TimeTools.getGmtFromLmt(fromLmtTime , location);
 
-    ChronoLocalDateTime resultGmt = getGmtTrans(fromGmtTime , star , point , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+    ChronoLocalDateTime resultGmt = getGmtTrans(fromGmtTime , star , point , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction , revJulDayFunc);
     return TimeTools.getLmtFromGmt(resultGmt , location);
   }
 

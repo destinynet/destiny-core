@@ -23,13 +23,13 @@ import static destiny.core.calendar.SolarTerms.立春;
  * 出生當下，即為一歲。（故， age 不可以 <= 0）
  * 「一歲」終止於「順推」的立春之時
  */
-public class IntAgeImpl implements IntAge, Serializable {
+public class IntAge8wImpl implements IntAge, Serializable {
 
   private final SolarTermsIF solarTermsImpl;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  public IntAgeImpl(SolarTermsIF solarTermsImpl) {this.solarTermsImpl = solarTermsImpl;}
+  public IntAge8wImpl(SolarTermsIF solarTermsImpl) {this.solarTermsImpl = solarTermsImpl;}
 
   @Override
   public Tuple2<Double, Double> getRange(Gender gender, double gmtJulDay, Location loc, int age) {

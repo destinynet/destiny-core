@@ -7,6 +7,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import destiny.astrology.*;
 import destiny.core.Gender;
+import destiny.core.IntAge;
 import destiny.core.calendar.*;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
@@ -27,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static destiny.astrology.Coordinate.ECLIPTIC;
 import static destiny.astrology.Planet.SUN;
@@ -43,6 +45,10 @@ public class PersonContext extends EightWordsContext {
   /** 星體運行到某點的介面 */
   @NotNull
   private final StarTransitIF starTransitImpl;
+
+  /** 虛歲 */
+  @NotNull
+  private final IntAge intAgeImpl;
 
   /** 出生時刻 */
   private final ChronoLocalDateTime lmt;
@@ -82,29 +88,14 @@ public class PersonContext extends EightWordsContext {
   private final FortuneDirectionIF fortuneDirectionImpl;
 
 
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   /** constructor */
-  public PersonContext(EightWordsIF eightWordsImpl ,
-                       ChineseDateIF chineseDateImpl,
-                       YearMonthIF yearMonthImpl,
-                       DayIF dayImpl,
-                       HourIF hourImpl,
-                       MidnightIF midnightImpl,
-                       boolean changeDayAfterZi,
-                       @NotNull SolarTermsIF solarTermsImpl,
-                       @NotNull StarTransitIF starTransitImpl,
-                       ChronoLocalDateTime lmt,
-                       Location location,
-                       String locationName,
-                       @NotNull Gender gender,
-                       double fortuneMonthSpan,
-                       FortuneDirectionIF fortuneDirectionImpl,
-                       RisingSignIF risingSignImpl,
-                       StarPositionIF starPositionImpl,
-                       FortuneOutput fortuneOutput) {
+  public PersonContext(EightWordsIF eightWordsImpl, ChineseDateIF chineseDateImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, @NotNull IntAge intAgeImpl, ChronoLocalDateTime lmt, Location location, String locationName, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, FortuneOutput fortuneOutput) {
     super(lmt , location , eightWordsImpl , yearMonthImpl, chineseDateImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi , risingSignImpl , starPositionImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
+    this.intAgeImpl = intAgeImpl;
     this.locationName = locationName;
     this.fortuneMonthSpan = fortuneMonthSpan;
     this.fortuneDirectionImpl = fortuneDirectionImpl;
@@ -123,11 +114,11 @@ public class PersonContext extends EightWordsContext {
     return new PersonContextModel(gender , eightWords , lmt , location , locationName ,
       getChineseDate() , isDst() ,
       getGmtMinuteOffset() ,
-      getFortuneDatas(9 , fortuneOutput) , getRisingStemBranch() ,
+      getFortuneDatas(9 , fortuneOutput) ,
+      getRisingStemBranch() ,
       getBranchOf(Planet.SUN) ,
       getBranchOf(Planet.MOON) ,
-      getPrevNextMajorSolarTerms()
-    );
+      getPrevNextMajorSolarTerms(), fortuneOutput, getVageMap(90));
   }
 
   /** 性別 */
@@ -150,6 +141,11 @@ public class PersonContext extends EightWordsContext {
   /** 大運 : 月干支的倍數 , 內定為 120 */
   public double getFortuneMonthSpan() {
     return fortuneMonthSpan;
+  }
+
+  public Map<Integer , Tuple2<ChronoLocalDateTime , ChronoLocalDateTime>> getVageMap(int toAge) {
+    double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
+    return intAgeImpl.getRangesLmtMap(gender , gmtJulDay , location , 1 , toAge, revJulDayFunc);
   }
 
   /** 八字大運是否順行 */
@@ -293,15 +289,6 @@ public class PersonContext extends EightWordsContext {
     logger.trace("durDays = {} " , durDays);
     return durDays * 86400;
 
-//    Duration dur = Duration.between(gmt , JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(targetGmtJulDay));
-//    long diffSecs = dur.getSeconds();
-//    long diffNano = dur.getNano();
-//
-//    logger.debug("diffSecs = {} , diffNano = {}" , diffSecs , diffNano);
-//    double resultSecs = diffSecs + diffNano / 1_000_000_000.0;
-//    logger.info("resultSecs = {}" , resultSecs);
-//
-//    return resultSecs;
   } // getTargetMajorSolarTermsSeconds(int)
 
 
@@ -370,8 +357,7 @@ public class PersonContext extends EightWordsContext {
       //LocalDate startFortuneLmtDate = startFortuneLmt.toLocalDate();
       //logger.trace("getFortuneDatas : {}.toLocalDate() = {} . era = {}" , startFortuneLmtDate.getClass().getSimpleName() , startFortuneLmtDate , startFortuneLmtDate.getEra());
 
-      switch(fortuneOutput)
-      {
+      switch(fortuneOutput) {
         case 西元 : {
           startFortune = startFortuneLmt.get(YEAR_OF_ERA);
           if (startFortuneLmt.getYear() <= 0) // 西元前
