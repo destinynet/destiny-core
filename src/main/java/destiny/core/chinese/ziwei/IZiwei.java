@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import static destiny.core.chinese.Branch.子;
@@ -145,15 +146,15 @@ public interface IZiwei {
 
   /**
    * 計算本命盤
-   *
-   * @param optionalMainBranch 預先計算過的命宮
+   *  @param optionalMainBranch 預先計算過的命宮
    * @param optionalBodyBranch 預先計算過的身宮
    * @param lunarYear          陰曆的年干支
    * @param solarYear          「節氣」的年干支
    * @param lunarMonth         陰曆的月份
    * @param monthBranch        「節氣」的月支
+   * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
    */
-  Builder getBirthPlate(Optional<Branch> optionalMainBranch, Optional<Branch> optionalBodyBranch, int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, ZContext context) ;
+  Builder getBirthPlate(Optional<Branch> optionalMainBranch, Optional<Branch> optionalBodyBranch, int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Optional<Map<Integer, Tuple2<Double, Double>>> optionalVageMap, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
   Builder getBirthPlate(ChronoLocalDateTime lmt, Location location, String place, @NotNull Collection<ZStar> stars, Gender gender, ZContextMore context, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);

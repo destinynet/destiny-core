@@ -86,14 +86,16 @@ public class Plate implements Serializable {
   /** 星體強弱表 */
   protected final Map<ZStar , Integer> starStrengthMap;
 
-
   /** 註解列表 */
   private final List<String> notes;
+
+  /** 虛歲，每歲的起訖時分 (in GMT) */
+  private final Map<Integer , Tuple2<Double , Double>> vageMap;
 
   /**
    * 命盤
    */
-  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable ChronoLocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, List<String> notes) {
+  protected Plate(ZContext context, ChineseDate chineseDate, @Nullable ChronoLocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, List<String> notes, Map<Integer, Tuple2<Double , Double>> vageMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -112,6 +114,7 @@ public class Plate implements Serializable {
     this.flowBranchMap = flowBranchMap;
     this.starStrengthMap = starStrengthMap;
     this.notes = notes;
+    this.vageMap = vageMap;
   }
 
   public ZContext getContext() {

@@ -36,7 +36,7 @@ public interface IntAge {
   /** 列出 fromAge 到 toAge 的結果 */
   List<Tuple2<Double , Double>> getRanges(Gender gender , double gmtJulDay , Location loc , int fromAge , int toAge);
 
-  /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Tuple[from , to]] */
+  /** 承上 , 列出 fromAge 到 toAge 的結果 (GMT) , 傳回 Map[Age , Tuple[from , to]] */
   default Map<Integer , Tuple2<Double , Double>> getRangesMap(Gender gender , double gmtJulDay , Location loc , int fromAge , int toAge) {
     List<Tuple2<Double , Double>> list = getRanges(gender , gmtJulDay , loc , fromAge , toAge);
 

@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -111,15 +110,11 @@ public class Builder implements Serializable {
   /** 註解列表 */
   private List<String> notes = new ArrayList<>();
 
+  /** 虛歲，每歲的起訖時分 (in GMT) */
+  private final Map<Integer , Tuple2<Double , Double>> vageMap;
+
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse,
-                 ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set,
-                 Map<StemBranch, House> branchHouseMap,
-                 Map<ZStar, Branch> starBranchMap,
-                 Map<ZStar, Integer> starStrengthMap,
-                 Map<StemBranch, Tuple2<Integer , Integer>> flowBigVageMap,
-                 Map<Branch, List<Double>> branchSmallRangesMap,
-                 Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap, Map<Branch, List<Double>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Tuple2<Double , Double>> vageMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -134,6 +129,7 @@ public class Builder implements Serializable {
     this.starStrengthMap = starStrengthMap;
     this.flowBigVageMap = flowBigVageMap;
     this.flyMap = flyMap;
+    this.vageMap = vageMap;
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -416,9 +412,9 @@ public class Builder implements Serializable {
 
   public Plate build() {
     if (personModel == null) {
-      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes);
+      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, vageMap);
     } else {
-      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes , personModel);
+      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes , vageMap , personModel);
     }
   }
 

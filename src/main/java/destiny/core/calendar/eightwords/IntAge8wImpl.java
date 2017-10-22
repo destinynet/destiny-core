@@ -55,7 +55,7 @@ public class IntAge8wImpl implements IntAge, Serializable {
       throw new RuntimeException("fromAge must be <= toAge");
     }
     Tuple2<Double , Double> from = getRange(gender , gmtJulDay , loc , fromAge);
-    List<Tuple2<Double , Double>> result = new ArrayList<>();
+    List<Tuple2<Double, Double>> result = new ArrayList<>((toAge - fromAge) + 1);
     result.add(from);
     return getRangesInner(result , (toAge - fromAge));
   }
@@ -73,4 +73,7 @@ public class IntAge8wImpl implements IntAge, Serializable {
       return getRangesInner(prevResults , count-1);
     }
   }
+
+
+
 }

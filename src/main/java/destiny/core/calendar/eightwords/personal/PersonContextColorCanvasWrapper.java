@@ -38,8 +38,6 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
   private OutputMode outputMode = OutputMode.HTML;
 
-  //private FortuneOutput fortuneOutput = FortuneOutput.虛歲;
-
   private final Decorator<ChronoLocalDateTime> timeDecorator = new TimeSecDecoratorChinese();
 
   private final Direction direction;
@@ -60,11 +58,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
   /** 取得八字命盤 */
   @NotNull
   @Override
-  public String toString()
-  {
-
-
-
+  public String toString() {
     ColorCanvas cc = new ColorCanvas(32, 70, "　");
 
     ColorCanvas metaDataColorCanvas = getMetaDataColorCanvas();
@@ -161,10 +155,4 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     }
   } // toString()
 
-  /**
-   * 設定大運輸出的格式
-   */
-//  public void setFortuneOutput(FortuneOutput fortuneOutput) {
-//    this.fortuneOutput = fortuneOutput;
-//  }
 }
