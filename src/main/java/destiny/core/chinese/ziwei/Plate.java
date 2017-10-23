@@ -308,6 +308,11 @@ public class Plate implements Serializable {
   }
 
 
+  /** 歲數 map (fromGMT , toGMT) */
+  public Map<Integer, Tuple2<Double, Double>> getVageMap() {
+    return vageMap;
+  }
+
   /** 取得註解列表 */
   public List<String> getNotes() {
     return notes;
