@@ -47,35 +47,35 @@ public interface IBigRange extends Descriptive {
   }
 
 
-  @Deprecated
-  Tuple2<Double , Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeqImpl);
+//  @Deprecated
+//  Tuple2<Double , Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeqImpl);
 
   /** 計算每個地支 的 大限 起訖 時刻 */
-  @Deprecated
-  default Map<Branch , Tuple2<Double , Double>> getFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
-    return Arrays.stream(Branch.values())
-      .map(branch -> {
-        Tuple2<Double , Double> t2 = getRange(branchHouseMap.get(branch), set, birthYear.getStem(), gender, fortuneOutput , houseSeq);
-        return Tuple.tuple(branch , t2);
-      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
-  }
+//  @Deprecated
+//  default Map<Branch , Tuple2<Double , Double>> getFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
+//    return Arrays.stream(Branch.values())
+//      .map(branch -> {
+//        Tuple2<Double , Double> t2 = getRange(branchHouseMap.get(branch), set, birthYear.getStem(), gender, fortuneOutput , houseSeq);
+//        return Tuple.tuple(branch , t2);
+//      }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+//  }
 
   /** 承上 , 計算每個地支的 大限 起訖 時刻，並且按照先後順序排列 (年齡 小 -> 大) */
-  @Deprecated
-  default Map<StemBranch , Tuple2<Double , Double>> getSortedFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
-    Map<Branch , Tuple2<Double , Double>> map = getFlowBigMap(branchHouseMap , set , birthYear, gender , fortuneOutput , houseSeq);
-    logger.debug("[unsorted] map = {}" , map);
-
-    Stem stemOf寅 = IZiwei.getStemOf寅(birthYear.getStem());
-
-    return map.entrySet().stream()
-      .map(e -> {
-        StemBranch sb = IZiwei.getStemBranchOf(e.getKey() , stemOf寅);
-        return new AbstractMap.SimpleEntry<>(sb, e.getValue());
-      })
-      .sorted(Map.Entry.comparingByValue())
-      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-  }
+//  @Deprecated
+//  default Map<StemBranch , Tuple2<Double , Double>> getSortedFlowBigMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , FortuneOutput fortuneOutput , IHouseSeq houseSeq) {
+//    Map<Branch , Tuple2<Double , Double>> map = getFlowBigMap(branchHouseMap , set , birthYear, gender , fortuneOutput , houseSeq);
+//    logger.debug("[unsorted] map = {}" , map);
+//
+//    Stem stemOf寅 = IZiwei.getStemOf寅(birthYear.getStem());
+//
+//    return map.entrySet().stream()
+//      .map(e -> {
+//        StemBranch sb = IZiwei.getStemBranchOf(e.getKey() , stemOf寅);
+//        return new AbstractMap.SimpleEntry<>(sb, e.getValue());
+//      })
+//      .sorted(Map.Entry.comparingByValue())
+//      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+//  }
 
   @Override
   default String getTitle(Locale locale) {

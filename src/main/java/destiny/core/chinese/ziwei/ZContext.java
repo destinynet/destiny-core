@@ -4,12 +4,14 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
+import destiny.core.IntAgeNote;
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -133,9 +135,11 @@ public class ZContext implements Serializable {
   /** 流時設定 */
   protected final IFlowHour flowHourImpl;
 
-
   /** 大限輸出格式 */
   private final FortuneOutput fortuneOutput;
+
+  /** 歲數註解 (西元？ 民國？ or others) */
+  private final List<IntAgeNote> ageNotes;
 
   /** 大限計算方式 */
   protected final IBigRange bigRangeImpl;
@@ -157,7 +161,7 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, @Nullable MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, @Nullable MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, List<IntAgeNote> ageNotes, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.mainBodyHouseImpl = mainBodyHouseImpl;
     this.purpleBranchImpl = purpleBranchImpl;
     this.mainStarsAlgo = mainStarsAlgo;
@@ -174,6 +178,7 @@ public class ZContext implements Serializable {
     this.flowDayImpl = flowDayImpl;
     this.flowHourImpl = flowHourImpl;
     this.fortuneOutput = fortuneOutput;
+    this.ageNotes = ageNotes;
     this.bigRangeImpl = bigRangeImpl;
     this.redBeauty = redBeauty;
   }

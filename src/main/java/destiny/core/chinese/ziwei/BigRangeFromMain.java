@@ -8,8 +8,6 @@ import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.YinYangIF;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
@@ -27,28 +25,26 @@ import static destiny.core.chinese.ziwei.House.命宮;
  */
 public class BigRangeFromMain implements IBigRange , Serializable {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
-
-
   @Override
   public Tuple2<Integer, Integer> getVageRange(House house, int set, YinYangIF yinYang, Gender gender, IHouseSeq houseSeqImpl) {
     return getAgeRange(house , set , yinYang , gender , houseSeqImpl);
   }
 
-  @Override
-  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeqImpl) {
-    switch (fortuneOutput) {
-      case 虛歲: {
-        return getAgeRange(house , set , yinYang , gender , houseSeqImpl)
-          .map1(Integer::doubleValue)
-          .map2(Integer::doubleValue);
-      } // 虛歲
-      case 民國: {
-
-      }
-      default: throw new AssertionError("Not Yet Implemented : " + fortuneOutput);
-    }
-  }
+//  @Deprecated
+//  @Override
+//  public Tuple2<Double, Double> getRange(House house, int set, YinYangIF yinYang, Gender gender, FortuneOutput fortuneOutput, IHouseSeq houseSeqImpl) {
+//    switch (fortuneOutput) {
+//      case 虛歲: {
+//        return getAgeRange(house , set , yinYang , gender , houseSeqImpl)
+//          .map1(Integer::doubleValue)
+//          .map2(Integer::doubleValue);
+//      } // 虛歲
+//      case 民國: {
+//
+//      }
+//      default: throw new AssertionError("Not Yet Implemented : " + fortuneOutput);
+//    }
+//  }
 
   /** 虛歲 */
   private Tuple2<Integer , Integer> getAgeRange(House house, int set, YinYangIF yinYang, Gender gender, IHouseSeq houseSeq) {

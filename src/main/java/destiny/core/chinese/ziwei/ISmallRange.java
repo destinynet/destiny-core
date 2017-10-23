@@ -38,15 +38,15 @@ public interface ISmallRange {
    * 要起該命造之小限盤，就從寅午戌的戌宮之對宮，
    * 也就是辰宮起一歲、二歲在巳宮（男命順行）、三歲在午宮，如此順排下去。
    * */
-  static List<Long> getRanges(Branch house , Branch birthYear , Gender gender) {
+  static List<Integer> getRanges(Branch house , Branch birthYear , Gender gender) {
     Branch start = getStartingHouse(birthYear);
     int steps = gender==男? house.getAheadOf(start) : start.getAheadOf(house);
 
     int startAge = 1 + steps;
 
-    List<Long> result = new ArrayList<>();
+    List<Integer> result = new ArrayList<>();
     for(int i=0 ;  i <6 ; i++) {
-      result.add((long) (startAge + i*12));
+      result.add(startAge + i*12);
     }
 
     return result;

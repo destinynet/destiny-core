@@ -55,8 +55,11 @@ public class ZiweiTools implements Serializable {
     int birthCycle = builder.getChineseDate().getCycle();
 
     // 先求出，虛歲，是幾歲到幾歲
-    Tuple2<Integer , Integer> range = bigRangeImpl.getRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() , birthYear.getStem() , builder.getGender() , FortuneOutput.虛歲 , context.getHouseSeqImpl())
-      .map((d1 , d2) -> Tuple.tuple(d1.intValue() , d2.intValue()));
+//    Tuple2<Integer , Integer> range = bigRangeImpl.getRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() ,
+//      birthYear.getStem() , builder.getGender() , FortuneOutput.虛歲 , context.getHouseSeqImpl())
+//      .map((d1 , d2) -> Tuple.tuple(d1.intValue() , d2.intValue()));
+
+    Tuple2<Integer , Integer> range = bigRangeImpl.getVageRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() , birthYear.getStem() , builder.getGender() , context.getHouseSeqImpl());
 
     // 再把虛歲轉換成干支
     return IntStream.rangeClosed(range.v1() , range.v2()).boxed().map(vAge -> {

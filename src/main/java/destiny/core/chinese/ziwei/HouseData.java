@@ -46,7 +46,7 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   private final int rangeToVage;
 
   /** 六條小限 */
-  private final List<Double> smallRanges;
+  private final List<Integer> smallRanges;
 
   /** 宮干四化，此宮位，因為什麼星，各飛入哪個宮位(地支) */
   private final Table<ITransFour.Value , ZStar , Branch> transFourFlyMap;
@@ -56,7 +56,7 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap,
                    Table<ITransFour.Value, ZStar, Branch> transFourFlyMap,
                    FortuneOutput fortuneOutput, int rangeFromVage, int rangeToVage,
-                   List<Double> smallRanges) {
+                   List<Integer> smallRanges) {
     this.house = house;
     this.stemBranch = stemBranch;
     this.stars = stars;
@@ -118,7 +118,7 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   }
 
   /** 六條小限 */
-  public List<Double> getSmallRanges() {
+  public List<Integer> getSmallRanges() {
     return smallRanges;
   }
 
