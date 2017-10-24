@@ -100,9 +100,10 @@ public class ZContextMore extends ZContext {
   private final boolean showYearFront;
 
 
-  public ZContextMore(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, IFinalMonthNumber.MonthAlgo mainStarsMonthAlgo, IFinalMonthNumber.MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, List<IntAgeNote> ageNotes, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity, boolean showGeneralFront, boolean showYearFront) {
+  public ZContextMore(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, IFinalMonthNumber.MonthAlgo mainStarsMonthAlgo, IFinalMonthNumber.MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl,
+                      List<IntAgeNote> ageNotes, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity, boolean showGeneralFront, boolean showYearFront) {
     super(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
-      transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, fortuneOutput, ageNotes, bigRangeImpl, redBeauty);
+      transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, FortuneOutput.虛歲, ageNotes, bigRangeImpl, redBeauty);
     this.name = name;
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;

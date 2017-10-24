@@ -21,10 +21,10 @@ public enum FortuneOutput implements Descriptive {
   @Override
   public String getTitle(Locale locale) {
     try {
-        return ResourceBundle.getBundle(FortuneOutput.class.getName(), locale).getString(name());
-      } catch (MissingResourceException e) {
-        return name();
-      }
+      return ResourceBundle.getBundle(FortuneOutput.class.getName(), locale).getString(name());
+    } catch (MissingResourceException e) {
+      return name();
+    }
   }
 
   @Override

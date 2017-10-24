@@ -11,7 +11,10 @@ import java.util.Optional;
  * 將 {@link IntAge} 計算出來的結果 Tuple2[GMT , GMT] 附註年份
  * 例如，西元年份、或是民國年份、或是中國歷史紀元
  */
-public interface IntAgeNote {
+public interface IntAgeNote extends Descriptive {
 
+  /**
+   * @param startAndEnd [from GMT, to GMT] 時刻
+   */
   Optional<String> getAgeNote(Tuple2<Double , Double> startAndEnd);
 }

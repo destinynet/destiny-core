@@ -111,10 +111,16 @@ public class Builder implements Serializable {
   private List<String> notes = new ArrayList<>();
 
   /** 歲數 (暫定虛歲），每歲的起訖時分 (in GMT) */
-  private final Map<Integer , Tuple2<Double , Double>> ageMap;
+  private final Map<Integer , Tuple2<Double , Double>> vageMap;
 
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Tuple2<Double , Double>> ageMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour,
+                 StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement,
+                 int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap,
+                 Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap,
+                 Map<Branch, List<Integer>> branchSmallRangesMap,
+                 Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap,
+                 Map<Integer, Tuple2<Double , Double>> vageMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -129,7 +135,7 @@ public class Builder implements Serializable {
     this.starStrengthMap = starStrengthMap;
     this.flowBigVageMap = flowBigVageMap;
     this.flyMap = flyMap;
-    this.ageMap = ageMap;
+    this.vageMap = vageMap;
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> branchStarMap = starBranchMap.entrySet().stream()
@@ -142,7 +148,7 @@ public class Builder implements Serializable {
       );
     logger.debug("branchStarMap = {}" , branchStarMap);
 
-    // TODO 可能有些 地支宮位裡面沒有星 , 因此建立出來的 Map 就無該 地支的 key 值 , 因此必須建立另一個 map , 確保裡面每個地支都存在，且 value 至少為 empty set
+    // 可能有些 地支宮位裡面沒有星 , 因此建立出來的 Map 就無該 地支的 key 值 , 因此必須建立另一個 map , 確保裡面每個地支都存在，且 value 至少為 empty set
 
     Map<Branch , Set<ZStar>> branchStarMap2 = Arrays.stream(Branch.values()).map(branch -> {
       Set<ZStar> stars = branchStarMap.getOrDefault(branch , new HashSet<>());
@@ -172,7 +178,7 @@ public class Builder implements Serializable {
         , stars
         , branchFlowHouseMap.get(sb.getBranch())
         , flyMap.get(sb)
-        , context.getFortuneOutput(), fromTo.v1() , fromTo.v2(), smallRanges);
+        , fromTo.v1() , fromTo.v2(), smallRanges);
     }).collect(Collectors.toSet());
 
   } // builder init
@@ -223,8 +229,8 @@ public class Builder implements Serializable {
   }
 
   /** 歲數 map */
-  public Map<Integer, Tuple2<Double, Double>> getAgeMap() {
-    return ageMap;
+  public Map<Integer, Tuple2<Double, Double>> getVageMap() {
+    return vageMap;
   }
 
   public Builder withLocalDateTime(ChronoLocalDateTime localDateTime) {
@@ -417,9 +423,9 @@ public class Builder implements Serializable {
 
   public Plate build() {
     if (personModel == null) {
-      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, ageMap);
+      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, vageMap);
     } else {
-      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes , ageMap, personModel);
+      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes , vageMap, personModel);
     }
   }
 

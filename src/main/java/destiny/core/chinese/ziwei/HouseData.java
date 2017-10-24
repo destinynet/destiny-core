@@ -5,7 +5,6 @@ package destiny.core.chinese.ziwei;
 
 import com.google.common.collect.Table;
 import destiny.core.chinese.Branch;
-import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -37,11 +36,8 @@ public class HouseData implements Serializable , Comparable<HouseData> {
 
 
   /**
-   * 大限 從何時 到何時
-   * 這裡用 long , 不用 int
-   * 是因為，可能以後會傳入 時間點 (幾月幾日幾點幾分幾秒...) , 則轉換成 julian day (去除小數部分)
+   * 大限，從「虛歲」幾歲，到幾歲
    * */
-  private final FortuneOutput fortuneOutput;
   private final int rangeFromVage;
   private final int rangeToVage;
 
@@ -54,15 +50,12 @@ public class HouseData implements Serializable , Comparable<HouseData> {
   private transient static Logger logger = LoggerFactory.getLogger(HouseData.class);
 
   public HouseData(House house, StemBranch stemBranch, Set<ZStar> stars, Map<FlowType, House> flowHouseMap,
-                   Table<ITransFour.Value, ZStar, Branch> transFourFlyMap,
-                   FortuneOutput fortuneOutput, int rangeFromVage, int rangeToVage,
-                   List<Integer> smallRanges) {
+                   Table<ITransFour.Value, ZStar, Branch> transFourFlyMap, int rangeFromVage, int rangeToVage, List<Integer> smallRanges) {
     this.house = house;
     this.stemBranch = stemBranch;
     this.stars = stars;
     this.flowHouseMap = flowHouseMap;
     this.transFourFlyMap = transFourFlyMap;
-    this.fortuneOutput = fortuneOutput;
     this.rangeFromVage = rangeFromVage;
     this.rangeToVage = rangeToVage;
     this.smallRanges = smallRanges;
@@ -103,10 +96,6 @@ public class HouseData implements Serializable , Comparable<HouseData> {
     return flowHouseMap.entrySet().stream()
       .filter(entry -> entry.getKey() != FlowType.本命)
       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (h1, h2) -> h1, TreeMap::new) );
-  }
-
-  public FortuneOutput getFortuneOutput() {
-    return fortuneOutput;
   }
 
   public int getRangeFromVage() {

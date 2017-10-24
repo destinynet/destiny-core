@@ -240,10 +240,6 @@ public class ZContext implements Serializable {
     return flowHourImpl;
   }
 
-  public FortuneOutput getFortuneOutput() {
-    return fortuneOutput;
-  }
-
 
   public IBigRange getBigRangeImpl() {
     return bigRangeImpl;
@@ -262,4 +258,15 @@ public class ZContext implements Serializable {
   }
 
 
+  /**
+   * 改由 {@link #getAgeNotes()} 處理
+   */
+  @Deprecated
+  public FortuneOutput getFortuneOutput() {
+    return fortuneOutput;
+  }
+
+  public List<IntAgeNote> getAgeNotes() {
+    return ageNotes;
+  }
 }
