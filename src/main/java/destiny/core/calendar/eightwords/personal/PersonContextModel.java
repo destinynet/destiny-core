@@ -34,15 +34,19 @@ public class PersonContextModel extends EightWordsContextModel {
   /** 總共要輸出的大運 */
   private final List<FortuneData> fortuneDatas;
 
-  /** 虛歲，每歲的起訖時分 */
-  private final Map<Integer , Tuple2<ChronoLocalDateTime , ChronoLocalDateTime>> vageMap;
+  /** 歲數(可能是虛歲)，每歲的起訖時刻 */
+  private final Map<Integer , Tuple2<Double , Double>> ageMap;
 
-  public PersonContextModel(Gender gender, EightWords eightWords, ChronoLocalDateTime lmt, Location location, String locationName, ChineseDate chineseDate, boolean dst, int gmtMinuteOffset, List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms, FortuneOutput fortuneOutput, Map<Integer, Tuple2<ChronoLocalDateTime, ChronoLocalDateTime>> vageMap) {
-    super(eightWords ,lmt , location, locationName, gmtMinuteOffset, dst, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
+  public PersonContextModel(Gender gender, EightWords eightWords, ChronoLocalDateTime lmt, Location location, String place,
+                            ChineseDate chineseDate, boolean dst, int gmtMinuteOffset, List<FortuneData> fortuneDatas,
+                            StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch,
+                            Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms, FortuneOutput fortuneOutput,
+                            Map<Integer, Tuple2<Double , Double>> ageMap) {
+    super(eightWords ,lmt , location, place, gmtMinuteOffset, dst, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
     this.gender = gender;
     this.fortuneDatas = fortuneDatas;
     this.fortuneOutput = fortuneOutput;
-    this.vageMap = vageMap;
+    this.ageMap = ageMap;
   } // constructor
 
   public Gender getGender() {
@@ -56,4 +60,6 @@ public class PersonContextModel extends EightWordsContextModel {
   public FortuneOutput getFortuneOutput() {
     return fortuneOutput;
   }
+
+
 }

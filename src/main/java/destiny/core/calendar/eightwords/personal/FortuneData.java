@@ -6,7 +6,6 @@ package destiny.core.calendar.eightwords.personal;
 import destiny.core.chinese.StemBranch;
 
 import java.io.Serializable;
-import java.time.chrono.ChronoLocalDateTime;
 
 /** 一柱大運的相關資訊。包含上方文字，干支... */
 public class FortuneData implements Serializable {
@@ -15,50 +14,47 @@ public class FortuneData implements Serializable {
   private final StemBranch stemBranch;
 
   /** 起運時刻 */
-  private final ChronoLocalDateTime startFortuneLmt;
+  private final double startFortuneGmtJulDay;
 
   /** 終運時刻 */
-  private final ChronoLocalDateTime endFortuneLmt;
+  private final double endFortuneGmtJulDay;
 
-  /** 起運 : 西元/民國/實歲/虛歲之值 */
-  private final int startFortune;
+  /** 起運歲數 (可能是虛歲、或是實歲) */
+  private final int startFortuneAge;
 
-  /** 終運 : 西元/民國/實歲/虛歲之值 */
-  private final int endFortune;
+  /** 終運歲數 (可能是虛歲、或是實歲) */
+  private final int endFortuneAge;
 
-  FortuneData(StemBranch stemBranch,
-              ChronoLocalDateTime startFortuneLmt,
-              ChronoLocalDateTime endFortuneLmt,
-              int startFortune, int endFortune) {
+  FortuneData(StemBranch stemBranch, double startFortuneGmtJulDay, double endFortuneGmtJulDay, int startFortuneAge, int endFortuneAge) {
     this.stemBranch = stemBranch;
-    this.startFortuneLmt = startFortuneLmt;
-    this.endFortuneLmt = endFortuneLmt;
-    this.startFortune = startFortune;
-    this.endFortune = endFortune;
+    this.startFortuneGmtJulDay = startFortuneGmtJulDay;
+    this.endFortuneGmtJulDay = endFortuneGmtJulDay;
+    this.startFortuneAge = startFortuneAge;
+    this.endFortuneAge = endFortuneAge;
   }
 
   @Override
   public String toString() {
-    return "{" + startFortune + " " + stemBranch +'}';
+    return "{" + startFortuneAge + " " + stemBranch +'}';
   }
 
   public StemBranch getStemBranch() {
     return stemBranch;
   }
 
-  public ChronoLocalDateTime getStartFortuneLmt() {
-    return startFortuneLmt;
+  public int getStartFortuneAge() {
+    return startFortuneAge;
   }
 
-  public ChronoLocalDateTime getEndFortuneLmt() {
-    return endFortuneLmt;
+  public int getEndFortuneAge() {
+    return endFortuneAge;
   }
 
-  public int getStartFortune() {
-    return startFortune;
+  public double getStartFortuneGmtJulDay() {
+    return startFortuneGmtJulDay;
   }
 
-  public int getEndFortune() {
-    return endFortune;
+  public double getEndFortuneGmtJulDay() {
+    return endFortuneGmtJulDay;
   }
 } // FortuneData

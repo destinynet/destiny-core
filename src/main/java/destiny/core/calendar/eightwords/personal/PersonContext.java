@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class PersonContext extends EightWordsContext {
   @NotNull
   private final StarTransitIF starTransitImpl;
 
-  /** 虛歲 */
+  /** 歲數實作 */
   @NotNull
   private final IntAge intAgeImpl;
 
@@ -118,7 +119,7 @@ public class PersonContext extends EightWordsContext {
       getRisingStemBranch() ,
       getBranchOf(Planet.SUN) ,
       getBranchOf(Planet.MOON) ,
-      getPrevNextMajorSolarTerms(), fortuneOutput, getVageMap(90));
+      getPrevNextMajorSolarTerms(), fortuneOutput, getAgeMap(90));
   }
 
   /** 性別 */
@@ -143,9 +144,9 @@ public class PersonContext extends EightWordsContext {
     return fortuneMonthSpan;
   }
 
-  public Map<Integer , Tuple2<ChronoLocalDateTime , ChronoLocalDateTime>> getVageMap(int toAge) {
+  public Map<Integer , Tuple2<Double , Double>> getAgeMap(int toAge) {
     double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
-    return intAgeImpl.getRangesLmtMap(gender , gmtJulDay , location , 1 , toAge, revJulDayFunc);
+    return intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , toAge);
   }
 
   /** 八字大運是否順行 */
@@ -338,6 +339,8 @@ public class PersonContext extends EightWordsContext {
 
     List<FortuneData> fortuneDatas = new ArrayList<>();
 
+    double gmtJulDay = getGmtJulDay();
+
     // 計算九柱大運的相關資訊
     for (int i=1 ; i<=fortunes ; i++) {
       // 西元/民國/實歲/虛歲之值
@@ -346,35 +349,31 @@ public class PersonContext extends EightWordsContext {
       double startFortuneSeconds = getTargetMajorSolarTermsSeconds(  i  * (isForward ? 1 : -1));
       double   endFortuneSeconds = getTargetMajorSolarTermsSeconds((i+1)* (isForward ? 1 : -1));
 
-      Tuple2<Integer , Integer> pair1 = TimeTools.splitSecond(Math.abs(startFortuneSeconds) * fortuneMonthSpan);
-      //ChronoLocalDateTime startFortuneLmt = getLmt().plus(pair1.v1() , SECONDS).plus(pair1.v2() , NANOS);
-      LocalDateTime startFortuneLmt = LocalDateTime.from(getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+      double startFortuneGmtJulDay = gmtJulDay + Math.abs(startFortuneSeconds)*fortuneMonthSpan/86400.0;
+      double   endFortuneGmtJulDay = gmtJulDay +   Math.abs(endFortuneSeconds)*fortuneMonthSpan/86400.0;
 
-      Tuple2<Integer , Integer> pair2 = TimeTools.splitSecond(Math.abs(endFortuneSeconds)   * fortuneMonthSpan);
-      //ChronoLocalDateTime endFortuneLmt   = getLmt().plus(pair2.v1() , SECONDS).plus(pair2.v2 , NANOS);
-      LocalDateTime endFortuneLmt  = LocalDateTime.from(getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
+      ChronoLocalDateTime startFortuneLmt = TimeTools.getLmtFromGmt(startFortuneGmtJulDay , location , JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
+      ChronoLocalDateTime   endFortuneLmt = TimeTools.getLmtFromGmt(  endFortuneGmtJulDay , location , JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
 
-      //LocalDate startFortuneLmtDate = startFortuneLmt.toLocalDate();
-      //logger.trace("getFortuneDatas : {}.toLocalDate() = {} . era = {}" , startFortuneLmtDate.getClass().getSimpleName() , startFortuneLmtDate , startFortuneLmtDate.getEra());
 
       switch(fortuneOutput) {
         case 西元 : {
           startFortune = startFortuneLmt.get(YEAR_OF_ERA);
-          if (startFortuneLmt.getYear() <= 0) // 西元前
+          if (startFortuneLmt.get(ChronoField.YEAR) <= 0) // 西元前
             startFortune= 0-startFortune;
           endFortune = endFortuneLmt.get(YEAR_OF_ERA);
-          if (endFortuneLmt.getYear() <= 0) // 西元前
+          if (endFortuneLmt.get(ChronoField.YEAR) <= 0) // 西元前
             endFortune = 0-endFortune;
           break;
         }
         case 民國 : {
           int year; //normalized 的 年份 , 有零 , 有負數
           year = startFortuneLmt.get(YEAR_OF_ERA);
-          if (startFortuneLmt.getYear() <= 0) //西元前
+          if (startFortuneLmt.get(ChronoField.YEAR) <= 0) //西元前
             year = -(year-1);
           startFortune = year-1911;
           year = endFortuneLmt.get(YEAR_OF_ERA);
-          if (endFortuneLmt.getYear() <= 0) //西元前
+          if (endFortuneLmt.get(ChronoField.YEAR) <= 0) //西元前
             year = -(year-1);
           endFortune = year-1911;
           break;
@@ -405,7 +404,7 @@ public class PersonContext extends EightWordsContext {
         }
       }
 
-      FortuneData fortuneData = new FortuneData(nextStemBranch , startFortuneLmt , endFortuneLmt, startFortune , endFortune);
+      FortuneData fortuneData = new FortuneData(nextStemBranch , startFortuneGmtJulDay, endFortuneGmtJulDay, startFortune , endFortune);
       fortuneDatas.add(fortuneData);
 
       nextStemBranch = isForward ? nextStemBranch.getNext() : nextStemBranch.getPrevious();

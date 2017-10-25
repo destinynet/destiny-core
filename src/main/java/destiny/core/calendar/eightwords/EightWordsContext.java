@@ -97,6 +97,10 @@ public class EightWordsContext implements Serializable {
     return lmt;
   }
 
+  public double getGmtJulDay() {
+    return TimeTools.getGmtJulDay(lmt , location);
+  }
+
   public Location getLocation() {
     return location;
   }
