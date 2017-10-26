@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords.personal;
 
+import destiny.core.IntAgeNote;
 import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.calendar.TimeSecDecoratorChinese;
@@ -15,6 +16,7 @@ import destiny.core.chinese.StemBranch;
 import destiny.tools.ColorCanvas.AlignUtil;
 import destiny.tools.ColorCanvas.ColorCanvas;
 import destiny.tools.Decorator;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -107,13 +109,26 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       Collections.reverse(dataList);
     }
 
+
+    List<IntAgeNote> ageNoteImpls = personContext.getAgeNoteImpls();
+
     for (int i=1 ; i <= dataList.size() ; i++) {
       FortuneData fortuneData = dataList.get(i-1);
-      int startFortune = fortuneData.getStartFortuneAge();
+
+      //int startFortune = fortuneData.getStartFortuneAge();
+      String startFortune = ageNoteImpls.stream().findFirst()
+        .map(impl -> impl.getAgeNote(fortuneData.getStartFortuneGmtJulDay()))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .orElse("");
+
+
       StemBranch stemBranch = fortuneData.getStemBranch();
       ChronoLocalDateTime startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.getStartFortuneGmtJulDay() , personContext.getLocation() , revJulDayFunc);
 
-      下方大運橫.setText(AlignUtil.alignCenter(startFortune , 6) , 1 , (i-1)*8+1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
+
+
+      下方大運橫.setText(StringUtils.center(startFortune , 6 , ' ') , 1 , (i-1)*8+1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       Reactions reaction = reactionsUtil.getReaction(stemBranch.getStem() , eightWords.getDay().getStem());
       下方大運橫.setText(reaction.toString().substring(0, 1), 2, (i-1)*8+3, "gray");
       下方大運橫.setText(reaction.toString().substring(1,2) , 3 , (i-1)*8+3 , "gray");
@@ -125,7 +140,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
 
     // 2017-10-25 起，右邊大運固定顯示虛歲
-    cc.setText("大運（"+ model.getFortuneOutput() +"）", 10, 55);
+    cc.setText("大運（虛歲）", 10, 55);
     cc.add(右方大運直, 11, 47);
     cc.add(下方大運橫, 22, 1);
 

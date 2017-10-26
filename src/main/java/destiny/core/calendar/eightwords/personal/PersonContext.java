@@ -8,11 +8,14 @@ import com.google.common.cache.CacheBuilder;
 import destiny.astrology.*;
 import destiny.core.Gender;
 import destiny.core.IntAge;
-import destiny.core.calendar.*;
+import destiny.core.IntAgeNote;
+import destiny.core.calendar.Location;
+import destiny.core.calendar.SolarTerms;
+import destiny.core.calendar.SolarTermsIF;
+import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.Branch;
-import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
@@ -23,17 +26,12 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
-import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static destiny.astrology.Coordinate.ECLIPTIC;
 import static destiny.astrology.Planet.SUN;
-import static java.time.temporal.ChronoField.YEAR_OF_ERA;
 
 public class PersonContext extends EightWordsContext {
 
@@ -77,7 +75,7 @@ public class PersonContext extends EightWordsContext {
   private final double fortuneHourSpan = 365 * 12;
 
   /** 大運輸出格式 */
-  private final FortuneOutput fortuneOutput;
+  //private final FortuneOutput fortuneOutput;
 
   private final Cache<PersonContext, Map<Integer, Double>> cache =
     CacheBuilder.newBuilder()
@@ -88,11 +86,16 @@ public class PersonContext extends EightWordsContext {
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法 */
   private final FortuneDirectionIF fortuneDirectionImpl;
 
-
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  /** 歲數註解實作 */
+  private final List<IntAgeNote> ageNoteImpls;
 
   /** constructor */
-  public PersonContext(EightWordsIF eightWordsImpl, ChineseDateIF chineseDateImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl, @NotNull IntAge intAgeImpl, ChronoLocalDateTime lmt, Location location, String locationName, @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, FortuneOutput fortuneOutput) {
+  public PersonContext(EightWordsIF eightWordsImpl, ChineseDateIF chineseDateImpl, YearMonthIF yearMonthImpl,
+                       DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi,
+                       @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl,
+                       @NotNull IntAge intAgeImpl, ChronoLocalDateTime lmt, Location location, String locationName,
+                       @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl,
+                       RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, List<IntAgeNote> ageNoteImpls) {
     super(lmt , location , eightWordsImpl , yearMonthImpl, chineseDateImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi , risingSignImpl , starPositionImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;
@@ -105,7 +108,7 @@ public class PersonContext extends EightWordsContext {
     this.lmt = lmt;
     this.location = location;
     this.gender = gender;
-    this.fortuneOutput = fortuneOutput;
+    this.ageNoteImpls = ageNoteImpls;
     ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt , location);
     this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt);
   }
@@ -115,11 +118,11 @@ public class PersonContext extends EightWordsContext {
     return new PersonContextModel(gender , eightWords , lmt , location , locationName ,
       getChineseDate() , isDst() ,
       getGmtMinuteOffset() ,
-      getFortuneDatas(9 , fortuneOutput) ,
+      getFortuneDatas(9) ,
       getRisingStemBranch() ,
       getBranchOf(Planet.SUN) ,
       getBranchOf(Planet.MOON) ,
-      getPrevNextMajorSolarTerms(), fortuneOutput, getAgeMap(90));
+      getPrevNextMajorSolarTerms(), getAgeMap(90));
   }
 
   /** 性別 */
@@ -319,30 +322,39 @@ public class PersonContext extends EightWordsContext {
     }
   } // getNextMajorSolarTerms()
 
+  /**
+   * @return 在此 gmtJulDay 時刻，座落於歲數的哪一歲當中
+   * 可能歲數超出範圍之後，或是根本在出生之前，就會傳回 empty
+   */
+  private Optional<Integer> getAge(double gmtJulDay , Map<Integer , Tuple2<Double , Double>> ageMap) {
+    return ageMap.entrySet().stream().filter(entry -> {
+      Tuple2<Double , Double> t2 = entry.getValue();
+      return gmtJulDay > t2.v1() && t2.v2() > gmtJulDay;
+    }).map(Map.Entry::getKey).findFirst();
+  }
+
+  public List<IntAgeNote> getAgeNoteImpls() {
+    return ageNoteImpls;
+  }
 
   /**
-   * @param fortunes 計算 n柱 大運的資料
-   * @param fortuneOutput 輸出格式
+   * @param count 計算 n柱 大運的資料
    */
-  public List<FortuneData> getFortuneDatas(int fortunes , FortuneOutput fortuneOutput) {
+  public List<FortuneData> getFortuneDatas(int count) {
     // forward : 大運是否順行
     boolean isForward = isFortuneDirectionForward();
 
     //下個大運的干支
     StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
-    EightWords eightWords = getEightWords();
 
-    // 前一個大運，開始的歲數
-    int prevStart = 0;
-    // 前一個大運，結束的歲數
-    int prevEnd = 0;
-
-    List<FortuneData> fortuneDatas = new ArrayList<>();
+    List<FortuneData> fortuneDatas = new ArrayList<>(count);
 
     double gmtJulDay = getGmtJulDay();
 
+    Map<Integer , Tuple2<Double , Double>> ageMap = getAgeMap(120);
+
     // 計算九柱大運的相關資訊
-    for (int i=1 ; i<=fortunes ; i++) {
+    for (int i=1 ; i<=count ; i++) {
       // 西元/民國/實歲/虛歲之值
       int startFortune;
       int endFortune;
@@ -352,59 +364,13 @@ public class PersonContext extends EightWordsContext {
       double startFortuneGmtJulDay = gmtJulDay + Math.abs(startFortuneSeconds)*fortuneMonthSpan/86400.0;
       double   endFortuneGmtJulDay = gmtJulDay +   Math.abs(endFortuneSeconds)*fortuneMonthSpan/86400.0;
 
-      ChronoLocalDateTime startFortuneLmt = TimeTools.getLmtFromGmt(startFortuneGmtJulDay , location , JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
-      ChronoLocalDateTime   endFortuneLmt = TimeTools.getLmtFromGmt(  endFortuneGmtJulDay , location , JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
+      startFortune = getAge(startFortuneGmtJulDay , ageMap).orElse(0);
+      endFortune   = getAge(  endFortuneGmtJulDay , ageMap).orElse(0);
 
+      List<String> startFortuneAgeNotes = ageNoteImpls.stream().map(impl -> impl.getAgeNote(ageMap.get(startFortune))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+      List<String>   endFortuneAgeNotes = ageNoteImpls.stream().map(impl -> impl.getAgeNote(ageMap.get(  endFortune))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
-      switch(fortuneOutput) {
-        case 西元 : {
-          startFortune = startFortuneLmt.get(YEAR_OF_ERA);
-          if (startFortuneLmt.get(ChronoField.YEAR) <= 0) // 西元前
-            startFortune= 0-startFortune;
-          endFortune = endFortuneLmt.get(YEAR_OF_ERA);
-          if (endFortuneLmt.get(ChronoField.YEAR) <= 0) // 西元前
-            endFortune = 0-endFortune;
-          break;
-        }
-        case 民國 : {
-          int year; //normalized 的 年份 , 有零 , 有負數
-          year = startFortuneLmt.get(YEAR_OF_ERA);
-          if (startFortuneLmt.get(ChronoField.YEAR) <= 0) //西元前
-            year = -(year-1);
-          startFortune = year-1911;
-          year = endFortuneLmt.get(YEAR_OF_ERA);
-          if (endFortuneLmt.get(ChronoField.YEAR) <= 0) //西元前
-            year = -(year-1);
-          endFortune = year-1911;
-          break;
-        }
-        case 實歲 : {
-          startFortune = (int) (Math.abs(startFortuneSeconds) * fortuneMonthSpan / (365.2563*24*60*60)) ;
-          endFortune   = (int) (Math.abs(endFortuneSeconds)   * fortuneMonthSpan / (365.2563*24*60*60)) ;
-          break;
-        }
-        default : {
-          //虛歲
-          // 取得 起運/終運 時的八字
-          EightWords startFortune8w = eightWordsImpl.getEightWords(startFortuneLmt, getLocation());
-          EightWords endFortune8w   = eightWordsImpl.getEightWords(endFortuneLmt, getLocation());
-
-          // 計算年干與本命年干的距離
-          startFortune = startFortune8w.getYear().differs(eightWords.getYear())+1;
-          //System.out.println("differs result , startFortune = " + startFortune + " , prevStart = " + prevStart);
-          while (startFortune < prevStart)
-            startFortune +=60;
-          prevStart = startFortune;
-          //System.out.println(startFortune8w.getYear()+"["+startFortune8w.getYear().getIndex()+"] to " + eightWords.getYear()+"["+eightWords.getYear().getIndex()+"] is "+ startFortune);
-
-          endFortune = endFortune8w.getYear().differs(eightWords.getYear())+1;
-          while (endFortune < prevEnd)
-            endFortune += 60;
-          prevEnd = endFortune;
-        }
-      }
-
-      FortuneData fortuneData = new FortuneData(nextStemBranch , startFortuneGmtJulDay, endFortuneGmtJulDay, startFortune , endFortune);
+      FortuneData fortuneData = new FortuneData(nextStemBranch , startFortuneGmtJulDay, endFortuneGmtJulDay, startFortune , endFortune, startFortuneAgeNotes, endFortuneAgeNotes);
       fortuneDatas.add(fortuneData);
 
       nextStemBranch = isForward ? nextStemBranch.getNext() : nextStemBranch.getPrevious();
@@ -554,4 +520,6 @@ public class PersonContext extends EightWordsContext {
     result = 31 * result + (fortuneDirectionImpl != null ? fortuneDirectionImpl.hashCode() : 0);
     return result;
   }
+
+
 }

@@ -139,7 +139,7 @@ public class ZContext implements Serializable {
   private final FortuneOutput fortuneOutput;
 
   /** 歲數註解 (西元？ 民國？ or others) */
-  private final List<IntAgeNote> ageNotes;
+  private final List<IntAgeNote> ageNoteImpls;
 
   /** 大限計算方式 */
   protected final IBigRange bigRangeImpl;
@@ -161,7 +161,7 @@ public class ZContext implements Serializable {
   }
   private final RedBeauty redBeauty;
 
-  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, @Nullable MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, List<IntAgeNote> ageNotes, IBigRange bigRangeImpl, RedBeauty redBeauty) {
+  public ZContext(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, @Nullable MonthAlgo mainStarsAlgo, MonthAlgo monthStarsAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl, FortuneOutput fortuneOutput, List<IntAgeNote> ageNoteImpls, IBigRange bigRangeImpl, RedBeauty redBeauty) {
     this.mainBodyHouseImpl = mainBodyHouseImpl;
     this.purpleBranchImpl = purpleBranchImpl;
     this.mainStarsAlgo = mainStarsAlgo;
@@ -178,7 +178,7 @@ public class ZContext implements Serializable {
     this.flowDayImpl = flowDayImpl;
     this.flowHourImpl = flowHourImpl;
     this.fortuneOutput = fortuneOutput;
-    this.ageNotes = ageNotes;
+    this.ageNoteImpls = ageNoteImpls;
     this.bigRangeImpl = bigRangeImpl;
     this.redBeauty = redBeauty;
   }
@@ -259,14 +259,14 @@ public class ZContext implements Serializable {
 
 
   /**
-   * 改由 {@link #getAgeNotes()} 處理
+   * 改由 {@link #getAgeNoteImpls()} 處理
    */
   @Deprecated
   public FortuneOutput getFortuneOutput() {
     return fortuneOutput;
   }
 
-  public List<IntAgeNote> getAgeNotes() {
-    return ageNotes;
+  public List<IntAgeNote> getAgeNoteImpls() {
+    return ageNoteImpls;
   }
 }

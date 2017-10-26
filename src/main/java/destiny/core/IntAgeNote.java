@@ -13,6 +13,9 @@ import java.util.Optional;
  */
 public interface IntAgeNote extends Descriptive {
 
+  /** 此時刻的註記 ( 通常只註記「西元XX年」 ) */
+  Optional<String> getAgeNote(double gmtJulDay);
+
   /**
    * @param startAndEnd [from GMT, to GMT] 時刻
    */

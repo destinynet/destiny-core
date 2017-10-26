@@ -20,9 +20,14 @@ public class IntAgeNoteWestYearImpl implements IntAgeNote , Serializable {
   private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   @Override
-  public Optional<String> getAgeNote(Tuple2<Double, Double> startAndEnd) {
-    ChronoLocalDateTime start = revJulDayFunc.apply(startAndEnd.v1());
+  public Optional<String> getAgeNote(double gmtJulDay) {
+    ChronoLocalDateTime start = revJulDayFunc.apply(gmtJulDay);
     return Optional.of(String.valueOf(start.get(ChronoField.YEAR_OF_ERA)));
+  }
+
+  @Override
+  public Optional<String> getAgeNote(Tuple2<Double, Double> startAndEnd) {
+    return getAgeNote(startAndEnd.v1());
   }
 
   @Override

@@ -21,8 +21,8 @@ public class IntAgeNoteMinguoYearImpl implements IntAgeNote , Serializable {
   private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   @Override
-  public Optional<String> getAgeNote(Tuple2<Double, Double> startAndEnd) {
-    ChronoLocalDateTime start = revJulDayFunc.apply(startAndEnd.v1());
+  public Optional<String> getAgeNote(double gmtJulDay) {
+    ChronoLocalDateTime start = revJulDayFunc.apply(gmtJulDay);
     int westYear = start.get(ChronoField.YEAR_OF_ERA);
     if (westYear >= 1912) {
       return Optional.of("民"+(westYear-1911));
@@ -30,6 +30,11 @@ public class IntAgeNoteMinguoYearImpl implements IntAgeNote , Serializable {
     else {
       return Optional.empty();
     }
+  }
+
+  @Override
+  public Optional<String> getAgeNote(Tuple2<Double, Double> startAndEnd) {
+    return getAgeNote(startAndEnd.v1());
   }
 
   @Override

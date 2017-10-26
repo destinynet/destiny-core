@@ -10,7 +10,6 @@ import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContextModel;
 import destiny.core.chinese.Branch;
-import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.StemBranch;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -28,24 +27,20 @@ public class PersonContextModel extends EightWordsContextModel {
   /** 性別 */
   protected final Gender gender;
 
-  /** 大運輸出格式 */
-  private final FortuneOutput fortuneOutput;
-
   /** 總共要輸出的大運 */
   private final List<FortuneData> fortuneDatas;
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻 */
   private final Map<Integer , Tuple2<Double , Double>> ageMap;
 
-  public PersonContextModel(Gender gender, EightWords eightWords, ChronoLocalDateTime lmt, Location location, String place,
-                            ChineseDate chineseDate, boolean dst, int gmtMinuteOffset, List<FortuneData> fortuneDatas,
-                            StemBranch risingStemBranch, Branch sunBranch, Branch moonBranch,
-                            Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms, FortuneOutput fortuneOutput,
-                            Map<Integer, Tuple2<Double , Double>> ageMap) {
+  public PersonContextModel(Gender gender, EightWords eightWords, ChronoLocalDateTime lmt, Location location,
+                            String place, ChineseDate chineseDate, boolean dst, int gmtMinuteOffset,
+                            List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch,
+                            Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms,
+                            Map<Integer, Tuple2<Double, Double>> ageMap) {
     super(eightWords ,lmt , location, place, gmtMinuteOffset, dst, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
     this.gender = gender;
     this.fortuneDatas = fortuneDatas;
-    this.fortuneOutput = fortuneOutput;
     this.ageMap = ageMap;
   } // constructor
 
@@ -57,9 +52,7 @@ public class PersonContextModel extends EightWordsContextModel {
     return Collections.unmodifiableList(fortuneDatas);
   }
 
-  public FortuneOutput getFortuneOutput() {
-    return fortuneOutput;
+  public Map<Integer, Tuple2<Double, Double>> getAgeMap() {
+    return ageMap;
   }
-
-
 }
