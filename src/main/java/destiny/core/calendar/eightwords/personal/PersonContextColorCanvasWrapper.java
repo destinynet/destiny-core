@@ -95,8 +95,9 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
       int   endFortune = fortuneData.getEndFortuneAge();
       StemBranch stemBranch = fortuneData.getStemBranch();
 
-      ChronoLocalDateTime startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.getStartFortuneGmtJulDay(),  personContext.getLocation() , revJulDayFunc);
-      ChronoLocalDateTime   endFortuneLmt = TimeTools.getLmtFromGmt(  fortuneData.getEndFortuneGmtJulDay() , personContext.getLocation() , revJulDayFunc);
+
+      ChronoLocalDateTime startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.getStartFortuneGmtJulDay(),  model.getLocation() , revJulDayFunc);
+      ChronoLocalDateTime   endFortuneLmt = TimeTools.getLmtFromGmt(  fortuneData.getEndFortuneGmtJulDay() , model.getLocation() , revJulDayFunc);
 
       右方大運直.setText(AlignUtil.alignRight(startFortune, 6) , i , 1 , "green" , null , "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt));
       右方大運直.setText("→" , i , 9 , "green" );
@@ -115,7 +116,6 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
     for (int i=1 ; i <= dataList.size() ; i++) {
       FortuneData fortuneData = dataList.get(i-1);
 
-      //int startFortune = fortuneData.getStartFortuneAge();
       String startFortune = ageNoteImpls.stream().findFirst()
         .map(impl -> impl.getAgeNote(fortuneData.getStartFortuneGmtJulDay()))
         .filter(Optional::isPresent)
@@ -124,7 +124,7 @@ public class PersonContextColorCanvasWrapper extends ContextColorCanvasWrapper {
 
 
       StemBranch stemBranch = fortuneData.getStemBranch();
-      ChronoLocalDateTime startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.getStartFortuneGmtJulDay() , personContext.getLocation() , revJulDayFunc);
+      ChronoLocalDateTime startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.getStartFortuneGmtJulDay() , model.getLocation() , revJulDayFunc);
 
 
 

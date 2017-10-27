@@ -62,9 +62,6 @@ public class EightWordsContext implements Serializable {
   }
 
   public EightWordsContextModel getModel() {
-    int gmtMinuteOffset = TimeTools.getDstSecondOffset(lmt, location).v2() / 60;
-    boolean dst = TimeTools.getDstSecondOffset(lmt, location).v1();
-
     Tuple2<SolarTerms , SolarTerms> prevNextMajorSolarTerms = getPrevNextMajorSolarTerms();
 
     ChineseDate chineseDate = getChineseDate();
@@ -72,7 +69,7 @@ public class EightWordsContext implements Serializable {
     StemBranch risingSign = getRisingStemBranch();
     Branch sunBranch = getBranchOf(Planet.SUN , lmt , location);
     Branch moonBranch = getBranchOf(Planet.MOON , lmt , location);
-    return new EightWordsContextModel(eightWords , lmt , location , "LOCATION", gmtMinuteOffset , dst , chineseDate, prevNextMajorSolarTerms.v1() ,
+    return new EightWordsContextModel(eightWords , lmt , location , "LOCATION", chineseDate, prevNextMajorSolarTerms.v1() ,
       prevNextMajorSolarTerms.v2() ,
       risingSign ,
       sunBranch , moonBranch);
@@ -99,10 +96,6 @@ public class EightWordsContext implements Serializable {
 
   public double getGmtJulDay() {
     return TimeTools.getGmtJulDay(lmt , location);
-  }
-
-  public Location getLocation() {
-    return location;
   }
 
   /** 上一個「節」、下一個「節」

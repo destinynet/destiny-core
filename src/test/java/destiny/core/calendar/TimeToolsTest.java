@@ -115,6 +115,37 @@ public class TimeToolsTest {
   }
 
   /**
+   * 已知
+   * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
+   *
+   * 比對 : 兩種計算 totalSeconds 的演算法
+   *
+   * zoneId.getRules().getOffset(lmt.atZone(zoneId).toInstant()).getTotalSeconds()
+   * lmt.atZone(zoneId).getOffset().getTotalSeconds()
+   *
+   * 其結果應該一致
+   */
+  @Test
+  public void testOffset() {
+    ZoneId zoneId = ZoneId.of("Asia/Taipei");
+    // 日光節約前一秒
+    ChronoLocalDateTime beforeDST = LocalDateTime.of(1974,3,31,23,59);
+
+    int totalSeconds = zoneId.getRules().getOffset(beforeDST.atZone(zoneId).toInstant()).getTotalSeconds();
+    assertEquals(60*60*8 , totalSeconds);
+    assertEquals(beforeDST.atZone(zoneId).getOffset().getTotalSeconds() , totalSeconds);
+    assertEquals(60*60*8 , TimeTools.getSecondsOffset(beforeDST , zoneId));
+
+    // 日光節約後一秒
+    ChronoLocalDateTime startDST = LocalDateTime.of(1974,4,1,0,0,1);
+    totalSeconds = zoneId.getRules().getOffset(startDST.atZone(zoneId).toInstant()).getTotalSeconds();
+    assertEquals(60*60*9 , totalSeconds);
+    assertEquals(startDST.atZone(zoneId).getOffset().getTotalSeconds() , totalSeconds);
+    assertEquals(60*60*9 , TimeTools.getSecondsOffset(startDST , zoneId));
+  }
+
+
+  /**
    * 已知：
    * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
    */

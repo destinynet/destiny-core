@@ -34,11 +34,11 @@ public class PersonContextModel extends EightWordsContextModel {
   private final Map<Integer , Tuple2<Double , Double>> ageMap;
 
   public PersonContextModel(Gender gender, EightWords eightWords, ChronoLocalDateTime lmt, Location location,
-                            String place, ChineseDate chineseDate, boolean dst, int gmtMinuteOffset,
+                            String place, ChineseDate chineseDate,
                             List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch,
                             Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms,
                             Map<Integer, Tuple2<Double, Double>> ageMap) {
-    super(eightWords ,lmt , location, place, gmtMinuteOffset, dst, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
+    super(eightWords ,lmt , location, place, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
     this.gender = gender;
     this.fortuneDatas = fortuneDatas;
     this.ageMap = ageMap;

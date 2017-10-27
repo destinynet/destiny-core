@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static destiny.core.calendar.Location.EastWest.EAST;
@@ -442,6 +444,10 @@ public class Location implements Serializable {
 
   public TimeZone getTimeZone() { return TimeZone.getTimeZone(tzid); }
 
+  public ZoneId getZoneId() {
+    return ZoneId.of(tzid);
+  }
+
   public double getAltitudeMeter() { return this.altitudeMeter; }
 
   public EastWest getEastWest() { return this.eastWest; }
@@ -546,11 +552,19 @@ public class Location implements Serializable {
   }
 
 
-  // 與 GMT 的時差 (分鐘) 
+  /**
+   * 與 GMT 的時差 (分鐘)
+   * {@link #minuteOffset} 的優先權高於 {@link #tzid}
+   */
   public int getMinuteOffset() {
     if (minuteOffset != null)
       return minuteOffset;
     else
       return TimeZone.getTimeZone(tzid).getRawOffset() / (60 * 1000);
+  }
+
+  public ZoneOffset getZoneOffset() {
+    int totalSeconds = getMinuteOffset()* 60;
+    return ZoneOffset.ofTotalSeconds(totalSeconds);
   }
 }

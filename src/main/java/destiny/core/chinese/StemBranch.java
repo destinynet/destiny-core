@@ -159,9 +159,6 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     return stemOptional.map(stem1 -> StemBranch.get(stem1 , branchOptional.orElseThrow(() -> new RuntimeException("Cannot find Branch: " + branchChar))))
       .orElseThrow(() -> new RuntimeException("Cannot get StemBranch("+stemChar+" , "+branchChar+")"));
 
-//    return stemOptional
-//      .map(stem1 -> StemBranch.get(stem1 , branchOptional.get()))
-//      .orElseThrow(() -> new RuntimeException("Cannot get StemBranch("+stemChar+" , "+branchChar+")"));
   }
   
   public static StemBranch get(@NotNull String stemBranch)

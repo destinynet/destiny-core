@@ -5,6 +5,7 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
+import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.chrono.ChronoLocalDateTime;
@@ -15,6 +16,12 @@ import java.time.chrono.ChronoLocalDateTime;
 public interface EightWordsIF {
 
   @NotNull
-  EightWords getEightWords(ChronoLocalDateTime lmt, Location location);
+  EightWords getEightWords(double gmtJulDay , Location loc);
+
+  @NotNull
+  default EightWords getEightWords(ChronoLocalDateTime lmt, Location loc) {
+    double gmtJulDay = TimeTools.getGmtJulDay(lmt , loc);
+    return getEightWords(gmtJulDay , loc);
+  }
 
 }

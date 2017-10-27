@@ -12,12 +12,14 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.util.function.Function;
 
 import static destiny.astrology.Centric.GEO;
 import static destiny.astrology.Coordinate.ECLIPTIC;
@@ -47,24 +49,24 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
   /** 換年的度數 , 通常是立春點 (315) 換年*/
   private double changeYearDegree;
 
-  /** 存放『年干』 */
-  @Nullable
-  private Stem 年干;
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
-  public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl) {
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+
+  public YearMonthSolarTermsStarPositionImpl(double changeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl) {
     this.starPositionImpl = starPositionImpl;
     this.starTransitImpl = starTransitImpl;
-    this.setting(ChangeYearDegree);
+    this.setChangeYearDegree(changeYearDegree);
   }
 
-  public YearMonthSolarTermsStarPositionImpl(double ChangeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl, boolean southernHemisphereOpposition) {
+  public YearMonthSolarTermsStarPositionImpl(double changeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl, boolean southernHemisphereOpposition) {
     this.starPositionImpl = starPositionImpl;
     this.starTransitImpl = starTransitImpl;
     this.southernHemisphereOpposition = southernHemisphereOpposition;
-    this.setting(ChangeYearDegree);
+    this.setChangeYearDegree(changeYearDegree);
   }
 
-  private void setting(double changeYearDegree) {
+  private void setChangeYearDegree(double changeYearDegree) {
     if (changeYearDegree < 180)
       throw new RuntimeException("Cannot set changeYearDegree smaller than 180 ");
     this.changeYearDegree = changeYearDegree;
@@ -72,7 +74,9 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
 
 
   @Override
-  public StemBranch getYear(ChronoLocalDateTime lmt, Location location) {
+  public StemBranch getYear(double gmtJulDay, Location loc) {
+    ChronoLocalDateTime lmt = TimeTools.getLmtFromGmt(gmtJulDay , loc , revJulDayFunc);
+
     StemBranch resultStemBranch;
     //西元 1984 年為 甲子年
     int index;
@@ -81,7 +85,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
     else
       index = (1 - lmt.get(ChronoField.YEAR) - 1984) % 60;
 
-    double gmtSecondsOffset = TimeTools.getDstSecondOffset(lmt, location).v2();
+    double gmtSecondsOffset = TimeTools.getDstSecondOffset(lmt, loc).v2();
 
     int gmtSecondsOffsetInt = (int) gmtSecondsOffset;
     int gmtNanoOffset = (int) ((gmtSecondsOffset - gmtSecondsOffsetInt) * 1_000_000_000);
@@ -133,24 +137,18 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
 
     }
     // 儲存年干 , 方便稍後推算月干
-    this.年干 = resultStemBranch.getStem();
+//    this.年干 = resultStemBranch.getStem();
     return resultStemBranch;
-  } // 年干支 , ChronoLocalDateTime 版本
-
-
+  }
 
 
   /**
    * @return 取得月干支
    */
   @Override
-  public StemBranch getMonth(ChronoLocalDateTime lmt, Location location) {
+  public StemBranch getMonth(double gmtJulDay, Location location) {
     Branch result月支;
     //先算出太陽在黃經上的度數
-
-    ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(lmt, location);
-
-    double gmtJulDay = TimeTools.getGmtJulDay(gmt);
 
     SolarTermsIF solarTermsImpl = new SolarTermsImpl(this.starTransitImpl, this.starPositionImpl);
     SolarTerms MonthST = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay);
@@ -175,7 +173,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
         /*
          * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
          */
-        double solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN, gmt, GEO, EQUATORIAL).getLat();
+        double solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, EQUATORIAL).getLat();
 
         if (solarEquatorialDegree >= 0) {
           //如果太陽在赤北緯
@@ -210,19 +208,11 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
     else
       result月支 = 月支;
 
-    return StemBranch.get(this.getMonthStem(lmt, location, result月支), result月支);
+    Stem 年干 = getYear(gmtJulDay , location).getStem();
+    return StemBranch.get(this.getMonthStem(gmtJulDay, 年干 , result月支), result月支);
   }
 
 
-  /**
-   * @param degree 設定太陽過黃道多少度 換年。一般而言是 立春（315），但是有人會使用冬至（270）換年
-   * 本實作僅接受 180(含) 到 360(不含) 之間的值
-   */
-  public void setChangeYearDegree(double degree) {
-    if (degree < 180)
-      throw new RuntimeException("Cannot set ChangeYearDrgree smaller than 180 ");
-    this.changeYearDegree = degree;
-  }
 
 
   /** 南半球月支是否對沖 , 內定是 '否' */
@@ -261,11 +251,8 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
    * </b>
    * </pre>
    */
-  private Stem getMonthStem(@NotNull ChronoLocalDateTime lmt, @NotNull Location location, @NotNull Branch 月支) {
+  private Stem getMonthStem(double gmtJulDay, @NotNull Stem 年干, @NotNull Branch 月支) {
     Stem 月干;
-
-    if (年干 == null)
-      this.getYear(lmt, location);  //如果年干還沒算，則強迫去算一次 年干支，其結果會儲存在 this.年干 內
 
     switch (年干) {
       case 甲:
@@ -296,14 +283,10 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
       if (starPositionImpl == null)
         throw new RuntimeException("Call state error ! starTransitImpl should be set.");
 
-      double gmtJulDay = TimeTools.getGmtJulDay(lmt, location);
-
       if (changeYearDegree < 315) {
-        //System.out.println("changeYearDegree < 315 , value = " + changeYearDegree);
-        //換年點在立春前
+        logger.debug("換年點在立春前 , changeYearDegree < 315 , value = {}" , changeYearDegree);
 
         double lmtSunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, ECLIPTIC).getLng();
-        //System.out.println("LMT = " + lmt + " degree = " + lmtSunDegree);
         if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree) {
           // t <---立春---- LMT -----換年點
           月干 = Stem.get(月干.getIndex() - 2);

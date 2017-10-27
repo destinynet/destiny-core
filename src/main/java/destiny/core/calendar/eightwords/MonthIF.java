@@ -6,6 +6,7 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.core.calendar.Location;
+import destiny.core.calendar.TimeTools;
 import destiny.core.chinese.StemBranch;
 
 import java.time.chrono.ChronoLocalDateTime;
@@ -15,13 +16,14 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public interface MonthIF {
 
-  /**
-   * @param lmt
-   * @param location
-   * @return 月干支
-   */
-  StemBranch getMonth(ChronoLocalDateTime lmt , Location location);
-  
+
+  StemBranch getMonth(double gmtJulDay, Location location);
+
+  default StemBranch getMonth(ChronoLocalDateTime lmt, Location loc) {
+    double gmtJulDay = TimeTools.getGmtJulDay(lmt , loc);
+    return getMonth(gmtJulDay , loc);
+  }
+
   /**
    * 南半球月支是否對沖 , 內定是 '否'
    */

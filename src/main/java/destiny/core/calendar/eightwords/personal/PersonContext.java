@@ -116,8 +116,7 @@ public class PersonContext extends EightWordsContext {
 
   public PersonContextModel getModel() {
     return new PersonContextModel(gender , eightWords , lmt , location , locationName ,
-      getChineseDate() , isDst() ,
-      getGmtMinuteOffset() ,
+      getChineseDate() ,
       getFortuneDatas(9) ,
       getRisingStemBranch() ,
       getBranchOf(Planet.SUN) ,
@@ -379,19 +378,9 @@ public class PersonContext extends EightWordsContext {
   }
 
 
-  public Branch getBranchOf(Star star) {
+  private Branch getBranchOf(Star star) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
     return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
-  }
-
-  /** 是否有日光節約時間 */
-  public boolean isDst() {
-    return TimeTools.getDstSecondOffset(lmt, location).v1();
-  }
-
-  /** 與 GMT 的時差 (分) */
-  public int getGmtMinuteOffset() {
-    return TimeTools.getDstSecondOffset(lmt, location).v2() / 60;
   }
 
   /**
@@ -427,7 +416,7 @@ public class PersonContext extends EightWordsContext {
   /**
    * 由 GMT 反推月大運，private method
    *
-   * @param targetGmt 目標時刻（必須在初生時刻之後）
+   * @param targetGmt 目標時刻（必須在出生時刻之後）
    * @param span      放大倍數
    * @return 干支
    */

@@ -211,12 +211,20 @@ public class TimeTools implements Serializable {
     return isDst(lmt , loc.getTimeZone());
   }
 
+  public static int getSecondsOffset(ChronoLocalDateTime lmt , ZoneId zoneId) {
+    return lmt.atZone(zoneId).getOffset().getTotalSeconds();
+  }
+
   /**
    * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
+   *
+   * 此演算法得到的結果，與下方相同
+   * zoneId.getRules().getOffset(lmt.atZone(zoneId).toInstant()).getTotalSeconds();
    */
   private static int getSecondsOffset(ChronoLocalDateTime lmt, TimeZone tz) {
-    ZoneOffset offset = lmt.atZone(tz.toZoneId()).getOffset();
-    return offset.getTotalSeconds();
+    return getSecondsOffset(lmt , tz.toZoneId());
+//    ZoneOffset offset = lmt.atZone(tz.toZoneId()).getOffset();
+//    return offset.getTotalSeconds();
   }
 
   /**
@@ -232,9 +240,6 @@ public class TimeTools implements Serializable {
   public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull Location loc) {
     return tuple(isDst(lmt, loc), getSecondsOffset(lmt, loc));
   }
-
-
-
 
   // ======================================== misc methods ========================================
 
