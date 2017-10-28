@@ -26,6 +26,10 @@ import java.util.stream.Collectors;
 
 public class Builder implements Serializable {
 
+  /** 名稱 */
+  @Nullable
+  private String name;
+
   /** 設定資料 */
   private final ZContext context;
 
@@ -114,13 +118,7 @@ public class Builder implements Serializable {
   private final Map<Integer , Tuple2<Double , Double>> vageMap;
 
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour,
-                 StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement,
-                 int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap,
-                 Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap,
-                 Map<Branch, List<Integer>> branchSmallRangesMap,
-                 Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap,
-                 Map<Integer, Tuple2<Double , Double>> vageMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Tuple2<Double, Double>> vageMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -231,6 +229,11 @@ public class Builder implements Serializable {
   /** 歲數 map */
   public Map<Integer, Tuple2<Double, Double>> getVageMap() {
     return vageMap;
+  }
+
+  public Builder withName(String name) {
+    this.name = name;
+    return this;
   }
 
   public Builder withLocalDateTime(ChronoLocalDateTime localDateTime) {
@@ -423,9 +426,9 @@ public class Builder implements Serializable {
 
   public Plate build() {
     if (personModel == null) {
-      return new Plate(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, vageMap);
+      return new Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, vageMap);
     } else {
-      return new PlateWithEightWords(context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes , vageMap, personModel);
+      return new PlateWithEightWords(name , context, chineseDate, localDateTime, location, place, gender, mainHouse , bodyHouse , mainStar, bodyStar, fiveElement , set , houseDataSet , transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes , vageMap, personModel);
     }
   }
 

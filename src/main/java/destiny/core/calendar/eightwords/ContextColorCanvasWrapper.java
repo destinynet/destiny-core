@@ -37,6 +37,8 @@ public class ContextColorCanvasWrapper {
   /** 八字 Context */
   protected final EightWordsContext context;
 
+  //protected final EightWordsContextModel model;
+
   /** 地支藏干的實作，內定採用標準設定 */
   private HiddenStemsIF     hiddenStemsImpl  = new HiddenStemsStandardImpl();
   /** 當地時間 */

@@ -10,7 +10,6 @@ import destiny.core.calendar.chinese.IFinalMonthNumber;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.FortuneOutput;
 import destiny.core.chinese.TianyiIF;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -24,9 +23,6 @@ import java.util.*;
  * 八字排列方向
  */
 public class ZContextMore extends ZContext {
-
-  @Nullable
-  private final String name;
 
   /** 宮干四化「自化」 顯示選項 */
   public enum SelfTransFour implements Descriptive {
@@ -100,11 +96,18 @@ public class ZContextMore extends ZContext {
   private final boolean showYearFront;
 
 
-  public ZContextMore(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl, IFinalMonthNumber.MonthAlgo mainStarsMonthAlgo, IFinalMonthNumber.MonthAlgo monthStarsMonthAlgo, YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell, HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl, IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl,
-                      List<IntAgeNote> ageNoteImpls, IBigRange bigRangeImpl, RedBeauty redBeauty, @Nullable String name, SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange, ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl, MidnightIF midnightImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, boolean changeDayAfterZi, boolean showMinors, boolean showDoctors, boolean showLongevity, boolean showGeneralFront, boolean showYearFront) {
+  public ZContextMore(IMainBodyHouse mainBodyHouseImpl, IPurpleStarBranch purpleBranchImpl,
+                      IFinalMonthNumber.MonthAlgo mainStarsMonthAlgo, IFinalMonthNumber.MonthAlgo monthStarsMonthAlgo,
+                      YearType yearType, IHouseSeq houseSeqImpl, TianyiIF tianyiImpl, FireBell fireBell,
+                      HurtAngel hurtAngel, ITransFour transFourImpl, IStrength strengthImpl,
+                      IFlowYear flowYearImpl, IFlowMonth flowMonthImpl, IFlowDay flowDayImpl, IFlowHour flowHourImpl,
+                      List<IntAgeNote> ageNoteImpls, IBigRange bigRangeImpl, RedBeauty redBeauty,
+                      SelfTransFour selfTransFour, OppoTransFour oppoTransFour, boolean showSmallRange,
+                      ChineseDateIF chineseDateImpl, boolean showEightWords, Direction direction, HourIF hourImpl,
+                      MidnightIF midnightImpl, YearMonthIF yearMonthImpl, DayIF dayImpl, boolean changeDayAfterZi,
+                      boolean showMinors, boolean showDoctors, boolean showLongevity, boolean showGeneralFront, boolean showYearFront) {
     super(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel,
       transFourImpl, strengthImpl , flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, FortuneOutput.虛歲, ageNoteImpls, bigRangeImpl, redBeauty);
-    this.name = name;
     this.selfTransFour = selfTransFour;
     this.oppoTransFour = oppoTransFour;
     this.showSmallRange = showSmallRange;
@@ -119,10 +122,6 @@ public class ZContextMore extends ZContext {
     this.showLongevity = showLongevity;
     this.showGeneralFront = showGeneralFront;
     this.showYearFront = showYearFront;
-  }
-
-  public Optional<String> getName() {
-    return Optional.ofNullable(name);
   }
 
   public SelfTransFour getSelfTransFour() {
@@ -206,6 +205,6 @@ public class ZContextMore extends ZContext {
 
   @Override
   public String toString() {
-    return "[ZContextMore " + "purpleBranchImpl=" + purpleBranchImpl + ", name='" + name + '\'' + ", selfTransFour=" + selfTransFour + ", oppoTransFour=" + oppoTransFour + ", showSmallRange=" + showSmallRange + ", direction=" + direction + ", houseSeqImpl=" + houseSeqImpl + ", hourImpl=" + hourImpl + ", midnightImpl=" + midnightImpl + ", tianyiImpl=" + tianyiImpl + ", changeDayAfterZi=" + changeDayAfterZi + ", showMinors=" + showMinors + ", showDoctors=" + showDoctors + ", showLongevity=" + showLongevity + ", transFourImpl=" + transFourImpl + ", strengthImpl=" + strengthImpl + ", flowYearImpl=" + flowYearImpl + ", flowMonthImpl=" + flowMonthImpl + ", flowDayImpl=" + flowDayImpl + ", flowHourImpl=" + flowHourImpl + ", bigRangeImpl=" + bigRangeImpl + ']';
+    return "[ZContextMore " + "purpleBranchImpl=" + purpleBranchImpl + ", selfTransFour=" + selfTransFour + ", oppoTransFour=" + oppoTransFour + ", showSmallRange=" + showSmallRange + ", direction=" + direction + ", houseSeqImpl=" + houseSeqImpl + ", hourImpl=" + hourImpl + ", midnightImpl=" + midnightImpl + ", tianyiImpl=" + tianyiImpl + ", changeDayAfterZi=" + changeDayAfterZi + ", showMinors=" + showMinors + ", showDoctors=" + showDoctors + ", showLongevity=" + showLongevity + ", transFourImpl=" + transFourImpl + ", strengthImpl=" + strengthImpl + ", flowYearImpl=" + flowYearImpl + ", flowMonthImpl=" + flowMonthImpl + ", flowDayImpl=" + flowDayImpl + ", flowHourImpl=" + flowHourImpl + ", bigRangeImpl=" + bigRangeImpl + ']';
   }
 }
