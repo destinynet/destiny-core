@@ -3,9 +3,13 @@
  */
 package destiny.astrology.classical;
 
-import destiny.astrology.*;
-import org.jetbrains.annotations.NotNull;
-import org.jooq.lambda.tuple.Tuple3;
+import destiny.astrology.Aspect;
+import destiny.astrology.Horoscope;
+import destiny.astrology.Planet;
+import destiny.astrology.Point;
+import org.jooq.lambda.tuple.Tuple2;
+
+import java.util.Optional;
 
 /**
  * <pre>
@@ -23,6 +27,6 @@ import org.jooq.lambda.tuple.Tuple3;
  */
 public interface RefranationIF {
 
-  @NotNull
-  Tuple3<Boolean , Point, Aspect> resultOf(Horoscope horoscope , Planet planet , Point otherPoint);
+  Optional<Tuple2<Point, Aspect>> getResult(Horoscope horoscope , Planet planet , Point otherPoint);
+
 }

@@ -57,7 +57,7 @@ public class SolarTermsImpl implements SolarTermsIF, Serializable {
    */
   @NotNull
   @Override
-  public List<SolarTermsTime> getPeriodSolarTerms(double fromGmt, double toGmt) {
+  public List<SolarTermsTime> getPeriodSolarTermsGMTs(double fromGmt, double toGmt) {
     SolarTerms nowST = getSolarTermsFromGMT(fromGmt);
 
     int nextZodiacDegree = (int) destiny.astrology.Utils.getNormalizeDegree(nowST.getZodiacDegree() + 15);

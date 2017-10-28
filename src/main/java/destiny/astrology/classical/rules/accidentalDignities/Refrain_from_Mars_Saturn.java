@@ -3,11 +3,14 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.*;
+import destiny.astrology.Aspect;
+import destiny.astrology.Horoscope;
+import destiny.astrology.Planet;
+import destiny.astrology.Point;
 import destiny.astrology.classical.RefranationIF;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
-import org.jooq.lambda.tuple.Tuple3;
 
 import java.util.Optional;
 
@@ -23,7 +26,7 @@ public final class Refrain_from_Mars_Saturn extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, Horoscope h) {
     // 太陽 / 月亮不會逆行
     if (planet == Planet.MOON || planet == Planet.SUN)
       return Optional.empty();
@@ -32,20 +35,36 @@ public final class Refrain_from_Mars_Saturn extends Rule {
 
     if (planet != Planet.MARS) {
       otherPoint = Planet.MARS;
-      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
-      if (t.v1()) {
-        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , t.v3());
-        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, t.v3()}));
+
+      Optional<Tuple2<Point, Aspect>> result = refranationImpl.getResult(h , planet , otherPoint);
+      if (result.isPresent()) {
+        Aspect aspect = result.get().v2();
+        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , aspect);
+        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, aspect}));
       }
+
+//      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
+//      if (t.v1()) {
+//        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , t.v3());
+//        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, t.v3()}));
+//      }
     }
 
     if (planet != Planet.SATURN) {
       otherPoint = Planet.SATURN;
-      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
-      if (t.v1()) {
-        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , t.v3());
-        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, t.v3()}));
+
+      Optional<Tuple2<Point, Aspect>> result = refranationImpl.getResult(h, planet, otherPoint);
+      if (result.isPresent()) {
+        Aspect aspect = result.get().v2();
+        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , aspect);
+        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, aspect}));
       }
+
+//      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
+//      if (t.v1()) {
+//        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , t.v3());
+//        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, t.v3()}));
+//      }
     }
     return Optional.empty();
   }

@@ -5,7 +5,6 @@
  */
 package destiny.astrology;
 
-import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
@@ -39,11 +38,6 @@ public interface RelativeTransitIF {
     double gmtJulDay = TimeTools.getGmtJulDay(fromGmt);
     return getRelativeTransit(transitStar , relativeStar , angle , gmtJulDay , isForward).map(revJulDayFunc);
   }
-
-  default Optional<ChronoLocalDateTime> getRelativeTransit(Star transitStar , Star relativeStar , double angle , ChronoLocalDateTime fromGmt , boolean isForward) {
-    return getRelativeTransit(transitStar , relativeStar , angle , fromGmt , isForward , JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
-  }
-
 
   /**
    * 從 fromGmt 到 toGmt 之間，transitStar 對 relativeStar 形成 angle 交角的時間

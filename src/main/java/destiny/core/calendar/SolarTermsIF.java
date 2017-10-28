@@ -51,15 +51,15 @@ public interface SolarTermsIF {
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    * @return List <SolarTermsTime>
    */
-  List<SolarTermsTime> getPeriodSolarTerms(double fromGmt , double toGmt );
+  List<SolarTermsTime> getPeriodSolarTermsGMTs(double fromGmt , double toGmt );
 
 
 
   /**
    * @return 傳回某段時間內的節氣列表， GMT 時刻
    */
-  default List<SolarTermsTime> getPeriodSolarTerms(@NotNull ChronoLocalDateTime fromGmtTime , @NotNull ChronoLocalDateTime toGmtTime ) {
-    return getPeriodSolarTerms(TimeTools.getGmtJulDay(fromGmtTime) , TimeTools.getGmtJulDay(toGmtTime));
+  default List<SolarTermsTime> getPeriodSolarTermsGMTs(@NotNull ChronoLocalDateTime fromGmtTime , @NotNull ChronoLocalDateTime toGmtTime ) {
+    return getPeriodSolarTermsGMTs(TimeTools.getGmtJulDay(fromGmtTime) , TimeTools.getGmtJulDay(toGmtTime));
   }
 
   /**
@@ -68,11 +68,11 @@ public interface SolarTermsIF {
    * 注意，此方法因為經過 Julian Day 的轉換，精確度比 GMT 差了 約萬分之一秒
    * List < SolarTermsTime >
    */
-  default List<SolarTermsTime> getLocalPeriodSolarTerms(@NotNull ChronoLocalDateTime fromLmt , @NotNull ChronoLocalDateTime toLmt , @NotNull Location location) {
+  default List<SolarTermsTime> getPeriodSolarTermsLMTs(@NotNull ChronoLocalDateTime fromLmt , @NotNull ChronoLocalDateTime toLmt , @NotNull Location location) {
     double fromGmt = TimeTools.getGmtJulDay(fromLmt , location);
     double   toGmt = TimeTools.getGmtJulDay(  toLmt , location);
 
-    return getPeriodSolarTerms(fromGmt, toGmt).stream().map( stt -> {
+    return getPeriodSolarTermsGMTs(fromGmt, toGmt).stream().map(stt -> {
       ChronoLocalDateTime gmt = stt.getTime();
       logger.trace("節氣 : {} , GMT時間 : {} . nano = {} " , stt.getSolarTerms() , gmt , gmt.get(ChronoField.NANO_OF_SECOND));
       return new SolarTermsTime(stt.getSolarTerms() , TimeTools.getLmtFromGmt(gmt , location));
