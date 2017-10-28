@@ -88,7 +88,7 @@ public interface RelativeTransitIF {
 
 
   /** 承上 , LMT 的 ChronoLocalDateTime 版本 */
-  default List<ChronoLocalDateTime> getLocalPeriodRelativeTransitTimes(Star transitStar, Star relativeStar, ChronoLocalDateTime fromLmt, ChronoLocalDateTime toLmt, Location location, double angle, Function<Double, ChronoLocalDateTime> revJulDayFunc)  {
+  default List<ChronoLocalDateTime> getPeriodRelativeTransitLMTs(Star transitStar, Star relativeStar, ChronoLocalDateTime fromLmt, ChronoLocalDateTime toLmt, Location location, double angle, Function<Double, ChronoLocalDateTime> revJulDayFunc)  {
     ChronoLocalDateTime fromGmt = TimeTools.getGmtFromLmt(fromLmt , location);
     ChronoLocalDateTime   toGmt = TimeTools.getGmtFromLmt(  toLmt , location);
 

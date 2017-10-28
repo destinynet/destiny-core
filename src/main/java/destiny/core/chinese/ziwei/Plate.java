@@ -31,9 +31,6 @@ public class Plate implements Serializable {
   @Nullable
   protected final String name;
 
-  /** 設定資料 */
-  //protected final ZContext context;
-
   /** 出生資料 , 陰曆 */
   protected final ChineseDate chineseDate;
 
