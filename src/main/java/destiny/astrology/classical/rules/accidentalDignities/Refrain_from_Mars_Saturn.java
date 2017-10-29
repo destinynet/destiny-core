@@ -42,12 +42,6 @@ public final class Refrain_from_Mars_Saturn extends Rule {
         logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , aspect);
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, aspect}));
       }
-
-//      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
-//      if (t.v1()) {
-//        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , t.v3());
-//        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, t.v3()}));
-//      }
     }
 
     if (planet != Planet.SATURN) {
@@ -59,12 +53,6 @@ public final class Refrain_from_Mars_Saturn extends Rule {
         logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , aspect);
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, aspect}));
       }
-
-//      Tuple3<Boolean, Point, Aspect> t = refranationImpl.resultOf(h, planet, otherPoint);
-//      if (t.v1()) {
-//        logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , t.v3());
-//        return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, t.v3()}));
-//      }
     }
     return Optional.empty();
   }
