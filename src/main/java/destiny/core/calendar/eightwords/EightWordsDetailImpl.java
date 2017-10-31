@@ -23,7 +23,7 @@ import java.time.chrono.ChronoLocalDateTime;
 public class EightWordsDetailImpl implements IEightWordsDetail , Serializable {
 
   @Override
-  public EightWordsContextModel getDetails(ChronoLocalDateTime lmt, Location location, String place , EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl , SolarTermsIF solarTermsImpl) {
+  public EightWordsContextModel getDetails(ChronoLocalDateTime lmt, Location location, String place , EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, IRisingSign risingSignImpl, IStarPosition starPositionImpl , SolarTermsIF solarTermsImpl) {
     double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
 
     // 現在的節氣
@@ -65,7 +65,7 @@ public class EightWordsDetailImpl implements IEightWordsDetail , Serializable {
   /**
    * 計算命宮干支
    */
-  private StemBranch getRisingStemBranch(ChronoLocalDateTime lmt , Location location , EightWords eightWords , RisingSignIF risingSignImpl ) {
+  private StemBranch getRisingStemBranch(ChronoLocalDateTime lmt , Location location , EightWords eightWords , IRisingSign risingSignImpl ) {
     // 命宮地支
     Branch risingBranch = risingSignImpl.getRisingSign(lmt, location , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC).getBranch();
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
@@ -77,7 +77,7 @@ public class EightWordsDetailImpl implements IEightWordsDetail , Serializable {
   /**
    * @return 計算星體的地支位置
    */
-  private Branch getBranchOf(Star star , ChronoLocalDateTime lmt , Location location , StarPositionIF starPositionImpl) {
+  private Branch getBranchOf(Star star , ChronoLocalDateTime lmt , Location location , IStarPosition starPositionImpl) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
     return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
   }

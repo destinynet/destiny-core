@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public class ZodiacDegreeDecoratorTradChinese implements ZodiacDegreeDecoratorIF {
+public class ZodiacDegreeDecoratorTradChinese implements IZodiacDegreeDecorator {
 
   private double deg;
 

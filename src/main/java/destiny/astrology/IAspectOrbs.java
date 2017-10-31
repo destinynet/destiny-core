@@ -9,6 +9,7 @@ package destiny.astrology;
  * 內定實作為 AspectOrbsDefaultImpl <br/>
  * 未來可以使用資料庫實作
  */
-interface AspectOrbsIF {
+interface IAspectOrbs {
+
   double getAspectOrb(Aspect aspect);
 }

@@ -42,11 +42,11 @@ public class EightWordsContext implements Serializable {
 
   protected final ChineseDateIF chineseDateImpl;      // 農曆計算
 
-  protected final RisingSignIF risingSignImpl;        // 命宮 (上升星座)
+  protected final IRisingSign risingSignImpl;        // 命宮 (上升星座)
 
-  protected final StarPositionIF starPositionImpl;    // 星體位置
+  protected final IStarPosition starPositionImpl;    // 星體位置
 
-  public EightWordsContext(ChronoLocalDateTime lmt, Location location, EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+  public EightWordsContext(ChronoLocalDateTime lmt, Location location, EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, IRisingSign risingSignImpl, IStarPosition starPositionImpl) {
     this.yearMonthImpl = yearMonthImpl;
     this.eightWords = eightWordsImpl.getEightWords(lmt , location);
     this.lmt = lmt;
@@ -139,7 +139,7 @@ public class EightWordsContext implements Serializable {
   /**
    * 取得命宮的計算方法
    */
-  public RisingSignIF getRisingSignImpl() {
+  public IRisingSign getRisingSignImpl() {
     return risingSignImpl;
   }
 

@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /** 現代占星術，計算一張星盤中，星體交角列表的實作 */
-public class HoroscopeAspectsCalculatorModern implements HoroscopeAspectsCalculatorIF , Serializable {
+public class HoroscopeAspectsCalculatorModern implements IHoroscopeAspectsCalculator, Serializable {
 
   private Horoscope horoscope;
   private final AspectEffectiveModern modern;

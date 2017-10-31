@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.BesiegedIF;
+import destiny.astrology.IBesieged;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.core.calendar.TimeTools;
@@ -23,9 +23,9 @@ import java.util.Optional;
 public class Besieged_Jupiter_Venus extends Rule {
 
   /** 計算兩星夾角的工具箱 */
-  private final BesiegedIF besiegedImpl;
+  private final IBesieged besiegedImpl;
 
-  public Besieged_Jupiter_Venus(BesiegedIF besiegedImpl) {
+  public Besieged_Jupiter_Venus(IBesieged besiegedImpl) {
     this.besiegedImpl = besiegedImpl;
   }
 

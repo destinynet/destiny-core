@@ -43,7 +43,7 @@ public class PersonContext extends EightWordsContext {
 
   /** 星體運行到某點的介面 */
   @NotNull
-  private final StarTransitIF starTransitImpl;
+  private final IStarTransit starTransitImpl;
 
   /** 歲數實作 */
   @NotNull
@@ -92,10 +92,10 @@ public class PersonContext extends EightWordsContext {
   /** constructor */
   public PersonContext(EightWordsIF eightWordsImpl, ChineseDateIF chineseDateImpl, YearMonthIF yearMonthImpl,
                        DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi,
-                       @NotNull SolarTermsIF solarTermsImpl, @NotNull StarTransitIF starTransitImpl,
+                       @NotNull SolarTermsIF solarTermsImpl, @NotNull IStarTransit starTransitImpl,
                        @NotNull IntAge intAgeImpl, ChronoLocalDateTime lmt, Location location, String locationName,
                        @NotNull Gender gender, double fortuneMonthSpan, FortuneDirectionIF fortuneDirectionImpl,
-                       RisingSignIF risingSignImpl, StarPositionIF starPositionImpl, List<IntAgeNote> ageNoteImpls) {
+                       IRisingSign risingSignImpl, IStarPosition starPositionImpl, List<IntAgeNote> ageNoteImpls) {
     super(lmt , location , eightWordsImpl , yearMonthImpl, chineseDateImpl , dayImpl , hourImpl , midnightImpl , changeDayAfterZi , risingSignImpl , starPositionImpl);
     this.solarTermsImpl = solarTermsImpl;
     this.starTransitImpl = starTransitImpl;

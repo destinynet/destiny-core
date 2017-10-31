@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
  * 四個角點，天底、東昇點、天頂、西落
  */
 public enum TransPoint implements LocaleStringIF {
+
   /** 東昇 */
   RISING("TransPoint.RISING"),
   /** 天頂 */
@@ -23,7 +24,7 @@ public enum TransPoint implements LocaleStringIF {
   SETTING ("TransPoint.SETTING"),
   /** 天底 */
   NADIR("TransPoint.NADIR");
-  
+
   private final static String resource = "destiny.astrology.Star";
 
   private final String nameKey;
@@ -43,7 +44,7 @@ public enum TransPoint implements LocaleStringIF {
   public String toString(@NotNull Locale locale) {
     return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
-  
-  
-  
+
+
+
 }

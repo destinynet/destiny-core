@@ -20,9 +20,9 @@ import java.util.*;
  * 至於被包夾的好壞，要看星性以及更進一步的交角 Apply / Separate 決定
  * </pre>
  */
-public interface BesiegedIF {
+public interface IBesieged {
 
-  Logger logger = LoggerFactory.getLogger(BesiegedIF.class);
+  Logger logger = LoggerFactory.getLogger(IBesieged.class);
 
   /**
    * 最 Generalized 的介面

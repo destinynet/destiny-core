@@ -6,7 +6,7 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.astrology.Planet;
-import destiny.astrology.RiseTransIF;
+import destiny.astrology.IRiseTrans;
 import destiny.astrology.TransPoint;
 import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
@@ -36,11 +36,11 @@ public class HourSolarTransImpl implements HourIF , Serializable {
   private boolean isDiscCenter = true;
   private boolean hasRefraction = true;
 
-  private final RiseTransIF riseTransImpl;
+  private final IRiseTrans riseTransImpl;
 
   private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
-  public HourSolarTransImpl(RiseTransIF riseTransImpl)
+  public HourSolarTransImpl(IRiseTrans riseTransImpl)
   {
     this.riseTransImpl = riseTransImpl;
   }
@@ -59,13 +59,13 @@ public class HourSolarTransImpl implements HourIF , Serializable {
   @Override
   public Branch getHour(double gmtJulDay, Location location) {
 
-    double nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
-    double nextNadir    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+    double nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
+    double nextNadir    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
 
     if (nextNadir > nextMeridian) {
       //子正到午正（上半天）
       double thirteenHoursAgo = gmtJulDay - (13/24.0);
-      double previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.NADIR , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+      double previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.NADIR , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
 
       logger.debug("gmtJulDay = {} , 上一個子正(GMT) = {}" , gmtJulDay , revJulDayFunc.apply(previousNadirGmt));
 
@@ -89,7 +89,7 @@ public class HourSolarTransImpl implements HourIF , Serializable {
     } else {
       //午正到子正（下半天）
       double thirteenHoursAgo = gmtJulDay - (13/24.0);
-      double previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+      double previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
 
       double diffDays = (nextNadir - previousMeridian);
       double oneUnitDays = diffDays/(12.0);
@@ -114,13 +114,13 @@ public class HourSolarTransImpl implements HourIF , Serializable {
   @Override
   public double getGmtNextStartOf(double gmtJulDay, Location location, Branch targetEb) {
     double resultGmt;
-    double nextMeridianGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
-    double nextNadirGmt    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+    double nextMeridianGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
+    double nextNadirGmt    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
 
     if (nextNadirGmt > nextMeridianGmt) {
       //LMT 位於子正到午正（上半天）
       double twelveHoursAgo = gmtJulDay-0.5;
-      double previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo , Planet.SUN , TransPoint.NADIR , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+      double previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo , Planet.SUN , TransPoint.NADIR , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
 
       double oneUnit1 = (nextMeridianGmt - previousNadir) / 12.0; // 單位為 day
       double oneUnit2 = (nextNadirGmt - nextMeridianGmt) / 12.0;
@@ -139,9 +139,9 @@ public class HourSolarTransImpl implements HourIF , Serializable {
         }
       } else {
         //欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰
-        double nextNextMeridianGmt = riseTransImpl.getGmtTransJulDay(nextNadirGmt , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+        double nextNextMeridianGmt = riseTransImpl.getGmtTransJulDay(nextNadirGmt , Planet.SUN , TransPoint.MERIDIAN , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
         double oneUnit3 = (nextNextMeridianGmt - nextNadirGmt) / 12.0;
-        double nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, atmosphericTemperature, atmosphericPressure, isDiscCenter, hasRefraction);
+        double nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
         double oneUnit4 = (nextNextNadir - nextNextMeridianGmt) / 12.0;
         if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 ||targetEb == Branch.午 ) {
           resultGmt = nextNadirGmt + oneUnit3 * ((targetEb.getIndex() - 1) * 2 + 1);
@@ -155,7 +155,7 @@ public class HourSolarTransImpl implements HourIF , Serializable {
     } else {
       //LMT 位於 午正到子正（下半天）
       double thirteenHoursAgo = gmtJulDay - 13/24.0;
-      double previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+      double previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo , Planet.SUN , TransPoint.MERIDIAN , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
 
       double oneUnit1 = (nextMeridianGmt - nextNadirGmt) / 12.0; //從 下一個子正 到 下一個午正，總共幾天
       double oneUnit2 = (nextNadirGmt - previousMeridian) / 12.0; //從 下一個子正 到 上一個午正，總共幾秒
@@ -177,7 +177,7 @@ public class HourSolarTransImpl implements HourIF , Serializable {
       else {
         // 欲求的時辰，早於現在所處的時辰
         double oneUnit3 = (nextMeridianGmt - nextNadirGmt) / 12.0;
-        double nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridianGmt , Planet.SUN , TransPoint.NADIR , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+        double nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridianGmt , Planet.SUN , TransPoint.NADIR , location , isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure);
         double oneUnit4 = (nextNextNadir - nextMeridianGmt) / 12.0;
         if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥 ) {
           resultGmt = nextMeridianGmt + oneUnit4 * ((targetEb.getIndex()-7)*2+1);

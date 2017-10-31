@@ -11,19 +11,14 @@ import java.util.Locale;
 
 public class DayNightHalfImpl implements DayNightDifferentiator , Serializable {
 
-  private final RiseTransIF riseTransImpl;
+  private final IRiseTrans riseTransImpl;
 
-  public DayNightHalfImpl(RiseTransIF riseTransImpl) {this.riseTransImpl = riseTransImpl;}
+  public DayNightHalfImpl(IRiseTrans riseTransImpl) {this.riseTransImpl = riseTransImpl;}
 
   @Override
   public DayNight getDayNight(double gmtJulDay, Location location) {
-    double atmosphericTemperature = 0;
-    double atmosphericPressure = 1013.25;
-    boolean isDiscCenter = true;
-    boolean hasRefraction = true;
-
-    double nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
-    double nextNadirJulDay    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , atmosphericTemperature, atmosphericPressure , isDiscCenter , hasRefraction);
+    double nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.MERIDIAN , location , false, true);
+    double nextNadirJulDay    = riseTransImpl.getGmtTransJulDay(gmtJulDay , Planet.SUN , TransPoint.NADIR    , location , false, true);
 
     if (nextNadirJulDay > nextMeridianJulDay) {
       //子正到午正（上半天）

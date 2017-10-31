@@ -14,7 +14,7 @@ public abstract class PositionAsteroidImpl extends AbstractPositionImpl<Asteroid
   }
 
   @Override
-  public Position getPosition(ChronoLocalDateTime lmt, Location loc, Centric centric, Coordinate coordinate, StarPositionIF starPositionImpl) {
+  public Position getPosition(ChronoLocalDateTime lmt, Location loc, Centric centric, Coordinate coordinate, IStarPosition starPositionImpl) {
     return starPositionImpl.getPosition(getPoint() , lmt, loc , centric , coordinate);
   }
 }

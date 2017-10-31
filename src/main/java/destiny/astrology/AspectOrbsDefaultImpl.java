@@ -12,8 +12,8 @@ import java.io.Serializable;
  * 「現代占星術」的交角容許度，內定實作
  * 參考資料 : http://www.myastrologybook.com/aspects-and-orbs.htm 
  * */
-public class AspectOrbsDefaultImpl implements AspectOrbsIF , Serializable
-{
+public class AspectOrbsDefaultImpl implements IAspectOrbs, Serializable{
+
   private final static ImmutableMap<Aspect , Double> aspectOrbsMap = new ImmutableMap.Builder<Aspect , Double>()
     .put(Aspect.CONJUNCTION, 11.0) //0
     .put(Aspect.SEMISEXTILE , 1.5) //30

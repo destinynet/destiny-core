@@ -5,8 +5,8 @@
 package destiny.core.calendar.eightwords;
 
 import destiny.astrology.Planet;
-import destiny.astrology.StarPositionIF;
-import destiny.astrology.StarTransitIF;
+import destiny.astrology.IStarPosition;
+import destiny.astrology.IStarTransit;
 import destiny.core.calendar.*;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
@@ -36,9 +36,9 @@ import static java.time.temporal.ChronoField.*;
  */
 public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Serializable {
 
-  private final StarPositionIF starPositionImpl;
+  private final IStarPosition starPositionImpl;
 
-  private final StarTransitIF starTransitImpl;
+  private final IStarTransit starTransitImpl;
 
   /** 南半球月令是否對沖 */
   private boolean southernHemisphereOpposition = false;
@@ -53,13 +53,13 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
 
   private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
-  public YearMonthSolarTermsStarPositionImpl(double changeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl) {
+  public YearMonthSolarTermsStarPositionImpl(double changeYearDegree, IStarPosition starPositionImpl, IStarTransit starTransitImpl) {
     this.starPositionImpl = starPositionImpl;
     this.starTransitImpl = starTransitImpl;
     this.setChangeYearDegree(changeYearDegree);
   }
 
-  public YearMonthSolarTermsStarPositionImpl(double changeYearDegree, StarPositionIF starPositionImpl, StarTransitIF starTransitImpl, boolean southernHemisphereOpposition) {
+  public YearMonthSolarTermsStarPositionImpl(double changeYearDegree, IStarPosition starPositionImpl, IStarTransit starTransitImpl, boolean southernHemisphereOpposition) {
     this.starPositionImpl = starPositionImpl;
     this.starTransitImpl = starTransitImpl;
     this.southernHemisphereOpposition = southernHemisphereOpposition;

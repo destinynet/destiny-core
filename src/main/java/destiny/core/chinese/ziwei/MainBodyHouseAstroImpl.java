@@ -5,13 +5,12 @@ package destiny.core.chinese.ziwei;
 
 import destiny.astrology.*;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.eightwords.RisingSignIF;
+import destiny.core.calendar.eightwords.IRisingSign;
 import destiny.core.chinese.Branch;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 
 /**
@@ -20,11 +19,11 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public class MainBodyHouseAstroImpl implements IMainBodyHouse, Serializable {
 
-  private final RisingSignIF risingSignImpl;
+  private final IRisingSign risingSignImpl;
 
-  private final StarPositionIF starPositionImpl;
+  private final IStarPosition starPositionImpl;
 
-  public MainBodyHouseAstroImpl(RisingSignIF risingSignImpl, StarPositionIF starPositionImpl) {
+  public MainBodyHouseAstroImpl(IRisingSign risingSignImpl, IStarPosition starPositionImpl) {
     this.risingSignImpl = risingSignImpl;
     this.starPositionImpl = starPositionImpl;
   }

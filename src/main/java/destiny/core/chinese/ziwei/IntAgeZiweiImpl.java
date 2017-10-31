@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.astrology.Planet;
-import destiny.astrology.RelativeTransitIF;
+import destiny.astrology.IRelativeTransit;
 import destiny.core.Gender;
 import destiny.core.IntAge;
 import destiny.core.calendar.JulDayResolver1582CutoverImpl;
@@ -35,13 +35,13 @@ public class IntAgeZiweiImpl implements IntAge , Serializable {
 
   private final ChineseDateIF chineseDateImpl;
 
-  private final RelativeTransitIF relativeTransitImpl;
+  private final IRelativeTransit relativeTransitImpl;
 
   private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  public IntAgeZiweiImpl(ChineseDateIF chineseDateImpl, RelativeTransitIF relativeTransitImpl) {
+  public IntAgeZiweiImpl(ChineseDateIF chineseDateImpl, IRelativeTransit relativeTransitImpl) {
     this.chineseDateImpl = chineseDateImpl;
     this.relativeTransitImpl = relativeTransitImpl;}
 

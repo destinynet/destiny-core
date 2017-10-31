@@ -7,7 +7,7 @@ package destiny.astrology;
 import org.jetbrains.annotations.NotNull;
 
 /** 黃道帶上的字串輸出 */
-public interface ZodiacDegreeDecoratorIF {
+public interface IZodiacDegreeDecorator {
 
   @NotNull
   String getOutputString(double degree);

@@ -14,7 +14,7 @@ import java.io.Serializable;
  * 內定只考慮日月的交角有特別的容許度 <br/>
  * 參考資料 http://www.myastrologybook.com/aspects-and-orbs.htm
  */
-public class AspectOrbsPlanetDefaultImpl implements AspectOrbsPlanetIF , Serializable
+public class AspectOrbsPlanetDefaultImpl implements IAspectOrbsPlanet, Serializable
 {
   /** key 為 "p1-p2-aspect" 或是 "p2-p1-aspect" 的組合，以 '-' 串接 */
   @NotNull

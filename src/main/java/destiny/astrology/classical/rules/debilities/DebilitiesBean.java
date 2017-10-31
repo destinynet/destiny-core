@@ -26,7 +26,7 @@ public class DebilitiesBean implements DebilitiesIF , Serializable {
   private DayNightDifferentiator dayNightImpl;
 
   @Inject
-  private BesiegedIF besiegedImpl;
+  private IBesieged besiegedImpl;
 
   @Inject
   private RefranationIF refranationImpl;

@@ -31,14 +31,14 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   private boolean precession = false;
   
   /** 計算星體的介面 */
-  private StarPositionWithAzimuthIF starPositionWithAzimuthImpl;
+  private IStarPositionWithAzimuth starPositionWithAzimuthImpl;
   
   /** 計算星體到黃道幾度的時刻，的介面 */
-  private StarTransitIF starTransitImpl;
+  private IStarTransit starTransitImpl;
   
-  private final HouseCuspIF houseCuspImpl;
+  private final IHouseCusp houseCuspImpl;
   
-  private final ApsisWithAzimuthIF apsisWithAzimuthImpl;
+  private final IApsisWithAzimuth apsisWithAzimuthImpl;
   
   /** 出生時間 , LMT */
   private final ChronoLocalDateTime natalLmt;
@@ -56,8 +56,8 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
   private double orb = 0;
   
   /** 最完整的 constructor , 連是否逆推 , 是否考慮歲差，都要帶入 */
-  public ReturnContext(IHoroscope horoscopeImpl, StarPositionWithAzimuthIF positionWithAzimuthImpl,
-                       StarTransitIF starTransitImpl, HouseCuspIF houseCuspImpl, ApsisWithAzimuthIF apsisWithAzimuthImpl,
+  public ReturnContext(IHoroscope horoscopeImpl, IStarPositionWithAzimuth positionWithAzimuthImpl,
+                       IStarTransit starTransitImpl, IHouseCusp houseCuspImpl, IApsisWithAzimuth apsisWithAzimuthImpl,
                        ChronoLocalDateTime natalLmt, Location natalLoc,
                        ChronoLocalDateTime nowLmt, Location nowLoc,
                        Planet planet, double orb, boolean converse, boolean precession)
@@ -154,12 +154,12 @@ public class ReturnContext implements DiscreteIF , Conversable , Serializable {
     this.precession = value;
   }
 
-  public void setStarPositionWithAzimuthImpl(StarPositionWithAzimuthIF starPositionWithAzimuthImpl)
+  public void setStarPositionWithAzimuthImpl(IStarPositionWithAzimuth starPositionWithAzimuthImpl)
   {
     this.starPositionWithAzimuthImpl = starPositionWithAzimuthImpl;
   }
 
-  public void setStarTransitImpl(StarTransitIF starTransitImpl)
+  public void setStarTransitImpl(IStarTransit starTransitImpl)
   {
     this.starTransitImpl = starTransitImpl;
   }

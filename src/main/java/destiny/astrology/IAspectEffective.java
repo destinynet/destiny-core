@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /** 一個星盤當中，兩顆星體，是否形成某交角 */
-public interface AspectEffectiveIF
-{
+public interface IAspectEffective {
+
   /**
    * @param p1 Point 1
    * @param deg1 Point 1 於黃道帶上的度數

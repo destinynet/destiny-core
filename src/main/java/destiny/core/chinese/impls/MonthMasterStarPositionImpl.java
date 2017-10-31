@@ -14,9 +14,9 @@ import java.util.Locale;
 
 public class MonthMasterStarPositionImpl implements MonthMasterIF , Serializable {
 
-  private final StarPositionIF starPositionImpl;
+  private final IStarPosition starPositionImpl;
 
-  public MonthMasterStarPositionImpl(StarPositionIF starPositionImpl) {this.starPositionImpl = starPositionImpl;}
+  public MonthMasterStarPositionImpl(IStarPosition starPositionImpl) {this.starPositionImpl = starPositionImpl;}
 
   @Override
   public String getTitle(Locale locale) {

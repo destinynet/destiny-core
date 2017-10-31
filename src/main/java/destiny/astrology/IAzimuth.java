@@ -13,7 +13,7 @@ import java.time.chrono.ChronoLocalDateTime;
  * 計算地平方位角 , 與 Point/Star/Planet/...等星體種類皆無關，只要座標即可
  * 內定實作是 AzimuthImpl
  */
-public interface AzimuthIF {
+public interface IAzimuth {
 
   /** 由黃經 , 黃緯 , 求得地平方位角 */
   Azimuth getAzimuthFromEcliptic(Position eclipticPosition, double gmtJulDay , Location location, double temperature, double pressure);

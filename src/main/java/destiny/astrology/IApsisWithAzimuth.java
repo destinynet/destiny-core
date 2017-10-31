@@ -14,7 +14,7 @@ import java.util.Map;
  * 計算星球南北交點 
  * Swiss Ephemeris 實作是 ApsisWithAzimuthImpl
  */
-public interface ApsisWithAzimuthIF extends ApsisIF {
+public interface IApsisWithAzimuth extends IApsis {
 
   Map<Apsis, PositionWithAzimuth> getPositionsWithAzimuths(Star star, double gmtJulDay , Coordinate coordinate, NodeType nodeType, Location location, double temperature, double pressure);
 

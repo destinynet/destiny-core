@@ -11,14 +11,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Optional;
 
-public class AspectApplySeparateImpl implements AspectApplySeparateIF , Serializable
+public class AspectApplySeparateImpl implements IAspectApplySeparate, Serializable
 {
   /** 可以注入現代占星 ( AspectEffectiveModern ) 或是古典占星 ( AspectEffectiveClassical ) 的實作 */
-  private final AspectEffectiveIF aspectEffectiveImpl;
+  private final IAspectEffective aspectEffectiveImpl;
 
   private final IHoroscope horoscopeImpl;
   
-  public AspectApplySeparateImpl(AspectEffectiveIF aspectEffectiveImpl, IHoroscope horoscopeImpl)
+  public AspectApplySeparateImpl(IAspectEffective aspectEffectiveImpl, IHoroscope horoscopeImpl)
   {
     this.aspectEffectiveImpl = aspectEffectiveImpl;
     this.horoscopeImpl = horoscopeImpl;

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /** 計算一張命盤 ( Horoscope ) 中，的交角列表 */
-public interface HoroscopeAspectsCalculatorIF extends Descriptive {
+public interface IHoroscopeAspectsCalculator extends Descriptive {
 
   /** 設定星盤 */
   void setHoroscope(Horoscope horoscope);

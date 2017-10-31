@@ -19,7 +19,7 @@ import java.util.function.Function;
  *
  * TODO : 計算星體 Transit 到黃道某點的時間，僅限於 Planet , Asteroid , Moon's Node
  */
-public interface StarTransitIF {
+public interface IStarTransit {
 
   /**
    * 傳回 GMT 時刻

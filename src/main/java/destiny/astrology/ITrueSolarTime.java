@@ -18,9 +18,9 @@ import java.time.temporal.ChronoUnit;
  * 真太陽時計算介面 <br/>
  * Swiss Ephemeris 實作是 TrueSolarTimeImpl
  */
-public interface TrueSolarTimeIF {
+public interface ITrueSolarTime {
 
-  Logger logger = LoggerFactory.getLogger(TrueSolarTimeIF.class);
+  Logger logger = LoggerFactory.getLogger(ITrueSolarTime.class);
 
   /**
    * E : Equation of Time

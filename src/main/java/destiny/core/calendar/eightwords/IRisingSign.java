@@ -15,7 +15,7 @@ import java.time.chrono.ChronoLocalDateTime;
 /**
  * 計算上升星座（八字命宮）
  */
-public interface RisingSignIF extends Descriptive {
+public interface IRisingSign extends Descriptive {
 
   ZodiacSign getRisingSign(double gmtJulDay, Location location , HouseSystem houseSystem , Coordinate coordinate);
 

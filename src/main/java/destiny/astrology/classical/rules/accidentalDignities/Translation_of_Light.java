@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology.classical.rules.accidentalDignities;
 
-import destiny.astrology.AspectApplySeparateIF;
+import destiny.astrology.IAspectApplySeparate;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.TranslationOfLightIF;
@@ -27,7 +27,7 @@ public class Translation_of_Light extends Rule
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
   {
-    Tuple4<Boolean , Planet , Planet , Optional<AspectApplySeparateIF.AspectType>> t = translationOfLightImpl.getResult(planet, h);
+    Tuple4<Boolean , Planet , Planet , Optional<IAspectApplySeparate.AspectType>> t = translationOfLightImpl.getResult(planet, h);
     if (t.v1()) {
       double deg = h.getAngle(t.v2() , t.v3());
       if (t.v4().isPresent()) {

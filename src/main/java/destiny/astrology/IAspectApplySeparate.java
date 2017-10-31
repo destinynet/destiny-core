@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 /** 一個星盤當中，兩個星體，是否形成交角。以及即將形成 (APPLYING , 入相位)，還是離開該交角 (SEPARATING , 出相位) */
-public interface AspectApplySeparateIF {
+public interface IAspectApplySeparate {
 
   enum AspectType {APPLYING, SEPARATING}
 

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Swiss ephemeris 的實作是 RelativeTransitImpl
  * </pre> 
  */
-public interface RelativeTransitIF {
+public interface IRelativeTransit {
 
   /**
    * <pre>

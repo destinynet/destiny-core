@@ -5,7 +5,7 @@
 package destiny.astrology.classical;
 
 import destiny.astrology.Aspect;
-import destiny.astrology.AspectEffectiveIF;
+import destiny.astrology.IAspectEffective;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Point;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ import java.io.Serializable;
  * 未來可以繼承此 Abstract Class , 呼叫資料庫 , 取得個人化的 OrbsMap
  * </pre>
  */
-public class AspectEffectiveClassical implements AspectEffectiveIF , Serializable
+public class AspectEffectiveClassical implements IAspectEffective, Serializable
 {
   /** 星芒交角 , 內定採用 PointDiameterAlBiruniImpl , 尚可選擇注入 PointDiameterLillyImpl */
   private PointDiameterIF pointDiameterImpl;// = new PointDiameterAlBiruniImpl();

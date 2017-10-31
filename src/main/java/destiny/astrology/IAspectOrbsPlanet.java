@@ -14,7 +14,7 @@ package destiny.astrology;
  * 未來可以用資料庫實作
  * </pre>
  */
-public interface AspectOrbsPlanetIF
+public interface IAspectOrbsPlanet
 {
   /**
    * @param aspect 欲取得容許度之交角

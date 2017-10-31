@@ -13,8 +13,7 @@ import java.util.Map;
  * 計算 南/北交點/近點/遠點 的介面 , 不限定只有月球<br>
  * Swiss Ephemeris 實作是 ApsisImpl , 目前僅支援 Planet , Asteroid
  */
-public interface ApsisIF
-{
+public interface IApsis {
   /**
    * 取得全部 Apsis (近點,遠點,北交,南交) 在某刻 (GMT) 的座標 , 通常 Star 會帶入 Planet.MOON
    */

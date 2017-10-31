@@ -6,7 +6,7 @@ package destiny.astrology;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
-import destiny.core.calendar.eightwords.RisingSignIF;
+import destiny.core.calendar.eightwords.IRisingSign;
 
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.Locale;
@@ -15,8 +15,7 @@ import java.util.Locale;
  * 取得宮首在「黃道」上幾度的介面<BR>
  * SwissEph 的實作是 HouseCuspImpl
  */
-public interface HouseCuspIF extends RisingSignIF {
-
+public interface IHouseCusp extends IRisingSign {
 
   /**
    * 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 length=13 的 array , array[0] 不使用, array[1] 為第 1 宮 , ... , array[12] 為第 12 宮 

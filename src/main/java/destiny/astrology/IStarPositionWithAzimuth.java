@@ -13,7 +13,7 @@ import java.time.chrono.ChronoLocalDateTime;
  * 計算星體位置 + 地平方位角 (限定 Star) , <BR>
  * Swiss Ephemeris 實作為 StarPositionWithAzimuthImpl
  */
-public interface StarPositionWithAzimuthIF extends StarPositionIF {
+public interface IStarPositionWithAzimuth extends IStarPosition {
 
   PositionWithAzimuth getPosition(Star star, double gmtJulDay, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure);
 

@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /** 古典占星術，列出一張星盤中呈現交角的星體以及角度 的實作 */
-public class HoroscopeAspectsCalculatorClassical implements HoroscopeAspectsCalculatorIF , Serializable
+public class HoroscopeAspectsCalculatorClassical implements IHoroscopeAspectsCalculator, Serializable
 {
   private Horoscope horoscope;
   

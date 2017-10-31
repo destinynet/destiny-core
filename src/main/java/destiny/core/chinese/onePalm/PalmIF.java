@@ -19,7 +19,6 @@ import destiny.core.chinese.Branch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -144,7 +143,7 @@ public interface PalmIF {
    */
   default PalmWithMeta getPalmWithMeta(Gender gender, ChronoLocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
                                        ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl,
-                                       RisingSignIF risingSignImpl, YearMonthIF yearMonthImpl, MonthAlgo monthAlgo,
+                                       IRisingSign risingSignImpl, YearMonthIF yearMonthImpl, MonthAlgo monthAlgo,
                                        boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     Branch hourBranch = hourImpl.getHour(lmt , loc);

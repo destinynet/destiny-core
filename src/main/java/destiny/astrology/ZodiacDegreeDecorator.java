@@ -11,7 +11,7 @@ import java.util.Locale;
 
 public class ZodiacDegreeDecorator
 {
-  private final static ImmutableMap<Locale , ZodiacDegreeDecoratorIF> implMap = new ImmutableMap.Builder<Locale , ZodiacDegreeDecoratorIF>()
+  private final static ImmutableMap<Locale , IZodiacDegreeDecorator> implMap = new ImmutableMap.Builder<Locale , IZodiacDegreeDecorator>()
     .put(Locale.TAIWAN , new ZodiacDegreeDecoratorTradChinese())
     .put(Locale.US     , new ZodiacDegreeDecoratorEnglish())
     .build();

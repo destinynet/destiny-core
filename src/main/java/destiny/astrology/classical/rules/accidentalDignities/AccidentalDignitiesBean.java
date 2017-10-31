@@ -25,7 +25,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
 {
   /** 計算兩星體呈現某交角的時間 , 內定採用 SwissEph 的實作 */
   @Inject
-  private RelativeTransitIF relativeTransitImpl;// = new RelativeTransitImpl();
+  private IRelativeTransit relativeTransitImpl;// = new RelativeTransitImpl();
 
   /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作 */
   @Inject
@@ -41,7 +41,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   private RefranationIF refranationImpl;
 
   @Inject
-  private BesiegedIF besiegedImpl;
+  private IBesieged besiegedImpl;
 
   public AccidentalDignitiesBean() {
   }
@@ -104,7 +104,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
     return rules;
   }
 
-  public void setRelativeTransitImpl(RelativeTransitIF relativeTransitImpl) {
+  public void setRelativeTransitImpl(IRelativeTransit relativeTransitImpl) {
     this.relativeTransitImpl = relativeTransitImpl;
   }
 

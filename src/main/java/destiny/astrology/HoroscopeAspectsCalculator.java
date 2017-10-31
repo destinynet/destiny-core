@@ -17,11 +17,11 @@ public class HoroscopeAspectsCalculator implements Serializable {
 
   private final Horoscope horoscope;
   
-  private final HoroscopeAspectsCalculatorIF calculator;
+  private final IHoroscopeAspectsCalculator calculator;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   
-  public HoroscopeAspectsCalculator(Horoscope horoscope , HoroscopeAspectsCalculatorIF calculator)
+  public HoroscopeAspectsCalculator(Horoscope horoscope , IHoroscopeAspectsCalculator calculator)
   {
     this.horoscope = horoscope;
     this.calculator = calculator;

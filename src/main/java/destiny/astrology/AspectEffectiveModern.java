@@ -15,24 +15,24 @@ import java.io.Serializable;
  * http://www.myastrologybook.com/aspects-and-orbs.htm
  * </pre>
  */
-public class AspectEffectiveModern implements Serializable , AspectEffectiveIF
+public class AspectEffectiveModern implements Serializable , IAspectEffective
 {
   /** 「不考慮行星」的交角容許度 , 內定採用 AspectOrbsDefaultImpl , 未來可以注入資料庫實作的版本 */
-  private AspectOrbsIF aspectOrbsImpl = new AspectOrbsDefaultImpl();
+  private IAspectOrbs aspectOrbsImpl = new AspectOrbsDefaultImpl();
   
   /** 「考量行星的」交角容許度實作，內定採用 AspectOrbsPlanetDefaultImpl , 未來可以注入資料庫實作的版本 */
-  private AspectOrbsPlanetIF aspectOrbsPlanetImpl = new AspectOrbsPlanetDefaultImpl(); 
+  private IAspectOrbsPlanet aspectOrbsPlanetImpl = new AspectOrbsPlanetDefaultImpl();
   
   public AspectEffectiveModern()
   {
   }
   
-  public void setAspectOrbsImpl(AspectOrbsIF impl)
+  public void setAspectOrbsImpl(IAspectOrbs impl)
   {
     this.aspectOrbsImpl = impl;
   }
   
-  public void setAspectOrbsPlanetImpl(AspectOrbsPlanetIF impl)
+  public void setAspectOrbsPlanetImpl(IAspectOrbsPlanet impl)
   {
     this.aspectOrbsPlanetImpl = impl;
   }
