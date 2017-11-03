@@ -7,6 +7,7 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
 
 import java.time.chrono.ChronoLocalDateTime;
+import java.util.List;
 
 /**
  * 取得當下、當地的「行星時」 Planetary Hour
@@ -19,11 +20,18 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public interface IPlanetaryHour {
 
-  Planet getPlanetaryHour(double gmtJulDay , Location loc);
+  PlanetaryHour getPlanetaryHour(double gmtJulDay , Location loc);
 
   default Planet getPlanetaryHour(ChronoLocalDateTime lmt, Location loc) {
     double gmtJulDay = TimeTools.getGmtJulDay(lmt , loc);
-    return getPlanetaryHour(gmtJulDay , loc);
+    return getPlanetaryHour(gmtJulDay , loc).getPlanet();
   }
 
+  List<PlanetaryHour> getPlanetaryHours(double fromGmt , double toGmt , Location loc);
+
+  default List<PlanetaryHour> getPlanetaryHours(ChronoLocalDateTime fromLmt , ChronoLocalDateTime toLmt , Location loc) {
+    double fromGmt = TimeTools.getGmtJulDay(fromLmt , loc);
+    double   toGmt = TimeTools.getGmtJulDay(  toLmt , loc);
+    return getPlanetaryHours(fromGmt , toGmt , loc);
+  }
 }
