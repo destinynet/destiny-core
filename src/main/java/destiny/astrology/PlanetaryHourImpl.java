@@ -8,6 +8,7 @@ import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.lambda.tuple.Tuple;
+import org.jooq.lambda.tuple.Tuple3;
 import org.jooq.lambda.tuple.Tuple4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +55,11 @@ public class PlanetaryHourImpl implements IPlanetaryHour, Serializable {
   @Override
   public PlanetaryHour getPlanetaryHour(double gmtJulDay, Location loc) {
 
-    // 整天 的 hour index , from 1 to 24 , and 當下，半天內的平均小時長度
-    Tuple4<Integer , Double , Double , Double > t4 = getHourIndexOfDay(gmtJulDay , loc);
+    // hourStart , hourEnd , hourIndex (1 to 24)
+    Tuple4<Double , Double , Integer , DayNight> tuples = getHourIndexOfDay(gmtJulDay , loc);
 
-    Planet planet = getPlanet(t4.v1() , gmtJulDay , loc);
-    return new PlanetaryHour(t4.v3 , t4.v4() , planet , loc);
+    Planet planet = getPlanet(tuples.v3() , gmtJulDay , loc);
+    return new PlanetaryHour(tuples.v1() , tuples.v2() , tuples.v4(), planet , loc);
   } // getPlanetaryHour
 
 
@@ -73,14 +74,15 @@ public class PlanetaryHourImpl implements IPlanetaryHour, Serializable {
 
     double cursor = fromGmt;
     while (cursor < toGmt) {
-      // 整天 的 hour index (from 1 to 24) , and 當下，半天內的平均小時長度 , and hourStart , hourEnd
-      Tuple4<Integer , Double , Double , Double> hourIndexOfDayAndAvgHour = getHourIndexOfDay(cursor , loc);
-      int dayIndex = hourIndexOfDayAndAvgHour.v1();
-      double hourStart = hourIndexOfDayAndAvgHour.v3();
-      double hourEnd = hourIndexOfDayAndAvgHour.v4();
+      // hourStart , hourEnd , hourIndex (1 to 24)
+      Tuple4<Double , Double , Integer , DayNight> hourIndexOfDayAndAvgHour = getHourIndexOfDay(cursor , loc);
+      double hourStart = hourIndexOfDayAndAvgHour.v1();
+      double hourEnd = hourIndexOfDayAndAvgHour.v2();
+      int dayIndex = hourIndexOfDayAndAvgHour.v3();
+      DayNight dayNight = hourIndexOfDayAndAvgHour.v4();
       Planet planet = getPlanet(dayIndex , hourStart , loc);
 
-      PlanetaryHour planetaryHour = new PlanetaryHour(hourStart , hourEnd , planet , loc);
+      PlanetaryHour planetaryHour = new PlanetaryHour(hourStart , hourEnd , dayNight, planet , loc);
       result.add(planetaryHour);
 
       cursor = hourEnd + (1/86400.0);
@@ -90,17 +92,17 @@ public class PlanetaryHourImpl implements IPlanetaryHour, Serializable {
 
 
   /**
-   * tuple1 : 整天 的 hour index , from 1 to 24
-   * tuple2 : 當下，半天內的平均小時長度
-   * tuple3 : hourStart
-   * tuple4 : hourEnd
+   * tuple1 : hourStart
+   * tuple2 : hourEnd
+   * tuple3 : 整天 的 hour index , from 1 to 24
+   * tuple4 : DayNight
    */
-  private Tuple4<Integer , Double , Double , Double> getHourIndexOfDay(double gmtJulDay , Location loc ) {
+  private Tuple4<Double , Double , Integer , DayNight> getHourIndexOfDay(double gmtJulDay , Location loc ) {
 
     double nextRising = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc);
     double nextSetting = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc);
 
-    Tuple4<Integer , Double , Double , Double> halfDayIndexAndAvgHour;
+    Tuple4<Double , Double , Integer , DayNight> halfDayIndex;
     DayNight dayNight;
     if (nextRising < nextSetting) {
       // 目前是黑夜
@@ -110,7 +112,7 @@ public class PlanetaryHourImpl implements IPlanetaryHour, Serializable {
       // 接著，計算「上一個」日落時刻
       double prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc);
 
-      halfDayIndexAndAvgHour = getHourIndexOfHalfDay(prevSetting , nextRising , gmtJulDay);
+      halfDayIndex = getHourIndexOfHalfDay(prevSetting , nextRising , gmtJulDay).concat(dayNight);
     }
     else {
       // 目前是白天
@@ -120,17 +122,17 @@ public class PlanetaryHourImpl implements IPlanetaryHour, Serializable {
       // 接著，計算「上一個」日出時刻
       double prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc);
 
-      halfDayIndexAndAvgHour = getHourIndexOfHalfDay(prevRising, nextSetting , gmtJulDay);
+      halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting , gmtJulDay).concat(dayNight);
     }
 
-    return halfDayIndexAndAvgHour.map1(value -> dayNight == DayNight.NIGHT ? value + 12 : value); // 夜晚 + 12
+    return halfDayIndex.map3(value -> dayNight == DayNight.NIGHT ? value + 12 : value); // 夜晚 + 12
   }
 
   /**
    * 「半天」的 hour index , from 1 to 12
-   * @return Tuple[ hourIndex , avgHour , hourStart , hourEnd ]
+   * @return Tuple[ hourStart , hourEnd , hourIndex]
    */
-  private Tuple4<Integer , Double , Double , Double> getHourIndexOfHalfDay(double from, double to, double gmtJulDay) {
+  private Tuple3<Double , Double , Integer> getHourIndexOfHalfDay(double from, double to, double gmtJulDay) {
     if (gmtJulDay < from || gmtJulDay > to) {
       // gmtJulDay 一定要在 from 與 to 的範圍內
       throw new RuntimeException("gmtJulDay " + gmtJulDay + " not between " + from + " and " + to);
@@ -141,10 +143,10 @@ public class PlanetaryHourImpl implements IPlanetaryHour, Serializable {
         double stepFrom = from + avgHour * (i - 1);
         double stepTo = from + avgHour * i;
         if (gmtJulDay >= stepFrom && gmtJulDay < stepTo) {
-          return Tuple.tuple(i,avgHour , stepFrom , stepTo);
+          return Tuple.tuple(stepFrom , stepTo , i);
         }
       }
-      return Tuple.tuple(12, avgHour, from + avgHour * 11, to);
+      return Tuple.tuple(from + avgHour * 11, to , 12);
     }
   } // getHourIndexOfHalfDay , return 1 to 12
 

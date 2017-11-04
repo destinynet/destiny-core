@@ -18,14 +18,18 @@ public class PlanetaryHour implements Serializable {
   /** GMT julDay */
   private final double hourEnd;
 
+  /** 此時刻，是白天，還是黑夜 */
+  private final DayNight dayNight;
+
   private final Planet planet;
 
   private final Location location;
 
-  public PlanetaryHour(double hourStart, double hourEnd, Planet planet, Location loc) {
+  public PlanetaryHour(double hourStart, double hourEnd, DayNight dayNight, Planet planet, Location loc) {
     this.hourStart = hourStart;
     this.hourEnd = hourEnd;
     this.planet = planet;
+    this.dayNight = dayNight;
     this.location = loc;
   }
 
@@ -37,6 +41,10 @@ public class PlanetaryHour implements Serializable {
     return hourEnd;
   }
 
+
+  public DayNight getDayNight() {
+    return dayNight;
+  }
   public Planet getPlanet() {
     return planet;
   }
