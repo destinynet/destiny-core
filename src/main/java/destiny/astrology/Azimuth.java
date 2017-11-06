@@ -16,10 +16,10 @@ public final class Azimuth implements Serializable {
   /** 地平方位角 , 以北為 0度，東為90度，南為 180度，西為 270度 */
   private final double degree;
 
-  /** 真方位角 */
+  /** 真實高度 */
   private final double trueAltitude;
 
-  /** 視方位角 */
+  /** 視高度 (會考量到大氣折射) */
   private final double apparentAltitude;
 
   public Azimuth(double degree, double trueAltitude, double apparentAltitude) {

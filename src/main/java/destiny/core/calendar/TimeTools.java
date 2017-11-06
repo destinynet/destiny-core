@@ -120,6 +120,11 @@ public class TimeTools implements Serializable {
     return getGmtJulDay(gmt);
   }
 
+  public static double getGmtJulDay(ChronoLocalDateTime lmt, ZoneId zoneId) {
+    ChronoLocalDateTime gmt = getGmtFromLmt(lmt , zoneId);
+    return getGmtJulDay(gmt);
+  }
+
 
 
 
@@ -354,4 +359,6 @@ public class TimeTools implements Serializable {
       return lmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
     }
   }
+
+
 }

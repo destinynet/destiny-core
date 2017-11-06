@@ -3,7 +3,7 @@
  */
 package destiny.astrology;
 
-public class EclipseTotal extends Eclipse implements IEclipseCenter {
+public class EclipseTotal extends AbstractEclipse implements IEclipseCenter {
 
   private final double totalBegin;
 
@@ -39,4 +39,8 @@ public class EclipseTotal extends Eclipse implements IEclipseCenter {
     return centerEnd;
   }
 
+  @Override
+  public Type getType() {
+    return Type.TOTAL;
+  }
 }

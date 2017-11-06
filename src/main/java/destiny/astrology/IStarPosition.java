@@ -27,6 +27,10 @@ public interface IStarPosition<T extends Position> {
     return getPosition(star , gmtJulDay , centric , coordinate);
   }
 
+  default T getPosition(Star star, double gmtJulDay, Location location, Centric centric, Coordinate coordinate) {
+    return getPosition(star , gmtJulDay , location , centric , coordinate , 0 , 1013.25);
+  }
+
   /**
    * @param gmt GMT 的 Gregorian 時刻
    */

@@ -24,4 +24,9 @@ public class EclipseAnnular extends EclipseTotal implements IEclipseAnnular {
   public double getAnnularEnd() {
     return annularEnd;
   }
+
+  @Override
+  public Type getType() {
+    return Type.ANNULAR;
+  }
 }
