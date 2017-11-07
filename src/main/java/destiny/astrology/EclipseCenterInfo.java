@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Eclipse 的 Center Line 資料
  */
-public class EclipseInfo implements Serializable {
+public class EclipseCenterInfo implements Serializable {
 
   private final double gmtJulDay;
 
@@ -21,7 +21,7 @@ public class EclipseInfo implements Serializable {
   private final Azimuth azimuth;
 
 
-  public EclipseInfo(double gmtJulDay, double longitude, double latitude, AbstractEclipse.Type type, Azimuth azimuth) {
+  public EclipseCenterInfo(double gmtJulDay, double longitude, double latitude, AbstractEclipse.Type type, Azimuth azimuth) {
     this.gmtJulDay = gmtJulDay;
     this.longitude = longitude;
     this.latitude = latitude;
