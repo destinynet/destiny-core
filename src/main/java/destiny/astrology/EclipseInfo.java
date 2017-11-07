@@ -10,6 +10,8 @@ import java.io.Serializable;
  */
 public class EclipseInfo implements Serializable {
 
+  private final double gmtJulDay;
+
   private final double longitude;
 
   private final double latitude;
@@ -19,11 +21,16 @@ public class EclipseInfo implements Serializable {
   private final Azimuth azimuth;
 
 
-  public EclipseInfo(double longitude, double latitude, AbstractEclipse.Type type, Azimuth azimuth) {
+  public EclipseInfo(double gmtJulDay, double longitude, double latitude, AbstractEclipse.Type type, Azimuth azimuth) {
+    this.gmtJulDay = gmtJulDay;
     this.longitude = longitude;
     this.latitude = latitude;
     this.type = type;
     this.azimuth = azimuth;
+  }
+
+  public double getGmtJulDay() {
+    return gmtJulDay;
   }
 
   public double getLongitude() {
@@ -42,9 +49,8 @@ public class EclipseInfo implements Serializable {
     return azimuth;
   }
 
-
   @Override
   public String toString() {
-    return "[EclipseLocation " + "longitude=" + longitude + ", latitude=" + latitude + ", type=" + type + ", azimuth=" + azimuth + ']';
+    return "[EclipseInfo " + "gmtJulDay=" + gmtJulDay + ", longitude=" + longitude + ", latitude=" + latitude + ", type=" + type + ", azimuth=" + azimuth + ']';
   }
 }

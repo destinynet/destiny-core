@@ -13,5 +13,5 @@ public interface IEclipse {
   AbstractEclipse nextSolarEclipse(double fromGmtJulDay , boolean forward);
 
   /** 此時此刻，哪裡有發生日食，其特徵為何 */
-  Optional<EclipseInfo> getEclipseInfo(double gmtJulDay, boolean forward);
+  Optional<EclipseInfo> getEclipseInfo(double gmtJulDay);
 }
