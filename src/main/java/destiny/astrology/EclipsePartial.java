@@ -14,5 +14,8 @@ public class EclipsePartial extends AbstractEclipse {
     return Type.PARTIAL;
   }
 
-
+  @Override
+  public String toString() {
+    return "[偏食 " + "begin=" + begin + ", max=" + max + ", end=" + end + ']';
+  }
 }

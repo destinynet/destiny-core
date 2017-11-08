@@ -9,8 +9,8 @@ public class EclipseAnnular extends EclipseTotal implements IEclipseAnnular {
 
   protected final double annularEnd;
 
-  public EclipseAnnular(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd, double centerBegin, double centerEnd , double annularBegin, double annularEnd) {
-    super(max, partialBegin, partialEnd, totalBegin, totalEnd, centerBegin, centerEnd);
+  public EclipseAnnular(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd, double annularBegin, double annularEnd) {
+    super(max, partialBegin, partialEnd, totalBegin, totalEnd);
     this.annularBegin = annularBegin;
     this.annularEnd = annularEnd;
   }
@@ -28,5 +28,15 @@ public class EclipseAnnular extends EclipseTotal implements IEclipseAnnular {
   @Override
   public Type getType() {
     return Type.ANNULAR;
+  }
+
+  @Override
+  public String toString() {
+    return "[環食 "
+      + "begin=" + begin
+      + ", totalBegin=" + totalBegin
+      + ", max=" + max
+      + ", totalEnd=" + totalEnd
+      + ", end=" + end + ']';
   }
 }

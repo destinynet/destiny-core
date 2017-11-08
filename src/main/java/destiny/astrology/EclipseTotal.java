@@ -3,22 +3,17 @@
  */
 package destiny.astrology;
 
-public class EclipseTotal extends AbstractEclipse implements IEclipseCenter {
+public class EclipseTotal extends AbstractEclipse {
 
-  private final double totalBegin;
+  protected final double totalBegin;
 
-  private final double totalEnd;
+  protected final double totalEnd;
 
-  private final double centerBegin;
-
-  private final double centerEnd;
-
-  public EclipseTotal(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd, double centerBegin, double centerEnd) {
+  public EclipseTotal(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd) {
     super(max, partialBegin , partialEnd);
     this.totalBegin = totalBegin;
     this.totalEnd = totalEnd;
-    this.centerBegin = centerBegin;
-    this.centerEnd = centerEnd;
+
   }
 
   public double getTotalBegin() {
@@ -30,17 +25,18 @@ public class EclipseTotal extends AbstractEclipse implements IEclipseCenter {
   }
 
   @Override
-  public double getCenterBegin() {
-    return centerBegin;
-  }
-
-  @Override
-  public double getCenterEnd() {
-    return centerEnd;
-  }
-
-  @Override
   public Type getType() {
     return Type.TOTAL;
+  }
+
+
+  @Override
+  public String toString() {
+    return "[全食 " +
+      "begin=" + begin +
+      ", totalBegin=" + totalBegin +
+      ", max=" + max +
+      ", totalEnd=" + totalEnd +
+      ", end=" + end + ']';
   }
 }
