@@ -15,11 +15,11 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public interface IStarPositionWithAzimuth extends IStarPosition {
 
-  PositionWithAzimuth getPosition(Star star, double gmtJulDay, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure);
+  PositionWithAzimuth getPosition(Star star, double gmtJulDay, double geoLng , double geoLat , double geoAlt , Centric centric, Coordinate coordinate, double temperature, double pressure);
 
   default PositionWithAzimuth getPositionFromGmt(Star star, ChronoLocalDateTime gmt, Location location, Centric centric, Coordinate coordinate, double temperature, double pressure) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
-    return getPosition(star , gmtJulDay , location , centric, coordinate, temperature , pressure);
+    return getPosition(star , gmtJulDay , location.getLongitude() , location.getLatitude() , location.getAltitudeMeter() , centric, coordinate, temperature , pressure);
   }
 
   /**
@@ -27,7 +27,7 @@ public interface IStarPositionWithAzimuth extends IStarPosition {
    */
   default PositionWithAzimuth getPositionFromGmt(Star star, ChronoLocalDateTime gmt, Location location, Centric centric, Coordinate coordinate) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
-    return getPosition(star , gmtJulDay , location , centric, coordinate, 0 , 1013.25);
+    return getPosition(star , gmtJulDay , location.getLongitude() , location.getLatitude() , location.getAltitudeMeter() , centric, coordinate, 0 , 1013.25);
   }
 
 

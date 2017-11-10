@@ -90,6 +90,12 @@ public class EclipseObservation implements Serializable {
 
   @Override
   public String toString() {
-    return "[EclipseObservation " + "type=" + type + ", centerLine=" + centerLine + ", azimuth=" + azimuth + ", magnitude=" + magnitude + ", obscuration=" + obscuration + ']';
+    return "[EclipseObservation "
+      + "type=" + type
+      + ", centerLine=" + centerLine
+      + ", (lat,lng)=" + lat + "," + lng
+      + ", azimuth=" + azimuth
+      + ", magnitude=" + magnitude
+      + ", obscuration=" + obscuration + ']';
   }
 }

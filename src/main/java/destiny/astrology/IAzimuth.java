@@ -16,7 +16,15 @@ import java.time.chrono.ChronoLocalDateTime;
 public interface IAzimuth {
 
   /** 由黃經 , 黃緯 , 求得地平方位角 */
-  Azimuth getAzimuthFromEcliptic(Position eclipticPosition, double gmtJulDay , Location location, double temperature, double pressure);
+  Azimuth getAzimuthFromEcliptic(Position eclipticPosition, double gmtJulDay , double geoLng , double geoLat , double geoAlt , double temperature, double pressure);
+
+  default Azimuth getAzimuthFromEcliptic(Position eclipticPosition, double gmtJulDay , double geoLng , double geoLat , double geoAlt) {
+    return getAzimuthFromEcliptic(eclipticPosition , gmtJulDay , geoLng , geoLat , geoAlt , 0 , 1013.25);
+  }
+
+  default Azimuth getAzimuthFromEcliptic(Position eclipticPosition, double gmtJulDay , Location location, double temperature, double pressure) {
+    return getAzimuthFromEcliptic(eclipticPosition , gmtJulDay , location.getLongitude() , location.getLatitude() , location.getAltitudeMeter() , temperature , pressure);
+  }
 
   default Azimuth getAzimuthFromEcliptic(Position eclipticPosition, double gmtJulDay , Location location) {
     return getAzimuthFromEcliptic(eclipticPosition , gmtJulDay , location , 0 , 1013.25);
@@ -29,7 +37,11 @@ public interface IAzimuth {
   }
 
   /** 由黃經 , 黃緯 , 求得地平方位角 */
-  Azimuth getAzimuthFromEquator(Position equatorPosition, double gmtJulDay, Location location, double temperature, double pressure);
+  Azimuth getAzimuthFromEquator(Position equatorPosition, double gmtJulDay, double geoLng , double geoLat , double geoAlt , double temperature, double pressure);
+
+  default Azimuth getAzimuthFromEquator(Position equatorPosition, double gmtJulDay, Location location, double temperature, double pressure) {
+    return getAzimuthFromEquator(equatorPosition , gmtJulDay , location.getLongitude() , location.getLatitude() , location.getAltitudeMeter() , temperature , pressure);
+  }
 
   /** 承上 , ChronoLocalDateTime 版本 */
   default Azimuth getAzimuthFromEquator(Position equatorPosition, ChronoLocalDateTime gmt, Location location, double temperature, double pressure) {
