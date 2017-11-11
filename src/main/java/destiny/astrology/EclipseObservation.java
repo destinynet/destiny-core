@@ -22,8 +22,8 @@ public class EclipseObservation implements Serializable {
   /** 高度 (米) */
   private final double alt;
 
-  /** 日全食、環食、或是偏食 */
-  private final AbstractEclipse.Type type;
+  /** 食 的種類 */
+  private final Enum eclipseType;
 
   /** 是否有 centerLine TODO : 不太確定是「當下」亦或是「全程」 , 待查 */
   private final boolean centerLine;
@@ -37,12 +37,12 @@ public class EclipseObservation implements Serializable {
   /** 面積被蓋住的比例 */
   private final double obscuration;
 
-  public EclipseObservation(double gmtJulDay, double lng, double lat, double alt, AbstractEclipse.Type type, boolean centerLine, Azimuth azimuth, double magnitude, double obscuration) {
+  public EclipseObservation(double gmtJulDay, double lng, double lat, double alt, Enum eclipseType, boolean centerLine, Azimuth azimuth, double magnitude, double obscuration) {
     this.gmtJulDay = gmtJulDay;
     this.lng = lng;
     this.lat = lat;
     this.alt = alt;
-    this.type = type;
+    this.eclipseType = eclipseType;
     this.centerLine = centerLine;
     this.azimuth = azimuth;
     this.magnitude = magnitude;
@@ -65,8 +65,8 @@ public class EclipseObservation implements Serializable {
     return alt;
   }
 
-  public AbstractEclipse.Type getType() {
-    return type;
+  public Enum getEclipseType() {
+    return eclipseType;
   }
 
   public boolean isCenterLine() {
@@ -91,9 +91,8 @@ public class EclipseObservation implements Serializable {
   @Override
   public String toString() {
     return "[EclipseObservation "
-      + "type=" + type
+      + " (lat,lng)=" + lat + "," + lng
       + ", centerLine=" + centerLine
-      + ", (lat,lng)=" + lat + "," + lng
       + ", azimuth=" + azimuth
       + ", magnitude=" + magnitude
       + ", obscuration=" + obscuration + ']';

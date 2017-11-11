@@ -3,13 +3,13 @@
  */
 package destiny.astrology;
 
-public class EclipseAnnularCentered extends EclipseAnnular implements IEclipseCenter {
+public class SolarEclipseAnnularCentered extends SolarEclipseAnnular implements IEclipseCenter {
 
   protected final double centerBegin;
 
   protected final double centerEnd;
 
-  public EclipseAnnularCentered(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd, double centerBegin, double centerEnd, double annularBegin, double annularEnd) {
+  public SolarEclipseAnnularCentered(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd, double centerBegin, double centerEnd, double annularBegin, double annularEnd) {
     super(max, partialBegin, partialEnd, totalBegin, totalEnd, annularBegin, annularEnd);
 
     this.centerBegin = centerBegin;

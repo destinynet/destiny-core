@@ -5,15 +5,8 @@ package destiny.astrology;
 
 import java.io.Serializable;
 
-/** 亦為「偏食」 */
+/** 日食、月食 的最上層 抽象 class */
 public abstract class AbstractEclipse implements Serializable {
-
-  public enum Type {
-    PARTIAL ,
-    TOTAL ,
-    ANNULAR ,
-    HYBRID    // 極為罕見的「全環食」
-  }
 
   /** 不論是 全食、偏食、還是環食，都會有「最大值」 */
   protected final double max;
@@ -40,5 +33,4 @@ public abstract class AbstractEclipse implements Serializable {
     return end;
   }
 
-  public abstract Type getType();
 }

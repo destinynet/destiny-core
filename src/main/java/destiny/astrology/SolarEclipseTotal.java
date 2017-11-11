@@ -3,13 +3,13 @@
  */
 package destiny.astrology;
 
-public class EclipseTotal extends AbstractEclipse {
+public class SolarEclipseTotal extends AbstractSolarEclipse {
 
   protected final double totalBegin;
 
   protected final double totalEnd;
 
-  public EclipseTotal(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd) {
+  public SolarEclipseTotal(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd) {
     super(max, partialBegin , partialEnd);
     this.totalBegin = totalBegin;
     this.totalEnd = totalEnd;
@@ -25,10 +25,9 @@ public class EclipseTotal extends AbstractEclipse {
   }
 
   @Override
-  public Type getType() {
-    return Type.TOTAL;
+  public SolarType getSolarType() {
+    return SolarType.TOTAL;
   }
-
 
   @Override
   public String toString() {
@@ -39,4 +38,5 @@ public class EclipseTotal extends AbstractEclipse {
       ", totalEnd=" + totalEnd +
       ", end=" + end + ']';
   }
+
 }

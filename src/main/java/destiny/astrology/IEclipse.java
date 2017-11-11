@@ -3,6 +3,7 @@
  */
 package destiny.astrology;
 
+import destiny.astrology.AbstractSolarEclipse.SolarType;
 import destiny.core.calendar.Location;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -15,13 +16,14 @@ import static destiny.core.calendar.TimeTools.getGmtJulDay;
 public interface IEclipse {
 
   /** 從此時之後，全球各地的「一場」日食資料 (型態、開始、最大、結束...） */
-  AbstractEclipse getNextSolarEclipse(double fromGmtJulDay, boolean forward, Collection<AbstractEclipse.Type> types);
-  default AbstractEclipse getNextSolarEclipse(double fromGmtJulDay, boolean forward) {
-    return getNextSolarEclipse(fromGmtJulDay , forward , Arrays.asList(AbstractEclipse.Type.values()));
+  AbstractSolarEclipse getNextSolarEclipse(double fromGmtJulDay, boolean forward, Collection<SolarType> types);
+
+  default AbstractSolarEclipse getNextSolarEclipse(double fromGmtJulDay, boolean forward) {
+    return getNextSolarEclipse(fromGmtJulDay , forward , Arrays.asList(SolarType.values()));
   }
 
   /** 同上，月食 */
-  AbstractEclipse getNextLunarEclipse(double fromGmtJulDay , boolean forward);
+  AbstractLunarEclipse getNextLunarEclipse(double fromGmtJulDay , boolean forward);
 
   /** 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2) */
   Tuple2<EclipseSpan , EclipseObservation> getNextSolarEclipse(double fromGmtJulDay , double lng , double lat , double alt , boolean forward);
@@ -41,15 +43,15 @@ public interface IEclipse {
   }
 
   /** 全球，某時間範圍內的日食記錄 */
-  default List<AbstractEclipse> getRangeSolarEclipses(double fromGmt , double toGmt , Collection<AbstractEclipse.Type> types) {
+  default List<AbstractSolarEclipse> getRangeSolarEclipses(double fromGmt , double toGmt , Collection<SolarType> types) {
     if (fromGmt >= toGmt)
       throw new RuntimeException("fromGmt : " + fromGmt + " must less than toGmt : " + toGmt);
 
-    List<AbstractEclipse> list = new ArrayList<>();
+    List<AbstractSolarEclipse> list = new ArrayList<>();
     double gmt = fromGmt;
 
     while (gmt < toGmt) {
-      AbstractEclipse e = getNextSolarEclipse(gmt , true , types);
+      AbstractSolarEclipse e = getNextSolarEclipse(gmt , true , types);
       list.add(e);
 
       gmt = e.getEnd();
@@ -58,17 +60,42 @@ public interface IEclipse {
   }
 
   /** 搜尋 全部 種類的日食 */
-  default List<AbstractEclipse> getRangeSolarEclipses(double fromGmt , double toGmt) {
-    return getRangeSolarEclipses(fromGmt , toGmt , Arrays.asList(AbstractEclipse.Type.values()));
+  default List<AbstractSolarEclipse> getRangeSolarEclipses(double fromGmt , double toGmt) {
+    return getRangeSolarEclipses(fromGmt , toGmt , Arrays.asList(SolarType.values()));
   }
 
   /** 承上 , ChronoLocalDateTime 版本 , 搜尋 全部 種類的日食 */
-  default List<AbstractEclipse> getRangeSolarEclipses(ChronoLocalDateTime fromGmt , ChronoLocalDateTime toGmt) {
+  default List<AbstractSolarEclipse> getRangeSolarEclipses(ChronoLocalDateTime fromGmt , ChronoLocalDateTime toGmt) {
     return getRangeSolarEclipses(getGmtJulDay(fromGmt) , getGmtJulDay(toGmt));
   }
 
   /** 承上 , ChronoLocalDateTime 版本 , 搜尋 單一 種類的日食 */
-  default List<AbstractEclipse> getRangeSolarEclipses(ChronoLocalDateTime fromGmt , ChronoLocalDateTime toGmt , AbstractEclipse.Type type) {
+  default List<AbstractSolarEclipse> getRangeSolarEclipses(ChronoLocalDateTime fromGmt , ChronoLocalDateTime toGmt , SolarType type) {
     return getRangeSolarEclipses(getGmtJulDay(fromGmt) , getGmtJulDay(toGmt) , Collections.singletonList(type));
   }
+
+
+  /** 全球，某時間範圍內的月食記錄 */
+  default List<AbstractLunarEclipse> getRangeLunarEclipses(double fromGmt , double toGmt , Collection<AbstractLunarEclipse.LunarType> types) {
+    if (fromGmt >= toGmt)
+      throw new RuntimeException("fromGmt : " + fromGmt + " must less than toGmt : " + toGmt);
+
+    List<AbstractLunarEclipse> list = new ArrayList<>();
+    double gmt = fromGmt;
+
+    while (gmt < toGmt) {
+      AbstractLunarEclipse e = getNextLunarEclipse(gmt , true);
+      list.add(e);
+
+      gmt = e.getEnd();
+    }
+    return list;
+  }
+
+    /** 承上 , ChronoLocalDateTime 版本 , 搜尋 全部 種類的日食 */
+  default List<AbstractLunarEclipse> getRangeLunarEclipses(ChronoLocalDateTime fromGmt , ChronoLocalDateTime toGmt) {
+    return getRangeLunarEclipses(getGmtJulDay(fromGmt) , getGmtJulDay(toGmt), null);
+  }
+
+
 }

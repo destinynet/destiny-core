@@ -3,15 +3,15 @@
  */
 package destiny.astrology;
 
-public class EclipsePartial extends AbstractEclipse {
+public class SolarEclipsePartial extends AbstractSolarEclipse {
 
-  public EclipsePartial(double max, double begin, double end) {
+  public SolarEclipsePartial(double max, double begin, double end) {
     super(max, begin, end);
   }
 
   @Override
-  public Type getType() {
-    return Type.PARTIAL;
+  public SolarType getSolarType() {
+    return SolarType.PARTIAL;
   }
 
   @Override

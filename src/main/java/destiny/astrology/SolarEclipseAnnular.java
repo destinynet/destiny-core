@@ -3,13 +3,13 @@
  */
 package destiny.astrology;
 
-public class EclipseAnnular extends EclipseTotal implements IEclipseAnnular {
+public class SolarEclipseAnnular extends SolarEclipseTotal implements IEclipseAnnular {
 
   protected final double annularBegin;
 
   protected final double annularEnd;
 
-  public EclipseAnnular(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd, double annularBegin, double annularEnd) {
+  public SolarEclipseAnnular(double max, double partialBegin, double partialEnd, double totalBegin, double totalEnd, double annularBegin, double annularEnd) {
     super(max, partialBegin, partialEnd, totalBegin, totalEnd);
     this.annularBegin = annularBegin;
     this.annularEnd = annularEnd;
@@ -26,9 +26,10 @@ public class EclipseAnnular extends EclipseTotal implements IEclipseAnnular {
   }
 
   @Override
-  public Type getType() {
-    return Type.ANNULAR;
+  public SolarType getSolarType() {
+    return SolarType.ANNULAR;
   }
+
 
   @Override
   public String toString() {

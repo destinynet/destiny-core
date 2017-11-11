@@ -6,7 +6,7 @@ package destiny.astrology;
 import java.io.Serializable;
 
 /**
- * 在一個地點觀測到的日食資料，開始、結束、各個接觸點 (contact) 各為何時
+ * 在一個地點觀測到的日、月食資料，開始、結束、各個接觸點 (contact) 各為何時
  */
 public class EclipseSpan implements Serializable {
 
@@ -19,7 +19,7 @@ public class EclipseSpan implements Serializable {
   /** 高度 (米) */
   private final double alt;
 
-  /** 哪一種日食，其 起訖 資訊為何 */
+  /** 哪一種食，其 起訖 資訊為何 */
   private final AbstractEclipse eclipse;
 
 
