@@ -31,7 +31,7 @@ public class EclipseObservation implements Serializable {
   /** 太陽的地平方位角 */
   private final Azimuth azimuth;
 
-  /** 半徑被蓋住的比例 */
+  /** 直徑被蓋住的比例 */
   private final double magnitude;
 
   /** 面積被蓋住的比例 */

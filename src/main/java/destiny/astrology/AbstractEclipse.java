@@ -8,7 +8,12 @@ import java.io.Serializable;
 /** 亦為「偏食」 */
 public abstract class AbstractEclipse implements Serializable {
 
-  public enum Type {PARTIAL , TOTAL , ANNULAR}
+  public enum Type {
+    PARTIAL ,
+    TOTAL ,
+    ANNULAR ,
+    HYBRID    // 極為罕見的「全環食」
+  }
 
   /** 不論是 全食、偏食、還是環食，都會有「最大值」 */
   protected final double max;
