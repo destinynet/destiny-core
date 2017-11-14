@@ -5,26 +5,25 @@ package destiny.astrology;
 
 /**
  * 半影月食
- * TODO 其 begin/end 似乎就等於 centerBegin/centerEnd ? 待查
  */
 public class LunarEclipsePenumbra extends AbstractLunarEclipse {
 
-  private final double centerBegin;
+  private final double penumbraBegin;
 
-  private final double centerEnd;
+  private final double penumbraEnd;
 
-  public LunarEclipsePenumbra(double max, double begin, double end, double centerBegin, double centerEnd) {
+  public LunarEclipsePenumbra(double max, double begin, double end, double penumbraBegin, double penumbraEnd) {
     super(max, begin, end);
-    this.centerBegin = centerBegin;
-    this.centerEnd = centerEnd;
+    this.penumbraBegin = penumbraBegin;
+    this.penumbraEnd = penumbraEnd;
   }
 
-  public double getCenterBegin() {
-    return centerBegin;
+  public double getPenumbraBegin() {
+    return penumbraBegin;
   }
 
-  public double getCenterEnd() {
-    return centerEnd;
+  public double getPenumbraEnd() {
+    return penumbraEnd;
   }
 
   @Override
