@@ -3,20 +3,18 @@
  */
 package destiny.astrology;
 
-public class LunarEclipseTotal extends AbstractLunarEclipse implements IEclipseCenter {
+public class LunarEclipseTotal extends LunarEclipsePartial {
 
+  /** 月亮全部進入地球本影 剛開始 (U2) */
   private final double totalBegin;
+
+  /** 月亮全部進入地球本影 剛結束 (U3) */
   private final double totalEnd;
 
-  private final double centerBegin;
-  private final double centerEnd;
-
-  public LunarEclipseTotal(double max, double begin, double end, double totalBegin, double totalEnd, double centerBegin, double centerEnd) {
-    super(max, begin, end);
+  public LunarEclipseTotal(double penumbraBegin, double partialBegin, double totalBegin, double max, double totalEnd, double partialEnd, double penumbraEnd) {
+    super(penumbraBegin , partialBegin , max , partialEnd , penumbraEnd);
     this.totalBegin = totalBegin;
     this.totalEnd = totalEnd;
-    this.centerBegin = centerBegin;
-    this.centerEnd = centerEnd;
   }
 
   public double getTotalBegin() {
@@ -32,13 +30,4 @@ public class LunarEclipseTotal extends AbstractLunarEclipse implements IEclipseC
     return LunarType.TOTAL;
   }
 
-  @Override
-  public double getCenterBegin() {
-    return centerBegin;
-  }
-
-  @Override
-  public double getCenterEnd() {
-    return centerEnd;
-  }
 }

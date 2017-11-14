@@ -13,7 +13,7 @@ public abstract class AbstractSolarEclipse extends AbstractEclipse {
   }
 
   public AbstractSolarEclipse(double max, double begin, double end) {
-    super(max, begin, end);
+    super(begin, max, end);
   }
 
 
