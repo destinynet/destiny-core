@@ -41,9 +41,8 @@ public interface IEclipse {
 
   // ========================================================================================
 
-  /** 此時此刻，哪裡有發生日食，其「中線」的地點為何 , 以及其相關日食觀測結果 . 此 method 專門計算「中線在哪裡」 */
-  Optional<SolarEclipseObservation> getEclipseCenterInfo(double gmtJulDay);
-
+  /** 此時此刻，哪裡有發生日食，其「中線」的地點為何 , 以及其相關日食觀測結果 . 此 method 專門計算「中線在哪裡 , 其太陽觀測為何」 (t.v1) , 是否出現中線了 (t.v2) */
+  Optional<Tuple2<SolarEclipseObservation , Boolean>> getEclipseCenterInfo(double gmtJulDay);
 
 
   /** 若當下 gmtJulDay 有日食，傳出此地點觀測此日食的相關資料 */
