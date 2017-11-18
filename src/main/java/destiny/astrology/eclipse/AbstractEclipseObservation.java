@@ -1,7 +1,9 @@
 /**
  * Created by smallufo on 2017-11-15.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
+
+import destiny.astrology.Azimuth;
 
 import java.io.Serializable;
 

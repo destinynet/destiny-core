@@ -1,9 +1,9 @@
 /**
  * Created by smallufo on 2017-11-05.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
 
-import destiny.astrology.AbstractSolarEclipse.SolarType;
+import destiny.astrology.eclipse.AbstractSolarEclipse.SolarType;
 import destiny.core.calendar.Location;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -29,14 +29,14 @@ public interface IEclipse {
   // ========================================================================================
 
   /** 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2) */
-  Tuple2<EclipseSpan , SolarEclipseObservation> getNextSolarEclipse(double fromGmtJulDay , double lng , double lat , double alt , boolean forward);
+  Tuple2<EclipseSpan, SolarEclipseObservation> getNextSolarEclipse(double fromGmtJulDay , double lng , double lat , double alt , boolean forward);
 
   default Tuple2<EclipseSpan , SolarEclipseObservation> getNextSolarEclipse(double fromGmtJulDay , Location loc , boolean forward) {
     return getNextSolarEclipse(fromGmtJulDay , loc.getLongitude() , loc.getLatitude() , loc.getAltitudeMeter() , forward);
   }
 
-  /** 從此之後 , 此地點下次發生月食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2) */
-  Tuple2<EclipseSpan , LunarEclipseObservation> getNextLunarEclipse(double fromGmtJulDay , double lng , double lat , double alt , boolean forward);
+  /** 從此之後 , 此地點下次發生月食的資訊為何 (tuple.v1) , 以及， 該地能否見到 半影、偏食、全蝕、的起訖 (tuple.v2) */
+  AbstractLunarEclipseObservation getNextLunarEclipse(double fromGmtJulDay , double lng , double lat , double alt , boolean forward);
 
 
   // ========================================================================================
@@ -49,8 +49,8 @@ public interface IEclipse {
   /** 若當下 gmtJulDay 有日食，傳出此地點觀測此日食的相關資料 */
   Optional<SolarEclipseObservation> getSolarEclipseObservation(double gmtJulDay , double lng , double lat , double alt);
 
-  /** 若當下 gmtJulDay 有月食，傳出此地點觀測此日食的相關資料 */
-  Optional<LunarEclipseObservation> getLunarEclipseObservation(double gmtJulDay , double lng , double lat , double alt);
+  /** 若當下 gmtJulDay 有月食，傳出此地點觀測此月食的相關資料 */
+  Optional<AbstractLunarEclipseObservation> getLunarEclipseObservation(double gmtJulDay , double lng , double lat , double alt);
 
 
   default Optional<SolarEclipseObservation> getSolarEclipseObservation(ChronoLocalDateTime gmt, double lng , double lat , double alt) {

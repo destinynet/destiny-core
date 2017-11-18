@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2017-11-12.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
 
 public class LunarEclipsePartial extends LunarEclipsePenumbra {
 

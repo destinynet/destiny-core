@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2017-11-11.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
 
 /** 全環食 */
 public class SolarEclipseHybrid extends SolarEclipseAnnularCentered {

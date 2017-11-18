@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2017-11-12.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
 
 public abstract class AbstractLunarEclipse extends AbstractEclipse {
 
@@ -34,4 +34,10 @@ public abstract class AbstractLunarEclipse extends AbstractEclipse {
 
 
   public abstract LunarType getLunarType();
+
+
+  @Override
+  public String toString() {
+    return "[AbstractLunarEclipse " + "type="+getLunarType()+ ", begin=" + begin + ", max=" + max + ", end=" + end + ']';
+  }
 }

@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2017-11-08.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
 
 public class SolarEclipseAnnularCentered extends SolarEclipseAnnular implements IEclipseCenter {
 

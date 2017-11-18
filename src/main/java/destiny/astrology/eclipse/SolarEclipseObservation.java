@@ -1,7 +1,11 @@
 /**
  * Created by smallufo on 2017-11-07.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
+
+import destiny.astrology.Azimuth;
+import destiny.astrology.eclipse.AbstractEclipseObservation;
+import destiny.astrology.eclipse.AbstractSolarEclipse;
 
 /**
  * 某時某刻某地點，觀測到的日食相關資訊
@@ -9,7 +13,7 @@ package destiny.astrology;
 public class SolarEclipseObservation extends AbstractEclipseObservation {
 
   /** 食 的種類 */
-  private final Enum eclipseType;
+  private final AbstractSolarEclipse.SolarType eclipseType;
 
   /** 是否有 centerLine TODO : 不太確定是「當下」亦或是「全程」 , 待查 */
   private final boolean centerLine;
@@ -20,7 +24,7 @@ public class SolarEclipseObservation extends AbstractEclipseObservation {
   /** 面積被蓋住的比例 */
   private final double obscuration;
 
-  public SolarEclipseObservation(double gmtJulDay, double lng, double lat, double alt, Enum eclipseType, boolean centerLine, Azimuth azimuth, double magnitude, double obscuration) {
+  public SolarEclipseObservation(double gmtJulDay, double lng, double lat, double alt, AbstractSolarEclipse.SolarType eclipseType, boolean centerLine, Azimuth azimuth, double magnitude, double obscuration) {
     super(gmtJulDay , lng , lat , alt , azimuth);
 
     this.eclipseType = eclipseType;
@@ -30,7 +34,7 @@ public class SolarEclipseObservation extends AbstractEclipseObservation {
   }
 
 
-  public Enum getEclipseType() {
+  public AbstractSolarEclipse.SolarType getType() {
     return eclipseType;
   }
 

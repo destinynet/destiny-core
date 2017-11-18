@@ -1,7 +1,9 @@
 /**
  * Created by smallufo on 2017-11-12.
  */
-package destiny.astrology;
+package destiny.astrology.eclipse;
+
+import destiny.astrology.eclipse.AbstractLunarEclipse;
 
 /**
  * 半影月食
