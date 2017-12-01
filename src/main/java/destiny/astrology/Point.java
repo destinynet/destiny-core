@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/7/24 at 下午 1:34:43
- */ 
+ */
 package destiny.astrology;
 
 import destiny.tools.LocaleStringIF;
@@ -10,8 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * 抽象class , 代表星盤上的一「點」，可能是實星（行星 {@link Planet}, 小行星 {@link Asteroid}, 恆星 {@link FixedStar}），
@@ -36,12 +35,12 @@ import java.util.ResourceBundle;
  * </pre>
  */
 public abstract class Point implements Serializable , LocaleStringIF {
-  
+
   private final String resource;
-  
+
   /** 名稱key , nameKey 相等，則此 Point 視為 equals! */
   private final String nameKey;
-  
+
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ...*/
   @Nullable
   String abbrKey;
@@ -61,18 +60,18 @@ public abstract class Point implements Serializable , LocaleStringIF {
   public String getName(@NotNull Locale locale) {
     return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
-  
+
   /** 名稱 */
   private String getName() {
     return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
-  
+
   /** toString 直接取名稱 */
   @Override
   public String toString() {
     return getName();
   }
-  
+
   /** toString 直接取名稱 (name) */
   @Override
   public String toString(@NotNull Locale locale) {
@@ -89,7 +88,7 @@ public abstract class Point implements Serializable , LocaleStringIF {
       return getAbbr(locale, name);
     }
   }
-  
+
   /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes */
   public String getAbbreviation() {
     if (abbrKey != null) {
@@ -101,7 +100,7 @@ public abstract class Point implements Serializable , LocaleStringIF {
       return getAbbr(Locale.getDefault(), name);
     }
   }
-  
+
   /**
    * 處理縮寫
    */
@@ -142,12 +141,10 @@ public abstract class Point implements Serializable , LocaleStringIF {
       return false;
     final Point other = (Point) obj;
     if (nameKey == null) {
-      if (other.nameKey != null)
-        return false;
+      return other.nameKey == null;
     }
-    else if (!nameKey.equals(other.nameKey))
-      return false;
-    return true;
+    else
+      return nameKey.equals(other.nameKey);
   }
 
 

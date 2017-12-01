@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class FlowYearAnchorImplTest {
 
-   private Logger logger = LoggerFactory.getLogger(getClass());
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   IFlowYear impl = new FlowYearAnchorImpl();
 
@@ -21,7 +21,7 @@ public class FlowYearAnchorImplTest {
   public void testString() {
     assertNotNull(impl.getTitle(Locale.TAIWAN));
     assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE));
-    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.SIMPLIFIED_CHINESE));
   }
 
 }
