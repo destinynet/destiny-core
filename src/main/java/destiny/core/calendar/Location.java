@@ -457,12 +457,12 @@ public class Location implements Serializable {
   @Override
   public String toString()
   {
-    return LocationDecorator.getOutputString(this , Locale.getDefault());
+    return LocationDecorator.INSTANCE.getOutputString(this , Locale.getDefault());
   }//toString()
 
   public String toString(Locale locale)
   {
-    return LocationDecorator.getOutputString(this , locale);
+    return LocationDecorator.INSTANCE.getOutputString(this , locale);
   }
 
 
