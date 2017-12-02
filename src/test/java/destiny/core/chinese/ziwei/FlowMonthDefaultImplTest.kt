@@ -1,29 +1,26 @@
 /**
  * Created by smallufo on 2017-04-16.
  */
-package destiny.core.chinese.ziwei;
+package destiny.core.chinese.ziwei
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import destiny.core.chinese.Branch.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertSame
+import org.junit.Test
+import org.slf4j.LoggerFactory
+import java.util.*
 
-import java.util.Locale;
+class FlowMonthDefaultImplTest {
 
-import static destiny.core.chinese.Branch.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+  private val logger = LoggerFactory.getLogger(javaClass)
 
-public class FlowMonthDefaultImplTest {
-
-  private Logger logger = LoggerFactory.getLogger(getClass());
-
-  IFlowMonth impl = new FlowMonthDefaultImpl();
+  internal var impl: IFlowMonth = FlowMonthDefaultImpl()
 
   @Test
-  public void testString() {
-    assertNotNull(impl.getTitle(Locale.TAIWAN));
-    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE));
-    logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.SIMPLIFIED_CHINESE));
+  fun testString() {
+    assertNotNull(impl.getTitle(Locale.TAIWAN))
+    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE))
+    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.SIMPLIFIED_CHINESE))
   }
 
 
@@ -39,9 +36,10 @@ public class FlowMonthDefaultImplTest {
    * 餘依此類推，未宮為二月、申宮為三月．．．戌宮即為九月命宮。
    */
   @Test
-  public void getFlowMonth1() throws Exception {
+  @Throws(Exception::class)
+  fun getFlowMonth1() {
 
-    assertSame(戌 , impl.getFlowMonth(酉 , 戌, 8 , 子));
+    assertSame(戌, impl.getFlowMonth(酉, 戌, 8, 子))
   }
 
 
@@ -59,9 +57,10 @@ public class FlowMonthDefaultImplTest {
    * 此日買中六合彩中齊六個字,發了一筆橫財。
    */
   @Test
-  public void testFlowMonth2() throws Exception {
+  @Throws(Exception::class)
+  fun testFlowMonth2() {
     // 午年斗君在子 , 寅月（一月），走0 步，所以流月命宮還是在子
-    assertSame(子 , impl.getFlowMonth(午 , 寅 ,  11 , 辰 ));
+    assertSame(子, impl.getFlowMonth(午, 寅, 11, 辰))
   }
 
 

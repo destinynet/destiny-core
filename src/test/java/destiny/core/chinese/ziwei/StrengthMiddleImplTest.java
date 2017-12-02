@@ -74,7 +74,7 @@ public class StrengthMiddleImplTest {
     assertSame(5, impl.getStrengthOf(StarMain.紫微.INSTANCE, 子).orElse(0));
     assertSame(5, impl.getStrengthOf(StarMain.破軍.INSTANCE, Branch.亥).orElse(0));
 
-    assertSame(2, impl.getStrengthOf(StarLucky.Companion.get天魁(), 子).orElse(0));
+    assertSame(2, impl.getStrengthOf(StarLucky.天魁.INSTANCE, 子).orElse(0));
     assertSame(5, impl.getStrengthOf(三台, 子).orElse(0));
     assertFalse(impl.getStrengthOf(天巫 , 子).isPresent());
   }
