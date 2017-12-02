@@ -187,13 +187,14 @@ public interface IZiwei {
   /** 命主 : 命宮所在地支安星 */
   static ZStar getMainStar(Branch branch) {
     switch (branch) {
-      case 子: return StarMain.Companion.get貪狼();
-      case 丑:case 亥: return StarMain.Companion.get巨門();
+
+      case 子: return StarMain.貪狼.INSTANCE;
+      case 丑:case 亥: return StarMain.巨門.INSTANCE;
       case 寅:case 戌: return StarLucky.Companion.get祿存();
       case 卯:case 酉: return StarLucky.Companion.get文曲();
-      case 辰:case 申: return StarMain.Companion.get廉貞();
-      case 巳:case 未: return StarMain.Companion.get武曲();
-      case 午:return StarMain.Companion.get破軍();
+      case 辰:case 申: return StarMain.廉貞.INSTANCE;
+      case 巳:case 未: return StarMain.武曲.INSTANCE;
+      case 午:return StarMain.破軍.INSTANCE;
       default: throw new AssertionError("Error : " + branch);
     }
   }
@@ -203,11 +204,11 @@ public interface IZiwei {
   static ZStar getBodyStar(Branch branch) {
     switch (branch) {
       case 子: return 火星;
-      case 丑:case 未: return StarMain.Companion.get天相();
-      case 寅:case 申: return StarMain.Companion.get天梁();
-      case 卯:case 酉: return StarMain.Companion.get天同();
+      case 丑:case 未: return StarMain.天相.INSTANCE;
+      case 寅:case 申: return StarMain.天梁.INSTANCE;
+      case 卯:case 酉: return StarMain.天同.INSTANCE;
       case 辰:case 戌: return StarLucky.Companion.get文昌();
-      case 巳:case 亥: return StarMain.Companion.get天機();
+      case 巳:case 亥: return StarMain.天機.INSTANCE;
       case 午: return 鈴星;
       default: throw new AssertionError("Error : " + branch);
     }

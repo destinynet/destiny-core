@@ -12,7 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static destiny.core.chinese.Branch.子;
-import static destiny.core.chinese.ziwei.StarMain.Companion;
 import static destiny.core.chinese.ziwei.StarMain.Type;
 import static destiny.core.chinese.ziwei.StarMinor.三台;
 import static destiny.core.chinese.ziwei.StarMinor.天巫;
@@ -59,7 +58,7 @@ public class StrengthMiddleImplTest {
 
   @Test
   public void getMap() {
-    impl.getMapOf(Companion.get紫微()).forEach((k, v) -> {
+    impl.getMapOf(StarMain.紫微.INSTANCE).forEach((k, v) -> {
       logger.info("{} -> {}" , k , v);
     });
 
@@ -72,8 +71,8 @@ public class StrengthMiddleImplTest {
   public void getStrength() {
 
 
-    assertSame(5, impl.getStrengthOf(Companion.get紫微(), 子).orElse(0));
-    assertSame(5, impl.getStrengthOf(Companion.get破軍(), Branch.亥).orElse(0));
+    assertSame(5, impl.getStrengthOf(StarMain.紫微.INSTANCE, 子).orElse(0));
+    assertSame(5, impl.getStrengthOf(StarMain.破軍.INSTANCE, Branch.亥).orElse(0));
 
     assertSame(2, impl.getStrengthOf(StarLucky.Companion.get天魁(), 子).orElse(0));
     assertSame(5, impl.getStrengthOf(三台, 子).orElse(0));

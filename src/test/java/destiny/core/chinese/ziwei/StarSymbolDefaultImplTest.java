@@ -15,20 +15,20 @@ public class StarSymbolDefaultImplTest {
   public void getSymbolAcquired() {
     IStarSymbol impl = new StarSymbolDefaultImpl();
 
-    assertSame(艮, impl.getSymbolAcquired(Companion.get紫微()));
-    assertSame(艮, impl.getSymbolAcquired(Companion.get天府()));
-    assertSame(震, impl.getSymbolAcquired(Companion.get天機()));
-    assertSame(震, impl.getSymbolAcquired(Companion.get巨門()));
-    assertSame(巽, impl.getSymbolAcquired(Companion.get貪狼()));
-    assertSame(離, impl.getSymbolAcquired(Companion.get太陽()));
-    assertSame(離, impl.getSymbolAcquired(Companion.get天相()));
-    assertSame(坤, impl.getSymbolAcquired(Companion.get武曲()));
-    assertSame(坤, impl.getSymbolAcquired(Companion.get破軍()));
-    assertSame(兌, impl.getSymbolAcquired(Companion.get天同()));
-    assertSame(兌, impl.getSymbolAcquired(Companion.get天梁()));
-    assertSame(乾, impl.getSymbolAcquired(Companion.get七殺()));
-    assertSame(坎, impl.getSymbolAcquired(Companion.get廉貞()));
-    assertSame(坎, impl.getSymbolAcquired(Companion.get太陰()));
+    assertSame(艮, impl.getSymbolAcquired(紫微.INSTANCE));
+    assertSame(艮, impl.getSymbolAcquired(天府.INSTANCE));
+    assertSame(震, impl.getSymbolAcquired(天機.INSTANCE));
+    assertSame(震, impl.getSymbolAcquired(巨門.INSTANCE));
+    assertSame(巽, impl.getSymbolAcquired(貪狼.INSTANCE));
+    assertSame(離, impl.getSymbolAcquired(太陽.INSTANCE));
+    assertSame(離, impl.getSymbolAcquired(天相.INSTANCE));
+    assertSame(坤, impl.getSymbolAcquired(武曲.INSTANCE));
+    assertSame(坤, impl.getSymbolAcquired(破軍.INSTANCE));
+    assertSame(兌, impl.getSymbolAcquired(天同.INSTANCE));
+    assertSame(兌, impl.getSymbolAcquired(天梁.INSTANCE));
+    assertSame(乾, impl.getSymbolAcquired(七殺.INSTANCE));
+    assertSame(坎, impl.getSymbolAcquired(廉貞.INSTANCE));
+    assertSame(坎, impl.getSymbolAcquired(太陰.INSTANCE));
 
 
   }

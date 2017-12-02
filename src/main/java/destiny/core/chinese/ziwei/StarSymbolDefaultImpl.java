@@ -21,19 +21,19 @@ public class StarSymbolDefaultImpl implements IStarSymbol, Serializable {
 
   @Override
   public Symbol getSymbolAcquired(StarMain star) {
-    if (star == Companion.get紫微() || star == Companion.get天府())
+    if (star == 紫微.INSTANCE || star == 天府.INSTANCE)
       return 艮;
-    else if (star == Companion.get天機() || star == Companion.get巨門())
+    else if (star == 天機.INSTANCE || star == StarMain.巨門.INSTANCE)
       return 震;
-    else if (star == Companion.get貪狼())
+    else if (star == StarMain.貪狼.INSTANCE)
       return 巽;
-    else if (star == Companion.get太陽() || star == Companion.get天相())
+    else if (star == StarMain.太陽.INSTANCE || star == StarMain.天相.INSTANCE)
       return 離;
-    else if (star == Companion.get武曲() || star == Companion.get破軍())
+    else if (star == StarMain.武曲.INSTANCE || star == StarMain.破軍.INSTANCE)
       return 坤;
-    else if (star == Companion.get天同() || star == Companion.get天梁())
+    else if (star == StarMain.天同.INSTANCE || star == StarMain.天梁.INSTANCE)
       return 兌;
-    else if (star == Companion.get七殺())
+    else if (star == StarMain.七殺.INSTANCE)
       return 乾;
     else {
       // 廉貞、太陰

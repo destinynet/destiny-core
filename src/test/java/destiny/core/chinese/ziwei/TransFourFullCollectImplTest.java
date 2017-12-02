@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import static destiny.core.chinese.Stem.*;
 import static destiny.core.chinese.ziwei.ITransFour.Value.*;
-import static destiny.core.chinese.ziwei.StarMain.Companion;
 import static org.junit.Assert.assertSame;
 
 @SuppressWarnings("Duplicates")
@@ -30,26 +29,26 @@ public class TransFourFullCollectImplTest {
   public void getStarOf() {
 
     assertSame(StarLucky.Companion.get右弼(), impl.getStarOf(戊, 科));
-    assertSame(Companion.get天機(), impl.getStarOf(戊, 忌));
+    assertSame(StarMain.天機.INSTANCE , impl.getStarOf(戊, 忌));
 
-    assertSame(Companion.get太陰(), impl.getStarOf(庚, 科));
-    assertSame(Companion.get天同(), impl.getStarOf(庚, 忌));
+    assertSame(StarMain.太陰.INSTANCE, impl.getStarOf(庚, 科));
+    assertSame(StarMain.天同.INSTANCE, impl.getStarOf(庚, 忌));
 
     assertSame(StarLucky.Companion.get左輔(), impl.getStarOf(壬, 科));
-    assertSame(Companion.get武曲(), impl.getStarOf(壬, 忌));
+    assertSame(StarMain.武曲.INSTANCE, impl.getStarOf(壬, 忌));
   }
 
   @Test
   public void getValueOf() {
-    assertSame(祿 , impl.getValueOf(Companion.get廉貞(), 甲).orElse(null));
-    assertSame(null , impl.getValueOf(Companion.get廉貞(), 乙).orElse(null));
-    assertSame(忌, impl.getValueOf(Companion.get廉貞(), 丙).orElse(null));
-    assertSame(null, impl.getValueOf(Companion.get廉貞(), 丁).orElse(null));
-    assertSame(null, impl.getValueOf(Companion.get廉貞(), 戊).orElse(null));
-    assertSame(null, impl.getValueOf(Companion.get廉貞(), 己).orElse(null));
-    assertSame(null, impl.getValueOf(Companion.get廉貞(), 庚).orElse(null));
-    assertSame(null, impl.getValueOf(Companion.get廉貞(), 辛).orElse(null));
-    assertSame(null, impl.getValueOf(Companion.get廉貞(), 壬).orElse(null));
-    assertSame(null, impl.getValueOf(Companion.get廉貞(), 癸).orElse(null));
+    assertSame(祿 , impl.getValueOf(StarMain.廉貞.INSTANCE, 甲).orElse(null));
+    assertSame(null , impl.getValueOf(StarMain.廉貞.INSTANCE, 乙).orElse(null));
+    assertSame(忌, impl.getValueOf(StarMain.廉貞.INSTANCE, 丙).orElse(null));
+    assertSame(null, impl.getValueOf(StarMain.廉貞.INSTANCE , 丁).orElse(null));
+    assertSame(null, impl.getValueOf(StarMain.廉貞.INSTANCE , 戊).orElse(null));
+    assertSame(null, impl.getValueOf(StarMain.廉貞.INSTANCE , 己).orElse(null));
+    assertSame(null, impl.getValueOf(StarMain.廉貞.INSTANCE , 庚).orElse(null));
+    assertSame(null, impl.getValueOf(StarMain.廉貞.INSTANCE , 辛).orElse(null));
+    assertSame(null, impl.getValueOf(StarMain.廉貞.INSTANCE , 壬).orElse(null));
+    assertSame(null, impl.getValueOf(StarMain.廉貞.INSTANCE , 癸).orElse(null));
   }
 }
