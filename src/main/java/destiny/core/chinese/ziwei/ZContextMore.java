@@ -182,8 +182,8 @@ public class ZContextMore extends ZContext {
 
   public List<ZStar> getStars() {
     List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(StarMain.values));
-    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarUnlucky.values));
     if (showMinors)
       starList.addAll(Arrays.asList(StarMinor.values));

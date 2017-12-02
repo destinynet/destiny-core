@@ -89,7 +89,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
    * @param index 0[甲子] ~ 59[癸亥]
    */
   public static StemBranch get(int index) {
-    return ArrayTools.get(ARRAY , index);
+    return ArrayTools.INSTANCE.get(ARRAY , index);
   }
 
   /**

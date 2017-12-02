@@ -12,8 +12,6 @@ import org.jooq.lambda.tuple.Tuple3;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static destiny.core.chinese.ziwei.StarLucky.fun祿存;
-
 /**
  * 博士12神煞 , 丙級星
  *
@@ -48,7 +46,7 @@ public class StarDoctor extends ZStar {
   // 年干、性別、步數
   private final static Function<Tuple3<Stem , Gender , Integer>, Branch> branchGender2Branch = (tuple3) -> {
     Stem yearStem = tuple3.v1();
-    Branch 祿存地支 = fun祿存.apply(yearStem);
+    Branch 祿存地支 = StarLucky.Companion.getFun祿存().invoke(yearStem);
     Gender gender = tuple3.v2();
     int steps = tuple3.v3();
 

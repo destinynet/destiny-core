@@ -80,7 +80,7 @@ public enum SolarTerms {
    * @return 0 傳回立春 , 1 傳回 雨水 , ... , 23 傳回 大寒 , 接著連續 24 傳回立春
    */
   public static SolarTerms get(int solarTermsIndex) {
-    return ArrayTools.get(VALUES , solarTermsIndex);
+    return ArrayTools.INSTANCE.get(VALUES , solarTermsIndex);
   }
 
   /**

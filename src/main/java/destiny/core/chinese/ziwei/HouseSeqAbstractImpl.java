@@ -48,7 +48,7 @@ public abstract class HouseSeqAbstractImpl implements IHouseSeq , Serializable {
   }
 
   private House get(int index) {
-    return ArrayTools.get(getHouses() , index);
+    return ArrayTools.INSTANCE.get(getHouses() , index);
   }
 
   private int getIndex(House h) {

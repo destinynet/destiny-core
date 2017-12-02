@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Locale;
 
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.StarMain.太陽;
 import static destiny.core.chinese.ziwei.ITransFour.Value.*;
+import static destiny.core.chinese.ziwei.StarMain.Companion;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
@@ -27,20 +27,20 @@ public class TransFourZiyunImplTest {
 
   @Test
   public void getStarOf() {
-    assertSame(太陽, impl.getStarOf(癸, 科));
+    assertSame(Companion.get太陽(), impl.getStarOf(癸, 科));
   }
 
   @Test
   public void getValueOf() {
-    assertSame(忌 , impl.getValueOf(太陽 , 甲).orElse(null));
-    assertNull(impl.getValueOf(太陽 , 乙).orElse(null));
-    assertNull(impl.getValueOf(太陽 , 丙).orElse(null));
-    assertNull(impl.getValueOf(太陽 , 丁).orElse(null));
-    assertNull(impl.getValueOf(太陽 , 戊).orElse(null));
-    assertNull(impl.getValueOf(太陽 , 己).orElse(null));
-    assertSame(祿 , impl.getValueOf(太陽 , 庚).orElse(null));
-    assertSame(權 , impl.getValueOf(太陽 , 辛).orElse(null));
-    assertNull(impl.getValueOf(太陽 , 壬).orElse(null));
-    assertSame(科 , impl.getValueOf(太陽 , 癸).orElse(null));
+    assertSame(忌 , impl.getValueOf(Companion.get太陽(), 甲).orElse(null));
+    assertNull(impl.getValueOf(Companion.get太陽(), 乙).orElse(null));
+    assertNull(impl.getValueOf(Companion.get太陽(), 丙).orElse(null));
+    assertNull(impl.getValueOf(Companion.get太陽(), 丁).orElse(null));
+    assertNull(impl.getValueOf(Companion.get太陽(), 戊).orElse(null));
+    assertNull(impl.getValueOf(Companion.get太陽(), 己).orElse(null));
+    assertSame(祿 , impl.getValueOf(Companion.get太陽(), 庚).orElse(null));
+    assertSame(權 , impl.getValueOf(Companion.get太陽(), 辛).orElse(null));
+    assertNull(impl.getValueOf(Companion.get太陽(), 壬).orElse(null));
+    assertSame(科 , impl.getValueOf(Companion.get太陽(), 癸).orElse(null));
   }
 }

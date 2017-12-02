@@ -31,9 +31,9 @@ public class ZStarTest {
   public void testMapGroupBy() {
     // 嘗試先建立一個簡單的 starBranchMap
     Map<ZStar, Branch> starBranchMap = new HashMap<>();
-    starBranchMap.put(StarMain.紫微 , Branch.子);
-    starBranchMap.put(StarMain.天同 , Branch.子);
-    starBranchMap.put(StarMain.七殺 , Branch.丑);
+    starBranchMap.put(StarMain.Companion.get紫微(), Branch.子);
+    starBranchMap.put(StarMain.Companion.get天同(), Branch.子);
+    starBranchMap.put(StarMain.Companion.get七殺(), Branch.丑);
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> map1 = starBranchMap.entrySet().stream()
@@ -61,8 +61,8 @@ public class ZStarTest {
   @Test
   public void testListStarByType() {
     List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(StarMain.values));
-    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarUnlucky.values));
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));

@@ -38,8 +38,8 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
   private static Table<ZStar , Branch , Integer> commonTable = new ImmutableTable.Builder<ZStar, Branch, Integer>()
 
     /** 年干星 . {@link StarLucky#祿存} 以及 {@link StarUnlucky#陀羅} 並非固定 */
-    .put(天魁, 子, 2).put(天魁, 丑, 2).put(天魁, 卯, 1).put(天魁, 午, 1).put(天魁, 亥, 2)
-    .put(天鉞, 寅, 2).put(天鉞, 巳, 2).put(天鉞, 未, 2).put(天鉞, 申, 1).put(天鉞, 酉, 1)
+    .put(Companion.get天魁(), 子, 2).put(Companion.get天魁(), 丑, 2).put(Companion.get天魁(), 卯, 1).put(Companion.get天魁(), 午, 1).put(Companion.get天魁(), 亥, 2)
+    .put(Companion.get天鉞(), 寅, 2).put(Companion.get天鉞(), 巳, 2).put(Companion.get天鉞(), 未, 2).put(Companion.get天鉞(), 申, 1).put(Companion.get天鉞(), 酉, 1)
     .put(天官, 寅, 5).put(天官, 卯, 2).put(天官, 辰, 2).put(天官, 巳, 2).put(天官, 午, 1).put(天官, 未, 1).put(天官, 酉, 5).put(天官, 戌, 5).put(天官, 亥, 2)
     .put(天福, 子, 5).put(天福, 寅, 2).put(天福, 卯, 5).put(天福, 巳, 2).put(天福, 午, 5).put(天福, 申, 1).put(天福, 酉, 1).put(天福, 亥, 1)
     .put(陀羅, 丑, 1).put(陀羅, 寅, 7).put(陀羅, 辰, 1).put(陀羅, 巳, 7).put(陀羅, 未, 1).put(陀羅, 申, 7).put(陀羅, 戌, 1).put(陀羅, 亥, 7)
@@ -50,7 +50,7 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
     .put(咸池, 子, 7).put(咸池, 卯, 5).put(咸池, 午, 7).put(咸池, 酉, 5)
     .put(寡宿, 丑, 5).put(寡宿, 辰, 7).put(寡宿, 未, 6).put(寡宿, 戌, 7)
     .put(破碎, 丑, 7).put(破碎, 巳, 7).put(破碎, 酉, 5)
-    .put(年馬, 寅, 2).put(年馬, 巳, 5).put(年馬, 申, 2).put(年馬, 亥, 5)
+    .put(Companion.get年馬(), 寅, 2).put(Companion.get年馬(), 巳, 5).put(Companion.get年馬(), 申, 2).put(Companion.get年馬(), 亥, 5)
     .put(紅鸞, 子, 1).put(紅鸞, 丑, 7).put(紅鸞, 寅, 2).put(紅鸞, 卯, 1).put(紅鸞, 辰, 7).put(紅鸞, 巳, 2).put(紅鸞, 午, 2).put(紅鸞, 未, 7).put(紅鸞, 申, 1).put(紅鸞, 酉, 2).put(紅鸞, 戌, 7).put(紅鸞, 亥, 1)
     .put(天喜, 子, 2).put(天喜, 丑, 7).put(天喜, 寅, 1).put(天喜, 卯, 2).put(天喜, 辰, 7).put(天喜, 巳, 1).put(天喜, 午, 1).put(天喜, 未, 7).put(天喜, 申, 2).put(天喜, 酉, 1).put(天喜, 戌, 7).put(天喜, 亥, 2)
     .put(龍池, 子, 2).put(龍池, 丑, 5).put(龍池, 寅, 5).put(龍池, 卯, 1).put(龍池, 辰, 1).put(龍池, 巳, 7).put(龍池, 午, 6).put(龍池, 未, 1).put(龍池, 申, 5).put(龍池, 酉, 1).put(龍池, 戌, 7).put(龍池, 亥, 2)
@@ -62,7 +62,7 @@ public abstract class StrengthAbstractImpl implements IStrength , Serializable {
 
     /** 月系星 . {@link StarLucky#左輔} , {@link StarLucky#右弼} 有其他版本 */
     .put(天巫, 寅, 5).put(天巫, 巳, 7).put(天巫, 申, 7).put(天巫, 亥, 5)
-    .put(月馬, 寅, 2).put(月馬, 巳, 5).put(月馬, 申, 2).put(月馬, 亥, 5)
+    .put(Companion.get月馬(), 寅, 2).put(Companion.get月馬(), 巳, 5).put(Companion.get月馬(), 申, 2).put(Companion.get月馬(), 亥, 5)
     .put(陰煞, 寅, 5).put(陰煞, 卯, 7).put(陰煞, 辰, 6).put(陰煞, 巳, 7).put(陰煞, 午, 7).put(陰煞, 未, 5).put(陰煞, 戌, 7).put(陰煞, 亥, 1)
     .put(天月, 寅, 5).put(天月, 卯, 7).put(天月, 辰, 6).put(天月, 巳, 7).put(天月, 午, 7).put(天月, 未, 5).put(天月, 戌, 7).put(天月, 亥, 1)
     .put(解神, 子, 1).put(解神, 丑, 5).put(解神, 寅, 1).put(解神, 卯, 1).put(解神, 辰, 1).put(解神, 巳, 2).put(解神, 午, 1).put(解神, 未, 5).put(解神, 申, 6).put(解神, 酉, 2).put(解神, 戌, 1).put(解神, 亥, 6)

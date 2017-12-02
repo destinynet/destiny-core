@@ -48,7 +48,7 @@ public class StemBranchOptional implements Serializable {
    * 0[甲子] ~ 59[癸亥]
    */
   private static StemBranchOptional get(int index) {
-    return ArrayTools.get(ARRAY , index);
+    return ArrayTools.INSTANCE.get(ARRAY , index);
   }
 
   public static StemBranchOptional get(Optional<Stem> stemOpt, Optional<Branch> branchOpt) {

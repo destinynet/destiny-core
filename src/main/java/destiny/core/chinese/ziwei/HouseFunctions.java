@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 import static destiny.core.chinese.ziwei.StarDoctor.*;
 import static destiny.core.chinese.ziwei.StarGeneralFront.*;
 import static destiny.core.chinese.ziwei.StarLongevity.*;
-import static destiny.core.chinese.ziwei.StarLucky.*;
-import static destiny.core.chinese.ziwei.StarMain.*;
+import static destiny.core.chinese.ziwei.StarLucky.Companion;
 import static destiny.core.chinese.ziwei.StarMinor.*;
 import static destiny.core.chinese.ziwei.StarMinor.fun咸池;
 import static destiny.core.chinese.ziwei.StarMinor.fun天德;
@@ -38,102 +37,102 @@ public class HouseFunctions {
 
   private static Logger logger = LoggerFactory.getLogger(HouseFunctions.class);
 
-  public final static IHouse house紫微 = new HouseMainStarImpl(紫微) {
+  public final static IHouse house紫微 = new HouseMainStarImpl(StarMain.Companion.get紫微()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun紫微.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun紫微().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house天機 = new HouseMainStarImpl(天機) {
+  public final static IHouse house天機 = new HouseMainStarImpl(StarMain.Companion.get天機()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun天機.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun天機().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house太陽 = new HouseMainStarImpl(太陽) {
+  public final static IHouse house太陽 = new HouseMainStarImpl(StarMain.Companion.get太陽()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun太陽.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun太陽().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house武曲 = new HouseMainStarImpl(武曲) {
+  public final static IHouse house武曲 = new HouseMainStarImpl(StarMain.Companion.get武曲()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun武曲.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun武曲().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house天同 = new HouseMainStarImpl(天同) {
+  public final static IHouse house天同 = new HouseMainStarImpl(StarMain.Companion.get天同()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun天同.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun天同().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house廉貞 = new HouseMainStarImpl(廉貞) {
+  public final static IHouse house廉貞 = new HouseMainStarImpl(StarMain.Companion.get廉貞()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun廉貞.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun廉貞().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house天府 = new HouseMainStarImpl(天府) {
+  public final static IHouse house天府 = new HouseMainStarImpl(StarMain.Companion.get天府()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun天府.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun天府().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
 
-  public final static IHouse house太陰 = new HouseMainStarImpl(太陰) {
+  public final static IHouse house太陰 = new HouseMainStarImpl(StarMain.Companion.get太陰()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun太陰.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun太陰().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house貪狼 = new HouseMainStarImpl(貪狼) {
+  public final static IHouse house貪狼 = new HouseMainStarImpl(StarMain.Companion.get貪狼()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun貪狼.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun貪狼().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house巨門 = new HouseMainStarImpl(巨門) {
+  public final static IHouse house巨門 = new HouseMainStarImpl(StarMain.Companion.get巨門()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun巨門.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun巨門().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house天相 = new HouseMainStarImpl(天相) {
+  public final static IHouse house天相 = new HouseMainStarImpl(StarMain.Companion.get天相()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun天相.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun天相().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house天梁 = new HouseMainStarImpl(天梁) {
+  public final static IHouse house天梁 = new HouseMainStarImpl(StarMain.Companion.get天梁()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun天梁.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun天梁().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house七殺 = new HouseMainStarImpl(七殺) {
+  public final static IHouse house七殺 = new HouseMainStarImpl(StarMain.Companion.get七殺()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun七殺.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun七殺().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
-  public final static IHouse house破軍 = new HouseMainStarImpl(破軍) {
+  public final static IHouse house破軍 = new HouseMainStarImpl(StarMain.Companion.get破軍()) {
     @Override
     public Branch getBranch(Tuple5<Integer, Integer, Boolean, Integer , IPurpleStarBranch> t) {
-      return fun破軍.apply(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
+      return StarMain.Companion.getFun破軍().invoke(t.v1() , t.v2() , t.v3() , t.v4() , t.v5());
     }
   };
 
@@ -143,66 +142,66 @@ public class HouseFunctions {
 
   // =======↓↓↓======= 以下  8 顆吉星 =======↓↓↓=======
   
-  public final static IHouse house文昌 = new HouseHourBranchImpl(文昌) {
+  public final static IHouse house文昌 = new HouseHourBranchImpl(Companion.get文昌()) {
     @Override
     public Branch getBranch(Branch branch) {
-      return fun文昌.apply(branch);
+      return Companion.getFun文昌().invoke(branch);
     }
   };
 
-  public final static IHouse house文曲 = new HouseHourBranchImpl(文曲) {
+  public final static IHouse house文曲 = new HouseHourBranchImpl(Companion.get文曲()) {
     @Override
     public Branch getBranch(Branch branch) {
-      return fun文曲.apply(branch);
+      return Companion.getFun文曲().invoke(branch);
     }
   };
 
-  public final static IHouse house左輔 = new HouseMonthImpl(左輔) {
+  public final static IHouse house左輔 = new HouseMonthImpl(StarLucky.Companion.get左輔()) {
     @Override
     public Branch getBranch(Integer finalMonthNum) {
-      return fun左輔_月數.apply(finalMonthNum);
+      return StarLucky.Companion.getFun左輔_月數().invoke(finalMonthNum);
     }
   };
 
-  public final static IHouse house右弼 = new HouseMonthImpl(右弼) {
+  public final static IHouse house右弼 = new HouseMonthImpl(Companion.get右弼()) {
     @Override
     public Branch getBranch(Integer finalMonthNum) {
-      return fun右弼_月數.apply(finalMonthNum);
+      return Companion.getFun右弼_月數().invoke(finalMonthNum);
     }
   };
 
-  public final static IHouse house天魁 = new HouseYearStemTianyiImpl(天魁) {
+  public final static IHouse house天魁 = new HouseYearStemTianyiImpl(Companion.get天魁()) {
     @Override
     public Branch getBranch(Tuple2<Stem, TianyiIF> tuple) {
-      return fun天魁.apply(tuple.v1() , tuple.v2());
+      return Companion.getFun天魁().invoke(tuple.v1() , tuple.v2());
     }
   };
   
-  public final static IHouse house天鉞 = new HouseYearStemTianyiImpl(天鉞) {
+  public final static IHouse house天鉞 = new HouseYearStemTianyiImpl(Companion.get天鉞()) {
     @Override
     public Branch getBranch(Tuple2<Stem, TianyiIF> tuple) {
-      return fun天鉞.apply(tuple.v1() , tuple.v2());
+      return Companion.getFun天鉞().invoke(tuple.v1() , tuple.v2());
     }
   };
   
-  public final static IHouse house祿存 = new HouseYearStemImpl(祿存) {
+  public final static IHouse house祿存 = new HouseYearStemImpl(Companion.get祿存()) {
     @Override
     public Branch getBranch(Stem stem) {
-      return fun祿存.apply(stem);
+      return Companion.getFun祿存().invoke(stem);
     }
   };
 
-  public final static IHouse house年馬 = new HouseYearBranchImpl(年馬) {
+  public final static IHouse house年馬 = new HouseYearBranchImpl(Companion.get年馬()) {
     @Override
     public Branch getBranch(Branch branch) {
-      return fun年馬_年支.apply(branch);
+      return Companion.getFun年馬_年支().invoke(branch);
     }
   };
 
-  public final static IHouse house月馬 = new HouseMonthImpl(月馬) {
+  public final static IHouse house月馬 = new HouseMonthImpl(Companion.get月馬()) {
     @Override
     public Branch getBranch(Integer finalMonthNum) {
-      return fun月馬_月數.apply(finalMonthNum);
+      return Companion.getFun月馬_月數().invoke(finalMonthNum);
     }
   };
 

@@ -55,7 +55,7 @@ public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF {
    * @return
    */
   public static Stem get(int index) {
-    return ArrayTools.get(ARRAY , index);
+    return ArrayTools.INSTANCE.get(ARRAY , index);
   }
 
 

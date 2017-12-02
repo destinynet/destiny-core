@@ -42,7 +42,7 @@ public enum Branch implements BranchIF<Branch> {
    * 11 為 亥 <BR>
    */
   public static Branch get(int index) {
-    return ArrayTools.get(ARRAY , index);
+    return ArrayTools.INSTANCE.get(ARRAY , index);
   }
 
   /**

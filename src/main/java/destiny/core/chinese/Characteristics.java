@@ -77,7 +77,7 @@ public class Characteristics {
   }
   
   public Branch get驛馬() {
-    switch (BranchTools.trilogy(日支)) {
+    switch (BranchTools.INSTANCE.trilogy(日支)) {
       case 水: return 寅;
       case 木: return 巳;
       case 金: return 亥;

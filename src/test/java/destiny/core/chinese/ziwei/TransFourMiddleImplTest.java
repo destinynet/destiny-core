@@ -31,27 +31,27 @@ public class TransFourMiddleImplTest {
   @Test
   public void getStarOf() {
 
-    assertSame(太陽, impl.getStarOf(戊, 科));
-    assertSame(天機, impl.getStarOf(戊, 忌));
+    assertSame(Companion.get太陽(), impl.getStarOf(戊, 科));
+    assertSame(Companion.get天機(), impl.getStarOf(戊, 忌));
 
-    assertSame(天府, impl.getStarOf(庚, 科));
-    assertSame(天同, impl.getStarOf(庚, 忌));
+    assertSame(Companion.get天府(), impl.getStarOf(庚, 科));
+    assertSame(Companion.get天同(), impl.getStarOf(庚, 忌));
 
-    assertSame(天府, impl.getStarOf(壬, 科));
-    assertSame(武曲, impl.getStarOf(壬, 忌));
+    assertSame(Companion.get天府(), impl.getStarOf(壬, 科));
+    assertSame(Companion.get武曲(), impl.getStarOf(壬, 忌));
   }
 
   @Test
   public void getValueOf() {
-    assertNull(impl.getValueOf(天府 , 甲).orElse(null));
-    assertNull(impl.getValueOf(天府 , 乙).orElse(null));
-    assertNull(impl.getValueOf(天府 , 丙).orElse(null));
-    assertNull(impl.getValueOf(天府 , 丁).orElse(null));
-    assertNull(impl.getValueOf(天府 , 戊).orElse(null));
-    assertNull(impl.getValueOf(天府 , 己).orElse(null));
-    assertSame(科 , impl.getValueOf(天府 , 庚).orElse(null));
-    assertNull(impl.getValueOf(天府 , 辛).orElse(null));
-    assertSame(科 , impl.getValueOf(天府 , 壬).orElse(null));
-    assertNull(impl.getValueOf(天府 , 癸).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 甲).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 乙).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 丙).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 丁).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 戊).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 己).orElse(null));
+    assertSame(科 , impl.getValueOf(Companion.get天府(), 庚).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 辛).orElse(null));
+    assertSame(科 , impl.getValueOf(Companion.get天府(), 壬).orElse(null));
+    assertNull(impl.getValueOf(Companion.get天府(), 癸).orElse(null));
   }
 }

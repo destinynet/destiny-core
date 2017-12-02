@@ -11,15 +11,13 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static destiny.core.chinese.Branch.*;
-import static destiny.core.chinese.ziwei.StarLucky.天魁;
-import static destiny.core.chinese.ziwei.StarMain.*;
+import static destiny.core.chinese.Branch.子;
+import static destiny.core.chinese.ziwei.StarMain.Companion;
+import static destiny.core.chinese.ziwei.StarMain.Type;
 import static destiny.core.chinese.ziwei.StarMinor.三台;
 import static destiny.core.chinese.ziwei.StarMinor.天巫;
 import static destiny.core.chinese.ziwei.StarUnlucky.地劫;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class StrengthMiddleImplTest {
 
@@ -37,8 +35,8 @@ public class StrengthMiddleImplTest {
   @Test
   public void testListStarByType() {
     List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(StarMain.values));
-    starList.addAll(Arrays.asList(StarLucky.values));
+    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarUnlucky.values));
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
@@ -61,7 +59,7 @@ public class StrengthMiddleImplTest {
 
   @Test
   public void getMap() {
-    impl.getMapOf(紫微).forEach((k,v) -> {
+    impl.getMapOf(Companion.get紫微()).forEach((k, v) -> {
       logger.info("{} -> {}" , k , v);
     });
 
@@ -74,10 +72,10 @@ public class StrengthMiddleImplTest {
   public void getStrength() {
 
 
-    assertSame(5, impl.getStrengthOf(紫微, 子).orElse(0));
-    assertSame(5, impl.getStrengthOf(破軍, Branch.亥).orElse(0));
+    assertSame(5, impl.getStrengthOf(Companion.get紫微(), 子).orElse(0));
+    assertSame(5, impl.getStrengthOf(Companion.get破軍(), Branch.亥).orElse(0));
 
-    assertSame(2, impl.getStrengthOf(天魁, 子).orElse(0));
+    assertSame(2, impl.getStrengthOf(StarLucky.Companion.get天魁(), 子).orElse(0));
     assertSame(5, impl.getStrengthOf(三台, 子).orElse(0));
     assertFalse(impl.getStrengthOf(天巫 , 子).isPresent());
   }

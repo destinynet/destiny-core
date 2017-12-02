@@ -17,7 +17,7 @@ public class StarMainTest {
 
   @Test
   public void testToString() {
-    for(StarMain star : StarMain.values) {
+    for(StarMain star : StarMain.Companion.getValues()) {
       assertNotNull(star.toString());
       assertNotNull(star.toString(Locale.TAIWAN));
       assertNotNull(star.toString(Locale.CHINA));

@@ -24,8 +24,6 @@ import java.util.Optional;
 import static destiny.core.chinese.Branch.子;
 import static destiny.core.chinese.Branch.寅;
 import static destiny.core.chinese.Stem.*;
-import static destiny.core.chinese.ziwei.StarLucky.*;
-import static destiny.core.chinese.ziwei.StarMain.*;
 import static destiny.core.chinese.ziwei.StarUnlucky.火星;
 import static destiny.core.chinese.ziwei.StarUnlucky.鈴星;
 
@@ -189,13 +187,13 @@ public interface IZiwei {
   /** 命主 : 命宮所在地支安星 */
   static ZStar getMainStar(Branch branch) {
     switch (branch) {
-      case 子: return 貪狼;
-      case 丑:case 亥: return 巨門;
-      case 寅:case 戌: return 祿存;
-      case 卯:case 酉: return 文曲;
-      case 辰:case 申: return 廉貞;
-      case 巳:case 未: return 武曲;
-      case 午:return 破軍;
+      case 子: return StarMain.Companion.get貪狼();
+      case 丑:case 亥: return StarMain.Companion.get巨門();
+      case 寅:case 戌: return StarLucky.Companion.get祿存();
+      case 卯:case 酉: return StarLucky.Companion.get文曲();
+      case 辰:case 申: return StarMain.Companion.get廉貞();
+      case 巳:case 未: return StarMain.Companion.get武曲();
+      case 午:return StarMain.Companion.get破軍();
       default: throw new AssertionError("Error : " + branch);
     }
   }
@@ -205,11 +203,11 @@ public interface IZiwei {
   static ZStar getBodyStar(Branch branch) {
     switch (branch) {
       case 子: return 火星;
-      case 丑:case 未: return 天相;
-      case 寅:case 申: return 天梁;
-      case 卯:case 酉: return 天同;
-      case 辰:case 戌: return 文昌;
-      case 巳:case 亥: return 天機;
+      case 丑:case 未: return StarMain.Companion.get天相();
+      case 寅:case 申: return StarMain.Companion.get天梁();
+      case 卯:case 酉: return StarMain.Companion.get天同();
+      case 辰:case 戌: return StarLucky.Companion.get文昌();
+      case 巳:case 亥: return StarMain.Companion.get天機();
       case 午: return 鈴星;
       default: throw new AssertionError("Error : " + branch);
     }

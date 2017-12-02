@@ -75,7 +75,7 @@ public final class StarUnlucky extends ZStar {
    */
   /** 火星 (全書): 年支 -> 地支 */
   public final static Function<Branch , Branch> fun火星_全書 = year -> {
-    switch (BranchTools.trilogy(year)) {
+    switch (BranchTools.INSTANCE.trilogy(year)) {
       case 火: return 丑; // 寅午戌人[丑]卯方
       case 水: return 寅; // 子申辰人[寅]戌揚
       case 金: return 卯; // 巳酉丑人[卯]戌位
@@ -86,7 +86,7 @@ public final class StarUnlucky extends ZStar {
 
   /** 鈴星 (全書): 年支 -> 地支 */
   public final static Function<Branch , Branch> fun鈴星_全書 = year -> {
-    switch (BranchTools.trilogy(year)) {
+    switch (BranchTools.INSTANCE.trilogy(year)) {
       case 火: return 卯; // 寅午戌人丑[卯]方
       case 水: return 戌; // 子申辰人寅[戌]揚
       case 金: return 戌; // 巳酉丑人卯[戌]位
@@ -106,7 +106,7 @@ public final class StarUnlucky extends ZStar {
 
   /** 火星 (全集): (年支、時支) -> 地支 (子由使用)*/
   public final static BiFunction<Branch , Branch , Branch> fun火星_全集 = (year , hour) -> {
-    switch (BranchTools.trilogy(year)) {
+    switch (BranchTools.INSTANCE.trilogy(year)) {
       case 火: return Branch.get(hour.getIndex()+1);
       case 水: return Branch.get(hour.getIndex()+2);
       case 金: return Branch.get(hour.getIndex()+3);
@@ -117,7 +117,7 @@ public final class StarUnlucky extends ZStar {
 
   /** 鈴星 (全集) : (年支、時支) -> 地支 (子由使用) */
   public final static BiFunction<Branch , Branch , Branch> fun鈴星_全集 = (year , hour ) -> {
-    switch (BranchTools.trilogy(year)) {
+    switch (BranchTools.INSTANCE.trilogy(year)) {
       case 火: return Branch.get(hour.getIndex()+3);
       case 水:
       case 金:

@@ -61,7 +61,7 @@ public class StarGeneralFront extends ZStar {
   };
 
   private final static Function2<Branch , StarGeneralFront, Branch> fun = (年支 , 星) -> {
-    FiveElement 五行 = BranchTools.trilogy(年支);
+    FiveElement 五行 = BranchTools.INSTANCE.trilogy(年支);
     // 第一個 (將星)
     Branch head = func.apply(五行);
     int steps = list.indexOf(星);

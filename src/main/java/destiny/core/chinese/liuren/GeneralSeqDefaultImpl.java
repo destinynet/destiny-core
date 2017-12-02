@@ -33,7 +33,7 @@ public class GeneralSeqDefaultImpl implements GeneralSeqIF , Serializable {
   }
 
   private static General get(int index) {
-    return ArrayTools.get(ARRAY , index);
+    return ArrayTools.INSTANCE.get(ARRAY , index);
   }
 
   private static int getIndex(General g) {
