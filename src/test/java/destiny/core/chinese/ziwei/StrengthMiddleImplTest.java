@@ -31,15 +31,18 @@ public class StrengthMiddleImplTest {
     logger.info("title tw = {} , cn = {}" , impl.getTitle(Locale.TAIWAN) , impl.getTitle(Locale.CHINA));
   }
 
+
   @Test
   public void testListStarByType() {
     List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
+//    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
+//    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarUnlucky.values));
     starList.addAll(Arrays.asList(StarMinor.values));
     starList.addAll(Arrays.asList(StarDoctor.values));
     starList.addAll(Arrays.asList(StarLongevity.values));
+
+    logger.info("starList = {}" , starList);
 
     Map<Type, Set<ZStar>> map = starList.stream()
       .collect(
@@ -69,13 +72,11 @@ public class StrengthMiddleImplTest {
 
   @Test
   public void getStrength() {
+    assertSame(5, impl.getStrengthOf(StarMain.紫微.INSTANCE, 子));
+    assertSame(5, impl.getStrengthOf(StarMain.破軍.INSTANCE, Branch.亥));
 
-
-    assertSame(5, impl.getStrengthOf(StarMain.紫微.INSTANCE, 子).orElse(0));
-    assertSame(5, impl.getStrengthOf(StarMain.破軍.INSTANCE, Branch.亥).orElse(0));
-
-    assertSame(2, impl.getStrengthOf(StarLucky.天魁.INSTANCE, 子).orElse(0));
-    assertSame(5, impl.getStrengthOf(三台, 子).orElse(0));
-    assertFalse(impl.getStrengthOf(天巫 , 子).isPresent());
+    assertSame(2, impl.getStrengthOf(StarLucky.天魁.INSTANCE, 子));
+    assertSame(5, impl.getStrengthOf(三台, 子));
+    assertNull(impl.getStrengthOf(天巫 , 子));
   }
 }

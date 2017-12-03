@@ -5,10 +5,11 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
 import destiny.core.chinese.Branch;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * 廟◎－星曜所在宮位是亮度最為光亮時，稱為入廟；任何星曜以入廟為最佳。
@@ -19,9 +20,10 @@ import java.util.Optional;
 public interface IStrength extends Descriptive {
 
   /** 取得一個星體，在 12 個宮位的廟旺表 */
-  Map<Branch, Integer> getMapOf(ZStar star);
+  Map<Branch, Integer> getMapOf(@NotNull ZStar star);
 
-  Optional<Integer> getStrengthOf(ZStar star , Branch branch);
+  @Nullable
+  Integer getStrengthOf(@NotNull ZStar star , @NotNull Branch branch);
 
   /**
    *

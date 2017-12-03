@@ -26,8 +26,6 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
   object 七殺 : StarMain("七殺")
   object 破軍 : StarMain("破軍")
 
-
-
   companion object {
 
     val values = arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍)

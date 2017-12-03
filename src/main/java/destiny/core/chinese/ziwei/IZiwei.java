@@ -190,8 +190,8 @@ public interface IZiwei {
 
       case 子: return StarMain.貪狼.INSTANCE;
       case 丑:case 亥: return StarMain.巨門.INSTANCE;
-      case 寅:case 戌: return StarLucky.Companion.get祿存();
-      case 卯:case 酉: return StarLucky.Companion.get文曲();
+      case 寅:case 戌: return StarLucky.祿存.INSTANCE;
+      case 卯:case 酉: return StarLucky.文曲.INSTANCE;
       case 辰:case 申: return StarMain.廉貞.INSTANCE;
       case 巳:case 未: return StarMain.武曲.INSTANCE;
       case 午:return StarMain.破軍.INSTANCE;
@@ -207,7 +207,7 @@ public interface IZiwei {
       case 丑:case 未: return StarMain.天相.INSTANCE;
       case 寅:case 申: return StarMain.天梁.INSTANCE;
       case 卯:case 酉: return StarMain.天同.INSTANCE;
-      case 辰:case 戌: return StarLucky.Companion.get文昌();
+      case 辰:case 戌: return StarLucky.文昌.INSTANCE;
       case 巳:case 亥: return StarMain.天機.INSTANCE;
       case 午: return 鈴星;
       default: throw new AssertionError("Error : " + branch);

@@ -120,13 +120,13 @@ object HouseFunctions {
 
   // =======↓↓↓======= 以下  8 顆吉星 =======↓↓↓=======
 
-  val house文昌: IHouse<*> = object : HouseHourBranchImpl(Companion.文昌) {
+  val house文昌: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文昌) {
     override fun getBranch(branch: Branch): Branch {
       return Companion.fun文昌.invoke(branch)
     }
   }
 
-  val house文曲: IHouse<*> = object : HouseHourBranchImpl(Companion.文曲) {
+  val house文曲: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文曲) {
     override fun getBranch(branch: Branch): Branch {
       return Companion.fun文曲.invoke(branch)
     }
@@ -138,37 +138,37 @@ object HouseFunctions {
     }
   }
 
-  val house右弼: IHouse<*> = object : HouseMonthImpl(Companion.右弼) {
+  val house右弼: IHouse<*> = object : HouseMonthImpl(StarLucky.右弼) {
     override fun getBranch(finalMonthNum: Int): Branch {
       return Companion.fun右弼_月數.invoke(finalMonthNum)
     }
   }
 
-  val house天魁: IHouse<*> = object : HouseYearStemTianyiImpl(Companion.天魁) {
+  val house天魁: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天魁) {
     override fun getBranch(tuple: Tuple2<Stem, TianyiIF>): Branch {
       return Companion.fun天魁.invoke(tuple.v1(), tuple.v2())
     }
   }
 
-  val house天鉞: IHouse<*> = object : HouseYearStemTianyiImpl(Companion.天鉞) {
+  val house天鉞: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天鉞) {
     override fun getBranch(tuple: Tuple2<Stem, TianyiIF>): Branch {
       return Companion.fun天鉞.invoke(tuple.v1(), tuple.v2())
     }
   }
 
-  val house祿存: IHouse<*> = object : HouseYearStemImpl(Companion.祿存) {
+  val house祿存: IHouse<*> = object : HouseYearStemImpl(StarLucky.祿存) {
     override fun getBranch(stem: Stem): Branch {
       return Companion.fun祿存.invoke(stem)
     }
   }
 
-  val house年馬: IHouse<*> = object : HouseYearBranchImpl(Companion.年馬) {
+  val house年馬: IHouse<*> = object : HouseYearBranchImpl(StarLucky.年馬) {
     override fun getBranch(branch: Branch): Branch {
       return Companion.fun年馬_年支.invoke(branch)
     }
   }
 
-  val house月馬: IHouse<*> = object : HouseMonthImpl(Companion.月馬) {
+  val house月馬: IHouse<*> = object : HouseMonthImpl(StarLucky.月馬) {
     override fun getBranch(finalMonthNum: Int): Branch {
       return Companion.fun月馬_月數.invoke(finalMonthNum)
     }

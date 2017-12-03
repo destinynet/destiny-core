@@ -13,9 +13,14 @@ class StarMainTest {
   private val logger = LoggerFactory.getLogger(javaClass)
 
   @Test
-  fun testToString() {
+  fun listValues() {
+    logger.info("{}" , StarMain.values)
+  }
 
+  @Test
+  fun testToString() {
     for (star in StarMain.values) {
+      assertNotNull(star)
       assertNotNull(star.toString())
       assertNotNull(star.toString(Locale.TAIWAN))
       assertNotNull(star.toString(Locale.CHINA))
