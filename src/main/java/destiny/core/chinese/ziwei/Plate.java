@@ -9,6 +9,7 @@ import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+import kotlin.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple;
@@ -91,12 +92,12 @@ public class Plate implements Serializable {
   private final List<String> notes;
 
   /** 虛歲，每歲的起訖時分 (in GMT) */
-  private final Map<Integer , Tuple2<Double , Double>> vageMap;
+  private final Map<Integer , Pair<Double , Double>> vageMap;
 
   /**
    * 命盤
    */
-  protected Plate(@Nullable String name, ChineseDate chineseDate, @Nullable ChronoLocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, List<String> notes, Map<Integer, Tuple2<Double, Double>> vageMap) {
+  protected Plate(@Nullable String name, ChineseDate chineseDate, @Nullable ChronoLocalDateTime localDateTime, @Nullable Location location, @Nullable String place, Gender gender, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Set<HouseData> houseDataSet, Map<ZStar, Map<FlowType, ITransFour.Value>> transFourMap, Map<Branch, Map<FlowType, House>> branchFlowHouseMap, Map<FlowType, StemBranch> flowBranchMap, Map<ZStar, Integer> starStrengthMap, List<String> notes, Map<Integer, Pair<Double, Double>> vageMap) {
     this.name = name;
     this.chineseDate = chineseDate;
     this.localDateTime = localDateTime;
@@ -310,7 +311,7 @@ public class Plate implements Serializable {
 
 
   /** 歲數 map (fromGMT , toGMT) */
-  public Map<Integer, Tuple2<Double, Double>> getVageMap() {
+  public Map<Integer, Pair<Double, Double>> getVageMap() {
     return vageMap;
   }
 

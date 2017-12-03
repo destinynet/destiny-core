@@ -17,6 +17,7 @@ import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -148,7 +149,11 @@ public class PersonContext extends EightWordsContext {
 
   public Map<Integer , Tuple2<Double , Double>> getAgeMap(int toAge) {
     double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
-    return intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , toAge);
+    Map<Integer, Pair<Double, Double>> map = intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , toAge);
+    return map.entrySet().stream()
+      .collect(Collectors.toMap(
+        Map.Entry::getKey, entry -> Tuple.tuple(entry.getValue().getFirst() , entry.getValue().getSecond()))
+      );
   }
 
   /** 八字大運是否順行 */

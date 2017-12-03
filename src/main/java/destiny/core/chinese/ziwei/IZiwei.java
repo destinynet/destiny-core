@@ -10,6 +10,7 @@ import destiny.core.calendar.SolarTermsIF;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.*;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -64,7 +65,7 @@ public interface IZiwei {
   /** 承上 , 找到命宮的 干支 ，可以取得「五行、第幾局」 */
   static Tuple2<FiveElement , Integer> getMainDesc(StemBranch mainHouse) {
     // 五行
-    FiveElement fiveElement = NaYin.getFiveElement(mainHouse);
+    FiveElement fiveElement = NaYin.Companion.getFiveElement(mainHouse);
     // 第幾局
     int set;
     switch (fiveElement) {
@@ -152,7 +153,7 @@ public interface IZiwei {
    * @param monthBranch        「節氣」的月支
    * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
    */
-  Builder getBirthPlate(Optional<Branch> optionalMainBranch, Optional<Branch> optionalBodyBranch, int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Optional<Map<Integer, Tuple2<Double, Double>>> optionalVageMap, ZContext context) ;
+  Builder getBirthPlate(Optional<Branch> optionalMainBranch, Optional<Branch> optionalBodyBranch, int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Optional<Map<Integer, Pair<Double, Double>>> optionalVageMap, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
   Builder getBirthPlate(ChronoLocalDateTime lmt, Location location, String place, Gender gender, ZContextMore context, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);

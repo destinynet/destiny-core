@@ -11,6 +11,7 @@ import destiny.core.calendar.eightwords.personal.PersonContextModel;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple;
@@ -115,10 +116,10 @@ public class Builder implements Serializable {
   private List<String> notes = new ArrayList<>();
 
   /** 歲數 (暫定虛歲），每歲的起訖時分 (in GMT) */
-  private final Map<Integer , Tuple2<Double , Double>> vageMap;
+  private final Map<Integer , Pair<Double , Double>> vageMap;
 
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Tuple2<Double, Double>> vageMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Pair<Double, Double>> vageMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -227,7 +228,7 @@ public class Builder implements Serializable {
   }
 
   /** 歲數 map */
-  public Map<Integer, Tuple2<Double, Double>> getVageMap() {
+  public Map<Integer, Pair<Double, Double>> getVageMap() {
     return vageMap;
   }
 
