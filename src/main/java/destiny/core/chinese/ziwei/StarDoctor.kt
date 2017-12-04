@@ -1,0 +1,68 @@
+/**
+ * Created by smallufo on 2017-04-15.
+ */
+package destiny.core.chinese.ziwei
+
+import destiny.core.Gender
+import destiny.core.chinese.Stem
+
+/**
+ * 博士12神煞 , 丙級星
+ *
+ * 博士永遠跟著祿存走，也就是說 [StarLucky.祿存] 的旁邊一定有博士，然後分別排列出力士、青龍、小耗……等星。
+ * 陽男陰女順排，陰男陽女逆排。
+ *
+ * 亦即，這是 (年干,性別) -> 地支
+ * 每次 function 都要 call [StarLucky.fun祿存]
+ *
+ */
+sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, ZStar.Type.博士) {
+  object 博士 : StarDoctor("博士")
+  object 力士 : StarDoctor("力士")
+  object 青龍 : StarDoctor("青龍")
+  object 小耗 : StarDoctor("小耗") // 又叫「地耗」
+  object 將軍 : StarDoctor("將軍")
+  object 奏書 : StarDoctor("奏書")
+  object 飛廉 : StarDoctor("飛廉")
+  object 喜神 : StarDoctor("喜神")
+  object 病符 : StarDoctor("病符")
+  object 大耗 : StarDoctor("大耗") // 又叫「天耗」
+  object 伏兵 : StarDoctor("伏兵")
+  object 官府 : StarDoctor("官府")
+
+  companion object {
+
+
+    val values = arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府)
+
+    // 年干、性別、步數
+    private val branchGender2Branch = { tuple3: Triple<Stem, Gender, Int> ->
+      val yearStem = tuple3.first
+      val 祿存地支 = StarLucky.fun祿存.invoke(yearStem)
+      val gender = tuple3.second
+      val steps = tuple3.third
+
+      if (yearStem.booleanValue && gender === Gender.男 || !yearStem.booleanValue && gender === Gender.女) {
+        // 陽男 陰女 順行
+        祿存地支.next(steps - 1)
+      } else {
+        // 陰男 陽女 逆行
+        祿存地支.prev(steps - 1)
+      }
+    }
+
+    // 年干星系
+    val fun博士 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 1)) }
+    val fun力士 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 2)) }
+    val fun青龍 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 3)) }
+    val fun小耗 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 4)) }
+    val fun將軍 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 5)) }
+    val fun奏書 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 6)) }
+    val fun飛廉 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 7)) }
+    val fun喜神 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 8)) }
+    val fun病符 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 9)) }
+    val fun大耗 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 10)) }
+    val fun伏兵 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 11)) }
+    val fun官府 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 12)) }
+  }
+}

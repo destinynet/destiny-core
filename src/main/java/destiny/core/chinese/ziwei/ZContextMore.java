@@ -184,18 +184,18 @@ public class ZContextMore extends ZContext {
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
     starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarUnlucky.values));
+    starList.addAll(Arrays.asList(StarUnlucky.Companion.getValues()));
     if (showMinors)
-      starList.addAll(Arrays.asList(StarMinor.values));
+      starList.addAll(Arrays.asList(StarMinor.Companion.getValues()));
 
     if (showDoctors)
-      starList.addAll(Arrays.asList(StarDoctor.values));
+      starList.addAll(Arrays.asList(StarDoctor.Companion.getValues()));
 
     if (showLongevity)
-      starList.addAll(Arrays.asList(StarLongevity.values));
+      starList.addAll(Arrays.asList(StarLongevity.Companion.getValues()));
 
     if (showGeneralFront)
-      starList.addAll(Arrays.asList(StarGeneralFront.values));
+      starList.addAll(Arrays.asList(StarGeneralFront.Companion.getValues()));
 
     if (showYearFront)
       starList.addAll(Arrays.asList(StarYearFront.values));

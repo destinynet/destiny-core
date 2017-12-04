@@ -37,10 +37,10 @@ public class StrengthMiddleImplTest {
     List<ZStar> starList = new ArrayList<>();
 //    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
 //    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarUnlucky.values));
-    starList.addAll(Arrays.asList(StarMinor.values));
-    starList.addAll(Arrays.asList(StarDoctor.values));
-    starList.addAll(Arrays.asList(StarLongevity.values));
+    starList.addAll(Arrays.asList(StarUnlucky.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarMinor.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarDoctor.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarLongevity.Companion.getValues()));
 
     logger.info("starList = {}" , starList);
 
@@ -65,8 +65,8 @@ public class StrengthMiddleImplTest {
       logger.info("{} -> {}" , k , v);
     });
 
-    impl.getMapOf(地劫).forEach((k,v) -> {
-      logger.info("{} : {} -> {}" , 地劫 , k , v);
+    impl.getMapOf(地劫.INSTANCE).forEach((k, v) -> {
+      logger.info("{} : {} -> {}" , 地劫.INSTANCE, k , v);
     });
   }
 
@@ -76,7 +76,7 @@ public class StrengthMiddleImplTest {
     assertSame(5, impl.getStrengthOf(StarMain.破軍.INSTANCE, Branch.亥));
 
     assertSame(2, impl.getStrengthOf(StarLucky.天魁.INSTANCE, 子));
-    assertSame(5, impl.getStrengthOf(三台, 子));
-    assertNull(impl.getStrengthOf(天巫 , 子));
+    assertSame(5, impl.getStrengthOf(三台.INSTANCE, 子));
+    assertNull(impl.getStrengthOf(天巫.INSTANCE, 子));
   }
 }

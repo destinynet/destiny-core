@@ -63,10 +63,10 @@ public class ZStarTest {
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
     starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarUnlucky.values));
-    starList.addAll(Arrays.asList(StarMinor.values));
-    starList.addAll(Arrays.asList(StarDoctor.values));
-    starList.addAll(Arrays.asList(StarLongevity.values));
+    starList.addAll(Arrays.asList(StarUnlucky.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarMinor.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarDoctor.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarLongevity.Companion.getValues()));
 
     Map<ZStar.Type, Set<ZStar>> map = starList.stream()
       .collect(

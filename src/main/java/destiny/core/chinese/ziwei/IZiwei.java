@@ -204,13 +204,13 @@ public interface IZiwei {
   /** 身主 : 以出生年之地支安星 */
   static ZStar getBodyStar(Branch branch) {
     switch (branch) {
-      case 子: return 火星;
+      case 子: return 火星.INSTANCE;
       case 丑:case 未: return StarMain.天相.INSTANCE;
       case 寅:case 申: return StarMain.天梁.INSTANCE;
       case 卯:case 酉: return StarMain.天同.INSTANCE;
       case 辰:case 戌: return StarLucky.文昌.INSTANCE;
       case 巳:case 亥: return StarMain.天機.INSTANCE;
-      case 午: return 鈴星;
+      case 午: return 鈴星.INSTANCE;
       default: throw new AssertionError("Error : " + branch);
     }
   }

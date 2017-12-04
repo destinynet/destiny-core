@@ -5,8 +5,8 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.iching.Symbol.*
-import org.junit.Assert.assertSame
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertSame
 
 class StarSymbolDefaultImplTest {
 

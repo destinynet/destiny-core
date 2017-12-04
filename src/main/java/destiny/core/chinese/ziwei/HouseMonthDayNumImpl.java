@@ -7,15 +7,14 @@ import destiny.core.Gender;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
+import kotlin.Pair;
 
 import java.util.Optional;
 
 /**
  * (月數,日數) -> 地支
  */
-public abstract class HouseMonthDayNumImpl extends HouseAbstractImpl<Tuple2<Integer, Integer>>{
+public abstract class HouseMonthDayNumImpl extends HouseAbstractImpl<Pair<Integer, Integer>>{
 
   HouseMonthDayNumImpl(ZStar star) {
     super(star);
@@ -24,6 +23,6 @@ public abstract class HouseMonthDayNumImpl extends HouseAbstractImpl<Tuple2<Inte
 
   @Override
   public Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars, SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays, Optional<Branch> predefinedMainHouse, ZContext context) {
-    return getBranch(Tuple.tuple(finalMonthNumForMonthStars, days));
+    return getBranch(new Pair<>(finalMonthNumForMonthStars, days));
   }
 }

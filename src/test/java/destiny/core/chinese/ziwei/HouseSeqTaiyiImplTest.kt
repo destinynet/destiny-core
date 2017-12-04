@@ -4,10 +4,12 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.ziwei.House.*
-import org.junit.Assert.*
-import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class HouseSeqTaiyiImplTest {
 
@@ -53,24 +55,24 @@ class HouseSeqTaiyiImplTest {
 
   @Test
   fun getAheadOf() {
-    assertEquals(0, impl.getAheadOf(官祿, 官祿).toLong())
-    assertEquals(1, impl.getAheadOf(交友, 官祿).toLong())
-    assertEquals(2, impl.getAheadOf(疾厄, 官祿).toLong())
-    assertEquals(3, impl.getAheadOf(福德, 官祿).toLong())
-    assertEquals(4, impl.getAheadOf(相貌, 官祿).toLong())
-    assertEquals(5, impl.getAheadOf(父母, 官祿).toLong())
-    assertEquals(6, impl.getAheadOf(命宮, 官祿).toLong())
-    assertEquals(7, impl.getAheadOf(兄弟, 官祿).toLong())
-    assertEquals(8, impl.getAheadOf(夫妻, 官祿).toLong())
-    assertEquals(9, impl.getAheadOf(子女, 官祿).toLong())
-    assertEquals(10, impl.getAheadOf(財帛, 官祿).toLong())
-    assertEquals(11, impl.getAheadOf(田宅, 官祿).toLong())
-    assertEquals(0, impl.getAheadOf(官祿, 官祿).toLong())
+    assertEquals(0, impl.getAheadOf(官祿, 官祿))
+    assertEquals(1, impl.getAheadOf(交友, 官祿))
+    assertEquals(2, impl.getAheadOf(疾厄, 官祿))
+    assertEquals(3, impl.getAheadOf(福德, 官祿))
+    assertEquals(4, impl.getAheadOf(相貌, 官祿))
+    assertEquals(5, impl.getAheadOf(父母, 官祿))
+    assertEquals(6, impl.getAheadOf(命宮, 官祿))
+    assertEquals(7, impl.getAheadOf(兄弟, 官祿))
+    assertEquals(8, impl.getAheadOf(夫妻, 官祿))
+    assertEquals(9, impl.getAheadOf(子女, 官祿))
+    assertEquals(10, impl.getAheadOf(財帛, 官祿))
+    assertEquals(11, impl.getAheadOf(田宅, 官祿))
+    assertEquals(0, impl.getAheadOf(官祿, 官祿))
 
-    assertEquals(-1, impl.getAheadOf(遷移, 官祿).toLong()) // 太乙派 ，不存在 遷移宮
-    assertEquals(-1, impl.getAheadOf(官祿, 遷移).toLong()) // 太乙派 ，不存在 遷移宮
-    assertEquals(-1, impl.getAheadOf(遷移, 命宮).toLong()) // 太乙派 ，不存在 遷移宮
-    assertEquals(-1, impl.getAheadOf(命宮, 遷移).toLong()) // 太乙派 ，不存在 遷移宮
+    assertEquals(-1, impl.getAheadOf(遷移, 官祿)) // 太乙派 ，不存在 遷移宮
+    assertEquals(-1, impl.getAheadOf(官祿, 遷移)) // 太乙派 ，不存在 遷移宮
+    assertEquals(-1, impl.getAheadOf(遷移, 命宮)) // 太乙派 ，不存在 遷移宮
+    assertEquals(-1, impl.getAheadOf(命宮, 遷移)) // 太乙派 ，不存在 遷移宮
   }
 
 }

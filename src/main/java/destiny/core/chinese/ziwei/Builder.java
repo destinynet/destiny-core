@@ -310,9 +310,9 @@ public class Builder implements Serializable {
       houseDataSet.forEach(houseData -> houseData.getStars().removeIf(star -> star instanceof StarGeneralFront));
 
       // 接著，以「流年」的將前12星，塞入
-      Arrays.stream(StarGeneralFront.values)
+      Arrays.stream(StarGeneralFront.Companion.getValues())
         .map(star -> {
-          Branch b = StarGeneralFront.funMap.get(star).apply(flowYear.getBranch());
+          Branch b = StarGeneralFront.Companion.getFunMap().get(star).invoke(flowYear.getBranch());
           return Tuple.tuple(star , b);
         }).forEach(t -> {
           houseDataSet.stream()

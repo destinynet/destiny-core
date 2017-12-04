@@ -7,19 +7,102 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.*
 import destiny.core.chinese.ziwei.StarDoctor.*
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun伏兵
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun力士
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun博士
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun喜神
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun大耗
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun奏書
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun官府
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun將軍
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun青龍
+import destiny.core.chinese.ziwei.StarDoctor.Companion.fun飛廉
 import destiny.core.chinese.ziwei.StarGeneralFront.*
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun亡神
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun劫煞
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun天煞
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun將星
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun息神
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun指背
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun攀鞍
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun月煞
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun歲馹
+import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun災煞
 import destiny.core.chinese.ziwei.StarLongevity.*
-import destiny.core.chinese.ziwei.StarLucky.Companion
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun冠帶
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun墓
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun帝旺
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun死
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun沐浴
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun病
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun絕
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun胎
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun臨官
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun衰
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun長生
+import destiny.core.chinese.ziwei.StarLongevity.Companion.fun養
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月數
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun天鉞
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun天魁
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun左輔_月數
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun年馬_年支
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun文昌
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun文曲
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun月馬_月數
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun祿存
 import destiny.core.chinese.ziwei.StarMinor.*
-import destiny.core.chinese.ziwei.StarMinor.fun咸池
-import destiny.core.chinese.ziwei.StarMinor.fun天德
-import destiny.core.chinese.ziwei.StarMinor.fun華蓋
-import destiny.core.chinese.ziwei.StarMinor.咸池
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun三台_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun傍空_A
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun八座_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun台輔
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun咸池
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天使_fixed疾厄
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天使_陽順陰逆
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天傷_fixed交友
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天傷_陽順陰逆
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天刑_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天哭
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天喜
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天壽
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天姚_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天官
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天巫_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天廚
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天才
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天月_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天福
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天空
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天虛
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun天貴
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun孤辰
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun寡宿
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun封誥
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun恩光
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun月德
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun正空_A
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun破碎
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun紅艷_甲乙相同
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun紅艷_甲乙相異
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun紅鸞
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun華蓋
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun蜚廉
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun解神_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun陰煞_月數
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun陰空
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun陽空
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun鳳閣
+import destiny.core.chinese.ziwei.StarMinor.Companion.fun龍池
 import destiny.core.chinese.ziwei.StarMinor.天德
-import destiny.core.chinese.ziwei.StarMinor.華蓋
 import destiny.core.chinese.ziwei.StarUnlucky.*
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun地劫
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun地空
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun擎羊
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun火星_全書
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun火星_全集
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全書
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
+import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
 import destiny.core.chinese.ziwei.StarYearFront.*
-import org.jooq.lambda.tuple.Tuple2
 import org.jooq.lambda.tuple.Tuple3
 import org.jooq.lambda.tuple.Tuple5
 import org.slf4j.LoggerFactory
@@ -122,55 +205,55 @@ object HouseFunctions {
 
   val house文昌: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文昌) {
     override fun getBranch(branch: Branch): Branch {
-      return Companion.fun文昌.invoke(branch)
+      return fun文昌.invoke(branch)
     }
   }
 
   val house文曲: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文曲) {
     override fun getBranch(branch: Branch): Branch {
-      return Companion.fun文曲.invoke(branch)
+      return fun文曲.invoke(branch)
     }
   }
 
   val house左輔: IHouse<*> = object : HouseMonthImpl(StarLucky.左輔) {
     override fun getBranch(finalMonthNum: Int): Branch {
-      return StarLucky.fun左輔_月數.invoke(finalMonthNum)
+      return fun左輔_月數.invoke(finalMonthNum)
     }
   }
 
   val house右弼: IHouse<*> = object : HouseMonthImpl(StarLucky.右弼) {
     override fun getBranch(finalMonthNum: Int): Branch {
-      return Companion.fun右弼_月數.invoke(finalMonthNum)
+      return fun右弼_月數.invoke(finalMonthNum)
     }
   }
 
   val house天魁: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天魁) {
-    override fun getBranch(tuple: Tuple2<Stem, TianyiIF>): Branch {
-      return Companion.fun天魁.invoke(tuple.v1(), tuple.v2())
+    override fun getBranch(tuple: Pair<Stem, TianyiIF>): Branch {
+      return fun天魁.invoke(tuple.first, tuple.second)
     }
   }
 
   val house天鉞: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天鉞) {
-    override fun getBranch(tuple: Tuple2<Stem, TianyiIF>): Branch {
-      return Companion.fun天鉞.invoke(tuple.v1(), tuple.v2())
+    override fun getBranch(tuple: Pair<Stem, TianyiIF>): Branch {
+      return fun天鉞.invoke(tuple.first, tuple.second)
     }
   }
 
   val house祿存: IHouse<*> = object : HouseYearStemImpl(StarLucky.祿存) {
     override fun getBranch(stem: Stem): Branch {
-      return Companion.fun祿存.invoke(stem)
+      return fun祿存.invoke(stem)
     }
   }
 
   val house年馬: IHouse<*> = object : HouseYearBranchImpl(StarLucky.年馬) {
     override fun getBranch(branch: Branch): Branch {
-      return Companion.fun年馬_年支.invoke(branch)
+      return fun年馬_年支.invoke(branch)
     }
   }
 
   val house月馬: IHouse<*> = object : HouseMonthImpl(StarLucky.月馬) {
     override fun getBranch(finalMonthNum: Int): Branch {
-      return Companion.fun月馬_月數.invoke(finalMonthNum)
+      return fun月馬_月數.invoke(finalMonthNum)
     }
   }
 
@@ -180,22 +263,22 @@ object HouseFunctions {
 
   val house擎羊: IHouse<*> = object : HouseYearStemImpl(擎羊) {
     override fun getBranch(stem: Stem): Branch {
-      return fun擎羊.apply(stem)
+      return fun擎羊.invoke(stem)
     }
   }
 
   val house陀羅: IHouse<*> = object : HouseYearStemImpl(陀羅) {
     override fun getBranch(stem: Stem): Branch {
-      return fun陀羅.apply(stem)
+      return fun陀羅.invoke(stem)
     }
   }
 
   val house火星: IHouse<*> = object : HouseYearBranchHourBranchImpl(火星) {
     override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, set: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Optional<Branch>, context: ZContext): Branch {
       val yearBranch = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
-      when (context.fireBell) {
-        ZContext.FireBell.FIREBELL_BOOK -> return fun火星_全書.apply(yearBranch)
-        ZContext.FireBell.FIREBELL_COLLECT -> return fun火星_全集.apply(yearBranch, hour)
+      return when (context.fireBell) {
+        ZContext.FireBell.FIREBELL_BOOK -> fun火星_全書.invoke(yearBranch)
+        ZContext.FireBell.FIREBELL_COLLECT -> fun火星_全集.invoke(yearBranch, hour)
         else -> throw AssertionError("error")
       }
     }
@@ -204,9 +287,9 @@ object HouseFunctions {
   val house鈴星: IHouse<*> = object : HouseYearBranchHourBranchImpl(鈴星) {
     override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, set: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Optional<Branch>, context: ZContext): Branch {
       val yearBranch = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
-      when (context.fireBell) {
-        ZContext.FireBell.FIREBELL_BOOK -> return fun鈴星_全書.apply(yearBranch)
-        ZContext.FireBell.FIREBELL_COLLECT -> return fun鈴星_全集.apply(yearBranch, hour)
+      return when (context.fireBell) {
+        ZContext.FireBell.FIREBELL_BOOK -> fun鈴星_全書.invoke(yearBranch)
+        ZContext.FireBell.FIREBELL_COLLECT -> fun鈴星_全集.invoke(yearBranch, hour)
         else -> throw AssertionError("error")
       }
     }
@@ -214,13 +297,13 @@ object HouseFunctions {
 
   val house地劫: IHouse<*> = object : HouseHourBranchImpl(地劫) {
     override fun getBranch(branch: Branch): Branch {
-      return fun地劫.apply(branch)
+      return fun地劫.invoke(branch)
     }
   }
 
   val house地空: IHouse<*> = object : HouseHourBranchImpl(地空) {
     override fun getBranch(branch: Branch): Branch {
-      return fun地空.apply(branch)
+      return fun地空.invoke(branch)
     }
   }
 
@@ -231,193 +314,193 @@ object HouseFunctions {
   // =======↓↓↓======= 以下      雜曜 =======↓↓↓=======
   val house天官: IHouse<*> = object : HouseYearStemImpl(天官) {
     override fun getBranch(stem: Stem): Branch {
-      return fun天官.apply(stem)
+      return fun天官.invoke(stem)
     }
   }
 
   val house天福: IHouse<*> = object : HouseYearStemImpl(天福) {
     override fun getBranch(stem: Stem): Branch {
-      return fun天福.apply(stem)
+      return fun天福.invoke(stem)
     }
   }
 
   val house天廚: IHouse<*> = object : HouseYearStemImpl(天廚) {
     override fun getBranch(stem: Stem): Branch {
-      return fun天廚.apply(stem)
+      return fun天廚.invoke(stem)
     }
   }
 
   val house天刑: IHouse<*> = object : HouseMonthImpl(天刑) {
-    override fun getBranch(finalMonthNum: Int?): Branch {
-      return fun天刑_月數.apply(finalMonthNum)
+    override fun getBranch(finalMonthNum: Int): Branch {
+      return fun天刑_月數.invoke(finalMonthNum)
     }
   }
 
   val house天姚: IHouse<*> = object : HouseMonthImpl(天姚) {
-    override fun getBranch(finalMonthNum: Int?): Branch {
-      return fun天姚_月數.apply(finalMonthNum)
+    override fun getBranch(finalMonthNum: Int): Branch {
+      return fun天姚_月數.invoke(finalMonthNum)
     }
   }
 
   val house解神: IHouse<*> = object : HouseMonthImpl(解神) {
-    override fun getBranch(finalMonthNum: Int?): Branch {
-      return fun解神_月數.apply(finalMonthNum)
+    override fun getBranch(finalMonthNum: Int): Branch {
+      return fun解神_月數.invoke(finalMonthNum)
     }
   }
 
   val house天巫: IHouse<*> = object : HouseMonthImpl(天巫) {
-    override fun getBranch(finalMonthNum: Int?): Branch {
-      return fun天巫_月數.apply(finalMonthNum)
+    override fun getBranch(finalMonthNum: Int): Branch {
+      return fun天巫_月數.invoke(finalMonthNum)
     }
   }
 
   val house天月: IHouse<*> = object : HouseMonthImpl(天月) {
-    override fun getBranch(finalMonthNum: Int?): Branch {
-      return fun天月_月數.apply(finalMonthNum)
+    override fun getBranch(finalMonthNum: Int): Branch {
+      return fun天月_月數.invoke(finalMonthNum)
     }
   }
 
   val house陰煞: IHouse<*> = object : HouseMonthImpl(陰煞) {
-    override fun getBranch(finalMonthNum: Int?): Branch {
-      return fun陰煞_月數.apply(finalMonthNum)
+    override fun getBranch(finalMonthNum: Int): Branch {
+      return fun陰煞_月數.invoke(finalMonthNum)
     }
   }
 
   val house台輔: IHouse<*> = object : HouseHourBranchImpl(台輔) {
     override fun getBranch(branch: Branch): Branch {
-      return fun台輔.apply(branch)
+      return fun台輔.invoke(branch)
     }
   }
 
   val house封誥: IHouse<*> = object : HouseHourBranchImpl(封誥) {
     override fun getBranch(branch: Branch): Branch {
-      return fun封誥.apply(branch)
+      return fun封誥.invoke(branch)
     }
   }
 
   val house天空: IHouse<*> = object : HouseYearBranchImpl(天空) {
     override fun getBranch(branch: Branch): Branch {
-      return fun天空.apply(branch)
+      return fun天空.invoke(branch)
     }
   }
 
   val house天哭: IHouse<*> = object : HouseYearBranchImpl(天哭) {
     override fun getBranch(branch: Branch): Branch {
-      return fun天哭.apply(branch)
+      return fun天哭.invoke(branch)
     }
   }
 
   val house天虛: IHouse<*> = object : HouseYearBranchImpl(天虛) {
     override fun getBranch(branch: Branch): Branch {
-      return fun天虛.apply(branch)
+      return fun天虛.invoke(branch)
     }
   }
 
   val house龍池: IHouse<*> = object : HouseYearBranchImpl(龍池) {
     override fun getBranch(branch: Branch): Branch {
-      return fun龍池.apply(branch)
+      return fun龍池.invoke(branch)
     }
   }
 
   val house鳳閣: IHouse<*> = object : HouseYearBranchImpl(鳳閣) {
     override fun getBranch(branch: Branch): Branch {
-      return fun鳳閣.apply(branch)
+      return fun鳳閣.invoke(branch)
     }
   }
 
   val house紅鸞: IHouse<*> = object : HouseYearBranchImpl(紅鸞) {
     override fun getBranch(branch: Branch): Branch {
-      return fun紅鸞.apply(branch)
+      return fun紅鸞.invoke(branch)
     }
   }
 
   val house天喜: IHouse<*> = object : HouseYearBranchImpl(天喜) {
     override fun getBranch(branch: Branch): Branch {
-      return fun天喜.apply(branch)
+      return fun天喜.invoke(branch)
     }
   }
 
   val house孤辰: IHouse<*> = object : HouseYearBranchImpl(孤辰) {
     override fun getBranch(branch: Branch): Branch {
-      return fun孤辰.apply(branch)
+      return fun孤辰.invoke(branch)
     }
   }
 
   val house寡宿: IHouse<*> = object : HouseYearBranchImpl(寡宿) {
     override fun getBranch(branch: Branch): Branch {
-      return fun寡宿.apply(branch)
+      return fun寡宿.invoke(branch)
     }
   }
 
   val house蜚廉: IHouse<*> = object : HouseYearBranchImpl(蜚廉) {
     override fun getBranch(branch: Branch): Branch {
-      return fun蜚廉.apply(branch)
+      return fun蜚廉.invoke(branch)
     }
   }
 
   val house破碎: IHouse<*> = object : HouseYearBranchImpl(破碎) {
     override fun getBranch(branch: Branch): Branch {
-      return fun破碎.apply(branch)
+      return fun破碎.invoke(branch)
     }
   }
 
-  val house華蓋: IHouse<*> = object : HouseYearBranchImpl(華蓋) {
+  val house華蓋: IHouse<*> = object : HouseYearBranchImpl(StarMinor.華蓋) {
     override fun getBranch(branch: Branch): Branch {
-      return fun華蓋.apply(branch)
+      return fun華蓋.invoke(branch)
     }
   }
 
-  val house咸池: IHouse<*> = object : HouseYearBranchImpl(咸池) {
+  val house咸池: IHouse<*> = object : HouseYearBranchImpl(StarMinor.咸池) {
     override fun getBranch(branch: Branch): Branch {
-      return fun咸池.apply(branch)
+      return fun咸池.invoke(branch)
     }
   }
 
   val house天德: IHouse<*> = object : HouseYearBranchImpl(天德) {
     override fun getBranch(branch: Branch): Branch {
-      return fun天德.apply(branch)
+      return StarMinor.fun天德.invoke(branch)
     }
   }
 
   val house月德: IHouse<*> = object : HouseYearBranchImpl(月德) {
     override fun getBranch(branch: Branch): Branch {
-      return fun月德.apply(branch)
+      return fun月德.invoke(branch)
     }
   }
 
   val house天才: IHouse<*> = object : HouseYearBranchMonthNumHourBranchMainHouseImpl(天才) {
     override fun getBranch(t: Tuple3<Branch, Int, Branch>): Branch {
-      return fun天才.apply(t.v1(), t.v2(), t.v3())
+      return fun天才.invoke(t.v1(), t.v2(), t.v3())
     }
   }
 
   val house天壽: IHouse<*> = object : HouseYearBranchMonthNumHourBranchImpl(天壽) {
-    override fun getBranch(t: Tuple3<Branch, Int, Branch>): Branch {
-      return fun天壽.apply(t.v1(), t.v2(), t.v3())
+    override fun getBranch(t: Triple<Branch, Int, Branch>): Branch {
+      return fun天壽.invoke(t.first, t.second, t.third)
     }
   }
 
   val house三台: IHouse<*> = object : HouseMonthDayNumImpl(三台) {
-    override fun getBranch(t: Tuple2<Int, Int>): Branch {
-      return fun三台_月數.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Int, Int>): Branch {
+      return fun三台_月數.invoke(t.first, t.second)
     }
   }
 
   val house八座: IHouse<*> = object : HouseMonthDayNumImpl(八座) {
-    override fun getBranch(t: Tuple2<Int, Int>): Branch {
-      return fun八座_月數.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Int, Int>): Branch {
+      return fun八座_月數.invoke(t.first, t.second)
     }
   }
 
   val house恩光: IHouse<*> = object : HouseDayNumHourBranchImpl(恩光) {
-    override fun getBranch(t: Tuple2<Int, Branch>): Branch {
-      return fun恩光.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Int, Branch>): Branch {
+      return fun恩光.invoke(t.first, t.second)
     }
   }
 
   val house天貴: IHouse<*> = object : HouseDayNumHourBranchImpl(天貴) {
-    override fun getBranch(t: Tuple2<Int, Branch>): Branch {
-      return fun天貴.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Int, Branch>): Branch {
+      return fun天貴.invoke(t.first, t.second)
     }
   }
 
@@ -432,9 +515,9 @@ object HouseFunctions {
         .map { mainHouse -> mainHouse.prev(steps) }
         .orElse(IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl))
 
-      when (context.hurtAngel) {
-        ZContext.HurtAngel.HURT_ANGEL_FIXED -> return fun天傷_fixed交友.apply(遷移宮地支)
-        ZContext.HurtAngel.HURT_ANGEL_YINYANG -> return fun天傷_陽順陰逆.apply(遷移宮地支, lunarYear.stem, gender)
+      return when (context.hurtAngel) {
+        ZContext.HurtAngel.HURT_ANGEL_FIXED -> fun天傷_fixed交友.invoke(遷移宮地支)
+        ZContext.HurtAngel.HURT_ANGEL_YINYANG -> fun天傷_陽順陰逆.invoke(遷移宮地支, lunarYear.stem, gender)
         else -> throw AssertionError("error")
       }
     }
@@ -449,9 +532,9 @@ object HouseFunctions {
         .map { mainHouse -> mainHouse.prev(steps) }
         .orElse(IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl))
 
-      when (context.hurtAngel) {
-        ZContext.HurtAngel.HURT_ANGEL_FIXED -> return fun天使_fixed疾厄.apply(遷移宮地支)
-        ZContext.HurtAngel.HURT_ANGEL_YINYANG -> return fun天使_陽順陰逆.apply(遷移宮地支, lunarYear.stem, gender)
+      return when (context.hurtAngel) {
+        ZContext.HurtAngel.HURT_ANGEL_FIXED -> fun天使_fixed疾厄.invoke(遷移宮地支)
+        ZContext.HurtAngel.HURT_ANGEL_YINYANG -> fun天使_陽順陰逆.invoke(遷移宮地支, lunarYear.stem, gender)
         else -> throw AssertionError("error")
       }
     }
@@ -459,27 +542,27 @@ object HouseFunctions {
 
   val house陽空: IHouse<*> = object : HouseYearImpl(陽空) {
     override fun getBranch(sb: StemBranch): Branch {
-      return fun陽空.apply(sb)
+      return fun陽空.invoke(sb)
     }
   }
 
   val house陰空: IHouse<*> = object : HouseYearImpl(陰空) {
     override fun getBranch(sb: StemBranch): Branch {
-      return fun陰空.apply(sb)
+      return fun陰空.invoke(sb)
     }
   }
 
   /** 截空 : 正空 (截路)  */
   val house正空: IHouse<*> = object : HouseYearStemImpl(正空) {
     override fun getBranch(stem: Stem): Branch {
-      return fun正空_A.apply(stem)
+      return fun正空_A.invoke(stem)
     }
   }
 
   /** 截空 : 傍空 (空亡)  */
   val house傍空: IHouse<*> = object : HouseYearStemImpl(傍空) {
     override fun getBranch(stem: Stem): Branch {
-      return fun傍空_A.apply(stem)
+      return fun傍空_A.invoke(stem)
     }
   }
 
@@ -491,8 +574,8 @@ object HouseFunctions {
 
     override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, set: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Optional<Branch>, context: ZContext): Branch {
       when (context.redBeauty) {
-        ZContext.RedBeauty.RED_BEAUTY_SAME -> return fun紅艷_甲乙相同.apply(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
-        ZContext.RedBeauty.RED_BEAUTY_DIFF -> return fun紅艷_甲乙相異.apply(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
+        ZContext.RedBeauty.RED_BEAUTY_SAME -> return fun紅艷_甲乙相同.invoke(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
+        ZContext.RedBeauty.RED_BEAUTY_DIFF -> return fun紅艷_甲乙相異.invoke(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
         else -> throw AssertionError("Error : " + context.redBeauty)
       }
     }
@@ -503,74 +586,74 @@ object HouseFunctions {
   // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
 
   val house博士: IHouse<*> = object : HouseYearStemGenderImpl(博士) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun博士.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun博士.invoke(t.first, t.second)
     }
   }
 
   val house力士: IHouse<*> = object : HouseYearStemGenderImpl(力士) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun力士.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun力士.invoke(t.first, t.second)
     }
   }
 
   val house青龍: IHouse<*> = object : HouseYearStemGenderImpl(青龍) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun青龍.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun青龍.invoke(t.first, t.second)
     }
   }
 
   val house小耗: IHouse<*> = object : HouseYearStemGenderImpl(StarDoctor.小耗) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return StarDoctor.fun小耗.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return StarDoctor.fun小耗.invoke(t.first, t.second)
     }
   }
 
   val house將軍: IHouse<*> = object : HouseYearStemGenderImpl(將軍) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun將軍.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun將軍.invoke(t.first, t.second)
     }
   }
 
   val house奏書: IHouse<*> = object : HouseYearStemGenderImpl(奏書) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun奏書.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun奏書.invoke(t.first, t.second)
     }
   }
 
   val house飛廉: IHouse<*> = object : HouseYearStemGenderImpl(飛廉) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun飛廉.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun飛廉.invoke(t.first, t.second)
     }
   }
 
   val house喜神: IHouse<*> = object : HouseYearStemGenderImpl(喜神) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun喜神.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun喜神.invoke(t.first, t.second)
     }
   }
 
   val house病符: IHouse<*> = object : HouseYearStemGenderImpl(StarDoctor.病符) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return StarDoctor.fun病符.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return StarDoctor.fun病符.invoke(t.first, t.second)
     }
   }
 
   val house大耗: IHouse<*> = object : HouseYearStemGenderImpl(大耗) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun大耗.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun大耗.invoke(t.first, t.second)
     }
   }
 
   val house伏兵: IHouse<*> = object : HouseYearStemGenderImpl(伏兵) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun伏兵.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun伏兵.invoke(t.first, t.second)
     }
   }
 
   val house官府: IHouse<*> = object : HouseYearStemGenderImpl(官府) {
-    override fun getBranch(t: Tuple2<Stem, Gender>): Branch {
-      return fun官府.apply(t.v1(), t.v2())
+    override fun getBranch(t: Pair<Stem, Gender>): Branch {
+      return fun官府.invoke(t.first, t.second)
     }
   }
 
@@ -579,73 +662,73 @@ object HouseFunctions {
   // =======↓↓↓======= 以下 長生12神煞 =======↓↓↓=======
   val house長生: IHouse<*> = object : HouseFiveGenderYinYangImpl(長生) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun長生.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun長生.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house沐浴: IHouse<*> = object : HouseFiveGenderYinYangImpl(沐浴) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun沐浴.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun沐浴.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house冠帶: IHouse<*> = object : HouseFiveGenderYinYangImpl(冠帶) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun冠帶.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun冠帶.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house臨官: IHouse<*> = object : HouseFiveGenderYinYangImpl(臨官) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun臨官.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun臨官.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house帝旺: IHouse<*> = object : HouseFiveGenderYinYangImpl(帝旺) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun帝旺.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun帝旺.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house衰: IHouse<*> = object : HouseFiveGenderYinYangImpl(衰) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun衰.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun衰.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house病: IHouse<*> = object : HouseFiveGenderYinYangImpl(病) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun病.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun病.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house死: IHouse<*> = object : HouseFiveGenderYinYangImpl(死) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun死.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun死.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house墓: IHouse<*> = object : HouseFiveGenderYinYangImpl(墓) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun墓.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun墓.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house絕: IHouse<*> = object : HouseFiveGenderYinYangImpl(絕) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun絕.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun絕.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house胎: IHouse<*> = object : HouseFiveGenderYinYangImpl(胎) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun胎.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun胎.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
 
   val house養: IHouse<*> = object : HouseFiveGenderYinYangImpl(養) {
     override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun養.apply(t3.v1(), t3.v2(), t3.v3())
+      return fun養.invoke(t3.v1(), t3.v2(), t3.v3())
     }
   }
   // =======↑↑↑======= 以上 長生12神煞 =======↑↑↑=======
@@ -654,62 +737,62 @@ object HouseFunctions {
   // =======↓↓↓======= 以下 將前12星 =======↓↓↓=======
   val house將前_將星: IHouse<*> = object : HouseYearBranchImpl(將星) {
     override fun getBranch(branch: Branch): Branch {
-      return fun將星.apply(branch)
+      return fun將星.invoke(branch)
     }
   }
   val house將前_攀鞍: IHouse<*> = object : HouseYearBranchImpl(攀鞍) {
     override fun getBranch(branch: Branch): Branch {
-      return fun攀鞍.apply(branch)
+      return fun攀鞍.invoke(branch)
     }
   }
   val house將前_歲馹: IHouse<*> = object : HouseYearBranchImpl(歲馹) {
     override fun getBranch(branch: Branch): Branch {
-      return fun歲馹.apply(branch)
+      return fun歲馹.invoke(branch)
     }
   }
   val house將前_息神: IHouse<*> = object : HouseYearBranchImpl(息神) {
     override fun getBranch(branch: Branch): Branch {
-      return fun息神.apply(branch)
+      return fun息神.invoke(branch)
     }
   }
   val house將前_華蓋: IHouse<*> = object : HouseYearBranchImpl(StarGeneralFront.華蓋) {
     override fun getBranch(branch: Branch): Branch {
-      return StarGeneralFront.fun華蓋.apply(branch)
+      return StarGeneralFront.fun華蓋.invoke(branch)
     }
   }
   val house將前_劫煞: IHouse<*> = object : HouseYearBranchImpl(劫煞) {
     override fun getBranch(branch: Branch): Branch {
-      return fun劫煞.apply(branch)
+      return fun劫煞.invoke(branch)
     }
   }
   val house將前_災煞: IHouse<*> = object : HouseYearBranchImpl(災煞) {
     override fun getBranch(branch: Branch): Branch {
-      return fun災煞.apply(branch)
+      return fun災煞.invoke(branch)
     }
   }
   val house將前_天煞: IHouse<*> = object : HouseYearBranchImpl(天煞) {
     override fun getBranch(branch: Branch): Branch {
-      return fun天煞.apply(branch)
+      return fun天煞.invoke(branch)
     }
   }
   val house將前_指背: IHouse<*> = object : HouseYearBranchImpl(指背) {
     override fun getBranch(branch: Branch): Branch {
-      return fun指背.apply(branch)
+      return fun指背.invoke(branch)
     }
   }
   val house將前_咸池: IHouse<*> = object : HouseYearBranchImpl(StarGeneralFront.咸池) {
     override fun getBranch(branch: Branch): Branch {
-      return StarGeneralFront.fun咸池.apply(branch)
+      return StarGeneralFront.fun咸池.invoke(branch)
     }
   }
   val house將前_月煞: IHouse<*> = object : HouseYearBranchImpl(月煞) {
     override fun getBranch(branch: Branch): Branch {
-      return fun月煞.apply(branch)
+      return fun月煞.invoke(branch)
     }
   }
   val house將前_亡神: IHouse<*> = object : HouseYearBranchImpl(亡神) {
     override fun getBranch(branch: Branch): Branch {
-      return fun亡神.apply(branch)
+      return fun亡神.invoke(branch)
     }
   }
 
