@@ -107,7 +107,7 @@ public class Builder implements Serializable {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時 */
-  private final Map<StemBranch , Tuple2<Integer , Integer>> flowBigVageMap;
+  private final Map<StemBranch , Pair<Integer , Integer>> flowBigVageMap;
 
   /** 註解 builder */
   private final List<Tuple2<String, Object[]>> notesBuilder = new ArrayList<>();
@@ -119,7 +119,7 @@ public class Builder implements Serializable {
   private final Map<Integer , Pair<Double , Double>> vageMap;
 
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Tuple2<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Pair<Double, Double>> vageMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Pair<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Pair<Double, Double>> vageMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
@@ -171,13 +171,13 @@ public class Builder implements Serializable {
       Set<ZStar> stars = branchStarMap2.get(sb.getBranch());
 
 
-      Tuple2<Integer , Integer> fromTo = flowBigVageMap.get(sb);
+      Pair<Integer , Integer> fromTo = flowBigVageMap.get(sb);
       List<Integer> smallRanges = branchSmallRangesMap.get(sb.getBranch());
       return new HouseData(house, sb
         , stars
         , branchFlowHouseMap.get(sb.getBranch())
         , flyMap.get(sb)
-        , fromTo.v1() , fromTo.v2(), smallRanges);
+        , fromTo.getFirst() , fromTo.getSecond(), smallRanges);
     }).collect(Collectors.toSet());
 
   } // builder init
@@ -209,7 +209,7 @@ public class Builder implements Serializable {
   /**
    * 取出 本命盤 , 排序過的 , 每個地支的 大限 「虛歲」起訖 時刻
    */
-  public Map<StemBranch, Tuple2<Integer , Integer>> getFlowBigMap() {
+  public Map<StemBranch, Pair<Integer , Integer>> getFlowBigMap() {
     return flowBigVageMap;
   }
 

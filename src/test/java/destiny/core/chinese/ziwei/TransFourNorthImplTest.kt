@@ -8,11 +8,11 @@ import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.右弼
 import destiny.core.chinese.ziwei.StarLucky.左輔
 import destiny.core.chinese.ziwei.StarMain.*
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertSame
-import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNull
+import kotlin.test.assertSame
 
 class TransFourNorthImplTest {
 

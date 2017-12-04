@@ -4,7 +4,7 @@
 package destiny.core;
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl;
-import org.jooq.lambda.tuple.Tuple2;
+import kotlin.Pair;
 
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
@@ -33,8 +33,8 @@ public class IntAgeNoteMinguoYearImpl implements IntAgeNote , Serializable {
   }
 
   @Override
-  public Optional<String> getAgeNote(Tuple2<Double, Double> startAndEnd) {
-    return getAgeNote(startAndEnd.v1());
+  public Optional<String> getAgeNote(Pair<Double, Double> startAndEnd) {
+    return getAgeNote(startAndEnd.getFirst());
   }
 
   @Override

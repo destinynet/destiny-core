@@ -4,13 +4,17 @@
  */
 package destiny.core;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 
 public interface Descriptive {
 
   /** 取得名稱 */
+  @NotNull
   String getTitle(Locale locale);
 
   /** 詳細描述 */
+  @NotNull
   String getDescription(Locale locale);
 }

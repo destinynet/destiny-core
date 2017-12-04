@@ -147,12 +147,12 @@ public class PersonContext extends EightWordsContext {
     return fortuneMonthSpan;
   }
 
-  public Map<Integer , Tuple2<Double , Double>> getAgeMap(int toAge) {
+  public Map<Integer , Pair<Double , Double>> getAgeMap(int toAge) {
     double gmtJulDay = TimeTools.getGmtJulDay(lmt , location);
     Map<Integer, Pair<Double, Double>> map = intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , toAge);
     return map.entrySet().stream()
       .collect(Collectors.toMap(
-        Map.Entry::getKey, entry -> Tuple.tuple(entry.getValue().getFirst() , entry.getValue().getSecond()))
+        Map.Entry::getKey, Map.Entry::getValue)
       );
   }
 
@@ -330,10 +330,10 @@ public class PersonContext extends EightWordsContext {
    * @return 在此 gmtJulDay 時刻，座落於歲數的哪一歲當中
    * 可能歲數超出範圍之後，或是根本在出生之前，就會傳回 empty
    */
-  private Optional<Integer> getAge(double gmtJulDay , Map<Integer , Tuple2<Double , Double>> ageMap) {
+  private Optional<Integer> getAge(double gmtJulDay , Map<Integer , Pair<Double , Double>> ageMap) {
     return ageMap.entrySet().stream().filter(entry -> {
-      Tuple2<Double , Double> t2 = entry.getValue();
-      return gmtJulDay > t2.v1() && t2.v2() > gmtJulDay;
+      Pair<Double , Double> t2 = entry.getValue();
+      return gmtJulDay > t2.getFirst() && t2.getSecond() > gmtJulDay;
     }).map(Map.Entry::getKey).findFirst();
   }
 
@@ -355,7 +355,7 @@ public class PersonContext extends EightWordsContext {
 
     double gmtJulDay = getGmtJulDay();
 
-    Map<Integer , Tuple2<Double , Double>> ageMap = getAgeMap(120);
+    Map<Integer , Pair<Double , Double>> ageMap = getAgeMap(120);
 
     // 計算九柱大運的相關資訊
     for (int i=1 ; i<=count ; i++) {

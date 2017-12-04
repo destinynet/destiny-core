@@ -3,7 +3,7 @@
  */
 package destiny.core;
 
-import org.jooq.lambda.tuple.Tuple2;
+import kotlin.Pair;
 
 import java.util.Optional;
 
@@ -19,5 +19,5 @@ public interface IntAgeNote extends Descriptive {
   /**
    * @param startAndEnd [from GMT, to GMT] 時刻
    */
-  Optional<String> getAgeNote(Tuple2<Double , Double> startAndEnd);
+  Optional<String> getAgeNote(Pair<Double , Double> startAndEnd);
 }

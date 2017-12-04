@@ -7,6 +7,7 @@ import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.chinese.*;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -59,10 +60,10 @@ public class ZiweiTools implements Serializable {
 //      birthYear.getStem() , builder.getGender() , FortuneOutput.虛歲 , context.getHouseSeqImpl())
 //      .map((d1 , d2) -> Tuple.tuple(d1.intValue() , d2.intValue()));
 
-    Tuple2<Integer , Integer> range = bigRangeImpl.getVageRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() , birthYear.getStem() , builder.getGender() , context.getHouseSeqImpl());
+    Pair<Integer , Integer> range = bigRangeImpl.getVageRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() , birthYear.getStem() , builder.getGender() , context.getHouseSeqImpl());
 
     // 再把虛歲轉換成干支
-    return IntStream.rangeClosed(range.v1() , range.v2()).boxed().map(vAge -> {
+    return IntStream.rangeClosed(range.getFirst() , range.getSecond()).boxed().map(vAge -> {
       StemBranch sb = birthYear.next(vAge-1); // 虛歲 (vAge) 轉換為年 , 要減一 . 虛歲
       int cycle;
       if (sb.getIndex() >= birthYear.getIndex()) {

@@ -8,7 +8,7 @@ import destiny.core.chinese.Branch.*
 
 /**
  * 14 顆主星
- * resource key 存放於 destiny.core.chinese.ziwei.ZStar.properties 當中
+ * resource key 存放於 [ZStar] 的 ZStar.properties 當中
  */
 sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", ZStar.Type.主星) {
   object 紫微 : StarMain("紫微")
@@ -29,6 +29,7 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
   companion object {
 
     val values = arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍)
+    val list = values.map { it -> it }.toList()
 
     // （局數 , 日數 , 是否閏月 , 上個月的天數 , 紫微星實作) -> 地支
     val fun紫微 = { set: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> iPurpleBranch.getBranchOfPurpleStar(set, days, leap, prevMonthDays) }

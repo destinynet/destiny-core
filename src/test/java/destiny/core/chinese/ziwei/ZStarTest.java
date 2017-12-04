@@ -4,8 +4,7 @@
 package destiny.core.chinese.ziwei;
 
 import destiny.core.chinese.Branch;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
+import kotlin.Pair;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +48,8 @@ public class ZStarTest {
 
     Map<Branch , Set<ZStar>> map2 = Arrays.stream(Branch.values()).map(branch -> {
       Set<ZStar> stars = map1.getOrDefault(branch , new HashSet<>());
-      return Tuple.tuple(branch , stars);
-    }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+      return new Pair<>(branch, stars);
+    }).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
     logger.info("map2 = {}" , map2);
 
 
@@ -60,8 +59,10 @@ public class ZStarTest {
 
   @Test
   public void testListStarByType() {
+
     List<ZStar> starList = new ArrayList<>();
     starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarUnlucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarMinor.Companion.getValues()));

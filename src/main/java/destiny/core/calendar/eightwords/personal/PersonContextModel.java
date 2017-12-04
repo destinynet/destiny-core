@@ -11,6 +11,7 @@ import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.EightWordsContextModel;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
+import kotlin.Pair;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.chrono.ChronoLocalDateTime;
@@ -31,13 +32,13 @@ public class PersonContextModel extends EightWordsContextModel {
   private final List<FortuneData> fortuneDatas;
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻 */
-  private final Map<Integer , Tuple2<Double , Double>> ageMap;
+  private final Map<Integer , Pair<Double , Double>> ageMap;
 
   public PersonContextModel(Gender gender, EightWords eightWords, ChronoLocalDateTime lmt, Location location,
                             String place, ChineseDate chineseDate,
                             List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch,
                             Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms,
-                            Map<Integer, Tuple2<Double, Double>> ageMap) {
+                            Map<Integer, Pair<Double, Double>> ageMap) {
     super(eightWords ,lmt , location, place, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
     this.gender = gender;
     this.fortuneDatas = fortuneDatas;
@@ -52,7 +53,7 @@ public class PersonContextModel extends EightWordsContextModel {
     return Collections.unmodifiableList(fortuneDatas);
   }
 
-  public Map<Integer, Tuple2<Double, Double>> getAgeMap() {
+  public Map<Integer, Pair<Double, Double>> getAgeMap() {
     return ageMap;
   }
 }

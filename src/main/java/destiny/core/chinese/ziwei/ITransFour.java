@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei;
 
 import destiny.core.Descriptive;
 import destiny.core.chinese.Stem;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 public interface ITransFour extends Descriptive {
 
   /** 取得「某天干（可能是本命年、大限、或是流年、流月、流日、流時）的某四化」是哪顆星 */
+  @NotNull
   ZStar getStarOf(Stem stem , Value value);
 
   /** 類似前者，但逆算：計算此星於此干，是否有四化，若有的話，其為何者 */

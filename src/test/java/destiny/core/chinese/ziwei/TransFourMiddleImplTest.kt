@@ -7,11 +7,11 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.忌
 import destiny.core.chinese.ziwei.ITransFour.Value.科
 import destiny.core.chinese.ziwei.StarMain.*
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertSame
-import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNull
+import kotlin.test.assertSame
 
 class TransFourMiddleImplTest {
 

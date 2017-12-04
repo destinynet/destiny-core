@@ -11,6 +11,7 @@ import destiny.core.chinese.ziwei.StarUnlucky.*
 import java.io.Serializable
 import java.util.*
 
+
 abstract class StrengthAbstractImpl : IStrength, Serializable {
 
   /** 取得一個星體，在 12 個宮位的廟旺表  */

@@ -13,7 +13,13 @@ class StrengthMiddleImplTest2 {
   private var impl: IStrength = StrengthMiddleImpl()
 
   @Test
-  fun testListStarByType() {
-    logger.info("StarMain.values = {}", StarMain.values)
+  fun `StarMain values`() {
+    logger.info("values = {}" , StarMain.values)
+    //StarMain.list.forEach { println("$it") }
+    for(star in StarMain.values) {
+      println("$star")
+    }
+    println("list = ${StarMain.list}")
+    logger.info("list = {}" , StarMain.list)
   }
 }
