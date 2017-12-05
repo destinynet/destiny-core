@@ -69,7 +69,6 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
 
   companion object {
 
-
     val values = arrayOf(天官, 天福, 天廚, 天刑, 天姚, 解神, 天巫, 天月, 陰煞, 台輔, 封誥, 天空, 天哭, 天虛, 龍池, 鳳閣, 紅鸞, 天喜, 孤辰, 寡宿, 蜚廉, 破碎, 華蓋, 咸池, 天德, 月德, 天才, 天壽, 三台, 八座, 恩光, 天貴, 天使, 天傷, 陽空, 陰空, 正空, 傍空, 紅艷)
 
     /** 天官 : 年干 -> 地支  */

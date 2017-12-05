@@ -25,7 +25,7 @@ import destiny.astrology.Point
  * 二、四化 ： 見 [ITransFour]
  *
  */
-abstract class ZStar : Point, Comparable<ZStar> {
+abstract class ZStar : Point, Comparable<ZStar>  {
 
   val type: Type
 

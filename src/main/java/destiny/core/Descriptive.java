@@ -12,9 +12,9 @@ public interface Descriptive {
 
   /** 取得名稱 */
   @NotNull
-  String getTitle(Locale locale);
+  String getTitle(@NotNull Locale locale);
 
   /** 詳細描述 */
   @NotNull
-  String getDescription(Locale locale);
+  String getDescription(@NotNull Locale locale);
 }

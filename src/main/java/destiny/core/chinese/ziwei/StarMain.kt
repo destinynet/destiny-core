@@ -10,7 +10,7 @@ import destiny.core.chinese.Branch.*
  * 14 顆主星
  * resource key 存放於 [ZStar] 的 ZStar.properties 當中
  */
-sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", ZStar.Type.主星) {
+sealed class StarMain(val nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", ZStar.Type.主星) {
   object 紫微 : StarMain("紫微")
   object 天機 : StarMain("天機")
   object 太陽 : StarMain("太陽")
@@ -26,7 +26,18 @@ sealed class StarMain(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, 
   object 七殺 : StarMain("七殺")
   object 破軍 : StarMain("破軍")
 
+
+  fun getAllValues(): Array<StarMain> {
+    return values
+  }
+
+  override fun toString(): String {
+    return nameKey
+  }
+
+
   companion object {
+
 
     val values = arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍)
     val list = values.map { it -> it }.toList()

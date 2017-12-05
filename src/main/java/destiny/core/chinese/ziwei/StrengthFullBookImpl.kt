@@ -5,9 +5,6 @@ package destiny.core.chinese.ziwei
 
 
 import destiny.core.chinese.Branch
-import destiny.core.chinese.Branch.*
-import destiny.core.chinese.ziwei.StarUnlucky.火星
-import destiny.core.chinese.ziwei.StarUnlucky.鈴星
 
 /**
  * 全書派
@@ -18,6 +15,52 @@ import destiny.core.chinese.ziwei.StarUnlucky.鈴星
  * 為求最保險的稱謂，稱此派為「全書派」 即可
  *
  */
+
+
+/**
+ * 此顆星，於此地支中，強度為何
+ * 1 最強 , 7 最弱
+ *
+ * 1  2       3    4    5      6          7
+ * 南派依序分成 →廟、旺、    得地     、平和、   閒地       、陷    ，等六級。
+ * 北派依序分成 →廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
+ */
+private val table: Set<Triple<ZStar, Branch, Int>> = setOf(
+  Triple(StarMain.紫微, Branch.子, 5), Triple(StarMain.紫微, Branch.丑, 1), Triple(StarMain.紫微, Branch.寅, 2), Triple(StarMain.紫微, Branch.卯, 2), Triple(StarMain.紫微, Branch.辰, 3), Triple(StarMain.紫微, Branch.巳, 2), Triple(StarMain.紫微, Branch.午, 1), Triple(StarMain.紫微, Branch.未, 1), Triple(StarMain.紫微, Branch.申, 2), Triple(StarMain.紫微, Branch.酉, 2), Triple(StarMain.紫微, Branch.戌, 3), Triple(StarMain.紫微, Branch.亥, 2)
+  , Triple(StarMain.天機, Branch.子, 1), Triple(StarMain.天機, Branch.丑, 7), Triple(StarMain.天機, Branch.寅, 3), Triple(StarMain.天機, Branch.卯, 2), Triple(StarMain.天機, Branch.辰, 4), Triple(StarMain.天機, Branch.巳, 5), Triple(StarMain.天機, Branch.午, 1), Triple(StarMain.天機, Branch.未, 7), Triple(StarMain.天機, Branch.申, 3), Triple(StarMain.天機, Branch.酉, 2), Triple(StarMain.天機, Branch.戌, 3), Triple(StarMain.天機, Branch.亥, 5)
+  , Triple(StarMain.太陽, Branch.子, 7), Triple(StarMain.太陽, Branch.丑, 6), Triple(StarMain.太陽, Branch.寅, 2), Triple(StarMain.太陽, Branch.卯, 1), Triple(StarMain.太陽, Branch.辰, 2), Triple(StarMain.太陽, Branch.巳, 2), Triple(StarMain.太陽, Branch.午, 2), Triple(StarMain.太陽, Branch.未, 3), Triple(StarMain.太陽, Branch.申, 3), Triple(StarMain.太陽, Branch.酉, 5), Triple(StarMain.太陽, Branch.戌, 6), Triple(StarMain.太陽, Branch.亥, 7)
+  , Triple(StarMain.武曲, Branch.子, 2), Triple(StarMain.武曲, Branch.丑, 1), Triple(StarMain.武曲, Branch.寅, 3), Triple(StarMain.武曲, Branch.卯, 4), Triple(StarMain.武曲, Branch.辰, 1), Triple(StarMain.武曲, Branch.巳, 5), Triple(StarMain.武曲, Branch.午, 2), Triple(StarMain.武曲, Branch.未, 1), Triple(StarMain.武曲, Branch.申, 3), Triple(StarMain.武曲, Branch.酉, 4), Triple(StarMain.武曲, Branch.戌, 1), Triple(StarMain.武曲, Branch.亥, 5)
+  , Triple(StarMain.天同, Branch.子, 2), Triple(StarMain.天同, Branch.丑, 6), Triple(StarMain.天同, Branch.寅, 4), Triple(StarMain.天同, Branch.卯, 5), Triple(StarMain.天同, Branch.辰, 5), Triple(StarMain.天同, Branch.巳, 1), Triple(StarMain.天同, Branch.午, 7), Triple(StarMain.天同, Branch.未, 6), Triple(StarMain.天同, Branch.申, 2), Triple(StarMain.天同, Branch.酉, 5), Triple(StarMain.天同, Branch.戌, 5), Triple(StarMain.天同, Branch.亥, 1)
+  , Triple(StarMain.廉貞, Branch.子, 5), Triple(StarMain.廉貞, Branch.丑, 4), Triple(StarMain.廉貞, Branch.寅, 1), Triple(StarMain.廉貞, Branch.卯, 5), Triple(StarMain.廉貞, Branch.辰, 4), Triple(StarMain.廉貞, Branch.巳, 7), Triple(StarMain.廉貞, Branch.午, 5), Triple(StarMain.廉貞, Branch.未, 4), Triple(StarMain.廉貞, Branch.申, 1), Triple(StarMain.廉貞, Branch.酉, 5), Triple(StarMain.廉貞, Branch.戌, 4), Triple(StarMain.廉貞, Branch.亥, 7)
+  , Triple(StarMain.天府, Branch.子, 1), Triple(StarMain.天府, Branch.丑, 1), Triple(StarMain.天府, Branch.寅, 1), Triple(StarMain.天府, Branch.卯, 3), Triple(StarMain.天府, Branch.辰, 1), Triple(StarMain.天府, Branch.巳, 3), Triple(StarMain.天府, Branch.午, 2), Triple(StarMain.天府, Branch.未, 1), Triple(StarMain.天府, Branch.申, 3), Triple(StarMain.天府, Branch.酉, 2), Triple(StarMain.天府, Branch.戌, 1), Triple(StarMain.天府, Branch.亥, 3)
+  , Triple(StarMain.太陰, Branch.子, 1), Triple(StarMain.太陰, Branch.丑, 1), Triple(StarMain.太陰, Branch.寅, 2), Triple(StarMain.太陰, Branch.卯, 7), Triple(StarMain.太陰, Branch.辰, 7), Triple(StarMain.太陰, Branch.巳, 7), Triple(StarMain.太陰, Branch.午, 6), Triple(StarMain.太陰, Branch.未, 6), Triple(StarMain.太陰, Branch.申, 4), Triple(StarMain.太陰, Branch.酉, 2), Triple(StarMain.太陰, Branch.戌, 2), Triple(StarMain.太陰, Branch.亥, 1)
+  , Triple(StarMain.貪狼, Branch.子, 2), Triple(StarMain.貪狼, Branch.丑, 1), Triple(StarMain.貪狼, Branch.寅, 5), Triple(StarMain.貪狼, Branch.卯, 4), Triple(StarMain.貪狼, Branch.辰, 1), Triple(StarMain.貪狼, Branch.巳, 7), Triple(StarMain.貪狼, Branch.午, 2), Triple(StarMain.貪狼, Branch.未, 1), Triple(StarMain.貪狼, Branch.申, 5), Triple(StarMain.貪狼, Branch.酉, 4), Triple(StarMain.貪狼, Branch.戌, 1), Triple(StarMain.貪狼, Branch.亥, 7)
+  , Triple(StarMain.巨門, Branch.子, 2), Triple(StarMain.巨門, Branch.丑, 6), Triple(StarMain.巨門, Branch.寅, 1), Triple(StarMain.巨門, Branch.卯, 1), Triple(StarMain.巨門, Branch.辰, 2), Triple(StarMain.巨門, Branch.巳, 2), Triple(StarMain.巨門, Branch.午, 2), Triple(StarMain.巨門, Branch.未, 6), Triple(StarMain.巨門, Branch.申, 1), Triple(StarMain.巨門, Branch.酉, 1), Triple(StarMain.巨門, Branch.戌, 7), Triple(StarMain.巨門, Branch.亥, 2)
+  , Triple(StarMain.天相, Branch.子, 1), Triple(StarMain.天相, Branch.丑, 1), Triple(StarMain.天相, Branch.寅, 1), Triple(StarMain.天相, Branch.卯, 7), Triple(StarMain.天相, Branch.辰, 3), Triple(StarMain.天相, Branch.巳, 3), Triple(StarMain.天相, Branch.午, 1), Triple(StarMain.天相, Branch.未, 3), Triple(StarMain.天相, Branch.申, 1), Triple(StarMain.天相, Branch.酉, 7), Triple(StarMain.天相, Branch.戌, 3), Triple(StarMain.天相, Branch.亥, 3)
+  , Triple(StarMain.天梁, Branch.子, 1), Triple(StarMain.天梁, Branch.丑, 2), Triple(StarMain.天梁, Branch.寅, 1), Triple(StarMain.天梁, Branch.卯, 1), Triple(StarMain.天梁, Branch.辰, 1), Triple(StarMain.天梁, Branch.巳, 3), Triple(StarMain.天梁, Branch.午, 1), Triple(StarMain.天梁, Branch.未, 2), Triple(StarMain.天梁, Branch.申, 7), Triple(StarMain.天梁, Branch.酉, 3), Triple(StarMain.天梁, Branch.戌, 1), Triple(StarMain.天梁, Branch.亥, 7)
+  , Triple(StarMain.七殺, Branch.子, 2), Triple(StarMain.七殺, Branch.丑, 1), Triple(StarMain.七殺, Branch.寅, 1), Triple(StarMain.七殺, Branch.卯, 2), Triple(StarMain.七殺, Branch.辰, 1), Triple(StarMain.七殺, Branch.巳, 5), Triple(StarMain.七殺, Branch.午, 2), Triple(StarMain.七殺, Branch.未, 1), Triple(StarMain.七殺, Branch.申, 1), Triple(StarMain.七殺, Branch.酉, 2), Triple(StarMain.七殺, Branch.戌, 1), Triple(StarMain.七殺, Branch.亥, 5)
+  , Triple(StarMain.破軍, Branch.子, 1), Triple(StarMain.破軍, Branch.丑, 2), Triple(StarMain.破軍, Branch.寅, 3), Triple(StarMain.破軍, Branch.卯, 7), Triple(StarMain.破軍, Branch.辰, 2), Triple(StarMain.破軍, Branch.巳, 5), Triple(StarMain.破軍, Branch.午, 1), Triple(StarMain.破軍, Branch.未, 2), Triple(StarMain.破軍, Branch.申, 3), Triple(StarMain.破軍, Branch.酉, 7), Triple(StarMain.破軍, Branch.戌, 2), Triple(StarMain.破軍, Branch.亥, 5)
+
+  , Triple(StarLucky.文昌, Branch.子, 3), Triple(StarLucky.文昌, Branch.丑, 1), Triple(StarLucky.文昌, Branch.寅, 7), Triple(StarLucky.文昌, Branch.卯, 4), Triple(StarLucky.文昌, Branch.辰, 3), Triple(StarLucky.文昌, Branch.巳, 1), Triple(StarLucky.文昌, Branch.午, 7), Triple(StarLucky.文昌, Branch.未, 4), Triple(StarLucky.文昌, Branch.申, 3), Triple(StarLucky.文昌, Branch.酉, 1), Triple(StarLucky.文昌, Branch.戌, 7), Triple(StarLucky.文昌, Branch.亥, 4)
+  , Triple(StarLucky.文曲, Branch.子, 3), Triple(StarLucky.文曲, Branch.丑, 1), Triple(StarLucky.文曲, Branch.寅, 5), Triple(StarLucky.文曲, Branch.卯, 2), Triple(StarLucky.文曲, Branch.辰, 3), Triple(StarLucky.文曲, Branch.巳, 1), Triple(StarLucky.文曲, Branch.午, 7), Triple(StarLucky.文曲, Branch.未, 2), Triple(StarLucky.文曲, Branch.申, 3), Triple(StarLucky.文曲, Branch.酉, 1), Triple(StarLucky.文曲, Branch.戌, 7), Triple(StarLucky.文曲, Branch.亥, 2)
+
+  // 祿存只有在 辰戌丑未 沒能量，其他都是廟
+  , Triple(StarLucky.祿存, Branch.子, 1), Triple(StarLucky.祿存, Branch.寅, 1), Triple(StarLucky.祿存, Branch.卯, 1), Triple(StarLucky.祿存, Branch.巳, 1), Triple(StarLucky.祿存, Branch.午, 1), Triple(StarLucky.祿存, Branch.申, 1), Triple(StarLucky.祿存, Branch.酉, 1), Triple(StarLucky.祿存, Branch.亥, 1)
+
+  // 北派 火鈴 強弱 是一樣的
+  , Triple(StarUnlucky.火星, Branch.子, 7), Triple(StarUnlucky.火星, Branch.丑, 3), Triple(StarUnlucky.火星, Branch.寅, 1), Triple(StarUnlucky.火星, Branch.卯, 4), Triple(StarUnlucky.火星, Branch.辰, 7), Triple(StarUnlucky.火星, Branch.巳, 3), Triple(StarUnlucky.火星, Branch.午, 1), Triple(StarUnlucky.火星, Branch.未, 4), Triple(StarUnlucky.火星, Branch.申, 7), Triple(StarUnlucky.火星, Branch.酉, 3), Triple(StarUnlucky.火星, Branch.戌, 1), Triple(StarUnlucky.火星, Branch.亥, 4)
+  , Triple(StarUnlucky.鈴星, Branch.子, 7), Triple(StarUnlucky.鈴星, Branch.丑, 3), Triple(StarUnlucky.鈴星, Branch.寅, 1), Triple(StarUnlucky.鈴星, Branch.卯, 4), Triple(StarUnlucky.鈴星, Branch.辰, 7), Triple(StarUnlucky.鈴星, Branch.巳, 3), Triple(StarUnlucky.鈴星, Branch.午, 1), Triple(StarUnlucky.鈴星, Branch.未, 4), Triple(StarUnlucky.鈴星, Branch.申, 7), Triple(StarUnlucky.鈴星, Branch.酉, 3), Triple(StarUnlucky.鈴星, Branch.戌, 1), Triple(StarUnlucky.鈴星, Branch.亥, 4)
+)
+
+private val commonStarMap: Map<ZStar, List<Pair<Branch, Int>>> = table
+  .groupBy { it.first }
+  .mapValues { it -> it.component2().map { t -> Pair(t.second, t.third) } }
+
+private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = table
+  .groupBy { Pair(it.first, it.second) }
+  .mapValues { it -> it.component2().map { it.third }.first() }
+
+
 class StrengthFullBookImpl : StrengthAbstractImpl() {
   /**
    * 1  2       3    4    5      6          7
@@ -26,56 +69,10 @@ class StrengthFullBookImpl : StrengthAbstractImpl() {
    */
 
   override fun getImplStrengthOf(star: ZStar, branch: Branch): Int? {
-    return commonPairMap[Pair(star,branch)]
+    return commonPairMap[Pair(star, branch)]
   }
 
   override fun getImplMapOf(star: ZStar): Map<Branch, Int>? {
     return commonStarMap[star]?.toMap()
-  }
-
-  companion object {
-
-    /**
-     * 此顆星，於此地支中，強度為何
-     * 1 最強 , 7 最弱
-     *
-     * 1  2       3    4    5      6          7
-     * 南派依序分成 →廟、旺、    得地     、平和、   閒地       、陷    ，等六級。
-     * 北派依序分成 →廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
-     */
-    private val table : Set<Triple<ZStar, Branch, Int>> = setOf(
-       Triple(StarMain.紫微, 子, 5),Triple(StarMain.紫微, 丑, 1),Triple(StarMain.紫微, 寅, 2),Triple(StarMain.紫微, 卯, 2),Triple(StarMain.紫微, 辰, 3),Triple(StarMain.紫微, 巳, 2),Triple(StarMain.紫微, 午, 1),Triple(StarMain.紫微, 未, 1),Triple(StarMain.紫微, 申, 2),Triple(StarMain.紫微, 酉, 2),Triple(StarMain.紫微, 戌, 3),Triple(StarMain.紫微, 亥, 2)
-      ,Triple(StarMain.天機, 子, 1),Triple(StarMain.天機, 丑, 7),Triple(StarMain.天機, 寅, 3),Triple(StarMain.天機, 卯, 2),Triple(StarMain.天機, 辰, 4),Triple(StarMain.天機, 巳, 5),Triple(StarMain.天機, 午, 1),Triple(StarMain.天機, 未, 7),Triple(StarMain.天機, 申, 3),Triple(StarMain.天機, 酉, 2),Triple(StarMain.天機, 戌, 3),Triple(StarMain.天機, 亥, 5)
-      ,Triple(StarMain.太陽, 子, 7),Triple(StarMain.太陽, 丑, 6),Triple(StarMain.太陽, 寅, 2),Triple(StarMain.太陽, 卯, 1),Triple(StarMain.太陽, 辰, 2),Triple(StarMain.太陽, 巳, 2),Triple(StarMain.太陽, 午, 2),Triple(StarMain.太陽, 未, 3),Triple(StarMain.太陽, 申, 3),Triple(StarMain.太陽, 酉, 5),Triple(StarMain.太陽, 戌, 6),Triple(StarMain.太陽, 亥, 7)
-      ,Triple(StarMain.武曲, 子, 2),Triple(StarMain.武曲, 丑, 1),Triple(StarMain.武曲, 寅, 3),Triple(StarMain.武曲, 卯, 4),Triple(StarMain.武曲, 辰, 1),Triple(StarMain.武曲, 巳, 5),Triple(StarMain.武曲, 午, 2),Triple(StarMain.武曲, 未, 1),Triple(StarMain.武曲, 申, 3),Triple(StarMain.武曲, 酉, 4),Triple(StarMain.武曲, 戌, 1),Triple(StarMain.武曲, 亥, 5)
-      ,Triple(StarMain.天同, 子, 2),Triple(StarMain.天同, 丑, 6),Triple(StarMain.天同, 寅, 4),Triple(StarMain.天同, 卯, 5),Triple(StarMain.天同, 辰, 5),Triple(StarMain.天同, 巳, 1),Triple(StarMain.天同, 午, 7),Triple(StarMain.天同, 未, 6),Triple(StarMain.天同, 申, 2),Triple(StarMain.天同, 酉, 5),Triple(StarMain.天同, 戌, 5),Triple(StarMain.天同, 亥, 1)
-      ,Triple(StarMain.廉貞, 子, 5),Triple(StarMain.廉貞, 丑, 4),Triple(StarMain.廉貞, 寅, 1),Triple(StarMain.廉貞, 卯, 5),Triple(StarMain.廉貞, 辰, 4),Triple(StarMain.廉貞, 巳, 7),Triple(StarMain.廉貞, 午, 5),Triple(StarMain.廉貞, 未, 4),Triple(StarMain.廉貞, 申, 1),Triple(StarMain.廉貞, 酉, 5),Triple(StarMain.廉貞, 戌, 4),Triple(StarMain.廉貞, 亥, 7)
-      ,Triple(StarMain.天府, 子, 1),Triple(StarMain.天府, 丑, 1),Triple(StarMain.天府, 寅, 1),Triple(StarMain.天府, 卯, 3),Triple(StarMain.天府, 辰, 1),Triple(StarMain.天府, 巳, 3),Triple(StarMain.天府, 午, 2),Triple(StarMain.天府, 未, 1),Triple(StarMain.天府, 申, 3),Triple(StarMain.天府, 酉, 2),Triple(StarMain.天府, 戌, 1),Triple(StarMain.天府, 亥, 3)
-      ,Triple(StarMain.太陰, 子, 1),Triple(StarMain.太陰, 丑, 1),Triple(StarMain.太陰, 寅, 2),Triple(StarMain.太陰, 卯, 7),Triple(StarMain.太陰, 辰, 7),Triple(StarMain.太陰, 巳, 7),Triple(StarMain.太陰, 午, 6),Triple(StarMain.太陰, 未, 6),Triple(StarMain.太陰, 申, 4),Triple(StarMain.太陰, 酉, 2),Triple(StarMain.太陰, 戌, 2),Triple(StarMain.太陰, 亥, 1)
-      ,Triple(StarMain.貪狼, 子, 2),Triple(StarMain.貪狼, 丑, 1),Triple(StarMain.貪狼, 寅, 5),Triple(StarMain.貪狼, 卯, 4),Triple(StarMain.貪狼, 辰, 1),Triple(StarMain.貪狼, 巳, 7),Triple(StarMain.貪狼, 午, 2),Triple(StarMain.貪狼, 未, 1),Triple(StarMain.貪狼, 申, 5),Triple(StarMain.貪狼, 酉, 4),Triple(StarMain.貪狼, 戌, 1),Triple(StarMain.貪狼, 亥, 7)
-      ,Triple(StarMain.巨門, 子, 2),Triple(StarMain.巨門, 丑, 6),Triple(StarMain.巨門, 寅, 1),Triple(StarMain.巨門, 卯, 1),Triple(StarMain.巨門, 辰, 2),Triple(StarMain.巨門, 巳, 2),Triple(StarMain.巨門, 午, 2),Triple(StarMain.巨門, 未, 6),Triple(StarMain.巨門, 申, 1),Triple(StarMain.巨門, 酉, 1),Triple(StarMain.巨門, 戌, 7),Triple(StarMain.巨門, 亥, 2)
-      ,Triple(StarMain.天相, 子, 1),Triple(StarMain.天相, 丑, 1),Triple(StarMain.天相, 寅, 1),Triple(StarMain.天相, 卯, 7),Triple(StarMain.天相, 辰, 3),Triple(StarMain.天相, 巳, 3),Triple(StarMain.天相, 午, 1),Triple(StarMain.天相, 未, 3),Triple(StarMain.天相, 申, 1),Triple(StarMain.天相, 酉, 7),Triple(StarMain.天相, 戌, 3),Triple(StarMain.天相, 亥, 3)
-      ,Triple(StarMain.天梁, 子, 1),Triple(StarMain.天梁, 丑, 2),Triple(StarMain.天梁, 寅, 1),Triple(StarMain.天梁, 卯, 1),Triple(StarMain.天梁, 辰, 1),Triple(StarMain.天梁, 巳, 3),Triple(StarMain.天梁, 午, 1),Triple(StarMain.天梁, 未, 2),Triple(StarMain.天梁, 申, 7),Triple(StarMain.天梁, 酉, 3),Triple(StarMain.天梁, 戌, 1),Triple(StarMain.天梁, 亥, 7)
-      ,Triple(StarMain.七殺, 子, 2),Triple(StarMain.七殺, 丑, 1),Triple(StarMain.七殺, 寅, 1),Triple(StarMain.七殺, 卯, 2),Triple(StarMain.七殺, 辰, 1),Triple(StarMain.七殺, 巳, 5),Triple(StarMain.七殺, 午, 2),Triple(StarMain.七殺, 未, 1),Triple(StarMain.七殺, 申, 1),Triple(StarMain.七殺, 酉, 2),Triple(StarMain.七殺, 戌, 1),Triple(StarMain.七殺, 亥, 5)
-      ,Triple(StarMain.破軍, 子, 1),Triple(StarMain.破軍, 丑, 2),Triple(StarMain.破軍, 寅, 3),Triple(StarMain.破軍, 卯, 7),Triple(StarMain.破軍, 辰, 2),Triple(StarMain.破軍, 巳, 5),Triple(StarMain.破軍, 午, 1),Triple(StarMain.破軍, 未, 2),Triple(StarMain.破軍, 申, 3),Triple(StarMain.破軍, 酉, 7),Triple(StarMain.破軍, 戌, 2),Triple(StarMain.破軍, 亥, 5)
-
-      ,Triple(StarLucky.文昌, 子, 3),Triple(StarLucky.文昌, 丑, 1),Triple(StarLucky.文昌, 寅, 7),Triple(StarLucky.文昌, 卯, 4),Triple(StarLucky.文昌, 辰, 3),Triple(StarLucky.文昌, 巳, 1),Triple(StarLucky.文昌, 午, 7),Triple(StarLucky.文昌, 未, 4),Triple(StarLucky.文昌, 申, 3),Triple(StarLucky.文昌, 酉, 1),Triple(StarLucky.文昌, 戌, 7),Triple(StarLucky.文昌, 亥, 4)
-      ,Triple(StarLucky.文曲, 子, 3),Triple(StarLucky.文曲, 丑, 1),Triple(StarLucky.文曲, 寅, 5),Triple(StarLucky.文曲, 卯, 2),Triple(StarLucky.文曲, 辰, 3),Triple(StarLucky.文曲, 巳, 1),Triple(StarLucky.文曲, 午, 7),Triple(StarLucky.文曲, 未, 2),Triple(StarLucky.文曲, 申, 3),Triple(StarLucky.文曲, 酉, 1),Triple(StarLucky.文曲, 戌, 7),Triple(StarLucky.文曲, 亥, 2)
-
-      // 祿存只有在 辰戌丑未 沒能量，其他都是廟
-      ,Triple(StarLucky.祿存, 子, 1),Triple(StarLucky.祿存, 寅, 1),Triple(StarLucky.祿存, 卯, 1),Triple(StarLucky.祿存, 巳, 1),Triple(StarLucky.祿存, 午, 1),Triple(StarLucky.祿存, 申, 1),Triple(StarLucky.祿存, 酉, 1),Triple(StarLucky.祿存, 亥, 1)
-
-      // 北派 火鈴 強弱 是一樣的
-      ,Triple(火星, 子, 7),Triple(火星, 丑, 3),Triple(火星, 寅, 1),Triple(火星, 卯, 4),Triple(火星, 辰, 7),Triple(火星, 巳, 3),Triple(火星, 午, 1),Triple(火星, 未, 4),Triple(火星, 申, 7),Triple(火星, 酉, 3),Triple(火星, 戌, 1),Triple(火星, 亥, 4)
-      ,Triple(鈴星, 子, 7),Triple(鈴星, 丑, 3),Triple(鈴星, 寅, 1),Triple(鈴星, 卯, 4),Triple(鈴星, 辰, 7),Triple(鈴星, 巳, 3),Triple(鈴星, 午, 1),Triple(鈴星, 未, 4),Triple(鈴星, 申, 7),Triple(鈴星, 酉, 3),Triple(鈴星, 戌, 1),Triple(鈴星, 亥, 4)
-    )
-
-    val commonStarMap: Map<ZStar, List<Pair<Branch, Int>>> = table
-      .groupBy { it.first }
-      .mapValues { it -> it.component2().map { t -> Pair(t.second, t.third) } }
-
-    val commonPairMap : Map<Pair<ZStar , Branch> , Int> = table
-      .groupBy { Pair(it.first, it.second) }
-      .mapValues { it -> it.component2().map { it.third }.first()}
   }
 }
