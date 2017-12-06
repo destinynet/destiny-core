@@ -103,6 +103,15 @@ import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全書
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
 import destiny.core.chinese.ziwei.StarYearFront.*
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun吊客
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun喪門
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun官符
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun晦氣
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun歲建
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun歲破
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun白虎
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun貫索
+import destiny.core.chinese.ziwei.StarYearFront.Companion.fun龍德
 import org.jooq.lambda.tuple.Tuple3
 import org.jooq.lambda.tuple.Tuple5
 import org.slf4j.LoggerFactory
@@ -802,73 +811,73 @@ object HouseFunctions {
   // =======↓↓↓======= 以下 歲前12星 =======↓↓↓=======
   val house歲前_歲建: IHouse<*> = object : HouseYearBranchImpl(歲建) {
     override fun getBranch(branch: Branch): Branch {
-      return fun歲建.apply(branch)
+      return fun歲建.invoke(branch)
     }
   }
 
   val house歲前_晦氣: IHouse<*> = object : HouseYearBranchImpl(晦氣) {
     override fun getBranch(branch: Branch): Branch {
-      return fun晦氣.apply(branch)
+      return fun晦氣.invoke(branch)
     }
   }
 
   val house歲前_喪門: IHouse<*> = object : HouseYearBranchImpl(喪門) {
     override fun getBranch(branch: Branch): Branch {
-      return fun喪門.apply(branch)
+      return fun喪門.invoke(branch)
     }
   }
 
   val house歲前_貫索: IHouse<*> = object : HouseYearBranchImpl(貫索) {
     override fun getBranch(branch: Branch): Branch {
-      return fun貫索.apply(branch)
+      return fun貫索.invoke(branch)
     }
   }
 
   val house歲前_官符: IHouse<*> = object : HouseYearBranchImpl(官符) {
     override fun getBranch(branch: Branch): Branch {
-      return fun官符.apply(branch)
+      return fun官符.invoke(branch)
     }
   }
 
   val house歲前_小耗: IHouse<*> = object : HouseYearBranchImpl(StarYearFront.小耗) {
     override fun getBranch(branch: Branch): Branch {
-      return StarYearFront.fun小耗.apply(branch)
+      return StarYearFront.fun小耗.invoke(branch)
     }
   }
 
   val house歲前_歲破: IHouse<*> = object : HouseYearBranchImpl(歲破) {
     override fun getBranch(branch: Branch): Branch {
-      return fun歲破.apply(branch)
+      return fun歲破.invoke(branch)
     }
   }
 
   val house歲前_龍德: IHouse<*> = object : HouseYearBranchImpl(龍德) {
     override fun getBranch(branch: Branch): Branch {
-      return fun龍德.apply(branch)
+      return fun龍德.invoke(branch)
     }
   }
 
   val house歲前_白虎: IHouse<*> = object : HouseYearBranchImpl(白虎) {
     override fun getBranch(branch: Branch): Branch {
-      return fun白虎.apply(branch)
+      return fun白虎.invoke(branch)
     }
   }
 
   val house歲前_天德: IHouse<*> = object : HouseYearBranchImpl(StarYearFront.天德) {
     override fun getBranch(branch: Branch): Branch {
-      return StarYearFront.fun天德.apply(branch)
+      return StarYearFront.fun天德.invoke(branch)
     }
   }
 
   val house歲前_吊客: IHouse<*> = object : HouseYearBranchImpl(吊客) {
     override fun getBranch(branch: Branch): Branch {
-      return fun吊客.apply(branch)
+      return fun吊客.invoke(branch)
     }
   }
 
   val house歲前_病符: IHouse<*> = object : HouseYearBranchImpl(StarYearFront.病符) {
     override fun getBranch(branch: Branch): Branch {
-      return StarYearFront.fun病符.apply(branch)
+      return StarYearFront.fun病符.invoke(branch)
     }
   }
 

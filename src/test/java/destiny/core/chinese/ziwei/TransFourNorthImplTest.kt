@@ -39,15 +39,15 @@ class TransFourNorthImplTest {
 
   @Test
   fun getValueOf() {
-    assertSame(科, impl.getValueOf(武曲, 甲).orElse(null))
-    assertNull(impl.getValueOf(武曲, 乙).orElse(null))
-    assertNull(impl.getValueOf(武曲, 丙).orElse(null))
-    assertNull(impl.getValueOf(武曲, 丁).orElse(null))
-    assertNull(impl.getValueOf(武曲, 戊).orElse(null))
-    assertSame(祿, impl.getValueOf(武曲, 己).orElse(null))
-    assertSame(權, impl.getValueOf(武曲, 庚).orElse(null))
-    assertNull(impl.getValueOf(武曲, 辛).orElse(null))
-    assertSame(忌, impl.getValueOf(武曲, 壬).orElse(null))
-    assertNull(impl.getValueOf(武曲, 癸).orElse(null))
+    assertSame(科, impl.getValueOf(武曲, 甲))
+    assertNull(impl.getValueOf(武曲, 乙))
+    assertNull(impl.getValueOf(武曲, 丙))
+    assertNull(impl.getValueOf(武曲, 丁))
+    assertNull(impl.getValueOf(武曲, 戊))
+    assertSame(祿, impl.getValueOf(武曲, 己))
+    assertSame(權, impl.getValueOf(武曲, 庚))
+    assertNull(impl.getValueOf(武曲, 辛))
+    assertSame(忌, impl.getValueOf(武曲, 壬))
+    assertNull(impl.getValueOf(武曲, 癸))
   }
 }

@@ -23,7 +23,7 @@ public final class Direct extends Rule {
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     if (planet != Planet.SUN && planet != Planet.MOON) {
 
-      return h.getPosition(planet)
+      return h.getPositionOpt(planet)
         .map(Position::getSpeedLng)
         .filter(speedLng -> speedLng > 0)
         .map(speedLng -> Tuple.tuple("comment", new Object[]{planet}));

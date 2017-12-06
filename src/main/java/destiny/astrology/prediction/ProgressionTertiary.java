@@ -18,10 +18,10 @@ import destiny.astrology.Constants;
  */
 public class ProgressionTertiary extends AbstractProgression {
   /** 一月有幾秒 */
-  private double monthSeconds = Constants.SIDEREAL_MONTH;
+  private double monthSeconds = Constants.INSTANCE.getSIDEREAL_MONTH();
   
   /** 一日有幾秒 */
-  private double daySeconds = Constants.SIDEREAL_DAY;
+  private double daySeconds = Constants.INSTANCE.getSIDEREAL_DAY();
   
   /** TP (一日一月) , 分子是 一月 */
   @Override

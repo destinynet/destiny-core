@@ -6,7 +6,7 @@ package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
-import destiny.astrology.classical.CollectionOfLightIF;
+import destiny.astrology.classical.ICollectionOfLight;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -18,15 +18,15 @@ import java.util.Optional;
  */
 public final class Collection_of_Light extends Rule
 {
-  private final CollectionOfLightIF collectionOfLightImpl;
+  private final ICollectionOfLight collectionOfLightImpl;
 
-  public Collection_of_Light(CollectionOfLightIF collectionOfLightImpl) {
+  public Collection_of_Light(ICollectionOfLight collectionOfLightImpl) {
     this.collectionOfLightImpl = collectionOfLightImpl;
   }
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    return collectionOfLightImpl.getResult(planet , h , CollectionOfLightIF.CollectType.DIGNITIES).map(twoPlanets ->
+    return collectionOfLightImpl.getResult(planet , h , ICollectionOfLight.CollectType.DIGNITIES).map(twoPlanets ->
       Tuple.tuple("comment", new Object[]{planet, twoPlanets.get(0), twoPlanets.get(1), h.getAngle(twoPlanets.get(0), twoPlanets.get(1))})
     );
   }

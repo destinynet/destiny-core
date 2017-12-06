@@ -253,10 +253,10 @@ public class Builder implements Serializable {
   }
 
   /** 添加 四化 */
-  public Builder appendTrans4Map(Map<Tuple2<ZStar , FlowType> , ITransFour.Value> map) {
+  public Builder appendTrans4Map(Map<Pair<ZStar , FlowType> , ITransFour.Value> map) {
     map.forEach((tuple , value) -> {
-      ZStar star = tuple.v1();
-      FlowType flowType = tuple.v2();
+      ZStar star = tuple.getFirst();
+      FlowType flowType = tuple.getSecond();
 
       this.transFourMap.computeIfPresent(star, (star1, flowTypeValueMap) -> {
         flowTypeValueMap.putIfAbsent(flowType , value);
@@ -332,9 +332,9 @@ public class Builder implements Serializable {
       houseDataSet.forEach(houseData -> houseData.getStars().removeIf(star -> star instanceof StarYearFront));
 
       // 接著，以「流年」的 歲前12星，塞入
-      Arrays.stream(StarYearFront.values)
+      Arrays.stream(StarYearFront.Companion.getValues())
         .map(star -> {
-          Branch b = StarYearFront.funMap.get(star).apply(flowYear.getBranch());
+          Branch b = StarYearFront.Companion.getFunMap().get(star).invoke(flowYear.getBranch());
           return Tuple.tuple(star , b);
         }).forEach(t -> {
           houseDataSet.stream()

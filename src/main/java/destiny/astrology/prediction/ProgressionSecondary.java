@@ -31,10 +31,10 @@ import destiny.astrology.Constants;
  */
 public class ProgressionSecondary extends AbstractProgression {
   /** 一年有幾秒 */
-  private double yearSeconds = Constants.SIDEREAL_YEAR;
+  private double yearSeconds = Constants.INSTANCE.getSIDEREAL_YEAR();
   
   /** 一日有幾秒 */
-  private double daySeconds = Constants.SIDEREAL_DAY;
+  private double daySeconds = Constants.INSTANCE.getSIDEREAL_DAY();
   
   /** SP (一日一年) , 分子是 一年 */
   @Override

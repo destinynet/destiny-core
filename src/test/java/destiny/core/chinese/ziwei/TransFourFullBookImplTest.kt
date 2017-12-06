@@ -38,15 +38,15 @@ class TransFourFullBookImplTest {
 
   @Test
   fun getValueOf() {
-    assertNull(impl.getValueOf(天機, 甲).orElse(null))
-    assertSame(祿, impl.getValueOf(天機, 乙).orElse(null))
-    assertSame(權, impl.getValueOf(天機, 丙).orElse(null))
-    assertSame(科, impl.getValueOf(天機, 丁).orElse(null))
-    assertSame(忌, impl.getValueOf(天機, 戊).orElse(null))
-    assertNull(impl.getValueOf(天機, 己).orElse(null))
-    assertNull(impl.getValueOf(天機, 庚).orElse(null))
-    assertNull(impl.getValueOf(天機, 辛).orElse(null))
-    assertNull(impl.getValueOf(天機, 壬).orElse(null))
-    assertNull(impl.getValueOf(天機, 癸).orElse(null))
+    assertNull(impl.getValueOf(天機, 甲))
+    assertSame(祿, impl.getValueOf(天機, 乙))
+    assertSame(權, impl.getValueOf(天機, 丙))
+    assertSame(科, impl.getValueOf(天機, 丁))
+    assertSame(忌, impl.getValueOf(天機, 戊))
+    assertNull(impl.getValueOf(天機, 己))
+    assertNull(impl.getValueOf(天機, 庚))
+    assertNull(impl.getValueOf(天機, 辛))
+    assertNull(impl.getValueOf(天機, 壬))
+    assertNull(impl.getValueOf(天機, 癸))
   }
 }

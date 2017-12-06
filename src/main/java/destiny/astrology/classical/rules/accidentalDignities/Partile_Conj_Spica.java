@@ -24,8 +24,8 @@ public final class Partile_Conj_Spica extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    Optional<Double> planetDegree = h.getPosition(planet).map(Position::getLng);
-    Optional<Double> spicaDeg = h.getPosition(FixedStar.SPICA).map(Position::getLng);
+    Optional<Double> planetDegree = h.getPositionOpt(planet).map(Position::getLng);
+    Optional<Double> spicaDeg = h.getPositionOpt(FixedStar.SPICA).map(Position::getLng);
 
     if (planetDegree.isPresent() && spicaDeg.isPresent()) {
       if (AspectEffectiveModern.isEffective(planetDegree.get(), spicaDeg.get(), Aspect.CONJUNCTION, 1)) {

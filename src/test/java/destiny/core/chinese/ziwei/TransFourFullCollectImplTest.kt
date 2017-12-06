@@ -39,15 +39,15 @@ class TransFourFullCollectImplTest {
 
   @Test
   fun getValueOf() {
-    assertSame(祿, impl.getValueOf(廉貞, 甲).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 乙).orElse(null))
-    assertSame(忌, impl.getValueOf(廉貞, 丙).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 丁).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 戊).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 己).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 庚).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 辛).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 壬).orElse(null))
-    assertSame(null, impl.getValueOf(廉貞, 癸).orElse(null))
+    assertSame(祿, impl.getValueOf(廉貞, 甲))
+    assertSame(null, impl.getValueOf(廉貞, 乙))
+    assertSame(忌, impl.getValueOf(廉貞, 丙))
+    assertSame(null, impl.getValueOf(廉貞, 丁))
+    assertSame(null, impl.getValueOf(廉貞, 戊))
+    assertSame(null, impl.getValueOf(廉貞, 己))
+    assertSame(null, impl.getValueOf(廉貞, 庚))
+    assertSame(null, impl.getValueOf(廉貞, 辛))
+    assertSame(null, impl.getValueOf(廉貞, 壬))
+    assertSame(null, impl.getValueOf(廉貞, 癸))
   }
 }

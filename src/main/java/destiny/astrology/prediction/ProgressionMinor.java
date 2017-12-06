@@ -13,10 +13,10 @@ import destiny.astrology.Constants;
  * */
 public class ProgressionMinor extends AbstractProgression {
   /** 一年有幾秒 */
-  private double yearSeconds = Constants.SIDEREAL_YEAR;
+  private double yearSeconds = Constants.INSTANCE.getSIDEREAL_YEAR();
   
   /** 一月有幾秒 */
-  private double monthSeconds = Constants.SIDEREAL_MONTH;
+  private double monthSeconds = Constants.INSTANCE.getSIDEREAL_MONTH();
   
   /** MP (一月一年) , 分子是 一年 */
   @Override

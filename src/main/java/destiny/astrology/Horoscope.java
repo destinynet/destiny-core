@@ -263,13 +263,13 @@ public class Horoscope implements Serializable {
   }
 
   /** 取得星體的位置以及地平方位角 */
-  public Optional<PositionWithAzimuth> getPosition(Point point)  {
+  public Optional<PositionWithAzimuth> getPositionOpt(Point point)  {
     return Optional.ofNullable(positionMap.get(point));
   }
 
   /** 取得某星 位於什麼星座 */
   public Optional<ZodiacSign> getZodiacSign(Point point) {
-    return getPosition(point)
+    return getPositionOpt(point)
       .map(pos -> ZodiacSign.getZodiacSign(pos.getLng()));
   }
 

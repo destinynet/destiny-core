@@ -29,15 +29,15 @@ class TransFourZiyunImplTest {
 
   @Test
   fun getValueOf() {
-    assertSame(忌, impl.getValueOf(太陽, 甲).orElse(null))
-    assertNull(impl.getValueOf(太陽, 乙).orElse(null))
-    assertNull(impl.getValueOf(太陽, 丙).orElse(null))
-    assertNull(impl.getValueOf(太陽, 丁).orElse(null))
-    assertNull(impl.getValueOf(太陽, 戊).orElse(null))
-    assertNull(impl.getValueOf(太陽, 己).orElse(null))
-    assertSame(祿, impl.getValueOf(太陽, 庚).orElse(null))
-    assertSame(權, impl.getValueOf(太陽, 辛).orElse(null))
-    assertNull(impl.getValueOf(太陽, 壬).orElse(null))
-    assertSame(科, impl.getValueOf(太陽, 癸).orElse(null))
+    assertSame(忌, impl.getValueOf(太陽, 甲))
+    assertNull(impl.getValueOf(太陽, 乙))
+    assertNull(impl.getValueOf(太陽, 丙))
+    assertNull(impl.getValueOf(太陽, 丁))
+    assertNull(impl.getValueOf(太陽, 戊))
+    assertNull(impl.getValueOf(太陽, 己))
+    assertSame(祿, impl.getValueOf(太陽, 庚))
+    assertSame(權, impl.getValueOf(太陽, 辛))
+    assertNull(impl.getValueOf(太陽, 壬))
+    assertSame(科, impl.getValueOf(太陽, 癸))
   }
 }

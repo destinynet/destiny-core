@@ -20,9 +20,9 @@ public final class Partile_Trine_Jupiter_Venus extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPosition(planet).map(Position::getLng).flatMap(planetDegree ->
-      h.getPosition(Planet.JUPITER).map(Position::getLng).flatMap(jupiterDeg ->
-        h.getPosition(Planet.VENUS).map(Position::getLng).flatMap(venusDeg -> {
+    return h.getPositionOpt(planet).map(Position::getLng).flatMap(planetDegree ->
+      h.getPositionOpt(Planet.JUPITER).map(Position::getLng).flatMap(jupiterDeg ->
+        h.getPositionOpt(Planet.VENUS).map(Position::getLng).flatMap(venusDeg -> {
           if (planet != Planet.JUPITER && AspectEffectiveModern.isEffective(planetDegree, jupiterDeg, Aspect.TRINE, 1.0)) {
             logger.debug("{} 與 {} 形成 {}" , planet , Planet.JUPITER , Aspect.TRINE);
             return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.JUPITER, Aspect.TRINE}));

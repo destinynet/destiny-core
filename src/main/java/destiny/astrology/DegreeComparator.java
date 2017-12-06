@@ -17,8 +17,8 @@ public class DegreeComparator implements Comparator<Point> {
   @Override
   public int compare(Point p1, Point p2) {
 
-    return horoscope.getPosition(p1).map(Position::getLng).flatMap(p1Deg ->
-      horoscope.getPosition(p2).map(Position::getLng).map(p2Deg ->
+    return horoscope.getPositionOpt(p1).map(Position::getLng).flatMap(p1Deg ->
+      horoscope.getPositionOpt(p2).map(Position::getLng).map(p2Deg ->
         (int) (p1Deg - p2Deg)
       )
     ).orElse(0);

@@ -6,8 +6,8 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.酉
-import org.junit.Test
 import org.slf4j.LoggerFactory
+import kotlin.test.Test
 
 class ISmallRangeTest {
 

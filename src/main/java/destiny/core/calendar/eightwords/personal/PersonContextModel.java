@@ -12,7 +12,6 @@ import destiny.core.calendar.eightwords.EightWordsContextModel;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
 import kotlin.Pair;
-import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.Collections;
@@ -37,9 +36,12 @@ public class PersonContextModel extends EightWordsContextModel {
   public PersonContextModel(Gender gender, EightWords eightWords, ChronoLocalDateTime lmt, Location location,
                             String place, ChineseDate chineseDate,
                             List<FortuneData> fortuneDatas, StemBranch risingStemBranch, Branch sunBranch,
-                            Branch moonBranch, Tuple2<SolarTerms, SolarTerms> prevNextMajorSolarTerms,
+                            Branch moonBranch, Pair<SolarTerms, SolarTerms> prevNextMajorSolarTerms,
                             Map<Integer, Pair<Double, Double>> ageMap) {
-    super(eightWords ,lmt , location, place, chineseDate, prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingStemBranch, sunBranch, moonBranch);
+    super(eightWords ,lmt , location, place, chineseDate,
+      prevNextMajorSolarTerms.getFirst(),
+      prevNextMajorSolarTerms.getSecond(),
+      risingStemBranch, sunBranch, moonBranch);
     this.gender = gender;
     this.fortuneDatas = fortuneDatas;
     this.ageMap = ageMap;

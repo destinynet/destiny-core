@@ -23,7 +23,7 @@ public final class Term extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPosition(planet)
+    return h.getPositionOpt(planet)
       .map(Position::getLng)
       .flatMap(lngDeg -> {
         Point termPoint = essentialImpl.getTermsPoint(lngDeg);

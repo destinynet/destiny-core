@@ -21,7 +21,7 @@ public final class Retrograde extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPosition(planet)
+    return h.getPositionOpt(planet)
       .map(Position::getSpeedLng)
       .filter(speedLng -> speedLng < 0)
       .map(speedLng -> Tuple.tuple("comment", new Object[]{planet}));

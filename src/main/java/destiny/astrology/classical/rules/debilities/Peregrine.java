@@ -24,7 +24,7 @@ public final class Peregrine extends EssentialRule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    return h.getPosition(planet).flatMap(pos -> {
+    return h.getPositionOpt(planet).flatMap(pos -> {
       double planetDegree = pos.getLng();
       //取得此 Planet 在什麼星座
       return h.getZodiacSign(planet).flatMap(sign -> {

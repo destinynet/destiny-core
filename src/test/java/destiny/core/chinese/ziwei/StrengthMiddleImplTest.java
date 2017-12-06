@@ -35,8 +35,8 @@ public class StrengthMiddleImplTest {
   @Test
   public void testListStarByType() {
     List<ZStar> starList = new ArrayList<>();
-//    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
-//    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
+    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarUnlucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarMinor.Companion.getValues()));
     starList.addAll(Arrays.asList(StarDoctor.Companion.getValues()));

@@ -39,15 +39,15 @@ class TransFourMiddleImplTest {
 
   @Test
   fun getValueOf() {
-    assertNull(impl.getValueOf(天府, 甲).orElse(null))
-    assertNull(impl.getValueOf(天府, 乙).orElse(null))
-    assertNull(impl.getValueOf(天府, 丙).orElse(null))
-    assertNull(impl.getValueOf(天府, 丁).orElse(null))
-    assertNull(impl.getValueOf(天府, 戊).orElse(null))
-    assertNull(impl.getValueOf(天府, 己).orElse(null))
-    assertSame(科, impl.getValueOf(天府, 庚).orElse(null))
-    assertNull(impl.getValueOf(天府, 辛).orElse(null))
-    assertSame(科, impl.getValueOf(天府, 壬).orElse(null))
-    assertNull(impl.getValueOf(天府, 癸).orElse(null))
+    assertNull(impl.getValueOf(天府, 甲))
+    assertNull(impl.getValueOf(天府, 乙))
+    assertNull(impl.getValueOf(天府, 丙))
+    assertNull(impl.getValueOf(天府, 丁))
+    assertNull(impl.getValueOf(天府, 戊))
+    assertNull(impl.getValueOf(天府, 己))
+    assertSame(科, impl.getValueOf(天府, 庚))
+    assertNull(impl.getValueOf(天府, 辛))
+    assertSame(科, impl.getValueOf(天府, 壬))
+    assertNull(impl.getValueOf(天府, 癸))
   }
 }

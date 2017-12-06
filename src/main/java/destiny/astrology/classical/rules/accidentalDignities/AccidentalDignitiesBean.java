@@ -6,7 +6,7 @@ package destiny.astrology.classical.rules.accidentalDignities;
 
 import destiny.astrology.*;
 import destiny.astrology.classical.AccidentalDignitiesIF;
-import destiny.astrology.classical.CollectionOfLightIF;
+import destiny.astrology.classical.ICollectionOfLight;
 import destiny.astrology.classical.RefranationIF;
 import destiny.astrology.classical.TranslationOfLightIF;
 import destiny.astrology.classical.rules.RuleIF;
@@ -35,7 +35,7 @@ public class AccidentalDignitiesBean implements AccidentalDignitiesIF , Serializ
   private TranslationOfLightIF translationOfLightImpl;
 
   @Inject
-  private CollectionOfLightIF collectionOfLightImpl;
+  private ICollectionOfLight collectionOfLightImpl;
 
   @Inject
   private RefranationIF refranationImpl;

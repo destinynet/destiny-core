@@ -22,9 +22,9 @@ public final class Moon_Decrease_Light extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPosition(planet)
+    return h.getPositionOpt(planet)
       .filter(pos -> planet == Planet.MOON).map(Position::getLng).flatMap(moonDegree ->
-        h.getPosition(Planet.SUN)
+        h.getPositionOpt(Planet.SUN)
           .map(Position::getLng)
           .filter(sunDegree -> Horoscope.isOriental(moonDegree, sunDegree))
           .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))

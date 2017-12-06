@@ -122,7 +122,8 @@ public class PersonContext extends EightWordsContext {
       getRisingStemBranch() ,
       getBranchOf(Planet.SUN) ,
       getBranchOf(Planet.MOON) ,
-      getPrevNextMajorSolarTerms(), getAgeMap(90));
+      getPrevNextMajorSolarTerms(),
+      getAgeMap(90));
   }
 
   /** 性別 */

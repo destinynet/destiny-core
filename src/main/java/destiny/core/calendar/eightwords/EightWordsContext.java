@@ -11,8 +11,7 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
 import destiny.core.chinese.StemBranchUtils;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
+import kotlin.Pair;
 
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
@@ -62,15 +61,16 @@ public class EightWordsContext implements Serializable {
   }
 
   public EightWordsContextModel getModel() {
-    Tuple2<SolarTerms , SolarTerms> prevNextMajorSolarTerms = getPrevNextMajorSolarTerms();
+    Pair<SolarTerms , SolarTerms> prevNextMajorSolarTerms = getPrevNextMajorSolarTerms();
 
     ChineseDate chineseDate = getChineseDate();
 
     StemBranch risingSign = getRisingStemBranch();
     Branch sunBranch = getBranchOf(Planet.SUN , lmt , location);
     Branch moonBranch = getBranchOf(Planet.MOON , lmt , location);
-    return new EightWordsContextModel(eightWords , lmt , location , "LOCATION", chineseDate, prevNextMajorSolarTerms.v1() ,
-      prevNextMajorSolarTerms.v2() ,
+    return new EightWordsContextModel(eightWords , lmt , location , "LOCATION", chineseDate,
+      prevNextMajorSolarTerms.getFirst() ,
+      prevNextMajorSolarTerms.getSecond() ,
       risingSign ,
       sunBranch , moonBranch);
   }
@@ -100,7 +100,7 @@ public class EightWordsContext implements Serializable {
 
   /** 上一個「節」、下一個「節」
    * */
-  public Tuple2<SolarTerms , SolarTerms> getPrevNextMajorSolarTerms() {
+  public Pair<SolarTerms , SolarTerms> getPrevNextMajorSolarTerms() {
     SolarTerms currentSolarTerms = getCurrentSolarTerms();
     int currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms);
     SolarTerms prevMajorSolarTerms;
@@ -115,7 +115,7 @@ public class EightWordsContext implements Serializable {
       prevMajorSolarTerms = currentSolarTerms.previous();
       nextMajorSolarTerms = currentSolarTerms.next();
     }
-    return Tuple.tuple(prevMajorSolarTerms , nextMajorSolarTerms);
+    return new Pair<>(prevMajorSolarTerms , nextMajorSolarTerms);
   }
 
   /** 取得農曆 */

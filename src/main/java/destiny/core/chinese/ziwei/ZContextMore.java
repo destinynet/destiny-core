@@ -198,7 +198,7 @@ public class ZContextMore extends ZContext {
       starList.addAll(Arrays.asList(StarGeneralFront.Companion.getValues()));
 
     if (showYearFront)
-      starList.addAll(Arrays.asList(StarYearFront.values));
+      starList.addAll(Arrays.asList(StarYearFront.Companion.getValues()));
     return starList;
   }
 

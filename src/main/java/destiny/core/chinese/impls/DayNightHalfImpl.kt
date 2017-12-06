@@ -1,0 +1,34 @@
+/**
+ * Created by smallufo on 2015-05-27.
+ */
+package destiny.core.chinese.impls
+
+import destiny.astrology.*
+import destiny.core.calendar.Location
+import java.io.Serializable
+import java.util.*
+
+class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : DayNightDifferentiator, Serializable {
+
+  override fun getDayNight(gmtJulDay: Double, location: Location): DayNight {
+    val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, false, true)
+    val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, false, true)
+
+    return if (nextNadirJulDay > nextMeridianJulDay) {
+      //子正到午正（上半天）
+      DayNight.DAY
+    } else {
+      //午正到子正（下半天）
+      DayNight.NIGHT
+    }
+  }
+
+
+  override fun getTitle(locale: Locale): String {
+    return "前半天後半天"
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return "夜半子正至午正（前半天）為晝；中午至半夜（後半天）為夜"
+  }
+}

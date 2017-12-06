@@ -26,21 +26,13 @@ sealed class StarMain(val nameKey: String) : ZStar(nameKey, ZStar::class.java.na
   object 七殺 : StarMain("七殺")
   object 破軍 : StarMain("破軍")
 
-
-  fun getAllValues(): Array<StarMain> {
-    return values
-  }
-
   override fun toString(): String {
     return nameKey
   }
 
-
   companion object {
 
-
     val values = arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍)
-    val list = values.map { it -> it }.toList()
 
     // （局數 , 日數 , 是否閏月 , 上個月的天數 , 紫微星實作) -> 地支
     val fun紫微 = { set: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> iPurpleBranch.getBranchOfPurpleStar(set, days, leap, prevMonthDays) }

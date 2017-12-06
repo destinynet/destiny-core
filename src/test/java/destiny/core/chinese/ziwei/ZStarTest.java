@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static destiny.core.chinese.Branch.*;
+import static destiny.core.chinese.ziwei.StarMain.*;
+
 public class ZStarTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,9 +33,9 @@ public class ZStarTest {
   public void testMapGroupBy() {
     // 嘗試先建立一個簡單的 starBranchMap
     Map<ZStar, Branch> starBranchMap = new HashMap<>();
-    starBranchMap.put(StarMain.紫微.INSTANCE, Branch.子);
-    starBranchMap.put(StarMain.天同.INSTANCE, Branch.子);
-    starBranchMap.put(StarMain.七殺.INSTANCE, Branch.丑);
+    starBranchMap.put(紫微.INSTANCE, 子);
+    starBranchMap.put(天同.INSTANCE, 子);
+    starBranchMap.put(七殺.INSTANCE, 丑);
 
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> map1 = starBranchMap.entrySet().stream()
@@ -46,22 +49,18 @@ public class ZStarTest {
     logger.info("map1 = {}" , map1);
 
 
-    Map<Branch , Set<ZStar>> map2 = Arrays.stream(Branch.values()).map(branch -> {
+    Map<Branch , Set<ZStar>> map2 = Arrays.stream(values()).map(branch -> {
       Set<ZStar> stars = map1.getOrDefault(branch , new HashSet<>());
       return new Pair<>(branch, stars);
     }).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
     logger.info("map2 = {}" , map2);
-
-
-
-
   }
 
   @Test
   public void testListStarByType() {
 
     List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(StarMain.Companion.getValues()));
+    starList.addAll(Arrays.asList(Companion.getValues()));
     starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
     starList.addAll(Arrays.asList(StarUnlucky.Companion.getValues()));

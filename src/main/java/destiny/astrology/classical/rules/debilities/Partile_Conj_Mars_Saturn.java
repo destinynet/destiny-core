@@ -22,9 +22,9 @@ public final class Partile_Conj_Mars_Saturn extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPosition(planet).map(Position::getLng).flatMap(planetDegree ->
-      h.getPosition(Planet.MARS).map(Position::getLng).flatMap(marsDeg ->
-        h.getPosition(Planet.SATURN).map(Position::getLng).flatMap(saturnDeg -> {
+    return h.getPositionOpt(planet).map(Position::getLng).flatMap(planetDegree ->
+      h.getPositionOpt(Planet.MARS).map(Position::getLng).flatMap(marsDeg ->
+        h.getPositionOpt(Planet.SATURN).map(Position::getLng).flatMap(saturnDeg -> {
           if (planet != Planet.MARS && Horoscope.getAngle(planetDegree, marsDeg) <= 1) {
             logger.debug("{} 與 {} 形成 {}" , planet , Planet.MARS , Aspect.CONJUNCTION);
             return Optional.of(Tuple.tuple("comment", new Object[]{planet, Planet.MARS, Aspect.CONJUNCTION}));

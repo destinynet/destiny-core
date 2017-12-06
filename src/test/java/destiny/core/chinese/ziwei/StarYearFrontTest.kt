@@ -4,11 +4,11 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.*
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertSame
-import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class StarYearFrontTest {
 
@@ -32,13 +32,13 @@ class StarYearFrontTest {
   @Test
   fun testFun() {
     // 午年 , 歲建 在 午
-    assertSame(午, StarYearFront.fun歲建.apply(午))
+    assertSame(午, StarYearFront.fun歲建.invoke(午))
     // 午年 , 晦氣 在 未
-    assertSame(未, StarYearFront.fun晦氣.apply(午))
+    assertSame(未, StarYearFront.fun晦氣.invoke(午))
     // 午年 , 歲破(大耗) 在 子
-    assertSame(子, StarYearFront.fun歲破.apply(午))
+    assertSame(子, StarYearFront.fun歲破.invoke(午))
     // 午年 , 病符 在 巳
-    assertSame(巳, StarYearFront.fun病符.apply(午))
+    assertSame(巳, StarYearFront.fun病符.invoke(午))
   }
 
 }

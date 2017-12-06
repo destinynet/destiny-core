@@ -25,10 +25,10 @@ public final class Oriental extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
 
-    return h.getPosition(planet)
+    return h.getPositionOpt(planet)
       .filter(pos -> planet == Planet.MERCURY || planet == Planet.VENUS)
       .map(Position::getLng).flatMap(planetDegree ->
-        h.getPosition(Planet.SUN)
+        h.getPositionOpt(Planet.SUN)
           .map(Position::getLng)
           .filter(sunDegree -> Horoscope.isOriental(planetDegree, sunDegree))
           .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
