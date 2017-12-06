@@ -49,7 +49,7 @@ public class Horoscope implements Serializable {
 
   private transient static Logger logger = LoggerFactory.getLogger(Horoscope.class);
 
-  private final transient Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final transient Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
 
   public Horoscope(double gmtJulDay, Location location, HouseSystem houseSystem, Coordinate coordinate, Centric centric, double temperature, double pressure, Map<Point, PositionWithAzimuth> positionMap, Map<Integer, Double> cuspDegreeMap) {
@@ -298,9 +298,8 @@ public class Horoscope implements Serializable {
   public static boolean isOriental(double from, double to) {
     if (from < to && to - from < 180)
       return true;
-    else if (from > to && from - to > 180)
-      return true;
-    return false;
+    else
+      return from > to && from - to > 180;
   }
 
   /**
@@ -309,8 +308,7 @@ public class Horoscope implements Serializable {
   public static boolean isOccidental(double from, double to) {
     if (from < to && to - from > 180)
       return true;
-    else if (from > to && from - to < 180)
-      return true;
-    return false;
+    else
+      return from > to && from - to < 180;
   }
 }

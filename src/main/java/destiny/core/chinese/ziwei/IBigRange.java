@@ -46,7 +46,7 @@ public interface IBigRange extends Descriptive {
         StemBranch sb = IZiwei.getStemBranchOf(e.getKey() , stemOf寅);
         return new AbstractMap.SimpleEntry<>(sb, e.getValue());
       })
-      .sorted() // FIXME : Pair 沒有實作 Comparable , 但是否真有必要排序呢？ 好像沒必要?
+      //.sorted() // FIXME : Pair 沒有實作 Comparable , 但是否真有必要排序呢？ 好像沒必要?
       //.sorted(Map.Entry.comparingByValue())
       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
   }

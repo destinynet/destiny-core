@@ -48,7 +48,7 @@ public class PlanetaryHourImpl implements IPlanetaryHour, Serializable {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   public PlanetaryHourImpl(IRiseTrans riseTransImpl) {this.riseTransImpl = riseTransImpl;}
 

@@ -25,7 +25,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
  */
 public class HourLmtImpl implements HourIF, Serializable {
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   @NotNull
   @Override

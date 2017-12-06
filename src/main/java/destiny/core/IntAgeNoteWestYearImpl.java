@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class IntAgeNoteWestYearImpl implements IntAgeNote , Serializable {
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   @Override
   public Optional<String> getAgeNote(double gmtJulDay) {

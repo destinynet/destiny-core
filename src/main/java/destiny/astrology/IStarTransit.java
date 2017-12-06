@@ -39,7 +39,7 @@ public interface IStarTransit {
    * 傳回 GMT
    * */
   default ChronoLocalDateTime getNextTransitGmtDateTime(Star star, double degree, Coordinate coordinate , double fromGmt , boolean isForward) {
-    return getNextTransitGmtDateTime(star , degree , coordinate , fromGmt , isForward , JulDayResolver1582CutoverImpl::getLocalDateTimeStatic);
+    return getNextTransitGmtDateTime(star , degree , coordinate , fromGmt , isForward , JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic);
   }
 
 }

@@ -38,7 +38,7 @@ public class HourSolarTransImpl implements HourIF , Serializable {
 
   private final IRiseTrans riseTransImpl;
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   public HourSolarTransImpl(IRiseTrans riseTransImpl)
   {

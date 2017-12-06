@@ -21,15 +21,15 @@ import static org.junit.Assert.*;
 
 public class JulDayResolver1582CutoverImplTest {
 
-  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   @Test
   public void getLocalDateTimeStatic() {
     LocalDateTime gregStart = LocalDateTime.of(1582, 10, 15, 0, 0);
-    ChronoLocalDateTime date1 = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(gregStart.toInstant(ZoneOffset.UTC));
+    ChronoLocalDateTime date1 = JulDayResolver1582CutoverImpl.Companion.getLocalDateTimeStatic(gregStart.toInstant(ZoneOffset.UTC));
 
     JulianDateTime julianEnd = JulianDateTime.of(1582, 10, 5, 0, 0); // 此日期其實不存在於 julian date
-    ChronoLocalDateTime date2 = JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(julianEnd.toInstant(ZoneOffset.UTC));
+    ChronoLocalDateTime date2 = JulDayResolver1582CutoverImpl.Companion.getLocalDateTimeStatic(julianEnd.toInstant(ZoneOffset.UTC));
 
     assertTrue(date2 instanceof LocalDateTime);
     assertEquals(date1, date2);
@@ -40,7 +40,7 @@ public class JulDayResolver1582CutoverImplTest {
    * 可以藉由這裡比對 http://aa.usno.navy.mil/data/docs/JulianDate.php
    */
   @Test
-  public void julDay2DateTime_JulGreg_cutover() throws Exception {
+  public void julDay2DateTime_JulGreg_cutover() {
 
     // Gregorian 第一天 : 1582-10-15 , julDay = 2299160.5
     double firstDayOfGregorian = 2299160.5;
@@ -49,7 +49,7 @@ public class JulDayResolver1582CutoverImplTest {
     LocalTime localTime;
 
     // Gregorian 第一天 : 1582-10-15 , julDay = 2299160.5
-    Tuple2<ChronoLocalDate , LocalTime> dateTime1 = JulDayResolver1582CutoverImpl.getDateTime(firstDayOfGregorian);
+    Tuple2<ChronoLocalDate , LocalTime> dateTime1 = JulDayResolver1582CutoverImpl.Companion.getDateTime(firstDayOfGregorian);
     localDate = dateTime1.v1();
     localTime = dateTime1.v2();
     assertTrue(localDate instanceof LocalDate);
@@ -59,7 +59,7 @@ public class JulDayResolver1582CutoverImplTest {
 
 
     // 1582-10-15 前一天 : 1582-10-04 ,  julDay = 2299159.5
-    Tuple2<ChronoLocalDate , LocalTime> dateTime2 = JulDayResolver1582CutoverImpl.getDateTime(firstDayOfGregorian-1);
+    Tuple2<ChronoLocalDate , LocalTime> dateTime2 = JulDayResolver1582CutoverImpl.Companion.getDateTime(firstDayOfGregorian-1);
     localDate = dateTime2.v1();
     localTime = dateTime2.v2();
     assertTrue(localDate instanceof JulianDate);
@@ -77,16 +77,16 @@ public class JulDayResolver1582CutoverImplTest {
   @Test
   public void testYear1() {
     //西元元年一月一號 (J)
-    assertEquals(JulianDate.of(1,1,1), JulDayResolver1582CutoverImpl.getDateTime(1721423.5).v1());
+    assertEquals(JulianDate.of(1,1,1), JulDayResolver1582CutoverImpl.Companion.getDateTime(1721423.5).v1());
 
     //西元前一年十二月三十一號 (J)
-    assertEquals(JulianDate.of(0,12,31), JulDayResolver1582CutoverImpl.getDateTime(1721422.5).v1());
+    assertEquals(JulianDate.of(0,12,31), JulDayResolver1582CutoverImpl.Companion.getDateTime(1721422.5).v1());
 
     //西元前一年一月一號 (J)
-    assertEquals(JulianDate.of(0,1,1), JulDayResolver1582CutoverImpl.getDateTime(1721057.5).v1());
+    assertEquals(JulianDate.of(0,1,1), JulDayResolver1582CutoverImpl.Companion.getDateTime(1721057.5).v1());
 
     //西元前二年十二月三十一號 (J)
-    assertEquals(JulianDate.of(-1,12,31), JulDayResolver1582CutoverImpl.getDateTime(1721056.5).v1());
+    assertEquals(JulianDate.of(-1,12,31), JulDayResolver1582CutoverImpl.Companion.getDateTime(1721056.5).v1());
   }
 
   @Test

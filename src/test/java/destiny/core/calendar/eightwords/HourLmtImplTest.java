@@ -21,10 +21,10 @@ public class HourLmtImplTest {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   @Test
-  public void getLmtNextStartOf() throws Exception {
+  public void getLmtNextStartOf() {
     HourIF hourImpl = new HourLmtImpl();
 
     Location loc = Location.of(Locale.TAIWAN);

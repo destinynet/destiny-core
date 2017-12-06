@@ -51,7 +51,7 @@ public class YearMonthSolarTermsStarPositionImpl implements YearMonthIF, Seriali
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   public YearMonthSolarTermsStarPositionImpl(double changeYearDegree, IStarPosition starPositionImpl, IStarTransit starTransitImpl) {
     this.starPositionImpl = starPositionImpl;

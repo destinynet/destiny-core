@@ -37,12 +37,12 @@ class IntAgeZiweiImpl(private val chineseDateImpl: ChineseDateIF, private val re
   }
 
   private fun getRangeInner(prevResult: Pair<Double, Double>, count: Int): Pair<Double, Double> {
-    if (count == 1) {
-      return prevResult
+    return if (count == 1) {
+      prevResult
     } else {
       val newStart = prevResult.second
       val newEnd = getNextYearSunMoonConj(prevResult.second + 2)
-      return getRangeInner(Pair(newStart, newEnd), count - 1)
+      getRangeInner(Pair(newStart, newEnd), count - 1)
     }
   }
 
@@ -84,8 +84,8 @@ class IntAgeZiweiImpl(private val chineseDateImpl: ChineseDateIF, private val re
   }
 
   private fun getRangesInner(prevResults: MutableList<Pair<Double, Double>>, count: Int): List<Pair<Double, Double>> {
-    if (count == 0) {
-      return prevResults
+    return if (count == 0) {
+      prevResults
     } else {
       val (_, second) = prevResults[prevResults.size - 1]
       val stepDay = second + 1
@@ -93,7 +93,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: ChineseDateIF, private val re
       val end = getNextYearSunMoonConj(stepDay)
       val newResult = Pair(second, end)
       prevResults.add(newResult)
-      return getRangesInner(prevResults, count - 1)
+      getRangesInner(prevResults, count - 1)
     }
   }
 

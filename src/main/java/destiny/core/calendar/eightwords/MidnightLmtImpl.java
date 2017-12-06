@@ -23,7 +23,7 @@ import static java.time.temporal.ChronoField.*;
  */
 public class MidnightLmtImpl implements MidnightIF, Serializable {
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   @Override
   public double getNextMidnight(double gmtJulDay, @NotNull Location loc) {

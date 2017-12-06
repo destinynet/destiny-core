@@ -25,7 +25,7 @@ public class DayImpl implements DayIF , Serializable {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl::getLocalDateTimeStatic;
+  private final static Function<Double , ChronoLocalDateTime> revJulDayFunc = JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic;
 
   public DayImpl()
   {

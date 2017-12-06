@@ -8,9 +8,7 @@ import destiny.core.IntAge
 import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms.立春
 import destiny.core.calendar.SolarTermsIF
-import org.slf4j.LoggerFactory
 import java.io.Serializable
-import java.util.*
 
 /**
  * 八字的「虛歲」大運
@@ -19,8 +17,6 @@ import java.util.*
  */
 class IntAge8wImpl(private val solarTermsImpl: SolarTermsIF) : IntAge, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
-
   override fun getRange(gender: Gender, gmtJulDay: Double, loc: Location, age: Int): Pair<Double, Double> {
     val age1 = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))
 
@@ -28,13 +24,13 @@ class IntAge8wImpl(private val solarTermsImpl: SolarTermsIF) : IntAge, Serializa
   }
 
   private fun getRangeInner(prevResult: Pair<Double, Double>, count: Int): Pair<Double, Double> {
-    if (count == 1) {
-      return prevResult
+    return if (count == 1) {
+      prevResult
     } else {
       val stepDay = prevResult.first + 1 // 取「立春日+1」作為 臨時的日子，以此日子，分別往 prior , after 推算立春日期
       val start = solarTermsImpl.getSolarTermsTime(立春, stepDay, false)
       val end = solarTermsImpl.getSolarTermsTime(立春, stepDay, true)
-      return getRangeInner(Pair(start, end), count - 1)
+      getRangeInner(Pair(start, end), count - 1)
     }
   }
 
@@ -49,8 +45,8 @@ class IntAge8wImpl(private val solarTermsImpl: SolarTermsIF) : IntAge, Serializa
   }
 
   private fun getRangesInner(prevResults: MutableList<Pair<Double, Double>>, count: Int): List<Pair<Double, Double>> {
-    if (count == 0) {
-      return prevResults
+    return if (count == 0) {
+      prevResults
     } else {
       val (_, second) = prevResults[prevResults.size - 1]
       val stepDay = second + 1
@@ -58,7 +54,7 @@ class IntAge8wImpl(private val solarTermsImpl: SolarTermsIF) : IntAge, Serializa
       val end = solarTermsImpl.getSolarTermsTime(立春, stepDay, true)
       val newResult = Pair(start, end)
       prevResults.add(newResult)
-      return getRangesInner(prevResults, count - 1)
+      getRangesInner(prevResults, count - 1)
     }
   }
 
