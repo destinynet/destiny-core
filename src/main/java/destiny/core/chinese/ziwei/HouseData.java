@@ -65,30 +65,18 @@ public class HouseData implements Serializable , Comparable<HouseData> {
 
   /** 宮干自化 列表 , 長度 0 , 1 or 2 */
   public List<ITransFour.Value> getSelfTransFours() {
-    // Set<Triple<ITransFour.Value , ZStar , Branch>>
     return transFourFlyMap.stream()
       .filter(t -> t.getThird() == stemBranch.getBranch())
       .map(Triple::getFirst)
       .collect(Collectors.toList());
-
-//    return transFourFlyMap.cellSet().stream()
-//      .filter(cell -> cell.getValue() == stemBranch.getBranch())
-//      .map(Table.Cell::getRowKey)
-//      .collect(Collectors.toList());
   }
 
   /** 宮干 化入對宮 */
   public List<ITransFour.Value> getOppositeTransFours() {
-
     return transFourFlyMap.stream()
       .filter(t -> t.getThird() == stemBranch.getBranch().getOpposite())
       .map(Triple::getFirst)
       .collect(Collectors.toList());
-
-//    return transFourFlyMap.cellSet().stream()
-//      .filter(cell -> cell.getValue() == stemBranch.getBranch().getOpposite())
-//      .map(Table.Cell::getRowKey)
-//      .collect(Collectors.toList());
   }
 
   public House getHouse() {

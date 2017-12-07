@@ -11,10 +11,10 @@ enum class FlowType : Descriptive {
   本命, 大限, 流年, 流月, 流日, 流時;
 
   override fun getTitle(locale: Locale): String {
-    try {
-      return ResourceBundle.getBundle(FlowType::class.java.name, locale).getString(name)
+    return try {
+      ResourceBundle.getBundle(FlowType::class.java.name, locale).getString(name)
     } catch (e: MissingResourceException) {
-      return name
+      name
     }
 
   }

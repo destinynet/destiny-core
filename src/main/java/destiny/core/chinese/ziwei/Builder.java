@@ -110,7 +110,7 @@ public class Builder implements Serializable {
   private final Map<StemBranch , Pair<Integer , Integer>> flowBigVageMap;
 
   /** 註解 builder */
-  private final List<Tuple2<String, Object[]>> notesBuilder = new ArrayList<>();
+  private final List<Pair<String, Object[]>> notesBuilder = new ArrayList<>();
 
   /** 註解列表 */
   private List<String> notes = new ArrayList<>();
@@ -404,7 +404,7 @@ public class Builder implements Serializable {
     return this;
   }
 
-  public Builder appendNotesBuilders(List<Tuple2<String , Object[]>> notesBuilders) {
+  public Builder appendNotesBuilders(List<Pair<String , Object[]>> notesBuilders) {
     this.notesBuilder.addAll(notesBuilders);
     return this;
   }
@@ -422,8 +422,8 @@ public class Builder implements Serializable {
 
   private List<String> buildNotes(@NotNull Class resourceBundleClazz , @NotNull Locale locale) {
     return notesBuilder.stream().map(t -> {
-      String pattern = ResourceBundle.getBundle(resourceBundleClazz.getName() , locale).getString(t.v1());
-      return MessageFormat.format(pattern , t.v2());
+      String pattern = ResourceBundle.getBundle(resourceBundleClazz.getName() , locale).getString(t.getFirst());
+      return MessageFormat.format(pattern , t.getSecond());
     }).collect(Collectors.toList());
   }
 
