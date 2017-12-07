@@ -670,74 +670,74 @@ object HouseFunctions {
 
   // =======↓↓↓======= 以下 長生12神煞 =======↓↓↓=======
   val house長生: IHouse<*> = object : HouseFiveGenderYinYangImpl(長生) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun長生.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun長生.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house沐浴: IHouse<*> = object : HouseFiveGenderYinYangImpl(沐浴) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun沐浴.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun沐浴.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house冠帶: IHouse<*> = object : HouseFiveGenderYinYangImpl(冠帶) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun冠帶.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun冠帶.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house臨官: IHouse<*> = object : HouseFiveGenderYinYangImpl(臨官) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun臨官.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun臨官.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house帝旺: IHouse<*> = object : HouseFiveGenderYinYangImpl(帝旺) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun帝旺.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun帝旺.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house衰: IHouse<*> = object : HouseFiveGenderYinYangImpl(衰) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun衰.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun衰.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house病: IHouse<*> = object : HouseFiveGenderYinYangImpl(病) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun病.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun病.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house死: IHouse<*> = object : HouseFiveGenderYinYangImpl(死) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun死.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun死.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house墓: IHouse<*> = object : HouseFiveGenderYinYangImpl(墓) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun墓.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun墓.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house絕: IHouse<*> = object : HouseFiveGenderYinYangImpl(絕) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun絕.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun絕.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house胎: IHouse<*> = object : HouseFiveGenderYinYangImpl(胎) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun胎.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun胎.invoke(t3.first, t3.second, t3.third)
     }
   }
 
   val house養: IHouse<*> = object : HouseFiveGenderYinYangImpl(養) {
-    override fun getBranch(t3: Tuple3<FiveElement, Gender, YinYangIF>): Branch {
-      return fun養.invoke(t3.v1(), t3.v2(), t3.v3())
+    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
+      return fun養.invoke(t3.first, t3.second, t3.third)
     }
   }
   // =======↑↑↑======= 以上 長生12神煞 =======↑↑↑=======

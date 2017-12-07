@@ -16,7 +16,6 @@ enum class FlowType : Descriptive {
     } catch (e: MissingResourceException) {
       name
     }
-
   }
 
   override fun getDescription(locale: Locale): String {

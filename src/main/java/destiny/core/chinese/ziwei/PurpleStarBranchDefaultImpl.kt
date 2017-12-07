@@ -1,15 +1,12 @@
 /**
  * Created by smallufo on 2017-04-27.
  */
-package destiny.core.chinese.ziwei;
+package destiny.core.chinese.ziwei
 
-import destiny.core.chinese.Branch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-
-import static destiny.core.chinese.Branch.寅;
+import destiny.core.chinese.Branch
+import destiny.core.chinese.Branch.寅
+import org.slf4j.LoggerFactory
+import java.io.Serializable
 
 /**
  * 內定求紫微星的地支宮位，不考慮閏月問題
@@ -23,14 +20,13 @@ import static destiny.core.chinese.Branch.寅;
  * 若差數為偶數，則倍數與差數相加而得一新的數字，
  * 下一步起寅宮並順時針數到上一步驟得出的數目，此一落宮點便是紫微星的位置；
  */
-public class PurpleStarBranchDefaultImpl implements IPurpleStarBranch , Serializable {
+class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private val logger = LoggerFactory.getLogger(javaClass)
 
-  @Override
-  public Branch getBranchOfPurpleStar(int set, int day, boolean leap, int prevMonthDays) {
-    int steps = getPurpleSteps(set, day);
-    return 寅.next(steps - 1);
+  override fun getBranchOfPurpleStar(set: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch {
+    val steps = getPurpleSteps(set, day)
+    return 寅.next(steps - 1)
   }
 
   /**
@@ -38,27 +34,26 @@ public class PurpleStarBranchDefaultImpl implements IPurpleStarBranch , Serializ
    * 也相等於：
    * 從「寅宮」，「逆數」幾步到「天府星」？
    */
-  private int getPurpleSteps(int set, int day) {
-    int multiple = day / set;
-    logger.debug("{} / {} = {}", day, set, multiple);
+  private fun getPurpleSteps(set: Int, day: Int): Int {
+    var multiple = day / set
+    logger.debug("{} / {} = {}", day, set, multiple)
     if (day % set > 0) {
-      multiple++;
-      logger.debug("multiple ++ , new multiple = {}", multiple);
+      multiple++
+      logger.debug("multiple ++ , new multiple = {}", multiple)
     }
 
     // 差數
-    int diff = multiple * set - day;
+    val diff = multiple * set - day
 
-    int steps;
-    if (diff % 2 == 1) {
+    val steps: Int
+    steps = if (diff % 2 == 1) {
       // 奇數
-      steps = multiple - diff;
-    }
-    else {
+      multiple - diff
+    } else {
       // 偶數
-      steps = multiple + diff;
+      multiple + diff
     }
-    return steps;
+    return steps
   }
 
 }

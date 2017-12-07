@@ -147,7 +147,7 @@ public class Builder implements Serializable {
           Collectors.mapping(Map.Entry::getKey, Collectors.toSet())
         )
       );
-    logger.debug("branchStarMap = {}" , branchStarMap);
+    logger.info("branchStarMap = {}" , branchStarMap);
 
     // 可能有些 地支宮位裡面沒有星 , 因此建立出來的 Map 就無該 地支的 key 值 , 因此必須建立另一個 map , 確保裡面每個地支都存在，且 value 至少為 empty set
 

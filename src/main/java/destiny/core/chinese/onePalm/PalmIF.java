@@ -38,7 +38,7 @@ public interface PalmIF {
   default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch , PositiveIF positiveImpl , Branch rising , Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
-    int finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
+    int finalMonthNum = IFinalMonthNumber.Companion.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
 
     // 年上起月
     Branch month = yearBranch.next((finalMonthNum-1)*positive);
@@ -65,7 +65,7 @@ public interface PalmIF {
 
     logger.trace("positive = {}" , positive);
 
-    int finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
+    int finalMonthNum = IFinalMonthNumber.Companion.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
 
 //    int finalMonthNum = monthNum ;
 //    if (leap && dayNum > 15)  // 若為閏月，15日以後算下個月

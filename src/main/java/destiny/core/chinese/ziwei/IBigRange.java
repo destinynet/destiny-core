@@ -29,9 +29,8 @@ public interface IBigRange extends Descriptive {
   default Map<Branch , Pair<Integer , Integer>> getFlowBigVageMap(Map<Branch, House> branchHouseMap, int set, StemBranch birthYear, Gender gender, IHouseSeq houseSeq) {
     return Arrays.stream(Branch.values())
       .map(branch -> {
-
-        Pair<Integer , Integer> t2 = getVageRange(branchHouseMap.get(branch), set, birthYear.getStem(), gender, houseSeq);
-        return Tuple.tuple(branch , t2);
+        Pair<Integer , Integer> pair = getVageRange(branchHouseMap.get(branch), set, birthYear.getStem(), gender, houseSeq);
+        return Tuple.tuple(branch , pair);
       }).collect(Collectors.toMap(t -> t.v1, t -> t.v2));
   }
 

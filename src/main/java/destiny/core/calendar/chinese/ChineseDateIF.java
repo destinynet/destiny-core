@@ -11,9 +11,8 @@ import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
 import destiny.core.calendar.eightwords.MidnightIF;
 import destiny.core.chinese.StemBranch;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.extra.chrono.JulianDate;
@@ -89,12 +88,12 @@ public interface ChineseDateIF extends Descriptive {
   ChineseDate prevMonthStart(ChineseDate chineseDate);
 
   /** 列出該年所有月份(以及是否是閏月) , 可能傳回 12 or 13月 (有閏月的話) */
-  default List<Tuple2<Integer , Boolean>> getMonthsOf(int cycle , StemBranch year) {
-    List<Tuple2<Integer , Boolean>> list = new ArrayList<>(13);
+  default List<Pair<Integer , Boolean>> getMonthsOf(int cycle , StemBranch year) {
+    List<Pair<Integer , Boolean>> list = new ArrayList<>(13);
     ChineseDate date = new ChineseDate(cycle , year , 1 , false , 1);
 
     while(date.getYear() == year) {
-      list.add(Tuple.tuple(date.getMonth() , date.isLeapMonth()));
+      list.add(new Pair<>(date.getMonth() , date.isLeapMonth()));
       date = nextMonthStart(date);
     }
     return list;

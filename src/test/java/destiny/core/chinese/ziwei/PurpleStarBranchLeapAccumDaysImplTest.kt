@@ -3,15 +3,12 @@
  */
 package destiny.core.chinese.ziwei
 
-import org.junit.Test
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-import java.util.Locale
-
 import destiny.core.chinese.Branch.*
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.slf4j.LoggerFactory
+import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class PurpleStarBranchLeapAccumDaysImplTest {
 
@@ -27,7 +24,6 @@ class PurpleStarBranchLeapAccumDaysImplTest {
   }
 
   @Test
-  @Throws(Exception::class)
   fun water2() {
     assertEquals(巳, impl.water2(32))
     assertEquals(巳, impl.water2(33))

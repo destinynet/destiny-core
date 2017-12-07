@@ -5,11 +5,11 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.午
 import destiny.core.chinese.Branch.未
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertSame
-import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class PurpleStarBranchDefaultImplTest {
 

@@ -8,9 +8,9 @@ import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.chinese.*;
 import kotlin.Pair;
+import kotlin.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
 import java.io.Serializable;
@@ -75,7 +75,7 @@ public class ZiweiTools implements Serializable {
    * @param flowYear 流年
    * @return 此流年有哪些流月（月份＋是否閏月）
    */
-  public static List<Tuple2<Integer , Boolean>> getMonthsOf(int cycle , StemBranch flowYear , ChineseDateIF chineseDateImpl) {
+  public static List<Pair<Integer , Boolean>> getMonthsOf(int cycle , StemBranch flowYear , ChineseDateIF chineseDateImpl) {
 
     return chineseDateImpl.getMonthsOf(cycle , flowYear);
   }
@@ -87,9 +87,9 @@ public class ZiweiTools implements Serializable {
    * @param leap      是否閏月
    * @return 該流月的日子 (陰曆＋陽曆＋干支）
    */
-  public static List<Tuple3<ChineseDate , ChronoLocalDate , StemBranch>> getDaysOfMonth(ChineseDateIF chineseDateImpl, int cycle, StemBranch flowYear , Integer flowMonth , boolean leap) {
+  public static List<Triple<ChineseDate , ChronoLocalDate , StemBranch>> getDaysOfMonth(ChineseDateIF chineseDateImpl, int cycle, StemBranch flowYear , Integer flowMonth , boolean leap) {
     int days = chineseDateImpl.getDaysOf(cycle , flowYear , flowMonth , leap);
-    List<Tuple3<ChineseDate, ChronoLocalDate, StemBranch>> list = new ArrayList<>(days);
+    List<Triple<ChineseDate, ChronoLocalDate, StemBranch>> list = new ArrayList<>(days);
     for(int i=1 ; i <= days ; i++) {
       ChineseDate yinDate = new ChineseDate(cycle , flowYear , flowMonth , leap , i);
 
@@ -97,7 +97,7 @@ public class ZiweiTools implements Serializable {
       int lmtJulDay = (int) ( TimeTools.getGmtJulDay(yangDate.atTime(LocalTime.MIDNIGHT))+0.5);
       int index = (lmtJulDay-11) % 60;
       StemBranch sb = StemBranch.get(index);
-      list.add(Tuple.tuple(yinDate , yangDate , sb));
+      list.add(new Triple<>(yinDate , yangDate , sb));
     }
     return list;
   }

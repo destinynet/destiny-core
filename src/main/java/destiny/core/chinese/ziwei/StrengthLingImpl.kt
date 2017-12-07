@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2017-04-20.
  */
-package destiny.core.chinese.ziwei;
+package destiny.core.chinese.ziwei
 
 /**
  * 令東來 修正版
@@ -9,6 +9,4 @@ package destiny.core.chinese.ziwei;
  *
  * 圖檔 http://imgur.com/a/iBwP0
  */
-public class StrengthLingImpl {
-
-}
+class StrengthLingImpl
