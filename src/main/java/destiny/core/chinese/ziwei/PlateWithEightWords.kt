@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 紫微盤為主，八字盤為輔
  */
 class PlateWithEightWords internal constructor(
-  name: String, chineseDate: ChineseDate,
+  name: String?, chineseDate: ChineseDate,
   localDateTime: ChronoLocalDateTime<*>?,
   location: Location?, place: String?,
   gender: Gender,

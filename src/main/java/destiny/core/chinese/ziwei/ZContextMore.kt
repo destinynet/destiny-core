@@ -28,7 +28,8 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleS
                    hurtAngel: ZContext.HurtAngel, transFourImpl: ITransFour, strengthImpl: IStrength,
                    flowYearImpl: IFlowYear, flowMonthImpl: IFlowMonth, flowDayImpl: IFlowDay, flowHourImpl: IFlowHour,
                    ageNoteImpls: List<IntAgeNote>, bigRangeImpl: IBigRange, redBeauty: ZContext.RedBeauty,
-                   val selfTransFour: SelfTransFour, val oppoTransFour: OppoTransFour,
+                   val selfTransFour: SelfTransFour,
+                   val oppoTransFour: OppoTransFour,
                    /** 是否顯示小限  */
                    val isShowSmallRange: Boolean,
                    /** 民用曆法 or 天文曆法  */
@@ -59,23 +60,25 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleS
   val stars: List<ZStar>
     get() {
       val starList = mutableListOf<ZStar>()
-      starList.addAll(Arrays.asList(*StarMain.values))
-      starList.addAll(Arrays.asList(*StarLucky.values))
-      starList.addAll(Arrays.asList(*StarUnlucky.values))
+      starList.addAll(StarMain.values)
+      starList.addAll(StarMain.values)
+      starList.addAll(StarLucky.values)
+      starList.addAll(StarUnlucky.values)
       if (isShowMinors)
-        starList.addAll(Arrays.asList(*StarMinor.values))
+        starList.addAll(StarMinor.values)
 
       if (isShowDoctors)
-        starList.addAll(Arrays.asList(*StarDoctor.values))
+        starList.addAll(StarDoctor.values)
 
       if (isShowLongevity)
-        starList.addAll(Arrays.asList(*StarLongevity.values))
+        starList.addAll(StarLongevity.values)
 
       if (isShowGeneralFront)
-        starList.addAll(Arrays.asList(*StarGeneralFront.values))
+        starList.addAll(StarGeneralFront.values)
 
       if (isShowYearFront)
-        starList.addAll(Arrays.asList(*StarYearFront.values))
+        starList.addAll(StarYearFront.values)
+
       return starList
     }
 

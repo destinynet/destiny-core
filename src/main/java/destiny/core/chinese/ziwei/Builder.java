@@ -14,8 +14,6 @@ import kotlin.Pair;
 import kotlin.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,14 +145,14 @@ public class Builder implements Serializable {
           Collectors.mapping(Map.Entry::getKey, Collectors.toSet())
         )
       );
-    logger.info("branchStarMap = {}" , branchStarMap);
+    logger.debug("branchStarMap = {}" , branchStarMap);
 
     // 可能有些 地支宮位裡面沒有星 , 因此建立出來的 Map 就無該 地支的 key 值 , 因此必須建立另一個 map , 確保裡面每個地支都存在，且 value 至少為 empty set
 
     Map<Branch , Set<ZStar>> branchStarMap2 = Arrays.stream(Branch.values()).map(branch -> {
       Set<ZStar> stars = branchStarMap.getOrDefault(branch , new HashSet<>());
-      return Tuple.tuple(branch , stars);
-    }).collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+      return new Pair<>(branch , stars);
+    }).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 
     this.stemBranchHouseMap = branchHouseMap;
 
@@ -162,9 +160,9 @@ public class Builder implements Serializable {
       branchHouseMap.entrySet().stream().map(e -> {
         Map<FlowType , House> m = new HashMap<>();
         m.put(FlowType.本命 , branchHouseMap.get(e.getKey()));
-        return Tuple.tuple(e.getKey().getBranch() , m);
+        return new Pair<>(e.getKey().getBranch() , m);
       })
-      .collect(Collectors.toMap(Tuple2::v1, Tuple2::v2));
+      .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
     branchFlowHouseMap.putAll(本命地支HouseMapping);
 
     houseDataSet = branchHouseMap.entrySet().stream().map(e -> {
@@ -256,9 +254,9 @@ public class Builder implements Serializable {
 
   /** 添加 四化 */
   public Builder appendTrans4Map(Map<Pair<ZStar , FlowType> , ITransFour.Value> map) {
-    map.forEach((tuple , value) -> {
-      ZStar star = tuple.getFirst();
-      FlowType flowType = tuple.getSecond();
+    map.forEach((pair , value) -> {
+      ZStar star = pair.getFirst();
+      FlowType flowType = pair.getSecond();
 
       this.transFourMap.computeIfPresent(star, (star1, flowTypeValueMap) -> {
         flowTypeValueMap.putIfAbsent(flowType , value);
@@ -315,11 +313,11 @@ public class Builder implements Serializable {
       Arrays.stream(StarGeneralFront.Companion.getValues())
         .map(star -> {
           Branch b = StarGeneralFront.Companion.getFunMap().get(star).invoke(flowYear.getBranch());
-          return Tuple.tuple(star , b);
-        }).forEach(t -> {
+          return new Pair<>(star , b);
+        }).forEach(p -> {
           houseDataSet.stream()
-            .filter(houseData -> houseData.getStemBranch().getBranch() == t.v2()).findFirst()
-            .ifPresent(houseData -> houseData.getStars().add(t.v1()));
+            .filter(houseData -> houseData.getStemBranch().getBranch() == p.getSecond()).findFirst()
+            .ifPresent(houseData -> houseData.getStars().add(p.getFirst()));
       });
     }
 
@@ -337,11 +335,11 @@ public class Builder implements Serializable {
       Arrays.stream(StarYearFront.Companion.getValues())
         .map(star -> {
           Branch b = StarYearFront.Companion.getFunMap().get(star).invoke(flowYear.getBranch());
-          return Tuple.tuple(star , b);
+          return new Pair<>(star , b);
         }).forEach(t -> {
           houseDataSet.stream()
-            .filter(houseData -> houseData.getStemBranch().getBranch() == t.v2()).findFirst()
-            .ifPresent(houseData -> houseData.getStars().add(t.v1()));
+            .filter(houseData -> houseData.getStemBranch().getBranch() == t.getSecond()).findFirst()
+            .ifPresent(houseData -> houseData.getStars().add(t.getFirst()));
       });
     }
 
