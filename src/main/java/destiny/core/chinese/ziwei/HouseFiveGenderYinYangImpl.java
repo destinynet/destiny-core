@@ -6,8 +6,8 @@ package destiny.core.chinese.ziwei;
 import destiny.core.Gender;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.*;
+import kotlin.Pair;
 import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 import org.jooq.lambda.tuple.Tuple3;
 
 import java.util.Optional;
@@ -41,9 +41,9 @@ public abstract class HouseFiveGenderYinYangImpl extends HouseAbstractImpl<Tuple
     StemBranch 命宮 = stemBranchOf寅.next(steps);
 
     //StemBranch 命宮 = IZiwei.getMainHouse(lunarYear.getStem() , finalMonthNumForMonthStars, hour);
-    Tuple2<FiveElement , Integer> t3 = IZiwei.getMainDesc(命宮);
+    Pair<FiveElement , Integer> pair = IZiwei.getMainDesc(命宮);
     // 五行局數
-    FiveElement fiveElement = t3.v1();
+    FiveElement fiveElement = pair.getFirst();
     return getBranch(Tuple.tuple(fiveElement , gender , lunarYear.getStem()));
   }
 

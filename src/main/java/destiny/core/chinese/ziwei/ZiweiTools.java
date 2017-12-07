@@ -55,11 +55,6 @@ public class ZiweiTools implements Serializable {
     StemBranch birthYear = builder.getChineseDate().getYear();
     int birthCycle = builder.getChineseDate().getCycle();
 
-    // 先求出，虛歲，是幾歲到幾歲
-//    Tuple2<Integer , Integer> range = bigRangeImpl.getRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() ,
-//      birthYear.getStem() , builder.getGender() , FortuneOutput.虛歲 , context.getHouseSeqImpl())
-//      .map((d1 , d2) -> Tuple.tuple(d1.intValue() , d2.intValue()));
-
     Pair<Integer , Integer> range = bigRangeImpl.getVageRange(builder.getBranchHouseMap().get(flowBig) , builder.getSet() , birthYear.getStem() , builder.getGender() , context.getHouseSeqImpl());
 
     // 再把虛歲轉換成干支
@@ -67,18 +62,8 @@ public class ZiweiTools implements Serializable {
       StemBranch sb = birthYear.next(vAge-1); // 虛歲 (vAge) 轉換為年 , 要減一 . 虛歲
       int cycle;
       if (sb.getIndex() >= birthYear.getIndex()) {
-//        if (vAge <= 60) {
-//          cycle = birthCycle;
-//        } else if (vAge > 60 && vAge <= 120) {
-//          cycle = birthCycle+1;
-//        }
         cycle = birthCycle + (vAge-1)/ 60;
       } else {
-//        if (vAge <= 60)  // 2~60歲
-//          cycle = birthCycle+1;
-//        else if (vAge > 60 && vAge <= 120) // 其實只會出現在 62~120歲 (跳過 61 , 因為干支 index 相同)
-//          cycle = birthCycle+2;
-
         cycle = birthCycle + (vAge-1)/ 60 +1;
       }
 

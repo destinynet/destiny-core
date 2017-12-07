@@ -56,30 +56,5 @@ public class ZStarTest {
     logger.info("map2 = {}" , map2);
   }
 
-  @Test
-  public void testListStarByType() {
-
-    List<ZStar> starList = new ArrayList<>();
-    starList.addAll(Arrays.asList(Companion.getValues()));
-    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarLucky.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarUnlucky.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarMinor.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarDoctor.Companion.getValues()));
-    starList.addAll(Arrays.asList(StarLongevity.Companion.getValues()));
-
-    Map<ZStar.Type, Set<ZStar>> map = starList.stream()
-      .collect(
-        Collectors.groupingBy(
-          ZStar::getType,
-          TreeMap::new ,
-          Collectors.mapping(t -> t , Collectors.toSet())
-        )
-      );
-    map.forEach((type , stars) -> {
-      logger.info("{}" , type);
-      stars.forEach(star -> logger.info("\t{}", star));
-    });
-  }
 
 }

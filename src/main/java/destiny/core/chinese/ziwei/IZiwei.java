@@ -12,8 +12,7 @@ import destiny.core.calendar.eightwords.YearMonthIF;
 import destiny.core.chinese.*;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +62,7 @@ public interface IZiwei {
   } // 取得命宮
 
   /** 承上 , 找到命宮的 干支 ，可以取得「五行、第幾局」 */
-  static Tuple2<FiveElement , Integer> getMainDesc(StemBranch mainHouse) {
+  static Pair<FiveElement , Integer> getMainDesc(StemBranch mainHouse) {
     // 五行
     FiveElement fiveElement = NaYin.Companion.getFiveElement(mainHouse);
     // 第幾局
@@ -76,7 +75,7 @@ public interface IZiwei {
       case 金: set = 4; break;
       default: throw new AssertionError("impossible");
     }
-    return Tuple.tuple(fiveElement , set);
+    return new Pair<>(fiveElement , set);
   }
 
 
@@ -153,7 +152,9 @@ public interface IZiwei {
    * @param monthBranch        「節氣」的月支
    * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
    */
-  Builder getBirthPlate(Optional<Branch> optionalMainBranch, Optional<Branch> optionalBodyBranch, int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Optional<Map<Integer, Pair<Double, Double>>> optionalVageMap, ZContext context) ;
+  Builder getBirthPlate(@Nullable Branch optionalMainBranch,
+                        @Nullable Branch optionalBodyBranch,
+                        int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Optional<Map<Integer, Pair<Double, Double>>> optionalVageMap, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
   Builder getBirthPlate(ChronoLocalDateTime lmt, Location location, String place, Gender gender, ZContextMore context, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);

@@ -33,6 +33,39 @@ class ZStarTest2 {
       branch to map1[branch]
     }.toMap()
 
+    // {子=[紫微, 天同], 丑=[七殺], 寅=null, 卯=null, 辰=null, 巳=null, 午=null, 未=null, 申=null, 酉=null, 戌=null, 亥=null}
     logger.info("map2 = {}", map2)
+
+
+    val map3 = Branch.values().map { branch ->
+      branch to starBranchMap.entries.groupBy { it.value }
+        .mapValues { it -> it.value.map { it.key } }[branch]
+    }.toMap()
+
+    // 等同 map2 , perfect !
+    logger.info("map3 = {}" , map3)
+  }
+
+  @Test
+  fun testListStarByType() {
+    val starList = listOf(
+      *StarMain.values ,
+      *StarLucky.values ,
+      *StarUnlucky.values ,
+      *StarMinor.values ,
+      *StarDoctor.values ,
+      *StarLongevity.values
+    )
+
+    val map1 = starList
+      .groupBy { it.type }
+      .toSortedMap()
+
+    map1.forEach { (type, stars) ->
+      logger.info("{}" , type)
+      for(star in stars) {
+        logger.info("\t{}" , star)
+      }
+    }
   }
 }

@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.ziwei;
 
-import com.google.common.collect.Table;
 import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
@@ -12,6 +11,7 @@ import destiny.core.chinese.Branch;
 import destiny.core.chinese.FiveElement;
 import destiny.core.chinese.StemBranch;
 import kotlin.Pair;
+import kotlin.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple;
@@ -102,7 +102,7 @@ public class Builder implements Serializable {
   private PersonContextModel personModel;
 
   /** 宮干四化 */
-  private final Map<StemBranch , Table<ITransFour.Value, ZStar, Branch>> flyMap;
+  private final Map<StemBranch , Set<Triple<ITransFour.Value, ZStar, Branch>>> flyMap;
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -119,7 +119,9 @@ public class Builder implements Serializable {
   private final Map<Integer , Pair<Double , Double>> vageMap;
 
   /** 本命盤 */
-  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Pair<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap, Map<StemBranch, Table<ITransFour.Value, ZStar, Branch>> flyMap, Map<Integer, Pair<Double, Double>> vageMap) {
+  public Builder(ZContext context, ChineseDate chineseDate, Gender gender, int birthMonthNum, Branch birthHour, StemBranch mainHouse, StemBranch bodyHouse, ZStar mainStar, ZStar bodyStar, FiveElement fiveElement, int set, Map<StemBranch, House> branchHouseMap, Map<ZStar, Branch> starBranchMap, Map<ZStar, Integer> starStrengthMap, Map<StemBranch, Pair<Integer, Integer>> flowBigVageMap, Map<Branch, List<Integer>> branchSmallRangesMap,
+                 Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> flyMap,
+                 Map<Integer, Pair<Double, Double>> vageMap) {
     this.context = context;
     this.chineseDate = chineseDate;
     this.gender = gender;
