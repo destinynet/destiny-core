@@ -61,7 +61,6 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleS
     get() {
       val starList = mutableListOf<ZStar>()
       starList.addAll(StarMain.values)
-      starList.addAll(StarMain.values)
       starList.addAll(StarLucky.values)
       starList.addAll(StarUnlucky.values)
       if (isShowMinors)

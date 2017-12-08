@@ -9,7 +9,6 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
-import org.apache.commons.lang3.StringUtils
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -66,23 +65,9 @@ open class Plate(
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
   val vageMap: Map<Int, Pair<Double, Double>>) : Serializable {
 
-  val nameOpt: Optional<String>
-    get() = Optional.ofNullable(name)
-
-  val localDateTimeOpt: Optional<ChronoLocalDateTime<*>>
-    get() = Optional.ofNullable(localDateTime)
-
-  val placeOpt: Optional<String>
-    get() = if (StringUtils.isBlank(place)) {
-      Optional.empty()
-    } else {
-      Optional.of(place!!)
-    }
-
   /** 宮位名稱 -> 宮位資料  */
   val houseMap: Map<House, HouseData>
     get() = houseDataSet.toList().map { hd -> hd.house to hd }.toMap()
-  //get() = houseDataSet.stream().collect<Map<House, HouseData>, Any>(Collectors.toMap(Function<HouseData, House> { it.getHouse() }) { hd -> hd })
 
   /** 星體 -> 宮位資料  */
   val starMap: Map<ZStar, HouseData>
@@ -181,6 +166,5 @@ open class Plate(
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .firstOrNull { it is StarYearFront }
-    //.let { zStar -> zStar as StarYearFront }
   }
 }
