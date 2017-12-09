@@ -111,6 +111,8 @@ open class Plate(
     return tranFours[star]?.map { (key, value) -> key to value }?.toList() ?: emptyList()
   }
 
+
+
   /** 取得在此地支宮位的主星  */
   fun getMainStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }

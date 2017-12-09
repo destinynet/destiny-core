@@ -157,7 +157,7 @@ public interface IZiwei {
                         int cycle, StemBranch lunarYear, StemBranch solarYear, int lunarMonth, boolean leapMonth, Branch monthBranch, SolarTerms solarTerms, int days, Branch hour, @NotNull Collection<ZStar> stars, Gender gender, Optional<Map<Integer, Pair<Double, Double>>> optionalVageMap, ZContext context) ;
 
   /** 輸入現代化的資料，計算本命盤 */
-  Builder getBirthPlate(ChronoLocalDateTime lmt, Location location, @Nullable String place, Gender gender, ZContextMore context, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);
+  Builder getBirthPlate(ChronoLocalDateTime lmt, Location location, @Nullable String place, Gender gender, @NotNull Collection<ZStar> stars , ZContextMore context, SolarTermsIF solarTermsImpl, YearMonthIF yearMonthImpl, DayIF dayImpl);
 
   /** 計算 大限盤 */
   Builder getFlowBig(Builder builder , ZContext context, StemBranch flowBig) ;

@@ -41,21 +41,29 @@ class Builder
   private val fiveElement: FiveElement,
   /** 五行第幾局  */
   val set: Int,
-  /** 干支 -> 宮位 的對照表  */
-  /** 傳回 干支 -> 宮位 的 mapping  */
-  val stemBranchHouseMap: Map<StemBranch, House>, starBranchMap: Map<ZStar, Branch>,
+  /**
+   *
+   * 干支 -> 宮位 的對照表
+   * 類似這樣資料結構 , 12組
+   * [子] :
+   *  本命 -> 疾厄
+   *  大運 -> XX宮
+   * [丑] :
+   *  本命 -> 財帛
+   *  大運 -> XX宮
+   * */
+  private val stemBranchHouseMap: Map<StemBranch, House>, starBranchMap: Map<ZStar, Branch>,
+
   /** 星體強弱表  */
   private val starStrengthMap: Map<ZStar, Int>,
+
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
-  /**
-   * 取出 本命盤 , 排序過的 , 每個地支的 大限 「虛歲」起訖 時刻
-   */
   val flowBigMap: Map<StemBranch, Pair<Int, Int>>, branchSmallRangesMap: Map<Branch, List<Int>>,
+
   /** 宮干四化  */
   private val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>>,
   /** 歲數 (暫定虛歲），每歲的起訖時分 (in GMT)  */
-  /** 歲數 map  */
-  val vageMap: Map<Int, Pair<Double, Double>>) : Serializable {
+  private val vageMap: Map<Int, Pair<Double, Double>>) : Serializable {
 
   /** 名稱  */
   private var name: String? = null
@@ -105,31 +113,38 @@ class Builder
 
   init {
 
-    // 哪個地支 裡面 有哪些星體
-    val branchStarMap = Branch.values().map { branch ->
-      branch to starBranchMap.entries.groupBy { it.value }
-        .mapValues { it -> it.value.map { it.key } }[branch]
-    }.toMap().toSortedMap()
-
-    branchStarMap.forEach { (branch , starList) ->
-      println("[$branch] : ${starList!!.joinToString(",") { it.toString() }}")
+    starBranchMap.forEach { (star, branch) ->
+      logger.info("{} -> {}", star, branch)
     }
 
+    // 中介 map , 記錄 '[辰] : 天相,紫微' 這樣的 mapping , 此 map 的 key 不一定包含全部地支，因為可能有空宮
+    val branchStarsMap: Map<Branch, List<ZStar>> = starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { it.key } }
 
-    val 本命地支HouseMapping = stemBranchHouseMap.entries.map { e ->
-      val m = HashMap<FlowType, House>()
-      m.put(FlowType.本命, stemBranchHouseMap[e.key]!!)
-      Pair<Branch, MutableMap<FlowType, House>>(e.key.branch, m)
-    }.toMap()
+    // 哪個地支 裡面 有哪些星體 (可能會有空宮 , 若星體很少的話)
+    val branchStarMap: Map<Branch, List<ZStar>?> = Branch.values().map { branch ->
+      branch to branchStarsMap[branch] // 可能為 null (空宮) , 故，不加 !!
+    }.toMap().toSortedMap()
 
-    branchFlowHouseMap.putAll(本命地支HouseMapping)
+
+    /**
+     * [branchFlowHouseMap] 儲存類似這樣資料結構 , 12組
+     * [子] :
+     *  本命 -> 疾厄
+     *  大運 -> XX宮
+     * [丑] :
+     *  本命 -> 財帛
+     */
+    stemBranchHouseMap.entries.map { e ->
+      val m = mutableMapOf(FlowType.本命 to stemBranchHouseMap[e.key]!!)
+      e.key.branch to m
+    }.toMap().toSortedMap().toMap(branchFlowHouseMap)
 
     houseDataSet = stemBranchHouseMap.entries.map { e ->
       val sb = e.key
       val house = e.value
-      val stars = branchStarMap[sb.branch]!!.toSet()
+      val stars = branchStarMap[sb.branch]?.toSet() ?: emptySet()
 
-      val fromTo = flowBigMap[sb]!!
+      val fromTo = flowBigMap[sb]!! // 必定不為空
       val smallRanges = branchSmallRangesMap[sb.branch]!!
       HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap[sb.branch]!!, flyMap[sb]!!, fromTo.first, fromTo.second, smallRanges)
     }.toSet()
@@ -209,8 +224,8 @@ class Builder
     // 以流年的 將前12星 取代本命盤中的位置
     // 先檢查，本命盤中，是否已經存在任何 將前12星 , 若有，代表設定要計算
     val showGeneralFront = houseDataSet
-      .flatMap { houseData -> houseData.stars}
-      .any { it is StarGeneralFront}
+      .flatMap { houseData -> houseData.stars }
+      .any { it is StarGeneralFront }
 
     if (showGeneralFront) {
       // 若有的話，就清除掉現有紀錄
@@ -219,10 +234,10 @@ class Builder
       // 接著，以「流年」的將前12星，塞入
       StarGeneralFront.values.map { star ->
         val b = StarGeneralFront.funMap[star]!!.invoke(flowYear.branch)
-        Pair(star , b)
-      }.forEach { (star , branch) ->
+        Pair(star, b)
+      }.forEach { (star, branch) ->
         houseDataSet.filter { it.stemBranch.branch == branch }
-          .first {houseData -> houseData.stars.add(star)}
+          .first { houseData -> houseData.stars.add(star) }
       }
     }
 
@@ -239,8 +254,8 @@ class Builder
       // 接著，以「流年」的 歲前12星，塞入
       StarYearFront.values.map { star ->
         val b = StarYearFront.funMap[star]!!.invoke(flowYear.branch)
-        Pair(star , b)
-      }.forEach { (star , branch) ->
+        Pair(star, b)
+      }.forEach { (star, branch) ->
         houseDataSet.filter { it.stemBranch.branch == branch }
           .first { houseData -> houseData.stars.add(star) }
       }
@@ -323,9 +338,11 @@ class Builder
   }
 
   private fun buildNotes(resourceBundleClazz: Class<*>, locale: Locale): List<String> {
-    return notesBuilder.map { (first , second) ->
+    return notesBuilder.map { (first, second) ->
       val pattern = ResourceBundle.getBundle(resourceBundleClazz.name, locale).getString(first)
-      MessageFormat.format(pattern, *second)
+      val note = MessageFormat.format(pattern, *second)
+      logger.debug("note : {}", note)
+      note
     }
   }
 

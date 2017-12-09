@@ -7,10 +7,11 @@ import destiny.core.Descriptive
 import destiny.core.IntAgeNote
 import destiny.core.calendar.chinese.ChineseDateIF
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.Direction
+import destiny.core.calendar.eightwords.HourIF
+import destiny.core.calendar.eightwords.MidnightIF
 import destiny.core.chinese.FortuneOutput
 import destiny.core.chinese.TianyiIF
-
 import java.util.*
 
 /**
@@ -24,10 +25,10 @@ import java.util.*
  */
 class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleStarBranch,
                    mainStarsMonthAlgo: IFinalMonthNumber.MonthAlgo, monthStarsMonthAlgo: IFinalMonthNumber.MonthAlgo,
-                   yearType: ZContext.YearType, houseSeqImpl: IHouseSeq, tianyiImpl: TianyiIF, fireBell: ZContext.FireBell,
-                   hurtAngel: ZContext.HurtAngel, transFourImpl: ITransFour, strengthImpl: IStrength,
+                   yearType: YearType, houseSeqImpl: IHouseSeq, tianyiImpl: TianyiIF, fireBell: FireBell,
+                   hurtAngel: HurtAngel, transFourImpl: ITransFour, strengthImpl: IStrength,
                    flowYearImpl: IFlowYear, flowMonthImpl: IFlowMonth, flowDayImpl: IFlowDay, flowHourImpl: IFlowHour,
-                   ageNoteImpls: List<IntAgeNote>, bigRangeImpl: IBigRange, redBeauty: ZContext.RedBeauty,
+                   ageNoteImpls: List<IntAgeNote>, bigRangeImpl: IBigRange, redBeauty: RedBeauty,
                    val selfTransFour: SelfTransFour,
                    val oppoTransFour: OppoTransFour,
                    /** 是否顯示小限  */
@@ -42,8 +43,6 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleS
                    val hourImpl: HourIF,
                    /** 子正判定  */
                    val midnightImpl: MidnightIF,
-                   yearMonthImpl: YearMonthIF,
-                   dayImpl: DayIF,
                    /** 子初換日 (true) 或 子正換日 (false)  */
                    val isChangeDayAfterZi: Boolean,
                    /** 顯示雜曜  */
@@ -57,29 +56,6 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleS
                    /** 顯示 歲前12星  */
                    val isShowYearFront: Boolean) : ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, FortuneOutput.虛歲, ageNoteImpls, bigRangeImpl, redBeauty) {
 
-  val stars: List<ZStar>
-    get() {
-      val starList = mutableListOf<ZStar>()
-      starList.addAll(StarMain.values)
-      starList.addAll(StarLucky.values)
-      starList.addAll(StarUnlucky.values)
-      if (isShowMinors)
-        starList.addAll(StarMinor.values)
-
-      if (isShowDoctors)
-        starList.addAll(StarDoctor.values)
-
-      if (isShowLongevity)
-        starList.addAll(StarLongevity.values)
-
-      if (isShowGeneralFront)
-        starList.addAll(StarGeneralFront.values)
-
-      if (isShowYearFront)
-        starList.addAll(StarYearFront.values)
-
-      return starList
-    }
 
   /** 宮干四化「自化」 顯示選項  */
   enum class SelfTransFour : Descriptive {
