@@ -113,9 +113,9 @@ class Builder
 
   init {
 
-    starBranchMap.forEach { (star, branch) ->
-      logger.info("{} -> {}", star, branch)
-    }
+//    starBranchMap.forEach { (star, branch) ->
+//      logger.info("{} -> {}", star, branch)
+//    }
 
     // 中介 map , 記錄 '[辰] : 天相,紫微' 這樣的 mapping , 此 map 的 key 不一定包含全部地支，因為可能有空宮
     val branchStarsMap: Map<Branch, List<ZStar>> = starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { it.key } }

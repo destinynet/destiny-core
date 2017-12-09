@@ -38,11 +38,11 @@ public interface IBigRange extends Descriptive {
   default Map<StemBranch , Pair<Integer , Integer>> getSortedFlowBigVageMap(Map<Branch , House> branchHouseMap , int set , StemBranch birthYear , Gender gender , IHouseSeq houseSeq) {
     Map<Branch , Pair<Integer , Integer>> map = getFlowBigVageMap(branchHouseMap , set , birthYear , gender , houseSeq);
 
-    Stem stemOf寅 = IZiwei.getStemOf寅(birthYear.getStem());
+    Stem stemOf寅 = IZiwei.Companion.getStemOf寅(birthYear.getStem());
 
     return map.entrySet().stream()
       .map(e -> {
-        StemBranch sb = IZiwei.getStemBranchOf(e.getKey() , stemOf寅);
+        StemBranch sb = IZiwei.Companion.getStemBranchOf(e.getKey() , stemOf寅);
         return new AbstractMap.SimpleEntry<>(sb, e.getValue());
       })
       //.sorted() // FIXME : Pair 沒有實作 Comparable , 但是否真有必要排序呢？ 好像沒必要?

@@ -45,7 +45,7 @@ interface ISmallRange {
     }
 
     /** 哪一宮 起 一歲小限  */
-    fun getStartingHouse(birthYear: Branch): Branch {
+    private fun getStartingHouse(birthYear: Branch): Branch {
       return when (birthYear) {
         寅, 午, 戌 -> 辰
         申, 子, 辰 -> 戌

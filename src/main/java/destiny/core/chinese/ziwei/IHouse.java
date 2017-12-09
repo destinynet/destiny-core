@@ -7,6 +7,7 @@ import destiny.core.Gender;
 import destiny.core.calendar.SolarTerms;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public interface IHouse<T> {
    * @param prevMonthDays              [陰曆] 上個月有幾日
    * @param predefinedMainHouse        預先計算好的「命宮」
    */
+  @NotNull
   Branch getBranch(StemBranch lunarYear, StemBranch solarYear, Branch monthBranch, int finalMonthNumForMonthStars,
                    SolarTerms solarTerms, int days, Branch hour, int set, Gender gender, boolean leap, int prevMonthDays,
                    Optional<Branch> predefinedMainHouse, ZContext context);
