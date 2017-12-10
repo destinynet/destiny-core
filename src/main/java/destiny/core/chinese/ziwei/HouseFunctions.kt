@@ -21,6 +21,7 @@ import destiny.core.chinese.ziwei.StarLucky.Companion.fun文昌
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun文曲
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun月馬_月數
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun祿存
+import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarMinor.*
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun三台_月數
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun傍空_A
@@ -75,7 +76,6 @@ import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
 import destiny.core.chinese.ziwei.StarYearFront.*
 import org.jooq.lambda.tuple.Tuple3
-import org.jooq.lambda.tuple.Tuple5
 import org.slf4j.LoggerFactory
 
 object HouseFunctions {
@@ -83,91 +83,33 @@ object HouseFunctions {
   private val logger = LoggerFactory.getLogger(HouseFunctions::class.java)
 
 
-  val house紫微: IHouse<*> = object : HouseMainStarImpl(StarMain.紫微) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
+  val house紫微: IHouse<*> = HouseMainStarImpl(紫微)
 
-      return StarMain.fun紫微.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house天機: IHouse<*> = HouseMainStarImpl(天機)
 
-  val house天機: IHouse<*> = object : HouseMainStarImpl(StarMain.天機) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun天機.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house太陽: IHouse<*> = HouseMainStarImpl(太陽)
 
-  val house太陽: IHouse<*> = object : HouseMainStarImpl(StarMain.太陽) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun太陽.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house武曲: IHouse<*> = HouseMainStarImpl(武曲)
 
-  val house武曲: IHouse<*> = object : HouseMainStarImpl(StarMain.武曲) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun武曲.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house天同: IHouse<*> = HouseMainStarImpl(天同)
 
-  val house天同: IHouse<*> = object : HouseMainStarImpl(StarMain.天同) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun天同.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house廉貞: IHouse<*> = HouseMainStarImpl(廉貞)
 
-  val house廉貞: IHouse<*> = object : HouseMainStarImpl(StarMain.廉貞) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun廉貞.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house天府: IHouse<*> = HouseMainStarImpl(天府)
 
-  val house天府: IHouse<*> = object : HouseMainStarImpl(StarMain.天府) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun天府.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house太陰: IHouse<*> = HouseMainStarImpl(太陰)
 
+  val house貪狼: IHouse<*> = HouseMainStarImpl(貪狼)
 
-  val house太陰: IHouse<*> = object : HouseMainStarImpl(StarMain.太陰) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun太陰.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house巨門: IHouse<*> = HouseMainStarImpl(巨門)
 
-  val house貪狼: IHouse<*> = object : HouseMainStarImpl(StarMain.貪狼) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun貪狼.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house天相: IHouse<*> = HouseMainStarImpl(天相)
 
-  val house巨門: IHouse<*> = object : HouseMainStarImpl(StarMain.巨門) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun巨門.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house天梁: IHouse<*> = HouseMainStarImpl(天梁)
 
-  val house天相: IHouse<*> = object : HouseMainStarImpl(StarMain.天相) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun天相.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house七殺: IHouse<*> = HouseMainStarImpl(七殺)
 
-  val house天梁: IHouse<*> = object : HouseMainStarImpl(StarMain.天梁) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun天梁.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
-
-  val house七殺: IHouse<*> = object : HouseMainStarImpl(StarMain.七殺) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun七殺.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
-
-  val house破軍: IHouse<*> = object : HouseMainStarImpl(StarMain.破軍) {
-    override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
-      return StarMain.fun破軍.invoke(t.v1(), t.v2(), t.v3(), t.v4(), t.v5())
-    }
-  }
+  val house破軍: IHouse<*> = HouseMainStarImpl(破軍)
 
 
   // =======↑↑↑======= 以上 14 顆主星 =======↑↑↑=======

@@ -14,7 +14,11 @@ import org.jooq.lambda.tuple.Tuple5
  * 14 顆主星
  * (局數,生日,是否閏月,前一個月幾天,當下節氣地支)
  */
-abstract class HouseMainStarImpl internal constructor(star: ZStar) : HouseAbstractImpl<Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>>(star) {
+open class HouseMainStarImpl internal constructor(star: StarMain) : HouseAbstractImpl<Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>>(star) {
+
+  override fun getBranch(t: Tuple5<Int, Int, Boolean, Int, IPurpleStarBranch>): Branch {
+    return StarMain.starFuncMap[star]!!.invoke(t.v1 , t.v2 , t.v3 , t.v4 , t.v5)
+  }
 
   override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
     return if (!leap) {
