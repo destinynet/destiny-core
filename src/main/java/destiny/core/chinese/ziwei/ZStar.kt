@@ -58,12 +58,12 @@ abstract class ZStar : Point, Comparable<ZStar>  {
     this.type = type
   }
 
-  override fun compareTo(o: ZStar): Int {
-    val typeCompare = this.type.compareTo(o.type)
+  override fun compareTo(other: ZStar): Int {
+    val typeCompare = this.type.compareTo(other.type)
     return if (typeCompare != 0)
       typeCompare
     else {
-      this.toString().compareTo(o.toString())
+      this.toString().compareTo(other.toString())
     }
   }
 }

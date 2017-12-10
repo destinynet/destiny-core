@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 
 /**
@@ -64,5 +65,20 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
     val fun大耗 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 10)) }
     val fun伏兵 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 11)) }
     val fun官府 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 12)) }
+
+    val starFuncMap: Map<StarDoctor, Function2<Stem, Gender, Branch>> = mapOf(
+      博士 to fun博士,
+      力士 to fun力士,
+      青龍 to fun青龍,
+      小耗 to fun小耗,
+      將軍 to fun將軍,
+      奏書 to fun奏書,
+      飛廉 to fun飛廉,
+      喜神 to fun喜神,
+      病符 to fun病符,
+      大耗 to fun大耗,
+      伏兵 to fun伏兵,
+      官府 to fun官府
+    )
   }
 }

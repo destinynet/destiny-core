@@ -6,9 +6,13 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.Gender.女
 import destiny.core.Gender.男
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.BranchTools
+import destiny.core.chinese.FiveElement.*
+import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.core.chinese.StemBranch
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月支
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月數
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun左輔_月支
@@ -197,10 +201,10 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     /** 天巫 : 月支 -> 地支  */
     val fun天巫_月支 = { month: Branch ->
       when (BranchTools.trilogy(month)) {
-        FiveElement.火 -> 巳
-        FiveElement.木 -> 申
-        FiveElement.水 -> 寅
-        FiveElement.金 -> 亥
+        火 -> 巳
+        木 -> 申
+        水 -> 寅
+        金 -> 亥
         else -> throw AssertionError(month)
       }
     }
@@ -321,10 +325,10 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     /** 孤辰 : 年支 -> 地支  */
     val fun孤辰 = { year: Branch ->
       when (BranchTools.direction(year)) {
-        FiveElement.水 -> 寅
-        FiveElement.木 -> 巳
-        FiveElement.火 -> 申
-        FiveElement.金 -> 亥
+        水 -> 寅
+        木 -> 巳
+        火 -> 申
+        金 -> 亥
         else -> throw AssertionError(year)
       }
     }
@@ -332,10 +336,10 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     /** 寡宿 : 年支 -> 地支  */
     val fun寡宿 = { year: Branch ->
       when (BranchTools.direction(year)) {
-        FiveElement.水 -> 戌
-        FiveElement.木 -> 丑
-        FiveElement.火 -> 辰
-        FiveElement.金 -> 未
+        水 -> 戌
+        木 -> 丑
+        火 -> 辰
+        金 -> 未
         else -> throw AssertionError(year)
       }
     }
@@ -373,10 +377,10 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
      */
     val fun華蓋 = { year: Branch ->
       when (BranchTools.trilogy(year)) {
-        FiveElement.水 -> 辰
-        FiveElement.金 -> 丑
-        FiveElement.火 -> 戌
-        FiveElement.木 -> 未
+        水 -> 辰
+        金 -> 丑
+        火 -> 戌
+        木 -> 未
         else -> throw AssertionError(year)
       }
     }
@@ -386,10 +390,10 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
      */
     val fun咸池 = { year: Branch ->
       when (BranchTools.trilogy(year)) {
-        FiveElement.水 -> 酉
-        FiveElement.金 -> 午
-        FiveElement.火 -> 卯
-        FiveElement.木 -> 子
+        水 -> 酉
+        金 -> 午
+        火 -> 卯
+        木 -> 子
         else -> throw AssertionError(year)
       }
     }

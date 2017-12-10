@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement
+import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.YinYangIF
 import org.slf4j.LoggerFactory
 
@@ -36,11 +37,11 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
 
     private val func = { 五行:FiveElement ->
       when (五行) {
-        FiveElement.水 -> 申
-        FiveElement.木 -> 亥
-        FiveElement.金 -> 巳
-        FiveElement.火 -> 寅
-        FiveElement.土 -> 申 // 土水共長生
+        水 -> 申
+        木 -> 亥
+        金 -> 巳
+        火 -> 寅
+        土 -> 申 // 土水共長生
       }
     }
 

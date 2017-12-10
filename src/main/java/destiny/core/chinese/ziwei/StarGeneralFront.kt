@@ -7,6 +7,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement
+import destiny.core.chinese.FiveElement.*
 
 /**
  * 將前12星
@@ -45,10 +46,10 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
     private val funFiveElement = { 五行: FiveElement ->
       when (五行) {
-        FiveElement.火 -> 午
-        FiveElement.木 -> 卯
-        FiveElement.水 -> 子
-        FiveElement.金 -> 酉
+        火 -> 午
+        木 -> 卯
+        水 -> 子
+        金 -> 酉
         else -> throw AssertionError("Error : " + 五行)
       }
     }

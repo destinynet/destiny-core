@@ -97,13 +97,12 @@ interface IZiwei {
       val fiveElement = NaYin.getFiveElement(mainHouse)
       // 第幾局
       val set: Int
-      when (fiveElement) {
-        FiveElement.水 -> set = 2
-        FiveElement.土 -> set = 5
-        FiveElement.木 -> set = 3
-        FiveElement.火 -> set = 6
-        FiveElement.金 -> set = 4
-        else -> throw AssertionError("impossible")
+      set = when (fiveElement) {
+        FiveElement.水 -> 2
+        FiveElement.土 -> 5
+        FiveElement.木 -> 3
+        FiveElement.火 -> 6
+        FiveElement.金 -> 4
       }
       return Pair(fiveElement, set)
     }

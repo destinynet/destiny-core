@@ -7,16 +7,6 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.*
 import destiny.core.chinese.ziwei.StarDoctor.*
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun伏兵
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun力士
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun博士
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun喜神
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun大耗
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun奏書
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun官府
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun將軍
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun青龍
-import destiny.core.chinese.ziwei.StarDoctor.Companion.fun飛廉
 import destiny.core.chinese.ziwei.StarGeneralFront.*
 import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun亡神
 import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun劫煞
@@ -585,77 +575,29 @@ object HouseFunctions {
 
   // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
 
-  val house博士: IHouse<*> = object : HouseYearStemGenderImpl(博士) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun博士.invoke(t.first, t.second)
-    }
-  }
+  val house博士: IHouse<*> = HouseDoctorImpl(博士)
 
-  val house力士: IHouse<*> = object : HouseYearStemGenderImpl(力士) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun力士.invoke(t.first, t.second)
-    }
-  }
+  val house力士: IHouse<*> = HouseDoctorImpl(力士)
 
-  val house青龍: IHouse<*> = object : HouseYearStemGenderImpl(青龍) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun青龍.invoke(t.first, t.second)
-    }
-  }
+  val house青龍: IHouse<*> = HouseDoctorImpl(青龍)
 
-  val house小耗: IHouse<*> = object : HouseYearStemGenderImpl(StarDoctor.小耗) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return StarDoctor.fun小耗.invoke(t.first, t.second)
-    }
-  }
+  val house小耗: IHouse<*> = HouseDoctorImpl(StarDoctor.小耗)
 
-  val house將軍: IHouse<*> = object : HouseYearStemGenderImpl(將軍) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun將軍.invoke(t.first, t.second)
-    }
-  }
+  val house將軍: IHouse<*> = HouseDoctorImpl(將軍)
 
-  val house奏書: IHouse<*> = object : HouseYearStemGenderImpl(奏書) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun奏書.invoke(t.first, t.second)
-    }
-  }
+  val house奏書: IHouse<*> = HouseDoctorImpl(奏書)
 
-  val house飛廉: IHouse<*> = object : HouseYearStemGenderImpl(飛廉) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun飛廉.invoke(t.first, t.second)
-    }
-  }
+  val house飛廉: IHouse<*> = HouseDoctorImpl(飛廉)
 
-  val house喜神: IHouse<*> = object : HouseYearStemGenderImpl(喜神) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun喜神.invoke(t.first, t.second)
-    }
-  }
+  val house喜神: IHouse<*> = HouseDoctorImpl(喜神)
 
-  val house病符: IHouse<*> = object : HouseYearStemGenderImpl(StarDoctor.病符) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return StarDoctor.fun病符.invoke(t.first, t.second)
-    }
-  }
+  val house病符: IHouse<*> = HouseDoctorImpl(StarDoctor.病符)
 
-  val house大耗: IHouse<*> = object : HouseYearStemGenderImpl(大耗) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun大耗.invoke(t.first, t.second)
-    }
-  }
+  val house大耗: IHouse<*> = HouseDoctorImpl(大耗)
 
-  val house伏兵: IHouse<*> = object : HouseYearStemGenderImpl(伏兵) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun伏兵.invoke(t.first, t.second)
-    }
-  }
+  val house伏兵: IHouse<*> = HouseDoctorImpl(伏兵)
 
-  val house官府: IHouse<*> = object : HouseYearStemGenderImpl(官府) {
-    override fun getBranch(t: Pair<Stem, Gender>): Branch {
-      return fun官府.invoke(t.first, t.second)
-    }
-  }
+  val house官府: IHouse<*> = HouseDoctorImpl(官府)
 
   // =======↑↑↑======= 以上 博士12神煞 =======↑↑↑=======
 

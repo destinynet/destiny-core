@@ -6,8 +6,9 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.BranchTools
-import destiny.core.chinese.FiveElement
+import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem
+import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ZStar.Type.*
 
 /**
@@ -29,28 +30,28 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
     /** 擎羊 : 年干 -> 地支  */
     val fun擎羊 = { year: Stem ->
       when (year) {
-        Stem.甲 -> 卯
-        Stem.乙 -> 辰
-        Stem.丙, Stem.戊 -> 午
-        Stem.丁, Stem.己 -> 未
-        Stem.庚 -> 酉
-        Stem.辛 -> 戌
-        Stem.壬 -> 子
-        Stem.癸 -> 丑
+        甲 -> 卯
+        乙 -> 辰
+        丙, 戊 -> 午
+        丁, 己 -> 未
+        庚 -> 酉
+        辛 -> 戌
+        壬 -> 子
+        癸 -> 丑
       }
     }
 
     /** 陀羅 : 年干 -> 地支  */
     val fun陀羅 = { year: Stem ->
       when (year) {
-        Stem.甲 -> 丑
-        Stem.乙 -> 寅
-        Stem.丙, Stem.戊 -> 辰
-        Stem.丁, Stem.己 -> 巳
-        Stem.庚 -> 未
-        Stem.辛 -> 申
-        Stem.壬 -> 戌
-        Stem.癸 -> 亥
+        甲 -> 丑
+        乙 -> 寅
+        丙, 戊 -> 辰
+        丁, 己 -> 巳
+        庚 -> 未
+        辛 -> 申
+        壬 -> 戌
+        癸 -> 亥
       }
     }
 
@@ -68,10 +69,10 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
     /** 火星 (全書): 年支 -> 地支  */
     val fun火星_全書 = { year: Branch ->
       when (BranchTools.trilogy(year)) {
-        FiveElement.火 -> 丑 // 寅午戌人[丑]卯方
-        FiveElement.水 -> 寅 // 子申辰人[寅]戌揚
-        FiveElement.金 -> 卯 // 巳酉丑人[卯]戌位
-        FiveElement.木 -> 酉 // 亥卯未人[酉]戌房
+        火 -> 丑 // 寅午戌人[丑]卯方
+        水 -> 寅 // 子申辰人[寅]戌揚
+        金 -> 卯 // 巳酉丑人[卯]戌位
+        木 -> 酉 // 亥卯未人[酉]戌房
         else -> throw AssertionError(year)
       }
     }
@@ -79,10 +80,10 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
     /** 鈴星 (全書): 年支 -> 地支  */
     val fun鈴星_全書 = { year: Branch ->
       when (BranchTools.trilogy(year)) {
-        FiveElement.火 -> 卯 // 寅午戌人丑[卯]方
-        FiveElement.水 -> 戌 // 子申辰人寅[戌]揚
-        FiveElement.金 -> 戌 // 巳酉丑人卯[戌]位
-        FiveElement.木 -> 戌 // 亥卯未人酉[戌]房
+        火 -> 卯 // 寅午戌人丑[卯]方
+        水 -> 戌 // 子申辰人寅[戌]揚
+        金 -> 戌 // 巳酉丑人卯[戌]位
+        木 -> 戌 // 亥卯未人酉[戌]房
         else -> throw AssertionError(year)
       }
     }
@@ -99,10 +100,10 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
     /** 火星 (全集): (年支、時支) -> 地支 (子由使用) */
     val fun火星_全集 = { year: Branch, hour: Branch ->
       when (BranchTools.trilogy(year)) {
-        FiveElement.火 -> Branch.get(hour.index + 1)
-        FiveElement.水 -> Branch.get(hour.index + 2)
-        FiveElement.金 -> Branch.get(hour.index + 3)
-        FiveElement.木 -> Branch.get(hour.index + 9)
+        火 -> Branch.get(hour.index + 1)
+        水 -> Branch.get(hour.index + 2)
+        金 -> Branch.get(hour.index + 3)
+        木 -> Branch.get(hour.index + 9)
         else -> throw AssertionError("年支 = $year , 時支 = $hour")
       }
     }
@@ -110,8 +111,8 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
     /** 鈴星 (全集) : (年支、時支) -> 地支 (子由使用)  */
     val fun鈴星_全集 = { year : Branch , hour : Branch->
       when (BranchTools.trilogy(year)) {
-        FiveElement.火 -> Branch.get(hour.index + 3)
-        FiveElement.水, FiveElement.金, FiveElement.木 -> Branch.get(hour.index + 10)
+        火 -> Branch.get(hour.index + 3)
+        水, 金, 木 -> Branch.get(hour.index + 10)
         else -> throw AssertionError("年支 = $year , 時支 = $hour")
       }
     }
