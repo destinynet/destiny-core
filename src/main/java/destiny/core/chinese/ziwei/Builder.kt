@@ -253,7 +253,7 @@ class Builder(
 
       // 接著，以「流年」的 歲前12星，塞入
       StarYearFront.values.map { star ->
-        val b = StarYearFront.funMap[star]!!.invoke(flowYear.branch)
+        val b = StarYearFront.starFuncMap[star]!!.invoke(flowYear.branch)
         Pair(star, b)
       }.forEach { (star, branch) ->
         houseDataSet.filter { it.stemBranch.branch == branch }

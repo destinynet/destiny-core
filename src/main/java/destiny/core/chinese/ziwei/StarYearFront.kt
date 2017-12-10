@@ -48,7 +48,7 @@ sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::clas
     val fun吊客 = { 年支: Branch -> func.invoke(年支, 吊客) }
     val fun病符 = { 年支: Branch -> func.invoke(年支, 病符) }
 
-    val funMap: Map<StarYearFront, Function1<Branch, Branch>> = mapOf(
+    val starFuncMap: Map<StarYearFront, Function1<Branch, Branch>> = mapOf(
       歲建 to fun歲建,
       晦氣 to fun晦氣,
       喪門 to fun喪門,
