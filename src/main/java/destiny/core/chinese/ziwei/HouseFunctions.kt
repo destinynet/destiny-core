@@ -5,32 +5,13 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
+import destiny.core.chinese.Stem
+import destiny.core.chinese.StemBranch
+import destiny.core.chinese.TianyiIF
 import destiny.core.chinese.ziwei.StarDoctor.*
 import destiny.core.chinese.ziwei.StarGeneralFront.*
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun亡神
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun劫煞
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun天煞
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun將星
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun息神
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun指背
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun攀鞍
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun月煞
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun歲馹
-import destiny.core.chinese.ziwei.StarGeneralFront.Companion.fun災煞
 import destiny.core.chinese.ziwei.StarLongevity.*
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun冠帶
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun墓
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun帝旺
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun死
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun沐浴
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun病
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun絕
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun胎
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun臨官
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun衰
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun長生
-import destiny.core.chinese.ziwei.StarLongevity.Companion.fun養
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月數
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun天鉞
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun天魁
@@ -602,141 +583,56 @@ object HouseFunctions {
   // =======↑↑↑======= 以上 博士12神煞 =======↑↑↑=======
 
   // =======↓↓↓======= 以下 長生12神煞 =======↓↓↓=======
-  val house長生: IHouse<*> = object : HouseFiveGenderYinYangImpl(長生) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun長生.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house長生: IHouse<*> = HouseStarLongevityImpl(長生)
 
-  val house沐浴: IHouse<*> = object : HouseFiveGenderYinYangImpl(沐浴) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun沐浴.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house沐浴: IHouse<*> = HouseStarLongevityImpl(沐浴)
 
-  val house冠帶: IHouse<*> = object : HouseFiveGenderYinYangImpl(冠帶) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun冠帶.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house冠帶: IHouse<*> = HouseStarLongevityImpl(冠帶)
 
-  val house臨官: IHouse<*> = object : HouseFiveGenderYinYangImpl(臨官) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun臨官.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house臨官: IHouse<*> = HouseStarLongevityImpl(臨官)
 
-  val house帝旺: IHouse<*> = object : HouseFiveGenderYinYangImpl(帝旺) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun帝旺.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house帝旺: IHouse<*> = HouseStarLongevityImpl(帝旺)
 
-  val house衰: IHouse<*> = object : HouseFiveGenderYinYangImpl(衰) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun衰.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house衰: IHouse<*> = HouseStarLongevityImpl(衰)
 
-  val house病: IHouse<*> = object : HouseFiveGenderYinYangImpl(病) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun病.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house病: IHouse<*> = HouseStarLongevityImpl(病)
 
-  val house死: IHouse<*> = object : HouseFiveGenderYinYangImpl(死) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun死.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house死: IHouse<*> = HouseStarLongevityImpl(死)
 
-  val house墓: IHouse<*> = object : HouseFiveGenderYinYangImpl(墓) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun墓.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house墓: IHouse<*> = HouseStarLongevityImpl(墓)
 
-  val house絕: IHouse<*> = object : HouseFiveGenderYinYangImpl(絕) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun絕.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house絕: IHouse<*> = HouseStarLongevityImpl(絕)
 
-  val house胎: IHouse<*> = object : HouseFiveGenderYinYangImpl(胎) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun胎.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house胎: IHouse<*> = HouseStarLongevityImpl(胎)
 
-  val house養: IHouse<*> = object : HouseFiveGenderYinYangImpl(養) {
-    override fun getBranch(t3: Triple<FiveElement, Gender, YinYangIF>): Branch {
-      return fun養.invoke(t3.first, t3.second, t3.third)
-    }
-  }
+  val house養: IHouse<*> = HouseStarLongevityImpl(養)
   // =======↑↑↑======= 以上 長生12神煞 =======↑↑↑=======
 
 
   // =======↓↓↓======= 以下 將前12星 =======↓↓↓=======
-  val house將前_將星: IHouse<*> = object : HouseYearBranchImpl(將星) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun將星.invoke(branch)
-    }
-  }
-  val house將前_攀鞍: IHouse<*> = object : HouseYearBranchImpl(攀鞍) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun攀鞍.invoke(branch)
-    }
-  }
-  val house將前_歲馹: IHouse<*> = object : HouseYearBranchImpl(歲馹) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun歲馹.invoke(branch)
-    }
-  }
-  val house將前_息神: IHouse<*> = object : HouseYearBranchImpl(息神) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun息神.invoke(branch)
-    }
-  }
-  val house將前_華蓋: IHouse<*> = object : HouseYearBranchImpl(StarGeneralFront.華蓋) {
-    override fun getBranch(branch: Branch): Branch {
-      return StarGeneralFront.fun華蓋.invoke(branch)
-    }
-  }
-  val house將前_劫煞: IHouse<*> = object : HouseYearBranchImpl(劫煞) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun劫煞.invoke(branch)
-    }
-  }
-  val house將前_災煞: IHouse<*> = object : HouseYearBranchImpl(災煞) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun災煞.invoke(branch)
-    }
-  }
-  val house將前_天煞: IHouse<*> = object : HouseYearBranchImpl(天煞) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun天煞.invoke(branch)
-    }
-  }
-  val house將前_指背: IHouse<*> = object : HouseYearBranchImpl(指背) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun指背.invoke(branch)
-    }
-  }
-  val house將前_咸池: IHouse<*> = object : HouseYearBranchImpl(StarGeneralFront.咸池) {
-    override fun getBranch(branch: Branch): Branch {
-      return StarGeneralFront.fun咸池.invoke(branch)
-    }
-  }
-  val house將前_月煞: IHouse<*> = object : HouseYearBranchImpl(月煞) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun月煞.invoke(branch)
-    }
-  }
-  val house將前_亡神: IHouse<*> = object : HouseYearBranchImpl(亡神) {
-    override fun getBranch(branch: Branch): Branch {
-      return fun亡神.invoke(branch)
-    }
-  }
+  val house將前_將星: IHouse<*> = HouseGeneralFrontImpl(將星)
+
+  val house將前_攀鞍: IHouse<*> = HouseGeneralFrontImpl(攀鞍)
+
+  val house將前_歲馹: IHouse<*> = HouseGeneralFrontImpl(歲馹)
+
+  val house將前_息神: IHouse<*> = HouseGeneralFrontImpl(息神)
+
+  val house將前_華蓋: IHouse<*> = HouseGeneralFrontImpl(StarGeneralFront.華蓋)
+
+  val house將前_劫煞: IHouse<*> = HouseGeneralFrontImpl(劫煞)
+
+  val house將前_災煞: IHouse<*> = HouseGeneralFrontImpl(災煞)
+
+  val house將前_天煞: IHouse<*> = HouseGeneralFrontImpl(天煞)
+
+  val house將前_指背: IHouse<*> = HouseGeneralFrontImpl(指背)
+
+  val house將前_咸池: IHouse<*> = HouseGeneralFrontImpl(StarGeneralFront.咸池)
+
+  val house將前_月煞: IHouse<*> = HouseGeneralFrontImpl(月煞)
+
+  val house將前_亡神: IHouse<*> = HouseGeneralFrontImpl(亡神)
 
   // =======↑↑↑======= 以上 將前12星 =======↑↑↑=======
 

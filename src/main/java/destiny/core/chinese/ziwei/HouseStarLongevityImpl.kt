@@ -1,12 +1,11 @@
 /**
- * Created by smallufo on 2017-04-19.
+ * Created by smallufo on 2017-12-11.
  */
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
-import destiny.core.chinese.Branch.寅
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YinYangIF
@@ -19,23 +18,20 @@ import destiny.core.chinese.YinYangIF
  * 重點是「五行局」， 而「五行局」又來自「命宮」
  * 但是「命宮」又有可能是依據上升星座而來，「可能」並非來自 陰曆 年份＋月份＋時辰來看
  */
-abstract class HouseFiveGenderYinYangImpl internal constructor(star: ZStar) : HouseAbstractImpl<Triple<FiveElement, Gender, YinYangIF>>(star) {
+class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<FiveElement, Gender, YinYangIF>>(star) {
 
-  override fun getBranch(lunarYear: StemBranch,
-                         solarYear: StemBranch, monthBranch: Branch,
-                         finalMonthNumForMonthStars: Int,
-                         solarTerms: SolarTerms, days: Int, hour: Branch, state: Int,
-                         gender: Gender, leap: Boolean, prevMonthDays: Int,
-                         predefinedMainHouse: Branch?,
-                         context: ZContext): Branch {
+  override fun getBranch(t: Triple<FiveElement, Gender, YinYangIF>): Branch {
+    return StarLongevity.starFuncMap[star]!!.invoke(t.first, t.second, t.third)
+  }
 
+  override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
     val stemOf寅 = IZiwei.getStemOf寅(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
 
-    val mainHouse = predefinedMainHouse?:IZiwei.getMainHouseBranch(finalMonthNumForMonthStars, hour)
+    val mainHouse = predefinedMainHouse ?: IZiwei.getMainHouseBranch(finalMonthNumForMonthStars, hour)
 
     // 左下角，寅宮 的 干支
-    val stemBranchOf寅 = StemBranch.get(stemOf寅, 寅)
-    val steps = mainHouse.getAheadOf(寅)
+    val stemBranchOf寅 = StemBranch.get(stemOf寅, Branch.寅)
+    val steps = mainHouse.getAheadOf(Branch.寅)
     val 命宮 = stemBranchOf寅.next(steps)
 
     //StemBranch 命宮 = IZiwei.getMainHouse(lunarYear.getStem() , finalMonthNumForMonthStars, hour);

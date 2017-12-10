@@ -1,3 +1,4 @@
+/** Created by smallufo on 2017-12-11. */
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
@@ -7,8 +8,6 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 
 /**
- * Created by smallufo on 2017-12-11.
- *
  * 年干 + 性別
  * 被用於 [StarDoctor] : 博士12神煞
  * 必須判別 [ZContext.YearType]

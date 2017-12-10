@@ -75,7 +75,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
     val fun月煞 = { 年支: Branch -> funYearBranch.invoke(年支, 月煞) }
     val fun亡神 = { 年支: Branch -> funYearBranch.invoke(年支, 亡神) }
 
-    val funMap: Map<StarGeneralFront, Function1<Branch, Branch>> = mapOf(
+    val starFuncMap: Map<StarGeneralFront, Function1<Branch, Branch>> = mapOf(
       將星 to fun將星,
       攀鞍 to fun攀鞍,
       歲馹 to fun歲馹,
