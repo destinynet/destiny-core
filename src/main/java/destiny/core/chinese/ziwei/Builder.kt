@@ -16,9 +16,9 @@ import java.text.MessageFormat
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-class Builder
 /** 本命盤  */
-(
+class Builder(
+
   /** 設定資料  */
   val context: ZContext,
   /** 陰曆生日  */

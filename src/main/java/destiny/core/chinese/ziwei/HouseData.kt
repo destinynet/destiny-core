@@ -5,13 +5,12 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 
 /**
  * 命盤中，一個宮位所包含的所有資訊
  */
-class HouseData(
+data class HouseData(
 
   /** 宮位名稱  */
   val house: House,
@@ -57,10 +56,6 @@ class HouseData(
   val vageRanges: Pair<Int, Int>
     get() = Pair(rangeFromVage, rangeToVage)
 
-  init {
-
-    logger.debug("宮位 : {} , 宮干自化 {}", stemBranch, transFourFlyMap)
-  }
 
   override fun toString(): String {
     return "[宮位 名稱=$house, 干支=$stemBranch, 星體=$stars]"
@@ -68,11 +63,6 @@ class HouseData(
 
   override fun compareTo(o: HouseData): Int {
     return if (this == o) 0 else this.house.compareTo(o.house)
-
   }
 
-  companion object {
-
-    @Transient private val logger = LoggerFactory.getLogger(HouseData::class.java)
-  }
 }

@@ -18,8 +18,8 @@ import java.util.*
  */
 abstract class HouseYearStemTianyiImpl internal constructor(star: ZStar) : HouseAbstractImpl<Pair<Stem, TianyiIF>>(star) {
 
-  override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, set: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Optional<Branch>, context: ZContext): Branch {
+  override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
     val yearStem = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem
-    return getBranch(Pair(yearStem, context.getTianyiImpl()))
+    return getBranch(Pair(yearStem, context.tianyiImpl))
   }
 }

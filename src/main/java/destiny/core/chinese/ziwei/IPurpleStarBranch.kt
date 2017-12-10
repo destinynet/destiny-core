@@ -11,16 +11,16 @@ import java.util.*
 interface IPurpleStarBranch : Descriptive {
 
   /**
-   * @param set           局數
+   * @param state         局數
    * @param day           本月幾日
    * @param leap          本月是否是閏月
    * @param prevMonthDays 上個月有幾天
    */
-  fun getBranchOfPurpleStar(set: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch
+  fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch
 
   /** 傳入的不是閏月，因此傳遞回去的 prevMonthDays 也不重要，傳回 0 即可  */
-  fun getBranchOfPurpleStar(set: Int, day: Int): Branch {
-    return getBranchOfPurpleStar(set, day, false, 0)
+  fun getBranchOfPurpleStarNonLeap(state: Int, day: Int): Branch {
+    return getBranchOfPurpleStar(state, day, false, 0)
   }
 
   override fun getTitle(locale: Locale): String {

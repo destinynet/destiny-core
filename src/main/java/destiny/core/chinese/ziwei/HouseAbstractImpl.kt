@@ -5,9 +5,4 @@ package destiny.core.chinese.ziwei
 
 import java.io.Serializable
 
-abstract class HouseAbstractImpl<T> protected constructor(private val star: ZStar) : IHouse<T>, Serializable {
-
-  override fun getStar(): ZStar {
-    return star
-  }
-}
+abstract class HouseAbstractImpl<T> protected constructor(override val star: ZStar) : IHouse<T>, Serializable

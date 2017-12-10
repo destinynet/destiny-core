@@ -10,7 +10,6 @@ import destiny.core.chinese.Branch.寅
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YinYangIF
-import java.util.*
 
 /**
  * 長生 12 神煞
@@ -25,13 +24,14 @@ abstract class HouseFiveGenderYinYangImpl internal constructor(star: ZStar) : Ho
   override fun getBranch(lunarYear: StemBranch,
                          solarYear: StemBranch, monthBranch: Branch,
                          finalMonthNumForMonthStars: Int,
-                         solarTerms: SolarTerms, days: Int, hour: Branch, set: Int,
+                         solarTerms: SolarTerms, days: Int, hour: Branch, state: Int,
                          gender: Gender, leap: Boolean, prevMonthDays: Int,
-                         predefinedMainHouse: Optional<Branch>,
+                         predefinedMainHouse: Branch?,
                          context: ZContext): Branch {
 
     val stemOf寅 = IZiwei.getStemOf寅(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
-    val mainHouse = predefinedMainHouse.orElse(IZiwei.getMainHouseBranch(finalMonthNumForMonthStars, hour))
+
+    val mainHouse = predefinedMainHouse?:IZiwei.getMainHouseBranch(finalMonthNumForMonthStars, hour)
 
     // 左下角，寅宮 的 干支
     val stemBranchOf寅 = StemBranch.get(stemOf寅, 寅)

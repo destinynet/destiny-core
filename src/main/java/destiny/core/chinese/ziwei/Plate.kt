@@ -39,17 +39,17 @@ open class Plate(
   /** 五行  */
   val fiveElement: FiveElement,
   /** 五行第幾局  */
-  val set: Int,
+  val state: Int,
 
   /** 12個宮位，每個宮位內的資料  */
   private val houseDataSet: Set<HouseData>,
 
-  /** 四化星 的列表
+  /**
+   * 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    */
-  /** 取得 星體的四化列表  */
-  val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>// = new HashMap<>();
-  ,
+  val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>,
+
   /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
   val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>,
 

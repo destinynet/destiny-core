@@ -6,6 +6,8 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 
+
+
 /**
  * 14 顆主星
  * resource key 存放於 [ZStar] 的 ZStar.properties 當中

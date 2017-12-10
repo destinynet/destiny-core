@@ -10,7 +10,6 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.HourIF
 import destiny.core.calendar.eightwords.MidnightIF
-import destiny.core.chinese.FortuneOutput
 import destiny.core.chinese.TianyiIF
 import java.util.*
 
@@ -54,7 +53,7 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleS
                    /** 顯示 將前12星  */
                    val isShowGeneralFront: Boolean,
                    /** 顯示 歲前12星  */
-                   val isShowYearFront: Boolean) : ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, FortuneOutput.虛歲, ageNoteImpls, bigRangeImpl, redBeauty) {
+                   val isShowYearFront: Boolean) : ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
 
 
   /** 宮干四化「自化」 顯示選項  */

@@ -24,8 +24,14 @@ class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  override fun getBranchOfPurpleStar(set: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch {
-    val steps = getPurpleSteps(set, day)
+  /**
+   * @param state 局數
+   * @param day 該月第幾天
+   * @param leap 是否是閏月 (此實作用不到)
+   * @param prevMonthDays 前一月有幾日 (此實作用不到)
+   */
+  override fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch {
+    val steps = getPurpleSteps(state, day)
     return 寅.next(steps - 1)
   }
 
