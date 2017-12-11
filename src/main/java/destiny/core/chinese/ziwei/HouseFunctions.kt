@@ -16,7 +16,7 @@ import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月數
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun天鉞
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun天魁
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun左輔_月數
-import destiny.core.chinese.ziwei.StarLucky.Companion.fun年馬_年支
+import destiny.core.chinese.ziwei.StarLucky.Companion.fun年馬
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun文昌
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun文曲
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun月馬_月數
@@ -75,7 +75,6 @@ import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全書
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
 import destiny.core.chinese.ziwei.StarYearFront.*
-import org.jooq.lambda.tuple.Tuple3
 import org.slf4j.LoggerFactory
 
 object HouseFunctions {
@@ -160,7 +159,7 @@ object HouseFunctions {
 
   val house年馬: IHouse<*> = object : HouseYearBranchImpl(StarLucky.年馬) {
     override fun getBranch(branch: Branch): Branch {
-      return fun年馬_年支.invoke(branch)
+      return fun年馬.invoke(branch)
     }
   }
 
@@ -380,8 +379,8 @@ object HouseFunctions {
   }
 
   val house天才: IHouse<*> = object : HouseYearBranchMonthNumHourBranchMainHouseImpl(天才) {
-    override fun getBranch(t: Tuple3<Branch, Int, Branch>): Branch {
-      return fun天才.invoke(t.v1(), t.v2(), t.v3())
+    override fun getBranch(t: Triple<Branch, Int, Branch>): Branch {
+      return fun天才.invoke(t.first, t.second, t.third)
     }
   }
 

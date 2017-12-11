@@ -35,14 +35,14 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     val fun文曲 = { hour: Branch -> Branch.get(hour.index + 4) }
 
     /** 左輔 : 月數 -> 地支  */
-    val fun左輔_月數 = { month: Int -> Branch.get(month + 3) }
+    val fun左輔_月數 = { finalMonthNum: Int -> Branch.get(finalMonthNum + 3) }
 
     /** 左輔 : 月支 -> 地支  */
     val fun左輔_月支 = { month: Branch -> Branch.get(month.index + 2) }
 
 
     /** 右弼 : 月數 -> 地支  */
-    val fun右弼_月數 = { month: Int -> Branch.get(11 - month) }
+    val fun右弼_月數 = { finalMonthNum: Int -> Branch.get(11 - finalMonthNum) }
 
     /** 右弼 : 月支 -> 地支  */
     val fun右弼_月支 = { month: Branch -> Branch.get(12 - month.index) }
@@ -73,7 +73,7 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     }
 
     /** 天馬(年的驛馬) : 年支 -> 地支  */
-    val fun年馬_年支 = { year: Branch ->
+    val fun年馬 = { year: Branch ->
       when (BranchTools.trilogy(year)) {
         FiveElement.火 -> 申
         FiveElement.木 -> 巳
@@ -84,13 +84,13 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     }
 
     /** 天馬(月的驛馬) : 月數 -> 地支  */
-    val fun月馬_月數 = { month: Int ->
-      when (month) {
+    val fun月馬_月數 = { finalMonthNum: Int ->
+      when (finalMonthNum) {
         1, 5, 9 -> 申
         2, 6, 10 -> 巳
         3, 7, 11 -> 寅
         4, 8, 12 -> 亥
-        else -> throw AssertionError(month)
+        else -> throw AssertionError(finalMonthNum)
       }
     }
 
@@ -104,6 +104,7 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
         else -> throw AssertionError(month)
       }
     }
+
   }
 
 

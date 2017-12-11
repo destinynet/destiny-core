@@ -412,12 +412,14 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
      */
     val fun月德 = { year: Branch -> Branch.get(year.index + 5) }
 
-    /** 天才 (年支 , 月數 , 時支) -> 地支
+    /**
+     * 天才 (年支 , 月數 , 時支) -> 地支
      * 天才由命宮起子, 順行至本生 「年支」安之.
      */
     val fun天才 = { year: Branch, month: Int, hour: Branch -> IZiwei.getMainHouseBranch(month, hour).next(year.index) }
 
-    /** 天壽 (年支 , 月數 , 時支) -> 地支
+    /**
+     * 天壽 (年支 , 月數 , 時支) -> 地支
      * 天壽由身宮起子, 順行至本生 「年支」安之  */
     val fun天壽 = { year: Branch, month: Int, hour: Branch -> IZiwei.getBodyHouseBranch(month, hour).next(year.index) }
 

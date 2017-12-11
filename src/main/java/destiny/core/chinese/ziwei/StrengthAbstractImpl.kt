@@ -129,6 +129,4 @@ abstract class StrengthAbstractImpl : IStrength, Serializable {
   override fun getDescription(locale: Locale): String {
     return getTitle(locale)
   }
-
-  companion object
 }

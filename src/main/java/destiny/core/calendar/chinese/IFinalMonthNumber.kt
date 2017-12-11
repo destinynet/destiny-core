@@ -21,7 +21,6 @@ interface IFinalMonthNumber {
     MONTH_LEAP_SPLIT15, // 若閏月，15日(含)之前當本月，之後當下月
     MONTH_SOLAR_TERMS;  // 節氣盤
 
-
     override fun getTitle(locale: Locale): String {
       return try {
         ResourceBundle.getBundle(IFinalMonthNumber::class.java.name, locale).getString(name)
@@ -41,7 +40,7 @@ interface IFinalMonthNumber {
      * @param monthNum       陰曆月份
      * @param leapMonth      是否閏月
      * @param monthBranch    節氣月支
-     * @param monthAlgorithm 哪種演算法
+     * @param monthAlgorithm 哪種演算法 . 可能為 null ! 若是 「非節氣」的狀況下， null 的話 就直接傳回 [monthNum] 即可
      * @param days           日數
      * @return 取得最終要計算的「月份」數字
      */

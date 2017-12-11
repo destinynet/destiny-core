@@ -10,13 +10,16 @@ import destiny.core.calendar.SolarTermsIF
 import destiny.core.calendar.eightwords.DayIF
 import destiny.core.calendar.eightwords.YearMonthIF
 import destiny.core.chinese.*
-import destiny.core.chinese.Branch.子
-import destiny.core.chinese.Branch.寅
+import destiny.core.chinese.Branch.*
+import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.Stem.*
+import destiny.core.chinese.ziwei.StarLucky.*
+import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.火星
 import destiny.core.chinese.ziwei.StarUnlucky.鈴星
 import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime
+
 
 /** 紫微斗數  */
 interface IZiwei {
@@ -24,18 +27,17 @@ interface IZiwei {
 
   /**
    * 計算本命盤
-   * @param optionalMainBranch 預先計算過的命宮
-   * @param optionalBodyBranch 預先計算過的身宮
+   * @param mainAndBody 預先計算過的命宮、身宮地支
+   * @param preFinalMonthNumForMainStars 預先計算好的「最終月數」 for 14顆主星 ([StarMain]])
    * @param lunarYear          陰曆的年干支
    * @param solarYear          「節氣」的年干支
    * @param lunarMonth         陰曆的月份
    * @param monthBranch        「節氣」的月支
    * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
    */
-  fun getBirthPlate(optionalMainBranch: Branch?,
-                    optionalBodyBranch: Branch?,
-                    cycle: Int, lunarYear: StemBranch, solarYear: StemBranch, lunarMonth: Int, leapMonth: Boolean, monthBranch: Branch, solarTerms: SolarTerms, lunarDays: Int, hour: Branch, stars: Collection<ZStar>, gender: Gender,
-                    optionalVageMap: Map<Int, Pair<Double, Double>>?, context: ZContext): Builder
+  fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?, preFinalMonthNumForMainStars: Int?,
+                    cycle: Int, lunarYear: StemBranch, solarYear: StemBranch, lunarMonth: Int, leapMonth: Boolean, monthBranch: Branch, solarTerms: SolarTerms, lunarDays: Int, hour: Branch, stars: Collection<ZStar>,
+                    gender: Gender, optionalVageMap: Map<Int, Pair<Double, Double>>?, context: ZContext): Builder
 
   /** 輸入現代化的資料，計算本命盤  */
   fun getBirthPlate(lmt: ChronoLocalDateTime<*>, location: Location, place: String?, gender: Gender, stars: Collection<ZStar>, context: ZContextMore, solarTermsImpl: SolarTermsIF, yearMonthImpl: YearMonthIF, dayImpl: DayIF): Builder
@@ -96,15 +98,15 @@ interface IZiwei {
       // 五行
       val fiveElement = NaYin.getFiveElement(mainHouse)
       // 第幾局
-      val set: Int
-      set = when (fiveElement) {
-        FiveElement.水 -> 2
-        FiveElement.土 -> 5
-        FiveElement.木 -> 3
-        FiveElement.火 -> 6
-        FiveElement.金 -> 4
+      val state: Int
+      state = when (fiveElement) {
+        水 -> 2
+        土 -> 5
+        木 -> 3
+        火 -> 6
+        金 -> 4
       }
-      return Pair(fiveElement, set)
+      return Pair(fiveElement, state)
     }
 
 
@@ -160,13 +162,12 @@ interface IZiwei {
      * TODO : should be private after Java9
      */
     fun getStemOf寅(year: Stem): Stem {
-      when (year) {
-        甲, 己 -> return 丙
-        乙, 庚 -> return 戊
-        丙, 辛 -> return 庚
-        丁, 壬 -> return 壬
-        戊, 癸 -> return 甲
-        else -> throw AssertionError("Error : " + year)
+      return when (year) {
+        甲, 己 -> 丙
+        乙, 庚 -> 戊
+        丙, 辛 -> 庚
+        丁, 壬 -> 壬
+        戊, 癸 -> 甲
       }
     }
 
@@ -175,37 +176,34 @@ interface IZiwei {
      */
     fun getFlowYearAnchor(flowYear: Branch, birthMonth: Int, birthHour: Branch): Branch {
       return flowYear                     // 以流年地支為起點
-        .prev(birthMonth - 1)               // 從1 逆數至「出生月」
+        .prev(birthMonth - 1)             // 從1 逆數至「出生月」
         .next(birthHour.getAheadOf(子))   // 再順數至「出生時」
     }
 
     /** 命主 : 命宮所在地支安星  */
     fun getMainStar(branch: Branch): ZStar {
-      when (branch) {
-
-        子 -> return StarMain.貪狼
-        Branch.丑, Branch.亥 -> return StarMain.巨門
-        寅, Branch.戌 -> return StarLucky.祿存
-        Branch.卯, Branch.酉 -> return StarLucky.文曲
-        Branch.辰, Branch.申 -> return StarMain.廉貞
-        Branch.巳, Branch.未 -> return StarMain.武曲
-        Branch.午 -> return StarMain.破軍
-        else -> throw AssertionError("Error : " + branch)
+      return when (branch) {
+        子 -> 貪狼
+        丑, 亥 -> 巨門
+        寅, 戌 -> 祿存
+        卯, 酉 -> 文曲
+        辰, 申 -> 廉貞
+        巳, 未 -> 武曲
+        午 -> 破軍
       }
     }
 
 
     /** 身主 : 以出生年之地支安星  */
     fun getBodyStar(branch: Branch): ZStar {
-      when (branch) {
-        子 -> return 火星
-        Branch.丑, Branch.未 -> return StarMain.天相
-        寅, Branch.申 -> return StarMain.天梁
-        Branch.卯, Branch.酉 -> return StarMain.天同
-        Branch.辰, Branch.戌 -> return StarLucky.文昌
-        Branch.巳, Branch.亥 -> return StarMain.天機
-        Branch.午 -> return 鈴星
-        else -> throw AssertionError("Error : " + branch)
+      return when (branch) {
+        子 -> 火星
+        丑, 未 -> 天相
+        寅, 申 -> 天梁
+        卯, 酉 -> 天同
+        辰, 戌 -> 文昌
+        巳, 亥 -> 天機
+        午 -> 鈴星
       }
     }
   }

@@ -341,7 +341,7 @@ class Builder(
     return notesBuilder.map { (first, second) ->
       val pattern = ResourceBundle.getBundle(resourceBundleClazz.name, locale).getString(first)
       val note = MessageFormat.format(pattern, *second)
-      logger.debug("note : {}", note)
+      logger.trace("note : {}", note)
       note
     }
   }

@@ -138,18 +138,18 @@ class StarLuckyTest {
 
   @Test
   fun test天馬() {
-    assertSame(寅, StarLucky.fun年馬_年支.invoke(子))
-    assertSame(亥, StarLucky.fun年馬_年支.invoke(丑))
-    assertSame(申, StarLucky.fun年馬_年支.invoke(寅))
-    assertSame(巳, StarLucky.fun年馬_年支.invoke(卯))
-    assertSame(寅, StarLucky.fun年馬_年支.invoke(辰))
-    assertSame(亥, StarLucky.fun年馬_年支.invoke(巳))
-    assertSame(申, StarLucky.fun年馬_年支.invoke(午))
-    assertSame(巳, StarLucky.fun年馬_年支.invoke(未))
-    assertSame(寅, StarLucky.fun年馬_年支.invoke(申))
-    assertSame(亥, StarLucky.fun年馬_年支.invoke(酉))
-    assertSame(申, StarLucky.fun年馬_年支.invoke(戌))
-    assertSame(巳, StarLucky.fun年馬_年支.invoke(亥))
+    assertSame(寅, StarLucky.fun年馬.invoke(子))
+    assertSame(亥, StarLucky.fun年馬.invoke(丑))
+    assertSame(申, StarLucky.fun年馬.invoke(寅))
+    assertSame(巳, StarLucky.fun年馬.invoke(卯))
+    assertSame(寅, StarLucky.fun年馬.invoke(辰))
+    assertSame(亥, StarLucky.fun年馬.invoke(巳))
+    assertSame(申, StarLucky.fun年馬.invoke(午))
+    assertSame(巳, StarLucky.fun年馬.invoke(未))
+    assertSame(寅, StarLucky.fun年馬.invoke(申))
+    assertSame(亥, StarLucky.fun年馬.invoke(酉))
+    assertSame(申, StarLucky.fun年馬.invoke(戌))
+    assertSame(巳, StarLucky.fun年馬.invoke(亥))
 
     assertSame(寅, StarLucky.fun月馬_月數.invoke(11))
     assertSame(亥, StarLucky.fun月馬_月數.invoke(12))
@@ -164,4 +164,5 @@ class StarLuckyTest {
     assertSame(申, StarLucky.fun月馬_月數.invoke(9))
     assertSame(巳, StarLucky.fun月馬_月數.invoke(10))
   }
+
 }

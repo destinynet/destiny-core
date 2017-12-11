@@ -23,9 +23,19 @@ interface IHouse<T> {
    * @param prevMonthDays              [陰曆] 上個月有幾日
    * @param predefinedMainHouse        預先計算好的「命宮」
    */
-  fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int,
-                solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int,
-                predefinedMainHouse: Branch?, context: ZContext): Branch
+  fun getBranch(lunarYear: StemBranch,
+                solarYear: StemBranch,
+                monthBranch: Branch,
+                finalMonthNumForMonthStars: Int,
+                solarTerms: SolarTerms,
+                days: Int,
+                hour: Branch,
+                state: Int,
+                gender: Gender,
+                leap: Boolean,
+                prevMonthDays: Int,
+                predefinedMainHouse: Branch?,
+                context: ZContext): Branch
 
 
 }

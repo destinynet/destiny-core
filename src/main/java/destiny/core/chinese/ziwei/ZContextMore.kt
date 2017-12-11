@@ -22,8 +22,10 @@ import java.util.*
  * 真太陽時(還是手錶平均時間)
  * 八字排列方向
  */
-class ZContextMore(mainBodyHouseImpl: IMainBodyHouse, purpleBranchImpl: IPurpleStarBranch,
-                   mainStarsMonthAlgo: IFinalMonthNumber.MonthAlgo, monthStarsMonthAlgo: IFinalMonthNumber.MonthAlgo,
+class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
+                   purpleBranchImpl: IPurpleStarBranch,
+                   mainStarsMonthAlgo: IFinalMonthNumber.MonthAlgo?,
+                   monthStarsMonthAlgo: IFinalMonthNumber.MonthAlgo,
                    yearType: YearType, houseSeqImpl: IHouseSeq, tianyiImpl: TianyiIF, fireBell: FireBell,
                    hurtAngel: HurtAngel, transFourImpl: ITransFour, strengthImpl: IStrength,
                    flowYearImpl: IFlowYear, flowMonthImpl: IFlowMonth, flowDayImpl: IFlowDay, flowHourImpl: IFlowHour,
