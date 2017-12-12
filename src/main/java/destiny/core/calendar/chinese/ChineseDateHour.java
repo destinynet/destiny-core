@@ -14,7 +14,7 @@ public class ChineseDateHour extends ChineseDate {
   private final Branch hourBranch;
 
   public ChineseDateHour(ChineseDate chineseDate , Branch hour) {
-    super(chineseDate.getCycle() , chineseDate.getYear() , chineseDate.getMonth() , chineseDate.isLeapMonth() , chineseDate.getDay());
+    super(chineseDate.getCycleOrZero() , chineseDate.getYear() , chineseDate.getMonth() , chineseDate.isLeapMonth() , chineseDate.getDay());
     this.hourBranch = hour;
   }
 

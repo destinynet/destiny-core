@@ -11,7 +11,7 @@ fun <T> Map<Locale, Decorator<T>>.getOutputString(value : T, locale : Locale) : 
   return this[LocaleTools.getBestMatchingLocale(locale , this.keys) ?: this.keys.first() ]!!.getOutputString(value)
 }
 
-interface Decorator<T> {
+interface Decorator<in T> {
 
   fun getOutputString(value: T): String
 }

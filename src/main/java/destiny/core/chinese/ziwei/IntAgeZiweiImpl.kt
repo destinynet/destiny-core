@@ -53,7 +53,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: ChineseDateIF, private val re
     // 陰曆日期
     val chineseDate = chineseDateImpl.getChineseDate(dateTime.toLocalDate())
 
-    val next1Year = getNextYear(chineseDate.cycle, chineseDate.year)
+    val next1Year = getNextYear(chineseDate.cycleOrZero, chineseDate.year)
     val next1YearJan2 = ChineseDate(next1Year.v1(), next1Year.v2(), 1, false, 2)
     // 利用「隔年、陰曆、一月二日、中午」作為「逆推」日月合朔的時間點
     val next1YearJan2Time = chineseDateImpl.getYangDate(next1YearJan2).atTime(LocalTime.NOON)

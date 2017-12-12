@@ -142,14 +142,14 @@ public class EightWords extends EightWordsNullable {
     assert (hour.getStemOptional().isPresent());
     return
       "\n"
-        + hour.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
-        + day.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
-        + month.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR)
-        + year.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.NULL_CHAR) +
+        + hour.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
+        + day.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
+        + month.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
+        + year.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR()) +
         "\n" +
-        hour.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
-        + day.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
-        + month.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR)
-        + year.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.NULL_CHAR) ;
+        hour.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
+        + day.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
+        + month.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
+        + year.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR()) ;
   }
 }

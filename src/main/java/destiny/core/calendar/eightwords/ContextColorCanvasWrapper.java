@@ -119,7 +119,7 @@ public class ContextColorCanvasWrapper {
     cc.add(西元資訊 , 1 , 1 );
 
     ChineseDate chineseDate = context.getChineseDate();
-    cc.setText("農曆：("+chineseDate.getCycle() + "循環)" + chineseDate , 2 , 1);
+    cc.setText("農曆：("+chineseDate.getCycleOrZero() + "循環)" + chineseDate , 2 , 1);
     
     String url = urlBuilder.getUrl(location);
     

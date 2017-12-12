@@ -60,7 +60,7 @@ public interface ChineseDateIF extends Descriptive {
   ChronoLocalDate getYangDate(int cycle, StemBranch year, boolean leap, int month, int day);
 
   default ChronoLocalDate getYangDate(ChineseDate cdate) {
-    return getYangDate(cdate.getCycle() , cdate.getYear() , cdate.isLeapMonth() , cdate.getMonth() , cdate.getDay());
+    return getYangDate(cdate.getCycleOrZero() , cdate.getYear() , cdate.isLeapMonth() , cdate.getMonth() , cdate.getDay());
   }
 
 

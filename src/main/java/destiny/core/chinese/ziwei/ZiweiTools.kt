@@ -24,9 +24,9 @@ class ZiweiTools : Serializable {
     fun getYearsOfFlowBig(builder: Builder, context: ZContext, flowBig: Branch): List<Triple<Int, StemBranch, Int>> {
       val bigRangeImpl = context.bigRangeImpl
       val birthYear = builder.chineseDate.year
-      val birthCycle = builder.chineseDate.cycle
+      val birthCycle = builder.chineseDate.cycleOrZero
 
-      val (first, second) = bigRangeImpl.getVageRange(builder.branchHouseMap[flowBig], builder.set, birthYear.stem, builder.gender, context.houseSeqImpl)
+      val (first, second) = bigRangeImpl.getVageRange(builder.branchHouseMap[flowBig]!!, builder.set, birthYear.stem, builder.gender, context.houseSeqImpl)
 
       // 再把虛歲轉換成干支
       return (first .. second).map { vAge ->

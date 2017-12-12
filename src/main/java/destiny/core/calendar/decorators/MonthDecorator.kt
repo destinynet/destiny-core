@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.decorators
 
+import destiny.tools.ChineseStringTools
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import java.io.Serializable
@@ -25,15 +26,7 @@ class MonthDecoratorChinese : Decorator<Int>, Serializable {
 
   override fun getOutputString(value: Int): String {
     return when (value) {
-      1 -> "一月"
-      2 -> "二月"
-      3 -> "三月"
-      4 -> "四月"
-      5 -> "五月"
-      6 -> "六月"
-      7 -> "七月"
-      8 -> "八月"
-      9 -> "九月"
+      in (1..9) -> ChineseStringTools.digitToChinese(value)+"月"
       10 -> "十月"
       11 -> "十一月"
       12 -> "十二月"
