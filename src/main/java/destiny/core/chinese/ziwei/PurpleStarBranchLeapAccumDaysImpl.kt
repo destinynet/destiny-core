@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 import java.io.Serializable
 
 /**
- * 閏月排紫微星
+ * 閏月排紫微星 , 累加前一月(非閏月)的日數
  *
  * 翰學居士 張寶丹 老師 , 高段紫微斗數 三本書
  *

@@ -35,7 +35,7 @@ public class PalmImplTest {
    * 年：巳—天文宮　月：巳—天文宮　日：辰—天奸宮　時：戌—天藝宮
    */
   @Test
-  public void testGetPalm_Male() throws Exception {
+  public void testGetPalm_Male() {
     Palm palm = impl.getPalm(Gender.男, 巳, false, 1, 12, 午, defaultImpl, true);
 
     assertSame(巳, palm.getYear());
@@ -63,7 +63,7 @@ public class PalmImplTest {
    * 年：戌—天藝宮　月：寅—天權宮　日：卯—天破宮　時：巳—天文宮
    */
   @Test
-  public void testGetPalm_Female() throws Exception {
+  public void testGetPalm_Female() {
     PalmIF impl = new PalmImpl();
     Palm palm = impl.getPalm(Gender.女, 戌, false, 9, 24, 戌, defaultImpl, true);
 
