@@ -1,17 +1,12 @@
 /**
  * Created by smallufo on 2014-07-15.
  */
-package destiny.astrology.classical;
+package destiny.astrology.classical
 
-import destiny.astrology.Aspect;
-import destiny.astrology.Horoscope;
-import destiny.astrology.Planet;
-import destiny.astrology.Point;
-import kotlin.Pair;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.Optional;
+import destiny.astrology.Aspect
+import destiny.astrology.Horoscope
+import destiny.astrology.Planet
+import destiny.astrology.Point
 
 /**
  * <pre>
@@ -25,16 +20,15 @@ import java.util.Optional;
  * 2. 本星即將 apply 他星，而在 perfect 前，他星逆行，代表對方退縮。
  *
  * TODO : 應該加上演算法：如果星體順轉逆（或逆轉順），並且逃離了 aspect 的有效範圍，才是真的「臨陣脫逃」
- * </pre>
+</pre> *
  */
-public interface RefranationIF {
+interface RefranationIF {
 
-  @Nullable
-  Pair<Point, Aspect> getResult(Horoscope horoscope , Planet planet , Point otherPoint , Collection<Aspect> aspects);
+  fun getResult(horoscope: Horoscope, planet: Planet, otherPoint: Point, aspects: Collection<Aspect>): Pair<Point, Aspect>?
 
-  default Optional<Pair<Point, Aspect>> getResult(Horoscope horoscope , Planet planet , Point otherPoint) {
-
-    return Optional.ofNullable(getResult(horoscope , planet , otherPoint , Aspect.getAngles(Aspect.Importance.HIGH)));
+  /** 取得重要交角 [Aspect.Importance.HIGH] 的結果 */
+  fun getImportantResult(horoscope: Horoscope, planet: Planet, otherPoint: Point): Pair<Point, Aspect>? {
+    return getResult(horoscope, planet, otherPoint, Aspect.getAngles(Aspect.Importance.HIGH))
   }
 
 }

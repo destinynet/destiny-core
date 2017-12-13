@@ -19,11 +19,8 @@ import static java.util.Optional.empty;
 /** Swift in motion (faster than average). */
 public final class Swift extends Rule {
 
-  public Swift() {
-  }
-
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
     return AverageDailyMotionMap.get(planet).flatMap(dailyDeg ->
       h.getPositionOpt(planet).map(Position::getSpeedLng).flatMap(speedLng -> {

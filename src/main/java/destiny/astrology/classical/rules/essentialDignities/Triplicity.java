@@ -24,7 +24,7 @@ public final class Triplicity extends Rule
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    return h.getZodiacSign(planet).flatMap(sign -> {
+    return h.getZodiacSignOpt(planet).flatMap(sign -> {
       DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
       if(  (dayNight == DayNight.DAY   && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY )) ||
            (dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))   )

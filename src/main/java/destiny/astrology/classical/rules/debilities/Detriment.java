@@ -21,7 +21,7 @@ public final class Detriment extends EssentialRule {
 
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
-    return h.getZodiacSign(planet)
+    return h.getZodiacSignOpt(planet)
       .filter(sign -> planet == essentialImpl.getPoint(sign , Dignity.DETRIMENT).orElse(null))
       .map(sign -> Tuple.tuple("comment", new Object[]{planet, sign}));
   }

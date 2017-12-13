@@ -26,7 +26,7 @@ public final class Ruler extends Rule
   @Override
   public Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
-    return h.getZodiacSign(planet)
+    return h.getZodiacSignOpt(planet)
       .flatMap(sign -> {
         // Ruler (旺)
         if (planet == essentialImpl.getPoint(sign , Dignity.RULER).orElse(null)) {
@@ -54,10 +54,10 @@ public final class Ruler extends Rule
     utils.setEssentialImpl(essentialImpl);
 
     //取得此 Planet 在什麼星座
-    return h.getZodiacSign(planet).flatMap(sign1 ->
+    return h.getZodiacSignOpt(planet).flatMap(sign1 ->
       essentialImpl.getPoint(sign1 , Dignity.RULER).flatMap(signRuler -> {
         // planet 在 sign1 , 計算 sign1 的 RULER , 為 signRuler
-        return h.getZodiacSign(signRuler)
+        return h.getZodiacSignOpt(signRuler)
           .filter(sign2 ->
             planet == essentialImpl.getPoint(sign2, Dignity.RULER).orElse(null)   // 已經確定 Ruler 互容，要排除互陷
             && !utils.isBothInBadSituation(planet , sign1 , signRuler , sign2)            // 只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨

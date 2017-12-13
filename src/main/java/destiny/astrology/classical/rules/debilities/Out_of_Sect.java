@@ -44,8 +44,8 @@ public final class Out_of_Sect extends Rule {
   protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
     DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
 
-    return h.getZodiacSign(planet).flatMap(sign ->
-      h.getHouse(planet).flatMap(house -> {
+    return h.getZodiacSignOpt(planet).flatMap(sign ->
+      h.getHouseOpt(planet).flatMap(house -> {
         if (dayNight == DayNight.DAY && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS)) {
           if (house >= 7 && sign.getBooleanValue()) {
             logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN));

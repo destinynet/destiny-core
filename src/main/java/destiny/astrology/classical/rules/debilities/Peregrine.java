@@ -27,7 +27,7 @@ public final class Peregrine extends EssentialRule {
     return h.getPositionOpt(planet).flatMap(pos -> {
       double planetDegree = pos.getLng();
       //取得此 Planet 在什麼星座
-      return h.getZodiacSign(planet).flatMap(sign -> {
+      return h.getZodiacSignOpt(planet).flatMap(sign -> {
         DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
         if (planet != essentialImpl.getPoint(sign, Dignity.RULER).orElse(null) &&
             planet != essentialImpl.getPoint(sign, Dignity.EXALTATION).orElse(null) &&

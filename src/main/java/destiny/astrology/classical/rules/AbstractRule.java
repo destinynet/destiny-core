@@ -7,7 +7,9 @@ package destiny.astrology.classical.rules;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.tools.LocaleStringIF;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,11 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
    * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
    */
   protected abstract Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, Horoscope h);
+
+  @Nullable
+  protected Pair<String, Object[]> getResult2(@NotNull Planet planet, @NotNull Horoscope h) {
+    return getResult(planet , h).map(t -> new Pair<>(t.v1 , t.v2)).orElse(null);
+  }
   
   /** 名稱 */
   @Override

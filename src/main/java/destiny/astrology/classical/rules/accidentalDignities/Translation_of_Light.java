@@ -25,7 +25,7 @@ public class Translation_of_Light extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h)
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h)
   {
     Tuple4<Boolean , Planet , Planet , Optional<IAspectApplySeparate.AspectType>> t = translationOfLightImpl.getResult(planet, h);
     if (t.v1()) {

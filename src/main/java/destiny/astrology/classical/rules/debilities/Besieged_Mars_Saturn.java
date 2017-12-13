@@ -32,7 +32,7 @@ public final class Besieged_Mars_Saturn extends Rule {
 
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     if (planet == Planet.SUN || planet == Planet.MOON || planet == Planet.MERCURY || planet == Planet.VENUS) {
       //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
       ChronoLocalDateTime gmt = TimeTools.getGmtFromLmt(h.getLmt() , h.getLocation());

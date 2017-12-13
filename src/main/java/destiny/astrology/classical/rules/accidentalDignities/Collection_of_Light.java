@@ -25,7 +25,7 @@ public final class Collection_of_Light extends Rule
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     return collectionOfLightImpl.getResult(planet , h , ICollectionOfLight.CollectType.DIGNITIES).map(twoPlanets ->
       Tuple.tuple("comment", new Object[]{planet, twoPlanets.get(0), twoPlanets.get(1), h.getAngle(twoPlanets.get(0), twoPlanets.get(1))})
     );

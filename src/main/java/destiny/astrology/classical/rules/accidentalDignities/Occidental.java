@@ -29,16 +29,6 @@ public final class Occidental extends Rule {
           .filter(sunDegree -> Horoscope.isOccidental(planetDegree, sunDegree))
           .map(sunDegree -> Tuple.tuple("comment", new Object[]{planet}))
       );
-
-//    double planetDegree = h.getPosition(planet).getLng();
-//    double sunDegree = h.getPosition(Planet.SUN).getLng();
-//    if (planet == Planet.MERCURY || planet == Planet.VENUS) {
-//      if (Horoscope.isOccidental(planetDegree, sunDegree)) {
-//        logger.debug("{} 在太陽西邊");
-//        return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
-//      }
-//    }
-//    return Optional.empty();
   }
 
 }

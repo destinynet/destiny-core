@@ -51,9 +51,9 @@ public final class MixedReception extends Rule
    */
   private Optional<Tuple2<String, Object[]>> rulerExaltMutualReception(Horoscope h , Planet planet) {
 
-    return h.getZodiacSign(planet).flatMap(sign1 ->
+    return h.getZodiacSignOpt(planet).flatMap(sign1 ->
       essentialImpl.getPoint(sign1, Dignity.RULER).flatMap(signRuler ->
-        h.getZodiacSign(signRuler).flatMap(sign2 ->
+        h.getZodiacSignOpt(signRuler).flatMap(sign2 ->
           essentialImpl.getPoint(sign2 , Dignity.EXALTATION).flatMap(planet2 -> {
             if (planet == planet2 && !utils.isBothInBadSituation(planet , sign1 , signRuler , sign2)) {
               logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容" , planet , sign1 , Dignity.RULER , signRuler ,sign2);
@@ -95,9 +95,9 @@ public final class MixedReception extends Rule
    */
   private Optional<Tuple2<String, Object[]>> exaltRulerMutualReception(Horoscope h , Planet planet) {
 
-    return h.getZodiacSign(planet).flatMap(sign1 ->
+    return h.getZodiacSignOpt(planet).flatMap(sign1 ->
       essentialImpl.getPoint(sign1, Dignity.EXALTATION).flatMap(thisSignExaltation ->
-        h.getZodiacSign(thisSignExaltation).flatMap(sign2 ->
+        h.getZodiacSignOpt(thisSignExaltation).flatMap(sign2 ->
           essentialImpl.getPoint(sign2 , Dignity.RULER).flatMap(planet2 -> {
             if (planet == planet2) {
               //已確定互容，要排除互陷

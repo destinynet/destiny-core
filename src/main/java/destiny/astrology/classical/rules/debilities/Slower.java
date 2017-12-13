@@ -18,13 +18,8 @@ import static java.util.Optional.empty;
 
 public final class Slower extends Rule {
 
-  public Slower() {
-  }
-
-
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     return AverageDailyMotionMap.get(planet).flatMap(dailyDeg ->
       h.getPositionOpt(planet).map(Position::getSpeedLng).flatMap(speedLng -> {
         if (speedLng < dailyDeg) {
@@ -34,7 +29,7 @@ public final class Slower extends Rule {
         return empty();
       })
     );
-
   }
+
 
 }

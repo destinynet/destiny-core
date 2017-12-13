@@ -18,7 +18,7 @@ public final class Conj_Algol extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
     return h.getPositionOpt(planet).map(Position::getLng).flatMap(planetDegree ->
       h.getPositionOpt(FixedStar.ALGOL).map(Position::getLng).flatMap(algolDeg -> {

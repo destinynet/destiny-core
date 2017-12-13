@@ -7,6 +7,7 @@ import destiny.core.calendar.JulDayResolver1582CutoverImpl;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.TimeTools;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -257,21 +258,49 @@ public class Horoscope implements Serializable {
   /**
    * @param point 取得此星體在第幾宮
    */
-  public Optional<Integer> getHouse(Point point) {
+  public Optional<Integer> getHouseOpt(Point point) {
     Optional<PositionWithAzimuth> pos = Optional.ofNullable(positionMap.get(point));
     return pos.map(Position::getLng).map(this::getHouse);
   }
 
+  /**
+   * @param point 取得此星體在第幾宮
+   */
+  @Nullable
+  public Integer getHouse(Point point) {
+    PositionWithAzimuth pos =  positionMap.get(point);
+    if (pos != null)
+      return getHouse(pos.getLng());
+    else
+      return null;
+  }
+
   /** 取得星體的位置以及地平方位角 */
+  @Nullable
+  public PositionWithAzimuth getPosition(Point point)  {
+    return positionMap.get(point);
+  }
+
+  /** 承上 , optional 版本 */
   public Optional<PositionWithAzimuth> getPositionOpt(Point point)  {
-    return Optional.ofNullable(positionMap.get(point));
+    return Optional.ofNullable(getPosition(point));
   }
 
   /** 取得某星 位於什麼星座 */
-  public Optional<ZodiacSign> getZodiacSign(Point point) {
-    return getPositionOpt(point)
-      .map(pos -> ZodiacSign.getZodiacSign(pos.getLng()));
+  @Nullable
+  public ZodiacSign getZodiacSign(Point point) {
+    PositionWithAzimuth pos = getPosition(point);
+    if (pos == null)
+      return null;
+    else
+      return ZodiacSign.getZodiacSign(pos.getLng());
   }
+
+  /** 承上 , optional 版本 */
+  public Optional<ZodiacSign> getZodiacSignOpt(Point point) {
+    return Optional.ofNullable(getZodiacSign(point));
+  }
+
 
   /**
    * ========================== 以下為 static utility methods ==========================
