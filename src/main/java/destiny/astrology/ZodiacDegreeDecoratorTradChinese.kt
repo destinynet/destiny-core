@@ -4,7 +4,7 @@
  */
 package destiny.astrology
 
-import java.util.Locale
+import java.util.*
 
 class ZodiacDegreeDecoratorTradChinese : IZodiacDegreeDecorator {
 
@@ -16,9 +16,9 @@ class ZodiacDegreeDecoratorTradChinese : IZodiacDegreeDecorator {
   private val sec: Double
     get() = ((deg - getDeg()) * 60 - min) * 60
 
-  override fun getOutputString(degree: Double): String {
-    val sign = ZodiacSign.getZodiacSign(degree)
-    this.deg = degree - sign.degree
+  override fun getOutputString(value: Double): String {
+    val sign = ZodiacSign.getZodiacSign(value)
+    this.deg = value - sign.degree
 
     val sb = StringBuilder()
     sb.append(sign.toString(Locale.TAIWAN)).append(" ")

@@ -4,7 +4,8 @@
  */
 package destiny.astrology
 
-import destiny.tools.LocaleUtils
+import destiny.tools.LocaleTools
+import destiny.tools.getOutputString
 import java.util.*
 
 object ZodiacDegreeDecorator {
@@ -15,11 +16,11 @@ object ZodiacDegreeDecorator {
 
 
   fun getOutputString(degree: Double, locale: Locale): String {
-    return implMap[LocaleUtils.getBestMatchingLocale(locale, implMap.keys).orElse(implMap.keys.toTypedArray()[0] as Locale)]!!.getOutputString(degree)
+    return implMap.getOutputString(degree , locale)
   }
 
   fun getSimpOutputString(degree: Double, locale: Locale): String {
-    return implMap[LocaleUtils.getBestMatchingLocale(locale, implMap.keys).orElse(implMap.keys.toTypedArray()[0] as Locale)]!!.getSimpOutString(degree)
+    return implMap[LocaleTools.getBestMatchingLocale(locale , implMap.keys)?: implMap.keys.first()]!!.getSimpOutString(degree)
   }
 
 }

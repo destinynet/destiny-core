@@ -4,7 +4,8 @@
  */
 package destiny.core
 
-import destiny.tools.LocaleTools
+import destiny.tools.Decorator
+import destiny.tools.getOutputString
 import java.util.*
 
 object GenderDecorator {
@@ -14,7 +15,19 @@ object GenderDecorator {
   )
 
   fun getOutputString(gender: Gender, locale: Locale): String {
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
-    return implMap[bestMatchingLocale]!!.getOutputString(gender)
+    return implMap.getOutputString(gender , locale)
+  }
+}
+
+
+class GenderDecoratorChinese : Decorator<Gender> {
+  override fun getOutputString(value: Gender): String {
+    return if (value === Gender.男) "男" else "女"
+  }
+}
+
+class GenderDecoratorEnglish : Decorator<Gender> {
+  override fun getOutputString(value: Gender): String {
+    return if (value === Gender.男) "Male" else "Female"
   }
 }

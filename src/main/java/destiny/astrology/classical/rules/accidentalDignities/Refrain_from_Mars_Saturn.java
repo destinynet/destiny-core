@@ -8,6 +8,7 @@ import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
 import destiny.astrology.classical.RefranationIF;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -36,9 +37,9 @@ public final class Refrain_from_Mars_Saturn extends Rule {
     if (planet != Planet.MARS) {
       otherPoint = Planet.MARS;
 
-      Optional<Tuple2<Point, Aspect>> result = refranationImpl.getResult(h , planet , otherPoint);
+      Optional<Pair<Point, Aspect>> result = refranationImpl.getResult(h , planet , otherPoint);
       if (result.isPresent()) {
-        Aspect aspect = result.get().v2();
+        Aspect aspect = result.get().getSecond();
         logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , aspect);
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, aspect}));
       }
@@ -47,9 +48,9 @@ public final class Refrain_from_Mars_Saturn extends Rule {
     if (planet != Planet.SATURN) {
       otherPoint = Planet.SATURN;
 
-      Optional<Tuple2<Point, Aspect>> result = refranationImpl.getResult(h, planet, otherPoint);
+      Optional<Pair<Point, Aspect>> result = refranationImpl.getResult(h, planet, otherPoint);
       if (result.isPresent()) {
-        Aspect aspect = result.get().v2();
+        Aspect aspect = result.get().getSecond();
         logger.debug("{} 逃過了與 {} 形成 {} (Refranation)" , planet , otherPoint , aspect);
         return Optional.of(Tuple.tuple("comment", new Object[]{planet, otherPoint, aspect}));
       }

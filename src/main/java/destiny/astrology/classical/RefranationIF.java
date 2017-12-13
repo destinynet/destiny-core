@@ -7,7 +7,8 @@ import destiny.astrology.Aspect;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import destiny.astrology.Point;
-import org.jooq.lambda.tuple.Tuple2;
+import kotlin.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -28,10 +29,12 @@ import java.util.Optional;
  */
 public interface RefranationIF {
 
-  Optional<Tuple2<Point, Aspect>> getResult(Horoscope horoscope , Planet planet , Point otherPoint , Collection<Aspect> aspects);
+  @Nullable
+  Pair<Point, Aspect> getResult(Horoscope horoscope , Planet planet , Point otherPoint , Collection<Aspect> aspects);
 
-  default Optional<Tuple2<Point, Aspect>> getResult(Horoscope horoscope , Planet planet , Point otherPoint) {
-    return getResult(horoscope , planet , otherPoint , Aspect.getAngles(Aspect.Importance.HIGH));
+  default Optional<Pair<Point, Aspect>> getResult(Horoscope horoscope , Planet planet , Point otherPoint) {
+
+    return Optional.ofNullable(getResult(horoscope , planet , otherPoint , Aspect.getAngles(Aspect.Importance.HIGH)));
   }
 
 }

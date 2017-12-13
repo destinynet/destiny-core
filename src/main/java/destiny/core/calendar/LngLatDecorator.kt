@@ -4,7 +4,7 @@
 package destiny.core.calendar
 
 import destiny.tools.Decorator
-import destiny.tools.LocaleTools
+import destiny.tools.getOutputString
 import java.text.DecimalFormat
 import java.util.*
 
@@ -20,8 +20,7 @@ object LngLatDecorator {
   )
 
   fun getOutputString(location: Location, locale: Locale): String {
-    val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
-    return implMap[bestMatchingLocale]!!.getOutputString(location)
+    return implMap.getOutputString(location , locale)
   }
 }
 
@@ -30,18 +29,18 @@ class LngLatDecoratorTaiwan : Decorator<Location> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(location: Location): String {
+  override fun getOutputString(value: Location): String {
     val sb = StringBuilder()
-    sb.append(if (location.eastWest == Location.EastWest.EAST) "東經" else "西經").append(" ")
-    sb.append(location.lngDeg).append("度 ")
-    sb.append(location.lngMin).append("分 ")
-    sb.append(formatter.format(location.lngSec)).append("秒, ")
+    sb.append(if (value.eastWest == Location.EastWest.EAST) "東經" else "西經").append(" ")
+    sb.append(value.lngDeg).append("度 ")
+    sb.append(value.lngMin).append("分 ")
+    sb.append(formatter.format(value.lngSec)).append("秒, ")
 
-    sb.append(if (location.northSouth == Location.NorthSouth.NORTH) "北緯" else "南緯").append(" ")
-    sb.append(location.latDeg).append("度 ")
-    sb.append(location.latMin).append("分 ")
+    sb.append(if (value.northSouth == Location.NorthSouth.NORTH) "北緯" else "南緯").append(" ")
+    sb.append(value.latDeg).append("度 ")
+    sb.append(value.latMin).append("分 ")
 
-    sb.append(formatter.format(location.latSec)).append("秒.")
+    sb.append(formatter.format(value.latSec)).append("秒")
 
     return sb.toString()
   }
@@ -51,18 +50,18 @@ class LngLatDecoratorChina : Decorator<Location> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(location: Location): String {
+  override fun getOutputString(value: Location): String {
     val sb = StringBuilder()
-    sb.append(if (location.eastWest == Location.EastWest.EAST) "东经" else "西经").append(" ")
-    sb.append(location.lngDeg).append("度")
-    sb.append(location.lngMin).append("分")
-    sb.append(formatter.format(location.lngSec)).append("秒, ")
+    sb.append(if (value.eastWest == Location.EastWest.EAST) "东经" else "西经").append(" ")
+    sb.append(value.lngDeg).append("度 ")
+    sb.append(value.lngMin).append("分 ")
+    sb.append(formatter.format(value.lngSec)).append("秒, ")
 
-    sb.append(if (location.northSouth == Location.NorthSouth.NORTH) "北纬" else "南纬").append(" ")
-    sb.append(location.latDeg).append("度")
-    sb.append(location.latMin).append("分")
+    sb.append(if (value.northSouth == Location.NorthSouth.NORTH) "北纬" else "南纬").append(" ")
+    sb.append(value.latDeg).append("度 ")
+    sb.append(value.latMin).append("分 ")
 
-    sb.append(formatter.format(location.latSec)).append("秒.")
+    sb.append(formatter.format(value.latSec)).append("秒")
 
     return sb.toString()
   }
@@ -73,18 +72,21 @@ class LngLatDecoratorEnglish : Decorator<Location> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(location: Location): String {
+  override fun getOutputString(value: Location): String {
 
     val sb = StringBuilder()
-    sb.append(if (location.eastWest == Location.EastWest.EAST) "East " else "West ")
-    sb.append(location.lngDeg).append("° ")
-    sb.append(location.lngMin).append("' ")
-    sb.append(formatter.format(location.lngSec)).append("\" , ")
+    sb.append(value.lngDeg).append("° ")
+    sb.append(value.lngMin).append("' ")
+    sb.append(formatter.format(value.lngSec)).append("\" ")
+    sb.append(if (value.eastWest == Location.EastWest.EAST) "E" else "W")
+    sb.append(" , ")
 
-    sb.append(if (location.northSouth == Location.NorthSouth.NORTH) "North " else "South ")
-    sb.append(location.latDeg).append("° ")
-    sb.append(location.latMin).append("' ")
-    sb.append(formatter.format(location.latSec)).append("\".")
+
+    sb.append(value.latDeg).append("° ")
+    sb.append(value.latMin).append("' ")
+    sb.append(formatter.format(value.latSec)).append("\" ")
+    sb.append(if (value.northSouth == Location.NorthSouth.NORTH) "N" else "S")
+
 
     return sb.toString()
   }
