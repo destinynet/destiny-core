@@ -34,7 +34,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
     Optional<Tuple2<String, Object[]>> result;
 
 
-    utils.setEssentialImpl(essentialImpl);
+    utils.setEssentialImpl(getEssentialImpl());
 
     result = rulerMutualDeception(h , planet);
     if (result.isPresent())
@@ -70,9 +70,9 @@ public final class MutualDeception extends EssentialRule implements Applicable {
   private Optional<Tuple2<String, Object[]>> rulerMutualDeception(Horoscope h , Planet planet) {
 
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
-      essentialImpl.getPoint(sign1 , Dignity.RULER).flatMap(signRuler ->
+      getEssentialImpl().getPoint(sign1 , Dignity.RULER).flatMap(signRuler ->
         h.getZodiacSignOpt(signRuler).flatMap(sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.RULER)
+          getEssentialImpl().getPoint(sign2 , Dignity.RULER)
             .filter(planet2 -> planet == planet2) // 確定 ruler 互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, signRuler, sign2)) // 確認互陷
             .map(planet2 -> {
@@ -83,20 +83,6 @@ public final class MutualDeception extends EssentialRule implements Applicable {
       )
     );
 
-//    return h.getZodiacSign(planet).flatMap(sign1 -> {
-//      Point signRuler = essentialImpl.getPoint(sign1, Dignity.RULER);
-//      return h.getZodiacSign(signRuler).flatMap(sign2 -> {
-//        Point planet2 = essentialImpl.getPoint(sign2, Dignity.RULER);
-//        if (planet == planet2) {
-//          //已經確定互容，要計算互陷/落
-//          if (utils.isBothInBadSituation(planet, sign1, signRuler, sign2)) {
-//            logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷" , planet , sign1 , Dignity.RULER , signRuler , sign2 , Dignity.RULER);
-//            return Optional.of(Tuple.tuple("comment1", new Object[]{planet, sign1, signRuler, sign2}));
-//          }
-//        }
-//        return empty();
-//      });
-//    });
   } // ruler 互陷 或 互落
 
 
@@ -105,9 +91,9 @@ public final class MutualDeception extends EssentialRule implements Applicable {
    */
   private Optional<Tuple2<String, Object[]>> exaltationMutualDeception(Horoscope h , Planet planet) {
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
-      essentialImpl.getPoint(sign1 , Dignity.EXALTATION).flatMap(signExaltation ->
+      getEssentialImpl().getPoint(sign1 , Dignity.EXALTATION).flatMap(signExaltation ->
         h.getZodiacSignOpt(signExaltation).flatMap(sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.EXALTATION)
+          getEssentialImpl().getPoint(sign2 , Dignity.EXALTATION)
             .filter(planet2 -> planet == planet2) // 確定 Exaltation 互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, signExaltation, sign2)) //確認互陷
             .map(planet2 -> {
@@ -126,9 +112,9 @@ public final class MutualDeception extends EssentialRule implements Applicable {
   private Optional<Tuple2<String, Object[]>> detrimentExaltationMutualDeception(Horoscope h , Planet planet) {
 
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
-      essentialImpl.getPoint(sign1 , Dignity.RULER).flatMap(thisSignRuler ->
+      getEssentialImpl().getPoint(sign1 , Dignity.RULER).flatMap(thisSignRuler ->
         h.getZodiacSignOpt(thisSignRuler).flatMap(sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.EXALTATION)
+          getEssentialImpl().getPoint(sign2 , Dignity.EXALTATION)
             .filter(planet2 -> planet == planet2) // 確認互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, thisSignRuler, sign2)) // 確認互陷
             .map(planet2 -> {
@@ -147,9 +133,9 @@ public final class MutualDeception extends EssentialRule implements Applicable {
   private Optional<Tuple2<String, Object[]>> fallExaltationMutualDeception(Horoscope h , Planet planet) {
 
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
-      essentialImpl.getPoint(sign1 , Dignity.EXALTATION).flatMap(thisSignExaltation ->
+      getEssentialImpl().getPoint(sign1 , Dignity.EXALTATION).flatMap(thisSignExaltation ->
         h.getZodiacSignOpt(thisSignExaltation).flatMap(sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.RULER)
+          getEssentialImpl().getPoint(sign2 , Dignity.RULER)
             .filter(planet2 -> planet == planet2) // 確認互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, thisSignExaltation, sign2)) // 確認互陷
             .map(planet2 -> {

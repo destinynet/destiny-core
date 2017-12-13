@@ -29,7 +29,7 @@ class Occidental : Rule() {
     }
   }
 
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  public override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val planetDegree: Double? = arrayOf(MARS , JUPITER , SATURN)
       .takeIf { it.contains(planet) }
       ?.let { h.getPosition(planet) }?.lng

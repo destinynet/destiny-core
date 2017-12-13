@@ -29,16 +29,16 @@ public final class Peregrine extends EssentialRule {
       //取得此 Planet 在什麼星座
       return h.getZodiacSignOpt(planet).flatMap(sign -> {
         DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
-        if (planet != essentialImpl.getPoint(sign, Dignity.RULER).orElse(null) &&
-            planet != essentialImpl.getPoint(sign, Dignity.EXALTATION).orElse(null) &&
-            planet != essentialImpl.getPoint(sign, Dignity.DETRIMENT).orElse(null) &&
-            planet != essentialImpl.getPoint(sign, Dignity.FALL).orElse(null) &&
-            planet != essentialImpl.getTermsPoint(sign, planetDegree) &&
-            planet != essentialImpl.getFacePoint(planetDegree)
+        if (planet != getEssentialImpl().getPoint(sign, Dignity.RULER).orElse(null) &&
+            planet != getEssentialImpl().getPoint(sign, Dignity.EXALTATION).orElse(null) &&
+            planet != getEssentialImpl().getPoint(sign, Dignity.DETRIMENT).orElse(null) &&
+            planet != getEssentialImpl().getPoint(sign, Dignity.FALL).orElse(null) &&
+            planet != getEssentialImpl().getTermsPoint(sign, planetDegree) &&
+            planet != getEssentialImpl().getFacePoint(planetDegree)
             ) {
           //判定日夜 Triplicity
-          if (   !(dayNight == DayNight.DAY && planet == essentialImpl.getTriplicityPoint(sign, DayNight.DAY))
-              && !(dayNight == DayNight.NIGHT && planet == essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))
+          if (   !(dayNight == DayNight.DAY && planet == getEssentialImpl().getTriplicityPoint(sign, DayNight.DAY))
+              && !(dayNight == DayNight.NIGHT && planet == getEssentialImpl().getTriplicityPoint(sign, DayNight.NIGHT))
             ) {
             return Optional.of(Tuple.tuple("comment", new Object[]{planet}));
           }
