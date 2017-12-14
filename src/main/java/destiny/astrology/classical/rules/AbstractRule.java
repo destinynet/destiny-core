@@ -51,7 +51,7 @@ public abstract class AbstractRule implements RuleIF , Serializable , LocaleStri
   protected abstract Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, Horoscope h);
 
   @Nullable
-  protected Pair<String, Object[]> getResult2(@NotNull Planet planet, @NotNull Horoscope h) {
+  public Pair<String, Object[]> getResult2(@NotNull Planet planet, @NotNull Horoscope h) {
     return getResult(planet , h).map(t -> new Pair<>(t.v1 , t.v2)).orElse(null);
   }
   

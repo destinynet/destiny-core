@@ -21,7 +21,7 @@ class Fall : EssentialRule() {
       .map { sign -> Tuple.tuple("comment", arrayOf(planet, sign)) }
   }
 
-  public override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)
       ?.takeIf { sign -> planet === essentialImpl.getPoint(sign , Dignity.FALL).orElse(null) }
       ?.let { "comment" to arrayOf(planet , it) }

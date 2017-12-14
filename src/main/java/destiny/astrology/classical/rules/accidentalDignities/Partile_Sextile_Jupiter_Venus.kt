@@ -37,18 +37,18 @@ class Partile_Sextile_Jupiter_Venus : Rule() {
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    val planetDeg: Double? = h.getPosition(planet)?.lng
-    val jupiterDeg: Double? = h.getPosition(JUPITER)?.lng
-    val venusDeg: Double? = h.getPosition(VENUS)?.lng
+    val planetDeg = h.getPosition(planet)?.lng
+    val jupiterDeg = h.getPosition(JUPITER)?.lng
+    val venusDeg = h.getPosition(VENUS)?.lng
 
-    return planetDeg?.let { pDeg ->
-      val jupResult: Pair<String, Array<Any>>? = jupiterDeg?.takeIf { jDeg ->
-         (planet !== JUPITER && AspectEffectiveModern.isEffective(pDeg , jDeg , SEXTILE , 1.0))
-      }?.let { "comment" to arrayOf(planet , JUPITER , SEXTILE) }
+    return planetDeg?.let {
+      val jupResult = jupiterDeg?.takeIf {
+        planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, SEXTILE, 1.0)
+      }?.let { "comment" to arrayOf(planet, JUPITER, SEXTILE) }
 
-      val venResult: Pair<String, Array<Any>>? = venusDeg?.takeIf { vDeg ->
-        (planet !== VENUS && AspectEffectiveModern.isEffective(pDeg , vDeg , SEXTILE , 1.0))
-      }?.let { "comment" to arrayOf(planet , VENUS , SEXTILE) }
+      val venResult = venusDeg?.takeIf {
+        planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, SEXTILE, 1.0)
+      }?.let { "comment" to arrayOf(planet, VENUS, SEXTILE) }
 
       if (jupResult != null)
         return@let jupResult

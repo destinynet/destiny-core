@@ -41,7 +41,7 @@ public final class Out_of_Sect extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
 
     return h.getZodiacSignOpt(planet).flatMap(sign ->

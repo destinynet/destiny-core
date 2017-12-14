@@ -1,8 +1,8 @@
 /**
  * @author smallufo
- * Created on 2007/12/30 at 上午 5:08:31
+ * Created on 2007/12/29 at 上午 4:51:44
  */
-package destiny.astrology.classical.rules.debilities
+package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
@@ -12,13 +12,15 @@ import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 import java.util.Optional.empty
 
-class Slower : Rule() {
+/** Swift in motion (faster than average).  */
+class Swift : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
+
     return AverageDailyMotionMap.getDailySpeedOpt(planet).flatMap { dailyDeg ->
       h.getPositionOpt(planet).map<Double> { it.speedLng }.flatMap { speedLng ->
-        if (speedLng < dailyDeg) {
-          logger.debug("{} 每日移動速度比平均值還慢", planet)
+        if (speedLng > dailyDeg) {
+          logger.debug("{} 每日移動速度比平均值還快", planet)
           Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf<Any>(planet)))
         }
         empty<Tuple2<String, Array<Any>>>()
@@ -27,9 +29,9 @@ class Slower : Rule() {
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf{ dailyDeg ->
-      h.getPosition(planet)?.speedLng?.let { speedLng ->
-        speedLng < dailyDeg
+    return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf { dailyDeg ->
+      return@takeIf h.getPosition(planet)?.speedLng?.let { speedLng ->
+        speedLng > dailyDeg
       }?:false
     }?.let { "comment" to arrayOf<Any>(planet) }
   }
