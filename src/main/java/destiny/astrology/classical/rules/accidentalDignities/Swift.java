@@ -22,7 +22,7 @@ public final class Swift extends Rule {
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
-    return AverageDailyMotionMap.get(planet).flatMap(dailyDeg ->
+    return AverageDailyMotionMap.INSTANCE.getDailySpeedOpt(planet).flatMap(dailyDeg ->
       h.getPositionOpt(planet).map(Position::getSpeedLng).flatMap(speedLng -> {
         if (speedLng > dailyDeg) {
           logger.debug("{} 每日移動速度比平均值還快" , planet);

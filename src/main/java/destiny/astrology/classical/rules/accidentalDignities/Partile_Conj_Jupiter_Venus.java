@@ -20,11 +20,8 @@ import static java.util.Optional.empty;
  * 和金星或木星合相，交角 1 度內 */
 public final class Partile_Conj_Jupiter_Venus extends Rule {
 
-  public Partile_Conj_Jupiter_Venus() {
-  }
-
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     return h.getPositionOpt(planet).map(Position::getLng).flatMap(planetDegree ->
       h.getPositionOpt(Planet.JUPITER).map(Position::getLng).flatMap(jupiterDeg ->
         h.getPositionOpt(Planet.VENUS).map(Position::getLng).flatMap(venusDeg -> {
