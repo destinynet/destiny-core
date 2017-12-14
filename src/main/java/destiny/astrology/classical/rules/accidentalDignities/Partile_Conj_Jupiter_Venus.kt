@@ -18,16 +18,18 @@ import java.util.Optional.empty
  * 和金星或木星合相，交角 1 度內  */
 class Partile_Conj_Jupiter_Venus : Rule() {
 
+  private val aspect = Aspect.CONJUNCTION
+
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
     return h.getPositionOpt(planet).map<Double> { it.lng }.flatMap { planetDegree ->
       h.getPositionOpt(JUPITER).map<Double> { it.lng }.flatMap { jupiterDeg ->
         h.getPositionOpt(VENUS).map<Double> { it.lng }.flatMap { venusDeg ->
           if (planet !== JUPITER && Horoscope.getAngle(planetDegree!!, jupiterDeg!!) <= 1) {
-            logger.debug("{} 與 {} 形成 {}", planet, JUPITER, Aspect.CONJUNCTION)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, JUPITER, Aspect.CONJUNCTION)))
+            logger.debug("{} 與 {} 形成 {}", planet, JUPITER, aspect)
+            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, JUPITER, aspect)))
           } else if (planet !== VENUS && Horoscope.getAngle(planetDegree!!, venusDeg!!) <= 1) {
-            logger.debug("{} 與 {} 形成 {}", planet, VENUS, Aspect.CONJUNCTION)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, VENUS, Aspect.CONJUNCTION)))
+            logger.debug("{} 與 {} 形成 {}", planet, VENUS, aspect)
+            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, VENUS, aspect)))
           }
           empty<Tuple2<String, Array<Any>>>()
         }
@@ -43,11 +45,11 @@ class Partile_Conj_Jupiter_Venus : Rule() {
     return planetDeg?.let {
       val jupResult = jupiterDeg?.takeIf {
         planet !== JUPITER && Horoscope.getAngle(planetDeg, jupiterDeg) <= 1
-      }?.let { "comment" to arrayOf(planet, JUPITER, Aspect.CONJUNCTION) }
+      }?.let { "comment" to arrayOf(planet, JUPITER, aspect) }
 
       val venResult = venusDeg?.takeIf {
         planet !== VENUS && Horoscope.getAngle(planetDeg, venusDeg) <= 1
-      }?.let { "comment" to arrayOf(planet, VENUS, Aspect.CONJUNCTION) }
+      }?.let { "comment" to arrayOf(planet, VENUS, aspect) }
 
       if (jupResult != null)
         return@let jupResult

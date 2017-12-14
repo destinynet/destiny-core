@@ -9,8 +9,10 @@ import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
-/** Partile conjunction with Dragon's Head (Moon's North Node).  */
+/** Partile aspect with Dragon's Head (Moon's North Node).  */
 class Partile_Conj_North_Node : Rule() {
+  
+  private val aspect = Aspect.CONJUNCTION
 
   /** 內定採用 NodeType.MEAN  */
   var nodeType = NodeType.MEAN
@@ -21,8 +23,8 @@ class Partile_Conj_North_Node : Rule() {
       val north = LunarNode.of(LunarNode.NorthSouth.NORTH, nodeType)
       h.getPositionOpt(north).map<Double> { it.lng }.flatMap { northDeg ->
         if (Horoscope.getAngle(planetDegree!!, northDeg!!) <= 1) {
-          logger.debug("{} 與 {} 形成 {}", planet, north, Aspect.CONJUNCTION)
-          Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf<Any>(planet, north, Aspect.CONJUNCTION)))
+          logger.debug("{} 與 {} 形成 {}", planet, north, aspect)
+          Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, north, aspect)))
         }
         Optional.empty<Tuple2<String, Array<Any>>>()
       }
@@ -36,8 +38,8 @@ class Partile_Conj_North_Node : Rule() {
     val northDeg: Double? = h.getPosition(north)?.lng
 
     return if (planetDeg != null && northDeg != null && Horoscope.getAngle(planetDeg , northDeg) <= 1) {
-      logger.debug("{} 與 {} 形成 {}", planet, north, Aspect.CONJUNCTION)
-      "comment" to arrayOf(planet , north , Aspect.CONJUNCTION)
+      logger.debug("{} 與 {} 形成 {}", planet, north, aspect)
+      "comment" to arrayOf(planet , north , aspect)
     } else {
       null
     }

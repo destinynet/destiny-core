@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.Aspect.SEXTILE
+import destiny.astrology.Aspect
 import destiny.astrology.AspectEffectiveModern
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
@@ -14,21 +14,22 @@ import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
-/** Partile sextile Jupiter or Venus.  */
+/** Partile aspect Jupiter or Venus.  */
 class Partile_Sextile_Jupiter_Venus : Rule() {
 
+  private val aspect = Aspect.SEXTILE
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
 
     return h.getPositionOpt(planet).map<Double> { it.lng }.flatMap { planetDegree ->
       h.getPositionOpt(JUPITER).map<Double> { it.lng }.flatMap { jupiterDeg ->
         h.getPositionOpt(VENUS).map<Double> { it.lng }.flatMap { venusDeg ->
-          if (planet !== JUPITER && AspectEffectiveModern.isEffective(planetDegree!!, jupiterDeg!!, SEXTILE, 1.0)) {
-            logger.debug("{} 與 {} 形成 {}", planet, JUPITER, SEXTILE)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, JUPITER, SEXTILE)))
-          } else if (planet !== VENUS && AspectEffectiveModern.isEffective(planetDegree!!, venusDeg!!, SEXTILE, 1.0)) {
-            logger.debug("{} 與 {} 形成 {}", planet, VENUS, SEXTILE)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, VENUS, SEXTILE)))
+          if (planet !== JUPITER && AspectEffectiveModern.isEffective(planetDegree!!, jupiterDeg!!, aspect, 1.0)) {
+            logger.debug("{} 與 {} 形成 {}", planet, JUPITER, aspect)
+            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, JUPITER, aspect)))
+          } else if (planet !== VENUS && AspectEffectiveModern.isEffective(planetDegree!!, venusDeg!!, aspect, 1.0)) {
+            logger.debug("{} 與 {} 形成 {}", planet, VENUS, aspect)
+            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, VENUS, aspect)))
           }
           Optional.empty<Tuple2<String, Array<Any>>>()
         }
@@ -43,12 +44,12 @@ class Partile_Sextile_Jupiter_Venus : Rule() {
 
     return planetDeg?.let {
       val jupResult = jupiterDeg?.takeIf {
-        planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, SEXTILE, 1.0)
-      }?.let { "comment" to arrayOf(planet, JUPITER, SEXTILE) }
+        planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, aspect, 1.0)
+      }?.let { "comment" to arrayOf(planet, JUPITER, aspect) }
 
       val venResult = venusDeg?.takeIf {
-        planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, SEXTILE, 1.0)
-      }?.let { "comment" to arrayOf(planet, VENUS, SEXTILE) }
+        planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, aspect, 1.0)
+      }?.let { "comment" to arrayOf(planet, VENUS, aspect) }
 
       if (jupResult != null)
         return@let jupResult

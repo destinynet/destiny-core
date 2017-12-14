@@ -12,6 +12,7 @@ import java.util.*
 /** Partile conjunct Spica at 23deg50' Libra in January 2000.  */
 class Partile_Conj_Spica : Rule() {
 
+  private val aspect = Aspect.CONJUNCTION
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
 
@@ -19,9 +20,9 @@ class Partile_Conj_Spica : Rule() {
     val spicaDeg = h.getPositionOpt(FixedStar.SPICA).map<Double>{ it.lng }
 
     if (planetDegree.isPresent && spicaDeg.isPresent) {
-      if (AspectEffectiveModern.isEffective(planetDegree.get(), spicaDeg.get(), Aspect.CONJUNCTION, 1.0)) {
-        logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, Aspect.CONJUNCTION)
-        return Optional.of(Tuple.tuple("comment", arrayOf(planet, FixedStar.SPICA, Aspect.CONJUNCTION)))
+      if (AspectEffectiveModern.isEffective(planetDegree.get(), spicaDeg.get(), aspect, 1.0)) {
+        logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, aspect)
+        return Optional.of(Tuple.tuple("comment", arrayOf(planet, FixedStar.SPICA, aspect)))
       }
     }
     return Optional.empty()
@@ -31,9 +32,9 @@ class Partile_Conj_Spica : Rule() {
     val planetDeg: Double? = h.getPosition(planet)?.lng
     val spicaDeg : Double? = h.getPosition(FixedStar.SPICA)?.lng
 
-    return if (planetDeg != null && spicaDeg != null && AspectEffectiveModern.isEffective(planetDeg , spicaDeg , Aspect.CONJUNCTION , 1.0)) {
-      logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, Aspect.CONJUNCTION)
-      "comment" to arrayOf(planet , FixedStar.SPICA , Aspect.CONJUNCTION)
+    return if (planetDeg != null && spicaDeg != null && AspectEffectiveModern.isEffective(planetDeg , spicaDeg , aspect , 1.0)) {
+      logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, aspect)
+      "comment" to arrayOf(planet , FixedStar.SPICA , aspect)
     } else
       null
   }
