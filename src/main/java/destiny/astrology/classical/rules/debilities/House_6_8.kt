@@ -16,7 +16,8 @@ class House_6_8 : Rule() {
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return h.getHouse(planet)?.takeIf { it == 6 || it == 8 }
+    return h.getHouse(planet)
+      ?.takeIf { it == 6 || it == 8 }
       ?.let { "comment" to arrayOf(planet , it) }
   }
 }

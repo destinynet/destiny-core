@@ -16,6 +16,8 @@ class Retrograde : Rule() {
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return h.getPosition(planet)?.speedLng?.takeIf { it < 0 }?.let { "comment" to arrayOf<Any>(planet) }
+    return h.getPosition(planet)?.speedLng
+      ?.takeIf { it < 0 }
+      ?.let { "comment" to arrayOf<Any>(planet) }
   }
 }

@@ -6,7 +6,6 @@ package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -14,12 +13,12 @@ import java.util.*
 class House_3 : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
+    return getResult2(planet, h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return h.getHouse(planet)?.takeIf { it == 3 }?.let { house ->
-      Pair("comment", arrayOf(planet, house))
-    }
+    return h.getHouse(planet)
+      ?.takeIf { it == 3 }
+      ?.let { house -> Pair("comment", arrayOf(planet, house)) }
   }
 }

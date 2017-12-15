@@ -12,7 +12,7 @@ import java.util.*
 
 /**
  * 喜樂宮 Joy House.
- * Mercory in 1st.
+ * Mercury in 1st.
  * Moon in 3rd.
  * Venus in 5th.
  * Mars in 6th.
@@ -23,18 +23,19 @@ import java.util.*
 class JoyHouse : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
+    return getResult2(planet, h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return h.getHouse(planet)?.takeIf { house ->
+    return h.getHouse(planet)
+      ?.takeIf { house ->
         planet === MERCURY && house == 1 ||
-        planet === MOON && house == 3 ||
-        planet === VENUS && house == 5 ||
-        planet === MARS && house == 6 ||
-        planet === SUN && house == 9 ||
-        planet === JUPITER && house == 11 ||
-        planet === SATURN && house == 12
-    }?.let { house -> "comment" to arrayOf(planet, house) }
+          planet === MOON && house == 3 ||
+          planet === VENUS && house == 5 ||
+          planet === MARS && house == 6 ||
+          planet === SUN && house == 9 ||
+          planet === JUPITER && house == 11 ||
+          planet === SATURN && house == 12
+      }?.let { house -> "comment" to arrayOf(planet, house) }
   }
 }

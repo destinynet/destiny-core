@@ -13,12 +13,12 @@ import java.util.*
 class House_1_10 : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
+    return getResult2(planet, h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return h.getHouse(planet)?.takeIf { it == 1 || it == 10 }?.let { house ->
-      Pair("comment", arrayOf(planet, house))
-    }
+    return h.getHouse(planet)
+      ?.takeIf { it == 1 || it == 10 }
+      ?.let { house -> Pair("comment", arrayOf(planet, house)) }
   }
 }

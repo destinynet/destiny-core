@@ -18,7 +18,7 @@ class Combustion : Rule() {
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== Planet.SUN }
-      .takeIf { h.getAngle(planet , Planet.SUN) > 17.0 / 60.0 && h.getAngle(planet , Planet.SUN) <= 8.5 }
-      .let { "comment" to arrayOf<Any>(planet) }
+      ?.takeIf { h.getAngle(planet , Planet.SUN) > 17.0 / 60.0 && h.getAngle(planet , Planet.SUN) <= 8.5 }
+      ?.let { "comment" to arrayOf<Any>(planet) }
   }
 }
