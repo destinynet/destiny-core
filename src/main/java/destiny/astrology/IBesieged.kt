@@ -86,14 +86,18 @@ interface IBesieged {
 
   /**
    * 傳回的 List[Planet] 必定 size = 2
+   * @param classical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
    */
-  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, onlyClassicalPlanets: Boolean, aspects: Collection<Aspect>): List<Planet> {
+  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean, aspects: Collection<Aspect>): List<Planet> {
 
-    val otherPlanets = getPlanetsExcept(planet, onlyClassicalPlanets)
+    val otherPlanets = getPlanetsExcept(planet, classical)
 
     return getBesiegingPlanets(planet, gmt, otherPlanets, aspects).first
   }
 
+  /**
+   * 傳回的 List[Planet] 必定 size = 2
+   */
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>,
                           onlyClassicalPlanets: Boolean, aspects: Array<Aspect>): List<Planet> {
     return getBesiegingPlanets(planet, gmt, onlyClassicalPlanets, Arrays.asList(*aspects))
@@ -102,13 +106,13 @@ interface IBesieged {
 
   /**
    * @param planet 此 planet 是否被 p1 , p2 所包夾
-   * @param isClassical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
+   * @param classical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
    * @param isOnlyHardAspects 是否只計算 「艱難交角」 : 0/90/180 ; 如果「false」的話，連 60/120 也算進去
    * @return 是否被包夾
    */
-  fun isBesieged(planet: Planet, p1: Planet, p2: Planet, gmt: ChronoLocalDateTime<*>, isClassical: Boolean, isOnlyHardAspects: Boolean): Boolean {
+  fun isBesieged(planet: Planet, p1: Planet, p2: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean, isOnlyHardAspects: Boolean): Boolean {
 
-    val otherPlanets = getPlanetsExcept(planet, isClassical)
+    val otherPlanets = getPlanetsExcept(planet, classical)
 
     val searchingAspects = listOf(
       Aspect.CONJUNCTION, // 0

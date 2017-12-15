@@ -10,7 +10,7 @@ interface IAspectApplySeparate {
     APPLYING, SEPARATING
   }
 
-  /** 如果不是形成 aspect 交角，會傳回 empty  */
+  /** 如果不是形成 aspect 交角，會傳回 null  */
   fun getAspectType(h: Horoscope, p1: Point, p2: Point, aspect: Aspect): AspectType?
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
