@@ -58,7 +58,7 @@ public class HoroscopeAspectsCalculatorClassical implements IHoroscopeAspectsCal
         //行星才比對
         double eachPlanetDeg = horoscope.getPositionWithAzimuth(eachPoint).getLng();
 
-        for (Aspect eachAspect : Aspect.getAngles(Aspect.Importance.HIGH)) {
+        for (Aspect eachAspect : Aspect.Companion.getAngles(Aspect.Importance.HIGH)) {
           //只比對 0 , 60 , 90 , 120 , 180 五個度數
           if (classical.isEffective(point, planetDeg, eachPoint, eachPlanetDeg, eachAspect)) {
             result.put(eachPoint, eachAspect);

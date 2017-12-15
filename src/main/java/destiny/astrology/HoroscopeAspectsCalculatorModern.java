@@ -20,7 +20,7 @@ public class HoroscopeAspectsCalculatorModern implements IHoroscopeAspectsCalcul
   private Logger logger = LoggerFactory.getLogger(getClass());
   
   /** 現代占星術，內定只計算重要性為「高」的角度 */
-  private Collection<Aspect> aspects = Aspect.getAngles(Aspect.Importance.HIGH);
+  private Collection<Aspect> aspects = Aspect.Companion.getAngles(Aspect.Importance.HIGH);
 
   public HoroscopeAspectsCalculatorModern()
   {

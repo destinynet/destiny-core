@@ -10,8 +10,6 @@ import destiny.core.calendar.TimeTools;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.*;
@@ -64,16 +62,6 @@ public interface IRelativeTransit {
         resultList.add(value);
         fromJulDay = fromJulDay + 0.000001;
       }
-
-//      Optional<Double> timeOptional = getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true);
-//      if (timeOptional.isPresent()) {
-//        fromJulDay = timeOptional.get();
-//        if (fromJulDay > toJulDay)
-//          break;
-//
-//        resultList.add(timeOptional.get());
-//        fromJulDay = fromJulDay + 0.000001;
-//      }
     }
     return resultList;
   }
@@ -178,16 +166,6 @@ public interface IRelativeTransit {
     }
   }
 
-  @Deprecated
-  default Optional<Tuple2<Double , Double>> getNearestRelativeTransitGmtJulDayOpt(Star transitStar , Star relativeStar , double fromGmtJulDay , Collection<Double> angles , boolean isForward ) {
-    Pair<Double , Double> pair = getNearestRelativeTransitGmtJulDay(transitStar , relativeStar , fromGmtJulDay , angles , isForward);
-
-    if (pair != null) {
-      return Optional.of(Tuple.tuple(pair.getFirst() , pair.getSecond()));
-    } else {
-      return Optional.empty();
-    }
-  }
 
   /**
    * 承上 , Date Time 版本
