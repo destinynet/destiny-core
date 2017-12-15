@@ -59,8 +59,11 @@ class IntAgeZiweiImpl(private val chineseDateImpl: ChineseDateIF, private val re
     val next1YearJan2Time = chineseDateImpl.getYangDate(next1YearJan2).atTime(LocalTime.NOON)
 
     val next1YearJan2Gmt = TimeTools.getGmtJulDay(next1YearJan2Time)
-    return relativeTransitImpl.getRelativeTransit(Planet.MOON, Planet.SUN, 0.0, next1YearJan2Gmt, false)
-      .orElseThrow { RuntimeException("Cannot get Sun/Moon Conj since julDay = " + next1YearJan2Gmt) }
+    val value = relativeTransitImpl.getRelativeTransit(Planet.MOON, Planet.SUN, 0.0, next1YearJan2Gmt, false)
+    if (value != null)
+      return value
+    else
+      throw RuntimeException("Cannot get Sun/Moon Conj since julDay = " + next1YearJan2Gmt)
   }
 
 

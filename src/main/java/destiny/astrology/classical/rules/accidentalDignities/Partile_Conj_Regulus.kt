@@ -5,7 +5,6 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.*
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -15,16 +14,7 @@ class Partile_Conj_Regulus : Rule() {
   private val aspect = Aspect.CONJUNCTION
   
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-
-    return h.getPositionOpt(planet).map<Double> { it.lng }.flatMap { planetDegree ->
-      h.getPositionOpt(FixedStar.REGULUS).map<Double> { it.lng }.flatMap { regulusDeg ->
-        if (AspectEffectiveModern.isEffective(planetDegree!!, regulusDeg!!, aspect, 1.0)) {
-          logger.debug("{} 與 {} 形成 {}", planet, FixedStar.REGULUS, aspect)
-          Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, FixedStar.REGULUS, aspect)))
-        }
-        Optional.empty<Tuple2<String, Array<Any>>>()
-      }
-    }
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

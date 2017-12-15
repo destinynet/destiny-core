@@ -5,7 +5,7 @@
  */
 package destiny.astrology;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 /**
  * 四個角點，天底、東昇點、天頂、西落
  */
-public enum TransPoint implements LocaleStringIF {
+public enum TransPoint implements ILocaleString {
 
   /** 東昇 */
   RISING("TransPoint.RISING"),

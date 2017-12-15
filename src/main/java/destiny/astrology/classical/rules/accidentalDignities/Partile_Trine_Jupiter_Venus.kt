@@ -10,7 +10,6 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.JUPITER
 import destiny.astrology.Planet.VENUS
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -18,20 +17,7 @@ import java.util.*
 class Partile_Trine_Jupiter_Venus : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return h.getPositionOpt(planet).map<Double>({ it.lng }).flatMap { planetDegree ->
-      h.getPositionOpt(JUPITER).map<Double>({ it.lng }).flatMap { jupiterDeg ->
-        h.getPositionOpt(VENUS).map<Double>({ it.lng }).flatMap { venusDeg ->
-          if (planet !== JUPITER && AspectEffectiveModern.isEffective(planetDegree!!, jupiterDeg!!, TRINE, 1.0)) {
-            logger.debug("{} 與 {} 形成 {}", planet, JUPITER, TRINE)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, JUPITER, TRINE)))
-          } else if (planet !== VENUS && AspectEffectiveModern.isEffective(planetDegree!!, venusDeg!!, TRINE, 1.0)) {
-            logger.debug("{} 與 {} 形成 {}", planet, VENUS, TRINE)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, VENUS, TRINE)))
-          }
-          Optional.empty<Tuple2<String, Array<Any>>>()
-        }
-      }
-    }
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

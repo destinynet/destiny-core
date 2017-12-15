@@ -23,12 +23,12 @@ public final class Face extends Rule {
   }
 
   @Override
-  protected Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
+  protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
     return h.getPositionOpt(planet).map(Position::getLng).flatMap(lngDeg -> {
         Point facePoint = essentialImpl.getFacePoint(lngDeg);
         if (planet == facePoint) {
-          logger.debug("{} 位於其 Chaldean decanate or face : {}" , planet , lngDeg);
+          getLogger().debug("{} 位於其 Chaldean decanate or face : {}" , planet , lngDeg);
           return Optional.of(Tuple.tuple("comment", new Object[]{planet, lngDeg}));
         }
         return empty();

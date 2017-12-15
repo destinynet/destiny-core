@@ -40,6 +40,7 @@ public final class Out_of_Sect extends Rule {
     this.dayNightImpl = dayNightImpl;
   }
 
+  @NotNull
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     DayNight dayNight = dayNightImpl.getDayNight(h.getLmt(), h.getLocation());
@@ -48,13 +49,13 @@ public final class Out_of_Sect extends Rule {
       h.getHouseOpt(planet).flatMap(house -> {
         if (dayNight == DayNight.DAY && (planet == Planet.MOON || planet == Planet.VENUS || planet == Planet.MARS)) {
           if (house >= 7 && sign.getBooleanValue()) {
-            logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN));
+            getLogger().debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN));
             return Optional.of(Tuple.tuple("commentNight", new Object[]{planet, sign}));
           }
         }
         else if (dayNight == DayNight.NIGHT && (planet == Planet.SUN || planet == Planet.JUPITER || planet == Planet.SATURN)) {
           if (house >= 7 && !sign.getBooleanValue()) {
-            logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN));
+            getLogger().debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN));
             return Optional.of(Tuple.tuple("commentDay", new Object[]{planet, sign}));
           }
         }

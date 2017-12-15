@@ -9,7 +9,6 @@ import destiny.astrology.IBesieged
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.core.calendar.TimeTools
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -24,15 +23,7 @@ class Besieged_Mars_Saturn(
   private val besiegedImpl: IBesieged) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    if (planet === SUN || planet === MOON || planet === MERCURY || planet === VENUS) {
-      //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
-      val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
-      if (besiegedImpl.isBesieged(planet, MARS, SATURN, gmt, true, true)) {
-        //addComment(Locale.TAIWAN , planet + " 被 " + Planet.MARS + " 以及 " + Planet.SATURN +" 夾制 (Besieged)");
-        return Optional.of(Tuple.tuple("comment", arrayOf<Any>(planet, MARS, SATURN)))
-      }
-    }
-    return Optional.empty()
+    return getResult2(planet , h).toOld()
   }
 
 

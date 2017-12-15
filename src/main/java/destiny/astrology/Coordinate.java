@@ -5,7 +5,7 @@
  */
 package destiny.astrology;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
  * Zodiac selection <br/> 
  * 黃道(ECLIPTIC) / 赤道(TROPICAL) / 恆星(SIDEREAL) 座標系 參數
  */
-public enum Coordinate implements LocaleStringIF
+public enum Coordinate implements ILocaleString
 {
   /** 黃道座標系 */
   ECLIPTIC("Coordinate.ECLIPTIC"),

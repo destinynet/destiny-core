@@ -4,7 +4,7 @@
  */
 package destiny.astrology;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +34,7 @@ import java.util.*;
  *                   North/South   PERIGEE (近)/APOGEE (遠)
  * </pre>
  */
-public abstract class Point implements Serializable , LocaleStringIF {
+public abstract class Point implements Serializable , ILocaleString {
 
   private final String resource;
 

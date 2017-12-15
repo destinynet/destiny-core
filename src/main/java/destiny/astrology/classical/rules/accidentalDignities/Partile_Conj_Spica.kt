@@ -5,7 +5,6 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.*
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -15,17 +14,7 @@ class Partile_Conj_Spica : Rule() {
   private val aspect = Aspect.CONJUNCTION
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-
-    val planetDegree = h.getPositionOpt(planet).map<Double>{ it.lng }
-    val spicaDeg = h.getPositionOpt(FixedStar.SPICA).map<Double>{ it.lng }
-
-    if (planetDegree.isPresent && spicaDeg.isPresent) {
-      if (AspectEffectiveModern.isEffective(planetDegree.get(), spicaDeg.get(), aspect, 1.0)) {
-        logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, aspect)
-        return Optional.of(Tuple.tuple("comment", arrayOf(planet, FixedStar.SPICA, aspect)))
-      }
-    }
-    return Optional.empty()
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

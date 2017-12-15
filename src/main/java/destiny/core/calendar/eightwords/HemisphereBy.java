@@ -4,14 +4,14 @@
  */ 
 package destiny.core.calendar.eightwords;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /** 界定南北半球的方法 , 赤道 還是 赤緯 */
-public enum HemisphereBy implements LocaleStringIF
+public enum HemisphereBy implements ILocaleString
 {
   /** 赤道 */
   EQUATOR("HemisphereBy.EQUATOR") ,

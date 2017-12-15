@@ -9,10 +9,8 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.MARS
 import destiny.astrology.Planet.SATURN
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
-import java.util.Optional.empty
 
 /** Partile conjunction with Mars or Saturn.  */
 class Partile_Conj_Mars_Saturn : Rule() {
@@ -20,21 +18,7 @@ class Partile_Conj_Mars_Saturn : Rule() {
   private val aspect = Aspect.CONJUNCTION
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-
-    return h.getPositionOpt(planet).map<Double>{ it.lng }.flatMap { planetDegree ->
-      h.getPositionOpt(MARS).map<Double>{ it.lng }.flatMap { marsDeg ->
-        h.getPositionOpt(SATURN).map<Double>{ it.lng }.flatMap { saturnDeg ->
-          if (planet !== MARS && Horoscope.getAngle(planetDegree!!, marsDeg!!) <= 1) {
-            logger.debug("{} 與 {} 形成 {}", planet, MARS, aspect)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, MARS, aspect)))
-          } else if (planet !== SATURN && Horoscope.getAngle(planetDegree!!, saturnDeg!!) <= 1) {
-            logger.debug("{} 與 {} 形成 {}", planet, SATURN, aspect)
-            Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, SATURN, aspect)))
-          }
-          empty<Tuple2<String, Array<Any>>>()
-        }
-      }
-    }
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

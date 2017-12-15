@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** 交角 , Aspect */
-public enum Aspect implements LocaleStringIF
+public enum Aspect implements ILocaleString
 {
   /** 0 , 合  */
   CONJUNCTION   ("Aspect.CONJUNCTION"   ,  0 , Importance.HIGH),

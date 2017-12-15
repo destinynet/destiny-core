@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 /**
  * 行星落入星座的 , 旺 廟 陷 落 
  */
-public enum Dignity implements LocaleStringIF {
+public enum Dignity implements ILocaleString {
 
   /** 旺 (+5) , 守護 */
   RULER     ("Dignity.RULER"),

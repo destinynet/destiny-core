@@ -8,7 +8,6 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.MOON
 import destiny.astrology.Planet.SUN
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -16,15 +15,7 @@ import java.util.*
 class Moon_Increase_Light : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return h.getPositionOpt(planet)
-      .filter { planet === MOON }
-      .map<Double> { it.lng }
-      .flatMap { moonDegree ->
-        h.getPositionOpt(SUN)
-          .map<Double> { it.lng }
-          .filter { sunDegree -> Horoscope.isOccidental(moonDegree!!, sunDegree!!) }
-          .map { Tuple.tuple("comment", arrayOf<Any>(planet)) }
-      }
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

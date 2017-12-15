@@ -4,14 +4,14 @@
  */
 package destiny.astrology;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /** 中心系統 */
-public enum Centric implements LocaleStringIF {
+public enum Centric implements ILocaleString {
   /** 地心 */
   GEO("Centric.GEO"),
   /** 日心 */

@@ -76,7 +76,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
             .filter(planet2 -> planet == planet2) // 確定 ruler 互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, signRuler, sign2)) // 確認互陷
             .map(planet2 -> {
-              logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷" , planet , sign1 , Dignity.RULER , signRuler , sign2 , Dignity.RULER);
+              getLogger().debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷" , planet , sign1 , Dignity.RULER , signRuler , sign2 , Dignity.RULER);
               return Tuple.tuple("comment1", new Object[]{planet, sign1, signRuler, sign2});
             })
         )
@@ -97,7 +97,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
             .filter(planet2 -> planet == planet2) // 確定 Exaltation 互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, signExaltation, sign2)) //確認互陷
             .map(planet2 -> {
-              logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷" , planet , sign1 , Dignity.EXALTATION , signExaltation , sign2 , Dignity.EXALTATION);
+              getLogger().debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷" , planet , sign1 , Dignity.EXALTATION , signExaltation , sign2 , Dignity.EXALTATION);
               return Tuple.tuple("comment2", new Object[]{planet, sign1, signExaltation, sign2});
             })
         )
@@ -118,7 +118,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
             .filter(planet2 -> planet == planet2) // 確認互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, thisSignRuler, sign2)) // 確認互陷
             .map(planet2 -> {
-              logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷" , planet , sign1 , Dignity.RULER , thisSignRuler , sign2);
+              getLogger().debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷" , planet , sign1 , Dignity.RULER , thisSignRuler , sign2);
               return Tuple.tuple("comment3", new Object[]{planet, sign1, thisSignRuler, sign2});
             })
         )
@@ -139,7 +139,7 @@ public final class MutualDeception extends EssentialRule implements Applicable {
             .filter(planet2 -> planet == planet2) // 確認互容
             .filter(planet2 -> utils.isBothInBadSituation(planet, sign1, thisSignExaltation, sign2)) // 確認互陷
             .map(planet2 -> {
-              logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷" , planet , sign1 , Dignity.EXALTATION , thisSignExaltation , sign2);
+              getLogger().debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷" , planet , sign1 , Dignity.EXALTATION , thisSignExaltation , sign2);
               return Tuple.tuple("comment4", new Object[]{planet, sign1, thisSignExaltation, sign2});
             })
         )

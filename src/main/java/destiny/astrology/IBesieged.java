@@ -4,8 +4,9 @@
 package destiny.astrology;
 
 import destiny.core.calendar.TimeTools;
+import kotlin.Triple;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.lambda.tuple.Tuple3;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public interface IBesieged {
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者 . 傳回的 List[Planet] 必定 size = 2
    * TODO : 目前的交角都只考慮「perfect」準確交角（一般行星三分容許度，日月17分），並未考慮容許度（即 applying），未來要改進
    */
-  Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, double gmtJulDay,
+  Triple<List<Planet> , Aspect , Aspect> getBesiegingPlanets(Planet planet, double gmtJulDay,
                                                                                  @NotNull Collection<Planet> otherPlanets,
                                                                                  @NotNull double[] angles);
 
@@ -46,7 +47,7 @@ public interface IBesieged {
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
   @NotNull
-  default Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, double gmtJulDay,
+  default Triple<List<Planet> , Aspect , Aspect> getBesiegingPlanets(Planet planet, double gmtJulDay,
                                                                                          @NotNull Collection<Planet> otherPlanets,
                                                                                          @NotNull Collection<Aspect> searchingAspects) {
     double[] angles = new double[searchingAspects.size()];
@@ -86,7 +87,7 @@ public interface IBesieged {
     if (!isClassical) {
       searchingAspects.addAll(mediumAspects);
     }
-    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).v1();
+    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).getFirst();
   }
 
   default List<Planet> getBesiegingPlanets(Planet planet , ChronoLocalDateTime gmt , boolean isClassical) {
@@ -95,7 +96,7 @@ public interface IBesieged {
 
 
   @NotNull
-  default Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>> getBesiegingPlanets(Planet planet, ChronoLocalDateTime gmt,
+  default Triple<List<Planet> , Aspect , Aspect> getBesiegingPlanets(Planet planet, ChronoLocalDateTime gmt,
                                                                                          @NotNull Collection<Planet> otherPlanets,
                                                                                          @NotNull Collection<Aspect> searchingAspects) {
     double gmtJulDay = TimeTools.getGmtJulDay(gmt);
@@ -117,7 +118,7 @@ public interface IBesieged {
       otherPlanets.remove(Planet.NEPTUNE);
       otherPlanets.remove(Planet.PLUTO);
     }
-    return getBesiegingPlanets(planet , gmt , otherPlanets , aspects).v1();
+    return getBesiegingPlanets(planet , gmt , otherPlanets , aspects).getFirst();
   }
 
   default List<Planet>  getBesiegingPlanets(Planet planet , ChronoLocalDateTime gmt ,
@@ -163,20 +164,19 @@ public interface IBesieged {
     }
 
 
-    Tuple3<List<Planet> , Optional<Aspect> , Optional<Aspect>>  triple = getBesiegingPlanets(planet , gmt , otherPlanets , searchingAspects);
-    List<Planet> besiegingPlanets = triple.v1();
+    Triple<List<Planet> , Aspect , Aspect> triple = getBesiegingPlanets(planet , gmt , otherPlanets , searchingAspects);
+    List<Planet> besiegingPlanets = triple.getFirst();
 
-    Optional<Aspect> aspectPrior = triple.v2();
-    Optional<Aspect> aspectAfter = triple.v3();
+    @Nullable Aspect aspectPrior = triple.getSecond();
+    @Nullable Aspect aspectAfter = triple.getThird();
 
     logger.debug("包夾 {} 的是 {}({}) 以及 {}({})", planet , besiegingPlanets.get(0) , aspectPrior , besiegingPlanets.get(1) , aspectAfter);
     if (besiegingPlanets.contains(p1)
       && besiegingPlanets.contains(p2)
-      && aspectPrior.isPresent()
-      && aspectAfter.isPresent())
+      && aspectPrior != null
+      && aspectAfter != null)
     {
-      if(constrainingAspects.contains(aspectPrior.get()) && constrainingAspects.contains(aspectAfter.get()))
-        return true;
+      return constrainingAspects.contains(aspectPrior) && constrainingAspects.contains(aspectAfter);
     }
     return false;
   }

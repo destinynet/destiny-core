@@ -9,7 +9,6 @@ import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -23,7 +22,7 @@ class Hayz(
   var dayNightImpl: DayNightDifferentiator) : Rule() {
 
   public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h)?.let { p -> Tuple.tuple(p.first , p.second) }.let { Optional.ofNullable(it) }
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

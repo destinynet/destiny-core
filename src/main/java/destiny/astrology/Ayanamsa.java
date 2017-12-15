@@ -4,7 +4,7 @@
  */
 package destiny.astrology;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
  * Ayanamsha is a Sanskrit word and is to be pronounced with the third "a" long, so: "Ayana-amsha". 
  * "ayana" means "precession" and "amsha" means "component".
  */
-public enum Ayanamsa implements LocaleStringIF {
+public enum Ayanamsa implements ILocaleString {
   FAGAN_BRADLEY     ("Ayana.FAGAN_BRADLEY"),
   LAHIRI            ("Ayana.LAHIRI"),
   DELUCE            ("Ayana.DELUCE"),

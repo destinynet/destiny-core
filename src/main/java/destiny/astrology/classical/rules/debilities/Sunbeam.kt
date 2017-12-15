@@ -7,7 +7,6 @@ package destiny.astrology.classical.rules.debilities
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.SUN
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -15,13 +14,7 @@ import java.util.*
 class Sunbeam : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    if (planet !== SUN) {
-      if (h.getAngle(planet, SUN) > 8.5 && h.getAngle(planet, SUN) <= 17) {
-        //addComment(Locale.TAIWAN , planet + " 被太陽曬傷 (Sunbeam)");
-        return Optional.of(Tuple.tuple("comment", arrayOf<Any>(planet)))
-      }
-    }
-    return Optional.empty()
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

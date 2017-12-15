@@ -6,7 +6,7 @@ package destiny.tools;
 
 import java.util.Locale;
 
-public interface LocaleStringIF {
+public interface ILocaleString {
 
   String toString(Locale locale);
 }

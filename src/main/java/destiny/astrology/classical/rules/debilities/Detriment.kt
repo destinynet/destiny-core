@@ -7,7 +7,6 @@ package destiny.astrology.classical.rules.debilities
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -15,12 +14,10 @@ import java.util.*
 class Detriment : EssentialRule() {
 
   public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return h.getZodiacSignOpt(planet)
-      .filter { sign -> planet === essentialImpl.getPoint(sign, Dignity.DETRIMENT).orElse(null) }
-      .map { sign -> Tuple.tuple("comment", arrayOf(planet, sign)) }
+    return getResult2(planet , h).toOld()
   }
 
-  public override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)
       ?.takeIf { sign -> planet === essentialImpl.getPoint(sign, Dignity.DETRIMENT).orElse(null) }
       ?.let { "comment" to arrayOf(planet , it) }

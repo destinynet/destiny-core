@@ -8,7 +8,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.YinYangIF;
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 import static destiny.core.chinese.Branch.*;
 
 /** 黃道十二宮 */
-public enum ZodiacSign implements LocaleStringIF , YinYangIF {
+public enum ZodiacSign implements ILocaleString, YinYangIF {
   /** Aries 戌/牡羊 */
   ARIES      ("ZodiacSign.ARIES"       , "ZodiacSign.ARIES_ABBR"       , Element.FIRE  , Quality.CARDINAL , true  ,   0),
   /** Taurus 酉/金牛 */

@@ -4,7 +4,7 @@
  */ 
 package destiny.astrology;
 
-import destiny.tools.LocaleStringIF;
+import destiny.tools.ILocaleString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 /**
  * 分宮法 , Zodiac House Systems
  */
-public enum HouseSystem implements LocaleStringIF {
+public enum HouseSystem implements ILocaleString {
 
   PLACIDUS("HouseSystem.PLACIDUS"),
   KOCH("HouseSystem.KOCH"),

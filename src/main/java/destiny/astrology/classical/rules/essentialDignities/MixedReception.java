@@ -56,7 +56,7 @@ public final class MixedReception extends Rule
         h.getZodiacSignOpt(signRuler).flatMap(sign2 ->
           essentialImpl.getPoint(sign2 , Dignity.EXALTATION).flatMap(planet2 -> {
             if (planet == planet2 && !utils.isBothInBadSituation(planet , sign1 , signRuler , sign2)) {
-              logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容" , planet , sign1 , Dignity.RULER , signRuler ,sign2);
+              getLogger().debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容" , planet , sign1 , Dignity.RULER , signRuler ,sign2);
               return Optional.of(Tuple.tuple("commentRuler", new Object[]{planet, sign1, signRuler, sign2}));
             }
             else
@@ -104,7 +104,7 @@ public final class MixedReception extends Rule
               //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
               if (!utils.isBothInBadSituation(planet , sign1 , thisSignExaltation , sign2)) {
                 //addComment(Locale.TAIWAN , planet + " 位於 " + sign + " , 與其 Exaltation " + thisSignExaltation + " 飛至 " + sign2 + " 形成旺廟互容");
-                logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容" , planet , sign1 , Dignity.EXALTATION , thisSignExaltation , sign2);
+                getLogger().debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容" , planet , sign1 , Dignity.EXALTATION , thisSignExaltation , sign2);
                 return Optional.of(Tuple.tuple("commentExaltation" , new Object[] {planet , sign1 , thisSignExaltation , sign2}));
               }
             }

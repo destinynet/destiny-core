@@ -14,9 +14,7 @@ import java.util.*
 class House_3 : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return h.getHouseOpt(planet)
-      .filter { house -> house == 3 }
-      .map { house -> Tuple.tuple("comment", arrayOf(planet, house)) }
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

@@ -7,7 +7,6 @@ package destiny.astrology.classical.rules.debilities
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -18,18 +17,10 @@ import java.util.*
 class Occidental : Rule() {
 
   public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-
-    return h.getPositionOpt(planet)
-      .filter { planet === MARS || planet === JUPITER || planet === SATURN }
-      .map<Double>{ it.lng }.flatMap { planetDegree ->
-      h.getPositionOpt(SUN)
-        .map<Double>{ it.lng }
-        .filter { sunDegree -> Horoscope.isOccidental(planetDegree!!, sunDegree!!) }
-        .map { Tuple.tuple("comment", arrayOf<Any>(planet)) }
-    }
+    return getResult2(planet , h).toOld()
   }
 
-  public override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val planetDegree: Double? = arrayOf(MARS , JUPITER , SATURN)
       .takeIf { it.contains(planet) }
       ?.let { h.getPosition(planet) }?.lng

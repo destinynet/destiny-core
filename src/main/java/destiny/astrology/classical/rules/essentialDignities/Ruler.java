@@ -30,10 +30,10 @@ public final class Ruler extends Rule
       .flatMap(sign -> {
         // Ruler (旺)
         if (planet == essentialImpl.getPoint(sign , Dignity.RULER).orElse(null)) {
-          logger.debug("{} 位於 {} , 為其 {}" , planet , sign , Dignity.RULER);
+          getLogger().debug("{} 位於 {} , 為其 {}" , planet , sign , Dignity.RULER);
           return Optional.of(Tuple.tuple("commentBasic", new Object[]{planet, sign}));
         } else {
-          logger.debug("檢查旺旺互容 of {}" , planet);
+          getLogger().debug("檢查旺旺互容 of {}" , planet);
           return rulerMutualReception(h , planet);
         }
       });
@@ -62,7 +62,7 @@ public final class Ruler extends Rule
             planet == essentialImpl.getPoint(sign2, Dignity.RULER).orElse(null)   // 已經確定 Ruler 互容，要排除互陷
             && !utils.isBothInBadSituation(planet , sign1 , signRuler , sign2)            // 只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
           ).flatMap(sign2 -> {
-            logger.debug("{} 位於 {} , 與其 Ruler {} 飛至 {} , 形成 旺旺互容" , planet , sign1 , signRuler , sign2);
+            getLogger().debug("{} 位於 {} , 與其 Ruler {} 飛至 {} , 形成 旺旺互容" , planet , sign1 , signRuler , sign2);
             return Optional.of(Tuple.tuple("commentReception", new Object[]{planet, sign1, signRuler, sign2}));
           });
       })

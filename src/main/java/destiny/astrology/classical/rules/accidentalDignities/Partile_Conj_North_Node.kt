@@ -5,7 +5,6 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.*
-import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
@@ -18,17 +17,7 @@ class Partile_Conj_North_Node : Rule() {
   var nodeType = NodeType.MEAN
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-
-    return h.getPositionOpt(planet).map<Double> { it.lng }.flatMap { planetDegree ->
-      val north = LunarNode.of(LunarNode.NorthSouth.NORTH, nodeType)
-      h.getPositionOpt(north).map<Double> { it.lng }.flatMap { northDeg ->
-        if (Horoscope.getAngle(planetDegree!!, northDeg!!) <= 1) {
-          logger.debug("{} 與 {} 形成 {}", planet, north, aspect)
-          Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf(planet, north, aspect)))
-        }
-        Optional.empty<Tuple2<String, Array<Any>>>()
-      }
-    }
+    return getResult2(planet , h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

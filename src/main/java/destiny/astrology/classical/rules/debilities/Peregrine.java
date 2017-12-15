@@ -22,6 +22,7 @@ public final class Peregrine extends EssentialRule {
     this.dayNightImpl = dayNightImpl;
   }
 
+  @NotNull
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
     return h.getPositionOpt(planet).flatMap(pos -> {
