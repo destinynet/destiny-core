@@ -81,11 +81,6 @@ public class EssentialUtils
         return true;
       return essentialImpl.getPointOpt(receiveeSign, Dignity.FALL).orElse(null) == receiver;
     }).orElse(false);
-
-//    ZodiacSign receiveeSign = h.getZodiacSign(receivee);
-//    if (essentialImpl.getPoint(receiveeSign , Dignity.DETRIMENT) == receiver)
-//      return true;
-//    return essentialImpl.getPoint(receiveeSign, Dignity.FALL) == receiver;
   }
   
   /** Ruler 互訪 , 還沒確認是 優質互容 */
@@ -99,13 +94,6 @@ public class EssentialUtils
       )
     ).orElse(false);
 
-//    //取得此 Planet 在什麼星座
-//    ZodiacSign sign1 = h.getZodiacSign(planet);
-//
-//    Point signRuler = essentialImpl.getPoint(sign1, Dignity.RULER);
-//    ZodiacSign sign2 = h.getZodiacSign(signRuler);
-//    Point planet2 = essentialImpl.getPoint(sign2, Dignity.RULER);
-//    return planet == planet2;
   }
   
   /** 如果其中一顆星處於 {@link Dignity#DETRIMENT} 或是 {@link Dignity#FALL} , 則為 true */

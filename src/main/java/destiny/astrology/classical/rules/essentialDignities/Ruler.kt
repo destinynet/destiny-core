@@ -24,7 +24,7 @@ class Ruler(private val dayNightDifferentiatorImpl: DayNightDifferentiator) : Ru
         "commentBasic" to arrayOf(planet, sign)
       } else {
         logger.debug("檢查旺旺互容 of {}", planet)
-        rulerMutualReception2(h , planet)
+        rulerMutualReception(h , planet)
       }
     }
   }
@@ -39,7 +39,7 @@ class Ruler(private val dayNightDifferentiatorImpl: DayNightDifferentiator) : Ru
    * 例如： 火星在射手 , 木星在牡羊 , 兩個星座的 Ruler 互訪<br></br>
    * 「而且都沒有落陷」 (否則變成互陷)
    */
-  private fun rulerMutualReception2(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+  private fun rulerMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     val utils = EssentialUtils(dayNightDifferentiatorImpl)
     utils.setEssentialImpl(essentialImpl)
 

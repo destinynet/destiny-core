@@ -14,14 +14,6 @@ class Face : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
     return getResult2(planet , h).toOld()
-//    return h.getPositionOpt(planet).map<Double> { it.getLng() }.flatMap { lngDeg ->
-//      val facePoint = essentialImpl.getFacePoint(lngDeg!!)
-//      if (planet === facePoint) {
-//        logger.info("{} 位於其 Chaldean decanate or face : {}", planet, lngDeg)
-//        Optional.of<Tuple2<String, Array<Any>>>(Tuple.tuple<String, Array<Any>>("comment", arrayOf<Any>(planet, lngDeg)))
-//      }
-//      empty<Tuple2<String, Array<Any>>>()
-//    }
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

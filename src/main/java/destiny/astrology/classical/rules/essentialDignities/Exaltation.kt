@@ -26,7 +26,7 @@ class Exaltation(private val dayNightDifferentiatorImpl: DayNightDifferentiator)
         logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)
         return@let "commentBasic" to arrayOf(planet, sign)
       } else
-        return@let exaltMutualReception2(h, planet)
+        return@let exaltMutualReception(h, planet)
     }
   }
 
@@ -34,7 +34,7 @@ class Exaltation(private val dayNightDifferentiatorImpl: DayNightDifferentiator)
    * 廟廟互容
    * [Dignity.EXALTATION] 互容
    */
-  private fun exaltMutualReception2(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+  private fun exaltMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1: ZodiacSign ->
       essentialImpl.getPoint(sign1, Dignity.EXALTATION)?.let { signExaltation ->
         val utils = EssentialUtils(dayNightDifferentiatorImpl)
