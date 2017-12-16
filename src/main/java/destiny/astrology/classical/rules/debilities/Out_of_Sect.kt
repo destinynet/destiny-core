@@ -6,7 +6,6 @@ package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.*
 import destiny.astrology.Planet.*
-import org.jooq.lambda.tuple.Tuple2
 import java.util.*
 
 /**
@@ -20,11 +19,7 @@ class Out_of_Sect(
   /** 計算白天黑夜的實作  */
   val dayNightImpl: DayNightDifferentiator) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
 
     val sign: ZodiacSign? = h.getZodiacSign(planet)

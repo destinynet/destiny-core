@@ -9,8 +9,6 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.EssentialUtils
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /**
  * 互容的變形，兩星都處與落陷，又互容→互相扯後腿<br></br>
@@ -21,11 +19,7 @@ class MutualDeception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Esse
 
   private val utils: EssentialUtils = EssentialUtils(dayNightDifferentiatorImpl)
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet, h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     utils.setEssentialImpl(essentialImpl)
 
     return rulerMutualDeception(h, planet)

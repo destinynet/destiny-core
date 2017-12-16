@@ -10,17 +10,11 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.JUPITER
 import destiny.astrology.Planet.VENUS
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /** Partile trine Jupiter or Venus.  */
 class Partile_Trine_Jupiter_Venus : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val planetDeg = h.getPosition(planet)?.lng
     val jupiterDeg = h.getPosition(JUPITER)?.lng
     val venusDeg = h.getPosition(VENUS)?.lng

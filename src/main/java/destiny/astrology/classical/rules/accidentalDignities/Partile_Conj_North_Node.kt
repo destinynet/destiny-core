@@ -5,8 +5,6 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.*
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /** Partile aspect with Dragon's Head (Moon's North Node).  */
 class Partile_Conj_North_Node : Rule() {
@@ -16,11 +14,7 @@ class Partile_Conj_North_Node : Rule() {
   /** 內定採用 NodeType.MEAN  */
   var nodeType = NodeType.MEAN
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
 
     val planetDeg: Double? = h.getPosition(planet)?.lng
     val north: LunarNode = LunarNode.of(LunarNode.NorthSouth.NORTH, nodeType)

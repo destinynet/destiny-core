@@ -30,19 +30,11 @@ abstract class AbstractRule protected constructor(private val resource: String) 
 
   override fun isApplicable(planet: Planet, h: Horoscope): Boolean {
     logger.debug("'{}' : isApplicable({})", javaClass.simpleName, planet)
-    return getResult(planet, h).isPresent
+    return (getResult(planet , h) != null)
   }
 
-  /**
-   * Tuple<String , Object[]> 參數：
-   * String 為 ResourceBundle 取得的 key , 前面要 prepend '[rule_name].'
-   * Object[] 為 MessageFormat.format(pattern , Object[]) 後方的參數
-  </String> */
-  protected abstract fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>>
+  abstract fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>?
 
-  open fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return getResult(planet, h).map { t -> Pair(t.v1, t.v2) }.orElse(null)
-  }
 
   /** 名稱  */
   override fun getName(): String {
@@ -69,10 +61,10 @@ abstract class AbstractRule protected constructor(private val resource: String) 
 
 
   /** 取得某 Locale 之下的註解  */
-  override fun getComment(planet: Planet, h: Horoscope, locale: Locale): Optional<String> {
-    return getResult(planet, h).map { tuple ->
-      val commentKey = tuple.v1()
-      val commentParameters = tuple.v2()
+  override fun getComment(planet: Planet, h: Horoscope, locale: Locale): String? {
+    return getResult(planet , h)?.let { pair ->
+      val commentKey = pair.first
+      val commentParameters = pair.second
       val pattern = ResourceBundle.getBundle(resource, locale).getString(nameKey + "." + commentKey)
       MessageFormat.format(pattern, *getCommentParameters(locale, commentParameters))
     }

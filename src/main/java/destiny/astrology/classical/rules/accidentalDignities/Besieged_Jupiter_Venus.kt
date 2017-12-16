@@ -9,8 +9,6 @@ import destiny.astrology.IBesieged
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.core.calendar.TimeTools
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /**
  * 夾輔 : 被金星木星包夾 , 是很幸運的情形<br></br>
@@ -22,11 +20,7 @@ class Besieged_Jupiter_Venus(
   /** 計算兩星夾角的實作  */
   private val besiegedImpl: IBesieged) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return planet.takeIf { arrayOf(SUN , MOON , MERCURY , MARS , SATURN).contains(it) }?.takeIf {
       val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
       besiegedImpl.isBesieged(it , VENUS , JUPITER , gmt , true , false)

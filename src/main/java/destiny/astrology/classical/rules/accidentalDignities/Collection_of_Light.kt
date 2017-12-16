@@ -8,20 +8,14 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.ICollectionOfLight
 import destiny.astrology.classical.ICollectionOfLight.CollectType.DIGNITIES
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /**
  * 目前只將「收集好光 (DIGNITIES) 」視為 Collection of Light ，而「蒐集穢光 (DEBILITIES) 」不納入考慮
  */
 class Collection_of_Light(private val collectionOfLightImpl: ICollectionOfLight) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
 
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return collectionOfLightImpl.getResult(planet , h , DIGNITIES)?.let { twoPlanets ->
       "comment" to arrayOf(planet, twoPlanets[0], twoPlanets[1], h.getAngle(twoPlanets[0], twoPlanets[1]))
     }

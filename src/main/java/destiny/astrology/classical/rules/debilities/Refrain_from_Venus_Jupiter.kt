@@ -8,16 +8,10 @@ import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.astrology.Point
 import destiny.astrology.classical.RefranationIF
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 class Refrain_from_Venus_Jupiter(private val refranationImpl: RefranationIF) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     // 太陽 / 月亮不會逆行
     return planet.takeIf { it !== SUN && it !== MOON }
       ?.let {

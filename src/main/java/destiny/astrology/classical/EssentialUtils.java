@@ -35,13 +35,13 @@ public class EssentialUtils
 
     return h.getZodiacSignOpt(receivee).map(receiveeSign -> {
       //比對 Ruler
-      if (essentialImpl.getPointOpt(receiveeSign, Dignity.RULER).orElse(null) == receiver) {
+      if (essentialImpl.getPoint(receiveeSign, Dignity.RULER) == receiver) {
         logger.debug("{} 透過 {} 接納 {}" , receiver , Dignity.RULER  , receivee);
         return true;
       }
 
       //比對 Exaltation
-      if (essentialImpl.getPointOpt(receiveeSign, Dignity.EXALTATION).orElse(null) == receiver) {
+      if (essentialImpl.getPoint(receiveeSign, Dignity.EXALTATION) == receiver) {
         logger.debug("{} 透過 {} 接納 {}" , receiver , Dignity.EXALTATION , receivee);
         return true;
       }
@@ -77,9 +77,9 @@ public class EssentialUtils
   public boolean isReceivingFromDebilities(Point receiver , Point receivee , @NotNull Horoscope h) {
 
     return h.getZodiacSignOpt(receivee).map(receiveeSign -> {
-      if (essentialImpl.getPointOpt(receiveeSign , Dignity.DETRIMENT).orElse(null) == receiver)
+      if (essentialImpl.getPoint(receiveeSign , Dignity.DETRIMENT) == receiver)
         return true;
-      return essentialImpl.getPointOpt(receiveeSign, Dignity.FALL).orElse(null) == receiver;
+      return essentialImpl.getPoint(receiveeSign, Dignity.FALL) == receiver;
     }).orElse(false);
   }
   
@@ -89,7 +89,7 @@ public class EssentialUtils
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
       essentialImpl.getPointOpt(sign1, Dignity.RULER).map(signRuler ->
         h.getZodiacSignOpt(signRuler)
-          .filter(sign2 -> planet == essentialImpl.getPointOpt(sign2, Dignity.RULER).orElse(null))
+          .filter(sign2 -> planet == essentialImpl.getPoint(sign2, Dignity.RULER))
           .isPresent()
       )
     ).orElse(false);

@@ -10,17 +10,11 @@ import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.EssentialUtils
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /** A planet in its exaltation , or mutual reception with another planet by exaltation  */
 class Exaltation(private val dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule() {
 
-  public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet, h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
       if (planet === essentialImpl.getPoint(sign, Dignity.EXALTATION)) {
         logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)

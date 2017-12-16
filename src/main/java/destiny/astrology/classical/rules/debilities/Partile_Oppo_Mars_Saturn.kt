@@ -10,19 +10,13 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.MARS
 import destiny.astrology.Planet.SATURN
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /** Partile opposite Mars or Saturn.  */
 class Partile_Oppo_Mars_Saturn : Rule() {
 
   private val aspect = OPPOSITION
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val planetDeg = h.getPosition(planet)?.lng
     val marsDeg = h.getPosition(MARS)?.lng
     val saturnDeg = h.getPosition(SATURN)?.lng

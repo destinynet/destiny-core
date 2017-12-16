@@ -32,7 +32,7 @@ class EssentialDignitiesBean(
 
   override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules
-      .map { it.getComment(planet, h, locale) }
+      .map { it.getCommentOpt(planet, h, locale) }
       .filter { it.isPresent }
       .map { it.get() }
       .toList()

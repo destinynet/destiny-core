@@ -7,6 +7,7 @@ package destiny.astrology.classical.rules;
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Locale;
@@ -27,9 +28,14 @@ public interface RuleIF extends Predicate<Tuple2<Planet, Horoscope>> {
   String getName(Locale locale);
 
   /** 取得某 Locale 之下的註解 */
-  Optional<String> getComment(Planet planet , Horoscope h , @NotNull Locale locale);
+  @Nullable
+  String getComment(Planet planet , Horoscope h , @NotNull Locale locale);
+
+  default Optional<String> getCommentOpt(Planet planet , Horoscope h , @NotNull Locale locale) {
+    return Optional.ofNullable(getComment(planet , h , locale));
+  }
 
   default Optional<String> getComment(Planet planet , Horoscope h) {
-    return getComment(planet , h , Locale.getDefault());
+    return getCommentOpt(planet , h , Locale.getDefault());
   }
 }

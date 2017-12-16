@@ -7,19 +7,13 @@ package destiny.astrology.classical.rules.debilities
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /** In Fall.  */
 class Fall : EssentialRule() {
 
-  public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)
-      ?.takeIf { sign -> planet === essentialImpl.getPointOpt(sign , Dignity.FALL).orElse(null) }
+      ?.takeIf { sign -> planet === essentialImpl.getPoint(sign , Dignity.FALL) }
       ?.let { "comment" to arrayOf(planet , it) }
   }
 }

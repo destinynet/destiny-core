@@ -55,7 +55,7 @@ public class RulesBean implements Serializable {
       accidentalDignitiesImpl.getRules().stream() ,
       debilitiesBean.getRules().stream()
     ).flatMap(x -> x)
-      .map(rule -> Tuple.tuple(rule , rule.getComment(planet , h , locale)))
+      .map(rule -> Tuple.tuple(rule , rule.getCommentOpt(planet , h , locale)))
       .filter(t2 -> t2.v2().isPresent())
       .map(t2 -> Tuple.tuple(t2.v1() , t2.v2().get()))
       .collect(Collectors.toList());

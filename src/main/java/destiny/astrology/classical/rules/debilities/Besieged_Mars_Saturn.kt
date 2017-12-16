@@ -9,8 +9,6 @@ import destiny.astrology.IBesieged
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.core.calendar.TimeTools
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /**
  * Besieged between Mars and Saturn.
@@ -22,12 +20,8 @@ class Besieged_Mars_Saturn(
   /** 計算兩星夾角的工具箱  */
   private val besiegedImpl: IBesieged) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
 
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return planet.takeIf { arrayOf(SUN , MOON , MERCURY , VENUS).contains(it) }
       ?.takeIf {
         val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)

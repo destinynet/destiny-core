@@ -9,8 +9,6 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.EssentialUtils
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /**
  * 廟旺互容 <br></br>
@@ -20,11 +18,7 @@ import java.util.*
 class MixedReception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule() {
   private val utils: EssentialUtils = EssentialUtils(dayNightDifferentiatorImpl)
 
-  public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet, h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     utils.setEssentialImpl(essentialImpl)
     return rulerExaltMutualReception(h, planet) ?: exaltRulerMutualReception(h, planet)
   }

@@ -6,17 +6,11 @@ package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /** Moon decreasing in light.  */
 class Moon_Decrease_Light : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
 
     val moonDegree: Double? = planet
       .takeIf { it === Planet.MOON }

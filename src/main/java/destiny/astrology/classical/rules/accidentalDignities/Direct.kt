@@ -8,17 +8,11 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.MOON
 import destiny.astrology.Planet.SUN
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /** Direct in motion (does not apply to Sun and Moon).  */
 class Direct : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== SUN && it !== MOON }
       ?.let { h.getPosition(it) }?.speedLng
       ?.takeIf { it > 0 }

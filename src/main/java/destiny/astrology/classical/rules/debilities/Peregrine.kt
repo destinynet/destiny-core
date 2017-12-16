@@ -6,8 +6,6 @@ package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.*
 import destiny.astrology.classical.Dignity
-import org.jooq.lambda.tuple.Tuple2
-import java.util.*
 
 /**
  * Peregrine : 漂泊、茫游、外出狀態
@@ -46,24 +44,20 @@ class Peregrine(
   /** 計算白天黑夜的實作  */
   private val dayNightImpl: DayNightDifferentiator) : EssentialRule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
-  }
-
-  override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val planetDeg: Double? = h.getPosition(planet)?.lng
     val sign: ZodiacSign? = h.getZodiacSign(planet)
 
     if (planetDeg != null && sign != null) {
-      val dayNight = dayNightImpl.getDayNight(h.lmt , h.location)
-      if (planet !== essentialImpl.getPointOpt(sign, Dignity.RULER).orElse(null) &&
-          planet !== essentialImpl.getPointOpt(sign, Dignity.EXALTATION).orElse(null) &&
-          planet !== essentialImpl.getPointOpt(sign, Dignity.DETRIMENT).orElse(null) &&
-          planet !== essentialImpl.getPointOpt(sign, Dignity.FALL).orElse(null) &&
-          planet !== essentialImpl.getTermsPoint(sign, planetDeg) &&
-          planet !== essentialImpl.getFacePoint(planetDeg)) {
+      val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
+      if (planet !== essentialImpl.getPoint(sign, Dignity.RULER) &&
+        planet !== essentialImpl.getPoint(sign, Dignity.EXALTATION) &&
+        planet !== essentialImpl.getPoint(sign, Dignity.DETRIMENT) &&
+        planet !== essentialImpl.getPoint(sign, Dignity.FALL) &&
+        planet !== essentialImpl.getTermsPoint(sign, planetDeg) &&
+        planet !== essentialImpl.getFacePoint(planetDeg)) {
         // 判定日夜 Triplicity
-        if ( !(dayNight == DayNight.DAY   && planet === essentialImpl.getTriplicityPoint(sign, DayNight.DAY))
+        if ( !(dayNight == DayNight.DAY && planet === essentialImpl.getTriplicityPoint(sign, DayNight.DAY))
           && !(dayNight == DayNight.NIGHT && planet === essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT)))
           return "comment" to arrayOf<Any>(planet)
       }
