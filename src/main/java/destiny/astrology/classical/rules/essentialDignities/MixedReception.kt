@@ -21,12 +21,12 @@ class MixedReception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule(
   private val utils: EssentialUtils = EssentialUtils(dayNightDifferentiatorImpl)
 
   public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
-    return getResult2(planet , h).toOld()
+    return getResult2(planet, h).toOld()
   }
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     utils.setEssentialImpl(essentialImpl)
-    return rulerExaltMutualReception(h , planet)?: exaltRulerMutualReception(h , planet)
+    return rulerExaltMutualReception(h, planet) ?: exaltRulerMutualReception(h, planet)
   }
 
   /**
@@ -38,14 +38,17 @@ class MixedReception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule(
    */
   private fun rulerExaltMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
-      essentialImpl.getPoint(sign1 , Dignity.RULER)?.let { signRuler ->
+      essentialImpl.getPoint(sign1, Dignity.RULER)?.let { signRuler ->
         h.getZodiacSign(signRuler)?.let { sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.EXALTATION)?.let { planet2 ->
-            if (planet === planet2 && !utils.isBothInBadSituation(planet , sign1 , signRuler , sign2)) {
-              logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 旺廟互容", planet, sign1, Dignity.RULER, signRuler, sign2)
-              "commentRuler" to arrayOf(planet, sign1, signRuler, sign2)
-            } else
-              null
+          essentialImpl.getPoint(sign2, Dignity.EXALTATION)?.takeIf { planet2 ->
+            // 確認戶容
+            planet === planet2
+          }?.takeIf {
+            // 兩星並沒有同時陷落
+            !utils.isBothInBadSituation(planet, sign1, signRuler, sign2)
+          }?.let {
+            logger.debug("[RULER/EXALT] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 旺廟互容", planet, sign1, Dignity.RULER, signRuler, sign2)
+            "commentRuler" to arrayOf(planet, sign1, signRuler, sign2)
           }
         }
       }
@@ -62,18 +65,17 @@ class MixedReception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule(
    */
   private fun exaltRulerMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
-      essentialImpl.getPoint(sign1 , Dignity.EXALTATION)?.let { signExalt ->
+      essentialImpl.getPoint(sign1, Dignity.EXALTATION)?.let { signExalt ->
         h.getZodiacSign(signExalt)?.let { sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.RULER)?.let { planet2 ->
-            if (planet === planet2) {
-              //已確定互容，要排除互陷
-              //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
-              if (!utils.isBothInBadSituation(planet , sign1 , signExalt , sign2)) {
-                logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
-                return@let "commentExaltation" to arrayOf(planet, sign1, signExalt, sign2)
-              }
-            }
-            return@let null
+          essentialImpl.getPoint(sign2, Dignity.RULER)?.takeIf { planet2 ->
+            //已確定互容，要排除互陷
+            planet === planet2
+          }?.takeIf {
+            //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
+            !utils.isBothInBadSituation(planet, sign1, signExalt, sign2)
+          }?.let {
+            logger.debug("[EXALT/RULER] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
+            "commentExaltation" to arrayOf(planet, sign1, signExalt, sign2)
           }
         }
       }
