@@ -35,6 +35,7 @@ public class EssentialDefaultImpl implements EssentialIF , Serializable
 
   @Override
   /** Triplicity of DAY/NIGHT */
+  @NotNull
   public Point getTriplicityPoint(ZodiacSign sign, DayNight dayNight) {
     return triplicityImpl.getTriplicityPoint(sign, dayNight);
   }

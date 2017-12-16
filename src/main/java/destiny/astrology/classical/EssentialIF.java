@@ -25,6 +25,7 @@ public interface EssentialIF {
   Optional<Point> getPoint(ZodiacSign sign , Dignity dignity);
   
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */
+  @NotNull
   Point getTriplicityPoint(ZodiacSign sign  , DayNight dayNight);
   
   /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360 */

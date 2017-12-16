@@ -13,6 +13,8 @@ import java.util.*
  * 判斷不得時 (Out of sect) : 白天 , 夜星位於地平面上，落入陽性星座；或是晚上，晝星在地平面上，落入陰性星座
  * 晝星 : 日 , 木 , 土
  * 夜星 : 月 , 金 , 火
+ *
+ * 相對於不得時的，是「得時」 [destiny.astrology.classical.rules.accidentalDignities.Hayz]
  */
 class Out_of_Sect(
   /** 計算白天黑夜的實作  */

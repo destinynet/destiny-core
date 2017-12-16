@@ -37,14 +37,13 @@ public class EssentialTriplicityDefaultImpl implements EssentialTriplicityIF , S
     .put(Element.WATER , Planet.MARS)
     .build();
   
+  /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */
+  @NotNull
   @Override
-  /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */ 
-  public Point getTriplicityPoint(@NotNull ZodiacSign sign, @NotNull DayNight dayNight)
-  {
-    switch (dayNight)
-    {
-      case DAY : return dayMap.get(sign.getElement());
-      case NIGHT : return nightMap.get(sign.getElement());
+  public Point getTriplicityPoint(@NotNull ZodiacSign sign, @NotNull DayNight dayNight) {
+    switch (dayNight) {
+      case DAY: return dayMap.get(sign.getElement());
+      case NIGHT: return nightMap.get(sign.getElement());
     }
     throw new RuntimeException("Cannot find DayNight : " + dayNight + " of Sign : " + sign);
   }

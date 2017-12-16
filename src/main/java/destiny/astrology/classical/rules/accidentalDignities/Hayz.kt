@@ -16,10 +16,12 @@ import java.util.*
  * 判斷得時 (Hayz) : 白天 , 晝星位於地平面上，落入陽性星座；或是晚上，夜星在地平面上，落入陰性星座
  * 晝星 : 日 , 木 , 土
  * 夜星 : 月 , 金 , 火
+ *
+ * 相對於得時的，是「不得時」 [destiny.astrology.classical.rules.debilities.Out_of_Sect]
  */
 class Hayz(
   /** 計算白天黑夜的實作  */
-  var dayNightImpl: DayNightDifferentiator) : Rule() {
+  val dayNightImpl: DayNightDifferentiator) : Rule() {
 
   public override fun getResult(planet: Planet, h: Horoscope): Optional<Tuple2<String, Array<Any>>> {
     return getResult2(planet , h).toOld()

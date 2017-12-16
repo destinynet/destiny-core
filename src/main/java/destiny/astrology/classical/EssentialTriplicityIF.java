@@ -7,6 +7,7 @@ package destiny.astrology.classical;
 import destiny.astrology.DayNight;
 import destiny.astrology.Point;
 import destiny.astrology.ZodiacSign;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 取得在某星座 ZodiacSign 得到 Triplicity 的 Star <BR>
@@ -16,6 +17,7 @@ import destiny.astrology.ZodiacSign;
 public interface EssentialTriplicityIF {
 
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */
+  @NotNull
   Point getTriplicityPoint(ZodiacSign sign, DayNight dayNight);
 
 }
