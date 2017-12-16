@@ -19,7 +19,7 @@ class Fall : EssentialRule() {
 
   override fun getResult2(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)
-      ?.takeIf { sign -> planet === essentialImpl.getPoint(sign , Dignity.FALL).orElse(null) }
+      ?.takeIf { sign -> planet === essentialImpl.getPointOpt(sign , Dignity.FALL).orElse(null) }
       ?.let { "comment" to arrayOf(planet , it) }
   }
 }

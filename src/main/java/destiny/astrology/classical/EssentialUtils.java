@@ -35,13 +35,13 @@ public class EssentialUtils
 
     return h.getZodiacSignOpt(receivee).map(receiveeSign -> {
       //比對 Ruler
-      if (essentialImpl.getPoint(receiveeSign, Dignity.RULER).orElse(null) == receiver) {
+      if (essentialImpl.getPointOpt(receiveeSign, Dignity.RULER).orElse(null) == receiver) {
         logger.debug("{} 透過 {} 接納 {}" , receiver , Dignity.RULER  , receivee);
         return true;
       }
 
       //比對 Exaltation
-      if (essentialImpl.getPoint(receiveeSign, Dignity.EXALTATION).orElse(null) == receiver) {
+      if (essentialImpl.getPointOpt(receiveeSign, Dignity.EXALTATION).orElse(null) == receiver) {
         logger.debug("{} 透過 {} 接納 {}" , receiver , Dignity.EXALTATION , receivee);
         return true;
       }
@@ -77,9 +77,9 @@ public class EssentialUtils
   public boolean isReceivingFromDebilities(Point receiver , Point receivee , @NotNull Horoscope h) {
 
     return h.getZodiacSignOpt(receivee).map(receiveeSign -> {
-      if (essentialImpl.getPoint(receiveeSign , Dignity.DETRIMENT).orElse(null) == receiver)
+      if (essentialImpl.getPointOpt(receiveeSign , Dignity.DETRIMENT).orElse(null) == receiver)
         return true;
-      return essentialImpl.getPoint(receiveeSign, Dignity.FALL).orElse(null) == receiver;
+      return essentialImpl.getPointOpt(receiveeSign, Dignity.FALL).orElse(null) == receiver;
     }).orElse(false);
 
 //    ZodiacSign receiveeSign = h.getZodiacSign(receivee);
@@ -92,9 +92,9 @@ public class EssentialUtils
   public boolean isBothRulerVisit(Point planet , @NotNull Horoscope h) {
 
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
-      essentialImpl.getPoint(sign1, Dignity.RULER).map(signRuler ->
+      essentialImpl.getPointOpt(sign1, Dignity.RULER).map(signRuler ->
         h.getZodiacSignOpt(signRuler)
-          .filter(sign2 -> planet == essentialImpl.getPoint(sign2, Dignity.RULER).orElse(null))
+          .filter(sign2 -> planet == essentialImpl.getPointOpt(sign2, Dignity.RULER).orElse(null))
           .isPresent()
       )
     ).orElse(false);
@@ -109,26 +109,26 @@ public class EssentialUtils
   }
   
   /** 如果其中一顆星處於 {@link Dignity#DETRIMENT} 或是 {@link Dignity#FALL} , 則為 true */
-  public boolean isOneInBadSituation(Point p1 , ZodiacSign sign1 , Point p2 , ZodiacSign sign2)
+  public boolean isOneInBadSituation(@NotNull Point p1 ,@NotNull ZodiacSign sign1 , @NotNull Point p2 , @NotNull ZodiacSign sign2)
   {
     return (
-        p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT).orElse(null)
-     || p1 == essentialImpl.getPoint(sign1, Dignity.FALL).orElse(null)
+        p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT)
+     || p1 == essentialImpl.getPoint(sign1, Dignity.FALL)
     )
       || (
-        p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT).orElse(null)
-     || p2 == essentialImpl.getPoint(sign2, Dignity.FALL).orElse(null)
+        p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT)
+     || p2 == essentialImpl.getPoint(sign2, Dignity.FALL)
     );
   }
   
   /** 如果 兩顆星都處於 {@link Dignity#DETRIMENT} 或是  {@link Dignity#FALL} , 則為 true */
-  public boolean isBothInBadSituation(Point p1 , ZodiacSign sign1 , Point p2 , ZodiacSign sign2) {
+  public boolean isBothInBadSituation(@NotNull Point p1 , @NotNull ZodiacSign sign1 , @NotNull Point p2 , @NotNull ZodiacSign sign2) {
     return (
-      p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT).orElse(null)
-   || p1 == essentialImpl.getPoint(sign1, Dignity.FALL).orElse(null)
+      p1 == essentialImpl.getPoint(sign1, Dignity.DETRIMENT)
+   || p1 == essentialImpl.getPoint(sign1, Dignity.FALL)
     ) && (
-      p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT).orElse(null)
-   || p2 == essentialImpl.getPoint(sign2, Dignity.FALL).orElse(null)
+      p2 == essentialImpl.getPoint(sign2, Dignity.DETRIMENT)
+   || p2 == essentialImpl.getPoint(sign2, Dignity.FALL)
     );
   }
 

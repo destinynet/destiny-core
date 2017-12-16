@@ -56,10 +56,10 @@ class Peregrine(
 
     if (planetDeg != null && sign != null) {
       val dayNight = dayNightImpl.getDayNight(h.lmt , h.location)
-      if (planet !== essentialImpl.getPoint(sign, Dignity.RULER).orElse(null) &&
-          planet !== essentialImpl.getPoint(sign, Dignity.EXALTATION).orElse(null) &&
-          planet !== essentialImpl.getPoint(sign, Dignity.DETRIMENT).orElse(null) &&
-          planet !== essentialImpl.getPoint(sign, Dignity.FALL).orElse(null) &&
+      if (planet !== essentialImpl.getPointOpt(sign, Dignity.RULER).orElse(null) &&
+          planet !== essentialImpl.getPointOpt(sign, Dignity.EXALTATION).orElse(null) &&
+          planet !== essentialImpl.getPointOpt(sign, Dignity.DETRIMENT).orElse(null) &&
+          planet !== essentialImpl.getPointOpt(sign, Dignity.FALL).orElse(null) &&
           planet !== essentialImpl.getTermsPoint(sign, planetDeg) &&
           planet !== essentialImpl.getFacePoint(planetDeg)) {
         // 判定日夜 Triplicity

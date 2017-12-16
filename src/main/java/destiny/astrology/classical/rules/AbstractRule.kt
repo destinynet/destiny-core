@@ -20,7 +20,7 @@ abstract class AbstractRule protected constructor(private val resource: String) 
     return this?.let { p -> Tuple.tuple(p.first , p.second) }.let { Optional.ofNullable(it) }
   }
 
-  val logger = LoggerFactory.getLogger(javaClass)
+  val logger = LoggerFactory.getLogger(javaClass)!!
 
   private var locale = Locale.getDefault()
 

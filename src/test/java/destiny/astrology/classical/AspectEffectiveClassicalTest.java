@@ -11,8 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class AspectEffectiveClassicalTest
-{
+public class AspectEffectiveClassicalTest {
 
   /** 測試注入 PlanetOrbsDefaultImpl 的實作 */
   @Test
@@ -20,67 +19,67 @@ public class AspectEffectiveClassicalTest
     AspectEffectiveClassical impl = new AspectEffectiveClassical();
     impl.setPlanetOrbsImpl(new PointDiameterAlBiruniImpl());
     // 日月容許度 13.5
-    assertTrue (impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.5 , 90));
-    assertTrue (impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.5 , Aspect.SQUARE));
-    assertFalse(impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.6 , 90));
-    assertFalse(impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.6 , Aspect.SQUARE));
-    assertTrue (impl.isEffective(Planet.SUN, 113.5 , Planet.MOON, 10 , 90));
-    assertTrue (impl.isEffective(Planet.SUN, 113.5 , Planet.MOON, 10 , Aspect.SQUARE));
-    assertFalse(impl.isEffective(Planet.SUN, 113.6 , Planet.MOON, 10 , 90));
-    assertFalse(impl.isEffective(Planet.SUN, 113.6 , Planet.MOON, 10 , Aspect.SQUARE));
+    assertTrue(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.5, 90));
+    assertTrue(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.5, Aspect.SQUARE));
+    assertFalse(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.6, 90));
+    assertFalse(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.6, Aspect.SQUARE));
+    assertTrue(impl.isEffective(Planet.SUN, 113.5, Planet.MOON, 10, 90));
+    assertTrue(impl.isEffective(Planet.SUN, 113.5, Planet.MOON, 10, Aspect.SQUARE));
+    assertFalse(impl.isEffective(Planet.SUN, 113.6, Planet.MOON, 10, 90));
+    assertFalse(impl.isEffective(Planet.SUN, 113.6, Planet.MOON, 10, Aspect.SQUARE));
 
-    assertTrue (impl.isEffective(Planet.SUN, 340 , Planet.MOON, 113.5 , 120));
-    assertFalse(impl.isEffective(Planet.SUN, 340 , Planet.MOON, 113.6 , 120));
-    assertTrue (impl.isEffective(Planet.SUN, 113.5 , Planet.MOON, 340 , 120));
-    assertFalse(impl.isEffective(Planet.SUN, 113.6 , Planet.MOON, 340 , 120));
+    assertTrue(impl.isEffective(Planet.SUN, 340, Planet.MOON, 113.5, 120));
+    assertFalse(impl.isEffective(Planet.SUN, 340, Planet.MOON, 113.6, 120));
+    assertTrue(impl.isEffective(Planet.SUN, 113.5, Planet.MOON, 340, 120));
+    assertFalse(impl.isEffective(Planet.SUN, 113.6, Planet.MOON, 340, 120));
 
     //月水容許度 9.5
-    assertTrue (impl.isEffective(Planet.MOON, 10 , Planet.MERCURY, 90.5 , 90));
-    assertFalse(impl.isEffective(Planet.MOON, 10 , Planet.MERCURY, 90.4 , 90));
-    assertTrue (impl.isEffective(Planet.MOON, 90.5 , Planet.MERCURY, 10 , 90));
-    assertFalse(impl.isEffective(Planet.MOON, 90.4 , Planet.MERCURY, 10 , 90));
+    assertTrue(impl.isEffective(Planet.MOON, 10, Planet.MERCURY, 90.5, 90));
+    assertFalse(impl.isEffective(Planet.MOON, 10, Planet.MERCURY, 90.4, 90));
+    assertTrue(impl.isEffective(Planet.MOON, 90.5, Planet.MERCURY, 10, 90));
+    assertFalse(impl.isEffective(Planet.MOON, 90.4, Planet.MERCURY, 10, 90));
 
     //水金容許度 7
-    assertTrue (impl.isEffective(Planet.MERCURY, 20 , Planet.VENUS, 73 , 60));
-    assertFalse(impl.isEffective(Planet.MERCURY, 20 , Planet.VENUS, 72 , 60));
-    assertTrue (impl.isEffective(Planet.MERCURY, 87 , Planet.VENUS, 20 , 60));
-    assertFalse(impl.isEffective(Planet.MERCURY, 88 , Planet.VENUS, 20 , 60));
+    assertTrue(impl.isEffective(Planet.MERCURY, 20, Planet.VENUS, 73, 60));
+    assertFalse(impl.isEffective(Planet.MERCURY, 20, Planet.VENUS, 72, 60));
+    assertTrue(impl.isEffective(Planet.MERCURY, 87, Planet.VENUS, 20, 60));
+    assertFalse(impl.isEffective(Planet.MERCURY, 88, Planet.VENUS, 20, 60));
 
     //金火容許度 7.5
-    assertTrue (impl.isEffective(Planet.VENUS, 30 , Planet.MARS, 157.5 , 120));
-    assertFalse(impl.isEffective(Planet.VENUS, 30 , Planet.MARS, 157.6 , 120));
-    assertTrue (impl.isEffective(Planet.VENUS, 142.5 , Planet.MARS, 30 , 120));
-    assertFalse(impl.isEffective(Planet.VENUS, 142.4 , Planet.MARS, 30 , 120));
+    assertTrue(impl.isEffective(Planet.VENUS, 30, Planet.MARS, 157.5, 120));
+    assertFalse(impl.isEffective(Planet.VENUS, 30, Planet.MARS, 157.6, 120));
+    assertTrue(impl.isEffective(Planet.VENUS, 142.5, Planet.MARS, 30, 120));
+    assertFalse(impl.isEffective(Planet.VENUS, 142.4, Planet.MARS, 30, 120));
 
     //火木容許度 8.5
-    assertTrue (impl.isEffective(Planet.MARS, 0 , Planet.JUPITER, 278.5 , 90));
-    assertFalse(impl.isEffective(Planet.MARS, 0 , Planet.JUPITER, 278.6 , 90));
-    assertTrue (impl.isEffective(Planet.MARS, 261.5 , Planet.JUPITER, 0 , 90));
-    assertFalse(impl.isEffective(Planet.MARS, 261.4 , Planet.JUPITER, 0 , 90));
+    assertTrue(impl.isEffective(Planet.MARS, 0, Planet.JUPITER, 278.5, 90));
+    assertFalse(impl.isEffective(Planet.MARS, 0, Planet.JUPITER, 278.6, 90));
+    assertTrue(impl.isEffective(Planet.MARS, 261.5, Planet.JUPITER, 0, 90));
+    assertFalse(impl.isEffective(Planet.MARS, 261.4, Planet.JUPITER, 0, 90));
 
     //木土容許度 9
-    assertTrue (impl.isEffective(Planet.JUPITER, 0 , Planet.SATURN, 129 , 120));
-    assertFalse(impl.isEffective(Planet.JUPITER, 0 , Planet.SATURN, 130 , 120));
-    assertTrue (impl.isEffective(Planet.JUPITER, 231 , Planet.SATURN, 0 , 120));
-    assertFalse(impl.isEffective(Planet.JUPITER, 230 , Planet.SATURN, 0 , 120));
+    assertTrue(impl.isEffective(Planet.JUPITER, 0, Planet.SATURN, 129, 120));
+    assertFalse(impl.isEffective(Planet.JUPITER, 0, Planet.SATURN, 130, 120));
+    assertTrue(impl.isEffective(Planet.JUPITER, 231, Planet.SATURN, 0, 120));
+    assertFalse(impl.isEffective(Planet.JUPITER, 230, Planet.SATURN, 0, 120));
 
     //土天容許度 7
-    assertTrue (impl.isEffective(Planet.SATURN, 90 , Planet.URANUS, 23 , 60));
-    assertFalse(impl.isEffective(Planet.SATURN, 90 , Planet.URANUS, 22 , 60));
-    assertTrue (impl.isEffective(Planet.SATURN, 37 , Planet.URANUS, 90 , 60));
-    assertFalse(impl.isEffective(Planet.SATURN, 38 , Planet.URANUS, 90 , 60));
+    assertTrue(impl.isEffective(Planet.SATURN, 90, Planet.URANUS, 23, 60));
+    assertFalse(impl.isEffective(Planet.SATURN, 90, Planet.URANUS, 22, 60));
+    assertTrue(impl.isEffective(Planet.SATURN, 37, Planet.URANUS, 90, 60));
+    assertFalse(impl.isEffective(Planet.SATURN, 38, Planet.URANUS, 90, 60));
 
     //天海容許度 5
-    assertTrue (impl.isEffective(Planet.URANUS, 0 , Planet.NEPTUNE, 95 , 90));
-    assertFalse(impl.isEffective(Planet.URANUS, 0 , Planet.NEPTUNE, 96 , 90));
-    assertTrue (impl.isEffective(Planet.URANUS, 85 , Planet.NEPTUNE, 0 , 90));
-    assertFalse(impl.isEffective(Planet.URANUS, 84 , Planet.NEPTUNE, 0 , 90));
+    assertTrue(impl.isEffective(Planet.URANUS, 0, Planet.NEPTUNE, 95, 90));
+    assertFalse(impl.isEffective(Planet.URANUS, 0, Planet.NEPTUNE, 96, 90));
+    assertTrue(impl.isEffective(Planet.URANUS, 85, Planet.NEPTUNE, 0, 90));
+    assertFalse(impl.isEffective(Planet.URANUS, 84, Planet.NEPTUNE, 0, 90));
 
     //海冥容許度 5
-    assertTrue (impl.isEffective(Planet.NEPTUNE, 0 , Planet.PLUTO, 95 , 90));
-    assertFalse(impl.isEffective(Planet.NEPTUNE, 0 , Planet.PLUTO, 96 , 90));
-    assertTrue (impl.isEffective(Planet.NEPTUNE, 85 , Planet.PLUTO, 0 , 90));
-    assertFalse(impl.isEffective(Planet.NEPTUNE, 84 , Planet.PLUTO, 0 , 90));
+    assertTrue(impl.isEffective(Planet.NEPTUNE, 0, Planet.PLUTO, 95, 90));
+    assertFalse(impl.isEffective(Planet.NEPTUNE, 0, Planet.PLUTO, 96, 90));
+    assertTrue(impl.isEffective(Planet.NEPTUNE, 85, Planet.PLUTO, 0, 90));
+    assertFalse(impl.isEffective(Planet.NEPTUNE, 84, Planet.PLUTO, 0, 90));
   }
 
   /** 多重角度比對，只要一個成立，就該傳回 true */
@@ -89,15 +88,15 @@ public class AspectEffectiveClassicalTest
     AspectEffectiveClassical impl = new AspectEffectiveClassical();
     impl.setPlanetOrbsImpl(new PointDiameterAlBiruniImpl());
 
-    assertTrue (impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.5 , Aspect.SQUARE));
-    assertTrue (impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.5 , Aspect.SQUARE , Aspect.TRINE , Aspect.OPPOSITION));
-    assertTrue (impl.isEffective(Planet.SUN, 10 , Planet.MOON, 113.5 , Aspect.TRINE , Aspect.OPPOSITION , Aspect.SQUARE));
+    assertTrue(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.5, Aspect.SQUARE));
+    assertTrue(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.5, Aspect.SQUARE, Aspect.TRINE, Aspect.OPPOSITION));
+    assertTrue(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.5, Aspect.TRINE, Aspect.OPPOSITION, Aspect.SQUARE));
     assertFalse(impl.isEffective(Planet.SUN, 10, Planet.MOON, 113.5, Aspect.TRINE, Aspect.OPPOSITION, Aspect.CONJUNCTION));
 
     //月水容許度 9.5
-    assertTrue (impl.isEffective(Planet.MOON, 10 , Planet.MERCURY, 90.5 , Aspect.SQUARE));
-    assertFalse(impl.isEffective(Planet.MOON, 10 , Planet.MERCURY, 90.4 , Aspect.SQUARE , Aspect.TRINE));
-    assertTrue (impl.isEffective(Planet.MOON, 90.5 , Planet.MERCURY, 10 , Aspect.OPPOSITION , Aspect.CONJUNCTION , Aspect.SQUARE));
-    assertFalse(impl.isEffective(Planet.MOON, 90.4 , Planet.MERCURY, 10 , Aspect.OPPOSITION , Aspect.CONJUNCTION , Aspect.SQUARE));
+    assertTrue(impl.isEffective(Planet.MOON, 10, Planet.MERCURY, 90.5, Aspect.SQUARE));
+    assertFalse(impl.isEffective(Planet.MOON, 10, Planet.MERCURY, 90.4, Aspect.SQUARE, Aspect.TRINE));
+    assertTrue(impl.isEffective(Planet.MOON, 90.5, Planet.MERCURY, 10, Aspect.OPPOSITION, Aspect.CONJUNCTION, Aspect.SQUARE));
+    assertFalse(impl.isEffective(Planet.MOON, 90.4, Planet.MERCURY, 10, Aspect.OPPOSITION, Aspect.CONJUNCTION, Aspect.SQUARE));
   }
 }

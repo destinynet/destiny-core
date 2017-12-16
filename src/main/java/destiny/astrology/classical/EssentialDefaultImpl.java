@@ -10,7 +10,6 @@ import destiny.astrology.ZodiacSign;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities */
 public class EssentialDefaultImpl implements EssentialIF , Serializable 
@@ -29,8 +28,8 @@ public class EssentialDefaultImpl implements EssentialIF , Serializable
    *                                     但 {@link Dignity#EXALTATION} 與 {@link Dignity#FALL} 就有可能為 empty
    * */
   @Override
-  public Optional<Point> getPoint(ZodiacSign sign, Dignity dignity) {
-    return essentialRedfImpl.getPoint(sign, dignity);
+  public Point getPoint(@NotNull ZodiacSign sign, @NotNull Dignity dignity) {
+    return essentialRedfImpl.getPoint(sign, dignity).orElse(null);
   }
 
   @Override

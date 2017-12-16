@@ -30,7 +30,7 @@ public final class MixedReception extends Rule
 
   @Override
   public Optional<Tuple2<String, Object[]>> getResult(Planet planet, @NotNull Horoscope h) {
-    utils.setEssentialImpl(essentialImpl);
+    utils.setEssentialImpl(getEssentialImpl());
 
     Optional<Tuple2<String, Object[]>> result;
 
@@ -52,9 +52,9 @@ public final class MixedReception extends Rule
   private Optional<Tuple2<String, Object[]>> rulerExaltMutualReception(Horoscope h , Planet planet) {
 
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
-      essentialImpl.getPoint(sign1, Dignity.RULER).flatMap(signRuler ->
+      getEssentialImpl().getPointOpt(sign1, Dignity.RULER).flatMap(signRuler ->
         h.getZodiacSignOpt(signRuler).flatMap(sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.EXALTATION).flatMap(planet2 -> {
+          getEssentialImpl().getPointOpt(sign2 , Dignity.EXALTATION).flatMap(planet2 -> {
             if (planet == planet2 && !utils.isBothInBadSituation(planet , sign1 , signRuler , sign2)) {
               getLogger().debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容" , planet , sign1 , Dignity.RULER , signRuler ,sign2);
               return Optional.of(Tuple.tuple("commentRuler", new Object[]{planet, sign1, signRuler, sign2}));
@@ -96,9 +96,9 @@ public final class MixedReception extends Rule
   private Optional<Tuple2<String, Object[]>> exaltRulerMutualReception(Horoscope h , Planet planet) {
 
     return h.getZodiacSignOpt(planet).flatMap(sign1 ->
-      essentialImpl.getPoint(sign1, Dignity.EXALTATION).flatMap(thisSignExaltation ->
+      getEssentialImpl().getPointOpt(sign1, Dignity.EXALTATION).flatMap(thisSignExaltation ->
         h.getZodiacSignOpt(thisSignExaltation).flatMap(sign2 ->
-          essentialImpl.getPoint(sign2 , Dignity.RULER).flatMap(planet2 -> {
+          getEssentialImpl().getPointOpt(sign2 , Dignity.RULER).flatMap(planet2 -> {
             if (planet == planet2) {
               //已確定互容，要排除互陷
               //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨

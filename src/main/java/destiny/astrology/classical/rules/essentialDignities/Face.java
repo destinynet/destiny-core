@@ -19,14 +19,12 @@ import static java.util.Optional.empty;
 /** A planet in its own Chaldean decanate or face. */
 public final class Face extends Rule {
 
-  public Face() {
-  }
-
+  @NotNull
   @Override
   protected Optional<Tuple2<String, Object[]>> getResult(@NotNull Planet planet, @NotNull Horoscope h) {
 
     return h.getPositionOpt(planet).map(Position::getLng).flatMap(lngDeg -> {
-        Point facePoint = essentialImpl.getFacePoint(lngDeg);
+        Point facePoint = getEssentialImpl().getFacePoint(lngDeg);
         if (planet == facePoint) {
           getLogger().debug("{} 位於其 Chaldean decanate or face : {}" , planet , lngDeg);
           return Optional.of(Tuple.tuple("comment", new Object[]{planet, lngDeg}));
@@ -35,10 +33,5 @@ public final class Face extends Rule {
       }
     );
 
-//    if (planet == essentialImpl.getFacePoint(h.getPosition(planet).getLng())) {
-//      logger.debug("{} 位於其 Chaldean decanate or face : {}" , planet , h.getPosition(planet).getLng());
-//      return Optional.of(Tuple.tuple("comment", new Object[]{planet, h.getPosition(planet).getLng()}));
-//    }
-//    return empty();
   }
 }
