@@ -10,8 +10,6 @@ import destiny.astrology.ZodiacSign;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 /** 
  * Facade Interface of Essential Dignities and Deblitities <br>
  * 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面
@@ -25,11 +23,6 @@ public interface EssentialIF {
    */
   @Nullable
   Point getPoint(@NotNull ZodiacSign sign , @NotNull Dignity dignity);
-
-  @Deprecated
-  default Optional<Point> getPointOpt(ZodiacSign sign , Dignity dignity) {
-    return Optional.ofNullable(getPoint(sign , dignity));
-  }
 
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星  */
   @NotNull

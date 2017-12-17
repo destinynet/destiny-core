@@ -297,6 +297,7 @@ public class Horoscope implements Serializable {
   }
 
   /** 承上 , optional 版本 */
+  @Deprecated
   public Optional<ZodiacSign> getZodiacSignOpt(Point point) {
     return Optional.ofNullable(getZodiacSign(point));
   }
