@@ -8,15 +8,15 @@ import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.IBesieged
 import destiny.astrology.Planet
-import destiny.astrology.classical.DebilitiesIF
-import destiny.astrology.classical.RefranationIF
+import destiny.astrology.classical.IDebilities
+import destiny.astrology.classical.IRefranation
 import destiny.astrology.classical.rules.RuleIF
 import java.io.Serializable
 import java.util.*
 import javax.annotation.PostConstruct
 import javax.inject.Inject
 
-class DebilitiesBean : DebilitiesIF, Serializable {
+class DebilitiesBean : IDebilities, Serializable {
 
   /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作  */
   @Inject
@@ -26,7 +26,7 @@ class DebilitiesBean : DebilitiesIF, Serializable {
   private lateinit var besiegedImpl: IBesieged
 
   @Inject
-  private lateinit var refranationImpl: RefranationIF
+  private lateinit var refranationImpl: IRefranation
 
   private var rules: List<RuleIF> = ArrayList()
 

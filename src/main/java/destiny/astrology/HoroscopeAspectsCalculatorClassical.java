@@ -5,7 +5,7 @@
 package destiny.astrology;
 
 import destiny.astrology.classical.AspectEffectiveClassical;
-import destiny.astrology.classical.PointDiameterIF;
+import destiny.astrology.classical.IPointDiameter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -24,14 +24,14 @@ public class HoroscopeAspectsCalculatorClassical implements IHoroscopeAspectsCal
   }
   
   /** 設定交角容許度的實作，例如 ( PointDiameterAlBiruniImpl , 或是 PointDiameterLillyImpl ) */
-  public void setPlanetOrbsImpl(PointDiameterIF planetOrbsImpl)
+  public void setPlanetOrbsImpl(IPointDiameter planetOrbsImpl)
   {
     //System.out.println(getClass().getOptionalName() + " 設定交角容許實作：" + planetOrbsImpl.getTitle());
     classical.setPlanetOrbsImpl(planetOrbsImpl);
   }
   
   /** 取得交角容許度的實作，例如 ( PointDiameterAlBiruniImpl 或是 PointDiameterLillyImpl ) */
-  public PointDiameterIF getPlanetOrbsImpl()
+  public IPointDiameter getPlanetOrbsImpl()
   {
     return classical.getPointDiameterImpl();
   }

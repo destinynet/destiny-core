@@ -18,7 +18,7 @@ import java.util.Optional;
  * 取得星座 ( ZodiacSign ) 的 : 旺 Rulership , 廟 Exaltation , 陷 Detriment , 落 Fail <br/>
  * 內定實作為 托勒密表格
  */
-public class EssentialRedfDefaultImpl implements EssentialRedfIF , Serializable
+public class EssentialRedfDefaultImpl implements IEssentialRedf, Serializable
 {
   /** 存放星體在黃道帶上幾度得到 Exaltation (廟 , +4) 的度數 */
   private final static ImmutableMap<Point,Double> starExaltationMap = new ImmutableMap.Builder<Point, Double>()

@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities */
-public class EssentialDefaultImpl implements EssentialIF , Serializable 
+public class EssentialDefaultImpl implements IEssential, Serializable
 {
-  private EssentialRedfIF essentialRedfImpl = new EssentialRedfDefaultImpl();
-  private EssentialTriplicityIF triplicityImpl = new EssentialTriplicityDefaultImpl();
-  private EssentialTermsIF termsImpl = new EssentialTermsDefaultImpl();
-  private EssentialFaceIF faceImpl = new EssentialFaceDefaultImpl();
+  private IEssentialRedf essentialRedfImpl = new EssentialRedfDefaultImpl();
+  private IEssentialTriplicity triplicityImpl = new EssentialTriplicityDefaultImpl();
+  private IEssentialTerms termsImpl = new EssentialTermsDefaultImpl();
+  private IEssentialFace faceImpl = new EssentialFaceDefaultImpl();
   
   public EssentialDefaultImpl()
   {
@@ -68,22 +68,22 @@ public class EssentialDefaultImpl implements EssentialIF , Serializable
     return faceImpl.getFaceStar(sign, degree);
   }
 
-  public void setEssentialRedfImpl(EssentialRedfIF essentialRedfImpl)
+  public void setEssentialRedfImpl(IEssentialRedf essentialRedfImpl)
   {
     this.essentialRedfImpl = essentialRedfImpl;
   }
 
-  public void setTriplicityImpl(EssentialTriplicityIF triplicityImpl)
+  public void setTriplicityImpl(IEssentialTriplicity triplicityImpl)
   {
     this.triplicityImpl = triplicityImpl;
   }
 
-  public void setTermsImpl(EssentialTermsIF termsImpl)
+  public void setTermsImpl(IEssentialTerms termsImpl)
   {
     this.termsImpl = termsImpl;
   }
 
-  public void setFaceImpl(EssentialFaceIF faceImpl)
+  public void setFaceImpl(IEssentialFace faceImpl)
   {
     this.faceImpl = faceImpl;
   }

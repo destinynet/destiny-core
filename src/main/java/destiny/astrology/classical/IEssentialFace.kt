@@ -11,7 +11,7 @@ import destiny.astrology.ZodiacSign
  * 取得黃道帶上某點，其 Face 是哪顆星，目前參考資料只會回傳行星 Planet <br></br>
  * 內定實作為 EssentialFaceDefaultImpl
  */
-interface EssentialFaceIF {
+interface IEssentialFace {
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
   fun getFaceStar(degree: Double): Star

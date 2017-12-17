@@ -7,14 +7,14 @@ package destiny.astrology.classical.rules.essentialDignities
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.EssentialDignitiesIF
+import destiny.astrology.classical.IEssentialDignities
 import destiny.astrology.classical.rules.RuleIF
 import java.io.Serializable
 import java.util.*
 
 class EssentialDignitiesBean(
   /** 計算白天黑夜的實作   */
-  private var dayNightImpl: DayNightDifferentiator) : EssentialDignitiesIF, Serializable {
+  private var dayNightImpl: DayNightDifferentiator) : IEssentialDignities, Serializable {
 
   /** 內定的 Rules  */
   private val defaultRules: List<RuleIF>

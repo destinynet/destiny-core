@@ -23,16 +23,16 @@ import java.util.stream.Stream;
  */
 public class RulesBean implements Serializable {
 
-  private EssentialDignitiesIF essentialDignitiesImpl;
+  private IEssentialDignities essentialDignitiesImpl;
 
-  private AccidentalDignitiesIF accidentalDignitiesImpl;
+  private IAccidentalDignities accidentalDignitiesImpl;
 
-  private DebilitiesIF debilitiesBean;
+  private IDebilities debilitiesBean;
 
   protected RulesBean() {
   }
 
-  public RulesBean(EssentialDignitiesIF essentialDignitiesImpl, AccidentalDignitiesIF accidentalDignitiesImpl, DebilitiesIF debilitiesBean) {
+  public RulesBean(IEssentialDignities essentialDignitiesImpl, IAccidentalDignities accidentalDignitiesImpl, IDebilities debilitiesBean) {
     this.essentialDignitiesImpl = essentialDignitiesImpl;
     this.accidentalDignitiesImpl = accidentalDignitiesImpl;
     this.debilitiesBean = debilitiesBean;

@@ -24,23 +24,23 @@ import java.io.Serializable;
 public class AspectEffectiveClassical implements IAspectEffective, Serializable
 {
   /** 星芒交角 , 內定採用 PointDiameterAlBiruniImpl , 尚可選擇注入 PointDiameterLillyImpl */
-  private PointDiameterIF pointDiameterImpl;// = new PointDiameterAlBiruniImpl();
+  private IPointDiameter pointDiameterImpl;// = new PointDiameterAlBiruniImpl();
   
   protected AspectEffectiveClassical()
   {
   }
   
-  public AspectEffectiveClassical(PointDiameterIF planetOrbsImpl)
+  public AspectEffectiveClassical(IPointDiameter planetOrbsImpl)
   {
     this.pointDiameterImpl = planetOrbsImpl;
   }
   
-  public void setPlanetOrbsImpl(PointDiameterIF impl)
+  public void setPlanetOrbsImpl(IPointDiameter impl)
   {
     this.pointDiameterImpl = impl;
   }
 
-  public PointDiameterIF getPointDiameterImpl()
+  public IPointDiameter getPointDiameterImpl()
   {
     return pointDiameterImpl;
   }

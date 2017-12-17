@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * 參考資料 http://www.skyscript.co.uk/aspects.html
  * 比較少用，對比於內定的 PointDiameterAlBiruniImpl
  */
-public class PointDiameterLillyImpl implements PointDiameterIF , Serializable
+public class PointDiameterLillyImpl implements IPointDiameter, Serializable
 {
   private final static ImmutableMap<Point , Double> planetOrbsMap = new ImmutableMap.Builder<Point , Double>()
     .put(Planet.SUN, 17.0)

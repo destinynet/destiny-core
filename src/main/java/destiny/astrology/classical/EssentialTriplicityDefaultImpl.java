@@ -21,7 +21,7 @@ import java.io.Serializable;
  * 水相 | 火星 | 火星 
  * </pre>
  */
-public class EssentialTriplicityDefaultImpl implements EssentialTriplicityIF , Serializable
+public class EssentialTriplicityDefaultImpl implements IEssentialTriplicity, Serializable
 {
   private final static ImmutableMap<Element,Planet> dayMap = new ImmutableMap.Builder<Element , Planet>()
     .put(Element.FIRE  , Planet.SUN)

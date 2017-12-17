@@ -5,17 +5,17 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.*
-import destiny.astrology.classical.AccidentalDignitiesIF
+import destiny.astrology.classical.IAccidentalDignities
 import destiny.astrology.classical.ICollectionOfLight
-import destiny.astrology.classical.RefranationIF
-import destiny.astrology.classical.TranslationOfLightIF
+import destiny.astrology.classical.IRefranation
+import destiny.astrology.classical.ITranslationOfLight
 import destiny.astrology.classical.rules.RuleIF
 import java.io.Serializable
 import java.util.*
 import javax.annotation.PostConstruct
 import javax.inject.Inject
 
-class AccidentalDignitiesBean : AccidentalDignitiesIF, Serializable {
+class AccidentalDignitiesBean : IAccidentalDignities, Serializable {
   /** 計算兩星體呈現某交角的時間 , 內定採用 SwissEph 的實作  */
   @Inject
   private lateinit var relativeTransitImpl: IRelativeTransit
@@ -25,13 +25,13 @@ class AccidentalDignitiesBean : AccidentalDignitiesIF, Serializable {
   lateinit var dayNightImpl: DayNightDifferentiator
 
   @Inject
-  private lateinit var translationOfLightImpl: TranslationOfLightIF
+  private lateinit var translationOfLightImpl: ITranslationOfLight
 
   @Inject
   private lateinit var collectionOfLightImpl: ICollectionOfLight
 
   @Inject
-  private lateinit var refranationImpl: RefranationIF
+  private lateinit var refranationImpl: IRefranation
 
   @Inject
   private lateinit var besiegedImpl: IBesieged

@@ -13,7 +13,7 @@ import java.io.Serializable;
 /**
  * Essential Terms , 內定實作 , 參考 Ptolemy's Table , 以五分法
  */
-public class EssentialTermsDefaultImpl implements EssentialTermsIF , Serializable {
+public class EssentialTermsDefaultImpl implements IEssentialTerms, Serializable {
 
   private final static ImmutableList<PointDegree> degList = new ImmutableList.Builder<PointDegree>()
     //戌

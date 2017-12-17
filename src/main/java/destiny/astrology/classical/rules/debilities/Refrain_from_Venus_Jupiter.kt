@@ -7,9 +7,9 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.astrology.Point
-import destiny.astrology.classical.RefranationIF
+import destiny.astrology.classical.IRefranation
 
-class Refrain_from_Venus_Jupiter(private val refranationImpl: RefranationIF) : Rule() {
+class Refrain_from_Venus_Jupiter(private val refranationImpl: IRefranation) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     // 太陽 / 月亮不會逆行

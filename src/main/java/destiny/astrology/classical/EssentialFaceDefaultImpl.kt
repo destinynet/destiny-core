@@ -23,7 +23,7 @@ import java.io.Serializable
  * 土星若與日月呈現150度角，則得 Face<br></br>
  *
  */
-class EssentialFaceDefaultImpl : EssentialFaceIF, Serializable {
+class EssentialFaceDefaultImpl : IEssentialFace, Serializable {
 
   override fun getFaceStar(degree: Double): Star {
     val index = (Utils.getNormalizeDegree(degree) / 10).toInt()

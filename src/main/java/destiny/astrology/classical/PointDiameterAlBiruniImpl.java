@@ -17,7 +17,7 @@ import java.util.Locale;
  * 參考資料 http://www.skyscript.co.uk/aspects.html
  * 尚有 PointDiameterLillyImpl 的實作可供比對
  */
-public class PointDiameterAlBiruniImpl implements PointDiameterIF , Serializable
+public class PointDiameterAlBiruniImpl implements IPointDiameter, Serializable
 {
   private final static ImmutableMap<Planet,Double> planetOrbsMap = new ImmutableMap.Builder<Planet , Double>()
     .put(Planet.SUN, 15.0)

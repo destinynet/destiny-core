@@ -15,7 +15,7 @@ class EssentialUtils(
   /** 內定採用 Swiss Ephemeris 的 DayNightDifferentiatorImpl  */
   private val dayNightDifferentiatorImpl: DayNightDifferentiator// = new DayNightDifferentiatorImpl(new RiseTransImpl());
 ) {
-  private var essentialImpl: EssentialIF = EssentialDefaultImpl()
+  private var essentialImpl: IEssential = EssentialDefaultImpl()
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -91,7 +91,7 @@ class EssentialUtils(
     return (p1 === essentialImpl.getPoint(sign1, Dignity.DETRIMENT) || p1 === essentialImpl.getPoint(sign1, Dignity.FALL)) && (p2 === essentialImpl.getPoint(sign2, Dignity.DETRIMENT) || p2 === essentialImpl.getPoint(sign2, Dignity.FALL))
   }
 
-  fun setEssentialImpl(essentialImpl: EssentialIF) {
+  fun setEssentialImpl(essentialImpl: IEssential) {
     this.essentialImpl = essentialImpl
   }
 
