@@ -36,7 +36,7 @@ class AccidentalDignitiesBean : IAccidentalDignities, Serializable {
   @Inject
   private lateinit var besiegedImpl: IBesieged
 
-  private var rules: List<RuleIF> = ArrayList()
+  override lateinit var rules: List<RuleIF>
 
   /** 內定的 Rules  */
   private val defaultRules: List<RuleIF>
@@ -82,9 +82,6 @@ class AccidentalDignitiesBean : IAccidentalDignities, Serializable {
       .toList()
   }
 
-  override fun getRules(): List<RuleIF> {
-    return rules
-  }
 
   fun setRelativeTransitImpl(relativeTransitImpl: IRelativeTransit) {
     this.relativeTransitImpl = relativeTransitImpl

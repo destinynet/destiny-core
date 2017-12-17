@@ -28,7 +28,7 @@ class DebilitiesBean : IDebilities, Serializable {
   @Inject
   private lateinit var refranationImpl: IRefranation
 
-  private var rules: List<RuleIF> = ArrayList()
+  override lateinit var rules: List<RuleIF>
 
 
   private val defaultRules: List<RuleIF>
@@ -71,8 +71,5 @@ class DebilitiesBean : IDebilities, Serializable {
       .toList()
   }
 
-  override fun getRules(): List<RuleIF> {
-    return rules
-  }
 
 }

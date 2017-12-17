@@ -13,8 +13,10 @@ import java.io.Serializable
 import java.util.*
 
 class EssentialDignitiesBean(
+
   /** 計算白天黑夜的實作   */
   private var dayNightImpl: DayNightDifferentiator) : IEssentialDignities, Serializable {
+
 
   /** 內定的 Rules  */
   private val defaultRules: List<RuleIF>
@@ -38,9 +40,7 @@ class EssentialDignitiesBean(
       .toList()
   }
 
-  override fun getRules(): List<RuleIF> {
-    return defaultRules
-  }
+  override  var rules : List<RuleIF>  = defaultRules
 
 
 }
