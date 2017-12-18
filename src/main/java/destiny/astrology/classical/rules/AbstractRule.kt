@@ -14,7 +14,7 @@ import java.io.Serializable
 import java.text.MessageFormat
 import java.util.*
 
-abstract class AbstractRule protected constructor(private val resource: String) : RuleIF, Serializable, ILocaleString {
+abstract class AbstractRule protected constructor(private val resource: String) : IRule, Serializable, ILocaleString {
 
   fun Pair<String, Array<Any>>?.toOld() : Optional<Tuple2<String, Array<Any>>> {
     return this?.let { p -> Tuple.tuple(p.first , p.second) }.let { Optional.ofNullable(it) }

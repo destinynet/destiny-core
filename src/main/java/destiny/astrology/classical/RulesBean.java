@@ -6,10 +6,9 @@ package destiny.astrology.classical;
 
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
-import destiny.astrology.classical.rules.RuleIF;
+import destiny.astrology.classical.rules.IRule;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.util.List;
@@ -49,15 +48,15 @@ public class RulesBean implements Serializable {
   }
 
   @NotNull
-  public List<Tuple2<RuleIF , String>> getRuleAndComments(Planet planet , Horoscope h , Locale locale) {
+  public List<Pair<IRule, String>> getRuleAndComments(Planet planet , Horoscope h , Locale locale) {
     return Stream.of(
       essentialDignitiesImpl.getRules().stream() ,
       accidentalDignitiesImpl.getRules().stream() ,
       debilitiesBean.getRules().stream()
     ).flatMap(x -> x)
-      .map(rule -> Tuple.tuple(rule , rule.getCommentOpt(planet , h , locale)))
-      .filter(t2 -> t2.v2().isPresent())
-      .map(t2 -> Tuple.tuple(t2.v1() , t2.v2().get()))
+      .map(rule -> new Pair<>(rule , rule.getComment(planet , h , locale)))
+      .filter(t2 -> t2.getSecond() != null)
+      .map(t2 -> new Pair<>(t2.getFirst() , t2.getSecond()))
       .collect(Collectors.toList());
   }
 }

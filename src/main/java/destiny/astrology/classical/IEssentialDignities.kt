@@ -6,7 +6,7 @@ package destiny.astrology.classical
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.rules.RuleIF
+import destiny.astrology.classical.rules.IRule
 import java.util.*
 
 /**
@@ -15,7 +15,7 @@ import java.util.*
  */
 interface IEssentialDignities {
 
-  val rules: List<RuleIF>
+  val rules: List<IRule>
 
   fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String>
 }

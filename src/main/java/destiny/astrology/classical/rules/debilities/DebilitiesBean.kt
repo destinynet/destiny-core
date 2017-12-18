@@ -10,7 +10,7 @@ import destiny.astrology.IBesieged
 import destiny.astrology.Planet
 import destiny.astrology.classical.IDebilities
 import destiny.astrology.classical.IRefranation
-import destiny.astrology.classical.rules.RuleIF
+import destiny.astrology.classical.rules.IRule
 import java.io.Serializable
 import java.util.*
 import javax.annotation.PostConstruct
@@ -28,10 +28,10 @@ class DebilitiesBean : IDebilities, Serializable {
   @Inject
   private lateinit var refranationImpl: IRefranation
 
-  override lateinit var rules: List<RuleIF>
+  override lateinit var rules: List<IRule>
 
 
-  private val defaultRules: List<RuleIF>
+  private val defaultRules: List<IRule>
     get() {
       return listOf(
           Detriment()
@@ -65,9 +65,9 @@ class DebilitiesBean : IDebilities, Serializable {
 
   override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules
-      .map { it.getCommentOpt(planet, h, locale) }
-      .filter { it.isPresent }
-      .map { it.get() }
+      .map { it.getComment(planet , h , locale) }
+      .filter { it != null }
+      .map { it -> it!! }
       .toList()
   }
 

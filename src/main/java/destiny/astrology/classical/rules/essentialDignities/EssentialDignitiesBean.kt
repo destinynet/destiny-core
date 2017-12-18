@@ -8,7 +8,7 @@ import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.IEssentialDignities
-import destiny.astrology.classical.rules.RuleIF
+import destiny.astrology.classical.rules.IRule
 import java.io.Serializable
 import java.util.*
 
@@ -19,7 +19,7 @@ class EssentialDignitiesBean(
 
 
   /** 內定的 Rules  */
-  private val defaultRules: List<RuleIF>
+  private val defaultRules: List<IRule>
     get() {
       return listOf(
         Ruler(dayNightImpl)
@@ -34,13 +34,13 @@ class EssentialDignitiesBean(
 
   override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules
-      .map { it.getCommentOpt(planet, h, locale) }
-      .filter { it.isPresent }
-      .map { it.get() }
+      .map { it.getComment(planet , h , locale) }
+      .filter { it != null }
+      .map { it -> it!! }
       .toList()
   }
 
-  override  var rules : List<RuleIF>  = defaultRules
+  override  var rules : List<IRule>  = defaultRules
 
 
 }

@@ -4,8 +4,8 @@
  */
 package destiny.astrology.classical.rules.debilities;
 
-import destiny.astrology.classical.rules.RuleIF;
+import destiny.astrology.classical.rules.IRule;
 
-public interface Applicable extends RuleIF {
+public interface Applicable extends IRule {
 
 }

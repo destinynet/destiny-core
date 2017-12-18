@@ -11,10 +11,8 @@ import destiny.astrology.ZodiacSign
 import org.slf4j.LoggerFactory
 
 /** EssentialIF 的工具箱  */
-class EssentialUtils(
-  /** 內定採用 Swiss Ephemeris 的 DayNightDifferentiatorImpl  */
-  private val dayNightDifferentiatorImpl: DayNightDifferentiator// = new DayNightDifferentiatorImpl(new RiseTransImpl());
-) {
+class EssentialUtils(private val dayNightImpl: DayNightDifferentiator) {
+
   private var essentialImpl: IEssential = EssentialDefaultImpl()
 
   private val logger = LoggerFactory.getLogger(javaClass)
@@ -35,7 +33,7 @@ class EssentialUtils(
           logger.debug("{} 透過 {} 接納 {}", receiver, Dignity.EXALTATION, receivee)
           true
         }
-        essentialImpl.getTriplicityPoint(receiveeSign, dayNightDifferentiatorImpl.getDayNight(h.lmt, h.location)) -> {
+        essentialImpl.getTriplicityPoint(receiveeSign, dayNightImpl.getDayNight(h.lmt, h.location)) -> {
           logger.debug("{} 透過 Triplicity 接納 {}", receiver, receivee)
           true
         }
