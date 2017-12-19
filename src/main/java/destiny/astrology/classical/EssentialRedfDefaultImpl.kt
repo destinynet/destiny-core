@@ -4,15 +4,13 @@
  */
 package destiny.astrology.classical
 
-import com.google.common.collect.ImmutableMap
 import destiny.astrology.*
 import destiny.astrology.ZodiacSign.*
 import destiny.astrology.classical.Dignity.*
 import java.io.Serializable
-import java.util.*
 
 /**
- * 取得星座 ( ZodiacSign ) 的 : 旺 Rulership , 廟 Exaltation , 陷 Detriment , 落 Fail <br></br>
+ * 取得星座 ( ZodiacSign ) 的 : 旺 Rulership , 廟 Exaltation , 陷 Detriment , 落 Fail
  * 內定實作為 托勒密表格
  */
 class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
@@ -55,51 +53,29 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
 
   companion object {
     /** 存放星體在黃道帶上幾度得到 Exaltation (廟 , +4) 的度數  */
-    private val starExaltationMap = ImmutableMap.Builder<Point, Double>()
-      .put(Planet.SUN, 19.0) // 太陽在戌宮 19度 exalted.
-      .put(Planet.MOON, 33.0) // 月亮在酉宮 03度 exalted.
-      .put(Planet.MERCURY, 165.0) // 水星在巳工 15度 exalted.
-      .put(Planet.VENUS, 357.0) // 金星在亥宮 27度 exalted.
-      .put(Planet.MARS, 298.0) // 火星在丑宮 28度 exalted.
-      .put(Planet.JUPITER, 105.0) // 木星在未宮 15度 exalted.
-      .put(Planet.SATURN, 201.0) // 土星在辰宮 21度 exalted.
-      .put(LunarNode.NORTH_TRUE, 63.0) //北交點在 申宮 03度 exalted.
-      .put(LunarNode.NORTH_MEAN, 63.0) //北交點在 申宮 03度 exalted.
-      .put(LunarNode.SOUTH_TRUE, 243.0) //南交點在 寅宮 03度 exalted.
-      .put(LunarNode.SOUTH_MEAN, 243.0) //南交點在 寅宮 03度 exalted.
-      .build()
+    private val starExaltationMap = mapOf<Point, Double>(
+       Planet.SUN to 19.0  // 太陽在戌宮 19度 exalted.
+      ,Planet.MOON to 33.0  // 月亮在酉宮 03度 exalted.
+      ,Planet.MERCURY to 165.0  // 水星在巳工 15度 exalted.
+      ,Planet.VENUS to 357.0  // 金星在亥宮 27度 exalted.
+      ,Planet.MARS to 298.0  // 火星在丑宮 28度 exalted.
+      ,Planet.JUPITER to 105.0  // 木星在未宮 15度 exalted.
+      ,Planet.SATURN to 201.0  // 土星在辰宮 21度 exalted.
+      ,LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
+      ,LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
+      ,LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
+      ,LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
+    )
 
-    /*
-     private static Map<Point , Double> starExaltationMap = Collections.synchronizedMap(new HashMap<Point , Double>());
-     static
-     {
-       starExaltationMap.put(Planet.SUN    ,  19.0); // 太陽在戌宮 19度 exalted.
-       starExaltationMap.put(Planet.MOON   ,  33.0); // 月亮在酉宮 03度 exalted.
-       starExaltationMap.put(Planet.MERCURY, 165.0); // 水星在巳工 15度 exalted.
-       starExaltationMap.put(Planet.VENUS  , 357.0); // 金星在亥宮 27度 exalted.
-       starExaltationMap.put(Planet.MARS   , 298.0); // 火星在丑宮 28度 exalted.
-       starExaltationMap.put(Planet.JUPITER, 105.0); // 木星在未宮 15度 exalted.
-       starExaltationMap.put(Planet.SATURN , 201.0); // 土星在辰宮 21度 exalted.
-       starExaltationMap.put(LunarNode.NORTH_TRUE ,  63.0); //北交點在 申宮 03度 exalted.
-       starExaltationMap.put(LunarNode.SOUTH_TRUE , 243.0); //南交點在 寅宮 03度 exalted.
-     }
-     */
 
     /**
      * 放星體在黃道帶上幾度得到 Fall (落 , -4) 的度數
      * 前面 starExaltationMap 中，每個星體的度數 +180度即為「落」
      */
-    private val starFallMap = HashMap<Point, Double>()
 
-    init {
-      for (eachPoint in starExaltationMap.keys)
-        starFallMap.put(eachPoint, Utils.getNormalizeDegree(starExaltationMap[eachPoint]!! + 180))
-    }
-
-    /** 星座 + 強弱度 的組合 key , 中間以減號 (-) 串接  */
-    private fun getCompositeKey(sign: ZodiacSign, dignity: Dignity): String {
-      return sign.toString() + '-' + dignity.toString()
-    }
+    private val starFallMap = starExaltationMap.keys.map {
+        it to Utils.getNormalizeDegree(starExaltationMap[it]!! + 180)
+      }.toMap()
 
     private val rulerMap = mapOf<Pair<ZodiacSign, Dignity>, Planet>(
       (ARIES to RULER) to Planet.MARS,
@@ -125,38 +101,6 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
       it
     }.toMap()
 
-    /** key 為 Sign-Dignity , 中間以 '-' 串接  */
-
-
-    init {
-//      /** 設定 Rulership (旺 , +5)  */
-//      essentialDignitiesMap.put(getCompositeKey(ARIES, RULER), Planet.MARS)
-//      essentialDignitiesMap.put(getCompositeKey(TAURUS, RULER), Planet.VENUS)
-//      essentialDignitiesMap.put(getCompositeKey(GEMINI, RULER), Planet.MERCURY)
-//      essentialDignitiesMap.put(getCompositeKey(CANCER, RULER), Planet.MOON)
-//      essentialDignitiesMap.put(getCompositeKey(LEO, RULER), Planet.SUN)
-//      essentialDignitiesMap.put(getCompositeKey(VIRGO, RULER), Planet.MERCURY)
-//      essentialDignitiesMap.put(getCompositeKey(LIBRA, RULER), Planet.VENUS)
-//      essentialDignitiesMap.put(getCompositeKey(SCORPIO, RULER), Planet.MARS)
-//      essentialDignitiesMap.put(getCompositeKey(SAGITTARIUS, RULER), Planet.JUPITER)
-//      essentialDignitiesMap.put(getCompositeKey(CAPRICORN, RULER), Planet.SATURN)
-//      essentialDignitiesMap.put(getCompositeKey(AQUARIUS, RULER), Planet.SATURN)
-//      essentialDignitiesMap.put(getCompositeKey(PISCES, RULER), Planet.JUPITER)
-//
-//      /**  設定 Detriment (陷 , -5) , 其值為對沖星座之 Ruler  */
-//      essentialDignitiesMap.put(getCompositeKey(ARIES, DETRIMENT), essentialDignitiesMap[getCompositeKey(ARIES.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(TAURUS, DETRIMENT), essentialDignitiesMap[getCompositeKey(TAURUS.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(GEMINI, DETRIMENT), essentialDignitiesMap[getCompositeKey(GEMINI.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(CANCER, DETRIMENT), essentialDignitiesMap[getCompositeKey(CANCER.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(LEO, DETRIMENT), essentialDignitiesMap[getCompositeKey(LEO.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(VIRGO, DETRIMENT), essentialDignitiesMap[getCompositeKey(VIRGO.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(LIBRA, DETRIMENT), essentialDignitiesMap[getCompositeKey(LIBRA.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(SCORPIO, DETRIMENT), essentialDignitiesMap[getCompositeKey(SCORPIO.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(SAGITTARIUS, DETRIMENT), essentialDignitiesMap[getCompositeKey(SAGITTARIUS.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(CAPRICORN, DETRIMENT), essentialDignitiesMap[getCompositeKey(CAPRICORN.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(AQUARIUS, DETRIMENT), essentialDignitiesMap[getCompositeKey(AQUARIUS.oppositeSign, RULER)])
-//      essentialDignitiesMap.put(getCompositeKey(PISCES, DETRIMENT), essentialDignitiesMap[getCompositeKey(PISCES.oppositeSign, RULER)])
-    }
   }
 
 }
