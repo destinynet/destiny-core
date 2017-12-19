@@ -53,7 +53,7 @@ class DebilitiesBean : IDebilities, Serializable {
         , Partile_Square_Mars_Saturn()
         , Conj_Algol()
         , Out_of_Sect(dayNightImpl)
-        , MutualDeception(dayNightImpl)
+        , MutualDeception()
         , Refrain_from_Venus_Jupiter(refranationImpl)
       )
     }

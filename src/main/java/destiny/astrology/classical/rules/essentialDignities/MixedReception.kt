@@ -4,22 +4,18 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.EssentialUtils
 
 /**
  * 廟旺互容 <br></br>
  * 舉例：水星到摩羯，火星到雙子 <br></br>
  * 摩羯為火星 Exaltation 之星座，雙子為水星 Ruler 之星座
  */
-class MixedReception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule() {
-  private val utils: EssentialUtils = EssentialUtils(dayNightDifferentiatorImpl)
+class MixedReception : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    utils.setEssentialImpl(essentialImpl)
     return rulerExaltMutualReception(h, planet) ?: exaltRulerMutualReception(h, planet)
   }
 
@@ -39,7 +35,7 @@ class MixedReception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule(
             planet === planet2
           }?.takeIf {
             // 兩星並沒有同時陷落
-            !utils.isBothInBadSituation(planet, sign1, signRuler, sign2)
+            !essentialImpl.isBothInBadSituation(planet, sign1, signRuler, sign2)
           }?.let {
             logger.debug("[RULER/EXALT] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 旺廟互容", planet, sign1, Dignity.RULER, signRuler, sign2)
             "commentRuler" to arrayOf(planet, sign1, signRuler, sign2)
@@ -66,7 +62,7 @@ class MixedReception(dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule(
             planet === planet2
           }?.takeIf {
             //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
-            !utils.isBothInBadSituation(planet, sign1, signExalt, sign2)
+            !essentialImpl.isBothInBadSituation(planet, sign1, signExalt, sign2)
           }?.let {
             logger.debug("[EXALT/RULER] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
             "commentExaltation" to arrayOf(planet, sign1, signExalt, sign2)

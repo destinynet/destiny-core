@@ -7,9 +7,6 @@ package destiny.astrology.classical.rules.essentialDignities
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.EssentialDefaultImpl
-import destiny.astrology.classical.EssentialUtils
-import destiny.astrology.classical.IEssential
 import destiny.astrology.classical.IEssentialDignities
 import destiny.astrology.classical.rules.*
 import destiny.astrology.classical.rules.Rule
@@ -28,7 +25,7 @@ class EssentialDignitiesBean(
       return listOf(
         Ruler(dayNightImpl)
         , Exaltation(dayNightImpl)
-        , MixedReception(dayNightImpl)
+        , MixedReception()
         , Triplicity(dayNightImpl)
         , Term()
         , Face()
@@ -53,15 +50,12 @@ class EssentialDignitiesBean(
 
   private val predicates: List<AbstractRulePredicate<Rule>>
     get() {
-      val essentialImpl : IEssential = EssentialDefaultImpl()
-      val utils = EssentialUtils(dayNightImpl)
-      utils.setEssentialImpl(essentialImpl)
       return listOf(
         RulerRredicate(),
         ExaltPredicate(),
         TermPredicate(),
         TriplicityPredicate(dayNightImpl),
-        BeneficialMutualReceptionPredicate(utils)
+        BeneficialMutualReceptionPredicate()
       )
     }
 

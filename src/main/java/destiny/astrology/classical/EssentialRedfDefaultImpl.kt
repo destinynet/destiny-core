@@ -78,18 +78,18 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
       }.toMap()
 
     private val rulerMap = mapOf<Pair<ZodiacSign, Dignity>, Planet>(
-      (ARIES to RULER) to Planet.MARS,
-      (TAURUS to RULER) to Planet.VENUS,
-      (GEMINI to RULER) to Planet.MERCURY,
-      (CANCER to RULER) to Planet.MOON,
-      (LEO to RULER) to Planet.SUN,
-      (VIRGO to RULER) to Planet.MERCURY,
-      (LIBRA to RULER) to Planet.VENUS,
-      (SCORPIO to RULER) to Planet.MARS,
+      (ARIES       to RULER) to Planet.MARS,
+      (TAURUS      to RULER) to Planet.VENUS,
+      (GEMINI      to RULER) to Planet.MERCURY,
+      (CANCER      to RULER) to Planet.MOON,
+      (LEO         to RULER) to Planet.SUN,
+      (VIRGO       to RULER) to Planet.MERCURY,
+      (LIBRA       to RULER) to Planet.VENUS,
+      (SCORPIO     to RULER) to Planet.MARS,
       (SAGITTARIUS to RULER) to Planet.JUPITER,
-      (CAPRICORN to RULER) to Planet.SATURN,
-      (AQUARIUS to RULER) to Planet.SATURN,
-      (PISCES to RULER) to Planet.JUPITER
+      (CAPRICORN   to RULER) to Planet.SATURN,
+      (AQUARIUS    to RULER) to Planet.SATURN,
+      (PISCES      to RULER) to Planet.JUPITER
     )
 
     private val essDigMap: Map<Pair<ZodiacSign, Dignity>, Planet> = rulerMap.toMutableMap().let {

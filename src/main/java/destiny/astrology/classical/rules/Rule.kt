@@ -16,7 +16,8 @@ import destiny.astrology.classical.Dignity
 enum class RuleType {
   EssentialDignity,
   AccidentalDignity,
-  Debility
+  Debility ,
+  Neutral // 中立，不確定好、或壞
 }
 
 sealed class Rule(val type: RuleType , val parent:Rule? = null) {
