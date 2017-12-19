@@ -63,7 +63,7 @@ class TriplicityPredicate(private val dayNightImpl: DayNightDifferentiator) : Ab
   }
 }
 
-class BeneficialMutlalReceptionPredicate(private val utils: EssentialUtils) : AbstractRulePredicate<Rule.BeneficialMutualReception>() {
+class BeneficialMutualReceptionPredicate(private val utils: EssentialUtils) : AbstractRulePredicate<Rule.BeneficialMutualReception>() {
 
   override fun getRule(p: Planet, h: Horoscope): Rule.BeneficialMutualReception? {
     return mutualReception(p, h, Dignity.RULER, Dignity.RULER)
@@ -72,19 +72,49 @@ class BeneficialMutlalReceptionPredicate(private val utils: EssentialUtils) : Ab
       ?: mutualReception(p, h, Dignity.EXALTATION, Dignity.RULER)
   }
 
-  private fun mutualReception(p: Planet, h: Horoscope, d1: Dignity, d2: Dignity): Rule.BeneficialMutualReception? {
+  private fun mutualReception(p: Planet, h: Horoscope, dig1: Dignity, dig2: Dignity): Rule.BeneficialMutualReception? {
     return h.getZodiacSign(p)
       ?.let { sign1 ->
-        essentialImpl.getPoint(sign1, d1)
+        essentialImpl.getPoint(sign1, dig1)
           ?.takeIf { planet2 -> p != planet2 }
           ?.let { planet2 ->
             h.getZodiacSign(planet2)
-              ?.takeIf { sign2 -> p === essentialImpl.getPoint(sign2, d2) }
+              ?.takeIf { sign2 -> p === essentialImpl.getPoint(sign2, dig2) }
               ?.takeIf { sign2 -> !utils.isBothInBadSituation(p, sign1, planet2, sign2) }
               ?.let { sign2 ->
-                Rule.BeneficialMutualReception(p, sign1, planet2 as Planet, sign2)
+                Rule.BeneficialMutualReception(p, sign1, dig1, planet2 as Planet, sign2, dig2)
               }
           }
       }
   }
 }
+
+class MutualReceptionPredicate(private val utils: EssentialUtils) : AbstractRulePredicate<Mutual>() {
+  override fun getRule(p: Planet, h: Horoscope): Mutual? {
+    return goodMutualReception(p, h, Dignity.RULER, Dignity.RULER)
+  }
+
+  private fun goodMutualReception(p: Planet, h: Horoscope, dig1: Dignity, dig2: Dignity): Mutual? {
+    return h.getZodiacSign(p)
+      ?.let { sign1 ->
+        essentialImpl.getPoint(sign1, dig1)
+          ?.takeIf { planet2 -> p != planet2 }
+          ?.let { planet2 ->
+            h.getZodiacSign(planet2)
+              ?.takeIf { sign2 -> p === essentialImpl.getPoint(sign2, dig2) }
+              //?.takeIf { sign2 -> !utils.isBothInBadSituation(p, sign1, planet2, sign2) }
+              ?.let { sign2 ->
+                return when (dig1 to dig2) {
+                  (Dignity.RULER to Dignity.RULER) -> Mutual.MutualRuler(p, sign1, planet2 as Planet, sign2)
+                  (Dignity.EXALTATION to Dignity.EXALTATION) -> Mutual.MutualExalt(p, sign1, planet2 as Planet, sign2)
+                  (Dignity.FALL to Dignity.FALL) -> Mutual.MutualFall(p , sign1 , planet2 as Planet , sign2)
+                  (Dignity.DETRIMENT to Dignity.DETRIMENT) -> Mutual.MutualDetriment(p , sign1 , planet2 as Planet , sign2)
+                  else -> null
+                }
+              }
+          }
+      }
+  }
+
+}
+

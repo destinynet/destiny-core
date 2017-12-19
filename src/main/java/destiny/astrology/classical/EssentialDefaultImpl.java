@@ -1,7 +1,7 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/12/12 at 下午 8:35:16
- */ 
+ */
 package destiny.astrology.classical;
 
 import destiny.astrology.DayNight;
@@ -12,15 +12,17 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities */
-public class EssentialDefaultImpl implements IEssential, Serializable
-{
+public class EssentialDefaultImpl implements IEssential, Serializable {
+
   private IEssentialRedf essentialRedfImpl = new EssentialRedfDefaultImpl();
+
   private IEssentialTriplicity triplicityImpl = new EssentialTriplicityDefaultImpl();
+
   private IEssentialTerms termsImpl = new EssentialTermsDefaultImpl();
+
   private IEssentialFace faceImpl = new EssentialFaceDefaultImpl();
-  
-  public EssentialDefaultImpl()
-  {
+
+  public EssentialDefaultImpl() {
   }
 
   /**
@@ -29,13 +31,13 @@ public class EssentialDefaultImpl implements IEssential, Serializable
    * */
   @Override
   public Point getPoint(@NotNull ZodiacSign sign, @NotNull Dignity dignity) {
-    return essentialRedfImpl.getPoint(sign, dignity).orElse(null);
+    return essentialRedfImpl.getPoint(sign, dignity);
   }
 
-  @Override
   /** Triplicity of DAY/NIGHT */
+  @Override
   @NotNull
-  public Point getTriplicityPoint(ZodiacSign sign, DayNight dayNight) {
+  public Point getTriplicityPoint(@NotNull ZodiacSign sign, @NotNull DayNight dayNight) {
     return triplicityImpl.getTriplicityPoint(sign, dayNight);
   }
 
@@ -46,14 +48,14 @@ public class EssentialDefaultImpl implements IEssential, Serializable
     return termsImpl.getTermsStar(degree);
   }
 
-  @Override
   /** Terms */
-  public Point getTermsPoint(ZodiacSign sign, double degree)
-  {
+  @NotNull
+  @Override
+  public Point getTermsPoint(@NotNull ZodiacSign sign, double degree) {
     return termsImpl.getTermsStar(sign, degree);
   }
 
-  
+
   /** Face */
   @NotNull
   @Override
@@ -61,31 +63,11 @@ public class EssentialDefaultImpl implements IEssential, Serializable
     return faceImpl.getFaceStar(degree);
   }
 
-  @Override
   /** Face */
-  public Point getFacePoint(ZodiacSign sign, double degree)
-  {
+  @NotNull
+  @Override
+  public Point getFacePoint(@NotNull ZodiacSign sign, double degree) {
     return faceImpl.getFaceStar(sign, degree);
-  }
-
-  public void setEssentialRedfImpl(IEssentialRedf essentialRedfImpl)
-  {
-    this.essentialRedfImpl = essentialRedfImpl;
-  }
-
-  public void setTriplicityImpl(IEssentialTriplicity triplicityImpl)
-  {
-    this.triplicityImpl = triplicityImpl;
-  }
-
-  public void setTermsImpl(IEssentialTerms termsImpl)
-  {
-    this.termsImpl = termsImpl;
-  }
-
-  public void setFaceImpl(IEssentialFace faceImpl)
-  {
-    this.faceImpl = faceImpl;
   }
 
 

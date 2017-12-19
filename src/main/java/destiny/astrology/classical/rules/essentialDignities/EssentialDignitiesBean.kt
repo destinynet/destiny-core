@@ -7,8 +7,12 @@ package destiny.astrology.classical.rules.essentialDignities
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
+import destiny.astrology.classical.EssentialDefaultImpl
+import destiny.astrology.classical.EssentialUtils
+import destiny.astrology.classical.IEssential
 import destiny.astrology.classical.IEssentialDignities
-import destiny.astrology.classical.rules.IRule
+import destiny.astrology.classical.rules.*
+import destiny.astrology.classical.rules.Rule
 import java.io.Serializable
 import java.util.*
 
@@ -31,8 +35,9 @@ class EssentialDignitiesBean(
       )
     }
 
+  override  var rules : List<IRule>  = defaultRules
 
-  override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
+  fun getComments2(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules
       .map { it.getComment(planet , h , locale) }
       .filter { it != null }
@@ -40,7 +45,26 @@ class EssentialDignitiesBean(
       .toList()
   }
 
-  override  var rules : List<IRule>  = defaultRules
+  override fun getComments(planet: Planet , h:Horoscope , locale: Locale) : List<String> {
+    return predicates
+      .mapNotNull { it.getRule(planet , h) }
+      .map { rule -> RuleTranslator.getDescriptor(rule).getDescription(locale) }
+  }
+
+  private val predicates: List<AbstractRulePredicate<Rule>>
+    get() {
+      val essentialImpl : IEssential = EssentialDefaultImpl()
+      val utils = EssentialUtils(dayNightImpl)
+      utils.setEssentialImpl(essentialImpl)
+      return listOf(
+        RulerRredicate(),
+        ExaltPredicate(),
+        TermPredicate(),
+        TriplicityPredicate(dayNightImpl),
+        BeneficialMutualReceptionPredicate(utils)
+      )
+    }
+
 
 
 }
