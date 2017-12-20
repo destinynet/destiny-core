@@ -59,6 +59,12 @@ object RuleTranslator {
           is Mutual.MutualDetriment -> TODO()
         }
       }
+      is MutualReception -> {
+        when (rule) {
+          is MutualReception.BySign -> TODO()
+          is MutualReception.ByExalt -> TODO()
+        }
+      }
     }
   }
 }

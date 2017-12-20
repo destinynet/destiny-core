@@ -255,13 +255,7 @@ public class Horoscope implements Serializable {
     return 12;
   } //getHouse()
 
-  /**
-   * @param point 取得此星體在第幾宮
-   */
-  public Optional<Integer> getHouseOpt(Point point) {
-    Optional<PositionWithAzimuth> pos = Optional.ofNullable(positionMap.get(point));
-    return pos.map(Position::getLng).map(this::getHouse);
-  }
+
 
   /**
    * @param point 取得此星體在第幾宮
@@ -281,11 +275,6 @@ public class Horoscope implements Serializable {
     return positionMap.get(point);
   }
 
-  /** 承上 , optional 版本 */
-  public Optional<PositionWithAzimuth> getPositionOpt(Point point)  {
-    return Optional.ofNullable(getPosition(point));
-  }
-
   /** 取得某星 位於什麼星座 */
   @Nullable
   public ZodiacSign getZodiacSign(Point point) {
@@ -294,12 +283,6 @@ public class Horoscope implements Serializable {
       return null;
     else
       return ZodiacSign.getZodiacSign(pos.getLng());
-  }
-
-  /** 承上 , optional 版本 */
-  @Deprecated
-  public Optional<ZodiacSign> getZodiacSignOpt(Point point) {
-    return Optional.ofNullable(getZodiacSign(point));
   }
 
 

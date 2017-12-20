@@ -85,7 +85,7 @@ class BeneficialMutualReceptionPredicate : AbstractRulePredicate<Rule.Beneficial
 }
 
 
-class MutualReceptionPredicate : AbstractRulePredicate<Mutual>() {
+class MutualReceptionPredicateOld : AbstractRulePredicate<Mutual>() {
 
   /**
    * planet1 位於 sign1 ,
@@ -127,4 +127,32 @@ class MutualReceptionPredicate : AbstractRulePredicate<Mutual>() {
 
 
 } // class MutualReceptionPredicate
+
+/**
+ * 互相接納
+ * https://skywriter.wordpress.com/2016/11/01/new-insights-into-mutual-reception/
+ */
+class MutualReceptionPredicate : AbstractRulePredicate<MutualReception>() {
+  override fun getRule(p: Planet, h: Horoscope): MutualReception? {
+    return getMutualReception(p , h , Dignity.RULER , Dignity.RULER)?.let { MutualReception.BySign(it.planet1 , it.sign1 , it.planet2 , it.sign2) }
+      ?:getMutualReception(p,h,Dignity.EXALTATION , Dignity.EXALTATION)?.let { MutualReception.ByExalt(it.planet1 , it.sign1 , it.planet2 , it.sign2) }
+  }
+
+  data class MutReception(val planet1: Planet, val sign1: ZodiacSign, val planet2: Planet, val sign2: ZodiacSign)
+
+  private fun getMutualReception(p: Planet, h: Horoscope, dig1: Dignity, dig2: Dignity): MutReception? {
+    return h.getZodiacSign(p)
+      ?.let { sign1 ->
+        essentialImpl.getPoint(sign1, dig1)
+          ?.takeIf { it !== p }
+          ?.let { point -> point as Planet }
+          ?.let { planet2 ->
+            h.getZodiacSign(planet2)
+              ?.takeIf { sign2 -> p === essentialImpl.getPoint(sign2, dig2) }
+              ?.let { sign2 -> MutReception(p , sign1 , planet2 , sign2) }
+          }
+      }
+  }
+
+}
 

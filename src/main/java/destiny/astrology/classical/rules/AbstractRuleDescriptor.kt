@@ -11,8 +11,8 @@ abstract class AbstractRuleDescriptor<out T : Rule>(val rule: T) : Descriptive {
 
   val resource = with(StringBuilder()) {
       append(rule.javaClass.`package`.name)
-      append('.')
-      append(rule.type.name)
+      //append('.')
+      //append(rule.type.name)
     }.toString()
 
   override fun getTitle(locale: Locale): String {
