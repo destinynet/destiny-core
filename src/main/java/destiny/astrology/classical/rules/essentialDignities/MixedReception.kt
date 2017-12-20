@@ -31,7 +31,7 @@ class MixedReception : Rule() {
       essentialImpl.getPoint(sign1, Dignity.RULER)?.let { signRuler ->
         h.getZodiacSign(signRuler)?.let { sign2 ->
           essentialImpl.getPoint(sign2, Dignity.EXALTATION)?.takeIf { planet2 ->
-            // 確認戶容
+            // 確認互容
             planet === planet2
           }?.takeIf {
             // 兩星並沒有同時陷落

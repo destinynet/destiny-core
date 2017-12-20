@@ -10,7 +10,7 @@ import java.io.Serializable
 /**
  * Essential Triplicity 實作 , 參考 Ptolemy's Table : <br></br>
  * <pre>
- * | 白天 | 夜晚
+ *     | 白天 | 夜晚
  * -------------------
  * 火相 | 太陽 | 木星
  * 土相 | 金星 | 月亮

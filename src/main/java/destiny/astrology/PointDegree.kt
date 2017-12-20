@@ -14,8 +14,7 @@ class PointDegree : Serializable {
 
   val point: Point
 
-  var degree: Double = 0.toDouble()
-    private set
+  val degree: Double
 
   /** 取得黃道此度數所在的星座  */
   val zodiacSign: ZodiacSign

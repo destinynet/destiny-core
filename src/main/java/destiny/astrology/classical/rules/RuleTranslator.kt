@@ -38,8 +38,9 @@ class BeneficialMutualReceptionDescriptor(rule: Rule.BeneficialMutualReception) 
   override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
     return "comment" to listOf(rule.planet , rule.sign1 , rule.dig1 , rule.planet2 , rule.sign2 , rule.dig2)
   }
-
 }
+
+
 
 object RuleTranslator {
   fun getDescriptor(rule : Rule): Descriptive {
@@ -52,7 +53,7 @@ object RuleTranslator {
       is Rule.BeneficialMutualReception -> BeneficialMutualReceptionDescriptor(rule)
       is Mutual -> {
         when (rule) {
-          is Mutual.MutualRuler -> TODO()
+          is Mutual.MutualGeneral -> TODO()
           is Mutual.MutualExalt -> TODO()
           is Mutual.MutualFall -> TODO()
           is Mutual.MutualDetriment -> TODO()

@@ -51,7 +51,7 @@ class EssentialDignitiesBean(
   private val predicates: List<AbstractRulePredicate<Rule>>
     get() {
       return listOf(
-        RulerRredicate(),
+        RulerPredicate(),
         ExaltPredicate(),
         TermPredicate(),
         TriplicityPredicate(dayNightImpl),

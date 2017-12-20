@@ -14,8 +14,7 @@ abstract class AbstractRulePredicate<out T : Rule> {
 
 var essentialImpl: IEssential = EssentialDefaultImpl()
 
-class RulerRredicate : AbstractRulePredicate<Rule.Ruler>() {
-
+class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Ruler? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === essentialImpl.getPoint(sign, Dignity.RULER)
