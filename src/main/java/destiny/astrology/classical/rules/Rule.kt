@@ -16,11 +16,11 @@ import destiny.astrology.classical.Dignity
 enum class RuleType {
   EssentialDignity,
   AccidentalDignity,
-  Debility ,
+  Debility,
   Neutral // 中立，不確定好、或壞
 }
 
-sealed class Rule(val type: RuleType , val parent:Rule? = null) {
+sealed class Rule(val type: RuleType, val parent: Rule? = null) {
 
   data class Ruler(val planet: Planet, val sign: ZodiacSign) : Rule(RuleType.EssentialDignity)
   data class Exalt(val planet: Planet, val sign: ZodiacSign) : Rule(RuleType.EssentialDignity)
@@ -34,9 +34,11 @@ sealed class Rule(val type: RuleType , val parent:Rule? = null) {
 
 }
 
-sealed class Mutual(type: RuleType) : Rule(type) {
-  data class MutualRuler(val planet: Planet , val sign1 : ZodiacSign , val planet2: Planet , val sign2: ZodiacSign) : Mutual(RuleType.EssentialDignity)
-  data class MutualExalt(val planet: Planet , val sign1 : ZodiacSign , val planet2: Planet , val sign2: ZodiacSign) : Mutual(RuleType.EssentialDignity)
-  data class MutualFall(val planet: Planet , val sign1 : ZodiacSign , val planet2: Planet , val sign2: ZodiacSign) : Mutual(RuleType.Debility)
-  data class MutualDetriment(val planet: Planet , val sign1 : ZodiacSign , val planet2: Planet , val sign2: ZodiacSign) : Mutual(RuleType.Debility)
+
+
+sealed class Mutual(val planet1: Planet, val sign1: ZodiacSign, val planet2: Planet, val sign2: ZodiacSign , type: RuleType) : Rule(type) {
+  class MutualGeneral(planet1: Planet, sign1: ZodiacSign, planet2: Planet, sign2: ZodiacSign) : Mutual(planet1 , sign1 , planet2 , sign2, RuleType.EssentialDignity)
+  class MutualExalt(planet1: Planet, sign1: ZodiacSign, planet2: Planet, sign2: ZodiacSign) : Mutual(planet1 , sign1 , planet2 , sign2 , RuleType.EssentialDignity)
+  class MutualFall(planet1: Planet, sign1: ZodiacSign, planet2: Planet, sign2: ZodiacSign) : Mutual(planet1 , sign1 , planet2 , sign2 , RuleType.Debility)
+  class MutualDetriment(planet1: Planet, sign1: ZodiacSign, planet2: Planet, sign2: ZodiacSign) : Mutual(planet1 , sign1 , planet2 , sign2 , RuleType.Debility)
 }

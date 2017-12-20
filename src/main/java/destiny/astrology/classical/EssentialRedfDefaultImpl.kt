@@ -16,8 +16,8 @@ import java.io.Serializable
 class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
 
   /**
-   * @param dignity [Dignity.RULER] 與 [Dignity.DETRIMENT] 不會傳回 empty() ,
-   * 但 [Dignity.EXALTATION] 與 [Dignity.FALL] 就有可能為 empty()
+   * @param dignity [Dignity.RULER] 與 [Dignity.DETRIMENT] 不會傳回 null ,
+   * 但 [Dignity.EXALTATION] 與 [Dignity.FALL] 就有可能為 null
    */
   override fun getPoint(sign: ZodiacSign, dignity: Dignity): Point? {
     return when (dignity) {

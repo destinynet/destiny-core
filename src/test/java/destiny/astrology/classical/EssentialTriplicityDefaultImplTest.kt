@@ -4,9 +4,10 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.DayNight
+import destiny.astrology.DayNight.DAY
+import destiny.astrology.DayNight.NIGHT
 import destiny.astrology.Planet
-import destiny.astrology.ZodiacSign
+import destiny.astrology.ZodiacSign.*
 import kotlin.test.Test
 import kotlin.test.assertSame
 
@@ -16,31 +17,31 @@ class EssentialTriplicityDefaultImplTest {
   fun testGetStar() {
     val impl = EssentialTriplicityDefaultImpl()
 
-    assertSame(Planet.SUN, impl.getTriplicityPoint(ZodiacSign.ARIES, DayNight.DAY))
-    assertSame(Planet.VENUS, impl.getTriplicityPoint(ZodiacSign.TAURUS, DayNight.DAY))
-    assertSame(Planet.SATURN, impl.getTriplicityPoint(ZodiacSign.GEMINI, DayNight.DAY))
-    assertSame(Planet.MARS, impl.getTriplicityPoint(ZodiacSign.CANCER, DayNight.DAY))
-    assertSame(Planet.SUN, impl.getTriplicityPoint(ZodiacSign.LEO, DayNight.DAY))
-    assertSame(Planet.VENUS, impl.getTriplicityPoint(ZodiacSign.VIRGO, DayNight.DAY))
-    assertSame(Planet.SATURN, impl.getTriplicityPoint(ZodiacSign.LIBRA, DayNight.DAY))
-    assertSame(Planet.MARS, impl.getTriplicityPoint(ZodiacSign.SCORPIO, DayNight.DAY))
-    assertSame(Planet.SUN, impl.getTriplicityPoint(ZodiacSign.SAGITTARIUS, DayNight.DAY))
-    assertSame(Planet.VENUS, impl.getTriplicityPoint(ZodiacSign.CAPRICORN, DayNight.DAY))
-    assertSame(Planet.SATURN, impl.getTriplicityPoint(ZodiacSign.AQUARIUS, DayNight.DAY))
-    assertSame(Planet.MARS, impl.getTriplicityPoint(ZodiacSign.PISCES, DayNight.DAY))
+    assertSame(Planet.SUN, impl.getTriplicityPoint(ARIES, DAY))
+    assertSame(Planet.VENUS, impl.getTriplicityPoint(TAURUS, DAY))
+    assertSame(Planet.SATURN, impl.getTriplicityPoint(GEMINI, DAY))
+    assertSame(Planet.MARS, impl.getTriplicityPoint(CANCER, DAY))
+    assertSame(Planet.SUN, impl.getTriplicityPoint(LEO, DAY))
+    assertSame(Planet.VENUS, impl.getTriplicityPoint(VIRGO, DAY))
+    assertSame(Planet.SATURN, impl.getTriplicityPoint(LIBRA, DAY))
+    assertSame(Planet.MARS, impl.getTriplicityPoint(SCORPIO, DAY))
+    assertSame(Planet.SUN, impl.getTriplicityPoint(SAGITTARIUS, DAY))
+    assertSame(Planet.VENUS, impl.getTriplicityPoint(CAPRICORN, DAY))
+    assertSame(Planet.SATURN, impl.getTriplicityPoint(AQUARIUS, DAY))
+    assertSame(Planet.MARS, impl.getTriplicityPoint(PISCES, DAY))
 
-    assertSame(Planet.JUPITER, impl.getTriplicityPoint(ZodiacSign.ARIES, DayNight.NIGHT))
-    assertSame(Planet.MOON, impl.getTriplicityPoint(ZodiacSign.TAURUS, DayNight.NIGHT))
-    assertSame(Planet.MERCURY, impl.getTriplicityPoint(ZodiacSign.GEMINI, DayNight.NIGHT))
-    assertSame(Planet.MARS, impl.getTriplicityPoint(ZodiacSign.CANCER, DayNight.NIGHT))
-    assertSame(Planet.JUPITER, impl.getTriplicityPoint(ZodiacSign.LEO, DayNight.NIGHT))
-    assertSame(Planet.MOON, impl.getTriplicityPoint(ZodiacSign.VIRGO, DayNight.NIGHT))
-    assertSame(Planet.MERCURY, impl.getTriplicityPoint(ZodiacSign.LIBRA, DayNight.NIGHT))
-    assertSame(Planet.MARS, impl.getTriplicityPoint(ZodiacSign.SCORPIO, DayNight.NIGHT))
-    assertSame(Planet.JUPITER, impl.getTriplicityPoint(ZodiacSign.SAGITTARIUS, DayNight.NIGHT))
-    assertSame(Planet.MOON, impl.getTriplicityPoint(ZodiacSign.CAPRICORN, DayNight.NIGHT))
-    assertSame(Planet.MERCURY, impl.getTriplicityPoint(ZodiacSign.AQUARIUS, DayNight.NIGHT))
-    assertSame(Planet.MARS, impl.getTriplicityPoint(ZodiacSign.PISCES, DayNight.NIGHT))
+    assertSame(Planet.JUPITER, impl.getTriplicityPoint(ARIES, NIGHT))
+    assertSame(Planet.MOON, impl.getTriplicityPoint(TAURUS, NIGHT))
+    assertSame(Planet.MERCURY, impl.getTriplicityPoint(GEMINI, NIGHT))
+    assertSame(Planet.MARS, impl.getTriplicityPoint(CANCER, NIGHT))
+    assertSame(Planet.JUPITER, impl.getTriplicityPoint(LEO, NIGHT))
+    assertSame(Planet.MOON, impl.getTriplicityPoint(VIRGO, NIGHT))
+    assertSame(Planet.MERCURY, impl.getTriplicityPoint(LIBRA, NIGHT))
+    assertSame(Planet.MARS, impl.getTriplicityPoint(SCORPIO, NIGHT))
+    assertSame(Planet.JUPITER, impl.getTriplicityPoint(SAGITTARIUS, NIGHT))
+    assertSame(Planet.MOON, impl.getTriplicityPoint(CAPRICORN, NIGHT))
+    assertSame(Planet.MERCURY, impl.getTriplicityPoint(AQUARIUS, NIGHT))
+    assertSame(Planet.MARS, impl.getTriplicityPoint(PISCES, NIGHT))
   }
 
 }

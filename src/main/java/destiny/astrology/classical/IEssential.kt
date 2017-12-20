@@ -34,6 +34,11 @@ interface IEssential {
       .toList()
   }
 
+  /** 取得此行星，在此星座的 旺 廟 陷 落 */
+  fun getDignity(planet: Planet , sign: ZodiacSign) : Dignity ? {
+    return Dignity.values().firstOrNull{ dig -> planet === getPoint(sign , dig) }
+  }
+
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星   */
   fun getTriplicityPoint(sign: ZodiacSign, dayNight: DayNight): Point
 
@@ -53,6 +58,12 @@ interface IEssential {
   fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean {
     return (p1 === getPoint(sign1, Dignity.DETRIMENT) || p1 === getPoint(sign1, Dignity.FALL))
       &&   (p2 === getPoint(sign2, Dignity.DETRIMENT) || p2 === getPoint(sign2, Dignity.FALL))
+  }
+
+  /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
+  fun isBothInGoodSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign):Boolean {
+    return (p1 === getPoint(sign1, Dignity.RULER) || p1 === getPoint(sign1, Dignity.EXALTATION))
+      &&   (p2 === getPoint(sign2, Dignity.RULER) || p2 === getPoint(sign2, Dignity.EXALTATION))
   }
 
   
