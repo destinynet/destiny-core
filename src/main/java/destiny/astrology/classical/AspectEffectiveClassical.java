@@ -46,7 +46,7 @@ public class AspectEffectiveClassical implements IAspectEffective, Serializable
   }
 
   public boolean isEffective(Point p1 , double deg1, Point p2 , double deg2 , double angle) {
-    return Math.abs(Horoscope.getAngle(deg1, deg2) - angle) <= (pointDiameterImpl.getDiameter(p1) + pointDiameterImpl.getDiameter(p2)) / 2;
+    return Math.abs(Horoscope.Companion.getAngle(deg1, deg2) - angle) <= (pointDiameterImpl.getDiameter(p1) + pointDiameterImpl.getDiameter(p2)) / 2;
   }
 
   /**
