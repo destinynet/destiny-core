@@ -15,7 +15,7 @@ class Exaltation(private val dayNightDifferentiatorImpl: DayNightDifferentiator)
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
-      if (planet === essentialImpl.getPoint(sign, Dignity.EXALTATION)) {
+      if (planet === exaltImpl.getExaltation(sign)) {
         logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)
         return@let "commentBasic" to arrayOf(planet, sign)
       } else
@@ -29,10 +29,10 @@ class Exaltation(private val dayNightDifferentiatorImpl: DayNightDifferentiator)
    */
   private fun exaltMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1: ZodiacSign ->
-      essentialImpl.getPoint(sign1, Dignity.EXALTATION)?.let { signExaltation ->
+      exaltImpl.getExaltation(sign1)?.let { signExaltation ->
         h.getZodiacSign(signExaltation)
           ?.takeIf { sign2 ->
-            planet === essentialImpl.getPoint(sign2, Dignity.EXALTATION)
+            planet === exaltImpl.getExaltation(sign2)
           }?.takeIf { sign2: ZodiacSign ->
           !essentialImpl.isBothInBadSituation(planet, sign1, signExaltation, sign2)
         }?.let { sign2: ZodiacSign ->

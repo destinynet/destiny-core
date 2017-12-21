@@ -15,7 +15,7 @@ import kotlin.test.assertSame
 
 class EssentialRedfDefaultImplTest {
 
-  internal var impl = EssentialRedfDefaultImpl(RulerPtolomyImpl() , DetrimentPtolomyImpl())
+  internal var impl = EssentialRedfDefaultImpl(RulerPtolemyImpl() , DetrimentPtolemyImpl())
 
 
   /** 測試 Exaltation (廟)  */

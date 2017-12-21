@@ -7,10 +7,7 @@ import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.EssentialDefaultImpl
-import destiny.astrology.classical.EssentialTools
-import destiny.astrology.classical.IEssential
+import destiny.astrology.classical.*
 
 abstract class AbstractRulePredicate<out T : Rule> {
   abstract fun getRule(p: Planet, h: Horoscope): T?
@@ -18,10 +15,14 @@ abstract class AbstractRulePredicate<out T : Rule> {
 
 var essentialImpl: IEssential = EssentialDefaultImpl()
 
+val rulerImpl: IRuler = RulerPtolemyImpl()
+val detrimentImpl : IDetriment = DetrimentPtolemyImpl()
+val exaltImpl : IExaltation = ExaltationPtolemyImpl()
+
 class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Ruler? {
     return h.getZodiacSign(p)?.takeIf { sign ->
-      p === essentialImpl.getPoint(sign, Dignity.RULER)
+      p === rulerImpl.getRuler(sign)
     }?.let { sign ->
       Rule.Ruler(p, sign)
     }
@@ -31,7 +32,7 @@ class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
 class ExaltPredicate : AbstractRulePredicate<Rule.Exalt>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Exalt? {
     return h.getZodiacSign(p)?.takeIf { sign ->
-      p === essentialImpl.getPoint(sign, Dignity.EXALTATION)
+      p === exaltImpl.getExaltation(sign)
     }?.let { sign ->
       Rule.Exalt(p, sign)
     }
@@ -95,12 +96,12 @@ class BeneficialMutualReceptionPredicate : AbstractRulePredicate<Rule.Beneficial
  */
 class MutualReceptionPredicate(val dayNightImpl: DayNightDifferentiator) : AbstractRulePredicate<MutualReception>() {
   override fun getRule(p: Planet, h: Horoscope): MutualReception? {
-    return EssentialTools.getMutualReception(p, h.pointSignMap, Dignity.RULER, Dignity.RULER, essentialImpl)
-        ?.let { MutualReception.BySign(it.planet1, it.sign1, it.planet2, it.sign2) }
-      ?: EssentialTools.getMutualReception(p, h.pointSignMap, Dignity.EXALTATION, Dignity.EXALTATION, essentialImpl)
+    return EssentialTools.getMutualReception(p, h.pointSignMap, Dignity.RULER, Dignity.RULER, essentialImpl, rulerImpl)
+      ?.let { MutualReception.BySign(it.planet1, it.sign1, it.planet2, it.sign2) }
+      ?: EssentialTools.getMutualReception(p, h.pointSignMap, Dignity.EXALTATION, Dignity.EXALTATION, essentialImpl, rulerImpl)
         ?.let { MutualReception.ByExalt(it.planet1, it.sign1, it.planet2, it.sign2) }
-      ?: EssentialTools.getTriplicityMutualReception(p, h.pointSignMap, dayNightImpl.getDayNight(h.lmt , h.location) , essentialImpl)
-        ?.let { MutualReception.ByTriplicity(it.planet1 , it.sign1 , it.planet2 , it.sign2) }
+      ?: EssentialTools.getTriplicityMutualReception(p, h.pointSignMap, dayNightImpl.getDayNight(h.lmt, h.location), essentialImpl)
+        ?.let { MutualReception.ByTriplicity(it.planet1, it.sign1, it.planet2, it.sign2) }
   }
 }
 

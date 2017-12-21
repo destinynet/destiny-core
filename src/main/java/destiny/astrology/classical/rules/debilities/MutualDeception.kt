@@ -30,9 +30,9 @@ class MutualDeception : EssentialRule(), Applicable {
    */
   private fun rulerMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
-      essentialImpl.getPoint(sign1, Dignity.RULER)?.let { signRuler ->
+      rulerImpl.getRuler(sign1).let { signRuler ->
         h.getZodiacSign(signRuler)?.let { sign2 ->
-          essentialImpl.getPoint(sign2, Dignity.RULER)?.takeIf { planet2 ->
+          rulerImpl.getRuler(sign2).takeIf { planet2 ->
             // 確定 ruler 互容
             planet === planet2
           }?.takeIf {
@@ -52,9 +52,9 @@ class MutualDeception : EssentialRule(), Applicable {
    */
   private fun exaltationMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
-      essentialImpl.getPoint(sign1, Dignity.EXALTATION)?.let { signExalt ->
+      exaltImpl.getExaltation(sign1)?.let { signExalt ->
         h.getZodiacSign(signExalt)?.let { sign2 ->
-          essentialImpl.getPoint(sign2, Dignity.EXALTATION)?.takeIf { planet2 ->
+          exaltImpl.getExaltation(sign2)?.takeIf { planet2 ->
             // 確認 Exaltation 互容
             planet === planet2
           }?.takeIf {
@@ -75,9 +75,9 @@ class MutualDeception : EssentialRule(), Applicable {
    */
   private fun detrimentExaltationMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
-      essentialImpl.getPoint(sign1, Dignity.RULER)?.let { signRuler ->
+      rulerImpl.getRuler(sign1).let { signRuler ->
         h.getZodiacSign(signRuler)?.let { sign2 ->
-          essentialImpl.getPoint(sign2, Dignity.EXALTATION)?.takeIf { planet2 ->
+          exaltImpl.getExaltation(sign2)?.takeIf { planet2 ->
             // 確認互容
             planet === planet2
           }?.takeIf {
@@ -98,9 +98,9 @@ class MutualDeception : EssentialRule(), Applicable {
    */
   private fun fallExaltationMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
-      essentialImpl.getPoint(sign1, Dignity.EXALTATION)?.let { signExalt ->
+      exaltImpl.getExaltation(sign1)?.let { signExalt ->
         h.getZodiacSign(signExalt)?.let { sign2 ->
-          essentialImpl.getPoint(sign2, Dignity.RULER)?.takeIf { planet2 ->
+          rulerImpl.getRuler(sign2).takeIf { planet2 ->
             // 確認互容
             planet === planet2
           }?.takeIf {

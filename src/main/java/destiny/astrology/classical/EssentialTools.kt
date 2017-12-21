@@ -17,12 +17,15 @@ class EssentialTools {
 
   companion object {
 
+    /**
+     * 製作出類似這樣的表格 : http://www.skyscript.co.uk/dig6.html
+     */
     fun getReceptionMap(map: Map<Planet, ZodiacSign>): Map<Pair<Planet, Reception>, Set<Planet>> {
       TODO()
     }
 
     /** 用以判斷 [Dignity] 的互容 */
-    fun getMutualReception(p: Planet, pointSignMap: Map<Point, ZodiacSign>, dig1: Dignity, dig2: Dignity, essentialImpl: IEssential): MutReception? {
+    fun getMutualReception(p: Planet, pointSignMap: Map<Point, ZodiacSign>, dig1: Dignity, dig2: Dignity, essentialImpl: IEssential, rulerImpl: IRuler): MutReception? {
       return pointSignMap[p]
         ?.let { sign1 ->
           essentialImpl.getPoint(sign1, dig1)

@@ -20,6 +20,10 @@ class EssentialRedfDefaultImpl(private val rulerImpl: IRuler,
                                private val detrimentImpl: IDetriment) : IEssentialRedf, Serializable {
 
 
+  override fun getDetriment(planet: Planet): Set<ZodiacSign> {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
   override fun getRuling(planet: Planet, dayNight: DayNight): ZodiacSign? {
     return rulerImpl.getRuling(planet, dayNight)
   }

@@ -11,9 +11,9 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class RulerPtolomyImplTest {
+class RulerPtolemyImplTest {
 
-  internal var impl = RulerPtolomyImpl()
+  internal var impl = RulerPtolemyImpl()
 
 
   @Test

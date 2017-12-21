@@ -4,14 +4,16 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.classical.EssentialDefaultImpl
-import destiny.astrology.classical.IEssential
+import destiny.astrology.classical.*
 import destiny.astrology.classical.rules.AbstractRule
 
 abstract class Rule : AbstractRule(resource), Applicable {
 
-  /** 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面  */
+  /** 具備計算 Ptolemy's Table of Essential Dignities and Debilities 的所有介面  */
   var essentialImpl: IEssential = EssentialDefaultImpl()
+
+  val rulerImpl : IRuler = RulerPtolemyImpl()
+  val exaltImpl : IExaltation = ExaltationPtolemyImpl()
 
   companion object {
     private val resource = "destiny.astrology.classical.rules.essentialDignities.EssentialDignities"

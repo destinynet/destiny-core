@@ -13,7 +13,7 @@ import java.io.Serializable
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities  */
 class EssentialDefaultImpl : IEssential, Serializable {
 
-  private val essentialRedfImpl = EssentialRedfDefaultImpl(RulerPtolomyImpl() , DetrimentPtolomyImpl())
+  private val essentialRedfImpl = EssentialRedfDefaultImpl(RulerPtolemyImpl() , DetrimentPtolemyImpl())
 
   private val triplicityImpl = EssentialTriplicityDefaultImpl()
 

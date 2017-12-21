@@ -50,14 +50,15 @@ class Peregrine(
 
     if (planetDeg != null && sign != null) {
       val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
-      if (planet !== essentialImpl.getPoint(sign, Dignity.RULER) &&
-        planet !== essentialImpl.getPoint(sign, Dignity.EXALTATION) &&
-        planet !== essentialImpl.getPoint(sign, Dignity.DETRIMENT) &&
+      if (
+        planet !== rulerImpl.getRuler(sign) &&
+        planet !== exaltImpl.getExaltation(sign) &&
+        planet !== detrimentImpl.getDetriment(sign) &&
         planet !== essentialImpl.getPoint(sign, Dignity.FALL) &&
         planet !== essentialImpl.getTermsPoint(sign, planetDeg) &&
         planet !== essentialImpl.getFacePoint(planetDeg)) {
         // 判定日夜 Triplicity
-        if ( !(dayNight == DayNight.DAY && planet === essentialImpl.getTriplicityPoint(sign, DayNight.DAY))
+        if (!(dayNight == DayNight.DAY && planet === essentialImpl.getTriplicityPoint(sign, DayNight.DAY))
           && !(dayNight == DayNight.NIGHT && planet === essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT)))
           return "comment" to arrayOf<Any>(planet)
       }

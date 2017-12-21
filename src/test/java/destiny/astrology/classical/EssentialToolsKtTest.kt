@@ -18,6 +18,9 @@ import kotlin.test.assertNull
 class EssentialToolsKtTest {
 
   private val essentialImpl = EssentialDefaultImpl()
+
+  private val rulerImpl : IRuler = RulerPtolemyImpl()
+
   /**
    * Reception by sign
    *
@@ -44,16 +47,16 @@ class EssentialToolsKtTest {
       MARS to LEO
     )
 
-    EssentialTools.getMutualReception(SUN , map , Dignity.RULER , Dignity.RULER , essentialImpl).let {
+    EssentialTools.getMutualReception(SUN, map, Dignity.RULER, Dignity.RULER, essentialImpl, rulerImpl).let {
       assertNotNull(it)
       println(it)
     }
-    EssentialTools.getMutualReception(MARS , map , Dignity.RULER , Dignity.RULER , essentialImpl).let {
+    EssentialTools.getMutualReception(MARS, map, Dignity.RULER, Dignity.RULER, essentialImpl, rulerImpl).let {
       assertNotNull(it)
       println(it)
     }
 
-    EssentialTools.getMutualReception(SUN , map , Dignity.RULER , Dignity.EXALTATION , essentialImpl).let {
+    EssentialTools.getMutualReception(SUN, map, Dignity.RULER, Dignity.EXALTATION, essentialImpl, rulerImpl).let {
       assertNull(it)
     }
   }
@@ -80,16 +83,16 @@ class EssentialToolsKtTest {
       VENUS to TAURUS
     )
 
-    EssentialTools.getMutualReception(MOON , map , Dignity.EXALTATION , Dignity.EXALTATION, essentialImpl).let {
+    EssentialTools.getMutualReception(MOON, map, Dignity.EXALTATION, Dignity.EXALTATION, essentialImpl, RulerPtolemyImpl()).let {
       assertNotNull(it)
       println(it)
     }
-    EssentialTools.getMutualReception(VENUS , map , Dignity.EXALTATION , Dignity.EXALTATION, essentialImpl).let {
+    EssentialTools.getMutualReception(VENUS, map, Dignity.EXALTATION, Dignity.EXALTATION, essentialImpl, RulerPtolemyImpl()).let {
       assertNotNull(it)
       println(it)
     }
 
-    EssentialTools.getMutualReception(MOON , map , Dignity.EXALTATION , Dignity.RULER, essentialImpl).let {
+    EssentialTools.getMutualReception(MOON, map, Dignity.EXALTATION, Dignity.RULER, essentialImpl, RulerPtolemyImpl()).let {
       assertNull(it)
     }
   }

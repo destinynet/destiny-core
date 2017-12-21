@@ -9,10 +9,11 @@ import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
 import kotlin.test.Test
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
-class DetrimentPtolomyImplTest {
+class DetrimentPtolemyImplTest {
 
-  internal var impl = DetrimentPtolomyImpl()
+  internal var impl = DetrimentPtolemyImpl()
 
   @Test
   fun `不分日夜，取得在此星座陷落的行星`() {
@@ -46,5 +47,48 @@ class DetrimentPtolomyImplTest {
     assertSame(MOON , impl.getDetriment(CAPRICORN , NIGHT))
     assertSame(SUN , impl.getDetriment(AQUARIUS , DAY))
     assertSame(MERCURY , impl.getDetriment(PISCES , NIGHT))
+  }
+
+  @Test
+  fun `不分日夜，取得此行星在哪些星座 陷(-5)`() {
+    impl.getDetriment(VENUS).let {
+      // 金星 陷 在 卯、戌
+      assertTrue(it.contains(ARIES))
+      assertTrue(it.contains(SCORPIO))
+    }
+
+    impl.getDetriment(MARS).let {
+      // 火星 陷 在 辰、酉
+      assertTrue(it.contains(TAURUS))
+      assertTrue(it.contains(LIBRA))
+    }
+
+    impl.getDetriment(JUPITER).let {
+      // 木星 陷 在 巳、申
+      assertTrue(it.contains(GEMINI))
+      assertTrue(it.contains(VIRGO))
+    }
+
+    impl.getDetriment(MERCURY).let {
+      // 水星 陷 在 寅、亥
+      assertTrue(it.contains(SAGITTARIUS))
+      assertTrue(it.contains(PISCES))
+    }
+
+    impl.getDetriment(SATURN).let {
+      // 土星 陷 在 午、未
+      assertTrue(it.contains(CANCER))
+      assertTrue(it.contains(LEO))
+    }
+
+    impl.getDetriment(SUN).let {
+      // 太陽 陷 在 子
+      assertTrue(it.contains(AQUARIUS))
+    }
+
+    impl.getDetriment(MOON).let {
+      // 月亮 陷 在 丑
+      assertTrue(it.contains(CAPRICORN))
+    }
   }
 }
