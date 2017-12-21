@@ -4,131 +4,19 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.DayNight.DAY
-import destiny.astrology.DayNight.NIGHT
 import destiny.astrology.Planet.*
 import destiny.astrology.PointDegree
 import destiny.astrology.ZodiacSign.*
-import destiny.astrology.classical.Dignity.*
+import destiny.astrology.classical.Dignity.EXALTATION
+import destiny.astrology.classical.Dignity.FALL
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 class EssentialRedfDefaultImplTest {
 
-  internal var impl = EssentialRedfDefaultImpl()
+  internal var impl = EssentialRedfDefaultImpl(RulerPtolomyImpl() , DetrimentPtolomyImpl())
 
-  @Test
-  fun getRulerByDayNight() {
-
-    assertSame(MARS, impl.getRulerByDayNight(ARIES, DAY))
-    assertNull(impl.getRulerByDayNight(ARIES, NIGHT)) // 牡羊晚上沒主人
-
-    assertNull(impl.getRulerByDayNight(TAURUS, DAY))  // 金牛白天沒主人
-    assertSame(VENUS, impl.getRulerByDayNight(TAURUS, NIGHT))
-
-    assertSame(MERCURY, impl.getRulerByDayNight(GEMINI, DAY))
-    assertNull(impl.getRulerByDayNight(GEMINI, NIGHT)) // 雙子晚上沒主人
-
-    assertSame(MOON, impl.getRulerByDayNight(CANCER, DAY))   // 巨蟹早晚都是月亮
-    assertSame(MOON, impl.getRulerByDayNight(CANCER, NIGHT))
-
-    assertSame(SUN, impl.getRulerByDayNight(LEO, DAY))   // 獅子早晚都是太陽
-    assertSame(SUN, impl.getRulerByDayNight(LEO, NIGHT))
-
-    assertNull(impl.getRulerByDayNight(VIRGO, DAY))       // 處女白天沒主人
-    assertSame(MERCURY, impl.getRulerByDayNight(VIRGO, NIGHT))
-
-    assertSame(VENUS, impl.getRulerByDayNight(LIBRA, DAY))
-    assertNull(impl.getRulerByDayNight(LIBRA, NIGHT))      // 天秤晚上沒主人
-
-    assertNull(impl.getRulerByDayNight(SCORPIO, DAY))      // 天蠍白天沒主人
-    assertSame(MARS, impl.getRulerByDayNight(SCORPIO, NIGHT))
-
-    assertSame(JUPITER, impl.getRulerByDayNight(SAGITTARIUS, DAY))
-    assertNull(impl.getRulerByDayNight(SAGITTARIUS, NIGHT))  // 射手晚上沒主人
-
-    assertNull(impl.getRulerByDayNight(CAPRICORN, DAY))  // 摩羯白天沒主人
-    assertSame(SATURN, impl.getRulerByDayNight(CAPRICORN, NIGHT))
-
-    assertSame(SATURN, impl.getRulerByDayNight(AQUARIUS, DAY))
-    assertNull(impl.getRulerByDayNight(AQUARIUS, NIGHT)) // 水瓶晚上沒主人
-
-    assertNull(impl.getRulerByDayNight(PISCES, DAY))     // 雙魚白天沒主人
-    assertSame(JUPITER, impl.getRulerByDayNight(PISCES, NIGHT))
-
-
-    MARS.let {
-      assertSame(ARIES, impl.getRulingByDayNight(it, DAY))      // 火星 白天掌管 牡羊
-      assertSame(SCORPIO, impl.getRulingByDayNight(it, NIGHT))  // 火星 晚上掌管 天蠍
-    }
-
-    VENUS.let {
-      assertSame(LIBRA, impl.getRulingByDayNight(it, DAY))    // 金星 白天掌管 天秤
-      assertSame(TAURUS, impl.getRulingByDayNight(it, NIGHT)) // 金星 晚上掌管 金牛
-    }
-
-    MERCURY.let {
-      assertSame(GEMINI, impl.getRulingByDayNight(it, DAY))   // 水星 白天掌管 雙子
-      assertSame(VIRGO, impl.getRulingByDayNight(it, NIGHT))  // 水星 晚上掌管 處女
-    }
-
-    MOON.let {
-      assertSame(CANCER, impl.getRulingByDayNight(it, DAY))   // 月亮 白天晚上都掌管 巨蟹
-      assertSame(CANCER, impl.getRulingByDayNight(it, NIGHT))
-    }
-
-    SUN.let {
-      assertSame(LEO, impl.getRulingByDayNight(it, DAY))    // 太陽 白天晚上都掌管 獅子
-      assertSame(LEO, impl.getRulingByDayNight(it, NIGHT))
-    }
-
-    JUPITER.let {
-      assertSame(SAGITTARIUS, impl.getRulingByDayNight(it, DAY))  // 木星 白天掌管 射手
-      assertSame(PISCES, impl.getRulingByDayNight(it, NIGHT))     // 木星 晚上掌管 雙魚
-    }
-
-    SATURN.let {
-      assertSame(AQUARIUS , impl.getRulingByDayNight(it , DAY))     // 土星 白天掌管 水瓶
-      assertSame(CAPRICORN , impl.getRulingByDayNight(it , NIGHT))  // 土星 晚上掌管 摩羯
-    }
-
-  }
-
-  /** 測試 Ruler (旺)  */
-  @Test
-  fun testRuler() {
-    assertSame(MARS, impl.getPoint(ARIES, RULER))
-    assertSame(VENUS, impl.getPoint(TAURUS, RULER))
-    assertSame(MERCURY, impl.getPoint(GEMINI, RULER))
-    assertSame(MOON, impl.getPoint(CANCER, RULER))
-    assertSame(SUN, impl.getPoint(LEO, RULER))
-    assertSame(MERCURY, impl.getPoint(VIRGO, RULER))
-    assertSame(VENUS, impl.getPoint(LIBRA, RULER))
-    assertSame(MARS, impl.getPoint(SCORPIO, RULER))
-    assertSame(JUPITER, impl.getPoint(SAGITTARIUS, RULER))
-    assertSame(SATURN, impl.getPoint(CAPRICORN, RULER))
-    assertSame(SATURN, impl.getPoint(AQUARIUS, RULER))
-    assertSame(JUPITER, impl.getPoint(PISCES, RULER))
-  }
-
-  /** 測試 Detriment (陷) , 其值為對沖星座之Ruler  */
-  @Test
-  fun testDetriment() {
-    assertSame(VENUS, impl.getPoint(ARIES, DETRIMENT))
-    assertSame(MARS, impl.getPoint(TAURUS, DETRIMENT))
-    assertSame(JUPITER, impl.getPoint(GEMINI, DETRIMENT))
-    assertSame(SATURN, impl.getPoint(CANCER, DETRIMENT))
-    assertSame(SATURN, impl.getPoint(LEO, DETRIMENT))
-    assertSame(JUPITER, impl.getPoint(VIRGO, DETRIMENT))
-    assertSame(MARS, impl.getPoint(LIBRA, DETRIMENT))
-    assertSame(VENUS, impl.getPoint(SCORPIO, DETRIMENT))
-    assertSame(MERCURY, impl.getPoint(SAGITTARIUS, DETRIMENT))
-    assertSame(MOON, impl.getPoint(CAPRICORN, DETRIMENT))
-    assertSame(SUN, impl.getPoint(AQUARIUS, DETRIMENT))
-    assertSame(MERCURY, impl.getPoint(PISCES, DETRIMENT))
-  }
 
   /** 測試 Exaltation (廟)  */
   @Test

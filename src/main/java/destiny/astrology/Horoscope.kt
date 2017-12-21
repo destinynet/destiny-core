@@ -41,6 +41,19 @@ class Horoscope(
 
   @Transient private val revJulDayFunc = { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
 
+
+  /**
+   * 星體於黃經的度數
+   */
+  val pointDegreeMap: Map<Point, Double>
+    get() = positionMap.mapValues { (_, posWithAzimuth) -> posWithAzimuth.lng }
+
+  /**
+   * 星體於黃道上的星座
+   */
+  val pointSignMap: Map<Point, ZodiacSign>
+    get() = pointDegreeMap.mapValues { (_,lngDeg) -> ZodiacSign.getZodiacSign(lngDeg)}
+
   /**
    * @return 取得 GMT 時刻
    */
@@ -86,7 +99,7 @@ class Horoscope(
   /**
    * 承上，但帶入自訂的 reverse Julian Day converter
    */
-  fun getGmt(revJulDayFunc: Function<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  private fun getGmt(revJulDayFunc: Function<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
     return revJulDayFunc.apply(gmtJulDay)
   }
 
@@ -125,7 +138,7 @@ class Horoscope(
    * 取得單一 Horoscope 中 , 任兩顆星的交角
    */
   fun getAngle(fromPoint: Point, toPoint: Point): Double {
-    return getAngle(positionMap[fromPoint]!!.getLng(), positionMap[toPoint]!!.getLng())
+    return getAngle(positionMap[fromPoint]!!.lng, positionMap[toPoint]!!.lng)
   }
 
   /**
@@ -184,11 +197,7 @@ class Horoscope(
    * @param point 取得此星體在第幾宮
    */
   fun getHouse(point: Point): Int? {
-    val pos = positionMap[point]
-    return if (pos != null)
-      getHouse(pos.getLng())
-    else
-      null
+    return positionMap[point]?.let { pos -> getHouse(pos.lng) }
   }
 
   /** 取得星體的位置以及地平方位角  */
@@ -198,11 +207,7 @@ class Horoscope(
 
   /** 取得某星 位於什麼星座  */
   fun getZodiacSign(point: Point): ZodiacSign? {
-    val pos = getPosition(point)
-    return if (pos == null)
-      null
-    else
-      ZodiacSign.getZodiacSign(pos.getLng())
+    return getPosition(point)?.let { pos -> ZodiacSign.getZodiacSign(pos.lng) }
   }
 
   companion object {
@@ -210,24 +215,19 @@ class Horoscope(
     @Transient private val logger = LoggerFactory.getLogger(Horoscope::class.java)
 
 
-    /**
-     * ========================== 以下為 static utility methods ==========================
-     */
+    /** ========================== 以下為 static utility methods ========================== */
 
 
     /**
      * @return 計算黃道帶上兩個度數的交角 , 其值必定小於等於 180度
      */
     fun getAngle(from: Double, to: Double): Double {
-      return if (from - to >= 180)
-        360 - from + to
-      else if (from - to >= 0)
-        from - to
-      else if (from - to >= -180)
-        to - from
-      else
-      // (from - to < -180)
-        from + 360 - to
+      return when {
+        from - to >= 180 -> 360 - from + to
+        from - to >= 0 -> from - to
+        from - to >= -180 -> to - from
+        else -> from + 360 - to  // (from - to < -180)
+      }
     }
 
     /**

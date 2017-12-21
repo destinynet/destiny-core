@@ -63,6 +63,7 @@ object RuleTranslator {
         when (rule) {
           is MutualReception.BySign -> TODO()
           is MutualReception.ByExalt -> TODO()
+          is MutualReception.ByTriplicity -> TODO()
         }
       }
     }

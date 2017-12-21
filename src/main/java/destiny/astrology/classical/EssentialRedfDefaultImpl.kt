@@ -14,9 +14,28 @@ import java.io.Serializable
 
 /**
  * 取得星座 ( ZodiacSign ) 的 : 旺 Rulership , 廟 Exaltation , 陷 Detriment , 落 Fail
- * 內定實作為 托勒密表格
+ * 內定實作為 托勒密 Ptolomy 表格
  */
-class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
+class EssentialRedfDefaultImpl(private val rulerImpl: IRuler,
+                               private val detrimentImpl: IDetriment) : IEssentialRedf, Serializable {
+
+
+  override fun getRuling(planet: Planet, dayNight: DayNight): ZodiacSign? {
+    return rulerImpl.getRuling(planet, dayNight)
+  }
+
+  override fun getRuling(planet: Planet): Set<ZodiacSign> {
+    return rulerImpl.getRuling(planet)
+  }
+
+  override fun getDetriment(sign: ZodiacSign): Planet {
+    return detrimentImpl.getDetriment(sign)
+  }
+
+  override fun getDetriment(sign: ZodiacSign, dayNight: DayNight?): Planet? {
+    return detrimentImpl.getDetriment(sign, dayNight)
+  }
+
 
   /**
    * @param dignity [Dignity.RULER] 與 [Dignity.DETRIMENT] 不會傳回 null ,
@@ -24,11 +43,14 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
    */
   override fun getPoint(sign: ZodiacSign, dignity: Dignity): Point? {
     return when (dignity) {
+    /** 旺 , +5 */
+      RULER -> getRuler(sign)
     /** 廟 , +4  */
       EXALTATION -> findPoint(sign, starExaltationMap) // nullable
     /** 落 , -4  */
       FALL -> findPoint(sign, starFallMap) // nullable
-      else -> rulerDetrimentMap[(sign to dignity)] // not null
+    /** 陷 , -5 */
+      DETRIMENT -> getDetriment(sign)
     }
   }
 
@@ -41,47 +63,44 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
 
 
   /**
-   * 取得「日夜區分版本」的 [RULER]
+   * @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null)
    */
-  fun getRulerByDayNight(sign: ZodiacSign , dayNight: DayNight) : Planet? {
-    return rulerDayNightMap[(sign to dayNight)]
+  override fun getRuler(sign: ZodiacSign, dayNight: DayNight?): Planet? {
+    return if (dayNight != null)
+      rulerDayNightMap[(sign to dayNight)]
+    else
+      rulerDetrimentMap[(sign to RULER)]
   }
 
-  /**
-   * 取得此行星在日、夜 是什麼星座的 [RULER]
-   */
-  fun getRulingByDayNight(planet: Planet , dayNight: DayNight) : ZodiacSign? {
-    return planetDayNightRulerMap[(planet to dayNight)]
-  }
 
   /**
    * 取得在此星座得到「Exaltation , 廟 +4」的星體及度數
    */
   fun getExaltationStarDegree(sign: ZodiacSign): PointDegree? {
-    return findPoint(sign , starExaltationMap)?.let { point -> PointDegree(point , starExaltationMap[point]!!) }
+    return findPoint(sign, starExaltationMap)?.let { point -> PointDegree(point, starExaltationMap[point]!!) }
   }
 
   /**
    * 取得在此星座得到「Fall , 落 -4」的星體及度數
    */
   fun getFallStarDegree(sign: ZodiacSign): PointDegree? {
-    return findPoint(sign , starFallMap)?.let { point -> PointDegree(point , starFallMap[point]!!) }
+    return findPoint(sign, starFallMap)?.let { point -> PointDegree(point, starFallMap[point]!!) }
   }
 
   companion object {
     /** 存放星體在黃道帶上幾度得到 Exaltation (廟 , +4) 的度數  */
     private val starExaltationMap = mapOf<Point, Double>(
-       SUN to 19.0  // 太陽在戌宮 19度 exalted.
+      SUN to 19.0  // 太陽在戌宮 19度 exalted.
       , MOON to 33.0  // 月亮在酉宮 03度 exalted.
       , MERCURY to 165.0  // 水星在巳宮 15度 exalted.
       , VENUS to 357.0  // 金星在亥宮 27度 exalted.
       , MARS to 298.0  // 火星在丑宮 28度 exalted.
       , JUPITER to 105.0  // 木星在未宮 15度 exalted.
       , SATURN to 201.0  // 土星在辰宮 21度 exalted.
-      ,LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
-      ,LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
-      ,LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
-      ,LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
+      , LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
+      , LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
+      , LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
+      , LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
     )
 
 
@@ -91,24 +110,24 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
      */
 
     private val starFallMap = starExaltationMap.keys.map {
-        it to Utils.getNormalizeDegree(starExaltationMap[it]!! + 180)
-      }.toMap()
+      it to Utils.getNormalizeDegree(starExaltationMap[it]!! + 180)
+    }.toMap()
 
 
     /** 不考量「日、夜」的 ruler */
     private val rulerMap = mapOf<Pair<ZodiacSign, Dignity>, Planet>(
-      (ARIES       to RULER) to MARS,
-      (TAURUS      to RULER) to VENUS,
-      (GEMINI      to RULER) to MERCURY,
-      (CANCER      to RULER) to MOON,
-      (LEO         to RULER) to SUN,
-      (VIRGO       to RULER) to MERCURY,
-      (LIBRA       to RULER) to VENUS,
-      (SCORPIO     to RULER) to MARS,
+      (ARIES to RULER) to MARS,
+      (TAURUS to RULER) to VENUS,
+      (GEMINI to RULER) to MERCURY,
+      (CANCER to RULER) to MOON,
+      (LEO to RULER) to SUN,
+      (VIRGO to RULER) to MERCURY,
+      (LIBRA to RULER) to VENUS,
+      (SCORPIO to RULER) to MARS,
       (SAGITTARIUS to RULER) to JUPITER,
-      (CAPRICORN   to RULER) to SATURN,
-      (AQUARIUS    to RULER) to SATURN,
-      (PISCES      to RULER) to JUPITER
+      (CAPRICORN to RULER) to SATURN,
+      (AQUARIUS to RULER) to SATURN,
+      (PISCES to RULER) to JUPITER
     )
 
     /** 不考量「日、夜」的  [RULER] (旺, +５) / [DETRIMENT]  (陷, -5) Map */
@@ -126,8 +145,8 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
      * 考量日夜的 rulerMap , 參考表格 : https://imgur.com/a/bZ6ij
      * 讀作 : 什麼星座的日/夜 的 ruler 是誰(maybe null)
      * */
-    private val rulerDayNightMap = mapOf<Pair<ZodiacSign , DayNight> , Planet> (
-      (ARIES to DAY) to MARS ,
+    private val rulerDayNightMap = mapOf<Pair<ZodiacSign, DayNight>, Planet>(
+      (ARIES to DAY) to MARS,
       (TAURUS to NIGHT) to VENUS,
       (GEMINI to DAY) to MERCURY,
       (CANCER to DAY) to MOON,
@@ -167,10 +186,10 @@ class EssentialRedfDefaultImpl : IEssentialRedf, Serializable {
      */
     private val planetDayNightRulerMap: Map<Pair<Planet, DayNight>, ZodiacSign> = rulerDayNightMap
       .entries
-      .map { (sign_to_DN,planet) -> planet to sign_to_DN }
-      .groupBy { (planet ,sign_to_DN) -> planet }
-      .flatMap { (planet,sign_to_DN) -> sign_to_DN }
-      .map { (planet , sign_to_DN) -> (planet to sign_to_DN.second) to sign_to_DN.first }
+      .map { (sign_to_DN, planet) -> planet to sign_to_DN }
+      .groupBy { (planet, sign_to_DN) -> planet }
+      .flatMap { (planet, sign_to_DN) -> sign_to_DN }
+      .map { (planet, sign_to_DN) -> (planet to sign_to_DN.second) to sign_to_DN.first }
       .toMap()
 
   }

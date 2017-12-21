@@ -37,4 +37,5 @@ sealed class Mutual(val planet1: Planet, val sign1: ZodiacSign, val planet2: Pla
 sealed class MutualReception(val planet1: Planet , val sign1: ZodiacSign , val planet2: Planet , val sign2: ZodiacSign) : Rule() {
   class BySign(planet1: Planet , sign1: ZodiacSign , planet2: Planet , sign2: ZodiacSign) : MutualReception(planet1 , sign1 , planet2 , sign2)
   class ByExalt(planet1: Planet , sign1: ZodiacSign , planet2: Planet , sign2: ZodiacSign) : MutualReception(planet1 , sign1 , planet2 , sign2)
+  class ByTriplicity(planet1: Planet , sign1: ZodiacSign , planet2: Planet , sign2: ZodiacSign) : MutualReception(planet1 , sign1 , planet2 , sign2)
 }

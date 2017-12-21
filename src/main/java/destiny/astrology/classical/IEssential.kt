@@ -17,8 +17,6 @@ interface IEssential {
     val logger = LoggerFactory.getLogger(IEssential::class.java)
   }
 
-
-
   /**
    * 取得黃道帶上某星座，其 Dignity 之 廟旺陷落 各是何星
    * @param dignity [Dignity.RULER] 與 [Dignity.DETRIMENT] 不會傳回 null ,
@@ -85,7 +83,18 @@ interface IEssential {
       receiver === getPoint(receiveeSign, Dignity.FALL)
     } ?: false
   }
-  
+
+
+  /**
+   * @param guest 是否接受 主人的 RULER 招待
+   */
+  fun isReceivingFromRuler(guest:Point, owner:Point , map:Map<Point, ZodiacSign>) : Boolean {
+    map[guest]?.takeIf{ sign1 ->
+      owner === getPoint(sign1 , Dignity.RULER)
+    }
+    TODO()
+  }
+
   /**
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」

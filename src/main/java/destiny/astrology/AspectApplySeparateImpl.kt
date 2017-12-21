@@ -15,8 +15,8 @@ class AspectApplySeparateImpl(
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
    */
   override fun getAspectType(h: Horoscope, p1: Point, p2: Point, aspect: Aspect): IAspectApplySeparate.AspectType? {
-    val deg1 = h.getPositionWithAzimuth(p1).getLng()
-    val deg2 = h.getPositionWithAzimuth(p2).getLng()
+    val deg1 = h.getPositionWithAzimuth(p1).lng
+    val deg2 = h.getPositionWithAzimuth(p2).lng
 
     if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect)) {
       val planetsAngle = Horoscope.getAngle(deg1, deg2)
@@ -27,8 +27,8 @@ class AspectApplySeparateImpl(
 
       val hc2 = horoscopeImpl.getHoroscope(oneSecondLater, h.location, h.points, h.houseSystem, h.centric, h.coordinate, h.temperature, h.pressure)
 
-      val deg1_next = hc2.getPositionWithAzimuth(p1).getLng()
-      val deg2_next = hc2.getPositionWithAzimuth(p2).getLng()
+      val deg1_next = hc2.getPositionWithAzimuth(p1).lng
+      val deg2_next = hc2.getPositionWithAzimuth(p2).lng
       val planetsAngle_next = Horoscope.getAngle(deg1_next, deg2_next)
       val error_next = Math.abs(planetsAngle_next - aspect.degree)
 

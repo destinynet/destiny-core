@@ -8,7 +8,9 @@ import destiny.astrology.*
 import java.io.Serializable
 
 /**
- * Essential Triplicity 實作 , 參考 Ptolemy's Table : <br></br>
+ * TODO https://altairastrology.wordpress.com/2008/04/18/a-closer-look-at-triplicity/
+ *
+ * Essential Triplicity 實作 , 參考 Ptolemy's Table :
  * <pre>
  *     | 白天 | 夜晚
  * -------------------
@@ -16,7 +18,7 @@ import java.io.Serializable
  * 土相 | 金星 | 月亮
  * 風相 | 土星 | 水星
  * 水相 | 火星 | 火星
-</pre> *
+ * </pre>
  */
 class EssentialTriplicityDefaultImpl : IEssentialTriplicity, Serializable {
 

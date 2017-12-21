@@ -34,7 +34,7 @@ class EssentialDignitiesBean(
 
   override  var rules : List<IRule>  = defaultRules
 
-  fun getComments2(planet: Planet, h: Horoscope, locale: Locale): List<String> {
+  override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules
       .map { it.getComment(planet , h , locale) }
       .filter { it != null }
@@ -42,7 +42,7 @@ class EssentialDignitiesBean(
       .toList()
   }
 
-  override fun getComments(planet: Planet , h:Horoscope , locale: Locale) : List<String> {
+  fun getCommentsTest(planet: Planet , h:Horoscope , locale: Locale) : List<String> {
     return predicates
       .mapNotNull { it.getRule(planet , h) }
       .map { rule -> RuleTranslator.getDescriptor(rule).getDescription(locale) }
