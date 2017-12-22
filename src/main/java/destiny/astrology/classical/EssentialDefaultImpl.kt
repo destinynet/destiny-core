@@ -13,13 +13,13 @@ import java.io.Serializable
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities  */
 class EssentialDefaultImpl : IEssential, Serializable {
 
-  private val essentialRedfImpl = EssentialRedfDefaultImpl(RulerPtolemyImpl() , DetrimentPtolemyImpl())
+  private val essentialRedfImpl = EssentialRedfDefaultImpl(RulerPtolemyImpl() , DetrimentPtolemyImpl() , ExaltationPtolemyImpl() , FallPtolemyImpl())
 
-  private val triplicityImpl = EssentialTriplicityDefaultImpl()
+  private val triplicityImpl = TriplicityWilliamImpl()
 
-  private val termsImpl = EssentialTermsDefaultImpl()
+  private val termsImpl = TermsPtolomyImpl()
 
-  private val faceImpl = EssentialFaceDefaultImpl()
+  private val faceImpl = FacePtolomyImpl()
 
   /**
    * @param dignity [Dignity.RULER] 與 [Dignity.DETRIMENT] 不會傳回 empty ,
@@ -31,28 +31,24 @@ class EssentialDefaultImpl : IEssential, Serializable {
 
   /** Triplicity of DAY/NIGHT  */
   override fun getTriplicityPoint(sign: ZodiacSign, dayNight: DayNight): Point {
-    return triplicityImpl.getTriplicityPoint(sign, dayNight)
+    return triplicityImpl.getPoint(sign, dayNight)
   }
 
-  /* Terms */
+  /** Terms */
   override fun getTermsPoint(degree: Double): Point {
-    return termsImpl.getTermsStar(degree)
+    return termsImpl.getPoint(degree)
   }
 
-  /** Terms  */
-  override fun getTermsPoint(sign: ZodiacSign, degree: Double): Point {
-    return termsImpl.getTermsStar(sign, degree)
-  }
 
 
   /** Face  */
   override fun getFacePoint(degree: Double): Point {
-    return faceImpl.getFaceStar(degree)
+    return faceImpl.getPoint(degree)
   }
 
   /** Face  */
   override fun getFacePoint(sign: ZodiacSign, degree: Double): Point {
-    return faceImpl.getFaceStar(sign, degree)
+    return faceImpl.getPoint(sign, degree)
   }
 
 

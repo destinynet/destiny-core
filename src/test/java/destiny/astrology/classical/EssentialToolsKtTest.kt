@@ -114,7 +114,7 @@ class EssentialToolsKtTest {
    * In a night chart, if the Moon occupies Aries, it’s received by Jupiter ruling fire signs by night.
    *    If that Jupiter occupies Virgo, it’s received by the Moon ruling earth signs by night.
    *
-   * 參考 [EssentialTriplicityDefaultImpl]
+   * 參考 [TriplicityWilliamImpl]
    * 如果白天時， 太陽在雙子（申宮、風象星座）, 風象星座白天主人為土星 ; 若土星在射手（寅宮、火象星座） , 火象星座白天主人為太陽 ==> 太陽、土星 透過 Triplicity 互容
    * 如果夜晚時， 月亮在牡羊（戌宮、火象星座）, 火象星座夜晚主人為木星 ; 若木星在處女（巳宮、土象星座） , 土象星座夜晚主人為月亮 ==> 月亮、木星 透過 Triplicity 互容
    *

@@ -18,8 +18,8 @@ class Triplicity(
     val sign = h.getZodiacSign(planet)
     return sign?.let {
       val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
-      if (dayNight == DayNight.DAY && planet === essentialImpl.getTriplicityPoint(sign, DayNight.DAY) ||
-          dayNight == DayNight.NIGHT && planet === essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT)) {
+      if (dayNight == DayNight.DAY && planet ===  triplicityImpl.getPoint(sign , DayNight.DAY) ||
+          dayNight == DayNight.NIGHT && planet === triplicityImpl.getPoint(sign , DayNight.NIGHT) ) {
         logger.debug("{} 位於 {} 為其 {} 之 Triplicity" , planet , sign , dayNight)
         return@let "comment" to arrayOf(planet, sign, dayNight)
       } else

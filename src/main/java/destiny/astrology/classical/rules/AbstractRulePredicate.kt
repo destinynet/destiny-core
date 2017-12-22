@@ -14,6 +14,8 @@ abstract class AbstractRulePredicate<out T : Rule> {
 }
 
 var essentialImpl: IEssential = EssentialDefaultImpl()
+val triplicityImpl : ITriplicity = TriplicityWilliamImpl()
+val termsImpl : ITerms = TermsPtolomyImpl()
 
 val rulerImpl: IRuler = RulerPtolemyImpl()
 val detrimentImpl : IDetriment = DetrimentPtolemyImpl()
@@ -42,7 +44,7 @@ class ExaltPredicate : AbstractRulePredicate<Rule.Exalt>() {
 class TermPredicate : AbstractRulePredicate<Rule.Term>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Term? {
     return h.getPosition(p)?.lng?.takeIf { lngDeg ->
-      p === essentialImpl.getTermsPoint(lngDeg)
+      p ===  termsImpl.getPoint(lngDeg)
     }?.let { lngDeg ->
       Rule.Term(p, lngDeg)
     }
@@ -54,8 +56,8 @@ class TriplicityPredicate(private val dayNightImpl: DayNightDifferentiator) : Ab
   override fun getRule(p: Planet, h: Horoscope): Rule.Triplicity? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
-        (dayNight == DayNight.DAY && p === essentialImpl.getTriplicityPoint(sign, DayNight.DAY) ||
-          dayNight == DayNight.NIGHT && p === essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT))
+        (dayNight == DayNight.DAY && p ===  triplicityImpl.getPoint(sign , DayNight.DAY) ||
+          dayNight == DayNight.NIGHT && p ===  triplicityImpl.getPoint(sign , DayNight.NIGHT))
       }?.let { dayNight ->
         Rule.Triplicity(p, sign, dayNight)
       }

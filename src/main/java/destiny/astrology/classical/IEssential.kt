@@ -43,8 +43,6 @@ interface IEssential {
   /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360  */
   fun getTermsPoint(degree: Double): Point
 
-  /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30  */
-  fun getTermsPoint(sign: ZodiacSign, degree: Double): Point
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
   fun getFacePoint(degree: Double): Point

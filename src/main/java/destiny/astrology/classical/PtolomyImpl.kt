@@ -6,6 +6,7 @@ package destiny.astrology.classical
 import destiny.astrology.*
 import destiny.astrology.DayNight.DAY
 import destiny.astrology.DayNight.NIGHT
+import destiny.astrology.Element.*
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
 import java.io.Serializable
@@ -14,7 +15,7 @@ import java.io.Serializable
 /**
  * Ruler 托勒密 Ptolemy 實作
  */
-class RulerPtolemyImpl : AbstractPtolemy(), IRuler, Serializable {
+class RulerPtolemyImpl : AbstractPtolemy(), IRuler {
 
   override fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Planet? {
     return if (dayNight != null)
@@ -39,7 +40,7 @@ class RulerPtolemyImpl : AbstractPtolemy(), IRuler, Serializable {
  * Detriment 托勒密 Ptolemy 實作
  * (Ruler 對沖)
  */
-class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment, Serializable {
+class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
 
   override fun getPoint(sign: ZodiacSign): Planet {
     return rulerMap[sign.oppositeSign]!!
@@ -55,8 +56,8 @@ class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment, Serializable {
   }
 }
 
-
-class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation, Serializable {
+/** Exaltation , +4 */
+class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 
   /** 哪顆星體在此星座 擢升 (EXALT , +4) , 必定為 1 or 0 顆星 */
   override fun getPoint(sign: ZodiacSign): Point? {
@@ -67,26 +68,274 @@ class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation, Serializable {
   override fun getSign(point: Point): ZodiacSign? {
     return exaltSignMap[point]
   }
+
+  /** 取得在此星座得到「Exaltation , 廟 +4」的星體及度數 */
+  override fun getPointDegree(sign: ZodiacSign): PointDegree? {
+    return findPoint(sign, exaltDegreeMap)?.let { point -> PointDegree(point, exaltDegreeMap[point]!!) }
+  }
 }
 
-
-class FallPtolemyImpl : AbstractPtolemy(), IFall , Serializable {
+/** Fall , -4 */
+class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
 
   /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
   override fun getPoint(sign: ZodiacSign): Point? {
-    return findPoint(sign , fallDegreeMap)
+    return findPoint(sign, fallDegreeMap)
   }
 
   /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
   override fun getSign(point: Point): ZodiacSign? {
     return fallSignMap[point]
   }
+
+  /** 取得在此星座得到 落 (FALL , -4) 的星體及度數 */
+  override fun getPointDegree(sign: ZodiacSign): PointDegree? {
+    return findPoint(sign, fallDegreeMap)?.let { point -> PointDegree(point, fallDegreeMap[point]!!) }
+  }
 }
+
+/**
+ * Triplicity , +3
+ * 托勒密 三分相 :
+ * source https://imgur.com/CoTa2bZ
+ * https://tonylouis.wordpress.com/2012/04/14/still-thinking-about-triplicity-rulers/
+ *
+ * <pre>
+ *     | 白天 | 夜晚 | 共管
+ * -----------------------
+ * 火象 | 太陽 | 木星 |
+ * 土象 | 金星 | 月亮 |
+ * 風象 | 土星 | 水星 |
+ * 水象 | 金星 | 月亮 | 火星
+ * </pre>
+ * */
+class TriplicityPtolomyImpl : ITriplicity, Serializable {
+
+  /** 哪顆星在此星座得到三分相 (+3) */
+  override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Point {
+    return when (dayNight) {
+      DayNight.DAY -> dayMap[sign.element]!!
+      DayNight.NIGHT -> nightMap[sign.element]!!
+    }
+  }
+
+  /**
+   * 共管 , Partner
+   * Ptolomy 只有水象星座，由火星共管
+   * */
+  override fun getPartner(sign: ZodiacSign): Point? {
+    return sign.element.takeIf { it === Element.WATER }?.let { Planet.MARS }
+  }
+
+  companion object {
+    private val dayMap = mapOf(
+      FIRE to SUN,
+      EARTH to VENUS,
+      AIR to SATURN,
+      WATER to VENUS
+    )
+
+    private val nightMap = mapOf(
+      FIRE to JUPITER,
+      EARTH to MOON,
+      AIR to MERCURY,
+      WATER to MOON
+    )
+  }
+}
+
+/**
+ * Terms , +2
+ * Ptolemy's Table , 以五分法
+ * */
+class TermsPtolomyImpl : ITerms , Serializable {
+
+  override fun getPoint(degree: Double): Point {
+    val normalizedDegree = Utils.getNormalizeDegree(degree)
+    val signIndex = normalizedDegree.toInt() / 30
+    (0..4)
+      .map { termPointDegrees[signIndex * 5 + it] }
+      .filter { normalizedDegree < it.degree }
+      .forEach { return it.point }
+    throw RuntimeException("Cannot find Essential Terms at degree $degree , signIndex = $signIndex")
+  }
+
+
+  override fun getPoint(sign: ZodiacSign, degree: Double): Point {
+    return getPoint(sign.degree + degree)
+  }
+
+  companion object {
+    internal val termPointDegrees = listOf(
+      //戌
+      PointDegree(JUPITER, 6.0),
+      PointDegree(VENUS, 14.0),
+      PointDegree(MERCURY, 21.0),
+      PointDegree(MARS, 26.0),
+      PointDegree(SATURN, 30.0),
+      //酉
+      PointDegree(VENUS, 38.0),
+      PointDegree(MERCURY, 45.0),
+      PointDegree(JUPITER, 52.0),
+      PointDegree(SATURN, 56.0),
+      PointDegree(MARS, 60.0),
+      //申
+      PointDegree(MERCURY, 67.0),
+      PointDegree(JUPITER, 74.0),
+      PointDegree(VENUS, 81.0),
+      PointDegree(SATURN, 85.0),
+      PointDegree(MARS, 90.0),
+      //未
+      PointDegree(MARS, 96.0),
+      PointDegree(JUPITER, 103.0),
+      PointDegree(MERCURY, 110.0),
+      PointDegree(VENUS, 117.0),
+      PointDegree(SATURN, 120.0),
+      //午
+      PointDegree(SATURN, 126.0),
+      PointDegree(MERCURY, 133.0),
+      PointDegree(VENUS, 139.0),
+      PointDegree(JUPITER, 145.0),
+      PointDegree(MARS, 150.0),
+      //巳
+      PointDegree(MERCURY, 157.0),
+      PointDegree(VENUS, 163.0),
+      PointDegree(JUPITER, 168.0),
+      PointDegree(SATURN, 174.0),
+      PointDegree(MARS, 180.0),
+      //辰
+      PointDegree(SATURN, 186.0),
+      PointDegree(VENUS, 191.0),
+      PointDegree(JUPITER, 199.0),
+      PointDegree(MERCURY, 204.0),
+      PointDegree(MARS, 210.0),
+      //卯
+      PointDegree(MARS, 216.0),
+      PointDegree(JUPITER, 224.0),
+      PointDegree(VENUS, 231.0),
+      PointDegree(MERCURY, 237.0),
+      PointDegree(SATURN, 240.0),
+      //寅
+      PointDegree(JUPITER, 248.0),
+      PointDegree(VENUS, 254.0),
+      PointDegree(MERCURY, 259.0),
+      PointDegree(SATURN, 265.0),
+      PointDegree(MARS, 270.0),
+      //丑
+      PointDegree(VENUS, 276.0),
+      PointDegree(MERCURY, 282.0),
+      PointDegree(JUPITER, 289.0),
+      PointDegree(MARS, 295.0),
+      PointDegree(SATURN, 300.0),
+      //子
+      PointDegree(SATURN, 306.0),
+      PointDegree(MERCURY, 312.0),
+      PointDegree(VENUS, 320.0),
+      PointDegree(JUPITER, 325.0),
+      PointDegree(MARS, 330.0),
+      //亥
+      PointDegree(VENUS, 338.0),
+      PointDegree(JUPITER, 344.0),
+      PointDegree(MERCURY, 350.0),
+      PointDegree(MARS, 356.0),
+      PointDegree(SATURN, 359.999999999999) //如果改成 360 , 會被 normalize 成 0
+    )
+  }
+}
+
+/**
+ * Face , +1
+ * Essential Face 內定實作  , 參考 Ptolemy's Table , 以三分法 .
+ *
+ * Al-Biruni 利用 Chaldean order 排列，從戌宮零度開始， 火 -> 日 -> 金 -> 水 -> 月 -> 土 -> 木 ，依序下去，每星佔 10度
+ *
+ * 另一種做法，是 Ptolemy 的定義：
+ * 根據此網站說明： http://www.gotohoroscope.com/dictionary/astrological-F.html
+ * A planet is said to be in its own face when located in a house that is distant from the Moon or the Sun
+ * by the same number of houses as the sign it rules is distant from the sign ruled by the Moon or Sun respectively.
+ *
+ * 也就是說 :
+ *
+ * 水星若與日月呈現 30度角，則得 Face
+ * 金星若與日月呈現 60度角，則得 Face
+ * 火星若與日月呈現 90度角，則得 Face
+ * 木星若與日月呈現120度角，則得 Face
+ * 土星若與日月呈現150度角，則得 Face
+ *
+ * */
+class FacePtolomyImpl : IFace , Serializable {
+
+  /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
+  override fun getPoint(degree: Double): Planet {
+    val index = (Utils.getNormalizeDegree(degree) / 10).toInt()
+    return faceStarList[index]
+  }
+
+  /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
+  override fun getPoint(sign: ZodiacSign, degree: Double): Planet {
+    return getPoint(sign.degree + degree)
+  }
+
+  companion object {
+    /** 因為間距固定 10度 , 所以 list 不用儲存度數  */
+    private val faceStarList = listOf(
+      //戌
+      MARS
+      , SUN
+      , VENUS
+      //酉
+      , MERCURY
+      , MOON
+      , SATURN
+      //申
+      , JUPITER
+      , MARS
+      , SUN
+      //未
+      , VENUS
+      , MERCURY
+      , MOON
+      //午
+      , SATURN
+      , JUPITER
+      , MARS
+      //巳
+      , SUN
+      , VENUS
+      , MERCURY
+      //辰
+      , MOON
+      , SATURN
+      , JUPITER
+      //卯
+      , MARS
+      , SUN
+      , VENUS
+      //寅
+      , MERCURY
+      , MOON
+      , SATURN
+      //丑
+      , JUPITER
+      , MARS
+      , SUN
+      //子
+      , VENUS
+      , MERCURY
+      , MOON
+      //亥
+      , SATURN
+      , JUPITER
+      , MARS
+    )
+  }
+}
+
 
 /**
  * 托勒密 RULER / DETRIMENT 共用表格
  */
-abstract class AbstractPtolemy {
+abstract class AbstractPtolemy : Serializable {
 
   fun findPoint(sign: ZodiacSign, map: Map<Point, Double>): Point? {
     return map.entries
@@ -197,17 +446,19 @@ abstract class AbstractPtolemy {
 
     /** 承上，儲存的是星座值 */
     internal val exaltSignMap: Map<Point, ZodiacSign> = exaltDegreeMap
-      .mapValues { (point , degree) -> getZodiacSign(degree) }
+      .mapValues { (point, degree) -> getZodiacSign(degree) }
       .toMap()
 
     /** Fall Degree Map , 即為 Exalt 對沖的度數 */
     internal val fallDegreeMap: Map<Point, Double> = exaltDegreeMap
-      .mapValues { (point,deg) -> Utils.getNormalizeDegree(deg+ 180) }
+      .mapValues { (point, deg) -> Utils.getNormalizeDegree(deg + 180) }
       .toMap()
 
     /** 承上，儲存的是星座 */
     internal val fallSignMap = fallDegreeMap
-      .mapValues { (point , degree) -> getZodiacSign(degree) }
+      .mapValues { (point, degree) -> getZodiacSign(degree) }
       .toMap()
-  }
+
+
+  } // companion object
 }

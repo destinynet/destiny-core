@@ -133,6 +133,7 @@ public enum ZodiacSign implements ILocaleString, YinYangIF {
   }
 
   /** 取得四大元素之一 */
+  @NotNull
   public Element getElement() {
     return element;
   }

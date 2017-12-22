@@ -11,10 +11,14 @@ abstract class EssentialRule : Rule() {
   /** 具備計算 Ptolemy's Table of Essential Dignities and Debilities 的所有介面  */
   var essentialImpl: IEssential = EssentialDefaultImpl()
 
+  val triplicityImpl : ITriplicity = TriplicityWilliamImpl()
+
   val rulerImpl : IRuler = RulerPtolemyImpl()
   val detrimentImpl : IDetriment = DetrimentPtolemyImpl()
   val exaltImpl : IExaltation = ExaltationPtolemyImpl()
   val fallImpl : IFall = FallPtolemyImpl()
+
+  val termsImpl : ITerms = TermsPtolomyImpl()
 
 
 }

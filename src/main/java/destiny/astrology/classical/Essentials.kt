@@ -3,22 +3,19 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.DayNight
-import destiny.astrology.Planet
-import destiny.astrology.Point
-import destiny.astrology.ZodiacSign
+import destiny.astrology.*
 import destiny.astrology.classical.Dignity.RULER
 
 /** Ruler , +5 */
 interface IRuler {
 
   /** 不分日夜，取得 RULER , 傳回的為 非null值 */
-  fun getPoint(sign: ZodiacSign): Planet {
+  fun getPoint(sign: ZodiacSign): Point {
     return getPoint(sign, null)!!
   }
 
   /** @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null) */
-  fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Planet?
+  fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Point?
 
   /** 不分日夜，取得此行星為哪個星座的主人 , 傳回的為 非null值 . size 固定為 2  */
   fun getSigns(planet: Planet): Set<ZodiacSign>
@@ -54,6 +51,9 @@ interface IExaltation {
   /** 此星體在哪個星座 擢升 (EXALT , +4) , 前者逆函數 */
   fun getSign(point: Point): ZodiacSign?
 
+  /** 取得在此星座得到 擢升 (EXALT , +4) 的星體及度數 */
+  fun getPointDegree(sign: ZodiacSign): PointDegree?
+
 }
 
 
@@ -65,4 +65,39 @@ interface IFall {
 
   /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
   fun getSign(point: Point): ZodiacSign?
+
+  /** 取得在此星座得到 落 (FALL , -4) 的星體及度數 */
+  fun getPointDegree(sign: ZodiacSign): PointDegree?
+}
+
+
+/** Triplicity , +3 */
+interface ITriplicity {
+
+  /** 哪顆星在此星座得到三分相 (+3) */
+  fun getPoint(sign: ZodiacSign, dayNight: DayNight): Point
+
+  /** 共管 , Partner */
+  fun getPartner(sign: ZodiacSign) : Point?
+}
+
+
+/** Terms , +2 */
+interface ITerms {
+
+  /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360  */
+  fun getPoint(degree: Double): Point
+
+  /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30  */
+  fun getPoint(sign: ZodiacSign, degree: Double): Point
+}
+
+/** Face (十度區 , Decans ) , +1 */
+interface IFace {
+
+  /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
+  fun getPoint(degree: Double): Point
+
+  /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
+  fun getPoint(sign: ZodiacSign, degree: Double): Point
 }

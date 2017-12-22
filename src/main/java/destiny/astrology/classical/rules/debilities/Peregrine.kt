@@ -54,11 +54,11 @@ class Peregrine(
         planet !== exaltImpl.getPoint(sign) &&
         planet !== detrimentImpl.getPoint(sign) &&
         planet !== fallImpl.getPoint(sign) &&
-        planet !== essentialImpl.getTermsPoint(sign, planetDeg) &&
+        planet !== termsImpl.getPoint(sign , planetDeg) &&
         planet !== essentialImpl.getFacePoint(planetDeg)) {
         // 判定日夜 Triplicity
-        if (!(dayNight == DayNight.DAY && planet === essentialImpl.getTriplicityPoint(sign, DayNight.DAY))
-          && !(dayNight == DayNight.NIGHT && planet === essentialImpl.getTriplicityPoint(sign, DayNight.NIGHT)))
+        if (!(dayNight == DayNight.DAY && planet ===  triplicityImpl.getPoint(sign , DayNight.DAY))
+          && !(dayNight == DayNight.NIGHT && planet === triplicityImpl.getPoint(sign , DayNight.NIGHT) ))
           return "comment" to arrayOf<Any>(planet)
       }
     }
