@@ -5,7 +5,6 @@
 package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.*
-import destiny.astrology.classical.Dignity
 
 /**
  * Peregrine : 漂泊、茫游、外出狀態
@@ -51,10 +50,10 @@ class Peregrine(
     if (planetDeg != null && sign != null) {
       val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
       if (
-        planet !== rulerImpl.getRuler(sign) &&
-        planet !== exaltImpl.getExaltation(sign) &&
-        planet !== detrimentImpl.getDetriment(sign) &&
-        planet !== essentialImpl.getPoint(sign, Dignity.FALL) &&
+        planet !== rulerImpl.getPoint(sign) &&
+        planet !== exaltImpl.getPoint(sign) &&
+        planet !== detrimentImpl.getPoint(sign) &&
+        planet !== fallImpl.getPoint(sign) &&
         planet !== essentialImpl.getTermsPoint(sign, planetDeg) &&
         planet !== essentialImpl.getFacePoint(planetDeg)) {
         // 判定日夜 Triplicity

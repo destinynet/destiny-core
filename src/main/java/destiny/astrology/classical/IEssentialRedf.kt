@@ -12,8 +12,8 @@ import destiny.astrology.ZodiacSign
  * 內定實作為 托勒密表格 EssentialDefaultImpl <br></br>
  * REDF 分別為 Rulership / Exaltation / Detriment / Fall 的第一個字母所組成
  */
-internal interface IEssentialRedf : IRuler , IDetriment {
+internal interface IEssentialRedf {
 
   /** 取得黃道帶上某星座，其 Dignity 之 廟旺陷落 各是何星  */
-  fun getPoint(sign: ZodiacSign, dignity: Dignity): Point?
+  fun getPointOld(sign: ZodiacSign, dignity: Dignity): Point?
 }

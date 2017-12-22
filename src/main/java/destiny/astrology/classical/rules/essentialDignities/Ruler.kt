@@ -12,7 +12,7 @@ class Ruler(private val dayNightDifferentiatorImpl: DayNightDifferentiator) : Ru
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
-      return if (planet === rulerImpl.getRuler(sign)) {
+      return if (planet === rulerImpl.getPoint(sign)) {
         logger.debug("{} 位於 {} , 為其 {}", planet, sign, Dignity.RULER)
         "commentBasic" to arrayOf(planet, sign)
       } else {
@@ -38,14 +38,14 @@ class Ruler(private val dayNightDifferentiatorImpl: DayNightDifferentiator) : Ru
     val sign1: ZodiacSign? = h.getZodiacSign(planet)
     // 此星座的 ruler 是什麼星
     val signRuler: Point? = sign1?.let {
-      rulerImpl.getRuler(it)
+      rulerImpl.getPoint(it)
       //essentialImpl.getPoint(it , Dignity.RULER)
     }
     // 該星飛到什麼星座
     val sign2: ZodiacSign? = signRuler?.let { h.getZodiacSign(it) }
 
     if (sign1 != null && signRuler != null && sign2 != null
-      && planet === rulerImpl.getRuler(sign2)) {
+      && planet === rulerImpl.getPoint(sign2)) {
       if (
         // 已經確定 Ruler 互容，要排除互陷
         !essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)) {

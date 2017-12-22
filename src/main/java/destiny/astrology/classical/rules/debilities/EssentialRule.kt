@@ -14,6 +14,7 @@ abstract class EssentialRule : Rule() {
   val rulerImpl : IRuler = RulerPtolemyImpl()
   val detrimentImpl : IDetriment = DetrimentPtolemyImpl()
   val exaltImpl : IExaltation = ExaltationPtolemyImpl()
+  val fallImpl : IFall = FallPtolemyImpl()
 
 
 }

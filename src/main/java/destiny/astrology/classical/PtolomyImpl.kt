@@ -16,19 +16,19 @@ import java.io.Serializable
  */
 class RulerPtolemyImpl : AbstractPtolemy(), IRuler, Serializable {
 
-  override fun getRuler(sign: ZodiacSign, dayNight: DayNight?): Planet? {
+  override fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Planet? {
     return if (dayNight != null)
       rulerDayNightMap[(sign to dayNight)]
     else
       rulerMap[sign]
   }
 
-  override fun getRuling(planet: Planet, dayNight: DayNight): ZodiacSign? {
+  override fun getSign(planet: Planet, dayNight: DayNight): ZodiacSign? {
     return rulingDayNightMap[(planet to dayNight)]
   }
 
   /** 不分日夜，取得此行星為哪兩個星座的 ruler (日月除外 , 各只有一個星座） */
-  override fun getRuling(planet: Planet): Set<ZodiacSign> {
+  override fun getSigns(planet: Planet): Set<ZodiacSign> {
     return rulingMap[planet]!!
   }
 }
@@ -41,16 +41,16 @@ class RulerPtolemyImpl : AbstractPtolemy(), IRuler, Serializable {
  */
 class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment, Serializable {
 
-  override fun getDetriment(sign: ZodiacSign): Planet {
+  override fun getPoint(sign: ZodiacSign): Planet {
     return rulerMap[sign.oppositeSign]!!
   }
 
   /** 此行星在哪些星座 陷 (-5), 至少一個，最多兩個 */
-  override fun getDetriment(planet: Planet): Set<ZodiacSign> {
+  override fun getSigns(planet: Planet): Set<ZodiacSign> {
     return detrimentMap[planet]!! // 托勒密表格，必定有值
   }
 
-  override fun getDetriment(sign: ZodiacSign, dayNight: DayNight?): Planet? {
+  override fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Planet? {
     return rulerDayNightMap[sign.oppositeSign to dayNight]
   }
 }
@@ -59,17 +59,29 @@ class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment, Serializable {
 class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation, Serializable {
 
   /** 哪顆星體在此星座 擢升 (EXALT , +4) , 必定為 1 or 0 顆星 */
-  override fun getExaltation(sign: ZodiacSign): Point? {
+  override fun getPoint(sign: ZodiacSign): Point? {
     return findPoint(sign, exaltDegreeMap)
   }
 
   /** 此星體在哪個星座 擢升 (EXALT , +4) , 前者逆函數 , 必定有值 */
-  override fun getExaltation(point: Point): ZodiacSign? {
+  override fun getSign(point: Point): ZodiacSign? {
     return exaltSignMap[point]
   }
-
 }
 
+
+class FallPtolemyImpl : AbstractPtolemy(), IFall , Serializable {
+
+  /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
+  override fun getPoint(sign: ZodiacSign): Point? {
+    return findPoint(sign , fallDegreeMap)
+  }
+
+  /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
+  override fun getSign(point: Point): ZodiacSign? {
+    return fallSignMap[point]
+  }
+}
 
 /**
  * 托勒密 RULER / DETRIMENT 共用表格
@@ -185,7 +197,17 @@ abstract class AbstractPtolemy {
 
     /** 承上，儲存的是星座值 */
     internal val exaltSignMap: Map<Point, ZodiacSign> = exaltDegreeMap
-      .mapValues { (sign , degree) -> getZodiacSign(degree) }
+      .mapValues { (point , degree) -> getZodiacSign(degree) }
+      .toMap()
+
+    /** Fall Degree Map , 即為 Exalt 對沖的度數 */
+    internal val fallDegreeMap: Map<Point, Double> = exaltDegreeMap
+      .mapValues { (point,deg) -> Utils.getNormalizeDegree(deg+ 180) }
+      .toMap()
+
+    /** 承上，儲存的是星座 */
+    internal val fallSignMap = fallDegreeMap
+      .mapValues { (point , degree) -> getZodiacSign(degree) }
       .toMap()
   }
 }

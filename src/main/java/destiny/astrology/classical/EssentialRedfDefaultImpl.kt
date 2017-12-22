@@ -5,10 +5,8 @@
 package destiny.astrology.classical
 
 import destiny.astrology.*
-import destiny.astrology.DayNight.DAY
-import destiny.astrology.DayNight.NIGHT
 import destiny.astrology.Planet.*
-import destiny.astrology.ZodiacSign.*
+import destiny.astrology.ZodiacSign.getZodiacSign
 import destiny.astrology.classical.Dignity.*
 import java.io.Serializable
 
@@ -20,41 +18,20 @@ class EssentialRedfDefaultImpl(private val rulerImpl: IRuler,
                                private val detrimentImpl: IDetriment) : IEssentialRedf, Serializable {
 
 
-  override fun getDetriment(planet: Planet): Set<ZodiacSign> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  override fun getRuling(planet: Planet, dayNight: DayNight): ZodiacSign? {
-    return rulerImpl.getRuling(planet, dayNight)
-  }
-
-  override fun getRuling(planet: Planet): Set<ZodiacSign> {
-    return rulerImpl.getRuling(planet)
-  }
-
-  override fun getDetriment(sign: ZodiacSign): Planet {
-    return detrimentImpl.getDetriment(sign)
-  }
-
-  override fun getDetriment(sign: ZodiacSign, dayNight: DayNight?): Planet? {
-    return detrimentImpl.getDetriment(sign, dayNight)
-  }
-
-
   /**
    * @param dignity [Dignity.RULER] 與 [Dignity.DETRIMENT] 不會傳回 null ,
    * 但 [Dignity.EXALTATION] 與 [Dignity.FALL] 就有可能為 null
    */
-  override fun getPoint(sign: ZodiacSign, dignity: Dignity): Point? {
+  override fun getPointOld(sign: ZodiacSign, dignity: Dignity): Point? {
     return when (dignity) {
     /** 旺 , +5 */
-      RULER -> getRuler(sign)
+      RULER -> rulerImpl.getPoint(sign)
     /** 廟 , +4  */
       EXALTATION -> findPoint(sign, starExaltationMap) // nullable
     /** 落 , -4  */
       FALL -> findPoint(sign, starFallMap) // nullable
     /** 陷 , -5 */
-      DETRIMENT -> getDetriment(sign)
+      DETRIMENT -> detrimentImpl.getPoint(sign)
     }
   }
 
@@ -65,16 +42,6 @@ class EssentialRedfDefaultImpl(private val rulerImpl: IRuler,
       .firstOrNull()
   }
 
-
-  /**
-   * @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null)
-   */
-  override fun getRuler(sign: ZodiacSign, dayNight: DayNight?): Planet? {
-    return if (dayNight != null)
-      rulerDayNightMap[(sign to dayNight)]
-    else
-      rulerDetrimentMap[(sign to RULER)]
-  }
 
 
   /**
@@ -118,83 +85,7 @@ class EssentialRedfDefaultImpl(private val rulerImpl: IRuler,
     }.toMap()
 
 
-    /** 不考量「日、夜」的 ruler */
-    private val rulerMap = mapOf<Pair<ZodiacSign, Dignity>, Planet>(
-      (ARIES to RULER) to MARS,
-      (TAURUS to RULER) to VENUS,
-      (GEMINI to RULER) to MERCURY,
-      (CANCER to RULER) to MOON,
-      (LEO to RULER) to SUN,
-      (VIRGO to RULER) to MERCURY,
-      (LIBRA to RULER) to VENUS,
-      (SCORPIO to RULER) to MARS,
-      (SAGITTARIUS to RULER) to JUPITER,
-      (CAPRICORN to RULER) to SATURN,
-      (AQUARIUS to RULER) to SATURN,
-      (PISCES to RULER) to JUPITER
-    )
 
-    /** 不考量「日、夜」的  [RULER] (旺, +５) / [DETRIMENT]  (陷, -5) Map */
-    private val rulerDetrimentMap: Map<Pair<ZodiacSign, Dignity>, Planet> = rulerMap.toMutableMap().let {
-      ZodiacSign.values().map { sign ->
-        val key = (sign to DETRIMENT)
-        val value = rulerMap[sign.oppositeSign to RULER]!!
-        it.put(key, value)
-      }
-      it
-    }.toMap()
-
-
-    /**
-     * 考量日夜的 rulerMap , 參考表格 : https://imgur.com/a/bZ6ij
-     * 讀作 : 什麼星座的日/夜 的 ruler 是誰(maybe null)
-     * */
-    private val rulerDayNightMap = mapOf<Pair<ZodiacSign, DayNight>, Planet>(
-      (ARIES to DAY) to MARS,
-      (TAURUS to NIGHT) to VENUS,
-      (GEMINI to DAY) to MERCURY,
-      (CANCER to DAY) to MOON,
-      (CANCER to NIGHT) to MOON,
-      (LEO to DAY) to SUN,
-      (LEO to NIGHT) to SUN,
-      (VIRGO to NIGHT) to MERCURY,
-      (LIBRA to DAY) to VENUS,
-      (SCORPIO to NIGHT) to MARS,
-      (SAGITTARIUS to DAY) to JUPITER,
-      (CAPRICORN to NIGHT) to SATURN,
-      (AQUARIUS to DAY) to SATURN,
-      (PISCES to NIGHT) to JUPITER
-    )
-
-    /**
-     * (火星, DAY) ==> 牡羊
-     * (火星, NIGHT) ==> 天蠍
-     *
-     * (金星, NIGHT) ==> 金牛
-     * (金星, DAY) ==> 天秤
-     *
-     * (水星, DAY) ==> 雙子
-     * (水星, NIGHT) ==> 處女
-     *
-     * (月亮, DAY) ==> 巨蟹
-     * (月亮, NIGHT) ==> 巨蟹
-     *
-     * (太陽, DAY) ==> 獅子
-     * (太陽, NIGHT) ==> 獅子
-     *
-     * (木星, DAY) ==> 射手
-     * (木星, NIGHT) ==> 雙魚
-     *
-     * (土星, NIGHT) ==> 摩羯
-     * (土星, DAY) ==> 水瓶
-     */
-    private val planetDayNightRulerMap: Map<Pair<Planet, DayNight>, ZodiacSign> = rulerDayNightMap
-      .entries
-      .map { (sign_to_DN, planet) -> planet to sign_to_DN }
-      .groupBy { (planet, sign_to_DN) -> planet }
-      .flatMap { (planet, sign_to_DN) -> sign_to_DN }
-      .map { (planet, sign_to_DN) -> (planet to sign_to_DN.second) to sign_to_DN.first }
-      .toMap()
 
   }
 

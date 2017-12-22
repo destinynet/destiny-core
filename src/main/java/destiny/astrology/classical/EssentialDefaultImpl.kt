@@ -26,7 +26,7 @@ class EssentialDefaultImpl : IEssential, Serializable {
    * 但 [Dignity.EXALTATION] 與 [Dignity.FALL] 就有可能為 empty
    */
   override fun getPoint(sign: ZodiacSign, dignity: Dignity): Point? {
-    return essentialRedfImpl.getPoint(sign, dignity)
+    return essentialRedfImpl.getPointOld(sign, dignity)
   }
 
   /** Triplicity of DAY/NIGHT  */

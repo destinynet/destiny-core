@@ -21,35 +21,35 @@ class EssentialRedfDefaultImplTest {
   /** 測試 Exaltation (廟)  */
   @Test
   fun testExaltation() {
-    assertSame(SUN, impl.getPoint(ARIES, EXALTATION))
-    assertSame(MOON, impl.getPoint(TAURUS, EXALTATION))
+    assertSame(SUN, impl.getPointOld(ARIES, EXALTATION))
+    assertSame(MOON, impl.getPointOld(TAURUS, EXALTATION))
     //assertSame(LunarNode.NORTH , impl.getPoint(ZodiacSign.GEMINI      , Dignity.EXALTATION));
-    assertSame(JUPITER, impl.getPoint(CANCER, EXALTATION))
-    assertSame(null, impl.getPoint(LEO, EXALTATION))
-    assertSame(MERCURY, impl.getPoint(VIRGO, EXALTATION))
-    assertSame(SATURN, impl.getPoint(LIBRA, EXALTATION))
-    assertSame(null, impl.getPoint(SCORPIO, EXALTATION))
+    assertSame(JUPITER, impl.getPointOld(CANCER, EXALTATION))
+    assertSame(null, impl.getPointOld(LEO, EXALTATION))
+    assertSame(MERCURY, impl.getPointOld(VIRGO, EXALTATION))
+    assertSame(SATURN, impl.getPointOld(LIBRA, EXALTATION))
+    assertSame(null, impl.getPointOld(SCORPIO, EXALTATION))
     //assertSame(LunarNode.SOUTH , impl.getPoint(ZodiacSign.SAGITTARIUS , Dignity.EXALTATION));
-    assertSame(MARS, impl.getPoint(CAPRICORN, EXALTATION))
-    assertSame(null, impl.getPoint(AQUARIUS, EXALTATION))
-    assertSame(VENUS, impl.getPoint(PISCES, EXALTATION))
+    assertSame(MARS, impl.getPointOld(CAPRICORN, EXALTATION))
+    assertSame(null, impl.getPointOld(AQUARIUS, EXALTATION))
+    assertSame(VENUS, impl.getPointOld(PISCES, EXALTATION))
   }
 
   /** 測試 Fall (落) , 其值為對沖星座之Exaltation之星體  */
   @Test
   fun testFall() {
-    assertSame(SATURN, impl.getPoint(ARIES, FALL))
-    assertSame(null, impl.getPoint(TAURUS, FALL))
+    assertSame(SATURN, impl.getPointOld(ARIES, FALL))
+    assertSame(null, impl.getPointOld(TAURUS, FALL))
     //assertSame(LunarNode.SOUTH   , impl.getPoint(ZodiacSign.GEMINI      , Dignity.FALL));
-    assertSame(MARS, impl.getPoint(CANCER, FALL))
-    assertSame(null, impl.getPoint(LEO, FALL))
-    assertSame(VENUS, impl.getPoint(VIRGO, FALL))
-    assertSame(SUN, impl.getPoint(LIBRA, FALL))
-    assertSame(MOON, impl.getPoint(SCORPIO, FALL))
+    assertSame(MARS, impl.getPointOld(CANCER, FALL))
+    assertSame(null, impl.getPointOld(LEO, FALL))
+    assertSame(VENUS, impl.getPointOld(VIRGO, FALL))
+    assertSame(SUN, impl.getPointOld(LIBRA, FALL))
+    assertSame(MOON, impl.getPointOld(SCORPIO, FALL))
     //assertSame(LunarNode.NORTH   , impl.getPoint(ZodiacSign.SAGITTARIUS , Dignity.FALL));
-    assertSame(JUPITER, impl.getPoint(CAPRICORN, FALL))
-    assertSame(null, impl.getPoint(AQUARIUS, FALL))
-    assertSame(MERCURY, impl.getPoint(PISCES, FALL))
+    assertSame(JUPITER, impl.getPointOld(CAPRICORN, FALL))
+    assertSame(null, impl.getPointOld(AQUARIUS, FALL))
+    assertSame(MERCURY, impl.getPointOld(PISCES, FALL))
   }
 
 

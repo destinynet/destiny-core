@@ -22,7 +22,7 @@ val exaltImpl : IExaltation = ExaltationPtolemyImpl()
 class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Ruler? {
     return h.getZodiacSign(p)?.takeIf { sign ->
-      p === rulerImpl.getRuler(sign)
+      p === rulerImpl.getPoint(sign)
     }?.let { sign ->
       Rule.Ruler(p, sign)
     }
@@ -32,7 +32,7 @@ class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
 class ExaltPredicate : AbstractRulePredicate<Rule.Exalt>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Exalt? {
     return h.getZodiacSign(p)?.takeIf { sign ->
-      p === exaltImpl.getExaltation(sign)
+      p === exaltImpl.getPoint(sign)
     }?.let { sign ->
       Rule.Exalt(p, sign)
     }
