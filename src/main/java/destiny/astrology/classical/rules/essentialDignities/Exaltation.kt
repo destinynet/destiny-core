@@ -4,14 +4,17 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
 import destiny.astrology.classical.Dignity
+import destiny.astrology.classical.EssentialTools
+import destiny.astrology.classical.IDetriment
+import destiny.astrology.classical.IFall
 
 /** A planet in its exaltation , or mutual reception with another planet by exaltation  */
-class Exaltation(private val dayNightDifferentiatorImpl: DayNightDifferentiator) : Rule() {
+class Exaltation(private val detrimentImpl : IDetriment,
+                 private val fallImpl : IFall) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
@@ -34,7 +37,7 @@ class Exaltation(private val dayNightDifferentiatorImpl: DayNightDifferentiator)
           ?.takeIf { sign2 ->
             planet === exaltImpl.getPoint(sign2)
           }?.takeIf { sign2: ZodiacSign ->
-          !essentialImpl.isBothInBadSituation(planet, sign1, signExaltation, sign2)
+          !EssentialTools.isBothInBadSituation(planet, sign1, signExaltation, sign2 , detrimentImpl, fallImpl)
         }?.let { sign2: ZodiacSign ->
           logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟廟互容", planet, sign1, Dignity.EXALTATION, signExaltation, sign2)
           "commentReception" to arrayOf(planet, sign1, signExaltation, sign2)

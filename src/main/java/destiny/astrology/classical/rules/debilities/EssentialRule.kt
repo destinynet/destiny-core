@@ -19,6 +19,7 @@ abstract class EssentialRule : Rule() {
   val fallImpl : IFall = FallPtolemyImpl()
 
   val termsImpl : ITerms = TermsPtolomyImpl()
+  val faceImpl : IFace = FacePtolomyImpl()
 
 
 }

@@ -34,22 +34,6 @@ class EssentialDefaultImpl : IEssential, Serializable {
     return triplicityImpl.getPoint(sign, dayNight)
   }
 
-  /** Terms */
-  override fun getTermsPoint(degree: Double): Point {
-    return termsImpl.getPoint(degree)
-  }
-
-
-
-  /** Face  */
-  override fun getFacePoint(degree: Double): Point {
-    return faceImpl.getPoint(degree)
-  }
-
-  /** Face  */
-  override fun getFacePoint(sign: ZodiacSign, degree: Double): Point {
-    return faceImpl.getPoint(sign, degree)
-  }
 
 
 }

@@ -7,7 +7,7 @@ package destiny.astrology.classical.rules.essentialDignities
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.IEssentialDignities
+import destiny.astrology.classical.*
 import destiny.astrology.classical.rules.*
 import destiny.astrology.classical.rules.Rule
 import java.io.Serializable
@@ -18,14 +18,16 @@ class EssentialDignitiesBean(
   /** 計算白天黑夜的實作   */
   private var dayNightImpl: DayNightDifferentiator) : IEssentialDignities, Serializable {
 
+  private val detrimentImpl: IDetriment = DetrimentPtolemyImpl()
+  private val fallImpl : IFall = FallPtolemyImpl()
 
   /** 內定的 Rules  */
   private val defaultRules: List<IRule>
     get() {
       return listOf(
-        Ruler(dayNightImpl)
-        , Exaltation(dayNightImpl)
-        , MixedReception()
+        Ruler(dayNightImpl , detrimentImpl , fallImpl)
+        , Exaltation(detrimentImpl , fallImpl)
+        , MixedReception(detrimentImpl , fallImpl)
         , Triplicity(dayNightImpl)
         , Term()
         , Face()

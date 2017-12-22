@@ -12,7 +12,7 @@ class Face : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getPosition(planet)?.lng?.takeIf { lngDeg ->
-      val facePoint = essentialImpl.getFacePoint(lngDeg)
+      val facePoint = faceImpl.getPoint(lngDeg)
       return@takeIf (planet === facePoint)
     }?.let { lngDeg ->
       logger.info("{} 位於其 Chaldean decanate or face : {}", planet, lngDeg)

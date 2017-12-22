@@ -18,6 +18,53 @@ class EssentialTools {
   companion object {
 
     /**
+     * @param p1 是否接受 p2 的 RULER 招待 , +5
+     * 譯作： p2 透過 RULER 接納了 p1
+     */
+    fun isReceivingFromRuler(p1: Point, p2: Point, map: Map<Point, ZodiacSign>, rulerImpl: IRuler): Boolean {
+      return map[p1]?.takeIf { sign1 ->
+        p2 === rulerImpl.getPoint(sign1)
+      }?.let { true } ?: false
+    }
+
+    /**
+     * @param p1 是否接受 p2 的 EXALT 招待 , +4
+     * 譯作 : p2 透過 EXALT 接納了 p1
+     */
+    fun isReceivingFromExalt(p1: Point, p2: Point, map: Map<Point, ZodiacSign>, exaltImpl: IExaltation): Boolean {
+      return map[p1]?.takeIf { sign1 ->
+        p2 === exaltImpl.getPoint(sign1)
+      }?.let { true } ?: false
+    }
+
+    /**
+     * @param p1 是否接受 p2 的 TRIPLICITY 招待 , +3
+     * 譯作 : p2 透過 TRIPLICITY 接納了 p1
+     */
+    fun isReceivingFromTriplicity(p1: Point, p2: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight, triplicityImpl: ITriplicity): Boolean {
+      return map[p1]?.takeIf { sign1 ->
+        p2 === triplicityImpl.getPoint(sign1, dayNight)
+      }?.let { true } ?: false
+    }
+
+    /**
+     * @param p1 位於 sign1 的 degree 度 , 是否接受 p2 的 TERMS 招待 , +2
+     * 譯作 : p2 透過 TERMS 接納了 p1
+     */
+    fun isReceivingFromTerms(p1: Point, sign1: ZodiacSign, degree: Double, p2: Point, termsImpl: ITerms): Boolean {
+      return (p2 === termsImpl.getPoint(sign1, degree))
+    }
+
+    /**
+     * @param p1 位於 sign1 的 degree 度 , 是否接受 p2 的 FACE 招待 , +1
+     * 譯作 : p2 透過 FACE 接納了 p1
+     */
+    fun isReceivingFromFace(p1: Point, sign1: ZodiacSign, degree: Double, p2: Point, faceImpl: IFace): Boolean {
+      return (p2 === faceImpl.getPoint(sign1 , degree))
+    }
+
+
+    /**
      * 製作出類似這樣的表格 : http://www.skyscript.co.uk/dig6.html
      */
     fun getReceptionMap(map: Map<Planet, ZodiacSign>): Map<Pair<Planet, Reception>, Set<Planet>> {
@@ -54,6 +101,19 @@ class EssentialTools {
             }
         }
     }
+
+    /** 如果 兩顆星都處於 [Dignity.DETRIMENT] 或是  [Dignity.FALL] , 則為 true  */
+    fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, detrimentImpl: IDetriment, fallImpl: IFall): Boolean {
+      return (p1 === detrimentImpl.getPoint(sign1) || p1 === fallImpl.getPoint(sign1))
+        && (p2 === detrimentImpl.getPoint(sign2) || p2 === fallImpl.getPoint(sign2))
+    }
+
+    /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
+    fun isBothInGoodSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, rulerImpl: IRuler, exaltImpl: IExaltation): Boolean {
+      return (p1 === rulerImpl.getPoint(sign1) || p1 === exaltImpl.getPoint(sign1))
+        && (p2 === rulerImpl.getPoint(sign2) || p2 === exaltImpl.getPoint(sign2))
+    }
+
   }
 
 

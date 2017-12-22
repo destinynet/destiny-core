@@ -4,6 +4,7 @@
 package destiny.astrology.classical
 
 import destiny.astrology.DayNight
+import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
@@ -11,6 +12,7 @@ import destiny.astrology.ZodiacSign.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
  * 測試 mutual reception , info & test case from https://skywriter.wordpress.com/2016/11/01/new-insights-into-mutual-reception/
@@ -171,9 +173,33 @@ class EssentialToolsKtTest {
   /**
    * 根據此頁資料來測試
    * http://www.skyscript.co.uk/dig6.html
+   *
+   *
+   * Consider the Sun in Libra. Venus is said to 'receive' the Sun because he is visiting her sign.
+   * In this capacity Venus is known as the Sun's dispositor.
+   *
+   * 太陽到 辰宮 (金星 為 主人 , RULER) , 金星要招待太陽   , 太陽 +5
+   *
+   * The Sun in Libra is also received, to a lesser degree, by Saturn since he has dignity in Libra by exaltation.
+   * 太陽到 辰宮 (土星 為 主秘 , EXALT) , 土星也要招待太陽 , 太陽 +4
+   *
+   * If the chart is a nocturnal one, Mercury offers a milder reception as ruler of the triplicity.
+   * 太陽 `夜晚` 到辰宮 (水星 為 三分主 , TRIPLICITY) , 水星也要招待太陽 , 太陽 +3
+   *
+   * Should the Sun be at 25 Libra, the minor receptions by term and face are from Mars and Jupiter respectively.
+   * 若太陽在 辰宮 25度
+   * 則會透過 TERMS 接受 火星的招待 , 太陽 +2
+   * 也會透過 FACE  接受 木星的招待 , 太陽 +1
    */
   @Test
-  fun `example1`() {
-
+  fun `太陽 夜晚 入辰宮`() {
+    val map = mapOf<Point , ZodiacSign>(
+      Planet.SUN to ZodiacSign.LIBRA
+    )
+    assertTrue(EssentialTools.isReceivingFromRuler(SUN , VENUS , map , RulerPtolemyImpl()))
+    assertTrue(EssentialTools.isReceivingFromExalt(SUN , SATURN , map , ExaltationPtolemyImpl()))
+    assertTrue(EssentialTools.isReceivingFromTriplicity(SUN , MERCURY , map , DayNight.NIGHT , TriplicityPtolomyImpl()))
+    assertTrue(EssentialTools.isReceivingFromTerms(SUN , LIBRA , 25.0 , MARS , TermsPtolomyImpl()))
+    assertTrue(EssentialTools.isReceivingFromFace(SUN , LIBRA , 25.0 , JUPITER , FacePtolomyImpl()))
   }
 }

@@ -17,6 +17,7 @@ abstract class Rule : AbstractRule(resource), Applicable {
 
   val rulerImpl : IRuler = RulerPtolemyImpl()
   val exaltImpl : IExaltation = ExaltationPtolemyImpl()
+  val faceImpl: IFace = FacePtolomyImpl()
 
   companion object {
     private const val resource = "destiny.astrology.classical.rules.essentialDignities.EssentialDignities"

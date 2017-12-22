@@ -14,15 +14,17 @@ import java.io.Serializable
  * Schoner Triplicity 實作
  * 參考表格 https://imgur.com/zHWZQ8L
  * 來自 https://altairastrology.wordpress.com/2008/04/18/a-closer-look-at-triplicity/
+ * 此表格中， EARTH + NIGHT == 太陽
  *
- * [*] 代表與 [TriplicityWilliamImpl] 不同
+ * 但其他資料都顯示為金星 , 故，這裡採用金星
+ *
  * <pre>
  *     | 白天 | 夜晚 | 共管
  * -----------------------
- * 火象 | 太陽 | 木星 | 火星*
- * 土象 | 月亮*| 太陽*| 土星*
- * 風象 | 土星 | 水星 | 木星*
- * 水象 | 金星*| 火星 | 月亮*
+ * 火象 | 太陽 | 木星 | 火星
+ * 土象 | 月亮 | 金星*| 土星
+ * 風象 | 土星 | 水星 | 木星
+ * 水象 | 金星 | 火星 | 月亮
  * </pre>
  */
 class TriplicitySchonerImpl : ITriplicity , Serializable {
@@ -55,7 +57,7 @@ class TriplicitySchonerImpl : ITriplicity , Serializable {
 
     internal val nightMap = mapOf(
       FIRE to JUPITER ,
-      EARTH to SUN ,
+      EARTH to VENUS ,
       AIR to MERCURY ,
       WATER to MARS
     )

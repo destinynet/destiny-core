@@ -14,12 +14,13 @@ abstract class AbstractRulePredicate<out T : Rule> {
 }
 
 var essentialImpl: IEssential = EssentialDefaultImpl()
-val triplicityImpl : ITriplicity = TriplicityWilliamImpl()
-val termsImpl : ITerms = TermsPtolomyImpl()
+val triplicityImpl: ITriplicity = TriplicityWilliamImpl()
+val termsImpl: ITerms = TermsPtolomyImpl()
 
 val rulerImpl: IRuler = RulerPtolemyImpl()
-val detrimentImpl : IDetriment = DetrimentPtolemyImpl()
-val exaltImpl : IExaltation = ExaltationPtolemyImpl()
+val detrimentImpl: IDetriment = DetrimentPtolemyImpl()
+val exaltImpl: IExaltation = ExaltationPtolemyImpl()
+val fallImpl: IFall = FallPtolemyImpl()
 
 class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Ruler? {
@@ -44,7 +45,7 @@ class ExaltPredicate : AbstractRulePredicate<Rule.Exalt>() {
 class TermPredicate : AbstractRulePredicate<Rule.Term>() {
   override fun getRule(p: Planet, h: Horoscope): Rule.Term? {
     return h.getPosition(p)?.lng?.takeIf { lngDeg ->
-      p ===  termsImpl.getPoint(lngDeg)
+      p === termsImpl.getPoint(lngDeg)
     }?.let { lngDeg ->
       Rule.Term(p, lngDeg)
     }
@@ -56,8 +57,8 @@ class TriplicityPredicate(private val dayNightImpl: DayNightDifferentiator) : Ab
   override fun getRule(p: Planet, h: Horoscope): Rule.Triplicity? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
-        (dayNight == DayNight.DAY && p ===  triplicityImpl.getPoint(sign , DayNight.DAY) ||
-          dayNight == DayNight.NIGHT && p ===  triplicityImpl.getPoint(sign , DayNight.NIGHT))
+        (dayNight == DayNight.DAY && p === triplicityImpl.getPoint(sign, DayNight.DAY) ||
+          dayNight == DayNight.NIGHT && p === triplicityImpl.getPoint(sign, DayNight.NIGHT))
       }?.let { dayNight ->
         Rule.Triplicity(p, sign, dayNight)
       }
@@ -82,7 +83,7 @@ class BeneficialMutualReceptionPredicate : AbstractRulePredicate<Rule.Beneficial
           ?.let { planet2 ->
             h.getZodiacSign(planet2)
               ?.takeIf { sign2 -> p === essentialImpl.getPoint(sign2, dig2) }
-              ?.takeIf { sign2 -> !essentialImpl.isBothInBadSituation(p, sign1, planet2, sign2) }
+              ?.takeIf { sign2 -> !EssentialTools.isBothInBadSituation(p, sign1, planet2, sign2, detrimentImpl, fallImpl) }
               ?.let { sign2 ->
                 Rule.BeneficialMutualReception(p, sign1, dig1, planet2 as Planet, sign2, dig2)
               }

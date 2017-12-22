@@ -103,9 +103,9 @@ class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
  * <pre>
  *     | 白天 | 夜晚 | 共管
  * -----------------------
- * 火象 | 太陽 | 木星 |
- * 土象 | 金星 | 月亮 |
- * 風象 | 土星 | 水星 |
+ * 火象 | 太陽 | 木星 | 火星
+ * 土象 | 金星 | 月亮 | 土星
+ * 風象 | 土星 | 水星 | 木星
  * 水象 | 金星 | 月亮 | 火星
  * </pre>
  * */
@@ -124,10 +124,17 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
    * Ptolomy 只有水象星座，由火星共管
    * */
   override fun getPartner(sign: ZodiacSign): Point? {
-    return sign.element.takeIf { it === Element.WATER }?.let { Planet.MARS }
+    return partnerMap[sign.element]!!
   }
 
   companion object {
+    private val partnerMap = mapOf(
+      FIRE to MARS,
+      EARTH to SATURN,
+      AIR to JUPITER,
+      WATER to MARS
+    )
+
     private val dayMap = mapOf(
       FIRE to SUN,
       EARTH to VENUS,
