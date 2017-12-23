@@ -82,8 +82,8 @@ interface ITriplicity {
 }
 
 
-/** Terms , +2 */
-interface ITerms {
+/** Term , +2 */
+interface ITerm {
 
   /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360  */
   fun getPoint(degree: Double): Point

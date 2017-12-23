@@ -8,9 +8,9 @@ import destiny.astrology.ZodiacSign.*
 import kotlin.test.Test
 import kotlin.test.assertSame
 
-class TermsPtolomyImplTest {
+class TermPtolomyImplTest {
 
-  val impl = TermsPtolomyImpl()
+  val impl = TermPtolomyImpl()
 
   @Test
   fun getPoint_from_degree() {

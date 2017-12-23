@@ -11,7 +11,7 @@ import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * 區分日夜的介面 , 內定實作是 DayNightDifferentiatorImpl
+ * 區分日夜的介面
  */
 interface DayNightDifferentiator : Descriptive {
 

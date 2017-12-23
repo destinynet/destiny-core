@@ -14,10 +14,22 @@ enum class Dignity(private val nameKey: String) : ILocaleString {
 
   /** 旺 (+5) , 守護  */
   RULER("Dignity.RULER"),
+
   /** 廟 (+4) , 躍升  */
   EXALTATION("Dignity.EXALTATION"),
+
+  /** 三分性 (+3) */
+  TRIPLICITY("Dignity.TRIPLICITY"),
+
+  /** 界 (+2) */
+  TERM("Dignity.TERM"),
+
+  /** 面 (+1) */
+  FACE("Dignity.FACE"),
+
   /** 落 (-4)  */
   FALL("Dignity.FALL"),
+
   /** 陷 (-5)  */
   DETRIMENT("Dignity.DETRIMENT");
 

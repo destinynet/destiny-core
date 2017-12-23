@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableBiMap;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.YinYangIF;
 import destiny.tools.ILocaleString;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -89,6 +90,15 @@ public enum ZodiacSign implements ILocaleString, YinYangIF {
   public static ZodiacSign getZodiacSign(double degree) {
     int index = (int) (Utils.getNormalizeDegree(degree) / 30);
     return values()[index];
+  }
+
+  /** 此黃道帶的度數，等於什麼星座幾度 */
+  @NotNull
+  public static Pair<ZodiacSign , Double> getSignAndDegree(double degree) {
+    int index = (int) (Utils.getNormalizeDegree(degree) / 30);
+    ZodiacSign sign = values()[index];
+    double deg = degree % 30;
+    return new Pair<>(sign , deg);
   }
 
   @Override

@@ -4,15 +4,17 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.*
+import destiny.astrology.Horoscope
+import destiny.astrology.Planet
+import destiny.astrology.Point
+import destiny.astrology.ZodiacSign
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.EssentialTools
 import destiny.astrology.classical.IDetriment
 import destiny.astrology.classical.IFall
 
 /** A planet in its own sign , or mutual reception with another planet by sign  */
-class Ruler(private val dayNightDifferentiatorImpl: DayNightDifferentiator ,
-            private val detrimentImpl:IDetriment ,
+class Ruler(private val detrimentImpl : IDetriment ,
             private val fallImpl : IFall) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {

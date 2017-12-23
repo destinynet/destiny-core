@@ -13,7 +13,7 @@ class Term : Rule() {
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val lngDeg: Double? = h.getPosition(planet)?.lng
     return lngDeg?.let {
-      val termPoint =  termsImpl.getPoint(lngDeg)
+      val termPoint =  termImpl.getPoint(lngDeg)
       if (planet === termPoint)
         return@let "comment" to arrayOf(planet, lngDeg)
       else

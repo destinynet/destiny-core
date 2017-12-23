@@ -54,7 +54,7 @@ class Peregrine(
         planet !== exaltImpl.getPoint(sign) &&
         planet !== detrimentImpl.getPoint(sign) &&
         planet !== fallImpl.getPoint(sign) &&
-        planet !== termsImpl.getPoint(sign , planetDeg) &&
+        planet !== termImpl.getPoint(sign , planetDeg) &&
         planet !== faceImpl.getPoint(planetDeg)) {
         // 判定日夜 Triplicity
         if (!(dayNight == DayNight.DAY && planet ===  triplicityImpl.getPoint(sign , DayNight.DAY))

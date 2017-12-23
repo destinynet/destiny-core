@@ -6,18 +6,16 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.EssentialTools
-import destiny.astrology.classical.IDetriment
-import destiny.astrology.classical.IFall
+import destiny.astrology.classical.*
 
 /**
  * 廟旺互容 <br></br>
  * 舉例：水星到摩羯，火星到雙子 <br></br>
  * 摩羯為火星 Exaltation 之星座，雙子為水星 Ruler 之星座
  */
-class MixedReception(private val detrimentImpl : IDetriment ,
-                     private val fallImpl : IFall) : Rule() {
+class MixedReception(private val exaltImpl : IExaltation ,
+                     private val detrimentImpl: IDetriment,
+                     private val fallImpl: IFall) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return rulerExaltMutualReception(h, planet) ?: exaltRulerMutualReception(h, planet)

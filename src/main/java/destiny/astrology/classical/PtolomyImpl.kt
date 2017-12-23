@@ -108,6 +108,8 @@ class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
  * 風象 | 土星 | 水星 | 木星
  * 水象 | 金星 | 月亮 | 火星
  * </pre>
+ * William Lily 指稱 , 托勒密後來把水象星座 的日夜 ruler 都改為火星 , 但此實作仍拆分為 金星、月亮
+ * 另一版本實作 [TriplicityWilliamImpl] 則作此調整
  * */
 class TriplicityPtolomyImpl : ITriplicity, Serializable {
 
@@ -155,7 +157,7 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
  * Terms , +2
  * Ptolemy's Table , 以五分法
  * */
-class TermsPtolomyImpl : ITerms , Serializable {
+class TermPtolomyImpl : ITerm, Serializable {
 
   override fun getPoint(degree: Double): Point {
     val normalizedDegree = Utils.getNormalizeDegree(degree)

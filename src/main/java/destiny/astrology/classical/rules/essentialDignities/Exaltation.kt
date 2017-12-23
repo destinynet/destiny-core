@@ -7,14 +7,12 @@ package destiny.astrology.classical.rules.essentialDignities
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
-import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.EssentialTools
-import destiny.astrology.classical.IDetriment
-import destiny.astrology.classical.IFall
+import destiny.astrology.classical.*
 
 /** A planet in its exaltation , or mutual reception with another planet by exaltation  */
-class Exaltation(private val detrimentImpl : IDetriment,
-                 private val fallImpl : IFall) : Rule() {
+class Exaltation(private val exaltImpl : IExaltation ,
+                 private val detrimentImpl: IDetriment,
+                 private val fallImpl: IFall) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->

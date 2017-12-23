@@ -7,27 +7,33 @@ package destiny.astrology.classical.rules.essentialDignities
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.*
-import destiny.astrology.classical.rules.*
-import destiny.astrology.classical.rules.Rule
+import destiny.astrology.classical.IDetriment
+import destiny.astrology.classical.IEssentialDignities
+import destiny.astrology.classical.IExaltation
+import destiny.astrology.classical.IFall
+import destiny.astrology.classical.rules.IRule
 import java.io.Serializable
 import java.util.*
 
 class EssentialDignitiesBean(
 
+  private val exaltImpl : IExaltation,
+
+  private val fallImpl : IFall,
+
+  private val detrimentImpl : IDetriment,
+
   /** 計算白天黑夜的實作   */
   private var dayNightImpl: DayNightDifferentiator) : IEssentialDignities, Serializable {
 
-  private val detrimentImpl: IDetriment = DetrimentPtolemyImpl()
-  private val fallImpl : IFall = FallPtolemyImpl()
 
   /** 內定的 Rules  */
   private val defaultRules: List<IRule>
     get() {
       return listOf(
-        Ruler(dayNightImpl , detrimentImpl , fallImpl)
-        , Exaltation(detrimentImpl , fallImpl)
-        , MixedReception(detrimentImpl , fallImpl)
+        Ruler(detrimentImpl , fallImpl)
+        , Exaltation(exaltImpl , detrimentImpl, fallImpl)
+        , MixedReception(exaltImpl , detrimentImpl, fallImpl)
         , Triplicity(dayNightImpl)
         , Term()
         , Face()
@@ -44,22 +50,6 @@ class EssentialDignitiesBean(
       .toList()
   }
 
-  fun getCommentsTest(planet: Planet , h:Horoscope , locale: Locale) : List<String> {
-    return predicates
-      .mapNotNull { it.getRule(planet , h) }
-      .map { rule -> RuleTranslator.getDescriptor(rule).getDescription(locale) }
-  }
-
-  private val predicates: List<AbstractRulePredicate<Rule>>
-    get() {
-      return listOf(
-        RulerPredicate(),
-        ExaltPredicate(),
-        TermPredicate(),
-        TriplicityPredicate(dayNightImpl),
-        BeneficialMutualReceptionPredicate()
-      )
-    }
 
 
 

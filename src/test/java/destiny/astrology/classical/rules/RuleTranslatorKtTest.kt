@@ -6,7 +6,6 @@ package destiny.astrology.classical.rules
 import destiny.astrology.DayNight
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
-import destiny.astrology.classical.Dignity
 import java.util.*
 import kotlin.test.Test
 
@@ -46,7 +45,5 @@ class RuleTranslatorKtTest {
     val trip = Rule.Triplicity(Planet.MOON, ZodiacSign.GEMINI, DayNight.NIGHT)
     print(trip)
 
-    val goodMutualReception = Rule.BeneficialMutualReception(Planet.MERCURY , ZodiacSign.ARIES, Dignity.RULER , Planet.MARS , ZodiacSign.GEMINI , Dignity.RULER)
-    print(goodMutualReception)
   }
 }

@@ -9,20 +9,23 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.*
 
-abstract class AbstractRulePredicate<out T : Rule> {
+abstract class AbstractRulePredicate<out T : Rule>(internal val essentialImpl: IEssential) {
   abstract fun getRule(p: Planet, h: Horoscope): T?
 }
 
-var essentialImpl: IEssential = EssentialDefaultImpl()
+
 val triplicityImpl: ITriplicity = TriplicityWilliamImpl()
-val termsImpl: ITerms = TermsPtolomyImpl()
+val termImpl: ITerm = TermPtolomyImpl()
 
 val rulerImpl: IRuler = RulerPtolemyImpl()
 val detrimentImpl: IDetriment = DetrimentPtolemyImpl()
 val exaltImpl: IExaltation = ExaltationPtolemyImpl()
 val fallImpl: IFall = FallPtolemyImpl()
+val faceImpl = FacePtolomyImpl()
 
-class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
+//var essentialImpl: IEssential = EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl)
+
+class RulerPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Ruler>(essentialImpl) {
   override fun getRule(p: Planet, h: Horoscope): Rule.Ruler? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === rulerImpl.getPoint(sign)
@@ -32,7 +35,7 @@ class RulerPredicate : AbstractRulePredicate<Rule.Ruler>() {
   }
 }
 
-class ExaltPredicate : AbstractRulePredicate<Rule.Exalt>() {
+class ExaltPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Exalt>(essentialImpl) {
   override fun getRule(p: Planet, h: Horoscope): Rule.Exalt? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === exaltImpl.getPoint(sign)
@@ -42,10 +45,10 @@ class ExaltPredicate : AbstractRulePredicate<Rule.Exalt>() {
   }
 }
 
-class TermPredicate : AbstractRulePredicate<Rule.Term>() {
+class TermPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Term>(essentialImpl) {
   override fun getRule(p: Planet, h: Horoscope): Rule.Term? {
     return h.getPosition(p)?.lng?.takeIf { lngDeg ->
-      p === termsImpl.getPoint(lngDeg)
+      p === termImpl.getPoint(lngDeg)
     }?.let { lngDeg ->
       Rule.Term(p, lngDeg)
     }
@@ -53,7 +56,7 @@ class TermPredicate : AbstractRulePredicate<Rule.Term>() {
 }
 
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
-class TriplicityPredicate(private val dayNightImpl: DayNightDifferentiator) : AbstractRulePredicate<Rule.Triplicity>() {
+class TriplicityPredicate(essentialImpl: IEssential, private val dayNightImpl: DayNightDifferentiator) : AbstractRulePredicate<Rule.Triplicity>(essentialImpl) {
   override fun getRule(p: Planet, h: Horoscope): Rule.Triplicity? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
@@ -66,45 +69,48 @@ class TriplicityPredicate(private val dayNightImpl: DayNightDifferentiator) : Ab
   }
 }
 
-class BeneficialMutualReceptionPredicate : AbstractRulePredicate<Rule.BeneficialMutualReception>() {
 
-  override fun getRule(p: Planet, h: Horoscope): Rule.BeneficialMutualReception? {
-    return mutualReception(p, h, Dignity.RULER, Dignity.RULER)
-      ?: mutualReception(p, h, Dignity.EXALTATION, Dignity.EXALTATION)
-      ?: mutualReception(p, h, Dignity.RULER, Dignity.EXALTATION)
-      ?: mutualReception(p, h, Dignity.EXALTATION, Dignity.RULER)
-  }
 
-  private fun mutualReception(p: Planet, h: Horoscope, dig1: Dignity, dig2: Dignity): Rule.BeneficialMutualReception? {
-    return h.getZodiacSign(p)
-      ?.let { sign1 ->
-        essentialImpl.getPoint(sign1, dig1)
-          ?.takeIf { planet2 -> p != planet2 }
-          ?.let { planet2 ->
-            h.getZodiacSign(planet2)
-              ?.takeIf { sign2 -> p === essentialImpl.getPoint(sign2, dig2) }
-              ?.takeIf { sign2 -> !EssentialTools.isBothInBadSituation(p, sign1, planet2, sign2, detrimentImpl, fallImpl) }
-              ?.let { sign2 ->
-                Rule.BeneficialMutualReception(p, sign1, dig1, planet2 as Planet, sign2, dig2)
-              }
-          }
-      }
+/** Mutual Reception by [Dignity.RULER]  */
+class MutualRuler(essentialImpl: IEssential) : AbstractRulePredicate<MutualReception.ByRuler>(essentialImpl) {
+  override fun getRule(p: Planet, h: Horoscope): MutualReception.ByRuler? {
+    return essentialImpl.receivingRulerFrom(p , h.pointDegreeMap)?.takeIf { p2 ->
+      p !== p2 && p === essentialImpl.receivingRulerFrom(p2 , h.pointDegreeMap)
+    }?.let { p2 -> MutualReception.ByRuler(p , h.pointSignMap[p]!! , p2 , h.pointSignMap[p2]!!) }
   }
 }
 
-
-/**
- * 互相接納
- * https://skywriter.wordpress.com/2016/11/01/new-insights-into-mutual-reception/
- */
-class MutualReceptionPredicate(val dayNightImpl: DayNightDifferentiator) : AbstractRulePredicate<MutualReception>() {
-  override fun getRule(p: Planet, h: Horoscope): MutualReception? {
-    return EssentialTools.getMutualReception(p, h.pointSignMap, Dignity.RULER, Dignity.RULER, essentialImpl, rulerImpl)
-      ?.let { MutualReception.BySign(it.planet1, it.sign1, it.planet2, it.sign2) }
-      ?: EssentialTools.getMutualReception(p, h.pointSignMap, Dignity.EXALTATION, Dignity.EXALTATION, essentialImpl, rulerImpl)
-        ?.let { MutualReception.ByExalt(it.planet1, it.sign1, it.planet2, it.sign2) }
-      ?: EssentialTools.getTriplicityMutualReception(p, h.pointSignMap, dayNightImpl.getDayNight(h.lmt, h.location), essentialImpl)
-        ?.let { MutualReception.ByTriplicity(it.planet1, it.sign1, it.planet2, it.sign2) }
+/** Mutual Reception by [Dignity.EXALTATION]  */
+class MutualExalt(essentialImpl: IEssential) : AbstractRulePredicate<MutualReception.ByExalt>(essentialImpl) {
+  override fun getRule(p: Planet, h: Horoscope): MutualReception.ByExalt? {
+    return essentialImpl.receivingExaltFrom(p , h.pointDegreeMap)?.takeIf { p2 ->
+      p !== p2 && p === essentialImpl.receivingExaltFrom(p2 , h.pointDegreeMap)
+    }?.let { p2 -> MutualReception.ByExalt(p , h.pointSignMap[p]!! , p2 , h.pointSignMap[p2]!!) }
   }
 }
 
+class MutualTriplicity(essentialImpl: IEssential , val dayNightImpl: DayNightDifferentiator) : AbstractRulePredicate<MutualReception.ByTriplicity>(essentialImpl) {
+  override fun getRule(p: Planet, h: Horoscope): MutualReception.ByTriplicity? {
+    val dayNight = dayNightImpl.getDayNight(h.gmtJulDay , h.location)
+    return essentialImpl.receivingTriplicityFrom(p , h.pointDegreeMap , dayNight)?.takeIf { p2 ->
+      p !== p2 && p === essentialImpl.receivingTriplicityFrom(p2 , h.pointDegreeMap , dayNight)
+    }?.let { p2 -> MutualReception.ByTriplicity(p ,h.pointSignMap[p]!! , p2 , h.pointSignMap[p2]!!) }
+  }
+}
+
+class MutualTerm(essentialImpl: IEssential) : AbstractRulePredicate<MutualReception.ByTerm>(essentialImpl) {
+  override fun getRule(p: Planet, h: Horoscope): MutualReception.ByTerm? {
+    return essentialImpl.receivingTermFrom(p , h.pointDegreeMap)?.takeIf { p2 ->
+      p !== p2 && p === essentialImpl.receivingTermFrom(p2 , h.pointDegreeMap)
+    }?.let { p2 -> MutualReception.ByTerm(p , h.pointSignMap[p]!! , h.pointDegreeMap[p]!!  , p2 , h.pointSignMap[p2]!! , h.pointDegreeMap[p2]!!) }
+  }
+}
+
+class MutualFace(essentialImpl: IEssential) : AbstractRulePredicate<MutualReception.ByFace>(essentialImpl) {
+  override fun getRule(p: Planet, h: Horoscope): MutualReception.ByFace? {
+    return essentialImpl.receivingFaceFrom(p , h.pointDegreeMap)?.takeIf { p2 ->
+      p !== p2 && p === essentialImpl.receivingFaceFrom(p2 , h.pointDegreeMap)
+    }?.let { p2 -> MutualReception.ByFace(p , h.pointSignMap[p]!! , h.pointDegreeMap[p]!!  , p2 , h.pointSignMap[p2]!! , h.pointDegreeMap[p2]!!) }
+  }
+
+}

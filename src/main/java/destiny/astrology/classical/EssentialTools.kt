@@ -17,59 +17,7 @@ class EssentialTools {
 
   companion object {
 
-    /**
-     * @param p1 是否接受 p2 的 RULER 招待 , +5
-     * 譯作： p2 透過 RULER 接納了 p1
-     */
-    fun isReceivingFromRuler(p1: Point, p2: Point, map: Map<Point, ZodiacSign>, rulerImpl: IRuler): Boolean {
-      return map[p1]?.takeIf { sign1 ->
-        p2 === rulerImpl.getPoint(sign1)
-      }?.let { true } ?: false
-    }
 
-    /**
-     * @param p1 是否接受 p2 的 EXALT 招待 , +4
-     * 譯作 : p2 透過 EXALT 接納了 p1
-     */
-    fun isReceivingFromExalt(p1: Point, p2: Point, map: Map<Point, ZodiacSign>, exaltImpl: IExaltation): Boolean {
-      return map[p1]?.takeIf { sign1 ->
-        p2 === exaltImpl.getPoint(sign1)
-      }?.let { true } ?: false
-    }
-
-    /**
-     * @param p1 是否接受 p2 的 TRIPLICITY 招待 , +3
-     * 譯作 : p2 透過 TRIPLICITY 接納了 p1
-     */
-    fun isReceivingFromTriplicity(p1: Point, p2: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight, triplicityImpl: ITriplicity): Boolean {
-      return map[p1]?.takeIf { sign1 ->
-        p2 === triplicityImpl.getPoint(sign1, dayNight)
-      }?.let { true } ?: false
-    }
-
-    /**
-     * @param p1 位於 sign1 的 degree 度 , 是否接受 p2 的 TERMS 招待 , +2
-     * 譯作 : p2 透過 TERMS 接納了 p1
-     */
-    fun isReceivingFromTerms(p1: Point, sign1: ZodiacSign, degree: Double, p2: Point, termsImpl: ITerms): Boolean {
-      return (p2 === termsImpl.getPoint(sign1, degree))
-    }
-
-    /**
-     * @param p1 位於 sign1 的 degree 度 , 是否接受 p2 的 FACE 招待 , +1
-     * 譯作 : p2 透過 FACE 接納了 p1
-     */
-    fun isReceivingFromFace(p1: Point, sign1: ZodiacSign, degree: Double, p2: Point, faceImpl: IFace): Boolean {
-      return (p2 === faceImpl.getPoint(sign1 , degree))
-    }
-
-
-    /**
-     * 製作出類似這樣的表格 : http://www.skyscript.co.uk/dig6.html
-     */
-    fun getReceptionMap(map: Map<Planet, ZodiacSign>): Map<Pair<Planet, Reception>, Set<Planet>> {
-      TODO()
-    }
 
     /** 用以判斷 [Dignity] 的互容 */
     fun getMutualReception(p: Planet, pointSignMap: Map<Point, ZodiacSign>, dig1: Dignity, dig2: Dignity, essentialImpl: IEssential, rulerImpl: IRuler): MutReception? {

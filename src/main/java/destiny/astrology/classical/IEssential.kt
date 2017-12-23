@@ -4,7 +4,11 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.*
+import destiny.astrology.DayNight
+import destiny.astrology.Horoscope
+import destiny.astrology.Point
+import destiny.astrology.ZodiacSign
+import destiny.astrology.classical.rules.Rule
 import org.slf4j.LoggerFactory
 
 /**
@@ -13,8 +17,92 @@ import org.slf4j.LoggerFactory
  */
 interface IEssential {
 
-  companion object {
-    val logger = LoggerFactory.getLogger(IEssential::class.java)
+  /**
+   * 那一顆星，透過 [Dignity.RULER] 接納了 p
+   */
+  fun receivingRulerFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
+
+  /** 承上 , double map 版本 */
+  fun receivingRulerFrom(p: Point, map: Map<Point, Double>): Point? {
+    return map.mapValues { (_ , degree) -> ZodiacSign.getZodiacSign(degree) }.let { receivingRulerFromSignMap(p , it) }
+  }
+
+  /**
+   * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 p
+   */
+  fun receivingExaltFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
+
+  /** 承上 , double map 版本 */
+  fun receivingExaltFrom(p: Point, map: Map<Point, Double>): Point? {
+    return map.mapValues { (_ , degree) -> ZodiacSign.getZodiacSign(degree) }.let { receivingExaltFromSignMap(p , it) }
+  }
+
+  /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 p */
+  fun receivingTriplicityFromSignMap(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight): Point?
+
+  /** 承上 , double map 版本 */
+  fun receivingTriplicityFrom(p: Point, map: Map<Point, Double>, dayNight: DayNight): Point? {
+    return map.mapValues { (_ , degree) -> ZodiacSign.getZodiacSign(degree) }.let { receivingTriplicityFromSignMap(p , it , dayNight) }
+  }
+
+  /** 那一顆星，透過 [Dignity.TERM] 接納了 p */
+  fun receivingTermFrom(p: Point , map: Map<Point , Double>) : Point ?
+
+  /** 哪一顆星，透過 [Dignity.FACE] 接納了 p */
+  fun receivingFaceFrom(p:Point , map: Map<Point, Double>) : Point?
+
+  /** 哪一顆星，透過 [Dignity.FALL] 接納了 p */
+  fun receivingFallFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
+
+  /** 承上 , double map 版本 */
+  fun receivingFallFrom(p: Point, map: Map<Point, Double>): Point? {
+    return map.mapValues { (_, degree) -> ZodiacSign.getZodiacSign(degree) }.let { receivingFallFromSignMap(p, it) }
+  }
+
+  /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 p */
+  fun receivingDetrimentFromSignMap(p:Point, map: Map<Point, ZodiacSign>): Point?
+
+  fun receivingDetrimentFrom(p:Point , map: Map<Point, Double>): Point? {
+    return map.mapValues { (_, degree) -> ZodiacSign.getZodiacSign(degree) }.let { receivingDetrimentFromSignMap(p, it) }
+  }
+
+  /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 */
+  fun getReceptions(p: Point, map: Map<Point, Double>, dayNight: DayNight , dignities: Set<Dignity>): Map<Dignity, Point?>
+
+  /**
+   * 製作出 Reception 表格
+   * 參考 : http://www.skyscript.co.uk/dig6.html
+   * */
+  fun getReceptionMap(map: Map<Point, Double>, dayNight: DayNight , dignities: Set<Dignity>): Set<Triple<Point, Dignity, Point?>> {
+    return map.keys.flatMap { p ->
+      getReceptions(p, map, dayNight , dignities).map { (dignity, point) ->
+        Triple(p, dignity, point)
+      }
+    }.toSet()
+  }
+
+  fun getMutualReceptionMap(map: Map<Point, Double>, dayNight: DayNight , dignities: Set<Dignity>): Set<Rule.MutReception> {
+    return map.keys.flatMap { p ->
+      getReceptions(p , map , dayNight , dignities)
+        .filter { (dig2 , p2) -> p2 != null }
+        .map { (dig2 , p2) -> p2!! to dig2}
+        .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities)
+          .filter { (dig1 , point) -> point === p && p !== p2 }
+          .map { (dig1 , point) -> Rule.MutReception(p , dig1 , p2 , dig2) }
+        }
+    }.toSet()
+  }
+
+  fun getMixedReceptionMap(map: Map<Point, Double>, dayNight: DayNight , dignities: Set<Dignity>): Set<Rule.MutReception> {
+    return map.keys.flatMap { p ->
+      getReceptions(p , map , dayNight , dignities)
+        .filter { (dig2 , p2) -> p2 != null }
+        .map { (dig2 , p2) -> p2!! to dig2}
+        .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities)
+          .filter { (dig1 , point) -> point === p && p !== p2 && dig1 !== dig2 }
+          .map { (dig1 , point) -> Rule.MutReception(p , dig1 , p2 , dig2) }
+        }
+    }.toSet()
   }
 
   /**
@@ -24,68 +112,22 @@ interface IEssential {
    */
   fun getPoint(sign: ZodiacSign, dignity: Dignity): Point?
 
-  fun getPoints(sign: ZodiacSign, vararg dignities: Dignity): List<Pair<Dignity, Point>> {
-    return dignities.map { dignity ->
-      dignity to getPoint(sign, dignity)
-    }.filter { it.second != null }
-      .map { it -> it.first to it.second!! }
-      .toList()
-  }
-
 
   /** 取得黃道帶上某星座，其 Triplicity 是什麼星   */
   fun getTriplicityPoint(sign: ZodiacSign, dayNight: DayNight): Point
 
 
   /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
-  fun isReceivingFromDebilities(receiver: Point, receivee: Point, h: Horoscope): Boolean {
-    return h.getZodiacSign(receivee)?.let { receiveeSign ->
-      receiver === getPoint(receiveeSign, Dignity.DETRIMENT) ||
-        receiver === getPoint(receiveeSign, Dignity.FALL)
-    } ?: false
-  }
-
-
-
+  fun isReceivingFromDebilities(receiver: Point, receivee: Point, h: Horoscope): Boolean
 
   /**
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
    */
-  fun isReceivingFromDignities(receiver: Point, receivee: Point, h: Horoscope, dayNightImpl: DayNightDifferentiator,
-                               faceImpl: IFace, termsImpl: ITerms, triplicityImpl: ITriplicity): Boolean {
+  fun isReceivingFromDignities(receiver: Point, receivee: Point, h: Horoscope) : Boolean
 
-    return h.getZodiacSign(receivee)?.let { receiveeSign ->
-      return when (receiver) {
-        getPoint(receiveeSign, Dignity.RULER) -> {
-          logger.debug("{} 透過 {} 接納 {}", receiver, Dignity.RULER, receivee)
-          true
-        }
-        getPoint(receiveeSign, Dignity.EXALTATION) -> {
-          logger.debug("{} 透過 {} 接納 {}", receiver, Dignity.EXALTATION, receivee)
-          true
-        }
-        triplicityImpl.getPoint(receiveeSign, dayNightImpl.getDayNight(h.lmt, h.location)) -> {
-          logger.debug("{} 透過 Triplicity 接納 {}", receiver, receivee)
-          true
-        }
-        else -> {
-          return h.getPosition(receivee)?.lng?.let { lngDegree ->
-            return when (receiver) {
-              termsImpl.getPoint(lngDegree) -> {
-                logger.debug("{} 透過 TERMS 接納 {}", receiver, receivee)
-                true
-              }
-              faceImpl.getPoint(lngDegree) -> {
-                logger.debug("{} 透過 FACE 接納 {}", receiver, receivee)
-                true
-              }
-              else -> false
-            }
-          } ?: false
-        } // else
-      }
-    } ?: false
+   companion object {
+    val logger = LoggerFactory.getLogger(IEssential::class.java)
   }
 
 }

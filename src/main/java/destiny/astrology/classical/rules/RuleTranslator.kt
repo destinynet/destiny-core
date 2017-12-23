@@ -34,11 +34,6 @@ class FaceDescriptor(rule : Rule.Face) : AbstractRuleDescriptor<Rule.Face>(rule)
   }
 }
 
-class BeneficialMutualReceptionDescriptor(rule: Rule.BeneficialMutualReception) : AbstractRuleDescriptor<Rule.BeneficialMutualReception>(rule) {
-  override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
-    return "comment" to listOf(rule.planet , rule.sign1 , rule.dig1 , rule.planet2 , rule.sign2 , rule.dig2)
-  }
-}
 
 
 
@@ -50,20 +45,14 @@ object RuleTranslator {
       is Rule.Term -> TermDescriptor(rule)
       is Rule.Triplicity -> TriplicityDescriptor(rule)
       is Rule.Face -> FaceDescriptor(rule)
-      is Rule.BeneficialMutualReception -> BeneficialMutualReceptionDescriptor(rule)
-      is Mutual -> {
-        when (rule) {
-          is Mutual.MutualGeneral -> TODO()
-          is Mutual.MutualExalt -> TODO()
-          is Mutual.MutualFall -> TODO()
-          is Mutual.MutualDetriment -> TODO()
-        }
-      }
+
       is MutualReception -> {
         when (rule) {
-          is MutualReception.BySign -> TODO()
+          is MutualReception.ByRuler -> TODO()
           is MutualReception.ByExalt -> TODO()
           is MutualReception.ByTriplicity -> TODO()
+          is MutualReception.ByTerm -> TODO()
+          is MutualReception.ByFace -> TODO()
         }
       }
     }

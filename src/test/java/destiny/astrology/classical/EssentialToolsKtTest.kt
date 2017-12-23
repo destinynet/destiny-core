@@ -4,7 +4,7 @@
 package destiny.astrology.classical
 
 import destiny.astrology.DayNight
-import destiny.astrology.Planet
+import destiny.astrology.DayNightSimpleImpl
 import destiny.astrology.Planet.*
 import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
@@ -12,16 +12,23 @@ import destiny.astrology.ZodiacSign.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 /**
  * 測試 mutual reception , info & test case from https://skywriter.wordpress.com/2016/11/01/new-insights-into-mutual-reception/
  */
 class EssentialToolsKtTest {
 
-  private val essentialImpl = EssentialDefaultImpl()
+  private val rulerImpl: IRuler = RulerPtolemyImpl()
+  private val exaltImpl: IExaltation = ExaltationPtolemyImpl()
+  private val fallImpl: IFall = FallPtolemyImpl()
+  private val detrimentImpl: IDetriment = DetrimentPtolemyImpl()
+  private val triplicityImpl: ITriplicity = TriplicityPtolomyImpl()
+  private val termsImpl = TermPtolomyImpl()
+  private val faceImpl = FacePtolomyImpl()
+  private val dayNightDifferentiator = DayNightSimpleImpl()
 
-  private val rulerImpl : IRuler = RulerPtolemyImpl()
+  private val essentialImpl = EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl , termsImpl , faceImpl , dayNightDifferentiator)
+
 
   /**
    * Reception by sign
@@ -45,7 +52,7 @@ class EssentialToolsKtTest {
   fun `太陽到戌 , 火星到午 , RULER 互訪而形成互容`() {
 
     val map = mapOf<Point, ZodiacSign>(
-      SUN to ARIES ,
+      SUN to ARIES,
       MARS to LEO
     )
 
@@ -79,9 +86,9 @@ class EssentialToolsKtTest {
    * where two planets occupy each other’s sign of exaltation.
    */
   @Test
-  fun `月亮到亥 , 金星到酉 , EXALT 互容` () {
+  fun `月亮到亥 , 金星到酉 , EXALT 互容`() {
     val map = mapOf<Point, ZodiacSign>(
-      MOON to PISCES ,
+      MOON to PISCES,
       VENUS to TAURUS
     )
 
@@ -124,22 +131,22 @@ class EssentialToolsKtTest {
    * although options for reciprocity are restricted to day-lords (Sun, Venus, Saturn and Mars) or night-lords (Jupiter, Moon, Mercury and Mars).
    */
   @Test
-  fun `白天 太陽雙子、土星射手 Triplicity互容` () {
-    val map = mapOf<Point , ZodiacSign>(
+  fun `白天 太陽雙子、土星射手 Triplicity互容`() {
+    val map = mapOf<Point, ZodiacSign>(
       SUN to GEMINI,
       SATURN to SAGITTARIUS
     )
     // 白天互容
-    EssentialTools.getTriplicityMutualReception(SUN , map , DayNight.DAY , essentialImpl).let {
+    EssentialTools.getTriplicityMutualReception(SUN, map, DayNight.DAY, essentialImpl).let {
       assertNotNull(it)
       println(it)
     }
-    EssentialTools.getTriplicityMutualReception(SATURN , map , DayNight.DAY , essentialImpl).let {
+    EssentialTools.getTriplicityMutualReception(SATURN, map, DayNight.DAY, essentialImpl).let {
       assertNotNull(it)
       println(it)
     }
     // 夜晚不成立
-    EssentialTools.getTriplicityMutualReception(SUN , map , DayNight.NIGHT , essentialImpl).let {
+    EssentialTools.getTriplicityMutualReception(SUN, map, DayNight.NIGHT, essentialImpl).let {
       assertNull(it)
     }
   }
@@ -148,58 +155,26 @@ class EssentialToolsKtTest {
    * 測試夜晚 Triplicity 互容
    */
   @Test
-  fun `夜晚 月亮牡羊、火星處女 Triplicity互容` () {
+  fun `夜晚 月亮牡羊、火星處女 Triplicity互容`() {
 
-    val map = mapOf<Point , ZodiacSign>(
+    val map = mapOf<Point, ZodiacSign>(
       MOON to ARIES,
       JUPITER to VIRGO
     )
     // 夜晚互容
-    EssentialTools.getTriplicityMutualReception(MOON , map , DayNight.NIGHT , essentialImpl).let {
+    EssentialTools.getTriplicityMutualReception(MOON, map, DayNight.NIGHT, essentialImpl).let {
       assertNotNull(it)
       println(it)
     }
-    EssentialTools.getTriplicityMutualReception(JUPITER , map , DayNight.NIGHT , essentialImpl).let {
+    EssentialTools.getTriplicityMutualReception(JUPITER, map, DayNight.NIGHT, essentialImpl).let {
       assertNotNull(it)
       println(it)
     }
     // 白天不成立
-    EssentialTools.getTriplicityMutualReception(MOON , map , DayNight.DAY , essentialImpl).let {
+    EssentialTools.getTriplicityMutualReception(MOON, map, DayNight.DAY, essentialImpl).let {
       assertNull(it)
     }
   }
 
 
-  /**
-   * 根據此頁資料來測試
-   * http://www.skyscript.co.uk/dig6.html
-   *
-   *
-   * Consider the Sun in Libra. Venus is said to 'receive' the Sun because he is visiting her sign.
-   * In this capacity Venus is known as the Sun's dispositor.
-   *
-   * 太陽到 辰宮 (金星 為 主人 , RULER) , 金星要招待太陽   , 太陽 +5
-   *
-   * The Sun in Libra is also received, to a lesser degree, by Saturn since he has dignity in Libra by exaltation.
-   * 太陽到 辰宮 (土星 為 主秘 , EXALT) , 土星也要招待太陽 , 太陽 +4
-   *
-   * If the chart is a nocturnal one, Mercury offers a milder reception as ruler of the triplicity.
-   * 太陽 `夜晚` 到辰宮 (水星 為 三分主 , TRIPLICITY) , 水星也要招待太陽 , 太陽 +3
-   *
-   * Should the Sun be at 25 Libra, the minor receptions by term and face are from Mars and Jupiter respectively.
-   * 若太陽在 辰宮 25度
-   * 則會透過 TERMS 接受 火星的招待 , 太陽 +2
-   * 也會透過 FACE  接受 木星的招待 , 太陽 +1
-   */
-  @Test
-  fun `太陽 夜晚 入辰宮`() {
-    val map = mapOf<Point , ZodiacSign>(
-      Planet.SUN to ZodiacSign.LIBRA
-    )
-    assertTrue(EssentialTools.isReceivingFromRuler(SUN , VENUS , map , RulerPtolemyImpl()))
-    assertTrue(EssentialTools.isReceivingFromExalt(SUN , SATURN , map , ExaltationPtolemyImpl()))
-    assertTrue(EssentialTools.isReceivingFromTriplicity(SUN , MERCURY , map , DayNight.NIGHT , TriplicityPtolomyImpl()))
-    assertTrue(EssentialTools.isReceivingFromTerms(SUN , LIBRA , 25.0 , MARS , TermsPtolomyImpl()))
-    assertTrue(EssentialTools.isReceivingFromFace(SUN , LIBRA , 25.0 , JUPITER , FacePtolomyImpl()))
-  }
 }
