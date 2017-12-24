@@ -6,9 +6,10 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
+import destiny.astrology.classical.ITerm
 
 /** A planet in itw own term.  */
-class Term : Rule() {
+class Term(private val termImpl : ITerm) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val lngDeg: Double? = h.getPosition(planet)?.lng

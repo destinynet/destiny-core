@@ -6,72 +6,30 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.classical.*
+import destiny.astrology.classical.Dignity
+import destiny.astrology.classical.IEssential
 
 /**
  * 廟旺互容 <br></br>
  * 舉例：水星到摩羯，火星到雙子 <br></br>
  * 摩羯為火星 Exaltation 之星座，雙子為水星 Ruler 之星座
  */
-class MixedReception(private val exaltImpl : IExaltation ,
-                     private val detrimentImpl: IDetriment,
-                     private val fallImpl: IFall) : Rule() {
+class MixedReception(private val essentialImpl: IEssential) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
-    return rulerExaltMutualReception(h, planet) ?: exaltRulerMutualReception(h, planet)
+    return mixedReception(h , planet)
   }
 
-  /**
-   * 旺廟互容
-   * RULER / EXALTATION 互容
-   * planet 在此 horoscope 中，座落到 sign1 星座
-   * 而 sign1 星座的 RULER           星，飛到 sign2 星座
-   * 而 sign2 星座的 EXALTATION (planet2) 剛好等於 planet
-   */
-  private fun rulerExaltMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
-    return h.getZodiacSign(planet)?.let { sign1 ->
-      rulerImpl.getPoint(sign1).let { signRuler ->
-        h.getZodiacSign(signRuler)?.let { sign2 ->
-          exaltImpl.getPoint(sign2)?.takeIf { planet2 ->
-            // 確認互容
-            planet === planet2
-          }?.takeIf {
-            // 兩星並沒有同時陷落
-            !EssentialTools.isBothInBadSituation(planet, sign1, signRuler, sign2 , detrimentImpl , fallImpl )
-          }?.let {
-            logger.debug("[RULER/EXALT] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 旺廟互容", planet, sign1, Dignity.RULER, signRuler, sign2)
-            "commentRuler" to arrayOf(planet, sign1, signRuler, sign2)
-          }
-        }
-      }
+  private fun mixedReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+    return essentialImpl.getMutualData(planet , h.pointDegreeMap , null, setOf(Dignity.RULER , Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
+      val sign1 = h.getZodiacSign(planet)!!
+      val sign2 = h.getZodiacSign(mutualData.p2)!!
+      logger.info("mutualData = {}" , mutualData)
+      logger.info("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 RULER/EXALT 互容" ,
+              planet , sign1 , mutualData.dig2 , mutualData.p2 , sign2 , sign2 , mutualData.dig1 , mutualData.p1 , sign1)
+      "comment" to arrayOf(planet , sign1 , mutualData.p2 , sign2)
     }
   }
 
-
-  /**
-   * 廟旺互容
-   * EXALTATION / RULER 互容
-   * planet 在此 horoscope 中，座落到 sign1 星座
-   * 而 sign1 星座的 EXALTATION   星，飛到 sign2 星座
-   * 而 sign2 星座的 RULER (planet2) 剛好等於 planet
-   */
-  private fun exaltRulerMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
-    return h.getZodiacSign(planet)?.let { sign1 ->
-      exaltImpl.getPoint(sign1)?.let { signExalt ->
-        h.getZodiacSign(signExalt)?.let { sign2 ->
-          rulerImpl.getPoint(sign2).takeIf { planet2 ->
-            //已確定互容，要排除互陷
-            planet === planet2
-          }?.takeIf {
-            //只要兩顆星都不是陷落，就算互容。其中一顆星陷落無妨
-            !EssentialTools.isBothInBadSituation(planet , sign1 , signExalt , sign2 , detrimentImpl , fallImpl)
-          }?.let {
-            logger.debug("[EXALT/RULER] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互容", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
-            "commentExaltation" to arrayOf(planet, sign1, signExalt, sign2)
-          }
-        }
-      }
-    }
-  }
 
 }

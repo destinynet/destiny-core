@@ -6,16 +6,11 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.Point
-import destiny.astrology.ZodiacSign
 import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.EssentialTools
-import destiny.astrology.classical.IDetriment
-import destiny.astrology.classical.IFall
+import destiny.astrology.classical.IEssential
 
 /** A planet in its own sign , or mutual reception with another planet by sign  */
-class Ruler(private val detrimentImpl : IDetriment ,
-            private val fallImpl : IFall) : Rule() {
+class Ruler(private val essentialImpl: IEssential) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
@@ -40,28 +35,10 @@ class Ruler(private val detrimentImpl : IDetriment ,
    * 「而且都沒有落陷」 (否則變成互陷)
    */
   private fun rulerMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
-
-    // 取得此 planet 在什麼星座
-    val sign1: ZodiacSign? = h.getZodiacSign(planet)
-    // 此星座的 ruler 是什麼星
-    val signRuler: Point? = sign1?.let {
-      rulerImpl.getPoint(it)
-      //essentialImpl.getPoint(it , Dignity.RULER)
+    return essentialImpl.getMutualData(planet , h.pointDegreeMap , null , setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
+      val sign1 = h.getZodiacSign(planet)!!
+      val sign2 = h.getZodiacSign(mutualData.p2)!!
+      "commentReception" to arrayOf(planet , sign1 , mutualData.p2 , sign2)
     }
-    // 該星飛到什麼星座
-    val sign2: ZodiacSign? = signRuler?.let { h.getZodiacSign(it) }
-
-    if (sign1 != null && signRuler != null && sign2 != null
-      && planet === rulerImpl.getPoint(sign2)) {
-      if (
-        // 已經確定 Ruler 互容，要排除互陷
-        !EssentialTools.isBothInBadSituation(planet , sign1 , signRuler , sign2 , detrimentImpl , fallImpl)
-      ) {
-        // FIXME : 其實這並非「旺旺互容」，因為並沒有檢查 planet 在 sign1 是否「旺」 , 也沒檢查 signRuler 在 sign2 是否「旺」
-        logger.debug("{} 位於 {} , 與其 Ruler {} 飛至 {} , 形成 旺旺互容", planet, sign1, signRuler, sign2)
-        return "commentReception" to arrayOf(planet, sign1, signRuler, sign2)
-      }
-    }
-    return null
   }
 }

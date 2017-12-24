@@ -7,14 +7,15 @@ package destiny.astrology.classical.rules.debilities
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.EssentialTools
+import destiny.astrology.classical.IEssential
 
 /**
  * 互容的變形，兩星都處與落陷，又互容→互相扯後腿<br></br>
  * 例如： 水星到雙魚 , 木星到處女<br></br>
  * 水星在雙魚為 Detriment/Fall , 雙魚的 Ruler 為木星 , 木星到處女為 Detriment
  */
-class MutualDeception : EssentialRule(), Applicable {
+@Deprecated("似乎不實用")
+class MutualDeception(private val essentialImpl: IEssential) : EssentialRule(), Applicable {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return rulerMutualDeception(h, planet)
@@ -38,7 +39,7 @@ class MutualDeception : EssentialRule(), Applicable {
             planet === planet2
           }?.takeIf {
             // 確認互陷
-            EssentialTools.isBothInBadSituation(planet , sign1 , signRuler , sign2 , detrimentImpl , fallImpl)
+            essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
           }?.let {
             logger.debug("[comment1] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.RULER, signRuler, sign2, Dignity.RULER)
             "comment1" to arrayOf(planet, sign1, signRuler, sign2)
@@ -60,7 +61,7 @@ class MutualDeception : EssentialRule(), Applicable {
             planet === planet2
           }?.takeIf {
             // 確認互陷
-            EssentialTools.isBothInBadSituation(planet, sign1, signExalt, sign2 , detrimentImpl , fallImpl)
+            essentialImpl.isBothInBadSituation(planet , sign1 , signExalt , sign2)
           }?.let {
             logger.info("[comment2] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2, Dignity.EXALTATION)
             "comment2" to arrayOf(planet, sign1, signExalt, sign2)
@@ -83,7 +84,7 @@ class MutualDeception : EssentialRule(), Applicable {
             planet === planet2
           }?.takeIf {
             // 確認互陷
-            EssentialTools.isBothInBadSituation(planet, sign1, signRuler, sign2 , detrimentImpl , fallImpl)
+            essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
           }?.let {
             logger.debug("[comment3] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.RULER, signRuler, sign2)
             "comment3" to arrayOf(planet, sign1, signRuler, sign2)
@@ -106,7 +107,7 @@ class MutualDeception : EssentialRule(), Applicable {
             planet === planet2
           }?.takeIf {
             // 確認互陷
-            EssentialTools.isBothInBadSituation(planet, sign1, signExalt, sign2 , detrimentImpl , fallImpl)
+            essentialImpl.isBothInBadSituation(planet , sign1 , signExalt , sign2)
           }?.let {
             logger.debug("[comment4] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
             "comment4" to arrayOf(planet, sign1, signExalt, sign2)

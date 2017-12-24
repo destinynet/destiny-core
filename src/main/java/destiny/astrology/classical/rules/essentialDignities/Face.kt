@@ -6,9 +6,10 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
+import destiny.astrology.classical.IFace
 
 /** A planet in its own Chaldean decanate or face.  */
-class Face : Rule() {
+class Face(private val faceImpl : IFace) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getPosition(planet)?.lng?.takeIf { lngDeg ->

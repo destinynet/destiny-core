@@ -157,6 +157,13 @@ interface IEssential {
    */
   fun isReceivingFromDignities(receiver: Point, receivee: Point, h: Horoscope) : Boolean
 
+
+  /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
+  fun isBothInGoodSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean
+
+  /** 是否兩顆星都處於不佳的狀態. 如果 兩顆星都處於 [Dignity.DETRIMENT] 或是  [Dignity.FALL] , 則為 true  */
+  fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean
+
    companion object {
     val logger = LoggerFactory.getLogger(IEssential::class.java)
   }
@@ -164,8 +171,15 @@ interface IEssential {
 }
 
 /**
- * p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1
+ * p1 以 dig1 的能量招待 (接納) p2 ,
+ * p2 以 dig2 的能量招待 (接納) p1
+ *
  * p1 「給出」 dig1 的能量到 p2
  * p2 「給出」 dig2 的能量到 p1
+ *
+ * 另外翻譯為：
+ * p1 位於 sign1 , 與 sign1 的 dig2 (p2) 飛至 sign2 , 而 sign2 的 dig1 (p1) 飛至 sign1
+ * p1 在 sign1 得到 p2 所提供的 dig2 能量
+ * p2 在 sign2 得到 p1 所提供的 dig1 能量
  * */
 data class MutualData(val p1: Point, val dig1: Dignity, val p2: Point, val dig2: Dignity)

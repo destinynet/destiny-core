@@ -6,13 +6,13 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
-import destiny.astrology.ZodiacSign
-import destiny.astrology.classical.*
+import destiny.astrology.classical.Dignity
+import destiny.astrology.classical.IEssential
+import destiny.astrology.classical.IExaltation
 
 /** A planet in its exaltation , or mutual reception with another planet by exaltation  */
-class Exaltation(private val exaltImpl : IExaltation ,
-                 private val detrimentImpl: IDetriment,
-                 private val fallImpl: IFall) : Rule() {
+class Exaltation(private val essentialImpl: IEssential,
+                 private val exaltImpl: IExaltation) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
@@ -29,18 +29,12 @@ class Exaltation(private val exaltImpl : IExaltation ,
    * [Dignity.EXALTATION] 互容
    */
   private fun exaltMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
-    return h.getZodiacSign(planet)?.let { sign1: ZodiacSign ->
-      exaltImpl.getPoint(sign1)?.let { signExaltation ->
-        h.getZodiacSign(signExaltation)
-          ?.takeIf { sign2 ->
-            planet === exaltImpl.getPoint(sign2)
-          }?.takeIf { sign2: ZodiacSign ->
-          !EssentialTools.isBothInBadSituation(planet, sign1, signExaltation, sign2 , detrimentImpl, fallImpl)
-        }?.let { sign2: ZodiacSign ->
-          logger.debug("{} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟廟互容", planet, sign1, Dignity.EXALTATION, signExaltation, sign2)
-          "commentReception" to arrayOf(planet, sign1, signExaltation, sign2)
-        }
-      }
+
+    return essentialImpl.getMutualData(planet , h.pointDegreeMap , null , setOf(Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
+      val sign1 = h.getZodiacSign(planet)!!
+      val sign2 = h.getZodiacSign(mutualData.p2)!!
+      "commentReception" to arrayOf(planet , sign1 , mutualData.p2 , sign2)
     }
+
   }
 }

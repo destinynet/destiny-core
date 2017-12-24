@@ -4,18 +4,15 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.classical.*
+import destiny.astrology.classical.IRuler
+import destiny.astrology.classical.ITriplicity
+import destiny.astrology.classical.RulerPtolemyImpl
+import destiny.astrology.classical.TriplicityWilliamImpl
 import destiny.astrology.classical.rules.AbstractRule
 
 abstract class Rule : AbstractRule(resource), Applicable {
 
-  val termImpl: ITerm = TermPtolomyImpl()
-  val triplicityImpl : ITriplicity = TriplicityWilliamImpl()
-
   val rulerImpl : IRuler = RulerPtolemyImpl()
-//  val fallImpl : IFall = FallPtolemyImpl()
-  //val detrimentImpl : IDetriment = DetrimentPtolemyImpl()
-  val faceImpl: IFace = FacePtolomyImpl()
 
   companion object {
     private const val resource = "destiny.astrology.classical.rules.essentialDignities.EssentialDignities"

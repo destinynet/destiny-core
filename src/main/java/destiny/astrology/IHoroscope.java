@@ -21,12 +21,11 @@ public interface IHoroscope {
 
   default Set<Point> getDefaultPoints() {
     Set<Point> pointSet = new HashSet<>();
-    pointSet.addAll(Arrays.asList(Planet.SUN , Planet.MOON , Planet.MERCURY , Planet.VENUS , Planet.MARS , Planet.JUPITER , Planet.SATURN));
-    //pointSet.addAll(Arrays.asList(Planet.values));
-//    pointSet.addAll(Arrays.asList(Asteroid.values));
-//    pointSet.addAll(Arrays.asList(Hamburger.values));
-//    pointSet.addAll(Arrays.asList(FixedStar.values));
-//    pointSet.addAll(Arrays.asList(LunarNode.mean_values));
+    pointSet.addAll(Arrays.asList(Planet.values));
+    pointSet.addAll(Arrays.asList(Asteroid.values));
+    pointSet.addAll(Arrays.asList(Hamburger.values));
+    pointSet.addAll(Arrays.asList(FixedStar.values));
+    pointSet.addAll(Arrays.asList(LunarNode.mean_values));
     return pointSet;
   }
 

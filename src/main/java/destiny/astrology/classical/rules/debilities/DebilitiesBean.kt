@@ -9,6 +9,7 @@ import destiny.astrology.Horoscope
 import destiny.astrology.IBesieged
 import destiny.astrology.Planet
 import destiny.astrology.classical.IDebilities
+import destiny.astrology.classical.IEssential
 import destiny.astrology.classical.IRefranation
 import destiny.astrology.classical.rules.IRule
 import java.io.Serializable
@@ -27,6 +28,9 @@ class DebilitiesBean : IDebilities, Serializable {
 
   @Inject
   private lateinit var refranationImpl: IRefranation
+
+  @Inject
+  private lateinit var essentialImpl: IEssential
 
   override lateinit var rules: List<IRule>
 
@@ -53,7 +57,7 @@ class DebilitiesBean : IDebilities, Serializable {
         , Partile_Square_Mars_Saturn()
         , Conj_Algol()
         , Out_of_Sect(dayNightImpl)
-        , MutualDeception()
+        , MutualDeception(essentialImpl)
         , Refrain_from_Venus_Jupiter(refranationImpl)
       )
     }

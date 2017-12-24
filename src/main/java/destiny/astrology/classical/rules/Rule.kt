@@ -21,26 +21,22 @@ sealed class Rule(val parent: Rule? = null) {
   data class Term(val planet: Planet, val lngDeg: Double) : Rule()
   data class Face(val planet: Planet, val lngDeg: Double) : Rule()
   data class Triplicity(val planet: Planet, val sign: ZodiacSign, val dayNight: DayNight) : Rule()
-
-
-
 }
 
 /** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */
 sealed class Mutual(val p1: Point, val dig1: Dignity, val p2: Point, val dig2: Dignity) : Rule() {
 
-  /** 以互相對等的能量接待 */
-  sealed class Equal(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, dignity: Dignity) : Mutual(p1, dignity, p2, dignity) {
-    class BeneficReception(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, dignity: Dignity) : Equal(p1 , sign1 , p2 , sign2 , dignity)
-    class MaleficReception(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, dignity: Dignity) : Equal(p1 , sign1 , p2 , sign2 , dignity)
+  /** 好的能量，互相接待 , deg1 , deg2 指的是「黃道帶」上的度數 , 並非是「該星座」的度數 */
+  sealed class Reception(p1: Point, dig1: Dignity , p2: Point, dig2: Dignity) : Mutual(p1 , dig1 , p2 , dig2) {
+    class Equal(p1: Point , sign1: ZodiacSign , deg1: Double?                 , p2 : Point , sign2: ZodiacSign , deg2: Double? , dignity: Dignity) : Reception(p1 , dignity , p2 , dignity)
+    class Mixed(p1: Point , sign1: ZodiacSign , deg1: Double? , dig1: Dignity , p2 : Point , sign2: ZodiacSign , deg2: Double? , dig2: Dignity   ) : Reception(p1 , dig1 , p2 , dig2)
   }
 
-  /** 以不對等的能量互相接待 */
-  sealed class Mixed(p1: Point, sign1: ZodiacSign, dig1: Dignity, p2: Point, sign2: ZodiacSign, dig2: Dignity): Mutual(p1 , dig1 , p2 , dig2) {
-    class BeneficReception(p1: Point, sign1: ZodiacSign, dig1: Dignity , p2: Point, sign2: ZodiacSign, dig2: Dignity) : Mixed(p1 , sign1 , dig1 , p2 , sign2 , dig2)
-    class MaleficReception(p1: Point, sign1: ZodiacSign, dig1: Dignity , p2: Point, sign2: ZodiacSign, dig2: Dignity) : Mixed(p1 , sign1 , dig1 , p2 , sign2 , dig2)
+  /** 互相踩對方痛腳 , deg1 , deg2 指的是「黃道帶」上的度數 , 並非是「該星座」的度數 */
+  sealed class Exclusive(p1: Point, dig1: Dignity , p2: Point, dig2: Dignity) : Mutual(p1 , dig1 , p2 , dig2) {
+    class Equal(p1: Point , sign1: ZodiacSign , deg1: Double?                 , p2 : Point , sign2: ZodiacSign , deg2: Double? , dignity: Dignity) : Exclusive(p1 , dignity , p2 , dignity)
+    class Mixed(p1: Point , sign1: ZodiacSign , deg1: Double? , dig1: Dignity , p2 : Point , sign2: ZodiacSign , deg2: Double? , dig2: Dignity   ) : Exclusive(p1 , dig1 , p2 , dig2)
   }
-
 }
 
 /**

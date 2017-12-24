@@ -8,10 +8,11 @@ import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
+import destiny.astrology.classical.ITriplicity
 
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
 class Triplicity(
-  /** 計算白天黑夜的實作  */
+  private val triplicityImpl : ITriplicity,
   private val dayNightImpl: DayNightDifferentiator) : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
