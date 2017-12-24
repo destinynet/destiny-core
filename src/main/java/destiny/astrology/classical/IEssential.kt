@@ -8,7 +8,6 @@ import destiny.astrology.DayNight
 import destiny.astrology.Horoscope
 import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
-import destiny.astrology.classical.rules.Rule
 import org.slf4j.LoggerFactory
 
 /**
@@ -67,7 +66,10 @@ interface IEssential {
   }
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 */
-  fun getReceptions(p: Point, map: Map<Point, Double>, dayNight: DayNight , dignities: Set<Dignity>): Map<Dignity, Point?>
+  fun getReceptions(p: Point, map: Map<Point, Double>, dayNight: DayNight? , dignities: Collection<Dignity>): Map<Dignity, Point>
+
+  /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 , 但是不計算 [Dignity.TERM] 以及 [Dignity.FACE] , 因為這兩者需要度數 */
+  fun getReceptionsFromSign(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight? , dignities: Collection<Dignity>): Map<Dignity, Point>
 
   /**
    * 製作出 Reception 表格
@@ -81,26 +83,55 @@ interface IEssential {
     }.toSet()
   }
 
-  fun getMutualReceptionMap(map: Map<Point, Double>, dayNight: DayNight , dignities: Set<Dignity>): Set<Rule.MutReception> {
-    return map.keys.flatMap { p ->
-      getReceptions(p , map , dayNight , dignities)
-        .filter { (dig2 , p2) -> p2 != null }
-        .map { (dig2 , p2) -> p2!! to dig2}
+  /** 查詢 p 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) */
+  fun getMutualData(p: Point , map: Map<Point, Double> , dayNight: DayNight? , dignities: Collection<Dignity>) : Set<MutualData> {
+    return map.keys.filter { it !== p }
+      .flatMap { p2 -> getReceptions(p2 , map , dayNight , dignities)
+        .filter { (dig1 , p1) -> p1 === p }
+        .map { (dig1,p1) -> p1 to dig1 }
+        .flatMap { (p1 , dig1) -> getReceptions(p1 , map , dayNight , dignities)
+          .filter { (dig2 , p) -> p === p2 }
+          .map { (dig2 , p2) -> MutualData(p1, dig1, p2, dig2) }
+        }
+      }.toSet()
+  }
+
+  /** 查詢 p 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) . 只考量星座，故，無法計算 [Dignity.TERM] 或 [Dignity.FALL] */
+  fun getMutualDataFromSign(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight?, dignities: Collection<Dignity>) : Set<MutualData> {
+    return map.keys.filter { it !== p }
+      .flatMap { p2 -> getReceptionsFromSign(p2 , map , dayNight , dignities)
+        .filter { (dig1 , p1) -> p1 === p }
+        .map { (dig1,p1) -> p1 to dig1 }
+        .flatMap { (p1 , dig1) -> getReceptionsFromSign(p1 , map , dayNight , dignities)
+          .filter { (dig2 , p) -> p === p2 }
+          .map { (dig2 , p2) ->
+            MutualData(p1, dig1, p2, dig2) }
+        }
+      }.toSet()
+  }
+
+  /** 所有能量的互容 , 不論相等或是不相等 */
+  fun getMutualReceptionMap(map: Map<Point, Double>, dayNight: DayNight? , dignities: Collection<Dignity>): Set<MutualData> {
+    return map.keys
+      .flatMap { p1 -> getReceptions(p1 , map , dayNight , dignities)
+        .filter { (dig2 , p2) -> p2 !== p1 }
+        .map { (dig2 , p2) -> p2 to dig2}
         .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities)
-          .filter { (dig1 , point) -> point === p && p !== p2 }
-          .map { (dig1 , point) -> Rule.MutReception(p , dig1 , p2 , dig2) }
+          .filter { (dig1 , point) -> point === p1 && p1 !== p2 }
+          .map { (dig1 , point) -> MutualData(p1, dig1, p2, dig2) }
         }
     }.toSet()
   }
 
-  fun getMixedReceptionMap(map: Map<Point, Double>, dayNight: DayNight , dignities: Set<Dignity>): Set<Rule.MutReception> {
+  /** 能量不相等的互容 */
+  fun getMixedReceptionMap(map: Map<Point, Double>, dayNight: DayNight , dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.flatMap { p ->
       getReceptions(p , map , dayNight , dignities)
-        .filter { (dig2 , p2) -> p2 != null }
-        .map { (dig2 , p2) -> p2!! to dig2}
-        .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities)
-          .filter { (dig1 , point) -> point === p && p !== p2 && dig1 !== dig2 }
-          .map { (dig1 , point) -> Rule.MutReception(p , dig1 , p2 , dig2) }
+        .filter { (dig2 , p2) -> p2 !== p }
+        .map { (dig2 , p2) -> p2 to dig2}
+        .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities.filter { it !== dig2 } )
+          .filter { (dig1 , point) -> point === p && p !== p2 }
+          .map { (dig1 , point) -> MutualData(p, dig1, p2, dig2) }
         }
     }.toSet()
   }
@@ -131,3 +162,10 @@ interface IEssential {
   }
 
 }
+
+/**
+ * p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1
+ * p1 「給出」 dig1 的能量到 p2
+ * p2 「給出」 dig2 的能量到 p1
+ * */
+data class MutualData(val p1: Point, val dig1: Dignity, val p2: Point, val dig2: Dignity)

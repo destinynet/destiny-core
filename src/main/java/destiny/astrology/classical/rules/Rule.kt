@@ -22,8 +22,24 @@ sealed class Rule(val parent: Rule? = null) {
   data class Face(val planet: Planet, val lngDeg: Double) : Rule()
   data class Triplicity(val planet: Planet, val sign: ZodiacSign, val dayNight: DayNight) : Rule()
 
-  /** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */
-  data class MutReception(val p1: Point , val dig1:Dignity , val p2: Point , val dig2: Dignity): Rule()
+
+
+}
+
+/** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */
+sealed class Mutual(val p1: Point, val dig1: Dignity, val p2: Point, val dig2: Dignity) : Rule() {
+
+  /** 以互相對等的能量接待 */
+  sealed class Equal(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, dignity: Dignity) : Mutual(p1, dignity, p2, dignity) {
+    class BeneficReception(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, dignity: Dignity) : Equal(p1 , sign1 , p2 , sign2 , dignity)
+    class MaleficReception(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign, dignity: Dignity) : Equal(p1 , sign1 , p2 , sign2 , dignity)
+  }
+
+  /** 以不對等的能量互相接待 */
+  sealed class Mixed(p1: Point, sign1: ZodiacSign, dig1: Dignity, p2: Point, sign2: ZodiacSign, dig2: Dignity): Mutual(p1 , dig1 , p2 , dig2) {
+    class BeneficReception(p1: Point, sign1: ZodiacSign, dig1: Dignity , p2: Point, sign2: ZodiacSign, dig2: Dignity) : Mixed(p1 , sign1 , dig1 , p2 , sign2 , dig2)
+    class MaleficReception(p1: Point, sign1: ZodiacSign, dig1: Dignity , p2: Point, sign2: ZodiacSign, dig2: Dignity) : Mixed(p1 , sign1 , dig1 , p2 , sign2 , dig2)
+  }
 
 }
 
@@ -32,18 +48,18 @@ sealed class Rule(val parent: Rule? = null) {
  * 僅適用於 [Dignity.RULER] , [Dignity.EXALTATION] , [Dignity.TRIPLICITY] , [Dignity.FALL] , [Dignity.DETRIMENT]
  * 剩下的 [Dignity.TERM] 以及 [Dignity.FACE] 需要「度數」，因此不適用
  * */
-sealed class MutualReception(val p1 : Point , val sign1: ZodiacSign , val p2 : Point , val sign2: ZodiacSign , val dignity: Dignity) : Rule() {
+sealed class MutualReception(val p1: Point, val sign1: ZodiacSign, val p2: Point, val sign2: ZodiacSign, val dignity: Dignity) : Rule() {
 
   /** p1 飛至 sign1 , sign1 的主人是 p2 , p2 飛至 sign2 , sign2 的主人是 p1 .  則 , p1 , p2 透過 [Dignity.RULER] 互容 */
-  class ByRuler(p1: Point , sign1: ZodiacSign , p2: Point , sign2: ZodiacSign) : MutualReception(p1 , sign1 , p2 , sign2 , Dignity.RULER)
+  class ByRuler(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign) : MutualReception(p1, sign1, p2, sign2, Dignity.RULER)
 
-  class ByExalt(p1: Point , sign1: ZodiacSign , p2: Point , sign2: ZodiacSign) : MutualReception(p1 , sign1 , p2 , sign2 , Dignity.EXALTATION)
+  class ByExalt(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign) : MutualReception(p1, sign1, p2, sign2, Dignity.EXALTATION)
 
-  class ByTriplicity(p1: Point , sign1: ZodiacSign , p2: Point , sign2: ZodiacSign) : MutualReception(p1 , sign1 , p2 , sign2 , Dignity.TRIPLICITY)
-
-  /** deg1 , deg2 指的是「黃道帶」上的度數 , 並非是「該星座」的度數 */
-  class ByTerm(p1: Point , sign1: ZodiacSign , deg1 : Double , p2: Point , sign2: ZodiacSign , deg2 : Double) : MutualReception(p1 , sign1 , p2 , sign2 , Dignity.TERM)
+  class ByTriplicity(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign) : MutualReception(p1, sign1, p2, sign2, Dignity.TRIPLICITY)
 
   /** deg1 , deg2 指的是「黃道帶」上的度數 , 並非是「該星座」的度數 */
-  class ByFace(p1: Point , sign1: ZodiacSign , deg1: Double , p2: Point , sign2: ZodiacSign , deg2: Double) : MutualReception(p1 , sign1 , p2 , sign2 , Dignity.FACE)
+  class ByTerm(p1: Point, sign1: ZodiacSign, deg1: Double, p2: Point, sign2: ZodiacSign, deg2: Double) : MutualReception(p1, sign1, p2, sign2, Dignity.TERM)
+
+  /** deg1 , deg2 指的是「黃道帶」上的度數 , 並非是「該星座」的度數 */
+  class ByFace(p1: Point, sign1: ZodiacSign, deg1: Double, p2: Point, sign2: ZodiacSign, deg2: Double) : MutualReception(p1, sign1, p2, sign2, Dignity.FACE)
 }

@@ -46,6 +46,8 @@ object RuleTranslator {
       is Rule.Triplicity -> TriplicityDescriptor(rule)
       is Rule.Face -> FaceDescriptor(rule)
 
+      is Mutual -> TODO()
+
       is MutualReception -> {
         when (rule) {
           is MutualReception.ByRuler -> TODO()
