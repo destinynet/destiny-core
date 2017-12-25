@@ -4,7 +4,10 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.*
+import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.Horoscope
+import destiny.astrology.IBesieged
+import destiny.astrology.Planet
 import destiny.astrology.classical.IAccidentalDignities
 import destiny.astrology.classical.ICollectionOfLight
 import destiny.astrology.classical.IRefranation
@@ -12,37 +15,22 @@ import destiny.astrology.classical.ITranslationOfLight
 import destiny.astrology.classical.rules.IRule
 import java.io.Serializable
 import java.util.*
-import javax.annotation.PostConstruct
-import javax.inject.Inject
 
-class AccidentalDignitiesBean : IAccidentalDignities, Serializable {
-  /** 計算兩星體呈現某交角的時間 , 內定採用 SwissEph 的實作  */
-  @Inject
-  private lateinit var relativeTransitImpl: IRelativeTransit
+class AccidentalDignitiesBean(private val dayNightImpl: DayNightDifferentiator,
+                              private val translationOfLightImpl: ITranslationOfLight,
+                              private val collectionOfLightImpl: ICollectionOfLight,
+                              private val refranationImpl: IRefranation,
+                              private val besiegedImpl: IBesieged) : IAccidentalDignities, Serializable {
 
-  /** 計算白天黑夜的實作 , 內定採用 SwissEph 的實作  */
-  @Inject
-  lateinit var dayNightImpl: DayNightDifferentiator
 
-  @Inject
-  private lateinit var translationOfLightImpl: ITranslationOfLight
-
-  @Inject
-  private lateinit var collectionOfLightImpl: ICollectionOfLight
-
-  @Inject
-  private lateinit var refranationImpl: IRefranation
-
-  @Inject
-  private lateinit var besiegedImpl: IBesieged
-
-  override lateinit var rules: List<IRule>
+  override val rules: List<IRule>
+    get() = defaultRules
 
   /** 內定的 Rules  */
   private val defaultRules: List<IRule>
     get() {
       return listOf(
-          House_1_10()
+        House_1_10()
         , House_4_7_11()
         , House_2_5()
         , House_9()
@@ -69,22 +57,13 @@ class AccidentalDignitiesBean : IAccidentalDignities, Serializable {
       )
     }
 
-  @PostConstruct
-  fun init() {
-    this.rules = defaultRules
-  }
 
   override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules
-      .map { it.getComment(planet , h , locale) }
+      .map { it.getComment(planet, h, locale) }
       .filter { it != null }
       .map { it -> it!! }
       .toList()
-  }
-
-
-  fun setRelativeTransitImpl(relativeTransitImpl: IRelativeTransit) {
-    this.relativeTransitImpl = relativeTransitImpl
   }
 
 

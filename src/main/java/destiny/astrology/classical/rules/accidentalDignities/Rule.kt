@@ -8,7 +8,7 @@ import destiny.astrology.classical.rules.AbstractRule
 
 abstract class Rule : AbstractRule(resource), Applicable {
   companion object {
-    private val resource = "destiny.astrology.classical.rules.accidentalDignities.AccidentalDignities"
+    private const val resource = "destiny.astrology.classical.rules.accidentalDignities.AccidentalDignities"
   }
 
 }

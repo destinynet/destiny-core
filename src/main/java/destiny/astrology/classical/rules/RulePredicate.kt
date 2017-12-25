@@ -9,23 +9,11 @@ import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.astrology.classical.*
 
-abstract class AbstractRulePredicate<out T : Rule>(internal val essentialImpl: IEssential) {
-  abstract fun getRule(p: Planet, h: Horoscope): T?
+interface RulePredicate<out T : Rule> {
+  fun getRule(p: Planet, h: Horoscope): T?
 }
 
-
-val triplicityImpl: ITriplicity = TriplicityWilliamImpl()
-val termImpl: ITerm = TermPtolomyImpl()
-
-val rulerImpl: IRuler = RulerPtolemyImpl()
-val detrimentImpl: IDetriment = DetrimentPtolemyImpl()
-val exaltImpl: IExaltation = ExaltationPtolemyImpl()
-val fallImpl: IFall = FallPtolemyImpl()
-val faceImpl = FacePtolomyImpl()
-
-//var essentialImpl: IEssential = EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl)
-
-class RulerPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Ruler>(essentialImpl) {
+class RulerPredicate(private val rulerImpl: IRuler) : RulePredicate<Rule.Ruler> {
   override fun getRule(p: Planet, h: Horoscope): Rule.Ruler? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === rulerImpl.getPoint(sign)
@@ -35,7 +23,7 @@ class RulerPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Rul
   }
 }
 
-class ExaltPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Exalt>(essentialImpl) {
+class ExaltPredicate(private val exaltImpl : IExaltation) : RulePredicate<Rule.Exalt> {
   override fun getRule(p: Planet, h: Horoscope): Rule.Exalt? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === exaltImpl.getPoint(sign)
@@ -45,7 +33,7 @@ class ExaltPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Exa
   }
 }
 
-class TermPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Term>(essentialImpl) {
+class TermPredicate(private val termImpl : ITerm) : RulePredicate<Rule.Term> {
   override fun getRule(p: Planet, h: Horoscope): Rule.Term? {
     return h.getPosition(p)?.lng?.takeIf { lngDeg ->
       p === termImpl.getPoint(lngDeg)
@@ -56,7 +44,8 @@ class TermPredicate(essentialImpl: IEssential) : AbstractRulePredicate<Rule.Term
 }
 
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
-class TriplicityPredicate(essentialImpl: IEssential, private val dayNightImpl: DayNightDifferentiator) : AbstractRulePredicate<Rule.Triplicity>(essentialImpl) {
+class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
+                          private val dayNightImpl: DayNightDifferentiator) : RulePredicate<Rule.Triplicity> {
   override fun getRule(p: Planet, h: Horoscope): Rule.Triplicity? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
@@ -70,3 +59,13 @@ class TriplicityPredicate(essentialImpl: IEssential, private val dayNightImpl: D
 }
 
 
+class MutualPredicate(private val essentialImpl: IEssential ,
+                      private val dayNightImpl: DayNightDifferentiator,
+                      private val dignities: Collection<Dignity>) : RulePredicate<Mutual.Reception> {
+  override fun getRule(p: Planet, h: Horoscope): Mutual.Reception ? {
+    val dayNight = dayNightImpl.getDayNight(h.gmtJulDay , h.location)
+    essentialImpl.getMutualData(p , h.pointDegreeMap , dayNight , dignities)
+    TODO()
+  }
+
+}
