@@ -79,6 +79,6 @@ public class EightWordsDetailImpl implements IEightWordsDetail , Serializable {
    */
   private Branch getBranchOf(Star star , ChronoLocalDateTime lmt , Location location , IStarPosition starPositionImpl) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
-    return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
+    return ZodiacSign.Companion.getZodiacSign(pos.getLng()).getBranch();
   }
 }

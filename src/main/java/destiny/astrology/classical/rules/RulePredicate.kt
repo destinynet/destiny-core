@@ -10,35 +10,35 @@ import destiny.astrology.Planet
 import destiny.astrology.classical.*
 
 interface RulePredicate<out T : Rule> {
-  fun getRule(p: Planet, h: Horoscope): T?
+  fun getRules(p: Planet, h: Horoscope): List<T>?
 }
 
 class RulerPredicate(private val rulerImpl: IRuler) : RulePredicate<Rule.Ruler> {
-  override fun getRule(p: Planet, h: Horoscope): Rule.Ruler? {
+  override fun getRules(p: Planet, h: Horoscope): List<Rule.Ruler>? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === rulerImpl.getPoint(sign)
     }?.let { sign ->
-      Rule.Ruler(p, sign)
+      listOf(Rule.Ruler(p, sign))
     }
   }
 }
 
 class ExaltPredicate(private val exaltImpl : IExaltation) : RulePredicate<Rule.Exalt> {
-  override fun getRule(p: Planet, h: Horoscope): Rule.Exalt? {
+  override fun getRules(p: Planet, h: Horoscope): List<Rule.Exalt>? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === exaltImpl.getPoint(sign)
     }?.let { sign ->
-      Rule.Exalt(p, sign)
+      listOf(Rule.Exalt(p, sign))
     }
   }
 }
 
 class TermPredicate(private val termImpl : ITerm) : RulePredicate<Rule.Term> {
-  override fun getRule(p: Planet, h: Horoscope): Rule.Term? {
+  override fun getRules(p: Planet, h: Horoscope): List<Rule.Term>? {
     return h.getPosition(p)?.lng?.takeIf { lngDeg ->
       p === termImpl.getPoint(lngDeg)
     }?.let { lngDeg ->
-      Rule.Term(p, lngDeg)
+      listOf(Rule.Term(p, lngDeg))
     }
   }
 }
@@ -46,13 +46,13 @@ class TermPredicate(private val termImpl : ITerm) : RulePredicate<Rule.Term> {
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
 class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
                           private val dayNightImpl: DayNightDifferentiator) : RulePredicate<Rule.Triplicity> {
-  override fun getRule(p: Planet, h: Horoscope): Rule.Triplicity? {
+  override fun getRules(p: Planet, h: Horoscope): List<Rule.Triplicity>? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
         (dayNight == DayNight.DAY && p === triplicityImpl.getPoint(sign, DayNight.DAY) ||
           dayNight == DayNight.NIGHT && p === triplicityImpl.getPoint(sign, DayNight.NIGHT))
       }?.let { dayNight ->
-        Rule.Triplicity(p, sign, dayNight)
+        listOf(Rule.Triplicity(p, sign, dayNight))
       }
     }
   }
@@ -62,7 +62,7 @@ class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
 class MutualPredicate(private val essentialImpl: IEssential ,
                       private val dayNightImpl: DayNightDifferentiator,
                       private val dignities: Collection<Dignity>) : RulePredicate<Mutual.Reception> {
-  override fun getRule(p: Planet, h: Horoscope): Mutual.Reception ? {
+  override fun getRules(p: Planet, h: Horoscope): List<Mutual.Reception> ? {
     val dayNight = dayNightImpl.getDayNight(h.gmtJulDay , h.location)
     essentialImpl.getMutualData(p , h.pointDegreeMap , dayNight , dignities)
     TODO()

@@ -21,10 +21,9 @@ class EssentialDignitiesBean(
   private val faceImpl : IFace,
   private var dayNightImpl: DayNightDifferentiator) : IEssentialDignities, Serializable {
 
-  /** 內定的 Rules  */
-  private val defaultRules: List<IRule>
-    get() {
-      return listOf(
+
+  override  val rules : List<IRule> by lazy {
+    listOf(
         Ruler(essentialImpl)
         , Exaltation(essentialImpl, exaltImpl)
         , MixedReception(essentialImpl)
@@ -32,9 +31,7 @@ class EssentialDignitiesBean(
         , Term(termImpl)
         , Face(faceImpl)
       )
-    }
-
-  override  var rules : List<IRule>  = defaultRules
+  }
 
   override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules

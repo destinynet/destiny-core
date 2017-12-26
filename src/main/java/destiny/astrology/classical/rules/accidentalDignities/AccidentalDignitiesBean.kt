@@ -23,40 +23,34 @@ class AccidentalDignitiesBean(private val dayNightImpl: DayNightDifferentiator,
                               private val besiegedImpl: IBesieged) : IAccidentalDignities, Serializable {
 
 
-  override val rules: List<IRule>
-    get() = defaultRules
-
-  /** 內定的 Rules  */
-  private val defaultRules: List<IRule>
-    get() {
-      return listOf(
-        House_1_10()
-        , House_4_7_11()
-        , House_2_5()
-        , House_9()
-        , House_3()
-        , Direct()
-        , Swift()
-        , Oriental()
-        , Occidental()
-        , Moon_Increase_Light()
-        , Free_Combustion()
-        , Cazimi()
-        , Partile_Conj_Jupiter_Venus()
-        , Partile_Conj_North_Node()
-        , Partile_Trine_Jupiter_Venus()
-        , Partile_Sextile_Jupiter_Venus()
-        , Partile_Conj_Regulus()
-        , Partile_Conj_Spica()
-        , JoyHouse()
-        , Hayz(dayNightImpl)
-        , Besieged_Jupiter_Venus(besiegedImpl)
-        , Translation_of_Light(translationOfLightImpl)
-        , Collection_of_Light(collectionOfLightImpl)
-        , Refrain_from_Mars_Saturn(refranationImpl)
-      )
-    }
-
+  override val rules: List<IRule> by lazy {
+    listOf(
+      House_1_10()
+      , House_4_7_11()
+      , House_2_5()
+      , House_9()
+      , House_3()
+      , Direct()
+      , Swift()
+      , Oriental()
+      , Occidental()
+      , Moon_Increase_Light()
+      , Free_Combustion()
+      , Cazimi()
+      , Partile_Conj_Jupiter_Venus()
+      , Partile_Conj_North_Node()
+      , Partile_Trine_Jupiter_Venus()
+      , Partile_Sextile_Jupiter_Venus()
+      , Partile_Conj_Regulus()
+      , Partile_Conj_Spica()
+      , JoyHouse()
+      , Hayz(dayNightImpl)
+      , Besieged_Jupiter_Venus(besiegedImpl)
+      , Translation_of_Light(translationOfLightImpl)
+      , Collection_of_Light(collectionOfLightImpl)
+      , Refrain_from_Mars_Saturn(refranationImpl)
+    )
+  }
 
   override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
     return rules

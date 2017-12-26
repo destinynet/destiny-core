@@ -44,6 +44,6 @@ enum class Ayanamsa(private val nameKey: String) : ILocaleString {
 
   companion object {
 
-    private val resource = "destiny.astrology.Astrology"
+    private const val resource = "destiny.astrology.Astrology"
   }
 }

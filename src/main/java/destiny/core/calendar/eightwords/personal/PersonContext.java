@@ -386,7 +386,7 @@ public class PersonContext extends EightWordsContext {
 
   private Branch getBranchOf(Star star) {
     Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
-    return ZodiacSign.getZodiacSign(pos.getLng()).getBranch();
+    return ZodiacSign.Companion.getZodiacSign(pos.getLng()).getBranch();
   }
 
   /**

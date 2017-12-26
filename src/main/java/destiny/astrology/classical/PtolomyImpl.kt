@@ -9,6 +9,7 @@ import destiny.astrology.DayNight.NIGHT
 import destiny.astrology.Element.*
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
+import destiny.astrology.ZodiacSign.Companion.getZodiacSign
 import java.io.Serializable
 
 
