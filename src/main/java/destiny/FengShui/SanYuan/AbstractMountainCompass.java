@@ -65,7 +65,7 @@ public abstract class AbstractMountainCompass extends AbstractCompass {
   @Override
   public double getStartDegree(Object o)
   {
-    return Utils.getNormalizeDegree(mountainList.indexOf(o) * getStepDegree() + getInitDegree() );
+    return Utils.INSTANCE.getNormalizeDegree(mountainList.indexOf(o) * getStepDegree() + getInitDegree() );
   }
   
   /**
@@ -74,7 +74,7 @@ public abstract class AbstractMountainCompass extends AbstractCompass {
   @Override
   public double getEndDegree(Object o)
   {
-    return Utils.getNormalizeDegree( (mountainList.indexOf(o)+1) * getStepDegree() + getInitDegree() );
+    return Utils.INSTANCE.getNormalizeDegree( (mountainList.indexOf(o)+1) * getStepDegree() + getInitDegree() );
   }
   
   /**

@@ -39,7 +39,7 @@ public class AcquiredSymbolCompass extends AbstractSymbol implements Serializabl
   @Override
   public double getStartDegree(Object o)
   {
-    return Utils.getNormalizeDegree(symbolList.indexOf(o) * getStepDegree() + getInitDegree());
+    return Utils.INSTANCE.getNormalizeDegree(symbolList.indexOf(o) * getStepDegree() + getInitDegree());
   }
   
   /**
@@ -48,7 +48,7 @@ public class AcquiredSymbolCompass extends AbstractSymbol implements Serializabl
   @Override
   public double getEndDegree(Object o)
   {
-    return Utils.getNormalizeDegree( (symbolList.indexOf(o) +1 ) * getStepDegree() + getInitDegree());
+    return Utils.INSTANCE.getNormalizeDegree( (symbolList.indexOf(o) +1 ) * getStepDegree() + getInitDegree());
   }
   
   /**

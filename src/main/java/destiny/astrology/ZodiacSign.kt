@@ -59,9 +59,9 @@ enum class ZodiacSign(private val nameKey: String,
   /** 取得星座的 index , 為 0-based , 牡羊座為 0 , 金牛座為 1 , ... , 雙魚座為 11  */
   val index: Int
     get() {
-      for (i in 0 until ZodiacSign.values().size)
-        if (this == ZodiacSign.values()[i])
-          return i
+      (0 until ZodiacSign.values().size)
+        .filter { this == ZodiacSign.values()[it] }
+        .forEach { return it }
       throw RuntimeException("Error!")
     }
 

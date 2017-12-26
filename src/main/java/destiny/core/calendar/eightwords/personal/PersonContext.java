@@ -9,10 +9,7 @@ import destiny.astrology.*;
 import destiny.core.Gender;
 import destiny.core.IntAge;
 import destiny.core.IntAgeNote;
-import destiny.core.calendar.Location;
-import destiny.core.calendar.SolarTerms;
-import destiny.core.calendar.SolarTermsIF;
-import destiny.core.calendar.TimeTools;
+import destiny.core.calendar.*;
 import destiny.core.calendar.chinese.ChineseDateIF;
 import destiny.core.calendar.eightwords.*;
 import destiny.core.chinese.Branch;
@@ -90,6 +87,8 @@ public class PersonContext extends EightWordsContext {
   /** 歲數註解實作 */
   private final List<IntAgeNote> ageNoteImpls;
 
+
+
   /** constructor */
   public PersonContext(EightWordsIF eightWordsImpl, ChineseDateIF chineseDateImpl, YearMonthIF yearMonthImpl,
                        DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi,
@@ -116,7 +115,7 @@ public class PersonContext extends EightWordsContext {
 
 
   public PersonContextModel getModel() {
-    return new PersonContextModel(gender , eightWords , lmt , location , locationName ,
+    return new PersonContextModel(gender , getEightWords(), lmt , location , locationName ,
       getChineseDate() ,
       getFortuneDatas(9) ,
       getRisingStemBranch() ,
@@ -175,14 +174,14 @@ public class PersonContext extends EightWordsContext {
     if (!prevMajorSolarTerms.isMajor()) // 如果是「中氣」的話
       prevMajorSolarTerms = prevMajorSolarTerms.previous(); // 再往前取一個 , 即可得到「節」
 
-    ChronoLocalDateTime prevGmt = starTransitImpl.getNextTransitGmtDateTime(SUN , prevMajorSolarTerms.getZodiacDegree() , ECLIPTIC , gmtJulDay , false);
+    ChronoLocalDateTime prevGmt = starTransitImpl.getNextTransitGmtDateTime(SUN , prevMajorSolarTerms.getZodiacDegree() , ECLIPTIC , gmtJulDay , false , JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic);
     Duration dur1 = Duration.between(gmt, prevGmt).abs();
     double d1 = dur1.getSeconds()+ dur1.getNano() / 1_000_000_000.0;
 
 
     // 下一個「節」
     SolarTerms nextMajorSolarTerms = this.getNextMajorSolarTerms(prevMajorSolarTerms, false);
-    ChronoLocalDateTime nextGmt = starTransitImpl.getNextTransitGmtDateTime(SUN , nextMajorSolarTerms.getZodiacDegree(), ECLIPTIC, gmtJulDay , true);
+    ChronoLocalDateTime nextGmt = starTransitImpl.getNextTransitGmtDateTime(SUN , nextMajorSolarTerms.getZodiacDegree(), ECLIPTIC, gmtJulDay , true , JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic);
     Duration dur2 = Duration.between(gmt, nextGmt).abs();
     double d2 = dur2.getSeconds() + dur2.getNano() / 1_000_000_000.0;
 
@@ -350,7 +349,7 @@ public class PersonContext extends EightWordsContext {
     boolean isForward = isFortuneDirectionForward();
 
     //下個大運的干支
-    StemBranch nextStemBranch = isForward ? eightWords.getMonth().getNext() : eightWords.getMonth().getPrevious();
+    StemBranch nextStemBranch = isForward ? getEightWords().getMonth().getNext() : getEightWords().getMonth().getPrevious();
 
     List<FortuneData> fortuneDatas = new ArrayList<>(count);
 
@@ -385,7 +384,7 @@ public class PersonContext extends EightWordsContext {
 
 
   private Branch getBranchOf(Star star) {
-    Position pos = starPositionImpl.getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
+    Position pos = getStarPositionImpl().getPosition(star , lmt , location , Centric.GEO ,Coordinate.ECLIPTIC);
     return ZodiacSign.Companion.getZodiacSign(pos.getLng()).getBranch();
   }
 
@@ -487,7 +486,7 @@ public class PersonContext extends EightWordsContext {
       return false;
     if (gender != that.gender)
       return false;
-    if (!eightWords.equals(that.eightWords))
+    if (!getEightWords().equals(that.getEightWords()))
       return false;
     if (currentSolarTerms != that.currentSolarTerms)
       return false;
@@ -504,7 +503,7 @@ public class PersonContext extends EightWordsContext {
     result = 31 * result + lmt.hashCode();
     result = 31 * result + location.hashCode();
     result = 31 * result + gender.hashCode();
-    result = 31 * result + (eightWords.hashCode());
+    result = 31 * result + (getEightWords().hashCode());
     result = 31 * result + (currentSolarTerms != null ? currentSolarTerms.hashCode() : 0);
     temp = Double.doubleToLongBits(fortuneMonthSpan);
     result = 31 * result + (int) (temp ^ (temp >>> 32));

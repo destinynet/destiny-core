@@ -38,12 +38,12 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
      * Julian Calendar    終止於西元 1582-10-04 , 該日的 Julian Day 是 2299159.5
      * Gregorian Calendar 開始於西元 1582-10-15 , 該日的 Julian Day 是 2299160.5
      */
-    private val GREGORIAN_START_JULIAN_DAY = 2299160.5
+    private const val GREGORIAN_START_JULIAN_DAY = 2299160.5
 
     /**
      * 承上， 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
      */
-    private val GREGORIAN_START_INSTANT = -12219292800000L
+    private const val GREGORIAN_START_INSTANT = -12219292800000L
 
     private val logger = LoggerFactory.getLogger(JulDayResolver1582CutoverImpl::class.java)
 
