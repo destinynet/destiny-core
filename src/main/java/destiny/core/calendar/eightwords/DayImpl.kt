@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
-import java.util.function.Function
 
 /**
  * 換日 的實作
@@ -87,7 +86,7 @@ class DayImpl : DayIF, Serializable {
 
   companion object {
 
-    private val revJulDayFunc = Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc = { it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 

@@ -13,7 +13,6 @@ import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import java.util.function.Function
 
 class EightWordsImpl(val yearMonthImpl: YearMonthIF          // 換年, 以及月支計算的實作
                      , val dayImpl: DayIF                // 計算日干支的介面
@@ -115,6 +114,6 @@ class EightWordsImpl(val yearMonthImpl: YearMonthIF          // 換年, 以及�
 
   companion object {
 
-    private val revJulDayFunc = Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

@@ -11,7 +11,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 
 import java.time.chrono.ChronoLocalDateTime
-import java.util.function.Function
 
 /** 時辰的分界點實作 , SwissEph 的實作是 HourSolarTransImpl  */
 interface HourIF : Descriptive {
@@ -44,10 +43,11 @@ interface HourIF : Descriptive {
    * @param eb 欲求之下一個地支開始時刻
    * @return 回傳 LMT 時刻
    */
-  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, location: Location, eb: Branch, revJulDayFunc: Function<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, location: Location, eb: Branch, revJulDayFunc: Function1<Double , ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, location, eb)
-    val resultGmt = revJulDayFunc.apply(resultGmtJulDay)
+
+    val resultGmt = revJulDayFunc.invoke(resultGmtJulDay)
     return TimeTools.getLmtFromGmt(resultGmt, location)
   }
 

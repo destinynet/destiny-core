@@ -30,7 +30,7 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
                              protected val starPositionImpl: IStarPosition<*>
 ) : Serializable {
 
-  val eightWords: EightWords
+  val eightWords: EightWords = eightWordsImpl.getEightWords(lmt, location)
 
   open val model: EightWordsContextModel
     get() {
@@ -97,10 +97,6 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
       val risingStem = StemBranchUtils.getMonthStem(eightWords.yearStem, risingBranch)
       return StemBranch.get(risingStem, risingBranch)
     }
-
-  init {
-    this.eightWords = eightWordsImpl.getEightWords(lmt, location)
-  }
 
   private fun getBranchOf(star: Star, lmt: ChronoLocalDateTime<*>, location: Location): Branch {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
