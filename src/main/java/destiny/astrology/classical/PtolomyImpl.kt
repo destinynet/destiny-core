@@ -117,8 +117,18 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
   /** 哪顆星在此星座得到三分相 (+3) */
   override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Point {
     return when (dayNight) {
-      DayNight.DAY -> dayMap[sign.element]!!
-      DayNight.NIGHT -> nightMap[sign.element]!!
+      DAY -> return when (sign.element) {
+        FIRE -> SUN
+        EARTH -> VENUS
+        AIR -> SATURN
+        WATER -> VENUS
+      }
+      NIGHT -> return when (sign.element) {
+        FIRE -> JUPITER
+        EARTH -> MOON
+        AIR -> MERCURY
+        WATER -> MOON
+      }
     }
   }
 
@@ -127,31 +137,36 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
    * Ptolomy 只有水象星座，由火星共管
    * */
   override fun getPartner(sign: ZodiacSign): Point? {
-    return partnerMap[sign.element]!!
+    return when (sign.element) {
+      FIRE -> MARS
+      EARTH -> SATURN
+      AIR -> JUPITER
+      WATER -> MARS
+    }
   }
 
-  companion object {
-    private val partnerMap = mapOf(
-      FIRE to MARS,
-      EARTH to SATURN,
-      AIR to JUPITER,
-      WATER to MARS
-    )
-
-    private val dayMap = mapOf(
-      FIRE to SUN,
-      EARTH to VENUS,
-      AIR to SATURN,
-      WATER to VENUS
-    )
-
-    private val nightMap = mapOf(
-      FIRE to JUPITER,
-      EARTH to MOON,
-      AIR to MERCURY,
-      WATER to MOON
-    )
-  }
+//  companion object {
+//    private val partnerMap = mapOf(
+//      FIRE to MARS,
+//      EARTH to SATURN,
+//      AIR to JUPITER,
+//      WATER to MARS
+//    )
+//
+//    private val dayMap = mapOf(
+//      FIRE to SUN,
+//      EARTH to VENUS,
+//      AIR to SATURN,
+//      WATER to VENUS
+//    )
+//
+//    private val nightMap = mapOf(
+//      FIRE to JUPITER,
+//      EARTH to MOON,
+//      AIR to MERCURY,
+//      WATER to MOON
+//    )
+//  }
 }
 
 /**
@@ -273,7 +288,7 @@ class TermPtolomyImpl : ITerm, Serializable {
  * 土星若與日月呈現150度角，則得 Face
  *
  * */
-class FacePtolomyImpl : IFace , Serializable {
+class FacePtolomyImpl : IFace, Serializable {
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
   override fun getPoint(degree: Double): Planet {
@@ -342,9 +357,62 @@ class FacePtolomyImpl : IFace , Serializable {
 }
 
 
+/** 存放星體在黃道帶上幾度得到 Exaltation (+4) 的度數  */
+val exaltDegreeMap = mapOf<Point, Double>(
+  SUN to 19.0  // 太陽在戌宮 19度 exalted.
+  , MOON to 33.0  // 月亮在酉宮 03度 exalted.
+  , MERCURY to 165.0  // 水星在巳宮 15度 exalted.
+  , VENUS to 357.0  // 金星在亥宮 27度 exalted.
+  , MARS to 298.0  // 火星在丑宮 28度 exalted.
+  , JUPITER to 105.0  // 木星在未宮 15度 exalted.
+  , SATURN to 201.0  // 土星在辰宮 21度 exalted.
+  , LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
+  , LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
+  , LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
+  , LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
+)
+
 /**
  * 托勒密 RULER / DETRIMENT 共用表格
  */
+
+private val rulerMap = mapOf(
+  ARIES to MARS,
+  TAURUS to VENUS,
+  GEMINI to MERCURY,
+  CANCER to MOON,
+  LEO to SUN,
+  VIRGO to MERCURY,
+  LIBRA to VENUS,
+  SCORPIO to MARS,
+  SAGITTARIUS to JUPITER,
+  CAPRICORN to SATURN,
+  AQUARIUS to SATURN,
+  PISCES to JUPITER
+)
+
+
+/**
+ * 考量日夜的 rulerMap , 參考表格 : https://imgur.com/a/bZ6ij
+ * 讀作 : 什麼星座的日/夜 的 ruler 是誰(maybe null)
+ * */
+private val rulerDayNightMap = mapOf(
+  (ARIES to DAY) to MARS,
+  (TAURUS to NIGHT) to VENUS,
+  (GEMINI to DAY) to MERCURY,
+  (CANCER to DAY) to MOON,
+  (CANCER to NIGHT) to MOON,
+  (LEO to DAY) to SUN,
+  (LEO to NIGHT) to SUN,
+  (VIRGO to NIGHT) to MERCURY,
+  (LIBRA to DAY) to VENUS,
+  (SCORPIO to NIGHT) to MARS,
+  (SAGITTARIUS to DAY) to JUPITER,
+  (CAPRICORN to NIGHT) to SATURN,
+  (AQUARIUS to DAY) to SATURN,
+  (PISCES to NIGHT) to JUPITER
+)
+
 abstract class AbstractPtolemy : Serializable {
 
   fun findPoint(sign: ZodiacSign, map: Map<Point, Double>): Point? {
@@ -356,23 +424,10 @@ abstract class AbstractPtolemy : Serializable {
 
   companion object {
     /** 不考量「日、夜」的 ruler */
-    internal val rulerMap = mapOf<ZodiacSign, Planet>(
-      ARIES to MARS,
-      TAURUS to VENUS,
-      GEMINI to MERCURY,
-      CANCER to MOON,
-      LEO to SUN,
-      VIRGO to MERCURY,
-      LIBRA to VENUS,
-      SCORPIO to MARS,
-      SAGITTARIUS to JUPITER,
-      CAPRICORN to SATURN,
-      AQUARIUS to SATURN,
-      PISCES to JUPITER
-    )
+    internal
 
-    /** 不考量日、夜的 ruling map */
-    internal val rulingMap: Map<Planet, Set<ZodiacSign>> = rulerMap
+      /** 不考量日、夜的 ruling map */
+    val rulingMap: Map<Planet, Set<ZodiacSign>> = rulerMap
       .map { (sign, planet) -> planet to sign }
       .groupBy { (planet, sign) -> planet }
       .mapValues { (planet, v) -> v.map { p -> p.second } }
@@ -386,26 +441,6 @@ abstract class AbstractPtolemy : Serializable {
       .mapValues { (planet, v) -> v.map { p -> p.second } }
       .mapValues { it.value.toSet() }
 
-    /**
-     * 考量日夜的 rulerMap , 參考表格 : https://imgur.com/a/bZ6ij
-     * 讀作 : 什麼星座的日/夜 的 ruler 是誰(maybe null)
-     * */
-    internal val rulerDayNightMap = mapOf<Pair<ZodiacSign, DayNight>, Planet>(
-      (ARIES to DAY) to MARS,
-      (TAURUS to NIGHT) to VENUS,
-      (GEMINI to DAY) to MERCURY,
-      (CANCER to DAY) to MOON,
-      (CANCER to NIGHT) to MOON,
-      (LEO to DAY) to SUN,
-      (LEO to NIGHT) to SUN,
-      (VIRGO to NIGHT) to MERCURY,
-      (LIBRA to DAY) to VENUS,
-      (SCORPIO to NIGHT) to MARS,
-      (SAGITTARIUS to DAY) to JUPITER,
-      (CAPRICORN to NIGHT) to SATURN,
-      (AQUARIUS to DAY) to SATURN,
-      (PISCES to NIGHT) to JUPITER
-    )
 
     /**
      * (火星, DAY) ==> 牡羊
@@ -438,21 +473,6 @@ abstract class AbstractPtolemy : Serializable {
         .map { (planet, sign_to_DN) -> (planet to sign_to_DN.second) to sign_to_DN.first }
         .toMap()
 
-
-    /** 存放星體在黃道帶上幾度得到 Exaltation (+4) 的度數  */
-    internal val exaltDegreeMap = mapOf<Point, Double>(
-      SUN to 19.0  // 太陽在戌宮 19度 exalted.
-      , MOON to 33.0  // 月亮在酉宮 03度 exalted.
-      , MERCURY to 165.0  // 水星在巳宮 15度 exalted.
-      , VENUS to 357.0  // 金星在亥宮 27度 exalted.
-      , MARS to 298.0  // 火星在丑宮 28度 exalted.
-      , JUPITER to 105.0  // 木星在未宮 15度 exalted.
-      , SATURN to 201.0  // 土星在辰宮 21度 exalted.
-      , LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
-      , LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
-      , LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
-      , LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
-    )
 
     /** 承上，儲存的是星座值 */
     internal val exaltSignMap: Map<Point, ZodiacSign> = exaltDegreeMap

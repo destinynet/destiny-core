@@ -6,7 +6,6 @@ package destiny.astrology
 import destiny.core.calendar.TimeTools
 import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 
 /**
  * <pre>
@@ -100,7 +99,7 @@ interface IBesieged {
    */
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>,
                           onlyClassicalPlanets: Boolean, aspects: Array<Aspect>): List<Planet> {
-    return getBesiegingPlanets(planet, gmt, onlyClassicalPlanets, Arrays.asList(*aspects))
+    return getBesiegingPlanets(planet, gmt, onlyClassicalPlanets, aspects.toList())
   }
 
 

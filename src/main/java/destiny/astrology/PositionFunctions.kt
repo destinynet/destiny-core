@@ -9,9 +9,10 @@ import destiny.astrology.Hamburger.*
 import destiny.astrology.LunarNode.*
 import destiny.astrology.Planet.*
 
+val posSun: IPosition<*> = object : PositionStarImpl(SUN) {}
 object PositionFunctions {
 
-  val posSun: IPosition<*> = object : PositionStarImpl(SUN) {}
+
   val posMoon: IPosition<*> = object : PositionStarImpl(MOON) {}
   val posMercury: IPosition<*> = object : PositionStarImpl(MERCURY) {}
   val posVenus: IPosition<*> = object : PositionStarImpl(VENUS) {}

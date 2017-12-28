@@ -43,8 +43,18 @@ class TriplicityDorotheusImpl : ITriplicity , Serializable {
   /** 哪顆星在此星座得到三分相 (+3) */
   override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Planet {
     return when (dayNight) {
-      DayNight.DAY -> dayMap[sign.element]!!
-      DayNight.NIGHT -> nightMap[sign.element]!!
+      DayNight.DAY -> when(sign.element) {
+        FIRE -> SUN
+        EARTH -> VENUS
+        AIR -> SATURN
+        WATER -> VENUS
+      }
+      DayNight.NIGHT -> when(sign.element) {
+        FIRE -> JUPITER
+        EARTH -> MOON
+        AIR -> MERCURY
+        WATER -> MARS
+      }
     }
   }
 
@@ -57,19 +67,19 @@ class TriplicityDorotheusImpl : ITriplicity , Serializable {
     }
   }
 
-  companion object {
-    internal val dayMap = mapOf(
-      FIRE to SUN,
-      EARTH to VENUS,
-      AIR to SATURN,
-      WATER to VENUS
-    )
-
-    internal val nightMap = mapOf(
-      FIRE to JUPITER ,
-      EARTH to MOON,
-      AIR to MERCURY,
-      WATER to MARS
-    )
-  }
+//  companion object {
+//    internal val dayMap = mapOf(
+//      FIRE to SUN,
+//      EARTH to VENUS,
+//      AIR to SATURN,
+//      WATER to VENUS
+//    )
+//
+//    internal val nightMap = mapOf(
+//      FIRE to JUPITER ,
+//      EARTH to MOON,
+//      AIR to MERCURY,
+//      WATER to MARS
+//    )
+//  }
 }

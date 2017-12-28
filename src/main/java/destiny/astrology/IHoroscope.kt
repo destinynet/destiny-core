@@ -15,15 +15,14 @@ import java.util.*
 interface IHoroscope {
 
   val defaultPoints: Set<Point>
-    get() {
-      return setOf(
-        *Planet.values ,
-        *Asteroid.values ,
-        *Hamburger.values ,
-        *FixedStar.values ,
-        *LunarNode.mean_values
-      )
-    }
+    get() = setOf(
+      *Planet.values,
+      *Asteroid.values,
+      *Hamburger.values,
+      *FixedStar.values,
+      *LunarNode.mean_values
+    )
+
 
   fun getDefaultPoints(nodeType: NodeType): Set<Point> {
     val pointSet = HashSet<Point>()

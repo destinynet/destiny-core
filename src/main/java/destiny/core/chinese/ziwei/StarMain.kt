@@ -12,6 +12,7 @@ import destiny.core.chinese.Branch.*
  * resource key 存放於 [ZStar] 的 ZStar.properties 當中
  */
 sealed class StarMain(val nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", ZStar.Type.主星) {
+
   object 紫微 : StarMain("紫微")
   object 天機 : StarMain("天機")
   object 太陽 : StarMain("太陽")

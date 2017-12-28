@@ -1,6 +1,11 @@
 package destiny.astrology.classical
 
-import destiny.astrology.*
+import destiny.astrology.DayNight
+import destiny.astrology.Element.*
+import destiny.astrology.Planet
+import destiny.astrology.Planet.*
+import destiny.astrology.Point
+import destiny.astrology.ZodiacSign
 import java.io.Serializable
 
 /**
@@ -26,8 +31,18 @@ class TriplicityWilliamImpl : ITriplicity, Serializable {
   /** 哪顆星在此星座得到三分相 (+3) */
   override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Planet {
     return when(dayNight) {
-      DayNight.DAY -> dayMap[sign.element]!!
-      DayNight.NIGHT -> nightMap[sign.element]!!
+      DayNight.DAY -> when(sign.element) {
+        FIRE -> SUN
+        EARTH -> VENUS
+        AIR -> SATURN
+        WATER -> MARS
+      }
+      DayNight.NIGHT -> when(sign.element) {
+        FIRE -> JUPITER
+        EARTH -> MOON
+        AIR -> MERCURY
+        WATER -> MARS
+      }
     }
   }
 
@@ -36,22 +51,22 @@ class TriplicityWilliamImpl : ITriplicity, Serializable {
    * Ptolomy 只有水象星座，由火星共管
    *  */
   override fun getPartner(sign: ZodiacSign): Point? {
-    return sign.element.takeIf { it === Element.WATER }?.let { Planet.MARS }
+    return sign.element.takeIf { it === WATER }?.let { MARS }
   }
 
-  companion object {
-    internal val dayMap = mapOf(
-      Element.FIRE to Planet.SUN,
-      Element.EARTH to Planet.VENUS,
-      Element.AIR to Planet.SATURN,
-      Element.WATER to Planet.MARS
-    )
-
-    internal val nightMap = mapOf(
-      Element.FIRE to Planet.JUPITER,
-      Element.EARTH to Planet.MOON,
-      Element.AIR to Planet.MERCURY,
-      Element.WATER to Planet.MARS
-    )
-  }
+//  companion object {
+//    internal val dayMap = mapOf(
+//      FIRE to SUN,
+//      EARTH to VENUS,
+//      AIR to SATURN,
+//      WATER to MARS
+//    )
+//
+//    internal val nightMap = mapOf(
+//      FIRE to JUPITER,
+//      EARTH to MOON,
+//      AIR to MERCURY,
+//      WATER to MARS
+//    )
+//  }
 }

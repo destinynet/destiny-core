@@ -58,11 +58,13 @@ public abstract class Point implements Serializable , ILocaleString {
 
   /** 名稱 */
   public String getName(@NotNull Locale locale) {
+    //System.out.println("get name of " + locale + " , resource = " + resource + " , nameKey = " + nameKey);
     return ResourceBundle.getBundle(resource, locale).getString(nameKey);
   }
 
   /** 名稱 */
   private String getName() {
+    //System.out.println("resource = " + resource);
     return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
   }
 
