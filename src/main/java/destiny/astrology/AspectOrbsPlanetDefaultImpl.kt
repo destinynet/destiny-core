@@ -11,6 +11,18 @@ import java.io.Serializable
  * 內定只考慮日月的交角有特別的容許度 <br></br>
  * 參考資料 http://www.myastrologybook.com/aspects-and-orbs.htm
  */
+private val sunMoonOrbsMap = mapOf(
+  Triple(Planet.SUN, Planet.MOON, Aspect.CONJUNCTION) to 12.0,
+  Triple(Planet.SUN, Planet.MOON, Aspect.OPPOSITION) to 12.0,
+  Triple(Planet.SUN, Planet.MOON, Aspect.TRINE) to 8.0,
+  Triple(Planet.SUN, Planet.MOON, Aspect.SQUARE) to 8.0,
+  Triple(Planet.SUN, Planet.MOON, Aspect.SEXTILE) to 5.0,
+  Triple(Planet.SUN, Planet.MOON, Aspect.SEMISQUARE) to 2.5,
+  Triple(Planet.SUN, Planet.MOON, Aspect.SESQUIQUADRATE) to 2.5,
+  Triple(Planet.SUN, Planet.MOON, Aspect.SEMISEXTILE) to 2.0,
+  Triple(Planet.SUN, Planet.MOON, Aspect.QUINCUNX) to 2.5
+)
+
 class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, Serializable {
 
   /**
@@ -19,24 +31,10 @@ class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, Serializable {
    */
   override fun getPlanetAspectOrb(p1: Point, p2: Point, aspect: Aspect): Double? {
 
-    val key1 = Triple(p1 , p2 , aspect)
-    val key2 = Triple(p2 , p1 , aspect)
+    val key1 = Triple(p1, p2, aspect)
+    val key2 = Triple(p2, p1, aspect)
 
-    return map[key1]?:map[key2]
-  }
-
-  companion object {
-    private val map = mapOf(
-      Triple(Planet.SUN, Planet.MOON, Aspect.CONJUNCTION) to 12.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.OPPOSITION) to 12.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.TRINE) to 8.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SQUARE) to 8.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SEXTILE) to 5.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SEMISQUARE) to 2.5,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SESQUIQUADRATE) to 2.5,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SEMISEXTILE) to 2.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.QUINCUNX) to 2.5
-    )
+    return sunMoonOrbsMap[key1] ?: sunMoonOrbsMap[key2]
   }
 
 }

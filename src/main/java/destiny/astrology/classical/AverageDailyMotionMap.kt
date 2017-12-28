@@ -5,7 +5,6 @@
 package destiny.astrology.classical
 
 import destiny.astrology.Planet
-import java.util.*
 
 /** 這個網址有平均速度的列表 http://mithras93.tripod.com/lessons/lesson7/index.html
  * 我則另外參考 Horary Astrology Plain and Simple , page 82  */
@@ -21,16 +20,9 @@ private val averageDailyMotionMap = mapOf(
 
 object AverageDailyMotionMap {
 
-  /**
-   * 三王星 沒「每日速度」資料
-   */
+  /** 三王星 沒「每日速度」資料 */
   fun getAvgDailySpeed(planet: Planet): Double? {
     return averageDailyMotionMap[planet]
   }
-
-  fun getDailySpeedOpt(planet: Planet): Optional<Double> {
-    return Optional.ofNullable(averageDailyMotionMap[planet])
-  }
-
 
 }

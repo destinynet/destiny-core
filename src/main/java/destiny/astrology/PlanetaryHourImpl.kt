@@ -17,19 +17,16 @@ import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.util.*
 
-/**
- * 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月
- */
+/** 星期六白天起，七顆行星順序： 土、木、火、日、金、水、月 */
 private val seqPlanet = arrayOf(SATURN, JUPITER, MARS, SUN, VENUS, MERCURY, MOON)
 
+/** 日期順序 */
+private val seqDay = intArrayOf(6, 7, 1, 2, 3, 4, 5)
+
 /**
- *
- *
  * http://www.astrology.com.tr/planetary-hours.asp
  *
- *
  * http://pansci.asia/archives/126644
- *
  *
  * 晝夜、分別劃分 12等分
  */
@@ -150,11 +147,8 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
   }
 
   companion object {
-    /**
-     * 日期順序
-     */
-    private val seqDay = intArrayOf(6, 7, 1, 2, 3, 4, 5)
 
-    private val revJulDayFunc = {it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+
+    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

@@ -16,7 +16,7 @@ interface IHoroscope {
 
   val defaultPoints: Set<Point>
     get() = setOf(
-      *Planet.values,
+      *Planets.values,
       *Asteroid.values,
       *Hamburger.values,
       *FixedStar.values,
@@ -26,7 +26,7 @@ interface IHoroscope {
 
   fun getDefaultPoints(nodeType: NodeType): Set<Point> {
     val pointSet = HashSet<Point>()
-    pointSet.addAll(Arrays.asList(*Planet.values))
+    pointSet.addAll(Arrays.asList(*Planets.values))
     pointSet.addAll(Arrays.asList(*Asteroid.values))
     pointSet.addAll(Arrays.asList(*Hamburger.values))
     pointSet.addAll(Arrays.asList(*FixedStar.values))

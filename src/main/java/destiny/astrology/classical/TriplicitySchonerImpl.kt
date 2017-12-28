@@ -56,21 +56,4 @@ class TriplicitySchonerImpl : ITriplicity , Serializable {
       WATER -> MOON
     }
   }
-
-//  companion object {
-//    internal val dayMap = mapOf(
-//      FIRE to SUN ,
-//      EARTH to MOON ,
-//      AIR to SATURN ,
-//      WATER to VENUS
-//    )
-//
-//    internal val nightMap = mapOf(
-//      FIRE to JUPITER ,
-//      EARTH to VENUS ,
-//      AIR to MERCURY ,
-//      WATER to MARS
-//    )
-//  }
-
 }

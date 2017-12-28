@@ -72,19 +72,4 @@ class TriplicityMorinImpl : ITriplicity, Serializable {
     }
   }
 
-//  companion object {
-//    internal val dayMap = mapOf(
-//      FIRE to SUN ,
-//      EARTH to MERCURY ,
-//      AIR to SATURN,
-//      WATER to JUPITER
-//    )
-//
-//    internal val nightMap = mapOf(
-//      FIRE to MARS ,
-//      EARTH to SATURN,
-//      AIR to VENUS,
-//      WATER to MOON
-//    )
-//  }
 }

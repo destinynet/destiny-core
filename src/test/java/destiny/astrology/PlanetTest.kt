@@ -68,23 +68,21 @@ class PlanetTest {
     println(Planet.NEPTUNE)
     println(Planet.PLUTO)
 
-    Planet.classicalValues.forEach { println(it) }
-
 
     println("\nclassical values :")
-    for (planet in Planet.classicalValues) {
+    for (planet in Planets.classicalValues) {
       assertNotNull(planet)
       assertNotNull(planet.toString())
       println(planet.toString())
     }
 
     println("\nall values :")
-    for (planet in Planet.values) {
+    for (planet in Planets.values) {
       assertNotNull(planet)
       assertNotNull(planet.toString())
     }
 
-    val points = setOf<Point>(*Planet.values , *FixedStar.values) as Collection<Point>
+    val points = setOf<Point>(*Planets.values , *FixedStar.values) as Collection<Point>
     println(points)
     points.forEach { println(it) }
   }
