@@ -60,24 +60,13 @@ interface IRiseTrans {
    * 取得某段時間（LMT）之內，某星體的通過某 Point 的時刻（GMT）
    */
   fun getPeriodStarRiseTransGmtJulDay(fromLmtTime: ChronoLocalDateTime<*>, toLmtTime: ChronoLocalDateTime<*>, star: Star, point: TransPoint, location: Location, atmosphericTemperature: Double, atmosphericPressure: Double, isDiscCenter: Boolean, hasRefraction: Boolean): List<Double> {
-    var fromGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(fromLmtTime, location))
+    val fromGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(fromLmtTime, location))
     val toGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(toLmtTime, location))
 
-    val resultList = mutableListOf<Double>()
-
-    var resultGmtJulDay: Double
-
-    while (fromGmtJulDay < toGmtJulDay) {
-      resultGmtJulDay = getGmtTransJulDay(fromGmtJulDay, star, point, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
-      logger.debug("resultGmtJulDay = {}", resultGmtJulDay)
-
-      if (resultGmtJulDay > toGmtJulDay)
-        break
-
-      resultList.add(resultGmtJulDay)
-      fromGmtJulDay = resultGmtJulDay + 0.01
-    }
-    return resultList
+    return generateSequence(getGmtTransJulDay(fromGmtJulDay, star, point, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)) {
+      getGmtTransJulDay(it+0.01, star, point, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+    }.takeWhile { it < toGmtJulDay }
+      .toList()
   }
 
   /**
@@ -102,8 +91,7 @@ interface IRiseTrans {
   }
 
   companion object {
-
-    val logger = LoggerFactory.getLogger(IRiseTrans::class.java)
+    val logger = LoggerFactory.getLogger(IRiseTrans::class.java)!!
   }
 }
 /**

@@ -3,8 +3,6 @@
  */
 package destiny.astrology
 
-import java.util.*
-
 /**
  * 計算星體在黃道帶上 逆行 / Stationary (停滯) 的介面，目前 SwissEph 的實作只支援 Planet , Asteroid , Moon's Node (只有 True Node。 Mean 不會逆行！)
  * SwissEph 內定實作是 RetrogradeImpl
@@ -46,16 +44,10 @@ interface IRetrograde {
       throw RuntimeException("toGmt ($toGmt) >= fromGmt($fromGmt)")
     }
 
-    var gmt = fromGmt
-    val list = ArrayList<Pair<Double, StationaryType>>()
-    while (gmt < toGmt) {
-      val result = getNextStationary(star, gmt, true, starPositionImpl)
-      if (result.first <= toGmt) {
-        list.add(result)
-      }
-      gmt = result.first + 1 / 1440.0
-    }
-    return list
+    return generateSequence (getNextStationary(star, fromGmt, true, starPositionImpl)) {
+      getNextStationary(star, it.first+(1/1440.0), true, starPositionImpl)
+    }.takeWhile { it.first <= toGmt }
+      .toList()
   }
 
   /**

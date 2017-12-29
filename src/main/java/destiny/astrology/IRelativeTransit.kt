@@ -30,11 +30,8 @@ interface IRelativeTransit {
   fun getRelativeTransit(transitStar: Star, relativeStar: Star, angle: Double, fromGmt: ChronoLocalDateTime<*>, isForward: Boolean,
                          revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*>? {
     val gmtJulDay = TimeTools.getGmtJulDay(fromGmt)
-    val value = getRelativeTransit(transitStar, relativeStar, angle, gmtJulDay, isForward)
-    return if (value != null)
-      revJulDayFunc.invoke(value)
-    else
-      null
+
+    return getRelativeTransit(transitStar, relativeStar, angle, gmtJulDay, isForward)?.let { value -> revJulDayFunc.invoke(value) }
   }
 
 
