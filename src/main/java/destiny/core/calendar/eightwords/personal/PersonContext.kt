@@ -53,7 +53,8 @@ class PersonContext(
   private val fortuneMonthSpan: Double,
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
   private val fortuneDirectionImpl: FortuneDirectionIF?,
-  risingSignImpl: IRisingSign, starPositionImpl: IStarPosition<*>,
+  risingSignImpl: IRisingSign,
+  starPositionImpl: IStarPosition<*>,
   /** 歲數註解實作  */
   val ageNoteImpls: List<IntAgeNote>) : EightWordsContext(lmt, location, eightWordsImpl, yearMonthImpl, chineseDateImpl, dayImpl, hourImpl, midnightImpl, changeDayAfterZi, risingSignImpl, starPositionImpl) {
 
@@ -123,12 +124,6 @@ class PersonContext(
       logger.debug(" nextGmt = {}", nextGmt)
       return Tuple.tuple(Tuple.tuple(prevMajorSolarTerms, d1), Tuple.tuple(nextMajorSolarTerms, d2))
     }
-
-
-  init {
-//    val gmt = TimeTools.getGmtFromLmt(lmt, location)
-//    this.currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
-  }// LMT 的八字
 
   private fun getAgeMap(toAge: Int): Map<Int, Pair<Double, Double>> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
@@ -252,17 +247,15 @@ class PersonContext(
    */
   private fun getNextMajorSolarTerms(currentSolarTerms: SolarTerms, reverse: Boolean): SolarTerms {
     val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
-    return if (currentSolarTermsIndex % 2 == 0)
-    //立春 , 驚蟄 , 清明 ...
-    {
+    return if (currentSolarTermsIndex % 2 == 0) {
+      //立春 , 驚蟄 , 清明 ...
       if (!reverse)
       //順推
         currentSolarTerms.next().next()
       else
         currentSolarTerms
-    } else
-    //雨水 , 春分 , 穀雨 ...
-    {
+    } else {
+      //雨水 , 春分 , 穀雨 ...
       if (!reverse)
       //順推
         currentSolarTerms.next()
@@ -282,7 +275,7 @@ class PersonContext(
   /**
    * @param count 計算 n柱 大運的資料
    */
-  fun getFortuneDatas(count: Int): List<FortuneData> {
+  private fun getFortuneDatas(count: Int): List<FortuneData> {
     // forward : 大運是否順行
     val isForward = isFortuneDirectionForward
 
@@ -296,6 +289,7 @@ class PersonContext(
     val ageMap = getAgeMap(120)
 
     // 計算九柱大運的相關資訊
+
     for (i in 1..count) {
       // 西元/民國/實歲/虛歲之值
       val startFortune: Int
@@ -309,8 +303,8 @@ class PersonContext(
       startFortune = getAge(startFortuneGmtJulDay, ageMap) ?: 0
       endFortune = getAge(endFortuneGmtJulDay, ageMap) ?: 0
 
-      val startFortuneAgeNotes = ageNoteImpls.map { impl -> impl.getAgeNote(ageMap[startFortune]) }.filter { it.isPresent }.map { it.get() }.toList()
-      val endFortuneAgeNotes = ageNoteImpls.map { impl -> impl.getAgeNote(ageMap[endFortune]) }.filter { it.isPresent }.map { it.get() }.toList()
+      val startFortuneAgeNotes = ageNoteImpls.map { impl -> ageMap[startFortune]?.let { impl.getAgeNote(it) } }.filter { it != null }.map { it!! }.toList()
+      val endFortuneAgeNotes   = ageNoteImpls.map { impl -> ageMap[  endFortune]?.let { impl.getAgeNote(it) } }.filter { it != null }.map { it!! }.toList()
 
       val fortuneData = FortuneData(nextStemBranch, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortune, endFortune, startFortuneAgeNotes, endFortuneAgeNotes)
       fortuneDatas.add(fortuneData)

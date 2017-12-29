@@ -92,18 +92,18 @@ enum class ZodiacSign(private val nameKey: String,
     private const val resource = "destiny.astrology.Sign"
 
     private val map = mapOf(
-      ARIES to 戌,
-      TAURUS to 酉,
-      GEMINI to 申,
-      CANCER to 未,
-      LEO to 午,
-      VIRGO to 巳,
-      LIBRA to 辰,
-      SCORPIO to 卯,
+      ARIES       to 戌,
+      TAURUS      to 酉,
+      GEMINI      to 申,
+      CANCER      to 未,
+      LEO         to 午,
+      VIRGO       to 巳,
+      LIBRA       to 辰,
+      SCORPIO     to 卯,
       SAGITTARIUS to 寅,
-      CAPRICORN to 丑,
-      AQUARIUS to 子,
-      PISCES to 亥
+      CAPRICORN   to 丑,
+      AQUARIUS    to 子,
+      PISCES      to 亥
     )
 
     /** 取得黃道帶上的某度，屬於哪個星座  */

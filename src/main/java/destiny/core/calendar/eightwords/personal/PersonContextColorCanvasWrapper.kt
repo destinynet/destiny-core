@@ -94,11 +94,11 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 //        .map(Optional::get)
 //        .orElse("");
 
-      val startFortune : String =
+      val startFortune: String =
         ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
-        .filter { it.isPresent }
-        .map { it.get() }
-        .first()
+          .filter { it !== null }
+          .map { it -> it!! }
+          .first()
 
 
       val stemBranch = fortuneData.stemBranch

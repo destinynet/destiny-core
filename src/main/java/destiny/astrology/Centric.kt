@@ -28,7 +28,7 @@ enum class Centric(private val nameKey: String) : ILocaleString {
 
   companion object {
 
-    private val resource = "destiny.astrology.Astrology"
+    private const val resource = "destiny.astrology.Astrology"
   }
 
 }

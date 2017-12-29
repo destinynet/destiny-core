@@ -18,7 +18,7 @@ class HoroscopeAspectData(p1: Point, p2: Point,
   private val pointComp = PointComparator()
 
   /** 存放形成交角的兩顆星體  */
-  private val twoPoints = Collections.synchronizedSet(TreeSet(pointComp))
+  val twoPoints = Collections.synchronizedSet(TreeSet(pointComp))
 
 
   private val logger = LoggerFactory.getLogger(javaClass)
@@ -38,9 +38,6 @@ class HoroscopeAspectData(p1: Point, p2: Point,
   }
 
 
-  fun getTwoPoints(): Set<Point> {
-    return twoPoints
-  }
 
   /** 傳入一個 point , 取得另一個 point , 如果沒有，則傳回 null  */
   fun getAnotherPoint(thisPoint: Point): Point? {
