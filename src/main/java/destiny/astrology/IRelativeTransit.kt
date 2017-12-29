@@ -43,20 +43,11 @@ interface IRelativeTransit {
    * @return 傳回一連串的 gmtJulDays
    */
   fun getPeriodRelativeTransitGmtJulDays(transitStar: Star, relativeStar: Star, fromJulDay: Double, toJulDay: Double, angle: Double): List<Double> {
-    var fromJD = fromJulDay
-    val resultList = mutableListOf<Double>()
-    while (fromJD < toJulDay) {
-      val value = getRelativeTransit(transitStar, relativeStar, angle, fromJD, true)
-      if (value != null) {
-        fromJD = value
-        if (fromJD > toJulDay)
-          break
 
-        resultList.add(value)
-        fromJD += 0.000001
-      }
-    }
-    return resultList
+    return generateSequence(getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true)) {
+      getRelativeTransit(transitStar, relativeStar, angle, it+0.000001, true)
+    }.takeWhile { it < toJulDay }
+      .toList()
   }
 
   /**

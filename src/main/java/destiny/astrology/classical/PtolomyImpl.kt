@@ -147,84 +147,6 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
 
 }
 
-/**
- * Terms , +2
- * Ptolemy's Table , 以五分法
- * */
-private val termPointDegrees = listOf(
-  //戌
-  PointDegree(JUPITER, 6.0),
-  PointDegree(VENUS, 14.0),
-  PointDegree(MERCURY, 21.0),
-  PointDegree(MARS, 26.0),
-  PointDegree(SATURN, 30.0),
-  //酉
-  PointDegree(VENUS, 38.0),
-  PointDegree(MERCURY, 45.0),
-  PointDegree(JUPITER, 52.0),
-  PointDegree(SATURN, 56.0),
-  PointDegree(MARS, 60.0),
-  //申
-  PointDegree(MERCURY, 67.0),
-  PointDegree(JUPITER, 74.0),
-  PointDegree(VENUS, 81.0),
-  PointDegree(SATURN, 85.0),
-  PointDegree(MARS, 90.0),
-  //未
-  PointDegree(MARS, 96.0),
-  PointDegree(JUPITER, 103.0),
-  PointDegree(MERCURY, 110.0),
-  PointDegree(VENUS, 117.0),
-  PointDegree(SATURN, 120.0),
-  //午
-  PointDegree(SATURN, 126.0),
-  PointDegree(MERCURY, 133.0),
-  PointDegree(VENUS, 139.0),
-  PointDegree(JUPITER, 145.0),
-  PointDegree(MARS, 150.0),
-  //巳
-  PointDegree(MERCURY, 157.0),
-  PointDegree(VENUS, 163.0),
-  PointDegree(JUPITER, 168.0),
-  PointDegree(SATURN, 174.0),
-  PointDegree(MARS, 180.0),
-  //辰
-  PointDegree(SATURN, 186.0),
-  PointDegree(VENUS, 191.0),
-  PointDegree(JUPITER, 199.0),
-  PointDegree(MERCURY, 204.0),
-  PointDegree(MARS, 210.0),
-  //卯
-  PointDegree(MARS, 216.0),
-  PointDegree(JUPITER, 224.0),
-  PointDegree(VENUS, 231.0),
-  PointDegree(MERCURY, 237.0),
-  PointDegree(SATURN, 240.0),
-  //寅
-  PointDegree(JUPITER, 248.0),
-  PointDegree(VENUS, 254.0),
-  PointDegree(MERCURY, 259.0),
-  PointDegree(SATURN, 265.0),
-  PointDegree(MARS, 270.0),
-  //丑
-  PointDegree(VENUS, 276.0),
-  PointDegree(MERCURY, 282.0),
-  PointDegree(JUPITER, 289.0),
-  PointDegree(MARS, 295.0),
-  PointDegree(SATURN, 300.0),
-  //子
-  PointDegree(SATURN, 306.0),
-  PointDegree(MERCURY, 312.0),
-  PointDegree(VENUS, 320.0),
-  PointDegree(JUPITER, 325.0),
-  PointDegree(MARS, 330.0),
-  //亥
-  PointDegree(VENUS, 338.0),
-  PointDegree(JUPITER, 344.0),
-  PointDegree(MERCURY, 350.0),
-  PointDegree(MARS, 356.0),
-  PointDegree(SATURN, 359.999999999999) //如果改成 360 , 會被 normalize 成 0
-)
 
 class TermPtolomyImpl : ITerm, Serializable {
 
@@ -240,6 +162,88 @@ class TermPtolomyImpl : ITerm, Serializable {
 
   override fun getPoint(sign: ZodiacSign, degree: Double): Point {
     return getPoint(sign.degree + degree)
+  }
+
+  companion object {
+    /**
+     * Terms , +2
+     * Ptolemy's Table , 以五分法
+     * */
+    private val termPointDegrees = listOf(
+      //戌
+      PointDegree(JUPITER, 6.0),
+      PointDegree(VENUS, 14.0),
+      PointDegree(MERCURY, 21.0),
+      PointDegree(MARS, 26.0),
+      PointDegree(SATURN, 30.0),
+      //酉
+      PointDegree(VENUS, 38.0),
+      PointDegree(MERCURY, 45.0),
+      PointDegree(JUPITER, 52.0),
+      PointDegree(SATURN, 56.0),
+      PointDegree(MARS, 60.0),
+      //申
+      PointDegree(MERCURY, 67.0),
+      PointDegree(JUPITER, 74.0),
+      PointDegree(VENUS, 81.0),
+      PointDegree(SATURN, 85.0),
+      PointDegree(MARS, 90.0),
+      //未
+      PointDegree(MARS, 96.0),
+      PointDegree(JUPITER, 103.0),
+      PointDegree(MERCURY, 110.0),
+      PointDegree(VENUS, 117.0),
+      PointDegree(SATURN, 120.0),
+      //午
+      PointDegree(SATURN, 126.0),
+      PointDegree(MERCURY, 133.0),
+      PointDegree(VENUS, 139.0),
+      PointDegree(JUPITER, 145.0),
+      PointDegree(MARS, 150.0),
+      //巳
+      PointDegree(MERCURY, 157.0),
+      PointDegree(VENUS, 163.0),
+      PointDegree(JUPITER, 168.0),
+      PointDegree(SATURN, 174.0),
+      PointDegree(MARS, 180.0),
+      //辰
+      PointDegree(SATURN, 186.0),
+      PointDegree(VENUS, 191.0),
+      PointDegree(JUPITER, 199.0),
+      PointDegree(MERCURY, 204.0),
+      PointDegree(MARS, 210.0),
+      //卯
+      PointDegree(MARS, 216.0),
+      PointDegree(JUPITER, 224.0),
+      PointDegree(VENUS, 231.0),
+      PointDegree(MERCURY, 237.0),
+      PointDegree(SATURN, 240.0),
+      //寅
+      PointDegree(JUPITER, 248.0),
+      PointDegree(VENUS, 254.0),
+      PointDegree(MERCURY, 259.0),
+      PointDegree(SATURN, 265.0),
+      PointDegree(MARS, 270.0),
+      //丑
+      PointDegree(VENUS, 276.0),
+      PointDegree(MERCURY, 282.0),
+      PointDegree(JUPITER, 289.0),
+      PointDegree(MARS, 295.0),
+      PointDegree(SATURN, 300.0),
+      //子
+      PointDegree(SATURN, 306.0),
+      PointDegree(MERCURY, 312.0),
+      PointDegree(VENUS, 320.0),
+      PointDegree(JUPITER, 325.0),
+      PointDegree(MARS, 330.0),
+      //亥
+      PointDegree(VENUS, 338.0),
+      PointDegree(JUPITER, 344.0),
+      PointDegree(MERCURY, 350.0),
+      PointDegree(MARS, 356.0),
+      PointDegree(SATURN, 359.999999999999) //如果改成 360 , 會被 normalize 成 0
+    )
+
   }
 }
 
@@ -264,57 +268,7 @@ class TermPtolomyImpl : ITerm, Serializable {
  *
  * */
 
-/** 因為間距固定 10度 , 所以 list 不用儲存度數  */
-private val faceStarList = listOf(
-  //戌
-  MARS
-  , SUN
-  , VENUS
-  //酉
-  , MERCURY
-  , MOON
-  , SATURN
-  //申
-  , JUPITER
-  , MARS
-  , SUN
-  //未
-  , VENUS
-  , MERCURY
-  , MOON
-  //午
-  , SATURN
-  , JUPITER
-  , MARS
-  //巳
-  , SUN
-  , VENUS
-  , MERCURY
-  //辰
-  , MOON
-  , SATURN
-  , JUPITER
-  //卯
-  , MARS
-  , SUN
-  , VENUS
-  //寅
-  , MERCURY
-  , MOON
-  , SATURN
-  //丑
-  , JUPITER
-  , MARS
-  , SUN
-  //子
-  , VENUS
-  , MERCURY
-  , MOON
-  //亥
-  , SATURN
-  , JUPITER
-  , MARS
-)
+
 
 class FacePtolomyImpl : IFace, Serializable {
 
@@ -328,64 +282,64 @@ class FacePtolomyImpl : IFace, Serializable {
   override fun getPoint(sign: ZodiacSign, degree: Double): Planet {
     return getPoint(sign.degree + degree)
   }
+
+  companion object {
+    /** 因為間距固定 10度 , 所以 list 不用儲存度數  */
+    private val faceStarList = listOf(
+      //戌
+      MARS
+      , SUN
+      , VENUS
+      //酉
+      , MERCURY
+      , MOON
+      , SATURN
+      //申
+      , JUPITER
+      , MARS
+      , SUN
+      //未
+      , VENUS
+      , MERCURY
+      , MOON
+      //午
+      , SATURN
+      , JUPITER
+      , MARS
+      //巳
+      , SUN
+      , VENUS
+      , MERCURY
+      //辰
+      , MOON
+      , SATURN
+      , JUPITER
+      //卯
+      , MARS
+      , SUN
+      , VENUS
+      //寅
+      , MERCURY
+      , MOON
+      , SATURN
+      //丑
+      , JUPITER
+      , MARS
+      , SUN
+      //子
+      , VENUS
+      , MERCURY
+      , MOON
+      //亥
+      , SATURN
+      , JUPITER
+      , MARS
+    )
+  }
 }
 
 
-/** 存放星體在黃道帶上幾度得到 Exaltation (+4) 的度數  */
-private val exaltDegreeMap = mapOf<Point, Double>(
-  SUN to 19.0  // 太陽在戌宮 19度 exalted.
-  , MOON to 33.0  // 月亮在酉宮 03度 exalted.
-  , MERCURY to 165.0  // 水星在巳宮 15度 exalted.
-  , VENUS to 357.0  // 金星在亥宮 27度 exalted.
-  , MARS to 298.0  // 火星在丑宮 28度 exalted.
-  , JUPITER to 105.0  // 木星在未宮 15度 exalted.
-  , SATURN to 201.0  // 土星在辰宮 21度 exalted.
-  , LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
-  , LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
-  , LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
-  , LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
-)
 
-/**
- * 托勒密 RULER / DETRIMENT 共用表格
- */
-
-private val rulerMap = mapOf(
-  ARIES to MARS,
-  TAURUS to VENUS,
-  GEMINI to MERCURY,
-  CANCER to MOON,
-  LEO to SUN,
-  VIRGO to MERCURY,
-  LIBRA to VENUS,
-  SCORPIO to MARS,
-  SAGITTARIUS to JUPITER,
-  CAPRICORN to SATURN,
-  AQUARIUS to SATURN,
-  PISCES to JUPITER
-)
-
-
-/**
- * 考量日夜的 rulerMap , 參考表格 : https://imgur.com/a/bZ6ij
- * 讀作 : 什麼星座的日/夜 的 ruler 是誰(maybe null)
- * */
-private val rulerDayNightMap = mapOf(
-  (ARIES to DAY) to MARS,
-  (TAURUS to NIGHT) to VENUS,
-  (GEMINI to DAY) to MERCURY,
-  (CANCER to DAY) to MOON,
-  (CANCER to NIGHT) to MOON,
-  (LEO to DAY) to SUN,
-  (LEO to NIGHT) to SUN,
-  (VIRGO to NIGHT) to MERCURY,
-  (LIBRA to DAY) to VENUS,
-  (SCORPIO to NIGHT) to MARS,
-  (SAGITTARIUS to DAY) to JUPITER,
-  (CAPRICORN to NIGHT) to SATURN,
-  (AQUARIUS to DAY) to SATURN,
-  (PISCES to NIGHT) to JUPITER
-)
 
 abstract class AbstractPtolemy : Serializable {
 
@@ -397,11 +351,41 @@ abstract class AbstractPtolemy : Serializable {
   }
 
   companion object {
-    /** 不考量「日、夜」的 ruler */
-    internal
 
-      /** 不考量日、夜的 ruling map */
-    val rulingMap: Map<Planet, Set<ZodiacSign>> = rulerMap
+    /** 托勒密 RULER / DETRIMENT 共用表格 */
+
+    internal val rulerMap = mapOf(
+      ARIES to MARS,
+      TAURUS to VENUS,
+      GEMINI to MERCURY,
+      CANCER to MOON,
+      LEO to SUN,
+      VIRGO to MERCURY,
+      LIBRA to VENUS,
+      SCORPIO to MARS,
+      SAGITTARIUS to JUPITER,
+      CAPRICORN to SATURN,
+      AQUARIUS to SATURN,
+      PISCES to JUPITER
+    )
+
+    /** 存放星體在黃道帶上幾度得到 Exaltation (+4) 的度數  */
+    internal val exaltDegreeMap = mapOf<Point, Double>(
+      SUN to 19.0  // 太陽在戌宮 19度 exalted.
+      , MOON to 33.0  // 月亮在酉宮 03度 exalted.
+      , MERCURY to 165.0  // 水星在巳宮 15度 exalted.
+      , VENUS to 357.0  // 金星在亥宮 27度 exalted.
+      , MARS to 298.0  // 火星在丑宮 28度 exalted.
+      , JUPITER to 105.0  // 木星在未宮 15度 exalted.
+      , SATURN to 201.0  // 土星在辰宮 21度 exalted.
+      , LunarNode.NORTH_TRUE to 63.0  //北交點在 申宮 03度 exalted.
+      , LunarNode.NORTH_MEAN to 63.0  //北交點在 申宮 03度 exalted.
+      , LunarNode.SOUTH_TRUE to 243.0  //南交點在 寅宮 03度 exalted.
+      , LunarNode.SOUTH_MEAN to 243.0  //南交點在 寅宮 03度 exalted.
+    )
+
+    /** 不考量「日、夜」的 ruler */
+    internal val rulingMap: Map<Planet, Set<ZodiacSign>> = rulerMap
       .map { (sign, planet) -> planet to sign }
       .groupBy { (planet, sign) -> planet }
       .mapValues { (planet, v) -> v.map { p -> p.second } }
@@ -415,6 +399,27 @@ abstract class AbstractPtolemy : Serializable {
       .mapValues { (planet, v) -> v.map { p -> p.second } }
       .mapValues { it.value.toSet() }
 
+
+    /**
+     * 考量日夜的 rulerMap , 參考表格 : https://imgur.com/a/bZ6ij
+     * 讀作 : 什麼星座的日/夜 的 ruler 是誰(maybe null)
+     * */
+    internal val rulerDayNightMap = mapOf(
+      (ARIES to DAY) to MARS,
+      (TAURUS to NIGHT) to VENUS,
+      (GEMINI to DAY) to MERCURY,
+      (CANCER to DAY) to MOON,
+      (CANCER to NIGHT) to MOON,
+      (LEO to DAY) to SUN,
+      (LEO to NIGHT) to SUN,
+      (VIRGO to NIGHT) to MERCURY,
+      (LIBRA to DAY) to VENUS,
+      (SCORPIO to NIGHT) to MARS,
+      (SAGITTARIUS to DAY) to JUPITER,
+      (CAPRICORN to NIGHT) to SATURN,
+      (AQUARIUS to DAY) to SATURN,
+      (PISCES to NIGHT) to JUPITER
+    )
 
     /**
      * (火星, DAY) ==> 牡羊

@@ -56,27 +56,11 @@ class PlanetTest {
   @Test
   fun testPlanets() {
 
-
-    println(Planet.SUN)
-    println(Planet.MOON)
-    println(Planet.MERCURY)
-    println(Planet.VENUS)
-    println(Planet.MARS)
-    println(Planet.JUPITER)
-    println(Planet.SATURN)
-    println(Planet.URANUS)
-    println(Planet.NEPTUNE)
-    println(Planet.PLUTO)
-
-
-    println("\nclassical values :")
     for (planet in Planets.classicalValues) {
       assertNotNull(planet)
       assertNotNull(planet.toString())
-      println(planet.toString())
     }
 
-    println("\nall values :")
     for (planet in Planets.values) {
       assertNotNull(planet)
       assertNotNull(planet.toString())
@@ -84,7 +68,6 @@ class PlanetTest {
 
     val points = setOf<Point>(*Planets.values , *FixedStar.values) as Collection<Point>
     println(points)
-    points.forEach { println(it) }
   }
 
   @Test
