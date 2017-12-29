@@ -109,45 +109,25 @@ interface IRelativeTransit {
       }
       .toList()
 
-
-    var resultGmtJulDay: Double? = null
-    var resultAngle: Double? = null
-    for (angle in realAngles) {
-      val value = getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, isForward)
-
-      if (resultGmtJulDay == null) {
-        resultGmtJulDay = value
-        resultAngle = angle
-      } else {
-
-        if (value != null) {
-          //目前已經有一個結果，比較看看現在算出的，和之前的，哪個比較近
-          if (isForward) {
-            //順推
-            if (value <= resultGmtJulDay) {
-              resultGmtJulDay = value
-              resultAngle = angle
-            }
-          } else {
-            //逆推
-            if (value > resultGmtJulDay) {
-              resultGmtJulDay = value
-              resultAngle = angle
-            }
-          }
-        }
+    return realAngles.map { angle ->
+      getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, isForward)?.let { resultGmtJulDay  ->
+        resultGmtJulDay to angle
       }
-    } // each realAngle
-
-
-    if (resultAngle != null && resultAngle > 180)
-      resultAngle = 360 - resultAngle
-
-    return if (resultGmtJulDay != null) {
-      Pair(resultGmtJulDay, resultAngle!!)
-    } else {
-      null
+    }.filter { it !== null }
+      .map { it -> it!! }
+      .sortedBy { (julDay, angle) -> julDay }
+      .let {
+        return@let if (isForward)
+          it.firstOrNull()  // 順推，取第一個（最接近當下）
+        else
+          it.lastOrNull()   // 逆推，取最後一個（最接近當下）
+      }?.let { (julDay, angle) ->
+      return@let if (angle > 180)
+        julDay to 360 - angle
+      else
+        julDay to angle
     }
+
   }
 
 
