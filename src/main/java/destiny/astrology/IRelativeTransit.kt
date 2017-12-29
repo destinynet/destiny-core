@@ -110,16 +110,14 @@ interface IRelativeTransit {
      */
 
     val realAngles: List<Double> = angles
-      .filter { it != 0.0 }
-      .flatMap { listOf(it , 360.0-it) }
+      .flatMap { it ->
+        if (it != 0.0)
+          listOf(it , 360.0-it)
+        else
+          listOf(it)
+      }
       .toList()
 
-//    val realAngles = HashSet<Double>()
-//    for (angle in angles) {
-//      realAngles.add(angle)
-//      if (angle != 0.0)
-//        realAngles.add(360 - angle)
-//    }
 
     var resultGmtJulDay: Double? = null
     var resultAngle: Double? = null
@@ -150,8 +148,10 @@ interface IRelativeTransit {
       }
     } // each realAngle
 
+
     if (resultAngle != null && resultAngle > 180)
       resultAngle = 360 - resultAngle
+
     return if (resultGmtJulDay != null) {
       Pair(resultGmtJulDay, resultAngle!!)
     } else {

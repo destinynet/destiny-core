@@ -15,6 +15,10 @@ class PointComparator : Comparator<Point>, Serializable {
   private val starClasses = arrayOf(Planet::class.java, LunarNode::class.java, Asteroid::class.java, FixedStar::class.java, Hamburger::class.java)
 
   override fun compare(p1: Point, p2: Point): Int {
+    if (p1 is Planet && p2 is Planet ) {
+      return p1.hashCode() - p2.hashCode()
+    }
+
     val p1class = p1.javaClass
     val p2class = p2.javaClass
     return if (p1class == p2class) {
