@@ -22,10 +22,6 @@ interface IAspectEffective {
   }
 
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, aspects: Collection<Aspect>): Boolean {
-    for (aspect in aspects) {
-      if (isEffective(p1, deg1, p2, deg2, aspect))
-        return true
-    }
-    return false
+    return aspects.any { isEffective(p1, deg1, p2, deg2, it) }
   }
 }

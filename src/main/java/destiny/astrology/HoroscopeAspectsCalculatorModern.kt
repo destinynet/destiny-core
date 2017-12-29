@@ -25,18 +25,16 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
 
   override fun getPointAspect(point: Point, horoscope: Horoscope, points: Collection<Point>): Map<Point, Aspect> {
 
-    val result = mutableMapOf<Point , Aspect>()
-
     val starDeg = horoscope.getPositionWithAzimuth(point).lng
 
-    for (eachPoint in points) {
-      val eachDeg = horoscope.getPositionWithAzimuth(eachPoint).lng
-      /** 直接比對度數，不考慮星體  */
-      aspects
-        .filter { eachAspect -> point !== eachPoint && modern.isEffective(starDeg, eachDeg, eachAspect) }
-        .forEach { eachAspect -> result[eachPoint] = eachAspect }
-    }
-    return result
+    return points
+      .filter { it !== point }
+      .flatMap { eachPoint ->
+        val eachDeg = horoscope.getPositionWithAzimuth(eachPoint).lng
+        aspects.filter { eachAspect -> modern.isEffective(starDeg, eachDeg, eachAspect) }
+          .map { eachAspect -> eachPoint to eachAspect }
+      }.toMap()
+
   }
 
   override fun getTitle(locale: Locale): String {
