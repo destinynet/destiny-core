@@ -33,6 +33,7 @@ class ReturnContext(
   /** 現在所處的地點  */
   private val nowLoc: Location, planet: Planet, orb: Double, converse: Boolean, precession: Boolean) : DiscreteIF, Conversable, Serializable {
 
+
   /** 返照法所採用的行星 , 太陽/太陰 , 或是其他  */
   private val planet = Planet.SUN
 
@@ -100,14 +101,12 @@ class ReturnContext(
   }
 
 
-  override fun setConverse(value: Boolean) {
-    this.converse = value
-  }
 
-  /** 是否逆推 , true 代表「是」，逆推！  */
-  override fun isConverse(): Boolean {
-    return converse
-  }
+  override var isConverse: Boolean
+    /** 是否逆推 , true 代表「是」，逆推！  */
+    get() = converse
+    set(value) {this.converse = value}
+
 
   fun setStarPositionWithAzimuthImpl(starPositionWithAzimuthImpl: IStarPositionWithAzimuth) {
     this.starPositionWithAzimuthImpl = starPositionWithAzimuthImpl
