@@ -60,7 +60,8 @@ interface IRelativeTransit {
   }
 
   /** 傳回 GMT  */
-  fun getPeriodRelativeTransitGMTs(transitStar: Star, relativeStar: Star, fromGmt: ChronoLocalDateTime<*>, toGmt: ChronoLocalDateTime<*>, angle: Double,
+  fun getPeriodRelativeTransitGMTs(transitStar: Star, relativeStar: Star, fromGmt: ChronoLocalDateTime<*>, toGmt: ChronoLocalDateTime<*>,
+                                   angle: Double,
                                    revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): List<ChronoLocalDateTime<*>> {
     val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
     val toGmtJulDay = TimeTools.getGmtJulDay(toGmt)

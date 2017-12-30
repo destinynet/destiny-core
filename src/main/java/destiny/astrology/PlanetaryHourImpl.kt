@@ -36,7 +36,6 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
 
   override fun getPlanetaryHour(gmtJulDay: Double, loc: Location): PlanetaryHour {
 
-    // hourStart , hourEnd , hourIndex (1 to 24)
     val tuples = getHourIndexOfDay(gmtJulDay, loc)
 
     val planet = getPlanet(tuples.v3(), gmtJulDay, loc)
@@ -147,8 +146,6 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
   }
 
   companion object {
-
-
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }
