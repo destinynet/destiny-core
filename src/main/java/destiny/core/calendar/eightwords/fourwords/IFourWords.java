@@ -6,7 +6,7 @@ import destiny.core.calendar.eightwords.EightWords;
 /**
  * 四字斷終生 介面
  */
-public interface FourWordsIF {
+public interface IFourWords {
 
   String getResult(EightWords ew);
 }

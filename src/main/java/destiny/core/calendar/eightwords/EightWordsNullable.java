@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -37,10 +36,6 @@ public class EightWordsNullable implements Serializable {
                             @NotNull StemBranchOptional month,
                             @NotNull StemBranchOptional day,
                             @NotNull StemBranchOptional hour) {
-    Objects.requireNonNull(year);
-    Objects.requireNonNull(month);
-    Objects.requireNonNull(day);
-    Objects.requireNonNull(hour);
     this.year = year;
     this.month = month;
     this.day = day;
