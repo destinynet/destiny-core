@@ -5,7 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.chinese.ChineseDateIF
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
@@ -45,7 +45,7 @@ class ZiweiTools : Serializable {
      * @param flowYear 流年
      * @return 此流年有哪些流月（月份＋是否閏月）
      */
-    fun getMonthsOf(cycle: Int, flowYear: StemBranch, chineseDateImpl: ChineseDateIF): List<Pair<Int, Boolean>> {
+    fun getMonthsOf(cycle: Int, flowYear: StemBranch, chineseDateImpl: IChineseDate): List<Pair<Int, Boolean>> {
 
       return chineseDateImpl.getMonthsOf(cycle, flowYear)
     }
@@ -57,7 +57,7 @@ class ZiweiTools : Serializable {
      * @param leap      是否閏月
      * @return 該流月的日子 (陰曆＋陽曆＋干支）
      */
-    fun getDaysOfMonth(chineseDateImpl: ChineseDateIF, cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>> {
+    fun getDaysOfMonth(chineseDateImpl: IChineseDate, cycle: Int, flowYear: StemBranch, flowMonth: Int, leap: Boolean): List<Triple<ChineseDate, ChronoLocalDate, StemBranch>> {
       val days = chineseDateImpl.getDaysOf(cycle, flowYear, flowMonth, leap)
 
       val list =  mutableListOf<Triple<ChineseDate, ChronoLocalDate, StemBranch>>()

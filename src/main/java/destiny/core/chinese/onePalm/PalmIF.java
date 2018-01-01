@@ -11,7 +11,7 @@ import destiny.core.Gender;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.calendar.chinese.ChineseDateHour;
-import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.chinese.IChineseDate;
 import destiny.core.calendar.chinese.IFinalMonthNumber;
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo;
 import destiny.core.calendar.eightwords.*;
@@ -142,7 +142,7 @@ public interface PalmIF {
    * @param clockwiseHouse  宮位飛佈，順時針(true) or 逆時針(false)
    */
   default PalmWithMeta getPalmWithMeta(Gender gender, ChronoLocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
-                                       ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl,
+                                       IChineseDate chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl,
                                        IRisingSign risingSignImpl, YearMonthIF yearMonthImpl, MonthAlgo monthAlgo,
                                        boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);

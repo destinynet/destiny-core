@@ -14,7 +14,7 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTermsIF
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.chinese.ChineseDateIF
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 
 class PersonContext(
   eightWordsImpl: EightWordsIF,
-  chineseDateImpl: ChineseDateIF,
+  chineseDateImpl: IChineseDate,
   yearMonthImpl: YearMonthIF,
   dayImpl: DayIF,
   hourImpl: HourIF,

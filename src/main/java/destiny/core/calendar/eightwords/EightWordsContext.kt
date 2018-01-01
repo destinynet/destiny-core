@@ -6,7 +6,7 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTermsImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.chinese.ChineseDateIF
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
@@ -21,7 +21,7 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
                              protected val eightWordsImpl: EightWordsIF,
                              val yearMonthImpl: YearMonthIF,
                              /** 取得陰陽曆轉換的實作  */
-                             val chineseDateImpl: ChineseDateIF,
+                             val chineseDateImpl: IChineseDate,
                              protected val dayImpl: DayIF,
                              val hourImpl: HourIF,
                              val midnightImpl: MidnightIF,

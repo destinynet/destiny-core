@@ -11,7 +11,7 @@ import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.chinese.ChineseDateIF
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
 import org.jooq.lambda.tuple.Tuple
 import org.jooq.lambda.tuple.Tuple2
@@ -26,7 +26,7 @@ import java.util.*
  * 出生當下，即為一歲。（故， age 不可以 <= 0）
  * 「一歲」終止於「順推」的「陰曆一月一日」
  */
-class IntAgeZiweiImpl(private val chineseDateImpl: ChineseDateIF, private val relativeTransitImpl: IRelativeTransit) : IntAge, Serializable {
+class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val relativeTransitImpl: IRelativeTransit) : IntAge, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 

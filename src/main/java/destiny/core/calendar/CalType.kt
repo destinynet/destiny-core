@@ -1,9 +1,9 @@
 /**
  * Created by smallufo on 2017-10-18.
  */
-package destiny.core.calendar;
+package destiny.core.calendar
 
-public enum CalType {
+enum class CalType {
   GREGORIAN,
   JULIAN
 }

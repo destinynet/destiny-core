@@ -6,7 +6,7 @@ package destiny.core.calendar.eightwords;
 import destiny.astrology.IStarPosition;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.SolarTermsIF;
-import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.chinese.IChineseDate;
 
 import java.time.chrono.ChronoLocalDateTime;
 
@@ -15,6 +15,6 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public interface IEightWordsDetail {
 
-  EightWordsContextModel getDetails(ChronoLocalDateTime lmt, Location location, String place , EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, ChineseDateIF chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, IRisingSign risingSignImpl, IStarPosition starPositionImpl , SolarTermsIF solarTermsImpl);
+  EightWordsContextModel getDetails(ChronoLocalDateTime lmt, Location location, String place , EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, IChineseDate chineseDateImpl, DayIF dayImpl, HourIF hourImpl, MidnightIF midnightImpl, boolean changeDayAfterZi, IRisingSign risingSignImpl, IStarPosition starPositionImpl , SolarTermsIF solarTermsImpl);
 
 }

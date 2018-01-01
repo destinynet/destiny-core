@@ -5,7 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.IntAgeNote
-import destiny.core.calendar.chinese.ChineseDateIF
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.HourIF
@@ -35,7 +35,7 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    /** 是否顯示小限  */
                    val isShowSmallRange: Boolean,
                    /** 民用曆法 or 天文曆法  */
-                   val chineseDateImpl: ChineseDateIF,
+                   val chineseDateImpl: IChineseDate,
                    /** 是否顯示八字盤  */
                    val isShowEightWords: Boolean,
                    /** 八字排盤，右至左 or 左至右  */

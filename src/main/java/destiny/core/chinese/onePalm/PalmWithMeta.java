@@ -5,7 +5,7 @@ package destiny.core.chinese.onePalm;
 
 import destiny.core.calendar.Location;
 import destiny.core.calendar.chinese.ChineseDate;
-import destiny.core.calendar.chinese.ChineseDateIF;
+import destiny.core.calendar.chinese.IChineseDate;
 import destiny.core.calendar.chinese.IFinalMonthNumber;
 import destiny.core.calendar.eightwords.DayIF;
 import destiny.core.calendar.eightwords.HourIF;
@@ -24,7 +24,7 @@ public class PalmWithMeta implements Serializable {
 
   private final String place;
 
-  private final ChineseDateIF chineseDateImpl;
+  private final IChineseDate chineseDateImpl;
 
   private final DayIF dayImpl;
 
@@ -40,7 +40,7 @@ public class PalmWithMeta implements Serializable {
 
   private final IFinalMonthNumber.MonthAlgo monthAlgo;
 
-  public PalmWithMeta(Palm palm, ChronoLocalDateTime lmt, Location loc, String place, ChineseDateIF chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean trueRisingSign, IFinalMonthNumber.MonthAlgo monthAlgo) {
+  public PalmWithMeta(Palm palm, ChronoLocalDateTime lmt, Location loc, String place, IChineseDate chineseDateImpl, DayIF dayImpl, PositiveIF positiveImpl, HourIF impl, MidnightIF midnightImpl, boolean changeDayAfterZi, boolean trueRisingSign, IFinalMonthNumber.MonthAlgo monthAlgo) {
     this.palm = palm;
     this.lmt = lmt;
     this.loc = loc;
@@ -73,7 +73,7 @@ public class PalmWithMeta implements Serializable {
     return place;
   }
 
-  public ChineseDateIF getChineseDateImpl() {
+  public IChineseDate getChineseDateImpl() {
     return chineseDateImpl;
   }
 

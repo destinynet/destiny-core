@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.calendar.Location
-import destiny.core.calendar.chinese.ChineseDateIF
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.DayIF
 import destiny.core.calendar.eightwords.HourIF
@@ -32,7 +32,7 @@ import java.time.chrono.ChronoLocalDateTime
  */
 class MainBodyHouseTradImpl(private val yearMonthImpl: YearMonthIF,
                             private val dayImpl: DayIF,
-                            private val chineseDateImpl: ChineseDateIF,
+                            private val chineseDateImpl: IChineseDate,
                             private val hourImpl: HourIF,
                             private val midnightImpl: MidnightIF,
                             private val changeDayAfterZi: Boolean,
