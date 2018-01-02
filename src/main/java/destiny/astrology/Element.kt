@@ -30,7 +30,7 @@ enum class Element(private val nameKey: String) : ILocaleString {
 
   companion object {
 
-    private val resource = "destiny.astrology.Sign"
+    private const val resource = "destiny.astrology.Sign"
   }
 
 

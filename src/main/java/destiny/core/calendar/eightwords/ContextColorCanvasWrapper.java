@@ -163,7 +163,7 @@ public class ContextColorCanvasWrapper {
     //如果是南半球，則添加南半球月支是否對沖
     if (location.getNorthSouth() == Location.NorthSouth.SOUTH)
     {
-      YearMonthIF yearMonthImpl = context.getYearMonthImpl();
+      IYearMonth yearMonthImpl = context.getYearMonthImpl();
       if (yearMonthImpl instanceof YearMonthSolarTermsStarPositionImpl)
       {
         YearMonthSolarTermsStarPositionImpl impl = (YearMonthSolarTermsStarPositionImpl) yearMonthImpl;

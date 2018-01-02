@@ -16,23 +16,23 @@ interface IHoroscope {
 
   val defaultPoints: Set<Point>
     get() = setOf(
-      *Planets.values,
-      *Asteroid.values,
-      *Hamburger.values,
-      *FixedStar.values,
-      *LunarNode.mean_values
+      *Planets.array,
+      *Asteroids.array,
+      *Hamburgers.array,
+      *FixedStars.array,
+      *LunarNodes.meanArray
     )
 
 
   fun getDefaultPoints(nodeType: NodeType): Set<Point> {
     val pointSet = HashSet<Point>()
-    pointSet.addAll(Arrays.asList(*Planets.values))
-    pointSet.addAll(Arrays.asList(*Asteroid.values))
-    pointSet.addAll(Arrays.asList(*Hamburger.values))
-    pointSet.addAll(Arrays.asList(*FixedStar.values))
+    pointSet.addAll(Arrays.asList(*Planets.array))
+    pointSet.addAll(Arrays.asList(*Asteroids.array))
+    pointSet.addAll(Arrays.asList(*Hamburgers.array))
+    pointSet.addAll(Arrays.asList(*FixedStars.array))
     when (nodeType) {
-      NodeType.MEAN -> pointSet.addAll(Arrays.asList(*LunarNode.mean_values))
-      NodeType.TRUE -> pointSet.addAll(Arrays.asList(*LunarNode.true_values))
+      NodeType.MEAN -> pointSet.addAll(Arrays.asList(*LunarNodes.meanArray))
+      NodeType.TRUE -> pointSet.addAll(Arrays.asList(*LunarNodes.trueArray))
     }
     return pointSet
   }

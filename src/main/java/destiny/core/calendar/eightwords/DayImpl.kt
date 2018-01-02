@@ -18,7 +18,7 @@ import java.time.temporal.ChronoField
 /**
  * 換日 的實作
  */
-class DayImpl : DayIF, Serializable {
+class DayImpl : IDay, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 

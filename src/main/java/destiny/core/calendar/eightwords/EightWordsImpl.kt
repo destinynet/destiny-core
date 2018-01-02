@@ -14,11 +14,11 @@ import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
-class EightWordsImpl(val yearMonthImpl: YearMonthIF          // 換年, 以及月支計算的實作
-                     , val dayImpl: DayIF                // 計算日干支的介面
+class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月支計算的實作
+                     , val dayImpl: IDay                // 計算日干支的介面
                      , val hourImpl: IHour               // 計算時支的介面
                      , val midnightImpl: IMidnight            // 計算「子正」的介面
-                     , changeDayAfterZi: Boolean) : EightWordsIF, Serializable {
+                     , changeDayAfterZi: Boolean) : IEightWords, Serializable {
   var isChangeDayAfterZi = true
     internal set // 子初是否換日，內定是：true (換日)
 

@@ -3,15 +3,15 @@
  * @date 2004/12/6
  * @time 下午 05:10:36
  */
-package destiny.core.calendar.eightwords;
+package destiny.core.calendar.eightwords
 
-import destiny.core.calendar.Location;
-import destiny.core.chinese.StemBranch;
+import destiny.core.calendar.Location
+import destiny.core.chinese.StemBranch
 
-import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoLocalDateTime
 
-/** 取得日干支的介面 */
-public interface DayIF {
+/** 取得日干支的介面  */
+interface IDay {
 
   /**
    * @param gmtJulDay GMT時間
@@ -21,7 +21,7 @@ public interface DayIF {
    * @param changeDayAfterZi 子時過後是否換日
    * @return 日辰干支
    */
-  StemBranch getDay(double gmtJulDay, Location location , IMidnight midnightImpl , IHour hourImpl , boolean changeDayAfterZi);
+  fun getDay(gmtJulDay: Double, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch
 
 
   /**
@@ -32,5 +32,5 @@ public interface DayIF {
    * @param changeDayAfterZi 子時過後是否換日
    * @return 日辰干支
    */
-  StemBranch getDay(ChronoLocalDateTime lmt, Location location , IMidnight midnightImpl , IHour hourImpl , boolean changeDayAfterZi);
+  fun getDay(lmt: ChronoLocalDateTime<*>, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch
 }

@@ -18,11 +18,11 @@ import java.time.chrono.ChronoLocalDateTime
  */
 open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
                              protected val location: Location,
-                             protected val eightWordsImpl: EightWordsIF,
-                             val yearMonthImpl: YearMonthIF,
+                             protected val eightWordsImpl: IEightWords,
+                             val yearMonthImpl: IYearMonth,
                              /** 取得陰陽曆轉換的實作  */
                              val chineseDateImpl: IChineseDate,
-                             protected val dayImpl: DayIF,
+                             protected val dayImpl: IDay,
                              val hourImpl: IHour,
                              val midnightImpl: IMidnight,
                              val isChangeDayAfterZi: Boolean,

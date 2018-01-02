@@ -7,7 +7,7 @@ package destiny.core.calendar.chinese;
 import destiny.core.Descriptive;
 import destiny.core.calendar.CalType;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.eightwords.DayIF;
+import destiny.core.calendar.eightwords.IDay;
 import destiny.core.calendar.eightwords.IHour;
 import destiny.core.calendar.eightwords.IMidnight;
 import destiny.core.chinese.StemBranch;
@@ -53,7 +53,7 @@ public interface IChineseDate extends Descriptive {
    * 最完整的「陽曆轉陰曆」演算法
    * 必須另外帶入 地點、日干支紀算法、時辰劃分法、子正計算方式、是否子初換日 5個參數
    */
-  ChineseDate getChineseDate(ChronoLocalDateTime lmt , Location location , DayIF dayImpl , IHour hourImpl , IMidnight midnightImpl , boolean changeDayAfterZi);
+  ChineseDate getChineseDate(ChronoLocalDateTime lmt , Location location , IDay dayImpl , IHour hourImpl , IMidnight midnightImpl , boolean changeDayAfterZi);
 
 
   // =============== 陰曆轉陽曆 ===============

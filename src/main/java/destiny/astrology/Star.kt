@@ -13,19 +13,19 @@ package destiny.astrology
  * 日月交點 [LunarPoint]
  * <pre>
  * 目前繼承圖如下 :
- *                    Star
- *                     |
- * +---------+---------+------------+-----------------+
- * |         |         |            |                 |
- * Planet  Asteroid  FixedStar  LunarPoint(A)      Hamburger
- * 行星    小行星     恆星          日月交點            漢堡虛星
- *                                  |
- *                                  |
- *                         +--------+--------+
- *                         |                 |
- *                         LunarNode         LunarApsis
- *                         [TRUE/MEAN]       [MEAN/OSCU]
- *                         North/South   PERIGEE (近)/APOGEE (遠)
+ *                         [Star]
+ *                           |
+ *     +-----------+---------+------------+-----------------+
+ *     |           |         |            |                 |
+ * [Planet]  [Asteroid]  [FixedStar]  [LunarPoint] (A)  [Hamburger]
+ *    行星     小行星         恆星        日月交點            漢堡虛星
+ *                                        |
+ *                                        |
+ *                               +--------+--------+
+ *                               |                 |
+ *                             [LunarNode]     LunarApsis
+ *                           [TRUE/MEAN]       [MEAN/OSCU]
+ *                           North/South   PERIGEE (近)/APOGEE (遠)
  *
  *</pre>
  */

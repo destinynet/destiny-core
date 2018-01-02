@@ -28,10 +28,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class PersonContext(
-  eightWordsImpl: EightWordsIF,
+  eightWordsImpl: IEightWords,
   chineseDateImpl: IChineseDate,
-  yearMonthImpl: YearMonthIF,
-  dayImpl: DayIF,
+  yearMonthImpl: IYearMonth,
+  dayImpl: IDay,
   hourImpl: IHour,
   midnightImpl: IMidnight,
   changeDayAfterZi: Boolean,

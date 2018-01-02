@@ -6,10 +6,10 @@ package destiny.core.chinese.ziwei
 import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.DayIF
+import destiny.core.calendar.eightwords.IDay
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
-import destiny.core.calendar.eightwords.YearMonthIF
+import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import destiny.core.chinese.ziwei.ZContext.YearType
 import java.io.Serializable
@@ -30,8 +30,8 @@ import java.time.chrono.ChronoLocalDateTime
  * 因此必須傳入一大堆參數，才能計算出「陰曆」或是「節氣」的「年」
  * 再由 [YearType] 來決定要挑哪一個
  */
-class MainBodyHouseTradImpl(private val yearMonthImpl: YearMonthIF,
-                            private val dayImpl: DayIF,
+class MainBodyHouseTradImpl(private val yearMonthImpl: IYearMonth,
+                            private val dayImpl: IDay,
                             private val chineseDateImpl: IChineseDate,
                             private val hourImpl: IHour,
                             private val midnightImpl: IMidnight,

@@ -16,23 +16,24 @@ class LunarNodeTest {
 
   @Test
   fun testToString() {
-    for (each in LunarNode.values) {
+    for (each in LunarNodes.meanArray) {
+      assertNotNull(each)
       assertNotNull(each.toString())
       logger.info("{}", each.toString())
     }
 
 
-    val set = LunarNode.values.map { it.toString() }.toSet()
+    val set = LunarNodes.meanArray.map { it.toString() }.toSet()
     assertTrue(set.contains("北交點"))
     assertTrue(set.contains("南交點"))
   }
 
   @Test
   fun testEquals() {
-    assertSame(LunarNode.NORTH_MEAN, LunarNode.of(LunarNode.NorthSouth.NORTH, NodeType.MEAN))
-    assertSame(LunarNode.NORTH_TRUE, LunarNode.of(LunarNode.NorthSouth.NORTH, NodeType.TRUE))
+    assertSame(LunarNode.NORTH_MEAN, LunarNode.of(NorthSouth.NORTH, NodeType.MEAN))
+    assertSame(LunarNode.NORTH_TRUE, LunarNode.of(NorthSouth.NORTH, NodeType.TRUE))
 
-    assertSame(LunarNode.SOUTH_MEAN, LunarNode.of(LunarNode.NorthSouth.SOUTH, NodeType.MEAN))
-    assertSame(LunarNode.SOUTH_TRUE, LunarNode.of(LunarNode.NorthSouth.SOUTH, NodeType.TRUE))
+    assertSame(LunarNode.SOUTH_MEAN, LunarNode.of(NorthSouth.SOUTH, NodeType.MEAN))
+    assertSame(LunarNode.SOUTH_TRUE, LunarNode.of(NorthSouth.SOUTH, NodeType.TRUE))
   }
 }

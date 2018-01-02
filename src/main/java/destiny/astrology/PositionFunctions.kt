@@ -3,7 +3,6 @@
  */
 package destiny.astrology
 
-import destiny.astrology.Asteroid.*
 import destiny.astrology.FixedStar.*
 import destiny.astrology.Hamburger.*
 import destiny.astrology.LunarNode.*
@@ -34,12 +33,12 @@ object PositionFunctions {
   val posLunarNodes_MEAN = arrayOf(posLunarNorth_MEAN, posLunarSouth_MEAN)
 
 
-  val posCeres: IPosition<*> = object : PositionAsteroidImpl(CERES) {}
-  val posPallas: IPosition<*> = object : PositionAsteroidImpl(PALLAS) {}
-  val posJuno: IPosition<*> = object : PositionAsteroidImpl(JUNO) {}
-  val posVesta: IPosition<*> = object : PositionAsteroidImpl(VESTA) {}
-  val posChiron: IPosition<*> = object : PositionAsteroidImpl(CHIRON) {}
-  val posPholus: IPosition<*> = object : PositionAsteroidImpl(PHOLUS) {}
+  val posCeres: IPosition<*> = object : PositionAsteroidImpl(Asteroid.CERES) {}
+  val posPallas: IPosition<*> = object : PositionAsteroidImpl(Asteroid.PALLAS) {}
+  val posJuno: IPosition<*> = object : PositionAsteroidImpl(Asteroid.JUNO) {}
+  val posVesta: IPosition<*> = object : PositionAsteroidImpl(Asteroid.VESTA) {}
+  val posChiron: IPosition<*> = object : PositionAsteroidImpl(Asteroid.CHIRON) {}
+  val posPholus: IPosition<*> = object : PositionAsteroidImpl(Asteroid.PHOLUS) {}
 
   val posAsteroids = arrayOf(posCeres, posPallas, posJuno, posVesta, posChiron, posPholus)
 

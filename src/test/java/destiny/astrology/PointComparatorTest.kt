@@ -12,10 +12,11 @@ class PointComparatorTest {
 
   @Test
   fun testCompare() {
-    assertTrue(pc.compare(Planet.SUN, LunarNode.NORTH_TRUE) < 0)
-    assertTrue(pc.compare(Planet.MOON, LunarNode.SOUTH_MEAN) < 0)
     assertTrue(pc.compare(LunarNode.SOUTH_MEAN, Asteroid.CERES) < 0)
     assertTrue(pc.compare(LunarNode.SOUTH_MEAN, Asteroid.PALLAS) < 0)
+
+    assertTrue(pc.compare(Planet.SUN, LunarNode.NORTH_TRUE) < 0)
+    assertTrue(pc.compare(Planet.MOON, LunarNode.SOUTH_MEAN) < 0)
 
     assertTrue(pc.compare(Asteroid.JUNO, FixedStar.ALGOL) < 0)
     assertTrue(pc.compare(Asteroid.VESTA, FixedStar.BETELGEUSE) < 0)

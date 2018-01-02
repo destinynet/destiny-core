@@ -7,7 +7,7 @@ import destiny.astrology.DayNight;
 import destiny.astrology.DayNightDifferentiator;
 import destiny.core.calendar.Location;
 import destiny.core.calendar.eightwords.EightWords;
-import destiny.core.calendar.eightwords.EightWordsIF;
+import destiny.core.calendar.eightwords.IEightWords;
 import destiny.core.chinese.*;
 import destiny.core.chinese.liuren.General;
 import destiny.core.chinese.liuren.GeneralSeqIF;
@@ -46,7 +46,7 @@ public interface PithyIF {
 
   default Pithy getPithy(Branch direction, ChronoLocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl,
                          DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl,
-                         GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, EightWordsIF eightWordsImpl) {
+                         GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, IEightWords eightWordsImpl) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
 
     Branch 月將 = monthBranchImpl.getBranch(lmt , loc);

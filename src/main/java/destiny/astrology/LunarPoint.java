@@ -1,14 +1,14 @@
 /**
- * @author smallufo 
+ * @author smallufo
  * Created on 2007/12/23 at 上午 5:24:56
- */ 
+ */
 package destiny.astrology;
 
 
 /**
  * 代表黃白道的交點，以及近遠點 , 繼承圖如下：
  * <pre>
- *           LunarPoint(Abstract)
+ *       LunarPoint(Abstract)
  *            日月交點
  *              |
  *              |

@@ -142,8 +142,8 @@ public interface PalmIF {
    * @param clockwiseHouse  宮位飛佈，順時針(true) or 逆時針(false)
    */
   default PalmWithMeta getPalmWithMeta(Gender gender, ChronoLocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
-                                       IChineseDate chineseDateImpl, DayIF dayImpl, IHour hourImpl, IMidnight midnightImpl,
-                                       IRisingSign risingSignImpl, YearMonthIF yearMonthImpl, MonthAlgo monthAlgo,
+                                       IChineseDate chineseDateImpl, IDay dayImpl, IHour hourImpl, IMidnight midnightImpl,
+                                       IRisingSign risingSignImpl, IYearMonth yearMonthImpl, MonthAlgo monthAlgo,
                                        boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {
     ChineseDate cDate = chineseDateImpl.getChineseDate(lmt , loc , dayImpl , hourImpl , midnightImpl , changeDayAfterZi);
     Branch hourBranch = hourImpl.getHour(lmt , loc);

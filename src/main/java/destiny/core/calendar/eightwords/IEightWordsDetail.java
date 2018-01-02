@@ -15,6 +15,6 @@ import java.time.chrono.ChronoLocalDateTime;
  */
 public interface IEightWordsDetail {
 
-  EightWordsContextModel getDetails(ChronoLocalDateTime lmt, Location location, String place , EightWordsIF eightWordsImpl, YearMonthIF yearMonthImpl, IChineseDate chineseDateImpl, DayIF dayImpl, IHour hourImpl, IMidnight midnightImpl, boolean changeDayAfterZi, IRisingSign risingSignImpl, IStarPosition starPositionImpl , SolarTermsIF solarTermsImpl);
+  EightWordsContextModel getDetails(ChronoLocalDateTime lmt, Location location, String place , IEightWords eightWordsImpl, IYearMonth yearMonthImpl, IChineseDate chineseDateImpl, IDay dayImpl, IHour hourImpl, IMidnight midnightImpl, boolean changeDayAfterZi, IRisingSign risingSignImpl, IStarPosition starPositionImpl , SolarTermsIF solarTermsImpl);
 
 }

@@ -17,7 +17,7 @@ class Partile_Conj_North_Node : Rule() {
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
 
     val planetDeg: Double? = h.getPosition(planet)?.lng
-    val north: LunarNode = LunarNode.of(LunarNode.NorthSouth.NORTH, nodeType)
+    val north: LunarNode = LunarNode.of(NorthSouth.NORTH, nodeType)
     val northDeg: Double? = h.getPosition(north)?.lng
 
     return if (planetDeg != null && northDeg != null && Horoscope.getAngle(planetDeg , northDeg) <= 1) {

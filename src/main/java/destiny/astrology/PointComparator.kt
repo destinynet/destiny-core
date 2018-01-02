@@ -25,7 +25,10 @@ class PointComparator : Comparator<Point>, Serializable {
       p1.hashCode() - p2.hashCode()
     } else {
       val starClassesList = Arrays.asList(*starClasses)
-      starClassesList.indexOf(p1class) - starClassesList.indexOf(p2class)
+      val index1 = starClassesList.indexOf(p1class)
+      val index2 = starClassesList.indexOf(p2class)
+      index1 - index2
+      //starClassesList.indexOf(p1class) - starClassesList.indexOf(p2class)
     }
   }
 

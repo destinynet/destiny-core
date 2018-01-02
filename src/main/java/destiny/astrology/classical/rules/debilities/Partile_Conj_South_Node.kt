@@ -14,7 +14,7 @@ class Partile_Conj_South_Node : Rule() {
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     val planetDeg = h.getPosition(planet)?.lng
-    val south = LunarNode.of(LunarNode.NorthSouth.SOUTH, nodeType)
+    val south = LunarNode.of(NorthSouth.SOUTH, nodeType)
     val southDeg = h.getPosition(south)?.lng
 
     return if (planetDeg != null && southDeg != null && Horoscope.getAngle(planetDeg , southDeg) <= 1)

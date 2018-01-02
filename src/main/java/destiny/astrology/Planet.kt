@@ -7,8 +7,9 @@ import destiny.astrology.Planet.*
 import java.util.*
 
 object Planets {
-  val classicalValues = arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
-  val values = arrayOf(*classicalValues, URANUS, NEPTUNE, PLUTO)
+  val classicalArray = arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
+  val array = arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO)
+  val list = listOf(*array)
 }
 
 sealed class Planet(val nameKey: String,
@@ -28,13 +29,13 @@ sealed class Planet(val nameKey: String,
   override fun compareTo(other: Planet): Int {
     if (this === other)
       return 0
-    return Planets.values.indexOf(this) - Planets.values.indexOf(other)
+    return Planets.array.indexOf(this) - Planets.array.indexOf(other)
   }
 
   companion object {
 
     fun fromString(value: String): Planet? {
-      return Planets.values.firstOrNull {
+      return Planets.array.firstOrNull {
         it.getName(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }

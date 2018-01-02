@@ -6,7 +6,7 @@ package destiny.core.chinese.liuren
 import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.core.calendar.Location
-import destiny.core.calendar.eightwords.DayIF
+import destiny.core.calendar.eightwords.IDay
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.chinese.Clockwise
@@ -21,7 +21,7 @@ import java.util.*
  * 甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順
  * XinRenKui Reverse
  */
-class ClockwiseXinRenKuiReverseImpl(private val dayImpl: DayIF,
+class ClockwiseXinRenKuiReverseImpl(private val dayImpl: IDay,
                                     private val midnightImpl: IMidnight,
                                     private val hourImpl: IHour,
                                     private val changeDayAfterZi: Boolean,

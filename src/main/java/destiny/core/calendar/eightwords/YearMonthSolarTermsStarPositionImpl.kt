@@ -30,7 +30,7 @@ import java.util.function.Function
  * <BR></BR>具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
 </pre> *
  */
-class YearMonthSolarTermsStarPositionImpl : YearMonthIF, Serializable {
+class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
 
   private val starPositionImpl: IStarPosition<*>?
 
