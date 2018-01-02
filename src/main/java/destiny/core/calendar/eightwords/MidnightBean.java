@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords;
 
 public interface MidnightBean {
 
-  MidnightIF getMidnightImpl();
+  IMidnight getMidnightImpl();
 
-  void setMidnightImpl(MidnightIF impl);
 }

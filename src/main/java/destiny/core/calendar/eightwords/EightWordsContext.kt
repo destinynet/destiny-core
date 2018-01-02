@@ -23,8 +23,8 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
                              /** 取得陰陽曆轉換的實作  */
                              val chineseDateImpl: IChineseDate,
                              protected val dayImpl: DayIF,
-                             val hourImpl: HourIF,
-                             val midnightImpl: MidnightIF,
+                             val hourImpl: IHour,
+                             val midnightImpl: IMidnight,
                              val isChangeDayAfterZi: Boolean,
                              val risingSignImpl: IRisingSign,
                              protected val starPositionImpl: IStarPosition<*>

@@ -21,7 +21,7 @@ public interface DayIF {
    * @param changeDayAfterZi 子時過後是否換日
    * @return 日辰干支
    */
-  StemBranch getDay(double gmtJulDay, Location location , MidnightIF midnightImpl , HourIF hourImpl , boolean changeDayAfterZi);
+  StemBranch getDay(double gmtJulDay, Location location , IMidnight midnightImpl , IHour hourImpl , boolean changeDayAfterZi);
 
 
   /**
@@ -32,5 +32,5 @@ public interface DayIF {
    * @param changeDayAfterZi 子時過後是否換日
    * @return 日辰干支
    */
-  StemBranch getDay(ChronoLocalDateTime lmt, Location location , MidnightIF midnightImpl , HourIF hourImpl , boolean changeDayAfterZi);
+  StemBranch getDay(ChronoLocalDateTime lmt, Location location , IMidnight midnightImpl , IHour hourImpl , boolean changeDayAfterZi);
 }

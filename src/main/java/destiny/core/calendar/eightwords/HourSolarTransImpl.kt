@@ -25,7 +25,7 @@ import java.util.function.Function
  * 依此來切割 12 時辰
 </PRE> *
  */
-class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : HourIF, Serializable {
+class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Serializable {
   private val logger = LoggerFactory.getLogger(javaClass)
 
   private val atmosphericPressure = 1013.25

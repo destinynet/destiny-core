@@ -8,8 +8,8 @@ import destiny.core.IntAgeNote
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.Direction
-import destiny.core.calendar.eightwords.HourIF
-import destiny.core.calendar.eightwords.MidnightIF
+import destiny.core.calendar.eightwords.IHour
+import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.chinese.TianyiIF
 import java.util.*
 
@@ -41,9 +41,9 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    /** 八字排盤，右至左 or 左至右  */
                    val direction: Direction,
                    /** 時辰劃分  */
-                   val hourImpl: HourIF,
+                   val hourImpl: IHour,
                    /** 子正判定  */
-                   val midnightImpl: MidnightIF,
+                   val midnightImpl: IMidnight,
                    /** 子初換日 (true) 或 子正換日 (false)  */
                    val isChangeDayAfterZi: Boolean,
                    /** 顯示雜曜  */

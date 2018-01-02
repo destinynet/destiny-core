@@ -7,8 +7,8 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.DayIF
-import destiny.core.calendar.eightwords.HourIF
-import destiny.core.calendar.eightwords.MidnightIF
+import destiny.core.calendar.eightwords.IHour
+import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.calendar.eightwords.YearMonthIF
 import destiny.core.chinese.Branch
 import destiny.core.chinese.ziwei.ZContext.YearType
@@ -33,8 +33,8 @@ import java.time.chrono.ChronoLocalDateTime
 class MainBodyHouseTradImpl(private val yearMonthImpl: YearMonthIF,
                             private val dayImpl: DayIF,
                             private val chineseDateImpl: IChineseDate,
-                            private val hourImpl: HourIF,
-                            private val midnightImpl: MidnightIF,
+                            private val hourImpl: IHour,
+                            private val midnightImpl: IMidnight,
                             private val changeDayAfterZi: Boolean,
                             private val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?) : IMainBodyHouse, Serializable {
 

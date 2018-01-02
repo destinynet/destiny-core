@@ -19,7 +19,7 @@ import java.util.*
 /**
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
  */
-class HourLmtImpl : HourIF, Serializable {
+class HourLmtImpl : IHour, Serializable {
 
   override fun getHour(gmtJulDay: Double, location: Location): Branch {
     val gmt = revJulDayFunc.invoke(gmtJulDay)
@@ -60,67 +60,69 @@ class HourLmtImpl : HourIF, Serializable {
    */
   override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, location: Location, eb: Branch, revJulDayFunc: Function1<Double , ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
 
+    val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+
     when (eb.index) {
       0 //欲求下一個子時時刻
       -> return if (lmt.get(HOUR_OF_DAY) >= 23)
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 23).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 23)
       else
-        lmt.with(HOUR_OF_DAY, 23).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 23)
       1 //欲求下一個丑時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 1)
-        lmt.with(HOUR_OF_DAY, 1).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 1)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 1).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 1)
       2 //欲求下一個寅時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 3)
-        lmt.with(HOUR_OF_DAY, 3).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 3)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 3).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 3)
       3 //欲求下一個卯時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 5)
-        lmt.with(HOUR_OF_DAY, 5).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 5)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 5).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 5)
       4 //欲求下一個辰時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 7)
-        lmt.with(HOUR_OF_DAY, 7).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 7)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 7).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 7)
       5 //欲求下一個巳時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 9)
-        lmt.with(HOUR_OF_DAY, 9).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 9)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 9).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 9)
       6 //欲求下一個午時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 11)
-        lmt.with(HOUR_OF_DAY, 11).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 11)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 11).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 11)
       7 //欲求下一個未時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 13)
-        lmt.with(HOUR_OF_DAY, 13).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 13)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 13).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 13)
       8 //欲求下一個申時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 15)
-        lmt.with(HOUR_OF_DAY, 15).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 15)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 15).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 15)
       9 //欲求下一個酉時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 17)
-        lmt.with(HOUR_OF_DAY, 17).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 17)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 17).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 17)
       10 //欲求下一個戌時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 19)
-        lmt.with(HOUR_OF_DAY, 19).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 19)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 19).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 19)
       11 //欲求下一個亥時的時刻
       -> return if (lmt.get(HOUR_OF_DAY) < 21)
-        lmt.with(HOUR_OF_DAY, 21).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.with(HOUR_OF_DAY, 21)
       else
-        lmt.plus(1, DAYS).with(HOUR_OF_DAY, 21).with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 21)
       else -> throw RuntimeException("Cannot get next start time of $eb , LMT = $lmt")
     }
   }

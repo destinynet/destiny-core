@@ -8,8 +8,8 @@ import destiny.astrology.DayNightDifferentiator
 import destiny.core.Descriptive
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.DayIF
-import destiny.core.calendar.eightwords.HourIF
-import destiny.core.calendar.eightwords.MidnightIF
+import destiny.core.calendar.eightwords.IHour
+import destiny.core.calendar.eightwords.IMidnight
 import java.time.LocalDateTime
 import java.util.*
 
@@ -30,7 +30,7 @@ interface TianyiIF : Descriptive {
     return DayNight.values().map { dayNight -> getFirstTianyi(stem , dayNight) }
   }
 
-  fun getTianyi(lmt: LocalDateTime, loc: Location, dayImpl: DayIF, midnightImpl: MidnightIF, hourImpl: HourIF, changeDayAfterZi: Boolean, differentiator: DayNightDifferentiator): Branch {
+  fun getTianyi(lmt: LocalDateTime, loc: Location, dayImpl: DayIF, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean, differentiator: DayNightDifferentiator): Branch {
     val day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi)
     val dayNight = differentiator.getDayNight(lmt, loc)
     return getFirstTianyi(day.getStem(), dayNight)

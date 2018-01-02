@@ -7,8 +7,8 @@ import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.DayIF
-import destiny.core.calendar.eightwords.HourIF
-import destiny.core.calendar.eightwords.MidnightIF
+import destiny.core.calendar.eightwords.IHour
+import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.chinese.Clockwise
 import destiny.core.chinese.ClockwiseIF
 import destiny.core.chinese.Stem.*
@@ -22,8 +22,8 @@ import java.util.*
  * XinRenKui Reverse
  */
 class ClockwiseXinRenKuiReverseImpl(private val dayImpl: DayIF,
-                                    private val midnightImpl: MidnightIF,
-                                    private val hourImpl: HourIF,
+                                    private val midnightImpl: IMidnight,
+                                    private val hourImpl: IHour,
                                     private val changeDayAfterZi: Boolean,
                                     private val differentiator: DayNightDifferentiator) : ClockwiseIF, Serializable {
 

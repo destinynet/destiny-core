@@ -32,8 +32,8 @@ class PersonContext(
   chineseDateImpl: IChineseDate,
   yearMonthImpl: YearMonthIF,
   dayImpl: DayIF,
-  hourImpl: HourIF,
-  midnightImpl: MidnightIF,
+  hourImpl: IHour,
+  midnightImpl: IMidnight,
   changeDayAfterZi: Boolean,
   /** 實作計算節氣的介面  */
   private val solarTermsImpl: SolarTermsIF,
@@ -390,13 +390,13 @@ class PersonContext(
     return "EightWordsPersonContext [gender=$gender, lmt=$lmt, location=$location]"
   }
 
-  override fun equals(o: Any?): Boolean {
-    if (this === o)
+  override fun equals(other: Any?): Boolean {
+    if (this === other)
       return true
-    if (o !is PersonContext)
+    if (other !is PersonContext)
       return false
 
-    val that = o as PersonContext?
+    val that = other as PersonContext?
 
     if (java.lang.Double.compare(that!!.fortuneMonthSpan, fortuneMonthSpan) != 0)
       return false

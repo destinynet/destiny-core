@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords;
 
 public interface HourBean {
 
-  HourIF getHourImpl();
+  IHour getHourImpl();
 
-  void setHourImpl(HourIF impl);
+  void setHourImpl(IHour impl);
 }

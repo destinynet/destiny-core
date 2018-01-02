@@ -26,14 +26,14 @@ class DayImpl : DayIF, Serializable {
   /**
    * TODO : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
    */
-  override fun getDay(gmtJulDay: Double, location: Location, midnightImpl: MidnightIF, hourImpl: HourIF, changeDayAfterZi: Boolean): StemBranch {
+  override fun getDay(gmtJulDay: Double, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, location, revJulDayFunc)
 
     return getDay(lmt, location, midnightImpl, hourImpl, changeDayAfterZi)
   } // GMT 版本
 
-  private fun getIndex(index: Int, nextMidnightLmt: ChronoLocalDateTime<*>, lmt: ChronoLocalDateTime<*>, hourImpl: HourIF, location: Location, changeDayAfterZi: Boolean, 下個子初時刻: ChronoLocalDateTime<*>): Int {
+  private fun getIndex(index: Int, nextMidnightLmt: ChronoLocalDateTime<*>, lmt: ChronoLocalDateTime<*>, hourImpl: IHour, location: Location, changeDayAfterZi: Boolean, 下個子初時刻: ChronoLocalDateTime<*>): Int {
     var index = index
     //子正，在 LMT 零時之前
     if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
@@ -48,7 +48,7 @@ class DayImpl : DayIF, Serializable {
     return index
   }
 
-  override fun getDay(lmt: ChronoLocalDateTime<*>, location: Location, midnightImpl: MidnightIF, hourImpl: HourIF, changeDayAfterZi: Boolean): StemBranch {
+  override fun getDay(lmt: ChronoLocalDateTime<*>, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
     // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
     val lmtJulDay = (TimeTools.getGmtJulDay(lmt) + 0.5).toInt()
     var index = (lmtJulDay - 11) % 60

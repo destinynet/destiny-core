@@ -13,7 +13,7 @@ import destiny.core.chinese.Branch
 import java.time.chrono.ChronoLocalDateTime
 
 /** 時辰的分界點實作 , SwissEph 的實作是 HourSolarTransImpl  */
-interface HourIF : Descriptive {
+interface IHour : Descriptive {
 
   fun getHour(gmtJulDay: Double, location: Location): Branch
 

@@ -19,7 +19,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 class EightWordsDetailImpl : IEightWordsDetail, Serializable {
 
-  override fun getDetails(lmt: ChronoLocalDateTime<*>, location: Location, place: String, eightWordsImpl: EightWordsIF, yearMonthImpl: YearMonthIF, chineseDateImpl: IChineseDate, dayImpl: DayIF, hourImpl: HourIF, midnightImpl: MidnightIF, changeDayAfterZi: Boolean, risingSignImpl: IRisingSign, starPositionImpl: IStarPosition<*>, solarTermsImpl: SolarTermsIF): EightWordsContextModel {
+  override fun getDetails(lmt: ChronoLocalDateTime<*>, location: Location, place: String, eightWordsImpl: EightWordsIF, yearMonthImpl: YearMonthIF, chineseDateImpl: IChineseDate, dayImpl: DayIF, hourImpl: IHour, midnightImpl: IMidnight, changeDayAfterZi: Boolean, risingSignImpl: IRisingSign, starPositionImpl: IStarPosition<*>, solarTermsImpl: SolarTermsIF): EightWordsContextModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     // 現在的節氣
