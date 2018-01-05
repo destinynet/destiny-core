@@ -4,7 +4,7 @@
  */
 package destiny.astrology
 
-import org.apache.commons.lang3.StringUtils
+import destiny.tools.AlignTools
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.util.*
@@ -34,7 +34,7 @@ class HoroscopeAspectData(p1: Point, p2: Point,
   override fun toString(): String {
 
     return twoPoints.toString() + aspect!!.toString(Locale.TAIWAN) + " 誤差 " +
-      StringUtils.substring(orb.toString(), 0, 4) + " 度"
+      AlignTools.leftPad(orb.toString() , 4) + "度"
   }
 
 

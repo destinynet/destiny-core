@@ -77,13 +77,12 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
 
     val resultStemBranch: StemBranch
     //西元 1984 年為 甲子年
-    val index: Int
-    if (lmt.get(ChronoField.YEAR) > 0)
-      index = (lmt.get(ChronoField.YEAR) - 1984) % 60
+    val index = if (lmt.get(ChronoField.YEAR) > 0)
+      (lmt.get(ChronoField.YEAR) - 1984) % 60
     else
-      index = (1 - lmt.get(ChronoField.YEAR) - 1984) % 60
+      (1 - lmt.get(ChronoField.YEAR) - 1984) % 60
 
-    val gmtSecondsOffset = TimeTools.getDstSecondOffset(lmt, loc).v2().toDouble()
+    val gmtSecondsOffset = TimeTools.getDstSecondOffset(lmt, loc).second.toDouble()
 
     val gmtSecondsOffsetInt = gmtSecondsOffset.toInt()
     val gmtNanoOffset = ((gmtSecondsOffset - gmtSecondsOffsetInt) * 1000000000).toInt()

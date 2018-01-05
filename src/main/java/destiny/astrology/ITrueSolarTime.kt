@@ -37,7 +37,7 @@ interface ITrueSolarTime {
     val e = getEquationSecs(gmt)
     val pair = TimeTools.splitSecond(e)
 
-    val gmtWithE = gmt.plus(pair.v1().toLong(), ChronoUnit.SECONDS).plus(pair.v2().toLong(), ChronoUnit.NANOS)
+    val gmtWithE = gmt.plus(pair.first.toLong(), ChronoUnit.SECONDS).plus(pair.second.toLong(), ChronoUnit.NANOS)
     logger.debug("gmt  = {}", gmt)
     logger.debug("gmtE = {}", gmtWithE)
 

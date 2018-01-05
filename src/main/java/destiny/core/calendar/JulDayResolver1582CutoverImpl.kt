@@ -121,8 +121,8 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       val second = h * 3600 - (hour * 3600).toDouble() - (minute * 60).toDouble()
 
       val pair = TimeTools.splitSecond(second)
-      val secsInt = pair.v1()
-      val nanoInt = pair.v2()
+      val secsInt = pair.first
+      val nanoInt = pair.second
 
       val localTime = LocalTime.of(hour, minute, secsInt, nanoInt)
 
@@ -187,9 +187,9 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       }
       val ldt: ChronoLocalDateTime<*>
       ldt = if (gregorian)
-        LocalDateTime.of(prolepticYear, month, day, hour, minute, pair.v1(), pair.v2())
+        LocalDateTime.of(prolepticYear, month, day, hour, minute, pair.first, pair.second)
       else
-        JulianDateTime.of(prolepticYear, month, day, hour, minute, pair.v1(), pair.v2())
+        JulianDateTime.of(prolepticYear, month, day, hour, minute, pair.first, pair.second)
 
       return Pair(ldt, gregorian)
     }

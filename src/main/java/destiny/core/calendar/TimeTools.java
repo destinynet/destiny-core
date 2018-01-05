@@ -3,9 +3,9 @@
  */
 package destiny.core.calendar;
 
+import kotlin.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,6 @@ import java.util.function.Function;
 
 import static java.time.temporal.ChronoField.*;
 import static java.time.temporal.JulianFields.JULIAN_DAY;
-import static org.jooq.lambda.tuple.Tuple.tuple;
 
 public class TimeTools implements Serializable {
 
@@ -242,8 +241,8 @@ public class TimeTools implements Serializable {
   /**
    * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
    * */
-  public static Tuple2<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull Location loc) {
-    return tuple(isDst(lmt, loc), getSecondsOffset(lmt, loc));
+  public static Pair<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull Location loc) {
+    return new Pair<>(isDst(lmt, loc), getSecondsOffset(lmt, loc));
   }
 
   // ======================================== misc methods ========================================
@@ -299,19 +298,19 @@ public class TimeTools implements Serializable {
   }
 
   /** 將 double 的秒數，拆為 long秒數 以及 longNano 兩個值 */
-  public static Tuple2<Integer , Integer> splitSecond(double seconds) {
+  public static Pair<Integer , Integer> splitSecond(double seconds) {
     int secs = (int) seconds;
     int nano = (int) ((seconds - secs)* 1_000_000_000);
-    return tuple(secs , nano);
+    return new Pair<>(secs , nano);
   }
 
   /**
    * 將「分鐘」拆成「小時」與「分」
    */
-  public static Tuple2<Integer , Integer> splitMinutes(int minutes) {
+  public static Pair<Integer , Integer> splitMinutes(int minutes) {
     int hours = minutes / 60;
     int mins = minutes % 60;
-    return tuple(hours , mins);
+    return new Pair<>(hours , mins);
   }
 
   /**
@@ -345,18 +344,18 @@ public class TimeTools implements Serializable {
    */
   public static ChronoLocalDateTime getLongitudeTime(ChronoLocalDateTime lmt, Location location) {
     double absLng = Math.abs(location.getLongitude());
-    double secondsOffset = getDstSecondOffset(lmt, location).v2();
+    double secondsOffset = getDstSecondOffset(lmt, location).getSecond();
     double zoneSecondOffset = Math.abs(secondsOffset);
     double longitudeSecondOffset = absLng * 4 * 60; // 經度與GMT的時差 (秒) , 一分鐘四度
 
     if (location.isEast()) {
       double seconds = longitudeSecondOffset - zoneSecondOffset;
-      Tuple2<Integer , Integer> pair = splitSecond(seconds);
-      return lmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
+      Pair<Integer , Integer> pair = splitSecond(seconds);
+      return lmt.plus(pair.getFirst() , ChronoUnit.SECONDS).plus(pair.getSecond() , ChronoUnit.NANOS);
     } else {
       double seconds = zoneSecondOffset - longitudeSecondOffset;
-      Tuple2<Integer , Integer> pair = splitSecond(seconds);
-      return lmt.plus(pair.v1() , ChronoUnit.SECONDS).plus(pair.v2() , ChronoUnit.NANOS);
+      Pair<Integer , Integer> pair = splitSecond(seconds);
+      return lmt.plus(pair.getFirst() , ChronoUnit.SECONDS).plus(pair.getSecond() , ChronoUnit.NANOS);
     }
   }
 

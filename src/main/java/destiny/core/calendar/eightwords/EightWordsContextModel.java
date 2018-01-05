@@ -9,7 +9,7 @@ import destiny.core.calendar.TimeTools;
 import destiny.core.calendar.chinese.ChineseDate;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.StemBranch;
-import org.jooq.lambda.tuple.Tuple2;
+import kotlin.Pair;
 
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
@@ -58,9 +58,9 @@ public class EightWordsContextModel implements Serializable {
     this.lmt = lmt;
     this.location = location;
     this.place = place;
-    Tuple2<Boolean, Integer> tuple = TimeTools.getDstSecondOffset(lmt , location);
-    this.dst = tuple.v1();
-    this.gmtMinuteOffset = tuple.v2() / 60;
+    Pair<Boolean, Integer> tuple = TimeTools.getDstSecondOffset(lmt , location);
+    this.dst = tuple.getFirst();
+    this.gmtMinuteOffset = tuple.getSecond() / 60;
     this.chineseDate = chineseDate;
     this.prevMajorSolarTerms = prevMajorSolarTerms;
     this.nextMajorSolarTerms = nextMajorSolarTerms;

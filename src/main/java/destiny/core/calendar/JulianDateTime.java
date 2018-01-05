@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar;
 
+import kotlin.Pair;
 import org.jooq.lambda.tuple.Tuple2;
 import org.threeten.extra.chrono.JulianDate;
 
@@ -128,8 +129,8 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute , double second) {
     JulianDate date = JulianDate.of(prolepticYear , month , dayOfMonth);
 
-    Tuple2<Integer , Integer> pair = TimeTools.splitSecond(second);
-    LocalTime time = LocalTime.of(hour , minute , pair.v1(), pair.v2());
+    Pair<Integer , Integer> pair = TimeTools.splitSecond(second);
+    LocalTime time = LocalTime.of(hour , minute , pair.getFirst(), pair.getSecond());
     return new JulianDateTime(date , time);
   }
 

@@ -15,12 +15,14 @@ class LunarApsisTest {
 
   @Test
   fun testToString() {
-    for (each in LunarApsis.values) {
+
+    for (each in LunarApsises.array) {
+      assertNotNull(each)
       assertNotNull(each.toString())
       logger.info("{}", each.toString())
     }
 
-    val set =  LunarApsis.values.map { it.toString() }.toSet()
+    val set =  LunarApsises.array.map { it.toString() }.toSet()
     assertTrue(set.contains("遠地點"))
     assertTrue(set.contains("近地點"))
   }

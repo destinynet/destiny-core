@@ -126,7 +126,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     val nextMajorSolarTerms = model.nextMajorSolarTerms
 
     val pair1 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(-1))
-    val prevMajorSolarTermsTime = model.lmt.plus(pair1.v1().toLong(), ChronoUnit.SECONDS).plus(pair1.v2().toLong(), ChronoUnit.NANOS)
+    val prevMajorSolarTermsTime = model.lmt.plus(pair1.first.toLong(), ChronoUnit.SECONDS).plus(pair1.second.toLong(), ChronoUnit.NANOS)
     //LocalDateTime prevMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
 
     節氣.setText(prevMajorSolarTerms.toString(), 1, 1)
@@ -134,7 +134,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
 
     val pair2 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(1))
-    val nextMajorSolarTermsTime = model.lmt.plus(pair2.v1().toLong(), ChronoUnit.SECONDS).plus(pair2.v2().toLong(), ChronoUnit.NANOS)
+    val nextMajorSolarTermsTime = model.lmt.plus(pair2.first.toLong(), ChronoUnit.SECONDS).plus(pair2.second.toLong(), ChronoUnit.NANOS)
     //LocalDateTime nextMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
     節氣.setText(nextMajorSolarTerms.toString(), 2, 1)
     節氣.setText("：", 2, 5)

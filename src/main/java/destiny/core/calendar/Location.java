@@ -5,7 +5,7 @@
 package destiny.core.calendar;
 
 import com.google.common.collect.ImmutableMap;
-import destiny.tools.AlignUtil;
+import destiny.tools.AlignTools;
 import destiny.tools.LocaleUtils;
 import destiny.tools.location.TimeZoneUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -370,12 +370,12 @@ public class Location implements Serializable {
     sb.append(eastWest == EAST ? '+' : '-');
     sb.append(StringUtils.leftPad(String.valueOf(this.lngDeg), 3 , ' '));
     sb.append(StringUtils.leftPad(String.valueOf(this.lngMin), 2 , ' '));
-    sb.append(AlignUtil.INSTANCE.alignRight(this.lngSec, 5 , ' '));
+    sb.append(AlignTools.INSTANCE.alignRight(this.lngSec, 5 , ' '));
     
     sb.append(northSouth == NORTH ? '+' : '-');
     sb.append(StringUtils.leftPad(String.valueOf(this.latDeg), 2 , ' '));
     sb.append(StringUtils.leftPad(String.valueOf(this.latMin), 2 , ' '));
-    sb.append(AlignUtil.INSTANCE.alignRight(this.latSec, 5 , ' '));
+    sb.append(AlignTools.INSTANCE.alignRight(this.latSec, 5 , ' '));
     
     sb.append(" ").append(this.altitudeMeter);
     //舊：sb.append(AlignUtil.alignRight(this.minuteOffset, 4 , ' '));
