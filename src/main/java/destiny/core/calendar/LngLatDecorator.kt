@@ -21,7 +21,7 @@ object LngLatDecorator {
   )
 
   fun getOutputString(location: Location, locale: Locale): String {
-    return implMap.getOutputString(location , locale)
+    return implMap.getOutputString(location, locale)
   }
 }
 
@@ -31,19 +31,17 @@ class LngLatDecoratorTaiwan : Decorator<Location> {
   internal var formatter = DecimalFormat("00.00")
 
   override fun getOutputString(value: Location): String {
-    val sb = StringBuilder()
-    with(sb) {
+    return with(StringBuilder()) {
       append(if (value.eastWest == Location.EastWest.EAST) "東經" else "西經")
-      append(AlignTools.alignRight(value.lngDeg , 3)).append("度 ")
-      append(AlignTools.alignRight(value.lngMin , 2)).append("分 ")
+      append(AlignTools.alignRight(value.lngDeg, 4, false)).append("度 ")
+      append(AlignTools.leftPad(value.lngMin.toString(), 2, '0')).append("分 ")
       append(formatter.format(value.lngSec)).append("秒, ")
 
       append(if (value.northSouth == Location.NorthSouth.NORTH) "北緯" else "南緯")
-      append(AlignTools.alignRight(value.latDeg , 3)).append("度 ")
-      append(AlignTools.alignRight(value.latMin , 2)).append("分 ")
+      append(AlignTools.alignRight(value.latDeg, 3)).append("度 ")
+      append(AlignTools.leftPad(value.latMin.toString(), 2, '0')).append("分 ")
       append(formatter.format(value.latSec)).append("秒")
-    }
-    return sb.toString()
+    }.toString()
   }
 }
 
@@ -52,19 +50,17 @@ class LngLatDecoratorChina : Decorator<Location> {
   internal var formatter = DecimalFormat("00.00")
 
   override fun getOutputString(value: Location): String {
-    val sb = StringBuilder()
-    sb.append(if (value.eastWest == Location.EastWest.EAST) "东经" else "西经").append(" ")
-    sb.append(value.lngDeg).append("度 ")
-    sb.append(value.lngMin).append("分 ")
-    sb.append(formatter.format(value.lngSec)).append("秒, ")
+    return with(StringBuilder()) {
+      append(if (value.eastWest == Location.EastWest.EAST) "东经" else "西经")
+      append(AlignTools.alignRight(value.lngDeg, 4, false)).append("度 ")
+      append(AlignTools.leftPad(value.lngMin.toString(), 2, '0')).append("分 ")
+      append(formatter.format(value.lngSec)).append("秒, ")
 
-    sb.append(if (value.northSouth == Location.NorthSouth.NORTH) "北纬" else "南纬").append(" ")
-    sb.append(value.latDeg).append("度 ")
-    sb.append(value.latMin).append("分 ")
-
-    sb.append(formatter.format(value.latSec)).append("秒")
-
-    return sb.toString()
+      append(if (value.northSouth == Location.NorthSouth.NORTH) "北纬" else "南纬")
+      append(AlignTools.alignRight(value.latDeg, 3)).append("度 ")
+      append(AlignTools.leftPad(value.latMin.toString(), 2, '0')).append("分 ")
+      append(formatter.format(value.latSec)).append("秒")
+    }.toString()
   }
 }
 

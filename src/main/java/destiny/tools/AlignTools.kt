@@ -49,7 +49,7 @@ object AlignTools {
    * 承上 , Int 的版本，但要確保 @param value 為正值
    * 前方儘量塞全形空白
    * */
-  fun alignRight(value: Int, width: Int): String {
+  fun alignRight(value: Int, width: Int , useDoubleSpaceChar:Boolean = false): String {
     if (value < 0)
       throw IllegalArgumentException("value $value must large or equal to 0")
 
@@ -60,7 +60,8 @@ object AlignTools {
       valueString
     else {
       val doubleByteSpaces = (width - valueLength)/2
-      "　".repeat(doubleByteSpaces).let {
+      val doubleSpace : String = if (useDoubleSpaceChar) "　" else "  "
+      doubleSpace.repeat(doubleByteSpaces).let {
           if ((width - valueLength) % 2 == 1)
             it + " "
           else
