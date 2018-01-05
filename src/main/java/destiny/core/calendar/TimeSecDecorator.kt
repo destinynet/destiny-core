@@ -37,25 +37,25 @@ class TimeSecDecoratorChinese : Decorator<ChronoLocalDateTime<*>>, Serializable 
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  override fun getOutputString(time: ChronoLocalDateTime<*>): String {
+  override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     val sb = StringBuilder()
 
-    logger.debug("time = {} , era = {}", time, time.toLocalDate().era)
+    logger.debug("time = {} , era = {}", value, value.toLocalDate().era)
 
     val min = TimeMinDecoratorChinese()
-    sb.append(min.getOutputString(time))
+    sb.append(min.getOutputString(value))
 
     sb.append(' ')
-    if (time.get(ChronoField.SECOND_OF_MINUTE) < 10) {
+    if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
       sb.append("0")
     }
-    sb.append(time.get(ChronoField.SECOND_OF_MINUTE))
+    sb.append(value.get(ChronoField.SECOND_OF_MINUTE))
 
-    if (time.get(ChronoField.NANO_OF_SECOND) == 0) {
+    if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
       sb.append(".00")
     } else {
       sb.append(".")
-      sb.append(time.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
+      sb.append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
     }
     sb.append("秒")
     return sb.toString()
@@ -66,23 +66,23 @@ class TimeSecDecoratorChinese : Decorator<ChronoLocalDateTime<*>>, Serializable 
 
 class TimeSecDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
-  override fun getOutputString(time: ChronoLocalDateTime<*>): String {
+  override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     val sb = StringBuilder()
 
     val min = TimeMinDecoratorEnglish()
-    sb.append(min.getOutputString(time))
+    sb.append(min.getOutputString(value))
     sb.append(":")
 
-    if (time.get(ChronoField.SECOND_OF_MINUTE) < 10) {
+    if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
       sb.append("0")
     }
-    sb.append(time.get(ChronoField.SECOND_OF_MINUTE))
+    sb.append(value.get(ChronoField.SECOND_OF_MINUTE))
 
-    if (time.get(ChronoField.NANO_OF_SECOND) == 0) {
+    if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
       sb.append(".00")
     } else {
       sb.append(".")
-      sb.append(time.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
+      sb.append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
     }
 
     return sb.toString()
@@ -92,22 +92,22 @@ class TimeSecDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializable 
 
 class TimeSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
-  override fun getOutputString(time: ChronoLocalDateTime<*>): String {
+  override fun getOutputString(value: ChronoLocalDateTime<*>): String {
     val sb = StringBuilder()
     val min = TimeMinDecoratorJapanese()
-    sb.append(min.getOutputString(time))
+    sb.append(min.getOutputString(value))
 
     sb.append(' ')
-    if (time.get(ChronoField.SECOND_OF_MINUTE) < 10) {
+    if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
       sb.append("0")
     }
-    sb.append(time.get(ChronoField.SECOND_OF_MINUTE))
+    sb.append(value.get(ChronoField.SECOND_OF_MINUTE))
 
-    if (time.get(ChronoField.NANO_OF_SECOND) == 0) {
+    if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
       sb.append(".00")
     } else {
       sb.append(".")
-      sb.append(time.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
+      sb.append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
     }
     sb.append("秒")
 

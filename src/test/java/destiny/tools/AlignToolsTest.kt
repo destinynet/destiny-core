@@ -51,6 +51,17 @@ class AlignToolsTest {
     assertEquals("　 12345　 ", AlignTools.alignCenter(value, 11))
   }
 
+
+  @Test
+  fun testAlignRightInt() {
+    assertEquals("2018" , AlignTools.alignRight(2018 , 4))
+    assertEquals(" 2018" , AlignTools.alignRight(2018 , 5))
+    assertEquals("　2018" , AlignTools.alignRight(2018 , 6))
+    assertEquals("　 2018" , AlignTools.alignRight(2018 , 7))
+    assertEquals("　　2018" , AlignTools.alignRight(2018 , 8))
+    assertEquals("　　　 1" , AlignTools.alignRight(1 , 8))
+  }
+
   @Test
   fun testAlignRightDouble() {
     assertEquals("0.12", AlignTools.alignRight(0.123456, 4, ' '))

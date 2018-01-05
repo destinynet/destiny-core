@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.AlignTools
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
 import org.slf4j.LoggerFactory
@@ -54,7 +55,8 @@ class TimeMinDecoratorChinese : Decorator<ChronoLocalDateTime<*>>, Serializable 
       sb.append("前")
     } else
       sb.append("　")
-    sb.append(TimeMinDecoratorChinese.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
+    sb.append(AlignTools.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
+    //sb.append(TimeMinDecoratorChinese.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
     sb.append(if (time.get(MONTH_OF_YEAR) < 10) "0" else "").append(time.get(MONTH_OF_YEAR)).append("月")
     sb.append(if (time.get(DAY_OF_MONTH) < 10) "0" else "").append(time.get(DAY_OF_MONTH)).append("日")
     sb.append("　")
@@ -62,16 +64,6 @@ class TimeMinDecoratorChinese : Decorator<ChronoLocalDateTime<*>>, Serializable 
     sb.append(if (time.get(MINUTE_OF_HOUR) < 10) "0" else "").append(time.get(MINUTE_OF_HOUR)).append("分")
 
     return sb.toString()
-  }
-
-  companion object {
-
-    fun alignRight(value: Int, width: Int): String {
-      val sb = StringBuffer(value.toString())
-      val valueLength = sb.length
-
-      return destiny.tools.ColorCanvas.AlignUtil.outputStringBuffer(valueLength, width, sb)
-    }
   }
 }
 
@@ -86,7 +78,7 @@ class TimeMinDecoratorChina : Decorator<ChronoLocalDateTime<*>>, Serializable {
       sb.append("前")
     } else
       sb.append("　")
-    sb.append(TimeMinDecoratorChinese.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
+    sb.append(AlignTools.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
     sb.append(if (time.get(MONTH_OF_YEAR) < 10) "0" else "").append(time.get(MONTH_OF_YEAR)).append("月")
     sb.append(if (time.get(DAY_OF_MONTH) < 10) "0" else "").append(time.get(DAY_OF_MONTH)).append("日")
     sb.append("　")
@@ -131,7 +123,7 @@ class TimeMinDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable
       sb.append("前")
     else
       sb.append("　")
-    sb.append(TimeMinDecoratorChinese.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
+    sb.append(AlignTools.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
     sb.append(if (time.get(MONTH_OF_YEAR) < 10) "0" else "").append(time.get(MONTH_OF_YEAR)).append("月")
     sb.append(if (time.get(DAY_OF_MONTH) < 10) "0" else "").append(time.get(DAY_OF_MONTH)).append("日")
     sb.append("　")

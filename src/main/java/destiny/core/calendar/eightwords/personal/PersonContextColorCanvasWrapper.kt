@@ -8,7 +8,7 @@ import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper
 import destiny.core.calendar.eightwords.Direction
-import destiny.tools.ColorCanvas.AlignUtil
+import destiny.tools.AlignTools
 import destiny.tools.ColorCanvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
 import java.time.chrono.ChronoLocalDateTime
@@ -70,9 +70,9 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
       val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
       val endFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.endFortuneGmtJulDay, model.location, revJulDayFunc)
 
-      右方大運直.setText(AlignUtil.alignRight(startFortune, 6), i, 1, "green", null, "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+      右方大運直.setText(AlignTools.alignRight(startFortune, 6), i, 1, "green", null, "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
       右方大運直.setText("→", i, 9, "green")
-      右方大運直.setText(AlignUtil.alignRight(endFortune, 6), i, 13, "green", null, "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt))
+      右方大運直.setText(AlignTools.alignRight(endFortune, 6), i, 13, "green", null, "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt))
       右方大運直.setText(stemBranch.toString(), i, 21, "green")
     }
 
@@ -142,10 +142,9 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 
     cc.add(節氣, 31, 1)
 
-    when (this.outputMode) {
-      PersonContextColorCanvasWrapper.OutputMode.TEXT -> return cc.toString()
-      PersonContextColorCanvasWrapper.OutputMode.HTML -> return cc.htmlOutput
-      else -> return cc.htmlOutput
+    return when (this.outputMode) {
+      PersonContextColorCanvasWrapper.OutputMode.TEXT -> cc.toString()
+      PersonContextColorCanvasWrapper.OutputMode.HTML -> cc.htmlOutput
     }
   } // toString()
 

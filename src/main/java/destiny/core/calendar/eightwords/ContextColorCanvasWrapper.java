@@ -15,6 +15,7 @@ import destiny.core.calendar.eightwords.personal.ReactionsUtil;
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
+import destiny.tools.AlignTools;
 import destiny.tools.ColorCanvas.AlignUtil;
 import destiny.tools.ColorCanvas.ColorCanvas;
 import org.jetbrains.annotations.NotNull;
@@ -103,17 +104,17 @@ public class ContextColorCanvasWrapper {
     else
       timeData.append("　");
       
-    timeData.append(AlignUtil.alignRight(lmt.get(YEAR_OF_ERA),4));
+    timeData.append(AlignTools.INSTANCE.alignRight(lmt.get(YEAR_OF_ERA),4));
     timeData.append("年");
-    timeData.append(AlignUtil.alignRight(lmt.get(MONTH_OF_YEAR),2));
+    timeData.append(AlignTools.INSTANCE.alignRight(lmt.get(MONTH_OF_YEAR),2));
     timeData.append("月");
-    timeData.append(AlignUtil.alignRight(lmt.get(DAY_OF_MONTH),2));
+    timeData.append(AlignTools.INSTANCE.alignRight(lmt.get(DAY_OF_MONTH),2));
     timeData.append("日");
-    timeData.append(AlignUtil.alignRight(lmt.get(HOUR_OF_DAY),2));
+    timeData.append(AlignTools.INSTANCE.alignRight(lmt.get(HOUR_OF_DAY),2));
     timeData.append("時");
-    timeData.append(AlignUtil.alignRight(lmt.get(MINUTE_OF_HOUR),2));
+    timeData.append(AlignTools.INSTANCE.alignRight(lmt.get(MINUTE_OF_HOUR),2));
     timeData.append("分");
-    timeData.append(AlignUtil.alignRight(lmt.get(SECOND_OF_MINUTE),4));
+    timeData.append(AlignTools.INSTANCE.alignRight(lmt.get(SECOND_OF_MINUTE),4));
     timeData.append("秒");
     西元資訊.setText(timeData.toString(), 1, 1);
     cc.add(西元資訊 , 1 , 1 );
@@ -128,7 +129,7 @@ public class ContextColorCanvasWrapper {
     //地點名稱.setText(locationName , 1 , 7);
     地點名稱.setText(locationName , 1 , 7 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
     int minuteOffset = TimeTools.getDstSecondOffset(lmt, location).getSecond() / 60;
-    地點名稱.setText(" GMT時差："+AlignUtil.alignRight(minuteOffset,6)+"分鐘", 1, 25 , "999999");
+    地點名稱.setText(" GMT時差："+AlignTools.INSTANCE.alignRight(minuteOffset,6)+"分鐘", 1, 25 , "999999");
     cc.add(地點名稱 , 3 , 1);
     
 
@@ -137,9 +138,9 @@ public class ContextColorCanvasWrapper {
     StringBuilder lonText = new StringBuilder();
     lonText.append(location.getEastWest() == Location.EastWest.EAST ? "東" : "西");
     lonText.append("經：");
-    lonText.append(AlignUtil.alignRight(location.getLngDeg(),4));
+    lonText.append(AlignTools.INSTANCE.alignRight(location.getLngDeg(),4));
     lonText.append("度");
-    lonText.append(AlignUtil.alignRight(location.getLngMin(),2));
+    lonText.append(AlignTools.INSTANCE.alignRight(location.getLngMin(),2));
     lonText.append("分");
     lonText.append(AlignUtil.alignRight(location.getLngSec(),4));
     lonText.append("秒");
@@ -150,9 +151,9 @@ public class ContextColorCanvasWrapper {
     StringBuilder latText = new StringBuilder();
     latText.append(location.getNorthSouth() == Location.NorthSouth.NORTH ? "北" : "南");
     latText.append("緯：");
-    latText.append(AlignUtil.alignRight(location.getLatDeg(),2));
+    latText.append(AlignTools.INSTANCE.alignRight(location.getLatDeg(),2));
     latText.append("度");
-    latText.append(AlignUtil.alignRight(location.getLatMin(),2));
+    latText.append(AlignTools.INSTANCE.alignRight(location.getLatMin(),2));
     latText.append("分");
     latText.append(AlignUtil.alignRight(location.getLatSec(),4));
     latText.append("秒");

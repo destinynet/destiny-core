@@ -24,7 +24,6 @@ object AlignTools {
    * Apache 的 [StringUtils] 尚無法提供此功能
    */
   fun alignRight(value: Double, width: Int, padChar: Char = ' '): String {
-
     val s = value.absoluteValue.toString().let {
       if (value < 0)
         '-' + it
@@ -44,6 +43,32 @@ object AlignTools {
         s.substring(0, width)
     }
   }
+
+
+  /**
+   * 承上 , Int 的版本，但要確保 @param value 為正值
+   * 前方儘量塞全形空白
+   * */
+  fun alignRight(value: Int, width: Int): String {
+    if (value < 0)
+      throw IllegalArgumentException("value $value must large or equal to 0")
+
+    val valueString = value.toString()
+
+    val valueLength = valueString.length
+    return if (valueLength == width)
+      valueString
+    else {
+      val doubleByteSpaces = (width - valueLength)/2
+      "　".repeat(doubleByteSpaces).let {
+          if ((width - valueLength) % 2 == 1)
+            it + " "
+          else
+            it
+        } + valueString
+    }
+  }
+
 
 
   /**
@@ -117,4 +142,6 @@ object AlignTools {
 
     return sb.toString()
   }
+
+
 }
