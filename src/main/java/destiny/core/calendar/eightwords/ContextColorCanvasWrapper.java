@@ -126,7 +126,7 @@ public class ContextColorCanvasWrapper {
     ColorCanvas 地點名稱 = new ColorCanvas(1,44, "　");
     地點名稱.setText("地點：", 1 , 1);
     //地點名稱.setText(locationName , 1 , 7);
-    地點名稱.setText(locationName , 1 , 7 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
+    地點名稱.setText(locationName , 1 , 7 , null , null , null , url , null , false);
     int minuteOffset = TimeTools.getDstSecondOffset(lmt, location).getSecond() / 60;
     地點名稱.setText(" GMT時差："+AlignTools.INSTANCE.alignRight(minuteOffset,6 , true)+"分鐘", 1, 25 , "999999");
     cc.add(地點名稱 , 3 , 1);
@@ -143,7 +143,7 @@ public class ContextColorCanvasWrapper {
     lonText.append("分");
     lonText.append(AlignTools.INSTANCE.alignRight(location.getLngSec() , 4 , ' '));
     lonText.append("秒");
-    經度.setText(lonText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
+    經度.setText(lonText.toString(), 1, 1 , null , null , null , url , null , false);
     cc.add(經度 , 4 , 1);
     
     ColorCanvas 緯度 = new ColorCanvas(1, 20 , "　");
@@ -156,7 +156,7 @@ public class ContextColorCanvasWrapper {
     latText.append("分");
     latText.append(AlignTools.INSTANCE.alignRight(location.getLatSec() , 4 , ' '));
     latText.append("秒");
-    緯度.setText(latText.toString(), 1, 1 , Optional.empty() , Optional.empty() , Optional.empty() , url , Optional.empty() , false);
+    緯度.setText(latText.toString(), 1, 1 , null , null , null , url , null, false);
     cc.add(緯度 , 4 , 25);
     
     cc.setText("換日："+ (context.isChangeDayAfterZi() ? "子初換日" : "子正換日"), 5, 1 , "999999" );
@@ -196,7 +196,7 @@ public class ContextColorCanvasWrapper {
       //網址長度可能是奇數
       if (linkUrl.length() % 2 == 1)
         linkUrl = linkUrl + ' ';
-      cc.setText(linkUrl, linkLine, 11 , Optional.of("999999") , Optional.empty() , Optional.empty() , linkUrl, Optional.empty() , false);
+      cc.setText(linkUrl, linkLine, 11 , "999999" , null , null , linkUrl, null, false);
     }
     //EightWords eightWords = context.getEightWords(lmt , location);
     //cc.setText("四字斷終生：" + fourWordsImpl.getResult(eightWords), 8, 1 , "#0000FF" , "#FFFF00" , fourWordsImpl.getResult(eightWords));

@@ -41,7 +41,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
     ColorCanvas c = new ColorCanvas(12, 74, "　");
     ColorCanvas siteCanvas = new ColorCanvas(2 , 74 , "　");
 
-    siteCanvas.setText("Destiny 命理網", 1, 1, Optional.empty() , Optional.empty() , Optional.empty(), "http://destiny.to", Optional.of("Destiny命理網"), false);
+    siteCanvas.setText("Destiny 命理網", 1, 1, null , null , null, "http://destiny.to", "Destiny命理網", false);
 
     siteCanvas.setText(" http://destiny.to ", 1, 17);
     siteCanvas.setText("梅花易數線上排盤" + "　" + metaData , 2, 1);
