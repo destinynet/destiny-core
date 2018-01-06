@@ -149,7 +149,7 @@ public class ColorCanvas implements Serializable
       for (int j=1 ; j <= width ; j++)
       {
         index = (i-1)*width+ j-1;
-        content[index] = new ColorByte( bytes[(j-1)%bytes.length], foreColor , backColor, Optional.empty() , null , Optional.empty());
+        content[index] = new ColorByte( bytes[(j-1)%bytes.length], foreColor.orElse(null) , backColor.orElse(null), null , null , null);
       }
     }
   }
@@ -303,7 +303,7 @@ public class ColorCanvas implements Serializable
         //先求出，目前 index 到行尾，要塞入幾個空白鍵（中文字為 1 個）
         int spaces = width - index % this.width;
         for (int j = index; j < index + spaces; j++) {
-          content[j] = new ColorByte((byte) ' ', foreColor, backColor, font, url, title);
+          content[j] = new ColorByte((byte) ' ', foreColor.orElse(null), backColor.orElse(null), font.orElse(null), url, title.orElse(null));
         }//填空白
         index = index + spaces;
       }
@@ -311,29 +311,29 @@ public class ColorCanvas implements Serializable
         //如果新加入的背景色為空，檢查原字元的背景色
         if (!backColor.isPresent()) {
           if (content[j].getBackColor() != null) {
-            backColor = content[j].getBackColor();
+            backColor = Optional.ofNullable(content[j].getBackColor());
           }
         }
         //如果新加入的前景色為空，檢查原字元的前景色
         if (!foreColor.isPresent()) {
           if (content[j].getForeColor() != null) {
-            foreColor = content[j].getForeColor();
+            foreColor = Optional.ofNullable(content[j].getForeColor());
           }
         }
         //如果新加入的字型為空，則檢查原字元的字型
         if (!font.isPresent()) {
           if (content[j].getFont() != null) {
-            font = content[j].getFont();
+            font = Optional.ofNullable(content[j].getFont());
           }
         }
         //如果新加入的 URL 為空，則檢查原字元的網址
         if (url == null) {
           if (content[j].getUrl() != null) {
-            url = content[j].getUrl().orElse(null);
+            url = content[j].getUrl();
           }
         }
 
-        content[j] = new ColorByte(bytes[j - index], foreColor, backColor, font, url, title);
+        content[j] = new ColorByte(bytes[j - index], foreColor.orElse(null), backColor.orElse(null), font.orElse(null), url, title.orElse(null));
       }
       index = index + bytes.length;
       if (index >= content.length) {
@@ -547,11 +547,11 @@ public class ColorCanvas implements Serializable
           }
 
           //檢查 '子' content 是否有背景色，如果背景色是 null , 則 '父'content 必須保留其背景色
-          if (childContent[j].getBackColor().isPresent()) {
+          if (childContent[j].getBackColor() != null) {
             this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1] = childContent[j];
           }
           else {
-            Optional<String> tempBgColor = this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1].getBackColor();
+            String tempBgColor = this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1].getBackColor();
             this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1] = childContent[j];
             this.content[(child.getX() + (childX - 1) - 1) * this.getWidth() + (child.getY() + (childY - 1)) - 1].setBackColor(tempBgColor);
           }
@@ -659,17 +659,16 @@ public class ColorCanvas implements Serializable
     }//走訪每個 list 內的 ColorByte
     ColorByte cb = list.get(0);
     
-    boolean hasUrl;
-    hasUrl = cb.getUrl().isPresent();
- 
+    boolean hasUrl = cb.getUrl() != null;
+
     boolean hasFont;
-    hasFont = (cb.getFont().isPresent()) || (cb.getForeColor().isPresent()) || (cb.getBackColor().isPresent()) || (cb.getTitle().isPresent());
+    hasFont = (cb.getFont() != null ) || (cb.getForeColor() != null) || (cb.getBackColor() != null) || (cb.getTitle() != null);
     
     if (hasUrl && !hasFont) //只有網址
     {
       try
       {
-        tempSb.append("<a href=\"").append(cb.getUrl().get()).append("\" target=\"_blank\">").append(new String(byteArray, "Big5")).append("</a>");
+        tempSb.append("<a href=\"").append(cb.getUrl()).append("\" target=\"_blank\">").append(new String(byteArray, "Big5")).append("</a>");
       }
       catch (UnsupportedEncodingException ignored)
       {
@@ -681,7 +680,7 @@ public class ColorCanvas implements Serializable
     }
     else if (hasUrl && hasFont) //有網址也有字型
     {
-      tempSb.append("<a href=\"").append(cb.getUrl().get()).append("\" target=\"_blank\">");
+      tempSb.append("<a href=\"").append(cb.getUrl()).append("\" target=\"_blank\">");
       tempSb.append(buildFontHtml(cb, byteArray));
       tempSb.append("</a>");
     }
@@ -706,18 +705,25 @@ public class ColorCanvas implements Serializable
     sb.append("style=\"");
 //    sb.append("white-space: pre; ");
 
-    cb.getForeColor().ifPresent(foreColor -> sb.append("color:").append(foreColor).append("; "));
-    cb.getBackColor().ifPresent( backColor -> sb.append("background-color:").append(backColor).append("; "));
-    cb.getFont().ifPresent( font -> sb.append("font-family:").append(font.getFamily()).append("; "));
+    if (cb.getForeColor() != null) {
+      sb.append("color:").append(cb.getForeColor()).append("; ");
+    }
+    if (cb.getBackColor() != null) {
+      sb.append("background-color:").append(cb.getBackColor()).append("; ");
+    }
+    if (cb.getFont() != null) {
+      sb.append("font-family:").append(cb.getFont().getFamily()).append("; ");
+    }
 
     sb.append("\"");
     
     //檢查是否有 title
-    cb.getTitle().ifPresent( title -> {
+    if (cb.getTitle() != null) {
       sb.append(" title=\"");
-      sb.append(cb.getTitle().orElse(""));
+      sb.append(cb.getTitle());
       sb.append("\"");
-    });
+    }
+
 
     sb.append(">");
     try {
