@@ -220,7 +220,7 @@ public class ContextColorCanvasWrapper {
    */
   protected ColorCanvas getEightWordsColorCanvas() {
     EightWords eightWords = context.getEightWords();
-    ColorCanvas 八字 = new ColorCanvas(10, 36, "　", Optional.empty(), Optional.empty());
+    ColorCanvas 八字 = new ColorCanvas(10, 36, "　", null , null);
 
     List<ColorCanvas> pillars = new ArrayList<>();
     pillars.add(getOnePillar(eightWords.getYear()  , "年" , eightWords.getDayStem()));
@@ -255,7 +255,7 @@ public class ContextColorCanvasWrapper {
    * @param pillarName "年" or "月" or "日" or "時"
    */
   private ColorCanvas getOnePillar(StemBranch stemBranch , String pillarName , Stem dayStem) {
-    ColorCanvas pillar = new ColorCanvas(10, 6, "　", Optional.empty(), Optional.empty());
+    ColorCanvas pillar = new ColorCanvas(10, 6, "　", null, null);
     pillar.setText(pillarName , 1 , 3);
     pillar.setText("柱", 2, 3);
     pillar.setText("：", 3, 3);

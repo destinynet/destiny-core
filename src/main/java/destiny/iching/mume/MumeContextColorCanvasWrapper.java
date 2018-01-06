@@ -144,7 +144,7 @@ public class MumeContextColorCanvasWrapper implements Serializable
       case 水: color = "BLACK"; break;
       default: throw new RuntimeException("impossible");
     }
-    ColorCanvas cc = new ColorCanvas(3,12,"　", Optional.of(color) , Optional.empty());
+    ColorCanvas cc = new ColorCanvas(3,12,"　", color , null);
     for (int i=3 ; i >=1 ; i--) {
       if (s.getBooleanValue(i))
         cc.setText("▅▅▅▅▅", 4-i, 1);

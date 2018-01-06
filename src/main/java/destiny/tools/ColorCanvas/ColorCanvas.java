@@ -14,9 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import static java.util.Optional.*;
 
 /**
  * 具備彩色/字型的 Canvas , 能夠輸出成 HTML , 座標系統為 1-based，如下： <BR>
@@ -27,7 +24,8 @@ import static java.util.Optional.*;
  */
 public class ColorCanvas implements Serializable {
 
-  private Optional<ColorCanvas> parent = empty();
+  @Nullable
+  private ColorCanvas parent = null;
 
   private int height; // x
 
@@ -73,27 +71,6 @@ public class ColorCanvas implements Serializable {
       content[i] = new ColorByte(bgChar);
   }//constructor
 
-  /**
-   * 產生新的畫布，內定以 fill ColorByte 填滿整個畫面
-   * @param h
-   * @param w
-   * @param fill
-   * @param extensible 是否可以 自動拉長：即 x 軸 (row) 是否可以自動增加 , 對於 addLine() 很好用
-   */
-  /* @Deprecated
-  public ColorCanvas(int h , int w , ColorByte fill, boolean extensible)
-  {
-    this.h = h;
-    this.w = w;
-    this.extensible = extensible;
-    
-    content = new ColorByte[w*h];
-    for (int i=0 ; i < content.length ; i++)
-    {
-      content[i] = fill;
-    }
-  }
-  */
 
   /** 生新的畫布，以 fill 'String' 填滿整個畫面 ，不指定前景背景顏色 */
   public ColorCanvas(int height, int width, @NotNull String fill) {
@@ -101,11 +78,11 @@ public class ColorCanvas implements Serializable {
     this.width = width;
     content = new ColorByte[width * height];
 
-    this.fillContent(fill, empty(), empty());
+    this.fillContent(fill, null , null);
   }
 
   /** 生新的畫布，以 fill 'String' 填滿整個畫面 ，指定前景及背景顏色 */
-  public ColorCanvas(int height, int width, @NotNull String fill, Optional<String> foreColor, Optional<String> backColor) {
+  public ColorCanvas(int height, int width, @NotNull String fill, @Nullable String foreColor, @Nullable String backColor) {
     this.height = height;
     this.width = width;
     content = new ColorByte[width * height];
@@ -114,7 +91,7 @@ public class ColorCanvas implements Serializable {
 
   }
 
-  private void fillContent(@NotNull String fill, Optional<String> foreColor, Optional<String> backColor) {
+  private void fillContent(@NotNull String fill, @Nullable String foreColor, @Nullable String backColor) {
     char[] strChars = fill.toCharArray();
 
     int totalBytesLength = 0; // fill 的 byte 長度
@@ -147,7 +124,7 @@ public class ColorCanvas implements Serializable {
     for (int i = 1; i <= height; i++) {
       for (int j = 1; j <= width; j++) {
         index = (i - 1) * width + j - 1;
-        content[index] = new ColorByte(bytes[(j - 1) % bytes.length], foreColor.orElse(null), backColor.orElse(null), null, null, null);
+        content[index] = new ColorByte(bytes[(j - 1) % bytes.length], foreColor, backColor, null, null, null);
       }
     }
   }
@@ -190,10 +167,6 @@ public class ColorCanvas implements Serializable {
     this.setText(str, x, y, foreColor, backColor, null, null, title, false);
   }
 
-
-//  public void setText(@NotNull String str, int x, int y, @Nullable String foreColor, @Nullable String backColor, @Nullable Font font, @Nullable URL url, @Nullable String title, boolean wrap) {
-//    setText(str, x, y, foreColor, backColor, font, url == null ? null : url.toExternalForm(), title, wrap);
-//  }
 
   /**
    * 在第 x row , 第 y column , 開始，寫入 彩色文字
@@ -352,11 +325,12 @@ public class ColorCanvas implements Serializable {
   private int getHeight() { return this.height; }
 
   void setParent(@NotNull ColorCanvas cc) {
-    this.parent = of(cc);
+    this.parent = cc;
   }
 
-  private Optional<ColorCanvas> getParent() {
-    return this.parent;
+  @Nullable
+  public ColorCanvas getParent() {
+    return parent;
   }
 
   /**
@@ -435,7 +409,7 @@ public class ColorCanvas implements Serializable {
     //需要多少 Rows
     int additionalRows = strWidth / this.width + 1;
 
-    ColorCanvas appendedCanvas = new ColorCanvas(additionalRows, width, fill, ofNullable(foreColor), ofNullable(backColor));
+    ColorCanvas appendedCanvas = new ColorCanvas(additionalRows, width, fill, foreColor, backColor);
     appendedCanvas.addLine(str, foreColor, backColor, font, url, true);
 
     this.height += additionalRows;
@@ -447,7 +421,7 @@ public class ColorCanvas implements Serializable {
 
   /** 附加一行「空行」到 content 尾端「之後」，亦即，加高 content */
   public void appendEmptyLine() {
-    ColorCanvas appendedCanvas = new ColorCanvas(1, width, " ", empty(), empty());
+    ColorCanvas appendedCanvas = new ColorCanvas(1, width, " ", null , null);
     this.height++;
     ColorByte[] newContent = new ColorByte[content.length + width];
     System.arraycopy(content, 0, newContent, 0, content.length);

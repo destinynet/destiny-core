@@ -56,7 +56,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 
 
     val 右方大運直 = ColorCanvas(9, 24, "　")
-    val 下方大運橫 = ColorCanvas(8, 70, "　", Optional.empty(), Optional.empty())
+    val 下方大運橫 = ColorCanvas(8, 70, "　", null, null)
 
     val dataList = ArrayList(model.fortuneDatas)
 
