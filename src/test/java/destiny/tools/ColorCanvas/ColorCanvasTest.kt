@@ -6,6 +6,15 @@ import kotlin.test.assertEquals
 class ColorCanvasTest {
 
   @Test
+  fun testCanvas() {
+    val cc = ColorCanvas(9, 50, "." , "#ffffcc" , "000")
+    cc.add(ColorCanvas(7 , 5 , "X" , "red" , "white") , 2 , 4)
+    cc.add(ColorCanvas(2 , 5 , "ABC" , "red" , "white") , 4 , 6)
+    cc.add(ColorCanvas(3 , 8 , "哈囉" , "red" , "white") , 4 , 40)
+    println(cc)
+  }
+
+  @Test
   fun testColorCanvas() {
     val cc = ColorCanvas(1, 10, "　")
     cc.setText("一二三四五", 1, 1)
@@ -30,7 +39,8 @@ class ColorCanvasTest {
     val cc = ColorCanvas(2, 10, " ")
     cc.setText("一二三四五", 1, 1)
     cc.setText("六七八九十", 2, 1)
-    cc.appendLine("測試隨便亂加行12rewerwrd哈哈", null, null, " ", null, null)
+    cc.appendLine("許功蓋許功蓋許功蓋", null, null, " ", null, null)
+    cc.appendLine("许功盖许功盖许功盖", null, null, " ", null, null)
     println(cc.toString())
   }
 }
