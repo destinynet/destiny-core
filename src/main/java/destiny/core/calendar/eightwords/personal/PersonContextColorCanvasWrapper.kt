@@ -35,7 +35,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     cc.add(metaDataColorCanvas, 1, 1) // 國曆 農曆 經度 緯度 短網址 等 MetaData
 
     cc.setText("性別：", 1, 59)
-    cc.setText(model.getGender().toString(), 1, 65) // '男' or '女'
+    cc.setText(model.gender.toString(), 1, 65) // '男' or '女'
     cc.setText("性", 1, 67)
 
     cc.setText("八字：", 10, 1)

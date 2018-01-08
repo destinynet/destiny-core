@@ -35,17 +35,23 @@ class PersonContext(
   hourImpl: IHour,
   midnightImpl: IMidnight,
   changeDayAfterZi: Boolean,
+
   /** 實作計算節氣的介面  */
   private val solarTermsImpl: SolarTermsIF,
+
   /** 星體運行到某點的介面  */
   private val starTransitImpl: IStarTransit,
+
   /** 歲數實作  */
   private val intAgeImpl: IntAge,
+
   /** 出生時刻  */
   lmt: ChronoLocalDateTime<*>,
+
   /** 出生地點  */
   location: Location,
-  private val locationName: String?,
+
+  private val place: String?,
   /** 性別  */
   val gender: Gender,
 
@@ -82,14 +88,14 @@ class PersonContext(
 
 
   override val model: PersonContextModel
-    get() = PersonContextModel(gender, eightWords, lmt, location, locationName,
-      chineseDate,
-      getFortuneDatas(9),
-      risingStemBranch,
-      getBranchOf(Planet.SUN),
-      getBranchOf(Planet.MOON),
-      prevNextMajorSolarTerms,
-      getAgeMap(90))
+    get() = PersonContextModel(gender, eightWords, lmt, location, place,
+                               chineseDate,
+                               getFortuneDatas(9),
+                               risingStemBranch,
+                               getBranchOf(Planet.SUN),
+                               getBranchOf(Planet.MOON),
+                               prevNextMajorSolarTerms,
+                               getAgeMap(90))
 
   /** 八字大運是否順行  */
   val isFortuneDirectionForward: Boolean

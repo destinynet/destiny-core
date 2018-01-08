@@ -61,8 +61,8 @@ data class HouseData(
     return "[宮位 名稱=$house, 干支=$stemBranch, 星體=$stars]"
   }
 
-  override fun compareTo(o: HouseData): Int {
-    return if (this == o) 0 else this.house.compareTo(o.house)
+  override fun compareTo(other: HouseData): Int {
+    return if (this == other) 0 else this.house.compareTo(other.house)
   }
 
 }

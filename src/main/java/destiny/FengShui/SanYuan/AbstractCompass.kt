@@ -3,30 +3,30 @@
  * @date 2002/9/23
  * @time 下午 03:02:51
  */
-package destiny.FengShui.SanYuan;
+package destiny.FengShui.SanYuan
 
-import java.io.Serializable;
+import java.io.Serializable
 
-abstract class AbstractCompass implements Serializable {
+abstract class AbstractCompass : Serializable {
 
   /**
    * 取得某個此輪初始元素的起始度數
    */
-  public abstract double getInitDegree();
+  abstract val initDegree: Double
 
   /**
    * 取得此輪每個元素的間隔度數
    */
-  public abstract double getStepDegree();
+  abstract val stepDegree: Double
 
   /**
    * 取得某個元素的起始度數
    */
-  public abstract double getStartDegree(Object o);
+  abstract fun getStartDegree(o: Any): Double
 
   /**
    * 取得某個元素的結束度數
    */
-  public abstract double getEndDegree(Object o);
+  abstract fun getEndDegree(o: Any): Double
 
 }
