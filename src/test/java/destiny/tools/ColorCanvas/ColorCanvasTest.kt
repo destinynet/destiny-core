@@ -30,7 +30,7 @@ class ColorCanvasTest {
   fun testAddLine() {
     val cc = ColorCanvas(2, 10, " ") //FIXME addLine() 只能測試背景是「非中文」的字元
     cc.setText("一二三四五", 1, 1)
-    cc.addLine("六七八九十", null, null, null, null, false)
+    cc.addLine("六七八九十", false)
     assertEquals("一二三四五\n六七八九十\n", cc.toString())
   }
 

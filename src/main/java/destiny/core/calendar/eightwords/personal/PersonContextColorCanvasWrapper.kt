@@ -22,17 +22,9 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
                                       /** 地支藏干的實作，內定採用標準設定  */
                                       private val hiddenStemsImpl: HiddenStemsIF, linkUrl: String, private val direction: Direction) : ContextColorCanvasWrapper(personContext, model.lmt, model.location, locationName, hiddenStemsImpl, linkUrl, direction) {
 
-  private var outputMode = OutputMode.HTML
 
   private val timeDecorator = TimeSecDecoratorChinese()
 
-  enum class OutputMode {
-    HTML, TEXT
-  }
-
-  fun setOutputMode(mode: OutputMode) {
-    this.outputMode = mode
-  }
 
   /** 取得八字命盤  */
   override fun toString(): String {
@@ -143,8 +135,8 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     cc.add(節氣, 31, 1)
 
     return when (this.outputMode) {
-      PersonContextColorCanvasWrapper.OutputMode.TEXT -> cc.toString()
-      PersonContextColorCanvasWrapper.OutputMode.HTML -> cc.htmlOutput
+      OutputMode.TEXT -> cc.toString()
+      OutputMode.HTML -> cc.htmlOutput
     }
   } // toString()
 

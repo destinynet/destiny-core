@@ -7,10 +7,8 @@ package destiny.tools.ColorCanvas
 
 import java.awt.Font
 import java.io.Serializable
-import java.io.UnsupportedEncodingException
 import java.net.URL
 import java.nio.charset.Charset
-import java.util.*
 
 /**
  * 具備彩色/字型的 Canvas , 能夠輸出成 HTML , 座標系統為 1-based，如下：
@@ -69,9 +67,7 @@ class ColorCanvas : Serializable {
               val tempBgColor =
                 this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].getBackColor()
               this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1] = childContent[j]
-              this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].setBackColor(
-                tempBgColor
-              )
+              this.content[(child.x + (childX - 1) - 1) * this.width + (child.y + (childY - 1)) - 1].setBackColor(tempBgColor)
             }
 
           }
@@ -107,7 +103,7 @@ class ColorCanvas : Serializable {
        * 所以，這裡就不需要再去 getContent() 一次
        */
 
-      val list = ArrayList<ColorByte>()
+      val list = mutableListOf<ColorByte>()
       while (precursor < content.size
       ) {
         if (content[index].isSameProperties(content[precursor])
@@ -166,7 +162,7 @@ class ColorCanvas : Serializable {
   constructor(height: Int, width: Int) {
     this.height = height
     this.width = width
-    content = Array(width * height , {ColorByte(' ')})
+    content = Array(width * height, { ColorByte(' ') })
   }
 
 
@@ -190,7 +186,7 @@ class ColorCanvas : Serializable {
     this.height = height
     this.width = width
 
-    content = fillContent(fill , null , null , height , width)
+    content = fillContent(fill, null, null, height, width)
   }
 
   /** 生新的畫布，以 fill 'String' 填滿整個畫面 ，指定前景及背景顏色  */
@@ -198,20 +194,24 @@ class ColorCanvas : Serializable {
     this.height = height
     this.width = width
 
-    content = fillContent(fill , foreColor , backColor , height , width)
+    content = fillContent(fill, foreColor, backColor, height, width)
   }
 
-  private fun fillContent(fill: String, foreColor: String?, backColor: String?, height: Int, width: Int) : Array<ColorByte> {
+  private fun fillContent(fill: String,
+                          foreColor: String?,
+                          backColor: String?,
+                          height: Int,
+                          width: Int): Array<ColorByte> {
     val bytes: ByteArray = fillingStringToBytes(fill)
 
-    return Array(width * height , {it ->
+    return Array(width * height, { it ->
       val h = it / width
       val w = it % width
-      ColorByte(bytes[w % bytes.size] , foreColor , backColor , null , null , null)
+      ColorByte(bytes[w % bytes.size], foreColor, backColor, null, null, null)
     })
   }
 
-  private fun fillingStringToBytes(fill: String) : ByteArray {
+  private fun fillingStringToBytes(fill: String): ByteArray {
     val strChars = fill.toCharArray()
 
     return strChars.flatMap { strChar ->
@@ -272,17 +272,15 @@ class ColorCanvas : Serializable {
    * @param title     Title
    * @param wrap      是否換行
    */
-  fun setText(
-    str: String,
-    x: Int,
-    y: Int,
-    foreColor: String?,
-    backColor: String?,
-    font: Font?,
-    url: String?,
-    title: String?,
-    wrap: Boolean
-  ) {
+  fun setText(str: String,
+              x: Int,
+              y: Int,
+              foreColor: String?,
+              backColor: String?,
+              font: Font?,
+              url: String?,
+              title: String?,
+              wrap: Boolean) {
     var str = str
     var foreColor = foreColor
     var backColor = backColor
@@ -290,12 +288,8 @@ class ColorCanvas : Serializable {
     var url = url
     var index = (x - 1) * width + (y - 1)
     var strWidth = 0
-    try {
-      //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
-      //byte[] bytes = str.getBytes("Big5");
-      strWidth = str.toByteArray(charset("Big5")).size
-    } catch (ignored: UnsupportedEncodingException) {
-    }
+    //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
+    strWidth = str.toByteArray(charset("Big5")).size
 
     if (wrap
     ) {
@@ -325,25 +319,17 @@ class ColorCanvas : Serializable {
     val strChars = str.toCharArray() //取得傳入字串的 char array
 
     for (strChar in strChars) {
-      var bytes: ByteArray? = null
-      try {
-        bytes = strChar.toString().toByteArray(charset("Big5"))
-      } catch (ignored: UnsupportedEncodingException) {
-      }
-
+      val bytes = strChar.toString().toByteArray(charset("Big5"))
       val indexLine = index / this.width + 1
       var precursorLine = 0
 
-      if (bytes != null
+
+      precursorLine = if ((index + bytes.size) % this.width == 0
       ) {
-        precursorLine = if ((index + bytes.size) % this.width == 0
-        )
         //剛好到行尾
-        {
-          indexLine
-        } else {
-          (index + bytes.size) / this.width + 1
-        }
+        indexLine
+      } else {
+        (index + bytes.size) / this.width + 1
       }
 
       if (indexLine != precursorLine
@@ -356,7 +342,7 @@ class ColorCanvas : Serializable {
         } //填空白
         index += spaces
       }
-      for (j in index until index + bytes!!.size) {
+      for (j in index until index + bytes.size) {
         //如果新加入的背景色為空，檢查原字元的背景色
         if (backColor == null
         ) {
@@ -380,7 +366,7 @@ class ColorCanvas : Serializable {
 
         content[j] = ColorByte(bytes[j - index], foreColor, backColor, font, url, title)
       }
-      index = index + bytes.size
+      index += bytes.size
       if (index >= content.size
       ) {
         break
@@ -394,9 +380,9 @@ class ColorCanvas : Serializable {
    * 2010/08/13 Added :
    * 要從 str 中製造出 寬度 為 w 的字串
    * 假設 str = "一二三四五aabbcc" , 強迫寬度為 10 , 就要取前五個字
-   * 原始字串的 bytearray 為：
+   * 原始字串的 byteArray 為：
    * [-28, -72, -128, -28, -70, -116, -28, -72, -119, -27, -101, -101, -28, -70, -108, 97, 97, 98, 98, 99, 99]
-   * (    一      ）（     二      ）（    三      ）（    四       ）（    五     ） a   a   b   b   c   c
+   * (     一      ） （     二      ）  （    三     ）  （     四     ） （    五     ）   a   a   b   b   c   c
    * 舊的演算法 :
    * byte[] byteArray = str.getBytes();
    * str = new String(byteArray , 0 , (this.w-y+1));
@@ -461,7 +447,12 @@ class ColorCanvas : Serializable {
   /**
    * 新增一行字，到本 Canvas 「有字的最底端」
    */
-  fun addLine(str: String, foreColor: String?, backColor: String?, font: Font?, url: URL?, wrap: Boolean) {
+  fun addLine(str: String,
+              wrap: Boolean,
+              foreColor: String? = null,
+              backColor: String? = null,
+              font: Font? = null,
+              url: URL? = null) {
     /**
      * 必須先取出來，第幾行開始為空
      * 演算法：由底層數上來，遇到有字，則停止
@@ -509,7 +500,7 @@ class ColorCanvas : Serializable {
     val additionalRows = strWidth / this.width + 1
 
     val appendedCanvas = ColorCanvas(additionalRows, width, fill, foreColor, backColor)
-    appendedCanvas.addLine(str, foreColor, backColor, font, url, true)
+    appendedCanvas.addLine(str, true, foreColor, backColor, font, url)
 
     this.height += additionalRows
     content += appendedCanvas.content
@@ -538,15 +529,12 @@ class ColorCanvas : Serializable {
     val hasFont: Boolean
     hasFont = cb.font != null || cb.foreColor != null || cb.getBackColor() != null || cb.title != null
 
-    if (hasUrl && !hasFont
-    )
     //只有網址
-    {
-      try {
-        tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">").append(String(byteArray, charsetBig5))
-          .append("</a>")
-      } catch (ignored: UnsupportedEncodingException) {
-      }
+    if (hasUrl && !hasFont
+    ) {
+      tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">")
+          .append(String(byteArray, charsetBig5)).append("</a>")
+
 
     } else if (!hasUrl && hasFont
     )
@@ -562,11 +550,7 @@ class ColorCanvas : Serializable {
       tempSb.append("</a>")
     } else {
       //沒有網址，也沒有字型變化
-      try {
-        tempSb.append(String(byteArray, Charset.forName("Big5")))
-      } catch (ignored: UnsupportedEncodingException) {
-      }
-
+      tempSb.append(String(byteArray, Charset.forName("Big5")))
     }
     return tempSb.toString()
   }
@@ -600,13 +584,8 @@ class ColorCanvas : Serializable {
       sb.append("\"")
     }
 
-
     sb.append(">")
-    try {
-      sb.append(String(byteArray, charsetBig5))
-    } catch (ignored: UnsupportedEncodingException) {
-    }
-
+    sb.append(String(byteArray, charsetBig5))
     sb.append("</span>")
     return sb
   } //buildFontHtml()
@@ -624,19 +603,13 @@ class ColorCanvas : Serializable {
       for (j in 0 until width) {
         byteArray[j] = cbs[(i - 1) * width + j].byte
       }
-      var s: String? = null
-      try {
-        s = String(byteArray, 0, width, charsetBig5)
-      } catch (ignored: UnsupportedEncodingException) {
-      }
-
-      sb.append(s)
+      sb.append(String(byteArray, 0, width, charsetBig5))
       sb.append('\n')
     }
     return sb.toString()
   }
 
   companion object {
-    val charsetBig5 = Charset.forName("Big5")
+    val charsetBig5 = Charset.forName("Big5")!!
   }
 } //class

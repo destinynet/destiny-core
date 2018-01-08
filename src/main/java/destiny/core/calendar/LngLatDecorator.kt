@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar
 
-import destiny.tools.AlignTools
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import java.text.DecimalFormat
@@ -32,15 +31,9 @@ class LngLatDecoratorTaiwan : Decorator<Location> {
 
   override fun getOutputString(value: Location): String {
     return with(StringBuilder()) {
-      append(if (value.eastWest == Location.EastWest.EAST) "東經" else "西經")
-      append(AlignTools.alignRight(value.lngDeg, 4, false)).append("度 ")
-      append(AlignTools.leftPad(value.lngMin.toString(), 2, '0')).append("分 ")
-      append(formatter.format(value.lngSec)).append("秒, ")
-
-      append(if (value.northSouth == Location.NorthSouth.NORTH) "北緯" else "南緯")
-      append(AlignTools.alignRight(value.latDeg, 3)).append("度 ")
-      append(AlignTools.leftPad(value.latMin.toString(), 2, '0')).append("分 ")
-      append(formatter.format(value.latSec)).append("秒")
+      append(LngDecorator.getOutputString(value.longitude , Locale.TAIWAN))
+      append(", ")
+      append(LatDecorator.getOutputString(value.latitude , Locale.TAIWAN))
     }.toString()
   }
 }
@@ -51,15 +44,9 @@ class LngLatDecoratorChina : Decorator<Location> {
 
   override fun getOutputString(value: Location): String {
     return with(StringBuilder()) {
-      append(if (value.eastWest == Location.EastWest.EAST) "东经" else "西经")
-      append(AlignTools.alignRight(value.lngDeg, 4, false)).append("度 ")
-      append(AlignTools.leftPad(value.lngMin.toString(), 2, '0')).append("分 ")
-      append(formatter.format(value.lngSec)).append("秒, ")
-
-      append(if (value.northSouth == Location.NorthSouth.NORTH) "北纬" else "南纬")
-      append(AlignTools.alignRight(value.latDeg, 3)).append("度 ")
-      append(AlignTools.leftPad(value.latMin.toString(), 2, '0')).append("分 ")
-      append(formatter.format(value.latSec)).append("秒")
+      append(LngDecorator.getOutputString(value.longitude , Locale.SIMPLIFIED_CHINESE))
+      append(", ")
+      append(LatDecorator.getOutputString(value.latitude , Locale.SIMPLIFIED_CHINESE))
     }.toString()
   }
 }
@@ -67,24 +54,12 @@ class LngLatDecoratorChina : Decorator<Location> {
 
 class LngLatDecoratorEnglish : Decorator<Location> {
 
-  internal var formatter = DecimalFormat("00.00")
-
   override fun getOutputString(value: Location): String {
 
-    val sb = StringBuilder()
-    sb.append(value.lngDeg).append("° ")
-    sb.append(value.lngMin).append("' ")
-    sb.append(formatter.format(value.lngSec)).append("\" ")
-    sb.append(if (value.eastWest == Location.EastWest.EAST) "E" else "W")
-    sb.append(" , ")
-
-
-    sb.append(value.latDeg).append("° ")
-    sb.append(value.latMin).append("' ")
-    sb.append(formatter.format(value.latSec)).append("\" ")
-    sb.append(if (value.northSouth == Location.NorthSouth.NORTH) "N" else "S")
-
-
-    return sb.toString()
+    return with(StringBuilder()) {
+      append(LngDecorator.getOutputString(value.longitude , Locale.ENGLISH))
+      append(", ")
+      append(LatDecorator.getOutputString(value.latitude , Locale.ENGLISH))
+    }.toString()
   }
 }

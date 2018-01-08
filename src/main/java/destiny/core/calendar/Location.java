@@ -71,7 +71,7 @@ public class Location implements Serializable {
     // en_GB , 倫敦
     .put(Locale.UK , new Location(WEST , 0 , 7 , NORTH , 51 , 30 , "Europe/London"))
     // en_HK , 香港    
-    .put(new Locale("en" , "HK"), new Location(EAST , 114 , 12 , NORTH , 22 , 16 , "Asia/Hong_Kong"))
+    .put(new Locale("en" , "HK"), new Location(EAST , 114.1735865 , NORTH , 22.2798721 , 0 , "Asia/Hong_Kong" , null))
     // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
     .put(new Locale("en" , "IE"), new Location(WEST , 6.2592 , NORTH , 53.3472 , 0, "Europe/Dublin", null))
     // en_MY , 馬來西亞 , 吉隆坡
@@ -117,7 +117,7 @@ public class Location implements Serializable {
     // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
     .put(Locale.CHINA   , new Location(EAST , 116 , 23 , NORTH , 39 , 55 , "Asia/Shanghai"))
     // zh_HK , 香港
-    .put(new Locale("zh" , "HK"), new Location(EAST , 114 , 9 , 0, NORTH , 22 , 17 , 2.4, "Asia/Hong_Kong"))
+    .put(new Locale("zh" , "HK"), new Location(EAST , 114.1735865 , NORTH , 22.2798721  , 0 , "Asia/Hong_Kong" , null))
     // zh_MO , 澳門
     .put(new Locale("zh" , "MO"), new Location(EAST , 113 , 35 , NORTH , 22 , 14 , "Asia/Macao"))
     // zh_SG , 新加坡
