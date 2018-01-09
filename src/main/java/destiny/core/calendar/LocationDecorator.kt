@@ -29,15 +29,15 @@ class LocationDecoratorTaiwan : Decorator<Location> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(location: Location): String {
+  override fun getOutputString(value: Location): String {
 
     val sb = StringBuilder()
-    sb.append(LngLatDecorator.getOutputString(location, Locale.TAIWAN))
+    sb.append(LngLatDecorator.getOutputString(value, Locale.TAIWAN))
 
-    sb.append("高度 ").append(location.altitudeMeter).append(" 公尺.")
-    sb.append(" 時區 ").append(location.timeZone.id)
-    if (location.hasMinuteOffset())
-      sb.append(" 時差 ").append(location.minuteOffset).append(" 分鐘.")
+    sb.append("高度 ").append(value.altitudeMeter).append(" 公尺.")
+    sb.append(" 時區 ").append(value.timeZone.id)
+    if (value.hasMinuteOffset())
+      sb.append(" 時差 ").append(value.minuteOffset).append(" 分鐘.")
 
     return sb.toString()
   }
@@ -49,14 +49,14 @@ class LocationDecoratorChina : Decorator<Location> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(location: Location): String {
+  override fun getOutputString(value: Location): String {
     val sb = StringBuilder()
-    sb.append(LngLatDecorator.getOutputString(location, Locale.CHINA))
+    sb.append(LngLatDecorator.getOutputString(value, Locale.CHINA))
 
-    sb.append("高度 ").append(location.altitudeMeter).append(" 米")
-    sb.append(" 时区 ").append(location.timeZone.id)
-    if (location.hasMinuteOffset())
-      sb.append(" 时差 ").append(location.minuteOffset).append(" 分钟.")
+    sb.append("高度 ").append(value.altitudeMeter).append(" 米")
+    sb.append(" 时区 ").append(value.timeZone.id)
+    if (value.hasMinuteOffset())
+      sb.append(" 时差 ").append(value.minuteOffset).append(" 分钟.")
 
     return sb.toString()
   }
@@ -68,12 +68,12 @@ class LocationDecoratorEnglish : Decorator<Location> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(location: Location): String {
+  override fun getOutputString(value: Location): String {
     val sb = StringBuilder()
-    sb.append(LngLatDecorator.getOutputString(location, Locale.ENGLISH))
+    sb.append(LngLatDecorator.getOutputString(value, Locale.ENGLISH))
 
-    sb.append(" GMT offset ").append(location.timeZone.rawOffset / (60000 * 60)).append(" hours , ")
-    sb.append("Alt ").append(location.altitudeMeter).append(" m.")
+    sb.append(" GMT offset ").append(value.timeZone.rawOffset / (60000 * 60)).append(" hours , ")
+    sb.append("Alt ").append(value.altitudeMeter).append(" m.")
     return sb.toString()
   }
 

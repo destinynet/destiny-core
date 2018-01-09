@@ -24,12 +24,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-/**
- *
- */
-public interface PalmIF {
+public interface IPalm {
 
-  Logger logger = LoggerFactory.getLogger(PalmIF.class);
+  Logger logger = LoggerFactory.getLogger(IPalm.class);
 
   /**
    * 本命盤，已經預先計算命宮

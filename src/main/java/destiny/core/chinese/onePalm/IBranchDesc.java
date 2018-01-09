@@ -6,7 +6,7 @@ package destiny.core.chinese.onePalm;
 import destiny.core.chinese.Branch;
 
 /** 由地支，取得解釋 */
-public interface BranchDescIF {
+public interface IBranchDesc {
 
   /** 取得某宮位的簡介 */
   String getHouseIntro(Branch house);

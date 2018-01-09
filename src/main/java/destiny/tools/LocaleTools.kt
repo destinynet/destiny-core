@@ -1,10 +1,10 @@
+/**
+ * Created by smallufo on 2017-12-02.
+ */
 package destiny.tools
 
 import java.util.*
 
-/**
- * Created by smallufo on 2017-12-02.
- */
 object LocaleTools {
   /** 將 string 以 _ 切開，傳回 Locale 物件  */
   fun getLocale(string: String): Locale {

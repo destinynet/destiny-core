@@ -5,7 +5,7 @@ package destiny.core.chinese.onePalm;
 
 import java.io.Serializable;
 
-public class PalmImpl implements PalmIF , Serializable {
+public class PalmImpl implements IPalm, Serializable {
 
   public PalmImpl() {
 

@@ -13,9 +13,9 @@ public class LocationWithName implements Serializable {
 
   private final String name;
 
-  public LocationWithName(Location location, String name) {
+  public LocationWithName(Location location, String place) {
     this.location = location;
-    this.name = name;
+    this.name = place;
   }
 
   public Location getLocation() {

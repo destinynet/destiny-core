@@ -20,7 +20,7 @@ import static org.junit.Assert.assertSame;
  */
 public class PalmImplTest {
 
-  PalmIF impl = new PalmImpl();
+  IPalm impl = new PalmImpl();
 
   PositiveIF defaultImpl = new PositiveGenderImpl();
 
@@ -64,7 +64,7 @@ public class PalmImplTest {
    */
   @Test
   public void testGetPalm_Female() {
-    PalmIF impl = new PalmImpl();
+    IPalm impl = new PalmImpl();
     Palm palm = impl.getPalm(Gender.女, 戌, false, 9, 24, 戌, defaultImpl, true);
 
     assertSame(戌, palm.getYear());
