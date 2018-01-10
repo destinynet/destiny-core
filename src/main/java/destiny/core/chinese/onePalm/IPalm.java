@@ -32,7 +32,7 @@ public interface IPalm {
    * 本命盤，已經預先計算命宮
    * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
    * */
-  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch , PositiveIF positiveImpl , Branch rising , Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch , IPositive positiveImpl , Branch rising , Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     int finalMonthNum = IFinalMonthNumber.Companion.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
@@ -57,16 +57,12 @@ public interface IPalm {
    * 本命盤 , 沒有預先計算命宮
    * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
    * */
-  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch, PositiveIF positiveImpl, Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch, IPositive positiveImpl, Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     logger.trace("positive = {}" , positive);
 
     int finalMonthNum = IFinalMonthNumber.Companion.getFinalMonthNumber(monthNum , leap , monthBranch , dayNum , monthAlgo);
-
-//    int finalMonthNum = monthNum ;
-//    if (leap && dayNum > 15)  // 若為閏月，15日以後算下個月
-//      finalMonthNum++;
 
     logger.trace("yearBranch = {}", yearBranch);
 
@@ -90,7 +86,7 @@ public interface IPalm {
   }
 
   /** 沒帶入節氣資料 , 內定把月份計算採用 {@link MonthAlgo#MONTH_LEAP_SPLIT15} 的演算法 */
-  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch, PositiveIF positiveImpl, boolean clockwiseHouse) {
+  default Palm getPalm(Gender gender, Branch yearBranch, boolean leap, int monthNum, int dayNum, Branch hourBranch, IPositive positiveImpl, boolean clockwiseHouse) {
     int positive = positiveImpl.isPositive(gender , yearBranch) ? 1 : -1 ;
 
     logger.trace("positive = {}" , positive);
@@ -126,7 +122,7 @@ public interface IPalm {
    * @param trueRising  是否已經預先計算好了真實的上升星座
    * @param monthBranch 「節氣」的月支
    */
-  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour , PositiveIF positiveImpl , Optional<Branch> trueRising , Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
+  default Palm getPalm(Gender gender , ChineseDateHour chineseDateHour , IPositive positiveImpl , Optional<Branch> trueRising , Branch monthBranch , MonthAlgo monthAlgo , boolean clockwiseHouse) {
     return trueRising
       .map  (rising -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl, rising , monthBranch, monthAlgo, clockwiseHouse))
       .orElseGet(() -> getPalm(gender, chineseDateHour.getYear().getBranch(), chineseDateHour.isLeapMonth(), chineseDateHour.getMonth(), chineseDateHour.getDay(), chineseDateHour.getHourBranch(), positiveImpl,          monthBranch, monthAlgo , clockwiseHouse));
@@ -138,7 +134,7 @@ public interface IPalm {
    * @param trueRisingSign  真實星體命宮. 若為 false , 則為傳統一掌經起命宮
    * @param clockwiseHouse  宮位飛佈，順時針(true) or 逆時針(false)
    */
-  default PalmWithMeta getPalmWithMeta(Gender gender, ChronoLocalDateTime lmt, Location loc, String place, PositiveIF positiveImpl,
+  default PalmWithMeta getPalmWithMeta(Gender gender, ChronoLocalDateTime lmt, Location loc, String place, IPositive positiveImpl,
                                        IChineseDate chineseDateImpl, IDay dayImpl, IHour hourImpl, IMidnight midnightImpl,
                                        IRisingSign risingSignImpl, IYearMonth yearMonthImpl, MonthAlgo monthAlgo,
                                        boolean changeDayAfterZi, boolean trueRisingSign, boolean clockwiseHouse) {
