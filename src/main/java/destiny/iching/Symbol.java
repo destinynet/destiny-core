@@ -17,7 +17,7 @@ import java.io.Serializable;
 /**
  * 八卦基本符號以及其資料
  */
-public enum Symbol implements Serializable , SymbolIF , IFiveElement {
+public enum Symbol implements Serializable , ISymbol, IFiveElement {
   乾('乾', new boolean[] {true  , true  , true  } ),
   兌('兌', new boolean[] {true  , true  , false } ),
   離('離', new boolean[] {true  , false , true  } ),

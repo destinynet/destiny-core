@@ -1,7 +1,7 @@
 /** 2009/7/13 上午 4:28:41 by smallufo */
 package destiny.iching.contentProviders;
 
-import destiny.iching.HexagramIF;
+import destiny.iching.IHexagram;
 
 import java.util.Locale;
 
@@ -9,12 +9,12 @@ import java.util.Locale;
 public interface ImageIF {
 
   /** 取得卦的象曰 */
-  String getHexagramImage(HexagramIF hexagram, Locale locale);
+  String getHexagramImage(IHexagram hexagram, Locale locale);
 
   /** 取得爻的象曰 , lineIndex 亦可直接傳 0 或 7 進來 */
-  String getLineImage(HexagramIF hexagram, int lineIndex, Locale locale);
+  String getLineImage(IHexagram hexagram, int lineIndex, Locale locale);
 
   /** 用九/用六的象曰 */
-  String getExtraImage(HexagramIF hexagram, Locale locale);
+  String getExtraImage(IHexagram hexagram, Locale locale);
 }
 

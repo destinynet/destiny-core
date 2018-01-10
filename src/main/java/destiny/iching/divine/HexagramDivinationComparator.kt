@@ -5,20 +5,20 @@
 package destiny.iching.divine
 
 import destiny.iching.Hexagram
-import destiny.iching.HexagramIF
+import destiny.iching.IHexagram
 import destiny.iching.HexagramSequenceIF
 import java.util.*
 
 /**
  * 京房卦序：乾為天,天風姤,天山遯,天地否...
  */
-class HexagramDivinationComparator : Comparator<HexagramIF>, HexagramSequenceIF {
+class HexagramDivinationComparator : Comparator<IHexagram>, HexagramSequenceIF {
 
   /**
    * 實作 HexagramSequenceIF
    * @return 傳回六爻卦序, 乾=1 , 姤=2 , 遯=3 , 否=4 ...
    */
-  override fun getIndex(hexagram: HexagramIF): Int {
+  override fun getIndex(hexagram: IHexagram): Int {
     val h = Hexagram.getHexagram(hexagram.upperSymbol, hexagram.lowerSymbol)
     return hexagramIndexMap[h]!!
   }
@@ -37,7 +37,7 @@ class HexagramDivinationComparator : Comparator<HexagramIF>, HexagramSequenceIF 
     return indexHexagramMap[i]!!
   }
 
-  override fun compare(h1: HexagramIF, h2: HexagramIF): Int {
+  override fun compare(h1: IHexagram, h2: IHexagram): Int {
     return getIndex(h1) - getIndex(h2)
   }
 

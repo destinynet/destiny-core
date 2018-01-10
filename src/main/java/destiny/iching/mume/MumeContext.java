@@ -5,7 +5,7 @@
 package destiny.iching.mume;
 
 import destiny.iching.Hexagram;
-import destiny.iching.HexagramIF;
+import destiny.iching.IHexagram;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -24,9 +24,9 @@ public class MumeContext implements Serializable
    * @param motivate
    *          動爻
    */
-  public MumeContext(@NotNull HexagramIF hexagram, int motivate)
+  public MumeContext(@NotNull IHexagram hexagram, int motivate)
   {
-    this.hexagram = Hexagram.getHexagram(hexagram.getYinYangs());
+    this.hexagram = Hexagram.Companion.getHexagram(hexagram.getYinYangs());
     this.motivate = motivate;
   }
 
@@ -34,14 +34,14 @@ public class MumeContext implements Serializable
    * @return 變卦
    */
   @NotNull
-  public HexagramIF getTargetHexagram()
+  public IHexagram getTargetHexagram()
   {
     boolean[] yinyangs = new boolean[6];
     for (int i = 1; i <= 6; i++)
       yinyangs[i - 1]  = hexagram.getLine(i);
 
     yinyangs[motivate - 1] = !hexagram.getLine(motivate);
-    return Hexagram.getHexagram(yinyangs);
+    return Hexagram.Companion.getHexagram(yinyangs);
   }
 
   public Hexagram getHexagram()
@@ -50,9 +50,9 @@ public class MumeContext implements Serializable
   }
 
   /** 設定本卦 */
-  public void setHexagram(@NotNull HexagramIF hexagram)
+  public void setHexagram(@NotNull IHexagram hexagram)
   {
-    this.hexagram = Hexagram.getHexagram(hexagram.getYinYangs());
+    this.hexagram = Hexagram.Companion.getHexagram(hexagram.getYinYangs());
   }
 
   /** 動爻 , 1~6 */

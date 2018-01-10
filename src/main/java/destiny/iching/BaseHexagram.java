@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 
 /** 因為 enum Hexagram 無法被繼承 , 所以才做出這個中介/adapter class , 提供給其他 class 繼承 */
-public class BaseHexagram implements HexagramIF , Serializable
+public class BaseHexagram implements IHexagram, Serializable
 {
   private Hexagram hexagram;
   
@@ -23,7 +23,7 @@ public class BaseHexagram implements HexagramIF , Serializable
   {
     if(yinyangs.length != 6)
       throw new RuntimeException("BaseHexagram yinyangs length not equal 6!");
-    this.hexagram = Hexagram.getHexagram(yinyangs);
+    this.hexagram = Hexagram.Companion.getHexagram(yinyangs);
   }
 
   @Override
@@ -81,17 +81,15 @@ public class BaseHexagram implements HexagramIF , Serializable
     BaseHexagram other = (BaseHexagram) obj;
     if (hexagram == null)
     {
-      if (other.hexagram != null)
-        return false;
+      return other.hexagram == null;
     }
-    else if (!hexagram.equals(other.hexagram))
-      return false;
-    return true;
+    else
+      return hexagram.equals(other.hexagram);
   }
 
   /** 從 "010101" 取得一個卦 */
   @NotNull
-  public static HexagramIF getFromBinaryString(@Nullable String code)
+  public static IHexagram getFromBinaryString(@Nullable String code)
   {
     if (code == null || code.length() < 6)
       return Hexagram.乾;
@@ -104,7 +102,7 @@ public class BaseHexagram implements HexagramIF , Serializable
         char c = code.toCharArray()[i];
         bools[i] = (c != '0');
       }
-      return Hexagram.getHexagram(bools);  
+      return Hexagram.Companion.getHexagram(bools);
     }
     catch(Exception e)
     {
@@ -114,7 +112,7 @@ public class BaseHexagram implements HexagramIF , Serializable
 
   @NotNull
   @Override
-  public HexagramIF getHexagram(int... lines)
+  public IHexagram getHexagram(@NotNull int... lines)
   {
     return hexagram.getHexagram(lines);
   }

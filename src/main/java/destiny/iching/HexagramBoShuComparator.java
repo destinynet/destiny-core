@@ -13,7 +13,7 @@ import java.util.Comparator;
 /**
  * 帛書卦序
  */
-public class HexagramBoShuComparator extends AbstractHexagramSequence implements Comparator<HexagramIF> {
+public class HexagramBoShuComparator extends AbstractHexagramSequence implements Comparator<IHexagram> {
 
   private static final BiMap<Hexagram,Integer> map = new ImmutableBiMap.Builder<Hexagram , Integer>()
     .put(Hexagram.乾, 1)
@@ -99,7 +99,7 @@ public class HexagramBoShuComparator extends AbstractHexagramSequence implements
   }
 
   @Override
-  public int compare(@NotNull HexagramIF h1, @NotNull HexagramIF h2)
+  public int compare(@NotNull IHexagram h1, @NotNull IHexagram h2)
   {
     return getIndex(h1)-getIndex(h2);
   }

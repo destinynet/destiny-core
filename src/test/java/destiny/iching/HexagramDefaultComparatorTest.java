@@ -83,13 +83,13 @@ public class HexagramDefaultComparatorTest
   {
     HexagramSequenceIF sequenceImpl = new HexagramDefaultComparator();
     
-    assertEquals(Hexagram.乾   , Hexagram.getHexagram(1 , sequenceImpl) );
-    assertEquals(Hexagram.坤   , Hexagram.getHexagram(2 , sequenceImpl) );
-    assertEquals(Hexagram.屯   , Hexagram.getHexagram(3 , sequenceImpl) );
-    assertEquals(Hexagram.蒙   , Hexagram.getHexagram(4 , sequenceImpl) );
-    assertEquals(Hexagram.需   , Hexagram.getHexagram(5 , sequenceImpl) );
-    assertEquals(Hexagram.訟   , Hexagram.getHexagram(6 , sequenceImpl) );
-    assertEquals(Hexagram.師   , Hexagram.getHexagram(7 , sequenceImpl) );
+    assertEquals(Hexagram.乾   , Hexagram.Companion.getHexagram(1 , sequenceImpl) );
+    assertEquals(Hexagram.坤   , Hexagram.Companion.getHexagram(2 , sequenceImpl) );
+    assertEquals(Hexagram.屯   , Hexagram.Companion.getHexagram(3 , sequenceImpl) );
+    assertEquals(Hexagram.蒙   , Hexagram.Companion.getHexagram(4 , sequenceImpl) );
+    assertEquals(Hexagram.需   , Hexagram.Companion.getHexagram(5 , sequenceImpl) );
+    assertEquals(Hexagram.訟   , Hexagram.Companion.getHexagram(6 , sequenceImpl) );
+    assertEquals(Hexagram.師   , Hexagram.Companion.getHexagram(7 , sequenceImpl) );
   }
   
   @Test

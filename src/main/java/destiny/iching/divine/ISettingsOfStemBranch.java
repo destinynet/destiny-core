@@ -7,7 +7,7 @@ package destiny.iching.divine;
 
 import destiny.core.Descriptive;
 import destiny.core.chinese.StemBranch;
-import destiny.iching.HexagramIF;
+import destiny.iching.IHexagram;
 
 /** 納甲法的設定介面 */
 public interface ISettingsOfStemBranch extends Descriptive {
@@ -16,5 +16,5 @@ public interface ISettingsOfStemBranch extends Descriptive {
    * 取得某個卦的某個爻的干支納甲
    * 1 <= LineIndex <=6
    */
-  StemBranch getStemBranch(HexagramIF hexagram, int lineIndex);
+  StemBranch getStemBranch(IHexagram hexagram, int lineIndex);
 }

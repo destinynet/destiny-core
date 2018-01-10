@@ -7,7 +7,7 @@ package destiny.iching.divine
 
 import destiny.core.Descriptive
 import destiny.core.chinese.StemBranch
-import destiny.iching.HexagramIF
+import destiny.iching.IHexagram
 
 /** 伏神介面  */
 interface IHiddenEnergy : Descriptive {
@@ -15,5 +15,5 @@ interface IHiddenEnergy : Descriptive {
    * 取得第幾爻的伏神
    * 1 <= LineIndex <=6
    */
-  fun getStemBranch(hexagram: HexagramIF, settings: ISettingsOfStemBranch, LineIndex: Int): StemBranch
+  fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, LineIndex: Int): StemBranch
 }

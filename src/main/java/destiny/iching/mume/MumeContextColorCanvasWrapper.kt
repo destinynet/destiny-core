@@ -6,7 +6,7 @@ package destiny.iching.mume
 
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.chinese.FiveElement
-import destiny.iching.HexagramIF
+import destiny.iching.IHexagram
 import destiny.iching.Symbol
 import destiny.iching.contentProviders.HexagramNameFullIF
 import destiny.tools.ColorCanvas.ColorCanvas
@@ -103,7 +103,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: HexagramNameFu
     return c.htmlOutput
   }
 
-  private fun getColorCanvas(hexagram: HexagramIF): ColorCanvas {
+  private fun getColorCanvas(hexagram: IHexagram): ColorCanvas {
     val cc = ColorCanvas(7, 12, "　")
 
     val name = hexagramNameFull.getNameFull(hexagram, Locale.TRADITIONAL_CHINESE)

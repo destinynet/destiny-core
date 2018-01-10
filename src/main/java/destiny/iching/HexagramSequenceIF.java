@@ -16,7 +16,7 @@ public interface HexagramSequenceIF
    * @param hexagram 一個卦的資料(Hexagram)
    * @return 卦序 1 <= int <=64
    */
-  int getIndex(HexagramIF hexagram);
+  int getIndex(IHexagram hexagram);
   
   
   /**

@@ -8,7 +8,8 @@ package destiny.iching;
 /**
  * Symbol(八卦) 的介面 , 主要 methods : getName() , 及 getYinYang(0<=index<=2)
  */
-interface SymbolIF {
+interface ISymbol {
+
   /**
    * 傳回八卦名
    */
@@ -19,6 +20,5 @@ interface SymbolIF {
    * index 值為 0,1 or 2
    */
   boolean getBooleanValue(int index);
-
 
 }

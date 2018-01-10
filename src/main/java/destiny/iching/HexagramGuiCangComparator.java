@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Comparator;
 
 /** 歸藏卦序 */
-public class HexagramGuiCangComparator extends AbstractHexagramSequence implements Comparator<HexagramIF> {
+public class HexagramGuiCangComparator extends AbstractHexagramSequence implements Comparator<IHexagram> {
 
   private static final BiMap<Hexagram,Integer> map = new ImmutableBiMap.Builder<Hexagram , Integer>()
     .put(Hexagram.坤, 1)
@@ -97,7 +97,7 @@ public class HexagramGuiCangComparator extends AbstractHexagramSequence implemen
   }
 
   @Override
-  public int compare(@NotNull HexagramIF h1, @NotNull HexagramIF h2) {
+  public int compare(@NotNull IHexagram h1, @NotNull IHexagram h2) {
     return getIndex(h1) - getIndex(h2);
   }
 

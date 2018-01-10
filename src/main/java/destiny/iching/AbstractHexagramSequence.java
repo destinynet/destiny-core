@@ -14,8 +14,8 @@ public abstract class AbstractHexagramSequence implements HexagramSequenceIF, Se
   protected abstract BiMap<Hexagram, Integer> getMap();
 
   @Override
-  public int getIndex(@NotNull HexagramIF hexagram) {
-    Hexagram h = Hexagram.getHexagram(hexagram.getUpperSymbol(), hexagram.getLowerSymbol());
+  public int getIndex(@NotNull IHexagram hexagram) {
+    Hexagram h = Hexagram.Companion.getHexagram(hexagram.getUpperSymbol(), hexagram.getLowerSymbol());
     return getMap().get(h);
   }
 
