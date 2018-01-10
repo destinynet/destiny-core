@@ -13,7 +13,7 @@ interface ISymbol {
   /**
    * 傳回八卦名
    */
-  char getName();
+  String getName();
 
   /**
    * 取得一個卦的第幾爻

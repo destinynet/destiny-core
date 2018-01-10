@@ -2,18 +2,19 @@
  * @author smallufo
  * Created on 2010/11/3 at 上午10:40:34
  */
-package destiny.iching;
+package destiny.iching
 
-import java.util.Locale;
+import java.util.*
 
 
-public interface LineNameDecorator {
+interface LineNameDecorator {
+
+  /** 取得支援的 locale  */
+  val supportedLocale: Locale
+
   /**
    * 將 1~6 , 以及陰陽 , 翻譯成 初九(六) 到 上九(六)
    * @param lineIndex 1~6 for 乾坤之外 , 1~7 for 乾坤
    */
-  String getName(IHexagram hexagram , int lineIndex);
-  
-  /** 取得支援的 locale */
-  Locale getSupportedLocale();
+  fun getName(hexagram: IHexagram, lineIndex: Int): String
 }

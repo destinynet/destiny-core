@@ -35,19 +35,19 @@ public class ChartColorCanvasWrapper implements Serializable
     Symbol tempSymbol = chart.getView(); //底邊
     //從 [2,1] (底邊) 開始，順時鐘設定八個卦的方位
     chartCoordinate[2][1] = chart.getChartBlock(tempSymbol);    //底邊
-    tempSymbol = SymbolAcquired.getClockwiseSymbol(tempSymbol);
+    tempSymbol = SymbolAcquired.Companion.getClockwiseSymbol(tempSymbol);
     chartCoordinate[2][0] = chart.getChartBlock(tempSymbol);    //左下
-    tempSymbol = SymbolAcquired.getClockwiseSymbol(tempSymbol);
+    tempSymbol = SymbolAcquired.Companion.getClockwiseSymbol(tempSymbol);
     chartCoordinate[1][0] = chart.getChartBlock(tempSymbol);    //左邊
-    tempSymbol = SymbolAcquired.getClockwiseSymbol(tempSymbol);
+    tempSymbol = SymbolAcquired.Companion.getClockwiseSymbol(tempSymbol);
     chartCoordinate[0][0] = chart.getChartBlock(tempSymbol);    //左上
-    tempSymbol = SymbolAcquired.getClockwiseSymbol(tempSymbol);
+    tempSymbol = SymbolAcquired.Companion.getClockwiseSymbol(tempSymbol);
     chartCoordinate[0][1] = chart.getChartBlock(tempSymbol);    //上方
-    tempSymbol = SymbolAcquired.getClockwiseSymbol(tempSymbol);
+    tempSymbol = SymbolAcquired.Companion.getClockwiseSymbol(tempSymbol);
     chartCoordinate[0][2] = chart.getChartBlock(tempSymbol);    //右上
-    tempSymbol = SymbolAcquired.getClockwiseSymbol(tempSymbol);
+    tempSymbol = SymbolAcquired.Companion.getClockwiseSymbol(tempSymbol);
     chartCoordinate[1][2] = chart.getChartBlock(tempSymbol);    //右邊
-    tempSymbol = SymbolAcquired.getClockwiseSymbol(tempSymbol);
+    tempSymbol = SymbolAcquired.Companion.getClockwiseSymbol(tempSymbol);
     chartCoordinate[2][2] = chart.getChartBlock(tempSymbol);    //右下
   }
   
@@ -119,7 +119,7 @@ public class ChartColorCanvasWrapper implements Serializable
     chartCanvas.setText(chart.getMountain().toString() , 26 , 11); // XX山
     chartCanvas.setText(chart.getMountain().getOppositeMountain().toString() , 26 , 15 ); // XX向
     chartCanvas.setText(chart.getView().toString() , 26 , 29 ); // 背XX
-    chartCanvas.setText(SymbolAcquired.getOppositeSymbol(chart.getView()).toString() , 26 , 33 ); // 朝XX
+    chartCanvas.setText(SymbolAcquired.Companion.getOppositeSymbol(chart.getView()).toString() , 26 , 33 ); // 朝XX
     
     ColorCanvas[] chartBlockCanvasArray =  
     { 

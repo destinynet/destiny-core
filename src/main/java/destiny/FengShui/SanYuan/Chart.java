@@ -121,8 +121,8 @@ public class Chart implements Serializable {
     }
 
     // TODO : 以後改用 SymbolAcquired.getSymbol : Optional<Symbol>  的演算法
-    Symbol 原始山盤卦 = SymbolAcquired.getSymbolNullable(mountainStart);
-    Symbol 原始向盤卦 = SymbolAcquired.getSymbolNullable(directionStart) ;
+    Symbol 原始山盤卦 = SymbolAcquired.Companion.getSymbolNullable(mountainStart);
+    Symbol 原始向盤卦 = SymbolAcquired.Companion.getSymbolNullable(directionStart) ;
     
     //填入山盤
     fillMountain (mountainStart  , isConverse(原始山盤卦 , 飛佈山盤卦 , getMountain()) );

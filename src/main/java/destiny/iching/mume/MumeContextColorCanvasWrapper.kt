@@ -131,7 +131,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: HexagramNameFu
       ) cc.setText("▅▅▅▅▅", 4 - i, 1)
       else cc.setText("▅▅　▅▅", 4 - i, 1)
     }
-    cc.setText(s.getName().toString(), 2, 11)
+    cc.setText(s.getName(), 2, 11)
     cc.setText(s.fiveElement.toString(), 3, 11)
     return cc
   }
