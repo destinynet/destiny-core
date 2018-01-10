@@ -12,7 +12,7 @@ import java.util.*
 /**
  * 大六壬：壬子天后 癸亥玄武
  */
-class GeneralStemBranchLiuren : GeneralStemBranchIF, Serializable {
+class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
 
   private val map = mapOf(
     貴人 to StemBranch.己丑 ,

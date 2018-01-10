@@ -8,7 +8,7 @@ import destiny.tools.ArrayTools
 import java.io.Serializable
 import java.util.*
 
-class GeneralSeqDefaultImpl : GeneralSeqIF, Serializable {
+class GeneralSeqDefaultImpl : IGeneralSeq, Serializable {
 
   override fun getTitle(locale: Locale): String {
     return "內定順序"

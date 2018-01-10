@@ -10,8 +10,8 @@ import destiny.core.calendar.eightwords.EightWords;
 import destiny.core.calendar.eightwords.IEightWords;
 import destiny.core.chinese.*;
 import destiny.core.chinese.liuren.General;
-import destiny.core.chinese.liuren.GeneralSeqIF;
-import destiny.core.chinese.liuren.GeneralStemBranchIF;
+import destiny.core.chinese.liuren.IGeneralSeq;
+import destiny.core.chinese.liuren.IGeneralStemBranch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public interface PithyIF {
   Logger logger = LoggerFactory.getLogger(PithyIF.class);
 
   default Pithy getPithy(Branch direction, EightWords ew, Branch 月將, TianyiIF tianyiImpl, DayNight dayNight,
-                         Clockwise clockwise, GeneralSeqIF seq , GeneralStemBranchIF generalStemBranchImpl) {
+                         Clockwise clockwise, IGeneralSeq seq , IGeneralStemBranch generalStemBranchImpl) {
 
     // 天乙貴人(起點)
     Branch 天乙貴人 = tianyiImpl.getFirstTianyi(ew.getDayStem() , dayNight);
@@ -46,7 +46,7 @@ public interface PithyIF {
 
   default Pithy getPithy(Branch direction, ChronoLocalDateTime lmt, Location loc, MonthMasterIF monthBranchImpl,
                          DayNightDifferentiator dayNightImpl, TianyiIF tianyiImpl, ClockwiseIF clockwiseImpl,
-                         GeneralSeqIF seq, GeneralStemBranchIF generalStemBranchImpl, IEightWords eightWordsImpl) {
+                         IGeneralSeq seq, IGeneralStemBranch generalStemBranchImpl, IEightWords eightWordsImpl) {
     EightWords ew = eightWordsImpl.getEightWords(lmt , loc);
 
     Branch 月將 = monthBranchImpl.getBranch(lmt , loc);

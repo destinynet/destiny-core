@@ -11,7 +11,7 @@ import destiny.core.chinese.StemBranch
  * 金口訣：壬子玄武 癸亥天后
  * 大六壬：壬子天后 癸亥玄武
  */
-interface GeneralStemBranchIF : Descriptive {
+interface IGeneralStemBranch : Descriptive {
 
   fun getStemBranch(general: General): StemBranch
 

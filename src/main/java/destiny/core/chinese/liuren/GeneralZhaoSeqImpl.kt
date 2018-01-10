@@ -11,7 +11,7 @@ import java.util.Locale
 
 import destiny.core.chinese.liuren.General.*
 
-class GeneralZhaoSeqImpl : GeneralSeqIF, Serializable {
+class GeneralZhaoSeqImpl : IGeneralSeq, Serializable {
 
   override fun getTitle(locale: Locale): String {
     return "趙氏六壬"

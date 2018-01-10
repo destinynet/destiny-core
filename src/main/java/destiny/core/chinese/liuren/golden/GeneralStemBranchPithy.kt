@@ -7,14 +7,14 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.General.*
-import destiny.core.chinese.liuren.GeneralStemBranchIF
+import destiny.core.chinese.liuren.IGeneralStemBranch
 import java.io.Serializable
 import java.util.*
 
 /**
  * 金口訣：壬子玄武 癸亥天后
  */
-class GeneralStemBranchPithy : GeneralStemBranchIF, Serializable {
+class GeneralStemBranchPithy : IGeneralStemBranch, Serializable {
 
   private val map = mapOf(
     貴人 to StemBranch.己丑,

@@ -11,8 +11,8 @@ import destiny.core.chinese.ClockwiseIF
 import destiny.core.chinese.MonthMasterIF
 import destiny.core.chinese.TianyiIF
 import destiny.core.chinese.liuren.General
-import destiny.core.chinese.liuren.GeneralSeqIF
-import destiny.core.chinese.liuren.GeneralStemBranchIF
+import destiny.core.chinese.liuren.IGeneralStemBranch
+import destiny.core.chinese.liuren.IGeneralSeq
 import java.io.Serializable
 import java.util.*
 
@@ -26,9 +26,9 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
                     /** 貴神順逆  */
                     val clockwiseImpl: ClockwiseIF,
                     /** 12天將順序  */
-                    val seqImpl: GeneralSeqIF,
+                    val seqImpl: IGeneralSeq,
                     /** 12天將干支  */
-                    private val generalStemBranchImpl: GeneralStemBranchIF) : Serializable {
+                    private val generalStemBranchImpl: IGeneralStemBranch) : Serializable {
 
   /** 起課方式  */
   enum class Method {
