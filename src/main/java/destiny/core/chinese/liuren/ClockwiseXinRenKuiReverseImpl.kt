@@ -10,7 +10,7 @@ import destiny.core.calendar.eightwords.IDay
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.chinese.Clockwise
-import destiny.core.chinese.ClockwiseIF
+import destiny.core.chinese.IClockwise
 import destiny.core.chinese.Stem.*
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -25,7 +25,7 @@ class ClockwiseXinRenKuiReverseImpl(private val dayImpl: IDay,
                                     private val midnightImpl: IMidnight,
                                     private val hourImpl: IHour,
                                     private val changeDayAfterZi: Boolean,
-                                    private val differentiator: DayNightDifferentiator) : ClockwiseIF, Serializable {
+                                    private val differentiator: DayNightDifferentiator) : IClockwise, Serializable {
 
   override fun getClockwise(lmt: ChronoLocalDateTime<*>, loc: Location): Clockwise {
     val day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi)

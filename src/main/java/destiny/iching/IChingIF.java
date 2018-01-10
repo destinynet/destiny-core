@@ -1,7 +1,7 @@
 /** 2009/6/23 上午 1:56:39 by smallufo */
 package destiny.iching;
 
-import destiny.core.chinese.YinYangIF;
+import destiny.core.chinese.IYinYang;
 import org.jetbrains.annotations.NotNull;
 
 /** 一個易經六十四卦的 Container */
@@ -13,7 +13,7 @@ public interface IChingIF {
 
   /** 從六個陰陽介面，取得一個卦 */
   @NotNull
-  HexagramIF getHexagram(YinYangIF[] yinyangs);
+  HexagramIF getHexagram(IYinYang[] yinyangs);
 
   /** 從六個 boolean 值 , 取得一個卦 */
   @NotNull

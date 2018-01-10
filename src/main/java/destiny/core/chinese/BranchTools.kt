@@ -8,7 +8,7 @@ import destiny.core.chinese.FiveElement.*
 object BranchTools {
 
   /** 地支三合  */
-  fun trilogy(branch: BranchIF<*>): FiveElement {
+  fun trilogy(branch: IBranch<*>): FiveElement {
     return when (branch.branch) {
       Branch.申, Branch.子, Branch.辰 -> 水
       Branch.巳, Branch.酉, Branch.丑 -> 金
@@ -19,7 +19,7 @@ object BranchTools {
   }
 
   /** 地支三會  */
-  fun direction(branch: BranchIF<*>): FiveElement {
+  fun direction(branch: IBranch<*>): FiveElement {
     return when (branch.branch) {
       Branch.亥, Branch.子, Branch.丑 -> 水
       Branch.寅, Branch.卯, Branch.辰 -> 木

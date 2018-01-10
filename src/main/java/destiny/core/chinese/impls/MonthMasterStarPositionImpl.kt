@@ -6,12 +6,12 @@ package destiny.core.chinese.impls
 import destiny.astrology.*
 import destiny.core.calendar.Location
 import destiny.core.chinese.Branch
-import destiny.core.chinese.MonthMasterIF
+import destiny.core.chinese.IMonthMaster
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>) : MonthMasterIF, Serializable {
+class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>) : IMonthMaster, Serializable {
 
   override fun getTitle(locale: Locale): String {
     return "星體觀測（過中氣）"

@@ -6,7 +6,7 @@ package destiny.core.chinese.impls
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.TianyiIF
-import destiny.core.chinese.YinYangIF
+import destiny.core.chinese.IYinYang
 
 import java.io.Serializable
 
@@ -35,7 +35,7 @@ class TianyiAuthorizedImpl : TianyiIF, Serializable {
    * 陰貴歌曰：甲貴陰牛庚戊羊，乙貴在鼠己猴鄉，
    * 　　　　　丙豬丁雞辛遇馬，壬蛇癸兔屬陰方。
    */
-  override fun getFirstTianyi(stem: Stem, yinYang: YinYangIF): Branch {
+  override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     when (stem) {
       Stem.甲 -> return if (yinYang.booleanValue) 未 else 丑
       Stem.戊, Stem.庚 -> return if (yinYang.booleanValue) 丑 else 未

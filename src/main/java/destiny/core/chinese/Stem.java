@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /** 天干系統 */
-public enum Stem implements Comparable<Stem> , FiveElementIF , YinYangIF {
+public enum Stem implements Comparable<Stem> , IFiveElement, IYinYang {
 
   甲('甲'),
   乙('乙'),

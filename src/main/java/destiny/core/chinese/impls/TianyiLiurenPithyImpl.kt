@@ -8,7 +8,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.TianyiIF
-import destiny.core.chinese.YinYangIF
+import destiny.core.chinese.IYinYang
 import java.io.Serializable
 
 /**
@@ -30,7 +30,7 @@ import java.io.Serializable
  */
 class TianyiLiurenPithyImpl : TianyiIF, Serializable {
 
-  override fun getFirstTianyi(stem: Stem, yinYang: YinYangIF): Branch {
+  override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
       甲, 戊, 庚 -> if (yinYang.booleanValue) 丑 else 未
 

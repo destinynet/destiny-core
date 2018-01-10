@@ -7,8 +7,8 @@ import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.core.Gender
 import destiny.core.calendar.LocationWithName
-import destiny.core.chinese.ClockwiseIF
-import destiny.core.chinese.MonthMasterIF
+import destiny.core.chinese.IClockwise
+import destiny.core.chinese.IMonthMaster
 import destiny.core.chinese.TianyiIF
 import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.IGeneralStemBranch
@@ -18,13 +18,13 @@ import java.util.*
 
 class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: Gender, val question: String, val locationWithName: LocationWithName,
                     /** 月將  */
-                    val monthMasterImpl: MonthMasterIF,
+                    val monthMasterImpl: IMonthMaster,
                     /** 晝夜區分  */
                     val dayNightImpl: DayNightDifferentiator,
                     /** 天乙貴人  */
                     val tianyiImpl: TianyiIF,
                     /** 貴神順逆  */
-                    val clockwiseImpl: ClockwiseIF,
+                    val clockwiseImpl: IClockwise,
                     /** 12天將順序  */
                     val seqImpl: IGeneralSeq,
                     /** 12天將干支  */
@@ -54,7 +54,7 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
     val 貴神 = pithy.benefactor
     sb.append("貴神：").append(貴神).append("（").append(General.get(貴神.branch, generalStemBranchImpl)).append("）").append("\n")
     val 將神 = pithy.johnson
-    sb.append("將神：").append(將神).append("（").append(MonthMasterIF.getName(將神.branch)).append("）").append("\n")
+    sb.append("將神：").append(將神).append("（").append(IMonthMaster.getName(將神.branch)).append("）").append("\n")
     sb.append("地分：").append(pithy.direction)
     sb.append("\n\n")
 

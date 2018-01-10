@@ -23,7 +23,7 @@ interface TianyiIF : Descriptive {
   /**
    * 取得天干的天乙貴人、分晝夜
    */
-  fun getFirstTianyi(stem: Stem, yinYang: YinYangIF): Branch
+  fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch
 
   /** 取得天干對應的天乙貴人，不分晝夜，一起傳回來  */
   fun getTianyis(stem: Stem): List<Branch> {

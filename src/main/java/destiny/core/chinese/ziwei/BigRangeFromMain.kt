@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.chinese.YinYangIF
+import destiny.core.chinese.IYinYang
 import destiny.core.chinese.ziwei.House.命宮
 import java.io.Serializable
 
@@ -20,12 +20,12 @@ import java.io.Serializable
  */
 class BigRangeFromMain : IBigRange, Serializable {
 
-  override fun getVageRange(house: House, set: Int, yinYang: YinYangIF, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
+  override fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
     return getAgeRange(house, set, yinYang, gender, houseSeqImpl)
   }
 
   /** 虛歲  */
-  private fun getAgeRange(house: House, set: Int, yinYang: YinYangIF, gender: Gender, houseSeq: IHouseSeq): Pair<Int, Int> {
+  private fun getAgeRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeq: IHouseSeq): Pair<Int, Int> {
     val steps: Int = if (yinYang.booleanValue && gender === Gender.男 || !yinYang.booleanValue && gender === Gender.女) {
       // 陽男陰女順行
       houseSeq.getAheadOf(命宮, house)

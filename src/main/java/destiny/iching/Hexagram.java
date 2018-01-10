@@ -4,7 +4,7 @@
  */
 package destiny.iching;
 
-import destiny.core.chinese.YinYangIF;
+import destiny.core.chinese.IYinYang;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
@@ -129,7 +129,7 @@ public enum Hexagram implements HexagramIF , Serializable
   
   /** 從 陰陽 YinYang 實體的 array 傳回 HexagramIF */
   @NotNull
-  public static Hexagram getHexagram(@NotNull YinYangIF[] yinyangs) {
+  public static Hexagram getHexagram(@NotNull IYinYang[] yinyangs) {
     if (yinyangs.length != 6)
       throw new RuntimeException("yinyangs length not equal 6 !");
 

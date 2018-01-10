@@ -8,7 +8,7 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
-import destiny.core.chinese.YinYangIF
+import destiny.core.chinese.IYinYang
 
 /**
  * 長生 12 神煞
@@ -18,9 +18,9 @@ import destiny.core.chinese.YinYangIF
  * 重點是「五行局」， 而「五行局」又來自「命宮」
  * 但是「命宮」又有可能是依據上升星座而來，「可能」並非來自 陰曆 年份＋月份＋時辰來看
  */
-class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<FiveElement, Gender, YinYangIF>>(star) {
+class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<FiveElement, Gender, IYinYang>>(star) {
 
-  override fun getBranch(t: Triple<FiveElement, Gender, YinYangIF>): Branch {
+  override fun getBranch(t: Triple<FiveElement, Gender, IYinYang>): Branch {
     return StarLongevity.starFuncMap[star]!!.invoke(t.first, t.second, t.third)
   }
 
@@ -37,7 +37,7 @@ class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<Fiv
     //StemBranch 命宮 = IZiwei.getMainHouse(lunarYear.getStem() , finalMonthNumForMonthStars, hour);
     val (fiveElement) = IZiwei.getMainDesc(命宮)
     // 五行局數
-    return getBranch(Triple<FiveElement, Gender, YinYangIF>(fiveElement, gender, lunarYear.stem))
+    return getBranch(Triple<FiveElement, Gender, IYinYang>(fiveElement, gender, lunarYear.stem))
   }
 
 }

@@ -4,9 +4,9 @@
  */
 package destiny.astrology
 
-import destiny.core.chinese.YinYangIF
+import destiny.core.chinese.IYinYang
 
-enum class DayNight(private val value: Boolean) : YinYangIF {
+enum class DayNight(private val value: Boolean) : IYinYang {
 
   /** 日  */
   DAY(true),

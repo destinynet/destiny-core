@@ -4,7 +4,7 @@
  */
 package destiny.core.chinese;
 
-public interface BranchIF<T> {
+public interface IBranch<T> {
 
   Branch getBranch();
 

@@ -8,7 +8,7 @@ package destiny.core.chinese;
 import org.jetbrains.annotations.NotNull;
 
 /** 實作 五行 getFiveElement() 以及 陰陽 getYinYang() 以及取得地支順序 getIndex() 的地支 */
-public enum SimpleBranch implements BranchIF<SimpleBranch>, FiveElementIF , YinYangIF {
+public enum SimpleBranch implements IBranch<SimpleBranch>, IFiveElement, IYinYang {
   子(Branch.子),
   丑(Branch.丑),
   寅(Branch.寅),

@@ -6,12 +6,12 @@ package destiny.core.chinese.impls
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
-import destiny.core.chinese.MonthMasterIF
+import destiny.core.chinese.IMonthMaster
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-class MonthMasterCombinedImpl(private val yearMonthImpl: IYearMonth) : MonthMasterIF, Serializable {
+class MonthMasterCombinedImpl(private val yearMonthImpl: IYearMonth) : IMonthMaster, Serializable {
 
   override fun getTitle(locale: Locale): String {
     return "月支六合（過節）"

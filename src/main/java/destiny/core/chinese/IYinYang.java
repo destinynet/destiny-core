@@ -5,11 +5,11 @@
 package destiny.core.chinese;
 
 /** 取得此元素的陰陽值 : getYinYang() */
-public interface YinYangIF {
+public interface IYinYang {
 
-  YinYangIF 陽 = () -> true;
+  IYinYang 陽 = () -> true;
 
-  YinYangIF 陰 = () -> false;
+  IYinYang 陰 = () -> false;
 
   boolean getBooleanValue();
 }

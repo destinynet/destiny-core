@@ -4,7 +4,7 @@
  */
 package destiny.core.chinese;
 
-public interface FiveElementIF {
+public interface IFiveElement {
 
   FiveElement getFiveElement();
 }

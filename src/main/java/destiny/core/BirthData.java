@@ -4,10 +4,10 @@
  */
 package destiny.core;
 
-import destiny.core.calendar.DateIF;
+import destiny.core.calendar.IDate;
 import destiny.core.calendar.Location;
-import destiny.core.calendar.LocationIF;
-import destiny.core.calendar.TimeIF;
+import destiny.core.calendar.ILocation;
+import destiny.core.calendar.ITime;
 
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDateTime;
@@ -16,7 +16,7 @@ import java.util.Objects;
 import static java.time.temporal.ChronoField.*;
 
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
-public class BirthData implements GenderIF, TimeIF, DateIF, LocationIF, Serializable {
+public class BirthData implements GenderIF, ITime, IDate, ILocation, Serializable {
 
   private Gender gender;
 

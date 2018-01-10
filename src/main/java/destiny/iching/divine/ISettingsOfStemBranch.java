@@ -10,7 +10,7 @@ import destiny.core.chinese.StemBranch;
 import destiny.iching.HexagramIF;
 
 /** 納甲法的設定介面 */
-public interface SettingsOfStemBranchIF extends Descriptive {
+public interface ISettingsOfStemBranch extends Descriptive {
 
   /**
    * 取得某個卦的某個爻的干支納甲

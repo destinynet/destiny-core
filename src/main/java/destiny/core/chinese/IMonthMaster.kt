@@ -15,7 +15,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 但是有些人堅持用「月支相合」（過節）
  * 因此會產生兩種實作
  */
-interface MonthMasterIF : Descriptive {
+interface IMonthMaster : Descriptive {
 
   /** 取得「月將」的方法  */
   fun getBranch(lmt: ChronoLocalDateTime<*>, location: Location): Branch

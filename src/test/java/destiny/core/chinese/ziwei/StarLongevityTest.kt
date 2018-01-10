@@ -7,8 +7,8 @@ import destiny.core.Gender.女
 import destiny.core.Gender.男
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
-import destiny.core.chinese.YinYangIF.陰
-import destiny.core.chinese.YinYangIF.陽
+import destiny.core.chinese.IYinYang.陰
+import destiny.core.chinese.IYinYang.陽
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun冠帶
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun沐浴
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun胎

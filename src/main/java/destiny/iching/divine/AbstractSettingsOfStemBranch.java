@@ -7,7 +7,7 @@ package destiny.iching.divine;
 import java.io.Serializable;
 
 @Deprecated
-public abstract class AbstractSettingsOfStemBranch implements SettingsOfStemBranchIF, Serializable
+public abstract class AbstractSettingsOfStemBranch implements ISettingsOfStemBranch, Serializable
 {
 
 }

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
-public enum FiveElement implements FiveElementIF , Serializable {
+public enum FiveElement implements IFiveElement, Serializable {
   木('木'),
   火('火'),
   土('土'),
@@ -35,7 +35,7 @@ public enum FiveElement implements FiveElementIF , Serializable {
     return this;
   }
   
-  public boolean equals(@NotNull FiveElementIF f)
+  public boolean equals(@NotNull IFiveElement f)
   {
     return f.getFiveElement() == this;
   }
@@ -62,7 +62,7 @@ public enum FiveElement implements FiveElementIF , Serializable {
 
   
   /** 此五行是否生另一五行 */
-  public boolean isProducingTo(@NotNull FiveElementIF f)
+  public boolean isProducingTo(@NotNull IFiveElement f)
   {
     return f.getFiveElement().getProducer() == this;
   }
@@ -89,7 +89,7 @@ public enum FiveElement implements FiveElementIF , Serializable {
   
   
   /** 此五行是否被另一五行所生 */
-  public boolean isProducedBy(@NotNull FiveElementIF f)
+  public boolean isProducedBy(@NotNull IFiveElement f)
   {
     return f.getFiveElement().getProduct() == this;
   }
@@ -117,7 +117,7 @@ public enum FiveElement implements FiveElementIF , Serializable {
   
   
   /** 此五行是否剋另一五行 , Dominator : 支配者 */
-  public boolean isDominatorOf(@NotNull FiveElementIF f)
+  public boolean isDominatorOf(@NotNull IFiveElement f)
   {
     return f.getFiveElement().getDominator() == this;
   }
@@ -143,7 +143,7 @@ public enum FiveElement implements FiveElementIF , Serializable {
   }//beatenBy()
   
   /** 此五行是否被另一五行所剋 */
-  public boolean isDominatedBy(@NotNull FiveElementIF f)
+  public boolean isDominatedBy(@NotNull IFiveElement f)
   {
     return f.getFiveElement().getDominateOver() == this;
   }

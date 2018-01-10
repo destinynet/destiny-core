@@ -8,7 +8,7 @@ import destiny.core.calendar.Location
 
 import java.time.chrono.ChronoLocalDateTime
 
-interface ClockwiseIF : Descriptive {
+interface IClockwise : Descriptive {
 
   fun getClockwise(lmt: ChronoLocalDateTime<*>, loc: Location): Clockwise
 }

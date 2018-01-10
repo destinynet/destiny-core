@@ -6,8 +6,8 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.chinese.Branch
+import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
-import destiny.core.chinese.YinYangIF
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -15,7 +15,7 @@ import java.util.*
 interface IBigRange : Descriptive {
 
   /** 取得此 house 的大限起訖時刻 , 傳回「虛歲」 (vAge)  */
-  fun getVageRange(house: House, set: Int, yinYang: YinYangIF, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int>
+  fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int>
 
   /** 計算每個地支 的 大限 起訖 虛歲  */
   fun getFlowBigVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<Branch, Pair<Int, Int>> {

@@ -7,8 +7,8 @@ package destiny.iching;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import destiny.core.chinese.FiveElement;
-import destiny.core.chinese.FiveElementIF;
-import destiny.core.chinese.YinYangIF;
+import destiny.core.chinese.IFiveElement;
+import destiny.core.chinese.IYinYang;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -17,7 +17,7 @@ import java.io.Serializable;
 /**
  * 八卦基本符號以及其資料
  */
-public enum Symbol implements Serializable , SymbolIF , FiveElementIF {
+public enum Symbol implements Serializable , SymbolIF , IFiveElement {
   乾('乾', new boolean[] {true  , true  , true  } ),
   兌('兌', new boolean[] {true  , true  , false } ),
   離('離', new boolean[] {true  , false , true  } ),
@@ -89,7 +89,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF {
    * 「由下而上」 三個陰陽 , 查詢卦象為何
    */
   @NotNull
-  private static Symbol getSymbol(YinYangIF[] line)
+  private static Symbol getSymbol(IYinYang[] line)
   {
     for (Symbol aSymbolArray : symbolArray) {
       if ((line[0].getBooleanValue() == aSymbolArray.yinYangs[0]) &&
@@ -121,7 +121,7 @@ public enum Symbol implements Serializable , SymbolIF , FiveElementIF {
    * 由 三個陰陽 , 查詢卦象為何 , 比較標準的命名方式
    */
   @NotNull
-  public static Symbol valueOf(YinYangIF[] yinYangs)
+  public static Symbol valueOf(IYinYang[] yinYangs)
   {
     return getSymbol(yinYangs);
   }

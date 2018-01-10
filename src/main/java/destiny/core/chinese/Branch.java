@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * 地支系統
  * */
-public enum Branch implements BranchIF<Branch> {
+public enum Branch implements IBranch<Branch> {
   子('子'),
   丑('丑'),
   寅('寅'),

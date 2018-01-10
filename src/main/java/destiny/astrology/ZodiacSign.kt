@@ -8,7 +8,7 @@ import destiny.astrology.Element.*
 import destiny.astrology.Quality.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.YinYangIF
+import destiny.core.chinese.IYinYang
 import destiny.tools.ILocaleString
 import java.util.*
 
@@ -22,7 +22,7 @@ enum class ZodiacSign(private val nameKey: String,
                       /** 陰陽  */
                       private val yinYang: Boolean,
                       /** 黃道起始度數  */
-                      val degree: Int) : ILocaleString, YinYangIF {
+                      val degree: Int) : ILocaleString, IYinYang {
   /** Aries 戌/牡羊  */
   ARIES("ZodiacSign.ARIES", "ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0),
   /** Taurus 酉/金牛  */
