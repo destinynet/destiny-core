@@ -8,7 +8,7 @@ import destiny.core.calendar.Location;
 import java.util.Locale;
 
 /**
- * 以 {@link GeocodingIF} 取代
+ * 以 {@link IGeocoding} 取代
  */
 public interface GeolocationFinder {
 

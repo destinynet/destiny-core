@@ -11,11 +11,6 @@ package destiny.iching;
 interface ISymbol {
 
   /**
-   * 傳回八卦名
-   */
-  String getName();
-
-  /**
    * 取得一個卦的第幾爻
    * index 值為 0,1 or 2
    */

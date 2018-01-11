@@ -31,7 +31,7 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
    * 實作 SymbolIF
    * 取得八卦名
    */
-  override fun getName(): String {
+  fun getName(): String {
     return name
   }
 

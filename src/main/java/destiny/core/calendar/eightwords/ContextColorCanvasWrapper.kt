@@ -5,7 +5,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.*
-import destiny.core.calendar.eightwords.personal.HiddenStemsIF
+import destiny.core.calendar.eightwords.personal.IHiddenStems
 import destiny.core.calendar.eightwords.personal.ReactionsUtil
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
@@ -32,7 +32,7 @@ open class ContextColorCanvasWrapper(
   //protected final EightWordsContextModel model;
 
   /** 地支藏干的實作，內定採用標準設定  */
-  private val hiddenStemsImpl: HiddenStemsIF,
+  private val hiddenStemsImpl: IHiddenStems,
   /** 網址連結  */
   private val linkUrl: String?,
   /** 輸出方向，由左至右，還是由右至左  */

@@ -58,7 +58,7 @@ class PersonContext(
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
   private val fortuneMonthSpan: Double,
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
-  private val fortuneDirectionImpl: FortuneDirectionIF?,
+  private val fortuneDirectionImpl: IFortuneDirection?,
   risingSignImpl: IRisingSign,
   starPositionImpl: IStarPosition<*>,
   /** 歲數註解實作  */

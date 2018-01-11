@@ -160,8 +160,19 @@ class HexagramDefaultComparatorTest {
   }
 
   @Test
-  fun testGetHexagram() {
-    val impl = HexagramDefaultComparator()
-    assertSame(Hexagram.坤, impl.getHexagram(-126))
+  fun testSeq() {
+    val comparator = HexagramDefaultComparator()
+
+    assertSame(Hexagram.乾, comparator.getHexagram(1))
+    assertSame(Hexagram.坤, comparator.getHexagram(2))
+    assertSame(Hexagram.未濟, comparator.getHexagram(64))
+
+    assertSame(Hexagram.既濟, comparator.getHexagram(-1))
+    assertSame(Hexagram.未濟, comparator.getHexagram(0))
+    assertSame(Hexagram.乾, comparator.getHexagram(65))
+    assertSame(Hexagram.坤, comparator.getHexagram(66))
+
+    assertSame(Hexagram.坤, comparator.getHexagram(-126))
   }
+
 }
