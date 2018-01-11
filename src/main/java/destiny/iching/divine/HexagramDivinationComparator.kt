@@ -6,13 +6,13 @@ package destiny.iching.divine
 
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
-import destiny.iching.HexagramSequenceIF
+import destiny.iching.IHexagramSequence
 import java.util.*
 
 /**
  * 京房卦序：乾為天,天風姤,天山遯,天地否...
  */
-class HexagramDivinationComparator : Comparator<IHexagram>, HexagramSequenceIF {
+class HexagramDivinationComparator : Comparator<IHexagram>, IHexagramSequence {
 
   /**
    * 實作 HexagramSequenceIF
@@ -25,14 +25,6 @@ class HexagramDivinationComparator : Comparator<IHexagram>, HexagramSequenceIF {
 
   override fun getHexagram(index: Int): Hexagram {
     val i = if (index > 64) index % 64 else if (index <= 0) 64 - (0-index) %64 else index
-
-//    var i = index
-//
-//    if (i > 64)
-//      i %= 64
-//
-//    if (i <= 0)
-//      i = 64 - (0 - i) % 64
 
     return indexHexagramMap[i]!!
   }
