@@ -16,7 +16,7 @@ import java.util.Objects;
 import static java.time.temporal.ChronoField.*;
 
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點 */
-public class BirthData implements GenderIF, ITime, IDate, ILocation, Serializable {
+public class BirthData implements IGender, ITime, IDate, ILocation, Serializable {
 
   private Gender gender;
 

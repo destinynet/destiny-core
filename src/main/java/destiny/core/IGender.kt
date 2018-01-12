@@ -5,7 +5,7 @@
 package destiny.core
 
 /** 某 class 具有 gender 的資料結構  */
-interface GenderIF {
+interface IGender {
 
   val gender: Gender
 }

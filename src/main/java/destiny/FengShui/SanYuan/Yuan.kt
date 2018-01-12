@@ -4,7 +4,7 @@
 package destiny.FengShui.SanYuan
 
 enum class Yuan {
-  UP, // 上元
+  UP,  // 上元
   MID, // 中元
-  LOW     // 下元
+  LOW  // 下元
 }
