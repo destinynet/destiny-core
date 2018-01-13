@@ -18,7 +18,6 @@ internal class ColorByte(val byte: Byte, val font: Font?, val url: String?, val 
 
   private var backColor: String? = null //背景色
 
-
   constructor(bgChar: Char) : this(bgChar.toByte(), null, null, null, null, null)
 
   constructor(b: Byte, foreColor: String?, backColor: String?, font: Font?, url: String?, title: String?) : this(
@@ -88,8 +87,6 @@ internal class ColorByte(val byte: Byte, val font: Font?, val url: String?, val 
    * @return
    */
   fun isSameProperties(cb: ColorByte): Boolean {
-    //System.out.println("font = " + font + " , cb.font = " + cb.font);
-    //url 的 equals 要 resolve domain name , 改以 url.toExternalForm() 來比對
     return (this.foreColor == null && cb.foreColor == null || this.foreColor != null && this.foreColor == cb.foreColor)
       && (this.backColor == null && cb.backColor == null || this.backColor != null && this.backColor == cb.backColor)
       && (this.font == null && cb.font == null || this.font != null && this.font == cb.font)

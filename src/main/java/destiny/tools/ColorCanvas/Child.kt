@@ -7,4 +7,4 @@ package destiny.tools.ColorCanvas
 
 import java.io.Serializable
 
-class Child(val canvasCanvas: ColorCanvas, val x: Int, val y: Int) : Serializable
+data class Child(val canvasCanvas: ColorCanvas, val x: Int, val y: Int) : Serializable

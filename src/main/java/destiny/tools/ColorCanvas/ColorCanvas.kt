@@ -41,8 +41,7 @@ class ColorCanvas : Serializable {
    */
   private val contentWithChildren: Array<ColorByte>
     get() {
-      if (this.children.size == 0
-      ) {
+      if (this.children.size == 0) {
         return this.content
       } else {
         //有 children
@@ -104,12 +103,9 @@ class ColorCanvas : Serializable {
        */
 
       val list = mutableListOf<ColorByte>()
-      while (precursor < content.size
-      ) {
-        if (content[index].isSameProperties(content[precursor])
-        ) {
-          if ((precursor + 1) % this.width == 0 && precursor != content.size - 1
-          ) {
+      while (precursor < content.size) {
+        if (content[index].isSameProperties(content[precursor])) {
+          if ((precursor + 1) % this.width == 0 && precursor != content.size - 1) {
             //如果到達了邊界 , 強制段行
             list.add(content[precursor])
             sb.append(buildHtml(list))
@@ -130,8 +126,7 @@ class ColorCanvas : Serializable {
           index = precursor
           list.add(content[index])
           //檢查是否到達邊界
-          if ((index + 1) % this.width == 0 && index != content.size - 1
-          ) {
+          if ((index + 1) % this.width == 0 && index != content.size - 1) {
             //如果到達邊界 , 則，將「一個」 ColorByte 送入製作成 HTML
             sb.append(buildHtml(list))
             sb.append("<br />")
@@ -291,8 +286,7 @@ class ColorCanvas : Serializable {
     //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
     strWidth = str.toByteArray(charset("Big5")).size
 
-    if (wrap
-    ) {
+    if (wrap) {
       //如果要換行 , 就檢查是否太長
       //檢查是否會太長 , 如果太長，丟出錯誤訊息
       if (index + strWidth - 1 >= this.content.size
@@ -304,8 +298,7 @@ class ColorCanvas : Serializable {
       //如果不換行（切字）
       //int a = y+strWidth-1;
       //System.out.println("a = " + a + " , w = " + w);
-      if (y + strWidth - 1 > this.width
-      ) {
+      if (y + strWidth - 1 > this.width) {
         //超出，切字
         //byte[] byteArray = str.getBytes();
         //str = new String(byteArray , 0 , (this.w-y+1));
@@ -324,16 +317,14 @@ class ColorCanvas : Serializable {
       var precursorLine = 0
 
 
-      precursorLine = if ((index + bytes.size) % this.width == 0
-      ) {
+      precursorLine = if ((index + bytes.size) % this.width == 0) {
         //剛好到行尾
         indexLine
       } else {
         (index + bytes.size) / this.width + 1
       }
 
-      if (indexLine != precursorLine
-      ) {
+      if (indexLine != precursorLine) {
         //代表有切行的可能，必須把這個 Char 移到下一行，而目前這行的結尾，以空白鍵填入
         //先求出，目前 index 到行尾，要塞入幾個空白鍵（中文字為 1 個）
         val spaces = width - index % this.width
@@ -367,8 +358,7 @@ class ColorCanvas : Serializable {
         content[j] = ColorByte(bytes[j - index], foreColor, backColor, font, url, title)
       }
       index += bytes.size
-      if (index >= content.size
-      ) {
+      if (index >= content.size) {
         break
       }
     }
@@ -431,11 +421,14 @@ class ColorCanvas : Serializable {
    */
   fun add(cc: ColorCanvas, x: Int, y: Int) {
     if (cc.width > this.width || cc.height > this.height
-    ) throw RuntimeException("不能把大的 Canvas 塞入小的 Canvas 中 ! 父 Canvas 寬 = " + this.width + " , 高 = " + this.height + " ; 子 Canvas 寬 = " + cc.width + " , 高 = " + cc.height)
+    ) throw RuntimeException(
+      "不能把大的 Canvas 塞入小的 Canvas 中 ! 父 Canvas 寬 = " + this.width + " , 高 = " + this.height + " ; 子 Canvas 寬 = " + cc.width + " , 高 = " + cc.height)
     if (y + cc.width - 1 >= this.width + 1
-    ) throw RuntimeException("寬度超過 ! 父 Canvas 寬度為 " + this.width + " , 起始加入 y 座標 = " + y + " , 子 Canvas 寬度為 " + cc.width + " , 超出！")
+    ) throw RuntimeException(
+      "寬度超過 ! 父 Canvas 寬度為 " + this.width + " , 起始加入 y 座標 = " + y + " , 子 Canvas 寬度為 " + cc.width + " , 超出！")
     if (x + cc.height - 1 > this.height
-    ) throw RuntimeException("高度超過 ! 父 Canvas 高度為 " + this.height + " , 起始加入 x 座標 = " + x + " , 子 Canvas 高度為 " + cc.height + " , 超出！")
+    ) throw RuntimeException(
+      "高度超過 ! 父 Canvas 高度為 " + this.height + " , 起始加入 x 座標 = " + x + " , 子 Canvas 高度為 " + cc.height + " , 超出！")
 
     cc.parent = this
     children.add(Child(cc, x, y))
@@ -469,15 +462,13 @@ class ColorCanvas : Serializable {
         val cb = cbs[j]
         //走訪此行每個 ColorByte 是否一樣，如果一樣，代表此行為空行
         //FIXME : 這無法處理「全形中文空白背景」，因為一個全形中文被拆成兩個 ColorByte , 其 properties 一定不一樣！
-        if (!(firstCB.isSameProperties(cb) && firstCB.byte == cb.byte)
-        ) {
+        if (!(firstCB.isSameProperties(cb) && firstCB.byte == cb.byte)) {
           targetLine = i + 1 //此行(row)找到不一樣的字元了，所以要加入 Line，得從下一行開始
           foundDifference = true
           break
         }
       } //走訪此行每個 ColorByte
-      if (foundDifference
-      ) break
+      if (foundDifference) break
       targetLine = i
     }
     //System.out.println("targetLine = " + targetLine);
@@ -530,19 +521,14 @@ class ColorCanvas : Serializable {
     hasFont = cb.font != null || cb.foreColor != null || cb.getBackColor() != null || cb.title != null
 
     //只有網址
-    if (hasUrl && !hasFont
-    ) {
+    if (hasUrl && !hasFont) {
       tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">")
-          .append(String(byteArray, charsetBig5)).append("</a>")
-
-
-    } else if (!hasUrl && hasFont
-    )
+        .append(String(byteArray, charsetBig5)).append("</a>")
+    } else if (!hasUrl && hasFont)
     //只有字型
     {
       tempSb.append(buildFontHtml(cb, byteArray))
-    } else if (hasUrl && hasFont
-    )
+    } else if (hasUrl && hasFont)
     //有網址也有字型
     {
       tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">")
@@ -561,24 +547,20 @@ class ColorCanvas : Serializable {
     sb.append("style=\"")
     //    sb.append("white-space: pre; ");
 
-    if (cb.foreColor != null
-    ) {
+    if (cb.foreColor != null) {
       sb.append("color:").append(cb.foreColor).append("; ")
     }
-    if (cb.getBackColor() != null
-    ) {
+    if (cb.getBackColor() != null) {
       sb.append("background-color:").append(cb.getBackColor()).append("; ")
     }
-    if (cb.font != null
-    ) {
+    if (cb.font != null) {
       sb.append("font-family:").append(cb.font.family).append("; ")
     }
 
     sb.append("\"")
 
     //檢查是否有 title
-    if (cb.title != null
-    ) {
+    if (cb.title != null) {
       sb.append(" title=\"")
       sb.append(cb.title)
       sb.append("\"")
