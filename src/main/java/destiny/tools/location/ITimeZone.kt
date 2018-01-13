@@ -10,19 +10,23 @@ import java.util.*
 interface ITimeZone {
 
   /** 從經緯度查詢 timezone  */
-  fun getTimeZone(lng: Double, lat: Double): TimeZone?
+  fun getTimeZoneId(lng: Double, lat: Double): String?
 
-  fun getTimeZone(ew: Location.EastWest,
+  fun getTimeZoneId(ew: Location.EastWest,
                      lngDeg: Int,
                      lngMin: Int,
                      lngSec: Double,
                      nw: Location.NorthSouth,
                      latDeg: Int,
                      latMin: Int,
-                     latSec: Double): TimeZone? {
+                     latSec: Double): String? {
     val lng = Location.getLongitude(ew, lngDeg, lngMin, lngSec)
     val lat = Location.getLatitude(nw, latDeg, latMin, latSec)
-    return getTimeZone(lng, lat)
+    return getTimeZoneId(lng, lat)
+  }
+
+  fun getTimeZone(lng: Double , lat:Double): TimeZone? {
+    return getTimeZoneId(lng , lat)?.let { TimeZone.getTimeZone(it) }
   }
 }
 
