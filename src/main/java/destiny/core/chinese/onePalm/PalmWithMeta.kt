@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 class PalmWithMeta(val palm: Palm,
                    val lmt: ChronoLocalDateTime<*>,
                    val loc: Location,
-                   val place: String,
+                   val place: String?,
                    val chineseDateImpl: IChineseDate,
                    val dayImpl: IDay,
                    val positiveImpl: IPositive,

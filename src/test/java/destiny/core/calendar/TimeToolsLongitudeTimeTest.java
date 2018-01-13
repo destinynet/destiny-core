@@ -63,7 +63,7 @@ public class TimeToolsLongitudeTimeTest {
   @Test
   public void testGetLocalTimeWest1() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 76.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
+    location = new Location(EastWest.WEST, 76.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.Companion.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 54, 0);
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
@@ -72,7 +72,7 @@ public class TimeToolsLongitudeTimeTest {
   @Test
   public void testGetLocalTimeWest2() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 85, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
+    location = new Location(EastWest.WEST, 85, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.Companion.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 13, 23, 20, 0);
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }
@@ -81,7 +81,7 @@ public class TimeToolsLongitudeTimeTest {
   @Test
   public void testGetLocalTimeWest3() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 70.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
+    location = new Location(EastWest.WEST, 70.5, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.Companion.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 18, 0);
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
 
@@ -91,7 +91,7 @@ public class TimeToolsLongitudeTimeTest {
   @Test
   public void testGetLocalTimeWest4() {
     lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0);
-    location = new Location(EastWest.WEST, 65, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.getTimeZone(-300).getID(), null);
+    location = new Location(EastWest.WEST, 65, NorthSouth.NORTH, 25.0, 0, TimeZoneUtils.Companion.getTimeZone(-300).getID(), null);
     expected = LocalDateTime.of(2007, 3, 14, 0, 40, 0);
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location));
   }

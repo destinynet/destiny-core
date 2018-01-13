@@ -9,12 +9,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.chrono.ChronoLocalDateTime;
 
-public class BirthDataWithLocNameEmail extends BirthDataWithLocName {
+public class BirthDataWithPlaceEmail extends BirthDataWithPlace {
 
   @Nullable
   private String email;
 
-  public BirthDataWithLocNameEmail(Gender gender, ChronoLocalDateTime time, Location location, String name) {
+  public BirthDataWithPlaceEmail(Gender gender, ChronoLocalDateTime time, Location location, String name) {
     super(gender, time, location, name);
   }
 

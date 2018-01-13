@@ -332,9 +332,9 @@ public class Location implements Serializable {
       this.altitudeMeter = Double.parseDouble(restTokens);
       //parse 成功，代表舊款
       if (firstToken.charAt(0) == '+')
-        this.tzid = TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken.substring(1))).getID();
+        this.tzid = TimeZoneUtils.Companion.getTimeZone(Integer.parseInt(firstToken.substring(1))).getID();
       else
-        this.tzid = TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken)).getID();
+        this.tzid = TimeZoneUtils.Companion.getTimeZone(Integer.parseInt(firstToken)).getID();
     } catch (NumberFormatException e) {
       //新款
       this.altitudeMeter = Double.parseDouble(firstToken);

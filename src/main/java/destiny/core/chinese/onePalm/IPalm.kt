@@ -165,7 +165,7 @@ interface IPalm {
   fun getPalmWithMeta(gender: Gender,
                       lmt: ChronoLocalDateTime<*>,
                       loc: Location,
-                      place: String,
+                      place: String?,
                       positiveImpl: IPositive,
                       chineseDateImpl: IChineseDate,
                       dayImpl: IDay,
