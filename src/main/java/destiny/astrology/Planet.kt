@@ -8,6 +8,8 @@ import java.util.*
 
 object Planets {
   val classicalArray = arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
+  val classicalList = listOf(*classicalArray)
+
   val array = arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO)
   val list = listOf(*array)
 }

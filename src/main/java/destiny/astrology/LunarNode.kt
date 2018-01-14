@@ -11,6 +11,7 @@ object LunarNodes {
   val inner_values = arrayOf(LunarNode.NORTH_TRUE, LunarNode.NORTH_MEAN, LunarNode.SOUTH_TRUE, LunarNode.SOUTH_MEAN)
   val trueArray = arrayOf(LunarNode.NORTH_TRUE, LunarNode.SOUTH_TRUE)
   val meanArray = arrayOf(LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN)
+  val meanList = listOf(*meanArray)
 }
 
 sealed class LunarNode (nameKey: String, abbrKey: String, val northSouth: NorthSouth, val nodeType: NodeType) :
