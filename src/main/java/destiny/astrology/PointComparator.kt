@@ -16,7 +16,7 @@ class PointComparator : Comparator<Point>, Serializable {
 
   override fun compare(p1: Point, p2: Point): Int {
     if (p1 is Planet && p2 is Planet ) {
-      return p1.hashCode() - p2.hashCode()
+      return Planets.array.indexOf(p1) - Planets.array.indexOf(p2)
     }
 
     val p1class = p1.javaClass
@@ -24,11 +24,9 @@ class PointComparator : Comparator<Point>, Serializable {
     return if (p1class == p2class) {
       p1.hashCode() - p2.hashCode()
     } else {
-      val starClassesList = Arrays.asList(*starClasses)
-      val index1 = starClassesList.indexOf(p1class)
-      val index2 = starClassesList.indexOf(p2class)
-      index1 - index2
-      //starClassesList.indexOf(p1class) - starClassesList.indexOf(p2class)
+      val i1 = starClasses.first { it.isInstance(p1) }.let { starClasses.indexOf(it) }
+      val i2 = starClasses.first { it.isInstance(p2) }.let { starClasses.indexOf(it) }
+      i1 - i2
     }
   }
 

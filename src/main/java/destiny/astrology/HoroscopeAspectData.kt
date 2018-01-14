@@ -18,8 +18,7 @@ class HoroscopeAspectData(p1: Point, p2: Point,
   private val pointComp = PointComparator()
 
   /** 存放形成交角的兩顆星體  */
-  val twoPoints = Collections.synchronizedSet(TreeSet(pointComp))
-
+  val twoPoints = Collections.synchronizedSet(TreeSet(pointComp))!!
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -56,7 +55,7 @@ class HoroscopeAspectData(p1: Point, p2: Point,
     val prime = 31
     var result = 1
     result = prime * result + (aspect?.hashCode() ?: 0)
-    result = prime * result + (twoPoints?.hashCode() ?: 0)
+    result = prime * result + twoPoints.hashCode()
     return result
   }
 
