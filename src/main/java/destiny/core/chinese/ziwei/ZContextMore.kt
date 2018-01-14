@@ -33,29 +33,29 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    val selfTransFour: SelfTransFour,
                    val oppoTransFour: OppoTransFour,
                    /** 是否顯示小限  */
-                   val isShowSmallRange: Boolean,
+                   val showSmallRange: Boolean,
                    /** 民用曆法 or 天文曆法  */
                    val chineseDateImpl: IChineseDate,
                    /** 是否顯示八字盤  */
-                   val isShowEightWords: Boolean,
+                   val showEightWords: Boolean = true ,
                    /** 八字排盤，右至左 or 左至右  */
-                   val direction: Direction,
+                   val direction: Direction? = Direction.R2L,
                    /** 時辰劃分  */
                    val hourImpl: IHour,
                    /** 子正判定  */
                    val midnightImpl: IMidnight,
                    /** 子初換日 (true) 或 子正換日 (false)  */
-                   val isChangeDayAfterZi: Boolean,
+                   val changeDayAfterZi: Boolean,
                    /** 顯示雜曜  */
-                   val isShowMinors: Boolean,
+                   val showMinors: Boolean,
                    /** 顯示博士12神煞  */
-                   val isShowDoctors: Boolean,
+                   val showDoctors: Boolean,
                    /** 顯示長生12神煞  */
-                   val isShowLongevity: Boolean,
+                   val showLongevity: Boolean,
                    /** 顯示 將前12星  */
-                   val isShowGeneralFront: Boolean,
+                   val showGeneralFront: Boolean,
                    /** 顯示 歲前12星  */
-                   val isShowYearFront: Boolean) : ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
+                   val showYearFront: Boolean) : ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
 
 
   /** 宮干四化「自化」 顯示選項  */
@@ -98,6 +98,6 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
 
 
   override fun toString(): String {
-    return "[ZContextMore purpleBranchImpl=$purpleBranchImpl, selfTransFour=$selfTransFour, oppoTransFour=$oppoTransFour, showSmallRange=$isShowSmallRange, direction=$direction, houseSeqImpl=$houseSeqImpl, hourImpl=$hourImpl, midnightImpl=$midnightImpl, tianyiImpl=$tianyiImpl, changeDayAfterZi=$isChangeDayAfterZi, showMinors=$isShowMinors, showDoctors=$isShowDoctors, showLongevity=$isShowLongevity, transFourImpl=$transFourImpl, strengthImpl=$strengthImpl, flowYearImpl=$flowYearImpl, flowMonthImpl=$flowMonthImpl, flowDayImpl=$flowDayImpl, flowHourImpl=$flowHourImpl, bigRangeImpl=$bigRangeImpl]"
+    return "[ZContextMore purpleBranchImpl=$purpleBranchImpl, selfTransFour=$selfTransFour, oppoTransFour=$oppoTransFour, showSmallRange=$showSmallRange, direction=$direction, houseSeqImpl=$houseSeqImpl, hourImpl=$hourImpl, midnightImpl=$midnightImpl, tianyiImpl=$tianyiImpl, changeDayAfterZi=$changeDayAfterZi, showMinors=$showMinors, showDoctors=$showDoctors, showLongevity=$showLongevity, transFourImpl=$transFourImpl, strengthImpl=$strengthImpl, flowYearImpl=$flowYearImpl, flowMonthImpl=$flowMonthImpl, flowDayImpl=$flowDayImpl, flowHourImpl=$flowHourImpl, bigRangeImpl=$bigRangeImpl]"
   }
 }

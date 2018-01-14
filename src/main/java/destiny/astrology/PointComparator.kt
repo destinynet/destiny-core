@@ -24,9 +24,13 @@ class PointComparator : Comparator<Point>, Serializable {
     return if (p1class == p2class) {
       p1.hashCode() - p2.hashCode()
     } else {
-      val i1 = starClasses.first { it.isInstance(p1) }.let { starClasses.indexOf(it) }
-      val i2 = starClasses.first { it.isInstance(p2) }.let { starClasses.indexOf(it) }
-      i1 - i2
+      val index1 = starClasses.first { it.isInstance(p1) }.let { starClasses.indexOf(it) }
+      val index2 = starClasses.first { it.isInstance(p2) }.let { starClasses.indexOf(it) }
+      if (index1 != index2) {
+        index1 - index2
+      } else {
+        p1.hashCode() - p2.hashCode()
+      }
     }
   }
 

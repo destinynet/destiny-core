@@ -17,6 +17,11 @@ class PointComparatorTest {
     pc.compare(Planet.JUPITER, Planet.SATURN).let { assertTrue(it < 0) }
     pc.compare(Planet.SATURN, Planet.PLUTO).let { assertTrue(it < 0) }
 
+
+    pc.compare(LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN).let { assertTrue(it < 0) }
+
+
+
     pc.compare(LunarNode.SOUTH_MEAN, Asteroid.CERES).let { assertTrue(it < 0) }
 
     pc.compare(LunarNode.SOUTH_MEAN, Asteroid.PALLAS).let { assertTrue(it < 0) }
