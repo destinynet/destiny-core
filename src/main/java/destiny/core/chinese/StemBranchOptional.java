@@ -98,6 +98,10 @@ public class StemBranchOptional implements Serializable {
       return get(stemBranch.charAt(0), stemBranch.charAt(1));
   }
 
+  public static StemBranchOptional get(@NotNull StemBranch sb) {
+    return get(sb.stem , sb.branch);
+  }
+
   private static Optional<Integer> getIndex(StemBranchOptional sb) {
     if (sb.stem != null && sb.branch != null) {
       for(int i=0 ; i < ARRAY.length ; i++) {
