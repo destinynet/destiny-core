@@ -9,7 +9,7 @@ import destiny.core.chinese.ziwei.House.命宮
 import java.io.Serializable
 
 /**
- * 命宮無大限
+ * 鄰宮起大限
  */
 class BigRangeSkipMain : IBigRange, Serializable {
 

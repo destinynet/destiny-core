@@ -39,10 +39,10 @@ interface IBigRange : Descriptive {
 
 
   override fun getTitle(locale: Locale): String {
-    try {
-      return ResourceBundle.getBundle(IBigRange::class.java.name, locale).getString(javaClass.simpleName)
+    return try {
+      ResourceBundle.getBundle(IBigRange::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
-      return javaClass.simpleName
+      javaClass.simpleName
     }
 
   }
@@ -53,6 +53,6 @@ interface IBigRange : Descriptive {
 
   companion object {
 
-    val logger = LoggerFactory.getLogger(IBigRange::class.java)
+    val logger = LoggerFactory.getLogger(IBigRange::class.java)!!
   }
 }
