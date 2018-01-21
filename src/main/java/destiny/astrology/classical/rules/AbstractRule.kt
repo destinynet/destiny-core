@@ -7,18 +7,12 @@ package destiny.astrology.classical.rules
 import destiny.astrology.Horoscope
 import destiny.astrology.Planet
 import destiny.tools.ILocaleString
-import org.jooq.lambda.tuple.Tuple
-import org.jooq.lambda.tuple.Tuple2
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.text.MessageFormat
 import java.util.*
 
 abstract class AbstractRule protected constructor(private val resource: String) : IRule, Serializable, ILocaleString {
-
-  fun Pair<String, Array<Any>>?.toOld() : Optional<Tuple2<String, Array<Any>>> {
-    return this?.let { p -> Tuple.tuple(p.first , p.second) }.let { Optional.ofNullable(it) }
-  }
 
   val logger = LoggerFactory.getLogger(javaClass)!!
 

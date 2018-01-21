@@ -7,9 +7,9 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
-import java.util.*
 
 /**
+ * FinalMonthNum
  * 月數 -> 地支
  * 「月數」 : 可能來自節氣、可能來自閏月的計算，總之，會得到一個數字
  */

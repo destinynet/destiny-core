@@ -4,7 +4,6 @@
 package destiny.core.calendar;
 
 import kotlin.Pair;
-import org.jooq.lambda.tuple.Tuple2;
 import org.threeten.extra.chrono.JulianDate;
 
 import java.io.Serializable;

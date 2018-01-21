@@ -3,8 +3,6 @@
  */
 package destiny.core.calendar
 
-import org.jooq.lambda.tuple.Tuple
-import org.jooq.lambda.tuple.Tuple2
 import org.slf4j.LoggerFactory
 import org.threeten.extra.chrono.JulianChronology
 import java.io.Serializable
@@ -135,9 +133,9 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       }
     }
 
-    fun getDateTime(gmtJulDay: Double): Tuple2<ChronoLocalDate, LocalTime> {
+    fun getDateTime(gmtJulDay: Double): Pair<ChronoLocalDate, LocalTime> {
       val dateTime = getLocalDateTimeStatic(gmtJulDay)
-      return Tuple.tuple(dateTime.toLocalDate(), dateTime.toLocalTime())
+      return Pair(dateTime.toLocalDate(), dateTime.toLocalTime())
     }
 
     /**

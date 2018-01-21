@@ -6,18 +6,18 @@ package destiny.astrology.classical.rules;
 
 import destiny.astrology.Horoscope;
 import destiny.astrology.Planet;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.Locale;
 import java.util.function.Predicate;
 
-public interface IRule extends Predicate<Tuple2<Planet, Horoscope>> {
+public interface IRule extends Predicate<Pair<Planet, Horoscope>> {
 
   @Override
-  default boolean test(Tuple2<Planet, Horoscope> t) {
-    return isApplicable(t.v1() , t.v2());
+  default boolean test(Pair<Planet, Horoscope> t) {
+    return isApplicable(t.getFirst() , t.getSecond());
   }
 
   boolean isApplicable(Planet planet, Horoscope h);
