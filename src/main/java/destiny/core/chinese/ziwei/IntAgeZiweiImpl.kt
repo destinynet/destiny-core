@@ -13,8 +13,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
-import org.jooq.lambda.tuple.Tuple
-import org.jooq.lambda.tuple.Tuple2
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.LocalTime
@@ -54,7 +52,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val rel
     val chineseDate = chineseDateImpl.getChineseDate(dateTime.toLocalDate())
 
     val next1Year = getNextYear(chineseDate.cycleOrZero, chineseDate.year)
-    val next1YearJan2 = ChineseDate(next1Year.v1(), next1Year.v2(), 1, false, 2)
+    val next1YearJan2 = ChineseDate(next1Year.first, next1Year.second, 1, false, 2)
     // 利用「隔年、陰曆、一月二日、中午」作為「逆推」日月合朔的時間點
     val next1YearJan2Time = chineseDateImpl.getYangDate(next1YearJan2).atTime(LocalTime.NOON)
 
@@ -67,12 +65,12 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val rel
   }
 
 
-  private fun getNextYear(cycle: Int, year: StemBranch): Tuple2<Int, StemBranch> {
+  private fun getNextYear(cycle: Int, year: StemBranch): Pair<Int, StemBranch> {
     return if (year.index == 59) {
       // 癸亥
-      Tuple.tuple(cycle + 1, year.next(1))
+      Pair(cycle + 1, year.next(1))
     } else {
-      Tuple.tuple(cycle, year.next(1))
+      Pair(cycle, year.next(1))
     }
   }
 

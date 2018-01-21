@@ -45,7 +45,7 @@ interface IntAge {
     }.toMap()
   }
 
-  /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Tuple[from , to]] , 傳回的是 {@link ChronoLocalDateTime} , GMT 時刻 */
+  /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Pair[from , to]] , 傳回的是 {@link ChronoLocalDateTime} , GMT 時刻 */
   fun getRangesGmtMap(gender: Gender, gmtJulDay: Double, loc: Location, fromAge: Int, toAge: Int, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Map<Int, Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>>> {
     return getRangesMap(gender, gmtJulDay, loc, fromAge, toAge)
       .mapValues { entry ->
@@ -55,7 +55,7 @@ interface IntAge {
       }
   }
 
-  /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Tuple[from , to]] , 傳回的是 {@link ChronoLocalDateTime} , LMT 時刻 */
+  /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Pair[from , to]] , 傳回的是 {@link ChronoLocalDateTime} , LMT 時刻 */
   fun getRangesLmtMap(gender: Gender, gmtJulDay: Double, loc: Location, fromAge: Int, toAge: Int, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Map<Int, Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>>> {
     return getRangesMap(gender, gmtJulDay, loc, fromAge, toAge)
       .mapValues { entry ->

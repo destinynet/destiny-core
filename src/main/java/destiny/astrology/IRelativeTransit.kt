@@ -89,7 +89,7 @@ interface IRelativeTransit {
    *
    * result 有可能為 empty , 例如計算 太陽/水星 [90,180,270] 的度數，將不會有結果
    *
-   * @return 傳回的 Tuple , 前者為 GMT 時間，後者為角度
+   * @return 傳回的 Pair , 前者為 GMT 時間，後者為角度
    */
   fun getNearestRelativeTransitGmtJulDay(transitStar: Star, relativeStar: Star, fromGmtJulDay: Double, angles: Collection<Double>, isForward: Boolean): Pair<Double, Double>? {
     /**

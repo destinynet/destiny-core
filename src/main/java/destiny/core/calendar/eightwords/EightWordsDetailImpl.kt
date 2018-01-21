@@ -12,8 +12,6 @@ import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
-import org.jooq.lambda.tuple.Tuple
-import org.jooq.lambda.tuple.Tuple2
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -35,13 +33,13 @@ class EightWordsDetailImpl : IEightWordsDetail, Serializable {
     val moonBranch = getBranchOf(Planet.MOON, lmt, location, starPositionImpl)
 
     return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
-      prevNextMajorSolarTerms.v1(), prevNextMajorSolarTerms.v2(), risingSign,
+      prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingSign,
       sunBranch, moonBranch)
   }
 
   /** 上一個「節」、下一個「節」
    */
-  private fun getPrevNextMajorSolarTerms(currentSolarTerms: SolarTerms): Tuple2<SolarTerms, SolarTerms> {
+  private fun getPrevNextMajorSolarTerms(currentSolarTerms: SolarTerms): Pair<SolarTerms, SolarTerms> {
     val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
     val prevMajorSolarTerms: SolarTerms
     val nextMajorSolarTerms: SolarTerms
@@ -54,7 +52,7 @@ class EightWordsDetailImpl : IEightWordsDetail, Serializable {
       prevMajorSolarTerms = currentSolarTerms.previous()
       nextMajorSolarTerms = currentSolarTerms.next()
     }
-    return Tuple.tuple(prevMajorSolarTerms, nextMajorSolarTerms)
+    return Pair(prevMajorSolarTerms, nextMajorSolarTerms)
   }
 
   /**

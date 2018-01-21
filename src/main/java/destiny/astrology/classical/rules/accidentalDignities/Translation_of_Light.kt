@@ -12,13 +12,14 @@ class Translation_of_Light(private val translationOfLightImpl: ITranslationOfLig
 
   override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
     return translationOfLightImpl.getResult(planet, h)
-      ?.takeIf { it.v1 == true }
       ?.let { t ->
-        val deg = h.getAngle(t.v2 , t.v3)
-        if (t.v4 != null)
-          return@let "commentAspect" to arrayOf(planet , t.v2 , t.v3 , deg , t.v4!!)
-        else
-          return@let "commentUnaspect" to arrayOf(planet , t.v2 , t.v3 , deg)
+        val deg = h.getAngle(t.first , t.second)
+        if (t.third != null) {
+          return@let "commentAspect" to arrayOf(planet , t.first , t.second , deg , t.third!!)
+        } else {
+          return@let "commentUnaspect" to arrayOf(planet , t.first , t.second , deg)
+        }
       }
+
   }
 }

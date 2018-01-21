@@ -6,9 +6,8 @@ package destiny.astrology.classical
 import destiny.astrology.Horoscope
 import destiny.astrology.IAspectApplySeparate
 import destiny.astrology.Planet
-import org.jooq.lambda.tuple.Tuple4
 
 interface ITranslationOfLight {
 
-  fun getResult(planet: Planet, h: Horoscope): Tuple4<Boolean, Planet, Planet, IAspectApplySeparate.AspectType?>?
+  fun getResult(planet: Planet, h: Horoscope): Triple<Planet, Planet, IAspectApplySeparate.AspectType?>?
 }

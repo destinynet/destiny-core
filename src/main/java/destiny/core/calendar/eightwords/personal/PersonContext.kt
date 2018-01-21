@@ -18,8 +18,6 @@ import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
-import org.jooq.lambda.tuple.Tuple
-import org.jooq.lambda.tuple.Tuple2
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.LocalDateTime
@@ -109,7 +107,7 @@ class PersonContext(
   // 如果是「中氣」的話
   // 再往前取一個 , 即可得到「節」
   // 下一個「節」
-  val majorSolarTermsBetween: Tuple2<Tuple2<SolarTerms, Double>, Tuple2<SolarTerms, Double>>
+  val majorSolarTermsBetween: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
     get() {
       val gmt = TimeTools.getGmtFromLmt(lmt, location)
       val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
@@ -128,7 +126,7 @@ class PersonContext(
       logger.debug(" prevGmt = {}", prevGmt)
       logger.debug("(now)Gmt = {}", gmt)
       logger.debug(" nextGmt = {}", nextGmt)
-      return Tuple.tuple(Tuple.tuple(prevMajorSolarTerms, d1), Tuple.tuple(nextMajorSolarTerms, d2))
+      return Pair(Pair(prevMajorSolarTerms, d1), Pair(nextMajorSolarTerms, d2))
     }
 
   private fun getAgeMap(toAge: Int): Map<Int, Pair<Double, Double>> {
