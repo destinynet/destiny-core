@@ -116,7 +116,7 @@ public abstract class AbstractMountainCompass extends AbstractCompass {
     }
     else if (m.getValue() instanceof Branch)
     {
-      int index = Branch.getIndex((Branch) m.getValue());
+      int index = Branch.Companion.getIndex((Branch) m.getValue());
       //寅巳申亥
       return index == 2 || index == 5 || index == 8 || index == 11;
     }

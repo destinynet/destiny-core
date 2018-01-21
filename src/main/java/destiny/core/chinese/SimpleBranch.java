@@ -73,7 +73,7 @@ public enum SimpleBranch implements IBranch<SimpleBranch>, IFiveElement, IYinYan
   }
 
   public final static boolean getBooleanValue(Branch branch) {
-    return (Branch.getIndex(branch) % 2 == 0);
+    return (Branch.Companion.getIndex(branch) % 2 == 0);
   }
 
 

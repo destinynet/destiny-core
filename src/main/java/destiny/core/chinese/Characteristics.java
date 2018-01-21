@@ -176,27 +176,27 @@ public class Characteristics {
   
   private void EmptyEnergies(Stem 天干, @NotNull Branch 地支)
   {
-    if (Stem.getIndex(天干) - getIndex(地支) ==0)
+    if (Stem.Companion.getIndex(天干) - Companion.getIndex(地支) ==0)
     {
       空亡[0]= 戌;
       空亡[1]= 亥;
     }
-    else if (( Stem.getIndex(天干) - getIndex(地支) == -10)|| (Stem.getIndex(天干) - getIndex(地支) == 2))
+    else if (( Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == -10)|| (Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == 2))
     {
       空亡[0]= 申;
       空亡[1]= 酉;
     }
-    else if ((Stem.getIndex(天干) - getIndex(地支) == -8)|| (Stem.getIndex(天干) - getIndex(地支) == 4))
+    else if ((Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == -8)|| (Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == 4))
     {
       空亡[0]= 午;
       空亡[1]= 未;
     }
-    else if ((Stem.getIndex(天干) - getIndex(地支) == -6)|| (Stem.getIndex(天干) - getIndex(地支) == 6))
+    else if ((Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == -6)|| (Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == 6))
     {
       空亡[0]= 辰;
       空亡[1]= 巳;
     }
-    else if ((Stem.getIndex(天干) - getIndex(地支) == -4)|| (Stem.getIndex(天干) - getIndex(地支) == 8))
+    else if ((Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == -4)|| (Stem.Companion.getIndex(天干) - Companion.getIndex(地支) == 8))
     {
       空亡[0]= 寅;
       空亡[1]= 卯;

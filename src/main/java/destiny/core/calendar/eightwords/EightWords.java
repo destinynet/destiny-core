@@ -3,12 +3,14 @@
  * 2002/8/25 下午 11:22:48
  */
 package destiny.core.calendar.eightwords;
- 
+
 import destiny.core.chinese.Branch;
 import destiny.core.chinese.Stem;
 import destiny.core.chinese.StemBranch;
-import destiny.tools.ChineseStringTools;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -16,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
  * 2006/06/12 將此 class 繼承 EightWordsNullable
  */
 public class EightWords extends EightWordsNullable {
- 
+
   /** Constructor , 任何一柱都不可以為 null */
   public EightWords(@NotNull StemBranch year, @NotNull StemBranch month, @NotNull StemBranch day, @NotNull StemBranch hour) {
     super(year, month, day, hour);
   }
-   
+
   /**
    * 以 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null
    */
@@ -33,7 +35,7 @@ public class EightWords extends EightWordsNullable {
       StemBranch.get(hour.toCharArray()[0] , hour.toCharArray()[1])
     );
   }
-   
+
   /** 從 EightWordsNullable 建立 EightWords , 其中 EightWordsNullable 任何一柱都不可以為 null , 否則會出現 RuntimeException */
   public EightWords(EightWordsNullable nullable) {
     super(nullable.getYear() , nullable.getMonth() , nullable.getDay() , nullable.getHour());
@@ -58,43 +60,51 @@ public class EightWords extends EightWordsNullable {
 
   @NotNull
   @Override public Stem getYearStem()  {
-    assert (year.getStemOptional().isPresent());
-    return year.getStemOptional().get();  }
+    assert (year.getStem() != null);
+    return year.getStem();
+  }
 
   @NotNull
   @Override public Stem getMonthStem() {
-    assert (month.getStemOptional().isPresent());
-    return month.getStemOptional().get(); }
+    assert (month.getStem() != null);
+    return month.getStem();
+  }
 
   @NotNull
   @Override public Stem getDayStem()   {
-    assert (day.getStemOptional().isPresent());
-    return day.getStemOptional().get();   }
+    assert (day.getStem() != null);
+    return day.getStem();
+  }
 
   @NotNull
   @Override public Stem getHourStem()  {
-    assert (hour.getStemOptional().isPresent());
-    return hour.getStemOptional().get();  }
+    assert (hour.getStem() != null);
+    return hour.getStem();
+  }
 
   @NotNull
   @Override public Branch getYearBranch()  {
-    assert (year.getBranchOptional().isPresent());
-    return year.getBranchOptional().get();  }
+    assert (year.getBranch() != null);
+    return year.getBranch();
+  }
 
   @NotNull
   @Override public Branch getMonthBranch() {
-    assert (month.getBranchOptional().isPresent());
-    return month.getBranchOptional().get(); }
+    assert (month.getBranch() != null);
+    return month.getBranch();
+  }
 
   @NotNull
   @Override public Branch getDayBranch()   {
-    assert (day.getBranchOptional().isPresent());
-    return day.getBranchOptional().get();   }
+    assert (day.getBranch() != null);
+    return day.getBranch();
+  }
 
   @NotNull
   @Override public Branch getHourBranch()  {
-    assert (hour.getBranchOptional().isPresent());
-    return hour.getBranchOptional().get();  }
+    assert (hour.getBranch() != null);
+    return hour.getBranch();
+  }
 
   @NotNull
   public StemBranch getYear() {
@@ -116,6 +126,17 @@ public class EightWords extends EightWordsNullable {
     return (StemBranch) hour;
   }
 
+  @NotNull
+  @Override
+  public List<StemBranch> getStemBranches() {
+    return new ArrayList<StemBranch>() {{
+      add((StemBranch)year);
+      add((StemBranch)month);
+      add((StemBranch)day);
+      add((StemBranch)hour);
+    }};
+  }
+
   @Override
   public boolean equals(Object o) {
     if ((o != null) && (o.getClass().equals(this.getClass()))) {
@@ -135,21 +156,15 @@ public class EightWords extends EightWordsNullable {
     hash = hash * 17 + hour.hashCode();
     return hash;
   }
-   
+
   @Override
   public String toString()
   {
     assert (hour.getStemOptional().isPresent());
-    return
-      "\n"
-        + hour.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
-        + day.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
-        + month.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
-        + year.getStemOptional().map(Stem::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR()) +
-        "\n" +
-        hour.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
-        + day.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
-        + month.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR())
-        + year.getBranchOptional().map(Branch::toString).orElse(ChineseStringTools.INSTANCE.getNULL_CHAR()) ;
+
+    return "\n"+
+      hour.getStem() + day.getStem() + month.getStem() + year.getStem()
+      + "\n" +
+      hour.getBranch() + day.getBranch() + month.getBranch()+year.getBranch();
   }
 }

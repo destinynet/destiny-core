@@ -82,7 +82,7 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   private final static List<StemBranch> list = Arrays.asList(ARRAY);
 
   private StemBranch(@NotNull Stem stem, @NotNull Branch branch) {
-    super(Optional.of(stem), Optional.of(branch));
+    super(stem, branch);
   }
   
   /**
@@ -126,11 +126,11 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
   @NotNull
   public static StemBranch get(@NotNull Stem stem, @NotNull Branch branch)
   {
-    if ( (Stem.getIndex(stem) % 2 )  != (Branch.getIndex(branch) %2 ) )
+    if ( (Stem.Companion.getIndex(stem) % 2 )  != (Branch.Companion.getIndex(branch) %2 ) )
         throw new RuntimeException("Stem/Branch combination illegal ! " + stem + " cannot be combined with " + branch);
 
-    int sIndex = Stem.getIndex(stem);
-    int bIndex = Branch.getIndex(branch);
+    int sIndex = Stem.Companion.getIndex(stem);
+    int bIndex = Branch.Companion.getIndex(branch);
     switch (sIndex - bIndex) {
       case 0:
       case -10:
@@ -152,17 +152,20 @@ public class StemBranch extends StemBranchOptional implements Comparable<StemBra
     }
   }
 
+  @NotNull
   public static StemBranch get(char stemChar , char branchChar) {
-    Optional<Stem> stemOptional = Stem.get(stemChar);
-    Optional<Branch> branchOptional = Branch.get(branchChar);
 
-    return stemOptional.map(stem1 -> StemBranch.get(stem1 , branchOptional.orElseThrow(() -> new RuntimeException("Cannot find Branch: " + branchChar))))
-      .orElseThrow(() -> new RuntimeException("Cannot get StemBranch("+stemChar+" , "+branchChar+")"));
-
+    Stem stem = Stem.Companion.get(stemChar);
+    Branch branch = Branch.Companion.get(branchChar);
+    if (stem != null && branch != null) {
+      return StemBranch.get(stem , branch);
+    } else {
+      throw new RuntimeException("Cannot get StemBranch("+stemChar+" , "+branchChar+")");
+    }
   }
-  
-  public static StemBranch get(@NotNull String stemBranch)
-  {
+
+  @NotNull
+  public static StemBranch get(@NotNull String stemBranch) {
     if (stemBranch.length() != 2)
       throw new RuntimeException("The length of " + stemBranch + " must equal to 2 !");
     else

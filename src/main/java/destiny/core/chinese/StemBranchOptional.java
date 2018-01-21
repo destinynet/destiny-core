@@ -25,22 +25,22 @@ public class StemBranchOptional implements Serializable {
     int n = 0;
     do {
       ARRAY[n] = new StemBranchOptional(
-        Optional.of(Stem.get(n % 10)),
-        Optional.of(Branch.get(n % 12))
+        Stem.Companion.get(n % 10),
+        Branch.Companion.get(n % 12)
       );
       n++;
     } while (n < 60);
   }
 
 
-  StemBranchOptional(@NotNull Optional<Stem> stemOpt, @NotNull Optional<Branch> branchOpt) {
+  StemBranchOptional(@Nullable Stem stemOpt, @Nullable Branch branchOpt) {
     check(stemOpt , branchOpt);
-    this.stem = stemOpt.orElse(null);
-    this.branch = branchOpt.orElse(null);
+    this.stem = stemOpt;
+    this.branch = branchOpt;
   }
 
   public static StemBranchOptional empty() {
-    return new StemBranchOptional(Optional.empty() , Optional.empty());
+    return new StemBranchOptional(null , null);
   }
 
 
@@ -51,12 +51,12 @@ public class StemBranchOptional implements Serializable {
     return ArrayTools.INSTANCE.get(ARRAY , index);
   }
 
-  public static StemBranchOptional get(Optional<Stem> stemOpt, Optional<Branch> branchOpt) {
+  public static StemBranchOptional get(@Nullable Stem stemOpt, @Nullable Branch branchOpt) {
     check(stemOpt , branchOpt);
 
-    if (stemOpt.isPresent() && branchOpt.isPresent()) {
-      int hIndex = Stem.getIndex(stemOpt.get());
-      int eIndex = Branch.getIndex(branchOpt.get());
+    if (stemOpt != null && branchOpt != null) {
+      int hIndex = Stem.Companion.getIndex(stemOpt);
+      int eIndex = Branch.Companion.getIndex(branchOpt);
       switch (hIndex - eIndex) {
         case 0:
         case -10:
@@ -81,14 +81,8 @@ public class StemBranchOptional implements Serializable {
     }
   }
 
-  public static StemBranchOptional get(Stem stem, Branch branch) {
-    return get(Optional.ofNullable(stem) , Optional.ofNullable(branch));
-  }
-
   public static StemBranchOptional get(char stemChar, char branchChar) {
-    Optional<Stem> stemOptional = Stem.get(stemChar);
-    Optional<Branch> branchOptional = Branch.get(branchChar);
-    return get(stemOptional , branchOptional);
+    return get(Stem.Companion.get(stemChar) , Branch.Companion.get(branchChar));
   }
 
   public static StemBranchOptional get(@NotNull String stemBranch) {
@@ -121,16 +115,26 @@ public class StemBranchOptional implements Serializable {
     return getIndex(this).map(i -> get(i+n));
   }
 
-  private static void check(@NotNull Optional<Stem> stemOpt, @NotNull Optional<Branch> branchOpt) {
-    if (stemOpt.isPresent() && branchOpt.isPresent()) {
-      if (stemOpt.get().getBooleanValue() !=  SimpleBranch.get(branchOpt.get()).getBooleanValue())
-        throw new RuntimeException("Stem/Branch combination illegal ! " + stemOpt.get() + " cannot be combined with " + branchOpt.get());
+  private static void check(@Nullable Stem stem, @Nullable Branch branch) {
+    if (stem!= null && branch != null) {
+      if (stem.getBooleanValue() != SimpleBranch.get(branch).getBooleanValue()) {
+        throw new RuntimeException("Stem/Branch combination illegal ! " + stem + " cannot be combined with " + branch);
+      }
     }
   }
 
+  @Nullable
+  public Stem getStem() {
+    return stem;
+  }
 
   public Optional<Stem> getStemOptional() {
     return Optional.ofNullable(stem);
+  }
+
+  @Nullable
+  public Branch getBranch() {
+    return branch;
   }
 
   public Optional<Branch> getBranchOptional() {

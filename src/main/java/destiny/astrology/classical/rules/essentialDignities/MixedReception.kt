@@ -10,8 +10,8 @@ import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IEssential
 
 /**
- * 廟旺互容 <br></br>
- * 舉例：水星到摩羯，火星到雙子 <br></br>
+ * 廟旺互容
+ * 舉例：水星到摩羯，火星到雙子
  * 摩羯為火星 Exaltation 之星座，雙子為水星 Ruler 之星座
  */
 class MixedReception(private val essentialImpl: IEssential) : Rule() {

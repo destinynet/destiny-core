@@ -87,15 +87,15 @@ class ReactionsUtil(
     fun getHeavenlyStems(actor: Stem, reactions: Reactions): Stem {
       return when (reactions) {
         Reactions.比肩 -> actor
-        Reactions.劫財 -> Stem.getHeavenlyStems(actor.fiveElement, !actor.booleanValue)
-        Reactions.正印 -> Stem.getHeavenlyStems(actor.fiveElement.producer, !actor.booleanValue)
-        Reactions.偏印 -> Stem.getHeavenlyStems(actor.fiveElement.producer, actor.booleanValue)
-        Reactions.食神 -> Stem.getHeavenlyStems(actor.fiveElement.product, actor.booleanValue)
-        Reactions.傷官 -> Stem.getHeavenlyStems(actor.fiveElement.product, !actor.booleanValue)
-        Reactions.正官 -> Stem.getHeavenlyStems(actor.fiveElement.dominator, !actor.booleanValue)
-        Reactions.七殺 -> Stem.getHeavenlyStems(actor.fiveElement.dominator, actor.booleanValue)
-        Reactions.正財 -> Stem.getHeavenlyStems(actor.fiveElement.dominateOver, !actor.booleanValue)
-        Reactions.偏財 -> Stem.getHeavenlyStems(actor.fiveElement.dominateOver, actor.booleanValue)
+        Reactions.劫財 -> Stem.get(actor.fiveElement, !actor.booleanValue)
+        Reactions.正印 -> Stem.get(actor.fiveElement.producer, !actor.booleanValue)
+        Reactions.偏印 -> Stem.get(actor.fiveElement.producer, actor.booleanValue)
+        Reactions.食神 -> Stem.get(actor.fiveElement.product, actor.booleanValue)
+        Reactions.傷官 -> Stem.get(actor.fiveElement.product, !actor.booleanValue)
+        Reactions.正官 -> Stem.get(actor.fiveElement.dominator, !actor.booleanValue)
+        Reactions.七殺 -> Stem.get(actor.fiveElement.dominator, actor.booleanValue)
+        Reactions.正財 -> Stem.get(actor.fiveElement.dominateOver, !actor.booleanValue)
+        Reactions.偏財 -> Stem.get(actor.fiveElement.dominateOver, actor.booleanValue)
       }
     }
   }

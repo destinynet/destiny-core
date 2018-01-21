@@ -89,7 +89,7 @@ public class EightWordsNullable implements Serializable {
 
   /** 取得四柱 */
   @NotNull
-  public List<StemBranchOptional> getStemBranches() {
+  public List<? extends StemBranchOptional > getStemBranches() {
     return new ArrayList<StemBranchOptional>() {{
       add(year);
       add(month);
@@ -146,22 +146,6 @@ public class EightWordsNullable implements Serializable {
     return result;
   }
 
-  public void setYear(@NotNull StemBranchOptional year) {
-    this.year = year;
-  }
-
-  public void setMonth(@NotNull StemBranchOptional month) {
-    this.month = month;
-  }
-
-  public void setDay(@NotNull StemBranchOptional day) {
-    this.day = day;
-  }
-
-  public void setHour(@NotNull StemBranchOptional hour) {
-    this.hour = hour;
-  }
-
   /**
    * 做法：將 年干、年支、月干、月支、日干、日支、時干、時支 分別取 index (1-based) , 若為 null 則取 0 , 再合併成一個 list
    */
@@ -189,19 +173,19 @@ public class EightWordsNullable implements Serializable {
    */
   public static EightWordsNullable getFromIntList(List<Integer> list) {
     assert list != null && list.size() == 8;
-    Optional<Stem>   yearStem    = list.get(0) == 0 ? Optional.empty() : Optional.of(Stem.get  (list.get(0)-1));
-    Optional<Branch> yearBranch  = list.get(1) == 0 ? Optional.empty() : Optional.of(Branch.get(list.get(1)-1));
-    Optional<Stem>   monthStem   = list.get(2) == 0 ? Optional.empty() : Optional.of(Stem.get  (list.get(2)-1));
-    Optional<Branch> monthBranch = list.get(3) == 0 ? Optional.empty() : Optional.of(Branch.get(list.get(3)-1));
-    Optional<Stem>   dayStem     = list.get(4) == 0 ? Optional.empty() : Optional.of(Stem.get  (list.get(4)-1));
-    Optional<Branch> dayBranch   = list.get(5) == 0 ? Optional.empty() : Optional.of(Branch.get(list.get(5)-1));
-    Optional<Stem>   hourStem    = list.get(6) == 0 ? Optional.empty() : Optional.of(Stem.get  (list.get(6)-1));
-    Optional<Branch> hourBranch  = list.get(7) == 0 ? Optional.empty() : Optional.of(Branch.get(list.get(7)-1));
+    Optional<Stem>   yearStem    = list.get(0) == 0 ? Optional.empty() : Optional.of(Stem.Companion.get  (list.get(0)-1));
+    Optional<Branch> yearBranch  = list.get(1) == 0 ? Optional.empty() : Optional.of(Branch.Companion.get(list.get(1)-1));
+    Optional<Stem>   monthStem   = list.get(2) == 0 ? Optional.empty() : Optional.of(Stem.Companion.get  (list.get(2)-1));
+    Optional<Branch> monthBranch = list.get(3) == 0 ? Optional.empty() : Optional.of(Branch.Companion.get(list.get(3)-1));
+    Optional<Stem>   dayStem     = list.get(4) == 0 ? Optional.empty() : Optional.of(Stem.Companion.get  (list.get(4)-1));
+    Optional<Branch> dayBranch   = list.get(5) == 0 ? Optional.empty() : Optional.of(Branch.Companion.get(list.get(5)-1));
+    Optional<Stem>   hourStem    = list.get(6) == 0 ? Optional.empty() : Optional.of(Stem.Companion.get  (list.get(6)-1));
+    Optional<Branch> hourBranch  = list.get(7) == 0 ? Optional.empty() : Optional.of(Branch.Companion.get(list.get(7)-1));
     return new EightWordsNullable(
-      StemBranchOptional.get(yearStem , yearBranch) ,
-      StemBranchOptional.get(monthStem , monthBranch) ,
-      StemBranchOptional.get(dayStem , dayBranch),
-      StemBranchOptional.get(hourStem , hourBranch)
+      StemBranchOptional.get(yearStem.orElse(null) , yearBranch.orElse(null)) ,
+      StemBranchOptional.get(monthStem.orElse(null) , monthBranch.orElse(null)) ,
+      StemBranchOptional.get(dayStem.orElse(null) , dayBranch.orElse(null)),
+      StemBranchOptional.get(hourStem.orElse(null) , hourBranch.orElse(null))
     );
   }
 }

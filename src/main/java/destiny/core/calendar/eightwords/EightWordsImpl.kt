@@ -6,7 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
-import destiny.core.chinese.Branch.getIndex
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.子
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
@@ -59,12 +59,12 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
         臨時日干 = Stem.get(臨時日干.index + 1)
     }
 
-    when (Stem.getIndex(臨時日干)) {
-      0, 5 -> 時干 = Stem.get(getIndex(時支))
-      1, 6 -> 時干 = Stem.get(getIndex(時支) + 2)
-      2, 7 -> 時干 = Stem.get(getIndex(時支) + 4)
-      3, 8 -> 時干 = Stem.get(getIndex(時支) + 6)
-      4, 9 -> 時干 = Stem.get(getIndex(時支) + 8)
+    時干 = when (Stem.getIndex(臨時日干)) {
+      0, 5 -> Stem.get(Branch.getIndex(時支))
+      1, 6 -> Stem.get(Branch.getIndex(時支) + 2)
+      2, 7 -> Stem.get(Branch.getIndex(時支) + 4)
+      3, 8 -> Stem.get(Branch.getIndex(時支) + 6)
+      4, 9 -> Stem.get(Branch.getIndex(時支) + 8)
       else -> throw AssertionError("Error")
     }
     return EightWords(year, month, day, StemBranch.get(時干, 時支))
@@ -102,11 +102,11 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
     }
 
     時干 = when (Stem.getIndex(臨時日干)) {
-      0, 5 -> Stem.get(getIndex(時支))
-      1, 6 -> Stem.get(getIndex(時支) + 2)
-      2, 7 -> Stem.get(getIndex(時支) + 4)
-      3, 8 -> Stem.get(getIndex(時支) + 6)
-      4, 9 -> Stem.get(getIndex(時支) + 8)
+      0, 5 -> Stem.get(Branch.getIndex(時支))
+      1, 6 -> Stem.get(Branch.getIndex(時支) + 2)
+      2, 7 -> Stem.get(Branch.getIndex(時支) + 4)
+      3, 8 -> Stem.get(Branch.getIndex(時支) + 6)
+      4, 9 -> Stem.get(Branch.getIndex(時支) + 8)
       else -> throw AssertionError("Error")
     }
     return EightWords(year, month, day, StemBranch.get(時干, 時支))
