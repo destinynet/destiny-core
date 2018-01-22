@@ -33,7 +33,7 @@ interface TianyiIF : Descriptive {
   fun getTianyi(lmt: LocalDateTime, loc: Location, dayImpl: IDay, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean, differentiator: DayNightDifferentiator): Branch {
     val day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi)
     val dayNight = differentiator.getDayNight(lmt, loc)
-    return getFirstTianyi(day.getStem(), dayNight)
+    return getFirstTianyi(day.stem, dayNight)
   }
 
   override fun getTitle(locale: Locale): String {

@@ -29,10 +29,10 @@ public class EightWords extends EightWordsNullable {
    */
   public EightWords(@NotNull String year , @NotNull String month , @NotNull String day , @NotNull String hour) {
     super(
-      StemBranch.get(year.toCharArray()[0] , year.toCharArray()[1]) ,
-      StemBranch.get(month.toCharArray()[0] , month.toCharArray()[1]),
-      StemBranch.get(day.toCharArray()[0] , day.toCharArray()[1]) ,
-      StemBranch.get(hour.toCharArray()[0] , hour.toCharArray()[1])
+      StemBranch.Companion.get(year.toCharArray()[0] , year.toCharArray()[1]) ,
+      StemBranch.Companion.get(month.toCharArray()[0] , month.toCharArray()[1]),
+      StemBranch.Companion.get(day.toCharArray()[0] , day.toCharArray()[1]) ,
+      StemBranch.Companion.get(hour.toCharArray()[0] , hour.toCharArray()[1])
     );
   }
 
@@ -44,10 +44,10 @@ public class EightWords extends EightWordsNullable {
   /** 直接用八個干支建立八字 */
   public EightWords(Stem yearStem , Branch yearBranch , Stem monthStem , Branch monthBranch , Stem dayStem , Branch dayBranch , Stem hourStem , Branch hourBranch) {
     super(
-      StemBranch.get(yearStem, yearBranch),
-      StemBranch.get(monthStem , monthBranch) ,
-      StemBranch.get(dayStem , dayBranch) ,
-      StemBranch.get(hourStem , hourBranch)
+      StemBranch.Companion.get(yearStem, yearBranch),
+      StemBranch.Companion.get(monthStem , monthBranch) ,
+      StemBranch.Companion.get(dayStem , dayBranch) ,
+      StemBranch.Companion.get(hourStem , hourBranch)
     );
   }
 

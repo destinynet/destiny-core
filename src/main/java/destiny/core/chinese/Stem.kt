@@ -70,8 +70,6 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
 
     private val ARRAY = arrayOf(甲, 乙, 丙, 丁, 戊, 己, 庚, 辛, 壬, 癸)
 
-    private val STEM_LIST = Arrays.asList(*ARRAY)
-
     /** 從五行 以及 陰陽 建立天干  */
     operator fun get(fiveElement: FiveElement, yinYang: Boolean): Stem {
       return when (fiveElement) {
@@ -85,10 +83,10 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
 
     /**
      * 抓取天干的 index , 為 0-based <BR></BR>
-     * 0 為 甲 <BR></BR>
-     * 1 為 乙 <BR></BR>
-     * ...     <BR></BR>
-     * 9 為 癸 <BR></BR>
+     * 0 為 甲
+     * 1 為 乙
+     * ...
+     * 9 為 癸
      * @param index
      * @return
      */

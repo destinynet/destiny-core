@@ -3,6 +3,9 @@
  */
 package destiny.core.chinese
 
+import destiny.core.chinese.Branch.子
+import destiny.core.chinese.Stem.*
+
 object StemBranchUtils {
 
   /**
@@ -19,11 +22,11 @@ object StemBranchUtils {
     // return Stem.get((dayStem.getIndex() % 5) *2 + hourBranch.getIndex());
     // 以下的解法，不用 expose index
     return when (dayStem) {
-      Stem.甲, Stem.己 -> StemBranch.get(Stem.甲, Branch.子).next(hourBranch.getAheadOf(Branch.子)).getStem()
-      Stem.乙, Stem.庚 -> StemBranch.get(Stem.丙, Branch.子).next(hourBranch.getAheadOf(Branch.子)).getStem()
-      Stem.丙, Stem.辛 -> StemBranch.get(Stem.戊, Branch.子).next(hourBranch.getAheadOf(Branch.子)).getStem()
-      Stem.丁, Stem.壬 -> StemBranch.get(Stem.庚, Branch.子).next(hourBranch.getAheadOf(Branch.子)).getStem()
-      Stem.戊, Stem.癸 -> StemBranch.get(Stem.壬, Branch.子).next(hourBranch.getAheadOf(Branch.子)).getStem()
+      甲, 己 -> StemBranch.get(甲, 子).next(hourBranch.getAheadOf(子)).stem
+      乙, 庚 -> StemBranch.get(丙, 子).next(hourBranch.getAheadOf(子)).stem
+      丙, 辛 -> StemBranch.get(戊, 子).next(hourBranch.getAheadOf(子)).stem
+      丁, 壬 -> StemBranch.get(庚, 子).next(hourBranch.getAheadOf(子)).stem
+      戊, 癸 -> StemBranch.get(壬, 子).next(hourBranch.getAheadOf(子)).stem
     }
   }
 }

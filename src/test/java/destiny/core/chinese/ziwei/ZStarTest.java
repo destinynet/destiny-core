@@ -40,8 +40,7 @@ public class ZStarTest {
     // 哪個地支 裡面 有哪些星體
     Map<Branch , Set<ZStar>> map1 = starBranchMap.entrySet().stream()
       .collect(
-        Collectors.groupingBy(
-          entry -> entry.getValue().getBranch(),
+        Collectors.groupingBy(Map.Entry::getValue,
           TreeMap::new,   // 保留地支順序
           Collectors.mapping(Map.Entry::getKey, Collectors.toSet())
         )

@@ -43,10 +43,10 @@ public class EightWordsNullable implements Serializable {
   }
 
   public EightWordsNullable() {
-    this.year  = StemBranchOptional.empty();
-    this.month = StemBranchOptional.empty();
-    this.day   = StemBranchOptional.empty();
-    this.hour  = StemBranchOptional.empty();
+    this.year  = StemBranchOptional.Companion.empty();
+    this.month = StemBranchOptional.Companion.empty();
+    this.day   = StemBranchOptional.Companion.empty();
+    this.hour  = StemBranchOptional.Companion.empty();
   }
 
   @NotNull
@@ -182,10 +182,10 @@ public class EightWordsNullable implements Serializable {
     Optional<Stem>   hourStem    = list.get(6) == 0 ? Optional.empty() : Optional.of(Stem.Companion.get  (list.get(6)-1));
     Optional<Branch> hourBranch  = list.get(7) == 0 ? Optional.empty() : Optional.of(Branch.Companion.get(list.get(7)-1));
     return new EightWordsNullable(
-      StemBranchOptional.get(yearStem.orElse(null) , yearBranch.orElse(null)) ,
-      StemBranchOptional.get(monthStem.orElse(null) , monthBranch.orElse(null)) ,
-      StemBranchOptional.get(dayStem.orElse(null) , dayBranch.orElse(null)),
-      StemBranchOptional.get(hourStem.orElse(null) , hourBranch.orElse(null))
+      StemBranchOptional.Companion.get(yearStem.orElse(null) , yearBranch.orElse(null)) ,
+      StemBranchOptional.Companion.get(monthStem.orElse(null) , monthBranch.orElse(null)) ,
+      StemBranchOptional.Companion.get(dayStem.orElse(null) , dayBranch.orElse(null)),
+      StemBranchOptional.Companion.get(hourStem.orElse(null) , hourBranch.orElse(null))
     );
   }
 }

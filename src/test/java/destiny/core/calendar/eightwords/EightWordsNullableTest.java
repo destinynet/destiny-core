@@ -17,20 +17,20 @@ public class EightWordsNullableTest {
 
   @Test
   public void testGetList() {
-    EightWordsNullable ewn1 = new EightWordsNullable(StemBranchOptional.get("甲子") , StemBranchOptional.get("乙丑") , StemBranchOptional.get("丙寅") , StemBranchOptional.get("丁卯"));
+    EightWordsNullable ewn1 = new EightWordsNullable(StemBranchOptional.Companion.get("甲子") , StemBranchOptional.Companion.get("乙丑") , StemBranchOptional.Companion.get("丙寅") , StemBranchOptional.Companion.get("丁卯"));
     EightWordsNullable ewn2 = EightWordsNullable.getFromIntList(ewn1.getIntList());
     assertEquals(ewn1 , ewn2);
 
     ewn1 = new EightWordsNullable(
-      StemBranchOptional.get(甲 , null) ,
-      StemBranchOptional.get(null , 丑) ,
-      StemBranchOptional.get(丙 , null) ,
-      StemBranchOptional.get(null ,卯));
+      StemBranchOptional.Companion.get(甲 , null) ,
+      StemBranchOptional.Companion.get(null , 丑) ,
+      StemBranchOptional.Companion.get(丙 , null) ,
+      StemBranchOptional.Companion.get(null ,卯));
     ewn2 = EightWordsNullable.getFromIntList(ewn1.getIntList());
     assertEquals(ewn1 , ewn2);
 
 
-    EightWordsNullable empty = new EightWordsNullable(StemBranchOptional.empty() , StemBranchOptional.empty() , StemBranchOptional.empty() , StemBranchOptional.empty());
+    EightWordsNullable empty = new EightWordsNullable(StemBranchOptional.Companion.empty() , StemBranchOptional.Companion.empty() , StemBranchOptional.Companion.empty() , StemBranchOptional.Companion.empty());
     EightWordsNullable empty2 = EightWordsNullable.getFromIntList(empty.getIntList());
     assertEquals(empty , empty2);
 
@@ -51,37 +51,37 @@ public class EightWordsNullableTest {
     EightWordsNullable ew2 = new EightWordsNullable();
     assertEquals(ew1 , ew2); //兩個都是 null 八字,應該 equals
 
-    ew1 = new EightWordsNullable(StemBranchOptional.get("甲子") , StemBranchOptional.get("乙丑") , StemBranchOptional.get("丙寅") , StemBranchOptional.get("丁卯"));
-    ew2 = new EightWordsNullable(StemBranchOptional.get("甲子") , StemBranchOptional.get("乙丑") , StemBranchOptional.get("丙寅") , StemBranchOptional.get("丁卯"));
+    ew1 = new EightWordsNullable(StemBranchOptional.Companion.get("甲子") , StemBranchOptional.Companion.get("乙丑") , StemBranchOptional.Companion.get("丙寅") , StemBranchOptional.Companion.get("丁卯"));
+    ew2 = new EightWordsNullable(StemBranchOptional.Companion.get("甲子") , StemBranchOptional.Companion.get("乙丑") , StemBranchOptional.Companion.get("丙寅") , StemBranchOptional.Companion.get("丁卯"));
     assertEquals(ew1 , ew2);
 
-    ew1 = new EightWordsNullable(StemBranchOptional.get("甲子") , StemBranchOptional.get("乙丑") , StemBranchOptional.get("丙寅") , StemBranchOptional.get("丁卯"));
+    ew1 = new EightWordsNullable(StemBranchOptional.Companion.get("甲子") , StemBranchOptional.Companion.get("乙丑") , StemBranchOptional.Companion.get("丙寅") , StemBranchOptional.Companion.get("丁卯"));
     ew2 = new EightWordsNullable(
-      StemBranchOptional.get(甲 , 子) ,
-      StemBranchOptional.get(Stem.乙 , 丑) ,
-      StemBranchOptional.get(Stem.丙 , 寅) ,
-      StemBranchOptional.get(Stem.丁 , 卯));
+      StemBranchOptional.Companion.get(甲 , 子) ,
+      StemBranchOptional.Companion.get(Stem.乙 , 丑) ,
+      StemBranchOptional.Companion.get(Stem.丙 , 寅) ,
+      StemBranchOptional.Companion.get(Stem.丁 , 卯));
     assertEquals(ew1 , ew2);
 
-    ew1 = new EightWordsNullable(StemBranchOptional.get("甲子") , StemBranchOptional.empty() , StemBranchOptional.get("丙寅") , StemBranchOptional.empty());
+    ew1 = new EightWordsNullable(StemBranchOptional.Companion.get("甲子") , StemBranchOptional.Companion.empty() , StemBranchOptional.Companion.get("丙寅") , StemBranchOptional.Companion.empty());
     ew2 = new EightWordsNullable(
-      StemBranchOptional.get(甲 , 子) ,
-      StemBranchOptional.empty() ,
-      StemBranchOptional.get(Stem.丙 , 寅) ,
-      StemBranchOptional.empty());
+      StemBranchOptional.Companion.get(甲 , 子) ,
+      StemBranchOptional.Companion.empty() ,
+      StemBranchOptional.Companion.get(Stem.丙 , 寅) ,
+      StemBranchOptional.Companion.empty());
     assertEquals(ew1 , ew2);
 
 
-    ew1 = new EightWordsNullable(StemBranchOptional.get("甲子") ,
-      StemBranchOptional.empty() ,
-      StemBranchOptional.get(Stem.丙 , null) ,
-      StemBranchOptional.get(null , 卯)
+    ew1 = new EightWordsNullable(StemBranchOptional.Companion.get("甲子") ,
+      StemBranchOptional.Companion.empty() ,
+      StemBranchOptional.Companion.get(Stem.丙 , null) ,
+      StemBranchOptional.Companion.get(null , 卯)
     );
     ew2 = new EightWordsNullable(
-      StemBranchOptional.get(甲 , 子) ,
-      StemBranchOptional.empty() ,
-      StemBranchOptional.get(Stem.丙 , null) ,
-      StemBranchOptional.get(null , 卯));
+      StemBranchOptional.Companion.get(甲 , 子) ,
+      StemBranchOptional.Companion.empty() ,
+      StemBranchOptional.Companion.get(Stem.丙 , null) ,
+      StemBranchOptional.Companion.get(null , 卯));
     assertEquals(ew1 , ew2);
 
   }

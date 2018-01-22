@@ -7,7 +7,7 @@ import java.util.*
 /**
  * 地支系統
  */
-enum class Branch : IBranch<Branch> {
+enum class Branch {
 
   子, 丑, 寅, 卯, 辰, 巳,
   午, 未, 申, 酉, 戌, 亥;
@@ -64,12 +64,6 @@ enum class Branch : IBranch<Branch> {
     return next(0 - n)
   }
 
-
-  override fun getBranch(): Branch {
-    return this
-  }
-
-
   /**
    * 此地支「領先」另一個地支多少距離. 其值一定為正值
    * 子領先子 0
@@ -77,7 +71,7 @@ enum class Branch : IBranch<Branch> {
    * ...
    * 子領先亥 1
    */
-  override fun getAheadOf(other: Branch): Int {
+  fun getAheadOf(other: Branch): Int {
     val steps = index - other.index
     return if (steps >= 0) steps else steps + 12
   }

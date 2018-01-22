@@ -5,7 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.丁
-import destiny.core.chinese.StemBranch.己酉
+import destiny.core.chinese.StemBranch.Companion.己酉
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun三台_月支
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun三台_月數
 import destiny.core.chinese.ziwei.StarMinor.Companion.fun八座_月支
