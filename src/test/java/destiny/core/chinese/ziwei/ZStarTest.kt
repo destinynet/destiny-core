@@ -7,7 +7,7 @@ import kotlin.test.Test
 /**
  * Created by smallufo on 2017-12-07.
  */
-class ZStarTest2 {
+class ZStarTest {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
