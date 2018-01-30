@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese
 
-object ISixAnimal {
+object SixAnimals {
 
   fun getSixAnimals(dayStem: Stem): List<SixAnimal> {
     var count = 0
