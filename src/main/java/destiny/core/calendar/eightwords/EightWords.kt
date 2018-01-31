@@ -13,14 +13,9 @@ import destiny.core.chinese.StemBranch
  * 八字資料結構 , 四柱任何一柱都不可以為 null
  * 2006/06/12 將此 class 繼承 EightWordsNullable
  */
-class EightWords(val year: StemBranch, val month: StemBranch, val day: StemBranch, val hour: StemBranch) {
+data class EightWords(val year: StemBranch, val month: StemBranch, val day: StemBranch, val hour: StemBranch) {
 
-  ///** 從 EightWordsNullable 建立 EightWords , 其中 EightWordsNullable 任何一柱都不可以為 null , 否則會出現 RuntimeException  */
-  //constructor(nullable: EightWordsNullable) : this(nullable.year , nullable.month ,nullable.day , nullable.hour)
-
-  /**
-   * 以 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null
-   */
+  /** 以字串 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null */
   constructor(year: String, month: String, day: String, hour: String)
     : this(StemBranch[year.toCharArray()[0], year.toCharArray()[1]],
             StemBranch[month.toCharArray()[0], month.toCharArray()[1]],
@@ -57,7 +52,7 @@ class EightWords(val year: StemBranch, val month: StemBranch, val day: StemBranc
 
   val hourBranch = hour.branch
 
-  val getStemBranches = listOf(year , month , day , hour)
+  val stemBranches = listOf(year, month, day, hour)
 
   fun getIntList() : List<Int> {
     return listOf(
@@ -76,33 +71,12 @@ class EightWords(val year: StemBranch, val month: StemBranch, val day: StemBranc
 
 
   override fun toString(): String {
-    assert(hour.stemOptional.isPresent)
-
     return ("\n" +
       hour.stem + day.stem + month.stem + year.stem
       + "\n" +
       hour.branch + day.branch + month.branch + year.branch)
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is EightWords) return false
-
-    if (year != other.year) return false
-    if (month != other.month) return false
-    if (day != other.day) return false
-    if (hour != other.hour) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = year.hashCode()
-    result = 31 * result + month.hashCode()
-    result = 31 * result + day.hashCode()
-    result = 31 * result + hour.hashCode()
-    return result
-  }
 
 
 }

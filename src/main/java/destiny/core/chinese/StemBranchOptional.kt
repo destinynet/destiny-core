@@ -64,9 +64,7 @@ open class StemBranchOptional internal constructor(open val stem: Stem?, open va
     }
 
 
-    /**
-     * 0[甲子] ~ 59[癸亥]
-     */
+    // 0[甲子] ~ 59[癸亥]
     private operator fun get(index: Int): StemBranchOptional {
       return ArrayTools[ARRAY, index]
     }

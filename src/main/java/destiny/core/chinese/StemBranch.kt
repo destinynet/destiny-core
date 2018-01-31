@@ -10,7 +10,7 @@ import java.io.Serializable
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
-class StemBranch private constructor(override val stem: Stem, override val branch: Branch) : StemBranchOptional(stem, branch),
+class StemBranch constructor(override val stem: Stem, override val branch: Branch) : StemBranchOptional(stem, branch),
   Comparable<StemBranch>, Serializable {
 
   /** 取得下一組干支 , 甲子 傳回 乙丑  */
