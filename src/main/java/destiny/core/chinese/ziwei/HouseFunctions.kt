@@ -8,7 +8,7 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
-import destiny.core.chinese.TianyiIF
+import destiny.core.chinese.ITianyi
 import destiny.core.chinese.ziwei.StarDoctor.*
 import destiny.core.chinese.ziwei.StarGeneralFront.*
 import destiny.core.chinese.ziwei.StarLongevity.*
@@ -140,13 +140,13 @@ object HouseFunctions {
   }
 
   val house天魁: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天魁) {
-    override fun getBranch(t: Pair<Stem, TianyiIF>): Branch {
+    override fun getBranch(t: Pair<Stem, ITianyi>): Branch {
       return fun天魁.invoke(t.first, t.second)
     }
   }
 
   val house天鉞: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天鉞) {
-    override fun getBranch(t: Pair<Stem, TianyiIF>): Branch {
+    override fun getBranch(t: Pair<Stem, ITianyi>): Branch {
       return fun天鉞.invoke(t.first, t.second)
     }
   }

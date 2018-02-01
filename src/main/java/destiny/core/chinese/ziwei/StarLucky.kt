@@ -4,8 +4,11 @@
 package destiny.core.chinese.ziwei
 
 import destiny.astrology.DayNight
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.Characters
+import destiny.core.chinese.Stem
+import destiny.core.chinese.ITianyi
 import destiny.core.chinese.ziwei.ZStar.Type.*
 
 /**
@@ -51,12 +54,12 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     /**
      * 天魁 (陽貴人) : 年干 -> 地支
      */
-    val fun天魁 = { year: Stem, tianyiImpl: TianyiIF -> tianyiImpl.getFirstTianyi(year, DayNight.DAY) }
+    val fun天魁 = { year: Stem, tianyiImpl: ITianyi -> tianyiImpl.getFirstTianyi(year, DayNight.DAY) }
 
     /**
      * 天鉞 (陰貴人) : 年干 -> 地支
      */
-    val fun天鉞 = { year: Stem, tianyiImpl: TianyiIF -> tianyiImpl.getFirstTianyi(year, DayNight.NIGHT) }
+    val fun天鉞 = { year: Stem, tianyiImpl: ITianyi -> tianyiImpl.getFirstTianyi(year, DayNight.NIGHT) }
 
     /** 祿存 : 年干 -> 地支  */
     val fun祿存 = { year: Stem ->
@@ -74,13 +77,7 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
 
     /** 天馬(年的驛馬) : 年支 -> 地支  */
     val fun年馬 = { year: Branch ->
-      when (BranchTools.trilogy(year)) {
-        FiveElement.火 -> 申
-        FiveElement.木 -> 巳
-        FiveElement.水 -> 寅
-        FiveElement.金 -> 亥
-        else -> throw AssertionError(year)
-      }
+      Characters.getHorse(year)
     }
 
     /** 天馬(月的驛馬) : 月數 -> 地支  */
@@ -96,13 +93,7 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
 
     /** 天馬(月的驛馬) : 月支 -> 地支  */
     val fun月馬_月支 = { month: Branch ->
-      when (BranchTools.trilogy(month)) {
-        FiveElement.火 -> 申
-        FiveElement.木 -> 巳
-        FiveElement.水 -> 寅
-        FiveElement.金 -> 亥
-        else -> throw AssertionError(month)
-      }
+      Characters.getHorse(month)
     }
 
   }

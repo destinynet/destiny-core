@@ -6,13 +6,10 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.Gender.女
 import destiny.core.Gender.男
-import destiny.core.chinese.Branch
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement.*
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
-import destiny.core.chinese.StemBranch
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月支
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun右弼_月數
 import destiny.core.chinese.ziwei.StarLucky.Companion.fun左輔_月支
@@ -388,15 +385,7 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     /** 咸池 : 年支 -> 地支
      * 子辰申年在酉, 丑巳酉年在午, 寅午戍年在卯, 卯未亥年在子
      */
-    val fun咸池 = { year: Branch ->
-      when (BranchTools.trilogy(year)) {
-        水 -> 酉
-        金 -> 午
-        火 -> 卯
-        木 -> 子
-        else -> throw AssertionError(year)
-      }
-    }
+    val fun咸池 = { year: Branch -> Characters.getPeach(year) }
 
     /** 天德 : 年支 -> 地支
      * 天德星從酉上起子，順數至流年太歲上是也。

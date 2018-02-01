@@ -4,15 +4,13 @@
 package destiny.core.chinese.impls
 
 import destiny.core.chinese.Branch
-import destiny.core.chinese.Stem
-import destiny.core.chinese.TianyiIF
+import destiny.core.chinese.Branch.*
+import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
-
+import destiny.core.chinese.Stem
 import java.io.Serializable
 
-import destiny.core.chinese.Branch.*
-
-class TianyiAuthorizedImpl : TianyiIF, Serializable {
+class TianyiAuthorizedImpl : ITianyi, Serializable {
 
   /**
    * 《協紀辨方書》 《蠡海集》

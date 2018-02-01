@@ -5,7 +5,7 @@ package destiny.tools
 
 object ChineseStringTools {
 
-  val NULL_CHAR = "　" //空白字元，使用全形的空白, 在 toString() 時使用
+  const val NULL_CHAR = "　" //空白字元，使用全形的空白, 在 toString() 時使用
 
   fun digitToChinese(digit: Int): String {
     when (digit) {

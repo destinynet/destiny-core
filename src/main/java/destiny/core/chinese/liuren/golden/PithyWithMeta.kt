@@ -9,7 +9,7 @@ import destiny.core.Gender
 import destiny.core.calendar.LocationWithName
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.IMonthMaster
-import destiny.core.chinese.TianyiIF
+import destiny.core.chinese.ITianyi
 import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.IGeneralStemBranch
 import destiny.core.chinese.liuren.IGeneralSeq
@@ -22,7 +22,7 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
                     /** 晝夜區分  */
                     val dayNightImpl: DayNightDifferentiator,
                     /** 天乙貴人  */
-                    val tianyiImpl: TianyiIF,
+                    val tianyiImpl: ITianyi,
                     /** 貴神順逆  */
                     val clockwiseImpl: IClockwise,
                     /** 12天將順序  */

@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.Descriptive
 import destiny.core.IntAgeNote
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
-import destiny.core.chinese.TianyiIF
+import destiny.core.chinese.ITianyi
 import java.io.Serializable
 import java.util.*
 
@@ -36,7 +36,7 @@ open class ZContext(
   val houseSeqImpl: IHouseSeq,
 
   /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
-  val tianyiImpl: TianyiIF, val fireBell: FireBell, val hurtAngel: HurtAngel,
+  val tianyiImpl: ITianyi, val fireBell: FireBell, val hurtAngel: HurtAngel,
 
   /** 四化設定  */
   val transFourImpl: ITransFour,

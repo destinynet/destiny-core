@@ -10,7 +10,7 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
-import destiny.core.chinese.TianyiIF
+import destiny.core.chinese.ITianyi
 import java.util.*
 
 /**
@@ -26,7 +26,7 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    purpleBranchImpl: IPurpleStarBranch,
                    mainStarsMonthAlgo: IFinalMonthNumber.MonthAlgo?,
                    monthStarsMonthAlgo: IFinalMonthNumber.MonthAlgo,
-                   yearType: YearType, houseSeqImpl: IHouseSeq, tianyiImpl: TianyiIF, fireBell: FireBell,
+                   yearType: YearType, houseSeqImpl: IHouseSeq, tianyiImpl: ITianyi, fireBell: FireBell,
                    hurtAngel: HurtAngel, transFourImpl: ITransFour, strengthImpl: IStrength,
                    flowYearImpl: IFlowYear, flowMonthImpl: IFlowMonth, flowDayImpl: IFlowDay, flowHourImpl: IFlowHour,
                    ageNoteImpls: List<IntAgeNote>, bigRangeImpl: IBigRange, redBeauty: RedBeauty,
@@ -37,7 +37,7 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    /** 民用曆法 or 天文曆法  */
                    val chineseDateImpl: IChineseDate,
                    /** 是否顯示八字盤  */
-                   val showEightWords: Boolean = true ,
+                   val showEightWords: Boolean = true,
                    /** 八字排盤，右至左 or 左至右  */
                    val direction: Direction? = Direction.R2L,
                    /** 時辰劃分  */

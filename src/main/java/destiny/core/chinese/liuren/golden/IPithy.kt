@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 interface IPithy {
 
-  fun getPithy(direction: Branch, ew: EightWords, 月將: Branch, tianyiImpl: TianyiIF, dayNight: DayNight,
+  fun getPithy(direction: Branch, ew: EightWords, 月將: Branch, tianyiImpl: ITianyi, dayNight: DayNight,
                clockwise: Clockwise, seq: IGeneralSeq, generalStemBranchImpl: IGeneralStemBranch): Pithy {
 
     // 天乙貴人(起點)
@@ -42,7 +42,7 @@ interface IPithy {
   }
 
   fun getPithy(direction: Branch, lmt: ChronoLocalDateTime<*>, loc: Location, monthBranchImpl: IMonthMaster,
-               dayNightImpl: DayNightDifferentiator, tianyiImpl: TianyiIF, clockwiseImpl: IClockwise,
+               dayNightImpl: DayNightDifferentiator, tianyiImpl: ITianyi, clockwiseImpl: IClockwise,
                seq: IGeneralSeq, generalStemBranchImpl: IGeneralStemBranch, eightWordsImpl: IEightWords): Pithy {
     val ew = eightWordsImpl.getEightWords(lmt, loc)
 

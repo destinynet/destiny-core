@@ -5,10 +5,10 @@ package destiny.core.chinese.impls
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.ITianyi
+import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
-import destiny.core.chinese.TianyiIF
-import destiny.core.chinese.IYinYang
 import java.io.Serializable
 
 /**
@@ -19,7 +19,7 @@ import java.io.Serializable
  *
  * 截圖 http://imgur.com/1rmn11a
  */
-class TianyiZiweiBookImpl : TianyiIF, Serializable {
+class TianyiZiweiBookImpl : ITianyi, Serializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
