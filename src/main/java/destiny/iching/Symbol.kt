@@ -36,7 +36,7 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
   }
 
   /**
-   * 實作 SymbolIF
+   * 實作 [ISymbol]
    * 取得一個卦的第幾爻
    * index 值為 1,2,或3
    */
@@ -45,7 +45,7 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
   }
 
   /**
-   * implements FiveElementIF
+   * implements [IFiveElement]
    */
   override fun getFiveElement(): FiveElement {
     return when (this) {

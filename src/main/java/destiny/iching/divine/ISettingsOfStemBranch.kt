@@ -14,7 +14,7 @@ interface ISettingsOfStemBranch : Descriptive {
 
   /**
    * 取得某個卦的某個爻的干支納甲
-   * 1 <= LineIndex <=6
+   * 1 <= lineIndex <=6
    */
   fun getStemBranch(hexagram: IHexagram, lineIndex: Int): StemBranch
 }

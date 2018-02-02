@@ -10,7 +10,7 @@ package destiny.iching
 interface IHexagram {
 
   /** 取得全部的陰陽  */
-  val yinYangs: BooleanArray
+  val yinYangs: List<Boolean>
 
   /** 取得上卦  */
   val upperSymbol: Symbol

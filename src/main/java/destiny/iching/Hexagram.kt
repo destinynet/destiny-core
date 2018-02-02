@@ -86,17 +86,26 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
   既濟(Symbol.坎, Symbol.離),
   未濟(Symbol.離, Symbol.坎);
 
-  override val yinYangs: BooleanArray
+  private val yinYangArray: BooleanArray
     get() {
-      val yy = BooleanArray(6)
-      yy[0] = lowerSymbol.getBooleanValue(1)
-      yy[1] = lowerSymbol.getBooleanValue(2)
-      yy[2] = lowerSymbol.getBooleanValue(3)
-      yy[3] = upperSymbol.getBooleanValue(1)
-      yy[4] = upperSymbol.getBooleanValue(2)
-      yy[5] = upperSymbol.getBooleanValue(3)
-      return yy
+      return booleanArrayOf(
+        lowerSymbol.getBooleanValue(1),
+        lowerSymbol.getBooleanValue(2),
+        lowerSymbol.getBooleanValue(3),
+        upperSymbol.getBooleanValue(1),
+        upperSymbol.getBooleanValue(2),
+        upperSymbol.getBooleanValue(3))
     }
+
+  override val yinYangs: List<Boolean>
+    get() = listOf(
+      lowerSymbol.getBooleanValue(1),
+      lowerSymbol.getBooleanValue(2),
+      lowerSymbol.getBooleanValue(3),
+      upperSymbol.getBooleanValue(1),
+      upperSymbol.getBooleanValue(2),
+      upperSymbol.getBooleanValue(3))
+
 
   /** @return 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名
    */
@@ -121,7 +130,7 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
 
   override val binaryCode: String
     get() {
-      return yinYangs.joinToString(separator = "" , transform = {b -> if (b) "1" else "0"})
+      return yinYangs.joinToString(separator = "", transform = { b -> if (b) "1" else "0"})
     }
 
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
@@ -142,11 +151,9 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
    * @param lines [1~6]
    */
   override fun getHexagram(vararg lines: Int): IHexagram {
-    val booleans = yinYangs
-    lines
-      .filter { it in 1..6 }
-      .forEach { booleans[it - 1] = !booleans[it - 1] }
-    return Hexagram.getHexagram(booleans)
+    return yinYangs
+      .mapIndexed { index, b -> if (lines.contains(index+1)) !b else b }
+      .let { Hexagram.getHexagram(it) }
   }
 
   companion object {
@@ -196,7 +203,7 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
       return Hexagram.getHexagram(upper, lower)
     }
 
-    private fun getHexagram(booleans: List<Boolean>): Hexagram {
+    fun getHexagram(booleans: List<Boolean>): Hexagram {
       if (booleans.size != 6)
         throw AssertionError("booleans length is not 6 . content : " + booleans)
       val lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2])

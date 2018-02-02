@@ -15,5 +15,5 @@ interface IHiddenEnergy : Descriptive {
    * 取得第幾爻的伏神
    * 1 <= LineIndex <=6
    */
-  fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, LineIndex: Int): StemBranch
+  fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, LineIndex: Int): StemBranch?
 }
