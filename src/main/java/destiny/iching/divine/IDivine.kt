@@ -11,7 +11,10 @@ import destiny.iching.Symbol
 
 object IDivine {
 
-  fun getPlate(src: Hexagram, dst: Hexagram, 納甲系統: ISettingsOfStemBranch , 伏神系統 : IHiddenEnergy ): DivinePlate {
+  fun getPlate(src: Hexagram,
+               dst: Hexagram,
+               納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
+               伏神系統 : IHiddenEnergy = HiddenEnergyWangImpl() ): DivinePlate {
     val comparator = HexagramDivinationComparator()
 
     /* 1 <= 卦序 <= 64 */
