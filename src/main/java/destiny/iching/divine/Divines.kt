@@ -63,6 +63,7 @@ object Divines {
   fun getPlateWithDay(src: Hexagram,
                       dst: Hexagram,
                       day: StemBranch,
+                      month: StemBranchOptional,
                       納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
                       伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
                       tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
@@ -76,7 +77,7 @@ object Divines {
     val 貴人 = tianyiImpl.getTianyis(day.stem).toSet()
     val 羊刃 = yangBladeImpl.getYangBlade(day.stem)
 
-    return DivinePlateWithDay(plate, day, 空亡, 驛馬, 桃花, 貴人, 羊刃)
+    return DivinePlateWithDay(plate, day, month, 空亡, 驛馬, 桃花, 貴人, 羊刃)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {

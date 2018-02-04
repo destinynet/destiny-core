@@ -11,12 +11,17 @@ import destiny.core.chinese.StemBranchOptional
 import destiny.iching.Hexagram
 import destiny.iching.Symbol
 
+interface IPlate {
+  val src: Hexagram
+  val dst: Hexagram
+}
+
 /**
  * 卜卦結果的輸出盤，作為 DTO
  */
 data class DivinePlate(
-  val src: Hexagram,
-  val dst: Hexagram,
+  override val src: Hexagram,
+  override val dst: Hexagram,
   val 本宮: Symbol,
   val 變宮: Symbol,
   val 本卦宮序: Int,
@@ -34,18 +39,19 @@ data class DivinePlate(
   val 變卦六親: List<Relative>,
   val 變卦對於本卦的六親: List<Relative>,
   val 伏神六親: List<Relative?>
-                      )
+                      ) : IPlate
 
 data class DivinePlateWithDay(
-  val plate: DivinePlate ,
+  val plate: DivinePlate,
 
-  val day: StemBranch ,
-  val 空亡: Set<Branch> ,
-  val 驛馬: Branch ,
-  val 桃花: Branch ,
-  val 貴人: Set<Branch> ,
-  val 羊刃: Branch) : IEightWordsNullable {
+  val day: StemBranch,
+  val month: StemBranchOptional,
+  val 空亡: Set<Branch>,
+  val 驛馬: Branch,
+  val 桃花: Branch,
+  val 貴人: Set<Branch>,
+  val 羊刃: Branch) : IEightWordsNullable, IPlate by plate {
 
   override val eightWordsNullable: EightWordsNullable
-    get() = EightWordsNullable(StemBranchOptional.empty(), StemBranchOptional.empty(), day, StemBranchOptional.empty())
+    get() = EightWordsNullable(StemBranchOptional.empty(), month, day, StemBranchOptional.empty())
 }
