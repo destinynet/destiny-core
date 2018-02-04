@@ -55,12 +55,11 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
     // 此卦所缺少的五行
     val lackingFiveElement: List<FiveElement> = listOf(*FiveElement.values())
       .filterNot { containingFiveElements.contains(it) }
-    println("lackingFiveElement = $lackingFiveElement")
+    //println("lackingFiveElement = $lackingFiveElement")
 
-    return if (lackingFiveElement.indices.any {
-        SimpleBranch.getFiveElement(settings.getStemBranch(首宮卦, lineIndex).branch).equals(
-          lackingFiveElement.elementAt(it))
-      }) settings.getStemBranch(首宮卦, lineIndex) else null
+    return settings.getStemBranch(首宮卦, lineIndex)
+      .takeIf { sb -> lackingFiveElement.contains(SimpleBranch.getFiveElement(sb.branch)) }
+
   } //getStemBranch()
 
   companion object {

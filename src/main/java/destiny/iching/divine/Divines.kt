@@ -3,18 +3,18 @@
  */
 package destiny.iching.divine
 
-import destiny.core.chinese.FiveElement
-import destiny.core.chinese.SimpleBranch
-import destiny.core.chinese.StemBranch
+import destiny.core.chinese.*
+import destiny.core.chinese.impls.TianyiAuthorizedImpl
+import destiny.core.chinese.impls.YangBladeNextBlissImpl
 import destiny.iching.Hexagram
 import destiny.iching.Symbol
 
-object IDivine {
+object Divines {
 
   fun getPlate(src: Hexagram,
                dst: Hexagram,
                納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-               伏神系統 : IHiddenEnergy = HiddenEnergyWangImpl() ): DivinePlate {
+               伏神系統: IHiddenEnergy = HiddenEnergyWangImpl()): DivinePlate {
     val comparator = HexagramDivinationComparator()
 
     /* 1 <= 卦序 <= 64 */
@@ -25,6 +25,7 @@ object IDivine {
     val 本卦宮位 = (本卦京房易卦卦序 - 1) / 8
     val 變卦宮位 = (變卦京房易卦卦序 - 1) / 8
 
+    // 1~8
     val 本卦宮序 = 本卦京房易卦卦序 - 本卦宮位 * 8
     val 變卦宮序 = 變卦京房易卦卦序 - 變卦宮位 * 8
 
@@ -43,18 +44,39 @@ object IDivine {
 
     val 本卦六親: List<Relative> = (0..5).map { getRelative(SimpleBranch.getFiveElement(本卦納甲[it].branch), 本宮五行) }.toList()
     val 變卦六親: List<Relative> = (0..5).map { getRelative(SimpleBranch.getFiveElement(變卦納甲[it].branch), 變宮五行) }.toList()
-    val 變卦對於本卦的六親: List<Relative> = (0..5).map { getRelative(SimpleBranch.getFiveElement(變卦納甲[it].branch), 本宮五行) }.toList()
+    val 變卦對於本卦的六親: List<Relative> =
+      (0..5).map { getRelative(SimpleBranch.getFiveElement(變卦納甲[it].branch), 本宮五行) }.toList()
 
-    val 伏神六親: List<Relative?> = 伏神納甲.map { it?.let { sb -> getRelative(SimpleBranch.getFiveElement(sb.branch), 本宮五行) }  }.toList()
+    val 伏神六親: List<Relative?> =
+      伏神納甲.map { it?.let { sb -> getRelative(SimpleBranch.getFiveElement(sb.branch), 本宮五行) } }.toList()
 
     return DivinePlate(src, dst,
                        本宮, 變宮,
                        本卦宮序, 變卦宮序,
                        本卦世爻, 本卦應爻,
                        變卦世爻, 變卦應爻,
-                       本卦納甲, 變卦納甲 , 伏神納甲 ,
-                       本卦六親 , 變卦六親 , 變卦對於本卦的六親 ,
+                       本卦納甲, 變卦納甲, 伏神納甲,
+                       本卦六親, 變卦六親, 變卦對於本卦的六親,
                        伏神六親)
+  }
+
+  fun getPlateWithDay(src: Hexagram,
+                      dst: Hexagram,
+                      day: StemBranch,
+                      納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
+                      伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
+                      tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
+                      yangBladeImpl: IYangBlade = YangBladeNextBlissImpl()): DivinePlateWithDay {
+
+    val plate = getPlate(src, dst, 納甲系統, 伏神系統)
+
+    val 空亡: Set<Branch> = day.empties.toSet()
+    val 驛馬: Branch = Characters.getHorse(day.branch)
+    val 桃花: Branch = Characters.getPeach(day.branch)
+    val 貴人 = tianyiImpl.getTianyis(day.stem).toSet()
+    val 羊刃 = yangBladeImpl.getYangBlade(day.stem)
+
+    return DivinePlateWithDay(plate, day, 空亡, 驛馬, 桃花, 貴人, 羊刃)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {
@@ -69,7 +91,7 @@ object IDivine {
     else -> throw RuntimeException("impossible")
   }
 
-  private fun getRelative(外在五行:FiveElement , 內在五行:FiveElement) : Relative {
+  private fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
     return when {
       外在五行.equals(內在五行) -> Relative.兄弟
       外在五行.isDominatorOf(內在五行) -> Relative.官鬼
