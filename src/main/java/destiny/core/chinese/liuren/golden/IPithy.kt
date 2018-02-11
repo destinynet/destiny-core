@@ -21,19 +21,19 @@ interface IPithy {
                clockwise: Clockwise, seq: IGeneralSeq, generalStemBranchImpl: IGeneralStemBranch): Pithy {
 
     // 天乙貴人(起點)
-    val 天乙貴人 = tianyiImpl.getFirstTianyi(ew.dayStem, dayNight)
+    val 天乙貴人 = tianyiImpl.getFirstTianyi(ew.day.stem, dayNight)
 
     val steps = when (clockwise) {
       Clockwise.CLOCKWISE -> direction.getAheadOf(天乙貴人)
       Clockwise.COUNTER -> 天乙貴人.getAheadOf(direction)
     }
 
-    logger.debug("天乙貴人 (日干 {} + {} ) = {} . 地分 = {} , 順逆 = {} , steps = {}", ew.dayStem, dayNight, 天乙貴人, direction,
-                 clockwise, steps)
+    logger.debug("天乙貴人 (日干 {} + {} ) = {} . 地分 = {} , 順逆 = {} , steps = {}",
+                 ew.day.stem, dayNight, 天乙貴人, direction, clockwise, steps)
 
     // 貴神
     val 貴神地支 = General.貴人.next(steps, seq).getStemBranch(generalStemBranchImpl).branch
-    val 貴神天干 = StemBranchUtils.getHourStem(ew.dayStem, 貴神地支)
+    val 貴神天干 = StemBranchUtils.getHourStem(ew.day.stem, 貴神地支)
     logger.debug("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}", General.貴人, steps, General.貴人.next(steps, seq), 貴神地支,
                  貴神天干)
     val 貴神 = StemBranch.get(貴神天干, 貴神地支)

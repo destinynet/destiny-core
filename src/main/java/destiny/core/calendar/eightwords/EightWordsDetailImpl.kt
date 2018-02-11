@@ -62,7 +62,7 @@ class EightWordsDetailImpl : IEightWordsDetail, Serializable {
     // 命宮地支
     val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-    val risingStem = StemBranchUtils.getMonthStem(eightWords.yearStem, risingBranch)
+    val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
     // 組合成干支
     return StemBranch.get(risingStem, risingBranch)
   }

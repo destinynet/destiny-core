@@ -10,13 +10,38 @@ import kotlin.test.Test
 
 class EightWordsNullableTest {
 
+  private fun EightWords.getIntList() : List<Int> {
+    return listOf(
+      year.stem.indexFromOne,
+      year.branch.indexFromOne,
+      month.stem.indexFromOne,
+      month.branch.indexFromOne,
+      day.stem.indexFromOne,
+      day.branch.indexFromOne,
+      hour.stem.indexFromOne,
+      hour.branch.indexFromOne
+                 )
+  }
+
+  private fun EightWordsNullable.getIntList() : List<Int> {
+    return listOf(
+      year.stem?.indexFromOne ?: 0,
+      year.branch?.indexFromOne ?: 0,
+      month.stem?.indexFromOne ?: 0,
+      month.branch?.indexFromOne ?: 0,
+      day.stem?.indexFromOne ?: 0,
+      day.branch?.indexFromOne ?: 0,
+      hour.stem?.indexFromOne ?: 0,
+      hour.branch?.indexFromOne ?: 0)
+  }
+
   private val logger = LoggerFactory.getLogger(javaClass)
 
   @Test
   fun testGetList() {
     var ewn1 = EightWordsNullable(StemBranchOptional["甲子"], StemBranchOptional["乙丑"], StemBranchOptional["丙寅"],
                                   StemBranchOptional["丁卯"])
-    var ewn2 = EightWordsNullable.getFromIntList(ewn1.intList)
+    var ewn2 = EightWordsNullable.getFromIntList(ewn1.getIntList())
     assertEquals(ewn1, ewn2)
 
     ewn1 = EightWordsNullable(
@@ -24,17 +49,17 @@ class EightWordsNullableTest {
       StemBranchOptional[null, 丑],
       StemBranchOptional[丙, null],
       StemBranchOptional[null, 卯])
-    ewn2 = EightWordsNullable.getFromIntList(ewn1.intList)
+    ewn2 = EightWordsNullable.getFromIntList(ewn1.getIntList())
     assertEquals(ewn1, ewn2)
 
 
     val empty = EightWordsNullable(StemBranchOptional.empty(), StemBranchOptional.empty(), StemBranchOptional.empty(),
                                    StemBranchOptional.empty())
-    val empty2 = EightWordsNullable.getFromIntList(empty.intList)
+    val empty2 = EightWordsNullable.getFromIntList(empty.getIntList())
     assertEquals(empty, empty2)
 
     val hashids = Hashids("ewn")
-    val encoded = hashids.encode(*empty.intList.stream().mapToLong { i -> i.toLong() }.toArray())
+    val encoded = hashids.encode(*empty.getIntList().stream().mapToLong { i -> i.toLong() }.toArray())
     logger.info("encoded = {}", encoded)
 
     val ew1 = EightWords(甲, 子, 乙, 丑, 丙, 寅, 丁, 卯)

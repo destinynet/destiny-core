@@ -40,14 +40,14 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexagramNameF
 
     val 八字Canvas = ColorCanvas(3, 8, "　")
     八字Canvas.setText("時日月年", 1, 1)
-    八字Canvas.setText(eightWords.hourStem.toString(), 2, 1) //時干
-    八字Canvas.setText(eightWords.hourBranch.toString(), 3, 1) //時支
-    八字Canvas.setText(eightWords.dayStem.toString(), 2, 3) //日干
-    八字Canvas.setText(eightWords.dayBranch.toString(), 3, 3) //日支
-    八字Canvas.setText(eightWords.monthStem.toString(), 2, 5) //月干
-    八字Canvas.setText(eightWords.monthBranch.toString(), 3, 5) //月支
-    八字Canvas.setText(eightWords.yearStem.toString(), 2, 7) //年干
-    八字Canvas.setText(eightWords.yearBranch.toString(), 3, 7) //年支
+    八字Canvas.setText(eightWords.hour.stem.toString(), 2, 1) //時干
+    八字Canvas.setText(eightWords.hour.branch.toString(), 3, 1) //時支
+    八字Canvas.setText(eightWords.day.stem.toString(), 2, 3) //日干
+    八字Canvas.setText(eightWords.day.branch.toString(), 3, 3) //日支
+    八字Canvas.setText(eightWords.month.stem.toString(), 2, 5) //月干
+    八字Canvas.setText(eightWords.month.branch.toString(), 3, 5) //月支
+    八字Canvas.setText(eightWords.year.stem.toString(), 2, 7) //年干
+    八字Canvas.setText(eightWords.year.branch.toString(), 3, 7) //年支
     c.add(八字Canvas, 1, 51)
 
     //純粹五個卦 , 不包含時間等其他資訊

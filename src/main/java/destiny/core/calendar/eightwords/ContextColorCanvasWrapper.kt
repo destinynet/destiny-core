@@ -163,10 +163,10 @@ open class ContextColorCanvasWrapper(
     get() {
       val eightWords: EightWords = context.eightWords
 
-      val pillars = listOf(getOnePillar(eightWords.year, "年", eightWords.dayStem),
-                           getOnePillar(eightWords.month, "月", eightWords.dayStem),
-                           getOnePillar(eightWords.day, "日", eightWords.dayStem),
-                           getOnePillar(eightWords.hour, "時", eightWords.dayStem)).let {
+      val pillars = listOf(getOnePillar(eightWords.year, "年", eightWords.day.stem),
+                           getOnePillar(eightWords.month, "月", eightWords.day.stem),
+                           getOnePillar(eightWords.day, "日", eightWords.day.stem),
+                           getOnePillar(eightWords.hour, "時", eightWords.day.stem)).let {
         if (direction === Direction.R2L) it.reversed()
         else it
       }

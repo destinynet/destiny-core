@@ -13,30 +13,28 @@ import java.util.*
 /**
  * 八字資料結構，可以包含 null 值
  */
-class EightWordsNullable(val year: StemBranchOptional ,
-                         val month: StemBranchOptional ,
-                         val day: StemBranchOptional ,
-                         val hour: StemBranchOptional) : Serializable {
+open class EightWordsNullable(open val year: StemBranchOptional,
+                              open val month: StemBranchOptional,
+                              open val day: StemBranchOptional,
+                              open val hour: StemBranchOptional) : Serializable {
 
+  //open val yearStem: Stem? = year.stemOptional.orElse(null)
+  //open val monthStem: Stem? = month.stemOptional.orElse(null)
+  //open val dayStem: Stem? = day.stemOptional.orElse(null)
+  //open val hourStem: Stem? = hour.stemOptional.orElse(null)
 
-  val yearStem: Stem? = year.stemOptional.orElse(null)
-  val monthStem: Stem? = month.stemOptional.orElse(null)
-  val dayStem: Stem? = day.stemOptional.orElse(null)
-  val hourStem: Stem? = hour.stemOptional.orElse(null)
-
-  val yearBranch: Branch? = year.branchOptional.orElse(null)
-  val monthBranch: Branch? = month.branchOptional.orElse(null)
-  val dayBranch: Branch? = day.branchOptional.orElse(null)
-  val hourBranch: Branch? = hour.branchOptional.orElse(null)
+  //open val yearBranch: Branch? = year.branchOptional.orElse(null)
+  //open val monthBranch: Branch? = month.branchOptional.orElse(null)
+  //open val dayBranch: Branch? = day.branchOptional.orElse(null)
+  //open val hourBranch: Branch? = hour.branchOptional.orElse(null)
 
   /** 取得四柱  */
-  val stemBranches: List<StemBranchOptional> = listOf(year , month , day , hour)
+  open val stemBranches: List<StemBranchOptional> = listOf(year, month, day, hour)
 
-  val intList: List<Int> = getIntList(this)
 
-  constructor() : this(StemBranchOptional.empty() ,
-                       StemBranchOptional.empty() ,
-                       StemBranchOptional.empty() ,
+  constructor() : this(StemBranchOptional.empty(),
+                       StemBranchOptional.empty(),
+                       StemBranchOptional.empty(),
                        StemBranchOptional.empty())
 
   override fun toString(): String {
@@ -88,22 +86,6 @@ class EightWordsNullable(val year: StemBranchOptional ,
   }
 
   companion object {
-
-    /**
-     * 做法：將 年干、年支、月干、月支、日干、日支、時干、時支 分別取 index (1-based) , 若為 null 則取 0 , 再合併成一個 list
-     */
-    private fun getIntList(ewn: EightWordsNullable): List<Int> {
-
-      return listOf(
-        ewn.year.stem?.indexFromOne ?: 0,
-        ewn.year.branch?.indexFromOne ?: 0,
-        ewn.month.stem?.indexFromOne ?: 0,
-        ewn.month.branch?.indexFromOne ?: 0,
-        ewn.day.stem?.indexFromOne ?: 0,
-        ewn.day.branch?.indexFromOne ?: 0,
-        ewn.hour.stem?.indexFromOne ?: 0,
-        ewn.hour.branch?.indexFromOne ?: 0)
-    }
 
     /**
      * 從 list of integer (1-based) 轉換成 EightWordsNullable

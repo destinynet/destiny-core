@@ -40,7 +40,7 @@ class Pithy(
    * 戊癸壬子頭 時元從子推
    */
   val human: Stem
-    get() = StemBranchUtils.getHourStem(eightWords.dayStem, direction)
+    get() = StemBranchUtils.getHourStem(eightWords.day.stem, direction)
 
   /**
    * 取得「將神」 : 從時辰開始，順數至「地分」
@@ -50,11 +50,11 @@ class Pithy(
    */
   val johnson: StemBranch
     get() {
-      val steps = direction.getAheadOf(eightWords.hourBranch)
+      val steps = direction.getAheadOf(eightWords.hour.branch)
       //println("地分 " + direction + " 領先時辰 " + eightWords.hourBranch + "  " + steps + " 步")
       val branch = monthSign.next(steps)
 
-      val stem = StemBranchUtils.getHourStem(eightWords.dayStem, monthSign.next(steps))
+      val stem = StemBranchUtils.getHourStem(eightWords.day.stem, monthSign.next(steps))
       //println("月將 = $monthSign , 加上 $steps 步 , 將神地支 = $branch , 天干為 $stem")
       return StemBranch.get(stem, branch)
     }

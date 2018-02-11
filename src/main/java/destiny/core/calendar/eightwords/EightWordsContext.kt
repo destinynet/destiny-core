@@ -94,8 +94,8 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
   val risingStemBranch: StemBranch
     get() {
       val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
-      val risingStem = StemBranchUtils.getMonthStem(eightWords.yearStem, risingBranch)
-      return StemBranch.get(risingStem, risingBranch)
+      val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
+      return StemBranch[risingStem, risingBranch]
     }
 
   private fun getBranchOf(star: Star, lmt: ChronoLocalDateTime<*>, location: Location): Branch {

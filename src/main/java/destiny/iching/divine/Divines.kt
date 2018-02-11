@@ -3,11 +3,13 @@
  */
 package destiny.iching.divine
 
+import destiny.core.calendar.eightwords.EightWordsNullable
 import destiny.core.chinese.*
 import destiny.core.chinese.impls.TianyiAuthorizedImpl
 import destiny.core.chinese.impls.YangBladeNextBlissImpl
 import destiny.iching.Hexagram
 import destiny.iching.Symbol
+import java.time.LocalDateTime
 
 object Divines {
 
@@ -60,24 +62,58 @@ object Divines {
                        伏神六親)
   }
 
-  fun getPlateWithDay(src: Hexagram,
-                      dst: Hexagram,
-                      day: StemBranch,
-                      month: StemBranchOptional,
-                      納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-                      伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
-                      tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
-                      yangBladeImpl: IYangBlade = YangBladeNextBlissImpl()): DivinePlateWithDay {
+
+  fun getFullPlate(src: Hexagram,
+                   dst: Hexagram,
+                   approach: DivineApproach,
+                   eightWordsNullable: EightWordsNullable,
+                   納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
+                   伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
+                   tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
+                   yangBladeImpl: IYangBlade = YangBladeNextBlissImpl()): DivinePlateFull {
+
+    val day: StemBranch? = eightWordsNullable.day.let { stemBranchOptional ->
+      stemBranchOptional.stem?.let { stem -> stemBranchOptional.branch?.let { branch ->
+        StemBranch[stem , branch]
+      } }
+    }
 
     val plate = getPlate(src, dst, 納甲系統, 伏神系統)
 
-    val 空亡: Set<Branch> = day.empties.toSet()
-    val 驛馬: Branch = Characters.getHorse(day.branch)
-    val 桃花: Branch = Characters.getPeach(day.branch)
-    val 貴人 = tianyiImpl.getTianyis(day.stem).toSet()
-    val 羊刃 = yangBladeImpl.getYangBlade(day.stem)
+    val 空亡: Set<Branch>? = day?.empties?.toSet()
+    val 驛馬: Branch? = day?.branch?.let { Characters.getHorse(it) }
+    val 桃花: Branch? =  day?.branch?.let { Characters.getPeach(it) }
+    val 貴人: Set<Branch>? = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() }
+    val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
+    return DivinePlateFull(plate , approach , null , eightWordsNullable , 空亡 , 驛馬 , 桃花 , 貴人, 羊刃)
+  }
 
-    return DivinePlateWithDay(plate, day, month, 空亡, 驛馬, 桃花, 貴人, 羊刃)
+  fun getFullPlate(src: Hexagram,
+                   dst: Hexagram,
+                   approach: DivineApproach,
+                   localDateTime: LocalDateTime,
+                   eightWordsNullable: EightWordsNullable,
+                   納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
+                   伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
+                   tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
+                   yangBladeImpl: IYangBlade = YangBladeNextBlissImpl()): DivinePlateFull {
+
+
+
+    val day: StemBranch? = eightWordsNullable.day.let { stemBranchOptional ->
+      stemBranchOptional.stem?.let { stem -> stemBranchOptional.branch?.let { branch ->
+        StemBranch[stem , branch]
+      } }
+    }
+
+    val plate = getPlate(src, dst, 納甲系統, 伏神系統)
+
+    val 空亡: Set<Branch>? = day?.empties?.toSet()
+    val 驛馬: Branch? = day?.branch?.let { Characters.getHorse(it) }
+    val 桃花: Branch? =  day?.branch?.let { Characters.getPeach(it) }
+    val 貴人: Set<Branch>? = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() }
+    val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
+    return DivinePlateFull(plate , approach , localDateTime , eightWordsNullable , 空亡 , 驛馬 , 桃花 , 貴人, 羊刃)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {

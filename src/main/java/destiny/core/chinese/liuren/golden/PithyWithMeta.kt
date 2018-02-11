@@ -11,8 +11,8 @@ import destiny.core.chinese.IClockwise
 import destiny.core.chinese.IMonthMaster
 import destiny.core.chinese.ITianyi
 import destiny.core.chinese.liuren.General
-import destiny.core.chinese.liuren.IGeneralStemBranch
 import destiny.core.chinese.liuren.IGeneralSeq
+import destiny.core.chinese.liuren.IGeneralStemBranch
 import java.io.Serializable
 import java.util.*
 
@@ -40,8 +40,8 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
     val sb = StringBuilder()
     val ew = pithy.eightWords
     sb.append("　日").append("\n")
-    sb.append(ew.hourStem).append(ew.dayStem).append(ew.monthStem).append(ew.yearStem).append("\n")
-    sb.append(ew.hourBranch).append(ew.dayBranch).append(ew.monthBranch).append(ew.yearBranch).append("\n")
+    sb.append(ew.hour.stem).append(ew.day.stem).append(ew.month.stem).append(ew.year.stem).append("\n")
+    sb.append(ew.hour.branch).append(ew.day.branch).append(ew.month.branch).append(ew.year.branch).append("\n")
     sb.append("\n")
     sb.append("月將：").append(pithy.monthSign).append("（").append(monthMasterImpl.getTitle(Locale.TAIWAN)).append("）").append("\n")
     sb.append("晝夜：").append(if (pithy.dayNight == DayNight.DAY) "日" else "夜").append("\n")
