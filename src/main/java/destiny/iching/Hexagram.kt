@@ -211,6 +211,10 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
       return Hexagram.getHexagram(upper, lower)
     }
 
+    fun getHexagram(iHexagram: IHexagram) : Hexagram {
+      return getHexagram(iHexagram.yinYangs)
+    }
+
     /**
      * @return 從 六爻 (6,7,8 or 9) 取得本卦以及變卦
      */

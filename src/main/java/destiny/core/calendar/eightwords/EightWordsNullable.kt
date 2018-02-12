@@ -87,6 +87,10 @@ open class EightWordsNullable(open val year: StemBranchOptional,
 
   companion object {
 
+    fun empty() : EightWordsNullable {
+      return EightWordsNullable(StemBranchOptional.empty() , StemBranchOptional.empty() , StemBranchOptional.empty() , StemBranchOptional.empty())
+    }
+
     /**
      * 從 list of integer (1-based) 轉換成 EightWordsNullable
      * TODO : 這要如何能夠自動 downcast 成 EightWords 呢？

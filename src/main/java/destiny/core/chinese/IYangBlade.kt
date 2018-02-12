@@ -3,8 +3,10 @@
  */
 package destiny.core.chinese
 
+import destiny.core.Descriptive
+
 /** 羊刃 */
-interface IYangBlade {
+interface IYangBlade : Descriptive {
   fun getYangBlade(stem: Stem): Branch
 }
 

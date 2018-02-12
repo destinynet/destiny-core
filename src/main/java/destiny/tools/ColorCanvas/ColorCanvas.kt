@@ -270,11 +270,11 @@ class ColorCanvas : Serializable {
   fun setText(str: String,
               x: Int,
               y: Int,
-              foreColor: String?,
-              backColor: String?,
-              font: Font?,
-              url: String?,
-              title: String?,
+              foreColor: String? = null,
+              backColor: String? = null,
+              font: Font? = null,
+              url: String? = null,
+              title: String? = null,
               wrap: Boolean) {
     var str = str
     var foreColor = foreColor
