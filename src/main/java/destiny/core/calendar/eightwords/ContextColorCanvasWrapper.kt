@@ -92,7 +92,7 @@ open class ContextColorCanvasWrapper(
 
       val 地點名稱 = ColorCanvas(1, 44, "　")
       地點名稱.setText("地點：", 1, 1)
-      地點名稱.setText(locationName, 1, 7, null, null, null, url, null, false)
+      地點名稱.setText(locationName, 1, 7, false, null, null, null, url, null)
       val minuteOffset = TimeTools.getDstSecondOffset(lmt, location).second / 60
       地點名稱.setText(" GMT時差：" + AlignTools.alignRight(minuteOffset, 6, true) + "分鐘", 1, 25, "999999")
       cc.add(地點名稱, 3, 1)
@@ -101,13 +101,13 @@ open class ContextColorCanvasWrapper(
       val 經度 = ColorCanvas(1, 24, "　")
       val lngText = LngDecorator.getOutputString(location.longitude , Locale.TAIWAN)
 
-      經度.setText(lngText, 1, 1, null, null, null, url, null, false)
+      經度.setText(lngText, 1, 1, false, null, null, null, url, null)
       cc.add(經度, 4, 1)
 
       val 緯度 = ColorCanvas(1, 22, "　")
       val latText = LatDecorator.getOutputString(location.latitude , Locale.TAIWAN)
 
-      緯度.setText(latText+" ", 1, 1, null, null, null, url, null, false)
+      緯度.setText(latText+" ", 1, 1, false, null, null, null, url, null)
       cc.add(緯度, 4, 25)
 
       cc.setText("換日：" + if (context.isChangeDayAfterZi) "子初換日" else "子正換日", 5, 1, "999999")
@@ -139,7 +139,7 @@ open class ContextColorCanvasWrapper(
         cc.setText("命盤連結  ", linkLine, 1, "999999")
         val showLinkUrl: String = if (linkUrl.length % 2 == 1) linkUrl + ' '
         else linkUrl
-        cc.setText(showLinkUrl, linkLine, 11, "999999", null, null, showLinkUrl, null, false)
+        cc.setText(showLinkUrl, linkLine, 11, false, "999999", null, null, showLinkUrl, null)
       }
       return cc
     }

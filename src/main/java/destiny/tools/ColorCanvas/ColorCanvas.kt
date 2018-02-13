@@ -23,7 +23,7 @@ class ColorCanvas : Serializable {
   var parent: ColorCanvas? = null
     internal set
 
-  private var height: Int = 0 // x
+  var height: Int = 0 // x
 
   val width: Int  // y
 
@@ -223,7 +223,7 @@ class ColorCanvas : Serializable {
    * @param y
    */
   fun setText(str: String, x: Int, y: Int) {
-    this.setText(str, x, y, null, null, null, null, null, false)
+    this.setText(str, x, y, false, null, null, null, null, null)
   }
 
   /**
@@ -235,7 +235,7 @@ class ColorCanvas : Serializable {
    * @wrap 是否換行 , 如果不換行，後面的字會被切掉
    */
   fun setText(str: String, x: Int, y: Int, wrap: Boolean) {
-    this.setText(str, x, y, null, null, null, null, null, wrap)
+    this.setText(str, x, y, wrap, null, null, null, null, null)
   } //setText
 
 
@@ -243,14 +243,14 @@ class ColorCanvas : Serializable {
    * 在第 x row , 第 y column , 開始，寫入 Text 純文字 , 有設定前景色
    */
   fun setText(str: String, x: Int, y: Int, foreColor: String) {
-    this.setText(str, x, y, foreColor, null, null, null, null, false)
+    this.setText(str, x, y, false, foreColor, null, null, null, null)
   }
 
   /**
    * 在第 x row , 第 y column , 開始，寫入 Text , 有設定前景色，背景色，以及 title
    */
   fun setText(str: String, x: Int, y: Int, foreColor: String, backColor: String?, title: String?) {
-    this.setText(str, x, y, foreColor, backColor, null, null, title, false)
+    this.setText(str, x, y, false, foreColor, backColor, null, null, title)
   }
 
 
@@ -270,12 +270,12 @@ class ColorCanvas : Serializable {
   fun setText(str: String,
               x: Int,
               y: Int,
+              wrap: Boolean,
               foreColor: String? = null,
               backColor: String? = null,
               font: Font? = null,
               url: String? = null,
-              title: String? = null,
-              wrap: Boolean) {
+              title: String? = null) {
     var str = str
     var foreColor = foreColor
     var backColor = backColor
@@ -475,7 +475,7 @@ class ColorCanvas : Serializable {
     if (targetLine > this.height
     ) throw RuntimeException("錯誤，欲新加入一行，但是最後一行已經有資料了，無法再往下加一行了")
 
-    this.setText(str, targetLine, 1, foreColor, backColor, font, null, null, wrap)
+    this.setText(str, targetLine, 1, wrap, foreColor, backColor, font, null, null)
   } //addLine
 
   /**

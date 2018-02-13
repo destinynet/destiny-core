@@ -3,6 +3,10 @@
  */
 package destiny.iching.divine
 
+import destiny.core.Gender
+import destiny.core.calendar.Location
+import destiny.core.calendar.TimeSecDecorator
+import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsNullable
 import destiny.core.chinese.*
 import destiny.core.chinese.impls.TianyiAuthorizedImpl
@@ -69,38 +73,15 @@ object Divines {
                        伏神六親)
   }
 
-
   fun getFullPlate(src: Hexagram,
                    dst: Hexagram,
                    hexagramNameFull: IHexagramNameFull,
+                   gender: Gender? = null,
+                   question: String? = null,
                    approach: DivineApproach,
-                   eightWordsNullable: EightWordsNullable,
-                   納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-                   伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
-                   tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
-                   yangBladeImpl: IYangBlade = YangBladeNextBlissImpl()): DivinePlateFull {
-
-    val day: StemBranch? = eightWordsNullable.day.let { stemBranchOptional ->
-      stemBranchOptional.stem?.let { stem -> stemBranchOptional.branch?.let { branch ->
-        StemBranch[stem , branch]
-      } }
-    }
-
-    val plate = getPlate(src, dst, hexagramNameFull , 納甲系統, 伏神系統)
-
-    val 空亡: Set<Branch>? = day?.empties?.toSet()
-    val 驛馬: Branch? = day?.branch?.let { Characters.getHorse(it) }
-    val 桃花: Branch? =  day?.branch?.let { Characters.getPeach(it) }
-    val 貴人: Set<Branch>? = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() }
-    val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
-    return DivinePlateFull(plate , approach , null , eightWordsNullable , 空亡 , 驛馬 , 桃花 , 貴人, 羊刃)
-  }
-
-  fun getFullPlate(src: Hexagram,
-                   dst: Hexagram,
-                   hexagramNameFull: IHexagramNameFull,
-                   approach: DivineApproach,
-                   localDateTime: ChronoLocalDateTime<*>,
+                   time: ChronoLocalDateTime<*>?,
+                   loc: Location? = Location.of(Locale.TAIWAN),
+                   place: String? = null,
                    eightWordsNullable: EightWordsNullable?,
                    納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
                    伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
@@ -123,7 +104,15 @@ object Divines {
     val 桃花: Branch? =  day?.branch?.let { Characters.getPeach(it) }
     val 貴人: Set<Branch>? = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() }
     val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
-    return DivinePlateFull(plate , approach , localDateTime , ewNullable , 空亡 , 驛馬 , 桃花 , 貴人, 羊刃)
+    val 六獸: List<SixAnimal>? = day?.let { SixAnimals.getSixAnimals(it.stem) }
+
+
+    val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc) }
+    val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
+    val meta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
+                          decoratedTime, 納甲系統.getTitle(Locale.TAIWAN), 伏神系統.getTitle(Locale.TAIWAN), null)
+
+    return DivinePlateFull(plate, meta, ewNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {
