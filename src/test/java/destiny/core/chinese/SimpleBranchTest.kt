@@ -4,46 +4,48 @@
  */
 package destiny.core.chinese
 
+import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.SimpleBranch.*
+import destiny.core.chinese.SimpleBranch.Companion.getFiveElement
 import org.junit.Assert.assertSame
 import kotlin.test.Test
 
 class SimpleBranchTest {
   @Test
   fun testGet() {
-    assertSame(SimpleBranch.子, SimpleBranch.get(Branch.子))
+    assertSame(SimpleBranch.子, SimpleBranch[Branch.子])
   }
 
   @Test
   fun testGetFiveElement() {
-    assertSame(FiveElement.水, 子.fiveElement)
-    assertSame(FiveElement.土, 丑.fiveElement)
-    assertSame(FiveElement.木, 寅.fiveElement)
-    assertSame(FiveElement.木, 卯.fiveElement)
-    assertSame(FiveElement.土, 辰.fiveElement)
-    assertSame(FiveElement.火, 巳.fiveElement)
-    assertSame(FiveElement.火, 午.fiveElement)
-    assertSame(FiveElement.土, 未.fiveElement)
-    assertSame(FiveElement.金, 申.fiveElement)
-    assertSame(FiveElement.金, 酉.fiveElement)
-    assertSame(FiveElement.土, 戌.fiveElement)
-    assertSame(FiveElement.水, 亥.fiveElement)
+    assertSame(水, 子.fiveElement)
+    assertSame(土, 丑.fiveElement)
+    assertSame(木, 寅.fiveElement)
+    assertSame(木, 卯.fiveElement)
+    assertSame(土, 辰.fiveElement)
+    assertSame(火, 巳.fiveElement)
+    assertSame(火, 午.fiveElement)
+    assertSame(土, 未.fiveElement)
+    assertSame(金, 申.fiveElement)
+    assertSame(金, 酉.fiveElement)
+    assertSame(土, 戌.fiveElement)
+    assertSame(水, 亥.fiveElement)
   }
 
   @Test
   fun testGetFiveElementEarthlyBranches() {
-    assertSame(FiveElement.水, getFiveElement(Branch.子))
-    assertSame(FiveElement.土, getFiveElement(Branch.丑))
-    assertSame(FiveElement.木, getFiveElement(Branch.寅))
-    assertSame(FiveElement.木, getFiveElement(Branch.卯))
-    assertSame(FiveElement.土, getFiveElement(Branch.辰))
-    assertSame(FiveElement.火, getFiveElement(Branch.巳))
-    assertSame(FiveElement.火, getFiveElement(Branch.午))
-    assertSame(FiveElement.土, getFiveElement(Branch.未))
-    assertSame(FiveElement.金, getFiveElement(Branch.申))
-    assertSame(FiveElement.金, getFiveElement(Branch.酉))
-    assertSame(FiveElement.土, getFiveElement(Branch.戌))
-    assertSame(FiveElement.水, getFiveElement(Branch.亥))
+    assertSame(水, getFiveElement(Branch.子))
+    assertSame(土, getFiveElement(Branch.丑))
+    assertSame(木, getFiveElement(Branch.寅))
+    assertSame(木, getFiveElement(Branch.卯))
+    assertSame(土, getFiveElement(Branch.辰))
+    assertSame(火, getFiveElement(Branch.巳))
+    assertSame(火, getFiveElement(Branch.午))
+    assertSame(土, getFiveElement(Branch.未))
+    assertSame(金, getFiveElement(Branch.申))
+    assertSame(金, getFiveElement(Branch.酉))
+    assertSame(土, getFiveElement(Branch.戌))
+    assertSame(水, getFiveElement(Branch.亥))
   }
 
   @Test

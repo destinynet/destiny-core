@@ -83,9 +83,8 @@ enum class ZodiacSign(private val nameKey: String,
     return ResourceBundle.getBundle(resource, locale).getString(abbrKey)
   }
 
-  override fun getBooleanValue(): Boolean {
-    return yinYang
-  }
+  override val booleanValue: Boolean
+    get() = yinYang
 
   companion object {
 

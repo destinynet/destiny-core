@@ -113,7 +113,7 @@ open class StemBranchOptional internal constructor(open val stem: Stem?, open va
 
     private fun check(stem: Stem?, branch: Branch?) {
       if (stem != null && branch != null) {
-        if (stem.booleanValue != SimpleBranch.get(branch).booleanValue) {
+        if (stem.booleanValue != SimpleBranch.getBooleanValue(branch)) {
           throw RuntimeException("Stem/Branch combination illegal ! $stem cannot be combined with $branch")
         }
       }

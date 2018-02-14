@@ -14,7 +14,7 @@ enum class DayNight(private val value: Boolean) : IYinYang {
   /** 夜  */
   NIGHT(false);
 
-  override fun getBooleanValue(): Boolean {
-    return value
-  }
+  override val booleanValue: Boolean
+    get() = value
+
 }

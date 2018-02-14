@@ -51,8 +51,8 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
   /**
    * 實作 [IFiveElement] 的 getFiveElement()
    */
-  override fun getFiveElement(): FiveElement {
-    return when (getIndex(this)) {
+  override val fiveElement: FiveElement
+    get() = when (getIndex(this)) {
       0, 1 -> 木
       2, 3 -> 火
       4, 5 -> 土
@@ -60,11 +60,9 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
       8, 9 -> 水
       else -> throw AssertionError("HeavenlyStems Error : cannot getFiveElements() : " + toString())
     }
-  } //getFiveElement()
 
-  override fun getBooleanValue(): Boolean {
-    return getIndex(this) % 2 == 0
-  }
+  override val booleanValue: Boolean
+    get() = getIndex(this) % 2 == 0
 
   companion object {
 

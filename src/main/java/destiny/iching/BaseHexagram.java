@@ -11,8 +11,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /** 因為 enum Hexagram 無法被繼承 , 所以才做出這個中介/adapter class , 提供給其他 class 繼承 */
-public class BaseHexagram implements IHexagram, Serializable
-{
+public class BaseHexagram implements IHexagram, Serializable {
+
   private Hexagram hexagram;
   
   public BaseHexagram(Hexagram hexagram)

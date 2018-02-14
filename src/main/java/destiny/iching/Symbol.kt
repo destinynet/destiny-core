@@ -44,18 +44,16 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
     return yinYangs[index - 1]
   }
 
-  /**
-   * implements [IFiveElement]
-   */
-  override fun getFiveElement(): FiveElement {
-    return when (this) {
+
+  override val fiveElement: FiveElement
+    get() = when (this) {
       乾, 兌 -> FiveElement.金
       離 -> FiveElement.火
       震, 巽 -> FiveElement.木
       坎 -> FiveElement.水
       艮, 坤 -> FiveElement.土
     }
-  }
+
 
   /** 先天八卦 -> 後天八卦  */
   fun toAcquired(): Symbol {
