@@ -11,6 +11,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.SixAnimal
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
+import destiny.iching.HexagramText
 import destiny.iching.Symbol
 import java.util.*
 
@@ -67,7 +68,8 @@ class DivinePlateFull(
   val 桃花: Branch?,
   val 貴人: Set<Branch>?,
   val 羊刃: Branch?,
-  val 六獸: List<SixAnimal>? ) : IEightWordsNullable,
+  val 六獸: List<SixAnimal>?,
+  val pairTexts: Pair<HexagramText, HexagramText>?) : IEightWordsNullable,
   DivinePlate(plate.src, plate.dst, plate.srcNameFull, plate.dstNameFull,
               plate.本宮, plate.變宮, plate.本卦宮序, plate.變卦宮序, plate.本卦世爻,
               plate.本卦應爻, plate.變卦世爻, plate.變卦應爻, plate.本卦納甲, plate.變卦納甲,

@@ -62,9 +62,9 @@ enum class FiveElement  : IFiveElement, Serializable {
       }
     } //beatenBy()
 
-  override fun getFiveElement(): FiveElement {
-    return this
-  }
+  override val fiveElement: FiveElement
+    get() = this
+
 
   fun equals(f: IFiveElement): Boolean {
     return f.fiveElement == this

@@ -11,9 +11,8 @@ import destiny.core.calendar.eightwords.EightWordsNullable
 import destiny.core.chinese.*
 import destiny.core.chinese.impls.TianyiAuthorizedImpl
 import destiny.core.chinese.impls.YangBladeNextBlissImpl
-import destiny.iching.Hexagram
-import destiny.iching.Symbol
-import destiny.iching.contentProviders.IHexagramNameFull
+import destiny.iching.*
+import destiny.iching.contentProviders.*
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
@@ -76,6 +75,10 @@ object Divines {
   fun getFullPlate(src: Hexagram,
                    dst: Hexagram,
                    hexagramNameFull: IHexagramNameFull,
+                   hexagramNameShort: IHexagramNameShort,
+                   expressionImpl: IExpression,
+                   imageImpl: IImage,
+                   judgementImpl: IHexagramJudgement,
                    gender: Gender? = null,
                    question: String? = null,
                    approach: DivineApproach,
@@ -86,7 +89,8 @@ object Divines {
                    納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
                    伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
                    tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
-                   yangBladeImpl: IYangBlade = YangBladeNextBlissImpl()): DivinePlateFull {
+                   yangBladeImpl: IYangBlade = YangBladeNextBlissImpl(),
+                   textLocale: Locale?): DivinePlateFull {
 
 
     val ewNullable = eightWordsNullable?: EightWordsNullable.empty()
@@ -112,7 +116,45 @@ object Divines {
     val meta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
                           decoratedTime, 納甲系統.getTitle(Locale.TAIWAN), 伏神系統.getTitle(Locale.TAIWAN), null)
 
-    return DivinePlateFull(plate, meta, ewNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
+    val pairTexts: Pair<HexagramText, HexagramText>? = textLocale?.let { locale ->
+      val srcText = getHexagramText(src , locale , hexagramNameFull , hexagramNameShort , expressionImpl , imageImpl , judgementImpl)
+      val dstText = getHexagramText(dst , locale , hexagramNameFull , hexagramNameShort , expressionImpl , imageImpl , judgementImpl)
+      Pair(srcText , dstText)
+    }
+
+    return DivinePlateFull(plate, meta, ewNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸 , pairTexts)
+  }
+
+  private fun getHexagramText(hexagram: IHexagram,
+                              locale: Locale,
+                              hexagramNameFull: IHexagramNameFull,
+                              hexagramNameShort: IHexagramNameShort,
+                              expressionImpl: IExpression,
+                              imageImpl: IImage,
+                              judgementImpl: IHexagramJudgement): HexagramText {
+    val shortName = hexagramNameShort.getNameShort(hexagram, locale)
+    val fullName = hexagramNameFull.getNameFull(hexagram, locale)
+    val expression = expressionImpl.getHexagramExpression(hexagram, locale)
+    val image = imageImpl.getHexagramImage(hexagram, locale)
+    val judgement = judgementImpl.getJudgement(hexagram, locale)
+
+    val lineTexts: List<LineText> = (1..6).map { lineIndex ->
+      val expression = expressionImpl.getLineExpression(hexagram , lineIndex , locale)
+      val image = imageImpl.getLineImage(hexagram , lineIndex , locale)
+      LineText(expression , image)
+    }.toList()
+
+    val seq:IHexagramSequence = HexagramDefaultComparator()
+    val extraLine: LineText? = seq.getIndex(hexagram).let {
+      if (it == 1 || it == 2) {
+        val expression = expressionImpl.getExtraExpression(hexagram , locale)
+        val image = imageImpl.getExtraImage(hexagram , locale)
+        LineText(expression , image)
+      }
+      else
+        null
+    }
+    return HexagramText(shortName , fullName , expression , image , judgement , lineTexts , extraLine)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {

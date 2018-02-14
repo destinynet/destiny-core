@@ -5,8 +5,9 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Gender.女
 import destiny.core.Gender.男
-import destiny.core.chinese.IYinYang.陰
-import destiny.core.chinese.IYinYang.陽
+import destiny.core.chinese.YinYang
+import destiny.core.chinese.YinYang.陰
+import destiny.core.chinese.YinYang.陽
 import destiny.core.chinese.ziwei.House.*
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -32,7 +33,7 @@ class BigRangeFromMainTest {
   @Test
   fun getVageRange() {
     // 陽男順行 , 可參考 https://imgur.com/a/g3D9X
-    assertEquals(Pair(2, 11), impl.getVageRange(命宮, 2,  陽, 男, seq))
+    assertEquals(Pair(2, 11), impl.getVageRange(命宮, 2, YinYang.陽, 男, seq))
     assertEquals(Pair(12, 21), impl.getVageRange(父母, 2, 陽, 男, seq))
     assertEquals(Pair(112,121) , impl.getVageRange(兄弟 , 2 , 陽 , 男 , seq))
 

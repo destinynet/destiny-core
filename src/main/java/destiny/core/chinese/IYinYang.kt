@@ -8,11 +8,15 @@ package destiny.core.chinese
 interface IYinYang {
 
   val booleanValue: Boolean
+}
 
-  companion object {
-
-    val 陽 = { true }
-
-    val 陰 = { false }
+enum class YinYang : IYinYang {
+  陽 {
+    override val booleanValue: Boolean
+      get() = true
+  },
+  陰 {
+    override val booleanValue: Boolean
+      get() = false
   }
 }
