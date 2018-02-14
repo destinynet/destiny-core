@@ -18,8 +18,8 @@ import java.util.*
 
 object Divines {
 
-  fun getPlate(src: Hexagram,
-               dst: Hexagram,
+  fun getPlate(src: IHexagram,
+               dst: IHexagram,
                hexagramNameFull: IHexagramNameFull,
                納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
                伏神系統: IHiddenEnergy = HiddenEnergyWangImpl()): DivinePlate {
@@ -61,7 +61,8 @@ object Divines {
     val 伏神六親: List<Relative?> =
       伏神納甲.map { it?.let { sb -> getRelative(SimpleBranch.getFiveElement(sb.branch), 本宮五行) } }.toList()
 
-    return DivinePlate(src, dst,
+
+    return DivinePlate(Hexagram.getHexagram(src), Hexagram.getHexagram(dst),
                        srcNameFull , dstNameFull,
                        本宮, 變宮,
                        本卦宮序, 變卦宮序,
@@ -72,8 +73,8 @@ object Divines {
                        伏神六親)
   }
 
-  fun getFullPlate(src: Hexagram,
-                   dst: Hexagram,
+  fun getFullPlate(src: IHexagram,
+                   dst: IHexagram,
                    hexagramNameFull: IHexagramNameFull,
                    hexagramNameShort: IHexagramNameShort,
                    expressionImpl: IExpression,
@@ -90,7 +91,7 @@ object Divines {
                    伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
                    tianyiImpl: ITianyi = TianyiAuthorizedImpl(),
                    yangBladeImpl: IYangBlade = YangBladeNextBlissImpl(),
-                   textLocale: Locale?): DivinePlateFull {
+                   textLocale: Locale? = null): DivinePlateFull {
 
 
     val ewNullable = eightWordsNullable?: EightWordsNullable.empty()
