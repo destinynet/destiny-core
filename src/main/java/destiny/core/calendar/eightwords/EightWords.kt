@@ -27,14 +27,10 @@ data class EightWords(override val year: StemBranch,
            StemBranch[hour.toCharArray()[0], hour.toCharArray()[1]])
 
   /** 直接用八個干支建立八字  */
-  constructor(yearStem: Stem,
-              yearBranch: Branch,
-              monthStem: Stem,
-              monthBranch: Branch,
-              dayStem: Stem,
-              dayBranch: Branch,
-              hourStem: Stem,
-              hourBranch: Branch)
+  constructor(yearStem: Stem, yearBranch: Branch,
+              monthStem: Stem, monthBranch: Branch,
+              dayStem: Stem, dayBranch: Branch,
+              hourStem: Stem, hourBranch: Branch)
     : this(StemBranch[yearStem, yearBranch],
            StemBranch[monthStem, monthBranch],
            StemBranch[dayStem, dayBranch],

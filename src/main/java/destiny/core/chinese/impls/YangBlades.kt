@@ -5,10 +5,11 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Characters
 import destiny.core.chinese.IYangBlade
 import destiny.core.chinese.Stem
+import java.io.Serializable
 import java.util.*
 
 /** 羊刃 : 「祿」  的下一位 , 陰干 的羊刃，會落在辰戌丑未 四庫中。 參考 https://imgur.com/bZZQRIw */
-class YangBladeNextBlissImpl : IYangBlade, Descriptive {
+class YangBladeNextBlissImpl : IYangBlade, Descriptive , Serializable {
   override fun getYangBlade(stem: Stem): Branch {
     return Characters.getBliss(stem).next(1)
   }
@@ -23,7 +24,7 @@ class YangBladeNextBlissImpl : IYangBlade, Descriptive {
 }
 
 /** 羊刃 : 劫財 算法 , 陰干 的羊刃，會落在 寅巳申亥 四驛馬中。 參考 https://imgur.com/bZZQRIw */
-class YangBladeRobCashImpl : IYangBlade, Descriptive {
+class YangBladeRobCashImpl : IYangBlade, Descriptive , Serializable {
   override fun getYangBlade(stem: Stem): Branch {
     return when (stem) {
       Stem.甲 -> Branch.卯      // 甲的帝旺在卯，卯中藏乙木，乙是甲的劫財，故卯是甲的羊刃。

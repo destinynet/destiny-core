@@ -2,7 +2,6 @@ package destiny.core.chinese
 
 import destiny.core.chinese.FiveElement.*
 import destiny.tools.ArrayTools
-import java.util.*
 
 /** 天干系統  */
 enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
@@ -66,8 +65,6 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
 
   companion object {
 
-    private val ARRAY = arrayOf(甲, 乙, 丙, 丁, 戊, 己, 庚, 辛, 壬, 癸)
-
     /** 從五行 以及 陰陽 建立天干  */
     operator fun get(fiveElement: FiveElement, yinYang: Boolean): Stem {
       return when (fiveElement) {
@@ -89,16 +86,16 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
      * @return
      */
     operator fun get(index: Int): Stem {
-      return ArrayTools[ARRAY, index]
+      return ArrayTools[values(), index]
     }
 
     operator fun get(c: Char): Stem? {
-      return ARRAY.firstOrNull { it -> it.name == c.toString() }
+      return values().firstOrNull { it -> it.name == c.toString() }
     }
 
     /** 甲[0] ... 癸[9]  */
     fun getIndex(hs: Stem): Int {
-      return Arrays.binarySearch(ARRAY, hs)
+      return values().indexOf(hs)//  Arrays.binarySearch(values(), hs)
     }
   }
 

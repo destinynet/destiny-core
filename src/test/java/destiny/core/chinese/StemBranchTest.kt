@@ -18,9 +18,14 @@ class StemBranchTest {
 
   @Test
   fun testList() {
-    StemBranch.list.joinToString(",") { it.toString() }.let { println(it) }
+    StemBranch.values().joinToString(",") { it.toString() }.let { println(it) }
   }
 
+  @Test
+  fun testIndex() {
+    assertSame(0 , StemBranch.甲子.index)
+    assertSame(59 , StemBranch.癸亥.index)
+  }
 
   @Test
   fun testEmpties() {

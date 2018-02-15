@@ -21,12 +21,6 @@ open class EightWordsNullable(open val year: IStemBranchOptional,
   /** 取得四柱  */
   open val stemBranches: List<IStemBranchOptional> = listOf(year, month, day, hour)
 
-
-  constructor() : this(StemBranchOptional.empty(),
-                       StemBranchOptional.empty(),
-                       StemBranchOptional.empty(),
-                       StemBranchOptional.empty())
-
   override fun toString(): String {
 
     val h1 = hour.stem?.toString() ?: ChineseStringTools.NULL_CHAR
@@ -78,7 +72,10 @@ open class EightWordsNullable(open val year: IStemBranchOptional,
   companion object {
 
     fun empty() : EightWordsNullable {
-      return EightWordsNullable(StemBranchOptional.empty() , StemBranchOptional.empty() , StemBranchOptional.empty() , StemBranchOptional.empty())
+      return EightWordsNullable(StemBranchOptional.empty() ,
+                                StemBranchOptional.empty() ,
+                                StemBranchOptional.empty() ,
+                                StemBranchOptional.empty())
     }
 
     /**

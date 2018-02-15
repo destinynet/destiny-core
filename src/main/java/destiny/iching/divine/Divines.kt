@@ -135,27 +135,27 @@ object Divines {
                               judgementImpl: IHexagramJudgement): HexagramText {
     val shortName = hexagramNameShort.getNameShort(hexagram, locale)
     val fullName = hexagramNameFull.getNameFull(hexagram, locale)
-    val expression = expressionImpl.getHexagramExpression(hexagram, locale)
-    val image = imageImpl.getHexagramImage(hexagram, locale)
-    val judgement = judgementImpl.getJudgement(hexagram, locale)
+    val hexExpression = expressionImpl.getHexagramExpression(hexagram, locale)
+    val hexImage = imageImpl.getHexagramImage(hexagram, locale)
+    val hexJudgement = judgementImpl.getJudgement(hexagram, locale)
 
     val lineTexts: List<LineText> = (1..6).map { lineIndex ->
-      val expression = expressionImpl.getLineExpression(hexagram , lineIndex , locale)
-      val image = imageImpl.getLineImage(hexagram , lineIndex , locale)
-      LineText(expression , image)
+      val lineExpression = expressionImpl.getLineExpression(hexagram , lineIndex , locale)
+      val lineImage = imageImpl.getLineImage(hexagram , lineIndex , locale)
+      LineText(lineExpression , lineImage)
     }.toList()
 
     val seq:IHexagramSequence = HexagramDefaultComparator()
     val extraLine: LineText? = seq.getIndex(hexagram).let {
       if (it == 1 || it == 2) {
-        val expression = expressionImpl.getExtraExpression(hexagram , locale)
-        val image = imageImpl.getExtraImage(hexagram , locale)
-        LineText(expression , image)
+        val lineExpression = expressionImpl.getExtraExpression(hexagram , locale)
+        val lineImage = imageImpl.getExtraImage(hexagram , locale)
+        LineText(lineExpression , lineImage)
       }
       else
         null
     }
-    return HexagramText(shortName , fullName , expression , image , judgement , lineTexts , extraLine)
+    return HexagramText(shortName , fullName , hexExpression , hexImage , hexJudgement , lineTexts , extraLine)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {

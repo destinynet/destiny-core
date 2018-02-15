@@ -71,8 +71,8 @@ class EightWordsNullableTest {
 
   @Test
   fun testEquals() {
-    var ew1 = EightWordsNullable()
-    var ew2 = EightWordsNullable()
+    var ew1 = EightWordsNullable.empty()
+    var ew2 = EightWordsNullable.empty()
     assertEquals(ew1, ew2) //兩個都是 null 八字,應該 equals
 
     ew1 = EightWordsNullable(StemBranchOptional["甲子"], StemBranchOptional["乙丑"], StemBranchOptional["丙寅"],

@@ -5,26 +5,19 @@ package destiny.core.chinese
 
 import destiny.tools.ArrayTools
 import java.io.Serializable
-import java.util.*
 
-open class StemBranchOptional internal constructor(override val stem: Stem?, override val branch: Branch?) : IStemBranchOptional , Serializable {
+data class StemBranchOptional internal constructor(override val stem: Stem?,
+                                                   override val branch: Branch?) : IStemBranchOptional , Serializable {
 
 
-  open val index: Int?
+  val index: Int?
     get() = StemBranchOptional.getIndex(this)
-
-  val stemOptional: Optional<Stem>
-    get() = Optional.ofNullable(stem)
-
-  val branchOptional: Optional<Branch>
-    get() = Optional.ofNullable(branch)
-
 
   init {
     check(stem, branch)
   }
 
-  open fun next(n: Int): StemBranchOptional? {
+  fun next(n: Int): StemBranchOptional? {
     val index = getIndex(this)
     return if (index != null) {
       get(index + n)
@@ -35,19 +28,6 @@ open class StemBranchOptional internal constructor(override val stem: Stem?, ove
 
   override fun toString(): String {
     return "[" + stem + ' '.toString() + branch + ']'.toString()
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other)
-      return true
-    if (other !is StemBranchOptional)
-      return false
-    val that = other as StemBranchOptional?
-    return stem == that!!.stem && branch == that.branch
-  }
-
-  override fun hashCode(): Int {
-    return Objects.hash(stem, branch)
   }
 
   companion object {

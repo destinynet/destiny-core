@@ -2,7 +2,6 @@ package destiny.core.chinese
 
 
 import destiny.tools.ArrayTools
-import java.util.*
 
 /**
  * 地支系統
@@ -79,8 +78,6 @@ enum class Branch {
 
   companion object {
 
-    private val ARRAY = arrayOf(子, 丑, 寅, 卯, 辰, 巳, 午, 未, 申, 酉, 戌, 亥)
-
     /**
      * 抓取地支的 index , 為 0-based <BR></BR>
      * 0 為 子
@@ -89,19 +86,19 @@ enum class Branch {
      * 11 為 亥
      */
     operator fun get(index: Int): Branch {
-      return ArrayTools[ARRAY, index]
+      return ArrayTools[values(), index]
     }
 
 
     operator fun get(c: Char): Branch? {
-      return ARRAY.firstOrNull { it.name == c.toString() }
+      return values().firstOrNull { it.name == c.toString() }
     }
 
     /**
      * 子[0] ~ 亥[11]
      */
     fun getIndex(eb: Branch): Int {
-      return Arrays.binarySearch(ARRAY, eb)
+      return values().indexOf(eb)
     }
   }
 
