@@ -6,7 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.astrology.*
 import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.SolarTermsIF
+import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 class EightWordsDetailImpl : IEightWordsDetail, Serializable {
 
-  override fun getDetails(lmt: ChronoLocalDateTime<*>, location: Location, place: String, eightWordsImpl: IEightWords, yearMonthImpl: IYearMonth, chineseDateImpl: IChineseDate, dayImpl: IDay, hourImpl: IHour, midnightImpl: IMidnight, changeDayAfterZi: Boolean, risingSignImpl: IRisingSign, starPositionImpl: IStarPosition<*>, solarTermsImpl: SolarTermsIF): EightWordsContextModel {
+  override fun getDetails(lmt: ChronoLocalDateTime<*>, location: Location, place: String, eightWordsImpl: IEightWords, yearMonthImpl: IYearMonth, chineseDateImpl: IChineseDate, dayImpl: IDay, hourImpl: IHour, midnightImpl: IMidnight, changeDayAfterZi: Boolean, risingSignImpl: IRisingSign, starPositionImpl: IStarPosition<*>, solarTermsImpl: ISolarTerms): EightWordsContextModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     // 現在的節氣

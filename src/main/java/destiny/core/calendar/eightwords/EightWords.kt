@@ -40,29 +40,6 @@ data class EightWords(override val year: StemBranch,
            StemBranch[dayStem, dayBranch],
            StemBranch[hourStem, hourBranch])
 
-  //override
-  val yearStem = year.stem
-
-  //override
-  val monthStem = month.stem
-
-  //override
-  val dayStem = day.stem
-
-  //override
-  val hourStem = hour.stem
-
-  //override
-  val yearBranch = year.branch
-
-  //override
-  val monthBranch = month.branch
-
-  //override
-  val dayBranch = day.branch
-
-  //override
-  val hourBranch = hour.branch
 
   override val stemBranches = listOf(year, month, day, hour)
 

@@ -4,24 +4,11 @@
 package destiny.core.calendar.chinese
 
 import destiny.core.chinese.Branch
-import destiny.core.chinese.StemBranch
 
 /**
- * 農曆日期＋時辰的表示法
+ * 農曆日期＋時辰(地支)的表示法
  */
-class ChineseDateHour : ChineseDate {
-
-  val hourBranch: Branch
-
-  constructor(chineseDate: ChineseDate, hour: Branch) :
-    super(chineseDate.cycleOrZero, chineseDate.year,
-          chineseDate.month, chineseDate.isLeapMonth,
-          chineseDate.day) {
-    this.hourBranch = hour
-  }
-
-  constructor(cycle: Int, year: StemBranch, month: Int, leapMonth: Boolean, day: Int, hour: Branch) :
-    super(cycle, year, month, leapMonth, day) {
-    this.hourBranch = hour
-  }
-}
+class ChineseDateHour(chineseDate: ChineseDate, val hourBranch: Branch)
+  : ChineseDate(chineseDate.cycleOrZero, chineseDate.year,
+                chineseDate.month, chineseDate.isLeapMonth,
+                chineseDate.day)

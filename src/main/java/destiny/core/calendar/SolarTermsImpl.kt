@@ -20,7 +20,7 @@ import java.util.*
 class SolarTermsImpl(
   private val starTransitImpl: IStarTransit,
   private val starPositionImpl: IStarPosition<*>
-) : SolarTermsIF, Serializable {
+) : ISolarTerms, Serializable {
 
 
   /**

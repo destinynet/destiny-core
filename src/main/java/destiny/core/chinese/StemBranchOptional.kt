@@ -7,7 +7,7 @@ import destiny.tools.ArrayTools
 import java.io.Serializable
 import java.util.*
 
-open class StemBranchOptional internal constructor(open val stem: Stem?, open val branch: Branch?) : Serializable {
+open class StemBranchOptional internal constructor(override val stem: Stem?, override val branch: Branch?) : IStemBranchOptional , Serializable {
 
 
   open val index: Int?

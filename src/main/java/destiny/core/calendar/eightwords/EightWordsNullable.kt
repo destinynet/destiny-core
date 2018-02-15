@@ -4,32 +4,22 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.chinese.Branch
+import destiny.core.chinese.IStemBranchOptional
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranchOptional
 import destiny.tools.ChineseStringTools
 import java.io.Serializable
-import java.util.*
 
 /**
  * 八字資料結構，可以包含 null 值
  */
-open class EightWordsNullable(open val year: StemBranchOptional,
-                              open val month: StemBranchOptional,
-                              open val day: StemBranchOptional,
-                              open val hour: StemBranchOptional) : Serializable {
-
-  //open val yearStem: Stem? = year.stemOptional.orElse(null)
-  //open val monthStem: Stem? = month.stemOptional.orElse(null)
-  //open val dayStem: Stem? = day.stemOptional.orElse(null)
-  //open val hourStem: Stem? = hour.stemOptional.orElse(null)
-
-  //open val yearBranch: Branch? = year.branchOptional.orElse(null)
-  //open val monthBranch: Branch? = month.branchOptional.orElse(null)
-  //open val dayBranch: Branch? = day.branchOptional.orElse(null)
-  //open val hourBranch: Branch? = hour.branchOptional.orElse(null)
+open class EightWordsNullable(open val year: IStemBranchOptional,
+                              open val month: IStemBranchOptional,
+                              open val day: IStemBranchOptional,
+                              open val hour: IStemBranchOptional) : Serializable {
 
   /** 取得四柱  */
-  open val stemBranches: List<StemBranchOptional> = listOf(year, month, day, hour)
+  open val stemBranches: List<IStemBranchOptional> = listOf(year, month, day, hour)
 
 
   constructor() : this(StemBranchOptional.empty(),
@@ -98,20 +88,19 @@ open class EightWordsNullable(open val year: StemBranchOptional,
     </T> */
     fun getFromIntList(list: List<Int>): EightWordsNullable {
       assert(list.size == 8)
-      val yearStem = if (list[0] == 0) Optional.empty() else Optional.of(Stem[list[0] - 1])
-      val yearBranch = if (list[1] == 0) Optional.empty() else Optional.of(Branch[list[1] - 1])
-      val monthStem = if (list[2] == 0) Optional.empty() else Optional.of(Stem[list[2] - 1])
-      val monthBranch = if (list[3] == 0) Optional.empty() else Optional.of(Branch[list[3] - 1])
-      val dayStem = if (list[4] == 0) Optional.empty() else Optional.of(Stem[list[4] - 1])
-      val dayBranch = if (list[5] == 0) Optional.empty() else Optional.of(Branch[list[5] - 1])
-      val hourStem = if (list[6] == 0) Optional.empty() else Optional.of(Stem[list[6] - 1])
-      val hourBranch = if (list[7] == 0) Optional.empty() else Optional.of(Branch[list[7] - 1])
+      val yearStem = if (list[0] == 0) null else Stem[list[0] - 1]
+      val yearBranch = if (list[1] == 0) null else Branch[list[1] - 1]
+      val monthStem = if (list[2] == 0) null else Stem[list[2] - 1]
+      val monthBranch = if (list[3] == 0) null else Branch[list[3] - 1]
+      val dayStem = if (list[4] == 0) null else Stem[list[4] - 1]
+      val dayBranch = if (list[5] == 0) null else Branch[list[5] - 1]
+      val hourStem = if (list[6] == 0) null else Stem[list[6] - 1]
+      val hourBranch = if (list[7] == 0) null else Branch[list[7] - 1]
       return EightWordsNullable(
-        StemBranchOptional[yearStem.orElse(null), yearBranch.orElse(null)],
-        StemBranchOptional[monthStem.orElse(null), monthBranch.orElse(null)],
-        StemBranchOptional[dayStem.orElse(null), dayBranch.orElse(null)],
-        StemBranchOptional[hourStem.orElse(null), hourBranch.orElse(null)]
-                               )
+        StemBranchOptional[yearStem , yearBranch],
+        StemBranchOptional[monthStem , monthBranch],
+        StemBranchOptional[dayStem , dayBranch],
+        StemBranchOptional[hourStem , hourBranch])
     }
   }
 }

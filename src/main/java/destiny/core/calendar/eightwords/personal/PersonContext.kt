@@ -12,7 +12,7 @@ import destiny.core.IntAge
 import destiny.core.IntAgeNote
 import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.SolarTermsIF
+import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.*
@@ -35,7 +35,7 @@ class PersonContext(
   changeDayAfterZi: Boolean,
 
   /** 實作計算節氣的介面  */
-  private val solarTermsImpl: SolarTermsIF,
+  private val solarTermsImpl: ISolarTerms,
 
   /** 星體運行到某點的介面  */
   private val starTransitImpl: IStarTransit,

@@ -11,7 +11,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 計算節氣的介面
  */
-interface SolarTermsIF {
+interface ISolarTerms {
 
   /** 計算某時刻當下的節氣  */
   fun getSolarTermsFromGMT(gmtJulDay: Double): SolarTerms
