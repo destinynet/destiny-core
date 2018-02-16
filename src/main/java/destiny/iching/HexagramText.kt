@@ -3,11 +3,13 @@
  */
 package destiny.iching
 
+import java.io.Serializable
+
 
 data class LineText(/** 爻辭 */
                     val expression : String ,
                     /** 象曰 */
-                    val image: String )
+                    val image: String ) : Serializable
 
 data class HexagramText(/** 短卦名 */
                         val shortName : String,
@@ -23,7 +25,7 @@ data class HexagramText(/** 短卦名 */
                         private val lineTexts : List<LineText>,
                         /** 用九、用六 的爻辭、象曰 */
                         val extraLine: LineText?
-                       ) {
+                       ) : Serializable {
   /** 取得第幾爻 , 1<= index <= 6 */
   fun getLineFromOne(index : Int) : LineText {
     return lineTexts[index-1]

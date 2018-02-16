@@ -18,14 +18,28 @@ import java.util.*
 
 object Divines {
 
+  /** 不傳回文字 */
   fun getPlate(src: IHexagram,
                dst: IHexagram,
-               hexagramNameFull: IHexagramNameFull,
                納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-               伏神系統: IHiddenEnergy = HiddenEnergyWangImpl()): DivinePlate {
+               伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
+               hexagramNameFull: IHexagramNameFull): DivinePlate {
+    return getPlate(src, dst, 納甲系統, 伏神系統, hexagramNameFull, null, null, null, null)
+  }
 
-    val srcNameFull = hexagramNameFull.getNameFull(src , Locale.TAIWAN)
-    val dstNameFull = hexagramNameFull.getNameFull(dst , Locale.TAIWAN)
+  fun getPlate(src: IHexagram,
+               dst: IHexagram,
+               納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
+               伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
+               hexagramNameFull: IHexagramNameFull,
+               hexagramNameShort: IHexagramNameShort? = null,
+               expressionImpl: IExpression? = null,
+               imageImpl: IImage? = null,
+               judgementImpl: IHexagramJudgement? = null,
+               textLocale: Locale? = null): DivinePlate {
+
+    val srcNameFull = hexagramNameFull.getNameFull(src, Locale.TAIWAN)
+    val dstNameFull = hexagramNameFull.getNameFull(dst, Locale.TAIWAN)
     val comparator = HexagramDivinationComparator()
 
     /* 1 <= 卦序 <= 64 */
@@ -61,16 +75,26 @@ object Divines {
     val 伏神六親: List<Relative?> =
       伏神納甲.map { it?.let { sb -> getRelative(SimpleBranch.getFiveElement(sb.branch), 本宮五行) } }.toList()
 
+    val meta = Meta(納甲系統.getTitle(Locale.TAIWAN), 伏神系統.getTitle(Locale.TAIWAN))
 
-    return DivinePlate(Hexagram.getHexagram(src), Hexagram.getHexagram(dst),
-                       srcNameFull , dstNameFull,
+    val pairTexts: Pair<HexagramText, HexagramText>? = if (hexagramNameShort != null && expressionImpl != null && imageImpl != null && judgementImpl != null && textLocale != null) {
+      val srcText =
+        getHexagramText(src, textLocale, hexagramNameFull, hexagramNameShort, expressionImpl, imageImpl, judgementImpl)
+      val dstText =
+        getHexagramText(dst, textLocale, hexagramNameFull, hexagramNameShort, expressionImpl, imageImpl, judgementImpl)
+      Pair(srcText, dstText)
+    } else
+      null
+
+    return DivinePlate(Hexagram.getHexagram(src), Hexagram.getHexagram(dst), meta,
+                       srcNameFull, dstNameFull,
                        本宮, 變宮,
                        本卦宮序, 變卦宮序,
                        本卦世爻, 本卦應爻,
                        變卦世爻, 變卦應爻,
                        本卦納甲, 變卦納甲, 伏神納甲,
                        本卦六親, 變卦六親, 變卦對於本卦的六親,
-                       伏神六親)
+                       伏神六親, pairTexts)
   }
 
   fun getFullPlate(src: IHexagram,
@@ -82,7 +106,7 @@ object Divines {
                    judgementImpl: IHexagramJudgement,
                    gender: Gender? = null,
                    question: String? = null,
-                   approach: DivineApproach,
+                   approach: DivineApproach?,
                    time: ChronoLocalDateTime<*>?,
                    loc: Location? = Location.of(Locale.TAIWAN),
                    place: String? = null,
@@ -94,19 +118,22 @@ object Divines {
                    textLocale: Locale? = null): DivinePlateFull {
 
 
-    val ewNullable = eightWordsNullable?: EightWordsNullable.empty()
+    val ewNullable = eightWordsNullable ?: EightWordsNullable.empty()
 
     val day: StemBranch? = ewNullable.day.let { stemBranchOptional ->
-      stemBranchOptional.stem?.let { stem -> stemBranchOptional.branch?.let { branch ->
-        StemBranch[stem , branch]
-      } }
+      stemBranchOptional.stem?.let { stem ->
+        stemBranchOptional.branch?.let { branch ->
+          StemBranch[stem, branch]
+        }
+      }
     }
 
-    val plate = getPlate(src, dst, hexagramNameFull, 納甲系統, 伏神系統)
+    val plate = getPlate(src, dst, 納甲系統, 伏神系統, hexagramNameFull, hexagramNameShort, expressionImpl, imageImpl,
+                         judgementImpl, textLocale)
 
     val 空亡: Set<Branch>? = day?.empties?.toSet()
     val 驛馬: Branch? = day?.branch?.let { Characters.getHorse(it) }
-    val 桃花: Branch? =  day?.branch?.let { Characters.getPeach(it) }
+    val 桃花: Branch? = day?.branch?.let { Characters.getPeach(it) }
     val 貴人: Set<Branch>? = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() }
     val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
     val 六獸: List<SixAnimal>? = day?.let { SixAnimals.getSixAnimals(it.stem) }
@@ -117,13 +144,8 @@ object Divines {
     val meta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
                           decoratedTime, 納甲系統.getTitle(Locale.TAIWAN), 伏神系統.getTitle(Locale.TAIWAN), null)
 
-    val pairTexts: Pair<HexagramText, HexagramText>? = textLocale?.let { locale ->
-      val srcText = getHexagramText(src , locale , hexagramNameFull , hexagramNameShort , expressionImpl , imageImpl , judgementImpl)
-      val dstText = getHexagramText(dst , locale , hexagramNameFull , hexagramNameShort , expressionImpl , imageImpl , judgementImpl)
-      Pair(srcText , dstText)
-    }
 
-    return DivinePlateFull(plate, meta, ewNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸 , pairTexts)
+    return DivinePlateFull(plate, meta, ewNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
   }
 
   private fun getHexagramText(hexagram: IHexagram,
@@ -140,22 +162,21 @@ object Divines {
     val hexJudgement = judgementImpl.getJudgement(hexagram, locale)
 
     val lineTexts: List<LineText> = (1..6).map { lineIndex ->
-      val lineExpression = expressionImpl.getLineExpression(hexagram , lineIndex , locale)
-      val lineImage = imageImpl.getLineImage(hexagram , lineIndex , locale)
-      LineText(lineExpression , lineImage)
+      val lineExpression = expressionImpl.getLineExpression(hexagram, lineIndex, locale)
+      val lineImage = imageImpl.getLineImage(hexagram, lineIndex, locale)
+      LineText(lineExpression, lineImage)
     }.toList()
 
-    val seq:IHexagramSequence = HexagramDefaultComparator()
+    val seq: IHexagramSequence = HexagramDefaultComparator()
     val extraLine: LineText? = seq.getIndex(hexagram).let {
       if (it == 1 || it == 2) {
-        val lineExpression = expressionImpl.getExtraExpression(hexagram , locale)
-        val lineImage = imageImpl.getExtraImage(hexagram , locale)
-        LineText(lineExpression , lineImage)
-      }
-      else
+        val lineExpression = expressionImpl.getExtraExpression(hexagram, locale)
+        val lineImage = imageImpl.getExtraImage(hexagram, locale)
+        LineText(lineExpression, lineImage)
+      } else
         null
     }
-    return HexagramText(shortName , fullName , hexExpression , hexImage , hexJudgement , lineTexts , extraLine)
+    return HexagramText(shortName, fullName, hexExpression, hexImage, hexJudgement, lineTexts, extraLine)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {
