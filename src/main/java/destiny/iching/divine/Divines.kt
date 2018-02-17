@@ -18,7 +18,7 @@ import java.util.*
 
 object Divines {
 
-  /** 取得單一卦象（不含任何文字）的排卦結果 */
+  /** 單一卦象 ,（不含任何文字）的排卦結果 */
   fun getSinglePlate(hexagram: IHexagram,
                      納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
                      伏神系統: IHiddenEnergy = HiddenEnergyWangImpl()): ISinglePlate {
@@ -50,22 +50,24 @@ object Divines {
     return SinglePlate(hex, 本宮, 宮序, 世爻, 應爻, 納甲, 六親, 伏神納甲, 伏神六親)
   }
 
-  /** 包含 長卦名 短卦名 等文字資料 */
-  fun getSinglePlateWithNames(hexagram: IHexagram,
-                              納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-                              伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
-                              nameShortImpl: IHexagramNameShort,
-                              nameFullImpl: IHexagramNameFull,
-                              locale: Locale = Locale.TAIWAN): ISinglePlateWithNames {
+  /** 單一卦象 , 包含 長卦名 短卦名 等文字資料 */
+  fun getSinglePlateWithName(hexagram: IHexagram,
+                             納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
+                             伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
+                             nameShortImpl: IHexagramNameShort,
+                             nameFullImpl: IHexagramNameFull,
+                             locale: Locale = Locale.TAIWAN): ISinglePlateWithNames {
     val singlePlate: SinglePlate = getSinglePlate(hexagram, 納甲系統, 伏神系統) as SinglePlate
     val nameShort = nameShortImpl.getNameShort(hexagram, locale)
     val nameFull = nameFullImpl.getNameFull(hexagram, locale)
 
     val hexagramName = HexagramName(nameShort, nameFull)
-    return SinglePlateWithNames(singlePlate, hexagramName)
+    return SinglePlateWithName(singlePlate, hexagramName)
   }
 
-  /** 不傳回文字 */
+
+
+  /** 合併卦象，不傳回文字，沒有日期時間等資料 */
   fun getPlate(src: IHexagram,
                dst: IHexagram,
                納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
@@ -217,7 +219,7 @@ object Divines {
     else -> throw RuntimeException("impossible")
   }
 
-  private fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
+  internal fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
     return when {
       外在五行.equals(內在五行) -> Relative.兄弟
       外在五行.isDominatorOf(內在五行) -> Relative.官鬼

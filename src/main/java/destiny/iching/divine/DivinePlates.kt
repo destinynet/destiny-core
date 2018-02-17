@@ -14,17 +14,17 @@ import destiny.iching.*
 import java.io.Serializable
 import java.util.*
 
-interface ICore {
-  val src: Hexagram
-  val dst: Hexagram
+interface ICombined {
+  val src: IHexagram
+  val dst: IHexagram
 }
 
-interface ICoreNames {
+interface ICombinedNames {
   val srcName: IHexagramName
   val dstName: IHexagramName
 }
 
-interface ICoreTexts : ICoreNames {
+interface ICombinedTexts : ICombinedNames {
   val srcText: HexagramText
   val dstText: HexagramText
 }
@@ -32,28 +32,25 @@ interface ICoreTexts : ICoreNames {
 open class Meta(val 納甲系統: String? = null,
                 val 伏神系統: String? = null) : Serializable
 
-interface ICoreWithMeta : ICore {
-  val meta: Meta
-}
 
 /**
  * 卜一個卦的最基本資料結構：本卦、變卦
  */
-open class Core(override val src: Hexagram,
-                override val dst: Hexagram) : ICore, Serializable
+data class Combined(override val src: Hexagram,
+                    override val dst: Hexagram) : ICombined, Serializable {
+  constructor(src: IHexagram , dst: IHexagram) : this(Hexagram.getHexagram(src) , Hexagram.getHexagram(dst))
+}
 
-open class CoreNames(override val srcName: HexagramName,
-                     override val dstName: HexagramName) : ICoreNames
+open class CombinedNames(override val srcName: HexagramName,
+                         override val dstName: HexagramName) : ICombinedNames
 
 
-open class CoreWithNames(val core: Core,
-                         val names: CoreNames) : ICore by core, ICoreNames by names
+open class CombinedWithNames(val combined: Combined,
+                             val names: CombinedNames) : ICombined by combined, ICombinedNames by names
 
-open class CoreWithMeta(val core: Core,
-                        override val meta: Meta) : ICoreWithMeta, ICore by core
 
-data class PairTexts(private val srcText: HexagramText,
-                     private val dstText: HexagramText) : ICoreNames {
+data class CombinedTexts(private val srcText: HexagramText,
+                         private val dstText: HexagramText) : ICombinedNames {
   override val srcName: IHexagramName
     get() = HexagramName(srcText.shortName, srcText.fullName)
   override val dstName: IHexagramName
@@ -77,6 +74,7 @@ interface ISinglePlate {
 }
 
 
+
 data class SinglePlate(override val hexagram: Hexagram,
                        /** 本宮 , 此卦 是八卦哪一宮 */
                        override val symbol: Symbol,
@@ -90,19 +88,27 @@ data class SinglePlate(override val hexagram: Hexagram,
                        override val 伏神納甲: List<StemBranch?>,
                        override val 伏神六親: List<Relative?>) : ISinglePlate
 
+
+interface ICombinedWithMeta : ICombined {
+  val srcPlate: ISinglePlate
+  val dstPlate: ISinglePlate
+  val 變卦對於本卦的六親: List<Relative>
+  val meta: Meta
+}
+
+open class CombinedWithMeta(override val srcPlate: ISinglePlate,
+                            override val dstPlate: ISinglePlate,
+                            override val 變卦對於本卦的六親: List<Relative>,
+                            override val meta: Meta) : ICombinedWithMeta , ICombined by Combined(srcPlate.hexagram, dstPlate.hexagram)
+
+
 interface ISinglePlateWithNames : ISinglePlate, IHexagramName
 
 
-open class CoreWithMetaTexts(val core: Core,
-                             override val meta: Meta,
-                             override val srcText: HexagramText,
-                             override val dstText: HexagramText) : ICoreTexts,
-  ICoreNames by PairTexts(srcText, dstText),
-  ICoreWithMeta by CoreWithMeta(core, meta)
 
 
-class SinglePlateWithNames(private val singlePlate: SinglePlate,
-                           private val hexagramName: HexagramName) :
+class SinglePlateWithName(private val singlePlate: SinglePlate,
+                          private val hexagramName: HexagramName) :
   ISinglePlateWithNames,
   ISinglePlate by singlePlate,
   IHexagramName by hexagramName
@@ -136,9 +142,9 @@ open class DivinePlate(
   override val 伏神納甲: List<StemBranch?>,
   override val 伏神六親: List<Relative?>,
   val pairTexts: Pair<HexagramText, HexagramText>?
-                      ) : ICore by Core(src, dst),
-  ISinglePlateWithNames by SinglePlateWithNames(SinglePlate(src, 本宮, 本卦宮序, 本卦世爻, 本卦應爻, 本卦納甲, 本卦六親, 伏神納甲, 伏神六親),
-                                                HexagramName(srcNameShort, srcNameFull))
+                      ) : ICombined by Combined(src, dst),
+  ISinglePlateWithNames by SinglePlateWithName(SinglePlate(src, 本宮, 本卦宮序, 本卦世爻, 本卦應爻, 本卦納甲, 本卦六親, 伏神納甲, 伏神六親),
+                                               HexagramName(srcNameShort, srcNameFull))
 
 
 /**
@@ -166,7 +172,9 @@ class DivinePlateFull(
   val 貴人: Set<Branch>?,
   val 羊刃: Branch?,
   val 六獸: List<SixAnimal>?) : IEightWordsNullable,
-  DivinePlate(plate.src, plate.dst, meta,
+  DivinePlate(Hexagram.getHexagram(plate.src),
+              Hexagram.getHexagram(plate.dst),
+              meta,
               plate.srcNameFull, plate.dstNameFull,
               plate.srcNameShort, plate.dstNameShort,
               plate.本宮, plate.變宮, plate.本卦宮序, plate.變卦宮序, plate.本卦世爻,
