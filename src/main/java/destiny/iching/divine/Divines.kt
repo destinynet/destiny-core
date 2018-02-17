@@ -51,12 +51,22 @@ object Divines {
   }
 
   /** 單一卦象 , 包含 長卦名 短卦名 等文字資料 */
+  fun getSinglePlateWithName(plate : ISinglePlate,
+                             nameShortImpl: IHexagramNameShort,
+                             nameFullImpl: IHexagramNameFull,
+                             locale: Locale = Locale.TAIWAN): ISinglePlateWithName {
+    val nameShort = nameShortImpl.getNameShort(plate.hexagram, locale)
+    val nameFull = nameFullImpl.getNameFull(plate.hexagram, locale)
+    val hexagramName = HexagramName(nameShort, nameFull)
+    return SinglePlateWithName(plate as SinglePlate, hexagramName)
+  }
+
   fun getSinglePlateWithName(hexagram: IHexagram,
                              納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
                              伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
                              nameShortImpl: IHexagramNameShort,
                              nameFullImpl: IHexagramNameFull,
-                             locale: Locale = Locale.TAIWAN): ISinglePlateWithNames {
+                             locale: Locale = Locale.TAIWAN): ISinglePlateWithName {
     val singlePlate: SinglePlate = getSinglePlate(hexagram, 納甲系統, 伏神系統) as SinglePlate
     val nameShort = nameShortImpl.getNameShort(hexagram, locale)
     val nameFull = nameFullImpl.getNameFull(hexagram, locale)

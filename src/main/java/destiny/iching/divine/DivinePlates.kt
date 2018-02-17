@@ -19,15 +19,10 @@ interface ICombined {
   val dst: IHexagram
 }
 
-interface ICombinedNames {
-  val srcName: IHexagramName
-  val dstName: IHexagramName
-}
-
-interface ICombinedTexts : ICombinedNames {
-  val srcText: HexagramText
-  val dstText: HexagramText
-}
+//interface ICombinedNames {
+//  val srcName: IHexagramName
+//  val dstName: IHexagramName
+//}
 
 open class Meta(val 納甲系統: String? = null,
                 val 伏神系統: String? = null) : Serializable
@@ -38,27 +33,27 @@ open class Meta(val 納甲系統: String? = null,
  */
 data class Combined(override val src: Hexagram,
                     override val dst: Hexagram) : ICombined, Serializable {
-  constructor(src: IHexagram , dst: IHexagram) : this(Hexagram.getHexagram(src) , Hexagram.getHexagram(dst))
+  constructor(src: IHexagram, dst: IHexagram) : this(Hexagram.getHexagram(src), Hexagram.getHexagram(dst))
 }
 
-open class CombinedNames(override val srcName: HexagramName,
-                         override val dstName: HexagramName) : ICombinedNames
+//open class CombinedNames(override val srcName: HexagramName,
+//                         override val dstName: HexagramName) : ICombinedNames
 
 
-open class CombinedWithNames(val combined: Combined,
-                             val names: CombinedNames) : ICombined by combined, ICombinedNames by names
+//open class CombinedWithNames(val combined: Combined,
+//                             val names: CombinedNames) : ICombined by combined, ICombinedNames by names
 
 
-data class CombinedTexts(private val srcText: HexagramText,
-                         private val dstText: HexagramText) : ICombinedNames {
-  override val srcName: IHexagramName
-    get() = HexagramName(srcText.shortName, srcText.fullName)
-  override val dstName: IHexagramName
-    get() = HexagramName(dstText.shortName, dstText.fullName)
-}
+//data class CombinedTexts(private val srcText: HexagramText,
+//                         private val dstText: HexagramText) : ICombinedNames {
+//  override val srcName: IHexagramName
+//    get() = HexagramName(srcText.shortName, srcText.fullName)
+//  override val dstName: IHexagramName
+//    get() = HexagramName(dstText.shortName, dstText.fullName)
+//}
 
 /** 單一卦象，卦名、世爻應爻、六親等資訊 */
-interface ISinglePlate {
+interface ISinglePlate : IHexagram {
   val hexagram: IHexagram
   /** 本宮 , 此卦 是八卦哪一宮 */
   val symbol: Symbol
@@ -74,7 +69,6 @@ interface ISinglePlate {
 }
 
 
-
 data class SinglePlate(override val hexagram: Hexagram,
                        /** 本宮 , 此卦 是八卦哪一宮 */
                        override val symbol: Symbol,
@@ -86,7 +80,7 @@ data class SinglePlate(override val hexagram: Hexagram,
                        override val 納甲: List<StemBranch>,
                        override val 六親: List<Relative>,
                        override val 伏神納甲: List<StemBranch?>,
-                       override val 伏神六親: List<Relative?>) : ISinglePlate
+                       override val 伏神六親: List<Relative?>) : ISinglePlate, IHexagram by hexagram
 
 
 interface ICombinedWithMeta : ICombined {
@@ -96,22 +90,33 @@ interface ICombinedWithMeta : ICombined {
   val meta: Meta
 }
 
-open class CombinedWithMeta(override val srcPlate: ISinglePlate,
+data class CombinedWithMeta(override val srcPlate: ISinglePlate,
                             override val dstPlate: ISinglePlate,
                             override val 變卦對於本卦的六親: List<Relative>,
-                            override val meta: Meta) : ICombinedWithMeta , ICombined by Combined(srcPlate.hexagram, dstPlate.hexagram)
+                            override val meta: Meta) : ICombinedWithMeta,
+  ICombined by Combined(srcPlate.hexagram, dstPlate.hexagram)
 
 
-interface ISinglePlateWithNames : ISinglePlate, IHexagramName
-
-
-
+interface ISinglePlateWithName : ISinglePlate, IHexagramName
 
 class SinglePlateWithName(private val singlePlate: SinglePlate,
                           private val hexagramName: HexagramName) :
-  ISinglePlateWithNames,
+  ISinglePlateWithName,
   ISinglePlate by singlePlate,
   IHexagramName by hexagramName
+
+
+interface ICombinedWithMetaName : ICombinedWithMeta {
+  override val srcPlate: ISinglePlateWithName
+  override val dstPlate: ISinglePlateWithName
+}
+
+/** [Combined] + [Meta] + [HexagramName] */
+data class CombinedWithMetaName(override val srcPlate: SinglePlateWithName,
+                                override val dstPlate: SinglePlateWithName,
+                                override val 變卦對於本卦的六親: List<Relative>,
+                                override val meta: Meta) : ICombinedWithMetaName,
+  ICombinedWithMeta by CombinedWithMeta(srcPlate, dstPlate, 變卦對於本卦的六親, meta)
 
 
 open class DivinePlate(
@@ -143,8 +148,8 @@ open class DivinePlate(
   override val 伏神六親: List<Relative?>,
   val pairTexts: Pair<HexagramText, HexagramText>?
                       ) : ICombined by Combined(src, dst),
-  ISinglePlateWithNames by SinglePlateWithName(SinglePlate(src, 本宮, 本卦宮序, 本卦世爻, 本卦應爻, 本卦納甲, 本卦六親, 伏神納甲, 伏神六親),
-                                               HexagramName(srcNameShort, srcNameFull))
+  ISinglePlateWithName by SinglePlateWithName(SinglePlate(src, 本宮, 本卦宮序, 本卦世爻, 本卦應爻, 本卦納甲, 本卦六親, 伏神納甲, 伏神六親),
+                                              HexagramName(srcNameShort, srcNameFull))
 
 
 /**
