@@ -45,8 +45,8 @@ class CombinedWithMetaContext(val src: IHexagram,
 }
 
 
-class CombinedWithMetaNameContext(val ctx : IResult<ICombinedWithMeta>,
-                                  val src: IHexagram,
+/** 合併卦象，只有卦名，沒有其他卦辭、爻辭等文字，也沒有日期時間等資料 */
+class CombinedWithMetaNameContext(val src: IHexagram,
                                   val dst: IHexagram,
                                   val locale: Locale = Locale.TAIWAN,
                                   val 納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
@@ -55,17 +55,16 @@ class CombinedWithMetaNameContext(val ctx : IResult<ICombinedWithMeta>,
                                   val nameFullImpl: IHexagramNameFull) : IResult<ICombinedWithMetaName> {
   override fun getResult(): ICombinedWithMetaName {
 
-    val combinedWithMeta: ICombinedWithMeta = ctx.getResult()
+    val ctx = CombinedWithMetaContext(src , dst , locale , 納甲系統, 伏神系統)
+    val prevResult: ICombinedWithMeta = ctx.getResult()
 
-    val srcPlate = Divines.getSinglePlateWithName(combinedWithMeta.srcPlate , nameShortImpl, nameFullImpl, locale) as SinglePlateWithName
-    val dstPlate = Divines.getSinglePlateWithName(combinedWithMeta.dstPlate , nameShortImpl, nameFullImpl, locale) as SinglePlateWithName
-
-    val 變卦對於本卦的六親: List<Relative> =
-      (0..5).map {
-        Divines.getRelative(SimpleBranch.getFiveElement(dstPlate.納甲[it].branch), srcPlate.symbol.fiveElement)
-      }.toList()
+    val srcPlate = Divines.getSinglePlateWithName(prevResult.srcPlate , nameShortImpl, nameFullImpl, locale) as SinglePlateWithName
+    val dstPlate = Divines.getSinglePlateWithName(prevResult.dstPlate , nameShortImpl, nameFullImpl, locale) as SinglePlateWithName
+    val 變卦對於本卦的六親 = prevResult.變卦對於本卦的六親
 
     return CombinedWithMetaName(srcPlate, dstPlate , 變卦對於本卦的六親 , Meta(納甲系統.getTitle(locale), 伏神系統.getTitle(locale)))
   }
 }
+
+
 

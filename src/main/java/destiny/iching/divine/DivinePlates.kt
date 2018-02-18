@@ -19,13 +19,13 @@ interface ICombined {
   val dst: IHexagram
 }
 
-//interface ICombinedNames {
-//  val srcName: IHexagramName
-//  val dstName: IHexagramName
-//}
+interface IMeta {
+  val 納甲系統: String
+  val 伏神系統: String
+}
 
-open class Meta(val 納甲系統: String? = null,
-                val 伏神系統: String? = null) : Serializable
+data class Meta(override val 納甲系統: String,
+                override val 伏神系統: String) : IMeta, Serializable
 
 
 /**
@@ -36,21 +36,6 @@ data class Combined(override val src: Hexagram,
   constructor(src: IHexagram, dst: IHexagram) : this(Hexagram.getHexagram(src), Hexagram.getHexagram(dst))
 }
 
-//open class CombinedNames(override val srcName: HexagramName,
-//                         override val dstName: HexagramName) : ICombinedNames
-
-
-//open class CombinedWithNames(val combined: Combined,
-//                             val names: CombinedNames) : ICombined by combined, ICombinedNames by names
-
-
-//data class CombinedTexts(private val srcText: HexagramText,
-//                         private val dstText: HexagramText) : ICombinedNames {
-//  override val srcName: IHexagramName
-//    get() = HexagramName(srcText.shortName, srcText.fullName)
-//  override val dstName: IHexagramName
-//    get() = HexagramName(dstText.shortName, dstText.fullName)
-//}
 
 /** 單一卦象，卦名、世爻應爻、六親等資訊 */
 interface ISinglePlate : IHexagram {
@@ -99,13 +84,14 @@ data class CombinedWithMeta(override val srcPlate: ISinglePlate,
 
 interface ISinglePlateWithName : ISinglePlate, IHexagramName
 
-class SinglePlateWithName(private val singlePlate: SinglePlate,
-                          private val hexagramName: HexagramName) :
+data class SinglePlateWithName(private val singlePlate: SinglePlate,
+                               private val hexagramName: HexagramName) :
   ISinglePlateWithName,
   ISinglePlate by singlePlate,
   IHexagramName by hexagramName
 
 
+/** 給 [PairChartWithTitle] 使用 , 合併卦象，只有卦名，沒有其他卦辭、爻辭等文字，也沒有日期時間等資料 (for 經文易排盤後對照) */
 interface ICombinedWithMetaName : ICombinedWithMeta {
   override val srcPlate: ISinglePlateWithName
   override val dstPlate: ISinglePlateWithName
@@ -119,10 +105,11 @@ data class CombinedWithMetaName(override val srcPlate: SinglePlateWithName,
   ICombinedWithMeta by CombinedWithMeta(srcPlate, dstPlate, 變卦對於本卦的六親, meta)
 
 
+/** TODO : Replace with [ICombinedWithMetaName] 以及 [CombinedWithMetaName] */
 open class DivinePlate(
   src: Hexagram,
   dst: Hexagram,
-  open val meta: Meta,
+  val meta: Meta,
   /** 本卦全名（三或四個中文字） */
   val srcNameFull: String,
   /** 變卦全名（三或四個中文字） */
@@ -147,29 +134,41 @@ open class DivinePlate(
   override val 伏神納甲: List<StemBranch?>,
   override val 伏神六親: List<Relative?>,
   val pairTexts: Pair<HexagramText, HexagramText>?
-                      ) : ICombined by Combined(src, dst),
+                      ) :
+  ICombined by Combined(src, dst),
   ISinglePlateWithName by SinglePlateWithName(SinglePlate(src, 本宮, 本卦宮序, 本卦世爻, 本卦應爻, 本卦納甲, 本卦六親, 伏神納甲, 伏神六親),
-                                              HexagramName(srcNameShort, srcNameFull))
+                                              HexagramName(srcNameShort, srcNameFull)),
+  IMeta by meta
 
 
 /**
  * 額外的卦象資訊，對整體卦象輸出沒有影響
  */
-class DivineMeta(val gender: Gender?,
-                 val question: String?,
-                 val approach: DivineApproach?,
-                 val gmtJulDay: Double? = null,
-                 val loc: Location? = Location.of(Locale.TAIWAN),
-                 val place: String?,
+interface IDivineMeta : IMeta {
+  val gender: Gender?
+  val question: String?
+  val approach: DivineApproach?
+  val gmtJulDay: Double?
+  val loc: Location?
+  val place: String?
+  /** 已經 format 的時間 */
+  val decoratedTime: String?
+}
+
+class DivineMeta(override val gender: Gender?,
+                 override val question: String?,
+                 override val approach: DivineApproach?,
+                 override val gmtJulDay: Double? = null,
+                 override val loc: Location? = Location.of(Locale.TAIWAN),
+                 override val place: String?,
                  /** 已經 format 的時間 */
-                 val decoratedTime: String?,
-                 納甲系統: String? = null,
-                 伏神系統: String? = null,
-                 val link: String?) : Meta(納甲系統, 伏神系統)
+                 override val decoratedTime: String?,
+                 val meta: Meta ,
+                 val link: String?) : IMeta by meta , IDivineMeta
 
 class DivinePlateFull(
   plate: DivinePlate,
-  override val meta: DivineMeta,
+  val divineMeta: DivineMeta,
   override val eightWordsNullable: EightWordsNullable,
   val 空亡: Set<Branch>?,
   val 驛馬: Branch?,
@@ -179,7 +178,7 @@ class DivinePlateFull(
   val 六獸: List<SixAnimal>?) : IEightWordsNullable,
   DivinePlate(Hexagram.getHexagram(plate.src),
               Hexagram.getHexagram(plate.dst),
-              meta,
+              Meta(divineMeta.納甲系統 , divineMeta.伏神系統),
               plate.srcNameFull, plate.dstNameFull,
               plate.srcNameShort, plate.dstNameShort,
               plate.本宮, plate.變宮, plate.本卦宮序, plate.變卦宮序, plate.本卦世爻,

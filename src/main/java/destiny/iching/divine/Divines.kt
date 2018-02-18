@@ -51,7 +51,7 @@ object Divines {
   }
 
   /** 單一卦象 , 包含 長卦名 短卦名 等文字資料 */
-  fun getSinglePlateWithName(plate : ISinglePlate,
+  fun getSinglePlateWithName(plate: ISinglePlate,
                              nameShortImpl: IHexagramNameShort,
                              nameFullImpl: IHexagramNameFull,
                              locale: Locale = Locale.TAIWAN): ISinglePlateWithName {
@@ -76,8 +76,27 @@ object Divines {
   }
 
 
+  fun getCombinedWithMetaNamePlate(src: IHexagram,
+                                   dst: IHexagram,
+                                   納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
+                                   伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
+                                   locale: Locale = Locale.TAIWAN,
+                                   nameFullImpl: IHexagramNameFull,
+                                   nameShortImpl: IHexagramNameShort): ICombinedWithMetaName {
+    val srcPlate = getSinglePlateWithName(src , 納甲系統 , 伏神系統, nameShortImpl, nameFullImpl) as SinglePlateWithName
+    val dstPlate = getSinglePlateWithName(dst , 納甲系統 , 伏神系統, nameShortImpl, nameFullImpl) as SinglePlateWithName
+    val 變卦對於本卦的六親: List<Relative> =
+      (0..5).map {
+        Divines.getRelative(SimpleBranch.getFiveElement(dstPlate.納甲[it].branch), srcPlate.symbol.fiveElement)
+      }.toList()
 
-  /** 合併卦象，不傳回文字，沒有日期時間等資料 */
+    return CombinedWithMetaName(srcPlate ,dstPlate , 變卦對於本卦的六親 , Meta(納甲系統.getTitle(locale), 伏神系統.getTitle(locale)))
+  }
+
+  /**
+   * 合併卦象，只有卦名，沒有其他卦辭、爻辭等文字，也沒有日期時間等資料
+   * deprecated for [CombinedWithMetaNameContext]
+   * */
   fun getPlate(src: IHexagram,
                dst: IHexagram,
                納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
@@ -87,6 +106,8 @@ object Divines {
     return getPlate(src, dst, 納甲系統, 伏神系統, nameFullImpl, nameShortImpl, null, null, null)
   }
 
+
+  /** deprecated for [CombinedWithMetaNameContext] */
   fun getPlate(src: IHexagram,
                dst: IHexagram,
                納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
@@ -210,11 +231,12 @@ object Divines {
 
     val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc) }
     val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
-    val meta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
-                          decoratedTime, 納甲系統.getTitle(Locale.TAIWAN), 伏神系統.getTitle(Locale.TAIWAN), null)
+
+    val meta = Meta(納甲系統.getTitle(Locale.TAIWAN), 伏神系統.getTitle(Locale.TAIWAN))
+    val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place, decoratedTime, meta , null)
 
 
-    return DivinePlateFull(plate, meta, ewNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
+    return DivinePlateFull(plate, divineMeta, ewNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {
