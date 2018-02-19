@@ -116,7 +116,7 @@ class CombinedFullContext(val src: IHexagram,
                           val nameShortImpl: IHexagramNameShort,
                           val nameFullImpl: IHexagramNameFull,
 
-                          val gender: Gender,
+                          val gender: Gender?,
                           val question: String?,
                           val approach: DivineApproach,
                           val time: ChronoLocalDateTime<*>?,
