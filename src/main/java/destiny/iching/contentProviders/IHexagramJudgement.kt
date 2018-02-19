@@ -2,10 +2,9 @@
 package destiny.iching.contentProviders
 
 import destiny.iching.IHexagram
+import java.util.*
 
-import java.util.Locale
-
-/** 彖曰  */
+/** 彖曰 , 只有卦，才有彖曰 */
 interface IHexagramJudgement {
 
   fun getJudgement(hexagram: IHexagram, locale: Locale): String

@@ -16,7 +16,10 @@ import java.io.Serializable
 open class EightWordsNullable(open val year: IStemBranchOptional,
                               open val month: IStemBranchOptional,
                               open val day: IStemBranchOptional,
-                              open val hour: IStemBranchOptional) : Serializable {
+                              open val hour: IStemBranchOptional) : Serializable , IEightWordsNullable {
+
+  override val eightWordsNullable: EightWordsNullable
+    get() = this
 
   /** 取得四柱  */
   open val stemBranches: List<IStemBranchOptional> = listOf(year, month, day, hour)

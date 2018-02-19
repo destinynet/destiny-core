@@ -5,11 +5,13 @@ package destiny.iching.divine
 
 import destiny.core.Gender
 import destiny.core.calendar.Location
+import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsNullable
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.Branch
 import destiny.core.chinese.SixAnimal
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.StemBranchOptional
 import destiny.iching.*
 import java.io.Serializable
 import java.util.*
@@ -105,6 +107,39 @@ data class CombinedWithMetaName(override val srcPlate: SinglePlateWithName,
   ICombinedWithMeta by CombinedWithMeta(srcPlate, dstPlate, 變卦對於本卦的六親, meta)
 
 
+/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) */
+interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNullable {
+  val day: StemBranch
+  val monthBranch: Branch
+
+  val 空亡: Set<Branch>
+  val 驛馬: Branch
+  val 桃花: Branch
+  val 貴人: Set<Branch>
+  val 羊刃: Branch
+  val 六獸: List<SixAnimal>
+}
+
+/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) */
+data class CombinedWithMetaNameDayMonth(private val combinedWithMetaName: CombinedWithMetaName,
+                                        override val day: StemBranch,
+                                        override val monthBranch: Branch,
+                                        override val 空亡: Set<Branch>,
+                                        override val 驛馬: Branch,
+                                        override val 桃花: Branch,
+                                        override val 貴人: Set<Branch>,
+                                        override val 羊刃: Branch,
+                                        override val 六獸: List<SixAnimal>) :
+  ICombinedWithMetaNameDayMonth,
+  ICombinedWithMetaName by combinedWithMetaName,
+  IEightWordsNullable by EightWordsNullable(StemBranchOptional.empty(), StemBranchOptional[null, monthBranch],
+                                            StemBranchOptional[day], StemBranchOptional.empty())
+
+interface ICombinedWithMetaNameTexts : ICombinedWithMetaName {
+  val pairTexts: Pair<HexagramText, HexagramText>
+}
+
+
 /** TODO : Replace with [ICombinedWithMetaName] 以及 [CombinedWithMetaName] */
 open class DivinePlate(
   src: Hexagram,
@@ -155,16 +190,35 @@ interface IDivineMeta : IMeta {
   val decoratedTime: String?
 }
 
-class DivineMeta(override val gender: Gender?,
-                 override val question: String?,
-                 override val approach: DivineApproach?,
-                 override val gmtJulDay: Double? = null,
-                 override val loc: Location? = Location.of(Locale.TAIWAN),
-                 override val place: String?,
-                 /** 已經 format 的時間 */
-                 override val decoratedTime: String?,
-                 val meta: Meta ,
-                 val link: String?) : IMeta by meta , IDivineMeta
+
+data class DivineMeta(override val gender: Gender?,
+                      override val question: String?,
+                      override val approach: DivineApproach?,
+                      override val gmtJulDay: Double? = null,
+                      override val loc: Location? = Location.of(Locale.TAIWAN),
+                      override val place: String?,
+                      /** 已經 format 的時間 */
+                      override val decoratedTime: String?,
+                      val meta: Meta,
+                      val link: String?) : IMeta by meta, IDivineMeta
+
+
+/** 完整卜卦盤 */
+interface ICombinedFull : ICombinedWithMetaNameDayMonth, ICombinedWithMetaNameTexts, IDivineMeta
+
+/** 完整卜卦盤 , 用以取代 [DivinePlateFull] , 具備完整八字 */
+data class CombinedFull(private val combinedWithMetaNameDayMonth: CombinedWithMetaNameDayMonth,
+                        val eightWords: EightWords,
+                        private val divineMeta: DivineMeta,
+                        override val pairTexts: Pair<HexagramText, HexagramText>) :
+  ICombinedFull,
+  ICombinedWithMetaNameDayMonth by combinedWithMetaNameDayMonth ,
+  IDivineMeta by divineMeta,
+  IEightWordsNullable by eightWords.nullable,
+  ICombinedWithMetaNameTexts {
+
+  override val eightWordsNullable = eightWords.nullable
+}
 
 class DivinePlateFull(
   plate: DivinePlate,
@@ -178,7 +232,7 @@ class DivinePlateFull(
   val 六獸: List<SixAnimal>?) : IEightWordsNullable,
   DivinePlate(Hexagram.getHexagram(plate.src),
               Hexagram.getHexagram(plate.dst),
-              Meta(divineMeta.納甲系統 , divineMeta.伏神系統),
+              Meta(divineMeta.納甲系統, divineMeta.伏神系統),
               plate.srcNameFull, plate.dstNameFull,
               plate.srcNameShort, plate.dstNameShort,
               plate.本宮, plate.變宮, plate.本卦宮序, plate.變卦宮序, plate.本卦世爻,
