@@ -203,7 +203,7 @@ data class DivineMeta(override val gender: Gender?,
                       val link: String?) : IMeta by meta, IDivineMeta
 
 
-/** 完整卜卦盤 */
+/** 完整卜卦盤 , 包含所有資料 */
 interface ICombinedFull : ICombinedWithMetaNameDayMonth, ICombinedWithMetaNameTexts, IDivineMeta
 
 /** 完整卜卦盤 , 用以取代 [DivinePlateFull] , 具備完整八字 */
@@ -220,6 +220,7 @@ data class CombinedFull(private val combinedWithMetaNameDayMonth: CombinedWithMe
   override val eightWordsNullable = eightWords.nullable
 }
 
+/** TODO : replace with [CombinedFull] */
 class DivinePlateFull(
   plate: DivinePlate,
   val divineMeta: DivineMeta,

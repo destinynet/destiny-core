@@ -11,7 +11,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.tools.AlignTools
-import destiny.tools.ColorCanvas.ColorCanvas
+import destiny.tools.canvas.ColorCanvas
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoField.*

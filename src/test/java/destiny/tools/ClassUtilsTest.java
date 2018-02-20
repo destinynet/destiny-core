@@ -5,7 +5,7 @@
 package destiny.tools;
 
 import destiny.tools.ClassUtils.PERMISSION;
-import destiny.tools.ColorCanvas.ColorCanvas;
+import destiny.tools.canvas.ColorCanvas;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -13,12 +13,12 @@ import static org.junit.Assert.assertTrue;
 public class ClassUtilsTest {
 
   @Test
-  public void testGetProperties() throws Exception {
+  public void testGetProperties() {
     ClassUtils.getProperties(ColorCanvas.class, PERMISSION.READABLE).forEach(System.out::println);
   }
 
   @Test
-  public void testIsWritable() throws Exception {
+  public void testIsWritable() {
     assertTrue(!ClassUtils.isWritable(ColorCanvas.class, "w"));
   }
 }

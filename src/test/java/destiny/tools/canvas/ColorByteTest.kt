@@ -3,7 +3,7 @@
  * @date 2005/4/4
  * @time 下午 03:05:36
  */
-package destiny.tools.ColorCanvas
+package destiny.tools.canvas
 
 import java.awt.Font
 import kotlin.test.Test

@@ -9,7 +9,7 @@ import destiny.core.chinese.FiveElement
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
 import destiny.iching.contentProviders.IHexagramNameFull
-import destiny.tools.ColorCanvas.ColorCanvas
+import destiny.tools.canvas.ColorCanvas
 import java.io.Serializable
 import java.util.*
 

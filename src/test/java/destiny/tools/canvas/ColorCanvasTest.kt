@@ -1,4 +1,4 @@
-package destiny.tools.ColorCanvas
+package destiny.tools.canvas
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

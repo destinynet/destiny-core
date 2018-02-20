@@ -3,7 +3,7 @@
  * @date 2004/8/13
  * @time 下午 06:01:39
  */
-package destiny.tools.ColorCanvas
+package destiny.tools.canvas
 
 import java.awt.Font
 import java.io.Serializable
@@ -18,7 +18,7 @@ import java.nio.charset.Charset
  * x3y1 x3y2 x3y3
  * </pre>
  */
-class ColorCanvas : Serializable {
+open class ColorCanvas : Serializable {
 
   var parent: ColorCanvas? = null
     internal set

@@ -5,7 +5,7 @@
  * @date 2004/8/13
  * @time 下午 06:08:03
  */
-package destiny.tools.ColorCanvas
+package destiny.tools.canvas
 
 import java.awt.Font
 import java.io.Serializable

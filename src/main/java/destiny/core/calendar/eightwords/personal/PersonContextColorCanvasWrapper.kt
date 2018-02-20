@@ -9,7 +9,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper
 import destiny.core.calendar.eightwords.Direction
 import destiny.tools.AlignTools
-import destiny.tools.ColorCanvas.ColorCanvas
+import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
