@@ -11,7 +11,6 @@ import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.Branch
 import destiny.core.chinese.SixAnimal
 import destiny.core.chinese.StemBranch
-import destiny.core.chinese.StemBranchOptional
 import destiny.iching.*
 import java.io.Serializable
 import java.util.*
@@ -120,10 +119,9 @@ interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNull
   val 六獸: List<SixAnimal>
 }
 
-/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) */
+/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) , 八字一定要包含 日干支 以及 月支  */
 data class CombinedWithMetaNameDayMonth(private val combinedWithMetaName: CombinedWithMetaName,
-                                        override val day: StemBranch,
-                                        override val monthBranch: Branch,
+                                        override val eightWordsNullable: EightWordsNullable,
                                         override val 空亡: Set<Branch>,
                                         override val 驛馬: Branch,
                                         override val 桃花: Branch,
@@ -131,9 +129,17 @@ data class CombinedWithMetaNameDayMonth(private val combinedWithMetaName: Combin
                                         override val 羊刃: Branch,
                                         override val 六獸: List<SixAnimal>) :
   ICombinedWithMetaNameDayMonth,
-  ICombinedWithMetaName by combinedWithMetaName,
-  IEightWordsNullable by EightWordsNullable(StemBranchOptional.empty(), StemBranchOptional[null, monthBranch],
-                                            StemBranchOptional[day], StemBranchOptional.empty())
+  ICombinedWithMetaName by combinedWithMetaName {
+
+  override val day = eightWordsNullable.day.let { StemBranch[it.stem!! , it.branch!!] }
+  override val monthBranch = eightWordsNullable.month.branch!!
+
+  init {
+    if (eightWordsNullable.day.stem == null || eightWordsNullable.day.branch == null && eightWordsNullable.month.branch == null) {
+      throw RuntimeException("八字 必須包含 日干支 以及 月支 ")
+    }
+  }
+}
 
 interface ICombinedWithMetaNameTexts : ICombinedWithMetaName {
   val pairTexts: Pair<HexagramText, HexagramText>

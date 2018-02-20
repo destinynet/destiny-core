@@ -8,6 +8,7 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.TimeSecDecorator
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.EightWordsNullable
 import destiny.core.chinese.*
 import destiny.core.chinese.impls.TianyiAuthorizedImpl
 import destiny.core.chinese.impls.YangBladeNextBlissImpl
@@ -77,24 +78,52 @@ class CombinedWithMetaNameContext(val src: IHexagram,
   }
 }
 
-/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 */
+/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 八字一定要包含 日干支 以及 月支 */
 class CombinedWithMetaNameDayMonthContext(val src: IHexagram,
                                           val dst: IHexagram,
                                           val locale: Locale = Locale.TAIWAN,
                                           val 納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
                                           val 伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
                                           val nameShortImpl: IHexagramNameShort,
-                                          val nameFullImpl: IHexagramNameFull ,
+                                          val nameFullImpl: IHexagramNameFull,
 
-                                          val day: StemBranch,
-                                          val monthBranch: Branch,
+                                          val eightWordsNullable: EightWordsNullable, // 一定要包含 日干支 以及 月支
                                           val tianyiImpl: ITianyi,
                                           val yangBladeImpl: IYangBlade) :
   IResult<ICombinedWithMetaNameDayMonth> {
+  constructor(src: Hexagram,
+              dst: Hexagram,
+              locale: Locale,
+              納甲系統: SettingsGingFang,
+              伏神系統: HiddenEnergyWangImpl,
+              nameShortImpl: IHexagramNameShort,
+              nameFullImpl: IHexagramNameFull,
+              day: StemBranch,
+              monthBranch: Branch,
+              tianyiImpl: ITianyi,
+              yangBladeImpl: IYangBlade) : this(src, dst, locale, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl,
+                                                EightWordsNullable(StemBranchOptional.empty(),
+                                                                   StemBranchOptional[null, monthBranch], day,
+                                                                   StemBranchOptional.empty()),
+                                                tianyiImpl, yangBladeImpl)
+
+
+  val day = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
+  val monthBranch = eightWordsNullable.month.branch!!
+
+  init {
+    if (eightWordsNullable.day.stem == null || eightWordsNullable.day.branch == null && eightWordsNullable.month.branch == null) {
+      throw RuntimeException("八字 必須包含 日干支 以及 月支 ")
+    }
+  }
+
+
   override fun getResult(): ICombinedWithMetaNameDayMonth {
 
     val prevCtx = CombinedWithMetaNameContext(src, dst, locale, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl)
     val prevResult = prevCtx.getResult() as CombinedWithMetaName
+
+    //val eightWordsNullable = EightWordsNullable(StemBranchOptional.empty(), StemBranchOptional[null, monthBranch], StemBranchOptional[day], StemBranchOptional.empty())
 
     // 神煞
     val 空亡: Set<Branch> = day.empties.toSet()
@@ -103,7 +132,7 @@ class CombinedWithMetaNameDayMonthContext(val src: IHexagram,
     val 貴人: Set<Branch> = day.stem.let { tianyiImpl.getTianyis(it).toSet() }
     val 羊刃: Branch = day.stem.let { yangBladeImpl.getYangBlade(it) }
     val 六獸: List<SixAnimal> = day.let { SixAnimals.getSixAnimals(it.stem) }
-    return CombinedWithMetaNameDayMonth(prevResult , day , monthBranch, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
+    return CombinedWithMetaNameDayMonth(prevResult, eightWordsNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
   }
 }
 
@@ -134,7 +163,8 @@ class CombinedFullContext(val src: IHexagram,
 
 
   override fun getResult(): ICombinedFull {
-    val prevCtx = CombinedWithMetaNameDayMonthContext(src , dst , locale , 納甲系統, 伏神系統, nameShortImpl, nameFullImpl , eightWords.day , eightWords.month.branch , tianyiImpl , yangBladeImpl)
+    val prevCtx = CombinedWithMetaNameDayMonthContext(src, dst, locale, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl,
+                                                      eightWords.nullable, tianyiImpl, yangBladeImpl)
     val prevResult = prevCtx.getResult() as CombinedWithMetaNameDayMonth
 
     val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc) }
