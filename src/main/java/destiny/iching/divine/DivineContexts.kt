@@ -159,7 +159,7 @@ class CombinedFullContext(val src: IHexagram,
                           val imageImpl: IImage,
                           val judgementImpl: IHexagramJudgement,
                           val textLocale: Locale
-                         ) : IResult<ICombinedWithMetaNameTexts> {
+                         ) : IResult<ICombinedFull> {
 
 
   override fun getResult(): ICombinedFull {
