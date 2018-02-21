@@ -164,13 +164,14 @@ class CombinedFullContext(val src: IHexagram,
 
   override fun getResult(): ICombinedFull {
     val prevCtx = CombinedWithMetaNameDayMonthContext(src, dst, locale, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl,
-                                                      eightWords.nullable, tianyiImpl, yangBladeImpl)
+                                                      eightWords, tianyiImpl, yangBladeImpl)
     val prevResult = prevCtx.getResult() as CombinedWithMetaNameDayMonth
 
     val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc) }
     val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
 
-    val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place, decoratedTime, prevResult.meta, null)
+    val meta = Meta(prevResult.納甲系統 , prevResult.伏神系統)
+    val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place, decoratedTime, meta, null)
 
     val srcText =
       IChing.getHexagramText(src, textLocale, nameFullImpl, nameShortImpl, expressionImpl, imageImpl, judgementImpl)

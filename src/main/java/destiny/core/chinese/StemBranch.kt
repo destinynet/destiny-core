@@ -180,6 +180,11 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
         get(stemBranch[0], stemBranch[1])
     }
 
+    /** 強制將 [IStemBranchOptional] downcast 成 [StemBranch] , 可能會拋出 NPE ! */
+    operator fun get(sbo : IStemBranchOptional) : StemBranch {
+      return get(sbo.stem!! , sbo.branch!!)
+    }
+
 
     /**
      * 0[甲子] ~ 59[癸亥]

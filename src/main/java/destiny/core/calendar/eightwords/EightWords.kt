@@ -36,10 +36,12 @@ data class EightWords(override val year: StemBranch,
            StemBranch[dayStem, dayBranch],
            StemBranch[hourStem, hourBranch])
 
+  /** 強制將 [EightWordsNullable] downcast 成 [EightWords] , 可能會拋出錯誤 , 注意 */
+  constructor(ewn : EightWordsNullable) : this(StemBranch[ewn.year] , StemBranch[ewn.month] , StemBranch[ewn.day] , StemBranch[ewn.hour])
 
   override val stemBranches = listOf(year, month, day, hour)
 
-  val nullable: EightWordsNullable = EightWordsNullable(year, month, day, hour)
+  //val nullable: EightWordsNullable = EightWordsNullable(year, month, day, hour)
 
 
   override fun toString(): String {
