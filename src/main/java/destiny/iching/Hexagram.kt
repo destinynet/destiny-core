@@ -211,6 +211,7 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
       return Hexagram.getHexagram(upper, lower)
     }
 
+
     fun getHexagram(iHexagram: IHexagram) : Hexagram {
       return getHexagram(iHexagram.yinYangs)
     }
