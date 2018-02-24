@@ -104,8 +104,8 @@ public class Chart implements Serializable {
       midDirection = 0;
     else
       midDirection =(
-      地盤.getEndDegree(getMountain().getOppositeMountain()) + 
-      地盤.getStartDegree(getMountain().getOppositeMountain()) ) / 2 ;
+      地盤.getEndDegree(getMountain().getOpposite()) +
+      地盤.getStartDegree(getMountain().getOpposite()) ) / 2 ;
 
     Symbol 飛佈山盤卦 = (Symbol) 後天八卦盤.getSymbol(midMountain );
     Symbol 飛佈向盤卦 = (Symbol) 後天八卦盤.getSymbol(midDirection);
@@ -127,14 +127,13 @@ public class Chart implements Serializable {
     //填入山盤
     fillMountain (mountainStart  , isConverse(原始山盤卦 , 飛佈山盤卦 , getMountain()) );
     //填入向盤
-    fillDirection(directionStart , isConverse(原始向盤卦 , 飛佈向盤卦 , getMountain().getOppositeMountain())  );
+    fillDirection(directionStart , isConverse(原始向盤卦 , 飛佈向盤卦 , getMountain().getOpposite())  );
   } //calculate()
   
   
   /**
    * 查詢某卦方位裡面的資料結構 (ChartBlock) , 如果查的是 null , 則傳回中宮
    */
-  @Nullable
   public ChartBlock getChartBlock(Symbol s)
   {
     for(ChartBlock chartBlock : blocks)
@@ -161,7 +160,7 @@ public class Chart implements Serializable {
        * index = 2 => 人元
        */
       double degree = 後天八卦盤.getStartDegree(原始卦) + index*15 +1; //最後的 +1 是確保結果能坐落於該山中
-      isConverse = !地盤.getYinYang((Mountain) (地盤.getMountain(degree)));
+      isConverse = !地盤.getYinYang((地盤.getMnt(degree)));
     }
     return isConverse;
   }
@@ -238,7 +237,7 @@ public class Chart implements Serializable {
   /**
    * 傳回座山
    */
-  public Mountain getMountain() 
+  public Mountain getMountain()
   { 
     return mountain; 
   }

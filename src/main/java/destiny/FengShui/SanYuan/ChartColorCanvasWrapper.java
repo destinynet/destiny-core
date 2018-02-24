@@ -117,7 +117,7 @@ public class ChartColorCanvasWrapper implements Serializable
 
     chartCanvas.setText(getChineseString(chart.getPeriod()) , 26 , 5); // XX運
     chartCanvas.setText(chart.getMountain().toString() , 26 , 11); // XX山
-    chartCanvas.setText(chart.getMountain().getOppositeMountain().toString() , 26 , 15 ); // XX向
+    chartCanvas.setText(chart.getMountain().getOpposite().toString() , 26 , 15 ); // XX向
     chartCanvas.setText(chart.getView().toString() , 26 , 29 ); // 背XX
     chartCanvas.setText(SymbolAcquired.Companion.getOppositeSymbol(chart.getView()).toString() , 26 , 33 ); // 朝XX
     

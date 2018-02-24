@@ -7,7 +7,7 @@ package destiny.FengShui.SanYuan
 
 import java.io.Serializable
 
-abstract class AbstractCompass : Serializable {
+abstract class AbstractCompass<T> : Serializable {
 
   /**
    * 取得某個此輪初始元素的起始度數
@@ -22,11 +22,12 @@ abstract class AbstractCompass : Serializable {
   /**
    * 取得某個元素的起始度數
    */
-  abstract fun getStartDegree(o: Any): Double
+  abstract fun getStartDegree(t : T): Double
+
 
   /**
    * 取得某個元素的結束度數
    */
-  abstract fun getEndDegree(o: Any): Double
+  abstract fun getEndDegree(t : T): Double
 
 }
