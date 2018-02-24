@@ -7,7 +7,6 @@ package destiny.iching.divine
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.IHexagramSequence
-import java.util.*
 
 /**
  * 京房卦序：乾為天,天風姤,天山遯,天地否...

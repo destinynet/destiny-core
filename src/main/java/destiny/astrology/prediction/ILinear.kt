@@ -9,7 +9,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 但 SolarReturn , LunarReturn 不屬於此類
  *
  */
-internal interface LinearIF : Mappable {
+internal interface ILinear : Mappable {
   /**
    * 取得反推（發散 divergent）的時間
    * @param natalTime 起始時間，通常是出生時間

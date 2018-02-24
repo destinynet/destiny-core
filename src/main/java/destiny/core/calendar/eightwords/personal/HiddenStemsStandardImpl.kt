@@ -6,7 +6,9 @@
 package destiny.core.calendar.eightwords.personal
 
 import destiny.core.chinese.Branch
+import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem
+import destiny.core.chinese.Stem.*
 import java.io.Serializable
 
 
@@ -24,18 +26,18 @@ class HiddenStemsStandardImpl : IHiddenStems, Serializable {
   companion object {
 
     val map = mapOf(
-      Branch.子 to listOf(Stem.癸),
-      Branch.丑 to listOf(Stem.己, Stem.癸, Stem.辛),
-      Branch.寅 to listOf(Stem.甲, Stem.丙, Stem.戊),
-      Branch.卯 to listOf(Stem.乙),
-      Branch.辰 to listOf(Stem.戊, Stem.乙, Stem.癸),
-      Branch.巳 to listOf(Stem.丙, Stem.戊, Stem.庚),
-      Branch.午 to listOf(Stem.丁, Stem.己),
-      Branch.未 to listOf(Stem.己, Stem.丁, Stem.乙),
-      Branch.申 to listOf(Stem.庚, Stem.壬, Stem.戊),
-      Branch.酉 to listOf(Stem.辛),
-      Branch.戌 to listOf(Stem.戊, Stem.辛, Stem.丁),
-      Branch.亥 to listOf(Stem.壬, Stem.甲))
+      子 to listOf(癸),
+      丑 to listOf(己, 癸, 辛),
+      寅 to listOf(甲, 丙, 戊),
+      卯 to listOf(乙),
+      辰 to listOf(戊, 乙, 癸),
+      巳 to listOf(丙, 戊, 庚),
+      午 to listOf(丁, 己),
+      未 to listOf(己, 丁, 乙),
+      申 to listOf(庚, 壬, 戊),
+      酉 to listOf(辛),
+      戌 to listOf(戊, 辛, 丁),
+      亥 to listOf(壬, 甲))
   }
 
 }

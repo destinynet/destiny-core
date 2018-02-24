@@ -5,8 +5,6 @@
  */
 package destiny.iching
 
-import java.util.*
-
 /**
  * 周易卦序Comparator
  */

@@ -6,6 +6,7 @@
 package destiny.core.calendar
 
 import destiny.core.calendar.SolarTerms.*
+import destiny.core.calendar.SolarTerms.Companion.getIndex
 import destiny.core.chinese.Branch.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -131,33 +132,33 @@ class SolarTermsTest {
 
   @Test
   fun testGet() {
-    assertSame(立春, SolarTerms.get(-24))
-    assertSame(大寒, SolarTerms.get(-1))
-    assertSame(立春, SolarTerms.get(0))
-    assertSame(雨水, SolarTerms.get(1))
-    assertSame(驚蟄, SolarTerms.get(2))
-    assertSame(春分, SolarTerms.get(3))
-    assertSame(清明, SolarTerms.get(4))
-    assertSame(穀雨, SolarTerms.get(5))
-    assertSame(立夏, SolarTerms.get(6))
-    assertSame(小滿, SolarTerms.get(7))
-    assertSame(芒種, SolarTerms.get(8))
-    assertSame(夏至, SolarTerms.get(9))
-    assertSame(小暑, SolarTerms.get(10))
-    assertSame(大暑, SolarTerms.get(11))
-    assertSame(立秋, SolarTerms.get(12))
-    assertSame(處暑, SolarTerms.get(13))
-    assertSame(白露, SolarTerms.get(14))
-    assertSame(秋分, SolarTerms.get(15))
-    assertSame(寒露, SolarTerms.get(16))
-    assertSame(霜降, SolarTerms.get(17))
-    assertSame(立冬, SolarTerms.get(18))
-    assertSame(小雪, SolarTerms.get(19))
-    assertSame(大雪, SolarTerms.get(20))
-    assertSame(冬至, SolarTerms.get(21))
-    assertSame(小寒, SolarTerms.get(22))
-    assertSame(大寒, SolarTerms.get(23))
-    assertSame(立春, SolarTerms.get(24))
+    assertSame(立春, SolarTerms[-24])
+    assertSame(大寒, SolarTerms[-1])
+    assertSame(立春, SolarTerms[0])
+    assertSame(雨水, SolarTerms[1])
+    assertSame(驚蟄, SolarTerms[2])
+    assertSame(春分, SolarTerms[3])
+    assertSame(清明, SolarTerms[4])
+    assertSame(穀雨, SolarTerms[5])
+    assertSame(立夏, SolarTerms[6])
+    assertSame(小滿, SolarTerms[7])
+    assertSame(芒種, SolarTerms[8])
+    assertSame(夏至, SolarTerms[9])
+    assertSame(小暑, SolarTerms[10])
+    assertSame(大暑, SolarTerms[11])
+    assertSame(立秋, SolarTerms[12])
+    assertSame(處暑, SolarTerms[13])
+    assertSame(白露, SolarTerms[14])
+    assertSame(秋分, SolarTerms[15])
+    assertSame(寒露, SolarTerms[16])
+    assertSame(霜降, SolarTerms[17])
+    assertSame(立冬, SolarTerms[18])
+    assertSame(小雪, SolarTerms[19])
+    assertSame(大雪, SolarTerms[20])
+    assertSame(冬至, SolarTerms[21])
+    assertSame(小寒, SolarTerms[22])
+    assertSame(大寒, SolarTerms[23])
+    assertSame(立春, SolarTerms[24])
 
   }
 }

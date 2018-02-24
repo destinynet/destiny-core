@@ -34,7 +34,7 @@ class AcquiredSymbolCompass : AbstractSymbol(), Serializable {
    */
   fun getSymbol(degree: Double): Any {
     var index = ((degree + 360 - initDegree) / stepDegree).toInt()
-    if (index >= 8) index = index - 8
+    if (index >= 8) index -= 8
     return symbolList[index]
   }
 

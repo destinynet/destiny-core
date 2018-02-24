@@ -4,9 +4,9 @@
 package destiny.core.calendar.eightwords
 
 import destiny.astrology.*
+import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
@@ -25,7 +25,7 @@ class EightWordsDetailImpl : IEightWordsDetail, Serializable {
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
     val chineseDate = chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
 
-    val prevNextMajorSolarTerms = getPrevNextMajorSolarTerms(currentSolarTerms)
+    val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
 
     val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
 
@@ -35,24 +35,6 @@ class EightWordsDetailImpl : IEightWordsDetail, Serializable {
     return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
       prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingSign,
       sunBranch, moonBranch)
-  }
-
-  /** 上一個「節」、下一個「節」
-   */
-  private fun getPrevNextMajorSolarTerms(currentSolarTerms: SolarTerms): Pair<SolarTerms, SolarTerms> {
-    val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
-    val prevMajorSolarTerms: SolarTerms
-    val nextMajorSolarTerms: SolarTerms
-    if (currentSolarTermsIndex % 2 == 0)
-    //立春 , 驚蟄 , 清明 ...
-    {
-      prevMajorSolarTerms = currentSolarTerms
-      nextMajorSolarTerms = currentSolarTerms.next().next()
-    } else {
-      prevMajorSolarTerms = currentSolarTerms.previous()
-      nextMajorSolarTerms = currentSolarTerms.next()
-    }
-    return Pair(prevMajorSolarTerms, nextMajorSolarTerms)
   }
 
   /**

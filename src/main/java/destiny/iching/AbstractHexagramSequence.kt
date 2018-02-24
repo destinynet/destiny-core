@@ -20,7 +20,6 @@ abstract class AbstractHexagramSequence : IHexagramSequence, Serializable {
     val i = if (index > 64) index % 64 else if (index <= 0) 64 - (0 - index) % 64 else index
 
     return map.filter { (_,v) -> v == i }.keys.first()
-    //return map.map { (k,v) -> v to k }.toMap()[i]!!
   }
 
 }

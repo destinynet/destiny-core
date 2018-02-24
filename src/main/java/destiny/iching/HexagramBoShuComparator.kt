@@ -4,8 +4,6 @@
  */
 package destiny.iching
 
-import java.util.*
-
 /**
  * 帛書卦序
  */

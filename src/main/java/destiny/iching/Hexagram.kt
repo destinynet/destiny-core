@@ -86,16 +86,6 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
   既濟(Symbol.坎, Symbol.離),
   未濟(Symbol.離, Symbol.坎);
 
-  private val yinYangArray: BooleanArray
-    get() {
-      return booleanArrayOf(
-        lowerSymbol.getBooleanValue(1),
-        lowerSymbol.getBooleanValue(2),
-        lowerSymbol.getBooleanValue(3),
-        upperSymbol.getBooleanValue(1),
-        upperSymbol.getBooleanValue(2),
-        upperSymbol.getBooleanValue(3))
-    }
 
   override val yinYangs: List<Boolean>
     get() = listOf(

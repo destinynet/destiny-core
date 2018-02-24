@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit
 /**
  * Progression 抽象類別，具備 Progression 演算法的 template methods
  */
-abstract class AbstractProgression : LinearIF, Conversable, Serializable {
+abstract class AbstractProgression : ILinear, Conversable, Serializable {
   /** 是否逆推，內定是順推  */
   override var isConverse = false
 

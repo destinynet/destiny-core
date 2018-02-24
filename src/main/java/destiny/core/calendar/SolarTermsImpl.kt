@@ -37,7 +37,7 @@ class SolarTermsImpl(
     var index = (sp.lng / 15).toInt() + 3
     if (index >= 24)
       index -= 24
-    return SolarTerms.get(index)
+    return SolarTerms[index]
   }
 
   /**

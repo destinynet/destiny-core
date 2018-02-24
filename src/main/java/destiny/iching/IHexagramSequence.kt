@@ -7,8 +7,8 @@ package destiny.iching
 
 /**
  * 取得卦的排列順序 , 1 <= int <= 64
- * <BR></BR>只有 HexagramDefaultComparator(周易卦序) 以及
- * <BR></BR>HexagramDivinationComparator(六爻卦序) 會使用到
+ * 只有 [HexagramDefaultComparator] (周易卦序) 以及
+ * [HexagramDivinationComparator] (六爻卦序) 會使用到
  */
 interface IHexagramSequence {
 

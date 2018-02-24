@@ -34,7 +34,7 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
 
   open val model: EightWordsContextModel
     get() {
-      val prevNextMajorSolarTerms = prevNextMajorSolarTerms
+      val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
 
       val chineseDate = chineseDate
 
@@ -62,23 +62,14 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
   val gmtJulDay: Double
     get() = TimeTools.getGmtJulDay(lmt, location)
 
-  /** 上一個「節」、下一個「節」
+  /**
+   * 上一個「節」、下一個「節」
+   * 立春 , 驚蟄 , 清明 ...
    */
-  //立春 , 驚蟄 , 清明 ...
   val prevNextMajorSolarTerms: Pair<SolarTerms, SolarTerms>
     get() {
       val currentSolarTerms = currentSolarTerms
-      val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
-      val prevMajorSolarTerms: SolarTerms
-      val nextMajorSolarTerms: SolarTerms
-      if (currentSolarTermsIndex % 2 == 0) {
-        prevMajorSolarTerms = currentSolarTerms
-        nextMajorSolarTerms = currentSolarTerms.next().next()
-      } else {
-        prevMajorSolarTerms = currentSolarTerms.previous()
-        nextMajorSolarTerms = currentSolarTerms.next()
-      }
-      return Pair(prevMajorSolarTerms, nextMajorSolarTerms)
+      return SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
     }
 
   /** 取得農曆  */

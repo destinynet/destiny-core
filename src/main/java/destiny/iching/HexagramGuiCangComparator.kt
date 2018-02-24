@@ -4,8 +4,6 @@
  */
 package destiny.iching
 
-import java.util.*
-
 /** 歸藏卦序  */
 class HexagramGuiCangComparator : AbstractHexagramSequence(), Comparator<IHexagram> {
 
