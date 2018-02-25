@@ -33,7 +33,7 @@ class AcquiredSymbolCompass : AbstractSymbol<Symbol>(), Serializable {
   /**
    * 取得目前這個度數位於哪個卦當中
    */
-  fun getSymbol(degree: Double): Any {
+  fun getSymbol(degree: Double): Symbol {
     var index = ((degree + 360 - initDegree) / stepDegree).toInt()
     if (index >= 8) index -= 8
     return symbolList[index]
