@@ -8,7 +8,7 @@ import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 
 
-class ChartSimpleCanvas(chart: Chart,
+class ChartCanvasSimple(chart: Chart,
                         fore: String? = null,
                         bg: String? = null) : ColorCanvas(8, 16, ChineseStringTools.NULL_CHAR, fore, bg) {
   init {
@@ -26,12 +26,12 @@ class ChartSimpleCanvas(chart: Chart,
 
     val symbols = generateSequence(chart.view, { it -> SymbolAcquired.getClockwiseSymbol(it)}).take(8).toList()
     coordinates.zip(symbols).forEach { (pair , symbol) ->
-      val blockCanvas = ChartBlockSimpleCanvas(chart.getChartBlock(symbol) , fore , bg)
+      val blockCanvas = ChartBlockCanvasSimple(chart.getChartBlock(symbol), fore, bg)
       add(blockCanvas , pair.first , pair.second)
     }
 
     // 中宮
-    val centerBlockCanvas = ChartBlockSimpleCanvas(chart.getCenterBlock())
+    val centerBlockCanvas = ChartBlockCanvasSimple(chart.getCenterBlock())
     add(centerBlockCanvas , 4 , 7)
   }
 

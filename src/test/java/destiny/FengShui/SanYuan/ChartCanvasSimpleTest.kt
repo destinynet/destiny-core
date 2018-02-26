@@ -6,7 +6,7 @@ package destiny.FengShui.SanYuan
 import destiny.iching.Symbol
 import kotlin.test.Test
 
-class ChartSimpleCanvasTest {
+class ChartCanvasSimpleTest {
 
   /**
   14 　 68 　 86
@@ -21,7 +21,7 @@ class ChartSimpleCanvasTest {
   @Test
   fun `七運，午山子向 , 坎底`() {
     val chart = Chart(7, Mountain.午, Symbol.坎)
-    val canvas = ChartSimpleCanvas(chart)
+    val canvas = ChartCanvasSimple(chart)
     println(canvas.htmlOutput)
   }
 
@@ -38,7 +38,7 @@ class ChartSimpleCanvasTest {
   @Test
   fun `七運，午山子向 , 兌底`() {
     val chart = Chart(7, Mountain.午, Symbol.兌)
-    val canvas = ChartSimpleCanvas(chart)
+    val canvas = ChartCanvasSimple(chart)
     println(canvas.htmlOutput)
   }
 }
