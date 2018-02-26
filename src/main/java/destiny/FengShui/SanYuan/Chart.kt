@@ -4,28 +4,29 @@
 package destiny.FengShui.SanYuan
 
 import destiny.iching.Symbol
+import destiny.iching.Symbol.*
 import destiny.iching.SymbolAcquired
-
 import java.io.Serializable
 
 /**
  * 三元盤的 presentation model
  */
 class Chart(
+
   // 元運 , 其值只能為 1~9
   val period: Int,
+
   // 座山
   val mountain: Mountain,
+
   // 從哪個卦看去 ? 意即，九宮格的底邊，是哪個卦（後天）
   val view: Symbol) : Serializable {
 
   private val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
 
-  private val 地盤 = EarthlyCompass()
-
-  private val 後天八卦盤 = AcquiredSymbolCompass()
 
   init {
+
     //決定座山/向 是位於哪一卦中
     //詢問此山/向 的中心點度數為：
     val midMountain: Double = if (Math.abs(地盤.getEndDegree(mountain) - 地盤.getStartDegree(mountain)) > 180)
@@ -41,38 +42,35 @@ class Chart(
     val 飛佈山盤卦 = 後天八卦盤.getSymbol(midMountain)
     val 飛佈向盤卦 = 後天八卦盤.getSymbol(midDirection)
 
+    println("midMountain = $midMountain , 飛佈山盤卦 = ${飛佈山盤卦} , 飛佈向盤卦 = ${飛佈向盤卦}")
+
     //搜尋 blocks[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
-    var mountainStart = 0
-    var directionStart = 0
+    val mntStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈山盤卦 }.let { getBlockPeriod(it) }
+    val dirStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈向盤卦 }.let { getBlockPeriod(it) }
+
+    // 原始 == 中宮
+    val 原始山盤卦: Symbol? = SymbolAcquired.getSymbolNullable(mntStart)
+    val 原始向盤卦: Symbol? = SymbolAcquired.getSymbolNullable(dirStart)
+
+    println("${飛佈山盤卦}山 ${飛佈向盤卦}向")
+    println("\t$飛佈山盤卦 = $mntStart , from 後天八卦 $原始山盤卦")
+    println("\t$飛佈向盤卦 = $dirStart , from 後天八卦 $原始向盤卦")
 
 
     for (i in 1..9) {
-      val blockSymbol = getBlockSymbol(i)
-      if (blockSymbol === 飛佈山盤卦)
-        mountainStart = getBlockPeriod(i)
-      if (blockSymbol === 飛佈向盤卦)
-        directionStart = getBlockPeriod(i)
-    }
-
-    val 原始山盤卦 = SymbolAcquired.getSymbolNullable(mountainStart)
-    val 原始向盤卦 = SymbolAcquired.getSymbolNullable(directionStart)
-
-
-    for (i in 1..9) {
-      val period = normalize(period+i-1)
+      val period = normalize(period + i - 1)
       val symbol = getBlockSymbol(i)
 
-      val mnt = getMountain(mountainStart, isConverse(原始山盤卦, 飛佈山盤卦, mountain), i)
-      val dst = getDirection(directionStart, isConverse(原始向盤卦, 飛佈向盤卦, mountain.opposite), i)
+      val mnt = getMountain(mntStart, isConverse(原始山盤卦, 飛佈山盤卦, mountain), i)
+      val dir = getDirection(dirStart, isConverse(原始向盤卦, 飛佈向盤卦, mountain.opposite), i)
 
-      blocks[i] = ChartBlock(symbol, mnt, dst, period)
+      blocks[i] = ChartBlock(symbol, mnt, dir, period)
     }
   } //init
 
 
-
   /**
-   * 方向（以卦來表示），尚未實作轉盤
+   * 方向（以卦來表示）
    * |-----------------|
    * | 9巽 | 5離 | 7坤 |
    * |[0,0]|[0,1]|[0,2]|
@@ -86,14 +84,16 @@ class Chart(
    */
   private fun getBlockSymbol(blockIndex: Int): Symbol? {
     return when (blockIndex) {
-      9 -> Symbol.巽
-      8 -> Symbol.震
-      4 -> Symbol.艮
-      5 -> Symbol.離
-      6 -> Symbol.坎
-      7 -> Symbol.坤
-      3 -> Symbol.兌
-      2 -> Symbol.乾
+      9 -> 巽
+      8 -> 震
+      4 -> 艮
+
+      5 -> 離
+      6 -> 坎
+
+      7 -> 坤
+      3 -> 兌
+      2 -> 乾
       else -> null
     }
   }
@@ -104,15 +104,28 @@ class Chart(
   }
 
   /**
-   * 查詢某卦方位裡面的資料結構 (ChartBlock) , 如果查的是 null , 則傳回中宮
+   * 查詢某卦方位裡面的資料結構 (ChartBlock)
    */
   fun getChartBlock(s: Symbol): ChartBlock {
-    return blocks.first { b -> b?.symbol === s }!!
+    return blocks.first { cb: ChartBlock? -> cb?.symbol === s }!!
+  }
+
+  /**
+   * 則傳回中宮
+   */
+  fun getCenterBlock() : ChartBlock {
+    //blocks.forEach { println(it) }
+    return blocks.filter { it != null }.first { cb -> cb?.symbol === null }!!
   }
 
   private fun isConverse(原始卦: Symbol?, 飛佈卦: Symbol, m: Mountain): Boolean {
     val isConverse: Boolean
     isConverse = if (原始卦 == null) {
+      /**
+       * 當五黃如中時，因為五黃本身沒有山向，五黃是中宮戊己土，那麼，
+       * 五入中的順飛還是逆飛則是由五所在的宮位的山向的陰陽，性質決定。
+       * 如一運子山午向，運星五到離，五入中為向星後，按五所在的「午」的性質決定，故逆飛。
+       */
       !地盤.getYinYang(m)
     } else {
       val index = ((地盤.getStartDegree(m) - 後天八卦盤.getStartDegree(飛佈卦)) / 15).toInt()
@@ -168,6 +181,11 @@ class Chart(
       // 逆飛
       normalize(start - blockIndex + 10)
     }
+  }
+
+  companion object {
+    private val 地盤 = EarthlyCompass()
+    private val 後天八卦盤 = AcquiredSymbolCompass()
   }
 
 }

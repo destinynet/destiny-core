@@ -4,6 +4,7 @@
 package destiny.FengShui.SanYuan
 
 import destiny.astrology.Utils
+import destiny.core.chinese.Branch
 
 abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
 
@@ -44,6 +45,9 @@ abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
   
   /**
    * http://www.neighbor168.com/name543/house11.htm
+   * 甲庚丙壬、乾坤艮巽、寅申巳亥12山，均屬陽
+   * 辰戌丑未、乙辛丁癸、子午卯酉12山，均屬陰
+   *
    * <pre>
    * 寅－－內藏甲、丙、戊，已知甲丙屬陽，故寅為陽。
    * 申－－內藏庚、壬、戊，已知庚壬屬陽，故申屬陽。
@@ -62,9 +66,10 @@ abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
       m.mnt is SealedMnt.MntStem -> // 陽干傳回陽 , 陰干傳回陰
         m.mnt.stem.booleanValue
       m.mnt is SealedMnt.MntBranch -> {
-        val index = m.mnt.branch.index
-        //寅巳申亥
-        index == 2 || index == 5 || index == 8 || index == 11
+        listOf(Branch.寅, Branch.巳, Branch.申, Branch.亥).contains(m.mnt.branch)
+//        val index = m.mnt.branch.index
+//        //寅巳申亥
+//        index == 2 || index == 5 || index == 8 || index == 11
       }
       else -> throw RuntimeException("Cannot find YinYang from " + m)
     }
