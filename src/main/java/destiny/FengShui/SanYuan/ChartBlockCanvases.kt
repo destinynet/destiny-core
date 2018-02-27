@@ -16,10 +16,10 @@ class ChartBlockCanvasSimple(cb: ChartBlock,
   init {
     val symbolText = cb.symbol?.toString() ?: "中"
     setText(symbolText, 2, 1) // 左下 , 八卦名稱
-    setText(ChineseStringTools.digitToChinese(cb.period), 2, 3) // 右下 , 大寫中文字
+    setText(ChineseStringTools.digitToChinese(cb.period), 2, 3 , "blue") // 右下 , 大寫中文字
 
-    setText(cb.mountain.toBiggerDigit(), 1, 1) // 左上角 , 山
-    setText(cb.direction.toBiggerDigit(), 1, 3) // 右上角 , 向
+    setText(cb.mountain.toBiggerDigit(), 1, 1 , "red") // 左上角 , 山
+    setText(cb.direction.toBiggerDigit(), 1, 3 , "green") // 右上角 , 向
   }
 }
 

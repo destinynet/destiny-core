@@ -1,35 +1,16 @@
 /**
- * Created by smallufo on 2018-02-25.
+ * Created by smallufo on 2018-02-27.
  */
 package destiny.FengShui.SanYuan
 
 import destiny.iching.Symbol
-import destiny.iching.Symbol.*
 import destiny.iching.SymbolAcquired
-import java.io.Serializable
 
 
+object ChartContext {
 
-/**
- * 三元盤的 presentation model
- * 挨星下卦
- */
-class Chart(
-
-  // 元運 , 其值只能為 1~9
-  val period: Int,
-
-  // 座山
-  val mountain: Mountain,
-
-  // 從哪個卦看去 ? 意即，九宮格的底邊，是哪個卦（後天）
-  val view: Symbol) : Serializable {
-
-  private val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
-
-
-  init {
-
+  fun getChart(period: Int, mountain: Mountain, view: Symbol): Chart2 {
+    val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
     //決定座山/向 是位於哪一卦中
     //詢問此山/向 的中心點度數為：
     val midMountain: Double = if (Math.abs(地盤.getEndDegree(mountain) - 地盤.getStartDegree(mountain)) > 180)
@@ -46,8 +27,8 @@ class Chart(
     val 飛佈向盤卦 = 後天八卦盤.getSymbol(midDirection)
 
     //搜尋 blocks[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
-    val mntStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈山盤卦 }.let { getBlockPeriod(it) }
-    val dirStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈向盤卦 }.let { getBlockPeriod(it) }
+    val mntStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈山盤卦 }.let { getBlockPeriod(it, period) }
+    val dirStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈向盤卦 }.let { getBlockPeriod(it, period) }
 
     // 原始 == 中宮
     val 原始山盤卦: Symbol? = SymbolAcquired.getSymbolNullable(mntStart)
@@ -71,8 +52,20 @@ class Chart(
 
       blocks[i] = ChartBlock(symbol, mnt, dir, period)
     }
-  } //init
 
+    val map = mapOf(
+      Position.C to blocks[1]!!,
+      Position.RB to blocks[2]!!,
+      Position.R to blocks[3]!!,
+      Position.LB to blocks[4]!!,
+      Position.U to blocks[5]!!,
+      Position.B to blocks[6]!!,
+      Position.RU to blocks[7]!!,
+      Position.L to blocks[8]!!,
+      Position.LU to blocks[9]!!
+                   )
+    return Chart2(period, mountain, view, map)
+  } // getChart
 
   /**
    * 方向（以卦來表示）
@@ -89,38 +82,22 @@ class Chart(
    */
   private fun getBlockSymbol(blockIndex: Int): Symbol? {
     return when (blockIndex) {
-      9 -> 巽
-      8 -> 震
-      4 -> 艮
+      9 -> Symbol.巽
+      8 -> Symbol.震
+      4 -> Symbol.艮
 
-      5 -> 離
-      6 -> 坎
+      5 -> Symbol.離
+      6 -> Symbol.坎
 
-      7 -> 坤
-      3 -> 兌
-      2 -> 乾
+      7 -> Symbol.坤
+      3 -> Symbol.兌
+      2 -> Symbol.乾
       else -> null
     }
   }
 
-  private fun getBlockPeriod(blockIndex: Int): Int {
-    val 元運 = period
-    return normalize(元運 + blockIndex - 1)
-  }
-
-  /**
-   * 查詢某卦方位裡面的資料結構 (ChartBlock)
-   */
-  fun getChartBlock(s: Symbol): ChartBlock {
-    return blocks.first { cb: ChartBlock? -> cb?.symbol === s }!!
-  }
-
-  /**
-   * 則傳回中宮
-   */
-  fun getCenterBlock(): ChartBlock {
-    //blocks.forEach { println(it) }
-    return blocks.filter { it != null }.first { cb -> cb?.symbol === null }!!
+  private fun getBlockPeriod(blockIndex: Int, period: Int): Int {
+    return normalize(period + blockIndex - 1)
   }
 
   private fun isReversed(原始卦: Symbol?, 飛佈卦: Symbol, m: Mountain): Boolean {
@@ -156,7 +133,6 @@ class Chart(
     }
   }
 
-
   /**
    * 傳入中宮的 山 或 向  , 以及是否逆飛
    *
@@ -172,10 +148,7 @@ class Chart(
     }
   }
 
-
-  companion object {
-    private val 地盤 = EarthlyCompass()
-    private val 後天八卦盤 = AcquiredSymbolCompass()
-  }
+  private val 地盤 = EarthlyCompass()
+  private val 後天八卦盤 = AcquiredSymbolCompass()
 
 }

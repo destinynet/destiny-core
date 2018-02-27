@@ -39,8 +39,8 @@ class ChartCanvasSimpleFramed(chart: Chart,
     setText("│３５│１７│５３│", 8, 1)
     setText("│ 二 │ 四 │ 九 │", 9, 1)
     setText("├──┴──┴──┤", 10, 1)
-    setText("│03運　09山　15向│",11,1)
-    setText("└────────┘",12,1)
+    setText("│03運　09山　15向│", 11, 1)
+    setText("└────────┘", 12, 1)
 
     // 從底端開始，順時針，八個卦
     val coordinates = listOf(
@@ -64,8 +64,8 @@ class ChartCanvasSimpleFramed(chart: Chart,
     val centerBlockCanvas = ChartBlockCanvasSimple(chart.getCenterBlock())
     add(centerBlockCanvas, 5, 9)
 
-    setText(chart.period.toChineseDigit() , 11,3)
-    setText(chart.mountain.toString() , 11,9)
-    setText(chart.mountain.opposite.toString() , 11,15)
+    setText(chart.period.toChineseDigit(), 11, 3)
+    setText(chart.mountain.toString(), 11, 9)
+    setText(chart.mountain.opposite.toString(), 11, 15)
   }
 }

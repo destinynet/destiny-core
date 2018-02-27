@@ -31,4 +31,20 @@ class ChartCanvasSimpleFramedTest {
 
     println(canvas.toString())
   }
+
+  @Test
+  fun `八運 甲山庚向 , chart2`() {
+    val chart = ChartContext.getChart(8 , Mountain.甲 , Symbol.坎)
+    println(chart)
+  }
+
+  /** 印出 24山 */
+  @Test
+  fun print24Mountains() {
+    Mountain.values().forEach { mnt ->
+      val chart = Chart(7, mnt, Symbol.坎)
+      val canvas = ChartCanvasSimpleFramed(chart)
+      println(canvas.htmlOutput)
+    }
+  }
 }
