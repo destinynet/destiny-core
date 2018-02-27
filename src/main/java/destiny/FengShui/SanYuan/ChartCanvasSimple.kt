@@ -34,6 +34,4 @@ class ChartCanvasSimple(chart: Chart,
     val centerBlockCanvas = ChartBlockCanvasSimple(chart.getCenterBlock())
     add(centerBlockCanvas , 4 , 7)
   }
-
-
 }

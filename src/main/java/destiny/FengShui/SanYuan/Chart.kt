@@ -10,6 +10,7 @@ import java.io.Serializable
 
 /**
  * 三元盤的 presentation model
+ * 挨星下卦
  */
 class Chart(
 
@@ -42,8 +43,6 @@ class Chart(
     val 飛佈山盤卦 = 後天八卦盤.getSymbol(midMountain)
     val 飛佈向盤卦 = 後天八卦盤.getSymbol(midDirection)
 
-    println("midMountain = $midMountain , 飛佈山盤卦 = ${飛佈山盤卦} , 飛佈向盤卦 = ${飛佈向盤卦}")
-
     //搜尋 blocks[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
     val mntStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈山盤卦 }.let { getBlockPeriod(it) }
     val dirStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈向盤卦 }.let { getBlockPeriod(it) }
@@ -52,17 +51,21 @@ class Chart(
     val 原始山盤卦: Symbol? = SymbolAcquired.getSymbolNullable(mntStart)
     val 原始向盤卦: Symbol? = SymbolAcquired.getSymbolNullable(dirStart)
 
-    println("${飛佈山盤卦}山 ${飛佈向盤卦}向")
-    println("\t$飛佈山盤卦 = $mntStart , from 後天八卦 $原始山盤卦")
-    println("\t$飛佈向盤卦 = $dirStart , from 後天八卦 $原始向盤卦")
+//    println("${飛佈山盤卦}山 ($midMountain) ${飛佈向盤卦}向")
+//    println("\t$飛佈山盤卦 = $mntStart , from 後天八卦 $原始山盤卦")
+//    println("\t$飛佈向盤卦 = $dirStart , from 後天八卦 $原始向盤卦")
 
+
+    val mntConverse = isConverse(原始山盤卦, 飛佈山盤卦, mountain)
+    val dirConverse = isConverse(原始向盤卦, 飛佈向盤卦, mountain.opposite)
 
     for (i in 1..9) {
       val period = normalize(period + i - 1)
       val symbol = getBlockSymbol(i)
 
-      val mnt = getMountain(mntStart, isConverse(原始山盤卦, 飛佈山盤卦, mountain), i)
-      val dir = getDirection(dirStart, isConverse(原始向盤卦, 飛佈向盤卦, mountain.opposite), i)
+      val mnt = getNumber(mntStart, mntConverse, i)
+//      println("[$i] , mntStart = $mntStart , mntConverse = $mntConverse")
+      val dir = getNumber(dirStart, dirConverse, i)
 
       blocks[i] = ChartBlock(symbol, mnt, dir, period)
     }
@@ -153,27 +156,11 @@ class Chart(
 
 
   /**
-   * 傳入座山 , 以及是否逆飛
+   * 傳入中宮的 山 或 向  , 以及是否逆飛
    *
    * @param blockIndex 1 to 9
    */
-  private fun getMountain(start: Int, converse: Boolean, blockIndex: Int): Int {
-    return if (!converse) {
-      // 順飛
-      normalize(start + blockIndex + 8)
-    } else {
-      // 逆飛
-      normalize(start - 1 + 10)
-    }
-  }
-
-
-  /**
-   * 傳入向山 , 以及是否逆飛
-   *
-   * @param blockIndex 1 to 9
-   */
-  private fun getDirection(start: Int, converse: Boolean, blockIndex: Int): Int {
+  private fun getNumber(start: Int, converse: Boolean, blockIndex: Int): Int {
     return if (!converse) {
       // 順飛
       normalize(start + blockIndex + 8)
@@ -182,6 +169,7 @@ class Chart(
       normalize(start - blockIndex + 10)
     }
   }
+
 
   companion object {
     private val 地盤 = EarthlyCompass()

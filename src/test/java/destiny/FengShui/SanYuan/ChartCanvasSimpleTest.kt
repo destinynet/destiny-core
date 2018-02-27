@@ -8,6 +8,14 @@ import kotlin.test.Test
 
 class ChartCanvasSimpleTest {
 
+  @Test
+  fun `八運，甲山庚向 , 坎底`() {
+    val chart = Chart(8, Mountain.甲, Symbol.坎)
+    val canvas = ChartCanvasSimple(chart)
+    //println(canvas.htmlOutput)
+    println(canvas.toString())
+  }
+
   /**
   14 　 68 　 86
   巽六　離二　坤四

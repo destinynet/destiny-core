@@ -67,9 +67,6 @@ abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
         m.mnt.stem.booleanValue
       m.mnt is SealedMnt.MntBranch -> {
         listOf(Branch.寅, Branch.巳, Branch.申, Branch.亥).contains(m.mnt.branch)
-//        val index = m.mnt.branch.index
-//        //寅巳申亥
-//        index == 2 || index == 5 || index == 8 || index == 11
       }
       else -> throw RuntimeException("Cannot find YinYang from " + m)
     }

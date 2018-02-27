@@ -21,4 +21,11 @@ class ChartCanvasFullTest {
     val canvas = ChartCanvasFull(chart)
     println(canvas.toString())
   }
+
+  @Test
+  fun `八運，甲山庚向 , 坎底`() {
+    val chart = Chart(8, Mountain.甲, Symbol.坎)
+    val canvas = ChartCanvasFull(chart)
+    println(canvas.toString())
+  }
 }
