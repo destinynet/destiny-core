@@ -8,8 +8,6 @@ import destiny.iching.Symbol.*
 import destiny.iching.SymbolAcquired
 import java.io.Serializable
 
-
-
 /**
  * 三元盤的 presentation model
  * 挨星下卦
@@ -32,18 +30,18 @@ class Chart(
 
     //決定座山/向 是位於哪一卦中
     //詢問此山/向 的中心點度數為：
-    val midMountain: Double = if (Math.abs(地盤.getEndDegree(mountain) - 地盤.getStartDegree(mountain)) > 180)
+    val midMntDeg: Double = if (Math.abs(地盤.getEndDegree(mountain) - 地盤.getStartDegree(mountain)) > 180)
       0.0
     else
       (地盤.getEndDegree(mountain) + 地盤.getStartDegree(mountain)) / 2
 
-    val midDirection = if (midMountain == 180.0)
+    val midDirDeg = if (midMntDeg == 180.0)
       0.0
     else
       (地盤.getEndDegree(mountain.opposite) + 地盤.getStartDegree(mountain.opposite)) / 2
 
-    val 飛佈山盤卦 = 後天八卦盤.getSymbol(midMountain)
-    val 飛佈向盤卦 = 後天八卦盤.getSymbol(midDirection)
+    val 飛佈山盤卦 = 後天八卦盤.getSymbol(midMntDeg)
+    val 飛佈向盤卦 = 後天八卦盤.getSymbol(midDirDeg)
 
     //搜尋 blocks[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
     val mntStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈山盤卦 }.let { getBlockPeriod(it) }

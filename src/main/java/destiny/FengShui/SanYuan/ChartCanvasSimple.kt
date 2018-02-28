@@ -1,37 +1,44 @@
 /**
- * Created by smallufo on 2018-02-27.
+ * Created by smallufo on 2018-02-28.
  */
 package destiny.FengShui.SanYuan
 
-import destiny.iching.SymbolAcquired
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 
-
-class ChartCanvasSimple(chart: Chart,
+/**
+ * 高度 = 8 , 寬度 = 16
+ *
+７９　２５　９７
+巽七　離三　坤五
+　　　　　　　　
+８８　６１　４３
+震六　中八　兌一
+　　　　　　　　
+３４　１６　５２
+艮二　坎四　乾九
+ */
+class ChartCanvasSimple(chart: IChartMntPresenter,
                         fore: String? = null,
                         bg: String? = null) : ColorCanvas(8, 16, ChineseStringTools.NULL_CHAR, fore, bg) {
+
   init {
-    // 從底端開始，順時針，八個卦
-    val coordinates = listOf(
-      Pair(7, 7), // 底
-      Pair(7, 1), // 左下
-      Pair(4, 1), // 左
-      Pair(1, 1), // 左上
-      Pair(1, 7), // 上
-      Pair(1, 13),  // 右上
-      Pair(4, 13),  // 右
-      Pair(7, 13)   // 右下
-                            )
+    val coordinateMap = mapOf(
+      Position.B to Pair(7, 7),
+      Position.LB to Pair(7, 1),
+      Position.L to Pair(4, 1),
+      Position.LU to Pair(1, 1),
+      Position.U to Pair(1, 7),
+      Position.RU to Pair(1, 13),
+      Position.R to Pair(4, 13),
+      Position.RB to Pair(7, 13),
+      Position.C to Pair(4, 7)
+                             )
 
-    val symbols = generateSequence(chart.view, { it -> SymbolAcquired.getClockwiseSymbol(it)}).take(8).toList()
-    coordinates.zip(symbols).forEach { (pair , symbol) ->
-      val blockCanvas = ChartBlockCanvasSimple(chart.getChartBlock(symbol), fore, bg)
-      add(blockCanvas , pair.first , pair.second)
+    coordinateMap.forEach { (pos, pair) ->
+      val chartBlock = chart.posMap[pos]!!
+      val blockCanvas = ChartBlockCanvasSimple(chartBlock, fore, bg)
+      add(blockCanvas, pair.first, pair.second)
     }
-
-    // 中宮
-    val centerBlockCanvas = ChartBlockCanvasSimple(chart.getCenterBlock())
-    add(centerBlockCanvas , 4 , 7)
   }
 }
