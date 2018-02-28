@@ -28,7 +28,7 @@ class SettingsGingFangReverseChien : AbstractSettings() {
 
   override val symbolBranchMap: Map<Symbol, List<Branch>>
     get() = mapOf(
-      乾 to listOf(子, 寅, 辰, 午, 申, 戌),
+      乾 to listOf(午, 申, 戌, 子, 寅, 辰),
       兌 to listOf(巳, 卯, 丑, 亥, 酉, 未),
       離 to listOf(卯, 丑, 亥, 酉, 未, 巳),
       震 to listOf(子, 寅, 辰, 午, 申, 戌),
