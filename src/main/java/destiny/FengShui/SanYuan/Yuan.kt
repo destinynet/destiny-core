@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2015-05-13.
  */
-package destiny.FengShui.SanYuan
+package destiny.fengshui.sanyuan
 
 enum class Yuan {
   UP,  // 上元

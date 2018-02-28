@@ -3,7 +3,7 @@
  * @date 2002/9/23
  * @time 上午 11:19:48
  */
-package destiny.FengShui.SanYuan
+package destiny.fengshui.sanyuan
 
 
 /**

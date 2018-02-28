@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2018-02-25.
  */
-package destiny.FengShui.SanYuan
+package destiny.fengshui.sanyuan
 
 import destiny.iching.Symbol
 import destiny.iching.Symbol.*

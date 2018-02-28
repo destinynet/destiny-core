@@ -3,7 +3,7 @@
  * @date 2002/9/23
  * @time 下午 07:30:40
  */
-package destiny.FengShui.SanYuan
+package destiny.fengshui.sanyuan
 
 import destiny.astrology.Utils
 import destiny.iching.Symbol

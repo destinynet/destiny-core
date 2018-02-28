@@ -3,7 +3,7 @@
  * @date 2002/9/23
  * @time 下午 07:20:08
  */
-package destiny.FengShui.SanYuan
+package destiny.fengshui.sanyuan
 
 abstract class AbstractSymbol<T> : AbstractCompass<T>() {
 

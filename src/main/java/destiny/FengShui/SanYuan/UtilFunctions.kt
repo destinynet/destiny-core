@@ -2,7 +2,7 @@
  * Created by smallufo on 2018-02-27.
  */
 
-package destiny.FengShui.SanYuan
+package destiny.fengshui.sanyuan
 
 import destiny.tools.ChineseStringTools
 

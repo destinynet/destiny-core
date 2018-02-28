@@ -3,7 +3,7 @@
  * @date 2002/9/23
  * @time 下午 03:02:51
  */
-package destiny.FengShui.SanYuan
+package destiny.fengshui.sanyuan
 
 import java.io.Serializable
 
