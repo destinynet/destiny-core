@@ -3,7 +3,6 @@
  */
 package destiny.FengShui.SanYuan
 
-import destiny.iching.SymbolAcquired
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 
@@ -24,7 +23,7 @@ import destiny.tools.canvas.ColorCanvas
 └────────┘
 原文網址：https://read01.com/RMPAEE.html
  */
-class ChartCanvasSimpleFramed(chart: Chart,
+class ChartCanvasSimpleFramed(chart: IChartMntPresenter,
                               fore: String? = null,
                               bg: String? = null) : ColorCanvas(12, 20, ChineseStringTools.NULL_CHAR, fore, bg) {
 
@@ -42,30 +41,27 @@ class ChartCanvasSimpleFramed(chart: Chart,
     setText("│03運　09山　15向│", 11, 1)
     setText("└────────┘", 12, 1)
 
-    // 從底端開始，順時針，八個卦
-    val coordinates = listOf(
-      Pair(8, 9), // 底
-      Pair(8, 3), // 左下
-      Pair(5, 3), // 左
-      Pair(2, 3), // 左上
-      Pair(2, 9), // 上
-      Pair(2, 15),  // 右上
-      Pair(5, 15),  // 右
-      Pair(8, 15)   // 右下
-                            )
 
-    val symbols = generateSequence(chart.view, { it -> SymbolAcquired.getClockwiseSymbol(it) }).take(8).toList()
-    coordinates.zip(symbols).forEach { (pair, symbol) ->
-      val blockCanvas = ChartBlockCanvasSimple(chart.getChartBlock(symbol), fore, bg)
+    val coordinateMap = mapOf(
+      Position.B  to Pair(8, 9),
+      Position.LB to Pair(8, 3),
+      Position.L  to Pair(5, 3),
+      Position.LU to Pair(2, 3),
+      Position.U  to Pair(2, 9),
+      Position.RU to Pair(2, 15),
+      Position.R  to Pair(5, 15),
+      Position.RB to Pair(8, 15),
+      Position.C  to Pair(5, 9))
+
+
+    coordinateMap.forEach { (pos, pair) ->
+      val chartBlock = chart.posMap[pos]!!
+      val blockCanvas = ChartBlockCanvasSimple(chartBlock, fore, bg)
       add(blockCanvas, pair.first, pair.second)
     }
 
-    // 中宮
-    val centerBlockCanvas = ChartBlockCanvasSimple(chart.getCenterBlock())
-    add(centerBlockCanvas, 5, 9)
-
     setText(chart.period.toChineseDigit(), 11, 3)
-    setText(chart.mountain.toString(), 11, 9)
-    setText(chart.mountain.opposite.toString(), 11, 15)
+    setText(chart.mnt.toString(), 11, 9)
+    setText(chart.mnt.opposite.toString(), 11, 15)
   }
 }

@@ -4,6 +4,7 @@
 package destiny.FengShui.SanYuan
 
 import destiny.iching.Symbol
+import java.io.Serializable
 
 
 interface IPeriod {
@@ -51,17 +52,21 @@ enum class Position {
 /** 具備描述九宮格的資料 , 九宮格內，每個 block 存放哪個 [ChartBlock] */
 interface IChartPresenter {
   val posMap: Map<Position, ChartBlock>
+
+//  fun getChartBlock(symbol: Symbol) : ChartBlock {
+//    return posMap.values.first { cb -> cb.symbol === symbol }
+//  }
 }
 
 interface IChartMntPresenter : IChartMnt , IChartPresenter
 
 /** 元運 + 何山（何向） */
 data class ChartMnt(override val period: Int,
-                    override val mnt: Mountain) : IChartMnt
+                    override val mnt: Mountain) : IChartMnt , Serializable
 
 /** 元運 + 座山的度數 （可推導出 座山)  */
 data class ChartDegree(override val period: Int,
-                       override val degree: Double) : IChartDegree, IChartMnt by degToMnt(period, degree)
+                       override val degree: Double) : IChartDegree, IChartMnt by degToMnt(period, degree) , Serializable
 
 fun degToMnt(period: Int, degree: Double): IChartMnt {
   val mnt = EarthlyCompass().getMnt(degree)
@@ -70,7 +75,12 @@ fun degToMnt(period: Int, degree: Double): IChartMnt {
 
 data class ChartMntPresenter(override val period: Int,
                              override val mnt: Mountain,
-                             val view: Symbol) : IChartMntPresenter , IChartPresenter by ChartPresenter(period , mnt , view)
+                             val view: Symbol) : IChartMntPresenter , IChartPresenter by ChartPresenter(period , mnt , view) , Serializable {
+  fun getChartBlock(symbol: Symbol): ChartBlock {
+    return posMap.values.first { cb -> cb.symbol === symbol }
+  }
+
+}
 
 
 

@@ -11,8 +11,7 @@ class ChartPresenter(private val period: Int,
                      private val mountain: Mountain,
                      private val view: Symbol) : IChartPresenter, Serializable {
 
-  override val posMap: Map<Position, ChartBlock>
-    get() = lazy {
+  override val posMap: Map<Position, ChartBlock> by lazy {
 
       //決定座山/向 是位於哪一卦中
       //詢問此山/向 的中心點度數為：
@@ -41,9 +40,9 @@ class ChartPresenter(private val period: Int,
       val mntReversed = isReversed(原始山盤卦, 飛佈山盤卦, mountain)
       val dirReversed = isReversed(原始向盤卦, 飛佈向盤卦, mountain.opposite)
 
-      println("${飛佈山盤卦}山 ($midMountain) ${飛佈向盤卦}向")
-      println("\t$飛佈山盤卦 = $mntStart , ${if (!mntReversed) "順" else "逆"}排 , from 後天八卦 $原始山盤卦")
-      println("\t$飛佈向盤卦 = $dirStart , ${if (!dirReversed) "順" else "逆"}排 , from 後天八卦 $原始向盤卦")
+//      println("${飛佈山盤卦}山 ($midMountain) ${飛佈向盤卦}向")
+//      println("\t$飛佈山盤卦 = $mntStart , ${if (!mntReversed) "順" else "逆"}排 , from 後天八卦 $原始山盤卦")
+//      println("\t$飛佈向盤卦 = $dirStart , ${if (!dirReversed) "順" else "逆"}排 , from 後天八卦 $原始向盤卦")
 
 
       val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
@@ -61,13 +60,9 @@ class ChartPresenter(private val period: Int,
       val chartBlocks: List<ChartBlock> = generateSequence(view, { it: Symbol -> SymbolAcquired.getClockwiseSymbol(it)}).take(8).map { s -> getChartBlock(s, blocks) }.toList()
 
       val map: Map<Position, ChartBlock> = positions.zip(chartBlocks).plusElement(Pair(Position.C , blocks[1]!!)).toMap()
-
       //println("map = $map")
-      println("map initialized")
-
-      return@lazy map
-
-    }.value
+      map
+    }
 
   private fun getChartBlock(symbol: Symbol?,
                             blocks: Array<ChartBlock?>) : ChartBlock {

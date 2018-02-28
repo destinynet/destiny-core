@@ -25,7 +25,7 @@ class ChartCanvasSimpleFramedTest {
    */
   @Test
   fun `八運 甲山庚向`() {
-    val chart = Chart(8, Mountain.甲, Symbol.坎)
+    val chart = ChartMntPresenter(8, Mountain.甲, Symbol.坎)
     val canvas = ChartCanvasSimpleFramed(chart)
     println(canvas.htmlOutput)
 
@@ -42,7 +42,7 @@ class ChartCanvasSimpleFramedTest {
   @Test
   fun print24Mountains() {
     Mountain.values().forEach { mnt ->
-      val chart = Chart(7, mnt, Symbol.坎)
+      val chart = ChartMntPresenter(7, mnt, Symbol.坎)
       val canvas = ChartCanvasSimpleFramed(chart)
       println(canvas.htmlOutput)
     }
