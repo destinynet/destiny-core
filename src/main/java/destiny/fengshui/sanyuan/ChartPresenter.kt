@@ -13,63 +13,53 @@ class ChartPresenter(private val period: Int,
 
   override val posMap: Map<Position, ChartBlock> by lazy {
 
-      //決定座山/向 是位於哪一卦中
-      //詢問此山/向 的中心點度數為：
-      val midMountain: Double = if (Math.abs(地盤.getEndDegree(mountain) - 地盤.getStartDegree(mountain)) > 180)
-        0.0
-      else
-        (地盤.getEndDegree(mountain) + 地盤.getStartDegree(mountain)) / 2
+    // 從傳入的 子山午向 , 導出 坎山離向
+    val 飛佈山盤卦: Symbol = 地盤.getSymbol(mountain)
+    val 飛佈向盤卦: Symbol = 地盤.getSymbol(mountain.opposite)
 
-      val midDirection = if (midMountain == 180.0)
-        0.0
-      else
-        (地盤.getEndDegree(mountain.opposite) + 地盤.getStartDegree(mountain.opposite)) / 2
+    //搜尋 blocks[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
+    val mntStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈山盤卦 }.let { getBlockPeriod(it, period) }
+    val dirStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈向盤卦 }.let { getBlockPeriod(it, period) }
 
-      // 從傳入的 子山午向 , 導出 坎山離向
-      val 飛佈山盤卦: Symbol = 後天八卦盤.getSymbol(midMountain)
-      val 飛佈向盤卦: Symbol = 後天八卦盤.getSymbol(midDirection)
+    // 原始 == 中宮
+    val 原始山盤卦: Symbol? = SymbolAcquired.getSymbolNullable(mntStart)
+    val 原始向盤卦: Symbol? = SymbolAcquired.getSymbolNullable(dirStart)
 
-      //搜尋 blocks[1~9] , 分別找尋 飛佈山盤卦 以及 飛佈向盤卦 , 取得其 period 值
-      val mntStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈山盤卦 }.let { getBlockPeriod(it, period) }
-      val dirStart: Int = (1..9).first { getBlockSymbol(it) === 飛佈向盤卦 }.let { getBlockPeriod(it, period) }
+    val mntReversed = isReversed(原始山盤卦, 飛佈山盤卦, mountain)
+    val dirReversed = isReversed(原始向盤卦, 飛佈向盤卦, mountain.opposite)
 
-      // 原始 == 中宮
-      val 原始山盤卦: Symbol? = SymbolAcquired.getSymbolNullable(mntStart)
-      val 原始向盤卦: Symbol? = SymbolAcquired.getSymbolNullable(dirStart)
-
-      val mntReversed = isReversed(原始山盤卦, 飛佈山盤卦, mountain)
-      val dirReversed = isReversed(原始向盤卦, 飛佈向盤卦, mountain.opposite)
-
-//      println("${飛佈山盤卦}山 ($midMountain) ${飛佈向盤卦}向")
-//      println("\t$飛佈山盤卦 = $mntStart , ${if (!mntReversed) "順" else "逆"}排 , from 後天八卦 $原始山盤卦")
-//      println("\t$飛佈向盤卦 = $dirStart , ${if (!dirReversed) "順" else "逆"}排 , from 後天八卦 $原始向盤卦")
+    //      println("${飛佈山盤卦}山 ($midMountain) ${飛佈向盤卦}向")
+    //      println("\t$飛佈山盤卦 = $mntStart , ${if (!mntReversed) "順" else "逆"}排 , from 後天八卦 $原始山盤卦")
+    //      println("\t$飛佈向盤卦 = $dirStart , ${if (!dirReversed) "順" else "逆"}排 , from 後天八卦 $原始向盤卦")
 
 
-      val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
-      for (i in 1..9) {
-        val period = normalize(period + i - 1)
-        val symbol = getBlockSymbol(i)
+    val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
+    for (i in 1..9) {
+      val period = normalize(period + i - 1)
+      val symbol = getBlockSymbol(i)
 
-        val mnt = getNumber(mntStart, mntReversed, i)
-        val dir = getNumber(dirStart, dirReversed, i)
+      val mnt = getNumber(mntStart, mntReversed, i)
+      val dir = getNumber(dirStart, dirReversed, i)
 
-        blocks[i] = ChartBlock(symbol, mnt, dir, period)
-      }
-
-      val positions: List<Position> = generateSequence(Position.B, { it:Position -> it.clockWise()!!}).take(8).toList()
-      val chartBlocks: List<ChartBlock> = generateSequence(view, { it: Symbol -> SymbolAcquired.getClockwiseSymbol(it)}).take(8).map { s -> getChartBlock(s, blocks) }.toList()
-
-      val map: Map<Position, ChartBlock> = positions.zip(chartBlocks).plusElement(Pair(Position.C , blocks[1]!!)).toMap()
-      //println("map = $map")
-      map
+      blocks[i] = ChartBlock(symbol, mnt, dir, period)
     }
 
+    val positions: List<Position> = generateSequence(Position.B, { it: Position -> it.clockWise()!! }).take(8).toList()
+    val chartBlocks: List<ChartBlock> =
+      generateSequence(view, { it: Symbol -> SymbolAcquired.getClockwiseSymbol(it) }).take(8)
+        .map { s -> getChartBlock(s, blocks) }.toList()
+
+    val map: Map<Position, ChartBlock> = positions.zip(chartBlocks).plusElement(Pair(Position.C, blocks[1]!!)).toMap()
+    //println("map = $map")
+    map
+  }
+
   private fun getChartBlock(symbol: Symbol?,
-                            blocks: Array<ChartBlock?>) : ChartBlock {
+                            blocks: Array<ChartBlock?>): ChartBlock {
     return if (symbol == null)
       blocks[1]!!
     else {
-      blocks.first { it?.symbol === symbol } !!
+      blocks.first { it?.symbol === symbol }!!
     }
   }
 
@@ -156,6 +146,7 @@ class ChartPresenter(private val period: Int,
   }
 
   companion object {
+    //正針24山
     private val 地盤 = EarthlyCompass()
     private val 後天八卦盤 = AcquiredSymbolCompass()
   }
