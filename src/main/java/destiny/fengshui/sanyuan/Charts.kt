@@ -15,6 +15,8 @@ interface IPeriod {
 interface IChartMnt : IPeriod {
   // 座山
   val mnt: Mountain
+  // 是否用替
+  val replacement: Boolean
 }
 
 interface IChartDegree : IChartMnt {
@@ -34,8 +36,8 @@ enum class Position {
   C; // 中間
 
   /** 順時針 */
-  fun clockWise() : Position? {
-    return when(this) {
+  fun clockWise(): Position? {
+    return when (this) {
       C -> null
       B -> LB
       LB -> L
@@ -53,29 +55,36 @@ enum class Position {
 interface IChartPresenter {
   val posMap: Map<Position, ChartBlock>
 
-//  fun getChartBlock(symbol: Symbol) : ChartBlock {
-//    return posMap.values.first { cb -> cb.symbol === symbol }
-//  }
+  //  fun getChartBlock(symbol: Symbol) : ChartBlock {
+  //    return posMap.values.first { cb -> cb.symbol === symbol }
+  //  }
 }
 
-interface IChartMntPresenter : IChartMnt , IChartPresenter
+interface IChartMntPresenter : IChartMnt, IChartPresenter
 
-/** 元運 + 何山（何向） */
+/** 元運 + 何山（何向）+ 是否用替 */
 data class ChartMnt(override val period: Int,
-                    override val mnt: Mountain) : IChartMnt , Serializable
+                    override val mnt: Mountain,
+                    override val replacement: Boolean) : IChartMnt, Serializable
 
 /** 元運 + 座山的度數 （可推導出 座山)  */
 data class ChartDegree(override val period: Int,
-                       override val degree: Double) : IChartDegree, IChartMnt by degToMnt(period, degree) , Serializable
+                       override val degree: Double,
+                       override val replacement: Boolean) : IChartDegree,
+  IChartMnt by degToMnt(period, degree, replacement), Serializable
 
-fun degToMnt(period: Int, degree: Double): IChartMnt {
+fun degToMnt(period: Int, degree: Double, replacement: Boolean): IChartMnt {
   val mnt = EarthlyCompass().getMnt(degree)
-  return ChartMnt(period, mnt)
+  return ChartMnt(period, mnt, replacement)
 }
 
 data class ChartMntPresenter(override val period: Int,
                              override val mnt: Mountain,
-                             val view: Symbol) : IChartMntPresenter , IChartPresenter by ChartPresenter(period , mnt , view) , Serializable {
+                             val view: Symbol,
+                             override val replacement: Boolean) : Serializable  ,
+  IChartMntPresenter,
+  IChartPresenter by ChartPresenter(period, mnt, view , replacement) {
+
   fun getChartBlock(symbol: Symbol): ChartBlock {
     return posMap.values.first { cb -> cb.symbol === symbol }
   }

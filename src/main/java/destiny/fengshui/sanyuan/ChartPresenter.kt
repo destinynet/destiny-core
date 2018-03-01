@@ -9,7 +9,8 @@ import java.io.Serializable
 
 class ChartPresenter(private val period: Int,
                      private val mountain: Mountain,
-                     private val view: Symbol) : IChartPresenter, Serializable {
+                     private val view: Symbol,
+                     private val replacement: Boolean) : IChartPresenter, Serializable {
 
   override val posMap: Map<Position, ChartBlock> by lazy {
 
