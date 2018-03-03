@@ -15,6 +15,10 @@ interface IPeriod {
 interface IChartMnt : IPeriod {
   // 座山
   val mnt: Mountain
+  // 是否用替
+  val replacement: Boolean
+  /** 9個 [ChartBlock] */
+  val blocks : List<ChartBlock>
 }
 
 interface IChartDegree : IChartMnt {
@@ -34,8 +38,8 @@ enum class Position {
   C; // 中間
 
   /** 順時針 */
-  fun clockWise() : Position? {
-    return when(this) {
+  fun clockWise(): Position? {
+    return when (this) {
       C -> null
       B -> LB
       LB -> L
@@ -51,37 +55,38 @@ enum class Position {
 
 /** 具備描述九宮格的資料 , 九宮格內，每個 block 存放哪個 [ChartBlock] */
 interface IChartPresenter {
-  val posMap: Map<Position, ChartBlock>
-
-//  fun getChartBlock(symbol: Symbol) : ChartBlock {
-//    return posMap.values.first { cb -> cb.symbol === symbol }
-//  }
+  val posMap: Map<Position, Symbol?>
 }
 
-interface IChartMntPresenter : IChartMnt , IChartPresenter
+interface IChartMntPresenter : IChartMnt, IChartPresenter {
+  fun getChartBlock(position: Position) : ChartBlock {
+    val symbol:Symbol? = posMap[position]
+    return blocks.first { it.symbol === symbol }
+  }
+}
 
-/** 元運 + 何山（何向） */
+/** 元運 + 何山（何向）+ 是否用替 */
 data class ChartMnt(override val period: Int,
-                    override val mnt: Mountain) : IChartMnt , Serializable
+                    override val mnt: Mountain,
+                    override val replacement: Boolean,
+                    override val blocks: List<ChartBlock>) : IChartMnt, Serializable
 
 /** 元運 + 座山的度數 （可推導出 座山)  */
 data class ChartDegree(override val period: Int,
-                       override val degree: Double) : IChartDegree, IChartMnt by degToMnt(period, degree) , Serializable
+                       override val degree: Double,
+                       override val replacement: Boolean,
+                       override val blocks: List<ChartBlock>) : IChartDegree, Serializable {
 
-fun degToMnt(period: Int, degree: Double): IChartMnt {
-  val mnt = EarthlyCompass().getMnt(degree)
-  return ChartMnt(period, mnt)
+  override val mnt: Mountain
+    get() = EarthlyCompass().getMnt(degree)
 }
+
 
 data class ChartMntPresenter(override val period: Int,
                              override val mnt: Mountain,
-                             val view: Symbol) : IChartMntPresenter , IChartPresenter by ChartPresenter(period , mnt , view) , Serializable {
-  fun getChartBlock(symbol: Symbol): ChartBlock {
-    return posMap.values.first { cb -> cb.symbol === symbol }
-  }
-
-}
-
-
+                             val view: Symbol,
+                             override val replacement: Boolean,
+                             override val blocks: List<ChartBlock>,
+                             override val posMap: Map<Position, Symbol?>) : Serializable , IChartMntPresenter
 
 

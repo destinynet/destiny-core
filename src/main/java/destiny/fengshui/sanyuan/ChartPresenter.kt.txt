@@ -9,7 +9,8 @@ import java.io.Serializable
 
 class ChartPresenter(private val period: Int,
                      private val mountain: Mountain,
-                     private val view: Symbol) : IChartPresenter, Serializable {
+                     private val view: Symbol,
+                     private val replacement: Boolean) : IChartPresenter, Serializable {
 
   override val posMap: Map<Position, ChartBlock> by lazy {
 
@@ -54,6 +55,25 @@ class ChartPresenter(private val period: Int,
     map
   }
 
+
+
+
+  private fun isReversed(原始卦: Symbol?, 飛佈卦: Symbol, m: Mountain): Boolean {
+    val reversed: Boolean
+    reversed = if (原始卦 == null) {
+      /**
+       * 當五黃如中時，因為五黃本身沒有山向，五黃是中宮戊己土，那麼，
+       * 五入中的順飛還是逆飛則是由五所在的宮位的山向的陰陽，性質決定。
+       * 如一運子山午向，運星五到離，五入中為向星後，按五所在的「午」的性質決定，故逆飛。
+       */
+      !mountainYinYangImpl.getYinYang(m)
+    } else {
+      !mountainYinYangImpl.getYinYang(VoidFunctions.getMappingMountain(m , 原始卦))
+    }
+    return reversed
+  }
+
+
   private fun getChartBlock(symbol: Symbol?,
                             blocks: Array<ChartBlock?>): ChartBlock {
     return if (symbol == null)
@@ -62,7 +82,6 @@ class ChartPresenter(private val period: Int,
       blocks.first { it?.symbol === symbol }!!
     }
   }
-
 
   /**
    * 方向（以卦來表示）
@@ -93,41 +112,10 @@ class ChartPresenter(private val period: Int,
     }
   }
 
-  /**
-   * 將 int 值侷限在 1 到 9 之間
-   */
-  private fun normalize(value: Int): Int {
-    return when {
-      value > 9 -> normalize(value - 9)
-      value < 1 -> normalize(value + 9)
-      else -> value
-    }
-  }
+
 
   private fun getBlockPeriod(blockIndex: Int, period: Int): Int {
     return normalize(period + blockIndex - 1)
-  }
-
-  private fun isReversed(原始卦: Symbol?, 飛佈卦: Symbol, m: Mountain): Boolean {
-    val reversed: Boolean
-    reversed = if (原始卦 == null) {
-      /**
-       * 當五黃如中時，因為五黃本身沒有山向，五黃是中宮戊己土，那麼，
-       * 五入中的順飛還是逆飛則是由五所在的宮位的山向的陰陽，性質決定。
-       * 如一運子山午向，運星五到離，五入中為向星後，按五所在的「午」的性質決定，故逆飛。
-       */
-      !地盤.getYinYang(m)
-    } else {
-      val index = ((地盤.getStartDegree(m) - 後天八卦盤.getStartDegree(飛佈卦)) / 15).toInt()
-      /**
-       * index = 0 => 地元
-       * index = 1 => 天元
-       * index = 2 => 人元
-       */
-      val degree = 後天八卦盤.getStartDegree(原始卦) + (index * 15).toDouble() + 1.0 //最後的 +1 是確保結果能坐落於該山中
-      !地盤.getYinYang(地盤.getMnt(degree))
-    }
-    return reversed
   }
 
   /**
@@ -145,9 +133,20 @@ class ChartPresenter(private val period: Int,
     }
   }
 
+  /**
+   * 將 int 值侷限在 1 到 9 之間
+   */
+  private fun normalize(value: Int): Int {
+    return when {
+      value > 9 -> normalize(value - 9)
+      value < 1 -> normalize(value + 9)
+      else -> value
+    }
+  }
+
   companion object {
     //正針24山
     private val 地盤 = EarthlyCompass()
-    private val 後天八卦盤 = AcquiredSymbolCompass()
+    private val mountainYinYangImpl = MountainYinYangEmptyImpl()
   }
 } // class

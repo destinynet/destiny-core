@@ -4,7 +4,6 @@
 package destiny.fengshui.sanyuan
 
 import destiny.astrology.Utils
-import destiny.core.chinese.Branch
 
 abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
 
@@ -42,33 +41,7 @@ abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
       index += 24
     return Mountain.values()[index]
   }
+
+
   
-  /**
-   * http://www.neighbor168.com/name543/house11.htm
-   * 甲庚丙壬、乾坤艮巽、寅申巳亥12山，均屬陽
-   * 辰戌丑未、乙辛丁癸、子午卯酉12山，均屬陰
-   *
-   * <pre>
-   * 寅－－內藏甲、丙、戊，已知甲丙屬陽，故寅為陽。
-   * 申－－內藏庚、壬、戊，已知庚壬屬陽，故申屬陽。
-   * 巳－－內藏庚、丙、戊，已知庚丙屬陽，故巳屬陽。
-   * 亥－－內藏甲、壬、戊，已知甲壬屬陽，故亥屬陽。
-   *
-   * 辰－－內藏乙、癸、戊，已知乙癸屬陰，故辰屬陰。
-   * 戌－－內藏辛、丁、戊，已知辛丁屬陰，故戌屬陰。
-   * 丑－－內藏癸、辛、己，已知癸辛屬陰，故丑屬陰。
-   * 未－－內藏丁、乙、己，己知丁乙屬陰，故未屬陰。
-  </pre> *
-   */
-  fun getYinYang(m: Mountain): Boolean {
-    return when {
-      m.mnt is SealedMnt.MntSymbol -> true
-      m.mnt is SealedMnt.MntStem -> // 陽干傳回陽 , 陰干傳回陰
-        m.mnt.stem.booleanValue
-      m.mnt is SealedMnt.MntBranch -> {
-        listOf(Branch.寅, Branch.巳, Branch.申, Branch.亥).contains(m.mnt.branch)
-      }
-      else -> throw RuntimeException("Cannot find YinYang from " + m)
-    }
-  }
 }

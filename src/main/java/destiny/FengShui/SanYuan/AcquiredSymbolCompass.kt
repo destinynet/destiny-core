@@ -9,7 +9,6 @@ import destiny.astrology.Utils
 import destiny.iching.Symbol
 import java.io.Serializable
 
-
 /**
  * 後天八卦於羅盤上的位置
  */
