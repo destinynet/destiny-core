@@ -21,13 +21,13 @@ class ChartMntPresenterTest {
    */
   @Test
   fun `七運，午山子向 , 坎底`() {
-    val chart = ChartMntPresenter(7, Mountain.午, Symbol.坎)
+    val chart = ChartMntPresenter(7, Mountain.午, Symbol.坎, false)
     println(chart.posMap)
   }
 
   @Test
   fun `七運，午山子向 , 乾底`() {
-    val chart = ChartMntPresenter(7, Mountain.午, Symbol.乾)
+    val chart = ChartMntPresenter(7, Mountain.午, Symbol.乾, false)
     println(chart.posMap)
   }
 
@@ -38,7 +38,7 @@ class ChartMntPresenterTest {
    */
   @Test
   fun `七運,乾山巽向`() {
-    val chart = ChartMntPresenter(7, Mountain.乾, Symbol.坎)
+    val chart = ChartMntPresenter(7, Mountain.乾, Symbol.坎, false)
     assertEquals(ChartBlock(Symbol.坎, 4, 2, 3), chart.getChartBlock(Symbol.坎))
     assertEquals(ChartBlock(Symbol.艮, 2, 9, 1), chart.getChartBlock(Symbol.艮))
     assertEquals(ChartBlock(Symbol.震, 6, 4, 5), chart.getChartBlock(Symbol.震))
@@ -67,7 +67,7 @@ class ChartMntPresenterTest {
   @Test
   fun `不同的觀點（視角）不會影響結果`() {
 
-    val chart坎底 = ChartMntPresenter(7, Mountain.午, Symbol.坎)
+    val chart坎底 = ChartMntPresenter(7, Mountain.午, Symbol.坎 , false)
     assertEquals(ChartBlock(Symbol.坎, 7, 7, 3), chart坎底.getChartBlock(Symbol.坎))
     assertEquals(ChartBlock(Symbol.艮, 5, 9, 1), chart坎底.getChartBlock(Symbol.艮))
     assertEquals(ChartBlock(Symbol.震, 9, 5, 5), chart坎底.getChartBlock(Symbol.震))
@@ -77,7 +77,7 @@ class ChartMntPresenterTest {
     assertEquals(ChartBlock(Symbol.兌, 4, 1, 9), chart坎底.getChartBlock(Symbol.兌))
     assertEquals(ChartBlock(Symbol.乾, 3, 2, 8), chart坎底.getChartBlock(Symbol.乾))
 
-    val chart乾底 = ChartMntPresenter(7, Mountain.午, Symbol.乾)
+    val chart乾底 = ChartMntPresenter(7, Mountain.午, Symbol.乾, false)
     assertEquals(ChartBlock(Symbol.坎, 7, 7, 3), chart乾底.getChartBlock(Symbol.坎))
     assertEquals(ChartBlock(Symbol.艮, 5, 9, 1), chart乾底.getChartBlock(Symbol.艮))
     assertEquals(ChartBlock(Symbol.震, 9, 5, 5), chart乾底.getChartBlock(Symbol.震))
@@ -87,7 +87,7 @@ class ChartMntPresenterTest {
     assertEquals(ChartBlock(Symbol.兌, 4, 1, 9), chart乾底.getChartBlock(Symbol.兌))
     assertEquals(ChartBlock(Symbol.乾, 3, 2, 8), chart乾底.getChartBlock(Symbol.乾))
 
-    val chart巽底 = ChartMntPresenter(7, Mountain.午, Symbol.巽)
+    val chart巽底 = ChartMntPresenter(7, Mountain.午, Symbol.巽, false)
     assertEquals(ChartBlock(Symbol.坎, 7, 7, 3), chart巽底.getChartBlock(Symbol.坎))
     assertEquals(ChartBlock(Symbol.艮, 5, 9, 1), chart巽底.getChartBlock(Symbol.艮))
     assertEquals(ChartBlock(Symbol.震, 9, 5, 5), chart巽底.getChartBlock(Symbol.震))
@@ -114,7 +114,7 @@ class ChartMntPresenterTest {
    */
   @Test
   fun testChart2() {
-    val chart = ChartMntPresenter(1, Mountain.丙, Symbol.乾)
+    val chart = ChartMntPresenter(1, Mountain.丙, Symbol.乾, false)
 
     assertEquals(ChartBlock(Symbol.坎, 1, 1, 6), chart.getChartBlock(Symbol.坎))
     assertEquals(ChartBlock(Symbol.艮, 8, 3, 4), chart.getChartBlock(Symbol.艮))
@@ -144,7 +144,7 @@ class ChartMntPresenterTest {
    */
   @Test
   fun `一運子山午向，運星五到離，五入中為向星`() {
-    val chart = ChartMntPresenter(1, Mountain.子, Symbol.坎)
+    val chart = ChartMntPresenter(1, Mountain.子, Symbol.坎, false)
     assertEquals(ChartBlock(Symbol.坎, 2, 9, 6), chart.getChartBlock(Symbol.坎))
     assertEquals(ChartBlock(Symbol.艮, 9, 2, 4), chart.getChartBlock(Symbol.艮))
     assertEquals(ChartBlock(Symbol.震, 4, 7, 8), chart.getChartBlock(Symbol.震))
