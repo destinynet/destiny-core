@@ -19,6 +19,10 @@ interface IChartMnt : IPeriod {
   val replacement: Boolean
   /** 9個 [ChartBlock] */
   val blocks : List<ChartBlock>
+
+  fun getChartBlockFromSymbol(symbol: Symbol?) : ChartBlock {
+    return blocks.first { it.symbol === symbol }
+  }
 }
 
 interface IChartDegree : IChartMnt {
@@ -59,9 +63,9 @@ interface IChartPresenter {
 }
 
 interface IChartMntPresenter : IChartMnt, IChartPresenter {
-  fun getChartBlock(position: Position) : ChartBlock {
+  fun getChartBlockFromPosition(position: Position) : ChartBlock {
     val symbol:Symbol? = posMap[position]
-    return blocks.first { it.symbol === symbol }
+    return getChartBlockFromSymbol(symbol)
   }
 }
 

@@ -39,14 +39,14 @@ class ChartMntPresenterTest {
   @Test
   fun `七運,乾山巽向`() {
     val chart = ChartMntContext.getChartPresenter(7, Mountain.乾, Symbol.坎)
-    assertEquals(ChartBlock(Symbol.坎, 4, 2, 3), chart.getChartBlock(Position.B))
-    assertEquals(ChartBlock(Symbol.艮, 2, 9, 1), chart.getChartBlock(Position.LB))
-    assertEquals(ChartBlock(Symbol.震, 6, 4, 5), chart.getChartBlock(Position.L))
-    assertEquals(ChartBlock(Symbol.巽, 7, 5, 6), chart.getChartBlock(Position.LU))
-    assertEquals(ChartBlock(Symbol.離, 3, 1, 2), chart.getChartBlock(Position.U))
-    assertEquals(ChartBlock(Symbol.坤, 5, 3, 4), chart.getChartBlock(Position.RU))
-    assertEquals(ChartBlock(Symbol.兌, 1, 8, 9), chart.getChartBlock(Position.R))
-    assertEquals(ChartBlock(Symbol.乾, 9, 7, 8), chart.getChartBlock(Position.RB))
+    assertEquals(ChartBlock(Symbol.坎, 4, 2, 3), chart.getChartBlockFromPosition(Position.B))
+    assertEquals(ChartBlock(Symbol.艮, 2, 9, 1), chart.getChartBlockFromPosition(Position.LB))
+    assertEquals(ChartBlock(Symbol.震, 6, 4, 5), chart.getChartBlockFromPosition(Position.L))
+    assertEquals(ChartBlock(Symbol.巽, 7, 5, 6), chart.getChartBlockFromPosition(Position.LU))
+    assertEquals(ChartBlock(Symbol.離, 3, 1, 2), chart.getChartBlockFromPosition(Position.U))
+    assertEquals(ChartBlock(Symbol.坤, 5, 3, 4), chart.getChartBlockFromPosition(Position.RU))
+    assertEquals(ChartBlock(Symbol.兌, 1, 8, 9), chart.getChartBlockFromPosition(Position.R))
+    assertEquals(ChartBlock(Symbol.乾, 9, 7, 8), chart.getChartBlockFromPosition(Position.RB))
   }
 
 
@@ -69,24 +69,24 @@ class ChartMntPresenterTest {
 
     val chart坎底 = ChartMntContext.getChartPresenter(7, Mountain.午, Symbol.坎)
     println(chart坎底)
-    assertEquals(ChartBlock(Symbol.坎, 7, 7, 3), chart坎底.getChartBlock(Position.B))
-    assertEquals(ChartBlock(Symbol.艮, 5, 9, 1), chart坎底.getChartBlock(Position.LB))
-    assertEquals(ChartBlock(Symbol.震, 9, 5, 5), chart坎底.getChartBlock(Position.L))
-    assertEquals(ChartBlock(Symbol.巽, 1, 4, 6), chart坎底.getChartBlock(Position.LU))
-    assertEquals(ChartBlock(Symbol.離, 6, 8, 2), chart坎底.getChartBlock(Position.U))
-    assertEquals(ChartBlock(Symbol.坤, 8, 6, 4), chart坎底.getChartBlock(Position.RU))
-    assertEquals(ChartBlock(Symbol.兌, 4, 1, 9), chart坎底.getChartBlock(Position.R))
-    assertEquals(ChartBlock(Symbol.乾, 3, 2, 8), chart坎底.getChartBlock(Position.RB))
+    assertEquals(ChartBlock(Symbol.坎, 7, 7, 3), chart坎底.getChartBlockFromPosition(Position.B))
+    assertEquals(ChartBlock(Symbol.艮, 5, 9, 1), chart坎底.getChartBlockFromPosition(Position.LB))
+    assertEquals(ChartBlock(Symbol.震, 9, 5, 5), chart坎底.getChartBlockFromPosition(Position.L))
+    assertEquals(ChartBlock(Symbol.巽, 1, 4, 6), chart坎底.getChartBlockFromPosition(Position.LU))
+    assertEquals(ChartBlock(Symbol.離, 6, 8, 2), chart坎底.getChartBlockFromPosition(Position.U))
+    assertEquals(ChartBlock(Symbol.坤, 8, 6, 4), chart坎底.getChartBlockFromPosition(Position.RU))
+    assertEquals(ChartBlock(Symbol.兌, 4, 1, 9), chart坎底.getChartBlockFromPosition(Position.R))
+    assertEquals(ChartBlock(Symbol.乾, 3, 2, 8), chart坎底.getChartBlockFromPosition(Position.RB))
 
     val chart乾底 = ChartMntContext.getChartPresenter(7, Mountain.午, Symbol.乾)
-    assertEquals(ChartBlock(Symbol.乾, 3, 2, 8), chart乾底.getChartBlock(Position.B))
-    assertEquals(ChartBlock(Symbol.坎, 7, 7, 3), chart乾底.getChartBlock(Position.LB))
-    assertEquals(ChartBlock(Symbol.艮, 5, 9, 1), chart乾底.getChartBlock(Position.L))
-    assertEquals(ChartBlock(Symbol.震, 9, 5, 5), chart乾底.getChartBlock(Position.LU))
-    assertEquals(ChartBlock(Symbol.巽, 1, 4, 6), chart乾底.getChartBlock(Position.U))
-    assertEquals(ChartBlock(Symbol.離, 6, 8, 2), chart乾底.getChartBlock(Position.RU))
-    assertEquals(ChartBlock(Symbol.坤, 8, 6, 4), chart乾底.getChartBlock(Position.R))
-    assertEquals(ChartBlock(Symbol.兌, 4, 1, 9), chart乾底.getChartBlock(Position.RB))
+    assertEquals(ChartBlock(Symbol.乾, 3, 2, 8), chart乾底.getChartBlockFromPosition(Position.B))
+    assertEquals(ChartBlock(Symbol.坎, 7, 7, 3), chart乾底.getChartBlockFromPosition(Position.LB))
+    assertEquals(ChartBlock(Symbol.艮, 5, 9, 1), chart乾底.getChartBlockFromPosition(Position.L))
+    assertEquals(ChartBlock(Symbol.震, 9, 5, 5), chart乾底.getChartBlockFromPosition(Position.LU))
+    assertEquals(ChartBlock(Symbol.巽, 1, 4, 6), chart乾底.getChartBlockFromPosition(Position.U))
+    assertEquals(ChartBlock(Symbol.離, 6, 8, 2), chart乾底.getChartBlockFromPosition(Position.RU))
+    assertEquals(ChartBlock(Symbol.坤, 8, 6, 4), chart乾底.getChartBlockFromPosition(Position.R))
+    assertEquals(ChartBlock(Symbol.兌, 4, 1, 9), chart乾底.getChartBlockFromPosition(Position.RB))
 
   }
 
@@ -109,13 +109,13 @@ class ChartMntPresenterTest {
   @Test
   fun `一運子山午向，運星五到離，五入中為向星`() {
     val chart = ChartMntContext.getChartPresenter(1, Mountain.子, Symbol.坎)
-    assertEquals(ChartBlock(Symbol.坎, 2, 9, 6), chart.getChartBlock(Position.B))
-    assertEquals(ChartBlock(Symbol.艮, 9, 2, 4), chart.getChartBlock(Position.LB))
-    assertEquals(ChartBlock(Symbol.震, 4, 7, 8), chart.getChartBlock(Position.L))
-    assertEquals(ChartBlock(Symbol.巽, 5, 6, 9), chart.getChartBlock(Position.LU))
-    assertEquals(ChartBlock(Symbol.離, 1, 1, 5), chart.getChartBlock(Position.U))
-    assertEquals(ChartBlock(Symbol.坤, 3, 8, 7), chart.getChartBlock(Position.RU))
-    assertEquals(ChartBlock(Symbol.兌, 8, 3, 3), chart.getChartBlock(Position.R))
-    assertEquals(ChartBlock(Symbol.乾, 7, 4, 2), chart.getChartBlock(Position.RB))
+    assertEquals(ChartBlock(Symbol.坎, 2, 9, 6), chart.getChartBlockFromPosition(Position.B))
+    assertEquals(ChartBlock(Symbol.艮, 9, 2, 4), chart.getChartBlockFromPosition(Position.LB))
+    assertEquals(ChartBlock(Symbol.震, 4, 7, 8), chart.getChartBlockFromPosition(Position.L))
+    assertEquals(ChartBlock(Symbol.巽, 5, 6, 9), chart.getChartBlockFromPosition(Position.LU))
+    assertEquals(ChartBlock(Symbol.離, 1, 1, 5), chart.getChartBlockFromPosition(Position.U))
+    assertEquals(ChartBlock(Symbol.坤, 3, 8, 7), chart.getChartBlockFromPosition(Position.RU))
+    assertEquals(ChartBlock(Symbol.兌, 8, 3, 3), chart.getChartBlockFromPosition(Position.R))
+    assertEquals(ChartBlock(Symbol.乾, 7, 4, 2), chart.getChartBlockFromPosition(Position.RB))
   }
 }

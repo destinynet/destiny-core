@@ -18,13 +18,13 @@ object ChartMntContext {
 
     val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
     for (i in 1..9) {
-      val period = normalize(period + i - 1)
+      val p = normalize(period + i - 1)
       val symbol = getBlockSymbol(i)
 
       val mnt = getNumber(mntStart, mntReversed, i)
       val dir = getNumber(dirStart, dirReversed, i)
 
-      blocks[i] = ChartBlock(symbol, mnt, dir, period)
+      blocks[i] = ChartBlock(symbol, mnt, dir, p)
     }
 
     val useReplacement = replacementImpl != null
@@ -52,10 +52,6 @@ object ChartMntContext {
     val useReplacement = replacementImpl != null
     return ChartMntPresenter(period , mnt , view , useReplacement , blocks , getPositionMap(view) )
   }
-
-
-
-
 
 
   /**

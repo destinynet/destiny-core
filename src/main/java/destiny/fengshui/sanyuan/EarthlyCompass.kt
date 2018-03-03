@@ -14,7 +14,7 @@ import destiny.iching.Symbol
 class EarthlyCompass : AbstractMountainCompass() {
 
   override val initDegree: Double
-    get() = 352.5
+    get() = 352.5 // 360-7.5
 
   /** 此座山 是位於哪一卦中 */
   fun getSymbol(mnt: Mountain): Symbol {
