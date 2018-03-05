@@ -14,17 +14,18 @@ import destiny.iching.divine.ISettingsOfStemBranch
 import destiny.iching.divine.Relative
 import destiny.iching.divine.SettingsGingFang
 
-enum class GhostType {
+/** spite : 惡意 、 刁難 */
+enum class SpiteType {
   正,
   地, // 坐山的後天八曜煞. 後天的乾位，為先天的艮卦 . 艮的曜煞在寅. ==> 寅為乾卦的地曜煞。
   天  // 坐山先天的八曜煞. 先天的乾位，為後天的離卦 . 離的曜煞在亥. ==> 亥為乾卦的天曜煞。
 }
 
 /** 八曜煞 , 或稱「三曜煞」 */
-object EightGhost {
+object TriSpites {
 
   /** 正 曜煞 */
-  private fun getStandardGhosts(symbol: Symbol, settings: ISettingsOfStemBranch): List<Branch> {
+  private fun getStandardSpites(symbol: Symbol, settings: ISettingsOfStemBranch): List<Branch> {
     val hexagram = Hexagram.Companion.getHexagram(symbol, symbol)
     return (1..6).filter {
       val sb: StemBranch = settings.getStemBranch(hexagram, it)
@@ -33,18 +34,18 @@ object EightGhost {
     }.map { settings.getStemBranch(hexagram, it).branch }
   }
 
-  fun getGhosts(symbol: Symbol, type: GhostType, settings: ISettingsOfStemBranch): List<Branch> {
+  fun getSpites(symbol: Symbol, type: SpiteType, settings: ISettingsOfStemBranch): List<Branch> {
     return when (type) {
-      GhostType.正 -> getStandardGhosts(symbol, settings)
-      GhostType.地 -> getStandardGhosts(SymbolPositions.acquiredToCongenital(symbol), settings)
-      GhostType.天 -> getStandardGhosts(SymbolPositions.congenitalToAcquired(symbol), settings)
+      SpiteType.正 -> getStandardSpites(symbol, settings)
+      SpiteType.地 -> getStandardSpites(SymbolPositions.acquiredToCongenital(symbol), settings)
+      SpiteType.天 -> getStandardSpites(SymbolPositions.congenitalToAcquired(symbol), settings)
     }
   }
 
-  fun getGhost(symbol: Symbol,
-               type: GhostType? = GhostType.正,
+  fun getSpite(symbol: Symbol,
+               type: SpiteType? = SpiteType.正,
                settings: ISettingsOfStemBranch? = SettingsGingFang()): Branch {
-    return getGhosts(symbol, type?:GhostType.正, settings ?: SettingsGingFang()).first()
+    return getSpites(symbol, type?:SpiteType.正, settings ?: SettingsGingFang()).first()
   }
 
 }

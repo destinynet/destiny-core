@@ -11,7 +11,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 
-class EightGhostTest {
+class TriSpitesTest {
 
   /** 坎龍坤兔震山猴，巽雞乾馬兌蛇頭，艮虎離豬為曜煞，墓宅逢之立便休 */
   @Test
@@ -19,20 +19,20 @@ class EightGhostTest {
     val settings = SettingsGingFang()
 
     // 坎龍坤兔震山猴
-    assertSame(Branch.辰, EightGhost.getGhost(Symbol.坎))
-    assertTrue(EightGhost.getGhosts(Symbol.坎 , GhostType.正 , settings).containsAll(listOf(Branch.辰 , Branch.戌))) // 坎卦 兩官鬼 : 辰戌
+    assertSame(Branch.辰, TriSpites.getSpite(Symbol.坎))
+    assertTrue(TriSpites.getSpites(Symbol.坎, SpiteType.正, settings).containsAll(listOf(Branch.辰, Branch.戌))) // 坎卦 兩官鬼 : 辰戌
 
-    assertSame(Branch.卯, EightGhost.getGhost(Symbol.坤))
-    assertSame(Branch.申, EightGhost.getGhost(Symbol.震))
+    assertSame(Branch.卯, TriSpites.getSpite(Symbol.坤))
+    assertSame(Branch.申, TriSpites.getSpite(Symbol.震))
 
     // 巽雞乾馬兌蛇頭
-    assertSame(Branch.酉, EightGhost.getGhost(Symbol.巽))
-    assertSame(Branch.午, EightGhost.getGhost(Symbol.乾))
-    assertSame(Branch.巳, EightGhost.getGhost(Symbol.兌))
+    assertSame(Branch.酉, TriSpites.getSpite(Symbol.巽))
+    assertSame(Branch.午, TriSpites.getSpite(Symbol.乾))
+    assertSame(Branch.巳, TriSpites.getSpite(Symbol.兌))
 
     // 艮虎離豬為曜煞
-    assertSame(Branch.寅, EightGhost.getGhost(Symbol.艮))
-    assertSame(Branch.亥, EightGhost.getGhost(Symbol.離))
+    assertSame(Branch.寅, TriSpites.getSpite(Symbol.艮))
+    assertSame(Branch.亥, TriSpites.getSpite(Symbol.離))
 
     // 墓宅逢之立便休
   }
@@ -44,9 +44,9 @@ class EightGhostTest {
    */
   @Test
   fun 乾三曜煞() {
-    assertSame(Branch.午, EightGhost.getGhost(Symbol.乾, GhostType.正))
-    assertSame(Branch.寅, EightGhost.getGhost(Symbol.乾, GhostType.地))
-    assertSame(Branch.亥, EightGhost.getGhost(Symbol.乾, GhostType.天))
+    assertSame(Branch.午, TriSpites.getSpite(Symbol.乾, SpiteType.正))
+    assertSame(Branch.寅, TriSpites.getSpite(Symbol.乾, SpiteType.地))
+    assertSame(Branch.亥, TriSpites.getSpite(Symbol.乾, SpiteType.天))
   }
 
   /**
@@ -56,9 +56,9 @@ class EightGhostTest {
    */
   @Test
   fun 坎三曜煞() {
-    assertSame(Branch.辰, EightGhost.getGhost(Symbol.坎, GhostType.正))
-    assertSame(Branch.卯, EightGhost.getGhost(Symbol.坎, GhostType.地))
-    assertSame(Branch.巳, EightGhost.getGhost(Symbol.坎, GhostType.天))
+    assertSame(Branch.辰, TriSpites.getSpite(Symbol.坎, SpiteType.正))
+    assertSame(Branch.卯, TriSpites.getSpite(Symbol.坎, SpiteType.地))
+    assertSame(Branch.巳, TriSpites.getSpite(Symbol.坎, SpiteType.天))
   }
 
   /**
@@ -68,9 +68,9 @@ class EightGhostTest {
    */
   @Test
   fun 艮三曜煞() {
-    assertSame(Branch.寅, EightGhost.getGhost(Symbol.艮, GhostType.正))
-    assertSame(Branch.申, EightGhost.getGhost(Symbol.艮, GhostType.地))
-    assertSame(Branch.午, EightGhost.getGhost(Symbol.艮, GhostType.天))
+    assertSame(Branch.寅, TriSpites.getSpite(Symbol.艮, SpiteType.正))
+    assertSame(Branch.申, TriSpites.getSpite(Symbol.艮, SpiteType.地))
+    assertSame(Branch.午, TriSpites.getSpite(Symbol.艮, SpiteType.天))
   }
 
   /**
@@ -80,9 +80,9 @@ class EightGhostTest {
    */
   @Test
   fun 震三曜煞() {
-    assertSame(Branch.申, EightGhost.getGhost(Symbol.震, GhostType.正))
-    assertSame(Branch.亥, EightGhost.getGhost(Symbol.震, GhostType.地))
-    assertSame(Branch.寅, EightGhost.getGhost(Symbol.震, GhostType.天))
+    assertSame(Branch.申, TriSpites.getSpite(Symbol.震, SpiteType.正))
+    assertSame(Branch.亥, TriSpites.getSpite(Symbol.震, SpiteType.地))
+    assertSame(Branch.寅, TriSpites.getSpite(Symbol.震, SpiteType.天))
   }
 
   /**
@@ -92,9 +92,9 @@ class EightGhostTest {
    */
   @Test
   fun 巽三曜煞() {
-    assertSame(Branch.酉, EightGhost.getGhost(Symbol.巽, GhostType.正))
-    assertSame(Branch.巳, EightGhost.getGhost(Symbol.巽, GhostType.地))
-    assertSame(Branch.卯, EightGhost.getGhost(Symbol.巽, GhostType.天))
+    assertSame(Branch.酉, TriSpites.getSpite(Symbol.巽, SpiteType.正))
+    assertSame(Branch.巳, TriSpites.getSpite(Symbol.巽, SpiteType.地))
+    assertSame(Branch.卯, TriSpites.getSpite(Symbol.巽, SpiteType.天))
   }
 
   /**
@@ -104,9 +104,9 @@ class EightGhostTest {
    */
   @Test
   fun 離三曜煞() {
-    assertSame(Branch.亥, EightGhost.getGhost(Symbol.離, GhostType.正))
-    assertSame(Branch.午, EightGhost.getGhost(Symbol.離, GhostType.地))
-    assertSame(Branch.申, EightGhost.getGhost(Symbol.離, GhostType.天))
+    assertSame(Branch.亥, TriSpites.getSpite(Symbol.離, SpiteType.正))
+    assertSame(Branch.午, TriSpites.getSpite(Symbol.離, SpiteType.地))
+    assertSame(Branch.申, TriSpites.getSpite(Symbol.離, SpiteType.天))
   }
 
   /**
@@ -116,9 +116,9 @@ class EightGhostTest {
    */
   @Test
   fun 坤三曜煞() {
-    assertSame(Branch.卯, EightGhost.getGhost(Symbol.坤, GhostType.正))
-    assertSame(Branch.酉, EightGhost.getGhost(Symbol.坤, GhostType.地))
-    assertSame(Branch.辰, EightGhost.getGhost(Symbol.坤, GhostType.天))
+    assertSame(Branch.卯, TriSpites.getSpite(Symbol.坤, SpiteType.正))
+    assertSame(Branch.酉, TriSpites.getSpite(Symbol.坤, SpiteType.地))
+    assertSame(Branch.辰, TriSpites.getSpite(Symbol.坤, SpiteType.天))
   }
 
   /**
@@ -128,8 +128,8 @@ class EightGhostTest {
    */
   @Test
   fun 兌三曜煞() {
-    assertSame(Branch.巳, EightGhost.getGhost(Symbol.兌, GhostType.正))
-    assertSame(Branch.辰, EightGhost.getGhost(Symbol.兌, GhostType.地))
-    assertSame(Branch.酉, EightGhost.getGhost(Symbol.兌, GhostType.天))
+    assertSame(Branch.巳, TriSpites.getSpite(Symbol.兌, SpiteType.正))
+    assertSame(Branch.辰, TriSpites.getSpite(Symbol.兌, SpiteType.地))
+    assertSame(Branch.酉, TriSpites.getSpite(Symbol.兌, SpiteType.天))
   }
 }
