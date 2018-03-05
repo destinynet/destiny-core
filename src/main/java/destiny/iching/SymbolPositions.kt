@@ -3,7 +3,7 @@
  */
 package destiny.iching
 
-import destiny.core.Position.*
+import destiny.core.TriGrid.*
 import destiny.iching.Symbol.*
 
 object SymbolPositions {

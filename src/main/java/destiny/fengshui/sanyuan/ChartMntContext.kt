@@ -3,7 +3,7 @@
  */
 package destiny.fengshui.sanyuan
 
-import destiny.core.Position
+import destiny.core.TriGrid
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 
@@ -34,14 +34,14 @@ object ChartMntContext {
   } // getChartMnt
 
 
-  fun getPositionMap(view: Symbol): Map<Position, Symbol?> {
+  fun getPositionMap(view: Symbol): Map<TriGrid, Symbol?> {
 
-    val positions: List<Position> = generateSequence(Position.B, { it: Position -> it.clockWise()!! }).take(8).toList()
+    val grids: List<TriGrid> = generateSequence(TriGrid.B, { it: TriGrid -> it.clockWise()!! }).take(8).toList()
     val chartBlocks: List<Symbol?> =
       generateSequence(view, { it: Symbol -> SymbolAcquired.getClockwiseSymbol(it) }).take(8)
         .toList()
 
-    return positions.zip(chartBlocks).plusElement(Pair(Position.C, null)).toMap()
+    return grids.zip(chartBlocks).plusElement(Pair(TriGrid.C, null)).toMap()
   } // getPositionMap
 
 

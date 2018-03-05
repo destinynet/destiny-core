@@ -3,7 +3,7 @@
  */
 package destiny.fengshui.sanyuan
 
-import destiny.core.Position
+import destiny.core.TriGrid
 import destiny.iching.Symbol
 import java.io.Serializable
 
@@ -19,9 +19,9 @@ interface IChartMnt : IPeriod {
   // 是否用替
   val replacement: Boolean
   /** 9個 [ChartBlock] */
-  val blocks : List<ChartBlock>
+  val blocks: List<ChartBlock>
 
-  fun getChartBlockFromSymbol(symbol: Symbol?) : ChartBlock {
+  fun getChartBlockFromSymbol(symbol: Symbol?): ChartBlock {
     return blocks.first { it.symbol === symbol }
   }
 }
@@ -33,12 +33,12 @@ interface IChartDegree : IChartMnt {
 
 /** 具備描述九宮格的資料 , 九宮格內，每個 block 存放哪個 [ChartBlock] */
 interface IChartPresenter {
-  val posMap: Map<Position, Symbol?>
+  val gridMap: Map<TriGrid, Symbol?>
 }
 
 interface IChartMntPresenter : IChartMnt, IChartPresenter {
-  fun getChartBlockFromPosition(position: Position) : ChartBlock {
-    val symbol:Symbol? = posMap[position]
+  fun getChartBlockFromGrid(grid: TriGrid): ChartBlock {
+    val symbol: Symbol? = gridMap[grid]
     return getChartBlockFromSymbol(symbol)
   }
 }
@@ -67,6 +67,6 @@ data class ChartMntPresenter(override val period: Int,
                              val view: Symbol,
                              override val replacement: Boolean,
                              override val blocks: List<ChartBlock>,
-                             override val posMap: Map<Position, Symbol?>) : Serializable , IChartMntPresenter
+                             override val gridMap: Map<TriGrid, Symbol?>) : Serializable, IChartMntPresenter
 
 

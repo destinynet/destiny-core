@@ -1,7 +1,7 @@
 package destiny.core
 
 /** 3x3 Grid */
-enum class Position {
+enum class TriGrid {
   B,   // 底
   LB,  // 左下
   L, // 左
@@ -13,7 +13,7 @@ enum class Position {
   C; // 中間
 
   /** 順時針 */
-  fun clockWise(): Position? {
+  fun clockWise(): TriGrid? {
     return when (this) {
       C -> null
       B -> LB
