@@ -85,7 +85,9 @@ data class ChartDegree(override val period: Int,
     get() = EarthlyCompass().getMnt(degree)
 }
 
-
+/**
+ * 描述一個三元玄空挨星、九宮格盤
+ */
 data class ChartMntPresenter(override val period: Int,
                              override val mnt: Mountain,
                              val view: Symbol,

@@ -3,7 +3,9 @@
  */
 package destiny.fengshui.sanyuan
 
-data class ReplacementStar(val period: Int, val enabled: Boolean)
+import java.io.Serializable
+
+data class ReplacementStar(val period: Int, val enabled: Boolean) : Serializable
 
 /** 替卦 */
 interface IReplacement {
@@ -21,7 +23,7 @@ interface IReplacement {
  * 若問寅午庚丁上
  * 一律挨來是弼星 (9,離)
  */
-class ReplacementDefaultImpl : IReplacement {
+class ReplacementDefaultImpl : IReplacement , Serializable {
 
   val map: Map<Mountain, ReplacementStar> = mapOf(
     Mountain.壬 to ReplacementStar(2, true),   // 坤、壬、乙，巨門(2,坤)從頭出

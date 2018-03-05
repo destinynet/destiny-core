@@ -172,7 +172,5 @@ object ChartMntContext {
 
   private val 地盤 = EarthlyCompass()
   private val 玄空陰陽 = MountainYinYangEmptyImpl()
-  private val 後天八卦盤 = AcquiredSymbolCompass()
-
 
 }
