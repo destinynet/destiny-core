@@ -115,6 +115,22 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
     }
 
     /**
+     * 逆時針
+     */
+    fun getCounterClockwiseSymbol(s: Symbol) : Symbol {
+      return when(s) {
+        巽 -> 震
+        震 -> 艮
+        艮 -> 坎
+        坎 -> 乾
+        乾 -> 兌
+        兌 -> 坤
+        坤 -> 離
+        離 -> 巽
+      }
+    }
+
+    /**
      * 取得對沖之卦
      */
     fun getOppositeSymbol(s: Symbol): Symbol {

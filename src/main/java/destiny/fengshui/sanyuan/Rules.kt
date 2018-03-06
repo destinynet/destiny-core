@@ -19,6 +19,7 @@ sealed class ChartRule {
 
 /** 單宮 特徵 */
 sealed class BlockRule {
+  data class 合十(val mntDir: MntDir) : BlockRule()
   data class 伏吟元旦盤(val mntDir: MntDir) : BlockRule()
   data class 伏吟天盤(val mntDir: MntDir) : BlockRule()
   data class 反吟元旦盤(val mntDir: MntDir) : BlockRule()

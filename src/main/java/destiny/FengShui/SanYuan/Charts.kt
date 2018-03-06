@@ -5,12 +5,20 @@ package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
 import destiny.iching.Symbol
+import destiny.iching.SymbolAcquired
 import java.io.Serializable
 
 
 interface IPeriod {
   // 元運 , 其值只能為 1~9
   val period: Int
+}
+
+enum class MntDirSpec {
+  到山到向 ,
+  上山下水 ,
+  雙星到山 ,
+  雙星到向
 }
 
 interface IChartMnt : IPeriod {
@@ -24,8 +32,41 @@ interface IChartMnt : IPeriod {
   fun getChartBlockFromSymbol(symbol: Symbol?): ChartBlock {
     return blocks.first { it.symbol === symbol }
   }
+
   fun getCenterBlock() : ChartBlock {
     return blocks.first { it.symbol == null }
+  }
+
+  /** 取得 四種 山向格局 (or null) */
+  fun getMntDirSpec() : MntDirSpec? {
+    val 地盤 = EarthlyCompass()
+    val mntBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt))
+    val dirBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt.opposite))
+
+    return if (mntBlock.mnt == period && dirBlock.dir == period)
+      MntDirSpec.到山到向
+    else if (mntBlock.dir == period && dirBlock.mnt == period)
+      MntDirSpec.上山下水
+    else if (mntBlock.mnt == period && mntBlock.dir == period)
+      MntDirSpec.雙星到山
+    else if (dirBlock.mnt == period && dirBlock.dir == period)
+      MntDirSpec.雙星到向
+    else
+      null // 只有替星盤 才有可能為 null , 正常的 挨星下卦，一定有值
+  }
+
+
+  /** 城門訣 */
+  fun getGates() : List<Symbol> {
+    // 先取出「向」兩旁的卦
+    val 地盤 = EarthlyCompass()
+
+    val dirSymbol: Symbol = 地盤.getSymbol(mnt.opposite)
+    val symbols = setOf(
+      SymbolAcquired.getClockwiseSymbol(dirSymbol),
+      SymbolAcquired.getCounterClockwiseSymbol(dirSymbol))
+
+    TODO()
   }
 }
 

@@ -115,6 +115,30 @@ class ChartMntRulesTest {
     }
   }
 
+  // ================================ 單宮 ================================
+
+  /**
+   * 單宮合十
+   * 已知：
+   * 八運 卯山酉向
+   *
+   * 震宮 , 天盤6 + 山星4 = 10 , 成立
+
+  ５２　１６　３４
+  巽七　離三　坤五
+  　　　　　　　　
+  ４３　６１　８８
+  震六　中八　兌一
+  　　　　　　　　
+  ９７　２５　７９
+  艮二　坎四　乾九
+   */
+  @Test
+  fun 單宮合十() {
+    ChartMntContext.getChartMnt(8, Mountain.卯).also {
+      assertEquals(BlockRule.合十(MntDir.山), ChartMntRules.match10(it.getChartBlockFromSymbol(Symbol.震)))
+    }
+  }
 
   /**
    * 七運，卯山酉向

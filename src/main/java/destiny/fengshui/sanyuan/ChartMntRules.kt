@@ -92,6 +92,19 @@ object ChartMntRules {
   // ================================ 單宮 ================================
 
   /**
+   * 單宮合十
+   */
+  fun match10(chartBlock: ChartBlock) : BlockRule.合十? {
+    return chartBlock.period.let {
+      when {
+        it + chartBlock.mnt == 10 -> BlockRule.合十(MntDir.山)
+        it + chartBlock.dir == 10 -> BlockRule.合十(MntDir.向)
+        else -> null
+      }
+    }
+  }
+
+  /**
    * 單宮伏吟(元旦盤) :
    * 山盤 或 向盤 飛星數 與 座落宮位的洛書數相同
    *
