@@ -10,6 +10,7 @@ import kotlin.test.assertEquals
 
 class ChartMntPresenterTest {
 
+
   /**
   14 　 68 　 86
   巽六　離二　坤四

@@ -9,9 +9,10 @@ import destiny.iching.SymbolAcquired
 
 object ChartMntContext {
 
+  /** 取得 [IChartMnt] 的實作 [ChartMnt] */
   fun getChartMnt(period: Int,
                   mountain: Mountain,
-                  replacementImpl: IReplacement?): IChartMnt {
+                  replacementImpl: IReplacement? = null): IChartMnt {
 
     val (mntStart, mntReversed) = getStart(period, mountain, replacementImpl)
     val (dirStart, dirReversed) = getStart(period, mountain.opposite, replacementImpl)
@@ -34,7 +35,15 @@ object ChartMntContext {
   } // getChartMnt
 
 
-  fun getPositionMap(view: Symbol): Map<TriGrid, Symbol?> {
+
+
+
+
+
+
+
+
+  private fun getGridMap(view: Symbol): Map<TriGrid, Symbol?> {
 
     val grids: List<TriGrid> = generateSequence(TriGrid.B, { it: TriGrid -> it.clockWise()!! }).take(8).toList()
     val chartBlocks: List<Symbol?> =
@@ -42,16 +51,17 @@ object ChartMntContext {
         .toList()
 
     return grids.zip(chartBlocks).plusElement(Pair(TriGrid.C, null)).toMap()
-  } // getPositionMap
+  } // getGridMap
 
 
+  /** 取得 [IChartMntPresenter] 的實作 [ChartMntPresenter] */
   fun getChartPresenter(period: Int ,
                         mnt : Mountain ,
                         view: Symbol,
                         replacementImpl: IReplacement? = null) : IChartMntPresenter {
     val blocks : List<ChartBlock> = getChartMnt(period, mnt, replacementImpl).blocks
     val useReplacement = replacementImpl != null
-    return ChartMntPresenter(period , mnt , view , useReplacement , blocks , getPositionMap(view) )
+    return ChartMntPresenter(period, mnt, view, useReplacement, blocks, getGridMap(view))
   }
 
 
@@ -59,7 +69,7 @@ object ChartMntContext {
    *  取得 山、向 的運 (入中宮者) , 以及，是否逆行
    */
   private fun getStart(period: Int, mountain: Mountain, replacementImpl: IReplacement?): Pair<Int, Boolean> {
-    val symbol = 地盤.getSymbol(mountain)
+    val symbol: Symbol = 地盤.getSymbol(mountain)
     val defaultStart = (1..9).first { getBlockSymbol(it) === symbol }.let { getBlockPeriod(it, period) }
     val 原始配卦: Symbol? = SymbolAcquired.getSymbolNullable(defaultStart)
     val reversed = isReversed(原始配卦, symbol, mountain)

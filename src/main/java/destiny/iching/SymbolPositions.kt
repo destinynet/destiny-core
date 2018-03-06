@@ -9,7 +9,7 @@ import destiny.iching.Symbol.*
 object SymbolPositions {
 
   /** 對應到 [SymbolCongenital] */
-  val 先天 = mapOf(
+  private val 先天 = mapOf(
     乾 to U,
     兌 to LU,
     離 to L,
@@ -20,7 +20,7 @@ object SymbolPositions {
     坤 to B)
 
   /** 對應到 [SymbolAcquired] */
-  val 後天 = mapOf(
+  private val 後天 = mapOf(
     巽 to LU,
     震 to L,
     艮 to LB,

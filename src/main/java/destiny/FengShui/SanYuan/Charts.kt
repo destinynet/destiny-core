@@ -24,6 +24,9 @@ interface IChartMnt : IPeriod {
   fun getChartBlockFromSymbol(symbol: Symbol?): ChartBlock {
     return blocks.first { it.symbol === symbol }
   }
+  fun getCenterBlock() : ChartBlock {
+    return blocks.first { it.symbol == null }
+  }
 }
 
 interface IChartDegree : IChartMnt {
@@ -68,5 +71,4 @@ data class ChartMntPresenter(override val period: Int,
                              override val replacement: Boolean,
                              override val blocks: List<ChartBlock>,
                              override val gridMap: Map<TriGrid, Symbol?>) : Serializable, IChartMntPresenter
-
 
