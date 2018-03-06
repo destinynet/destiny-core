@@ -19,10 +19,10 @@ data class ChartBlock(
   val symbol: Symbol?,
 
   /** 山盤 , 1~9 */
-  val mountain: Int,
+  val mnt: Int,
 
   /** 向盤 , 1~9 */
-  val direction: Int,
+  val dir: Int,
 
   /** 元運 , 1~9 */
   val period: Int) : Serializable

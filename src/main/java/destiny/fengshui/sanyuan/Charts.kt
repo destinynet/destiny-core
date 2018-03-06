@@ -3,7 +3,7 @@
  */
 package destiny.fengshui.sanyuan
 
-import destiny.core.Position
+import destiny.core.TriGrid
 import destiny.iching.Symbol
 import java.io.Serializable
 
@@ -13,16 +13,44 @@ interface IPeriod {
   val period: Int
 }
 
+enum class MntDirSpec {
+  到山到向 ,
+  上山下水 ,
+  雙星到山 ,
+  雙星到向
+}
+
 interface IChartMnt : IPeriod {
   // 座山
   val mnt: Mountain
   // 是否用替
   val replacement: Boolean
   /** 9個 [ChartBlock] */
-  val blocks : List<ChartBlock>
+  val blocks: List<ChartBlock>
 
-  fun getChartBlockFromSymbol(symbol: Symbol?) : ChartBlock {
+  fun getChartBlockFromSymbol(symbol: Symbol?): ChartBlock {
     return blocks.first { it.symbol === symbol }
+  }
+
+  fun getCenterBlock() : ChartBlock {
+    return blocks.first { it.symbol == null }
+  }
+
+  fun getMntDirSpec() : MntDirSpec? {
+    val 地盤 = EarthlyCompass()
+    val mntBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt))
+    val dirBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt.opposite))
+
+    return if (mntBlock.mnt == period && dirBlock.dir == period)
+      MntDirSpec.到山到向
+    else if (mntBlock.dir == period && dirBlock.mnt == period)
+      MntDirSpec.上山下水
+    else if (mntBlock.mnt == period && mntBlock.dir == period)
+      MntDirSpec.雙星到山
+    else if (dirBlock.mnt == period && dirBlock.dir == period)
+      MntDirSpec.雙星到向
+    else
+      null // 只有替星盤 才有可能為 null , 正常的 挨星下卦，一定有值
   }
 }
 
@@ -33,12 +61,12 @@ interface IChartDegree : IChartMnt {
 
 /** 具備描述九宮格的資料 , 九宮格內，每個 block 存放哪個 [ChartBlock] */
 interface IChartPresenter {
-  val posMap: Map<Position, Symbol?>
+  val gridMap: Map<TriGrid, Symbol?>
 }
 
 interface IChartMntPresenter : IChartMnt, IChartPresenter {
-  fun getChartBlockFromPosition(position: Position) : ChartBlock {
-    val symbol:Symbol? = posMap[position]
+  fun getChartBlockFromGrid(grid: TriGrid): ChartBlock {
+    val symbol: Symbol? = gridMap[grid]
     return getChartBlockFromSymbol(symbol)
   }
 }
@@ -67,6 +95,5 @@ data class ChartMntPresenter(override val period: Int,
                              val view: Symbol,
                              override val replacement: Boolean,
                              override val blocks: List<ChartBlock>,
-                             override val posMap: Map<Position, Symbol?>) : Serializable , IChartMntPresenter
-
+                             override val gridMap: Map<TriGrid, Symbol?>) : Serializable, IChartMntPresenter
 

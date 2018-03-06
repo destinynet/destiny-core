@@ -8,6 +8,8 @@ enum class MntDir {
   山, 向
 }
 
+
+
 /** 全局 特徵 */
 sealed class ChartRule {
   data class 合十(val mntDir: MntDir) : ChartRule()

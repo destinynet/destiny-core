@@ -28,6 +28,11 @@ class ChartMntRulesTest {
       assertEquals(ChartRule.合十(MntDir.山), ChartMntRules.match10(it))
     }
 
+    // 另一範例： 七運，午山子向 , 向盤合十
+    ChartMntContext.getChartMnt(7, Mountain.午).also {
+      assertEquals(ChartRule.合十(MntDir.向), ChartMntRules.match10(it))
+    }
+
     // 印出全部 (共24局)
     (1..9).forEach { period ->
       Mountain.values().forEach { mnt ->
