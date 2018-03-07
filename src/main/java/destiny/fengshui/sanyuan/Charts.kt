@@ -5,7 +5,9 @@ package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
 import destiny.iching.Symbol
+import destiny.iching.SymbolAcquired
 import java.io.Serializable
+import kotlin.math.abs
 
 
 interface IPeriod {
@@ -18,6 +20,11 @@ enum class MntDirSpec {
   上山下水 ,
   雙星到山 ,
   雙星到向
+}
+
+enum class Gate {
+  正城門,
+  副城門
 }
 
 interface IChartMnt : IPeriod {
@@ -36,6 +43,7 @@ interface IChartMnt : IPeriod {
     return blocks.first { it.symbol == null }
   }
 
+  /** 取得 四種 山向格局 (or null) */
   fun getMntDirSpec() : MntDirSpec? {
     val 地盤 = EarthlyCompass()
     val mntBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt))
@@ -51,6 +59,43 @@ interface IChartMnt : IPeriod {
       MntDirSpec.雙星到向
     else
       null // 只有替星盤 才有可能為 null , 正常的 挨星下卦，一定有值
+  }
+
+
+  /** 城門訣 , 傳回 正城門、副城門 ， 以及各自在此運是否 enabled */
+  fun getGates(): Map<Gate , Pair<Mountain , Boolean>> {
+    // 先取出「向」兩旁的卦
+    val 地盤 = EarthlyCompass()
+
+    val dirSymbol: Symbol = 地盤.getSymbol(mnt.opposite)
+    /*
+    取出 「向」卦，順逆兩卦，相對應（天元、人元、地元龍）的兩個山
+    例如：子山午向，「向」為離卦。 離卦 兩旁分別是 巽、坤兩卦
+    而巽、坤兩卦內，的天元龍就是「巽」「坤」兩山
+     */
+    val mountains: Set<Mountain> = setOf(
+      VoidFunctions.getMappingMountain(mnt , SymbolAcquired.getClockwiseSymbol(dirSymbol)) ,
+      VoidFunctions.getMappingMountain(mnt , SymbolAcquired.getCounterClockwiseSymbol(dirSymbol)))
+
+    // 目前有兩個山，其中一個為「正城門」、另一個為「副城門」.
+    // 正者：其卦 與「向」卦 的落書數，相差5 , 另一個為負
+    // 例如：子山午向，「向卦」為離，洛書數為9
+    // 旁邊兩山，「巽=4」「坤=2」 , 「巽」的4 與 「離」的9 相差5 , 故，「巽」為正城門、「坤」為副城門
+
+    // 正城門
+    val mntPrimary = mountains.first {
+      val mntSymbol: Symbol = 地盤.getSymbol(it)
+      abs(SymbolAcquired.getIndex(mntSymbol) - SymbolAcquired.getIndex(dirSymbol)) == 5
+    }
+    // 副城門
+    val mntSecondary = mountains.minus(mntPrimary).first()
+
+    //println("正 = $mntPrimary , 副 = $mntSecondary")
+
+    return mapOf(
+      Gate.正城門 to Pair(mntPrimary , true),
+      Gate.副城門 to Pair(mntSecondary , true))
+
   }
 }
 

@@ -8,6 +8,18 @@ import kotlin.test.Test
 
 class ChartMntContextTest {
 
+
+  @Test
+  fun test城門訣() {
+    Mountain.values().forEach { mnt ->
+      ChartMntContext.getChartMnt(1 , mnt).getGates().also { map ->
+        println("$mnt 山 , 正 = ${map[Gate.正城門]} , 副 = ${map[Gate.副城門]}")
+      }
+    }
+
+  }
+
+
   /**
    * 測試 [IChartMnt.getMntDirSpec]
    */

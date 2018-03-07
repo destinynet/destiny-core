@@ -35,6 +35,14 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
      * 取得後天八卦的卦序
      * 坎1 , 坤2 , ... , 離 9
      * 因為沒有 5 , 所以得把 5 給跳過
+     *
+     *
+     * 巽4 | 離9 | 坤2
+     * ----+-----+----
+     * 震3 |     | 兌7
+     * ----+-----+----
+     * 艮8 | 坎1 | 乾6
+     *
      */
     fun getIndex(s: Symbol): Int {
       var tempIndex = 後天八卦List.indexOf(s) + 1
