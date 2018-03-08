@@ -5,6 +5,8 @@ package destiny.fengshui.sanyuan
 
 import destiny.core.chinese.Branch
 import destiny.iching.Symbol
+import destiny.iching.SymbolAcquired
+import kotlin.math.abs
 
 /** 「玄空」所使用的 functions */
 object VoidFunctions {
@@ -42,10 +44,41 @@ object VoidFunctions {
    * 再找出「震」卦的天元龍 ==> 卯 (最終傳回值)
    */
   fun getMappingMountain(m: Mountain, symbol: Symbol): Mountain {
-
     val tri = getTri(m)
     return Mountain.values().first {
       it.symbol === symbol && tri === VoidFunctions.getTri(it)
     }
+  }
+
+  /** 城門訣 , 傳回 正城門、副城門 */
+  fun getGates(m:Mountain) : Map<Gate , Mountain> {
+    // 先取出「向」兩旁的卦
+    val 地盤 = EarthlyCompass()
+    val dirSymbol: Symbol = 地盤.getSymbol(m.opposite)
+
+    /*
+    取出 「向」卦，順逆兩卦，相對應（天元、人元、地元龍）的兩個山
+    例如：子山午向，「向」為離卦。 離卦 兩旁分別是 巽、坤兩卦
+    而巽、坤兩卦內，的天元龍就是「巽」「坤」兩山
+     */
+    val mountains: Set<Mountain> = setOf(
+      getMappingMountain(m, SymbolAcquired.getClockwiseSymbol(dirSymbol)),
+      getMappingMountain(m, SymbolAcquired.getCounterClockwiseSymbol(dirSymbol)))
+
+    // 目前有兩個山，其中一個為「正城門」、另一個為「副城門」.
+    // 正者：其卦 與「向」卦 的落書數，相差5 , 另一個為負
+    // 例如：子山午向，「向卦」為離，洛書數為9
+    // 旁邊兩山，「巽=4」「坤=2」 , 「巽」的4 與 「離」的9 相差5 , 故，「巽」為正城門、「坤」為副城門
+
+    // 正城門
+    val mntPrimary = mountains.first {
+      val mntSymbol: Symbol = 地盤.getSymbol(it)
+      abs(SymbolAcquired.getIndex(mntSymbol) - SymbolAcquired.getIndex(dirSymbol)) == 5
+    }
+    // 副城門
+    val mntSecondary = mountains.minus(mntPrimary).first()
+    return mapOf(
+      Gate.正城門 to mntPrimary ,
+      Gate.副城門 to mntSecondary)
   }
 }

@@ -21,6 +21,11 @@ enum class MntDirSpec {
   雙星到向
 }
 
+enum class Gate {
+  正城門,
+  副城門
+}
+
 interface IChartMnt : IPeriod {
   // 座山
   val mnt: Mountain
@@ -56,17 +61,33 @@ interface IChartMnt : IPeriod {
   }
 
 
-  /** 城門訣 */
-  fun getGates() : List<Symbol> {
-    // 先取出「向」兩旁的卦
+  /** 城門訣 , 傳回 正城門、副城門 ， 以及各自在此運是否 enabled */
+  fun getGates(): Map<Gate , Pair<Mountain , Boolean>> {
+
+    val gateMap: Map<Gate, Mountain> = VoidFunctions.getGates(mnt)
+
     val 地盤 = EarthlyCompass()
+    val 玄空陰陽 = MountainYinYangEmptyImpl()
+    return gateMap.mapValues { (_,m) ->
+      val symbol = 地盤.getSymbol(m)
+      val start: Int = getChartBlockFromSymbol(symbol).period
 
-    val dirSymbol: Symbol = 地盤.getSymbol(mnt.opposite)
-    val symbols = setOf(
-      SymbolAcquired.getClockwiseSymbol(dirSymbol),
-      SymbolAcquired.getCounterClockwiseSymbol(dirSymbol))
+      val mappingMountain = SymbolAcquired.getSymbol(start)?.let {
+        VoidFunctions.getMappingMountain(m,it)
+      }?:m
 
-    TODO()
+      val reversed = !玄空陰陽.getYinYang(mappingMountain)
+
+      val steps = symbolPeriods.indexOf(symbol)
+      val finalValue = (start + steps * (if (reversed) (-1) else 1)).let {
+        if (it > 9)
+          return@let (it -9)
+        if (it < 1)
+          return@let (it + 9)
+        return@let it
+      }
+      m to (finalValue == period)
+    }
   }
 }
 
