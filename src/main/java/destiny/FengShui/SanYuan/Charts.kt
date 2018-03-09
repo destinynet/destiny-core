@@ -42,7 +42,7 @@ interface IChartMnt : IPeriod {
     return blocks.first { it.symbol == null }
   }
 
-  /** 取得 四種 山向格局 (or null) */
+  /** 取得 四種 山向格局 (or null if 替星) */
   fun getMntDirSpec() : MntDirSpec? {
     val 地盤 = EarthlyCompass()
     val mntBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt))

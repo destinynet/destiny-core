@@ -7,6 +7,10 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 
 
+//enum class StarMain2(val nameKey: String) : ZStar(nameKey , ZStar::class.java.name , nameKey + "_ABBR", ZStar.Type.主星) {
+//  紫微
+//}
+
 /**
  * 14 顆主星
  * resource key 存放於 [ZStar] 的 ZStar.properties 當中

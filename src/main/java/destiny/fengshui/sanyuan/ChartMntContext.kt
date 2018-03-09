@@ -35,14 +35,6 @@ object ChartMntContext {
   } // getChartMnt
 
 
-
-
-
-
-
-
-
-
   private fun getGridMap(view: Symbol): Map<TriGrid, Symbol?> {
 
     val grids: List<TriGrid> = generateSequence(TriGrid.B, { it: TriGrid -> it.clockWise()!! }).take(8).toList()
