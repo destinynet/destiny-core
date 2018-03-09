@@ -4,6 +4,7 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
+import destiny.fengshui.sanyuan.FlyingStar.symbolPeriods
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 
@@ -17,17 +18,14 @@ object ChartMntContext {
     val (mntStart, mntReversed) = getStart(period, mountain, replacementImpl)
     val (dirStart, dirReversed) = getStart(period, mountain.opposite, replacementImpl)
 
-
-    val blocks = arrayOfNulls<ChartBlock>(10) // 0 不用
-    for (i in 1..9) {
-      val p = normalize(period + i - 1)
-      val symbol = getBlockSymbol(i)
-
-      val mnt = getNumber(mntStart, mntReversed, i)
-      val dir = getNumber(dirStart, dirReversed, i)
-
-      blocks[i] = ChartBlock(symbol, mnt, dir, p)
-    }
+    val blocks = symbolPeriods.filterNotNull().map { symbol ->
+      val steps = symbolPeriods.indexOf(symbol)
+      val p = FlyingStar.getValue(period , steps , false)
+      val mnt = FlyingStar.getValue(mntStart , steps , mntReversed)
+      val dir = FlyingStar.getValue(dirStart , steps , dirReversed)
+      ChartBlock(symbol , mnt , dir , p)
+    }.toList()
+      .plus(ChartBlock(null , mntStart , dirStart , period)) // 中宮
 
     val useReplacement = replacementImpl != null
 

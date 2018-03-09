@@ -39,10 +39,10 @@ interface IChartMnt : IPeriod {
   }
 
   fun getCenterBlock() : ChartBlock {
-    return blocks.first { it.symbol == null }
+    return getChartBlockFromSymbol(null)
   }
 
-  /** 取得 四種 山向格局 (or null) */
+  /** 取得 四種 山向格局 (or null if 替星) */
   fun getMntDirSpec() : MntDirSpec? {
     val 地盤 = EarthlyCompass()
     val mntBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt))
@@ -78,14 +78,15 @@ interface IChartMnt : IPeriod {
 
       val reversed = !玄空陰陽.getYinYang(mappingMountain)
 
-      val steps = symbolPeriods.indexOf(symbol)
-      val finalValue = (start + steps * (if (reversed) (-1) else 1)).let {
-        if (it > 9)
-          return@let (it -9)
-        if (it < 1)
-          return@let (it + 9)
-        return@let it
-      }
+      val steps = FlyingStar.symbolPeriods.indexOf(symbol)
+      val finalValue: Int = FlyingStar.getValue(start , steps , reversed)
+//        (start + steps * (if (reversed) (-1) else 1)).let {
+//        if (it > 9)
+//          return@let (it -9)
+//        if (it < 1)
+//          return@let (it + 9)
+//        return@let it
+//      }
       m to (finalValue == period)
     }
   }
