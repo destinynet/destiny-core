@@ -29,7 +29,7 @@ object ChartMntContext {
 
     val useReplacement = replacementImpl != null
 
-    return ChartMnt(period , mountain , useReplacement , blocks.filterNotNull())
+    return ChartMnt(period, mountain, useReplacement, blocks)
   } // getChartMnt
 
 
@@ -60,7 +60,14 @@ object ChartMntContext {
    */
   private fun getStart(period: Int, mountain: Mountain, replacementImpl: IReplacement?): Pair<Int, Boolean> {
     val symbol: Symbol = 地盤.getSymbol(mountain)
-    val defaultStart = (1..9).first { getBlockSymbol(it) === symbol }.let { getBlockPeriod(it, period) }
+
+    val defaultStart = (period + symbolPeriods.indexOf(symbol)).let {
+      if (it > 9)
+        return@let it - 9
+      else
+        return@let it
+    }
+
     val 原始配卦: Symbol? = SymbolAcquired.getSymbolNullable(defaultStart)
     val reversed = isReversed(原始配卦, symbol, mountain)
 
@@ -101,74 +108,6 @@ object ChartMntContext {
   }
 
 
-  private fun getChartBlock(symbol: Symbol?,
-                            blocks: Iterable<ChartBlock?>): ChartBlock {
-    return if (symbol == null)
-      blocks.first { it?.symbol === null }!!
-    //blocks[1]!!
-    else {
-      blocks.first { it?.symbol === symbol }!!
-    }
-  }
-
-  /**
-   * 方向（以卦來表示）
-   * |-----------------|
-   * | 9巽 | 5離 | 7坤 |
-   * |[0,0]|[0,1]|[0,2]|
-   * |-----|-----|-----|
-   * | 8震 |  1  | 3兌 |
-   * |[1,0]|[1,1]|[1,2]|
-   * |-----|-----|-----|
-   * | 4艮 | 6坎 | 2乾 |
-   * |[2,0]|[2,1]|[2,2]|
-   * |-----------------|
-   */
-  private fun getBlockSymbol(blockIndex: Int): Symbol? {
-    return when (blockIndex) {
-      9 -> Symbol.巽
-      8 -> Symbol.震
-      4 -> Symbol.艮
-
-      5 -> Symbol.離
-      6 -> Symbol.坎
-
-      7 -> Symbol.坤
-      3 -> Symbol.兌
-      2 -> Symbol.乾
-      else -> null
-    }
-  }
-
-  private fun getBlockPeriod(blockIndex: Int, period: Int): Int {
-    return normalize(period + blockIndex - 1)
-  }
-
-  /**
-   * 傳入中宮的 山 或 向  , 以及是否逆飛
-   *
-   * @param blockIndex 1 to 9
-   */
-  private fun getNumber(start: Int, converse: Boolean, blockIndex: Int): Int {
-    return if (!converse) {
-      // 順飛
-      normalize(start + blockIndex + 8)
-    } else {
-      // 逆飛
-      normalize(start - blockIndex + 10)
-    }
-  }
-
-  /**
-   * 將 int 值侷限在 1 到 9 之間
-   */
-  private fun normalize(value: Int): Int {
-    return when {
-      value > 9 -> normalize(value - 9)
-      value < 1 -> normalize(value + 9)
-      else -> value
-    }
-  }
 
 
   private val 地盤 = EarthlyCompass()

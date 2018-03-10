@@ -10,6 +10,7 @@ import kotlin.test.assertEquals
 
 class ChartMntContextTest {
 
+  val replaceImpl = ReplacementDefaultImpl()
 
   @Test
   fun test城門訣() {
@@ -67,6 +68,39 @@ class ChartMntContextTest {
     }
   }
 
+
+  /**
+   *
+   * 承上
+   *
+   * 八運 子山午向 , 用替
+
+  ５３　１７　３５
+  巽七　離三　坤五
+  　　　　　　　　
+  ４４　６２　８９
+  震六　中八　兌一
+  　　　　　　　　
+  ９８　２６　７１
+  艮二　坎四　乾九
+   */
+  @Test
+  fun `八運 子山午向 , 用替`() {
+    ChartMntContext.getChartMnt(8, Mountain.子 , replaceImpl).also { chart ->
+      assertEquals(ChartBlock(null, 6, 2, 8), chart.getCenterBlock())
+      assertEquals(ChartBlock(null, 6, 2, 8), chart.getChartBlockFromSymbol(null))
+      assertEquals(ChartBlock(Symbol.乾, 7, 1, 9), chart.getChartBlockFromSymbol(Symbol.乾))
+      assertEquals(ChartBlock(Symbol.兌, 8, 9, 1), chart.getChartBlockFromSymbol(Symbol.兌))
+      assertEquals(ChartBlock(Symbol.艮, 9, 8, 2), chart.getChartBlockFromSymbol(Symbol.艮))
+      assertEquals(ChartBlock(Symbol.離, 1, 7, 3), chart.getChartBlockFromSymbol(Symbol.離))
+      assertEquals(ChartBlock(Symbol.坎, 2, 6, 4), chart.getChartBlockFromSymbol(Symbol.坎))
+      assertEquals(ChartBlock(Symbol.坤, 3, 5, 5), chart.getChartBlockFromSymbol(Symbol.坤))
+      assertEquals(ChartBlock(Symbol.震, 4, 4, 6), chart.getChartBlockFromSymbol(Symbol.震))
+      assertEquals(ChartBlock(Symbol.巽, 5, 3, 7), chart.getChartBlockFromSymbol(Symbol.巽))
+    }
+  }
+
+
   /**
    * 八運 申山寅向 , 五入中
    *
@@ -95,6 +129,35 @@ class ChartMntContextTest {
     }
   }
 
+
+  /**
+   * 承上
+   * 八運 申山寅向 , 五入中 , 用替
+   *
+  ４９　９５　２７
+  巽七　離三　坤五
+  　　　　　　　　
+  ３８　５１　７３
+  震六　中八　兌一
+  　　　　　　　　
+  ８４　１６　６２
+  艮二　坎四　乾九
+   */
+  @Test
+  fun `八運 申山寅向 用替`() {
+    ChartMntContext.getChartMnt(8, Mountain.申, replaceImpl).also { chart ->
+      assertEquals(ChartBlock(null, 5, 1, 8), chart.getCenterBlock())
+      assertEquals(ChartBlock(null, 5, 1, 8), chart.getChartBlockFromSymbol(null))
+      assertEquals(ChartBlock(Symbol.乾, 6, 2, 9), chart.getChartBlockFromSymbol(Symbol.乾))
+      assertEquals(ChartBlock(Symbol.兌, 7, 3, 1), chart.getChartBlockFromSymbol(Symbol.兌))
+      assertEquals(ChartBlock(Symbol.艮, 8, 4, 2), chart.getChartBlockFromSymbol(Symbol.艮))
+      assertEquals(ChartBlock(Symbol.離, 9, 5, 3), chart.getChartBlockFromSymbol(Symbol.離))
+      assertEquals(ChartBlock(Symbol.坎, 1, 6, 4), chart.getChartBlockFromSymbol(Symbol.坎))
+      assertEquals(ChartBlock(Symbol.坤, 2, 7, 5), chart.getChartBlockFromSymbol(Symbol.坤))
+      assertEquals(ChartBlock(Symbol.震, 3, 8, 6), chart.getChartBlockFromSymbol(Symbol.震))
+      assertEquals(ChartBlock(Symbol.巽, 4, 9, 7), chart.getChartBlockFromSymbol(Symbol.巽))
+    }
+  }
 
   /**
    * 測試 [IChartMnt.getMntDirSpec]
