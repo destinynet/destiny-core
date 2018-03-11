@@ -9,6 +9,36 @@ import kotlin.test.assertEquals
 
 class ChartMntRulesTest {
 
+  @Test
+  fun 全盤連珠三般卦_十六局() {
+    val matches =
+      (1..9).flatMap{  period ->
+        Mountain.values().mapNotNull { mnt ->
+          ChartMntRules.contTriplet(ChartMntContext.getChartMnt(period, mnt))?.let { period to mnt }
+        }
+      }
+    assertEquals(16 , matches.size)
+
+    matches.forEach { (period ,mnt) ->
+      println("${period}運 ${mnt}山${mnt.opposite}向")
+    }
+  }
+
+  @Test
+  fun 全盤父母三般卦_十六局() {
+    val matches =
+      (1..9).flatMap{  period ->
+        Mountain.values().mapNotNull { mnt ->
+          ChartMntRules.parentTriplet(ChartMntContext.getChartMnt(period, mnt))?.let { period to mnt }
+        }
+      }
+    assertEquals(16 , matches.size)
+
+    matches.forEach { (period ,mnt) ->
+      println("${period}運 ${mnt}山${mnt.opposite}向")
+    }
+  }
+
   /**
    * 全局合十
    * 範例：

@@ -5,8 +5,45 @@ package destiny.fengshui.sanyuan
 
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
+import kotlin.math.abs
 
 object ChartMntRules {
+
+
+  fun contTriplet(chart: IChartMnt): ChartRule.連珠三般卦? {
+    fun distance(v1:Int , v2:Int) : Int {
+      return abs(v1 - v2).let { abs ->
+        return@let when {
+          abs <= 6 ->  abs
+          abs == 8 -> 1 // 1 & 9
+          else -> 2 // 7(1,8 or 2,9)
+        }
+      }
+    }
+
+    return Symbol.values().all {
+      chart.getChartBlockFromSymbol(it).let { block ->
+        distance(block.period , block.mnt) <=2 && distance(block.period , block.dir) <= 2 && distance(block.mnt , block.dir) <=2
+      }
+    }.let {
+      if (it) ChartRule.連珠三般卦 else null
+    }
+  }
+
+  fun parentTriplet(chart: IChartMnt): ChartRule.父母三般卦? {
+    val set1 = setOf(1,4,7)
+    val set2 = setOf(2,5,8)
+    val set3 = setOf(3,6,9)
+
+    return Symbol.values().all  {
+      val blockNums: Set<Int> = chart.getChartBlockFromSymbol(it).let {
+        setOf(it.period , it.mnt , it.dir)
+      }
+      blockNums.containsAll(set1) || blockNums.containsAll(set2) || blockNums.containsAll(set3)
+    }.let {
+      if (it) ChartRule.父母三般卦 else null
+    }
+  }
 
   /**
    * 全局合十 :

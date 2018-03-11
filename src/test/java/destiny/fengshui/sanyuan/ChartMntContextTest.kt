@@ -12,9 +12,20 @@ class ChartMntContextTest {
 
   val replaceImpl = ReplacementDefaultImpl()
 
+
+  @Test
+  fun 七星打劫() {
+    Mountain.values().forEach { mnt ->
+      ChartMntContext.getChartMnt(5, mnt).also {
+        it.getRobbery()?.also { robbery ->
+          println("${it.period}運 ${mnt}山 : $robbery" )
+        }
+      }
+    }
+  }
+
   @Test
   fun test城門訣() {
-
     // 四運 , 子山午向 , 四運子山午向的向方兩旁，均有城門可取。此兩旁的城門，正好補救了午向沒有旺星到向之不足。
     ChartMntContext.getChartMnt(4, Mountain.子).getGates().also {
       assertEquals(mapOf(Gate.正城門 to Pair(Mountain.巽, true), Gate.副城門 to Pair(Mountain.坤, true)), it)
@@ -29,15 +40,15 @@ class ChartMntContextTest {
     ChartMntContext.getChartMnt(1, Mountain.午).getGates().also {
       assertEquals(mapOf(Gate.正城門 to Pair(Mountain.乾, false), Gate.副城門 to Pair(Mountain.艮, false)), it)
     }
+  }
 
-
-
+  @Test
+  fun 印出一運所有山之城門訣() {
     Mountain.values().forEach { mnt ->
       ChartMntContext.getChartMnt(1, mnt).getGates().also { map ->
         println("$mnt 山 , 正 = ${map[Gate.正城門]} , 副 = ${map[Gate.副城門]}")
       }
     }
-
   }
 
   /**
@@ -86,7 +97,7 @@ class ChartMntContextTest {
    */
   @Test
   fun `八運 子山午向 , 用替`() {
-    ChartMntContext.getChartMnt(8, Mountain.子 , replaceImpl).also { chart ->
+    ChartMntContext.getChartMnt(8, Mountain.子, replaceImpl).also { chart ->
       assertEquals(ChartBlock(null, 6, 2, 8), chart.getCenterBlock())
       assertEquals(ChartBlock(null, 6, 2, 8), chart.getChartBlockFromSymbol(null))
       assertEquals(ChartBlock(Symbol.乾, 7, 1, 9), chart.getChartBlockFromSymbol(Symbol.乾))
