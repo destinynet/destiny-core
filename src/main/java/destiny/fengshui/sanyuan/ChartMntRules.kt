@@ -9,6 +9,21 @@ import kotlin.math.abs
 
 object ChartMntRules {
 
+  fun getChartRules(chart: IChartMnt) : List<ChartRule> {
+    val list: List<(chart: IChartMnt) -> ChartRule?> = listOf(
+      this::match10 ,
+      this::beneathSameOrigin ,
+      this::reversed,
+      this::parentTriplet,
+      this::contTriplet,
+      this::robbery
+      )
+
+    return list.mapNotNull {
+      it.invoke(chart)
+    }.toList()
+  }
+
   /** 七星打劫 */
   fun robbery(chart: IChartMnt): ChartRule.Robbery? {
     return chart.getMntDirSpec()

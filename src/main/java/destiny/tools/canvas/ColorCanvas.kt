@@ -481,7 +481,12 @@ open class ColorCanvas : Serializable {
   /**
    * 附加一串字，到 content 的尾端「之後」，亦即，加高 content
    */
-  fun appendLine(str: String, foreColor: String?, backColor: String?, fill: String, font: Font?, url: URL?) {
+  fun appendLine(str: String,
+                 foreColor: String?,
+                 backColor: String?,
+                 fill: String,
+                 font: Font? = null,
+                 url: URL? = null) {
     val strWidth: Int = str.toByteArray(charsetBig5).size
     //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
 

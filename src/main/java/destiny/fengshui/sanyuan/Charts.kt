@@ -14,12 +14,6 @@ interface IPeriod {
   val period: Int
 }
 
-enum class MntDirSpec {
-  到山到向 ,
-  上山下水 ,
-  雙星到山 ,
-  雙星到向
-}
 
 enum class Gate {
   正城門,
@@ -85,29 +79,8 @@ interface IChartMnt : IPeriod {
   } // 城門訣
 
   /** 七星打劫 */
-  fun getRobbery() : Robbery? {
-    return getMntDirSpec()?.takeIf { it === MntDirSpec.雙星到向 || it === MntDirSpec.到山到向 }?.let {
-      val 離乾震 = listOf(Symbol.離 , Symbol.乾, Symbol.震)
-      val 離宮ints: Set<Int> = 離乾震
-        .map { getChartBlockFromSymbol(it) }
-        .map { it.dir }
-        .toSet()
-
-      val 坎兌巽 = listOf(Symbol.坎 , Symbol.兌 , Symbol.巽)
-      val 坎宮ints = 坎兌巽
-        .map { getChartBlockFromSymbol(it) }
-        .map { it.dir }
-        .toSet()
-
-        return@let if (離宮ints.containsAll(listOf(1, 4, 7)) || 離宮ints.containsAll(listOf(2, 5, 8)) || 離宮ints.containsAll(listOf(3, 6, 9)) ) {
-          val map = 離乾震.map { symbol -> symbol to getChartBlockFromSymbol(symbol).dir }.toMap()
-          Robbery(Symbol.離 , map)
-        } else if (坎宮ints.containsAll(listOf(1,4,7)) || 坎宮ints.containsAll(listOf(2,5,8)) || 坎宮ints.containsAll(listOf(3,6,9))) {
-          val map = 坎兌巽.map { symbol -> symbol to getChartBlockFromSymbol(symbol).dir }.toMap()
-          Robbery(Symbol.坎 , map)
-        } else
-          null
-    }
+  fun getRobbery() : ChartRule.Robbery? {
+    return ChartMntRules.robbery(this)
   } // 七星打劫
 }
 

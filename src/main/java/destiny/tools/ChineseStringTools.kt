@@ -21,4 +21,19 @@ object ChineseStringTools {
       else -> NULL_CHAR
     }
   }
+
+  fun toBiggerDigit(digit: Int): String {
+    return when (digit) {
+      1 -> "１"
+      2 -> "２"
+      3 -> "３"
+      4 -> "４"
+      5 -> "５"
+      6 -> "６"
+      7 -> "７"
+      8 -> "８"
+      9 -> "９"
+      else -> ChineseStringTools.NULL_CHAR
+    }
+  }
 }

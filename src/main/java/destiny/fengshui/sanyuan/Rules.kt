@@ -10,8 +10,17 @@ enum class MntDir {
   山, 向
 }
 
+enum class MntDirSpec {
+  到山到向 ,
+  上山下水 ,
+  雙星到山 ,
+  雙星到向
+}
+
+
 /** 全局 特徵 */
 sealed class ChartRule {
+
   data class 合十(val mntDir: MntDir) : ChartRule()
   data class 伏吟元旦盤(val mntDir: MntDir) : ChartRule()
   data class 反吟(val mntDir: MntDir) : ChartRule()
