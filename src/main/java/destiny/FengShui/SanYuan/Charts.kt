@@ -80,16 +80,14 @@ interface IChartMnt : IPeriod {
 
       val steps = FlyingStar.symbolPeriods.indexOf(symbol)
       val finalValue: Int = FlyingStar.getValue(start , steps , reversed)
-//        (start + steps * (if (reversed) (-1) else 1)).let {
-//        if (it > 9)
-//          return@let (it -9)
-//        if (it < 1)
-//          return@let (it + 9)
-//        return@let it
-//      }
       m to (finalValue == period)
     }
-  }
+  } // 城門訣
+
+  /** 七星打劫 */
+  fun getRobbery() : ChartRule.Robbery? {
+    return ChartMntRules.robbery(this)
+  } // 七星打劫
 }
 
 interface IChartDegree : IChartMnt {

@@ -9,12 +9,67 @@ import kotlin.math.abs
 
 object ChartMntRules {
 
+  /** 七星打劫 */
+  fun robbery(chart: IChartMnt): ChartRule.Robbery? {
+    return chart.getMntDirSpec()
+      ?.takeIf { it === destiny.fengshui.sanyuan.MntDirSpec.雙星到向 }
+      ?.takeIf { beneathSameOrigin(chart) == null } // 去除伏吟 6局
+      ?.let {
+      val set147 = listOf(1, 4, 7)
+      val set258 = listOf(2, 5, 8)
+      val set369 = listOf(3, 6, 9)
 
+      val sets = listOf(set147, set258, set369)
+      val set: List<Int> = sets.first { it.contains(chart.period) }
+
+      val 離乾震 = listOf(Symbol.離, Symbol.乾, Symbol.震)
+      val 離宮ints: Set<Int> = 離乾震
+        .map { chart.getChartBlockFromSymbol(it) }
+        .map { it.dir }
+        .toSet()
+
+      val 坎兌巽 = listOf(Symbol.坎, Symbol.兌, Symbol.巽)
+      val 坎宮ints = 坎兌巽
+        .map { chart.getChartBlockFromSymbol(it) }
+        .map { it.dir }
+        .toSet()
+
+      return@let when {
+        離宮ints.containsAll(set) -> {
+          val map = 離乾震.map { symbol -> symbol to chart.getChartBlockFromSymbol(symbol).dir }.toMap()
+          ChartRule.Robbery(Symbol.離, map)
+        }
+        坎宮ints.containsAll(set) -> {
+          val map = 坎兌巽.map { symbol -> symbol to chart.getChartBlockFromSymbol(symbol).dir }.toMap()
+          ChartRule.Robbery(Symbol.坎, map)
+        }
+        else -> null
+      }
+    }
+  }
+
+
+  /**
+   * 連珠三般卦是指運盤中每宮山星、向星和運星所代表的三個數字是互相連貫的三個數字，
+   * 共有九種情況，分別為一二三、二三四、三四五、四五六、五六七、六七八、七八九、八九一、九一二。
+   *
+   * 中州派玄空學裏對連珠三般卦是凶局而論，又稱此種格局為連茹格，
+   * 連茹者即連根撥起之意，所以連茹格並非真正的連珠卦（而真的連珠卦是指父母三般卦）
+   *
+   * 此星盤格局有一個特殊的性質，一般均主前吉後凶，一發財旋之即敗。
+   * 即剛搬遷入此格局之宅，吉事不斷，但剛一發財，凶事必然隨之而來。
+   * 所以連茹卦的特點須注意，切不可圖一時之吉，遺終身之凶！這是連茹三般卦的一個重要性質。
+   *
+   * 但同時須于排龍訣互相應用。
+   *
+   * 若排吉龍吉得此局，形巒配合，運內亦許發吉，但運退後即主大敗其財；
+   * 若排凶龍，形巒相背，則必主人財二絕。
+   */
   fun contTriplet(chart: IChartMnt): ChartRule.連珠三般卦? {
-    fun distance(v1:Int , v2:Int) : Int {
+    fun distance(v1: Int, v2: Int): Int {
       return abs(v1 - v2).let { abs ->
         return@let when {
-          abs <= 6 ->  abs
+          abs <= 6 -> abs
           abs == 8 -> 1 // 1 & 9
           else -> 2 // 7(1,8 or 2,9)
         }
@@ -23,21 +78,33 @@ object ChartMntRules {
 
     return Symbol.values().all {
       chart.getChartBlockFromSymbol(it).let { block ->
-        distance(block.period , block.mnt) <=2 && distance(block.period , block.dir) <= 2 && distance(block.mnt , block.dir) <=2
+        distance(block.period, block.mnt) <= 2
+          && distance(block.period, block.dir) <= 2
+          && distance(block.mnt, block.dir) <= 2
       }
     }.let {
       if (it) ChartRule.連珠三般卦 else null
     }
   }
 
+  /**
+   * 父母三般卦又稱天地父母三般卦，
+   * 指運盤中每宮山星、向星和運星所代表的三個數字是一四七、二五八、三六九這三組數字的組合。
+   *
+   * 「父母三般卦」的出現，意味著宅命盤中每宮的元運可以貫通上、中、下三元，一般認為是吉象，
+   * 其主要性質是旺財，主出巨富，但不主顯貴，或富大於貴，適於經商之用。
+   *
+   * 但需要注意的是，「父母三般卦」必是 [MntDirSpec.上山下水] 的格局
+   * 因此，在「父母三般卦」局中，向星的當令星所在方位必須有水加持，才能使吉運生效，否則有可能出現由吉變凶的情況。
+   */
   fun parentTriplet(chart: IChartMnt): ChartRule.父母三般卦? {
-    val set1 = setOf(1,4,7)
-    val set2 = setOf(2,5,8)
-    val set3 = setOf(3,6,9)
+    val set1 = setOf(1, 4, 7)
+    val set2 = setOf(2, 5, 8)
+    val set3 = setOf(3, 6, 9)
 
-    return Symbol.values().all  {
+    return Symbol.values().all {
       val blockNums: Set<Int> = chart.getChartBlockFromSymbol(it).let {
-        setOf(it.period , it.mnt , it.dir)
+        setOf(it.period, it.mnt, it.dir)
       }
       blockNums.containsAll(set1) || blockNums.containsAll(set2) || blockNums.containsAll(set3)
     }.let {
@@ -131,7 +198,7 @@ object ChartMntRules {
   /**
    * 單宮合十
    */
-  fun match10(chartBlock: ChartBlock) : BlockRule.合十? {
+  fun match10(chartBlock: ChartBlock): BlockRule.合十? {
     return chartBlock.period.let {
       when {
         it + chartBlock.mnt == 10 -> BlockRule.合十(MntDir.山)

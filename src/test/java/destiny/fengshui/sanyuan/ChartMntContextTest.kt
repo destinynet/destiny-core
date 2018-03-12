@@ -12,18 +12,6 @@ class ChartMntContextTest {
 
   val replaceImpl = ReplacementDefaultImpl()
 
-
-  @Test
-  fun 七星打劫() {
-    Mountain.values().forEach { mnt ->
-      ChartMntContext.getChartMnt(5, mnt).also {
-        it.getRobbery()?.also { robbery ->
-          println("${it.period}運 ${mnt}山 : $robbery" )
-        }
-      }
-    }
-  }
-
   @Test
   fun test城門訣() {
     // 四運 , 子山午向 , 四運子山午向的向方兩旁，均有城門可取。此兩旁的城門，正好補救了午向沒有旺星到向之不足。

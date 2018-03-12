@@ -6,15 +6,87 @@ package destiny.fengshui.sanyuan
 import destiny.iching.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class ChartMntRulesTest {
+
+  /**
+   * 七星打劫 , 42局 : https://imgur.com/lw1cSmZ
+   */
+  @Test
+  fun 七星打劫() {
+
+    val matches: List<IChartMnt> = (1..9).flatMap { period ->
+      Mountain.values().mapNotNull { mnt ->
+        ChartMntContext.getChartMnt(period, mnt).let { chart ->
+          ChartMntRules.robbery(chart)?.let {
+            //println("$period 運 $mnt 山 :  ${it.symbol} : ${it.map}")
+            chart
+          }
+        }
+      }
+    }
+
+    assertEquals(42 , matches.size)
+    // 真打劫 21局
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.辰))
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.庚))
+    matches.contains(ChartMntContext.getChartMnt(2 , Mountain.壬))
+    matches.contains(ChartMntContext.getChartMnt(2 , Mountain.酉))
+    matches.contains(ChartMntContext.getChartMnt(2 , Mountain.辛))
+    matches.contains(ChartMntContext.getChartMnt(3 , Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(3 , Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(4 , Mountain.壬))
+    matches.contains(ChartMntContext.getChartMnt(4 , Mountain.辰))
+    matches.contains(ChartMntContext.getChartMnt(6 , Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(6 , Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(7 , Mountain.壬))
+    matches.contains(ChartMntContext.getChartMnt(8 , Mountain.子))
+    matches.contains(ChartMntContext.getChartMnt(8 , Mountain.癸))
+    matches.contains(ChartMntContext.getChartMnt(8 , Mountain.庚))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.巽))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.巳))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.酉))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.辛))
+
+    // 假打劫 , 亦有 21局
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.卯))
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.乙))
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.乾))
+    matches.contains(ChartMntContext.getChartMnt(1 , Mountain.亥))
+    matches.contains(ChartMntContext.getChartMnt(2 , Mountain.甲))
+    matches.contains(ChartMntContext.getChartMnt(2 , Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(2 , Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(3 , Mountain.丙))
+    matches.contains(ChartMntContext.getChartMnt(4 , Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(4 , Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(6 , Mountain.丙))
+    matches.contains(ChartMntContext.getChartMnt(6 , Mountain.戌))
+    matches.contains(ChartMntContext.getChartMnt(7 , Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(7 , Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(8 , Mountain.卯))
+    matches.contains(ChartMntContext.getChartMnt(8 , Mountain.乙))
+    matches.contains(ChartMntContext.getChartMnt(8 , Mountain.丙))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.甲))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.午))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.丁))
+    matches.contains(ChartMntContext.getChartMnt(9 , Mountain.戌))
+  }
 
   @Test
   fun 全盤連珠三般卦_十六局() {
     val matches =
       (1..9).flatMap{  period ->
         Mountain.values().mapNotNull { mnt ->
-          ChartMntRules.contTriplet(ChartMntContext.getChartMnt(period, mnt))?.let { period to mnt }
+          ChartMntContext.getChartMnt(period, mnt).let { chart ->
+            ChartMntRules.contTriplet(chart)?.let {
+              // 「連珠三般卦」必是上山下水的格局
+              assertSame(MntDirSpec.上山下水 , chart.getMntDirSpec())
+              period to mnt
+            }
+          }
         }
       }
     assertEquals(16 , matches.size)
@@ -24,12 +96,20 @@ class ChartMntRulesTest {
     }
   }
 
+
   @Test
   fun 全盤父母三般卦_十六局() {
-    val matches =
+    val matches: List<Pair<Int, Mountain>> =
       (1..9).flatMap{  period ->
         Mountain.values().mapNotNull { mnt ->
-          ChartMntRules.parentTriplet(ChartMntContext.getChartMnt(period, mnt))?.let { period to mnt }
+          ChartMntContext.getChartMnt(period, mnt).let { chart ->
+            ChartMntRules.parentTriplet(chart)?.let {
+              // 「父母三般卦」必是上山下水的格局
+              assertSame(MntDirSpec.上山下水 , chart.getMntDirSpec())
+              period to mnt
+            }
+          }
+          //ChartMntRules.parentTriplet(ChartMntContext.getChartMnt(period, mnt))?.let { period to mnt }
         }
       }
     assertEquals(16 , matches.size)
