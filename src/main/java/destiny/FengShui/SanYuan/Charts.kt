@@ -14,12 +14,6 @@ interface IPeriod {
   val period: Int
 }
 
-enum class MntDirSpec {
-  到山到向 ,
-  上山下水 ,
-  雙星到山 ,
-  雙星到向
-}
 
 enum class Gate {
   正城門,
