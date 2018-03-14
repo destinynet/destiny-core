@@ -38,12 +38,12 @@ open class EightWordsContextModel(val eightWords: EightWords,
   val gmtMinuteOffset: Int
 
   /** 日光節約  */
-  val isDst: Boolean
+  val dst: Boolean
 
 
   init {
     val (first, second) = TimeTools.getDstSecondOffset(lmt, location)
-    this.isDst = first
+    this.dst = first
     this.gmtMinuteOffset = second / 60
   }
 }

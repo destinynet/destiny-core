@@ -19,6 +19,6 @@ interface IStarSymbol {
 
   /** 先天八卦 : 先求後天八卦，再 map 回先天八卦  */
   fun getSymbolCongenital(star: StarMain): Symbol {
-    return getSymbolAcquired(star).toCongential()
+    return getSymbolAcquired(star).toCongenital()
   }
 }

@@ -28,7 +28,6 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
   }
 
   /**
-   * 實作 SymbolIF
    * 取得八卦名
    */
   fun getName(): String {
@@ -61,7 +60,7 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
   }
 
   /** 後天八卦 -> 先天八卦  */
-  fun toCongential(): Symbol {
+  fun toCongenital(): Symbol {
     return con2AcqMap.map { (k,v) -> v to k }.toMap()[this]!!
   }
 
