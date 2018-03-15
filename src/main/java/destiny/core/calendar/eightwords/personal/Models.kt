@@ -12,7 +12,7 @@ import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
-interface IEightWordsModel {
+interface ITimeModel {
   val eightWords: EightWords
   val lmt: ChronoLocalDateTime<*>
   val location: Location
@@ -36,11 +36,11 @@ interface IEightWordsModel {
 }
 
 
-data class EightWordsModel(override val eightWords: EightWords,
-                           override val lmt: ChronoLocalDateTime<*>,
-                           override val location: Location,
-                           override val place: String?,
-                           override val chineseDate: ChineseDate,
-                           override val prevMajorSolarTerms: SolarTerms,
-                           override val nextMajorSolarTerms: SolarTerms,
-                           override val risingStemBranch: StemBranch) : IEightWordsModel, Serializable
+data class TimeModel(override val eightWords: EightWords,
+                     override val lmt: ChronoLocalDateTime<*>,
+                     override val location: Location,
+                     override val place: String?,
+                     override val chineseDate: ChineseDate,
+                     override val prevMajorSolarTerms: SolarTerms,
+                     override val nextMajorSolarTerms: SolarTerms,
+                     override val risingStemBranch: StemBranch) : ITimeModel, Serializable

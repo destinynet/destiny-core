@@ -7,8 +7,36 @@ import destiny.iching.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class ChartMntRulesTest {
+
+  val replaceImpl = ReplacementDefaultImpl()
+
+  @Test
+  fun 八純卦() {
+    val shouldBeEmpty = (1..9).flatMap { period ->
+      Mountain.values().mapNotNull { mnt ->
+        ChartMntContext.getChartMnt(period , mnt).let { chart ->
+          ChartMntRules.pure(chart)?.let { chart }
+        }
+      }
+    }
+    // 無兼向，沒有八純卦
+    assertTrue(shouldBeEmpty.isEmpty())
+
+    val matches = (1..9).flatMap { period ->
+      Mountain.values().mapNotNull { mnt ->
+        ChartMntContext.getChartMnt(period , mnt , replaceImpl).let { chart ->
+          ChartMntRules.pure(chart)?.let { chart }
+        }
+      }
+    }
+    println(matches.size)
+    matches.forEach { chart ->
+      println("${chart.period}運 ${chart.mnt}山${chart.mnt.opposite}向")
+    }
+  }
 
   /**
    * 七星打劫 , 42局 : https://imgur.com/lw1cSmZ

@@ -33,7 +33,7 @@ public class Location implements Serializable {
   private final int latDeg; //= 25;
   private final int latMin; // = 3;
   private final double latSec;// = 0;
-  
+
   /**
    * TimeZone id , 例如 "Asia/Taipei"
    * 2017-04-09 起， 用以取代 TimeZone field , 降低記憶體用量
@@ -54,7 +54,7 @@ public class Location implements Serializable {
     .put(Locale.GERMAN  , new Location(EAST , 13 , 24 , NORTH , 52 , 31 , "Europe/Berlin"))
     // de_DE , 柏林
     .put(Locale.GERMANY , new Location(EAST , 13 , 24 , NORTH , 52 , 31 , "Europe/Berlin"))
-    
+
     // en , 紐約 , 40.758899, -73.985131 , 時報廣場
     .put(Locale.ENGLISH , new Location(-73.985131 , 40.758899 , "America/New_York"))
     // en_US , 紐約
@@ -62,7 +62,7 @@ public class Location implements Serializable {
 
     // en_AU , 雪梨
     .put(new Locale("en" , "AU") , new Location(EAST , 151 , 12 , 40 , SOUTH , 33 , 51 , 36 , "Australia/Sydney"))
-    // en_BW , 波札那 Botswana 
+    // en_BW , 波札那 Botswana
     .put(new Locale("en" , "BW") , new Location(EAST , 25 , 55 , SOUTH , 24 , 40 , "Africa/Gaborone"))
     // en_CA , 多倫多
     .put(Locale.CANADA, new Location(WEST , 79 , 24 , NORTH , 43 , 40 , "America/Toronto"))
@@ -70,7 +70,7 @@ public class Location implements Serializable {
     .put(new Locale("en" , "DK") , new Location(EAST , 12 , 34 , NORTH , 55 , 43 , "Europe/Copenhagen"))
     // en_GB , 倫敦
     .put(Locale.UK , new Location(WEST , 0 , 7 , NORTH , 51 , 30 , "Europe/London"))
-    // en_HK , 香港    
+    // en_HK , 香港
     .put(new Locale("en" , "HK"), new Location(EAST , 114.1735865 , NORTH , 22.2798721 , 0 , "Asia/Hong_Kong" , null))
     // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
     .put(new Locale("en" , "IE"), new Location(WEST , 6.2592 , NORTH , 53.3472 , 0, "Europe/Dublin", null))
@@ -96,24 +96,24 @@ public class Location implements Serializable {
     .put(Locale.ITALIAN , new Location(EAST , 12 , 29 , NORTH , 41 , 54 , "Europe/Rome"))
     // it_IT , 羅馬
     .put(Locale.ITALY   , new Location(EAST , 12 , 29 , NORTH , 41 , 54 , "Europe/Rome"))
-    
-    
+
+
     // ja , 東京
     .put(Locale.JAPANESE , new Location(EAST , 139 , 46 , 0 , NORTH , 35 , 40 , 50, "Asia/Tokyo"))
     // ja_JP , 東京
     .put(Locale.JAPAN    , new Location(EAST , 139 , 45 , 0 , NORTH , 35 , 40 , 0, "Asia/Tokyo"))
-    
+
     // ko , 首爾
     .put(Locale.KOREAN , new Location(EAST , 127 , 0 , NORTH , 37 , 32 , "Asia/Seoul"))
     // ko_KR , 首爾
     .put(Locale.KOREA  , new Location(EAST , 127 , 0 , NORTH , 37 , 32 , "Asia/Seoul"))
-    
-    
+
+
     // zh , 北京
     //.put(Locale.CHINESE , new Location(EastWest.EAST , 116 , 23 , NorthSouth.NORTH , 39 , 55 , "Asia/Shanghai"))
     .put(Locale.CHINESE , new Location(116.397 , 39.9075 , "Asia/Harbin"))
-    
-    
+
+
     // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
     .put(Locale.CHINA   , new Location(EAST , 116 , 23 , NORTH , 39 , 55 , "Asia/Shanghai"))
     // zh_HK , 香港
@@ -122,7 +122,7 @@ public class Location implements Serializable {
     .put(new Locale("zh" , "MO"), new Location(EAST , 113 , 35 , NORTH , 22 , 14 , "Asia/Macao"))
     // zh_SG , 新加坡
     .put(new Locale("zh" , "SG"), new Location(EAST , 103 , 51 , NORTH , 1 , 17 , "Asia/Singapore"))
-    
+
     // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
     .put(Locale.TAIWAN, new Location(121.517668 , 25.039030 , "Asia/Taipei"))
     .build();
@@ -133,8 +133,8 @@ public class Location implements Serializable {
     Location loc = locMap.get(matchedLocale);
     return new Location(loc.eastWest , loc.lngDeg , loc.lngMin , loc.lngSec , loc.northSouth , loc.latDeg , loc.latMin , loc.latSec , loc.altitudeMeter , loc.tzid , loc.minuteOffset);
   }
-  
-  
+
+
   /**
    * 最詳盡的 constructor
    *
@@ -172,7 +172,7 @@ public class Location implements Serializable {
                   double altitudeMeter , TimeZone timeZone) {
     this(eastWest , lngDeg , lngMin , lngSec , northSouth , latDeg , latMin , latSec , altitudeMeter , timeZone.getID());
   }
-  
+
   /** 大家比較常用的，只有「度、分」。省略「秒」以及「高度」 */
   public Location(EastWest eastWest, int lngDeg, int lngMin,
                   NorthSouth northSouth, int latDeg, int latMin,
@@ -180,7 +180,7 @@ public class Location implements Serializable {
     this(eastWest , lngDeg , lngMin , 0, northSouth , latDeg , latMin , 0 , 0 , timeZone);
   }
 
-  
+
   /** 省略高度 */
   public Location(EastWest eastWest , int lngDeg , int lngMin , double lngSec ,
                   NorthSouth northSouth , int latDeg , int latMin , double latSec ,
@@ -194,7 +194,7 @@ public class Location implements Serializable {
                   TimeZone timeZone ) {
     this(eastWest , lngDeg , lngMin , lngSec , northSouth , latDeg , latMin , latSec , 0 , timeZone.getID());
   }
-  
+
   /** 比較省略的 constructor  , 去除東西經、南北緯 , 其值由 經度/緯度的正負去判斷 */
   public Location(int lngDeg , int lngMin , double lngSec ,
                   int latDeg , int latMin , double latSec ,
@@ -206,7 +206,7 @@ public class Location implements Serializable {
       timeZone.getID()
     );
   }
-  
+
   /** 較省略的 constructor , 度數以 double 取代 */
   public Location(EastWest eastWest, double lng, NorthSouth northSouth, double lat,
                   double altMeter, String zoneId, @Nullable Integer minuteOffset) {
@@ -214,7 +214,7 @@ public class Location implements Serializable {
     this.lngDeg = (int) Math.abs(lng);
     this.lngMin = (int) ((Math.abs(lng) - lngDeg) * 60);
     this.lngSec = Math.abs(lng)*3600 - lngDeg *3600 - lngMin *60;
-    
+
     this.northSouth = northSouth;
     this.latDeg = (int) Math.abs(lat);
     this.latMin = (int) ((Math.abs(lat) - latDeg) * 60);
@@ -225,7 +225,7 @@ public class Location implements Serializable {
     this.minuteOffset = minuteOffset;
   }
 
-  
+
   /** 更省略的 constructor */
   public Location(double lng, double lat , double altMeter , String tzid , @Nullable Integer minuteOffset) {
     this(
@@ -272,24 +272,24 @@ public class Location implements Serializable {
     this.minuteOffset = minuteOffset;
   }
 
-  
-  /** 
+
+  /**
    * 利用 debug String 建立 Location , 缺點：「秒」只限制在小數點下兩位數
-   * 
+   *
    * 2012/3 之後 , 新款格式 : 新增 minuteOffset 欄位
    * 012345678901234567890123~
    * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ minuteOffset
-   * 
+   *
    * prior 2012/3 格式
    * 012345678901234567890123456789012
    * +DDDMMSSSSS+DDMMSSSSS Alt~ Timezone
    * 範例:
    * +12130  0.0+25 3  0.0 0.0 Asia/Taipei
-   * 
+   *
    * 舊款格式 (2012/3之後不支援)
    * 0123456789012345678901234567
    * +DDDMMSSSSS+DDMMSSSSS+OOO A~
-   * 
+   *
    * 分辨方法：如果能以空白切三段，就是新的，否則就是舊的。
    */
   public Location(@NotNull String s) {
@@ -300,11 +300,11 @@ public class Location implements Serializable {
       this.eastWest = WEST;
     else
       throw new RuntimeException("EW not correct : " + ew);
-    
+
     this.lngDeg = Integer.valueOf(s.substring(1, 4).trim());
     this.lngMin = Integer.valueOf(s.substring(4, 6).trim());
     this.lngSec = Double.valueOf(s.substring(6, 11).trim());
-    
+
     char ns = s.charAt(11);
     if (ns == '+')
       this.northSouth = NORTH;
@@ -312,21 +312,21 @@ public class Location implements Serializable {
       this.northSouth = SOUTH;
     else
       throw new RuntimeException("ns not correct : " + ns);
-    
+
     this.latDeg = Integer.valueOf(s.substring(12, 14).trim());
     this.latMin = Integer.valueOf(s.substring(14, 16).trim());
     this.latSec = Double.valueOf(s.substring(16, 21).trim());
-    
+
     //包含了 高度以及時區
     String altitudeAndTimezone = s.substring(21);
     //System.out.println("altitudeAndTimezone = '" + altitudeAndTimezone+"'");
-    
+
     StringTokenizer st = new StringTokenizer(altitudeAndTimezone , " ");
     String firstToken = st.nextToken();
     // 2012/3 之後 , restToken 可能還會 append minuteOffset
     String restTokens = altitudeAndTimezone.substring( altitudeAndTimezone.indexOf(firstToken)+firstToken.length()+1).trim();
     //System.out.println("firstToken = '" + firstToken + "' , rest = '" + restTokens+"'");
-    
+
     //檢查 restTokens 是否能轉為 double，如果能的話，代表是舊款 , 否則就是新款
     try {
       this.altitudeMeter = Double.parseDouble(restTokens);
@@ -349,13 +349,13 @@ public class Location implements Serializable {
     }
 
   }
-  
+
   @NotNull
   public static Location get(@NotNull String s)
   {
     return new Location(s);
   }
-  
+
   /**
    * 2012/03 格式：
    * 012345678901234567890123456789012345678901234567890
@@ -371,18 +371,18 @@ public class Location implements Serializable {
     sb.append(StringUtils.leftPad(String.valueOf(this.lngDeg), 3 , ' '));
     sb.append(StringUtils.leftPad(String.valueOf(this.lngMin), 2 , ' '));
     sb.append(AlignTools.INSTANCE.alignRight(this.lngSec, 5 , ' '));
-    
+
     sb.append(northSouth == NORTH ? '+' : '-');
     sb.append(StringUtils.leftPad(String.valueOf(this.latDeg), 2 , ' '));
     sb.append(StringUtils.leftPad(String.valueOf(this.latMin), 2 , ' '));
     sb.append(AlignTools.INSTANCE.alignRight(this.latSec, 5 , ' '));
-    
+
     sb.append(" ").append(this.altitudeMeter);
     //舊：sb.append(AlignUtil.alignRight(this.minuteOffset, 4 , ' '));
     sb.append(' ').append(tzid);
     if (minuteOffset != null)
       sb.append(" ").append(minuteOffset);
-    
+
     return sb.toString();
   }
 
@@ -400,7 +400,7 @@ public class Location implements Serializable {
       result = 0 - result;
     return result;
   }
-  
+
   /**
    * @return 取得緯度，in double，包含正負值
    */

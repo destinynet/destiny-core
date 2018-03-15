@@ -16,12 +16,32 @@ object ChartMntRules {
       this::reversed,
       this::parentTriplet,
       this::contTriplet,
-      this::robbery
+      this::robbery,
+      this::pure
       )
 
     return list.mapNotNull {
       it.invoke(chart)
     }.toList()
+  }
+
+  /**
+   * [ChartRule.八純卦]
+   * 「八純卦」在玄空風水中，屬大凶之局，指的是在玄空九個宮位中，山飛星與向飛星全部相同，
+   * 八純卦屬大凶之格局，會有剩孤家一人、妻離子散的情形，家破人亡之情形，
+   * 建議遇到此大凶格局的房屋，不要選擇居住於此房屋，
+   * 其實此格局只有在五運屋(坐東南朝西北)或(坐西北朝東南)有兼向時才會發生。
+   * 此局凶暴不宜，且無化解之法，因此避之方為上策。
+   */
+  fun pure(chart: IChartMnt): ChartRule.八純卦? {
+    return chart.blocks.all { block ->
+      block.mnt == block.dir
+    }.let {
+      if (it)
+        return@let ChartRule.八純卦
+      else
+        return@let null
+    }
   }
 
   /** 七星打劫 */
@@ -194,6 +214,9 @@ object ChartMntRules {
   　　　　　　　　
   ２６　９４　４８
   艮一　坎三　乾八
+
+   TODO : 另一種反吟 : 山飛星與向飛星對角合十，亦是為「反吟」的格局
+   詳見 http://www.grand-tao.org/wap/xuanzheninfo.php?id=15
    * */
   fun reversed(chart: IChartMnt): ChartRule.反吟? {
     return chart.getCenterBlock().let { cb ->
