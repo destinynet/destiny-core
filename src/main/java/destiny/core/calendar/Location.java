@@ -17,10 +17,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 
-import static destiny.core.calendar.Location.EastWest.EAST;
-import static destiny.core.calendar.Location.EastWest.WEST;
-import static destiny.core.calendar.Location.NorthSouth.NORTH;
-import static destiny.core.calendar.Location.NorthSouth.SOUTH;
+import static destiny.core.calendar.EastWest.EAST;
+import static destiny.core.calendar.EastWest.WEST;
+import static destiny.core.calendar.NorthSouth.NORTH;
+import static destiny.core.calendar.NorthSouth.SOUTH;
 
 public class Location implements Serializable {
 
@@ -466,67 +466,6 @@ public class Location implements Serializable {
   }
 
 
-  public enum EastWest {
-    EAST("Location.EAST"), WEST("Location.WEST");
-
-    private final static String resource = destiny.core.calendar.Location.class.getName();//"destiny.core.calendar.Location";
-
-    private final String nameKey;
-
-    EastWest(String nameKey) {
-      this.nameKey = nameKey;
-    }
-
-    @Override
-    public String toString() {
-      return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
-    }
-
-    public String toString(@NotNull Locale locale) {
-      return ResourceBundle.getBundle(resource, locale).getString(nameKey);
-    }
-
-    @NotNull
-    public static EastWest getEastWest(char c) {
-      if (c == 'E' || c == 'e')
-        return EAST;
-      if (c == 'W' || c == 'w')
-        return WEST;
-      throw new IllegalArgumentException("char '" + c + "' only accepts 'E' , 'e' , 'W' , or 'w'. ");
-    }
-  }
-
-  public enum NorthSouth {
-    NORTH("Location.NORTH"), SOUTH("Location.SOUTH");
-
-    private final static String resource =  Location.class.getName();
-
-    private final String nameKey;
-
-    NorthSouth(String nameKey) {
-      this.nameKey = nameKey;
-    }
-
-    @Override
-    public String toString() {
-      return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey);
-    }
-
-    public String toString(@NotNull Locale locale) {
-      return ResourceBundle.getBundle(resource, locale).getString(nameKey);
-    }
-
-    @NotNull
-    public static NorthSouth getNorthSouth(char c) {
-      if (c == 'N' || c == 'n')
-        return NORTH;
-      if (c == 'S' || c == 's')
-        return SOUTH;
-      throw new IllegalArgumentException("char '" + c + "' only accepts 'N' , 'n' , 'S' , or 's'. ");
-    }
-  }
-
-
   @Override
   public boolean equals(Object o) {
     if (this == o)
@@ -547,16 +486,12 @@ public class Location implements Serializable {
     return minuteOffset!=null;
   }
 
-  public Optional<Integer> getMinuteOffsetOptional() {
-    return Optional.ofNullable(minuteOffset);
-  }
-
 
   /**
    * 與 GMT 的時差 (分鐘)
    * {@link #minuteOffset} 的優先權高於 {@link #tzid}
    */
-  public int getMinuteOffset() {
+  public int getFinalMinuteOffset() {
     if (minuteOffset != null)
       return minuteOffset;
     else
@@ -564,7 +499,7 @@ public class Location implements Serializable {
   }
 
   public ZoneOffset getZoneOffset() {
-    int totalSeconds = getMinuteOffset()* 60;
+    int totalSeconds = getFinalMinuteOffset()* 60;
     return ZoneOffset.ofTotalSeconds(totalSeconds);
   }
 }

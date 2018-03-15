@@ -111,7 +111,7 @@ open class ContextColorCanvasWrapper(
       cc.add(緯度, 4, 25)
 
       cc.setText("換日：" + if (context.isChangeDayAfterZi) "子初換日" else "子正換日", 5, 1, "999999")
-      if (location.northSouth == Location.NorthSouth.SOUTH) {
+      if (location.northSouth == NorthSouth.SOUTH) {
         val yearMonthImpl = context.yearMonthImpl
         if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {
           cc.setText("南半球", 5, 35, "FF0000")

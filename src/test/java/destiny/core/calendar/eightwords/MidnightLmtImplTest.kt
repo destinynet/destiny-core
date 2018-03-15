@@ -5,8 +5,10 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.EastWest
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
+import destiny.core.calendar.NorthSouth
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -19,7 +21,7 @@ class MidnightLmtImplTest {
   fun testGetNextMidnight() {
 
     val impl = MidnightLmtImpl()
-    val location = Location(Location.EastWest.EAST, 121, 0, 0.0, Location.NorthSouth.NORTH, 25, 0, 0.0, TimeZone.getTimeZone("Asia/Taipei"))
+    val location = Location(EastWest.EAST, 121, 0, 0.0, NorthSouth.NORTH, 25, 0, 0.0, TimeZone.getTimeZone("Asia/Taipei"))
     var expected: ChronoLocalDateTime<*>
     var actual: ChronoLocalDateTime<*>
 

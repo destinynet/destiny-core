@@ -18,10 +18,10 @@ object LatDecorator {
   }
 }
 
-data class Lat(val northSouth: Location.NorthSouth, val deg: Int, val min: Int, val sec: Double) {
+data class Lat(val northSouth: NorthSouth, val deg: Int, val min: Int, val sec: Double) {
   companion object {
     fun of(value: Double): Lat {
-      val northSouth = if (value >= 0) Location.NorthSouth.NORTH else Location.NorthSouth.SOUTH
+      val northSouth = if (value >= 0) NorthSouth.NORTH else NorthSouth.SOUTH
 
       val deg = value.absoluteValue.toInt()
       val min = ((value.absoluteValue - deg) * 60).toInt()
@@ -40,7 +40,7 @@ class LatDecoratorTaiwan : Decorator<Double> {
     val lat = Lat.of(value)
 
     return with(StringBuilder()) {
-      append(if (lat.northSouth == Location.NorthSouth.NORTH) "北緯" else "南緯")
+      append(if (lat.northSouth == NorthSouth.NORTH) "北緯" else "南緯")
       append("：")
       append("%02d".format(lat.deg)).append("度")
       append("%02d".format(lat.min)).append("分")
@@ -65,7 +65,7 @@ class LatDecoratorChina : Decorator<Double> {
     val lat = Lat.of(value)
 
     return with(StringBuilder()) {
-      append(if (lat.northSouth == Location.NorthSouth.NORTH) "北纬" else "南纬")
+      append(if (lat.northSouth == NorthSouth.NORTH) "北纬" else "南纬")
       append("：")
       append("%02d".format(lat.deg)).append("度")
       append("%02d".format(lat.min)).append("分")
@@ -101,7 +101,7 @@ class LatDecoratorEnglish : Decorator<Double> {
         else it
       }
       append(secString).append("\"")
-      append(if (lat.northSouth == Location.NorthSouth.NORTH) "N" else "S")
+      append(if (lat.northSouth == NorthSouth.NORTH) "N" else "S")
     }.toString()
   }
 

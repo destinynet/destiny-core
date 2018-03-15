@@ -18,10 +18,10 @@ object LngDecorator {
   }
 }
 
-data class Lng(val eastWest: Location.EastWest, val deg: Int, val min: Int, val sec: Double) {
+data class Lng(val eastWest: EastWest, val deg: Int, val min: Int, val sec: Double) {
   companion object {
     fun of(value: Double): Lng {
-      val eastWest = if (value >= 0) Location.EastWest.EAST else Location.EastWest.WEST
+      val eastWest = if (value >= 0) EastWest.EAST else EastWest.WEST
 
       val deg = value.absoluteValue.toInt()
       val min = ((value.absoluteValue - deg) * 60).toInt()
@@ -41,7 +41,7 @@ class LngDecoratorTaiwan : Decorator<Double> {
     val lng = Lng.of(value)
 
     return with(StringBuilder()) {
-      append(if (lng.eastWest == Location.EastWest.EAST) "東經" else "西經")
+      append(if (lng.eastWest == EastWest.EAST) "東經" else "西經")
       append("：")
       append("%03d".format(lng.deg)).append("度")
       append("%02d".format(lng.min)).append("分")
@@ -67,7 +67,7 @@ class LngDecoratorChina : Decorator<Double> {
     val lng = Lng.of(value)
 
     return with(StringBuilder()) {
-      append(if (lng.eastWest == Location.EastWest.EAST) "东经" else "西经")
+      append(if (lng.eastWest == EastWest.EAST) "东经" else "西经")
       append("：")
       append("%03d".format(lng.deg)).append("度")
       append("%02d".format(lng.min)).append("分")
@@ -103,7 +103,7 @@ class LngDecoratorEnglish : Decorator<Double> {
         else it
       }
       append(secString).append("\"")
-      append(if (lng.eastWest == Location.EastWest.EAST) "E" else "W")
+      append(if (lng.eastWest == EastWest.EAST) "E" else "W")
     }.toString()
   }
 
