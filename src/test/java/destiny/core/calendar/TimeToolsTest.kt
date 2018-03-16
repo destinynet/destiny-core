@@ -147,7 +147,7 @@ class TimeToolsTest {
    */
   @Test
   fun testGetLmtFromGmt() {
-    val loc = Location(121.30, 25.03, TimeZone.getTimeZone("Asia/Taipei"))
+    val loc = Location(121.30, 25.03, "Asia/Taipei")
     var gmt: ChronoLocalDateTime<*>
     var lmt: ChronoLocalDateTime<*>
 

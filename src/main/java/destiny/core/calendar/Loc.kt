@@ -14,17 +14,16 @@ import kotlin.math.abs
 interface ILoc {
   val longitude: Double
   val latitude: Double
-  val tzid: String
+  val tzid: String?
 
   /** 強制覆蓋與 GMT 的時差 , 優先權高於 [tzid]  */
   val minuteOffset: Int?
-  //get() = field ?: TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000)
 
   val hasMinuteOffset: Boolean
     get() = minuteOffset != null
 
   val finalMinuteOffset: Int
-    get() = if (minuteOffset != null) minuteOffset!! else TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000)
+    get() = minuteOffset ?: TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000)
 
   /** 高度（公尺） */
   val altitudeMeter: Double?
@@ -101,18 +100,15 @@ interface ILoc {
       append(' ').append(tzid)
       if (minuteOffset != null)
         append(" ").append(minuteOffset.toString())
-    } .toString()
-
-  //  override fun toString() : String {
-  //    LocationDecorator.getOutputString(this, Locale.getDefault());
-  //  }
+    }.toString()
 }
 
 data class Location(override val longitude: Double,
                     override val latitude: Double,
-                    override val tzid: String,
-                    override val minuteOffset: Int?,
+                    override val tzid: String?,
+                    override val minuteOffset: Int? = null,
                     override val altitudeMeter: Double? = 0.0) : ILoc, Serializable {
+
 
   /**
    * 最詳盡的 constructor
@@ -122,56 +118,49 @@ data class Location(override val longitude: Double,
    * 012345678901234567890123456789012345678901234567890
    * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ [minuteOffset]
    * */
-  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
-              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
-              altitudeMeter: Double, tzid: String, minuteOffset: Int?) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+  constructor(eastWest: EastWest,
+              lngDeg: Int,
+              lngMin: Int,
+              lngSec: Double? = 0.0,
+              northSouth: NorthSouth,
+              latDeg: Int,
+              latMin: Int,
+              latSec: Double? = 0.0,
+              tzid: String,
+              minuteOffset: Int? = null,
+              altitudeMeter: Double? = 0.0) : this(
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec!! / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec!! / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
 
-  /** 省去 minuteOffset */
-  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
-              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
-              altitudeMeter: Double, tzid: String) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
-    tzid, null, altitudeMeter)
-
   /** 承上  , 以 TimeZone 傳入 , 轉為 tzid */
-  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
-              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
-              altitudeMeter: Double, timeZone: TimeZone) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
-    timeZone.id, null, altitudeMeter)
+  @Deprecated("")
+  constructor(eastWest: EastWest,
+              lngDeg: Int,
+              lngMin: Int,
+              lngSec: Double? = 0.0,
+              northSouth: NorthSouth,
+              latDeg: Int,
+              latMin: Int,
+              latSec: Double? = 0.0,
+              timeZone: TimeZone,
+              altitudeMeter: Double? = 0.0) : this(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec,
+                                                   timeZone.id, null, altitudeMeter)
 
 
   /** 大家比較常用的，只有「度、分」。省略「秒」以及「高度」 */
   constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int,
               northSouth: NorthSouth, latDeg: Int, latMin: Int,
-              tzid: String) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    (latDeg.toDouble() + latMin.toDouble() / 60.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
-    tzid, null, null)
-
-
-  /** 省略高度 */
-  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
-              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
-              tzid: String) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
-    tzid, null, null)
+              tzid: String) :
+    this(eastWest, lngDeg, lngMin, 0.0, northSouth, latDeg, latMin, 0.0, tzid)
 
 
   /** 承上 , 以 TimeZone 傳入 */
   constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
               northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
-              timeZone: TimeZone) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
-    timeZone.id, null, null)
+              timeZone: TimeZone) :
+    this(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, timeZone.id)
 
 
   /** 比較省略的 constructor  , 去除東西經、南北緯 , 其值由 經度/緯度的正負去判斷 */
@@ -180,33 +169,24 @@ data class Location(override val longitude: Double,
               timeZone: TimeZone) : this(
     (abs(lngDeg).toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (lngDeg < 0) 0 - it else it },
     (abs(latDeg).toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (latDeg < 0) 0 - it else it },
-    timeZone.id, null, null)
+    timeZone.id, null , 0.0)
 
 
   /** 較省略的 constructor , 度數以 double 取代 */
   constructor(eastWest: EastWest, lng: Double,
               northSouth: NorthSouth, lat: Double,
-              altitudeMeter: Double, tzid: String, minuteOffset: Int?) : this(
-
+              tzid: String, minuteOffset: Int? = null, altitudeMeter: Double? = 0.0) : this(
     lng.let { if (eastWest == EastWest.WEST) 0 - it else it },
     lat.let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
-  constructor(lng: Double, lat: Double, tzid: String, minuteOffset: Int?) : this(
-    lng, lat, tzid, minuteOffset, null)
+  constructor(lng: Double, lat: Double, tzid: String? = null, altitudeMeter: Double? = 0.0) :
+    this(lng, lat, tzid, null, altitudeMeter)
 
+  constructor(lng: Double, lat: Double, timeZone: TimeZone) : this(lng, lat, timeZone.id, null , null)
 
-  constructor(lng: Double, lat: Double, altitudeMeter: Double, tzid: String? = null) :
-    this(lng, lat, tzid ?: "Asia/Taipei", null, altitudeMeter)
-
-  constructor(lng: Double, lat: Double, tzid: String) : this(lng, lat, tzid, null)
-
-  constructor(lng: Double, lat: Double, timeZone: TimeZone, minuteOffset: Int?) :
-    this(lng, lat, timeZone.id, minuteOffset)
-
-  constructor(lng: Double, lat: Double, timeZone: TimeZone) : this(lng, lat, timeZone.id)
-
-  constructor(lng: Double, lat: Double, minuteOffset: Int) : this(lng, lat, "Asia/Taipei", minuteOffset)
+  /** 某些環境，時區不明，但有 [minuteOffset] */
+  constructor(lng: Double, lat: Double, minuteOffset: Int) : this(lng, lat, null, minuteOffset)
 
 
   companion object {
@@ -270,7 +250,8 @@ data class Location(override val longitude: Double,
         }
       }
 
-      return Location(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, altitudeMeter, tzid, minuteOffset)
+      return Location(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, tzid, minuteOffset,
+                      altitudeMeter)
     } // fromDebugString
 
 
@@ -294,10 +275,9 @@ data class Location(override val longitude: Double,
       // en_GB , 倫敦
       Locale.UK to Location(EastWest.WEST, 0, 7, NorthSouth.NORTH, 51, 30, "Europe/London"),
       // en_HK , 香港
-      Locale("en", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, 0.0, "Asia/Hong_Kong",
-                                     null),
+      Locale("en", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, "Asia/Hong_Kong"),
       // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
-      Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, 0.0, "Europe/Dublin", null),
+      Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, "Europe/Dublin"),
       // en_MY , 馬來西亞 , 吉隆坡
       Locale("en", "MY") to Location(EastWest.EAST, 101, 42, NorthSouth.NORTH, 3, 8, "Asia/Kuala_Lumpur"),
       // en_NZ , 紐西蘭 , 奧克蘭 Auckland (最大城市)
@@ -321,7 +301,7 @@ data class Location(override val longitude: Double,
       // ja , 東京
       Locale.JAPANESE to Location(EastWest.EAST, 139, 46, 0.0, NorthSouth.NORTH, 35, 40, 50.0, "Asia/Tokyo"),
       // ja_JP , 東京
-      Locale.JAPAN to Location(EastWest.EAST, 139, 45, 0.0, NorthSouth.NORTH, 35, 40, 0.0, "Asia/Tokyo"),
+      Locale.JAPAN to Location(EastWest.EAST, 139, 45, NorthSouth.NORTH, 35, 40, "Asia/Tokyo"),
       // ko , 首爾
       Locale.KOREAN to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
       // ko_KR , 首爾
@@ -331,8 +311,7 @@ data class Location(override val longitude: Double,
       // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
       Locale.CHINA to Location(EastWest.EAST, 116, 23, NorthSouth.NORTH, 39, 55, "Asia/Shanghai"),
       // zh_HK , 香港
-      Locale("zh", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, 0.0, "Asia/Hong_Kong",
-                                     null),
+      Locale("zh", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, "Asia/Hong_Kong"),
       // zh_MO , 澳門
       Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
       // zh_SG , 新加坡
@@ -350,8 +329,8 @@ data class Location(override val longitude: Double,
 
     fun getLongitude(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
       return (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let {
-        if (ew==EastWest.WEST)
-          0-it
+        if (ew == EastWest.WEST)
+          0 - it
         else
           it
       }
@@ -360,7 +339,7 @@ data class Location(override val longitude: Double,
     fun getLatitude(nw: NorthSouth, latDeg: Int, latMin: Int, latSec: Double): Double {
       return (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let {
         if (nw == NorthSouth.SOUTH)
-          0-it
+          0 - it
         else
           it
       }

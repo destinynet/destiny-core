@@ -36,7 +36,9 @@ class LocationTest {
     var expected: Location
 
     actual = Location(-12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120))
-    expected = Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
+    println("actual = $actual")
+    expected = Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id )
+    println("expected = $expected")
     Assert.assertEquals(expected, actual)
 
     actual = Location(12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120))
@@ -57,18 +59,20 @@ class LocationTest {
   fun testLocationDebugString() {
     var location: Location
     var expected: String
-    location = Location(EastWest.EAST, 121, 30, 12.30, NorthSouth.NORTH, 25, 3, 12.30, 12.3456, TimeZoneUtils.getTimeZone(480).id)
+    location = Location(EastWest.EAST, 121, 30, 12.30, NorthSouth.NORTH, 25, 3, 12.30,
+                        TimeZoneUtils.getTimeZone(480), 12.3456)
     expected = "+1213012.30+25 312.30 12.3456 CTT"
 
     Assert.assertEquals(expected, location.debugString)
 
     location =
-      Location(EastWest.EAST, 121, 30, 12.33, NorthSouth.NORTH, 25, 3, 12.33, 0.0, TimeZoneUtils.getTimeZone(-60).id)
+      Location(EastWest.EAST, 121, 30, 12.33, NorthSouth.NORTH, 25, 3, 12.33, TimeZoneUtils.getTimeZone(-60).id)
     expected = "+1213012.34+25 312.34 0.0 Etc/GMT+1"
     Assert.assertEquals(expected, location.debugString)
 
-    location = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, -1000.0,
-                        TimeZoneUtils.getTimeZone(-60).id)
+    location = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34,
+                        TimeZoneUtils.getTimeZone(-60),
+                        -1000.0)
     expected = "+1213012.34+25 312.34 -1000.0 Etc/GMT+1"
     Assert.assertEquals(expected, location.debugString)
 
@@ -83,27 +87,27 @@ class LocationTest {
     var expected: Location
 
     location = Location.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei")
-    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei")
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", null , 12.3456)
     Assert.assertEquals(expected, location)
 
     //強制設定 minuteOffset = 0
     location = Location.fromDebugString(location.debugString + " 0")
-    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei", 0)
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", 0, 12.3456)
     Assert.assertEquals(expected, location)
 
     location = Location.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei 60")
-    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei", 60)
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", 60, 12.3456)
     Assert.assertEquals(expected, location)
 
     location = Location.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei -480")
-    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei", -480)
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", -480, 12.3456)
     Assert.assertEquals(expected, location)
   }
 
   @Test
   fun testLocationEastWestDoubleNorthSouthDoubleInt() {
     val location: Location
-    location = Location(EastWest.EAST, 121.51, NorthSouth.NORTH, 25.33, 0.0, "Asia/Taipei", null)
+    location = Location(EastWest.EAST, 121.51, NorthSouth.NORTH, 25.33, "Asia/Taipei", null, 0.0)
     Assert.assertEquals(121, location.lngDeg.toLong())
     Assert.assertEquals(30, location.lngMin.toLong())
     Assert.assertEquals(36.0, location.lngSec, 0.0)
