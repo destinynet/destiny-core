@@ -157,7 +157,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
             */
       if (hemisphereBy == HemisphereBy.EQUATOR) {
         //如果是依據赤道來區分南北半球
-        if (!location.isNorth)
+        if (location.northSouth == NorthSouth.SOUTH)
           result月支 = Branch.get(monthIndex + 6)
         else
           result月支 = 月支
@@ -169,7 +169,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
 
         if (solarEquatorialDegree >= 0) {
           //如果太陽在赤北緯
-          if (location.isNorth) {
+          if (location.northSouth==NorthSouth.NORTH) {
             //地點在北半球
             if (location.latitude >= solarEquatorialDegree)
               result月支 = 月支
@@ -181,7 +181,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
           }
         } else {
           //太陽在赤南緯
-          if (!location.isNorth) {
+          if (location.northSouth== NorthSouth.SOUTH) {
             //地點在南半球
             if (location.latitude <= solarEquatorialDegree)
               result月支 = Branch.get(monthIndex + 6) //所在地緯度高於 太陽赤南緯，真正的南半球

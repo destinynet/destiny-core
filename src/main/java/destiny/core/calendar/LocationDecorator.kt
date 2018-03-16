@@ -36,7 +36,7 @@ class LocationDecoratorTaiwan : Decorator<Location> {
 
     sb.append("高度 ").append(value.altitudeMeter).append(" 公尺.")
     sb.append(" 時區 ").append(value.timeZone.id)
-    if (value.hasMinuteOffset())
+    if (value.hasMinuteOffset)
       sb.append(" 時差 ").append(value.finalMinuteOffset).append(" 分鐘.")
 
     return sb.toString()
@@ -55,7 +55,7 @@ class LocationDecoratorChina : Decorator<Location> {
 
     sb.append("高度 ").append(value.altitudeMeter).append(" 米")
     sb.append(" 时区 ").append(value.timeZone.id)
-    if (value.hasMinuteOffset())
+    if (value.hasMinuteOffset)
       sb.append(" 时差 ").append(value.finalMinuteOffset).append(" 分钟.")
 
     return sb.toString()

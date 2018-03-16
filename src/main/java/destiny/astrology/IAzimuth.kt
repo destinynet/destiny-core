@@ -16,7 +16,7 @@ import java.time.chrono.ChronoLocalDateTime
 interface IAzimuth {
 
   /** 由黃經 , 黃緯 , 求得地平方位角  */
-  fun getAzimuthFromEcliptic(eclipticPosition: Position, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double, temperature: Double, pressure: Double): Azimuth
+  fun getAzimuthFromEcliptic(eclipticPosition: Position, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double?=0.0, temperature: Double, pressure: Double): Azimuth
 
   fun getAzimuthFromEcliptic(eclipticPosition: Position, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double): Azimuth {
     return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, geoLng, geoLat, geoAlt, 0.0, 1013.25)
@@ -33,7 +33,7 @@ interface IAzimuth {
   }
 
   /** 由黃經 , 黃緯 , 求得地平方位角  */
-  fun getAzimuthFromEquator(equatorPosition: Position, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double, temperature: Double, pressure: Double): Azimuth
+  fun getAzimuthFromEquator(equatorPosition: Position, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double?=0.0, temperature: Double, pressure: Double): Azimuth
 
   fun getAzimuthFromEquator(equatorPosition: Position, gmtJulDay: Double, location: Location, temperature: Double, pressure: Double): Azimuth {
     return getAzimuthFromEquator(equatorPosition, gmtJulDay, location.longitude, location.latitude, location.altitudeMeter, temperature, pressure)

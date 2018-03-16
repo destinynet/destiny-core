@@ -25,7 +25,7 @@ interface IEclipse {
   // ========================================================================================
 
   /** 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2)  */
-  fun getNextSolarEclipse(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation>
+  fun getNextSolarEclipse(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double?=0.0, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation>
 
   fun getNextSolarEclipse(fromGmtJulDay: Double, loc: Location, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation> {
     return getNextSolarEclipse(fromGmtJulDay, loc.longitude, loc.latitude, loc.altitudeMeter, forward)

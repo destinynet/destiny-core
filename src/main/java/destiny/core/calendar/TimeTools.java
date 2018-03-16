@@ -145,7 +145,7 @@ public class TimeTools implements Serializable {
   }
 
   public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , Location loc) {
-    if (loc.hasMinuteOffset()) {
+    if (loc.getHasMinuteOffset()) {
       int secOffset = loc.getFinalMinuteOffset() * 60;
       return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
     } else {
@@ -183,7 +183,7 @@ public class TimeTools implements Serializable {
   }
 
   public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , Location loc) {
-    if (loc.hasMinuteOffset()) {
+    if (loc.getHasMinuteOffset()) {
       int secOffset = loc.getFinalMinuteOffset() * 60;
       return gmt.plus(secOffset , ChronoUnit.SECONDS).atZone(loc.getTimeZone().toZoneId()).toLocalDateTime();
     }
@@ -347,7 +347,7 @@ public class TimeTools implements Serializable {
     double zoneSecondOffset = Math.abs(secondsOffset);
     double longitudeSecondOffset = absLng * 4 * 60; // 經度與GMT的時差 (秒) , 一分鐘四度
 
-    if (location.isEast()) {
+    if (location.getEastWest()==EastWest.EAST) {
       double seconds = longitudeSecondOffset - zoneSecondOffset;
       Pair<Integer , Integer> pair = splitSecond(seconds);
       return lmt.plus(pair.getFirst() , ChronoUnit.SECONDS).plus(pair.getSecond() , ChronoUnit.NANOS);

@@ -23,7 +23,7 @@ interface IStarPosition<out T : Position> {
   fun getPosition(star: Star, gmtJulDay: Double, centric: Centric, coordinate: Coordinate): T
 
   /** 同樣是求 Position , 但多傳入地點、溫度、壓力 等資料 , 在此直接 discard 掉  */
-  fun getPosition(star: Star, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): T {
+  fun getPosition(star: Star, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double?=0.0, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): T {
     return getPosition(star, gmtJulDay, centric, coordinate)
   }
 

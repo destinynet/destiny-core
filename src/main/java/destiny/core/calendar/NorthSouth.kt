@@ -18,7 +18,7 @@ enum class NorthSouth(private val nameKey: String) {
 
   companion object {
 
-    private val resource = Location::class.java.name
+    private val resource = NorthSouth::class.java.name
 
     fun getNorthSouth(c: Char): NorthSouth {
       if (c == 'N' || c == 'n')

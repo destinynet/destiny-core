@@ -15,7 +15,7 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IStarPositionWithAzimuth : IStarPosition<Position> {
 
-  override fun getPosition(star: Star, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): PositionWithAzimuth
+  override fun getPosition(star: Star, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double?, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): PositionWithAzimuth
 
   fun getPositionFromGmt(star: Star, gmt: ChronoLocalDateTime<*>, location: Location, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): PositionWithAzimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)

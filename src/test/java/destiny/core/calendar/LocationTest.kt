@@ -6,8 +6,8 @@ package destiny.core.calendar
 
 import destiny.tools.location.TimeZoneUtils
 import org.junit.Assert
-import kotlin.test.Test
 import org.slf4j.LoggerFactory
+import kotlin.test.Test
 
 class LocationTest {
 
@@ -57,13 +57,13 @@ class LocationTest {
   fun testLocationDebugString() {
     var location: Location
     var expected: String
-    location = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456,
-                        TimeZoneUtils.getTimeZone(480).id)
-    expected = "+1213012.34+25 312.34 12.3456 CTT"
+    location = Location(EastWest.EAST, 121, 30, 12.30, NorthSouth.NORTH, 25, 3, 12.30, 12.3456, TimeZoneUtils.getTimeZone(480).id)
+    expected = "+1213012.30+25 312.30 12.3456 CTT"
+
     Assert.assertEquals(expected, location.debugString)
 
     location =
-      Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 0.0, TimeZoneUtils.getTimeZone(-60).id)
+      Location(EastWest.EAST, 121, 30, 12.33, NorthSouth.NORTH, 25, 3, 12.33, 0.0, TimeZoneUtils.getTimeZone(-60).id)
     expected = "+1213012.34+25 312.34 0.0 Etc/GMT+1"
     Assert.assertEquals(expected, location.debugString)
 
@@ -82,20 +82,20 @@ class LocationTest {
     var location: Location
     var expected: Location
 
-    location = Location("+1213012.34+25 312.34 12.3456 Asia/Taipei")
+    location = Location.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei")
     expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei")
     Assert.assertEquals(expected, location)
 
     //強制設定 minuteOffset = 0
-    location = Location(location.debugString + " 0")
+    location = Location.fromDebugString(location.debugString + " 0")
     expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei", 0)
     Assert.assertEquals(expected, location)
 
-    location = Location("+1213012.34+25 312.34 12.3456 Asia/Taipei 60")
+    location = Location.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei 60")
     expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei", 60)
     Assert.assertEquals(expected, location)
 
-    location = Location("+1213012.34+25 312.34 12.3456 Asia/Taipei -480")
+    location = Location.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei -480")
     expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, 12.3456, "Asia/Taipei", -480)
     Assert.assertEquals(expected, location)
   }

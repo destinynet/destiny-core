@@ -4,6 +4,8 @@
 package destiny.core.calendar
 
 import destiny.tools.AlignTools
+import destiny.tools.LocaleTools
+import destiny.tools.location.TimeZoneUtils
 import java.io.Serializable
 import java.time.ZoneId
 import java.util.*
@@ -25,7 +27,7 @@ interface ILoc {
     get() = if (minuteOffset != null) minuteOffset!! else TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000)
 
   /** 高度（公尺） */
-  val altitudeMeter: Int?
+  val altitudeMeter: Double?
 
   val eastWest: EastWest
     get() =
@@ -84,7 +86,7 @@ interface ILoc {
    * 尾方的 minuteOffset 為 optional , 如果有的話，會 override Asia/Taipei 的 minuteOffset
    */
   val debugString: String
-    get() = with(StringBuffer()) {
+    get() = StringBuffer().apply {
       append(if (eastWest == EastWest.EAST) '+' else '-')
       append(AlignTools.leftPad(lngDeg.toString(), 3, ' '))
       append(AlignTools.leftPad(lngMin.toString(), 2, ' '))
@@ -99,15 +101,276 @@ interface ILoc {
       append(' ').append(tzid)
       if (minuteOffset != null)
         append(" ").append(minuteOffset.toString())
-    }.toString()
+    } .toString()
 
   //  override fun toString() : String {
   //    LocationDecorator.getOutputString(this, Locale.getDefault());
   //  }
 }
 
-data class Loc(override val longitude: Double,
-               override val latitude: Double,
-               override val tzid: String,
-               override val minuteOffset: Int?,
-               override val altitudeMeter: Int? = 0) : ILoc, Serializable
+data class Location(override val longitude: Double,
+                    override val latitude: Double,
+                    override val tzid: String,
+                    override val minuteOffset: Int?,
+                    override val altitudeMeter: Double? = 0.0) : ILoc, Serializable {
+
+  /**
+   * 最詳盡的 constructor
+   *
+   * 參考 [debugString]
+   * 2012/03 格式：
+   * 012345678901234567890123456789012345678901234567890
+   * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ [minuteOffset]
+   * */
+  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
+              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
+              altitudeMeter: Double, tzid: String, minuteOffset: Int?) : this(
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    tzid, minuteOffset, altitudeMeter)
+
+
+  /** 省去 minuteOffset */
+  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
+              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
+              altitudeMeter: Double, tzid: String) : this(
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    tzid, null, altitudeMeter)
+
+  /** 承上  , 以 TimeZone 傳入 , 轉為 tzid */
+  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
+              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
+              altitudeMeter: Double, timeZone: TimeZone) : this(
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    timeZone.id, null, altitudeMeter)
+
+
+  /** 大家比較常用的，只有「度、分」。省略「秒」以及「高度」 */
+  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int,
+              northSouth: NorthSouth, latDeg: Int, latMin: Int,
+              tzid: String) : this(
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    tzid, null, null)
+
+
+  /** 省略高度 */
+  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
+              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
+              tzid: String) : this(
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    tzid, null, null)
+
+
+  /** 承上 , 以 TimeZone 傳入 */
+  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
+              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
+              timeZone: TimeZone) : this(
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    timeZone.id, null, null)
+
+
+  /** 比較省略的 constructor  , 去除東西經、南北緯 , 其值由 經度/緯度的正負去判斷 */
+  constructor(lngDeg: Int, lngMin: Int, lngSec: Double,
+              latDeg: Int, latMin: Int, latSec: Double,
+              timeZone: TimeZone) : this(
+    (abs(lngDeg).toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (lngDeg < 0) 0 - it else it },
+    (abs(latDeg).toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (latDeg < 0) 0 - it else it },
+    timeZone.id, null, null)
+
+
+  /** 較省略的 constructor , 度數以 double 取代 */
+  constructor(eastWest: EastWest, lng: Double,
+              northSouth: NorthSouth, lat: Double,
+              altitudeMeter: Double, tzid: String, minuteOffset: Int?) : this(
+
+    lng.let { if (eastWest == EastWest.WEST) 0 - it else it },
+    lat.let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    tzid, minuteOffset, altitudeMeter)
+
+  constructor(lng: Double, lat: Double, tzid: String, minuteOffset: Int?) : this(
+    lng, lat, tzid, minuteOffset, null)
+
+
+  constructor(lng: Double, lat: Double, altitudeMeter: Double, tzid: String? = null) :
+    this(lng, lat, tzid ?: "Asia/Taipei", null, altitudeMeter)
+
+  constructor(lng: Double, lat: Double, tzid: String) : this(lng, lat, tzid, null)
+
+  constructor(lng: Double, lat: Double, timeZone: TimeZone, minuteOffset: Int?) :
+    this(lng, lat, timeZone.id, minuteOffset)
+
+  constructor(lng: Double, lat: Double, timeZone: TimeZone) : this(lng, lat, timeZone.id)
+
+  constructor(lng: Double, lat: Double, minuteOffset: Int) : this(lng, lat, "Asia/Taipei", minuteOffset)
+
+
+  companion object {
+    fun fromDebugString(s: String): Location {
+      val eastWest: EastWest
+      val ew = s[0]
+      eastWest = when (ew) {
+        '+' -> EastWest.EAST
+        '-' -> EastWest.WEST
+        else -> throw RuntimeException("EW not correct : $ew")
+      }
+
+      val lngDeg = Integer.valueOf(s.substring(1, 4).trim { it <= ' ' })
+      val lngMin = Integer.valueOf(s.substring(4, 6).trim { it <= ' ' })
+      val lngSec = java.lang.Double.valueOf(s.substring(6, 11).trim { it <= ' ' })
+
+      val northSouth: NorthSouth
+      val ns = s[11]
+      northSouth = when (ns) {
+        '+' -> NorthSouth.NORTH
+        '-' -> NorthSouth.SOUTH
+        else -> throw RuntimeException("ns not correct : $ns")
+      }
+
+      val latDeg = Integer.valueOf(s.substring(12, 14).trim { it <= ' ' })
+      val latMin = Integer.valueOf(s.substring(14, 16).trim { it <= ' ' })
+      val latSec = java.lang.Double.valueOf(s.substring(16, 21).trim { it <= ' ' })
+
+      //包含了 高度以及時區
+      val altitudeAndTimezone = s.substring(21)
+      //System.out.println("altitudeAndTimezone = '" + altitudeAndTimezone+"'");
+
+      var st = StringTokenizer(altitudeAndTimezone, " ")
+      val firstToken = st.nextToken()
+      // 2012/3 之後 , restToken 可能還會 append minuteOffset
+      val restTokens = altitudeAndTimezone.substring(altitudeAndTimezone.indexOf(firstToken) + firstToken.length + 1)
+        .trim { it <= ' ' }
+      //System.out.println("firstToken = '" + firstToken + "' , rest = '" + restTokens+"'");
+
+      var altitudeMeter: Double
+      var tzid: String
+      var minuteOffset: Int? = null
+      //檢查 restTokens 是否能轉為 double，如果能的話，代表是舊款 , 否則就是新款
+      try {
+        altitudeMeter = java.lang.Double.parseDouble(restTokens)
+        //parse 成功，代表舊款
+        tzid = if (firstToken[0] == '+')
+          TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken.substring(1))).id
+        else
+          TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken)).id
+      } catch (e: NumberFormatException) {
+        //新款
+        altitudeMeter = java.lang.Double.parseDouble(firstToken)
+        st = StringTokenizer(restTokens, " ")
+        if (st.countTokens() == 1)
+          tzid = restTokens
+        else {
+          // 2012/3 格式 : timeZone 之後，還附加 minuteOffset
+          tzid = st.nextToken()
+          minuteOffset = Integer.valueOf(st.nextToken())
+        }
+      }
+
+      return Location(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, altitudeMeter, tzid, minuteOffset)
+    } // fromDebugString
+
+
+    private val locMap = mapOf(
+      // de , 柏林
+      Locale.GERMAN to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
+      // de_DE , 柏林
+      Locale.GERMANY to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
+      // en , 紐約 , 40.758899, -73.985131 , 時報廣場
+      Locale.ENGLISH to Location(-73.985131, 40.758899, "America/New_York"),
+      // en_US , 紐約
+      Locale.US to Location(-73.985131, 40.758899, "America/New_York"),
+      // en_AU , 雪梨
+      Locale("en", "AU") to Location(EastWest.EAST, 151, 12, 40.0, NorthSouth.SOUTH, 33, 51, 36.0, "Australia/Sydney"),
+      // en_BW , 波札那 Botswana
+      Locale("en", "BW") to Location(EastWest.EAST, 25, 55, NorthSouth.SOUTH, 24, 40, "Africa/Gaborone"),
+      // en_CA , 多倫多
+      Locale.CANADA to Location(EastWest.WEST, 79, 24, NorthSouth.NORTH, 43, 40, "America/Toronto"),
+      // en_DK , 丹麥 哥本哈根 Copenhagen
+      Locale("en", "DK") to Location(EastWest.EAST, 12, 34, NorthSouth.NORTH, 55, 43, "Europe/Copenhagen"),
+      // en_GB , 倫敦
+      Locale.UK to Location(EastWest.WEST, 0, 7, NorthSouth.NORTH, 51, 30, "Europe/London"),
+      // en_HK , 香港
+      Locale("en", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, 0.0, "Asia/Hong_Kong",
+                                     null),
+      // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
+      Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, 0.0, "Europe/Dublin", null),
+      // en_MY , 馬來西亞 , 吉隆坡
+      Locale("en", "MY") to Location(EastWest.EAST, 101, 42, NorthSouth.NORTH, 3, 8, "Asia/Kuala_Lumpur"),
+      // en_NZ , 紐西蘭 , 奧克蘭 Auckland (最大城市)
+      Locale("en", "NZ") to Location(EastWest.EAST, 174, 45, NorthSouth.SOUTH, 36, 52, "Pacific/Auckland"),
+      // en_PH , 菲律賓 , 馬尼拉
+      Locale("en", "PH") to Location(EastWest.EAST, 121, 0, NorthSouth.NORTH, 14, 35, "Asia/Manila"),
+      // en_SG , 新加坡
+      Locale("en", "SG") to Location(EastWest.EAST, 103, 51, NorthSouth.NORTH, 1, 17, "Asia/Singapore"),
+      // en_ZA , 南非 , 約翰尼斯堡
+      Locale("en", "ZA") to Location(EastWest.EAST, 27, 54, NorthSouth.SOUTH, 26, 8, "Africa/Johannesburg"),
+      // en_ZW , 辛巴威 , 哈拉雷
+      Locale("en", "ZW") to Location(EastWest.EAST, 31, 3, NorthSouth.SOUTH, 17, 50, "Africa/Harare"),
+      // fr , 巴黎
+      Locale.FRENCH to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
+      // fr_FR , 巴黎
+      Locale.FRANCE to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
+      // it , 羅馬
+      Locale.ITALIAN to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
+      // it_IT , 羅馬
+      Locale.ITALY to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
+      // ja , 東京
+      Locale.JAPANESE to Location(EastWest.EAST, 139, 46, 0.0, NorthSouth.NORTH, 35, 40, 50.0, "Asia/Tokyo"),
+      // ja_JP , 東京
+      Locale.JAPAN to Location(EastWest.EAST, 139, 45, 0.0, NorthSouth.NORTH, 35, 40, 0.0, "Asia/Tokyo"),
+      // ko , 首爾
+      Locale.KOREAN to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
+      // ko_KR , 首爾
+      Locale.KOREA to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
+      // zh , 北京
+      Locale.CHINESE to Location(116.397, 39.9075, "Asia/Harbin"),
+      // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
+      Locale.CHINA to Location(EastWest.EAST, 116, 23, NorthSouth.NORTH, 39, 55, "Asia/Shanghai"),
+      // zh_HK , 香港
+      Locale("zh", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, 0.0, "Asia/Hong_Kong",
+                                     null),
+      // zh_MO , 澳門
+      Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
+      // zh_SG , 新加坡
+      Locale("zh", "SG") to Location(EastWest.EAST, 103, 51, NorthSouth.NORTH, 1, 17, "Asia/Singapore"),
+      // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
+      Locale.TAIWAN to Location(121.517668, 25.039030, "Asia/Taipei")
+                              )
+
+
+    fun of(locale: Locale): Location {
+      val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
+      val loc = locMap[matchedLocale]!!
+      return Location(loc.longitude, loc.latitude, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
+    }
+
+    fun getLongitude(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
+      return (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let {
+        if (ew==EastWest.WEST)
+          0-it
+        else
+          it
+      }
+    }
+
+    fun getLatitude(nw: NorthSouth, latDeg: Int, latMin: Int, latSec: Double): Double {
+      return (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let {
+        if (nw == NorthSouth.SOUTH)
+          0-it
+        else
+          it
+      }
+    }
+
+
+  }
+
+  override fun toString(): String {
+    return LocationDecorator.getOutputString(this, Locale.getDefault())
+    //return "Loc(longitude=$longitude, latitude=$latitude, tzid='$tzid', minuteOffset=$minuteOffset, altitudeMeter=$altitudeMeter)"
+  }
+}

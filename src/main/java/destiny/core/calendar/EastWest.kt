@@ -18,7 +18,7 @@ enum class EastWest(private val nameKey: String) {
 
   companion object {
 
-    private val resource = Location::class.java.name //"destiny.core.calendar.Location";
+    private val resource = EastWest::class.java.name
 
     fun getEastWest(c: Char): EastWest {
       if (c == 'E' || c == 'e')
