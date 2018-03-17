@@ -134,21 +134,6 @@ data class Location(override val longitude: Double,
     tzid, minuteOffset, altitudeMeter)
 
 
-  /** 承上  , 以 TimeZone 傳入 , 轉為 tzid */
-  @Deprecated("")
-  constructor(eastWest: EastWest,
-              lngDeg: Int,
-              lngMin: Int,
-              lngSec: Double? = 0.0,
-              northSouth: NorthSouth,
-              latDeg: Int,
-              latMin: Int,
-              latSec: Double? = 0.0,
-              timeZone: TimeZone,
-              altitudeMeter: Double? = 0.0) : this(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec,
-                                                   timeZone.id, null, altitudeMeter)
-
-
   /** 大家比較常用的，只有「度、分」。省略「秒」以及「高度」 */
   constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int,
               northSouth: NorthSouth, latDeg: Int, latMin: Int,
@@ -156,20 +141,13 @@ data class Location(override val longitude: Double,
     this(eastWest, lngDeg, lngMin, 0.0, northSouth, latDeg, latMin, 0.0, tzid)
 
 
-  /** 承上 , 以 TimeZone 傳入 */
-  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
-              northSouth: NorthSouth, latDeg: Int, latMin: Int, latSec: Double,
-              timeZone: TimeZone) :
-    this(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, timeZone.id)
-
-
   /** 比較省略的 constructor  , 去除東西經、南北緯 , 其值由 經度/緯度的正負去判斷 */
   constructor(lngDeg: Int, lngMin: Int, lngSec: Double,
               latDeg: Int, latMin: Int, latSec: Double,
-              timeZone: TimeZone) : this(
+              tzid:String) : this(
     (abs(lngDeg).toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (lngDeg < 0) 0 - it else it },
     (abs(latDeg).toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (latDeg < 0) 0 - it else it },
-    timeZone.id, null , 0.0)
+    tzid, null , 0.0)
 
 
   /** 較省略的 constructor , 度數以 double 取代 */

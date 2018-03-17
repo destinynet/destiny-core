@@ -23,7 +23,7 @@ class LngLatDecoratorTest {
 
   @Test
   fun getOutputString_withZero() {
-    val loc = Location(12, 3, 4.0, 5, 6, 7.0, TimeZone.getDefault())
+    val loc = Location(12, 3, 4.0, 5, 6, 7.0, TimeZone.getDefault().id)
     assertEquals("東經：012度03分04.00秒, 北緯：05度06分07.00秒" , LngLatDecorator.getOutputString(loc , Locale.TAIWAN))
     assertEquals("东经：012度03分04.00秒, 北纬：05度06分07.00秒" , LngLatDecorator.getOutputString(loc , Locale.SIMPLIFIED_CHINESE))
   }

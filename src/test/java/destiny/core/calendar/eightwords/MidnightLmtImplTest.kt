@@ -11,7 +11,6 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.NorthSouth
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -21,7 +20,7 @@ class MidnightLmtImplTest {
   fun testGetNextMidnight() {
 
     val impl = MidnightLmtImpl()
-    val location = Location(EastWest.EAST, 121, 0, 0.0, NorthSouth.NORTH, 25, 0, 0.0, TimeZone.getTimeZone("Asia/Taipei"))
+    val location = Location(EastWest.EAST, 121, 0, 0.0, NorthSouth.NORTH, 25, 0, 0.0, "Asia/Taipei")
     var expected: ChronoLocalDateTime<*>
     var actual: ChronoLocalDateTime<*>
 
