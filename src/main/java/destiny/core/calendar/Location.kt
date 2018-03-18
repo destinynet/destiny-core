@@ -11,7 +11,7 @@ import java.time.ZoneId
 import java.util.*
 import kotlin.math.abs
 
-interface ILoc {
+interface ILocation {
   val longitude: Double
   val latitude: Double
   val tzid: String?
@@ -71,21 +71,29 @@ interface ILoc {
     }.toString()
 
   val timeZone: TimeZone
-    get() = TimeZone.getTimeZone(tzid)
+    get() =  tzid?.let {
+      TimeZone.getTimeZone(it)
+    } ?:minuteOffset?.let {
+      TimeZoneUtils.getTimeZone(it)
+    } ?: TimeZone.getTimeZone("GMT")
 
   val zoneId: ZoneId
-    get() = ZoneId.of(tzid)
+    get() = tzid?.let {
+      ZoneId.of(it)
+    } ?:minuteOffset?.let {
+      TimeZoneUtils.getTimeZone(it).toZoneId()
+    }?: ZoneId.of("GMT")
 
   /**
    * 2012/03 格式：
    * 012345678901234567890123456789012345678901234567890
-   * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ [minuteOffset]
+   * +DDDMMSSSSS+DDMMSSSSS [altitudeMeter]~ [tzid]~ [minuteOffset]
    * 範例 :
    * +1213012.34+25 312.34 12.3456 Asia/Taipei 480
    * 尾方的 minuteOffset 為 optional , 如果有的話，會 override Asia/Taipei 的 minuteOffset
    */
   val debugString: String
-    get() = StringBuffer().apply {
+    get() = StringBuilder().apply {
       append(if (eastWest == EastWest.EAST) '+' else '-')
       append(AlignTools.leftPad(lngDeg.toString(), 3, ' '))
       append(AlignTools.leftPad(lngMin.toString(), 2, ' '))
@@ -107,7 +115,7 @@ data class Location(override val longitude: Double,
                     override val latitude: Double,
                     override val tzid: String?,
                     override val minuteOffset: Int? = null,
-                    override val altitudeMeter: Double? = 0.0) : ILoc, Serializable {
+                    override val altitudeMeter: Double? = 0.0) : ILocation, Serializable {
 
 
   /**
@@ -147,7 +155,7 @@ data class Location(override val longitude: Double,
               tzid:String) : this(
     (abs(lngDeg).toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (lngDeg < 0) 0 - it else it },
     (abs(latDeg).toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (latDeg < 0) 0 - it else it },
-    tzid, null , 0.0)
+    tzid, null , null)
 
 
   /** 較省略的 constructor , 度數以 double 取代 */
@@ -160,11 +168,6 @@ data class Location(override val longitude: Double,
 
   constructor(lng: Double, lat: Double, tzid: String? = null, altitudeMeter: Double? = 0.0) :
     this(lng, lat, tzid, null, altitudeMeter)
-
-  constructor(lng: Double, lat: Double, timeZone: TimeZone) : this(lng, lat, timeZone.id, null , null)
-
-  /** 某些環境，時區不明，但有 [minuteOffset] */
-  constructor(lng: Double, lat: Double, minuteOffset: Int) : this(lng, lat, null, minuteOffset)
 
 
   companion object {
@@ -253,7 +256,7 @@ data class Location(override val longitude: Double,
       // en_GB , 倫敦
       Locale.UK to Location(EastWest.WEST, 0, 7, NorthSouth.NORTH, 51, 30, "Europe/London"),
       // en_HK , 香港
-      Locale("en", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, "Asia/Hong_Kong"),
+      Locale("en", "HK") to Location(114.1735865, 22.2798721, "Asia/Hong_Kong"),
       // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
       Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, "Europe/Dublin"),
       // en_MY , 馬來西亞 , 吉隆坡
@@ -289,7 +292,7 @@ data class Location(override val longitude: Double,
       // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
       Locale.CHINA to Location(EastWest.EAST, 116, 23, NorthSouth.NORTH, 39, 55, "Asia/Shanghai"),
       // zh_HK , 香港
-      Locale("zh", "HK") to Location(EastWest.EAST, 114.1735865, NorthSouth.NORTH, 22.2798721, "Asia/Hong_Kong"),
+      Locale("zh", "HK") to Location(114.1735865, 22.2798721, "Asia/Hong_Kong"),
       // zh_MO , 澳門
       Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
       // zh_SG , 新加坡
@@ -322,12 +325,13 @@ data class Location(override val longitude: Double,
           it
       }
     }
+  }
 
-
+  fun toString(locale : Locale): String {
+    return LocationDecorator.getOutputString(this, locale)
   }
 
   override fun toString(): String {
-    return LocationDecorator.getOutputString(this, Locale.getDefault())
-    //return "Loc(longitude=$longitude, latitude=$latitude, tzid='$tzid', minuteOffset=$minuteOffset, altitudeMeter=$altitudeMeter)"
+    return toString(Locale.getDefault())
   }
 }

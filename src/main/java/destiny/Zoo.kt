@@ -1,5 +1,6 @@
 package destiny
 
+import java.lang.StringBuilder
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -65,9 +66,25 @@ class LocaleAnimal(c: Animal) : ILocaleString2 {
 
 class DerivedCat(localString2: ILocaleString2) : ILocaleString2 by localString2
 
+interface IContainer {
+  val strA: String
+  val strB: String
+  val strC: String
+    get() = with(StringBuilder()) {
+      append(strA)
+      append('+')
+      append(strB)
+    }.toString()
+}
+
+data class Container(override val strA: String,
+                     override val strB: String) : IContainer
 
 
 fun main(args: Array<String>) {
+
+  val c = Container("strA", "strB")
+  println(c.strC)
 
   fun hello(a: Animal): String {
     return when (a) {

@@ -16,7 +16,8 @@ import java.util.*
 /** 一個命盤最基本的必備元素 : 性別 / 時間 / 地點  */
 open class BirthData(override val gender: Gender,
                      override val time: ChronoLocalDateTime<*>,
-                     override var location: Location) : IGender, ITime, IDate, ILocation, Serializable {
+                     // TODO : location 被 UI 端可能重新設定，暫時無法設成 val
+                     var location: Location) : IGender, ITime, IDate, ILocation by location , Serializable {
 
   override val isAd: Boolean
     get() = time.get(YEAR) > 0

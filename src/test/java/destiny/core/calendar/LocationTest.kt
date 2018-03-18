@@ -8,11 +8,30 @@ import destiny.tools.location.TimeZoneUtils
 import org.junit.Assert
 import org.slf4j.LoggerFactory
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class LocationTest {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
+  @Test
+  fun `沒帶入 tzid , 但有帶入 minuteOffset , 將會反查 tzid 找出相符合的 tzid`() {
+    val loc = Location(121.0 , 25.0 , null , 480 , null)
+    assertEquals("CTT" , loc.timeZone.id)
+    /** 定義於 [java.time.ZoneId.SHORT_IDS] */
+    assertEquals("Asia/Shanghai" , loc.zoneId.id)
+    println(loc.timeZone)
+    assertEquals(480 , loc.finalMinuteOffset)
+  }
+
+  @Test
+  fun `有帶入 tzid , 但帶入非平時的 minuteOffset`() {
+    val loc = Location(121.0 , 25.0 , "Asia/Taipei" , 540 , null)
+    assertEquals("Asia/Taipei" , loc.timeZone.id)
+    assertEquals("Asia/Taipei" , loc.zoneId.id)
+    println(loc.timeZone)
+    assertEquals(540 , loc.finalMinuteOffset)
+  }
 
   @Test
   fun testNorthSouth() {
@@ -98,8 +117,7 @@ class LocationTest {
 
   @Test
   fun testLocationEastWestDoubleNorthSouthDoubleInt() {
-    val location: Location
-    location = Location(EastWest.EAST, 121.51, NorthSouth.NORTH, 25.33, "Asia/Taipei", null, 0.0)
+    val location = Location(EastWest.EAST, 121.51, NorthSouth.NORTH, 25.33, "Asia/Taipei")
     Assert.assertEquals(121, location.lngDeg.toLong())
     Assert.assertEquals(30, location.lngMin.toLong())
     Assert.assertEquals(36.0, location.lngSec, 0.0)

@@ -15,7 +15,7 @@ class NaYinTest {
       assertNotNull(sb)
       assertNotNull(NaYin.getFiveElement(sb))
       assertNotNull(NaYin.getDesc(sb, Locale.TAIWAN))
-      println(sb.toString() + " : " + NaYin.getDesc(sb, Locale.TAIWAN) + " , 五行 : " + NaYin.getFiveElement(sb))
+      println(sb.toString() + " : " + NaYin.getDesc(sb, Locale.TAIWAN) + " , 簡體 : " + NaYin.getDesc(sb , Locale.SIMPLIFIED_CHINESE) + " , 五行 : " + NaYin.getFiveElement(sb))
     }
   }
 }
