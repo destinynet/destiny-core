@@ -134,7 +134,7 @@ data class Location(override val longitude: Double,
               latDeg: Int,
               latMin: Int,
               latSec: Double? = 0.0,
-              tzid: String,
+              tzid: String?,
               minuteOffset: Int? = null,
               altitudeMeter: Double? = 0.0) : this(
     (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec!! / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
