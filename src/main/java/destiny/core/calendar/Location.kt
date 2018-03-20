@@ -106,15 +106,22 @@ interface ILocation {
 
       append(" ").append(altitudeMeter)
       append(' ').append(tzid)
-      if (minuteOffset != null)
-        append(" ").append(minuteOffset.toString())
+
+      minuteOffset?.also {
+        append(' ').append(it)
+      }
     }.toString()
+} // ILocation
+
+interface IPlace {
+  val place: String
 }
+
 
 data class Location(override val longitude: Double,
                     override val latitude: Double,
                     override val tzid: String?,
-                    override val minuteOffset: Int? = null,
+                    override val minuteOffset: Int? ,
                     override val altitudeMeter: Double? = 0.0) : ILocation, Serializable {
 
 
@@ -334,4 +341,7 @@ data class Location(override val longitude: Double,
   override fun toString(): String {
     return toString(Locale.getDefault())
   }
-}
+} // Location
+
+
+data class LocationPlace(val location: Location, override val place:String) : ILocation by location , IPlace , Serializable

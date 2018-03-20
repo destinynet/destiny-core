@@ -42,7 +42,7 @@ interface IHoroscope {
                    houseSystem: HouseSystem,
                    centric: Centric,
                    coordinate: Coordinate,
-                   temperature: Double, pressure: Double): Horoscope
+                   temperature: Double?=0.0, pressure: Double?=1013.25): Horoscope
 
 
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: Location,

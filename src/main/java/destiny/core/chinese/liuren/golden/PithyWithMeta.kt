@@ -6,7 +6,7 @@ package destiny.core.chinese.liuren.golden
 import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.core.Gender
-import destiny.core.calendar.LocationWithName
+import destiny.core.calendar.LocationPlace
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.IMonthMaster
 import destiny.core.chinese.ITianyi
@@ -16,17 +16,17 @@ import destiny.core.chinese.liuren.IGeneralStemBranch
 import java.io.Serializable
 import java.util.*
 
-class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: Gender, val question: String, val locationWithName: LocationWithName,
+class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: Gender, val question: String, val locationPlace: LocationPlace,
                     /** 月將  */
-                    val monthMasterImpl: IMonthMaster,
+                    private val monthMasterImpl: IMonthMaster,
                     /** 晝夜區分  */
                     val dayNightImpl: DayNightDifferentiator,
                     /** 天乙貴人  */
                     val tianyiImpl: ITianyi,
                     /** 貴神順逆  */
-                    val clockwiseImpl: IClockwise,
+                    private val clockwiseImpl: IClockwise,
                     /** 12天將順序  */
-                    val seqImpl: IGeneralSeq,
+                    private val seqImpl: IGeneralSeq,
                     /** 12天將干支  */
                     private val generalStemBranchImpl: IGeneralStemBranch) : Serializable {
 
@@ -45,9 +45,9 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
     sb.append("\n")
     sb.append("月將：").append(pithy.monthSign).append("（").append(monthMasterImpl.getTitle(Locale.TAIWAN)).append("）").append("\n")
     sb.append("晝夜：").append(if (pithy.dayNight == DayNight.DAY) "日" else "夜").append("\n")
-    sb.append("年空：").append(ew.year.empties.map { it.toString() }.joinToString("、")).append("\n")
+    sb.append("年空：").append(ew.year.empties.joinToString("、") { it.toString() }).append("\n")
     //sb.append("年空：").append(ew.year.empties.stream().map<String>(Function<Branch, String> { it.toString() }).collect<String, *>(Collectors.joining("、"))).append("\n")
-    sb.append("日空：").append(ew.day.empties.map { it.toString() }.joinToString("、")).append("\n")
+    sb.append("日空：").append(ew.day.empties.joinToString("、") { it.toString() }).append("\n")
     //sb.append("日空：").append(ew.day.empties.stream().map<String>(Function<Branch, String> { it.toString() }).collect<String, *>(Collectors.joining("、"))).append("\n")
     sb.append("\n")
     sb.append("人元：").append(pithy.human).append("\n")
@@ -60,7 +60,7 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
 
     sb.append("性別：").append(gender).append("\n")
     sb.append("問題：").append(question).append("\n")
-    sb.append("地點：").append(locationWithName.name).append("\n")
+    sb.append("地點：").append(locationPlace.place).append("\n")
 
     if (method != null)
       sb.append("起課方式：").append(if (method == Method.RANDOM) "電腦起課" else "手動起課").append("\n")
