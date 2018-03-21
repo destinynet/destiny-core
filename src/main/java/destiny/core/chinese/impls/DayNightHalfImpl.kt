@@ -4,13 +4,14 @@
 package destiny.core.chinese.impls
 
 import destiny.astrology.*
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import java.io.Serializable
 import java.util.*
 
 class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : DayNightDifferentiator, Serializable {
 
-  override fun getDayNight(gmtJulDay: Double, location: Location): DayNight {
+  override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {
     val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, false, true)
     val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, false, true)
 

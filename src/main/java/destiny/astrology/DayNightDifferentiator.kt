@@ -5,9 +5,8 @@
 package destiny.astrology
 
 import destiny.core.Descriptive
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
-
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -15,9 +14,9 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface DayNightDifferentiator : Descriptive {
 
-  fun getDayNight(gmtJulDay: Double, location: Location): DayNight
+  fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight
 
-  fun getDayNight(lmt: ChronoLocalDateTime<*>, location: Location): DayNight {
+  fun getDayNight(lmt: ChronoLocalDateTime<*>, location: ILocation): DayNight {
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
     return getDayNight(TimeTools.getGmtJulDay(gmt), location)
   }

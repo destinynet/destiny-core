@@ -114,7 +114,7 @@ public class TimeTools implements Serializable {
   /**
    * 直接從 LMT 傳回 gmt 的 jul day
    */
-  public static double getGmtJulDay(ChronoLocalDateTime lmt , Location loc) {
+  public static double getGmtJulDay(ChronoLocalDateTime lmt , ILocation loc) {
     ChronoLocalDateTime gmt = getGmtFromLmt(lmt , loc);
     return getGmtJulDay(gmt);
   }
@@ -144,7 +144,7 @@ public class TimeTools implements Serializable {
     return getGmtFromLmt(lmt.atZone(zoneId));
   }
 
-  public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , Location loc) {
+  public static ChronoLocalDateTime getGmtFromLmt(ChronoLocalDateTime lmt , ILocation loc) {
     if (loc.getHasMinuteOffset()) {
       int secOffset = loc.getFinalMinuteOffset() * 60;
       return lmt.plus(0-secOffset , ChronoUnit.SECONDS);
@@ -182,7 +182,7 @@ public class TimeTools implements Serializable {
     return newZoned.toLocalDateTime();
   }
 
-  public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , Location loc) {
+  public static ChronoLocalDateTime getLmtFromGmt(ChronoLocalDateTime gmt , ILocation loc) {
     if (loc.getHasMinuteOffset()) {
       int secOffset = loc.getFinalMinuteOffset() * 60;
       return gmt.plus(secOffset , ChronoUnit.SECONDS).atZone(loc.getTimeZone().toZoneId()).toLocalDateTime();

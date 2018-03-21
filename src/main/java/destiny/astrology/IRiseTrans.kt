@@ -5,6 +5,7 @@
  */
 package destiny.astrology
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import org.slf4j.LoggerFactory
@@ -26,12 +27,12 @@ interface IRiseTrans {
    * 根據測試資料 , 美國海軍天文台的計算結果，「似乎」傾向 center = false , refraction = true. 亦即： 計算「邊緣」以及「考量折射」
    *
    */
-  fun getGmtTransJulDay(fromGmtJulDay: Double, star: Star, point: TransPoint, location: Location, isDiscCenter: Boolean, hasRefraction: Boolean, atmosphericTemperature: Double, atmosphericPressure: Double): Double
+  fun getGmtTransJulDay(fromGmtJulDay: Double, star: Star, point: TransPoint, location: ILocation, isDiscCenter: Boolean, hasRefraction: Boolean, atmosphericTemperature: Double, atmosphericPressure: Double): Double
 
   /**
    * 內定 溫度0度 , 壓力 1013.25
    */
-  fun getGmtTransJulDay(fromGmtJulDay: Double, star: Star, point: TransPoint, location: Location, isDiscCenter: Boolean = false, hasRefraction: Boolean = true): Double {
+  fun getGmtTransJulDay(fromGmtJulDay: Double, star: Star, point: TransPoint, location: ILocation, isDiscCenter: Boolean = false, hasRefraction: Boolean = true): Double {
     return getGmtTransJulDay(fromGmtJulDay, star, point, location, isDiscCenter, hasRefraction, 0.0, 1013.25)
   }
 

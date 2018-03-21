@@ -122,7 +122,7 @@ data class Location(override val longitude: Double,
                     override val latitude: Double,
                     override val tzid: String?,
                     override val minuteOffset: Int? ,
-                    override val altitudeMeter: Double? = 0.0) : ILocation, Serializable {
+                    override val altitudeMeter: Double? ) : ILocation, Serializable {
 
 
   /**
@@ -168,14 +168,17 @@ data class Location(override val longitude: Double,
   /** 較省略的 constructor , 度數以 double 取代 */
   constructor(eastWest: EastWest, lng: Double,
               northSouth: NorthSouth, lat: Double,
-              tzid: String, minuteOffset: Int? = null, altitudeMeter: Double? = 0.0) : this(
+              tzid: String, minuteOffset: Int? = null, altitudeMeter: Double? = null) : this(
     lng.let { if (eastWest == EastWest.WEST) 0 - it else it },
     lat.let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
-  constructor(lng: Double, lat: Double, tzid: String? = null, altitudeMeter: Double? = 0.0) :
-    this(lng, lat, tzid, null, altitudeMeter)
 
+  constructor(lng: Double, lat: Double, tzid: String?) :
+    this(lng, lat, tzid, null, null)
+
+  constructor(lng: Double, lat: Double) :
+    this(lng, lat, null, null, null)
 
   companion object {
     fun fromDebugString(s: String): Location {
@@ -344,4 +347,14 @@ data class Location(override val longitude: Double,
 } // Location
 
 
-data class LocationPlace(val location: Location, override val place:String) : ILocation by location , IPlace , Serializable
+interface ILocationPlace : ILocation , IPlace
+
+data class LocationPlace(val location: Location, override val place:String) : ILocationPlace , ILocation by location , Serializable {
+  fun toString(locale: Locale): String {
+    return LocationDecorator.getOutputString(this, locale)
+  }
+
+  override fun toString(): String {
+    return toString(Locale.getDefault())
+  }
+}

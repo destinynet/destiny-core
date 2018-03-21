@@ -10,13 +10,13 @@ import java.text.DecimalFormat
 import java.util.*
 
 object LocationDecorator {
-  private val implMap = mapOf<Locale, Decorator<Location>>(
+  private val implMap = mapOf<Locale, Decorator<ILocation>>(
     Locale.TAIWAN to LocationDecoratorTaiwan(),
     Locale.CHINA to LocationDecoratorChina(),
     Locale.ENGLISH to LocationDecoratorEnglish()
   )
 
-  fun getOutputString(location: Location, locale: Locale): String {
+  fun getOutputString(location: ILocation, locale: Locale): String {
 
     val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
     return implMap[bestMatchingLocale]!!.getOutputString(location)
@@ -25,11 +25,11 @@ object LocationDecorator {
 }
 
 
-class LocationDecoratorTaiwan : Decorator<Location> {
+class LocationDecoratorTaiwan : Decorator<ILocation> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(value: Location): String {
+  override fun getOutputString(value: ILocation): String {
 
     val sb = StringBuilder()
     sb.append(LngLatDecorator.getOutputString(value, Locale.TAIWAN))
@@ -45,11 +45,11 @@ class LocationDecoratorTaiwan : Decorator<Location> {
 }
 
 
-class LocationDecoratorChina : Decorator<Location> {
+class LocationDecoratorChina : Decorator<ILocation> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(value: Location): String {
+  override fun getOutputString(value: ILocation): String {
     val sb = StringBuilder()
     sb.append(LngLatDecorator.getOutputString(value, Locale.CHINA))
 
@@ -64,11 +64,11 @@ class LocationDecoratorChina : Decorator<Location> {
 }
 
 
-class LocationDecoratorEnglish : Decorator<Location> {
+class LocationDecoratorEnglish : Decorator<ILocation> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(value: Location): String {
+  override fun getOutputString(value: ILocation): String {
     val sb = StringBuilder()
     sb.append(LngLatDecorator.getOutputString(value, Locale.ENGLISH))
 

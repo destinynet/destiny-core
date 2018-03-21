@@ -37,7 +37,7 @@ object LocationTools {
       val tzid: String? = parts.firstOrNull { it is LocationPadding.tzid }?.let { it as LocationPadding.tzid}?.value?.id
       val minuteOffset: Int? = parts.firstOrNull { it is LocationPadding.minOffset }?.let {it as LocationPadding.minOffset}?.value
       val altMeter: Double? = parts.firstOrNull { it is LocationPadding.altMeter}?.let { it as LocationPadding.altMeter}?.value
-      Location(it.lng, it.lat , tzid , minuteOffset , altMeter?:0.0)
+      Location(it.lng, it.lat , tzid , minuteOffset , altMeter)
     }
   }
 

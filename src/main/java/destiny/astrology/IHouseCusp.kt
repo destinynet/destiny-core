@@ -4,6 +4,7 @@
  */
 package destiny.astrology
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IRisingSign
@@ -19,7 +20,7 @@ interface IHouseCusp : IRisingSign {
   /**
    * 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 length=13 的 array , array[0] 不使用, array[1] 為第 1 宮 , ... , array[12] 為第 12 宮
    */
-  fun getHouseCusps(gmtJulDay: Double, loc: Location, houseSystem: HouseSystem, coordinate: Coordinate): DoubleArray
+  fun getHouseCusps(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): DoubleArray
 
   /**
    * 取得所有宮（1~12）的宮首，是什麼星座 . 傳回一個 length=13 的 array , array[0] 不使用。

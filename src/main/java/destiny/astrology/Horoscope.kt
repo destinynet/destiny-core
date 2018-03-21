@@ -3,43 +3,72 @@
  */
 package destiny.astrology
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.function.Function
 
-class Horoscope(
-
+interface IHoro {
   /** GMT's Julian Day */
-  val gmtJulDay: Double,
+  val gmtJulDay: Double
 
-  val location: Location,
+  val location: ILocation
 
   /** 分宮法  */
-  val houseSystem: HouseSystem,
+  val houseSystem: HouseSystem
 
   /** 座標系統  */
-  val coordinate: Coordinate,
+  val coordinate: Coordinate
 
   /** 中心系統  */
-  val centric: Centric,
+  val centric: Centric
 
   /** 溫度  */
-  val temperature: Double,
+  val temperature: Double?
 
   /** 壓力  */
-  val pressure: Double,
+  val pressure: Double?
 
   /** 星體位置表 */
-  private val positionMap: Map<Point, PositionWithAzimuth>,
+  val positionMap: Map<Point, PositionWithAzimuth>
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
-  private val cuspDegreeMap: Map<Int, Double>) : Serializable {
+  val cuspDegreeMap: Map<Int, Double>
+}
 
-  @Transient private val revJulDayFunc = { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
+data class Horoscope(
+
+  /** GMT's Julian Day */
+  override val gmtJulDay: Double,
+
+  override val location: ILocation,
+
+  /** 分宮法  */
+  override val houseSystem: HouseSystem,
+
+  /** 座標系統  */
+  override val coordinate: Coordinate,
+
+  /** 中心系統  */
+  override val centric: Centric,
+
+  /** 溫度  */
+  override val temperature: Double?,
+
+  /** 壓力  */
+  override val pressure: Double?,
+
+  /** 星體位置表 */
+  override val positionMap: Map<Point, PositionWithAzimuth>,
+
+  /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
+  override val cuspDegreeMap: Map<Int, Double>) : IHoro , Serializable {
+
+  @Transient private val revJulDayFunc =
+    { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
 
 
   /**
@@ -52,7 +81,7 @@ class Horoscope(
    * 星體於黃道上的星座
    */
   val pointSignMap: Map<Point, ZodiacSign>
-    get() = pointDegreeMap.mapValues { (_,lngDeg) -> ZodiacSign.getZodiacSign(lngDeg)}
+    get() = pointDegreeMap.mapValues { (_, lngDeg) -> ZodiacSign.getZodiacSign(lngDeg) }
 
   /**
    * @return 取得 GMT 時刻

@@ -3,8 +3,8 @@
  */
 package destiny.astrology
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import java.io.Serializable
 import java.time.temporal.ChronoField
@@ -14,7 +14,7 @@ class DayNightSimpleImpl : DayNightDifferentiator , Serializable {
 
   @Transient private val revJulDayFunc = { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
 
-  override fun getDayNight(gmtJulDay: Double, location: Location): DayNight {
+  override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {
     val lmt = TimeTools.getLmtFromGmt(revJulDayFunc.invoke(gmtJulDay) , location)
     val hour = lmt.get(ChronoField.HOUR_OF_DAY)
     return if (hour in 6..17)

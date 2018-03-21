@@ -5,7 +5,7 @@
  */
 package destiny.astrology
 
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
@@ -37,7 +37,7 @@ interface IHoroscope {
     return pointSet
   }
 
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: Location,
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                    points: Collection<Point>,
                    houseSystem: HouseSystem,
                    centric: Centric,
@@ -45,14 +45,14 @@ interface IHoroscope {
                    temperature: Double?=0.0, pressure: Double?=1013.25): Horoscope
 
 
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: Location,
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                    houseSystem: HouseSystem,
                    centric: Centric,
                    coordinate: Coordinate): Horoscope {
     return getHoroscope(lmt, loc, defaultPoints, houseSystem, centric, coordinate, 0.0, 1013.25)
   }
 
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: Location,
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                    houseSystem: HouseSystem,
                    centric: Centric,
                    coordinate: Coordinate,

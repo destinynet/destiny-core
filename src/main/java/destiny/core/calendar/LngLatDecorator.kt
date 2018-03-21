@@ -13,23 +13,23 @@ import java.util.*
  */
 object LngLatDecorator {
 
-  private val implMap = mapOf<Locale, Decorator<Location>>(
+  private val implMap = mapOf<Locale, Decorator<ILocation>>(
     Locale.TAIWAN to LngLatDecoratorTaiwan(),
     Locale.CHINA to LngLatDecoratorChina(),
     Locale.ENGLISH to LngLatDecoratorEnglish()
   )
 
-  fun getOutputString(location: Location, locale: Locale): String {
+  fun getOutputString(location: ILocation, locale: Locale): String {
     return implMap.getOutputString(location, locale)
   }
 }
 
 
-class LngLatDecoratorTaiwan : Decorator<Location> {
+class LngLatDecoratorTaiwan : Decorator<ILocation> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(value: Location): String {
+  override fun getOutputString(value: ILocation): String {
     return with(StringBuilder()) {
       append(LngDecorator.getOutputString(value.longitude , Locale.TAIWAN))
       append(", ")
@@ -38,11 +38,11 @@ class LngLatDecoratorTaiwan : Decorator<Location> {
   }
 }
 
-class LngLatDecoratorChina : Decorator<Location> {
+class LngLatDecoratorChina : Decorator<ILocation> {
 
   internal var formatter = DecimalFormat("00.00")
 
-  override fun getOutputString(value: Location): String {
+  override fun getOutputString(value: ILocation): String {
     return with(StringBuilder()) {
       append(LngDecorator.getOutputString(value.longitude , Locale.SIMPLIFIED_CHINESE))
       append(", ")
@@ -52,9 +52,9 @@ class LngLatDecoratorChina : Decorator<Location> {
 }
 
 
-class LngLatDecoratorEnglish : Decorator<Location> {
+class LngLatDecoratorEnglish : Decorator<ILocation> {
 
-  override fun getOutputString(value: Location): String {
+  override fun getOutputString(value: ILocation): String {
 
     return with(StringBuilder()) {
       append(LngDecorator.getOutputString(value.longitude , Locale.ENGLISH))
