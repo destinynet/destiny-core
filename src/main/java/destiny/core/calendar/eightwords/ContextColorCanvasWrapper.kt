@@ -105,7 +105,7 @@ open class ContextColorCanvasWrapper(
       cc.add(經度, 4, 1)
 
       val 緯度 = ColorCanvas(1, 22, "　")
-      val latText = LatDecorator.getOutputString(location.latitude , Locale.TAIWAN)
+      val latText = LatDecorator.getOutputString(location.lat, Locale.TAIWAN)
 
       緯度.setText(latText+" ", 1, 1, false, null, null, null, url, null)
       cc.add(緯度, 4, 25)

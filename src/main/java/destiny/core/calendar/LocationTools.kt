@@ -10,12 +10,12 @@ object LocationTools {
 
   /**
    * 2018-03 格式： (直接帶入 data class [Location] 之值)
-   * [Location.latitude],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   fun getDebugString(loc: Location): String {
     return StringBuilder().apply {
       loc.apply {
-        append(latitude)
+        append(lat)
         append(',')
         append(lng)
         tzid?.also { append(' ').append(it) }
@@ -27,7 +27,7 @@ object LocationTools {
 
   /**
    * 解碼 2018-03 的 [Location] debugString
-   * [Location.latitude],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   fun decodeDebugStringNew(string: String): Location? {
     val parts: Set<LocationPadding> =

@@ -14,7 +14,7 @@ import kotlin.math.abs
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
 interface ILatLng {
   val lng: Double
-  val latitude: Double
+  val lat: Double
 
   val eastWest: EastWest
     get() =
@@ -34,25 +34,25 @@ interface ILatLng {
 
   val northSouth: NorthSouth
     get() =
-      if (latitude >= 0)
+      if (lat >= 0)
         NorthSouth.NORTH
       else
         NorthSouth.SOUTH
 
 
   val latDeg: Int
-    get() = abs(latitude).toInt()
+    get() = abs(lat).toInt()
 
   val latMin: Int
-    get() = ((abs(latitude) - latDeg) * 60).toInt()
+    get() = ((abs(lat) - latDeg) * 60).toInt()
 
   val latSec: Double
-    get() = abs(latitude) * 3600 - (latDeg * 3600).toDouble() - (latMin * 60).toDouble()
+    get() = abs(lat) * 3600 - (latDeg * 3600).toDouble() - (latMin * 60).toDouble()
 
   /** 取得經緯度的十進位表示法，先緯度、再精度 */
   val decimal: String
     get() = with(StringBuffer()) {
-      append(latitude)
+      append(lat)
       append(',')
       append(lng)
     }.toString()
@@ -123,7 +123,7 @@ interface IPlace {
 
 
 data class Location(override val lng: Double,
-                    override val latitude: Double,
+                    override val lat: Double,
                     override val tzid: String?,
                     override val minuteOffset: Int?,
                     override val altitudeMeter: Double?) : ILocation, Serializable {
@@ -321,7 +321,7 @@ data class Location(override val lng: Double,
     fun of(locale: Locale): Location {
       val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
       val loc = locMap[matchedLocale]!!
-      return Location(loc.lng, loc.latitude, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
+      return Location(loc.lng, loc.lat, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
     }
 
     fun getLongitude(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {

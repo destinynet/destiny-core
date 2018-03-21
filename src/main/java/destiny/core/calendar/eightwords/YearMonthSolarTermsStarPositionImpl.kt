@@ -171,7 +171,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
           //如果太陽在赤北緯
           if (location.northSouth==NorthSouth.NORTH) {
             //地點在北半球
-            if (location.latitude >= solarEquatorialDegree)
+            if (location.lat >= solarEquatorialDegree)
               result月支 = 月支
             else
               result月支 = Branch.get(monthIndex + 6) //所在地緯度低於 太陽赤緯，取對沖月份
@@ -183,7 +183,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
           //太陽在赤南緯
           if (location.northSouth== NorthSouth.SOUTH) {
             //地點在南半球
-            if (location.latitude <= solarEquatorialDegree)
+            if (location.lat <= solarEquatorialDegree)
               result月支 = Branch.get(monthIndex + 6) //所在地緯度高於 太陽赤南緯，真正的南半球
             else
               result月支 = 月支 //雖在南半球，但緯度低於太陽赤南緯，視為北半球

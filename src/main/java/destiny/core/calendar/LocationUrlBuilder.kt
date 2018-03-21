@@ -12,6 +12,6 @@ interface LocationUrlBuilder {
   fun getUrl(lat: Double, lng: Double): String
 
   fun getUrl(location: Location): String {
-    return getUrl(location.latitude, location.lng)
+    return getUrl(location.lat, location.lng)
   }
 }
