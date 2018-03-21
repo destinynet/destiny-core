@@ -32,4 +32,32 @@ class LocationToolsTest {
       assertEquals(Location(121.0,25.03) , decodeDebugStringNew("25.03,121.0"))
     }
   }
+
+
+  /**
+   * 2012/03 之後的格式 , 尾方為 altitude TimeZone [minuteOffset]
+   */
+  @Test
+  fun testLocationFromDebugString_format2012() {
+    var location: Location
+    var expected: Location
+
+    location = LocationTools.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei")
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", null , 12.3456)
+    assertEquals(expected, location)
+
+    //強制設定 minuteOffset = 0
+    location = LocationTools.fromDebugString(location.debugString + " 0")
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", 0, 12.3456)
+    assertEquals(expected, location)
+
+    location = LocationTools.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei 60")
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", 60, 12.3456)
+    assertEquals(expected, location)
+
+    location = LocationTools.fromDebugString("+1213012.34+25 312.34 12.3456 Asia/Taipei -480")
+    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", -480, 12.3456)
+    assertEquals(expected, location)
+  }
+
 }

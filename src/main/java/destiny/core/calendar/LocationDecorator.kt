@@ -34,7 +34,9 @@ class LocationDecoratorTaiwan : Decorator<ILocation> {
     val sb = StringBuilder()
     sb.append(LngLatDecorator.getOutputString(value, Locale.TAIWAN))
 
-    sb.append("高度 ").append(value.altitudeMeter).append(" 公尺.")
+    value.altitudeMeter?.also {
+      sb.append("高度 ").append(it).append(" 公尺.")
+    }
     sb.append(" 時區 ").append(value.timeZone.id)
     if (value.hasMinuteOffset)
       sb.append(" 時差 ").append(value.finalMinuteOffset).append(" 分鐘.")
@@ -53,7 +55,9 @@ class LocationDecoratorChina : Decorator<ILocation> {
     val sb = StringBuilder()
     sb.append(LngLatDecorator.getOutputString(value, Locale.CHINA))
 
-    sb.append("高度 ").append(value.altitudeMeter).append(" 米")
+    value.altitudeMeter?.also {
+      sb.append("高度 ").append(it).append(" 米")
+    }
     sb.append(" 时区 ").append(value.timeZone.id)
     if (value.hasMinuteOffset)
       sb.append(" 时差 ").append(value.finalMinuteOffset).append(" 分钟.")
@@ -72,8 +76,10 @@ class LocationDecoratorEnglish : Decorator<ILocation> {
     val sb = StringBuilder()
     sb.append(LngLatDecorator.getOutputString(value, Locale.ENGLISH))
 
-    sb.append(" GMT offset ").append(value.timeZone.rawOffset / (60000 * 60)).append(" hours , ")
-    sb.append("Alt ").append(value.altitudeMeter).append(" m.")
+    sb.append(" GMT offset ").append(value.timeZone.rawOffset / (60000 * 60)).append(" hours")
+    value.altitudeMeter?.also {
+      sb.append(", Alt ").append(it).append(" m.")
+    }
     return sb.toString()
   }
 

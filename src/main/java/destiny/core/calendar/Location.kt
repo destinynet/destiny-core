@@ -187,69 +187,7 @@ data class Location(override val lng: Double,
 
 
   companion object {
-    fun fromDebugString(s: String): Location {
-      val eastWest: EastWest
-      val ew = s[0]
-      eastWest = when (ew) {
-        '+' -> EastWest.EAST
-        '-' -> EastWest.WEST
-        else -> throw RuntimeException("EW not correct : $ew")
-      }
 
-      val lngDeg = Integer.valueOf(s.substring(1, 4).trim { it <= ' ' })
-      val lngMin = Integer.valueOf(s.substring(4, 6).trim { it <= ' ' })
-      val lngSec = java.lang.Double.valueOf(s.substring(6, 11).trim { it <= ' ' })
-
-      val northSouth: NorthSouth
-      val ns = s[11]
-      northSouth = when (ns) {
-        '+' -> NorthSouth.NORTH
-        '-' -> NorthSouth.SOUTH
-        else -> throw RuntimeException("ns not correct : $ns")
-      }
-
-      val latDeg = Integer.valueOf(s.substring(12, 14).trim { it <= ' ' })
-      val latMin = Integer.valueOf(s.substring(14, 16).trim { it <= ' ' })
-      val latSec = java.lang.Double.valueOf(s.substring(16, 21).trim { it <= ' ' })
-
-      //包含了 高度以及時區
-      val altitudeAndTimezone = s.substring(21)
-      //System.out.println("altitudeAndTimezone = '" + altitudeAndTimezone+"'");
-
-      var st = StringTokenizer(altitudeAndTimezone, " ")
-      val firstToken = st.nextToken()
-      // 2012/3 之後 , restToken 可能還會 append minuteOffset
-      val restTokens = altitudeAndTimezone.substring(altitudeAndTimezone.indexOf(firstToken) + firstToken.length + 1)
-        .trim { it <= ' ' }
-      //System.out.println("firstToken = '" + firstToken + "' , rest = '" + restTokens+"'");
-
-      var altitudeMeter: Double
-      var tzid: String
-      var minuteOffset: Int? = null
-      //檢查 restTokens 是否能轉為 double，如果能的話，代表是舊款 , 否則就是新款
-      try {
-        altitudeMeter = java.lang.Double.parseDouble(restTokens)
-        //parse 成功，代表舊款
-        tzid = if (firstToken[0] == '+')
-          TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken.substring(1))).id
-        else
-          TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken)).id
-      } catch (e: NumberFormatException) {
-        //新款
-        altitudeMeter = java.lang.Double.parseDouble(firstToken)
-        st = StringTokenizer(restTokens, " ")
-        if (st.countTokens() == 1)
-          tzid = restTokens
-        else {
-          // 2012/3 格式 : timeZone 之後，還附加 minuteOffset
-          tzid = st.nextToken()
-          minuteOffset = Integer.valueOf(st.nextToken())
-        }
-      }
-
-      return Location(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, tzid, minuteOffset,
-                      altitudeMeter)
-    } // fromDebugString
 
 
     private val locMap = mapOf(
