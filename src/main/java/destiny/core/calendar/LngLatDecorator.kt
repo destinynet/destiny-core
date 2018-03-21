@@ -31,7 +31,7 @@ class LngLatDecoratorTaiwan : Decorator<ILocation> {
 
   override fun getOutputString(value: ILocation): String {
     return with(StringBuilder()) {
-      append(LngDecorator.getOutputString(value.longitude , Locale.TAIWAN))
+      append(LngDecorator.getOutputString(value.lng, Locale.TAIWAN))
       append(", ")
       append(LatDecorator.getOutputString(value.latitude , Locale.TAIWAN))
     }.toString()
@@ -44,7 +44,7 @@ class LngLatDecoratorChina : Decorator<ILocation> {
 
   override fun getOutputString(value: ILocation): String {
     return with(StringBuilder()) {
-      append(LngDecorator.getOutputString(value.longitude , Locale.SIMPLIFIED_CHINESE))
+      append(LngDecorator.getOutputString(value.lng, Locale.SIMPLIFIED_CHINESE))
       append(", ")
       append(LatDecorator.getOutputString(value.latitude , Locale.SIMPLIFIED_CHINESE))
     }.toString()
@@ -57,7 +57,7 @@ class LngLatDecoratorEnglish : Decorator<ILocation> {
   override fun getOutputString(value: ILocation): String {
 
     return with(StringBuilder()) {
-      append(LngDecorator.getOutputString(value.longitude , Locale.ENGLISH))
+      append(LngDecorator.getOutputString(value.lng, Locale.ENGLISH))
       append(", ")
       append(LatDecorator.getOutputString(value.latitude , Locale.ENGLISH))
     }.toString()

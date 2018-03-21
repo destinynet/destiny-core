@@ -23,7 +23,7 @@ interface IAzimuth {
   }
 
   fun getAzimuthFromEcliptic(eclipticPosition: IPos, gmtJulDay: Double, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): Azimuth {
-    return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location.longitude, location.latitude, location.altitudeMeter, temperature, pressure)
+    return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location.lng, location.latitude, location.altitudeMeter, temperature, pressure)
   }
 
   /** 承上 , ChronoLocalDateTime 版本  */
@@ -36,7 +36,7 @@ interface IAzimuth {
   fun getAzimuthFromEquator(equatorPosition: IPos, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double?=0.0, temperature: Double, pressure: Double): Azimuth
 
   fun getAzimuthFromEquator(equatorPosition: IPos, gmtJulDay: Double, location: Location, temperature: Double, pressure: Double): Azimuth {
-    return getAzimuthFromEquator(equatorPosition, gmtJulDay, location.longitude, location.latitude, location.altitudeMeter, temperature, pressure)
+    return getAzimuthFromEquator(equatorPosition, gmtJulDay, location.lng, location.latitude, location.altitudeMeter, temperature, pressure)
   }
 
   /** 承上 , ChronoLocalDateTime 版本  */

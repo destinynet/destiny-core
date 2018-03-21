@@ -342,7 +342,7 @@ public class TimeTools implements Serializable {
    * @return 經度時間
    */
   public static ChronoLocalDateTime getLongitudeTime(ChronoLocalDateTime lmt, Location location) {
-    double absLng = Math.abs(location.getLongitude());
+    double absLng = Math.abs(location.getLng());
     double secondsOffset = getDstSecondOffset(lmt, location).getSecond();
     double zoneSecondOffset = Math.abs(secondsOffset);
     double longitudeSecondOffset = absLng * 4 * 60; // 經度與GMT的時差 (秒) , 一分鐘四度

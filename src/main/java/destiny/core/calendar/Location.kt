@@ -11,39 +11,26 @@ import java.time.ZoneId
 import java.util.*
 import kotlin.math.abs
 
-interface ILocation {
-  val longitude: Double
+/** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
+interface ILatLng {
+  val lng: Double
   val latitude: Double
-  val tzid: String?
-
-  /** 強制覆蓋與 GMT 的時差 , 優先權高於 [tzid]  */
-  val minuteOffset: Int?
-
-  val hasMinuteOffset: Boolean
-    get() = minuteOffset != null
-
-  val finalMinuteOffset: Int
-    get() = minuteOffset ?: TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000)
-
-  /** 高度（公尺） */
-  val altitudeMeter: Double?
 
   val eastWest: EastWest
     get() =
-      if (longitude >= 0)
+      if (lng >= 0)
         EastWest.EAST
       else
         EastWest.WEST
 
-
   val lngDeg: Int
-    get() = abs(longitude).toInt()
+    get() = abs(lng).toInt()
 
   val lngMin: Int
-    get() = ((abs(longitude) - lngDeg) * 60).toInt()
+    get() = ((abs(lng) - lngDeg) * 60).toInt()
 
   val lngSec: Double
-    get() = abs(longitude) * 3600 - (lngDeg * 3600).toDouble() - (lngMin * 60).toDouble()
+    get() = abs(lng) * 3600 - (lngDeg * 3600).toDouble() - (lngMin * 60).toDouble()
 
   val northSouth: NorthSouth
     get() =
@@ -67,22 +54,39 @@ interface ILocation {
     get() = with(StringBuffer()) {
       append(latitude)
       append(',')
-      append(longitude)
+      append(lng)
     }.toString()
+}
+
+interface ILocation : ILatLng {
+
+  val tzid: String?
+
+  /** 強制覆蓋與 GMT 的時差 , 優先權高於 [tzid]  */
+  val minuteOffset: Int?
+
+  val hasMinuteOffset: Boolean
+    get() = minuteOffset != null
+
+  val finalMinuteOffset: Int
+    get() = minuteOffset ?: TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000)
+
+  /** 高度（公尺） */
+  val altitudeMeter: Double?
 
   val timeZone: TimeZone
-    get() =  tzid?.let {
+    get() = tzid?.let {
       TimeZone.getTimeZone(it)
-    } ?:minuteOffset?.let {
+    } ?: minuteOffset?.let {
       TimeZoneUtils.getTimeZone(it)
     } ?: TimeZone.getTimeZone("GMT")
 
   val zoneId: ZoneId
     get() = tzid?.let {
       ZoneId.of(it)
-    } ?:minuteOffset?.let {
+    } ?: minuteOffset?.let {
       TimeZoneUtils.getTimeZone(it).toZoneId()
-    }?: ZoneId.of("GMT")
+    } ?: ZoneId.of("GMT")
 
   /**
    * 2012/03 格式：
@@ -118,12 +122,20 @@ interface IPlace {
 }
 
 
-data class Location(override val longitude: Double,
+data class Location(override val lng: Double,
                     override val latitude: Double,
                     override val tzid: String?,
-                    override val minuteOffset: Int? ,
-                    override val altitudeMeter: Double? ) : ILocation, Serializable {
+                    override val minuteOffset: Int?,
+                    override val altitudeMeter: Double?) : ILocation, Serializable {
 
+  constructor(lng: Double, lat: Double, tzid: String?, minuteOffset: Int?) :
+    this(lng, lat, tzid, minuteOffset, null)
+
+  constructor(lng: Double, lat: Double, tzid: String?) :
+    this(lng, lat, tzid, null)
+
+  constructor(lng: Double, lat: Double) :
+    this(lng, lat, null)
 
   /**
    * 最詳盡的 constructor
@@ -159,10 +171,10 @@ data class Location(override val longitude: Double,
   /** 比較省略的 constructor  , 去除東西經、南北緯 , 其值由 經度/緯度的正負去判斷 */
   constructor(lngDeg: Int, lngMin: Int, lngSec: Double,
               latDeg: Int, latMin: Int, latSec: Double,
-              tzid:String) : this(
+              tzid: String) : this(
     (abs(lngDeg).toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (lngDeg < 0) 0 - it else it },
     (abs(latDeg).toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (latDeg < 0) 0 - it else it },
-    tzid, null , null)
+    tzid, null, null)
 
 
   /** 較省略的 constructor , 度數以 double 取代 */
@@ -173,12 +185,6 @@ data class Location(override val longitude: Double,
     lat.let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
-
-  constructor(lng: Double, lat: Double, tzid: String?) :
-    this(lng, lat, tzid, null, null)
-
-  constructor(lng: Double, lat: Double) :
-    this(lng, lat, null, null, null)
 
   companion object {
     fun fromDebugString(s: String): Location {
@@ -315,7 +321,7 @@ data class Location(override val longitude: Double,
     fun of(locale: Locale): Location {
       val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
       val loc = locMap[matchedLocale]!!
-      return Location(loc.longitude, loc.latitude, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
+      return Location(loc.lng, loc.latitude, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
     }
 
     fun getLongitude(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
@@ -337,7 +343,7 @@ data class Location(override val longitude: Double,
     }
   }
 
-  fun toString(locale : Locale): String {
+  fun toString(locale: Locale): String {
     return LocationDecorator.getOutputString(this, locale)
   }
 
@@ -347,9 +353,10 @@ data class Location(override val longitude: Double,
 } // Location
 
 
-interface ILocationPlace : ILocation , IPlace
+interface ILocationPlace : ILocation, IPlace
 
-data class LocationPlace(val location: Location, override val place:String) : ILocationPlace , ILocation by location , Serializable {
+data class LocationPlace(val location: Location, override val place: String) : ILocationPlace, ILocation by location,
+  Serializable {
   fun toString(locale: Locale): String {
     return LocationDecorator.getOutputString(this, locale)
   }

@@ -10,14 +10,14 @@ object LocationTools {
 
   /**
    * 2018-03 格式： (直接帶入 data class [Location] 之值)
-   * [Location.latitude],[Location.longitude] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * [Location.latitude],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   fun getDebugString(loc: Location): String {
     return StringBuilder().apply {
       loc.apply {
         append(latitude)
         append(',')
-        append(longitude)
+        append(lng)
         tzid?.also { append(' ').append(it) }
         minuteOffset?.also { append(' ').append(it).append('m') } // 「分鐘」尾端加上 'm' , 保留未來可能出現 's' (秒數) 的可能性
         altitudeMeter?.takeIf { it != 0.0 }?.also { append(' ').append(it) }
@@ -27,7 +27,7 @@ object LocationTools {
 
   /**
    * 解碼 2018-03 的 [Location] debugString
-   * [Location.latitude],[Location.longitude] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * [Location.latitude],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   fun decodeDebugStringNew(string: String): Location? {
     val parts: Set<LocationPadding> =

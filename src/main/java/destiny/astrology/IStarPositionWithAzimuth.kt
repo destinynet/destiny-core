@@ -14,19 +14,19 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IStarPositionWithAzimuth : IStarPosition<IPos> {
 
-  override fun getPosition(star: Star, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double?, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): PositionWithAzimuth
+  override fun getPosition(star: Star, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double?, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): IPositionWithAzimuth
 
-  fun getPositionFromGmt(star: Star, gmt: ChronoLocalDateTime<*>, location: ILocation, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): PositionWithAzimuth {
+  fun getPositionFromGmt(star: Star, gmt: ChronoLocalDateTime<*>, location: ILocation, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): IPositionWithAzimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getPosition(star, gmtJulDay, location.longitude, location.latitude, location.altitudeMeter, centric, coordinate, temperature, pressure)
+    return getPosition(star, gmtJulDay, location.lng, location.latitude, location.altitudeMeter, centric, coordinate, temperature, pressure)
   }
 
   /**
    * 內定 溫度 攝氏零度，壓力 1013.25
    */
-  fun getPositionFromGmt(star: Star, gmt: ChronoLocalDateTime<*>, location: ILocation, centric: Centric, coordinate: Coordinate): PositionWithAzimuth {
+  fun getPositionFromGmt(star: Star, gmt: ChronoLocalDateTime<*>, location: ILocation, centric: Centric, coordinate: Coordinate): IPositionWithAzimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getPosition(star, gmtJulDay, location.longitude, location.latitude, location.altitudeMeter, centric, coordinate, 0.0, 1013.25)
+    return getPosition(star, gmtJulDay, location.lng, location.latitude, location.altitudeMeter, centric, coordinate, 0.0, 1013.25)
   }
 
 

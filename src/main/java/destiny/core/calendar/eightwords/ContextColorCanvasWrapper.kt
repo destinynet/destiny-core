@@ -99,7 +99,7 @@ open class ContextColorCanvasWrapper(
 
 
       val 經度 = ColorCanvas(1, 24, "　")
-      val lngText = LngDecorator.getOutputString(location.longitude , Locale.TAIWAN)
+      val lngText = LngDecorator.getOutputString(location.lng, Locale.TAIWAN)
 
       經度.setText(lngText, 1, 1, false, null, null, null, url, null)
       cc.add(經度, 4, 1)

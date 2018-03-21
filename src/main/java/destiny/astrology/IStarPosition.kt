@@ -47,7 +47,7 @@ interface IStarPosition<out T : IPos> {
   }
 
   fun getPosition(star: Star, gmtJulDay: Double, loc: ILocation, centric: Centric, coordinate: Coordinate): T {
-    return getPosition(star, gmtJulDay, loc.longitude, loc.latitude, loc.altitudeMeter, centric, coordinate, 0.0,
+    return getPosition(star, gmtJulDay, loc.lng, loc.latitude, loc.altitudeMeter, centric, coordinate, 0.0,
                        1013.25)
   }
 
@@ -71,7 +71,7 @@ interface IStarPosition<out T : IPos> {
                   temperature: Double,
                   pressure: Double): IPos {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getPosition(star, gmtJulDay, loc.longitude, loc.latitude, loc.altitudeMeter, centric, coordinate,
+    return getPosition(star, gmtJulDay, loc.lng, loc.latitude, loc.altitudeMeter, centric, coordinate,
                        temperature, pressure)
   }
 

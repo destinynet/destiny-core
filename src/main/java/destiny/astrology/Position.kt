@@ -11,10 +11,6 @@ interface IPos {
   val speedDistance: Double // speed in distance (AU / day)
 }
 
-interface IPosAzimuth : IPos {
-  val azimuth: Azimuth
-}
-
 data class Position(
   override val lng: Double,
   override val lat: Double,
@@ -24,7 +20,9 @@ data class Position(
   override val speedDistance: Double) : IPos, Serializable
 
 
-interface IPositionWithAzimuth : IPos, IPosAzimuth
+interface IPositionWithAzimuth : IPos {
+  val azimuth : Azimuth
+}
 
 data class PositionWithAzimuth(
   val pos: Position,

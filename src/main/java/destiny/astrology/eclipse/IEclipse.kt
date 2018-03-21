@@ -28,7 +28,7 @@ interface IEclipse {
   fun getNextSolarEclipse(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double?=0.0, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation>
 
   fun getNextSolarEclipse(fromGmtJulDay: Double, loc: Location, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation> {
-    return getNextSolarEclipse(fromGmtJulDay, loc.longitude, loc.latitude, loc.altitudeMeter, forward)
+    return getNextSolarEclipse(fromGmtJulDay, loc.lng, loc.latitude, loc.altitudeMeter, forward)
   }
 
   /** 從此之後 , 此地點下次發生月食的資訊為何 (tuple.v1) , 以及， 該地能否見到 半影、偏食、全蝕、的起訖 (tuple.v2)  */
