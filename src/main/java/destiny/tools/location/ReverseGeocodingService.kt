@@ -4,13 +4,15 @@
  */
 package destiny.tools.location
 
+import destiny.core.calendar.ILatLng
 import java.util.*
 
 interface ReverseGeocodingService {
 
   fun getNearbyLocation(lng: Double, lat: Double, locale: Locale): String?
 
-  fun getNearbyLocationOpt(lng: Double, lat: Double, locale: Locale): Optional<String> {
-    return getNearbyLocation(lng , lat , locale).let { Optional.ofNullable(it) }
+  fun getNearbyLocation(latLng : ILatLng, locale: Locale) : String? {
+    return getNearbyLocation(latLng.lng, latLng.lat, locale)
   }
+
 }

@@ -11,6 +11,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.tools.AlignTools
+import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
@@ -57,16 +58,16 @@ open class ContextColorCanvasWrapper(
     //cc.setText("四字斷終生：" + fourWordsImpl.getResult(eightWords), 8, 1 , "#0000FF" , "#FFFF00" , fourWordsImpl.getResult(eightWords));
   val metaDataColorCanvas: ColorCanvas
     get() {
-      val cc = ColorCanvas(9, 52, "　")
+      val cc = ColorCanvas(9, 52, ChineseStringTools.NULL_CHAR)
 
-      val 西元資訊 = ColorCanvas(1, 36, "　")
+      val 西元資訊 = ColorCanvas(1, 36, ChineseStringTools.NULL_CHAR)
 
 
       val timeData = with(StringBuilder()) {
         append("西元：")
 
         if (lmt.toLocalDate().get(ChronoField.YEAR) <= 0) append("前")
-        else append("　")
+        else append(ChineseStringTools.NULL_CHAR)
 
         append(AlignTools.alignRight(lmt.get(YEAR_OF_ERA), 4, true))
         append("年")
@@ -90,24 +91,24 @@ open class ContextColorCanvasWrapper(
 
       val url = urlBuilder.getUrl(location)
 
-      val 地點名稱 = ColorCanvas(1, 44, "　")
+      val 地點名稱 = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
       地點名稱.setText("地點：", 1, 1)
       地點名稱.setText(locationName, 1, 7, false, null, null, null, url, null)
-      val minuteOffset = TimeTools.getDstSecondOffset(lmt, location).second / 60
+      val minuteOffset = location.minuteOffset?:TimeTools.getDstSecondOffset(lmt, location).second / 60
       地點名稱.setText(" GMT時差：" + AlignTools.alignRight(minuteOffset, 6, true) + "分鐘", 1, 25, "999999")
       cc.add(地點名稱, 3, 1)
 
 
-      val 經度 = ColorCanvas(1, 24, "　")
+      val 經度 = ColorCanvas(1, 24, ChineseStringTools.NULL_CHAR)
       val lngText = LngDecorator.getOutputString(location.lng, Locale.TAIWAN)
 
       經度.setText(lngText, 1, 1, false, null, null, null, url, null)
       cc.add(經度, 4, 1)
 
-      val 緯度 = ColorCanvas(1, 22, "　")
+      val 緯度 = ColorCanvas(1, 22, ChineseStringTools.NULL_CHAR)
       val latText = LatDecorator.getOutputString(location.lat, Locale.TAIWAN)
 
-      緯度.setText(latText+" ", 1, 1, false, null, null, null, url, null)
+      緯度.setText("$latText ", 1, 1, false, null, null, null, url, null)
       cc.add(緯度, 4, 25)
 
       cc.setText("換日：" + if (context.isChangeDayAfterZi) "子初換日" else "子正換日", 5, 1, "999999")
@@ -137,7 +138,7 @@ open class ContextColorCanvasWrapper(
       val linkLine = 9
       if (linkUrl != null) {
         cc.setText("命盤連結  ", linkLine, 1, "999999")
-        val showLinkUrl: String = if (linkUrl.length % 2 == 1) linkUrl + ' '
+        val showLinkUrl: String = if (linkUrl.length % 2 == 1) "$linkUrl "
         else linkUrl
         cc.setText(showLinkUrl, linkLine, 11, false, "999999", null, null, showLinkUrl, null)
       }
@@ -171,7 +172,7 @@ open class ContextColorCanvasWrapper(
         else it
       }
 
-      return ColorCanvas(10, 36, "　", null, null).let {
+      return ColorCanvas(10, 36, ChineseStringTools.NULL_CHAR, null, null).let {
         for (i in 1..4) {
           it.add(pillars[i - 1], 1, (i - 1) * 10 + 1)
         }
@@ -201,7 +202,7 @@ open class ContextColorCanvasWrapper(
    * @param pillarName "年" or "月" or "日" or "時"
    */
   private fun getOnePillar(stemBranch: StemBranch, pillarName: String, dayStem: Stem): ColorCanvas {
-    val pillar = ColorCanvas(10, 6, "　", null, null)
+    val pillar = ColorCanvas(10, 6, ChineseStringTools.NULL_CHAR, null, null)
     pillar.setText(pillarName, 1, 3)
     pillar.setText("柱", 2, 3)
     pillar.setText("：", 3, 3)
@@ -222,7 +223,7 @@ open class ContextColorCanvasWrapper(
    * 傳回八字命盤
    */
   override fun toString(): String {
-    val cc = ColorCanvas(20, 52, "　")
+    val cc = ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR)
     cc.add(metaDataColorCanvas, 1, 1)
     cc.add(eightWordsColorCanvas, 11, 1)
     return when (this.outputMode) {
@@ -234,7 +235,7 @@ open class ContextColorCanvasWrapper(
 
   protected fun 地支藏干(地支: Branch, 天干: Stem): ColorCanvas {
     val reactionsUtil = ReactionsUtil(this.hiddenStemsImpl)
-    val resultCanvas = ColorCanvas(3, 6, "　")
+    val resultCanvas = ColorCanvas(3, 6, ChineseStringTools.NULL_CHAR)
     val reactions = reactionsUtil.getReactions(地支, 天干)
     for (i in reactions.indices) {
       val eachReaction = reactions[i]

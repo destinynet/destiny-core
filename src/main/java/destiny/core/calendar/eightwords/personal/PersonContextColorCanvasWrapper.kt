@@ -9,6 +9,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper
 import destiny.core.calendar.eightwords.Direction
 import destiny.tools.AlignTools
+import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
 import java.time.chrono.ChronoLocalDateTime
@@ -30,7 +31,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 
   /** 取得八字命盤  */
   override fun toString(): String {
-    val cc = ColorCanvas(32, 70, "　")
+    val cc = ColorCanvas(32, 70, ChineseStringTools.NULL_CHAR)
 
     val metaDataColorCanvas = metaDataColorCanvas
 
@@ -49,8 +50,8 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     cc.add(eightWordsColorCanvas, 11, 9) // 純粹八字盤
 
 
-    val 右方大運直 = ColorCanvas(9, 24, "　")
-    val 下方大運橫 = ColorCanvas(8, 70, "　", null, null)
+    val 右方大運直 = ColorCanvas(9, 24, ChineseStringTools.NULL_CHAR)
+    val 下方大運橫 = ColorCanvas(8, 70, ChineseStringTools.NULL_CHAR)
 
     val dataList = ArrayList(model.fortuneDatas)
 
@@ -72,7 +73,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 
 
     if (direction == Direction.R2L) {
-      Collections.reverse(dataList)
+      dataList.reverse()
     }
 
 
@@ -115,7 +116,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     cc.add(右方大運直, 11, 47)
     cc.add(下方大運橫, 22, 1)
 
-    val 節氣 = ColorCanvas(2, cc.width, "　")
+    val 節氣 = ColorCanvas(2, cc.width, ChineseStringTools.NULL_CHAR)
     val prevMajorSolarTerms = model.prevMajorSolarTerms
     val nextMajorSolarTerms = model.nextMajorSolarTerms
 

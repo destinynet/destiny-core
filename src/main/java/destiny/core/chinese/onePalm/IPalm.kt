@@ -10,6 +10,7 @@ import destiny.core.Gender
 import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.calendar.chinese.IChineseDate
+import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.calendar.eightwords.*
@@ -141,7 +142,7 @@ interface IPalm {
    * @param monthBranch 「節氣」的月支
    */
   fun getPalm(gender: Gender,
-              chineseDateHour: ChineseDateHour,
+              chineseDateHour: IChineseDateHourModel,
               positiveImpl: IPositive,
               trueRising: Branch?,
               monthBranch: Branch,

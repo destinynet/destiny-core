@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar.chinese
 
+import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.tools.ChineseStringTools
 
@@ -14,17 +15,17 @@ import java.io.Serializable
  * 農曆日期的表示法（無時辰）
  * epoch : -2636/2/15
  */
-open class ChineseDate(
+interface IChineseDateModel {
   /** 第幾輪  */
-  private val cycle: Int?,
+  val cycle: Int?
   /** 年干支  */
-  val year: StemBranch,
+  val year: StemBranch
   /** 月  */
-  val month: Int,
+  val month: Int
   /** 是否是潤月  */
-  val isLeapMonth: Boolean,
+  val isLeapMonth: Boolean
   /** 日  */
-  val day: Int) : Serializable {
+  val day: Int
 
   val cycleOrZero: Int
     get() = cycle ?: 0
@@ -36,6 +37,23 @@ open class ChineseDate(
   val westYear: Int
     get() = -2636 + (cycleOrZero - 1) * 60 + year.index
 
+}
+
+interface IChineseDateHourModel : IChineseDateModel {
+  val hourBranch: Branch
+}
+
+data class ChineseDate(
+  /** 第幾輪  */
+  override val cycle: Int?,
+  /** 年干支  */
+  override val year: StemBranch,
+  /** 月  */
+  override val month: Int,
+  /** 是否是潤月  */
+  override val isLeapMonth: Boolean,
+  /** 日  */
+  override val day: Int) : IChineseDateModel, Serializable {
 
   override fun toString(): String {
     return year.toString() + "年" + (if (isLeapMonth) "閏" else "") + toChinese(month) + "月" + toChinese(day) + "日"
@@ -59,3 +77,11 @@ open class ChineseDate(
     }
   }
 }
+
+
+/**
+ * 農曆日期＋時辰(地支)的表示法
+ */
+data class ChineseDateHour(val chineseDate: ChineseDate,
+                           override val hourBranch: Branch) : IChineseDateModel by chineseDate, IChineseDateHourModel,
+  Serializable
