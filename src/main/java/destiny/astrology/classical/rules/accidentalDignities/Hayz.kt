@@ -32,7 +32,7 @@ class Hayz(
             ?.takeIf { house >= 7 && sign.booleanValue }
             ?.let {
               logger.debug("晝星 {} 於白天在地平面上，落入陽性星座 {} , 得時", planet, sign.toString(Locale.TAIWAN))
-              "commonDay" to arrayOf(planet, sign)
+              "commentDay" to arrayOf(planet, sign)
             }
           DayNight.NIGHT -> planet.takeIf { arrayOf(MOON, VENUS, MARS).contains(it) }
             ?.takeIf { house >= 7 && !sign.booleanValue }

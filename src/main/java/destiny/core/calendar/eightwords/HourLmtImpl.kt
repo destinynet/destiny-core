@@ -5,8 +5,8 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import java.io.Serializable
@@ -21,7 +21,7 @@ import java.util.*
  */
 class HourLmtImpl : IHour, Serializable {
 
-  override fun getHour(gmtJulDay: Double, location: Location): Branch {
+  override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
     val gmt = revJulDayFunc.invoke(gmtJulDay)
     val lmtHour = TimeTools.getLmtFromGmt(gmt, location).get(ChronoField.HOUR_OF_DAY)
     return getHour(lmtHour)
@@ -42,10 +42,10 @@ class HourLmtImpl : IHour, Serializable {
       19, 20 -> return Branch.戌
       21, 22 -> return Branch.亥
     }
-    throw RuntimeException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : " + lmtHour)
+    throw RuntimeException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
   }
 
-  override fun getGmtNextStartOf(gmtJulDay: Double, location: Location, eb: Branch): Double {
+  override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
 
     val gmt = revJulDayFunc.invoke(gmtJulDay)
     val lmt = TimeTools.getLmtFromGmt(gmt, location)
@@ -58,7 +58,7 @@ class HourLmtImpl : IHour, Serializable {
   /**
    * 要實作，不然會有一些 round-off 的問題
    */
-  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, location: Location, eb: Branch, revJulDayFunc: Function1<Double , ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, location: ILocation, eb: Branch, revJulDayFunc: Function1<Double , ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
 
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
 

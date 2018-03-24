@@ -44,28 +44,16 @@ data class BirthData(
                     ) : IBirthData, Serializable
 
 
-
-interface IBirthDataWithPlace : IBirthData {
-  val name:String
-  val place:String
+interface IBirthDataNamePlace : IBirthData {
+  val name: String
+  val place: String
 }
 
-data class BirthDataWithPlace2(
+data class BirthDataNamePlace(
   val birthData: BirthData,
-  override val name:String,
-  override val place: String):IBirthDataWithPlace , IBirthData by birthData , Serializable {
+  override val name: String,
+  override val place: String) : IBirthDataNamePlace, IBirthData by birthData, Serializable {
 
-  constructor(gender: Gender , time: ChronoLocalDateTime<*> , location: Location , name: String , place: String)
+  constructor(gender: Gender, time: ChronoLocalDateTime<*>, location: Location, name: String, place: String)
     : this(BirthData(gender, time, location), name, place)
 }
-
-
-interface IBirthDataWithPlaceEmail : IBirthDataWithPlace {
-  val email:String
-}
-
-//data class BirthDataWithPlaceEmail2(
-//  private val birthDataWithPlace: BirthDataWithPlace2,
-//  override val email: String) : IBirthDataWithPlaceEmail , IBirthDataWithPlace by birthDataWithPlace , Serializable
-
-

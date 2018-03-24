@@ -8,8 +8,8 @@ package destiny.core.calendar.eightwords
 import destiny.astrology.IRiseTrans
 import destiny.astrology.Planet
 import destiny.astrology.TransPoint
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.chinese.Branch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
@@ -41,7 +41,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
     this.hasRefraction = hasRefraction
   }
 
-  override fun getHour(gmtJulDay: Double, location: Location): Branch {
+  override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
 
     val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
     val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
@@ -78,24 +78,19 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
       val diffDays = nextNadir - previousMeridian
       val oneUnitDays = diffDays / 12.0
 
-      return if (gmtJulDay < previousMeridian + oneUnitDays)
-        Branch.午
-      else if (gmtJulDay < previousMeridian + oneUnitDays * 3)
-        Branch.未
-      else if (gmtJulDay < previousMeridian + oneUnitDays * 5)
-        Branch.申
-      else if (gmtJulDay < previousMeridian + oneUnitDays * 7)
-        Branch.酉
-      else if (gmtJulDay < previousMeridian + oneUnitDays * 9)
-        Branch.戌
-      else if (gmtJulDay < previousMeridian + oneUnitDays * 11)
-        Branch.亥
-      else
-        Branch.子
+      return when {
+        gmtJulDay < previousMeridian + oneUnitDays -> Branch.午
+        gmtJulDay < previousMeridian + oneUnitDays * 3 -> Branch.未
+        gmtJulDay < previousMeridian + oneUnitDays * 5 -> Branch.申
+        gmtJulDay < previousMeridian + oneUnitDays * 7 -> Branch.酉
+        gmtJulDay < previousMeridian + oneUnitDays * 9 -> Branch.戌
+        gmtJulDay < previousMeridian + oneUnitDays * 11 -> Branch.亥
+        else -> Branch.子
+      }
     }
   }
 
-  override fun getGmtNextStartOf(gmtJulDay: Double, location: Location, targetEb: Branch): Double {
+  override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
     val resultGmt: Double
     val nextMeridianGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
     val nextNadirGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
@@ -109,14 +104,14 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
       val oneUnit2 = (nextNadirGmt - nextMeridianGmt) / 12.0
 
       val currentEb = getHour(gmtJulDay, location) // 取得目前在哪個時辰之中
-      if (targetEb.index > currentEb.index || targetEb == Branch.子) {
+      if (eb.index > currentEb.index || eb == Branch.子) {
         //代表現在所處的時辰，未超過欲求的時辰
-        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 || targetEb == Branch.午) {
-          resultGmt = previousNadir + oneUnit1 * ((targetEb.index - 1) * 2 + 1)
-        } else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥) {
-          resultGmt = nextMeridianGmt + oneUnit2 * ((targetEb.index - 7) * 2 + 1)
+        resultGmt = if (eb == Branch.丑 || eb == Branch.寅 || eb == Branch.卯 || eb == Branch.辰 || eb == Branch.巳 || eb == Branch.午) {
+          previousNadir + oneUnit1 * ((eb.index - 1) * 2 + 1)
+        } else if (eb == Branch.未 || eb == Branch.申 || eb == Branch.酉 || eb == Branch.戌 || eb == Branch.亥) {
+          nextMeridianGmt + oneUnit2 * ((eb.index - 7) * 2 + 1)
         } else {
-          resultGmt = nextMeridianGmt + oneUnit2 * 11 // eb == 子時
+          nextMeridianGmt + oneUnit2 * 11 // eb == 子時
         }
       } else {
         //欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰
@@ -124,10 +119,10 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
         val oneUnit3 = (nextNextMeridianGmt - nextNadirGmt) / 12.0
         val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
         val oneUnit4 = (nextNextNadir - nextNextMeridianGmt) / 12.0
-        if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 || targetEb == Branch.午) {
-          resultGmt = nextNadirGmt + oneUnit3 * ((targetEb.index - 1) * 2 + 1)
-        } else if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥) {
-          resultGmt = nextNextMeridianGmt + oneUnit4 * ((targetEb.index - 7) * 2 + 1)
+        resultGmt = if (eb == Branch.丑 || eb == Branch.寅 || eb == Branch.卯 || eb == Branch.辰 || eb == Branch.巳 || eb == Branch.午) {
+          nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
+        } else if (eb == Branch.未 || eb == Branch.申 || eb == Branch.酉 || eb == Branch.戌 || eb == Branch.亥) {
+          nextNextMeridianGmt + oneUnit4 * ((eb.index - 7) * 2 + 1)
         } else {
           throw RuntimeException("Runtime Exception : 沒有子時的情況") //沒有子時的情況
         }
@@ -142,28 +137,28 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
       val oneUnit2 = (nextNadirGmt - previousMeridian) / 12.0 //從 下一個子正 到 上一個午正，總共幾秒
 
       val currentEb = this.getHour(gmtJulDay, location) // 取得目前在哪個時辰中
-      if (currentEb.index >= 6 && currentEb.index <= 11 &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
-        (targetEb.index >= 6 && targetEb.index > currentEb.index || targetEb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
+      if (currentEb.index in 6..11 &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
+        (eb.index >= 6 && eb.index > currentEb.index || eb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
       ) {
-        if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥) {
-          resultGmt = previousMeridian + oneUnit2 * ((targetEb.index - 7) * 2 + 1)
-        } else if (targetEb == Branch.丑 || targetEb == Branch.寅 || targetEb == Branch.卯 || targetEb == Branch.辰 || targetEb == Branch.巳 || targetEb == Branch.午) {
-          resultGmt = nextNadirGmt + oneUnit1 * ((targetEb.index - 1) * 2 + 1)
+        resultGmt = if (eb == Branch.未 || eb == Branch.申 || eb == Branch.酉 || eb == Branch.戌 || eb == Branch.亥) {
+          previousMeridian + oneUnit2 * ((eb.index - 7) * 2 + 1)
+        } else if (eb == Branch.丑 || eb == Branch.寅 || eb == Branch.卯 || eb == Branch.辰 || eb == Branch.巳 || eb == Branch.午) {
+          nextNadirGmt + oneUnit1 * ((eb.index - 1) * 2 + 1)
         } else {
-          resultGmt = previousMeridian + oneUnit2 * 11 // 晚子時之始
+          previousMeridian + oneUnit2 * 11 // 晚子時之始
         }
       } else {
         // 欲求的時辰，早於現在所處的時辰
         val oneUnit3 = (nextMeridianGmt - nextNadirGmt) / 12.0
         val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
         val oneUnit4 = (nextNextNadir - nextMeridianGmt) / 12.0
-        if (targetEb == Branch.未 || targetEb == Branch.申 || targetEb == Branch.酉 || targetEb == Branch.戌 || targetEb == Branch.亥) {
-          resultGmt = nextMeridianGmt + oneUnit4 * ((targetEb.index - 7) * 2 + 1)
-        } else if (targetEb == Branch.子) {
-          resultGmt = nextMeridianGmt + oneUnit4 * 11
+        resultGmt = if (eb == Branch.未 || eb == Branch.申 || eb == Branch.酉 || eb == Branch.戌 || eb == Branch.亥) {
+          nextMeridianGmt + oneUnit4 * ((eb.index - 7) * 2 + 1)
+        } else if (eb == Branch.子) {
+          nextMeridianGmt + oneUnit4 * 11
         } else {
           //丑寅卯辰巳午
-          resultGmt = nextNadirGmt + oneUnit3 * ((targetEb.index - 1) * 2 + 1)
+          nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
         }
       }
     }
