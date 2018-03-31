@@ -5,7 +5,6 @@
 package destiny.astrology
 
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IRisingSign
 import java.time.chrono.ChronoLocalDateTime
@@ -43,9 +42,9 @@ interface IHouseCusp : IRisingSign {
   /**
    * 取得第 index 宮的宮首在黃道幾度 , 為 1-based , 1 <= index <=12
    */
-  fun getHouseCusp(index: Int, gmtJulDay: Double, location: Location, houseSystem: HouseSystem, coordinate: Coordinate): Double
+  fun getHouseCusp(index: Int, gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): Double
 
-  fun getHouseCusp(index: Int, lmt: ChronoLocalDateTime<*>, location: Location, houseSystem: HouseSystem, coordinate: Coordinate): Double {
+  fun getHouseCusp(index: Int, lmt: ChronoLocalDateTime<*>, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): Double {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     return getHouseCusp(index, gmtJulDay, location, houseSystem, coordinate)
   }

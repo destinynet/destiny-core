@@ -51,6 +51,7 @@ class DateDecoratorChinese : Decorator<ChronoLocalDate>, Serializable {
 class DateDecoratorEnglish : Decorator<ChronoLocalDate>, Serializable {
   override fun getOutputString(value: ChronoLocalDate): String {
     return with(StringBuilder()) {
+      append(value.get(YEAR_OF_ERA))
       if (value.era === IsoEra.CE)
         append("AD")
       else

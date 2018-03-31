@@ -6,9 +6,7 @@
 package destiny.astrology
 
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
-
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -19,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 interface IStarPosition<out T : IPos> {
 
   /** 設定觀測地點，對於 [Centric.TOPO] 有用 . 2017-07-03 註記 : 此 method 無法移除 */
-  fun setLocation(location: Location)
+  fun setLocation(location: ILocation)
 
   fun getPosition(star: Star, gmtJulDay: Double, centric: Centric, coordinate: Coordinate): T
 

@@ -28,7 +28,7 @@ interface IntAge {
   fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double>
 
   /** 承上 , 傳回 {@link ChronoLocalDateTime} 版本 */
-  fun getRangeTime(gender: Gender, gmtJulDay: Double, loc: Location, age: Int, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>> {
+  fun getRangeTime(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>> {
     return getRange(gender, gmtJulDay, loc, age).let { pair ->
       Pair(revJulDayFunc.invoke(pair.first), revJulDayFunc.invoke(pair.second))
     }

@@ -26,7 +26,7 @@ object AlignTools {
   fun alignRight(value: Double, width: Int, padChar: Char = ' '): String {
     val s = value.absoluteValue.toString().let {
       if (value < 0)
-        '-' + it
+        "-$it"
       else
         it
     }

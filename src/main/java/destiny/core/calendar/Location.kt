@@ -126,7 +126,7 @@ data class Location(override val lng: Double,
               latSec: Double? = 0.0,
               tzid: String?,
               minuteOffset: Int? = null,
-              altitudeMeter: Double? = 0.0) : this(
+              altitudeMeter: Double? = null) : this(
     (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec!! / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
     (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec!! / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)

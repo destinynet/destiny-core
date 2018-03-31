@@ -341,7 +341,7 @@ public class TimeTools implements Serializable {
    * 將 LMT 以及經度 轉換為當地真正的時間 , 不包含真太陽時(均時差) 的校正
    * @return 經度時間
    */
-  public static ChronoLocalDateTime getLongitudeTime(ChronoLocalDateTime lmt, Location location) {
+  public static ChronoLocalDateTime getLongitudeTime(ChronoLocalDateTime lmt, ILocation location) {
     double absLng = Math.abs(location.getLng());
     double secondsOffset = getDstSecondOffset(lmt, location).getSecond();
     double zoneSecondOffset = Math.abs(secondsOffset);
