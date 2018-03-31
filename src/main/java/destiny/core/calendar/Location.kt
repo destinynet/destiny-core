@@ -49,7 +49,7 @@ interface ILatLng {
   val latSec: Double
     get() = abs(lat) * 3600 - (latDeg * 3600).toDouble() - (latMin * 60).toDouble()
 
-  /** 取得經緯度的十進位表示法，先緯度、再精度 */
+  /** 取得經緯度的十進位表示法，先緯度、再經度 */
   val decimal: String
     get() = with(StringBuffer()) {
       append(lat)
@@ -88,33 +88,6 @@ interface ILocation : ILatLng {
       TimeZoneUtils.getTimeZone(it).toZoneId()
     } ?: ZoneId.of("GMT")
 
-  /**
-   * 2012/03 格式：
-   * 012345678901234567890123456789012345678901234567890
-   * +DDDMMSSSSS+DDMMSSSSS [altitudeMeter]~ [tzid]~ [minuteOffset]
-   * 範例 :
-   * +1213012.34+25 312.34 12.3456 Asia/Taipei 480
-   * 尾方的 minuteOffset 為 optional , 如果有的話，會 override Asia/Taipei 的 minuteOffset
-   */
-  val debugString: String
-    get() = StringBuilder().apply {
-      append(if (eastWest == EastWest.EAST) '+' else '-')
-      append(AlignTools.leftPad(lngDeg.toString(), 3, ' '))
-      append(AlignTools.leftPad(lngMin.toString(), 2, ' '))
-      append(AlignTools.alignRight(lngSec, 5, ' '))
-
-      append(if (northSouth == NorthSouth.NORTH) '+' else '-')
-      append(AlignTools.leftPad(latDeg.toString(), 2, ' '))
-      append(AlignTools.leftPad(latMin.toString(), 2, ' '))
-      append(AlignTools.alignRight(latSec, 5, ' '))
-
-      append(" ").append(altitudeMeter)
-      append(' ').append(tzid)
-
-      minuteOffset?.also {
-        append(' ').append(it)
-      }
-    }.toString()
 } // ILocation
 
 interface IPlace {
@@ -140,7 +113,6 @@ data class Location(override val lng: Double,
   /**
    * 最詳盡的 constructor
    *
-   * 參考 [debugString]
    * 2012/03 格式：
    * 012345678901234567890123456789012345678901234567890
    * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ [minuteOffset]

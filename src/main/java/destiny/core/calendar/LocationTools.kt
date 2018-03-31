@@ -10,11 +10,16 @@ import java.util.*
 
 object LocationTools {
 
+
+  fun encode(loc: ILocation): String {
+    return encode2018(loc)
+  }
+
   /**
    * 2018-03 格式： (直接帶入 data class [Location] 之值)
    * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
-  fun getDebugString(loc: Location): String {
+  fun encode2018(loc: ILocation): String {
     return StringBuilder().apply {
       loc.apply {
         append(lat)
@@ -27,48 +32,6 @@ object LocationTools {
     }.toString()
   }
 
-  /**
-   * 解碼 2018-03 的 [Location] debugString
-   * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
-   */
-  fun decodeDebugStringNew(string: String): Location? {
-    val parts: Set<LocationPadding> =
-      string.splitToSequence(" ").map { it -> LocationPadding.getPadding(it) }.filterNotNull().toSet()
-
-    return (parts.first { it is LocationPadding.latLng } as LocationPadding.latLng).let {
-      val tzid: String? =
-        parts.firstOrNull { it is LocationPadding.tzid }?.let { it as LocationPadding.tzid }?.value?.id
-      val minuteOffset: Int? =
-        parts.firstOrNull { it is LocationPadding.minOffset }?.let { it as LocationPadding.minOffset }?.value
-      val altMeter: Double? =
-        parts.firstOrNull { it is LocationPadding.altMeter }?.let { it as LocationPadding.altMeter }?.value
-      Location(it.lng, it.lat, tzid, minuteOffset, altMeter)
-    }
-  }
-
-  sealed class LocationPadding {
-    data class latLng(val lat: Double, val lng: Double) : LocationPadding()
-    data class tzid(val value: ZoneId) : LocationPadding()
-    data class minOffset(val value: Int) : LocationPadding()
-    data class altMeter(val value: Double) : LocationPadding()
-
-    companion object {
-      fun getPadding(value: String): LocationPadding? {
-        return when {
-          value.contains(",") -> {
-            val (lat, lng) = value.split(",").map { it.toDouble() }
-            LocationPadding.latLng(lat, lng)
-          }
-          ZoneId.getAvailableZoneIds().contains(value) -> LocationPadding.tzid(ZoneId.of(value))
-          value.endsWith('m') && value.takeWhile { it.isDigit() }.toIntOrNull() != null ->
-            LocationPadding.minOffset(value.takeWhile { it.isDigit() }.toInt())
-          value.toDoubleOrNull() != null -> LocationPadding.altMeter(value.toDouble())
-          else -> null
-        }
-      }
-    }
-  }
-
 
   /**
    * 2012/03 格式：
@@ -79,7 +42,7 @@ object LocationTools {
    * 尾方的 minuteOffset 為 optional , 如果有的話，會 override Asia/Taipei 的 minuteOffset
    *
    */
-  fun getDebugString2012(loc: ILocation): String {
+  fun encode2012(loc: ILocation): String {
     return StringBuilder().apply {
       loc.apply {
         append(if (eastWest == EastWest.EAST) '+' else '-')
@@ -103,14 +66,58 @@ object LocationTools {
   }
 
 
-  fun fromDebugString(s:String) : Location {
-    return fromDebugString2012(s)
+  fun decode(s: String): ILocation {
+    return decode2018(s) ?: {
+      decode2012(s)
+    }.invoke()
+  }
+
+  /**
+   * 解碼 2018-03 的 [Location] debugString
+   * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   */
+  fun decode2018(string: String): ILocation? {
+    val parts: Set<LocationPadding> =
+      string.splitToSequence(" ").map { it -> LocationPadding.getPadding(it) }.filterNotNull().toSet()
+
+    return (parts.first { it is LocationPadding.latLng } as LocationPadding.latLng).let {
+      val tzid: String? =
+        parts.firstOrNull { it is LocationPadding.tzid }?.let { it as LocationPadding.tzid }?.value?.id
+      val minuteOffset: Int? =
+        parts.firstOrNull { it is LocationPadding.minOffset }?.let { it as LocationPadding.minOffset }?.value
+      val altMeter: Double? =
+        parts.firstOrNull { it is LocationPadding.altMeter }?.let { it as LocationPadding.altMeter }?.value
+      Location(it.lng, it.lat, tzid, minuteOffset, altMeter)
+    }
+  }
+
+  private sealed class LocationPadding {
+    data class latLng(val lat: Double, val lng: Double) : LocationPadding()
+    data class tzid(val value: ZoneId) : LocationPadding()
+    data class minOffset(val value: Int) : LocationPadding()
+    data class altMeter(val value: Double) : LocationPadding()
+
+    companion object {
+      fun getPadding(value: String): LocationPadding? {
+        return when {
+          value.contains(",") -> {
+            val (lat, lng) = value.split(",").map { it.toDouble() }
+            LocationPadding.latLng(lat, lng)
+          }
+          ZoneId.getAvailableZoneIds().contains(value) -> LocationPadding.tzid(ZoneId.of(value))
+          value.endsWith('m') && value.takeWhile { it.isDigit() }.toIntOrNull() != null ->
+            LocationPadding.minOffset(value.takeWhile { it.isDigit() }.toInt())
+          value.toDoubleOrNull() != null -> LocationPadding.altMeter(value.toDouble())
+          else -> null
+        }
+      }
+    }
   }
 
   /**
    * decode 2012-03 格式
    */
-  fun fromDebugString2012(s: String): Location {
+  fun decode2012(s: String): ILocation {
     val eastWest: EastWest
     val ew = s[0]
     eastWest = when (ew) {
@@ -119,9 +126,9 @@ object LocationTools {
       else -> throw RuntimeException("EW not correct : $ew")
     }
 
-    val lngDeg = Integer.valueOf(s.substring(1, 4).trim { it <= ' ' })
-    val lngMin = Integer.valueOf(s.substring(4, 6).trim { it <= ' ' })
-    val lngSec = java.lang.Double.valueOf(s.substring(6, 11).trim { it <= ' ' })
+    val lngDeg = (s.substring(1, 4).trim { it <= ' ' }).toInt()
+    val lngMin = (s.substring(4, 6).trim { it <= ' ' }).toInt()
+    val lngSec = (s.substring(6, 11).trim { it <= ' ' }).toDouble()
 
     val northSouth: NorthSouth
     val ns = s[11]
@@ -131,9 +138,9 @@ object LocationTools {
       else -> throw RuntimeException("ns not correct : $ns")
     }
 
-    val latDeg = Integer.valueOf(s.substring(12, 14).trim { it <= ' ' })
-    val latMin = Integer.valueOf(s.substring(14, 16).trim { it <= ' ' })
-    val latSec = java.lang.Double.valueOf(s.substring(16, 21).trim { it <= ' ' })
+    val latDeg = (s.substring(12, 14).trim { it <= ' ' }).toInt()
+    val latMin = (s.substring(14, 16).trim { it <= ' ' }).toInt()
+    val latSec = (s.substring(16, 21).trim { it <= ' ' }).toDouble()
 
     //包含了 高度以及時區
     val altitudeAndTimezone = s.substring(21)
@@ -154,9 +161,9 @@ object LocationTools {
       altitudeMeter = restTokens.toDouble()
       //parse 成功，代表舊款
       tzid = if (firstToken[0] == '+')
-        TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken.substring(1))).id
+        TimeZoneUtils.getTimeZone(firstToken.substring(1).toInt()).id
       else
-        TimeZoneUtils.getTimeZone(Integer.parseInt(firstToken)).id
+        TimeZoneUtils.getTimeZone(firstToken.toInt()).id
     } catch (e: NumberFormatException) {
       //新款
       //println("新款 , firstToken = $firstToken")

@@ -17,6 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoField.*
 import java.util.*
+import kotlin.math.abs
 
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
@@ -95,7 +96,15 @@ open class ContextColorCanvasWrapper(
       地點名稱.setText("地點：", 1, 1)
       地點名稱.setText(locationName, 1, 7, false, null, null, null, url, null)
       val minuteOffset = location.minuteOffset?:TimeTools.getDstSecondOffset(lmt, location).second / 60
-      地點名稱.setText(" GMT時差：" + AlignTools.alignRight(minuteOffset, 6, true) + "分鐘", 1, 25, "999999")
+
+      minuteOffset.also { it ->
+        val absValue = abs(it)
+        if (it >= 0) {
+          地點名稱.setText(" GMT時差：" + AlignTools.alignRight(it, 6, true) + "分鐘", 1, 25, "999999")
+        } else {
+          地點名稱.setText(" GMT時差：前" + AlignTools.alignRight(absValue, 4, true) + "分鐘", 1, 25, "999999")
+        }
+      }
       cc.add(地點名稱, 3, 1)
 
 

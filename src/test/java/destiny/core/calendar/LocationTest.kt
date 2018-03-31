@@ -74,20 +74,6 @@ class LocationTest {
     Assert.assertEquals(expected, actual)
   }
 
-  @Test
-  fun testLocationDebugString() {
-    var location: Location
-    location = Location(EastWest.EAST, 121, 30, 12.30, NorthSouth.NORTH, 25, 3, 12.30, TimeZoneUtils.getTimeZone(480).id , null , 12.3456)
-
-    Assert.assertEquals("+1213012.30+25 312.30 12.3456 CTT", location.debugString)
-
-    location = Location(EastWest.EAST, 121, 30, 12.33, NorthSouth.NORTH, 25, 3, 12.33, TimeZoneUtils.getTimeZone(-60).id)
-    Assert.assertEquals("+1213012.34+25 312.34 0.0 Etc/GMT+1", location.debugString)
-
-    location = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, TimeZoneUtils.getTimeZone(-60).id, null , -1000.0)
-    Assert.assertEquals("+1213012.34+25 312.34 -1000.0 Etc/GMT+1", location.debugString)
-
-  }
 
 
   @Test
