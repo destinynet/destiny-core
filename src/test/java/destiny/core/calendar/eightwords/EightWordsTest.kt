@@ -25,4 +25,10 @@ class EightWordsTest {
     assertNotNull(eightWordsFull.toString())
     println(eightWordsFull.toString())
   }
+
+  @Test
+  fun testStemBranches() {
+    val eightWordsFull = EightWords(StemBranch["甲子"], StemBranch["乙丑"], StemBranch["丙寅"], StemBranch["丁卯"])
+    assertEquals(listOf(StemBranch.甲子, StemBranch.乙丑, StemBranch.丙寅, StemBranch.丁卯) , eightWordsFull.stemBranches)
+  }
 }

@@ -7,17 +7,18 @@ package destiny.core.calendar.eightwords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
+import java.io.Serializable
 
 
 /**
  * 八字資料結構 , 四柱任何一柱都不可以為 null
- * 2006/06/12 將此 class 繼承 EightWordsNullable
+ * 2006-06-12 將此 class 繼承 [EightWordsNullable]
+ * 2018-04-01 起， 將此 class 與 [EightWordsNullable] 拆離繼承關係
  */
 data class EightWords(override val year: StemBranch,
                       override val month: StemBranch,
                       override val day: StemBranch,
-                      override val hour: StemBranch
-                     ) : EightWordsNullable(year, month, day, hour) {
+                      override val hour: StemBranch) : IEightWords , Serializable {
 
   /** 以字串 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null */
   constructor(year: String, month: String, day: String, hour: String)
@@ -37,12 +38,8 @@ data class EightWords(override val year: StemBranch,
            StemBranch[hourStem, hourBranch])
 
   /** 強制將 [EightWordsNullable] downcast 成 [EightWords] , 可能會拋出錯誤 , 注意 */
-  constructor(ewn : EightWordsNullable) : this(StemBranch[ewn.year] , StemBranch[ewn.month] , StemBranch[ewn.day] , StemBranch[ewn.hour])
-
-  override val stemBranches = listOf(year, month, day, hour)
-
-  //val nullable: EightWordsNullable = EightWordsNullable(year, month, day, hour)
-
+  constructor(ewn: IEightWordsNullable) : this(StemBranch[ewn.year], StemBranch[ewn.month], StemBranch[ewn.day],
+                                              StemBranch[ewn.hour])
 
   override fun toString(): String {
     return ("\n" +

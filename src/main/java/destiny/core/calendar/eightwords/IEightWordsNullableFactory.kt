@@ -5,8 +5,8 @@
 package destiny.core.calendar.eightwords
 
 /** 可以取得八字的介面  */
-interface IEightWordsNullable {
+interface IEightWordsNullableFactory {
 
-  val eightWordsNullable: EightWordsNullable
+  val eightWordsNullable: IEightWordsNullable
 
 }

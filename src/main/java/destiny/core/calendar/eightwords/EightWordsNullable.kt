@@ -3,26 +3,41 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.chinese.Branch
-import destiny.core.chinese.IStemBranchOptional
-import destiny.core.chinese.Stem
-import destiny.core.chinese.StemBranchOptional
+import destiny.core.chinese.*
 import destiny.tools.ChineseStringTools
 import java.io.Serializable
 
 /**
  * 八字資料結構，可以包含 null 值
  */
-open class EightWordsNullable(open val year: IStemBranchOptional,
-                              open val month: IStemBranchOptional,
-                              open val day: IStemBranchOptional,
-                              open val hour: IStemBranchOptional) : Serializable , IEightWordsNullable {
+interface IEightWordsNullable {
+  val year: IStemBranchOptional
+  val month: IStemBranchOptional
+  val day: IStemBranchOptional
+  val hour: IStemBranchOptional
+
+  /** 取得四柱  */
+  val stemBranches: List<IStemBranchOptional>
+    get() = listOf(year, month, day, hour)
+}
+
+interface IEightWords : IEightWordsNullable , IEightWordsNullableFactory {
+  override val year : StemBranch
+  override val month : StemBranch
+  override val day: StemBranch
+  override val hour: StemBranch
+
+  override val eightWordsNullable: IEightWordsNullable
+    get() = EightWordsNullable(year, month, day, hour)
+}
+
+data class EightWordsNullable(override val year: IStemBranchOptional,
+                              override val month: IStemBranchOptional,
+                              override val day: IStemBranchOptional,
+                              override val hour: IStemBranchOptional) : IEightWordsNullable , IEightWordsNullableFactory , Serializable {
 
   override val eightWordsNullable: EightWordsNullable
     get() = this
-
-  /** 取得四柱  */
-  open val stemBranches: List<IStemBranchOptional> = listOf(year, month, day, hour)
 
   override fun toString(): String {
 
@@ -43,34 +58,6 @@ open class EightWordsNullable(open val year: IStemBranchOptional,
       )
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other !is EightWordsNullable) {
-      return false
-    }
-
-    val that = other as EightWordsNullable?
-
-    if (day != that!!.day) {
-      return false
-    }
-    if (hour != that.hour) {
-      return false
-    }
-    return if (month != that.month) {
-      false
-    } else year == that.year
-  }
-
-  override fun hashCode(): Int {
-    var result = year.hashCode()
-    result = 31 * result + month.hashCode()
-    result = 31 * result + day.hashCode()
-    result = 31 * result + hour.hashCode()
-    return result
-  }
 
   companion object {
 

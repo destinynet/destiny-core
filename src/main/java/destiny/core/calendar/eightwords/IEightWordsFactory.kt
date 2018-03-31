@@ -11,7 +11,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 計算八字的介面
  */
-interface IEightWords {
+interface IEightWordsFactory {
 
   fun getEightWords(gmtJulDay: Double, loc: ILocation): EightWords
 

@@ -26,7 +26,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class PersonContext(
-  eightWordsImpl: IEightWords,
+  eightWordsImpl: IEightWordsFactory,
   chineseDateImpl: IChineseDate,
   yearMonthImpl: IYearMonth,
   dayImpl: IDay,

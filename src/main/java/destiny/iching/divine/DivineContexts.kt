@@ -10,6 +10,7 @@ import destiny.core.calendar.TimeSecDecorator
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsNullable
+import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.core.chinese.impls.TianyiAuthorizedImpl
 import destiny.core.chinese.impls.YangBladeNextBlissImpl
@@ -88,7 +89,7 @@ class CombinedWithMetaNameDayMonthContext(val src: IHexagram,
                                           val nameShortImpl: IHexagramNameShort,
                                           val nameFullImpl: IHexagramNameFull,
 
-                                          val eightWordsNullable: EightWordsNullable, // 一定要包含 日干支 以及 月支
+                                          val eightWordsNullable: IEightWordsNullable, // 一定要包含 日干支 以及 月支
                                           val tianyiImpl: ITianyi,
                                           val yangBladeImpl: IYangBlade) :
   IResult<ICombinedWithMetaNameDayMonth> {

@@ -6,8 +6,15 @@ package destiny.core.chinese
 import destiny.tools.ArrayTools
 import java.io.Serializable
 
-data class StemBranchOptional internal constructor(override val stem: Stem?,
-                                                   override val branch: Branch?) : IStemBranchOptional , Serializable {
+
+interface IStemBranchOptional {
+  val stem: Stem?
+  val branch: Branch?
+}
+
+data class StemBranchOptional internal constructor(
+  override val stem: Stem?,
+  override val branch: Branch?) : IStemBranchOptional , Serializable {
 
 
   val index: Int?
@@ -33,10 +40,11 @@ data class StemBranchOptional internal constructor(override val stem: Stem?,
   companion object {
 
     // 0[甲子] ~ 59[癸亥]
-    private val ARRAY : Array<StemBranchOptional> by lazy {
+    private val ARRAY: Array<StemBranchOptional> by lazy {
       var n = 0
       generateSequence {
-        StemBranchOptional(Stem[n % 10], Branch[n % 12]).takeIf { n++ < 60 } }.toList().toTypedArray()
+        StemBranchOptional(Stem[n % 10], Branch[n % 12]).takeIf { n++ < 60 }
+      }.toList().toTypedArray()
     }
 
     fun empty(): StemBranchOptional {

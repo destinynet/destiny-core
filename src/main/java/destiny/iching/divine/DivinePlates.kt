@@ -7,8 +7,8 @@ import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.EightWords
-import destiny.core.calendar.eightwords.EightWordsNullable
 import destiny.core.calendar.eightwords.IEightWordsNullable
+import destiny.core.calendar.eightwords.IEightWordsNullableFactory
 import destiny.core.chinese.Branch
 import destiny.core.chinese.SixAnimal
 import destiny.core.chinese.StemBranch
@@ -111,7 +111,7 @@ data class CombinedWithMetaName(override val srcPlate: SinglePlateWithName,
 
 
 /** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) */
-interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNullable {
+interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNullableFactory {
   val day: StemBranch
   val monthBranch: Branch
 
@@ -125,7 +125,7 @@ interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNull
 
 /** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) , 八字一定要包含 日干支 以及 月支  */
 data class CombinedWithMetaNameDayMonth(private val combinedWithMetaName: CombinedWithMetaName,
-                                        override val eightWordsNullable: EightWordsNullable,
+                                        override val eightWordsNullable: IEightWordsNullable,
                                         override val 空亡: Set<Branch>,
                                         override val 驛馬: Branch,
                                         override val 桃花: Branch,
@@ -188,7 +188,7 @@ data class CombinedFull(private val combinedWithMetaNameDayMonth: CombinedWithMe
   ICombinedFull,
   ICombinedWithMetaNameDayMonth by combinedWithMetaNameDayMonth,
   IDivineMeta by divineMeta,
-  IEightWordsNullable by eightWords,
+  IEightWordsNullableFactory by eightWords,
   ICombinedWithMetaNameTexts,
   Serializable {
 

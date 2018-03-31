@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.子
@@ -19,7 +18,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
                      , val dayImpl: IDay                // 計算日干支的介面
                      , val hourImpl: IHour               // 計算時支的介面
                      , val midnightImpl: IMidnight            // 計算「子正」的介面
-                     , changeDayAfterZi: Boolean) : IEightWords, Serializable {
+                     , changeDayAfterZi: Boolean) : IEightWordsFactory, Serializable {
   var isChangeDayAfterZi = true
     internal set // 子初是否換日，內定是：true (換日)
 
