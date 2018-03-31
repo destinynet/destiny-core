@@ -10,9 +10,9 @@ import destiny.astrology.Planet.SUN
 import destiny.core.Gender
 import destiny.core.IntAge
 import destiny.core.IntAgeNote
-import destiny.core.calendar.Location
-import destiny.core.calendar.SolarTerms
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.*
@@ -47,7 +47,7 @@ class PersonContext(
   lmt: ChronoLocalDateTime<*>,
 
   /** 出生地點  */
-  location: Location,
+  location: ILocation,
 
   private val place: String?,
   /** 性別  */

@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.personal.PersonContextModel
@@ -72,7 +73,7 @@ class Builder(
   private var localDateTime: ChronoLocalDateTime<*>? = null
 
   /** 出生地點  */
-  private var location: Location? = null
+  private var location: ILocation? = null
 
   /** 地點名稱  */
   private var place: String? = null
@@ -161,7 +162,7 @@ class Builder(
     return this
   }
 
-  fun withLocation(location: Location): Builder {
+  fun withLocation(location: ILocation): Builder {
     this.location = location
     return this
   }

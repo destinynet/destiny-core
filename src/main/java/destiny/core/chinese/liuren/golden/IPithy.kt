@@ -5,7 +5,7 @@ package destiny.core.chinese.liuren.golden
 
 import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
@@ -41,7 +41,7 @@ interface IPithy {
     return Pithy(ew, direction, 月將, dayNight, 貴神)
   }
 
-  fun getPithy(direction: Branch, lmt: ChronoLocalDateTime<*>, loc: Location, monthBranchImpl: IMonthMaster,
+  fun getPithy(direction: Branch, lmt: ChronoLocalDateTime<*>, loc: ILocation, monthBranchImpl: IMonthMaster,
                dayNightImpl: DayNightDifferentiator, tianyiImpl: ITianyi, clockwiseImpl: IClockwise,
                seq: IGeneralSeq, generalStemBranchImpl: IGeneralStemBranch, eightWordsImpl: IEightWords): Pithy {
     val ew = eightWordsImpl.getEightWords(lmt, loc)

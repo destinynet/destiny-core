@@ -4,7 +4,7 @@
 package destiny.core.chinese.impls
 
 import destiny.astrology.*
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster
 import java.io.Serializable
@@ -21,7 +21,7 @@ class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>
     return "真實觀測太陽在黃道的度數，判斷月將（太陽星座）"
   }
 
-  override fun getBranch(lmt: ChronoLocalDateTime<*>, location: Location): Branch {
+  override fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
     val pos = starPositionImpl.getPosition(Planet.SUN, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
     return ZodiacSign.getZodiacSign(pos.lng).branch
   }

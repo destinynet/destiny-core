@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.ISolarTerms
@@ -40,7 +41,7 @@ interface IZiwei {
                     gender: Gender, optionalVageMap: Map<Int, Pair<Double, Double>>?, context: ZContext): Builder
 
   /** 輸入現代化的資料，計算本命盤  */
-  fun getBirthPlate(lmt: ChronoLocalDateTime<*>, location: Location, place: String?, gender: Gender, stars: Collection<ZStar>, context: ZContextMore, solarTermsImpl: ISolarTerms, yearMonthImpl: IYearMonth, dayImpl: IDay): Builder
+  fun getBirthPlate(lmt: ChronoLocalDateTime<*>, location: ILocation, place: String?, gender: Gender, stars: Collection<ZStar>, context: ZContextMore, solarTermsImpl: ISolarTerms, yearMonthImpl: IYearMonth, dayImpl: IDay): Builder
 
   /** 計算 大限盤  */
   fun getFlowBig(builder: Builder, context: ZContext, flowBig: StemBranch): Builder

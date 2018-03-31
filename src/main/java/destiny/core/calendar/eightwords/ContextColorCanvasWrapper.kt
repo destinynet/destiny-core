@@ -28,7 +28,7 @@ open class ContextColorCanvasWrapper(
   /** 當地時間  */
   private val lmt: ChronoLocalDateTime<*>,
   /** 地點  */
-  private val location: Location,
+  private val location: ILocation,
   /** 地點的名稱  */
   private val locationName: String,
   //protected final EightWordsContextModel model;

@@ -5,9 +5,9 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.Gender
 import destiny.core.IntAge
-import destiny.core.calendar.Location
-import destiny.core.calendar.SolarTerms.立春
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms.立春
 import java.io.Serializable
 
 /**
@@ -17,7 +17,7 @@ import java.io.Serializable
  */
 class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IntAge, Serializable {
 
-  override fun getRange(gender: Gender, gmtJulDay: Double, loc: Location, age: Int): Pair<Double, Double> {
+  override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
     val age1 = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))
 
     return getRangeInner(age1, age)
@@ -34,7 +34,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IntAge, Serializab
     }
   }
 
-  override fun getRanges(gender: Gender, gmtJulDay: Double, loc: Location, fromAge: Int, toAge: Int): List<Pair<Double, Double>> {
+  override fun getRanges(gender: Gender, gmtJulDay: Double, loc: ILocation, fromAge: Int, toAge: Int): List<Pair<Double, Double>> {
     if (fromAge > toAge) {
       throw RuntimeException("fromAge must be <= toAge")
     }

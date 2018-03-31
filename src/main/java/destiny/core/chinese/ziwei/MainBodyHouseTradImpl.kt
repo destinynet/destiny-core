@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IDay
@@ -39,7 +39,7 @@ class MainBodyHouseTradImpl(private val yearMonthImpl: IYearMonth,
                             private val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?) : IMainBodyHouse, Serializable {
 
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
-  override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: Location): Triple<Branch, Branch , Int?> {
+  override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
 
     val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
 

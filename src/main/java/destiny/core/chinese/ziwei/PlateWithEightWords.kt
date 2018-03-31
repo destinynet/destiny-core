@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.personal.PersonContextModel
 import destiny.core.chinese.Branch
@@ -19,7 +19,7 @@ import java.time.chrono.ChronoLocalDateTime
 class PlateWithEightWords internal constructor(
   name: String?, chineseDate: ChineseDate,
   localDateTime: ChronoLocalDateTime<*>?,
-  location: Location?, place: String?,
+  location: ILocation?, place: String?,
   gender: Gender,
   mainHouse: StemBranch, bodyHouse: StemBranch,
   mainStar: ZStar, bodyStar: ZStar,

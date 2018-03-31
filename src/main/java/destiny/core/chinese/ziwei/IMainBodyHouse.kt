@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -13,7 +13,7 @@ import java.util.*
 interface IMainBodyHouse : Descriptive {
 
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
-  fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: Location): Triple<Branch, Branch , Int?>
+  fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?>
 
   override fun getTitle(locale: Locale): String {
     return try {

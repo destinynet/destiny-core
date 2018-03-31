@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
@@ -20,7 +21,7 @@ import java.util.function.Function
  */
 class MidnightLmtImpl : IMidnight, Serializable {
 
-  override fun getNextMidnight(gmtJulDay: Double, loc: Location): Double {
+  override fun getNextMidnight(gmtJulDay: Double, loc: ILocation): Double {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
 
     val resultLmt = lmt.plus(1, ChronoUnit.DAYS)
@@ -33,7 +34,7 @@ class MidnightLmtImpl : IMidnight, Serializable {
   }
 
 
-  override fun getNextMidnight(lmt: ChronoLocalDateTime<*>, loc: Location, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  override fun getNextMidnight(lmt: ChronoLocalDateTime<*>, loc: ILocation, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
     return lmt
       .plus(1, ChronoUnit.DAYS)
       .with(HOUR_OF_DAY, 0)

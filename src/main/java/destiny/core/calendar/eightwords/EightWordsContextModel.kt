@@ -3,13 +3,12 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
-
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -19,7 +18,7 @@ import java.time.chrono.ChronoLocalDateTime
  */
 open class EightWordsContextModel(val eightWords: EightWords,
                                   val lmt: ChronoLocalDateTime<*>,
-                                  val location: Location,
+                                  val location: ILocation,
                                   /** 地點名稱  */
                                   val place: String?,
                                   /** 農曆  */

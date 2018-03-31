@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.chinese.StemBranch
 
@@ -21,7 +22,7 @@ interface IDay {
    * @param changeDayAfterZi 子時過後是否換日
    * @return 日辰干支
    */
-  fun getDay(gmtJulDay: Double, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch
+  fun getDay(gmtJulDay: Double, location: ILocation, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch
 
 
   /**
@@ -32,5 +33,5 @@ interface IDay {
    * @param changeDayAfterZi 子時過後是否換日
    * @return 日辰干支
    */
-  fun getDay(lmt: ChronoLocalDateTime<*>, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch
+  fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch
 }

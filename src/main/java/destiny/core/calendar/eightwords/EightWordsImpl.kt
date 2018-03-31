@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
@@ -29,7 +30,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
   }
 
 
-  override fun getEightWords(gmtJulDay: Double, loc: Location): EightWords {
+  override fun getEightWords(gmtJulDay: Double, loc: ILocation): EightWords {
     val year = yearMonthImpl.getYear(gmtJulDay, loc)
 
     val month = yearMonthImpl.getMonth(gmtJulDay, loc)
@@ -73,7 +74,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
   /**
    * 計算八字 , 不用轉換，直接以 LMT 來計算即可！
    */
-  override fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: Location): EightWords {
+  override fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: ILocation): EightWords {
 
     val year = yearMonthImpl.getYear(lmt, loc)
     val month = yearMonthImpl.getMonth(lmt, loc)

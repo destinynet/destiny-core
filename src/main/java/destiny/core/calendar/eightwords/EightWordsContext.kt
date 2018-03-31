@@ -1,7 +1,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.astrology.*
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTermsImpl
 import destiny.core.calendar.TimeTools
@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 除了計算八字，另外新增輸出農曆以及命宮的方法
  */
 open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
-                             protected val location: Location,
+                             protected val location: ILocation,
                              protected val eightWordsImpl: IEightWords,
                              val yearMonthImpl: IYearMonth,
                              /** 取得陰陽曆轉換的實作  */
@@ -89,7 +89,7 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
       return StemBranch[risingStem, risingBranch]
     }
 
-  private fun getBranchOf(star: Star, lmt: ChronoLocalDateTime<*>, location: Location): Branch {
+  private fun getBranchOf(star: Star, lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
     return ZodiacSign.getZodiacSign(pos.lng).branch
   }

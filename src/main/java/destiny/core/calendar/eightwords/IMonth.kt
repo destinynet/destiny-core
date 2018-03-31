@@ -5,10 +5,9 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.StemBranch
-
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -17,9 +16,9 @@ import java.time.chrono.ChronoLocalDateTime
 interface IMonth {
 
 
-  fun getMonth(gmtJulDay: Double, location: Location): StemBranch
+  fun getMonth(gmtJulDay: Double, location: ILocation): StemBranch
 
-  fun getMonth(lmt: ChronoLocalDateTime<*>, loc: Location): StemBranch {
+  fun getMonth(lmt: ChronoLocalDateTime<*>, loc: ILocation): StemBranch {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getMonth(gmtJulDay, loc)
   }

@@ -5,6 +5,7 @@
  */
 package destiny.astrology
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
@@ -70,7 +71,7 @@ interface IRelativeTransit {
 
 
   /** 承上 , LMT 的 ChronoLocalDateTime 版本  */
-  fun getPeriodRelativeTransitLMTs(transitStar: Star, relativeStar: Star, fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, location: Location, angle: Double,
+  fun getPeriodRelativeTransitLMTs(transitStar: Star, relativeStar: Star, fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, location: ILocation, angle: Double,
                                    revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): List<ChronoLocalDateTime<*>> {
     val fromGmt = TimeTools.getGmtFromLmt(fromLmt, location)
     val toGmt = TimeTools.getGmtFromLmt(toLmt, location)

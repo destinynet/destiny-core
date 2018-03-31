@@ -4,6 +4,7 @@
 package destiny.core.chinese
 
 import destiny.core.Descriptive
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.chinese.Branch.*
 
@@ -18,7 +19,7 @@ import java.time.chrono.ChronoLocalDateTime
 interface IMonthMaster : Descriptive {
 
   /** 取得「月將」的方法  */
-  fun getBranch(lmt: ChronoLocalDateTime<*>, location: Location): Branch
+  fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch
 
   companion object {
 

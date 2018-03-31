@@ -25,7 +25,7 @@ interface ISolarTerms {
   /**
    * 承上 , LMT + Location 版本
    */
-  fun getSolarTerms(lmt: ChronoLocalDateTime<*>, location: Location): SolarTerms {
+  fun getSolarTerms(lmt: ChronoLocalDateTime<*>, location: ILocation): SolarTerms {
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
     return getSolarTermsFromGMT(gmt)
   }
@@ -59,7 +59,7 @@ interface ISolarTerms {
    */
   fun getPeriodSolarTermsLMTs(fromLmt: ChronoLocalDateTime<*>,
                               toLmt: ChronoLocalDateTime<*>,
-                              location: Location): List<SolarTermsTime> {
+                              location: ILocation): List<SolarTermsTime> {
     val fromGmt = TimeTools.getGmtJulDay(fromLmt, location)
     val toGmt = TimeTools.getGmtJulDay(toLmt, location)
 

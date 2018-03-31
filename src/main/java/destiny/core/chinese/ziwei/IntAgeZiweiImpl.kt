@@ -7,6 +7,7 @@ import destiny.astrology.IRelativeTransit
 import destiny.astrology.Planet
 import destiny.core.Gender
 import destiny.core.IntAge
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
@@ -28,7 +29,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val rel
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  override fun getRange(gender: Gender, gmtJulDay: Double, loc: Location, age: Int): Pair<Double, Double> {
+  override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
 
     val age1 = Pair(gmtJulDay, getNextYearSunMoonConj(gmtJulDay))
     return getRangeInner(age1, age)
@@ -74,7 +75,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val rel
     }
   }
 
-  override fun getRanges(gender: Gender, gmtJulDay: Double, loc: Location, fromAge: Int, toAge: Int): List<Pair<Double, Double>> {
+  override fun getRanges(gender: Gender, gmtJulDay: Double, loc: ILocation, fromAge: Int, toAge: Int): List<Pair<Double, Double>> {
     if (fromAge > toAge) {
       throw RuntimeException("fromAge must be <= toAge")
     }

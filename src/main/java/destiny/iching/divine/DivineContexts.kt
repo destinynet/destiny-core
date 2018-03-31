@@ -4,6 +4,7 @@
 package destiny.iching.divine
 
 import destiny.core.Gender
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeSecDecorator
 import destiny.core.calendar.TimeTools
@@ -149,7 +150,7 @@ class CombinedFullContext(val src: IHexagram,
                           val question: String?,
                           val approach: DivineApproach,
                           val time: ChronoLocalDateTime<*>?,
-                          val loc: Location? = Location.of(Locale.TAIWAN),
+                          val loc: ILocation? = Location.of(Locale.TAIWAN),
                           val place: String? = null,
                           val eightWords: EightWords,
                           val tianyiImpl: ITianyi = TianyiAuthorizedImpl(),

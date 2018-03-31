@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.onePalm
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
@@ -16,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 class PalmWithMeta(val palm: Palm,
                    val lmt: ChronoLocalDateTime<*>,
-                   val loc: Location,
+                   val loc: ILocation,
                    val place: String?,
                    val chineseDateImpl: IChineseDate,
                    val dayImpl: IDay,

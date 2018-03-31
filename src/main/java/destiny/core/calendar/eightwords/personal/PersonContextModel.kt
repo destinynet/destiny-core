@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords.personal
 
 import destiny.core.Gender
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.EightWords
@@ -24,7 +24,7 @@ class PersonContextModel(
 
   lmt: ChronoLocalDateTime<*>,
 
-  location: Location,
+  location: ILocation,
 
   place: String?,
 

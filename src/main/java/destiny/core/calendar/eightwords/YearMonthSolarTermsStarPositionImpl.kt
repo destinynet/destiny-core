@@ -72,7 +72,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
   }
 
 
-  override fun getYear(gmtJulDay: Double, loc: Location): StemBranch {
+  override fun getYear(gmtJulDay: Double, loc: ILocation): StemBranch {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
 
     val resultStemBranch: StemBranch
@@ -139,7 +139,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
   /**
    * @return 取得月干支
    */
-  override fun getMonth(gmtJulDay: Double, location: Location): StemBranch {
+  override fun getMonth(gmtJulDay: Double, location: ILocation): StemBranch {
     val result月支: Branch
     //先算出太陽在黃經上的度數
 

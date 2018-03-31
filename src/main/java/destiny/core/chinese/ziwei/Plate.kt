@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
@@ -23,7 +23,7 @@ open class Plate(
   /** 出生資料 , 陽曆 , 精確到「分、秒」  */
   val localDateTime: ChronoLocalDateTime<*>?,
   /** 出生地點  */
-  val location: Location?,
+  val location: ILocation?,
   /** 地點名稱  */
   val place: String?,
   /** 性別  */

@@ -192,7 +192,7 @@ public class TimeTools implements Serializable {
     }
   }
 
-  public static ChronoLocalDateTime getLmtFromGmt(double gmtJulDay , Location location , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
+  public static ChronoLocalDateTime getLmtFromGmt(double gmtJulDay , ILocation location , Function<Double , ChronoLocalDateTime> revJulDayFunc) {
     ChronoLocalDateTime gmt = revJulDayFunc.apply(gmtJulDay);
     return getLmtFromGmt(gmt , location);
   }
@@ -210,7 +210,7 @@ public class TimeTools implements Serializable {
     return zdt.getZone().getRules().isDaylightSavings(zdt.toInstant());
   }
 
-  public static boolean isDst(ChronoLocalDateTime lmt, Location loc) {
+  public static boolean isDst(ChronoLocalDateTime lmt, ILocation loc) {
     return isDst(lmt , loc.getTimeZone());
   }
 
@@ -233,14 +233,14 @@ public class TimeTools implements Serializable {
   /**
    * @return 取得此地點、此時刻，與 GMT 的「秒差」 (不論是否有日光節約時間）
    */
-  public static int getSecondsOffset(ChronoLocalDateTime lmt, Location loc) {
+  public static int getSecondsOffset(ChronoLocalDateTime lmt, ILocation loc) {
     return getSecondsOffset(lmt , loc.getTimeZone());
   }
 
   /**
    * @return 確認此時刻，是否有DST。不論是否有沒有DST，都傳回與GMT誤差幾秒
    * */
-  public static Pair<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull Location loc) {
+  public static Pair<Boolean, Integer> getDstSecondOffset(@NotNull ChronoLocalDateTime lmt, @NotNull ILocation loc) {
     return new Pair<>(isDst(lmt, loc), getSecondsOffset(lmt, loc));
   }
 

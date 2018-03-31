@@ -6,6 +6,7 @@ package destiny.core.calendar.chinese
 
 import destiny.core.Descriptive
 import destiny.core.calendar.CalType
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IDay
 import destiny.core.calendar.eightwords.IHour
@@ -46,7 +47,7 @@ interface IChineseDate : Descriptive {
    * 必須另外帶入 地點、日干支紀算法、時辰劃分法、子正計算方式、是否子初換日 5個參數
    */
   fun getChineseDate(lmt: ChronoLocalDateTime<*>,
-                     location: Location,
+                     location: ILocation,
                      dayImpl: IDay,
                      hourImpl: IHour,
                      midnightImpl: IMidnight,

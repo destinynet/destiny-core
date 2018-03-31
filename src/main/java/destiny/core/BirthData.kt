@@ -4,6 +4,7 @@
  */
 package destiny.core
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -12,7 +13,7 @@ import java.time.temporal.ChronoField.*
 interface IBirthData {
   val gender: Gender
   val time: ChronoLocalDateTime<*>
-  val location: Location
+  val location: ILocation
 
   val ad: Boolean
     get() = time.get(YEAR) > 0
@@ -40,7 +41,7 @@ interface IBirthData {
 data class BirthData(
   override val gender: Gender,
   override val time: ChronoLocalDateTime<*>,
-  override val location: Location
+  override val location: ILocation
                     ) : IBirthData, Serializable
 
 
@@ -54,6 +55,6 @@ data class BirthDataNamePlace(
   override val name: String,
   override val place: String) : IBirthDataNamePlace, IBirthData by birthData, Serializable {
 
-  constructor(gender: Gender, time: ChronoLocalDateTime<*>, location: Location, name: String, place: String)
+  constructor(gender: Gender, time: ChronoLocalDateTime<*>, location: ILocation, name: String, place: String)
     : this(BirthData(gender, time, location), name, place)
 }

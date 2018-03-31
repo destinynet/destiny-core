@@ -7,6 +7,7 @@ import com.google.common.collect.HashBiMap
 import destiny.astrology.Coordinate
 import destiny.astrology.HouseSystem
 import destiny.core.Gender
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.calendar.chinese.IChineseDate
@@ -165,7 +166,7 @@ interface IPalm {
    */
   fun getPalmWithMeta(gender: Gender,
                       lmt: ChronoLocalDateTime<*>,
-                      loc: Location,
+                      loc: ILocation,
                       place: String?,
                       positiveImpl: IPositive,
                       chineseDateImpl: IChineseDate,

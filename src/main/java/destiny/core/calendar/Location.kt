@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar
 
-import destiny.tools.AlignTools
 import destiny.tools.LocaleTools
 import destiny.tools.location.TimeZoneUtils
 import java.io.Serializable
@@ -265,7 +264,7 @@ data class Location(override val lng: Double,
 
 interface ILocationPlace : ILocation, IPlace
 
-data class LocationPlace(val location: Location, override val place: String) : ILocationPlace, ILocation by location,
+data class LocationPlace(val location: ILocation, override val place: String) : ILocationPlace, ILocation by location,
   Serializable {
   fun toString(locale: Locale): String {
     return LocationDecorator.getOutputString(this, locale)

@@ -6,7 +6,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Descriptive
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
@@ -14,10 +14,10 @@ import java.time.chrono.ChronoLocalDateTime
 interface IMidnight : Descriptive {
 
   /** 取得下一個「子正」的 GMT 時刻  */
-  fun getNextMidnight(gmtJulDay: Double, loc: Location): Double
+  fun getNextMidnight(gmtJulDay: Double, loc: ILocation): Double
 
   /** 取得下一個「子正」的 LMT 時刻  */
-  fun getNextMidnight(lmt: ChronoLocalDateTime<*>, loc: Location, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  fun getNextMidnight(lmt: ChronoLocalDateTime<*>, loc: ILocation, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     val gmtResultJulDay = getNextMidnight(gmtJulDay, loc)
     val gmtResult = revJulDayFunc.invoke(gmtResultJulDay)

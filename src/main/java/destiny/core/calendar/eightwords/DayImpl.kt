@@ -5,8 +5,8 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
@@ -26,14 +26,14 @@ class DayImpl : IDay, Serializable {
   /**
    * TODO : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
    */
-  override fun getDay(gmtJulDay: Double, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
+  override fun getDay(gmtJulDay: Double, location: ILocation, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, location, revJulDayFunc)
 
     return getDay(lmt, location, midnightImpl, hourImpl, changeDayAfterZi)
   } // GMT 版本
 
-  private fun getIndex(index: Int, nextMidnightLmt: ChronoLocalDateTime<*>, lmt: ChronoLocalDateTime<*>, hourImpl: IHour, location: Location, changeDayAfterZi: Boolean, 下個子初時刻: ChronoLocalDateTime<*>): Int {
+  private fun getIndex(index: Int, nextMidnightLmt: ChronoLocalDateTime<*>, lmt: ChronoLocalDateTime<*>, hourImpl: IHour, location: ILocation, changeDayAfterZi: Boolean, 下個子初時刻: ChronoLocalDateTime<*>): Int {
     var index = index
     //子正，在 LMT 零時之前
     if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
@@ -48,7 +48,7 @@ class DayImpl : IDay, Serializable {
     return index
   }
 
-  override fun getDay(lmt: ChronoLocalDateTime<*>, location: Location, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
+  override fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
     // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
     val lmtJulDay = (TimeTools.getGmtJulDay(lmt) + 0.5).toInt()
     var index = (lmtJulDay - 11) % 60

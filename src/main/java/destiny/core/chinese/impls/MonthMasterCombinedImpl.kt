@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster
@@ -22,7 +22,7 @@ class MonthMasterCombinedImpl(private val yearMonthImpl: IYearMonth) : IMonthMas
   }
 
 
-  override fun getBranch(lmt: ChronoLocalDateTime<*>, location: Location): Branch {
+  override fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
     val monthBranch = yearMonthImpl.getMonth(lmt, location).branch
     return monthBranch.combined
   }

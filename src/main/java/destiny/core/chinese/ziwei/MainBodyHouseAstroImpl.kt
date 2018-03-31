@@ -4,10 +4,9 @@
 package destiny.core.chinese.ziwei
 
 import destiny.astrology.*
-import destiny.core.calendar.Location
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IRisingSign
 import destiny.core.chinese.Branch
-
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -21,7 +20,7 @@ class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign, private va
    * 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」
    * 占星算法，取上升、月亮 為命宮、身宮， 不會需要「月數」
    * */
-  override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: Location): Triple<Branch, Branch , Int?> {
+  override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
     val mainHouse = risingSignImpl.getRisingSign(lmt, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
     val moonPos = starPositionImpl.getPosition(Planet.MOON, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
 
