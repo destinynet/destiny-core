@@ -79,7 +79,6 @@ object LocationTools {
   fun decode2018(string: String): ILocation? {
     val parts: Set<LocationPadding> =
       string.splitToSequence(" ").map { it -> LocationPadding.getPadding(it) }.filterNotNull().toSet()
-
     return (parts.first { it is LocationPadding.latLng } as LocationPadding.latLng).let {
       val tzid: String? =
         parts.firstOrNull { it is LocationPadding.tzid }?.let { it as LocationPadding.tzid }?.value?.id
@@ -105,8 +104,10 @@ object LocationTools {
             LocationPadding.latLng(lat, lng)
           }
           ZoneId.getAvailableZoneIds().contains(value) -> LocationPadding.tzid(ZoneId.of(value))
-          value.endsWith('m') && value.takeWhile { it.isDigit() }.toIntOrNull() != null ->
-            LocationPadding.minOffset(value.takeWhile { it.isDigit() }.toInt())
+
+          value.endsWith('m') && value.substring(0,value.length-1).toIntOrNull() != null ->
+            LocationPadding.minOffset((value.substring(0,value.length-1)).toInt())
+
           value.toDoubleOrNull() != null -> LocationPadding.altMeter(value.toDouble())
           else -> null
         }
