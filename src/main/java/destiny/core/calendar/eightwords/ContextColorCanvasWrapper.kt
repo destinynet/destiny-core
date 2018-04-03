@@ -6,7 +6,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.personal.IHiddenStems
-import destiny.core.calendar.eightwords.personal.ReactionsUtil
+import destiny.core.calendar.eightwords.personal.ReactionUtil
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
@@ -46,7 +46,7 @@ open class ContextColorCanvasWrapper(
 
   var outputMode = OutputMode.HTML
 
-  private val reactionsUtil: ReactionsUtil = ReactionsUtil(this.hiddenStemsImpl)
+  private val reactionUtil: ReactionUtil = ReactionUtil(this.hiddenStemsImpl)
 
   /**
    * 取得 MetaData (國曆 農曆 經度 緯度 等資料)
@@ -220,7 +220,7 @@ open class ContextColorCanvasWrapper(
     pillar.setText(stemBranch.branch.toString(), 7, 3, "red", null, stemBranch.toString() + pillarName)
 
     if ("日" != pillarName) {
-      val 干對日主 = reactionsUtil.getReaction(stemBranch.stem, dayStem).toString()
+      val 干對日主 = reactionUtil.getReaction(stemBranch.stem, dayStem).toString()
       pillar.setText(干對日主.substring(0, 1), 4, 3, "gray")
       pillar.setText(干對日主.substring(1, 2), 5, 3, "gray")
     }
@@ -243,12 +243,12 @@ open class ContextColorCanvasWrapper(
 
 
   protected fun 地支藏干(地支: Branch, 天干: Stem): ColorCanvas {
-    val reactionsUtil = ReactionsUtil(this.hiddenStemsImpl)
+    val reactionsUtil = ReactionUtil(this.hiddenStemsImpl)
     val resultCanvas = ColorCanvas(3, 6, ChineseStringTools.NULL_CHAR)
     val reactions = reactionsUtil.getReactions(地支, 天干)
     for (i in reactions.indices) {
       val eachReaction = reactions[i]
-      resultCanvas.setText(ReactionsUtil.getHeavenlyStems(天干, eachReaction).toString(), 1, 5 - 2 * i, "gray") // 天干
+      resultCanvas.setText(ReactionUtil.getStem(天干, eachReaction).toString(), 1, 5 - 2 * i, "gray") // 天干
       resultCanvas.setText(eachReaction.toString().substring(0, 1), 2, 5 - 2 * i, "gray")
       resultCanvas.setText(eachReaction.toString().substring(1, 2), 3, 5 - 2 * i, "gray")
 

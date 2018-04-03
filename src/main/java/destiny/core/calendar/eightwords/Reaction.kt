@@ -10,20 +10,20 @@ import java.util.*
 /**
  * 十神 , 天干之間互相的互動關係 : 比間，劫財，正財...
  */
-enum class Reactions constructor(private val value: String) {
-  比肩("比肩"),
-  劫財("劫財"),
-  正財("正財"),
-  偏財("偏財"),
-  正印("正印"),
-  偏印("偏印"),
-  食神("食神"),
-  傷官("傷官"),
-  正官("正官"),
-  七殺("七殺");
+enum class Reaction  {
+  比肩,
+  劫財,
+  正財,
+  偏財,
+  正印,
+  偏印,
+  食神,
+  傷官,
+  正官,
+  七殺;
 
   /** 比肩.getPairReaction() == 劫財  */
-  val pairReaction: Reactions
+  val pairReaction: Reaction
     get() {
       return when (this) {
         比肩 -> 劫財
@@ -40,16 +40,16 @@ enum class Reactions constructor(private val value: String) {
     }
 
   override fun toString(): String {
-    return value
+    return name
   }
 
   fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(Reactions::class.java.name, locale).getString(name)
+    return ResourceBundle.getBundle(Reaction::class.java.name, locale).getString(name)
   }
 
   /** 縮寫  */
   fun getAbbreviation(locale: Locale): String {
-    return ResourceBundle.getBundle(Reactions::class.java.name, locale).getString(name + "_ABBR")
+    return ResourceBundle.getBundle(Reaction::class.java.name, locale).getString(name + "_ABBR")
   }
 
 }

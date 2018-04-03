@@ -26,11 +26,16 @@ data class StemBranchOptional internal constructor(
 
   fun next(n: Int): StemBranchOptional? {
     val index = getIndex(this)
-    return if (index != null) {
-      get(index + n)
-    } else {
-      null
+
+    return index?.let {
+      get(it + n)
     }
+
+//    return if (index != null) {
+//      get(index + n)
+//    } else {
+//      null
+//    }
   }
 
   override fun toString(): String {
@@ -63,6 +68,7 @@ data class StemBranchOptional internal constructor(
       return if (stem != null && branch != null) {
         val sIndex = Stem.getIndex(stem)
         val bIndex = Branch.getIndex(branch)
+
         when (sIndex - bIndex) {
           0, -10 -> get(bIndex)
           2, -8 -> get(bIndex + 12)

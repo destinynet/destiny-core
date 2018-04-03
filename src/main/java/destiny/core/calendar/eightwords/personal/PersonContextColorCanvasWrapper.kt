@@ -45,7 +45,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 
     val eightWords = model.eightWords
 
-    val reactionsUtil = ReactionsUtil(this.hiddenStemsImpl)
+    val reactionsUtil = ReactionUtil(this.hiddenStemsImpl)
 
     cc.add(eightWordsColorCanvas, 11, 9) // 純粹八字盤
 

@@ -9,12 +9,17 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.甲子
 import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 class StemBranchTest {
+
+  /** 兩種甲子目前不相等，未來要如何改，再想想 */
+  @Test
+  fun testEqualWithStemBranchOptional() {
+    val a : IStemBranchOptional = StemBranch.甲子
+    val b : IStemBranchOptional = StemBranchOptional[甲 , 子]
+    assertNotEquals(a , b)
+  }
 
   @Test
   fun testList() {
