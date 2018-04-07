@@ -12,6 +12,8 @@ import destiny.core.chinese.Stem.*
 import java.io.Serializable
 
 /**
+ * 此為 web 大六壬 內定版本
+ *
  * 《大六壬金口訣》《六壬神課金口訣》
  * http://ctext.org/wiki.pl?if=gb&chapter=237248
  * line 105 :

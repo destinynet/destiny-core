@@ -16,7 +16,7 @@ import java.io.Serializable
  * 六壬金口訣，核心資料結構
  * 口訣 : Pithy
  */
-class Pithy(
+data class Pithy(
 
   /** 八字  */
   val eightWords: EightWords,
