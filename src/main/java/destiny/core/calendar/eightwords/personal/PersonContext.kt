@@ -85,15 +85,14 @@ class PersonContext(
     .build<PersonContext, MutableMap<Int, Double>>()
 
 
-  override val model: PersonContextModel
-    get() = PersonContextModel(gender, eightWords, lmt, location, place,
-                               chineseDate,
-                               getFortuneDatas(9),
-                               risingStemBranch,
-                               getBranchOf(Planet.SUN),
-                               getBranchOf(Planet.MOON),
-                               prevNextMajorSolarTerms,
-                               getAgeMap(90))
+  override val model: IPersonContextModel
+    get() {
+      val eightWordsContextModel = EightWordsContextModel(
+        eightWords , lmt , location , place , chineseDate ,
+        prevNextMajorSolarTerms.first , prevNextMajorSolarTerms.second , risingStemBranch ,
+        getBranchOf(Planet.SUN) , getBranchOf(Planet.MOON))
+      return PersonContextModel(eightWordsContextModel , gender , getFortuneDatas(9) , getAgeMap(90))
+    }
 
   /** 八字大運是否順行  */
   val isFortuneDirectionForward: Boolean

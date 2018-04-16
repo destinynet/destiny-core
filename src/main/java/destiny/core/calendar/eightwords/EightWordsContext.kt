@@ -32,7 +32,7 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
 
   val eightWords: EightWords = eightWordsImpl.getEightWords(lmt, location)
 
-  open val model: EightWordsContextModel
+  open val model: IEightWordsContextModel
     get() {
       val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
 
