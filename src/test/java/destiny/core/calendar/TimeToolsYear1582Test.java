@@ -80,37 +80,37 @@ public class TimeToolsYear1582Test {
    */
   @Test
   public void testGmtJulDayEquals() {
-    assertEquals(getGmtJulDay(d1J) , getGmtJulDay(d1G) , 0.0);
-    assertEquals(getGmtJulDay(d2J) , getGmtJulDay(d2G) , 0.0);
-    assertEquals(getGmtJulDay(d3J) , getGmtJulDay(d3G) , 0.0);
-    assertEquals(getGmtJulDay(d4J) , getGmtJulDay(d4G) , 0.0);
+    assertEquals(Companion.getGmtJulDay(d1J) , Companion.getGmtJulDay(d1G) , 0.0);
+    assertEquals(Companion.getGmtJulDay(d2J) , Companion.getGmtJulDay(d2G) , 0.0);
+    assertEquals(Companion.getGmtJulDay(d3J) , Companion.getGmtJulDay(d3G) , 0.0);
+    assertEquals(Companion.getGmtJulDay(d4J) , Companion.getGmtJulDay(d4G) , 0.0);
 
-    assertEquals(firstDayOfGregorian-2 , getGmtJulDay(d1J) , 0.0);
-    assertEquals(firstDayOfGregorian-1 , getGmtJulDay(d2J) , 0.0);
-    assertEquals(firstDayOfGregorian   , getGmtJulDay(d3J) , 0.0);  // cutover 開始
-    assertEquals(firstDayOfGregorian+1 , getGmtJulDay(d4J) , 0.0);
+    assertEquals(firstDayOfGregorian-2 , Companion.getGmtJulDay(d1J) , 0.0);
+    assertEquals(firstDayOfGregorian-1 , Companion.getGmtJulDay(d2J) , 0.0);
+    assertEquals(firstDayOfGregorian   , Companion.getGmtJulDay(d3J) , 0.0);  // cutover 開始
+    assertEquals(firstDayOfGregorian+1 , Companion.getGmtJulDay(d4J) , 0.0);
 
-    assertEquals(firstDayOfGregorian-2 , getGmtJulDay(d1G) , 0.0);
-    assertEquals(firstDayOfGregorian-1 , getGmtJulDay(d2G) , 0.0);
-    assertEquals(firstDayOfGregorian   , getGmtJulDay(d3G) , 0.0);  // cutover 開始
-    assertEquals(firstDayOfGregorian+1 , getGmtJulDay(d4G) , 0.0);
+    assertEquals(firstDayOfGregorian-2 , Companion.getGmtJulDay(d1G) , 0.0);
+    assertEquals(firstDayOfGregorian-1 , Companion.getGmtJulDay(d2G) , 0.0);
+    assertEquals(firstDayOfGregorian   , Companion.getGmtJulDay(d3G) , 0.0);  // cutover 開始
+    assertEquals(firstDayOfGregorian+1 , Companion.getGmtJulDay(d4G) , 0.0);
 
 
 
-    assertEquals(firstDayOfGregorian+0.5   , getGmtJulDay(d3J.plus(12 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 + 12小時
-    assertEquals(firstDayOfGregorian+0.5   , getGmtJulDay(d3G.plus(12 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 + 12小時
+    assertEquals(firstDayOfGregorian+0.5   , Companion.getGmtJulDay(d3J.plus(12 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 + 12小時
+    assertEquals(firstDayOfGregorian+0.5   , Companion.getGmtJulDay(d3G.plus(12 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 + 12小時
 
-    assertEquals(firstDayOfGregorian-0.25  , getGmtJulDay(d3J.minus(6 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 - 6小時
-    assertEquals(firstDayOfGregorian-0.25  , getGmtJulDay(d3G.minus(6 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 - 6小時
+    assertEquals(firstDayOfGregorian-0.25  , Companion.getGmtJulDay(d3J.minus(6 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 - 6小時
+    assertEquals(firstDayOfGregorian-0.25  , Companion.getGmtJulDay(d3G.minus(6 , ChronoUnit.HOURS)) , 0.0);  // cutover 開始 - 6小時
   }
 
     /**
    * 從「日期」、「時間」分開物件，轉換成 julDay
    */
   @Test
-  public void dateTime2JulDay() throws Exception {
-    assertEquals(firstDayOfGregorian, getGmtJulDay(LocalDate.of(1582, 10, 15), LocalTime.MIDNIGHT), 0.0);
-    assertEquals(firstDayOfGregorian - 1, getGmtJulDay(JulianDate.of(1582, 10, 4), LocalTime.MIDNIGHT), 0.0);
+  public void dateTime2JulDay() {
+    assertEquals(firstDayOfGregorian, Companion.getGmtJulDay(LocalDate.of(1582, 10, 15), LocalTime.MIDNIGHT), 0.0);
+    assertEquals(firstDayOfGregorian - 1, Companion.getGmtJulDay(JulianDate.of(1582, 10, 4), LocalTime.MIDNIGHT), 0.0);
   }
 
 
@@ -159,71 +159,71 @@ public class TimeToolsYear1582Test {
   @Test
   public void testBetween() {
     // 同曆法 , 確認 : d2 位於 d1 與 d3 之間
-    assertTrue(isBetween(d2J , d1J , d3J));
-    assertTrue(isBetween(d2J , d3J , d1J));
-    assertTrue(isBetween(d2G , d1G , d3G));
-    assertTrue(isBetween(d2G , d3G , d1G));
+    assertTrue(Companion.isBetween(d2J , d1J , d3J));
+    assertTrue(Companion.isBetween(d2J , d3J , d1J));
+    assertTrue(Companion.isBetween(d2G , d1G , d3G));
+    assertTrue(Companion.isBetween(d2G , d3G , d1G));
 
     // 同曆法 , 確認 : d3 位於 d2 與 d4 之間
-    assertTrue(isBetween(d3J , d2J , d4J));
-    assertTrue(isBetween(d3J , d4J , d2J));
-    assertTrue(isBetween(d3G , d2G , d4G));
-    assertTrue(isBetween(d3G , d4G , d2G));
+    assertTrue(Companion.isBetween(d3J , d2J , d4J));
+    assertTrue(Companion.isBetween(d3J , d4J , d2J));
+    assertTrue(Companion.isBetween(d3G , d2G , d4G));
+    assertTrue(Companion.isBetween(d3G , d4G , d2G));
 
     // 跨曆法 , 確認 : d2 位於 d1 與 d3 之間
-    assertTrue(isBetween(d2G , d1J , d3J));
-    assertTrue(isBetween(d2G , d3J , d1J));
-    assertTrue(isBetween(d2J , d1G , d3G));
-    assertTrue(isBetween(d2J , d3G , d1G));
+    assertTrue(Companion.isBetween(d2G , d1J , d3J));
+    assertTrue(Companion.isBetween(d2G , d3J , d1J));
+    assertTrue(Companion.isBetween(d2J , d1G , d3G));
+    assertTrue(Companion.isBetween(d2J , d3G , d1G));
 
     // 跨曆法 , 確認 : d3 位於 d2 與 d4 之間
-    assertTrue(isBetween(d3J , d2G , d4G));
-    assertTrue(isBetween(d3J , d4G , d2G));
-    assertTrue(isBetween(d3G , d2J , d4J));
-    assertTrue(isBetween(d3G , d4J , d2J));
+    assertTrue(Companion.isBetween(d3J , d2G , d4G));
+    assertTrue(Companion.isBetween(d3J , d4G , d2G));
+    assertTrue(Companion.isBetween(d3G , d2J , d4J));
+    assertTrue(Companion.isBetween(d3G , d4J , d2J));
   }
 
   /** 測試 {@link TimeTools#isAfter(ChronoLocalDateTime, ChronoLocalDateTime)} 能否比對不同曆法之間的日期 */
   @Test
   public void testAfter() {
     // 同曆法 (J)
-    assertTrue(isAfter(d2J , d1J));
-    assertTrue(isAfter(d3J , d2J));
-    assertTrue(isAfter(d4J , d3J));
+    assertTrue(Companion.isAfter(d2J , d1J));
+    assertTrue(Companion.isAfter(d3J , d2J));
+    assertTrue(Companion.isAfter(d4J , d3J));
     // 同曆法 (G)
-    assertTrue(isAfter(d2G , d1G));
-    assertTrue(isAfter(d3G , d2G));
-    assertTrue(isAfter(d4G , d3G));
+    assertTrue(Companion.isAfter(d2G , d1G));
+    assertTrue(Companion.isAfter(d3G , d2G));
+    assertTrue(Companion.isAfter(d4G , d3G));
 
     // 不同曆法
-    assertTrue(isAfter(d2G , d1J));
-    assertTrue(isAfter(d3G , d2J));
-    assertTrue(isAfter(d4G , d3J));
+    assertTrue(Companion.isAfter(d2G , d1J));
+    assertTrue(Companion.isAfter(d3G , d2J));
+    assertTrue(Companion.isAfter(d4G , d3J));
 
-    assertTrue(isAfter(d2J , d1G));
-    assertTrue(isAfter(d3J , d2G));
-    assertTrue(isAfter(d4J , d3G));
+    assertTrue(Companion.isAfter(d2J , d1G));
+    assertTrue(Companion.isAfter(d3J , d2G));
+    assertTrue(Companion.isAfter(d4J , d3G));
   }
 
   /** 測試 {@link TimeTools#isBefore(ChronoLocalDateTime, ChronoLocalDateTime)} 能否比對不同曆法之間的日期 */
   @Test
   public void testBefore() {
     // 同曆法 (J)
-    assertTrue(isBefore(d1J , d2J));
-    assertTrue(isBefore(d2J , d3J));
-    assertTrue(isBefore(d3J , d4J));
+    assertTrue(Companion.isBefore(d1J , d2J));
+    assertTrue(Companion.isBefore(d2J , d3J));
+    assertTrue(Companion.isBefore(d3J , d4J));
     // 同曆法 (G)
-    assertTrue(isBefore(d1G , d2G));
-    assertTrue(isBefore(d2G , d3G));
-    assertTrue(isBefore(d3G , d4G));
+    assertTrue(Companion.isBefore(d1G , d2G));
+    assertTrue(Companion.isBefore(d2G , d3G));
+    assertTrue(Companion.isBefore(d3G , d4G));
 
     // 不同曆法
-    assertTrue(isBefore(d1J , d2G));
-    assertTrue(isBefore(d2J , d3G));
-    assertTrue(isBefore(d3J , d4G));
+    assertTrue(Companion.isBefore(d1J , d2G));
+    assertTrue(Companion.isBefore(d2J , d3G));
+    assertTrue(Companion.isBefore(d3J , d4G));
 
-    assertTrue(isBefore(d1G , d2J));
-    assertTrue(isBefore(d2G , d3J));
-    assertTrue(isBefore(d3G , d4J));
+    assertTrue(Companion.isBefore(d1G , d2J));
+    assertTrue(Companion.isBefore(d2G , d3J));
+    assertTrue(Companion.isBefore(d3G , d4J));
   }
 }

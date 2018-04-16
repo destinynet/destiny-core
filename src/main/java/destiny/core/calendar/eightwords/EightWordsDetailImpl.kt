@@ -17,7 +17,19 @@ import java.time.chrono.ChronoLocalDateTime
 
 class EightWordsDetailImpl : IEightWordsDetail, Serializable {
 
-  override fun getDetails(lmt: ChronoLocalDateTime<*>, location: Location, place: String, eightWordsImpl: IEightWordsFactory, yearMonthImpl: IYearMonth, chineseDateImpl: IChineseDate, dayImpl: IDay, hourImpl: IHour, midnightImpl: IMidnight, changeDayAfterZi: Boolean, risingSignImpl: IRisingSign, starPositionImpl: IStarPosition<*>, solarTermsImpl: ISolarTerms): EightWordsContextModel {
+  override fun getDetails(lmt: ChronoLocalDateTime<*>,
+                          location: Location,
+                          place: String,
+                          eightWordsImpl: IEightWordsFactory,
+                          yearMonthImpl: IYearMonth,
+                          chineseDateImpl: IChineseDate,
+                          dayImpl: IDay,
+                          hourImpl: IHour,
+                          midnightImpl: IMidnight,
+                          changeDayAfterZi: Boolean,
+                          risingSignImpl: IRisingSign,
+                          starPositionImpl: IStarPosition<*>,
+                          solarTermsImpl: ISolarTerms): IEightWordsContextModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     // 現在的節氣
@@ -33,14 +45,17 @@ class EightWordsDetailImpl : IEightWordsDetail, Serializable {
     val moonBranch = getBranchOf(Planet.MOON, lmt, location, starPositionImpl)
 
     return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
-      prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingSign,
-      sunBranch, moonBranch)
+                                  prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingSign,
+                                  sunBranch, moonBranch)
   }
 
   /**
    * 計算命宮干支
    */
-  private fun getRisingStemBranch(lmt: ChronoLocalDateTime<*>, location: Location, eightWords: EightWords, risingSignImpl: IRisingSign): StemBranch {
+  private fun getRisingStemBranch(lmt: ChronoLocalDateTime<*>,
+                                  location: Location,
+                                  eightWords: EightWords,
+                                  risingSignImpl: IRisingSign): StemBranch {
     // 命宮地支
     val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
@@ -52,7 +67,10 @@ class EightWordsDetailImpl : IEightWordsDetail, Serializable {
   /**
    * @return 計算星體的地支位置
    */
-  private fun getBranchOf(star: Star, lmt: ChronoLocalDateTime<*>, location: Location, starPositionImpl: IStarPosition<*>): Branch {
+  private fun getBranchOf(star: Star,
+                          lmt: ChronoLocalDateTime<*>,
+                          location: Location,
+                          starPositionImpl: IStarPosition<*>): Branch {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
     return ZodiacSign.getZodiacSign(pos.lng).branch
   }

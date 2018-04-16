@@ -24,10 +24,15 @@ interface IPersonContextModel : IEightWordsContextModel {
  * 方便未來 View 端直接存取。不用在 View 端計算。
  */
 data class PersonContextModel(
+
   private val eightWordsContextModel: EightWordsContextModel,
+
+  /** 性別 */
   override val gender: Gender,
+
   /** 總共要輸出的大運  */
   override val fortuneDatas: List<FortuneData>,
+
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
   override val ageMap: Map<Int, Pair<Double, Double>>) : IPersonContextModel,
   IEightWordsContextModel by eightWordsContextModel, Serializable

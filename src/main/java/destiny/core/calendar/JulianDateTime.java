@@ -128,7 +128,7 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute , double second) {
     JulianDate date = JulianDate.of(prolepticYear , month , dayOfMonth);
 
-    Pair<Integer , Integer> pair = TimeTools.splitSecond(second);
+    Pair<Integer , Integer> pair = TimeTools.Companion.splitSecond(second);
     LocalTime time = LocalTime.of(hour , minute , pair.getFirst(), pair.getSecond());
     return new JulianDateTime(date , time);
   }

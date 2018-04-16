@@ -5,7 +5,7 @@ package destiny.astrology.eclipse
 
 import destiny.astrology.eclipse.AbstractSolarEclipse.SolarType
 import destiny.core.calendar.Location
-import destiny.core.calendar.TimeTools.getGmtJulDay
+import destiny.core.calendar.TimeTools.Companion.getGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 
 /** 計算日食、月食的介面  */

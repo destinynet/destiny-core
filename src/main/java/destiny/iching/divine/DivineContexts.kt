@@ -169,7 +169,7 @@ class CombinedFullContext(val src: IHexagram,
                                                       eightWords, tianyiImpl, yangBladeImpl)
     val prevResult = prevCtx.getResult() as CombinedWithMetaNameDayMonth
 
-    val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc) }
+    val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc!!) }
     val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
 
     val meta = Meta(prevResult.納甲系統 , prevResult.伏神系統)

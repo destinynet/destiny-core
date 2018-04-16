@@ -26,6 +26,6 @@ interface IEightWordsDetail {
                  changeDayAfterZi: Boolean,
                  risingSignImpl: IRisingSign,
                  starPositionImpl: IStarPosition<*>,
-                 solarTermsImpl: ISolarTerms): EightWordsContextModel
+                 solarTermsImpl: ISolarTerms): IEightWordsContextModel
 
 }

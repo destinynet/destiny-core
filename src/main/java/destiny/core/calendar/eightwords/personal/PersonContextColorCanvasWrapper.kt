@@ -12,14 +12,12 @@ import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
-import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.function.Function
 
 class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
                                       /** 預先儲存已經計算好的結果  */
-                                      private val model: PersonContextModel,
+                                      private val model: IPersonContextModel,
                                       place: String,
                                       /** 地支藏干的實作，內定採用標準設定  */
                                       private val hiddenStemsImpl: IHiddenStems, linkUrl: String, private val direction: Direction) :
@@ -144,8 +142,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
   } // toString()
 
   companion object {
-
-    private val revJulDayFunc = Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }

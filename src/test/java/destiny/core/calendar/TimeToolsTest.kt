@@ -3,7 +3,9 @@
  */
 package destiny.core.calendar
 
-import destiny.core.calendar.TimeTools.*
+import destiny.core.calendar.TimeTools.Companion.getDstSecondOffset
+import destiny.core.calendar.TimeTools.Companion.getGmtJulDay
+import destiny.core.calendar.TimeTools.Companion.getLmtFromGmt
 import org.junit.Assert.assertEquals
 import org.slf4j.LoggerFactory
 import java.lang.Boolean.FALSE

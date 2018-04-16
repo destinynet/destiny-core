@@ -6,11 +6,10 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.personal.PersonContextModel
+import destiny.core.calendar.eightwords.personal.IPersonContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
-
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -31,4 +30,7 @@ class PlateWithEightWords internal constructor(
   starStrengthMap: Map<ZStar, Int>,
   notes: List<String>, vageMap: Map<Int, Pair<Double, Double>>,
   /** 八字資料  */
-  val personModel: PersonContextModel) : Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar, fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, vageMap)
+  val personModel: IPersonContextModel) :
+  Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,
+        fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
+        vageMap)

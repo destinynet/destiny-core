@@ -5,9 +5,8 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.personal.PersonContextModel
+import destiny.core.calendar.eightwords.personal.IPersonContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
@@ -95,7 +94,7 @@ class Builder(
   private val flowBranchMap = TreeMap<FlowType, StemBranch>()
 
   /** 八字命盤  */
-  private var personModel: PersonContextModel? = null
+  private var personModel: IPersonContextModel? = null
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -317,7 +316,7 @@ class Builder(
     return this
   }
 
-  fun withPersonModel(personModel: PersonContextModel): Builder {
+  fun withPersonModel(personModel: IPersonContextModel): Builder {
     this.personModel = personModel
     return this
   }

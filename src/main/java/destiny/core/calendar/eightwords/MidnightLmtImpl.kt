@@ -7,14 +7,12 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.function.Function
 
 /**
  * 純粹以地方平均時（手錶時間）來判定
@@ -34,7 +32,9 @@ class MidnightLmtImpl : IMidnight, Serializable {
   }
 
 
-  override fun getNextMidnight(lmt: ChronoLocalDateTime<*>, loc: ILocation, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  override fun getNextMidnight(lmt: ChronoLocalDateTime<*>,
+                               loc: ILocation,
+                               revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
     return lmt
       .plus(1, ChronoUnit.DAYS)
       .with(HOUR_OF_DAY, 0)
@@ -52,8 +52,7 @@ class MidnightLmtImpl : IMidnight, Serializable {
   }
 
   companion object {
-
-    private val revJulDayFunc = Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }
