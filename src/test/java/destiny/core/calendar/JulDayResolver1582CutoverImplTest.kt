@@ -12,7 +12,6 @@ import java.time.ZoneOffset
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.chrono.IsoEra
-import java.util.function.Function
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -20,8 +19,21 @@ import kotlin.test.assertTrue
 
 class JulDayResolver1582CutoverImplTest {
 
-  private val revJulDayFunc =
-    Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+  private val revJulDayFunc = {it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+
+  @Test
+  fun testFromDebugString() {
+    assertEquals(LocalDateTime.of(2018, 4, 17, 18, 19, 30) , JulDayResolver1582CutoverImpl.fromDebugString("+20180417181930.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 5) , JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 4 5.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 5 , 123_000_000) , JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 4 5.123"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59) , JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 459.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59) , JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59, 155_000_000) , JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.155"))
+
+    // Greg 開始
+    assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), JulDayResolver1582CutoverImpl.fromDebugString("+15821015000000.0"))
+
+  }
 
   @Test
   fun getLocalDateTimeStatic() {
@@ -100,7 +112,7 @@ class JulDayResolver1582CutoverImplTest {
     var localDate: ChronoLocalDate
     var localTime: LocalTime
 
-    var dateTime: ChronoLocalDateTime<*> = revJulDayFunc.apply(firstDay)
+    var dateTime: ChronoLocalDateTime<*> = revJulDayFunc.invoke(firstDay)
     localDate = dateTime.toLocalDate()
     localTime = dateTime.toLocalTime()
     assertTrue(localDate is JulianDate)
@@ -109,7 +121,7 @@ class JulDayResolver1582CutoverImplTest {
     assertEquals(LocalTime.MIDNIGHT, localTime)
 
     // 往前一天，變成 「西元前」一年，12/31
-    dateTime = revJulDayFunc.apply(firstDay - 1)
+    dateTime = revJulDayFunc.invoke(firstDay - 1)
     localDate = dateTime.toLocalDate()
     localTime = dateTime.toLocalTime()
     assertTrue(localDate is JulianDate)

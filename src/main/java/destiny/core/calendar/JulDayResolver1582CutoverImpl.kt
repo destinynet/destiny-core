@@ -150,15 +150,15 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       ad = when (plusMinus) {
         '+' -> true
         '-' -> false
-        else -> throw RuntimeException("AD not correct : " + plusMinus)
+        else -> throw RuntimeException("AD not correct : $plusMinus")
       }
 
-      val yearOfEra = Integer.valueOf(s.substring(1, 5).trim { it <= ' ' })
-      val month = Integer.valueOf(s.substring(5, 7).trim { it <= ' ' })
-      val day = Integer.valueOf(s.substring(7, 9).trim { it <= ' ' })
-      val hour = Integer.valueOf(s.substring(9, 11).trim { it <= ' ' })
-      val minute = Integer.valueOf(s.substring(11, 13).trim { it <= ' ' })
-      val second = java.lang.Double.valueOf(s.substring(13))
+      val yearOfEra = s.substring(1, 5).trim { it <= ' ' }.toInt()
+      val month = s.substring(5, 7).trim { it <= ' ' }.toInt()
+      val day = s.substring(7, 9).trim { it <= ' ' }.toInt()
+      val hour = s.substring(9, 11).trim { it <= ' ' }.toInt()
+      val minute = s.substring(11, 13).trim { it <= ' ' }.toInt()
+      val second = s.substring(13).toDouble()
 
       return of(ad, yearOfEra, month, day, hour, minute, second).first
     }

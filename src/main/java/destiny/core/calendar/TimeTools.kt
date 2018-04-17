@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Instant
@@ -272,15 +271,18 @@ class TimeTools : Serializable {
     }
 
 
+    /** decode 於 [JulDayResolver1582CutoverImpl.fromDebugString] */
     fun getDebugString(time: ChronoLocalDateTime<*>): String {
       return with(StringBuilder()) {
         append(if (time.get(YEAR_OF_ERA) >= 1) '+' else '-')
-        append(StringUtils.leftPad(time.get(YEAR_OF_ERA).toString(), 4, ' '))
-        append(StringUtils.leftPad(time.get(MONTH_OF_YEAR).toString(), 2, ' '))
-        append(StringUtils.leftPad(time.get(DAY_OF_MONTH).toString(), 2, ' '))
-        append(StringUtils.leftPad(time.get(HOUR_OF_DAY).toString(), 2, ' '))
-        append(StringUtils.leftPad(time.get(MINUTE_OF_HOUR).toString(), 2, ' '))
-        append(time.get(SECOND_OF_MINUTE))
+        append(time.get(YEAR_OF_ERA).toString().padStart(4,' '))
+
+        append(time.get(MONTH_OF_YEAR).toString().padStart(2 ,'0'))
+        append(time.get(DAY_OF_MONTH).toString().padStart(2 ,'0'))
+        append(time.get(HOUR_OF_DAY).toString().padStart(2 ,'0'))
+        append(time.get(MINUTE_OF_HOUR).toString().padStart(2 ,'0'))
+        append(time.get(SECOND_OF_MINUTE).toString().padStart(2 ,'0'))
+
         append('.')
         if (time.get(NANO_OF_SECOND) == 0) {
           append('0')
