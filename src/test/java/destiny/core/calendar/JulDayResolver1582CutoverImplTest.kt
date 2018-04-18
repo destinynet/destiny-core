@@ -29,10 +29,6 @@ class JulDayResolver1582CutoverImplTest {
     assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59) , JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 459.0"))
     assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59) , JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.0"))
     assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59, 155_000_000) , JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.155"))
-
-    // Greg 開始
-    assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), JulDayResolver1582CutoverImpl.fromDebugString("+15821015000000.0"))
-
   }
 
   @Test

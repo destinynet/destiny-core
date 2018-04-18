@@ -125,7 +125,7 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
   /**
    * @param prolepticYear maybe <= 0
    */
-  public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute , double second) {
+  public static JulianDateTime of(int prolepticYear, int month, int dayOfMonth, int hour, int minute , int second) {
     JulianDate date = JulianDate.of(prolepticYear , month , dayOfMonth);
 
     Pair<Integer , Integer> pair = TimeTools.Companion.splitSecond(second);
@@ -159,13 +159,14 @@ public class JulianDateTime implements Serializable , ChronoLocalDateTime<Julian
     return new JulianDateTime(date, time);
   }
 
-  public int getProlepticYear() {
-    return date.get(YEAR);
+  /** 一定為正值 */
+  public int getYearOfEra() {
+    return date.get(YEAR_OF_ERA);
   }
 
-  /** must be >= 0 */
+  /** 與 {@link LocalDate#year} 一樣，都為 proleptic year . 西元元年=1 , 西元前一年=0 */
   public int getYear() {
-    return date.get(YEAR_OF_ERA);
+    return date.get(YEAR);
   }
 
   public int getMonth() {

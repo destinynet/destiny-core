@@ -136,7 +136,7 @@ class InstantTest {
 
     logger.info("dateTime , class = {} , value = {}", dateTime.javaClass, dateTime)
     assertTrue(dateTime is JulianDateTime)
-    assertEquals(JulianDateTime.of(1582, 10, 4, 23, 59, 59.0), dateTime)
+    assertEquals(JulianDateTime.of(1582, 10, 4, 23, 59, 59), dateTime)
 
   }
 

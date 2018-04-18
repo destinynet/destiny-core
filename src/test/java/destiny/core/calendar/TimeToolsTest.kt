@@ -13,6 +13,7 @@ import java.lang.Boolean.TRUE
 import java.time.*
 import java.time.chrono.ChronoLocalDateTime
 import java.time.chrono.ChronoZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.test.Test
 
@@ -20,16 +21,61 @@ class TimeToolsTest {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
+  @Test
+  fun testDebugStringIso8601_FromGregorian() {
+    assertEquals("G2018-04-18T14:26:01", TimeTools.getDebugStringIso8601(LocalDateTime.of(2018, 4, 18, 14, 26, 1)))
+    assertEquals("G2018-04-18T14:26:01.123", TimeTools.getDebugStringIso8601(LocalDateTime.of(2018, 4, 18, 14, 26, 1 , 123_000_000)))
+    assertEquals("G2018-04-18T14:26:01.123456789", TimeTools.getDebugStringIso8601(LocalDateTime.of(2018, 4, 18, 14, 26, 1 , 123_456_789)))
+
+    assertEquals("G0018-04-18T14:26:01.123456789", TimeTools.getDebugStringIso8601(LocalDateTime.of(18, 4, 18, 14, 26, 1 , 123_456_789)))
+    // 西元元年
+    assertEquals("G0001-01-01T00:00:00.123456789", TimeTools.getDebugStringIso8601(LocalDateTime.of(1, 1, 1, 0, 0, 0 , 123_456_789)))
+    // 西元前一年 (y=0)
+    assertEquals("G0000-12-31T00:00:00", TimeTools.getDebugStringIso8601(LocalDateTime.of(1, 1, 1, 0, 0, 0).minusDays(1)))
+    assertEquals("G0000-12-31T00:00:00", TimeTools.getDebugStringIso8601(LocalDateTime.of(0, 12, 31, 0, 0, 0)))
+    // 西元前二年 (y=-1)
+    assertEquals("G-0001-01-01T00:00:00", TimeTools.getDebugStringIso8601(LocalDateTime.of(1, 1, 1, 0, 0, 0).minusYears(2)))
+    assertEquals("G-0001-01-01T00:00:00", TimeTools.getDebugStringIso8601(LocalDateTime.of(-1, 1, 1, 0, 0, 0)))
+  }
+
+  @Test
+  fun testDebugStringIso8601_FromJulian() {
+    assertEquals("J2018-04-18T14:26:01", TimeTools.getDebugStringIso8601(JulianDateTime.of(2018, 4, 18, 14, 26, 1)))
+    assertEquals("J2018-04-18T14:26:01.123", TimeTools.getDebugStringIso8601(JulianDateTime.of(2018, 4, 18, 14, 26, 1 , 123_000_000)))
+    assertEquals("J2018-04-18T14:26:01.123456789", TimeTools.getDebugStringIso8601(JulianDateTime.of(2018, 4, 18, 14, 26, 1 , 123_456_789)))
+    assertEquals("J2018-04-18T14:26:01.10203", TimeTools.getDebugStringIso8601(JulianDateTime.of(2018, 4, 18, 14, 26, 1 , 102_030_000)))
+    // 西元元年
+    assertEquals("J0001-01-01T00:00:00.10203", TimeTools.getDebugStringIso8601(JulianDateTime.of(1, 1, 1, 0, 0, 0 , 102_030_000)))
+    assertEquals("J0001-01-01T00:00:00", TimeTools.getDebugStringIso8601(JulianDateTime.of(1, 1, 1, 0, 0, 0)))
+    // 西元前一年 (y=0)
+    assertEquals("J0000-12-31T00:00:00", TimeTools.getDebugStringIso8601(JulianDateTime.of(1, 1, 1, 0, 0, 0).minus(1 , ChronoUnit.DAYS)))
+    assertEquals("J0000-12-31T00:00:00", TimeTools.getDebugStringIso8601(JulianDateTime.of(0, 12, 31, 0, 0, 0)))
+    assertEquals("J0000-01-01T00:00:00", TimeTools.getDebugStringIso8601(JulianDateTime.of(0, 1, 1, 0, 0, 0)))
+    // 西元前二年 (y=-1)
+    assertEquals("J-0001-12-31T00:00:00", TimeTools.getDebugStringIso8601(JulianDateTime.of(0, 1, 1, 0, 0, 0).minus(1 , ChronoUnit.DAYS)))
+    assertEquals("J-0001-01-01T00:00:00", TimeTools.getDebugStringIso8601(JulianDateTime.of(-1, 1, 1, 0, 0, 0)))
+  }
 
   @Test
   fun testGetDebugString() {
-    assertEquals("+20180417181930.0" , TimeTools.getDebugString(LocalDateTime.of(2018, 4, 17, 18, 19, 30)))
-    assertEquals("+20180417181930.123" , TimeTools.getDebugString(LocalDateTime.of(2018, 4, 17, 18, 19, 30 ).withNano(123_000_000)))
+    assertEquals("+20180417181930.0", TimeTools.getDebugStringOld(LocalDateTime.of(2018, 4, 17, 18, 19, 30)))
+    assertEquals("+20180417181930.123",
+                 TimeTools.getDebugStringOld(LocalDateTime.of(2018, 4, 17, 18, 19, 30).withNano(123_000_000)))
     // 一月二日 三點四分 五.xx 秒
-    assertEquals("+20180102030405.123" , TimeTools.getDebugString(LocalDateTime.of(2018, 1, 2, 3, 4, 5 ).withNano(123_000_000)))
+    assertEquals("+20180102030405.123",
+                 TimeTools.getDebugStringOld(LocalDateTime.of(2018, 1, 2, 3, 4, 5).withNano(123_000_000)))
+  }
 
+  @Test
+  fun testDebugString_gregorianCutover() {
     // Greg 開始
-    assertEquals("+15821015000000.0" , TimeTools.getDebugString(LocalDateTime.of(1582,10,15,0,0)))
+    val gregStart = LocalDateTime.of(1582, 10, 15, 0, 0)
+    TimeTools.getDebugStringOld(gregStart).also { debugString ->
+      assertEquals("+15821015000000.0", debugString)
+      assertEquals(gregStart, JulDayResolver1582CutoverImpl.fromDebugString(debugString))
+    }
+
+    println(TimeTools.getDebugStringOld(LocalDateTime.of(1582, 10, 14, 0, 0)))
   }
 
 
@@ -47,7 +93,7 @@ class TimeToolsTest {
   @Test
   fun test_getJulDayFromGregorian() {
     assertEquals(2457774.0, getGmtJulDay(LocalDateTime.of(2017, 1, 20, 12, 0, 0)), 0.0)
-    assertEquals(2457774.0, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 12, 0, 0.0)), 0.0)
+    assertEquals(2457774.0, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 12, 0, 0)), 0.0)
   }
 
 

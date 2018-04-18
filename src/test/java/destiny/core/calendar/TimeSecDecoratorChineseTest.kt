@@ -29,11 +29,11 @@ class TimeSecDecoratorChineseTest {
     logger.info("{} : {}", gTime, decorator.getOutputString(gTime))
     assertEquals("西元前2000年12月31日　23時59分 59.99秒", decorator.getOutputString(gTime))
 
-    var jTime: JulianDateTime = JulianDateTime.of(2000, 1, 1, 0, 0, 0.0)
+    var jTime: JulianDateTime = JulianDateTime.of(2000, 1, 1, 0, 0, 0)
     logger.info("jTime.toLocalDate.era = {}", jTime.toLocalDate().era)
     logger.info("{} : {}", jTime.javaClass.simpleName, decorator.getOutputString(jTime))
 
-    jTime = JulianDateTime.of(-2000, 1, 1, 0, 0, 0.0)
+    jTime = JulianDateTime.of(-2000, 1, 1, 0, 0, 0)
     logger.info("jTime.toLocalDate.era = {}", jTime.toLocalDate().era)
     logger.info("{} : {}", jTime.javaClass.simpleName, decorator.getOutputString(jTime))
   }

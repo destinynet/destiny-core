@@ -12,11 +12,13 @@ import java.time.ZoneOffset
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.chrono.ChronoZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.JulianFields.JULIAN_DAY
 import java.time.zone.ZoneRulesException
 import java.util.*
+import kotlin.math.abs
 
 class TimeTools : Serializable {
 
@@ -270,18 +272,56 @@ class TimeTools : Serializable {
       return julDay2 > julDay && julDay > julDay1 || julDay1 > julDay && julDay > julDay2
     }
 
+    /**
+     * ISO 8601 編碼
+     * ex : 2018-04-18T02:43:10
+     * 年份為 proleptic year
+     * 以公元前1年為0000年，公元前2年為-0001年
+     */
+    fun getDebugStringIso8601(time: ChronoLocalDateTime<*>): String {
+      return StringBuilder().apply {
+        if (time is JulianDateTime) {
+          append("J")
+          // JulianDateTime 不能直接用 DateTimeFormatter , 會被轉成 Gregorian 日期輸出
+          if (time.year < 0)
+            append('-')
+          append(abs(time.year).toString().padStart(4 , '0'))
+          append('-')
+          append(time.month.toString().padStart(2, '0'))
+          append('-')
+          append(time.dayOfMonth.toString().padStart(2, '0'))
+          append('T')
+          append(time.hour.toString().padStart(2, '0'))
+          append(':')
+          append(time.minute.toString().padStart(2, '0'))
+          append(':')
+          append(time.second.toString().padStart(2, '0'))
+          if (time.nano > 0) {
+            append('.')
+            append(time.nano.toString().dropLastWhile { it == '0' }) // 把尾端的 '0' 都移除
+          }
+        } else {
+          append("G")
+          val isoDateTime = time.format(DateTimeFormatter.ISO_DATE_TIME)
+          append(isoDateTime)
+        }
+      }.toString()
+    }
 
-    /** decode 於 [JulDayResolver1582CutoverImpl.fromDebugString] */
-    fun getDebugString(time: ChronoLocalDateTime<*>): String {
+    /**
+     * 舊版 編碼
+     * decode 於 [JulDayResolver1582CutoverImpl.fromDebugString]
+     * */
+    fun getDebugStringOld(time: ChronoLocalDateTime<*>): String {
       return with(StringBuilder()) {
         append(if (time.get(YEAR_OF_ERA) >= 1) '+' else '-')
-        append(time.get(YEAR_OF_ERA).toString().padStart(4,' '))
+        append(time.get(YEAR_OF_ERA).toString().padStart(4, ' '))
 
-        append(time.get(MONTH_OF_YEAR).toString().padStart(2 ,'0'))
-        append(time.get(DAY_OF_MONTH).toString().padStart(2 ,'0'))
-        append(time.get(HOUR_OF_DAY).toString().padStart(2 ,'0'))
-        append(time.get(MINUTE_OF_HOUR).toString().padStart(2 ,'0'))
-        append(time.get(SECOND_OF_MINUTE).toString().padStart(2 ,'0'))
+        append(time.get(MONTH_OF_YEAR).toString().padStart(2, '0'))
+        append(time.get(DAY_OF_MONTH).toString().padStart(2, '0'))
+        append(time.get(HOUR_OF_DAY).toString().padStart(2, '0'))
+        append(time.get(MINUTE_OF_HOUR).toString().padStart(2, '0'))
+        append(time.get(SECOND_OF_MINUTE).toString().padStart(2, '0'))
 
         append('.')
         if (time.get(NANO_OF_SECOND) == 0) {
