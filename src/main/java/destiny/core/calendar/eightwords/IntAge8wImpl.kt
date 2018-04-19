@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Gender
-import destiny.core.IntAge
+import destiny.core.IIntAge
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms.立春
@@ -15,7 +15,7 @@ import java.io.Serializable
  * 出生當下，即為一歲。（故， age 不可以 <= 0）
  * 「一歲」終止於「順推」的立春之時
  */
-class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IntAge, Serializable {
+class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializable {
 
   override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
     val age1 = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))

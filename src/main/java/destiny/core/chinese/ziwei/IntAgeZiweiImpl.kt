@@ -6,10 +6,9 @@ package destiny.core.chinese.ziwei
 import destiny.astrology.IRelativeTransit
 import destiny.astrology.Planet
 import destiny.core.Gender
-import destiny.core.IntAge
+import destiny.core.IIntAge
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
@@ -25,7 +24,7 @@ import java.util.*
  * 出生當下，即為一歲。（故， age 不可以 <= 0）
  * 「一歲」終止於「順推」的「陰曆一月一日」
  */
-class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val relativeTransitImpl: IRelativeTransit) : IntAge, Serializable {
+class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val relativeTransitImpl: IRelativeTransit) : IIntAge, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -62,7 +61,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val rel
     if (value != null)
       return value
     else
-      throw RuntimeException("Cannot get Sun/Moon Conj since julDay = " + next1YearJan2Gmt)
+      throw RuntimeException("Cannot get Sun/Moon Conj since julDay = $next1YearJan2Gmt")
   }
 
 

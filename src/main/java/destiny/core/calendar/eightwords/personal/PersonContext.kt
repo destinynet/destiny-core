@@ -8,7 +8,7 @@ import destiny.astrology.*
 import destiny.astrology.Coordinate.ECLIPTIC
 import destiny.astrology.Planet.SUN
 import destiny.core.Gender
-import destiny.core.IntAge
+import destiny.core.IIntAge
 import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
@@ -35,13 +35,13 @@ class PersonContext(
   changeDayAfterZi: Boolean,
 
   /** 實作計算節氣的介面  */
-  private val solarTermsImpl: ISolarTerms,
+  solarTermsImpl: ISolarTerms,
 
   /** 星體運行到某點的介面  */
   private val starTransitImpl: IStarTransit,
 
   /** 歲數實作  */
-  private val intAgeImpl: IntAge,
+  private val intAgeImpl: IIntAge,
 
   /** 出生時刻  */
   lmt: ChronoLocalDateTime<*>,
@@ -60,14 +60,11 @@ class PersonContext(
   risingSignImpl: IRisingSign,
   starPositionImpl: IStarPosition<*>,
   /** 歲數註解實作  */
-  val ageNoteImpls: List<IntAgeNote>) : EightWordsContext(lmt, location, eightWordsImpl, yearMonthImpl, chineseDateImpl, dayImpl, hourImpl, midnightImpl, changeDayAfterZi, risingSignImpl, starPositionImpl) {
+  val ageNoteImpls: List<IntAgeNote>) :
+  EightWordsContext(lmt, location, eightWordsImpl, yearMonthImpl, chineseDateImpl, dayImpl, hourImpl, midnightImpl,
+                    changeDayAfterZi, risingSignImpl, starPositionImpl , solarTermsImpl) {
 
   private val logger = LoggerFactory.getLogger(javaClass)
-
-
-  /** 現在（LMT）的節/氣  */
-//  private override val currentSolarTerms: SolarTerms?
-
 
   /** 運：「日」的 span 倍數，內定 365，即：一日走一年  */
   private val fortuneDaySpan = 365.0
@@ -295,16 +292,14 @@ class PersonContext(
 
     for (i in 1..count) {
       // 西元/民國/實歲/虛歲之值
-      val startFortune: Int
-      val endFortune: Int
       val startFortuneSeconds = getTargetMajorSolarTermsSeconds(i * if (isForward) 1 else -1)
-      val endFortuneSeconds = getTargetMajorSolarTermsSeconds((i + 1) * if (isForward) 1 else -1)
+      val   endFortuneSeconds = getTargetMajorSolarTermsSeconds((i + 1) * if (isForward) 1 else -1)
 
       val startFortuneGmtJulDay = gmtJulDay + Math.abs(startFortuneSeconds) * fortuneMonthSpan / 86400.0
-      val endFortuneGmtJulDay = gmtJulDay + Math.abs(endFortuneSeconds) * fortuneMonthSpan / 86400.0
+      val   endFortuneGmtJulDay = gmtJulDay + Math.abs(  endFortuneSeconds) * fortuneMonthSpan / 86400.0
 
-      startFortune = getAge(startFortuneGmtJulDay, ageMap) ?: 0
-      endFortune = getAge(endFortuneGmtJulDay, ageMap) ?: 0
+      val startFortune = getAge(startFortuneGmtJulDay, ageMap) ?: 0
+      val   endFortune = getAge(  endFortuneGmtJulDay, ageMap) ?: 0
 
       val startFortuneAgeNotes = ageNoteImpls.map { impl -> ageMap[startFortune]?.let { impl.getAgeNote(it) } }.filter { it != null }.map { it!! }.toList()
       val endFortuneAgeNotes   = ageNoteImpls.map { impl -> ageMap[  endFortune]?.let { impl.getAgeNote(it) } }.filter { it != null }.map { it!! }.toList()

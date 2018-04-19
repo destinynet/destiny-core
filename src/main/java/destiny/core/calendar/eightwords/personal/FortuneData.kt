@@ -8,7 +8,7 @@ import destiny.core.chinese.StemBranch
 import java.io.Serializable
 
 /** 一柱大運的相關資訊。包含上方文字，干支...  */
-class FortuneData internal constructor(
+data class FortuneData(
   /** 大運干支  */
   val stemBranch: StemBranch,
   /** 起運時刻  */
@@ -20,10 +20,8 @@ class FortuneData internal constructor(
   /** 終運歲數 (可能是虛歲、或是實歲)  */
   val endFortuneAge: Int,
   /** 起運歲數的註解（西元、或民國） */
-  /** 起運歲數註解  */
   val startFortuneAgeNotes: List<String>,
   /** 終運歲數的註解（西元、或民國） */
-  /** 終運歲數註解  */
   val endFortuneAgeNotes: List<String>) : Serializable {
 
   override fun toString(): String {

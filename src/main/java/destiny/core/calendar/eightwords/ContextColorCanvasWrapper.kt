@@ -23,7 +23,10 @@ import kotlin.math.abs
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
  */
 open class ContextColorCanvasWrapper(
-  /** 八字 Context  */
+  /**
+   * 八字 Context
+   * TODO : 2018-04-19 Note : 這應該要朝向傳入 [IEightWordsContextModel] 來繪製
+   *  */
   protected val context: EightWordsContext,
   /** 當地時間  */
   private val lmt: ChronoLocalDateTime<*>,

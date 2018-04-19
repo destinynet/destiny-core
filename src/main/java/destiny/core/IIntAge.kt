@@ -19,7 +19,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 韓國另有另一種「一歲」指的是「出生之時」到「下一個三月一日」為止，日後均以「三月初一」為界
 </pre> *
  */
-interface IntAge {
+interface IIntAge {
 
   /**
    * 此時刻出生的某人，在第幾歲時，範圍為何
@@ -27,7 +27,7 @@ interface IntAge {
    * */
   fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double>
 
-  /** 承上 , 傳回 {@link ChronoLocalDateTime} 版本 */
+  /** 承上 , 傳回 [ChronoLocalDateTime] 版本 */
   fun getRangeTime(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>> {
     return getRange(gender, gmtJulDay, loc, age).let { pair ->
       Pair(revJulDayFunc.invoke(pair.first), revJulDayFunc.invoke(pair.second))

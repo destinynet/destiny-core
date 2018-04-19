@@ -4,7 +4,7 @@
 package destiny.core
 
 /**
- * 將 [IntAge] 計算出來的結果 Pair[GMT , GMT] 附註年份
+ * 將 [IIntAge] 計算出來的結果 Pair[GMT , GMT] 附註年份
  * 例如，西元年份、或是民國年份、或是中國歷史紀元
  */
 interface IntAgeNote : Descriptive {

@@ -2,8 +2,8 @@ package destiny.core.calendar.eightwords
 
 import destiny.astrology.*
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.SolarTermsImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
@@ -14,6 +14,7 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
+ * 計算八字盤（不包含「人」的資訊）
  * 除了計算八字，另外新增輸出農曆以及命宮的方法
  */
 open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
@@ -27,36 +28,61 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
                              val midnightImpl: IMidnight,
                              val isChangeDayAfterZi: Boolean,
                              val risingSignImpl: IRisingSign,
-                             protected val starPositionImpl: IStarPosition<*>
-) : Serializable {
+                             protected val starPositionImpl: IStarPosition<*>,
+                             val solarTermsImpl: ISolarTerms
+                            ) : IEightWordsContext , Serializable {
 
   val eightWords: EightWords = eightWordsImpl.getEightWords(lmt, location)
 
   open val model: IEightWordsContextModel
     get() {
-      val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
-
-      val chineseDate = chineseDate
-
-      val risingSign = risingStemBranch
-      val sunBranch = getBranchOf(Planet.SUN, lmt, location)
-      val moonBranch = getBranchOf(Planet.MOON, lmt, location)
-      return EightWordsContextModel(eightWords, lmt, location, "LOCATION", chineseDate,
-        prevNextMajorSolarTerms.first,
-        prevNextMajorSolarTerms.second,
-        risingSign,
-        sunBranch, moonBranch)
+      return getEightWordsContextModel(lmt, location, "PLACE", eightWordsImpl, yearMonthImpl, chineseDateImpl, dayImpl,
+                                       hourImpl, midnightImpl, isChangeDayAfterZi, risingSignImpl, starPositionImpl,
+                                       solarTermsImpl)
     }
+
+  override fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
+                                         location: ILocation,
+                                         place: String?,
+                                         eightWordsImpl: IEightWordsFactory,
+                                         yearMonthImpl: IYearMonth,
+                                         chineseDateImpl: IChineseDate,
+                                         dayImpl: IDay,
+                                         hourImpl: IHour,
+                                         midnightImpl: IMidnight,
+                                         changeDayAfterZi: Boolean,
+                                         risingSignImpl: IRisingSign,
+                                         starPositionImpl: IStarPosition<*>,
+                                         solarTermsImpl: ISolarTerms): IEightWordsContextModel {
+
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+
+    // 現在的節氣
+    val currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+    val eightWords = eightWordsImpl.getEightWords(lmt, location)
+    val chineseDate = chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
+
+    val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
+
+    val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
+
+    val sunBranch = getBranchOf(Planet.SUN, lmt, location, starPositionImpl)
+    val moonBranch = getBranchOf(Planet.MOON, lmt, location, starPositionImpl)
+
+    return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
+                                  prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingSign,
+                                  sunBranch, moonBranch)
+  }
 
   /**
    * 節氣
-   * TODO 演算法重複 [SolarTermsImpl.getSolarTermsFromGMT]
    */
   val currentSolarTerms: SolarTerms
     get() {
       val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-      val sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC)
-      return SolarTerms.getFromDegree(sp.lng)
+      return solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+//      val sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC)
+//      return SolarTerms.getFromDegree(sp.lng)
     }
 
   val gmtJulDay: Double
@@ -84,12 +110,33 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
   // 組合成干支
   val risingStemBranch: StemBranch
     get() {
-      val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
-      val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
-      return StemBranch[risingStem, risingBranch]
+      return getRisingStemBranch(lmt , location , eightWords , risingSignImpl)
+//      val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
+//      val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
+//      return StemBranch[risingStem, risingBranch]
     }
 
-  private fun getBranchOf(star: Star, lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
+
+  /**
+   * 計算命宮干支
+   */
+  private fun getRisingStemBranch(lmt: ChronoLocalDateTime<*>,
+                                  location: ILocation,
+                                  eightWords: EightWords,
+                                  risingSignImpl: IRisingSign): StemBranch {
+    // 命宮地支
+    val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
+    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
+    val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
+    // 組合成干支
+    return StemBranch[risingStem, risingBranch]
+  }
+
+
+  private fun getBranchOf(star: Star,
+                          lmt: ChronoLocalDateTime<*>,
+                          location: ILocation,
+                          starPositionImpl: IStarPosition<*>): Branch {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
     return ZodiacSign.getZodiacSign(pos.lng).branch
   }
