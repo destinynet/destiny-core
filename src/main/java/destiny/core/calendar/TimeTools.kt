@@ -5,10 +5,7 @@ package destiny.core.calendar
 
 import org.slf4j.LoggerFactory
 import java.io.Serializable
-import java.time.Instant
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.*
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.chrono.ChronoZonedDateTime
@@ -272,13 +269,40 @@ class TimeTools : Serializable {
       return julDay2 > julDay && julDay > julDay1 || julDay1 > julDay && julDay > julDay2
     }
 
+
+    /**
+     * 解碼
+     */
+    fun decode(s: String) : ChronoLocalDateTime<*> {
+      return when {
+        s.startsWith('G') -> LocalDateTime.parse(s.substring(1) , DateTimeFormatter.ISO_DATE_TIME)
+        s.startsWith('J') -> {
+          val date = s.substring(1 , s.indexOf('T'))
+          val (year,month,day) = date.split("-").let {
+            Triple(it[0].toInt() , it[1].toInt() , it[2].toInt())
+          }
+          val time = LocalTime.parse(s.substring(s.indexOf('T')+1))
+          JulianDateTime.of(year,month, day , time.hour , time.minute , time.second , time.nano)
+        }
+        else -> JulDayResolver1582CutoverImpl.fromDebugString(s)
+      }
+    }
+
+
+    /**
+     * 新版 (since 2018-04) 直接以 ISO-8601 編碼 , 但前面加上 G/J 以區別 Gregorian or Julian 曆別
+     */
+    fun encode(time: ChronoLocalDateTime<*>) : String {
+      return encodeIso8601(time)
+    }
+
     /**
      * ISO 8601 編碼
      * ex : 2018-04-18T02:43:10
      * 年份為 proleptic year
      * 以公元前1年為0000年，公元前2年為-0001年
      */
-    fun getDebugStringIso8601(time: ChronoLocalDateTime<*>): String {
+    fun encodeIso8601(time: ChronoLocalDateTime<*>): String {
       return StringBuilder().apply {
         if (time is JulianDateTime) {
           append("J")
@@ -312,7 +336,7 @@ class TimeTools : Serializable {
      * 舊版 編碼
      * decode 於 [JulDayResolver1582CutoverImpl.fromDebugString]
      * */
-    fun getDebugStringOld(time: ChronoLocalDateTime<*>): String {
+    fun encodeOld(time: ChronoLocalDateTime<*>): String {
       return with(StringBuilder()) {
         append(if (time.get(YEAR_OF_ERA) >= 1) '+' else '-')
         append(time.get(YEAR_OF_ERA).toString().padStart(4, ' '))
