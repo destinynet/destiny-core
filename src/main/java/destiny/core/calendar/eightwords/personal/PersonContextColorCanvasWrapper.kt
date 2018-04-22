@@ -21,7 +21,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
                                       place: String,
                                       /** 地支藏干的實作，內定採用標準設定  */
                                       private val hiddenStemsImpl: IHiddenStems, linkUrl: String, private val direction: Direction) :
-  ContextColorCanvasWrapper(personContext, model.lmt, model.location, place, hiddenStemsImpl, linkUrl, direction) {
+  ContextColorCanvasWrapper(personContext, place, hiddenStemsImpl, linkUrl, direction) {
 
 
   private val timeDecorator = TimeSecDecoratorChinese()

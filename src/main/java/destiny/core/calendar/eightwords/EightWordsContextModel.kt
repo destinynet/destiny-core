@@ -12,10 +12,12 @@ import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
-
+/** 純粹八字（不含「人」的資料） */
 interface IEightWordsContextModel {
   val eightWords: EightWords
+
   val lmt: ChronoLocalDateTime<*>
+
   val location: ILocation
 
   /** 是否有日光節約  */
@@ -38,6 +40,19 @@ interface IEightWordsContextModel {
   /** 月亮位置  */
   val moonBranch: Branch
 }
+
+/**
+ * 取代 [EightWordsContext]
+ * 純粹由「時間、地點」切入，不帶其他參數，取得八字盤 (不含「人」的資料）
+ */
+interface IEightWordsContext {
+
+  fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
+                                location: ILocation,
+                                place: String?): IEightWordsContextModel
+
+}
+
 
 /**
  * 一個八字命盤「額外」的計算結果 , 方便排盤輸出

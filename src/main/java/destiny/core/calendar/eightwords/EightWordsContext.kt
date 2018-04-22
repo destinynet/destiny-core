@@ -18,49 +18,39 @@ import java.time.chrono.ChronoLocalDateTime
  * 除了計算八字，另外新增輸出農曆以及命宮的方法
  */
 open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
-                             protected val location: ILocation,
+                             val location: ILocation,
+                             val place: String?,
                              protected val eightWordsImpl: IEightWordsFactory,
-                             val yearMonthImpl: IYearMonth,
                              /** 取得陰陽曆轉換的實作  */
                              val chineseDateImpl: IChineseDate,
+                             val yearMonthImpl: IYearMonth,
                              protected val dayImpl: IDay,
                              val hourImpl: IHour,
                              val midnightImpl: IMidnight,
-                             val isChangeDayAfterZi: Boolean,
+                             val changeDayAfterZi: Boolean,
                              val risingSignImpl: IRisingSign,
                              protected val starPositionImpl: IStarPosition<*>,
                              val solarTermsImpl: ISolarTerms
-                            ) : IEightWordsContext , Serializable {
+                            ) : IEightWordsContext, Serializable {
 
   val eightWords: EightWords = eightWordsImpl.getEightWords(lmt, location)
 
   open val model: IEightWordsContextModel
     get() {
-      return getEightWordsContextModel(lmt, location, "PLACE", eightWordsImpl, yearMonthImpl, chineseDateImpl, dayImpl,
-                                       hourImpl, midnightImpl, isChangeDayAfterZi, risingSignImpl, starPositionImpl,
-                                       solarTermsImpl)
+      return getEightWordsContextModel(lmt, location, place)
     }
 
   override fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                          location: ILocation,
-                                         place: String?,
-                                         eightWordsImpl: IEightWordsFactory,
-                                         yearMonthImpl: IYearMonth,
-                                         chineseDateImpl: IChineseDate,
-                                         dayImpl: IDay,
-                                         hourImpl: IHour,
-                                         midnightImpl: IMidnight,
-                                         changeDayAfterZi: Boolean,
-                                         risingSignImpl: IRisingSign,
-                                         starPositionImpl: IStarPosition<*>,
-                                         solarTermsImpl: ISolarTerms): IEightWordsContextModel {
+                                         place: String?): IEightWordsContextModel {
 
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     // 現在的節氣
     val currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
-    val eightWords = eightWordsImpl.getEightWords(lmt, location)
-    val chineseDate = chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
+    val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
+    val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl,
+                                                          midnightImpl, changeDayAfterZi)
 
     val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
 
@@ -81,8 +71,8 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
     get() {
       val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
       return solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
-//      val sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC)
-//      return SolarTerms.getFromDegree(sp.lng)
+      //      val sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC)
+      //      return SolarTerms.getFromDegree(sp.lng)
     }
 
   val gmtJulDay: Double
@@ -100,20 +90,14 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
 
   /** 取得農曆  */
   val chineseDate: ChineseDate
-    get() = chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, isChangeDayAfterZi)
+    get() = chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
 
   /**
    * 計算命宮干支
    */
-  // 命宮地支
-  // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-  // 組合成干支
   val risingStemBranch: StemBranch
     get() {
-      return getRisingStemBranch(lmt , location , eightWords , risingSignImpl)
-//      val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
-//      val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
-//      return StemBranch[risingStem, risingBranch]
+      return getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
     }
 
 

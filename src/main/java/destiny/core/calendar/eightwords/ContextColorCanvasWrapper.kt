@@ -13,7 +13,6 @@ import destiny.core.chinese.StemBranch
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
-import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoField.*
 import java.util.*
@@ -28,13 +27,8 @@ open class ContextColorCanvasWrapper(
    * TODO : 2018-04-19 Note : 這應該要朝向傳入 [IEightWordsContextModel] 來繪製
    *  */
   protected val context: EightWordsContext,
-  /** 當地時間  */
-  private val lmt: ChronoLocalDateTime<*>,
-  /** 地點  */
-  private val location: ILocation,
   /** 地點的名稱  */
-  private val locationName: String,
-  //protected final EightWordsContextModel model;
+  private val place: String,
 
   /** 地支藏干的實作，內定採用標準設定  */
   private val hiddenStemsImpl: IHiddenStems,
@@ -48,6 +42,9 @@ open class ContextColorCanvasWrapper(
   private val urlBuilder = GoogleMapsUrlBuilder()
 
   var outputMode = OutputMode.HTML
+
+  private val lmt = context.lmt
+  private val location = context.location
 
   private val reactionUtil: ReactionUtil = ReactionUtil(this.hiddenStemsImpl)
 
@@ -97,7 +94,7 @@ open class ContextColorCanvasWrapper(
 
       val 地點名稱 = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
       地點名稱.setText("地點：", 1, 1)
-      地點名稱.setText(locationName, 1, 7, false, null, null, null, url, null)
+      地點名稱.setText(place, 1, 7, false, null, null, null, url, null)
       val minuteOffset = location.minuteOffset?:TimeTools.getDstSecondOffset(lmt, location).second / 60
 
       minuteOffset.also { it ->
@@ -123,7 +120,7 @@ open class ContextColorCanvasWrapper(
       緯度.setText("$latText ", 1, 1, false, null, null, null, url, null)
       cc.add(緯度, 4, 25)
 
-      cc.setText("換日：" + if (context.isChangeDayAfterZi) "子初換日" else "子正換日", 5, 1, "999999")
+      cc.setText("換日：" + if (context.changeDayAfterZi) "子初換日" else "子正換日", 5, 1, "999999")
       if (location.northSouth == NorthSouth.SOUTH) {
         val yearMonthImpl = context.yearMonthImpl
         if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {

@@ -33,8 +33,8 @@ class PersonContext(
   hourImpl: IHour,
   midnightImpl: IMidnight,
   changeDayAfterZi: Boolean,
-
-  /** 實作計算節氣的介面  */
+  risingSignImpl: IRisingSign,
+  starPositionImpl: IStarPosition<*>,
   solarTermsImpl: ISolarTerms,
 
   /** 星體運行到某點的介面  */
@@ -45,24 +45,20 @@ class PersonContext(
 
   /** 出生時刻  */
   lmt: ChronoLocalDateTime<*>,
-
   /** 出生地點  */
   location: ILocation,
 
-  private val place: String?,
+  place: String?,
   /** 性別  */
   val gender: Gender,
-
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
   private val fortuneMonthSpan: Double,
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
-  private val fortuneDirectionImpl: IFortuneDirection?,
-  risingSignImpl: IRisingSign,
-  starPositionImpl: IStarPosition<*>,
+  private val fortuneDirectionImpl: IFortuneDirection,
   /** 歲數註解實作  */
   val ageNoteImpls: List<IntAgeNote>) :
-  EightWordsContext(lmt, location, eightWordsImpl, yearMonthImpl, chineseDateImpl, dayImpl, hourImpl, midnightImpl,
-                    changeDayAfterZi, risingSignImpl, starPositionImpl , solarTermsImpl) {
+  EightWordsContext(lmt, location, place , eightWordsImpl, chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl,
+                    changeDayAfterZi, risingSignImpl, starPositionImpl, solarTermsImpl) {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -93,7 +89,7 @@ class PersonContext(
 
   /** 八字大運是否順行  */
   val isFortuneDirectionForward: Boolean
-    get() = this.fortuneDirectionImpl!!.isForward(this)
+    get() = fortuneDirectionImpl.isForward(gender , eightWords)
 
 
   /**
@@ -114,7 +110,7 @@ class PersonContext(
       val prevGmt = starTransitImpl.getNextTransitGmtDateTime(SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), ECLIPTIC, gmtJulDay, false)
       val dur1 = Duration.between(gmt, prevGmt).abs()
       val d1 = dur1.seconds + dur1.nano / 1_000_000_000.0
-      val nextMajorSolarTerms = this.getNextMajorSolarTerms(prevMajorSolarTerms, false)
+      val nextMajorSolarTerms = getNextMajorSolarTerms(prevMajorSolarTerms, false)
       val nextGmt = starTransitImpl.getNextTransitGmtDateTime(SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), ECLIPTIC, gmtJulDay, true)
       val dur2 = Duration.between(gmt, nextGmt).abs()
       val d2 = dur2.seconds + dur2.nano / 1_000_000_000.0
@@ -144,9 +140,9 @@ class PersonContext(
     if (index < 0)
       reverse = true
 
-    val gmt = TimeTools.getGmtFromLmt(lmt, location)
+    val gmt: ChronoLocalDateTime<*> = TimeTools.getGmtFromLmt(lmt, location)
     //double stepGmt = TimeTools.getGmtJulDay(gmt);
-    var stepGmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    var stepGmtJulDay: Double = TimeTools.getGmtJulDay(lmt, location)
     //現在的 節氣
     var currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
     var stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, reverse)
@@ -434,7 +430,7 @@ class PersonContext(
     result = 31 * result + (temp xor temp.ushr(32)).toInt()
     temp = java.lang.Double.doubleToLongBits(fortuneHourSpan)
     result = 31 * result + (temp xor temp.ushr(32)).toInt()
-    result = 31 * result + (fortuneDirectionImpl?.hashCode() ?: 0)
+    result = 31 * result + fortuneDirectionImpl.hashCode()
     return result
   }
 

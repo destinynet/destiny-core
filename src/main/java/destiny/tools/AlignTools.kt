@@ -63,7 +63,7 @@ object AlignTools {
       val doubleSpace : String = if (useDoubleSpaceChar) "　" else "  "
       doubleSpace.repeat(doubleByteSpaces).let {
           if ((width - valueLength) % 2 == 1)
-            it + " "
+            "$it "
           else
             it
         } + valueString
