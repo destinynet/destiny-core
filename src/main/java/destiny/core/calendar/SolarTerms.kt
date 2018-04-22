@@ -94,13 +94,40 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
      * 上一個「節」、下一個「節」
      * 立春 , 驚蟄 , 清明 ...
      */
-    fun getPrevNextMajorSolarTerms(currentSolarTerms: SolarTerms) : Pair<SolarTerms, SolarTerms> {
+    fun getPrevNextMajorSolarTerms(currentSolarTerms: SolarTerms): Pair<SolarTerms, SolarTerms> {
       return if (currentSolarTerms.isMajor) {
-        Pair(currentSolarTerms , currentSolarTerms.next().next())
+        Pair(currentSolarTerms, currentSolarTerms.next().next())
       } else {
-        Pair(currentSolarTerms.previous() , currentSolarTerms.next())
+        Pair(currentSolarTerms.previous(), currentSolarTerms.next())
       }
     }
+
+
+    /**
+     * 取得下一個「節」
+     *
+     * @param currentSolarTerms 現在的「節」
+     * @param reverse           是否逆推
+     * @return 下一個「節」（如果 reverse == true，則傳回上一個「節」）
+     */
+    fun getNextMajorSolarTerms(currentSolarTerms: SolarTerms, reverse: Boolean): SolarTerms {
+      val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
+      return if (currentSolarTermsIndex % 2 == 0) {
+        //立春 , 驚蟄 , 清明 ...
+        if (!reverse)
+        //順推
+          currentSolarTerms.next().next()
+        else
+          currentSolarTerms
+      } else {
+        //雨水 , 春分 , 穀雨 ...
+        if (!reverse)
+        //順推
+          currentSolarTerms.next()
+        else
+          currentSolarTerms.previous()
+      }
+    } // getNextMajorSolarTerms()
   }
 
 }

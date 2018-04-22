@@ -92,35 +92,6 @@ class PersonContext(
     get() = fortuneDirectionImpl.isForward(gender , eightWords)
 
 
-  /**
-   * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
-   */
-  // 現在（亦即：上一個節）的「節」
-  // 如果是「中氣」的話
-  // 再往前取一個 , 即可得到「節」
-  // 下一個「節」
-  val majorSolarTermsBetween: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
-    get() {
-      val gmt = TimeTools.getGmtFromLmt(lmt, location)
-      val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-      var prevMajorSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
-      if (!prevMajorSolarTerms.isMajor)
-        prevMajorSolarTerms = prevMajorSolarTerms.previous()
-
-      val prevGmt = starTransitImpl.getNextTransitGmtDateTime(SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), ECLIPTIC, gmtJulDay, false)
-      val dur1 = Duration.between(gmt, prevGmt).abs()
-      val d1 = dur1.seconds + dur1.nano / 1_000_000_000.0
-      val nextMajorSolarTerms = getNextMajorSolarTerms(prevMajorSolarTerms, false)
-      val nextGmt = starTransitImpl.getNextTransitGmtDateTime(SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), ECLIPTIC, gmtJulDay, true)
-      val dur2 = Duration.between(gmt, nextGmt).abs()
-      val d2 = dur2.seconds + dur2.nano / 1_000_000_000.0
-
-      logger.debug(" prevGmt = {}", prevGmt)
-      logger.debug("(now)Gmt = {}", gmt)
-      logger.debug(" nextGmt = {}", nextGmt)
-      return Pair(Pair(prevMajorSolarTerms, d1), Pair(nextMajorSolarTerms, d2))
-    }
-
   private fun getAgeMap(toAge: Int): Map<Int, Pair<Double, Double>> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
@@ -145,7 +116,7 @@ class PersonContext(
     var stepGmtJulDay: Double = TimeTools.getGmtJulDay(lmt, location)
     //現在的 節氣
     var currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
-    var stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, reverse)
+    var stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, reverse)
 
     var i: Int
     i = if (!reverse)
@@ -191,7 +162,7 @@ class PersonContext(
           }
 
           currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
-          stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, false)
+          stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, false)
           i++
         } // while (i <= index)
       } //順推
@@ -218,7 +189,7 @@ class PersonContext(
           }
 
           currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
-          stepMajorSolarTerms = this.getNextMajorSolarTerms(currentSolarTerms, true)
+          stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, true)
           i--
         } //while (i >= index)
       } //逆推
@@ -234,31 +205,6 @@ class PersonContext(
   } // getTargetMajorSolarTermsSeconds(int)
 
 
-  /**
-   * 取得下一個「節」
-   *
-   * @param currentSolarTerms 現在的「節」
-   * @param reverse           是否逆推
-   * @return 下一個「節」（如果 reverse == true，則傳回上一個「節」）
-   */
-  private fun getNextMajorSolarTerms(currentSolarTerms: SolarTerms, reverse: Boolean): SolarTerms {
-    val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
-    return if (currentSolarTermsIndex % 2 == 0) {
-      //立春 , 驚蟄 , 清明 ...
-      if (!reverse)
-      //順推
-        currentSolarTerms.next().next()
-      else
-        currentSolarTerms
-    } else {
-      //雨水 , 春分 , 穀雨 ...
-      if (!reverse)
-      //順推
-        currentSolarTerms.next()
-      else
-        currentSolarTerms.previous()
-    }
-  } // getNextMajorSolarTerms()
 
   /**
    * @return 在此 gmtJulDay 時刻，座落於歲數的哪一歲當中

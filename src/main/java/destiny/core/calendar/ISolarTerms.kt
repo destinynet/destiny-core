@@ -69,4 +69,9 @@ interface ISolarTerms {
     }.toList()
   }
 
+  /**
+   * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
+   */
+  fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+
 }

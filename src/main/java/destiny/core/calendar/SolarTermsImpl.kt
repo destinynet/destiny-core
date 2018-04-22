@@ -5,13 +5,13 @@
  */
 package destiny.core.calendar
 
-import destiny.astrology.Centric
+import destiny.astrology.*
 import destiny.astrology.Coordinate.ECLIPTIC
-import destiny.astrology.IStarPosition
-import destiny.astrology.IStarTransit
 import destiny.astrology.Planet.SUN
 import destiny.astrology.Utils.getNormalizeDegree
 import java.io.Serializable
+import java.time.Duration
+import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 /**
@@ -20,7 +20,7 @@ import java.util.*
 class SolarTermsImpl(
   private val starTransitImpl: IStarTransit,
   private val starPositionImpl: IStarPosition<*>
-) : ISolarTerms, Serializable {
+                    ) : ISolarTerms, Serializable {
 
 
   /**
@@ -75,5 +75,29 @@ class SolarTermsImpl(
   override fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, isForward: Boolean): Double {
     val zodiacDegree = solarTerms.zodiacDegree
     return starTransitImpl.getNextTransitGmt(SUN, zodiacDegree.toDouble(), ECLIPTIC, fromGmtJulDay, isForward)
+  }
+
+  /**
+   * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
+   */
+  override fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*>,
+                                location: ILocation): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+    val gmt = TimeTools.getGmtFromLmt(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    var prevMajorSolarTerms = getSolarTermsFromGMT(gmt)
+    if (!prevMajorSolarTerms.isMajor)
+      prevMajorSolarTerms = prevMajorSolarTerms.previous()
+
+    val prevGmt = starTransitImpl.getNextTransitGmtDateTime(Planet.SUN, prevMajorSolarTerms.zodiacDegree.toDouble(),
+                                                            Coordinate.ECLIPTIC, gmtJulDay, false)
+    val dur1 = Duration.between(gmt, prevGmt).abs()
+    val d1 = dur1.seconds + dur1.nano / 1_000_000_000.0
+    val nextMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(prevMajorSolarTerms, false)
+    val nextGmt = starTransitImpl.getNextTransitGmtDateTime(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(),
+                                                            Coordinate.ECLIPTIC, gmtJulDay, true)
+    val dur2 = Duration.between(gmt, nextGmt).abs()
+    val d2 = dur2.seconds + dur2.nano / 1_000_000_000.0
+
+    return Pair(Pair(prevMajorSolarTerms, d1), Pair(nextMajorSolarTerms, d2))
   }
 }

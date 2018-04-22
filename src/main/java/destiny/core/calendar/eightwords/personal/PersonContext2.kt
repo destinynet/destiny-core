@@ -23,15 +23,21 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class PersonContext2(
+
   private val eightWordsContext: EightWordsContext2,
+
   /** 歲數實作  */
   private val intAgeImpl: IIntAge,
+
   /** 星體運行到某點的介面  */
   private val starTransitImpl: IStarTransit,
+
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
   private val fortuneDirectionImpl: IFortuneDirection,
+
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
   private val fortuneMonthSpan: Double=120.0,
+
   /** 歲數註解實作  */
   val ageNoteImpls: List<IntAgeNote>
                     ) : IPersonContext , Serializable {
