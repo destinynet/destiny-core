@@ -21,11 +21,11 @@ import kotlin.math.abs
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
  */
-open class ContextColorCanvasWrapper(
+class ContextColorCanvas(
 
-  protected val model :IEightWordsContextModel,
+  private val model :IEightWordsContextModel,
 
-  protected val context : EightWordsContext2,
+  private val context : EightWordsContext2,
 
   //protected val context: EightWordsContext,
   /** 地點的名稱  */
@@ -36,18 +36,34 @@ open class ContextColorCanvasWrapper(
   /** 網址連結  */
   private val linkUrl: String?,
   /** 輸出方向，由左至右，還是由右至左  */
-  private val direction: Direction) {
+  private val direction: Direction) : ColorCanvas(20 , 52 , ChineseStringTools.NULL_CHAR ) {
 
 
   /** TODO : IoC Google Maps URL Builder  */
   private val urlBuilder = GoogleMapsUrlBuilder()
 
-  var outputMode = OutputMode.HTML
+  var outputMode = ColorCanvas.OutputMode.HTML
 
   private val lmt = model.lmt
   private val location = model.location
 
   private val reactionUtil: ReactionUtil = ReactionUtil(this.hiddenStemsImpl)
+
+
+  init {
+    add(metaDataColorCanvas, 1, 1)
+    add(eightWordsColorCanvas, 11, 1)
+  }
+
+  /**
+   * 傳回八字命盤
+   */
+  override fun toString(): String {
+    return when (this.outputMode) {
+      ColorCanvas.OutputMode.TEXT -> getTextOutput()
+      ColorCanvas.OutputMode.HTML -> htmlOutput
+    }
+  } //toString()
 
   /**
    * 取得 MetaData (國曆 農曆 經度 緯度 等資料)
@@ -184,11 +200,6 @@ open class ContextColorCanvasWrapper(
       }
     }
 
-  /** 輸出模式  */
-  enum class OutputMode {
-    HTML, TEXT
-  }
-
   /** 取得「一柱」的 ColorCanvas , 10 x 6
    * <pre>
    * 　時　
@@ -223,18 +234,6 @@ open class ContextColorCanvasWrapper(
     return pillar
   }
 
-  /**
-   * 傳回八字命盤
-   */
-  override fun toString(): String {
-    val cc = ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR)
-    cc.add(metaDataColorCanvas, 1, 1)
-    cc.add(eightWordsColorCanvas, 11, 1)
-    return when (this.outputMode) {
-      ContextColorCanvasWrapper.OutputMode.TEXT -> cc.toString()
-      ContextColorCanvasWrapper.OutputMode.HTML -> cc.htmlOutput
-    }
-  } //toString()
 
 
   fun 地支藏干(地支: Branch, 天干: Stem): ColorCanvas {

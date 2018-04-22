@@ -34,6 +34,12 @@ open class ColorCanvas : Serializable {
 
   private val children = mutableListOf<Child>()
 
+
+  /** 輸出模式  */
+  enum class OutputMode {
+    HTML, TEXT
+  }
+
   /**
    * 讀取這個 ColorCanvas 的 content 資料
    * 「以及」其子ColorCanvas 的 content 資料
@@ -582,7 +588,7 @@ open class ColorCanvas : Serializable {
    * 省略所有 Color / Font / URL
    * 純粹輸出 byte 內容
    */
-  override fun toString(): String {
+  fun getTextOutput() : String {
     val sb = StringBuilder()
     val cbs = this.contentWithChildren
     for (i in 1..height) {
@@ -594,6 +600,14 @@ open class ColorCanvas : Serializable {
       sb.append('\n')
     }
     return sb.toString()
+  }
+
+  /**
+   * 省略所有 Color / Font / URL
+   * 純粹輸出 byte 內容
+   */
+  override fun toString(): String {
+    return getTextOutput()
   }
 
   companion object {
