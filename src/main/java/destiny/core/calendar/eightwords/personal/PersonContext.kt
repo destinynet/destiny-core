@@ -81,9 +81,9 @@ class PersonContext(
   override val model: IPersonContextModel
     get() {
       val eightWordsContextModel = EightWordsContextModel(
-        eightWords , lmt , location , place , chineseDate ,
-        prevNextMajorSolarTerms.first , prevNextMajorSolarTerms.second , risingStemBranch ,
-        getBranchOf(Planet.SUN) , getBranchOf(Planet.MOON))
+        eightWords, lmt, location, place, chineseDate,
+        prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingStemBranch,
+        getBranchOf(Planet.SUN), getBranchOf(Planet.MOON))
       return PersonContextModel(eightWordsContextModel , gender , getFortuneDatas(9) , getAgeMap(90))
     }
 
@@ -103,7 +103,7 @@ class PersonContext(
    *
    * @return **如果 index 為正，則傳回正值; 如果 index 為負，則傳回負值**
    */
-  fun getTargetMajorSolarTermsSeconds(index: Int): Double {
+  fun getTargetMajorSolarTermsSeconds(gmtJulDay : Double , index: Int): Double {
     if (index == 0)
       throw RuntimeException("index cannot be 0 !")
 
@@ -113,7 +113,7 @@ class PersonContext(
 
     val gmt: ChronoLocalDateTime<*> = TimeTools.getGmtFromLmt(lmt, location)
     //double stepGmt = TimeTools.getGmtJulDay(gmt);
-    var stepGmtJulDay: Double = TimeTools.getGmtJulDay(lmt, location)
+    var stepGmtJulDay: Double = gmtJulDay
     //現在的 節氣
     var currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
     var stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, reverse)
@@ -234,8 +234,8 @@ class PersonContext(
 
     for (i in 1..count) {
       // 西元/民國/實歲/虛歲之值
-      val startFortuneSeconds = getTargetMajorSolarTermsSeconds(i * if (isForward) 1 else -1)
-      val   endFortuneSeconds = getTargetMajorSolarTermsSeconds((i + 1) * if (isForward) 1 else -1)
+      val startFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay , i * if (isForward) 1 else -1)
+      val   endFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay , (i + 1) * if (isForward) 1 else -1)
 
       val startFortuneGmtJulDay = gmtJulDay + Math.abs(startFortuneSeconds) * fortuneMonthSpan / 86400.0
       val   endFortuneGmtJulDay = gmtJulDay + Math.abs(  endFortuneSeconds) * fortuneMonthSpan / 86400.0
@@ -307,7 +307,7 @@ class PersonContext(
     if (targetGmt.isAfter(gmt) && isFortuneDirectionForward) {
       logger.debug("大運順行")
       var index = 1
-      while (getTargetMajorSolarTermsSeconds(index) * span < diffSeconds) {
+      while (getTargetMajorSolarTermsSeconds(gmtJulDay , index) * span < diffSeconds) {
         resultStemBranch = resultStemBranch.next
         index++
       }
@@ -316,7 +316,7 @@ class PersonContext(
     if (targetGmt.isAfter(gmt) && !isFortuneDirectionForward) {
       logger.debug("大運逆行")
       var index = -1
-      while (Math.abs(getTargetMajorSolarTermsSeconds(index) * span) < diffSeconds) {
+      while (Math.abs(getTargetMajorSolarTermsSeconds(gmtJulDay , index) * span) < diffSeconds) {
         resultStemBranch = resultStemBranch.previous
         index--
       }

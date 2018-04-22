@@ -60,11 +60,11 @@ class PersonContext2(
 
     val ageMap = getAgeMap(120 , gmtJulDay , gender , location)
 
-    val gmt: ChronoLocalDateTime<*> = TimeTools.getGmtFromLmt(lmt, location)
+    //val gmt: ChronoLocalDateTime<*> = TimeTools.getGmtFromLmt(lmt, location)
 
     // forward : 大運是否順行
     val forward = isFortuneDirectionForward(gender , ewModel.eightWords)
-    val fortuneDataList = getFortuneDatas(9, forward, ewModel.eightWords, gmt, gmtJulDay, ageMap)
+    val fortuneDataList = getFortuneDatas(9, forward, ewModel.eightWords, gmtJulDay, ageMap)
 
     return PersonContextModel(ewModel , gender , fortuneDataList , ageMap)
   }
@@ -78,9 +78,8 @@ class PersonContext2(
    * @param count 計算 n柱 大運的資料
    */
   private fun getFortuneDatas(count: Int,
-                              forward : Boolean,
+                              forward: Boolean,
                               eightWords: EightWords,
-                              gmt : ChronoLocalDateTime<*>,
                               gmtJulDay: Double,
                               ageMap: Map<Int, Pair<Double, Double>>): List<FortuneData> {
         //下個大運的干支
@@ -144,7 +143,7 @@ class PersonContext2(
     var stepGmtJulDay = gmtJulDay
     //現在的 節氣
     var currentSolarTerms = eightWordsContext.solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
-    var stepMajorSolarTerms = getNextMajorSolarTerms(currentSolarTerms, reverse)
+    var stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, reverse)
 
     var i: Int
     i = if (!reverse)
@@ -191,7 +190,7 @@ class PersonContext2(
           }
 
           currentSolarTerms = eightWordsContext.solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
-          stepMajorSolarTerms = getNextMajorSolarTerms(currentSolarTerms, false)
+          stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, false)
           i++
         } // while (i <= index)
       } //順推
@@ -219,7 +218,7 @@ class PersonContext2(
           }
 
           currentSolarTerms = eightWordsContext.solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
-          stepMajorSolarTerms = getNextMajorSolarTerms(currentSolarTerms, true)
+          stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, true)
           i--
         } //while (i >= index)
       } //逆推
@@ -234,29 +233,4 @@ class PersonContext2(
 
   } // getTargetMajorSolarTermsSeconds(int)
 
-   /**
-   * 取得下一個「節」
-   *
-   * @param currentSolarTerms 現在的「節」
-   * @param reverse           是否逆推
-   * @return 下一個「節」（如果 reverse == true，則傳回上一個「節」）
-   */
-  private fun getNextMajorSolarTerms(currentSolarTerms: SolarTerms, reverse: Boolean): SolarTerms {
-    val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
-    return if (currentSolarTermsIndex % 2 == 0) {
-      //立春 , 驚蟄 , 清明 ...
-      if (!reverse)
-      //順推
-        currentSolarTerms.next().next()
-      else
-        currentSolarTerms
-    } else {
-      //雨水 , 春分 , 穀雨 ...
-      if (!reverse)
-      //順推
-        currentSolarTerms.next()
-      else
-        currentSolarTerms.previous()
-    }
-  } // getNextMajorSolarTerms()
 }

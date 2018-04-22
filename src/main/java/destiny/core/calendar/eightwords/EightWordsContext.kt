@@ -20,16 +20,16 @@ import java.time.chrono.ChronoLocalDateTime
 open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
                              val location: ILocation,
                              val place: String?,
-                             protected val eightWordsImpl: IEightWordsFactory,
+                             val eightWordsImpl: IEightWordsFactory,
                              /** 取得陰陽曆轉換的實作  */
                              val chineseDateImpl: IChineseDate,
                              val yearMonthImpl: IYearMonth,
-                             protected val dayImpl: IDay,
+                             val dayImpl: IDay,
                              val hourImpl: IHour,
                              val midnightImpl: IMidnight,
                              val changeDayAfterZi: Boolean,
                              val risingSignImpl: IRisingSign,
-                             protected val starPositionImpl: IStarPosition<*>,
+                             val starPositionImpl: IStarPosition<*>,
                              val solarTermsImpl: ISolarTerms
                             ) : IEightWordsContext, Serializable {
 
@@ -69,13 +69,15 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
    */
   val currentSolarTerms: SolarTerms
     get() {
-      val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
       return solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+//      val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+//
+//      return solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
       //      val sp = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC)
       //      return SolarTerms.getFromDegree(sp.lng)
     }
 
-  val gmtJulDay: Double
+  protected val gmtJulDay: Double
     get() = TimeTools.getGmtJulDay(lmt, location)
 
   /**

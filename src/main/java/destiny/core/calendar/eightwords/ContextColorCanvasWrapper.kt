@@ -22,11 +22,12 @@ import kotlin.math.abs
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
  */
 open class ContextColorCanvasWrapper(
-  /**
-   * 八字 Context
-   * TODO : 2018-04-19 Note : 這應該要朝向傳入 [IEightWordsContextModel] 來繪製
-   *  */
-  protected val context: EightWordsContext,
+
+  protected val model :IEightWordsContextModel,
+
+  protected val context : EightWordsContext2,
+
+  //protected val context: EightWordsContext,
   /** 地點的名稱  */
   private val place: String,
 
@@ -43,26 +44,19 @@ open class ContextColorCanvasWrapper(
 
   var outputMode = OutputMode.HTML
 
-  private val lmt = context.lmt
-  private val location = context.location
+  private val lmt = model.lmt
+  private val location = model.location
 
   private val reactionUtil: ReactionUtil = ReactionUtil(this.hiddenStemsImpl)
 
   /**
    * 取得 MetaData (國曆 農曆 經度 緯度 等資料)
    */
-  protected //地點名稱.setText(locationName , 1 , 7);
-    //如果是南半球，則添加南半球月支是否對沖
-    // 命宮
-    //網址長度可能是奇數, 要在尾端 padding 一個空白字元
-    //EightWords eightWords = context.getEightWords(lmt , location);
-    //cc.setText("四字斷終生：" + fourWordsImpl.getResult(eightWords), 8, 1 , "#0000FF" , "#FFFF00" , fourWordsImpl.getResult(eightWords));
   val metaDataColorCanvas: ColorCanvas
     get() {
       val cc = ColorCanvas(9, 52, ChineseStringTools.NULL_CHAR)
 
       val 西元資訊 = ColorCanvas(1, 36, ChineseStringTools.NULL_CHAR)
-
 
       val timeData = with(StringBuilder()) {
         append("西元：")
@@ -87,7 +81,8 @@ open class ContextColorCanvasWrapper(
       西元資訊.setText(timeData.toString(), 1, 1)
       cc.add(西元資訊, 1, 1)
 
-      val chineseDate = context.chineseDate
+
+      val chineseDate = model.chineseDate
       cc.setText("農曆：(" + chineseDate.cycleOrZero + "循環)" + chineseDate, 2, 1)
 
       val url = urlBuilder.getUrl(location)
@@ -139,7 +134,7 @@ open class ContextColorCanvasWrapper(
       cc.setText("時辰劃分：" + context.hourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, "999999", null,
                  context.hourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       val risingLine = 8
-      val 命宮 = context.risingStemBranch
+      val 命宮 = model.risingStemBranch
       cc.setText("命宮：", risingLine, 1, "999999", null, "命宮")
       cc.setText(命宮.toString(), risingLine, 7, "FF0000", null, 命宮.toString())
       cc.setText("（" + context.risingSignImpl.getTitle(Locale.TAIWAN) + "）", risingLine, 11, "999999")
@@ -169,9 +164,9 @@ open class ContextColorCanvasWrapper(
    * 　官財　　　　神　　　官財　　　殺財　　　　　　　
   </pre> *
    */
-  protected val eightWordsColorCanvas: ColorCanvas
+  val eightWordsColorCanvas: ColorCanvas
     get() {
-      val eightWords: EightWords = context.eightWords
+      val eightWords: EightWords = model.eightWords
 
       val pillars = listOf(getOnePillar(eightWords.year, "年", eightWords.day.stem),
                            getOnePillar(eightWords.month, "月", eightWords.day.stem),
@@ -242,7 +237,7 @@ open class ContextColorCanvasWrapper(
   } //toString()
 
 
-  protected fun 地支藏干(地支: Branch, 天干: Stem): ColorCanvas {
+  fun 地支藏干(地支: Branch, 天干: Stem): ColorCanvas {
     val reactionsUtil = ReactionUtil(this.hiddenStemsImpl)
     val resultCanvas = ColorCanvas(3, 6, ChineseStringTools.NULL_CHAR)
     val reactions = reactionsUtil.getReactions(地支, 天干)

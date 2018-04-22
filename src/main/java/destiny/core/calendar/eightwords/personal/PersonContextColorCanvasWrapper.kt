@@ -8,6 +8,7 @@ import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.ContextColorCanvasWrapper
 import destiny.core.calendar.eightwords.Direction
+import destiny.core.calendar.eightwords.EightWordsContext2
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
@@ -20,8 +21,21 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
                                       private val model: IPersonContextModel,
                                       place: String,
                                       /** 地支藏干的實作，內定採用標準設定  */
-                                      private val hiddenStemsImpl: IHiddenStems, linkUrl: String, private val direction: Direction) :
-  ContextColorCanvasWrapper(personContext, place, hiddenStemsImpl, linkUrl, direction) {
+                                      private val hiddenStemsImpl: IHiddenStems,
+                                      linkUrl: String,
+                                      private val direction: Direction)
+//: ContextColorCanvasWrapper(personContext, place, hiddenStemsImpl, linkUrl, direction)
+{
+
+  private val ewContextColorCanvasWrapper : ContextColorCanvasWrapper by lazy {
+    val ewContext = EightWordsContext2(personContext.eightWordsImpl , personContext.chineseDateImpl ,
+                                       personContext.yearMonthImpl , personContext.dayImpl , personContext.hourImpl ,
+                                       personContext.midnightImpl , personContext.changeDayAfterZi ,
+                                       personContext.risingSignImpl , personContext.starPositionImpl ,
+                                       personContext.solarTermsImpl)
+    val ewModel = ewContext.getEightWordsContextModel(personContext.lmt , personContext.location , personContext.place)
+    ContextColorCanvasWrapper(ewModel , ewContext , ewModel.place?:"" , hiddenStemsImpl , linkUrl , direction)
+  }
 
 
   private val timeDecorator = TimeSecDecoratorChinese()
@@ -31,7 +45,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
   override fun toString(): String {
     val cc = ColorCanvas(32, 70, ChineseStringTools.NULL_CHAR)
 
-    val metaDataColorCanvas = metaDataColorCanvas
+    val metaDataColorCanvas = ewContextColorCanvasWrapper.metaDataColorCanvas
 
     cc.add(metaDataColorCanvas, 1, 1) // 國曆 農曆 經度 緯度 短網址 等 MetaData
 
@@ -45,7 +59,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 
     val reactionsUtil = ReactionUtil(this.hiddenStemsImpl)
 
-    cc.add(eightWordsColorCanvas, 11, 9) // 純粹八字盤
+    cc.add(ewContextColorCanvasWrapper.eightWordsColorCanvas, 11, 9) // 純粹八字盤
 
 
     val 右方大運直 = ColorCanvas(9, 24, ChineseStringTools.NULL_CHAR)
@@ -105,7 +119,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
       下方大運橫.setText(reaction.toString().substring(1, 2), 3, (i - 1) * 8 + 3, "gray")
       下方大運橫.setText(stemBranch.stem.toString(), 4, (i - 1) * 8 + 3, "red")
       下方大運橫.setText(stemBranch.branch.toString(), 5, (i - 1) * 8 + 3, "red")
-      下方大運橫.add(地支藏干(stemBranch.branch, eightWords.day.stem), 6, (i - 1) * 8 + 1)
+      下方大運橫.add(ewContextColorCanvasWrapper.地支藏干(stemBranch.branch, eightWords.day.stem), 6, (i - 1) * 8 + 1)
     }
 
 
@@ -118,7 +132,9 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     val prevMajorSolarTerms = model.prevMajorSolarTerms
     val nextMajorSolarTerms = model.nextMajorSolarTerms
 
-    val pair1 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(-1))
+    val gmtJulDay = TimeTools.getGmtJulDay(personContext.lmt , personContext.location)
+
+    val pair1 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(gmtJulDay , -1))
     val prevMajorSolarTermsTime = model.lmt.plus(pair1.first.toLong(), ChronoUnit.SECONDS).plus(pair1.second.toLong(), ChronoUnit.NANOS)
     //LocalDateTime prevMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
 
@@ -126,7 +142,7 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
     節氣.setText("：", 1, 5)
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
 
-    val pair2 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(1))
+    val pair2 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(gmtJulDay , 1))
     val nextMajorSolarTermsTime = model.lmt.plus(pair2.first.toLong(), ChronoUnit.SECONDS).plus(pair2.second.toLong(), ChronoUnit.NANOS)
     //LocalDateTime nextMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
     節氣.setText(nextMajorSolarTerms.toString(), 2, 1)
@@ -135,9 +151,9 @@ class PersonContextColorCanvasWrapper(private val personContext: PersonContext,
 
     cc.add(節氣, 31, 1)
 
-    return when (this.outputMode) {
-      OutputMode.TEXT -> cc.toString()
-      OutputMode.HTML -> cc.htmlOutput
+    return when (ewContextColorCanvasWrapper.outputMode) {
+      ContextColorCanvasWrapper.OutputMode.TEXT -> cc.toString()
+      ContextColorCanvasWrapper.OutputMode.HTML -> cc.htmlOutput
     }
   } // toString()
 
