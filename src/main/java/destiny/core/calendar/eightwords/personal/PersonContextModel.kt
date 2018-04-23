@@ -6,7 +6,7 @@ package destiny.core.calendar.eightwords.personal
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.EightWordsContextModel
+import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -28,7 +28,7 @@ interface IPersonContextModel : IEightWordsContextModel {
  * 提供純粹「時間、地點、性別」的切入點 , 不帶其他參數，取得一張個人命盤
  * 未來可用以取代 [PersonContext]
  */
-interface IPersonContext {
+interface IPersonContext : IEightWordsContext {
 
   fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
                             location: ILocation,

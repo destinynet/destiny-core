@@ -28,7 +28,7 @@ class SolarTermsImpl(
    * 步驟：
    * 1. 計算太陽在黃道面的度數
    * 2. 比對此度數 , 將此度數除以 15 取整數
-   * 3. 將以上的值代入 SolarTermsArray[int] 即是答案
+   * 3. 將以上的值代入 SolarTerms 即是答案
    */
   override fun getSolarTermsFromGMT(gmtJulDay: Double): SolarTerms {
     // Step 1: Calculate the Longitude of SUN

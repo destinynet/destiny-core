@@ -25,7 +25,7 @@ class EightWordsColorCanvas(
 
   private val model :IEightWordsContextModel,
 
-  private val context : EightWordsContext2,
+  private val context : EightWordsContext,
 
   /** 地點的名稱  */
   private val place: String,

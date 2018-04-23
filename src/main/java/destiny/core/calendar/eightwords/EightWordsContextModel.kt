@@ -42,10 +42,11 @@ interface IEightWordsContextModel {
 }
 
 /**
- * 取代 [EightWordsContext]
  * 純粹由「時間、地點」切入，不帶其他參數，取得八字盤 (不含「人」的資料）
  */
-interface IEightWordsContext {
+interface IEightWordsContext : IEightWordsFactory {
+
+
 
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                 location: ILocation,

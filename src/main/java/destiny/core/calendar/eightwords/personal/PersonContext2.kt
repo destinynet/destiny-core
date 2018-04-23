@@ -14,18 +14,18 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWords
-import destiny.core.calendar.eightwords.EightWordsContext2
+import destiny.core.calendar.eightwords.EightWordsContext
+import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /** 用以取代 [PersonContext] */
 class PersonContext2(
 
-  private val eightWordsContext: EightWordsContext2,
+  private val eightWordsContext: EightWordsContext,
 
   /** 歲數實作  */
   private val intAgeImpl: IIntAge,
@@ -41,7 +41,7 @@ class PersonContext2(
 
   /** 歲數註解實作  */
   val ageNoteImpls: List<IntAgeNote>
-                    ) : IPersonContext , Serializable {
+                    ) : IPersonContext , IEightWordsContext by eightWordsContext , Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 

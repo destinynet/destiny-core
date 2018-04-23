@@ -14,29 +14,28 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsContext
-import destiny.core.calendar.eightwords.EightWordsContext2
-import destiny.core.calendar.eightwords.EightWordsContextModel
+import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /** to be replaced by [PersonContext2] */
+@Deprecated("PersonContext2")
 class PersonContext(
-  ewContext: EightWordsContext2,
+  val ewContext: EightWordsContext,
   /** 星體運行到某點的介面  */
   private val starTransitImpl: IStarTransit,
   /** 歲數實作  */
   private val intAgeImpl: IIntAge,
   /** 出生時刻  */
-  override val lmt: ChronoLocalDateTime<*>,
+  val lmt: ChronoLocalDateTime<*>,
   /** 出生地點  */
-  override val location: ILocation,
-  override val place: String?,
+  val location: ILocation,
+  val place: String?,
   /** 性別  */
   val gender: Gender,
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
@@ -44,13 +43,7 @@ class PersonContext(
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
   private val fortuneDirectionImpl: IFortuneDirection,
   /** 歲數註解實作  */
-  val ageNoteImpls: List<IntAgeNote>) :
-  EightWordsContext(lmt, location, place, ewContext.eightWordsImpl,
-                    ewContext.chineseDateImpl, ewContext.yearMonthImpl,
-                    ewContext.dayImpl, ewContext.hourImpl,
-                    ewContext.midnightImpl,
-                    ewContext.changeDayAfterZi, ewContext.risingSignImpl,
-                    ewContext.starPositionImpl, ewContext.solarTermsImpl) {
+  val ageNoteImpls: List<IntAgeNote>) {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -69,19 +62,23 @@ class PersonContext(
     .expireAfterAccess(10, TimeUnit.MINUTES)
     .build< Pair<Double , Gender>, MutableMap<Int, Double>>()
 
+  val eightWordsModel : IEightWordsContextModel by lazy {
+    ewContext.getEightWordsContextModel(lmt, location, place)
+  }
 
-  override val model: IPersonContextModel
+  private val gmtJulDay : Double by lazy {
+    TimeTools.getGmtJulDay(lmt , location)
+  }
+
+
+  val model: IPersonContextModel
     get() {
-      val eightWordsContextModel = EightWordsContextModel(
-        eightWords, lmt, location, place, chineseDate,
-        prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingStemBranch,
-        getBranchOf(Planet.SUN), getBranchOf(Planet.MOON))
-      return PersonContextModel(eightWordsContextModel , gender , getFortuneDatas(9) , getAgeMap(90))
+      return PersonContextModel(eightWordsModel, gender , getFortuneDatas(9) , getAgeMap(90))
     }
 
   /** 八字大運是否順行  */
   val isFortuneDirectionForward: Boolean
-    get() = fortuneDirectionImpl.isForward(gender , eightWords)
+    get() = fortuneDirectionImpl.isForward(gender , eightWordsModel.eightWords)
 
 
   private fun getAgeMap(toAge: Int): Map<Int, Pair<Double, Double>> {
@@ -95,7 +92,7 @@ class PersonContext(
    *
    * @return **如果 index 為正，則傳回正值; 如果 index 為負，則傳回負值**
    */
-  fun getTargetMajorSolarTermsSeconds(gmtJulDay : Double , index: Int): Double {
+  private fun getTargetMajorSolarTermsSeconds(gmtJulDay : Double , index: Int): Double {
     if (index == 0)
       throw RuntimeException("index cannot be 0 !")
 
@@ -107,7 +104,7 @@ class PersonContext(
     //double stepGmt = TimeTools.getGmtJulDay(gmt);
     var stepGmtJulDay: Double = gmtJulDay
     //現在的 節氣
-    var currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
+    var currentSolarTerms = ewContext.solarTermsImpl.getSolarTermsFromGMT(gmt)
     var stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, reverse)
 
     var i: Int
@@ -153,7 +150,7 @@ class PersonContext(
             stepGmtJulDay = targetGmtJulDay!! + 1// LocalDateTime.from(targetGmt).plusSeconds(24 * 60 * 60);
           }
 
-          currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
+          currentSolarTerms = ewContext.solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
           stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, false)
           i++
         } // while (i <= index)
@@ -182,7 +179,7 @@ class PersonContext(
             stepGmtJulDay = targetGmtJulDay!! - 1 //LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
           }
 
-          currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
+          currentSolarTerms = ewContext.solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)
           stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, true)
           i--
         } //while (i >= index)
@@ -216,7 +213,7 @@ class PersonContext(
     val isForward = isFortuneDirectionForward
 
     //下個大運的干支
-    var nextStemBranch = if (isForward) eightWords.month.next else eightWords.month.previous
+    var nextStemBranch = if (isForward) eightWordsModel.eightWords.month.next else eightWordsModel.eightWords.month.previous
 
     val fortuneDatas = ArrayList<FortuneData>(count)
 
@@ -250,7 +247,7 @@ class PersonContext(
 
 
   private fun getBranchOf(star: Star): Branch {
-    val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
+    val pos = ewContext.starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
     return ZodiacSign.getZodiacSign(pos.lng).branch
   }
 
@@ -293,7 +290,7 @@ class PersonContext(
    */
   private fun getStemBranchOfFortune(targetGmt: LocalDateTime, span: Double): StemBranch {
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
-    var resultStemBranch = this.eightWords.month
+    var resultStemBranch =  eightWordsModel.eightWords.month
 
     val dur = Duration.between(targetGmt, gmt).abs()
     val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0

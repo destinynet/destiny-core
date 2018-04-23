@@ -8,7 +8,7 @@ import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.EightWordsColorCanvas
-import destiny.core.calendar.eightwords.EightWordsContext2
+import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
@@ -28,11 +28,8 @@ class PersonContextColorCanvas(private val personContext: PersonContext,
   var outputMode = ColorCanvas.OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
-    val ewContext = EightWordsContext2(personContext.eightWordsImpl, personContext.chineseDateImpl,
-                                       personContext.yearMonthImpl, personContext.dayImpl, personContext.hourImpl,
-                                       personContext.midnightImpl, personContext.changeDayAfterZi,
-                                       personContext.risingSignImpl, personContext.starPositionImpl,
-                                       personContext.solarTermsImpl)
+    val ewContext: EightWordsContext = personContext.ewContext
+
     val ewModel = ewContext.getEightWordsContextModel(personContext.lmt, personContext.location, personContext.place)
     EightWordsColorCanvas(ewModel, ewContext, ewModel.place ?: "", hiddenStemsImpl, linkUrl, direction)
   }
