@@ -6,9 +6,11 @@ package destiny.core.calendar.eightwords.personal
 import destiny.core.Gender
 import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
@@ -22,6 +24,23 @@ interface IPersonContextModel : IEightWordsContextModel {
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
   val ageMap: Map<Int, Pair<Double, Double>>
+
+  /**
+   * 由 GMT 反推月大運
+   *
+   * @param targetGmt 目標時刻 (in GMT)
+   * @return 月大運干支
+   */
+  fun getStemBranchOfFortuneMonth(targetGmt : ChronoLocalDateTime<*>) : StemBranch? {
+    val gmtJulDay = TimeTools.getGmtJulDay(targetGmt)
+
+    return if (gmtJulDay < fortuneDatas[0].startFortuneGmtJulDay)
+      eightWords.month // 還未上運 ，傳回 月干支
+    else fortuneDatas.firstOrNull {
+      gmtJulDay > it.startFortuneGmtJulDay &&
+        it.endFortuneGmtJulDay > gmtJulDay
+    }?.stemBranch
+  }
 }
 
 /**

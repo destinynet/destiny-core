@@ -79,6 +79,12 @@ interface ISolarTerms {
   /**
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
-  fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+  fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val (prevPair , nextPair) = getMajorSolarTermsGmtBetween(lmt, location)
+    val dur1 = (gmtJulDay - prevPair.second) * 60 * 60 * 24
+    val dur2 = (nextPair.second - gmtJulDay) * 60 * 60 * 24
+    return Pair(Pair(prevPair.first , dur1) , Pair(nextPair.first , dur2))
+  }
 
 }

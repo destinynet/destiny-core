@@ -257,6 +257,7 @@ class PersonContext(
    * @param targetGmt 目標時刻 (in GMT)
    * @return 月大運干支
    */
+  @Deprecated("by model")
   fun getStemBranchOfFortuneMonth(targetGmt: LocalDateTime): StemBranch {
     return this.getStemBranchOfFortune(targetGmt, this.fortuneMonthSpan)
   }
