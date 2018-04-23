@@ -9,14 +9,14 @@ import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.EightWordsColorCanvas
-import destiny.core.calendar.eightwords.EightWordsContext
+import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
-class PersonContextColorCanvas(private val personContext: PersonContext,
+class PersonContextColorCanvas(private val personContext: IPersonContext,
                                /** 預先儲存已經計算好的結果  */
                                private val model: IPersonContextModel,
                                place: String,
@@ -28,10 +28,8 @@ class PersonContextColorCanvas(private val personContext: PersonContext,
   var outputMode = ColorCanvas.OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
-    val ewContext: EightWordsContext = personContext.ewContext
-
-    val ewModel = ewContext.getEightWordsContextModel(personContext.lmt, personContext.location, personContext.place)
-    EightWordsColorCanvas(ewModel, ewContext, ewModel.place ?: "", hiddenStemsImpl, linkUrl, direction)
+    val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.lmt, model.location, model.place)
+    EightWordsColorCanvas(m, personContext, model.place ?: "", hiddenStemsImpl, linkUrl, direction)
   }
 
 
@@ -120,15 +118,17 @@ class PersonContextColorCanvas(private val personContext: PersonContext,
     val 節氣 = ColorCanvas(2, width, ChineseStringTools.NULL_CHAR)
     val prevMajorSolarTerms: Pair<SolarTerms, Double> = model.prevMajorSolarTerms
     val nextMajorSolarTerms: Pair<SolarTerms, Double> = model.nextMajorSolarTerms
+    println("prev = $prevMajorSolarTerms")
+    println("next = $nextMajorSolarTerms")
 
     val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second , model.location , revJulDayFunc)
 
-    節氣.setText(prevMajorSolarTerms.toString(), 1, 1)
+    節氣.setText(prevMajorSolarTerms.first.toString(), 1, 1)
     節氣.setText("：", 1, 5)
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
 
     val nextMajorSolarTermsTime = TimeTools.getLmtFromGmt(nextMajorSolarTerms.second , model.location , revJulDayFunc)
-    節氣.setText(nextMajorSolarTerms.toString(), 2, 1)
+    節氣.setText(nextMajorSolarTerms.first.toString(), 2, 1)
     節氣.setText("：", 2, 5)
     節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime), 2, 7)
 

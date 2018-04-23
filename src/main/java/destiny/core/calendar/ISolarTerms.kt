@@ -70,6 +70,13 @@ interface ISolarTerms {
   }
 
   /**
+   * 計算此時刻的...
+   * 上一個「節」是什麼，其 GMT JulDay 為何
+   * 下一個「節」是什麼，其 GMT JulDay 為何
+   */
+  fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+
+  /**
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
   fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>

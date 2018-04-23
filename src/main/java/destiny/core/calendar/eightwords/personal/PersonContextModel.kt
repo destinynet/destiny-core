@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords.personal
 
 import destiny.core.Gender
+import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.IEightWordsContext
@@ -29,6 +30,8 @@ interface IPersonContextModel : IEightWordsContextModel {
  * 未來可用以取代 [PersonContext]
  */
 interface IPersonContext : IEightWordsContext {
+
+  val ageNoteImpls: List<IntAgeNote>
 
   fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
                             location: ILocation,

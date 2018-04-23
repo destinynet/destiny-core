@@ -27,10 +27,9 @@ interface IEightWordsContextModel {
 
   /** 地點名稱  */
   val place: String?
+
   /** 農曆  */
   val chineseDate: ChineseDate
-
-
 
   /** 上一個「節」 , 以及 GMT Jul Day */
   val prevMajorSolarTerms: Pair<SolarTerms,Double>
@@ -38,10 +37,13 @@ interface IEightWordsContextModel {
 
   /** 下一個「節」 , 以及 GMT Jul Day */
   val nextMajorSolarTerms: Pair<SolarTerms,Double>
+
   /** 命宮 (上升星座)  */
   val risingStemBranch: StemBranch
+
   /** 太陽位置  */
   val sunBranch: Branch
+
   /** 月亮位置  */
   val moonBranch: Branch
 }
@@ -50,8 +52,13 @@ interface IEightWordsContextModel {
  * 純粹由「時間、地點」切入，不帶其他參數，取得八字盤 (不含「人」的資料）
  */
 interface IEightWordsContext : IEightWordsFactory {
-
-
+  /** 是否子初換日 */
+  val changeDayAfterZi: Boolean
+  val yearMonthImpl: IYearMonth
+  val dayImpl: IDay
+  val hourImpl: IHour
+  val midnightImpl: IMidnight
+  val risingSignImpl: IRisingSign
 
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                 location: ILocation,

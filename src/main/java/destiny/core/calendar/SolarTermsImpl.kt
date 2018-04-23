@@ -78,8 +78,31 @@ class SolarTermsImpl(
   }
 
   /**
-   * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
+   * 計算此時刻的...
+   * 上一個「節」是什麼，其 GMT JulDay 為何
+   * 下一個「節」是什麼，其 GMT JulDay 為何
    */
+  override fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*>,
+                                            location: ILocation): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+
+    val gmt = TimeTools.getGmtFromLmt(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    var prevMajorSolarTerms = getSolarTermsFromGMT(gmt)
+    if (!prevMajorSolarTerms.isMajor)
+      prevMajorSolarTerms = prevMajorSolarTerms.previous()
+
+    val prevGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
+
+    val nextMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(prevMajorSolarTerms, false)
+    val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
+    return Pair(Pair(prevMajorSolarTerms, prevGmtJulDay), Pair(nextMajorSolarTerms, nextGmtJulDay))
+  }
+
+  /**
+   * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
+   * TODO : 改由 interface body 實作
+   */
+  @Deprecated("改由 interface body 實作")
   override fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*>,
                                 location: ILocation): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
@@ -92,6 +115,7 @@ class SolarTermsImpl(
                                                             Coordinate.ECLIPTIC, gmtJulDay, false)
     val dur1 = Duration.between(gmt, prevGmt).abs()
     val d1 = dur1.seconds + dur1.nano / 1_000_000_000.0
+
     val nextMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(prevMajorSolarTerms, false)
     val nextGmt = starTransitImpl.getNextTransitGmtDateTime(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(),
                                                             Coordinate.ECLIPTIC, gmtJulDay, true)

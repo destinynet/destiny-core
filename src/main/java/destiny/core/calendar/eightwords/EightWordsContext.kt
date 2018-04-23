@@ -6,7 +6,6 @@ package destiny.core.calendar.eightwords
 import destiny.astrology.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
-import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
@@ -22,12 +21,12 @@ class EightWordsContext(
   val eightWordsImpl: IEightWordsFactory,
   /** 取得陰陽曆轉換的實作  */
   val chineseDateImpl: IChineseDate,
-  val yearMonthImpl: IYearMonth,
-  val dayImpl: IDay,
-  val hourImpl: IHour,
-  val midnightImpl: IMidnight,
-  val changeDayAfterZi: Boolean,
-  val risingSignImpl: IRisingSign,
+  override val yearMonthImpl: IYearMonth,
+  override val dayImpl: IDay,
+  override val hourImpl: IHour,
+  override val midnightImpl: IMidnight,
+  override val changeDayAfterZi: Boolean,
+  override val risingSignImpl: IRisingSign,
   val starPositionImpl: IStarPosition<*>,
   val solarTermsImpl: ISolarTerms) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
@@ -35,17 +34,12 @@ class EightWordsContext(
                                          location: ILocation,
                                          place: String?): IEightWordsContextModel {
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-
     // 現在的節氣
-    val currentSolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
     val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
     val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl,
                                                           midnightImpl, changeDayAfterZi)
 
-    //val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
-
-    val (prevMajorSolarTerms , nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsBetween(lmt , location)
+    val (prevMajorSolarTerms , nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsGmtBetween(lmt , location)
 
     val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
 

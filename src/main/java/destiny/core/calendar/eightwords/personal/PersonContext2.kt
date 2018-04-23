@@ -40,7 +40,7 @@ class PersonContext2(
   private val fortuneMonthSpan: Double=120.0,
 
   /** 歲數註解實作  */
-  val ageNoteImpls: List<IntAgeNote>
+  override val ageNoteImpls: List<IntAgeNote>
                     ) : IPersonContext , IEightWordsContext by eightWordsContext , Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
