@@ -17,9 +17,9 @@ import java.time.chrono.ChronoLocalDateTime
  * 計算八字盤（不包含「人」的資訊）
  * 除了計算八字，另外新增輸出農曆以及命宮的方法
  */
-open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
-                             val location: ILocation,
-                             val place: String?,
+open class EightWordsContext(open val lmt: ChronoLocalDateTime<*>,
+                             open val location: ILocation,
+                             open val place: String?,
                              val eightWordsImpl: IEightWordsFactory,
                              /** 取得陰陽曆轉換的實作  */
                              val chineseDateImpl: IChineseDate,
@@ -33,7 +33,7 @@ open class EightWordsContext(val lmt: ChronoLocalDateTime<*>,
                              val solarTermsImpl: ISolarTerms
                             ) : IEightWordsContext, Serializable {
 
-  val eightWords: EightWords = eightWordsImpl.getEightWords(lmt, location)
+  val eightWords: EightWords by lazy { eightWordsImpl.getEightWords(lmt, location) }
 
   open val model: IEightWordsContextModel
     get() {

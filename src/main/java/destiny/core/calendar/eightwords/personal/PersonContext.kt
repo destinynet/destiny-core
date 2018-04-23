@@ -11,11 +11,11 @@ import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.EightWordsContext
+import destiny.core.calendar.eightwords.EightWordsContext2
+import destiny.core.calendar.eightwords.EightWordsContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
@@ -25,30 +25,18 @@ import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+/** to be replaced by [PersonContext2] */
 class PersonContext(
-  eightWordsImpl: IEightWordsFactory,
-  chineseDateImpl: IChineseDate,
-  yearMonthImpl: IYearMonth,
-  dayImpl: IDay,
-  hourImpl: IHour,
-  midnightImpl: IMidnight,
-  changeDayAfterZi: Boolean,
-  risingSignImpl: IRisingSign,
-  starPositionImpl: IStarPosition<*>,
-  solarTermsImpl: ISolarTerms,
-
+  ewContext: EightWordsContext2,
   /** 星體運行到某點的介面  */
   private val starTransitImpl: IStarTransit,
-
   /** 歲數實作  */
   private val intAgeImpl: IIntAge,
-
   /** 出生時刻  */
-  lmt: ChronoLocalDateTime<*>,
+  override val lmt: ChronoLocalDateTime<*>,
   /** 出生地點  */
-  location: ILocation,
-
-  place: String?,
+  override val location: ILocation,
+  override val place: String?,
   /** 性別  */
   val gender: Gender,
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
@@ -57,8 +45,12 @@ class PersonContext(
   private val fortuneDirectionImpl: IFortuneDirection,
   /** 歲數註解實作  */
   val ageNoteImpls: List<IntAgeNote>) :
-  EightWordsContext(lmt, location, place , eightWordsImpl, chineseDateImpl, yearMonthImpl, dayImpl, hourImpl, midnightImpl,
-                    changeDayAfterZi, risingSignImpl, starPositionImpl, solarTermsImpl) {
+  EightWordsContext(lmt, location, place, ewContext.eightWordsImpl,
+                    ewContext.chineseDateImpl, ewContext.yearMonthImpl,
+                    ewContext.dayImpl, ewContext.hourImpl,
+                    ewContext.midnightImpl,
+                    ewContext.changeDayAfterZi, ewContext.risingSignImpl,
+                    ewContext.starPositionImpl, ewContext.solarTermsImpl) {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -75,7 +67,7 @@ class PersonContext(
   private val cache = CacheBuilder.newBuilder()
     .maximumSize(100)
     .expireAfterAccess(10, TimeUnit.MINUTES)
-    .build<PersonContext, MutableMap<Int, Double>>()
+    .build< Pair<Double , Gender>, MutableMap<Int, Double>>()
 
 
   override val model: IPersonContextModel
@@ -124,12 +116,12 @@ class PersonContext(
     else
       -1
 
-    var hashMap: MutableMap<Int, Double>? = cache.getIfPresent(this)
+    var hashMap: MutableMap<Int, Double>? = cache.getIfPresent(Pair(gmtJulDay , gender))
 
 
     if (hashMap == null) {
       hashMap = LinkedHashMap()
-      cache.put(this, hashMap)
+      cache.put(Pair(gmtJulDay , gender), hashMap)
     }
 
     var targetGmtJulDay: Double? = null
@@ -153,7 +145,7 @@ class PersonContext(
 
 
             hashMap[i] = targetGmtJulDay
-            cache.put(this, hashMap)
+            cache.put(Pair(gmtJulDay , gender), hashMap)
           } else {
             //之前計算過
             logger.debug("順推 cache.get({}) hit", i)
@@ -175,15 +167,17 @@ class PersonContext(
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
 
           if (hashMap[i] == null) {
+            logger.debug("逆推 cache.get({}) miss", i)
             //沒有計算過
 
             targetGmtJulDay = this.starTransitImpl.getNextTransitGmt(SUN, stepMajorSolarTerms.zodiacDegree.toDouble(), ECLIPTIC, stepGmtJulDay, false)
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1 // LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
             hashMap[i] = targetGmtJulDay
-            cache.put(this, hashMap)
+            cache.put(Pair(gmtJulDay , gender), hashMap)
           } else {
             //之前計算過
+            logger.debug("逆推 cache.get({}) hit", i)
             targetGmtJulDay = hashMap[i]
             stepGmtJulDay = targetGmtJulDay!! - 1 //LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
           }
@@ -330,55 +324,6 @@ class PersonContext(
     return "EightWordsPersonContext [gender=$gender, lmt=$lmt, location=$location]"
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other)
-      return true
-    if (other !is PersonContext)
-      return false
-
-    val that = other as PersonContext?
-
-    if (java.lang.Double.compare(that!!.fortuneMonthSpan, fortuneMonthSpan) != 0)
-      return false
-    if (java.lang.Double.compare(that.fortuneDaySpan, fortuneDaySpan) != 0)
-      return false
-    if (java.lang.Double.compare(that.fortuneHourSpan, fortuneHourSpan) != 0)
-      return false
-    if (solarTermsImpl != that.solarTermsImpl)
-      return false
-    if (starTransitImpl != that.starTransitImpl)
-      return false
-    if (lmt != that.lmt)
-      return false
-    if (location != that.location)
-      return false
-    if (gender !== that.gender)
-      return false
-    if (eightWords != that.eightWords)
-      return false
-    return if (currentSolarTerms != that.currentSolarTerms) false else !if (fortuneDirectionImpl != null) fortuneDirectionImpl != that.fortuneDirectionImpl else that.fortuneDirectionImpl != null
-
-  }
-
-  override fun hashCode(): Int {
-    var result: Int
-    var temp: Long
-    result = solarTermsImpl.hashCode()
-    result = 31 * result + starTransitImpl.hashCode()
-    result = 31 * result + lmt.hashCode()
-    result = 31 * result + location.hashCode()
-    result = 31 * result + gender.hashCode()
-    result = 31 * result + eightWords.hashCode()
-    result = 31 * result + currentSolarTerms.hashCode()
-    temp = java.lang.Double.doubleToLongBits(fortuneMonthSpan)
-    result = 31 * result + (temp xor temp.ushr(32)).toInt()
-    temp = java.lang.Double.doubleToLongBits(fortuneDaySpan)
-    result = 31 * result + (temp xor temp.ushr(32)).toInt()
-    temp = java.lang.Double.doubleToLongBits(fortuneHourSpan)
-    result = 31 * result + (temp xor temp.ushr(32)).toInt()
-    result = 31 * result + fortuneDirectionImpl.hashCode()
-    return result
-  }
 
 
 }

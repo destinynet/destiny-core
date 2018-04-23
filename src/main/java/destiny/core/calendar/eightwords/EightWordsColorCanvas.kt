@@ -21,13 +21,12 @@ import kotlin.math.abs
 /**
  * 純粹繪製『八字盤』，不包含『人』的因素（大運流年等）
  */
-class ContextColorCanvas(
+class EightWordsColorCanvas(
 
   private val model :IEightWordsContextModel,
 
   private val context : EightWordsContext2,
 
-  //protected val context: EightWordsContext,
   /** 地點的名稱  */
   private val place: String,
 
@@ -44,11 +43,7 @@ class ContextColorCanvas(
 
   var outputMode = ColorCanvas.OutputMode.HTML
 
-  private val lmt = model.lmt
-  private val location = model.location
-
-  private val reactionUtil: ReactionUtil = ReactionUtil(this.hiddenStemsImpl)
-
+  private val reactionUtil: ReactionUtil = ReactionUtil(hiddenStemsImpl)
 
   init {
     add(metaDataColorCanvas, 1, 1)
@@ -70,6 +65,8 @@ class ContextColorCanvas(
    */
   val metaDataColorCanvas: ColorCanvas
     get() {
+      val lmt = model.lmt
+      val location = model.location
       val cc = ColorCanvas(9, 52, ChineseStringTools.NULL_CHAR)
 
       val 西元資訊 = ColorCanvas(1, 36, ChineseStringTools.NULL_CHAR)

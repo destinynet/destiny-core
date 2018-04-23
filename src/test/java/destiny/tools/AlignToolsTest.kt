@@ -54,12 +54,12 @@ class AlignToolsTest {
 
   @Test
   fun testAlignRightInt() {
-    assertEquals("2018" , AlignTools.alignRight(2018 , 4))
-    assertEquals(" 2018" , AlignTools.alignRight(2018 , 5))
-    assertEquals("　2018" , AlignTools.alignRight(2018 , 6))
-    assertEquals("　 2018" , AlignTools.alignRight(2018 , 7))
-    assertEquals("　　2018" , AlignTools.alignRight(2018 , 8))
-    assertEquals("　　　 1" , AlignTools.alignRight(1 , 8))
+    assertEquals("2018", AlignTools.alignRight(2018, 4 , true))
+    assertEquals(" 2018", AlignTools.alignRight(2018, 5 , true))
+    assertEquals("　2018", AlignTools.alignRight(2018, 6, true))
+    assertEquals("　 2018", AlignTools.alignRight(2018, 7 , true))
+    assertEquals("　　2018", AlignTools.alignRight(2018, 8, true))
+    assertEquals("　　　 1", AlignTools.alignRight(1, 8 , true))
   }
 
   @Test

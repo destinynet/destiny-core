@@ -22,6 +22,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+/** 用以取代 [PersonContext] */
 class PersonContext2(
 
   private val eightWordsContext: EightWordsContext2,
@@ -44,10 +45,11 @@ class PersonContext2(
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
+
   private val cache = CacheBuilder.newBuilder()
     .maximumSize(100)
     .expireAfterAccess(10, TimeUnit.MINUTES)
-    .build<PersonContext2, MutableMap<Int, Double>>()
+    .build<Pair<Double , Gender>, MutableMap<Int, Double>>()
 
   override fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
                                      location: ILocation,
@@ -64,7 +66,7 @@ class PersonContext2(
 
     // forward : 大運是否順行
     val forward = isFortuneDirectionForward(gender , ewModel.eightWords)
-    val fortuneDataList = getFortuneDatas(9, forward, ewModel.eightWords, gmtJulDay, ageMap)
+    val fortuneDataList = getFortuneDatas(9, forward, ewModel.eightWords, gmtJulDay, gender , ageMap)
 
     return PersonContextModel(ewModel , gender , fortuneDataList , ageMap)
   }
@@ -81,6 +83,7 @@ class PersonContext2(
                               forward: Boolean,
                               eightWords: EightWords,
                               gmtJulDay: Double,
+                              gender: Gender,
                               ageMap: Map<Int, Pair<Double, Double>>): List<FortuneData> {
         //下個大運的干支
     var nextStemBranch = if (forward) eightWords.month.next else eightWords.month.previous
@@ -91,8 +94,8 @@ class PersonContext2(
     // 計算九柱大運的相關資訊
     for (i in 1..count) {
       // 西元/民國/實歲/虛歲之值
-      val startFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay ,  i * if (forward) 1 else -1)
-      val   endFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay , (i + 1) * if (forward) 1 else -1)
+      val startFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay , gender ,  i * if (forward) 1 else -1)
+      val   endFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay , gender , (i + 1) * if (forward) 1 else -1)
 
       val startFortuneGmtJulDay = gmtJulDay + Math.abs(startFortuneSeconds) * fortuneMonthSpan / 86400.0
       val   endFortuneGmtJulDay = gmtJulDay + Math.abs(  endFortuneSeconds) * fortuneMonthSpan / 86400.0
@@ -132,7 +135,7 @@ class PersonContext2(
    *
    * @return **如果 index 為正，則傳回正值; 如果 index 為負，則傳回負值**
    */
-  fun getTargetMajorSolarTermsSeconds(gmtJulDay : Double , index: Int): Double {
+  private fun getTargetMajorSolarTermsSeconds(gmtJulDay : Double , gender: Gender , index: Int): Double {
     if (index == 0)
       throw RuntimeException("index cannot be 0 !")
 
@@ -151,12 +154,12 @@ class PersonContext2(
     else
       -1
 
-    var hashMap: MutableMap<Int, Double>? = cache.getIfPresent(this)
+    var hashMap: MutableMap<Int, Double>? = cache.getIfPresent(Pair(gmtJulDay , gender))
 
 
     if (hashMap == null) {
       hashMap = LinkedHashMap()
-      cache.put(this, hashMap)
+      cache.put(Pair(gmtJulDay , gender), hashMap)
     }
 
     var targetGmtJulDay: Double? = null
@@ -181,7 +184,7 @@ class PersonContext2(
 
 
             hashMap[i] = targetGmtJulDay
-            cache.put(this, hashMap)
+            cache.put(Pair(gmtJulDay , gender), hashMap)
           } else {
             //之前計算過
             logger.debug("順推 cache.get({}) hit", i)
@@ -203,6 +206,7 @@ class PersonContext2(
           // 推算到上一個/下一個「節」的秒數：陽男陰女順推，陰男陽女逆推
 
           if (hashMap[i] == null) {
+            logger.debug("逆推 cache.get({}) miss", i)
             //沒有計算過
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepMajorSolarTerms.zodiacDegree.toDouble(),
@@ -210,9 +214,10 @@ class PersonContext2(
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1 // LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
             hashMap[i] = targetGmtJulDay
-            cache.put(this, hashMap)
+            cache.put(Pair(gmtJulDay , gender), hashMap)
           } else {
             //之前計算過
+            logger.debug("逆推 cache.get({}) hit", i)
             targetGmtJulDay = hashMap[i]
             stepGmtJulDay = targetGmtJulDay!! - 1 //LocalDateTime.from(targetGmt).minusSeconds(24 * 60 * 60);
           }

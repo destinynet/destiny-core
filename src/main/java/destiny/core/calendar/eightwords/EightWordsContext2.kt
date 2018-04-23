@@ -16,16 +16,16 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 class EightWordsContext2(
-  protected val eightWordsImpl: IEightWordsFactory,
+  val eightWordsImpl: IEightWordsFactory,
   /** 取得陰陽曆轉換的實作  */
   val chineseDateImpl: IChineseDate,
   val yearMonthImpl: IYearMonth,
-  protected val dayImpl: IDay,
+  val dayImpl: IDay,
   val hourImpl: IHour,
   val midnightImpl: IMidnight,
   val changeDayAfterZi: Boolean,
   val risingSignImpl: IRisingSign,
-  protected val starPositionImpl: IStarPosition<*>,
+  val starPositionImpl: IStarPosition<*>,
   val solarTermsImpl: ISolarTerms) : IEightWordsContext, Serializable {
 
 

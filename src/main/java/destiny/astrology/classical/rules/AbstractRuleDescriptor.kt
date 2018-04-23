@@ -23,7 +23,7 @@ abstract class AbstractRuleDescriptor<out T : Rule>(val rule: T) : Descriptive {
     return getCommentParameters(locale).let { pair ->
       val commentKey = pair.first
       val commentParameters = pair.second
-      val pattern = ResourceBundle.getBundle(resource, locale).getString(nameKey + "." + commentKey)
+      val pattern = ResourceBundle.getBundle(resource, locale).getString("$nameKey.$commentKey")
       MessageFormat.format(pattern, *getCommentParameters(locale, commentParameters))
     }
   }
