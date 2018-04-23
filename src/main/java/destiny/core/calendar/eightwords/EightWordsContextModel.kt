@@ -29,10 +29,15 @@ interface IEightWordsContextModel {
   val place: String?
   /** 農曆  */
   val chineseDate: ChineseDate
-  /** 上一個「節」  */
-  val prevMajorSolarTerms: SolarTerms
-  /** 下一個「節」  */
-  val nextMajorSolarTerms: SolarTerms
+
+
+
+  /** 上一個「節」 , 以及 GMT Jul Day */
+  val prevMajorSolarTerms: Pair<SolarTerms,Double>
+
+
+  /** 下一個「節」 , 以及 GMT Jul Day */
+  val nextMajorSolarTerms: Pair<SolarTerms,Double>
   /** 命宮 (上升星座)  */
   val risingStemBranch: StemBranch
   /** 太陽位置  */
@@ -67,10 +72,10 @@ data class EightWordsContextModel(
   override val place: String?,
   /** 農曆  */
   override val chineseDate: ChineseDate,
-  /** 上一個「節」  */
-  override val prevMajorSolarTerms: SolarTerms,
-  /** 下一個「節」  */
-  override val nextMajorSolarTerms: SolarTerms,
+  /** 上一個「節」 , 以及 GMT Jul Day  */
+  override val prevMajorSolarTerms: Pair<SolarTerms,Double>,
+  /** 下一個「節」 , 以及 GMT Jul Day  */
+  override val nextMajorSolarTerms: Pair<SolarTerms,Double>,
   /** 命宮 (上升星座)  */
   override val risingStemBranch: StemBranch,
   /** 太陽位置  */

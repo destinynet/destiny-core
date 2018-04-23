@@ -139,20 +139,14 @@ class PersonContext2(
     if (index == 0)
       throw RuntimeException("index cannot be 0 !")
 
-    var reverse = false
-    if (index < 0)
-      reverse = true
+    val reverse = index < 0
 
     var stepGmtJulDay = gmtJulDay
     //現在的 節氣
     var currentSolarTerms = eightWordsContext.solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
     var stepMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(currentSolarTerms, reverse)
 
-    var i: Int
-    i = if (!reverse)
-      1
-    else
-      -1
+    var i: Int = if (!reverse) 1 else -1
 
     var hashMap: MutableMap<Int, Double>? = cache.getIfPresent(Pair(gmtJulDay , gender))
 

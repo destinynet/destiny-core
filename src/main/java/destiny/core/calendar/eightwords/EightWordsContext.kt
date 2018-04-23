@@ -6,7 +6,6 @@ package destiny.core.calendar.eightwords
 import destiny.astrology.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
-import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
@@ -44,7 +43,9 @@ class EightWordsContext(
     val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl,
                                                           midnightImpl, changeDayAfterZi)
 
-    val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
+    //val prevNextMajorSolarTerms = SolarTerms.getPrevNextMajorSolarTerms(currentSolarTerms)
+
+    val (prevMajorSolarTerms , nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsBetween(lmt , location)
 
     val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
 
@@ -52,7 +53,7 @@ class EightWordsContext(
     val moonBranch = getBranchOf(Planet.MOON, lmt, location, starPositionImpl)
 
     return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
-                                  prevNextMajorSolarTerms.first, prevNextMajorSolarTerms.second, risingSign,
+                                  prevMajorSolarTerms , nextMajorSolarTerms, risingSign,
                                   sunBranch, moonBranch)
   }
 

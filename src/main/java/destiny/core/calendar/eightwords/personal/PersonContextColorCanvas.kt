@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords.personal
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
@@ -13,7 +14,6 @@ import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 class PersonContextColorCanvas(private val personContext: PersonContext,
@@ -118,26 +118,16 @@ class PersonContextColorCanvas(private val personContext: PersonContext,
     add(下方大運橫, 22, 1)
 
     val 節氣 = ColorCanvas(2, width, ChineseStringTools.NULL_CHAR)
-    val prevMajorSolarTerms = model.prevMajorSolarTerms
-    val nextMajorSolarTerms = model.nextMajorSolarTerms
+    val prevMajorSolarTerms: Pair<SolarTerms, Double> = model.prevMajorSolarTerms
+    val nextMajorSolarTerms: Pair<SolarTerms, Double> = model.nextMajorSolarTerms
 
-    val gmtJulDay = TimeTools.getGmtJulDay(personContext.lmt, personContext.location)
-
-    val pair1 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(gmtJulDay, -1))
-    val prevMajorSolarTermsTime =
-      model.lmt
-        .plus(pair1.first.toLong(), ChronoUnit.SECONDS)
-        .plus(pair1.second.toLong(), ChronoUnit.NANOS)
-    //LocalDateTime prevMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair1.v1()).plusNanos(pair1.v2());
+    val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second , model.location , revJulDayFunc)
 
     節氣.setText(prevMajorSolarTerms.toString(), 1, 1)
     節氣.setText("：", 1, 5)
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
 
-    val pair2 = TimeTools.splitSecond(personContext.getTargetMajorSolarTermsSeconds(gmtJulDay, 1))
-    val nextMajorSolarTermsTime =
-      model.lmt.plus(pair2.first.toLong(), ChronoUnit.SECONDS).plus(pair2.second.toLong(), ChronoUnit.NANOS)
-    //LocalDateTime nextMajorSolarTermsTime =LocalDateTime.from(model.getLmt()).plusSeconds(pair2.v1()).plusNanos(pair2.v2());
+    val nextMajorSolarTermsTime = TimeTools.getLmtFromGmt(nextMajorSolarTerms.second , model.location , revJulDayFunc)
     節氣.setText(nextMajorSolarTerms.toString(), 2, 1)
     節氣.setText("：", 2, 5)
     節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime), 2, 7)
