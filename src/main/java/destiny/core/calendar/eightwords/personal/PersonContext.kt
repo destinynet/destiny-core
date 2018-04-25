@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords.personal
 
+import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import destiny.astrology.Coordinate
 import destiny.astrology.IStarTransit
@@ -23,6 +24,7 @@ import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.getOrSet
 import kotlin.math.abs
 
 class PersonContext(
@@ -54,27 +56,33 @@ class PersonContext(
   private val logger = LoggerFactory.getLogger(javaClass)
 
 
-  private val cache = CacheBuilder.newBuilder()
+  private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
     .maximumSize(100)
     .expireAfterAccess(1, TimeUnit.MINUTES)
     .build<Pair<Double, Gender>, MutableMap<Int, Double>>()
+
+  @Transient
+  private val ewModelThreadLocal = ThreadLocal<IEightWordsContextModel>()
+
+  @Transient
+  private val ageMapThreadLocal = ThreadLocal<Map<Int, Pair<Double, Double>>>()
 
   override fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
                                      location: ILocation,
                                      place: String?,
                                      gender: Gender): IPersonContextModel {
 
-    val ewModel: IEightWordsContextModel = eightWordsContext.getEightWordsContextModel(lmt, location, place)
+    val ewModel: IEightWordsContextModel = ewModelThreadLocal.getOrSet { eightWordsContext.getEightWordsContextModel(lmt, location, place) }
 
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
-    val ageMap = getAgeMap(120, gmtJulDay, gender, location)
+    val ageMap: Map<Int, Pair<Double, Double>> = ageMapThreadLocal.getOrSet { getAgeMap(120, gmtJulDay, gender, location) }
 
-    //val gmt: ChronoLocalDateTime<*> = TimeTools.getGmtFromLmt(lmt, location)
-
-    // forward : 大運是否順行
-    val forward = isFortuneForward(gender, ewModel.eightWords)
-    val fortuneDataList = getFortuneDataList(9, forward, ewModel.eightWords, gmtJulDay, gender, ageMap)
+    val t0 = System.currentTimeMillis()
+    val fortuneDataList = getFortuneDataList(lmt , location , gender , 9)
+    val t1 = System.currentTimeMillis()
+    logger.info("get fortuneDataList , takes {} millis" , (t1-t0))
+    fortuneDataList.forEach { println(it) }
 
     return PersonContextModel(ewModel, gender, fortuneDataList, ageMap)
   }
@@ -84,23 +92,22 @@ class PersonContext(
     return fortuneDirectionImpl.isForward(gender, eightWords)
   }
 
-  /**
-   * @param count 計算 n柱 大運的資料
-   */
-  private fun getFortuneDataList(count: Int,
-                                 forward: Boolean,
-                                 eightWords: EightWords,
-                                 gmtJulDay: Double,
-                                 gender: Gender,
-                                 ageMap: Map<Int, Pair<Double, Double>>): List<FortuneData> {
+  /** 順推大運 , 取得該命盤的幾條大運 */
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
+                                  location: ILocation,
+                                  gender: Gender,
+                                  count: Int): List<FortuneData> {
+    val ewModel: IEightWordsContextModel = ewModelThreadLocal.getOrSet { eightWordsContext.getEightWordsContextModel(lmt, location, null) }
+    val eightWords = ewModel.eightWords
+    val forward = isFortuneForward(gender , eightWords)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt , location)
+
+    val ageMap: Map<Int, Pair<Double, Double>> = ageMapThreadLocal.getOrSet { getAgeMap(120, gmtJulDay, gender, location) }
+
     //下個大運的干支
     var nextStemBranch = if (forward) eightWords.month.next else eightWords.month.previous
-
-    val fortuneDatas = mutableListOf<FortuneData>()
-
-
-    // 計算 count柱大運的相關資訊
-    for (i in 1..count) {
+    var i=1
+    return generateSequence {
       // 距離下個「節」有幾秒
       val startFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay, gender, i * if (forward) 1 else -1)
       val endFortuneSeconds = getTargetMajorSolarTermsSeconds(gmtJulDay, gender, (i + 1) * if (forward) 1 else -1)
@@ -121,15 +128,16 @@ class PersonContext(
         ageNoteImpls.map { impl -> ageMap[endFortuneAge]?.let { impl.getAgeNote(it) } }.filter { it != null }
           .map { it!! }.toList()
 
-      val fortuneData =
-        FortuneData(nextStemBranch, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
-                    startFortuneAgeNotes, endFortuneAgeNotes)
-      fortuneDatas.add(fortuneData)
-
+      val sb = StemBranch[nextStemBranch.stem , nextStemBranch.branch]
       nextStemBranch = if (forward) nextStemBranch.next else nextStemBranch.previous
-    } // for 1 ~ fortunes)
-    return fortuneDatas
-  }
+      i++
+      FortuneData(sb, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
+                    startFortuneAgeNotes, endFortuneAgeNotes)
+    }.takeWhile { i <= count+1 }
+      .toList()
+
+  } // 順推大運 , 取得該命盤的幾條大運
+
 
   private fun getAgeMap(toAge: Int,
                         gmtJulDay: Double,
@@ -296,3 +304,4 @@ class PersonContext(
     }
   }
 }
+

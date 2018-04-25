@@ -43,9 +43,22 @@ interface IPersonContextModel : IEightWordsContextModel {
   }
 }
 
+/**
+ * 順推大運 , 取得該命盤的幾條大運
+ */
+interface IFortune {
+
+  /** 順推大運 , 取得該命盤的幾條大運 */
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
+                         location: ILocation,
+                         gender: Gender,
+                         count: Int): List<FortuneData>
+}
+
 
 /**
- * 由 GMT 反推 月、日、時 大運
+ * 逆推大運，
+ * 由 GMT 反推 大運 是哪條干支
  */
 interface IReverseFortune {
 
@@ -53,6 +66,7 @@ interface IReverseFortune {
   /**
    * 由 GMT 反推月大運
    * @param targetGmt 目標時刻為此時， 計算此時刻是屬於哪條月大運當中
+   * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
   fun getStemBranchOfFortuneMonth(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
@@ -102,7 +116,7 @@ interface IReverseFortuneSpan : IReverseFortune {
  * 類似 [IEightWordsContext]
  * 提供純粹「時間、地點、性別」的切入點 , 不帶其他參數，取得一張個人命盤
  */
-interface IPersonContext : IEightWordsContext {
+interface IPersonContext : IEightWordsContext , IFortune {
 
 
   fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
