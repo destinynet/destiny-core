@@ -12,7 +12,6 @@ import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
-import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
 
 interface IPersonContextModel : IEightWordsContextModel {
@@ -20,7 +19,7 @@ interface IPersonContextModel : IEightWordsContextModel {
   val gender: Gender
 
   /** 總共要輸出的大運  */
-  val fortuneDatas: List<FortuneData>
+  val fortuneDataLarges: List<FortuneData>
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
   val ageMap: Map<Int, Pair<Double, Double>>
@@ -34,9 +33,9 @@ interface IPersonContextModel : IEightWordsContextModel {
   fun getStemBranchOfFortuneMonth(targetGmt: ChronoLocalDateTime<*>): StemBranch? {
     val gmtJulDay = TimeTools.getGmtJulDay(targetGmt)
 
-    return if (gmtJulDay < fortuneDatas[0].startFortuneGmtJulDay)
+    return if (gmtJulDay < fortuneDataLarges[0].startFortuneGmtJulDay)
       eightWords.month // 還未上運 ，傳回 月干支
-    else fortuneDatas.firstOrNull {
+    else fortuneDataLarges.firstOrNull {
       gmtJulDay > it.startFortuneGmtJulDay &&
         it.endFortuneGmtJulDay > gmtJulDay
     }?.stemBranch
@@ -46,7 +45,7 @@ interface IPersonContextModel : IEightWordsContextModel {
 /**
  * 順推大運 , 取得該命盤的幾條大運
  */
-interface IFortune {
+interface IFortuneLarge {
 
   /** 順推大運 , 取得該命盤的幾條大運 */
   fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
@@ -60,7 +59,7 @@ interface IFortune {
  * 逆推大運，
  * 由 GMT 反推 大運 是哪條干支
  */
-interface IReverseFortune {
+interface IReverseFortuneLarge {
 
 
   /**
@@ -77,7 +76,7 @@ interface IReverseFortune {
 /**
  * 利用星體運算「倍數延展」的方式計算、反推大運 的實作
  */
-interface IReverseFortuneSpan : IReverseFortune {
+interface IReverseFortuneLargeSpan : IReverseFortuneLarge {
 
   /** 運 :「月」的 span 倍數，通常為 120 ，即：一個月干支 擴展(乘以)120 倍，變成十年  */
   val fortuneMonthSpan: Double
@@ -116,7 +115,7 @@ interface IReverseFortuneSpan : IReverseFortune {
  * 類似 [IEightWordsContext]
  * 提供純粹「時間、地點、性別」的切入點 , 不帶其他參數，取得一張個人命盤
  */
-interface IPersonContext : IEightWordsContext , IFortune {
+interface IPersonContext : IEightWordsContext , IFortuneLarge {
 
 
   fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
@@ -139,7 +138,7 @@ data class PersonContextModel(
   override val gender: Gender,
 
   /** 總共要輸出的大運  */
-  override val fortuneDatas: List<FortuneData>,
+  override val fortuneDataLarges: List<FortuneData>,
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
   override val ageMap: Map<Int, Pair<Double, Double>>) : IPersonContextModel,
@@ -148,7 +147,7 @@ data class PersonContextModel(
 /** 除了「人」的資料，還包括「排盤當下的時間」，會標註當下行運、流年 */
 interface IPersonPresentModel : IPersonContextModel {
 
-  val viewGmt: LocalDateTime
+  val viewGmt: ChronoLocalDateTime<*>
 
   val viewChineseDate: ChineseDate
 
@@ -161,7 +160,7 @@ interface IPersonPresentModel : IPersonContextModel {
 
 data class PersonPresentModel(
   private val personContextModel: PersonContextModel,
-  override val viewGmt: LocalDateTime,
+  override val viewGmt: ChronoLocalDateTime<*>,
   override val viewChineseDate: ChineseDate,
   override val selectedFortuneData: FortuneData,
   override val selectedAge: Int) : IPersonPresentModel, IPersonContextModel by personContextModel, Serializable

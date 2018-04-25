@@ -51,7 +51,7 @@ class PersonContext(
 
   /** 運 :「時辰」的 span 倍數，內定 365x12，即：一時辰走一年  */
   override val fortuneHourSpan: Double = (365 * 12).toDouble()
-                   ) : IPersonContext, IEightWordsContext by eightWordsContext, IReverseFortuneSpan, Serializable {
+                   ) : IPersonContext, IEightWordsContext by eightWordsContext, IReverseFortuneLargeSpan, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -78,11 +78,7 @@ class PersonContext(
 
     val ageMap: Map<Int, Pair<Double, Double>> = ageMapThreadLocal.getOrSet { getAgeMap(120, gmtJulDay, gender, location) }
 
-    val t0 = System.currentTimeMillis()
     val fortuneDataList = getFortuneDataList(lmt , location , gender , 9)
-    val t1 = System.currentTimeMillis()
-    logger.info("get fortuneDataList , takes {} millis" , (t1-t0))
-    fortuneDataList.forEach { println(it) }
 
     return PersonContextModel(ewModel, gender, fortuneDataList, ageMap)
   }
@@ -104,8 +100,8 @@ class PersonContext(
 
     val ageMap: Map<Int, Pair<Double, Double>> = ageMapThreadLocal.getOrSet { getAgeMap(120, gmtJulDay, gender, location) }
 
+
     //下個大運的干支
-    var nextStemBranch = if (forward) eightWords.month.next else eightWords.month.previous
     var i=1
     return generateSequence {
       // 距離下個「節」有幾秒
@@ -128,8 +124,7 @@ class PersonContext(
         ageNoteImpls.map { impl -> ageMap[endFortuneAge]?.let { impl.getAgeNote(it) } }.filter { it != null }
           .map { it!! }.toList()
 
-      val sb = StemBranch[nextStemBranch.stem , nextStemBranch.branch]
-      nextStemBranch = if (forward) nextStemBranch.next else nextStemBranch.previous
+      val sb: StemBranch = eightWords.month.let { if (forward) it.next(i) else it.prev(i) }
       i++
       FortuneData(sb, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
                     startFortuneAgeNotes, endFortuneAgeNotes)

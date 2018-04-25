@@ -56,7 +56,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     val 右方大運直 = ColorCanvas(9, 24, ChineseStringTools.NULL_CHAR)
     val 下方大運橫 = ColorCanvas(8, 70, ChineseStringTools.NULL_CHAR)
 
-    val dataList = ArrayList(model.fortuneDatas)
+    val dataList = ArrayList(model.fortuneDataLarges)
 
     for (i in 1..dataList.size) {
       val fortuneData = dataList[i - 1]
@@ -118,8 +118,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     val 節氣 = ColorCanvas(2, width, ChineseStringTools.NULL_CHAR)
     val prevMajorSolarTerms: Pair<SolarTerms, Double> = model.prevMajorSolarTerms
     val nextMajorSolarTerms: Pair<SolarTerms, Double> = model.nextMajorSolarTerms
-    println("prev = $prevMajorSolarTerms")
-    println("next = $nextMajorSolarTerms")
 
     val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second , model.location , revJulDayFunc)
 
