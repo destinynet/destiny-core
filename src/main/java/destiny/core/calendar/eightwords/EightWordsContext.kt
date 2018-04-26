@@ -19,8 +19,9 @@ import java.time.chrono.ChronoLocalDateTime
  */
 class EightWordsContext(
   val eightWordsImpl: IEightWordsFactory,
-  /** 取得陰陽曆轉換的實作  */
-  val chineseDateImpl: IChineseDate,
+
+  /** 陰陽曆轉換的實作  */
+  override val chineseDateImpl: IChineseDate,
   override val yearMonthImpl: IYearMonth,
   override val dayImpl: IDay,
   override val hourImpl: IHour,

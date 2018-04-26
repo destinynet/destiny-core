@@ -51,7 +51,8 @@ class PersonContext(
 
   /** 運 :「時辰」的 span 倍數，內定 365x12，即：一時辰走一年  */
   override val fortuneHourSpan: Double = (365 * 12).toDouble()
-                   ) : IPersonContext, IEightWordsContext by eightWordsContext, IReverseFortuneLargeSpan, Serializable {
+                   ) : IPersonContext, IPersonPresentContext , IEightWordsContext by eightWordsContext,
+  IReverseFortuneLargeSpan, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -297,6 +298,8 @@ class PersonContext(
       }
       return resultStemBranch
     }
-  }
+  } // getStemBranchOfFortune() : 由 GMT 反推大運
+
+
 }
 

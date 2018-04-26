@@ -7,6 +7,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
@@ -54,6 +55,7 @@ interface IEightWordsContextModel {
 interface IEightWordsContext : IEightWordsFactory {
   /** 是否子初換日 */
   val changeDayAfterZi: Boolean
+  val chineseDateImpl: IChineseDate
   val yearMonthImpl: IYearMonth
   val dayImpl: IDay
   val hourImpl: IHour

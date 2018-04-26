@@ -18,7 +18,7 @@ import java.util.*
 
 class PersonContextColorCanvas(private val personContext: IPersonContext,
                                /** 預先儲存已經計算好的結果  */
-                               private val model: IPersonContextModel,
+                               private val model: IPersonPresentModel,
                                place: String,
                                /** 地支藏干的實作，內定採用標準設定  */
                                private val hiddenStemsImpl: IHiddenStems,
@@ -59,7 +59,9 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     val dataList = ArrayList(model.fortuneDataLarges)
 
     for (i in 1..dataList.size) {
+
       val fortuneData = dataList[i - 1]
+      val selected = fortuneData.stemBranch == model.selectedFortuneData
       val startFortune = fortuneData.startFortuneAge
       val endFortune = fortuneData.endFortuneAge
       val stemBranch = fortuneData.stemBranch
@@ -68,12 +70,16 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
       val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
       val endFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.endFortuneGmtJulDay, model.location, revJulDayFunc)
 
-      右方大運直.setText(AlignTools.alignRight(startFortune, 6), i, 1, "green", null,
+      val bgColor = if (selected) "CCC" else null
+
+      val row = ColorCanvas(1,24 , ChineseStringTools.NULL_CHAR , null , bgColor)
+      row.setText(AlignTools.alignRight(startFortune, 6), 1, 1, "green", null,
                     "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
-      右方大運直.setText("→", i, 9, "green")
-      右方大運直.setText(AlignTools.alignRight(endFortune, 6), i, 13, "green", null,
+      row.setText("→", 1, 9, "green" , null , null)
+      row.setText(AlignTools.alignRight(endFortune, 6), 1, 13, "green", null,
                     "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt))
-      右方大運直.setText(stemBranch.toString(), i, 21, "green")
+      row.setText(stemBranch.toString(), 1, 21, "green")
+      右方大運直.add(row , i , 1)
     }
 
 
@@ -86,6 +92,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
     for (i in 1..dataList.size) {
       val fortuneData = dataList[i - 1]
+      val selected = fortuneData.stemBranch == model.selectedFortuneData
 
       val startFortune: String =
         ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
@@ -93,20 +100,21 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
           .map { it -> it!! }
           .first()
 
-
       val stemBranch = fortuneData.stemBranch
       val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
 
+      val bgColor = if (selected) "DDD" else null
+      val triColumn = ColorCanvas(8 , 6 , ChineseStringTools.NULL_CHAR , null , bgColor)
 
-
-      下方大運橫.setText(StringUtils.center(startFortune, 6, ' '), 1, (i - 1) * 8 + 1, "green", null,
-                    "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+      triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1,  1, "green", null, "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
       val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
-      下方大運橫.setText(reaction.toString().substring(0, 1), 2, (i - 1) * 8 + 3, "gray")
-      下方大運橫.setText(reaction.toString().substring(1, 2), 3, (i - 1) * 8 + 3, "gray")
-      下方大運橫.setText(stemBranch.stem.toString(), 4, (i - 1) * 8 + 3, "red")
-      下方大運橫.setText(stemBranch.branch.toString(), 5, (i - 1) * 8 + 3, "red")
-      下方大運橫.add(ewContextColorCanvas.地支藏干(stemBranch.branch, eightWords.day.stem), 6, (i - 1) * 8 + 1)
+      triColumn.setText(reaction.toString().substring(0, 1), 2,  3, "gray")
+      triColumn.setText(reaction.toString().substring(1, 2), 3,  3, "gray")
+      triColumn.setText(stemBranch.stem.toString(), 4,  3, "red")
+      triColumn.setText(stemBranch.branch.toString(), 5, 3, "red")
+      triColumn.add(ewContextColorCanvas.地支藏干(stemBranch.branch, eightWords.day.stem), 6, 1)
+
+      下方大運橫.add(triColumn , 1 , (i-1) * 8 + 1)
     }
 
 

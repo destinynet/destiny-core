@@ -115,7 +115,7 @@ interface IReverseFortuneLargeSpan : IReverseFortuneLarge {
  * 類似 [IEightWordsContext]
  * 提供純粹「時間、地點、性別」的切入點 , 不帶其他參數，取得一張個人命盤
  */
-interface IPersonContext : IEightWordsContext , IFortuneLarge {
+interface IPersonContext : IEightWordsContext, IFortuneLarge, IReverseFortuneLarge {
 
 
   fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
@@ -151,16 +151,28 @@ interface IPersonPresentModel : IPersonContextModel {
 
   val viewChineseDate: ChineseDate
 
-  /** 此時處於何大運中 */
-  val selectedFortuneData: FortuneData
+  /** 目前所處於的大運 */
+  val selectedFortuneData: StemBranch
 
-  /** 此時處於何歲中 */
-  val selectedAge: Int
 }
 
 data class PersonPresentModel(
-  private val personContextModel: PersonContextModel,
+  private val personContextModel: IPersonContextModel,
   override val viewGmt: ChronoLocalDateTime<*>,
   override val viewChineseDate: ChineseDate,
-  override val selectedFortuneData: FortuneData,
-  override val selectedAge: Int) : IPersonPresentModel, IPersonContextModel by personContextModel, Serializable
+  override val selectedFortuneData: StemBranch) :
+  IPersonPresentModel, IPersonContextModel by personContextModel, Serializable
+
+interface IPersonPresentContext : IPersonContext {
+
+  fun getPersonPresentModel(lmt: ChronoLocalDateTime<*>,
+                            location: ILocation,
+                            place: String?,
+                            gender: Gender,
+                            viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
+    val viewChineseDate: ChineseDate = chineseDateImpl.getChineseDate(viewGmt.toLocalDate())
+    val pcm = getPersonContextModel(lmt, location, place, gender)
+    val selectedFortuneData = getStemBranchOfFortuneMonth(lmt, location, gender, viewGmt)
+    return PersonPresentModel(pcm, viewGmt, viewChineseDate, selectedFortuneData)
+  }
+}
