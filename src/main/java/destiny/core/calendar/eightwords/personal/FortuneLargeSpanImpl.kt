@@ -14,7 +14,6 @@ import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.StemBranch
@@ -27,17 +26,17 @@ import kotlin.math.abs
 
 
 /** 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 */
-class PersonFortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
-                                 /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
-                                 private val fortuneDirectionImpl: IFortuneDirection,
-                                 /** 歲數實作  */
-                                 private val intAgeImpl: IIntAge,
-                                 /** 星體運行到某點的介面  */
-                                 private val starTransitImpl: IStarTransit,
-                                 /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
-                                 private val fortuneMonthSpan: Double = 120.0,
-                                 /** 歲數註解實作  */
-                                 private val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, Serializable {
+class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
+                           /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
+                           private val fortuneDirectionImpl: IFortuneDirection,
+                           /** 歲數實作  */
+                           private val intAgeImpl: IIntAge,
+                           /** 星體運行到某點的介面  */
+                           private val starTransitImpl: IStarTransit,
+                           /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
+                           private val fortuneMonthSpan: Double = 120.0,
+                           /** 歲數註解實作  */
+                           private val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -45,11 +44,6 @@ class PersonFortuneLargeSpanImpl(private val eightWordsContext: EightWordsContex
     .maximumSize(100)
     .expireAfterAccess(1, TimeUnit.MINUTES)
     .build<Pair<Double, Gender>, MutableMap<Int, Double>>()
-
-  /** 八字大運是否順行  */
-  private fun isFortuneForward(gender: Gender, eightWords: EightWords): Boolean {
-    return fortuneDirectionImpl.isForward(gender, eightWords)
-  }
 
   private fun getAgeMap(toAge: Int,
                         gmtJulDay: Double,
@@ -66,7 +60,7 @@ class PersonFortuneLargeSpanImpl(private val eightWordsContext: EightWordsContex
 
     val eightWords = eightWordsContext.eightWordsImpl.getEightWords(lmt , location)
 
-    val forward = isFortuneForward(gender, eightWords)
+    val forward =  fortuneDirectionImpl.isForward(lmt , location , gender)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     val ageMap: Map<Int, Pair<Double, Double>> = getAgeMap(120, gmtJulDay, gender, location)
@@ -232,7 +226,7 @@ class PersonFortuneLargeSpanImpl(private val eightWordsContext: EightWordsContex
     var resultStemBranch = ewModel.eightWords.month
 
     // 大運是否順行
-    val fortuneForward = fortuneDirectionImpl.isForward(gender, ewModel.eightWords)
+    val fortuneForward = fortuneDirectionImpl.isForward(lmt , location , gender)
 
     val dur = Duration.between(targetGmt, gmt).abs()
     val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0

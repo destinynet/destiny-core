@@ -23,6 +23,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
                               val fromAge: Int,
                               val toAge: Int)
 
+  @Transient
   private val cacheThreadLocal = ThreadLocal<Pair<CacheKey, List<Pair<Double, Double>>>>()
 
   override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {

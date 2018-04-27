@@ -66,6 +66,20 @@ interface IPersonFortuneLarge {
                     targetGmt: ChronoLocalDateTime<*>): StemBranch
 }
 
+
+/** 推算小運 */
+interface IPersonFortuneSmall {
+
+  /**
+   * 順推小運
+   * 取得幾條小運
+   */
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*> ,
+                         location: ILocation ,
+                         gender: Gender ,
+                         count: Int) : List<FortuneData>
+}
+
 /**
  * 類似 [IEightWordsContext]
  * 提供純粹「時間、地點、性別」的切入點 , 不帶其他參數，取得一張個人命盤

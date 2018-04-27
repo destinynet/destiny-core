@@ -22,45 +22,72 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
+  private data class CacheKey(val gmtJulDay: Double , val loc: ILocation)
+
+  @Transient
+  private val cacheThreadLocal = ThreadLocal<Pair<CacheKey , EightWords>>()
+
   override fun getEightWords(gmtJulDay: Double, loc: ILocation): EightWords {
-    val year = yearMonthImpl.getYear(gmtJulDay, loc)
 
-    val month = yearMonthImpl.getMonth(gmtJulDay, loc)
-    val day = dayImpl.getDay(gmtJulDay, loc, midnightImpl, hourImpl, changeDayAfterZi)
-    var 臨時日干 = day.stem
-    val 時支 = this.hourImpl.getHour(gmtJulDay, loc)
+    fun inner(): EightWords {
+      val year = yearMonthImpl.getYear(gmtJulDay, loc)
 
-    val 時干: Stem
+      val month = yearMonthImpl.getMonth(gmtJulDay, loc)
+      val day = dayImpl.getDay(gmtJulDay, loc, midnightImpl, hourImpl, changeDayAfterZi)
+      var 臨時日干 = day.stem
+      val 時支 = this.hourImpl.getHour(gmtJulDay, loc)
 
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
+      val 時干: Stem
 
-    val nextZi = hourImpl.getLmtNextStartOf(lmt, loc, 子, revJulDayFunc)
+      val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
 
-    // 如果「子正」才換日
-    if (!changeDayAfterZi) {
-      /**
-       * <pre>
-       * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
-       * 第一： LMT 零時 > 子正 > LMT > 子初 ,（即下圖之 LMT1)
-       * 第二： 子正 > LMT > LMT 零時 (> 子初) , （即下圖之 LMT3)
-       *
-       * 子末(通常1)  LMT4    子正      LMT3       0|24     LMT2        子正    LMT1    子初（通常23)
-       * |------------------|--------------------|--------------------|------------------|
-      </pre> *
-       */
-      if (day !== dayImpl.getDay(nextZi, loc, midnightImpl, hourImpl, changeDayAfterZi))
-        臨時日干 = Stem[臨時日干.index + 1]
+      val nextZi = hourImpl.getLmtNextStartOf(lmt, loc, 子, revJulDayFunc)
+
+      // 如果「子正」才換日
+      if (!changeDayAfterZi) {
+        /**
+         * <pre>
+         * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
+         * 第一： LMT 零時 > 子正 > LMT > 子初 ,（即下圖之 LMT1)
+         * 第二： 子正 > LMT > LMT 零時 (> 子初) , （即下圖之 LMT3)
+         *
+         * 子末(通常1)  LMT4    子正      LMT3       0|24     LMT2        子正    LMT1    子初（通常23)
+         * |------------------|--------------------|--------------------|------------------|
+        </pre> *
+         */
+        if (day !== dayImpl.getDay(nextZi, loc, midnightImpl, hourImpl, changeDayAfterZi))
+          臨時日干 = Stem[臨時日干.index + 1]
+      }
+
+      時干 = when (Stem.getIndex(臨時日干)) {
+        0, 5 -> Stem[Branch.getIndex(時支)]
+        1, 6 -> Stem[Branch.getIndex(時支) + 2]
+        2, 7 -> Stem[Branch.getIndex(時支) + 4]
+        3, 8 -> Stem[Branch.getIndex(時支) + 6]
+        4, 9 -> Stem[Branch.getIndex(時支) + 8]
+        else -> throw AssertionError("Error")
+      }
+      return EightWords(year, month, day, StemBranch.get(時干, 時支))
     }
 
-    時干 = when (Stem.getIndex(臨時日干)) {
-      0, 5 -> Stem[Branch.getIndex(時支)]
-      1, 6 -> Stem[Branch.getIndex(時支) + 2]
-      2, 7 -> Stem[Branch.getIndex(時支) + 4]
-      3, 8 -> Stem[Branch.getIndex(時支) + 6]
-      4, 9 -> Stem[Branch.getIndex(時支) + 8]
-      else -> throw AssertionError("Error")
+    val key = CacheKey(gmtJulDay , loc)
+    val pair = cacheThreadLocal.get()
+
+    return if (pair == null) {
+      val ew = inner()
+      cacheThreadLocal.set(key to ew)
+      ew
+    } else {
+      if (key == pair.first) {
+        // cache matches
+        pair.second
+      } else {
+        // cache not matches
+        val ew = inner()
+        cacheThreadLocal.set(key to ew)
+        ew
+      }
     }
-    return EightWords(year, month, day, StemBranch.get(時干, 時支))
   }
 
   /**

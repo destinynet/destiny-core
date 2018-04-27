@@ -33,6 +33,7 @@ class EightWordsContext(
 
   private data class CacheKey(val lmt: ChronoLocalDateTime<*> , val location: ILocation , val place: String?)
 
+  @Transient
   private val cacheThreadLocal = ThreadLocal<Pair<CacheKey , IEightWordsContextModel>>()
 
   override fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
