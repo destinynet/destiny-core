@@ -41,9 +41,7 @@ interface IIntAge {
   fun getRangesMap(gender: Gender, gmtJulDay: Double, loc: ILocation, fromAge: Int, toAge: Int): Map<Int, Pair<Double, Double>> {
     val list = getRanges(gender, gmtJulDay, loc, fromAge, toAge)
 
-    return (0 until list.size).map { it ->
-      Pair(it + 1, list[it])
-    }.toMap()
+    return (fromAge .. toAge).zip(list).toMap()
   }
 
   /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Pair[from , to]] , 傳回的是 {@link ChronoLocalDateTime} , GMT 時刻 */

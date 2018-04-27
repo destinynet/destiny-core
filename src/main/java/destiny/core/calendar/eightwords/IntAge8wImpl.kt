@@ -17,6 +17,14 @@ import java.io.Serializable
  */
 class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializable {
 
+  private data class CacheKey(val gender: Gender,
+                              val gmtJulDay: Double,
+                              val loc: ILocation,
+                              val fromAge: Int,
+                              val toAge: Int)
+
+  private val cacheThreadLocal = ThreadLocal<Pair<CacheKey, List<Pair<Double, Double>>>>()
+
   override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
     val age1 = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))
 
@@ -34,14 +42,40 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
     }
   }
 
-  override fun getRanges(gender: Gender, gmtJulDay: Double, loc: ILocation, fromAge: Int, toAge: Int): List<Pair<Double, Double>> {
-    if (fromAge > toAge) {
-      throw RuntimeException("fromAge must be <= toAge")
+  override fun getRanges(gender: Gender,
+                         gmtJulDay: Double,
+                         loc: ILocation,
+                         fromAge: Int,
+                         toAge: Int): List<Pair<Double, Double>> {
+    require(fromAge <= toAge) { "fromAge($fromAge) must be <= toAge($toAge)" }
+
+    val key = CacheKey(gender, gmtJulDay, loc, fromAge, toAge)
+    val pair = cacheThreadLocal.get()
+
+    fun innerGetList() : List<Pair<Double, Double>> {
+      val from = getRange(gender, gmtJulDay, loc, fromAge)
+      val result = mutableListOf<Pair<Double, Double>>().apply { add(from) }
+      return getRangesInner(result, toAge - fromAge)
     }
-    val from = getRange(gender, gmtJulDay, loc, fromAge)
-    val result = ArrayList<Pair<Double, Double>>(toAge - fromAge + 1)
-    result.add(from)
-    return getRangesInner(result, toAge - fromAge)
+
+    if (pair == null) {
+      // pair is null
+      val list = innerGetList()
+      cacheThreadLocal.set(key to list)
+      return list
+    } else {
+      // pair is not null
+      return if (key == pair.first) {
+        // cache matches
+        pair.second
+      } else {
+        // cache not matches
+        val list = innerGetList()
+        cacheThreadLocal.set(key to list)
+        list
+      }
+    }
+
   }
 
   private fun getRangesInner(prevResults: MutableList<Pair<Double, Double>>, count: Int): List<Pair<Double, Double>> {

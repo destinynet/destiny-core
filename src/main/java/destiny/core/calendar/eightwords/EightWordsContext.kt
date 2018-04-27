@@ -31,25 +31,48 @@ class EightWordsContext(
   val starPositionImpl: IStarPosition<*>,
   val solarTermsImpl: ISolarTerms) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
+  private data class CacheKey(val lmt: ChronoLocalDateTime<*> , val location: ILocation , val place: String?)
+
+  private val cacheThreadLocal = ThreadLocal<Pair<CacheKey , IEightWordsContextModel>>()
+
   override fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                          location: ILocation,
                                          place: String?): IEightWordsContextModel {
 
-    // 現在的節氣
-    val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
-    val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl,
-                                                          midnightImpl, changeDayAfterZi)
+    val key = CacheKey(lmt , location , place)
 
-    val (prevMajorSolarTerms , nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsGmtBetween(lmt , location)
+    fun innerGetModel() : IEightWordsContextModel {
+      // 現在的節氣
+      val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
+      val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl,
+                                                            midnightImpl, changeDayAfterZi)
 
-    val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
+      val (prevMajorSolarTerms, nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsGmtBetween(lmt, location)
 
-    val sunBranch = getBranchOf(Planet.SUN, lmt, location, starPositionImpl)
-    val moonBranch = getBranchOf(Planet.MOON, lmt, location, starPositionImpl)
+      val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
 
-    return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
-                                  prevMajorSolarTerms , nextMajorSolarTerms, risingSign,
-                                  sunBranch, moonBranch)
+      val sunBranch = getBranchOf(Planet.SUN, lmt, location, starPositionImpl)
+      val moonBranch = getBranchOf(Planet.MOON, lmt, location, starPositionImpl)
+
+      return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
+                                    prevMajorSolarTerms, nextMajorSolarTerms, risingSign,
+                                    sunBranch, moonBranch)
+    }
+
+    val pair: Pair<CacheKey, IEightWordsContextModel>? = cacheThreadLocal.get()
+    return if (pair == null) {
+      val model = innerGetModel()
+      cacheThreadLocal.set(key to model)
+      model
+    } else {
+      return if (key == pair.first) {
+        pair.second
+      } else {
+        val model = innerGetModel()
+        cacheThreadLocal.set(key to model)
+        model
+      }
+    }
   }
 
   /**

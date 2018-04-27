@@ -42,80 +42,35 @@ interface IPersonContextModel : IEightWordsContextModel {
   }
 }
 
-/**
- * 順推大運 , 取得該命盤的幾條大運
- */
-interface IFortuneLarge {
 
-  /** 順推大運 , 取得該命盤的幾條大運 */
+/** 推算 大運 演算法 */
+interface IPersonFortuneLarge {
+
+  /**
+   * 順推大運
+   * 取得該命盤的幾條大運 */
   fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
                          location: ILocation,
                          gender: Gender,
                          count: Int): List<FortuneData>
-}
-
-
-/**
- * 逆推大運，
- * 由 GMT 反推 大運 是哪條干支
- */
-interface IReverseFortuneLarge {
-
 
   /**
+   * 逆推大運
    * 由 GMT 反推月大運
    * @param targetGmt 目標時刻為此時， 計算此時刻是屬於哪條月大運當中
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
-  fun getStemBranchOfFortuneMonth(lmt: ChronoLocalDateTime<*>,
-                                  location: ILocation,
-                                  gender: Gender,
-                                  targetGmt: ChronoLocalDateTime<*>): StemBranch
-}
-
-/**
- * 利用星體運算「倍數延展」的方式計算、反推大運 的實作
- */
-interface IReverseFortuneLargeSpan : IReverseFortuneLarge {
-
-  /** 運 :「月」的 span 倍數，通常為 120 ，即：一個月干支 擴展(乘以)120 倍，變成十年  */
-  val fortuneMonthSpan: Double
-
-  /** 運：「日」的 span 倍數，通常為 365，即：一日走一年  */
-  val fortuneDaySpan: Double
-
-  /** 運 :「時辰」的 span 倍數，通常為 365x12，即：一時辰走一年  */
-  val fortuneHourSpan: Double
-
-  /**
-   * 由 GMT 反推大運
-   *
-   * @param lmt       出生時刻
-   * @param location  出生地點
-   * @param targetGmt 目標時刻（必須在出生時刻之後）
-   * @param span      放大倍數
-   * @return 干支
-   */
-  fun getStemBranchOfFortune(lmt: ChronoLocalDateTime<*>,
-                             location: ILocation,
-                             gender: Gender,
-                             targetGmt: ChronoLocalDateTime<*>,
-                             span: Double): StemBranch
-
-  /** 由 GMT 反推月大運 */
-  override fun getStemBranchOfFortuneMonth(lmt: ChronoLocalDateTime<*>,
-                                           location: ILocation,
-                                           gender: Gender,
-                                           targetGmt: ChronoLocalDateTime<*>): StemBranch {
-    return getStemBranchOfFortune(lmt, location, gender, targetGmt, fortuneMonthSpan)
-  }
+  fun getStemBranch(lmt: ChronoLocalDateTime<*>,
+                    location: ILocation,
+                    gender: Gender,
+                    targetGmt: ChronoLocalDateTime<*>): StemBranch
 }
 
 /**
  * 類似 [IEightWordsContext]
  * 提供純粹「時間、地點、性別」的切入點 , 不帶其他參數，取得一張個人命盤
  */
-interface IPersonContext : IEightWordsContext, IFortuneLarge, IReverseFortuneLarge {
+interface IPersonContext : IEightWordsContext {
 
 
   fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
@@ -169,10 +124,5 @@ interface IPersonPresentContext : IPersonContext {
                             location: ILocation,
                             place: String?,
                             gender: Gender,
-                            viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
-    val viewChineseDate: ChineseDate = chineseDateImpl.getChineseDate(viewGmt.toLocalDate())
-    val pcm = getPersonContextModel(lmt, location, place, gender)
-    val selectedFortuneData = getStemBranchOfFortuneMonth(lmt, location, gender, viewGmt)
-    return PersonPresentModel(pcm, viewGmt, viewChineseDate, selectedFortuneData)
-  }
+                            viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel
 }
