@@ -36,7 +36,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
     return if (count == 1) {
       prevResult
     } else {
-      val stepDay = prevResult.first + 1 // 取「立春日+1」作為 臨時的日子，以此日子，分別往 prior , after 推算立春日期
+      val stepDay = prevResult.second + 1 // 取「立春日+1」作為 臨時的日子，以此日子，分別往 prior , after 推算立春日期
       val start = solarTermsImpl.getSolarTermsTime(立春, stepDay, false)
       val end = solarTermsImpl.getSolarTermsTime(立春, stepDay, true)
       getRangeInner(Pair(start, end), count - 1)

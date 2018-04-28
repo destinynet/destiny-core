@@ -25,6 +25,6 @@ data class FortuneData(
   val endFortuneAgeNotes: List<String>) : Serializable {
 
   override fun toString(): String {
-    return "{$startFortuneAge $stemBranch}"
+    return "{$startFortuneAge $stemBranch , from $startFortuneGmtJulDay}"
   }
 } // FortuneData
