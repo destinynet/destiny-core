@@ -21,6 +21,9 @@ interface IPersonContextModel : IEightWordsContextModel {
   /** 總共要輸出的大運  */
   val fortuneDataLarges: List<FortuneData>
 
+  /** 小運 */
+  val fortuneDataSmalls: List<FortuneData>
+
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
   val ageMap: Map<Int, Pair<Double, Double>>
 
@@ -108,6 +111,9 @@ data class PersonContextModel(
 
   /** 總共要輸出的大運  */
   override val fortuneDataLarges: List<FortuneData>,
+
+  /** 小運 */
+  override val fortuneDataSmalls: List<FortuneData>,
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
   override val ageMap: Map<Int, Pair<Double, Double>>) : IPersonContextModel,

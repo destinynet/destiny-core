@@ -6,6 +6,15 @@ import destiny.core.chinese.StemBranch.甲子
 import destiny.core.chinese.StemBranch.癸亥
 import destiny.tools.ArrayTools
 
+enum class StemBranchCycle(val sb:StemBranch) {
+  甲子(StemBranch.甲子),
+  甲寅(StemBranch.甲寅),
+  甲辰(StemBranch.甲辰),
+  甲午(StemBranch.甲午),
+  甲申(StemBranch.甲申),
+  甲戌(StemBranch.甲戌)
+}
+
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
@@ -126,9 +135,13 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
     return values().indexOf(sb)
   } //getIndex()
 
-    /** 取得「空亡」的兩個地支  */
+  /** 取得「空亡」的兩個地支  */
   val empties: Collection<Branch>
     get() = StemBranch.getEmpties(this)
+
+  /** 哪一「旬」 */
+  val cycle: StemBranchCycle
+    get() = StemBranch.getCycle(this)
 
 
   override fun toString(): String {
@@ -203,17 +216,28 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
       return listOf(*values())
     }
 
+    fun getCycle(sb: StemBranch) : StemBranchCycle {
+      val shift = sb.stem.index - sb.branch.index
+      return when(shift) {
+        0 -> StemBranchCycle.甲子
+        2 , -10 -> StemBranchCycle.甲戌
+        4 , -8 -> StemBranchCycle.甲申
+        6 , -6 -> StemBranchCycle.甲午
+        8 , -4 -> StemBranchCycle.甲辰
+        10 , -2 -> StemBranchCycle.甲寅
+        else -> throw AssertionError("Not valid $sb")
+      }
+    }
+
     /** 取得「空亡」的兩個地支  */
     fun getEmpties(sb: StemBranch): Collection<Branch> {
-      val shift = sb.stem.index - sb.branch.index
-      return when (shift) {
-        0 -> listOf(戌, 亥)
-        2, -10 -> listOf(申, 酉)
-        4, -8 -> listOf(午, 未)
-        6, -6 -> listOf(辰, 巳)
-        8, -4 -> listOf(寅, 卯)
-        10, -2 -> listOf(子, 丑)
-        else -> throw AssertionError("Cannot find 空亡 from " + sb)
+      return when(sb.cycle) {
+        StemBranchCycle.甲子 -> listOf(戌, 亥)
+        StemBranchCycle.甲戌 -> listOf(申, 酉)
+        StemBranchCycle.甲申 -> listOf(午, 未)
+        StemBranchCycle.甲午 -> listOf(辰, 巳)
+        StemBranchCycle.甲辰 -> listOf(寅, 卯)
+        StemBranchCycle.甲寅 -> listOf(子, 丑)
       }
     }
   } // companion

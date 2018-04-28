@@ -7,7 +7,7 @@ package destiny.core.chinese
 
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
-import destiny.core.chinese.StemBranch.甲子
+import destiny.core.chinese.StemBranch.*
 import java.util.*
 import kotlin.test.*
 
@@ -16,9 +16,9 @@ class StemBranchTest {
   /** 兩種甲子目前不相等，未來要如何改，再想想 */
   @Test
   fun testEqualWithStemBranchOptional() {
-    val a : IStemBranchOptional = StemBranch.甲子
-    val b : IStemBranchOptional = StemBranchOptional[甲 , 子]
-    assertNotEquals(a , b)
+    val a: IStemBranchOptional = StemBranch.甲子
+    val b: IStemBranchOptional = StemBranchOptional[甲, 子]
+    assertNotEquals(a, b)
   }
 
   @Test
@@ -27,9 +27,32 @@ class StemBranchTest {
   }
 
   @Test
+  fun testGetCycle() {
+    assertSame(StemBranchCycle.甲子, 甲子.cycle)
+    assertSame(StemBranchCycle.甲子, 癸酉.cycle)
+
+    assertSame(StemBranchCycle.甲戌, 甲戌.cycle)
+    assertSame(StemBranchCycle.甲戌, 癸未.cycle)
+
+    assertSame(StemBranchCycle.甲申, 甲申.cycle)
+    assertSame(StemBranchCycle.甲申, 癸巳.cycle)
+
+    assertSame(StemBranchCycle.甲午, 甲午.cycle)
+    assertSame(StemBranchCycle.甲午, 癸卯.cycle)
+
+    assertSame(StemBranchCycle.甲辰, 甲辰.cycle)
+    assertSame(StemBranchCycle.甲辰, 癸丑.cycle)
+
+    assertSame(StemBranchCycle.甲寅, 甲寅.cycle)
+    assertSame(StemBranchCycle.甲寅, 癸亥.cycle)
+
+  }
+
+
+  @Test
   fun testIndex() {
-    assertSame(0 , StemBranch.甲子.index)
-    assertSame(59 , StemBranch.癸亥.index)
+    assertSame(0, StemBranch.甲子.index)
+    assertSame(59, StemBranch.癸亥.index)
   }
 
   @Test
@@ -177,7 +200,8 @@ class StemBranchTest {
   fun testSorting() {
     val SBArray1 = arrayOf(StemBranch[10], StemBranch[甲, 午], StemBranch[50], StemBranch['甲', '子'], StemBranch[20])
     val expected =
-      arrayOf(StemBranch['甲', '子'], StemBranch['甲', '戌'], StemBranch['甲', '申'], StemBranch['甲', '午'], StemBranch['甲', '寅'])
+      arrayOf(StemBranch['甲', '子'], StemBranch['甲', '戌'], StemBranch['甲', '申'], StemBranch['甲', '午'],
+              StemBranch['甲', '寅'])
     Arrays.sort(SBArray1)
     assertTrue(Arrays.equals(expected, SBArray1))
   }

@@ -55,7 +55,7 @@ class PersonContext(
     // 120歲 小運 , 120柱
     val fortuneDataSmalls = fortuneSmallImpl.getFortuneDataList(lmt , location , gender , 120)
 
-    return PersonContextModel(ewModel, gender, fortuneDataLarges, ageMap)
+    return PersonContextModel(ewModel, gender, fortuneDataLarges, fortuneDataSmalls , ageMap)
   }
 
   override fun getPersonPresentModel(lmt: ChronoLocalDateTime<*>,
