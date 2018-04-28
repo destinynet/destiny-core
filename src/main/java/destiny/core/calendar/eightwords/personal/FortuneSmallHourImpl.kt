@@ -24,7 +24,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 三歲小運：乙卯；
  * 四歲小運：丙辰...
  */
-class FortuneSmallTradImpl(
+class FortuneSmallHourImpl(
   private val eightWordsContext: EightWordsContext,
   private val fortuneDirectionImpl: IFortuneDirection,
   /** 歲數實作  */
