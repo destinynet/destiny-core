@@ -12,6 +12,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -26,8 +27,11 @@ class PersonContext(
   /** 歲數註解實作  */
   override val ageNoteImpls: List<IntAgeNote>,
 
-  /** 順推、逆推大運 的實作 */
-  private val personFortuneLargeImpl: IPersonFortuneLarge
+  /** 大運 的實作 */
+  private val fortuneLargeImpl: IPersonFortuneLarge,
+
+  /** 小運 的實作 */
+  private val fortuneSmallImpl : IPersonFortuneSmall
                    ) : IPersonContext,
   IPersonPresentContext , IEightWordsContext by eightWordsContext, Serializable {
 
@@ -42,20 +46,16 @@ class PersonContext(
 
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
-    val ageMap: Map<Int, Pair<Double, Double>> = getAgeMap(120, gmtJulDay, gender, location)
+    // 1到120歲 , 每歲的開始、以及結束
+    val ageMap: Map<Int, Pair<Double, Double>> = intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , 120)
 
-    val fortuneDataList = personFortuneLargeImpl.getFortuneDataList(lmt, location, gender, 9)
+    // 9條大運
+    val fortuneDataLarges = fortuneLargeImpl.getFortuneDataList(lmt, location, gender, 9)
 
-    return PersonContextModel(ewModel, gender, fortuneDataList, ageMap)
-  }
+    // 120歲 小運 , 120柱
+    val fortuneDataSmalls = fortuneSmallImpl.getFortuneDataList(lmt , location , gender , 120)
 
-
-
-  private fun getAgeMap(toAge: Int,
-                        gmtJulDay: Double,
-                        gender: Gender,
-                        location: ILocation): Map<Int, Pair<Double, Double>> {
-    return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
+    return PersonContextModel(ewModel, gender, fortuneDataLarges, ageMap)
   }
 
   override fun getPersonPresentModel(lmt: ChronoLocalDateTime<*>,
@@ -65,8 +65,9 @@ class PersonContext(
                                      viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
     val viewChineseDate: ChineseDate = chineseDateImpl.getChineseDate(viewGmt.toLocalDate())
     val pcm = getPersonContextModel(lmt, location, place, gender)
-    val selectedFortuneData = personFortuneLargeImpl.getStemBranch(lmt, location, gender, viewGmt)
-    return PersonPresentModel(pcm, viewGmt, viewChineseDate, selectedFortuneData)
+    // 目前所處的大運
+    val selectedFortuneLarge: StemBranch = fortuneLargeImpl.getStemBranch(lmt, location, gender, viewGmt)
+    return PersonPresentModel(pcm, viewGmt, viewChineseDate, selectedFortuneLarge)
   }
 }
 
