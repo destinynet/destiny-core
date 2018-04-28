@@ -127,7 +127,7 @@ interface IPersonPresentModel : IPersonContextModel {
   val viewChineseDate: ChineseDate
 
   /** 目前所處於的大運 */
-  val selectedFortuneData: StemBranch
+  val selectedFortuneLarge: StemBranch
 
 }
 
@@ -135,7 +135,7 @@ data class PersonPresentModel(
   private val personContextModel: IPersonContextModel,
   override val viewGmt: ChronoLocalDateTime<*>,
   override val viewChineseDate: ChineseDate,
-  override val selectedFortuneData: StemBranch) :
+  override val selectedFortuneLarge: StemBranch) :
   IPersonPresentModel, IPersonContextModel by personContextModel, Serializable
 
 interface IPersonPresentContext : IPersonContext {

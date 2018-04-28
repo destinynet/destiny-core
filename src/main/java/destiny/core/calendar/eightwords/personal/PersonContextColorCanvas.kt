@@ -61,7 +61,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     for (i in 1..dataList.size) {
 
       val fortuneData = dataList[i - 1]
-      val selected = fortuneData.stemBranch == model.selectedFortuneData
+      val selected = fortuneData.stemBranch == model.selectedFortuneLarge
       val startFortune = fortuneData.startFortuneAge
       val endFortune = fortuneData.endFortuneAge
       val stemBranch = fortuneData.stemBranch
@@ -92,7 +92,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
     for (i in 1..dataList.size) {
       val fortuneData = dataList[i - 1]
-      val selected = fortuneData.stemBranch == model.selectedFortuneData
+      val selected = fortuneData.stemBranch == model.selectedFortuneLarge
 
       val startFortune: String =
         ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
