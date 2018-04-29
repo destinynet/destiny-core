@@ -16,7 +16,7 @@ import destiny.core.chinese.StemBranch
 abstract class HouseYearStemImpl internal constructor(star: ZStar) : HouseAbstractImpl<Stem>(star) {
 
   override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
-    val yearStem = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem
+    val yearStem = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem
     return getBranch(yearStem)
   }
 }

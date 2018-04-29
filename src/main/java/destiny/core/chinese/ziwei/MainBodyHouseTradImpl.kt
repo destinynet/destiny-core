@@ -11,7 +11,6 @@ import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
-import destiny.core.chinese.ziwei.ZContext.YearType
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 

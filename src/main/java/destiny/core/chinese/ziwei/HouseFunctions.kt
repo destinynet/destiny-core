@@ -187,20 +187,20 @@ object HouseFunctions {
 
   val house火星: IHouse<*> = object : HouseYearBranchHourBranchImpl(火星) {
     override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
-      val yearBranch = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
+      val yearBranch = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
       return when (context.fireBell) {
-        ZContext.FireBell.FIREBELL_BOOK -> fun火星_全書.invoke(yearBranch)
-        ZContext.FireBell.FIREBELL_COLLECT -> fun火星_全集.invoke(yearBranch, hour)
+        FireBell.FIREBELL_BOOK -> fun火星_全書.invoke(yearBranch)
+        FireBell.FIREBELL_COLLECT -> fun火星_全集.invoke(yearBranch, hour)
       }
     }
   }
 
   val house鈴星: IHouse<*> = object : HouseYearBranchHourBranchImpl(鈴星) {
     override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
-      val yearBranch = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
+      val yearBranch = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
       return when (context.fireBell) {
-        ZContext.FireBell.FIREBELL_BOOK -> fun鈴星_全書.invoke(yearBranch)
-        ZContext.FireBell.FIREBELL_COLLECT -> fun鈴星_全集.invoke(yearBranch, hour)
+        FireBell.FIREBELL_BOOK -> fun鈴星_全書.invoke(yearBranch)
+        FireBell.FIREBELL_COLLECT -> fun鈴星_全集.invoke(yearBranch, hour)
       }
     }
   }
@@ -424,8 +424,8 @@ object HouseFunctions {
       val 遷移宮地支 = predefinedMainHouse?.prev(steps)?:IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl)
 
       return when (context.hurtAngel) {
-        ZContext.HurtAngel.HURT_ANGEL_FIXED -> fun天傷_fixed交友.invoke(遷移宮地支)
-        ZContext.HurtAngel.HURT_ANGEL_YINYANG -> fun天傷_陽順陰逆.invoke(遷移宮地支, lunarYear.stem, gender)
+        HurtAngel.HURT_ANGEL_FIXED -> fun天傷_fixed交友.invoke(遷移宮地支)
+        HurtAngel.HURT_ANGEL_YINYANG -> fun天傷_陽順陰逆.invoke(遷移宮地支, lunarYear.stem, gender)
       }
     }
   }
@@ -438,8 +438,8 @@ object HouseFunctions {
       val 遷移宮地支 : Branch = predefinedMainHouse?.prev(steps) ?:IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl)
 
       return when (context.hurtAngel) {
-        ZContext.HurtAngel.HURT_ANGEL_FIXED -> fun天使_fixed疾厄.invoke(遷移宮地支)
-        ZContext.HurtAngel.HURT_ANGEL_YINYANG -> fun天使_陽順陰逆.invoke(遷移宮地支, lunarYear.stem, gender)
+        HurtAngel.HURT_ANGEL_FIXED -> fun天使_fixed疾厄.invoke(遷移宮地支)
+        HurtAngel.HURT_ANGEL_YINYANG -> fun天使_陽順陰逆.invoke(遷移宮地支, lunarYear.stem, gender)
       }
     }
   }
@@ -478,8 +478,8 @@ object HouseFunctions {
 
     override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
       return when (context.redBeauty) {
-        ZContext.RedBeauty.RED_BEAUTY_SAME -> fun紅艷_甲乙相同.invoke(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
-        ZContext.RedBeauty.RED_BEAUTY_DIFF -> fun紅艷_甲乙相異.invoke(if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
+        RedBeauty.RED_BEAUTY_SAME -> fun紅艷_甲乙相同.invoke(if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
+        RedBeauty.RED_BEAUTY_DIFF -> fun紅艷_甲乙相異.invoke(if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
       }
     }
   }

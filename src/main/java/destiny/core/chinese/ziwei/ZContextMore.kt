@@ -55,7 +55,10 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    /** 顯示 將前12星  */
                    val showGeneralFront: Boolean,
                    /** 顯示 歲前12星  */
-                   val showYearFront: Boolean) : ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl, tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl, flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
+                   val showYearFront: Boolean) :
+  ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl,
+           tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl,
+           flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
 
 
   /** 宮干四化「自化」 顯示選項  */

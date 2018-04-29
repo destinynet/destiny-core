@@ -23,7 +23,7 @@ class HouseDoctorImpl(star: StarDoctor) : HouseAbstractImpl<Pair<Stem, Gender>>(
   }
 
   override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
-    val yearStem = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem
+    val yearStem = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem
     return getBranch(Pair(yearStem, gender))
   }
 

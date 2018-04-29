@@ -7,7 +7,6 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
-import java.util.*
 
 /**
  * 年干支 ，用於旬空兩顆星
@@ -17,7 +16,7 @@ abstract class HouseYearImpl internal constructor(star: ZStar) : HouseAbstractIm
 
 
   override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
-    val year = if (context.yearType == ZContext.YearType.YEAR_LUNAR) lunarYear else solarYear
+    val year = if (context.yearType == YearType.YEAR_LUNAR) lunarYear else solarYear
 
     return getBranch(year)
   }
