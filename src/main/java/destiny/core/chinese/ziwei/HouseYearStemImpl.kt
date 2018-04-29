@@ -11,11 +11,23 @@ import destiny.core.chinese.StemBranch
 
 /**
  * 年干 系星
- * 必須判斷 [ZContext.YearType]
+ * 必須判斷 [IZiweiContext.yearType]
  */
 abstract class HouseYearStemImpl internal constructor(star: ZStar) : HouseAbstractImpl<Stem>(star) {
 
-  override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
+  override fun getBranch(lunarYear: StemBranch,
+                         solarYear: StemBranch,
+                         monthBranch: Branch,
+                         finalMonthNumForMonthStars: Int,
+                         solarTerms: SolarTerms,
+                         days: Int,
+                         hour: Branch,
+                         state: Int,
+                         gender: Gender,
+                         leap: Boolean,
+                         prevMonthDays: Int,
+                         predefinedMainHouse: Branch?,
+                         context: IZiweiContext): Branch {
     val yearStem = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem
     return getBranch(yearStem)
   }

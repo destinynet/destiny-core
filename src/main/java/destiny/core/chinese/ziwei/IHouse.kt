@@ -35,7 +35,7 @@ interface IHouse<T> {
                 leap: Boolean,
                 prevMonthDays: Int,
                 predefinedMainHouse: Branch?,
-                context: ZContext): Branch
+                context: IZiweiContext): Branch
 
 
 }

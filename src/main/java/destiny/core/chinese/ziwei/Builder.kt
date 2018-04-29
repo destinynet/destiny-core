@@ -20,7 +20,7 @@ import java.util.*
 class Builder(
 
   /** 設定資料  */
-  val context: ZContext,
+  val context: IZiweiContext,
   /** 陰曆生日  */
   val chineseDate: ChineseDate,
   /** 性別  */

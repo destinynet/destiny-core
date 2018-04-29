@@ -12,7 +12,8 @@ import destiny.core.chinese.Stem
  * 目前只有 [StarMinor.天傷] , [StarMinor.天使] 會用到
  * 實作於 [StarMinor.fun天傷_陽順陰逆] , [StarMinor.fun天使_陽順陰逆]
  */
-abstract class HouseHouseDepYearStemGenderImpl internal constructor(star: ZStar) : HouseAbstractImpl<Triple<Branch, Stem, Gender>>(star) {
+abstract class HouseHouseDepYearStemGenderImpl internal constructor(star: ZStar) :
+  HouseAbstractImpl<Triple<Branch, Stem, Gender>>(star) {
 
   override fun getBranch(o: Triple<Branch, Stem, Gender>): Branch {
     throw RuntimeException("error")

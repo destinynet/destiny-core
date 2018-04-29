@@ -24,7 +24,19 @@ class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<Fiv
     return StarLongevity.starFuncMap[star]!!.invoke(t.first, t.second, t.third)
   }
 
-  override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
+  override fun getBranch(lunarYear: StemBranch,
+                         solarYear: StemBranch,
+                         monthBranch: Branch,
+                         finalMonthNumForMonthStars: Int,
+                         solarTerms: SolarTerms,
+                         days: Int,
+                         hour: Branch,
+                         state: Int,
+                         gender: Gender,
+                         leap: Boolean,
+                         prevMonthDays: Int,
+                         predefinedMainHouse: Branch?,
+                         context: IZiweiContext): Branch {
     val stemOf寅 = IZiwei.getStemOf寅(if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
 
     val mainHouse = predefinedMainHouse ?: IZiwei.getMainHouseBranch(finalMonthNumForMonthStars, hour)

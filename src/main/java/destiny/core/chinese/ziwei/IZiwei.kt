@@ -38,7 +38,7 @@ interface IZiwei {
    */
   fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?, preFinalMonthNumForMainStars: Int?,
                     cycle: Int, lunarYear: StemBranch, solarYear: StemBranch, lunarMonth: Int, leapMonth: Boolean, monthBranch: Branch, solarTerms: SolarTerms, lunarDays: Int, hour: Branch, stars: Collection<ZStar>,
-                    gender: Gender, optionalVageMap: Map<Int, Pair<Double, Double>>?, context: ZContext): Builder
+                    gender: Gender, optionalVageMap: Map<Int, Pair<Double, Double>>?, context: IZiweiContext): Builder
 
   /** 輸入現代化的資料，計算本命盤  */
   fun getBirthPlate(lmt: ChronoLocalDateTime<*>, location: ILocation, place: String?, gender: Gender, stars: Collection<ZStar>, context: ZContextMore, solarTermsImpl: ISolarTerms, yearMonthImpl: IYearMonth, dayImpl: IDay): Builder

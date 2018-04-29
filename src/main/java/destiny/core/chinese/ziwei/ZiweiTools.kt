@@ -21,7 +21,7 @@ class ZiweiTools : Serializable {
 
 
     /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
-    fun getYearsOfFlowBig(builder: Builder, context: ZContext, flowBig: Branch): List<Triple<Int, StemBranch, Int>> {
+    fun getYearsOfFlowBig(builder: Builder, context: IZiweiContext, flowBig: Branch): List<Triple<Int, StemBranch, Int>> {
       val bigRangeImpl = context.bigRangeImpl
       val birthYear = builder.chineseDate.year
       val birthCycle = builder.chineseDate.cycleOrZero

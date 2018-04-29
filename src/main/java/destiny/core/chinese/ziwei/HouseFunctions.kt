@@ -6,9 +6,9 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
+import destiny.core.chinese.ITianyi
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
-import destiny.core.chinese.ITianyi
 import destiny.core.chinese.ziwei.StarDoctor.*
 import destiny.core.chinese.ziwei.StarGeneralFront.*
 import destiny.core.chinese.ziwei.StarLongevity.*
@@ -186,7 +186,7 @@ object HouseFunctions {
   }
 
   val house火星: IHouse<*> = object : HouseYearBranchHourBranchImpl(火星) {
-    override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
+    override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: IZiweiContext): Branch {
       val yearBranch = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
       return when (context.fireBell) {
         FireBell.FIREBELL_BOOK -> fun火星_全書.invoke(yearBranch)
@@ -196,7 +196,7 @@ object HouseFunctions {
   }
 
   val house鈴星: IHouse<*> = object : HouseYearBranchHourBranchImpl(鈴星) {
-    override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
+    override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: IZiweiContext): Branch {
       val yearBranch = if (context.yearType == YearType.YEAR_LUNAR) lunarYear.branch else solarYear.branch
       return when (context.fireBell) {
         FireBell.FIREBELL_BOOK -> fun鈴星_全書.invoke(yearBranch)
@@ -416,7 +416,19 @@ object HouseFunctions {
 
 
   val house天傷: IHouse<*> = object : HouseHouseDepYearStemGenderImpl(天傷) {
-    override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
+    override fun getBranch(lunarYear: StemBranch,
+                           solarYear: StemBranch,
+                           monthBranch: Branch,
+                           finalMonthNumForMonthStars: Int,
+                           solarTerms: SolarTerms,
+                           days: Int,
+                           hour: Branch,
+                           state: Int,
+                           gender: Gender,
+                           leap: Boolean,
+                           prevMonthDays: Int,
+                           predefinedMainHouse: Branch?,
+                           context: IZiweiContext): Branch {
       // 太乙派，沒有遷移宮
       val houseSeqImpl = HouseSeqDefaultImpl()
       val steps = houseSeqImpl.getAheadOf(House.遷移, House.命宮)
@@ -431,7 +443,19 @@ object HouseFunctions {
   }
 
   val house天使: IHouse<*> = object : HouseHouseDepYearStemGenderImpl(天使) {
-    override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
+    override fun getBranch(lunarYear: StemBranch,
+                           solarYear: StemBranch,
+                           monthBranch: Branch,
+                           finalMonthNumForMonthStars: Int,
+                           solarTerms: SolarTerms,
+                           days: Int,
+                           hour: Branch,
+                           state: Int,
+                           gender: Gender,
+                           leap: Boolean,
+                           prevMonthDays: Int,
+                           predefinedMainHouse: Branch?,
+                           context: IZiweiContext): Branch {
       // 太乙派，沒有遷移宮
       val houseSeqImpl = HouseSeqDefaultImpl()
       val steps = houseSeqImpl.getAheadOf(House.遷移, House.命宮)
@@ -476,7 +500,19 @@ object HouseFunctions {
       throw RuntimeException("Error")
     }
 
-    override fun getBranch(lunarYear: StemBranch, solarYear: StemBranch, monthBranch: Branch, finalMonthNumForMonthStars: Int, solarTerms: SolarTerms, days: Int, hour: Branch, state: Int, gender: Gender, leap: Boolean, prevMonthDays: Int, predefinedMainHouse: Branch?, context: ZContext): Branch {
+    override fun getBranch(lunarYear: StemBranch,
+                           solarYear: StemBranch,
+                           monthBranch: Branch,
+                           finalMonthNumForMonthStars: Int,
+                           solarTerms: SolarTerms,
+                           days: Int,
+                           hour: Branch,
+                           state: Int,
+                           gender: Gender,
+                           leap: Boolean,
+                           prevMonthDays: Int,
+                           predefinedMainHouse: Branch?,
+                           context: IZiweiContext): Branch {
       return when (context.redBeauty) {
         RedBeauty.RED_BEAUTY_SAME -> fun紅艷_甲乙相同.invoke(if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
         RedBeauty.RED_BEAUTY_DIFF -> fun紅艷_甲乙相異.invoke(if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
