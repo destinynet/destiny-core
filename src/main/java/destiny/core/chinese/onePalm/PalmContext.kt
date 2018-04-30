@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2015-05-17.
+ * Created by smallufo on 2018-04-30.
  */
 package destiny.core.chinese.onePalm
 
@@ -16,9 +16,11 @@ import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import org.slf4j.LoggerFactory
+import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
-interface IPalm {
+
+interface IPalmContext {
 
   /**
    * [A] 本命盤，已經預先計算命宮
@@ -33,14 +35,14 @@ interface IPalm {
               positiveImpl: IPositive,
               rising: Branch,
               monthBranch: Branch,
-              monthAlgo: MonthAlgo,
-              clockwiseHouse: Boolean): Palm {
+              monthAlgo: IFinalMonthNumber.MonthAlgo,
+              clockwiseHouse: Boolean): IPalmModel {
     val positive = if (positiveImpl.isPositive(gender, yearBranch)) 1 else -1
 
     val finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, monthBranch, dayNum, monthAlgo)
 
     // 年上起月
-    val month = yearBranch.next((finalMonthNum - 1) * positive)
+    val month: Branch = yearBranch.next((finalMonthNum - 1) * positive)
 
     // 月上起日
     val day = month.next((dayNum - 1) * positive)
@@ -52,8 +54,9 @@ interface IPalm {
     for (i in 0..11) {
       houseMap[if (clockwiseHouse) rising.next(i) else rising.prev(i)] = Palm.House.values()[i]
     }
-    return Palm(gender, yearBranch, month, day, hour, houseMap)
+    return PalmModel(gender, yearBranch, month, day, hour, houseMap)
   }
+
 
   /**
    * [B] 本命盤 , 沒有預先計算命宮
@@ -67,8 +70,8 @@ interface IPalm {
               hourBranch: Branch,
               positiveImpl: IPositive,
               monthBranch: Branch,
-              monthAlgo: MonthAlgo,
-              clockwiseHouse: Boolean): Palm {
+              monthAlgo: IFinalMonthNumber.MonthAlgo,
+              clockwiseHouse: Boolean): IPalmModel {
     val positive = if (positiveImpl.isPositive(gender, yearBranch)) 1 else -1
 
     logger.trace("positive = {}", positive)
@@ -93,7 +96,7 @@ interface IPalm {
     for (i in 0..11) {
       houseMap[if (clockwiseHouse) rising.next(i) else rising.prev(i)] = Palm.House.values()[i]
     }
-    return Palm(gender, yearBranch, month, day, hour, houseMap)
+    return PalmModel(gender, yearBranch, month, day, hour, houseMap)
   }
 
   /** [C] 沒帶入節氣資料 , 內定把月份計算採用 [MonthAlgo.MONTH_LEAP_SPLIT15] 的演算法  */
@@ -102,9 +105,48 @@ interface IPalm {
               leap: Boolean,
               monthNum: Int,
               dayNum: Int,
-              hourBranch: Branch,
-              positiveImpl: IPositive,
-              clockwiseHouse: Boolean): Palm {
+              hourBranch: Branch) : IPalmModel
+
+
+  /**
+   * [D] 本命盤
+   * @param trueRising : 是否已經預先計算好了真實的上升星座
+   * @param monthBranch : 「節氣」的月支
+   */
+  fun getPalm(gender: Gender,
+              chineseDateHour: IChineseDateHourModel,
+              trueRising: Branch?,
+              monthBranch: Branch): IPalmModel
+
+  /**
+   * [E] 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
+   */
+  fun getPalm(gender: Gender, lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?): IPalmModel
+
+  companion object {
+    val logger = LoggerFactory.getLogger(IPalmContext::class.java)!!
+  }
+}
+
+class PalmContext(val positiveImpl: IPositive,
+                  val chineseDateImpl: IChineseDate,
+                  val dayImpl: IDay,
+                  val hourImpl: IHour,
+                  val midnightImpl: IMidnight,
+                  val risingSignImpl: IRisingSign,
+                  val yearMonthImpl: IYearMonth,
+                  val monthAlgo: IFinalMonthNumber.MonthAlgo,
+                  val changeDayAfterZi: Boolean,
+                  val trueRisingSign: Boolean,
+                  val clockwiseHouse: Boolean) : IPalmContext, Serializable {
+
+  /** [C] 沒帶入節氣資料 , 內定把月份計算採用 [MonthAlgo.MONTH_LEAP_SPLIT15] 的演算法  */
+  override fun getPalm(gender: Gender,
+                       yearBranch: Branch,
+                       leap: Boolean,
+                       monthNum: Int,
+                       dayNum: Int,
+                       hourBranch: Branch) : IPalmModel {
     val positive = if (positiveImpl.isPositive(gender, yearBranch)) 1 else -1
 
     logger.trace("positive = {}", positive)
@@ -132,52 +174,27 @@ interface IPalm {
     for (i in 0..11) {
       houseMap[if (clockwiseHouse) rising.next(i) else rising.prev(i)] = Palm.House.values()[i]
     }
-    return Palm(gender, yearBranch, month, day, hour, houseMap)
+    return PalmModel(gender, yearBranch, month, day, hour, houseMap)
   }
 
-  /**
-   * [D] 本命盤
-   *
-   * @param trueRising  是否已經預先計算好了真實的上升星座
-   * @param monthBranch 「節氣」的月支
-   */
-  fun getPalm(gender: Gender,
-              chineseDateHour: IChineseDateHourModel,
-              positiveImpl: IPositive,
-              trueRising: Branch?,
-              monthBranch: Branch,
-              monthAlgo: MonthAlgo,
-              clockwiseHouse: Boolean): Palm {
-
+  /** [D] */
+  override fun getPalm(gender: Gender,
+                       chineseDateHour: IChineseDateHourModel,
+                       trueRising: Branch?,
+                       monthBranch: Branch): IPalmModel {
     return trueRising?.let { rising ->
       getPalm(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
-              chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, rising     , monthBranch, monthAlgo,
+              chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, rising, monthBranch, monthAlgo,
               clockwiseHouse)
-    }?: getPalm(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
-              chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, monthBranch, monthAlgo, clockwiseHouse)
+    } ?: getPalm(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
+                 chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, monthBranch, monthAlgo, clockwiseHouse)
   }
 
   /**
    * [E] 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
-   * @param yearMonthImpl   八字年月的計算實作（主要是用於計算月令）
-   * @param trueRisingSign  真實星體命宮. 若為 false , 則為傳統一掌經起命宮
-   * @param clockwiseHouse  宮位飛佈，順時針(true) or 逆時針(false)
    */
-  fun getPalmWithMeta(gender: Gender,
-                      lmt: ChronoLocalDateTime<*>,
-                      loc: ILocation,
-                      place: String?,
-                      positiveImpl: IPositive,
-                      chineseDateImpl: IChineseDate,
-                      dayImpl: IDay,
-                      hourImpl: IHour,
-                      midnightImpl: IMidnight,
-                      risingSignImpl: IRisingSign,
-                      yearMonthImpl: IYearMonth,
-                      monthAlgo: MonthAlgo,
-                      changeDayAfterZi: Boolean,
-                      trueRisingSign: Boolean,
-                      clockwiseHouse: Boolean): PalmWithMeta {
+  override fun getPalm(gender: Gender, lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?): IPalmModel {
+
     val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
     val hourBranch = hourImpl.getHour(lmt, loc)
     val chineseDateHour = ChineseDateHour(cDate, hourBranch)
@@ -191,36 +208,12 @@ interface IPalm {
 
     // 節氣的月支
     val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
-    val palm = getPalm(gender, chineseDateHour, positiveImpl, trueRising, monthBranch, monthAlgo, clockwiseHouse)
-    return PalmWithMeta(palm, lmt, loc, place, chineseDateImpl, dayImpl, positiveImpl, hourImpl, midnightImpl,
-                        changeDayAfterZi, trueRisingSign, monthAlgo)
-  }
+    val palm = getPalm(gender, chineseDateHour, trueRising, monthBranch)
 
-  /**
-   * 大運從掌中年上起月，男順、女逆，輪數至本生月起運。本生月所在宮為一運，下一宮為二運，而一運管10年。
-   *
-   *
-   * 女則逆行，也從子（天貴宮）上起正月，三月則落在戌（天藝宮）上，戌為初運（1－10歲），酉（天刃宮）為二運（11－20歲）也，餘此類推。
-   *
-   * 大運盤，每運10年，從 1歲起. 1~10 , 11~20 , 21~30 ...
-   * Map 的 key 為「運的開始」: 1 , 11 , 21 , 31 ...
-   * @param count : 要算多少組大運
-   * 演算法與 [Palm.getMajorFortunes] 一致
-   */
-  fun getMajorFortunes(gender: Gender, yearBranch: Branch, month: Int, count: Int): Map<Int, Branch> {
-    val positive = if (gender === Gender.男) 1 else -1
-
-    // 年上起月
-    val monthBranch = yearBranch.next((month - 1) * positive)
-
-    return (1..count).map { (it -1) * 10 + 1 to monthBranch.next((it-1)*positive) }
-      .sortedBy { it.first }
-      .toMap()
+    return palm
   }
 
   companion object {
-
-    val logger = LoggerFactory.getLogger(IPalm::class.java)
+    val logger = LoggerFactory.getLogger(PalmContext::class.java)!!
   }
-
 }

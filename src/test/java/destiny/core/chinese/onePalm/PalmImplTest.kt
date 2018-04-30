@@ -129,7 +129,6 @@ class PalmImplTest {
   fun testRising_Male() {
     val palm = impl.getPalm(Gender.男, 巳, false, 1, 12, 午, defaultImpl, true)
     assertSame(未, palm.getBranch(Palm.House.命))
-
   }
 
   /**

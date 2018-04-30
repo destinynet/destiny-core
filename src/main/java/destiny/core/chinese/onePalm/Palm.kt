@@ -10,7 +10,7 @@ import java.io.Serializable
 /**
  * 達摩一掌金 資料結構
  */
-open class Palm : Serializable {
+class Palm : Serializable {
 
   val gender: Gender
 
@@ -45,7 +45,8 @@ open class Palm : Serializable {
     命, 財帛, 兄弟, 田宅, 男女, 奴僕, 配偶, 疾厄, 遷移, 官祿, 福德, 相貌
   }
 
-  constructor(gender: Gender, year: Branch, month: Branch, day: Branch, hour: Branch, houseMap: Map<Branch, House>) {
+  constructor(gender: Gender, year: Branch, month: Branch, day: Branch, hour: Branch,
+              houseMap: Map<Branch, House>) {
     this.gender = gender
     this.year = year
     this.month = month
