@@ -18,8 +18,15 @@ import java.time.chrono.ChronoLocalDateTime
 object Pithies {
   val logger = LoggerFactory.getLogger(Pithies::class.java)
 
-  fun getPithy(direction: Branch, ew: EightWords, 月將: Branch, tianyiImpl: ITianyi, dayNight: DayNight,
-               clockwise: Clockwise, seq: IGeneralSeq, generalStemBranchImpl: IGeneralStemBranch): Pithy {
+  fun getPithy(direction: Branch,
+               ew: EightWords,
+               月將: Branch,
+               dayNight: DayNight,
+
+               tianyiImpl: ITianyi,
+               clockwise: Clockwise,
+               seq: IGeneralSeq,
+               generalStemBranchImpl: IGeneralStemBranch): IPithyModel {
 
     // 天乙貴人(起點)
     val 天乙貴人 = tianyiImpl.getFirstTianyi(ew.day.stem, dayNight)
@@ -45,7 +52,7 @@ object Pithies {
 
   fun getPithy(direction: Branch, lmt: ChronoLocalDateTime<*>, loc: ILocation, monthBranchImpl: IMonthMaster,
                dayNightImpl: DayNightDifferentiator, tianyiImpl: ITianyi, clockwiseImpl: IClockwise,
-               seq: IGeneralSeq, generalStemBranchImpl: IGeneralStemBranch, eightWordsImpl: IEightWordsFactory): Pithy {
+               seq: IGeneralSeq, generalStemBranchImpl: IGeneralStemBranch, eightWordsImpl: IEightWordsFactory): IPithyModel {
     val ew = eightWordsImpl.getEightWords(lmt, loc)
 
     val 月將 = monthBranchImpl.getBranch(lmt, loc)
@@ -55,6 +62,9 @@ object Pithies {
 
     val dayNight = dayNightImpl.getDayNight(lmt, loc)
 
-    return getPithy(direction, ew, 月將, tianyiImpl, dayNight, clockwise, seq, generalStemBranchImpl)
+    val pithyModel = getPithy(direction, ew, 月將, dayNight, tianyiImpl, clockwise, seq, generalStemBranchImpl)
+    //PithyDetailModel(pithyModel , gender =)
+
+    return getPithy(direction, ew, 月將, dayNight, tianyiImpl, clockwise, seq, generalStemBranchImpl)
   }
 }

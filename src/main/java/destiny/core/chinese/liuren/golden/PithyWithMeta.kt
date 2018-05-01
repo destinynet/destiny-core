@@ -16,7 +16,12 @@ import destiny.core.chinese.liuren.IGeneralStemBranch
 import java.io.Serializable
 import java.util.*
 
-class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: Gender, val question: String, val locationPlace: LocationPlace,
+@Deprecated("")
+class PithyWithMeta(val pithy: Pithy,
+                    private val method: Method?,
+                    val gender: Gender,
+                    val question: String,
+                    val locationPlace: LocationPlace,
                     /** 月將  */
                     private val monthMasterImpl: IMonthMaster,
                     /** 晝夜區分  */
@@ -43,7 +48,8 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
     sb.append(ew.hour.stem).append(ew.day.stem).append(ew.month.stem).append(ew.year.stem).append("\n")
     sb.append(ew.hour.branch).append(ew.day.branch).append(ew.month.branch).append(ew.year.branch).append("\n")
     sb.append("\n")
-    sb.append("月將：").append(pithy.monthSign).append("（").append(monthMasterImpl.getTitle(Locale.TAIWAN)).append("）").append("\n")
+    sb.append("月將：").append(pithy.monthSign).append("（").append(monthMasterImpl.getTitle(Locale.TAIWAN)).append("）")
+      .append("\n")
     sb.append("晝夜：").append(if (pithy.dayNight == DayNight.DAY) "日" else "夜").append("\n")
     sb.append("年空：").append(ew.year.empties.joinToString("、") { it.toString() }).append("\n")
     //sb.append("年空：").append(ew.year.empties.stream().map<String>(Function<Branch, String> { it.toString() }).collect<String, *>(Collectors.joining("、"))).append("\n")
@@ -52,7 +58,8 @@ class PithyWithMeta(val pithy: Pithy, private val method: Method?, val gender: G
     sb.append("\n")
     sb.append("人元：").append(pithy.human).append("\n")
     val 貴神 = pithy.benefactor
-    sb.append("貴神：").append(貴神).append("（").append(General.get(貴神.branch, generalStemBranchImpl)).append("）").append("\n")
+    sb.append("貴神：").append(貴神).append("（").append(General.get(貴神.branch, generalStemBranchImpl)).append("）")
+      .append("\n")
     val 將神 = pithy.johnson
     sb.append("將神：").append(將神).append("（").append(IMonthMaster.getName(將神.branch)).append("）").append("\n")
     sb.append("地分：").append(pithy.direction)

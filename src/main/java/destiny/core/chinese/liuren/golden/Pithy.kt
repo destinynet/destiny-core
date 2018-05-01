@@ -4,6 +4,8 @@
 package destiny.core.chinese.liuren.golden
 
 import destiny.astrology.DayNight
+import destiny.core.Gender
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
@@ -11,27 +13,24 @@ import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 
 import java.io.Serializable
+import java.time.chrono.ChronoLocalDateTime
 
-/**
- * 六壬金口訣，核心資料結構
- * 口訣 : Pithy
- */
-data class Pithy(
+interface IPithyModel {
 
   /** 八字  */
-  val eightWords: EightWords,
+  val eightWords: EightWords
 
   /** 地分  */
-  val direction: Branch,
+  val direction: Branch
 
   /** 月將（太陽星座）*/
-  val monthSign: Branch,
+  val monthSign: Branch
 
   /** 取得「晝夜」 */
-  val dayNight: DayNight,
+  val dayNight: DayNight
 
   /** 貴神  */
-  val benefactor: StemBranch) : Serializable {
+  val benefactor: StemBranch
 
   /**
    * 取得「人元」 : 演算法如同「五鼠遁時」法
@@ -41,6 +40,7 @@ data class Pithy(
    */
   val human: Stem
     get() = StemBranchUtils.getHourStem(eightWords.day.stem, direction)
+
 
   /**
    * 取得「將神」 : 從時辰開始，順數至「地分」
@@ -56,23 +56,54 @@ data class Pithy(
 
       val stem = StemBranchUtils.getHourStem(eightWords.day.stem, monthSign.next(steps))
       //println("月將 = $monthSign , 加上 $steps 步 , 將神地支 = $branch , 天干為 $stem")
-      return StemBranch.get(stem, branch)
+      return StemBranch[stem, branch]
     }
-
-  /**
-   * 取得「日」的空亡
-   */
-  val dayEmpties: Collection<Branch>
-    get() = eightWords.day.empties
+}
 
 
-  override fun toString(): String {
-    return "[Pithy " +
-      "八字=" + eightWords +
-      ", 地分=" + direction +
-      ", 人元=" + human +
-      ", 月將=" + monthSign +
-      ", 貴神=" + benefactor +
-      ']'.toString()
+/**
+ * 六壬金口訣，核心資料結構
+ * 口訣 : Pithy
+ */
+data class Pithy(
+
+  /** 八字  */
+  override val eightWords: EightWords,
+
+  /** 地分  */
+  override val direction: Branch,
+
+  /** 月將（太陽星座）*/
+  override val monthSign: Branch,
+
+  /** 取得「晝夜」 */
+  override val dayNight: DayNight,
+
+  /** 貴神  */
+  override val benefactor: StemBranch) : IPithyModel, Serializable
+
+interface IPithyDetailModel : IPithyModel {
+
+  val gender: Gender
+  val lmt: ChronoLocalDateTime<*>
+  val loc: ILocation
+  val place: String?
+
+  val question: String?
+  val method: Method
+
+  /** 起課方式  */
+  enum class Method {
+    RANDOM, MANUAL
   }
 }
+
+data class PithyDetailModel(
+  private val pithy: IPithyModel,
+  override val gender: Gender,
+  override val lmt: ChronoLocalDateTime<*>,
+  override val loc: ILocation,
+  override val place: String?,
+  override val question: String?,
+  override val method: IPithyDetailModel.Method
+                           ) : IPithyDetailModel, IPithyModel by pithy, Serializable
