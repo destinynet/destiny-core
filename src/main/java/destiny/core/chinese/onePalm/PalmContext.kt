@@ -32,7 +32,7 @@ interface IPalmContext {
 
 
   /**
-   * [A] 本命盤，已經預先計算命宮
+   * 本命盤，已經預先計算命宮
    * @param main 預先計算的命宮
    * @param clockwiseHouse 宮位飛佈，順時針(true) or 逆時針(false)
    */
