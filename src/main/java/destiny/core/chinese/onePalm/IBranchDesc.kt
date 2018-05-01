@@ -12,7 +12,7 @@ interface IBranchDesc {
   fun getHouseIntro(house: Branch): String
 
   /** 取得某柱（座落於某宮）的解釋  */
-  fun getContent(pillar: Palm.Pillar, house: Branch): String
+  fun getContent(pillar: IPalmModel.Pillar, house: Branch): String
 
   /** 取得「時柱」的詩詞  */
   fun getPoem(hourBranch: Branch): String

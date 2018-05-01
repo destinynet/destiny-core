@@ -10,6 +10,7 @@ import java.io.Serializable
 /**
  * 達摩一掌金 資料結構
  */
+@Deprecated("")
 class Palm : Serializable {
 
   val gender: Gender
@@ -37,10 +38,12 @@ class Palm : Serializable {
         .map { branch -> branch to pillarMap.filter { (_,v) -> v === branch }.keys }
         .toMap()
 
+  @Deprecated("")
   enum class Pillar {
     年, 月, 日, 時
   }
 
+  @Deprecated("")
   enum class House {
     命, 財帛, 兄弟, 田宅, 男女, 奴僕, 配偶, 疾厄, 遷移, 官祿, 福德, 相貌
   }

@@ -4,20 +4,15 @@
 package destiny.core.chinese.onePalm
 
 import com.google.common.collect.HashBiMap
-import destiny.astrology.Coordinate
-import destiny.astrology.HouseSystem
 import destiny.core.Gender
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.chinese.ChineseDateHour
-import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
-import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import org.slf4j.LoggerFactory
-import java.time.chrono.ChronoLocalDateTime
 
+
+@Deprecated("")
 interface IPalm {
 
   /**
@@ -157,44 +152,7 @@ interface IPalm {
               chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, monthBranch, monthAlgo, clockwiseHouse)
   }
 
-  /**
-   * [E] 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
-   * @param yearMonthImpl   八字年月的計算實作（主要是用於計算月令）
-   * @param trueRisingSign  真實星體命宮. 若為 false , 則為傳統一掌經起命宮
-   * @param clockwiseHouse  宮位飛佈，順時針(true) or 逆時針(false)
-   */
-  fun getPalmWithMeta(gender: Gender,
-                      lmt: ChronoLocalDateTime<*>,
-                      loc: ILocation,
-                      place: String?,
-                      positiveImpl: IPositive,
-                      chineseDateImpl: IChineseDate,
-                      dayImpl: IDay,
-                      hourImpl: IHour,
-                      midnightImpl: IMidnight,
-                      risingSignImpl: IRisingSign,
-                      yearMonthImpl: IYearMonth,
-                      monthAlgo: MonthAlgo,
-                      changeDayAfterZi: Boolean,
-                      trueRisingSign: Boolean,
-                      clockwiseHouse: Boolean): PalmWithMeta {
-    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
-    val hourBranch = hourImpl.getHour(lmt, loc)
-    val chineseDateHour = ChineseDateHour(cDate, hourBranch)
 
-    val trueRising: Branch? = if (trueRisingSign) {
-      // 真實上升星座
-      risingSignImpl.getRisingSign(lmt, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
-    } else {
-      null
-    }
-
-    // 節氣的月支
-    val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
-    val palm = getPalm(gender, chineseDateHour, positiveImpl, trueRising, monthBranch, monthAlgo, clockwiseHouse)
-    return PalmWithMeta(palm, lmt, loc, place, chineseDateImpl, dayImpl, positiveImpl, hourImpl, midnightImpl,
-                        changeDayAfterZi, trueRisingSign, monthAlgo)
-  }
 
   /**
    * 大運從掌中年上起月，男順、女逆，輪數至本生月起運。本生月所在宮為一運，下一宮為二運，而一運管10年。
