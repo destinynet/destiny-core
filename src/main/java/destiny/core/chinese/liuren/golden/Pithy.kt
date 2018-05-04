@@ -11,7 +11,6 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
-
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -82,13 +81,29 @@ data class Pithy(
   /** 貴神  */
   override val benefactor: StemBranch) : IPithyModel, Serializable
 
-interface IPithyDetailModel : IPithyModel {
 
+/**
+ * 添加了性別、詳細時間
+ */
+interface IPithyModernModel : IPithyModel {
   val gender: Gender
   val lmt: ChronoLocalDateTime<*>
   val loc: ILocation
-  val place: String?
+}
 
+data class PithyModernModel(
+  private val pithy: IPithyModel,
+  override val gender: Gender,
+  override val lmt: ChronoLocalDateTime<*>,
+  override val loc: ILocation) : IPithyModernModel, IPithyModel by pithy, Serializable
+
+
+/**
+ * 給 web 端使用，多了 地名、question 等比較無關的欄位
+ */
+interface IPithyDetailModel : IPithyModernModel {
+
+  val place: String?
   val question: String?
   val method: Method
 
@@ -98,12 +113,10 @@ interface IPithyDetailModel : IPithyModel {
   }
 }
 
+
 data class PithyDetailModel(
-  private val pithy: IPithyModel,
-  override val gender: Gender,
-  override val lmt: ChronoLocalDateTime<*>,
-  override val loc: ILocation,
+  private val pithyModernModel: IPithyModernModel,
   override val place: String?,
   override val question: String?,
   override val method: IPithyDetailModel.Method
-                           ) : IPithyDetailModel, IPithyModel by pithy, Serializable
+                           ) : IPithyDetailModel, IPithyModernModel by pithyModernModel, Serializable
