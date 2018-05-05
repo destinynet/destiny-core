@@ -70,9 +70,11 @@ interface IBesieged {
     return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).first
   }
 
+  // 承上 , gmt 版本
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, isClassical: Boolean): List<Planet> {
     return getBesiegingPlanets(planet, TimeTools.getGmtJulDay(gmt), isClassical)
   }
+
 
 
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>,
@@ -87,21 +89,16 @@ interface IBesieged {
    * 傳回的 List[Planet] 必定 size = 2
    * @param classical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
    */
-  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean, aspects: Collection<Aspect>): List<Planet> {
-
+  fun getBesiegingPlanets(planet: Planet, gmtJulDay: Double, classical: Boolean, aspects: Collection<Aspect>): List<Planet> {
     val otherPlanets = getPlanetsExcept(planet, classical)
-
-    return getBesiegingPlanets(planet, gmt, otherPlanets, aspects).first
+    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, aspects).first
   }
 
-  /**
-   * 傳回的 List[Planet] 必定 size = 2
-   */
-  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>,
-                          onlyClassicalPlanets: Boolean, aspects: Array<Aspect>): List<Planet> {
-    return getBesiegingPlanets(planet, gmt, onlyClassicalPlanets, aspects.toList())
+  // 承上 , gmt 版本
+  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean, aspects: Collection<Aspect>): List<Planet> {
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    return getBesiegingPlanets(planet , gmtJulDay , classical , aspects)
   }
-
 
   /**
    * @param planet 此 planet 是否被 p1 , p2 所包夾
@@ -129,7 +126,8 @@ interface IBesieged {
         true
     }
 
-    val (besiegingPlanets, aspectPrior, aspectAfter) = getBesiegingPlanets(planet, gmt, otherPlanets, searchingAspects)
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    val (besiegingPlanets, aspectPrior, aspectAfter) = getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects)
 
     logger.debug("包夾 {} 的是 {}({}) 以及 {}({})", planet, besiegingPlanets[0], aspectPrior, besiegingPlanets[1], aspectAfter)
     return if (besiegingPlanets.contains(p1)

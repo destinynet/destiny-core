@@ -3,6 +3,7 @@
  */
 package destiny.astrology.eclipse
 
+@Deprecated("ILunarEclipse")
 abstract class AbstractLunarEclipse(
 
   /** 半影開始 (P1) , 最早 , 可視為整個 eclipse 的 begin  */
@@ -13,16 +14,10 @@ abstract class AbstractLunarEclipse(
   /** 半影結束 (P4) , 最遲 , 可視為整個 eclipse 的 end    */
   val penumbraEnd: Double
 
-) : AbstractEclipse(penumbraBegin, max, penumbraEnd) {
+                                   ) : AbstractEclipse(penumbraBegin, max, penumbraEnd) {
 
 
-  abstract val lunarType: LunarType
-
-  enum class LunarType {
-    TOTAL,
-    PARTIAL,
-    PENUMBRA  // 半影月食
-  }
+  abstract val lunarType: ILunarEclipse.LunarType
 
 
   override fun toString(): String {

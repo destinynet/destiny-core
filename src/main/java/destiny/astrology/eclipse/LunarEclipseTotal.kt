@@ -14,7 +14,7 @@ class LunarEclipseTotal(
   /** 月亮全部進入地球本影 剛結束 (U3)  */
   val totalEnd: Double, partialEnd: Double, penumbraEnd: Double) : LunarEclipsePartial(penumbraBegin, partialBegin, max, partialEnd, penumbraEnd) {
 
-  override val lunarType: AbstractLunarEclipse.LunarType
-    get() = AbstractLunarEclipse.LunarType.TOTAL
+  override val lunarType: ILunarEclipse.LunarType
+    get() = ILunarEclipse.LunarType.TOTAL
 
 }

@@ -7,7 +7,7 @@ import destiny.astrology.Azimuth
 
 /** 月全食 */
 class LunarEclipseTotalObservation(gmtJulDay: Double, lng: Double, lat: Double, alt: Double, azimuth: Azimuth,
-                                   lunarType: AbstractLunarEclipse.LunarType,
+                                   lunarType: ILunarEclipse.LunarType,
                                    magUmbra: Double,
                                    magPenumbra: Double,
                                    maxVisible: Boolean,

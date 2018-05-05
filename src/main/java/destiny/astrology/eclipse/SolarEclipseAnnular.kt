@@ -3,10 +3,17 @@
  */
 package destiny.astrology.eclipse
 
-open class SolarEclipseAnnular(max: Double, partialBegin: Double, partialEnd: Double, totalBegin: Double, totalEnd: Double, override val annularBegin: Double, override val annularEnd: Double) : SolarEclipseTotal(max, partialBegin, partialEnd, totalBegin, totalEnd), IEclipseAnnular {
+open class SolarEclipseAnnular(max: Double,
+                               partialBegin: Double,
+                               partialEnd: Double,
+                               totalBegin: Double,
+                               totalEnd: Double,
+                               override val annularBegin: Double,
+                               override val annularEnd: Double) :
+  SolarEclipseTotal(max, partialBegin, partialEnd, totalBegin, totalEnd), IEclipseAnnular {
 
-  override val solarType: AbstractSolarEclipse.SolarType
-    get() = AbstractSolarEclipse.SolarType.ANNULAR
+  override val solarType: ISolarEclipse.SolarType
+    get() = ISolarEclipse.SolarType.ANNULAR
 
 
   override fun toString(): String {

@@ -16,7 +16,7 @@ open class LunarEclipsePartial(
 
   penumbraEnd: Double) : LunarEclipsePenumbra(penumbraBegin, max, penumbraEnd) {
 
-  override val lunarType: AbstractLunarEclipse.LunarType
-    get() = AbstractLunarEclipse.LunarType.PARTIAL
+  override val lunarType: ILunarEclipse.LunarType
+    get() = ILunarEclipse.LunarType.PARTIAL
 
 }

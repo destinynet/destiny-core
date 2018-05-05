@@ -7,7 +7,7 @@ import destiny.astrology.Azimuth
 
 abstract class AbstractLunarEclipseObservation(
   gmtJulDay: Double, lng: Double, lat: Double, alt: Double, azimuth: Azimuth,
-  val type: AbstractLunarEclipse.LunarType,
+  val type: ILunarEclipse.LunarType,
 
   /** 本影強度 , magnitude of Umbra  */
   val magUmbra: Double,
@@ -18,7 +18,7 @@ abstract class AbstractLunarEclipseObservation(
   /** 食甚可見否?  */
   val isMaxVisible: Boolean) : AbstractEclipseObservation(gmtJulDay, lng, lat, alt, azimuth) {
 
-  fun getLunarType(): AbstractLunarEclipse.LunarType {
+  fun getLunarType(): ILunarEclipse.LunarType {
     return type
   }
 

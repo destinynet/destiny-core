@@ -15,8 +15,8 @@ open class LunarEclipsePenumbra(
   /** 月亮完全離開地球半影 P4 , 可視為整個 eclipse 的 end  */
   penumbraEnd: Double) : AbstractLunarEclipse(penumbraBegin, max, penumbraEnd) {
 
-  override val lunarType: AbstractLunarEclipse.LunarType
-    get() = AbstractLunarEclipse.LunarType.PENUMBRA
+  override val lunarType: ILunarEclipse.LunarType
+    get() = ILunarEclipse.LunarType.PENUMBRA
 
 
 }

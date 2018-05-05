@@ -7,7 +7,6 @@ package destiny.astrology
 
 import destiny.core.calendar.ILocation
 import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 
 /**
  * 2015-06-11 重寫此介面，讓此介面成為 immutable
@@ -25,14 +24,14 @@ interface IHoroscope {
 
 
   fun getDefaultPoints(nodeType: NodeType): Set<Point> {
-    val pointSet = HashSet<Point>()
-    pointSet.addAll(Arrays.asList(*Planets.array))
-    pointSet.addAll(Arrays.asList(*Asteroids.array))
-    pointSet.addAll(Arrays.asList(*Hamburgers.array))
-    pointSet.addAll(Arrays.asList(*FixedStars.array))
+    val pointSet = mutableSetOf<Point>()
+    pointSet.addAll(listOf(*Planets.array))
+    pointSet.addAll(listOf(*Asteroids.array))
+    pointSet.addAll(listOf(*Hamburgers.array))
+    pointSet.addAll(listOf(*FixedStars.array))
     when (nodeType) {
-      NodeType.MEAN -> pointSet.addAll(Arrays.asList(*LunarNodes.meanArray))
-      NodeType.TRUE -> pointSet.addAll(Arrays.asList(*LunarNodes.trueArray))
+      NodeType.MEAN -> pointSet.addAll(listOf(*LunarNodes.meanArray))
+      NodeType.TRUE -> pointSet.addAll(listOf(*LunarNodes.trueArray))
     }
     return pointSet
   }

@@ -8,7 +8,7 @@ import java.io.Serializable
 /**
  * 在一個地點觀測到的日、月食資料，開始、結束、各個接觸點 (contact) 各為何時
  */
-class EclipseSpan(
+data class EclipseSpan(
   /** 經度  */
   val lng: Double,
   /** 緯度  */

@@ -3,4 +3,11 @@
  */
 package destiny.astrology.eclipse
 
-class SolarEclipseTotalCentered(max: Double, partialBegin: Double, partialEnd: Double, totalBegin: Double, totalEnd: Double, override val centerBegin: Double, override val centerEnd: Double) : SolarEclipseTotal(max, partialBegin, partialEnd, totalBegin, totalEnd), IEclipseCenter
+class SolarEclipseTotalCentered(max: Double,
+                                partialBegin: Double,
+                                partialEnd: Double,
+                                totalBegin: Double,
+                                totalEnd: Double,
+                                override val centerBegin: Double,
+                                override val centerEnd: Double) :
+  SolarEclipseTotal(max, partialBegin, partialEnd, totalBegin, totalEnd), IEclipseCenter
