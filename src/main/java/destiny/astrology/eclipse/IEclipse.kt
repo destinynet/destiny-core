@@ -21,11 +21,14 @@ interface ISolarEclipse : IEclipse {
     HYBRID    // 極為罕見的「全環食」
   }
 
-  //val solarType: SolarType
+  val solarType: SolarType
 }
 
+/** 日偏食 , 沒有額外參數 */
+interface ISolarEclipsePartial : ISolarEclipse
+
 /** 日全食 */
-interface ISolarEclipseTotal : ISolarEclipse {
+interface ISolarEclipseTotal : ISolarEclipsePartial {
   val totalBegin: Double
   val totalEnd: Double
 }
@@ -36,6 +39,9 @@ interface ISolarEclipseAnnular : ISolarEclipseTotal {
   val annularEnd: Double
 }
 
+/** 混合型 , 全環食 , 非常罕見 */
+interface ISolarEclipseHybrid : ISolarEclipseAnnular
+
 /** 日食 的集合 */
 sealed class AbstractSolarEclipse2 : ISolarEclipse {
 
@@ -43,34 +49,54 @@ sealed class AbstractSolarEclipse2 : ISolarEclipse {
   data class SolarEclipsePartial(
     override val begin: Double,
     override val max: Double,
-    override val end: Double) : AbstractSolarEclipse2()
+    override val end: Double) : AbstractSolarEclipse2() , ISolarEclipsePartial {
+    override val solarType: ISolarEclipse.SolarType
+      get() = ISolarEclipse.SolarType.PARTIAL
+  }
 
   /** 日全食 , 為 偏食 的一種 , 內定「無中線」 */
   data class SolarEclipseTotal(
     private val partial: SolarEclipsePartial,
     override val totalBegin: Double,
-    override val totalEnd: Double) : AbstractSolarEclipse2(), ISolarEclipse by partial, ISolarEclipseTotal
+    override val totalEnd: Double) : AbstractSolarEclipse2(), ISolarEclipse by partial, ISolarEclipseTotal {
+    override val solarType: ISolarEclipse.SolarType
+      get() = ISolarEclipse.SolarType.TOTAL
+  }
 
   /** 日全食 , 有中線 */
   data class SolarEclipseTotalCentered(
     private val total: SolarEclipseTotal,
     override val centerBegin: Double,
-    override val centerEnd: Double) : AbstractSolarEclipse2(), ISolarEclipseTotal by total, IEclipseCenter
+    override val centerEnd: Double) : AbstractSolarEclipse2(), ISolarEclipseTotal by total, IEclipseCenter {
+    override val solarType: ISolarEclipse.SolarType
+      get() = ISolarEclipse.SolarType.TOTAL
+  }
 
   /** 日環食 , 為 全食 的一種 , 內定是「無中線」 */
-  data class SolarEclipseAnnular2(
+  data class SolarEclipseAnnular(
     private val total: SolarEclipseTotal,
+    // NOTE : swisseph 尚未實作 annular Begin/End 之值， 都會傳回 0.0
     override val annularBegin: Double,
-    override val annularEnd: Double) : AbstractSolarEclipse2(), ISolarEclipseTotal by total, ISolarEclipseAnnular
+    override val annularEnd: Double) : AbstractSolarEclipse2(), ISolarEclipseTotal by total, ISolarEclipseAnnular {
+    override val solarType: ISolarEclipse.SolarType
+      get() = ISolarEclipse.SolarType.ANNULAR
+  }
 
   /** 日環食 , 有中線 */
-  data class SolarEclipseAnnularCentered2(
-    private val annular: SolarEclipseAnnular2,
+  data class SolarEclipseAnnularCentered(
+    private val annular: SolarEclipseAnnular,
     override val centerBegin: Double,
-    override val centerEnd: Double) : ISolarEclipseAnnular by annular, IEclipseCenter
+    override val centerEnd: Double) : AbstractSolarEclipse2(), ISolarEclipseAnnular by annular, IEclipseCenter {
+    override val solarType: ISolarEclipse.SolarType
+      get() = ISolarEclipse.SolarType.ANNULAR
+  }
 
   /** 混合型 , 全環食 , 非常罕見 */
-  data class SolarEclipseHybrid2(private val annularCentered: SolarEclipseAnnularCentered2)
+  data class SolarEclipseHybrid(private val annularCentered: SolarEclipseAnnularCentered) : AbstractSolarEclipse2(),
+    ISolarEclipseAnnular by annularCentered, IEclipseCenter by annularCentered , ISolarEclipseHybrid {
+    override val solarType: ISolarEclipse.SolarType
+      get() = ISolarEclipse.SolarType.HYBRID
+  }
 
 }
 
@@ -88,7 +114,6 @@ interface ILunarEclipse : IEclipse {
   /** 半影結束 (P4) , 最遲 , 可視為整個 eclipse 的 end    */
   val penumbraEnd: Double
     get() = end
-
 
   enum class LunarType {
     TOTAL,

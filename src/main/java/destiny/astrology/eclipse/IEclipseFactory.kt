@@ -54,7 +54,10 @@ interface IEclipseFactory {
 
   // ========================================================================================
 
-  /** 全球，某時間範圍內的日食記錄  */
+  /**
+   * 全球，某時間範圍內的日食記錄
+   * [IEclipseFactory2.getRangeSolarEclipses]
+   * */
   fun getRangeSolarEclipses(fromGmt: Double, toGmt: Double, types: Collection<SolarType> = listOf(*SolarType.values())): List<AbstractSolarEclipse> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
@@ -70,7 +73,10 @@ interface IEclipseFactory {
     return list
   }
 
-  /** 承上 , ChronoLocalDateTime 版本 , 搜尋 全部 種類的日食  */
+  /**
+   * 承上 , ChronoLocalDateTime 版本 , 搜尋 全部 種類的日食
+   * [IEclipseFactory2.getRangeSolarEclipses]
+   * */
   fun getRangeSolarEclipses(fromGmt: ChronoLocalDateTime<*>, toGmt: ChronoLocalDateTime<*>): List<AbstractSolarEclipse> {
     return getRangeSolarEclipses(getGmtJulDay(fromGmt), getGmtJulDay(toGmt))
   }
