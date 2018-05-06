@@ -44,4 +44,19 @@ interface IEclipseFactory2 {
 
   /** 從此時之後，全球各地的「一場」月食資料 (型態、開始、最大、結束...）  */
   fun getNextLunarEclipse(fromGmtJulDay: Double, forward: Boolean) : AbstractLunarEclipse2
+
+  // ================================== 日食觀測 ==================================
+
+  /** 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2)  */
+  fun getNextSolarEclipseAtLoc(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double?=0.0, forward: Boolean): Pair<EclipseSpan2, ISolarEclipseObservation>
+
+  /**
+   * 若當下 gmtJulDay 有日食，傳出此地點觀測此日食的相關資料
+   * */
+  fun getSolarEclipseObservationAtLoc(gmtJulDay: Double, lng: Double, lat: Double, alt: Double) : ISolarEclipseObservation?
+
+  /** 承上 , [ChronoLocalDateTime] 版本 */
+  fun getSolarEclipseObservationAtLoc(gmt: ChronoLocalDateTime<*>, lng: Double, lat: Double, alt: Double) : ISolarEclipseObservation? {
+    return getSolarEclipseObservationAtLoc(TimeTools.getGmtJulDay(gmt), lng, lat, alt)
+  }
 }

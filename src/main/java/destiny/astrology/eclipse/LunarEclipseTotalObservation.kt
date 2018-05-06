@@ -5,7 +5,10 @@ package destiny.astrology.eclipse
 
 import destiny.astrology.Azimuth
 
-/** 月全食 */
+/**
+ * 月全食
+ * [ILunarEclipseTotalObservation]
+ * */
 class LunarEclipseTotalObservation(gmtJulDay: Double, lng: Double, lat: Double, alt: Double, azimuth: Azimuth,
                                    lunarType: ILunarEclipse.LunarType,
                                    magUmbra: Double,
@@ -15,7 +18,7 @@ class LunarEclipseTotalObservation(gmtJulDay: Double, lng: Double, lat: Double, 
                                    penumbraEndVisible: Boolean,
                                    partialBeginVisible: Boolean,
                                    partialEndVisible: Boolean,
-                                   val isTotalBeginVisible: Boolean,
-                                   val isTotalEndVisible: Boolean) :
+                                   val totalBeginVisible: Boolean,
+                                   val totalEndVisible: Boolean) :
   LunarEclipsePartialObservation(gmtJulDay, lng, lat, alt, azimuth, lunarType,
     magUmbra, magPenumbra, maxVisible, penumbraBeginVisible, penumbraEndVisible, partialBeginVisible, partialEndVisible)

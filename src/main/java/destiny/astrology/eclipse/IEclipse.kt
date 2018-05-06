@@ -148,7 +148,6 @@ sealed class AbstractLunarEclipse2 : ILunarEclipse {
     override val max: Double,
     override val end: Double) : AbstractLunarEclipse2()
 
-
   /** 月偏食 */
   data class LunarEclipsePartial(
     private val penumbra: LunarEclipsePenumbra,

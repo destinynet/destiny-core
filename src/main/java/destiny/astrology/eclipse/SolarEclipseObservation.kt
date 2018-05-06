@@ -7,6 +7,7 @@ import destiny.astrology.Azimuth
 
 /**
  * 某時某刻某地點，觀測到的日食相關資訊
+ * [ISolarEclipseObservation]
  */
 class SolarEclipseObservation(gmtJulDay: Double, lng: Double, lat: Double, alt: Double,
                               /** 食 的種類  */

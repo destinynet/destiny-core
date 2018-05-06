@@ -9,7 +9,9 @@ import java.io.Serializable
 
 /**
  * 某時某地點，針對某日食、月食的觀測資料
+ * [IEclipseObservation]
  */
+@Deprecated("")
 abstract class AbstractEclipseObservation protected constructor(
   /** 當下的時間點為何  */
   val gmtJulDay: Double,

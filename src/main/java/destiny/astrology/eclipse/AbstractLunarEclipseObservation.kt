@@ -5,6 +5,10 @@ package destiny.astrology.eclipse
 
 import destiny.astrology.Azimuth
 
+/**
+ * [ILunarEclipseObservation]
+ */
+@Deprecated("")
 abstract class AbstractLunarEclipseObservation(
   gmtJulDay: Double, lng: Double, lat: Double, alt: Double, azimuth: Azimuth,
   val type: ILunarEclipse.LunarType,
@@ -16,7 +20,7 @@ abstract class AbstractLunarEclipseObservation(
   val magPenumbra: Double,
 
   /** 食甚可見否?  */
-  val isMaxVisible: Boolean) : AbstractEclipseObservation(gmtJulDay, lng, lat, alt, azimuth) {
+  val maxVisible: Boolean) : AbstractEclipseObservation(gmtJulDay, lng, lat, alt, azimuth) {
 
   fun getLunarType(): ILunarEclipse.LunarType {
     return type

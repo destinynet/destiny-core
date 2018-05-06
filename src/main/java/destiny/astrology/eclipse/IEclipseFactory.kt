@@ -11,9 +11,13 @@ import java.time.chrono.ChronoLocalDateTime
 /** 計算日食、月食的介面  */
 interface IEclipseFactory {
 
-  /** 從此時之後，全球各地的「一場」日食資料 (型態、開始、最大、結束...）  */
+  /**
+   * 從此時之後，全球各地的「一場」日食資料 (型態、開始、最大、結束...）
+   * [IEclipseFactory2.getNextSolarEclipse]
+   * */
   fun getNextSolarEclipse(fromGmtJulDay: Double, forward: Boolean, types: Collection<SolarType>): AbstractSolarEclipse
 
+  /** [IEclipseFactory2.getNextSolarEclipse] */
   fun getNextSolarEclipse(fromGmtJulDay: Double, forward: Boolean): AbstractSolarEclipse {
     return getNextSolarEclipse(fromGmtJulDay, forward, listOf(*SolarType.values()))
   }
@@ -24,15 +28,18 @@ interface IEclipseFactory {
 
   // ========================================================================================
 
-  /** 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2)  */
-  fun getNextSolarEclipse(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double?=0.0, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation>
+  /**
+   * 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2)
+   * [IEclipseFactory2.getNextSolarEclipseAtLoc]
+   * */
+  fun getNextSolarEclipseAtLoc(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double?=0.0, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation>
 
-  fun getNextSolarEclipse(fromGmtJulDay: Double, loc: Location, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation> {
-    return getNextSolarEclipse(fromGmtJulDay, loc.lng, loc.lat, loc.altitudeMeter, forward)
+  fun getNextSolarEclipseAtLoc(fromGmtJulDay: Double, loc: Location, forward: Boolean): Pair<EclipseSpan, SolarEclipseObservation> {
+    return getNextSolarEclipseAtLoc(fromGmtJulDay, loc.lng, loc.lat, loc.altitudeMeter, forward)
   }
 
   /** 從此之後 , 此地點下次發生月食的資訊為何 (tuple.v1) , 以及， 該地能否見到 半影、偏食、全蝕、的起訖 (tuple.v2)  */
-  fun getNextLunarEclipse(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double, forward: Boolean): AbstractLunarEclipseObservation
+  fun getNextLunarEclipseAtLoc(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double, forward: Boolean): AbstractLunarEclipseObservation
 
 
   // ========================================================================================
@@ -41,15 +48,19 @@ interface IEclipseFactory {
   fun getEclipseCenterInfo(gmtJulDay: Double): Pair<SolarEclipseObservation, Boolean>?
 
 
-  /** 若當下 gmtJulDay 有日食，傳出此地點觀測此日食的相關資料  */
-  fun getSolarEclipseObservation(gmtJulDay: Double, lng: Double, lat: Double, alt: Double): SolarEclipseObservation?
+  /**
+   * 若當下 gmtJulDay 有日食，傳出此地點觀測此日食的相關資料
+   * [IEclipseFactory2.getSolarEclipseObservationAtLoc]
+   *  */
+  fun getSolarEclipseObservationAtLoc(gmtJulDay: Double, lng: Double, lat: Double, alt: Double): SolarEclipseObservation?
 
   /** 若當下 gmtJulDay 有月食，傳出此地點觀測此月食的相關資料  */
   fun getLunarEclipseObservation(gmtJulDay: Double, lng: Double, lat: Double, alt: Double): AbstractLunarEclipseObservation?
 
 
-  fun getSolarEclipseObservation(gmt: ChronoLocalDateTime<*>, lng: Double, lat: Double, alt: Double): SolarEclipseObservation? {
-    return getSolarEclipseObservation(getGmtJulDay(gmt), lng, lat, alt)
+  /** 承上 , [ChronoLocalDateTime] 版本 */
+  fun getSolarEclipseObservationAtLoc(gmt: ChronoLocalDateTime<*>, lng: Double, lat: Double, alt: Double): SolarEclipseObservation? {
+    return getSolarEclipseObservationAtLoc(getGmtJulDay(gmt), lng, lat, alt)
   }
 
   // ========================================================================================
