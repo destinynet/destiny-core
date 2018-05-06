@@ -4,8 +4,6 @@
 package destiny.astrology.eclipse
 
 import destiny.astrology.eclipse.ISolarEclipse.SolarType
-import destiny.core.calendar.TimeTools.Companion.getGmtJulDay
-import java.time.chrono.ChronoLocalDateTime
 
 /** 計算日食、月食的介面  */
 interface IEclipseFactory {
@@ -16,12 +14,10 @@ interface IEclipseFactory {
    * */
   fun getNextSolarEclipse(fromGmtJulDay: Double, forward: Boolean, types: Collection<SolarType>): AbstractSolarEclipse
 
-  /** [IEclipseFactory2.getNextSolarEclipse] */
-  fun getNextSolarEclipse(fromGmtJulDay: Double, forward: Boolean): AbstractSolarEclipse {
-    return getNextSolarEclipse(fromGmtJulDay, forward, listOf(*SolarType.values()))
-  }
-
-  /** 同上，月食  */
+  /**
+   * 從此時之後，全球各地的「一場」月食資料 (型態、開始、最大、結束...）
+   * [IEclipseFactory2.getNextLunarEclipse]
+   * */
   fun getNextLunarEclipse(fromGmtJulDay: Double, forward: Boolean): AbstractLunarEclipse
 
 
@@ -55,35 +51,6 @@ interface IEclipseFactory {
 
   /** 若當下 gmtJulDay 有月食，傳出此地點觀測此月食的相關資料  */
   fun getLunarEclipseObservation(gmtJulDay: Double, lng: Double, lat: Double, alt: Double): AbstractLunarEclipseObservation?
-
-
-  /** 承上 , [ChronoLocalDateTime] 版本 */
-  fun getSolarEclipseObservationAtLoc(gmt: ChronoLocalDateTime<*>, lng: Double, lat: Double, alt: Double): SolarEclipseObservation? {
-    return getSolarEclipseObservationAtLoc(getGmtJulDay(gmt), lng, lat, alt)
-  }
-
-  // ========================================================================================
-
-  /** 全球，某時間範圍內的月食記錄  */
-  fun getRangeLunarEclipses(fromGmt: Double, toGmt: Double, types: Collection<ILunarEclipse.LunarType>?): List<AbstractLunarEclipse> {
-    require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
-
-    val list = mutableListOf<AbstractLunarEclipse>()
-    var gmt = fromGmt
-
-    while (gmt < toGmt) {
-      val e = getNextLunarEclipse(gmt, true)
-      list.add(e)
-
-      gmt = e.end
-    }
-    return list
-  }
-
-  /** 承上 , ChronoLocalDateTime 版本 , 搜尋 全部 種類的日食  */
-  fun getRangeLunarEclipses(fromGmt: ChronoLocalDateTime<*>, toGmt: ChronoLocalDateTime<*>): List<AbstractLunarEclipse> {
-    return getRangeLunarEclipses(getGmtJulDay(fromGmt), getGmtJulDay(toGmt), null)
-  }
 
 
 }

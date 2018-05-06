@@ -22,7 +22,10 @@ interface IEclipseFactory2 {
   }
 
   /** 全球，某時間範圍內的日食記錄  */
-  fun getRangeSolarEclipses(fromGmt: Double, toGmt: Double, types: Collection<ISolarEclipse.SolarType> = listOf(*ISolarEclipse.SolarType.values())) : List<AbstractSolarEclipse2> {
+  fun getRangeSolarEclipses(fromGmt: Double,
+                            toGmt: Double,
+                            types: Collection<ISolarEclipse.SolarType> = listOf(
+                              *ISolarEclipse.SolarType.values())): List<AbstractSolarEclipse2> {
     require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
 
     return generateSequence (getNextSolarEclipse(fromGmt , true , types)) {
@@ -45,6 +48,24 @@ interface IEclipseFactory2 {
 
   /** 從此時之後，全球各地的「一場」月食資料 (型態、開始、最大、結束...）  */
   fun getNextLunarEclipse(fromGmtJulDay: Double, forward: Boolean) : AbstractLunarEclipse2
+
+  /** 全球，某時間範圍內的月食記錄 */
+  fun getRangeLunarEclipses(fromGmt: Double,
+                            toGmt: Double,
+                            types: Collection<ILunarEclipse.LunarType> = listOf(
+                              *ILunarEclipse.LunarType.values())): List<AbstractLunarEclipse2> {
+    require( fromGmt < toGmt) { "fromGmt : $fromGmt must less than toGmt : $toGmt" }
+
+    return generateSequence( getNextLunarEclipse(fromGmt , true)) {
+      getNextLunarEclipse(it.end , true)
+    }.takeWhile { it.end < toGmt }
+      .toList()
+  }
+
+  /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 全部 種類的月食  */
+  fun getRangeLunarEclipses(fromGmt: ChronoLocalDateTime<*> , toGmt: ChronoLocalDateTime<*>) : List<AbstractLunarEclipse2> {
+    return getRangeLunarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt))
+  }
 
   // ================================== 日食觀測 ==================================
 
