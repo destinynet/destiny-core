@@ -3,6 +3,7 @@
  */
 package destiny.astrology.eclipse
 
+import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
@@ -50,6 +51,11 @@ interface IEclipseFactory2 {
   /** 從此之後 , 此地點下次發生日食的資訊為何 (tuple.v1) , 以及， 日食最大化的時間，該地的觀測資訊為何 (tuple.v2)  */
   fun getNextSolarEclipseAtLoc(fromGmtJulDay: Double, lng: Double, lat: Double, alt: Double?=0.0, forward: Boolean): Pair<EclipseSpan2, ISolarEclipseObservation>
 
+  /** 承上 [ILocation] 版本 */
+  fun getNextSolarEclipseAtLoc(fromGmtJulDay: Double, loc: ILocation, forward: Boolean): Pair<EclipseSpan2, ISolarEclipseObservation> {
+    return getNextSolarEclipseAtLoc(fromGmtJulDay, loc.lng, loc.lat, loc.altitudeMeter, forward)
+  }
+
   /**
    * 若當下 gmtJulDay 有日食，傳出此地點觀測此日食的相關資料
    * */
@@ -59,4 +65,9 @@ interface IEclipseFactory2 {
   fun getSolarEclipseObservationAtLoc(gmt: ChronoLocalDateTime<*>, lng: Double, lat: Double, alt: Double) : ISolarEclipseObservation? {
     return getSolarEclipseObservationAtLoc(TimeTools.getGmtJulDay(gmt), lng, lat, alt)
   }
+
+
+  /** 此時此刻，哪裡有發生日食，其「中線」的地點為何 , 以及其相關日食觀測結果 . 此 method 專門計算「中線在哪裡 , 其太陽觀測為何」 (t.v1) , 是否出現中線了 (t.v2)  */
+  fun getEclipseCenterInfo(gmtJulDay: Double) : Pair<ISolarEclipseObservation , Boolean>?
+
 }
