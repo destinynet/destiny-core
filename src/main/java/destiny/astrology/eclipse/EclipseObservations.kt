@@ -116,6 +116,10 @@ sealed class AbstractLunarEclipseObservation2 : ILunarEclipseObservation {
   data class LunarEclipseTotalObservation(
     private val partialObs : LunarEclipsePartialObservation,
     override val totalBeginVisible: Boolean,
-    override val totalEndVisible: Boolean) : AbstractLunarEclipseObservation2() , ILunarEclipseTotalObservation , ILunarEclipsePartialObservation by partialObs
+    override val totalEndVisible: Boolean) : AbstractLunarEclipseObservation2() , ILunarEclipseTotalObservation , ILunarEclipsePartialObservation by partialObs {
+    override val type: ILunarEclipse.LunarType
+      get() = ILunarEclipse.LunarType.TOTAL
+  }
+
 
 }
