@@ -67,8 +67,7 @@ data class Horoscope(
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
   override val cuspDegreeMap: Map<Int, Double>) : IHoro , Serializable {
 
-  @Transient private val revJulDayFunc =
-    { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
+  @Transient private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
 
 
   /**

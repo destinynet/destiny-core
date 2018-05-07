@@ -81,7 +81,7 @@ interface ILunarEclipseTotalObservation : ILunarEclipsePartialObservation {
   val totalEndVisible: Boolean
 }
 
-sealed class AbstractLunarEclipseObservation2 : ILunarEclipseObservation {
+sealed class AbstractLunarEclipseObservation : ILunarEclipseObservation {
 
   /** 半影月食 的觀測資料 */
   data class LunarEclipsePenumbraObservation(
@@ -96,7 +96,7 @@ sealed class AbstractLunarEclipseObservation2 : ILunarEclipseObservation {
     override val maxVisible: Boolean,
 
     override val penumbraBeginVisible: Boolean,
-    override val penumbraEndVisible: Boolean) : AbstractLunarEclipseObservation2(),
+    override val penumbraEndVisible: Boolean) : AbstractLunarEclipseObservation(),
     ILunarEclipsePenumbraObservation {
     override val type: ILunarEclipse.LunarType
       get() = ILunarEclipse.LunarType.PENUMBRA
@@ -106,7 +106,7 @@ sealed class AbstractLunarEclipseObservation2 : ILunarEclipseObservation {
   data class LunarEclipsePartialObservation(
     private val penumbraObs: LunarEclipsePenumbraObservation,
     override val partialBeginVisible: Boolean,
-    override val partialEndVisible: Boolean) : AbstractLunarEclipseObservation2(), ILunarEclipsePartialObservation,
+    override val partialEndVisible: Boolean) : AbstractLunarEclipseObservation(), ILunarEclipsePartialObservation,
     ILunarEclipsePenumbraObservation by penumbraObs {
     override val type: ILunarEclipse.LunarType
       get() = ILunarEclipse.LunarType.PARTIAL
@@ -116,7 +116,7 @@ sealed class AbstractLunarEclipseObservation2 : ILunarEclipseObservation {
   data class LunarEclipseTotalObservation(
     private val partialObs : LunarEclipsePartialObservation,
     override val totalBeginVisible: Boolean,
-    override val totalEndVisible: Boolean) : AbstractLunarEclipseObservation2() , ILunarEclipseTotalObservation , ILunarEclipsePartialObservation by partialObs {
+    override val totalEndVisible: Boolean) : AbstractLunarEclipseObservation() , ILunarEclipseTotalObservation , ILunarEclipsePartialObservation by partialObs {
     override val type: ILunarEclipse.LunarType
       get() = ILunarEclipse.LunarType.TOTAL
   }
