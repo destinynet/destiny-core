@@ -13,7 +13,6 @@ open class PositionLunarPointImpl internal constructor(lunarPoint: LunarPoint) :
                            centric: Centric,
                            coordinate: Coordinate,
                            starPositionImpl: IStarPosition<*>): IPos {
-    return starPositionImpl.getPosition(point, gmtJulDay, centric, coordinate)
+    return starPositionImpl.getPosition(point , gmtJulDay , loc.lng , loc.lat , loc.altitudeMeter?:0.0 , centric , coordinate , 0.0 , 1013.25)
   }
-
 }

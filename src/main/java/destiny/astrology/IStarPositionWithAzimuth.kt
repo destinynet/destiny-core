@@ -45,8 +45,7 @@ interface IStarPositionWithAzimuth : IStarPosition<IPos> {
                          centric: Centric,
                          coordinate: Coordinate): IPositionWithAzimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getPosition(star, gmtJulDay, location.lng, location.lat, location.altitudeMeter, centric, coordinate, 0.0,
-                       1013.25)
+    return getPosition(star, gmtJulDay, location.lng, location.lat, location.altitudeMeter, centric, coordinate, 0.0, 1013.25)
   }
 
 

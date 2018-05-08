@@ -25,5 +25,5 @@ interface IPositionWithAzimuth : IPos {
 }
 
 data class PositionWithAzimuth(
-  val pos: Position,
+  val pos: IPos,
   override val azimuth: Azimuth) : IPositionWithAzimuth, IPos by pos, Serializable

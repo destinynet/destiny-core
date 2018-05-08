@@ -18,14 +18,13 @@ interface IPosition<out T : Point> {
                   starPositionImpl: IStarPosition<*>): IPos
 
 
-
   fun getPosition(lmt: ChronoLocalDateTime<*>,
                   loc: ILocation,
                   centric: Centric,
                   coordinate: Coordinate,
                   starPositionImpl: IStarPosition<*>): IPos {
     val gmtJulDay: Double = TimeTools.getGmtJulDay(lmt, loc)
-    return getPosition(gmtJulDay , loc , centric , coordinate , starPositionImpl)
+    return getPosition(gmtJulDay, loc, centric, coordinate, starPositionImpl)
   }
 
 
