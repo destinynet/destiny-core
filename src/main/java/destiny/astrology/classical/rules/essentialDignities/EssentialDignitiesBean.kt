@@ -6,6 +6,7 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.classical.*
 import destiny.astrology.classical.rules.IRule
@@ -33,7 +34,7 @@ class EssentialDignitiesBean(
       )
   }
 
-  override fun getComments(planet: Planet, h: Horoscope, locale: Locale): List<String> {
+  override fun getComments(planet: Planet, h: IHoro, locale: Locale): List<String> {
     return rules
       .map { it.getComment(planet , h , locale) }
       .filter { it != null }

@@ -6,7 +6,7 @@ package destiny.astrology
 
 import java.util.*
 
-class DegreeComparator(private val horoscope: Horoscope) : Comparator<Point> {
+class DegreeComparator(private val horoscope: IHoro) : Comparator<Point> {
 
   override fun compare(p1: Point, p2: Point): Int {
 

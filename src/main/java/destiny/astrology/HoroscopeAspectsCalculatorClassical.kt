@@ -20,7 +20,7 @@ class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffective
 
 
 
-  override fun getPointAspect(point: Point, horoscope: Horoscope, points: Collection<Point>): Map<Point, Aspect> {
+  override fun getPointAspect(point: Point, horoscope: IHoro, points: Collection<Point>): Map<Point, Aspect> {
 
     return if (point is Planet) {
       val planetDeg = horoscope.getPositionWithAzimuth(point).lng

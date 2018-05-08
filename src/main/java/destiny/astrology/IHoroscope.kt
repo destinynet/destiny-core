@@ -41,14 +41,14 @@ interface IHoroscope {
                    houseSystem: HouseSystem,
                    centric: Centric,
                    coordinate: Coordinate,
-                   temperature: Double?=0.0, pressure: Double?=1013.25): Horoscope
+                   temperature: Double?=0.0, pressure: Double?=1013.25): IHoro
 
 
   // default points
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                    houseSystem: HouseSystem,
                    centric: Centric,
-                   coordinate: Coordinate): Horoscope {
+                   coordinate: Coordinate): IHoro {
     return getHoroscope(lmt, loc, defaultPoints, houseSystem, centric, coordinate, 0.0, 1013.25)
   }
 
@@ -56,7 +56,7 @@ interface IHoroscope {
                    houseSystem: HouseSystem,
                    centric: Centric,
                    coordinate: Coordinate,
-                   nodeType: NodeType): Horoscope {
+                   nodeType: NodeType): IHoro {
     return getHoroscope(lmt, loc, getDefaultPoints(nodeType), houseSystem, centric, coordinate, 0.0, 1013.25)
   }
 }

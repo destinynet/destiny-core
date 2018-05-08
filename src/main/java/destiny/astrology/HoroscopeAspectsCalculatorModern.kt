@@ -23,7 +23,7 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
     this.aspects = aspects
   }
 
-  override fun getPointAspect(point: Point, horoscope: Horoscope, points: Collection<Point>): Map<Point, Aspect> {
+  override fun getPointAspect(point: Point, horoscope: IHoro, points: Collection<Point>): Map<Point, Aspect> {
 
     val starDeg = horoscope.getPositionWithAzimuth(point).lng
 

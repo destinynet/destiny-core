@@ -50,7 +50,7 @@ class ReturnContext(
 
 
   /** 對外主要的 method , 取得 return 盤  */
-  val returnHoroscope: Horoscope
+  val returnHoroscope: IHoro
     get() {
       val natalGmt = TimeTools.getGmtFromLmt(natalLmt, natalLoc)
       val nowGmt = TimeTools.getGmtFromLmt(nowLmt, nowLoc)
