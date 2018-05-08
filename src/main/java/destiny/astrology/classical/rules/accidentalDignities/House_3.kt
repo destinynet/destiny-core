@@ -4,13 +4,13 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 
 /** In the 3rd house.  */
 class House_3 : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return h.getHouse(planet)
       ?.takeIf { it == 3 }
       ?.let { house -> Pair("comment", arrayOf(planet, house)) }

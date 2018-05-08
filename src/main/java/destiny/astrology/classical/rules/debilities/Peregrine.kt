@@ -43,7 +43,7 @@ class Peregrine(
   /** 計算白天黑夜的實作  */
   private val dayNightImpl: DayNightDifferentiator) : EssentialRule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     val planetDeg: Double? = h.getPosition(planet)?.lng
     val sign: ZodiacSign? = h.getZodiacSign(planet)
 

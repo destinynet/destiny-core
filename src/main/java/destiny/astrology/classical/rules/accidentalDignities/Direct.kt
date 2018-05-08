@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.Planet.MOON
 import destiny.astrology.Planet.SUN
@@ -12,7 +12,7 @@ import destiny.astrology.Planet.SUN
 /** Direct in motion (does not apply to Sun and Moon).  */
 class Direct : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== SUN && it !== MOON }
       ?.let { h.getPosition(it) }?.speedLng
       ?.takeIf { it > 0 }

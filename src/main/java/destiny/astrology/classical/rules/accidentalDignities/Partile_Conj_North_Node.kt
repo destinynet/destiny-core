@@ -14,13 +14,13 @@ class Partile_Conj_North_Node : Rule() {
   /** 內定採用 NodeType.MEAN  */
   var nodeType = NodeType.MEAN
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
 
     val planetDeg: Double? = h.getPosition(planet)?.lng
     val north: LunarNode = LunarNode.of(NorthSouth.NORTH, nodeType)
     val northDeg: Double? = h.getPosition(north)?.lng
 
-    return if (planetDeg != null && northDeg != null && Horoscope.getAngle(planetDeg , northDeg) <= 1) {
+    return if (planetDeg != null && northDeg != null && IHoro.getAngle(planetDeg , northDeg) <= 1) {
       logger.debug("{} 與 {} 形成 {}", planet, north, aspect)
       "comment" to arrayOf(planet , north , aspect)
     } else {

@@ -4,8 +4,8 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.Horoscope
 import destiny.astrology.IBesieged
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.core.calendar.TimeTools
@@ -20,7 +20,7 @@ class Besieged_Jupiter_Venus(
   /** 計算兩星夾角的實作  */
   private val besiegedImpl: IBesieged) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return planet.takeIf { arrayOf(SUN , MOON , MERCURY , MARS , SATURN).contains(it) }?.takeIf {
       val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
       besiegedImpl.isBesieged(it , VENUS , JUPITER , gmt , true , false)

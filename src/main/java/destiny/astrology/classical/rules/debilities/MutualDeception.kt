@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.debilities
 
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IEssential
@@ -17,7 +17,7 @@ import destiny.astrology.classical.IEssential
 @Deprecated("似乎不實用")
 class MutualDeception(private val essentialImpl: IEssential) : EssentialRule(), Applicable {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return rulerMutualDeception(h, planet)
       ?: exaltationMutualDeception(h, planet)
       ?: detrimentExaltationMutualDeception(h, planet)
@@ -30,7 +30,7 @@ class MutualDeception(private val essentialImpl: IEssential) : EssentialRule(), 
    * 而 sign1 星座的 ruler 星，飛到 sign2 星座
    * 而 sign2 星座的 ruler (planet2) 剛好等於 planet
    */
-  private fun rulerMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+  private fun rulerMutualDeception(h: IHoro, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
       rulerImpl.getPoint(sign1).let { signRuler ->
         h.getZodiacSign(signRuler)?.let { sign2 ->
@@ -52,7 +52,7 @@ class MutualDeception(private val essentialImpl: IEssential) : EssentialRule(), 
   /**
    * @return Exaltation 的 互陷 或 互落
    */
-  private fun exaltationMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+  private fun exaltationMutualDeception(h: IHoro, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
       exaltImpl.getPoint(sign1)?.let { signExalt ->
         h.getZodiacSign(signExalt)?.let { sign2 ->
@@ -75,7 +75,7 @@ class MutualDeception(private val essentialImpl: IEssential) : EssentialRule(), 
    * 旺廟互陷
    * 「Ruler 到 Detriment , Exaltation 到 Fall 又互容」的互陷
    */
-  private fun detrimentExaltationMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+  private fun detrimentExaltationMutualDeception(h: IHoro, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
       rulerImpl.getPoint(sign1).let { signRuler ->
         h.getZodiacSign(signRuler)?.let { sign2 ->
@@ -98,7 +98,7 @@ class MutualDeception(private val essentialImpl: IEssential) : EssentialRule(), 
    * 旺廟互陷
    * 「Ruler 到 Fall , Exaltation 到 Detriment 又互容」的互陷
    */
-  private fun fallExaltationMutualDeception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+  private fun fallExaltationMutualDeception(h: IHoro, planet: Planet): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign1 ->
       exaltImpl.getPoint(sign1)?.let { signExalt ->
         h.getZodiacSign(signExalt)?.let { sign2 ->

@@ -4,7 +4,7 @@
 package destiny.astrology.classical
 
 import destiny.astrology.Aspect
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.Point
 
@@ -24,10 +24,10 @@ import destiny.astrology.Point
  */
 interface IRefranation {
 
-  fun getResult(horoscope: Horoscope, planet: Planet, otherPoint: Point, aspects: Collection<Aspect>): Pair<Point, Aspect>?
+  fun getResult(horoscope: IHoro, planet: Planet, otherPoint: Point, aspects: Collection<Aspect>): Pair<Point, Aspect>?
 
   /** 取得重要交角 [Aspect.Importance.HIGH] 的結果 */
-  fun getImportantResult(horoscope: Horoscope, planet: Planet, otherPoint: Point): Pair<Point, Aspect>? {
+  fun getImportantResult(horoscope: IHoro, planet: Planet, otherPoint: Point): Pair<Point, Aspect>? {
     return getResult(horoscope, planet, otherPoint, Aspect.getAngles(Aspect.Importance.HIGH))
   }
 

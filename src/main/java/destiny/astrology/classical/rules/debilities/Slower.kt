@@ -4,13 +4,13 @@
  */
 package destiny.astrology.classical.rules.debilities
 
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.classical.AverageDailyMotionMap
 
 class Slower : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf{ dailyDeg ->
       h.getPosition(planet)?.speedLng?.let { speedLng ->
         speedLng < dailyDeg

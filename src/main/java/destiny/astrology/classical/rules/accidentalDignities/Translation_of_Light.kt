@@ -4,13 +4,13 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.classical.ITranslationOfLight
 
 class Translation_of_Light(private val translationOfLightImpl: ITranslationOfLight) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return translationOfLightImpl.getResult(planet, h)
       ?.let { t ->
         val deg = h.getAngle(t.first , t.second)

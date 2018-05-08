@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IEssential
@@ -12,7 +12,7 @@ import destiny.astrology.classical.IEssential
 /** A planet in its own sign , or mutual reception with another planet by sign  */
 class Ruler(private val essentialImpl: IEssential) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
       return if (planet === rulerImpl.getPoint(sign)) {
         logger.debug("{} 位於 {} , 為其 {}", planet, sign, Dignity.RULER)
@@ -34,7 +34,7 @@ class Ruler(private val essentialImpl: IEssential) : Rule() {
    * 例如： 火星在射手 , 木星在牡羊 , 兩個星座的 Ruler 互訪<br></br>
    * 「而且都沒有落陷」 (否則變成互陷)
    */
-  private fun rulerMutualReception(h: Horoscope, planet: Planet): Pair<String, Array<Any>>? {
+  private fun rulerMutualReception(h: IHoro, planet: Planet): Pair<String, Array<Any>>? {
     return essentialImpl.getMutualData(planet , h.pointDegreeMap , null , setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
       val sign1 = h.getZodiacSign(planet)!!
       val sign2 = h.getZodiacSign(mutualData.p2)!!

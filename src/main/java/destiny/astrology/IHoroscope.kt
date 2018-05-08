@@ -44,6 +44,7 @@ interface IHoroscope {
                    temperature: Double?=0.0, pressure: Double?=1013.25): Horoscope
 
 
+  // default points
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                    houseSystem: HouseSystem,
                    centric: Centric,

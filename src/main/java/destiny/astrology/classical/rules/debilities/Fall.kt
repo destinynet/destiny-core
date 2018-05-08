@@ -4,13 +4,13 @@
  */
 package destiny.astrology.classical.rules.debilities
 
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 
 /** In Fall.  */
 class Fall : EssentialRule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)
       ?.takeIf { sign -> planet === fallImpl.getPoint(sign)}
       ?.let { "comment" to arrayOf(planet , it) }

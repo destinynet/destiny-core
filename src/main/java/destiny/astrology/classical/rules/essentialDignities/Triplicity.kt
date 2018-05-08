@@ -6,7 +6,7 @@ package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.classical.ITriplicity
 
@@ -15,7 +15,7 @@ class Triplicity(
   private val triplicityImpl : ITriplicity,
   private val dayNightImpl: DayNightDifferentiator) : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     val sign = h.getZodiacSign(planet)
     return sign?.let {
       val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)

@@ -30,7 +30,7 @@ interface IHoroscopeContext {
  * to replace [IHoroscope]
  */
 class HoroscopeContext(
-  val points: Collection<Point>,
+  val points: Collection<Point> ,
   val houseSystem: HouseSystem,
   val centric: Centric,
   val coordinate: Coordinate,
@@ -62,5 +62,15 @@ class HoroscopeContext(
 
     return Horoscope(gmtJulDay, loc, houseSystem, coordinate, centric, temperature, pressure, positionMap,
                      cuspDegreeMap)
+  }
+
+  companion object {
+    val defaultPoints = setOf(
+      *Planets.array,
+      *Asteroids.array,
+      *Hamburgers.array,
+      *FixedStars.array,
+      *LunarNodes.meanArray
+    )
   }
 }

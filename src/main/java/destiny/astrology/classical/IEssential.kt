@@ -5,7 +5,7 @@
 package destiny.astrology.classical
 
 import destiny.astrology.DayNight
-import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
 import org.slf4j.LoggerFactory
@@ -149,13 +149,13 @@ interface IEssential {
 
 
   /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
-  fun isReceivingFromDebilities(receiver: Point, receivee: Point, h: Horoscope): Boolean
+  fun isReceivingFromDebilities(receiver: Point, receivee: Point, h: IHoro): Boolean
 
   /**
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
    */
-  fun isReceivingFromDignities(receiver: Point, receivee: Point, h: Horoscope) : Boolean
+  fun isReceivingFromDignities(receiver: Point, receivee: Point, h: IHoro) : Boolean
 
 
   /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */

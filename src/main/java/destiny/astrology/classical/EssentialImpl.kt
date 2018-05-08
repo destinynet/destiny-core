@@ -122,7 +122,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
    */
-  override fun isReceivingFromDignities(receiver: Point, receivee: Point, h: Horoscope): Boolean {
+  override fun isReceivingFromDignities(receiver: Point, receivee: Point, h: IHoro): Boolean {
     return h.getZodiacSign(receivee)?.let { receiveeSign ->
       return when (receiver) {
         getPoint(receiveeSign, Dignity.RULER) -> {
@@ -157,7 +157,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
   }
 
   /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
-  override fun isReceivingFromDebilities(receiver: Point, receivee: Point, h: Horoscope): Boolean {
+  override fun isReceivingFromDebilities(receiver: Point, receivee: Point, h: IHoro): Boolean {
     return h.getZodiacSign(receivee)?.let { receiveeSign ->
       receiver === getPoint(receiveeSign, Dignity.DETRIMENT) ||
         receiver === getPoint(receiveeSign, Dignity.FALL)

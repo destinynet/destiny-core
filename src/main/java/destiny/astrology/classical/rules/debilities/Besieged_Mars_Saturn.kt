@@ -4,8 +4,8 @@
  */
 package destiny.astrology.classical.rules.debilities
 
-import destiny.astrology.Horoscope
 import destiny.astrology.IBesieged
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.core.calendar.TimeTools
@@ -21,7 +21,7 @@ class Besieged_Mars_Saturn(
   private val besiegedImpl: IBesieged) : Rule() {
 
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return planet.takeIf { arrayOf(SUN , MOON , MERCURY , VENUS).contains(it) }
       ?.takeIf {
         val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)

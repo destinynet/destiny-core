@@ -11,7 +11,7 @@ class Partile_Conj_Spica : Rule() {
 
   private val aspect = Aspect.CONJUNCTION
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     val planetDeg: Double? = h.getPosition(planet)?.lng
     val spicaDeg : Double? = h.getPosition(FixedStar.SPICA)?.lng
 

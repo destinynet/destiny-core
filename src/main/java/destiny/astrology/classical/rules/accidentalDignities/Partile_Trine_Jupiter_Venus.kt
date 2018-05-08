@@ -7,6 +7,7 @@ package destiny.astrology.classical.rules.accidentalDignities
 import destiny.astrology.Aspect.TRINE
 import destiny.astrology.AspectEffectiveModern
 import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.Planet.JUPITER
 import destiny.astrology.Planet.VENUS
@@ -14,7 +15,7 @@ import destiny.astrology.Planet.VENUS
 /** Partile trine Jupiter or Venus.  */
 class Partile_Trine_Jupiter_Venus : Rule() {
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     val planetDeg = h.getPosition(planet)?.lng
     val jupiterDeg = h.getPosition(JUPITER)?.lng
     val venusDeg = h.getPosition(VENUS)?.lng

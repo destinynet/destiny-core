@@ -5,6 +5,7 @@
 package destiny.astrology.classical.rules
 
 import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.tools.ILocaleString
 import org.slf4j.LoggerFactory
@@ -27,7 +28,7 @@ abstract class AbstractRule protected constructor(private val resource: String) 
     return (getResult(planet , h) != null)
   }
 
-  abstract fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>?
+  abstract fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>?
 
 
   /** 名稱  */

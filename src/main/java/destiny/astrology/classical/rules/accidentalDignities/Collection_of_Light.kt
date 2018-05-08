@@ -5,6 +5,7 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.Horoscope
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 import destiny.astrology.classical.ICollectionOfLight
 import destiny.astrology.classical.ICollectionOfLight.CollectType.DIGNITIES
@@ -15,7 +16,7 @@ import destiny.astrology.classical.ICollectionOfLight.CollectType.DIGNITIES
 class Collection_of_Light(private val collectionOfLightImpl: ICollectionOfLight) : Rule() {
 
 
-  override fun getResult(planet: Planet, h: Horoscope): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
     return collectionOfLightImpl.getResult(planet , h , DIGNITIES)?.let { twoPlanets ->
       "comment" to arrayOf(planet, twoPlanets[0], twoPlanets[1], h.getAngle(twoPlanets[0], twoPlanets[1]))
     }

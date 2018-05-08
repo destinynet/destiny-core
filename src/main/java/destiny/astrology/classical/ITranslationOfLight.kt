@@ -3,11 +3,11 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.Horoscope
 import destiny.astrology.IAspectApplySeparate
+import destiny.astrology.IHoro
 import destiny.astrology.Planet
 
 interface ITranslationOfLight {
 
-  fun getResult(planet: Planet, h: Horoscope): Triple<Planet, Planet, IAspectApplySeparate.AspectType?>?
+  fun getResult(planet: Planet, h: IHoro): Triple<Planet, Planet, IAspectApplySeparate.AspectType?>?
 }
