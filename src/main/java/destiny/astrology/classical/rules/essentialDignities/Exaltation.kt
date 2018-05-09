@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IEssential
@@ -14,7 +14,7 @@ import destiny.astrology.classical.IExaltation
 class Exaltation(private val essentialImpl: IEssential,
                  private val exaltImpl: IExaltation) : Rule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
       if (planet === exaltImpl.getPoint(sign)) {
         logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)
@@ -28,7 +28,7 @@ class Exaltation(private val essentialImpl: IEssential,
    * 廟廟互容
    * [Dignity.EXALTATION] 互容
    */
-  private fun exaltMutualReception(h: IHoro, planet: Planet): Pair<String, Array<Any>>? {
+  private fun exaltMutualReception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
 
     return essentialImpl.getMutualData(planet , h.pointDegreeMap , null , setOf(Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
       val sign1 = h.getZodiacSign(planet)!!

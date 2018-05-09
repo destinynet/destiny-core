@@ -4,13 +4,13 @@
  */
 package destiny.astrology.classical.rules.debilities
 
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** In Detriment.  */
 class Detriment : EssentialRule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
 
     return h.getZodiacSign(planet)
       ?.takeIf { sign -> planet === detrimentImpl.getPoint(sign) }

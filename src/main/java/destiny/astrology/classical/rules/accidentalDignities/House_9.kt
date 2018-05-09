@@ -4,13 +4,13 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** In the 9th house.  */
 class House_9 : Rule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getHouse(planet)
       ?.takeIf { it == 9 }
       ?.let { house -> Pair("comment", arrayOf(planet, house)) }

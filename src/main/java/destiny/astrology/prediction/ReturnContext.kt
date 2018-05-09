@@ -31,7 +31,7 @@ class ReturnContext(
   /** 欲計算的目標時間，通常是當下，now，以LMT型態  */
   private val nowLmt: ChronoLocalDateTime<*>,
   /** 現在所處的地點  */
-  private val nowLoc: Location, planet: Planet, orb: Double, converse: Boolean, precession: Boolean) : DiscreteIF, Conversable, Serializable {
+  private val nowLoc: Location, planet: Planet, orb: Double, converse: Boolean, precession: Boolean) : IDiscrete, Conversable, Serializable {
 
 
   /** 返照法所採用的行星 , 太陽/太陰 , 或是其他  */
@@ -50,7 +50,7 @@ class ReturnContext(
 
 
   /** 對外主要的 method , 取得 return 盤  */
-  val returnHoroscope: IHoro
+  val returnHoroscope: IHoroscopeModel
     get() {
       val natalGmt = TimeTools.getGmtFromLmt(natalLmt, natalLoc)
       val nowGmt = TimeTools.getGmtFromLmt(nowLmt, nowLoc)
@@ -65,7 +65,7 @@ class ReturnContext(
       val pressure = 1013.25
       val nodeType = NodeType.MEAN
 
-      return horoscopeImpl.getHoroscope(convergentLmt, nowLoc, houseSystem, centric, coordinate)
+      return horoscopeImpl.getHoroscope(convergentLmt, nowLoc, null, houseSystem, centric, coordinate)
     }
 
   init {

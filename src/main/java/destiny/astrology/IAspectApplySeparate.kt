@@ -11,8 +11,8 @@ interface IAspectApplySeparate {
   }
 
   /** 如果不是形成 aspect 交角，會傳回 null  */
-  fun getAspectType(h: IHoro, p1: Point, p2: Point, aspect: Aspect): AspectType?
+  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspect: Aspect): AspectType?
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun getAspectType(h: IHoro, p1: Point, p2: Point, aspects: Collection<Aspect>): AspectType?
+  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): AspectType?
 }

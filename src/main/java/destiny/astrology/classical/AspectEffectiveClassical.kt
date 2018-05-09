@@ -6,7 +6,7 @@ package destiny.astrology.classical
 
 import destiny.astrology.Aspect
 import destiny.astrology.IAspectEffective
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Point
 import java.io.Serializable
 
@@ -36,7 +36,7 @@ class AspectEffectiveClassical : IAspectEffective, Serializable {
 
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, angle: Double): Boolean {
     return Math.abs(
-      IHoro.getAngle(deg1, deg2) - angle) <= (pointDiameterImpl!!.getDiameter(p1) + pointDiameterImpl!!.getDiameter(p2)) / 2
+      IHoroscopeModel.getAngle(deg1, deg2) - angle) <= (pointDiameterImpl!!.getDiameter(p1) + pointDiameterImpl!!.getDiameter(p2)) / 2
   }
 
   /**

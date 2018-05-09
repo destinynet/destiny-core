@@ -4,8 +4,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.Horoscope
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 
@@ -14,14 +13,14 @@ import destiny.astrology.Planet.*
  */
 class Oriental : Rule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDegree: Double? = arrayOf(MARS, JUPITER, SATURN)
       .takeIf { it.contains(planet) }
       ?.let { h.getPosition(planet) }?.lng
 
     val sunDegree: Double? = h.getPosition(SUN)?.lng
 
-    return if (sunDegree != null && planetDegree != null && IHoro.isOriental(planetDegree, sunDegree)) {
+    return if (sunDegree != null && planetDegree != null && IHoroscopeModel.isOriental(planetDegree, sunDegree)) {
       "comment" to arrayOf<Any>(planet)
     } else {
       null

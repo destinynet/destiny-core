@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 
@@ -20,7 +20,7 @@ import destiny.astrology.Planet.*
  */
 class JoyHouse : Rule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getHouse(planet)
       ?.takeIf { house ->
         planet === MERCURY && house == 1 ||

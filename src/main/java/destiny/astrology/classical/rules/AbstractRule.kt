@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules
 
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.tools.ILocaleString
 import org.slf4j.LoggerFactory
@@ -22,12 +22,12 @@ abstract class AbstractRule protected constructor(private val resource: String) 
   /** 名稱key  */
   private val nameKey: String = javaClass.simpleName
 
-  override fun isApplicable(planet: Planet, h: IHoro): Boolean {
+  override fun isApplicable(planet: Planet, h: IHoroscopeModel): Boolean {
     logger.debug("'{}' : isApplicable({})", javaClass.simpleName, planet)
     return (getResult(planet , h) != null)
   }
 
-  abstract fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>?
+  abstract fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>?
 
 
   /** 名稱  */
@@ -55,7 +55,7 @@ abstract class AbstractRule protected constructor(private val resource: String) 
 
 
   /** 取得某 Locale 之下的註解  */
-  override fun getComment(planet: Planet, h: IHoro, locale: Locale): String? {
+  override fun getComment(planet: Planet, h: IHoroscopeModel, locale: Locale): String? {
     return getResult(planet , h)?.let { pair ->
       val commentKey = pair.first
       val commentParameters = pair.second

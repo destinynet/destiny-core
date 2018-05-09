@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules;
 
-import destiny.astrology.IHoro;
+import destiny.astrology.IHoroscopeModel;
 import destiny.astrology.Planet;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -13,14 +13,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-public interface IRule extends Predicate<Pair<Planet, IHoro>> {
+public interface IRule extends Predicate<Pair<Planet, IHoroscopeModel>> {
 
   @Override
-  default boolean test(Pair<Planet, IHoro> t) {
+  default boolean test(Pair<Planet, IHoroscopeModel> t) {
     return isApplicable(t.getFirst() , t.getSecond());
   }
 
-  boolean isApplicable(Planet planet, IHoro h);
+  boolean isApplicable(Planet planet, IHoroscopeModel h);
 
   String getName();
 
@@ -28,10 +28,10 @@ public interface IRule extends Predicate<Pair<Planet, IHoro>> {
 
   /** 取得某 Locale 之下的註解 */
   @Nullable
-  String getComment(Planet planet , IHoro h , @NotNull Locale locale);
+  String getComment(Planet planet , IHoroscopeModel h , @NotNull Locale locale);
 
   @Nullable
-  default String getComment(Planet planet , IHoro h) {
+  default String getComment(Planet planet , IHoroscopeModel h) {
     return getComment(planet , h , Locale.getDefault());
   }
 }

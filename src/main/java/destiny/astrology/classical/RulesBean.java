@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical;
 
-import destiny.astrology.IHoro;
+import destiny.astrology.IHoroscopeModel;
 import destiny.astrology.Planet;
 import destiny.astrology.classical.rules.IRule;
 import kotlin.Pair;
@@ -28,8 +28,8 @@ public class RulesBean implements Serializable {
 
   private IDebilities debilitiesBean;
 
-  protected RulesBean() {
-  }
+//  protected RulesBean() {
+//  }
 
   public RulesBean(IEssentialDignities essentialDignitiesImpl, IAccidentalDignities accidentalDignitiesImpl, IDebilities debilitiesBean) {
     this.essentialDignitiesImpl = essentialDignitiesImpl;
@@ -38,7 +38,7 @@ public class RulesBean implements Serializable {
   }
 
   @NotNull
-  public List<String> getComments(Planet planet , IHoro h , Locale locale) {
+  public List<String> getComments(Planet planet , IHoroscopeModel h , Locale locale) {
     return Stream.of(
       essentialDignitiesImpl.getComments(planet , h , locale).stream() ,
       accidentalDignitiesImpl.getComments(planet , h , locale).stream(),
@@ -48,7 +48,8 @@ public class RulesBean implements Serializable {
   }
 
   @NotNull
-  public List<Pair<IRule, String>> getRuleAndComments(Planet planet , IHoro h , Locale locale) {
+  public List<Pair<IRule, String>> getRuleAndComments(Planet planet , IHoroscopeModel h , Locale locale) {
+
     return Stream.of(
       essentialDignitiesImpl.getRules().stream() ,
       accidentalDignitiesImpl.getRules().stream() ,

@@ -4,14 +4,13 @@
  */
 package destiny.astrology.classical.rules.debilities
 
-import destiny.astrology.Horoscope
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** Moon decreasing in light.  */
 class Moon_Decrease_Light : Rule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
 
     val moonDegree: Double? = planet
       .takeIf { it === Planet.MOON }
@@ -19,7 +18,7 @@ class Moon_Decrease_Light : Rule() {
 
     val sunDegree: Double? = h.getPosition(Planet.SUN)?.lng
 
-    return if (moonDegree != null && sunDegree != null && IHoro.isOriental(moonDegree, sunDegree)) {
+    return if (moonDegree != null && sunDegree != null && IHoroscopeModel.isOriental(moonDegree, sunDegree)) {
       "comment" to arrayOf<Any>(planet)
     } else {
       null

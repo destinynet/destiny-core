@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import java.io.Serializable
 
 /** 利用 HoroscopeAspectsCalculatorIF , 計算命盤之中，星體所呈現的交角，及其容許度  */
-class HoroscopeAspectsCalculator(private val horoscope: IHoro, private val calculator: IHoroscopeAspectsCalculator) : Serializable {
+class HoroscopeAspectsCalculator(private val horoscope: IHoroscopeModel, private val calculator: IHoroscopeAspectsCalculator) : Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 

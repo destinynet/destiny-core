@@ -5,16 +5,16 @@ package destiny.astrology.classical.rules
 
 import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.*
 
 interface RulePredicate<out T : Rule> {
-  fun getRules(p: Planet, h: IHoro): List<T>?
+  fun getRules(p: Planet, h: IHoroscopeModel): List<T>?
 }
 
 class RulerPredicate(private val rulerImpl: IRuler) : RulePredicate<Rule.Ruler> {
-  override fun getRules(p: Planet, h: IHoro): List<Rule.Ruler>? {
+  override fun getRules(p: Planet, h: IHoroscopeModel): List<Rule.Ruler>? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === rulerImpl.getPoint(sign)
     }?.let { sign ->
@@ -24,7 +24,7 @@ class RulerPredicate(private val rulerImpl: IRuler) : RulePredicate<Rule.Ruler> 
 }
 
 class ExaltPredicate(private val exaltImpl : IExaltation) : RulePredicate<Rule.Exalt> {
-  override fun getRules(p: Planet, h: IHoro): List<Rule.Exalt>? {
+  override fun getRules(p: Planet, h: IHoroscopeModel): List<Rule.Exalt>? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === exaltImpl.getPoint(sign)
     }?.let { sign ->
@@ -34,7 +34,7 @@ class ExaltPredicate(private val exaltImpl : IExaltation) : RulePredicate<Rule.E
 }
 
 class TermPredicate(private val termImpl : ITerm) : RulePredicate<Rule.Term> {
-  override fun getRules(p: Planet, h: IHoro): List<Rule.Term>? {
+  override fun getRules(p: Planet, h: IHoroscopeModel): List<Rule.Term>? {
     return h.getPosition(p)?.lng?.takeIf { lngDeg ->
       p === termImpl.getPoint(lngDeg)
     }?.let { lngDeg ->
@@ -46,7 +46,7 @@ class TermPredicate(private val termImpl : ITerm) : RulePredicate<Rule.Term> {
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
 class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
                           private val dayNightImpl: DayNightDifferentiator) : RulePredicate<Rule.Triplicity> {
-  override fun getRules(p: Planet, h: IHoro): List<Rule.Triplicity>? {
+  override fun getRules(p: Planet, h: IHoroscopeModel): List<Rule.Triplicity>? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
         (dayNight == DayNight.DAY && p === triplicityImpl.getPoint(sign, DayNight.DAY) ||
@@ -62,7 +62,7 @@ class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
 class MutualPredicate(private val essentialImpl: IEssential ,
                       private val dayNightImpl: DayNightDifferentiator,
                       private val dignities: Collection<Dignity>) : RulePredicate<Mutual.Reception> {
-  override fun getRules(p: Planet, h: IHoro): List<Mutual.Reception> ? {
+  override fun getRules(p: Planet, h: IHoroscopeModel): List<Mutual.Reception> ? {
     val dayNight = dayNightImpl.getDayNight(h.gmtJulDay , h.location)
     essentialImpl.getMutualData(p , h.pointDegreeMap , dayNight , dignities)
     TODO()

@@ -4,25 +4,34 @@
 package destiny.astrology
 
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
+/**
+ * 與「人」無關的星盤資料
+ * 沒有性別 [destiny.core.Gender]
+ *
+ * to replace [IHoroscope]
+ */
 interface IHoroscopeContext {
 
-  fun getHoroscope(gmtJulDay: Double, loc: ILocation, gender: Gender, temperature: Double? = 0.0,
-                   pressure: Double? = 1013.25): IHoro
+  fun getHoroscope(gmtJulDay: Double, loc: ILocation,
+                   place: String?,
+                   temperature: Double? = 0.0,
+                   pressure: Double? = 1013.25): IHoroscopeModel
 
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, temperature: Double? = 0.0,
-                   pressure: Double? = 1013.25): IHoro {
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?, temperature: Double? = 0.0,
+                   pressure: Double? = 1013.25): IHoroscopeModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getHoroscope(gmtJulDay, loc, gender, temperature, pressure)
+    return getHoroscope(gmtJulDay, loc, place, temperature, pressure)
   }
 
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): IHoro {
-    return getHoroscope(lmt, loc, gender, null, null)
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation): IHoroscopeModel {
+    return getHoroscope(lmt, loc, null, null, null)
   }
 }
 
@@ -30,7 +39,7 @@ interface IHoroscopeContext {
  * to replace [IHoroscope]
  */
 class HoroscopeContext(
-  val points: Collection<Point> ,
+  val points: Collection<Point>,
   val houseSystem: HouseSystem,
   val centric: Centric,
   val coordinate: Coordinate,
@@ -41,11 +50,11 @@ class HoroscopeContext(
 
   override fun getHoroscope(gmtJulDay: Double,
                             loc: ILocation,
-                            gender: Gender,
+                            place: String?,
                             temperature: Double?,
-                            pressure: Double?): IHoro {
+                            pressure: Double?): IHoroscopeModel {
 
-    val positionMap = points.map { point ->
+    val positionMap: Map<Point, PositionWithAzimuth> = points.map { point ->
       point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, centric, coordinate,
                                                                  starPositionWithAzimuthImpl)
     }.filter { (_, v) -> v != null }
@@ -60,8 +69,8 @@ class HoroscopeContext(
       it to cusps[it]
     }.toMap()
 
-    return Horoscope(gmtJulDay, loc, houseSystem, coordinate, centric, temperature, pressure, positionMap,
-                     cuspDegreeMap)
+    return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate, centric, temperature, pressure, positionMap,
+                          cuspDegreeMap)
   }
 
   companion object {
@@ -70,7 +79,35 @@ class HoroscopeContext(
       *Asteroids.array,
       *Hamburgers.array,
       *FixedStars.array,
-      *LunarNodes.meanArray
-    )
+      *LunarNodes.meanArray)
   }
+}
+
+/**
+ * 與「人」相關的星盤資料
+ */
+interface IPersonHoroscopeContext : IHoroscopeContext {
+
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>,
+                   loc: ILocation,
+                   place: String?,
+                   gender: Gender,
+                   name: String?): IPersonHoroscopeModel
+
+  fun getHoroscope(birthData: IBirthDataNamePlace): IPersonHoroscopeModel {
+    return getHoroscope(birthData.time, birthData.location, birthData.place, birthData.gender, birthData.name)
+  }
+}
+
+class PersonHoroscopeContext(private val hContext: HoroscopeContext) : IPersonHoroscopeContext,
+  IHoroscopeContext by hContext {
+  override fun getHoroscope(lmt: ChronoLocalDateTime<*>,
+                            loc: ILocation,
+                            place: String?,
+                            gender: Gender,
+                            name: String?): IPersonHoroscopeModel {
+    val h = hContext.getHoroscope(lmt, loc, place)
+    return PersonHoroscopeModel(h, gender, name)
+  }
+
 }

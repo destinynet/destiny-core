@@ -40,7 +40,8 @@ class PersonContext(
   override fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
                                      location: ILocation,
                                      place: String?,
-                                     gender: Gender): IPersonContextModel {
+                                     gender: Gender,
+                                     name: String?): IPersonContextModel {
 
     val ewModel: IEightWordsContextModel = eightWordsContext.getEightWordsContextModel(lmt, location, place)
 
@@ -55,16 +56,17 @@ class PersonContext(
     // 120歲 小運 , 120柱
     val fortuneDataSmalls = fortuneSmallImpl.getFortuneDataList(lmt , location , gender , 120)
 
-    return PersonContextModel(ewModel, gender, fortuneDataLarges, fortuneDataSmalls , ageMap)
+    return PersonContextModel(ewModel, gender, name , fortuneDataLarges, fortuneDataSmalls , ageMap)
   }
 
   override fun getPersonPresentModel(lmt: ChronoLocalDateTime<*>,
                                      location: ILocation,
                                      place: String?,
                                      gender: Gender,
+                                     name: String?,
                                      viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
     val viewChineseDate: ChineseDate = chineseDateImpl.getChineseDate(viewGmt.toLocalDate())
-    val pcm = getPersonContextModel(lmt, location, place, gender)
+    val pcm = getPersonContextModel(lmt, location, place, gender, name)
     // 目前所處的大運
     val selectedFortuneLarge: StemBranch = fortuneLargeImpl.getStemBranch(lmt, location, gender, viewGmt)
     return PersonPresentModel(pcm, viewGmt, viewChineseDate, selectedFortuneLarge)

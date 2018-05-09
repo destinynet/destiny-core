@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IEssential
@@ -16,11 +16,11 @@ import destiny.astrology.classical.IEssential
  */
 class MixedReception(private val essentialImpl: IEssential) : Rule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return mixedReception(h , planet)
   }
 
-  private fun mixedReception(h: IHoro, planet: Planet): Pair<String, Array<Any>>? {
+  private fun mixedReception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
     return essentialImpl.getMutualData(planet , h.pointDegreeMap , null, setOf(Dignity.RULER , Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
       val sign1 = h.getZodiacSign(planet)!!
       val sign2 = h.getZodiacSign(mutualData.p2)!!

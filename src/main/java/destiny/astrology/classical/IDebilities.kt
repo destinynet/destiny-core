@@ -4,8 +4,7 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.Horoscope
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.rules.IRule
 import java.util.*
@@ -18,5 +17,5 @@ interface IDebilities {
 
   val rules: List<IRule>
 
-  fun getComments(planet: Planet, h: IHoro, locale: Locale): List<String>
+  fun getComments(planet: Planet, h: IHoroscopeModel, locale: Locale): List<String>
 }

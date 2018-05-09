@@ -6,7 +6,7 @@ package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.IBesieged
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.IAccidentalDignities
 import destiny.astrology.classical.ICollectionOfLight
@@ -52,7 +52,7 @@ class AccidentalDignitiesBean(private val dayNightImpl: DayNightDifferentiator,
     )
   }
 
-  override fun getComments(planet: Planet, h: IHoro, locale: Locale): List<String> {
+  override fun getComments(planet: Planet, h: IHoroscopeModel, locale: Locale): List<String> {
     return rules
       .map { it.getComment(planet, h, locale) }
       .filter { it != null }

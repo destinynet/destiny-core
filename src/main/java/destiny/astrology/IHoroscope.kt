@@ -36,27 +36,32 @@ interface IHoroscope {
     return pointSet
   }
 
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>,
+                   loc: ILocation,
+                   place: String?,
                    points: Collection<Point>,
                    houseSystem: HouseSystem,
                    centric: Centric,
                    coordinate: Coordinate,
-                   temperature: Double?=0.0, pressure: Double?=1013.25): IHoro
+                   temperature: Double? = 0.0,
+                   pressure: Double? = 1013.25): IHoroscopeModel
 
 
   // default points
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>,
+                   loc: ILocation,
+                   place: String?,
                    houseSystem: HouseSystem,
                    centric: Centric,
-                   coordinate: Coordinate): IHoro {
-    return getHoroscope(lmt, loc, defaultPoints, houseSystem, centric, coordinate, 0.0, 1013.25)
+                   coordinate: Coordinate): IHoroscopeModel {
+    return getHoroscope(lmt, loc, null, defaultPoints, houseSystem, centric, coordinate, 0.0, 1013.25)
   }
 
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                    houseSystem: HouseSystem,
                    centric: Centric,
                    coordinate: Coordinate,
-                   nodeType: NodeType): IHoro {
-    return getHoroscope(lmt, loc, getDefaultPoints(nodeType), houseSystem, centric, coordinate, 0.0, 1013.25)
+                   nodeType: NodeType): IHoroscopeModel {
+    return getHoroscope(lmt, loc, null, getDefaultPoints(nodeType), houseSystem, centric, coordinate, 0.0, 1013.25)
   }
 }

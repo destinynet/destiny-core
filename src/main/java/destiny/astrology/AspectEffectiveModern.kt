@@ -31,7 +31,7 @@ class AspectEffectiveModern : Serializable, IAspectEffective {
 
   /** 直接比對度數是否形成交角，不考慮星體  */
   fun isEffective(deg1: Double, deg2: Double, aspect: Aspect): Boolean {
-    val angle = IHoro.getAngle(deg1, deg2)
+    val angle = IHoroscopeModel.getAngle(deg1, deg2)
     return Math.abs(angle - aspect.degree) <= aspectOrbsImpl.getAspectOrb(aspect)
   }
 
@@ -40,7 +40,7 @@ class AspectEffectiveModern : Serializable, IAspectEffective {
      //從「考量行星」的交角容許度實作找起
     val orb = aspectOrbsPlanetImpl.getPlanetAspectOrb(p1, p2, aspect)
       ?: aspectOrbsImpl.getAspectOrb(aspect) // 再從「不考慮行星」的交角容許度尋找
-    val angle = IHoro.getAngle(deg1, deg2)
+    val angle = IHoroscopeModel.getAngle(deg1, deg2)
 
     return orb.let {
       Math.abs(angle - aspect.degree) <= it
@@ -50,7 +50,7 @@ class AspectEffectiveModern : Serializable, IAspectEffective {
   companion object {
 
     fun isEffective(deg1: Double, deg2: Double, aspect: Aspect, orb: Double): Boolean {
-      val angle = IHoro.getAngle(deg1, deg2)
+      val angle = IHoroscopeModel.getAngle(deg1, deg2)
       return Math.abs(angle - aspect.degree) <= orb
     }
   }

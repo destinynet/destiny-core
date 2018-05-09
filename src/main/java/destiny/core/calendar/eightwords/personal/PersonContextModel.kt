@@ -3,7 +3,9 @@
  */
 package destiny.core.calendar.eightwords.personal
 
+import destiny.core.BirthDataNamePlace
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
@@ -17,6 +19,9 @@ import java.time.chrono.ChronoLocalDateTime
 interface IPersonContextModel : IEightWordsContextModel {
   /** 性別 */
   val gender: Gender
+
+  /** 名稱 */
+  val name: String?
 
   /** 總共要輸出的大運  */
   val fortuneDataLarges: List<FortuneData>
@@ -77,10 +82,10 @@ interface IPersonFortuneSmall {
    * 順推小運
    * 取得幾條小運
    */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*> ,
-                         location: ILocation ,
-                         gender: Gender ,
-                         count: Int) : List<FortuneData>
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
+                         location: ILocation,
+                         gender: Gender,
+                         count: Int): List<FortuneData>
 }
 
 /**
@@ -93,7 +98,12 @@ interface IPersonContext : IEightWordsContext {
   fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
                             location: ILocation,
                             place: String?,
-                            gender: Gender): IPersonContextModel
+                            gender: Gender,
+                            name: String?): IPersonContextModel
+
+  fun getPersonContextModel(birthData: BirthDataNamePlace): IPersonContextModel {
+    return getPersonContextModel(birthData.time, birthData.location, birthData.place, birthData.gender, birthData.name)
+  }
 
   val ageNoteImpls: List<IntAgeNote>
 }
@@ -108,6 +118,9 @@ data class PersonContextModel(
 
   /** 性別 */
   override val gender: Gender,
+
+  /** 名稱 */
+  override val name: String?,
 
   /** 總共要輸出的大運  */
   override val fortuneDataLarges: List<FortuneData>,
@@ -144,5 +157,11 @@ interface IPersonPresentContext : IPersonContext {
                             location: ILocation,
                             place: String?,
                             gender: Gender,
+                            name: String?,
                             viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel
+
+  fun getPersonPresentModel(data: IBirthDataNamePlace,
+                            viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
+    return getPersonPresentModel(data.time, data.location, data.place, data.gender, data.name, viewGmt)
+  }
 }

@@ -12,12 +12,12 @@ class Partile_Conj_South_Node : Rule() {
   /** 內定採用 NodeType.MEAN  */
   var nodeType = NodeType.MEAN
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDeg = h.getPosition(planet)?.lng
     val south = LunarNode.of(NorthSouth.SOUTH, nodeType)
     val southDeg = h.getPosition(south)?.lng
 
-    return if (planetDeg != null && southDeg != null && IHoro.getAngle(planetDeg , southDeg) <= 1)
+    return if (planetDeg != null && southDeg != null && IHoroscopeModel.getAngle(planetDeg, southDeg) <= 1)
       "comment" to arrayOf(planet , south , Aspect.CONJUNCTION)
     else
       null

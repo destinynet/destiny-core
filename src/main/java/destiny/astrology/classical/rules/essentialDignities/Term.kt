@@ -4,14 +4,14 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.IHoro
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.ITerm
 
 /** A planet in itw own term.  */
 class Term(private val termImpl : ITerm) : Rule() {
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val lngDeg: Double? = h.getPosition(planet)?.lng
     return lngDeg?.let {
       val termPoint =  termImpl.getPoint(lngDeg)

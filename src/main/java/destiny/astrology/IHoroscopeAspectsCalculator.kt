@@ -10,5 +10,5 @@ import destiny.core.Descriptive
 interface IHoroscopeAspectsCalculator : Descriptive {
 
   /** 取得與 [Point] 形成交角的星體，以及其交角是哪種 ，如果沒形成任何交角，傳回 null  */
-  fun getPointAspect(point: Point, horoscope: IHoro, points: Collection<Point>): Map<Point, Aspect>
+  fun getPointAspect(point: Point, horoscope: IHoroscopeModel, points: Collection<Point>): Map<Point, Aspect>
 }

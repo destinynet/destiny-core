@@ -11,7 +11,7 @@ class Partile_Conj_Regulus : Rule() {
 
   private val aspect = Aspect.CONJUNCTION
 
-  override fun getResult(planet: Planet, h: IHoro): Pair<String, Array<Any>>? {
+  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDeg: Double? = h.getPosition(planet)?.lng
     val regulusDeg: Double? = h.getPosition(FixedStar.REGULUS)?.lng
     return if (planetDeg != null && regulusDeg != null && AspectEffectiveModern.isEffective(planetDeg, regulusDeg, aspect, 1.0)) {
