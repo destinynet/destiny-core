@@ -10,7 +10,10 @@ import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 2015-06-11 重寫此介面，讓此介面成為 immutable
+ *
+ * TODO : to be replaced with [IHoroscopeContext]
  */
+@Deprecated("IHoroscopeContext")
 interface IHoroscope {
 
   val defaultPoints: Set<Point>
@@ -48,6 +51,7 @@ interface IHoroscope {
 
 
   // default points
+  @Deprecated("")
   fun getHoroscope(lmt: ChronoLocalDateTime<*>,
                    loc: ILocation,
                    place: String?,

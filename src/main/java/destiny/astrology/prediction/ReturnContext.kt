@@ -14,12 +14,13 @@ import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 返照法演算法 , 可以計算 Planet 的返照
+ * TODO : interface 化
  */
 class ReturnContext(
   /** 最完整的 constructor , 連是否逆推 , 是否考慮歲差，都要帶入  */
   private val horoscopeImpl: IHoroscope,
   /** 計算星體的介面  */
-  private var starPositionWithAzimuthImpl: IStarPositionWithAzimuth?,
+  private val starPositionWithAzimuthImpl: IStarPositionWithAzimuth,
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
   private val houseCuspImpl: IHouseCusp,
@@ -65,7 +66,8 @@ class ReturnContext(
       val pressure = 1013.25
       val nodeType = NodeType.MEAN
 
-      return horoscopeImpl.getHoroscope(convergentLmt, nowLoc, null, houseSystem, centric, coordinate)
+      val horoscopeContext = HoroscopeContext(IHoroscopeContext.defaultPoints , houseSystem , centric , coordinate , starPositionWithAzimuthImpl , houseCuspImpl)
+      return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
     }
 
   init {
@@ -84,7 +86,7 @@ class ReturnContext(
 
     val coordinate = if (isPrecession) Coordinate.SIDEREAL else Coordinate.ECLIPTIC
     //先計算出生盤中，該星體的黃道位置
-    val natalPlanetDegree = starPositionWithAzimuthImpl!!.getPosition(planet, natalGmtTime, Centric.GEO, coordinate).lng
+    val natalPlanetDegree = starPositionWithAzimuthImpl.getPosition(planet, natalGmtTime, Centric.GEO, coordinate).lng
 
     //再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
     return if (!converse) {
@@ -108,13 +110,7 @@ class ReturnContext(
     set(value) {this.converse = value}
 
 
-  fun setStarPositionWithAzimuthImpl(starPositionWithAzimuthImpl: IStarPositionWithAzimuth) {
-    this.starPositionWithAzimuthImpl = starPositionWithAzimuthImpl
-  }
 
-  fun setStarTransitImpl(starTransitImpl: IStarTransit) {
-    this.starTransitImpl = starTransitImpl
-  }
 
 
 }

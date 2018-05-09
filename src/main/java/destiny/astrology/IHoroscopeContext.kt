@@ -19,19 +19,47 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IHoroscopeContext {
 
-  fun getHoroscope(gmtJulDay: Double, loc: ILocation,
+
+  /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
+  fun getHoroscope(gmtJulDay: Double,
+                   loc: ILocation,
                    place: String?,
+                   points: Collection<Point>? = defaultPoints,
+                   houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
+                   centric: Centric? = Centric.GEO,
+                   coordinate: Coordinate? = Coordinate.ECLIPTIC,
                    temperature: Double? = 0.0,
                    pressure: Double? = 1013.25): IHoroscopeModel
 
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?, temperature: Double? = 0.0,
+
+
+  /** 最完整 , [ChronoLocalDateTime] 版本 */
+  fun getHoroscope(lmt: ChronoLocalDateTime<*>,
+                   loc: ILocation,
+                   place: String?=null,
+                   points: Collection<Point>?,
+                   houseSystem: HouseSystem?,
+                   centric: Centric?,
+                   coordinate: Coordinate?,
+                   temperature: Double? = 0.0,
                    pressure: Double? = 1013.25): IHoroscopeModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getHoroscope(gmtJulDay, loc, place, temperature, pressure)
+    return getHoroscope(gmtJulDay, loc, place, points, houseSystem, centric, coordinate, temperature, pressure)
   }
 
+
+  /** 最精簡 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation): IHoroscopeModel {
-    return getHoroscope(lmt, loc, null, null, null)
+    return getHoroscope(lmt, loc , null , defaultPoints , HouseSystem.PLACIDUS , Centric.GEO , Coordinate.ECLIPTIC)
+  }
+
+  companion object {
+    val defaultPoints = setOf<Point>(
+      *Planets.array,
+      *Asteroids.array,
+      *Hamburgers.array,
+      *FixedStars.array,
+      *LunarNodes.meanArray)
   }
 }
 
@@ -48,33 +76,45 @@ class HoroscopeContext(
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
+
+  /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
   override fun getHoroscope(gmtJulDay: Double,
                             loc: ILocation,
                             place: String?,
+                            points: Collection<Point>?,
+                            houseSystem: HouseSystem?,
+                            centric: Centric?,
+                            coordinate: Coordinate?,
                             temperature: Double?,
                             pressure: Double?): IHoroscopeModel {
 
-    val positionMap: Map<Point, PositionWithAzimuth> = points.map { point ->
-      point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, centric, coordinate,
+    println("hs = $houseSystem , centric = $centric , coordinate = $coordinate")
+    val positionMap: Map<Point, PositionWithAzimuth> = (points?:this.points).map { point ->
+      point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, centric ?: this.centric,
+                                                                 coordinate ?: this.coordinate,
                                                                  starPositionWithAzimuthImpl)
     }.filter { (_, v) -> v != null }
       .map { (point, pos) -> point to pos!! as PositionWithAzimuth }
       .toMap()
 
+
     // [0] ~ [12] , 只有 [1] 到 [12] 有值
-    val cusps = houseCuspImpl.getHouseCusps(gmtJulDay, loc, houseSystem, coordinate)
+    val cusps =
+      houseCuspImpl.getHouseCusps(gmtJulDay, loc, houseSystem ?: this.houseSystem, coordinate ?: this.coordinate)
     logger.debug("cusps = {}", cusps)
 
     val cuspDegreeMap = (1 until cusps.size).map {
       it to cusps[it]
     }.toMap()
 
-    return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate, centric, temperature, pressure, positionMap,
+    return HoroscopeModel(gmtJulDay, loc, place, houseSystem ?: this.houseSystem, coordinate ?: this.coordinate,
+                          centric ?: this.centric, temperature, pressure, positionMap,
                           cuspDegreeMap)
   }
 
+
   companion object {
-    val defaultPoints = setOf(
+    val defaultPoints = setOf<Point>(
       *Planets.array,
       *Asteroids.array,
       *Hamburgers.array,
@@ -106,7 +146,7 @@ class PersonHoroscopeContext(private val hContext: HoroscopeContext) : IPersonHo
                             place: String?,
                             gender: Gender,
                             name: String?): IPersonHoroscopeModel {
-    val h = hContext.getHoroscope(lmt, loc, place)
+    val h = hContext.getHoroscope(lmt=lmt, loc=loc)
     return PersonHoroscopeModel(h, gender, name)
   }
 

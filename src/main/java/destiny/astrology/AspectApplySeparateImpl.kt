@@ -33,8 +33,11 @@ class AspectApplySeparateImpl(
       val lmt = h.lmt //目前時間
       val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
 
-      val hContext = HoroscopeContext(h.points, h.houseSystem, h.centric, h.coordinate, starPositionWithAzimuthImpl , houseCuspImpl)
-      val h2 = hContext.getHoroscope(oneSecondLater , h.location , h.place , h.temperature , h.pressure)
+      val hContext : IHoroscopeContext = HoroscopeContext(h.points, h.houseSystem, h.centric, h.coordinate, starPositionWithAzimuthImpl , houseCuspImpl)
+      val h2 = hContext.getHoroscope(lmt = oneSecondLater, loc = h.location, place = h.place,
+                                     points = IHoroscopeContext.defaultPoints,
+                                     houseSystem = null, centric = null, coordinate = null, temperature = h.temperature,
+                                     pressure = h.pressure)
 
 //      val h2 = horoscopeImpl.getHoroscope(oneSecondLater, h.location, null, h.points, h.houseSystem, h.centric, h.coordinate, h.temperature, h.pressure)
 
