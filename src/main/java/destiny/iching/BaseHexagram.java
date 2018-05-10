@@ -10,7 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.util.List;
 
-/** 因為 enum Hexagram 無法被繼承 , 所以才做出這個中介/adapter class , 提供給其他 class 繼承 */
+/** 因為 enum Hexagram 無法被繼承 , 所以才做出這個中介/adapter class , 提供給其他 class 繼承
+ * FIXME :  2018-05-11 考慮此 class 之存廢 */
 public class BaseHexagram implements IHexagram, Serializable {
 
   private Hexagram hexagram;
@@ -117,4 +118,24 @@ public class BaseHexagram implements IHexagram, Serializable {
     return hexagram.getHexagram(lines);
   }
 
+  @NotNull
+  @Override
+  public IHexagram getMiddleSpanHexagram() {
+    // TODO
+    return null;
+  }
+
+  @NotNull
+  @Override
+  public IHexagram getInterlacedHexagram() {
+    // TODO
+    return null;
+  }
+
+  @NotNull
+  @Override
+  public IHexagram getReversedHexagram() {
+    // TODO
+    return null;
+  }
 }

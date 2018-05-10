@@ -144,7 +144,6 @@ interface IPalmContext {
     return getPalm(data.gender , data.time , data.location , data.place , data.name)
   }
 
-
   companion object {
     val logger = LoggerFactory.getLogger(IPalmContext::class.java)!!
   }

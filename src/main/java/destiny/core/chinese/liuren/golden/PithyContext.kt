@@ -6,6 +6,7 @@ package destiny.core.chinese.liuren.golden
 import destiny.astrology.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
@@ -33,6 +34,10 @@ interface IPithyContext {
                      place: String?,
                      question: String,
                      method: IPithyDetailModel.Method): IPithyDetailModel
+
+  fun getDetailModel(data: IBirthDataNamePlace , direction: Branch , question: String , method: IPithyDetailModel.Method)  : IPithyDetailModel {
+    return getDetailModel(data.gender , data.time , data.location , direction , data.place , question , method)
+  }
 }
 
 class PithyContext(

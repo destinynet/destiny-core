@@ -29,4 +29,28 @@ interface IHexagram {
    * @param lines [1~6]
    */
   fun getHexagram(vararg lines: Int): IHexagram
+
+  /**
+   * 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名
+   */
+  val middleSpanHexagram: IHexagram
+    get() = Hexagram.getHexagram(
+      booleanArrayOf(lowerSymbol.getBooleanValue(2), lowerSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(1),
+                     lowerSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(1), upperSymbol.getBooleanValue(2)))
+
+  /**
+   * 錯卦 , 一卦六爻全變 , 交錯之意 , 故取名 Interlaced Hexagram
+   */
+  val interlacedHexagram: IHexagram
+    get() = Hexagram.getHexagram(
+      booleanArrayOf(!lowerSymbol.getBooleanValue(1), !lowerSymbol.getBooleanValue(2), !lowerSymbol.getBooleanValue(3),
+                     !upperSymbol.getBooleanValue(1), !upperSymbol.getBooleanValue(2), !upperSymbol.getBooleanValue(3)))
+
+  /**
+   * 綜卦 , 上下顛倒 , 故取名 Reversed Hexagram
+   */
+  val reversedHexagram: IHexagram
+    get() = Hexagram.getHexagram(
+      booleanArrayOf(upperSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(2), upperSymbol.getBooleanValue(1),
+                     lowerSymbol.getBooleanValue(3), lowerSymbol.getBooleanValue(2), lowerSymbol.getBooleanValue(1)))
 }

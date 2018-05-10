@@ -119,7 +119,7 @@ public class UBBCodeConverter
     int j;
     while ((j = s.indexOf(s1)) != -1)
     {
-      s3.append(s.substring(0, j));
+      s3.append(s, 0, j);
       s3.append(s2);
       s = s.substring(j + i);
     }
@@ -305,8 +305,8 @@ public class UBBCodeConverter
       result = u_m.find();
       while (result)
       {
-        u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5), "<p align=" + u_m
-            .group(2) + ">" + u_m.group(4) + "</p>");
+        u_s = replace(u_s1, u_m.group(1) + u_m.group(2) + u_m.group(3) + u_m.group(4) + u_m.group(5), "<pattern align=" + u_m
+            .group(2) + ">" + u_m.group(4) + "</pattern>");
         u_s1 = u_s;
         u_m.find();
       }
