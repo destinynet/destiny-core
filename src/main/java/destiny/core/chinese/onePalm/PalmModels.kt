@@ -165,16 +165,18 @@ data class PalmModel(
   }
 }
 
-interface IPalmModelMeta : IPalmModel {
-  val lmt : ChronoLocalDateTime<*>
-  val loc : ILocation
-  val place : String?
-  val chineseDateHour : ChineseDateHour
+interface IPalmMetaModel : IPalmModel {
+  val lmt: ChronoLocalDateTime<*>
+  val loc: ILocation
+  val place: String?
+  val name: String?
+  val chineseDateHour: ChineseDateHour
 }
 
-data class PalmModelMeta(
-  private val palmModel: IPalmModel ,
-  override val lmt : ChronoLocalDateTime<*>,
-  override val loc : ILocation,
-  override val place : String?,
-  override val chineseDateHour: ChineseDateHour) : IPalmModelMeta , IPalmModel by palmModel , Serializable
+data class PalmMetaModel(
+  private val palmModel: IPalmModel,
+  override val lmt: ChronoLocalDateTime<*>,
+  override val loc: ILocation,
+  override val place: String?,
+  override val name: String?,
+  override val chineseDateHour: ChineseDateHour) : IPalmMetaModel, IPalmModel by palmModel, Serializable

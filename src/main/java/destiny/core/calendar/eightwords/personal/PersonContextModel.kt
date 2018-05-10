@@ -101,8 +101,8 @@ interface IPersonContext : IEightWordsContext {
                             gender: Gender,
                             name: String?): IPersonContextModel
 
-  fun getPersonContextModel(birthData: BirthDataNamePlace): IPersonContextModel {
-    return getPersonContextModel(birthData.time, birthData.location, birthData.place, birthData.gender, birthData.name)
+  fun getPersonContextModel(data: BirthDataNamePlace): IPersonContextModel {
+    return getPersonContextModel(data.time, data.location, data.place, data.gender, data.name)
   }
 
   val ageNoteImpls: List<IntAgeNote>

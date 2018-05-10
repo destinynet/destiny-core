@@ -71,7 +71,11 @@ class PalmContext(override val positiveImpl: IPositive,
   /**
    * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
    */
-  override fun getPalm(gender: Gender, lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?): IPalmModelMeta {
+  override fun getPalm(gender: Gender,
+                       lmt: ChronoLocalDateTime<*>,
+                       loc: ILocation,
+                       place: String?,
+                       name: String?): IPalmMetaModel {
 
     val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
     val hourBranch = hourImpl.getHour(lmt, loc)
@@ -87,7 +91,7 @@ class PalmContext(override val positiveImpl: IPositive,
     // 節氣的月支
     val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
     val palm = getPalm(gender, chineseDateHour, trueRising, monthBranch)
-    return PalmModelMeta(palm , lmt, loc, place , chineseDateHour)
+    return PalmMetaModel(palm, lmt, loc, place, name, chineseDateHour)
   }
 
   companion object {

@@ -1,6 +1,7 @@
 package destiny.core.chinese.onePalm
 
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
@@ -133,7 +134,16 @@ interface IPalmContext {
   /**
    * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
    */
-  fun getPalm(gender: Gender, lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?): IPalmModelMeta
+  fun getPalm(gender: Gender,
+              lmt: ChronoLocalDateTime<*>,
+              loc: ILocation,
+              place: String?,
+              name: String?): IPalmMetaModel
+
+  fun getPalm(data: IBirthDataNamePlace) : IPalmMetaModel {
+    return getPalm(data.gender , data.time , data.location , data.place , data.name)
+  }
+
 
   companion object {
     val logger = LoggerFactory.getLogger(IPalmContext::class.java)!!

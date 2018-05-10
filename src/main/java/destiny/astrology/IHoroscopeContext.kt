@@ -88,7 +88,6 @@ class HoroscopeContext(
                             temperature: Double?,
                             pressure: Double?): IHoroscopeModel {
 
-    println("hs = $houseSystem , centric = $centric , coordinate = $coordinate")
     val positionMap: Map<Point, PositionWithAzimuth> = (points?:this.points).map { point ->
       point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, centric ?: this.centric,
                                                                  coordinate ?: this.coordinate,
