@@ -19,6 +19,10 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IHoroscopeContext {
 
+  val houseSystem: HouseSystem
+  val centric: Centric
+  val coordinate: Coordinate
+
 
   /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
   fun getHoroscope(gmtJulDay: Double,
@@ -32,15 +36,14 @@ interface IHoroscopeContext {
                    pressure: Double? = 1013.25): IHoroscopeModel
 
 
-
   /** 最完整 , [ChronoLocalDateTime] 版本 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>,
                    loc: ILocation,
-                   place: String?=null,
-                   points: Collection<Point>?,
-                   houseSystem: HouseSystem?,
-                   centric: Centric?,
-                   coordinate: Coordinate?,
+                   place: String? = null,
+                   points: Collection<Point>? = defaultPoints,
+                   houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
+                   centric: Centric? = Centric.GEO,
+                   coordinate: Coordinate? = Coordinate.ECLIPTIC,
                    temperature: Double? = 0.0,
                    pressure: Double? = 1013.25): IHoroscopeModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
@@ -50,7 +53,7 @@ interface IHoroscopeContext {
 
   /** 最精簡 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation): IHoroscopeModel {
-    return getHoroscope(lmt, loc , null , defaultPoints , HouseSystem.PLACIDUS , Centric.GEO , Coordinate.ECLIPTIC)
+    return getHoroscope(lmt, loc, null, defaultPoints, HouseSystem.PLACIDUS, Centric.GEO, Coordinate.ECLIPTIC)
   }
 
   companion object {
@@ -68,9 +71,9 @@ interface IHoroscopeContext {
  */
 class HoroscopeContext(
   val points: Collection<Point>,
-  val houseSystem: HouseSystem,
-  val centric: Centric,
-  val coordinate: Coordinate,
+  override val houseSystem: HouseSystem,
+  override val centric: Centric,
+  override val coordinate: Coordinate,
   val starPositionWithAzimuthImpl: IStarPositionWithAzimuth,
   val houseCuspImpl: IHouseCusp) : IHoroscopeContext, Serializable {
 
@@ -88,9 +91,13 @@ class HoroscopeContext(
                             temperature: Double?,
                             pressure: Double?): IHoroscopeModel {
 
-    val positionMap: Map<Point, PositionWithAzimuth> = (points?:this.points).map { point ->
-      point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, centric ?: this.centric,
-                                                                 coordinate ?: this.coordinate,
+    val finalHs = houseSystem ?: this.houseSystem
+    val finalCentric = centric ?: this.centric
+    val finalCoordinate = coordinate ?: this.coordinate
+
+    val positionMap: Map<Point, PositionWithAzimuth> = (points ?: this.points).map { point ->
+      point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, finalCentric,
+                                                                 finalCoordinate,
                                                                  starPositionWithAzimuthImpl)
     }.filter { (_, v) -> v != null }
       .map { (point, pos) -> point to pos!! as PositionWithAzimuth }
@@ -99,15 +106,15 @@ class HoroscopeContext(
 
     // [0] ~ [12] , 只有 [1] 到 [12] 有值
     val cusps =
-      houseCuspImpl.getHouseCusps(gmtJulDay, loc, houseSystem ?: this.houseSystem, coordinate ?: this.coordinate)
+      houseCuspImpl.getHouseCusps(gmtJulDay, loc, finalHs, finalCoordinate)
     logger.debug("cusps = {}", cusps)
 
     val cuspDegreeMap = (1 until cusps.size).map {
       it to cusps[it]
     }.toMap()
 
-    return HoroscopeModel(gmtJulDay, loc, place, houseSystem ?: this.houseSystem, coordinate ?: this.coordinate,
-                          centric ?: this.centric, temperature, pressure, positionMap,
+    return HoroscopeModel(gmtJulDay, loc, place, finalHs, finalCoordinate,
+                          finalCentric, temperature, pressure, positionMap,
                           cuspDegreeMap)
   }
 
@@ -131,21 +138,27 @@ interface IPersonHoroscopeContext : IHoroscopeContext {
                    loc: ILocation,
                    place: String?,
                    gender: Gender,
-                   name: String?): IPersonHoroscopeModel
+                   name: String?,
+                   houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
+                   centric: Centric? = Centric.GEO,
+                   coordinate: Coordinate? = Coordinate.ECLIPTIC): IPersonHoroscopeModel
 
   fun getHoroscope(birthData: IBirthDataNamePlace): IPersonHoroscopeModel {
     return getHoroscope(birthData.time, birthData.location, birthData.place, birthData.gender, birthData.name)
   }
 }
 
-class PersonHoroscopeContext(private val hContext: HoroscopeContext) : IPersonHoroscopeContext,
+class PersonHoroscopeContext(private val hContext: IHoroscopeContext) : IPersonHoroscopeContext,
   IHoroscopeContext by hContext {
   override fun getHoroscope(lmt: ChronoLocalDateTime<*>,
                             loc: ILocation,
                             place: String?,
                             gender: Gender,
-                            name: String?): IPersonHoroscopeModel {
-    val h = hContext.getHoroscope(lmt=lmt, loc=loc)
+                            name: String?,
+                            houseSystem: HouseSystem?,
+                            centric: Centric?,
+                            coordinate: Coordinate?): IPersonHoroscopeModel {
+    val h = hContext.getHoroscope(lmt, loc, houseSystem = houseSystem, centric = centric, coordinate = coordinate)
     return PersonHoroscopeModel(h, gender, name)
   }
 
