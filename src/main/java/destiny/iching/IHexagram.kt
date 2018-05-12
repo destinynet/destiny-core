@@ -9,20 +9,42 @@ package destiny.iching
  */
 interface IHexagram {
 
-  /** 取得全部的陰陽  */
-  val yinYangs: List<Boolean>
-
   /** 取得上卦  */
   val upperSymbol: Symbol
 
   /** 取得下卦  */
   val lowerSymbol: Symbol
 
+  /** 取得全部的陰陽  */
+  val yinYangs: List<Boolean>
+    get() = listOf(
+      lowerSymbol.getBooleanValue(1),
+      lowerSymbol.getBooleanValue(2),
+      lowerSymbol.getBooleanValue(3),
+      upperSymbol.getBooleanValue(1),
+      upperSymbol.getBooleanValue(2),
+      upperSymbol.getBooleanValue(3))
+
+
   /** 取得 010101 的表示法  */
   val binaryCode: String
+    get() = yinYangs.joinToString(separator = "", transform = { b -> if (b) "1" else "0" })
+
 
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
-  fun getLine(index: Int): Boolean
+  fun getLine(index: Int): Boolean {
+    require(index in 1..6) { "index out of range , 1 <= index <= 6 : $index" }
+    when (index) {
+      1 -> return lowerSymbol.getBooleanValue(1)
+      2 -> return lowerSymbol.getBooleanValue(2)
+      3 -> return lowerSymbol.getBooleanValue(3)
+      4 -> return upperSymbol.getBooleanValue(1)
+      5 -> return upperSymbol.getBooleanValue(2)
+      6 -> return upperSymbol.getBooleanValue(3)
+    }
+    throw RuntimeException("index out of range , 1 <= index <= 6 : $index")
+  }
+
 
   /**
    * 第 line 爻動的話，變卦是什麼

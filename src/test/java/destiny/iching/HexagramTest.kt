@@ -5,10 +5,26 @@
 package destiny.iching
 
 import org.junit.Assert.*
-import java.util.*
 import kotlin.test.Test
 
 class HexagramTest {
+
+  @Test
+  fun testGetLine() {
+    assertTrue(Hexagram.乾.getLine(1))
+    assertTrue(Hexagram.乾.getLine(2))
+    assertTrue(Hexagram.乾.getLine(3))
+    assertTrue(Hexagram.乾.getLine(4))
+    assertTrue(Hexagram.乾.getLine(5))
+    assertTrue(Hexagram.乾.getLine(6))
+
+    assertFalse(Hexagram.坤.getLine(1))
+    assertFalse(Hexagram.坤.getLine(2))
+    assertFalse(Hexagram.坤.getLine(3))
+    assertFalse(Hexagram.坤.getLine(4))
+    assertFalse(Hexagram.坤.getLine(5))
+    assertFalse(Hexagram.坤.getLine(6))
+  }
 
   @Test
   fun testBinaryCode() {
@@ -24,32 +40,32 @@ class HexagramTest {
   fun testGetTuple() {
     var list: List<Int>
     var pair: Pair<IHexagram, IHexagram>
-    list = Arrays.asList(7, 7, 7, 7, 7, 7)
+    list = listOf(7, 7, 7, 7, 7, 7)
     pair = Hexagram.getHexagrams(list)
     assertEquals(Hexagram.乾, pair.first)
     assertEquals(Hexagram.乾, pair.second)
 
-    list = Arrays.asList(9, 9, 9, 9, 9, 9)
+    list = listOf(9, 9, 9, 9, 9, 9)
     pair = Hexagram.getHexagrams(list)
     assertEquals(Hexagram.乾, pair.first)
     assertEquals(Hexagram.坤, pair.second)
 
-    list = Arrays.asList(9, 9, 9, 6, 6, 6)
+    list = listOf(9, 9, 9, 6, 6, 6)
     pair = Hexagram.getHexagrams(list)
     assertEquals(Hexagram.泰, pair.first)
     assertEquals(Hexagram.否, pair.second)
 
-    list = Arrays.asList(6, 6, 6, 9, 9, 9)
+    list = listOf(6, 6, 6, 9, 9, 9)
     pair = Hexagram.getHexagrams(list)
     assertEquals(Hexagram.否, pair.first)
     assertEquals(Hexagram.泰, pair.second)
 
-    list = Arrays.asList(6, 9, 6, 9, 6, 9)
+    list = listOf(6, 9, 6, 9, 6, 9)
     pair = Hexagram.getHexagrams(list)
     assertEquals(Hexagram.未濟, pair.first)
     assertEquals(Hexagram.既濟, pair.second)
 
-    list = Arrays.asList(9, 6, 9, 6, 9, 6)
+    list = listOf(9, 6, 9, 6, 9, 6)
     pair = Hexagram.getHexagrams(list)
     assertEquals(Hexagram.既濟, pair.first)
     assertEquals(Hexagram.未濟, pair.second)
@@ -63,7 +79,7 @@ class HexagramTest {
 
   @Test
   fun testHexagram() {
-    val set = HashSet<Hexagram>()
+    val set = mutableSetOf<Hexagram>()
 
     for (h in Hexagram.values()) {
       assertTrue(!set.contains(h))

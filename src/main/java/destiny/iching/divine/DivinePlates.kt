@@ -33,10 +33,8 @@ data class Meta(override val 納甲系統: String,
 /**
  * 卜一個卦的最基本資料結構：本卦、變卦
  */
-data class Combined(override val src: Hexagram,
-                    override val dst: Hexagram) : ICombined, Serializable {
-  constructor(src: IHexagram, dst: IHexagram) : this(Hexagram.getHexagram(src), Hexagram.getHexagram(dst))
-}
+data class Combined(override val src: IHexagram,
+                    override val dst: IHexagram) : ICombined, Serializable
 
 
 /** 單一卦象，卦名、世爻應爻、六親等資訊 */

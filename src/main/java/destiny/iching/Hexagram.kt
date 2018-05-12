@@ -7,8 +7,9 @@ package destiny.iching
 import destiny.core.chinese.IYinYang
 import java.io.Serializable
 
-enum class Hexagram constructor(override val upperSymbol: Symbol, override val lowerSymbol: Symbol)
-  : IHexagram, Serializable {
+enum class Hexagram constructor(
+  override val upperSymbol: Symbol,
+  override val lowerSymbol: Symbol) : IHexagram, Serializable {
   乾(Symbol.乾, Symbol.乾),
   坤(Symbol.坤, Symbol.坤),
   屯(Symbol.坎, Symbol.震),
@@ -87,32 +88,7 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
   未濟(Symbol.離, Symbol.坎);
 
 
-  override val yinYangs: List<Boolean>
-    get() = listOf(
-      lowerSymbol.getBooleanValue(1),
-      lowerSymbol.getBooleanValue(2),
-      lowerSymbol.getBooleanValue(3),
-      upperSymbol.getBooleanValue(1),
-      upperSymbol.getBooleanValue(2),
-      upperSymbol.getBooleanValue(3))
 
-  override val binaryCode: String
-    get() {
-      return yinYangs.joinToString(separator = "", transform = { b -> if (b) "1" else "0" })
-    }
-
-  /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
-  override fun getLine(index: Int): Boolean {
-    when (index) {
-      1 -> return lowerSymbol.getBooleanValue(1)
-      2 -> return lowerSymbol.getBooleanValue(2)
-      3 -> return lowerSymbol.getBooleanValue(3)
-      4 -> return upperSymbol.getBooleanValue(1)
-      5 -> return upperSymbol.getBooleanValue(2)
-      6 -> return upperSymbol.getBooleanValue(3)
-    }
-    throw RuntimeException("index out of range , 1 <= index <= 6 : $index")
-  }
 
   /**
    * 第 line 爻動的話，變卦是什麼
@@ -172,8 +148,8 @@ enum class Hexagram constructor(override val upperSymbol: Symbol, override val l
     }
 
     fun getHexagram(booleans: List<Boolean>): Hexagram {
-      if (booleans.size != 6)
-        throw AssertionError("booleans length is not 6 . content : $booleans")
+      require(booleans.size == 6) { "booleans length is not 6 . content : $booleans" }
+
       val lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2])
       val upper = Symbol.getSymbol(booleans[3], booleans[4], booleans[5])
       return Hexagram.getHexagram(upper, lower)
