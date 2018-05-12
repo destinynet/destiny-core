@@ -140,6 +140,7 @@ interface IPalmContext {
               place: String?,
               name: String?): IPalmMetaModel
 
+  /** 計算 [IBirthDataNamePlace] */
   fun getPalm(data: IBirthDataNamePlace) : IPalmMetaModel {
     return getPalm(data.gender , data.time , data.location , data.place , data.name)
   }

@@ -56,31 +56,33 @@ interface ISinglePlate : IHexagram {
 }
 
 
-data class SinglePlate(override val hexagram: Hexagram,
-                       /** 本宮 , 此卦 是八卦哪一宮 */
-                       override val symbol: Symbol,
-                       override val 宮序: Int,
-                       /** 1~6 */
-                       override val 世爻: Int,
-                       /** 1~6 */
-                       override val 應爻: Int,
-                       override val 納甲: List<StemBranch>,
-                       override val 六親: List<Relative>,
-                       override val 伏神納甲: List<StemBranch?>,
-                       override val 伏神六親: List<Relative?>) : ISinglePlate, IHexagram by hexagram, Serializable
+data class SinglePlate(
+  override val hexagram: Hexagram,
+  /** 本宮 , 此卦 是八卦哪一宮 */
+  override val symbol: Symbol,
+  override val 宮序: Int,
+  /** 1~6 */
+  override val 世爻: Int,
+  /** 1~6 */
+  override val 應爻: Int,
+  override val 納甲: List<StemBranch>,
+  override val 六親: List<Relative>,
+  override val 伏神納甲: List<StemBranch?>,
+  override val 伏神六親: List<Relative?>) : ISinglePlate, IHexagram by hexagram, Serializable
 
 
-interface ICombinedWithMeta : ICombined , IMeta {
+interface ICombinedWithMeta : ICombined, IMeta {
   val srcPlate: ISinglePlate
   val dstPlate: ISinglePlate
   val 變卦對於本卦的六親: List<Relative>
   //val meta: Meta
 }
 
-data class CombinedWithMeta(override val srcPlate: ISinglePlate,
-                            override val dstPlate: ISinglePlate,
-                            override val 變卦對於本卦的六親: List<Relative>,
-                            val meta: Meta) : ICombinedWithMeta,
+data class CombinedWithMeta(
+  override val srcPlate: ISinglePlate,
+  override val dstPlate: ISinglePlate,
+  override val 變卦對於本卦的六親: List<Relative>,
+  val meta: Meta) : ICombinedWithMeta,
   ICombined by Combined(srcPlate.hexagram, dstPlate.hexagram),
   IMeta by meta,
   Serializable
@@ -103,10 +105,11 @@ interface ICombinedWithMetaName : ICombinedWithMeta {
 }
 
 /** [Combined] + [Meta] + [HexagramName] */
-data class CombinedWithMetaName(override val srcPlate: SinglePlateWithName,
-                                override val dstPlate: SinglePlateWithName,
-                                override val 變卦對於本卦的六親: List<Relative>,
-                                val meta: Meta) : ICombinedWithMetaName,
+data class CombinedWithMetaName(
+  override val srcPlate: SinglePlateWithName,
+  override val dstPlate: SinglePlateWithName,
+  override val 變卦對於本卦的六親: List<Relative>,
+  val meta: Meta) : ICombinedWithMetaName,
   ICombinedWithMeta by CombinedWithMeta(srcPlate, dstPlate, 變卦對於本卦的六親, meta), Serializable
 
 
@@ -124,14 +127,15 @@ interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNull
 }
 
 /** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) , 八字一定要包含 日干支 以及 月支  */
-data class CombinedWithMetaNameDayMonth(private val combinedWithMetaName: CombinedWithMetaName,
-                                        override val eightWordsNullable: IEightWordsNullable,
-                                        override val 空亡: Set<Branch>,
-                                        override val 驛馬: Branch,
-                                        override val 桃花: Branch,
-                                        override val 貴人: Set<Branch>,
-                                        override val 羊刃: Branch,
-                                        override val 六獸: List<SixAnimal>) :
+data class CombinedWithMetaNameDayMonth(
+  private val combinedWithMetaName: CombinedWithMetaName,
+  override val eightWordsNullable: IEightWordsNullable,
+  override val 空亡: Set<Branch>,
+  override val 驛馬: Branch,
+  override val 桃花: Branch,
+  override val 貴人: Set<Branch>,
+  override val 羊刃: Branch,
+  override val 六獸: List<SixAnimal>) :
   ICombinedWithMetaNameDayMonth,
   ICombinedWithMetaName by combinedWithMetaName, Serializable {
 
@@ -165,26 +169,28 @@ interface IDivineMeta : IMeta {
 }
 
 
-data class DivineMeta(override val gender: Gender?,
-                      override val question: String?,
-                      override val approach: DivineApproach?,
-                      override val gmtJulDay: Double? = null,
-                      override val loc: ILocation? = Location.of(Locale.TAIWAN),
-                      override val place: String?,
-                      /** 已經 format 的時間 */
-                      override val decoratedTime: String?,
-                      val meta: Meta,
-                      val link: String?) : IMeta by meta, IDivineMeta, Serializable
+data class DivineMeta(
+  override val gender: Gender?,
+  override val question: String?,
+  override val approach: DivineApproach?,
+  override val gmtJulDay: Double? = null,
+  override val loc: ILocation? = Location.of(Locale.TAIWAN),
+  override val place: String?,
+  /** 已經 format 的時間 */
+  override val decoratedTime: String?,
+  val meta: Meta,
+  val link: String?) : IMeta by meta, IDivineMeta, Serializable
 
 
 /** 完整卜卦盤 , 包含所有資料 */
 interface ICombinedFull : ICombinedWithMetaNameDayMonth, ICombinedWithMetaNameTexts, IDivineMeta
 
 /** 完整卜卦盤 , 具備完整八字 */
-data class CombinedFull(private val combinedWithMetaNameDayMonth: CombinedWithMetaNameDayMonth,
-                        val eightWords: EightWords,
-                        private val divineMeta: DivineMeta,
-                        override val pairTexts: Pair<HexagramText, HexagramText>) :
+data class CombinedFull(
+  private val combinedWithMetaNameDayMonth: CombinedWithMetaNameDayMonth,
+  val eightWords: EightWords,
+  private val divineMeta: DivineMeta,
+  override val pairTexts: Pair<HexagramText, HexagramText>) :
   ICombinedFull,
   ICombinedWithMetaNameDayMonth by combinedWithMetaNameDayMonth,
   IDivineMeta by divineMeta,
