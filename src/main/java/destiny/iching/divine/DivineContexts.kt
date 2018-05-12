@@ -71,9 +71,9 @@ class CombinedWithMetaNameContext(val src: IHexagram,
     val prevResult: ICombinedWithMeta = prevCtx.getResult()
 
     val srcPlate =
-      Divines.getSinglePlateWithName(prevResult.srcPlate, nameShortImpl, nameFullImpl, locale) as SinglePlateWithName
+      Divines.getSinglePlateWithName(prevResult.srcModel, nameShortImpl, nameFullImpl, locale) as SingleHexagramWithName
     val dstPlate =
-      Divines.getSinglePlateWithName(prevResult.dstPlate, nameShortImpl, nameFullImpl, locale) as SinglePlateWithName
+      Divines.getSinglePlateWithName(prevResult.dstModel, nameShortImpl, nameFullImpl, locale) as SingleHexagramWithName
     val 變卦對於本卦的六親 = prevResult.變卦對於本卦的六親
 
     return CombinedWithMetaName(srcPlate, dstPlate, 變卦對於本卦的六親, Meta(納甲系統.getTitle(locale), 伏神系統.getTitle(locale)))

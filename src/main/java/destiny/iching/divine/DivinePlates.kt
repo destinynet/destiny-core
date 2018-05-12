@@ -38,7 +38,7 @@ data class Combined(override val src: IHexagram,
 
 
 /** 單一卦象，卦名、世爻應爻、六親等資訊 */
-interface ISinglePlate : IHexagram {
+interface ISingleHexagram : IHexagram {
   val hexagram: IHexagram
   /** 本宮 , 此卦 是八卦哪一宮 */
   val symbol: Symbol
@@ -54,8 +54,8 @@ interface ISinglePlate : IHexagram {
 }
 
 
-data class SinglePlate(
-  override val hexagram: Hexagram,
+data class SingleHexagram(
+  override val hexagram: IHexagram,
   /** 本宮 , 此卦 是八卦哪一宮 */
   override val symbol: Symbol,
   override val 宮序: Int,
@@ -66,49 +66,49 @@ data class SinglePlate(
   override val 納甲: List<StemBranch>,
   override val 六親: List<Relative>,
   override val 伏神納甲: List<StemBranch?>,
-  override val 伏神六親: List<Relative?>) : ISinglePlate, IHexagram by hexagram, Serializable
+  override val 伏神六親: List<Relative?>) : ISingleHexagram, IHexagram by hexagram, Serializable
 
 
 interface ICombinedWithMeta : ICombined, IMeta {
-  val srcPlate: ISinglePlate
-  val dstPlate: ISinglePlate
+  val srcModel: ISingleHexagram
+  val dstModel: ISingleHexagram
   val 變卦對於本卦的六親: List<Relative>
   //val meta: Meta
 }
 
 data class CombinedWithMeta(
-  override val srcPlate: ISinglePlate,
-  override val dstPlate: ISinglePlate,
+  override val srcModel: ISingleHexagram,
+  override val dstModel: ISingleHexagram,
   override val 變卦對於本卦的六親: List<Relative>,
   val meta: Meta) : ICombinedWithMeta,
-  ICombined by Combined(srcPlate.hexagram, dstPlate.hexagram),
+  ICombined by Combined(srcModel, dstModel),
   IMeta by meta,
   Serializable
 
 
-interface ISinglePlateWithName : ISinglePlate, IHexagramName
+interface ISingleHexagramWithName : ISingleHexagram, IHexagramName
 
-data class SinglePlateWithName(private val singlePlate: SinglePlate,
-                               private val hexagramName: HexagramName) :
-  ISinglePlateWithName,
-  ISinglePlate by singlePlate,
+data class SingleHexagramWithName(private val singlePlate: SingleHexagram,
+                                  private val hexagramName: HexagramName) :
+  ISingleHexagramWithName,
+  ISingleHexagram by singlePlate,
   IHexagramName by hexagramName,
   Serializable
 
 
 /** 合併卦象，只有卦名，沒有其他卦辭、爻辭等文字，也沒有日期時間等資料 (for 經文易排盤後對照) */
 interface ICombinedWithMetaName : ICombinedWithMeta {
-  override val srcPlate: ISinglePlateWithName
-  override val dstPlate: ISinglePlateWithName
+  override val srcModel: ISingleHexagramWithName
+  override val dstModel: ISingleHexagramWithName
 }
 
 /** [Combined] + [Meta] + [HexagramName] */
 data class CombinedWithMetaName(
-  override val srcPlate: SinglePlateWithName,
-  override val dstPlate: SinglePlateWithName,
+  override val srcModel: SingleHexagramWithName,
+  override val dstModel: SingleHexagramWithName,
   override val 變卦對於本卦的六親: List<Relative>,
   val meta: Meta) : ICombinedWithMetaName,
-  ICombinedWithMeta by CombinedWithMeta(srcPlate, dstPlate, 變卦對於本卦的六親, meta), Serializable
+  ICombinedWithMeta by CombinedWithMeta(srcModel, dstModel, 變卦對於本卦的六親, meta), Serializable
 
 
 /** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) */
