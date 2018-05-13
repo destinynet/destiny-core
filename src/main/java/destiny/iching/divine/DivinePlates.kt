@@ -69,6 +69,7 @@ data class SingleHexagram(
   override val 伏神六親: List<Relative?>) : ISingleHexagram, IHexagram by hexagram, Serializable
 
 
+/** 純粹組合兩卦 , 沒有其他 卦名、卦辭、日期 等資訊 */
 interface ICombinedWithMeta : ICombined, IMeta {
   val srcModel: ISingleHexagram
   val dstModel: ISingleHexagram
@@ -88,8 +89,8 @@ data class CombinedWithMeta(
 
 interface ISingleHexagramWithName : ISingleHexagram, IHexagramName
 
-data class SingleHexagramWithName(private val singlePlate: SingleHexagram,
-                                  private val hexagramName: HexagramName) :
+data class SingleHexagramWithName(private val singlePlate: ISingleHexagram,
+                                  private val hexagramName: IHexagramName) :
   ISingleHexagramWithName,
   ISingleHexagram by singlePlate,
   IHexagramName by hexagramName,
@@ -104,14 +105,17 @@ interface ICombinedWithMetaName : ICombinedWithMeta {
 
 /** [Combined] + [Meta] + [HexagramName] */
 data class CombinedWithMetaName(
-  override val srcModel: SingleHexagramWithName,
-  override val dstModel: SingleHexagramWithName,
+  override val srcModel: ISingleHexagramWithName,
+  override val dstModel: ISingleHexagramWithName,
   override val 變卦對於本卦的六親: List<Relative>,
   val meta: Meta) : ICombinedWithMetaName,
   ICombinedWithMeta by CombinedWithMeta(srcModel, dstModel, 變卦對於本卦的六親, meta), Serializable
 
 
-/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) */
+/**
+ * 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] )
+ * 通常用於 書籍、古書 當中卦象對照
+ * */
 interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNullableFactory {
   val day: StemBranch
   val monthBranch: Branch
@@ -124,9 +128,10 @@ interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNull
   val 六獸: List<SixAnimal>
 }
 
-/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) , 八字一定要包含 日干支 以及 月支  */
+/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 ,
+ * 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) , 八字一定要包含 日干支 以及 月支  */
 data class CombinedWithMetaNameDayMonth(
-  private val combinedWithMetaName: CombinedWithMetaName,
+  private val combinedWithMetaName: ICombinedWithMetaName,
   override val eightWordsNullable: IEightWordsNullable,
   override val 空亡: Set<Branch>,
   override val 驛馬: Branch,

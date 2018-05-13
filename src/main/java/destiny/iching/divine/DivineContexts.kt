@@ -36,6 +36,8 @@ open class CombinedContext(val src: IHexagram, val dst: IHexagram) : IResult<ICo
 }
 
 
+/** to be replaced by [DivineContext.getCombinedWithMeta] */
+@Deprecated("DivineContext")
 class CombinedWithMetaContext(val src: IHexagram,
                               val dst: IHexagram,
                               val locale: Locale = Locale.TAIWAN,
@@ -44,20 +46,24 @@ class CombinedWithMetaContext(val src: IHexagram,
   override fun getResult(): ICombinedWithMeta {
     val meta = Meta(納甲系統.getTitle(locale), 伏神系統.getTitle(locale))
 
-    val srcPlate = Divines.getSinglePlate(src, 納甲系統, 伏神系統)
-    val dstPlate = Divines.getSinglePlate(dst, 納甲系統, 伏神系統)
+    val srcModel = Divines.getSinglePlate(src, 納甲系統, 伏神系統)
+    val dstModel = Divines.getSinglePlate(dst, 納甲系統, 伏神系統)
 
     val 變卦對於本卦的六親: List<Relative> =
       (0..5).map {
-        Divines.getRelative(SimpleBranch.getFiveElement(dstPlate.納甲[it].branch), srcPlate.symbol.fiveElement)
+        Divines.getRelative(SimpleBranch.getFiveElement(dstModel.納甲[it].branch), srcModel.symbol.fiveElement)
       }.toList()
 
-    return CombinedWithMeta(srcPlate, dstPlate, 變卦對於本卦的六親, meta)
+    return CombinedWithMeta(srcModel, dstModel, 變卦對於本卦的六親, meta)
   }
 }
 
 
-/** 合併卦象，只有卦名，沒有其他卦辭、爻辭等文字，也沒有日期時間等資料 */
+/**
+ * 合併卦象，只有卦名，沒有其他卦辭、爻辭等文字，也沒有日期時間等資料
+ * to be replaced by [DivineContext.getCombinedWithMetaName]
+ * */
+@Deprecated("DivineContext")
 class CombinedWithMetaNameContext(val src: IHexagram,
                                   val dst: IHexagram,
                                   val locale: Locale = Locale.TAIWAN,
@@ -80,7 +86,11 @@ class CombinedWithMetaNameContext(val src: IHexagram,
   }
 }
 
-/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 八字一定要包含 日干支 以及 月支 */
+/**
+ * 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 八字一定要包含 日干支 以及 月支
+ * to be replaced by [DivineContext.getCombinedWithMetaNameDayMonth]
+ * */
+@Deprecated("DivineContext")
 class CombinedWithMetaNameDayMonthContext(val src: IHexagram,
                                           val dst: IHexagram,
                                           val locale: Locale = Locale.TAIWAN,
@@ -110,8 +120,8 @@ class CombinedWithMetaNameDayMonthContext(val src: IHexagram,
                                                 tianyiImpl, yangBladeImpl)
 
 
-  val day = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
-  val monthBranch = eightWordsNullable.month.branch!!
+  val day: StemBranch = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
+  //val monthBranch = eightWordsNullable.month.branch!!
 
   init {
     if (eightWordsNullable.day.stem == null || eightWordsNullable.day.branch == null && eightWordsNullable.month.branch == null) {
