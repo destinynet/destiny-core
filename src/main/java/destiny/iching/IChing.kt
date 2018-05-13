@@ -8,6 +8,8 @@ import java.util.*
 
 object IChing {
 
+  /** to be replaced with [HexagramTextContext.getHexagramText] */
+  @Deprecated("HexagramTextContext")
   fun getHexagramText(hexagram: IHexagram,
                       locale: Locale,
                       hexagramNameFull: IHexagramNameFull,

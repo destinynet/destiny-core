@@ -6,7 +6,7 @@ package destiny.iching.divine
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
-import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.calendar.eightwords.IEightWordsNullableFactory
 import destiny.core.chinese.Branch
@@ -153,7 +153,7 @@ data class CombinedWithMetaNameDayMonth(
 }
 
 interface ICombinedWithMetaNameTexts : ICombinedWithMetaName {
-  val pairTexts: Pair<HexagramText, HexagramText>
+  val pairTexts: Pair<IHexagramText, IHexagramText>
 }
 
 
@@ -190,10 +190,10 @@ interface ICombinedFull : ICombinedWithMetaNameDayMonth, ICombinedWithMetaNameTe
 
 /** 完整卜卦盤 , 具備完整八字 */
 data class CombinedFull(
-  private val combinedWithMetaNameDayMonth: CombinedWithMetaNameDayMonth,
-  val eightWords: EightWords,
+  private val combinedWithMetaNameDayMonth: ICombinedWithMetaNameDayMonth,
+  val eightWords: IEightWords,
   private val divineMeta: DivineMeta,
-  override val pairTexts: Pair<HexagramText, HexagramText>) :
+  override val pairTexts: Pair<IHexagramText, IHexagramText>) :
   ICombinedFull,
   ICombinedWithMetaNameDayMonth by combinedWithMetaNameDayMonth,
   IDivineMeta by divineMeta,

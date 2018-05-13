@@ -3,22 +3,25 @@
  */
 package destiny.iching.divine
 
+import destiny.core.Gender
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.Location
+import destiny.core.calendar.TimeSecDecorator
+import destiny.core.calendar.TimeTools
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
-import destiny.iching.Hexagram
-import destiny.iching.HexagramName
-import destiny.iching.IHexagram
-import destiny.iching.Symbol
-import destiny.iching.contentProviders.IHexagramNameFull
-import destiny.iching.contentProviders.IHexagramNameShort
+import destiny.iching.*
+import destiny.iching.contentProviders.*
 import java.io.Serializable
+import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 interface ISingleHexagramContext {
   /** 單一卦象 ,（不含任何文字）的排卦結果 [SingleHexagram] */
   fun getSingleHexagram(hexagram: IHexagram,
-                        納甲系統: ISettingsOfStemBranch? = SettingsGingFang(),
-                        伏神系統: IHiddenEnergy? = HiddenEnergyWangImpl()): ISingleHexagram
+                        納甲系統: ISettingsOfStemBranch? = null,
+                        伏神系統: IHiddenEnergy? = null): ISingleHexagram
 }
 
 /** 純粹組合兩卦 , 沒有其他 卦名、卦辭、日期 等資訊 */
@@ -26,8 +29,8 @@ interface ICombinedWithMetaContext : ISingleHexagramContext {
   fun getCombinedWithMeta(src: IHexagram,
                           dst: IHexagram,
                           locale: Locale? = Locale.getDefault(),
-                          納甲系統: ISettingsOfStemBranch? = SettingsGingFang(),
-                          伏神系統: IHiddenEnergy? = HiddenEnergyWangImpl()): ICombinedWithMeta
+                          納甲系統: ISettingsOfStemBranch? = null,
+                          伏神系統: IHiddenEnergy? = null): ICombinedWithMeta
 }
 
 
@@ -37,8 +40,8 @@ interface ICombinedWithMetaNameContext : ICombinedWithMetaContext {
   fun getCombinedWithMetaName(src: IHexagram,
                               dst: IHexagram,
                               locale: Locale? = Locale.getDefault(),
-                              納甲系統: ISettingsOfStemBranch? = SettingsGingFang(),
-                              伏神系統: IHiddenEnergy? = HiddenEnergyWangImpl()): ICombinedWithMetaName
+                              納甲系統: ISettingsOfStemBranch? = null,
+                              伏神系統: IHiddenEnergy? = null): ICombinedWithMetaName
 }
 
 /**
@@ -48,12 +51,40 @@ interface ICombinedWithMetaNameContext : ICombinedWithMetaContext {
 interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
   fun getCombinedWithMetaNameDayMonth(src: IHexagram,
                                       dst: IHexagram,
-                                      locale: Locale? = Locale.getDefault(),
-                                      納甲系統: ISettingsOfStemBranch? = SettingsGingFang(),
-                                      伏神系統: IHiddenEnergy? = HiddenEnergyWangImpl(),
                                       eightWordsNullable: IEightWordsNullable,
+                                      locale: Locale? = null,
+                                      納甲系統: ISettingsOfStemBranch? = null,
+                                      伏神系統: IHiddenEnergy? = null,
                                       tianyiImpl: ITianyi? = null,
                                       yangBladeImpl: IYangBlade? = null): ICombinedWithMetaNameDayMonth
+}
+
+
+/** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
+interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
+
+  fun getCombinedFull(src: IHexagram,
+                      dst: IHexagram,
+                      eightWordsNullable: IEightWords,
+                      gender: Gender?,
+
+                      question: String?,
+                      approach: DivineApproach,
+                      time: ChronoLocalDateTime<*>?,
+                      loc: ILocation? = Location.of(Locale.TAIWAN),
+
+                      place: String? = null,
+                      locale: Locale? = Locale.getDefault(),
+                      納甲系統: ISettingsOfStemBranch? = null,
+
+                      伏神系統: IHiddenEnergy? = null,
+                      tianyiImpl: ITianyi? = null,
+                      yangBladeImpl: IYangBlade? = null,
+
+                      expressionImpl: IExpression? = null,
+                      imageImpl: IImage? = null,
+                      judgementImpl: IHexagramJudgement? = null): ICombinedFull
+
 }
 
 class DivineContext(
@@ -63,9 +94,12 @@ class DivineContext(
   private val nameShortImpl: IHexagramNameShort,
   private val nameFullImpl: IHexagramNameFull,
   private val tianyiImpl: ITianyi,
-  private val yangBladeImpl: IYangBlade)
+  private val yangBladeImpl: IYangBlade,
+  private val expressionImpl: IExpression,
+  private val imageImpl: IImage,
+  private val judgementImpl: IHexagramJudgement)
   : ISingleHexagramContext, ICombinedWithMetaContext, ICombinedWithMetaNameContext,
-  ICombinedWithMetaNameDayMonthContext, Serializable {
+  ICombinedWithMetaNameDayMonthContext, ICombinedFullContext , Serializable {
 
 
   val comparator = HexagramDivinationComparator()
@@ -76,6 +110,10 @@ class DivineContext(
                                  伏神系統: IHiddenEnergy?): ISingleHexagram {
     val final納甲 = 納甲系統 ?: this.納甲系統
     val final伏神 = 伏神系統 ?: this.伏神系統
+
+//    println("\n納甲系統 from param = $納甲系統")
+//    println("納甲系統 from this = ${this.納甲系統}")
+//    println("final納甲 = $final納甲")
 
     val 京房易卦卦序 = comparator.getIndex(hexagram)
 
@@ -154,18 +192,17 @@ class DivineContext(
    * */
   override fun getCombinedWithMetaNameDayMonth(src: IHexagram,
                                                dst: IHexagram,
+                                               eightWordsNullable: IEightWordsNullable,
                                                locale: Locale?,
                                                納甲系統: ISettingsOfStemBranch?,
                                                伏神系統: IHiddenEnergy?,
-                                               eightWordsNullable: IEightWordsNullable,
                                                tianyiImpl: ITianyi?,
                                                yangBladeImpl: IYangBlade?): ICombinedWithMetaNameDayMonth {
 
-    val finalTianyi = tianyiImpl?:this.tianyiImpl
-    val finalYangBlade = yangBladeImpl?:this.yangBladeImpl
+    val finalTianyi = tianyiImpl ?: this.tianyiImpl
+    val finalYangBlade = yangBladeImpl ?: this.yangBladeImpl
 
     val day: StemBranch = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
-    //val monthBranch = eightWordsNullable.month.branch!!
 
     val combinedWithMetaName = getCombinedWithMetaName(src, dst, locale, 納甲系統, 伏神系統)
 
@@ -177,7 +214,48 @@ class DivineContext(
     val 羊刃: Branch = day.stem.let { finalYangBlade.getYangBlade(it) }
     val 六獸: List<SixAnimal> = day.let { SixAnimals.getSixAnimals(it.stem) }
 
-    return CombinedWithMetaNameDayMonth(combinedWithMetaName , eightWordsNullable , 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
+    return CombinedWithMetaNameDayMonth(combinedWithMetaName, eightWordsNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
+  }
+
+
+  /** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
+  override fun getCombinedFull(src: IHexagram,
+                               dst: IHexagram,
+                               eightWords: IEightWords,
+                               gender: Gender?,
+                               question: String?,
+                               approach: DivineApproach,
+                               time: ChronoLocalDateTime<*>?,
+                               loc: ILocation?,
+                               place: String?,
+
+                               locale: Locale?,
+                               納甲系統: ISettingsOfStemBranch?,
+                               伏神系統: IHiddenEnergy?,
+                               tianyiImpl: ITianyi?,
+                               yangBladeImpl: IYangBlade?,
+                               expressionImpl: IExpression?,
+                               imageImpl: IImage?,
+                               judgementImpl: IHexagramJudgement?) : ICombinedFull {
+
+    val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWords, locale, 納甲系統,
+                                                                       伏神系統, tianyiImpl, yangBladeImpl)
+    val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc!!) }
+    val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
+
+    val meta = Meta(combinedWithMetaNameDayMonth.納甲系統 , combinedWithMetaNameDayMonth.伏神系統)
+    val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place, decoratedTime, meta, null)
+
+    val finalExpressionImpl = expressionImpl?:this.expressionImpl
+    val finalImageImpl = imageImpl?:this.imageImpl
+    val finalJudgeImpl = judgementImpl?:this.judgementImpl
+
+    val textContext : IHexagramTextContext = HexagramTextContext(nameFullImpl , nameShortImpl , finalExpressionImpl , finalImageImpl, finalJudgeImpl)
+    val srcText = textContext.getHexagramText(src , locale)
+    val dstText = textContext.getHexagramText(dst , locale)
+
+    val pairTexts: Pair<IHexagramText, IHexagramText> = Pair(srcText, dstText)
+    return CombinedFull(combinedWithMetaNameDayMonth, eightWords, divineMeta, pairTexts)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {
@@ -204,15 +282,6 @@ class DivineContext(
   }
 
 } // DivineContext
-
-
-
-
-
-
-
-
-
 
 
 object Divines {
