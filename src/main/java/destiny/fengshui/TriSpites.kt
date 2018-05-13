@@ -9,10 +9,7 @@ import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.Symbol
 import destiny.iching.SymbolPositions
-import destiny.iching.divine.Divines
-import destiny.iching.divine.ISettingsOfStemBranch
-import destiny.iching.divine.Relative
-import destiny.iching.divine.SettingsGingFang
+import destiny.iching.divine.*
 
 /** spite : 惡意 、 刁難 */
 enum class SpiteType {
@@ -30,7 +27,7 @@ object TriSpites {
     return (1..6).filter {
       val sb: StemBranch = settings.getStemBranch(hexagram, it)
       val 外在五行 = SimpleBranch.getFiveElement(sb.branch)
-      Divines.getRelative(外在五行, symbol.fiveElement) === Relative.官鬼
+      DivineContext.getRelative(外在五行, symbol.fiveElement) === Relative.官鬼
     }.map { settings.getStemBranch(hexagram, it).branch }
   }
 

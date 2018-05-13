@@ -24,8 +24,17 @@ interface ISingleHexagramContext {
                         伏神系統: IHiddenEnergy? = null): ISingleHexagram
 }
 
+interface ISingleHexagramWithNameContext {
+  fun getSingleHexagramWithName(hexagram: IHexagram,
+                                locale: Locale?=null,
+                                納甲系統: ISettingsOfStemBranch? = null,
+                                伏神系統: IHiddenEnergy? = null,
+                                nameShortImpl: IHexagramNameShort? = null,
+                                nameFullImpl: IHexagramNameFull? = null): ISingleHexagramWithName
+}
+
 /** 純粹組合兩卦 , 沒有其他 卦名、卦辭、日期 等資訊 */
-interface ICombinedWithMetaContext : ISingleHexagramContext {
+interface ICombinedWithMetaContext : ISingleHexagramWithNameContext {
   fun getCombinedWithMeta(src: IHexagram,
                           dst: IHexagram,
                           locale: Locale? = Locale.getDefault(),
@@ -41,7 +50,9 @@ interface ICombinedWithMetaNameContext : ICombinedWithMetaContext {
                               dst: IHexagram,
                               locale: Locale? = Locale.getDefault(),
                               納甲系統: ISettingsOfStemBranch? = null,
-                              伏神系統: IHiddenEnergy? = null): ICombinedWithMetaName
+                              伏神系統: IHiddenEnergy? = null ,
+                              nameShortImpl: IHexagramNameShort?=null,
+                              nameFullImpl: IHexagramNameFull?=null): ICombinedWithMetaName
 }
 
 /**
@@ -65,7 +76,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
 
   fun getCombinedFull(src: IHexagram,
                       dst: IHexagram,
-                      eightWordsNullable: IEightWords,
+                      eightWords: IEightWords,
                       gender: Gender?,
 
                       question: String?,
@@ -98,8 +109,8 @@ class DivineContext(
   private val expressionImpl: IExpression,
   private val imageImpl: IImage,
   private val judgementImpl: IHexagramJudgement)
-  : ISingleHexagramContext, ICombinedWithMetaContext, ICombinedWithMetaNameContext,
-  ICombinedWithMetaNameDayMonthContext, ICombinedFullContext , Serializable {
+  : ISingleHexagramContext, ISingleHexagramWithNameContext, ICombinedWithMetaContext, ICombinedWithMetaNameContext,
+  ICombinedWithMetaNameDayMonthContext, ICombinedFullContext, Serializable {
 
 
   val comparator = HexagramDivinationComparator()
@@ -110,10 +121,6 @@ class DivineContext(
                                  伏神系統: IHiddenEnergy?): ISingleHexagram {
     val final納甲 = 納甲系統 ?: this.納甲系統
     val final伏神 = 伏神系統 ?: this.伏神系統
-
-//    println("\n納甲系統 from param = $納甲系統")
-//    println("納甲系統 from this = ${this.納甲系統}")
-//    println("final納甲 = $final納甲")
 
     val 京房易卦卦序 = comparator.getIndex(hexagram)
 
@@ -139,6 +146,23 @@ class DivineContext(
       伏神納甲.map { it?.let { sb -> getRelative(SimpleBranch.getFiveElement(sb.branch), 本宮五行) } }.toList()
 
     return SingleHexagram(hexagram, 本宮, 宮序, 世爻, 應爻, 納甲, 六親, 伏神納甲, 伏神六親)
+  }
+
+  override fun getSingleHexagramWithName(hexagram: IHexagram,
+                                         locale: Locale?,
+                                         納甲系統: ISettingsOfStemBranch?,
+                                         伏神系統: IHiddenEnergy? ,
+                                         nameShortImpl: IHexagramNameShort?,
+                                         nameFullImpl: IHexagramNameFull?): ISingleHexagramWithName {
+    val model = getSingleHexagram(hexagram, 納甲系統, 伏神系統)
+
+    val finalLocale = locale?:this.locale
+    val finalNameShortImpl = nameShortImpl?:this.nameShortImpl
+    val finalNameFullImpl = nameFullImpl?:this.nameFullImpl
+
+    val nameShort = finalNameShortImpl.getNameShort(hexagram , finalLocale)
+    val nameFull = finalNameFullImpl.getNameFull(hexagram , finalLocale)
+    return SingleHexagramWithName(model , HexagramName(nameShort , nameFull))
   }
 
   /** [ICombinedWithMeta] 純粹組合兩卦 , 沒有其他 卦名、卦辭、日期 等資訊 */
@@ -167,19 +191,12 @@ class DivineContext(
                                        dst: IHexagram,
                                        locale: Locale?,
                                        納甲系統: ISettingsOfStemBranch?,
-                                       伏神系統: IHiddenEnergy?): ICombinedWithMetaName {
+                                       伏神系統: IHiddenEnergy? ,
+                                       nameShortImpl: IHexagramNameShort?,
+                                       nameFullImpl: IHexagramNameFull?): ICombinedWithMetaName {
 
-    val finalLocale = locale ?: this.locale
-    val srcHex = getSingleHexagram(src, 納甲系統, 伏神系統)
-    val srcNameShort = nameShortImpl.getNameShort(src, finalLocale)
-    val srcNameFull = nameFullImpl.getNameFull(src, finalLocale)
-    val srcModel = SingleHexagramWithName(srcHex, HexagramName(srcNameShort, srcNameFull))
-
-    val dstHex = getSingleHexagram(dst, 納甲系統, 伏神系統)
-    val dstNameShort = nameShortImpl.getNameShort(dst, finalLocale)
-    val dstNameFull = nameFullImpl.getNameFull(dst, finalLocale)
-    val dstModel = SingleHexagramWithName(dstHex, HexagramName(dstNameShort, dstNameFull))
-
+    val srcModel = getSingleHexagramWithName(src , locale, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl)
+    val dstModel = getSingleHexagramWithName(dst , locale, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl)
     val combined = getCombinedWithMeta(src, dst, locale, 納甲系統, 伏神系統)
 
     return CombinedWithMetaName(srcModel, dstModel, combined.變卦對於本卦的六親, Meta(combined.納甲系統, combined.伏神系統))
@@ -236,23 +253,24 @@ class DivineContext(
                                yangBladeImpl: IYangBlade?,
                                expressionImpl: IExpression?,
                                imageImpl: IImage?,
-                               judgementImpl: IHexagramJudgement?) : ICombinedFull {
+                               judgementImpl: IHexagramJudgement?): ICombinedFull {
 
     val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWords, locale, 納甲系統,
                                                                        伏神系統, tianyiImpl, yangBladeImpl)
     val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc!!) }
     val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
 
-    val meta = Meta(combinedWithMetaNameDayMonth.納甲系統 , combinedWithMetaNameDayMonth.伏神系統)
+    val meta = Meta(combinedWithMetaNameDayMonth.納甲系統, combinedWithMetaNameDayMonth.伏神系統)
     val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place, decoratedTime, meta, null)
 
-    val finalExpressionImpl = expressionImpl?:this.expressionImpl
-    val finalImageImpl = imageImpl?:this.imageImpl
-    val finalJudgeImpl = judgementImpl?:this.judgementImpl
+    val finalExpressionImpl = expressionImpl ?: this.expressionImpl
+    val finalImageImpl = imageImpl ?: this.imageImpl
+    val finalJudgeImpl = judgementImpl ?: this.judgementImpl
 
-    val textContext : IHexagramTextContext = HexagramTextContext(nameFullImpl , nameShortImpl , finalExpressionImpl , finalImageImpl, finalJudgeImpl)
-    val srcText = textContext.getHexagramText(src , locale)
-    val dstText = textContext.getHexagramText(dst , locale)
+    val textContext: IHexagramTextContext =
+      HexagramTextContext(nameFullImpl, nameShortImpl, finalExpressionImpl, finalImageImpl, finalJudgeImpl)
+    val srcText = textContext.getHexagramText(src, locale)
+    val dstText = textContext.getHexagramText(dst, locale)
 
     val pairTexts: Pair<IHexagramText, IHexagramText> = Pair(srcText, dstText)
     return CombinedFull(combinedWithMetaNameDayMonth, eightWords, divineMeta, pairTexts)
@@ -270,120 +288,20 @@ class DivineContext(
     else -> throw RuntimeException("impossible")
   }
 
-  fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
-    return when {
-      外在五行.equals(內在五行) -> Relative.兄弟
-      外在五行.isDominatorOf(內在五行) -> Relative.官鬼
-      外在五行.isDominatedBy(內在五行) -> Relative.妻財
-      外在五行.isProducingTo(內在五行) -> Relative.父母
-      外在五行.isProducedBy(內在五行) -> Relative.子孫
-      else -> throw RuntimeException("$外在五行 and $內在五行")
+
+  companion object {
+    fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
+      return when {
+        外在五行.equals(內在五行) -> Relative.兄弟
+        外在五行.isDominatorOf(內在五行) -> Relative.官鬼
+        外在五行.isDominatedBy(內在五行) -> Relative.妻財
+        外在五行.isProducingTo(內在五行) -> Relative.父母
+        外在五行.isProducedBy(內在五行) -> Relative.子孫
+        else -> throw RuntimeException("$外在五行 and $內在五行")
+      }
     }
-  }
+
+  } // companion
+
 
 } // DivineContext
-
-
-object Divines {
-
-  /** 單一卦象 ,（不含任何文字）的排卦結果 [SingleHexagram] */
-  @Deprecated("DivineContext")
-  fun getSinglePlate(hexagram: IHexagram,
-                     納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-                     伏神系統: IHiddenEnergy = HiddenEnergyWangImpl()): ISingleHexagram {
-    //val hex = Hexagram.getHexagram(hexagram)
-    val comparator = HexagramDivinationComparator()
-    val 京房易卦卦序 = comparator.getIndex(hexagram)
-
-    /* 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */
-    val 宮位 = (京房易卦卦序 - 1) / 8
-
-    // 1~8
-    val 宮序 = 京房易卦卦序 - 宮位 * 8
-
-    val 本宮: Symbol = Hexagram.getHexagram(宮位 * 8 + 1, comparator).upperSymbol
-
-    val (世爻, 應爻) = get世爻應爻(宮序)
-
-    val 納甲: List<StemBranch> = (1..6).map { index -> 納甲系統.getStemBranch(hexagram, index) }.toList()
-
-    val 本宮五行 = 本宮.fiveElement
-
-    val 六親: List<Relative> = (0..5).map { getRelative(SimpleBranch.getFiveElement(納甲[it].branch), 本宮五行) }.toList()
-
-    val 伏神納甲: List<StemBranch?> = (1..6).map { index -> 伏神系統.getStemBranch(hexagram, 納甲系統, index) }.toList()
-
-    val 伏神六親: List<Relative?> =
-      伏神納甲.map { it?.let { sb -> getRelative(SimpleBranch.getFiveElement(sb.branch), 本宮五行) } }.toList()
-
-    return SingleHexagram(hexagram, 本宮, 宮序, 世爻, 應爻, 納甲, 六親, 伏神納甲, 伏神六親)
-  }
-
-  /** 單一卦象 , 包含 長卦名 短卦名 等文字資料 [SingleHexagramWithName] */
-  @Deprecated("DivineContext")
-  fun getSinglePlateWithName(hexagram: ISingleHexagram,
-                             nameShortImpl: IHexagramNameShort,
-                             nameFullImpl: IHexagramNameFull,
-                             locale: Locale = Locale.TAIWAN): ISingleHexagramWithName {
-    val nameShort = nameShortImpl.getNameShort(hexagram.hexagram, locale)
-    val nameFull = nameFullImpl.getNameFull(hexagram.hexagram, locale)
-    val hexagramName = HexagramName(nameShort, nameFull)
-    return SingleHexagramWithName(hexagram as SingleHexagram, hexagramName)
-  }
-
-  fun getSinglePlateWithName(hexagram: IHexagram,
-                             納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-                             伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
-                             nameShortImpl: IHexagramNameShort,
-                             nameFullImpl: IHexagramNameFull,
-                             locale: Locale = Locale.TAIWAN): ISingleHexagramWithName {
-    val singlePlate: SingleHexagram = getSinglePlate(hexagram, 納甲系統, 伏神系統) as SingleHexagram
-    val nameShort = nameShortImpl.getNameShort(hexagram, locale)
-    val nameFull = nameFullImpl.getNameFull(hexagram, locale)
-
-    val hexagramName = HexagramName(nameShort, nameFull)
-    return SingleHexagramWithName(singlePlate, hexagramName)
-  }
-
-
-  fun getCombinedWithMetaNamePlate(src: IHexagram,
-                                   dst: IHexagram,
-                                   納甲系統: ISettingsOfStemBranch = SettingsGingFang(),
-                                   伏神系統: IHiddenEnergy = HiddenEnergyWangImpl(),
-                                   locale: Locale = Locale.TAIWAN,
-                                   nameFullImpl: IHexagramNameFull,
-                                   nameShortImpl: IHexagramNameShort): ICombinedWithMetaName {
-    val srcPlate = getSinglePlateWithName(src, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl) as SingleHexagramWithName
-    val dstPlate = getSinglePlateWithName(dst, 納甲系統, 伏神系統, nameShortImpl, nameFullImpl) as SingleHexagramWithName
-    val 變卦對於本卦的六親: List<Relative> =
-      (0..5).map {
-        Divines.getRelative(SimpleBranch.getFiveElement(dstPlate.納甲[it].branch), srcPlate.symbol.fiveElement)
-      }.toList()
-
-    return CombinedWithMetaName(srcPlate, dstPlate, 變卦對於本卦的六親, Meta(納甲系統.getTitle(locale), 伏神系統.getTitle(locale)))
-  }
-
-
-  private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {
-    1 -> Pair(6, 3)
-    2 -> Pair(1, 4)
-    3 -> Pair(2, 5)
-    4 -> Pair(3, 6)
-    5 -> Pair(4, 1)
-    6 -> Pair(5, 2)
-    7 -> Pair(4, 1)
-    8 -> Pair(3, 6)
-    else -> throw RuntimeException("impossible")
-  }
-
-  fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
-    return when {
-      外在五行.equals(內在五行) -> Relative.兄弟
-      外在五行.isDominatorOf(內在五行) -> Relative.官鬼
-      外在五行.isDominatedBy(內在五行) -> Relative.妻財
-      外在五行.isProducingTo(內在五行) -> Relative.父母
-      外在五行.isProducedBy(內在五行) -> Relative.子孫
-      else -> throw RuntimeException("$外在五行 and $內在五行")
-    }
-  }
-}
