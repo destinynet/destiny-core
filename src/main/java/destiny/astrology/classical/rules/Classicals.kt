@@ -79,12 +79,9 @@ class ClassicalContext(
                                       centric: Centric?,
                                       coordinate: Coordinate?): IClassicalModel {
     val finalLocale = locale ?: this.locale
-    val finalHs = houseSystem ?: this.houseSystem
-    val finalCentric = centric ?: this.centric
-    val finalCoordinate = coordinate ?: this.coordinate
 
     val h: IPersonHoroscopeModel =
-      personContext.getHoroscope(lmt, loc, place, gender, name, finalHs, finalCentric, finalCoordinate)
+      personContext.getPersonHoroscope(lmt, loc, place, gender, name, houseSystem, coordinate, centric)
     val commentMap: Map<Planet, List<String>> = Planets.classicalList.map { planet ->
       val list1 = essentialDignitiesImpl.getComments(planet, h, finalLocale)
       val list2 = accidentalDignitiesImpl.getComments(planet, h, finalLocale)
@@ -105,12 +102,9 @@ class ClassicalContext(
                                   centric: Centric?,
                                   coordinate: Coordinate?): Map<Planet, List<Pair<IRule, String>>> {
     val finalLocale = locale ?: this.locale
-    val finalHs = houseSystem ?: this.houseSystem
-    val finalCentric = centric ?: this.centric
-    val finalCoordinate = coordinate ?: this.coordinate
 
     val h: IPersonHoroscopeModel =
-      personContext.getHoroscope(lmt, loc, place, gender, name, finalHs, finalCentric, finalCoordinate)
+      personContext.getPersonHoroscope(lmt, loc, place, gender, name, houseSystem, coordinate, centric)
 
     val rules1 = essentialDignitiesImpl.rules
     val rules2 = accidentalDignitiesImpl.rules

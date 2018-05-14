@@ -66,7 +66,8 @@ class ReturnContext(
       val pressure = 1013.25
       val nodeType = NodeType.MEAN
 
-      val horoscopeContext = HoroscopeContext(IHoroscopeContext.defaultPoints , houseSystem , centric , coordinate , starPositionWithAzimuthImpl , houseCuspImpl)
+      val horoscopeContext = HoroscopeContext(IHoroscopeContext.defaultPoints, houseSystem, coordinate,
+                                              centric, starPositionWithAzimuthImpl, houseCuspImpl)
       return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
     }
 
