@@ -24,7 +24,7 @@ interface ISingleHexagramContext {
                         伏神系統: IHiddenEnergy? = null): ISingleHexagram
 }
 
-interface ISingleHexagramWithNameContext {
+interface ISingleHexagramWithNameContext : ISingleHexagramContext {
   fun getSingleHexagramWithName(hexagram: IHexagram,
                                 locale: Locale?=null,
                                 納甲系統: ISettingsOfStemBranch? = null,
