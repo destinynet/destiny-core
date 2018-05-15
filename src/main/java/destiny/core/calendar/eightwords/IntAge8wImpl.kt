@@ -51,6 +51,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
     require(fromAge <= toAge) { "fromAge($fromAge) must be <= toAge($toAge)" }
 
     val key = CacheKey(gender, gmtJulDay, loc, fromAge, toAge)
+    // FIXME : 2018-05-15 實際上線時，偶爾出現 NPE
     val pair = cacheThreadLocal.get()
 
     fun innerGetList() : List<Pair<Double, Double>> {

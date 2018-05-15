@@ -15,7 +15,6 @@ import java.time.chrono.ChronoLocalDateTime
  * 與「人」無關的星盤資料
  * 沒有性別 [destiny.core.Gender]
  *
- * to replace [IHoroscope]
  */
 interface IHoroscopeContext {
 
@@ -62,13 +61,12 @@ interface IHoroscopeContext {
       *Asteroids.array,
       *Hamburgers.array,
       *FixedStars.array,
-      *LunarNodes.meanArray)
+      LunarNode.NORTH_MEAN
+      //*LunarNodes.meanArray
+    )
   }
 }
 
-/**
- * to replace [IHoroscope]
- */
 class HoroscopeContext(
   val points: Collection<Point>,
   override val houseSystem: HouseSystem,

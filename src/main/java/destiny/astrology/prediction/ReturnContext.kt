@@ -17,8 +17,6 @@ import java.time.chrono.ChronoLocalDateTime
  * TODO : interface 化
  */
 class ReturnContext(
-  /** 最完整的 constructor , 連是否逆推 , 是否考慮歲差，都要帶入  */
-  private val horoscopeImpl: IHoroscope,
   /** 計算星體的介面  */
   private val starPositionWithAzimuthImpl: IStarPositionWithAzimuth,
   /** 計算星體到黃道幾度的時刻，的介面  */
