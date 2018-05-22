@@ -197,7 +197,6 @@ data class CombinedFull(
   ICombinedFull,
   ICombinedWithMetaNameDayMonth by combinedWithMetaNameDayMonth,
   IDivineMeta by divineMeta,
-  IEightWordsNullableFactory by eightWords,
   ICombinedWithMetaNameTexts,
   Serializable {
 

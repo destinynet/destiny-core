@@ -14,7 +14,8 @@ import java.time.chrono.ChronoLocalDateTime
  * 利用上升星座，計算命宮
  * 利用月亮星座，計算身宮
  */
-class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign, private val starPositionImpl: IStarPosition<*>) : IMainBodyHouse, Serializable {
+class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign, private val starPositionImpl: IStarPosition<*>) :
+  IMainBodyHouse, Serializable {
 
   /**
    * 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」
