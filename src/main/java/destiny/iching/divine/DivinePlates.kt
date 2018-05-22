@@ -6,7 +6,6 @@ package destiny.iching.divine
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
-import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.calendar.eightwords.IEightWordsNullableFactory
 import destiny.core.chinese.Branch
@@ -188,10 +187,10 @@ data class DivineMeta(
 /** 完整卜卦盤 , 包含所有資料 */
 interface ICombinedFull : ICombinedWithMetaNameDayMonth, ICombinedWithMetaNameTexts, IDivineMeta
 
-/** 完整卜卦盤 , 具備完整八字 */
+/** 完整卜卦盤 , 具備「可能」完整八字 */
 data class CombinedFull(
   private val combinedWithMetaNameDayMonth: ICombinedWithMetaNameDayMonth,
-  val eightWords: IEightWords,
+  override val eightWordsNullable: IEightWordsNullable,
   private val divineMeta: DivineMeta,
   override val pairTexts: Pair<IHexagramText, IHexagramText>) :
   ICombinedFull,
@@ -204,5 +203,5 @@ data class CombinedFull(
     get() = divineMeta.納甲系統
   override val 伏神系統: String
     get() = divineMeta.伏神系統
-  override val eightWordsNullable = eightWords
+  //override val eightWordsNullable = eightWordsNullable
 }

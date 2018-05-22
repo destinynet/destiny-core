@@ -8,7 +8,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeSecDecorator
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.iching.*
@@ -76,7 +75,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
 
   fun getCombinedFull(src: IHexagram,
                       dst: IHexagram,
-                      eightWords: IEightWords,
+                      eightWordsNullable: IEightWordsNullable,
                       gender: Gender?,
 
                       question: String?,
@@ -238,7 +237,7 @@ class DivineContext(
   /** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
   override fun getCombinedFull(src: IHexagram,
                                dst: IHexagram,
-                               eightWords: IEightWords,
+                               eightWordsNullable: IEightWordsNullable,
                                gender: Gender?,
                                question: String?,
                                approach: DivineApproach,
@@ -255,7 +254,7 @@ class DivineContext(
                                imageImpl: IImage?,
                                judgementImpl: IHexagramJudgement?): ICombinedFull {
 
-    val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWords, locale, 納甲系統,
+    val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWordsNullable, locale, 納甲系統,
                                                                        伏神系統, tianyiImpl, yangBladeImpl)
     val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc!!) }
     val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
@@ -273,7 +272,7 @@ class DivineContext(
     val dstText = textContext.getHexagramText(dst, locale)
 
     val pairTexts: Pair<IHexagramText, IHexagramText> = Pair(srcText, dstText)
-    return CombinedFull(combinedWithMetaNameDayMonth, eightWords, divineMeta, pairTexts)
+    return CombinedFull(combinedWithMetaNameDayMonth, eightWordsNullable, divineMeta, pairTexts)
   }
 
   private fun get世爻應爻(宮序: Int): Pair<Int, Int> = when (宮序) {
