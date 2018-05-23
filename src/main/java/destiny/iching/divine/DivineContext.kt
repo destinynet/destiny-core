@@ -79,7 +79,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
                       gender: Gender?,
 
                       question: String?,
-                      approach: DivineApproach,
+                      approach: DivineApproach?,
                       time: ChronoLocalDateTime<*>?,
                       loc: ILocation? = Location.of(Locale.TAIWAN),
 
@@ -240,7 +240,7 @@ class DivineContext(
                                eightWordsNullable: IEightWordsNullable,
                                gender: Gender?,
                                question: String?,
-                               approach: DivineApproach,
+                               approach: DivineApproach?,
                                time: ChronoLocalDateTime<*>?,
                                loc: ILocation?,
                                place: String?,
