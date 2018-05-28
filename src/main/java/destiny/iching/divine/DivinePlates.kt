@@ -21,12 +21,12 @@ interface ICombined {
 }
 
 interface IMeta {
-  val 納甲系統: String
-  val 伏神系統: String
+  val 納甲系統: ISettingsOfStemBranch
+  val 伏神系統: IHiddenEnergy
 }
 
-data class Meta(override val 納甲系統: String,
-                override val 伏神系統: String) : IMeta, Serializable
+data class Meta(override val 納甲系統: ISettingsOfStemBranch,
+                override val 伏神系統: IHiddenEnergy) : IMeta, Serializable
 
 
 /**
@@ -199,9 +199,9 @@ data class CombinedFull(
   ICombinedWithMetaNameTexts,
   Serializable {
 
-  override val 納甲系統: String
+  override val 納甲系統
     get() = divineMeta.納甲系統
-  override val 伏神系統: String
+  override val 伏神系統
     get() = divineMeta.伏神系統
   //override val eightWordsNullable = eightWordsNullable
 }

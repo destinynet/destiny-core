@@ -56,7 +56,10 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
     this.setChangeYearDegree(changeYearDegree)
   }
 
-  constructor(changeYearDegree: Double, starPositionImpl: IStarPosition<*>, starTransitImpl: IStarTransit, southernHemisphereOpposition: Boolean) {
+  constructor(changeYearDegree: Double,
+              starPositionImpl: IStarPosition<*>,
+              starTransitImpl: IStarTransit,
+              southernHemisphereOpposition: Boolean) {
     this.starPositionImpl = starPositionImpl
     this.starTransitImpl = starTransitImpl
     this.southernHemisphereOpposition = southernHemisphereOpposition
@@ -85,7 +88,8 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
     val gmtSecondsOffsetInt = gmtSecondsOffset.toInt()
     val gmtNanoOffset = ((gmtSecondsOffset - gmtSecondsOffsetInt) * 1000000000).toInt()
 
-    val gmt = lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
+    val gmt =
+      lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
 
 
     val solarLongitude = starPositionImpl!!.getPosition(Planet.SUN, gmt, GEO, ECLIPTIC).lng
@@ -96,7 +100,8 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
       // 360 > solarLongitude >= 180
 
       //取得 lmt 當年 1/1 凌晨零分的度數
-      val startOfYear = lmt.with(DAY_OF_YEAR, 1).with(HOUR_OF_DAY, 0).with(MINUTE_OF_HOUR, 0).minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS)
+      val startOfYear = lmt.with(DAY_OF_YEAR, 1).with(HOUR_OF_DAY, 0).with(MINUTE_OF_HOUR, 0)
+        .minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS)
 
       val degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN, startOfYear, GEO, ECLIPTIC).lng
 
@@ -146,48 +151,48 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
 
     var monthIndex = SolarTerms.getIndex(MonthST) / 2 + 2
     if (monthIndex >= 12)
-      monthIndex = monthIndex - 12
-    val 月支 = Branch.get(monthIndex)
+      monthIndex -= 12
+    val 月支 = Branch[monthIndex]
 
     if (southernHemisphereOpposition) {
-      /*
-            * 解決南半球月支正沖的問題
-            */
+      /**
+       * 解決南半球月支正沖的問題
+       */
       if (hemisphereBy == HemisphereBy.EQUATOR) {
         //如果是依據赤道來區分南北半球
-        if (location.northSouth == NorthSouth.SOUTH)
-          result月支 = Branch.get(monthIndex + 6)
+        result月支 = if (location.northSouth == NorthSouth.SOUTH)
+          Branch[monthIndex + 6]
         else
-          result月支 = 月支
+          月支
       } else {
-        /*
-                * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
-                */
+        /**
+         * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
+         */
         val solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, EQUATORIAL).lat
 
         if (solarEquatorialDegree >= 0) {
           //如果太陽在赤北緯
-          if (location.northSouth==NorthSouth.NORTH) {
+          result月支 = if (location.northSouth == NorthSouth.NORTH) {
             //地點在北半球
             if (location.lat >= solarEquatorialDegree)
-              result月支 = 月支
+              月支
             else
-              result月支 = Branch.get(monthIndex + 6) //所在地緯度低於 太陽赤緯，取對沖月份
+              Branch[monthIndex + 6] //所在地緯度低於 太陽赤緯，取對沖月份
           } else {
             //地點在南半球 , 取正沖
-            result月支 = Branch.get(monthIndex + 6)
+            Branch[monthIndex + 6]
           }
         } else {
           //太陽在赤南緯
-          if (location.northSouth== NorthSouth.SOUTH) {
+          result月支 = if (location.northSouth == NorthSouth.SOUTH) {
             //地點在南半球
             if (location.lat <= solarEquatorialDegree)
-              result月支 = Branch.get(monthIndex + 6) //所在地緯度高於 太陽赤南緯，真正的南半球
+              Branch[monthIndex + 6] //所在地緯度高於 太陽赤南緯，真正的南半球
             else
-              result月支 = 月支 //雖在南半球，但緯度低於太陽赤南緯，視為北半球
+              月支 //雖在南半球，但緯度低於太陽赤南緯，視為北半球
           } else {
             //地點在北半球，月支不變
-            result月支 = 月支
+            月支
           }
         }
       }

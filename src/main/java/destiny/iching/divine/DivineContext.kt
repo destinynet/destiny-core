@@ -174,7 +174,7 @@ class DivineContext(
     val final伏神 = 伏神系統 ?: this.伏神系統
     val finalLocale = locale ?: this.locale
 
-    val meta = Meta(final納甲.getTitle(finalLocale), final伏神.getTitle(finalLocale))
+    val meta = Meta(final納甲, final伏神)
     val srcModel = getSingleHexagram(src, 納甲系統, 伏神系統)
     val dstModel = getSingleHexagram(dst, 納甲系統, 伏神系統)
 
