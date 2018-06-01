@@ -100,10 +100,10 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
     /** 火星 (全集): (年支、時支) -> 地支 (子由使用) */
     val fun火星_全集 = { year: Branch, hour: Branch ->
       when (BranchTools.trilogy(year)) {
-        火 -> Branch.get(hour.index + 1)
-        水 -> Branch.get(hour.index + 2)
-        金 -> Branch.get(hour.index + 3)
-        木 -> Branch.get(hour.index + 9)
+        火 -> Branch[hour.index + 1]
+        水 -> Branch[hour.index + 2]
+        金 -> Branch[hour.index + 3]
+        木 -> Branch[hour.index + 9]
         else -> throw AssertionError("年支 = $year , 時支 = $hour")
       }
     }
@@ -111,16 +111,16 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
     /** 鈴星 (全集) : (年支、時支) -> 地支 (子由使用)  */
     val fun鈴星_全集 = { year : Branch , hour : Branch->
       when (BranchTools.trilogy(year)) {
-        火 -> Branch.get(hour.index + 3)
-        水, 金, 木 -> Branch.get(hour.index + 10)
+        火 -> Branch[hour.index + 3]
+        水, 金, 木 -> Branch[hour.index + 10]
         else -> throw AssertionError("年支 = $year , 時支 = $hour")
       }
     }
 
     /** 地劫 : 時支 -> 地支  */
-    val fun地劫 = { hour : Branch -> Branch.get(hour.index - 1) }
+    val fun地劫 = { hour : Branch -> Branch[hour.index - 1] }
 
     /** 地空 : 時支 -> 地支  */
-    val fun地空 = { hour : Branch -> Branch.get(11 - hour.index) }
+    val fun地空 = { hour : Branch -> Branch[11 - hour.index] }
   }
 }
