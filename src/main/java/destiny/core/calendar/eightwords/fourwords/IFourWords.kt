@@ -2,12 +2,13 @@
 package destiny.core.calendar.eightwords.fourwords
 
 import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.IEightWords
 
 /**
  * 四字斷終生 介面
  */
 interface IFourWords {
 
-  fun getResult(ew: EightWords): String
+  fun getResult(ew: IEightWords): String
 }
 

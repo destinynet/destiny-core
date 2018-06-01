@@ -101,11 +101,6 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
       }
     }
 
-    fun getSymbolOpt(index: Int): Optional<Symbol> {
-      return Optional.ofNullable(getSymbol(index))
-    }
-
-
     /**
      * 以順時針方向取得一卦
      */
