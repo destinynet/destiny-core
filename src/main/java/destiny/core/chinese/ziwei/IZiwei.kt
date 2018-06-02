@@ -5,9 +5,8 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
-import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.eightwords.IDay
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.*
@@ -41,24 +40,24 @@ interface IZiwei {
                     gender: Gender, optionalVageMap: Map<Int, Pair<Double, Double>>?, context: IZiweiContext): Builder
 
   /** 輸入現代化的資料，計算本命盤  */
-  fun getBirthPlate(lmt: ChronoLocalDateTime<*>, location: ILocation, place: String?, gender: Gender, stars: Collection<ZStar>, context: ZContextMore, solarTermsImpl: ISolarTerms, yearMonthImpl: IYearMonth, dayImpl: IDay): Builder
+  fun getBirthPlate(lmt: ChronoLocalDateTime<*>, location: ILocation, place: String?, gender: Gender, stars: Collection<ZStar>, context: IZContextPresent, solarTermsImpl: ISolarTerms, yearMonthImpl: IYearMonth, dayImpl: IDay): Builder
 
   /** 計算 大限盤  */
-  fun getFlowBig(builder: Builder, context: ZContext, flowBig: StemBranch): Builder
+  fun getFlowBig(builder: Builder, context: IZiweiContext, flowBig: StemBranch): Builder
 
 
   /** 計算 流年盤  */
-  fun getFlowYear(builder: Builder, context: ZContext, flowBig: StemBranch, flowYear: StemBranch): Builder
+  fun getFlowYear(builder: Builder, context: IZiweiContext, flowBig: StemBranch, flowYear: StemBranch): Builder
 
   /** 計算 流月盤 TODO : 流月必須要考慮 「是否閏月」 , 可能要拆成 Integer + Boolean  */
-  fun getFlowMonth(builder: Builder, context: ZContext, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch): Builder
+  fun getFlowMonth(builder: Builder, context: IZiweiContext, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch): Builder
 
   /** 計算 流日盤  */
-  fun getFlowDay(builder: Builder, context: ZContext,
+  fun getFlowDay(builder: Builder, context: IZiweiContext,
                  flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int): Builder
 
   /** 計算 流時盤  */
-  fun getFlowHour(builder: Builder, context: ZContext,
+  fun getFlowHour(builder: Builder, context: IZiweiContext,
                   flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch): Builder
 
   companion object {

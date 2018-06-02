@@ -33,7 +33,7 @@ interface ISolarTerms {
   /**
    * @return 計算，從 某時刻開始，的下一個（或上一個）節氣的時間點為何
    */
-  fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, isForward: Boolean): Double
+  fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, forward: Boolean): Double
 
 
   /**

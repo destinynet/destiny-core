@@ -22,15 +22,15 @@ interface IStarTransit {
   /**
    * 傳回 GMT 時刻
    */
-  fun getNextTransitGmt(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, isForward: Boolean): Double
+  fun getNextTransitGmt(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, forward: Boolean): Double
 
 
   /**
    * 傳回 GMT
    */
-  fun getNextTransitGmtDateTime(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, isForward: Boolean,
+  fun getNextTransitGmtDateTime(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, forward: Boolean = true,
                                 revJulDayFunc: Function<Double, ChronoLocalDateTime<*>> = Function { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }): ChronoLocalDateTime<*> {
-    val gmtJulDay = getNextTransitGmt(star, degree, coordinate, fromGmt, isForward)
+    val gmtJulDay = getNextTransitGmt(star, degree, coordinate, fromGmt, forward)
     return revJulDayFunc.apply(gmtJulDay)
   }
 

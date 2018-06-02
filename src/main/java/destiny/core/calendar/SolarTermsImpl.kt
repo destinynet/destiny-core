@@ -71,9 +71,9 @@ class SolarTermsImpl(
   /**
    * @return 計算，從 某時刻開始，的下一個（或上一個）節氣的時間點為何
    */
-  override fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, isForward: Boolean): Double {
+  override fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, forward: Boolean): Double {
     val zodiacDegree = solarTerms.zodiacDegree
-    return starTransitImpl.getNextTransitGmt(SUN, zodiacDegree.toDouble(), ECLIPTIC, fromGmtJulDay, isForward)
+    return starTransitImpl.getNextTransitGmt(SUN, zodiacDegree.toDouble(), ECLIPTIC, fromGmtJulDay, forward)
   }
 
   /**

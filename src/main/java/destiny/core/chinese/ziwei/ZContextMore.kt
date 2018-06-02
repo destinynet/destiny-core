@@ -79,7 +79,7 @@ interface IZContextPresent : IZiweiContext {
     SELF_TRANS_FOUR_ARROW;
 
     override fun getTitle(locale: Locale): String {
-      return ResourceBundle.getBundle(ZContextMore::class.java.name, locale).getString(name)
+      return ResourceBundle.getBundle(IZContextPresent::class.java.name, locale).getString(name)
     }
 
     override fun getDescription(locale: Locale): String {
@@ -96,7 +96,7 @@ interface IZContextPresent : IZiweiContext {
     OPPO_TRANS_FOUR_ARROW;
 
     override fun getTitle(locale: Locale): String {
-      return ResourceBundle.getBundle(ZContextMore::class.java.name, locale).getString(name)
+      return ResourceBundle.getBundle(IZContextPresent::class.java.name, locale).getString(name)
     }
 
     override fun getDescription(locale: Locale): String {
@@ -108,10 +108,10 @@ interface IZContextPresent : IZiweiContext {
 
 class ZContextPresent(
   private val zContext : ZContext ,
-  override val selfTransFour: IZContextPresent.SelfTransFour,
-  override val oppoTransFour: IZContextPresent.OppoTransFour,
-  /** 是否顯示小限  */
-  override val showSmallRange: Boolean,
+  override val selfTransFour: IZContextPresent.SelfTransFour = IZContextPresent.SelfTransFour.SELF_TRANS_FOUR_TEXT,
+  override val oppoTransFour: IZContextPresent.OppoTransFour = IZContextPresent.OppoTransFour.OPPO_TRANS_FOUR_ARROW,
+  /** 是否顯示小限 */
+  override val showSmallRange: Boolean = false,
   /** 民用曆法 or 天文曆法  */
   override val chineseDateImpl: IChineseDate,
   /** 是否顯示八字盤  */
@@ -123,17 +123,17 @@ class ZContextPresent(
   /** 子正判定  */
   override val midnightImpl: IMidnight,
   /** 子初換日 (true) 或 子正換日 (false)  */
-  override val changeDayAfterZi: Boolean,
+  override val changeDayAfterZi: Boolean = true,
   /** 顯示雜曜  */
-  override val showMinors: Boolean,
+  override val showMinors: Boolean = true,
   /** 顯示博士12神煞  */
-  override val showDoctors: Boolean,
+  override val showDoctors: Boolean = true,
   /** 顯示長生12神煞  */
-  override val showLongevity: Boolean,
+  override val showLongevity: Boolean = true,
   /** 顯示 將前12星  */
-  override val showGeneralFront: Boolean,
+  override val showGeneralFront: Boolean = true,
   /** 顯示 歲前12星  */
-  override val showYearFront: Boolean) : IZContextPresent , IZiweiContext by zContext , Serializable
+  override val showYearFront: Boolean = true) : IZContextPresent , IZiweiContext by zContext , Serializable
 
 /**
  * 純粹「設定」，並不包含 生日、性別、出生地 等資訊
@@ -144,6 +144,7 @@ class ZContextPresent(
  * 真太陽時(還是手錶平均時間)
  * 八字排列方向
  */
+@Deprecated("ZContextPresent")
 class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    purpleBranchImpl: IPurpleStarBranch,
                    mainStarsMonthAlgo: IFinalMonthNumber.MonthAlgo?,
@@ -153,32 +154,32 @@ class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
                    flowYearImpl: IFlowYear, flowMonthImpl: IFlowMonth, flowDayImpl: IFlowDay, flowHourImpl: IFlowHour,
                    ageNoteImpls: List<IntAgeNote>, bigRangeImpl: IBigRange, redBeauty: RedBeauty,
 
-                   val selfTransFour: IZContextPresent.SelfTransFour,
-                   val oppoTransFour: IZContextPresent.OppoTransFour,
+                   override val selfTransFour: IZContextPresent.SelfTransFour,
+                   override val oppoTransFour: IZContextPresent.OppoTransFour,
                    /** 是否顯示小限  */
-                   val showSmallRange: Boolean,
+                   override val showSmallRange: Boolean,
                    /** 民用曆法 or 天文曆法  */
-                   val chineseDateImpl: IChineseDate,
+                   override val chineseDateImpl: IChineseDate,
                    /** 是否顯示八字盤  */
-                   val showEightWords: Boolean = true,
+                   override val showEightWords: Boolean = true,
                    /** 八字排盤，右至左 or 左至右  */
-                   val direction: Direction? = Direction.R2L,
+                   override val direction: Direction? = Direction.R2L,
                    /** 時辰劃分  */
-                   val hourImpl: IHour,
+                   override val hourImpl: IHour,
                    /** 子正判定  */
-                   val midnightImpl: IMidnight,
+                   override val midnightImpl: IMidnight,
                    /** 子初換日 (true) 或 子正換日 (false)  */
-                   val changeDayAfterZi: Boolean,
+                   override val changeDayAfterZi: Boolean,
                    /** 顯示雜曜  */
-                   val showMinors: Boolean,
+                   override val showMinors: Boolean,
                    /** 顯示博士12神煞  */
-                   val showDoctors: Boolean,
+                   override val showDoctors: Boolean,
                    /** 顯示長生12神煞  */
-                   val showLongevity: Boolean,
+                   override val showLongevity: Boolean,
                    /** 顯示 將前12星  */
-                   val showGeneralFront: Boolean,
+                   override val showGeneralFront: Boolean,
                    /** 顯示 歲前12星  */
-                   val showYearFront: Boolean) :
+                   override val showYearFront: Boolean) : IZContextPresent , IZiweiContext by
   ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl,
            tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl,
            flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
