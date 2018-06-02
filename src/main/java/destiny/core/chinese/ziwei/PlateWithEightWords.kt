@@ -28,7 +28,7 @@ class PlateWithEightWords internal constructor(
   branchFlowHouseMap: Map<Branch, Map<FlowType, House>>,
   flowBranchMap: Map<FlowType, StemBranch>,
   starStrengthMap: Map<ZStar, Int>,
-  notes: List<String>, vageMap: Map<Int, Pair<Double, Double>>,
+  notes: List<String>, vageMap: Map<Int, Pair<Double, Double>>?,
   /** 八字資料  */
   val personModel: IPersonContextModel) :
   Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,

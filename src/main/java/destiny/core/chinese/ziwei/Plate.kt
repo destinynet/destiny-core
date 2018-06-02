@@ -63,7 +63,7 @@ open class Plate(
   val notes: List<String>,
 
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
-  val vageMap: Map<Int, Pair<Double, Double>>) : Serializable {
+  val vageMap: Map<Int, Pair<Double, Double>>?) : Serializable {
 
   /** 宮位名稱 -> 宮位資料  */
   val houseMap: Map<House, HouseData>

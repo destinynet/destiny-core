@@ -63,7 +63,7 @@ class Builder(
   /** 宮干四化  */
   private val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>>,
   /** 歲數 (暫定虛歲），每歲的起訖時分 (in GMT)  */
-  private val vageMap: Map<Int, Pair<Double, Double>>) : Serializable {
+  private val vageMap: Map<Int, Pair<Double, Double>>?) : Serializable {
 
   /** 名稱  */
   private var name: String? = null
@@ -348,9 +348,13 @@ class Builder(
 
   fun build(): Plate {
     return if (personModel == null) {
-      Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar, fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, vageMap)
+      Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,
+            fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
+            vageMap)
     } else {
-      PlateWithEightWords(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar, fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes, vageMap, personModel!!)
+      PlateWithEightWords(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar,
+                          bodyStar, fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap,
+                          starStrengthMap, notes, vageMap, personModel!!)
     }
   }
 

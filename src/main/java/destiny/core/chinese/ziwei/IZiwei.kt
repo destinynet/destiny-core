@@ -35,12 +35,32 @@ interface IZiwei {
    * @param monthBranch        「節氣」的月支
    * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
    */
-  fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?, preFinalMonthNumForMainStars: Int?,
-                    cycle: Int, lunarYear: StemBranch, solarYear: StemBranch, lunarMonth: Int, leapMonth: Boolean, monthBranch: Branch, solarTerms: SolarTerms, lunarDays: Int, hour: Branch, stars: Collection<ZStar>,
-                    gender: Gender, optionalVageMap: Map<Int, Pair<Double, Double>>?, context: IZiweiContext): Builder
+  fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?,
+                    preFinalMonthNumForMainStars: Int?,
+                    cycle: Int,
+                    lunarYear: StemBranch,
+                    solarYear: StemBranch,
+                    lunarMonth: Int,
+                    leapMonth: Boolean,
+                    monthBranch: Branch,
+                    solarTerms: SolarTerms,
+                    lunarDays: Int,
+                    hour: Branch,
+                    stars: Collection<ZStar>,
+                    gender: Gender,
+                    optionalVageMap: Map<Int, Pair<Double, Double>>?,
+                    context: IZiweiContext): Builder
 
   /** 輸入現代化的資料，計算本命盤  */
-  fun getBirthPlate(lmt: ChronoLocalDateTime<*>, location: ILocation, place: String?, gender: Gender, stars: Collection<ZStar>, context: IZContextPresent, solarTermsImpl: ISolarTerms, yearMonthImpl: IYearMonth, dayImpl: IDay): Builder
+  fun getModernPlate(lmt: ChronoLocalDateTime<*>,
+                     location: ILocation,
+                     place: String?,
+                     gender: Gender,
+                     stars: Collection<ZStar>,
+                     context: IZContextPresent,
+                     solarTermsImpl: ISolarTerms,
+                     yearMonthImpl: IYearMonth,
+                     dayImpl: IDay): Builder
 
   /** 計算 大限盤  */
   fun getFlowBig(builder: Builder, context: IZiweiContext, flowBig: StemBranch): Builder

@@ -4,13 +4,10 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
-import destiny.core.IntAgeNote
 import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
-import destiny.core.chinese.ITianyi
 import java.io.Serializable
 import java.util.*
 
@@ -144,48 +141,48 @@ class ZContextPresent(
  * 真太陽時(還是手錶平均時間)
  * 八字排列方向
  */
-@Deprecated("ZContextPresent")
-class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
-                   purpleBranchImpl: IPurpleStarBranch,
-                   mainStarsMonthAlgo: IFinalMonthNumber.MonthAlgo?,
-                   monthStarsMonthAlgo: IFinalMonthNumber.MonthAlgo,
-                   yearType: YearType, houseSeqImpl: IHouseSeq, tianyiImpl: ITianyi, fireBell: FireBell,
-                   hurtAngel: HurtAngel, transFourImpl: ITransFour, strengthImpl: IStrength,
-                   flowYearImpl: IFlowYear, flowMonthImpl: IFlowMonth, flowDayImpl: IFlowDay, flowHourImpl: IFlowHour,
-                   ageNoteImpls: List<IntAgeNote>, bigRangeImpl: IBigRange, redBeauty: RedBeauty,
-
-                   override val selfTransFour: IZContextPresent.SelfTransFour,
-                   override val oppoTransFour: IZContextPresent.OppoTransFour,
-                   /** 是否顯示小限  */
-                   override val showSmallRange: Boolean,
-                   /** 民用曆法 or 天文曆法  */
-                   override val chineseDateImpl: IChineseDate,
-                   /** 是否顯示八字盤  */
-                   override val showEightWords: Boolean = true,
-                   /** 八字排盤，右至左 or 左至右  */
-                   override val direction: Direction? = Direction.R2L,
-                   /** 時辰劃分  */
-                   override val hourImpl: IHour,
-                   /** 子正判定  */
-                   override val midnightImpl: IMidnight,
-                   /** 子初換日 (true) 或 子正換日 (false)  */
-                   override val changeDayAfterZi: Boolean,
-                   /** 顯示雜曜  */
-                   override val showMinors: Boolean,
-                   /** 顯示博士12神煞  */
-                   override val showDoctors: Boolean,
-                   /** 顯示長生12神煞  */
-                   override val showLongevity: Boolean,
-                   /** 顯示 將前12星  */
-                   override val showGeneralFront: Boolean,
-                   /** 顯示 歲前12星  */
-                   override val showYearFront: Boolean) : IZContextPresent , IZiweiContext by
-  ZContext(mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType, houseSeqImpl,
-           tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl, flowDayImpl,
-           flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
-
-
-  override fun toString(): String {
-    return "[ZContextMore purpleBranchImpl=$purpleBranchImpl, selfTransFour=$selfTransFour, oppoTransFour=$oppoTransFour, showSmallRange=$showSmallRange, direction=$direction, houseSeqImpl=$houseSeqImpl, hourImpl=$hourImpl, midnightImpl=$midnightImpl, tianyiImpl=$tianyiImpl, changeDayAfterZi=$changeDayAfterZi, showMinors=$showMinors, showDoctors=$showDoctors, showLongevity=$showLongevity, transFourImpl=$transFourImpl, strengthImpl=$strengthImpl, flowYearImpl=$flowYearImpl, flowMonthImpl=$flowMonthImpl, flowDayImpl=$flowDayImpl, flowHourImpl=$flowHourImpl, bigRangeImpl=$bigRangeImpl]"
-  }
-}
+//@Deprecated("ZContextPresent")
+//class ZContextMore(mainBodyHouseImpl: IMainBodyHouse,
+//                   purpleBranchImpl: IPurpleStarBranch,
+//                   mainStarsMonthAlgo: IFinalMonthNumber.MonthAlgo?,
+//                   monthStarsMonthAlgo: IFinalMonthNumber.MonthAlgo,
+//                   yearType: YearType, houseSeqImpl: IHouseSeq, tianyiImpl: ITianyi, fireBell: FireBell,
+//                   hurtAngel: HurtAngel, transFourImpl: ITransFour, strengthImpl: IStrength,
+//                   flowYearImpl: IFlowYear, flowMonthImpl: IFlowMonth, flowDayImpl: IFlowDay, flowHourImpl: IFlowHour,
+//                   ageNoteImpls: List<IntAgeNote>, bigRangeImpl: IBigRange, redBeauty: RedBeauty,
+//
+//                   override val selfTransFour: IZContextPresent.SelfTransFour,
+//                   override val oppoTransFour: IZContextPresent.OppoTransFour,
+//                   /** 是否顯示小限  */
+//                   override val showSmallRange: Boolean,
+//                   /** 民用曆法 or 天文曆法  */
+//                   override val chineseDateImpl: IChineseDate,
+//                   /** 是否顯示八字盤  */
+//                   override val showEightWords: Boolean = true,
+//                   /** 八字排盤，右至左 or 左至右  */
+//                   override val direction: Direction? = Direction.R2L,
+//                   /** 時辰劃分  */
+//                   override val hourImpl: IHour,
+//                   /** 子正判定  */
+//                   override val midnightImpl: IMidnight,
+//                   /** 子初換日 (true) 或 子正換日 (false)  */
+//                   override val changeDayAfterZi: Boolean,
+//                   /** 顯示雜曜  */
+//                   override val showMinors: Boolean,
+//                   /** 顯示博士12神煞  */
+//                   override val showDoctors: Boolean,
+//                   /** 顯示長生12神煞  */
+//                   override val showLongevity: Boolean,
+//                   /** 顯示 將前12星  */
+//                   override val showGeneralFront: Boolean,
+//                   /** 顯示 歲前12星  */
+//                   override val showYearFront: Boolean) : IZContextPresent , IZiweiContext by
+//  ZContext(starList, mainBodyHouseImpl, purpleBranchImpl, mainStarsMonthAlgo, monthStarsMonthAlgo, yearType,
+//           houseSeqImpl, tianyiImpl, fireBell, hurtAngel, transFourImpl, strengthImpl, flowYearImpl, flowMonthImpl,
+//           flowDayImpl, flowHourImpl, ageNoteImpls, bigRangeImpl, redBeauty) {
+//
+//
+//  override fun toString(): String {
+//    return "[ZContextMore purpleBranchImpl=$purpleBranchImpl, selfTransFour=$selfTransFour, oppoTransFour=$oppoTransFour, showSmallRange=$showSmallRange, direction=$direction, houseSeqImpl=$houseSeqImpl, hourImpl=$hourImpl, midnightImpl=$midnightImpl, tianyiImpl=$tianyiImpl, changeDayAfterZi=$changeDayAfterZi, showMinors=$showMinors, showDoctors=$showDoctors, showLongevity=$showLongevity, transFourImpl=$transFourImpl, strengthImpl=$strengthImpl, flowYearImpl=$flowYearImpl, flowMonthImpl=$flowMonthImpl, flowDayImpl=$flowDayImpl, flowHourImpl=$flowHourImpl, bigRangeImpl=$bigRangeImpl]"
+//  }
+//}
