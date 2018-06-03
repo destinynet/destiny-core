@@ -32,12 +32,16 @@ interface IZiweiModernContext : IZiweiContext {
 
   val midnightImpl: IMidnight
 
-  val changeDayAfterZi: Boolean
-
   val relativeTransitImpl : IRelativeTransit
 
+  val changeDayAfterZi: Boolean
+
   /** 輸入現代化的資料，計算本命盤  */
-  fun getModernPlate(lmt: ChronoLocalDateTime<*>, location: ILocation, place: String?, gender: Gender, name: String?)
+  fun getModernPlate(lmt: ChronoLocalDateTime<*>,
+                     location: ILocation,
+                     place: String?,
+                     gender: Gender,
+                     name: String?): Builder
 }
 
 class ZModernContext(
@@ -48,8 +52,8 @@ class ZModernContext(
   override val dayImpl: IDay,
   override val hourImpl: IHour,
   override val midnightImpl: IMidnight,
-  override val changeDayAfterZi: Boolean,
-  override val relativeTransitImpl: IRelativeTransit) : IZiweiModernContext, IZiweiContext by context, Serializable {
+  override val relativeTransitImpl: IRelativeTransit,
+  override val changeDayAfterZi: Boolean = true) : IZiweiModernContext, IZiweiContext by context, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)!!
 
@@ -61,7 +65,7 @@ class ZModernContext(
                               location: ILocation,
                               place: String?,
                               gender: Gender,
-                              name: String?) {
+                              name: String?) : Builder {
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
@@ -113,16 +117,21 @@ class ZModernContext(
     val vageMap = intAgeZiweiImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, location), location, 1, 130)
 
 
-    // 過濾真正要顯示的 Stars
-    val shownStars = mutableListOf<ZStar>()
-    // 14主星 , 八吉星 , 六凶星 : 固定顯示
-    stars.filter { it is StarMain || it is StarLucky || it is StarUnlucky }.forEach { shownStars.add(it) }
+//    // 過濾真正要顯示的 Stars
+//    val shownStars = mutableListOf<ZStar>()
+//    // 14主星 , 八吉星 , 六凶星 : 固定顯示
+//    stars.filter { it is StarMain || it is StarLucky || it is StarUnlucky }.forEach { shownStars.add(it) }
 
 
 
+    return getBirthPlate(Pair(命宮地支, 身宮地支) , finalMonthNumForMainStars , cycle , yinYear , solarYear , lunarMonth
+                  , cDate.isLeapMonth , monthBranch , solarTerms , lunarDays , hour , stars , gender , vageMap)
+      .withLocalDateTime(lmt)
+      .withLocation(location)
+      .appendNotesBuilders(notesBuilders).apply {
+        place?.also { withPlace(it) }
+      }
 
-
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 }
 

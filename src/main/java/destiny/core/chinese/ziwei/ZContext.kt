@@ -7,9 +7,13 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import destiny.core.Descriptive
 import destiny.core.Gender
+import destiny.core.IIntAge
 import destiny.core.IntAgeNote
+import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
+import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
+import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.chinese.Branch
@@ -18,6 +22,7 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
+import java.time.LocalTime
 import java.util.*
 
 interface IZiweiContext {
@@ -80,6 +85,12 @@ interface IZiweiContext {
 
   /** 紅豔 */
   val redBeauty: RedBeauty
+
+//  /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
+//  val chineseDateImpl: IChineseDate?
+//
+//  /** 計算虛歲 的實作 (可為空) */
+//  val intAgeImpl : IIntAge?
 
 
   /**
@@ -253,8 +264,15 @@ class ZContext(
 
   /** 大限計算方式  */
   override val bigRangeImpl: IBigRange,
+
   /** 紅豔 */
-  override val redBeauty: RedBeauty) : IZiweiContext, Serializable {
+  override val redBeauty: RedBeauty,
+
+  /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
+  private val chineseDateImpl: IChineseDate? = null,
+
+  /** 虛歲實作 */
+  private val intAgeImpl: IIntAge? = null) : IZiweiContext, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)!!
 
@@ -444,16 +462,19 @@ class ZContext(
       branch to ISmallRange.getRanges(branch, lunarYear.branch, gender)
     }.toMap()
 
-    // 歲數 map
-    val vageMap: Map<Int, Pair<Double, Double>>? = optionalVageMap
-//    vageMap = if (optionalVageMap != null)
-//      optionalVageMap
-//    else {
-//      val chineseDateImpl = ChineseDateCalendricaImpl() // 這裡不需太精確，不用在此套用天文曆法
-//      val gmt = chineseDateImpl.getYangDate(chineseDate).atTime(LocalTime.NOON)
-//      val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-//      intAgeZiweiImpl.getRangesMap(gender, gmtJulDay, Location.of(Locale.UK), 1, 130) // 參數沒有 loc 資訊，時間傳回 GMT , 就以 UK 作為地點
-//    }
+    /**
+     * 歲數 map , 2018-06-03 改 optional . 因為不想在 core 內 , depend on ChineseDateCalendricaImpl
+     * 不然就得開發另一套非常簡易的 [IIntAge] 在此使用
+     */
+    val vageMap: Map<Int, Pair<Double, Double>>? = optionalVageMap ?: {
+      if (chineseDateImpl != null && intAgeImpl != null) {
+        val gmt = chineseDateImpl.getYangDate(chineseDate).atTime(LocalTime.NOON)
+        val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+        intAgeImpl.getRangesMap(gender, gmtJulDay, Location.of(Locale.UK), 1, 130) // 參數沒有 loc 資訊，時間傳回 GMT , 就以 UK 作為地點
+      } else {
+        null
+      }
+    }.invoke()
 
     return Builder(this, chineseDate, gender, finalMonthNumForMonthStars, hour, mainHouse, bodyHouse, mainStar,
                    bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
