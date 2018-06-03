@@ -57,7 +57,8 @@ interface IZiwei {
                      place: String?,
                      gender: Gender,
                      stars: Collection<ZStar>,
-                     context: IZContextPresent,
+                     context: IZiweiModernContext,
+                     viewSettings: ViewSettings,
                      solarTermsImpl: ISolarTerms,
                      yearMonthImpl: IYearMonth,
                      dayImpl: IDay): Builder
