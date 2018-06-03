@@ -121,6 +121,7 @@ data class ViewSettings(
   }
 } // data class ViewSettings
 
+@Deprecated("")
 class ZContextPresent(
   private val zContext: ZModernContext,
   override val selfTransFour: ViewSettings.SelfTransFour = ViewSettings.SelfTransFour.SELF_TRANS_FOUR_TEXT,
