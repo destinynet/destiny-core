@@ -41,7 +41,7 @@ interface IZiweiModernContext : IZiweiContext {
                      location: ILocation,
                      place: String?,
                      gender: Gender,
-                     name: String?): Builder
+                     name: String?=null): Builder
 }
 
 class ZModernContext(

@@ -113,10 +113,6 @@ class Builder(
 
   init {
 
-//    starBranchMap.forEach { (star, branch) ->
-//      logger.info("{} -> {}", star, branch)
-//    }
-
     // 中介 map , 記錄 '[辰] : 天相,紫微' 這樣的 mapping , 此 map 的 key 不一定包含全部地支，因為可能有空宮
     val branchStarsMap: Map<Branch, List<ZStar>> = starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { it.key } }
 
@@ -195,11 +191,11 @@ class Builder(
    * @param map     地支「在該大限」與宮位的對照表
    */
   fun withFlowBig(flowBig: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap.put(FlowType.大限, flowBig)
+    this.flowBranchMap[FlowType.大限] = flowBig
 
     map.forEach { branch, house ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m.put(FlowType.大限, map[branch]!!)
+        m[FlowType.大限] = map[branch]!!
         m
       }
     }
@@ -213,10 +209,10 @@ class Builder(
    * @param map      地支「在該流年」與宮位的對照表
    */
   fun withFlowYear(flowYear: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap.put(FlowType.流年, flowYear)
+    this.flowBranchMap[FlowType.流年] = flowYear
     map.forEach { branch, house ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m.put(FlowType.流年, map[branch]!!)
+        m[FlowType.流年] = map[branch]!!
         m
       }
     }
@@ -272,10 +268,10 @@ class Builder(
    * @param map       地支「在該流月」與宮位的對照表
    */
   fun withFlowMonth(flowMonth: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap.put(FlowType.流月, flowMonth)
+    this.flowBranchMap[FlowType.流月] = flowMonth
     map.forEach { branch, house ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m.put(FlowType.流月, map[branch]!!)
+        m[FlowType.流月] = map[branch]!!
         m
       }
     }
@@ -292,7 +288,7 @@ class Builder(
     this.flowBranchMap.put(FlowType.流日, flowDay)
     map.forEach { branch, house ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m.put(FlowType.流日, map[branch]!!)
+        m[FlowType.流日] = map[branch]!!
         m
       }
     }
@@ -309,7 +305,7 @@ class Builder(
     this.flowBranchMap.put(FlowType.流時, flowHour)
     map.forEach { branch, house ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m.put(FlowType.流時, map[branch]!!)
+        m[FlowType.流時] = map[branch]!!
         m
       }
     }
@@ -346,15 +342,14 @@ class Builder(
     }
   }
 
-  fun build(): Plate {
-    return if (personModel == null) {
-      Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,
+  fun build(): IPlate {
+    val plate = Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,
             fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
             vageMap)
+    return if (personModel == null) {
+      plate
     } else {
-      PlateWithEightWords(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar,
-                          bodyStar, fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap,
-                          starStrengthMap, notes, vageMap, personModel!!)
+      PlateWithEightWords(plate , personModel!!)
     }
   }
 

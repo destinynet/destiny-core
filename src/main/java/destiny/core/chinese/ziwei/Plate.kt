@@ -13,57 +13,69 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-/** 排盤結果 , 作為 DTO  */
-/** 命盤 */
-open class Plate(
+interface IPlate {
   /** 名稱  */
-  val name: String?,
+  val name: String?
+
   /** 出生資料 , 陰曆  */
-  val chineseDate: ChineseDate,
+  val chineseDate: ChineseDate
+
   /** 出生資料 , 陽曆 , 精確到「分、秒」  */
-  val localDateTime: ChronoLocalDateTime<*>?,
+  val localDateTime: ChronoLocalDateTime<*>?
+
   /** 出生地點  */
-  val location: ILocation?,
+  val location: ILocation?
+
   /** 地點名稱  */
-  val place: String?,
+  val place: String?
+
   /** 性別  */
-  val gender: Gender,
+  val gender: Gender
+
   /** 命宮  */
-  val mainHouse: StemBranch,
+  val mainHouse: StemBranch
+
   /** 身宮  */
-  val bodyHouse: StemBranch,
+  val bodyHouse: StemBranch
+
   /** 命主  */
-  val mainStar: ZStar,
+  val mainStar: ZStar
+
   /** 身主  */
-  val bodyStar: ZStar,
+  val bodyStar: ZStar
+
   /** 五行  */
-  val fiveElement: FiveElement,
+  val fiveElement: FiveElement
+
   /** 五行第幾局  */
-  val state: Int,
+  val state: Int
 
   /** 12個宮位，每個宮位內的資料  */
-  private val houseDataSet: Set<HouseData>,
+  val houseDataSet: Set<HouseData>
 
   /**
    * 四化星 的列表
    * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
    */
-  val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>,
+  val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
 
   /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
-  val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>,
+  val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>
 
   /** 取得此命盤，包含哪些流運資訊  */
-  val flowBranchMap: Map<FlowType, StemBranch>,
+  val flowBranchMap: Map<FlowType, StemBranch>
 
   /** 星體強弱表  */
-  val starStrengthMap: Map<ZStar, Int>,
+  val starStrengthMap: Map<ZStar, Int>
 
   /** 註解列表  */
-  val notes: List<String>,
+  val notes: List<String>
 
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
-  val vageMap: Map<Int, Pair<Double, Double>>?) : Serializable {
+  val vageMap: Map<Int, Pair<Double, Double>>?
+
+
+  // =========== fields for overridden ===========
 
   /** 宮位名稱 -> 宮位資料  */
   val houseMap: Map<House, HouseData>
@@ -87,6 +99,8 @@ open class Plate(
   val branchHouseMap: Map<Branch, House>
     get() = branchFlowHouseMap.map { it -> it.key to it.value[FlowType.本命]!! }.toMap()
 
+  // =========== functions ===========
+
   /** 取得每個宮位、詳細資料 , 按照 [命宮 , 兄弟 , 夫妻...] 排序下來  */
   fun getSortedHouseDataSet(): Set<HouseData> {
     return TreeSet(houseDataSet)
@@ -106,49 +120,47 @@ open class Plate(
     return houseDataSet.firstOrNull { it.stars.contains(star) }
   }
 
-  /** 取得此顆星，的四化列表  */
+  /** 取得此顆星，的四化列表 */
   fun getTransFourOf(star: ZStar): List<Pair<FlowType, ITransFour.Value>> {
     return tranFours[star]?.map { (key, value) -> key to value }?.toList() ?: emptyList()
   }
 
-
-
-  /** 取得在此地支宮位的主星  */
+  /** 取得在此地支宮位的主星 */
   fun getMainStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .filter { it is StarMain }
   }
 
-  /** 吉星  */
+  /** 吉星 */
   fun getLuckyStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .filter { it is StarLucky }
   }
 
-  /** 凶星  */
+  /** 凶星 */
   fun getUnluckyStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .filter { it is StarUnlucky }
   }
 
-  /** 雜曜  */
+  /** 雜曜 */
   fun getMinorStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .filter { it is StarMinor }
   }
 
-  /** 博士12神煞  */
+  /** 博士12神煞 */
   fun getDoctorStarIn(branch: Branch): ZStar? {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .firstOrNull { it is StarDoctor }
   }
 
-  /** 長生12神煞  */
+  /** 長生12神煞 */
   fun getLongevityStarIn(branch: Branch): ZStar? {
     return houseDataSet
       .filter { it.stemBranch.branch == branch }
@@ -156,17 +168,80 @@ open class Plate(
       .firstOrNull { it is StarLongevity }
   }
 
-  /** 將前 12星  */
+  /** 將前 12星 */
   fun getGeneralFrontStarIn(branch: Branch): ZStar? {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .firstOrNull { it is StarGeneralFront }
   }
 
-  /** 歲前 12星  */
+  /** 歲前 12星 */
   fun getYearFrontStarIn(branch: Branch): ZStar? {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
       .firstOrNull { it is StarYearFront }
   }
 }
+
+/** 排盤結果 , 作為 DTO  */
+/** 命盤 */
+data class Plate(
+  /** 名稱  */
+  override val name: String?,
+
+  /** 出生資料 , 陰曆  */
+  override val chineseDate: ChineseDate,
+
+  /** 出生資料 , 陽曆 , 精確到「分、秒」  */
+  override val localDateTime: ChronoLocalDateTime<*>?,
+
+  /** 出生地點  */
+  override val location: ILocation?,
+
+  /** 地點名稱  */
+  override val place: String?,
+
+  /** 性別  */
+  override val gender: Gender,
+
+  /** 命宮  */
+  override val mainHouse: StemBranch,
+
+  /** 身宮  */
+  override val bodyHouse: StemBranch,
+
+  /** 命主  */
+  override val mainStar: ZStar,
+
+  /** 身主  */
+  override val bodyStar: ZStar,
+
+  /** 五行  */
+  override val fiveElement: FiveElement,
+
+  /** 五行第幾局  */
+  override val state: Int,
+
+  /** 12個宮位，每個宮位內的資料  */
+  override val houseDataSet: Set<HouseData>,
+
+  /**
+   * 四化星 的列表
+   * 存放著「這顆星」在 [本命、大限、流年、...] 的四化 結果為何
+   */
+  override val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>,
+
+  /** 取得此地支，在各個流運類型， 宮位名稱 是什麼  */
+  override val branchFlowHouseMap: Map<Branch, Map<FlowType, House>>,
+
+  /** 取得此命盤，包含哪些流運資訊  */
+  override val flowBranchMap: Map<FlowType, StemBranch>,
+
+  /** 星體強弱表  */
+  override val starStrengthMap: Map<ZStar, Int>,
+
+  /** 註解列表  */
+  override val notes: List<String>,
+
+  /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
+  override val vageMap: Map<Int, Pair<Double, Double>>?) : IPlate, Serializable

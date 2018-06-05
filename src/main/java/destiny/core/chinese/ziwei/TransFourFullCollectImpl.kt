@@ -10,6 +10,7 @@ import java.util.*
 /**
  * 紫微斗數全集、中州派（陸斌兆）、欽天門
  *
+ *
  * 五十五年二月間，神州出版社出版了《十八飛星策天紫微斗數全集》( 下簡稱《全集》) ，由周應祥發行，
  * 著作人是大宋華山希夷陳圖南著；隱逸玉蟾白先生增。
  *
@@ -65,7 +66,7 @@ class TransFourFullCollectImpl : TransFourAbstractImpl() {
       , Triple(己, 科, StarMain.天梁)
       , Triple(己, 忌, StarLucky.文曲)
 
-      // 庚 有差別
+      // 庚 有差別 (比較正確)
       , Triple(庚, 祿, StarMain.太陽)
       , Triple(庚, 權, StarMain.武曲)
       , Triple(庚, 科, StarMain.太陰)
@@ -84,7 +85,7 @@ class TransFourFullCollectImpl : TransFourAbstractImpl() {
 
       , Triple(癸, 祿, StarMain.破軍)
       , Triple(癸, 權, StarMain.巨門)
-      , Triple(癸, 科, StarMain.太陰)
+      , Triple(癸, 科, StarMain.太陰) // 不正確
       , Triple(癸, 忌, StarMain.貪狼)
     )
   }

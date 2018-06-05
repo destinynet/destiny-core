@@ -8,7 +8,7 @@ import destiny.core.chinese.ziwei.ITransFour.Value.*
 import java.util.*
 
 /**
- * 紫雲派
+ * 紫雲派 ==> 改「全集」派
  */
 
 

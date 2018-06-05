@@ -52,6 +52,7 @@ interface IZiwei {
                     context: IZiweiContext): Builder
 
   /** 輸入現代化的資料，計算本命盤  */
+  @Deprecated("")
   fun getModernPlate(lmt: ChronoLocalDateTime<*>,
                      location: ILocation,
                      place: String?,
@@ -180,7 +181,6 @@ interface IZiwei {
 
     /**
      * 左下角，寅宮 的天干
-     * TODO : should be private after Java9
      */
     fun getStemOf寅(year: Stem): Stem {
       return when (year) {

@@ -49,6 +49,7 @@ class TransFourDivineImpl : TransFourAbstractImpl() {
       , Triple(丁, 科, StarMain.天機)
       , Triple(丁, 忌, StarMain.巨門)
 
+      // 戊 有差別
       , Triple(戊, 祿, StarMain.貪狼)
       , Triple(戊, 權, StarMain.太陰)
       , Triple(戊, 科, StarLucky.右弼)

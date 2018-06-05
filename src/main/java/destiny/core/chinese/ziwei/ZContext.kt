@@ -86,12 +86,6 @@ interface IZiweiContext {
   /** 紅豔 */
   val redBeauty: RedBeauty
 
-//  /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
-//  val chineseDateImpl: IChineseDate?
-//
-//  /** 計算虛歲 的實作 (可為空) */
-//  val intAgeImpl : IIntAge?
-
 
   /**
    * 本命盤
@@ -143,7 +137,7 @@ enum class YearType : Descriptive {
 
 /** [StarUnlucky.火星] ,  [StarUnlucky.鈴星] 設定  */
 enum class FireBell : Descriptive {
-  /** [StarUnlucky.fun火星_全集] , [StarUnlucky.fun鈴星_全集] : (年支、時支) -> 地支  */
+  /** [StarUnlucky.fun火星_全集] , [StarUnlucky.fun鈴星_全集] : (年支、時支) -> 地支 (福耕老師論點) */
   FIREBELL_COLLECT,
 
   /** [StarUnlucky.fun火星_全書] , [StarUnlucky.fun鈴星_全書] : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮  */
@@ -184,10 +178,10 @@ enum class HurtAngel : Descriptive {
 
 /** 紅艷  */
 enum class RedBeauty : Descriptive {
-  /** [StarMinor.fun紅艷_甲乙相同]  */
+  /** [StarMinor.fun紅艷_甲乙相異]  */
   RED_BEAUTY_DIFF,
 
-  /** [StarMinor.fun紅艷_甲乙相異]  */
+  /** [StarMinor.fun紅艷_甲乙相同]  */
   RED_BEAUTY_SAME;
 
   override fun getTitle(locale: Locale): String {
@@ -221,10 +215,10 @@ class ZContext(
   override val mainStarsAlgo: MonthAlgo?,
 
   /** 月系星，如何計算月令  */
-  override val monthStarsAlgo: MonthAlgo,
+  override val monthStarsAlgo: MonthAlgo = MonthAlgo.MONTH_FIXED_THIS,
 
   /** 年系星系 , 初一為界，還是 [destiny.core.calendar.SolarTerms.立春] 為界 */
-  override val yearType: YearType,
+  override val yearType: YearType = YearType.YEAR_LUNAR,
 
   /** 宮位名字  */
   override val houseSeqImpl: IHouseSeq,
@@ -236,10 +230,10 @@ class ZContext(
   override val tianyiImpl: ITianyi,
 
   /** [StarUnlucky.火星] ,  [StarUnlucky.鈴星] 設定  */
-  override val fireBell: FireBell,
+  override val fireBell: FireBell = FireBell.FIREBELL_COLLECT,
 
   /** [StarMinor.天傷]、 [StarMinor.天使] 計算方式  */
-  override val hurtAngel: HurtAngel,
+  override val hurtAngel: HurtAngel = HurtAngel.HURT_ANGEL_FIXED,
 
   /** 四化設定  */
   override val transFourImpl: ITransFour,
@@ -266,7 +260,7 @@ class ZContext(
   override val bigRangeImpl: IBigRange,
 
   /** 紅豔 */
-  override val redBeauty: RedBeauty,
+  override val redBeauty: RedBeauty = RedBeauty.RED_BEAUTY_DIFF,
 
   /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
   private val chineseDateImpl: IChineseDate? = null,
