@@ -193,7 +193,7 @@ class Builder(
   fun withFlowBig(flowBig: StemBranch, map: Map<Branch, House>): Builder {
     this.flowBranchMap[FlowType.大限] = flowBig
 
-    map.forEach { branch, house ->
+    map.forEach { branch, _ ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
         m[FlowType.大限] = map[branch]!!
         m
@@ -210,7 +210,7 @@ class Builder(
    */
   fun withFlowYear(flowYear: StemBranch, map: Map<Branch, House>): Builder {
     this.flowBranchMap[FlowType.流年] = flowYear
-    map.forEach { branch, house ->
+    map.forEach { branch, _ ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
         m[FlowType.流年] = map[branch]!!
         m
@@ -269,7 +269,7 @@ class Builder(
    */
   fun withFlowMonth(flowMonth: StemBranch, map: Map<Branch, House>): Builder {
     this.flowBranchMap[FlowType.流月] = flowMonth
-    map.forEach { branch, house ->
+    map.forEach { branch, _ ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
         m[FlowType.流月] = map[branch]!!
         m
@@ -285,8 +285,8 @@ class Builder(
    * @param map     地支「在該流日」與宮位的對照表
    */
   fun withFlowDay(flowDay: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap.put(FlowType.流日, flowDay)
-    map.forEach { branch, house ->
+    this.flowBranchMap[FlowType.流日] = flowDay
+    map.forEach { branch, _ ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
         m[FlowType.流日] = map[branch]!!
         m
@@ -302,8 +302,8 @@ class Builder(
    * @param map      地支「在該流時」與宮位的對照表
    */
   fun withFlowHour(flowHour: StemBranch, map: Map<Branch, House>): Builder {
-    this.flowBranchMap.put(FlowType.流時, flowHour)
-    map.forEach { branch, house ->
+    this.flowBranchMap[FlowType.流時] = flowHour
+    map.forEach { branch, _ ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
         m[FlowType.流時] = map[branch]!!
         m
@@ -343,7 +343,8 @@ class Builder(
   }
 
   fun build(): IPlate {
-    val plate = Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,
+    val plate =
+      Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,
             fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
             vageMap)
     return if (personModel == null) {

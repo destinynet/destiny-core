@@ -3,12 +3,6 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.Gender
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.ISolarTerms
-import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.eightwords.IDay
-import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement.*
@@ -18,51 +12,50 @@ import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.火星
 import destiny.core.chinese.ziwei.StarUnlucky.鈴星
 import org.slf4j.LoggerFactory
-import java.time.chrono.ChronoLocalDateTime
 
 
 /** 紫微斗數  */
 interface IZiwei {
 
 
-  /**
-   * 計算本命盤
-   * @param mainAndBody 預先計算過的命宮、身宮地支
-   * @param preFinalMonthNumForMainStars 預先計算好的「最終月數」 for 14顆主星 ([StarMain]])
-   * @param lunarYear          陰曆的年干支
-   * @param solarYear          「節氣」的年干支
-   * @param lunarMonth         陰曆的月份
-   * @param monthBranch        「節氣」的月支
-   * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
-   */
-  fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?,
-                    preFinalMonthNumForMainStars: Int?,
-                    cycle: Int,
-                    lunarYear: StemBranch,
-                    solarYear: StemBranch,
-                    lunarMonth: Int,
-                    leapMonth: Boolean,
-                    monthBranch: Branch,
-                    solarTerms: SolarTerms,
-                    lunarDays: Int,
-                    hour: Branch,
-                    stars: Collection<ZStar>,
-                    gender: Gender,
-                    optionalVageMap: Map<Int, Pair<Double, Double>>?,
-                    context: IZiweiContext): Builder
+//  /**
+//   * 計算本命盤
+//   * @param mainAndBody 預先計算過的命宮、身宮地支
+//   * @param preFinalMonthNumForMainStars 預先計算好的「最終月數」 for 14顆主星 ([StarMain]])
+//   * @param lunarYear          陰曆的年干支
+//   * @param solarYear          「節氣」的年干支
+//   * @param lunarMonth         陰曆的月份
+//   * @param monthBranch        「節氣」的月支
+//   * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
+//   */
+//  fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?,
+//                    preFinalMonthNumForMainStars: Int?,
+//                    cycle: Int,
+//                    lunarYear: StemBranch,
+//                    solarYear: StemBranch,
+//                    lunarMonth: Int,
+//                    leapMonth: Boolean,
+//                    monthBranch: Branch,
+//                    solarTerms: SolarTerms,
+//                    lunarDays: Int,
+//                    hour: Branch,
+//                    stars: Collection<ZStar>,
+//                    gender: Gender,
+//                    optionalVageMap: Map<Int, Pair<Double, Double>>?,
+//                    context: IZiweiContext): Builder
 
-  /** 輸入現代化的資料，計算本命盤  */
-  @Deprecated("")
-  fun getModernPlate(lmt: ChronoLocalDateTime<*>,
-                     location: ILocation,
-                     place: String?,
-                     gender: Gender,
-                     stars: Collection<ZStar>,
-                     context: IZiweiModernContext,
-                     viewSettings: ViewSettings,
-                     solarTermsImpl: ISolarTerms,
-                     yearMonthImpl: IYearMonth,
-                     dayImpl: IDay): Builder
+//  /** 輸入現代化的資料，計算本命盤  */
+//  @Deprecated("")
+//  fun getModernPlate(lmt: ChronoLocalDateTime<*>,
+//                     location: ILocation,
+//                     place: String?,
+//                     gender: Gender,
+//                     stars: Collection<ZStar>,
+//                     context: IZiweiModernContext,
+//                     viewSettings: ViewSettings,
+//                     solarTermsImpl: ISolarTerms,
+//                     yearMonthImpl: IYearMonth,
+//                     dayImpl: IDay): Builder
 
   /** 計算 大限盤  */
   fun getFlowBig(builder: Builder, context: IZiweiContext, flowBig: StemBranch): Builder
