@@ -6,6 +6,11 @@ import destiny.core.chinese.StemBranch.甲子
 import destiny.core.chinese.StemBranch.癸亥
 import destiny.tools.ArrayTools
 
+interface IStemBranch : IStemBranchOptional {
+  override val stem : Stem
+  override val branch : Branch
+}
+
 enum class StemBranchCycle(val sb:StemBranch) {
   甲子(StemBranch.甲子),
   甲寅(StemBranch.甲寅),
@@ -18,7 +23,8 @@ enum class StemBranchCycle(val sb:StemBranch) {
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
-enum class StemBranch(override val stem: Stem, override val branch: Branch) : IStemBranchOptional , Comparable<StemBranch> {
+enum class StemBranch(override val stem: Stem, override val branch: Branch) : IStemBranchOptional , IStemBranch,
+  Comparable<StemBranch> {
     甲子(甲, 子),
     乙丑(乙, 丑),
     丙寅(丙, 寅),

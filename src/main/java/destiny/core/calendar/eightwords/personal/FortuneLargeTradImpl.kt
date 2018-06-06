@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords.personal
 
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
-import destiny.core.chinese.StemBranch
+import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -27,7 +27,7 @@ class FortuneLargeTradImpl : IPersonFortuneLarge , Serializable {
   override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
                              location: ILocation,
                              gender: Gender,
-                             targetGmt: ChronoLocalDateTime<*>): StemBranch {
+                             targetGmt: ChronoLocalDateTime<*>): IStemBranch {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 }

@@ -27,7 +27,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
   @Transient
   private val cacheThreadLocal = ThreadLocal<Pair<CacheKey , EightWords>>()
 
-  override fun getEightWords(gmtJulDay: Double, loc: ILocation): EightWords {
+  override fun getEightWords(gmtJulDay: Double, loc: ILocation): IEightWords {
 
     fun inner(): EightWords {
       val year = yearMonthImpl.getYear(gmtJulDay, loc)
@@ -67,7 +67,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
         4, 9 -> Stem[Branch.getIndex(時支) + 8]
         else -> throw AssertionError("Error")
       }
-      return EightWords(year, month, day, StemBranch.get(時干, 時支))
+      return EightWords(year, month, day, StemBranch[時干, 時支])
     }
 
     val key = CacheKey(gmtJulDay , loc)
@@ -93,7 +93,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
   /**
    * 計算八字 , 不用轉換，直接以 LMT 來計算即可！
    */
-  override fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: ILocation): EightWords {
+  override fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: ILocation): IEightWords {
 
     val year = yearMonthImpl.getYear(lmt, loc)
     val month = yearMonthImpl.getMonth(lmt, loc)

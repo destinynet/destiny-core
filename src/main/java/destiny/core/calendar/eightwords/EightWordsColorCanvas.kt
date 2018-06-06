@@ -8,6 +8,7 @@ import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.personal.IHiddenStems
 import destiny.core.calendar.eightwords.personal.ReactionUtil
 import destiny.core.chinese.Branch
+import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.tools.AlignTools
@@ -179,7 +180,7 @@ class EightWordsColorCanvas(
    */
   val eightWordsColorCanvas: ColorCanvas
     get() {
-      val eightWords: EightWords = model.eightWords
+      val eightWords: IEightWords = model.eightWords
 
       val pillars = listOf(getOnePillar(eightWords.year, "年", eightWords.day.stem),
                            getOnePillar(eightWords.month, "月", eightWords.day.stem),
@@ -213,7 +214,7 @@ class EightWordsColorCanvas(
    * @param stemBranch
    * @param pillarName "年" or "月" or "日" or "時"
    */
-  private fun getOnePillar(stemBranch: StemBranch, pillarName: String, dayStem: Stem): ColorCanvas {
+  private fun getOnePillar(stemBranch: IStemBranch, pillarName: String, dayStem: Stem): ColorCanvas {
     val pillar = ColorCanvas(10, 6, ChineseStringTools.NULL_CHAR, null, null)
     pillar.setText(pillarName, 1, 3)
     pillar.setText("柱", 2, 3)

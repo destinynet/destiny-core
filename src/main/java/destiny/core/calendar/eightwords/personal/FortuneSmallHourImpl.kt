@@ -9,6 +9,7 @@ import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -45,7 +46,7 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
 
   /** 內定實作法 : 透過 [IIntAge.getRangesMap] 取得歲數 map , 套上干支 */
   private fun implByRangesMap(gmtJulDay: Double,
-                              eightWords: EightWords,
+                              eightWords: IEightWords,
                               gender: Gender,
                               location: ILocation,
                               count: Int,

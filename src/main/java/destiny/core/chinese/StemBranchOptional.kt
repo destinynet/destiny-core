@@ -7,14 +7,17 @@ import destiny.tools.ArrayTools
 import java.io.Serializable
 
 
+/**
+ * 干、支 可其中一個為空，也可兩個都為空
+ */
 interface IStemBranchOptional {
   val stem: Stem?
   val branch: Branch?
 }
 
-data class StemBranchOptional internal constructor(
+data class StemBranchOptional(
   override val stem: Stem?,
-  override val branch: Branch?) : IStemBranchOptional , Serializable {
+  override val branch: Branch?) : IStemBranchOptional, Serializable {
 
 
   val index: Int?
@@ -30,12 +33,6 @@ data class StemBranchOptional internal constructor(
     return index?.let {
       get(it + n)
     }
-
-//    return if (index != null) {
-//      get(index + n)
-//    } else {
-//      null
-//    }
   }
 
   override fun toString(): String {
@@ -107,8 +104,8 @@ data class StemBranchOptional internal constructor(
 
     private fun check(stem: Stem?, branch: Branch?) {
       if (stem != null && branch != null) {
-        if (stem.booleanValue != SimpleBranch.getBooleanValue(branch)) {
-          throw RuntimeException("Stem/Branch combination illegal ! $stem cannot be combined with $branch")
+        require(stem.booleanValue == SimpleBranch.getBooleanValue(branch)) {
+          "Stem/Branch combination illegal ! $stem cannot be combined with $branch"
         }
       }
     }

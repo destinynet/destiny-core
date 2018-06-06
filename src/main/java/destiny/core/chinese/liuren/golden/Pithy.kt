@@ -6,7 +6,7 @@ package destiny.core.chinese.liuren.golden
 import destiny.astrology.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 interface IPithyModel {
 
   /** 八字  */
-  val eightWords: EightWords
+  val eightWords: IEightWords
 
   /** 地分  */
   val direction: Branch
@@ -67,7 +67,7 @@ interface IPithyModel {
 data class Pithy(
 
   /** 八字  */
-  override val eightWords: EightWords,
+  override val eightWords: IEightWords,
 
   /** 地分  */
   override val direction: Branch,

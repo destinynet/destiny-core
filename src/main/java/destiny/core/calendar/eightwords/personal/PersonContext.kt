@@ -12,6 +12,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
@@ -68,7 +69,7 @@ class PersonContext(
     val viewChineseDate: ChineseDate = chineseDateImpl.getChineseDate(viewGmt.toLocalDate())
     val pcm = getPersonContextModel(lmt, location, place, gender, name)
     // 目前所處的大運
-    val selectedFortuneLarge: StemBranch = fortuneLargeImpl.getStemBranch(lmt, location, gender, viewGmt)
+    val selectedFortuneLarge: IStemBranch = fortuneLargeImpl.getStemBranch(lmt, location, gender, viewGmt)
     return PersonPresentModel(pcm, viewGmt, viewChineseDate, selectedFortuneLarge)
   }
 }

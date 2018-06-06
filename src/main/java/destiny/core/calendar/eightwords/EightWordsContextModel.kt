@@ -15,7 +15,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 /** 純粹八字（不含「人」的資料） */
 interface IEightWordsContextModel {
-  val eightWords: EightWords
+  val eightWords: IEightWords
 
   val lmt: ChronoLocalDateTime<*>
 
@@ -74,7 +74,7 @@ interface IEightWordsContext : IEightWordsFactory {
  * Note : 仍然不包含「人」的資訊（性別、大運、歲數...等）
  */
 data class EightWordsContextModel(
-  override val eightWords: EightWords,
+  override val eightWords: IEightWords,
   override val lmt: ChronoLocalDateTime<*>,
   override val location: ILocation,
   /** 地點名稱  */

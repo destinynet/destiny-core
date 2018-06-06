@@ -7,9 +7,7 @@ package destiny.core.calendar.eightwords.personal
 
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
-
 import java.io.Serializable
 
 /**
@@ -18,7 +16,7 @@ import java.io.Serializable
 class FortuneDirectionDefaultImpl(val eightWordsImpl : IEightWordsFactory) : IFortuneDirection, Serializable {
 
   override fun isForward(gmtJulDay: Double, loc: ILocation , gender: Gender): Boolean {
-    val eightWords: EightWords = eightWordsImpl.getEightWords(gmtJulDay, loc)
+    val eightWords = eightWordsImpl.getEightWords(gmtJulDay, loc)
 
     return gender === Gender.男 && eightWords.year.stem.booleanValue
       || gender === Gender.女 && !eightWords.year.stem.booleanValue

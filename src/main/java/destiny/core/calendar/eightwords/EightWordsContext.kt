@@ -81,7 +81,7 @@ class EightWordsContext(
    */
   private fun getRisingStemBranch(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
-                                  eightWords: EightWords,
+                                  eightWords: IEightWords,
                                   risingSignImpl: IRisingSign): StemBranch {
     // 命宮地支
     val risingBranch = risingSignImpl.getRisingSign(lmt, location, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch

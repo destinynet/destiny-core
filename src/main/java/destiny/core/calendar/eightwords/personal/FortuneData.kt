@@ -3,14 +3,13 @@
  */
 package destiny.core.calendar.eightwords.personal
 
-import destiny.core.chinese.StemBranch
-
+import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 
 /** 一柱大運的相關資訊。包含上方文字，干支...  */
 data class FortuneData(
   /** 大運干支  */
-  val stemBranch: StemBranch,
+  val stemBranch: IStemBranch,
   /** 起運時刻  */
   val startFortuneGmtJulDay: Double,
   /** 終運時刻  */

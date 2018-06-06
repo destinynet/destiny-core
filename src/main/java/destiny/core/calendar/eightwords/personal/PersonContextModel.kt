@@ -12,6 +12,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -38,7 +39,7 @@ interface IPersonContextModel : IEightWordsContextModel {
    * @param targetGmt 目標時刻 (in GMT)
    * @return 月大運干支
    */
-  fun getStemBranchOfFortuneMonth(targetGmt: ChronoLocalDateTime<*>): StemBranch? {
+  fun getStemBranchOfFortuneMonth(targetGmt: ChronoLocalDateTime<*>): IStemBranch? {
     val gmtJulDay = TimeTools.getGmtJulDay(targetGmt)
 
     return if (gmtJulDay < fortuneDataLarges[0].startFortuneGmtJulDay)
@@ -71,7 +72,7 @@ interface IPersonFortuneLarge {
   fun getStemBranch(lmt: ChronoLocalDateTime<*>,
                     location: ILocation,
                     gender: Gender,
-                    targetGmt: ChronoLocalDateTime<*>): StemBranch
+                    targetGmt: ChronoLocalDateTime<*>): IStemBranch
 }
 
 
@@ -140,7 +141,7 @@ interface IPersonPresentModel : IPersonContextModel {
   val viewChineseDate: ChineseDate
 
   /** 目前所處於的大運 */
-  val selectedFortuneLarge: StemBranch
+  val selectedFortuneLarge: IStemBranch
 
 }
 
@@ -148,7 +149,7 @@ data class PersonPresentModel(
   private val personContextModel: IPersonContextModel,
   override val viewGmt: ChronoLocalDateTime<*>,
   override val viewChineseDate: ChineseDate,
-  override val selectedFortuneLarge: StemBranch) :
+  override val selectedFortuneLarge: IStemBranch) :
   IPersonPresentModel, IPersonContextModel by personContextModel, Serializable
 
 interface IPersonPresentContext : IPersonContext {

@@ -50,7 +50,7 @@ interface IZiweiContext {
   val houseSeqImpl: IHouseSeq
 
   /** 上一個月有幾日 */
-  val prevMonthDaysImpl : IPrevMonthDays
+  val prevMonthDaysImpl: IPrevMonthDays
 
   /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
   val tianyiImpl: ITianyi
@@ -121,8 +121,8 @@ interface IZiweiContext {
    * @return 傳回四化 (若有的話)
    */
   fun getTrans4Map(stars: Collection<ZStar>,
-                           flowType: FlowType,
-                           flowStem: Stem): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
+                   flowType: FlowType,
+                   flowStem: Stem): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
     return stars.map { star ->
       val key = star to flowType
       val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
@@ -186,7 +186,12 @@ interface IZiweiContext {
   }
 
   /** 計算 流日盤  */
-  fun getFlowDay(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int): Builder {
+  fun getFlowDay(builder: Builder,
+                 flowBig: StemBranch,
+                 flowYear: StemBranch,
+                 flowMonth: StemBranch,
+                 flowDay: StemBranch,
+                 flowDayNum: Int): Builder {
     val 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
     val 流日命宮 = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, 流月命宮)
@@ -204,7 +209,13 @@ interface IZiweiContext {
   }
 
   /** 流時盤  */
-  fun getFlowHour(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch): Builder {
+  fun getFlowHour(builder: Builder,
+                  flowBig: StemBranch,
+                  flowYear: StemBranch,
+                  flowMonth: StemBranch,
+                  flowDay: StemBranch,
+                  flowDayNum: Int,
+                  flowHour: StemBranch): Builder {
     val 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
     val 流日命宮 = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, 流月命宮)
     val 流時命宮 = flowHourImpl.getFlowHour(flowHour.branch, 流日命宮)
@@ -433,11 +444,14 @@ class ZContext(
 
     if (mainBodyHouseImpl is MainBodyHouseTradImpl   // 如果主星是以傳統方式計算
       && lunarMonth != finalMonthNumForMainStars             // 而且最終月份數不一樣
-      ) {
-      logger.warn("命身宮設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", mainStarsAlgo, if (leapMonth) "閏" else "", lunarMonth, finalMonthNumForMainStars)
+    ) {
+      logger.warn("命身宮設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", mainStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
+                  finalMonthNumForMainStars)
       when {
         IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS === mainStarsAlgo -> // 命身宮用節氣計算，故用 {0}月={1} 而非 {2}{3}月
-          notesBuilders.add(Pair("mainStarsAlgo_month_solar_terms", arrayOf(monthBranch, finalMonthNumForMainStars, if (leapMonth) "閏" else "", lunarMonth)))
+          notesBuilders.add(Pair("mainStarsAlgo_month_solar_terms",
+                                 arrayOf(monthBranch, finalMonthNumForMainStars, if (leapMonth) "閏" else "",
+                                         lunarMonth)))
         IFinalMonthNumber.MonthAlgo.MONTH_LEAP_NEXT === mainStarsAlgo -> // 命身宮於閏{0}月視為下月={1}
           notesBuilders.add(Pair("mainStarsAlgo_month_leap_next", arrayOf<Any>(lunarMonth, finalMonthNumForMainStars)))
         IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15 === mainStarsAlgo -> // 命身宮於閏月月中切割,故用{0}月
@@ -446,12 +460,16 @@ class ZContext(
     }
 
     if (lunarMonth != finalMonthNumForMonthStars) {
-      logger.warn("月系星的設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", monthStarsAlgo, if (leapMonth) "閏" else "", lunarMonth, finalMonthNumForMonthStars)
+      logger.warn("月系星的設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", monthStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
+                  finalMonthNumForMonthStars)
       when {
         IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS === monthStarsAlgo -> // 月系星以節氣計算，故月用 {0}={1} 而非 {2}
-          notesBuilders.add(Pair("monthStarsAlgo_solar_month", arrayOf(monthBranch, finalMonthNumForMonthStars, if (leapMonth) "閏" else "", lunarMonth)))
+          notesBuilders.add(Pair("monthStarsAlgo_solar_month",
+                                 arrayOf(monthBranch, finalMonthNumForMonthStars, if (leapMonth) "閏" else "",
+                                         lunarMonth)))
         IFinalMonthNumber.MonthAlgo.MONTH_LEAP_NEXT === monthStarsAlgo -> // 月系星於閏{0}月視為下月{1}
-          notesBuilders.add(Pair("monthStarsAlgo_month_leap_next", arrayOf<Any>(lunarMonth, finalMonthNumForMonthStars)))
+          notesBuilders.add(
+            Pair("monthStarsAlgo_month_leap_next", arrayOf<Any>(lunarMonth, finalMonthNumForMonthStars)))
         IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15 === monthStarsAlgo -> // 月系星於閏月月中切割,故用{0}月
           notesBuilders.add(Pair("monthStarsAlgo_month_leap_split15", arrayOf<Any>(finalMonthNumForMonthStars)))
       }
@@ -529,20 +547,21 @@ class ZContext(
 
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
-    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> = branchHouseMap.keys.map { sb: StemBranch ->
-      val m = mutableSetOf<Triple<ITransFour.Value, ZStar, Branch>>()
-      ITransFour.Value.values().map { value: ITransFour.Value ->
-        val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
-        if (starBranchMap[flyStar] == null) {
-          // TODO 通常不會有空宮 , 這裡就不做事
-          logger.debug("cannot find flyStar[{} ({})] from starBranchMap : ", flyStar, flyStar.javaClass.name)
-          starBranchMap.forEach { star, branch -> logger.debug("\t{}->{}", star, branch) }
-        } else {
-          m.add(Triple(value, flyStar, starBranchMap[flyStar]!!))
+    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> =
+      branchHouseMap.keys.map { sb: StemBranch ->
+        val m = mutableSetOf<Triple<ITransFour.Value, ZStar, Branch>>()
+        ITransFour.Value.values().map { value: ITransFour.Value ->
+          val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
+          if (starBranchMap[flyStar] == null) {
+            // TODO 通常不會有空宮 , 這裡就不做事
+            logger.debug("cannot find flyStar[{} ({})] from starBranchMap : ", flyStar, flyStar.javaClass.name)
+            starBranchMap.forEach { star, branch -> logger.debug("\t{}->{}", star, branch) }
+          } else {
+            m.add(Triple(value, flyStar, starBranchMap[flyStar]!!))
+          }
         }
-      }
-      sb to m
-    }.toMap()
+        sb to m
+      }.toMap()
 
 
     // 星體強弱表
@@ -591,16 +610,16 @@ class ZContext(
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-//  private fun getTrans4Map(stars: Collection<ZStar>,
-//                           flowType: FlowType,
-//                           flowStem: Stem): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
-//    return stars.map { star ->
-//      val key = star to flowType
-//      val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
-//      key to value
-//    }.filter { it.second != null }
-//      .map { it.first to it.second!! }
-//      .toMap()
-//  }
+  //  private fun getTrans4Map(stars: Collection<ZStar>,
+  //                           flowType: FlowType,
+  //                           flowStem: Stem): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
+  //    return stars.map { star ->
+  //      val key = star to flowType
+  //      val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
+  //      key to value
+  //    }.filter { it.second != null }
+  //      .map { it.first to it.second!! }
+  //      .toMap()
+  //  }
 
 } // ZContext

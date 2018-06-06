@@ -9,6 +9,7 @@ import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.*
 import destiny.core.chinese.liuren.General
@@ -21,7 +22,7 @@ interface IPithyContext {
 
   fun getModel(direction: Branch,
                clockwise: Clockwise,
-               ew: EightWords,
+               ew: IEightWords,
                月將: Branch,
                dayNight: DayNight): IPithyModel
 
@@ -52,7 +53,7 @@ class PithyContext(
 
   override fun getModel(direction: Branch,
                         clockwise: Clockwise,
-                        ew: EightWords,
+                        ew: IEightWords,
                         月將: Branch,
                         dayNight: DayNight): IPithyModel {
     // 天乙貴人(起點)

@@ -13,9 +13,9 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IEightWordsFactory {
 
-  fun getEightWords(gmtJulDay: Double, loc: ILocation): EightWords
+  fun getEightWords(gmtJulDay: Double, loc: ILocation): IEightWords
 
-  fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: ILocation): EightWords {
+  fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: ILocation): IEightWords {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getEightWords(gmtJulDay, loc)
   }
