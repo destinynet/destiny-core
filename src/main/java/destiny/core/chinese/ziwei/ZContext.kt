@@ -204,14 +204,14 @@ interface IZiweiContext {
   }
 
   /** 流時盤  */
-  fun getFlowHour(builder: Builder, context: IZiweiContext, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch): Builder {
+  fun getFlowHour(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch): Builder {
     val 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
     val 流日命宮 = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, 流月命宮)
     val 流時命宮 = flowHourImpl.getFlowHour(flowHour.branch, 流日命宮)
 
     val branchHouseMap = Branch.values().map { branch ->
       val steps = branch.getAheadOf(流時命宮)
-      val house = context.houseSeqImpl.prev(House.命宮, steps)
+      val house = houseSeqImpl.prev(House.命宮, steps)
       branch to house
     }.toMap()
 

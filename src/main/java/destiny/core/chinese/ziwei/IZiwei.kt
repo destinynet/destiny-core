@@ -17,24 +17,6 @@ import org.slf4j.LoggerFactory
 /** 紫微斗數  */
 interface IZiwei {
 
-  /** 計算 大限盤  */
-  fun getFlowBig(builder: Builder, context: IZiweiContext, flowBig: StemBranch): Builder
-
-
-  /** 計算 流年盤  */
-  fun getFlowYear(builder: Builder, context: IZiweiContext, flowBig: StemBranch, flowYear: StemBranch): Builder
-
-  /** 計算 流月盤 TODO : 流月必須要考慮 「是否閏月」 , 可能要拆成 Integer + Boolean  */
-  fun getFlowMonth(builder: Builder, context: IZiweiContext, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch): Builder
-
-  /** 計算 流日盤  */
-  fun getFlowDay(builder: Builder, context: IZiweiContext,
-                 flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int): Builder
-
-  /** 計算 流時盤  */
-  fun getFlowHour(builder: Builder, context: IZiweiContext,
-                  flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch, flowDay: StemBranch, flowDayNum: Int, flowHour: StemBranch): Builder
-
   companion object {
 
     val logger = LoggerFactory.getLogger(IZiwei::class.java)
