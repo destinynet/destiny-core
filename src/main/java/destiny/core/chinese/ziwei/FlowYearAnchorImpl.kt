@@ -11,6 +11,6 @@ import java.io.Serializable
 class FlowYearAnchorImpl : IFlowYear, Serializable {
 
   override fun getFlowYear(flowYearBranch: Branch, birthMonth: Int, birthHour: Branch): Branch {
-    return IZiwei.getFlowYearAnchor(flowYearBranch, birthMonth, birthHour)
+    return Ziwei.getFlowYearAnchor(flowYearBranch, birthMonth, birthHour)
   }
 }

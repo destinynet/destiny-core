@@ -458,39 +458,39 @@ class ZContext(
     }
 
     // 寅 的天干
-    val stemOf寅 = IZiwei.getStemOf寅(lunarYear.stem)
+    val stemOf寅 = Ziwei.getStemOf寅(lunarYear.stem)
 
     // 命宮所參考的「年干」，同時依據「年系星」的類型來決定
     val year: StemBranch = if (yearType == YearType.YEAR_LUNAR) lunarYear else solarYear
 
     // 命宮地支
-    val mainBranch = mainAndBody?.first ?: IZiwei.getMainHouseBranch(finalMonthNumForMainStars, hour)
-    val mainHouse = IZiwei.getStemBranchOf(mainBranch, stemOf寅)
+    val mainBranch = mainAndBody?.first ?: Ziwei.getMainHouseBranch(finalMonthNumForMainStars, hour)
+    val mainHouse = Ziwei.getStemBranchOf(mainBranch, stemOf寅)
     logger.trace("命宮在 : {}", mainHouse)
 
     // 身宮地支
-    val bodyBranch = mainAndBody?.second ?: IZiwei.getBodyHouseBranch(finalMonthNumForMainStars, hour)
-    val bodyHouse = IZiwei.getStemBranchOf(bodyBranch, stemOf寅)
+    val bodyBranch = mainAndBody?.second ?: Ziwei.getBodyHouseBranch(finalMonthNumForMainStars, hour)
+    val bodyHouse = Ziwei.getStemBranchOf(bodyBranch, stemOf寅)
     logger.trace("身宮在 : {}", bodyHouse)
 
     // 取命主 : 命宮所在地支安星
-    val mainStar = IZiwei.getMainStar(mainHouse.branch)
+    val mainStar = Ziwei.getMainStar(mainHouse.branch)
 
     // 取身主 : 以出生年之地支安星
-    val bodyStar = IZiwei.getBodyStar(lunarYear.branch)
+    val bodyStar = Ziwei.getBodyStar(lunarYear.branch)
 
 
     // 12宮 順序 以及 名稱
     //val houseSeqImpl = context.houseSeqImpl
 
     /** 由命宮干支的納音 [NaYin] 來決定 五行+局數(Int) , 例如 水 2 局 */
-    val (五行, 五行局) = IZiwei.getMainDesc(mainHouse)
+    val (五行, 五行局) = Ziwei.getMainDesc(mainHouse)
 
     // 干支 -> 宮位 的 mapping
     val branchHouseMap: Map<StemBranch, House> = houseSeqImpl.houses.map { house ->
       // 要計算的宮位，比命宮，超前幾步
       val steps = houseSeqImpl.getAheadOf(house, House.命宮)
-      val sb = IZiwei.getStemBranchOf(mainHouse.branch.prev(steps), stemOf寅)
+      val sb = Ziwei.getStemBranchOf(mainHouse.branch.prev(steps), stemOf寅)
       sb to house
     }.toMap()
 

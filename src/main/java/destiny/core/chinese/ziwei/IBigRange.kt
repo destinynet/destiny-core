@@ -29,10 +29,10 @@ interface IBigRange : Descriptive {
   fun getSortedFlowBigVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<StemBranch, Pair<Int, Int>> {
     val map = getFlowBigVageMap(branchHouseMap, set, birthYear, gender, houseSeq)
 
-    val stemOf寅 = IZiwei.getStemOf寅(birthYear.stem)
+    val stemOf寅 = Ziwei.getStemOf寅(birthYear.stem)
 
     return map.entries.map { entry ->
-      val sb = IZiwei.getStemBranchOf(entry.key, stemOf寅)
+      val sb = Ziwei.getStemBranchOf(entry.key, stemOf寅)
       sb to entry.value
     }.sortedBy { (_ , pair) -> pair.first  }.toMap()
   }

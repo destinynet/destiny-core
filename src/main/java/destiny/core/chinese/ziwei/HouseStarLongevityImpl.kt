@@ -37,9 +37,9 @@ class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<Fiv
                          prevMonthDays: Int,
                          predefinedMainHouse: Branch?,
                          context: IZiweiContext): Branch {
-    val stemOf寅 = IZiwei.getStemOf寅(if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
+    val stemOf寅 = Ziwei.getStemOf寅(if (context.yearType == YearType.YEAR_LUNAR) lunarYear.stem else solarYear.stem)
 
-    val mainHouse = predefinedMainHouse ?: IZiwei.getMainHouseBranch(finalMonthNumForMonthStars, hour)
+    val mainHouse = predefinedMainHouse ?: Ziwei.getMainHouseBranch(finalMonthNumForMonthStars, hour)
 
     // 左下角，寅宮 的 干支
     val stemBranchOf寅 = StemBranch.get(stemOf寅, Branch.寅)
@@ -47,7 +47,7 @@ class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<Fiv
     val 命宮 = stemBranchOf寅.next(steps)
 
     //StemBranch 命宮 = IZiwei.getMainHouse(lunarYear.getStem() , finalMonthNumForMonthStars, hour);
-    val (fiveElement) = IZiwei.getMainDesc(命宮)
+    val (fiveElement) = Ziwei.getMainDesc(命宮)
     // 五行局數
     return getBranch(Triple<FiveElement, Gender, IYinYang>(fiveElement, gender, lunarYear.stem))
   }

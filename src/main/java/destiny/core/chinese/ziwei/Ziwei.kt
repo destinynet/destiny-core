@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory
 
 
 /** 紫微斗數  */
-interface IZiwei {
+interface Ziwei {
 
   companion object {
 
-    val logger = LoggerFactory.getLogger(IZiwei::class.java)
+    val logger = LoggerFactory.getLogger(Ziwei::class.java)
 
     /**
      * 命宮 : (月數 , 時支) -> 地支

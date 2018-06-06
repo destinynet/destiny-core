@@ -19,7 +19,7 @@ import java.io.Serializable
 class FlowMonthDefaultImpl : IFlowMonth, Serializable {
 
   override fun getFlowMonth(flowYear: Branch, flowMonth: Branch, birthMonth: Int, birthHour: Branch): Branch {
-    return IZiwei
+    return Ziwei
       .getFlowYearAnchor(flowYear, birthMonth, birthHour) // 先計算流年斗君
       .next(flowMonth.getAheadOf(Branch.寅))// 順數至流月
   }

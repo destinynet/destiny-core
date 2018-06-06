@@ -18,8 +18,6 @@ import java.time.chrono.ChronoLocalDate
  */
 class ZiweiTools : Serializable {
   companion object {
-
-
     /** 列出此大限中，包含哪十個流年 (陰曆 cycle + 地支干支) , 並且「虛歲」各別是幾歲 ,   */
     fun getYearsOfFlowBig(builder: Builder, context: IZiweiContext, flowBig: Branch): List<Triple<Int, StemBranch, Int>> {
       val bigRangeImpl = context.bigRangeImpl
@@ -68,7 +66,7 @@ class ZiweiTools : Serializable {
         val yangDate = chineseDateImpl.getYangDate(yinDate)
         val lmtJulDay = (TimeTools.getGmtJulDay(yangDate.atTime(LocalTime.MIDNIGHT)) + 0.5).toInt()
         val index = (lmtJulDay - 11) % 60
-        val sb = StemBranch.get(index)
+        val sb = StemBranch[index]
         list.add(Triple(yinDate, yangDate, sb))
       }
       return list
@@ -80,7 +78,7 @@ class ZiweiTools : Serializable {
     fun getHoursOfDay(day: StemBranch): List<StemBranch> {
       return Branch.values().map { b ->
         val stem = StemBranchUtils.getHourStem(day.stem, b)
-        StemBranch.get(stem , b)
+        StemBranch[stem, b]
       }.toList()
     }
   }

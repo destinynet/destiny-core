@@ -433,7 +433,7 @@ object HouseFunctions {
       val houseSeqImpl = HouseSeqDefaultImpl()
       val steps = houseSeqImpl.getAheadOf(House.遷移, House.命宮)
 
-      val 遷移宮地支 = predefinedMainHouse?.prev(steps)?:IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl)
+      val 遷移宮地支 = predefinedMainHouse?.prev(steps)?:Ziwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl)
 
       return when (context.hurtAngel) {
         HurtAngel.HURT_ANGEL_FIXED -> fun天傷_fixed交友.invoke(遷移宮地支)
@@ -459,7 +459,7 @@ object HouseFunctions {
       // 太乙派，沒有遷移宮
       val houseSeqImpl = HouseSeqDefaultImpl()
       val steps = houseSeqImpl.getAheadOf(House.遷移, House.命宮)
-      val 遷移宮地支 : Branch = predefinedMainHouse?.prev(steps) ?:IZiwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl)
+      val 遷移宮地支 : Branch = predefinedMainHouse?.prev(steps) ?:Ziwei.getHouseBranch(finalMonthNumForMonthStars, hour, House.遷移, houseSeqImpl)
 
       return when (context.hurtAngel) {
         HurtAngel.HURT_ANGEL_FIXED -> fun天使_fixed疾厄.invoke(遷移宮地支)
