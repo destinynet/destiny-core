@@ -150,7 +150,7 @@ enum class StemBranchUnconstrained(override val stem: Stem, override val branch:
    * 取得下 n 組干支組合
    * n = 0 : 傳回自己
    */
-  fun next(n: Int): StemBranchUnconstrained {
+  override fun next(n: Int): StemBranchUnconstrained {
     return get(getIndex(this) + n)
   }
 
@@ -158,17 +158,17 @@ enum class StemBranchUnconstrained(override val stem: Stem, override val branch:
    * 取得前 n 組干支組合
    * n = 0 : 傳回自己
    */
-  fun prev(n: Int): StemBranchUnconstrained {
+  override fun prev(n: Int): StemBranchUnconstrained {
     return next(0 - n)
   }
 
-  /** 取得下一組干支 , 甲子 傳回 乙子  */
-  val next: StemBranchUnconstrained
-    get() = next(1)
-
-  /** 取得上一組干支 , 甲子 傳回 甲亥  */
-  val previous: StemBranchUnconstrained
-    get() = prev(1)
+//  /** 取得下一組干支 , 甲子 傳回 乙子  */
+//  val next: StemBranchUnconstrained
+//    get() = next(1)
+//
+//  /** 取得上一組干支 , 甲子 傳回 甲亥  */
+//  val previous: StemBranchUnconstrained
+//    get() = prev(1)
 
 
   /**

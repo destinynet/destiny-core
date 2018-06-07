@@ -7,11 +7,18 @@ import destiny.core.chinese.StemBranch.癸亥
 import destiny.tools.ArrayTools
 
 interface IStemBranch : IStemBranchOptional {
-  override val stem : Stem
-  override val branch : Branch
+  override val stem: Stem
+  override val branch: Branch
+
+  fun prev(n: Int): IStemBranch
+  fun next(n: Int): IStemBranch
+  val next: IStemBranch
+    get() = next(1)
+  val previous: IStemBranch
+    get() = prev(1)
 }
 
-enum class StemBranchCycle(val sb:StemBranch) {
+enum class StemBranchCycle(val sb: StemBranch) {
   甲子(StemBranch.甲子),
   甲寅(StemBranch.甲寅),
   甲辰(StemBranch.甲辰),
@@ -23,68 +30,68 @@ enum class StemBranchCycle(val sb:StemBranch) {
 /**
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
-enum class StemBranch(override val stem: Stem, override val branch: Branch) : IStemBranchOptional , IStemBranch,
+enum class StemBranch(override val stem: Stem, override val branch: Branch) : IStemBranchOptional, IStemBranch,
   Comparable<StemBranch> {
-    甲子(甲, 子),
-    乙丑(乙, 丑),
-    丙寅(丙, 寅),
-    丁卯(丁, 卯),
-    戊辰(戊, 辰),
-    己巳(己, 巳),
-    庚午(庚, 午),
-    辛未(辛, 未),
-    壬申(壬, 申),
-    癸酉(癸, 酉),
-    甲戌(甲, 戌),
-    乙亥(乙, 亥),
-    丙子(丙, 子),
-    丁丑(丁, 丑),
-    戊寅(戊, 寅),
-    己卯(己, 卯),
-    庚辰(庚, 辰),
-    辛巳(辛, 巳),
-    壬午(壬, 午),
-    癸未(癸, 未),
-    甲申(甲, 申),
-    乙酉(乙, 酉),
-    丙戌(丙, 戌),
-    丁亥(丁, 亥),
-    戊子(戊, 子),
-    己丑(己, 丑),
-    庚寅(庚, 寅),
-    辛卯(辛, 卯),
-    壬辰(壬, 辰),
-    癸巳(癸, 巳),
-    甲午(甲, 午),
-    乙未(乙, 未),
-    丙申(丙, 申),
-    丁酉(丁, 酉),
-    戊戌(戊, 戌),
-    己亥(己, 亥),
-    庚子(庚, 子),
-    辛丑(辛, 丑),
-    壬寅(壬, 寅),
-    癸卯(癸, 卯),
-    甲辰(甲, 辰),
-    乙巳(乙, 巳),
-    丙午(丙, 午),
-    丁未(丁, 未),
-    戊申(戊, 申),
-    己酉(己, 酉),
-    庚戌(庚, 戌),
-    辛亥(辛, 亥),
-    壬子(壬, 子),
-    癸丑(癸, 丑),
-    甲寅(甲, 寅),
-    乙卯(乙, 卯),
-    丙辰(丙, 辰),
-    丁巳(丁, 巳),
-    戊午(戊, 午),
-    己未(己, 未),
-    庚申(庚, 申),
-    辛酉(辛, 酉),
-    壬戌(壬, 戌),
-    癸亥(癸, 亥);
+  甲子(甲, 子),
+  乙丑(乙, 丑),
+  丙寅(丙, 寅),
+  丁卯(丁, 卯),
+  戊辰(戊, 辰),
+  己巳(己, 巳),
+  庚午(庚, 午),
+  辛未(辛, 未),
+  壬申(壬, 申),
+  癸酉(癸, 酉),
+  甲戌(甲, 戌),
+  乙亥(乙, 亥),
+  丙子(丙, 子),
+  丁丑(丁, 丑),
+  戊寅(戊, 寅),
+  己卯(己, 卯),
+  庚辰(庚, 辰),
+  辛巳(辛, 巳),
+  壬午(壬, 午),
+  癸未(癸, 未),
+  甲申(甲, 申),
+  乙酉(乙, 酉),
+  丙戌(丙, 戌),
+  丁亥(丁, 亥),
+  戊子(戊, 子),
+  己丑(己, 丑),
+  庚寅(庚, 寅),
+  辛卯(辛, 卯),
+  壬辰(壬, 辰),
+  癸巳(癸, 巳),
+  甲午(甲, 午),
+  乙未(乙, 未),
+  丙申(丙, 申),
+  丁酉(丁, 酉),
+  戊戌(戊, 戌),
+  己亥(己, 亥),
+  庚子(庚, 子),
+  辛丑(辛, 丑),
+  壬寅(壬, 寅),
+  癸卯(癸, 卯),
+  甲辰(甲, 辰),
+  乙巳(乙, 巳),
+  丙午(丙, 午),
+  丁未(丁, 未),
+  戊申(戊, 申),
+  己酉(己, 酉),
+  庚戌(庚, 戌),
+  辛亥(辛, 亥),
+  壬子(壬, 子),
+  癸丑(癸, 丑),
+  甲寅(甲, 寅),
+  乙卯(乙, 卯),
+  丙辰(丙, 辰),
+  丁巳(丁, 巳),
+  戊午(戊, 午),
+  己未(己, 未),
+  庚申(庚, 申),
+  辛酉(辛, 酉),
+  壬戌(壬, 戌),
+  癸亥(癸, 亥);
 
   /** @return 0[甲子] ~ 59[癸亥] */
   val index: Int
@@ -94,7 +101,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
    * 取得下 n 組干支組合
    * n = 0 : 傳回自己
    */
-  fun next(n: Int): StemBranch {
+  override fun next(n: Int): StemBranch {
     return get(getIndex(this) + n)
   }
 
@@ -103,17 +110,17 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
    * 取得前 n 組干支組合
    * n = 0 : 傳回自己
    */
-  fun prev(n: Int): StemBranch {
+  override fun prev(n: Int): StemBranch {
     return next(0 - n)
   }
 
-  /** 取得下一組干支 , 甲子 傳回 乙丑  */
-  val next: StemBranch
-    get() = next(1)
-
-  /** 取得上一組干支 , 甲子 傳回 癸亥  */
-  val previous: StemBranch
-    get() = prev(1)
+  //  /** 取得下一組干支 , 甲子 傳回 乙丑  */
+  //  val next: StemBranch
+  //    get() = next(1)
+  //
+  //  /** 取得上一組干支 , 甲子 傳回 癸亥  */
+  //  val previous: StemBranch
+  //    get() = prev(1)
 
 
   /**
@@ -153,7 +160,6 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
   override fun toString(): String {
     return stem.toString() + branch.toString()
   }
-
 
 
   companion object {
@@ -200,8 +206,8 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
     }
 
     /** 強制將 [IStemBranchOptional] downcast 成 [StemBranch] , 可能會拋出 NPE ! */
-    operator fun get(sbo : IStemBranchOptional) : StemBranch {
-      return get(sbo.stem!! , sbo.branch!!)
+    operator fun get(sbo: IStemBranchOptional): StemBranch {
+      return get(sbo.stem!!, sbo.branch!!)
     }
 
 
@@ -222,22 +228,22 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
       return listOf(*values())
     }
 
-    fun getCycle(sb: StemBranch) : StemBranchCycle {
+    fun getCycle(sb: StemBranch): StemBranchCycle {
       val shift = sb.stem.index - sb.branch.index
-      return when(shift) {
+      return when (shift) {
         0 -> StemBranchCycle.甲子
-        2 , -10 -> StemBranchCycle.甲戌
-        4 , -8 -> StemBranchCycle.甲申
-        6 , -6 -> StemBranchCycle.甲午
-        8 , -4 -> StemBranchCycle.甲辰
-        10 , -2 -> StemBranchCycle.甲寅
+        2, -10 -> StemBranchCycle.甲戌
+        4, -8 -> StemBranchCycle.甲申
+        6, -6 -> StemBranchCycle.甲午
+        8, -4 -> StemBranchCycle.甲辰
+        10, -2 -> StemBranchCycle.甲寅
         else -> throw AssertionError("Not valid $sb")
       }
     }
 
     /** 取得「空亡」的兩個地支  */
     fun getEmpties(sb: StemBranch): Collection<Branch> {
-      return when(sb.cycle) {
+      return when (sb.cycle) {
         StemBranchCycle.甲子 -> listOf(戌, 亥)
         StemBranchCycle.甲戌 -> listOf(申, 酉)
         StemBranchCycle.甲申 -> listOf(午, 未)

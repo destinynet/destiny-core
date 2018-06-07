@@ -234,7 +234,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
     require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
 
     val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, location)
-    var resultStemBranch: StemBranchUnconstrained = eightWords.month.let { StemBranchUnconstrained[it.stem , it.branch]!! }
+    var resultStemBranch: IStemBranch = eightWords.month.let { StemBranchUnconstrained[it.stem , it.branch]!! }
 
     // 大運是否順行
     val fortuneForward = fortuneDirectionImpl.isForward(lmt , location , gender)

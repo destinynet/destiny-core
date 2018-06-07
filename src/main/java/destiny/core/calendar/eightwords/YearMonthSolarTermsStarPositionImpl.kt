@@ -10,12 +10,11 @@ import destiny.astrology.Coordinate.EQUATORIAL
 import destiny.astrology.IStarPosition
 import destiny.astrology.IStarTransit
 import destiny.astrology.Planet
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.NorthSouth
-import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.SolarTermsImpl
+import destiny.core.calendar.*
 import destiny.core.chinese.Branch
+import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
+import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory
  *
  * 具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  */
-class YearMonthSolarTermsStarPositionImpl(
+open class YearMonthSolarTermsStarPositionImpl(
   /** 換年的度數 , 通常是立春點 (315) 換年 */
   changeYearDegree: Double = 315.0,
   private val starPositionImpl: IStarPosition<*>,
@@ -37,17 +36,21 @@ class YearMonthSolarTermsStarPositionImpl(
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
+  val solarTermsImpl : ISolarTerms by lazy {
+    SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
+  }
+
   /**
    * @return 取得月干支
    */
-  override fun getMonth(gmtJulDay: Double, location: ILocation): StemBranch {
+  override fun getMonth(gmtJulDay: Double, location: ILocation): IStemBranch {
     val result月支: Branch
     //先算出太陽在黃經上的度數
 
-    val solarTermsImpl = SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
-    val MonthST = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+    // 目前的節氣
+    val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 
-    var monthIndex = SolarTerms.getIndex(MonthST) / 2 + 2
+    var monthIndex = SolarTerms.getIndex(solarTerms) / 2 + 2
     if (monthIndex >= 12)
       monthIndex -= 12
     val 月支 = Branch[monthIndex]
@@ -98,46 +101,42 @@ class YearMonthSolarTermsStarPositionImpl(
       result月支 = 月支
 
     val 年干 = getYear(gmtJulDay, location).stem
-    return StemBranch[this.getMonthStem(gmtJulDay, 年干, result月支), result月支]
+    return StemBranch[getMonthStem(gmtJulDay, 年干, result月支), result月支]
   }
 
   /**
    * 五虎遁月 取得月干
-   * <pre>
-   * **
+   *
    * 甲己之年丙作首
    * 乙庚之歲戊為頭
    * 丙辛之歲由庚上
    * 丁壬壬位順行流
    * 若言戊癸何方發
    * 甲寅之上好追求。
-   ** *
-  </pre> *
+   *
    */
   private fun getMonthStem(gmtJulDay: Double, 年干: Stem, 月支: Branch): Stem {
-
     var 月干: Stem = when (年干) {
-      Stem.甲, Stem.己 -> if (月支.index >= 2) Stem[Branch.getIndex(月支)] else Stem[Branch.getIndex(月支) + 2]
-      Stem.乙, Stem.庚 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 2] else Stem[Branch.getIndex(月支) + 4]
-      Stem.丙, Stem.辛 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 4] else Stem[Branch.getIndex(月支) + 6]
-      Stem.丁, Stem.壬 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 6] else Stem[Branch.getIndex(月支) + 8]
-      Stem.戊, Stem.癸 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 8] else Stem[Branch.getIndex(月支) + 10]
+      甲, 己 -> if (月支.index >= 2) Stem[Branch.getIndex(月支)] else Stem[Branch.getIndex(月支) + 2]
+      乙, 庚 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 2] else Stem[Branch.getIndex(月支) + 4]
+      丙, 辛 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 4] else Stem[Branch.getIndex(月支) + 6]
+      丁, 壬 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 6] else Stem[Branch.getIndex(月支) + 8]
+      戊, 癸 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 8] else Stem[Branch.getIndex(月支) + 10]
     }
 
     if (changeYearDegree != 315.0) {
 
+      val sunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, ECLIPTIC).lng
+
       if (changeYearDegree < 315) {
         logger.debug("換年點在立春前 , changeYearDegree < 315 , value = {}", changeYearDegree)
-
-        val lmtSunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, ECLIPTIC).lng
-        if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree) {
+        if (sunDegree > changeYearDegree && 315 > sunDegree) {
           // t <---立春---- LMT -----換年點
           月干 = Stem[月干.index - 2]
         }
       } else if (changeYearDegree > 315) {
         //換年點在立春後 , 還沒測試
-        val lmtSunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, ECLIPTIC).lng
-        if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
+        if (sunDegree > 315 && changeYearDegree > sunDegree)
           月干 = Stem[月干.index + 2]
       }
     }
@@ -147,6 +146,4 @@ class YearMonthSolarTermsStarPositionImpl(
   init {
     require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
   }
-
-
 }

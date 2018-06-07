@@ -21,14 +21,14 @@ interface IEightWordsNullable {
     get() = listOf(year, month, day, hour)
 }
 
-interface IEightWords : IEightWordsNullable , IEightWordsNullableFactory {
-  override val year : StemBranch
-  override val month : StemBranch
+interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
+  override val year: StemBranch
+  override val month: IStemBranch
   override val day: StemBranch
-  override val hour: StemBranch
+  override val hour: IStemBranch
 
-  override val stemBranches: List<StemBranch>
-    get() = listOf(year , month , day , hour)
+  override val stemBranches: List<IStemBranch>
+    get() = listOf(year, month, day, hour)
 
   override val eightWordsNullable: IEightWordsNullable
     get() = EightWordsNullable(year, month, day, hour)
@@ -37,7 +37,8 @@ interface IEightWords : IEightWordsNullable , IEightWordsNullableFactory {
 data class EightWordsNullable(override val year: IStemBranchOptional,
                               override val month: IStemBranchOptional,
                               override val day: IStemBranchOptional,
-                              override val hour: IStemBranchOptional) : IEightWordsNullable , IEightWordsNullableFactory , Serializable {
+                              override val hour: IStemBranchOptional) : IEightWordsNullable, IEightWordsNullableFactory,
+  Serializable {
 
   override val eightWordsNullable: EightWordsNullable
     get() = this
@@ -64,10 +65,10 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
 
   companion object {
 
-    fun empty() : EightWordsNullable {
-      return EightWordsNullable(StemBranchOptional.empty() ,
-                                StemBranchOptional.empty() ,
-                                StemBranchOptional.empty() ,
+    fun empty(): EightWordsNullable {
+      return EightWordsNullable(StemBranchOptional.empty(),
+                                StemBranchOptional.empty(),
+                                StemBranchOptional.empty(),
                                 StemBranchOptional.empty())
     }
   }
@@ -79,9 +80,9 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
  * 2018-04-01 起， 將此 class 與 [EightWordsNullable] 拆離繼承關係
  */
 data class EightWords(override val year: StemBranch,
-                      override val month: StemBranch,
+                      override val month: IStemBranch,
                       override val day: StemBranch,
-                      override val hour: StemBranch) : IEightWords,
+                      override val hour: IStemBranch) : IEightWords,
   Serializable {
 
   /** 以字串 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null */

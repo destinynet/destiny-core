@@ -17,7 +17,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
-import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
@@ -90,7 +89,7 @@ class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
         ageNoteImpls.map { impl -> ageMap[endFortuneAge]?.let { impl.getAgeNote(it) } }.filter { it != null }
           .map { it!! }.toList()
 
-      val sb: StemBranch = eightWords.month.let { if (forward) it.next(i) else it.prev(i) }
+      val sb: IStemBranch = eightWords.month.let { if (forward) it.next(i) else it.prev(i) }
       i++
       FortuneData(sb, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
                   startFortuneAgeNotes, endFortuneAgeNotes)

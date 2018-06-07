@@ -11,6 +11,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.StemBranch
+import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
@@ -23,6 +24,7 @@ open class YearEclipticDegreeImpl(
   /** 換年的度數 , 通常是立春點 (315) 換年 */
   protected val changeYearDegree: Double = 315.0,
   private val starPositionImpl: IStarPosition<*>) : IYear, Serializable {
+
   override fun getYear(gmtJulDay: Double, loc: ILocation): StemBranch {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
 
@@ -91,5 +93,6 @@ open class YearEclipticDegreeImpl(
 
   companion object {
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    val logger = LoggerFactory.getLogger(YearEclipticDegreeImpl::class.java)!!
   }
 }
