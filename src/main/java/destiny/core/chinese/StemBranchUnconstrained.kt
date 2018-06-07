@@ -162,14 +162,6 @@ enum class StemBranchUnconstrained(override val stem: Stem, override val branch:
     return next(0 - n)
   }
 
-//  /** 取得下一組干支 , 甲子 傳回 乙子  */
-//  val next: StemBranchUnconstrained
-//    get() = next(1)
-//
-//  /** 取得上一組干支 , 甲子 傳回 甲亥  */
-//  val previous: StemBranchUnconstrained
-//    get() = prev(1)
-
 
   /**
    * 取得此干支，領先另一組，多少步. 其值一定為正值

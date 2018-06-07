@@ -105,7 +105,6 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
     return get(getIndex(this) + n)
   }
 
-
   /**
    * 取得前 n 組干支組合
    * n = 0 : 傳回自己
@@ -113,14 +112,6 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
   override fun prev(n: Int): StemBranch {
     return next(0 - n)
   }
-
-  //  /** 取得下一組干支 , 甲子 傳回 乙丑  */
-  //  val next: StemBranch
-  //    get() = next(1)
-  //
-  //  /** 取得上一組干支 , 甲子 傳回 癸亥  */
-  //  val previous: StemBranch
-  //    get() = prev(1)
 
 
   /**
