@@ -604,22 +604,4 @@ class ZContext(
       .appendTrans4Map(trans4Map)
   }
 
-  /**
-   * @param stars     取得這些星體
-   * @param flowType  在[本命、大限、流年]... (之一)
-   * @param flowStem  天干為
-   * @return 傳回四化 (若有的話)
-   */
-  //  private fun getTrans4Map(stars: Collection<ZStar>,
-  //                           flowType: FlowType,
-  //                           flowStem: Stem): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
-  //    return stars.map { star ->
-  //      val key = star to flowType
-  //      val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
-  //      key to value
-  //    }.filter { it.second != null }
-  //      .map { it.first to it.second!! }
-  //      .toMap()
-  //  }
-
 } // ZContext

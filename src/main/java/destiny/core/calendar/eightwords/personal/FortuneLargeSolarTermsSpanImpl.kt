@@ -21,6 +21,7 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import org.slf4j.LoggerFactory
 import java.io.Serializable
+import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -107,15 +108,6 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
       .toList()
   }
 
-  /**
-   * 逆推大運
-   */
-  override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
-                             location: ILocation,
-                             gender: Gender,
-                             targetGmt: ChronoLocalDateTime<*>): IStemBranch {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
 
 
   /**
@@ -228,4 +220,45 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
     return ageMap.entries.firstOrNull { (age, pair) -> gmtJulDay > pair.first && pair.second > gmtJulDay }?.key
   }
 
+
+  /**
+   * 逆推大運 , 求，未來某時刻，的大運干支為何
+   */
+  override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
+                             location: ILocation,
+                             gender: Gender,
+                             targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmt = TimeTools.getGmtFromLmt(lmt, location)
+
+    require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
+
+    val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, location)
+    var resultStemBranch: StemBranchUnconstrained = eightWords.month.let { StemBranchUnconstrained[it.stem , it.branch]!! }
+
+    // 大運是否順行
+    val fortuneForward = fortuneDirectionImpl.isForward(lmt , location , gender)
+
+    val dur = Duration.between(targetGmt, gmt).abs()
+    val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0
+
+    return if (fortuneForward) {
+      logger.debug("大運順行")
+      var index = 1
+
+      while (getTargetSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan < diffSeconds) {
+        resultStemBranch = resultStemBranch.next
+        index++
+      }
+      resultStemBranch
+    } else {
+      logger.debug("大運逆行")
+      var index = -1
+      while (abs(getTargetSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan) < diffSeconds) {
+        resultStemBranch = resultStemBranch.previous
+        index--
+      }
+      resultStemBranch
+    }
+  } // 逆推大運
 }

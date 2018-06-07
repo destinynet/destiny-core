@@ -21,21 +21,18 @@ import java.time.temporal.ChronoField.*
 import java.time.temporal.ChronoUnit
 
 /**
- * <pre>
  * 年：具備設定換年點的功能
- * <BR></BR>
+ *
  * 月：「定氣法」計算地支 , 計算太陽在黃道帶 0 , 15 , 30 ... 345 度的時刻
- * <BR></BR>具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
-</pre> *
+ *
+ * 具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  */
-class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
-
-  private val starPositionImpl: IStarPosition<*>?
-
-  private val starTransitImpl: IStarTransit
-
-  /** 南半球月令是否對沖  */
-  private var southernHemisphereOpposition = false
+class YearMonthSolarTermsStarPositionImpl(changeYearDegree: Double,
+                                          private val starPositionImpl: IStarPosition<*>,
+                                          private val starTransitImpl: IStarTransit,
+                                          /** 南半球月令是否對沖  */
+                                          private var southernHemisphereOpposition: Boolean = false) : IYearMonth,
+  Serializable {
 
   /** 依據 赤道 [HemisphereBy.EQUATOR] , 還是 赤緯 [HemisphereBy.DECLINATION] 來界定南北半球  */
   /**
@@ -50,25 +47,8 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  constructor(changeYearDegree: Double, starPositionImpl: IStarPosition<*>, starTransitImpl: IStarTransit) {
-    this.starPositionImpl = starPositionImpl
-    this.starTransitImpl = starTransitImpl
-    this.setChangeYearDegree(changeYearDegree)
-  }
-
-  constructor(changeYearDegree: Double,
-              starPositionImpl: IStarPosition<*>,
-              starTransitImpl: IStarTransit,
-              southernHemisphereOpposition: Boolean) {
-    this.starPositionImpl = starPositionImpl
-    this.starTransitImpl = starTransitImpl
-    this.southernHemisphereOpposition = southernHemisphereOpposition
-    this.setChangeYearDegree(changeYearDegree)
-  }
-
   private fun setChangeYearDegree(changeYearDegree: Double) {
-    if (changeYearDegree < 180)
-      throw RuntimeException("Cannot set changeYearDegree smaller than 180 ")
+    require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
     this.changeYearDegree = changeYearDegree
   }
 
@@ -92,10 +72,10 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
       lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
 
 
-    val solarLongitude = starPositionImpl!!.getPosition(Planet.SUN, gmt, GEO, ECLIPTIC).lng
+    val solarLongitude = starPositionImpl.getPosition(Planet.SUN, gmt, GEO, ECLIPTIC).lng
     if (solarLongitude < 180)
     //立春(0)過後，到秋分之間(180)，確定不會換年
-      resultStemBranch = StemBranch.get(index)
+      resultStemBranch = StemBranch[index]
     else {
       // 360 > solarLongitude >= 180
 
@@ -106,29 +86,29 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
       val degreeOfStartOfYear = starPositionImpl.getPosition(Planet.SUN, startOfYear, GEO, ECLIPTIC).lng
 
       if (changeYearDegree >= degreeOfStartOfYear) {
-        if (solarLongitude >= changeYearDegree)
-          resultStemBranch = StemBranch.get(index)
+        resultStemBranch = if (solarLongitude >= changeYearDegree)
+          StemBranch[index]
         else if (changeYearDegree > solarLongitude && solarLongitude >= degreeOfStartOfYear) {
           val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
           if (TimeTools.isBefore(tempTime, startOfYear))
-            resultStemBranch = StemBranch.get(index - 1)
+            StemBranch[index - 1]
           else
-            resultStemBranch = StemBranch.get(index)
+            StemBranch[index]
         } else
-          resultStemBranch = StemBranch.get(index)
+          StemBranch[index]
       } else {
         // degreeOfStartOfYear > changeYearDegree >= 秋分 (180)
-        if (solarLongitude >= degreeOfStartOfYear) {
+        resultStemBranch = if (solarLongitude >= degreeOfStartOfYear) {
           val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
           if (TimeTools.isBefore(tempTime, startOfYear))
-            resultStemBranch = StemBranch.get(index)
+            StemBranch[index]
           else
-            resultStemBranch = StemBranch.get(index + 1)
+            StemBranch[index + 1]
         } else {
           if (solarLongitude >= changeYearDegree)
-            resultStemBranch = StemBranch.get(index + 1)
+            StemBranch[index + 1]
           else
-            resultStemBranch = StemBranch.get(index)
+            StemBranch[index]
         }
       }
 
@@ -146,7 +126,7 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
     val result月支: Branch
     //先算出太陽在黃經上的度數
 
-    val solarTermsImpl = SolarTermsImpl(this.starTransitImpl, this.starPositionImpl!!)
+    val solarTermsImpl = SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
     val MonthST = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 
     var monthIndex = SolarTerms.getIndex(MonthST) / 2 + 2
@@ -200,14 +180,9 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
       result月支 = 月支
 
     val 年干 = getYear(gmtJulDay, location).stem
-    return StemBranch.get(this.getMonthStem(gmtJulDay, 年干, result月支), result月支)
+    return StemBranch[this.getMonthStem(gmtJulDay, 年干, result月支), result月支]
   }
 
-
-  /** 南半球月支是否對沖 , 內定是 '否'  */
-  override fun setSouthernHemisphereOpposition(value: Boolean) {
-    this.southernHemisphereOpposition = value
-  }
 
   fun isSouthernHemisphereOpposition(): Boolean {
     return southernHemisphereOpposition
@@ -230,16 +205,14 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
     var 月干: Stem
 
     月干 = when (年干) {
-      Stem.甲, Stem.己 -> if (月支.index >= 2) Stem.get(Branch.getIndex(月支)) else Stem.get(Branch.getIndex(月支) + 2)
-      Stem.乙, Stem.庚 -> if (月支.index >= 2) Stem.get(Branch.getIndex(月支) + 2) else Stem.get(Branch.getIndex(月支) + 4)
-      Stem.丙, Stem.辛 -> if (月支.index >= 2) Stem.get(Branch.getIndex(月支) + 4) else Stem.get(Branch.getIndex(月支) + 6)
-      Stem.丁, Stem.壬 -> if (月支.index >= 2) Stem.get(Branch.getIndex(月支) + 6) else Stem.get(Branch.getIndex(月支) + 8)
-      Stem.戊, Stem.癸 -> if (月支.index >= 2) Stem.get(Branch.getIndex(月支) + 8) else Stem.get(Branch.getIndex(月支) + 10)
+      Stem.甲, Stem.己 -> if (月支.index >= 2) Stem[Branch.getIndex(月支)] else Stem[Branch.getIndex(月支) + 2]
+      Stem.乙, Stem.庚 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 2] else Stem[Branch.getIndex(月支) + 4]
+      Stem.丙, Stem.辛 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 4] else Stem[Branch.getIndex(月支) + 6]
+      Stem.丁, Stem.壬 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 6] else Stem[Branch.getIndex(月支) + 8]
+      Stem.戊, Stem.癸 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 8] else Stem[Branch.getIndex(月支) + 10]
     }
 
     if (changeYearDegree != 315.0) {
-      if (starPositionImpl == null)
-        throw RuntimeException("Call state error ! starTransitImpl should be set.")
 
       if (changeYearDegree < 315) {
         logger.debug("換年點在立春前 , changeYearDegree < 315 , value = {}", changeYearDegree)
@@ -247,13 +220,13 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
         val lmtSunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, ECLIPTIC).lng
         if (lmtSunDegree > changeYearDegree && 315 > lmtSunDegree) {
           // t <---立春---- LMT -----換年點
-          月干 = Stem.get(月干.index - 2)
+          月干 = Stem[月干.index - 2]
         }
       } else if (changeYearDegree > 315) {
         //換年點在立春後 , 還沒測試
         val lmtSunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, GEO, ECLIPTIC).lng
         if (lmtSunDegree > 315 && changeYearDegree > lmtSunDegree)
-          月干 = Stem.get(月干.index + 2)
+          月干 = Stem[月干.index + 2]
       }
     }
     return 月干
@@ -261,7 +234,10 @@ class YearMonthSolarTermsStarPositionImpl : IYearMonth, Serializable {
 
   companion object {
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
-    //private val revJulDayFunc = Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+  }
+
+  init {
+    this.setChangeYearDegree(changeYearDegree)
   }
 
 

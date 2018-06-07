@@ -39,10 +39,6 @@ interface IMonth {
     return getMonth(gmtJulDay, loc)
   }
 
-  /**
-   * 南半球月支是否對沖 , 內定是 '否'
-   */
-  fun setSouthernHemisphereOpposition(value: Boolean)
 }
 
 
