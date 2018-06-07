@@ -32,6 +32,16 @@ interface IYear {
  */
 interface IMonth {
 
+  /** 南半球月令是否對沖  */
+  val southernHemisphereOpposition: Boolean
+
+  /**
+   * 南半球的判定方法
+   * 依據 赤道 [HemisphereBy.EQUATOR] , 還是 赤緯 [HemisphereBy.DECLINATION] 來界定南北半球
+   * 舉例，夏至時，太陽在北回歸線，北回歸線過嘉義，則此時，嘉義以南是否算南半球？
+   */
+  val hemisphereBy: HemisphereBy
+
   fun getMonth(gmtJulDay: Double, location: ILocation): StemBranch
 
   fun getMonth(lmt: ChronoLocalDateTime<*>, loc: ILocation): StemBranch {

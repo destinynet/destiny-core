@@ -10,7 +10,6 @@ import destiny.core.calendar.eightwords.personal.ReactionUtil
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
-import destiny.core.chinese.StemBranch
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
@@ -134,7 +133,7 @@ class EightWordsColorCanvas(
         val yearMonthImpl = context.yearMonthImpl
         if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {
           cc.setText("南半球", 5, 35, "FF0000")
-          cc.setText("月令：" + if (yearMonthImpl.isSouthernHemisphereOpposition()) "對沖" else "不對沖", 5, 41)
+          cc.setText("月令：" + if (yearMonthImpl.southernHemisphereOpposition) "對沖" else "不對沖", 5, 41)
         }
       }
 

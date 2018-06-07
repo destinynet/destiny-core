@@ -3,13 +3,13 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.astrology.IStarPosition
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import java.io.Serializable
 
 /**
- * TODO : coolWind 提出：依據星座劃分月令
+ * 依據星座劃分月令 , coolwind 提出的理論
  *
  * 以此盤而言 : 1985年 4月11日 9時50分 , https://goo.gl/FCZ6iU
  * 傳統排法， 清明 -> 立夏 , 辰月
@@ -26,10 +26,13 @@ import java.io.Serializable
  * 辰 辰 卯 丑
  *
  */
-class YearMonthSunSignImpl : IYearMonth, Serializable {
-  override fun getYear(gmtJulDay: Double, loc: ILocation): StemBranch {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
+class YearMonthSunSignImpl(
+  /** 換年的度數 , 通常是立春點 (315) 換年 */
+  changeYearDegree: Double = 315.0,
+  starPositionImpl: IStarPosition<*>,
+  override val southernHemisphereOpposition: Boolean = false,
+  override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
+  YearEclipticDegreeImpl(changeYearDegree, starPositionImpl), IYearMonth {
 
   override fun getMonth(gmtJulDay: Double, location: ILocation): StemBranch {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
