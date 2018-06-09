@@ -25,7 +25,7 @@ interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
   override val year: StemBranch
   override val month: IStemBranch
   override val day: StemBranch
-  override val hour: IStemBranch
+  override val hour: StemBranch
 
   override val stemBranches: List<IStemBranch>
     get() = listOf(year, month, day, hour)
@@ -82,7 +82,7 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
 data class EightWords(override val year: StemBranch,
                       override val month: IStemBranch,
                       override val day: StemBranch,
-                      override val hour: IStemBranch) : IEightWords,
+                      override val hour: StemBranch) : IEightWords,
   Serializable {
 
   /** 以字串 "甲子","甲子","甲子","甲子" 方式 construct 此物件 , 任何一柱都不可以為 null */

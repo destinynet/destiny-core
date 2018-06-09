@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Descriptive
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.IStemBranch
@@ -56,4 +57,4 @@ interface IMonth {
 /**
  * 年月應該要一起考慮，所以設計這個 Interface
  */
-interface IYearMonth : IYear, IMonth
+interface IYearMonth : IYear, IMonth , Descriptive

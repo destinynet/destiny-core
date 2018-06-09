@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.astrology.ZodiacSign
 import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.personal.IHiddenStems
 import destiny.core.calendar.eightwords.personal.ReactionUtil
@@ -23,9 +24,9 @@ import kotlin.math.abs
  */
 class EightWordsColorCanvas(
 
-  private val model :IEightWordsContextModel,
+  private val model: IEightWordsContextModel,
 
-  private val context : IEightWordsContext,
+  private val context: IEightWordsContext,
 
   /** 地點的名稱  */
   private val place: String,
@@ -35,7 +36,7 @@ class EightWordsColorCanvas(
   /** 網址連結  */
   private val linkUrl: String?,
   /** 輸出方向，由左至右，還是由右至左  */
-  private val direction: Direction) : ColorCanvas(20 , 52 , ChineseStringTools.NULL_CHAR ) {
+  private val direction: Direction) : ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR) {
 
 
   /** TODO : IoC Google Maps URL Builder  */
@@ -103,7 +104,7 @@ class EightWordsColorCanvas(
       val 地點名稱 = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
       地點名稱.setText("地點：", 1, 1)
       地點名稱.setText(place, 1, 7, false, null, null, null, url, place)
-      val minuteOffset = location.minuteOffset?:TimeTools.getDstSecondOffset(lmt, location).second / 60
+      val minuteOffset = location.minuteOffset ?: TimeTools.getDstSecondOffset(lmt, location).second / 60
 
       minuteOffset.also { it ->
         val absValue = abs(it)
@@ -128,29 +129,39 @@ class EightWordsColorCanvas(
       緯度.setText("$latText ", 1, 1, false, null, null, null, url, null)
       cc.add(緯度, 4, 25)
 
-      cc.setText("換日：" + if (context.changeDayAfterZi) "子初換日" else "子正換日", 5, 1)
+      var x = 0
+      if (context.yearMonthImpl is YearMonthSunSignImpl) {
+        val monthDesc = ChineseStringTools.toBiggerDigits(120) + "月柱法"+"（"+ZodiacSign.getZodiacSign(model.sunBranch)+"）"
+        cc.setText(monthDesc, 5, 1, "FF0000")
+        x += 22
+      }
+
+      cc.setText("換日：" + if (context.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
       if (location.northSouth == NorthSouth.SOUTH) {
         val yearMonthImpl = context.yearMonthImpl
         if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {
-          cc.setText("南半球", 5, 35, "FF0000")
-          cc.setText("月令：" + if (yearMonthImpl.southernHemisphereOpposition) "對沖" else "不對沖", 5, 41)
+          cc.setText("南半球", 5, x + 35, "FF0000")
+          cc.setText("月令：" + if (yearMonthImpl.southernHemisphereOpposition) "對沖" else "不對沖", 5, x + 41)
         }
       }
 
-      cc.setText("日光節約：", 5, 19)
+      cc.setText("日光節約：", 5, x + 19)
       val isDst = TimeTools.getDstSecondOffset(lmt, location).first
       val dstString = if (isDst) "有" else "無"
-      cc.setText(dstString, 5, 29, if (isDst) "FF0000" else "" , "", null)
+      cc.setText(dstString, 5, x + 29, if (isDst) "FF0000" else "", "", null)
 
       cc.setText("子正是：" + context.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, null, null,
                  context.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       cc.setText("時辰劃分：" + context.hourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, null, null,
                  context.hourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       val risingLine = 8
-      val 命宮 = model.risingStemBranch
+      //val 命宮 = model.risingStemBranch
+      val 命宮String = model.risingStemBranch.let { sb ->
+        sb.toString() + "（" + ZodiacSign.getZodiacSign(sb.branch) + "）"
+      }
       cc.setText("命宮：", risingLine, 1, null, null, "命宮")
-      cc.setText(命宮.toString(), risingLine, 7, "FF0000", null, 命宮.toString())
-      cc.setText("（" + context.risingSignImpl.getTitle(Locale.TAIWAN) + "）", risingLine, 11)
+      cc.setText(命宮String, risingLine, 7, "FF0000", null, 命宮String)
+      cc.setText("（" + context.risingSignImpl.getTitle(Locale.TAIWAN) + "）", risingLine, 19)
 
       val linkLine = 9
       if (linkUrl != null) {
@@ -230,7 +241,6 @@ class EightWordsColorCanvas(
     pillar.add(地支藏干(stemBranch.branch, dayStem), 8, 1)
     return pillar
   }
-
 
 
   fun 地支藏干(地支: Branch, 天干: Stem): ColorCanvas {

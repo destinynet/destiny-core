@@ -4,7 +4,7 @@
  */
 package destiny.iching.mume
 
-import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.FiveElement
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
@@ -22,7 +22,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexagramNameF
   lateinit var mumeContext: MumeContext
   var metaData: String? = null
   var dateInfo = "" //日期/時間/地點經緯度 等資料
-  lateinit var eightWords: EightWords
+  lateinit var eightWords: IEightWords
 
 
   override fun toString(): String {
@@ -32,7 +32,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexagramNameF
     siteCanvas.setText("Destiny 命理網", 1, 1, false, null, null, null, "https://destiny.to", "Destiny命理網")
 
     siteCanvas.setText("https://destiny.to  ", 1, 17)
-    siteCanvas.setText("梅花易數線上排盤" + "　" + metaData, 2, 1)
+    siteCanvas.setText("梅花易數線上排盤　$metaData", 2, 1)
     c.add(siteCanvas, 1, 1)
     val dateCanvas = ColorCanvas(1, 38, "　")
     dateCanvas.setText(dateInfo, 1, 1)

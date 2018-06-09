@@ -9,6 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
+import java.util.*
 
 /**
  * 依據星座劃分月令 , coolwind 提出的理論
@@ -24,7 +25,16 @@ class YearMonthSunSignImpl(
   changeYearDegree: Double = 315.0,
   override val southernHemisphereOpposition: Boolean = false,
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
-  YearMonthSolarTermsStarPositionImpl(changeYearDegree , starPositionImpl , starTransitImpl, southernHemisphereOpposition, hemisphereBy) {
+  YearMonthSolarTermsStarPositionImpl(starPositionImpl, starTransitImpl, changeYearDegree, southernHemisphereOpposition,
+                                      hemisphereBy) {
+
+  override fun getTitle(locale: Locale): String {
+    return "120柱月令"
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return "以節氣加星座 劃分月令：節氣的「節」與「氣」之間，屬於上一個星座，天干不變，地支退一位"
+  }
 
   override fun getMonth(gmtJulDay: Double, location: ILocation): IStemBranch {
     // 原始 月干支

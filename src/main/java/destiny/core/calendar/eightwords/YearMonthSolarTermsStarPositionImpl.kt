@@ -17,6 +17,7 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
+import java.util.*
 
 /**
  * 年：具備設定換年點的功能
@@ -26,13 +27,21 @@ import org.slf4j.LoggerFactory
  * 具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  */
 open class YearMonthSolarTermsStarPositionImpl(
-  /** 換年的度數 , 通常是立春點 (315) 換年 */
-  changeYearDegree: Double = 315.0,
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
+  /** 換年的度數 , 通常是立春點 (315) 換年 */
+  changeYearDegree: Double = 315.0,
   override val southernHemisphereOpposition: Boolean = false,
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
   YearEclipticDegreeImpl(changeYearDegree, starPositionImpl), IYearMonth {
+
+  override fun getTitle(locale: Locale): String {
+    return "傳統年月"
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return "以「節氣」的「節」來切割月份"
+  }
 
   private val logger = LoggerFactory.getLogger(javaClass)
 

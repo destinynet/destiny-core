@@ -22,14 +22,14 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  private data class CacheKey(val gmtJulDay: Double , val loc: ILocation)
+  private data class CacheKey(val gmtJulDay: Double, val loc: ILocation)
 
   @Transient
-  private val cacheThreadLocal = ThreadLocal<Pair<CacheKey , EightWords>>()
+  private val cacheThreadLocal = ThreadLocal<Pair<CacheKey, IEightWords>>()
 
   override fun getEightWords(gmtJulDay: Double, loc: ILocation): IEightWords {
 
-    fun inner(): EightWords {
+    fun inner(): IEightWords {
       val year = yearMonthImpl.getYear(gmtJulDay, loc)
 
       val month = yearMonthImpl.getMonth(gmtJulDay, loc)
@@ -70,7 +70,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
       return EightWords(year, month, day, StemBranch[時干, 時支])
     }
 
-    val key = CacheKey(gmtJulDay , loc)
+    val key = CacheKey(gmtJulDay, loc)
     val pair = cacheThreadLocal.get()
 
     return if (pair == null) {

@@ -18,6 +18,7 @@ object ChineseStringTools {
       7 -> "七"
       8 -> "八"
       9 -> "九"
+      0 -> "０"
       else -> NULL_CHAR
     }
   }
@@ -33,7 +34,14 @@ object ChineseStringTools {
       7 -> "７"
       8 -> "８"
       9 -> "９"
+      0 -> "０"
       else -> ChineseStringTools.NULL_CHAR
+    }
+  }
+
+  fun toBiggerDigits(value: Int): String {
+    return value.toString().toList().joinToString("") { char ->
+      toBiggerDigit(char.toString().toInt())
     }
   }
 }
