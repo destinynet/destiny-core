@@ -1,12 +1,13 @@
 package destiny.core.chinese
 
 
+import destiny.core.ILoop
 import destiny.tools.ArrayTools
 
 /**
  * 地支系統
  */
-enum class Branch {
+enum class Branch : ILoop<Branch> {
 
   子, 丑, 寅, 卯, 辰, 巳,
   午, 未, 申, 酉, 戌, 亥;
@@ -51,17 +52,10 @@ enum class Branch {
    * 取得下 n 個地支為何
    * n = 0 : 傳回自己
    */
-  fun next(n: Int): Branch {
+  override fun next(n: Int): Branch {
     return get(getIndex(this) + n)
   }
 
-  /**
-   * 取得前 n 個地支為何
-   * n = 0 : 傳回自己
-   */
-  fun prev(n: Int): Branch {
-    return next(0 - n)
-  }
 
   /**
    * 此地支「領先」另一個地支多少距離. 其值一定為正值

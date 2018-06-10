@@ -1,10 +1,11 @@
 package destiny.core.chinese
 
+import destiny.core.ILoop
 import destiny.core.chinese.FiveElement.*
 import destiny.tools.ArrayTools
 
 /** 天干系統  */
-enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
+enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
 
   甲, 乙, 丙, 丁, 戊,
   己, 庚, 辛, 壬, 癸;
@@ -23,17 +24,10 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang {
    * 取得下 n 個天干為何
    * n = 0 : 傳回自己
    */
-  fun next(n: Int): Stem {
+  override fun next(n: Int): Stem {
     return get(getIndex(this) + n)
   }
 
-  /**
-   * 取得前 n 個天干為何
-   * n = 0 : 傳回自己
-   */
-  fun prev(n: Int): Stem {
-    return next(0 - n)
-  }
 
   /**
    * 取得此天干，領先另一個天干，多少距離. 其值一定為正值

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese
 
+import destiny.core.ILoop
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.ArrayTools
@@ -12,6 +13,7 @@ import destiny.tools.ArrayTools
  * 120柱干支組合，沒有 陰陽限制
  */
 enum class StemBranchUnconstrained(override val stem: Stem, override val branch: Branch) : IStemBranchOptional,
+  ILoop<IStemBranch>,
   IStemBranch {
   甲子(甲, 子),
   乙子(乙, 子),
@@ -134,7 +136,7 @@ enum class StemBranchUnconstrained(override val stem: Stem, override val branch:
   癸亥(癸, 亥),
   甲亥(甲, 亥);
 
-  fun toStemBranch() : StemBranch? {
+  fun toStemBranch(): StemBranch? {
     return if (index % 2 == 0) {
       StemBranch[stem, branch]
     } else {
@@ -152,14 +154,6 @@ enum class StemBranchUnconstrained(override val stem: Stem, override val branch:
    */
   override fun next(n: Int): StemBranchUnconstrained {
     return get(getIndex(this) + n)
-  }
-
-  /**
-   * 取得前 n 組干支組合
-   * n = 0 : 傳回自己
-   */
-  override fun prev(n: Int): StemBranchUnconstrained {
-    return next(0 - n)
   }
 
 

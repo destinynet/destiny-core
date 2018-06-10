@@ -3,9 +3,10 @@
  */
 package destiny.core.chinese
 
+import destiny.core.ILoop
 import destiny.tools.ArrayTools
 
-enum class SixAnimal {
+enum class SixAnimal : ILoop<SixAnimal> {
   青龍,
   朱雀,
   勾陳,
@@ -13,26 +14,12 @@ enum class SixAnimal {
   白虎,
   玄武;
 
-  fun next(n: Int): SixAnimal {
+  override fun next(n: Int): SixAnimal {
     return get(getIndex(this) + n)
   }
 
-  fun next(): SixAnimal {
-    return get(getIndex(this) + 1)
-  }
-
-
-  fun prev(n: Int): SixAnimal {
-    return get(getIndex(this) - n)
-  }
-
-  fun prev(): SixAnimal {
-    return get(getIndex(this) - 1)
-  }
-
-
   companion object {
-    private val ARRAY = arrayOf(青龍, 朱雀, 勾陳, 螣蛇, 白虎, 玄武)
+    //private val ARRAY = arrayOf(青龍, 朱雀, 勾陳, 螣蛇, 白虎, 玄武)
 
     fun get(stem : Stem) : SixAnimal {
       return when(stem.fiveElement) {
@@ -45,11 +32,11 @@ enum class SixAnimal {
     }
 
     operator fun get(index: Int): SixAnimal {
-      return ArrayTools[ARRAY, index]
+      return ArrayTools[values(), index]
     }
 
     private fun getIndex(animal: SixAnimal): Int {
-      return ARRAY.binarySearch(animal)
+      return values().indexOf(animal)
     }
   }
 }

@@ -6,9 +6,11 @@ package destiny.astrology
 
 import destiny.astrology.Element.*
 import destiny.astrology.Quality.*
+import destiny.core.ILoop
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.IYinYang
+import destiny.tools.ArrayTools
 import destiny.tools.ILocaleString
 import java.util.*
 
@@ -22,7 +24,7 @@ enum class ZodiacSign(private val nameKey: String,
                       /** 陰陽  */
                       private val yinYang: Boolean,
                       /** 黃道起始度數  */
-                      val degree: Int) : ILocaleString, IYinYang {
+                      val degree: Int) : ILocaleString, IYinYang , ILoop<ZodiacSign> {
   /** Aries 戌/牡羊  */
   ARIES("ZodiacSign.ARIES", "ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0),
   /** Taurus 酉/金牛  */
@@ -59,10 +61,11 @@ enum class ZodiacSign(private val nameKey: String,
   /** 取得星座的 index , 為 0-based , 牡羊座為 0 , 金牛座為 1 , ... , 雙魚座為 11  */
   val index: Int
     get() {
-      (0 until ZodiacSign.values().size)
-        .filter { this == ZodiacSign.values()[it] }
-        .forEach { return it }
-      throw RuntimeException("Error!")
+      return values().indexOf(this)
+//      (0 until ZodiacSign.values().size)
+//        .filter { this == ZodiacSign.values()[it] }
+//        .forEach { return it }
+//      throw RuntimeException("Error!")
     }
 
   /**
@@ -81,6 +84,10 @@ enum class ZodiacSign(private val nameKey: String,
 
   fun getAbbreviation(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(abbrKey)
+  }
+
+  override fun next(n: Int): ZodiacSign {
+    return get(index + n)
   }
 
   override val booleanValue: Boolean
@@ -104,6 +111,17 @@ enum class ZodiacSign(private val nameKey: String,
       AQUARIUS    to 子,
       PISCES      to 亥
     )
+
+    /**
+     * 抓取地支的 index , 為 0-based
+     * 0 : 牡羊
+     * 1 : 金牛
+     * ...
+     * 11 : 雙魚
+     */
+    operator fun get(index:Int) : ZodiacSign {
+      return ArrayTools[values() , index]
+    }
 
     /** 取得黃道帶上的某度，屬於哪個星座  */
     fun getZodiacSign(degree: Double): ZodiacSign {

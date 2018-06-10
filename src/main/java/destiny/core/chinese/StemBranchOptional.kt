@@ -60,7 +60,7 @@ data class StemBranchOptional(
     }
 
     operator fun get(stem: Stem?, branch: Branch?): StemBranchOptional {
-      check(stem, branch)
+      //check(stem, branch)
 
       return if (stem != null && branch != null) {
         val sIndex = Stem.getIndex(stem)

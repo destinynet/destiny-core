@@ -1,21 +1,15 @@
 package destiny.core.chinese
 
+import destiny.core.ILoop
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch.甲子
 import destiny.core.chinese.StemBranch.癸亥
 import destiny.tools.ArrayTools
 
-interface IStemBranch : IStemBranchOptional {
+interface IStemBranch : IStemBranchOptional , ILoop<IStemBranch> {
   override val stem: Stem
   override val branch: Branch
-
-  fun prev(n: Int): IStemBranch
-  fun next(n: Int): IStemBranch
-  val next: IStemBranch
-    get() = next(1)
-  val previous: IStemBranch
-    get() = prev(1)
 }
 
 enum class StemBranchCycle(val sb: StemBranch) {
@@ -31,6 +25,7 @@ enum class StemBranchCycle(val sb: StemBranch) {
  * 中國干支組合表示法，0[甲子] ~ 59[癸亥]
  */
 enum class StemBranch(override val stem: Stem, override val branch: Branch) : IStemBranchOptional, IStemBranch,
+  ILoop<IStemBranch>,
   Comparable<StemBranch> {
   甲子(甲, 子),
   乙丑(乙, 丑),
@@ -104,15 +99,6 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
   override fun next(n: Int): StemBranch {
     return get(getIndex(this) + n)
   }
-
-  /**
-   * 取得前 n 組干支組合
-   * n = 0 : 傳回自己
-   */
-  override fun prev(n: Int): StemBranch {
-    return next(0 - n)
-  }
-
 
   /**
    * 取得此干支，領先另一組，多少步. 其值一定為正值
