@@ -44,4 +44,17 @@ object ChineseStringTools {
       toBiggerDigit(char.toString().toInt())
     }
   }
+
+  /**
+   * @param value 確保每個字都是全型中文字
+   */
+  fun alignRight(value: String, width: Int): String {
+    val valueLength = value.length*2
+    return if (valueLength == width)
+      value
+    else {
+      val doubleByteSpaces = (width - valueLength)/2
+      NULL_CHAR.repeat(doubleByteSpaces)+ value
+    }
+  }
 }

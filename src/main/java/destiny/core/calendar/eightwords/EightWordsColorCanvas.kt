@@ -10,6 +10,7 @@ import destiny.core.calendar.eightwords.personal.IHiddenStems
 import destiny.core.calendar.eightwords.personal.ReactionUtil
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.NaYin
 import destiny.core.chinese.Stem
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
@@ -36,7 +37,9 @@ class EightWordsColorCanvas(
   /** 網址連結  */
   private val linkUrl: String?,
   /** 輸出方向，由左至右，還是由右至左  */
-  private val direction: Direction) : ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR) {
+  private val direction: Direction,
+  /** 是否顯示納音 */
+  private val showNaYin: Boolean = false) : ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR) {
 
 
   /** TODO : IoC Google Maps URL Builder  */
@@ -131,7 +134,8 @@ class EightWordsColorCanvas(
 
       var x = 0
       if (context.yearMonthImpl is YearMonthSunSignImpl) {
-        val monthDesc = ChineseStringTools.toBiggerDigits(120) + "月柱法"+"（"+ZodiacSign.getZodiacSign(model.sunBranch)+"）"
+        val monthDesc =
+          ChineseStringTools.toBiggerDigits(120) + "月柱法" + "（" + ZodiacSign.getZodiacSign(model.sunBranch) + "）"
         cc.setText(monthDesc, 5, 1, "FF0000")
         x += 22
       }
@@ -238,6 +242,16 @@ class EightWordsColorCanvas(
       pillar.setText(干對日主.substring(0, 1), 4, 3, "gray")
       pillar.setText(干對日主.substring(1, 2), 5, 3, "gray")
     }
+
+    if (showNaYin) {
+      NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
+        val name = naYin.name
+        pillar.setText(name[0].toString(), 5, 5, "plum")
+        pillar.setText(name[1].toString(), 6, 5, "plum")
+        pillar.setText(name[2].toString(), 7, 5, "plum")
+      }
+    }
+
     pillar.add(地支藏干(stemBranch.branch, dayStem), 8, 1)
     return pillar
   }

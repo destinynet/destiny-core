@@ -10,30 +10,34 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.EightWordsColorCanvas
 import destiny.core.calendar.eightwords.IEightWordsContextModel
-import destiny.tools.AlignTools
+import destiny.core.chinese.NaYin
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
-import java.util.*
+import java.time.format.DateTimeFormatter
 
 class PersonContextColorCanvas(private val personContext: IPersonContext,
                                /** 預先儲存已經計算好的結果  */
                                private val model: IPersonPresentModel,
-                               place: String,
                                /** 地支藏干的實作，內定採用標準設定  */
                                private val hiddenStemsImpl: IHiddenStems,
-                               linkUrl: String,
-                               private val direction: Direction) : ColorCanvas(32, 70, ChineseStringTools.NULL_CHAR) {
+                               private val linkUrl: String,
+                               private val direction: Direction,
+                               /** 是否顯示納音 */
+                               private val showNaYin: Boolean = false) :
+  ColorCanvas(33, 70, ChineseStringTools.NULL_CHAR) {
 
   var outputMode = ColorCanvas.OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
     val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.lmt, model.location, model.place)
-    EightWordsColorCanvas(m, personContext, model.place ?: "", hiddenStemsImpl, linkUrl, direction)
+    EightWordsColorCanvas(m, personContext, model.place ?: "", hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
 
 
   private val timeDecorator = TimeSecDecoratorChinese()
+
+  private val monthDayFormatter = DateTimeFormatter.ofPattern("MM月")
 
 
   init {
@@ -54,16 +58,21 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
 
     val 右方大運直 = ColorCanvas(9, 24, ChineseStringTools.NULL_CHAR)
-    val 下方大運橫 = ColorCanvas(8, 70, ChineseStringTools.NULL_CHAR)
+    val 下方大運橫 = ColorCanvas(9, 70, ChineseStringTools.NULL_CHAR)
 
-    val dataList = ArrayList(model.fortuneDataLarges)
+    val dataList = model.fortuneDataLarges.toMutableList() // ArrayList(model.fortuneDataLarges)
 
     for (i in 1..dataList.size) {
 
       val fortuneData = dataList[i - 1]
       val selected = fortuneData.stemBranch == model.selectedFortuneLarge
-      val startFortune = fortuneData.startFortuneAge
-      val endFortune = fortuneData.endFortuneAge
+      val startFortune = ChineseStringTools.toBiggerDigits(fortuneData.startFortuneAge).let {
+        if (selected)
+          "★$it"
+        else
+          it
+      }
+      val endFortune = ChineseStringTools.toBiggerDigits(fortuneData.endFortuneAge)
       val stemBranch = fortuneData.stemBranch
 
 
@@ -72,14 +81,15 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
       val bgColor = if (selected) "CCC" else null
 
-      val row = ColorCanvas(1,24 , ChineseStringTools.NULL_CHAR , null , bgColor)
-      row.setText(AlignTools.alignRight(startFortune, 6), 1, 1, "green", null,
-                    "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
-      row.setText("→", 1, 9, "green" , null , null)
-      row.setText(AlignTools.alignRight(endFortune, 6), 1, 13, "green", null,
-                    "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt))
+      val row = ColorCanvas(1, 24, ChineseStringTools.NULL_CHAR, null, bgColor)
+
+      row.setText(ChineseStringTools.alignRight(startFortune, 6), 1, 1, "green", null,
+                  "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+      row.setText("→", 1, 9, "green", null, null)
+      row.setText(ChineseStringTools.alignRight(endFortune, 6), 1, 13, "green", null,
+                  "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt))
       row.setText(stemBranch.toString(), 1, 21, "green")
-      右方大運直.add(row , i , 1)
+      右方大運直.add(row, i, 1)
     }
 
 
@@ -104,17 +114,33 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
       val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
 
       val bgColor = if (selected) "DDD" else null
-      val triColumn = ColorCanvas(8 , 6 , ChineseStringTools.NULL_CHAR , null , bgColor)
+      val triColumn = ColorCanvas(9, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
 
-      triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1,  1, "green", null, "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+      triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1, 1, "green", null,
+                        "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+      // 加上月、日
+      val monthDay = startFortuneLmt.toLocalDate().let { value ->
+        monthDayFormatter.format(value)
+      }
+      triColumn.setText(StringUtils.center(monthDay, 6, ' '), 2, 1, "green", null, null)
+      if (showNaYin) {
+        NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
+          val name = naYin.name
+          triColumn.setText(name[0].toString(), 4, 5, "plum")
+          triColumn.setText(name[1].toString(), 5, 5, "plum")
+          triColumn.setText(name[2].toString(), 6, 5, "plum")
+        }
+      }
+
+
       val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
-      triColumn.setText(reaction.toString().substring(0, 1), 2,  3, "gray")
-      triColumn.setText(reaction.toString().substring(1, 2), 3,  3, "gray")
-      triColumn.setText(stemBranch.stem.toString(), 4,  3, "red")
-      triColumn.setText(stemBranch.branch.toString(), 5, 3, "red")
-      triColumn.add(ewContextColorCanvas.地支藏干(stemBranch.branch, eightWords.day.stem), 6, 1)
+      triColumn.setText(reaction.toString().substring(0, 1), 3, 3, "gray")
+      triColumn.setText(reaction.toString().substring(1, 2), 4, 3, "gray")
+      triColumn.setText(stemBranch.stem.toString(), 5, 3, "red")
+      triColumn.setText(stemBranch.branch.toString(), 6, 3, "red")
+      triColumn.add(ewContextColorCanvas.地支藏干(stemBranch.branch, eightWords.day.stem), 7, 1)
 
-      下方大運橫.add(triColumn , 1 , (i-1) * 8 + 1)
+      下方大運橫.add(triColumn, 1, (i - 1) * 8 + 1)
     }
 
 
@@ -127,18 +153,18 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     val prevMajorSolarTerms: Pair<SolarTerms, Double> = model.prevMajorSolarTerms
     val nextMajorSolarTerms: Pair<SolarTerms, Double> = model.nextMajorSolarTerms
 
-    val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second , model.location , revJulDayFunc)
+    val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second, model.location, revJulDayFunc)
 
     節氣.setText(prevMajorSolarTerms.first.toString(), 1, 1)
     節氣.setText("：", 1, 5)
     節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
 
-    val nextMajorSolarTermsTime = TimeTools.getLmtFromGmt(nextMajorSolarTerms.second , model.location , revJulDayFunc)
+    val nextMajorSolarTermsTime = TimeTools.getLmtFromGmt(nextMajorSolarTerms.second, model.location, revJulDayFunc)
     節氣.setText(nextMajorSolarTerms.first.toString(), 2, 1)
     節氣.setText("：", 2, 5)
     節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime), 2, 7)
 
-    add(節氣, 31, 1)
+    add(節氣, 32, 1)
   }
 
   /** 取得八字命盤  */

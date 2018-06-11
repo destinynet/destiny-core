@@ -17,6 +17,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.StemBranchUnconstrained
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 
-/** 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 */
+/** 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 . 內定 一柱十年 */
 class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
                            /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
                            private val fortuneDirectionImpl: IFortuneDirection,
@@ -89,7 +90,20 @@ class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
         ageNoteImpls.map { impl -> ageMap[endFortuneAge]?.let { impl.getAgeNote(it) } }.filter { it != null }
           .map { it!! }.toList()
 
-      val sb: IStemBranch = eightWords.month.let { if (forward) it.next(i) else it.prev(i) }
+      val sb: IStemBranch = eightWords.month.let {
+        if (forward) {
+          if (it is StemBranchUnconstrained)
+            it.next(i*2)
+          else
+            it.next(i)
+        }
+        else {
+          if (it is StemBranchUnconstrained)
+            it.prev(i*2)
+          else
+            it.prev(i)
+        }
+      }
       i++
       FortuneData(sb, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
                   startFortuneAgeNotes, endFortuneAgeNotes)
@@ -235,7 +249,7 @@ class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
       logger.debug("大運順行")
       var index = 1
       while (getTargetMajorSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan < diffSeconds) {
-        resultStemBranch = resultStemBranch.next
+        resultStemBranch = if (ewModel.eightWords.month is StemBranchUnconstrained) resultStemBranch.next(2) else resultStemBranch.next
         index++
       }
       return resultStemBranch
@@ -243,7 +257,8 @@ class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
       logger.debug("大運逆行")
       var index = -1
       while (abs(getTargetMajorSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan) < diffSeconds) {
-        resultStemBranch = resultStemBranch.previous
+//        resultStemBranch = resultStemBranch.previous
+        resultStemBranch = if (ewModel.eightWords.month is StemBranchUnconstrained) resultStemBranch.prev(2) else resultStemBranch.previous
         index--
       }
       return resultStemBranch

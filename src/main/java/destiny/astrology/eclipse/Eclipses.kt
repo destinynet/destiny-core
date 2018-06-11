@@ -147,24 +147,24 @@ interface ILunarEclipseTotal : ILunarEclipsePartial {
   val totalEnd: Double
 }
 
-sealed class AbstractLunarEclipse2 : ILunarEclipse {
+sealed class AbstractLunarEclipse : ILunarEclipse {
 
   /** 半影月食 */
   data class LunarEclipsePenumbra(
     override val begin: Double,
     override val max: Double,
-    override val end: Double) : AbstractLunarEclipse2()
+    override val end: Double) : AbstractLunarEclipse()
 
   /** 月偏食 */
   data class LunarEclipsePartial(
     private val penumbra: LunarEclipsePenumbra,
     override val partialBegin: Double,
-    override val partialEnd: Double) : AbstractLunarEclipse2(), ILunarEclipse by penumbra, ILunarEclipsePartial
+    override val partialEnd: Double) : AbstractLunarEclipse(), ILunarEclipse by penumbra, ILunarEclipsePartial
 
   /** 月全食 */
   data class LunarEclipseTotal(
     private val partial: LunarEclipsePartial,
     override val totalBegin: Double,
-    override val totalEnd: Double) : AbstractLunarEclipse2(), ILunarEclipsePartial by partial, ILunarEclipseTotal
+    override val totalEnd: Double) : AbstractLunarEclipse(), ILunarEclipsePartial by partial, ILunarEclipseTotal
 
 }

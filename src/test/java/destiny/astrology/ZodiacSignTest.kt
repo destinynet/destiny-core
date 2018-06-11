@@ -13,6 +13,27 @@ import kotlin.test.assertSame
 class ZodiacSignTest {
 
   @Test
+  fun testIndex() {
+    assertSame(PISCES, ZodiacSign.get(-1))
+    assertSame(ARIES , ZodiacSign.get(0))
+    assertSame(PISCES, ZodiacSign.get(11))
+    assertSame(ARIES, ZodiacSign.get(12))
+  }
+
+  @Test
+  fun testLoop() {
+    assertSame(PISCES, ARIES.previous)
+    assertSame(PISCES, ARIES.prev(1))
+    assertSame(PISCES, ARIES.prev(13))
+    assertSame(PISCES, ARIES.next(-1))
+
+    assertSame(TAURUS , ARIES.next)
+    assertSame(TAURUS , ARIES.next(1))
+    assertSame(TAURUS , ARIES.next(13))
+    assertSame(TAURUS , ARIES.prev(-1))
+  }
+
+  @Test
   fun testGetZodiacSign() {
     assertSame(ARIES, ZodiacSign.getZodiacSign(0.0))
     assertSame(ARIES, ZodiacSign.getZodiacSign(29.99))

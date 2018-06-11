@@ -19,7 +19,6 @@ enum class SixAnimal : ILoop<SixAnimal> {
   }
 
   companion object {
-    //private val ARRAY = arrayOf(青龍, 朱雀, 勾陳, 螣蛇, 白虎, 玄武)
 
     fun get(stem : Stem) : SixAnimal {
       return when(stem.fiveElement) {
