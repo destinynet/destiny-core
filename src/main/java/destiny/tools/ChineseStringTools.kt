@@ -45,6 +45,17 @@ object ChineseStringTools {
     }
   }
 
+  /** 搜尋字串中的數字，並且替換成全型 */
+  fun replaceToBiggerDigits(value : String) : String {
+    return value.toCharArray().joinToString("") { c : Char ->
+      if (c.isDigit()){
+        toBiggerDigit(c.toString().toInt())
+      }
+      else
+        c.toString()
+    }
+  }
+
   /**
    * @param value 確保每個字都是全型中文字
    */

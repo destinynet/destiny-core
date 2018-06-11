@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
@@ -263,5 +264,13 @@ class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
       }
       return resultStemBranch
     }
+  }
+
+  override fun getTitle(locale: Locale): String {
+    return "傳統（節氣的「節」）過運"
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return "太陽過黃道節氣的「節」來劃分大運，傳統此法一柱約十年"
   }
 }

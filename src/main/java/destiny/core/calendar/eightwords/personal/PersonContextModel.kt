@@ -3,17 +3,13 @@
  */
 package destiny.core.calendar.eightwords.personal
 
-import destiny.core.BirthDataNamePlace
-import destiny.core.Gender
-import destiny.core.IBirthDataNamePlace
-import destiny.core.IntAgeNote
+import destiny.core.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
-import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -53,7 +49,7 @@ interface IPersonContextModel : IEightWordsContextModel {
 
 
 /** 推算 大運 演算法 */
-interface IPersonFortuneLarge {
+interface IPersonFortuneLarge : Descriptive {
 
   /**
    * 順推大運

@@ -14,7 +14,9 @@ import destiny.core.chinese.NaYin
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class PersonContextColorCanvas(private val personContext: IPersonContext,
                                /** 預先儲存已經計算好的結果  */
@@ -58,11 +60,13 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
 
     val 右方大運直 = ColorCanvas(9, 24, ChineseStringTools.NULL_CHAR)
-    val 下方大運橫 = ColorCanvas(9, 70, ChineseStringTools.NULL_CHAR)
+    val 下方大運橫 = ColorCanvas(10, 70, ChineseStringTools.NULL_CHAR)
 
     val dataList = model.fortuneDataLarges.toMutableList() // ArrayList(model.fortuneDataLarges)
+    logger.debug("dataList size = {}", dataList.size)
 
-    for (i in 1..dataList.size) {
+    // 右方大運直 (限定9柱)
+    for (i in 1..9) {
 
       val fortuneData = dataList[i - 1]
       val selected = fortuneData.stemBranch == model.selectedFortuneLarge
@@ -100,48 +104,105 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
     val ageNoteImpls = personContext.ageNoteImpls
 
-    for (i in 1..dataList.size) {
-      val fortuneData = dataList[i - 1]
-      val selected = fortuneData.stemBranch == model.selectedFortuneLarge
+    // 下方大運橫
+    if (dataList.size == 9) {
+      // 完整九條大運 , 每條 height=10 , width = 6
+      for (i in 1..dataList.size) {
+        val fortuneData = dataList[i - 1]
+        val selected = fortuneData.stemBranch == model.selectedFortuneLarge
 
-      val startFortune: String =
-        ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
-          .filter { it !== null }
-          .map { it -> it!! }
-          .first()
+        val startFortune: String =
+          ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
+            .filter { it !== null }
+            .map { it -> it!! }
+            .first()
 
-      val stemBranch = fortuneData.stemBranch
-      val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
+        val stemBranch = fortuneData.stemBranch
+        val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
 
-      val bgColor = if (selected) "DDD" else null
-      val triColumn = ColorCanvas(9, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
+        val bgColor = if (selected) "DDD" else null
+        val triColumn = ColorCanvas(10, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
 
-      triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1, 1, "green", null,
-                        "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
-      // 加上月、日
-      val monthDay = startFortuneLmt.toLocalDate().let { value ->
-        monthDayFormatter.format(value)
-      }
-      triColumn.setText(StringUtils.center(monthDay, 6, ' '), 2, 1, "green", null, null)
-      if (showNaYin) {
-        NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
-          val name = naYin.name
-          triColumn.setText(name[0].toString(), 4, 5, "plum")
-          triColumn.setText(name[1].toString(), 5, 5, "plum")
-          triColumn.setText(name[2].toString(), 6, 5, "plum")
+        triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1, 1, "green", null,
+                          "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+        // 加上月、日
+        val monthDay = startFortuneLmt.toLocalDate().let { value ->
+          monthDayFormatter.format(value)
         }
-      }
+        triColumn.setText(StringUtils.center(monthDay, 6, ' '), 2, 1, "green", null, null)
+        if (showNaYin) {
+          NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
+            val name = naYin.name
+            triColumn.setText(name[0].toString(), 4, 5, "plum")
+            triColumn.setText(name[1].toString(), 5, 5, "plum")
+            triColumn.setText(name[2].toString(), 6, 5, "plum")
+          }
+        }
 
+        val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
+        triColumn.setText(reaction.toString().substring(0, 1), 3, 3, "gray")
+        triColumn.setText(reaction.toString().substring(1, 2), 4, 3, "gray")
+        triColumn.setText(stemBranch.stem.toString(), 5, 3, "red")
+        triColumn.setText(stemBranch.branch.toString(), 6, 3, "red")
+        triColumn.add(ewContextColorCanvas.地支藏干(stemBranch.branch, eightWords.day.stem), 7, 1)
 
-      val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
-      triColumn.setText(reaction.toString().substring(0, 1), 3, 3, "gray")
-      triColumn.setText(reaction.toString().substring(1, 2), 4, 3, "gray")
-      triColumn.setText(stemBranch.stem.toString(), 5, 3, "red")
-      triColumn.setText(stemBranch.branch.toString(), 6, 3, "red")
-      triColumn.add(ewContextColorCanvas.地支藏干(stemBranch.branch, eightWords.day.stem), 7, 1)
+        下方大運橫.add(triColumn, 1, (i - 1) * 8 + 1)
+      } // 1~9
+    } else if (dataList.size == 18) {
+      // 18條大運 , 分成上下兩條 , 每條 height=5 , width = 6
+      for (i in 1..9) {
+        for (j in 1..2) {
+          val index = (2 * (i - 1) + j - 1).let {
+            if (direction == Direction.L2R)
+              it
+            else {
+              // 交換上下兩列
+              if (j==1)
+                it+1
+              else
+                it-1
+            }
+          }
+          val fortuneData = dataList[index]
 
-      下方大運橫.add(triColumn, 1, (i - 1) * 8 + 1)
-    }
+          val selected = fortuneData.stemBranch == model.selectedFortuneLarge
+          val startFortune: String =
+            ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
+              .filter { it !== null }
+              .map { it -> it!! }
+              .first()
+          val stemBranch = fortuneData.stemBranch
+          val startFortuneLmt =
+            TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
+
+          val bgColor = if (selected) "DDD" else null
+          val triColumnShort = ColorCanvas(5, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
+          //triColumnShort.setText(i.toString()+"/"+j.toString()+":"+dataList.indexOf(fortuneData) , 1 , 1)
+
+          //val title = AlignTools.leftPad(startFortune, 6 , ChineseStringTools.NULL_CHAR.get(0))
+          val title = StringUtils.center(startFortune, 6, ' ')
+          //val title = ChineseStringTools.replaceToBiggerDigits(startFortune)
+          //val title = StringUtils.rightPad(startFortune, 6, ChineseStringTools.NULL_CHAR)
+          triColumnShort.setText(title, 1, 1, "green", null, "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+
+          val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
+          triColumnShort.setText(reaction.getAbbreviation(Locale.TAIWAN) , 2 , 3 , "gray")
+          triColumnShort.setText(stemBranch.stem.toString() , 3 , 3 , "red")
+          triColumnShort.setText(stemBranch.branch.toString() , 4 , 3 , "red")
+          // 地支藏干
+          val reactions = reactionsUtil.getReactions(stemBranch.branch, eightWords.day.stem)
+          for (k in reactions.indices) {
+            val eachReaction = reactions[k]
+            triColumnShort.setText(ReactionUtil.getStem(eightWords.day.stem, eachReaction).toString(), 5, 5 - 2 * k, "gray") // 天干
+          }
+          //triColumnShort.setText("XX" , 5 , 3 , "gray")
+          val (x, y) = ((j - 1) * 5 + 1) to ((i - 1) * 8 + 1)
+          //println("i = $i , j = $j , x = $x , y = $y")
+          下方大運橫.add(triColumnShort, x, y)
+        } // 1~2
+      } // 1~ (18/2=9)
+
+    } // 18條大運 , 分成上下兩條 , 每條 height=5 , width = 6
 
 
     // 2017-10-25 起，右邊大運固定顯示虛歲
@@ -176,6 +237,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
   }
 
   companion object {
+    private val logger = LoggerFactory.getLogger(PersonContextColorCanvas::class.java)!!
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 

@@ -23,11 +23,12 @@ import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 /**
- * 黃道節氣過運法
+ * 節氣星座過運法
  * 以太陽每過黃道15度 [destiny.core.calendar.SolarTerms] 放大 120倍
  * 每柱干支大運約為五年左右
  * 傳回的大運干支為 [destiny.core.chinese.StemBranchUnconstrained] , 可能會出現「甲丑」 這類干支
@@ -261,4 +262,12 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
       resultStemBranch
     }
   } // 逆推大運
+
+  override fun getTitle(locale: Locale): String {
+    return "星座加節氣過運法"
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return "除了傳統法，額外考量「星座」（意即：中氣）過運。通常一柱大運為五年。"
+  }
 }

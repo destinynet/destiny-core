@@ -13,7 +13,6 @@ import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
-import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -51,8 +50,9 @@ class PersonContext(
     // 1到120歲 , 每歲的開始、以及結束
     val ageMap: Map<Int, Pair<Double, Double>> = intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , 120)
 
-    // 9條大運
-    val fortuneDataLarges = fortuneLargeImpl.getFortuneDataList(lmt, location, gender, 9)
+    // 9 or 18 條大運
+    val n = if (fortuneLargeImpl is FortuneLargeSolarTermsSpanImpl) 18 else 9
+    val fortuneDataLarges = fortuneLargeImpl.getFortuneDataList(lmt, location, gender, n)
 
     // 120歲 小運 , 120柱
     val fortuneDataSmalls = fortuneSmallImpl.getFortuneDataList(lmt , location , gender , 120)

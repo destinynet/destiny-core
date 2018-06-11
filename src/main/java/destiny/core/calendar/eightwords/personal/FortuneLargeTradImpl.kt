@@ -8,6 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 
 /**
  * 傳統八字起大運法
@@ -28,6 +29,14 @@ class FortuneLargeTradImpl : IPersonFortuneLarge , Serializable {
                              location: ILocation,
                              gender: Gender,
                              targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun getTitle(locale: Locale): String {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  override fun getDescription(locale: Locale): String {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 }

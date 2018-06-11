@@ -266,7 +266,6 @@ class EightWordsColorCanvas(
       resultCanvas.setText(ReactionUtil.getStem(天干, eachReaction).toString(), 1, 5 - 2 * i, "gray") // 天干
       resultCanvas.setText(eachReaction.toString().substring(0, 1), 2, 5 - 2 * i, "gray")
       resultCanvas.setText(eachReaction.toString().substring(1, 2), 3, 5 - 2 * i, "gray")
-
     }
     return resultCanvas
   }
