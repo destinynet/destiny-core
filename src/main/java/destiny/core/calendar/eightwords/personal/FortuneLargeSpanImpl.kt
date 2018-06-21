@@ -267,7 +267,7 @@ class FortuneLargeSpanImpl(private val eightWordsContext: EightWordsContext,
   }
 
   override fun getTitle(locale: Locale): String {
-    return "傳統（節氣的「節」）過運"
+    return "傳統「節」過運"
   }
 
   override fun getDescription(locale: Locale): String {

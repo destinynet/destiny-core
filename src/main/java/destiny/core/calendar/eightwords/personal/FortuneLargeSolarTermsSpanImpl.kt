@@ -264,7 +264,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
   } // 逆推大運
 
   override fun getTitle(locale: Locale): String {
-    return "星座加節氣過運法"
+    return "「節」＋「氣（星座）」過運"
   }
 
   override fun getDescription(locale: Locale): String {

@@ -98,6 +98,7 @@ class ZModernContext(
     if (dst) {
       // 日光節約時間 特別註記
       notesBuilders.add(Pair("dst", arrayOf()))
+      logger.info("[DST]:校正日光節約時間...")
       logger.info("lmt = {} , location = {} . location.hasMinuteOffset = {}", lmt, location, location.hasMinuteOffset)
       logger.info("loc tz = {} , minuteOffset = {}", location.timeZone.id, location.finalMinuteOffset)
       logger.info("日光節約時間： {} ,  GMT 時差 : {}", dst, minuteOffset)
