@@ -135,7 +135,7 @@ class EightWordsColorCanvas(
       var x = 0
       if (context.yearMonthImpl is YearMonthSunSignImpl) {
         val monthDesc =
-          ChineseStringTools.toBiggerDigits(120) + "月柱法" + "（" + ZodiacSign.getZodiacSign(model.sunBranch) + "）"
+          ChineseStringTools.toBiggerDigits(120) + "月柱法" + "（" + model.sunSign + "）"
         cc.setText(monthDesc, 5, 1, "FF0000")
         x += 22
       }

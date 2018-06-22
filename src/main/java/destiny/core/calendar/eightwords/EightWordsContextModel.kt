@@ -9,7 +9,6 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -40,14 +39,23 @@ interface IEightWordsContextModel {
   /** 下一個「節」 , 以及 GMT Jul Day */
   val nextMajorSolarTerms: Pair<SolarTerms,Double>
 
+  /** 上一個(目前)星座 , 以及 GMT Jul Day */
+  val prevSolarSign : Pair<ZodiacSign , Double>
+
+  /** 下一個星座 , 以及 GMT Jul Day */
+  val nextSolarSign : Pair<ZodiacSign , Double>
+
   /** 命宮 (上升星座)  */
   val risingStemBranch: StemBranch
 
-  /** 太陽位置  */
-  val sunBranch: Branch
+  /** 太陽星座 */
+  val sunSign: ZodiacSign
 
-  /** 月亮位置  */
-  val moonBranch: Branch
+  /** 月亮星座 */
+  val moonSign:ZodiacSign
+
+  val gmtJulDay
+    get() = TimeTools.getGmtJulDay(lmt , location)
 }
 
 /**
@@ -88,10 +96,20 @@ data class EightWordsContextModel(
   override val nextMajorSolarTerms: Pair<SolarTerms,Double>,
   /** 命宮 (上升星座)  */
   override val risingStemBranch: StemBranch,
-  /** 太陽位置  */
-  override val sunBranch: Branch,
-  /** 月亮位置  */
-  override val moonBranch: Branch) : IEightWordsContextModel, Serializable {
+
+  /** 上一個(目前)星座 , 以及 GMT Jul Day */
+  override val prevSolarSign: Pair<ZodiacSign, Double>,
+
+  /** 下一個星座 , 以及 GMT Jul Day */
+  override val nextSolarSign: Pair<ZodiacSign, Double>,
+
+  /** 月亮星座 */
+  override val moonSign: ZodiacSign) : IEightWordsContextModel, Serializable {
+
+  /** 太陽星座 */
+  override val sunSign : ZodiacSign by lazy {
+    prevSolarSign.first
+  }
 
   /** 是否有日光節約  */
   override val dst: Boolean

@@ -28,8 +28,14 @@ interface IStarTransit {
   /**
    * 傳回 GMT
    */
-  fun getNextTransitGmtDateTime(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, forward: Boolean = true,
-                                revJulDayFunc: Function<Double, ChronoLocalDateTime<*>> = Function { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }): ChronoLocalDateTime<*> {
+  fun getNextTransitGmtDateTime(star: Star,
+                                degree: Double,
+                                coordinate: Coordinate,
+                                fromGmt: Double,
+                                forward: Boolean = true,
+                                revJulDayFunc: Function<Double, ChronoLocalDateTime<*>> = Function {
+                                  JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it)
+                                }): ChronoLocalDateTime<*> {
     val gmtJulDay = getNextTransitGmt(star, degree, coordinate, fromGmt, forward)
     return revJulDayFunc.apply(gmtJulDay)
   }

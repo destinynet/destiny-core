@@ -10,6 +10,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
 import destiny.core.calendar.eightwords.EightWordsColorCanvas
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.core.calendar.eightwords.TimeLine
 import destiny.core.chinese.NaYin
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
@@ -27,7 +28,9 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
                                private val direction: Direction,
                                /** 是否顯示納音 */
                                private val showNaYin: Boolean = false) :
-  ColorCanvas(33, 70, ChineseStringTools.NULL_CHAR) {
+  ColorCanvas(38, 70, ChineseStringTools.NULL_CHAR)
+//  ColorCanvas(33, 70, ChineseStringTools.NULL_CHAR)
+{
 
   var outputMode = ColorCanvas.OutputMode.HTML
 
@@ -39,7 +42,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
   private val timeDecorator = TimeSecDecoratorChinese()
 
-  private val monthDayFormatter = DateTimeFormatter.ofPattern("MM月")
+  private val monthFormatter = DateTimeFormatter.ofPattern("MM月")
+  private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
 
 
   init {
@@ -125,9 +129,9 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
         triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1, 1, "green", null,
                           "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
-        // 加上月、日
+        // 加上月
         val monthDay = startFortuneLmt.toLocalDate().let { value ->
-          monthDayFormatter.format(value)
+          monthFormatter.format(value)
         }
         triColumn.setText(StringUtils.center(monthDay, 6, ' '), 2, 1, "green", null, null)
         if (showNaYin) {
@@ -226,6 +230,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime), 2, 7)
 
     add(節氣, 32, 1)
+
+    add(TimeLine(model) , 34 , 1)
   }
 
   /** 取得八字命盤  */

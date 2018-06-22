@@ -7,7 +7,6 @@ import destiny.astrology.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import java.io.Serializable
@@ -29,7 +28,8 @@ class EightWordsContext(
   override val changeDayAfterZi: Boolean,
   override val risingSignImpl: IRisingSign,
   val starPositionImpl: IStarPosition<*>,
-  val solarTermsImpl: ISolarTerms) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
+  val solarTermsImpl: ISolarTerms,
+  val zodiacSignImpl: IZodiacSign) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
   private data class CacheKey(val lmt: ChronoLocalDateTime<*> , val location: ILocation , val place: String?)
 
@@ -51,13 +51,18 @@ class EightWordsContext(
       val (prevMajorSolarTerms, nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsGmtBetween(lmt, location)
 
       val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
+      val sunSign = getSignOf(Planet.SUN, lmt, location, starPositionImpl)
+      val moonSign = getSignOf(Planet.MOON, lmt, location, starPositionImpl)
 
-      val sunBranch = getBranchOf(Planet.SUN, lmt, location, starPositionImpl)
-      val moonBranch = getBranchOf(Planet.MOON, lmt, location, starPositionImpl)
+
+      val (prevSolarSign , nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN , lmt , location)
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
-                                    prevMajorSolarTerms, nextMajorSolarTerms, risingSign,
-                                    sunBranch, moonBranch)
+                                    prevMajorSolarTerms, nextMajorSolarTerms,
+                                    risingSign ,
+                                    prevSolarSign , nextSolarSign,
+                                    moonSign
+                                   )
     }
 
     val pair: Pair<CacheKey, IEightWordsContextModel>? = cacheThreadLocal.get()
@@ -91,11 +96,13 @@ class EightWordsContext(
     return StemBranch[risingStem, risingBranch]
   }
 
-  private fun getBranchOf(star: Star,
+  private fun getSignOf(star: Star,
                           lmt: ChronoLocalDateTime<*>,
                           location: ILocation,
-                          starPositionImpl: IStarPosition<*>): Branch {
+                          starPositionImpl: IStarPosition<*>): ZodiacSign {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
-    return ZodiacSign.getZodiacSign(pos.lng).branch
+    return ZodiacSign.getZodiacSign(pos.lng)
   }
+
+
 }

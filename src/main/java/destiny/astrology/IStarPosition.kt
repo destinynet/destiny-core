@@ -85,5 +85,6 @@ interface IStarPosition<out T : IPos> {
     val gmt = TimeTools.getGmtFromLmt(lmt, location.timeZone.toZoneId())
     return getPosition(star, gmt, centric, coordinate, location, temperature, pressure)
   }
+
 }
 /** 取得星體的位置 , 包含當地時間 (LMT) 以及座標 , 「不包含」 溫度、壓力  */
