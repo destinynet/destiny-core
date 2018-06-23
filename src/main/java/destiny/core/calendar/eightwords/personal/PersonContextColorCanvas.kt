@@ -4,7 +4,6 @@
 package destiny.core.calendar.eightwords.personal
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
@@ -28,7 +27,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
                                private val direction: Direction,
                                /** 是否顯示納音 */
                                private val showNaYin: Boolean = false) :
-  ColorCanvas(38, 70, ChineseStringTools.NULL_CHAR)
+  ColorCanvas(36, 70, ChineseStringTools.NULL_CHAR)
 //  ColorCanvas(33, 70, ChineseStringTools.NULL_CHAR)
 {
 
@@ -214,24 +213,24 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     add(右方大運直, 11, 47)
     add(下方大運橫, 22, 1)
 
-    val 節氣 = ColorCanvas(2, width, ChineseStringTools.NULL_CHAR)
-    val prevMajorSolarTerms: Pair<SolarTerms, Double> = model.prevMajorSolarTerms
-    val nextMajorSolarTerms: Pair<SolarTerms, Double> = model.nextMajorSolarTerms
+//    val 節氣 = ColorCanvas(2, width, ChineseStringTools.NULL_CHAR)
+//    val prevMajorSolarTerms: Pair<SolarTerms, Double> = model.prevMajorSolarTerms
+//    val nextMajorSolarTerms: Pair<SolarTerms, Double> = model.nextMajorSolarTerms
+//
+//    val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second, model.location, revJulDayFunc)
+//
+//    節氣.setText(prevMajorSolarTerms.first.toString(), 1, 1)
+//    節氣.setText("：", 1, 5)
+//    節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
+//
+//    val nextMajorSolarTermsTime = TimeTools.getLmtFromGmt(nextMajorSolarTerms.second, model.location, revJulDayFunc)
+//    節氣.setText(nextMajorSolarTerms.first.toString(), 2, 1)
+//    節氣.setText("：", 2, 5)
+//    節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime), 2, 7)
+//
+//    add(節氣, 32, 1)
 
-    val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second, model.location, revJulDayFunc)
-
-    節氣.setText(prevMajorSolarTerms.first.toString(), 1, 1)
-    節氣.setText("：", 1, 5)
-    節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
-
-    val nextMajorSolarTermsTime = TimeTools.getLmtFromGmt(nextMajorSolarTerms.second, model.location, revJulDayFunc)
-    節氣.setText(nextMajorSolarTerms.first.toString(), 2, 1)
-    節氣.setText("：", 2, 5)
-    節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime), 2, 7)
-
-    add(節氣, 32, 1)
-
-    add(TimeLine(model) , 34 , 1)
+    add(TimeLine(model) , 32 , 1)
   }
 
   /** 取得八字命盤  */

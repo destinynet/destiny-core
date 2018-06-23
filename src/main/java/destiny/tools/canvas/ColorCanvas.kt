@@ -276,7 +276,7 @@ open class ColorCanvas : Serializable {
   fun setText(str: String,
               x: Int,
               y: Int,
-              wrap: Boolean,
+              wrap: Boolean = false,
               foreColor: String? = null,
               backColor: String? = null,
               font: Font? = null,
