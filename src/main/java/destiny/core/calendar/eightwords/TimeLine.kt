@@ -33,6 +33,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString() , 1 , 1 , title = title)
       setText(monthDayFormatter.format(lmt.toLocalDate()) , 2 , 1 , title=title)
+      setText(pair.first.branch.toString() , 1 , 5 , "white" , "teal" , null)
     }
 
     // 最右邊 節氣
@@ -41,6 +42,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString(), 1, 63 , title = title)
       setText(monthDayFormatter.format(lmt.toLocalDate()) , 2 , 63 , title = title)
+      setText(pair.first.branch.toString() , 1 , 67 , "white" , "teal" , null)
     }
 
     // 中間 星座
@@ -96,8 +98,8 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
       left to right
     }.invoke()
 
-    setText(leftDaysString, 4, starIndex - leftDaysString.length * 2)
-    setText(rightDaysString, 4, starIndex + 2)
+    setText(leftDaysString, 4, starIndex - leftDaysString.length * 2 , "gray")
+    setText(rightDaysString, 4, starIndex + 2 , "gray")
 
   } // init
 

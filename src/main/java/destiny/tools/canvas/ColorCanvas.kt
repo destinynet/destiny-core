@@ -255,7 +255,7 @@ open class ColorCanvas : Serializable {
   /**
    * 在第 x row , 第 y column , 開始，寫入 Text , 有設定前景色，背景色，以及 title
    */
-  fun setText(str: String, x: Int, y: Int, foreColor: String?, backColor: String?, title: String?) {
+  fun setText(str: String, x: Int, y: Int, foreColor: String?, backColor: String?, title: String? = null) {
     this.setText(str, x, y, false, foreColor, backColor, null, null, title)
   }
 
