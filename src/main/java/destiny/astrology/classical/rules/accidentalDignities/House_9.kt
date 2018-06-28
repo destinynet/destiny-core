@@ -8,7 +8,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** In the 9th house.  */
-class House_9 : Rule() {
+class House_9 : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getHouse(planet)

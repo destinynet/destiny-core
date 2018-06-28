@@ -18,7 +18,7 @@ import destiny.core.calendar.TimeTools
  */
 class Besieged_Mars_Saturn(
   /** 計算兩星夾角的工具箱  */
-  private val besiegedImpl: IBesieged) : Rule() {
+  private val besiegedImpl: IBesieged) : DebilityRule() {
 
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {

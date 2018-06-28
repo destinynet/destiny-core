@@ -14,7 +14,7 @@ import destiny.astrology.classical.IEssential
  * 舉例：水星到摩羯，火星到雙子
  * 摩羯為火星 Exaltation 之星座，雙子為水星 Ruler 之星座
  */
-class MixedReception(private val essentialImpl: IEssential) : Rule() {
+class MixedReception(private val essentialImpl: IEssential) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return mixedReception(h , planet)

@@ -8,7 +8,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** Cazimi (within 17 minutes of the Sun).  */
-class Cazimi : Rule() {
+class Cazimi : AccidentalRule() {
 
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {

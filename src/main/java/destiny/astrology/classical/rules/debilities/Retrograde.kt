@@ -7,7 +7,7 @@ package destiny.astrology.classical.rules.debilities
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
-class Retrograde : Rule() {
+class Retrograde : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getPosition(planet)?.speedLng

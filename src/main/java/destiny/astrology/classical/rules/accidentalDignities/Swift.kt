@@ -9,7 +9,7 @@ import destiny.astrology.Planet
 import destiny.astrology.classical.AverageDailyMotionMap
 
 /** Swift in motion (faster than average).  */
-class Swift : Rule() {
+class Swift : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf { dailyDeg ->

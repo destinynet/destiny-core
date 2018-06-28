@@ -12,7 +12,7 @@ import destiny.astrology.Planet.JUPITER
 import destiny.astrology.Planet.VENUS
 
 /** Partile aspect Jupiter or Venus.  */
-class Partile_Sextile_Jupiter_Venus : Rule() {
+class Partile_Sextile_Jupiter_Venus : AccidentalRule() {
 
   private val aspect = Aspect.SEXTILE
 

@@ -12,7 +12,7 @@ import destiny.astrology.Planet.*
  * Mars, Jupiter, or Saturn occidental to the Sun.
  * 火星、木星、或土星，在太陽西方
  */
-class Occidental : Rule() {
+class Occidental : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDegree: Double? = arrayOf(MARS , JUPITER , SATURN)

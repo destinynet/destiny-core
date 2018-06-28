@@ -8,7 +8,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** Free from combustion and the Sun's rays. 只要脫離了太陽左右 17度，就算 Free Combustion !?  */
-class Free_Combustion : Rule() {
+class Free_Combustion : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== Planet.SUN }

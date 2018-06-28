@@ -5,18 +5,26 @@ import destiny.tools.ILocaleString
 import java.text.MessageFormat
 import java.util.*
 
+/**
+ * 新版 [Rule]
+ */
 abstract class AbstractRuleDescriptor<out T : Rule>(val rule: T) : Descriptive {
 
   val nameKey = rule.javaClass.simpleName!!
 
   val resource = with(StringBuilder()) {
-      append(rule.javaClass.`package`.name)
-      //append('.')
-      //append(rule.type.name)
+    append("destiny.astrology.classical.Classical")
+//      append(rule.javaClass.`package`.name)
+//      append('.')
+//      append(rule.javaClass.simpleName)
     }.toString()
 
   override fun getTitle(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+    return try {
+      ResourceBundle.getBundle(resource, locale).getString(nameKey)
+    } catch (e: Exception) {
+      rule.javaClass.simpleName
+    }
   }
 
   override fun getDescription(locale: Locale): String {

@@ -10,7 +10,7 @@ import destiny.astrology.Planet.MOON
 import destiny.astrology.Planet.SUN
 
 /** Direct in motion (does not apply to Sun and Moon).  */
-class Direct : Rule() {
+class Direct : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== SUN && it !== MOON }

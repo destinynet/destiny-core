@@ -6,9 +6,7 @@ package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.classical.*
 
-abstract class EssentialRule : Rule() {
-
-
+abstract class EssentialRule : DebilityRule() {
 
   val triplicityImpl : ITriplicity = TriplicityWilliamImpl()
 

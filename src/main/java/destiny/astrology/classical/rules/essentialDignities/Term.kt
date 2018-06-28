@@ -9,7 +9,7 @@ import destiny.astrology.Planet
 import destiny.astrology.classical.ITerm
 
 /** A planet in itw own term.  */
-class Term(private val termImpl : ITerm) : Rule() {
+class Term(private val termImpl : ITerm) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val lngDeg: Double? = h.getPosition(planet)?.lng

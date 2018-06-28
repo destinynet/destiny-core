@@ -13,7 +13,7 @@ import destiny.astrology.classical.ITriplicity
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
 class Triplicity(
   private val triplicityImpl : ITriplicity,
-  private val dayNightImpl: DayNightDifferentiator) : Rule() {
+  private val dayNightImpl: DayNightDifferentiator) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val sign = h.getZodiacSign(planet)

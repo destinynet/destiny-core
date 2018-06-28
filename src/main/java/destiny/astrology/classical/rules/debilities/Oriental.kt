@@ -12,7 +12,7 @@ import destiny.astrology.Planet.*
  * Mercury, or Venus oriental to the Sun.
  * 金星、水星，是否 東出 於 太陽
  */
-class Oriental : Rule() {
+class Oriental : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDegree: Double? = arrayOf(MERCURY , VENUS).takeIf { it.contains(planet) }

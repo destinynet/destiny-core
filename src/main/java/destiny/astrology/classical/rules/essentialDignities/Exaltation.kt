@@ -12,7 +12,7 @@ import destiny.astrology.classical.IExaltation
 
 /** A planet in its exaltation , or mutual reception with another planet by exaltation  */
 class Exaltation(private val essentialImpl: IEssential,
-                 private val exaltImpl: IExaltation) : Rule() {
+                 private val exaltImpl: IExaltation) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->

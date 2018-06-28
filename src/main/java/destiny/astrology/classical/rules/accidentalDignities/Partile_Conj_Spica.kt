@@ -7,7 +7,7 @@ package destiny.astrology.classical.rules.accidentalDignities
 import destiny.astrology.*
 
 /** Partile conjunct Spica at 23deg50' Libra in January 2000.  */
-class Partile_Conj_Spica : Rule() {
+class Partile_Conj_Spica : AccidentalRule() {
 
   private val aspect = Aspect.CONJUNCTION
 

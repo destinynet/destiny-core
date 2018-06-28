@@ -12,7 +12,7 @@ import destiny.astrology.Planet.JUPITER
 import destiny.astrology.Planet.VENUS
 
 /** Partile trine Jupiter or Venus.  */
-class Partile_Trine_Jupiter_Venus : Rule() {
+class Partile_Trine_Jupiter_Venus : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDeg = h.getPosition(planet)?.lng

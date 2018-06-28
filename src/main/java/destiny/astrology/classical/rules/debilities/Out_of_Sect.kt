@@ -17,7 +17,7 @@ import java.util.*
  */
 class Out_of_Sect(
   /** 計算白天黑夜的實作  */
-  val dayNightImpl: DayNightDifferentiator) : Rule() {
+  val dayNightImpl: DayNightDifferentiator) : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)

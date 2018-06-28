@@ -8,7 +8,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** Combust the Sun (between 17' and 8.5 from Sol).  */
-class Combustion : Rule() {
+class Combustion : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== Planet.SUN }

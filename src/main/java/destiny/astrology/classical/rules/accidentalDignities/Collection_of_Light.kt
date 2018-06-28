@@ -12,7 +12,7 @@ import destiny.astrology.classical.ICollectionOfLight.CollectType.DIGNITIES
 /**
  * 目前只將「收集好光 (DIGNITIES) 」視為 Collection of Light ，而「蒐集穢光 (DEBILITIES) 」不納入考慮
  */
-class Collection_of_Light(private val collectionOfLightImpl: ICollectionOfLight) : Rule() {
+class Collection_of_Light(private val collectionOfLightImpl: ICollectionOfLight) : AccidentalRule() {
 
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {

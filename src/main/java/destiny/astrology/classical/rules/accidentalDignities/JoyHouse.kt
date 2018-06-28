@@ -18,7 +18,7 @@ import destiny.astrology.Planet.*
  * Jupiter in 11th.
  * Saturn in 12th.
  */
-class JoyHouse : Rule() {
+class JoyHouse : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getHouse(planet)

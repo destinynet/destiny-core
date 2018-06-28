@@ -5,8 +5,9 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.classical.rules.AbstractRule
+import destiny.astrology.classical.rules.RuleType
 
-abstract class Rule : AbstractRule(resource), Applicable {
+abstract class AccidentalRule : AbstractRule(resource, RuleType.ACCIDENTAL) {
   companion object {
     private const val resource = "destiny.astrology.classical.rules.accidentalDignities.AccidentalDignities"
   }

@@ -12,7 +12,7 @@ import destiny.astrology.classical.IRefranation
 /**
  * 在與火星或土星形成交角之前，臨陣退縮，代表避免厄運
  */
-class Refrain_from_Mars_Saturn(private val refranationImpl: IRefranation) : Rule() {
+class Refrain_from_Mars_Saturn(private val refranationImpl: IRefranation) : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     // 太陽 / 月亮不會逆行

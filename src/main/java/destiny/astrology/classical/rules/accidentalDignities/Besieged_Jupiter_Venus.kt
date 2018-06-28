@@ -18,7 +18,7 @@ import destiny.core.calendar.TimeTools
 class Besieged_Jupiter_Venus(
 
   /** 計算兩星夾角的實作  */
-  private val besiegedImpl: IBesieged) : Rule() {
+  private val besiegedImpl: IBesieged) : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return planet.takeIf { arrayOf(SUN , MOON , MERCURY , MARS , SATURN).contains(it) }?.takeIf {

@@ -9,7 +9,7 @@ import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 
 /** Mercury, or Venus occidental of (rising after) the Sun.  */
-class Occidental : Rule() {
+class Occidental : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDeg: Double? = planet.takeIf { it === MERCURY || it === VENUS }

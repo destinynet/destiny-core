@@ -10,7 +10,7 @@ import destiny.astrology.Planet.MOON
 import destiny.astrology.Planet.SUN
 
 /** Moon increasing in light (月增光/上弦月) , or occidental of the Sun.  */
-class Moon_Increase_Light : Rule() {
+class Moon_Increase_Light : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val moonDeg = planet.takeIf { it === MOON }

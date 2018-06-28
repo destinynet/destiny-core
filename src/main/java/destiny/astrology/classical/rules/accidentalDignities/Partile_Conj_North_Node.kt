@@ -7,7 +7,7 @@ package destiny.astrology.classical.rules.accidentalDignities
 import destiny.astrology.*
 
 /** Partile aspect with Dragon's Head (Moon's North Node).  */
-class Partile_Conj_North_Node : Rule() {
+class Partile_Conj_North_Node : AccidentalRule() {
   
   private val aspect = Aspect.CONJUNCTION
 

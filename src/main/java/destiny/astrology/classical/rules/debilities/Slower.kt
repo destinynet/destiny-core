@@ -8,7 +8,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.AverageDailyMotionMap
 
-class Slower : Rule() {
+class Slower : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf{ dailyDeg ->

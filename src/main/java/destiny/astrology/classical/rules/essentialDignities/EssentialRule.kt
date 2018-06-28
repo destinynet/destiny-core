@@ -5,12 +5,11 @@
 package destiny.astrology.classical.rules.essentialDignities
 
 import destiny.astrology.classical.IRuler
-import destiny.astrology.classical.ITriplicity
 import destiny.astrology.classical.RulerPtolemyImpl
-import destiny.astrology.classical.TriplicityWilliamImpl
 import destiny.astrology.classical.rules.AbstractRule
+import destiny.astrology.classical.rules.RuleType
 
-abstract class Rule : AbstractRule(resource), Applicable {
+abstract class EssentialRule : AbstractRule(resource, RuleType.ESSENTIAL) {
 
   val rulerImpl : IRuler = RulerPtolemyImpl()
 

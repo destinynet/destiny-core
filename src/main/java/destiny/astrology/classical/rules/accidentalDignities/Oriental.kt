@@ -11,7 +11,7 @@ import destiny.astrology.Planet.*
 /** Mars, Jupiter, or Saturn oriental of (rising before) the Sun.
  * 火星、木星、土星 是否 東出 於 太陽
  */
-class Oriental : Rule() {
+class Oriental : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDegree: Double? = arrayOf(MARS, JUPITER, SATURN)

@@ -10,7 +10,7 @@ import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IEssential
 
 /** A planet in its own sign , or mutual reception with another planet by sign  */
-class Ruler(private val essentialImpl: IEssential) : Rule() {
+class Ruler(private val essentialImpl: IEssential) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->

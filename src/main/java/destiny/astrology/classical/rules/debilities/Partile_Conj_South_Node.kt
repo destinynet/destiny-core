@@ -7,7 +7,7 @@ package destiny.astrology.classical.rules.debilities
 import destiny.astrology.*
 
 /** Partile conjunction with Dragon's Tail (Moon's South Node).  */
-class Partile_Conj_South_Node : Rule() {
+class Partile_Conj_South_Node : DebilityRule() {
 
   /** 內定採用 NodeType.MEAN  */
   var nodeType = NodeType.MEAN

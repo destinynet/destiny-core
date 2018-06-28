@@ -8,7 +8,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 
 /** Moon decreasing in light.  */
-class Moon_Decrease_Light : Rule() {
+class Moon_Decrease_Light : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
 

@@ -11,7 +11,7 @@ import destiny.astrology.Planet.MARS
 import destiny.astrology.Planet.SATURN
 
 /** Partile conjunction with Mars or Saturn.  */
-class Partile_Conj_Mars_Saturn : Rule() {
+class Partile_Conj_Mars_Saturn : DebilityRule() {
 
   private val aspect = Aspect.CONJUNCTION
 

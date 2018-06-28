@@ -12,7 +12,7 @@ import destiny.astrology.Planet.MARS
 import destiny.astrology.Planet.SATURN
 
 /** Partile square Mars or Saturn.  */
-class Partile_Square_Mars_Saturn : Rule() {
+class Partile_Square_Mars_Saturn : DebilityRule() {
 
   private val aspect = Aspect.SQUARE
 

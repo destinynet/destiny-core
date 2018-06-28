@@ -9,7 +9,7 @@ import destiny.astrology.Planet
 import destiny.astrology.classical.IFace
 
 /** A planet in its own Chaldean decanate or face.  */
-class Face(private val faceImpl : IFace) : Rule() {
+class Face(private val faceImpl : IFace) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getPosition(planet)?.lng?.takeIf { lngDeg ->

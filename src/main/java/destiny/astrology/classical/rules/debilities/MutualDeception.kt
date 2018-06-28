@@ -15,7 +15,7 @@ import destiny.astrology.classical.IEssential
  * 水星在雙魚為 Detriment/Fall , 雙魚的 Ruler 為木星 , 木星到處女為 Detriment
  */
 @Deprecated("似乎不實用")
-class MutualDeception(private val essentialImpl: IEssential) : EssentialRule(), Applicable {
+class MutualDeception(private val essentialImpl: IEssential) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return rulerMutualDeception(h, planet)

@@ -9,7 +9,7 @@ import destiny.astrology.Planet
 import destiny.astrology.Planet.SUN
 
 /** Under the Sunbeams (between 8.5 and 17 from Sol).  */
-class Sunbeam : Rule() {
+class Sunbeam : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== SUN }

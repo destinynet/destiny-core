@@ -12,7 +12,7 @@ import destiny.astrology.Planet.MARS
 import destiny.astrology.Planet.SATURN
 
 /** Partile opposite Mars or Saturn.  */
-class Partile_Oppo_Mars_Saturn : Rule() {
+class Partile_Oppo_Mars_Saturn : DebilityRule() {
 
   private val aspect = OPPOSITION
 

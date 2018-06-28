@@ -16,14 +16,18 @@ class RuleTranslatorKtTest {
     RuleTranslator.getDescriptor(rule).let {
       println("title(tw) = ${it.getTitle(Locale.TAIWAN)}")
       println("title(en) = ${it.getTitle(Locale.ENGLISH)}")
+      println("title(en_US) = ${it.getTitle(Locale.US)}")
+      println("title(簡) = ${it.getTitle(Locale.SIMPLIFIED_CHINESE)}")
+      println("title(jp) = ${it.getTitle(Locale.JAPANESE)}")
+      println("title(fr) = ${it.getTitle(Locale.FRANCE)}")
 
-      println("\t comment(tw) = ${it.getDescription(Locale.TAIWAN)}")
-      println("\t comment(en   ) = ${it.getDescription(Locale.ENGLISH)}")
-      println("\t comment(en_US) = ${it.getDescription(Locale.US)}")
-      println("\t comment(UK   ) = ${it.getDescription(Locale.UK)}") // en_GB
-      println("\t comment(簡) = ${it.getDescription(Locale.SIMPLIFIED_CHINESE)}")
-      println("\t comment(jp) = ${it.getDescription(Locale.JAPANESE)}")
-      println("\t comment(fr) = ${it.getDescription(Locale.FRANCE)}")
+//      println("\t comment(tw) = ${it.getDescription(Locale.TAIWAN)}")
+//      println("\t comment(en   ) = ${it.getDescription(Locale.ENGLISH)}")
+//      println("\t comment(en_US) = ${it.getDescription(Locale.US)}")
+//      println("\t comment(UK   ) = ${it.getDescription(Locale.UK)}") // en_GB
+//      println("\t comment(簡) = ${it.getDescription(Locale.SIMPLIFIED_CHINESE)}")
+//      println("\t comment(jp) = ${it.getDescription(Locale.JAPANESE)}")
+//      println("\t comment(fr) = ${it.getDescription(Locale.FRANCE)}")
       println()
     }
   }

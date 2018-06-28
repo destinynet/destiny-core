@@ -12,7 +12,12 @@ import java.io.Serializable
 import java.text.MessageFormat
 import java.util.*
 
-abstract class AbstractRule protected constructor(private val resource: String) : IRule, Serializable, ILocaleString {
+
+abstract class AbstractRule protected constructor(
+  private val resource: String,
+  override val type: RuleType) : IRule,
+
+  Serializable, ILocaleString {
 
   val logger = LoggerFactory.getLogger(javaClass)!!
 
@@ -24,15 +29,15 @@ abstract class AbstractRule protected constructor(private val resource: String) 
 
   override fun isApplicable(planet: Planet, h: IHoroscopeModel): Boolean {
     logger.debug("'{}' : isApplicable({})", javaClass.simpleName, planet)
-    return (getResult(planet , h) != null)
+    return (getResult(planet, h) != null)
   }
 
   abstract fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>?
 
 
   /** 名稱  */
-  override fun getName(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
+  override val name: String by lazy {
+    ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
   }
 
   /** 名稱  */
@@ -47,7 +52,7 @@ abstract class AbstractRule protected constructor(private val resource: String) 
     return commentParameters.map {
       when (it) {
         is ILocaleString -> it.toString(locale)
-        is Double -> it.toString().substring(0,5) //避免 double 輸出太長
+        is Double -> it.toString().substring(0, 5) //避免 double 輸出太長
         else -> it
       }
     }.toTypedArray()
@@ -56,7 +61,7 @@ abstract class AbstractRule protected constructor(private val resource: String) 
 
   /** 取得某 Locale 之下的註解  */
   override fun getComment(planet: Planet, h: IHoroscopeModel, locale: Locale): String? {
-    return getResult(planet , h)?.let { pair ->
+    return getResult(planet, h)?.let { pair ->
       val commentKey = pair.first
       val commentParameters = pair.second
       val pattern = ResourceBundle.getBundle(resource, locale).getString("$nameKey.$commentKey")

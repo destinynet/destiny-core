@@ -7,7 +7,7 @@ package destiny.astrology.classical.rules.accidentalDignities
 import destiny.astrology.*
 
 /** Partile conjunct Cor Leonis (Regulus) at 29deg50' Leo in January 2000.  */
-class Partile_Conj_Regulus : Rule() {
+class Partile_Conj_Regulus : AccidentalRule() {
 
   private val aspect = Aspect.CONJUNCTION
 

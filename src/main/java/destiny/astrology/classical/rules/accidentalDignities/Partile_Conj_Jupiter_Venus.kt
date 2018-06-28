@@ -12,7 +12,7 @@ import destiny.astrology.Planet.VENUS
 
 /** Partile conjunction with Jupiter or Venus.
  * 和金星或木星合相，交角 1 度內  */
-class Partile_Conj_Jupiter_Venus : Rule() {
+class Partile_Conj_Jupiter_Venus : AccidentalRule() {
 
   private val aspect = Aspect.CONJUNCTION
 
