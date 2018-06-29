@@ -4,8 +4,8 @@
  */
 package destiny.iching
 
-import destiny.astrology.DayNight.DAY
-import destiny.astrology.DayNight.NIGHT
+import destiny.core.DayNight.DAY
+import destiny.core.DayNight.NIGHT
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.IYinYang
 import destiny.iching.Symbol.*

@@ -5,6 +5,7 @@
 package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.*
+import destiny.core.DayNight
 
 /**
  * Peregrine : 漂泊、茫游、外出狀態
@@ -57,8 +58,8 @@ class Peregrine(
         planet !== termImpl.getPoint(sign , planetDeg) &&
         planet !== faceImpl.getPoint(planetDeg)) {
         // 判定日夜 Triplicity
-        if (!(dayNight == DayNight.DAY && planet ===  triplicityImpl.getPoint(sign , DayNight.DAY))
-          && !(dayNight == DayNight.NIGHT && planet === triplicityImpl.getPoint(sign , DayNight.NIGHT) ))
+        if (!(dayNight == DayNight.DAY && planet ===  triplicityImpl.getPoint(sign, DayNight.DAY))
+          && !(dayNight == DayNight.NIGHT && planet === triplicityImpl.getPoint(sign, DayNight.NIGHT) ))
           return "comment" to arrayOf<Any>(planet)
       }
     }

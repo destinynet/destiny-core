@@ -4,12 +4,13 @@
 package destiny.astrology.classical
 
 import destiny.astrology.*
-import destiny.astrology.DayNight.DAY
-import destiny.astrology.DayNight.NIGHT
+import destiny.core.DayNight.DAY
+import destiny.core.DayNight.NIGHT
 import destiny.astrology.Element.*
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
 import destiny.astrology.ZodiacSign.Companion.getZodiacSign
+import destiny.core.DayNight
 import java.io.Serializable
 
 

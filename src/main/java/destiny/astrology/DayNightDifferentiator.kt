@@ -4,6 +4,7 @@
  */
 package destiny.astrology
 
+import destiny.core.DayNight
 import destiny.core.Descriptive
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools

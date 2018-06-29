@@ -5,6 +5,7 @@ package destiny.astrology.classical
 
 import destiny.astrology.*
 import destiny.astrology.classical.Dignity.RULER
+import destiny.core.DayNight
 
 /** Ruler , +5 */
 interface IRuler {

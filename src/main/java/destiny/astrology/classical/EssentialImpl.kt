@@ -5,6 +5,7 @@
 package destiny.astrology.classical
 
 import destiny.astrology.*
+import destiny.core.DayNight
 
 import java.io.Serializable
 

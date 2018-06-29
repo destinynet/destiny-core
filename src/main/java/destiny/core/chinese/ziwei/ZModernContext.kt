@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.IRelativeTransit
 import destiny.core.Gender
 import destiny.core.IIntAge
@@ -30,6 +31,8 @@ interface IZiweiModernContext : IZiweiContext {
 
   val hourImpl: IHour
 
+  val dayNightImpl : DayNightDifferentiator
+
   val midnightImpl: IMidnight
 
   val relativeTransitImpl : IRelativeTransit
@@ -51,6 +54,7 @@ class ZModernContext(
   override val yearMonthImpl: IYearMonth,
   override val dayImpl: IDay,
   override val hourImpl: IHour,
+  override val dayNightImpl: DayNightDifferentiator,
   override val midnightImpl: IMidnight,
   override val relativeTransitImpl: IRelativeTransit,
   override val changeDayAfterZi: Boolean = true) : IZiweiModernContext, IZiweiContext by context, Serializable {
@@ -66,6 +70,8 @@ class ZModernContext(
                               place: String?,
                               gender: Gender,
                               name: String?) : Builder {
+
+
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
@@ -114,6 +120,8 @@ class ZModernContext(
       }
     }
 
+    val dayNight = dayNightImpl.getDayNight(lmt, location)
+
     // 虛歲時刻 (gmt Julian day)
     val vageMap = intAgeZiweiImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, location), location, 1, 130)
 
@@ -126,7 +134,7 @@ class ZModernContext(
 
 
     return getBirthPlate(Pair(命宮地支, 身宮地支) , finalMonthNumForMainStars , cycle , yinYear , solarYear , lunarMonth
-                  , cDate.isLeapMonth , monthBranch , solarTerms , lunarDays , hour , stars , gender , vageMap)
+                  , cDate.isLeapMonth , monthBranch , solarTerms , lunarDays , hour , dayNight , stars , gender , vageMap)
       .withLocalDateTime(lmt)
       .withLocation(location)
       .appendNotesBuilders(notesBuilders).apply {

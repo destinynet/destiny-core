@@ -6,6 +6,7 @@ package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.*
 import destiny.astrology.Planet.*
+import destiny.core.DayNight
 import java.util.*
 
 /**
@@ -31,7 +32,7 @@ class Out_of_Sect(
           logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
           return "commentNight" to arrayOf(planet, sign)
         }
-        DayNight.NIGHT -> if (arrayOf(SUN , JUPITER , SATURN).contains(planet) && house >= 7 && !sign.booleanValue) {
+        DayNight.NIGHT -> if (arrayOf(SUN, JUPITER, SATURN).contains(planet) && house >= 7 && !sign.booleanValue) {
           logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
           return "commentDay" to arrayOf(planet , sign)
         }

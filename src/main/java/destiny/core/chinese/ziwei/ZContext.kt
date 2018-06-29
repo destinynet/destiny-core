@@ -5,10 +5,7 @@ package destiny.core.chinese.ziwei
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import destiny.core.Descriptive
-import destiny.core.Gender
-import destiny.core.IIntAge
-import destiny.core.IntAgeNote
+import destiny.core.*
 import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
@@ -110,6 +107,8 @@ interface IZiweiContext {
                     solarTerms: SolarTerms,
                     lunarDays: Int,
                     hour: Branch,
+                    dayNight: DayNight = (if (listOf(Branch.卯, Branch.辰, Branch.巳,
+                                                     Branch.午, Branch.未, Branch.申).contains(hour)) DayNight.DAY else DayNight.NIGHT),
                     stars: Collection<ZStar>,
                     gender: Gender,
                     optionalVageMap: Map<Int, Pair<Double, Double>>?): Builder
@@ -412,6 +411,7 @@ class ZContext(
                              solarTerms: SolarTerms,
                              lunarDays: Int,
                              hour: Branch,
+                             dayNight: DayNight,
                              stars: Collection<ZStar>,
                              gender: Gender,
                              optionalVageMap: Map<Int, Pair<Double, Double>>?): Builder {
@@ -597,7 +597,7 @@ class ZContext(
       }
     }.invoke()
 
-    return Builder(this, chineseDate, gender, finalMonthNumForMonthStars, hour, mainHouse, bodyHouse, mainStar,
+    return Builder(this, chineseDate, gender, finalMonthNumForMonthStars, hour, dayNight , mainHouse, bodyHouse, mainStar,
                    bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
                    branchSmallRangesMap, flyMap, vageMap)
       .appendNotesBuilders(notesBuilders)

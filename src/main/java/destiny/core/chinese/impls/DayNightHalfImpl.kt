@@ -3,9 +3,12 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.astrology.*
+import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IRiseTrans
+import destiny.astrology.Planet
+import destiny.astrology.TransPoint
+import destiny.core.DayNight
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import java.io.Serializable
 import java.util.*
 

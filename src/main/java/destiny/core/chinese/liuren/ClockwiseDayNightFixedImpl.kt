@@ -3,10 +3,9 @@
  */
 package destiny.core.chinese.liuren
 
-import destiny.astrology.DayNight
+import destiny.core.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.chinese.Clockwise
 import destiny.core.chinese.IClockwise
 import java.io.Serializable

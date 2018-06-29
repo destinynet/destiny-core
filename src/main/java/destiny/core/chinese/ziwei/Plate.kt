@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
@@ -28,6 +29,9 @@ interface IPlate {
 
   /** 地點名稱  */
   val place: String?
+
+  /** 日、夜？ */
+  val dayNight : DayNight
 
   /** 性別  */
   val gender: Gender
@@ -98,6 +102,24 @@ interface IPlate {
   /** 本命盤中，此地支的宮位名稱是什麼  */
   val branchHouseMap: Map<Branch, House>
     get() = branchFlowHouseMap.map { it -> it.key to it.value[FlowType.本命]!! }.toMap()
+
+
+  /** 三方 (地支) */
+  val trinities: Set<Branch>
+    get() = mainHouse.branch.let {
+      setOf(it, it.prev(4), it.next(4))
+    }
+
+  /** 三方 (宮位) */
+  val trinitiesHouses: List<HouseData>
+    get() = houseDataSet.filter { trinities.contains(it.stemBranch.branch)}
+
+
+  /** 四正 (地支) */
+  val quads: Set<Branch>
+    get() = mainHouse.branch.let {
+      setOf(it , it.next(3) , it.next(6) , it.next(9))
+    }
 
   // =========== functions ===========
 
@@ -184,7 +206,6 @@ interface IPlate {
 }
 
 /** 排盤結果 , 作為 DTO  */
-/** 命盤 */
 data class Plate(
   /** 名稱  */
   override val name: String?,
@@ -200,6 +221,9 @@ data class Plate(
 
   /** 地點名稱  */
   override val place: String?,
+
+  /** 日、夜？ */
+  override val dayNight: DayNight,
 
   /** 性別  */
   override val gender: Gender,

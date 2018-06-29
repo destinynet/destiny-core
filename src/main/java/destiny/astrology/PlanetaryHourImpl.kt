@@ -5,6 +5,7 @@ package destiny.astrology
 
 import destiny.astrology.Planet.*
 import destiny.astrology.TransPoint.*
+import destiny.core.DayNight
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools

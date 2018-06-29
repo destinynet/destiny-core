@@ -3,6 +3,7 @@
  */
 package destiny.astrology
 
+import destiny.core.DayNight
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools

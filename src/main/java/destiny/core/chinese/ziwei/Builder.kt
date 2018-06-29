@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
@@ -29,6 +30,8 @@ class Builder(
   val birthMonthNum: Int,
   /** 出生時辰  */
   val birthHour: Branch,
+  /** 日、夜？ */
+  private val dayNight : DayNight,
   /** 命宮  */
   private val mainHouse: StemBranch,
   /** 身宮  */
@@ -76,6 +79,7 @@ class Builder(
 
   /** 地點名稱  */
   private var place: String? = null
+
 
   private val houseDataSet: Set<HouseData>
 
@@ -344,7 +348,7 @@ class Builder(
 
   fun build(): IPlate {
     val plate =
-      Plate(name, chineseDate, localDateTime, location, place, gender, mainHouse, bodyHouse, mainStar, bodyStar,
+      Plate(name, chineseDate, localDateTime, location, place, dayNight , gender, mainHouse, bodyHouse, mainStar, bodyStar,
             fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
             vageMap)
     return if (personModel == null) {

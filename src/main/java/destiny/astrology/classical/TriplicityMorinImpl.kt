@@ -3,7 +3,7 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.DayNight
+import destiny.core.DayNight
 import destiny.astrology.Element.*
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*

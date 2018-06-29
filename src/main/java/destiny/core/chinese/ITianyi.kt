@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese
 
-import destiny.astrology.DayNight
+import destiny.core.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.core.Descriptive
 import destiny.core.calendar.Location
@@ -27,7 +27,7 @@ interface ITianyi : Descriptive {
 
   /** 取得天干對應的天乙貴人，不分晝夜，一起傳回來  */
   fun getTianyis(stem: Stem): List<Branch> {
-    return DayNight.values().map { dayNight -> getFirstTianyi(stem , dayNight) }
+    return DayNight.values().map { dayNight -> getFirstTianyi(stem, dayNight) }
   }
 
   fun getTianyi(lmt: LocalDateTime, loc: Location, dayImpl: IDay, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean, differentiator: DayNightDifferentiator): Branch {

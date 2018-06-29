@@ -3,7 +3,7 @@
  */
 package destiny.astrology.classical.rules
 
-import destiny.astrology.DayNight
+import destiny.core.DayNight
 import destiny.astrology.DayNightDifferentiator
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
