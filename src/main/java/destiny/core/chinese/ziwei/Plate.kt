@@ -24,6 +24,9 @@ interface IPlate {
   /** 出生資料 , 陽曆 , 精確到「分、秒」  */
   val localDateTime: ChronoLocalDateTime<*>?
 
+  /** 出生年的干支 (可能是節氣、也可能是陰曆) */
+  val year : StemBranch
+
   /** 出生地點  */
   val location: ILocation?
 
@@ -207,6 +210,9 @@ data class Plate(
 
   /** 出生資料 , 陽曆 , 精確到「分、秒」  */
   override val localDateTime: ChronoLocalDateTime<*>?,
+
+  /** 出生年的干支 (可能是節氣、也可能是陰曆) */
+  override val year : StemBranch,
 
   /** 出生地點  */
   override val location: ILocation?,

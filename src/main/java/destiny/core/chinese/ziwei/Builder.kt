@@ -26,6 +26,11 @@ class Builder(
   val chineseDate: ChineseDate,
   /** 性別  */
   val gender: Gender,
+  /**
+   * 出生年的干支 (可能是節氣、也可能是陰曆)
+   * 這與 [chineseDate] 內的 [ChineseDate.year] 或許重複
+   *  */
+  val year : StemBranch,
   /** 出生月份  */
   val birthMonthNum: Int,
   /** 出生時辰  */
@@ -106,7 +111,7 @@ class Builder(
   private val notesBuilder = mutableListOf<Pair<String, Array<Any>>>()
 
   /** 註解列表  */
-  private var notes: List<String> = ArrayList()
+  private var notes: List<String> = mutableListOf()
 
   val stars: Set<ZStar>
     get() = starStrengthMap.keys
@@ -348,7 +353,7 @@ class Builder(
 
   fun build(): IPlate {
     val plate =
-      Plate(name, chineseDate, localDateTime, location, place, dayNight , gender, mainHouse, bodyHouse, mainStar, bodyStar,
+      Plate(name, chineseDate, localDateTime, year , location, place, dayNight , gender, mainHouse, bodyHouse, mainStar, bodyStar,
             fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
             vageMap)
     return if (personModel == null) {

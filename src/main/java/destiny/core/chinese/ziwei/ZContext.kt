@@ -620,7 +620,7 @@ class ZContext(
       }
     }.invoke()
 
-    return Builder(this, chineseDate, gender, finalMonthNumForMonthStars, hour, dayNight , mainHouse, bodyHouse, mainStar,
+    return Builder(this, chineseDate, gender, year , finalMonthNumForMonthStars, hour, dayNight , mainHouse, bodyHouse, mainStar,
                    bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
                    branchSmallRangesMap, flyMap, vageMap)
       .appendNotesBuilders(notesBuilders)
