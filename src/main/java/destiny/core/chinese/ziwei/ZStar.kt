@@ -35,6 +35,7 @@ abstract class ZStar : Point, Comparable<ZStar>  {
     年干,
     年支,
     月,
+    年月, // 年馬 or 月馬
     日,
     時,
     月日, // 三台、八座

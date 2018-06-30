@@ -7,8 +7,8 @@ import destiny.core.DayNight
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Characters
-import destiny.core.chinese.Stem
 import destiny.core.chinese.ITianyi
+import destiny.core.chinese.Stem
 import destiny.core.chinese.ziwei.ZStar.Type.*
 
 /**
@@ -23,13 +23,14 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
   object 天魁 : StarLucky("天魁", 年干) // 甲 , 丙火 , 天乙貴人 , 陽貴
   object 天鉞 : StarLucky("天鉞", 年干) // 甲 , 丁火 , 玉堂貴人 , 陰貴
   object 祿存 : StarLucky("祿存", 年干) // 甲
+  object 天馬 : StarLucky("天馬" , 年月)  // 乙級星
   object 年馬 : StarLucky("年馬", 年支) // 乙級星 (其實就是天馬)
   object 月馬 : StarLucky("月馬", 月)   // 乙級星 (其實就是天馬)
 
 
   companion object {
 
-    val values = arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 年馬, 月馬)
+    val values = arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬)
 
     /** 文昌 : 時支 -> 地支  */
     val fun文昌 = { hour: Branch -> Branch.get(10 - hour.index) }

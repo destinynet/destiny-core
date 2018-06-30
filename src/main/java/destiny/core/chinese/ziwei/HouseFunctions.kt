@@ -169,6 +169,28 @@ object HouseFunctions {
     }
   }
 
+  val house天馬: IHouse<*> = object : HouseYearMonthImpl(StarLucky.天馬) {
+    override fun getBranch(lunarYear: StemBranch,
+                           solarYear: StemBranch,
+                           monthBranch: Branch,
+                           finalMonthNumForMonthStars: Int,
+                           solarTerms: SolarTerms,
+                           days: Int,
+                           hour: Branch,
+                           state: Int,
+                           gender: Gender,
+                           leap: Boolean,
+                           prevMonthDays: Int,
+                           predefinedMainHouse: Branch?,
+                           context: IZiweiContext): Branch {
+
+      return when(context.skyHorse) {
+        SkyHorse.YEAR -> fun年馬.invoke(lunarYear.branch)
+        SkyHorse.MONTH -> fun月馬_月數.invoke(finalMonthNumForMonthStars)
+      }
+    }
+  }
+
   // =======↑↑↑======= 以上  8 顆吉星 =======↑↑↑=======
 
   // =======↓↓↓======= 以下  6 顆兇星 =======↓↓↓=======
@@ -637,8 +659,8 @@ object HouseFunctions {
     // 14主星
     house紫微, house天機, house太陽, house武曲, house天同, house廉貞, house天府, house太陰, house貪狼, house巨門, house天相, house天梁, house七殺, house破軍
 
-    /** 八(+1)吉星 ( [house年馬] 與 [house月馬] 其實就是 [StarLucky.年馬] 及 [StarLucky.月馬] )   */
-    ,house文昌, house文曲, house左輔, house右弼, house天魁, house天鉞, house祿存, house年馬, house月馬
+    // 八吉星
+    ,house文昌, house文曲, house左輔, house右弼, house天魁, house天鉞, house祿存, house天馬 //, house年馬, house月馬
 
     // 六兇星
     ,house擎羊, house陀羅, house火星, house鈴星, house地劫, house地空

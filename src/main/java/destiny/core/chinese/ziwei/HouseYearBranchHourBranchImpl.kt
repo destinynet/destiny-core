@@ -15,7 +15,7 @@ abstract class HouseYearBranchHourBranchImpl internal constructor(star: ZStar) :
   HouseAbstractImpl<Pair<Branch, Branch>>(star) {
 
   override fun getBranch(objects: Pair<Branch, Branch>): Branch {
-    throw RuntimeException("error : " + objects)
+    throw RuntimeException("error : $objects")
   }
 
 
