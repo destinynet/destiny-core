@@ -86,7 +86,7 @@ fun fun機月同梁() = { it: IPlate ->
       it.starMap[star]?.stemBranch?.branch
     }
 
-  it.trinities.containsAll(branches)
+  it.mainHouse.branch.trinities.containsAll(branches)
 }
 
 
@@ -144,7 +144,7 @@ fun fun君臣慶會() = { it: IPlate ->
   }
 
   test1 &&
-    (it.trinities.containsAll(branches) || neighbors.containsAll(branches))
+    (it.mainHouse.branch.trinities.containsAll(branches) || neighbors.containsAll(branches))
 }
 
 
@@ -305,9 +305,9 @@ fun fun對面朝天() = { it: IPlate ->
  * TODO 是指命宮中有化科星坐守，三方四正有化祿或祿存星會照。紫微命盤中有此格局的人才華卓越，有名望，遠近皆榮顯，風云際會，開展運程，財名皆足。步入社會發展，可獲擢昇。多主大限行吉之地平步青云，惟財官二宮亦并有魁鉞守照方作此斷。加煞忌、辛勞更甚、以破格論。
  */
 fun fun科名會祿() = { it: IPlate ->
-  val 化科入命宮: Boolean = it.houseMap[House.命宮]?.stars?.map { star ->
+  val 化科入命宮: Boolean = it.houseMap[House.命宮]!!.stars.map { star ->
     it.tranFours[star]?.get(FlowType.本命)
-  }?.contains(ITransFour.Value.科) ?: false
+  }.contains(ITransFour.Value.科)
 
   val 化碌入遷移宮: Boolean = it.houseMap[House.遷移]?.stars?.map { star ->
     it.tranFours[star]?.get(FlowType.本命)
@@ -320,9 +320,9 @@ fun fun科名會祿() = { it: IPlate ->
  * 化科入命宮，化權入遷移宮時，謂之科權逢迎格，主其人科甲及第，金榜高中。
  */
 fun fun科權逢迎() = { it: IPlate ->
-  val 化科入命宮: Boolean = it.houseMap[House.命宮]?.stars?.map { star ->
+  val 化科入命宮: Boolean = it.houseMap[House.命宮]!!.stars.map { star ->
     it.tranFours[star]?.get(FlowType.本命)
-  }?.contains(ITransFour.Value.科) ?: false
+  }.contains(ITransFour.Value.科)
 
   val 化權入遷移宮: Boolean = it.houseMap[House.遷移]?.stars?.map { star ->
     it.tranFours[star]?.get(FlowType.本命)
@@ -338,9 +338,9 @@ fun fun科權逢迎() = { it: IPlate ->
  * 雙祿交流格 : TODO 祿存和化祿俱在三方四正中。有財源，在事業上有成富的機運。又稱為祿合鴛鴦格。
  */
 fun fun祿合鴛鴦() = { it: IPlate ->
-  val 化祿入命宮: Boolean = it.houseMap[House.命宮]?.stars?.map { star ->
+  val 化祿入命宮: Boolean = it.houseMap[House.命宮]!!.stars.map { star ->
     it.tranFours[star]?.get(FlowType.本命)
-  }?.contains(ITransFour.Value.祿) ?: false
+  }.contains(ITransFour.Value.祿)
 
   化祿入命宮 &&
     (it.mainHouse.branch == it.starMap[祿存]?.stemBranch?.branch)
@@ -365,7 +365,7 @@ fun fun雙祿朝垣() = { it: IPlate ->
  */
 fun fun三奇加會() = { it: IPlate ->
   val good3: Set<ITransFour.Value> = setOf(ITransFour.Value.祿, ITransFour.Value.權, ITransFour.Value.科)
-  it.trinities.all { branch ->
+  it.mainHouse.branch.trinities.all { branch ->
     val a: Set<ITransFour.Value?> = it.getHouseDataOf(branch).stars.map { star ->
       it.tranFours[star]?.get(FlowType.本命)
     }.toSet()
@@ -600,6 +600,8 @@ fun fun羊陀夾命() = { it: IPlate ->
 
 /**
  * 火星、鈴星在左右鄰宮相夾命宮，即為此格。
+ *
+ * TODO : 若為火鈴夾貪格情況，就不 為火鈴夾命格。
  */
 fun fun火鈴夾命() = { it: IPlate ->
   val branches: Set<Branch?> = listOf(火星, 鈴星).map { star ->
@@ -620,6 +622,241 @@ fun fun風流綵杖() = { it: IPlate ->
   it.mainHouse.branch == 寅
     && it.starMap[貪狼]?.stemBranch?.branch == 寅
     && it.starMap[陀羅]?.stemBranch?.branch == 寅
+}
+
+/**
+ * 巨門、天機同在酉宮坐命，有化忌同宮。性質為奔波飄蕩。不利於感情、 事業。
+ */
+fun fun巨機化酉() = { it: IPlate ->
+  val 化忌入命宮: Boolean = it.houseMap[House.命宮]!!.stars.map { star ->
+    it.tranFours[star]?.get(FlowType.本命)
+  }.contains(ITransFour.Value.忌)
+
+  化忌入命宮
+    && it.mainHouse.branch == 酉
+    && it.starMap[巨門]?.stemBranch?.branch == 酉
+    && it.starMap[天機]?.stemBranch?.branch == 酉
+}
+
+/**
+ * 太陽在戌宮坐命，此時太陰在辰宮；或太陰在辰宮坐命，太陽在戌宮。
+ * 取其日在戌時，月在辰時， 兩星光芒皆弱不旺。勞碌命，求人不如勞己。無閒享清福。
+ */
+fun fun日月反背() = { it: IPlate ->
+  val value1 = (it.mainHouse.branch == 戌 && it.starMap[太陽]?.stemBranch?.branch == 戌)
+  val value2 = (it.mainHouse.branch == 辰 && it.starMap[太陰]?.stemBranch?.branch == 辰)
+  value1 || value2
+}
+
+/**
+ * 天梁在巳亥寅申宮坐命，與天馬同宮。
+ * 天馬只會出現於四馬地(巳 亥寅申。 此格表示勞而無獲之象。若顯現在感情生活上，對婚姻生活帶來不利影響。
+ */
+fun fun梁馬飄蕩() = { it: IPlate ->
+  // TODO : PENDING 天馬
+}
+
+/**
+ * 廉貞、七殺同在丑或未宮守命。
+ * 此格人應注意法律方面的問題。
+ */
+fun fun貞殺同宮() = { it: IPlate ->
+  it.mainHouse.branch.let { branch ->
+    if (branch == 丑 || branch == 未)
+      branch
+    else
+      null
+  }?.let { branch ->
+    val branches: Set<Branch?> = listOf(廉貞, 七殺).map { star ->
+      it.starMap[star]?.stemBranch?.branch
+    }.toSet()
+
+    setOf(branch).containsAll(branches)
+  } ?: false
+}
+
+/**
+ * (刑囚會印)
+ * 刑囚夾印，刑仗唯司
+ * 廉貞、天相在子或午宮坐命有擎羊同宮。天相為印，廉貞為囚，擎羊 化氣為刑。應注意法律訴訟問題。
+ * 廉貞、天相、擎羊 其實無法「夾」，故，「刑囚會印」比較貼切
+ *
+ * 「刑囚夾印」在紫微斗數裡是一種破敗格局，主是非官訟，其中
+ *    「刑」代表「羊刃」，乃六煞星之首；
+ *    「囚」指的是廉貞星，廉貞星乃次桃花星；
+ *    「印」指的是天相星，是一顆宰相星，代表參謀作業，化氣為蔭。
+ */
+fun fun刑囚夾印() = { it: IPlate ->
+  it.mainHouse.branch.let {
+    if (it == 子 || it == 午)
+      it
+    else
+      null
+  }?.let { branch ->
+    val branches: Set<Branch?> = listOf(廉貞, 天相, 擎羊).map { star ->
+      it.starMap[star]?.stemBranch?.branch
+    }.toSet()
+
+    setOf(branch).containsAll(branches)
+  } ?: false
+}
+
+/**
+ * 巨門守命，且在三方四正中，與羊陀火鈴四煞同時有會照或同宮關係。
+ * 此格局應防意外之災或為不得已苦衷流落四方。
+ */
+fun fun巨逢四煞() = { it: IPlate ->
+  it.mainHouse.branch.let { branch ->
+    if (branch == it.starMap[巨門]?.stemBranch?.branch)
+      branch
+    else
+      null
+  }?.let { branch ->
+    val branches: Set<Branch?> = listOf(擎羊, 陀羅, 火星, 鈴星).map { star ->
+      it.starMap[star]?.stemBranch?.branch
+    }.toSet()
+    branch.trinities.containsAll(branches)
+  } ?: false
+}
+
+/**
+ * 地劫、地空二星或其中之一星守命。
+ * 有精神上孤獨，錢不易留住之跡象。
+ */
+fun fun命裡逢空() = { it: IPlate ->
+  it.houseMap[House.命宮]!!.stars.any { setOf(地劫, 地空).contains(it) }
+}
+
+/**
+ * 地劫、地空二星在左右鄰宮夾命。
+ * 有精神上孤獨，錢不易留住之跡象。
+ */
+fun fun空劫夾命() = { it: IPlate ->
+  val neighbors: Set<Branch> = it.mainHouse.branch.let { branch ->
+    setOf(branch.previous, branch.next)
+  }
+
+  val branches: Set<Branch?> = listOf(地劫, 地空).map { star ->
+    it.starMap[star]?.stemBranch?.branch
+  }.toSet()
+
+  branches.containsAll(neighbors)
+}
+
+/**
+ * 文昌或文曲守命，遇空劫 或火鈴或羊陀對星來夾。有懷才不遇跡象。
+ */
+fun fun文星遇夾() = { it: IPlate ->
+  val 命宮有文星: Boolean = it.houseMap[House.命宮]!!.stars.any { setOf(文昌, 文曲).contains(it) }
+
+  val 空劫夾命: Boolean = fun空劫夾命().invoke(it)
+  val 火鈴夾命: Boolean = fun火鈴夾命().invoke(it)
+  val 羊陀夾命: Boolean = fun羊陀夾命().invoke(it)
+
+  命宮有文星 && (空劫夾命 || 火鈴夾命 || 羊陀夾命)
+}
+
+/**
+ * 化忌坐命，擎羊、陀羅於兩鄰宮相夾。
+ *
+ * 祿存在命宮，則必為羊陀所夾。若有化忌星同宮，羊陀凶性得以充分發揮。雖有祿存守命，亦不為美。
+ */
+fun fun羊陀夾忌() = { it: IPlate ->
+  val 羊陀夾命: Boolean = fun羊陀夾命().invoke(it)
+  val 化忌入命宮: Boolean = it.houseMap[House.命宮]!!.stars.map { star ->
+    it.tranFours[star]?.get(FlowType.本命)
+  }.contains(ITransFour.Value.忌)
+
+  羊陀夾命 && 化忌入命宮
+}
+
+/**
+ * 天相受化忌和天梁於左右鄰宮相夾；或天相受化忌和擎羊於左右鄰宮相夾。
+ */
+fun fun刑忌夾印() = { it: IPlate ->
+  it.starMap[天相]?.stemBranch?.branch?.let { branch ->
+    setOf(branch.previous, branch.next)
+  }?.let { neighbors ->
+    val 鄰宮化忌: Branch? =
+      neighbors.firstOrNull { branch ->
+        it.getHouseDataOf(branch).stars.any { star ->
+          it.tranFours[star]?.get(FlowType.本命) == ITransFour.Value.忌
+        }
+      }
+
+    val 另宮: Branch? = 鄰宮化忌?.let { branch -> neighbors.minus(branch).first() }
+    另宮?.let { branch ->
+      val 另宮有天梁: Boolean = it.starMap[天梁]?.stemBranch?.branch == branch
+      val 另宮有擎羊: Boolean = it.starMap[擎羊]?.stemBranch?.branch == branch
+      另宮有天梁 || 另宮有擎羊
+    } ?: false
+  } ?: false
+}
+
+/**
+ * 天馬遇地劫、地空同宮或三方沖照。奔波，空忙一場。
+ */
+fun fun馬落空亡() = { it: IPlate ->
+  // TODO : 天馬
+}
+
+
+/**
+ * 祿存、化祿同時坐命，遇地劫、地空同宮。
+ * 此即 [fun祿合鴛鴦] 格
+ *
+ * 祿存、化祿同時坐命，本為 雙祿交流格。但若遇地空、地劫同宮，此時雙祿為被衝破情形，稱為兩重華蓋。
+ * 華蓋表示有宗教緣分。皈依宗教，反可享主清福。但因雙祿被衝破，較不易累積錢財。
+ */
+fun fun兩重華蓋() = { it: IPlate ->
+  val 祿合鴛鴦 = fun祿合鴛鴦().invoke(it)
+
+  val 空劫入命: Boolean = listOf(地劫, 地空).map { star ->
+    it.starMap[star]?.stemBranch?.branch
+  }.toSet().let { branches -> setOf(it.mainHouse.branch).containsAll(branches) }
+
+  祿合鴛鴦 && 空劫入命
+}
+
+
+/**
+ * 祿存或化祿坐命，在三方四正中，有被地劫、地空衝破。
+ * 吉處藏凶之象，應居安思危。
+ */
+fun fun祿逢衝破() = { it: IPlate ->
+  val 化祿入命宮: Boolean = it.houseMap[House.命宮]!!.stars.map { star ->
+    it.tranFours[star]?.get(FlowType.本命)
+  }.contains(ITransFour.Value.祿)
+
+  val 祿存坐命: Boolean = it.starMap[祿存]?.stemBranch?.branch == it.mainHouse.branch
+
+  val 三方四正: Set<Branch> = it.mainHouse.branch.let { b -> b.trinities.plus(b.opposite) }
+
+  val 空劫: Set<Branch?> = listOf(地劫, 地空).map { star ->
+    it.starMap[star]?.stemBranch?.branch
+  }.toSet()
+
+  (化祿入命宮 || 祿存坐命) && 三方四正.containsAll(空劫)
+}
+
+/**
+ * 貪狼坐命在子宮。
+ * 廉貞、貪狼坐命於亥宮，遇陀羅同宮。
+ *
+ * 無論男女，多風流，感情債不斷。
+ *
+ * 泛水桃花的極致是貪狼居子宮遇擎羊同宮
+ */
+fun fun泛水桃花() = { it: IPlate ->
+  val 貪狼坐命在子宮 = it.mainHouse.branch == 子
+    && it.starMap[貪狼]?.stemBranch?.branch == 子
+
+  val 貪狼坐命在亥宮 = it.mainHouse.branch == 亥
+    && it.starMap[貪狼]?.stemBranch?.branch == 亥
+  val 廉貞在亥 = it.starMap[廉貞]?.stemBranch?.branch == 亥
+  val 陀羅在亥 = it.starMap[陀羅]?.stemBranch?.branch == 亥
+
+  貪狼坐命在子宮 || (貪狼坐命在亥宮 && 廉貞在亥 && 陀羅在亥)
 }
 
 enum class PatternType {
@@ -677,6 +914,19 @@ sealed class Pattern(val name: String, val type: PatternType, val predicate: (IP
   class 羊陀夾命 : Pattern("羊陀夾命", EVIL, fun羊陀夾命())
   class 火鈴夾命 : Pattern("火鈴夾命", EVIL, fun火鈴夾命())
   class 風流綵杖 : Pattern("風流綵杖", EVIL, fun風流綵杖())
+  class 巨機化酉 : Pattern("巨機化酉", EVIL, fun巨機化酉())
+  class 日月反背 : Pattern("日月反背", EVIL, fun日月反背())
+  class 貞殺同宮 : Pattern("貞殺同宮", EVIL, fun貞殺同宮())
+  class 刑囚夾印 : Pattern("刑囚夾印", EVIL, fun刑囚夾印())
+  class 巨逢四煞 : Pattern("巨逢四煞", EVIL, fun巨逢四煞())
+  class 命裡逢空 : Pattern("命裡逢空", EVIL, fun命裡逢空())
+  class 空劫夾命 : Pattern("空劫夾命", EVIL, fun空劫夾命())
+  class 文星遇夾 : Pattern("文星遇夾", EVIL, fun文星遇夾())
+  class 羊陀夾忌 : Pattern("羊陀夾忌", EVIL, fun羊陀夾忌())
+  class 刑忌夾印 : Pattern("刑忌夾印", EVIL, fun刑忌夾印())
+  class 兩重華蓋 : Pattern("兩重華蓋", EVIL, fun兩重華蓋())
+  class 祿逢衝破 : Pattern("祿逢衝破", EVIL, fun祿逢衝破())
+  class 泛水桃花 : Pattern("泛水桃花", EVIL, fun泛水桃花())
 
   companion object {
     fun values(): List<Pattern> {
@@ -686,7 +936,8 @@ sealed class Pattern(val name: String, val type: PatternType, val predicate: (IP
         對面朝天(), 科名會祿(), 科權逢迎(), 祿合鴛鴦(), 雙祿朝垣(), 三奇加會(), 祿馬交馳(), 月朗天門(), 月生滄海(), 石中隱玉(),
         壽星入廟(), 英星入廟(), 機梁加會(), 文桂文華(), 魁鉞拱命(), 紫府夾命(), 左右同宮(),
 
-        馬頭帶劍(), 極居卯酉(), 命無正曜(), 羊陀夾命(), 火鈴夾命(), 風流綵杖())
+        馬頭帶劍(), 極居卯酉(), 命無正曜(), 羊陀夾命(), 火鈴夾命(), 風流綵杖(), 巨機化酉(), 日月反背(), 貞殺同宮(), 刑囚夾印(),
+        巨逢四煞(), 命裡逢空(), 空劫夾命(), 文星遇夾(), 羊陀夾忌(), 刑忌夾印(), 兩重華蓋(), 祿逢衝破(), 泛水桃花())
     }
   }
 

@@ -104,22 +104,14 @@ interface IPlate {
     get() = branchFlowHouseMap.map { it -> it.key to it.value[FlowType.本命]!! }.toMap()
 
 
-  /** 三方 (地支) */
-  val trinities: Set<Branch>
-    get() = mainHouse.branch.let {
-      setOf(it, it.prev(4), it.next(4))
-    }
-
-  /** 三方 (宮位) */
-  val trinitiesHouses: List<HouseData>
-    get() = houseDataSet.filter { trinities.contains(it.stemBranch.branch)}
+  /** 三方 */
+  val trinities: Set<HouseData>
+    get() = houseDataSet.filter { mainHouse.branch.trinities.contains(it.stemBranch.branch)}.toSet()
 
 
-  /** 四正 (地支) */
-  val quads: Set<Branch>
-    get() = mainHouse.branch.let {
-      setOf(it , it.next(3) , it.next(6) , it.next(9))
-    }
+  /** 四正 */
+  val quads: Set<HouseData>
+    get() = houseDataSet.filter { mainHouse.branch.quads.contains(it.stemBranch.branch) }.toSet()
 
   // =========== functions ===========
 

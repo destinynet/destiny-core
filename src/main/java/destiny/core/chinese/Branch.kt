@@ -48,6 +48,14 @@ enum class Branch : ILoop<Branch> {
   val indexFromOne: Int
     get() = index + 1
 
+  /** 三合 */
+  val trinities : Set<Branch>
+    get() = setOf(this, next(4), next(8))
+
+  /** 刑 */
+  val quads : Set<Branch>
+    get() = setOf(this, next(3), next(6), next(9))
+
   /**
    * 取得下 n 個地支為何
    * n = 0 : 傳回自己

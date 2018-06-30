@@ -52,8 +52,13 @@ interface IZiweiContext {
   /** [StarLucky.天魁] , [StarLucky.天鉞] (貴人) 算法  */
   val tianyiImpl: ITianyi
 
+  /** 火鈴 */
   val fireBell: FireBell
 
+  /** 天馬 */
+  val skyHorse : SkyHorse
+
+  /** 天使天傷 */
   val hurtAngel: HurtAngel
 
   /** 四化設定  */
@@ -274,6 +279,22 @@ enum class FireBell : Descriptive {
   }
 }
 
+/** 天馬，要用 年馬 還是 月馬 */
+enum class SkyHorse : Descriptive {
+  YEAR ,
+  MONTH;
+
+  override fun getTitle(locale: Locale): String {
+    return when(this) {
+      YEAR -> "年馬"
+      MONTH -> "月馬"
+    }
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return getTitle(locale)
+  }
+}
 
 /** [StarMinor.天傷]、 [StarMinor.天使] 計算方式  */
 enum class HurtAngel : Descriptive {
@@ -350,6 +371,9 @@ class ZContext(
   /** [StarUnlucky.火星] ,  [StarUnlucky.鈴星] 設定  */
   override val fireBell: FireBell = FireBell.FIREBELL_COLLECT,
 
+  /** 天馬 [SkyHorse] 設定 , 年馬 還是 月馬 */
+  override val skyHorse: SkyHorse = SkyHorse.YEAR,
+
   /** [StarMinor.天傷]、 [StarMinor.天使] 計算方式  */
   override val hurtAngel: HurtAngel = HurtAngel.HURT_ANGEL_FIXED,
 
@@ -382,7 +406,6 @@ class ZContext(
 
   /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
   private val chineseDateImpl: IChineseDate? = null,
-
   /** 虛歲實作 */
   private val intAgeImpl: IIntAge? = null) : IZiweiContext, Serializable {
 
