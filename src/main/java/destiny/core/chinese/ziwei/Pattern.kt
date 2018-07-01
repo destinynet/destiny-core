@@ -21,7 +21,7 @@ fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let
 fun IPlate.三方(branch: Branch = this.mainHouse.branch) = 拱(branch).plus(branch)
 fun IPlate.三方四正(branch: Branch = this.mainHouse.branch): Set<Branch> = 三方(branch).plus(branch.opposite)
 
-fun IPlate.neighbors(): Set<Branch> = this.mainHouse.branch.let { setOf(it.previous, it.next) }
+fun IPlate.neighbors(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.previous, it.next) }
 
 fun IPlate.紫府(): List<Branch?> = setOf(紫微, 天府).map { star -> this.starMap[star]?.stemBranch?.branch }
 fun IPlate.輔弼(): List<Branch?> = setOf(左輔, 右弼).map { star -> this.starMap[star]?.stemBranch?.branch }
@@ -31,16 +31,18 @@ fun IPlate.魁鉞(): List<Branch?> = setOf(天魁, 天鉞).map { star -> this.st
 fun IPlate.劫空(): List<Branch?> =
   listOf(地劫, 地空).map { star -> this.starMap[star]?.stemBranch?.branch }
 
-fun IPlate.三方四正有輔弼() = this.三方四正().containsAll(輔弼())
-fun IPlate.鄰宮有輔弼() = neighbors().containsAll(輔弼())
+fun IPlate.三方四正有輔弼(branch: Branch = this.mainHouse.branch) = this.三方四正(branch).containsAll(輔弼())
+fun IPlate.鄰宮有輔弼(branch: Branch = this.mainHouse.branch) = neighbors(branch).containsAll(輔弼())
 
-fun IPlate.三方四正有昌曲() = this.三方四正().containsAll(昌曲())
-fun IPlate.鄰宮有昌曲() = neighbors().containsAll(昌曲())
+fun IPlate.三方四正有昌曲(branch: Branch = this.mainHouse.branch) = this.三方四正(branch).containsAll(昌曲())
+fun IPlate.鄰宮有昌曲(branch: Branch = this.mainHouse.branch) = neighbors(branch).containsAll(昌曲())
 
-fun IPlate.三方四正有魁鉞() = this.三方四正().containsAll(魁鉞())
-fun IPlate.鄰宮有魁鉞() = neighbors().containsAll(魁鉞())
+fun IPlate.三方四正有魁鉞(branch: Branch = this.mainHouse.branch) = this.三方四正(branch).containsAll(魁鉞())
+fun IPlate.鄰宮有魁鉞(branch: Branch = this.mainHouse.branch) = neighbors(branch).containsAll(魁鉞())
 
-fun IPlate.三方四正有祿存() = this.三方四正().contains(this.starMap[祿存]?.stemBranch?.branch)
+fun IPlate.三方四正有祿存(branch: Branch = this.mainHouse.branch) =
+  this.三方四正(branch).contains(this.starMap[祿存]?.stemBranch?.branch)
+
 fun IPlate.三方四正有祿權科星(branch: Branch = this.mainHouse.branch): Boolean =
   this.三方四正(branch).flatMap { b ->
     this.getHouseDataOf(b).stars.map { star: ZStar ->
@@ -154,7 +156,7 @@ fun fun天府朝垣() = { it: IPlate ->
       add(GoodCombination.祿權科星)
   }?.toSet()
 
-  if (天府廉貞在戌宮坐命 && goods!= null && goods.isNotEmpty())
+  if (天府廉貞在戌宮坐命 && goods != null && goods.isNotEmpty())
     天府朝垣(goods)
   else
     null
@@ -185,7 +187,7 @@ fun fun府相朝垣() = { it: IPlate ->
       add(GoodCombination.祿權科星)
   }?.toSet()
 
-  if (府相宮位正確 && goods!= null && goods.isNotEmpty())
+  if (府相宮位正確 && goods != null && goods.isNotEmpty())
     府相朝垣(goods)
   else
     null
@@ -242,7 +244,7 @@ fun fun機月同梁() = { it: IPlate ->
       it.starMap[star]?.stemBranch?.branch
     }
 
-  if (it.mainHouse.branch.trinities.containsAll(branches))
+  if (it.三方四正().containsAll(branches))
     機月同梁
   else
     null
@@ -1308,7 +1310,7 @@ fun fun文星遇夾() = { it: IPlate ->
     fun羊陀夾命().invoke(it)?.also { add(EvilCombination.羊陀) }
   }?.toSet()
 
-  if (命宮有文星 && evils!= null && evils.isNotEmpty())
+  if (命宮有文星 && evils != null && evils.isNotEmpty())
     文星遇夾(evils)
   else
     null
