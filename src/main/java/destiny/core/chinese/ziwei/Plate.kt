@@ -82,7 +82,7 @@ interface IPlate {
   val vageMap: Map<Int, Pair<Double, Double>>?
 
 
-  // =========== fields for overridden ===========
+  // =========== 以上 ↑↑ fields for overridden ↑↑ ===========
 
   /** 宮位名稱 -> 宮位資料  */
   val houseMap: Map<House, HouseData>
@@ -107,16 +107,7 @@ interface IPlate {
     get() = branchFlowHouseMap.map { it -> it.key to it.value[FlowType.本命]!! }.toMap()
 
 
-  /** 三方 */
-  val trinities: Set<HouseData>
-    get() = houseDataSet.filter { mainHouse.branch.trinities.contains(it.stemBranch.branch)}.toSet()
-
-
-  /** 四正 */
-  val quads: Set<HouseData>
-    get() = houseDataSet.filter { mainHouse.branch.quads.contains(it.stemBranch.branch) }.toSet()
-
-  // =========== functions ===========
+  // =========== 以上 ↑↑ functions ↑↑ ===========
 
   /** 取得每個宮位、詳細資料 , 按照 [命宮 , 兄弟 , 夫妻...] 排序下來  */
   fun getSortedHouseDataSet(): Set<HouseData> {
@@ -140,6 +131,17 @@ interface IPlate {
   /** 取得此顆星，的四化列表 */
   fun getTransFourOf(star: ZStar): List<Pair<FlowType, ITransFour.Value>> {
     return tranFours[star]?.map { (key, value) -> key to value }?.toList() ?: emptyList()
+  }
+
+  /**
+   * 取得此四化星，在哪一宮位
+   * // val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
+   * */
+  fun getTransFourHouseOf(value : ITransFour.Value , type: FlowType = FlowType.本命) : HouseData {
+    val star = tranFours.entries.first { (_, map) ->
+      map.any { (t,v) -> t == type && v == value }
+    }.key
+    return getHouseDataOf(star)!!
   }
 
   /** 取得在此地支宮位的主星 */
