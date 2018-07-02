@@ -28,8 +28,8 @@ fun IPlate.輔弼(): List<Branch?> = setOf(左輔, 右弼).map { star -> this.st
 fun IPlate.昌曲(): List<Branch?> = setOf(文昌, 文曲).map { star -> this.starMap[star]?.stemBranch?.branch }
 fun IPlate.魁鉞(): List<Branch?> = setOf(天魁, 天鉞).map { star -> this.starMap[star]?.stemBranch?.branch }
 
-fun IPlate.劫空(): List<Branch?> =
-  listOf(地劫, 地空).map { star -> this.starMap[star]?.stemBranch?.branch }
+fun IPlate.羊陀(): List<Branch?> = listOf(擎羊, 陀羅).map { star -> this.starMap[star]?.stemBranch?.branch }
+fun IPlate.劫空(): List<Branch?> = listOf(地劫, 地空).map { star -> this.starMap[star]?.stemBranch?.branch }
 
 fun IPlate.三方四正有輔弼(branch: Branch = this.mainHouse.branch) = this.三方四正(branch).containsAll(輔弼())
 fun IPlate.鄰宮有輔弼(branch: Branch = this.mainHouse.branch) = neighbors(branch).containsAll(輔弼())
@@ -627,7 +627,7 @@ fun fun雙祿朝垣() = { it: IPlate ->
  */
 fun fun三奇加會() = { it: IPlate ->
   val good3: Set<ITransFour.Value> = setOf(祿, 權, 科)
-  it.mainHouse.branch.trinities.all { branch ->
+  it.三方四正().all { branch ->
     val a: Set<ITransFour.Value?> = it.getHouseDataOf(branch).stars.map { star ->
       it.tranFours[star]?.get(FlowType.本命)
     }.toSet()
@@ -1252,22 +1252,19 @@ fun fun刑囚夾印() = { it: IPlate ->
  * 此格局應防意外之災或為不得已苦衷流落四方。
  */
 fun fun巨逢四煞() = { it: IPlate ->
-  it.mainHouse.branch.let { branch ->
-    if (branch == it.starMap[巨門]?.stemBranch?.branch)
-      branch
-    else
-      null
-  }?.let { branch ->
-    val branches: Set<Branch?> = listOf(擎羊, 陀羅, 火星, 鈴星).map { star ->
+
+  val 巨門守命 = it.mainHouse.branch == it.starMap[巨門]?.stemBranch?.branch
+
+  val branches: Set<Branch?> = listOf(擎羊, 陀羅, 火星, 鈴星).map { star ->
       it.starMap[star]?.stemBranch?.branch
     }.toSet()
-    branch.trinities.containsAll(branches)
-  }?.let {
-    if (it)
-      巨逢四煞
-    else
-      null
-  }
+
+  val 三方四正包含四凶星 = it.三方四正().containsAll(branches)
+
+  if (巨門守命 && 三方四正包含四凶星)
+    巨逢四煞
+  else
+    null
 }
 
 /**
@@ -1322,11 +1319,10 @@ fun fun文星遇夾() = { it: IPlate ->
  * 祿存在命宮，則必為羊陀所夾。若有化忌星同宮，羊陀凶性得以充分發揮。雖有祿存守命，亦不為美。
  */
 fun fun羊陀夾忌() = { it: IPlate ->
-  val 羊陀夾命: Boolean = fun羊陀夾命().invoke(it) != null
-  val 化忌入命宮 = it.getTransFourHouseOf(忌).stemBranch.branch == it.mainHouse.branch
 
-  if (羊陀夾命 && 化忌入命宮)
-    羊陀夾忌
+  val 化忌宮位 = it.getTransFourHouseOf(忌)
+  if (it.neighbors(化忌宮位.stemBranch.branch).containsAll(it.羊陀()))
+    羊陀夾忌(化忌宮位.house)
   else
     null
 }
@@ -1585,7 +1581,7 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
   object 空劫夾命 : Pattern("空劫夾命", EVIL)
   class 文星遇夾(evils: Set<EvilCombination>) : Pattern("文星遇夾", EVIL, evils.joinToString(","))
 
-  object 羊陀夾忌 : Pattern("羊陀夾忌", EVIL)
+  class 羊陀夾忌(house: House) : Pattern("羊陀夾忌", EVIL , house.toString())
   object 刑忌夾印 : Pattern("刑忌夾印", EVIL)
   object 馬落空亡 : Pattern("馬落空亡", EVIL)
   object 兩重華蓋 : Pattern("兩重華蓋", EVIL)
