@@ -15,50 +15,6 @@ import destiny.core.chinese.ziwei.PatternType.GOOD
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
-import java.io.Serializable
-
-interface IPatternContext {
-
-  enum class Target {
-    /** 只針對命宮 */
-    MAIN,
-    /** 計算所有宮位 */
-    EVERY
-  }
-
-  val target: Target
-}
-
-class PatternContext(
-  override val target: IPatternContext.Target) : IPatternContext, Serializable
-
-interface IPattern {
-
-  /** 可以指定宮位 (傳入地支) */
-  fun getPattern(it: IPlate, pContext: IPatternContext): Pattern?
-}
-
-/** 單純命宮實作 */
-abstract class PatternSingleImpl : IPattern, Serializable {
-  override fun getPattern(it: IPlate, pContext: IPatternContext): Pattern? {
-    return getSingle(it, pContext)
-  }
-
-  abstract fun getSingle(it: IPlate, pContext: IPatternContext): Pattern?
-}
-
-/** 支援多重宮位 */
-abstract class PatternMultipleImpl : IPattern, Serializable {
-  override fun getPattern(it: IPlate, pContext: IPatternContext): Pattern? {
-    return when (pContext.target) {
-      IPatternContext.Target.MAIN -> getMultiple(it, setOf(it.mainHouse.branch), pContext)
-      IPatternContext.Target.EVERY -> getMultiple(it, Branch.values().toSet(), pContext)
-    }
-  }
-
-  abstract fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern?
-}
-
 
 /** 拱 */
 fun Collection<Branch?>.trine(): Branch? {
@@ -209,30 +165,31 @@ val p紫府朝垣 = object : PatternMultipleImpl() {
  * 從訂定格局的立意來看，顯然「天府朝垣」只能成為「輔弼」，所謂「腰金衣紫」，無非只是屬于大臣的榮譽，究竟不是領袖人材。
  * 根據現代社會結構，廉貞天府在戌宮同守的人，只是一位很好的理財人材。若甲年生人，廉貞化祿，祿存又居于寅宮相會，則其人亦能創業致富，但卻缺少開創力，只能在守成中發展，不擅長開創。若天馬在寅宮，則其人利于外埠經商。
  */
-fun fun天府朝垣() = { it: IPlate ->
+val p天府朝垣 = object : PatternSingleImpl() {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+    val 天府廉貞在戌宮坐命: Boolean = it.mainHouse.branch.let { branch ->
+      branch == 戌
+        && setOf(branch).containsAll(listOf(天府, 廉貞).map { star: ZStar -> it.starMap[star]?.stemBranch?.branch })
+    }
 
-  val 天府廉貞在戌宮坐命: Boolean = it.mainHouse.branch.let { branch ->
-    branch == 戌
-      && setOf(branch).containsAll(listOf(天府, 廉貞).map { star: ZStar -> it.starMap[star]?.stemBranch?.branch })
+    val goods = mutableSetOf<GoodCombo>().takeIf { 天府廉貞在戌宮坐命 }?.apply {
+      if (it.三方四正有輔弼())
+        add(GoodCombo.輔弼)
+      if (it.三方四正有昌曲())
+        add(GoodCombo.昌曲)
+      if (it.三方四正有魁鉞())
+        add(GoodCombo.魁鉞)
+      if (it.三方四正有祿存())
+        add(GoodCombo.祿存)
+      if (it.三方四正有祿權科星())
+        add(GoodCombo.祿權科星)
+    }?.toSet()
+
+    return if (天府廉貞在戌宮坐命 && goods != null && goods.isNotEmpty())
+      天府朝垣(goods)
+    else
+      null
   }
-
-  val goods = mutableSetOf<GoodCombo>().takeIf { 天府廉貞在戌宮坐命 }?.apply {
-    if (it.三方四正有輔弼())
-      add(GoodCombo.輔弼)
-    if (it.三方四正有昌曲())
-      add(GoodCombo.昌曲)
-    if (it.三方四正有魁鉞())
-      add(GoodCombo.魁鉞)
-    if (it.三方四正有祿存())
-      add(GoodCombo.祿存)
-    if (it.三方四正有祿權科星())
-      add(GoodCombo.祿權科星)
-  }?.toSet()
-
-  if (天府廉貞在戌宮坐命 && goods != null && goods.isNotEmpty())
-    天府朝垣(goods)
-  else
-    null
 }
 
 
@@ -1704,9 +1661,9 @@ val p財與囚仇 = object : PatternSingleImpl() {
 val p火入泉鄉 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
     return if (it.starMap[廉貞]?.stemBranch?.branch == 亥)
-    火入泉鄉
-  else
-    null
+      火入泉鄉
+    else
+      null
   }
 }
 
@@ -1803,11 +1760,11 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
   companion object {
 
     fun newValues(): List<IPattern> = listOf(
-      p極向離明, p紫府同宮, p紫府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天, p日月夾命,
-      p君臣慶會, p日月同宮, p日月並明, p日照雷門, p明珠出海, p巨日同宮, p貪武同行, p將星得地, p七殺廟斗, p雄宿朝垣,
-      p對面朝天, p科名會祿, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇加會, p祿馬交馳, p月朗天門, p月生滄海, p石中隱玉,
-      p壽星入廟, p英星入廟, p機梁加會, p文桂文華, p魁鉞拱命, p紫府夾命, p左右同宮, p丹墀桂墀, p甲第登庸, p化星返貴,
-      p天乙拱命, p廉貞文武, p星臨正位,
+      p極向離明, p紫府同宮, p紫府朝垣, p天府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天,
+      p日月夾命, p君臣慶會, p日月同宮, p日月並明, p日照雷門, p明珠出海, p巨日同宮, p貪武同行, p將星得地, p七殺廟斗,
+      p雄宿朝垣, p對面朝天, p科名會祿, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇加會, p祿馬交馳, p月朗天門, p月生滄海,
+      p石中隱玉, p壽星入廟, p英星入廟, p機梁加會, p文桂文華, p魁鉞拱命, p紫府夾命, p左右同宮, p丹墀桂墀, p甲第登庸,
+      p化星返貴, p天乙拱命, p廉貞文武, p星臨正位,
 
       p馬頭帶劍, p極居卯酉, p命無正曜, p羊陀夾命, p火鈴夾命, p風流綵杖, p巨機化酉, p日月反背, p梁馬飄蕩, p貞殺同宮,
       p殺拱廉貞, p刑囚夾印, p巨逢四煞, p命裡逢空, p空劫夾命, p文星遇夾, p羊陀夾忌, p刑忌夾印, p馬落空亡, p兩重華蓋,
