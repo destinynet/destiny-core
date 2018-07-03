@@ -109,6 +109,13 @@ interface IPlate {
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
 
+  /** 取得這些星體所在宮位的地支 */
+  fun getBranches(vararg stars: ZStar) : List<Branch> {
+    return stars.map { star -> starMap[star]?.stemBranch?.branch }
+      .filter { b -> b!= null }
+      .map { b -> b!! }
+  }
+
   /** 取得每個宮位、詳細資料 , 按照 [命宮 , 兄弟 , 夫妻...] 排序下來  */
   fun getSortedHouseDataSet(): Set<HouseData> {
     return TreeSet(houseDataSet)
