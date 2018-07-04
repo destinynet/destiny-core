@@ -76,6 +76,10 @@ fun IPlate.化祿入命宮(): Boolean = this.getHouseDataOf(this.mainHouse.branc
   this.tranFours[star]?.get(FlowType.本命)
 }.contains(祿)
 
+fun IPlate.化權入命宮(): Boolean = this.getHouseDataOf(this.mainHouse.branch).stars.map { star ->
+  this.tranFours[star]?.get(FlowType.本命)
+}.contains(權)
+
 fun IPlate.化科入命宮(): Boolean = this.getHouseDataOf(this.mainHouse.branch).stars.map { star ->
   this.tranFours[star]?.get(FlowType.本命)
 }.contains(科)
@@ -439,19 +443,32 @@ val p日月照壁 = object : PatternSingleImpl() {
  * (金燦光輝)
  * 太陽在午宮坐命。
  *
+ * 金燦光輝格 : 又名日麗中天格，太陽守命入午宮，與祿存、科權祿、左右、昌曲、魁鉞加會方合此格。喜夏天及白天生人。
+ *
  * 白天出生者，謂之金燦光輝格，主富可敵國，或為權貴。
  */
 val p日麗中天 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
-    return if (
-      it.mainHouse.branch == 午
-      && it.starMap[太陽]?.stemBranch?.branch == 午
-    )
-      日麗中天(it.dayNight)
-    else
-      null
-  }
 
+    return it.mainHouse.branch.takeIf { branch ->
+      branch == 午 &&
+        it.starMap[太陽]?.stemBranch?.branch == 午
+    }?.let { branch ->
+      val goods = mutableSetOf<GoodCombo>().apply {
+        if (it.三方四正有輔弼(branch))
+          add(GoodCombo.輔弼)
+        if (it.三方四正有昌曲(branch))
+          add(GoodCombo.昌曲)
+        if (it.三方四正有魁鉞(branch))
+          add(GoodCombo.魁鉞)
+        if (it.三方四正有祿存(branch))
+          add(GoodCombo.祿存)
+        if (it.三方四正有祿權科星(branch))
+          add(GoodCombo.祿權科星)
+      }.toSet()
+      日麗中天(it.dayNight, goods)
+    }
+  }
 }
 
 /**
@@ -852,11 +869,29 @@ val p科名會祿 = object : PatternSingleImpl() {
 }
 
 /**
+ * 甲第登科格 : 化科在命宮，化權在三方四正會照，主聰明，有學歷，入社會時可飛黃騰達之跡象。
+ * 因為以上定義已經包含了 [p科權逢迎] , 故在此，只實作「三方」 , 不考慮 對宮
+ *
+ * 「甲第登科格」一般包含在 [p三奇嘉會] 格裡，所不同者，不涉及化祿之定位，所以也不須去計較化忌的落點位置。
+ */
+val p甲第登科 = object : PatternSingleImpl() {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+    return if (
+      it.化科入命宮() &&
+      it.三方().contains(it.getTransFourHouseOf(權).stemBranch.branch)
+    )
+      甲第登科
+    else
+      null
+  }
+}
+
+/**
  * 化科入命宮，化權入遷移宮(對宮)時，謂之科權逢迎格，主其人科甲及第，金榜高中。
  */
 val p科權逢迎 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
-    val 化權入遷移宮 = it.getTransFourHouseOf(權).house == House.遷移
+    val 化權入遷移宮 = it.getTransFourHouseOf(權).stemBranch.branch == it.mainHouse.branch.opposite
 
     return if (it.化科入命宮() && 化權入遷移宮)
       科權逢迎
@@ -919,7 +954,7 @@ val p雙祿朝垣 = object : PatternMultipleImpl() {
  * 化權、化碌、化科在命宮的三方四正，謂之三奇加會格，主其文才蓋世，出將入相。
  * (一定是：命宮、官祿、財帛)
  */
-val p三奇加會 = object : PatternSingleImpl() {
+val p三奇嘉會 = object : PatternSingleImpl() {
 
   override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
 
@@ -932,7 +967,7 @@ val p三奇加會 = object : PatternSingleImpl() {
       a.any { value: ITransFour.Value? -> good3.contains(value) }
     }.let {
       if (it)
-        三奇加會
+        三奇嘉會
       else
         null
     }
@@ -1354,9 +1389,9 @@ val p丹墀桂墀 = object : PatternSingleImpl() {
     val 月旺廟 = it.starStrengthMap[太陰]?.let { it <= 2 } ?: false
 
     // B
-    val 日月分散在辰戌 = setOf(辰, 戌) == it.日月().toSet()
+    val 日月分散在辰戌且其中一個守命宮 = setOf(辰, 戌) == it.日月().toSet() && setOf(辰, 戌).contains(it.mainHouse.branch)
 
-    return if (日旺廟 && 月旺廟 && (三方四正有日月 || 日月分散在辰戌))
+    return if (日旺廟 && 月旺廟 && (三方四正有日月 || 日月分散在辰戌且其中一個守命宮))
       丹墀桂墀
     else
       null
@@ -1540,6 +1575,8 @@ val p三合火貪 = object : PatternMultipleImpl() {
   override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
     return it.starMap[貪狼]?.stemBranch?.branch?.let { branch ->
       if (it.三方(branch).contains(it.starMap[火星]?.stemBranch?.branch)) {
+        println("貪狼在 $branch . 火星在 ${it.starMap[火星]?.stemBranch}")
+
         val house = it.getHouseDataOf(branch).house
         三合火貪(house)
       } else
@@ -1556,12 +1593,76 @@ val p三合鈴貪 = object : PatternMultipleImpl() {
     return it.starMap[貪狼]?.stemBranch?.branch?.let { branch ->
       if (it.三方(branch).contains(it.starMap[鈴星]?.stemBranch?.branch)) {
         val house = it.getHouseDataOf(branch).house
-        三合火貪(house)
+        三合鈴貪(house)
       } else
         null
     }
   }
+}
 
+/**
+ * 說法A : (狹義的權祿巡逢必須由權與祿同入本命宮方算)
+ * 即化祿或祿存與化權同守命宮，唯需無煞有吉者，遇煞則成虛譽之隆，虛有其表而已。
+ *
+ * 說法B : (廣義)
+ * 化祿、化權在命宮三方四正會照
+ *
+ * 古歌雲：「命逢權祿實堪誇，千載功名富貴家，單見也應身富厚，平生穩步好生涯」。
+ * 具此命格者，有專業能力兼有經商智謀，若朝專業方向研發創新，可有大成就。
+ */
+val p權祿巡逢 = object : PatternMultipleImpl() {
+
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+    // 說法A
+    val 化權與祿存或化祿同宮: Branch? = it.getTransFourHouseOf(權).stemBranch.branch
+      .takeIf { branch -> branches.contains(branch) }
+      ?.takeIf { branch ->
+        it.starMap[祿存]?.stemBranch?.branch == branch
+          || it.getTransFourHouseOf(祿).stemBranch.branch == branch
+      }
+
+    // 說法B : 化祿、化權 拱 某宮
+    val 化祿化權拱某宮: Branch? =
+      listOf(it.getTransFourHouseOf(祿).stemBranch.branch,
+             it.getTransFourHouseOf(權).stemBranch.branch).trine()
+
+    return listOf(化權與祿存或化祿同宮, 化祿化權拱某宮)
+      .firstOrNull { it != null }
+      ?.let { branch ->
+        val goods = mutableSetOf<GoodCombo>().apply {
+          if (it.三方四正有輔弼(branch))
+            add(GoodCombo.輔弼)
+          if (it.三方四正有昌曲(branch))
+            add(GoodCombo.昌曲)
+          if (it.三方四正有魁鉞(branch))
+            add(GoodCombo.魁鉞)
+          if (it.三方四正有祿存(branch))
+            add(GoodCombo.祿存)
+          if (it.三方四正有祿權科星(branch))
+            add(GoodCombo.祿權科星)
+        }.toSet()
+        val house = it.getHouseDataOf(branch).house
+        權祿巡逢(house, goods)
+      }
+  }
+}
+
+/**
+ * 化祿、化權、化科這三化曜其中有2個或者三個居命宮兩側，即在鄰宮來夾命。
+ */
+val p科權祿夾 = object : PatternSingleImpl() {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+
+    val 科權祿 = listOf(
+      it.getTransFourHouseOf(科).stemBranch.branch,
+      it.getTransFourHouseOf(權).stemBranch.branch,
+      it.getTransFourHouseOf(祿).stemBranch.branch)
+
+    return if (科權祿.containsAll(it.neighbors())) {
+      科權祿夾
+    } else
+      null
+  }
 }
 
 // =========================== 以下 , 惡格 ===========================
@@ -2249,7 +2350,9 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
   class 善蔭朝綱(goods: Set<GoodCombo>) : Pattern("善蔭朝綱", GOOD, goods.joinToString(","))
   object 機月同梁 : Pattern("機月同梁", GOOD)
   class 日月照壁(goods: Set<GoodCombo>) : Pattern("日月照壁", GOOD, goods.joinToString(","))
-  class 日麗中天(dayNight: DayNight) : Pattern("日麗中天", GOOD, dayNight.toString())
+  class 日麗中天(dayNight: DayNight, goods: Set<GoodCombo>) :
+    Pattern("日麗中天", GOOD, "[" + dayNight.toString() + "]" + goods.joinToString(","))
+
   object 日月夾命 : Pattern("日月夾命", GOOD)
   class 君臣慶會(house: House, goods: Set<GoodCombo>) :
     Pattern("君臣慶會", GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
@@ -2266,10 +2369,11 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
   object 雄宿朝垣 : Pattern("雄宿朝垣", GOOD)
   object 對面朝天 : Pattern("對面朝天", GOOD)
   object 科名會祿 : Pattern("科名會祿", GOOD)
+  object 甲第登科 : Pattern("甲第登科", GOOD)
   object 科權逢迎 : Pattern("科權逢迎", GOOD)
   object 祿合鴛鴦 : Pattern("祿合鴛鴦", GOOD)
   class 雙祿朝垣(house: House) : Pattern("雙祿朝垣", GOOD, "[" + house.toString() + "]")
-  object 三奇加會 : Pattern("三奇加會", GOOD)
+  object 三奇嘉會 : Pattern("三奇嘉會", GOOD)
   object 祿馬交馳 : Pattern("祿馬交馳", GOOD)
   class 月朗天門(dayNight: DayNight) : Pattern("月朗天門", GOOD, dayNight.toString())
   class 月生滄海(dayNight: DayNight) : Pattern("月生滄海", GOOD, dayNight.toString())
@@ -2292,6 +2396,28 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
   object 輔拱文星 : Pattern("輔拱文星", GOOD)
   class 三合火貪(house: House) : Pattern("三合火貪", GOOD, "[" + house.toString() + "]")
   class 三合鈴貪(house: House) : Pattern("三合鈴貪", GOOD, "[" + house.toString() + "]")
+  class 權祿巡逢(house: House, goods: Set<GoodCombo>) :
+    Pattern("權祿巡逢", GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
+  object 科權祿夾 : Pattern("科權祿夾" , GOOD)
+  object 文星拱命 : Pattern("文星拱命" , GOOD) // TODO 文星拱命
+  object 財祿夾馬 : Pattern("財祿夾馬" , GOOD) // TODO 財祿夾馬
+  object 財蔭夾印 : Pattern("財蔭夾印" , GOOD) // TODO 財蔭夾印
+  object 擎羊入廟 : Pattern("擎羊入廟" , GOOD) // TODO 擎羊入廟
+  object 祿馬配印 : Pattern("祿馬配印" , GOOD) // TODO 祿馬配印
+  object 昌曲夾命 : Pattern("昌曲夾命" , GOOD) // TODO 昌曲夾命
+  object 左右夾命 : Pattern("左右夾命" , GOOD) // TODO 左右夾命
+  object 双祿夾命 : Pattern("双祿夾命" , GOOD) // TODO 双祿夾命
+  object 權煞化祿 : Pattern("權煞化祿" , GOOD) // TODO 權煞化祿
+  object 祿文拱命 : Pattern("祿文拱命" , GOOD) // TODO 祿文拱命
+  object 明祿暗祿 : Pattern("明祿暗祿" , GOOD) // TODO 明祿暗祿
+  object 水木清華 : Pattern("水木清華" , GOOD) // TODO 水木清華
+  object 金鑾扶駕 : Pattern("金鑾扶駕" , GOOD) // TODO 金鑾扶駕
+  object 玉袖添香 : Pattern("玉袖添香" , GOOD) // TODO 玉袖添香
+  object 殺破狼格 : Pattern("殺破狼格" , GOOD) // TODO 殺破狼格
+  object 廟星變景 : Pattern("廟星變景" , GOOD) // TODO 廟星變景
+  object 辛勞開創 : Pattern("辛勞開創" , GOOD) // TODO 辛勞開創
+  object 財印天祿 : Pattern("財印天祿" , GOOD) // TODO 財印天祿
+  object 蟾宮折桂 : Pattern("蟾宮折桂" , GOOD) // TODO 蟾宮折桂
 
   // =========================== 以下 , 惡格 ===========================
 
@@ -2328,9 +2454,10 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
     fun values(): List<IPattern> = listOf(
       p極向離明, p紫府同宮, p紫府朝垣, p天府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天,
       p日月夾命, p君臣慶會, p日月同宮, p日月並明, p日照雷門, p陽梁昌祿, p明珠出海, p巨日同宮, p貪武同行, p將星得地,
-      p七殺朝斗, p雄宿朝垣, p對面朝天, p科名會祿, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇加會, p祿馬交馳, p月朗天門,
-      p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p機梁加會, p文桂文華, p文梁振紀, p魁鉞拱命, p紫府夾命, p左右同宮,
-      p丹墀桂墀, p甲第登庸, p化星返貴, p天乙拱命, p坐貴向貴, p廉貞文武, p星臨正位, p輔拱文星, p三合火貪, p三合鈴貪,
+      p七殺朝斗, p雄宿朝垣, p對面朝天, p科名會祿, p甲第登科, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇嘉會, p祿馬交馳,
+      p月朗天門, p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p機梁加會, p文桂文華, p文梁振紀, p魁鉞拱命, p紫府夾命,
+      p左右同宮, p丹墀桂墀, p甲第登庸, p化星返貴, p天乙拱命, p坐貴向貴, p廉貞文武, p星臨正位, p輔拱文星, p三合火貪,
+      p三合鈴貪, p權祿巡逢, p科權祿夾,
 
       p馬頭帶劍, p極居卯酉, p命無正曜, p羊陀夾命, p火鈴夾命, p羊陀夾忌, p風流綵杖, p巨機化酉, p日月反背, p梁馬飄蕩,
       p貞殺同宮, p殺拱廉貞, p刑囚夾印, p巨逢四煞, p命裡逢空, p空劫夾命, p文星遇夾, p刑忌夾印, p馬落空亡, p兩重華蓋,
