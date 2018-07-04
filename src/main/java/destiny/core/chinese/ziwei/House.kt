@@ -18,7 +18,7 @@ enum class House constructor(private val value: String) {
   疾厄("疾厄"),
 
   遷移("遷移"), /** 太乙派，沒有遷移宮 : [HouseSeqTaiyiImpl]  */
-  交友("交友"),
+  交友("交友"), // 奴僕
   官祿("官祿"),
 
   田宅("田宅"),

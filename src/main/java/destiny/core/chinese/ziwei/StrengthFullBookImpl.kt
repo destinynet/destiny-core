@@ -68,7 +68,7 @@ private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = table
 
 class StrengthFullBookImpl : StrengthAbstractImpl() {
   /**
-   * 1  2       3    4    5      6          7
+   *             1  2       3    4    5      6          7
    * 南派依序分成 →廟、旺、    得地     、平和、   閒地       、陷    ，等六級。
    * 北派依序分成 →廟、旺、    得地、利益、平和、   不得地(失地)、陷    ，等七級。
    */
