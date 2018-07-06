@@ -140,9 +140,13 @@ interface IPlate {
     return tranFours[star]?.map { (key, value) -> key to value }?.toList() ?: emptyList()
   }
 
+  /** 取得此星，的四化值 (maybe null) */
+  fun getTransFourValue(star: ZStar , type: FlowType = FlowType.本命): ITransFour.Value? {
+    return tranFours[star]?.let { m -> m[type] }
+  }
+
   /**
    * 取得此四化星，在哪一宮位
-   * // val tranFours: Map<ZStar, Map<FlowType, ITransFour.Value>>
    * */
   fun getTransFourHouseOf(value : ITransFour.Value , type: FlowType = FlowType.本命) : HouseData {
     val star = tranFours.entries.first { (_, map) ->
