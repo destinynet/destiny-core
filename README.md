@@ -14,7 +14,7 @@ A : Kotlin . 原本使用 Java , 最近半年 migrate 到 Kotlin.
 A : 請自行讀 code (本人不負責教學). Test case 都有附上，自己看。
 
 ### Q : 我要怎麼學習讀懂？
-A : 您必須熟悉 Java / Kotlin / Object-Oriented & Function programming 才能看得懂
+A : 您必須熟悉 Java / Kotlin / Object-Oriented & Functional programming 才能看得懂
 
 ### Q : 可以教我嗎？
 A : 花錢請我
