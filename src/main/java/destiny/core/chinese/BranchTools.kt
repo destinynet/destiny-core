@@ -26,4 +26,5 @@ object BranchTools {
       Branch.申, Branch.酉, Branch.戌 -> 金
     }
   }
+
 }

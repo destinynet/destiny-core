@@ -103,6 +103,36 @@ enum class Branch : ILoop<Branch> {
       return values().indexOf(eb)
     }
   }
+}
 
+/** 兩地支「拱」哪個地支 */
+fun Collection<Branch?>.trine(): Branch? {
+  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
+    val a = list[0]
+    val b = list[1]
+    return if (a != null && b != null) {
+      when {
+        a.getAheadOf(b) == 4 -> a.next(4)
+        b.getAheadOf(a) == 4 -> b.next(4)
+        else -> null
+      }
+    } else
+      null
+  }
+}
 
+/** 兩地支「夾」哪個地支 */
+fun Collection<Branch?>.grip(): Branch? {
+  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
+    val a = list[0]
+    val b = list[1]
+    return if (a != null && b != null) {
+      when {
+        a.getAheadOf(b) == 2 -> b.next
+        b.getAheadOf(a) == 2 -> a.next
+        else -> null
+      }
+    } else
+      null
+  }
 }

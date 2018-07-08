@@ -7,6 +7,8 @@ import destiny.core.DayNight
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem
+import destiny.core.chinese.grip
+import destiny.core.chinese.trine
 import destiny.core.chinese.ziwei.House.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.Pattern.*
@@ -28,38 +30,38 @@ class Memoize1<in T, out R>(val f: (T) -> R) : (T) -> R {
 
 fun <T, R> ((T) -> R).memoize(): (T) -> R = Memoize1(this)
 
-
-/** 拱 */
-fun Collection<Branch?>.trine(): Branch? {
-  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
-    val a = list[0]
-    val b = list[1]
-    return if (a != null && b != null) {
-      when {
-        a.getAheadOf(b) == 4 -> a.next(4)
-        b.getAheadOf(a) == 4 -> b.next(4)
-        else -> null
-      }
-    } else
-      null
-  }
-}
-
-/** 夾 */
-fun Collection<Branch?>.grip(): Branch? {
-  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
-    val a = list[0]
-    val b = list[1]
-    return if (a != null && b != null) {
-      when {
-        a.getAheadOf(b) == 2 -> b.next
-        b.getAheadOf(a) == 2 -> a.next
-        else -> null
-      }
-    } else
-      null
-  }
-}
+//
+///** 拱 */
+//fun Collection<Branch?>.trine(): Branch? {
+//  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
+//    val a = list[0]
+//    val b = list[1]
+//    return if (a != null && b != null) {
+//      when {
+//        a.getAheadOf(b) == 4 -> a.next(4)
+//        b.getAheadOf(a) == 4 -> b.next(4)
+//        else -> null
+//      }
+//    } else
+//      null
+//  }
+//}
+//
+///** 夾 */
+//fun Collection<Branch?>.grip(): Branch? {
+//  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
+//    val a = list[0]
+//    val b = list[1]
+//    return if (a != null && b != null) {
+//      when {
+//        a.getAheadOf(b) == 2 -> b.next
+//        b.getAheadOf(a) == 2 -> a.next
+//        else -> null
+//      }
+//    } else
+//      null
+//  }
+//}
 
 fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.prev(4), it.next(4)) }
 fun IPlate.三方(branch: Branch = this.mainHouse.branch) = 拱(branch).plus(branch)
@@ -131,7 +133,7 @@ enum class Route {
  * 又稱 金輿扶駕
  * */
 val p極向離明 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.starMap[紫微]?.stemBranch?.branch?.let { branch ->
       if (branch == 午 && branch == it.mainHouse.branch)
         極向離明
@@ -143,7 +145,7 @@ val p極向離明 = object : PatternSingleImpl() {
 
 /** 安命在寅或申宮，紫微天府同宮。 */
 val p紫府同宮 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch.let { branch ->
       if ((branch == 寅 || branch == 申) &&
         it.starMap[紫微]?.stemBranch == it.starMap[天府]?.stemBranch
@@ -161,7 +163,7 @@ val p紫府同宮 = object : PatternSingleImpl() {
  * 紫府朝垣格就是紫微、天府在命宮三方四正合照命宮，且有祿存或者科、權、祿，或者有左輔右弼、文昌文曲、天魁天鉞等吉星會照。
  * */
 val p紫府朝垣 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.紫府().trine()
       .takeIf { branches.contains(it) }   // 紫府拱
       ?.let { branch ->
@@ -199,7 +201,7 @@ val p紫府朝垣 = object : PatternMultipleImpl() {
  * 根據現代社會結構，廉貞天府在戌宮同守的人，只是一位很好的理財人材。若甲年生人，廉貞化祿，祿存又居于寅宮相會，則其人亦能創業致富，但卻缺少開創力，只能在守成中發展，不擅長開創。若天馬在寅宮，則其人利于外埠經商。
  */
 val p天府朝垣 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.mainHouse.branch
       .takeIf { branch ->
@@ -236,7 +238,7 @@ val p天府朝垣 = object : PatternSingleImpl() {
  */
 val p府相朝垣 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 寅 || it == 申 }
       ?.takeIf { _ -> it.starMap[天府]?.house == House.官祿 }
@@ -283,7 +285,7 @@ val p府相朝垣 = object : PatternSingleImpl() {
  * 因為巨機同臨時，夫妻官祿線必有太陽、太陰同宮坐守，大利婚姻。
  */
 val p巨機同宮 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.mainHouse.branch
       .takeIf { it == 卯 || it == 酉 }
@@ -324,7 +326,7 @@ val p巨機同宮 = object : PatternSingleImpl() {
  * 也就是為聰明機智之人，這也是具有善蔭朝綱格局之人的通性。
  */
 val p善蔭朝綱 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 辰 || it == 戌 }
       ?.takeIf { branch -> it.starMap[天機]?.stemBranch?.branch == branch }
@@ -354,7 +356,7 @@ val p善蔭朝綱 = object : PatternSingleImpl() {
  * 命宮的對宮、合宮見天機、太陰、天同、天梁等，同宮加會，謂之機月同梁格，主其人智慧超群，為最佳之幕僚、輔佐人才。
  */
 val p機月同梁 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 四星: List<Branch> = it.getBranches(天機, 太陰, 天同, 天梁)
 
     return if (it.三方四正().containsAll(四星))
@@ -376,7 +378,7 @@ val p機月同梁 = object : PatternSingleImpl() {
  * 忌太陽、太陰落陷，或有煞忌星會照，命主一生辛苦難免。
  */
 val p日月照壁 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.getHouseDataOf(House.田宅)
       ?.takeIf { houseData -> houseData.stemBranch.branch == 丑 || houseData.stemBranch.branch == 未 }
@@ -409,7 +411,7 @@ val p日月照壁 = object : PatternSingleImpl() {
  * 白天出生者，謂之金燦光輝格，主富可敵國，或為權貴。
  */
 val p日麗中天 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.mainHouse.branch
       .takeIf { branch ->
@@ -439,7 +441,7 @@ val p日麗中天 = object : PatternSingleImpl() {
  * TODO 命宮坐吉曜，太陽太陰在輔宮夾命宮，謂之日月夾命格，主其人不貴則大富。
  */
 val p日月夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.日月()
       .takeIf { 日月 -> it.mainHouse.branch == 日月.grip() }
       ?.let { 日月夾命 }
@@ -459,7 +461,7 @@ val p日月夾命 = object : PatternSingleImpl() {
  */
 
 val p君臣慶會 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
 
     return it.starMap[紫微]?.stemBranch?.branch
       ?.takeIf { b -> branches.contains(b) }
@@ -498,7 +500,7 @@ val p君臣慶會 = object : PatternMultipleImpl() {
  * 命宮在丑或未，日月二星坐守。
  */
 val p日月同宮 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch.let { branch ->
       if (branch == 丑 || branch == 未)
         branch
@@ -529,7 +531,7 @@ val p日月同宮 = object : PatternSingleImpl() {
  */
 val p日月並明 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return if (
       it.mainHouse.branch == 丑
       && it.starMap[太陽]?.stemBranch?.branch == 巳
@@ -568,7 +570,7 @@ val p日月並明 = object : PatternSingleImpl() {
  * TODO : 另一種類似的 陽梁居卯 , 則針對「非命宮」而言
  */
 val p日照雷門 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return if (
       it.mainHouse.branch == 卯
       && it.dayNight == DayNight.DAY
@@ -593,7 +595,7 @@ val p日照雷門 = object : PatternSingleImpl() {
  * 陽梁昌祿 的格局組成是:太陽、天梁、文昌、祿存（或化祿）在三方四正會之。當然,化祿為上格,祿存次之。
  */
 val p陽梁昌祿 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
 
     val 太陽地支 = it.starMap[太陽]?.stemBranch?.branch
 
@@ -627,7 +629,7 @@ val p陽梁昌祿 = object : PatternMultipleImpl() {
  * 同時太陽位于卯宮時也是處于一種旭日東升、蒸蒸日上的狀態中，因此命盤中有此格局的人容易少年成名。
  */
 val p明珠出海 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return if (
       it.mainHouse.branch == 未
       && it.starMap[太陽]?.stemBranch?.branch == 卯
@@ -646,7 +648,7 @@ val p明珠出海 = object : PatternSingleImpl() {
  * 太陽、巨門入命宮在寅時，謂之巨日同宮格，主其人食祿豐譽，口福聞名。
  */
 val p巨日同宮 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 寅 || it == 申 }
       ?.takeIf { branch -> setOf(branch).containsAll(it.getBranches(太陽, 巨門)) }
@@ -660,7 +662,7 @@ val p巨日同宮 = object : PatternSingleImpl() {
  * 貪狼武曲入命宮在丑或未時，謂之貪武同行格，主其人先貧後富，大器晚成，三十歲後發福。
  */
 val p貪武同行 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 丑 || it == 未 }
       ?.takeIf { branch -> setOf(branch).containsAll(it.getBranches(武曲, 貪狼)) }
@@ -675,7 +677,7 @@ val p貪武同行 = object : PatternSingleImpl() {
  * TODO 武曲入命宮在辰、戌、丑、未時，若又為辰、戌、丑、未年出生者，謂之將星得地格，主其人英名顯赫，大富大貴。
  */
 val p將星得地 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 辰 || it == 戌 }
       ?.takeIf { branch -> it.starMap[武曲]?.stemBranch?.branch == branch }
@@ -694,7 +696,7 @@ val p將星得地 = object : PatternSingleImpl() {
  * 此格帶有殺氣，自己發達而必有另一部份人遭殃，或所以而有不少人死在他的手下。
  */
 val p七殺朝斗 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 申 || it == 午 || it == 子 || it == 寅 }
       ?.takeIf { branch -> it.starMap[七殺]?.stemBranch?.branch == branch } // 七殺入命宮在寅申子午
@@ -728,7 +730,7 @@ val p七殺朝斗 = object : PatternSingleImpl() {
  *  廉貞在寅申獨坐，對宮必為貪狼，事業為武曲天府在子午，財帛為紫微天相在辰戌。
  */
 val p雄宿朝垣 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 寅 || it == 申 }
       ?.takeIf { branch -> it.starMap[廉貞]?.stemBranch?.branch == branch }
@@ -741,7 +743,7 @@ val p雄宿朝垣 = object : PatternSingleImpl() {
  * 命宮在子，太陽與化碌在午，謂之對面朝天格，主其人文章蓋世、超群。
  */
 val p對面朝天 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 子 }   // 命宮在子
       ?.takeIf { _ -> it.starMap[太陽]?.stemBranch?.branch == 午 }         // 太陽在午
@@ -761,7 +763,7 @@ val p對面朝天 = object : PatternSingleImpl() {
  */
 val p科名會祿 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 三方四正有化祿: Boolean = it.三方四正().contains(it.getTransFourHouseOf(祿).stemBranch.branch)
 
@@ -779,7 +781,7 @@ val p科名會祿 = object : PatternSingleImpl() {
  * 「甲第登科格」一般包含在 [p三奇嘉會] 格裡，所不同者，不涉及化祿之定位，所以也不須去計較化忌的落點位置。
  */
 val p甲第登科 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return if (
       it.化科入命宮() &&
       it.三方().contains(it.getTransFourHouseOf(權).stemBranch.branch)
@@ -794,7 +796,7 @@ val p甲第登科 = object : PatternSingleImpl() {
  * 化科入命宮，化權入遷移宮(對宮)時，謂之科權逢迎格，主其人科甲及第，金榜高中。
  */
 val p科權逢迎 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 化權入遷移宮 = it.getTransFourHouseOf(權).stemBranch.branch == it.mainHouse.branch.opposite
 
     return if (it.化科入命宮() && 化權入遷移宮)
@@ -813,7 +815,7 @@ val p科權逢迎 = object : PatternSingleImpl() {
  * 雙祿交流格 : TODO 祿存和化祿俱在三方四正中。有財源，在事業上有成富的機運。又稱為祿合鴛鴦格。
  */
 val p祿合鴛鴦 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 化祿入對宮 = it.getTransFourHouseOf(權).stemBranch.branch == it.mainHouse.branch.opposite
     val 祿存入命宮 = (it.mainHouse.branch == it.starMap[祿存]?.stemBranch?.branch)
@@ -843,7 +845,7 @@ val p祿合鴛鴦 = object : PatternSingleImpl() {
 
 val p雙祿朝垣 = object : PatternMultipleImpl() {
 
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     val 化祿宮位: Branch = it.getTransFourHouseOf(祿).stemBranch.branch
     val 祿存宮位: Branch? = it.starMap[祿存]?.stemBranch?.branch
 
@@ -862,7 +864,7 @@ val p雙祿朝垣 = object : PatternMultipleImpl() {
  */
 val p三奇嘉會 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val good3: Set<ITransFour.Value> = setOf(祿, 權, 科)
 
@@ -893,7 +895,7 @@ val p三奇嘉會 = object : PatternSingleImpl() {
  * 若祿跟馬同在本宮或祿馬同在對宮，祿馬交馳的力量就會大減。另外，若天馬同宮有截空，空亡，當然亦是減力的，祿馬交馳也不喜歡疊祿。
  */
 val p祿馬交馳 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 天馬在命: Boolean = it.mainHouse.branch == it.starMap[天馬]?.stemBranch?.branch
     val 天馬在遷: Boolean = it.mainHouse.branch.opposite == it.starMap[天馬]?.stemBranch?.branch
 
@@ -919,7 +921,7 @@ val p祿馬交馳 = object : PatternSingleImpl() {
  * 太陰入命在亥宮時，夜晚出生者，謂之月朗天門格，主其人出相入將，非貴則富。
  */
 val p月朗天門 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 亥 }
       ?.takeIf { _ -> it.starMap[太陰]?.stemBranch?.branch == 亥 }
@@ -933,7 +935,7 @@ val p月朗天門 = object : PatternSingleImpl() {
  * 日月滄海格：太陰入命宮在子時，夜晚出生者，謂之日月滄海格，主其人富貴、清高、忠良。
  */
 val p月生滄海 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 子 }
       ?.takeIf { _ -> it.starMap[太陰]?.stemBranch?.branch == 子 }
@@ -952,7 +954,7 @@ val p月生滄海 = object : PatternSingleImpl() {
  */
 val p石中隱玉 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 子 || it == 午 }
       ?.takeIf { branch -> it.starMap[巨門]?.stemBranch?.branch == branch } // 巨門入命於子或午
@@ -987,7 +989,7 @@ val p石中隱玉 = object : PatternSingleImpl() {
  * 有詩曰：命遇離明拱壽星，一生榮華沐深恩。飛騰鴻鴣青霄近，氣象堂堂侍帝廷。
  */
 val p壽星入廟 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 午 }
       ?.takeIf { _ -> it.starMap[天梁]?.stemBranch?.branch == 午 } // 天梁入命宮在午
@@ -1023,7 +1025,7 @@ val p壽星入廟 = object : PatternSingleImpl() {
  * 而七殺星也能在“體制”之內作最大能量的沖刺作為，這便是“英星入廟”格局的實質精神所在。
  */
 val p英星入廟 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 子 || it == 午 }
       ?.takeIf { branch -> it.starMap[破軍]?.stemBranch?.branch == branch } // 破軍守命居子或午
@@ -1054,7 +1056,7 @@ val p英星入廟 = object : PatternSingleImpl() {
  * 吉星少，從事的工作的軍警、司法等有關。又見煞者，多為宗教教主、邪教創始人、神學家、哲學家、思想家、氣功師。
  */
 val p機梁加會 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 辰 || it == 戌 }
       ?.takeIf { branch -> setOf(branch).containsAll(it.getBranches(天機, 天梁)) } // 天機, 天梁在該宮
@@ -1085,7 +1087,7 @@ val p機梁加會 = object : PatternSingleImpl() {
  * */
 val p文桂文華 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 丑 || it == 未 }
       ?.let { branch ->
@@ -1110,7 +1112,7 @@ val p文桂文華 = object : PatternSingleImpl() {
  * 即文曲（或文昌）、天梁一起坐守命宮，二星皆入廟旺之地，且命宮三方四正有祿存、科權祿、左右、魁鉞等吉星加會，即成格。
  */
 val p文梁振紀 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 命宮有昌或曲且處廟旺 = it.getHouseDataOf(it.mainHouse.branch).stars
       .filter { star -> listOf(文昌, 文曲).contains(star) }
       .map { star -> it.starStrengthMap[star] }
@@ -1147,7 +1149,7 @@ val p文梁振紀 = object : PatternSingleImpl() {
  */
 val p魁鉞拱命 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return when {
       setOf(it.mainHouse.branch).containsAll(it.魁鉞()) -> Route.入
       it.魁鉞().toSet() == it.neighbors() -> Route.夾
@@ -1166,7 +1168,7 @@ val p魁鉞拱命 = object : PatternSingleImpl() {
  * 若叁方四正多兇少吉，仍屬普通之人。
  * */
 val p左右同宮 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.mainHouse.branch
       .takeIf { it == 丑 || it == 未 }
@@ -1202,7 +1204,7 @@ val p左右同宮 = object : PatternSingleImpl() {
  */
 val p丹墀桂墀 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it
       .takeIf { it.starStrengthMap[太陽]?.let { it <= 2 } ?: false }  // 日旺廟
       ?.takeIf { it.starStrengthMap[太陰]?.let { it <= 2 } ?: false } // 月旺廟
@@ -1222,7 +1224,7 @@ val p丹墀桂墀 = object : PatternSingleImpl() {
  */
 val p甲第登庸 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 拱有化權 = it.拱().contains(it.getTransFourHouseOf(權).stemBranch.branch)
 
@@ -1238,7 +1240,7 @@ val p甲第登庸 = object : PatternSingleImpl() {
  * 巨門在辰宮坐命，辛年生人；天同在戌坐命，丁年生人，即為此格。
  */
 val p化星返貴 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 辛年巨門在辰坐命: Boolean = it.mainHouse.branch
       .takeIf { it == 辰 }
@@ -1267,7 +1269,7 @@ val p化星返貴 = object : PatternSingleImpl() {
  *
  */
 val p天乙拱命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> branch == it.魁鉞().trine() }
       ?.let { _ -> 天乙拱命 }
@@ -1286,7 +1288,7 @@ val p天乙拱命 = object : PatternSingleImpl() {
  * TODO 須命宮主星廟旺，三方四正有吉星加會，主有學識，高學歷，端莊，一生多助人，亦多得眾人相助，能逢凶化吉，遇難呈祥，富貴。 若命陷弱，縱有魁鉞，雖能得人助，終究普通無成就。
  */
 val p坐貴向貴 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 命宮身宮 = setOf(it.mainHouse.branch, it.bodyHouse.branch)
     val 命宮對宮 = setOf(it.mainHouse.branch, it.mainHouse.branch.opposite)
 
@@ -1304,7 +1306,7 @@ val p坐貴向貴 = object : PatternSingleImpl() {
  * 古人對這個格局的評價非常高，有「命中文武喜朝垣，入廟平生福氣全，純粹文能高折桂，戰征武定鎮三邊」之說。也就是說紫微命盤中有此格局的人文武雙全，很適合做大將軍。
  */
 val p廉貞文武 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse
       .takeIf { branch -> it.starMap[廉貞]?.stemBranch?.branch == branch }  // 廉貞坐命
       ?.takeIf { _ -> it.starMap[武曲]?.house == House.官祿 }          // 武曲官祿
@@ -1322,7 +1324,7 @@ val p廉貞文武 = object : PatternSingleImpl() {
  * 天梁正位在父母宮。
  */
 val p星臨正位 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val matched = mutableSetOf<ZStar>().apply {
       if (it.starMap[武曲]?.house == 財帛)
         add(武曲)
@@ -1349,7 +1351,7 @@ val p星臨正位 = object : PatternSingleImpl() {
  * 遇擎羊、火星、鈴星、地空、地劫、截路、空亡等兇星同宮或會照，則破格。
  */
 val p輔拱文星 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.starMap[文昌]?.stemBranch?.branch
       ?.takeIf { branch -> it.三方四正(branch).contains(it.starMap[左輔]?.stemBranch?.branch) }
       ?.let { branch ->
@@ -1367,7 +1369,7 @@ val p輔拱文星 = object : PatternMultipleImpl() {
  * 其人或以武職立功，把握國家軍警大權，或經商暴發，財運亨通。喜與鈴星加會。
  */
 val p三合火貪 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.starMap[貪狼]?.stemBranch?.branch
       ?.takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch -> it.三方(branch).contains(it.starMap[火星]?.stemBranch?.branch) }
@@ -1382,7 +1384,7 @@ val p三合火貪 = object : PatternMultipleImpl() {
  * 類似 [p三合火貪] , ㄧ樣以 [貪狼] 為主 , 但以 [鈴星] 為輔
  */
 val p三合鈴貪 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.starMap[貪狼]?.stemBranch?.branch
       ?.takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch -> it.三方(branch).contains(it.starMap[鈴星]?.stemBranch?.branch) }
@@ -1405,7 +1407,7 @@ val p三合鈴貪 = object : PatternMultipleImpl() {
  */
 val p權祿巡逢 = object : PatternMultipleImpl() {
 
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     // 說法A
     val 化權與祿存或化祿同宮: Branch? = it.getTransFourHouseOf(權).stemBranch.branch
       .takeIf { branch -> branches.contains(branch) }
@@ -1444,7 +1446,7 @@ val p權祿巡逢 = object : PatternMultipleImpl() {
  * 化祿、化權、化科這三化曜其中有2個或者三個居命宮兩側，即在鄰宮來夾命。
  */
 val p科權祿夾 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return listOf(
       it.getTransFourHouseOf(科).stemBranch.branch,
@@ -1460,7 +1462,7 @@ val p科權祿夾 = object : PatternSingleImpl() {
  * 書云『文昌文曲最榮華，值此需生富貴家，更得三方祥曜拱，卻如錦上又添花』
  */
 val p文星拱命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.昌曲().trine()
       ?.takeIf { b -> it.mainHouse.branch == b }
       ?.let { _ -> 文星拱命 }
@@ -1476,7 +1478,7 @@ val p文星拱命 = object : PatternSingleImpl() {
  * 在紫微斗數中，武曲為財星，祿存或化祿亦主財，紫微命盤中有雙財星夾命，其人一生錢財不愁，假如命宮中又有天馬星坐守，則財源更廣，錢水更活。
  */
 val p財祿夾馬 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
 
     val 武曲branch = it.starMap[武曲]?.stemBranch?.branch
     val 祿存branch = it.starMap[祿存]?.stemBranch?.branch
@@ -1525,7 +1527,7 @@ val p財祿夾馬 = object : PatternMultipleImpl() {
  * 太陽化祿和天梁夾宮亦佳，更次之的，是天同化祿天梁夾，財氣較弱，助力也較遜色。祿存和天梁夾宮，雖然也有財蔭夾的性質，但由于必有擎羊同度，擎羊化氣為刑，不利天相，故為破格。
  */
 val p財蔭夾印 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     val 化祿地支 = it.getTransFourHouseOf(祿).stemBranch.branch
     val 天梁地支 = it.starMap[天梁]?.stemBranch?.branch
 
@@ -1550,7 +1552,7 @@ val p財蔭夾印 = object : PatternMultipleImpl() {
  *
  */
 val p擎羊入廟 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return listOf(辰, 戌, 丑, 未).firstOrNull { branch ->
       branches.contains(branch) &&
         it.starMap[擎羊]?.stemBranch?.branch == branch
@@ -1569,7 +1571,7 @@ val p擎羊入廟 = object : PatternMultipleImpl() {
  * 天相、祿存（或化祿）、天馬這三顆星在三方四正相會，且未遇煞星者，是為成格。
  */
 val p祿馬配印 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.getBranches(天馬, 天相)
       .takeIf { list -> list.size == 1 } // 天馬 天相 同宮
       ?.let { list -> list[0] }
@@ -1590,7 +1592,7 @@ val p祿馬配印 = object : PatternMultipleImpl() {
  */
 val p紫府夾命 = object : PatternSingleImpl() {
 
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 寅 || it == 申 }    // 命在寅或申
       ?.takeIf { branch -> branch == it.紫府().grip() } // 紫府有夾命
@@ -1610,7 +1612,7 @@ val p紫府夾命 = object : PatternSingleImpl() {
  * 4、戌時生人立命在丑。
  */
 val p昌曲夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> branch == 丑 || branch == 未 }  // 命宮在丑或未宮
       ?.takeIf { branch -> it.昌曲().grip() == branch } // 昌曲夾命
@@ -1625,7 +1627,7 @@ val p昌曲夾命 = object : PatternSingleImpl() {
  * 而且，如果因為命盤結構中的某些原因造成「事業容易失敗」的話，即使化祿化權在命宮～左右夾命反而還會是拖垮整個家族經濟的最後一跟稻草。
  */
 val p左右夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.輔弼()
       .takeIf { 左右 -> 左右.grip() == it.mainHouse.branch }
       ?.let { _ -> 左右夾命 }
@@ -1639,7 +1641,7 @@ val p左右夾命 = object : PatternSingleImpl() {
  * 但經由雙祿夾輔, 得以制煞為用. 甚至連凶格被雙祿夾輔, 都能轉危為安
  */
 val p雙祿夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return listOf(
       it.starMap[祿存]?.stemBranch?.branch,
       it.getTransFourHouseOf(祿).stemBranch.branch)
@@ -1657,7 +1659,7 @@ val p雙祿夾命 = object : PatternSingleImpl() {
  * 此格局的人，性格剛烈，具英雄氣慨，一生運勢起伏不穩，九死一生，驚險百出。若從事武職，危險性職業或是做冒險投機生意，很容易成功。
  */
 val p權煞化祿 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.getHouseDataOf(it.mainHouse.branch).stars
       .takeIf { _ -> it.getMainStarsIn(it.mainHouse.branch).isEmpty() } // 命宮無主星
       ?.intersect(listOf(擎羊, 陀羅, 火星, 鈴星))
@@ -1681,7 +1683,7 @@ val p權煞化祿 = object : PatternSingleImpl() {
  * 最忌有煞忌星沖照，視為破格，如命宮無主星，則不成格。
  */
 val p祿文拱命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.starMap[祿存]?.stemBranch?.branch
       ?.takeIf { branch -> branch == it.mainHouse.branch } // 祿存坐命
@@ -1696,7 +1698,7 @@ val p祿文拱命 = object : PatternSingleImpl() {
  * 六合包括：子丑，寅亥，卯戌，辰酉，巳申，午未。
  */
 val p明祿暗祿 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 祿存branch = it.starMap[祿存]?.stemBranch?.branch
     val 化祿branch = it.getTransFourHouseOf(祿).stemBranch.branch
 
@@ -1720,7 +1722,7 @@ val p明祿暗祿 = object : PatternSingleImpl() {
  * 天機與太陰同時座於命宮.此格局只會出現在寅宮or申宮.
  */
 val p水木清華 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return if (setOf(it.mainHouse.branch).containsAll(it.getBranches(天機, 太陰)))
       水木清華
     else
@@ -1738,7 +1740,7 @@ val p水木清華 = object : PatternSingleImpl() {
  * 日月合臨 ? 真有此盤！？ 暫且先不做此條件
  */
 val p金鑾扶駕 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.starMap[紫微]?.stemBranch?.branch
       ?.takeIf { b -> branches.contains(b) }
       ?.takeIf { b -> setOf(b).containsAll(it.輔弼()) }
@@ -1754,7 +1756,7 @@ val p金鑾扶駕 = object : PatternMultipleImpl() {
  * 福德有昌曲的人喜歡閱讀，重精神享受，喜思考，善理解。
  */
 val p玉袖添香 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 巳 || it == 亥 }
       .takeIf { _ -> it.getHouseDataOf(House.福德)?.stars?.containsAll(listOf(文昌, 文曲)) ?: false }
@@ -1767,7 +1769,7 @@ val p玉袖添香 = object : PatternSingleImpl() {
  * 其他兩個一定會分別在「財帛宮」與「官祿宮」。簡單說，這三顆星是「一組」。
  */
 val p殺破狼格 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch.trinities
       .takeIf { set -> set == it.getBranches(七殺, 破軍, 貪狼).toSet() }
       ?.let { _ -> 殺破狼格 }
@@ -1778,7 +1780,7 @@ val p殺破狼格 = object : PatternSingleImpl() {
  * 太陰或天同在命宮入廟，顯得享福而缺乏開創力，若能化忌而不會其它煞星、則有激發作用，雖會有一時失敗，終有偉大成就。
  */
 val p廟星變景 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return setOf(太陰, 天同)
       .firstOrNull { star -> it.starMap[star]?.stemBranch?.branch == it.mainHouse.branch } // 有其中一顆星在命宮
       ?.takeIf { star -> it.starStrengthMap[star] == 1 } // 入廟
@@ -1791,7 +1793,7 @@ val p廟星變景 = object : PatternSingleImpl() {
  * 化忌在四墓之地(辰戌丑未)入命。一生辛勞開創，中年後能立大事業。
  */
 val p辛勞開創 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> setOf(辰, 戌, 丑, 未).contains(branch) } // 命宮在 辰, 戌, 丑, 未 之一
       ?.takeIf { branch -> branch == it.getTransFourHouseOf(忌).stemBranch.branch }  // 命宮有化忌星
@@ -1803,7 +1805,7 @@ val p辛勞開創 = object : PatternSingleImpl() {
  * 天同、天梁、祿星(或化祿)坐命寅或申宮，武曲天相左右鄰宮夾命，主富貴雙全，但偏向貴格。
  */
 val p財印天祿 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> branch == 寅 || branch == 申 }
       ?.takeIf { branch -> it.neighbors(branch) == it.getBranches(武曲, 天相).toSet() }  // 武曲天相左右鄰宮夾命
@@ -1827,7 +1829,7 @@ val p財印天祿 = object : PatternSingleImpl() {
  * 廟旺太陰、文曲星同坐夫妻宮，再逢遇吉星，為「蟾宮折桂格」，男招貴妻，有才華，會做人，內外兼顧；女生貴子，丈夫文質彬彬，得富貴。
  */
 val p蟾宮折桂 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return listOf(太陰, 文曲)
       .takeIf { 太陰文曲 -> it.getHouseDataOf(House.夫妻)?.stars?.containsAll(太陰文曲) ?: false }  // 共入夫妻宮
       ?.takeIf { 太陰文曲 -> 太陰文曲.all { star -> it.starStrengthMap[star]?.let { value -> value <= 2 } ?: false } }  // 共同旺廟
@@ -1850,7 +1852,7 @@ val p蟾宮折桂 = object : PatternSingleImpl() {
  *
  */
 val p馬頭帶劍 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> branch == 午 } // 命在午
       ?.takeIf { _ -> it.starMap[擎羊]?.stemBranch?.branch == 午 } // 擎羊在午
@@ -1878,7 +1880,7 @@ val p馬頭帶劍 = object : PatternSingleImpl() {
  * 古詩云：“極居卯酉遇劫空，十人之命九為僧”。又云：“借問此身何處去，衲衣削發居空門”。
  */
 val p極居卯酉 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.mainHouse.branch
       .takeIf { it == 卯 || it == 酉 }
@@ -1902,7 +1904,7 @@ val p極居卯酉 = object : PatternSingleImpl() {
  * 命宮裡無任何十四顆主星坐命。
  */
 val p命無正曜 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.takeIf { it.getMainStarsIn(it.mainHouse.branch).isEmpty() }
       ?.let { _ -> 命無正曜 }
   }
@@ -1912,7 +1914,7 @@ val p命無正曜 = object : PatternSingleImpl() {
  * 在寅宮，貪狼坐命，遇陀羅同宮。
  */
 val p風流綵杖 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.takeIf { it.mainHouse.branch == 寅 }
       ?.takeIf { it.starMap[貪狼]?.stemBranch?.branch == 寅 }
       ?.takeIf { it.starMap[陀羅]?.stemBranch?.branch == 寅 }
@@ -1924,7 +1926,7 @@ val p風流綵杖 = object : PatternSingleImpl() {
  * 巨門、天機同在酉宮坐命，有化忌同宮。性質為奔波飄蕩。不利於感情、 事業。
  */
 val p巨機化酉 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { _ -> it.化忌入命宮() }
       ?.takeIf { _ -> it.mainHouse.branch == 酉 }
@@ -1940,7 +1942,7 @@ val p巨機化酉 = object : PatternSingleImpl() {
  * 取其日在戌時，月在辰時， 兩星光芒皆弱不旺。勞碌命，求人不如勞己。無閒享清福。
  */
 val p日月反背 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 太陽在戌宮坐命 = (it.mainHouse.branch == 戌 && it.starMap[太陽]?.stemBranch?.branch == 戌)
     val 太陰在辰宮坐命 = (it.mainHouse.branch == 辰 && it.starMap[太陰]?.stemBranch?.branch == 辰)
     return if (太陽在戌宮坐命 || 太陰在辰宮坐命)
@@ -1954,7 +1956,7 @@ val p日月反背 = object : PatternSingleImpl() {
  * 太陽、太陰同入疾厄宮，有身體障礙。但從事醫生、星相命卜之業，反主吉。
  */
 val p日月疾厄 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.getHouseDataOf(House.疾厄)?.stars
       ?.takeIf { stars -> stars.containsAll(listOf(太陽, 太陰)) }
       ?.let { _ -> 日月疾厄 }
@@ -1973,7 +1975,7 @@ val p日月疾厄 = object : PatternSingleImpl() {
  * 為社會底層人物，一生飄蕩，身在異鄉，并常為他人之事而奔波，無事閑忙，名利皆虛，貧賤之命。
  */
 val p梁馬飄蕩 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 說法A_天梁在寅巳申亥坐命與天馬同宮 = it.mainHouse.branch.let { branch ->
       if (listOf(寅, 巳, 申, 亥).contains(branch))
@@ -2007,7 +2009,7 @@ val p梁馬飄蕩 = object : PatternSingleImpl() {
  * 此格人應注意法律方面的問題。
  */
 val p貞殺同宮 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 丑 || it == 未 }
       ?.takeIf { branch -> setOf(branch).containsAll(it.getBranches(廉貞, 七殺)) } // 貞殺同宮
@@ -2031,7 +2033,7 @@ val p貞殺同宮 = object : PatternSingleImpl() {
  * 以上諸等，命宮三方四正無吉星加會，反而加會羊陀火鈴天刑化忌劫空等諸多惡曜，便爲殺拱廉貞之格。
  */
 val p殺拱廉貞 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 廉貞貪狼在巳宮守命: Boolean = it.mainHouse.branch.let { branch ->
       branch == 巳
         && setOf(branch).containsAll(it.getBranches(廉貞, 貪狼))
@@ -2061,7 +2063,7 @@ val p殺拱廉貞 = object : PatternSingleImpl() {
  * 此格局應防意外之災或為不得已苦衷流落四方。
  */
 val p巨逢四煞 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.starMap[巨門]?.stemBranch?.branch
       ?.takeIf { branches.contains(it) }
       ?.takeIf { 巨門地支 -> it.三方四正(巨門地支).containsAll(it.getBranches(擎羊, 陀羅, 火星, 鈴星)) } // 三方四正包含全部四凶星
@@ -2077,7 +2079,7 @@ val p巨逢四煞 = object : PatternMultipleImpl() {
  * 有精神上孤獨，錢不易留住之跡象。
  */
 val p命裡逢空 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.空劫()
       .takeIf { 空劫 -> 空劫.contains(it.mainHouse.branch) }
       ?.let { _ -> 命裡逢空 }
@@ -2088,7 +2090,7 @@ val p命裡逢空 = object : PatternSingleImpl() {
  * 文昌或文曲守命，遇空劫 或火鈴或羊陀對星來夾。有懷才不遇跡象。
  */
 val p文星遇夾 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> it.昌曲().contains(branch) } // 命宮有文星
       ?.let { _ ->
@@ -2112,7 +2114,7 @@ val p文星遇夾 = object : PatternSingleImpl() {
  * 空亡用日空
  */
 val p馬落空亡 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> branch == it.starMap[天馬]?.stemBranch?.branch } // 命宮天馬
       ?.takeIf { _ -> it.三方四正().intersect(it.空劫()).isNotEmpty() } // 三方四正有地空或地劫
@@ -2129,7 +2131,7 @@ val p馬落空亡 = object : PatternSingleImpl() {
  * 華蓋表示有宗教緣分。皈依宗教，反可享主清福。但因雙祿被衝破，較不易累積錢財。
  */
 val p兩重華蓋 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return p祿合鴛鴦.getSingle(it, pContext)
       ?.takeIf { _ -> setOf(it.mainHouse.branch).containsAll(it.空劫()) } // 空劫入命
       ?.let { _ -> 兩重華蓋 }
@@ -2142,7 +2144,7 @@ val p兩重華蓋 = object : PatternSingleImpl() {
  * 吉處藏凶之象，應居安思危。
  */
 val p祿逢衝破 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 化祿入命宮: Boolean = it.getTransFourHouseOf(祿).stemBranch.branch == it.mainHouse.branch
 
     val 祿存坐命: Boolean = it.starMap[祿存]?.stemBranch?.branch == it.mainHouse.branch
@@ -2165,7 +2167,7 @@ val p祿逢衝破 = object : PatternSingleImpl() {
  * 泛水桃花的極致是貪狼居子宮遇擎羊同宮
  */
 val p泛水桃花 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 貪狼坐命在子宮 = it.mainHouse.branch == 子
       && it.starMap[貪狼]?.stemBranch?.branch == 子
 
@@ -2196,7 +2198,7 @@ val p泛水桃花 = object : PatternSingleImpl() {
  * 王亭之的意見。所謂「天梁拱月」，乃是天梁居巳亥，太陰居丑未，或大陰居寅申，天梁居子午的格局
  */
 val p天梁拱月 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> listOf(巳, 亥, 申).contains(branch) }
       ?.takeIf { branch -> it.starMap[天梁]?.stemBranch?.branch == branch } // 天梁陷地守命
@@ -2215,7 +2217,7 @@ val p天梁拱月 = object : PatternSingleImpl() {
  * TODO 若是命宮三方四正臨廟旺，加會星并得吉化，則不作此論。
  */
 val p財與囚仇 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return setOf(it.mainHouse.branch, it.bodyHouse.branch)
       .takeIf { set -> set == it.getBranches(武曲, 廉貞).toSet() }
       ?.let { _ -> 財與囚仇 }
@@ -2227,7 +2229,7 @@ val p財與囚仇 = object : PatternSingleImpl() {
  * 廉貞(火)在亥逢化忌(水)，是火入泉鄉，主大凶。
  */
 val p火入泉鄉 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return if (it.starMap[廉貞]?.stemBranch?.branch == 亥)
       火入泉鄉
     else
@@ -2246,7 +2248,7 @@ val p火入泉鄉 = object : PatternSingleImpl() {
  * 主其人虛有其表，好看而已，終究不能有所作為，縱有一時之財利也很快陷于困窮。
  */
 val p祿逢兩煞 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 祿存守命宮: Boolean = it.getHouseDataOf(it.mainHouse.branch).stars.contains(祿存)
     val 化祿守命宮: Boolean = it.getTransFourHouseOf(祿).stemBranch.branch == it.mainHouse.branch
 
@@ -2269,7 +2271,7 @@ val p祿逢兩煞 = object : PatternSingleImpl() {
  * 人命得此，乃貧賤夭折之命無疑。在現代生活中，則代表生活艱辛，有志難伸，充滿挑戰與磨難。一生較無貴人相輔相成，只靠自己一步一腳印，奮發圖強。
  */
 val p君子在野 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 閒宮: List<Branch> = listOf(父母, 兄弟, 疾厄, 交友, 夫妻, 子女)
       .map { h -> it.getHouseDataOf(h)?.stemBranch?.branch }
@@ -2296,7 +2298,7 @@ val p君子在野 = object : PatternSingleImpl() {
  * 祿存在命宮，則必為羊陀所夾。若有化忌星同宮，羊陀凶性得以充分發揮。雖有祿存守命，亦不為美。
  */
 val p羊陀夾忌 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     val 化忌宮位 = it.getTransFourHouseOf(忌)
     return 化忌宮位
       .takeIf { branches.contains(it.stemBranch.branch) }
@@ -2311,7 +2313,7 @@ val p羊陀夾忌 = object : PatternMultipleImpl() {
  * 破軍或七殺入命宮，火星、鈴星在左右鄰宮相夾。
  */
 val p火鈴夾忌 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.火鈴().grip() // 火鈴夾
       ?.takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch -> it.getBranches(破軍, 七殺).contains(branch) }
@@ -2328,7 +2330,7 @@ val p火鈴夾忌 = object : PatternMultipleImpl() {
  * 注意：该格与羊陀夹忌格只一字之差。本格无忌冲破禄存，所以相对好一些。但同样是凶格。
  */
 val p羊陀夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.羊陀()
       .takeIf { 羊陀 -> it.mainHouse.branch == 羊陀.grip() }
       ?.let { _ -> 羊陀夾命 }
@@ -2343,7 +2345,7 @@ val p羊陀夾命 = object : PatternSingleImpl() {
  * 若是貪狼守命宮，得火鈴夾命反為大吉之格，要是貪狼化祿的話，則是大富大貴之命。
  */
 val p火鈴夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.火鈴()
       .takeIf { 火鈴 -> it.mainHouse.branch == 火鈴.grip() }
       ?.let { _ -> 火鈴夾命 }
@@ -2359,7 +2361,7 @@ val p火鈴夾命 = object : PatternSingleImpl() {
  * 若是命宮無正曜，或星辰落陷，遇劫空夾，主惡兆。
  */
 val p空劫夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.空劫()
       .takeIf { 空劫 -> it.mainHouse.branch == 空劫.grip() }
       ?.let { _ -> 空劫夾命 }
@@ -2387,7 +2389,7 @@ val p空劫夾命 = object : PatternSingleImpl() {
  *    「印」指的是天相星，是一顆宰相星，代表參謀作業，化氣為蔭。
  */
 val p刑囚夾印 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 說法A_廉貞天相擎羊入命宮於子或午: House? = it.mainHouse.branch
       .takeIf { it == 子 || it == 午 }
@@ -2412,7 +2414,7 @@ val p刑囚夾印 = object : PatternSingleImpl() {
  * 或天相受化忌和擎羊於左右鄰宮相夾。
  */
 val p刑忌夾印 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     return it.starMap[天相]?.stemBranch?.branch?.let { 天相branch ->
       val neighbors = it.neighbors(天相branch)
@@ -2442,7 +2444,7 @@ val p刑忌夾印 = object : PatternSingleImpl() {
  * 祿存天馬與地空或地劫同宮。似有展望之機，卻又乏力邁步。
  */
 val p祿衰馬困 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.getBranches(祿存, 天馬)
       .takeIf { it.size == 1 } // 祿存天馬 同宮
       ?.let { list -> list[0] }
@@ -2459,7 +2461,7 @@ val p祿衰馬困 = object : PatternMultipleImpl() {
  * 命坐文星，卻逢四煞 (鈴星、火星、擎羊、陀羅) 、忌星、空劫。苟有文才亦不見用，空懷大志功名不成。
  */
 val p名不利達 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.getHouseDataOf(it.mainHouse.branch).stars.intersect(listOf(文昌, 文曲))
       .takeIf { stars -> stars.isNotEmpty() }  // 命宮 有 文昌 或 文曲
       ?.takeIf { _ ->
@@ -2482,7 +2484,7 @@ val p名不利達 = object : PatternSingleImpl() {
  * 三方忌煞格：某宫的三方四正宫均有煞星并化忌星时，即是。与三方煞聚凶格的区别是：煞聚格无化忌星，忌煞格有忌星。
  */
 val p三方並凶 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.三方四正().takeIf { branches ->
       val 有六煞: Boolean = it.getBranches(*StarUnlucky.values).intersect(branches).isNotEmpty()
       val 有化忌 = branches.contains(it.getTransFourHouseOf(忌).stemBranch.branch)
@@ -2496,7 +2498,7 @@ val p三方並凶 = object : PatternSingleImpl() {
  * 化忌、化權、化科同時會入某宮，該宮便形成「三奇沖剋 」，三奇沖剋 ，一片凄慘，必有災難之事。
  */
 val p三奇沖剋 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.getTransFourHouseOf(忌).stemBranch.branch
       .takeIf { branches.contains(it) }
       ?.takeIf { branch -> branch == it.getTransFourHouseOf(權).stemBranch.branch }
@@ -2522,7 +2524,7 @@ val p三奇沖剋 = object : PatternMultipleImpl() {
  * 但一生中將時有艷遇，應注意把持住使不逾己，才不致毀掉辛苦建立的美滿家庭。
  */
 val p天機巳亥 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.starMap[天機]?.stemBranch?.branch
       ?.takeIf { branch -> branch == 巳 || branch == 亥 }
       ?.takeIf { branch -> it.starMap[太陰]?.stemBranch?.branch == branch.opposite } // 太陰 在 對宮
@@ -2537,7 +2539,7 @@ val p天機巳亥 = object : PatternSingleImpl() {
  * 此格之人生性怯弱，身體多病，或一生貧賤愁苦，再遇四煞沖會，多主心狠手毒，無情無義。女命受感情打擊或作人情婦，難成為正宮。
  */
 val p月同遇煞 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.getHouseDataOf(it.mainHouse.branch).stars
       .takeIf { stars -> stars.containsAll(listOf(太陰, 天同)) }   // 太陰 , 天同 都在命宮
       ?.takeIf { stars ->
@@ -2558,7 +2560,7 @@ val p月同遇煞 = object : PatternSingleImpl() {
  * 此格之人命纏文曲主桃花主糾纏不清，桃花不停困擾不斷，容易在感情上迷失自我而導致失敗。
  */
 val p桃花滾浪 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.starMap[文曲]?.stemBranch?.branch
       ?.takeIf { branch -> branch == it.mainHouse.branch }  // 文曲 在命宮
       ?.takeIf { branch -> branch == 戌 }  // 文曲 在戌
@@ -2579,7 +2581,7 @@ val p桃花滾浪 = object : PatternSingleImpl() {
  * 所以適合變動性大的工作，可減少漂泊性質，如導遊、空勤人員或是遠洋船員。
  */
 val p梁同巳亥 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { it == 巳 || it == 亥 }
       ?.takeIf { branch -> branch == it.starMap[天梁]?.stemBranch?.branch } // 天梁 在 巳 or 亥
@@ -2592,7 +2594,7 @@ val p梁同巳亥 = object : PatternSingleImpl() {
  * (四正?)
  */
 val p科星逢破 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     return it.getTransFourHouseOf(科).stemBranch.branch
       .takeIf { branch -> branches.contains(branch) }
       ?.takeIf { branch ->
@@ -2614,7 +2616,7 @@ val p科星逢破 = object : PatternMultipleImpl() {
  * 但如果同宮內再有天刑星時，其之為禍才大（其名為：刑囚會鈴），而其是克應在廉貞化忌之大限或流年。
  */
 val p刑囚會鈴 = object : PatternMultipleImpl() {
-  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): Pattern? {
+  override fun getMultiple(it: IPlate, branches: Set<Branch>, pContext: IPatternContext): IPattern? {
     val 廉貞化忌 = it.getTransFourValue(廉貞) == 忌
 
     val 三星同宮: Branch? = it.getBranches(廉貞, 擎羊, 鈴星)
@@ -2635,7 +2637,7 @@ val p刑囚會鈴 = object : PatternMultipleImpl() {
  * (三方四正？）
  */
 val p鈴昌陀武 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> it.三方四正(branch).containsAll(it.getBranches(鈴星, 文昌, 陀羅, 武曲)) }
       ?.let { _ -> 鈴昌陀武 }
@@ -2646,7 +2648,7 @@ val p鈴昌陀武 = object : PatternSingleImpl() {
  * 廉貞七殺，有擎羊同度，會鈴星，不利軍職武職人員，主殉職。
  */
 val p廉殺羊鈴 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse.branch
       .takeIf { branch -> it.三方四正(branch).containsAll(it.getBranches(廉貞, 七殺, 擎羊, 鈴星)) }
       ?.let { _ -> 廉殺羊鈴 }
@@ -2659,7 +2661,7 @@ val p廉殺羊鈴 = object : PatternSingleImpl() {
  * 一生孤贫格,破军陷地守命（卯酉宫、巳亥宫），命宫、对宫、三合宫没有任何一颗吉星加会，即为一生孤贫之格。
  */
 val p一生孤貧 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.starMap[破軍]?.stemBranch?.branch
       ?.takeIf { branch -> branch == it.mainHouse.branch } // 破軍守命
       ?.takeIf { _ -> 7 == it.starStrengthMap[破軍] }  // 破軍 陷
@@ -2675,7 +2677,7 @@ val p一生孤貧 = object : PatternSingleImpl() {
  * 4、遇火铃，性格急躁，不易聚财；遇羊驼，富贵不长；遇空劫，空成空败，欢喜一场。
  */
 val p魁鉞凶冲 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return setOf(it.mainHouse.branch, it.bodyHouse.branch)
       .takeIf { set -> set == it.getBranches(天魁, 天鉞).toSet() }
       ?.takeIf { _ -> it.三方四正().intersect(it.getBranches(*StarLucky.values)).isEmpty() } // 三方四正无吉星
@@ -2697,7 +2699,7 @@ val p魁鉞凶冲 = object : PatternSingleImpl() {
  * 『眾水朝東』-破軍與文昌或文曲在寅卯兩地，不但刑剋而且財不聚
  */
 val p眾水朝東 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): Pattern? {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.getBranches(文昌, 文曲, 破軍)
       .takeIf { list -> list.size == 1 } // 三星同宮
       ?.let { list -> list[0] }
@@ -2706,10 +2708,7 @@ val p眾水朝東 = object : PatternSingleImpl() {
   }
 }
 
-
-enum class PatternType {
-  GOOD, EVIL
-}
+// =========================== 以上 , 惡格 ===========================
 
 
 /**
@@ -2717,7 +2716,9 @@ enum class PatternType {
  * https://goo.gl/hDUun2 ( http://vioheart.pixnet.net )
  * http://www.ai5429.com/c/clock108/
  */
-sealed class Pattern(val name: String, val type: PatternType, val notes: String? = null) {
+sealed class Pattern(override val name: String,
+                     override val type: PatternType, 
+                     override val notes: String? = null) : IPattern {
   object 極向離明 : Pattern("極向離明", GOOD)
   object 紫府同宮 : Pattern("紫府同宮", GOOD)
   class 紫府朝垣(house: House, goods: Set<GoodCombo>) :
@@ -2854,7 +2855,7 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
 
   companion object {
 
-    fun values(): List<IPattern> = listOf(
+    fun values(): List<IPatternFactory> = listOf(
       p極向離明, p紫府同宮, p紫府朝垣, p天府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天,
       p日月夾命, p君臣慶會, p日月同宮, p日月並明, p日照雷門, p陽梁昌祿, p明珠出海, p巨日同宮, p貪武同行, p將星得地,
       p七殺朝斗, p雄宿朝垣, p對面朝天, p科名會祿, p甲第登科, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇嘉會, p祿馬交馳,
@@ -2869,6 +2870,6 @@ sealed class Pattern(val name: String, val type: PatternType, val notes: String?
       p祿逢兩煞, p君子在野, p羊陀夾忌, p火鈴夾忌, p羊陀夾命, p火鈴夾命, p空劫夾命, p刑囚夾印, p刑忌夾印, p祿衰馬困,
       p名不利達, p三方並凶, p三奇沖剋, p天機巳亥, p月同遇煞, p桃花滾浪, p梁同巳亥, p科星逢破, p刑囚會鈴, p鈴昌陀武,
       p廉殺羊鈴, p一生孤貧, p魁鉞凶冲, p眾水朝東
-                                         )
+                                                )
   }
 }
