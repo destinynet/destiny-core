@@ -34,7 +34,11 @@ interface IPatternDescription : IPattern {
   val descriptions : List<String>
 }
 
-data class PatternDescriotion(
+interface IPatternDescriptionFactory {
+  fun getPatternDescription(pattern: IPattern) : IPatternDescription?
+}
+
+data class PatternDescription(
   val pattern : IPattern ,
   override val descriptions : List<String>
                              ) : IPatternDescription , IPattern by pattern , Serializable
@@ -44,7 +48,6 @@ class PatternContext(
   override val target: IPatternContext.Target) : IPatternContext, Serializable
 
 interface IPatternFactory {
-
   /** 可以指定宮位 (傳入地支) */
   fun getPattern(it: IPlate, pContext: IPatternContext): IPattern?
 }
