@@ -312,7 +312,8 @@ val p巨機同宮 = object : PatternSingleImpl() {
 
 
 /**
- * 天機、天梁二星同時在辰或戌宮守命，為此格。
+ * (機梁加會)
+ * 天機、天梁二星 (同時) 在辰或戌宮守命，為此格。 亦稱「機梁加會」
  *
  * 天機星的五行局木，為益算之星，化氣為「善」，
  * 天梁星屬土，司「壽」，化氣為「蔭」，
@@ -324,6 +325,11 @@ val p巨機同宮 = object : PatternSingleImpl() {
  * 因為在這種盤面裡，太陽、太陰星座落在旺相的宮位。
  * 所謂「機梁善談兵」，可以聯想到，具有此種命格之人，口才必好，而口才好的人其邏輯組織力強，分析能力、策劃、規劃力的縝密度及前瞻性較常人為佳，
  * 也就是為聰明機智之人，這也是具有善蔭朝綱格局之人的通性。
+ *
+ * 所謂“機梁加會格”是指天機、天梁二星在辰戌宮守命，與祿存、科權祿、左右、昌曲、魁鉞加會。
+ * 紫微命盤中有此格局者心地善良，樂善好施，于事奉公守法，于家庭父慈子孝、兄友弟恭，能設身處地為人著想，而且口才極佳，講起話來滔滔不絕。
+ * 此人必擅策劃有分析能力，聰明靈敏，能以特殊技藝立足于社會。會吉星多，主大富大貴。
+ * 吉星少，從事的工作的軍警、司法等有關。又見煞者，多為宗教教主、邪教創始人、神學家、哲學家、思想家、氣功師。
  */
 val p善蔭朝綱 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
@@ -437,6 +443,7 @@ val p日麗中天 = object : PatternSingleImpl() {
 
 /**
  * 命宮在丑或未宮，太陽與太陰在左右鄰宮相夾。有財運，利於事業發展。
+ * 天府或者是武曲、貪狼在丑、未宮駐守命宮，兩邊有太陽、太陰相夾，命宮及三方四正有吉星廟旺會照，又無煞星侵擾，命主既有權又有錢，一生富貴。
  *
  * TODO 命宮坐吉曜，太陽太陰在輔宮夾命宮，謂之日月夾命格，主其人不貴則大富。
  */
@@ -797,12 +804,10 @@ val p甲第登科 = object : PatternSingleImpl() {
  */
 val p科權逢迎 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    val 化權入遷移宮 = it.getTransFourHouseOf(權).stemBranch.branch == it.mainHouse.branch.opposite
-
-    return if (it.化科入命宮() && 化權入遷移宮)
-      科權逢迎
-    else
-      null
+    return it
+      .takeIf { it.化科入命宮() }
+      ?.takeIf { it.getTransFourHouseOf(權).stemBranch.branch == it.mainHouse.branch.opposite } // 化權入遷移宮
+      ?.let { 科權逢迎 }
   }
 }
 
@@ -930,9 +935,10 @@ val p月朗天門 = object : PatternSingleImpl() {
 }
 
 /**
- * 太陰、天同星在子宮坐命。
+ * 太陰、天同星在子宮坐命。又名“水澄桂萼”格
  *
  * 日月滄海格：太陰入命宮在子時，夜晚出生者，謂之日月滄海格，主其人富貴、清高、忠良。
+ * 一輪明月高掛夜空，水中倒映著月亮，安靜祥和，美不勝收！因此此格生人，男的多儒雅帥哥，英俊瀟灑，女的多婀娜多姿，容貌秀麗，而且委婉從容，落落大方，這個格局是最能出俊男美女的。
  */
 val p月生滄海 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
@@ -1048,40 +1054,9 @@ val p英星入廟 = object : PatternSingleImpl() {
 }
 
 /**
- * 天機、天梁 (同時) 入命宮在辰或戌宮，謂之機梁加會格，主其人富貴、仁慈、善良。
- *
- * 所謂“機梁加會格”是指天機、天梁二星在辰戌宮守命，與祿存、科權祿、左右、昌曲、魁鉞加會。
- * 紫微命盤中有此格局者心地善良，樂善好施，于事奉公守法，于家庭父慈子孝、兄友弟恭，能設身處地為人著想，而且口才極佳，講起話來滔滔不絕。
- * 此人必擅策劃有分析能力，聰明靈敏，能以特殊技藝立足于社會。會吉星多，主大富大貴。
- * 吉星少，從事的工作的軍警、司法等有關。又見煞者，多為宗教教主、邪教創始人、神學家、哲學家、思想家、氣功師。
- */
-val p機梁加會 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return it.mainHouse.branch
-      .takeIf { it == 辰 || it == 戌 }
-      ?.takeIf { branch -> setOf(branch).containsAll(it.getBranches(天機, 天梁)) } // 天機, 天梁在該宮
-      ?.let { branch ->
-        val goods = mutableSetOf<GoodCombo>().apply {
-          if (it.三方四正有輔弼(branch))
-            add(GoodCombo.輔弼)
-          if (it.三方四正有昌曲(branch))
-            add(GoodCombo.昌曲)
-          if (it.三方四正有魁鉞(branch))
-            add(GoodCombo.魁鉞)
-          if (it.三方四正有祿存(branch))
-            add(GoodCombo.祿存)
-          if (it.三方四正有祿權科星(branch))
-            add(GoodCombo.祿權科星)
-        }.toSet()
-        機梁加會(goods)
-      }
-  }
-}
-
-/**
  * 文昌、文曲兩星在丑或未宮守命。
  *
- * TODO 文昌、文曲入命宮，或夾命宮，或三合命宮，謂之文桂文華格，主其人多學而廣，非富則貴。
+ * 文昌、文曲入命宮，或夾命宮，或三合命宮，謂之文桂文華格，主其人多學而廣，非富則貴。
  *
  * 若逢 破軍，且在 寅 or 卯 , 則為 [p眾水朝東]
  * */
@@ -1402,7 +1377,7 @@ val p三合鈴貪 = object : PatternMultipleImpl() {
  * 說法B : (廣義)
  * 化祿、化權在命宮三方四正會照
  *
- * 古歌雲：「命逢權祿實堪誇，千載功名富貴家，單見也應身富厚，平生穩步好生涯」。
+ * 古歌云：「命逢權祿實堪誇，千載功名富貴家，單見也應身富厚，平生穩步好生涯」。
  * 具此命格者，有專業能力兼有經商智謀，若朝專業方向研發創新，可有大成就。
  */
 val p權祿巡逢 = object : PatternMultipleImpl() {
@@ -1443,7 +1418,7 @@ val p權祿巡逢 = object : PatternMultipleImpl() {
 }
 
 /**
- * 化祿、化權、化科這三化曜其中有2個或者三個居命宮兩側，即在鄰宮來夾命。
+ * 化祿、化權、化科這三化曜其中有兩個或者三個居命宮兩側，即在鄰宮來夾命。
  */
 val p科權祿夾 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
@@ -1548,7 +1523,7 @@ val p財蔭夾印 = object : PatternMultipleImpl() {
  * 古典出處
  * 賦云：「擎羊入廟，富貴聲揚」。 賦又云：「擎羊火星，權威出眾」。 意為羊刃入廟格，若加火星，權威出眾，領導有方，有統御之方。
  * 雖說羊刃在四墓地，兇性被制，然其它凶星發作時，羊刃亦為災，刑傷難免。
- * 古賦雲：「巨火擎羊，防遭縊死」。 此謂巨門、火星、羊刃(或陀羅)坐守身、命，大限逢之，太歲又兇，謹防縊死或投河。
+ * 古賦云：「巨火擎羊，防遭縊死」。 此謂巨門、火星、羊刃(或陀羅)坐守身、命，大限逢之，太歲又兇，謹防縊死或投河。
  *
  */
 val p擎羊入廟 = object : PatternMultipleImpl() {
@@ -1565,7 +1540,7 @@ val p擎羊入廟 = object : PatternMultipleImpl() {
 
 /**
  * 說法A : 只考量同宮 (這裡用此法)
- * 祿存(或化祿)、天馬又同時與天相星同宮，便叫祿馬配印格
+ * 祿存(或化祿)、天馬又同時與天相星同宮，便叫祿馬配印格。
  *
  * 說法B : (考量三方四正 , 更寬鬆 )
  * 天相、祿存（或化祿）、天馬這三顆星在三方四正相會，且未遇煞星者，是為成格。
@@ -1624,7 +1599,7 @@ val p昌曲夾命 = object : PatternSingleImpl() {
  * 命宮在丑或未宮，左輔與右弼在左右鄰宮相夾。
  *
  * 「左右夾命」看的則是「人生的輔助力」，但是還要再研究「輔助來源」的品質，才能論好壞。
- * 而且，如果因為命盤結構中的某些原因造成「事業容易失敗」的話，即使化祿化權在命宮～左右夾命反而還會是拖垮整個家族經濟的最後一跟稻草。
+ * 而且，如果因為命盤結構中的某些原因造成「事業容易失敗」的話，即使化祿化權在命宮，左右夾命反而還會是拖垮整個家族經濟的最後一跟稻草。
  */
 val p左右夾命 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
@@ -1744,6 +1719,7 @@ val p金鑾扶駕 = object : PatternMultipleImpl() {
     return it.starMap[紫微]?.stemBranch?.branch
       ?.takeIf { b -> branches.contains(b) }
       ?.takeIf { b -> setOf(b).containsAll(it.輔弼()) }
+      ?.takeIf { b -> it.三方四正(b).containsAll(it.日月()) } // 不太可能五星同宮, 因此，對於日月，放寬到「三方四正」
       ?.let { branch ->
         val house = it.getHouseDataOf(branch).house
         金鑾扶駕(house)
@@ -1848,7 +1824,7 @@ val p蟾宮折桂 = object : PatternSingleImpl() {
  * 一是貪狼與擎羊在午宮守命。特別是戊年生人，貪狼化祿，更吉。即或不然，為丙年生人，天同於未宮化祿，與巳宮的祿存夾命，亦為美格。
  * 一是天同與擎羊在午宮守命，亦以丙戊年生人為合格。
  *
- * 擎羊為古人視為剛強好勇之星，於午宮雖然落陷，但午宮的火可以制擎羊之金，反成器用，於是橫暴之力任為威權，因此有「威鎮邊疆」之說。相傳漢光武劉秀的命，即入此格局。
+ * 擎羊為古人視為剛強好勇之星，於午宮雖然落陷，但午宮的火可以制擎羊之金，反成器用，於是橫暴之力任為威權，因此有「威鎮邊疆」之說。
  *
  */
 val p馬頭帶劍 = object : PatternSingleImpl() {
@@ -2145,16 +2121,14 @@ val p兩重華蓋 = object : PatternSingleImpl() {
  */
 val p祿逢衝破 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    val 化祿入命宮: Boolean = it.getTransFourHouseOf(祿).stemBranch.branch == it.mainHouse.branch
-
-    val 祿存坐命: Boolean = it.starMap[祿存]?.stemBranch?.branch == it.mainHouse.branch
-
-    return if (
-      (化祿入命宮 || 祿存坐命) && it.三方四正().containsAll(it.空劫())
-    )
-      祿逢衝破
-    else
-      null
+    return it.mainHouse.branch
+      .takeIf { branch ->
+        val 化祿入命宮 = branch == it.getTransFourHouseOf(祿).stemBranch.branch
+        val 祿存坐命 = branch == it.starMap[祿存]?.stemBranch?.branch
+        化祿入命宮 || 祿存坐命
+      }
+      ?.takeIf { _ -> it.三方四正().containsAll(it.空劫()) }
+      ?.let { _ -> 祿逢衝破 }
   }
 }
 
@@ -2193,7 +2167,7 @@ val p泛水桃花 = object : PatternSingleImpl() {
  * 以上二者，命宮及三方無祿存、科權祿、左右、昌曲、魁鉞等吉星同宮和加會，
  * 反而會有羊陀火鈴劫空刑姚化忌大耗等凶星，爲天梁拱月格。
  *
- * 人命逢此，窮困而事業無成，不聚財，飄流在外，不務正業，成事不足，敗事有餘。男命浪蕩，好酒色嫖賭，女命多淫，私通內亂，故古詩云：
+ * 人命逢此，窮困而事業無成，不聚財，飄流在外，不務正業，成事不足，敗事有餘。男命浪蕩，好酒色嫖賭，女命多淫，私通內亂
  *
  * 王亭之的意見。所謂「天梁拱月」，乃是天梁居巳亥，太陰居丑未，或大陰居寅申，天梁居子午的格局
  */
@@ -2410,7 +2384,7 @@ val p刑囚夾印 = object : PatternSingleImpl() {
 }
 
 /**
- * 天相受化忌和天梁於左右鄰宮相夾；
+ * 天相受化忌和天梁於左右鄰宮相夾 (不是正宗) ；
  * 或天相受化忌和擎羊於左右鄰宮相夾。
  */
 val p刑忌夾印 = object : PatternSingleImpl() {
@@ -2671,10 +2645,10 @@ val p一生孤貧 = object : PatternSingleImpl() {
 }
 
 /**
- * 1、名词解释：魁钺入命身，逢众多凶煞同宫、加会。
- * 2、成功条件：三方四正无吉星解救，而遇煞星忌星。
- * 3、作用：难于显贵，富贵艰难。
- * 4、遇火铃，性格急躁，不易聚财；遇羊驼，富贵不长；遇空劫，空成空败，欢喜一场。
+ * 1、名詞解釋：魁鉞入命身，逢眾多凶煞同宮、加會。
+ * 2、成功條件：三方四正無吉星解救，而遇煞星忌星。
+ * 3、作用：難於顯貴，富貴艱難。
+ * 4、遇火鈴，性格急躁，不易聚財；遇羊陀，富貴不長；遇空劫，空成空敗，歡喜一場。
  */
 val p魁鉞凶冲 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
@@ -2764,7 +2738,7 @@ sealed class Pattern(override val name: String,
   class 石中隱玉(goods: Set<GoodCombo>) : Pattern("石中隱玉", GOOD, goods.joinToString(","))
   class 壽星入廟(goods: Set<GoodCombo>) : Pattern("壽星入廟", GOOD, goods.joinToString(","))
   class 英星入廟(goods: Set<GoodCombo>) : Pattern("英星入廟", GOOD, goods.joinToString(","))
-  class 機梁加會(goods: Set<GoodCombo>) : Pattern("機梁加會", GOOD, goods.joinToString(","))
+  //class 機梁加會(goods: Set<GoodCombo>) : Pattern("機梁加會", GOOD, goods.joinToString(","))
   class 文桂文華(route: Route) : Pattern("文桂文華", GOOD, route.toString())
   class 文梁振紀(goods: Set<GoodCombo>) : Pattern("文梁振紀", GOOD, goods.joinToString(","))
   class 魁鉞拱命(route: Route) : Pattern("魁鉞拱命", GOOD, route.toString())
@@ -2859,7 +2833,7 @@ sealed class Pattern(override val name: String,
       p極向離明, p紫府同宮, p紫府朝垣, p天府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天,
       p日月夾命, p君臣慶會, p日月同宮, p日月並明, p日照雷門, p陽梁昌祿, p明珠出海, p巨日同宮, p貪武同行, p將星得地,
       p七殺朝斗, p雄宿朝垣, p對面朝天, p科名會祿, p甲第登科, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇嘉會, p祿馬交馳,
-      p月朗天門, p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p機梁加會, p文桂文華, p文梁振紀, p魁鉞拱命, p左右同宮,
+      p月朗天門, p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p文桂文華, p文梁振紀, p魁鉞拱命, p左右同宮,
       p丹墀桂墀, p甲第登庸, p化星返貴, p天乙拱命, p坐貴向貴, p廉貞文武, p星臨正位, p輔拱文星, p三合火貪, p三合鈴貪,
       p權祿巡逢, p科權祿夾, p文星拱命, p財祿夾馬, p財蔭夾印, p擎羊入廟, p祿馬配印, p紫府夾命, p昌曲夾命, p左右夾命,
       p雙祿夾命, p權煞化祿, p祿文拱命, p明祿暗祿, p水木清華, p金鑾扶駕, p玉袖添香, p殺破狼格, p廟星變景, p辛勞開創,

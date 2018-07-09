@@ -30,18 +30,31 @@ interface IPattern {
   val notes: String?
 }
 
+
+enum class ParaType {
+  NORMAL,
+  SCRIPTURE
+}
+
+sealed class Paragraph(val paraType: ParaType, val content: String) {
+  class Normal(content: String) : Paragraph(ParaType.NORMAL, content)
+  class Scripture(content: String) : Paragraph(ParaType.SCRIPTURE, content)
+}
+
+
 interface IPatternDescription : IPattern {
-  val descriptions : List<String>
+  val paras: List<Paragraph>
 }
 
 interface IPatternDescriptionFactory {
-  fun getPatternDescription(pattern: IPattern) : IPatternDescription?
+  fun getPatternDescription(pattern: IPattern): IPatternDescription?
 }
 
+
 data class PatternDescription(
-  val pattern : IPattern ,
-  override val descriptions : List<String>
-                             ) : IPatternDescription , IPattern by pattern , Serializable
+  val pattern: IPattern,
+  override val paras: List<Paragraph>
+                             ) : IPatternDescription, IPattern by pattern, Serializable
 
 
 class PatternContext(
