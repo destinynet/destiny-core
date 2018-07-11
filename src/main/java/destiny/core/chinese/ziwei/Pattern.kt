@@ -17,51 +17,19 @@ import destiny.core.chinese.ziwei.PatternType.GOOD
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
+import java.io.Serializable
 
 /**
  * https://medium.com/@JorgeCastilloPr/kotlin-purity-and-function-memoization-b12ab35d70a5
  */
-class Memoize1<in T, out R>(val f: (T) -> R) : (T) -> R {
+class Memoize<in T, out R>(val f: (T) -> R) : (T) -> R {
   private val values = mutableMapOf<T, R>()
   override fun invoke(x: T): R {
     return values.getOrPut(x) { f(x) }
   }
 }
 
-fun <T, R> ((T) -> R).memoize(): (T) -> R = Memoize1(this)
-
-//
-///** 拱 */
-//fun Collection<Branch?>.trine(): Branch? {
-//  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
-//    val a = list[0]
-//    val b = list[1]
-//    return if (a != null && b != null) {
-//      when {
-//        a.getAheadOf(b) == 4 -> a.next(4)
-//        b.getAheadOf(a) == 4 -> b.next(4)
-//        else -> null
-//      }
-//    } else
-//      null
-//  }
-//}
-//
-///** 夾 */
-//fun Collection<Branch?>.grip(): Branch? {
-//  return this.takeIf { it.size >= 2 }?.toList()?.let { list ->
-//    val a = list[0]
-//    val b = list[1]
-//    return if (a != null && b != null) {
-//      when {
-//        a.getAheadOf(b) == 2 -> b.next
-//        b.getAheadOf(a) == 2 -> a.next
-//        else -> null
-//      }
-//    } else
-//      null
-//  }
-//}
+fun <T, R> ((T) -> R).memoize(): (T) -> R = Memoize(this)
 
 fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.prev(4), it.next(4)) }
 fun IPlate.三方(branch: Branch = this.mainHouse.branch) = 拱(branch).plus(branch)
@@ -2692,7 +2660,7 @@ val p眾水朝東 = object : PatternSingleImpl() {
  */
 sealed class Pattern(override val name: String,
                      override val type: PatternType, 
-                     override val notes: String? = null) : IPattern {
+                     override val notes: String? = null) : IPattern , Serializable {
   object 極向離明 : Pattern("極向離明", GOOD)
   object 紫府同宮 : Pattern("紫府同宮", GOOD)
   class 紫府朝垣(house: House, goods: Set<GoodCombo>) :
@@ -2833,11 +2801,11 @@ sealed class Pattern(override val name: String,
       p極向離明, p紫府同宮, p紫府朝垣, p天府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天,
       p日月夾命, p君臣慶會, p日月同宮, p日月並明, p日照雷門, p陽梁昌祿, p明珠出海, p巨日同宮, p貪武同行, p將星得地,
       p七殺朝斗, p雄宿朝垣, p對面朝天, p科名會祿, p甲第登科, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇嘉會, p祿馬交馳,
-      p月朗天門, p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p文桂文華, p文梁振紀, p魁鉞拱命, p左右同宮,
-      p丹墀桂墀, p甲第登庸, p化星返貴, p天乙拱命, p坐貴向貴, p廉貞文武, p星臨正位, p輔拱文星, p三合火貪, p三合鈴貪,
-      p權祿巡逢, p科權祿夾, p文星拱命, p財祿夾馬, p財蔭夾印, p擎羊入廟, p祿馬配印, p紫府夾命, p昌曲夾命, p左右夾命,
-      p雙祿夾命, p權煞化祿, p祿文拱命, p明祿暗祿, p水木清華, p金鑾扶駕, p玉袖添香, p殺破狼格, p廟星變景, p辛勞開創,
-      p財印天祿, p蟾宮折桂,
+      p月朗天門, p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p文桂文華, p文梁振紀, p魁鉞拱命, p左右同宮, p丹墀桂墀,
+      p甲第登庸, p化星返貴, p天乙拱命, p坐貴向貴, p廉貞文武, p星臨正位, p輔拱文星, p三合火貪, p三合鈴貪, p權祿巡逢,
+      p科權祿夾, p文星拱命, p財祿夾馬, p財蔭夾印, p擎羊入廟, p祿馬配印, p紫府夾命, p昌曲夾命, p左右夾命, p雙祿夾命,
+      p權煞化祿, p祿文拱命, p明祿暗祿, p水木清華, p金鑾扶駕, p玉袖添香, p殺破狼格, p廟星變景, p辛勞開創, p財印天祿,
+      p蟾宮折桂,
 
       p馬頭帶劍, p極居卯酉, p命無正曜, p風流綵杖, p巨機化酉, p日月反背, p日月疾厄, p梁馬飄蕩, p貞殺同宮, p殺拱廉貞,
       p巨逢四煞, p命裡逢空, p文星遇夾, p馬落空亡, p兩重華蓋, p祿逢衝破, p泛水桃花, p天梁拱月, p財與囚仇, p火入泉鄉,

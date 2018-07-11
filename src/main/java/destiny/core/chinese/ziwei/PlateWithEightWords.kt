@@ -14,7 +14,7 @@ interface IPlateWithEightWords : IPlate {
 }
 
 data class PlateWithEightWords(
-  private val plate: Plate ,
+  private val plate: IPlate ,
   /** 八字資料  */
   override val personModel: IPersonContextModel) : IPlateWithEightWords , IPlate by plate
 

@@ -36,7 +36,7 @@ enum class ParaType {
   SCRIPTURE
 }
 
-sealed class Paragraph(val paraType: ParaType, val content: String) {
+sealed class Paragraph(val paraType: ParaType, val content: String) : Serializable {
   class Normal(content: String) : Paragraph(ParaType.NORMAL, content)
   class Scripture(content: String) : Paragraph(ParaType.SCRIPTURE, content)
 }
@@ -47,7 +47,7 @@ interface IPatternDescription : IPattern {
 }
 
 interface IPatternDescriptionFactory {
-  fun getPatternDescription(pattern: IPattern): IPatternDescription?
+  fun getPatternDescription(pattern: IPattern): IPatternDescription
 }
 
 
@@ -64,6 +64,22 @@ interface IPatternFactory {
   /** 可以指定宮位 (傳入地支) */
   fun getPattern(it: IPlate, pContext: IPatternContext): IPattern?
 }
+
+
+fun IPlate.getPatterns(pContext: IPatternContext): List<IPattern> {
+  return Pattern.values().map { factory ->
+    factory.getPattern(this, pContext)
+  }.filter { p -> p != null }
+    .map { p -> p!! }
+    .toList()
+}
+
+fun IPlate.getPatternDescriptions(pContext: IPatternContext, pdFactory: IPatternDescriptionFactory) : List<IPatternDescription> {
+  return this.getPatterns(pContext).map { pattern ->
+    pdFactory.getPatternDescription(pattern)
+  }.toList()
+}
+
 
 /** 單純命宮實作 */
 abstract class PatternSingleImpl : IPatternFactory, Serializable {

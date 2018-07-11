@@ -71,8 +71,6 @@ class ZModernContext(
                               gender: Gender,
                               name: String?) : Builder {
 
-
-
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
 
@@ -124,14 +122,6 @@ class ZModernContext(
 
     // 虛歲時刻 (gmt Julian day)
     val vageMap = intAgeZiweiImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, location), location, 1, 130)
-
-
-//    // 過濾真正要顯示的 Stars
-//    val shownStars = mutableListOf<ZStar>()
-//    // 14主星 , 八吉星 , 六凶星 : 固定顯示
-//    stars.filter { it is StarMain || it is StarLucky || it is StarUnlucky }.forEach { shownStars.add(it) }
-
-
 
     return getBirthPlate(Pair(命宮地支, 身宮地支) , finalMonthNumForMainStars , cycle , yinYear , solarYear , lunarMonth
                   , cDate.isLeapMonth , monthBranch , solarTerms , lunarDays , hour , dayNight , stars , gender , vageMap)
