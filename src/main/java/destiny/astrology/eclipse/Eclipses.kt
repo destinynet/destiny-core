@@ -127,6 +127,8 @@ interface ILunarEclipse : IEclipse {
     PARTIAL,
     PENUMBRA  // 半影月食
   }
+
+  val lunarType : LunarType
 }
 
 /** 月偏食 */
@@ -153,18 +155,29 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
   data class LunarEclipsePenumbra(
     override val begin: Double,
     override val max: Double,
-    override val end: Double) : AbstractLunarEclipse()
+    override val end: Double) : AbstractLunarEclipse() {
+    override val lunarType: ILunarEclipse.LunarType
+      get() = ILunarEclipse.LunarType.PENUMBRA
+
+  }
 
   /** 月偏食 */
   data class LunarEclipsePartial(
     private val penumbra: LunarEclipsePenumbra,
     override val partialBegin: Double,
-    override val partialEnd: Double) : AbstractLunarEclipse(), ILunarEclipse by penumbra, ILunarEclipsePartial
+    override val partialEnd: Double) : AbstractLunarEclipse(), ILunarEclipse by penumbra, ILunarEclipsePartial {
+    override val lunarType: ILunarEclipse.LunarType
+      get() = ILunarEclipse.LunarType.PARTIAL
+
+  }
 
   /** 月全食 */
   data class LunarEclipseTotal(
     private val partial: LunarEclipsePartial,
     override val totalBegin: Double,
-    override val totalEnd: Double) : AbstractLunarEclipse(), ILunarEclipsePartial by partial, ILunarEclipseTotal
+    override val totalEnd: Double) : AbstractLunarEclipse(), ILunarEclipsePartial by partial, ILunarEclipseTotal {
+    override val lunarType: ILunarEclipse.LunarType
+      get() = ILunarEclipse.LunarType.TOTAL
+  }
 
 }

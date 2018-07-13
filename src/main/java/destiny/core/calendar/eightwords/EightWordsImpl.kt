@@ -36,8 +36,6 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月
 
   override fun getEightWords(gmtJulDay: Double, loc: ILocation): IEightWords {
 
-    println("getEightWords , gmtJulDay = $gmtJulDay")
-
     fun inner(): IEightWords {
       val year = yearMonthImpl.getYear(gmtJulDay, loc)
 
