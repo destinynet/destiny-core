@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar.eightwords
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import destiny.astrology.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
@@ -11,6 +13,7 @@ import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import java.util.concurrent.TimeUnit
 
 /**
  * 2018-04 新版 [EightWordsContext]
@@ -33,8 +36,10 @@ class EightWordsContext(
 
   private data class CacheKey(val lmt: ChronoLocalDateTime<*> , val location: ILocation , val place: String?)
 
-  @Transient
-  private val cacheThreadLocal = ThreadLocal<Pair<CacheKey , IEightWordsContextModel>>()
+  private val cache : Cache<CacheKey , IEightWordsContextModel> = CacheBuilder.newBuilder()
+    .maximumSize(100)
+    .expireAfterAccess(10 , TimeUnit.SECONDS)
+    .build()
 
   override fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                          location: ILocation,
@@ -65,20 +70,8 @@ class EightWordsContext(
                                    )
     }
 
-    val pair: Pair<CacheKey, IEightWordsContextModel>? = cacheThreadLocal.get()
-    return if (pair == null) {
-      val model = innerGetModel()
-      cacheThreadLocal.set(key to model)
-      model
-    } else {
-      return if (key == pair.first) {
-        pair.second
-      } else {
-        val model = innerGetModel()
-        cacheThreadLocal.set(key to model)
-        model
-      }
-    }
+    return cache.get(key) { innerGetModel()}
+
   }
 
   /**

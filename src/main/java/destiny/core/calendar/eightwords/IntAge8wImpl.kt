@@ -3,12 +3,15 @@
  */
 package destiny.core.calendar.eightwords
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms.立春
 import java.io.Serializable
+import java.util.concurrent.TimeUnit
 
 /**
  * 八字的「虛歲」大運
@@ -23,8 +26,12 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
                               val fromAge: Int,
                               val toAge: Int)
 
-  @Transient
-  private val cacheThreadLocal = ThreadLocal<Pair<CacheKey, List<Pair<Double, Double>>>>()
+
+  private val cache : Cache<CacheKey , List<Pair<Double, Double>>> = CacheBuilder.newBuilder()
+    .maximumSize(100)
+    //.expireAfterWrite(5 , TimeUnit.SECONDS)
+    .expireAfterAccess(10 , TimeUnit.SECONDS)
+    .build()
 
   override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
     val age1 = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))
@@ -51,8 +58,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
     require(fromAge <= toAge) { "fromAge($fromAge) must be <= toAge($toAge)" }
 
     val key = CacheKey(gender, gmtJulDay, loc, fromAge, toAge)
-    // FIXME : 2018-05-15 實際上線時，偶爾出現 NPE
-    val pair = cacheThreadLocal.get()
+
 
     fun innerGetList() : List<Pair<Double, Double>> {
       val from = getRange(gender, gmtJulDay, loc, fromAge)
@@ -60,23 +66,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
       return getRangesInner(result, toAge - fromAge)
     }
 
-    if (pair == null) {
-      // pair is null
-      val list = innerGetList()
-      cacheThreadLocal.set(key to list)
-      return list
-    } else {
-      // pair is not null
-      return if (key == pair.first) {
-        // cache matches
-        pair.second
-      } else {
-        // cache not matches
-        val list = innerGetList()
-        cacheThreadLocal.set(key to list)
-        list
-      }
-    }
+    return cache.get(key) {innerGetList()}
 
   }
 

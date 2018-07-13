@@ -409,20 +409,6 @@ val p日麗中天 = object : PatternSingleImpl() {
   }
 }
 
-/**
- * 命宮在丑或未宮，太陽與太陰在左右鄰宮相夾。有財運，利於事業發展。
- * 天府或者是武曲、貪狼在丑、未宮駐守命宮，兩邊有太陽、太陰相夾，命宮及三方四正有吉星廟旺會照，又無煞星侵擾，命主既有權又有錢，一生富貴。
- *
- * TODO 命宮坐吉曜，太陽太陰在輔宮夾命宮，謂之日月夾命格，主其人不貴則大富。
- */
-val p日月夾命 = object : PatternSingleImpl() {
-  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return it.日月()
-      .takeIf { 日月 -> it.mainHouse.branch == 日月.grip() }
-      ?.let { 日月夾命 }
-  }
-}
-
 
 /**
  * 命宮有紫微星，且於三方四正中有至少有左輔、右弼任何一星加會或同宮，或兩星於兩鄰宮相夾。
@@ -1543,6 +1529,21 @@ val p紫府夾命 = object : PatternSingleImpl() {
   }
 }
 
+
+/**
+ * 命宮在丑或未宮，太陽與太陰在左右鄰宮相夾。有財運，利於事業發展。
+ * 天府或者是武曲、貪狼在丑、未宮駐守命宮，兩邊有太陽、太陰相夾，命宮及三方四正有吉星廟旺會照，又無煞星侵擾，命主既有權又有錢，一生富貴。
+ *
+ * TODO 命宮坐吉曜，太陽太陰在輔宮夾命宮，謂之日月夾命格，主其人不貴則大富。
+ */
+val p日月夾命 = object : PatternSingleImpl() {
+  override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
+    return it.日月()
+      .takeIf { 日月 -> it.mainHouse.branch == 日月.grip() }
+      ?.let { 日月夾命 }
+  }
+}
+
 /**
  * (文星暗拱)
  * 命宮在丑或未宮，文昌與文曲在左右鄰宮相夾。
@@ -2172,10 +2173,10 @@ val p財與囚仇 = object : PatternSingleImpl() {
  */
 val p火入泉鄉 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return if (it.starMap[廉貞]?.stemBranch?.branch == 亥)
-      火入泉鄉
-    else
-      null
+    return it
+      .takeIf { it.starMap[廉貞]?.stemBranch?.branch == 亥 }
+      ?.takeIf { it.getTransFourValue(廉貞) == 忌 }
+      ?.let { 火入泉鄉 }
   }
 }
 
@@ -2659,8 +2660,8 @@ val p眾水朝東 = object : PatternSingleImpl() {
  * http://www.ai5429.com/c/clock108/
  */
 sealed class Pattern(override val name: String,
-                     override val type: PatternType, 
-                     override val notes: String? = null) : IPattern , Serializable {
+                     override val type: PatternType,
+                     override val notes: String? = null) : IPattern, Serializable {
   object 極向離明 : Pattern("極向離明", GOOD)
   object 紫府同宮 : Pattern("紫府同宮", GOOD)
   class 紫府朝垣(house: House, goods: Set<GoodCombo>) :
@@ -2679,7 +2680,7 @@ sealed class Pattern(override val name: String,
   class 日麗中天(dayNight: DayNight, goods: Set<GoodCombo>) :
     Pattern("日麗中天", GOOD, "[" + dayNight.toString() + "]" + goods.joinToString(","))
 
-  object 日月夾命 : Pattern("日月夾命", GOOD)
+
   class 君臣慶會(house: House, goods: Set<GoodCombo>) :
     Pattern("君臣慶會", GOOD, "[" + house.toString() + "]" + goods.joinToString(","))
 
@@ -2708,6 +2709,7 @@ sealed class Pattern(override val name: String,
   class 英星入廟(goods: Set<GoodCombo>) : Pattern("英星入廟", GOOD, goods.joinToString(","))
   //class 機梁加會(goods: Set<GoodCombo>) : Pattern("機梁加會", GOOD, goods.joinToString(","))
   class 文桂文華(route: Route) : Pattern("文桂文華", GOOD, route.toString())
+
   class 文梁振紀(goods: Set<GoodCombo>) : Pattern("文梁振紀", GOOD, goods.joinToString(","))
   class 魁鉞拱命(route: Route) : Pattern("魁鉞拱命", GOOD, route.toString())
   class 左右同宮(goods: Set<GoodCombo>) : Pattern("左右同宮", GOOD, goods.joinToString(","))
@@ -2733,6 +2735,7 @@ sealed class Pattern(override val name: String,
   class 擎羊入廟(house: House) : Pattern("擎羊入廟", GOOD, "[" + house.toString() + "]")
   class 祿馬配印(house: House) : Pattern("祿馬配印", GOOD, "[" + house.toString() + "]")
   object 紫府夾命 : Pattern("紫府夾命", GOOD)
+  object 日月夾命 : Pattern("日月夾命", GOOD)
   object 昌曲夾命 : Pattern("昌曲夾命", GOOD)
   object 左右夾命 : Pattern("左右夾命", GOOD)
   object 雙祿夾命 : Pattern("雙祿夾命", GOOD)
@@ -2799,11 +2802,11 @@ sealed class Pattern(override val name: String,
 
     fun values(): List<IPatternFactory> = listOf(
       p極向離明, p紫府同宮, p紫府朝垣, p天府朝垣, p府相朝垣, p巨機同宮, p善蔭朝綱, p機月同梁, p日月照壁, p日麗中天,
-      p日月夾命, p君臣慶會, p日月同宮, p日月並明, p日照雷門, p陽梁昌祿, p明珠出海, p巨日同宮, p貪武同行, p將星得地,
-      p七殺朝斗, p雄宿朝垣, p對面朝天, p科名會祿, p甲第登科, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇嘉會, p祿馬交馳,
-      p月朗天門, p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p文桂文華, p文梁振紀, p魁鉞拱命, p左右同宮, p丹墀桂墀,
-      p甲第登庸, p化星返貴, p天乙拱命, p坐貴向貴, p廉貞文武, p星臨正位, p輔拱文星, p三合火貪, p三合鈴貪, p權祿巡逢,
-      p科權祿夾, p文星拱命, p財祿夾馬, p財蔭夾印, p擎羊入廟, p祿馬配印, p紫府夾命, p昌曲夾命, p左右夾命, p雙祿夾命,
+      p君臣慶會, p日月同宮, p日月並明, p日照雷門, p陽梁昌祿, p明珠出海, p巨日同宮, p貪武同行, p將星得地, p七殺朝斗,
+      p雄宿朝垣, p對面朝天, p科名會祿, p甲第登科, p科權逢迎, p祿合鴛鴦, p雙祿朝垣, p三奇嘉會, p祿馬交馳, p月朗天門,
+      p月生滄海, p石中隱玉, p壽星入廟, p英星入廟, p文桂文華, p文梁振紀, p魁鉞拱命, p左右同宮, p丹墀桂墀, p甲第登庸,
+      p化星返貴, p天乙拱命, p坐貴向貴, p廉貞文武, p星臨正位, p輔拱文星, p三合火貪, p三合鈴貪, p權祿巡逢, p科權祿夾,
+      p文星拱命, p財祿夾馬, p財蔭夾印, p擎羊入廟, p祿馬配印, p紫府夾命, p日月夾命, p昌曲夾命, p左右夾命, p雙祿夾命,
       p權煞化祿, p祿文拱命, p明祿暗祿, p水木清華, p金鑾扶駕, p玉袖添香, p殺破狼格, p廟星變景, p辛勞開創, p財印天祿,
       p蟾宮折桂,
 
