@@ -50,6 +50,15 @@ fun IPlate.羊陀(): List<Branch> = this.getBranches(擎羊, 陀羅)
 fun IPlate.火鈴(): List<Branch> = this.getBranches(火星, 鈴星)
 fun IPlate.空劫(): List<Branch> = this.getBranches(地空, 地劫)
 
+fun IPlate.六惡星(): Set<Branch> = this.羊陀().plus(this.火鈴()).plus(this.空劫()).toSet()
+
+fun IPlate.三方四正無六惡星(branch: Branch = this.mainHouse.branch) : Boolean {
+  return this
+    .takeIf { it.三方四正(branch).intersect(it.六惡星()).isEmpty() }
+    ?.let { _ -> true }
+    ?: false
+}
+
 fun IPlate.三方四正有輔弼(branch: Branch = this.mainHouse.branch) = this.三方四正(branch).containsAll(輔弼())
 fun IPlate.鄰宮有輔弼(branch: Branch = this.mainHouse.branch) = neighbors(branch).containsAll(輔弼())
 
@@ -99,15 +108,14 @@ enum class Route {
 /**
  * 紫微在午宮坐命
  * 又稱 金輿扶駕
+ * 三方四正無兇星
  * */
 val p極向離明 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return it.starMap[紫微]?.stemBranch?.branch?.let { branch ->
-      if (branch == 午 && branch == it.mainHouse.branch)
-        極向離明
-      else
-        null
-    }
+    return it.takeIf { it.mainHouse.branch == 午 }
+      ?.takeIf { it.starMap[紫微]?.stemBranch?.branch == 午 }
+      ?.takeIf { it.三方四正無六惡星() }
+      ?.let { _ -> 極向離明 }
   }
 }
 
@@ -462,20 +470,12 @@ val p君臣慶會 = object : PatternMultipleImpl() {
  */
 val p日月同宮 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return it.mainHouse.branch.let { branch ->
-      if (branch == 丑 || branch == 未)
-        branch
-      else
-        null
-    }?.let { branch ->
-      it.starMap[太陽]?.stemBranch?.branch == branch
-        && it.starMap[太陰]?.stemBranch?.branch == branch
-    }?.let {
-      if (it)
-        日月同宮
-      else
-        null
-    }
+
+    return it.mainHouse.branch
+      .takeIf { it == 丑 || it == 未 }
+      ?.takeIf { branch -> it.starMap[太陽]?.stemBranch?.branch == branch }
+      ?.takeIf { branch -> it.starMap[太陰]?.stemBranch?.branch == branch }
+      ?.let { _ -> 日月同宮 }
   }
 }
 
