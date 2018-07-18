@@ -493,14 +493,11 @@ val p日月同宮 = object : PatternSingleImpl() {
 val p日月並明 = object : PatternSingleImpl() {
 
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return if (
-      it.mainHouse.branch == 丑
-      && it.starMap[太陽]?.stemBranch?.branch == 巳
-      && it.starMap[太陰]?.stemBranch?.branch == 酉
-    )
-      日月並明
-    else
-      null
+    return it.mainHouse.branch
+      .takeIf { branch -> branch == 丑 }
+      ?.takeIf { _ -> it.starMap[太陽]?.stemBranch?.branch == 巳 }
+      ?.takeIf { _ -> it.starMap[太陰]?.stemBranch?.branch == 酉 }
+      ?.let { 日月並明 }
   }
 }
 
@@ -591,14 +588,11 @@ val p陽梁昌祿 = object : PatternMultipleImpl() {
  */
 val p明珠出海 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    return if (
-      it.mainHouse.branch == 未
-      && it.starMap[太陽]?.stemBranch?.branch == 卯
-      && it.starMap[太陰]?.stemBranch?.branch == 亥
-    )
-      明珠出海
-    else
-      null
+    return it.mainHouse.branch
+      .takeIf { branch -> branch == 未 }
+      ?.takeIf { _ -> it.starMap[太陽]?.stemBranch?.branch == 卯 }
+      ?.takeIf { _ -> it.starMap[太陰]?.stemBranch?.branch == 亥 }
+      ?.let { _ -> 明珠出海 }
   }
 }
 
