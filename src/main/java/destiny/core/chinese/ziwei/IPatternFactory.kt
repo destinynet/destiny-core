@@ -36,9 +36,9 @@ enum class ParaType {
   SCRIPTURE
 }
 
-sealed class Paragraph(val paraType: ParaType, val content: String) : Serializable {
-  class Normal(content: String) : Paragraph(ParaType.NORMAL, content)
-  class Scripture(content: String) : Paragraph(ParaType.SCRIPTURE, content)
+sealed class Paragraph(open val paraType: ParaType, open val content: String) : Serializable {
+  data class Normal(override val content: String) : Paragraph(ParaType.NORMAL, content)
+  data class Scripture(override val content: String) : Paragraph(ParaType.SCRIPTURE, content)
 }
 
 
