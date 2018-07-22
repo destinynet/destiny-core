@@ -20,29 +20,16 @@ interface IPatternContext {
 }
 
 
-enum class PatternType {
-  GOOD, EVIL
-}
 
-interface IPattern {
-  val name: String
-  val type: PatternType
-  val notes: String?
+
+sealed class Paragraph(open val content: String) : Serializable {
+  data class Normal(override val content: String) : Paragraph(content)
+  data class Scripture(override val content: String) : Paragraph(content)
 }
 
 
-enum class ParaType {
-  NORMAL,
-  SCRIPTURE
-}
-
-sealed class Paragraph(open val paraType: ParaType, open val content: String) : Serializable {
-  data class Normal(override val content: String) : Paragraph(ParaType.NORMAL, content)
-  data class Scripture(override val content: String) : Paragraph(ParaType.SCRIPTURE, content)
-}
-
-
-interface IPatternDescription : IPattern {
+interface IPatternDescription {
+  val pattern : IPattern
   val paras: List<Paragraph>
 }
 
@@ -52,9 +39,9 @@ interface IPatternDescriptionFactory {
 
 
 data class PatternDescription(
-  val pattern: IPattern,
+  override val pattern: IPattern,
   override val paras: List<Paragraph>
-                             ) : IPatternDescription, IPattern by pattern, Serializable
+                             ) : IPatternDescription, Serializable
 
 
 class PatternContext(
@@ -67,14 +54,15 @@ interface IPatternFactory {
 
 
 fun IPlate.getPatterns(pContext: IPatternContext): List<IPattern> {
-  return Pattern.values().map { factory ->
+  return ClassicalPattern.values().map { factory ->
     factory.getPattern(this, pContext)
   }.filter { p -> p != null }
     .map { p -> p!! }
     .toList()
 }
 
-fun IPlate.getPatternDescriptions(pContext: IPatternContext, pdFactory: IPatternDescriptionFactory) : List<IPatternDescription> {
+fun IPlate.getPatternDescriptions(pContext: IPatternContext,
+                                  pdFactory: IPatternDescriptionFactory): List<IPatternDescription> {
   return this.getPatterns(pContext).map { pattern ->
     pdFactory.getPatternDescription(pattern)
   }.toList()
