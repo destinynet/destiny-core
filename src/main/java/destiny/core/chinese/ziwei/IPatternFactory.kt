@@ -20,8 +20,6 @@ interface IPatternContext {
 }
 
 
-
-
 sealed class Paragraph(open val content: String) : Serializable {
   data class Normal(override val content: String) : Paragraph(content)
   data class Scripture(override val content: String) : Paragraph(content)
@@ -29,13 +27,17 @@ sealed class Paragraph(open val content: String) : Serializable {
 
 
 interface IPatternDescription {
-  val pattern : IPattern
+  val pattern: IPattern
+  val name: String
+    get() = pattern.name
+  val notes: String?
+    get() = pattern.notes
   val paras: List<Paragraph>
 }
 
 
-interface IPlateDescriptions {
-  fun getPatternDescriptions(plate : IPlate) : List<IPatternDescription>
+interface IPlateDescriptionsFactory {
+  fun getPatternDescriptions(plate: IPlate): List<IPatternDescription>
 }
 
 data class PatternDescription(
