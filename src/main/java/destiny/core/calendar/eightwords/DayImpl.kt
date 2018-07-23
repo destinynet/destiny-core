@@ -12,8 +12,10 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
+import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
+import java.time.temporal.ChronoUnit
 
 /**
  * 換日 的實作
@@ -26,35 +28,63 @@ class DayImpl : IDay, Serializable {
   /**
    * TODO : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
    */
-  override fun getDay(gmtJulDay: Double, location: ILocation, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
+  override fun getDay(gmtJulDay: Double,
+                      location: ILocation,
+                      midnightImpl: IMidnight,
+                      hourImpl: IHour,
+                      changeDayAfterZi: Boolean): StemBranch {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, location, revJulDayFunc)
 
     return getDay(lmt, location, midnightImpl, hourImpl, changeDayAfterZi)
   } // GMT 版本
 
-  private fun getIndex(index: Int, nextMidnightLmt: ChronoLocalDateTime<*>, lmt: ChronoLocalDateTime<*>, hourImpl: IHour, location: ILocation, changeDayAfterZi: Boolean, 下個子初時刻: ChronoLocalDateTime<*>): Int {
-    var index = index
+  private fun getIndex(index: Int,
+                       nextMidnightLmt: ChronoLocalDateTime<*>,
+                       lmt: ChronoLocalDateTime<*>,
+                       hourImpl: IHour,
+                       location: ILocation,
+                       changeDayAfterZi: Boolean,
+                       下個子初時刻: ChronoLocalDateTime<*>): Int {
+    var result = index
     //子正，在 LMT 零時之前
     if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
       // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
       val midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, location, Branch.子, revJulDayFunc)
-      if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH))
-        index++
+
+      if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
+        result++
+      }
     } else {
       // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
-      index++
+      result++
     }
-    return index
+    return result
   }
 
-  override fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean): StemBranch {
+  override fun getDay(lmt: ChronoLocalDateTime<*>,
+                      location: ILocation,
+                      midnightImpl: IMidnight,
+                      hourImpl: IHour,
+                      changeDayAfterZi: Boolean): StemBranch {
     // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
     val lmtJulDay = (TimeTools.getGmtJulDay(lmt) + 0.5).toInt()
     var index = (lmtJulDay - 11) % 60
 
-    val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, revJulDayFunc)
+
     val 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, revJulDayFunc)
+
+
+    val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, revJulDayFunc).let { it ->
+      val dur = Duration.between(下個子初時刻, it).abs()
+      if (dur.toMinutes() <= 1) {
+        logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}" , 下個子初時刻 , it , dur.seconds) // DST 結束前一天，可能會出錯
+        return@let it.plus(1 , ChronoUnit.HOURS)
+      } else {
+        return@let it
+      }
+    }
+
 
     if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
       //子正，在 LMT 零時之前
@@ -81,12 +111,12 @@ class DayImpl : IDay, Serializable {
           index++
       }
     }
-    return StemBranch.get(index)
+    return StemBranch[index]
   } // LMT 版本
 
   companion object {
 
-    private val revJulDayFunc = { it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 

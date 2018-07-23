@@ -37,7 +37,7 @@ interface IPatternDescription {
 
 
 interface IPlateDescriptionsFactory {
-  fun getPatternDescriptions(plate: IPlate): List<IPatternDescription>
+  fun getPatternDescriptions(plate: IPlate , pContext: IPatternContext): List<IPatternDescription>
 }
 
 data class PatternDescription(
