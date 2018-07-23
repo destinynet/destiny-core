@@ -109,4 +109,7 @@ interface IPattern {
 interface IStarHousePattern : IPattern {
   val star : ZStar
   val house : House
+
+  override val name: String
+    get() = star.toString() + "在"+house+"宮"
 }

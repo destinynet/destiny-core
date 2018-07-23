@@ -33,15 +33,14 @@ interface IPatternDescription {
   val paras: List<Paragraph>
 }
 
-interface IPatternDescriptionFactory {
-  fun getPatternDescription(pattern: IPattern): IPatternDescription
-}
 
+interface IPlateDescriptions {
+  fun getPatternDescriptions(plate : IPlate) : List<IPatternDescription>
+}
 
 data class PatternDescription(
   override val pattern: IPattern,
-  override val paras: List<Paragraph>
-                             ) : IPatternDescription, Serializable
+  override val paras: List<Paragraph>) : IPatternDescription, Serializable
 
 
 class PatternContext(
@@ -53,19 +52,12 @@ interface IPatternFactory {
 }
 
 
-fun IPlate.getPatterns(pContext: IPatternContext): List<IPattern> {
+fun IPlate.getClassicalPatterns(pContext: IPatternContext): List<IPattern> {
   return ClassicalPattern.values().map { factory ->
     factory.getPattern(this, pContext)
   }.filter { p -> p != null }
     .map { p -> p!! }
     .toList()
-}
-
-fun IPlate.getPatternDescriptions(pContext: IPatternContext,
-                                  pdFactory: IPatternDescriptionFactory): List<IPatternDescription> {
-  return this.getPatterns(pContext).map { pattern ->
-    pdFactory.getPatternDescription(pattern)
-  }.toList()
 }
 
 
