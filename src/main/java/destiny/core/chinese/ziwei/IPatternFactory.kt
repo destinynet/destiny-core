@@ -53,16 +53,6 @@ interface IPatternFactory {
   fun getPattern(it: IPlate, pContext: IPatternContext): IPattern?
 }
 
-
-fun IPlate.getClassicalPatterns(pContext: IPatternContext): List<IPattern> {
-  return ClassicalPattern.values().map { factory ->
-    factory.getPattern(this, pContext)
-  }.filter { p -> p != null }
-    .map { p -> p!! }
-    .toList()
-}
-
-
 /** 單純命宮實作 */
 abstract class PatternSingleImpl : IPatternFactory, Serializable {
   override fun getPattern(it: IPlate, pContext: IPatternContext): IPattern? {

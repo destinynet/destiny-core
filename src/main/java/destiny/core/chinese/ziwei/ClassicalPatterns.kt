@@ -2722,6 +2722,7 @@ sealed class ClassicalPattern(override val name: String,
   object 一生孤貧 : ClassicalPattern("一生孤貧", PatternType.EVIL)
   class 魁鉞凶冲(evils: Set<EvilCombo>) : ClassicalPattern("魁鉞凶冲", PatternType.EVIL, evils.joinToString(","))
   object 眾水朝東 : ClassicalPattern("眾水朝東", PatternType.EVIL)
+  // TODO : 在野孤君 , 無道之君
 
   companion object {
 
