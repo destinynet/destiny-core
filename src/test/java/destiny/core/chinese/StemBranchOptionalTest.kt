@@ -43,7 +43,7 @@ class StemBranchOptionalTest {
       // 錯誤的組合
       StemBranchOptional[甲, 丑]
       fail("error")
-    } catch (e: RuntimeException) {
+    } catch (e: Throwable) {
       assertTrue(true)
     }
 
@@ -51,7 +51,7 @@ class StemBranchOptionalTest {
       // 錯誤的組合
       StemBranchOptional["甲丑"]
       fail("error")
-    } catch (e: RuntimeException) {
+    } catch (e: Throwable) {
       assertTrue(true)
     }
 
@@ -59,7 +59,7 @@ class StemBranchOptionalTest {
       // 錯誤的組合
       StemBranchOptional['甲', '丑']
       fail("error")
-    } catch (e: RuntimeException) {
+    } catch (e: Throwable) {
       assertTrue(true)
     }
 
@@ -68,7 +68,7 @@ class StemBranchOptionalTest {
       // 錯誤的組合
       StemBranchOptional[甲, 丑]
       fail("error")
-    } catch (e: RuntimeException) {
+    } catch (e: Throwable) {
       assertTrue(true)
     }
 
