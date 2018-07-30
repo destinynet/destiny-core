@@ -111,5 +111,10 @@ interface IStarHousePattern : IPattern {
   val house : House
 
   override val name: String
-    get() = star.toString() + "在"+house+"宮"
+    get() = (star.toString() + "在"+house).let {
+      if (!it.endsWith("宮"))
+        it+"宮"
+      else
+        it
+    }
 }

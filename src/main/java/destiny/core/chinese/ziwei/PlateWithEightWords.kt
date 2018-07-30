@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.calendar.eightwords.personal.IPersonContextModel
+import java.io.Serializable
 
 /**
  * 紫微盤為主，八字盤為輔
@@ -16,5 +17,5 @@ interface IPlateWithEightWords : IPlate {
 data class PlateWithEightWords(
   private val plate: IPlate ,
   /** 八字資料  */
-  override val personModel: IPersonContextModel) : IPlateWithEightWords , IPlate by plate
+  override val personModel: IPersonContextModel) : IPlateWithEightWords , IPlate by plate , Serializable
 
