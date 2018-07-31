@@ -118,3 +118,33 @@ interface IStarHousePattern : IPattern {
         it
     }
 }
+
+/**
+ * A星(與B星）坐X或Y地支 於 Z宮位
+ */
+interface IStarsBranchesHousePattern : IPattern {
+  val stars : Set<ZStar>
+  val branches : Set<Branch>
+  val house : House
+
+  override val name: String
+    get() = {
+      val sb = StringBuilder()
+      sb.append(stars.joinToString("與"))
+
+      if (stars.size == 1)
+        sb.append(" 獨坐 ")
+      else
+        sb.append(" 坐 ")
+
+      sb.append(branches.joinToString("或"))
+      sb.append(" 於 ")
+      sb.append(house.toString().let {
+        if (!it.endsWith("宮"))
+          it+"宮"
+        else
+          it
+      })
+      sb.toString()
+    }.invoke()
+}
