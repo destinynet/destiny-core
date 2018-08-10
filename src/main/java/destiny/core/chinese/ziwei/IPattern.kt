@@ -8,6 +8,7 @@ import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
+import java.io.Serializable
 
 /**
  * https://medium.com/@JorgeCastilloPr/kotlin-purity-and-function-memoization-b12ab35d70a5
@@ -103,6 +104,8 @@ interface IPattern {
 }
 
 
+/** ============================================================================= */
+
 /**
  * 某星 在 某宮位
  */
@@ -118,6 +121,16 @@ interface IStarHousePattern : IPattern {
         it
     }
 }
+
+data class StarHousePattern(
+  override val star: ZStar,
+  override val house: House) : IStarHousePattern , Serializable {
+  override val notes: String?
+    get() = null
+}
+
+
+/** ============================================================================= */
 
 /**
  * A星(與B星）坐X或Y地支 於 Z宮位
@@ -147,4 +160,17 @@ interface IStarsBranchesHousePattern : IPattern {
       })
       sb.toString()
     }.invoke()
+}
+
+data class StarBranchHousePattern (
+  val andStars: Set<ZStar>,
+  val orBranches: Set<Branch>,
+  override val house: House
+  ) : IStarsBranchesHousePattern , Serializable {
+  override val stars: Set<ZStar>
+    get() = andStars
+  override val branches: Set<Branch>
+    get() = orBranches
+  override val notes: String?
+    get() = null
 }
