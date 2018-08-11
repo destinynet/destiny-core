@@ -110,11 +110,11 @@ interface IPattern {
  * 某星 在 某宮位
  */
 interface IStarHousePattern : IPattern {
-  val star : ZStar
+  val orStars : Set<ZStar>
   val house : House
 
   override val name: String
-    get() = (star.toString() + "在"+house).let {
+    get() = (orStars.joinToString("或") { it.toString() }+"在"+house).let {
       if (!it.endsWith("宮"))
         it+"宮"
       else
@@ -123,7 +123,7 @@ interface IStarHousePattern : IPattern {
 }
 
 data class StarHousePattern(
-  override val star: ZStar,
+  override val orStars: Set<ZStar>,
   override val house: House) : IStarHousePattern , Serializable {
   override val notes: String?
     get() = null
