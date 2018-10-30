@@ -45,6 +45,7 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-maven-plugin</artifactId>
@@ -69,6 +70,7 @@
           <jvmTarget>1.8</jvmTarget>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
