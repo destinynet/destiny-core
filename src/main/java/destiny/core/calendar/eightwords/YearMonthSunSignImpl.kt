@@ -12,6 +12,7 @@ import destiny.core.chinese.StemBranchUnconstrained
 import java.util.*
 
 /**
+ * 120柱月令
  * 依據星座劃分月令 , coolwind 提出的理論
  * 若是出生之時，太陽位於「節、氣」的「前半段」 , 例如：「立春 到 雨水 之間」 或是 「立夏 到 小滿 之間」
  * 則，地支退一位 , 意味： 地支以星座區分（氣 與 氣之間劃分）

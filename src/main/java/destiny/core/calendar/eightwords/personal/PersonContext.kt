@@ -28,10 +28,10 @@ class PersonContext(
   override val ageNoteImpls: List<IntAgeNote>,
 
   /** 大運 的實作 */
-  private val fortuneLargeImpl: IPersonFortuneLarge,
+  override val fortuneLargeImpl: IPersonFortuneLarge,
 
   /** 小運 的實作 */
-  private val fortuneSmallImpl : IPersonFortuneSmall
+  override val fortuneSmallImpl : IPersonFortuneSmall
                    ) : IPersonContext,
   IPersonPresentContext , IEightWordsContext by eightWordsContext, Serializable {
 

@@ -103,6 +103,12 @@ interface IPersonContext : IEightWordsContext {
   }
 
   val ageNoteImpls: List<IntAgeNote>
+
+  /** 大運 的實作 */
+  val fortuneLargeImpl : IPersonFortuneLarge
+
+  /** 小運 的實作 */
+  val fortuneSmallImpl : IPersonFortuneSmall
 }
 
 /**
