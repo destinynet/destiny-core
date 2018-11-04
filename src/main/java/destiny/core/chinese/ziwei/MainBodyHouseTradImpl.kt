@@ -35,7 +35,7 @@ class MainBodyHouseTradImpl(private val yearMonthImpl: IYearMonth,
                             private val hourImpl: IHour,
                             private val midnightImpl: IMidnight,
                             private val changeDayAfterZi: Boolean,
-                            private val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?) : IMainBodyHouse, Serializable {
+                            val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?) : IMainBodyHouse, Serializable {
 
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
   override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
