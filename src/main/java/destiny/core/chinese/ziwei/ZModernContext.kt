@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.astrology.IRelativeTransit
 import destiny.core.Gender
 import destiny.core.IIntAge
@@ -31,7 +31,7 @@ interface IZiweiModernContext : IZiweiContext {
 
   val hourImpl: IHour
 
-  val dayNightImpl : DayNightDifferentiator
+  val dayNightImpl : IDayNight
 
   val midnightImpl: IMidnight
 
@@ -54,7 +54,7 @@ class ZModernContext(
   override val yearMonthImpl: IYearMonth,
   override val dayImpl: IDay,
   override val hourImpl: IHour,
-  override val dayNightImpl: DayNightDifferentiator,
+  override val dayNightImpl: IDayNight,
   override val midnightImpl: IMidnight,
   override val relativeTransitImpl: IRelativeTransit,
   override val changeDayAfterZi: Boolean = true) : IZiweiModernContext, IZiweiContext by context, Serializable {

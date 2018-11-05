@@ -42,7 +42,7 @@ import destiny.core.DayNight
  */
 class Peregrine(
   /** 計算白天黑夜的實作  */
-  private val dayNightImpl: DayNightDifferentiator) : EssentialRule() {
+  private val dayNightImpl: IDayNight) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val planetDeg: Double? = h.getPosition(planet)?.lng

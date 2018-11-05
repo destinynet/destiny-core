@@ -13,7 +13,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 區分日夜的介面
  */
-interface DayNightDifferentiator : Descriptive {
+interface IDayNight : Descriptive {
 
   fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight
 

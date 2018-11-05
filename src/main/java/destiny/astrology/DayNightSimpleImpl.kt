@@ -11,7 +11,7 @@ import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.util.*
 
-class DayNightSimpleImpl : DayNightDifferentiator , Serializable {
+class DayNightSimpleImpl : IDayNight , Serializable {
 
   @Transient private val revJulDayFunc = { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
 

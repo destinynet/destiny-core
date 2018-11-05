@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.astrology.IBesieged
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
@@ -16,7 +16,7 @@ import destiny.astrology.classical.rules.IRule
 import java.io.Serializable
 import java.util.*
 
-class AccidentalDignitiesBean(private val dayNightImpl: DayNightDifferentiator,
+class AccidentalDignitiesBean(private val dayNightImpl: IDayNight,
                               private val translationOfLightImpl: ITranslationOfLight,
                               private val collectionOfLightImpl: ICollectionOfLight,
                               private val refranationImpl: IRefranation,

@@ -4,7 +4,7 @@
 package destiny.core.chinese
 
 import destiny.core.DayNight
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.core.Descriptive
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IDay
@@ -30,7 +30,7 @@ interface ITianyi : Descriptive {
     return DayNight.values().map { dayNight -> getFirstTianyi(stem, dayNight) }
   }
 
-  fun getTianyi(lmt: LocalDateTime, loc: Location, dayImpl: IDay, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean, differentiator: DayNightDifferentiator): Branch {
+  fun getTianyi(lmt: LocalDateTime, loc: Location, dayImpl: IDay, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean, differentiator: IDayNight): Branch {
     val day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi)
     val dayNight = differentiator.getDayNight(lmt, loc)
     return getFirstTianyi(day.stem, dayNight)

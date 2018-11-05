@@ -4,7 +4,7 @@
 package destiny.astrology.classical.rules
 
 import destiny.core.DayNight
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.*
@@ -45,7 +45,7 @@ class TermPredicate(private val termImpl : ITerm) : RulePredicate<Rule.Term> {
 
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
 class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
-                          private val dayNightImpl: DayNightDifferentiator) : RulePredicate<Rule.Triplicity> {
+                          private val dayNightImpl: IDayNight) : RulePredicate<Rule.Triplicity> {
   override fun getRules(p: Planet, h: IHoroscopeModel): List<Rule.Triplicity>? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
@@ -59,8 +59,8 @@ class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
 }
 
 
-class MutualPredicate(private val essentialImpl: IEssential ,
-                      private val dayNightImpl: DayNightDifferentiator,
+class MutualPredicate(private val essentialImpl: IEssential,
+                      private val dayNightImpl: IDayNight,
                       private val dignities: Collection<Dignity>) : RulePredicate<Mutual.Reception> {
   override fun getRules(p: Planet, h: IHoroscopeModel): List<Mutual.Reception> ? {
     val dayNight = dayNightImpl.getDayNight(h.gmtJulDay , h.location)

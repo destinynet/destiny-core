@@ -5,7 +5,7 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.core.DayNight
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
@@ -20,7 +20,7 @@ import java.util.*
  */
 class Hayz(
   /** 計算白天黑夜的實作  */
-  val dayNightImpl: DayNightDifferentiator) : AccidentalRule() {
+  val dayNightImpl: IDayNight) : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)

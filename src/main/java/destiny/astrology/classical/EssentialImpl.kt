@@ -17,7 +17,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
                     private val triplicityImpl: ITriplicity,
                     private val termImpl: ITerm,
                     private val faceImpl: IFace,
-                    private val dayNightDifferentiator: DayNightDifferentiator) : IEssential, Serializable {
+                    private val dayNightDifferentiator: IDayNight) : IEssential, Serializable {
 
 
   /**

@@ -4,7 +4,7 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.*
@@ -19,7 +19,7 @@ class EssentialDignitiesBean(
   private val triplicityImpl : ITriplicity,
   private val termImpl : ITerm,
   private val faceImpl : IFace,
-  private var dayNightImpl: DayNightDifferentiator) : IEssentialDignities, Serializable {
+  private var dayNightImpl: IDayNight) : IEssentialDignities, Serializable {
 
 
   override  val rules : List<IRule> by lazy {

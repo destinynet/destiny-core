@@ -4,7 +4,7 @@
 package destiny.core.chinese.liuren
 
 import destiny.core.DayNight
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Clockwise
 import destiny.core.chinese.IClockwise
@@ -18,7 +18,7 @@ import java.util.*
  * Clockwise Day Clockwise / Night Counter
  * dayNightFixedImpl
  */
-class ClockwiseDayNightFixedImpl(private val differentiator: DayNightDifferentiator) : IClockwise, Serializable {
+class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClockwise, Serializable {
 
   override fun getClockwise(lmt: ChronoLocalDateTime<*>, loc: ILocation): Clockwise {
     val dayNight = differentiator.getDayNight(lmt, loc)

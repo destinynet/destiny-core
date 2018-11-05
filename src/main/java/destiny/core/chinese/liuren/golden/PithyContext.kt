@@ -4,7 +4,7 @@
 package destiny.core.chinese.liuren.golden
 
 import destiny.core.DayNight
-import destiny.astrology.DayNightDifferentiator
+import destiny.astrology.IDayNight
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
@@ -44,7 +44,7 @@ class PithyContext(
   val eightWordsImpl: IEightWordsFactory,
   val monthMasterImpl: IMonthMaster,
   val clockwiseImpl: IClockwise,
-  val dayNightImpl: DayNightDifferentiator,
+  val dayNightImpl: IDayNight,
   val tianyiImpl: ITianyi,
   val seqImpl: IGeneralSeq,
   val generalStemBranchImpl: IGeneralStemBranch) : IPithyContext {
