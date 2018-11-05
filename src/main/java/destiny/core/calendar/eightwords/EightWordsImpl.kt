@@ -17,10 +17,10 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
 
-class EightWordsImpl(val yearMonthImpl: IYearMonth          // 換年, 以及月支計算的實作
+class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支計算的實作
                      , val dayImpl: IDay                // 計算日干支的介面
-                     , val hourImpl: IHour               // 計算時支的介面
-                     , val midnightImpl: IMidnight            // 計算「子正」的介面
+                     , val hourImpl: IHour              // 計算時支的介面
+                     , val midnightImpl: IMidnight      // 計算「子正」的介面
                      , val changeDayAfterZi: Boolean) : IEightWordsFactory, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
