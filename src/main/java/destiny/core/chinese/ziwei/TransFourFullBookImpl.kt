@@ -10,8 +10,6 @@ import java.util.*
 /**
  * 紫微斗數全書、閩派、南派
  */
-
-
 class TransFourFullBookImpl : TransFourAbstractImpl() {
 
   override val table

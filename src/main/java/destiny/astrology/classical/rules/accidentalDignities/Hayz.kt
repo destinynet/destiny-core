@@ -4,11 +4,11 @@
  */
 package destiny.astrology.classical.rules.accidentalDignities
 
-import destiny.core.DayNight
 import destiny.astrology.IDayNight
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
+import destiny.core.DayNight
 import java.util.*
 
 /**
@@ -27,7 +27,7 @@ class Hayz(
 
     return h.getZodiacSign(planet)?.let { sign ->
       h.getHouse(planet)?.let { house ->
-        return@let when (dayNight) {
+        when (dayNight) {
           DayNight.DAY -> planet.takeIf { arrayOf(SUN, JUPITER, SATURN).contains(it) }
             ?.takeIf { house >= 7 && sign.booleanValue }
             ?.let {
