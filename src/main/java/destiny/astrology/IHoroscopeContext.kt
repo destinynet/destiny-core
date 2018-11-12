@@ -28,9 +28,9 @@ interface IHoroscopeContext {
                    loc: ILocation,
                    place: String?,
                    points: Collection<Point>? = defaultPoints,
-                   houseSystem: HouseSystem?,
-                   coordinate: Coordinate?,
-                   centric: Centric?,
+                   houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
+                   coordinate: Coordinate? = Coordinate.ECLIPTIC,
+                   centric: Centric? = Centric.GEO,
                    temperature: Double? = 0.0,
                    pressure: Double? = 1013.25): IHoroscopeModel
 
@@ -40,9 +40,9 @@ interface IHoroscopeContext {
                    loc: ILocation,
                    place: String?,
                    points: Collection<Point>?,
-                   houseSystem: HouseSystem?,
-                   coordinate: Coordinate?,
-                   centric: Centric?,
+                   houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
+                   coordinate: Coordinate? = Coordinate.ECLIPTIC,
+                   centric: Centric? = Centric.GEO,
                    temperature: Double? = 0.0,
                    pressure: Double? = 1013.25): IHoroscopeModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
@@ -144,8 +144,8 @@ interface IPersonHoroscopeContext : IHoroscopeContext {
                          centric: Centric? = Centric.GEO,
 
                          points: Collection<Point>? = IHoroscopeContext.defaultPoints): IPersonHoroscopeModel {
-    val horo = getHoroscope(lmt, loc, place, points, houseSystem, coordinate, centric, 0.0, 1013.25)
-    return PersonHoroscopeModel(horo , gender, name)
+    val horoscope = getHoroscope(lmt, loc, place, points, houseSystem, coordinate, centric, 0.0, 1013.25)
+    return PersonHoroscopeModel(horoscope, gender, name)
   }
 
   fun getPersonHoroscope(birthData: IBirthDataNamePlace): IPersonHoroscopeModel {

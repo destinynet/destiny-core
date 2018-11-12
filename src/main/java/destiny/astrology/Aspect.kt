@@ -67,7 +67,7 @@ enum class Aspect(private val nameKey: String,
 
   companion object {
 
-    private val resource = "destiny.astrology.Astrology"
+    private const val resource = "destiny.astrology.Astrology"
 
     private val importanceAngles: Map<Importance, List<Aspect>> = Aspect.values().groupBy { it.importance }
 

@@ -43,6 +43,6 @@ enum class Dignity(private val nameKey: String) : ILocaleString {
 
   companion object {
 
-    private val resource = "destiny.astrology.classical.Classical"
+    private const val resource = "destiny.astrology.classical.Classical"
   }
 }
