@@ -7,6 +7,7 @@ package destiny.tools
 import java.util.*
 
 interface SearchableI18n<T> : Searchable<T> {
+
   /** 搜尋關鍵字，若找不到，則傳回 長度為零的 list 。 start 為 0-based  */
   fun search(keyword: String, start: Int, count: Int, vararg locales: Locale): List<T>
 
