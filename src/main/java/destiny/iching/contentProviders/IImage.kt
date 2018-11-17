@@ -14,6 +14,6 @@ interface IImage {
   fun getLineImage(hexagram: IHexagram, lineIndex: Int, locale: Locale): String
 
   /** 用九/用六的象曰  */
-  fun getExtraImage(hexagram: IHexagram, locale: Locale): String
+  fun getExtraImage(hexagram: IHexagram, locale: Locale): String?
 }
 

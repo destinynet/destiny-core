@@ -24,5 +24,5 @@ interface IExpression {
   fun getLineExpression(hexagram: IHexagram, lineIndex: Int, locale: Locale): String
 
   /** 取得 用六/用九 的爻辭  */
-  fun getExtraExpression(hexagram: IHexagram, locale: Locale): String
+  fun getExtraExpression(hexagram: IHexagram, locale: Locale): String?
 }

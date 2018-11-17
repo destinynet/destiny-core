@@ -125,7 +125,8 @@ object LocaleTools {
    * 7. 內訂(純 basename)
    * </pre>
    */
-  fun getBestMatchingLocaleWithDefault(locale: Locale = Locale.getDefault(), locales: Iterable<Locale>): Locale? {
+  fun getBestMatchingLocaleWithDefault(locales: Iterable<Locale>,
+                                       locale: Locale = Locale.getDefault()): Locale? {
 
     val defaultLocale = Locale.getDefault()
 

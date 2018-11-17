@@ -93,7 +93,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull ,
       if (it == 1 || it == 2) {
         val lineExpression = expressionImpl.getExtraExpression(hexagram, finalLocale)
         val lineImage = imageImpl.getExtraImage(hexagram, finalLocale)
-        LineText(lineExpression, lineImage)
+        LineText(lineExpression!!, lineImage!!)
       } else
         null
     }

@@ -18,6 +18,7 @@ public class LocaleUtils implements Serializable {
     return LocaleTools.INSTANCE.getStringOrDefault(localeStringMap , locale);
   }
 
+  @Deprecated
   public static Optional<Locale> getBestMatchingLocale(Locale locale) {
     //TODO : 未來該把此 TAIWAN , CHINA , ENGLISH 做更彈性的調整。
     ImmutableSet<Locale> supported = ImmutableSet.of(Locale.TAIWAN , Locale.CHINA , Locale.ENGLISH);
@@ -41,6 +42,6 @@ public class LocaleUtils implements Serializable {
    * </pre>
    */
   public static Optional<Locale> getBestMatchingLocale(@Nullable Locale locale , @NotNull Iterable<Locale> locales) {
-    return Optional.ofNullable(LocaleTools.INSTANCE.getBestMatchingLocaleWithDefault(locale ==  null ? Locale.getDefault(): locale , locales));
+    return Optional.ofNullable(LocaleTools.INSTANCE.getBestMatchingLocaleWithDefault(locales, locale ==  null ? Locale.getDefault(): locale));
   }
 }
