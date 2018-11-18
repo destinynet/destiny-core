@@ -172,7 +172,6 @@ class DivineContext(
                                    伏神系統: IHiddenEnergy?): ICombinedWithMeta {
     val final納甲 = 納甲系統 ?: this.納甲系統
     val final伏神 = 伏神系統 ?: this.伏神系統
-    val finalLocale = locale ?: this.locale
 
     val meta = Meta(final納甲, final伏神)
     val srcModel = getSingleHexagram(src, 納甲系統, 伏神系統)

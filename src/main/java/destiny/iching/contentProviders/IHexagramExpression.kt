@@ -6,6 +6,7 @@ import java.util.*
 
 /** 卦辭  */
 interface IHexagramExpression {
-  fun getExpression(hexagram: IHexagram, locale: Locale): String
+
+  fun getHexagramExpression(hexagram: IHexagram, locale: Locale): String
 }
 

@@ -22,7 +22,7 @@ class HexagramDivinationComparator : Comparator<IHexagram>, IHexagramSequence {
     return hexagramIndexMap[h]!!
   }
 
-  override fun getHexagram(index: Int): Hexagram {
+  override fun getHexagram(index: Int): IHexagram {
     val i = if (index > 64) index % 64 else if (index <= 0) 64 - (0-index) %64 else index
 
     return indexHexagramMap[i]!!

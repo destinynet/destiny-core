@@ -25,6 +25,6 @@ interface IHexagramSequence {
    * @param index : 1<=index <=64
    * @return
    */
-  fun getHexagram(index: Int): Hexagram
+  fun getHexagram(index: Int): IHexagram
 
 }

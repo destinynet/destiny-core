@@ -7,6 +7,12 @@ import java.util.*
 /** 384爻辭 + 用九/用六 兩個 extra  */
 interface ILineExpression {
 
+  /**
+   * @param hexagram
+   * @param line 1~6
+   * @param locale
+   * @return 取得爻辭
+   */
   fun getLineExpression(hexagram: IHexagram, line: Int, locale: Locale): String
 
   fun getExtraExpression(hexagram: IHexagram, locale: Locale): String?
