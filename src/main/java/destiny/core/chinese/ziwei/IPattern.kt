@@ -46,7 +46,7 @@ fun IPlate.六惡星(): Set<Branch> = this.羊陀().plus(this.火鈴()).plus(thi
 fun IPlate.三方四正無六惡星(branch: Branch = this.mainHouse.branch) : Boolean {
   return this
     .takeIf { it.三方四正(branch).intersect(it.六惡星()).isEmpty() }
-    ?.let { _ -> true }
+    ?.let { true }
     ?: false
 }
 

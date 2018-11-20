@@ -20,7 +20,7 @@ interface IHouse<T> {
    * @param monthBranch                「節氣」的月令
    * @param finalMonthNumForMonthStars 最終依據的月令數字
    * @param leap                       是否是閏月
-   * @param prevMonthDays              [陰曆] 上個月有幾日
+   * @param prevMonthDays              「陰曆」 上個月有幾日
    * @param predefinedMainHouse        預先計算好的「命宮」
    */
   fun getBranch(lunarYear: StemBranch,

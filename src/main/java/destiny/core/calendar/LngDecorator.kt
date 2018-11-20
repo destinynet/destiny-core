@@ -48,7 +48,7 @@ class LngDecoratorTaiwan : Decorator<Double> {
 
       val secString = "%02.2f".format(lng.sec).let {
         // 可能是 "0.00"
-        if (it.length == 4) "0" + it
+        if (it.length == 4) "0$it"
         else it
       }
       append(secString)
@@ -74,7 +74,7 @@ class LngDecoratorChina : Decorator<Double> {
 
       val secString = "%02.2f".format(lng.sec).let {
         // 可能是 "0.00"
-        if (it.length == 4) "0" + it
+        if (it.length == 4) "0$it"
         else it
       }
       append(secString)
@@ -99,7 +99,7 @@ class LngDecoratorEnglish : Decorator<Double> {
       append("%02d".format(lng.min)).append("'")
       val secString = "%02.2f".format(lng.sec).let {
         // 可能是 "0.00"
-        if (it.length == 4) "0" + it
+        if (it.length == 4) "0$it"
         else it
       }
       append(secString).append("\"")

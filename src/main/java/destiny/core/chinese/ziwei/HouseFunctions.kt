@@ -82,76 +82,76 @@ object HouseFunctions {
   private val logger = LoggerFactory.getLogger(HouseFunctions::class.java)
 
 
-  val house紫微: IHouse<*> = HouseMainStarImpl(紫微)
+  private val house紫微: IHouse<*> = HouseMainStarImpl(紫微)
 
-  val house天機: IHouse<*> = HouseMainStarImpl(天機)
+  private val house天機: IHouse<*> = HouseMainStarImpl(天機)
 
-  val house太陽: IHouse<*> = HouseMainStarImpl(太陽)
+  private val house太陽: IHouse<*> = HouseMainStarImpl(太陽)
 
-  val house武曲: IHouse<*> = HouseMainStarImpl(武曲)
+  private val house武曲: IHouse<*> = HouseMainStarImpl(武曲)
 
-  val house天同: IHouse<*> = HouseMainStarImpl(天同)
+  private val house天同: IHouse<*> = HouseMainStarImpl(天同)
 
-  val house廉貞: IHouse<*> = HouseMainStarImpl(廉貞)
+  private val house廉貞: IHouse<*> = HouseMainStarImpl(廉貞)
 
-  val house天府: IHouse<*> = HouseMainStarImpl(天府)
+  private val house天府: IHouse<*> = HouseMainStarImpl(天府)
 
-  val house太陰: IHouse<*> = HouseMainStarImpl(太陰)
+  private val house太陰: IHouse<*> = HouseMainStarImpl(太陰)
 
-  val house貪狼: IHouse<*> = HouseMainStarImpl(貪狼)
+  private val house貪狼: IHouse<*> = HouseMainStarImpl(貪狼)
 
-  val house巨門: IHouse<*> = HouseMainStarImpl(巨門)
+  private val house巨門: IHouse<*> = HouseMainStarImpl(巨門)
 
-  val house天相: IHouse<*> = HouseMainStarImpl(天相)
+  private val house天相: IHouse<*> = HouseMainStarImpl(天相)
 
-  val house天梁: IHouse<*> = HouseMainStarImpl(天梁)
+  private val house天梁: IHouse<*> = HouseMainStarImpl(天梁)
 
-  val house七殺: IHouse<*> = HouseMainStarImpl(七殺)
+  private val house七殺: IHouse<*> = HouseMainStarImpl(七殺)
 
-  val house破軍: IHouse<*> = HouseMainStarImpl(破軍)
+  private val house破軍: IHouse<*> = HouseMainStarImpl(破軍)
 
 
   // =======↑↑↑======= 以上 14 顆主星 =======↑↑↑=======
 
   // =======↓↓↓======= 以下  8 顆吉星 =======↓↓↓=======
 
-  val house文昌: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文昌) {
+  private val house文昌: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文昌) {
     override fun getBranch(t: Branch): Branch {
       return fun文昌.invoke(t)
     }
   }
 
-  val house文曲: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文曲) {
+  private val house文曲: IHouse<*> = object : HouseHourBranchImpl(StarLucky.文曲) {
     override fun getBranch(t: Branch): Branch {
       return fun文曲.invoke(t)
     }
   }
 
-  val house左輔: IHouse<*> = object : HouseMonthImpl(StarLucky.左輔) {
+  private val house左輔: IHouse<*> = object : HouseMonthImpl(StarLucky.左輔) {
     override fun getBranch(t: Int): Branch {
       return fun左輔_月數.invoke(t)
     }
   }
 
-  val house右弼: IHouse<*> = object : HouseMonthImpl(StarLucky.右弼) {
+  private val house右弼: IHouse<*> = object : HouseMonthImpl(StarLucky.右弼) {
     override fun getBranch(t: Int): Branch {
       return fun右弼_月數.invoke(t)
     }
   }
 
-  val house天魁: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天魁) {
+  private val house天魁: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天魁) {
     override fun getBranch(t: Pair<Stem, ITianyi>): Branch {
       return fun天魁.invoke(t.first, t.second)
     }
   }
 
-  val house天鉞: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天鉞) {
+  private val house天鉞: IHouse<*> = object : HouseYearStemTianyiImpl(StarLucky.天鉞) {
     override fun getBranch(t: Pair<Stem, ITianyi>): Branch {
       return fun天鉞.invoke(t.first, t.second)
     }
   }
 
-  val house祿存: IHouse<*> = object : HouseYearStemImpl(StarLucky.祿存) {
+  private val house祿存: IHouse<*> = object : HouseYearStemImpl(StarLucky.祿存) {
     override fun getBranch(t: Stem): Branch {
       return fun祿存.invoke(t)
     }
@@ -169,7 +169,7 @@ object HouseFunctions {
     }
   }
 
-  val house天馬: IHouse<*> = object : HouseYearMonthImpl(StarLucky.天馬) {
+  private val house天馬: IHouse<*> = object : HouseYearMonthImpl(StarLucky.天馬) {
     override fun getBranch(lunarYear: StemBranch,
                            solarYear: StemBranch,
                            monthBranch: Branch,
@@ -195,13 +195,13 @@ object HouseFunctions {
 
   // =======↓↓↓======= 以下  6 顆兇星 =======↓↓↓=======
 
-  val house擎羊: IHouse<*> = object : HouseYearStemImpl(擎羊) {
+  private val house擎羊: IHouse<*> = object : HouseYearStemImpl(擎羊) {
     override fun getBranch(t: Stem): Branch {
       return fun擎羊.invoke(t)
     }
   }
 
-  val house陀羅: IHouse<*> = object : HouseYearStemImpl(陀羅) {
+  private val house陀羅: IHouse<*> = object : HouseYearStemImpl(陀羅) {
     override fun getBranch(t: Stem): Branch {
       return fun陀羅.invoke(t)
     }
@@ -227,13 +227,13 @@ object HouseFunctions {
     }
   }
 
-  val house地劫: IHouse<*> = object : HouseHourBranchImpl(地劫) {
+  private val house地劫: IHouse<*> = object : HouseHourBranchImpl(地劫) {
     override fun getBranch(t: Branch): Branch {
       return fun地劫.invoke(t)
     }
   }
 
-  val house地空: IHouse<*> = object : HouseHourBranchImpl(地空) {
+  private val house地空: IHouse<*> = object : HouseHourBranchImpl(地空) {
     override fun getBranch(t: Branch): Branch {
       return fun地空.invoke(t)
     }
@@ -244,200 +244,200 @@ object HouseFunctions {
 
 
   // =======↓↓↓======= 以下      雜曜 =======↓↓↓=======
-  val house天官: IHouse<*> = object : HouseYearStemImpl(天官) {
+  private val house天官: IHouse<*> = object : HouseYearStemImpl(天官) {
     override fun getBranch(t: Stem): Branch {
       return fun天官.invoke(t)
     }
   }
 
-  val house天福: IHouse<*> = object : HouseYearStemImpl(天福) {
+  private val house天福: IHouse<*> = object : HouseYearStemImpl(天福) {
     override fun getBranch(t: Stem): Branch {
       return fun天福.invoke(t)
     }
   }
 
-  val house天廚: IHouse<*> = object : HouseYearStemImpl(天廚) {
+  private val house天廚: IHouse<*> = object : HouseYearStemImpl(天廚) {
     override fun getBranch(t: Stem): Branch {
       return fun天廚.invoke(t)
     }
   }
 
-  val house天刑: IHouse<*> = object : HouseMonthImpl(天刑) {
+  private val house天刑: IHouse<*> = object : HouseMonthImpl(天刑) {
     override fun getBranch(t: Int): Branch {
       return fun天刑_月數.invoke(t)
     }
   }
 
-  val house天姚: IHouse<*> = object : HouseMonthImpl(天姚) {
+  private val house天姚: IHouse<*> = object : HouseMonthImpl(天姚) {
     override fun getBranch(t: Int): Branch {
       return fun天姚_月數.invoke(t)
     }
   }
 
-  val house解神: IHouse<*> = object : HouseMonthImpl(解神) {
+  private val house解神: IHouse<*> = object : HouseMonthImpl(解神) {
     override fun getBranch(t: Int): Branch {
       return fun解神_月數.invoke(t)
     }
   }
 
-  val house天巫: IHouse<*> = object : HouseMonthImpl(天巫) {
+  private val house天巫: IHouse<*> = object : HouseMonthImpl(天巫) {
     override fun getBranch(t: Int): Branch {
       return fun天巫_月數.invoke(t)
     }
   }
 
-  val house天月: IHouse<*> = object : HouseMonthImpl(天月) {
+  private val house天月: IHouse<*> = object : HouseMonthImpl(天月) {
     override fun getBranch(t: Int): Branch {
       return fun天月_月數.invoke(t)
     }
   }
 
-  val house陰煞: IHouse<*> = object : HouseMonthImpl(陰煞) {
+  private val house陰煞: IHouse<*> = object : HouseMonthImpl(陰煞) {
     override fun getBranch(t: Int): Branch {
       return fun陰煞_月數.invoke(t)
     }
   }
 
-  val house台輔: IHouse<*> = object : HouseHourBranchImpl(台輔) {
+  private val house台輔: IHouse<*> = object : HouseHourBranchImpl(台輔) {
     override fun getBranch(t: Branch): Branch {
       return fun台輔.invoke(t)
     }
   }
 
-  val house封誥: IHouse<*> = object : HouseHourBranchImpl(封誥) {
+  private val house封誥: IHouse<*> = object : HouseHourBranchImpl(封誥) {
     override fun getBranch(t: Branch): Branch {
       return fun封誥.invoke(t)
     }
   }
 
-  val house天空: IHouse<*> = object : HouseYearBranchImpl(天空) {
+  private val house天空: IHouse<*> = object : HouseYearBranchImpl(天空) {
     override fun getBranch(t: Branch): Branch {
       return fun天空.invoke(t)
     }
   }
 
-  val house天哭: IHouse<*> = object : HouseYearBranchImpl(天哭) {
+  private val house天哭: IHouse<*> = object : HouseYearBranchImpl(天哭) {
     override fun getBranch(t: Branch): Branch {
       return fun天哭.invoke(t)
     }
   }
 
-  val house天虛: IHouse<*> = object : HouseYearBranchImpl(天虛) {
+  private val house天虛: IHouse<*> = object : HouseYearBranchImpl(天虛) {
     override fun getBranch(t: Branch): Branch {
       return fun天虛.invoke(t)
     }
   }
 
-  val house龍池: IHouse<*> = object : HouseYearBranchImpl(龍池) {
+  private val house龍池: IHouse<*> = object : HouseYearBranchImpl(龍池) {
     override fun getBranch(t: Branch): Branch {
       return fun龍池.invoke(t)
     }
   }
 
-  val house鳳閣: IHouse<*> = object : HouseYearBranchImpl(鳳閣) {
+  private val house鳳閣: IHouse<*> = object : HouseYearBranchImpl(鳳閣) {
     override fun getBranch(t: Branch): Branch {
       return fun鳳閣.invoke(t)
     }
   }
 
-  val house紅鸞: IHouse<*> = object : HouseYearBranchImpl(紅鸞) {
+  private val house紅鸞: IHouse<*> = object : HouseYearBranchImpl(紅鸞) {
     override fun getBranch(t: Branch): Branch {
       return fun紅鸞.invoke(t)
     }
   }
 
-  val house天喜: IHouse<*> = object : HouseYearBranchImpl(天喜) {
+  private val house天喜: IHouse<*> = object : HouseYearBranchImpl(天喜) {
     override fun getBranch(t: Branch): Branch {
       return fun天喜.invoke(t)
     }
   }
 
-  val house孤辰: IHouse<*> = object : HouseYearBranchImpl(孤辰) {
+  private val house孤辰: IHouse<*> = object : HouseYearBranchImpl(孤辰) {
     override fun getBranch(t: Branch): Branch {
       return fun孤辰.invoke(t)
     }
   }
 
-  val house寡宿: IHouse<*> = object : HouseYearBranchImpl(寡宿) {
+  private val house寡宿: IHouse<*> = object : HouseYearBranchImpl(寡宿) {
     override fun getBranch(t: Branch): Branch {
       return fun寡宿.invoke(t)
     }
   }
 
-  val house蜚廉: IHouse<*> = object : HouseYearBranchImpl(蜚廉) {
+  private val house蜚廉: IHouse<*> = object : HouseYearBranchImpl(蜚廉) {
     override fun getBranch(t: Branch): Branch {
       return fun蜚廉.invoke(t)
     }
   }
 
-  val house破碎: IHouse<*> = object : HouseYearBranchImpl(破碎) {
+  private val house破碎: IHouse<*> = object : HouseYearBranchImpl(破碎) {
     override fun getBranch(t: Branch): Branch {
       return fun破碎.invoke(t)
     }
   }
 
-  val house華蓋: IHouse<*> = object : HouseYearBranchImpl(StarMinor.華蓋) {
+  private val house華蓋: IHouse<*> = object : HouseYearBranchImpl(StarMinor.華蓋) {
     override fun getBranch(t: Branch): Branch {
       return fun華蓋.invoke(t)
     }
   }
 
-  val house咸池: IHouse<*> = object : HouseYearBranchImpl(StarMinor.咸池) {
+  private val house咸池: IHouse<*> = object : HouseYearBranchImpl(StarMinor.咸池) {
     override fun getBranch(t: Branch): Branch {
       return fun咸池.invoke(t)
     }
   }
 
-  val house天德: IHouse<*> = object : HouseYearBranchImpl(天德) {
+  private val house天德: IHouse<*> = object : HouseYearBranchImpl(天德) {
     override fun getBranch(t: Branch): Branch {
       return StarMinor.fun天德.invoke(t)
     }
   }
 
-  val house月德: IHouse<*> = object : HouseYearBranchImpl(月德) {
+  private val house月德: IHouse<*> = object : HouseYearBranchImpl(月德) {
     override fun getBranch(t: Branch): Branch {
       return fun月德.invoke(t)
     }
   }
 
-  val house天才: IHouse<*> = object : HouseYearBranchMonthNumHourBranchMainHouseImpl(天才) {
+  private val house天才: IHouse<*> = object : HouseYearBranchMonthNumHourBranchMainHouseImpl(天才) {
     override fun getBranch(t: Triple<Branch, Int, Branch>): Branch {
       return fun天才.invoke(t.first, t.second, t.third)
     }
   }
 
-  val house天壽: IHouse<*> = object : HouseYearBranchMonthNumHourBranchImpl(天壽) {
+  private val house天壽: IHouse<*> = object : HouseYearBranchMonthNumHourBranchImpl(天壽) {
     override fun getBranch(t: Triple<Branch, Int, Branch>): Branch {
       return fun天壽.invoke(t.first, t.second, t.third)
     }
   }
 
-  val house三台: IHouse<*> = object : HouseMonthDayNumImpl(三台) {
+  private val house三台: IHouse<*> = object : HouseMonthDayNumImpl(三台) {
     override fun getBranch(t: Pair<Int, Int>): Branch {
       return fun三台_月數.invoke(t.first, t.second)
     }
   }
 
-  val house八座: IHouse<*> = object : HouseMonthDayNumImpl(八座) {
+  private val house八座: IHouse<*> = object : HouseMonthDayNumImpl(八座) {
     override fun getBranch(t: Pair<Int, Int>): Branch {
       return fun八座_月數.invoke(t.first, t.second)
     }
   }
 
-  val house恩光: IHouse<*> = object : HouseDayNumHourBranchImpl(恩光) {
+  private val house恩光: IHouse<*> = object : HouseDayNumHourBranchImpl(恩光) {
     override fun getBranch(t: Pair<Int, Branch>): Branch {
       return fun恩光.invoke(t.first, t.second)
     }
   }
 
-  val house天貴: IHouse<*> = object : HouseDayNumHourBranchImpl(天貴) {
+  private val house天貴: IHouse<*> = object : HouseDayNumHourBranchImpl(天貴) {
     override fun getBranch(t: Pair<Int, Branch>): Branch {
       return fun天貴.invoke(t.first, t.second)
     }
   }
 
 
-  val house天傷: IHouse<*> = object : HouseHouseDepYearStemGenderImpl(天傷) {
+  private val house天傷: IHouse<*> = object : HouseHouseDepYearStemGenderImpl(天傷) {
     override fun getBranch(lunarYear: StemBranch,
                            solarYear: StemBranch,
                            monthBranch: Branch,
@@ -464,7 +464,7 @@ object HouseFunctions {
     }
   }
 
-  val house天使: IHouse<*> = object : HouseHouseDepYearStemGenderImpl(天使) {
+  private val house天使: IHouse<*> = object : HouseHouseDepYearStemGenderImpl(天使) {
     override fun getBranch(lunarYear: StemBranch,
                            solarYear: StemBranch,
                            monthBranch: Branch,
@@ -490,34 +490,34 @@ object HouseFunctions {
     }
   }
 
-  val house陽空: IHouse<*> = object : HouseYearImpl(陽空) {
+  private val house陽空: IHouse<*> = object : HouseYearImpl(陽空) {
     override fun getBranch(t: StemBranch): Branch {
       return fun陽空.invoke(t)
     }
   }
 
-  val house陰空: IHouse<*> = object : HouseYearImpl(陰空) {
+  private val house陰空: IHouse<*> = object : HouseYearImpl(陰空) {
     override fun getBranch(t: StemBranch): Branch {
       return fun陰空.invoke(t)
     }
   }
 
   /** 截空 : 正空 (截路)  */
-  val house正空: IHouse<*> = object : HouseYearStemImpl(正空) {
+  private val house正空: IHouse<*> = object : HouseYearStemImpl(正空) {
     override fun getBranch(t: Stem): Branch {
       return fun正空_A.invoke(t)
     }
   }
 
   /** 截空 : 傍空 (空亡)  */
-  val house傍空: IHouse<*> = object : HouseYearStemImpl(傍空) {
+  private val house傍空: IHouse<*> = object : HouseYearStemImpl(傍空) {
     override fun getBranch(t: Stem): Branch {
       return fun傍空_A.invoke(t)
     }
   }
 
   /** 紅艷  */
-  val house紅艷: IHouse<*> = object : HouseYearStemImpl(紅艷) {
+  private val house紅艷: IHouse<*> = object : HouseYearStemImpl(紅艷) {
     override fun getBranch(t: Stem): Branch {
       throw RuntimeException("Error")
     }
@@ -546,116 +546,116 @@ object HouseFunctions {
 
   // =======↓↓↓======= 以下 博士12神煞 =======↓↓↓=======
 
-  val house博士: IHouse<*> = HouseDoctorImpl(博士)
+  private val house博士: IHouse<*> = HouseDoctorImpl(博士)
 
-  val house力士: IHouse<*> = HouseDoctorImpl(力士)
+  private val house力士: IHouse<*> = HouseDoctorImpl(力士)
 
-  val house青龍: IHouse<*> = HouseDoctorImpl(青龍)
+  private val house青龍: IHouse<*> = HouseDoctorImpl(青龍)
 
-  val house小耗: IHouse<*> = HouseDoctorImpl(StarDoctor.小耗)
+  private val house小耗: IHouse<*> = HouseDoctorImpl(StarDoctor.小耗)
 
-  val house將軍: IHouse<*> = HouseDoctorImpl(將軍)
+  private val house將軍: IHouse<*> = HouseDoctorImpl(將軍)
 
-  val house奏書: IHouse<*> = HouseDoctorImpl(奏書)
+  private val house奏書: IHouse<*> = HouseDoctorImpl(奏書)
 
-  val house飛廉: IHouse<*> = HouseDoctorImpl(飛廉)
+  private val house飛廉: IHouse<*> = HouseDoctorImpl(飛廉)
 
-  val house喜神: IHouse<*> = HouseDoctorImpl(喜神)
+  private val house喜神: IHouse<*> = HouseDoctorImpl(喜神)
 
-  val house病符: IHouse<*> = HouseDoctorImpl(StarDoctor.病符)
+  private val house病符: IHouse<*> = HouseDoctorImpl(StarDoctor.病符)
 
-  val house大耗: IHouse<*> = HouseDoctorImpl(大耗)
+  private val house大耗: IHouse<*> = HouseDoctorImpl(大耗)
 
-  val house伏兵: IHouse<*> = HouseDoctorImpl(伏兵)
+  private val house伏兵: IHouse<*> = HouseDoctorImpl(伏兵)
 
-  val house官府: IHouse<*> = HouseDoctorImpl(官府)
+  private val house官府: IHouse<*> = HouseDoctorImpl(官府)
 
   // =======↑↑↑======= 以上 博士12神煞 =======↑↑↑=======
 
   // =======↓↓↓======= 以下 長生12神煞 =======↓↓↓=======
-  val house長生: IHouse<*> = HouseStarLongevityImpl(長生)
+  private val house長生: IHouse<*> = HouseStarLongevityImpl(長生)
 
-  val house沐浴: IHouse<*> = HouseStarLongevityImpl(沐浴)
+  private val house沐浴: IHouse<*> = HouseStarLongevityImpl(沐浴)
 
-  val house冠帶: IHouse<*> = HouseStarLongevityImpl(冠帶)
+  private val house冠帶: IHouse<*> = HouseStarLongevityImpl(冠帶)
 
-  val house臨官: IHouse<*> = HouseStarLongevityImpl(臨官)
+  private val house臨官: IHouse<*> = HouseStarLongevityImpl(臨官)
 
-  val house帝旺: IHouse<*> = HouseStarLongevityImpl(帝旺)
+  private val house帝旺: IHouse<*> = HouseStarLongevityImpl(帝旺)
 
-  val house衰: IHouse<*> = HouseStarLongevityImpl(衰)
+  private val house衰: IHouse<*> = HouseStarLongevityImpl(衰)
 
-  val house病: IHouse<*> = HouseStarLongevityImpl(病)
+  private val house病: IHouse<*> = HouseStarLongevityImpl(病)
 
-  val house死: IHouse<*> = HouseStarLongevityImpl(死)
+  private val house死: IHouse<*> = HouseStarLongevityImpl(死)
 
-  val house墓: IHouse<*> = HouseStarLongevityImpl(墓)
+  private val house墓: IHouse<*> = HouseStarLongevityImpl(墓)
 
-  val house絕: IHouse<*> = HouseStarLongevityImpl(絕)
+  private val house絕: IHouse<*> = HouseStarLongevityImpl(絕)
 
-  val house胎: IHouse<*> = HouseStarLongevityImpl(胎)
+  private val house胎: IHouse<*> = HouseStarLongevityImpl(胎)
 
-  val house養: IHouse<*> = HouseStarLongevityImpl(養)
+  private val house養: IHouse<*> = HouseStarLongevityImpl(養)
   // =======↑↑↑======= 以上 長生12神煞 =======↑↑↑=======
 
 
   // =======↓↓↓======= 以下 將前12星 =======↓↓↓=======
-  val house將前_將星: IHouse<*> = HouseGeneralFrontImpl(將星)
+  private val house將前_將星: IHouse<*> = HouseGeneralFrontImpl(將星)
 
-  val house將前_攀鞍: IHouse<*> = HouseGeneralFrontImpl(攀鞍)
+  private val house將前_攀鞍: IHouse<*> = HouseGeneralFrontImpl(攀鞍)
 
-  val house將前_歲馹: IHouse<*> = HouseGeneralFrontImpl(歲馹)
+  private val house將前_歲馹: IHouse<*> = HouseGeneralFrontImpl(歲馹)
 
-  val house將前_息神: IHouse<*> = HouseGeneralFrontImpl(息神)
+  private val house將前_息神: IHouse<*> = HouseGeneralFrontImpl(息神)
 
-  val house將前_華蓋: IHouse<*> = HouseGeneralFrontImpl(StarGeneralFront.華蓋)
+  private val house將前_華蓋: IHouse<*> = HouseGeneralFrontImpl(StarGeneralFront.華蓋)
 
-  val house將前_劫煞: IHouse<*> = HouseGeneralFrontImpl(劫煞)
+  private val house將前_劫煞: IHouse<*> = HouseGeneralFrontImpl(劫煞)
 
-  val house將前_災煞: IHouse<*> = HouseGeneralFrontImpl(災煞)
+  private val house將前_災煞: IHouse<*> = HouseGeneralFrontImpl(災煞)
 
-  val house將前_天煞: IHouse<*> = HouseGeneralFrontImpl(天煞)
+  private val house將前_天煞: IHouse<*> = HouseGeneralFrontImpl(天煞)
 
-  val house將前_指背: IHouse<*> = HouseGeneralFrontImpl(指背)
+  private val house將前_指背: IHouse<*> = HouseGeneralFrontImpl(指背)
 
-  val house將前_咸池: IHouse<*> = HouseGeneralFrontImpl(StarGeneralFront.咸池)
+  private val house將前_咸池: IHouse<*> = HouseGeneralFrontImpl(StarGeneralFront.咸池)
 
-  val house將前_月煞: IHouse<*> = HouseGeneralFrontImpl(月煞)
+  private val house將前_月煞: IHouse<*> = HouseGeneralFrontImpl(月煞)
 
-  val house將前_亡神: IHouse<*> = HouseGeneralFrontImpl(亡神)
+  private val house將前_亡神: IHouse<*> = HouseGeneralFrontImpl(亡神)
 
   // =======↑↑↑======= 以上 將前12星 =======↑↑↑=======
 
 
   // =======↓↓↓======= 以下 歲前12星 =======↓↓↓=======
-  val house歲前_歲建: IHouse<*> = HouseStarYearFrontImpl(歲建)
+  private val house歲前_歲建: IHouse<*> = HouseStarYearFrontImpl(歲建)
 
-  val house歲前_晦氣: IHouse<*> = HouseStarYearFrontImpl(晦氣)
+  private val house歲前_晦氣: IHouse<*> = HouseStarYearFrontImpl(晦氣)
 
-  val house歲前_喪門: IHouse<*> = HouseStarYearFrontImpl(喪門)
+  private val house歲前_喪門: IHouse<*> = HouseStarYearFrontImpl(喪門)
 
-  val house歲前_貫索: IHouse<*> = HouseStarYearFrontImpl(貫索)
+  private val house歲前_貫索: IHouse<*> = HouseStarYearFrontImpl(貫索)
 
-  val house歲前_官符: IHouse<*> = HouseStarYearFrontImpl(官符)
+  private val house歲前_官符: IHouse<*> = HouseStarYearFrontImpl(官符)
 
-  val house歲前_小耗: IHouse<*> = HouseStarYearFrontImpl(StarYearFront.小耗)
+  private val house歲前_小耗: IHouse<*> = HouseStarYearFrontImpl(StarYearFront.小耗)
 
-  val house歲前_歲破: IHouse<*> = HouseStarYearFrontImpl(歲破)
+  private val house歲前_歲破: IHouse<*> = HouseStarYearFrontImpl(歲破)
 
-  val house歲前_龍德: IHouse<*> = HouseStarYearFrontImpl(龍德)
+  private val house歲前_龍德: IHouse<*> = HouseStarYearFrontImpl(龍德)
 
-  val house歲前_白虎: IHouse<*> = HouseStarYearFrontImpl(白虎)
+  private val house歲前_白虎: IHouse<*> = HouseStarYearFrontImpl(白虎)
 
-  val house歲前_天德: IHouse<*> = HouseStarYearFrontImpl(StarYearFront.天德)
+  private val house歲前_天德: IHouse<*> = HouseStarYearFrontImpl(StarYearFront.天德)
 
-  val house歲前_吊客: IHouse<*> = HouseStarYearFrontImpl(吊客)
+  private val house歲前_吊客: IHouse<*> = HouseStarYearFrontImpl(吊客)
 
-  val house歲前_病符: IHouse<*> = HouseStarYearFrontImpl(StarYearFront.病符)
+  private val house歲前_病符: IHouse<*> = HouseStarYearFrontImpl(StarYearFront.病符)
 
   // =======↑↑↑======= 以上 歲前12星 =======↑↑↑=======
 
 
-  val iHouseSet: Set<IHouse<*>> = setOf(
+  private val iHouseSet: Set<IHouse<*>> = setOf(
     // 14主星
     house紫微, house天機, house太陽, house武曲, house天同, house廉貞, house天府, house太陰, house貪狼, house巨門, house天相, house天梁, house七殺, house破軍
 
@@ -686,7 +686,7 @@ object HouseFunctions {
 
     // 歲前12星
     ,house歲前_歲建, house歲前_晦氣, house歲前_喪門, house歲前_貫索, house歲前_官符, house歲前_小耗, house歲前_歲破, house歲前_龍德, house歲前_白虎, house歲前_天德, house歲前_吊客, house歲前_病符
-  )
+                                               )
 
   val map : Map<ZStar , IHouse<*>> = iHouseSet.map {
     Pair(it.star,it)

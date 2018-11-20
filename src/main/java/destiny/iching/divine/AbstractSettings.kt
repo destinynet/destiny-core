@@ -30,7 +30,7 @@ abstract class AbstractSettings : ISettingsOfStemBranch, Serializable {
       地支 = symbolBranchMap[hexagram.upperSymbol]!![lineIndex-1]
     } //上卦天干
 
-    return StemBranch.get(天干, 地支)
+    return StemBranch[天干, 地支]
   }
 
 }

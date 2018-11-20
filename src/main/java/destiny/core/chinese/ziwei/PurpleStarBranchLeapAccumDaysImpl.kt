@@ -177,7 +177,7 @@ class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch, Serializable {
         4 -> gold4(newDays)
         5 -> earth5(newDays)
         6 -> fire6(newDays)
-        else -> throw AssertionError("Error state : " + state)
+        else -> throw AssertionError("Error state : $state")
       }
     } // 閏月
   }
@@ -187,7 +187,7 @@ class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch, Serializable {
     if (newDays == 31)
       return 辰
     val branchIndex = (newDays - 32) / 2 % 12 + 5
-    return Branch.get(branchIndex)
+    return Branch[branchIndex]
   }
 
   /** 木三局  */

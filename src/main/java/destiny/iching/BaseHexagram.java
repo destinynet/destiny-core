@@ -88,28 +88,6 @@ public class BaseHexagram implements IHexagram, Serializable {
       return hexagram.equals(other.hexagram);
   }
 
-  /** 從 "010101" 取得一個卦 */
-  @NotNull
-  public static IHexagram getFromBinaryString(@Nullable String code)
-  {
-    if (code == null || code.length() < 6)
-      return Hexagram.乾;
-    
-    boolean[] bools = new boolean[6];
-    try
-    {
-      for(int i=0 ; i<6 ; i++)
-      {
-        char c = code.toCharArray()[i];
-        bools[i] = (c != '0');
-      }
-      return Hexagram.Companion.getHexagram(bools);
-    }
-    catch(Exception e)
-    {
-      return Hexagram.乾;
-    }
-  }
 
   @NotNull
   @Override

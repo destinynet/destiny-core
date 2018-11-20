@@ -409,14 +409,14 @@ class TimeTools : Serializable {
       val zoneSecondOffset = Math.abs(secondsOffset)
       val longitudeSecondOffset = absLng * 4.0 * 60.0 // 經度與GMT的時差 (秒) , 一分鐘四度
 
-      if (location.eastWest === EastWest.EAST) {
+      return if (location.eastWest === EastWest.EAST) {
         val seconds = longitudeSecondOffset - zoneSecondOffset
         val (first, second) = splitSecond(seconds)
-        return lmt.plus(first.toLong(), ChronoUnit.SECONDS).plus(second.toLong(), ChronoUnit.NANOS)
+        lmt.plus(first.toLong(), ChronoUnit.SECONDS).plus(second.toLong(), ChronoUnit.NANOS)
       } else {
         val seconds = zoneSecondOffset - longitudeSecondOffset
         val (first, second) = splitSecond(seconds)
-        return lmt.plus(first.toLong(), ChronoUnit.SECONDS).plus(second.toLong(), ChronoUnit.NANOS)
+        lmt.plus(first.toLong(), ChronoUnit.SECONDS).plus(second.toLong(), ChronoUnit.NANOS)
       }
     }
   }

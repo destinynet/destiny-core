@@ -33,23 +33,23 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     val values = arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬)
 
     /** 文昌 : 時支 -> 地支  */
-    val fun文昌 = { hour: Branch -> Branch.get(10 - hour.index) }
+    val fun文昌 = { hour: Branch -> Branch[10 - hour.index] }
 
     /** 文曲 : 時支 -> 地支  */
-    val fun文曲 = { hour: Branch -> Branch.get(hour.index + 4) }
+    val fun文曲 = { hour: Branch -> Branch[hour.index + 4] }
 
     /** 左輔 : 月數 -> 地支  */
-    val fun左輔_月數 = { finalMonthNum: Int -> Branch.get(finalMonthNum + 3) }
+    val fun左輔_月數 = { finalMonthNum: Int -> Branch[finalMonthNum + 3] }
 
     /** 左輔 : 月支 -> 地支  */
-    val fun左輔_月支 = { month: Branch -> Branch.get(month.index + 2) }
+    val fun左輔_月支 = { month: Branch -> Branch[month.index + 2] }
 
 
     /** 右弼 : 月數 -> 地支  */
-    val fun右弼_月數 = { finalMonthNum: Int -> Branch.get(11 - finalMonthNum) }
+    val fun右弼_月數 = { finalMonthNum: Int -> Branch[11 - finalMonthNum] }
 
     /** 右弼 : 月支 -> 地支  */
-    val fun右弼_月支 = { month: Branch -> Branch.get(12 - month.index) }
+    val fun右弼_月支 = { month: Branch -> Branch[12 - month.index] }
 
 
     /**

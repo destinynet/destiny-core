@@ -7,8 +7,8 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
-import destiny.core.chinese.StemBranch
 import destiny.core.chinese.IYinYang
+import destiny.core.chinese.StemBranch
 
 /**
  * 長生 12 神煞
@@ -42,7 +42,7 @@ class HouseStarLongevityImpl(star: StarLongevity) : HouseAbstractImpl<Triple<Fiv
     val mainHouse = predefinedMainHouse ?: Ziwei.getMainHouseBranch(finalMonthNumForMonthStars, hour)
 
     // 左下角，寅宮 的 干支
-    val stemBranchOf寅 = StemBranch.get(stemOf寅, Branch.寅)
+    val stemBranchOf寅 = StemBranch[stemOf寅, Branch.寅]
     val steps = mainHouse.getAheadOf(Branch.寅)
     val 命宮 = stemBranchOf寅.next(steps)
 

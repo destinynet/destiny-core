@@ -59,14 +59,14 @@ class HoroscopeAspectData(p1: Point, p2: Point,
     return result
   }
 
-  override fun equals(obj: Any?): Boolean {
-    if (this === obj)
+  override fun equals(other: Any?): Boolean {
+    if (this === other)
       return true
-    if (obj == null)
+    if (other == null)
       return false
-    if (javaClass != obj.javaClass)
+    if (javaClass != other.javaClass)
       return false
-    val other = obj as HoroscopeAspectData?
+    val other = other as HoroscopeAspectData?
     if (aspect == null) {
       if (other!!.aspect != null)
         return false
@@ -80,9 +80,9 @@ class HoroscopeAspectData(p1: Point, p2: Point,
     return true
   }
 
-  override fun compareTo(o: HoroscopeAspectData): Int {
+  override fun compareTo(other: HoroscopeAspectData): Int {
     val it1 = twoPoints.iterator()
-    val it2 = o.twoPoints.iterator()
+    val it2 = other.twoPoints.iterator()
     val thisP0 = it1.next()
     val thisP1 = it1.next()
     val thatP0 = it2.next()

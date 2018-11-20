@@ -20,10 +20,10 @@ import java.util.regex.Pattern;
 public class Hashids {
   private static final String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-  private String salt = "";
-  private String alphabet = "";
+  private String salt;
+  private String alphabet;
   private String seps = "cfhistuCFHISTU";
-  private int minHashLength = 0;
+  private int minHashLength;
   private String guards;
 
   public Hashids() {
@@ -49,7 +49,7 @@ public class Hashids {
     StringBuilder uniqueAlphabet = new StringBuilder();
     for(int i = 0; i < this.alphabet.length(); i++){
       if(!uniqueAlphabet.toString().contains("" + this.alphabet.charAt(i))){
-        uniqueAlphabet.append("").append(this.alphabet.charAt(i));
+        uniqueAlphabet.append(this.alphabet.charAt(i));
       }
     }
 
@@ -215,14 +215,14 @@ public class Hashids {
    * @return decryped numbers
    */
   private String decodeHex(String hash){
-      String result = "";
+      StringBuilder result = new StringBuilder();
       long[] numbers = this.decode(hash);
 
 	  for (long number : numbers) {
-		  result += Long.toHexString(number).substring(1);
+		  result.append(Long.toHexString(number).substring(1));
 	  }
 
-      return result;
+      return result.toString();
   }
 
   private String _encode(long... numbers){
@@ -235,7 +235,8 @@ public class Hashids {
     //char lottery = ret;
     long num;
     int sepsIndex, guardIndex;
-    String buffer, ret_str = ret + "";
+    String buffer;
+    StringBuilder ret_str = new StringBuilder(ret + "");
     char guard;
 
     for(int i = 0; i < numbers.length; i++){
@@ -245,41 +246,41 @@ public class Hashids {
       alphabet = this.consistentShuffle(alphabet, buffer.substring(0, alphabet.length()));
       String last = this.hash(num, alphabet);
 
-      ret_str += last;
+      ret_str.append(last);
 
       if(i + 1 < numbers.length){
         num %= ((int)last.toCharArray()[0] + i);
         sepsIndex = (int)(num % this.seps.length());
-        ret_str += this.seps.toCharArray()[sepsIndex];
+        ret_str.append(this.seps.toCharArray()[sepsIndex]);
       }
     }
 
     if(ret_str.length() < this.minHashLength){
-      guardIndex = (numberHashInt + (int)(ret_str.toCharArray()[0])) % this.guards.length();
+      guardIndex = (numberHashInt + (int)(ret_str.toString().toCharArray()[0])) % this.guards.length();
       guard = this.guards.toCharArray()[guardIndex];
 
-      ret_str = guard + ret_str;
+      ret_str.insert(0, guard);
 
       if(ret_str.length() < this.minHashLength){
-        guardIndex = (numberHashInt + (int)(ret_str.toCharArray()[2])) % this.guards.length();
+        guardIndex = (numberHashInt + (int)(ret_str.toString().toCharArray()[2])) % this.guards.length();
         guard = this.guards.toCharArray()[guardIndex];
 
-        ret_str += guard;
+        ret_str.append(guard);
       }
     }
 
     int halfLen = alphabet.length() / 2;
     while(ret_str.length() < this.minHashLength){
       alphabet = this.consistentShuffle(alphabet, alphabet);
-      ret_str = alphabet.substring(halfLen) + ret_str + alphabet.substring(0, halfLen);
+      ret_str = new StringBuilder(alphabet.substring(halfLen) + ret_str + alphabet.substring(0, halfLen));
       int excess = ret_str.length() - this.minHashLength;
       if(excess > 0){
         int start_pos = excess / 2;
-        ret_str = ret_str.substring(start_pos, start_pos + this.minHashLength);
+        ret_str = new StringBuilder(ret_str.substring(start_pos, start_pos + this.minHashLength));
       }
     }
 
-    return ret_str;
+    return ret_str.toString();
   }
 
   private long[] _decode(String hash, String alphabet){
@@ -346,16 +347,16 @@ public class Hashids {
   }
 
   private String hash(long input, String alphabet){
-    String hash = "";
+    StringBuilder hash = new StringBuilder();
     int alphabetLen = alphabet.length();
     char[] arr = alphabet.toCharArray();
 
     do {
-      hash = arr[(int)(input % alphabetLen)] + hash;
+      hash.insert(0, arr[(int) (input % alphabetLen)]);
       input /= alphabetLen;
     } while(input > 0);
 
-    return hash;
+    return hash.toString();
   }
 
   private Long unhash(String input, String alphabet){

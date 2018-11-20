@@ -5,9 +5,7 @@ package destiny.core.chinese
 
 import destiny.core.Descriptive
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.chinese.Branch.*
-
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -25,7 +23,7 @@ interface IMonthMaster : Descriptive {
 
     /** 取得「月將」的中文稱謂
      *
-     * @see [十二月將](http://zh.wikipedia.org/wiki/十二月將)
+     * @link 十二月將 http://zh.wikipedia.org/wiki/十二月將
      *
      */
     fun getName(branch: Branch): String {

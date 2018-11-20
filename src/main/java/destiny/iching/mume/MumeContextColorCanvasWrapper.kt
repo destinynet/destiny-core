@@ -117,8 +117,8 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexagramNameF
   }
 
   private fun getColorCanvas(s: Symbol): ColorCanvas {
-    val color: String //卦的顏色
-    color = when (s.fiveElement) {
+    //卦的顏色
+    val color: String = when (s.fiveElement) {
       FiveElement.木 -> "GREEN"
       FiveElement.火 -> "RED"
       FiveElement.土 -> "CC6633"

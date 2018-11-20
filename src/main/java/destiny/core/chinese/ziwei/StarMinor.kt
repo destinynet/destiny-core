@@ -120,10 +120,10 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
     }
 
     /** 天刑 : 月數 -> 地支  */
-    val fun天刑_月數 = { month: Int -> Branch.get(month + 8) }
+    val fun天刑_月數 = { month: Int -> Branch[month + 8] }
 
     /** 天刑 : 月支 -> 地支  */
-    val fun天刑_月支 = { month: Branch -> Branch.get(month.index + 7) }
+    val fun天刑_月支 = { month: Branch -> Branch[month.index + 7] }
 
     /** 天刑(整合版) : (月數 或 月支) -> 地支  */
     //  public final static Function3<ZContext.MonthType , Integer , Branch , Branch> fun天刑 = (type , monthNum , monthBranch) -> {
@@ -136,7 +136,7 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
 
 
     /** 天姚 : 月數 -> 地支  */
-    val fun天姚_月數 = { monthNum: Int -> Branch.get(monthNum) }
+    val fun天姚_月數 = { monthNum: Int -> Branch[monthNum] }
 
     /** 天姚 : 月支 -> 地支  */
     val fun天姚_月支 = { month: Branch -> month.next(11) }
@@ -295,31 +295,31 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
 
 
     /** 台輔 : 時支 -> 地支  */
-    val fun台輔 = { hour: Branch -> Branch.get(hour.index + 6) }
+    val fun台輔 = { hour: Branch -> Branch[hour.index + 6] }
 
     /** 封誥 : 時支 -> 地支  */
-    val fun封誥 = { hour: Branch -> Branch.get(hour.index + 2) }
+    val fun封誥 = { hour: Branch -> Branch[hour.index + 2] }
 
     /** 天空 : 年支 -> 地支. 注意其與 [StarUnlucky.fun地空] 是不同的星/演算法  */
-    val fun天空 = { year: Branch -> Branch.get(year.index + 1) }
+    val fun天空 = { year: Branch -> Branch[year.index + 1] }
 
     /** 天哭 : 年支 -> 地支  */
-    val fun天哭 = { year: Branch -> Branch.get(6 - year.index) }
+    val fun天哭 = { year: Branch -> Branch[6 - year.index] }
 
     /** 天虛 : 年支 -> 地支  */
-    val fun天虛 = { year: Branch -> Branch.get(year.index + 6) }
+    val fun天虛 = { year: Branch -> Branch[year.index + 6] }
 
     /** 龍池 : 年支 -> 地支  */
-    val fun龍池 = { year: Branch -> Branch.get(year.index + 4) }
+    val fun龍池 = { year: Branch -> Branch[year.index + 4] }
 
     /** 鳳閣 : 年支 -> 地支  */
-    val fun鳳閣 = { year: Branch -> Branch.get(10 - year.index) }
+    val fun鳳閣 = { year: Branch -> Branch[10 - year.index] }
 
     /** 紅鸞 : 年支 -> 地支  */
-    val fun紅鸞 = { year: Branch -> Branch.get(3 - year.index) }
+    val fun紅鸞 = { year: Branch -> Branch[3 - year.index] }
 
     /** 天喜 : 年支 -> 地支  */
-    val fun天喜 = { year: Branch -> Branch.get(9 - year.index) }
+    val fun天喜 = { year: Branch -> Branch[9 - year.index] }
 
     /** 孤辰 : 年支 -> 地支  */
     val fun孤辰 = { year: Branch ->
@@ -394,14 +394,14 @@ sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
      * 出生年 子..丑..寅..卯..辰..巳..午..未..申..酉..戌..亥
      * 天德宫 酉..戌..亥..子..丑..寅..卯..辰..巳..午..未..申
      */
-    val fun天德 = { year: Branch -> Branch.get(year.index + 9) }
+    val fun天德 = { year: Branch -> Branch[year.index + 9] }
 
     /** 月德 : 年支 -> 地支
      * 月德星從子上起，順至流年太歲上是也。
      * 出生年 子..丑..寅..卯..辰..巳..午..未..申..酉..戌..亥
      * 月德宫 巳..午..未..申..酉..戌..亥..子..丑..寅..卯..辰
      */
-    val fun月德 = { year: Branch -> Branch.get(year.index + 5) }
+    val fun月德 = { year: Branch -> Branch[year.index + 5] }
 
     /**
      * 天才 (年支 , 月數 , 時支) -> 地支

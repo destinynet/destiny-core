@@ -36,7 +36,7 @@ object LocationTools {
   /**
    * 2012/03 格式：
    * 012345678901234567890123456789012345678901234567890
-   * +DDDMMSSSSS+DDMMSSSSS [altitudeMeter]~ [tzid]~ [minuteOffset]
+   * +DDDMMSSSSS+DDMMSSSSS (altitudeMeter)~ (tzid)~ (minuteOffset)
    * 範例 :
    * +1213012.34+25 312.34 12.3456 Asia/Taipei 480
    * 尾方的 minuteOffset 為 optional , 如果有的話，會 override Asia/Taipei 的 minuteOffset

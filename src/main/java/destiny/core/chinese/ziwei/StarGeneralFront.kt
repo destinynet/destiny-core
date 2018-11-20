@@ -50,7 +50,7 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
         木 -> 卯
         水 -> 子
         金 -> 酉
-        else -> throw AssertionError("Error : " + 五行)
+        else -> throw AssertionError("Error : $五行")
       }
     }
 

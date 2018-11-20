@@ -27,10 +27,10 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
   }
 
   override fun getTitle(locale: Locale): String {
-    try {
-      return ResourceBundle.getBundle(HouseSeqAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
+    return try {
+      ResourceBundle.getBundle(HouseSeqAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
-      return javaClass.simpleName
+      javaClass.simpleName
     }
 
   }

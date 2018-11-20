@@ -22,11 +22,11 @@ enum class SimpleBranch(override val branch: Branch) : IBranch<SimpleBranch>, IF
 
 
   override val fiveElement: FiveElement
-    get() = Companion.getFiveElement(branch)
+    get() = getFiveElement(branch)
 
 
   override val booleanValue: Boolean
-    get() = Companion.getBooleanValue(this.branch)
+    get() = getBooleanValue(this.branch)
 
 
   override fun getAheadOf(other: SimpleBranch): Int {

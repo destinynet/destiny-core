@@ -30,17 +30,16 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
    */
   override fun getConvergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
     val dur = Duration.between(natalTime, nowTime).abs()
-    val resultTime: ChronoLocalDateTime<*>
+
 
     val secsDouble = dur.seconds / numerator * denominator
     val secs = secsDouble.toLong()
     val nanos = ((secsDouble - secs) * 1000000000).toLong()
 
-    if (isConverse)
-      resultTime = natalTime.minus(secs, ChronoUnit.SECONDS).minus(nanos, ChronoUnit.NANOS)
+    return if (isConverse)
+      natalTime.minus(secs, ChronoUnit.SECONDS).minus(nanos, ChronoUnit.NANOS)
     else
-      resultTime = natalTime.plus(secs, ChronoUnit.SECONDS).plus(nanos, ChronoUnit.NANOS)
-    return resultTime
+      natalTime.plus(secs, ChronoUnit.SECONDS).plus(nanos, ChronoUnit.NANOS)
   }
 
 
@@ -57,13 +56,11 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
     val secs = secDouble.toLong()
     val nanos = ((secDouble - secs) * 1000000000).toLong()
 
-    val resultTime: ChronoLocalDateTime<*>
-    if (isConverse) {
-      resultTime = natalTime.minus(secs, ChronoUnit.SECONDS).minus(nanos, ChronoUnit.NANOS)
+    return if (isConverse) {
+      natalTime.minus(secs, ChronoUnit.SECONDS).minus(nanos, ChronoUnit.NANOS)
     } else {
-      resultTime = natalTime.plus(secs, ChronoUnit.SECONDS).plus(nanos, ChronoUnit.NANOS)
+      natalTime.plus(secs, ChronoUnit.SECONDS).plus(nanos, ChronoUnit.NANOS)
     }
-    return resultTime
   }
 
 

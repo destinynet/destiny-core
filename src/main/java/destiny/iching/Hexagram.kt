@@ -168,5 +168,20 @@ enum class Hexagram constructor(
       val dst = lines.map { i -> i == 6 || i == 7 }.toList()
       return Pair<IHexagram, IHexagram>(getHexagram(src), getHexagram(dst))
     }
+
+    /** 從 "010101" 取得一個卦 */
+    fun getFromBinaryString(code: String) : IHexagram {
+      val array = BooleanArray(6)
+      return try {
+        for (i in 0..5) {
+          val c = code.toCharArray()[i]
+          array[i] = c != '0'
+        }
+        Hexagram.getHexagram(array)
+      } catch (e: Exception) {
+        Hexagram.乾
+      }
+
+    }
   }
 }

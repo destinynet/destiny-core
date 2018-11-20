@@ -47,7 +47,7 @@ class LatDecoratorTaiwan : Decorator<Double> {
 
       val secString = "%02.2f".format(lat.sec).let {
         // 可能是 "0.00"
-        if (it.length == 4) "0" + it
+        if (it.length == 4) "0$it"
         else it
       }
       append(secString)
@@ -72,7 +72,7 @@ class LatDecoratorChina : Decorator<Double> {
 
       val secString = "%02.2f".format(lat.sec).let {
         // 可能是 "0.00"
-        if (it.length == 4) "0" + it
+        if (it.length == 4) "0$it"
         else it
       }
       append(secString)
@@ -97,7 +97,7 @@ class LatDecoratorEnglish : Decorator<Double> {
       append("%02d".format(lat.min)).append("'")
       val secString = "%02.3f".format(lat.sec).let {
         // 可能是 "0.000"
-        if (it.length == 5) "0" + it
+        if (it.length == 5) "0$it"
         else it
       }
       append(secString).append("\"")

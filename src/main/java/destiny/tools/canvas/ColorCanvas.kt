@@ -163,7 +163,7 @@ open class ColorCanvas : Serializable {
   constructor(height: Int, width: Int) {
     this.height = height
     this.width = width
-    content = Array(width * height, { ColorByte(' ') })
+    content = Array(width * height) { ColorByte(' ') }
   }
 
 
@@ -178,7 +178,7 @@ open class ColorCanvas : Serializable {
     this.height = height
     this.width = width
 
-    content = Array(width * height, { ColorByte(bgChar) })
+    content = Array(width * height) { ColorByte(bgChar) }
   } //constructor
 
 
@@ -205,11 +205,11 @@ open class ColorCanvas : Serializable {
                           width: Int): Array<ColorByte> {
     val bytes: ByteArray = fillingStringToBytes(fill)
 
-    return Array(width * height, { it ->
+    return Array(width * height) { it ->
       val h = it / width
       val w = it % width
       ColorByte(bytes[w % bytes.size], foreColor, backColor, null, null, null)
-    })
+    }
   }
 
   private fun fillingStringToBytes(fill: String): ByteArray {

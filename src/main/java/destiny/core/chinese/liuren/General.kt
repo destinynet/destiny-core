@@ -11,7 +11,7 @@ import destiny.core.chinese.StemBranch
 /**
  * 十二天將
  */
-enum class General(val shortName: Char, val isPositive: Boolean, val fiveElement: FiveElement) {
+enum class General(val shortName: Char, val positive: Boolean, val fiveElement: FiveElement) {
 
   貴人('貴',  true, 土),
   螣蛇('螣', false, 火),

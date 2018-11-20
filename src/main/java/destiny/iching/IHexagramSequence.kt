@@ -5,6 +5,8 @@
  */
 package destiny.iching
 
+import destiny.iching.divine.HexagramDivinationComparator
+
 /**
  * 取得卦的排列順序 , 1 <= int <= 64
  * 只有 [HexagramDefaultComparator] (周易卦序) 以及

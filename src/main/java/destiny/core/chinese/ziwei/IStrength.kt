@@ -39,7 +39,7 @@ interface IStrength : Descriptive {
           5 -> "平"
           6 -> "闲"
           7 -> "陷"
-          else -> throw AssertionError("Error : " + value)
+          else -> throw AssertionError("Error : $value")
         }
       }
       return when (value) {
@@ -50,7 +50,7 @@ interface IStrength : Descriptive {
         5 -> "平"
         6 -> "閒"
         7 -> "陷"
-        else -> throw AssertionError("Error : " + value)
+        else -> throw AssertionError("Error : $value")
       }
     }
   }

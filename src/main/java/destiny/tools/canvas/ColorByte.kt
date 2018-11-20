@@ -72,7 +72,7 @@ internal class ColorByte(val byte: Byte, val font: Font?, val url: String?, val 
       if (isRGB) {
         finalColor = color.toUpperCase()
         if (start == 0)
-          finalColor = "#" + finalColor
+          finalColor = "#$finalColor"
       } else
         finalColor = color
     }

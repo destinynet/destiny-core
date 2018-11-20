@@ -6,7 +6,6 @@
 package destiny.astrology
 
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 

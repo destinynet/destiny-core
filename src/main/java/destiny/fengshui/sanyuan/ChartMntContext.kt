@@ -35,9 +35,9 @@ object ChartMntContext {
 
   private fun getGridMap(view: Symbol): Map<TriGrid, Symbol?> {
 
-    val grids: List<TriGrid> = generateSequence(TriGrid.B, { it: TriGrid -> it.clockWise()!! }).take(8).toList()
+    val grids: List<TriGrid> = generateSequence(TriGrid.B) { it: TriGrid -> it.clockWise()!! }.take(8).toList()
     val chartBlocks: List<Symbol?> =
-      generateSequence(view, { it: Symbol -> SymbolAcquired.getClockwiseSymbol(it) }).take(8)
+      generateSequence(view) { it: Symbol -> SymbolAcquired.getClockwiseSymbol(it) }.take(8)
         .toList()
 
     return grids.zip(chartBlocks).plusElement(Pair(TriGrid.C, null)).toMap()

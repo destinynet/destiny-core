@@ -114,7 +114,7 @@ interface Ziwei {
 
     fun getStemBranchOf(branch: Branch, stemOf寅: Stem): StemBranch {
       // 左下角，寅宮 的 干支
-      val stemBranchOf寅 = StemBranch.get(stemOf寅, 寅)
+      val stemBranchOf寅 = StemBranch[stemOf寅, 寅]
       val steps = branch.getAheadOf(寅)
       return stemBranchOf寅.next(steps)
     }
