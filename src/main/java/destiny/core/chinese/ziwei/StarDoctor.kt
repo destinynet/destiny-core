@@ -53,18 +53,18 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
     }
 
     // 年干星系
-    val fun博士 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 1)) }
-    val fun力士 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 2)) }
-    val fun青龍 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 3)) }
-    val fun小耗 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 4)) }
-    val fun將軍 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 5)) }
-    val fun奏書 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 6)) }
-    val fun飛廉 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 7)) }
-    val fun喜神 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 8)) }
-    val fun病符 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 9)) }
-    val fun大耗 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 10)) }
-    val fun伏兵 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 11)) }
-    val fun官府 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 12)) }
+    private val fun博士 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 1)) }
+    private val fun力士 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 2)) }
+    private val fun青龍 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 3)) }
+    private val fun小耗 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 4)) }
+    private val fun將軍 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 5)) }
+    private val fun奏書 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 6)) }
+    private val fun飛廉 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 7)) }
+    private val fun喜神 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 8)) }
+    private val fun病符 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 9)) }
+    private val fun大耗 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 10)) }
+    private val fun伏兵 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 11)) }
+    private val fun官府 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 12)) }
 
     val starFuncMap: Map<StarDoctor, Function2<Stem, Gender, Branch>> = mapOf(
       博士 to fun博士,

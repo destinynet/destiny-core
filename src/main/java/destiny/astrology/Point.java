@@ -43,7 +43,7 @@ public abstract class Point implements Serializable , ILocaleString {
 
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ...*/
   @Nullable
-  String abbrKey;
+  private String abbrKey;
 
   public Point(String nameKey, String resource) {
     this.nameKey = nameKey;

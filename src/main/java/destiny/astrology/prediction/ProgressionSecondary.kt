@@ -31,10 +31,10 @@ import destiny.astrology.Constants
  */
 class ProgressionSecondary : AbstractProgression() {
   /** 一年有幾秒  */
-  var yearSeconds = Constants.SIDEREAL_YEAR
+  private var yearSeconds = Constants.SIDEREAL_YEAR
 
   /** 一日有幾秒  */
-  var daySeconds = Constants.SIDEREAL_DAY
+  private var daySeconds = Constants.SIDEREAL_DAY
 
   /** SP (一日一年) , 分子是 一年  */
   override val numerator: Double

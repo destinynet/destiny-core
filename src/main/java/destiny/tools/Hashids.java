@@ -20,10 +20,10 @@ import java.util.regex.Pattern;
 public class Hashids {
   private static final String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-  private String salt;
+  private final String salt;
   private String alphabet;
   private String seps = "cfhistuCFHISTU";
-  private int minHashLength;
+  private final int minHashLength;
   private String guards;
 
   public Hashids() {

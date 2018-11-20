@@ -36,14 +36,19 @@ public class ClassUtils implements Serializable {
    * 判斷是否是 JPA 的 id
    */
   public static boolean isId(@NotNull Class<?> clazz, String propertyName) {
+    boolean value = false;
     for (Field field : clazz.getDeclaredFields()) {
       if (field.getName().equals(propertyName)) {
         for (Annotation annotation : field.getDeclaredAnnotations()) {
-          return idSet.contains(annotation.annotationType().getName());
+          String typeName = annotation.annotationType().getName();
+          if (idSet.contains(typeName)) {
+            value = true;
+            break;
+          }
         }
       }
     }
-    return false;
+    return value;
   }
 
   /**

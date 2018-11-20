@@ -24,7 +24,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
    * 那一顆星，透過 [Dignity.RULER] 接納了 p
    */
   override fun receivingRulerFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { rulerImpl.getPoint(it).takeIf { map.containsKey(it) } }
+    return map[p]?.let { it -> rulerImpl.getPoint(it).takeIf { map.containsKey(it) } }
   }
 
 
