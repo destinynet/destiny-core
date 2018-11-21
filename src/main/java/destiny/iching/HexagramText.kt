@@ -69,7 +69,7 @@ interface IHexagramTextContext {
 
 class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull ,
                           private val hexagramNameShort: IHexagramNameShort,
-                          private val expressionImpl: IExpression ,
+                          private val expressionImpl: IExpression,
                           private val imageImpl: IImage ,
                           private val judgementImpl: IHexagramJudgement) : IHexagramTextContext , Serializable {
   override fun getHexagramText(hexagram: IHexagram, locale: Locale?): IHexagramText {

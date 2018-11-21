@@ -266,7 +266,7 @@ class DivineContext(
     val finalJudgeImpl = judgementImpl ?: this.judgementImpl
 
     val textContext: IHexagramTextContext =
-      HexagramTextContext(nameFullImpl, nameShortImpl, finalExpressionImpl, finalImageImpl, finalJudgeImpl)
+      HexagramTextContext(nameFullImpl, nameShortImpl, finalExpressionImpl , finalImageImpl, finalJudgeImpl)
     val srcText = textContext.getHexagramText(src, locale)
     val dstText = textContext.getHexagramText(dst, locale)
 

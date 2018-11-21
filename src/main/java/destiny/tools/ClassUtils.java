@@ -37,7 +37,7 @@ public class ClassUtils implements Serializable {
    */
   public static boolean isId(@NotNull Class<?> clazz, String propertyName) {
     boolean value = false;
-    for (Field field : clazz.getDeclaredFields()) {
+    for (Field field : clazz.getDeclaredFields())
       if (field.getName().equals(propertyName)) {
         for (Annotation annotation : field.getDeclaredAnnotations()) {
           String typeName = annotation.annotationType().getName();
@@ -47,7 +47,6 @@ public class ClassUtils implements Serializable {
           }
         }
       }
-    }
     return value;
   }
 
