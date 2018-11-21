@@ -4,6 +4,7 @@
  */
 package destiny.iching;
 
+import destiny.core.chinese.IYinYang;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,6 +62,20 @@ public class BaseHexagram implements IHexagram, Serializable {
     return hexagram.getBinaryCode();
   }
 
+
+  @NotNull
+  @Override
+  public IYinYang getLineYinYang(int index) {
+    return hexagram.getLineYinYang(index);
+  }
+
+  @NotNull
+  @Override
+  public List<Boolean> getTargetYinYangs(@NotNull int... lines) {
+    return null;
+  }
+
+
   @Override
   public int hashCode()
   {
@@ -93,7 +108,7 @@ public class BaseHexagram implements IHexagram, Serializable {
   @Override
   public IHexagram getHexagram(@NotNull int... lines)
   {
-    return hexagram.getHexagram(lines);
+    return Hexagram.Companion.getHexagram(hexagram.getTargetYinYangs(lines));
   }
 
   @NotNull
@@ -116,4 +131,6 @@ public class BaseHexagram implements IHexagram, Serializable {
     // TODO
     return null;
   }
+
+
 }

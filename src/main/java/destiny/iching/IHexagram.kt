@@ -4,6 +4,9 @@
  */
 package destiny.iching
 
+import destiny.core.chinese.IYinYang
+import destiny.core.chinese.YinYang
+
 /**
  * 一個最基本的「卦」的資料，只有 取得 各爻陰陽 getLine(int index) / 取得六爻陰陽 getLines()  / 上卦 getUpperSymbol() / 下卦 getLowerSymbol() / 等介面
  */
@@ -45,12 +48,27 @@ interface IHexagram {
     throw RuntimeException("index out of range , 1 <= index <= 6 : $index")
   }
 
+  /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
+  fun getLineYinYang(index : Int) : IYinYang {
+    require(index in 1..6) { "index out of range , 1 <= index <= 6 : $index" }
+
+    return if (getLine(index)) {
+      YinYang.陽
+    } else {
+      YinYang.陰
+    }
+  }
+
 
   /**
-   * 第 line 爻動的話，變卦是什麼
+   * 第 line 爻動的話，變卦的陰陽是什麼
    * @param lines [1~6]
    */
-  fun getHexagram(vararg lines: Int): IHexagram
+  @JvmDefault
+  fun getTargetYinYangs(vararg lines: Int) : List<Boolean> {
+    return yinYangs
+      .mapIndexed { index, b -> if (lines.contains(index + 1)) !b else b }
+  }
 
   /**
    * 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名

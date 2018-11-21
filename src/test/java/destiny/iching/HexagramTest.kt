@@ -4,6 +4,7 @@
  */
 package destiny.iching
 
+import destiny.iching.Hexagram.*
 import org.junit.Assert.*
 import kotlin.test.Test
 
@@ -11,29 +12,29 @@ class HexagramTest {
 
   @Test
   fun testGetLine() {
-    assertTrue(Hexagram.乾.getLine(1))
-    assertTrue(Hexagram.乾.getLine(2))
-    assertTrue(Hexagram.乾.getLine(3))
-    assertTrue(Hexagram.乾.getLine(4))
-    assertTrue(Hexagram.乾.getLine(5))
-    assertTrue(Hexagram.乾.getLine(6))
+    assertTrue(乾.getLine(1))
+    assertTrue(乾.getLine(2))
+    assertTrue(乾.getLine(3))
+    assertTrue(乾.getLine(4))
+    assertTrue(乾.getLine(5))
+    assertTrue(乾.getLine(6))
 
-    assertFalse(Hexagram.坤.getLine(1))
-    assertFalse(Hexagram.坤.getLine(2))
-    assertFalse(Hexagram.坤.getLine(3))
-    assertFalse(Hexagram.坤.getLine(4))
-    assertFalse(Hexagram.坤.getLine(5))
-    assertFalse(Hexagram.坤.getLine(6))
+    assertFalse(坤.getLine(1))
+    assertFalse(坤.getLine(2))
+    assertFalse(坤.getLine(3))
+    assertFalse(坤.getLine(4))
+    assertFalse(坤.getLine(5))
+    assertFalse(坤.getLine(6))
   }
 
   @Test
   fun testBinaryCode() {
-    assertEquals("111111" , Hexagram.乾.binaryCode)
-    assertEquals("000000" , Hexagram.坤.binaryCode)
-    assertEquals("100010" , Hexagram.屯.binaryCode)
-    assertEquals("010001" , Hexagram.蒙.binaryCode)
-    assertEquals("010101" , Hexagram.未濟.binaryCode)
-    assertEquals("101010" , Hexagram.既濟.binaryCode)
+    assertEquals("111111" , 乾.binaryCode)
+    assertEquals("000000" , 坤.binaryCode)
+    assertEquals("100010" , 屯.binaryCode)
+    assertEquals("010001" , 蒙.binaryCode)
+    assertEquals("010101" , 未濟.binaryCode)
+    assertEquals("101010" , 既濟.binaryCode)
   }
 
   @Test
@@ -42,46 +43,47 @@ class HexagramTest {
     var pair: Pair<IHexagram, IHexagram>
     list = listOf(7, 7, 7, 7, 7, 7)
     pair = Hexagram.getHexagrams(list)
-    assertEquals(Hexagram.乾, pair.first)
-    assertEquals(Hexagram.乾, pair.second)
+    assertEquals(乾, pair.first)
+    assertEquals(乾, pair.second)
 
     list = listOf(9, 9, 9, 9, 9, 9)
     pair = Hexagram.getHexagrams(list)
-    assertEquals(Hexagram.乾, pair.first)
-    assertEquals(Hexagram.坤, pair.second)
+    assertEquals(乾, pair.first)
+    assertEquals(坤, pair.second)
 
     list = listOf(9, 9, 9, 6, 6, 6)
     pair = Hexagram.getHexagrams(list)
-    assertEquals(Hexagram.泰, pair.first)
-    assertEquals(Hexagram.否, pair.second)
+    assertEquals(泰, pair.first)
+    assertEquals(否, pair.second)
 
     list = listOf(6, 6, 6, 9, 9, 9)
     pair = Hexagram.getHexagrams(list)
-    assertEquals(Hexagram.否, pair.first)
-    assertEquals(Hexagram.泰, pair.second)
+    assertEquals(否, pair.first)
+    assertEquals(泰, pair.second)
 
     list = listOf(6, 9, 6, 9, 6, 9)
     pair = Hexagram.getHexagrams(list)
-    assertEquals(Hexagram.未濟, pair.first)
-    assertEquals(Hexagram.既濟, pair.second)
+    assertEquals(未濟, pair.first)
+    assertEquals(既濟, pair.second)
 
     list = listOf(9, 6, 9, 6, 9, 6)
     pair = Hexagram.getHexagrams(list)
-    assertEquals(Hexagram.既濟, pair.first)
-    assertEquals(Hexagram.未濟, pair.second)
+    assertEquals(既濟, pair.first)
+    assertEquals(未濟, pair.second)
   }
 
   @Test
   fun testGetHexagramLine() {
-    val src = Hexagram.乾
-    assertSame(Hexagram.姤, src.getHexagram(1))
+    val src = 乾
+    assertSame(姤, Hexagram.getHexagram(src.getTargetYinYangs(1)))
+    //assertSame(Hexagram.姤, src.getHexagram(1))
   }
 
   @Test
   fun testHexagram() {
     val set = mutableSetOf<Hexagram>()
 
-    for (h in Hexagram.values()) {
+    for (h in values()) {
       assertTrue(!set.contains(h))
       set.add(h)
       assertNotNull(h)
@@ -97,42 +99,46 @@ class HexagramTest {
    */
   @Test
   fun testHexagramWithMotivLines() {
-    assertEquals(Hexagram.姤, Hexagram.乾.getHexagram(1))
+    // line = 0 , 不變
+    assertEquals(乾, Hexagram.getHexagram(乾.getTargetYinYangs(0)))
 
-    assertEquals(Hexagram.遯, Hexagram.乾.getHexagram(1, 2))
-    assertEquals(Hexagram.遯, Hexagram.乾.getHexagram(2, 1))
+    assertEquals(姤, Hexagram.getHexagram(乾.getTargetYinYangs(1)))
 
-    assertEquals(Hexagram.否, Hexagram.乾.getHexagram(1, 2, 3))
-    assertEquals(Hexagram.否, Hexagram.乾.getHexagram(3, 2, 1))
-    assertEquals(Hexagram.否, Hexagram.乾.getHexagram(2, 3, 1))
+    assertEquals(遯, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2)))
 
-    assertEquals(Hexagram.觀, Hexagram.乾.getHexagram(1, 2, 3, 4))
-    assertEquals(Hexagram.剝, Hexagram.乾.getHexagram(1, 2, 3, 4, 5))
-    assertEquals(Hexagram.坤, Hexagram.乾.getHexagram(1, 2, 3, 4, 5, 6))
+    assertEquals(遯, Hexagram.getHexagram(乾.getTargetYinYangs(2, 1)))
 
-    assertEquals(Hexagram.復, Hexagram.坤.getHexagram(1))
-    assertEquals(Hexagram.臨, Hexagram.坤.getHexagram(1, 2))
-    assertEquals(Hexagram.泰, Hexagram.坤.getHexagram(1, 2, 3))
-    assertEquals(Hexagram.大壯, Hexagram.坤.getHexagram(1, 2, 3, 4))
-    assertEquals(Hexagram.夬, Hexagram.坤.getHexagram(1, 2, 3, 4, 5))
-    assertEquals(Hexagram.乾, Hexagram.坤.getHexagram(1, 2, 3, 4, 5, 6))
+    assertEquals(否, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3)))
+    assertEquals(否, Hexagram.getHexagram(乾.getTargetYinYangs(3, 2, 1)))
+    assertEquals(否, Hexagram.getHexagram(乾.getTargetYinYangs(2, 3, 1)))
+
+    assertEquals(觀, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3, 4)))
+    assertEquals(剝, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3, 4, 5)))
+    assertEquals(坤, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
+
+    assertEquals(復, Hexagram.getHexagram(坤.getTargetYinYangs(1)))
+    assertEquals(臨, Hexagram.getHexagram(坤.getTargetYinYangs(1, 2)))
+    assertEquals(泰, Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3)))
+    assertEquals(大壯, Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3, 4)))
+    assertEquals(夬,  Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3, 4, 5)))
+    assertEquals(乾,  Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
   }
 
   /** 測試互卦  */
   @Test
   fun testMiddleSpanHexagram() {
-    assertSame(Hexagram.蹇, Hexagram.晉.middleSpanHexagram)
+    assertSame(蹇, 晉.middleSpanHexagram)
   }
 
   /** 測試錯卦  */
   @Test
   fun testInterlacedHexagram() {
-    assertSame(Hexagram.需, Hexagram.晉.interlacedHexagram)
+    assertSame(需, 晉.interlacedHexagram)
   }
 
   /** 測試綜卦  */
   @Test
   fun testReversedHexagram() {
-    assertSame(Hexagram.明夷, Hexagram.晉.reversedHexagram)
+    assertSame(明夷, 晉.reversedHexagram)
   }
 }

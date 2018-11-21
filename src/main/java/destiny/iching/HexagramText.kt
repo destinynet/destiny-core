@@ -3,12 +3,16 @@
  */
 package destiny.iching
 
+import destiny.core.chinese.IYinYang
+import destiny.core.chinese.YinYang
 import destiny.iching.contentProviders.*
 import java.io.Serializable
 import java.util.*
 
 
 data class LineText(
+  /** 陰陽 */
+  val yinYang: IYinYang,
   /** 爻辭 */
   val expression: String,
   /** 象曰 */
@@ -28,8 +32,11 @@ data class HexagramName(
   override val fullName: String) : IHexagramName, Serializable
 
 
+
+
 /** 完整一個卦象的所有文字 */
-interface IHexagramText : IHexagramName {
+interface IHexagramText : IHexagramName , IHexagram  {
+
   /** 卦名 */
   val hexagramName : IHexagramName
   /** 卦辭 */
@@ -47,6 +54,8 @@ interface IHexagramText : IHexagramName {
   fun getLineFromOne(index: Int): LineText {
     return lineTexts[index - 1]
   }
+
+
 }
 
 data class HexagramText(
@@ -60,7 +69,13 @@ data class HexagramText(
   /** 六爻 */
   override val lineTexts: List<LineText>,
   /** 用九、用六 的爻辭、象曰 */
-  override val extraLine: LineText?) : IHexagramText , IHexagramName by hexagramName , Serializable
+  override val extraLine: LineText?) : IHexagramText , IHexagramName by hexagramName , Serializable {
+
+  override val upperSymbol: Symbol
+    get() = Symbol.getSymbol( arrayOf(lineTexts[3].yinYang , lineTexts[4].yinYang , lineTexts[5].yinYang))
+  override val lowerSymbol: Symbol
+    get() = Symbol.getSymbol( arrayOf(lineTexts[0].yinYang , lineTexts[1].yinYang , lineTexts[2].yinYang))
+}
 
 
 interface IHexagramTextContext {
@@ -85,7 +100,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull ,
     val lineTexts: List<LineText> = (1..6).map { lineIndex ->
       val lineExpression = expressionImpl.getLineExpression(hexagram, lineIndex, finalLocale)
       val lineImage = imageImpl.getLineImage(hexagram, lineIndex, finalLocale)
-      LineText(lineExpression, lineImage)
+      LineText( hexagram.getLineYinYang(lineIndex) , lineExpression, lineImage)
     }.toList()
 
     val seq: IHexagramSequence = HexagramDefaultComparator()
@@ -93,7 +108,9 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull ,
       if (it == 1 || it == 2) {
         val lineExpression = expressionImpl.getExtraExpression(hexagram, finalLocale)
         val lineImage = imageImpl.getExtraImage(hexagram, finalLocale)
-        LineText(lineExpression!!, lineImage!!)
+        // 用九 or 用六
+        val use9or6 = if (it == 1) YinYang.陽 else YinYang.陰
+        LineText(use9or6, lineExpression!!, lineImage!!)
       } else
         null
     }
