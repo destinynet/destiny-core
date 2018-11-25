@@ -88,18 +88,6 @@ enum class Hexagram constructor(
   未濟(Symbol.離, Symbol.坎);
 
 
-
-
-  /**
-   * 第 line 爻動的話，變卦是什麼
-   * @param lines [1~6]
-   */
-  override fun getHexagram(vararg lines: Int): IHexagram {
-    return yinYangs
-      .mapIndexed { index, b -> if (lines.contains(index + 1)) !b else b }
-      .let { Hexagram.getHexagram(it) }
-  }
-
   companion object {
 
     fun getHexagram(upper: Symbol, lower: Symbol): Hexagram {

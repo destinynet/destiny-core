@@ -104,12 +104,12 @@ public class BaseHexagram implements IHexagram, Serializable {
   }
 
 
-  @NotNull
-  @Override
-  public IHexagram getHexagram(@NotNull int... lines)
-  {
-    return Hexagram.Companion.getHexagram(hexagram.getTargetYinYangs(lines));
-  }
+//  @NotNull
+//  @Override
+//  public IHexagram getHexagram(@NotNull int... lines)
+//  {
+//    return Hexagram.Companion.getHexagram(hexagram.getTargetYinYangs(lines));
+//  }
 
   @NotNull
   @Override
