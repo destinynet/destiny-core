@@ -25,7 +25,7 @@ sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZSt
 
   companion object {
 
-    val values = arrayOf(擎羊, 陀羅, 火星, 鈴星, 地劫, 地空)
+    val values by lazy { arrayOf(擎羊, 陀羅, 火星, 鈴星, 地劫, 地空) }
 
     /** 擎羊 : 年干 -> 地支  */
     val fun擎羊 = { year: Stem ->

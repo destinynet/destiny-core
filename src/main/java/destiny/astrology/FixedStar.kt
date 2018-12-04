@@ -4,12 +4,6 @@
  */
 package destiny.astrology
 
-
-object FixedStars {
-  val array = arrayOf(FixedStar.REGULUS, FixedStar.SPICA, FixedStar.ALGOL, FixedStar.ALDEBARAN, FixedStar.RIGEL, FixedStar.CAPELLA, FixedStar.BETELGEUSE, FixedStar.SIRIUS, FixedStar.CANOPUS, FixedStar.POLLUX, FixedStar.PROCYON, FixedStar.PRAESEPE, FixedStar.ALPHARD, FixedStar.ARCTURUS, FixedStar.ANTARES, FixedStar.VEGA, FixedStar.ALTAIR, FixedStar.FOMALHAUT, FixedStar.DENEB)
-  val list = listOf(*array)
-}
-
 /** 恆星  */
 sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<FixedStar> {
   /** Algol 大陵五  */
@@ -73,7 +67,18 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
     if (this == other)
       return 0
 
-    return FixedStars.array.indexOf(this) - FixedStars.array.indexOf(other)
+    return array.indexOf(this) - array.indexOf(other)
   }
 
+
+  companion object {
+
+    val array by lazy {
+      arrayOf(FixedStar.REGULUS, FixedStar.SPICA, FixedStar.ALGOL, FixedStar.ALDEBARAN, FixedStar.RIGEL,
+              FixedStar.CAPELLA, FixedStar.BETELGEUSE, FixedStar.SIRIUS, FixedStar.CANOPUS, FixedStar.POLLUX,
+              FixedStar.PROCYON, FixedStar.PRAESEPE, FixedStar.ALPHARD, FixedStar.ARCTURUS, FixedStar.ANTARES,
+              FixedStar.VEGA, FixedStar.ALTAIR, FixedStar.FOMALHAUT, FixedStar.DENEB)
+    }
+    val list by lazy { listOf(*array) }
+  }
 }

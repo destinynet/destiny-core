@@ -33,8 +33,7 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
 
   companion object {
 
-
-    val values = arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府)
+    val values by lazy { arrayOf(博士, 力士, 青龍, 小耗, 將軍, 奏書, 飛廉, 喜神, 病符, 大耗, 伏兵, 官府) }
 
     // 年干、性別、步數
     private val branchGender2Branch = { tuple3: Triple<Stem, Gender, Int> ->
@@ -66,19 +65,21 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
     private val fun伏兵 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 11)) }
     private val fun官府 = { stem: Stem, gender: Gender -> branchGender2Branch.invoke(Triple(stem, gender, 12)) }
 
-    val starFuncMap: Map<StarDoctor, Function2<Stem, Gender, Branch>> = mapOf(
-      博士 to fun博士,
-      力士 to fun力士,
-      青龍 to fun青龍,
-      小耗 to fun小耗,
-      將軍 to fun將軍,
-      奏書 to fun奏書,
-      飛廉 to fun飛廉,
-      喜神 to fun喜神,
-      病符 to fun病符,
-      大耗 to fun大耗,
-      伏兵 to fun伏兵,
-      官府 to fun官府
-    )
+    val starFuncMap: Map<StarDoctor, Function2<Stem, Gender, Branch>> by lazy {
+      mapOf(
+        博士 to fun博士,
+        力士 to fun力士,
+        青龍 to fun青龍,
+        小耗 to fun小耗,
+        將軍 to fun將軍,
+        奏書 to fun奏書,
+        飛廉 to fun飛廉,
+        喜神 to fun喜神,
+        病符 to fun病符,
+        大耗 to fun大耗,
+        伏兵 to fun伏兵,
+        官府 to fun官府
+           )
+    }
   }
 }

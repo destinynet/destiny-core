@@ -102,7 +102,7 @@ enum class Hexagram constructor(
      * @param index 1 <= 卦序 <= 64
      * @param sequence 實作 getIndex(Hexagram) 的介面
      */
-    fun getHexagram(index: Int, sequence: IHexagramSequence): IHexagram {
+    fun getHexagram(index: Int, sequence: IHexagramSequence = HexagramDefaultComparator()): IHexagram {
       if (index > 64)
         return getHexagram(index % 64, sequence)
       return if (index <= 0) getHexagram(index + 64, sequence) else sequence.getHexagram(index)

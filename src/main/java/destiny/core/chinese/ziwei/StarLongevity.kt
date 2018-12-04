@@ -9,7 +9,6 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.IYinYang
-import org.slf4j.LoggerFactory
 
 /** 長生 12 神煞  */
 sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", ZStar.Type.長生) {
@@ -30,11 +29,9 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
   companion object {
 
 
-    val values = arrayOf(長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養)
+    val values by lazy { arrayOf(長生, 沐浴, 冠帶, 臨官, 帝旺, 衰, 病, 死, 墓, 絕, 胎, 養) }
 
-    private val list = arrayOf(*values)
-
-    private val logger = LoggerFactory.getLogger(StarLongevity::class.java)
+    private val list by lazy { arrayOf(*values) }
 
     private val func = { 五行: FiveElement ->
       when (五行) {
@@ -74,20 +71,22 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
     val fun胎 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 胎) }
     val fun養 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 養) }
 
-    val starFuncMap: Map<StarLongevity, Function3<FiveElement, Gender, IYinYang, Branch>> = mapOf(
-      長生 to fun長生,
-      沐浴 to fun沐浴,
-      冠帶 to fun冠帶,
-      臨官 to fun臨官,
-      帝旺 to fun帝旺,
-      衰 to fun衰,
-      病 to fun病,
-      死 to fun死,
-      墓 to fun墓,
-      絕 to fun絕,
-      胎 to fun胎,
-      養 to fun養
-                                                                                                                      )
+    val starFuncMap: Map<StarLongevity, Function3<FiveElement, Gender, IYinYang, Branch>> by lazy {
+      mapOf(
+        長生 to fun長生,
+        沐浴 to fun沐浴,
+        冠帶 to fun冠帶,
+        臨官 to fun臨官,
+        帝旺 to fun帝旺,
+        衰 to fun衰,
+        病 to fun病,
+        死 to fun死,
+        墓 to fun墓,
+        絕 to fun絕,
+        胎 to fun胎,
+        養 to fun養
+           )
+    }
   }
 
 }

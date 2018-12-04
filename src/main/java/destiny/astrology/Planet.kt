@@ -3,16 +3,7 @@
  */
 package destiny.astrology
 
-import destiny.astrology.Planet.*
 import java.util.*
-
-object Planets {
-  val classicalArray = arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN)
-  val classicalList = listOf(*classicalArray)
-
-  val array = arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO)
-  val list = listOf(*array)
-}
 
 sealed class Planet(val nameKey: String,
                     val abbrKey: String) : Star(nameKey, abbrKey, Star::class.java.name) , Comparable<Planet> {
@@ -31,13 +22,19 @@ sealed class Planet(val nameKey: String,
   override fun compareTo(other: Planet): Int {
     if (this === other)
       return 0
-    return Planets.array.indexOf(this) - Planets.array.indexOf(other)
+    return array.indexOf(this) - array.indexOf(other)
   }
 
   companion object {
 
+    val classicalArray by lazy { arrayOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN) }
+    val classicalList by lazy { listOf(*classicalArray) }
+
+    val array by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
+    val list by lazy { listOf(*array) }
+
     fun fromString(value: String): Planet? {
-      return Planets.array.firstOrNull {
+      return Planet.array.firstOrNull {
         it.getName(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }

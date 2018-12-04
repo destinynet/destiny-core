@@ -57,10 +57,10 @@ interface IHoroscopeContext {
 
   companion object {
     val defaultPoints = setOf<Point>(
-      *Planets.array,
+      *Planet.array,
       //*Asteroids.array,
-      *Hamburgers.array,
-      *FixedStars.array,
+      *Hamburger.array,
+      *FixedStar.array,
       LunarNode.NORTH_MEAN,LunarNode.SOUTH_MEAN
       //*LunarNodes.meanArray
     )
@@ -120,11 +120,11 @@ class HoroscopeContext(
 
   companion object {
     val defaultPoints = setOf<Point>(
-      *Planets.array,
-      *Asteroids.array,
-      *Hamburgers.array,
-      *FixedStars.array,
-      *LunarNodes.meanArray)
+      *Planet.array,
+      *Asteroid.array,
+      *Hamburger.array,
+      *FixedStar.array,
+      *LunarNode.meanArray)
   }
 }
 

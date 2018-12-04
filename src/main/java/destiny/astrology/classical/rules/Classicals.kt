@@ -82,7 +82,7 @@ class ClassicalContext(
 
     val h: IPersonHoroscopeModel =
       personContext.getPersonHoroscope(lmt, loc, place, gender, name, houseSystem, coordinate, centric)
-    val commentMap: Map<Planet, List<String>> = Planets.classicalList.map { planet ->
+    val commentMap: Map<Planet, List<String>> = Planet.classicalList.map { planet ->
       val list1 = essentialDignitiesImpl.getComments(planet, h, finalLocale)
       val list2 = accidentalDignitiesImpl.getComments(planet, h, finalLocale)
       val list3 = debilitiesBean.getComments(planet, h, finalLocale)
@@ -111,7 +111,7 @@ class ClassicalContext(
     val rules3 = debilitiesBean.rules
     val rules = rules1 + rules2 + rules3
 
-    return Planets.classicalList.map { planet ->
+    return Planet.classicalList.map { planet ->
 
       val comments: List<Pair<IRule, String>> = rules.map { rule ->
         rule to rule.getComment(planet, h, finalLocale)

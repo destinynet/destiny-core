@@ -38,7 +38,7 @@ sealed class StarMain(val nameKey: String) : ZStar(nameKey, ZStar::class.java.na
 
   companion object {
 
-    val values = arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍)
+    val values by lazy { arrayOf(紫微, 天機, 太陽, 武曲, 天同, 廉貞, 天府, 太陰, 貪狼, 巨門, 天相, 天梁, 七殺, 破軍) }
 
     // （局數 , 日數 , 是否閏月 , 上個月的天數 , 紫微星實作) -> 地支
     private val fun紫微 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> iPurpleBranch.getBranchOfPurpleStar(state, days, leap, prevMonthDays) }
@@ -56,22 +56,24 @@ sealed class StarMain(val nameKey: String) : ZStar(nameKey, ZStar::class.java.na
     private val fun七殺 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(6) }
     private val fun破軍 = { state: Int, days: Int, leap: Boolean, prevMonthDays: Int, iPurpleBranch: IPurpleStarBranch -> fun天府.invoke(state, days, leap, prevMonthDays, iPurpleBranch).next(10) }
 
-    val starFuncMap: Map<StarMain, Function5<Int, Int, Boolean, Int, IPurpleStarBranch, Branch>> = mapOf(
-      紫微 to fun紫微,
-      天機 to fun天機,
-      太陽 to fun太陽,
-      武曲 to fun武曲,
-      天同 to fun天同,
-      廉貞 to fun廉貞,
-      天府 to fun天府,
-      太陰 to fun太陰,
-      貪狼 to fun貪狼,
-      巨門 to fun巨門,
-      天相 to fun天相,
-      天梁 to fun天梁,
-      七殺 to fun七殺,
-      破軍 to fun破軍
-    )
+    val starFuncMap: Map<StarMain, Function5<Int, Int, Boolean, Int, IPurpleStarBranch, Branch>> by lazy {
+      mapOf(
+        紫微 to fun紫微,
+        天機 to fun天機,
+        太陽 to fun太陽,
+        武曲 to fun武曲,
+        天同 to fun天同,
+        廉貞 to fun廉貞,
+        天府 to fun天府,
+        太陰 to fun太陰,
+        貪狼 to fun貪狼,
+        巨門 to fun巨門,
+        天相 to fun天相,
+        天梁 to fun天梁,
+        七殺 to fun七殺,
+        破軍 to fun破軍
+           )
+    }
 
     /**
      * 以「寅申」為軸，取得對宮的地支

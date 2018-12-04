@@ -16,14 +16,14 @@ class LunarNodeTest {
 
   @Test
   fun testToString() {
-    for (each in LunarNodes.meanArray) {
+    for (each in LunarNode.meanArray) {
       assertNotNull(each)
       assertNotNull(each.toString())
       logger.info("{}", each.toString())
     }
 
 
-    val set = LunarNodes.meanArray.map { it.toString() }.toSet()
+    val set = LunarNode.meanArray.map { it.toString() }.toSet()
     assertTrue(set.contains("北交點"))
     assertTrue(set.contains("南交點"))
   }

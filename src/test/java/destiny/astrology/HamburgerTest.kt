@@ -18,7 +18,7 @@ class HamburgerTest {
 
     var locale: Locale = Locale("zh", "TW")
 
-    Hamburgers.array.forEach {
+    Hamburger.array.forEach {
       assertNotNull(it)
     }
     assertEquals("Zeus", Hamburger.ZEUS.getName(locale))

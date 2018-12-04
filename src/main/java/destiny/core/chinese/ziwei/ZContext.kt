@@ -114,9 +114,8 @@ interface IZiweiContext {
                     hour: Branch,
                     dayNight: DayNight = (if (listOf(Branch.卯, Branch.辰, Branch.巳,
                                                      Branch.午, Branch.未, Branch.申).contains(hour)) DayNight.DAY else DayNight.NIGHT),
-                    stars: Collection<ZStar>,
                     gender: Gender,
-                    optionalVageMap: Map<Int, Pair<Double, Double>>?): Builder
+                    optionalVageMap: Map<Int, Pair<Double, Double>>? = null): Builder
 
   /**
    * @param stars     取得這些星體
@@ -147,7 +146,7 @@ interface IZiweiContext {
     }.toMap()
 
     // 大限四化
-    val trans4Map = getTrans4Map(builder.stars, FlowType.大限, flowBig.stem)
+    val trans4Map = getTrans4Map(stars, FlowType.大限, flowBig.stem)
     return builder
       .withFlowBig(flowBig, branchHouseMap)
       .appendTrans4Map(trans4Map)
@@ -164,7 +163,7 @@ interface IZiweiContext {
     }.toMap()
 
     // 流年四化
-    val trans4Map = getTrans4Map(builder.stars, FlowType.流年, flowYear.stem)
+    val trans4Map = getTrans4Map(stars, FlowType.流年, flowYear.stem)
 
     return getFlowBig(builder, flowBig)
       .withFlowYear(flowYear, branchHouseMap)
@@ -182,7 +181,7 @@ interface IZiweiContext {
     }.toMap()
 
     // 流月四化
-    val trans4Map = getTrans4Map(builder.stars, FlowType.流月, flowMonth.stem)
+    val trans4Map = getTrans4Map(stars, FlowType.流月, flowMonth.stem)
 
     return getFlowYear(builder, flowBig, flowYear)
       .withFlowMonth(flowMonth, branchHouseMap)
@@ -206,7 +205,7 @@ interface IZiweiContext {
     }.toMap()
 
     // 流日四化
-    val trans4Map = getTrans4Map(builder.stars, FlowType.流日, flowDay.stem)
+    val trans4Map = getTrans4Map(stars, FlowType.流日, flowDay.stem)
     return getFlowMonth(builder, flowBig, flowYear, flowMonth)
       .withFlowDay(flowDay, branchHouseMap)
       .appendTrans4Map(trans4Map)
@@ -231,7 +230,7 @@ interface IZiweiContext {
     }.toMap()
 
     // 流時四化
-    val trans4Map = getTrans4Map(builder.stars, FlowType.流時, flowHour.stem)
+    val trans4Map = getTrans4Map(stars, FlowType.流時, flowHour.stem)
 
     return getFlowDay(builder, flowBig, flowYear, flowMonth, flowDay, flowDayNum)
       .withFlowHour(flowHour, branchHouseMap)
@@ -435,7 +434,6 @@ class ZContext(
                              lunarDays: Int,
                              hour: Branch,
                              dayNight: DayNight,
-                             stars: Collection<ZStar>,
                              gender: Gender,
                              optionalVageMap: Map<Int, Pair<Double, Double>>?): Builder {
     // 排盤之中所產生的註解 , Pair<KEY , parameters>

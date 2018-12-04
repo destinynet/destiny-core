@@ -113,8 +113,8 @@ class Builder(
   /** 註解列表  */
   private var notes: List<String> = mutableListOf()
 
-  val stars: Set<ZStar>
-    get() = starStrengthMap.keys
+//  val stars: Set<ZStar>
+//    get() = starStrengthMap.keys
 
   /** 承上，只傳回「地支」 -> 宮位 的 mapping  */
   val branchHouseMap: Map<Branch, House>

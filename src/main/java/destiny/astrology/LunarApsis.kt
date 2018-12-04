@@ -6,17 +6,12 @@ package destiny.astrology
 
 import destiny.astrology.Apsis.APHELION
 import destiny.astrology.Apsis.PERIHELION
-import destiny.astrology.LunarApsis.*
 
 
 enum class MeanOscu {
   MEAN, OSCU
 }
 
-object LunarApsises {
-
-  val array = arrayOf(APOGEE_MEAN, APOGEE_OSCU, PERIGEE_MEAN, PERIGEE_OSCU)
-}
 
 sealed class LunarApsis(nameKey: String, abbrKey: String,
                         /** 只會用到 PERIHELION , APHELION  */
@@ -62,7 +57,10 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
   override fun compareTo(other: LunarApsis): Int {
     if (this == other)
       return 0
-    return LunarApsises.array.indexOf(this) - LunarApsises.array.indexOf(other)
+    return array.indexOf(this) - array.indexOf(other)
   }
 
+  companion object {
+    val array by lazy { arrayOf(APOGEE_MEAN, APOGEE_OSCU, PERIGEE_MEAN, PERIGEE_OSCU) }
+  }
 }

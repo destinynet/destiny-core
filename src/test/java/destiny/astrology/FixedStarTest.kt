@@ -14,11 +14,11 @@ class FixedStarTest {
   @Test
   fun testFixedStar() {
 
-    FixedStars.array.forEach {
+    FixedStar.array.forEach {
       assertNotNull(it)
     }
 
-    for (each in FixedStars.array) {
+    for (each in FixedStar.array) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])
 

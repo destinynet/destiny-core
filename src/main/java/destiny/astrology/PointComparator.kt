@@ -16,7 +16,7 @@ class PointComparator : Comparator<Point>, Serializable {
 
   override fun compare(p1: Point, p2: Point): Int {
     if (p1 is Planet && p2 is Planet ) {
-      return Planets.array.indexOf(p1) - Planets.array.indexOf(p2)
+      return Planet.array.indexOf(p1) - Planet.array.indexOf(p2)
     }
 
     val p1class = p1.javaClass

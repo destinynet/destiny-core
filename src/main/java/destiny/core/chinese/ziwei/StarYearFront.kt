@@ -25,10 +25,9 @@ sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::clas
 
   companion object {
 
+    val values by lazy { arrayOf(歲建, 晦氣, 喪門, 貫索, 官符, 小耗, 歲破, 龍德, 白虎, 天德, 吊客, 病符) }
 
-    val values = arrayOf(歲建, 晦氣, 喪門, 貫索, 官符, 小耗, 歲破, 龍德, 白虎, 天德, 吊客, 病符)
-
-    private val list = listOf(*values)
+    private val list by lazy { listOf(*values) }
 
     private val func = { 年支: Branch, 星: ZStar ->
       val steps = list.indexOf(星)
@@ -48,19 +47,21 @@ sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::clas
     val fun吊客 = { 年支: Branch -> func.invoke(年支, 吊客) }
     val fun病符 = { 年支: Branch -> func.invoke(年支, 病符) }
 
-    val starFuncMap: Map<StarYearFront, Function1<Branch, Branch>> = mapOf(
-      歲建 to fun歲建,
-      晦氣 to fun晦氣,
-      喪門 to fun喪門,
-      貫索 to fun貫索,
-      官符 to fun官符,
-      小耗 to fun小耗,
-      歲破 to fun歲破,
-      龍德 to fun龍德,
-      白虎 to fun白虎,
-      天德 to fun天德,
-      吊客 to fun吊客,
-      病符 to fun病符
-    )
+    val starFuncMap: Map<StarYearFront, Function1<Branch, Branch>> by lazy {
+      mapOf(
+        歲建 to fun歲建,
+        晦氣 to fun晦氣,
+        喪門 to fun喪門,
+        貫索 to fun貫索,
+        官符 to fun官符,
+        小耗 to fun小耗,
+        歲破 to fun歲破,
+        龍德 to fun龍德,
+        白虎 to fun白虎,
+        天德 to fun天德,
+        吊客 to fun吊客,
+        病符 to fun病符
+           )
+    }
   }
 }

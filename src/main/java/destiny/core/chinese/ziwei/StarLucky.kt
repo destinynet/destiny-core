@@ -30,7 +30,7 @@ sealed class StarLucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar
 
   companion object {
 
-    val values = arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬)
+    val values by lazy { arrayOf(文昌, 文曲, 左輔, 右弼, 天魁, 天鉞, 祿存, 天馬) }
 
     /** 文昌 : 時支 -> 地支  */
     val fun文昌 = { hour: Branch -> Branch[10 - hour.index] }

@@ -4,16 +4,9 @@
  */
 package destiny.astrology
 
-import java.util.*
-
-object Asteroids {
-  val array = arrayOf(Asteroid.CERES, Asteroid.PALLAS, Asteroid.JUNO, Asteroid.VESTA, Asteroid.CHIRON, Asteroid.PHOLUS)
-  val list = listOf(*array)
-}
-
-sealed class Asteroid (nameKey: String,
-                       abbrKey: String,
-                       val index: Int) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<Asteroid> {
+sealed class Asteroid(nameKey: String,
+                      abbrKey: String,
+                      val index: Int) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<Asteroid> {
 
   /** 穀神星  */
   object CERES : Asteroid("Asteroid.CERES", "Asteroid.CERES_ABBR", 1)
@@ -38,8 +31,13 @@ sealed class Asteroid (nameKey: String,
     if (this == other)
       return 0
 
-    val list = Arrays.asList(*Asteroids.array)
-    return list.indexOf(this) - list.indexOf(other)
+    return array.indexOf(this) - array.indexOf(other)
   }
-  
+
+  companion object {
+    val array by lazy {
+      arrayOf(Asteroid.CERES, Asteroid.PALLAS, Asteroid.JUNO, Asteroid.VESTA, Asteroid.CHIRON, Asteroid.PHOLUS)
+    }
+    val list by lazy { listOf(*array) }
+  }
 }

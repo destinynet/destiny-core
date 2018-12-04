@@ -6,11 +6,6 @@ package destiny.astrology
 
 
 /** 漢堡學派 Uranian Astrology  */
-object Hamburgers {
-  val array = arrayOf(Hamburger.CUPIDO, Hamburger.HADES, Hamburger.ZEUS, Hamburger.KRONOS, Hamburger.APOLLON, Hamburger.ADMETOS, Hamburger.VULKANUS, Hamburger.POSEIDON)
-  val list = listOf(*array)
-}
-
 sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.java.name), Comparable<Hamburger> {
 
   object CUPIDO   : Hamburger("Hamburger.CUPIDO")
@@ -26,7 +21,19 @@ sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.java.name),
     if (this == other)
       return 0
 
-    return Hamburgers.array.indexOf(this) - Hamburgers.array.indexOf(other)
+    return array.indexOf(this) - array.indexOf(other)
   }
 
+
+  companion object {
+    val array by lazy {
+      arrayOf(Hamburger.CUPIDO, Hamburger.HADES, Hamburger.ZEUS, Hamburger.KRONOS, Hamburger.APOLLON, Hamburger.ADMETOS,
+              Hamburger.VULKANUS, Hamburger.POSEIDON)
+    }
+
+    val list by lazy {
+      listOf(*array)
+    }
+
+  }
 }

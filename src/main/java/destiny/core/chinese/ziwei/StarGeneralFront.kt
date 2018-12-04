@@ -40,9 +40,9 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
   companion object {
 
-    val values = arrayOf(將星, 攀鞍, 歲馹, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神)
+    val values by lazy { arrayOf(將星, 攀鞍, 歲馹, 息神, 華蓋, 劫煞, 災煞, 天煞, 指背, 咸池, 月煞, 亡神) }
 
-    private val list = arrayOf(*values)
+    private val list by lazy { arrayOf(*values) }
 
     private val funFiveElement = { 五行: FiveElement ->
       when (五行) {
@@ -75,19 +75,21 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
     private val fun月煞 = { 年支: Branch -> funYearBranch.invoke(年支, 月煞) }
     val fun亡神 = { 年支: Branch -> funYearBranch.invoke(年支, 亡神) }
 
-    val starFuncMap: Map<StarGeneralFront, Function1<Branch, Branch>> = mapOf(
-      將星 to fun將星,
-      攀鞍 to fun攀鞍,
-      歲馹 to fun歲馹,
-      息神 to fun息神,
-      華蓋 to fun華蓋,
-      劫煞 to fun劫煞,
-      災煞 to fun災煞,
-      天煞 to fun天煞,
-      指背 to fun指背,
-      咸池 to fun咸池,
-      月煞 to fun月煞,
-      亡神 to fun亡神
-    )
+    val starFuncMap: Map<StarGeneralFront, Function1<Branch, Branch>> by lazy {
+      mapOf(
+        將星 to fun將星,
+        攀鞍 to fun攀鞍,
+        歲馹 to fun歲馹,
+        息神 to fun息神,
+        華蓋 to fun華蓋,
+        劫煞 to fun劫煞,
+        災煞 to fun災煞,
+        天煞 to fun天煞,
+        指背 to fun指背,
+        咸池 to fun咸池,
+        月煞 to fun月煞,
+        亡神 to fun亡神
+           )
+    }
   }
 }

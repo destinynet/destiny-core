@@ -78,6 +78,17 @@ class HexagramDefaultComparatorTest {
   }
 
   @Test
+  fun testHexagramSequenceWithDefault() {
+    assertEquals(Hexagram.乾, Hexagram.getHexagram(1))
+    assertEquals(Hexagram.坤, Hexagram.getHexagram(2))
+    assertEquals(Hexagram.屯, Hexagram.getHexagram(3))
+    assertEquals(Hexagram.蒙, Hexagram.getHexagram(4))
+    assertEquals(Hexagram.需, Hexagram.getHexagram(5))
+    assertEquals(Hexagram.訟, Hexagram.getHexagram(6))
+    assertEquals(Hexagram.師, Hexagram.getHexagram(7))
+  }
+
+  @Test
   fun testGetIndex() {
     val impl = HexagramDefaultComparator()
 
