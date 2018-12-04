@@ -56,7 +56,6 @@ data class HouseData(
   val vageRanges: Pair<Int, Int>
     get() = Pair(rangeFromVage, rangeToVage)
 
-
   override fun toString(): String {
     return "[宮位 名稱=$house, 干支=$stemBranch, 星體=$stars]"
   }

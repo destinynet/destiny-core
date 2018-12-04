@@ -4,9 +4,9 @@
  */
 package destiny.tools
 
-import java.util.Locale
+import java.util.*
 
 interface ILocaleString {
 
-  fun toString(locale: Locale): String
+  fun toString(locale: Locale = Locale.getDefault()): String
 }

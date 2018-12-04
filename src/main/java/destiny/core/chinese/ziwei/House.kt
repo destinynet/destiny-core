@@ -3,12 +3,13 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.tools.ILocaleString
 import java.util.*
 
 /**
  * 十二宮位 (遷移 or 相貌)
  */
-enum class House constructor(private val value: String) {
+enum class House constructor(private val value: String) : ILocaleString {
   命宮("命宮"),
   兄弟("兄弟"),
   夫妻("夫妻"),
@@ -27,7 +28,7 @@ enum class House constructor(private val value: String) {
 
   相貌("相貌");
 
-  fun toString(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return ResourceBundle.getBundle(House::class.java.name, locale).getString(value)
   }
 
