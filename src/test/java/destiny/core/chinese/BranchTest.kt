@@ -140,15 +140,29 @@ class BranchTest {
     assertSame(9, 酉.index)
     assertSame(10, 戌.index)
     assertSame(11, 亥.index)
+  }
 
+  @Test
+  fun testQuads() {
+    assertEquals(setOf(子 , 午 , 卯 , 酉) , 子.quads)
+    assertEquals(setOf(丑 , 未 , 辰 , 戌) , 丑.quads)
+    assertEquals(setOf(寅 , 巳 , 申 , 亥) , 寅.quads)
+  }
+
+  @Test
+  fun testTrine() {
+    assertEquals(setOf(申 , 子 , 辰) , 子.trinities)
+    assertEquals(setOf(巳 , 酉 , 丑) , 丑.trinities)
+    assertEquals(setOf(寅 , 午 , 戌) , 寅.trinities)
+    assertEquals(setOf(亥 , 卯 , 未) , 卯.trinities)
   }
 
   @Test
   fun testSorting() {
-    val EBArray = arrayOf(午, 酉, 子, 卯)
-    Arrays.sort(EBArray)
+    val array = arrayOf(午, 酉, 子, 卯)
+    Arrays.sort(array)
     val expected = arrayOf(子, 卯, 午, 酉)
-    assertTrue(Arrays.equals(expected, EBArray))
+    assertTrue(Arrays.equals(expected, array))
   }
 
   @Test

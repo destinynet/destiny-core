@@ -10,45 +10,41 @@ import java.io.Serializable
 import java.util.*
 
 /** 存放星體交角的資料結構  */
-class HoroscopeAspectData(p1: Point, p2: Point,
-                          /** 兩星所形成的交角  */
-                          val aspect: Aspect?,
-                          /** orb 不列入 equals / hashCode 計算  */
-                          val orb: Double) : Comparable<HoroscopeAspectData>, Serializable {
+data class HoroscopeAspectData(val p1: Point,
+                               val p2: Point,
+                               /** 兩星所形成的交角  */
+                               val aspect: Aspect?,
+                               /** orb 不列入 equals / hashCode 計算  */
+                               val orb: Double) : Comparable<HoroscopeAspectData>, Serializable {
   private val pointComp = PointComparator()
 
   /** 存放形成交角的兩顆星體  */
-  val twoPoints = Collections.synchronizedSet(TreeSet(pointComp))!!
+  val twoPoints = setOf(p1 , p2)
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
   init {
-    twoPoints.add(p1)
-    twoPoints.add(p2)
-    if (twoPoints.size <= 1) {
-      logger.warn("twoPoints size = {} , p1 = {} ({}) , p2 = {} ({}) . equals ? {}", twoPoints.size, p1, p1.hashCode(), p2, p2.hashCode(), p1 == p2)
+    val set = TreeSet(pointComp).apply {
+      add(p1)
+      add(p2)
+    }
+    if (set.size <= 1) {
+      logger.warn("twoPoints size = {} , p1 = {} ({}) , p2 = {} ({}) . equals ? {}",
+                  set.size, p1, p1.hashCode(), p2, p2.hashCode(), p1 == p2)
     }
   }
 
   override fun toString(): String {
-
-    return twoPoints.toString() + aspect!!.toString(Locale.TAIWAN) + " 誤差 " +
-      AlignTools.leftPad(orb.toString() , 4) + "度"
+    return "$twoPoints $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度"
   }
-
 
 
   /** 傳入一個 point , 取得另一個 point , 如果沒有，則傳回 null  */
   fun getAnotherPoint(thisPoint: Point): Point? {
-    val itp = twoPoints.iterator()
-    while (itp.hasNext()) {
-      val p = itp.next()
-      return if (p == thisPoint)
-        itp.next()
-      else
-        p
-    }
-    return null
+    return twoPoints
+      .takeIf { it.contains(thisPoint) }
+      ?.minus(thisPoint)
+      ?.firstOrNull()
   }
 
   override fun hashCode(): Int {
@@ -66,16 +62,13 @@ class HoroscopeAspectData(p1: Point, p2: Point,
       return false
     if (javaClass != other.javaClass)
       return false
-    val other = other as HoroscopeAspectData?
+    val o = other as HoroscopeAspectData?
     if (aspect == null) {
-      if (other!!.aspect != null)
+      if (o!!.aspect != null)
         return false
-    } else if (aspect != other!!.aspect)
+    } else if (aspect != o!!.aspect)
       return false
-    if (twoPoints == null) {
-      if (other.twoPoints != null)
-        return false
-    } else if (twoPoints != other.twoPoints)
+    if (twoPoints != o.twoPoints)
       return false
     return true
   }

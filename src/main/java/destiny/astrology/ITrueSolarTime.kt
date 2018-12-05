@@ -48,8 +48,7 @@ interface ITrueSolarTime {
   }
 
   companion object {
-
-    val logger = LoggerFactory.getLogger(ITrueSolarTime::class.java)
+    val logger = LoggerFactory.getLogger(ITrueSolarTime::class.java)!!
   }
 
 }

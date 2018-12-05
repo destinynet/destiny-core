@@ -132,7 +132,7 @@ class Builder(
 
 
     /**
-     * [branchFlowHouseMap] 儲存類似這樣資料結構 , 12組
+     * (branchFlowHouseMap) 儲存類似這樣資料結構 , 12組
      * (子) :
      *  本命 -> 疾厄
      *  大運 -> XX宮

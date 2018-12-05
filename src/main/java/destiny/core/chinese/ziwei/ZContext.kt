@@ -523,7 +523,7 @@ class ZContext(
     //val houseSeqImpl = context.houseSeqImpl
 
     /**
-     * 由命宮干支的納音 [destiny.core.chinese.NaYin] 來決定 五行+局數(Int) , 例如 水 2 局
+     * 由命宮干支的納音 (NaYin) 來決定 五行+局數(Int) , 例如 水 2 局
      * */
     val (五行, 五行局) = Ziwei.getMainDesc(mainHouse)
 

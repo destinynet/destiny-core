@@ -59,20 +59,16 @@ enum class ZodiacSign(private val nameKey: String,
     get() = ZodiacSign.values()[normalize(this.index + 6)]
 
   /** 取得星座的 index , 為 0-based , 牡羊座為 0 , 金牛座為 1 , ... , 雙魚座為 11  */
-  val index: Int
-    get() {
-      return values().indexOf(this)
-//      (0 until ZodiacSign.values().size)
-//        .filter { this == ZodiacSign.values()[it] }
-//        .forEach { return it }
-//      throw RuntimeException("Error!")
-    }
+  val index: Int by lazy {
+    values().indexOf(this)
+  }
 
   /**
    * @return 取得星座的地支名稱 (牡羊 : 戌)
    */
-  val branch: Branch
-    get() = map[this]!!
+  val branch: Branch by lazy {
+    map[this]!!
+  }
 
   override fun toString(): String {
     return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)

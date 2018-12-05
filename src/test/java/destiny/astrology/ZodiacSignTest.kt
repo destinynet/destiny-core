@@ -5,6 +5,7 @@
 package destiny.astrology
 
 import destiny.astrology.ZodiacSign.*
+import destiny.core.chinese.Branch
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -83,6 +84,22 @@ class ZodiacSignTest {
     assertSame(9, CAPRICORN.index)
     assertSame(10, AQUARIUS.index)
     assertSame(11, PISCES.index)
+  }
+
+  @Test
+  fun testGetBranch() {
+    assertSame(Branch.戌 , ARIES.branch)
+    assertSame(Branch.酉 , TAURUS.branch)
+    assertSame(Branch.申 , GEMINI.branch)
+    assertSame(Branch.未 , CANCER.branch)
+    assertSame(Branch.午 , LEO.branch)
+    assertSame(Branch.巳 , VIRGO.branch)
+    assertSame(Branch.辰 , LIBRA.branch)
+    assertSame(Branch.卯 , SCORPIO.branch)
+    assertSame(Branch.寅 , SAGITTARIUS.branch)
+    assertSame(Branch.丑 , CAPRICORN.branch)
+    assertSame(Branch.子 , AQUARIUS.branch)
+    assertSame(Branch.亥 , PISCES.branch)
   }
 
   @Test
