@@ -82,11 +82,11 @@ object LocationTools {
     return try {
       (parts.firstOrNull { it is LocationPadding.latLng } as LocationPadding.latLng).let {
         val tzid: String? =
-          parts.firstOrNull { it is LocationPadding.tzid }?.let { it as LocationPadding.tzid }?.value?.id
+          parts.firstOrNull { padding -> padding is LocationPadding.tzid }?.let { pad -> pad as LocationPadding.tzid }?.value?.id
         val minuteOffset: Int? =
-          parts.firstOrNull { it is LocationPadding.minOffset }?.let { it as LocationPadding.minOffset }?.value
+          parts.firstOrNull { padding -> padding is LocationPadding.minOffset }?.let { pad -> pad as LocationPadding.minOffset }?.value
         val altMeter: Double? =
-          parts.firstOrNull { it is LocationPadding.altMeter }?.let { it as LocationPadding.altMeter }?.value
+          parts.firstOrNull { padding -> padding is LocationPadding.altMeter }?.let { pad -> pad as LocationPadding.altMeter }?.value
         Location(it.lng, it.lat, tzid, minuteOffset, altMeter)
       }
     } catch (e: Exception) {

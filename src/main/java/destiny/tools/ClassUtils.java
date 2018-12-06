@@ -1,4 +1,4 @@
-/**
+/*
  * @author smallufo
  * Created on 2010/12/15 at 下午4:13:36
  */

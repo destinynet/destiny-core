@@ -55,18 +55,18 @@ object ChartMntRules {
       val set369 = listOf(3, 6, 9)
 
       val sets = listOf(set147, set258, set369)
-      val set: List<Int> = sets.first { it.contains(chart.period) }
+      val set: List<Int> = sets.first { list -> list.contains(chart.period) }
 
       val 離乾震 = listOf(Symbol.離, Symbol.乾, Symbol.震)
       val 離宮ints: Set<Int> = 離乾震
-        .map { chart.getChartBlockFromSymbol(it) }
-        .map { it.dir }
+        .map { symbol -> chart.getChartBlockFromSymbol(symbol) }
+        .map { chartBlock -> chartBlock.dir }
         .toSet()
 
       val 坎兌巽 = listOf(Symbol.坎, Symbol.兌, Symbol.巽)
       val 坎宮ints = 坎兌巽
-        .map { chart.getChartBlockFromSymbol(it) }
-        .map { it.dir }
+        .map { symbol -> chart.getChartBlockFromSymbol(symbol) }
+        .map { chartBlock -> chartBlock.dir }
         .toSet()
 
       return@let when {
@@ -138,8 +138,8 @@ object ChartMntRules {
     val set3 = setOf(3, 6, 9)
 
     return Symbol.values().all {
-      val blockNums: Set<Int> = chart.getChartBlockFromSymbol(it).let {
-        setOf(it.period, it.mnt, it.dir)
+      val blockNums: Set<Int> = chart.getChartBlockFromSymbol(it).let { chartBlock ->
+        setOf(chartBlock.period, chartBlock.mnt, chartBlock.dir)
       }
       blockNums.containsAll(set1) || blockNums.containsAll(set2) || blockNums.containsAll(set3)
     }.let {

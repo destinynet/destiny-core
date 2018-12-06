@@ -1043,8 +1043,8 @@ val p丹墀桂墀 = object : PatternSingleImpl() {
 
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it
-      .takeIf { it.starStrengthMap[太陽]?.let { it <= 2 } ?: false }  // 日旺廟
-      ?.takeIf { it.starStrengthMap[太陰]?.let { it <= 2 } ?: false } // 月旺廟
+      .takeIf { it.starStrengthMap[太陽]?.let { strength -> strength <= 2 } ?: false }  // 日旺廟
+      ?.takeIf { it.starStrengthMap[太陰]?.let { strength -> strength <= 2 } ?: false } // 月旺廟
       ?.takeIf {
         val 三方四正有日月: Boolean = it.三方四正().containsAll(it.日月())
         val 日月分散在辰戌且其中一個守命宮 = setOf(辰, 戌) == it.日月().toSet() && setOf(辰,

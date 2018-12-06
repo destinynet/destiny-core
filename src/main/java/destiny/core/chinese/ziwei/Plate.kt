@@ -96,7 +96,7 @@ interface IPlate {
 
   /** 宮位地支 -> 星體s  */
   val branchStarMap: Map<Branch, Collection<ZStar>>
-    get() = houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { it.stars } }
+    get() = houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
 
   /** 宮位名稱 -> 星體s  */
   val houseStarMap: Map<House, Set<ZStar>>

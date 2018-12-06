@@ -21,8 +21,8 @@ class Refrain_from_Venus_Jupiter(private val refranationImpl: IRefranation) : De
         if (planet !== VENUS) {
           otherPoint = VENUS
 
-          refranationImpl.getImportantResult(h, planet, otherPoint)?.let {
-            val aspect = it.second
+          refranationImpl.getImportantResult(h, planet, otherPoint)?.let { pair ->
+            val aspect = pair.second
             logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, otherPoint, aspect)
             return "comment" to arrayOf(planet, otherPoint, aspect)
           }
@@ -31,8 +31,8 @@ class Refrain_from_Venus_Jupiter(private val refranationImpl: IRefranation) : De
         if (planet !== JUPITER) {
           otherPoint = JUPITER
 
-          refranationImpl.getImportantResult(h, planet, otherPoint)?.let {
-            val aspect = it.second
+          refranationImpl.getImportantResult(h, planet, otherPoint)?.let { pair ->
+            val aspect = pair.second
             logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, otherPoint, aspect)
             return "comment" to arrayOf(planet , otherPoint , aspect)
           }

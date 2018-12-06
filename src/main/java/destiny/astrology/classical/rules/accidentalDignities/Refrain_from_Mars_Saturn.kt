@@ -23,8 +23,8 @@ class Refrain_from_Mars_Saturn(private val refranationImpl: IRefranation) : Acci
         if (planet !== MARS) {
           otherPoint = MARS
 
-          refranationImpl.getImportantResult(h , planet , otherPoint)?.let {
-            val aspect = it.second
+          refranationImpl.getImportantResult(h , planet , otherPoint)?.let { pair ->
+            val aspect = pair.second
             logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, otherPoint, aspect)
             return "comment" to arrayOf(planet, otherPoint, aspect)
           }
@@ -33,8 +33,8 @@ class Refrain_from_Mars_Saturn(private val refranationImpl: IRefranation) : Acci
         if (planet !== SATURN) {
           otherPoint = SATURN
 
-          refranationImpl.getImportantResult(h , planet , otherPoint)?.let {
-            val aspect = it.second
+          refranationImpl.getImportantResult(h , planet , otherPoint)?.let { pair ->
+            val aspect = pair.second
             logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, otherPoint, aspect)
             return "comment" to arrayOf(planet, otherPoint, aspect)
           }

@@ -4,9 +4,11 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.*
+import destiny.astrology.IDayNight
+import destiny.astrology.IHoroscopeModel
+import destiny.astrology.Point
+import destiny.astrology.ZodiacSign
 import destiny.core.DayNight
-
 import java.io.Serializable
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities  */
@@ -32,32 +34,32 @@ class EssentialImpl(private val rulerImpl: IRuler,
    * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 p
    */
   override fun receivingExaltFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { exaltImpl.getPoint(it).takeIf { map.containsKey(it) } }
+    return map[p]?.let { exaltImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
   /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 p */
   override fun receivingTriplicityFromSignMap(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight): Point? {
-    return map[p]?.let { triplicityImpl.getPoint(it, dayNight).takeIf { map.containsKey(it) } }
+    return map[p]?.let { triplicityImpl.getPoint(it, dayNight).takeIf { point -> map.containsKey(point) } }
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 p */
   override fun receivingTermFrom(p: Point, map: Map<Point, Double>): Point? {
-    return map[p]?.let { termImpl.getPoint(it).takeIf { map.containsKey(it) } }
+    return map[p]?.let { termImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
   }
 
   /** 哪一顆星，透過 [Dignity.FACE] 接納了 p */
   override fun receivingFaceFrom(p: Point, map: Map<Point, Double>): Point? {
-    return map[p]?.let { faceImpl.getPoint(it).takeIf { map.containsKey(it) } }
+    return map[p]?.let { faceImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
   }
 
   /** 哪一顆星，透過 [Dignity.FALL] 接納了 p */
   override fun receivingFallFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { fallImpl.getPoint(it).takeIf { map.containsKey(it) } }
+    return map[p]?.let { fallImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
   }
 
   /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 p */
   override fun receivingDetrimentFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { detrimentImpl.getPoint(it).takeIf { map.containsKey(it) } }
+    return map[p]?.let { detrimentImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
 

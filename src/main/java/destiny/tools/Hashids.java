@@ -1,4 +1,4 @@
-/**
+/*
  * Created by smallufo on 2015-04-21.
  */
 package destiny.tools;

@@ -11,8 +11,8 @@ import destiny.core.DayNight
 import org.slf4j.LoggerFactory
 
 /**
- * Facade Interface of Essential Dignities and Deblitities <br></br>
- * 具備計算 Ptolemy's Table of Essential Dignities and Deblities 的所有介面
+ * Facade Interface of Essential Dignities and Debilities <br></br>
+ * 具備計算 Ptolemy's Table of Essential Dignities and Debilities 的所有介面
  */
 interface IEssential {
 
