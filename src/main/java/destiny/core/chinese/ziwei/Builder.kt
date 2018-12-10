@@ -345,6 +345,12 @@ class Builder(
   private fun buildNotes(resourceBundleClazz: Class<*>, locale: Locale): List<String> {
     return notesBuilder.map { (first, second) ->
       val pattern = ResourceBundle.getBundle(resourceBundleClazz.name, locale).getString(first)
+//      val pattern = try {
+//        ResourceBundle.getBundle(resourceBundleClazz.name, locale).getString(first)
+//      } catch (e : Exception) {
+//        logger.warn("Cannot get {} from {} , locale = {}" , first , resourceBundleClazz.name , locale)
+//        "錯誤！ $first"
+//      }
       val note = MessageFormat.format(pattern, *second)
       logger.trace("note : {}", note)
       note

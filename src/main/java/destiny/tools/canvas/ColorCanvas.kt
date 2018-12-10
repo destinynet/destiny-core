@@ -263,30 +263,30 @@ open class ColorCanvas : Serializable {
   /**
    * 在第 x row , 第 y column , 開始，寫入 彩色文字
    *
-   * @param str       要輸入的字串
+   * @param text       要輸入的字串
    * @param x         row index
    * @param y         column index
    * @param foreColor 前景顏色字串，以 16 進位表示，例如 "FFFFCC"
    * @param backColor 背景顏色字串，以 16 進位表示，例如 "FFFFCC"
-   * @param font      字型，例如： new Font("細明體" , Font.PLAIN , 16)
-   * @param url       網址物件 , 例如 "http://www.google.com.tw"
+   * @param txtFont      字型，例如： new Font("細明體" , Font.PLAIN , 16)
+   * @param txtUrl       網址物件 , 例如 "http://www.google.com.tw"
    * @param title     Title
    * @param wrap      是否換行
    */
-  fun setText(str: String,
+  fun setText(text: String,
               x: Int,
               y: Int,
               wrap: Boolean = false,
               foreColor: String? = null,
               backColor: String? = null,
-              font: Font? = null,
-              url: String? = null,
+              txtFont: Font? = null,
+              txtUrl: String? = null,
               title: String? = null) {
-    var str = str
-    var foreColor = foreColor
-    var backColor = backColor
-    var font = font
-    var url = url
+    var str = text
+    var fore = foreColor
+    var back = backColor
+    var font = txtFont
+    var url = txtUrl
     var index = (x - 1) * width + (y - 1)
     var strWidth = 0
     //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
@@ -335,33 +335,29 @@ open class ColorCanvas : Serializable {
         //先求出，目前 index 到行尾，要塞入幾個空白鍵（中文字為 1 個）
         val spaces = width - index % this.width
         for (j in index until index + spaces) {
-          content[j] = ColorByte(' '.toByte(), foreColor, backColor, font, url, title)
+          content[j] = ColorByte(' '.toByte(), fore, back, font, url, title)
         } //填空白
         index += spaces
       }
       for (j in index until index + bytes.size) {
         //如果新加入的背景色為空，檢查原字元的背景色
-        if (backColor == null
-        ) {
-          backColor = content[j].getBackColor()
+        if (back == null) {
+          back = content[j].getBackColor()
         }
         //如果新加入的前景色為空，檢查原字元的前景色
-        if (foreColor == null
-        ) {
-          foreColor = content[j].foreColor
+        if (fore == null) {
+          fore = content[j].foreColor
         }
         //如果新加入的字型為空，則檢查原字元的字型
-        if (font == null
-        ) {
+        if (font == null) {
           font = content[j].font
         }
         //如果新加入的 URL 為空，則檢查原字元的網址
-        if (url == null
-        ) {
+        if (url == null) {
           url = content[j].url
         }
 
-        content[j] = ColorByte(bytes[j - index], foreColor, backColor, font, url, title)
+        content[j] = ColorByte(bytes[j - index], fore, back, font, url, title)
       }
       index += bytes.size
       if (index >= content.size) {
