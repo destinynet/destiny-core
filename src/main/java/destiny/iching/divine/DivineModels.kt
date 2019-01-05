@@ -88,10 +88,10 @@ data class CombinedWithMeta(
 
 interface ISingleHexagramWithName : ISingleHexagram, IHexagramName
 
-data class SingleHexagramWithName(private val singlePlate: ISingleHexagram,
+data class SingleHexagramWithName(private val singleHexagram: ISingleHexagram,
                                   private val hexagramName: IHexagramName) :
   ISingleHexagramWithName,
-  ISingleHexagram by singlePlate,
+  ISingleHexagram by singleHexagram,
   IHexagramName by hexagramName,
   Serializable
 

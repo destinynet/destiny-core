@@ -6,13 +6,13 @@ package destiny.core.chinese
 import destiny.core.ILoop
 import destiny.tools.ArrayTools
 
-enum class SixAnimal : ILoop<SixAnimal> {
-  青龍,
-  朱雀,
-  勾陳,
-  螣蛇,
-  白虎,
-  玄武;
+enum class SixAnimal(val shortName:String) : ILoop<SixAnimal> {
+  青龍("龍"),
+  朱雀("雀"),
+  勾陳("勾"),
+  螣蛇("蛇"),
+  白虎("虎"),
+  玄武("玄");
 
   override fun next(n: Int): SixAnimal {
     return get(getIndex(this) + n)
