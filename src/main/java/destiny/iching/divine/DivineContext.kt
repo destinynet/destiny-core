@@ -4,10 +4,7 @@
 package destiny.iching.divine
 
 import destiny.core.Gender
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
-import destiny.core.calendar.TimeSecDecorator
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.iching.*
@@ -80,7 +77,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
 
                       question: String?,
                       approach: DivineApproach?,
-                      time: ChronoLocalDateTime<*>?,
+                      lmt: ChronoLocalDateTime<*>?,
                       loc: ILocation? = Location.of(Locale.TAIWAN),
 
                       place: String? = null,
@@ -240,7 +237,7 @@ class DivineContext(
                                gender: Gender?,
                                question: String?,
                                approach: DivineApproach?,
-                               time: ChronoLocalDateTime<*>?,
+                               lmt: ChronoLocalDateTime<*>?,
                                loc: ILocation?,
                                place: String?,
 
@@ -255,11 +252,14 @@ class DivineContext(
 
     val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWordsNullable, locale, 納甲系統,
                                                                        伏神系統, tianyiImpl, yangBladeImpl)
-    val gmtJulDay: Double? = time?.let { TimeTools.getGmtJulDay(it, loc!!) }
-    val decoratedTime = time?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
+    val gmtJulDay: Double? = lmt?.let { TimeTools.getGmtJulDay(it, loc!!) }
+
+    val decoratedDate = lmt?.let { DateDecorator.getOutputString(it.toLocalDate() , Locale.TAIWAN) }
+    val decoratedDateTime = lmt?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
 
     val meta = Meta(combinedWithMetaNameDayMonth.納甲系統, combinedWithMetaNameDayMonth.伏神系統)
-    val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place, decoratedTime, meta, null)
+    val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
+                                decoratedDate, decoratedDateTime, meta , null)
 
     val finalExpressionImpl = expressionImpl ?: this.expressionImpl
     val finalImageImpl = imageImpl ?: this.imageImpl

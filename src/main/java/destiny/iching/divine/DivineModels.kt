@@ -167,7 +167,8 @@ interface IDivineMeta : IMeta {
   val loc: ILocation?
   val place: String?
   /** 已經 format 的時間 */
-  val decoratedTime: String?
+  val decoratedDate : String?
+  val decoratedDateTime: String?
 }
 
 
@@ -178,10 +179,10 @@ data class DivineMeta(
   override val gmtJulDay: Double? = null,
   override val loc: ILocation? = Location.of(Locale.TAIWAN),
   override val place: String?,
-  /** 已經 format 的時間 */
-  override val decoratedTime: String?,
+  override val decoratedDate: String?,
+  override val decoratedDateTime: String?,
   val meta: Meta,
-  val link: String?) : IMeta by meta, IDivineMeta, Serializable
+  val link: String? = null) : IMeta by meta, IDivineMeta, Serializable
 
 
 /** 完整卜卦盤 , 包含所有資料 */
