@@ -11,7 +11,7 @@ interface ReverseGeocodingService {
 
   fun getNearbyLocation(lng: Double, lat: Double, locale: Locale): String?
 
-  fun getNearbyLocation(latLng : ILatLng, locale: Locale) : String? {
+  fun getNearbyLocation(latLng : ILatLng, locale: Locale = Locale.getDefault()) : String? {
     return getNearbyLocation(latLng.lng, latLng.lat, locale)
   }
 

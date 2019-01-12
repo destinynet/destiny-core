@@ -28,7 +28,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
                                /** 是否顯示納音 */
                                private val showNaYin: Boolean = false) :
   ColorCanvas(36, 70, ChineseStringTools.NULL_CHAR)
-//  ColorCanvas(33, 70, ChineseStringTools.NULL_CHAR)
 {
 
   var outputMode = ColorCanvas.OutputMode.HTML
@@ -105,6 +104,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     }
 
 
+    // TODO : 必須要確認， ageNoteImpls 不能為空list
     val ageNoteImpls = personContext.ageNoteImpls
 
     // 下方大運橫
@@ -115,9 +115,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
         val selected = fortuneData.stemBranch == model.selectedFortuneLarge
 
         val startFortune: String =
-          ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
-            .filter { it !== null }
-            .map { it -> it!! }
+          ageNoteImpls
+            .mapNotNull { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
             .first()
 
         val stemBranch = fortuneData.stemBranch
@@ -170,9 +169,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
           val selected = fortuneData.stemBranch == model.selectedFortuneLarge
           val startFortune: String =
-            ageNoteImpls.map { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
-              .filter { it !== null }
-              .map { it -> it!! }
+            ageNoteImpls
+              .mapNotNull { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
               .first()
           val stemBranch = fortuneData.stemBranch
           val startFortuneLmt =

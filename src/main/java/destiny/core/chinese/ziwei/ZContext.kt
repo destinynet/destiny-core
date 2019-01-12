@@ -405,6 +405,7 @@ class ZContext(
 
   /** 計算虛歲時，需要 [IChineseDate] , 若不提供 , 則無法計算虛歲歲數 (除非有預先算好、傳入) */
   private val chineseDateImpl: IChineseDate? = null,
+
   /** 虛歲實作 */
   private val intAgeImpl: IIntAge? = null) : IZiweiContext, Serializable {
 
