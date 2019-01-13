@@ -140,6 +140,15 @@ interface IPalmContext {
               place: String?,
               name: String?): IPalmMetaModel
 
+  /**
+   * 承上 , 除了計算本命盤，還額外傳回命盤的文字解釋
+   */
+  fun getPalmWithDesc(gender: Gender,
+                      lmt: ChronoLocalDateTime<*>,
+                      loc: ILocation,
+                      place: String?,
+                      name: String?): IPalmMetaModelDesc
+
   /** 計算 [IBirthDataNamePlace] */
   fun getPalm(data: IBirthDataNamePlace) : IPalmMetaModel {
     return getPalm(data.gender , data.time , data.location , data.place , data.name)

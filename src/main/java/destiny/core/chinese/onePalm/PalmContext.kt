@@ -27,7 +27,8 @@ class PalmContext(override val positiveImpl: IPositive,
                   override val monthAlgo: IFinalMonthNumber.MonthAlgo,
                   override val changeDayAfterZi: Boolean,
                   override val trueRisingSign: Boolean,
-                  override val clockwiseHouse: Boolean) : IPalmContext, Serializable {
+                  override val clockwiseHouse: Boolean,
+                  val branchDescImpl: IBranchDesc) : IPalmContext, Serializable {
 
   /** 沒帶入節氣資料 , 內定把月份計算採用 [IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15] 的演算法  */
   override fun getPalmWithoutSolarTerms(gender: Gender,
@@ -35,7 +36,7 @@ class PalmContext(override val positiveImpl: IPositive,
                                         leap: Boolean,
                                         monthNum: Int,
                                         dayNum: Int,
-                                        hourBranch: Branch) : IPalmModel {
+                                        hourBranch: Branch): IPalmModel {
     val positive = if (positiveImpl.isPositive(gender, yearBranch)) 1 else -1
 
     logger.trace("positive = {}", positive)
@@ -67,7 +68,6 @@ class PalmContext(override val positiveImpl: IPositive,
   }
 
 
-
   /**
    * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
    */
@@ -91,7 +91,36 @@ class PalmContext(override val positiveImpl: IPositive,
     // 節氣的月支
     val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
     val palm = getPalm(gender, chineseDateHour, trueRising, monthBranch)
+
     return PalmMetaModel(palm, lmt, loc, place, name, chineseDateHour)
+  }
+
+  override fun getPalmWithDesc(gender: Gender,
+                               lmt: ChronoLocalDateTime<*>,
+                               loc: ILocation,
+                               place: String?,
+                               name: String?): IPalmMetaModelDesc {
+    val palmMetaModel: IPalmMetaModel = getPalm(gender, lmt, loc, place, name)
+    val palmModelDesc: IPalmModelDesc = getPalmModelDesc(palmMetaModel)
+    return PalmMetaModelDesc(palmMetaModel, palmModelDesc)
+  }
+
+  private fun getPalmModelDesc(palmModel: IPalmModel): IPalmModelDesc {
+    val houseDescriptions = palmModel.nonEmptyPillars.keys.map { branch ->
+      val dao = IPalmModel.getDao(branch)
+      val star = IPalmModel.getStar(branch)
+      val houseIntro = branchDescImpl.getHouseIntro(branch)
+      val map = palmModel.getPillars(branch).map { pillar ->
+        pillar to branchDescImpl.getContent(pillar, branch)
+      }.toMap()
+      HouseDescription(branch, dao, star, houseIntro, map)
+    }.toList()
+
+    val hourBranch = palmModel.getBranch(IPalmModel.Pillar.時)
+    val hourPoem = branchDescImpl.getPoem(hourBranch)
+    val hourContent = branchDescImpl.getContent(hourBranch)
+
+    return PalmModelDesc(houseDescriptions, hourPoem, hourContent)
   }
 
   companion object {

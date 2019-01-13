@@ -173,6 +173,36 @@ interface IPalmMetaModel : IPalmModel {
   val chineseDateHour: ChineseDateHour
 }
 
+data class HouseDescription(
+  val branch: Branch,
+  val dao: String,
+  val star: String,
+  val intro: String,
+  val map: Map<IPalmModel.Pillar, String>
+                           ) : Serializable
+
+/** 一則 [IPalmModel] 的文字解釋 */
+interface IPalmModelDesc {
+
+  val houseDescriptions: List<HouseDescription>
+
+  /** 時柱 對應的七言絕句 */
+  val hourPoem: String
+
+  /* 「時柱」的解釋 */
+  val hourContent: String
+
+}
+
+interface IPalmMetaModelDesc : IPalmMetaModel, IPalmModelDesc
+
+data class PalmModelDesc(
+  override val houseDescriptions: List<HouseDescription>,
+  override val hourPoem: String,
+  override val hourContent: String
+                        ) : IPalmModelDesc, Serializable
+
+
 data class PalmMetaModel(
   private val palmModel: IPalmModel,
   override val lmt: ChronoLocalDateTime<*>,
@@ -180,3 +210,9 @@ data class PalmMetaModel(
   override val place: String?,
   override val name: String?,
   override val chineseDateHour: ChineseDateHour) : IPalmMetaModel, IPalmModel by palmModel, Serializable
+
+data class PalmMetaModelDesc(
+  val palmMetaModel: IPalmMetaModel,
+  val palmModelDesc: IPalmModelDesc
+                            ) : IPalmMetaModelDesc, IPalmMetaModel by palmMetaModel, IPalmModelDesc by palmModelDesc,
+  Serializable
