@@ -30,13 +30,13 @@ class Builder(
    * 出生年的干支 (可能是節氣、也可能是陰曆)
    * 這與 [chineseDate] 內的 [ChineseDate.year] 或許重複
    *  */
-  val year : StemBranch,
+  val year: StemBranch,
   /** 出生月份  */
   val birthMonthNum: Int,
   /** 出生時辰  */
   val birthHour: Branch,
   /** 日、夜？ */
-  private val dayNight : DayNight,
+  private val dayNight: DayNight,
   /** 命宮  */
   private val mainHouse: StemBranch,
   /** 身宮  */
@@ -113,8 +113,8 @@ class Builder(
   /** 註解列表  */
   private var notes: List<String> = mutableListOf()
 
-//  val stars: Set<ZStar>
-//    get() = starStrengthMap.keys
+  //  val stars: Set<ZStar>
+  //    get() = starStrengthMap.keys
 
   /** 承上，只傳回「地支」 -> 宮位 的 mapping  */
   val branchHouseMap: Map<Branch, House>
@@ -123,7 +123,8 @@ class Builder(
   init {
 
     // 中介 map , 記錄 '[辰] : 天相,紫微' 這樣的 mapping , 此 map 的 key 不一定包含全部地支，因為可能有空宮
-    val branchStarsMap: Map<Branch, List<ZStar>> = starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { it.key } }
+    val branchStarsMap: Map<Branch, List<ZStar>> =
+      starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { it.key } }
 
     // 哪個地支 裡面 有哪些星體 (可能會有空宮 , 若星體很少的話)
     val branchStarMap: Map<Branch, List<ZStar>?> = Branch.values().map { branch ->
@@ -151,7 +152,8 @@ class Builder(
 
       val fromTo = flowBigMap[sb]!! // 必定不為空
       val smallRanges = branchSmallRangesMap[sb.branch]!!
-      HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap[sb.branch]!!, flyMap[sb]!!, fromTo.first, fromTo.second, smallRanges)
+      HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap[sb.branch]!!, flyMap[sb]!!, fromTo.first,
+                fromTo.second, smallRanges)
     }.toSet()
 
   } // builder init
@@ -241,8 +243,9 @@ class Builder(
         val b = StarGeneralFront.starFuncMap[star]!!.invoke(flowYear.branch)
         Pair(star, b)
       }.forEach { (star, branch) ->
-        houseDataSet.filter { it.stemBranch.branch == branch }
-          .first { houseData -> houseData.stars.add(star) }
+        houseDataSet
+          .first { it.stemBranch.branch == branch }
+          .also { houseData -> houseData.stars.add(star) }
       }
     }
 
@@ -261,8 +264,9 @@ class Builder(
         val b = StarYearFront.starFuncMap[star]!!.invoke(flowYear.branch)
         Pair(star, b)
       }.forEach { (star, branch) ->
-        houseDataSet.filter { it.stemBranch.branch == branch }
-          .first { houseData -> houseData.stars.add(star) }
+        houseDataSet
+          .first { it.stemBranch.branch == branch }
+          .also { houseData -> houseData.stars.add(star) }
       }
 
     }
@@ -353,13 +357,14 @@ class Builder(
 
   fun build(): IPlate {
     val plate =
-      Plate(name, chineseDate, localDateTime, year , location, place, dayNight , gender, mainHouse, bodyHouse, mainStar, bodyStar,
+      Plate(name, chineseDate, localDateTime, year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
+            bodyStar,
             fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
             vageMap)
     return if (personModel == null) {
       plate
     } else {
-      PlateWithEightWords(plate , personModel!!)
+      PlateWithEightWords(plate, personModel!!)
     }
   }
 

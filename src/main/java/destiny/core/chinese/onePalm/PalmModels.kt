@@ -194,6 +194,9 @@ interface IPalmModelDesc {
 
 }
 
+/**
+ * 2019 Jan 新增 , 提供網頁輸出使用
+ */
 interface IPalmMetaModelDesc : IPalmMetaModel, IPalmModelDesc
 
 data class PalmModelDesc(
@@ -216,3 +219,4 @@ data class PalmMetaModelDesc(
   val palmModelDesc: IPalmModelDesc
                             ) : IPalmMetaModelDesc, IPalmMetaModel by palmMetaModel, IPalmModelDesc by palmModelDesc,
   Serializable
+
