@@ -15,10 +15,18 @@ interface MapConverter<T> {
 }
 
 
+interface IAbstractImpls<T> : MapConverter<T> {
+
+  val impls : List<T>
+  fun getImpl(implKey: String): T
+  fun getStringValue(t: T): String
+  fun getStringValue(t: () -> T): String
+}
+
 open class KAbstractImpls<T>(override val key: String,
                              private val defaultImpl: T,
                              private val defaultImplKey: String) : Serializable,
-  MapConverter<T> {
+  MapConverter<T> , IAbstractImpls<T> {
 
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()
@@ -33,12 +41,13 @@ open class KAbstractImpls<T>(override val key: String,
     implValueMap[t] = value
   }
 
-  fun getImpls(): List<T> {
-    return implValueMap.keys.toList()
-  }
+  override val impls: List<T>
+    get() = implValueMap.keys.toList()
 
 
-  fun getStringValue(t: T): String {
+
+
+  override fun getStringValue(t: T): String {
     return implValueMap[t] ?: {
       logger.warn("cannot get ParameterValue from {} . implValueMap = {}. returning default : {}",
                   t, implValueMap, defaultImpl)
@@ -46,7 +55,7 @@ open class KAbstractImpls<T>(override val key: String,
     }.invoke()
   }
 
-  fun getStringValue(t: () -> T): String {
+  override fun getStringValue(t: () -> T): String {
     return getStringValue(t.invoke())
   }
 
@@ -60,13 +69,16 @@ open class KAbstractImpls<T>(override val key: String,
   }
 
   /** 從 parameter value 找出其對應的實作是哪一個  */
-  private fun getImpl(implKey: String): T {
+  override fun getImpl(implKey: String): T {
     val t = implValueMap.inverse()[implKey]
     return t ?: defaultImpl
   }
 }
 
-class DescriptiveImpls<T : Descriptive>(
+interface  IDescriptiveImpls<T:Descriptive> : IAbstractImpls<T>
+
+open class DescriptiveImpls<T : Descriptive>(
   key: String,
   defaultImpl: T,
-  defaultImplKey: String) : KAbstractImpls<T>(key, defaultImpl, defaultImplKey)
+  defaultImplKey: String) : KAbstractImpls<T>(key, defaultImpl, defaultImplKey) ,
+  IDescriptiveImpls<T>
