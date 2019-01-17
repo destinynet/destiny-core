@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.liuren.golden
 
-import destiny.core.DayNight
 import destiny.astrology.IDayNight
+import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
@@ -43,10 +43,11 @@ interface IPithyContext {
 class PithyContext(
   val eightWordsImpl: IEightWordsFactory,
   val monthMasterImpl: IMonthMaster,
+
   val clockwiseImpl: IClockwise,
   val dayNightImpl: IDayNight,
   val tianyiImpl: ITianyi,
-  val seqImpl: IGeneralSeq,
+  val generalSeqImpl: IGeneralSeq,
   val generalStemBranchImpl: IGeneralStemBranch) : IPithyContext {
 
 
@@ -67,9 +68,9 @@ class PithyContext(
                  ew.day.stem, dayNight, 天乙貴人, direction, clockwise, steps)
 
     // 貴神
-    val 貴神地支 = General.貴人.next(steps, seqImpl).getStemBranch(generalStemBranchImpl).branch
+    val 貴神地支 = General.貴人.next(steps, generalSeqImpl).getStemBranch(generalStemBranchImpl).branch
     val 貴神天干 = StemBranchUtils.getHourStem(ew.day.stem, 貴神地支)
-    logger.debug("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}", General.貴人, steps, General.貴人.next(steps, seqImpl),
+    logger.debug("推導貴神，從 {} 開始走 {} 步，得到 {} , 地支為 {} , 天干為 {}", General.貴人, steps, General.貴人.next(steps, generalSeqImpl),
                  貴神地支,
                  貴神天干)
     val 貴神 = StemBranch[貴神天干, 貴神地支]

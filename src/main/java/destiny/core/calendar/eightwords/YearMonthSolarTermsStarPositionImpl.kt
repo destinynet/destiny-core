@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
+ * (default)
  * 年：具備設定換年點的功能
  *
  * 月：「定氣法」計算地支 , 計算太陽在黃道帶 0 , 15 , 30 ... 345 度的時刻
@@ -29,7 +30,7 @@ import java.util.*
 open class YearMonthSolarTermsStarPositionImpl(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
-  /** 換年的度數 , 通常是立春點 (315) 換年 */
+  /** 換年的度數 , 通常是立春點 (315) 換年  , 另一個值通常為 270 (冬至) */
   changeYearDegree: Double = 315.0,
   override val southernHemisphereOpposition: Boolean = false,
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :

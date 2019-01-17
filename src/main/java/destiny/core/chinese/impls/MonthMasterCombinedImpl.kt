@@ -11,7 +11,7 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-class MonthMasterCombinedImpl(private val yearMonthImpl: IYearMonth) : IMonthMaster, Serializable {
+class MonthMasterCombinedImpl(val yearMonthImpl: IYearMonth) : IMonthMaster, Serializable {
 
   override fun getTitle(locale: Locale): String {
     return "月支六合（過節）"
