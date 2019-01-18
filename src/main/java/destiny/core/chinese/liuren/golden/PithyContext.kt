@@ -15,6 +15,7 @@ import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.IGeneralSeq
 import destiny.core.chinese.liuren.IGeneralStemBranch
 import org.slf4j.LoggerFactory
+import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 interface IPithyContext {
@@ -48,7 +49,7 @@ class PithyContext(
   val dayNightImpl: IDayNight,
   val tianyiImpl: ITianyi,
   val generalSeqImpl: IGeneralSeq,
-  val generalStemBranchImpl: IGeneralStemBranch) : IPithyContext {
+  val generalStemBranchImpl: IGeneralStemBranch) : IPithyContext , Serializable {
 
 
   override fun getModel(direction: Branch,
