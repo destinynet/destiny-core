@@ -29,12 +29,12 @@ import java.time.chrono.ChronoLocalDateTime
  * 因此必須傳入一大堆參數，才能計算出「陰曆」或是「節氣」的「年」
  * 再由 [YearType] 來決定要挑哪一個
  */
-class MainBodyHouseTradImpl(private val yearMonthImpl: IYearMonth,
+class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
                             private val dayImpl: IDay,
                             private val chineseDateImpl: IChineseDate,
-                            private val hourImpl: IHour,
-                            private val midnightImpl: IMidnight,
-                            private val changeDayAfterZi: Boolean,
+                            val hourImpl: IHour,
+                            val midnightImpl: IMidnight,
+                            val changeDayAfterZi: Boolean,
                             val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?) : IMainBodyHouse, Serializable {
 
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
