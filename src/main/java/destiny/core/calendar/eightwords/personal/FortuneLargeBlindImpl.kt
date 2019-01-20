@@ -4,7 +4,9 @@
 package destiny.core.calendar.eightwords.personal
 
 import destiny.core.Gender
+import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -29,7 +31,11 @@ import java.util.*
  * 交運之時不外出，怕與自己屬相衝。
  * 三日不見紅白事，身旺體壯家業興。
  */
-class FortuneLargeBlindImpl : IPersonFortuneLarge, Serializable {
+class FortuneLargeBlindImpl(
+  override val eightWordsImpl: IEightWordsFactory,
+  override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, Serializable {
+
+
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   gender: Gender,

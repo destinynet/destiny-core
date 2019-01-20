@@ -28,18 +28,19 @@ import kotlin.math.abs
 
 
 /** 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 . 內定 一柱十年 */
-class FortuneLargeSpanImpl(private val eightWordsImpl: IEightWordsFactory,
-                           private val solarTermsImpl: ISolarTerms,
-                           /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
-                           private val fortuneDirectionImpl: IFortuneDirection,
-                           /** 歲數實作  */
-                           private val intAgeImpl: IIntAge,
-                           /** 星體運行到某點的介面  */
-                           private val starTransitImpl: IStarTransit,
-                           /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
-                           private val fortuneMonthSpan: Double = 120.0,
-                           /** 歲數註解實作  */
-                           private val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, Serializable {
+class FortuneLargeSpanImpl(
+  override val eightWordsImpl: IEightWordsFactory,
+  private val solarTermsImpl: ISolarTerms,
+  /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
+  private val fortuneDirectionImpl: IFortuneDirection,
+  /** 歲數實作  */
+  private val intAgeImpl: IIntAge,
+  /** 星體運行到某點的介面  */
+  private val starTransitImpl: IStarTransit,
+  /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
+  override val fortuneMonthSpan: Double = 120.0,
+  /** 歲數註解實作  */
+  override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -61,9 +62,9 @@ class FortuneLargeSpanImpl(private val eightWordsImpl: IEightWordsFactory,
                                   gender: Gender,
                                   count: Int): List<FortuneData> {
 
-    val eightWords = eightWordsImpl.getEightWords(lmt , location)
+    val eightWords = eightWordsImpl.getEightWords(lmt, location)
 
-    val forward =  fortuneDirectionImpl.isForward(lmt , location , gender)
+    val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     val ageMap: Map<Int, Pair<Double, Double>> = getAgeMap(120, gmtJulDay, gender, location)
@@ -95,13 +96,12 @@ class FortuneLargeSpanImpl(private val eightWordsImpl: IEightWordsFactory,
       val sb: IStemBranch = eightWords.month.let {
         if (forward) {
           if (it is StemBranchUnconstrained)
-            it.next(i*2)
+            it.next(i * 2)
           else
             it.next(i)
-        }
-        else {
+        } else {
           if (it is StemBranchUnconstrained)
-            it.prev(i*2)
+            it.prev(i * 2)
           else
             it.prev(i)
         }
@@ -238,11 +238,11 @@ class FortuneLargeSpanImpl(private val eightWordsImpl: IEightWordsFactory,
 
     require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
 
-    val eightWords = eightWordsImpl.getEightWords(lmt , location)
+    val eightWords = eightWordsImpl.getEightWords(lmt, location)
     var resultStemBranch = eightWords.month
 
     // 大運是否順行
-    val fortuneForward = fortuneDirectionImpl.isForward(lmt , location , gender)
+    val fortuneForward = fortuneDirectionImpl.isForward(lmt, location, gender)
 
     val dur = Duration.between(targetGmt, gmt).abs()
     val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0
@@ -251,7 +251,8 @@ class FortuneLargeSpanImpl(private val eightWordsImpl: IEightWordsFactory,
       logger.debug("大運順行")
       var index = 1
       while (getTargetMajorSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan < diffSeconds) {
-        resultStemBranch = if (eightWords.month is StemBranchUnconstrained) resultStemBranch.next(2) else resultStemBranch.next
+        resultStemBranch =
+          if (eightWords.month is StemBranchUnconstrained) resultStemBranch.next(2) else resultStemBranch.next
         index++
       }
       return resultStemBranch
@@ -259,8 +260,9 @@ class FortuneLargeSpanImpl(private val eightWordsImpl: IEightWordsFactory,
       logger.debug("大運逆行")
       var index = -1
       while (abs(getTargetMajorSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan) < diffSeconds) {
-//        resultStemBranch = resultStemBranch.previous
-        resultStemBranch = if (eightWords.month is StemBranchUnconstrained) resultStemBranch.prev(2) else resultStemBranch.previous
+        //        resultStemBranch = resultStemBranch.previous
+        resultStemBranch =
+          if (eightWords.month is StemBranchUnconstrained) resultStemBranch.prev(2) else resultStemBranch.previous
         index--
       }
       return resultStemBranch

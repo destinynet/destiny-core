@@ -35,17 +35,18 @@ import kotlin.math.abs
  *
  * 演算法與 [FortuneLargeSpanImpl] 類似
  */
-class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFactory,
-                                     /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
-                                     private val fortuneDirectionImpl: IFortuneDirection,
-                                     /** 歲數實作  */
-                                     private val intAgeImpl: IIntAge,
-                                     private val solarTermsImpl: ISolarTerms,
-                                     private val starTransitImpl: IStarTransit,
-                                     /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
-                                     private val fortuneMonthSpan: Double = 120.0,
-                                     /** 歲數註解實作  */
-                                     private val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, Serializable {
+class FortuneLargeSolarTermsSpanImpl(
+  override val eightWordsImpl: IEightWordsFactory,
+  /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
+  private val fortuneDirectionImpl: IFortuneDirection,
+  /** 歲數實作  */
+  private val intAgeImpl: IIntAge,
+  private val solarTermsImpl: ISolarTerms,
+  private val starTransitImpl: IStarTransit,
+  /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
+  override val fortuneMonthSpan: Double = 120.0,
+  /** 歲數註解實作  */
+  override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -99,7 +100,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
         ageNoteImpls.map { impl -> ageMap[endFortuneAge]?.let { impl.getAgeNote(it) } }.filter { it != null }
           .map { it!! }.toList()
 
-      val sbu = eightWords.month.let { StemBranchUnconstrained[it.stem , it.branch]!! }
+      val sbu = eightWords.month.let { StemBranchUnconstrained[it.stem, it.branch]!! }
         .let { if (forward) it.next(i) else it.prev(i) }
       //val sb: StemBranch = eightWords.month.let { if (forward) it.next(i) else it.prev(i) }
       i++
@@ -108,7 +109,6 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
     }.takeWhile { i <= count + 1 }
       .toList()
   }
-
 
 
   /**
@@ -156,7 +156,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, true)
 
-            logger.debug("[順] 計算 {} 日期 = {}" , stepSolarTerms , revJulDayFunc.invoke(targetGmtJulDay))
+            logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
             //以隔天計算現在節氣
             stepGmtJulDay = targetGmtJulDay + 1
 
@@ -187,7 +187,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, false)
-            logger.debug("[逆] 計算 {} 日期 = {}" , stepSolarTerms , revJulDayFunc.invoke(targetGmtJulDay))
+            logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1
             hashMap[i] = targetGmtJulDay
@@ -209,7 +209,7 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
 
     // 同義於 Duration.between(gmt , targetGmtJulDay)
     val durDays = targetGmtJulDay!! - gmtJulDay
-    logger.debug("targetGmtJulDay {} - gmtJulDay {} : durDays = {} ", targetGmtJulDay , gmtJulDay , durDays)
+    logger.debug("targetGmtJulDay {} - gmtJulDay {} : durDays = {} ", targetGmtJulDay, gmtJulDay, durDays)
     return durDays * 86400
   } // getTargetSolarTermsSeconds
 
@@ -235,10 +235,10 @@ class FortuneLargeSolarTermsSpanImpl(private val eightWordsImpl: IEightWordsFact
     require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
 
     val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, location)
-    var resultStemBranch: IStemBranch = eightWords.month.let { StemBranchUnconstrained[it.stem , it.branch]!! }
+    var resultStemBranch: IStemBranch = eightWords.month.let { StemBranchUnconstrained[it.stem, it.branch]!! }
 
     // 大運是否順行
-    val fortuneForward = fortuneDirectionImpl.isForward(lmt , location , gender)
+    val fortuneForward = fortuneDirectionImpl.isForward(lmt, location, gender)
 
     val dur = Duration.between(targetGmt, gmt).abs()
     val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0

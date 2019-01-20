@@ -12,7 +12,6 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.子
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
@@ -22,8 +21,6 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
                      , val hourImpl: IHour              // 計算時支的介面
                      , val midnightImpl: IMidnight      // 計算「子正」的介面
                      , val changeDayAfterZi: Boolean) : IEightWordsFactory, Serializable {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
 
   private data class CacheKeyGmt(val gmtJulDay: Double, val loc: ILocation)
 

@@ -4,7 +4,9 @@
 package destiny.core.calendar.eightwords.personal
 
 import destiny.core.Gender
+import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -17,7 +19,10 @@ import java.util.*
  * 參考
  * https://sites.google.com/site/laughing8word/home/horoscope_figure
  */
-class FortuneLargeTradImpl : IPersonFortuneLarge , Serializable {
+class FortuneLargeTradImpl(
+  override val eightWordsImpl: IEightWordsFactory,
+  override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge , Serializable {
+
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   gender: Gender,
