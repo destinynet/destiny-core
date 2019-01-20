@@ -8,10 +8,16 @@ import destiny.core.Descriptive
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 
-interface MapConverter<T> {
+/**
+ * Context 與 Map<String , String> 互換
+ */
+interface IContextMap<T> {
+  fun getMap(context: T): Map<String, String>
+  fun getContext(map: Map<String, String>): T
+}
+
+interface MapConverter<T> : IContextMap<T> {
   val key: String
-  fun getImpl(map: Map<String, String>): T
-  fun addToMap(map: MutableMap<String, String>, impl: T)
 }
 
 
@@ -59,14 +65,16 @@ open class KAbstractImpls<T>(override val key: String,
     return getStringValue(t.invoke())
   }
 
-  override fun getImpl(map: Map<String, String>): T {
+  override fun getContext(map: Map<String, String>): T {
     val implKey = map.getOrDefault(key, defaultImplKey)
     return getImpl(implKey)
   }
 
-  override fun addToMap(map: MutableMap<String, String>, impl: T) {
-    map[key] = getStringValue(impl)
+
+  override fun getMap(context: T): Map<String, String> {
+    return mapOf(key to getStringValue(context))
   }
+
 
   /** 從 parameter value 找出其對應的實作是哪一個  */
   override fun getImpl(implKey: String): T {

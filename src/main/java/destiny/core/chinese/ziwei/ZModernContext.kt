@@ -48,7 +48,7 @@ interface IZiweiModernContext : IZiweiContext {
 }
 
 class ZModernContext(
-  private val context: IZiweiContext,
+  val context: IZiweiContext,
   override val chineseDateImpl: IChineseDate,
   override val solarTermsImpl: ISolarTerms,
   override val yearMonthImpl: IYearMonth,
