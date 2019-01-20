@@ -95,13 +95,13 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
 }
 
 class DivineContext(
-  private val 納甲系統: ISettingsOfStemBranch,
-  private val 伏神系統: IHiddenEnergy,
+  val 納甲系統: ISettingsOfStemBranch,
+  val 伏神系統: IHiddenEnergy,
   private val locale: Locale,
   private val nameShortImpl: IHexagramNameShort,
   private val nameFullImpl: IHexagramNameFull,
-  private val tianyiImpl: ITianyi,
-  private val yangBladeImpl: IYangBlade,
+  val tianyiImpl: ITianyi,
+  val yangBladeImpl: IYangBlade,
   private val expressionImpl: IExpression,
   private val imageImpl: IImage,
   private val judgementImpl: IHexagramJudgement)
