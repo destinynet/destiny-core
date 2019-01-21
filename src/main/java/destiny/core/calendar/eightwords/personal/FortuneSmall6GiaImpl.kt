@@ -26,7 +26,7 @@ import java.time.chrono.ChronoLocalDateTime
  */
 class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
                            private val intAgeImpl: IIntAge,
-                           private val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneSmall, Serializable {
+                           override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneSmall, Serializable {
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   gender: Gender,

@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords.personal
 
 import destiny.core.Gender
 import destiny.core.IIntAge
-import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
@@ -13,19 +12,15 @@ import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 class PersonContext(
 
-  private val eightWordsContext: EightWordsContext,
+  val eightWordsContext: EightWordsContext,
 
   /** 歲數實作  */
-  private val intAgeImpl: IIntAge,
-
-  /** 歲數註解實作  */
-  override val ageNoteImpls: List<IntAgeNote>,
+  val intAgeImpl: IIntAge,
 
   /** 大運 的實作 */
   override val fortuneLargeImpl: IPersonFortuneLarge,
@@ -34,8 +29,6 @@ class PersonContext(
   override val fortuneSmallImpl : IPersonFortuneSmall
                    ) : IPersonContext,
   IPersonPresentContext , IEightWordsContext by eightWordsContext, Serializable {
-
-  private var logger = LoggerFactory.getLogger(javaClass)
 
   override fun getPersonContextModel(lmt: ChronoLocalDateTime<*>,
                                      location: ILocation,

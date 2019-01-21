@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 
-/** 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 . 內定 一柱十年 */
+/** 標準 , 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 . 內定 一柱十年 */
 class FortuneLargeSpanImpl(
   override val eightWordsImpl: IEightWordsFactory,
   private val solarTermsImpl: ISolarTerms,

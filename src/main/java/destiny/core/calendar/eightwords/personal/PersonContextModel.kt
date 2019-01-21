@@ -84,6 +84,8 @@ interface IPersonFortuneLarge : Descriptive {
 /** 推算小運 */
 interface IPersonFortuneSmall {
 
+  val ageNoteImpls: List<IntAgeNote>
+
   /**
    * 順推小運
    * 取得幾條小運
@@ -110,8 +112,6 @@ interface IPersonContext : IEightWordsContext {
   fun getPersonContextModel(data: BirthDataNamePlace): IPersonContextModel {
     return getPersonContextModel(data.time, data.location, data.place, data.gender, data.name)
   }
-
-  val ageNoteImpls: List<IntAgeNote>
 
   /** 大運 的實作 */
   val fortuneLargeImpl : IPersonFortuneLarge

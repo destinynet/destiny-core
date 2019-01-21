@@ -105,7 +105,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
 
     // TODO : 必須要確認， ageNoteImpls 不能為空list
-    val ageNoteImpls = personContext.ageNoteImpls
+    val ageNoteImpls = personContext.fortuneLargeImpl.ageNoteImpls
 
     // 下方大運橫
     if (dataList.size == 9) {

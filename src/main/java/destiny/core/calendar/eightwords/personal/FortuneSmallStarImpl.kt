@@ -17,7 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 八字小運推算不分陰命陽命，一律以男子一歲時從丙寅起順數，女子一歲時從壬申起逆數。
  */
 class FortuneSmallStarImpl(private val intAgeImpl: IIntAge ,
-                           private val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneSmall , Serializable {
+                           override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneSmall , Serializable {
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   gender: Gender,

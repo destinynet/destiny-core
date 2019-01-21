@@ -23,16 +23,16 @@ interface MapConverter<T> : IContextMap<T> {
 
 interface IAbstractImpls<T> : MapConverter<T> {
 
-  val impls : List<T>
+  val impls: List<T>
   fun getImpl(implKey: String): T
   fun getStringValue(t: T): String
   fun getStringValue(t: () -> T): String
 }
 
-open class KAbstractImpls<T>(override val key: String,
-                             private val defaultImpl: T,
-                             private val defaultImplKey: String) : Serializable,
-  MapConverter<T> , IAbstractImpls<T> {
+open class AbstractImpls<T>(override val key: String,
+                            private val defaultImpl: T,
+                            private val defaultImplKey: String) : Serializable,
+  MapConverter<T>, IAbstractImpls<T> {
 
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()
@@ -49,8 +49,6 @@ open class KAbstractImpls<T>(override val key: String,
 
   override val impls: List<T>
     get() = implValueMap.keys.toList()
-
-
 
 
   override fun getStringValue(t: T): String {
@@ -83,10 +81,10 @@ open class KAbstractImpls<T>(override val key: String,
   }
 }
 
-interface  IDescriptiveImpls<T:Descriptive> : IAbstractImpls<T>
+interface IDescriptiveImpls<T : Descriptive> : IAbstractImpls<T>
 
 open class DescriptiveImpls<T : Descriptive>(
   key: String,
   defaultImpl: T,
-  defaultImplKey: String) : KAbstractImpls<T>(key, defaultImpl, defaultImplKey) ,
+  defaultImplKey: String) : AbstractImpls<T>(key, defaultImpl, defaultImplKey),
   IDescriptiveImpls<T>

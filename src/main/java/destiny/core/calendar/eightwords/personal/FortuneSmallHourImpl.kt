@@ -30,7 +30,7 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
                            private val fortuneDirectionImpl: IFortuneDirection,
                            /** 歲數實作  */
                            private val intAgeImpl: IIntAge,
-                           private val ageNoteImpls: List<IntAgeNote>
+                           override val ageNoteImpls: List<IntAgeNote>
                           ) : IPersonFortuneSmall, Serializable {
 
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
