@@ -35,9 +35,7 @@ class EssentialDignitiesBean(
 
   override fun getComments(planet: Planet, h: IHoroscopeModel, locale: Locale): List<String> {
     return rules
-      .map { it.getComment(planet , h , locale) }
-      .filter { it != null }
-      .map { it -> it!! }
+      .mapNotNull { it.getComment(planet, h, locale) }
       .toList()
   }
 

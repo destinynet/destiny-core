@@ -10,6 +10,11 @@ import java.util.*
 
 object LocationTools {
 
+  private fun String.localTrim() =
+    this
+      .replace("[\\p{Cc}]\\d+;".toRegex(), "")
+      .replace("[\\p{Cntrl}]".toRegex(), "")
+      .trim { it == ' ' }
 
   fun encode(loc: ILocation): String {
     return encode2018(loc)
@@ -67,26 +72,31 @@ object LocationTools {
 
 
   fun decode(s: String): ILocation {
-    return decode2018(s) ?: {
-      decode2012(s)
-    }.invoke()
+    return s.localTrim().let { it ->
+      decode2018(it) ?: {
+        decode2012(it)
+      }.invoke()
+    }
   }
 
   /**
    * 解碼 2018-03 的 [Location] debugString
    * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
-  fun decode2018(string: String): ILocation? {
+  private fun decode2018(string: String): ILocation? {
     val parts: Set<LocationPadding> =
       string.splitToSequence(" ").map { it -> LocationPadding.getPadding(it) }.filterNotNull().toSet()
     return try {
       (parts.firstOrNull { it is LocationPadding.latLng } as LocationPadding.latLng).let {
         val tzid: String? =
-          parts.firstOrNull { padding -> padding is LocationPadding.tzid }?.let { pad -> pad as LocationPadding.tzid }?.value?.id
+          parts.firstOrNull { padding -> padding is LocationPadding.tzid }?.let { pad -> pad as LocationPadding.tzid }
+            ?.value?.id
         val minuteOffset: Int? =
-          parts.firstOrNull { padding -> padding is LocationPadding.minOffset }?.let { pad -> pad as LocationPadding.minOffset }?.value
+          parts.firstOrNull { padding -> padding is LocationPadding.minOffset }
+            ?.let { pad -> pad as LocationPadding.minOffset }?.value
         val altMeter: Double? =
-          parts.firstOrNull { padding -> padding is LocationPadding.altMeter }?.let { pad -> pad as LocationPadding.altMeter }?.value
+          parts.firstOrNull { padding -> padding is LocationPadding.altMeter }
+            ?.let { pad -> pad as LocationPadding.altMeter }?.value
         Location(it.lng, it.lat, tzid, minuteOffset, altMeter)
       }
     } catch (e: Exception) {
@@ -109,8 +119,8 @@ object LocationTools {
           }
           ZoneId.getAvailableZoneIds().contains(value) -> LocationPadding.tzid(ZoneId.of(value))
 
-          value.endsWith('m') && value.substring(0,value.length-1).toIntOrNull() != null ->
-            LocationPadding.minOffset((value.substring(0,value.length-1)).toInt())
+          value.endsWith('m') && value.substring(0, value.length - 1).toIntOrNull() != null ->
+            LocationPadding.minOffset((value.substring(0, value.length - 1)).toInt())
 
           value.toDoubleOrNull() != null -> LocationPadding.altMeter(value.toDouble())
           else -> null
@@ -122,7 +132,7 @@ object LocationTools {
   /**
    * decode 2012-03 格式
    */
-  fun decode2012(s: String): ILocation {
+  private fun decode2012(s: String): ILocation {
     val eastWest: EastWest
     val ew = s[0]
     eastWest = when (ew) {

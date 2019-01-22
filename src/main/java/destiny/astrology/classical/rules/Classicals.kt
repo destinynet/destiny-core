@@ -31,7 +31,7 @@ interface IClassicalContext : IPersonHoroscopeContext {
                              place: String?,
                              gender: Gender,
                              name: String?,
-                             locale: Locale? = Locale.getDefault(),
+                             locale: Locale = Locale.getDefault(),
                              houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
                              centric: Centric? = Centric.GEO,
                              coordinate: Coordinate? = Coordinate.ECLIPTIC): IClassicalModel
@@ -53,7 +53,7 @@ interface IClassicalContext : IPersonHoroscopeContext {
                          place: String?,
                          gender: Gender,
                          name: String?,
-                         locale: Locale? = Locale.getDefault(),
+                         locale: Locale = Locale.getDefault(),
                          houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
                          centric: Centric? = Centric.GEO,
                          coordinate: Coordinate? = Coordinate.ECLIPTIC): Map<Planet, List<Pair<IRule, String>>>
@@ -67,25 +67,24 @@ class ClassicalContext(
   private val personContext: IPersonHoroscopeContext,
   private val essentialDignitiesImpl: IEssentialDignities,
   private val accidentalDignitiesImpl: IAccidentalDignities,
-  private val debilitiesBean: DebilitiesBean,
-  val locale: Locale) : IClassicalContext, IPersonHoroscopeContext by personContext {
+  private val debilitiesBean: DebilitiesBean
+                      ) : IClassicalContext, IPersonHoroscopeContext by personContext {
   override fun getClassicalCommentMap(lmt: ChronoLocalDateTime<*>,
                                       loc: ILocation,
                                       place: String?,
                                       gender: Gender,
                                       name: String?,
-                                      locale: Locale?,
+                                      locale: Locale,
                                       houseSystem: HouseSystem?,
                                       centric: Centric?,
                                       coordinate: Coordinate?): IClassicalModel {
-    val finalLocale = locale ?: this.locale
 
     val h: IPersonHoroscopeModel =
       personContext.getPersonHoroscope(lmt, loc, place, gender, name, houseSystem, coordinate, centric)
     val commentMap: Map<Planet, List<String>> = Planet.classicalList.map { planet ->
-      val list1 = essentialDignitiesImpl.getComments(planet, h, finalLocale)
-      val list2 = accidentalDignitiesImpl.getComments(planet, h, finalLocale)
-      val list3 = debilitiesBean.getComments(planet, h, finalLocale)
+      val list1 = essentialDignitiesImpl.getComments(planet, h, locale)
+      val list2 = accidentalDignitiesImpl.getComments(planet, h, locale)
+      val list3 = debilitiesBean.getComments(planet, h, locale)
       planet to (list1 + list2 + list3)
     }.toMap()
 
@@ -97,11 +96,10 @@ class ClassicalContext(
                                   place: String?,
                                   gender: Gender,
                                   name: String?,
-                                  locale: Locale?,
+                                  locale: Locale ,
                                   houseSystem: HouseSystem?,
                                   centric: Centric?,
                                   coordinate: Coordinate?): Map<Planet, List<Pair<IRule, String>>> {
-    val finalLocale = locale ?: this.locale
 
     val h: IPersonHoroscopeModel =
       personContext.getPersonHoroscope(lmt, loc, place, gender, name, houseSystem, coordinate, centric)
@@ -114,7 +112,7 @@ class ClassicalContext(
     return Planet.classicalList.map { planet ->
 
       val comments: List<Pair<IRule, String>> = rules.map { rule ->
-        rule to rule.getComment(planet, h, finalLocale)
+        rule to rule.getComment(planet, h, locale)
       }.filter { it.second != null }
         .map { pair -> Pair(pair.first, pair.second!!) }
 
