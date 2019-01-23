@@ -21,8 +21,8 @@ data class ViewSettings(
   /** 是否顯示八字盤  */
   val showEightWords: Boolean = true,
 
-  /** 八字排盤，右至左 or 左至右. 若是不顯示的話，則為 null */
-  val direction: Direction? = Direction.R2L,
+  /** 八字排盤，右至左 or 左至右 */
+  val direction: Direction = Direction.R2L,
 
   /** 顯示雜曜  */
   val showMinors: Boolean = true,

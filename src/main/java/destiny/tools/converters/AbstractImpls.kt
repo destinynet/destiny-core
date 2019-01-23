@@ -13,15 +13,26 @@ import java.io.Serializable
  */
 interface IContextMap<T> {
   fun getMap(context: T): Map<String, String>
-  fun getContext(map: Map<String, String>): T
+  fun getContext(map: Map<String, String>): T?
+}
+
+interface IContextMapWithDefault<T> : IContextMap<T> {
+  override fun getContext(map: Map<String, String>): T
 }
 
 interface MapConverter<T> : IContextMap<T> {
   val key: String
 }
 
+interface MapConverterWithDefault<T> : MapConverter<T> {
+  val defaultImpl : T
 
-interface IAbstractImpls<T> : MapConverter<T> {
+  fun getContextWithDefault(map: Map<String, String>): T {
+    return getContext(map) ?:defaultImpl
+  }
+}
+
+interface IAbstractImpls<T> : MapConverterWithDefault<T> {
 
   val impls: List<T>
   fun getImpl(implKey: String): T
@@ -30,9 +41,8 @@ interface IAbstractImpls<T> : MapConverter<T> {
 }
 
 open class AbstractImpls<T>(override val key: String,
-                            private val defaultImpl: T,
-                            private val defaultImplKey: String) : Serializable,
-  MapConverter<T>, IAbstractImpls<T> {
+                            override val defaultImpl: T,
+                            private val defaultImplKey: String) : Serializable, IAbstractImpls<T> {
 
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()
