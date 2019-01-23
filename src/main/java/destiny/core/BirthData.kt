@@ -8,10 +8,20 @@ import destiny.core.calendar.ILocation
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
+/**
+ * 最精要、計算 (modern版) 八字、斗數、占星 的元素
+ */
 interface IBirthData {
   val gender: Gender
   val time: ChronoLocalDateTime<*>
   val location: ILocation
+}
+
+/** 承上 , mutable 版本 */
+interface IBirthDataMutable : IBirthData {
+  override var gender: Gender
+  override var time: ChronoLocalDateTime<*>
+  override var location: ILocation
 }
 
 data class BirthData(
@@ -21,9 +31,18 @@ data class BirthData(
                     ) : IBirthData, Serializable
 
 
+/**
+ * 加上姓名、地名 等資料
+ */
 interface IBirthDataNamePlace : IBirthData {
   val name: String?
   val place: String?
+}
+
+/** 承上 , mutable 版本 */
+interface IBirthDataNamePlaceMutable : IBirthDataNamePlace , IBirthDataMutable {
+  override var name: String?
+  override var place: String?
 }
 
 data class BirthDataNamePlace(
