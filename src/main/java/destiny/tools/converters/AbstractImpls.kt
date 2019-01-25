@@ -63,7 +63,7 @@ open class AbstractImpls<T>(override val key: String,
 
   override fun getStringValue(t: T): String {
     return implValueMap[t] ?: {
-      logger.warn("cannot get ParameterValue from {} . implValueMap = {}. returning default : {}",
+      logger.warn("cannot get value from {} . implValueMap = {}. returning default : {}",
                   t, implValueMap, defaultImpl)
       implValueMap[defaultImpl]!!
     }.invoke()

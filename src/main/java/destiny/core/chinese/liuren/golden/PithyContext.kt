@@ -33,7 +33,7 @@ interface IPithyContext {
                      loc: ILocation,
                      direction: Branch,
                      place: String?,
-                     question: String,
+                     question: String?,
                      method: IPithyDetailModel.Method): IPithyDetailModel
 
   fun getDetailModel(data: IBirthDataNamePlace , direction: Branch , question: String , method: IPithyDetailModel.Method)  : IPithyDetailModel {
@@ -95,7 +95,7 @@ class PithyContext(
                               loc: ILocation,
                               direction: Branch,
                               place: String?,
-                              question: String,
+                              question: String?,
                               method: IPithyDetailModel.Method): IPithyDetailModel {
     val modernModel = getModernModel(gender, lmt, loc, direction)
     return PithyDetailModel(modernModel, place, question, method)
