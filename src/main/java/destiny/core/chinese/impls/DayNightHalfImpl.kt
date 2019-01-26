@@ -15,8 +15,10 @@ import java.util.*
 class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Serializable {
 
   override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {
-    val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, false, true)
-    val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, false, true)
+    val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location,
+                                                             discCenter = false, refraction = true)
+    val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location,
+                                                          discCenter = false, refraction = true)
 
     return if (nextNadirJulDay > nextMeridianJulDay) {
       //子正到午正（上半天）
