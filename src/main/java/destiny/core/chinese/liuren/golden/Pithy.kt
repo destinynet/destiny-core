@@ -5,6 +5,7 @@ package destiny.core.chinese.liuren.golden
 
 import destiny.core.DayNight
 import destiny.core.Gender
+import destiny.core.IBirthData
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
@@ -85,17 +86,17 @@ data class Pithy(
 /**
  * 添加了性別、詳細時間
  */
-interface IPithyModernModel : IPithyModel {
-  val gender: Gender
-  val lmt: ChronoLocalDateTime<*>
-  val loc: ILocation
+interface IPithyModernModel : IPithyModel , IBirthData {
+//  val gender: Gender
+//  val time: ChronoLocalDateTime<*>
+//  val location: ILocation
 }
 
 data class PithyModernModel(
   private val pithy: IPithyModel,
   override val gender: Gender,
-  override val lmt: ChronoLocalDateTime<*>,
-  override val loc: ILocation) : IPithyModernModel, IPithyModel by pithy, Serializable
+  override val time: ChronoLocalDateTime<*>,
+  override val location: ILocation) : IPithyModernModel, IPithyModel by pithy, Serializable
 
 
 /**

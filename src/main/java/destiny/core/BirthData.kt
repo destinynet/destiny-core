@@ -8,27 +8,42 @@ import destiny.core.calendar.ILocation
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
+/** 時間、地點 */
+interface ITimeLoc {
+  val time: ChronoLocalDateTime<*>
+  val location: ILocation
+
+
+}
+
+data class TimeLoc(
+  override val time: ChronoLocalDateTime<*>,
+  override val location: ILocation) : ITimeLoc, Serializable
+
+data class TimeLocMutable(
+  override var time: ChronoLocalDateTime<*>,
+  override var location: ILocation) : ITimeLoc, Serializable
+
+
 /**
  * 最精要、計算 (modern版) 八字、斗數、占星 的元素
  */
-interface IBirthData {
+interface IBirthData : ITimeLoc {
   val gender: Gender
-  val time: ChronoLocalDateTime<*>
-  val location: ILocation
 }
 
+
+data class BirthData(
+  val timeLoc: ITimeLoc,
+  override val gender: Gender
+                    ) : IBirthData, ITimeLoc by timeLoc, Serializable
+
 /** 承上 , mutable 版本 */
-interface IBirthDataMutable : IBirthData {
+interface IBirthDataMutable : IBirthData, Serializable {
   override var gender: Gender
   override var time: ChronoLocalDateTime<*>
   override var location: ILocation
 }
-
-data class BirthData(
-  override val gender: Gender,
-  override val time: ChronoLocalDateTime<*>,
-  override val location: ILocation
-                    ) : IBirthData, Serializable
 
 
 /**
@@ -40,7 +55,7 @@ interface IBirthDataNamePlace : IBirthData {
 }
 
 /** 承上 , mutable 版本 */
-interface IBirthDataNamePlaceMutable : IBirthDataNamePlace , IBirthDataMutable {
+interface IBirthDataNamePlaceMutable : IBirthDataNamePlace, IBirthDataMutable {
   override var name: String?
   override var place: String?
 }
@@ -51,5 +66,5 @@ data class BirthDataNamePlace(
   override val place: String?) : IBirthDataNamePlace, IBirthData by birthData, Serializable {
 
   constructor(gender: Gender, time: ChronoLocalDateTime<*>, location: ILocation, name: String?, place: String?)
-    : this(BirthData(gender, time, location), name, place)
+    : this(BirthData(TimeLoc(time, location), gender), name, place)
 }

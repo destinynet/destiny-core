@@ -10,4 +10,4 @@ import java.io.Serializable
 
 data class ParsedBasic(
   val successful: Boolean,
-  private val birthData: BirthData) : Serializable, IBirthData by birthData
+  private val birthData: IBirthData) : Serializable, IBirthData by birthData
