@@ -61,7 +61,7 @@ interface IBirthDataNamePlaceMutable : IBirthDataNamePlace, IBirthDataMutable {
 }
 
 data class BirthDataNamePlace(
-  val birthData: BirthData,
+  val birthData: IBirthData,
   override val name: String?,
   override val place: String?) : IBirthDataNamePlace, IBirthData by birthData, Serializable {
 

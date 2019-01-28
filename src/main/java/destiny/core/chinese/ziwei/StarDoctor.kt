@@ -42,6 +42,8 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
       val gender = tuple3.second
       val steps = tuple3.third
 
+      //println("yearStem = $yearStem , 祿存地支 = $祿存地支 , gender = $gender , steps = $steps")
+
       if (yearStem.booleanValue && gender === Gender.男 || !yearStem.booleanValue && gender === Gender.女) {
         // 陽男 陰女 順行
         祿存地支.next(steps - 1)

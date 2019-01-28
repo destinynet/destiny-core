@@ -594,7 +594,7 @@ class ZContext(
         val strength: Int? = strengthImpl.getStrengthOf(star, starBranchMap[star]!!)
         star to strength
       }.filter { it.second != null }
-      .map { it -> it.first to it.second!! }
+      .map { it.first to it.second!! }
       .toMap()
 
     val chineseDate = ChineseDate(cycle, lunarYear, lunarMonth, leapMonth, lunarDays)

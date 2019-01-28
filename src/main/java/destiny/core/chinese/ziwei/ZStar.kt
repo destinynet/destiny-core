@@ -67,4 +67,22 @@ abstract class ZStar : Point, Comparable<ZStar>  {
       this.toString().compareTo(other.toString())
     }
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is ZStar) return false
+    if (!super.equals(other)) return false
+
+    if (type != other.type) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = super.hashCode()
+    result = 31 * result + type.hashCode()
+    return result
+  }
+
+
 }

@@ -3,6 +3,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Branch
 import org.slf4j.LoggerFactory
 import kotlin.test.Test
+import kotlin.test.assertNotEquals
 
 /**
  * Created by smallufo on 2017-12-07.
@@ -11,6 +12,15 @@ class ZStarTest {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
+  @Test
+  fun shouldNotEqual() {
+    logger.info("StarDoctor.小耗 = {}" , StarDoctor.小耗)
+    logger.info("StarYearFront.小耗 = {}" , StarYearFront.小耗)
+    assertNotEquals<Any>(StarDoctor.小耗 , StarYearFront.小耗)
+    assertNotEquals<ZStar>(StarDoctor.小耗 , StarYearFront.小耗)
+    assertNotEquals<ZStar>(StarDoctor.博士 , StarDoctor.力士)
+    assertNotEquals<StarDoctor>(StarDoctor.博士 , StarDoctor.力士)
+  }
 
   @Test
   fun testMapGroupBy() {
