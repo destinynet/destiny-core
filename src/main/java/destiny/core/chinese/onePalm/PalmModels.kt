@@ -29,6 +29,16 @@ interface IPalmModel {
     命, 財帛, 兄弟, 田宅, 男女, 奴僕, 配偶, 疾厄, 遷移, 官祿, 福德, 相貌
   }
 
+  /** 達摩一掌經，主要四個大字 , 由 年、月、日、時 四星所組成 */
+  val fourChars: String
+    get() =
+      with(StringBuilder()) {
+        append(getStar(year).substring(1, 2))
+        append(getStar(month).substring(1, 2))
+        append(getStar(day).substring(1, 2))
+        append(getStar(hour).substring(1, 2))
+      }.toString()
+
   /**
    * 取得哪些宮位有「柱」坐落其中，列出來
    */
