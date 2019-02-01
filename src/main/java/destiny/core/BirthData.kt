@@ -5,24 +5,37 @@
 package destiny.core
 
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.Location
 import java.io.Serializable
+import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 
 /** 時間、地點 */
-interface ITimeLoc {
+interface ITimeLoc : Serializable {
   val time: ChronoLocalDateTime<*>
   val location: ILocation
-
-
 }
 
 data class TimeLoc(
   override val time: ChronoLocalDateTime<*>,
-  override val location: ILocation) : ITimeLoc, Serializable
+  override val location: ILocation) : ITimeLoc
+
+interface ITimeLocMutable : ITimeLoc {
+  override var time: ChronoLocalDateTime<*>
+  override var location: ILocation
+}
 
 data class TimeLocMutable(
   override var time: ChronoLocalDateTime<*>,
-  override var location: ILocation) : ITimeLoc, Serializable
+  override var location: ILocation) : ITimeLocMutable {
+
+  companion object {
+    fun withDefault(): ITimeLoc {
+      return TimeLoc(LocalDateTime.now(), Location.of(Locale.getDefault()))
+    }
+  }
+}
 
 
 /**
@@ -36,13 +49,16 @@ interface IBirthData : ITimeLoc {
 data class BirthData(
   val timeLoc: ITimeLoc,
   override val gender: Gender
-                    ) : IBirthData, ITimeLoc by timeLoc, Serializable
+                    ) : IBirthData, ITimeLoc by timeLoc {
+
+  constructor(time: ChronoLocalDateTime<*>, location: ILocation, gender: Gender) : this(TimeLoc(time, location), gender)
+}
 
 /** 承上 , mutable 版本 */
-interface IBirthDataMutable : IBirthData, Serializable {
-  override var gender: Gender
+interface IBirthDataMutable : IBirthData {
   override var time: ChronoLocalDateTime<*>
   override var location: ILocation
+  override var gender: Gender
 }
 
 
@@ -63,7 +79,7 @@ interface IBirthDataNamePlaceMutable : IBirthDataNamePlace, IBirthDataMutable {
 data class BirthDataNamePlace(
   val birthData: IBirthData,
   override val name: String?,
-  override val place: String?) : IBirthDataNamePlace, IBirthData by birthData, Serializable {
+  override val place: String?) : IBirthDataNamePlace, IBirthData by birthData {
 
   constructor(gender: Gender, time: ChronoLocalDateTime<*>, location: ILocation, name: String?, place: String?)
     : this(BirthData(TimeLoc(time, location), gender), name, place)
