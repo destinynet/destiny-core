@@ -26,7 +26,6 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
 
   private val cacheGmt: Cache<CacheKeyGmt, IEightWords> = CacheBuilder.newBuilder()
     .maximumSize(100)
-    //.expireAfterWrite(5, TimeUnit.SECONDS)
     .expireAfterAccess(10, TimeUnit.SECONDS)
     .build()
 
