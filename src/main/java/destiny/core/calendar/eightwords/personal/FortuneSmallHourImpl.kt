@@ -56,10 +56,8 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
     return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, count).map { (age, pair) ->
       sb = if (forward) sb.next as StemBranch else sb.previous as StemBranch
       val (from, to) = pair
-      val startFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> impl.getAgeNote(from) }.filter { it != null }.map { it!! }.toList()
-      val endFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> impl.getAgeNote(to) }.filter { it != null }.map { it!! }.toList()
+      val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
+      val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
       FortuneData(sb, from, to, age, age + 1, startFortuneAgeNotes, endFortuneAgeNotes)
     }.toList()
   }
@@ -80,10 +78,8 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
       // 出生當時，就是一歲
       val (from, to) = intAgeImpl.getRange(gender, gmtJulDay, location, age + 1)
       /** 附加上 西元、民國 之類的註記 */
-      val startFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> impl.getAgeNote(from) }.filter { it != null }.map { it!! }.toList()
-      val endFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> impl.getAgeNote(to) }.filter { it != null }.map { it!! }.toList()
+      val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
+      val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
 
       sb = if (forward) sb.next as StemBranch else sb.previous as StemBranch
       age += 1

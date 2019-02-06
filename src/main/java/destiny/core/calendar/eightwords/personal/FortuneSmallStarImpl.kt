@@ -27,10 +27,8 @@ class FortuneSmallStarImpl(private val intAgeImpl: IIntAge ,
 
     return intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , count).map { (age , pair) ->
       val (from , to) = pair
-      val startFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> impl.getAgeNote(from) }.filter { it != null }.map { it!! }.toList()
-      val endFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> impl.getAgeNote(to) }.filter { it != null }.map { it!! }.toList()
+      val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
+      val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
       sb = if (gender == Gender.男) sb.next else sb.previous
       FortuneData(sb , from , to , age , age+1 , startFortuneAgeNotes , endFortuneAgeNotes)
     }.toList()

@@ -87,11 +87,9 @@ class FortuneLargeSpanImpl(
 
       /** 附加上 西元、民國 之類的註記 */
       val startFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> ageMap[startFortuneAge]?.let { impl.getAgeNote(it) } }.filter { it != null }
-          .map { it!! }.toList()
+        ageNoteImpls.mapNotNull { impl -> ageMap[startFortuneAge]?.let { impl.getAgeNote(it) } }.toList()
       val endFortuneAgeNotes: List<String> =
-        ageNoteImpls.map { impl -> ageMap[endFortuneAge]?.let { impl.getAgeNote(it) } }.filter { it != null }
-          .map { it!! }.toList()
+        ageNoteImpls.mapNotNull { impl -> ageMap[endFortuneAge]?.let { impl.getAgeNote(it) } }.toList()
 
       val sb: IStemBranch = eightWords.month.let {
         if (forward) {

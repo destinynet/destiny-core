@@ -34,20 +34,29 @@ class EightWordsContext(
   val solarTermsImpl: ISolarTerms,
   val zodiacSignImpl: IZodiacSign) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
-  private data class CacheKey(val lmt: ChronoLocalDateTime<*> , val location: ILocation , val place: String?)
+  private data class CacheKey(val lmt: ChronoLocalDateTime<*>, val location: ILocation, val place: String?)
 
-  private val cache : Cache<CacheKey , IEightWordsContextModel> = CacheBuilder.newBuilder()
+  /**
+   * TODO : 2019-02-02 : use ehcache to replace guava cache . 在紫微排盤後，切換到其他排盤，在切回原紫微盤，無法做時辰切換 , 換用 ehcache 不知能否解決此 bug
+   *
+   * Caused by: com.google.common.util.concurrent.UncheckedExecutionException: com.google.common.util.concurrent.UncheckedExecutionException: java.lang.NullPointerException
+   * at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2050)
+   * at com.google.common.cache.LocalCache.get(LocalCache.java:3952)
+   * at com.google.common.cache.LocalCache$LocalManualCache.get(LocalCache.java:4871)
+   * at destiny.core.calendar.eightwords.EightWordsContext.getEightWordsContextModel(EightWordsContext.kt:73)
+   */
+  private val cache: Cache<CacheKey, IEightWordsContextModel> = CacheBuilder.newBuilder()
     .maximumSize(100)
-    .expireAfterAccess(10 , TimeUnit.SECONDS)
+    .expireAfterAccess(10, TimeUnit.SECONDS)
     .build()
 
   override fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                          location: ILocation,
                                          place: String?): IEightWordsContextModel {
 
-    val key = CacheKey(lmt , location , place)
+    val key = CacheKey(lmt, location, place)
 
-    fun innerGetModel() : IEightWordsContextModel {
+    fun innerGetModel(): IEightWordsContextModel {
       // 現在的節氣
       val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
       val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl,
@@ -60,17 +69,17 @@ class EightWordsContext(
       val moonSign = getSignOf(Planet.MOON, lmt, location, starPositionImpl)
 
 
-      val (prevSolarSign , nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN , lmt , location)
+      val (prevSolarSign, nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location)
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
                                     prevMajorSolarTerms, nextMajorSolarTerms,
-                                    risingSign ,
-                                    prevSolarSign , nextSolarSign,
+                                    risingSign,
+                                    prevSolarSign, nextSolarSign,
                                     moonSign
                                    )
     }
 
-    return cache.get(key) { innerGetModel()}
+    return cache.get(key) { innerGetModel() }
 
   }
 
@@ -90,9 +99,9 @@ class EightWordsContext(
   }
 
   private fun getSignOf(star: Star,
-                          lmt: ChronoLocalDateTime<*>,
-                          location: ILocation,
-                          starPositionImpl: IStarPosition<*>): ZodiacSign {
+                        lmt: ChronoLocalDateTime<*>,
+                        location: ILocation,
+                        starPositionImpl: IStarPosition<*>): ZodiacSign {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
     return ZodiacSign.getZodiacSign(pos.lng)
   }
