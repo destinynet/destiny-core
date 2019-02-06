@@ -6,7 +6,6 @@ package destiny.core.calendar
 import destiny.core.calendar.TimeTools.Companion.getDstSecondOffset
 import destiny.core.calendar.TimeTools.Companion.getGmtJulDay
 import destiny.core.calendar.TimeTools.Companion.getLmtFromGmt
-import org.junit.Assert.assertEquals
 import org.slf4j.LoggerFactory
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
@@ -16,6 +15,7 @@ import java.time.chrono.ChronoZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TimeToolsTest {
 
@@ -84,7 +84,7 @@ class TimeToolsTest {
    */
   @Test
   fun test1970Epoch() {
-    assertEquals(2440587.5, getGmtJulDay(LocalDateTime.of(1970, 1, 1, 0, 0)), 0.0)
+    assertEquals(2440587.5, getGmtJulDay(LocalDateTime.of(1970, 1, 1, 0, 0)))
   }
 
   /**
@@ -92,8 +92,8 @@ class TimeToolsTest {
    */
   @Test
   fun test_getJulDayFromGregorian() {
-    assertEquals(2457774.0, getGmtJulDay(LocalDateTime.of(2017, 1, 20, 12, 0, 0)), 0.0)
-    assertEquals(2457774.0, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 12, 0, 0)), 0.0)
+    assertEquals(2457774.0, getGmtJulDay(LocalDateTime.of(2017, 1, 20, 12, 0, 0)))
+    assertEquals(2457774.0, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 12, 0, 0)))
   }
 
 
@@ -109,25 +109,25 @@ class TimeToolsTest {
   @Test
   fun testJulDayZero() {
     val startJulG = getGmtJulDay(LocalDateTime.of(-4713, 11, 24, 12, 0))
-    assertEquals(0.0, startJulG, 0.0)
+    assertEquals(0.0, startJulG)
 
     val startJulJ = getGmtJulDay(JulianDateTime.of(-4712, 1, 1, 12, 0))
-    assertEquals(0.0, startJulJ, 0.0)
+    assertEquals(0.0, startJulJ)
   }
 
   @Test
   fun testJulianDateTime() {
     // 中午 , 0
-    assertEquals(2457774.0, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 12, 0)), 0.0)
+    assertEquals(2457774.0, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 12, 0)))
 
     // 下午 6點，過了 0.25天
-    assertEquals(2457774.25, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 18, 0)), 0.0)
+    assertEquals(2457774.25, getGmtJulDay(JulianDateTime.of(2017, 1, 7, 18, 0)))
 
     // 晚上12點，過了 0.5天
-    assertEquals(2457774.5, getGmtJulDay(JulianDateTime.of(2017, 1, 8, 0, 0)), 0.0)   // (g)1/21
+    assertEquals(2457774.5, getGmtJulDay(JulianDateTime.of(2017, 1, 8, 0, 0)))   // (g)1/21
 
     // 隔天早上 6點，過了 0.75天
-    assertEquals(2457774.75, getGmtJulDay(JulianDateTime.of(2017, 1, 8, 6, 0)), 0.0)
+    assertEquals(2457774.75, getGmtJulDay(JulianDateTime.of(2017, 1, 8, 6, 0)))
   }
 
   @Test
@@ -404,7 +404,7 @@ class TimeToolsTest {
     assertEquals(ZoneId.of("GMT"), zdt.zone)
     // GMT 為清晨 6點
     assertEquals(LocalDateTime.of(2017, 9, 30, 6, 0), zdt.toLocalDateTime())
-    assertEquals(2458026.75, TimeTools.getJulDay(zdt), 0.0)
+    assertEquals(2458026.75, TimeTools.getJulDay(zdt))
   }
 
   /**
@@ -469,7 +469,7 @@ class TimeToolsTest {
     assertEquals(ZoneId.of("GMT"), zdt.zone)
     // GMT 為清晨 0點
     assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), zdt.toLocalDateTime())
-    assertEquals(2299160.5, TimeTools.getJulDay(zdt), 0.0)
+    assertEquals(2299160.5, TimeTools.getJulDay(zdt))
 
 
     // 1582-10-15 , 9:00 , 日本
@@ -481,7 +481,7 @@ class TimeToolsTest {
     // GMT 為清晨 0點
     logger.info("gmt = {}", zdt)
     assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), zdt.toLocalDateTime())
-    assertEquals(2299160.5, TimeTools.getJulDay(zdt), 0.0)
+    assertEquals(2299160.5, TimeTools.getJulDay(zdt))
   }
 
 

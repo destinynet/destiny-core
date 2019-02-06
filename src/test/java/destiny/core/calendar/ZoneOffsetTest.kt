@@ -3,15 +3,14 @@
  */
 package destiny.core.calendar
 
-import org.junit.Test
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 import java.sql.Timestamp
-import java.time.*
-import java.time.chrono.ChronoLocalDateTime
-
-import org.junit.Assert.assertEquals
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ZoneOffsetTest {
 

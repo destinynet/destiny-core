@@ -4,13 +4,13 @@
  */
 package destiny.core.calendar
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.chrono.IsoEra
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TimeSecDecoratorChineseTest {
 

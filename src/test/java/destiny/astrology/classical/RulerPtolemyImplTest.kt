@@ -3,9 +3,9 @@
  */
 package destiny.astrology.classical
 
-import destiny.core.DayNight
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
+import destiny.core.DayNight
 import kotlin.test.Test
 import kotlin.test.assertNull
 import kotlin.test.assertSame
@@ -85,37 +85,37 @@ class RulerPtolemyImplTest {
     assertSame(JUPITER, impl.getPoint(PISCES, DayNight.NIGHT))
 
 
-    MARS.let {
+    MARS.also {
       assertSame(ARIES, impl.getSign(it, DayNight.DAY))      // 火星 白天掌管 牡羊
       assertSame(SCORPIO, impl.getSign(it, DayNight.NIGHT))  // 火星 晚上掌管 天蠍
     }
 
-    VENUS.let {
+    VENUS.also {
       assertSame(LIBRA, impl.getSign(it, DayNight.DAY))    // 金星 白天掌管 天秤
       assertSame(TAURUS, impl.getSign(it, DayNight.NIGHT)) // 金星 晚上掌管 金牛
     }
 
-    MERCURY.let {
+    MERCURY.also {
       assertSame(GEMINI, impl.getSign(it, DayNight.DAY))   // 水星 白天掌管 雙子
       assertSame(VIRGO, impl.getSign(it, DayNight.NIGHT))  // 水星 晚上掌管 處女
     }
 
-    MOON.let {
+    MOON.also {
       assertSame(CANCER, impl.getSign(it, DayNight.DAY))   // 月亮 白天晚上都掌管 巨蟹
       assertSame(CANCER, impl.getSign(it, DayNight.NIGHT))
     }
 
-    SUN.let {
+    SUN.also {
       assertSame(LEO, impl.getSign(it, DayNight.DAY))    // 太陽 白天晚上都掌管 獅子
       assertSame(LEO, impl.getSign(it, DayNight.NIGHT))
     }
 
-    JUPITER.let {
+    JUPITER.also {
       assertSame(SAGITTARIUS, impl.getSign(it, DayNight.DAY))  // 木星 白天掌管 射手
       assertSame(PISCES, impl.getSign(it, DayNight.NIGHT))     // 木星 晚上掌管 雙魚
     }
 
-    SATURN.let {
+    SATURN.also {
       assertSame(AQUARIUS, impl.getSign(it, DayNight.DAY))     // 土星 白天掌管 水瓶
       assertSame(CAPRICORN, impl.getSign(it, DayNight.NIGHT))  // 土星 晚上掌管 摩羯
     }

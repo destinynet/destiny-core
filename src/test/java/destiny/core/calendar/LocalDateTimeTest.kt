@@ -3,23 +3,20 @@
  */
 package destiny.core.calendar
 
-import org.junit.Test
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
+import java.lang.System.out
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.chrono.IsoEra
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import java.util.TimeZone
-
-import java.lang.System.out
 import java.time.temporal.ChronoField.YEAR_OF_ERA
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertSame
+import java.time.temporal.ChronoUnit
+import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class LocalDateTimeTest {
 

@@ -5,10 +5,10 @@
 package destiny.core.calendar
 
 import destiny.tools.location.TimeZoneUtils
-import org.junit.Assert
 import org.slf4j.LoggerFactory
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 class LocationTest {
 
@@ -35,18 +35,18 @@ class LocationTest {
 
   @Test
   fun testNorthSouth() {
-    Assert.assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('N'))
-    Assert.assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('n'))
-    Assert.assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('S'))
-    Assert.assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('s'))
+    assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('N'))
+    assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('n'))
+    assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('S'))
+    assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('s'))
   }
 
   @Test
   fun testEastWest() {
-    Assert.assertSame(EastWest.EAST, EastWest.getEastWest('E'))
-    Assert.assertSame(EastWest.EAST, EastWest.getEastWest('e'))
-    Assert.assertSame(EastWest.WEST, EastWest.getEastWest('W'))
-    Assert.assertSame(EastWest.WEST, EastWest.getEastWest('w'))
+    assertSame(EastWest.EAST, EastWest.getEastWest('E'))
+    assertSame(EastWest.EAST, EastWest.getEastWest('e'))
+    assertSame(EastWest.WEST, EastWest.getEastWest('W'))
+    assertSame(EastWest.WEST, EastWest.getEastWest('w'))
   }
 
   @Test
@@ -58,20 +58,20 @@ class LocationTest {
     println("actual = $actual")
     expected = Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id )
     println("expected = $expected")
-    Assert.assertEquals(expected, actual)
+    assertEquals(expected, actual)
 
     actual = Location(12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
     expected = Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    Assert.assertEquals(expected, actual)
+    assertEquals(expected, actual)
 
 
     actual = Location(-12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
     expected = Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    Assert.assertEquals(expected, actual)
+    assertEquals(expected, actual)
 
     actual = Location(12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
     expected = Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    Assert.assertEquals(expected, actual)
+    assertEquals(expected, actual)
   }
 
 
@@ -79,13 +79,13 @@ class LocationTest {
   @Test
   fun testLocationEastWestDoubleNorthSouthDoubleInt() {
     val location = Location(EastWest.EAST, 121.51, NorthSouth.NORTH, 25.33, "Asia/Taipei")
-    Assert.assertEquals(121, location.lngDeg.toLong())
-    Assert.assertEquals(30, location.lngMin.toLong())
-    Assert.assertEquals(36.0, location.lngSec, 0.0)
+    assertEquals(121, location.lngDeg.toLong())
+    assertEquals(30, location.lngMin.toLong())
+    assertEquals(36.0, location.lngSec)
 
-    Assert.assertEquals(25, location.latDeg.toLong())
-    Assert.assertEquals(19, location.latMin.toLong())
-    Assert.assertEquals(48.0, location.latSec, 0.0)
+    assertEquals(25, location.latDeg.toLong())
+    assertEquals(19, location.latMin.toLong())
+    assertEquals(48.0, location.latSec)
   }
 
 

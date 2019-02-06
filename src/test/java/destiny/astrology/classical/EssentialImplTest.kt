@@ -3,13 +3,13 @@
  */
 package destiny.astrology.classical
 
-import destiny.core.DayNight
 import destiny.astrology.DayNightSimpleImpl
 import destiny.astrology.Planet.*
 import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
 import destiny.astrology.ZodiacSign.*
 import destiny.astrology.classical.Dignity.*
+import destiny.core.DayNight
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -64,7 +64,7 @@ class EssentialImplTest {
 
 
     // 太陽 土星 透過 EXALT 互相接納
-    essentialImpl.getMutualDataFromSign(SUN, signMap, DayNight.NIGHT, setOf(EXALTATION)).let {
+    essentialImpl.getMutualDataFromSign(SUN, signMap, DayNight.NIGHT, setOf(EXALTATION)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(SUN, EXALTATION, SATURN, EXALTATION), it.first())
@@ -117,25 +117,25 @@ class EssentialImplTest {
     )
 
     // 太陽觀點
-    essentialImpl.getMutualDataFromSign(SUN, map, null, setOf(RULER)).let {
+    essentialImpl.getMutualDataFromSign(SUN, map, null, setOf(RULER)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(SUN, RULER, MARS, RULER), it.firstOrNull())
     }
 
     // 火星觀點
-    essentialImpl.getMutualDataFromSign(MARS, map, null, setOf(RULER)).let {
+    essentialImpl.getMutualDataFromSign(MARS, map, null, setOf(RULER)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(MARS, RULER, SUN, RULER), it.firstOrNull())
     }
 
     // EXALT 無資料
-    essentialImpl.getMutualDataFromSign(SUN, map, null, setOf(EXALTATION)).let {
+    essentialImpl.getMutualDataFromSign(SUN, map, null, setOf(EXALTATION)).also {
       assertTrue(it.isEmpty())
     }
     // EXALT 無資料
-    essentialImpl.getMutualDataFromSign(MARS, map, null, setOf(EXALTATION)).let {
+    essentialImpl.getMutualDataFromSign(MARS, map, null, setOf(EXALTATION)).also {
       assertTrue(it.isEmpty())
     }
   }
@@ -163,23 +163,23 @@ class EssentialImplTest {
     )
 
     // 月亮觀點
-    essentialImpl.getMutualDataFromSign(MOON, map, null, setOf(RULER, EXALTATION)).let {
+    essentialImpl.getMutualDataFromSign(MOON, map, null, setOf(RULER, EXALTATION)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(MOON, EXALTATION, VENUS, EXALTATION), it.first())
     }
     // 金星觀點
-    essentialImpl.getMutualDataFromSign(VENUS, map, null, setOf(RULER, EXALTATION)).let {
+    essentialImpl.getMutualDataFromSign(VENUS, map, null, setOf(RULER, EXALTATION)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(VENUS, EXALTATION, MOON, EXALTATION), it.first())
     }
     // RULER 無資料
-    essentialImpl.getMutualDataFromSign(MOON, map, null, setOf(RULER)).let {
+    essentialImpl.getMutualDataFromSign(MOON, map, null, setOf(RULER)).also {
       assertTrue(it.isEmpty())
     }
     // RULER 無資料
-    essentialImpl.getMutualDataFromSign(VENUS, map, null, setOf(RULER)).let {
+    essentialImpl.getMutualDataFromSign(VENUS, map, null, setOf(RULER)).also {
       assertTrue(it.isEmpty())
     }
   }
@@ -216,23 +216,23 @@ class EssentialImplTest {
     )
 
     // 太陽、白天，成立
-    essentialImpl.getMutualDataFromSign(SUN, map, DayNight.DAY, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(SUN, map, DayNight.DAY, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(SUN , TRIPLICITY , SATURN , TRIPLICITY) , it.first())
     }
     // 土星、白天，成立
-    essentialImpl.getMutualDataFromSign(SATURN, map, DayNight.DAY, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(SATURN, map, DayNight.DAY, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(SATURN , TRIPLICITY , SUN , TRIPLICITY) , it.first())
     }
     // 夜晚不成立
-    essentialImpl.getMutualDataFromSign(SUN, map, DayNight.NIGHT, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(SUN, map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
       assertTrue(it.isEmpty())
     }
     // 夜晚不成立
-    essentialImpl.getMutualDataFromSign(SATURN, map, DayNight.NIGHT, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(SATURN, map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
       assertTrue(it.isEmpty())
     }
   }
@@ -248,23 +248,23 @@ class EssentialImplTest {
       JUPITER to VIRGO
     )
     // 月亮觀點、夜晚互容
-    essentialImpl.getMutualDataFromSign(MOON, map, DayNight.NIGHT, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(MOON, map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(MOON , TRIPLICITY , JUPITER , TRIPLICITY) , it.first())
     }
     // 木星觀點、夜晚互容
-    essentialImpl.getMutualDataFromSign(JUPITER, map, DayNight.NIGHT, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(JUPITER, map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(JUPITER, TRIPLICITY , MOON , TRIPLICITY) , it.first())
     }
     // 白天不成立
-    essentialImpl.getMutualDataFromSign(MOON, map, DayNight.DAY, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(MOON, map, DayNight.DAY, setOf(TRIPLICITY)).also {
       assertTrue(it.isEmpty())
     }
     // 白天不成立
-    essentialImpl.getMutualDataFromSign(JUPITER, map, DayNight.DAY, setOf(TRIPLICITY)).let {
+    essentialImpl.getMutualDataFromSign(JUPITER, map, DayNight.DAY, setOf(TRIPLICITY)).also {
       assertTrue(it.isEmpty())
     }
   }
@@ -283,13 +283,13 @@ class EssentialImplTest {
       SATURN to GEMINI
     )
 
-    essentialImpl.getMutualDataFromSign(JUPITER, signMap, null, setOf(DETRIMENT, FALL)).let {
+    essentialImpl.getMutualDataFromSign(JUPITER, signMap, null, setOf(DETRIMENT, FALL)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(JUPITER, DETRIMENT, SATURN, FALL), it.first())
     }
 
-    essentialImpl.getMutualDataFromSign(SATURN, signMap, null, setOf(DETRIMENT, FALL)).let {
+    essentialImpl.getMutualDataFromSign(SATURN, signMap, null, setOf(DETRIMENT, FALL)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(SATURN, FALL, JUPITER, DETRIMENT), it.first())
@@ -309,13 +309,13 @@ class EssentialImplTest {
       MARS to SAGITTARIUS
     )
 
-    essentialImpl.getMutualDataFromSign(MERCURY, signMap, null, setOf(DETRIMENT, FALL)).let {
+    essentialImpl.getMutualDataFromSign(MERCURY, signMap, null, setOf(DETRIMENT, FALL)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(MERCURY, DETRIMENT, MARS, FALL), it.first())
     }
 
-    essentialImpl.getMutualDataFromSign(MARS, signMap, null, setOf(FALL, DETRIMENT)).let {
+    essentialImpl.getMutualDataFromSign(MARS, signMap, null, setOf(FALL, DETRIMENT)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
       assertEquals(MutualData(MARS, FALL, MERCURY, DETRIMENT), it.first())

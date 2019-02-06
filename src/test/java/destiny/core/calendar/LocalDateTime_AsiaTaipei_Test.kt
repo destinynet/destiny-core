@@ -3,16 +3,14 @@
  */
 package destiny.core.calendar
 
-import org.junit.Test
-
+import java.lang.System.out
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import java.util.TimeZone
-
-import java.lang.System.out
-import org.junit.Assert.assertEquals
+import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * java 8 LocalDateTime 的測試
@@ -119,20 +117,20 @@ class LocalDateTime_AsiaTaipei_Test {
       // 日光節約時間前一秒
       lmt = LocalDateTime.of(year, 4, 30, 23, 59, 59)
       zdt = lmt.atZone(asiaTaipei)
-      assertEquals(year.toString() + "-04-30T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-04-30T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
       // 過了一秒，變成日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-05-01T01:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-05-01T01:00", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
 
       // 日光節約時間結束前一秒
       zdt = LocalDateTime.of(year, 9, 30, 23, 59, 59).atZone(asiaTaipei)
-      assertEquals(year.toString() + "-09-30T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-09-30T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
       // 過了一秒，結束日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-09-30T23:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-09-30T23:00", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
     }
 
@@ -161,20 +159,20 @@ class LocalDateTime_AsiaTaipei_Test {
       // 日光節約時間前一秒
       lmt = LocalDateTime.of(year, 3, 31, 23, 59, 59)
       zdt = lmt.atZone(asiaTaipei)
-      assertEquals(year.toString() + "-03-31T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-03-31T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
       // 過了一秒，變成日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-04-01T01:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-04-01T01:00", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
 
       // 日光節約時間結束前一秒
       zdt = LocalDateTime.of(year, 10, 31, 23, 59, 59).atZone(asiaTaipei)
-      assertEquals(year.toString() + "-10-31T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-10-31T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
       // 過了一秒，結束日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-10-31T23:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-10-31T23:00", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
     }
 
@@ -184,20 +182,20 @@ class LocalDateTime_AsiaTaipei_Test {
       // 日光節約時間前一秒
       lmt = LocalDateTime.of(year, 3, 31, 23, 59, 59)
       zdt = lmt.atZone(asiaTaipei)
-      assertEquals(year.toString() + "-03-31T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-03-31T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
       // 過了一秒，變成日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-04-01T01:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-04-01T01:00", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
 
       // 日光節約時間結束前一秒
       zdt = LocalDateTime.of(year, 9, 30, 23, 59, 59).atZone(asiaTaipei)
-      assertEquals(year.toString() + "-09-30T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-09-30T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
       // 過了一秒，結束日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-09-30T23:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-09-30T23:00", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
     }
 
@@ -249,20 +247,20 @@ class LocalDateTime_AsiaTaipei_Test {
       // 日光節約時間前一秒
       lmt = LocalDateTime.of(year, 3, 31, 23, 59, 59)
       zdt = lmt.atZone(asiaTaipei)
-      assertEquals(year.toString() + "-03-31T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-03-31T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
       // 過了一秒，變成日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-04-01T01:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-04-01T01:00", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
 
       // 日光節約時間結束前一秒
       zdt = LocalDateTime.of(year, 9, 30, 23, 59, 59).atZone(asiaTaipei)
-      assertEquals(year.toString() + "-09-30T23:59:59", zdt.toLocalDateTime().toString())
+      assertEquals("$year-09-30T23:59:59", zdt.toLocalDateTime().toString())
       assertEquals("+09:00", zdt.offset.toString())
       // 過了一秒，結束日光節約時間
       zdt = zdt.plus(1, ChronoUnit.SECONDS)
-      assertEquals(year.toString() + "-09-30T23:00", zdt.toLocalDateTime().toString())
+      assertEquals("$year-09-30T23:00", zdt.toLocalDateTime().toString())
       assertEquals("+08:00", zdt.offset.toString())
     }
 

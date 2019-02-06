@@ -3,13 +3,9 @@
  */
 package destiny.core.calendar
 
-import org.junit.Test
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import java.time.LocalDate
-import java.util.Calendar
-import java.util.GregorianCalendar
+import java.util.*
+import kotlin.test.Test
 
 class GregorianCalendarTest {
 

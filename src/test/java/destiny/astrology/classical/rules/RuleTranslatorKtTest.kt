@@ -3,9 +3,9 @@
  */
 package destiny.astrology.classical.rules
 
-import destiny.core.DayNight
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
+import destiny.core.DayNight
 import java.util.*
 import kotlin.test.Test
 
@@ -13,7 +13,7 @@ class RuleTranslatorKtTest {
 
   fun print(rule: Rule) {
 
-    RuleTranslator.getDescriptor(rule).let {
+    RuleTranslator.getDescriptor(rule).also {
       println("title(tw) = ${it.getTitle(Locale.TAIWAN)}")
       println("title(en) = ${it.getTitle(Locale.ENGLISH)}")
       println("title(en_US) = ${it.getTitle(Locale.US)}")
