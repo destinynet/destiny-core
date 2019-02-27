@@ -3,9 +3,9 @@
  */
 package destiny.core.chinese.holo
 
+import destiny.astrology.ZodiacSign
 import destiny.core.Gender.*
 import destiny.core.calendar.eightwords.EightWords
-import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YuanGenderImpl
@@ -125,109 +125,228 @@ class HoloContextTest {
   }
 
   @Test
-  fun testYuanTang_Yang() {
+  fun test元堂_陽() {
     // 一陽
     Hexagram.師.also { hex ->
-      assertSame(2, context.getYuanTang(hex, 子))
-      assertSame(2, context.getYuanTang(hex, 丑))
-      assertSame(1, context.getYuanTang(hex, 寅))
-      assertSame(3, context.getYuanTang(hex, 卯))
-      assertSame(4, context.getYuanTang(hex, 辰))
-      assertSame(5, context.getYuanTang(hex, 巳))
+      assertSame(2, context.getYuanTang(hex, 子, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 丑, 男, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 寅, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 卯, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 辰, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 巳, 男, ZodiacSign.LEO))
     }
 
 
     // 二陽
     Hexagram.萃.also { hex ->
-      assertSame(4, context.getYuanTang(hex, 子))
-      assertSame(5, context.getYuanTang(hex, 丑))
-      assertSame(4, context.getYuanTang(hex, 寅))
-      assertSame(5, context.getYuanTang(hex, 卯))
-      assertSame(1, context.getYuanTang(hex, 辰))
-      assertSame(2, context.getYuanTang(hex, 巳))
+      assertSame(4, context.getYuanTang(hex, 子, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 丑, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 寅, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 卯, 男, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 辰, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 巳, 男, ZodiacSign.LEO))
     }
 
     // 三陽
     Hexagram.旅.also { hex ->
-      assertSame(3, context.getYuanTang(hex, 子))
-      assertSame(4, context.getYuanTang(hex, 丑))
-      assertSame(6, context.getYuanTang(hex, 寅))
-      assertSame(3, context.getYuanTang(hex, 卯))
-      assertSame(4, context.getYuanTang(hex, 辰))
-      assertSame(6, context.getYuanTang(hex, 巳))
+      assertSame(3, context.getYuanTang(hex, 子, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 丑, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 寅, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 卯, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 辰, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 巳, 男, ZodiacSign.LEO))
     }
 
     // 四陽
     Hexagram.巽.also { hex ->
-      assertSame(2, context.getYuanTang(hex, 子))
-      assertSame(3, context.getYuanTang(hex, 丑))
-      assertSame(5, context.getYuanTang(hex, 寅))
-      assertSame(6, context.getYuanTang(hex, 卯))
-      assertSame(1, context.getYuanTang(hex, 辰))
-      assertSame(4, context.getYuanTang(hex, 巳))
+      assertSame(2, context.getYuanTang(hex, 子, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 丑, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 寅, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 卯, 男, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 辰, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 巳, 男, ZodiacSign.LEO))
     }
 
     // 五陽
     Hexagram.同人.also { hex ->
-      assertSame(1, context.getYuanTang(hex, 子))
-      assertSame(3, context.getYuanTang(hex, 丑))
-      assertSame(4, context.getYuanTang(hex, 寅))
-      assertSame(5, context.getYuanTang(hex, 卯))
-      assertSame(6, context.getYuanTang(hex, 辰))
-      assertSame(2, context.getYuanTang(hex, 巳))
+      assertSame(1, context.getYuanTang(hex, 子, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 丑, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 寅, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 卯, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 辰, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 巳, 男, ZodiacSign.LEO))
     }
   }
 
   @Test
-  fun testYuanTang_Yin() {
+  fun test元堂_六陽爻() {
+    Hexagram.乾.also { hex ->
+      assertSame(1, context.getYuanTang(hex, 子, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 丑, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 寅, 男, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 卯, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 辰, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 巳, 男, ZodiacSign.LEO))
+
+      assertSame(4, context.getYuanTang(hex, 午, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 未, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 申, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 酉, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 戌, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 亥, 男, ZodiacSign.LEO))
+    }
+  }
+
+
+  @Test
+  fun test元堂_六陰爻() {
+    Hexagram.坤.also { hex ->
+      assertSame(1, context.getYuanTang(hex, 子, 女, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 丑, 女, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 寅, 女, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 卯, 女, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 辰, 女, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 巳, 女, ZodiacSign.LEO))
+
+      assertSame(4, context.getYuanTang(hex, 午, 女, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 未, 女, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 申, 女, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 酉, 女, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 戌, 女, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 亥, 女, ZodiacSign.LEO))
+    }
+  }
+
+
+
+  @Test
+  fun test元堂_六陽爻_女命_前半年() {
+    Hexagram.乾.also { hex ->
+      assertSame(6, context.getYuanTang(hex, 子, 女, ZodiacSign.CAPRICORN))
+      assertSame(5, context.getYuanTang(hex, 丑, 女, ZodiacSign.CAPRICORN))
+      assertSame(4, context.getYuanTang(hex, 寅, 女, ZodiacSign.CAPRICORN))
+      assertSame(6, context.getYuanTang(hex, 卯, 女, ZodiacSign.CAPRICORN))
+      assertSame(5, context.getYuanTang(hex, 辰, 女, ZodiacSign.CAPRICORN))
+      assertSame(4, context.getYuanTang(hex, 巳, 女, ZodiacSign.CAPRICORN))
+
+      assertSame(3, context.getYuanTang(hex, 午, 女, ZodiacSign.CAPRICORN))
+      assertSame(2, context.getYuanTang(hex, 未, 女, ZodiacSign.CAPRICORN))
+      assertSame(1, context.getYuanTang(hex, 申, 女, ZodiacSign.CAPRICORN))
+      assertSame(3, context.getYuanTang(hex, 酉, 女, ZodiacSign.CAPRICORN))
+      assertSame(2, context.getYuanTang(hex, 戌, 女, ZodiacSign.CAPRICORN))
+      assertSame(1, context.getYuanTang(hex, 亥, 女, ZodiacSign.CAPRICORN))
+    }
+  }
+
+  @Test
+  fun test元堂_六陽爻_女命_後半年() {
+    Hexagram.乾.also { hex ->
+      assertSame(1, context.getYuanTang(hex, 子, 女, ZodiacSign.CANCER))
+      assertSame(2, context.getYuanTang(hex, 丑, 女, ZodiacSign.CANCER))
+      assertSame(3, context.getYuanTang(hex, 寅, 女, ZodiacSign.CANCER))
+      assertSame(1, context.getYuanTang(hex, 卯, 女, ZodiacSign.CANCER))
+      assertSame(2, context.getYuanTang(hex, 辰, 女, ZodiacSign.CANCER))
+      assertSame(3, context.getYuanTang(hex, 巳, 女, ZodiacSign.CANCER))
+
+      assertSame(4, context.getYuanTang(hex, 午, 女, ZodiacSign.CANCER))
+      assertSame(5, context.getYuanTang(hex, 未, 女, ZodiacSign.CANCER))
+      assertSame(6, context.getYuanTang(hex, 申, 女, ZodiacSign.CANCER))
+      assertSame(4, context.getYuanTang(hex, 酉, 女, ZodiacSign.CANCER))
+      assertSame(5, context.getYuanTang(hex, 戌, 女, ZodiacSign.CANCER))
+      assertSame(6, context.getYuanTang(hex, 亥, 女, ZodiacSign.CANCER))
+    }
+  }
+
+
+
+  @Test
+  fun test元堂_六陰爻_男命_前半年() {
+    Hexagram.坤.also { hex ->
+      assertSame(1, context.getYuanTang(hex, 子, 男, ZodiacSign.CAPRICORN))
+      assertSame(2, context.getYuanTang(hex, 丑, 男, ZodiacSign.CAPRICORN))
+      assertSame(3, context.getYuanTang(hex, 寅, 男, ZodiacSign.CAPRICORN))
+      assertSame(1, context.getYuanTang(hex, 卯, 男, ZodiacSign.CAPRICORN))
+      assertSame(2, context.getYuanTang(hex, 辰, 男, ZodiacSign.CAPRICORN))
+      assertSame(3, context.getYuanTang(hex, 巳, 男, ZodiacSign.CAPRICORN))
+
+      assertSame(4, context.getYuanTang(hex, 午, 男, ZodiacSign.CAPRICORN))
+      assertSame(5, context.getYuanTang(hex, 未, 男, ZodiacSign.CAPRICORN))
+      assertSame(6, context.getYuanTang(hex, 申, 男, ZodiacSign.CAPRICORN))
+      assertSame(4, context.getYuanTang(hex, 酉, 男, ZodiacSign.CAPRICORN))
+      assertSame(5, context.getYuanTang(hex, 戌, 男, ZodiacSign.CAPRICORN))
+      assertSame(6, context.getYuanTang(hex, 亥, 男, ZodiacSign.CAPRICORN))
+    }
+  }
+
+  @Test
+  fun test元堂_六陰爻_男命_後半年() {
+    Hexagram.坤.also { hex ->
+      assertSame(6, context.getYuanTang(hex, 子, 男, ZodiacSign.CANCER))
+      assertSame(5, context.getYuanTang(hex, 丑, 男, ZodiacSign.CANCER))
+      assertSame(4, context.getYuanTang(hex, 寅, 男, ZodiacSign.CANCER))
+      assertSame(6, context.getYuanTang(hex, 卯, 男, ZodiacSign.CANCER))
+      assertSame(5, context.getYuanTang(hex, 辰, 男, ZodiacSign.CANCER))
+      assertSame(4, context.getYuanTang(hex, 巳, 男, ZodiacSign.CANCER))
+
+      assertSame(3, context.getYuanTang(hex, 午, 男, ZodiacSign.CANCER))
+      assertSame(2, context.getYuanTang(hex, 未, 男, ZodiacSign.CANCER))
+      assertSame(1, context.getYuanTang(hex, 申, 男, ZodiacSign.CANCER))
+      assertSame(3, context.getYuanTang(hex, 酉, 男, ZodiacSign.CANCER))
+      assertSame(2, context.getYuanTang(hex, 戌, 男, ZodiacSign.CANCER))
+      assertSame(1, context.getYuanTang(hex, 亥, 男, ZodiacSign.CANCER))
+    }
+  }
+
+  @Test
+  fun test元堂_陰() {
     // 一陰
     Hexagram.小畜.also { hex ->
-      assertSame(4, context.getYuanTang(hex, 午))
-      assertSame(4, context.getYuanTang(hex, 未))
-      assertSame(1, context.getYuanTang(hex, 申))
-      assertSame(2, context.getYuanTang(hex, 酉))
-      assertSame(3, context.getYuanTang(hex, 戌))
-      assertSame(5, context.getYuanTang(hex, 亥))
+      assertSame(4, context.getYuanTang(hex, 午, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 未, 男, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 申, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 酉, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 戌, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 亥, 男, ZodiacSign.LEO))
     }
 
     // 二陰
     Hexagram.無妄.also { hex ->
-      assertSame(2, context.getYuanTang(hex, 午))
-      assertSame(3, context.getYuanTang(hex, 未))
-      assertSame(2, context.getYuanTang(hex, 申))
-      assertSame(3, context.getYuanTang(hex, 酉))
-      assertSame(1, context.getYuanTang(hex, 戌))
-      assertSame(4, context.getYuanTang(hex, 亥))
+      assertSame(2, context.getYuanTang(hex, 午, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 未, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 申, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 酉, 男, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 戌, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 亥, 男, ZodiacSign.LEO))
     }
 
     // 三陰
     Hexagram.節.also { hex ->
-      assertSame(3, context.getYuanTang(hex, 午))
-      assertSame(4, context.getYuanTang(hex, 未))
-      assertSame(6, context.getYuanTang(hex, 申))
-      assertSame(3, context.getYuanTang(hex, 酉))
-      assertSame(4, context.getYuanTang(hex, 戌))
-      assertSame(6, context.getYuanTang(hex, 亥))
+      assertSame(3, context.getYuanTang(hex, 午, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 未, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 申, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 酉, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 戌, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 亥, 男, ZodiacSign.LEO))
     }
 
     // 四陰
     Hexagram.震.also { hex ->
-      assertSame(2, context.getYuanTang(hex, 午))
-      assertSame(3, context.getYuanTang(hex, 未))
-      assertSame(5, context.getYuanTang(hex, 申))
-      assertSame(6, context.getYuanTang(hex, 酉))
-      assertSame(1, context.getYuanTang(hex, 戌))
-      assertSame(4, context.getYuanTang(hex, 亥))
+      assertSame(2, context.getYuanTang(hex, 午, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 未, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 申, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 酉, 男, ZodiacSign.LEO))
+      assertSame(1, context.getYuanTang(hex, 戌, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 亥, 男, ZodiacSign.LEO))
     }
 
     // 五陰
     Hexagram.豫.also { hex ->
-      assertSame(1, context.getYuanTang(hex, 午))
-      assertSame(2, context.getYuanTang(hex, 未))
-      assertSame(3, context.getYuanTang(hex, 申))
-      assertSame(5, context.getYuanTang(hex, 酉))
-      assertSame(6, context.getYuanTang(hex, 戌))
-      assertSame(4, context.getYuanTang(hex, 亥))
+      assertSame(1, context.getYuanTang(hex, 午, 男, ZodiacSign.LEO))
+      assertSame(2, context.getYuanTang(hex, 未, 男, ZodiacSign.LEO))
+      assertSame(3, context.getYuanTang(hex, 申, 男, ZodiacSign.LEO))
+      assertSame(5, context.getYuanTang(hex, 酉, 男, ZodiacSign.LEO))
+      assertSame(6, context.getYuanTang(hex, 戌, 男, ZodiacSign.LEO))
+      assertSame(4, context.getYuanTang(hex, 亥, 男, ZodiacSign.LEO))
     }
   }
 }

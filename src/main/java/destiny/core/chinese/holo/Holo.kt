@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.holo
 
+import destiny.astrology.ZodiacSign
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
@@ -66,8 +67,10 @@ interface IHoloContext {
   }
 
   /** 元堂 , return 1(incl.) to 6(incl.) */
-  fun getYuanTang(hexagram: IHexagram, hour: Branch): Int {
+  fun getYuanTang(hexagram: IHexagram, hour: Branch, gender: Gender, sign: ZodiacSign): Int {
+    // 幾個陽爻
     val yangCount = hexagram.yinYangs.count { it }
+    // 幾個陰爻
     val yinCount = hexagram.yinYangs.count { !it }
 
     val yangSeq: Sequence<Int> = hexagram.yinYangs.zip(1..6)
@@ -80,10 +83,33 @@ interface IHoloContext {
       .map { pair -> pair.second }
       .let { list -> generateSequence { list }.flatten() }
 
+    // 冬至 到 夏至 (前半年)
+    val formerHalfYear = setOf(ZodiacSign.CAPRICORN, ZodiacSign.AQUARIUS, ZodiacSign.PISCES, ZodiacSign.ARIES, ZodiacSign.TAURUS, ZodiacSign.GEMINI)
+    // 夏至 到 冬至 (後半年)
+    val laterHalfYear = ZodiacSign.values().toSet().minus(formerHalfYear)
+
 
     return if (hour.index <= 5) {
       // 子~巳 , 前六時 陽
+
       when (yangCount) {
+        0 -> {
+          // 六陰爻
+          when (gender) {
+            Gender.男 -> {
+              if (formerHalfYear.contains(sign)) {
+                // 前半年
+                listOf(1, 2, 3, 1, 2, 3)[hour.index]
+              } else {
+                // 後半年
+                listOf(6, 5, 4, 6, 5, 4)[hour.index]
+              }
+            }
+            Gender.女 -> {
+              listOf(1, 2, 3, 1, 2, 3)[hour.index]
+            }
+          }
+        }
         1 -> when (hour) {
           in 子..丑 -> yangSeq.take(hour.index + 1).last()
           else -> yinSeq.take(hour.index - 1).last()
@@ -104,11 +130,44 @@ interface IHoloContext {
           in 子..辰 -> yangSeq.take(hour.index + 1).last()
           else -> yinSeq.first()
         }
-        else -> TODO()
+        else -> {
+          // 六陽爻
+          when (gender) {
+            Gender.男 -> {
+              listOf(1, 2, 3, 1, 2, 3)[hour.index]
+            }
+            Gender.女 -> {
+              if (formerHalfYear.contains(sign)) {
+                // 前半年
+                listOf(6, 5, 4, 6, 5, 4)[hour.index]
+              } else {
+                // 後半年
+                listOf(1, 2, 3, 1, 2, 3)[hour.index]
+              }
+            }
+          }
+        }
       }
     } else {
       // 午~亥 , 後六時 陰
       when (yinCount) {
+        0 -> {
+          // 六陽爻
+          when (gender) {
+            Gender.男 -> {
+              listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
+            }
+            Gender.女 -> {
+              if (formerHalfYear.contains(sign)) {
+                // 前半年
+                listOf(3, 2, 1, 3, 2, 1)[hour.index - 6]
+              } else {
+                // 後半年
+                listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
+              }
+            }
+          }
+        }
         1 -> when (hour) {
           in 午..未 -> yinSeq.first()
           else -> yangSeq.take(hour.index - 7).last()
@@ -129,7 +188,23 @@ interface IHoloContext {
           in 午..戌 -> yinSeq.take(hour.index - 5).last()
           else -> yangSeq.first()
         }
-        else -> TODO()
+        else -> {
+          // 六陰爻
+          when (gender) {
+            Gender.男 -> {
+              if (formerHalfYear.contains(sign)) {
+                // 前半年
+                listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
+              } else {
+                // 後半年
+                listOf(3, 2, 1, 3, 2, 1)[hour.index - 6]
+              }
+            }
+            Gender.女 -> {
+              listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
+            }
+          }
+        }
       }
     }
 
