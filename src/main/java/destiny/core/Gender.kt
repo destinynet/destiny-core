@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.util.*
 
 /** 性別  */
-enum class Gender(val isMale: Boolean) : Serializable {
+enum class Gender(val male: Boolean) : Serializable {
 
   男(true), 女(false);
 

@@ -11,6 +11,8 @@ import destiny.core.chinese.IYuanGander
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.fengshui.sanyuan.Yuan
+import destiny.iching.Hexagram
+import destiny.iching.IHexagram
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 import java.io.Serializable
@@ -46,8 +48,21 @@ class NumberizeImpl : INumberize, Serializable {
 }
 
 interface IHoloContext {
-  fun getUpperSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
-  fun getLowerSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
+  // 天數
+  fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
+
+  // 地數
+  fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
+
+  fun getHexagram(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): IHexagram {
+    val yangSymbol = getYangSymbol(ew, gender, yuan, yinYang)
+    val yinSymbol = getYinSymbol(ew, gender, yuan, yinYang)
+    return if ((gender == Gender.男 && yinYang) || (gender == Gender.女 && !yinYang)) {
+      Hexagram.getHexagram(yangSymbol , yinSymbol)
+    } else {
+      Hexagram.getHexagram(yinSymbol , yangSymbol)
+    }
+  }
 }
 
 class HoloContext(private val numberize: INumberize,
@@ -61,7 +76,7 @@ class HoloContext(private val numberize: INumberize,
     return this % 2 == 0
   }
 
-  override fun getUpperSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol {
+  override fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol {
     val sum = ew.stemBranches.map { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isOdd() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isOdd() }.sum()
@@ -77,7 +92,7 @@ class HoloContext(private val numberize: INumberize,
 
   }
 
-  override fun getLowerSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol {
+  override fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol {
     val sum = ew.stemBranches.map { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isEven() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isEven() }.sum()
@@ -91,5 +106,6 @@ class HoloContext(private val numberize: INumberize,
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, yinYang)
   }
+
 
 }
