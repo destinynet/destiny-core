@@ -5,6 +5,8 @@ package destiny.core.chinese.holo
 
 import destiny.core.Gender.*
 import destiny.core.calendar.eightwords.EightWords
+import destiny.core.chinese.Branch
+import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YuanGenderImpl
 import destiny.fengshui.sanyuan.Yuan.*
@@ -120,5 +122,112 @@ class HoloContextTest {
     assertEquals(Hexagram.坤, context.getHexagram(ew, 女, UP, false))
     assertEquals(Hexagram.坤, context.getHexagram(ew, 女, MID, false))
     assertEquals(Hexagram.坤, context.getHexagram(ew, 女, LOW, false))
+  }
+
+  @Test
+  fun testYuanTang_Yang() {
+    // 一陽
+    Hexagram.師.also { hex ->
+      assertSame(2, context.getYuanTang(hex, 子))
+      assertSame(2, context.getYuanTang(hex, 丑))
+      assertSame(1, context.getYuanTang(hex, 寅))
+      assertSame(3, context.getYuanTang(hex, 卯))
+      assertSame(4, context.getYuanTang(hex, 辰))
+      assertSame(5, context.getYuanTang(hex, 巳))
+    }
+
+
+    // 二陽
+    Hexagram.萃.also { hex ->
+      assertSame(4, context.getYuanTang(hex, 子))
+      assertSame(5, context.getYuanTang(hex, 丑))
+      assertSame(4, context.getYuanTang(hex, 寅))
+      assertSame(5, context.getYuanTang(hex, 卯))
+      assertSame(1, context.getYuanTang(hex, 辰))
+      assertSame(2, context.getYuanTang(hex, 巳))
+    }
+
+    // 三陽
+    Hexagram.旅.also { hex ->
+      assertSame(3, context.getYuanTang(hex, 子))
+      assertSame(4, context.getYuanTang(hex, 丑))
+      assertSame(6, context.getYuanTang(hex, 寅))
+      assertSame(3, context.getYuanTang(hex, 卯))
+      assertSame(4, context.getYuanTang(hex, 辰))
+      assertSame(6, context.getYuanTang(hex, 巳))
+    }
+
+    // 四陽
+    Hexagram.巽.also { hex ->
+      assertSame(2, context.getYuanTang(hex, 子))
+      assertSame(3, context.getYuanTang(hex, 丑))
+      assertSame(5, context.getYuanTang(hex, 寅))
+      assertSame(6, context.getYuanTang(hex, 卯))
+      assertSame(1, context.getYuanTang(hex, 辰))
+      assertSame(4, context.getYuanTang(hex, 巳))
+    }
+
+    // 五陽
+    Hexagram.同人.also { hex ->
+      assertSame(1, context.getYuanTang(hex, 子))
+      assertSame(3, context.getYuanTang(hex, 丑))
+      assertSame(4, context.getYuanTang(hex, 寅))
+      assertSame(5, context.getYuanTang(hex, 卯))
+      assertSame(6, context.getYuanTang(hex, 辰))
+      assertSame(2, context.getYuanTang(hex, 巳))
+    }
+  }
+
+  @Test
+  fun testYuanTang_Yin() {
+    // 一陰
+    Hexagram.小畜.also { hex ->
+      assertSame(4, context.getYuanTang(hex, 午))
+      assertSame(4, context.getYuanTang(hex, 未))
+      assertSame(1, context.getYuanTang(hex, 申))
+      assertSame(2, context.getYuanTang(hex, 酉))
+      assertSame(3, context.getYuanTang(hex, 戌))
+      assertSame(5, context.getYuanTang(hex, 亥))
+    }
+
+    // 二陰
+    Hexagram.無妄.also { hex ->
+      assertSame(2, context.getYuanTang(hex, 午))
+      assertSame(3, context.getYuanTang(hex, 未))
+      assertSame(2, context.getYuanTang(hex, 申))
+      assertSame(3, context.getYuanTang(hex, 酉))
+      assertSame(1, context.getYuanTang(hex, 戌))
+      assertSame(4, context.getYuanTang(hex, 亥))
+    }
+
+    // 三陰
+    Hexagram.節.also { hex ->
+      assertSame(3, context.getYuanTang(hex, 午))
+      assertSame(4, context.getYuanTang(hex, 未))
+      assertSame(6, context.getYuanTang(hex, 申))
+      assertSame(3, context.getYuanTang(hex, 酉))
+      assertSame(4, context.getYuanTang(hex, 戌))
+      assertSame(6, context.getYuanTang(hex, 亥))
+    }
+
+    // 四陰
+    Hexagram.震.also { hex ->
+      assertSame(2, context.getYuanTang(hex, 午))
+      assertSame(3, context.getYuanTang(hex, 未))
+      assertSame(5, context.getYuanTang(hex, 申))
+      assertSame(6, context.getYuanTang(hex, 酉))
+      assertSame(1, context.getYuanTang(hex, 戌))
+      assertSame(4, context.getYuanTang(hex, 亥))
+    }
+
+    // 五陰
+    Hexagram.豫.also { hex ->
+      assertSame(1, context.getYuanTang(hex, 午))
+      assertSame(2, context.getYuanTang(hex, 未))
+      assertSame(3, context.getYuanTang(hex, 申))
+      assertSame(5, context.getYuanTang(hex, 酉))
+      assertSame(6, context.getYuanTang(hex, 戌))
+      assertSame(4, context.getYuanTang(hex, 亥))
+    }
   }
 }

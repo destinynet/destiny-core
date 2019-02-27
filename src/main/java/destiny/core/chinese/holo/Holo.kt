@@ -16,6 +16,7 @@ import destiny.iching.IHexagram
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 import java.io.Serializable
+import java.lang.RuntimeException
 
 interface INumberize {
   fun getNumber(stem: Stem): Int
@@ -58,10 +59,81 @@ interface IHoloContext {
     val yangSymbol = getYangSymbol(ew, gender, yuan, yinYang)
     val yinSymbol = getYinSymbol(ew, gender, yuan, yinYang)
     return if ((gender == Gender.男 && yinYang) || (gender == Gender.女 && !yinYang)) {
-      Hexagram.getHexagram(yangSymbol , yinSymbol)
+      Hexagram.getHexagram(yangSymbol, yinSymbol)
     } else {
-      Hexagram.getHexagram(yinSymbol , yangSymbol)
+      Hexagram.getHexagram(yinSymbol, yangSymbol)
     }
+  }
+
+  /** 元堂 , return 1(incl.) to 6(incl.) */
+  fun getYuanTang(hexagram: IHexagram, hour: Branch): Int {
+    val yangCount = hexagram.yinYangs.count { it }
+    val yinCount = hexagram.yinYangs.count { !it }
+
+    val yangSeq: Sequence<Int> = hexagram.yinYangs.zip(1..6)
+      .filter { (yinYang, indexFrom1) -> yinYang }
+      .map { pair -> pair.second }
+      .let { list -> generateSequence { list }.flatten() }
+
+    val yinSeq = hexagram.yinYangs.zip(1..6)
+      .filter { (yinYang, indexFrom1) -> !yinYang }
+      .map { pair -> pair.second }
+      .let { list -> generateSequence { list }.flatten() }
+
+
+    return if (hour.index <= 5) {
+      // 子~巳 , 前六時 陽
+      when (yangCount) {
+        1 -> when (hour) {
+          in 子..丑 -> yangSeq.take(hour.index + 1).last()
+          else -> yinSeq.take(hour.index - 1).last()
+        }
+        2 -> when (hour) {
+          in 子..卯 -> yangSeq.take(hour.index + 1).last()
+          else -> yinSeq.take(hour.index + 1).last()
+        }
+        3 -> when (hour) {
+          in 子..巳 -> yangSeq.take(hour.index + 1).last()
+          else -> throw RuntimeException("error")
+        }
+        4 -> when (hour) {
+          in 子..卯 -> yangSeq.take(hour.index + 1).last()
+          else -> yinSeq.take(hour.index + 1).last()
+        }
+        5 -> when (hour) {
+          in 子..辰 -> yangSeq.take(hour.index + 1).last()
+          else -> yinSeq.first()
+        }
+        else -> TODO()
+      }
+    } else {
+      // 午~亥 , 後六時 陰
+      when (yinCount) {
+        1 -> when (hour) {
+          in 午..未 -> yinSeq.first()
+          else -> yangSeq.take(hour.index - 7).last()
+        }
+        2 -> when (hour) {
+          in 午..酉 -> yinSeq.take(hour.index - 5).last()
+          else -> yangSeq.take(hour.index - 9).last()
+        }
+        3 -> when (hour) {
+          in 午..亥 -> yinSeq.take(hour.index - 5).last()
+          else -> throw RuntimeException("error")
+        }
+        4 -> when (hour) {
+          in 午..酉 -> yinSeq.take(hour.index - 5).last()
+          else -> yangSeq.take(hour.index - 9).last()
+        }
+        5 -> when (hour) {
+          in 午..戌 -> yinSeq.take(hour.index - 5).last()
+          else -> yangSeq.first()
+        }
+        else -> TODO()
+      }
+    }
+
+
   }
 }
 
