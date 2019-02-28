@@ -54,6 +54,7 @@ interface IHoloContext {
   // 地數
   fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
 
+  /** 先天卦 */
   fun getHexagram(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): IHexagram {
     val yangSymbol = getYangSymbol(ew, gender, yuan, yinYang)
     val yinSymbol = getYinSymbol(ew, gender, yuan, yinYang)
@@ -205,6 +206,25 @@ interface IHoloContext {
 
 
   }
+
+  /** 後天卦 */
+  fun getHexagramAcquired(hexagramCongenital: IHexagram , yuanTang:Int) : IHexagram {
+    return hexagramCongenital.yinYangs.mapIndexed { index, booleanValue ->
+      if (index == yuanTang-1)
+        !booleanValue
+      else
+        booleanValue
+    }.let { list ->
+      Hexagram.getHexagram(list).let { hex ->
+        val upperSymbol = hex.upperSymbol
+        val lowerSymbol = hex.lowerSymbol
+        // 上下交換
+        // TODO : 三至尊卦
+        Hexagram.getHexagram(lowerSymbol , upperSymbol)
+      }
+    }
+  }
+
 }
 
 class HoloContext(private val numberize: INumberize,
