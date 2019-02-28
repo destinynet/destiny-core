@@ -6,10 +6,8 @@ package destiny.core.chinese.holo
 import destiny.astrology.ZodiacSign
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.chinese.Branch
+import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.IYuanGander
-import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.Hexagram
@@ -66,8 +64,11 @@ interface IHoloContext {
     }
   }
 
-  /** 元堂 , return 1(incl.) to 6(incl.) */
-  fun getYuanTang(hexagram: IHexagram, hour: Branch, gender: Gender, sign: ZodiacSign): Int {
+  /**
+   * 元堂 , return 1(incl.) to 6(incl.)
+   * @param yearHalfYinYang 切割年份的陰陽， 常例為 前半年(冬至 to 夏至) 為 陽 , 後半年(夏至 to 冬至) 為 陰
+   * */
+  fun getYuanTang(hexagram: IHexagram, hour: Branch, gender: Gender, yearHalfYinYang: IYinYang): Int {
     // 幾個陽爻
     val yangCount = hexagram.yinYangs.count { it }
     // 幾個陰爻
@@ -83,12 +84,6 @@ interface IHoloContext {
       .map { pair -> pair.second }
       .let { list -> generateSequence { list }.flatten() }
 
-    // 冬至 到 夏至 (前半年)
-    val formerHalfYear = setOf(ZodiacSign.CAPRICORN, ZodiacSign.AQUARIUS, ZodiacSign.PISCES, ZodiacSign.ARIES, ZodiacSign.TAURUS, ZodiacSign.GEMINI)
-    // 夏至 到 冬至 (後半年)
-    val laterHalfYear = ZodiacSign.values().toSet().minus(formerHalfYear)
-
-
     return if (hour.index <= 5) {
       // 子~巳 , 前六時 陽
 
@@ -97,7 +92,7 @@ interface IHoloContext {
           // 六陰爻
           when (gender) {
             Gender.男 -> {
-              if (formerHalfYear.contains(sign)) {
+              if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(1, 2, 3, 1, 2, 3)[hour.index]
               } else {
@@ -137,7 +132,7 @@ interface IHoloContext {
               listOf(1, 2, 3, 1, 2, 3)[hour.index]
             }
             Gender.女 -> {
-              if (formerHalfYear.contains(sign)) {
+              if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(6, 5, 4, 6, 5, 4)[hour.index]
               } else {
@@ -158,7 +153,7 @@ interface IHoloContext {
               listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
             }
             Gender.女 -> {
-              if (formerHalfYear.contains(sign)) {
+              if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(3, 2, 1, 3, 2, 1)[hour.index - 6]
               } else {
@@ -192,7 +187,7 @@ interface IHoloContext {
           // 六陰爻
           when (gender) {
             Gender.男 -> {
-              if (formerHalfYear.contains(sign)) {
+              if (yearHalfYinYang.booleanValue) {
                 // 前半年
                 listOf(4, 5, 6, 4, 5, 6)[hour.index - 6]
               } else {
@@ -213,7 +208,8 @@ interface IHoloContext {
 }
 
 class HoloContext(private val numberize: INumberize,
-                  private val yuanGenderImpl: IYuanGander) : IHoloContext, Serializable {
+                  private val yuanGenderImpl: IYuanGander,
+                  private val yearSplitterImpl : IYearSplitterBySign) : IHoloContext, Serializable {
 
   private fun Int.isOdd(): Boolean {
     return this % 2 == 1
