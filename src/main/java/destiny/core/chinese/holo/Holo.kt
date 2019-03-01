@@ -9,10 +9,7 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.fengshui.sanyuan.Yuan
-import destiny.iching.Hexagram
-import destiny.iching.IHexagram
-import destiny.iching.Symbol
-import destiny.iching.SymbolAcquired
+import destiny.iching.*
 import java.io.Serializable
 import java.lang.RuntimeException
 
@@ -60,11 +57,17 @@ data class Holo(
   /** 後天卦 , with 元堂 (1~6) */
   val hexagramAcquired: Pair<IHexagram, Int>,
 
-  /** 天元氣 */
-  val vigorStem: Boolean,
+  /** 得「年干」元氣之 Symbol */
+  val vigorousSymbolsFromYearStem: Set<Symbol>,
 
-  /** 地元氣 */
-  val vigorBranch: Boolean
+  /** 得「年支」元氣之 Symbol */
+  val vigorousSymbolsFromYearBranch: Set<Symbol>,
+
+  /** 得「年干」元氣相反之 Symbol */
+  val vigorlessSymbolsFromYearStem: Set<Symbol>,
+
+  /** 得「年支」元氣相反之 Symbol */
+  val vigorlessSymbolsFromYearBranch: Set<Symbol>
 )
 
 interface IHoloContext {
@@ -249,11 +252,11 @@ interface IHoloContext {
   /** 先天卦 (with 元堂) */
   fun getHexagramCongenital(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Pair<IHexagram, Int> {
     if (yearHalfYinYang.booleanValue) {
-      require( !(未..亥).contains(ew.month.branch) ) {
+      require(!(未..亥).contains(ew.month.branch)) {
         "前半年，月支 ${ew.month.branch} 不可以出現在 未~亥 當中"
       }
     } else {
-      require( !(丑..巳).contains(ew.month.branch)) {
+      require(!(丑..巳).contains(ew.month.branch)) {
         "後半年，月支 ${ew.month.branch} 不可以出現在 丑~巳 當中"
       }
       // 冬至、夏至 平分 子月、午月 ，無法從八字中判斷
@@ -327,6 +330,8 @@ class HoloContext(private val numberize: INumberize,
                   private val yearSplitterImpl: IYearSplitterBySign,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR) : IHoloContext, Serializable {
 
+  private fun IHexagram.symbols() = setOf(this.upperSymbol, this.lowerSymbol)
+
   private fun Int.isOdd(): Boolean {
     return this % 2 == 1
   }
@@ -338,25 +343,39 @@ class HoloContext(private val numberize: INumberize,
   override fun getHolo(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Holo {
     val hexagramCongenital: Pair<IHexagram, Int> = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang)
 
-    val yinYang : IYinYang = threeKings?.let { algo ->
-      when(algo) {
+    val yinYang: IYinYang = threeKings?.let { algo ->
+      when (algo) {
         IHoloContext.ThreeKingsAlgo.HALF_YEAR -> yearHalfYinYang
         IHoloContext.ThreeKingsAlgo.MONTH_BRANCH -> SimpleBranch[ew.month.branch]
       }
-    }?: yearHalfYinYang
+    } ?: yearHalfYinYang
 
     val hexagramAcquired: Pair<IHexagram, Int> = getHexagramAcquired(hexagramCongenital.first, hexagramCongenital.second, yinYang)
 
-    val vigorStem = SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))?.let { symbol ->
-      (hexagramCongenital.first.upperSymbol == symbol) || (hexagramCongenital.first.lowerSymbol == symbol)
-    }?:false
+    // 得「年干」元氣之 Symbol
+    val vigorousSymbolsFromYearStem = hexagramCongenital.first.symbols().filter { s ->
+      s == SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))
+    }.toSet()
+
+    // 得「年支」元氣之 Symbol
+    val vigorousSymbolsFromYearBranch = hexagramCongenital.first.symbols().filter { s ->
+      s == SimpleBranch.getSymbol(ew.year.branch)
+    }.toSet()
+
+    // 得「年干」元氣相反之 Symbol
+    val vigorlessSymbolsFromYearStem = hexagramCongenital.first.symbols().filter { s ->
+      s == SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))?.let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
+    }.toSet()
+
+    // 得「年支」元氣相反之 Symbol
+    val vigorlessSymbolsFromYearBranch = hexagramCongenital.first.symbols().filter { s ->
+      s ==  SimpleBranch.getSymbol(ew.year.branch).let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
+    }.toSet()
 
 
-    val vigorBranch = SimpleBranch.getSymbol(ew.year.branch).let { symbol ->
-      (hexagramCongenital.first.upperSymbol == symbol) || (hexagramCongenital.first.lowerSymbol == symbol)
-    }
-
-    return Holo(ew , gender , yuan , hexagramCongenital , hexagramAcquired , vigorStem , vigorBranch)
+    return Holo(ew, gender, yuan, hexagramCongenital, hexagramAcquired,
+      vigorousSymbolsFromYearStem, vigorousSymbolsFromYearBranch ,
+      vigorlessSymbolsFromYearStem , vigorlessSymbolsFromYearBranch)
   }
 
   /** 天數 -> 卦 */
