@@ -48,13 +48,22 @@ class NumberizeImpl : INumberize, Serializable {
 }
 
 interface IHoloContext {
+
+  /**
+   * 取後天卦 [getHexagramAcquired] 時 ， 是否考量三至尊卦 : [Hexagram.坎] [Hexagram.屯] [Hexagram.蹇]
+   */
+  val threeKings: Boolean
+
   // 天數
   fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
 
   // 地數
   fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
 
-  /** 先天卦 */
+  /**
+   * 先天卦
+   * @param yinYang 陽男 , 陽女 , 陰男 , or 陰女
+   * */
   fun getHexagram(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): IHexagram {
     val yangSymbol = getYangSymbol(ew, gender, yuan, yinYang)
     val yinSymbol = getYinSymbol(ew, gender, yuan, yinYang)
@@ -207,10 +216,21 @@ interface IHoloContext {
 
   }
 
-  /** 後天卦 */
-  fun getHexagramAcquired(hexagramCongenital: IHexagram , yuanTang:Int) : IHexagram {
+  /**
+   * 後天卦
+   * @param yearHalfYinYang 切割年份的陰陽， 常例為 前半年(冬至 to 夏至) 為 陽 , 後半年(夏至 to 冬至) 為 陰
+   *  */
+  fun getHexagramAcquired(hexagramCongenital: IHexagram, yuanTang: Int, yearHalfYinYang: IYinYang): Pair<IHexagram, Int> {
+
+    val newYuanTang = ((yuanTang + 3) % 6).let {
+      if (it == 0)
+        6
+      else
+        it
+    }
+
     return hexagramCongenital.yinYangs.mapIndexed { index, booleanValue ->
-      if (index == yuanTang-1)
+      if (index == yuanTang - 1)
         !booleanValue
       else
         booleanValue
@@ -218,18 +238,47 @@ interface IHoloContext {
       Hexagram.getHexagram(list).let { hex ->
         val upperSymbol = hex.upperSymbol
         val lowerSymbol = hex.lowerSymbol
-        // 上下交換
-        // TODO : 三至尊卦
-        Hexagram.getHexagram(lowerSymbol , upperSymbol)
+
+        if (threeKings && threeKingHexagrams.contains(hexagramCongenital) && (yuanTang == 5 || yuanTang == 6)) {
+          /** 三至尊卦 : [Hexagram.坎] [Hexagram.屯] [Hexagram.蹇] , 且 , 元堂 為 5 or 6 */
+          if (yuanTang == 5) {
+            if (yearHalfYinYang.booleanValue) {
+              Hexagram.getHexagram(lowerSymbol, upperSymbol) to newYuanTang
+            } else {
+              // 爻變，上下不動
+              Hexagram.getHexagram(upperSymbol, lowerSymbol) to yuanTang
+            }
+          } else {
+            // 6
+            if (yearHalfYinYang.booleanValue) {
+              // 爻變，上下不動
+              Hexagram.getHexagram(upperSymbol, lowerSymbol) to yuanTang
+            } else {
+              Hexagram.getHexagram(lowerSymbol, upperSymbol) to newYuanTang
+            }
+          }
+
+        } else {
+          // 正常狀況 上下交換
+          Hexagram.getHexagram(lowerSymbol, upperSymbol) to newYuanTang
+        }
       }
     }
   }
 
+  companion object {
+    val threeKingHexagrams = setOf(Hexagram.坎, Hexagram.屯, Hexagram.蹇)
+  }
+
 }
 
+/**
+ * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
+ */
 class HoloContext(private val numberize: INumberize,
                   private val yuanGenderImpl: IYuanGander,
-                  private val yearSplitterImpl : IYearSplitterBySign) : IHoloContext, Serializable {
+                  private val yearSplitterImpl: IYearSplitterBySign,
+                  override val threeKings: Boolean = true) : IHoloContext, Serializable {
 
   private fun Int.isOdd(): Boolean {
     return this % 2 == 1
