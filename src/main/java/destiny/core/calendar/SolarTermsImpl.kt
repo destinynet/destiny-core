@@ -81,13 +81,9 @@ class SolarTermsImpl(
    * 上一個「節」是什麼，其 GMT JulDay 為何
    * 下一個「節」是什麼，其 GMT JulDay 為何
    */
-  override fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*>,
-                                            location: ILocation): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
-
-    val gmt = TimeTools.getGmtFromLmt(lmt, location)
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    var prevMajorSolarTerms = getSolarTermsFromGMT(gmt)
-    if (!prevMajorSolarTerms.isMajor)
+  override fun getMajorSolarTermsGmtBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+    var prevMajorSolarTerms = getSolarTermsFromGMT(gmtJulDay)
+    if (!prevMajorSolarTerms.major)
       prevMajorSolarTerms = prevMajorSolarTerms.previous()
 
     val prevGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
@@ -96,5 +92,21 @@ class SolarTermsImpl(
     val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
     return Pair(Pair(prevMajorSolarTerms, prevGmtJulDay), Pair(nextMajorSolarTerms, nextGmtJulDay))
   }
+
+//  override fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*>,
+//                                            location: ILocation): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+//
+//    val gmt = TimeTools.getGmtFromLmt(lmt, location)
+//    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+//    var prevMajorSolarTerms = getSolarTermsFromGMT(gmt)
+//    if (!prevMajorSolarTerms.major)
+//      prevMajorSolarTerms = prevMajorSolarTerms.previous()
+//
+//    val prevGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
+//
+//    val nextMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(prevMajorSolarTerms, false)
+//    val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
+//    return Pair(Pair(prevMajorSolarTerms, prevGmtJulDay), Pair(nextMajorSolarTerms, nextGmtJulDay))
+//  }
 
 }

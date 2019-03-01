@@ -39,7 +39,7 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
    * 驚蟄 => true
    * ...
    */
-  val isMajor: Boolean
+  val major: Boolean
     get() = SolarTerms.getIndex(this) % 2 == 0
 
   /** 取得地支  */
@@ -95,7 +95,7 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
      * 立春 , 驚蟄 , 清明 ...
      */
     fun getPrevNextMajorSolarTerms(currentSolarTerms: SolarTerms): Pair<SolarTerms, SolarTerms> {
-      return if (currentSolarTerms.isMajor) {
+      return if (currentSolarTerms.major) {
         Pair(currentSolarTerms, currentSolarTerms.next().next())
       } else {
         Pair(currentSolarTerms.previous(), currentSolarTerms.next())

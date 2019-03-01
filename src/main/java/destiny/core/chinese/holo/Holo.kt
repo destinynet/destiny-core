@@ -5,12 +5,16 @@ package destiny.core.chinese.holo
 
 import destiny.astrology.ZodiacSign
 import destiny.core.Gender
+import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms
+import destiny.core.calendar.SolarTerms.*
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
+import destiny.iching.Symbol.*
 import java.io.Serializable
 import java.lang.RuntimeException
 
@@ -59,16 +63,16 @@ data class Holo(
   val hexagramAcquired: Pair<IHexagram, Int>,
 
   /** 天元氣 */
-  val vigorousSymbolFromStem: Symbol?,
+  val vigorousSymbolFromStem: Symbol,
 
   /** 地元氣 */
-  val vigorousSymbolFromBranch: Symbol?,
+  val vigorousSymbolFromBranch: Symbol,
 
   /** 天元氣相反 */
-  val vigorlessSymbolFromStem: Symbol?,
+  val vigorlessSymbolFromStem: Symbol,
 
   /** 地元氣相反 */
-  val vigorlessSymbolFromBranch: Symbol?
+  val vigorlessSymbolFromBranch: Symbol
 )
 
 interface IHoloContext {
@@ -326,6 +330,32 @@ interface IHoloContext {
 
 }
 
+
+/**
+ * 西方設定：二分二至 為季節的起點
+ * 每個「季月」「坤、艮」各旺 18天 -> 這論點有 bug : 剩餘的12天 又回到季節的卦象
+ */
+class SeasonalSymbolHoloImpl(val solarTermsImpl: ISolarTerms) : ISeasonalSymbol , Serializable {
+  override fun getSeasonalSymbol(gmtJulDay: Double): Set<Symbol> {
+
+    val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+
+    return solarTerms.branch.takeIf { listOf(辰 , 戌 , 丑 , 未).contains(it) }
+      ?.let {
+        solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).first.second
+      }?.takeIf { it <= 18.0  }
+      ?.let { setOf(坤 , 艮) }
+      ?: {
+        setOf(when (solarTerms) {
+          冬至, 小寒, 大寒, 立春, 雨水, 驚蟄 -> 坎
+          春分, 清明, 穀雨, 立夏, 小滿, 芒種 -> 震
+          夏至, 小暑, 大暑, 立秋, 處暑, 白露 -> 離
+          秋分 ,寒露 ,霜降 ,立冬 ,小雪 ,大雪 -> 兌
+        })
+      }.invoke()
+  }
+}
+
 /**
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
@@ -360,17 +390,33 @@ class HoloContext(private val numberize: INumberize,
     val hexagramAcquired: Pair<IHexagram, Int> = getHexagramAcquired(hexagramCongenital.first, hexagramCongenital.second, yinYang)
 
     // 天元氣
-    val vigorousSymbolFromStem: Symbol? = SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))
+    val vigorousSymbolFromStem = SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))!!
     // 地元氣
-    val vigorousSymbolFromBranch: Symbol = SimpleBranch.getSymbol(ew.year.branch)
+    val vigorousSymbolFromBranch = ew.year.branch.let { branch ->
+      when(branch) {
+        子 -> 坎
+        丑 , 寅 -> 艮
+        卯 -> 震
+        辰 , 巳 -> 巽
+        午 -> 離
+        未 , 申 -> 坤
+        酉 -> 兌
+        戌 , 亥 -> 乾
+      }
+    }
     // 天元氣相反
-    val vigorlessSymbolFromStem = vigorousSymbolFromStem?.let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
+    val vigorlessSymbolFromStem = vigorousSymbolFromStem.let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
     // 地元氣相反
     val vigorlessSymbolFromBranch = vigorousSymbolFromBranch.let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
 
 
-    // 化工 : 得到季節力量者
-
+    // 化工 : 得到季節力量者 , 這裡的季節，與中國的季節不同（遲了一個半月），反而與西洋的季節定義相同 : 二分二至 為 春夏秋冬的起點
+    when(sign) {
+      ZodiacSign.CAPRICORN , ZodiacSign.AQUARIUS , ZodiacSign.PISCES -> 坎
+      ZodiacSign.ARIES , ZodiacSign.TAURUS , ZodiacSign.GEMINI -> 震
+      ZodiacSign.CANCER , ZodiacSign.LEO , ZodiacSign.VIRGO -> 離
+      ZodiacSign.LIBRA , ZodiacSign.SCORPIO , ZodiacSign.SAGITTARIUS -> 兌
+    }
 
 
     return Holo(ew, gender, yuan, hexagramCongenital, hexagramAcquired,

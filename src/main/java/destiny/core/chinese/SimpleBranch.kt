@@ -59,17 +59,5 @@ enum class SimpleBranch(override val branch: Branch) : IBranch<SimpleBranch>, IF
       return Branch.getIndex(branch) % 2 == 0
     }
 
-    fun getSymbol(branch: Branch) : Symbol {
-      return when(branch) {
-        Branch.子 -> Symbol.坎
-        Branch.丑 , Branch.寅 -> Symbol.艮
-        Branch.卯 -> Symbol.震
-        Branch.辰 , Branch.巳 -> Symbol.巽
-        Branch.午 -> Symbol.離
-        Branch.未 , Branch.申 -> Symbol.坤
-        Branch.酉 -> Symbol.兌
-        Branch.戌 , Branch.亥 -> Symbol.乾
-      }
-    }
   }
 }

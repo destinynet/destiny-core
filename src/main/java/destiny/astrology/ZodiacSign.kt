@@ -145,7 +145,7 @@ enum class ZodiacSign(private val nameKey: String,
      * 從地支，找星座
      */
     fun getZodiacSign(branch: Branch): ZodiacSign {
-      return map.map { (k, v) -> v to k }.toMap()[branch]!!
+      return map.map { (k, v) -> v to k }.toMap().getValue(branch)
     }
   }
 
