@@ -87,7 +87,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
      * 震3 |  5  | 兌7
      * ----+-----+----
      * 艮8 | 坎1 | 乾6
-     * 若傳入 5 , 則傳回 Optional.empty()
+     * 若傳入 5 , 則傳回 null
      * 若傳入 0 則傳回離卦
      * 傳入 10 , 則傳回坎卦 (10 % 9 = 1)
      */

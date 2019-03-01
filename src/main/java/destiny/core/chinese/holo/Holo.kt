@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.holo
 
+import destiny.astrology.ZodiacSign
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
@@ -57,17 +58,17 @@ data class Holo(
   /** 後天卦 , with 元堂 (1~6) */
   val hexagramAcquired: Pair<IHexagram, Int>,
 
-  /** 得「年干」元氣之 Symbol */
-  val vigorousSymbolsFromYearStem: Set<Symbol>,
+  /** 天元氣 */
+  val vigorousSymbolFromStem: Symbol?,
 
-  /** 得「年支」元氣之 Symbol */
-  val vigorousSymbolsFromYearBranch: Set<Symbol>,
+  /** 地元氣 */
+  val vigorousSymbolFromBranch: Symbol?,
 
-  /** 得「年干」元氣相反之 Symbol */
-  val vigorlessSymbolsFromYearStem: Set<Symbol>,
+  /** 天元氣相反 */
+  val vigorlessSymbolFromStem: Symbol?,
 
-  /** 得「年支」元氣相反之 Symbol */
-  val vigorlessSymbolsFromYearBranch: Set<Symbol>
+  /** 地元氣相反 */
+  val vigorlessSymbolFromBranch: Symbol?
 )
 
 interface IHoloContext {
@@ -84,7 +85,10 @@ interface IHoloContext {
    */
   val threeKings: ThreeKingsAlgo?
 
-  fun getHolo(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Holo
+  /**
+   * @param yearHalfYinYang 三至尊卦 的陰陽判別
+   */
+  fun getHolo(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang , sign: ZodiacSign): Holo
 
   /** 天數 -> 卦 */
   fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
@@ -340,7 +344,10 @@ class HoloContext(private val numberize: INumberize,
     return this % 2 == 0
   }
 
-  override fun getHolo(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Holo {
+  /**
+   * @param yearHalfYinYang 三至尊卦 的陰陽判別
+   */
+  override fun getHolo(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang , sign: ZodiacSign): Holo {
     val hexagramCongenital: Pair<IHexagram, Int> = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang)
 
     val yinYang: IYinYang = threeKings?.let { algo ->
@@ -352,30 +359,23 @@ class HoloContext(private val numberize: INumberize,
 
     val hexagramAcquired: Pair<IHexagram, Int> = getHexagramAcquired(hexagramCongenital.first, hexagramCongenital.second, yinYang)
 
-    // 得「年干」元氣之 Symbol
-    val vigorousSymbolsFromYearStem = hexagramCongenital.first.symbols().filter { s ->
-      s == SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))
-    }.toSet()
+    // 天元氣
+    val vigorousSymbolFromStem: Symbol? = SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))
+    // 地元氣
+    val vigorousSymbolFromBranch: Symbol = SimpleBranch.getSymbol(ew.year.branch)
+    // 天元氣相反
+    val vigorlessSymbolFromStem = vigorousSymbolFromStem?.let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
+    // 地元氣相反
+    val vigorlessSymbolFromBranch = vigorousSymbolFromBranch.let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
 
-    // 得「年支」元氣之 Symbol
-    val vigorousSymbolsFromYearBranch = hexagramCongenital.first.symbols().filter { s ->
-      s == SimpleBranch.getSymbol(ew.year.branch)
-    }.toSet()
 
-    // 得「年干」元氣相反之 Symbol
-    val vigorlessSymbolsFromYearStem = hexagramCongenital.first.symbols().filter { s ->
-      s == SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))?.let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
-    }.toSet()
+    // 化工 : 得到季節力量者
 
-    // 得「年支」元氣相反之 Symbol
-    val vigorlessSymbolsFromYearBranch = hexagramCongenital.first.symbols().filter { s ->
-      s ==  SimpleBranch.getSymbol(ew.year.branch).let { symbol -> SymbolCongenital.getOppositeSymbol(symbol) }
-    }.toSet()
 
 
     return Holo(ew, gender, yuan, hexagramCongenital, hexagramAcquired,
-      vigorousSymbolsFromYearStem, vigorousSymbolsFromYearBranch ,
-      vigorlessSymbolsFromYearStem , vigorlessSymbolsFromYearBranch)
+      vigorousSymbolFromStem , vigorousSymbolFromBranch , vigorlessSymbolFromStem , vigorlessSymbolFromBranch
+      )
   }
 
   /** 天數 -> 卦 */
