@@ -5,6 +5,8 @@
  */
 package destiny.core.chinese
 
+import destiny.iching.Symbol
+
 /** 實作 五行 [IFiveElement] 以及 陰陽 [IYinYang] 以及取得地支順序 getIndex() 的地支  */
 enum class SimpleBranch(override val branch: Branch) : IBranch<SimpleBranch>, IFiveElement, IYinYang {
   子(Branch.子),
@@ -55,6 +57,19 @@ enum class SimpleBranch(override val branch: Branch) : IBranch<SimpleBranch>, IF
 
     fun getBooleanValue(branch: Branch): Boolean {
       return Branch.getIndex(branch) % 2 == 0
+    }
+
+    fun getSymbol(branch: Branch) : Symbol {
+      return when(branch) {
+        Branch.子 -> Symbol.坎
+        Branch.丑 , Branch.寅 -> Symbol.艮
+        Branch.卯 -> Symbol.震
+        Branch.辰 , Branch.巳 -> Symbol.巽
+        Branch.午 -> Symbol.離
+        Branch.未 , Branch.申 -> Symbol.坤
+        Branch.酉 -> Symbol.兌
+        Branch.戌 , Branch.亥 -> Symbol.乾
+      }
     }
   }
 }

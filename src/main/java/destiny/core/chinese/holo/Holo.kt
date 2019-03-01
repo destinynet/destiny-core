@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.holo
 
-import destiny.astrology.ZodiacSign
 import destiny.core.Gender
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
@@ -47,27 +46,57 @@ class NumberizeImpl : INumberize, Serializable {
   }
 }
 
+
+data class Holo(
+  val ew: IEightWords,
+
+  val gender: Gender,
+
+  val yuan: Yuan,
+
+  /** 先天卦 , with 元堂 (1~6) */
+  val hexagramCongenital: Pair<IHexagram, Int>,
+
+  /** 後天卦 , with 元堂 (1~6) */
+  val hexagramAcquired: Pair<IHexagram, Int>,
+
+  /** 天元氣 */
+  val vigorStem: Boolean,
+
+  /** 地元氣 */
+  val vigorBranch: Boolean
+)
+
 interface IHoloContext {
+
+  enum class ThreeKingsAlgo {
+    /** 前半年(冬至 to 夏至) 為 陽 , 後半年(夏至 to 冬至) 為 陰 */
+    HALF_YEAR,
+    /** 月令地支 的陰陽 */
+    MONTH_BRANCH
+  }
 
   /**
    * 取後天卦 [getHexagramAcquired] 時 ， 是否考量三至尊卦 : [Hexagram.坎] [Hexagram.屯] [Hexagram.蹇]
    */
-  val threeKings: Boolean
+  val threeKings: ThreeKingsAlgo?
 
-  // 天數
-  fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
+  fun getHolo(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Holo
 
-  // 地數
-  fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol
+  /** 天數 -> 卦 */
+  fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
+
+  /** 地數 -> 卦 */
+  fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
 
   /**
-   * 先天卦
-   * @param yinYang 陽男 , 陽女 , 陰男 , or 陰女
+   * 本命卦
    * */
-  fun getHexagram(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): IHexagram {
-    val yangSymbol = getYangSymbol(ew, gender, yuan, yinYang)
-    val yinSymbol = getYinSymbol(ew, gender, yuan, yinYang)
-    return if ((gender == Gender.男 && yinYang) || (gender == Gender.女 && !yinYang)) {
+  fun getHexagram(ew: IEightWords, gender: Gender, yuan: Yuan): IHexagram {
+    val yangSymbol = getYangSymbol(ew, gender, yuan)
+    val yinSymbol = getYinSymbol(ew, gender, yuan)
+
+    return if ((gender == Gender.男 && ew.year.stem.booleanValue) || (gender == Gender.女 && !ew.year.stem.booleanValue)) {
       Hexagram.getHexagram(yangSymbol, yinSymbol)
     } else {
       Hexagram.getHexagram(yinSymbol, yangSymbol)
@@ -216,11 +245,29 @@ interface IHoloContext {
 
   }
 
+
+  /** 先天卦 (with 元堂) */
+  fun getHexagramCongenital(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Pair<IHexagram, Int> {
+    if (yearHalfYinYang.booleanValue) {
+      require( !(未..亥).contains(ew.month.branch) ) {
+        "前半年，月支 ${ew.month.branch} 不可以出現在 未~亥 當中"
+      }
+    } else {
+      require( !(丑..巳).contains(ew.month.branch)) {
+        "後半年，月支 ${ew.month.branch} 不可以出現在 丑~巳 當中"
+      }
+      // 冬至、夏至 平分 子月、午月 ，無法從八字中判斷
+    }
+    val hex = getHexagram(ew, gender, yuan)
+    val yuanTang = getYuanTang(hex, ew.hour.branch, gender, yearHalfYinYang)
+    return hex to yuanTang
+  }
+
   /**
-   * 後天卦
-   * @param yearHalfYinYang 切割年份的陰陽， 常例為 前半年(冬至 to 夏至) 為 陽 , 後半年(夏至 to 冬至) 為 陰
+   * 後天卦 (with 元堂)
+   * @param yinYang 在「三至尊卦」 [threeKingHexagrams] 的情形下，陰陽如何判別？ 是依據切割年份的陰陽 ( [ThreeKingsAlgo.HALF_YEAR] ) , 或是依據 月份地支 判斷的陰陽 ( [ThreeKingsAlgo.MONTH_BRANCH] )
    *  */
-  fun getHexagramAcquired(hexagramCongenital: IHexagram, yuanTang: Int, yearHalfYinYang: IYinYang): Pair<IHexagram, Int> {
+  fun getHexagramAcquired(hexagramCongenital: IHexagram, yuanTang: Int, yinYang: IYinYang): Pair<IHexagram, Int> {
 
     val newYuanTang = ((yuanTang + 3) % 6).let {
       if (it == 0)
@@ -239,10 +286,10 @@ interface IHoloContext {
         val upperSymbol = hex.upperSymbol
         val lowerSymbol = hex.lowerSymbol
 
-        if (threeKings && threeKingHexagrams.contains(hexagramCongenital) && (yuanTang == 5 || yuanTang == 6)) {
+        if (threeKings != null && threeKingHexagrams.contains(hexagramCongenital) && (yuanTang == 5 || yuanTang == 6)) {
           /** 三至尊卦 : [Hexagram.坎] [Hexagram.屯] [Hexagram.蹇] , 且 , 元堂 為 5 or 6 */
           if (yuanTang == 5) {
-            if (yearHalfYinYang.booleanValue) {
+            if (yinYang.booleanValue) {
               Hexagram.getHexagram(lowerSymbol, upperSymbol) to newYuanTang
             } else {
               // 爻變，上下不動
@@ -250,7 +297,7 @@ interface IHoloContext {
             }
           } else {
             // 6
-            if (yearHalfYinYang.booleanValue) {
+            if (yinYang.booleanValue) {
               // 爻變，上下不動
               Hexagram.getHexagram(upperSymbol, lowerSymbol) to yuanTang
             } else {
@@ -278,7 +325,7 @@ interface IHoloContext {
 class HoloContext(private val numberize: INumberize,
                   private val yuanGenderImpl: IYuanGander,
                   private val yearSplitterImpl: IYearSplitterBySign,
-                  override val threeKings: Boolean = true) : IHoloContext, Serializable {
+                  override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR) : IHoloContext, Serializable {
 
   private fun Int.isOdd(): Boolean {
     return this % 2 == 1
@@ -288,7 +335,32 @@ class HoloContext(private val numberize: INumberize,
     return this % 2 == 0
   }
 
-  override fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol {
+  override fun getHolo(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Holo {
+    val hexagramCongenital: Pair<IHexagram, Int> = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang)
+
+    val yinYang : IYinYang = threeKings?.let { algo ->
+      when(algo) {
+        IHoloContext.ThreeKingsAlgo.HALF_YEAR -> yearHalfYinYang
+        IHoloContext.ThreeKingsAlgo.MONTH_BRANCH -> SimpleBranch[ew.month.branch]
+      }
+    }?: yearHalfYinYang
+
+    val hexagramAcquired: Pair<IHexagram, Int> = getHexagramAcquired(hexagramCongenital.first, hexagramCongenital.second, yinYang)
+
+    val vigorStem = SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))?.let { symbol ->
+      (hexagramCongenital.first.upperSymbol == symbol) || (hexagramCongenital.first.lowerSymbol == symbol)
+    }?:false
+
+
+    val vigorBranch = SimpleBranch.getSymbol(ew.year.branch).let { symbol ->
+      (hexagramCongenital.first.upperSymbol == symbol) || (hexagramCongenital.first.lowerSymbol == symbol)
+    }
+
+    return Holo(ew , gender , yuan , hexagramCongenital , hexagramAcquired , vigorStem , vigorBranch)
+  }
+
+  /** 天數 -> 卦 */
+  override fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
     val sum = ew.stemBranches.map { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isOdd() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isOdd() }.sum()
@@ -300,11 +372,12 @@ class HoloContext(private val numberize: INumberize,
       else -> sum % 10
     }
 
-    return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, yinYang)
+    return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
 
   }
 
-  override fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan, yinYang: Boolean): Symbol {
+  /** 地數 -> 卦 */
+  override fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
     val sum = ew.stemBranches.map { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isEven() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isEven() }.sum()
@@ -316,7 +389,7 @@ class HoloContext(private val numberize: INumberize,
       else -> sum % 10
     }
 
-    return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, yinYang)
+    return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
   }
 
 

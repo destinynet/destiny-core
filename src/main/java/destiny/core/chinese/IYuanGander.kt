@@ -10,17 +10,20 @@ import destiny.iching.Symbol
 import java.io.Serializable
 
 interface IYuanGander {
-  fun getSymbol(gender: Gender, yuan: Yuan, yinYang: Boolean) : Symbol
+  /**
+   * @param yinYang 陽男、陽女、陰男、 or 陰女
+   */
+  fun getSymbol(gender: Gender, yuan: Yuan, yinYang: IYinYang) : Symbol
 }
 
 class YuanGenderImpl : IYuanGander, Serializable {
-  override fun getSymbol(gender: Gender, yuan: Yuan, yinYang: Boolean) : Symbol {
+  override fun getSymbol(gender: Gender, yuan: Yuan, yinYang: IYinYang) : Symbol {
     return when (yuan) {
       Yuan.UP -> when (gender) {
         男 -> Symbol.艮
         女 -> Symbol.坤
       }
-      Yuan.MID -> if (gender === 女 && yinYang || gender === 男 && !yinYang)
+      Yuan.MID -> if (gender === 女 && yinYang.booleanValue || gender === 男 && !yinYang.booleanValue)
         Symbol.坤
       else
         Symbol.艮
