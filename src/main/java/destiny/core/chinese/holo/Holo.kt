@@ -113,25 +113,25 @@ interface IHoloContext {
   fun getHeavenNumber(ew: IEightWords) : Int
 
   /** 天數 -> 卦 */
-  fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
+  fun getHeavenSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
 
   /** 地數 */
   fun getEarthNumber(ew: IEightWords) : Int
 
   /** 地數 -> 卦 */
-  fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
+  fun getEarthSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
 
   /**
    * 本命卦
    * */
   fun getHexagram(ew: IEightWords, gender: Gender, yuan: Yuan): IHexagram {
-    val yangSymbol = getYangSymbol(ew, gender, yuan)
-    val yinSymbol = getYinSymbol(ew, gender, yuan)
+    val heavenSymbol = getHeavenSymbol(ew, gender, yuan)
+    val earthSymbol = getEarthSymbol(ew, gender, yuan)
 
     return if ((gender == Gender.男 && ew.year.stem.booleanValue) || (gender == Gender.女 && !ew.year.stem.booleanValue)) {
-      Hexagram.getHexagram(yangSymbol, yinSymbol)
+      Hexagram.getHexagram(heavenSymbol, earthSymbol)
     } else {
-      Hexagram.getHexagram(yinSymbol, yangSymbol)
+      Hexagram.getHexagram(earthSymbol, heavenSymbol)
     }
   }
 
@@ -380,7 +380,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     val gmtJulDay = TimeTools.getGmtJulDay(lmt , loc)
     val ew: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
 
+    // 天數
     val heavenNumber = getHeavenNumber(ew)
+    // 地數
     val earthNumber = getEarthNumber(ew)
 
     val sign = zodiacSignImpl.getSign(Planet.SUN, gmtJulDay)
@@ -440,7 +442,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   }
 
   /** 天數 -> 卦 */
-  override fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
+  override fun getHeavenSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
 
     fun shrink(value : Int) : Int {
       return when {
@@ -464,7 +466,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   }
 
   /** 地數 -> 卦 */
-  override fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
+  override fun getEarthSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
 
     fun shrink(value : Int) : Int {
       return if (value > 30) {
@@ -480,7 +482,6 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     }
 
     val value = shrink(getEarthNumber(ew))
-
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
   }

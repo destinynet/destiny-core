@@ -14,13 +14,13 @@ import java.io.Serializable
 /** 季月，化工 */
 enum class EndSeasonSymbolSpan {
   FULL_MONTH, // 整月
-  DAYS_18 // 月份開頭 18天
+  DAYS_18 // 月份「結尾」 18天
 }
 
 
 /**
  * 西方設定：二分二至 為季節的起點
- * @param endSeasonSymbolSpan 若為 [EndSeasonSymbolSpan.DAYS_18] , 每個「季月」「坤、艮」各旺 18天 -> 這論點有 bug : 剩餘的12天 又回到季節的卦象
+ * @param endSeasonSymbolSpan 若為 [EndSeasonSymbolSpan.DAYS_18] , 每個「季月」「坤、艮」 「結束前」各旺 18天
  * 若其為 [EndSeasonSymbolSpan.FULL_MONTH] , 則 「季月」 的「坤、艮」旺全月
  *
  */
@@ -32,10 +32,10 @@ class SeasonalSymbolHoloImpl(val solarTermsImpl: ISolarTerms ,
 
     return solarTerms.branch.takeIf { listOf(辰, 戌, 丑, 未).contains(it) }
       ?.let {
-        solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).first.second
+        solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).second.second
       }?.takeIf {
         when (endSeasonSymbolSpan) {
-          EndSeasonSymbolSpan.DAYS_18 -> it <= 18
+          EndSeasonSymbolSpan.DAYS_18 -> Math.abs(it-gmtJulDay) <= 18
           EndSeasonSymbolSpan.FULL_MONTH -> true
         }
       }
