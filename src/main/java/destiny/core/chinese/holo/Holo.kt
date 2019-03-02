@@ -343,7 +343,7 @@ interface IHoloContext {
 /**
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
-class HoloContext(private val eightWordsFactory: IEightWordsFactory,
+class HoloContext(private val eightWordsImpl: IEightWordsFactory,
                   private val yuanImpl : IYuan,
                   private val numberize: INumberize,
                   private val yuanGenderImpl: IYuanGander,
@@ -366,7 +366,7 @@ class HoloContext(private val eightWordsFactory: IEightWordsFactory,
     val yuan = yuanImpl.getYuan(lmt , loc)
 
     val gmtJulDay = TimeTools.getGmtJulDay(lmt , loc)
-    val ew: IEightWords = eightWordsFactory.getEightWords(lmt, loc)
+    val ew: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
 
     val sign = zodiacSignImpl.getSign(Planet.SUN, gmtJulDay)
     val yearHalfYinYang = yearSplitterImpl.getYinYang(sign)
@@ -423,12 +423,15 @@ class HoloContext(private val eightWordsFactory: IEightWordsFactory,
     }.sum()
 
 
-
-    val value = when {
-      sum > 25 -> sum % 25
-      sum == 25 -> 5
-      else -> sum % 10
+    fun shrink(value : Int) : Int {
+      return when {
+        value > 25 -> shrink(value % 25)
+        value == 25 -> 5
+        else -> value % 10
+      }
     }
+
+    val value = shrink(sum)
 
     println("天數 sum = $sum , value = $value")
 
@@ -443,11 +446,21 @@ class HoloContext(private val eightWordsFactory: IEightWordsFactory,
         numberize.getNumber(sb.branch).filter { it.isEven() }.sum()
     }.sum()
 
-    val value = when {
-      sum > 20 -> sum % 30
-      sum == 30 -> 3
-      else -> sum % 10
+
+    fun shrink(value : Int) : Int {
+      return if (value > 30) {
+        shrink(value % 30)
+      } else {
+        (value % 10).let { reminder ->
+          if (reminder != 0)
+            reminder
+          else
+            value / 10
+        }
+      }
     }
+
+    val value = shrink(sum)
 
     println("地數 sum = $sum , value = $value")
 
