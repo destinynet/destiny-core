@@ -11,11 +11,11 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 interface IYearSplitterBySign {
-  fun getYinYang(sign: ZodiacSign): YinYang
+  fun getYinYang(sign: ZodiacSign): IYinYang
 }
 
 interface IYearSplitter : IYearSplitterBySign {
-  fun getYinYang(lmt: ChronoLocalDateTime<*>, location: ILocation): YinYang
+  fun getYinYang(lmt: ChronoLocalDateTime<*>, location: ILocation): IYinYang
 }
 
 

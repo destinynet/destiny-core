@@ -50,7 +50,7 @@ class SolarTermsImpl(
 
     var nextZodiacDegree = getNormalizeDegree((nowST.zodiacDegree + 15).toDouble())
 
-    val resultList = ArrayList<SolarTermsTime>()
+    val resultList = mutableListOf<SolarTermsTime>()
 
     while (fromGmt < toGmt) {
       val solarTermsTime: SolarTermsTime
@@ -92,21 +92,5 @@ class SolarTermsImpl(
     val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
     return Pair(Pair(prevMajorSolarTerms, prevGmtJulDay), Pair(nextMajorSolarTerms, nextGmtJulDay))
   }
-
-//  override fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*>,
-//                                            location: ILocation): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
-//
-//    val gmt = TimeTools.getGmtFromLmt(lmt, location)
-//    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-//    var prevMajorSolarTerms = getSolarTermsFromGMT(gmt)
-//    if (!prevMajorSolarTerms.major)
-//      prevMajorSolarTerms = prevMajorSolarTerms.previous()
-//
-//    val prevGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
-//
-//    val nextMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(prevMajorSolarTerms, false)
-//    val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
-//    return Pair(Pair(prevMajorSolarTerms, prevGmtJulDay), Pair(nextMajorSolarTerms, nextGmtJulDay))
-//  }
 
 }

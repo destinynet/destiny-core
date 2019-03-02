@@ -16,6 +16,10 @@ interface IZodiacSign {
    */
   fun getSignsBetween(star: Star, gmtJulDay: Double): Pair<Pair<ZodiacSign, Double>, Pair<ZodiacSign, Double>>
 
+  fun getSign(star: Star , gmtJulDay: Double) : ZodiacSign {
+    return getSignsBetween(star , gmtJulDay).first.first
+  }
+
   fun getSignsBetween(star: Star, lmt : ChronoLocalDateTime<*> , location : ILocation): Pair<Pair<ZodiacSign, Double>, Pair<ZodiacSign, Double>> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt , location)
     return getSignsBetween(star , gmtJulDay)
