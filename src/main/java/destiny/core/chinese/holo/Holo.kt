@@ -59,6 +59,12 @@ data class Holo(
 
   val yuan: Yuan,
 
+  /** 天數 */
+  val heavenNumber: Int,
+
+  /** 地數 */
+  val earthNumber : Int,
+
   /** 先天卦 , with 元堂 (1~6) */
   val hexagramCongenital: Pair<IHexagram, Int>,
 
@@ -103,8 +109,14 @@ interface IHoloContext {
 
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): Holo
 
+  /** 天數 */
+  fun getHeavenNumber(ew: IEightWords) : Int
+
   /** 天數 -> 卦 */
   fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
+
+  /** 地數 */
+  fun getEarthNumber(ew: IEightWords) : Int
 
   /** 地數 -> 卦 */
   fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
@@ -368,6 +380,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     val gmtJulDay = TimeTools.getGmtJulDay(lmt , loc)
     val ew: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
 
+    val heavenNumber = getHeavenNumber(ew)
+    val earthNumber = getEarthNumber(ew)
+
     val sign = zodiacSignImpl.getSign(Planet.SUN, gmtJulDay)
     val yearHalfYinYang = yearSplitterImpl.getYinYang(sign)
 
@@ -409,19 +424,23 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     // 化工反例
     val seasonlessSymbols = seasonalSymbols.map { SymbolCongenital.getOppositeSymbol(it) }.toSet()
 
-    return Holo(ew, gender, yuan, hexagramCongenital, hexagramAcquired,
-      vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch,
+    return Holo(ew, gender, yuan, heavenNumber , earthNumber ,
+      hexagramCongenital, hexagramAcquired,
+      vigorousSymbolFromStem, vigorousSymbolFromBranch,
+      vigorlessSymbolFromStem, vigorlessSymbolFromBranch,
       seasonalSymbols , seasonlessSymbols
     )
   }
 
-  /** 天數 -> 卦 */
-  override fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
-    val sum = ew.stemBranches.map { sb ->
+  override fun getHeavenNumber(ew: IEightWords): Int {
+    return ew.stemBranches.map { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isOdd() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isOdd() }.sum()
     }.sum()
+  }
 
+  /** 天數 -> 卦 */
+  override fun getYangSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
 
     fun shrink(value : Int) : Int {
       return when {
@@ -431,21 +450,21 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       }
     }
 
-    val value = shrink(sum)
-
-    println("天數 sum = $sum , value = $value")
+    val value = shrink(getHeavenNumber(ew))
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
 
   }
 
-  /** 地數 -> 卦 */
-  override fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
-    val sum = ew.stemBranches.map { sb ->
+  override fun getEarthNumber(ew: IEightWords): Int {
+    return ew.stemBranches.map { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isEven() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isEven() }.sum()
     }.sum()
+  }
 
+  /** 地數 -> 卦 */
+  override fun getYinSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
 
     fun shrink(value : Int) : Int {
       return if (value > 30) {
@@ -460,9 +479,8 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       }
     }
 
-    val value = shrink(sum)
+    val value = shrink(getEarthNumber(ew))
 
-    println("地數 sum = $sum , value = $value")
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
   }
