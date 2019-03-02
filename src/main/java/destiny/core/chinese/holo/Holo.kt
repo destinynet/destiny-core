@@ -81,7 +81,10 @@ data class Holo(
    * 化工 : 得到季節力量者 , 這裡的季節，與中國的季節不同（遲了一個半月），反而與西洋的季節定義相同 : 二分二至 為 春夏秋冬的起點
    * 另外考慮了季月 艮坤 旺 18日
    */
-  val seasonalSymbols: Set<Symbol>
+  val seasonalSymbols: Set<Symbol>,
+
+  /** 化工反例 */
+  val seasonlessSymbols: Set<Symbol>
 )
 
 interface IHoloContext {
@@ -98,9 +101,6 @@ interface IHoloContext {
    */
   val threeKings: ThreeKingsAlgo?
 
-  /**
-   * @param yearHalfYinYang 三至尊卦 的陰陽判別
-   */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): Holo
 
   /** 天數 -> 卦 */
@@ -350,7 +350,8 @@ class HoloContext(private val eightWordsFactory: IEightWordsFactory,
                   private val zodiacSignImpl : IZodiacSign,
                   private val yearSplitterImpl: IYearSplitterBySign,
                   private val seasonalSymbolImpl: ISeasonalSymbol,
-                  override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR) : IHoloContext, Serializable {
+                  override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR
+) : IHoloContext, Serializable {
 
   private fun Int.isOdd(): Boolean {
     return this % 2 == 1
@@ -405,9 +406,12 @@ class HoloContext(private val eightWordsFactory: IEightWordsFactory,
     // 另外考慮了季月 艮坤 旺 18日
     val seasonalSymbols: Set<Symbol> = seasonalSymbolImpl.getSeasonalSymbol(lmt, loc)
 
+    // 化工反例
+    val seasonlessSymbols = seasonalSymbols.map { SymbolCongenital.getOppositeSymbol(it) }.toSet()
+
     return Holo(ew, gender, yuan, hexagramCongenital, hexagramAcquired,
       vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch,
-      seasonalSymbols
+      seasonalSymbols , seasonlessSymbols
     )
   }
 
@@ -418,11 +422,15 @@ class HoloContext(private val eightWordsFactory: IEightWordsFactory,
         numberize.getNumber(sb.branch).filter { it.isOdd() }.sum()
     }.sum()
 
+
+
     val value = when {
       sum > 25 -> sum % 25
       sum == 25 -> 5
       else -> sum % 10
     }
+
+    println("天數 sum = $sum , value = $value")
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
 
@@ -440,6 +448,8 @@ class HoloContext(private val eightWordsFactory: IEightWordsFactory,
       sum == 30 -> 3
       else -> sum % 10
     }
+
+    println("地數 sum = $sum , value = $value")
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
   }
