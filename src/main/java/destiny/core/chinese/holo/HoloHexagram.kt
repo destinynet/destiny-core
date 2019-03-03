@@ -27,6 +27,8 @@ interface IHoloHexagram : IHexagram {
    */
   override fun getLineYinYang(index: Int): IHoloLine
 
+  /** 元堂 在第幾爻 (1~6) */
+  fun getYuanTang() : Int
 }
 
 data class HoloHexagram(val lines : List<HoloLine>) : IHoloHexagram {
@@ -34,13 +36,22 @@ data class HoloHexagram(val lines : List<HoloLine>) : IHoloHexagram {
     require(lines.size == 6) {
       "lines length should be exactly 6"
     }
+    require(lines.filter { it.yuanTang }.size == 1) {
+      "必須要有唯一一個 元堂 爻"
+    }
   }
+
 
   override val lowerSymbol: Symbol
     get() = Symbol.getSymbol(lines[0].booleanValue, lines[1].booleanValue, lines[2].booleanValue)
 
   override val upperSymbol: Symbol
     get() = Symbol.getSymbol(lines[3].booleanValue, lines[4].booleanValue, lines[5].booleanValue)
+
+  /** 元堂 在第幾爻 (1~6) */
+  override fun getYuanTang(): Int {
+    return lines.withIndex().first { it.value.yuanTang }.index + 1
+  }
 
   /**
    * @param index 1 <= index <= 6

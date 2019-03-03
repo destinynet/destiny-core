@@ -7,6 +7,8 @@ import destiny.astrology.IZodiacSign
 import destiny.astrology.Planet
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
@@ -361,6 +363,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
                   private val zodiacSignImpl: IZodiacSign,
                   private val yearSplitterImpl: IYearSplitterBySign,
                   private val seasonalSymbolImpl: ISeasonalSymbol,
+                  private val solarTermsImpl : ISolarTerms,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR
 ) : IHoloContext, Serializable {
 
@@ -387,7 +390,37 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     val sign = zodiacSignImpl.getSign(Planet.SUN, gmtJulDay)
     val yearHalfYinYang = yearSplitterImpl.getYinYang(sign)
 
+    // 先天命卦
     val hexagramCongenital: Pair<IHexagram, Int> = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang)
+
+    generateSequence { hexagramCongenital.first.yinYangs }
+      .flatten()
+      .drop(hexagramCongenital.second-1)
+      .withIndex()
+      .map {
+        val index = ((it.index + hexagramCongenital.second) % 6).let { r -> if (r == 0) 6 else r }
+        index to it.value
+      }
+      .take(6)
+      .foldIndexed(mutableListOf<HoloLine>()) { index , holoLines , pair ->
+        val yinYang = if (pair.second) YinYang.陽 else YinYang.陰
+        val yuanTang : Boolean = (index == 0)
+        val startFortuneGmtJulDay = if (holoLines.isEmpty()) gmtJulDay else holoLines.last().endFortuneGmtDay
+
+        val endFortuneGmtJulDay = generateSequence(startFortuneGmtJulDay+0.1) {
+          solarTermsImpl.getSolarTermsTime(SolarTerms.立春, it+0.1, true)
+        }.take(if (pair.second) 10 else 7)
+          .last()
+        val line = HoloLine(yinYang , yuanTang , startFortuneGmtJulDay , endFortuneGmtJulDay)
+        holoLines.add(line)
+        holoLines
+      }
+
+      .forEach { holoLine ->
+        println("$holoLine")
+        println("\t range years = ${(holoLine.endFortuneGmtDay - holoLine.startFortuneGmtJulDay)/365}")
+      }
+
 
     val yinYang: IYinYang = threeKings?.let { algo ->
       when (algo) {
@@ -396,6 +429,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       }
     } ?: yearHalfYinYang
 
+    // 後天命卦
     val hexagramAcquired: Pair<IHexagram, Int> = getHexagramAcquired(hexagramCongenital.first, hexagramCongenital.second, yinYang)
 
     // 天元氣
