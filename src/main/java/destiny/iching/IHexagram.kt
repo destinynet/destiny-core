@@ -93,4 +93,18 @@ interface IHexagram {
     get() = Hexagram.getHexagram(
       booleanArrayOf(upperSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(2), upperSymbol.getBooleanValue(1),
                      lowerSymbol.getBooleanValue(3), lowerSymbol.getBooleanValue(2), lowerSymbol.getBooleanValue(1)))
+
+  /** 每卦各取 先天對沖 */
+  val congenitalOpposition: IHexagram
+    get() = Hexagram.getHexagram(
+      SymbolCongenital.getOppositeSymbol(upperSymbol),
+      SymbolCongenital.getOppositeSymbol(lowerSymbol)
+    )
+
+  /** 每卦各取 後天對沖 */
+  val acquiredOpposition: IHexagram
+    get() = Hexagram.getHexagram(
+      SymbolAcquired.getOppositeSymbol(upperSymbol),
+      SymbolAcquired.getOppositeSymbol(lowerSymbol)
+    )
 }

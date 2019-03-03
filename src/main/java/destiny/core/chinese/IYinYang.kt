@@ -4,8 +4,10 @@
  */
 package destiny.core.chinese
 
+import java.io.Serializable
+
 /** 取得此元素的陰陽值 : getYinYang()  */
-interface IYinYang {
+interface IYinYang : Serializable {
 
   val booleanValue: Boolean
 }

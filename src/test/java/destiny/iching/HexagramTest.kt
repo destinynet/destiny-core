@@ -11,6 +11,19 @@ import kotlin.test.Test
 class HexagramTest {
 
   @Test
+  fun testCongenitalOpposition() {
+    assertSame(剝 , 夬.congenitalOpposition)
+    assertSame(夬 , 剝.congenitalOpposition)
+
+    assertSame(渙 , 豐.congenitalOpposition)
+    assertSame(豐 , 渙.congenitalOpposition)
+
+    assertSame(姤 , 復.congenitalOpposition)
+    assertSame(復 , 姤.congenitalOpposition)
+
+  }
+
+  @Test
   fun testGetLine() {
     assertTrue(乾.getLine(1))
     assertTrue(乾.getLine(2))

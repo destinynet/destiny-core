@@ -51,7 +51,6 @@ class NumberizeImpl : INumberize, Serializable {
   }
 }
 
-
 data class Holo(
   val ew: IEightWords,
 
@@ -63,7 +62,7 @@ data class Holo(
   val heavenNumber: Int,
 
   /** 地數 */
-  val earthNumber : Int,
+  val earthNumber: Int,
 
   /** 先天卦 , with 元堂 (1~6) */
   val hexagramCongenital: Pair<IHexagram, Int>,
@@ -110,13 +109,13 @@ interface IHoloContext {
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): Holo
 
   /** 天數 */
-  fun getHeavenNumber(ew: IEightWords) : Int
+  fun getHeavenNumber(ew: IEightWords): Int
 
   /** 天數 -> 卦 */
   fun getHeavenSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
 
   /** 地數 */
-  fun getEarthNumber(ew: IEightWords) : Int
+  fun getEarthNumber(ew: IEightWords): Int
 
   /** 地數 -> 卦 */
   fun getEarthSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol
@@ -356,10 +355,10 @@ interface IHoloContext {
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
 class HoloContext(private val eightWordsImpl: IEightWordsFactory,
-                  private val yuanImpl : IYuan,
+                  private val yuanImpl: IYuan,
                   private val numberize: INumberize,
                   private val yuanGenderImpl: IYuanGander,
-                  private val zodiacSignImpl : IZodiacSign,
+                  private val zodiacSignImpl: IZodiacSign,
                   private val yearSplitterImpl: IYearSplitterBySign,
                   private val seasonalSymbolImpl: ISeasonalSymbol,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR
@@ -375,9 +374,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
   override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): Holo {
 
-    val yuan = yuanImpl.getYuan(lmt , loc)
+    val yuan = yuanImpl.getYuan(lmt, loc)
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt , loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     val ew: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
 
     // 天數
@@ -426,11 +425,11 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     // 化工反例
     val seasonlessSymbols = seasonalSymbols.map { SymbolCongenital.getOppositeSymbol(it) }.toSet()
 
-    return Holo(ew, gender, yuan, heavenNumber , earthNumber ,
+    return Holo(ew, gender, yuan, heavenNumber, earthNumber,
       hexagramCongenital, hexagramAcquired,
       vigorousSymbolFromStem, vigorousSymbolFromBranch,
       vigorlessSymbolFromStem, vigorlessSymbolFromBranch,
-      seasonalSymbols , seasonlessSymbols
+      seasonalSymbols, seasonlessSymbols
     )
   }
 
@@ -444,7 +443,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   /** 天數 -> 卦 */
   override fun getHeavenSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
 
-    fun shrink(value : Int) : Int {
+    fun shrink(value: Int): Int {
       return when {
         value > 25 -> shrink(value % 25)
         value == 25 -> 5
@@ -468,7 +467,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   /** 地數 -> 卦 */
   override fun getEarthSymbol(ew: IEightWords, gender: Gender, yuan: Yuan): Symbol {
 
-    fun shrink(value : Int) : Int {
+    fun shrink(value: Int): Int {
       return if (value > 30) {
         shrink(value % 30)
       } else {
@@ -485,6 +484,4 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
   }
-
-
 }
