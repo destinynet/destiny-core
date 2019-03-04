@@ -3,7 +3,9 @@
  */
 package destiny.core.chinese.holo
 
+import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.IYinYang
+import destiny.core.chinese.StemBranch
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
 
@@ -29,9 +31,12 @@ interface IHoloHexagram : IHexagram {
 
   /** 元堂 在第幾爻 (1~6) */
   val yuanTang: Int
+
+  /** 元堂爻的資訊 */
+  val yuanTangLine : IHoloLine
 }
 
-data class HoloHexagram(val lines : List<HoloLine>) : IHoloHexagram {
+data class HoloHexagram(val lines: List<HoloLine>) : IHoloHexagram {
   init {
     require(lines.size == 6) {
       "lines length should be exactly 6"
@@ -52,6 +57,9 @@ data class HoloHexagram(val lines : List<HoloLine>) : IHoloHexagram {
   override val yuanTang: Int
     get() = lines.withIndex().first { it.value.yuanTang }.index + 1
 
+  /** 元堂爻的資訊 */
+  override val yuanTangLine: IHoloLine
+    get() = lines.first { it.yuanTang }
 
   /**
    * @param index 1 <= index <= 6
@@ -60,6 +68,33 @@ data class HoloHexagram(val lines : List<HoloLine>) : IHoloHexagram {
     require(index in 1..6) {
       "index should between 1 (incl.) and 6 (incl.)"
     }
-    return lines[index-1]
+    return lines[index - 1]
   }
 }
+
+/** 流年卦 */
+interface IHoloYearlyHexagram : IHexagram {
+
+  /** 流年干支 */
+  val stemBranch : IStemBranch
+
+  /** 流年卦象 */
+  val hexagram: IHexagram
+
+  /** 元堂 第幾爻 (1~6) */
+  val yuanTang : Int
+
+  /** start of GMT JulianDay */
+  val start: Double
+
+  /** end of GMT JulianDay */
+  val end: Double
+}
+
+/** 流年卦 */
+data class HoloYearlyHexagram(
+  override val stemBranch: IStemBranch,
+  override val hexagram : IHexagram,
+  override val yuanTang: Int,
+  override val start: Double,
+  override val end: Double) : IHoloYearlyHexagram , IHexagram by hexagram
