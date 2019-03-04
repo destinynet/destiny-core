@@ -88,7 +88,7 @@ class HexagramTest {
   @Test
   fun testGetHexagramLine() {
     val src = 乾
-    assertSame(姤, Hexagram.getHexagram(src.getTargetYinYangs(1)))
+    assertSame(姤, Hexagram.of(src.getTargetYinYangs(1)))
     //assertSame(Hexagram.姤, src.getHexagram(1))
   }
 
@@ -113,28 +113,28 @@ class HexagramTest {
   @Test
   fun testHexagramWithMotivLines() {
     // line = 0 , 不變
-    assertEquals(乾, Hexagram.getHexagram(乾.getTargetYinYangs(0)))
+    assertEquals(乾, Hexagram.of(乾.getTargetYinYangs(0)))
 
-    assertEquals(姤, Hexagram.getHexagram(乾.getTargetYinYangs(1)))
+    assertEquals(姤, Hexagram.of(乾.getTargetYinYangs(1)))
 
-    assertEquals(遯, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2)))
+    assertEquals(遯, Hexagram.of(乾.getTargetYinYangs(1, 2)))
 
-    assertEquals(遯, Hexagram.getHexagram(乾.getTargetYinYangs(2, 1)))
+    assertEquals(遯, Hexagram.of(乾.getTargetYinYangs(2, 1)))
 
-    assertEquals(否, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3)))
-    assertEquals(否, Hexagram.getHexagram(乾.getTargetYinYangs(3, 2, 1)))
-    assertEquals(否, Hexagram.getHexagram(乾.getTargetYinYangs(2, 3, 1)))
+    assertEquals(否, Hexagram.of(乾.getTargetYinYangs(1, 2, 3)))
+    assertEquals(否, Hexagram.of(乾.getTargetYinYangs(3, 2, 1)))
+    assertEquals(否, Hexagram.of(乾.getTargetYinYangs(2, 3, 1)))
 
-    assertEquals(觀, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3, 4)))
-    assertEquals(剝, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3, 4, 5)))
-    assertEquals(坤, Hexagram.getHexagram(乾.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
+    assertEquals(觀, Hexagram.of(乾.getTargetYinYangs(1, 2, 3, 4)))
+    assertEquals(剝, Hexagram.of(乾.getTargetYinYangs(1, 2, 3, 4, 5)))
+    assertEquals(坤, Hexagram.of(乾.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
 
-    assertEquals(復, Hexagram.getHexagram(坤.getTargetYinYangs(1)))
-    assertEquals(臨, Hexagram.getHexagram(坤.getTargetYinYangs(1, 2)))
-    assertEquals(泰, Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3)))
-    assertEquals(大壯, Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3, 4)))
-    assertEquals(夬,  Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3, 4, 5)))
-    assertEquals(乾,  Hexagram.getHexagram(坤.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
+    assertEquals(復, Hexagram.of(坤.getTargetYinYangs(1)))
+    assertEquals(臨, Hexagram.of(坤.getTargetYinYangs(1, 2)))
+    assertEquals(泰, Hexagram.of(坤.getTargetYinYangs(1, 2, 3)))
+    assertEquals(大壯, Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4)))
+    assertEquals(夬,  Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4, 5)))
+    assertEquals(乾,  Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
   }
 
   /** 測試互卦  */

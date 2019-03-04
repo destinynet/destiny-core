@@ -105,7 +105,7 @@ class DivineContext(
     // 1~8
     val 宮序 = 京房易卦卦序 - 宮位 * 8
 
-    val 本宮: Symbol = Hexagram.getHexagram(宮位 * 8 + 1, comparator).upperSymbol
+    val 本宮: Symbol = Hexagram.of(宮位 * 8 + 1, comparator).upperSymbol
 
     val (世爻, 應爻) = get世爻應爻(宮序)
 

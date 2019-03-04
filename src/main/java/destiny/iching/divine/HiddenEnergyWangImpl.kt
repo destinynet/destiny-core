@@ -45,7 +45,7 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
     //int 宮序 = 京房易卦卦序 - 宮位*8;
 
-    val 首宮卦 = Hexagram.getHexagram(宮位 * 8 + 1, comparator)
+    val 首宮卦 = Hexagram.of(宮位 * 8 + 1, comparator)
 
 
     // 此卦包含的五行

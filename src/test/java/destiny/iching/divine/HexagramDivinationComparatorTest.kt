@@ -44,14 +44,14 @@ class HexagramDivinationComparatorTest {
   fun testHexagramSequence() {
     val sequence = HexagramDivinationComparator()
 
-    assertEquals(Hexagram.乾, Hexagram.getHexagram(1, sequence))
-    assertEquals(Hexagram.姤, Hexagram.getHexagram(2, sequence))
-    assertEquals(Hexagram.遯, Hexagram.getHexagram(3, sequence))
-    assertEquals(Hexagram.否, Hexagram.getHexagram(4, sequence))
-    assertEquals(Hexagram.觀, Hexagram.getHexagram(5, sequence))
-    assertEquals(Hexagram.剝, Hexagram.getHexagram(6, sequence))
-    assertEquals(Hexagram.晉, Hexagram.getHexagram(7, sequence))
-    assertEquals(Hexagram.大有, Hexagram.getHexagram(8, sequence))
+    assertEquals(Hexagram.乾, Hexagram.of(1, sequence))
+    assertEquals(Hexagram.姤, Hexagram.of(2, sequence))
+    assertEquals(Hexagram.遯, Hexagram.of(3, sequence))
+    assertEquals(Hexagram.否, Hexagram.of(4, sequence))
+    assertEquals(Hexagram.觀, Hexagram.of(5, sequence))
+    assertEquals(Hexagram.剝, Hexagram.of(6, sequence))
+    assertEquals(Hexagram.晉, Hexagram.of(7, sequence))
+    assertEquals(Hexagram.大有, Hexagram.of(8, sequence))
   }
 
 

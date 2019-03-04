@@ -90,7 +90,7 @@ enum class Hexagram constructor(
 
   companion object {
 
-    fun getHexagram(upper: Symbol, lower: Symbol): Hexagram {
+    fun of(upper: Symbol, lower: Symbol): Hexagram {
       return values().first {
         it.upperSymbol === upper && it.lowerSymbol === lower
       }
@@ -102,22 +102,28 @@ enum class Hexagram constructor(
      * @param index 1 <= 卦序 <= 64
      * @param sequence 實作 getIndex(Hexagram) 的介面
      */
-    fun getHexagram(index: Int, sequence: IHexagramSequence = HexagramDefaultComparator()): IHexagram {
+    fun of(index: Int, sequence: IHexagramSequence = HexagramDefaultComparator()): IHexagram {
       if (index > 64)
-        return getHexagram(index % 64, sequence)
-      return if (index <= 0) getHexagram(index + 64, sequence) else sequence.getHexagram(index)
+        return of(index % 64, sequence)
+      return if (index <= 0) of(index + 64, sequence) else sequence.getHexagram(index)
 
     }
 
-    /** 從 陰陽 YinYang 實體的 array 傳回 HexagramIF  */
-    fun getHexagram(yinyangs: Array<IYinYang>): Hexagram {
-      if (yinyangs.size != 6)
-        throw RuntimeException("yinyangs length not equal 6 !")
+    /** 從 陰陽 YinYang 實體的 array 傳回 Hexagram  */
+    fun of(yinYangs: Array<IYinYang>): Hexagram {
+      require(yinYangs.size == 6) { "yinYangs size != 6" }
 
-      val upper = Symbol.getSymbol(yinyangs[3].booleanValue, yinyangs[4].booleanValue, yinyangs[5].booleanValue)
-      val lower = Symbol.getSymbol(yinyangs[0].booleanValue, yinyangs[1].booleanValue, yinyangs[2].booleanValue)
-      return getHexagram(upper, lower)
+      val upper = Symbol.getSymbol(yinYangs[3].booleanValue, yinYangs[4].booleanValue, yinYangs[5].booleanValue)
+      val lower = Symbol.getSymbol(yinYangs[0].booleanValue, yinYangs[1].booleanValue, yinYangs[2].booleanValue)
+      return of(upper, lower)
     }
+
+//    fun of(yinYangs : List<IYinYang>) : Hexagram {
+//      require(yinYangs.size == 6) { "yinYangs size != 6" }
+//      val upper = Symbol.getSymbol(yinYangs[3].booleanValue, yinYangs[4].booleanValue, yinYangs[5].booleanValue)
+//      val lower = Symbol.getSymbol(yinYangs[0].booleanValue, yinYangs[1].booleanValue, yinYangs[2].booleanValue)
+//      return of(upper, lower)
+//    }
 
     /**
      * 由六爻的 boolean array 尋找卦象
@@ -126,26 +132,25 @@ enum class Hexagram constructor(
      * 六爻陰陽，由初爻至上爻
      * @return 卦的實體(Hexagram)
      */
-    fun getHexagram(booleans: BooleanArray): Hexagram {
-      if (booleans.size != 6)
-        throw RuntimeException("booleans length is not 6 , the length is " + booleans.size)
+    fun of(booleans: BooleanArray): Hexagram {
+      require(booleans.size == 6) { "booleans size != 6" }
       val lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2])
       val upper = Symbol.getSymbol(booleans[3], booleans[4], booleans[5])
 
-      return Hexagram.getHexagram(upper, lower)
+      return Hexagram.of(upper, lower)
     }
 
-    fun getHexagram(booleans: List<Boolean>): Hexagram {
+    fun of(booleans: List<Boolean>): Hexagram {
       require(booleans.size == 6) { "booleans length is not 6 . content : $booleans" }
 
       val lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2])
       val upper = Symbol.getSymbol(booleans[3], booleans[4], booleans[5])
-      return Hexagram.getHexagram(upper, lower)
+      return Hexagram.of(upper, lower)
     }
 
 
-    fun getHexagram(iHexagram: IHexagram): Hexagram {
-      return getHexagram(iHexagram.yinYangs)
+    fun of(hex: IHexagram): Hexagram {
+      return of(hex.yinYangs)
     }
 
     /**
@@ -154,7 +159,7 @@ enum class Hexagram constructor(
     fun getHexagrams(lines: List<Int>): Pair<IHexagram, IHexagram> {
       val src = lines.map { i -> i % 2 == 1 }.toList()
       val dst = lines.map { i -> i == 6 || i == 7 }.toList()
-      return Pair<IHexagram, IHexagram>(getHexagram(src), getHexagram(dst))
+      return Pair<IHexagram, IHexagram>(of(src), of(dst))
     }
 
     /** 從 "010101" 取得一個卦 */
@@ -165,7 +170,7 @@ enum class Hexagram constructor(
           val c = code.toCharArray()[i]
           array[i] = c != '0'
         }
-        Hexagram.getHexagram(array)
+        Hexagram.of(array)
       } catch (e: Exception) {
         Hexagram.乾
       }

@@ -30,7 +30,7 @@ class MumeContext(
         yinyangs[i - 1] = hexagram.getLine(i)
 
       yinyangs[motivate - 1] = !hexagram.getLine(motivate)
-      return Hexagram.getHexagram(yinyangs)
+      return Hexagram.of(yinyangs)
     }
 
 

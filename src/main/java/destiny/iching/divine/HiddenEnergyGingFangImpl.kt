@@ -47,11 +47,11 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
     val 宮序 = 京房易卦卦序 - 宮位 * 8
     //System.out.println("宮序:" + 宮序);
 
-    val 首宮卦 = Hexagram.getHexagram(宮位 * 8 + 1, comparator)
+    val 首宮卦 = Hexagram.of(宮位 * 8 + 1, comparator)
 
     val sequence = HexagramDivinationComparator()
 
-    val 對宮首卦 = Hexagram.getHexagram((7 - 宮位) * 8 + 1, sequence)
+    val 對宮首卦 = Hexagram.of((7 - 宮位) * 8 + 1, sequence)
     //System.out.println("首宮卦:" + 首宮卦 + " , 對宮首卦為:" + 對宮首卦);
 
     when {

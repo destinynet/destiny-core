@@ -68,24 +68,24 @@ class HexagramDefaultComparatorTest {
   fun testHexagramSequence() {
     val sequenceImpl = HexagramDefaultComparator()
 
-    assertEquals(Hexagram.乾, Hexagram.getHexagram(1, sequenceImpl))
-    assertEquals(Hexagram.坤, Hexagram.getHexagram(2, sequenceImpl))
-    assertEquals(Hexagram.屯, Hexagram.getHexagram(3, sequenceImpl))
-    assertEquals(Hexagram.蒙, Hexagram.getHexagram(4, sequenceImpl))
-    assertEquals(Hexagram.需, Hexagram.getHexagram(5, sequenceImpl))
-    assertEquals(Hexagram.訟, Hexagram.getHexagram(6, sequenceImpl))
-    assertEquals(Hexagram.師, Hexagram.getHexagram(7, sequenceImpl))
+    assertEquals(Hexagram.乾, Hexagram.of(1, sequenceImpl))
+    assertEquals(Hexagram.坤, Hexagram.of(2, sequenceImpl))
+    assertEquals(Hexagram.屯, Hexagram.of(3, sequenceImpl))
+    assertEquals(Hexagram.蒙, Hexagram.of(4, sequenceImpl))
+    assertEquals(Hexagram.需, Hexagram.of(5, sequenceImpl))
+    assertEquals(Hexagram.訟, Hexagram.of(6, sequenceImpl))
+    assertEquals(Hexagram.師, Hexagram.of(7, sequenceImpl))
   }
 
   @Test
   fun testHexagramSequenceWithDefault() {
-    assertEquals(Hexagram.乾, Hexagram.getHexagram(1))
-    assertEquals(Hexagram.坤, Hexagram.getHexagram(2))
-    assertEquals(Hexagram.屯, Hexagram.getHexagram(3))
-    assertEquals(Hexagram.蒙, Hexagram.getHexagram(4))
-    assertEquals(Hexagram.需, Hexagram.getHexagram(5))
-    assertEquals(Hexagram.訟, Hexagram.getHexagram(6))
-    assertEquals(Hexagram.師, Hexagram.getHexagram(7))
+    assertEquals(Hexagram.乾, Hexagram.of(1))
+    assertEquals(Hexagram.坤, Hexagram.of(2))
+    assertEquals(Hexagram.屯, Hexagram.of(3))
+    assertEquals(Hexagram.蒙, Hexagram.of(4))
+    assertEquals(Hexagram.需, Hexagram.of(5))
+    assertEquals(Hexagram.訟, Hexagram.of(6))
+    assertEquals(Hexagram.師, Hexagram.of(7))
   }
 
   @Test

@@ -26,7 +26,7 @@ object TriSpites {
 
   /** 正 曜煞 */
   private fun getStandardSpites(symbol: Symbol, settings: ISettingsOfStemBranch): List<Branch> {
-    val hexagram = Hexagram.getHexagram(symbol, symbol)
+    val hexagram = Hexagram.of(symbol, symbol)
     return (1..6).filter {
       val sb: StemBranch = settings.getStemBranch(hexagram, it)
       val 外在五行 = SimpleBranch.getFiveElement(sb.branch)

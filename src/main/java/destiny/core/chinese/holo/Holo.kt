@@ -67,10 +67,10 @@ data class Holo(
   val earthNumber: Int,
 
   /** 先天卦 , with 元堂 (1~6) */
-  val hexagramCongenital: Pair<IHexagram, Int>,
+  val hexagramCongenital: HoloHexagram,
 
   /** 後天卦 , with 元堂 (1~6) */
-  val hexagramAcquired: Pair<IHexagram, Int>,
+  val hexagramAcquired: HoloHexagram,
 
   /** 天元氣 */
   val vigorousSymbolFromStem: Symbol,
@@ -130,9 +130,9 @@ interface IHoloContext {
     val earthSymbol = getEarthSymbol(ew, gender, yuan)
 
     return if ((gender == Gender.男 && ew.year.stem.booleanValue) || (gender == Gender.女 && !ew.year.stem.booleanValue)) {
-      Hexagram.getHexagram(heavenSymbol, earthSymbol)
+      Hexagram.of(heavenSymbol, earthSymbol)
     } else {
-      Hexagram.getHexagram(earthSymbol, heavenSymbol)
+      Hexagram.of(earthSymbol, heavenSymbol)
     }
   }
 
@@ -315,7 +315,7 @@ interface IHoloContext {
       else
         booleanValue
     }.let { list ->
-      Hexagram.getHexagram(list).let { hex ->
+      Hexagram.of(list).let { hex ->
         val upperSymbol = hex.upperSymbol
         val lowerSymbol = hex.lowerSymbol
 
@@ -323,24 +323,24 @@ interface IHoloContext {
           /** 三至尊卦 : [Hexagram.坎] [Hexagram.屯] [Hexagram.蹇] , 且 , 元堂 為 5 or 6 */
           if (yuanTang == 5) {
             if (yinYang.booleanValue) {
-              Hexagram.getHexagram(lowerSymbol, upperSymbol) to newYuanTang
+              Hexagram.of(lowerSymbol, upperSymbol) to newYuanTang
             } else {
               // 爻變，上下不動
-              Hexagram.getHexagram(upperSymbol, lowerSymbol) to yuanTang
+              Hexagram.of(upperSymbol, lowerSymbol) to yuanTang
             }
           } else {
             // 6
             if (yinYang.booleanValue) {
               // 爻變，上下不動
-              Hexagram.getHexagram(upperSymbol, lowerSymbol) to yuanTang
+              Hexagram.of(upperSymbol, lowerSymbol) to yuanTang
             } else {
-              Hexagram.getHexagram(lowerSymbol, upperSymbol) to newYuanTang
+              Hexagram.of(lowerSymbol, upperSymbol) to newYuanTang
             }
           }
 
         } else {
           // 正常狀況 上下交換
-          Hexagram.getHexagram(lowerSymbol, upperSymbol) to newYuanTang
+          Hexagram.of(lowerSymbol, upperSymbol) to newYuanTang
         }
       }
     }
@@ -363,7 +363,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
                   private val zodiacSignImpl: IZodiacSign,
                   private val yearSplitterImpl: IYearSplitterBySign,
                   private val seasonalSymbolImpl: ISeasonalSymbol,
-                  private val solarTermsImpl : ISolarTerms,
+                  private val solarTermsImpl: ISolarTerms,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR
 ) : IHoloContext, Serializable {
 
@@ -373,6 +373,35 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
   private fun Int.isEven(): Boolean {
     return this % 2 == 0
+  }
+
+  private fun getHoloHexagram(yinYangs: List<Boolean>, yuanTangIndexFrom1: Int, initGmtJulDay: Double): HoloHexagram {
+    return generateSequence { yinYangs }
+      .flatten()
+      .drop(yuanTangIndexFrom1 - 1)
+      .withIndex()
+      .map {
+        // index : 第幾爻 (1~6)
+        val index = ((it.index + yuanTangIndexFrom1) % 6).let { r -> if (r == 0) 6 else r }
+        index to it.value
+      }
+      .take(6)
+      .foldIndexed(mutableListOf<Pair<Int, HoloLine>>()) { indexFrom0, holoLines, pair ->
+        val yinYang = if (pair.second) YinYang.陽 else YinYang.陰
+        val yuanTang: Boolean = (indexFrom0 == 0)
+        val startFortuneGmtJulDay = if (holoLines.isEmpty()) initGmtJulDay else holoLines.last().second.endFortuneGmtDay
+        val endFortuneGmtJulDay = generateSequence(startFortuneGmtJulDay + 0.1) {
+          solarTermsImpl.getSolarTermsTime(SolarTerms.立春, it + 0.1, true)
+        }
+          .drop(1).take(if (pair.second) 9 else 6)
+          .last()
+        val line = HoloLine(yinYang, yuanTang, startFortuneGmtJulDay, endFortuneGmtJulDay)
+        holoLines.add(pair.first to line)
+        holoLines
+      }
+      .sortedBy { (lineIndex, line) -> lineIndex }
+      .map { (lineIndex, line) -> line }
+      .let { lines -> HoloHexagram(lines) }
   }
 
   override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): Holo {
@@ -391,36 +420,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     val yearHalfYinYang = yearSplitterImpl.getYinYang(sign)
 
     // 先天命卦
-    val hexagramCongenital: Pair<IHexagram, Int> = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang)
-
-    generateSequence { hexagramCongenital.first.yinYangs }
-      .flatten()
-      .drop(hexagramCongenital.second-1)
-      .withIndex()
-      .map {
-        val index = ((it.index + hexagramCongenital.second) % 6).let { r -> if (r == 0) 6 else r }
-        index to it.value
-      }
-      .take(6)
-      .foldIndexed(mutableListOf<HoloLine>()) { index , holoLines , pair ->
-        val yinYang = if (pair.second) YinYang.陽 else YinYang.陰
-        val yuanTang : Boolean = (index == 0)
-        val startFortuneGmtJulDay = if (holoLines.isEmpty()) gmtJulDay else holoLines.last().endFortuneGmtDay
-
-        val endFortuneGmtJulDay = generateSequence(startFortuneGmtJulDay+0.1) {
-          solarTermsImpl.getSolarTermsTime(SolarTerms.立春, it+0.1, true)
-        }.take(if (pair.second) 10 else 7)
-          .last()
-        val line = HoloLine(yinYang , yuanTang , startFortuneGmtJulDay , endFortuneGmtJulDay)
-        holoLines.add(line)
-        holoLines
-      }
-
-      .forEach { holoLine ->
-        println("$holoLine")
-        println("\t range years = ${(holoLine.endFortuneGmtDay - holoLine.startFortuneGmtJulDay)/365}")
-      }
-
+    val hexagramCongenital: HoloHexagram = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang).let { (hex, indexFrom1) ->
+      getHoloHexagram(hex.yinYangs, indexFrom1, gmtJulDay)
+    }
 
     val yinYang: IYinYang = threeKings?.let { algo ->
       when (algo) {
@@ -429,8 +431,11 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       }
     } ?: yearHalfYinYang
 
+
     // 後天命卦
-    val hexagramAcquired: Pair<IHexagram, Int> = getHexagramAcquired(hexagramCongenital.first, hexagramCongenital.second, yinYang)
+    val hexagramAcquired: HoloHexagram = getHexagramAcquired(hexagramCongenital, hexagramCongenital.yuanTang, yinYang).let { (hex, indexFrom1) ->
+      getHoloHexagram(hex.yinYangs, indexFrom1, hexagramCongenital.lines.maxBy { holoLine: HoloLine -> holoLine.endFortuneGmtDay }!!.endFortuneGmtDay)
+    }
 
     // 天元氣
     val vigorousSymbolFromStem = SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))!!

@@ -18,7 +18,7 @@ class HexagramDivinationComparator : Comparator<IHexagram>, IHexagramSequence {
    * @return 傳回六爻卦序, 乾=1 , 姤=2 , 遯=3 , 否=4 ...
    */
   override fun getIndex(hexagram: IHexagram): Int {
-    val h = Hexagram.getHexagram(hexagram.upperSymbol, hexagram.lowerSymbol)
+    val h = Hexagram.of(hexagram.upperSymbol, hexagram.lowerSymbol)
     return hexagramIndexMap[h]!!
   }
 

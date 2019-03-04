@@ -74,7 +74,7 @@ interface IHexagram {
    * 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名
    */
   val middleSpanHexagram: IHexagram
-    get() = Hexagram.getHexagram(
+    get() = Hexagram.of(
       booleanArrayOf(lowerSymbol.getBooleanValue(2), lowerSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(1),
                      lowerSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(1), upperSymbol.getBooleanValue(2)))
 
@@ -82,7 +82,7 @@ interface IHexagram {
    * 錯卦 , 一卦六爻全變 , 交錯之意 , 故取名 Interlaced Hexagram
    */
   val interlacedHexagram: IHexagram
-    get() = Hexagram.getHexagram(
+    get() = Hexagram.of(
       booleanArrayOf(!lowerSymbol.getBooleanValue(1), !lowerSymbol.getBooleanValue(2), !lowerSymbol.getBooleanValue(3),
                      !upperSymbol.getBooleanValue(1), !upperSymbol.getBooleanValue(2), !upperSymbol.getBooleanValue(3)))
 
@@ -90,20 +90,20 @@ interface IHexagram {
    * 綜卦 , 上下顛倒 , 故取名 Reversed Hexagram
    */
   val reversedHexagram: IHexagram
-    get() = Hexagram.getHexagram(
+    get() = Hexagram.of(
       booleanArrayOf(upperSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(2), upperSymbol.getBooleanValue(1),
                      lowerSymbol.getBooleanValue(3), lowerSymbol.getBooleanValue(2), lowerSymbol.getBooleanValue(1)))
 
   /** 每卦各取 先天對沖 */
   val congenitalOpposition: IHexagram
-    get() = Hexagram.getHexagram(
+    get() = Hexagram.of(
       SymbolCongenital.getOppositeSymbol(upperSymbol),
       SymbolCongenital.getOppositeSymbol(lowerSymbol)
     )
 
   /** 每卦各取 後天對沖 */
   val acquiredOpposition: IHexagram
-    get() = Hexagram.getHexagram(
+    get() = Hexagram.of(
       SymbolAcquired.getOppositeSymbol(upperSymbol),
       SymbolAcquired.getOppositeSymbol(lowerSymbol)
     )
