@@ -134,16 +134,16 @@ interface IHoloContext {
    * */
   fun getYuanTang(hexagram: IHexagram, hour: Branch, gender: Gender, yearHalfYinYang: IYinYang): Int {
     // 幾個陽爻
-    val yangCount = hexagram.yinYangs.count { it }
+    val yangCount = hexagram.booleans.count { it }
     // 幾個陰爻
-    val yinCount = hexagram.yinYangs.count { !it }
+    val yinCount = hexagram.booleans.count { !it }
 
-    val yangSeq: Sequence<Int> = hexagram.yinYangs.zip(1..6)
+    val yangSeq: Sequence<Int> = hexagram.booleans.zip(1..6)
       .filter { (yinYang, indexFrom1) -> yinYang }
       .map { pair -> pair.second }
       .let { list -> generateSequence { list }.flatten() }
 
-    val yinSeq = hexagram.yinYangs.zip(1..6)
+    val yinSeq = hexagram.booleans.zip(1..6)
       .filter { (yinYang, indexFrom1) -> !yinYang }
       .map { pair -> pair.second }
       .let { list -> generateSequence { list }.flatten() }
@@ -301,7 +301,7 @@ interface IHoloContext {
         it
     }
 
-    return hexagramCongenital.yinYangs.mapIndexed { index, booleanValue ->
+    return hexagramCongenital.booleans.mapIndexed { index, booleanValue ->
       if (index == yuanTang - 1)
         !booleanValue
       else

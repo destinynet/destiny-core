@@ -15,6 +15,7 @@ import destiny.fengshui.sanyuan.IYuan
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 import destiny.iching.Symbol.*
+import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -72,6 +73,12 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       .let { lines -> HoloHexagram(lines) }
   }
 
+  private fun getSeqFromYuanTang(hex: IHexagram, yuanTangIndexFrom1: Int): Sequence<IYinYang> {
+    return generateSequence { hex.yinYangs }
+      .flatten()
+      .drop(yuanTangIndexFrom1 - 1) // 從「元堂」爻開始
+  }
+
   private fun getHoloHexagramAndAgeList(yinYangs: List<Boolean>, yuanTangIndexFrom1: Int, initGmtJulDay: Double): Pair<HoloHexagram, List<Double>> {
     return generateSequence { yinYangs }
       .flatten()
@@ -115,20 +122,20 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
 
   /**
-   * 取得歲流年卦
+   * 取得流年卦 , 陽爻 取 9 年， 陰爻 取 6 年
    * @param hex 先天卦
    * @param lineIndex 元堂 (1~6)
    */
-  fun getYearlyHexagrams(hex: IHexagram , lineIndex : Int) : Sequence<Pair<IHexagram, Int>> {
+  fun getYearlyHexagrams(hex: IHexagram , lineIndex : Int , yinYang : IYinYang) : Sequence<Pair<IHexagram, Int>> {
 
 
     // 將 爻 限制在 1~6 之間
-    fun confine(line: Int): Int {
-      return (line % 6).let { r -> if (r == 0) 6 else r }
-    }
+    fun confine(line: Int): Int { return (line % 6).let { r -> if (r == 0) 6 else r } }
 
+    logger.info("getYearlyHexagrams() , hex = {} , lineIndex = {} , 陰陽年 = {}" , Hexagram.of(hex) , confine(lineIndex) , yinYang)
+
+    // 第幾爻變換
     fun switch(hex: IHexagram, line: Int): Pair<IHexagram, Int> {
-
       return (1..6)
         .map { index ->
           hex.getLine(index).let {
@@ -141,9 +148,19 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
         .toList().let { Hexagram.of(it) to confine(line) }
     }
 
-    return if (hex.getLine(lineIndex)) {
+    val confinedLine = confine(lineIndex)
+
+    return if (hex.getLine(confinedLine)) {
       // 陽爻
-      generateSequence (Triple(hex , lineIndex , 1)) { triple ->
+      val firstYear = if (!yinYang.booleanValue) {
+        logger.info("陽爻，元堂，流年逢陰年 ")
+        switch(hex , confinedLine).let { Triple(it.first , it.second , 1) }
+      } else {
+        logger.info("陽爻，元堂，流年仍陽年 ")
+        Triple(Hexagram.of(hex) , confinedLine , 1)
+      }
+
+      generateSequence (firstYear) { triple ->
         if (triple.third < 9) {
           val toAddLine = when(triple.third) {
             1 -> 3
@@ -158,12 +175,11 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
       }.take(9)
         .map { triple -> triple.first to triple.second }
-        .plus( getYearlyHexagrams(hex , confine(lineIndex+1)) )
     } else {
       // 陰爻
-      generateSequence(switch(hex , lineIndex)) { pair ->
+      generateSequence(switch(hex , confinedLine)) { pair ->
         switch(pair.first , pair.second+1)
-      }.take(6).plus( getYearlyHexagrams(hex , confine(lineIndex+1)) )
+      }.take(6)
     }
   }
 
@@ -185,7 +201,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
     // 先天命卦
     val (hexagramCongenital: HoloHexagram, ageEnds1: List<Double>) = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang).let { (hex, indexFrom1) ->
-      getHoloHexagramAndAgeList(hex.yinYangs, indexFrom1, gmtJulDay)
+      getHoloHexagramAndAgeList(hex.booleans, indexFrom1, gmtJulDay)
     }
 
     val yinYang: IYinYang = threeKings?.let { algo ->
@@ -198,11 +214,56 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
     // 後天命卦
     val (hexagramAcquired: HoloHexagram, ageEnds2: List<Double>) = getHexagramAcquired(hexagramCongenital, hexagramCongenital.yuanTang, yinYang).let { (hex, indexFrom1) ->
-      getHoloHexagramAndAgeList(hex.yinYangs, indexFrom1, hexagramCongenital.lines.maxBy { holoLine: HoloLine -> holoLine.endFortuneGmtDay }!!.endFortuneGmtDay)
+      getHoloHexagramAndAgeList(hex.booleans, indexFrom1, hexagramCongenital.lines.maxBy { holoLine: HoloLine -> holoLine.endFortuneGmtDay }!!.endFortuneGmtDay)
     }
 
+
+    val stemBranchSeq = generateSequence(ew.year) { it.next as StemBranch }
+
     // 每歲的結尾 , sorted
-    val ageEnds = ageEnds1.plus(ageEnds2)
+    val yearlyPartial: Sequence<Triple<StemBranch, Double, Double>> = listOf(gmtJulDay).asSequence().plus(ageEnds1).plus(ageEnds2).windowed(2, 1, false)
+      .map { listOfDouble -> listOfDouble[0] to listOfDouble[1] }
+      .asSequence()
+      .zip(stemBranchSeq)
+      .mapIndexed { indexFrom0, pair ->
+        val vAge = indexFrom0 + 1
+        val stemBranch: StemBranch = pair.second
+        val fromGmt: Double = pair.first.first
+        val toGmt: Double = pair.first.second
+        Triple(stemBranch, fromGmt, toGmt)
+      }
+
+
+    var partialHexagrams = getYearlyHexagrams(hexagramCongenital , hexagramCongenital.yuanTang , ew.year.stem).toList()
+
+    val yearlyHexagramList: List<Triple<StemBranch, Double, Double>> = yearlyPartial.toList()
+
+    val yearlyHexagrams = mutableListOf<IHoloYearlyHexagram>()
+
+    var i = 0
+    var cycle = 0
+    while (i + partialHexagrams.size < yearlyHexagramList.size) {
+      logger.info("sublist from {} to {}" , i , i+partialHexagrams.size)
+      val partialResult: List<HoloYearlyHexagram> = yearlyHexagramList.subList(i , i+partialHexagrams.size).mapIndexed{ indexFrom0, partial: Triple<StemBranch, Double, Double> ->
+        val stemBranch = partial.first
+        val fromGmt = partial.second
+        val toGmt = partial.third
+        val (hex: IHexagram, yuanTang) = partialHexagrams[indexFrom0]
+        logger.info("indexFrom0 = {} , 干支 = {} , hex = {} , 元堂 = {}" , indexFrom0 , stemBranch , hex , yuanTang)
+        HoloYearlyHexagram(stemBranch , hex , yuanTang , fromGmt , toGmt)
+      }
+      logger.info("adding partial result size = {}" , partialResult.size)
+      yearlyHexagrams.addAll(partialResult)
+      i += partialResult.size
+      val last: HoloYearlyHexagram = partialResult.last()
+      cycle++
+      val hex: HoloHexagram = if (cycle < 6) hexagramCongenital else hexagramAcquired
+
+      partialHexagrams = getYearlyHexagrams(hex , hex.yuanTang+cycle , last.stemBranch.next.stem).toList()
+    }
+
+    logger.info("yearlyHexagrams size = {}" , yearlyHexagrams.size)
+
 
     // 天元氣
     val vigorousSymbolFromStem = SymbolAcquired.getSymbol(numberize.getNumber(ew.year.stem))!!
@@ -289,5 +350,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     val value = shrink(getEarthNumber(ew))
 
     return SymbolAcquired.getSymbol(value) ?: yuanGenderImpl.getSymbol(gender, yuan, ew.year.stem)
+  }
+
+  companion object {
+    private val logger = LoggerFactory.getLogger(HoloContext::class.java)
   }
 }

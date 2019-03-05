@@ -18,8 +18,8 @@ interface IHexagram {
   /** 取得下卦  */
   val lowerSymbol: Symbol
 
-  /** 取得全部的陰陽  */
-  val yinYangs: List<Boolean>
+  /** 取得全部的 boolean 值 */
+  val booleans: List<Boolean>
     get() = listOf(
       lowerSymbol.getBooleanValue(1),
       lowerSymbol.getBooleanValue(2),
@@ -28,10 +28,13 @@ interface IHexagram {
       upperSymbol.getBooleanValue(2),
       upperSymbol.getBooleanValue(3))
 
+  /** 取得全部的 [IYinYang] 值 */
+  val yinYangs : List<IYinYang>
+    get() = booleans.map { b -> if (b) YinYang.陽 else YinYang.陰 }
 
   /** 取得 010101 的表示法  */
   val binaryCode: String
-    get() = yinYangs.joinToString(separator = "", transform = { b -> if (b) "1" else "0" })
+    get() = booleans.joinToString(separator = "", transform = { b -> if (b) "1" else "0" })
 
 
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
@@ -66,7 +69,7 @@ interface IHexagram {
    */
   @JvmDefault
   fun getTargetYinYangs(vararg lines: Int) : List<Boolean> {
-    return yinYangs
+    return booleans
       .mapIndexed { index, b -> if (lines.contains(index + 1)) !b else b }
   }
 
