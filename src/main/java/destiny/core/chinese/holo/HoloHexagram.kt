@@ -5,7 +5,6 @@ package destiny.core.chinese.holo
 
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.IYinYang
-import destiny.core.chinese.StemBranch
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
 
@@ -19,8 +18,14 @@ interface IHoloLine : IYinYang {
 
 data class HoloLine(override val yinYang: IYinYang,
                     override val yuanTang: Boolean,
-                    override val startFortuneGmtJulDay: Double,
-                    override val endFortuneGmtDay: Double) : IHoloLine, IYinYang by yinYang
+                    val yearly: List<HoloYearlyHexagram>) : IHoloLine, IYinYang by yinYang {
+
+  override val startFortuneGmtJulDay: Double
+    get() = yearly.minBy { it.start }!!.start
+
+  override val endFortuneGmtDay: Double
+    get() = yearly.maxBy { it.end }!!.end
+}
 
 interface IHoloHexagram : IHexagram {
 
