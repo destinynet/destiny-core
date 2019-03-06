@@ -58,7 +58,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       .foldIndexed(mutableListOf<Pair<Int, HoloLine>>()) { indexFrom0to5, lineIndex_holoLine , lineIndex_boolean ->
         val yinYang = lineIndex_boolean.second
         val yuanTang: Boolean = (indexFrom0to5 == 0)
-        val startFortuneGmtJulDay = if (lineIndex_holoLine.isEmpty()) initGmtJulDay else lineIndex_holoLine.last().second.endFortuneGmtDay
+        val startFortuneGmtJulDay = if (lineIndex_holoLine.isEmpty()) initGmtJulDay else lineIndex_holoLine.last().second.endGmtJulDay
 
         val stemBranchOf1stYear: IStemBranch = lineIndex_holoLine.lastOrNull()?.second?.yearly?.last()?.stemBranch?.next?:initStemBranch
 
@@ -183,9 +183,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
     // 後天命卦
     val hexagramAcquired: HoloHexagram = getHexagramAcquired(hexagramCongenital, hexagramCongenital.yuanTang, yinYang).let { (hex, indexFrom1) ->
-      val maxLine: HoloLine = hexagramCongenital.lines.maxBy { holoLine: HoloLine -> holoLine.endFortuneGmtDay }!!
+      val maxLine: HoloLine = hexagramCongenital.lines.maxBy { holoLine: HoloLine -> holoLine.endGmtJulDay }!!
 
-      getHoloHexagramAndAgeList(hex , indexFrom1 , maxLine.endFortuneGmtDay  , maxLine.yearly.last().stemBranch.next)
+      getHoloHexagramAndAgeList(hex , indexFrom1 , maxLine.endGmtJulDay  , maxLine.yearly.last().stemBranch.next)
     }
 
     // 天元氣

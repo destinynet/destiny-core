@@ -45,46 +45,115 @@ class NumberizeImpl : INumberize, Serializable {
   }
 }
 
-data class Holo(
-  val ew: IEightWords,
+interface IHolo {
+  val ew: IEightWords
 
-  val gender: Gender,
+  val gender: Gender
 
-  val yuan: Yuan,
+  val yuan: Yuan
 
   /** 天數 */
-  val heavenNumber: Int,
+  val heavenNumber: Int
 
   /** 地數 */
-  val earthNumber: Int,
+  val earthNumber: Int
 
   /** 先天卦 , with 元堂 (1~6) */
-  val hexagramCongenital: HoloHexagram,
+  val hexagramCongenital: IHoloHexagram
 
   /** 後天卦 , with 元堂 (1~6) */
-  val hexagramAcquired: HoloHexagram,
+  val hexagramAcquired: IHoloHexagram
 
   /** 天元氣 */
-  val vigorousSymbolFromStem: Symbol,
+  val vigorousSymbolFromStem: Symbol
 
   /** 地元氣 */
-  val vigorousSymbolFromBranch: Symbol,
+  val vigorousSymbolFromBranch: Symbol
 
   /** 天元氣相反 */
-  val vigorlessSymbolFromStem: Symbol,
+  val vigorlessSymbolFromStem: Symbol
 
   /** 地元氣相反 */
-  val vigorlessSymbolFromBranch: Symbol,
+  val vigorlessSymbolFromBranch: Symbol
 
   /**
    * 化工 : 得到季節力量者 , 這裡的季節，與中國的季節不同（遲了一個半月），反而與西洋的季節定義相同 : 二分二至 為 春夏秋冬的起點
    * 另外考慮了季月 艮坤 旺 18日
    */
-  val seasonalSymbols: Set<Symbol>,
+  val seasonalSymbols: Set<Symbol>
 
   /** 化工反例 */
   val seasonlessSymbols: Set<Symbol>
-)
+
+
+  /**
+   * @param gmtJulDay 取得此時刻 的大運 (6 or 9 年) 走到哪個卦 的 哪個爻
+   * @return IHexagram 必定為 先天卦 或 後天卦 , 1 <= Int <= 6
+   */
+  fun getLargeFortuneOf(gmtJulDay: Double): Pair<IHexagram, Int>? {
+    return hexagramCongenital.let { hex ->
+      val lineIndex = hex.lines.indexOfFirst { holoLine -> holoLine.startGmtJulDay <= gmtJulDay && gmtJulDay < holoLine.endGmtJulDay } + 1
+      hex to lineIndex
+    }.takeIf { (_, lineIndex) -> lineIndex > 0 }
+      ?: {
+        hexagramAcquired.let { hex ->
+          val lineIndex = hex.lines.indexOfFirst { holoLine -> holoLine.startGmtJulDay <= gmtJulDay && gmtJulDay < holoLine.endGmtJulDay } + 1
+          hex to lineIndex
+        }.takeIf { (_, lineIndex) -> lineIndex > 0 }
+      }.invoke()
+  }
+
+  /**
+   * 取得此時刻的流年卦
+   */
+  fun getYearlyHexagramOf(gmtJulDay: Double) : IHoloYearlyHexagram? {
+    return hexagramCongenital.lines.plus(hexagramCongenital.lines)
+      .flatMap { holoLine -> holoLine.yearly }
+      .firstOrNull { it.start <= gmtJulDay && gmtJulDay < it.end }
+  }
+} // IHolo
+
+data class Holo(
+  override val ew: IEightWords,
+
+  override val gender: Gender,
+
+  override val yuan: Yuan,
+
+  /** 天數 */
+  override val heavenNumber: Int,
+
+  /** 地數 */
+  override val earthNumber: Int,
+
+  /** 先天卦 , with 元堂 (1~6) */
+  override val hexagramCongenital: HoloHexagram,
+
+  /** 後天卦 , with 元堂 (1~6) */
+  override val hexagramAcquired: HoloHexagram,
+
+  /** 天元氣 */
+  override val vigorousSymbolFromStem: Symbol,
+
+  /** 地元氣 */
+  override val vigorousSymbolFromBranch: Symbol,
+
+  /** 天元氣相反 */
+  override val vigorlessSymbolFromStem: Symbol,
+
+  /** 地元氣相反 */
+  override val vigorlessSymbolFromBranch: Symbol,
+
+  /**
+   * 化工 : 得到季節力量者 , 這裡的季節，與中國的季節不同（遲了一個半月），反而與西洋的季節定義相同 : 二分二至 為 春夏秋冬的起點
+   * 另外考慮了季月 艮坤 旺 18日
+   */
+  override val seasonalSymbols: Set<Symbol>,
+
+  /** 化工反例 */
+  override val seasonlessSymbols: Set<Symbol>
+
+) : IHolo
 
 interface IHoloContext {
 
@@ -100,7 +169,8 @@ interface IHoloContext {
    */
   val threeKings: ThreeKingsAlgo?
 
-  fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): Holo
+  /** 取得 先天卦、後天卦 , 包含大運、流年等資訊 */
+  fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): IHolo
 
   /** 天數 */
   fun getHeavenNumber(ew: IEightWords): Int
@@ -337,6 +407,7 @@ interface IHoloContext {
       }
     }
   }
+
 
   companion object {
     val threeKingHexagrams = setOf(Hexagram.坎, Hexagram.屯, Hexagram.蹇)

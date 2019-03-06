@@ -14,10 +14,10 @@ interface IHoloLine : IYinYang {
   val yuanTang: Boolean
   val yearly: List<IHoloYearlyHexagram>
 
-  val startFortuneGmtJulDay: Double
+  val startGmtJulDay: Double
     get() = yearly.minBy { it.start }!!.start
 
-  val endFortuneGmtDay: Double
+  val endGmtJulDay: Double
     get() = yearly.maxBy { it.end }!!.end
 }
 
@@ -27,42 +27,13 @@ data class HoloLine(override val yinYang: IYinYang,
 
 interface IHoloHexagram : IHexagram {
 
-  /**
-   * @param index 1 <= index <= 6
-   */
-  override fun getLineYinYang(index: Int): IHoloLine
-
-  /** 元堂 在第幾爻 (1~6) */
-  val yuanTang: Int
-
-  /** 元堂爻的資訊 */
-  val yuanTangLine : IHoloLine
-}
-
-data class HoloHexagram(val lines: List<HoloLine>) : IHoloHexagram {
-  init {
-    require(lines.size == 6) {
-      "lines length should be exactly 6"
-    }
-    require(lines.filter { it.yuanTang }.size == 1) {
-      "必須要有唯一一個 元堂 爻"
-    }
-  }
-
+  val lines : List<IHoloLine>
 
   override val lowerSymbol: Symbol
     get() = Symbol.getSymbol(lines[0].booleanValue, lines[1].booleanValue, lines[2].booleanValue)
 
   override val upperSymbol: Symbol
     get() = Symbol.getSymbol(lines[3].booleanValue, lines[4].booleanValue, lines[5].booleanValue)
-
-  /** 元堂 在第幾爻 (1~6) */
-  override val yuanTang: Int
-    get() = lines.withIndex().first { it.value.yuanTang }.index + 1
-
-  /** 元堂爻的資訊 */
-  override val yuanTangLine: IHoloLine
-    get() = lines.first { it.yuanTang }
 
   /**
    * @param index 1 <= index <= 6
@@ -72,6 +43,25 @@ data class HoloHexagram(val lines: List<HoloLine>) : IHoloHexagram {
       "index should between 1 (incl.) and 6 (incl.)"
     }
     return lines[index - 1]
+  }
+
+  /** 元堂 在第幾爻 (1~6) */
+  val yuanTang: Int
+    get() = lines.withIndex().first { it.value.yuanTang }.index + 1
+
+  /** 元堂爻的資訊 */
+  val yuanTangLine : IHoloLine
+    get() = lines.first { it.yuanTang }
+}
+
+data class HoloHexagram(override val lines: List<HoloLine>) : IHoloHexagram {
+  init {
+    require(lines.size == 6) {
+      "lines length should be exactly 6"
+    }
+    require(lines.filter { it.yuanTang }.size == 1) {
+      "必須要有唯一一個 元堂 爻"
+    }
   }
 }
 
