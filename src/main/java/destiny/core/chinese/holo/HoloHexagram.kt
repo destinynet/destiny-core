@@ -12,20 +12,18 @@ import destiny.iching.Symbol
 interface IHoloLine : IYinYang {
   val yinYang: IYinYang
   val yuanTang: Boolean
+  val yearly: List<IHoloYearlyHexagram>
+
   val startFortuneGmtJulDay: Double
+    get() = yearly.minBy { it.start }!!.start
+
   val endFortuneGmtDay: Double
+    get() = yearly.maxBy { it.end }!!.end
 }
 
 data class HoloLine(override val yinYang: IYinYang,
                     override val yuanTang: Boolean,
-                    val yearly: List<HoloYearlyHexagram>) : IHoloLine, IYinYang by yinYang {
-
-  override val startFortuneGmtJulDay: Double
-    get() = yearly.minBy { it.start }!!.start
-
-  override val endFortuneGmtDay: Double
-    get() = yearly.maxBy { it.end }!!.end
-}
+                    override val yearly: List<IHoloYearlyHexagram>) : IHoloLine, IYinYang by yinYang
 
 interface IHoloHexagram : IHexagram {
 
