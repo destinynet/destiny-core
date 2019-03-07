@@ -57,7 +57,6 @@ data class HoloHexagram(
     return "$hexagram 之 $yuanTang"
   }
 }
-
 /** 除了 卦象、元堂 之外，另外包含干支資訊 (並非元堂爻的納甲) */
 interface IHoloHexagramWithStemBranch : IHoloHexagram {
   /**
@@ -88,10 +87,48 @@ data class HoloLine(val yinYang: IYinYang,
                      * 流月的爻，可以變化出 30 個流日卦象
                      * 流日的爻，可以變化出 12 個流時卦象
                      * */
-                    val hexagrams: List<IHoloHexagramWithStemBranch>) : TimeRange<Double> {
+                    val hexagrams: List<IHoloHexagramWithStemBranch>) : IYinYang by yinYang , TimeRange<Double> {
+
+
   override val start: Double
     get() = hexagrams.minBy { it.start }!!.start
 
   override val endExclusive: Double
     get() = hexagrams.maxBy { it.endExclusive }!!.endExclusive
+}
+
+
+
+
+/** 純粹用於 先天卦 or 後天卦 , 包含六爻中，每爻的流年資訊 */
+interface ILifeHoloHexagram : IHoloHexagram {
+  val lines : List<HoloLine>
+}
+
+/** 先天卦 or 後天卦 */
+data class LifeHoloHexagram(override val lines: List<HoloLine>,
+                            override val stemBranches: List<StemBranch>) : ILifeHoloHexagram {
+
+  init {
+    require(lines.count { it.yuanTang } == 1) {
+      "傳入的六爻，只能有一個 元堂，不能多也不能少。"
+    }
+  }
+
+  override val scale: IHoloHexagram.Scale
+    get() = IHoloHexagram.Scale.LIFE
+
+  override val hexagram: Hexagram
+    get() = Hexagram.ofYinYangs(lines)
+
+  override val yuanTang: Int
+    get() = lines.indexOfFirst { it.yuanTang }+1
+
+  override val start: Double
+    get() = lines.minBy { it.start }!!.start
+
+  override val endExclusive: Double
+    get() = lines.maxBy { it.endExclusive }!!.endExclusive
+
+
 }

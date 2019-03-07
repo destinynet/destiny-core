@@ -110,7 +110,7 @@ enum class Hexagram constructor(
     }
 
     /** 從 陰陽 YinYang 實體的 array 傳回 Hexagram  */
-    fun of(yinYangs: Array<IYinYang>): Hexagram {
+    fun ofYinYangs(yinYangs: List<IYinYang>): Hexagram {
       require(yinYangs.size == 6) { "booleans size != 6" }
 
       val upper = Symbol.getSymbol(yinYangs[3].booleanValue, yinYangs[4].booleanValue, yinYangs[5].booleanValue)

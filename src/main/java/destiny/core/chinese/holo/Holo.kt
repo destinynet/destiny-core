@@ -55,11 +55,11 @@ interface IHolo {
   /** 地數 */
   val earthNumber: Int
 
-  /** 先天卦 , with 元堂 (1~6) */
-  val hexagramCongenital: IHoloHexagram
+  /** 先天卦 , with 元堂 (1~6) , 包含六爻中每年的流年資訊 , 6 or 9 年 */
+  val hexagramCongenital: ILifeHoloHexagram
 
-  /** 後天卦 , with 元堂 (1~6) */
-  val hexagramAcquired: IHoloHexagram
+  /** 後天卦 , with 元堂 (1~6) , 包含六爻中每年的流年資訊 , 6 or 9 年 */
+  val hexagramAcquired: ILifeHoloHexagram
 
   /** 天元氣 */
   val vigorousSymbolFromStem: Symbol
@@ -89,8 +89,8 @@ data class Holo(
   override val yuan: Yuan,
   override val heavenNumber: Int,
   override val earthNumber: Int,
-  override val hexagramCongenital: IHoloHexagram,
-  override val hexagramAcquired: IHoloHexagram,
+  override val hexagramCongenital: ILifeHoloHexagram,
+  override val hexagramAcquired: ILifeHoloHexagram,
   override val vigorousSymbolFromStem: Symbol,
   override val vigorousSymbolFromBranch: Symbol,
   override val vigorlessSymbolFromStem: Symbol,

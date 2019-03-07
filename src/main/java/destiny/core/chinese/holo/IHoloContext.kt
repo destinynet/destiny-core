@@ -29,7 +29,7 @@ interface IHoloContext {
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender) : IHolo
 
-  /** 承上，另外取得此時刻的 主卦、大運、流年、流月 等資訊 */
+  /** 承上，除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
   fun getHoloWithTime(lmt: ChronoLocalDateTime<*> , loc:ILocation , gender: Gender , gmt:Double) : Pair<IHolo , List<IHoloHexagram>>
 
 
