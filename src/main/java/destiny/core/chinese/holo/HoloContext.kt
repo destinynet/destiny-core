@@ -12,6 +12,7 @@ import destiny.fengshui.sanyuan.IYuan
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 import destiny.iching.Symbol.*
+import destiny.iching.divine.ISettingsOfStemBranch
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -27,26 +28,8 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
                   private val yearSplitterImpl: IYearSplitterBySign,
                   private val seasonalSymbolImpl: ISeasonalSymbol,
                   private val solarTermsImpl: ISolarTerms,
+                  private val settings: ISettingsOfStemBranch,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR) : IHoloContext, Serializable {
-
-  /** 流年卦 */
-  private data class HoloYearlyHexagram(
-    val stemBranch: IStemBranch,
-    val hexagram: Hexagram,
-    val yuanTang: Int,
-    val start: Double,
-    val end: Double) : IHexagram by hexagram
-
-  /** 先天卦 or 後天卦 的單一爻 , 內含 6年 or 9年 的流年資料結構 */
-  private data class HoloLine(val yinYang: IYinYang,
-                              val yuanTang: Boolean,
-                              val yearly: List<HoloYearlyHexagram>) {
-    val startGmtJulDay: Double
-      get() = yearly.minBy { it.start }!!.start
-
-    val endGmtJulDay: Double
-      get() = yearly.maxBy { it.end }!!.end
-  }
 
   private fun Int.isOdd(): Boolean {
     return this % 2 == 1
@@ -76,14 +59,16 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       .foldIndexed(mutableListOf<Pair<Int, HoloLine>>()) { indexFrom0to5, lineIndex_holoLine, lineIndex_boolean ->
         val yinYang = lineIndex_boolean.second
         val yuanTang: Boolean = (indexFrom0to5 == 0)
-        val startFortuneGmtJulDay = if (lineIndex_holoLine.isEmpty()) initGmtJulDay else lineIndex_holoLine.last().second.endGmtJulDay
+        val startFortuneGmtJulDay = if (lineIndex_holoLine.isEmpty()) initGmtJulDay else lineIndex_holoLine.last().second.endExclusive
 
-        val stemBranchOf1stYear: IStemBranch = lineIndex_holoLine.lastOrNull()?.second?.yearly?.last()?.stemBranch?.next
+        val stemBranchOf1stYear: IStemBranch = lineIndex_holoLine.lastOrNull()?.second?.hexagrams?.last()?.stemBranch?.next
           ?: initStemBranch
 
+        // 每年 卦象 、元堂 以及 該年的干支
         val yearlySeq: Sequence<Triple<Hexagram, Int, IStemBranch>> = getYearlyHexagrams(hex, yuanTangIndexFrom1 + indexFrom0to5, stemBranchOf1stYear)
 
-        val yearly: List<HoloYearlyHexagram> = generateSequence(startFortuneGmtJulDay) {
+        // 6 or 9 條流年資訊
+        val yearly: List<HoloHexagramWithStemBranch> = generateSequence(startFortuneGmtJulDay) {
           solarTermsImpl.getSolarTermsTime(SolarTerms.立春, it + 0.1, true)
         }
           .take(if (lineIndex_boolean.second.booleanValue) 9 + 1 else 6 + 1)
@@ -96,7 +81,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
             val yearlyHex = hex_lineIndex_stemBranch.first
             val lineIndex = hex_lineIndex_stemBranch.second
             val stemBranch = hex_lineIndex_stemBranch.third
-            HoloYearlyHexagram(stemBranch, yearlyHex, lineIndex, fromGmt, toGmt)
+            val stemBranches = (1..6).map { settings.getStemBranch(yearlyHex , it) }.toList()
+            val holoHexagram: IHoloHexagram = HoloHexagram(IHoloHexagram.Scale.YEAR, yearlyHex, lineIndex, stemBranches, fromGmt, toGmt)
+            HoloHexagramWithStemBranch(holoHexagram , stemBranch)
           }.toList()
 
         val line = HoloLine(yinYang, yuanTang, yearly)
@@ -190,9 +177,10 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     // 先天命卦 , 以及六爻大運、流年 等資訊
     val (hexagramCongenital: IHoloHexagram, congenitalLines: List<HoloLine>) = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang).let { (hex, yuanTang) ->
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, gmtJulDay, ew.year)
-      val start = lines.minBy { line -> line.startGmtJulDay }!!.startGmtJulDay
-      val end = lines.maxBy { line -> line.endGmtJulDay }!!.endGmtJulDay
-      HoloHexagram(IHoloHexagram.Scale.LIFE, hex, yuanTang, start, end) to lines
+      val stemBranches = (1..6).map { settings.getStemBranch(hex , it) }.toList()
+      val start = lines.minBy { line -> line.start }!!.start
+      val end = lines.maxBy { line -> line.endExclusive }!!.endExclusive
+      HoloHexagram(IHoloHexagram.Scale.LIFE, hex, yuanTang, stemBranches , start, end) to lines
     }
 
     val yinYang: IYinYang = threeKings?.let { algo ->
@@ -205,13 +193,13 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
     // 後天命卦 , 以及六爻大運、流年 等資訊
     val (hexagramAcquired: IHoloHexagram, acquiredLines: List<HoloLine>) = getHexagramAcquired(hexagramCongenital, hexagramCongenital.yuanTang, yinYang).let { (hex, yuanTang) ->
-      val maxLine: HoloLine = congenitalLines.maxBy { holoLine: HoloLine -> holoLine.endGmtJulDay }!!
+      val maxLine: HoloLine = congenitalLines.maxBy { holoLine: HoloLine -> holoLine.endExclusive }!!
 
-      val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, maxLine.endGmtJulDay, maxLine.yearly.last().stemBranch.next)
-
-      val start = lines.minBy { line -> line.startGmtJulDay }!!.startGmtJulDay
-      val end = lines.maxBy { line -> line.endGmtJulDay }!!.endGmtJulDay
-      HoloHexagram(IHoloHexagram.Scale.LIFE, hex, yuanTang, start, end) to lines
+      val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, maxLine.endExclusive, maxLine.hexagrams.last().stemBranch.next)
+      val stemBranches = (1..6).map { settings.getStemBranch(hex , it) }.toList()
+      val start = lines.minBy { line -> line.start }!!.start
+      val end = lines.maxBy { line -> line.endExclusive }!!.endExclusive
+      HoloHexagram(IHoloHexagram.Scale.LIFE, hex, yuanTang, stemBranches , start, end) to lines
     }
 
 
@@ -254,20 +242,20 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   /** 包含 大運、流年、流月 等資訊 */
   override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: Double): Pair<IHolo, List<IHoloHexagram>> {
 
-    val (holo, congenitalLines, acquiredLines) = getHoloInner(lmt, loc, gender)
+    val (holo, congenitalLines: List<HoloLine>, acquiredLines: List<HoloLine>) = getHoloInner(lmt, loc, gender)
 
     // 現在處於 先天卦 or 後天卦 當中
     val mainHexagram: IHoloHexagram? = holo.hexagramCongenital.takeIf {
-      it.start <= gmt && gmt < it.end
+      it.contains(gmt)
     } ?: holo.hexagramAcquired.takeIf {
-      it.start <= gmt && gmt < it.end
+      it.contains(gmt)
     }
 
     // 此時刻的大運 (6 or 9年) 的 卦象(with 元堂)
-    val majorHexagram: HoloHexagram? = (holo.hexagramCongenital.let { holoHexagram: IHoloHexagram ->
+    val majorHexagram: IHoloHexagramWithStemBranch? = (holo.hexagramCongenital.let { holoHexagram: IHoloHexagram ->
       // 先從先天卦找起
       val lineIndex = congenitalLines.indexOfFirst {
-        it.startGmtJulDay <= gmt && gmt < it.endGmtJulDay
+        it.contains(gmt)
       } + 1
       Triple(holoHexagram.hexagram, lineIndex, if (lineIndex > 0) congenitalLines[lineIndex - 1] else null)
 
@@ -275,23 +263,32 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       ?: holo.hexagramAcquired.let { holoHexagram: IHoloHexagram ->
         // 再到後天卦尋找
         val lineIndex = acquiredLines.indexOfFirst {
-          it.startGmtJulDay <= gmt && gmt < it.endGmtJulDay
+          it.contains(gmt)
         } + 1
         Triple(holoHexagram.hexagram, lineIndex, if (lineIndex > 0) congenitalLines[lineIndex - 1] else null)
       }.takeIf { (_, lineIndex) -> lineIndex > 0 }
       )?.let { (hex, lineIndex, line) ->
-      val start = line!!.yearly.minBy { it.start }!!.start
-      val end = line.yearly.maxBy { it.end }!!.end
-      HoloHexagram(IHoloHexagram.Scale.MAJOR, hex, lineIndex, start, end)
+      // 大運的干支 , 指的是 先後天卦，走到哪一爻, 該爻的納甲
+      val stemBranch = settings.getStemBranch(hex , lineIndex)
+      val stemBranches = (1..6).map { settings.getStemBranch(hex , it) }.toList()
+      val start = line!!.hexagrams.minBy { it.start }!!.start
+      val end = line.hexagrams.maxBy { it.endExclusive }!!.endExclusive
+      val holoHex = HoloHexagram(IHoloHexagram.Scale.MAJOR, hex, lineIndex, stemBranches , start, end)
+      HoloHexagramWithStemBranch(holoHex , stemBranch)
     }
 
     // 此時刻的流年卦象 (with 元堂)
-    val yearlyHexagram: HoloHexagram? = congenitalLines.plus(acquiredLines).flatMap { holoLine ->
-      holoLine.yearly
-    }.firstOrNull { yearly ->
-      yearly.start <= gmt && gmt < yearly.end
-    }?.let { yearly ->
-      HoloHexagram(IHoloHexagram.Scale.YEAR, yearly.hexagram, yearly.yuanTang, yearly.start, yearly.end)
+    val yearlyHexagram: IHoloHexagramWithStemBranch? = congenitalLines.plus(acquiredLines).flatMap { holoLine ->
+      // 每條 holoLine 存放 6 or 9 條 流年資訊
+      holoLine.hexagrams
+    }.firstOrNull { hex: IHoloHexagramWithStemBranch ->
+      hex.contains(gmt)
+    }?.let { hex: IHoloHexagramWithStemBranch ->
+      // 流年干支
+      val stemBranch = hex.stemBranch
+      val stemBranches = (1..6).map { settings.getStemBranch(hex.hexagram , it) }.toList()
+      val holoHex = HoloHexagram(IHoloHexagram.Scale.YEAR, hex.hexagram, hex.yuanTang, stemBranches , hex.start, hex.endExclusive)
+      HoloHexagramWithStemBranch(holoHex , stemBranch)
     }
 
     val list: List<IHoloHexagram> = mutableListOf<IHoloHexagram>().apply {
@@ -301,6 +298,18 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     }.toList()
 
     return holo to list
+  }
+
+
+  /**
+   * 取得某段範圍內 (例如：十年) 的大運、流年對照表
+   * 傳回的 pair , first 為大運 (6 or 9年) , second 為 流年
+   * */
+  override fun getYearly(lmt: ChronoLocalDateTime<*> , loc:ILocation , gender: Gender , from: Double, to: Double): List<Pair<IHoloHexagram, IHoloHexagram>> {
+
+    val (holo, congenitalLines, acquiredLines) = getHoloInner(lmt, loc, gender)
+
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
 

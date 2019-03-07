@@ -5,15 +5,14 @@ package destiny.core.chinese.holo
 
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.IYinYang
+import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
 import java.io.Serializable
 
 
-
-
-interface IHoloHexagram : IHexagram {
+interface IHoloHexagram : IHexagram, TimeRange<Double> {
 
   enum class Scale {
     LIFE,    // 半輩子，意味： 先天卦 or 後天卦
@@ -30,11 +29,14 @@ interface IHoloHexagram : IHexagram {
   /** 元堂 在第幾爻 (1~6) */
   val yuanTang: Int
 
+  /** 六爻納甲 */
+  val stemBranches : List<StemBranch>
+
   /** start of GMT JulianDay */
-  val start: Double
+  override val start: Double
 
   /** end of GMT JulianDay */
-  val end: Double
+  override val endExclusive: Double
 
   override val lowerSymbol: Symbol
     get() = hexagram.lowerSymbol
@@ -47,11 +49,49 @@ data class HoloHexagram(
   override val scale: IHoloHexagram.Scale,
   override val hexagram: Hexagram,
   override val yuanTang: Int,
+  override val stemBranches: List<StemBranch>,
   override val start: Double,
-  override val end: Double) : IHoloHexagram, Serializable {
+  override val endExclusive: Double) : IHoloHexagram, Serializable {
 
   override fun toString(): String {
     return "$hexagram 之 $yuanTang"
   }
 }
 
+/** 除了 卦象、元堂 之外，另外包含干支資訊 (並非元堂爻的納甲) */
+interface IHoloHexagramWithStemBranch : IHoloHexagram {
+  /**
+   * 此干支 可能表示 大運、流年、流月、流日 or 流時 的干支
+   * 大運 : 代表本命先後天卦中，走到哪一爻，該爻的納甲
+   * 流年 : 流年干支
+   * 流月 : 流月干支
+   * ... 其餘類推
+   * */
+  val stemBranch: IStemBranch
+}
+
+/**
+ * 流年、流月、流日 or 流時 卦象 ,
+ * @param stemBranch 流年、流月、流日 or 流時 的干支  (並非元堂爻的納甲)
+ **/
+data class HoloHexagramWithStemBranch(
+  val holoHexagram: IHoloHexagram,
+  override val stemBranch: IStemBranch) : IHoloHexagramWithStemBranch, IHoloHexagram by holoHexagram
+
+/** 先天卦 or 後天卦 的單一爻 , 內含 6年 or 9年 的流年資料結構 */
+data class HoloLine(val yinYang: IYinYang,
+                    val yuanTang: Boolean,
+                    /**
+                     * 每個爻 可以變化出多個卦 ,
+                     * 大運的爻，可以變化出 6 or 9 個流年卦象
+                     * 流年的爻，可以變化出 12 個流月卦象
+                     * 流月的爻，可以變化出 30 個流日卦象
+                     * 流日的爻，可以變化出 12 個流時卦象
+                     * */
+                    val hexagrams: List<IHoloHexagramWithStemBranch>) : TimeRange<Double> {
+  override val start: Double
+    get() = hexagrams.minBy { it.start }!!.start
+
+  override val endExclusive: Double
+    get() = hexagrams.maxBy { it.endExclusive }!!.endExclusive
+}

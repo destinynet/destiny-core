@@ -32,6 +32,13 @@ interface IHoloContext {
   /** 承上，另外取得此時刻的 主卦、大運、流年、流月 等資訊 */
   fun getHoloWithTime(lmt: ChronoLocalDateTime<*> , loc:ILocation , gender: Gender , gmt:Double) : Pair<IHolo , List<IHoloHexagram>>
 
+
+  /**
+   * 取得某段範圍內 (例如：十年) 的大運、流年對照表
+   * 傳回的 pair , first 為大運 (6 or 9年) , second 為 流年
+   * */
+  fun getYearly(lmt: ChronoLocalDateTime<*> , loc:ILocation , gender: Gender , from:Double , to:Double) : List<Pair<IHoloHexagram , IHoloHexagram>>
+
   /** 天數 */
   fun getHeavenNumber(ew: IEightWords): Int
 
@@ -57,6 +64,8 @@ interface IHoloContext {
       Hexagram.of(earthSymbol, heavenSymbol)
     }
   }
+
+
 
   /**
    * 元堂 , return 1(incl.) to 6(incl.)
@@ -200,9 +209,6 @@ interface IHoloContext {
 
   }
 
-
-
-
   /** 先天卦 (with 元堂 : 1~6) */
   fun getHexagramCongenital(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Pair<Hexagram, Int> {
     if (yearHalfYinYang.booleanValue) {
@@ -268,7 +274,9 @@ interface IHoloContext {
         }
       }
     }
-  }
+  } // 後天卦
+
+
 
 
   companion object {
