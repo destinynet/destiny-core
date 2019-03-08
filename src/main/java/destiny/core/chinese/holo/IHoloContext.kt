@@ -5,6 +5,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IYinYang
+import destiny.core.chinese.Stem
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
@@ -29,15 +30,26 @@ interface IHoloContext {
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender) : IHolo
 
-  /** 承上，除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
+  /**
+   * 列出當年 12 個月的流月卦象
+   * @param yearHexagram 當年卦象
+   */
+  fun getMonthlyHexagrams(yearHexagram: IHoloHexagramWithStemBranch): List<IHoloHexagramWithStemBranch>
+
+  /**
+   * 取得當下 gmt 時刻的「月份」卦象
+   * @param yearStem 該年天干
+   * @param yearHexagram 該年卦象
+   * @param yearYuanTang 該年元堂
+   */
+  fun getMonthlyHexagram(yearStem : Stem, yearHexagram : Hexagram, yearYuanTang : Int, gmt: Double) : IHoloHexagramWithStemBranch
+
+
+
+  /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
   fun getHoloWithTime(lmt: ChronoLocalDateTime<*> , loc:ILocation , gender: Gender , gmt:Double) : Pair<IHolo , List<IHoloHexagram>>
 
 
-  /**
-   * 取得某段範圍內 (例如：十年) 的大運、流年對照表
-   * 傳回的 pair , first 為大運 (6 or 9年) , second 為 流年
-   * */
-  fun getYearly(lmt: ChronoLocalDateTime<*> , loc:ILocation , gender: Gender , from:Double , to:Double) : List<Pair<IHoloHexagram , IHoloHexagram>>
 
   /** 天數 */
   fun getHeavenNumber(ew: IEightWords): Int

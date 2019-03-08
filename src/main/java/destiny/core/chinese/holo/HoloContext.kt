@@ -238,50 +238,90 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
    * 列出當年 12 個月的流月卦象
    * @param yearHexagram 當年卦象
    */
-  private fun getMonthlyHexagrams(yearHexagram: IHoloHexagramWithStemBranch): List<IHoloHexagramWithStemBranch> {
+  override fun getMonthlyHexagrams(yearHexagram: IHoloHexagramWithStemBranch): List<IHoloHexagramWithStemBranch> {
     // 立春開始
     val springStart = yearHexagram.start
     return SolarTerms.values()
       .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
-      .asSequence().groupBy { it.branch.indexFromOne % 2 }
-      .let { map ->
-        // 單月
-        val oddMonthHexagrams : List<IHoloHexagramWithStemBranch> = map.getValue(1).foldIndexed(mutableListOf<IHoloHexagramWithStemBranch>()) { indexFrom0, list, solarTerms ->
-          val lastHex = if (list.isEmpty()) yearHexagram else list.last()
-          val (hex, yuanTang) = switch(lastHex.hexagram, lastHex.yuanTang + 1)
-          val stemBranches: List<StemBranch> = (1..6).map { settings.getStemBranch(hex , it) }.toList()
-          val start: Double = if (list.isEmpty()) springStart else list.last().endExclusive
-          val end = solarTermsImpl.getSolarTermsTime(solarTerms.next().next() , start , true)
-          val holoHex = HoloHexagram(IHoloHexagram.Scale.MONTH , hex , yuanTang , stemBranches , start , end)
-          // 五虎遁年起月訣
-          val monthStem = StemBranchUtils.getMonthStem(yearHexagram.stemBranch.stem , solarTerms.branch)
-          list.add(HoloHexagramWithStemBranch(holoHex , StemBranch[monthStem, solarTerms.branch]))
-          list
-        }.toList()
+      .asSequence()
+      .foldIndexed(mutableListOf()) { indexFrom0, list, solarTerms ->
+        val lastOddHex: IHoloHexagramWithStemBranch = if (list.isEmpty()) yearHexagram else {
+          if (list.size % 2 == 1)
+            list.last()
+          else
+            list.dropLast(1).last()
+        }
 
-        // 雙月
-        val evenMonthHexagrams = map.getValue(0).foldIndexed(mutableListOf<IHoloHexagramWithStemBranch>()) { indexFrom0, list, solarTerms ->
-          // 單月的元堂變應爻
-          val (hex, yuanTang) = oddMonthHexagrams[indexFrom0].let { oddHex -> switch(oddHex.hexagram , oddHex.yuanTang+3) }
-          val stemBranches: List<StemBranch> = (1..6).map { settings.getStemBranch(hex , it) }.toList()
-          val start: Double = if (list.isEmpty()) springStart else list.last().endExclusive
-          val end = solarTermsImpl.getSolarTermsTime(solarTerms.next().next() , start , true)
-          val holoHex = HoloHexagram(IHoloHexagram.Scale.MONTH , hex , yuanTang , stemBranches , start , end)
-          // 五虎遁年起月訣
-          val monthStem = StemBranchUtils.getMonthStem(yearHexagram.stemBranch.stem , solarTerms.branch)
-          list.add(HoloHexagramWithStemBranch(holoHex , StemBranch[monthStem, solarTerms.branch]))
-          list
-        }.toList()
+        val lastHex = if (list.isEmpty()) yearHexagram else list.last()
 
-        oddMonthHexagrams.plus(evenMonthHexagrams).sortedBy { it.start }
+        val (hex , yuanTang , start) = if (indexFrom0 % 2 == 0) {
+          // 單月 (立春 ...)
+          val (hex, yuanTang) = switch(lastOddHex.hexagram, lastOddHex.yuanTang + 1)
+          val start: Double = if (list.isEmpty()) springStart else list.last().endExclusive
+          Triple(hex , yuanTang , start)
+        } else {
+          // 雙月 (驚蟄 ...)
+          val (hex , yuanTang) = switch(lastHex.hexagram , lastHex.yuanTang+3)
+          val start : Double = list.last().endExclusive
+          Triple(hex , yuanTang , start)
+        }
+
+        val stemBranches: List<StemBranch> = (1..6).map { settings.getStemBranch(hex , it) }.toList()
+        val end:Double = solarTermsImpl.getSolarTermsTime(solarTerms.next().next() , start , true)
+        val holoHex = HoloHexagram(IHoloHexagram.Scale.MONTH , hex , yuanTang , stemBranches , start , end)
+        // 五虎遁年起月訣
+        val monthStem = StemBranchUtils.getMonthStem(yearHexagram.stemBranch.stem , solarTerms.branch)
+        list.add(HoloHexagramWithStemBranch(holoHex , StemBranch[monthStem, solarTerms.branch]))
+        list
       }
-//      .also {
-//        logger.info("計算 [{}]年 ({} 之 {})的 流月 :" , yearHexagram.stemBranch , yearHexagram.hexagram , yearHexagram.yuanTang)
-//        it.forEach { month ->
-//          logger.info("\t[{}]月 {} 之 {} , from {} to {}" , month.stemBranch , month.hexagram , month.yuanTang ,
-//            revJulDayFunc.invoke(month.start) , revJulDayFunc.invoke(month.endExclusive))
-//        }
-//      }
+  }
+
+  /**
+   * 取得當下 gmt 時刻的「月份」卦象
+   * @param yearStem 該年天干
+   * @param yearHexagram 該年卦象
+   * @param yearYuanTang 該年元堂
+   */
+  override fun getMonthlyHexagram(yearStem : Stem, yearHexagram : Hexagram , yearYuanTang : Int , gmt: Double) : IHoloHexagramWithStemBranch {
+    val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
+
+    val monthNum = solarTerms.branch.getAheadOf(寅)+1 // 1~12
+
+    val list: List<Pair<Hexagram, Int>> = SolarTerms.values()
+      .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
+      .asSequence()
+      .foldIndexed(mutableListOf<Pair<Hexagram, Int>>()) { indexFrom0, list, solarTerms ->
+        val lastOddHex: Pair<Hexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else {
+          if (list.size % 2 == 1)
+            list.last()
+          else
+            list.dropLast(1).last()
+        }
+
+        val lastHex: Pair<Hexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else list.last()
+
+        val (hex, yuanTang) = if (indexFrom0 % 2 == 0) {
+          // 單月 (立春 ...)
+          switch(lastOddHex.first, lastOddHex.second + 1)
+        } else {
+          // 雙月 (驚蟄 ...)
+          switch(lastHex.first, lastHex.second + 3)
+        }
+        list.add(hex to yuanTang)
+        list
+      }.toList()
+
+    val (monthHex: Hexagram, monthYuanTang: Int) = list[monthNum-1]
+
+    val stemBranches = (1..6).map { settings.getStemBranch(monthHex , it) }
+    val (start , end) = solarTermsImpl.getMajorSolarTermsGmtBetween(gmt).let { (from , to) ->
+      from.second to to.second
+    }
+
+    val holoHexagram = HoloHexagram(IHoloHexagram.Scale.MONTH , monthHex , monthYuanTang , stemBranches , start , end)
+    // 五虎遁年起月訣
+    val monthStem = StemBranchUtils.getMonthStem(yearStem, solarTerms.branch)
+    return HoloHexagramWithStemBranch(holoHexagram , StemBranch[monthStem , solarTerms.branch])
   }
 
   /** 傳回 本命先後天卦、以及此 gmt 時刻 的大運、流年、流月 等資訊 */
@@ -338,13 +378,13 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       HoloHexagramWithStemBranch(holoHex, stemBranch)
     }
 
-    // 流月 (depends on 流年) TODO : 算流月可以不用算整年再來 filter
+    // 流月 (depends on 流年)
     val monthlyHexagram: IHoloHexagramWithStemBranch? = yearlyHexagram?.let { yearly: IHoloHexagramWithStemBranch ->
-      getMonthlyHexagrams(yearly).firstOrNull { month ->
-        month.contains(gmt)
-      }
+      getMonthlyHexagram(yearly.stemBranch.stem , yearly.hexagram , yearly.yuanTang , gmt)
+//      getMonthlyHexagrams(yearly).firstOrNull { month ->
+//        month.contains(gmt)
+//      }
     }
-
 
     val list: List<IHoloHexagram> = mutableListOf<IHoloHexagram>().apply {
       mainHexagram?.also { this.add(it) }
@@ -353,23 +393,8 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       monthlyHexagram?.also { this.add(it) }
     }.toList()
 
-
-
     return holo to list
   }
-
-
-  /**
-   * 取得某段範圍內 (例如：十年) 的大運、流年對照表
-   * 傳回的 pair , first 為大運 (6 or 9年) , second 為 流年
-   * */
-  override fun getYearly(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, from: Double, to: Double): List<Pair<IHoloHexagram, IHoloHexagram>> {
-
-    //val (holo, congenitalLines, acquiredLines) = getHoloInner(lmt, loc, gender)
-
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
 
   override fun getHeavenNumber(ew: IEightWords): Int {
     return ew.stemBranches.map { sb ->
