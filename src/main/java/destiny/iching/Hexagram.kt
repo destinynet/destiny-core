@@ -5,11 +5,14 @@
 package destiny.iching
 
 import destiny.core.chinese.IYinYang
+import destiny.core.chinese.YinYang
 import java.io.Serializable
 
 enum class Hexagram constructor(
   override val upperSymbol: Symbol,
   override val lowerSymbol: Symbol) : IHexagram, Serializable {
+
+
   乾(Symbol.乾, Symbol.乾),
   坤(Symbol.坤, Symbol.坤),
   屯(Symbol.坎, Symbol.震),
@@ -87,6 +90,13 @@ enum class Hexagram constructor(
   既濟(Symbol.坎, Symbol.離),
   未濟(Symbol.離, Symbol.坎);
 
+  override val yinYangs: List<IYinYang>
+    get() = (1..3).map { lowerSymbol.getBooleanValue(it) }.plus( (1..3).map { upperSymbol.getBooleanValue(it) }).map {
+      if (it)
+        YinYang.陽
+      else
+        YinYang.陰
+    }
 
   companion object {
 
@@ -176,5 +186,7 @@ enum class Hexagram constructor(
       }
 
     }
+
+
   }
 }

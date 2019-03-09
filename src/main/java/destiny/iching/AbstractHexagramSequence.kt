@@ -12,7 +12,7 @@ abstract class AbstractHexagramSequence : IHexagramSequence, Serializable {
 
   override fun getIndex(hexagram: IHexagram): Int {
     val h = Hexagram.of(hexagram.upperSymbol, hexagram.lowerSymbol)
-    return map[h]!!
+    return map.getValue(h)
   }
 
 

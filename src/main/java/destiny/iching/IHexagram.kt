@@ -12,25 +12,21 @@ import destiny.core.chinese.YinYang
  */
 interface IHexagram {
 
+  /** 取得全部的 [IYinYang] 值 */
+  val yinYangs : List<IYinYang>
+
   /** 取得上卦  */
   val upperSymbol: Symbol
+    get() = yinYangs.subList(3, 6).let { Symbol.of(it) }
 
   /** 取得下卦  */
   val lowerSymbol: Symbol
+    get() = yinYangs.subList(0, 3).let { Symbol.of(it) }
+
 
   /** 取得全部的 boolean 值 */
   val booleans: List<Boolean>
-    get() = listOf(
-      lowerSymbol.getBooleanValue(1),
-      lowerSymbol.getBooleanValue(2),
-      lowerSymbol.getBooleanValue(3),
-      upperSymbol.getBooleanValue(1),
-      upperSymbol.getBooleanValue(2),
-      upperSymbol.getBooleanValue(3))
-
-  /** 取得全部的 [IYinYang] 值 */
-  val yinYangs : List<IYinYang>
-    get() = booleans.map { b -> if (b) YinYang.陽 else YinYang.陰 }
+    get() = yinYangs.map { it.booleanValue }
 
   /** 取得 010101 的表示法  */
   val binaryCode: String
@@ -54,12 +50,7 @@ interface IHexagram {
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
   fun getLineYinYang(index : Int) : IYinYang {
     require(index in 1..6) { "index out of range , 1 <= index <= 6 : $index" }
-
-    return if (getLine(index)) {
-      YinYang.陽
-    } else {
-      YinYang.陰
-    }
+    return yinYangs[index-1]
   }
 
 
@@ -69,33 +60,37 @@ interface IHexagram {
    */
   @JvmDefault
   fun getTargetYinYangs(vararg lines: Int) : List<Boolean> {
-    return booleans
-      .mapIndexed { index, b -> if (lines.contains(index + 1)) !b else b }
+    return yinYangs.mapIndexed { index , yy -> if (lines.contains(index+1)) !yy.booleanValue else yy.booleanValue}
   }
 
   /**
    * 互卦 , 去掉初爻、上爻，中間四爻延展出去，故用 Middle Span Hexagram 為名
    */
   val middleSpanHexagram: IHexagram
-    get() = Hexagram.of(
-      booleanArrayOf(lowerSymbol.getBooleanValue(2), lowerSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(1),
-                     lowerSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(1), upperSymbol.getBooleanValue(2)))
+    get() = Hexagram.ofYinYangs(
+      listOf(
+        yinYangs[1], yinYangs[2], yinYangs[3],
+        yinYangs[2], yinYangs[3], yinYangs[4])
+    )
 
   /**
    * 錯卦 , 一卦六爻全變 , 交錯之意 , 故取名 Interlaced Hexagram
    */
   val interlacedHexagram: IHexagram
-    get() = Hexagram.of(
-      booleanArrayOf(!lowerSymbol.getBooleanValue(1), !lowerSymbol.getBooleanValue(2), !lowerSymbol.getBooleanValue(3),
-                     !upperSymbol.getBooleanValue(1), !upperSymbol.getBooleanValue(2), !upperSymbol.getBooleanValue(3)))
+    get() = Hexagram.of(booleanArrayOf(
+      !yinYangs[0].booleanValue,
+      !yinYangs[1].booleanValue,
+      !yinYangs[2].booleanValue,
+      !yinYangs[3].booleanValue,
+      !yinYangs[4].booleanValue,
+      !yinYangs[5].booleanValue)
+    )
 
   /**
    * 綜卦 , 上下顛倒 , 故取名 Reversed Hexagram
    */
   val reversedHexagram: IHexagram
-    get() = Hexagram.of(
-      booleanArrayOf(upperSymbol.getBooleanValue(3), upperSymbol.getBooleanValue(2), upperSymbol.getBooleanValue(1),
-                     lowerSymbol.getBooleanValue(3), lowerSymbol.getBooleanValue(2), lowerSymbol.getBooleanValue(1)))
+    get() = Hexagram.ofYinYangs(yinYangs.reversed())
 
   /** 每卦各取 先天對沖 */
   val congenitalOpposition: IHexagram

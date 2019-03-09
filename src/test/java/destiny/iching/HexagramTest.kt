@@ -41,6 +41,18 @@ class HexagramTest {
   }
 
   @Test
+  fun testGetUpperLowerSymbol() {
+    assertSame(Symbol.離 , 大有.upperSymbol)
+    assertSame(Symbol.乾 , 大有.lowerSymbol)
+
+    assertSame(Symbol.震 , 歸妹.upperSymbol)
+    assertSame(Symbol.兌 , 歸妹.lowerSymbol)
+
+    assertSame(Symbol.坎 , 既濟.upperSymbol)
+    assertSame(Symbol.離 , 既濟.lowerSymbol)
+  }
+
+  @Test
   fun testBinaryCode() {
     assertEquals("111111" , 乾.binaryCode)
     assertEquals("000000" , 坤.binaryCode)
@@ -141,17 +153,27 @@ class HexagramTest {
   @Test
   fun testMiddleSpanHexagram() {
     assertSame(蹇, 晉.middleSpanHexagram)
+    assertSame(夬, 恆.middleSpanHexagram)
+    assertSame(姤, 咸.middleSpanHexagram)
+    assertSame(既濟, 歸妹.middleSpanHexagram)
+    assertSame(未濟, 既濟.middleSpanHexagram)
   }
 
   /** 測試錯卦  */
   @Test
   fun testInterlacedHexagram() {
     assertSame(需, 晉.interlacedHexagram)
+    assertSame(坤, 乾.interlacedHexagram)
+    assertSame(未濟, 既濟.interlacedHexagram)
   }
 
   /** 測試綜卦  */
   @Test
   fun testReversedHexagram() {
     assertSame(明夷, 晉.reversedHexagram)
+    assertSame(乾, 乾.reversedHexagram)
+    assertSame(未濟, 既濟.reversedHexagram)
+    assertSame(小過, 小過.reversedHexagram)
+    assertSame(遯, 大壯.reversedHexagram)
   }
 }

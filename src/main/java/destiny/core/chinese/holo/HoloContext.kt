@@ -45,17 +45,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   }
 
   /** @param line 第幾爻變換 (1~6) */
-  fun switch(hex: Hexagram, line: Int): Pair<Hexagram, Int> {
-    return (1..6)
-      .map { index ->
-        hex.getLine(index).let {
-          if (confine(line) == index)
-            !it
-          else
-            it
-        }
-      }
-      .toList().let { Hexagram.of(it) to confine(line) }
+  fun switch(hex: IHexagram, line: Int): Pair<Hexagram, Int> {
+    val confinedLine = confine(line)
+    return Hexagram.of(hex.getTargetYinYangs(confinedLine)) to confinedLine
   }
 
   /**
@@ -233,7 +225,6 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     return Holo(ew, gender, yuan, heavenNumber, earthNumber, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
   } // getHolo(inner)
 
-
   /**
    * 列出當年 12 個月的流月卦象
    * @param yearHexagram 當年卦象
@@ -282,23 +273,23 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
    * @param yearHexagram 該年卦象
    * @param yearYuanTang 該年元堂
    */
-  override fun getMonthlyHexagram(yearStem : Stem, yearHexagram : Hexagram , yearYuanTang : Int , gmt: Double) : IHoloHexagramWithStemBranch {
+  override fun getMonthlyHexagram(yearStem : Stem, yearHexagram : IHexagram , yearYuanTang : Int , gmt: Double) : IHoloHexagramWithStemBranch {
     val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
 
     val monthNum = solarTerms.branch.getAheadOf(寅)+1 // 1~12
 
-    val list: List<Pair<Hexagram, Int>> = SolarTerms.values()
+    val list: List<Pair<IHexagram, Int>> = SolarTerms.values()
       .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
       .asSequence()
-      .foldIndexed(mutableListOf<Pair<Hexagram, Int>>()) { indexFrom0, list, solarTerms ->
-        val lastOddHex: Pair<Hexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else {
+      .foldIndexed(mutableListOf<Pair<IHexagram, Int>>()) { indexFrom0, list, _ ->
+        val lastOddHex: Pair<IHexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else {
           if (list.size % 2 == 1)
             list.last()
           else
             list.dropLast(1).last()
         }
 
-        val lastHex: Pair<Hexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else list.last()
+        val lastHex: Pair<IHexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else list.last()
 
         val (hex, yuanTang) = if (indexFrom0 % 2 == 0) {
           // 單月 (立春 ...)
@@ -311,7 +302,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
         list
       }.toList()
 
-    val (monthHex: Hexagram, monthYuanTang: Int) = list[monthNum-1]
+    val (monthHex: IHexagram, monthYuanTang: Int) = list[monthNum-1]
 
     val stemBranches = (1..6).map { settings.getStemBranch(monthHex , it) }
     val (start , end) = solarTermsImpl.getMajorSolarTermsGmtBetween(gmt).let { (from , to) ->
@@ -381,9 +372,6 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     // 流月 (depends on 流年)
     val monthlyHexagram: IHoloHexagramWithStemBranch? = yearlyHexagram?.let { yearly: IHoloHexagramWithStemBranch ->
       getMonthlyHexagram(yearly.stemBranch.stem , yearly.hexagram , yearly.yuanTang , gmt)
-//      getMonthlyHexagrams(yearly).firstOrNull { month ->
-//        month.contains(gmt)
-//      }
     }
 
     val list: List<IHoloHexagram> = mutableListOf<IHoloHexagram>().apply {

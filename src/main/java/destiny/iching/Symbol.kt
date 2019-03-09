@@ -88,6 +88,10 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
       return getSymbol(line[0].booleanValue , line[1].booleanValue , line[2].booleanValue)
     }
 
+    fun of(yinYangs : List<IYinYang>) : Symbol {
+      return symbols.first { yinYangs[0].booleanValue && yinYangs[1].booleanValue && yinYangs[2].booleanValue }
+    }
+
     /**
      * 「由下而上」 三個陰陽 , 查詢卦象為何
      */

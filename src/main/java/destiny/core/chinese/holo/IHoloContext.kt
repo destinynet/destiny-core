@@ -42,14 +42,10 @@ interface IHoloContext {
    * @param yearHexagram 該年卦象
    * @param yearYuanTang 該年元堂
    */
-  fun getMonthlyHexagram(yearStem : Stem, yearHexagram : Hexagram, yearYuanTang : Int, gmt: Double) : IHoloHexagramWithStemBranch
-
-
+  fun getMonthlyHexagram(yearStem : Stem, yearHexagram : IHexagram, yearYuanTang : Int, gmt: Double) : IHoloHexagramWithStemBranch
 
   /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
   fun getHoloWithTime(lmt: ChronoLocalDateTime<*> , loc:ILocation , gender: Gender , gmt:Double) : Pair<IHolo , List<IHoloHexagram>>
-
-
 
   /** 天數 */
   fun getHeavenNumber(ew: IEightWords): Int

@@ -24,13 +24,13 @@ interface IHoloHexagram : IHexagram, TimeRange<Double> {
   val scale: Scale
 
   /** 卦象 */
-  val hexagram: Hexagram
+  val hexagram: IHexagram
 
   /** 元堂 在第幾爻 (1~6) */
   val yuanTang: Int
 
   /** 六爻納甲 */
-  val stemBranches : List<StemBranch>
+  val stemBranches: List<StemBranch>
 
   /** start of GMT JulianDay */
   override val start: Double
@@ -38,25 +38,21 @@ interface IHoloHexagram : IHexagram, TimeRange<Double> {
   /** end of GMT JulianDay */
   override val endExclusive: Double
 
-  override val lowerSymbol: Symbol
-    get() = hexagram.lowerSymbol
-
-  override val upperSymbol: Symbol
-    get() = hexagram.upperSymbol
 }
 
 data class HoloHexagram(
   override val scale: IHoloHexagram.Scale,
-  override val hexagram: Hexagram,
+  override val hexagram: IHexagram,
   override val yuanTang: Int,
   override val stemBranches: List<StemBranch>,
   override val start: Double,
-  override val endExclusive: Double) : IHoloHexagram, Serializable {
+  override val endExclusive: Double) : IHoloHexagram, IHexagram by hexagram , Serializable {
 
   override fun toString(): String {
     return "$hexagram 之 $yuanTang"
   }
 }
+
 /** 除了 卦象、元堂 之外，另外包含干支資訊 (並非元堂爻的納甲) */
 interface IHoloHexagramWithStemBranch : IHoloHexagram {
   /**
@@ -87,7 +83,7 @@ data class HoloLine(val yinYang: IYinYang,
                      * 流月的爻，可以變化出 30 個流日卦象
                      * 流日的爻，可以變化出 12 個流時卦象
                      * */
-                    val hexagrams: List<IHoloHexagramWithStemBranch>) : IYinYang by yinYang , TimeRange<Double> {
+                    val hexagrams: List<IHoloHexagramWithStemBranch>) : IYinYang by yinYang, TimeRange<Double> {
 
 
   override val start: Double
@@ -98,11 +94,9 @@ data class HoloLine(val yinYang: IYinYang,
 }
 
 
-
-
 /** 純粹用於 先天卦 or 後天卦 , 包含六爻中，每爻的流年資訊 */
 interface ILifeHoloHexagram : IHoloHexagram {
-  val lines : List<HoloLine>
+  val lines: List<HoloLine>
 }
 
 /** 先天卦 or 後天卦 */
@@ -115,6 +109,8 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
     }
   }
 
+  override val yinYangs: List<IYinYang> = lines
+
   override val scale: IHoloHexagram.Scale
     get() = IHoloHexagram.Scale.LIFE
 
@@ -122,7 +118,7 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
     get() = Hexagram.ofYinYangs(lines)
 
   override val yuanTang: Int
-    get() = lines.indexOfFirst { it.yuanTang }+1
+    get() = lines.indexOfFirst { it.yuanTang } + 1
 
   override val start: Double
     get() = lines.minBy { it.start }!!.start
@@ -130,5 +126,23 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
   override val endExclusive: Double
     get() = lines.maxBy { it.endExclusive }!!.endExclusive
 
-
 }
+
+
+/**
+ * 爻辭
+ */
+data class LinePoem(
+  /** line index , 1~6 */
+  val line: Int,
+  val poem: String)
+
+/**
+ * 河洛理數64卦訣
+ */
+data class HoloHexagramPoem(
+  val hexagram: Hexagram,
+  val poems: List<String>,
+  /** 六爻 , size = 6 */
+  val linePoems: List<LinePoem>
+)

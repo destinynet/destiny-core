@@ -16,7 +16,7 @@ data class LineText(
   /** 爻辭 */
   val expression: String,
   /** 象曰 */
-  val image: String) : Serializable
+  val image: String) : IYinYang by yinYang , Serializable
 
 interface IHexagramName {
   /** 短卦名 , 一個中文字 */
@@ -71,10 +71,8 @@ data class HexagramText(
   /** 用九、用六 的爻辭、象曰 */
   override val extraLine: LineText?) : IHexagramText , IHexagramName by hexagramName , Serializable {
 
-  override val upperSymbol: Symbol
-    get() = Symbol.getSymbol( arrayOf(lineTexts[3].yinYang , lineTexts[4].yinYang , lineTexts[5].yinYang))
-  override val lowerSymbol: Symbol
-    get() = Symbol.getSymbol( arrayOf(lineTexts[0].yinYang , lineTexts[1].yinYang , lineTexts[2].yinYang))
+  override val yinYangs: List<IYinYang> = lineTexts
+
 }
 
 
