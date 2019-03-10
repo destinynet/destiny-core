@@ -24,14 +24,8 @@ class MumeContext(
    * @return 變卦
    */
   val targetHexagram: IHexagram
-    get() {
-      val yinyangs = BooleanArray(6)
-      for (i in 1..6)
-        yinyangs[i - 1] = hexagram.getLine(i)
+    get() = Hexagram.of(hexagram.getTargetYinYangs(motivate))
 
-      yinyangs[motivate - 1] = !hexagram.getLine(motivate)
-      return Hexagram.of(yinyangs)
-    }
 
 
 }

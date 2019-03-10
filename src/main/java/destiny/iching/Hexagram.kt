@@ -128,13 +128,6 @@ enum class Hexagram constructor(
       return of(upper, lower)
     }
 
-//    fun of(yinYangs : List<IYinYang>) : Hexagram {
-//      require(yinYangs.size == 6) { "yinYangs size != 6" }
-//      val upper = Symbol.getSymbol(yinYangs[3].booleanValue, yinYangs[4].booleanValue, yinYangs[5].booleanValue)
-//      val lower = Symbol.getSymbol(yinYangs[0].booleanValue, yinYangs[1].booleanValue, yinYangs[2].booleanValue)
-//      return of(upper, lower)
-//    }
-
     /**
      * 由六爻的 boolean array 尋找卦象
      *

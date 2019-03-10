@@ -8,7 +8,6 @@ import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
-import destiny.iching.Symbol
 import java.io.Serializable
 
 
@@ -46,7 +45,7 @@ data class HoloHexagram(
   override val yuanTang: Int,
   override val stemBranches: List<StemBranch>,
   override val start: Double,
-  override val endExclusive: Double) : IHoloHexagram, IHexagram by hexagram , Serializable {
+  override val endExclusive: Double) : IHoloHexagram, IHexagram by hexagram, Serializable {
 
   override fun toString(): String {
     return "$hexagram 之 $yuanTang"
@@ -132,17 +131,51 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
 /**
  * 爻辭
  */
+interface ILinePoem : IYinYang {
+  /** line index , 1~6 */
+  val line: Int
+  val poems: List<String>
+}
+
 data class LinePoem(
   /** line index , 1~6 */
-  val line: Int,
-  val poem: String)
+  override val line: Int,
+  override val poems: List<String>,
+  val yinYang: IYinYang) : ILinePoem, IYinYang by yinYang {
+  constructor(line: Int, poems: List<String>, hexagram: IHexagram) : this(
+    line, poems, hexagram.getLineYinYang(line)
+  )
+}
 
 /**
- * 河洛理數64卦訣
+ * 河洛理數64卦訣 , 卦辭
  */
-data class HoloHexagramPoem(
-  val hexagram: Hexagram,
-  val poems: List<String>,
+interface IPoemHexagram : IHexagram {
+
+  val hexagram: IHexagram
+  /** 卦象 之詩 */
+  val poems: List<String>
+  /** 六爻之詩 , size = 6 */
+  val linePoems: List<ILinePoem>
+
+}
+
+data class PoemHexagram(
+  override val hexagram: IHexagram,
+  override val poems: List<String>,
   /** 六爻 , size = 6 */
-  val linePoems: List<LinePoem>
-)
+  override val linePoems: List<ILinePoem>
+) : IPoemHexagram, IHexagram by hexagram
+
+
+/** 結合了 河洛卦象 以及 河洛詩詞 */
+interface IHoloPoemHexagram : IPoemHexagram, IHoloHexagram
+
+/** 因為 Diamond problem , 這裡擇一實作（不用 delegate） , 選擇 實作 [IPoemHexagram] 因為其 methods 較少 */
+data class HoloPoemHexagram(
+  val holoHexagram: IHoloHexagram,
+  val poemHexagram: IPoemHexagram
+) : IHoloPoemHexagram, IHoloHexagram by holoHexagram {
+  override val poems: List<String> = poemHexagram.poems
+  override val linePoems: List<ILinePoem> = poemHexagram.linePoems
+}
