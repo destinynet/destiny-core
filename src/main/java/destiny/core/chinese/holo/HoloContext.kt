@@ -343,7 +343,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
         val lineIndex = acquiredLines.indexOfFirst {
           it.contains(gmt)
         } + 1
-        Triple(holoHexagram.hexagram, lineIndex, if (lineIndex > 0) congenitalLines[lineIndex - 1] else null)
+        Triple(holoHexagram.hexagram, lineIndex, if (lineIndex > 0) acquiredLines[lineIndex - 1] else null)
       }.takeIf { (_, lineIndex) -> lineIndex > 0 }
       )?.let { (hex, lineIndex, line) ->
       // 大運的干支 , 指的是 先後天卦，走到哪一爻, 該爻的納甲
