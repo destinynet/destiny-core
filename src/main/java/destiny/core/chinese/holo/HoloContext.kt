@@ -89,7 +89,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
           .map { (from_to, hex_lineIndex_stemBranch) ->
             val fromGmt = from_to.first
             val toGmt = from_to.second
-            val yearlyHex = hex_lineIndex_stemBranch.first
+            val yearlyHex: Hexagram = hex_lineIndex_stemBranch.first
             val lineIndex = hex_lineIndex_stemBranch.second
             val stemBranch = hex_lineIndex_stemBranch.third
             val stemBranches = (1..6).map { settings.getStemBranch(yearlyHex, it) }.toList()
@@ -247,12 +247,12 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
         val (hex , yuanTang , start) = if (indexFrom0 % 2 == 0) {
           // 單月 (立春 ...)
-          val (hex, yuanTang) = switch(lastOddHex.hexagram, lastOddHex.yuanTang + 1)
+          val (hex, yuanTang) = switch(lastOddHex, lastOddHex.yuanTang + 1)
           val start: Double = if (list.isEmpty()) springStart else list.last().endExclusive
           Triple(hex , yuanTang , start)
         } else {
           // 雙月 (驚蟄 ...)
-          val (hex , yuanTang) = switch(lastHex.hexagram , lastHex.yuanTang+3)
+          val (hex , yuanTang) = switch(lastHex , lastHex.yuanTang+3)
           val start : Double = list.last().endExclusive
           Triple(hex , yuanTang , start)
         }
@@ -335,7 +335,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
       val lineIndex = congenitalLines.indexOfFirst {
         it.contains(gmt)
       } + 1
-      Triple(holoHexagram.hexagram, lineIndex, if (lineIndex > 0) congenitalLines[lineIndex - 1] else null)
+      Triple(holoHexagram, lineIndex, if (lineIndex > 0) congenitalLines[lineIndex - 1] else null)
 
     }.takeIf { (_, lineIndex) -> lineIndex > 0 }
       ?: holo.hexagramAcquired.let { holoHexagram: IHoloHexagram ->
@@ -343,7 +343,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
         val lineIndex = acquiredLines.indexOfFirst {
           it.contains(gmt)
         } + 1
-        Triple(holoHexagram.hexagram, lineIndex, if (lineIndex > 0) acquiredLines[lineIndex - 1] else null)
+        Triple(holoHexagram, lineIndex, if (lineIndex > 0) acquiredLines[lineIndex - 1] else null)
       }.takeIf { (_, lineIndex) -> lineIndex > 0 }
       )?.let { (hex, lineIndex, line) ->
       // 大運的干支 , 指的是 先後天卦，走到哪一爻, 該爻的納甲
@@ -364,14 +364,14 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     }?.let { hex: IHoloHexagramWithStemBranch ->
       // 流年干支
       val stemBranch = hex.stemBranch
-      val stemBranches = (1..6).map { settings.getStemBranch(hex.hexagram, it) }.toList()
-      val holoHex = HoloHexagram(IHoloHexagram.Scale.YEAR, hex.hexagram, hex.yuanTang, stemBranches, hex.start, hex.endExclusive)
+      val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
+      val holoHex = HoloHexagram(IHoloHexagram.Scale.YEAR, hex, hex.yuanTang, stemBranches, hex.start, hex.endExclusive)
       HoloHexagramWithStemBranch(holoHex, stemBranch)
     }
 
     // 流月 (depends on 流年)
     val monthlyHexagram: IHoloHexagramWithStemBranch? = yearlyHexagram?.let { yearly: IHoloHexagramWithStemBranch ->
-      getMonthlyHexagram(yearly.stemBranch.stem , yearly.hexagram , yearly.yuanTang , gmt)
+      getMonthlyHexagram(yearly.stemBranch.stem , yearly , yearly.yuanTang , gmt)
     }
 
     val list: List<IHoloHexagram> = mutableListOf<IHoloHexagram>().apply {

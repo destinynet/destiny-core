@@ -22,9 +22,6 @@ interface IHoloHexagram : IHexagram, TimeRange<Double> {
 
   val scale: Scale
 
-  /** 卦象 */
-  val hexagram: IHexagram
-
   /** 元堂 在第幾爻 (1~6) */
   val yuanTang: Int
 
@@ -41,14 +38,14 @@ interface IHoloHexagram : IHexagram, TimeRange<Double> {
 
 data class HoloHexagram(
   override val scale: IHoloHexagram.Scale,
-  override val hexagram: IHexagram,
+  val hexagram: IHexagram,
   override val yuanTang: Int,
   override val stemBranches: List<StemBranch>,
   override val start: Double,
   override val endExclusive: Double) : IHoloHexagram, IHexagram by hexagram, Serializable {
 
   override fun toString(): String {
-    return "$hexagram 之 $yuanTang"
+    return "$${Hexagram.of(hexagram)} 之 $yuanTang"
   }
 }
 
@@ -113,9 +110,6 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
   override val scale: IHoloHexagram.Scale
     get() = IHoloHexagram.Scale.LIFE
 
-  override val hexagram: Hexagram
-    get() = Hexagram.ofYinYangs(lines)
-
   override val yuanTang: Int
     get() = lines.indexOfFirst { it.yuanTang } + 1
 
@@ -151,8 +145,6 @@ data class LinePoem(
  * 河洛理數64卦訣 , 卦辭
  */
 interface IPoemHexagram : IHexagram {
-
-  //val hexagram: IHexagram
   /** 卦象 之詩 */
   val poems: List<String>
   /** 六爻之詩 , size = 6 */

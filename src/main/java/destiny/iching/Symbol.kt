@@ -61,7 +61,7 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
 
   /** 後天八卦 -> 先天八卦  */
   fun toCongenital(): Symbol {
-    return con2AcqMap.map { (k,v) -> v to k }.toMap()[this]!!
+    return con2AcqMap.map { (k, v) -> v to k }.toMap()[this]!!
   }
 
   companion object {
@@ -85,11 +85,16 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
      * 「由下而上」 三個陰陽 , 查詢卦象為何
      */
     fun getSymbol(line: Array<IYinYang>): Symbol {
-      return getSymbol(line[0].booleanValue , line[1].booleanValue , line[2].booleanValue)
+      return getSymbol(line[0].booleanValue, line[1].booleanValue, line[2].booleanValue)
     }
 
-    fun of(yinYangs : List<IYinYang>) : Symbol {
-      return symbols.first { yinYangs[0].booleanValue && yinYangs[1].booleanValue && yinYangs[2].booleanValue }
+    fun of(yinYangs: List<IYinYang>): Symbol {
+
+      return symbols.first {
+        it.yinYangs[0] == yinYangs[0].booleanValue &&
+          it.yinYangs[1] == yinYangs[1].booleanValue &&
+          it.yinYangs[2] == yinYangs[2].booleanValue
+      }
     }
 
     /**
@@ -98,8 +103,8 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
     fun getSymbol(vararg lines: Boolean): Symbol {
       return symbols.first {
         lines[0] == it.yinYangs[0] &&
-        lines[1] == it.yinYangs[1] &&
-        lines[2] == it.yinYangs[2]
+          lines[1] == it.yinYangs[1] &&
+          lines[2] == it.yinYangs[2]
       }
     }
 
