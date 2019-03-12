@@ -152,7 +152,7 @@ data class LinePoem(
  */
 interface IPoemHexagram : IHexagram {
 
-  val hexagram: IHexagram
+  //val hexagram: IHexagram
   /** 卦象 之詩 */
   val poems: List<String>
   /** 六爻之詩 , size = 6 */
@@ -161,7 +161,7 @@ interface IPoemHexagram : IHexagram {
 }
 
 data class PoemHexagram(
-  override val hexagram: IHexagram,
+  val hexagram: IHexagram,
   override val poems: List<String>,
   /** 六爻 , size = 6 */
   override val linePoems: List<ILinePoem>
@@ -171,6 +171,7 @@ data class PoemHexagram(
 /** 結合了 河洛卦象 以及 河洛詩詞 */
 interface IHoloPoemHexagram : IPoemHexagram, IHoloHexagram
 
+
 /** 因為 Diamond problem , 這裡擇一實作（不用 delegate） , 選擇 實作 [IPoemHexagram] 因為其 methods 較少 */
 data class HoloPoemHexagram(
   val holoHexagram: IHoloHexagram,
@@ -178,4 +179,45 @@ data class HoloPoemHexagram(
 ) : IHoloPoemHexagram, IHoloHexagram by holoHexagram {
   override val poems: List<String> = poemHexagram.poems
   override val linePoems: List<ILinePoem> = poemHexagram.linePoems
+}
+
+
+/** 終身卦 解釋 */
+interface IHoloLifeDescHexagram : IHexagram {
+  /** 卦的解釋 */
+  val hexContent: String
+  /** 六爻的解釋 */
+  val lineContents: List<String>
+}
+
+/** 終身卦 解釋 */
+data class HoloLifeDescHexagram(
+  val hexagram: IHexagram,
+  /** 卦的解釋 */
+  override val hexContent: String,
+  /** 六爻的解釋 */
+  override val lineContents: List<String>) : IHoloLifeDescHexagram , IHexagram by hexagram {
+
+  init {
+    require(lineContents.size == 6) {
+      "line contents size should be equal to 6"
+    }
+  }
+}
+
+/** 最終組合卦象 */
+interface IHoloFullHexagram : IHoloHexagram , IPoemHexagram , IHoloLifeDescHexagram
+
+/** 最終組合卦象 */
+data class HoloFullHexagram(
+  val holoHexagram: IHoloHexagram,
+  val poemHexagram: IPoemHexagram,
+  val lifeDescHexagram : IHoloLifeDescHexagram
+) : IHoloFullHexagram , IHoloHexagram by holoHexagram {
+
+  override val poems: List<String> = poemHexagram.poems
+  override val linePoems: List<ILinePoem> = poemHexagram.linePoems
+
+  override val hexContent: String = lifeDescHexagram.hexContent
+  override val lineContents: List<String> = lifeDescHexagram.lineContents
 }
