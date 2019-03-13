@@ -56,12 +56,12 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
 
   /** 先天八卦 -> 後天八卦  */
   fun toAcquired(): Symbol {
-    return con2AcqMap[this]!!
+    return con2AcqMap.getValue(this)
   }
 
   /** 後天八卦 -> 先天八卦  */
   fun toCongenital(): Symbol {
-    return con2AcqMap.map { (k, v) -> v to k }.toMap()[this]!!
+    return con2AcqMap.map { (k, v) -> v to k }.toMap().getValue(this)
   }
 
   companion object {
@@ -89,9 +89,8 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
     }
 
     fun of(yinYangs: List<IYinYang>): Symbol {
-
       return symbols.first {
-        it.yinYangs[0] == yinYangs[0].booleanValue &&
+          it.yinYangs[0] == yinYangs[0].booleanValue &&
           it.yinYangs[1] == yinYangs[1].booleanValue &&
           it.yinYangs[2] == yinYangs[2].booleanValue
       }
@@ -102,17 +101,11 @@ enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, I
      */
     fun getSymbol(vararg lines: Boolean): Symbol {
       return symbols.first {
-        lines[0] == it.yinYangs[0] &&
+          lines[0] == it.yinYangs[0] &&
           lines[1] == it.yinYangs[1] &&
           lines[2] == it.yinYangs[2]
       }
     }
 
-    /**
-     * 由 三個陰陽 , 查詢卦象為何 , 比較標準的命名方式
-     */
-    fun valueOf(yinYangs: Array<IYinYang>): Symbol {
-      return getSymbol(yinYangs)
-    }
   }
 }
