@@ -103,9 +103,12 @@ class DivineContext(
     val 宮位 = (京房易卦卦序 - 1) / 8
 
     // 1~8
-    val 宮序 = 京房易卦卦序 - 宮位 * 8
+//    val 宮序 = 京房易卦卦序 - 宮位 * 8
+//
+//    val 本宮: Symbol = Hexagram.of(宮位 * 8 + 1, comparator).upperSymbol
 
-    val 本宮: Symbol = Hexagram.of(宮位 * 8 + 1, comparator).upperSymbol
+    val (本宮 , 宮序) = getSymbolAndIndex(hexagram)
+
 
     val (世爻, 應爻) = get世爻應爻(宮序)
 
@@ -235,6 +238,23 @@ class DivineContext(
 
 
   companion object {
+
+    val comparator = HexagramDivinationComparator()
+
+    /** 取得此卦 是哪個本宮的第幾卦 (1~8) */
+    fun getSymbolAndIndex(hexagram: IHexagram) : Pair<Symbol , Int> {
+      val 京房易卦卦序 = comparator.getIndex(hexagram)
+
+      /* 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */
+      val 宮位 = (京房易卦卦序 - 1) / 8
+
+      // 1~8
+      val 宮序 = 京房易卦卦序 - 宮位 * 8
+
+      val 本宮: Symbol = Hexagram.of(宮位 * 8 + 1, comparator).upperSymbol
+      return 本宮 to 宮序
+    }
+
     fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
       return when {
         外在五行.equals(內在五行) -> Relative.兄弟
