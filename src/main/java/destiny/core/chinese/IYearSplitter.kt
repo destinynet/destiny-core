@@ -6,6 +6,7 @@ package destiny.core.chinese
 import destiny.astrology.IZodiacSign
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
+import destiny.astrology.ZodiacSign.*
 import destiny.core.calendar.ILocation
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -41,9 +42,9 @@ class YearSplitterSignImpl(val zodiacSignImpl: IZodiacSign) : IYearSplitter, Ser
   companion object {
 
     // 冬至 到 夏至 (前半年)
-    val formerHalfYear = setOf(ZodiacSign.CAPRICORN, ZodiacSign.AQUARIUS, ZodiacSign.PISCES, ZodiacSign.ARIES, ZodiacSign.TAURUS, ZodiacSign.GEMINI)
+    val formerHalfYear = setOf(CAPRICORN, AQUARIUS, PISCES, ARIES, TAURUS, GEMINI)
 
     // 夏至 到 冬至 (後半年)
-    val laterHalfYear = ZodiacSign.values().toSet().minus(formerHalfYear)
+    val laterHalfYear = values().toSet().minus(formerHalfYear)
   }
 }

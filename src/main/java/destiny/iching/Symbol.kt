@@ -13,15 +13,15 @@ import java.io.Serializable
 /**
  * 八卦基本符號以及其資料
  */
-enum class Symbol(private val yinYangs: BooleanArray) : Serializable, ISymbol, IFiveElement {
-  乾(booleanArrayOf(true, true, true)),
-  兌(booleanArrayOf(true, true, false)),
-  離(booleanArrayOf(true, false, true)),
-  震(booleanArrayOf(true, false, false)),
-  巽(booleanArrayOf(false, true, true)),
-  坎(booleanArrayOf(false, true, false)),
-  艮(booleanArrayOf(false, false, true)),
-  坤(booleanArrayOf(false, false, false));
+enum class Symbol(private val yinYangs: BooleanArray , val unicode : Char) : Serializable, ISymbol, IFiveElement {
+  乾(booleanArrayOf(true, true, true) , '☰'),
+  兌(booleanArrayOf(true, true, false) , '☱'),
+  離(booleanArrayOf(true, false, true) , '☲'),
+  震(booleanArrayOf(true, false, false) , '☳'),
+  巽(booleanArrayOf(false, true, true) , '☴'),
+  坎(booleanArrayOf(false, true, false) , '☵'),
+  艮(booleanArrayOf(false, false, true) , '☶'),
+  坤(booleanArrayOf(false, false, false) , '☷');
 
   override fun toString(): String {
     return name

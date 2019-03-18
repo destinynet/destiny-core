@@ -5,10 +5,17 @@
 package destiny.iching
 
 import destiny.iching.Hexagram.*
-import org.junit.Assert.*
-import kotlin.test.Test
+import kotlin.test.*
 
 class HexagramTest {
+
+  @Test
+  fun testUnicode() {
+    Hexagram.values().forEach { h ->
+      assertNotNull(h.unicode)
+      println("$h = ${h.unicode}")
+    }
+  }
 
   @Test
   fun testCongenitalOpposition() {

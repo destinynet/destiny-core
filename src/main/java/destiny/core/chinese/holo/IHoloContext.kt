@@ -30,6 +30,7 @@ interface IHoloContext {
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender) : IHolo
 
+
   /**
    * 列出當年 12 個月的流月卦象
    * @param yearHexagram 當年卦象

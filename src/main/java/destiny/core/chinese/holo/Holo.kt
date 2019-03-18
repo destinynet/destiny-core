@@ -4,22 +4,32 @@
 package destiny.core.chinese.holo
 
 import destiny.core.Gender
+import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 
 interface IHolo {
+  val gmtJulDay : Double
+
   val ew: IEightWords
 
   val gender: Gender
 
   val yuan: Yuan
 
+  /** 位於哪兩個「節」之間，以及這兩節各自的 GMT julDay 為何 */
+  val between: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+
   /** 天數 */
   val heavenNumber: Int
 
+  val heavenSymbol: Symbol
+
   /** 地數 */
   val earthNumber: Int
+
+  val earthSymbol: Symbol
 
   /** 先天卦 , with 元堂 (1~6) , 包含六爻中每年的流年資訊 , 6 or 9 年 */
   val hexagramCongenital: ILifeHoloHexagram
@@ -50,11 +60,15 @@ interface IHolo {
 }
 
 data class Holo(
+  override val gmtJulDay: Double,
   override val ew: IEightWords,
   override val gender: Gender,
   override val yuan: Yuan,
+  override val between: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>,
   override val heavenNumber: Int,
+  override val heavenSymbol: Symbol,
   override val earthNumber: Int,
+  override val earthSymbol: Symbol,
   override val hexagramCongenital: ILifeHoloHexagram,
   override val hexagramAcquired: ILifeHoloHexagram,
   override val vigorousSymbolFromStem: Symbol,
@@ -63,7 +77,5 @@ data class Holo(
   override val vigorlessSymbolFromBranch: Symbol,
   override val seasonalSymbols: Set<Symbol>,
   override val seasonlessSymbols: Set<Symbol>) : IHolo
-
-
 
 

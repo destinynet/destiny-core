@@ -107,17 +107,13 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
 
   override val yinYangs: List<IYinYang> = lines
 
-  override val scale: IHoloHexagram.Scale
-    get() = IHoloHexagram.Scale.LIFE
+  override val scale: IHoloHexagram.Scale = IHoloHexagram.Scale.LIFE
 
-  override val yuanTang: Int
-    get() = lines.indexOfFirst { it.yuanTang } + 1
+  override val yuanTang: Int = lines.indexOfFirst { it.yuanTang } + 1
 
-  override val start: Double
-    get() = lines.minBy { it.start }!!.start
+  override val start: Double = lines.minBy { it.start }!!.start
 
-  override val endExclusive: Double
-    get() = lines.maxBy { it.endExclusive }!!.endExclusive
+  override val endExclusive: Double = lines.maxBy { it.endExclusive }!!.endExclusive
 
 }
 
