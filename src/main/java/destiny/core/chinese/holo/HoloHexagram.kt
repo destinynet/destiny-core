@@ -8,6 +8,7 @@ import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
+import destiny.iching.IHexagramText
 import java.io.Serializable
 
 
@@ -145,7 +146,6 @@ interface IPoemHexagram : IHexagram {
   val poems: List<String>
   /** 六爻之詩 , size = 6 */
   val linePoems: List<ILinePoem>
-
 }
 
 data class PoemHexagram(
@@ -174,8 +174,12 @@ data class HoloPoemHexagram(
 interface IHoloLifeDescHexagram : IHexagram {
   /** 卦的解釋 */
   val hexContent: String
-  /** 六爻的解釋 */
-  val lineContents: List<String>
+
+  /**
+   * 六爻的解釋
+   * @param lineIndex 1 (incl.) ~ 6 (incl.)
+   * */
+  fun getLineContent(lineIndex: Int): String
 }
 
 /** 終身卦 解釋 */
@@ -184,7 +188,11 @@ data class HoloLifeDescHexagram(
   /** 卦的解釋 */
   override val hexContent: String,
   /** 六爻的解釋 */
-  override val lineContents: List<String>) : IHoloLifeDescHexagram , IHexagram by hexagram {
+  private val lineContents: List<String>) : IHoloLifeDescHexagram, IHexagram by hexagram {
+
+  override fun getLineContent(lineIndex: Int): String {
+    return lineContents[lineIndex - 1]
+  }
 
   init {
     require(lineContents.size == 6) {
@@ -194,18 +202,21 @@ data class HoloLifeDescHexagram(
 }
 
 /** 最終組合卦象 */
-interface IHoloFullHexagram : IHoloHexagram , IPoemHexagram , IHoloLifeDescHexagram
+interface IHoloFullHexagram : IHoloHexagram, IPoemHexagram, IHoloLifeDescHexagram
 
 /** 最終組合卦象 */
 data class HoloFullHexagram(
   val holoHexagram: IHoloHexagram,
   val poemHexagram: IPoemHexagram,
-  val lifeDescHexagram : IHoloLifeDescHexagram
-) : IHoloFullHexagram , IHoloHexagram by holoHexagram {
+  val lifeDescHexagram: IHoloLifeDescHexagram,
+  val hexagramText: IHexagramText
+) : IHoloFullHexagram, IHoloHexagram by holoHexagram {
 
   override val poems: List<String> = poemHexagram.poems
   override val linePoems: List<ILinePoem> = poemHexagram.linePoems
 
   override val hexContent: String = lifeDescHexagram.hexContent
-  override val lineContents: List<String> = lifeDescHexagram.lineContents
+  override fun getLineContent(lineIndex: Int): String {
+    return lifeDescHexagram.getLineContent(lineIndex)
+  }
 }

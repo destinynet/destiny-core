@@ -2,6 +2,7 @@ package destiny.core.chinese.holo
 
 import destiny.astrology.IZodiacSign
 import destiny.astrology.Planet
+import destiny.core.BirthData
 import destiny.core.Gender
 import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.IEightWords
@@ -225,7 +226,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     // 位於哪兩個「節」之間，以及這兩節各自的 julDay 為何
     val between: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> = solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay)
 
-    return Holo(gmtJulDay , ew, gender, yuan, between , heavenNumber, heavenSymbol, earthNumber, earthSymbol, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
+    val birthData = BirthData(lmt , loc , gender)
+
+    return Holo(birthData , ew, gender, yuan, between , heavenNumber, heavenSymbol, earthNumber, earthSymbol, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
   } // getHolo(inner)
 
   /**

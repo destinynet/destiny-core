@@ -13,7 +13,7 @@ import destiny.core.chinese.YinYang
 interface IHexagram {
 
   /** 取得全部的 [IYinYang] 值 */
-  val yinYangs : List<IYinYang>
+  val yinYangs: List<IYinYang>
 
   /** 取得上卦  */
   val upperSymbol: Symbol
@@ -23,10 +23,10 @@ interface IHexagram {
   val lowerSymbol: Symbol
     get() = yinYangs.subList(0, 3).let { Symbol.of(it) }
 
-  val unicode : Char
-  get() {
-    return unicodeMap.getValue(listOf(upperSymbol, lowerSymbol))
-  }
+  val unicode: Char
+    get() {
+      return unicodeMap.getValue(listOf(upperSymbol, lowerSymbol))
+    }
 
   /** 取得全部的 boolean 值 */
   val booleans: List<Boolean>
@@ -52,9 +52,9 @@ interface IHexagram {
   }
 
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
-  fun getLineYinYang(index : Int) : IYinYang {
+  fun getLineYinYang(index: Int): IYinYang {
     require(index in 1..6) { "index out of range , 1 <= index <= 6 : $index" }
-    return yinYangs[index-1]
+    return yinYangs[index - 1]
   }
 
 
@@ -63,8 +63,8 @@ interface IHexagram {
    * @param lines [1~6]
    */
   @JvmDefault
-  fun getTargetYinYangs(vararg lines: Int) : List<Boolean> {
-    return yinYangs.mapIndexed { index , yy -> if (lines.contains(index+1)) !yy.booleanValue else yy.booleanValue}
+  fun getTargetYinYangs(vararg lines: Int): List<Boolean> {
+    return yinYangs.mapIndexed { index, yy -> if (lines.contains(index + 1)) !yy.booleanValue else yy.booleanValue }
   }
 
   /**
@@ -111,71 +111,71 @@ interface IHexagram {
     )
 
   companion object {
-    val unicodeMap : Map<List<Symbol> , Char> = mapOf(
-      (listOf(Symbol.乾, Symbol.乾) to  '䷀'),
-      (listOf(Symbol.坤, Symbol.坤) to  '䷁'),
-      (listOf(Symbol.坎, Symbol.震) to  '䷂'),
-      (listOf(Symbol.艮, Symbol.坎) to  '䷃'),
-      (listOf(Symbol.坎, Symbol.乾) to  '䷄'),
-      (listOf(Symbol.乾, Symbol.坎) to  '䷅'),
-      (listOf(Symbol.坤, Symbol.坎) to  '䷆'),
-      (listOf(Symbol.坎, Symbol.坤) to  '䷇'),
-      (listOf(Symbol.巽, Symbol.乾) to  '䷈'),
-      (listOf(Symbol.乾, Symbol.兌) to  '䷉'),
-      (listOf(Symbol.坤, Symbol.乾) to  '䷊'),
-      (listOf(Symbol.乾, Symbol.坤) to  '䷋'),
-      (listOf(Symbol.乾, Symbol.離) to  '䷌'),
-      (listOf(Symbol.離, Symbol.乾) to  '䷍'),
-      (listOf(Symbol.坤, Symbol.艮) to  '䷎'),
-      (listOf(Symbol.震, Symbol.坤) to  '䷏'),
-      (listOf(Symbol.兌, Symbol.震) to  '䷐'),
-      (listOf(Symbol.艮, Symbol.巽) to  '䷑'),
-      (listOf(Symbol.坤, Symbol.兌) to  '䷒'),
-      (listOf(Symbol.巽, Symbol.坤) to  '䷓'),
-      (listOf(Symbol.離, Symbol.震) to  '䷔'),
-      (listOf(Symbol.艮, Symbol.離) to  '䷕'),
-      (listOf(Symbol.艮, Symbol.坤) to  '䷖'),
-      (listOf(Symbol.坤, Symbol.震) to  '䷗'),
-      (listOf(Symbol.乾, Symbol.震) to  '䷘'),
-      (listOf(Symbol.艮, Symbol.乾) to  '䷙'),
-      (listOf(Symbol.艮, Symbol.震) to  '䷚'),
-      (listOf(Symbol.兌, Symbol.巽) to  '䷛'),
-      (listOf(Symbol.坎, Symbol.坎) to  '䷜'),
-      (listOf(Symbol.離, Symbol.離) to  '䷝'),
-      (listOf(Symbol.兌, Symbol.艮) to  '䷞'),
-      (listOf(Symbol.震, Symbol.巽) to  '䷟'),
-      (listOf(Symbol.乾, Symbol.艮) to  '䷠'),
-      (listOf(Symbol.震, Symbol.乾) to  '䷡'),
-      (listOf(Symbol.離, Symbol.坤) to  '䷢'),
-      (listOf(Symbol.坤, Symbol.離) to  '䷣'),
-      (listOf(Symbol.巽, Symbol.離) to  '䷤'),
-      (listOf(Symbol.離, Symbol.兌) to  '䷥'),
-      (listOf(Symbol.坎, Symbol.艮) to  '䷦'),
-      (listOf(Symbol.震, Symbol.坎) to  '䷧'),
-      (listOf(Symbol.艮, Symbol.兌) to  '䷨'),
-      (listOf(Symbol.巽, Symbol.震) to  '䷩'),
-      (listOf(Symbol.兌, Symbol.乾) to  '䷪'),
-      (listOf(Symbol.乾, Symbol.巽) to  '䷫'),
-      (listOf(Symbol.兌, Symbol.坤) to  '䷬'),
-      (listOf(Symbol.坤, Symbol.巽) to  '䷭'),
-      (listOf(Symbol.兌, Symbol.坎) to  '䷮'),
-      (listOf(Symbol.坎, Symbol.巽) to  '䷯'),
-      (listOf(Symbol.兌, Symbol.離) to  '䷰'),
-      (listOf(Symbol.離, Symbol.巽) to  '䷱'),
-      (listOf(Symbol.震, Symbol.震) to  '䷲'),
-      (listOf(Symbol.艮, Symbol.艮) to  '䷳'),
-      (listOf(Symbol.巽, Symbol.艮) to  '䷴'),
-      (listOf(Symbol.震, Symbol.兌) to  '䷵'),
-      (listOf(Symbol.震, Symbol.離) to  '䷶'),
-      (listOf(Symbol.離, Symbol.艮) to  '䷷'),
-      (listOf(Symbol.巽, Symbol.巽) to  '䷸'),
-      (listOf(Symbol.兌, Symbol.兌) to  '䷹'),
-      (listOf(Symbol.巽, Symbol.坎) to  '䷺'),
-      (listOf(Symbol.坎, Symbol.兌) to  '䷻'),
-      (listOf(Symbol.巽, Symbol.兌) to  '䷼'),
-      (listOf(Symbol.震, Symbol.艮) to  '䷽'),
-      (listOf(Symbol.坎, Symbol.離) to  '䷾'),
-      (listOf(Symbol.離, Symbol.坎) to  '䷿')
+    private val unicodeMap: Map<List<Symbol>, Char> = mapOf(
+      (listOf(Symbol.乾, Symbol.乾) to '䷀'),
+      (listOf(Symbol.坤, Symbol.坤) to '䷁'),
+      (listOf(Symbol.坎, Symbol.震) to '䷂'),
+      (listOf(Symbol.艮, Symbol.坎) to '䷃'),
+      (listOf(Symbol.坎, Symbol.乾) to '䷄'),
+      (listOf(Symbol.乾, Symbol.坎) to '䷅'),
+      (listOf(Symbol.坤, Symbol.坎) to '䷆'),
+      (listOf(Symbol.坎, Symbol.坤) to '䷇'),
+      (listOf(Symbol.巽, Symbol.乾) to '䷈'),
+      (listOf(Symbol.乾, Symbol.兌) to '䷉'),
+      (listOf(Symbol.坤, Symbol.乾) to '䷊'),
+      (listOf(Symbol.乾, Symbol.坤) to '䷋'),
+      (listOf(Symbol.乾, Symbol.離) to '䷌'),
+      (listOf(Symbol.離, Symbol.乾) to '䷍'),
+      (listOf(Symbol.坤, Symbol.艮) to '䷎'),
+      (listOf(Symbol.震, Symbol.坤) to '䷏'),
+      (listOf(Symbol.兌, Symbol.震) to '䷐'),
+      (listOf(Symbol.艮, Symbol.巽) to '䷑'),
+      (listOf(Symbol.坤, Symbol.兌) to '䷒'),
+      (listOf(Symbol.巽, Symbol.坤) to '䷓'),
+      (listOf(Symbol.離, Symbol.震) to '䷔'),
+      (listOf(Symbol.艮, Symbol.離) to '䷕'),
+      (listOf(Symbol.艮, Symbol.坤) to '䷖'),
+      (listOf(Symbol.坤, Symbol.震) to '䷗'),
+      (listOf(Symbol.乾, Symbol.震) to '䷘'),
+      (listOf(Symbol.艮, Symbol.乾) to '䷙'),
+      (listOf(Symbol.艮, Symbol.震) to '䷚'),
+      (listOf(Symbol.兌, Symbol.巽) to '䷛'),
+      (listOf(Symbol.坎, Symbol.坎) to '䷜'),
+      (listOf(Symbol.離, Symbol.離) to '䷝'),
+      (listOf(Symbol.兌, Symbol.艮) to '䷞'),
+      (listOf(Symbol.震, Symbol.巽) to '䷟'),
+      (listOf(Symbol.乾, Symbol.艮) to '䷠'),
+      (listOf(Symbol.震, Symbol.乾) to '䷡'),
+      (listOf(Symbol.離, Symbol.坤) to '䷢'),
+      (listOf(Symbol.坤, Symbol.離) to '䷣'),
+      (listOf(Symbol.巽, Symbol.離) to '䷤'),
+      (listOf(Symbol.離, Symbol.兌) to '䷥'),
+      (listOf(Symbol.坎, Symbol.艮) to '䷦'),
+      (listOf(Symbol.震, Symbol.坎) to '䷧'),
+      (listOf(Symbol.艮, Symbol.兌) to '䷨'),
+      (listOf(Symbol.巽, Symbol.震) to '䷩'),
+      (listOf(Symbol.兌, Symbol.乾) to '䷪'),
+      (listOf(Symbol.乾, Symbol.巽) to '䷫'),
+      (listOf(Symbol.兌, Symbol.坤) to '䷬'),
+      (listOf(Symbol.坤, Symbol.巽) to '䷭'),
+      (listOf(Symbol.兌, Symbol.坎) to '䷮'),
+      (listOf(Symbol.坎, Symbol.巽) to '䷯'),
+      (listOf(Symbol.兌, Symbol.離) to '䷰'),
+      (listOf(Symbol.離, Symbol.巽) to '䷱'),
+      (listOf(Symbol.震, Symbol.震) to '䷲'),
+      (listOf(Symbol.艮, Symbol.艮) to '䷳'),
+      (listOf(Symbol.巽, Symbol.艮) to '䷴'),
+      (listOf(Symbol.震, Symbol.兌) to '䷵'),
+      (listOf(Symbol.震, Symbol.離) to '䷶'),
+      (listOf(Symbol.離, Symbol.艮) to '䷷'),
+      (listOf(Symbol.巽, Symbol.巽) to '䷸'),
+      (listOf(Symbol.兌, Symbol.兌) to '䷹'),
+      (listOf(Symbol.巽, Symbol.坎) to '䷺'),
+      (listOf(Symbol.坎, Symbol.兌) to '䷻'),
+      (listOf(Symbol.巽, Symbol.兌) to '䷼'),
+      (listOf(Symbol.震, Symbol.艮) to '䷽'),
+      (listOf(Symbol.坎, Symbol.離) to '䷾'),
+      (listOf(Symbol.離, Symbol.坎) to '䷿')
     )
   }
 }

@@ -4,17 +4,15 @@
 package destiny.core.chinese.holo
 
 import destiny.core.Gender
+import destiny.core.IBirthData
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 
-interface IHolo {
-  val gmtJulDay : Double
+interface IHolo : IBirthData {
 
   val ew: IEightWords
-
-  val gender: Gender
 
   val yuan: Yuan
 
@@ -60,7 +58,7 @@ interface IHolo {
 }
 
 data class Holo(
-  override val gmtJulDay: Double,
+  val birthData: IBirthData,
   override val ew: IEightWords,
   override val gender: Gender,
   override val yuan: Yuan,
@@ -76,6 +74,6 @@ data class Holo(
   override val vigorlessSymbolFromStem: Symbol,
   override val vigorlessSymbolFromBranch: Symbol,
   override val seasonalSymbols: Set<Symbol>,
-  override val seasonlessSymbols: Set<Symbol>) : IHolo
+  override val seasonlessSymbols: Set<Symbol>) : IHolo , IBirthData by birthData
 
 
