@@ -56,7 +56,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
    * @param yuanTangIndexFrom1 元堂 (1~6)
    * @return Holo卦象 以及 出生之後每個立春的GMT時刻(亦即：原歲數截止時刻 & 新歲數開始時刻 ）
    */
-  private fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: Double, initStemBranch: IStemBranch): List<HoloLine> {
+  fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: Double, initStemBranch: IStemBranch): List<HoloLine> {
     return generateSequence { hex.yinYangs }
       .flatten()
       .drop(yuanTangIndexFrom1 - 1) // 從「元堂」爻開始

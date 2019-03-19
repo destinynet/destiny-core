@@ -144,16 +144,24 @@ data class LinePoem(
 interface IPoemHexagram : IHexagram {
   /** 卦象 之詩 */
   val poems: List<String>
-  /** 六爻之詩 , size = 6 */
-  val linePoems: List<ILinePoem>
+
+  /** 六爻之詩 , 1 <= lineIndex <= 6 */
+  fun getLinePoem(lineIndex: Int): ILinePoem
+
 }
 
 data class PoemHexagram(
   val hexagram: IHexagram,
   override val poems: List<String>,
+
   /** 六爻 , size = 6 */
-  override val linePoems: List<ILinePoem>
-) : IPoemHexagram, IHexagram by hexagram
+  private val linePoems: List<ILinePoem>
+) : IPoemHexagram, IHexagram by hexagram {
+
+  override fun getLinePoem(lineIndex: Int): ILinePoem {
+    return linePoems[lineIndex - 1]
+  }
+}
 
 
 /** 結合了 河洛卦象 以及 河洛詩詞 */
@@ -165,8 +173,13 @@ data class HoloPoemHexagram(
   val holoHexagram: IHoloHexagram,
   val poemHexagram: IPoemHexagram
 ) : IHoloPoemHexagram, IHoloHexagram by holoHexagram {
+
+
   override val poems: List<String> = poemHexagram.poems
-  override val linePoems: List<ILinePoem> = poemHexagram.linePoems
+
+  override fun getLinePoem(lineIndex: Int): ILinePoem {
+    return poemHexagram.getLinePoem(lineIndex)
+  }
 }
 
 
@@ -213,7 +226,10 @@ data class HoloFullHexagram(
 ) : IHoloFullHexagram, IHoloHexagram by holoHexagram {
 
   override val poems: List<String> = poemHexagram.poems
-  override val linePoems: List<ILinePoem> = poemHexagram.linePoems
+
+  override fun getLinePoem(lineIndex: Int): ILinePoem {
+    return poemHexagram.getLinePoem(lineIndex)
+  }
 
   override val hexContent: String = lifeDescHexagram.hexContent
   override fun getLineContent(lineIndex: Int): String {

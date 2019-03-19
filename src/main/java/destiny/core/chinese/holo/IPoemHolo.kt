@@ -21,7 +21,10 @@ data class LifeHoloPoemHexagram(
   , ILifeHoloHexagram by lifeHoloHexagram, IPoemHexagram {
 
   override val poems: List<String> = poemHexagram.poems
-  override val linePoems: List<ILinePoem> = poemHexagram.linePoems
+
+  override fun getLinePoem(lineIndex: Int): ILinePoem {
+    return poemHexagram.getLinePoem(lineIndex)
+  }
 
   override val hexContent: String = lifeDescHexagram.hexContent
 
