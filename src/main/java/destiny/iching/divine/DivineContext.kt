@@ -215,10 +215,10 @@ class DivineContext(
     val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
                                 decoratedDate, decoratedDateTime, meta, null)
 
-    val textContext: IHexagramTextContext =
+    val textContext: IHexagramProvider<IHexagramText> =
       HexagramTextContext(nameFullImpl, nameShortImpl, expressionImpl, imageImpl, judgementImpl)
-    val srcText = textContext.getHexagramText(src, locale)
-    val dstText = textContext.getHexagramText(dst, locale)
+    val srcText = textContext.getHexagram(src, locale)
+    val dstText = textContext.getHexagram(dst, locale)
 
     val pairTexts: Pair<IHexagramText, IHexagramText> = Pair(srcText, dstText)
     return CombinedFull(combinedWithMetaNameDayMonth, eightWordsNullable, divineMeta, pairTexts)
