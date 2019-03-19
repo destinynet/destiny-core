@@ -2,7 +2,7 @@ package destiny.core.chinese.holo
 
 import destiny.astrology.IZodiacSign
 import destiny.astrology.Planet
-import destiny.core.BirthData
+import destiny.core.BirthDataNamePlace
 import destiny.core.Gender
 import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.IEightWords
@@ -154,7 +154,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   }
 
   /** 先天卦 + 後天卦 */
-  override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender): IHolo {
+  override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?): IHolo {
     val yuan = yuanImpl.getYuan(lmt, loc)
 
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
@@ -226,9 +226,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
     // 位於哪兩個「節」之間，以及這兩節各自的 julDay 為何
     val between: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> = solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay)
 
-    val birthData = BirthData(lmt , loc , gender)
+    val birthData = BirthDataNamePlace(gender, lmt, loc, name, place)
 
-    return Holo(birthData , ew, gender, yuan, between , heavenNumber, heavenSymbol, earthNumber, earthSymbol, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
+    return Holo(birthData, ew, gender, yuan, between, heavenNumber, heavenSymbol, earthNumber, earthSymbol, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
   } // getHolo(inner)
 
   /**
@@ -322,9 +322,9 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
   }
 
   /** 傳回 本命先後天卦、以及此 gmt 時刻 的大運、流年、流月 等資訊 */
-  override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: Double): Pair<IHolo, List<IHoloHexagram>> {
+  override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: Double, name: String?, place: String?): Pair<IHolo, List<IHoloHexagram>> {
 
-    val holo = getHolo(lmt, loc, gender)
+    val holo = getHolo(lmt, loc, gender , name, place)
     val congenitalLines: List<HoloLine> = holo.hexagramCongenital.lines
     val acquiredLines: List<HoloLine> = holo.hexagramAcquired.lines
 

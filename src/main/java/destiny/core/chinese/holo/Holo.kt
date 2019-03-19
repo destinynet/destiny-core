@@ -5,12 +5,13 @@ package destiny.core.chinese.holo
 
 import destiny.core.Gender
 import destiny.core.IBirthData
+import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 
-interface IHolo : IBirthData {
+interface IHolo : IBirthDataNamePlace {
 
   val ew: IEightWords
 
@@ -58,7 +59,7 @@ interface IHolo : IBirthData {
 }
 
 data class Holo(
-  val birthData: IBirthData,
+  val birthData: IBirthDataNamePlace,
   override val ew: IEightWords,
   override val gender: Gender,
   override val yuan: Yuan,
@@ -74,6 +75,6 @@ data class Holo(
   override val vigorlessSymbolFromStem: Symbol,
   override val vigorlessSymbolFromBranch: Symbol,
   override val seasonalSymbols: Set<Symbol>,
-  override val seasonlessSymbols: Set<Symbol>) : IHolo , IBirthData by birthData
+  override val seasonlessSymbols: Set<Symbol>) : IHolo , IBirthDataNamePlace by birthData
 
 
