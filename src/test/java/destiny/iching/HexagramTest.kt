@@ -32,19 +32,19 @@ class HexagramTest {
 
   @Test
   fun testGetLine() {
-    assertTrue(乾.getLine(1))
-    assertTrue(乾.getLine(2))
-    assertTrue(乾.getLine(3))
-    assertTrue(乾.getLine(4))
-    assertTrue(乾.getLine(5))
-    assertTrue(乾.getLine(6))
+    assertTrue(乾.getBoolean(1))
+    assertTrue(乾.getBoolean(2))
+    assertTrue(乾.getBoolean(3))
+    assertTrue(乾.getBoolean(4))
+    assertTrue(乾.getBoolean(5))
+    assertTrue(乾.getBoolean(6))
 
-    assertFalse(坤.getLine(1))
-    assertFalse(坤.getLine(2))
-    assertFalse(坤.getLine(3))
-    assertFalse(坤.getLine(4))
-    assertFalse(坤.getLine(5))
-    assertFalse(坤.getLine(6))
+    assertFalse(坤.getBoolean(1))
+    assertFalse(坤.getBoolean(2))
+    assertFalse(坤.getBoolean(3))
+    assertFalse(坤.getBoolean(4))
+    assertFalse(坤.getBoolean(5))
+    assertFalse(坤.getBoolean(6))
   }
 
   @Test

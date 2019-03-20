@@ -89,7 +89,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
     val lineTexts: List<LineText> = (1..6).map { lineIndex ->
       val lineExpression = expressionImpl.getLineExpression(hex, lineIndex, locale)
       val lineImage = imageImpl.getLineImage(hex, lineIndex, locale)
-      LineText(hex.getLineYinYang(lineIndex), lineExpression, lineImage)
+      LineText(hex.getYinYang(lineIndex), lineExpression, lineImage)
     }.toList()
 
     val seq: IHexagramSequence = HexagramDefaultComparator()

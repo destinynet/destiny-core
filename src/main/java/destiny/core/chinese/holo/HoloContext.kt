@@ -119,7 +119,7 @@ class HoloContext(private val eightWordsImpl: IEightWordsFactory,
 
     val confinedLine = confine(lineIndex)
 
-    return if (hex.getLine(confinedLine)) {
+    return if (hex.getBoolean(confinedLine)) {
       // 陽爻
       val firstYear: Triple<Hexagram, Int, Int> = if (!stemBranch.stem.booleanValue) {
         logger.debug("陽爻，元堂，流年逢陰年 ")

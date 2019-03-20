@@ -75,7 +75,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexagramNameF
     mainCanvas.add(本卦canvas, 1, 5)
 
     //變爻
-    if (mumeContext.hexagram.getLine(mumeContext.motivate)
+    if (mumeContext.hexagram.getBoolean(mumeContext.motivate)
     ) mainCanvas.setText("◎", 9 - mumeContext.motivate, 17)
     else mainCanvas.setText("〤", 9 - mumeContext.motivate, 17)
 

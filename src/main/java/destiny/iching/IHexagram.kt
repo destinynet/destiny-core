@@ -5,7 +5,6 @@
 package destiny.iching
 
 import destiny.core.chinese.IYinYang
-import destiny.core.chinese.YinYang
 
 /**
  * 一個最基本的「卦」的資料，只有 取得 各爻陰陽 getLine(int index) / 取得六爻陰陽 getLines()  / 上卦 getUpperSymbol() / 下卦 getLowerSymbol() / 等介面
@@ -38,9 +37,9 @@ interface IHexagram {
 
 
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
-  fun getLine(index: Int): Boolean {
-    require(index in 1..6) { "index out of range , 1 <= index <= 6 : $index" }
-    when (index) {
+  fun getBoolean(lineIndex: Int): Boolean {
+    require(lineIndex in 1..6) { "lineIndex out of range , 1 <= lineIndex <= 6 : $lineIndex" }
+    when (lineIndex) {
       1 -> return lowerSymbol.getBooleanValue(1)
       2 -> return lowerSymbol.getBooleanValue(2)
       3 -> return lowerSymbol.getBooleanValue(3)
@@ -48,13 +47,13 @@ interface IHexagram {
       5 -> return upperSymbol.getBooleanValue(2)
       6 -> return upperSymbol.getBooleanValue(3)
     }
-    throw RuntimeException("index out of range , 1 <= index <= 6 : $index")
+    throw RuntimeException("index out of range , 1 <= index <= 6 : $lineIndex")
   }
 
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
-  fun getLineYinYang(index: Int): IYinYang {
-    require(index in 1..6) { "index out of range , 1 <= index <= 6 : $index" }
-    return yinYangs[index - 1]
+  fun getYinYang(lineIndex: Int): IYinYang {
+    require(lineIndex in 1..6) { "lineIndex out of range , 1 <= lineIndex <= 6 : $lineIndex" }
+    return yinYangs[lineIndex - 1]
   }
 
 

@@ -24,7 +24,7 @@ class HexagramDefaultComparatorTest {
 
       val h = impl.getHexagram(hex)
       for (line in 1..6) {
-        sb.append(h.getLine(line))
+        sb.append(h.getBoolean(line))
         sb.append(',')
       }
       sb.append("},")

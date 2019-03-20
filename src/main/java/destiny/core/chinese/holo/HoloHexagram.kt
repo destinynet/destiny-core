@@ -9,6 +9,7 @@ import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.IHexagramText
+import destiny.iching.contentProviders.IHexData
 import java.io.Serializable
 
 
@@ -134,9 +135,10 @@ data class LinePoem(
   override val poems: List<String>,
   val yinYang: IYinYang) : ILinePoem, IYinYang by yinYang {
   constructor(line: Int, poems: List<String>, hexagram: IHexagram) : this(
-    line, poems, hexagram.getLineYinYang(line)
+    line, poems, hexagram.getYinYang(line)
   )
 }
+
 
 /**
  * 河洛理數64卦訣 , 卦辭
@@ -147,8 +149,21 @@ interface IPoemHexagram : IHexagram {
 
   /** 六爻之詩 , 1 <= lineIndex <= 6 */
   fun getLinePoem(lineIndex: Int): ILinePoem
-
 }
+
+data class PoemData(override val hexagram: IHexagram,
+                    override val hex: List<String>,
+                    /** 六爻 , size = 6 */
+                    private val linePoems: List<ILinePoem>) : IHexData<List<String>, ILinePoem> {
+
+  override fun getLine(lineIndex: Int): ILinePoem {
+    return linePoems[lineIndex - 1]
+  }
+
+  // 並未實作 用九、用六
+  override val extraLine: ILinePoem? = null
+}
+
 
 data class PoemHexagram(
   val hexagram: IHexagram,
