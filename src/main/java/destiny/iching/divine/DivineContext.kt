@@ -64,7 +64,7 @@ interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
 interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
   val expressionImpl: IExpression
   val imageImpl: IImage
-  val judgementImpl: IHexagramJudgement
+  val hexJudgement : IHexJudgement
 
   fun getCombinedFull(src: IHexagram,
                       dst: IHexagram,
@@ -90,7 +90,7 @@ class DivineContext(
   override val nameFullImpl: IHexagramNameFull,
   override val expressionImpl: IExpression,
   override val imageImpl: IImage,
-  override val judgementImpl: IHexagramJudgement) : ICombinedFullContext, Serializable {
+  override val hexJudgement: IHexJudgement) : ICombinedFullContext, Serializable {
 
   val comparator = HexagramDivinationComparator()
 
@@ -216,7 +216,7 @@ class DivineContext(
                                 decoratedDate, decoratedDateTime, meta, null)
 
     val textContext: IHexagramProvider<IHexagramText> =
-      HexagramTextContext(nameFullImpl, nameShortImpl, expressionImpl, imageImpl, judgementImpl)
+      HexagramTextContext(nameFullImpl, nameShortImpl, expressionImpl, imageImpl, hexJudgement)
     val srcText = textContext.getHexagram(src, locale)
     val dstText = textContext.getHexagram(dst, locale)
 

@@ -76,7 +76,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
                           private val hexagramNameShort: IHexagramNameShort,
                           private val expressionImpl: IExpression,
                           private val imageImpl: IImage,
-                          private val judgementImpl: IHexagramJudgement) : IHexagramProvider<IHexagramText>, Serializable {
+                          private val hexJudgement: IHexJudgement) : IHexagramProvider<IHexagramText>, Serializable {
 
   override fun getHexagram(hex: IHexagram, locale: Locale): IHexagramText {
 
@@ -84,7 +84,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
     val fullName = hexagramNameFull.getNameFull(hex, locale)
     val hexExpression = expressionImpl.getHexagramExpression(hex, locale)
     val hexImage = imageImpl.getHexagramImage(hex, locale)
-    val hexJudgement = judgementImpl.getJudgement(hex, locale)
+    val judgement = hexJudgement.getHexagram(hex, locale)
 
     val lineTexts: List<LineText> = (1..6).map { lineIndex ->
       val lineExpression = expressionImpl.getLineExpression(hex, lineIndex, locale)
@@ -104,6 +104,6 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
         null
     }
     val hName = HexagramName(shortName, fullName)
-    return HexagramText(hName, hexExpression, hexImage, hexJudgement, lineTexts, extraLine)
+    return HexagramText(hName, hexExpression, hexImage, judgement, lineTexts, extraLine)
   }
 }
