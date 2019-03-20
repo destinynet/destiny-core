@@ -74,7 +74,7 @@ data class HexagramText(
 
 class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
                           private val hexagramNameShort: IHexagramNameShort,
-                          private val expressionImpl: IExpression,
+                          private val hexExpressionImpl: IHexProvider<String, String>,
                           private val imageImpl: IImage,
                           private val hexJudgement: IHexJudgement) : IHexagramProvider<IHexagramText>, Serializable {
 
@@ -82,12 +82,12 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
 
     val shortName = hexagramNameShort.getNameShort(hex, locale)
     val fullName = hexagramNameFull.getNameFull(hex, locale)
-    val hexExpression = expressionImpl.getHexagramExpression(hex, locale)
+    val hexExpression = hexExpressionImpl.getHexagram(hex, locale)
     val hexImage = imageImpl.getHexagramImage(hex, locale)
     val judgement = hexJudgement.getHexagram(hex, locale)
 
     val lineTexts: List<LineText> = (1..6).map { lineIndex ->
-      val lineExpression = expressionImpl.getLineExpression(hex, lineIndex, locale)
+      val lineExpression = hexExpressionImpl.getLine(hex, lineIndex, locale)
       val lineImage = imageImpl.getLineImage(hex, lineIndex, locale)
       LineText(hex.getYinYang(lineIndex), lineExpression, lineImage)
     }.toList()
@@ -95,7 +95,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
     val seq: IHexagramSequence = HexagramDefaultComparator()
     val extraLine: LineText? = seq.getIndex(hex).let {
       if (it == 1 || it == 2) {
-        val lineExpression = expressionImpl.getExtraExpression(hex, locale)
+        val lineExpression = hexExpressionImpl.getExtraLine(hex, locale)
         val lineImage = imageImpl.getExtraImage(hex, locale)
         // 用九 or 用六
         val use9or6 = if (it == 1) YinYang.陽 else YinYang.陰

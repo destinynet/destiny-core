@@ -62,7 +62,7 @@ interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
 
 /** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
 interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
-  val expressionImpl: IExpression
+  val hexExpressionImpl: IHexProvider<String , String>
   val imageImpl: IImage
   val hexJudgement : IHexJudgement
 
@@ -88,7 +88,7 @@ class DivineContext(
   override val yangBladeImpl: IYangBlade,
   override val nameShortImpl: IHexagramNameShort,
   override val nameFullImpl: IHexagramNameFull,
-  override val expressionImpl: IExpression,
+  override val hexExpressionImpl: IHexProvider<String , String>,
   override val imageImpl: IImage,
   override val hexJudgement: IHexJudgement) : ICombinedFullContext, Serializable {
 
@@ -216,7 +216,7 @@ class DivineContext(
                                 decoratedDate, decoratedDateTime, meta, null)
 
     val textContext: IHexagramProvider<IHexagramText> =
-      HexagramTextContext(nameFullImpl, nameShortImpl, expressionImpl, imageImpl, hexJudgement)
+      HexagramTextContext(nameFullImpl, nameShortImpl, hexExpressionImpl, imageImpl, hexJudgement)
     val srcText = textContext.getHexagram(src, locale)
     val dstText = textContext.getHexagram(dst, locale)
 
