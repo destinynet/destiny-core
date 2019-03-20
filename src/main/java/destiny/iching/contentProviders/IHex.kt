@@ -27,7 +27,7 @@ interface IHexLine<LineT> {
 
 /** 單一卦象 的資料結構 */
 interface IHexData<HexT, LineT> {
-  val hexagram : Hexagram
+  val hexagram: Hexagram
 
   val hexValue: HexT
 
@@ -43,10 +43,16 @@ interface IHexProvider<HexT, LineT> : IHex<HexT>, IHexLine<LineT> {
 
 
 /** 短卦名 (中文為 一或兩字元) */
-interface IHexNameShort : IHex<String>
+interface IHexNameShort : IHex<String> {
+  /** 從卦的「短卦名」，反查回 Hexagram  */
+  fun reverse(name: String, locale: Locale): IHexagram
+}
 
 /** 完整卦名 (中文為 三或四字元) */
-interface IHexNameFull : IHex<String>
+interface IHexNameFull : IHex<String> {
+  /** 從卦的「長卦名」，反查回 Hexagram  */
+  fun reverse(name: String, locale: Locale): IHexagram
+}
 
 /** 卦辭、爻辭 */
 data class HexExpression(

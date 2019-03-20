@@ -8,7 +8,9 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.FiveElement
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
-import destiny.iching.contentProviders.IHexagramNameFull
+import destiny.iching.contentProviders.IHex
+import destiny.iching.contentProviders.IHexNameFull
+import destiny.iching.contentProviders.IHexNameShort
 import destiny.tools.canvas.ColorCanvas
 import java.io.Serializable
 import java.util.*
@@ -17,7 +19,7 @@ import java.util.*
  * 將 梅花易的 Context (MumeContext) 包裝成彩色 ColorCanvas
  * @author smallufo
  */
-class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexagramNameFull) : Serializable {
+class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexNameFull) : Serializable {
 
   lateinit var mumeContext: MumeContext
   var metaData: String? = null
@@ -106,7 +108,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexagramNameF
   private fun getColorCanvas(hexagram: IHexagram): ColorCanvas {
     val cc = ColorCanvas(7, 12, "　")
 
-    val name = hexagramNameFull.getNameFull(hexagram, Locale.TRADITIONAL_CHINESE)
+    val name = hexagramNameFull.getHexagram(hexagram, Locale.TRADITIONAL_CHINESE)
     //卦名
     if (name.length == 4
     ) cc.setText(" $name ", 1, 1)

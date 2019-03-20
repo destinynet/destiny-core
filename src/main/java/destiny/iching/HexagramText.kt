@@ -72,23 +72,23 @@ data class HexagramText(
   override val yinYangs: List<IYinYang> = lineTexts
 }
 
-class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
-                          private val hexagramNameShort: IHexagramNameShort,
+class HexagramTextContext(private val hexagramNameFull: IHex<String>,
+                          private val hexagramNameShort: IHex<String>,
                           private val hexExpressionImpl: IHexProvider<String, String>,
-                          private val imageImpl: IImage,
+                          private val hexImageImpl: IHexProvider<String, String>,
                           private val hexJudgement: IHexJudgement) : IHexagramProvider<IHexagramText>, Serializable {
 
   override fun getHexagram(hex: IHexagram, locale: Locale): IHexagramText {
 
-    val shortName = hexagramNameShort.getNameShort(hex, locale)
-    val fullName = hexagramNameFull.getNameFull(hex, locale)
+    val shortName = hexagramNameShort.getHexagram(hex, locale)
+    val fullName = hexagramNameFull.getHexagram(hex, locale)
     val hexExpression = hexExpressionImpl.getHexagram(hex, locale)
-    val hexImage = imageImpl.getHexagramImage(hex, locale)
+    val hexImage = hexImageImpl.getHexagram(hex, locale)
     val judgement = hexJudgement.getHexagram(hex, locale)
 
     val lineTexts: List<LineText> = (1..6).map { lineIndex ->
       val lineExpression = hexExpressionImpl.getLine(hex, lineIndex, locale)
-      val lineImage = imageImpl.getLineImage(hex, lineIndex, locale)
+      val lineImage = hexImageImpl.getLine(hex, lineIndex, locale)
       LineText(hex.getYinYang(lineIndex), lineExpression, lineImage)
     }.toList()
 
@@ -96,7 +96,7 @@ class HexagramTextContext(private val hexagramNameFull: IHexagramNameFull,
     val extraLine: LineText? = seq.getIndex(hex).let {
       if (it == 1 || it == 2) {
         val lineExpression = hexExpressionImpl.getExtraLine(hex, locale)
-        val lineImage = imageImpl.getExtraImage(hex, locale)
+        val lineImage = hexImageImpl.getExtraLine(hex, locale)
         // 用九 or 用六
         val use9or6 = if (it == 1) YinYang.陽 else YinYang.陰
         LineText(use9or6, lineExpression!!, lineImage!!)

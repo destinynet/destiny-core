@@ -1,11 +1,16 @@
 /** 2009/6/18 by smallufo  */
 package destiny.iching
 
+import destiny.iching.contentProviders.IHexProvider
 import destiny.core.Descriptive
 import java.util.*
 
 
-/** 對一個「卦」的註釋  */
+/**
+ * 對一個「卦」的註釋
+ * 或許可以用 [IHexProvider] 來取代
+ *  */
+@Deprecated("")
 interface HexagramContentProvider : Descriptive {
 
   /** 支援哪種(些)語言  */

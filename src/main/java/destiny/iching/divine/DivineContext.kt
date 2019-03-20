@@ -21,8 +21,8 @@ interface ISingleHexagramContext {
 }
 
 interface ISingleHexagramWithNameContext : ISingleHexagramContext {
-  val nameShortImpl: IHexagramNameShort
-  val nameFullImpl: IHexagramNameFull
+  val nameShortImpl: IHex<String>
+  val nameFullImpl: IHex<String>
   fun getSingleHexagramWithName(hexagram: IHexagram,
                                 locale: Locale = Locale.TAIWAN): ISingleHexagramWithName
 }
@@ -63,7 +63,7 @@ interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
 /** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
 interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
   val hexExpressionImpl: IHexProvider<String , String>
-  val imageImpl: IImage
+  val hexImageImpl: IHexProvider<String , String>
   val hexJudgement : IHexJudgement
 
   fun getCombinedFull(src: IHexagram,
@@ -86,10 +86,10 @@ class DivineContext(
   override val 伏神系統: IHiddenEnergy,
   override val tianyiImpl: ITianyi,
   override val yangBladeImpl: IYangBlade,
-  override val nameShortImpl: IHexagramNameShort,
-  override val nameFullImpl: IHexagramNameFull,
+  override val nameShortImpl: IHex<String> ,
+  override val nameFullImpl: IHex<String> ,
   override val hexExpressionImpl: IHexProvider<String , String>,
-  override val imageImpl: IImage,
+  override val hexImageImpl: IHexProvider<String , String>,
   override val hexJudgement: IHexJudgement) : ICombinedFullContext, Serializable {
 
   val comparator = HexagramDivinationComparator()
@@ -131,8 +131,8 @@ class DivineContext(
     val model = getSingleHexagram(hexagram)
 
 
-    val nameShort = nameShortImpl.getNameShort(hexagram, locale)
-    val nameFull = nameFullImpl.getNameFull(hexagram, locale)
+    val nameShort = nameShortImpl.getHexagram(hexagram, locale)
+    val nameFull = nameFullImpl.getHexagram(hexagram, locale)
     return SingleHexagramWithName(model, HexagramName(nameShort, nameFull))
   }
 
@@ -216,7 +216,7 @@ class DivineContext(
                                 decoratedDate, decoratedDateTime, meta, null)
 
     val textContext: IHexagramProvider<IHexagramText> =
-      HexagramTextContext(nameFullImpl, nameShortImpl, hexExpressionImpl, imageImpl, hexJudgement)
+      HexagramTextContext(nameFullImpl, nameShortImpl, hexExpressionImpl, hexImageImpl, hexJudgement)
     val srcText = textContext.getHexagram(src, locale)
     val dstText = textContext.getHexagram(dst, locale)
 
