@@ -3,6 +3,7 @@
  */
 package destiny.iching.contentProviders
 
+import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import java.util.*
 
@@ -26,9 +27,9 @@ interface IHexLine<LineT> {
 
 /** 單一卦象 的資料結構 */
 interface IHexData<HexT, LineT> {
-  val hexagram : IHexagram
+  val hexagram : Hexagram
 
-  val hex: HexT
+  val hexValue: HexT
 
   fun getLine(lineIndex: Int): LineT
 
@@ -48,11 +49,9 @@ interface IHexNameShort : IHex<String>
 interface IHexNameFull : IHex<String>
 
 /** 卦辭、爻辭 */
-interface IHexExpression : IHexProvider<String, String>
-
 data class HexExpression(
-  override val hexagram: IHexagram,
-  override val hex: String,
+  override val hexagram: Hexagram,
+  override val hexValue: String,
   private val lines: List<String>,
   override val extraLine: String?) : IHexData<String, String> {
 
@@ -62,11 +61,9 @@ data class HexExpression(
 }
 
 /** 卦 或 爻 的象曰  */
-interface IHexImage : IHexProvider<String, String>
-
 data class HexImage(
-  override val hexagram: IHexagram,
-  override val hex: String,
+  override val hexagram: Hexagram,
+  override val hexValue: String,
   private val lines: List<String>,
   override val extraLine: String?) : IHexData<String, String> {
   override fun getLine(lineIndex: Int): String {

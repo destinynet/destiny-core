@@ -143,18 +143,24 @@ data class LinePoem(
 /**
  * 河洛理數64卦訣 , 卦辭
  */
+@Deprecated("")
 interface IPoemHexagram : IHexagram {
   /** 卦象 之詩 */
+  @Deprecated("")
   val poems: List<String>
 
   /** 六爻之詩 , 1 <= lineIndex <= 6 */
+  @Deprecated("")
   fun getLinePoem(lineIndex: Int): ILinePoem
 }
 
-data class PoemData(override val hexagram: IHexagram,
-                    override val hex: List<String>,
-                    /** 六爻 , size = 6 */
-                    private val linePoems: List<ILinePoem>) : IHexData<List<String>, ILinePoem> {
+/** 河洛理數64卦訣 , 卦辭 */
+data class PoemHexagram(override val hexagram: Hexagram,
+                        override val hexValue: List<String>,
+                        /** 六爻 , size = 6 */
+                        private val linePoems: List<ILinePoem>) : IHexData<List<String>, ILinePoem>, IPoemHexagram {
+  override val yinYangs: List<IYinYang>
+    get() = hexagram.yinYangs
 
   override fun getLine(lineIndex: Int): ILinePoem {
     return linePoems[lineIndex - 1]
@@ -162,19 +168,14 @@ data class PoemData(override val hexagram: IHexagram,
 
   // 並未實作 用九、用六
   override val extraLine: ILinePoem? = null
-}
 
+  @Deprecated("")
+  override val poems: List<String>
+    get() = hexValue
 
-data class PoemHexagram(
-  val hexagram: IHexagram,
-  override val poems: List<String>,
-
-  /** 六爻 , size = 6 */
-  private val linePoems: List<ILinePoem>
-) : IPoemHexagram, IHexagram by hexagram {
-
+  @Deprecated("")
   override fun getLinePoem(lineIndex: Int): ILinePoem {
-    return linePoems[lineIndex - 1]
+    return getLine(lineIndex)
   }
 }
 
