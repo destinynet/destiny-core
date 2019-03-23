@@ -1,10 +1,8 @@
 /**
  * Created by smallufo on 2019-03-20.
  */
-package destiny.iching.contentProviders
+package destiny.iching
 
-import destiny.iching.Hexagram
-import destiny.iching.IHexagram
 import java.util.*
 
 /** 針對「卦」所做的註解 */
@@ -35,6 +33,18 @@ interface IHexData<HexT, LineT> {
 
   val extraLine: LineT?
 }
+
+
+/**
+ * replace with [IHexProvider]<HexT, LineT>
+ */
+@Deprecated("")
+interface IHexagramProvider<T : IHexagram> {
+
+  @Deprecated("")
+  fun getHexagram(hex: IHexagram, locale: Locale=Locale.getDefault()): T
+}
+
 
 interface IHexProvider<HexT, LineT> : IHex<HexT>, IHexLine<LineT> {
 
@@ -67,11 +77,12 @@ data class HexExpression(
 }
 
 /** 卦 或 爻 的象曰  */
+interface IHexImage : IHexData<String , String>
 data class HexImage(
   override val hexagram: Hexagram,
   override val hexValue: String,
   private val lines: List<String>,
-  override val extraLine: String?) : IHexData<String, String> {
+  override val extraLine: String?) : IHexImage {
   override fun getLine(lineIndex: Int): String {
     return lines[lineIndex - 1]
   }

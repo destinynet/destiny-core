@@ -1,7 +1,6 @@
 /** 2009/6/18 by smallufo  */
 package destiny.iching
 
-import destiny.iching.contentProviders.IHexProvider
 import destiny.core.Descriptive
 import java.util.*
 

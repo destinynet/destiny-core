@@ -5,7 +5,6 @@ package destiny.iching
 
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.YinYang
-import destiny.iching.contentProviders.*
 import java.io.Serializable
 import java.util.*
 

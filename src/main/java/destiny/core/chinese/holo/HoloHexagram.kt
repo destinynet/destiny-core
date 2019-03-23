@@ -9,7 +9,8 @@ import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.IHexagramText
-import destiny.iching.contentProviders.IHexData
+import destiny.iching.IHexData
+import destiny.iching.IHexProvider
 import java.io.Serializable
 
 
@@ -140,88 +141,54 @@ data class LinePoem(
 }
 
 
+// ========================================================================================
+
 /**
  * 河洛理數64卦訣 , 卦辭
  */
-@Deprecated("")
-interface IPoemHexagram : IHexagram {
-  /** 卦象 之詩 */
-  @Deprecated("")
-  val poems: List<String>
-
-  /** 六爻之詩 , 1 <= lineIndex <= 6 */
-  @Deprecated("")
-  fun getLinePoem(lineIndex: Int): ILinePoem
-}
-
-/** 河洛理數64卦訣 , 卦辭 */
+interface IPoemProvider : IHexProvider<List<String>, ILinePoem>
+interface IPoemHexagram : IHexData<List<String>, ILinePoem>
 data class PoemHexagram(override val hexagram: Hexagram,
                         override val hexValue: List<String>,
                         /** 六爻 , size = 6 */
-                        private val linePoems: List<ILinePoem>) : IHexData<List<String>, ILinePoem>, IPoemHexagram {
-  override val yinYangs: List<IYinYang>
-    get() = hexagram.yinYangs
-
+                        private val linePoems: List<ILinePoem>) : IPoemHexagram {
   override fun getLine(lineIndex: Int): ILinePoem {
     return linePoems[lineIndex - 1]
   }
 
   // 並未實作 用九、用六
   override val extraLine: ILinePoem? = null
-
-  @Deprecated("")
-  override val poems: List<String>
-    get() = hexValue
-
-  @Deprecated("")
-  override fun getLinePoem(lineIndex: Int): ILinePoem {
-    return getLine(lineIndex)
-  }
 }
 
+// ========================================================================================
 
 /** 結合了 河洛卦象 以及 河洛詩詞 */
-interface IHoloPoemHexagram : IPoemHexagram, IHoloHexagram
-
-
-/** 因為 Diamond problem , 這裡擇一實作（不用 delegate） , 選擇 實作 [IPoemHexagram] 因為其 methods 較少 */
+interface IHoloPoemHexagram : IHoloHexagram , IPoemHexagram
 data class HoloPoemHexagram(
   val holoHexagram: IHoloHexagram,
   val poemHexagram: IPoemHexagram
-) : IHoloPoemHexagram, IHoloHexagram by holoHexagram {
+) : IHoloPoemHexagram, IHoloHexagram by holoHexagram, IPoemHexagram by poemHexagram
 
 
-  override val poems: List<String> = poemHexagram.poems
-
-  override fun getLinePoem(lineIndex: Int): ILinePoem {
-    return poemHexagram.getLinePoem(lineIndex)
-  }
-}
-
+// ========================================================================================
 
 /** 終身卦 解釋 */
-interface IHoloLifeDescHexagram : IHexagram {
-  /** 卦的解釋 */
-  val hexContent: String
-
-  /**
-   * 六爻的解釋
-   * @param lineIndex 1 (incl.) ~ 6 (incl.)
-   * */
-  fun getLineContent(lineIndex: Int): String
-}
-
-/** 終身卦 解釋 */
+interface ILifeDescProvider : IHexProvider<String, String>
+interface IHoloLifeDescHexagram : IHexData<String, String>
 data class HoloLifeDescHexagram(
-  val hexagram: IHexagram,
+  override val hexagram: Hexagram,
   /** 卦的解釋 */
-  override val hexContent: String,
+  override val hexValue: String,
   /** 六爻的解釋 */
-  private val lineContents: List<String>) : IHoloLifeDescHexagram, IHexagram by hexagram {
+  private val lineContents: List<String>) : IHoloLifeDescHexagram {
 
-  override fun getLineContent(lineIndex: Int): String {
+  override fun getLine(lineIndex: Int): String {
     return lineContents[lineIndex - 1]
   }
+
+  /** 並未實作 用九、用六 */
+  override val extraLine: String?
+    get() = null
 
   init {
     require(lineContents.size == 6) {
@@ -230,25 +197,15 @@ data class HoloLifeDescHexagram(
   }
 }
 
+// ========================================================================================
+
 /** 最終組合卦象 */
-interface IHoloFullHexagram : IHoloHexagram, IPoemHexagram, IHoloLifeDescHexagram
+interface IHoloFullHexagram : IHoloHexagram //, IPoemHexagram, IHoloLifeDescHexagram
 
 /** 最終組合卦象 */
 data class HoloFullHexagram(
   val holoHexagram: IHoloHexagram,
   val poemHexagram: IPoemHexagram,
-  val lifeDescHexagram: IHoloLifeDescHexagram,
+  val lifeDescHexagram: IHexData<String, String>,
   val hexagramText: IHexagramText
-) : IHoloFullHexagram, IHoloHexagram by holoHexagram {
-
-  override val poems: List<String> = poemHexagram.poems
-
-  override fun getLinePoem(lineIndex: Int): ILinePoem {
-    return poemHexagram.getLinePoem(lineIndex)
-  }
-
-  override val hexContent: String = lifeDescHexagram.hexContent
-  override fun getLineContent(lineIndex: Int): String {
-    return lifeDescHexagram.getLineContent(lineIndex)
-  }
-}
+) : IHoloFullHexagram, IHoloHexagram by holoHexagram , IPoemHexagram by poemHexagram

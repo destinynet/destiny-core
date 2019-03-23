@@ -3,44 +3,28 @@
  */
 package destiny.core.chinese.holo
 
-import destiny.iching.IHexagram
 import destiny.iching.IHexagramText
 
 
-interface ILifeHoloPoemHexagram : ILifeHoloHexagram, IPoemHexagram, IHoloLifeDescHexagram
-
 /**
- * 因為有 Diamond problem ( [ILifeHoloHexagram] , 與 [IPoemHexagram] 同時都實作 [IHexagram] )
- * 所以無法 兩者介面皆 delegate , 只能擇一 一一實作 (這裡挑 [IPoemHexagram] , 因為它只要實作兩個 methods 即可)
+ * 先天卦、後天卦 with 終身卦的斷語 and 詩詞
  */
 data class LifeHoloPoemHexagram(
+  /** 加上六條 [HoloLine] , 內含 6年 or 9年 的流年資料結構 */
   val lifeHoloHexagram: ILifeHoloHexagram,
+  /** 詩詞 */
   val poemHexagram: IPoemHexagram,
-  val lifeDescHexagram: IHoloLifeDescHexagram ,
-  val hexagramText : IHexagramText) : ILifeHoloPoemHexagram
-  , ILifeHoloHexagram by lifeHoloHexagram, IPoemHexagram {
-
-  override val poems: List<String> = poemHexagram.poems
-
-  override fun getLinePoem(lineIndex: Int): ILinePoem {
-    return poemHexagram.getLinePoem(lineIndex)
-  }
-
-  override val hexContent: String = lifeDescHexagram.hexContent
-
-  override fun getLineContent(lineIndex: Int): String {
-    return lifeDescHexagram.getLineContent(lineIndex)
-  }
-
-}
+  /** 終身卦的斷語 */
+  val lifeDescHexagram: IHoloLifeDescHexagram,
+  val hexagramText: IHexagramText) : ILifeHoloHexagram by lifeHoloHexagram, IPoemHexagram by poemHexagram
 
 interface IPoemHolo : IHolo {
-  override val hexagramCongenital: ILifeHoloPoemHexagram
-  override val hexagramAcquired: ILifeHoloPoemHexagram
+  override val hexagramCongenital: ILifeHoloHexagram
+  override val hexagramAcquired: ILifeHoloHexagram
 }
 
 data class PoemHolo(
   val holo: IHolo,
-  override val hexagramCongenital: ILifeHoloPoemHexagram,
-  override val hexagramAcquired: ILifeHoloPoemHexagram
+  override val hexagramCongenital: ILifeHoloHexagram,
+  override val hexagramAcquired: ILifeHoloHexagram
 ) : IPoemHolo, IHolo by holo
