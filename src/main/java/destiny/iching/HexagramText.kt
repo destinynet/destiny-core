@@ -5,6 +5,10 @@ package destiny.iching
 
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.YinYang
+import destiny.iching.contentProviders.IHex
+import destiny.iching.contentProviders.IHexJudgement
+import destiny.iching.contentProviders.IHexProvider
+import destiny.iching.contentProviders.IHexagramProvider
 import java.io.Serializable
 import java.util.*
 
@@ -51,9 +55,10 @@ interface IHexagramText : IHexagramName, IHexagram {
   fun getLineFromOne(index: Int): LineText {
     return lineTexts[index - 1]
   }
-
-
 }
+
+
+
 
 data class HexagramText(
   override val hexagramName: HexagramName,

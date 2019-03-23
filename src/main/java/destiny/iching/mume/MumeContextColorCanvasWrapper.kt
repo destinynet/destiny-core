@@ -8,7 +8,7 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.FiveElement
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
-import destiny.iching.IHexNameFull
+import destiny.iching.contentProviders.IHexNameFull
 import destiny.tools.canvas.ColorCanvas
 import java.io.Serializable
 import java.util.*

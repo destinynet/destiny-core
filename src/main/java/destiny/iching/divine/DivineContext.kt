@@ -8,6 +8,7 @@ import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.iching.*
+import destiny.iching.contentProviders.*
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*

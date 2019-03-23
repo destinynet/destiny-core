@@ -1,8 +1,7 @@
-/**
- * Created by smallufo on 2019-03-20.
- */
-package destiny.iching
+package destiny.iching.contentProviders
 
+import destiny.iching.IHexData
+import destiny.iching.IHexagram
 import java.util.*
 
 /** 針對「卦」所做的註解 */
@@ -23,18 +22,6 @@ interface IHexLine<LineT> {
 }
 
 
-/** 單一卦象 的資料結構 */
-interface IHexData<HexT, LineT> {
-  val hexagram: Hexagram
-
-  val hexValue: HexT
-
-  fun getLine(lineIndex: Int): LineT
-
-  val extraLine: LineT?
-}
-
-
 /**
  * replace with [IHexProvider]<HexT, LineT>
  */
@@ -42,15 +29,13 @@ interface IHexData<HexT, LineT> {
 interface IHexagramProvider<T : IHexagram> {
 
   @Deprecated("")
-  fun getHexagram(hex: IHexagram, locale: Locale=Locale.getDefault()): T
+  fun getHexagram(hex: IHexagram, locale: Locale = Locale.getDefault()): T
 }
-
 
 interface IHexProvider<HexT, LineT> : IHex<HexT>, IHexLine<LineT> {
 
   fun getHexagramData(hex: IHexagram, locale: Locale = Locale.getDefault()): IHexData<HexT, LineT>
 }
-
 
 /** 短卦名 (中文為 一或兩字元) */
 interface IHexNameShort : IHex<String> {
@@ -62,30 +47,6 @@ interface IHexNameShort : IHex<String> {
 interface IHexNameFull : IHex<String> {
   /** 從卦的「長卦名」，反查回 Hexagram  */
   fun reverse(name: String, locale: Locale): IHexagram
-}
-
-/** 卦辭、爻辭 */
-data class HexExpression(
-  override val hexagram: Hexagram,
-  override val hexValue: String,
-  private val lines: List<String>,
-  override val extraLine: String?) : IHexData<String, String> {
-
-  override fun getLine(lineIndex: Int): String {
-    return lines[lineIndex - 1]
-  }
-}
-
-/** 卦 或 爻 的象曰  */
-interface IHexImage : IHexData<String , String>
-data class HexImage(
-  override val hexagram: Hexagram,
-  override val hexValue: String,
-  private val lines: List<String>,
-  override val extraLine: String?) : IHexImage {
-  override fun getLine(lineIndex: Int): String {
-    return lines[lineIndex - 1]
-  }
 }
 
 /** 彖曰 , 只有卦，才有彖曰 */

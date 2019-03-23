@@ -10,7 +10,7 @@ import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.IHexagramText
 import destiny.iching.IHexData
-import destiny.iching.IHexProvider
+import destiny.iching.contentProviders.IHexProvider
 import java.io.Serializable
 
 
