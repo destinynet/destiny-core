@@ -3,9 +3,11 @@
  */
 package destiny.iching
 
+import java.io.Serializable
+
 
 /** 單一卦象 的資料結構 */
-interface IHexData<HexT, LineT> {
+interface IHexData<HexT, LineT> : Serializable {
   val hexagram: Hexagram
 
   val hexValue: HexT

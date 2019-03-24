@@ -22,14 +22,14 @@ import java.time.chrono.ChronoLocalDateTime
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
 class HoloContext(val eightWordsImpl: IEightWordsFactory,
-                  private val yuanImpl: IYuan,
-                  private val numberize: INumberize,
-                  private val yuanGenderImpl: IYuanGander,
-                  private val zodiacSignImpl: IZodiacSign,
-                  private val yearSplitterImpl: IYearSplitterBySign,
-                  private val seasonalSymbolImpl: ISeasonalSymbol,
-                  private val solarTermsImpl: ISolarTerms,
-                  private val settings: ISettingsOfStemBranch,
+                  val yuanImpl: IYuan,
+                  val numberize: INumberize,
+                  val yuanGenderImpl: IYuanGander,
+                  val zodiacSignImpl: IZodiacSign,
+                  val yearSplitterImpl: IYearSplitterBySign,
+                  val seasonalSymbolImpl: ISeasonalSymbol,
+                  val solarTermsImpl: ISolarTerms,
+                  val settings: ISettingsOfStemBranch,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR) : IHoloContext, Serializable {
 
   private fun Int.isOdd(): Boolean {
