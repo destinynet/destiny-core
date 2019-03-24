@@ -21,7 +21,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
-class HoloContext(private val eightWordsImpl: IEightWordsFactory,
+class HoloContext(val eightWordsImpl: IEightWordsFactory,
                   private val yuanImpl: IYuan,
                   private val numberize: INumberize,
                   private val yuanGenderImpl: IYuanGander,

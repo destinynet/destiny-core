@@ -58,8 +58,6 @@ interface IHexagramText : IHexagramName, IHexagram {
 }
 
 
-
-
 data class HexagramText(
   override val hexagramName: HexagramName,
   /** 卦辭 */
@@ -96,8 +94,9 @@ class HexagramTextContext(private val hexagramNameFull: IHex<String>,
       LineText(hex.getYinYang(lineIndex), lineExpression, lineImage)
     }.toList()
 
-    val seq: IHexagramSequence = HexagramDefaultComparator()
-    val extraLine: LineText? = seq.getIndex(hex).let {
+
+
+    val extraLine: LineText? = comparator.getIndex(hex).let {
       if (it == 1 || it == 2) {
         val lineExpression = hexExpressionImpl.getExtraLine(hex, locale)
         val lineImage = hexImageImpl.getExtraLine(hex, locale)
@@ -109,5 +108,9 @@ class HexagramTextContext(private val hexagramNameFull: IHex<String>,
     }
     val hName = HexagramName(shortName, fullName)
     return HexagramText(hName, hexExpression, hexImage, judgement, lineTexts, extraLine)
+  }
+
+  companion object {
+    val comparator: IHexagramSequence = HexagramDefaultComparator()
   }
 }

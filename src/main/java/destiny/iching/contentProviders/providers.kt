@@ -22,16 +22,12 @@ interface IHexLine<LineT> {
 }
 
 
-/**
- * replace with [IHexProvider]<HexT, LineT>
- */
-@Deprecated("")
 interface IHexagramProvider<T : IHexagram> {
 
-  @Deprecated("")
   fun getHexagram(hex: IHexagram, locale: Locale = Locale.getDefault()): T
 }
 
+/** 卦 [IHex] + 爻 [IHexLine] , 此 interface 不實作 [IHexagram] 有其考量，避免 subclass 出現 diamond problem */
 interface IHexProvider<HexT, LineT> : IHex<HexT>, IHexLine<LineT> {
 
   fun getHexagramData(hex: IHexagram, locale: Locale = Locale.getDefault()): IHexData<HexT, LineT>
