@@ -257,8 +257,9 @@ data class Location(override val lng: Double,
   }
 
   override fun toString(): String {
-    return toString(Locale.getDefault())
+    return "Location($lat,$lng, tzid=$tzid)"
   }
+
 } // Location
 
 

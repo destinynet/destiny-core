@@ -14,7 +14,7 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-interface IPlate {
+interface IPlate : Serializable {
   /** 名稱  */
   val name: String?
 
