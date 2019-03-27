@@ -10,10 +10,6 @@ import org.slf4j.LoggerFactory
 
 object ParserCommons {
 
-  private val logger = LoggerFactory.getLogger(ParserCommons::class.java)
-
-  private val comparator = HexagramDefaultComparator()
-
   /**
    * http://stackoverflow.com/a/4014447/298430
    * 避免 exception , 最佳解：用 Guava

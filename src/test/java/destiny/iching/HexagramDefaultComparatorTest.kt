@@ -16,7 +16,7 @@ class HexagramDefaultComparatorTest {
   @Test
   fun testOutput() {
     // map.put(new Boolean[]{true}, 1);
-    val impl = HexagramDefaultComparator()
+    val impl = HexagramDefaultComparator.instance
     for (hex in 1..64) {
       val sb = StringBuffer()
 
@@ -58,7 +58,7 @@ class HexagramDefaultComparatorTest {
               Hexagram.革, Hexagram.鼎, Hexagram.震, Hexagram.艮, Hexagram.漸, Hexagram.歸妹, Hexagram.豐, Hexagram.旅,
               Hexagram.巽, Hexagram.兌, Hexagram.渙, Hexagram.節, Hexagram.中孚, Hexagram.小過, Hexagram.既濟, Hexagram.未濟)
 
-    Arrays.sort(hexagramDatas, HexagramDefaultComparator())
+    Arrays.sort(hexagramDatas, HexagramDefaultComparator.instance)
     for (i in hexagramDatas.indices) {
       assertSame(expected[i], hexagramDatas[i])
     }
@@ -66,7 +66,7 @@ class HexagramDefaultComparatorTest {
 
   @Test
   fun testHexagramSequence() {
-    val sequenceImpl = HexagramDefaultComparator()
+    val sequenceImpl = HexagramDefaultComparator.instance
 
     assertEquals(Hexagram.乾, Hexagram.of(1, sequenceImpl))
     assertEquals(Hexagram.坤, Hexagram.of(2, sequenceImpl))
@@ -90,7 +90,7 @@ class HexagramDefaultComparatorTest {
 
   @Test
   fun testGetIndex() {
-    val impl = HexagramDefaultComparator()
+    val impl = HexagramDefaultComparator.instance
 
     assertEquals(1, impl.getIndex(Hexagram.乾).toLong())
     assertEquals(2, impl.getIndex(Hexagram.坤).toLong())
@@ -172,7 +172,7 @@ class HexagramDefaultComparatorTest {
 
   @Test
   fun testSeq() {
-    val comparator = HexagramDefaultComparator()
+    val comparator = HexagramDefaultComparator.instance
 
     assertSame(Hexagram.乾, comparator.getHexagram(1))
     assertSame(Hexagram.坤, comparator.getHexagram(2))

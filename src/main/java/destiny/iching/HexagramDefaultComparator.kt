@@ -82,4 +82,7 @@ class HexagramDefaultComparator : AbstractHexagramSequence(), Comparator<IHexagr
     return getIndex(hexagram1) - getIndex(hexagram2)
   }
 
+  companion object {
+    val instance = HexagramDefaultComparator()
+  }
 }

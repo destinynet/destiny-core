@@ -96,7 +96,7 @@ class HexagramTextContext(private val hexagramNameFull: IHex<String>,
 
 
 
-    val extraLine: LineText? = comparator.getIndex(hex).let {
+    val extraLine: LineText? = HexagramDefaultComparator.instance.getIndex(hex).let {
       if (it == 1 || it == 2) {
         val lineExpression = hexExpressionImpl.getExtraLine(hex, locale)
         val lineImage = hexImageImpl.getExtraLine(hex, locale)
@@ -110,7 +110,4 @@ class HexagramTextContext(private val hexagramNameFull: IHex<String>,
     return HexagramText(hName, hexExpression, hexImage, judgement, lineTexts, extraLine)
   }
 
-  companion object {
-    val comparator: IHexagramSequence = HexagramDefaultComparator()
-  }
 }
