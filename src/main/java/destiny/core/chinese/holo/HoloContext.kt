@@ -51,6 +51,12 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     return Hexagram.of(hex.getTargetYinYangs(confinedLine)) to confinedLine
   }
 
+  /** @param line 第幾爻變換 (1~6) */
+  fun switch2(hex: IHexagram, line: Int): Hexagram {
+    val confinedLine = confine(line)
+    return Hexagram.of(hex.getTargetYinYangs(confinedLine))
+  }
+
   /**
    * @param hex 先天卦 or 後天卦
    * @param yuanTangIndexFrom1 元堂 (1~6)
@@ -150,6 +156,11 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
         switch(pair.first, pair.second + 1)
       }.take(6)
         .mapIndexed { indexFrom0, hexAndLine -> Triple(hexAndLine.first, hexAndLine.second, stemBranch.next(indexFrom0)) }
+
+//      generateSequence((hex to confinedLine)) { pair ->
+//        switch2(pair.first, pair.second) to confine(pair.second+1)
+//      }.take(6)
+//        .mapIndexed { indexFrom0, hexAndLine -> Triple(hexAndLine.first, hexAndLine.second, stemBranch.next(indexFrom0)) }
     }
   }
 
@@ -324,7 +335,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
   /** 傳回 本命先後天卦、以及此 gmt 時刻 的大運、流年、流月 等資訊 */
   override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: Double, name: String?, place: String?): Pair<IHolo, List<IHoloHexagram>> {
 
-    val holo = getHolo(lmt, loc, gender , name, place)
+    val holo = getHolo(lmt, loc, gender, name, place)
     val congenitalLines: List<HoloLine> = holo.hexagramCongenital.lines
     val acquiredLines: List<HoloLine> = holo.hexagramAcquired.lines
 
@@ -404,7 +415,13 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       return when {
         value > 25 -> shrink(value % 25)
         value == 25 -> 5
-        else -> value % 10
+        else -> (value % 10).let { reminder ->
+          if (reminder != 0)
+            reminder
+          else
+            value / 10
+        }
+        //else -> (value % 10)
       }
     }
 
