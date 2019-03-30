@@ -13,5 +13,19 @@ interface ILineNameDecorator {
    *
    * @param lineIndex 1~6 (乾坤之外) , 1~7 for 乾坤
    */
-  fun getLineName(locale: Locale, hexagram: IHexagram, lineIndex: Int): String
+  fun getLineName(hexagram: IHexagram, lineIndex: Int, locale: Locale): String
+}
+
+
+
+interface LineNameDecorator {
+
+  /** 取得支援的 locale  */
+  val supportedLocale: Locale
+
+  /**
+   * 將 1~6 , 以及陰陽 , 翻譯成 初九(六) 到 上九(六)
+   * @param lineIndex 1~6 for 乾坤之外 , 1~7 for 乾坤
+   */
+  fun getName(hexagram: IHexagram, lineIndex: Int): String
 }

@@ -51,11 +51,11 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     return Hexagram.of(hex.getTargetYinYangs(confinedLine)) to confinedLine
   }
 
-  /** @param line 第幾爻變換 (1~6) */
-  fun switch2(hex: IHexagram, line: Int): Hexagram {
-    val confinedLine = confine(line)
-    return Hexagram.of(hex.getTargetYinYangs(confinedLine))
-  }
+//  /** @param line 第幾爻變換 (1~6) */
+//  fun switch2(hex: IHexagram, line: Int): Hexagram {
+//    val confinedLine = confine(line)
+//    return Hexagram.of(hex.getTargetYinYangs(confinedLine))
+//  }
 
   /**
    * @param hex 先天卦 or 後天卦
