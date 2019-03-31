@@ -45,5 +45,11 @@ interface IHexNameFull : IHex<String> {
   fun reverse(name: String, locale: Locale): IHexagram
 }
 
+/** 卦辭、爻辭 */
+interface IHexagramExpression : IHexProvider<String, String>
+
+/** 象曰 */
+interface IHexagramImage : IHexProvider<String, String>
+
 /** 彖曰 , 只有卦，才有彖曰 */
 interface IHexJudgement : IHex<String>

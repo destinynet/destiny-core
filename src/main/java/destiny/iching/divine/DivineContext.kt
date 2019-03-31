@@ -62,8 +62,8 @@ interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
 
 /** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
 interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
-  val hexExpressionImpl: IHexProvider<String, String>
-  val hexImageImpl: IHexProvider<String, String>
+  val hexExpressionImpl: IHexagramExpression
+  val hexImageImpl: IHexagramImageDestinyCoreContext
   val hexJudgement : IHexJudgement
 
   fun getCombinedFull(src: IHexagram,
@@ -88,8 +88,8 @@ class DivineContext(
   override val yangBladeImpl: IYangBlade,
   override val nameShortImpl: IHexNameShort,
   override val nameFullImpl: IHexNameFull,
-  override val hexExpressionImpl: IHexProvider<String, String>,
-  override val hexImageImpl: IHexProvider<String, String>,
+  override val hexExpressionImpl: IHexagramExpression,
+  override val hexImageImpl: IHexagramImage,
   override val hexJudgement: IHexJudgement) : ICombinedFullContext, Serializable {
 
   val comparator = HexagramDivinationComparator()

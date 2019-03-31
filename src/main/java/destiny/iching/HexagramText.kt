@@ -5,10 +5,7 @@ package destiny.iching
 
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.YinYang
-import destiny.iching.contentProviders.IHex
-import destiny.iching.contentProviders.IHexJudgement
-import destiny.iching.contentProviders.IHexProvider
-import destiny.iching.contentProviders.IHexagramProvider
+import destiny.iching.contentProviders.*
 import java.io.Serializable
 import java.util.*
 
@@ -74,9 +71,9 @@ data class HexagramText(
   override val yinYangs: List<IYinYang> = lineTexts
 }
 
-class HexagramTextContext(private val hexagramNameFull: IHex<String>,
-                          private val hexagramNameShort: IHex<String>,
-                          private val hexExpressionImpl: IHexProvider<String, String>,
+class HexagramTextContext(private val hexagramNameFull: IHexNameFull,
+                          private val hexagramNameShort: IHexNameShort,
+                          private val hexExpressionImpl: IHexagramExpression,
                           private val hexImageImpl: IHexProvider<String, String>,
                           private val hexJudgement: IHexJudgement) : IHexagramProvider<IHexagramText>, Serializable {
 
