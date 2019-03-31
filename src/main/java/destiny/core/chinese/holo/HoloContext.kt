@@ -125,7 +125,11 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       // 陽爻
       val firstYear: Triple<Hexagram, Int, Int> = if (!stemBranch.stem.booleanValue) {
         logger.debug("陽爻，元堂，流年逢陰年 ")
-        switch(hex, confinedLine).let { Triple(it.first, it.second, 1) }
+        if (hexChange == IHoloContext.HexChange.SRC) {
+          Triple(hex , confinedLine , 1)
+        } else {
+          switch(hex, confinedLine).let { Triple(it.first, it.second, 1) }
+        }
       } else {
         logger.debug("陽爻，元堂，流年仍陽年 ") // 第一年不用變
         Triple(Hexagram.of(hex), confinedLine, 1)
@@ -133,15 +137,22 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
 
       /**  [IHoloContext.HexChange.SRC] 設定 */
-      val srcSeq = generateSequence(Triple(hex , confinedLine , 1)) { triple ->
+      val srcSeq = generateSequence(firstYear) { triple ->
         when (triple.third) {
-          1 -> Triple(triple.first, confine(triple.second + 3), triple.third + 1)
+          1 -> {
+            if (!stemBranch.stem.booleanValue) // 陰年
+              Triple(switch(triple.first, triple.second).first, confine(triple.second + 3), triple.third + 1)
+            else
+              Triple(triple.first, confine(triple.second + 3), triple.third + 1) // 陽年
+          }
           2 -> Triple(switch(triple.first, triple.second).first, confine(triple.second + 3), triple.third + 1)
           else -> Triple(switch(triple.first, triple.second).first, confine(triple.second + 1), triple.third + 1)
         }
       }
 
       /**  [IHoloContext.HexChange.DST] 設定 */
+
+
       val dstSeq = generateSequence(firstYear) { triple ->
         if (triple.third < 9) {
           val toAddLine = when (triple.third) {
