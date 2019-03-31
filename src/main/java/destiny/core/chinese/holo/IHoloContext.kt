@@ -27,6 +27,18 @@ interface IHoloContext {
    */
   val threeKings: ThreeKingsAlgo?
 
+
+  /**
+   * 流年、流月 爻變
+   * 取本卦，還是，變卦
+   */
+  enum class HexChange {
+    SRC ,
+    DST   // 書上所推衍，感覺是變卦
+  }
+
+  val hexChange : HexChange
+
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender , name:String? = null , place:String? = null) : IHolo
 

@@ -30,7 +30,9 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
                   val seasonalSymbolImpl: ISeasonalSymbol,
                   val solarTermsImpl: ISolarTerms,
                   val settings: ISettingsOfStemBranch,
-                  override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR) : IHoloContext, Serializable {
+                  override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
+                  override val hexChange: IHoloContext.HexChange = IHoloContext.HexChange.DST
+) : IHoloContext, Serializable {
 
   private fun Int.isOdd(): Boolean {
     return this % 2 == 1
@@ -50,12 +52,6 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val confinedLine = confine(line)
     return Hexagram.of(hex.getTargetYinYangs(confinedLine)) to confinedLine
   }
-
-//  /** @param line 第幾爻變換 (1~6) */
-//  fun switch2(hex: IHexagram, line: Int): Hexagram {
-//    val confinedLine = confine(line)
-//    return Hexagram.of(hex.getTargetYinYangs(confinedLine))
-//  }
 
   /**
    * @param hex 先天卦 or 後天卦
@@ -117,11 +113,11 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
    * 取得流年卦 , 陽爻 取 9 年， 陰爻 取 6 年
    * @param hex 先天卦
    * @param lineIndex 元堂 (1~6)
+   * @param stemBranch 第一年的干支
    */
   fun getYearlyHexagrams(hex: Hexagram, lineIndex: Int, stemBranch: IStemBranch): Sequence<Triple<Hexagram, Int, IStemBranch>> {
 
     logger.debug("getYearlyHexagrams() , hex = {} , lineIndex = {} , 年 = {}", Hexagram.of(hex), confine(lineIndex), stemBranch)
-
 
     val confinedLine = confine(lineIndex)
 
@@ -131,11 +127,22 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
         logger.debug("陽爻，元堂，流年逢陰年 ")
         switch(hex, confinedLine).let { Triple(it.first, it.second, 1) }
       } else {
-        logger.debug("陽爻，元堂，流年仍陽年 ")
+        logger.debug("陽爻，元堂，流年仍陽年 ") // 第一年不用變
         Triple(Hexagram.of(hex), confinedLine, 1)
       }
 
-      generateSequence(firstYear) { triple ->
+
+      /**  [IHoloContext.HexChange.SRC] 設定 */
+      val srcSeq = generateSequence(Triple(hex , confinedLine , 1)) { triple ->
+        when (triple.third) {
+          1 -> Triple(triple.first, confine(triple.second + 3), triple.third + 1)
+          2 -> Triple(switch(triple.first, triple.second).first, confine(triple.second + 3), triple.third + 1)
+          else -> Triple(switch(triple.first, triple.second).first, confine(triple.second + 1), triple.third + 1)
+        }
+      }
+
+      /**  [IHoloContext.HexChange.DST] 設定 */
+      val dstSeq = generateSequence(firstYear) { triple ->
         if (triple.third < 9) {
           val toAddLine = when (triple.third) {
             1 -> 3
@@ -147,20 +154,29 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
         } else {
           null
         }
+      }
 
-      }.take(9)
-        .map { triple: Triple<Hexagram, Int, Int> -> Triple(triple.first, triple.second, stemBranch.next(triple.third - 1)) }
+      val seq = if (hexChange == IHoloContext.HexChange.SRC) srcSeq else dstSeq
+      seq.take(9)
+        .map { triple: Triple<Hexagram, Int, Int> ->
+          Triple(triple.first, triple.second, stemBranch.next(triple.third - 1))
+        }
     } else {
       // 陰爻
       generateSequence(switch(hex, confinedLine)) { pair ->
         switch(pair.first, pair.second + 1)
-      }.take(6)
-        .mapIndexed { indexFrom0, hexAndLine -> Triple(hexAndLine.first, hexAndLine.second, stemBranch.next(indexFrom0)) }
-
-//      generateSequence((hex to confinedLine)) { pair ->
-//        switch2(pair.first, pair.second) to confine(pair.second+1)
-//      }.take(6)
-//        .mapIndexed { indexFrom0, hexAndLine -> Triple(hexAndLine.first, hexAndLine.second, stemBranch.next(indexFrom0)) }
+      }
+        .take(6)
+        .mapIndexed { indexFrom0, hexAndLine ->
+          Triple(hexAndLine.first, hexAndLine.second, stemBranch.next(indexFrom0))
+        }.map { triple: Triple<Hexagram, Int, IStemBranch> ->
+          if (hexChange == IHoloContext.HexChange.SRC) {
+            val yearHex = switch(triple.first, triple.second).first
+            Triple(yearHex, triple.second, triple.third)
+          } else {
+            triple
+          }
+        }
     }
   }
 
