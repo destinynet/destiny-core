@@ -277,7 +277,6 @@ class TimeTools : Serializable {
     fun decode(s: String): ChronoLocalDateTime<*> {
       val trimmed = StringTools.clean(s)
       return when {
-
         trimmed.startsWith('G') -> LocalDateTime.parse(trimmed.substring(1), DateTimeFormatter.ISO_DATE_TIME)
         trimmed.startsWith('J') -> {
           val date = s.substring(1, s.indexOf('T'))

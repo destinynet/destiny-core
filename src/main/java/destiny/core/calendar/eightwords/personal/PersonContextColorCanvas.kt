@@ -23,7 +23,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
                                private val model: IPersonPresentModel,
                                /** 地支藏干的實作，內定採用標準設定  */
                                private val hiddenStemsImpl: IHiddenStems,
-                               private val linkUrl: String,
+                               private val linkUrl: String?,
                                private val direction: Direction,
                                /** 是否顯示納音 */
                                private val showNaYin: Boolean = false) :

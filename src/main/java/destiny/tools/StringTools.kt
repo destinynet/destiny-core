@@ -5,11 +5,11 @@ package destiny.tools
 
 object StringTools {
 
-//  private const val char160 = 160.toChar()
-//  private const val char005 = 5.toChar()
-
-
   // https://stackoverflow.com/a/11020944/298430
+  /**
+   * 清除看不到的字元
+   * 以及移除前後空白
+   */
   fun clean(s: String): String {
     val out = StringBuilder()
     var current: Char
@@ -28,18 +28,7 @@ object StringTools {
       }
 
     }
-    return out.toString().replace("\\s".toRegex(), " ")
+    return out.toString().replace("\\s".toRegex(), " ").trim()
   }
 
-
-  // not working
-  fun localTrim(s: String): String {
-    return s.trim()
-      .replace("\r\n", "\n")
-      .replace("\r", "\n")
-      .replace("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "")
-      .replace("[^\\x00-\\x7F]", "")
-      .replace("\\P{Print}", "")
-      .replace("\\p{XDigit}{4}" ,"")
-  }
 }
