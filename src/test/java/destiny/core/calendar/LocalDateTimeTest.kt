@@ -23,6 +23,14 @@ class LocalDateTimeTest {
   private val logger = LoggerFactory.getLogger(javaClass)
 
   @Test
+  fun testParse() {
+    // trump : 1946-06-14T12:30
+    val trump = "1946-06-14T12:30"
+    logger.info("parsed 1 {} = {}" , trump , LocalDateTime.parse(trump))
+    logger.info("parsed 2 {} = {}" , trump , LocalDateTime.parse(trump) , DateTimeFormatter.ISO_DATE_TIME)
+  }
+
+  @Test
   fun testWithValue() {
     val ldt = LocalDateTime.now()
     logger.info("before withYear , ldt = {}", ldt)

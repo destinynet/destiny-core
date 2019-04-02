@@ -49,7 +49,7 @@ class TianyiAuthorizedImpl : ITianyi, Serializable {
 
       Stem.辛 -> return if (yinYang.booleanValue) 寅 else 午
 
-      else -> throw AssertionError(stem.toString() + " at " + yinYang)
+      else -> throw AssertionError("$stem at $yinYang")
     }
   }
 

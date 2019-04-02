@@ -275,7 +275,7 @@ class TimeTools : Serializable {
      */
     fun decode(s: String) : ChronoLocalDateTime<*> {
       return when {
-        s.startsWith('G') -> LocalDateTime.parse(s.substring(1) , DateTimeFormatter.ISO_DATE_TIME)
+        s.startsWith('G') -> LocalDateTime.parse(s.trim().substring(1) , DateTimeFormatter.ISO_DATE_TIME)
         s.startsWith('J') -> {
           val date = s.substring(1 , s.indexOf('T'))
           val (year,month,day) = date.split("-").let {

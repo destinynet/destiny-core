@@ -124,7 +124,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     return if (hex.getBoolean(confinedLine)) {
       // 陽爻
       val firstYear: Triple<Hexagram, Int, Int> = if (!stemBranch.stem.booleanValue) {
-        logger.debug("陽爻，元堂，流年逢陰年 ")
+        logger.debug("陽爻，元堂，流年逢陰年 必變")
         //switch(hex, confinedLine).let { Triple(it.first , confine(it.second) , 1) }
         if (hexChange == IHoloContext.HexChange.SRC) {
           Triple(switch(hex , confinedLine).first , confine(confinedLine+3) , 1)

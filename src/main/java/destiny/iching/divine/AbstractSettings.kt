@@ -22,12 +22,12 @@ abstract class AbstractSettings : ISettingsOfStemBranch, Serializable {
 
     if ((1..3).contains(lineIndex)) {
       //下卦天干
-      天干 = symbolStemMap[hexagram.lowerSymbol]!![lineIndex-1]
-      地支 = symbolBranchMap[hexagram.lowerSymbol]!![lineIndex-1]
+      天干 = symbolStemMap.getValue(hexagram.lowerSymbol)[lineIndex-1]
+      地支 = symbolBranchMap.getValue(hexagram.lowerSymbol)[lineIndex-1]
     } else {
       //上卦天干
-      天干 = symbolStemMap[hexagram.upperSymbol]!![lineIndex-1]
-      地支 = symbolBranchMap[hexagram.upperSymbol]!![lineIndex-1]
+      天干 = symbolStemMap.getValue(hexagram.upperSymbol)[lineIndex-1]
+      地支 = symbolBranchMap.getValue(hexagram.upperSymbol)[lineIndex-1]
     } //上卦天干
 
     return StemBranch[天干, 地支]

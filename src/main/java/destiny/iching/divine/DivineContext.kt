@@ -9,6 +9,7 @@ import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.iching.*
 import destiny.iching.contentProviders.*
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -63,7 +64,7 @@ interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
 /** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
 interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
   val hexExpressionImpl: IHexagramExpression
-  val hexImageImpl: IHexagramImageDestinyCoreContext
+  val hexImageImpl: IHexagramImage
   val hexJudgement : IHexJudgement
 
   fun getCombinedFull(src: IHexagram,
@@ -74,7 +75,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
                       question: String?,
                       approach: DivineApproach?,
                       lmt: ChronoLocalDateTime<*>?,
-                      loc: ILocation? = Location.of(Locale.TAIWAN),
+                      loc: ILocation = Location.of(Locale.TAIWAN),
 
                       place: String? = null,
                       locale: Locale = Locale.TAIWAN): ICombinedFull
@@ -200,14 +201,15 @@ class DivineContext(
                                question: String?,
                                approach: DivineApproach?,
                                lmt: ChronoLocalDateTime<*>?,
-                               loc: ILocation?,
+                               loc: ILocation,
                                place: String?,
                                locale: Locale
                               ): ICombinedFull {
 
     val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWordsNullable, locale)
-    val gmtJulDay: Double? = lmt?.let { TimeTools.getGmtJulDay(it, loc!!) }
+    val gmtJulDay: Double? = lmt?.let { TimeTools.getGmtJulDay(it, loc) }
 
+    logger.debug("eightWordsNullable = {}" , eightWordsNullable)
     val decoratedDate = lmt?.let { DateDecorator.getOutputString(it.toLocalDate(), Locale.TAIWAN) }
     val decoratedDateTime = lmt?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
 
@@ -238,6 +240,8 @@ class DivineContext(
 
 
   companion object {
+
+    val logger = KotlinLogging.logger {  }
 
     val comparator = HexagramDivinationComparator()
 
