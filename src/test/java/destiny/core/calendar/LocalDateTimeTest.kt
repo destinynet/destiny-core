@@ -23,6 +23,12 @@ class LocalDateTimeTest {
   private val logger = LoggerFactory.getLogger(javaClass)
 
   @Test
+  fun testParse2() {
+    val t = "2019-04-02T18:04:37.628251"
+    logger.info("parsed = {}" , LocalDateTime.parse(t))
+  }
+
+  @Test
   fun testParse() {
     // trump : 1946-06-14T12:30
     val trump = "1946-06-14T12:30"

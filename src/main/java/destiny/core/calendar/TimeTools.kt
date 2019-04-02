@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.StringTools
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.*
@@ -273,16 +274,18 @@ class TimeTools : Serializable {
     /**
      * 解碼
      */
-    fun decode(s: String) : ChronoLocalDateTime<*> {
+    fun decode(s: String): ChronoLocalDateTime<*> {
+      val trimmed = StringTools.clean(s)
       return when {
-        s.startsWith('G') -> LocalDateTime.parse(s.trim().substring(1) , DateTimeFormatter.ISO_DATE_TIME)
-        s.startsWith('J') -> {
-          val date = s.substring(1 , s.indexOf('T'))
-          val (year,month,day) = date.split("-").let {
-            Triple(it[0].toInt() , it[1].toInt() , it[2].toInt())
+
+        trimmed.startsWith('G') -> LocalDateTime.parse(trimmed.substring(1), DateTimeFormatter.ISO_DATE_TIME)
+        trimmed.startsWith('J') -> {
+          val date = s.substring(1, s.indexOf('T'))
+          val (year, month, day) = date.split("-").let {
+            Triple(it[0].toInt(), it[1].toInt(), it[2].toInt())
           }
-          val time = LocalTime.parse(s.substring(s.indexOf('T')+1))
-          JulianDateTime.of(year,month, day , time.hour , time.minute , time.second , time.nano)
+          val time = LocalTime.parse(s.substring(s.indexOf('T') + 1))
+          JulianDateTime.of(year, month, day, time.hour, time.minute, time.second, time.nano)
         }
         else -> JulDayResolver1582CutoverImpl.fromDebugString(s)
       }
@@ -292,7 +295,7 @@ class TimeTools : Serializable {
     /**
      * 新版 (since 2018-04) 直接以 ISO-8601 編碼 , 但前面加上 G/J 以區別 Gregorian or Julian 曆別
      */
-    fun encode(time: ChronoLocalDateTime<*>) : String {
+    fun encode(time: ChronoLocalDateTime<*>): String {
       return encodeIso8601(time)
     }
 
@@ -309,7 +312,7 @@ class TimeTools : Serializable {
           // JulianDateTime 不能直接用 DateTimeFormatter , 會被轉成 Gregorian 日期輸出
           if (time.year < 0)
             append('-')
-          append(abs(time.year).toString().padStart(4 , '0'))
+          append(abs(time.year).toString().padStart(4, '0'))
           append('-')
           append(time.month.toString().padStart(2, '0'))
           append('-')
