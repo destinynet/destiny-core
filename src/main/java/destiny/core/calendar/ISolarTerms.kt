@@ -6,6 +6,8 @@
 package destiny.core.calendar
 
 
+import destiny.astrology.Coordinate
+import destiny.astrology.Planet
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -69,6 +71,14 @@ interface ISolarTerms {
     }.toList()
   }
 
+
+  /**
+   * 計算此時刻
+   * 上一個 節/氣 是什麼，其 GMT JulDay 為何
+   * 下一個 節/氣 是什麼，其 GMT JulDay 為何
+   */
+  fun getSolarTermsBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+
   /**
    * 計算此時刻的...
    * 上一個「節」是什麼，其 GMT JulDay 為何
@@ -92,4 +102,7 @@ interface ISolarTerms {
     return Pair(Pair(prevPair.first , dur1) , Pair(nextPair.first , dur2))
   }
 
+
+  /** 取得目前時刻與 兩個主要「節」、一個「氣」的相對位置 */
+  fun getSolarTermsPosition(gmtJulDay: Double) : SolarTermsTimePos
 }

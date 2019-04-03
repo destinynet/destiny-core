@@ -263,12 +263,13 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     // 化工反例
     val seasonlessSymbols = seasonalSymbols.map { SymbolCongenital.getOppositeSymbol(it) }.toSet()
 
-    // 位於哪兩個「節」之間，以及這兩節各自的 julDay 為何
-    val between: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> = solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay)
+    // 位於哪兩個「節或氣」之間
+    val solarTermsPos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
+
 
     val birthData = BirthDataNamePlace(gender, lmt, loc, name, place)
 
-    return Holo(birthData, ew, gender, yuan, between, heavenNumber, heavenSymbol, earthNumber, earthSymbol, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
+    return Holo(birthData, ew, gender, yuan, solarTermsPos , heavenNumber, heavenSymbol, earthNumber, earthSymbol, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
   } // getHolo(inner)
 
   /**

@@ -10,8 +10,6 @@ import destiny.astrology.Coordinate.ECLIPTIC
 import destiny.astrology.Planet.SUN
 import destiny.astrology.Utils.getNormalizeDegree
 import java.io.Serializable
-import java.time.chrono.ChronoLocalDateTime
-import java.util.*
 
 /**
  * 節氣實作
@@ -82,15 +80,56 @@ class SolarTermsImpl(
    * 下一個「節」是什麼，其 GMT JulDay 為何
    */
   override fun getMajorSolarTermsGmtBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
-    var prevMajorSolarTerms = getSolarTermsFromGMT(gmtJulDay)
-    if (!prevMajorSolarTerms.major)
-      prevMajorSolarTerms = prevMajorSolarTerms.previous()
 
-    val prevGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
-
-    val nextMajorSolarTerms = SolarTerms.getNextMajorSolarTerms(prevMajorSolarTerms, false)
-    val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
-    return Pair(Pair(prevMajorSolarTerms, prevGmtJulDay), Pair(nextMajorSolarTerms, nextGmtJulDay))
+    return getSolarTermsBetween(gmtJulDay).let { pair ->
+      if (pair.first.first.major) {
+        // 前半段
+        val nextMajorSolarTerms = pair.second.first.next()
+        val nextMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(Planet.SUN, nextMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
+        pair.first to (nextMajorSolarTerms to nextMajorSolarTermsTime)
+      } else {
+        // 後半段
+        val prevMajorSolarTerms = pair.first.first.previous()
+        val prevMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(Planet.SUN, prevMajorSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
+        (prevMajorSolarTerms to prevMajorSolarTermsTime) to pair.second
+      }
+    }
   }
 
+  /**
+   * 計算此時刻
+   * 上一個 節/氣 是什麼，其 GMT JulDay 為何
+   * 下一個 節/氣 是什麼，其 GMT JulDay 為何
+   */
+  override fun getSolarTermsBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+    val prevSolarTerms = getSolarTermsFromGMT(gmtJulDay)
+    val prevGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, prevSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
+    val nextSolarTerms = prevSolarTerms.next()
+    val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, nextSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
+    return Pair(prevSolarTerms to prevGmtJulDay , nextSolarTerms to nextGmtJulDay)
+  }
+
+  /** 取得目前時刻與 兩個主要「節」、一個「氣」的相對位置 */
+  override fun getSolarTermsPosition(gmtJulDay: Double): SolarTermsTimePos {
+
+    return getSolarTermsBetween(gmtJulDay).let { pair ->
+      if (pair.first.first.major) {
+        // 前半段
+        val middle = pair.second
+
+
+        val endSolarTerms = middle.first.next()
+        val nextGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, endSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, true)
+
+        SolarTermsTimePos(gmtJulDay , pair.first , middle , (endSolarTerms to nextGmtJulDay))
+      } else {
+        // 後半段
+
+        val prevSolarTerms = pair.first.first.previous()
+        val prevGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, prevSolarTerms.zodiacDegree.toDouble(), Coordinate.ECLIPTIC, gmtJulDay, false)
+
+        SolarTermsTimePos(gmtJulDay , (prevSolarTerms to prevGmtJulDay) , pair.first , pair.second)
+      }
+    }
+  }
 }

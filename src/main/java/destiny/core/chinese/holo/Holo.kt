@@ -4,12 +4,56 @@
 package destiny.core.chinese.holo
 
 import destiny.core.Gender
-import destiny.core.IBirthData
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.SolarTerms
+import destiny.core.calendar.SolarTerms.*
+import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
+
+/**
+ * 四節氣卦
+ */
+data class SeasonalHexagram(
+  /** 只會有 [Hexagram.坎] [Hexagram.離] [Hexagram.震] [Hexagram.兌] 這四卦 */
+  val hex: IHexagram,
+  /** 1 ~ 6 爻 */
+  val line: Int,
+  val solarTerms: SolarTerms
+)
+
+/** 四節氣卦 */
+val seasonHexMap: Map<SolarTerms, Pair<Symbol, Int>> = mapOf(
+  冬至 to (Symbol.坎 to 1),
+  小寒 to (Symbol.坎 to 2),
+  大寒 to (Symbol.坎 to 3),
+  立春 to (Symbol.坎 to 4),
+  雨水 to (Symbol.坎 to 5),
+  驚蟄 to (Symbol.坎 to 6),
+
+  春分 to (Symbol.震 to 1),
+  清明 to (Symbol.震 to 2),
+  穀雨 to (Symbol.震 to 3),
+  立夏 to (Symbol.震 to 4),
+  小滿 to (Symbol.震 to 5),
+  芒種 to (Symbol.震 to 6),
+
+  夏至 to (Symbol.離 to 1),
+  小暑 to (Symbol.離 to 2),
+  大暑 to (Symbol.離 to 3),
+  立秋 to (Symbol.離 to 4),
+  處暑 to (Symbol.離 to 5),
+  白露 to (Symbol.離 to 6),
+
+  秋分 to (Symbol.兌 to 1),
+  寒露 to (Symbol.兌 to 2),
+  霜降 to (Symbol.兌 to 3),
+  立冬 to (Symbol.兌 to 4),
+  小雪 to (Symbol.兌 to 5),
+  大雪 to (Symbol.兌 to 6)
+)
+
 
 interface IHolo : IBirthDataNamePlace {
 
@@ -17,8 +61,8 @@ interface IHolo : IBirthDataNamePlace {
 
   val yuan: Yuan
 
-  /** 位於哪兩個「節」之間，以及這兩節各自的 GMT julDay 為何 */
-  val between: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+  /** 距離「節」與「氣」的時間 */
+  val solarTermsPos : SolarTermsTimePos
 
   /** 天數 */
   val heavenNumber: Int
@@ -63,7 +107,7 @@ data class Holo(
   override val ew: IEightWords,
   override val gender: Gender,
   override val yuan: Yuan,
-  override val between: Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>,
+  override val solarTermsPos: SolarTermsTimePos,
   override val heavenNumber: Int,
   override val heavenSymbol: Symbol,
   override val earthNumber: Int,
@@ -75,6 +119,6 @@ data class Holo(
   override val vigorlessSymbolFromStem: Symbol,
   override val vigorlessSymbolFromBranch: Symbol,
   override val seasonalSymbols: Set<Symbol>,
-  override val seasonlessSymbols: Set<Symbol>) : IHolo , IBirthDataNamePlace by birthData
+  override val seasonlessSymbols: Set<Symbol>) : IHolo, IBirthDataNamePlace by birthData
 
 
