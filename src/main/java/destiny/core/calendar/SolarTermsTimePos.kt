@@ -26,6 +26,14 @@ data class SolarTermsTimePos(
     !firstHalf
   }
 
+  /** 取得「節」或「氣」, 若在前半部，則取 [prevMajor] , 若在後半部，則取 [middle] */
+  val solarTerms : SolarTerms by lazy {
+    if (firstHalf)
+      prevMajor.first
+    else
+      middle.first
+  }
+
   /** 距離「節」的開始有幾秒 */
   val toPrevMajorSeconds : Double by lazy {
     (gmtJulDay - prevMajor.second) * 86400

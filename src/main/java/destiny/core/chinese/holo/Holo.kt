@@ -100,6 +100,9 @@ interface IHolo : IBirthDataNamePlace {
 
   /** 化工反例 */
   val seasonlessSymbols: Set<Symbol>
+
+  /** 四節氣卦 */
+  val seasonalHexagram : Pair<Hexagram , Int>
 }
 
 data class Holo(
@@ -119,6 +122,7 @@ data class Holo(
   override val vigorlessSymbolFromStem: Symbol,
   override val vigorlessSymbolFromBranch: Symbol,
   override val seasonalSymbols: Set<Symbol>,
-  override val seasonlessSymbols: Set<Symbol>) : IHolo, IBirthDataNamePlace by birthData
+  override val seasonlessSymbols: Set<Symbol>,
+  override val seasonalHexagram: Pair<Hexagram, Int>) : IHolo, IBirthDataNamePlace by birthData
 
 

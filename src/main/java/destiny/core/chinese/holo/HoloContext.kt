@@ -264,12 +264,19 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val seasonlessSymbols = seasonalSymbols.map { SymbolCongenital.getOppositeSymbol(it) }.toSet()
 
     // 位於哪兩個「節或氣」之間
-    val solarTermsPos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
+    val solarTermsPos: SolarTermsTimePos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
 
 
     val birthData = BirthDataNamePlace(gender, lmt, loc, name, place)
 
-    return Holo(birthData, ew, gender, yuan, solarTermsPos , heavenNumber, heavenSymbol, earthNumber, earthSymbol, hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch, vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols)
+    // 四節氣卦
+    val seasonalHexagram: Pair<Hexagram, Int> = seasonHexMap.getValue(solarTermsPos.solarTerms).let { pair ->
+      Hexagram.of(pair.first , pair.first) to pair.second
+    }
+
+    return Holo(birthData, ew, gender, yuan, solarTermsPos , heavenNumber, heavenSymbol, earthNumber, earthSymbol,
+      hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch,
+      vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols , seasonalHexagram)
   } // getHolo(inner)
 
   /**
