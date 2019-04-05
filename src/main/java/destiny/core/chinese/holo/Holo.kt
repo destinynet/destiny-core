@@ -12,6 +12,9 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 
+import destiny.core.chinese.IMonthlyHexagram
+import destiny.core.chinese.IDailyHexagram
+
 /**
  * 四節氣卦
  */
@@ -80,10 +83,10 @@ interface IHolo : IBirthDataNamePlace {
   /** 後天卦 , with 元堂 (1~6) , 包含六爻中每年的流年資訊 , 6 or 9 年 */
   val hexagramAcquired: ILifeHoloHexagram
 
-  /** 天元氣 */
+  /** 天元氣 (from 年干) */
   val vigorousSymbolFromStem: Symbol
 
-  /** 地元氣 */
+  /** 地元氣 (from 年支) */
   val vigorousSymbolFromBranch: Symbol
 
   /** 天元氣相反 */
@@ -101,8 +104,14 @@ interface IHolo : IBirthDataNamePlace {
   /** 化工反例 */
   val seasonlessSymbols: Set<Symbol>
 
-  /** 四節氣卦 */
+  /** 四節氣卦 , 其中的 [Hexagram] 只會有 [Hexagram.坎] , [Hexagram.離] , [Hexagram.震] , [Hexagram.兌] 四種可能 */
   val seasonalHexagram : Pair<Hexagram , Int>
+
+  /** 12消息卦 , from [IMonthlyHexagram] */
+  val monthlyHexagram: Hexagram
+
+  /** 60值日卦 , from [IDailyHexagram] */
+  val dailyHexagram : Hexagram
 }
 
 data class Holo(
@@ -123,6 +132,8 @@ data class Holo(
   override val vigorlessSymbolFromBranch: Symbol,
   override val seasonalSymbols: Set<Symbol>,
   override val seasonlessSymbols: Set<Symbol>,
-  override val seasonalHexagram: Pair<Hexagram, Int>) : IHolo, IBirthDataNamePlace by birthData
+  override val seasonalHexagram: Pair<Hexagram, Int>,
+  override val monthlyHexagram: Hexagram,
+  override val dailyHexagram: Hexagram) : IHolo, IBirthDataNamePlace by birthData
 
 

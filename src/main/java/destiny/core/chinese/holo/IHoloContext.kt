@@ -3,9 +3,7 @@ package destiny.core.chinese.holo
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.chinese.Branch
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.Stem
+import destiny.core.chinese.*
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
@@ -38,6 +36,12 @@ interface IHoloContext {
   }
 
   val hexChange : HexChange
+
+  /** 12消息卦，兩種設定 , 中氣切分，還是「節」切分  */
+  val monthlyHexagramImpl : IMonthlyHexagram
+
+  /** 值日卦 , 六日七分法，還是 焦氏易林 的 易林值日 */
+  val dailyHexagramImpl : IDailyHexagram
 
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender , name:String? = null , place:String? = null) : IHolo
@@ -99,12 +103,12 @@ interface IHoloContext {
     val yinCount = hexagram.booleans.count { !it }
 
     val yangSeq: Sequence<Int> = hexagram.booleans.zip(1..6)
-      .filter { (yinYang, indexFrom1) -> yinYang }
+      .filter { (yinYang, _) -> yinYang }
       .map { pair -> pair.second }
       .let { list -> generateSequence { list }.flatten() }
 
     val yinSeq = hexagram.booleans.zip(1..6)
-      .filter { (yinYang, indexFrom1) -> !yinYang }
+      .filter { (yinYang, _) -> !yinYang }
       .map { pair -> pair.second }
       .let { list -> generateSequence { list }.flatten() }
 

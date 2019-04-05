@@ -30,6 +30,8 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
                   val seasonalSymbolImpl: ISeasonalSymbol,
                   val solarTermsImpl: ISolarTerms,
                   val settings: ISettingsOfStemBranch,
+                  override val monthlyHexagramImpl: IMonthlyHexagram = MonthlyHexagramSignImpl.instance,
+                  override val dailyHexagramImpl: IDailyHexagram,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
                   override val hexChange: IHoloContext.HexChange = IHoloContext.HexChange.DST
 ) : IHoloContext, Serializable {
@@ -127,7 +129,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
         logger.debug("陽爻，元堂，流年逢陰年 必變")
         //switch(hex, confinedLine).let { Triple(it.first , confine(it.second) , 1) }
         if (hexChange == IHoloContext.HexChange.SRC) {
-          Triple(switch(hex , confinedLine).first , confine(confinedLine+3) , 1)
+          Triple(switch(hex, confinedLine).first, confine(confinedLine + 3), 1)
           //Triple(hex , confinedLine , 1)
         } else {
           switch(hex, confinedLine).let { Triple(it.first, it.second, 1) }
@@ -210,11 +212,15 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val sign = zodiacSignImpl.getSign(Planet.SUN, gmtJulDay)
     val yearHalfYinYang: IYinYang = yearSplitterImpl.getYinYang(sign)
 
+    // 當年立春時刻
+    val startOfYear = solarTermsImpl.getSolarTermsTime(SolarTerms.立春, gmtJulDay, false)
+
     // 先天命卦 , 以及六爻大運、流年 等資訊
     val hexagramCongenital: ILifeHoloHexagram = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang).let { (hex, yuanTang) ->
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, gmtJulDay, ew.year)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-      LifeHoloHexagram(lines, stemBranches)
+      val dutyDays = dailyHexagramImpl.getDutyDay(hex, startOfYear - 0.01, true)
+      LifeHoloHexagram(lines, stemBranches, dutyDays)
     }
 
     val yinYang: IYinYang = threeKings?.let { algo ->
@@ -232,7 +238,8 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, congMaxLine.endExclusive, congMaxLine.hexagrams.last().stemBranch.next)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-      LifeHoloHexagram(lines, stemBranches)
+      val dutyDays = dailyHexagramImpl.getDutyDay(hex, startOfYear - 0.01, true)
+      LifeHoloHexagram(lines, stemBranches, dutyDays)
     }
 
 
@@ -271,12 +278,23 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
     // 四節氣卦
     val seasonalHexagram: Pair<Hexagram, Int> = seasonHexMap.getValue(solarTermsPos.solarTerms).let { pair ->
-      Hexagram.of(pair.first , pair.first) to pair.second
+      Hexagram.of(pair.first, pair.first) to pair.second
     }
 
-    return Holo(birthData, ew, gender, yuan, solarTermsPos , heavenNumber, heavenSymbol, earthNumber, earthSymbol,
-      hexagramCongenital, hexagramAcquired, vigorousSymbolFromStem, vigorousSymbolFromBranch,
-      vigorlessSymbolFromStem, vigorlessSymbolFromBranch, seasonalSymbols, seasonlessSymbols , seasonalHexagram)
+    // 12消息卦
+    val monthlyHexagram: Hexagram = monthlyHexagramImpl.getHexagram(solarTermsPos.solarTerms).first
+
+    // 值日卦
+    val dailyHexagram: Hexagram = dailyHexagramImpl.getHexagram(gmtJulDay).first
+
+    return Holo(birthData, ew, gender, yuan, solarTermsPos,
+      heavenNumber, heavenSymbol,
+      earthNumber, earthSymbol,
+      hexagramCongenital, hexagramAcquired,
+      vigorousSymbolFromStem, vigorousSymbolFromBranch,
+      vigorlessSymbolFromStem, vigorlessSymbolFromBranch,
+      seasonalSymbols, seasonlessSymbols,
+      seasonalHexagram, monthlyHexagram, dailyHexagram)
   } // getHolo(inner)
 
   /**

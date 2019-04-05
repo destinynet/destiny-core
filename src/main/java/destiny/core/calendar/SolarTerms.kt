@@ -72,6 +72,10 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
       return Arrays.binarySearch(values(), solarTerm)
     }
 
+    fun of(branch: Branch) : List<SolarTerms> {
+      return values().filter { it.branch == branch }.toList()
+    }
+
     /**
      * @param solarTermsIndex 節氣的索引
      * @return 0 傳回立春 , 1 傳回 雨水 , ... , 23 傳回 大寒 , 接著連續 24 傳回立春

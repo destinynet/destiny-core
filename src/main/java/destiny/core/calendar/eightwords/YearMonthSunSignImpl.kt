@@ -6,7 +6,6 @@ package destiny.core.calendar.eightwords
 import destiny.astrology.IStarPosition
 import destiny.astrology.IStarTransit
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import java.util.*
@@ -43,9 +42,8 @@ class YearMonthSunSignImpl(
 
     // 目前的節氣
     val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
-    val solarTermsIndex: Int = SolarTerms.getIndex(solarTerms)
 
-    return if (solarTermsIndex % 2 == 0) {
+    return if (solarTerms.major) {
       // 單數 : 立春 、 驚蟄 ...
       StemBranchUnconstrained[originalMonth.stem , originalMonth.branch]!!.previous
     } else {

@@ -96,11 +96,14 @@ data class HoloLine(val yinYang: IYinYang,
 /** 純粹用於 先天卦 or 後天卦 , 包含六爻中，每爻的流年資訊 */
 interface ILifeHoloHexagram : IHoloHexagram {
   val lines: List<HoloLine>
+  /** 值日卦，當年度，值日於哪些天 (通常為 6日) */
+  val dutyDays: Pair<Double, Double>?
 }
 
 /** 先天卦 or 後天卦 */
 data class LifeHoloHexagram(override val lines: List<HoloLine>,
-                            override val stemBranches: List<StemBranch>) : ILifeHoloHexagram {
+                            override val stemBranches: List<StemBranch>,
+                            override val dutyDays: Pair<Double, Double>?) : ILifeHoloHexagram {
 
   init {
     require(lines.count { it.yuanTang } == 1) {
@@ -147,6 +150,7 @@ data class LinePoem(
  * 河洛理數64卦訣 , 卦辭
  */
 interface IPoemProvider : IHexProvider<List<String>, ILinePoem>
+
 interface IPoemHexagram : IHexData<List<String>, ILinePoem>
 data class PoemHexagram(override val hexagram: Hexagram,
                         override val hexValue: List<String>,
@@ -163,7 +167,8 @@ data class PoemHexagram(override val hexagram: Hexagram,
 // ========================================================================================
 
 /** 結合了 河洛卦象 以及 河洛詩詞 */
-interface IHoloPoemHexagram : IHoloHexagram , IPoemHexagram
+interface IHoloPoemHexagram : IHoloHexagram, IPoemHexagram
+
 data class HoloPoemHexagram(
   val holoHexagram: IHoloHexagram,
   val poemHexagram: IPoemHexagram
@@ -174,6 +179,7 @@ data class HoloPoemHexagram(
 
 /** 終身卦 解釋 */
 interface ILifeDescProvider : IHexProvider<String, String>
+
 interface IHoloLifeDescHexagram : IHexData<String, String>
 data class HoloLifeDescHexagram(
   override val hexagram: Hexagram,
@@ -208,4 +214,4 @@ data class HoloFullHexagram(
   val poemHexagram: IPoemHexagram,
   val lifeDescHexagram: IHexData<String, String>,
   val hexagramText: IHexagramText
-) : IHoloFullHexagram, IHoloHexagram by holoHexagram , IPoemHexagram by poemHexagram
+) : IHoloFullHexagram, IHoloHexagram by holoHexagram, IPoemHexagram by poemHexagram
