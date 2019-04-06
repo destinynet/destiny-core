@@ -4,6 +4,9 @@
  */
 package destiny.astrology
 
+import destiny.astrology.classical.PointDiameterAlBiruniImpl
+import destiny.astrology.classical.PointDiameterLillyImpl
+
 import destiny.astrology.classical.AspectEffectiveClassical
 import destiny.astrology.classical.IPointDiameter
 
@@ -13,11 +16,8 @@ import java.util.*
 /** 古典占星術，列出一張星盤中呈現交角的星體以及角度 的實作  */
 class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffectiveClassical) : IHoroscopeAspectsCalculator, Serializable {
 
-  /** 取得交角容許度的實作，例如 ( PointDiameterAlBiruniImpl 或是 PointDiameterLillyImpl )  */
-  /** 設定交角容許度的實作，例如 ( PointDiameterAlBiruniImpl , 或是 PointDiameterLillyImpl )  */
-  var planetOrbsImpl: IPointDiameter?=null
-    get() = classical.pointDiameterImpl
-
+  /** 取得交角容許度的實作，例如 ( [PointDiameterAlBiruniImpl] 或是 [PointDiameterLillyImpl] )  */
+  val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl
 
 
   override fun getPointAspect(point: Point, horoscope: IHoroscopeModel, points: Collection<Point>): Map<Point, Aspect> {
@@ -30,7 +30,7 @@ class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffective
         .flatMap { eachPoint ->
           val eachPlanetDeg = horoscope.getPositionWithAzimuth(eachPoint).lng
           Aspect.getAngles(Aspect.Importance.HIGH)
-            .filter { classical.isEffective(point , planetDeg , eachPoint , eachPlanetDeg , it) }
+            .filter { classical.isEffective(point, planetDeg, eachPoint, eachPlanetDeg, it) }
             .map { eachPoint to it }
         }.toMap()
     } else {
@@ -41,11 +41,11 @@ class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffective
 
 
   override fun getTitle(locale: Locale): String {
-    return "古典占星術 : " + classical.pointDiameterImpl!!.getTitle(locale)
+    return "古典占星術 : " + classical.planetOrbsImpl.getTitle(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "古典占星術實作 : " + classical.pointDiameterImpl!!.getDescription(locale)
+    return "古典占星術實作 : " + classical.planetOrbsImpl.getDescription(locale)
   }
 
 
