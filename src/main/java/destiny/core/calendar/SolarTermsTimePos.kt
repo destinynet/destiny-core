@@ -1,6 +1,7 @@
 package destiny.core.calendar
 
 import java.io.Serializable
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 data class SolarTermsTimePos(
@@ -47,5 +48,28 @@ data class SolarTermsTimePos(
   /** 距離「中氣」有幾秒 , 這裡採用絕對值，必須配合 [firstHalf] 或是 [secondHalf] 才能知道是在「中氣」之前還是之後 */
   val toMiddleSeconds : Double by lazy {
     (middle.second - gmtJulDay).absoluteValue
+  }
+
+  override fun toString(): String {
+    return StringBuilder().apply {
+      append("距離 ").append(prevMajor.first).append("節 (${prevMajor.first.branch})有")
+      append((gmtJulDay - prevMajor.second).toString().take(5))
+      append("日")
+
+      append("，")
+
+      append("距離 ").append(nextMajor.first).append("節 (${nextMajor.first.branch})有")
+      append((nextMajor.second-gmtJulDay).toString().take(5))
+      append("日；")
+
+      append("在中氣").append(middle.first)
+      if (firstHalf) {
+        append("之前")
+      } else {
+        append("之後")
+      }
+      append(abs(middle.second - gmtJulDay).toString().take(5)).append("日。")
+    }.toString()
+
   }
 }

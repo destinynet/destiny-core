@@ -30,6 +30,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
                   val seasonalSymbolImpl: ISeasonalSymbol,
                   val solarTermsImpl: ISolarTerms,
                   val settings: ISettingsOfStemBranch,
+                  private val hexSolidImpl : IHexSolid,
                   override val monthlyHexagramImpl: IMonthlyHexagram = MonthlyHexagramSignImpl.instance,
                   override val dailyHexagramImpl: IDailyHexagram,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
@@ -220,7 +221,8 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, gmtJulDay, ew.year)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
       val dutyDays = dailyHexagramImpl.getDutyDay(hex, startOfYear - 0.01, true)
-      LifeHoloHexagram(lines, stemBranches, dutyDays)
+      val hexSolid = hexSolidImpl.getHexagram(hex)
+      LifeHoloHexagram(lines, stemBranches, dutyDays , hexSolid)
     }
 
     val yinYang: IYinYang = threeKings?.let { algo ->
@@ -239,7 +241,8 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, congMaxLine.endExclusive, congMaxLine.hexagrams.last().stemBranch.next)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
       val dutyDays = dailyHexagramImpl.getDutyDay(hex, startOfYear - 0.01, true)
-      LifeHoloHexagram(lines, stemBranches, dutyDays)
+      val hexSolid = hexSolidImpl.getHexagram(hex)
+      LifeHoloHexagram(lines, stemBranches, dutyDays , hexSolid)
     }
 
 

@@ -119,25 +119,30 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
     return plus(-amountToSubtract, unit)
   }
 
-  private fun plusNanos(nanos: Long): JulianDateTime {
+  fun plusNanos(nanos: Long): JulianDateTime {
     return plusWithOverflow(date, 0, 0, 0, nanos, 1)
   }
 
-  private fun plusSeconds(seconds: Long): JulianDateTime {
+  fun plusSeconds(seconds: Long): JulianDateTime {
     return plusWithOverflow(date, 0, 0, seconds, 0, 1)
   }
 
-  private fun plusMinutes(minutes: Long): JulianDateTime {
+  fun plusMinutes(minutes: Long): JulianDateTime {
     return plusWithOverflow(date, 0, minutes, 0, 0, 1)
   }
 
-  private fun plusHours(hours: Long): JulianDateTime {
+  fun plusHours(hours: Long): JulianDateTime {
     return plusWithOverflow(date, hours, 0, 0, 0, 1)
   }
 
-  private fun plusDays(days: Long): JulianDateTime {
+  fun plusDays(days: Long): JulianDateTime {
     val newDate = date.plus(days, ChronoUnit.DAYS)
     return with(newDate, time)
+  }
+
+  fun plusMonths(months: Long) : JulianDateTime {
+    val newDate = date.plus(months, ChronoUnit.MONTHS)
+    return with(newDate , time)
   }
 
   /**
