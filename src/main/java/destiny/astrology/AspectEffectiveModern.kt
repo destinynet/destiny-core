@@ -8,11 +8,9 @@ import java.io.Serializable
 import kotlin.math.abs
 
 /**
- * <pre>
  * 現代占星的交角容許度
  * 參考資料
  * http://www.myastrologybook.com/aspects-and-orbs.htm
-</pre> *
  */
 class AspectEffectiveModern(
   /** 「不考慮行星」的交角容許度 */

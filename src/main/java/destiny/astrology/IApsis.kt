@@ -9,7 +9,7 @@ import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * 計算 南/北交點/近點/遠點 的介面 , 不限定只有月球<br></br>
+ * 計算 南/北交點/近點/遠點 的介面 , 不限定只有月球
  * Swiss Ephemeris 實作是 ApsisImpl , 目前僅支援 Planet , Asteroid
  */
 interface IApsis {

@@ -59,11 +59,11 @@ interface IBesieged {
     val majorAspects = Aspect.getAngles(Aspect.Importance.HIGH)
     val mediumAspects = Aspect.getAngles(Aspect.Importance.MEDIUM)
 
-    val searchingAspects = majorAspects.let { it ->
+    val searchingAspects = majorAspects.let {
       if (isClassical)
-        return@let it
+        it
       else {
-        return@let it + mediumAspects
+        it + mediumAspects
       }
     }
 
@@ -74,7 +74,6 @@ interface IBesieged {
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, isClassical: Boolean): List<Planet> {
     return getBesiegingPlanets(planet, TimeTools.getGmtJulDay(gmt), isClassical)
   }
-
 
 
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>,
@@ -97,7 +96,7 @@ interface IBesieged {
   // 承上 , gmt 版本
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean, aspects: Collection<Aspect>): List<Planet> {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getBesiegingPlanets(planet , gmtJulDay , classical , aspects)
+    return getBesiegingPlanets(planet, gmtJulDay, classical, aspects)
   }
 
   /**
