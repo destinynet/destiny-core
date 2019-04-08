@@ -9,11 +9,9 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
 import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.eightwords.IEightWords
+import destiny.core.chinese.*
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
-
-import destiny.core.chinese.IMonthlyHexagram
-import destiny.core.chinese.IDailyHexagram
 
 /**
  * 四節氣卦
@@ -57,6 +55,16 @@ val seasonHexMap: Map<SolarTerms, Pair<Symbol, Int>> = mapOf(
   大雪 to (Symbol.兌 to 6)
 )
 
+/** 參評歌訣 */
+sealed class MagicCode(open val code: Int,
+                       override val fiveElement: FiveElement,
+                       open val text: String ,
+                       open val day:Branch,
+                       open val hour:Branch) : IFiveElement {
+  data class MagicCodeGender(override val code: Int, override val fiveElement: FiveElement, val gender: Gender, override val text: String, override val day: Branch, override val hour: Branch) : MagicCode(code, fiveElement, text , day, hour)
+  data class MagicCodeFlow(override val code: Int, override val fiveElement: FiveElement, override val text: String , override val day: Branch, override val hour: Branch) : MagicCode(code, fiveElement, text , day, hour)
+}
+
 
 interface IHolo : IBirthDataNamePlace {
 
@@ -65,7 +73,7 @@ interface IHolo : IBirthDataNamePlace {
   val yuan: Yuan
 
   /** 距離「節」與「氣」的時間 */
-  val solarTermsPos : SolarTermsTimePos
+  val solarTermsPos: SolarTermsTimePos
 
   /** 天數 */
   val heavenNumber: Int
@@ -105,13 +113,16 @@ interface IHolo : IBirthDataNamePlace {
   val seasonlessSymbols: Set<Symbol>
 
   /** 四節氣卦 , 其中的 [Hexagram] 只會有 [Hexagram.坎] , [Hexagram.離] , [Hexagram.震] , [Hexagram.兌] 四種可能 */
-  val seasonalHexagram : Pair<Hexagram , Int>
+  val seasonalHexagram: Pair<Hexagram, Int>
 
   /** 12消息卦 , from [IMonthlyHexagram] */
   val monthlyHexagram: Hexagram
 
   /** 60值日卦 , from [IDailyHexagram] */
-  val dailyHexagram : Hexagram
+  val dailyHexagram: Hexagram
+
+  /** 參評歌訣 */
+  val magicCode : String
 }
 
 data class Holo(
@@ -134,6 +145,7 @@ data class Holo(
   override val seasonlessSymbols: Set<Symbol>,
   override val seasonalHexagram: Pair<Hexagram, Int>,
   override val monthlyHexagram: Hexagram,
-  override val dailyHexagram: Hexagram) : IHolo, IBirthDataNamePlace by birthData
+  override val dailyHexagram: Hexagram,
+  override val magicCode: String) : IHolo, IBirthDataNamePlace by birthData
 
 
