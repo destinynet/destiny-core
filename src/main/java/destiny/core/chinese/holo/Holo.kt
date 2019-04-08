@@ -12,6 +12,7 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
+import java.io.Serializable
 
 /**
  * 四節氣卦
@@ -55,14 +56,14 @@ val seasonHexMap: Map<SolarTerms, Pair<Symbol, Int>> = mapOf(
   大雪 to (Symbol.兌 to 6)
 )
 
-/** 參評歌訣 */
-sealed class MagicCode(open val code: Int,
+/** 金鎖銀匙 參評歌訣 */
+sealed class GoldenKey(open val code: Int,
                        override val fiveElement: FiveElement,
-                       open val text: String ,
+                       open val text: String,
                        open val day:Branch,
-                       open val hour:Branch) : IFiveElement {
-  data class MagicCodeGender(override val code: Int, override val fiveElement: FiveElement, val gender: Gender, override val text: String, override val day: Branch, override val hour: Branch) : MagicCode(code, fiveElement, text , day, hour)
-  data class MagicCodeFlow(override val code: Int, override val fiveElement: FiveElement, override val text: String , override val day: Branch, override val hour: Branch) : MagicCode(code, fiveElement, text , day, hour)
+                       open val hour:Branch) : IFiveElement , Serializable {
+  data class GoldenKeyGender(override val code: Int, override val fiveElement: FiveElement, val gender: Gender, override val text: String, override val day: Branch, override val hour: Branch) : GoldenKey(code, fiveElement, text , day, hour)
+  data class GoldenKeyFlow(override val code: Int, override val fiveElement: FiveElement, override val text: String, override val day: Branch, override val hour: Branch) : GoldenKey(code, fiveElement, text , day, hour)
 }
 
 
@@ -121,8 +122,8 @@ interface IHolo : IBirthDataNamePlace {
   /** 60值日卦 , from [IDailyHexagram] */
   val dailyHexagram: Hexagram
 
-  /** 參評歌訣 */
-  val magicCode : String
+  /** 金鎖銀匙 參評歌訣 */
+  val goldenKey : GoldenKey?
 }
 
 data class Holo(
@@ -146,6 +147,6 @@ data class Holo(
   override val seasonalHexagram: Pair<Hexagram, Int>,
   override val monthlyHexagram: Hexagram,
   override val dailyHexagram: Hexagram,
-  override val magicCode: String) : IHolo, IBirthDataNamePlace by birthData
+  override val goldenKey: GoldenKey?) : IHolo, IBirthDataNamePlace by birthData
 
 

@@ -17,7 +17,7 @@ import java.util.*
 class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffectiveClassical) : IHoroscopeAspectsCalculator, Serializable {
 
   /** 取得交角容許度的實作，例如 ( [PointDiameterAlBiruniImpl] 或是 [PointDiameterLillyImpl] )  */
-  val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl
+  var planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl
 
 
   override fun getPointAspect(point: Point, horoscope: IHoroscopeModel, points: Collection<Point>): Map<Point, Aspect> {

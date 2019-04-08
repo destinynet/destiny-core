@@ -19,7 +19,7 @@ import java.util.*
  * 壬子癸丑桑柘木　甲寅乙卯大溪水　丙辰丁巳砂中土　戊午己未天上火
  * 庚申辛酉石榴木　壬戌癸亥大海水
  */
-enum class NaYin(val fiveElement: FiveElement) : Serializable {
+enum class NaYin(override val fiveElement: FiveElement) : IFiveElement , Serializable {
   海中金(金),
   爐中火(火),
   大林木(木),
@@ -117,7 +117,7 @@ enum class NaYin(val fiveElement: FiveElement) : Serializable {
                            )
 
     fun getFiveElement(sb: StemBranch): FiveElement {
-      return map[sb]!!.fiveElement
+      return map.getValue(sb).fiveElement
     }
 
     fun getNaYin(sb: IStemBranch): NaYin? {
