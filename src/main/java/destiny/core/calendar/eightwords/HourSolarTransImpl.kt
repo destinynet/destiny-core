@@ -12,7 +12,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*
 
@@ -25,30 +25,28 @@ import java.util.*
 </PRE> *
  */
 class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Serializable {
-  private val logger = LoggerFactory.getLogger(javaClass)
-
   private val atmosphericPressure = 1013.25
   private val atmosphericTemperature = 0.0
-  private var isDiscCenter = true
-  private var hasRefraction = true
+  private var discCenter = true
+  private var refraction = true
 
   fun setDiscCenter(isDiscCenter: Boolean) {
-    this.isDiscCenter = isDiscCenter
+    this.discCenter = isDiscCenter
   }
 
   fun setHasRefraction(hasRefraction: Boolean) {
-    this.hasRefraction = hasRefraction
+    this.refraction = hasRefraction
   }
 
   override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
 
-    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
-    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
     if (nextNadir > nextMeridian) {
       //子正到午正（上半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-      val previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+      val previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
       logger.debug("gmtJulDay = {} , 上一個子正(GMT) = {}", gmtJulDay, revJulDayFunc.invoke(previousNadirGmt))
 
@@ -67,7 +65,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
     } else {
       //午正到子正（下半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
       val diffDays = nextNadir - previousMeridian
       val oneUnitDays = diffDays / 12.0
@@ -86,13 +84,13 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
 
   override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
     val resultGmt: Double
-    val nextMeridianGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
-    val nextNadirGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+    val nextMeridianGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+    val nextNadirGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
     if (nextNadirGmt > nextMeridianGmt) {
       //LMT 位於子正到午正（上半天）
       val twelveHoursAgo = gmtJulDay - 0.5
-      val previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+      val previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
       val oneUnit1 = (nextMeridianGmt - previousNadir) / 12.0 // 單位為 day
       val oneUnit2 = (nextNadirGmt - nextMeridianGmt) / 12.0
@@ -109,9 +107,9 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
         }
       } else {
         //欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰
-        val nextNextMeridianGmt = riseTransImpl.getGmtTransJulDay(nextNadirGmt, Planet.SUN, TransPoint.MERIDIAN, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+        val nextNextMeridianGmt = riseTransImpl.getGmtTransJulDay(nextNadirGmt, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
         val oneUnit3 = (nextNextMeridianGmt - nextNadirGmt) / 12.0
-        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
         val oneUnit4 = (nextNextNadir - nextNextMeridianGmt) / 12.0
         resultGmt = if (eb == 丑 || eb == 寅 || eb == 卯 || eb == 辰 || eb == 巳 || eb == 午) {
           nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
@@ -125,7 +123,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
     } else {
       //LMT 位於 午正到子正（下半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
       val oneUnit1 = (nextMeridianGmt - nextNadirGmt) / 12.0 //從 下一個子正 到 下一個午正，總共幾天
       val oneUnit2 = (nextNadirGmt - previousMeridian) / 12.0 //從 下一個子正 到 上一個午正，總共幾秒
@@ -144,7 +142,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
       } else {
         // 欲求的時辰，早於現在所處的時辰
         val oneUnit3 = (nextMeridianGmt - nextNadirGmt) / 12.0
-        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, isDiscCenter, hasRefraction, atmosphericTemperature, atmosphericPressure)
+        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
         val oneUnit4 = (nextNextNadir - nextMeridianGmt) / 12.0
         resultGmt = if (eb == 未 || eb == 申 || eb == 酉 || eb == 戌 || eb == 亥) {
           nextMeridianGmt + oneUnit4 * ((eb.index - 7) * 2 + 1)
@@ -169,8 +167,32 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
     return "利用太陽過天底 到天頂之間，劃分十二等份，再從太陽過天頂到天底，平均劃分十二等份，依此來切割 12 時辰"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as HourSolarTransImpl
+
+    if (atmosphericPressure != other.atmosphericPressure) return false
+    if (atmosphericTemperature != other.atmosphericTemperature) return false
+    if (discCenter != other.discCenter) return false
+    if (refraction != other.refraction) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = atmosphericPressure.hashCode()
+    result = 31 * result + atmosphericTemperature.hashCode()
+    result = 31 * result + discCenter.hashCode()
+    result = 31 * result + refraction.hashCode()
+    return result
+  }
+
+
   companion object {
 
+    val logger = KotlinLogging.logger {}
     private val revJulDayFunc =  {it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 

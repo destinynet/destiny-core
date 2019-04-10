@@ -116,8 +116,8 @@ enum class NaYin(override val fiveElement: FiveElement) : IFiveElement , Seriali
       癸亥 to 大海水
                            )
 
-    fun getFiveElement(sb: StemBranch): FiveElement {
-      return map.getValue(sb).fiveElement
+    fun getFiveElement(sb: IStemBranch): FiveElement {
+      return map.getValue(StemBranch[sb.stem , sb.branch]).fiveElement
     }
 
     fun getNaYin(sb: IStemBranch): NaYin? {

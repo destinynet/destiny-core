@@ -216,5 +216,6 @@ data class HoloFullHexagram(
   val holoHexagram: IHoloHexagram,
   val poemHexagram: IPoemHexagram,
   val lifeDescHexagram: IHexData<String, String>,
-  val hexagramText: IHexagramText
+  val hexagramText: IHexagramText,
+  val goldenKey: GoldenKey? = null
 ) : IHoloFullHexagram, IHoloHexagram by holoHexagram, IPoemHexagram by poemHexagram

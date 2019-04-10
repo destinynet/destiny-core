@@ -31,7 +31,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
                   val solarTermsImpl: ISolarTerms,
                   val settings: ISettingsOfStemBranch,
                   private val hexSolidImpl : IHexSolid,
-                  private val goldenKeyProvider: IGoldenKeyProvider,
+                  val goldenKeyProvider: IGoldenKeyProvider,
                   override val monthlyHexagramImpl: IMonthlyHexagram = MonthlyHexagramSignImpl.instance,
                   override val dailyHexagramImpl: IDailyHexagram,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
@@ -292,8 +292,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val dailyHexagram: Hexagram = dailyHexagramImpl.getHexagram(gmtJulDay).first
 
     // 金鎖銀匙歌 參評歌訣
-    NaYin.getFiveElement(ew.year)
-    val goldenKey = goldenKeyProvider.getBaseText(NaYin.getFiveElement(ew.year), ew.day.branch , ew.hour.branch , gender)
+    val goldenKey = goldenKeyProvider.getBaseGoldenKey(NaYin.getFiveElement(ew.year), ew.day.branch , ew.hour.branch , gender)
 
     return Holo(birthData, ew, gender, yuan, solarTermsPos,
       heavenNumber, heavenSymbol,

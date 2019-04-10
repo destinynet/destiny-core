@@ -11,8 +11,8 @@ import destiny.core.chinese.IFiveElement
 interface IGoldenKeyProvider {
 
   /** 查本命 */
-  fun getBaseText(fiveElement: IFiveElement, day: Branch, hour: Branch, gender: Gender) : GoldenKey?
+  fun getBaseGoldenKey(fiveElement: IFiveElement, day: Branch, hour: Branch, gender: Gender) : GoldenKey?
 
   /** 查歲運 */
-  fun getFlowText(fiveElement: IFiveElement, day:Branch, hour:Branch) : GoldenKey?
+  fun getFlowGoldenKey(fiveElement: IFiveElement, day:Branch, flowBranch:Branch) : GoldenKey?
 }

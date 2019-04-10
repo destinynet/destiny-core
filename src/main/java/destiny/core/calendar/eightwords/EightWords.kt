@@ -22,10 +22,10 @@ interface IEightWordsNullable {
 }
 
 interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
-  override val year: StemBranch
+  override val year: IStemBranch
   override val month: IStemBranch
   override val day: StemBranch
-  override val hour: StemBranch
+  override val hour: IStemBranch
 
   override val stemBranches: List<IStemBranch>
     get() = listOf(year, month, day, hour)

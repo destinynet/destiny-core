@@ -137,6 +137,17 @@ class HourLmtImpl : IHour, Serializable {
     return "兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
   companion object {
     private val revJulDayFunc =  { it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
