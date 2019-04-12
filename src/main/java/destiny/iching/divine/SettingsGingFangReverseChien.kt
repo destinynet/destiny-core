@@ -45,4 +45,15 @@ class SettingsGingFangReverseChien : AbstractSettings() {
     return "京房易納甲之另派說法，乾卦納支自午起：午申戌子寅辰"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }

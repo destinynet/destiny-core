@@ -12,6 +12,8 @@ import java.io.Serializable
 
 class TianyiAuthorizedImpl : ITianyi, Serializable {
 
+
+
   /**
    * 《協紀辨方書》 《蠡海集》
    * 甲戊庚牛羊，乙己鼠猴鄉；丙丁豬雞位，壬癸兔蛇藏；六辛逢馬虎，此是貴人鄉。
@@ -51,6 +53,16 @@ class TianyiAuthorizedImpl : ITianyi, Serializable {
 
       else -> throw AssertionError("$stem at $yinYang")
     }
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
   }
 
 

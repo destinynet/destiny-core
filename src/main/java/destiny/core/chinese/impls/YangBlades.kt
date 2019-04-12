@@ -21,6 +21,18 @@ class YangBladeNextBlissImpl : IYangBlade, Descriptive , Serializable {
   override fun getDescription(locale: Locale): String {
     return "陰干 的羊刃，會落在辰戌丑未 四庫中。"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }
 
 /** 羊刃 : 劫財 算法 , 陰干 的羊刃，會落在 寅巳申亥 四驛馬中。 參考 https://imgur.com/bZZQRIw */
@@ -45,4 +57,16 @@ class YangBladeRobCashImpl : IYangBlade, Descriptive , Serializable {
   override fun getDescription(locale: Locale): String {
     return "陰干 的羊刃，會落在 寅巳申亥 四驛馬中。"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }

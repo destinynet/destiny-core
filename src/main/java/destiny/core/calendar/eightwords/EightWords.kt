@@ -22,7 +22,7 @@ interface IEightWordsNullable {
 }
 
 interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
-  override val year: IStemBranch
+  override val year: StemBranch
   override val month: IStemBranch
   override val day: StemBranch
   override val hour: IStemBranch

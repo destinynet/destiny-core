@@ -46,4 +46,15 @@ class SettingsTsangShan : AbstractSettings() {
     return "藏山雷學是大陸易學家 石銘 及 孫則鳴 等人所提出來的納甲系統，有著另外一套嚴謹的學理在背後支持。詳情可參照《藏山雷學》一書"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }
