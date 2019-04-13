@@ -27,6 +27,17 @@ class TransFourDivineImpl : TransFourAbstractImpl() {
     return "占驗門"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
   companion object {
     private val dataTable = listOf(
       Triple(甲, 祿, StarMain.廉貞)

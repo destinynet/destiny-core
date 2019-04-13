@@ -46,7 +46,7 @@ open class YearMonthSolarTermsStarPositionImpl(
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  val solarTermsImpl : ISolarTerms by lazy {
+  val solarTermsImpl: ISolarTerms by lazy {
     SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
   }
 
@@ -153,7 +153,27 @@ open class YearMonthSolarTermsStarPositionImpl(
     return 月干
   }
 
+
   init {
     require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
+  }
+
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as YearMonthSolarTermsStarPositionImpl
+
+    if (southernHemisphereOpposition != other.southernHemisphereOpposition) return false
+    if (hemisphereBy != other.hemisphereBy) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = southernHemisphereOpposition.hashCode()
+    result = 31 * result + hemisphereBy.hashCode()
+    return result
   }
 }

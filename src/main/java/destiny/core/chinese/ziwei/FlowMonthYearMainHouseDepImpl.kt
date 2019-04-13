@@ -21,4 +21,16 @@ class FlowMonthYearMainHouseDepImpl : IFlowMonth, Serializable {
   override fun getFlowMonth(flowYear: Branch, flowMonth: Branch, birthMonth: Int, birthHour: Branch): Branch {
     return flowYear.next(flowMonth.getAheadOf(Branch.寅))
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }

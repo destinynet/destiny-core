@@ -37,4 +37,7 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Seria
   override fun getDescription(locale: Locale): String {
     return "夜半子正至午正（前半天）為晝；中午至半夜（後半天）為夜"
   }
+
+
+
 }

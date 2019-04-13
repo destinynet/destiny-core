@@ -47,7 +47,7 @@ private val table: Set<Triple<ZStar, Branch, Int>> = setOf(
 
 private val commonStarMap: Map<ZStar, List<Pair<Branch, Int>>> = table
   .groupBy { it.first }
-  .mapValues { it -> it.component2().map { t -> Pair(t.second, t.third) } }
+  .mapValues { it.component2().map { t -> Pair(t.second, t.third) } }
 
 private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = table
   .groupBy { Pair(it.first, it.second) }
@@ -71,5 +71,16 @@ class StrengthMiddleImpl : StrengthAbstractImpl() {
   override fun getImplMapOf(star: ZStar): Map<Branch, Int>? {
     return commonStarMap[star]?.toMap()
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
 
 }

@@ -51,6 +51,17 @@ class MidnightLmtImpl : IMidnight, Serializable {
     return "晚上零時就是子正，不校正經度差以及真太陽時"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
   companion object {
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }

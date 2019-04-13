@@ -43,6 +43,17 @@ class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
     }
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
   companion object {
 
     val instance = MonthlyHexagramSignImpl()
@@ -87,6 +98,17 @@ class MonthlyHexagramBranchImpl : IMonthlyHexagram , Serializable {
     }
     return hex to between
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
 
   companion object {
 

@@ -20,7 +20,7 @@ interface IBigRange : Descriptive {
   /** 計算每個地支 的 大限 起訖 虛歲  */
   fun getFlowBigVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<Branch, Pair<Int, Int>> {
     return Branch.values().map { branch ->
-      val pair = getVageRange(branchHouseMap[branch]!!, set, birthYear.stem, gender, houseSeq)
+      val pair = getVageRange(branchHouseMap.getValue(branch), set, birthYear.stem, gender, houseSeq)
       branch to pair
     }.toMap()
   }

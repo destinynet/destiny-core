@@ -33,6 +33,17 @@ class TransFourFullCollectImpl : TransFourAbstractImpl() {
     return "紫微斗數全集、中州派（陸斌兆）、欽天門"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
   companion object {
     private val dataTable = listOf(
       Triple(甲, 祿, StarMain.廉貞)

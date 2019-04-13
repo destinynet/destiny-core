@@ -21,6 +21,16 @@ class TransFourMiddleImpl : TransFourAbstractImpl() {
     return "中州派(王亭之)"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
   companion object {
     private val dataTable = listOf(
       Triple(甲, 祿, StarMain.廉貞)

@@ -21,4 +21,14 @@ class HouseSeqTaiyiImpl : HouseSeqAbstractImpl() {
     private val ARRAY = arrayOf(命宮, 兄弟, 夫妻, 子女, 財帛, 田宅, 官祿, 交友, 疾厄, 福德, 相貌, 父母)
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
 }

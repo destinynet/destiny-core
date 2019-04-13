@@ -17,8 +17,8 @@ abstract class TransFourAbstractImpl : ITransFour, Serializable {
 
   override fun getStarOf(stem: Stem, value: ITransFour.Value): ZStar {
     return table
-      .filter { it -> it.first == stem && it.second == value}
-      .map { it -> it.third }
+      .filter { it.first == stem && it.second == value}
+      .map { it.third }
       .first()
   }
 

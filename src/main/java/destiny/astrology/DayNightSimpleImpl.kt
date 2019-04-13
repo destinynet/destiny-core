@@ -32,4 +32,6 @@ class DayNightSimpleImpl : IDayNight , Serializable {
     return "六至十八為白天，其餘為晚上。僅能作為 Test 使用，勿用於 Production 環境"
   }
 
+
+
 }

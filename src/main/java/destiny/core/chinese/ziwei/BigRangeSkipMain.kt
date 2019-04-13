@@ -30,4 +30,16 @@ class BigRangeSkipMain : IBigRange, Serializable {
     val toRange = set + steps * 10 + 9
     return Pair(fromRange, toRange)
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }

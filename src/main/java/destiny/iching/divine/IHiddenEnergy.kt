@@ -13,7 +13,7 @@ import destiny.iching.IHexagram
 interface IHiddenEnergy : Descriptive {
   /**
    * 取得第幾爻的伏神
-   * 1 <= LineIndex <=6
+   * @param lineIndex 1 <= lineIndex <=6
    */
   fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch?
 }

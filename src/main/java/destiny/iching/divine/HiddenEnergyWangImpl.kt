@@ -62,6 +62,17 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
   } //getStemBranch()
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
   companion object {
 
     private const val NAME = "王洪緒之《卜筮正宗》"

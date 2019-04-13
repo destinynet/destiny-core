@@ -21,4 +21,15 @@ class PositiveGenderImpl : IPositive, Serializable {
   override fun getDescription(locale: Locale): String {
     return "固定男順女逆"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
 }

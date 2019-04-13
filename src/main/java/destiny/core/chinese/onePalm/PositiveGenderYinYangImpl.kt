@@ -26,7 +26,16 @@ class PositiveGenderYinYangImpl : IPositive, Serializable {
 
   override fun getDescription(locale: Locale): String {
     return "陽男陰女順；陰男陽女逆。"
+  }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
   }
 
 }

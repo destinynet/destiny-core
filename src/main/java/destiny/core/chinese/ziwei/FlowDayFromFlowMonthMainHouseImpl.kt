@@ -15,4 +15,16 @@ class FlowDayFromFlowMonthMainHouseImpl : IFlowDay, Serializable {
   override fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch {
     return flowMonthMainHouse.next(flowDayNum - 1)
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }
