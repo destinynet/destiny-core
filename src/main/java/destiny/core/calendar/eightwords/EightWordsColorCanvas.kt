@@ -41,8 +41,6 @@ class EightWordsColorCanvas(
   /** 是否顯示納音 */
   private val showNaYin: Boolean = false) : ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR) {
 
-
-  /** TODO : IoC Google Maps URL Builder  */
   private val urlBuilder = GoogleMapsUrlBuilder()
 
   var outputMode = ColorCanvas.OutputMode.HTML

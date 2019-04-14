@@ -13,8 +13,6 @@ import java.util.*
 
 class DayNightSimpleImpl : IDayNight , Serializable {
 
-  @Transient private val revJulDayFunc = { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
-
   override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {
     val lmt = TimeTools.getLmtFromGmt(revJulDayFunc.invoke(gmtJulDay) , location)
     val hour = lmt.get(ChronoField.HOUR_OF_DAY)
@@ -32,6 +30,20 @@ class DayNightSimpleImpl : IDayNight , Serializable {
     return "六至十八為白天，其餘為晚上。僅能作為 Test 使用，勿用於 Production 環境"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is DayNightSimpleImpl) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
+  companion object {
+    private val revJulDayFunc = { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
+  }
 
 
 }

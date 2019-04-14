@@ -42,13 +42,6 @@ class FortuneLargeSpanImpl(
   /** 歲數註解實作  */
   override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
-
-  private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
-    .maximumSize(100)
-    .expireAfterAccess(1, TimeUnit.MINUTES)
-    .build<Pair<Double, Gender>, MutableMap<Int, Double>>()
-
   private fun getAgeMap(toAge: Int,
                         gmtJulDay: Double,
                         gender: Gender,
@@ -273,5 +266,13 @@ class FortuneLargeSpanImpl(
 
   override fun getDescription(locale: Locale): String {
     return "太陽過黃道節氣的「節」來劃分大運，傳統此法一柱約十年"
+  }
+
+  companion object {
+    private val logger = LoggerFactory.getLogger(javaClass)
+    private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
+      .maximumSize(100)
+      .expireAfterAccess(1, TimeUnit.MINUTES)
+      .build<Pair<Double, Gender>, MutableMap<Int, Double>>()
   }
 }

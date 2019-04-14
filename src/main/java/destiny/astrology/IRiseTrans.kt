@@ -136,6 +136,3 @@ interface IRiseTrans {
     val logger = LoggerFactory.getLogger(IRiseTrans::class.java)!!
   }
 }
-/**
- * 內定 center = false , 並且 考量大氣折射
- */

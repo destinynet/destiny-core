@@ -10,6 +10,7 @@ import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
@@ -22,11 +23,9 @@ import java.time.temporal.ChronoUnit
  */
 class DayImpl : IDay, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
-
 
   /**
-   * TODO : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
+   * Note : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
    */
   override fun getDay(gmtJulDay: Double,
                       location: ILocation,
@@ -75,7 +74,7 @@ class DayImpl : IDay, Serializable {
     val 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, revJulDayFunc)
 
 
-    val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, revJulDayFunc).let { it ->
+    val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, revJulDayFunc).let {
       val dur = Duration.between(下個子初時刻, it).abs()
       if (dur.toMinutes() <= 1) {
         logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}" , 下個子初時刻 , it , dur.seconds) // DST 結束前一天，可能會出錯
@@ -116,7 +115,10 @@ class DayImpl : IDay, Serializable {
 
   companion object {
 
+    private val logger = KotlinLogging.logger {}
+
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+
   }
 
 

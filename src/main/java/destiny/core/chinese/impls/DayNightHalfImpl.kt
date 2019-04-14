@@ -38,6 +38,20 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Seria
     return "夜半子正至午正（前半天）為晝；中午至半夜（後半天）為夜"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as DayNightHalfImpl
+
+    if (riseTransImpl != other.riseTransImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return riseTransImpl.hashCode()
+  }
 
 
 }

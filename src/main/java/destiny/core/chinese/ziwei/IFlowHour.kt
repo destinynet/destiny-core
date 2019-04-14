@@ -28,4 +28,7 @@ interface IFlowHour : Descriptive {
   override fun getDescription(locale: Locale): String {
     return getTitle(locale)
   }
+
+
+
 }

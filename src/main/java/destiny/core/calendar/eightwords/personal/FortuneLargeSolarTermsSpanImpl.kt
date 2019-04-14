@@ -19,7 +19,7 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
@@ -47,15 +47,6 @@ class FortuneLargeSolarTermsSpanImpl(
   override val fortuneMonthSpan: Double = 120.0,
   /** 歲數註解實作  */
   override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
-
-  private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
-
-  private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
-    .maximumSize(100)
-    .expireAfterAccess(1, TimeUnit.MINUTES)
-    .build<Pair<Double, Gender>, MutableMap<Int, Double>>()
 
   private fun getAgeMap(toAge: Int,
                         gmtJulDay: Double,
@@ -154,7 +145,7 @@ class FortuneLargeSolarTermsSpanImpl(
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, true)
 
-            logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
+            logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, Companion.revJulDayFunc.invoke(targetGmtJulDay))
             //以隔天計算現在節氣
             stepGmtJulDay = targetGmtJulDay + 1
 
@@ -185,7 +176,7 @@ class FortuneLargeSolarTermsSpanImpl(
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, false)
-            logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
+            logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, Companion.revJulDayFunc.invoke(targetGmtJulDay))
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1
             hashMap[i] = targetGmtJulDay
@@ -216,7 +207,7 @@ class FortuneLargeSolarTermsSpanImpl(
    * 可能歲數超出範圍之後，或是根本在出生之前，就會傳回 empty
    */
   private fun getAge(gmtJulDay: Double, ageMap: Map<Int, Pair<Double, Double>>): Int? {
-    return ageMap.entries.firstOrNull { (age, pair) -> gmtJulDay > pair.first && pair.second > gmtJulDay }?.key
+    return ageMap.entries.firstOrNull { (_, pair) -> gmtJulDay > pair.first && pair.second > gmtJulDay }?.key
   }
 
 
@@ -268,4 +259,20 @@ class FortuneLargeSolarTermsSpanImpl(
   override fun getDescription(locale: Locale): String {
     return "除了傳統法，額外考量「星座」（意即：中氣）過運。通常一柱大運為五年。"
   }
+
+
+
+
+  companion object {
+    private val logger = KotlinLogging.logger {}
+    
+    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+
+    private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
+      .maximumSize(100)
+      .expireAfterAccess(1, TimeUnit.MINUTES)
+      .build<Pair<Double, Gender>, MutableMap<Int, Double>>()
+  }
+
+
 }

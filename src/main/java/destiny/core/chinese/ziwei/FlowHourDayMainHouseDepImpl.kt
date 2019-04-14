@@ -17,4 +17,16 @@ class FlowHourDayMainHouseDepImpl : IFlowHour, Serializable {
   override fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch {
     return flowDayMainHour.next(hour.getAheadOf(Branch.子))
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FlowHourDayMainHouseDepImpl) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }

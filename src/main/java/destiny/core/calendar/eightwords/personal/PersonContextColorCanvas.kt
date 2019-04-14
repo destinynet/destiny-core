@@ -103,8 +103,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
       dataList.reverse()
     }
 
-
-    // TODO : 必須要確認， ageNoteImpls 不能為空list
     val ageNoteImpls = personContext.fortuneLargeImpl.ageNoteImpls
 
     // 下方大運橫

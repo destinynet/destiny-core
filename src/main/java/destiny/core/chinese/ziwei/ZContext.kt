@@ -470,13 +470,13 @@ class ZContext(
       logger.warn("命身宮設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", mainStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
                   finalMonthNumForMainStars)
       when {
-        IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS === mainStarsAlgo -> // 命身宮用節氣計算，故用 {0}月={1} 而非 {2}{3}月
+        MonthAlgo.MONTH_SOLAR_TERMS === mainStarsAlgo -> // 命身宮用節氣計算，故用 {0}月={1} 而非 {2}{3}月
           notesBuilders.add(Pair("mainStarsAlgo_month_solar_terms",
                                  arrayOf(monthBranch, finalMonthNumForMainStars, if (leapMonth) "閏" else "",
                                          lunarMonth)))
-        IFinalMonthNumber.MonthAlgo.MONTH_LEAP_NEXT === mainStarsAlgo -> // 命身宮於閏{0}月視為下月={1}
+        MonthAlgo.MONTH_LEAP_NEXT === mainStarsAlgo -> // 命身宮於閏{0}月視為下月={1}
           notesBuilders.add(Pair("mainStarsAlgo_month_leap_next", arrayOf<Any>(lunarMonth, finalMonthNumForMainStars)))
-        IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15 === mainStarsAlgo -> // 命身宮於閏月月中切割,故用{0}月
+        MonthAlgo.MONTH_LEAP_SPLIT15 === mainStarsAlgo -> // 命身宮於閏月月中切割,故用{0}月
           notesBuilders.add(Pair("mainStarsAlgo_month_leap_split15", arrayOf<Any>(finalMonthNumForMainStars)))
       }
     }
@@ -485,14 +485,14 @@ class ZContext(
       logger.warn("月系星的設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", monthStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
                   finalMonthNumForMonthStars)
       when {
-        IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS === monthStarsAlgo -> // 月系星以節氣計算，故月用 {0}={1} 而非 {2}
+        MonthAlgo.MONTH_SOLAR_TERMS === monthStarsAlgo -> // 月系星以節氣計算，故月用 {0}={1} 而非 {2}
           notesBuilders.add(Pair("monthStarsAlgo_solar_month",
                                  arrayOf(monthBranch, finalMonthNumForMonthStars, if (leapMonth) "閏" else "",
                                          lunarMonth)))
-        IFinalMonthNumber.MonthAlgo.MONTH_LEAP_NEXT === monthStarsAlgo -> // 月系星於閏{0}月視為下月{1}
+        MonthAlgo.MONTH_LEAP_NEXT === monthStarsAlgo -> // 月系星於閏{0}月視為下月{1}
           notesBuilders.add(
             Pair("monthStarsAlgo_month_leap_next", arrayOf<Any>(lunarMonth, finalMonthNumForMonthStars)))
-        IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15 === monthStarsAlgo -> // 月系星於閏月月中切割,故用{0}月
+        MonthAlgo.MONTH_LEAP_SPLIT15 === monthStarsAlgo -> // 月系星於閏月月中切割,故用{0}月
           notesBuilders.add(Pair("monthStarsAlgo_month_leap_split15", arrayOf<Any>(finalMonthNumForMonthStars)))
       }
     }
@@ -538,7 +538,7 @@ class ZContext(
 
     // 地支 <-> 宮位 的 雙向 mapping
     val branchHouseBiMap: BiMap<Branch, House> = HashBiMap.create<Branch, House>()
-    branchHouseMap.forEach { sb, house -> branchHouseBiMap[sb.branch] = house }
+    branchHouseMap.forEach { (sb, house) -> branchHouseBiMap[sb.branch] = house }
 
     // 為了某些流派閏月的考量 , 須在此求出「上個月」有幾天 , 才能求出紫微星
     val prevMonthDays = if (leapMonth) prevMonthDaysImpl.getPrevMonthDays(cycle, lunarYear, lunarMonth, true) else 0
@@ -579,9 +579,9 @@ class ZContext(
           if (starBranchMap[flyStar] == null) {
             // TODO 通常不會有空宮 , 這裡就不做事
             logger.debug("cannot find flyStar[{} ({})] from starBranchMap : ", flyStar, flyStar.javaClass.name)
-            starBranchMap.forEach { star, branch -> logger.debug("\t{}->{}", star, branch) }
+            starBranchMap.forEach { (star, branch) -> logger.debug("\t{}->{}", star, branch) }
           } else {
-            m.add(Triple(value, flyStar, starBranchMap[flyStar]!!))
+            m.add(Triple(value, flyStar, starBranchMap.getValue(flyStar)))
           }
         }
         sb to m

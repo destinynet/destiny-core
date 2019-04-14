@@ -91,6 +91,20 @@ open class YearEclipticDegreeImpl(
     return resultStemBranch
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is YearEclipticDegreeImpl) return false
+
+    if (changeYearDegree != other.changeYearDegree) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return changeYearDegree.hashCode()
+  }
+
+
   companion object {
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
     val logger = LoggerFactory.getLogger(YearEclipticDegreeImpl::class.java)!!

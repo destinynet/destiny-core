@@ -153,17 +153,9 @@ open class YearMonthSolarTermsStarPositionImpl(
     return 月干
   }
 
-
-  init {
-    require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
-  }
-
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-
-    other as YearMonthSolarTermsStarPositionImpl
+    if (other !is YearMonthSolarTermsStarPositionImpl) return false
 
     if (southernHemisphereOpposition != other.southernHemisphereOpposition) return false
     if (hemisphereBy != other.hemisphereBy) return false
@@ -176,4 +168,11 @@ open class YearMonthSolarTermsStarPositionImpl(
     result = 31 * result + hemisphereBy.hashCode()
     return result
   }
+
+
+  init {
+    require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
+  }
+
+
 }

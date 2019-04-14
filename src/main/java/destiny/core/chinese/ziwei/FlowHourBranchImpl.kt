@@ -18,4 +18,16 @@ class FlowHourBranchImpl : IFlowHour, Serializable {
   override fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch {
     return hour
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FlowHourBranchImpl) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
 }

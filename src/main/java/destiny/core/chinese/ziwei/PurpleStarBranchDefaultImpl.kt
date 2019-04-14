@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.寅
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 
@@ -22,7 +23,6 @@ import java.io.Serializable
  */
 class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
 
   /**
    * @param state 局數
@@ -60,6 +60,21 @@ class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
       multiple + diff
     }
     return steps
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is PurpleStarBranchDefaultImpl) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
+  companion object {
+    private val logger = KotlinLogging.logger {  }
   }
 
 }
