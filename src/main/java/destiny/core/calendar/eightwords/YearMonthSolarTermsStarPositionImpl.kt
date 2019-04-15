@@ -27,7 +27,7 @@ import java.util.*
  *
  * 具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  */
-open class YearMonthSolarTermsStarPositionImpl(
+class YearMonthSolarTermsStarPositionImpl(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
   /** 換年的度數 , 通常是立春點 (315) 換年  , 另一個值通常為 270 (冬至) */

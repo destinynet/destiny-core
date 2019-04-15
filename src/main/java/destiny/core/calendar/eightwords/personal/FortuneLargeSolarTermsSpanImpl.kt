@@ -145,7 +145,7 @@ class FortuneLargeSolarTermsSpanImpl(
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, true)
 
-            logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, Companion.revJulDayFunc.invoke(targetGmtJulDay))
+            logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
             //以隔天計算現在節氣
             stepGmtJulDay = targetGmtJulDay + 1
 
@@ -176,7 +176,7 @@ class FortuneLargeSolarTermsSpanImpl(
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, false)
-            logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, Companion.revJulDayFunc.invoke(targetGmtJulDay))
+            logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1
             hashMap[i] = targetGmtJulDay

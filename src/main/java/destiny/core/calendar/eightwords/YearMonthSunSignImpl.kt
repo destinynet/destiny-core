@@ -4,8 +4,8 @@
 package destiny.core.calendar.eightwords
 
 import destiny.astrology.IStarPosition
-import destiny.astrology.IStarTransit
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.ISolarTerms
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import java.util.*
@@ -20,13 +20,18 @@ import java.util.*
  */
 class YearMonthSunSignImpl(
   starPositionImpl: IStarPosition<*>,
-  starTransitImpl: IStarTransit,
+  private val ymSolarTermsStarPositionImpl: YearMonthSolarTermsStarPositionImpl,
   /** 換年的度數 , 通常是立春點 (315) 換年 */
   changeYearDegree: Double = 315.0,
+
   override val southernHemisphereOpposition: Boolean = false,
-  override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
-  YearMonthSolarTermsStarPositionImpl(starPositionImpl, starTransitImpl, changeYearDegree, southernHemisphereOpposition,
-                                      hemisphereBy) {
+  override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR)
+  : YearEclipticDegreeImpl(changeYearDegree, starPositionImpl), IYearMonth {
+
+  val solarTermsImpl: ISolarTerms by lazy {
+    ymSolarTermsStarPositionImpl.solarTermsImpl
+    //SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
+  }
 
   override fun getTitle(locale: Locale): String {
     return "120柱月令"
@@ -38,16 +43,17 @@ class YearMonthSunSignImpl(
 
   override fun getMonth(gmtJulDay: Double, location: ILocation): IStemBranch {
     // 原始 月干支
-    val originalMonth = super.getMonth(gmtJulDay, location)
+    val originalMonth = ymSolarTermsStarPositionImpl.getMonth(gmtJulDay, location)
+    //val originalMonth = super.getMonth(gmtJulDay, location)
 
     // 目前的節氣
     val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 
     return if (solarTerms.major) {
       // 單數 : 立春 、 驚蟄 ...
-      StemBranchUnconstrained[originalMonth.stem , originalMonth.branch]!!.previous
+      StemBranchUnconstrained[originalMonth.stem, originalMonth.branch]!!.previous
     } else {
-      StemBranchUnconstrained[originalMonth.stem , originalMonth.branch]!!
+      StemBranchUnconstrained[originalMonth.stem, originalMonth.branch]!!
     }
   }
 
