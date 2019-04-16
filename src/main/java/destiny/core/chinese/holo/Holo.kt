@@ -25,7 +25,7 @@ data class SeasonalHexagram(
   val solarTerms: SolarTerms
 )
 
-/** 四節氣卦 */
+/** 四節氣卦 , 出自 孟喜 的卦氣說 */
 val seasonHexMap: Map<SolarTerms, Pair<Symbol, Int>> = mapOf(
   冬至 to (Symbol.坎 to 1),
   小寒 to (Symbol.坎 to 2),
