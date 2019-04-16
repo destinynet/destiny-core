@@ -17,13 +17,8 @@ class TransFourChenBiDongImpl : TransFourAbstractImpl() {
   override val table
     get() = dataTable
 
-
-  override fun getTitle(locale: Locale): String {
-    return "陳泌棟版"
-  }
-
   override fun getDescription(locale: Locale): String {
-    return "陳泌棟版"
+    return "陳泌棟 修訂版"
   }
 
   override fun equals(other: Any?): Boolean {

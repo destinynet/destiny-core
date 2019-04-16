@@ -59,11 +59,10 @@ class YearMonthSunSignImpl(
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (javaClass != other?.javaClass) return false
+    if (other !is YearMonthSunSignImpl) return false
     if (!super.equals(other)) return false
 
-    other as YearMonthSunSignImpl
-
+    if (ymSolarTermsStarPositionImpl != other.ymSolarTermsStarPositionImpl) return false
     if (southernHemisphereOpposition != other.southernHemisphereOpposition) return false
     if (hemisphereBy != other.hemisphereBy) return false
 
@@ -72,9 +71,11 @@ class YearMonthSunSignImpl(
 
   override fun hashCode(): Int {
     var result = super.hashCode()
+    result = 31 * result + ymSolarTermsStarPositionImpl.hashCode()
     result = 31 * result + southernHemisphereOpposition.hashCode()
     result = 31 * result + hemisphereBy.hashCode()
     return result
   }
+
 
 }

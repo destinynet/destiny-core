@@ -568,6 +568,8 @@ class ZContext(
         notesBuilders.add(Pair("solar_year", arrayOf<Any>(solarYear, lunarYear)))
       }
     }
+    logger.debug("transFourImpl = {} , title = {}" , transFourImpl.javaClass.simpleName , transFourImpl.getTitle(Locale.getDefault()))
+    logger.debug("trans4Map = {}" , trans4Map)
 
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
