@@ -64,12 +64,12 @@ interface IPalmModel {
 
   /** 取得此地支，是什麼宮  */
   fun getHouse(branch: Branch): House {
-    return houseMap[branch]!!
+    return houseMap.getValue(branch)
   }
 
   /** 與上面相反，取得此宮位於什麼地支  */
   fun getBranch(house: House): Branch {
-    return houseMap.map { (k, v) -> v to k }.toMap()[house]!!
+    return houseMap.map { (k, v) -> v to k }.toMap().getValue(house)
   }
 
   /**
