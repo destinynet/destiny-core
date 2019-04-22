@@ -30,17 +30,15 @@ import java.time.chrono.ChronoLocalDateTime
  * 再由 [YearType] 來決定要挑哪一個
  */
 class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
-                            private val dayImpl: IDay,
+                            val dayImpl: IDay,
                             private val chineseDateImpl: IChineseDate,
                             val hourImpl: IHour,
-                            val midnightImpl: IMidnight,
-                            val changeDayAfterZi: Boolean,
                             val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?) : IMainBodyHouse, Serializable {
 
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
   override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
 
-    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
+    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl)
 
     val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
 

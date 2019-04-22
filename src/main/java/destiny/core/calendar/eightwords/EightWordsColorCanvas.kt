@@ -138,7 +138,7 @@ class EightWordsColorCanvas(
         x += 22
       }
 
-      cc.setText("換日：" + if (context.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
+      cc.setText("換日：" + if (context.dayImpl.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
       if (location.northSouth == NorthSouth.SOUTH) {
         val yearMonthImpl = context.yearMonthImpl
         if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {
@@ -152,8 +152,8 @@ class EightWordsColorCanvas(
       val dstString = if (isDst) "有" else "無"
       cc.setText(dstString, 5, x + 29, if (isDst) "FF0000" else "", "", null)
 
-      cc.setText("子正是：" + context.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, null, null,
-                 context.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+      cc.setText("子正是：" + context.dayImpl.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, null, null,
+                 context.dayImpl.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       cc.setText("時辰劃分：" + context.hourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, null, null,
                  context.hourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       val risingLine = 8

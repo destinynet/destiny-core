@@ -62,13 +62,10 @@ interface IEightWordsContextModel {
  * 純粹由「時間、地點」切入，不帶其他參數，取得八字盤 (不含「人」的資料）
  */
 interface IEightWordsContext : IEightWordsFactory {
-  /** 是否子初換日 */
-  val changeDayAfterZi: Boolean
   val chineseDateImpl: IChineseDate
   val yearMonthImpl: IYearMonth
   val dayImpl: IDay
   val hourImpl: IHour
-  val midnightImpl: IMidnight
   val risingSignImpl: IRisingSign
 
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,

@@ -87,7 +87,7 @@ class ZModernContext(
     val dst = t2.first
     val minuteOffset = t2.second / 60
 
-    val cDate = chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
+    val cDate = chineseDateImpl.getChineseDate(lmt, location, dayImpl)
     val cycle = cDate.cycleOrZero
     val yinYear = cDate.year
 

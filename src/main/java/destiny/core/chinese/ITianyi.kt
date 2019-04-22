@@ -31,7 +31,7 @@ interface ITianyi : Descriptive {
   }
 
   fun getTianyi(lmt: LocalDateTime, loc: Location, dayImpl: IDay, midnightImpl: IMidnight, hourImpl: IHour, changeDayAfterZi: Boolean, differentiator: IDayNight): Branch {
-    val day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi)
+    val day = dayImpl.getDay(lmt, loc)
     val dayNight = differentiator.getDayNight(lmt, loc)
     return getFirstTianyi(day.stem, dayNight)
   }

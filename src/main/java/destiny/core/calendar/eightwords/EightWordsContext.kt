@@ -27,8 +27,6 @@ class EightWordsContext(
   override val yearMonthImpl: IYearMonth,
   override val dayImpl: IDay,
   override val hourImpl: IHour,
-  override val midnightImpl: IMidnight,
-  override val changeDayAfterZi: Boolean,
   override val risingSignImpl: IRisingSign,
   val starPositionImpl: IStarPosition<*>,
   val solarTermsImpl: ISolarTerms,
@@ -59,8 +57,7 @@ class EightWordsContext(
     fun innerGetModel(): IEightWordsContextModel {
       // 現在的節氣
       val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
-      val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl, hourImpl,
-                                                            midnightImpl, changeDayAfterZi)
+      val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl)
 
       val (prevMajorSolarTerms, nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsGmtBetween(lmt, location)
 

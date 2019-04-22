@@ -72,7 +72,7 @@ object LocationTools {
 
 
   fun decode(s: String): ILocation {
-    return s.localTrim().let { it ->
+    return s.localTrim().let {
       decode2018(it) ?: {
         decode2012(it)
       }.invoke()
@@ -85,7 +85,7 @@ object LocationTools {
    */
   private fun decode2018(string: String): ILocation? {
     val parts: Set<LocationPadding> =
-      string.splitToSequence(" ").map { it -> LocationPadding.getPadding(it) }.filterNotNull().toSet()
+      string.splitToSequence(" ").map { LocationPadding.getPadding(it) }.filterNotNull().toSet()
     return try {
       (parts.firstOrNull { it is LocationPadding.latLng } as LocationPadding.latLng).let {
         val tzid: String? =
@@ -115,14 +115,14 @@ object LocationTools {
         return when {
           value.contains(",") -> {
             val (lat, lng) = value.split(",").map { it.toDouble() }
-            LocationPadding.latLng(lat, lng)
+            latLng(lat, lng)
           }
           ZoneId.getAvailableZoneIds().contains(value) -> LocationPadding.tzid(ZoneId.of(value))
 
           value.endsWith('m') && value.substring(0, value.length - 1).toIntOrNull() != null ->
-            LocationPadding.minOffset((value.substring(0, value.length - 1)).toInt())
+            minOffset((value.substring(0, value.length - 1)).toInt())
 
-          value.toDoubleOrNull() != null -> LocationPadding.altMeter(value.toDouble())
+          value.toDoubleOrNull() != null -> altMeter(value.toDouble())
           else -> null
         }
       }

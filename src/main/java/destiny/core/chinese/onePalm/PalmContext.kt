@@ -77,7 +77,7 @@ class PalmContext(override val positiveImpl: IPositive,
                        place: String?,
                        name: String?): IPalmMetaModel {
 
-    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl, hourImpl, midnightImpl, changeDayAfterZi)
+    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl)
     val hourBranch = hourImpl.getHour(lmt, loc)
     val chineseDateHour = ChineseDateHour(cDate, hourBranch)
 

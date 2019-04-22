@@ -28,7 +28,7 @@ class ClockwiseXinRenKuiReverseImpl(private val dayImpl: IDay,
                                     private val differentiator: IDayNight) : IClockwise, Serializable {
 
   override fun getClockwise(lmt: ChronoLocalDateTime<*>, loc: ILocation): Clockwise {
-    val day = dayImpl.getDay(lmt, loc, midnightImpl, hourImpl, changeDayAfterZi)
+    val day = dayImpl.getDay(lmt, loc)
     val dayNight = differentiator.getDayNight(lmt, loc)
 
     return when (day.stem) {

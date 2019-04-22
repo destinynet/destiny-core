@@ -11,7 +11,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
@@ -21,21 +20,19 @@ import java.time.temporal.ChronoUnit
 /**
  * 換日 的實作
  */
-class DayImpl : IDay, Serializable {
+class DayImpl(override val midnightImpl: IMidnight,
+              val hourImpl: IHour,
+              override val changeDayAfterZi: Boolean) : IDay, Serializable {
 
 
   /**
    * Note : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
    */
-  override fun getDay(gmtJulDay: Double,
-                      location: ILocation,
-                      midnightImpl: IMidnight,
-                      hourImpl: IHour,
-                      changeDayAfterZi: Boolean): StemBranch {
+  override fun getDay(gmtJulDay: Double, location: ILocation): StemBranch {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, location, revJulDayFunc)
 
-    return getDay(lmt, location, midnightImpl, hourImpl, changeDayAfterZi)
+    return getDay(lmt, location)
   } // GMT 版本
 
   private fun getIndex(index: Int,
@@ -62,10 +59,7 @@ class DayImpl : IDay, Serializable {
   }
 
   override fun getDay(lmt: ChronoLocalDateTime<*>,
-                      location: ILocation,
-                      midnightImpl: IMidnight,
-                      hourImpl: IHour,
-                      changeDayAfterZi: Boolean): StemBranch {
+                      location: ILocation): StemBranch {
     // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
     val lmtJulDay = (TimeTools.getGmtJulDay(lmt) + 0.5).toInt()
     var index = (lmtJulDay - 11) % 60
@@ -112,6 +106,25 @@ class DayImpl : IDay, Serializable {
     }
     return StemBranch[index]
   } // LMT 版本
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is DayImpl) return false
+
+    if (midnightImpl != other.midnightImpl) return false
+    if (hourImpl != other.hourImpl) return false
+    if (changeDayAfterZi != other.changeDayAfterZi) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = midnightImpl.hashCode()
+    result = 31 * result + hourImpl.hashCode()
+    result = 31 * result + changeDayAfterZi.hashCode()
+    return result
+  }
+
 
   companion object {
 
