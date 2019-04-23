@@ -31,4 +31,9 @@ interface IDay {
    * @return 日辰干支
    */
   fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation): StemBranch
+
+  /**
+   * 取得 GMT 此時刻，在此地 的一日，從何時，到何時 (gmt)
+   */
+  fun getDayRange(gmtJulDay: Double , location: ILocation) : Pair<Double , Double>
 }

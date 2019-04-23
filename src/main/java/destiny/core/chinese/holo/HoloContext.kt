@@ -5,6 +5,7 @@ import destiny.astrology.Planet
 import destiny.core.BirthDataNamePlace
 import destiny.core.Gender
 import destiny.core.calendar.*
+import destiny.core.calendar.eightwords.EightWordsImpl
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.*
@@ -405,13 +406,37 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
   fun getDailyHexagram(monthHexagram: IHexagram, yuanTang: Int, viewGmt: Double, loc: ILocation): IHoloHexagramWithStemBranch {
 
     // 計算此時刻，處於何節氣中 , 開始為何時
-    val (solarTerms , startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
+    val (solarTerms, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
+
+    val dayImpl = (eightWordsImpl as EightWordsImpl).dayImpl
+    val startSB = dayImpl.getDay(startGmt, loc)
+    val viewSB = dayImpl.getDay(viewGmt, loc)
+    val diffDays: Int = viewSB.getAheadOf(startSB) + 1 // 沒有第零日 , 「節」當日也算第一日
+    logger.info("從 {} 到 {} , diffDays = {}", startSB, viewSB, diffDays)
+
+    val (dayHex , dayYuanTang) = generateSequence(monthHexagram to confine(yuanTang + 1)) {
+      Pair(Hexagram.of(monthHexagram), confine(it.second + 1))
+    }.flatMap { pair ->
+      logger.info("pair = {}", pair)
+      generateSequence(switch(pair.first , pair.second).first to 1) {
+        it.first to confine(it.second + 1)
+      }.take(6)
+    }.last()
+
+    val stemBranches = (1..6).map { settings.getStemBranch(dayHex, it) }
+
+    val hourImpl = eightWordsImpl.hourImpl
+
+    // TODO : 最佳化， dayImpl 應該實作 startOfDay , endOfDay
+    val start = hourImpl.getGmtNextStartOf(viewGmt-1 , loc , 子)
+    val end = hourImpl.getGmtNextStartOf(viewGmt , loc , 子)
 
 
+    val holoHex = HoloHexagram(IHoloHexagram.Scale.DAY , dayHex , dayYuanTang , stemBranches,  start , end)
 
-    val startLmt = TimeTools.getLmtFromGmt(revJulDayFunc.invoke(startGmt) , loc)
-    val viewLmt = TimeTools.getLmtFromGmt(revJulDayFunc.invoke(viewGmt) , loc)
-    TODO()
+    val daySb = dayImpl.getDay(viewGmt , loc)
+
+    return HoloHexagramWithStemBranch(holoHex , daySb)
   } // 流日
 
   /** 傳回 本命先後天卦、以及此 gmt 時刻 的大運、流年、流月 等資訊 */

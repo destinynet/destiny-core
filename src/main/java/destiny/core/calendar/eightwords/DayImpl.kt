@@ -68,13 +68,14 @@ class DayImpl(override val midnightImpl: IMidnight,
     val 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, revJulDayFunc)
 
 
+    // 下個子正時刻
     val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, revJulDayFunc).let {
       val dur = Duration.between(下個子初時刻, it).abs()
       if (dur.toMinutes() <= 1) {
         logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}" , 下個子初時刻 , it , dur.seconds) // DST 結束前一天，可能會出錯
-        return@let it.plus(1 , ChronoUnit.HOURS)
+        it.plus(1 , ChronoUnit.HOURS)
       } else {
-        return@let it
+        it
       }
     }
 
@@ -106,6 +107,15 @@ class DayImpl(override val midnightImpl: IMidnight,
     }
     return StemBranch[index]
   } // LMT 版本
+
+  /**
+   * 取得 GMT 此時刻，在此地 的一日，從何時，到何時 (gmt)
+   */
+  override fun getDayRange(gmtJulDay: Double, location: ILocation): Pair<Double, Double> {
+    val 下個子初 = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子)
+    val 下個子正 = midnightImpl.getNextMidnight(gmtJulDay , location)
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

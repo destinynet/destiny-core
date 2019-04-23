@@ -25,8 +25,8 @@ import java.util.*
 </PRE> *
  */
 class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Serializable {
-  private val atmosphericPressure = 1013.25
-  private val atmosphericTemperature = 0.0
+  private var atmosphericPressure = 1013.25
+  private var atmosphericTemperature = 0.0
   private var discCenter = true
   private var refraction = true
 
@@ -87,6 +87,11 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
     val nextMeridianGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
     val nextNadirGmt = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
+    // 午前
+    val 丑to午 = listOf(丑 , 寅 , 卯 , 辰 , 巳 , 午)
+    // 午後 (不含子)
+    val 未to亥 = listOf(未 , 申 , 酉 , 戌 , 亥)
+
     if (nextNadirGmt > nextMeridianGmt) {
       //LMT 位於子正到午正（上半天）
       val twelveHoursAgo = gmtJulDay - 0.5
@@ -98,12 +103,10 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
       val currentEb = getHour(gmtJulDay, location) // 取得目前在哪個時辰之中
       if (eb.index > currentEb.index || eb == 子) {
         //代表現在所處的時辰，未超過欲求的時辰
-        resultGmt = if (eb == 丑 || eb == 寅 || eb == 卯 || eb == 辰 || eb == 巳 || eb == 午) {
-          previousNadir + oneUnit1 * ((eb.index - 1) * 2 + 1)
-        } else if (eb == 未 || eb == 申 || eb == 酉 || eb == 戌 || eb == 亥) {
-          nextMeridianGmt + oneUnit2 * ((eb.index - 7) * 2 + 1)
-        } else {
-          nextMeridianGmt + oneUnit2 * 11 // eb == 子時
+        resultGmt = when {
+          丑to午.contains(eb) -> previousNadir + oneUnit1 * ((eb.index - 1) * 2 + 1)
+          未to亥.contains(eb) -> nextMeridianGmt + oneUnit2 * ((eb.index - 7) * 2 + 1)
+          else -> nextMeridianGmt + oneUnit2 * 11 // eb == 子時
         }
       } else {
         //欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰
@@ -111,12 +114,10 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
         val oneUnit3 = (nextNextMeridianGmt - nextNadirGmt) / 12.0
         val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
         val oneUnit4 = (nextNextNadir - nextNextMeridianGmt) / 12.0
-        resultGmt = if (eb == 丑 || eb == 寅 || eb == 卯 || eb == 辰 || eb == 巳 || eb == 午) {
-          nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
-        } else if (eb == 未 || eb == 申 || eb == 酉 || eb == 戌 || eb == 亥) {
-          nextNextMeridianGmt + oneUnit4 * ((eb.index - 7) * 2 + 1)
-        } else {
-          throw RuntimeException("Runtime Exception : 沒有子時的情況") //沒有子時的情況
+        resultGmt = when {
+          丑to午.contains(eb) -> nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
+          未to亥.contains(eb) -> nextNextMeridianGmt + oneUnit4 * ((eb.index - 7) * 2 + 1)
+          else -> throw RuntimeException("Runtime Exception : 沒有子時的情況") //沒有子時的情況
         }
       }
 
@@ -132,25 +133,22 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
       if (currentEb.index in 6..11 &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
         (eb.index >= 6 && eb.index > currentEb.index || eb == 子) //而且現在所處的時辰，未超過欲求的時辰
       ) {
-        resultGmt = if (eb == 未 || eb == 申 || eb == 酉 || eb == 戌 || eb == 亥) {
-          previousMeridian + oneUnit2 * ((eb.index - 7) * 2 + 1)
-        } else if (eb == 丑 || eb == 寅 || eb == 卯 || eb == 辰 || eb == 巳 || eb == 午) {
-          nextNadirGmt + oneUnit1 * ((eb.index - 1) * 2 + 1)
-        } else {
-          previousMeridian + oneUnit2 * 11 // 晚子時之始
+        resultGmt = when {
+          未to亥.contains(eb) -> previousMeridian + oneUnit2 * ((eb.index - 7) * 2 + 1)
+          丑to午.contains(eb) -> nextNadirGmt + oneUnit1 * ((eb.index - 1) * 2 + 1)
+          else -> previousMeridian + oneUnit2 * 11 // 晚子時之始
         }
       } else {
         // 欲求的時辰，早於現在所處的時辰
         val oneUnit3 = (nextMeridianGmt - nextNadirGmt) / 12.0
         val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridianGmt, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
         val oneUnit4 = (nextNextNadir - nextMeridianGmt) / 12.0
-        resultGmt = if (eb == 未 || eb == 申 || eb == 酉 || eb == 戌 || eb == 亥) {
-          nextMeridianGmt + oneUnit4 * ((eb.index - 7) * 2 + 1)
-        } else if (eb == 子) {
-          nextMeridianGmt + oneUnit4 * 11
-        } else {
-          //丑寅卯辰巳午
-          nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
+        resultGmt = when {
+          未to亥.contains(eb) -> nextMeridianGmt + oneUnit4 * ((eb.index - 7) * 2 + 1)
+          丑to午.contains(eb) -> nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
+          else -> nextMeridianGmt + oneUnit4 * 11 // 子
+//          else -> //丑寅卯辰巳午
+//            nextNadirGmt + oneUnit3 * ((eb.index - 1) * 2 + 1)
         }
       }
     }

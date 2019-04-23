@@ -21,6 +21,7 @@ interface IHoloHexagram : IHexagram, TimeRange<Double> {
     MAJOR,   // 大運 : 陽爻9年 , 陰爻6年
     YEAR,    // 流年
     MONTH,   // 流月
+    DAY      // 留日
   }
 
   val scale: Scale
@@ -59,6 +60,7 @@ interface IHoloHexagramWithStemBranch : IHoloHexagram {
    * 大運 : 代表本命先後天卦中，走到哪一爻，該爻的納甲
    * 流年 : 流年干支
    * 流月 : 流月干支
+   * 留日 : 流日干支
    * ... 其餘類推
    * */
   val stemBranch: IStemBranch
