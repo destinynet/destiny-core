@@ -58,7 +58,7 @@ class HourLmtImpl : IHour, Serializable {
   /**
    * 要實作，不然會有一些 round-off 的問題
    */
-  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, location: ILocation, eb: Branch, revJulDayFunc: Function1<Double , ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, location: ILocation, eb: Branch, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
 
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
 
@@ -128,6 +128,91 @@ class HourLmtImpl : IHour, Serializable {
   }
 
 
+  /**
+   * 取得「前一個」此地支的開始時刻
+   */
+  override fun getGmtPrevStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
+    val gmt = revJulDayFunc.invoke(gmtJulDay)
+    val lmt = TimeTools.getLmtFromGmt(gmt, location)
+    val lmtResult = getLmtPrevStartOf(lmt, location, eb, revJulDayFunc)
+    val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
+    return TimeTools.getGmtJulDay(gmtResult)
+  }
+
+  /**
+   * 取得「前一個」此地支的開始時刻
+   */
+  override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, location: ILocation, eb: Branch, revJulDayFunc: (Double) -> ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
+    val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
+
+    val hourOfDay = lmt.get(HOUR_OF_DAY)
+    val yesterdayHourStart = lmtAtHourStart.minus(1, DAYS)
+    return when (eb) {
+      Branch.子 -> if (hourOfDay < 23)
+        yesterdayHourStart.with(HOUR_OF_DAY, 23)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 23)
+
+      Branch.丑 -> if (hourOfDay < 1)
+        yesterdayHourStart.with(HOUR_OF_DAY, 1)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 1)
+
+      Branch.寅 -> if (hourOfDay < 3)
+        yesterdayHourStart.with(HOUR_OF_DAY, 3)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 3)
+
+      Branch.卯 -> if (hourOfDay < 5)
+        yesterdayHourStart.with(HOUR_OF_DAY, 5)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 5)
+
+      Branch.辰 -> if (hourOfDay < 7)
+        yesterdayHourStart.with(HOUR_OF_DAY, 7)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 7)
+
+      Branch.巳 -> if (hourOfDay < 9)
+        yesterdayHourStart.with(HOUR_OF_DAY, 9)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 9)
+
+      Branch.午 -> if (hourOfDay < 11)
+        yesterdayHourStart.with(HOUR_OF_DAY, 11)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 11)
+
+      Branch.未 -> if (hourOfDay < 13)
+        yesterdayHourStart.with(HOUR_OF_DAY, 13)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 13)
+
+      Branch.申 -> if (hourOfDay < 15)
+        yesterdayHourStart.with(HOUR_OF_DAY, 15)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 15)
+
+      Branch.酉 -> if (hourOfDay < 17)
+        yesterdayHourStart.with(HOUR_OF_DAY, 17)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 17)
+
+      Branch.戌 -> if (hourOfDay < 19)
+        yesterdayHourStart.with(HOUR_OF_DAY, 19)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 19)
+
+      Branch.亥 -> if (hourOfDay < 21)
+        yesterdayHourStart.with(HOUR_OF_DAY, 21)
+      else
+        lmtAtHourStart.with(HOUR_OF_DAY, 21)
+    }
+  }
+
+  /**
+   * LMT 要實作
+   */
   override fun getTitle(locale: Locale): String {
     return "以當地標準鐘錶時間區隔時辰"
   }
@@ -149,7 +234,7 @@ class HourLmtImpl : IHour, Serializable {
 
 
   companion object {
-    private val revJulDayFunc =  { it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }

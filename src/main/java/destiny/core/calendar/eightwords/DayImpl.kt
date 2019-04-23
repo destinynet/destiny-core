@@ -113,8 +113,15 @@ class DayImpl(override val midnightImpl: IMidnight,
    */
   override fun getDayRange(gmtJulDay: Double, location: ILocation): Pair<Double, Double> {
     val 下個子初 = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子)
+    val 上個子正 = midnightImpl.getPrevMidnight(gmtJulDay , location)
     val 下個子正 = midnightImpl.getNextMidnight(gmtJulDay , location)
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    return if (changeDayAfterZi) {
+      // 子初換日
+      TODO()
+    } else {
+      // 子正換日
+      上個子正 to 下個子正
+    }
   }
 
   override fun equals(other: Any?): Boolean {
