@@ -400,10 +400,10 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
   /**
    * 取得當下時刻的流日卦象
    * @param monthHexagram 流月卦
-   * @param yuanTang 流月元堂 (index start from 1)
+   * @param monthYuanTang 流月元堂 (index start from 1)
    * @param viewGmt 當下的 GMT 時刻
    */
-  fun getDailyHexagram(monthHexagram: IHexagram, yuanTang: Int, viewGmt: Double, loc: ILocation): IHoloHexagramWithStemBranch {
+  override fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: Double, loc: ILocation): IHoloHexagramWithStemBranch {
 
     // 計算此時刻，處於何節氣中 , 開始為何時
     val (solarTerms, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
@@ -412,12 +412,12 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val startSB = dayImpl.getDay(startGmt, loc)
     val viewSB = dayImpl.getDay(viewGmt, loc)
     val diffDays: Int = viewSB.getAheadOf(startSB) + 1 // 沒有第零日 , 「節」當日也算第一日
-    logger.info("從 {} 到 {} , diffDays = {}", startSB, viewSB, diffDays)
+    logger.debug("從 {} 到 {} , diffDays = {}", startSB, viewSB, diffDays)
 
-    val (dayHex , dayYuanTang) = generateSequence(monthHexagram to confine(yuanTang + 1)) {
+    val (dayHex , dayYuanTang) = generateSequence(monthHexagram to confine(monthYuanTang + 1)) {
       Pair(Hexagram.of(monthHexagram), confine(it.second + 1))
     }.flatMap { pair ->
-      logger.info("pair = {}", pair)
+      logger.trace("pair = {}", pair)
       generateSequence(switch(pair.first , pair.second).first to 1) {
         it.first to confine(it.second + 1)
       }.take(6)
@@ -427,10 +427,16 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
     val hourImpl = eightWordsImpl.hourImpl
 
-    // TODO : 最佳化， dayImpl 應該實作 startOfDay , endOfDay
-    val start = hourImpl.getGmtNextStartOf(viewGmt-1 , loc , 子)
-    val end = hourImpl.getGmtNextStartOf(viewGmt , loc , 子)
-
+    val start = if (dayImpl.changeDayAfterZi)  {
+      hourImpl.getGmtPrevStartOf(viewGmt , loc , 子)
+    } else {
+      dayImpl.midnightImpl.getPrevMidnight(viewGmt , loc)
+    }
+    val end = if (dayImpl.changeDayAfterZi) {
+      hourImpl.getGmtNextStartOf(viewGmt , loc , 子)
+    } else {
+      dayImpl.midnightImpl.getNextMidnight(viewGmt , loc)
+    }
 
     val holoHex = HoloHexagram(IHoloHexagram.Scale.DAY , dayHex , dayYuanTang , stemBranches,  start , end)
 
@@ -498,11 +504,17 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       getMonthlyHexagram(yearly.stemBranch.stem, yearly, yearly.yuanTang, gmt)
     }
 
+    // 流日
+    val dailyHexagram: IHoloHexagramWithStemBranch? = monthlyHexagram?.let { monthly ->
+      getDailyHexagram(monthly , monthly.yuanTang , gmt , loc)
+    }
+
     val list: List<IHoloHexagram> = mutableListOf<IHoloHexagram>().apply {
       mainHexagram?.also { this.add(it) }
       majorHexagram?.also { this.add(it) }
       yearlyHexagram?.also { this.add(it) }
       monthlyHexagram?.also { this.add(it) }
+      dailyHexagram?.also { this.add(it) }
     }.toList()
 
     return holo to list
