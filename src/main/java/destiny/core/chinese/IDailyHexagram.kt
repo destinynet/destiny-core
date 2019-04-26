@@ -36,6 +36,7 @@ val branchHexagramsMap: Map<Branch, List<Hexagram>> = mapOf(
  * 值日卦
  * 可能有 六日七分 實作 (坎離震兌 並未值日)
  * 也會有 焦氏易林 實作 (坎離震兌 各值一日)
+ * 也會有 先天64卦 實作
  *  */
 interface IDailyHexagram : Descriptive {
 

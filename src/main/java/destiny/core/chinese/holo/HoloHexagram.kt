@@ -21,7 +21,7 @@ interface IHoloHexagram : IHexagram, TimeRange<Double> {
     MAJOR,   // 大運 : 陽爻9年 , 陰爻6年
     YEAR,    // 流年
     MONTH,   // 流月
-    DAY      // 留日
+    DAY      // 流日
   }
 
   val scale: Scale
@@ -98,8 +98,10 @@ data class HoloLine(val yinYang: IYinYang,
 /** 純粹用於 先天卦 or 後天卦 , 包含六爻中，每爻的流年資訊 */
 interface ILifeHoloHexagram : IHoloHexagram {
   val lines: List<HoloLine>
+
   /** 值日卦，當年度，值日於哪些天 (通常為 6日) */
   val dutyDays: Pair<Double, Double>?
+
   /** 六十四卦立體 , 卦體吉凶立論 */
   val solid : String
 }

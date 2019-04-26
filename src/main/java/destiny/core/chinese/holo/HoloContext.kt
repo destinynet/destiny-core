@@ -417,11 +417,11 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val (dayHex , dayYuanTang) = generateSequence(monthHexagram to confine(monthYuanTang + 1)) {
       Pair(Hexagram.of(monthHexagram), confine(it.second + 1))
     }.flatMap { pair ->
-      logger.trace("pair = {}", pair)
+      logger.debug("pair = {}", pair)
       generateSequence(switch(pair.first , pair.second).first to 1) {
         it.first to confine(it.second + 1)
       }.take(6)
-    }.last()
+    }.take(diffDays).last()
 
     val stemBranches = (1..6).map { settings.getStemBranch(dayHex, it) }
 
@@ -452,7 +452,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val congenitalLines: List<HoloLine> = holo.hexagramCongenital.lines
     val acquiredLines: List<HoloLine> = holo.hexagramAcquired.lines
 
-    // 現在處於 先天卦 or 後天卦 當中
+    // 現在處於 先天卦 or 後天卦 當中 , FIXME : 排久遠之前的盤，會有問題
     val mainHexagram: IHoloHexagram? = holo.hexagramCongenital.takeIf {
       it.contains(gmt)
     } ?: holo.hexagramAcquired.takeIf {
@@ -506,7 +506,9 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
     // 流日
     val dailyHexagram: IHoloHexagramWithStemBranch? = monthlyHexagram?.let { monthly ->
-      getDailyHexagram(monthly , monthly.yuanTang , gmt , loc)
+      getDailyHexagram(monthly , monthly.yuanTang , gmt , loc).also {
+        logger.debug("流日 , start = {}" , it.start)
+      }
     }
 
     val list: List<IHoloHexagram> = mutableListOf<IHoloHexagram>().apply {

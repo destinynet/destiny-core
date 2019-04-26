@@ -140,7 +140,7 @@ enum class Hexagram constructor(
       val lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2])
       val upper = Symbol.getSymbol(booleans[3], booleans[4], booleans[5])
 
-      return Hexagram.of(upper, lower)
+      return of(upper, lower)
     }
 
     fun of(booleans: List<Boolean>): Hexagram {
@@ -148,7 +148,7 @@ enum class Hexagram constructor(
 
       val lower = Symbol.getSymbol(booleans[0], booleans[1], booleans[2])
       val upper = Symbol.getSymbol(booleans[3], booleans[4], booleans[5])
-      return Hexagram.of(upper, lower)
+      return of(upper, lower)
     }
 
 
@@ -166,16 +166,16 @@ enum class Hexagram constructor(
     }
 
     /** 從 "010101" 取得一個卦 */
-    fun getFromBinaryString(code: String) : IHexagram {
+    fun getFromBinaryString(code: String) : Hexagram {
       val array = BooleanArray(6)
       return try {
         for (i in 0..5) {
           val c = code.toCharArray()[i]
           array[i] = c != '0'
         }
-        Hexagram.of(array)
+        of(array)
       } catch (e: Exception) {
-        Hexagram.乾
+        乾
       }
 
     }
