@@ -8,6 +8,7 @@ import destiny.core.chinese.Branch.*
 import destiny.iching.Hexagram
 import destiny.iching.Hexagram.*
 import destiny.iching.IHexagram
+import java.io.Serializable
 
 
 /**
@@ -49,7 +50,38 @@ interface IDailyHexagram : Descriptive {
    * 取得某時刻之後 (或之前)，出現此卦的 時間點範圍
    * @param forward true : 順查 , false : 逆查
    */
-  fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward : Boolean = true): Pair<Double, Double>?
+  fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean = true): Pair<Double, Double>?
+}
+
+interface IDailyHexagramService {
+
+  /**
+   * 取得當下的值日卦，起迄時刻的 gmt julDay 為何
+   */
+  fun getHexagramMap(gmtJulDay: Double) : Map<IDailyHexagram , Pair<Hexagram , Pair<Double , Double>>>
+
+  /**
+   * 取得從此時刻之後（或之前）， 在不同的值日系統下， 遇到此卦的值日時刻，是從何時到何時
+   */
+  fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean = true): Map<IDailyHexagram, Pair<Double, Double>>
 }
 
 
+class DailyHexagramService(val impls: Set<IDailyHexagram>) : IDailyHexagramService, Serializable {
+
+  override fun getHexagramMap(gmtJulDay: Double): Map<IDailyHexagram, Pair<Hexagram, Pair<Double, Double>>> {
+    return impls.map {
+      it to it.getHexagram(gmtJulDay)
+    }.toMap()
+  }
+
+  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean): Map<IDailyHexagram, Pair<Double, Double>> {
+    return impls.map {
+      it to it.getDutyDays(hexagram, gmtJulDay, forward)
+    }.filter {
+      it.second != null
+    }.map { it.first to it.second!! }
+      .toMap()
+  }
+
+}

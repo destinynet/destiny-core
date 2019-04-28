@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.holo
 
+import destiny.core.chinese.IDailyHexagram
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
@@ -14,7 +15,7 @@ import destiny.iching.contentProviders.IHexProvider
 import java.io.Serializable
 
 
-interface IHoloHexagram : IHexagram, TimeRange<Double> {
+interface IHoloHexagram : IHexagram, TimeRange<Double>, Serializable {
 
   enum class Scale {
     LIFE,    // 半輩子，意味： 先天卦 or 後天卦
@@ -99,8 +100,8 @@ data class HoloLine(val yinYang: IYinYang,
 interface ILifeHoloHexagram : IHoloHexagram {
   val lines: List<HoloLine>
 
-  /** 值日卦，當年度，值日於哪些天 (通常為 6日) */
-  val dutyDays: Pair<Double, Double>?
+  /** 值日卦 map : 此卦，在不同的卦氣系統內，今年值日的範圍為何 */
+  val dutyDaysMap : Map<IDailyHexagram, Pair<Double , Double>>
 
   /** 六十四卦立體 , 卦體吉凶立論 */
   val solid : String
@@ -109,7 +110,7 @@ interface ILifeHoloHexagram : IHoloHexagram {
 /** 先天卦 or 後天卦 */
 data class LifeHoloHexagram(override val lines: List<HoloLine>,
                             override val stemBranches: List<StemBranch>,
-                            override val dutyDays: Pair<Double, Double>?,
+                            override val dutyDaysMap: Map<IDailyHexagram, Pair<Double, Double>>,
                             override val solid: String) : ILifeHoloHexagram {
 
   init {

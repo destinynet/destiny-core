@@ -34,7 +34,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
                   private val hexSolidImpl: IHexSolid,
                   val goldenKeyProvider: IGoldenKeyProvider,
                   override val monthlyHexagramImpl: IMonthlyHexagram = MonthlyHexagramSignImpl.instance,
-                  override val dailyHexagramImpl: IDailyHexagram,
+                  val dailyHexagramService: IDailyHexagramService,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
                   override val hexChange: IHoloContext.HexChange = IHoloContext.HexChange.DST
 ) : IHoloContext, Serializable {
@@ -222,9 +222,9 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val hexagramCongenital: ILifeHoloHexagram = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang).let { (hex, yuanTang) ->
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, gmtJulDay, ew.year)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-      val dutyDays = dailyHexagramImpl.getDutyDays(hex, startOfYear - 0.01, true)
+      val dutyDaysMap = dailyHexagramService.getDutyDays(hex, startOfYear - 0.01, true)
       val hexSolid = hexSolidImpl.getHexagram(hex)
-      LifeHoloHexagram(lines, stemBranches, dutyDays, hexSolid)
+      LifeHoloHexagram(lines, stemBranches, dutyDaysMap , hexSolid)
     }
 
     val yinYang: IYinYang = threeKings?.let { algo ->
@@ -242,9 +242,9 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, congMaxLine.endExclusive, congMaxLine.hexagrams.last().stemBranch.next)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-      val dutyDays = dailyHexagramImpl.getDutyDays(hex, startOfYear - 0.01, true)
+      val dutyDaysMap = dailyHexagramService.getDutyDays(hex, startOfYear - 0.01, true)
       val hexSolid = hexSolidImpl.getHexagram(hex)
-      LifeHoloHexagram(lines, stemBranches, dutyDays, hexSolid)
+      LifeHoloHexagram(lines, stemBranches, dutyDaysMap , hexSolid)
     }
 
 
@@ -289,8 +289,10 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     // 12消息卦
     val monthlyHexagram: Hexagram = monthlyHexagramImpl.getHexagram(solarTermsPos.solarTerms).first
 
-    // 值日卦
-    val dailyHexagram: Hexagram = dailyHexagramImpl.getHexagram(gmtJulDay).first
+    // 當下值日卦列表
+    val dailyHexagramMap: Map<IDailyHexagram, Hexagram> = dailyHexagramService.getHexagramMap(gmtJulDay).map { (k , v) ->
+      k to v.first
+    }.toMap()
 
     // 金鎖銀匙歌 參評歌訣
     val goldenKey = goldenKeyProvider.getBaseGoldenKey(NaYin.getFiveElement(ew.year), ew.day.branch, ew.hour.branch, gender)
@@ -302,7 +304,9 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       vigorousSymbolFromStem, vigorousSymbolFromBranch,
       vigorlessSymbolFromStem, vigorlessSymbolFromBranch,
       seasonalSymbols, seasonlessSymbols,
-      seasonalHexagram, monthlyHexagram, dailyHexagram, goldenKey)
+      seasonalHexagram, monthlyHexagram,
+      dailyHexagramMap,
+      goldenKey)
   } // getHolo(inner)
 
   /**

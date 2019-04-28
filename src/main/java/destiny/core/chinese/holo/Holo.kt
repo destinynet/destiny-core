@@ -119,8 +119,8 @@ interface IHolo : IBirthDataNamePlace {
   /** 12消息卦 , from [IMonthlyHexagram] */
   val monthlyHexagram: Hexagram
 
-  /** 60值日卦 , from [IDailyHexagram] */
-  val dailyHexagram: Hexagram
+  /** 值日卦 , from [IDailyHexagramService] */
+  val dailyHexagramMap: Map<IDailyHexagram, Hexagram>
 
   /** 金鎖銀匙 參評歌訣 */
   val goldenKey : GoldenKey?
@@ -146,7 +146,7 @@ data class Holo(
   override val seasonlessSymbols: Set<Symbol>,
   override val seasonalHexagram: Pair<Hexagram, Int>,
   override val monthlyHexagram: Hexagram,
-  override val dailyHexagram: Hexagram,
+  override val dailyHexagramMap: Map<IDailyHexagram, Hexagram>,
   override val goldenKey: GoldenKey?) : IHolo, IBirthDataNamePlace by birthData
 
 

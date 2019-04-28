@@ -40,9 +40,6 @@ interface IHoloContext {
   /** 12消息卦，兩種設定 , 中氣切分，還是「節」切分  */
   val monthlyHexagramImpl : IMonthlyHexagram
 
-  /** 值日卦 , 六日七分法，還是 焦氏易林 的 易林值日 */
-  val dailyHexagramImpl : IDailyHexagram
-
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender , name:String? = null , place:String? = null) : IHolo
 
