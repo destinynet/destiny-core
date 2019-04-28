@@ -222,7 +222,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val hexagramCongenital: ILifeHoloHexagram = getHexagramCongenital(ew, gender, yuan, yearHalfYinYang).let { (hex, yuanTang) ->
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, gmtJulDay, ew.year)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-      val dutyDays = dailyHexagramImpl.getDutyDay(hex, startOfYear - 0.01, true)
+      val dutyDays = dailyHexagramImpl.getDutyDays(hex, startOfYear - 0.01, true)
       val hexSolid = hexSolidImpl.getHexagram(hex)
       LifeHoloHexagram(lines, stemBranches, dutyDays, hexSolid)
     }
@@ -242,7 +242,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, congMaxLine.endExclusive, congMaxLine.hexagrams.last().stemBranch.next)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-      val dutyDays = dailyHexagramImpl.getDutyDay(hex, startOfYear - 0.01, true)
+      val dutyDays = dailyHexagramImpl.getDutyDays(hex, startOfYear - 0.01, true)
       val hexSolid = hexSolidImpl.getHexagram(hex)
       LifeHoloHexagram(lines, stemBranches, dutyDays, hexSolid)
     }

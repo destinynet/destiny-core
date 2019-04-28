@@ -40,7 +40,7 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
    * ...
    */
   val major: Boolean
-    get() = SolarTerms.getIndex(this) % 2 == 0
+    get() = getIndex(this) % 2 == 0
 
   /** 取得地支  */
   val branch: Branch
@@ -50,11 +50,11 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
     }
 
   operator fun next(): SolarTerms {
-    return get(SolarTerms.getIndex(this) + 1)
+    return get(getIndex(this) + 1)
   }
 
   fun previous(): SolarTerms {
-    return get(SolarTerms.getIndex(this) - 1)
+    return get(getIndex(this) - 1)
   }
 
 
@@ -115,7 +115,7 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
      * @return 下一個「節」（如果 reverse == true，則傳回上一個「節」）
      */
     fun getNextMajorSolarTerms(currentSolarTerms: SolarTerms, reverse: Boolean): SolarTerms {
-      val currentSolarTermsIndex = SolarTerms.getIndex(currentSolarTerms)
+      val currentSolarTermsIndex = getIndex(currentSolarTerms)
       return if (currentSolarTermsIndex % 2 == 0) {
         //立春 , 驚蟄 , 清明 ...
         if (!reverse)

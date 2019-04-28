@@ -46,10 +46,10 @@ interface IDailyHexagram : Descriptive {
   fun getHexagram(gmtJulDay: Double): Pair<Hexagram, Pair<Double, Double>>
 
   /**
-   * 取得某時刻之後，出現此卦的 時間點範圍
+   * 取得某時刻之後 (或之前)，出現此卦的 時間點範圍
    * @param forward true : 順查 , false : 逆查
    */
-  fun getDutyDay(hexagram: IHexagram, gmtJulDay: Double, forward : Boolean = true): Pair<Double, Double>?
+  fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward : Boolean = true): Pair<Double, Double>?
 }
 
 
