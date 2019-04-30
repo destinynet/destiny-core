@@ -67,6 +67,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
   val hexImageImpl: IHexagramImage
   val hexJudgement : IHexJudgement
 
+  /** 完整易卦排盤 , 包含時間、地點、八字(可能不完整)、卦辭爻辭、神煞 等資料 */
   fun getCombinedFull(src: IHexagram,
                       dst: IHexagram,
                       eightWordsNullable: IEightWordsNullable,
@@ -167,7 +168,8 @@ class DivineContext(
 
 
   /**
-   * 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] )
+   * 「可能」具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 ,
+   * 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] )
    * 通常用於 書籍、古書 當中卦象對照
    * */
   override fun getCombinedWithMetaNameDayMonth(src: IHexagram,
@@ -176,24 +178,30 @@ class DivineContext(
                                                locale: Locale
                                               ): ICombinedWithMetaNameDayMonth {
 
+    val day: StemBranch? = eightWordsNullable.day.let {
+      if (it.stem != null && it.branch != null)
+        StemBranch[it.stem!!, it.branch!!]
+      else
+        null
+    }
 
-    val day: StemBranch = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
+    //val day: StemBranch = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
 
     val combinedWithMetaName = getCombinedWithMetaName(src, dst, locale)
 
     // 神煞
-    val 空亡: Set<Branch> = day.empties.toSet()
-    val 驛馬: Branch = day.branch.let { Characters.getHorse(it) }
-    val 桃花: Branch = day.branch.let { Characters.getPeach(it) }
-    val 貴人: Set<Branch> = day.stem.let { tianyiImpl.getTianyis(it).toSet() }
-    val 羊刃: Branch = day.stem.let { yangBladeImpl.getYangBlade(it) }
-    val 六獸: List<SixAnimal> = day.let { SixAnimals.getSixAnimals(it.stem) }
+    val 空亡: Set<Branch>? = day?.empties?.toSet()
+    val 驛馬: Branch? = day?.branch?.let { Characters.getHorse(it) }
+    val 桃花: Branch? = day?.branch?.let { Characters.getPeach(it) }
+    val 貴人: Set<Branch>? = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() }
+    val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
+    val 六獸: List<SixAnimal>? = day?.let { SixAnimals.getSixAnimals(it.stem) }
 
     return CombinedWithMetaNameDayMonth(combinedWithMetaName, eightWordsNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
   }
 
 
-  /** 完整易卦排盤 , 包含時間、地點、八字、卦辭爻辭、神煞 等資料 */
+  /** 完整易卦排盤 , 包含時間、地點、八字(可能不完整)、卦辭爻辭、神煞 等資料 */
   override fun getCombinedFull(src: IHexagram,
                                dst: IHexagram,
                                eightWordsNullable: IEightWordsNullable,

@@ -6,13 +6,14 @@
 package destiny.iching
 
 import destiny.iching.divine.HexagramDivinationComparator
+import java.io.Serializable
 
 /**
  * 取得卦的排列順序 , 1 <= int <= 64
  * 只有 [HexagramDefaultComparator] (周易卦序) 以及
  * [HexagramDivinationComparator] (六爻卦序) 會使用到
  */
-interface IHexagramSequence {
+interface IHexagramSequence : Serializable {
 
   /**
    * 傳回卦序

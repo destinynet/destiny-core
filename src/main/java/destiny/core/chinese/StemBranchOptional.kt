@@ -10,18 +10,18 @@ import java.io.Serializable
 /**
  * 干、支 可其中一個為空，也可兩個都為空
  */
-interface IStemBranchOptional {
+interface IStemBranchOptional : Serializable {
   val stem: Stem?
   val branch: Branch?
 }
 
 data class StemBranchOptional(
   override val stem: Stem?,
-  override val branch: Branch?) : IStemBranchOptional, Serializable {
+  override val branch: Branch?) : IStemBranchOptional {
 
 
   val index: Int?
-    get() = StemBranchOptional.getIndex(this)
+    get() = getIndex(this)
 
   init {
     check(stem, branch)
@@ -36,7 +36,7 @@ data class StemBranchOptional(
   }
 
   override fun toString(): String {
-    return "[" + stem + ' '.toString() + branch + ']'.toString()
+    return "[$stem $branch]"
   }
 
   companion object {

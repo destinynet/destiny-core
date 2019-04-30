@@ -15,12 +15,12 @@ import destiny.iching.*
 import java.io.Serializable
 import java.util.*
 
-interface ICombined {
+interface ICombined : Serializable {
   val src: IHexagram
   val dst: IHexagram
 }
 
-interface IMeta {
+interface IMeta : Serializable {
   val 納甲系統: ISettingsOfStemBranch
   val 伏神系統: IHiddenEnergy
 }
@@ -112,42 +112,48 @@ data class CombinedWithMetaName(
 
 
 /**
- * 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 , 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] )
+ * 「可能」具備「日干支」「月令」 , 或許可以排出六獸 [SixAnimal] 以及神煞 ,
+ * 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] )
  * 通常用於 書籍、古書 當中卦象對照
  * */
 interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNullableFactory {
-  val day: StemBranch
-  val monthBranch: Branch
+  val day: StemBranch?
+  val monthBranch: Branch?
 
-  val 空亡: Set<Branch>
-  val 驛馬: Branch
-  val 桃花: Branch
-  val 貴人: Set<Branch>
-  val 羊刃: Branch
-  val 六獸: List<SixAnimal>
+  val 空亡: Set<Branch>?
+  val 驛馬: Branch?
+  val 桃花: Branch?
+  val 貴人: Set<Branch>?
+  val 羊刃: Branch?
+  val 六獸: List<SixAnimal>?
 }
 
-/** 具備「日干支」「月令」 , 可以排出六獸 [SixAnimal] 以及神煞 ,
- * 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) , 八字一定要包含 日干支 以及 月支  */
+/** 「可能」具備「日干支」「月令」 , 或許可以排出六獸 [SixAnimal] 以及神煞 ,
+ * 但不具備完整時間，也沒有起卦方法 ( [DivineApproach] ) , 八字可能要包含 日干支 以及 月支  */
 data class CombinedWithMetaNameDayMonth(
   private val combinedWithMetaName: ICombinedWithMetaName,
   override val eightWordsNullable: IEightWordsNullable,
-  override val 空亡: Set<Branch>,
-  override val 驛馬: Branch,
-  override val 桃花: Branch,
-  override val 貴人: Set<Branch>,
-  override val 羊刃: Branch,
-  override val 六獸: List<SixAnimal>) :
+  override val 空亡: Set<Branch>?,
+  override val 驛馬: Branch?,
+  override val 桃花: Branch?,
+  override val 貴人: Set<Branch>?,
+  override val 羊刃: Branch?,
+  override val 六獸: List<SixAnimal>?) :
   ICombinedWithMetaNameDayMonth,
   ICombinedWithMetaName by combinedWithMetaName, Serializable {
 
-  override val day = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
-  override val monthBranch = eightWordsNullable.month.branch!!
+  override val day = eightWordsNullable.day.let {
+    if (it.stem!= null && it.branch != null)
+      StemBranch[it.stem!!, it.branch!!]
+    else
+      null
+  }
+  override val monthBranch = eightWordsNullable.month.branch
 
   init {
-    if (eightWordsNullable.day.stem == null || eightWordsNullable.day.branch == null && eightWordsNullable.month.branch == null) {
-      throw RuntimeException("八字 必須包含 日干支 以及 月支 ")
-    }
+//    if (eightWordsNullable.day.stem == null || eightWordsNullable.day.branch == null && eightWordsNullable.month.branch == null) {
+//      throw RuntimeException("八字 必須包含 日干支 以及 月支 ")
+//    }
   }
 }
 
@@ -188,7 +194,7 @@ data class DivineMeta(
 /** 完整卜卦盤 , 包含所有資料 */
 interface ICombinedFull : ICombinedWithMetaNameDayMonth, ICombinedWithMetaNameTexts, IDivineMeta
 
-/** 完整卜卦盤 , 具備「可能」完整八字 */
+/** 完整卜卦盤 , 具備八字(可能不完整) */
 data class CombinedFull(
   private val combinedWithMetaNameDayMonth: ICombinedWithMetaNameDayMonth,
   override val eightWordsNullable: IEightWordsNullable,

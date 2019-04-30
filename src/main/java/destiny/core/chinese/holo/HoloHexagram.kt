@@ -100,7 +100,7 @@ data class HoloLine(val yinYang: IYinYang,
 interface ILifeHoloHexagram : IHoloHexagram {
   val lines: List<HoloLine>
 
-  /** 值日卦 map : 此卦，在不同的卦氣系統內，今年值日的範圍為何 */
+  /** 值日卦 map : 此卦，在不同的卦氣系統內，「今年」值日的範圍為何 */
   val dutyDaysMap : Map<IDailyHexagram, Pair<Double , Double>>
 
   /** 六十四卦立體 , 卦體吉凶立論 */
