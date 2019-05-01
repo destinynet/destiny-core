@@ -57,7 +57,7 @@ interface IHoroscopeModel {
    * 星體於黃道上的星座
    */
   val pointSignMap: Map<Point, ZodiacSign>
-    get() = pointDegreeMap.mapValues { (_, lngDeg) -> ZodiacSign.getZodiacSign(lngDeg) }
+    get() = pointDegreeMap.mapValues { (_, lngDeg) -> ZodiacSign.of(lngDeg) }
 
   /**
    * @return 取得 GMT 時刻
@@ -215,7 +215,7 @@ interface IHoroscopeModel {
 
   /** 取得某星 位於什麼星座  */
   fun getZodiacSign(point: Point): ZodiacSign? {
-    return getPosition(point)?.let { pos -> ZodiacSign.getZodiacSign(pos.lng) }
+    return getPosition(point)?.let { pos -> ZodiacSign.of(pos.lng) }
   }
 
   companion object {

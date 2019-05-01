@@ -18,6 +18,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
@@ -268,8 +269,31 @@ class FortuneLargeSpanImpl(
     return "太陽過黃道節氣的「節」來劃分大運，傳統此法一柱約十年"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FortuneLargeSpanImpl) return false
+
+    if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
+    if (intAgeImpl != other.intAgeImpl) return false
+    if (starTransitImpl != other.starTransitImpl) return false
+    if (fortuneMonthSpan != other.fortuneMonthSpan) return false
+    if (ageNoteImpls != other.ageNoteImpls) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = fortuneDirectionImpl.hashCode()
+    result = 31 * result + intAgeImpl.hashCode()
+    result = 31 * result + starTransitImpl.hashCode()
+    result = 31 * result + fortuneMonthSpan.hashCode()
+    result = 31 * result + ageNoteImpls.hashCode()
+    return result
+  }
+
+
   companion object {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val logger = KotlinLogging.logger {  }
     private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(1, TimeUnit.MINUTES)

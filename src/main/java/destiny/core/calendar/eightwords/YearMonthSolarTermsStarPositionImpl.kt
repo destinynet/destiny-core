@@ -16,6 +16,7 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranch
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -43,8 +44,6 @@ class YearMonthSolarTermsStarPositionImpl(
   override fun getDescription(locale: Locale): String {
     return "以「節氣」的「節」來切割月份"
   }
-
-  private val logger = LoggerFactory.getLogger(javaClass)
 
   val solarTermsImpl: ISolarTerms by lazy {
     SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
@@ -172,6 +171,10 @@ class YearMonthSolarTermsStarPositionImpl(
 
   init {
     require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger {  }
   }
 
 

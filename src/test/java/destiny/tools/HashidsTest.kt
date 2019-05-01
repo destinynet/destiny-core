@@ -14,7 +14,7 @@ class HashidsTest {
 
   @Test
   fun test_HashByMac() {
-    val mac = searchForMac()
+    val mac = searchForMac()!!
     val a = Hashids(mac)
 
     for (i in 0..9) {

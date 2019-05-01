@@ -5,6 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.astrology.ZodiacSign
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.tools.ChineseStringTools
@@ -19,7 +20,8 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
 
   init {
     val centerSign: Pair<ZodiacSign, Double> =
-      if (model.nextSolarSign.second < model.nextMajorSolarTerms.second) {
+      if (model.solarTermsTimePos.firstHalf)
+      {
         // 時刻 在 前半節氣
         model.nextSolarSign
       } else {
@@ -28,7 +30,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
       }
 
     // 最左邊 節氣
-    model.prevMajorSolarTerms.also { pair ->
+    model.solarTermsTimePos.prevMajor.also { pair: Pair<SolarTerms, Double> ->
       val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, revJulDayFunc)
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString() , 1 , 1 , title = title)
@@ -37,7 +39,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
     }
 
     // 最右邊 節氣
-    model.nextMajorSolarTerms.also { pair ->
+    model.solarTermsTimePos.nextMajor.also { pair ->
       val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, revJulDayFunc)
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString(), 1, 63 , title = title)
@@ -46,8 +48,10 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
     }
 
     // 中間 星座
+
     centerSign.also { sign ->
-      val middle = model.prevMajorSolarTerms.first.next().toString() + "／" + sign.first.toString()
+
+      val middle = model.solarTermsTimePos.prevMajor.first.next().toString() + "／" + sign.first.toString()
       val lmt = TimeTools.getLmtFromGmt(centerSign.second, model.location, revJulDayFunc)
       val title = timeDecorator.getOutputString(lmt)
       setText("$middle→" , 1 , 29 , title = title)
@@ -62,8 +66,9 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
 
 
     // 到 左邊 節氣 的天數
-    val toLeftDays = (model.gmtJulDay - model.prevMajorSolarTerms.second)
-    val toRightDays = (model.nextMajorSolarTerms.second - model.gmtJulDay)
+
+    val toLeftDays = (model.gmtJulDay - model.solarTermsTimePos.prevMajor.second)
+    val toRightDays = (model.solarTermsTimePos.nextMajor.second - model.gmtJulDay)
 
     val leftBlocks = ((toLeftDays / (toLeftDays + toRightDays)) * 30).toInt().let { it ->
       when {

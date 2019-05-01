@@ -13,6 +13,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.LocalTime
@@ -24,9 +25,10 @@ import java.util.*
  * 出生當下，即為一歲。（故， age 不可以 <= 0）
  * 「一歲」終止於「順推」的「陰曆一月一日」
  */
-class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val relativeTransitImpl: IRelativeTransit) : IIntAge, Serializable {
+class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
+                      private val relativeTransitImpl: IRelativeTransit) : IIntAge, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+
 
   override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
 
@@ -98,7 +100,22 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate, private val rel
     }
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is IntAgeZiweiImpl) return false
+
+    if (relativeTransitImpl != other.relativeTransitImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return relativeTransitImpl.hashCode()
+  }
+
+
   companion object {
+    private val logger = KotlinLogging.logger {  }
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

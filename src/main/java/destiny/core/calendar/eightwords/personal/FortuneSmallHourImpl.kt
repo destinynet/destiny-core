@@ -62,6 +62,8 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
     }.toList()
   }
 
+
+
   /** 另一個實作法 : 不斷呼叫 [IIntAge.getRange] , 比較沒有效率 (因底層無 cache)
    * 經測試 , 算 60柱，花費 4.2 sec
    * 而 [implByRangesMap] 只要花 0.4 sec
@@ -86,5 +88,23 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
       FortuneData(sb, from, to, age, age + 1, startFortuneAgeNotes, endFortuneAgeNotes)
     }.takeWhile { age <= count }
       .toList()
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FortuneSmallHourImpl) return false
+
+    if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
+    if (intAgeImpl != other.intAgeImpl) return false
+    if (ageNoteImpls != other.ageNoteImpls) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = fortuneDirectionImpl.hashCode()
+    result = 31 * result + intAgeImpl.hashCode()
+    result = 31 * result + ageNoteImpls.hashCode()
+    return result
   }
 }

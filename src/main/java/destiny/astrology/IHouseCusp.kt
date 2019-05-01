@@ -28,7 +28,7 @@ interface IHouseCusp : IRisingSign {
     val cusps = getHouseCusps(gmtJulDay, location, houseSystem, coordinate)
 
     return (1..12).map {
-      it to ZodiacSign.getZodiacSign(cusps[it])
+      it to ZodiacSign.of(cusps[it])
     }.toMap()
   }
 

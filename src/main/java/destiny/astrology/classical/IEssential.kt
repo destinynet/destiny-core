@@ -8,6 +8,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
 import destiny.core.DayNight
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 
 /**
@@ -23,7 +24,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun receivingRulerFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingRulerFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.getZodiacSign(degree) })
+    return receivingRulerFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.of(degree) })
   }
 
   /**
@@ -33,7 +34,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun receivingExaltFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingExaltFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.getZodiacSign(degree) })
+    return receivingExaltFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.of(degree) })
   }
 
   /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 p */
@@ -41,7 +42,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun receivingTriplicityFrom(p: Point, map: Map<Point, Double>, dayNight: DayNight): Point? {
-    return receivingTriplicityFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.getZodiacSign(degree) }, dayNight)
+    return receivingTriplicityFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.of(degree) }, dayNight)
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 p */
@@ -55,14 +56,14 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun receivingFallFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingFallFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.getZodiacSign(degree) })
+    return receivingFallFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 p */
   fun receivingDetrimentFromSignMap(p:Point, map: Map<Point, ZodiacSign>): Point?
 
   fun receivingDetrimentFrom(p:Point , map: Map<Point, Double>): Point? {
-    return receivingDetrimentFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.getZodiacSign(degree) })
+    return receivingDetrimentFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 */
@@ -165,7 +166,7 @@ interface IEssential {
   fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean
 
    companion object {
-    val logger = LoggerFactory.getLogger(IEssential::class.java)!!
+    val logger = KotlinLogging.logger {  }
   }
 
 }

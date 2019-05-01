@@ -159,7 +159,7 @@ class EightWordsColorCanvas(
       val risingLine = 8
       //val 命宮 = model.risingStemBranch
       val 命宮String = model.risingStemBranch.let { sb ->
-        sb.toString() + "（" + ZodiacSign.getZodiacSign(sb.branch) + "）"
+        sb.toString() + "（" + ZodiacSign.of(sb.branch) + "）"
       }
       cc.setText("命宮：", risingLine, 1, null, null, "命宮")
       cc.setText(命宮String, risingLine, 7, "FF0000", null, 命宮String)

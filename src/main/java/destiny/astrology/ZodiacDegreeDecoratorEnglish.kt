@@ -17,14 +17,14 @@ class ZodiacDegreeDecoratorEnglish : IZodiacDegreeDecorator {
     get() = ((deg - getDeg()) * 60 - min) * 60
 
   override fun getOutputString(value: Double): String {
-    val sign = ZodiacSign.getZodiacSign(value)
+    val sign = ZodiacSign.of(value)
     this.deg = value - sign.degree
 
     return sign.toString(Locale.US) + " "  + getDeg() + "Deg " + min + "Min " + sec + "Sec"
   }
 
   override fun getSimpOutString(degree: Double): String {
-    val sign = ZodiacSign.getZodiacSign(degree)
+    val sign = ZodiacSign.of(degree)
     this.deg = degree - sign.degree
 
     val sb = StringBuilder()

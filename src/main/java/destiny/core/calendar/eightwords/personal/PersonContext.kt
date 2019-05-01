@@ -65,5 +65,27 @@ class PersonContext(
     val selectedFortuneLarge: IStemBranch = fortuneLargeImpl.getStemBranch(lmt, location, gender, viewGmt)
     return PersonPresentModel(pcm, viewGmt, viewChineseDate, selectedFortuneLarge)
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is PersonContext) return false
+
+    if (eightWordsContext != other.eightWordsContext) return false
+    if (intAgeImpl != other.intAgeImpl) return false
+    if (fortuneLargeImpl != other.fortuneLargeImpl) return false
+    if (fortuneSmallImpl != other.fortuneSmallImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = eightWordsContext.hashCode()
+    result = 31 * result + intAgeImpl.hashCode()
+    result = 31 * result + fortuneLargeImpl.hashCode()
+    result = 31 * result + fortuneSmallImpl.hashCode()
+    return result
+  }
+
+
 }
 

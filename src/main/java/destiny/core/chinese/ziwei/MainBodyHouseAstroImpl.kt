@@ -26,7 +26,7 @@ class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign,
     val mainHouse = risingSignImpl.getRisingSign(lmt, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
     val moonPos = starPositionImpl.getPosition(Planet.MOON, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
 
-    val zodiacSign = ZodiacSign.getZodiacSign(moonPos.lng)
+    val zodiacSign = ZodiacSign.of(moonPos.lng)
 
     val bodyHouse = zodiacSign.branch
 

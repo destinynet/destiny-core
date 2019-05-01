@@ -8,6 +8,7 @@ import com.google.common.cache.CacheBuilder
 import destiny.astrology.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
@@ -28,9 +29,11 @@ class EightWordsContext(
   override val dayImpl: IDay,
   override val hourImpl: IHour,
   override val risingSignImpl: IRisingSign,
-  val starPositionImpl: IStarPosition<*>,
-  val solarTermsImpl: ISolarTerms,
-  val zodiacSignImpl: IZodiacSign) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
+
+  private val starPositionImpl: IStarPosition<*>,
+  private val solarTermsImpl: ISolarTerms,
+  val zodiacSignImpl: IZodiacSign,
+  val riseTransImpl : IRiseTrans) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
   private data class CacheKey(val lmt: ChronoLocalDateTime<*>, val location: ILocation, val place: String?)
 
@@ -55,11 +58,10 @@ class EightWordsContext(
     val key = CacheKey(lmt, location, place)
 
     fun innerGetModel(): IEightWordsContextModel {
+      val gmtJulDay = TimeTools.getGmtJulDay(lmt , location)
       // 現在的節氣
       val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
       val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl)
-
-      val (prevMajorSolarTerms, nextMajorSolarTerms) = solarTermsImpl.getMajorSolarTermsGmtBetween(lmt, location)
 
       val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
       val sunSign = getSignOf(Planet.SUN, lmt, location, starPositionImpl)
@@ -68,11 +70,12 @@ class EightWordsContext(
 
       val (prevSolarSign, nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location)
 
+      val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
+
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
-                                    prevMajorSolarTerms, nextMajorSolarTerms,
-                                    risingSign,
-                                    prevSolarSign, nextSolarSign,
-                                    moonSign
+        solarTermsTimePos, risingSign,
+        prevSolarSign, nextSolarSign,
+        moonSign
                                    )
     }
 
@@ -100,7 +103,27 @@ class EightWordsContext(
                         location: ILocation,
                         starPositionImpl: IStarPosition<*>): ZodiacSign {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
-    return ZodiacSign.getZodiacSign(pos.lng)
+    return ZodiacSign.of(pos.lng)
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is EightWordsContext) return false
+
+    if (chineseDateImpl != other.chineseDateImpl) return false
+    if (yearMonthImpl != other.yearMonthImpl) return false
+    if (dayImpl != other.dayImpl) return false
+    if (hourImpl != other.hourImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = chineseDateImpl.hashCode()
+    result = 31 * result + yearMonthImpl.hashCode()
+    result = 31 * result + dayImpl.hashCode()
+    result = 31 * result + hourImpl.hashCode()
+    return result
   }
 
 

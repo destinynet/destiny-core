@@ -4,9 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.astrology.ZodiacSign
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
@@ -26,18 +24,18 @@ interface IEightWordsContextModel {
 
   val gmtMinuteOffset: Int
 
+  val gmtJulDay
+    get() = TimeTools.getGmtJulDay(lmt , location)
+
   /** 地點名稱  */
   val place: String?
 
   /** 農曆  */
   val chineseDate: ChineseDate
 
-  /** 上一個「節」 , 以及 GMT Jul Day */
-  val prevMajorSolarTerms: Pair<SolarTerms,Double>
+  /** 與前後節氣 （外加中氣、亦即星座） 的相對位置 */
+  val solarTermsTimePos : SolarTermsTimePos
 
-
-  /** 下一個「節」 , 以及 GMT Jul Day */
-  val nextMajorSolarTerms: Pair<SolarTerms,Double>
 
   /** 上一個(目前)星座 , 以及 GMT Jul Day */
   val prevSolarSign : Pair<ZodiacSign , Double>
@@ -54,8 +52,7 @@ interface IEightWordsContextModel {
   /** 月亮星座 */
   val moonSign:ZodiacSign
 
-  val gmtJulDay
-    get() = TimeTools.getGmtJulDay(lmt , location)
+
 }
 
 /**
@@ -87,10 +84,10 @@ data class EightWordsContextModel(
   override val place: String?,
   /** 農曆  */
   override val chineseDate: ChineseDate,
-  /** 上一個「節」 , 以及 GMT Jul Day  */
-  override val prevMajorSolarTerms: Pair<SolarTerms,Double>,
-  /** 下一個「節」 , 以及 GMT Jul Day  */
-  override val nextMajorSolarTerms: Pair<SolarTerms,Double>,
+  /** 與前後節氣 （外加中氣） 的相對位置 */
+  override val solarTermsTimePos: SolarTermsTimePos,
+
+
   /** 命宮 (上升星座)  */
   override val risingStemBranch: StemBranch,
 

@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.astrology.IRiseTrans
 import destiny.astrology.Planet
+import destiny.astrology.Star
 import destiny.astrology.TransPoint
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
@@ -24,7 +25,8 @@ import java.util.*
  * 依此來切割 12 時辰
 </PRE> *
  */
-class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Serializable {
+class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
+                         private val star : Star = Planet.SUN) : IHour, Serializable {
 
   private var atmosphericPressure = 1013.25
   private var atmosphericTemperature = 0.0
@@ -262,10 +264,9 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (javaClass != other?.javaClass) return false
+    if (other !is HourSolarTransImpl) return false
 
-    other as HourSolarTransImpl
-
+    if (star != other.star) return false
     if (atmosphericPressure != other.atmosphericPressure) return false
     if (atmosphericTemperature != other.atmosphericTemperature) return false
     if (discCenter != other.discCenter) return false
@@ -275,7 +276,8 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans) : IHour, Seriali
   }
 
   override fun hashCode(): Int {
-    var result = atmosphericPressure.hashCode()
+    var result = star.hashCode()
+    result = 31 * result + atmosphericPressure.hashCode()
     result = 31 * result + atmosphericTemperature.hashCode()
     result = 31 * result + discCenter.hashCode()
     result = 31 * result + refraction.hashCode()

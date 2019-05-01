@@ -18,7 +18,7 @@ class PointDegree : Serializable {
 
   /** 取得黃道此度數所在的星座  */
   val zodiacSign: ZodiacSign
-    get() = ZodiacSign.getZodiacSign(degree)
+    get() = ZodiacSign.of(degree)
 
   /** 此星體在黃道帶上幾度  */
   constructor(p: Point, deg: Double) {

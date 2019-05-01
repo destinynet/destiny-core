@@ -17,6 +17,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.ITianyi
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.LocalTime
@@ -35,10 +36,10 @@ interface IZiweiContext {
    * 命宮、身宮、紫微等14顆主星 對於月份，如何計算 . 若 [mainBodyHouseImpl] 為占星實作 [MainBodyHouseAstroImpl] , 此值會被忽略
    * 注意，此值可能為 null , 因為若是 '命宮、身宮 演算法' 是占星實作的話 , client 端會把此值填為 null
    * */
-  val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?
+  val mainStarsAlgo: MonthAlgo?
 
   /** 月系星，如何計算月令  */
-  val monthStarsAlgo: IFinalMonthNumber.MonthAlgo
+  val monthStarsAlgo: MonthAlgo
 
   /** 年系星系 , 初一為界，還是 [destiny.core.calendar.SolarTerms.立春] 為界 */
   val yearType: YearType
@@ -409,8 +410,6 @@ class ZContext(
   /** 虛歲實作 */
   private val intAgeImpl: IIntAge? = null) : IZiweiContext, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)!!
-
   /**
    * 本命盤
    *
@@ -628,6 +627,10 @@ class ZContext(
                    branchSmallRangesMap, flyMap, vageMap)
       .appendNotesBuilders(notesBuilders)
       .appendTrans4Map(trans4Map)
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger {  }
   }
 
 } // ZContext

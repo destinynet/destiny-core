@@ -67,7 +67,7 @@ enum class ZodiacSign(private val nameKey: String,
    * @return 取得星座的地支名稱 (牡羊 : 戌)
    */
   val branch: Branch by lazy {
-    map[this]!!
+    map.getValue(this)
   }
 
   override fun toString(): String {
@@ -120,7 +120,7 @@ enum class ZodiacSign(private val nameKey: String,
     }
 
     /** 取得黃道帶上的某度，屬於哪個星座  */
-    fun getZodiacSign(degree: Double): ZodiacSign {
+    fun of(degree: Double): ZodiacSign {
       val index = (Utils.getNormalizeDegree(degree) / 30).toInt()
       return values()[index]
     }
@@ -144,7 +144,7 @@ enum class ZodiacSign(private val nameKey: String,
     /**
      * 從地支，找星座
      */
-    fun getZodiacSign(branch: Branch): ZodiacSign {
+    fun of(branch: Branch): ZodiacSign {
       return map.map { (k, v) -> v to k }.toMap().getValue(branch)
     }
   }

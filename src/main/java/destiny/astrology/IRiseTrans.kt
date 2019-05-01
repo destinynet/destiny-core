@@ -8,6 +8,7 @@ package destiny.astrology
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime
 
@@ -133,6 +134,6 @@ interface IRiseTrans {
   }
 
   companion object {
-    val logger = LoggerFactory.getLogger(IRiseTrans::class.java)!!
+    val logger = KotlinLogging.logger {  }
   }
 }

@@ -9,7 +9,7 @@ import destiny.core.DayNight.NIGHT
 import destiny.astrology.Element.*
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
-import destiny.astrology.ZodiacSign.Companion.getZodiacSign
+import destiny.astrology.ZodiacSign.Companion.of
 import destiny.core.DayNight
 import java.io.Serializable
 
@@ -346,7 +346,7 @@ abstract class AbstractPtolemy : Serializable {
 
   fun findPoint(sign: ZodiacSign, map: Map<Point, Double>): Point? {
     return map.entries
-      .filter { (_, value) -> sign === getZodiacSign(value) }
+      .filter { (_, value) -> sign === of(value) }
       .map { entry -> entry.key }
       .firstOrNull()
   }
@@ -456,7 +456,7 @@ abstract class AbstractPtolemy : Serializable {
 
     /** 承上，儲存的是星座值 */
     internal val exaltSignMap: Map<Point, ZodiacSign> = exaltDegreeMap
-      .mapValues { (point, degree) -> getZodiacSign(degree) }
+      .mapValues { (point, degree) -> of(degree) }
       .toMap()
 
     /** Fall Degree Map , 即為 Exalt 對沖的度數 */
@@ -466,7 +466,7 @@ abstract class AbstractPtolemy : Serializable {
 
     /** 承上，儲存的是星座 */
     internal val fallSignMap = fallDegreeMap
-      .mapValues { (point, degree) -> getZodiacSign(degree) }
+      .mapValues { (point, degree) -> of(degree) }
       .toMap()
 
 

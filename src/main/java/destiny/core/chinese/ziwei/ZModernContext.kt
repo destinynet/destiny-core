@@ -12,7 +12,7 @@ import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.*
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -59,7 +59,6 @@ class ZModernContext(
   override val relativeTransitImpl: IRelativeTransit,
   override val changeDayAfterZi: Boolean = true) : IZiweiModernContext, IZiweiContext by context, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)!!
 
   private val intAgeZiweiImpl : IIntAge by lazy {
     IntAgeZiweiImpl(chineseDateImpl , relativeTransitImpl)
@@ -130,7 +129,11 @@ class ZModernContext(
       .appendNotesBuilders(notesBuilders).apply {
         place?.also { withPlace(it) }
       }
-
   }
+
+  companion object {
+    val logger = KotlinLogging.logger {  }
+  }
+
 }
 

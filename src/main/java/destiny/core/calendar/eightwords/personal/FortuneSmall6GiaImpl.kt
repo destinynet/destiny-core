@@ -51,4 +51,22 @@ class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
       FortuneData(sb , from , to , age , age+1 , startFortuneAgeNotes , endFortuneAgeNotes)
     }.toList()
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FortuneSmall6GiaImpl) return false
+
+    if (intAgeImpl != other.intAgeImpl) return false
+    if (ageNoteImpls != other.ageNoteImpls) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = intAgeImpl.hashCode()
+    result = 31 * result + ageNoteImpls.hashCode()
+    return result
+  }
+
+
 }
