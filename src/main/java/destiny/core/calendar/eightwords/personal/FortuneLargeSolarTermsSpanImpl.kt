@@ -260,7 +260,25 @@ class FortuneLargeSolarTermsSpanImpl(
     return "除了傳統法，額外考量「星座」（意即：中氣）過運。通常一柱大運為五年。"
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FortuneLargeSolarTermsSpanImpl) return false
 
+    if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
+    if (intAgeImpl != other.intAgeImpl) return false
+    if (fortuneMonthSpan != other.fortuneMonthSpan) return false
+    if (ageNoteImpls != other.ageNoteImpls) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = fortuneDirectionImpl.hashCode()
+    result = 31 * result + intAgeImpl.hashCode()
+    result = 31 * result + fortuneMonthSpan.hashCode()
+    result = 31 * result + ageNoteImpls.hashCode()
+    return result
+  }
 
 
   companion object {

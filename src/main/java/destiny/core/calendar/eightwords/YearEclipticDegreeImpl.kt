@@ -22,7 +22,7 @@ import java.time.temporal.ChronoUnit
  */
 open class YearEclipticDegreeImpl(
   /** 換年的度數 , 通常是立春點 (315) 換年 */
-  val changeYearDegree: Double = 315.0,
+  var changeYearDegree: Double = 315.0,
   private val starPositionImpl: IStarPosition<*>) : IYear, Serializable {
 
   override fun getYear(gmtJulDay: Double, loc: ILocation): StemBranch {

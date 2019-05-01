@@ -138,16 +138,12 @@ class SolarTermsImpl(
     if (other !is SolarTermsImpl) return false
 
     if (starTransitImpl != other.starTransitImpl) return false
-    if (starPositionImpl != other.starPositionImpl) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = starTransitImpl.hashCode()
-    result = 31 * result + starPositionImpl.hashCode()
-    return result
+    return starTransitImpl.hashCode()
   }
-
 
 }

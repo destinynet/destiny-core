@@ -61,14 +61,17 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
           臨時日干 = Stem[臨時日干.index + 1]
       }
 
-      時干 = when (Stem.getIndex(臨時日干)) {
-        0, 5 -> Stem[Branch.getIndex(時支)]
-        1, 6 -> Stem[Branch.getIndex(時支) + 2]
-        2, 7 -> Stem[Branch.getIndex(時支) + 4]
-        3, 8 -> Stem[Branch.getIndex(時支) + 6]
-        4, 9 -> Stem[Branch.getIndex(時支) + 8]
-        else -> throw AssertionError("Error")
-      }
+
+      時干 = getHourStem(臨時日干 , 時支)
+
+//      時干 = when (Stem.getIndex(臨時日干)) {
+//        0, 5 -> Stem[Branch.getIndex(時支)]
+//        1, 6 -> Stem[Branch.getIndex(時支) + 2]
+//        2, 7 -> Stem[Branch.getIndex(時支) + 4]
+//        3, 8 -> Stem[Branch.getIndex(時支) + 6]
+//        4, 9 -> Stem[Branch.getIndex(時支) + 8]
+//        else -> throw AssertionError("Error")
+//      }
       return EightWords(year, month, day, StemBranch[時干, 時支])
     }
 
@@ -135,7 +138,21 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
     return cacheLmt.get(key) { inner() }
   }
 
+
+
   companion object {
+
+    /** 五鼠遁日 */
+    fun getHourStem(dayStem : Stem , hourBranch : Branch) : Stem {
+      return when (Stem.getIndex(dayStem)) {
+        0, 5 -> Stem[Branch.getIndex(hourBranch)]
+        1, 6 -> Stem[Branch.getIndex(hourBranch) + 2]
+        2, 7 -> Stem[Branch.getIndex(hourBranch) + 4]
+        3, 8 -> Stem[Branch.getIndex(hourBranch) + 6]
+        4, 9 -> Stem[Branch.getIndex(hourBranch) + 8]
+        else -> throw AssertionError("Error")
+      }
+    }
 
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }

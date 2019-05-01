@@ -23,7 +23,7 @@ class HourLmtImpl : IHour, Serializable {
 
   override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
     val gmt = revJulDayFunc.invoke(gmtJulDay)
-    val lmtHour = TimeTools.getLmtFromGmt(gmt, location).get(ChronoField.HOUR_OF_DAY)
+    val lmtHour = TimeTools.getLmtFromGmt(gmt, location).get(HOUR_OF_DAY)
     return getHour(lmtHour)
   }
 

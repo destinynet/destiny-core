@@ -275,7 +275,6 @@ class FortuneLargeSpanImpl(
 
     if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
     if (intAgeImpl != other.intAgeImpl) return false
-    if (starTransitImpl != other.starTransitImpl) return false
     if (fortuneMonthSpan != other.fortuneMonthSpan) return false
     if (ageNoteImpls != other.ageNoteImpls) return false
 
@@ -285,7 +284,6 @@ class FortuneLargeSpanImpl(
   override fun hashCode(): Int {
     var result = fortuneDirectionImpl.hashCode()
     result = 31 * result + intAgeImpl.hashCode()
-    result = 31 * result + starTransitImpl.hashCode()
     result = 31 * result + fortuneMonthSpan.hashCode()
     result = 31 * result + ageNoteImpls.hashCode()
     return result

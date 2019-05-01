@@ -23,6 +23,6 @@ class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>
 
   override fun getBranch(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
     val pos = starPositionImpl.getPosition(Planet.SUN, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
-    return ZodiacSign.of(pos.lng).branch
+    return pos.sign.branch
   }
 }

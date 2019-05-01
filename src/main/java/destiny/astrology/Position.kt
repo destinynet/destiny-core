@@ -9,6 +9,14 @@ interface IPos {
   val speedLng: Double  // speed in lng (degree / day)
   val speedLat: Double  // speed in lat (degree / day)
   val speedDistance: Double // speed in distance (AU / day)
+
+  /** 黃道什麼星座 */
+  val sign: ZodiacSign
+    get() = ZodiacSign.of(lng)
+
+  /** 黃道什麼星座 , 以及該星座的度數 (0~30) */
+  val signDegree: Pair<ZodiacSign, Double>
+    get() = ZodiacSign.getSignAndDegree(lng)
 }
 
 data class Position(
@@ -21,7 +29,7 @@ data class Position(
 
 
 interface IPositionWithAzimuth : IPos {
-  val azimuth : Azimuth
+  val azimuth: Azimuth
 }
 
 data class PositionWithAzimuth(

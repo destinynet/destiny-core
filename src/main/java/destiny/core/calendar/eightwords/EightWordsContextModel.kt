@@ -3,13 +3,22 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.ZodiacSign
+import destiny.astrology.*
 import destiny.core.calendar.*
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
+
+/**
+ * 目前這星體的位置，以及其「時辰」(地盤12宮)
+ */
+data class PositionWithBranch(
+  val pos: IPos,
+  val hour: StemBranch
+)
+
 
 /** 純粹八字（不含「人」的資料） */
 interface IEightWordsContextModel {
@@ -25,7 +34,7 @@ interface IEightWordsContextModel {
   val gmtMinuteOffset: Int
 
   val gmtJulDay
-    get() = TimeTools.getGmtJulDay(lmt , location)
+    get() = TimeTools.getGmtJulDay(lmt, location)
 
   /** 地點名稱  */
   val place: String?
@@ -34,25 +43,26 @@ interface IEightWordsContextModel {
   val chineseDate: ChineseDate
 
   /** 與前後節氣 （外加中氣、亦即星座） 的相對位置 */
-  val solarTermsTimePos : SolarTermsTimePos
+  val solarTermsTimePos: SolarTermsTimePos
 
 
   /** 上一個(目前)星座 , 以及 GMT Jul Day */
-  val prevSolarSign : Pair<ZodiacSign , Double>
+  val prevSolarSign: Pair<ZodiacSign, Double>
 
   /** 下一個星座 , 以及 GMT Jul Day */
-  val nextSolarSign : Pair<ZodiacSign , Double>
+  val nextSolarSign: Pair<ZodiacSign, Double>
 
   /** 命宮 (上升星座)  */
   val risingStemBranch: StemBranch
+
+  /** 星體位置表 */
+  val starPosMap : Map<Star , PositionWithBranch>
 
   /** 太陽星座 */
   val sunSign: ZodiacSign
 
   /** 月亮星座 */
-  val moonSign:ZodiacSign
-
-
+  val moonSign: ZodiacSign
 }
 
 /**
@@ -97,11 +107,14 @@ data class EightWordsContextModel(
   /** 下一個星座 , 以及 GMT Jul Day */
   override val nextSolarSign: Pair<ZodiacSign, Double>,
 
+  /** 星體位置表 */
+  override val starPosMap: Map<Star, PositionWithBranch>,
+
   /** 月亮星座 */
   override val moonSign: ZodiacSign) : IEightWordsContextModel, Serializable {
 
   /** 太陽星座 */
-  override val sunSign : ZodiacSign by lazy {
+  override val sunSign: ZodiacSign by lazy {
     prevSolarSign.first
   }
 

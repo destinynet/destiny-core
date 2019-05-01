@@ -10,6 +10,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
+import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import java.io.Serializable
@@ -64,8 +65,25 @@ class EightWordsContext(
       val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl)
 
       val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
-      val sunSign = getSignOf(Planet.SUN, lmt, location, starPositionImpl)
+
+
+      // 日干
+      val dayStem = eightWords.day.stem
+
+      // 五星 + 南北交點
+      val stars: List<Star> = listOf(*Planet.classicalArray , *LunarNode.meanArray)
+
+      val starPosMap : Map<Star, PositionWithBranch> = stars.map { p ->
+        val pos: IPos = starPositionImpl.getPosition(p , lmt , location , Centric.GEO , Coordinate.ECLIPTIC)
+        val hourImpl = HourSolarTransImpl(riseTransImpl , p)
+        val hourBranch: Branch = hourImpl.getHour(gmtJulDay , location)
+        val hourStem = EightWordsImpl.getHourStem(dayStem , hourBranch)
+        val hour = StemBranch[hourStem , hourBranch]
+        p to PositionWithBranch(pos , hour)
+      }.toMap()
+
       val moonSign = getSignOf(Planet.MOON, lmt, location, starPositionImpl)
+
 
 
       val (prevSolarSign, nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location)
@@ -74,9 +92,8 @@ class EightWordsContext(
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
         solarTermsTimePos, risingSign,
-        prevSolarSign, nextSolarSign,
-        moonSign
-                                   )
+        prevSolarSign, nextSolarSign, starPosMap,
+        moonSign)
     }
 
     return cache.get(key) { innerGetModel() }
@@ -103,7 +120,7 @@ class EightWordsContext(
                         location: ILocation,
                         starPositionImpl: IStarPosition<*>): ZodiacSign {
     val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
-    return ZodiacSign.of(pos.lng)
+    return pos.sign
   }
 
   override fun equals(other: Any?): Boolean {

@@ -56,7 +56,7 @@ enum class ZodiacSign(private val nameKey: String,
 
   /** 取得對沖的星座  */
   val oppositeSign: ZodiacSign
-    get() = ZodiacSign.values()[normalize(this.index + 6)]
+    get() = values()[normalize(this.index + 6)]
 
   /** 取得星座的 index , 為 0-based , 牡羊座為 0 , 金牛座為 1 , ... , 雙魚座為 11  */
   val index: Int by lazy {
