@@ -27,17 +27,11 @@ interface IZiweiModernContext : IZiweiContext {
 
   val yearMonthImpl : IYearMonth
 
-  val dayImpl: IDay
-
-  val hourImpl: IHour
+  val dayHourImpl : IDayHour
 
   val dayNightImpl : IDayNight
 
-  val midnightImpl: IMidnight
-
   val relativeTransitImpl : IRelativeTransit
-
-  val changeDayAfterZi: Boolean
 
   /** 輸入現代化的資料，計算本命盤  */
   fun getModernPlate(lmt: ChronoLocalDateTime<*>,
@@ -52,12 +46,10 @@ class ZModernContext(
   override val chineseDateImpl: IChineseDate,
   override val solarTermsImpl: ISolarTerms,
   override val yearMonthImpl: IYearMonth,
-  override val dayImpl: IDay,
-  override val hourImpl: IHour,
+  override val dayHourImpl: IDayHour,
   override val dayNightImpl: IDayNight,
-  override val midnightImpl: IMidnight,
-  override val relativeTransitImpl: IRelativeTransit,
-  override val changeDayAfterZi: Boolean = true) : IZiweiModernContext, IZiweiContext by context, Serializable {
+  override val relativeTransitImpl: IRelativeTransit
+) : IZiweiModernContext, IZiweiContext by context, Serializable {
 
 
   private val intAgeZiweiImpl : IIntAge by lazy {
@@ -86,7 +78,7 @@ class ZModernContext(
     val dst = t2.first
     val minuteOffset = t2.second / 60
 
-    val cDate = chineseDateImpl.getChineseDate(lmt, location, dayImpl)
+    val cDate = chineseDateImpl.getChineseDate(lmt, location, dayHourImpl)
     val cycle = cDate.cycleOrZero
     val yinYear = cDate.year
 
@@ -97,7 +89,7 @@ class ZModernContext(
     val solarTerms = solarTermsImpl.getSolarTerms(lmt, location)
     val lunarDays = cDate.day
 
-    val hour = hourImpl.getHour(lmt, location)
+    val hour = dayHourImpl.getHour(lmt, location)
     if (dst) {
       // 日光節約時間 特別註記
       notesBuilders.add(Pair("dst", arrayOf()))
@@ -105,10 +97,10 @@ class ZModernContext(
       logger.info("lmt = {} , location = {} . location.hasMinuteOffset = {}", lmt, location, location.hasMinuteOffset)
       logger.info("loc tz = {} , minuteOffset = {}", location.timeZone.id, location.finalMinuteOffset)
       logger.info("日光節約時間： {} ,  GMT 時差 : {}", dst, minuteOffset)
-      logger.info("時辰 = {} . hourImpl = {}", hour, hourImpl.javaClass.simpleName)
+      logger.info("時辰 = {} . hourImpl = {}", hour, dayHourImpl.hourImpl.javaClass.simpleName)
     }
 
-    if (hourImpl is HourSolarTransImpl) {
+    if (dayHourImpl.hourImpl is HourSolarTransImpl) {
       // 如果是真太陽時
       val hour2 = HourLmtImpl().getHour(lmt, location)
       if (hour != hour2) {

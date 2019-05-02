@@ -5,6 +5,7 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.chinese.Branch
@@ -14,8 +15,9 @@ import java.time.chrono.ChronoLocalDateTime
 interface IPalmContext {
 
   val positiveImpl : IPositive
-  val hourImpl : IHour
-  val midnightImpl : IMidnight
+  val dayHourImpl : IDayHour
+//  val hourImpl : IHour
+//  val midnightImpl : IMidnight
   val monthAlgo : IFinalMonthNumber.MonthAlgo
   val trueRisingSign: Boolean
   val changeDayAfterZi: Boolean

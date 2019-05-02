@@ -26,9 +26,11 @@ class EightWordsContext(
 
   /** 陰陽曆轉換的實作  */
   override val chineseDateImpl: IChineseDate,
+  /** 年月 */
   override val yearMonthImpl: IYearMonth,
-  override val dayImpl: IDay,
-  override val hourImpl: IHour,
+  /** 日時 */
+  override val dayHourImpl : IDayHour,
+
   override val risingSignImpl: IRisingSign,
 
   private val starPositionImpl: IStarPosition<*>,
@@ -62,7 +64,7 @@ class EightWordsContext(
       val gmtJulDay = TimeTools.getGmtJulDay(lmt , location)
       // 現在的節氣
       val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
-      val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayImpl)
+      val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayHourImpl)
 
       val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
 
@@ -82,9 +84,6 @@ class EightWordsContext(
         p to PositionWithBranch(pos , hour)
       }.toMap()
 
-      val moonSign = getSignOf(Planet.MOON, lmt, location, starPositionImpl)
-
-
 
       val (prevSolarSign, nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location)
 
@@ -92,8 +91,7 @@ class EightWordsContext(
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
         solarTermsTimePos, risingSign,
-        prevSolarSign, nextSolarSign, starPosMap,
-        moonSign)
+        prevSolarSign, nextSolarSign, starPosMap)
     }
 
     return cache.get(key) { innerGetModel() }
@@ -115,13 +113,6 @@ class EightWordsContext(
     return StemBranch[risingStem, risingBranch]
   }
 
-  private fun getSignOf(star: Star,
-                        lmt: ChronoLocalDateTime<*>,
-                        location: ILocation,
-                        starPositionImpl: IStarPosition<*>): ZodiacSign {
-    val pos = starPositionImpl.getPosition(star, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
-    return pos.sign
-  }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -129,8 +120,7 @@ class EightWordsContext(
 
     if (chineseDateImpl != other.chineseDateImpl) return false
     if (yearMonthImpl != other.yearMonthImpl) return false
-    if (dayImpl != other.dayImpl) return false
-    if (hourImpl != other.hourImpl) return false
+    if (dayHourImpl != other.dayHourImpl) return false
 
     return true
   }
@@ -138,8 +128,8 @@ class EightWordsContext(
   override fun hashCode(): Int {
     var result = chineseDateImpl.hashCode()
     result = 31 * result + yearMonthImpl.hashCode()
-    result = 31 * result + dayImpl.hashCode()
-    result = 31 * result + hourImpl.hashCode()
+    result = 31 * result + dayHourImpl.hashCode()
+
     return result
   }
 

@@ -12,12 +12,12 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * 目前這星體的位置，以及其「時辰」(地盤12宮)
+ * 目前這星體的位置，以及其「時辰」(「類似」地盤12宮)
  */
 data class PositionWithBranch(
-  val pos: IPos,
+  private val pos: IPos,
   val hour: StemBranch
-)
+) : IPos by pos
 
 
 /** 純粹八字（不含「人」的資料） */
@@ -58,11 +58,6 @@ interface IEightWordsContextModel {
   /** 星體位置表 */
   val starPosMap : Map<Star , PositionWithBranch>
 
-  /** 太陽星座 */
-  val sunSign: ZodiacSign
-
-  /** 月亮星座 */
-  val moonSign: ZodiacSign
 }
 
 /**
@@ -71,8 +66,7 @@ interface IEightWordsContextModel {
 interface IEightWordsContext : IEightWordsFactory {
   val chineseDateImpl: IChineseDate
   val yearMonthImpl: IYearMonth
-  val dayImpl: IDay
-  val hourImpl: IHour
+  val dayHourImpl : IDayHour
   val risingSignImpl: IRisingSign
 
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
@@ -108,15 +102,8 @@ data class EightWordsContextModel(
   override val nextSolarSign: Pair<ZodiacSign, Double>,
 
   /** 星體位置表 */
-  override val starPosMap: Map<Star, PositionWithBranch>,
-
-  /** 月亮星座 */
-  override val moonSign: ZodiacSign) : IEightWordsContextModel, Serializable {
-
-  /** 太陽星座 */
-  override val sunSign: ZodiacSign by lazy {
-    prevSolarSign.first
-  }
+  override val starPosMap: Map<Star, PositionWithBranch>
+) : IEightWordsContextModel, Serializable {
 
   /** 是否有日光節約  */
   override val dst: Boolean

@@ -6,10 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.IDay
-import destiny.core.calendar.eightwords.IHour
-import destiny.core.calendar.eightwords.IMidnight
-import destiny.core.calendar.eightwords.IYearMonth
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.Branch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -30,22 +27,21 @@ import java.time.chrono.ChronoLocalDateTime
  * 再由 [YearType] 來決定要挑哪一個
  */
 class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
-                            val dayImpl: IDay,
+                            val dayHourImpl: IDayHour,
                             private val chineseDateImpl: IChineseDate,
-                            val hourImpl: IHour,
                             val mainStarsAlgo: IFinalMonthNumber.MonthAlgo?) : IMainBodyHouse, Serializable {
 
   /** 命宮、身宮 、以及「最後要給主星所使用的月數 (若為占星算法，此值為空) 」 */
   override fun getMainBodyHouse(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<Branch, Branch , Int?> {
 
-    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl)
+    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
 
     val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
 
     val lunarMonth = cDate.month
     val days = cDate.day
 
-    val hour = hourImpl.getHour(lmt, loc)
+    val hour = dayHourImpl.getHour(lmt, loc)
 
     // 最終要計算的「月份」數字 , for 主星
     val finalMonthNumForMainStars = IFinalMonthNumber.getFinalMonthNumber(lunarMonth, cDate.isLeapMonth, monthBranch, days, mainStarsAlgo)

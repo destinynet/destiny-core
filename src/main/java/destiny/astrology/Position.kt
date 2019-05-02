@@ -2,7 +2,7 @@ package destiny.astrology
 
 import java.io.Serializable
 
-interface IPos {
+interface IPos : Serializable {
   val lng: Double
   val lat: Double
   val distance: Double  // in AU
@@ -25,7 +25,7 @@ data class Position(
   override val distance: Double,
   override val speedLng: Double,
   override val speedLat: Double,
-  override val speedDistance: Double) : IPos, Serializable
+  override val speedDistance: Double) : IPos
 
 
 interface IPositionWithAzimuth : IPos {

@@ -8,6 +8,7 @@ import destiny.core.Descriptive
 import destiny.core.calendar.CalType
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDay
+import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.StemBranch
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDate
@@ -45,7 +46,7 @@ interface IChineseDate : Descriptive {
    */
   fun getChineseDate(lmt: ChronoLocalDateTime<*>,
                      location: ILocation,
-                     dayImpl: IDay): ChineseDate
+                     dayHourImpl: IDayHour): ChineseDate
 
 
   // =============== 陰曆轉陽曆 ===============

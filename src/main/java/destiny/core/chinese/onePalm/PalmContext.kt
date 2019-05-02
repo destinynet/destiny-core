@@ -19,9 +19,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 class PalmContext(override val positiveImpl: IPositive,
                   val chineseDateImpl: IChineseDate,
-                  val dayImpl: IDay,
-                  override val hourImpl: IHour,
-                  override val midnightImpl: IMidnight,
+                  override val dayHourImpl : IDayHour,
                   val risingSignImpl: IRisingSign,
                   val yearMonthImpl: IYearMonth,
                   override val monthAlgo: IFinalMonthNumber.MonthAlgo,
@@ -77,8 +75,8 @@ class PalmContext(override val positiveImpl: IPositive,
                        place: String?,
                        name: String?): IPalmMetaModel {
 
-    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayImpl)
-    val hourBranch = hourImpl.getHour(lmt, loc)
+    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
+    val hourBranch = dayHourImpl.getHour(lmt, loc)
     val chineseDateHour = ChineseDateHour(cDate, hourBranch)
 
     val trueRising: Branch? = if (trueRisingSign) {

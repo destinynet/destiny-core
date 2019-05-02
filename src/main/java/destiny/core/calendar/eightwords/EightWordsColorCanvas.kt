@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
 import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.personal.IHiddenStems
@@ -133,12 +134,12 @@ class EightWordsColorCanvas(
       var x = 0
       if (context.yearMonthImpl is YearMonthSunSignImpl) {
         val monthDesc =
-          ChineseStringTools.toBiggerDigits(120) + "月柱法" + "（" + model.sunSign + "）"
+          ChineseStringTools.toBiggerDigits(120) + "月柱法" + "（" + model.starPosMap.getValue(Planet.SUN).sign + "）"
         cc.setText(monthDesc, 5, 1, "FF0000")
         x += 22
       }
 
-      cc.setText("換日：" + if (context.dayImpl.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
+      cc.setText("換日：" + if (context.dayHourImpl.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
       if (location.northSouth == NorthSouth.SOUTH) {
         val yearMonthImpl = context.yearMonthImpl
         if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {
@@ -152,10 +153,10 @@ class EightWordsColorCanvas(
       val dstString = if (isDst) "有" else "無"
       cc.setText(dstString, 5, x + 29, if (isDst) "FF0000" else "", "", null)
 
-      cc.setText("子正是：" + context.dayImpl.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, null, null,
-                 context.dayImpl.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
-      cc.setText("時辰劃分：" + context.hourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, null, null,
-                 context.hourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+      cc.setText("子正是：" + context.dayHourImpl.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, null, null,
+                 context.dayHourImpl.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+      cc.setText("時辰劃分：" + context.dayHourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, null, null,
+                 context.dayHourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       val risingLine = 8
       //val 命宮 = model.risingStemBranch
       val 命宮String = model.risingStemBranch.let { sb ->

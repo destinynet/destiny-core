@@ -17,8 +17,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
 
 class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支計算的實作
-                     , val dayImpl: IDay                // 計算日干支的介面
-                     , val hourImpl: IHour              // 計算時支的介面
+                     , val dayHourImpl : IDayHour       // 日、時 的實作
 ) : IEightWordsFactory, Serializable {
 
   private data class CacheKeyGmt(val gmtJulDay: Double, val loc: ILocation)
@@ -35,18 +34,18 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
       val year = yearMonthImpl.getYear(gmtJulDay, loc)
 
       val month = yearMonthImpl.getMonth(gmtJulDay, loc)
-      val day = dayImpl.getDay(gmtJulDay, loc)
+      val day = dayHourImpl.getDay(gmtJulDay, loc)
       var 臨時日干 = day.stem
-      val 時支 = this.hourImpl.getHour(gmtJulDay, loc)
+      val 時支 = this.dayHourImpl.getHour(gmtJulDay, loc)
 
       val 時干: Stem
 
       val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
 
-      val nextZi = hourImpl.getLmtNextStartOf(lmt, loc, 子, revJulDayFunc)
+      val nextZi = dayHourImpl.getLmtNextStartOf(lmt, loc, 子, revJulDayFunc)
 
       // 如果「子正」才換日
-      if (!dayImpl.changeDayAfterZi) {
+      if (!dayHourImpl.changeDayAfterZi) {
         /**
          * <pre>
          * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
@@ -57,7 +56,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
          * |------------------|--------------------|--------------------|------------------|
         </pre> *
          */
-        if (day !== dayImpl.getDay(nextZi, loc))
+        if (day !== dayHourImpl.getDay(nextZi, loc))
           臨時日干 = Stem[臨時日干.index + 1]
       }
 
@@ -98,16 +97,16 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
     fun inner(): IEightWords {
       val year = yearMonthImpl.getYear(lmt, loc)
       val month = yearMonthImpl.getMonth(lmt, loc)
-      val day = dayImpl.getDay(lmt, loc)
+      val day = dayHourImpl.getDay(lmt, loc)
       var 臨時日干 = day.stem
-      val 時支 = this.hourImpl.getHour(lmt, loc)
+      val 時支 = this.dayHourImpl.getHour(lmt, loc)
 
       val 時干: Stem
 
-      val nextZi = hourImpl.getLmtNextStartOf(lmt, loc, 子, revJulDayFunc)
+      val nextZi = dayHourImpl.getLmtNextStartOf(lmt, loc, 子, revJulDayFunc)
 
       // 如果「子正」才換日
-      if (!dayImpl.changeDayAfterZi) {
+      if (!dayHourImpl.changeDayAfterZi) {
         /**
          * <pre>
          * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
@@ -118,7 +117,7 @@ class EightWordsImpl(val yearMonthImpl: IYearMonth      // 換年, 以及月支�
          * |------------------|--------------------|--------------------|------------------|
         </pre> *
          */
-        if (day !== dayImpl.getDay(nextZi, loc))
+        if (day !== dayHourImpl.getDay(nextZi, loc))
           臨時日干 = Stem[臨時日干.index + 1]
       }
 

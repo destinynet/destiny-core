@@ -112,14 +112,15 @@ class DayImpl(override val midnightImpl: IMidnight,
    * 取得 GMT 此時刻，在此地 的一日，從何時，到何時 (gmt)
    */
   override fun getDayRange(gmtJulDay: Double, location: ILocation): Pair<Double, Double> {
-    val 下個子初 = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子)
-    val 上個子正 = midnightImpl.getPrevMidnight(gmtJulDay , location)
-    val 下個子正 = midnightImpl.getNextMidnight(gmtJulDay , location)
     return if (changeDayAfterZi) {
       // 子初換日
-      TODO()
+      val 上個子初 = hourImpl.getGmtPrevStartOf(gmtJulDay , location , Branch.子)
+      val 下個子初 = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子)
+      上個子初 to 下個子初
     } else {
       // 子正換日
+      val 上個子正 = midnightImpl.getPrevMidnight(gmtJulDay , location)
+      val 下個子正 = midnightImpl.getNextMidnight(gmtJulDay , location)
       上個子正 to 下個子正
     }
   }

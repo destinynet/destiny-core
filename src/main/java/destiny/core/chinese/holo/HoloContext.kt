@@ -412,7 +412,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     // 計算此時刻，處於何節氣中 , 開始為何時
     val (solarTerms, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
 
-    val dayImpl = (eightWordsImpl as EightWordsImpl).dayImpl
+    val dayImpl = (eightWordsImpl as EightWordsImpl).dayHourImpl
     val startSB = dayImpl.getDay(startGmt, loc)
     val viewSB = dayImpl.getDay(viewGmt, loc)
     val diffDays: Int = viewSB.getAheadOf(startSB) + 1 // 沒有第零日 , 「節」當日也算第一日
@@ -429,7 +429,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
     val stemBranches = (1..6).map { settings.getStemBranch(dayHex, it) }
 
-    val hourImpl = eightWordsImpl.hourImpl
+    val hourImpl = eightWordsImpl.dayHourImpl.hourImpl
 
     val start = if (dayImpl.changeDayAfterZi)  {
       hourImpl.getGmtPrevStartOf(viewGmt , loc , 子)

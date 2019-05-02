@@ -214,7 +214,7 @@ class HourLmtImpl : IHour, Serializable {
    * LMT 要實作
    */
   override fun getTitle(locale: Locale): String {
-    return "以當地標準鐘錶時間區隔時辰"
+    return "以地方平均時（LMT）來區隔"
   }
 
 
