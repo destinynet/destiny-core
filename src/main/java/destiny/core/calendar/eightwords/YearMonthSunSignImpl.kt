@@ -34,7 +34,7 @@ class YearMonthSunSignImpl(
   }
 
   override fun getTitle(locale: Locale): String {
-    return "120柱月令"
+    return name
   }
 
   override fun getDescription(locale: Locale): String {
@@ -75,6 +75,10 @@ class YearMonthSunSignImpl(
     result = 31 * result + southernHemisphereOpposition.hashCode()
     result = 31 * result + hemisphereBy.hashCode()
     return result
+  }
+
+  companion object {
+    const val name = "120柱月令"
   }
 
 

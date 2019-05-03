@@ -255,7 +255,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
 
 
   override fun getTitle(locale: Locale): String {
-    return "真太陽時"
+    return name
   }
 
   override fun getDescription(locale: Locale): String {
@@ -286,6 +286,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
 
 
   companion object {
+    const val name = "真太陽時"
     val logger = KotlinLogging.logger {}
   }
 

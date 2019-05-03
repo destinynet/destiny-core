@@ -38,7 +38,7 @@ class YearMonthSolarTermsStarPositionImpl(
   YearEclipticDegreeImpl(changeYearDegree, starPositionImpl), IYearMonth {
 
   override fun getTitle(locale: Locale): String {
-    return "傳統年月"
+    return name
   }
 
   override fun getDescription(locale: Locale): String {
@@ -174,6 +174,7 @@ class YearMonthSolarTermsStarPositionImpl(
   }
 
   companion object {
+    const val name = "傳統年月"
     val logger = KotlinLogging.logger {  }
   }
 
