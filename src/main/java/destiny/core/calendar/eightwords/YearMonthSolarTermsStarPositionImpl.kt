@@ -124,13 +124,6 @@ class YearMonthSolarTermsStarPositionImpl(
   private fun getMonthStem(gmtJulDay: Double, 年干: Stem, 月支: Branch): Stem {
 
     var 月干: Stem = StemBranchUtils.getMonthStem(年干 , 月支)
-//    var 月干: Stem = when (年干) {
-//      甲, 己 -> if (月支.index >= 2) Stem[Branch.getIndex(月支)] else Stem[Branch.getIndex(月支) + 2]
-//      乙, 庚 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 2] else Stem[Branch.getIndex(月支) + 4]
-//      丙, 辛 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 4] else Stem[Branch.getIndex(月支) + 6]
-//      丁, 壬 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 6] else Stem[Branch.getIndex(月支) + 8]
-//      戊, 癸 -> if (月支.index >= 2) Stem[Branch.getIndex(月支) + 8] else Stem[Branch.getIndex(月支) + 10]
-//    }
 
     if (changeYearDegree != 315.0) {
 

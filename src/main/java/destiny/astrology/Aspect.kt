@@ -80,7 +80,7 @@ enum class Aspect(private val nameKey: String,
      * 取得某類重要度 (高/中/低) 的角度列表
      */
     fun getAngles(importance: Importance): List<Aspect> {
-      return importanceAngles[importance]!!
+      return importanceAngles.getValue(importance)
     }
 
 

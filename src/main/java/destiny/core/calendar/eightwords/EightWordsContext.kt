@@ -13,6 +13,7 @@ import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import destiny.core.chinese.StemBranchUtils.getHourStem
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
@@ -67,7 +68,7 @@ class EightWordsContext(
       val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
       val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayHourImpl)
 
-      val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
+      //val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
 
 
       // 日干
@@ -76,7 +77,7 @@ class EightWordsContext(
       // 五星 + 南北交點
       val stars: List<Star> = listOf(*Planet.classicalArray , *LunarNode.meanArray)
 
-      val starPosMap : Map<Star, PositionWithBranch> = stars.map { p ->
+      val starPosMap : Map<Point, PositionWithBranch> = stars.map { p ->
         val pos: IPos = starPositionImpl.getPosition(p , lmt , location , Centric.GEO , Coordinate.ECLIPTIC)
 
         val hourImpl = HourHouseImpl(houseCuspImpl , starPositionImpl , p)
@@ -96,17 +97,16 @@ class EightWordsContext(
         put(10 , houseCusps[10])
       }.toMap()
 
-
-
-
-
       val (prevSolarSign, nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location)
 
       val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
 
+      val calculator = HoroscopeAspectsCalculator(HoroscopeAspectsCalculatorModern())
+      val aspectDataSet = calculator.getAspectDataSet(starPosMap)
+
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
-        solarTermsTimePos, risingSign,
-        prevSolarSign, nextSolarSign, starPosMap , houseMap)
+        solarTermsTimePos,
+        prevSolarSign, nextSolarSign, starPosMap , houseMap , aspectDataSet)
     }
 
     return cache.get(key) { innerGetModel() }
@@ -148,5 +148,9 @@ class EightWordsContext(
     return result
   }
 
+
+  companion object {
+    val logger = KotlinLogging.logger {  }
+  }
 
 }

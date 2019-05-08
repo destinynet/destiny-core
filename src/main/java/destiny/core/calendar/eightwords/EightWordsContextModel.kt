@@ -52,15 +52,21 @@ interface IEightWordsContextModel {
   /** 下一個星座 , 以及 GMT Jul Day */
   val nextSolarSign: Pair<ZodiacSign, Double>
 
-  /** 命宮 (上升星座)  */
-  @Deprecated("")
-  val risingStemBranch: StemBranch
-
   /** 星體位置表 */
-  val starPosMap : Map<Star , PositionWithBranch>
+  val starPosMap: Map<Point, PositionWithBranch>
+
+  /** 命宮 (上升星座) */
+  val risingStemBranch: StemBranch
+    get() {
+      return starPosMap.getValue(Planet.SUN).hour
+    }
+
 
   /** 四至點 (house of 1 , 4 , 7 , 10) 黃道度數 */
-  val houseMap : Map<Int , Double>
+  val houseMap: Map<Int, Double>
+
+  /** 星體交角 */
+  val aspectsDataSet: Set<HoroscopeAspectData>
 }
 
 /**
@@ -69,7 +75,7 @@ interface IEightWordsContextModel {
 interface IEightWordsContext : IEightWordsFactory {
   val chineseDateImpl: IChineseDate
   val yearMonthImpl: IYearMonth
-  val dayHourImpl : IDayHour
+  val dayHourImpl: IDayHour
   val risingSignImpl: IRisingSign
 
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
@@ -94,10 +100,6 @@ data class EightWordsContextModel(
   /** 與前後節氣 （外加中氣） 的相對位置 */
   override val solarTermsTimePos: SolarTermsTimePos,
 
-
-  /** 命宮 (上升星座)  */
-  override val risingStemBranch: StemBranch,
-
   /** 上一個(目前)星座 , 以及 GMT Jul Day */
   override val prevSolarSign: Pair<ZodiacSign, Double>,
 
@@ -105,10 +107,13 @@ data class EightWordsContextModel(
   override val nextSolarSign: Pair<ZodiacSign, Double>,
 
   /** 星體位置表 */
-  override val starPosMap: Map<Star, PositionWithBranch>,
+  override val starPosMap: Map<Point, PositionWithBranch>,
 
   /** 四至點 (house of 1 , 4 , 7 , 10) 黃道度數 */
-  override val houseMap: Map<Int, Double>
+  override val houseMap: Map<Int, Double>,
+
+  /** 星體交角 */
+  override val aspectsDataSet: Set<HoroscopeAspectData>
 ) : IEightWordsContextModel, Serializable {
 
   /** 是否有日光節約  */

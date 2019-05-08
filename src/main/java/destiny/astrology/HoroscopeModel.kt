@@ -122,14 +122,14 @@ interface IHoroscopeModel {
    */
   fun getHouse(degree: Double): Int {
     for (i in 1..11) {
-      if (Math.abs(cuspDegreeMap[i + 1]!! - cuspDegreeMap[i]!!) < 180) {
+      if (Math.abs(cuspDegreeMap.getValue(i + 1) - cuspDegreeMap.getValue(i)) < 180) {
         //沒有切換360度的問題
-        if (cuspDegreeMap[i]!! <= degree && degree < cuspDegreeMap[i + 1]!!)
+        if (cuspDegreeMap.getValue(i) <= degree && degree < cuspDegreeMap.getValue(i + 1))
           return i
       } else {
         //切換360度
-        if (cuspDegreeMap[i]!! <= degree && degree < cuspDegreeMap[i + 1]!! + 360 ||
-          cuspDegreeMap[i]!! <= degree + 360 && degree < cuspDegreeMap[i + 1]!!)
+        if (cuspDegreeMap.getValue(i) <= degree && degree < cuspDegreeMap.getValue(i + 1) + 360 ||
+          cuspDegreeMap.getValue(i) <= degree + 360 && degree < cuspDegreeMap.getValue(i + 1))
           return i
       }
     }
@@ -166,21 +166,23 @@ interface IHoroscopeModel {
    * 取得單一 Horoscope 中 , 任兩顆星的交角
    */
   fun getAngle(fromPoint: Point, toPoint: Point): Double {
-    return getAngle(positionMap[fromPoint]!!.lng, positionMap[toPoint]!!.lng)
+    return getAngle(positionMap.getValue(fromPoint).lng, positionMap.getValue(toPoint).lng)
   }
 
   /**
    * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度
    * 例如兩星交角 175 度 , Aspect = 沖 (180) , 則 誤差 5 度
    */
+  @Deprecated("")
   fun getAspectError(p1: Point, p2: Point, aspect: Aspect): Double {
-    val angle = getAngle(p1, p2) //其值必定小於等於 180度
-    return Math.abs(aspect.degree - angle)
+    return Companion.getAspectError(positionMap , p1, p2, aspect)?:0.0
+//    val angle = getAngle(p1, p2) //其值必定小於等於 180度
+//    return Math.abs(aspect.degree - angle)
   }
 
   /** 取得一顆星體 Point / Star 在星盤上的角度  */
   fun getPositionWithAzimuth(point: Point): PositionWithAzimuth {
-    return positionMap[point]!!
+    return positionMap.getValue(point)
   }
 
 
@@ -219,6 +221,20 @@ interface IHoroscopeModel {
   }
 
   companion object {
+
+    /**
+     * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度
+     * 例如兩星交角 175 度 , Aspect = 沖 (180) , 則 誤差 5 度
+     */
+    fun getAspectError(positionMap: Map<Point, IPos> , p1:Point , p2:Point , aspect: Aspect) : Double? {
+      return positionMap[p1]?.let { p1Pos ->
+        positionMap[p2]?.let { p2Pos ->
+          val angle = getAngle(p1Pos.lng , p2Pos.lng)
+          Math.abs(aspect.degree - angle)
+        }
+      }
+    }
+
     /**
      * @return 計算黃道帶上兩個度數的交角 , 其值必定小於等於 180度
      */

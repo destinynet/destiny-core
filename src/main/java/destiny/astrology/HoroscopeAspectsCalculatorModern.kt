@@ -13,8 +13,6 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
 
   private val modern: AspectEffectiveModern = AspectEffectiveModern()
 
-  private val logger = LoggerFactory.getLogger(javaClass)
-
   /** 現代占星術，內定只計算重要性為「高」的角度  */
   private var aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)
 
@@ -23,17 +21,18 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
     this.aspects = aspects
   }
 
-  override fun getPointAspect(point: Point, horoscope: IHoroscopeModel, points: Collection<Point>): Map<Point, Aspect> {
+  override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>): Map<Point, Aspect> {
 
-    val starDeg = horoscope.getPositionWithAzimuth(point).lng
-
-    return points
-      .filter { it !== point }
-      .flatMap { eachPoint ->
-        val eachDeg = horoscope.getPositionWithAzimuth(eachPoint).lng
-        aspects.filter { eachAspect -> modern.isEffective(starDeg, eachDeg, eachAspect) }
-          .map { eachAspect -> eachPoint to eachAspect }
-      }.toMap()
+    return positionMap[point]?.lng?.let { starDeg ->
+      points
+        .filter { it !== point }
+        .filter { positionMap.containsKey(it) }
+        .flatMap { eachPoint ->
+          val eachDeg = positionMap.getValue(eachPoint).lng
+          aspects.filter { eachAspect -> modern.isEffective(starDeg, eachDeg, eachAspect) }
+            .map { eachAspect -> eachPoint to eachAspect }
+        }.toMap()
+    }?: emptyMap()
 
   }
 

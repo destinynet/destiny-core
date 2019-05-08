@@ -19,16 +19,15 @@ class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffective
   /** 取得交角容許度的實作，例如 ( [PointDiameterAlBiruniImpl] 或是 [PointDiameterLillyImpl] )  */
   var planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl
 
-
-  override fun getPointAspect(point: Point, horoscope: IHoroscopeModel, points: Collection<Point>): Map<Point, Aspect> {
+  override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>): Map<Point, Aspect> {
 
     return if (point is Planet) {
-      val planetDeg = horoscope.getPositionWithAzimuth(point).lng
+      val planetDeg = positionMap.getValue(point).lng
       //只比對 0 , 60 , 90 , 120 , 180 五個度數
       points
         .filter { it !== point }
         .flatMap { eachPoint ->
-          val eachPlanetDeg = horoscope.getPositionWithAzimuth(eachPoint).lng
+          val eachPlanetDeg = positionMap.getValue(eachPoint).lng
           Aspect.getAngles(Aspect.Importance.HIGH)
             .filter { classical.isEffective(point, planetDeg, eachPoint, eachPlanetDeg, it) }
             .map { eachPoint to it }
@@ -38,7 +37,6 @@ class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffective
       emptyMap()
     }
   }
-
 
   override fun getTitle(locale: Locale): String {
     return "古典占星術 : " + classical.planetOrbsImpl.getTitle(locale)

@@ -4,43 +4,43 @@
  */
 package destiny.astrology
 
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 
-/** 利用 HoroscopeAspectsCalculatorIF , 計算命盤之中，星體所呈現的交角，及其容許度  */
-class HoroscopeAspectsCalculator(private val horoscope: IHoroscopeModel, private val calculator: IHoroscopeAspectsCalculator) : Serializable {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
-
+/** 利用 [IHoroscopeAspectsCalculator] , 計算命盤之中，星體所呈現的交角，及其容許度  */
+class HoroscopeAspectsCalculator(private val calculator: IHoroscopeAspectsCalculator) : Serializable {
 
   /**
-   * 計算 points 之間所形成的交角 . aspects 為要計算的交角 , 如果 aspects 為 null , 代表不過濾任何交角 <br></br>
+   *
+   *
    * 如果沒有形成任何交角（不太可能 , 除非 points 很少 ），則傳回 size = 0 之 Set
+   *
+   * @param positionMap : 計算 此 map 星體之間所形成的交角
+   * @param points : 欲計算交角的 points , 因為 positionMap 可能包含許多小星體 , 沒必要計算的星體
+   * @param aspects : 要計算的交角
    */
-  @JvmOverloads
-  fun getAspectDataSet(points: Collection<Point>, aspects: Collection<Aspect>? = null): Collection<HoroscopeAspectData> {
+  fun getAspectDataSet(positionMap: Map<Point ,IPos>,
+                       points: Collection<Point> = positionMap.keys,
+                       aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)): Set<HoroscopeAspectData> {
+
     val dataSet = mutableSetOf<HoroscopeAspectData>()
 
-    for (point in points) {
-      val map = calculator.getPointAspect(point, horoscope, points)
+    points.map { point ->
+      val map: Map<Point, Aspect> = calculator.getPointAspect(point, positionMap, points)
       logger.debug("與 {} 形成所有交角的 pointAspect Map = {}", point, map)
 
-      val setOfPoint = map.filter { (key , value) -> aspects?.contains(value)?:false }
-        .map { (key , value) -> HoroscopeAspectData(point , key , value , horoscope.getAspectError(point , key , value)) }
+      map.filter { (_, value) -> aspects.contains(value) }
+        .map { (key, value) -> HoroscopeAspectData(point, key, value, IHoroscopeModel.getAspectError(positionMap , point, key, value)?:0.0) }
         .toSet()
+    }.flatMapTo(dataSet ) { it }
+      .toSet()
 
-      dataSet.addAll(setOfPoint)
-
-//      for ((key, value) in map) {
-//        //處理過濾交角的事宜
-//        if (aspects == null || aspects.size == 0 || aspects.contains(value)) {
-//          val data = HoroscopeAspectData(point, key, value, horoscope.getAspectError(point, key, value))
-//          logger.debug("data : twoPoints = {} 形成 {} 角 , 交角 {} 度", data.twoPoints, data.aspect, data.orb)
-//          dataSet.add(data)
-//        }
-//      }
-    }
     return dataSet
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger { }
   }
 
 }
