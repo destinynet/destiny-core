@@ -9,10 +9,12 @@ import java.io.Serializable
 
 /**
  * 干、支 可其中一個為空，也可兩個都為空
+ * nullable & UnConstrained
  */
 interface IStemBranchOptional : Serializable {
   val stem: Stem?
   val branch: Branch?
+
 }
 
 data class StemBranchOptional(
@@ -23,9 +25,9 @@ data class StemBranchOptional(
   val index: Int?
     get() = getIndex(this)
 
-  init {
-    check(stem, branch)
-  }
+//  init {
+//    check(stem, branch)
+//  }
 
   fun next(n: Int): StemBranchOptional? {
     val index = getIndex(this)
@@ -60,23 +62,23 @@ data class StemBranchOptional(
     }
 
     operator fun get(stem: Stem?, branch: Branch?): StemBranchOptional {
-      //check(stem, branch)
 
-      return if (stem != null && branch != null) {
-        val sIndex = Stem.getIndex(stem)
-        val bIndex = Branch.getIndex(branch)
-
-        when (sIndex - bIndex) {
-          0, -10 -> get(bIndex)
-          2, -8 -> get(bIndex + 12)
-          4, -6 -> get(bIndex + 24)
-          6, -4 -> get(bIndex + 36)
-          8, -2 -> get(bIndex + 48)
-          else -> throw AssertionError("Invalid Stem/Branch Combination!")
-        }
-      } else {
-        StemBranchOptional(stem, branch)
-      }
+      return StemBranchOptional(stem, branch)
+//      return if (stem != null && branch != null) {
+//        val sIndex = Stem.getIndex(stem)
+//        val bIndex = Branch.getIndex(branch)
+//
+//        when (sIndex - bIndex) {
+//          0, -10 -> get(bIndex)
+//          2, -8 -> get(bIndex + 12)
+//          4, -6 -> get(bIndex + 24)
+//          6, -4 -> get(bIndex + 36)
+//          8, -2 -> get(bIndex + 48)
+//          else -> throw AssertionError("Invalid Stem/Branch Combination! $stem & $branch , value = ${sIndex - bIndex}")
+//        }
+//      } else {
+//        StemBranchOptional(stem, branch)
+//      }
     }
 
     operator fun get(stemChar: Char, branchChar: Char): StemBranchOptional {
@@ -102,13 +104,13 @@ data class StemBranchOptional(
       return null
     }
 
-    private fun check(stem: Stem?, branch: Branch?) {
-      if (stem != null && branch != null) {
-        require(stem.booleanValue == SimpleBranch.getBooleanValue(branch)) {
-          "Stem/Branch combination illegal ! $stem cannot be combined with $branch"
-        }
-      }
-    }
+//    private fun check(stem: Stem?, branch: Branch?) {
+//      if (stem != null && branch != null) {
+//        require(stem.booleanValue == SimpleBranch.getBooleanValue(branch)) {
+//          "Stem/Branch combination illegal ! $stem cannot be combined with $branch"
+//        }
+//      }
+//    }
 
     operator fun iterator(): Iterator<StemBranchOptional> {
       return ARRAY.iterator()

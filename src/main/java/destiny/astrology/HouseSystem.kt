@@ -14,7 +14,7 @@ enum class HouseSystem(private val nameKey: String) : ILocaleString {
 
   PLACIDUS("HouseSystem.PLACIDUS"),
   KOCH("HouseSystem.KOCH"),
-  /** 東昇/天頂 均等三等分 */
+  /** 東昇/天頂 度數 均等三等分 , Porphyry */
   PORPHYRIUS("HouseSystem.PORPHYRIUS"),
   REGIOMONTANUS("HouseSystem.REGIOMONTANUS"),
   CAMPANUS("HouseSystem.CAMPANUS"),
@@ -22,7 +22,15 @@ enum class HouseSystem(private val nameKey: String) : ILocaleString {
   VEHLOW_EQUAL("HouseSystem.VEHLOW_EQUAL"),
   AXIAL_ROTATION("HouseSystem.AXIAL_ROTATION"),
   HORIZONTAL("HouseSystem.HORIZONTAL"),
-  ALCABITIUS("HouseSystem.ALCABITIUS");
+  ALCABITIUS("HouseSystem.ALCABITIUS"),
+  /**
+   * axial rotation system/ Meridian houses
+   * this is a non-quadrant system that can be described as both space- and time-based
+   *
+   * (wiki) Each house is exactly 2 sidereal hours long.
+   *  */
+  MERIDIAN("HouseSystem.MERIDIAN")
+  ;
 
   override fun toString(): String {
     return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)

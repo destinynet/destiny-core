@@ -53,11 +53,14 @@ interface IEightWordsContextModel {
   val nextSolarSign: Pair<ZodiacSign, Double>
 
   /** 命宮 (上升星座)  */
+  @Deprecated("")
   val risingStemBranch: StemBranch
 
   /** 星體位置表 */
   val starPosMap : Map<Star , PositionWithBranch>
 
+  /** 四至點 (house of 1 , 4 , 7 , 10) 黃道度數 */
+  val houseMap : Map<Int , Double>
 }
 
 /**
@@ -102,7 +105,10 @@ data class EightWordsContextModel(
   override val nextSolarSign: Pair<ZodiacSign, Double>,
 
   /** 星體位置表 */
-  override val starPosMap: Map<Star, PositionWithBranch>
+  override val starPosMap: Map<Star, PositionWithBranch>,
+
+  /** 四至點 (house of 1 , 4 , 7 , 10) 黃道度數 */
+  override val houseMap: Map<Int, Double>
 ) : IEightWordsContextModel, Serializable {
 
   /** 是否有日光節約  */

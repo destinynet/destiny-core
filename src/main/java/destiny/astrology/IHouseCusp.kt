@@ -22,7 +22,7 @@ interface IHouseCusp : IRisingSign {
   fun getHouseCusps(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): DoubleArray
 
   /**
-   * 取得所有宮（1~12）的宮首，是什麼星座 . 傳回一個 length=13 的 array , array[0] 不使用。
+   * 取得所有宮（1~12）的宮首，是什麼星座
    */
   fun getHouseSigns(gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): Map<Int , ZodiacSign> {
     val cusps = getHouseCusps(gmtJulDay, location, houseSystem, coordinate)
@@ -35,7 +35,7 @@ interface IHouseCusp : IRisingSign {
 
   /** 取得「上升星座」 (分宮法/HouseSystem  或許不需要)  */
   override fun getRisingSign(gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacSign {
-    return getHouseSigns(gmtJulDay, location, houseSystem, coordinate)[1]!!
+    return getHouseSigns(gmtJulDay, location, houseSystem, coordinate).getValue(1)
   }
 
 

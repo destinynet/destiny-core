@@ -69,7 +69,7 @@ enum class Aspect(private val nameKey: String,
 
     private const val resource = "destiny.astrology.Astrology"
 
-    private val importanceAngles: Map<Importance, List<Aspect>> = Aspect.values().groupBy { it.importance }
+    private val importanceAngles: Map<Importance, List<Aspect>> = values().groupBy { it.importance }
 
     /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null  */
     fun getAspectFromName(value: String): Aspect? {

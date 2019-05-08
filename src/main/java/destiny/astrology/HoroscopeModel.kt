@@ -158,7 +158,7 @@ interface IHoroscopeModel {
       return getCuspDegree(cusp - 12)
     else if (cusp < 1)
       return getCuspDegree(cusp + 12)
-    return cuspDegreeMap[cusp]!!
+    return cuspDegreeMap.getValue(cusp)
   }
 
 

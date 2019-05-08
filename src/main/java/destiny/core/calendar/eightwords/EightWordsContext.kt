@@ -10,9 +10,9 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
+import destiny.core.chinese.StemBranchUtils.getHourStem
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.concurrent.TimeUnit
@@ -35,6 +35,7 @@ class EightWordsContext(
 
   private val starPositionImpl: IStarPosition<*>,
   private val solarTermsImpl: ISolarTerms,
+  private val houseCuspImpl : IHouseCusp,
   val zodiacSignImpl: IZodiacSign,
   val riseTransImpl : IRiseTrans) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
@@ -77,12 +78,26 @@ class EightWordsContext(
 
       val starPosMap : Map<Star, PositionWithBranch> = stars.map { p ->
         val pos: IPos = starPositionImpl.getPosition(p , lmt , location , Centric.GEO , Coordinate.ECLIPTIC)
-        val hourImpl = HourSolarTransImpl(riseTransImpl , p)
-        val hourBranch: Branch = hourImpl.getHour(gmtJulDay , location)
-        val hourStem = EightWordsImpl.getHourStem(dayStem , hourBranch)
+
+        val hourImpl = HourHouseImpl(houseCuspImpl , starPositionImpl , p)
+        val hourBranch = hourImpl.getHour(gmtJulDay, location)
+
+        val hourStem = getHourStem(dayStem , hourBranch)
         val hour = StemBranch[hourStem , hourBranch]
         p to PositionWithBranch(pos , hour)
       }.toMap()
+
+      val houseCusps: DoubleArray = houseCuspImpl.getHouseCusps(gmtJulDay , location , HouseSystem.MERIDIAN , Coordinate.ECLIPTIC)
+
+      val houseMap = mutableMapOf<Int , Double>().apply {
+        put(1 , houseCusps[1])
+        put(4 , houseCusps[4])
+        put(7 , houseCusps[7])
+        put(10 , houseCusps[10])
+      }.toMap()
+
+
+
 
 
       val (prevSolarSign, nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location)
@@ -91,7 +106,7 @@ class EightWordsContext(
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
         solarTermsTimePos, risingSign,
-        prevSolarSign, nextSolarSign, starPosMap)
+        prevSolarSign, nextSolarSign, starPosMap , houseMap)
     }
 
     return cache.get(key) { innerGetModel() }

@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import org.threeten.extra.chrono.JulianChronology
 import java.io.Serializable
@@ -43,7 +44,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
      */
     private const val GREGORIAN_START_INSTANT = -12219292800000L
 
-    private val logger = LoggerFactory.getLogger(JulDayResolver1582CutoverImpl::class.java)
+    private val logger = KotlinLogging.logger {  }
 
     /**
      * @param gmtInstant 從 Instant 轉為 日期、時間
@@ -149,7 +150,10 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       ad = when (plusMinus) {
         '+' -> true
         '-' -> false
-        else -> throw RuntimeException("AD not correct : $plusMinus")
+        else -> {
+          logger.error("Cannot decode debugString : {}" , s)
+          throw RuntimeException("AD not correct : $plusMinus")
+        }
       }
 
       val yearOfEra = s.substring(1, 5).trim { it <= ' ' }.toInt()

@@ -34,7 +34,7 @@ sealed class Planet(val nameKey: String,
     val list by lazy { listOf(*array) }
 
     fun fromString(value: String): Planet? {
-      return Planet.array.firstOrNull {
+      return array.firstOrNull {
         it.getName(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }

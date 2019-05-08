@@ -15,6 +15,7 @@ interface IDay {
   /** 是否子初換日 */
   val changeDayAfterZi: Boolean
 
+  /** 子正實作 */
   val midnightImpl: IMidnight
 
   /**

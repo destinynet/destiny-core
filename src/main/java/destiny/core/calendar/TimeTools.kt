@@ -276,6 +276,7 @@ class TimeTools : Serializable {
      */
     fun decode(s: String): ChronoLocalDateTime<*> {
       val trimmed = StringTools.clean(s)
+      logger.trace("clean '{}' => '{}' " , s , trimmed)
       return when {
         trimmed.startsWith('G') -> LocalDateTime.parse(trimmed.substring(1), DateTimeFormatter.ISO_DATE_TIME)
         trimmed.startsWith('J') -> {
@@ -286,7 +287,7 @@ class TimeTools : Serializable {
           val time = LocalTime.parse(s.substring(s.indexOf('T') + 1))
           JulianDateTime.of(year, month, day, time.hour, time.minute, time.second, time.nano)
         }
-        else -> JulDayResolver1582CutoverImpl.fromDebugString(s)
+        else -> JulDayResolver1582CutoverImpl.fromDebugString(trimmed)
       }
     }
 

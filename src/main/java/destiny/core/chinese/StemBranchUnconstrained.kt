@@ -172,6 +172,9 @@ enum class StemBranchUnconstrained(override val stem: Stem,
     return values().indexOf(sbu)
   }
 
+
+
+
   companion object {
 
     /** 0[甲子] ~ 119[甲亥] */

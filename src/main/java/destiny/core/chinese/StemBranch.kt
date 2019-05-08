@@ -7,6 +7,9 @@ import destiny.core.chinese.StemBranch.甲子
 import destiny.core.chinese.StemBranch.癸亥
 import destiny.tools.ArrayTools
 
+/**
+ * non-nullable && unConstrained
+ */
 interface IStemBranch : IStemBranchOptional , ILoop<IStemBranch> {
   override val stem: Stem
   override val branch: Branch
