@@ -42,15 +42,6 @@ class EightWordsContext(
 
   private data class CacheKey(val lmt: ChronoLocalDateTime<*>, val location: ILocation, val place: String?)
 
-  /**
-   * TODO : 2019-02-02 : use ehcache to replace guava cache . 在紫微排盤後，切換到其他排盤，在切回原紫微盤，無法做時辰切換 , 換用 ehcache 不知能否解決此 bug
-   *
-   * Caused by: com.google.common.util.concurrent.UncheckedExecutionException: com.google.common.util.concurrent.UncheckedExecutionException: java.lang.NullPointerException
-   * at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2050)
-   * at com.google.common.cache.LocalCache.get(LocalCache.java:3952)
-   * at com.google.common.cache.LocalCache$LocalManualCache.get(LocalCache.java:4871)
-   * at destiny.core.calendar.eightwords.EightWordsContext.getEightWordsContextModel(EightWordsContext.kt:73)
-   */
   private val cache: Cache<CacheKey, IEightWordsContextModel> = CacheBuilder.newBuilder()
     .maximumSize(100)
     .expireAfterAccess(10, TimeUnit.SECONDS)
@@ -68,7 +59,8 @@ class EightWordsContext(
       val eightWords = this.eightWordsImpl.getEightWords(lmt, location)
       val chineseDate = this.chineseDateImpl.getChineseDate(lmt, location, dayHourImpl)
 
-      //val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
+      // 命宮
+      val risingSign = getRisingStemBranch(lmt, location, eightWords, risingSignImpl)
 
 
       // 日干
@@ -88,14 +80,17 @@ class EightWordsContext(
         p to PositionWithBranch(pos , hour)
       }.toMap()
 
-      val houseCusps: DoubleArray = houseCuspImpl.getHouseCusps(gmtJulDay , location , HouseSystem.MERIDIAN , Coordinate.ECLIPTIC)
 
-      val houseMap = mutableMapOf<Int , Double>().apply {
-        put(1 , houseCusps[1])
-        put(4 , houseCusps[4])
-        put(7 , houseCusps[7])
-        put(10 , houseCusps[10])
-      }.toMap()
+      val houseMap: Map<Int, Double> = houseCuspImpl.getHouseCuspMap(gmtJulDay , location , HouseSystem.MERIDIAN , Coordinate.ECLIPTIC)
+
+      // 四個至點的黃道度數
+      val placidusMap = houseCuspImpl.getHouseCusps(gmtJulDay , location , HouseSystem.PLACIDUS , Coordinate.ECLIPTIC)
+      val rsmiMap = mutableMapOf<TransPoint , Double>().apply {
+        put(TransPoint.RISING , placidusMap[1])
+        put(TransPoint.NADIR , placidusMap[4])
+        put(TransPoint.SETTING, placidusMap[7])
+        put(TransPoint.MERIDIAN , placidusMap[10])
+      }
 
       val (prevSolarSign, nextSolarSign) = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location)
 
@@ -106,7 +101,7 @@ class EightWordsContext(
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
         solarTermsTimePos,
-        prevSolarSign, nextSolarSign, starPosMap , houseMap , aspectDataSet)
+        prevSolarSign, nextSolarSign, starPosMap ,risingSign, houseMap , rsmiMap , aspectDataSet)
     }
 
     return cache.get(key) { innerGetModel() }

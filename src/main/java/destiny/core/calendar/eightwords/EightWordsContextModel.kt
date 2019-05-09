@@ -57,13 +57,12 @@ interface IEightWordsContextModel {
 
   /** 命宮 (上升星座) */
   val risingStemBranch: StemBranch
-    get() {
-      return starPosMap.getValue(Planet.SUN).hour
-    }
 
-
-  /** 四至點 (house of 1 , 4 , 7 , 10) 黃道度數 */
+  /** 12地盤時辰 宮首 的黃道度數 */
   val houseMap: Map<Int, Double>
+
+  /** 四至點 的 黃道度數 */
+  val rsmiMap : Map<TransPoint , Double>
 
   /** 星體交角 */
   val aspectsDataSet: Set<HoroscopeAspectData>
@@ -109,8 +108,14 @@ data class EightWordsContextModel(
   /** 星體位置表 */
   override val starPosMap: Map<Point, PositionWithBranch>,
 
-  /** 四至點 (house of 1 , 4 , 7 , 10) 黃道度數 */
+  /** 命宮 (上升星座) */
+  override val risingStemBranch: StemBranch,
+
+  /** 12地盤時辰 宮首 的黃道度數 */
   override val houseMap: Map<Int, Double>,
+
+  /** 四至點 的黃道度數 */
+  override val rsmiMap : Map<TransPoint , Double>,
 
   /** 星體交角 */
   override val aspectsDataSet: Set<HoroscopeAspectData>

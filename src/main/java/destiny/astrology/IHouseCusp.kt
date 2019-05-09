@@ -19,16 +19,36 @@ interface IHouseCusp : IRisingSign {
   /**
    * 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 length=13 的 array , array[0] 不使用, array[1] 為第 1 宮 , ... , array[12] 為第 12 宮
    */
-  fun getHouseCusps(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): DoubleArray
+  fun getHouseCusps(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): DoubleArray
 
   /**
+   * 承上， 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 Map , key 為 1~12 , value 為 [Coordinate] 度數 (default 黃道)
+   */
+  fun getHouseCuspMap(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , Double> {
+    return getHouseCusps(gmtJulDay, loc, houseSystem, coordinate)
+      .drop(1)
+      .mapIndexed { index, d ->
+        val houseIndex = index+1
+        houseIndex to d
+      }.toMap()
+  }
+
+  /**
+   * 取得所有宮（1~12）的宮首，是什麼星座 , 以及宮首在該星座的度數
+   */
+  fun getHouseSignsAndDegrees(gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , Pair<ZodiacSign , Double>> {
+    return getHouseCuspMap(gmtJulDay, location, houseSystem, coordinate).map { (houseIndex , degree) ->
+      houseIndex to ZodiacSign.getSignAndDegree(degree)
+    }.toMap()
+  }
+
+  /**
+   * 承上，只取星座
    * 取得所有宮（1~12）的宮首，是什麼星座
    */
-  fun getHouseSigns(gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): Map<Int , ZodiacSign> {
-    val cusps = getHouseCusps(gmtJulDay, location, houseSystem, coordinate)
-
-    return (1..12).map {
-      it to ZodiacSign.of(cusps[it])
+  fun getHouseSigns(gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , ZodiacSign> {
+    return getHouseSignsAndDegrees(gmtJulDay, location, houseSystem, coordinate).map { (houseIndex , pair) ->
+      houseIndex to pair.first
     }.toMap()
   }
 
