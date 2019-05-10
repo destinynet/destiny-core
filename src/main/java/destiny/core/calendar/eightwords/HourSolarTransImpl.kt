@@ -43,13 +43,13 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
 
   override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
 
-    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
-    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
+    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
     if (nextNadir > nextMeridian) {
       //子正到午正（上半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-      val previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       logger.debug("gmtJulDay = {}", gmtJulDay)
 
@@ -68,7 +68,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
     } else {
       //午正到子正（下半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       val diffDays = nextNadir - previousMeridian
       val oneUnitDays = diffDays / 12.0
@@ -90,12 +90,15 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
   // 午後 (不含子)
   private val 未to亥 = listOf(未, 申, 酉, 戌, 亥)
 
+  /**
+   * 取得「下一個」此地支的開始時刻
+   */
   override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
     val resultGmt: Double
     // 下個午正
-    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
     // 下個子正
-    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
     val currentEb: Branch = getHour(gmtJulDay, location) // 取得目前在哪個時辰之中
 
@@ -103,7 +106,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
       // 目前時刻 位於子正到午正（上半天）
       val twelveHoursAgo = gmtJulDay - 0.5
       // 上一個子正
-      val previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
 
       val oneUnit1 = (nextMeridian - previousNadir) / 12.0 // 單位為 day , 左半部
@@ -119,9 +122,9 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
         }
       } else {
         // 欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰 : ex 目前是寅時，要計算「下一個丑時」 ==> 算的是明天的丑時
-        val nextNextMeridian = riseTransImpl.getGmtTransJulDay(nextNadir, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+        val nextNextMeridian = riseTransImpl.getGmtTransJulDay(nextNadir, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
         val oneUnit3 = (nextNextMeridian - nextNadir) / 12.0
-        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridian, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridian, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
         val oneUnit4 = (nextNextNadir - nextNextMeridian) / 12.0
         resultGmt = when {
           丑to午.contains(eb) -> nextNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)
@@ -134,7 +137,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
       // 目前時刻 位於 午正到子正（下半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
       // 上一個午正
-      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       val oneUnit1 = (nextMeridian - nextNadir) / 12.0 //從 下一個子正 到 下一個午正，總共幾天
       val oneUnit2 = (nextNadir - previousMeridian) / 12.0 //從 下一個子正 到 上一個午正，總共幾秒
@@ -150,7 +153,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
       } else {
         // 欲求的時辰，早於現在所處的時辰
         val oneUnit3 = (nextMeridian - nextNadir) / 12.0
-        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridian, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridian, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
         val oneUnit4 = (nextNextNadir - nextMeridian) / 12.0
         resultGmt = when {
           未to亥.contains(eb) -> nextMeridian + oneUnit4 * ((eb.index - 7) * 2 + 1)
@@ -169,9 +172,9 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
    */
   override fun getGmtPrevStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
     // 下個午正
-    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
     // 下個子正
-    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
     val currentEb: Branch = getHour(gmtJulDay, location) // 取得目前在哪個時辰之中
 
@@ -181,13 +184,13 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
       // 目前時刻 位於子正到午正（上半天）
 
       // 上一個子正
-      val previousNadir = riseTransImpl.getGmtTransJulDay(nextMeridian - 0.75, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val previousNadir = riseTransImpl.getGmtTransJulDay(nextMeridian - 0.75, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       //上一個午正 : 用「上一個子正」減去 0.75 (約早上六點) , 使其必定能夠算出「上一個午正」
-      val prevMeridian = riseTransImpl.getGmtTransJulDay(previousNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val prevMeridian = riseTransImpl.getGmtTransJulDay(previousNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       // 上、上一個子正： 用「上一個午正」減去 0.75 (約晚上六點) , 使其必定能算出「上上一個子正」
-      val prevPrevNadir = riseTransImpl.getGmtTransJulDay(prevMeridian - 0.75, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val prevPrevNadir = riseTransImpl.getGmtTransJulDay(prevMeridian - 0.75, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       return if (eb.index > currentEb.index || eb == 子) {
         // 目前時辰，小於欲求的時辰 ==> 算的是昨天的時辰
@@ -218,13 +221,13 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
       // 目前時刻 位於 午正到子正（下半天）
 
       // 上一個午正
-      val prevMeridian = riseTransImpl.getGmtTransJulDay(nextNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val prevMeridian = riseTransImpl.getGmtTransJulDay(nextNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       // 上一個子正
-      val previousNadir = riseTransImpl.getGmtTransJulDay(prevMeridian - 0.75, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val previousNadir = riseTransImpl.getGmtTransJulDay(prevMeridian - 0.75, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       // 上、上一個午正 : 用「上一個子正」減去 0.75 (約上午六點), 必定能算出「上上一個午正」
-      val prevPrevMeridian = riseTransImpl.getGmtTransJulDay(previousNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)
+      val prevPrevMeridian = riseTransImpl.getGmtTransJulDay(previousNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction, atmosphericTemperature, atmosphericPressure)!!
 
       val oneUnit3 = (prevMeridian - previousNadir) / 12.0
 

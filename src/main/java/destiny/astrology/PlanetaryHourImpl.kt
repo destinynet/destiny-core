@@ -69,8 +69,9 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
 
   private fun getHourIndexOfDay(gmtJulDay: Double, loc: Location): HourIndexOfDay {
 
-    val nextRising = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc)
-    val nextSetting = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc)
+    // TODO : 極區內可能不適用
+    val nextRising = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, RISING, loc)!!
+    val nextSetting = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, SETTING, loc)!!
 
     val halfDayIndex: HourIndexOfDay
     val dayNight: DayNight
@@ -78,18 +79,18 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
       // 目前是黑夜
       dayNight = DayNight.NIGHT
       // 先計算「接近上一個中午」的時刻，這裡不用算得很精準
-      val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc) - 1 // 記得減一
+      val nearPrevMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, MERIDIAN, loc)!! - 1 // 記得減一
       // 接著，計算「上一個」日落時刻
-      val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc)
+      val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc)!!
 
       halfDayIndex = getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let { HourIndexOfDay(it.hourStart , it.hourEnd , it.hourIndex , dayNight) }
     } else {
       // 目前是白天
       dayNight = DayNight.DAY
       // 先計算「接近上一個子正的時刻」，這禮不用算得很經準
-      val nearPrevMidNight = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, NADIR, loc) - 1 // 記得減一
+      val nearPrevMidNight = riseTransImpl.getGmtTransJulDay(gmtJulDay, SUN, NADIR, loc)!! - 1 // 記得減一
       // 接著，計算「上一個」日出時刻
-      val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc)
+      val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc)!!
 
       halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let { HourIndexOfDay(it.hourStart , it.hourEnd , it.hourIndex , dayNight) }
     }

@@ -41,12 +41,18 @@ class HourHouseImpl(val houseCuspImpl : IHouseCusp,
     return houseToBranch(houseIndex)
   }
 
+  /**
+   * 取得「下一個」此地支的開始時刻
+   */
   override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
+  /**
+   * 取得「前一個」此地支的開始時刻
+   */
   override fun getGmtPrevStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   override fun getTitle(locale: Locale): String {
