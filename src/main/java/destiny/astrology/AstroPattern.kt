@@ -14,8 +14,9 @@ sealed class AstroPattern(override val name: String,
   }
 
   // T-Squared
-  class 三刑會沖(private val oppoPoints: Set<Point>, private val squaredPoint: Point) : AstroPattern("三刑會沖", "$oppoPoints 正沖，兩者均與 $squaredPoint 相刑")
+  class 三刑會沖(val oppoPoints: Set<Point>, val squaredPoint: Point) : AstroPattern("三刑會沖", "$oppoPoints 正沖，兩者均與 $squaredPoint 相刑")
 
+  class 三刑會衝逢解(val embed: 三刑會沖, point : Point) : AstroPattern("三刑會衝逢解" , "$embed , 逢 $point 化解")
 
 }
 
@@ -29,8 +30,14 @@ object AstroPatterns {
 
   val classicalList = Planet.classicalList
 
+  // 90
   val squareCalculator = modernCalculator {
     aspects = setOf(Aspect.SQUARE)
+  }
+
+  // 60,120
+  val sextileTrineCalculator = modernCalculator {
+    aspects = setOf(Aspect.SEXTILE, Aspect.TRINE)
   }
 
   // 只計算 0,60,90,120,180 五個重要交角
@@ -61,8 +68,21 @@ object AstroPatterns {
             AstroPattern.三刑會沖(two, squareP)
           }
         }.toSet()
-
     }
+  }
+
+  object TSquareWithHelp : IPatternFactory, Serializable {
+    override fun getPattern(starPosMap: Map<Point, IPos>): Set<AstroPattern> {
+
+      return TSquared.getPattern(starPosMap)
+        .map { it as AstroPattern.三刑會沖 }
+        .flatMap {
+          sextileTrineCalculator.getPointAspect(it.squaredPoint, starPosMap).map { (k,v) ->
+            AstroPattern.三刑會衝逢解(it, k)
+          }
+        }.toSet()
+    }
+
   }
 }
 
