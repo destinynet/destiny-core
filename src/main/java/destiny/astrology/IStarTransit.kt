@@ -22,7 +22,7 @@ interface IStarTransit {
   /**
    * 傳回 GMT 時刻
    */
-  fun getNextTransitGmt(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, forward: Boolean): Double
+  fun getNextTransitGmt(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, forward: Boolean = true): Double
 
 
   /**

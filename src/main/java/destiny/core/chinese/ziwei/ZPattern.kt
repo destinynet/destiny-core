@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.IPattern
 import destiny.core.chinese.Branch
 import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.*
@@ -93,14 +94,6 @@ enum class Route {
   入,
   夾,
   拱,
-}
-
-
-interface IPattern {
-
-  val name: String
-
-  val notes: String?
 }
 
 

@@ -39,7 +39,7 @@ interface IHoroscopeContext {
   fun getHoroscope(lmt: ChronoLocalDateTime<*>,
                    loc: ILocation,
                    place: String?,
-                   points: Collection<Point>?,
+                   points: Collection<Point>? = defaultPoints,
                    houseSystem: HouseSystem? = HouseSystem.PLACIDUS,
                    coordinate: Coordinate? = Coordinate.ECLIPTIC,
                    centric: Centric? = Centric.GEO,

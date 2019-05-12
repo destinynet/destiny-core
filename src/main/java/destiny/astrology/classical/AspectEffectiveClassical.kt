@@ -24,8 +24,7 @@ import kotlin.math.abs
 class AspectEffectiveClassical(val planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl()) : IAspectEffective, Serializable {
 
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, angle: Double): Boolean {
-    return abs(
-      IHoroscopeModel.getAngle(deg1, deg2) - angle) <= (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
+    return abs(IHoroscopeModel.getAngle(deg1, deg2) - angle) <= (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
   }
 
   /**

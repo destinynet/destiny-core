@@ -13,11 +13,40 @@ import destiny.astrology.classical.IPointDiameter
 import java.io.Serializable
 import java.util.*
 
-/** 古典占星術，列出一張星盤中呈現交角的星體以及角度 的實作  */
-class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffectiveClassical) : IHoroscopeAspectsCalculator, Serializable {
 
-  /** 取得交角容許度的實作，例如 ( [PointDiameterAlBiruniImpl] 或是 [PointDiameterLillyImpl] )  */
+class AspectEffectiveClassicalBuilder {
+  var planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl()
+  fun build(): AspectEffectiveClassical = AspectEffectiveClassical(planetOrbsImpl)
+}
+
+fun aspectEffectiveClassical(block: AspectEffectiveClassicalBuilder.() -> Unit = {}) = AspectEffectiveClassicalBuilder().apply(block).build()
+
+
+class HoroscopeAspectsCalculatorClassicalBuilder {
+
+  var classical: AspectEffectiveClassical = AspectEffectiveClassicalBuilder().build()
   var planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl
+    set(value) {
+      field = value
+      classical = aspectEffectiveClassical {
+        planetOrbsImpl = value
+      }
+    }
+
+  fun build() = HoroscopeAspectsCalculatorClassical(classical)
+}
+
+fun classicalCalculator(block: HoroscopeAspectsCalculatorClassicalBuilder.() -> Unit = {}) = HoroscopeAspectsCalculatorClassicalBuilder().apply(block).build()
+
+
+/**
+ * 古典占星術，列出一張星盤中呈現交角的星體以及角度 的實作
+ * @param aspects 其實只能運算 [Aspect.Importance.HIGH]
+ *  */
+class HoroscopeAspectsCalculatorClassical(
+  val classical: AspectEffectiveClassical,
+  val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl,
+  override val aspects : Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)) : IHoroscopeAspectsCalculator, Serializable {
 
   override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>): Map<Point, Aspect> {
 
@@ -28,7 +57,7 @@ class HoroscopeAspectsCalculatorClassical(private val classical: AspectEffective
         .filter { it !== point }
         .flatMap { eachPoint ->
           val eachPlanetDeg = positionMap.getValue(eachPoint).lng
-          Aspect.getAngles(Aspect.Importance.HIGH)
+          aspects
             .filter { classical.isEffective(point, planetDeg, eachPoint, eachPlanetDeg, it) }
             .map { eachPoint to it }
         }.toMap()

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.IPattern
 import destiny.core.chinese.Branch
 import java.io.Serializable
 

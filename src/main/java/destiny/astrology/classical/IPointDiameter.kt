@@ -9,7 +9,7 @@ import destiny.core.Descriptive
 
 /**
  * 「古典占星術」所使用，取得星體光芒的「直徑」
- * 內定實作為 PointDiameterAlBiruniImpl , 未來可以用資料庫實作。
+ * 內定實作為 [PointDiameterAlBiruniImpl] , 未來可以用資料庫實作。
  */
 interface IPointDiameter : Descriptive {
 

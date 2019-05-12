@@ -169,16 +169,6 @@ interface IHoroscopeModel {
     return getAngle(positionMap.getValue(fromPoint).lng, positionMap.getValue(toPoint).lng)
   }
 
-  /**
-   * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度
-   * 例如兩星交角 175 度 , Aspect = 沖 (180) , 則 誤差 5 度
-   */
-  @Deprecated("")
-  fun getAspectError(p1: Point, p2: Point, aspect: Aspect): Double {
-    return Companion.getAspectError(positionMap , p1, p2, aspect)?:0.0
-//    val angle = getAngle(p1, p2) //其值必定小於等於 180度
-//    return Math.abs(aspect.degree - angle)
-  }
 
   /** 取得一顆星體 Point / Star 在星盤上的角度  */
   fun getPositionWithAzimuth(point: Point): PositionWithAzimuth {

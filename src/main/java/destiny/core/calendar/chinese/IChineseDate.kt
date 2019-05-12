@@ -7,7 +7,6 @@ package destiny.core.calendar.chinese
 import destiny.core.Descriptive
 import destiny.core.calendar.CalType
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.eightwords.IDay
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.StemBranch
 import org.threeten.extra.chrono.JulianDate

@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.DayNight
+import destiny.core.IPattern
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem

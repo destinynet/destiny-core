@@ -13,7 +13,7 @@ import java.util.*
 data class HoroscopeAspectData(val p1: Point,
                                val p2: Point,
                                /** 兩星所形成的交角  */
-                               val aspect: Aspect?,
+                               val aspect: Aspect,
                                /** orb 不列入 equals / hashCode 計算  */
                                val orb: Double = 0.0) : Comparable<HoroscopeAspectData>, Serializable {
   private val pointComp = PointComparator()
@@ -50,7 +50,7 @@ data class HoroscopeAspectData(val p1: Point,
   override fun hashCode(): Int {
     val prime = 31
     var result = 1
-    result = prime * result + (aspect?.hashCode() ?: 0)
+    result = prime * result + aspect.hashCode()
     result = prime * result + twoPoints.hashCode()
     return result
   }
@@ -63,10 +63,7 @@ data class HoroscopeAspectData(val p1: Point,
     if (javaClass != other.javaClass)
       return false
     val o = other as HoroscopeAspectData?
-    if (aspect == null) {
-      if (o!!.aspect != null)
-        return false
-    } else if (aspect != o!!.aspect)
+    if (aspect != o!!.aspect)
       return false
     if (twoPoints != o.twoPoints)
       return false

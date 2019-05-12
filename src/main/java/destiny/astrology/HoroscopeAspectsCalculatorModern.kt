@@ -4,23 +4,37 @@
  */
 package destiny.astrology
 
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.util.*
 
-/** 現代占星術，計算一張星盤中，星體交角列表的實作  */
-class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializable {
+/**
+ * 現代占星術，計算一張星盤中，星體交角列表的實作
+ * 內定只計算重要性為「高」的角度 ( [Aspect.Importance.HIGH] )
+ * */
+
+class HoroscopeAspectsCalculatorModernBuilder {
+
+  var aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)
+  fun aspects(vararg aspect : Aspect) {
+    aspects = aspect.toList()
+  }
+  fun build() : IHoroscopeAspectsCalculator {
+    return HoroscopeAspectsCalculatorModern(aspects)
+  }
+}
+
+fun modernCalculator(block: HoroscopeAspectsCalculatorModernBuilder.() -> Unit = {})
+  = HoroscopeAspectsCalculatorModernBuilder().apply(block).build()
+
+
+class HoroscopeAspectsCalculatorModern(
+  override val aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)) : IHoroscopeAspectsCalculator, Serializable {
 
   private val modern: AspectEffectiveModern = AspectEffectiveModern()
 
-  /** 現代占星術，內定只計算重要性為「高」的角度  */
-  private var aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)
-
-  /** 設定要計算哪些角度  */
-  fun setAspects(aspects: Collection<Aspect>) {
-    this.aspects = aspects
-  }
-
+  /**
+   * point 與這些 points 形成哪些 [Aspect]
+   */
   override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>): Map<Point, Aspect> {
 
     return positionMap[point]?.lng?.let { starDeg ->
