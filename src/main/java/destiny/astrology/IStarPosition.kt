@@ -14,7 +14,7 @@ import java.time.chrono.ChronoLocalDateTime
  * Swiss Ephemeris 的實作是 StarPositionImpl <br></br>
  * 原廠還支援 月亮的 Apsis , 但我使用 ApsisIF 來實作
  */
-interface IStarPosition<out T : IPos> {
+interface IStarPosition<out T : IStarPos> {
 
   /** 設定觀測地點，對於 [Centric.TOPO] 有用 . 2017-07-03 註記 : 此 method 無法移除 */
   fun setLocation(location: ILocation)
@@ -52,7 +52,7 @@ interface IStarPosition<out T : IPos> {
   /**
    * @param gmt GMT 的 Gregorian 時刻
    */
-  fun getPosition(star: Star, gmt: ChronoLocalDateTime<*>, centric: Centric, coordinate: Coordinate): IPos {
+  fun getPosition(star: Star, gmt: ChronoLocalDateTime<*>, centric: Centric, coordinate: Coordinate): T {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPosition(star, gmtJulDay, centric, coordinate)
   }

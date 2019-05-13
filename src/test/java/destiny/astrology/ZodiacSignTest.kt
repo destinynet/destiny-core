@@ -157,7 +157,7 @@ class ZodiacSignTest {
     assertEquals("孖", GEMINI.abbreviation)
     assertEquals("蟹", CANCER.abbreviation)
     assertEquals("獅", LEO.abbreviation)
-    assertEquals("處", VIRGO.abbreviation)
+    assertEquals("女", VIRGO.abbreviation)
     assertEquals("秤", LIBRA.abbreviation)
     assertEquals("蠍", SCORPIO.abbreviation)
     assertEquals("射", SAGITTARIUS.abbreviation)

@@ -5,10 +5,6 @@ import java.io.Serializable
 interface IPos : Serializable {
   val lng: Double
   val lat: Double
-  val distance: Double  // in AU
-  val speedLng: Double  // speed in lng (degree / day)
-  val speedLat: Double  // speed in lat (degree / day)
-  val speedDistance: Double // speed in distance (AU / day)
 
   /** 黃道什麼星座 */
   val sign: ZodiacSign
@@ -19,19 +15,29 @@ interface IPos : Serializable {
     get() = ZodiacSign.getSignAndDegree(lng)
 }
 
-data class Position(
-  override val lng: Double,
-  override val lat: Double,
+data class Pos(override val lng: Double,
+               override val lat: Double) : IPos
+
+
+interface IStarPos : IPos {
+  val distance: Double  // in AU
+  val speedLng: Double  // speed in lng (degree / day)
+  val speedLat: Double  // speed in lat (degree / day)
+  val speedDistance: Double // speed in distance (AU / day)
+}
+
+data class StarPosition(
+  val pos: IPos,
   override val distance: Double,
   override val speedLng: Double,
   override val speedLat: Double,
-  override val speedDistance: Double) : IPos
+  override val speedDistance: Double
+) : IStarPos, IPos by pos
 
-
-interface IPositionWithAzimuth : IPos {
+interface IPositionWithAzimuth : IStarPos {
   val azimuth: Azimuth
 }
 
 data class PositionWithAzimuth(
-  val pos: IPos,
-  override val azimuth: Azimuth) : IPositionWithAzimuth, IPos by pos, Serializable
+  val starPos: IStarPos,
+  override val azimuth: Azimuth) : IPositionWithAzimuth, IStarPos by starPos, Serializable

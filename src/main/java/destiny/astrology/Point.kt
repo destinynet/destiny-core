@@ -14,7 +14,7 @@ import java.util.*
  * 抽象class , 代表星盤上的一「點」，可能是實星（行星 [Planet], 小行星 [Asteroid], 恆星 [FixedStar]），
  * 虛星 (漢堡星 [Hamburger]) , 也可能只是交點 (例如：黃白交點 [LunarPoint])
  * 目前繼承圖如下：
- * <pre>
+ *
  *                     Point
  *                       |
  *                     Star
@@ -30,7 +30,7 @@ import java.util.*
  *                   LunarNode         LunarApsis
  *                   [TRUE/MEAN]       [MEAN/OSCU]
  *                   North/South   PERIGEE (近)/APOGEE (遠)
- * </pre>                  
+ *
  */
 abstract class Point(
   /** 名稱key , nameKey 相等，則此 Point 視為 equals!  */

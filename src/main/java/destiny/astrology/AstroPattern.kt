@@ -82,7 +82,6 @@ object AstroPatterns {
           }
         }.toSet()
     }
-
   }
 }
 
