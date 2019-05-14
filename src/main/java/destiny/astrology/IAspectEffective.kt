@@ -17,6 +17,10 @@ interface IAspectEffective {
    */
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Boolean
 
+  fun isEffective(p1: Point , p2: Point , posMap: Map<Point, IPos> , aspect: Aspect): Boolean{
+    return isEffective(p1 ,  posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)
+  }
+
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, vararg aspects: Aspect): Boolean {
     return isEffective(p1, deg1, p2, deg2, Arrays.asList(*aspects))
   }

@@ -23,7 +23,7 @@ class HoroscopeAspectsCalculatorModernBuilder {
   }
 }
 
-fun modernCalculator(block: HoroscopeAspectsCalculatorModernBuilder.() -> Unit = {})
+fun modernCalculator(block: HoroscopeAspectsCalculatorModernBuilder.() -> Unit = {}): IHoroscopeAspectsCalculator
   = HoroscopeAspectsCalculatorModernBuilder().apply(block).build()
 
 

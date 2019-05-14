@@ -14,7 +14,7 @@ class HoroscopeAspectsCalculator(private val calculator: IHoroscopeAspectsCalcul
    * 如果沒有形成任何交角（不太可能 , 除非 points 很少 ），則傳回 size = 0 之 Set
    *
    * @param positionMap : 計算 此 map 星體之間所形成的交角
-   * @param points : 欲計算交角的 points , 因為 positionMap 可能包含許多小星體 , 沒必要計算的星體
+   * @param points : 欲計算交角的 points , 因為 positionMap 可能包含許多小星體、沒必要計算的星體
    */
   fun getAspectDataSet(positionMap: Map<Point, IPos>,
                        points: Collection<Point> = positionMap.keys): Set<HoroscopeAspectData> {
