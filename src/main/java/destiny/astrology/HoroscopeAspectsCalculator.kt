@@ -17,15 +17,16 @@ class HoroscopeAspectsCalculator(private val calculator: IHoroscopeAspectsCalcul
    * @param points : 欲計算交角的 points , 因為 positionMap 可能包含許多小星體、沒必要計算的星體
    */
   fun getAspectDataSet(positionMap: Map<Point, IPos>,
-                       points: Collection<Point> = positionMap.keys): Set<HoroscopeAspectData> {
+                       points: Collection<Point> = positionMap.keys ,
+                       aspects : Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)): Set<HoroscopeAspectData> {
 
     val dataSet = mutableSetOf<HoroscopeAspectData>()
 
     points.map { point ->
-      val map: Map<Point, Aspect> = calculator.getPointAspect(point, positionMap, points)
+      val map: Map<Point, Aspect> = calculator.getPointAspect(point, positionMap, points , aspects)
       logger.trace("與 {} 形成所有交角的 pointAspect Map = {}", point, map)
 
-      map.filter { (_, value) -> calculator.aspects.contains(value) }
+      map.filter { (_, value) -> aspects.contains(value) }
         .map { (key, value) -> HoroscopeAspectData(point, key, value, IHoroscopeModel.getAspectError(positionMap , point, key, value)?:0.0) }
         .toSet()
     }.flatMapTo(dataSet ) { it }

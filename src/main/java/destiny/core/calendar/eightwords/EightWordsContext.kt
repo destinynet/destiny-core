@@ -96,7 +96,7 @@ class EightWordsContext(
 
       val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
 
-      val calculator = HoroscopeAspectsCalculator(modernCalculator())
+      val calculator = HoroscopeAspectsCalculator(HoroscopeAspectsCalculatorModern())
       val aspectDataSet = calculator.getAspectDataSet(starPosMap)
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,

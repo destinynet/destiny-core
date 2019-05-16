@@ -41,23 +41,24 @@ fun classicalCalculator(block: HoroscopeAspectsCalculatorClassicalBuilder.() -> 
 
 /**
  * 古典占星術，列出一張星盤中呈現交角的星體以及角度 的實作
- * @param aspects 其實只能運算 [Aspect.Importance.HIGH]
  *  */
 class HoroscopeAspectsCalculatorClassical(
   val classical: AspectEffectiveClassical,
-  val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl,
-  override val aspects : Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)) : IHoroscopeAspectsCalculator, Serializable {
+  val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl) : IHoroscopeAspectsCalculator, Serializable {
 
-  override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>): Map<Point, Aspect> {
+  /**
+   * @param aspects 雖然 classical 只能計算  [Aspect.Importance.HIGH] , 但仍可透過此參數，再進一步過濾要計算的交角
+   */
+  override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point> , aspects: Collection<Aspect>): Map<Point, Aspect> {
 
     return if (point is Planet) {
       val planetDeg = positionMap.getValue(point).lng
-      //只比對 0 , 60 , 90 , 120 , 180 五個度數
       points
         .filter { it !== point }
         .flatMap { eachPoint ->
           val eachPlanetDeg = positionMap.getValue(eachPoint).lng
           aspects
+            .filter { Aspect.getAngles(Aspect.Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
             .filter { classical.isEffective(point, planetDeg, eachPoint, eachPlanetDeg, it) }
             .map { eachPoint to it }
         }.toMap()

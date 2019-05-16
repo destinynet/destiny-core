@@ -19,7 +19,7 @@ data class HoroscopeAspectData(val p1: Point,
   private val pointComp = PointComparator()
 
   /** 存放形成交角的兩顆星體  */
-  val twoPoints = setOf(p1 , p2)
+  val points = setOf(p1 , p2)
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -35,13 +35,13 @@ data class HoroscopeAspectData(val p1: Point,
   }
 
   override fun toString(): String {
-    return "$twoPoints $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度"
+    return "$points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度"
   }
 
 
   /** 傳入一個 point , 取得另一個 point , 如果沒有，則傳回 null  */
   fun getAnotherPoint(thisPoint: Point): Point? {
-    return twoPoints
+    return points
       .takeIf { it.contains(thisPoint) }
       ?.minus(thisPoint)
       ?.firstOrNull()
@@ -51,7 +51,7 @@ data class HoroscopeAspectData(val p1: Point,
     val prime = 31
     var result = 1
     result = prime * result + aspect.hashCode()
-    result = prime * result + twoPoints.hashCode()
+    result = prime * result + points.hashCode()
     return result
   }
 
@@ -65,14 +65,14 @@ data class HoroscopeAspectData(val p1: Point,
     val o = other as HoroscopeAspectData?
     if (aspect != o!!.aspect)
       return false
-    if (twoPoints != o.twoPoints)
+    if (points != o.points)
       return false
     return true
   }
 
   override fun compareTo(other: HoroscopeAspectData): Int {
-    val it1 = twoPoints.iterator()
-    val it2 = other.twoPoints.iterator()
+    val it1 = points.iterator()
+    val it2 = other.points.iterator()
     val thisP0 = it1.next()
     val thisP1 = it1.next()
     val thatP0 = it2.next()
