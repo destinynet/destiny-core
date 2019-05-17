@@ -121,19 +121,7 @@ interface IHoroscopeModel {
    * 黃道幾度，落於第幾宮 ( 1 <= house <= 12 )
    */
   fun getHouse(degree: Double): Int {
-    for (i in 1..11) {
-      if (Math.abs(cuspDegreeMap.getValue(i + 1) - cuspDegreeMap.getValue(i)) < 180) {
-        //沒有切換360度的問題
-        if (cuspDegreeMap.getValue(i) <= degree && degree < cuspDegreeMap.getValue(i + 1))
-          return i
-      } else {
-        //切換360度
-        if (cuspDegreeMap.getValue(i) <= degree && degree < cuspDegreeMap.getValue(i + 1) + 360 ||
-          cuspDegreeMap.getValue(i) <= degree + 360 && degree < cuspDegreeMap.getValue(i + 1))
-          return i
-      }
-    }
-    return 12
+    return Companion.getHouse(degree, cuspDegreeMap)
   } //getHouse()
 
   /**
@@ -211,6 +199,19 @@ interface IHoroscopeModel {
   }
 
   companion object {
+
+    fun getHouse(degree: Double , cuspDegreeMap: Map<Int, Double>) : Int {
+      return (1..11).firstOrNull { house ->
+        if ((Math.abs(cuspDegreeMap.getValue(house + 1) - cuspDegreeMap.getValue(house)) < 180)) {
+          //沒有切換360度的問題
+          cuspDegreeMap.getValue(house) <= degree && degree < cuspDegreeMap.getValue(house + 1)
+        } else {
+          //切換360度
+          cuspDegreeMap.getValue(house) <= degree && degree < cuspDegreeMap.getValue(house + 1) + 360 ||
+            cuspDegreeMap.getValue(house) <= degree + 360 && degree < cuspDegreeMap.getValue(house + 1)
+        }
+      } ?:12
+    }
 
     /**
      * 取得此兩顆星，對於此交角 Aspect 的誤差是幾度

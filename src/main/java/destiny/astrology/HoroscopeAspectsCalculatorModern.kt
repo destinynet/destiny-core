@@ -26,7 +26,7 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
         .filter { positionMap.containsKey(it) }
         .flatMap { eachPoint ->
           val eachDeg = positionMap.getValue(eachPoint).lng
-          aspects.filter { eachAspect -> modern.isEffective(starDeg, eachDeg, eachAspect) }
+          aspects.filter { eachAspect -> modern.isEffective(point , starDeg, eachPoint , eachDeg, eachAspect) }
             .map { eachAspect -> eachPoint to eachAspect }
         }.toMap()
     }?: emptyMap()

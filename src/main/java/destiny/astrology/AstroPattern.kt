@@ -3,7 +3,6 @@
  */
 package destiny.astrology
 
-import com.google.common.collect.Sets
 import destiny.core.IPattern
 import java.io.Serializable
 
@@ -76,11 +75,14 @@ sealed class AstroPattern(override val name: String,
 
   data class 五芒星(override val points: Set<Point>) : AstroPattern("五芒星", "$points 形成 五芒星")
 
+  data class 聚集星座(override val points: Set<Point>, val sign: ZodiacSign) : AstroPattern("聚集星座" , "${points.size}星聚集在 $sign : ${points.joinToString(",")}")
+  data class 聚集宮位(override val points: Set<Point>, val house: Int) : AstroPattern("聚集宮位" , "${points.size}星聚集在 第${house}宮 : ${points.joinToString(",")}")
+
 }
 
 interface IPatternFactory : Serializable {
 
-  fun getPattern(starPosMap: Map<Point, IPos>): Set<AstroPattern>
+  fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern>
 
 }
 

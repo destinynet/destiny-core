@@ -23,8 +23,36 @@ import kotlin.math.abs
  */
 class AspectEffectiveClassical(val planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl()) : IAspectEffective, Serializable {
 
+
+  private fun getAngleDiff(deg1: Double , deg2: Double , angle: Double) : Double {
+    return abs(IHoroscopeModel.getAngle(deg1, deg2) - angle)
+  }
+
+  private fun getSumOfRadius(p1: Point , p2: Point) : Double {
+    return (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
+  }
+
+  fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double> {
+
+    val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
+    val sumOfRadius = getSumOfRadius(p1 , p2)
+
+    return (angleDiff <= sumOfRadius).let { value ->
+      if (value)
+        true to (0.6 + 0.4 * (sumOfRadius - angleDiff) / sumOfRadius)
+      else
+        false to 0.0
+    }
+  }
+
+
+  /**
+   * classical 交角不談容許度 (orb)
+   */
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, angle: Double): Boolean {
-    return abs(IHoroscopeModel.getAngle(deg1, deg2) - angle) <= (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
+    val angleDiff = getAngleDiff(deg1, deg2, angle)
+    val sumOfRadius = getSumOfRadius(p1 , p2)
+    return (angleDiff <= sumOfRadius)
   }
 
   /**

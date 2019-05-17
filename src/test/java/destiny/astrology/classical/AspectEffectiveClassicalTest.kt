@@ -6,11 +6,15 @@ package destiny.astrology.classical
 
 import destiny.astrology.Aspect.*
 import destiny.astrology.Planet.*
+import mu.KotlinLogging
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class AspectEffectiveClassicalTest {
+
+  val logger = KotlinLogging.logger {}
 
   /** 測試注入 PlanetOrbsDefaultImpl 的實作  */
   @Test
@@ -26,6 +30,16 @@ class AspectEffectiveClassicalTest {
     assertTrue(impl.isEffective(SUN, 113.5, MOON, 10.0, SQUARE))
     assertFalse(impl.isEffective(SUN, 113.6, MOON, 10.0, 90.0))
     assertFalse(impl.isEffective(SUN, 113.6, MOON, 10.0, SQUARE))
+
+    assertTrue(impl.isEffective(SUN, 0.0, MOON, 193.5, OPPOSITION))
+    assertFalse(impl.isEffective(SUN, 0.0, MOON, 193.6, OPPOSITION))
+
+    impl.isEffectiveAndScore(SUN, 0.0, MOON, 193.5, OPPOSITION).also {
+      assertEquals(Pair(true ,0.6) , it)
+    }
+    impl.isEffectiveAndScore(SUN, 0.0, MOON, 180.0, OPPOSITION).also {
+      assertEquals(true to 1.0 , it)
+    }
 
     assertTrue(impl.isEffective(SUN, 340.0, MOON, 113.5, 120.0))
     assertFalse(impl.isEffective(SUN, 340.0, MOON, 113.6, 120.0))
@@ -97,4 +111,6 @@ class AspectEffectiveClassicalTest {
     assertTrue(impl.isEffective(MOON, 90.5, MERCURY, 10.0, OPPOSITION, CONJUNCTION, SQUARE))
     assertFalse(impl.isEffective(MOON, 90.4, MERCURY, 10.0, OPPOSITION, CONJUNCTION, SQUARE))
   }
+
+
 }

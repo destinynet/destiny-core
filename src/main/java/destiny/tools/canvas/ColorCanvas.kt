@@ -229,7 +229,7 @@ open class ColorCanvas : Serializable {
    * @param y
    */
   fun setText(str: String, x: Int, y: Int) {
-    this.setText(str, x, y, false, null, null, null, null, null)
+    this.setText(str, x, y, false)
   }
 
   /**
@@ -241,7 +241,7 @@ open class ColorCanvas : Serializable {
    * @wrap 是否換行 , 如果不換行，後面的字會被切掉
    */
   fun setText(str: String, x: Int, y: Int, wrap: Boolean) {
-    this.setText(str, x, y, wrap, null, null, null, null, null)
+    this.setText(str, x, y, wrap)
   } //setText
 
 
@@ -249,7 +249,7 @@ open class ColorCanvas : Serializable {
    * 在第 x row , 第 y column , 開始，寫入 Text 純文字 , 有設定前景色
    */
   fun setText(str: String, x: Int, y: Int, foreColor: String) {
-    this.setText(str, x, y, false, foreColor, null, null, null, null)
+    this.setText(str, x, y, false, foreColor)
   }
 
   /**

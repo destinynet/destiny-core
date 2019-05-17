@@ -47,29 +47,6 @@ data class HoroscopeAspectData(val p1: Point,
       ?.firstOrNull()
   }
 
-  override fun hashCode(): Int {
-    val prime = 31
-    var result = 1
-    result = prime * result + aspect.hashCode()
-    result = prime * result + points.hashCode()
-    return result
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other)
-      return true
-    if (other == null)
-      return false
-    if (javaClass != other.javaClass)
-      return false
-    val o = other as HoroscopeAspectData?
-    if (aspect != o!!.aspect)
-      return false
-    if (points != o.points)
-      return false
-    return true
-  }
-
   override fun compareTo(other: HoroscopeAspectData): Int {
     val it1 = points.iterator()
     val it2 = other.points.iterator()
@@ -87,6 +64,22 @@ data class HoroscopeAspectData(val p1: Point,
       pointComp.compare(thisP0, thatP0)
     }
 
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is HoroscopeAspectData) return false
+
+    if (aspect != other.aspect) return false
+    if (points != other.points) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = aspect.hashCode()
+    result = 31 * result + points.hashCode()
+    return result
   }
 
 

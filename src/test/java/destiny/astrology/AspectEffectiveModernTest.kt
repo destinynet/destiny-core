@@ -6,7 +6,9 @@ package destiny.astrology
 
 import destiny.astrology.Aspect.*
 import destiny.astrology.Planet.*
+import mu.KotlinLogging
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -14,6 +16,8 @@ import kotlin.test.assertTrue
 class AspectEffectiveModernTest  {
 
   private val modern: AspectEffectiveModern = AspectEffectiveModern()
+
+  private val logger = KotlinLogging.logger {  }
 
   /** 測試「不考量行星」，注入內定的 AspectOrbsDefaultImpl 實作  */
   @Test
@@ -62,7 +66,19 @@ class AspectEffectiveModernTest  {
     // 對沖 容許度 , 基本為 11 度 , 而此實作，日月對沖容許度為 12 度
     assertTrue(modern.isEffective(SUN, 0.0, MOON, 191.0, OPPOSITION))
     assertTrue(modern.isEffective(SUN, 0.0, MOON, 192.0, OPPOSITION))
+
     assertFalse(modern.isEffective(SUN, 0.0, MOON, 193.0, OPPOSITION))
+
+    modern.isEffectiveAndScore(SUN , 0.0 , MOON , 192.0 , OPPOSITION).also {
+      assertEquals(true to 0.6 , it)
+    }
+    modern.isEffectiveAndScore(SUN , 0.0 , MOON , 180.0 , OPPOSITION).also {
+      assertEquals(true to 1.0 , it)
+    }
+    modern.isEffectiveAndScore(SUN, 0.0, MOON, 193.0, OPPOSITION).also {
+      assertEquals(false to 0.0, it)
+    }
+
     // 其他星體的「對沖」容許度，仍為 11度
     assertTrue(modern.isEffective(MOON, 0.0, VENUS, 191.0, OPPOSITION))
     assertFalse(modern.isEffective(MOON, 0.0, VENUS, 192.0, OPPOSITION))
