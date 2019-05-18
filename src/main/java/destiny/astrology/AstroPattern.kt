@@ -8,7 +8,8 @@ import java.io.Serializable
 
 sealed class AstroPattern(override val name: String,
                           override val notes: String? = null,
-                          open val points: Set<Point> = emptySet()) : IPattern, Serializable {
+                          open val points: Set<Point> = emptySet(),
+                          open val score: Double? = null) : IPattern, Serializable {
 
   override fun toString(): String {
     return "AstroPattern(notes=$notes)"
@@ -22,7 +23,7 @@ sealed class AstroPattern(override val name: String,
   }
 
   // T-Squared
-  data class 三刑會沖(val oppoPoints: Set<Point>, val squaredPoint: Point) : AstroPattern("三刑會沖", "$oppoPoints 正沖，兩者均與 $squaredPoint 相刑") {
+  data class 三刑會沖(val oppoPoints: Set<Point>, val squaredPoint: Point, override val score: Double?) : AstroPattern("三刑會沖", "$oppoPoints 正沖，兩者均與 $squaredPoint 相刑") {
     override val points: Set<Point>
       get() = oppoPoints.plus(squaredPoint)
   }
@@ -75,8 +76,8 @@ sealed class AstroPattern(override val name: String,
 
   data class 五芒星(override val points: Set<Point>) : AstroPattern("五芒星", "$points 形成 五芒星")
 
-  data class 聚集星座(override val points: Set<Point>, val sign: ZodiacSign) : AstroPattern("聚集星座" , "${points.size}星聚集在 $sign : ${points.joinToString(",")}")
-  data class 聚集宮位(override val points: Set<Point>, val house: Int) : AstroPattern("聚集宮位" , "${points.size}星聚集在 第${house}宮 : ${points.joinToString(",")}")
+  data class 聚集星座(override val points: Set<Point>, val sign: ZodiacSign) : AstroPattern("聚集星座", "${points.size}星聚集在 $sign : ${points.joinToString(",")}")
+  data class 聚集宮位(override val points: Set<Point>, val house: Int) : AstroPattern("聚集宮位", "${points.size}星聚集在 第${house}宮 : ${points.joinToString(",")}")
 
 }
 

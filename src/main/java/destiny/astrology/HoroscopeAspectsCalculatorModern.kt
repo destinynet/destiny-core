@@ -15,22 +15,23 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
 
   private val modern: AspectEffectiveModern = AspectEffectiveModern()
 
-  /**
-   * point 與這些 points 形成哪些 [Aspect]
-   */
-  override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point> , aspects: Collection<Aspect>): Map<Point, Aspect> {
-
+  override fun getPointAspectAndScore(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>, aspects: Collection<Aspect>): Map<Point, Pair<Aspect, Double>> {
     return positionMap[point]?.lng?.let { starDeg ->
       points
         .filter { it !== point }
         .filter { positionMap.containsKey(it) }
         .flatMap { eachPoint ->
           val eachDeg = positionMap.getValue(eachPoint).lng
-          aspects.filter { eachAspect -> modern.isEffective(point , starDeg, eachPoint , eachDeg, eachAspect) }
-            .map { eachAspect -> eachPoint to eachAspect }
+
+          aspects.map { eachAspect ->
+            eachAspect to modern.isEffectiveAndScore(point, starDeg, eachPoint, eachDeg, eachAspect)
+          }.filter { (_, pair: Pair<Boolean, Double>) ->
+            pair.first
+          }.map { (aspect, pair) ->
+            eachPoint to (aspect to pair.second)
+          }
         }.toMap()
     }?: emptyMap()
-
   }
 
   override fun getTitle(locale: Locale): String {

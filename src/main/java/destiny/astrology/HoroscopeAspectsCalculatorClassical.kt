@@ -46,22 +46,20 @@ class HoroscopeAspectsCalculatorClassical(
   val classical: AspectEffectiveClassical,
   val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl) : IHoroscopeAspectsCalculator, Serializable {
 
-  /**
-   * @param aspects 雖然 classical 只能計算  [Aspect.Importance.HIGH] , 但仍可透過此參數，再進一步過濾要計算的交角
-   */
-  override fun getPointAspect(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point> , aspects: Collection<Aspect>): Map<Point, Aspect> {
-
+  override fun getPointAspectAndScore(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>, aspects: Collection<Aspect>): Map<Point, Pair<Aspect, Double>> {
     return if (point is Planet) {
-      val planetDeg = positionMap.getValue(point).lng
-      points
-        .filter { it !== point }
-        .flatMap { eachPoint ->
-          val eachPlanetDeg = positionMap.getValue(eachPoint).lng
-          aspects
-            .filter { Aspect.getAngles(Aspect.Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
-            .filter { classical.isEffective(point, planetDeg, eachPoint, eachPlanetDeg, it) }
-            .map { eachPoint to it }
-        }.toMap()
+      positionMap[point]?.lng?.let { planetDeg ->
+
+        points.filter { it !== point }
+          .flatMap { eachPoint ->
+            val eachPlanetDeg = positionMap.getValue(eachPoint).lng
+            aspects
+              .filter { Aspect.getAngles(Aspect.Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
+              .map { aspect -> aspect to classical.isEffectiveAndScore(point, planetDeg, eachPoint, eachPlanetDeg, aspect) }
+              .filter { (_, pair) -> pair.first }
+              .map { (aspect, pair) -> eachPoint to (aspect to pair.second) }
+          }.toMap()
+      }?: emptyMap()
     } else {
       // 非行星不計算
       emptyMap()

@@ -23,12 +23,15 @@ class HoroscopeAspectsCalculator(private val calculator: IHoroscopeAspectsCalcul
     val dataSet = mutableSetOf<HoroscopeAspectData>()
 
     points.map { point ->
-      val map: Map<Point, Aspect> = calculator.getPointAspect(point, positionMap, points , aspects)
+      val map: Map<Point, Pair<Aspect,Double>> = calculator.getPointAspectAndScore(point, positionMap, points , aspects)
       logger.trace("與 {} 形成所有交角的 pointAspect Map = {}", point, map)
 
-      map.filter { (_, value) -> aspects.contains(value) }
-        .map { (key, value) -> HoroscopeAspectData(point, key, value, IHoroscopeModel.getAspectError(positionMap , point, key, value)?:0.0) }
-        .toSet()
+      map.filter { (_ , aspectAndScore) -> aspects.contains(aspectAndScore.first) }
+        .map { (key , aspectAndScore) ->
+          HoroscopeAspectData(point, key, aspectAndScore.first,
+            IHoroscopeModel.getAspectError(positionMap , point, key, aspectAndScore.first)?:0.0 , aspectAndScore.second)
+        }.toSet()
+
     }.flatMapTo(dataSet ) { it }
       .toSet()
 

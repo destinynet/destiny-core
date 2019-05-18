@@ -8,6 +8,8 @@ import java.util.*
 /** 一個星盤當中，兩顆星體，是否形成某交角  */
 interface IAspectEffective {
 
+  fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double>
+
   /**
    * @param p1 Point 1
    * @param deg1 Point 1 於黃道帶上的度數

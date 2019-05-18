@@ -33,7 +33,7 @@ class AspectEffectiveModern(
       ?: aspectOrbsImpl.getAspectOrb(aspect) // 再從「不考慮行星」的交角容許度尋找
   }
 
-  fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double> {
+  override fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double> {
     val orb = getOrb(p1, p2, aspect)
     val angle = IHoroscopeModel.getAngle(deg1, deg2)
     val angleDiff = abs(angle - aspect.degree)

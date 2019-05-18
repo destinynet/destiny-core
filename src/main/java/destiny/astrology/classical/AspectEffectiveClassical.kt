@@ -32,7 +32,7 @@ class AspectEffectiveClassical(val planetOrbsImpl: IPointDiameter = PointDiamete
     return (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
   }
 
-  fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double> {
+  override fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double> {
 
     val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
     val sumOfRadius = getSumOfRadius(p1 , p2)

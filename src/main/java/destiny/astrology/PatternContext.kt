@@ -70,9 +70,10 @@ class PatternContext(val aspectEffective: IAspectEffective,
             threeSet.filter { it.aspect == Aspect.OPPOSITION }.size == 1
               && threeSet.filter { it.aspect == Aspect.SQUARE }.size == 2
           }.map { threeSet ->
+            val score: Double? = threeSet.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.average()
             val oppoPoints = threeSet.first { it.aspect == Aspect.OPPOSITION }.points
             val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints).first()
-            AstroPattern.三刑會沖(oppoPoints, squared)
+            AstroPattern.三刑會沖(oppoPoints, squared , score)
           }
         }?.toSet() ?: emptySet()
 

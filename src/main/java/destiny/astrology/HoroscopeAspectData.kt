@@ -15,7 +15,9 @@ data class HoroscopeAspectData(val p1: Point,
                                /** 兩星所形成的交角  */
                                val aspect: Aspect,
                                /** orb 不列入 equals / hashCode 計算  */
-                               val orb: Double = 0.0) : Comparable<HoroscopeAspectData>, Serializable {
+                               val orb: Double = 0.0 ,
+                               /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
+                               val score:Double? = null) : Comparable<HoroscopeAspectData>, Serializable {
   private val pointComp = PointComparator()
 
   /** 存放形成交角的兩顆星體  */
