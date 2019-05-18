@@ -32,7 +32,7 @@ class RulerPtolemyImpl : AbstractPtolemy(), IRuler {
 
   /** 不分日夜，取得此行星為哪兩個星座的 ruler (日月除外 , 各只有一個星座） */
   override fun getSigns(planet: Planet): Set<ZodiacSign> {
-    return rulingMap[planet]!!
+    return rulingMap.getValue(planet)
   }
 }
 
@@ -50,7 +50,7 @@ class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
 
   /** 此行星在哪些星座 陷 (-5), 至少一個，最多兩個 */
   override fun getSigns(planet: Planet): Set<ZodiacSign> {
-    return detrimentMap[planet]!! // 托勒密表格，必定有值
+    return detrimentMap.getValue(planet) // 托勒密表格，必定有值
   }
 
   override fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Planet? {
@@ -388,16 +388,16 @@ abstract class AbstractPtolemy : Serializable {
     /** 不考量「日、夜」的 ruler */
     internal val rulingMap: Map<Planet, Set<ZodiacSign>> = rulerMap
       .map { (sign, planet) -> planet to sign }
-      .groupBy { (planet, sign) -> planet }
-      .mapValues { (planet, v) -> v.map { p -> p.second } }
+      .groupBy { (planet, _) -> planet }
+      .mapValues { (_, v) -> v.map { p -> p.second } }
       .mapValues { it.value.toSet() }
 
 
     /** 此行星，在哪些星座 陷 (-5) */
     internal val detrimentMap: Map<Planet, Set<ZodiacSign>> = rulerMap
       .map { (sign, planet) -> planet to sign.oppositeSign }
-      .groupBy { (planet, sign) -> planet }
-      .mapValues { (planet, v) -> v.map { p -> p.second } }
+      .groupBy { (planet, _) -> planet }
+      .mapValues { (_, v) -> v.map { p -> p.second } }
       .mapValues { it.value.toSet() }
 
 
@@ -448,25 +448,25 @@ abstract class AbstractPtolemy : Serializable {
       rulerDayNightMap
         .entries
         .map { (sign_to_DN, planet) -> planet to sign_to_DN }
-        .groupBy { (planet, sign_to_DN) -> planet }
-        .flatMap { (planet, sign_to_DN) -> sign_to_DN }
+        .groupBy { (planet, _) -> planet }
+        .flatMap { (_, sign_to_DN) -> sign_to_DN }
         .map { (planet, sign_to_DN) -> (planet to sign_to_DN.second) to sign_to_DN.first }
         .toMap()
 
 
     /** 承上，儲存的是星座值 */
     internal val exaltSignMap: Map<Point, ZodiacSign> = exaltDegreeMap
-      .mapValues { (point, degree) -> of(degree) }
+      .mapValues { (_, degree) -> of(degree) }
       .toMap()
 
     /** Fall Degree Map , 即為 Exalt 對沖的度數 */
     internal val fallDegreeMap: Map<Point, Double> = exaltDegreeMap
-      .mapValues { (point, deg) -> Utils.getNormalizeDegree(deg + 180) }
+      .mapValues { (_, deg) -> Utils.getNormalizeDegree(deg + 180) }
       .toMap()
 
     /** 承上，儲存的是星座 */
     internal val fallSignMap = fallDegreeMap
-      .mapValues { (point, degree) -> of(degree) }
+      .mapValues { (_, degree) -> of(degree) }
       .toMap()
 
 

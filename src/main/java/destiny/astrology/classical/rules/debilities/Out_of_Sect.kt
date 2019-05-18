@@ -26,18 +26,23 @@ class Out_of_Sect(
     val sign: ZodiacSign? = h.getZodiacSign(planet)
     val house: Int? = h.getHouse(planet)
 
-    if (sign != null && house != null) {
-      when (dayNight) {
-        DayNight.DAY -> if (arrayOf(MOON, VENUS, MARS).contains(planet) && house >= 7 && sign.booleanValue) {
-          logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
-          return "commentNight" to arrayOf(planet, sign)
-        }
-        DayNight.NIGHT -> if (arrayOf(SUN, JUPITER, SATURN).contains(planet) && house >= 7 && !sign.booleanValue) {
-          logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
-          return "commentDay" to arrayOf(planet , sign)
+    return sign?.let { _ ->
+      house?.let { _ ->
+        when (dayNight) {
+          DayNight.DAY -> if (arrayOf(MOON, VENUS, MARS).contains(planet) && house >= 7 && sign.booleanValue) {
+            logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
+            "commentNight" to arrayOf(planet, sign)
+          } else {
+            null
+          }
+          DayNight.NIGHT -> if (arrayOf(SUN, JUPITER, SATURN).contains(planet) && house >= 7 && !sign.booleanValue) {
+            logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
+            "commentDay" to arrayOf(planet , sign)
+          } else {
+            null
+          }
         }
       }
     }
-    return null
   }
 }
