@@ -106,95 +106,30 @@ class UBBCodeConverter {
 
   fun replace(s: String, s1: String, s2: String): String {
     return s.replace(s1, s2)
-//    var s = s
-//    val s3 = StringBuilder()
-//    val i = s1.length
-//    var j: Int
-//    while ((j = s.indexOf(s1)) != -1) {
-//      s3.append(s, 0, j)
-//      s3.append(s2)
-//      s = s.substring(j + i)
-//    }
-//    s3.append(s)
-//    return s3.toString()
   }
 
   private fun reImg(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[img])(.+?)(\\[/img])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<img src=" + matcher.group(2) + " border=0>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[img])(.+?)(\\[/img])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<img src=" + r.groupValues[2] + " border=0>" }
   }
 
   private fun reInvert(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val up = Pattern.compile("(\\[invert])(.+?)(\\[/invert])", 2)
-      val um = up.matcher(us2)
-      result = um.find()
-      while (result) {
-        str = replace(str1, um.group(1) + um.group(2) + um.group(3), "<table style=\"filter:invert\"><img src=" + um
-          .group(2) + " border=0></table>")
-        str1 = str
-        um.find()
-      }
-    } catch (ignored: Exception) {
-    }
 
-    return str
+    val regex = "(\\[invert])(.+?)(\\[/invert])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<table style=\"filter:invert\"><img src=" + r.groupValues[2] + " border=0></table>"
+    }
   }
 
   private fun reXray(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[xray])(.+?)(\\[/xray])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<table style=\"filter:xray\"><img src=" + matcher.group(2) + " border=0></table>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[xray])(.+?)(\\[/xray])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<table style=\"filter:xray\"><img src=" + r.groupValues[2] + " border=0></table>" }
   }
 
   private fun reUrl(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[url])(.+?)(\\[/url])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<a href=" + matcher.group(2) + " target=_blank>" + matcher
-          .group(2) + "</a>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
 
-    return str
+    val regex = "(\\[url])(.+?)(\\[/url])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->  "<a href=" + r.groupValues[2] + " target=_blank>" + r.groupValues[2] + "</a>"}
   }
 
   private fun reTxtUrl(s: String): String {
@@ -206,7 +141,6 @@ class UBBCodeConverter {
       val matcher = pattern.matcher(us2)
       result = matcher.find()
       while (result) {
-        //str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5), "<a href=" + matcher.group(2) + " target=_blank title=" + matcher.group(4) + ">" + matcher.group(4) + "</a>");
         str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5), "<a href=" + matcher.group(2) + " target=_blank >" + matcher.group(4) + "</a>")
         str1 = str
         matcher.find()
@@ -218,22 +152,8 @@ class UBBCodeConverter {
   }
 
   private fun reEmail(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[email])(.+?)(\\[/email])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<a href=mailto:" + matcher.group(2) + ">" + matcher.group(2) + "</a>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[email])(.+?)(\\[/email])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<a href=mailto:" + r.groupValues[2] + ">" + r.groupValues[2] + "</a>" }
   }
 
   private fun reTxtEmail(s: String): String {
@@ -277,141 +197,39 @@ class UBBCodeConverter {
   }
 
   private fun reFly(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[fly])(.+?)(\\[/fly])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<div><marquee behavior=alternate>" + matcher.group(2) + "</marquee></div>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[fly])(.+?)(\\[/fly])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<div><marquee behavior=alternate>" + r.groupValues[2] + "</marquee></div>" }
   }
 
   private fun reMove(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[move])(.+?)(\\[/move])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<div><marquee>" + matcher.group(2) + "</marquee></div>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[move])(.+?)(\\[/move])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<div><marquee>"+r.groupValues[2]+"</marquee></div>"}
   }
 
   private fun reBold(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[b])(.+?)(\\[/b])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<b>" + matcher.group(2) + "</b>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[b])(.+?)(\\[/b])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<b>"+r.groupValues[2]+"</b>"}
   }
 
   private fun reSlope(s: String): String {
 
-    val regex = "(\\[i])(.+?)(\\[/i])".toRegex(option = RegexOption.IGNORE_CASE)
+    val regex = "(\\[i])(.+?)(\\[/i])".toRegex(RegexOption.IGNORE_CASE)
     return s.replace(regex) { r -> "<i>"+r.groupValues[2]+"</i>"}
-
-
-//    str1 = s
-//    str = s
-//    val us2 = str1.subSequence(0, str1.length)
-//    try {
-//      val pattern = Pattern.compile("(\\[i])(.+?)(\\[/i])", 2)
-//      val matcher = pattern.matcher(us2)
-//      result = matcher.find()
-//      while (result) {
-//        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<i>" + matcher.group(2) + "</i>")
-//        str1 = str
-//        matcher.find()
-//      }
-//    } catch (ignored: Exception) {
-//    }
-//
-//    return str
   }
 
   private fun reDownLine(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[u])(.+?)(\\[/u])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<u>" + matcher.group(2) + "</u>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[u])(.+?)(\\[/u])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<u>"+r.groupValues[2]+"</u>"}
   }
 
   private fun reSup(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[sup])(.+?)(\\[/sup])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<sup>" + matcher.group(2) + "</sup>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[sup])(.+?)(\\[/sup])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<sup>"+r.groupValues[2]+"</sup>"}
   }
 
   private fun reSub(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[sub])(.+?)(\\[/sub])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<sub>" + matcher.group(2) + "</sub>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
-
-    return str
+    val regex = "(\\[sub])(.+?)(\\[/sub])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<sub>"+r.groupValues[2]+"</sub>"}
   }
 
   private fun reDelLine(s: String): String {
@@ -578,32 +396,13 @@ class UBBCodeConverter {
   }
 
   private fun reQuote(s: String): String {
-//    str1 = s
-//    str = s
-//    val us2 = str1.subSequence(0, str1.length)
 
-    return """(\[quote])(.+?)(\[/quote])""".toRegex(option = RegexOption.IGNORE_CASE)
+    return """(\[quote])(.+?)(\[/quote])""".toRegex(RegexOption.IGNORE_CASE)
       .toPattern().matcher(s)
       ?.takeIf { matcher -> matcher.find() }
       ?.let { matcher ->
         replace(s, matcher.group(1) + matcher.group(2) + matcher.group(3), "<hr noshade size=1 ><blockquote>" + matcher.group(2) + "</blockquote><hr noshade size=1>")
       }?:s
-
-
-
-//    try {
-//      val pattern = Pattern.compile("(\\[quote])(.+?)(\\[/quote])", 2)
-//      val matcher = pattern.matcher(us2)
-//      result = matcher.find()
-//      while (result) {
-//        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<hr noshade size=1 ><blockquote>" + matcher.group(2) + "</blockquote><hr noshade size=1>")
-//        str1 = str
-//        matcher.find()
-//      }
-//    } catch (ignored: Exception) {
-//    }
-//
-//    return str
   }
 
   private fun reCode(s: String): String {
@@ -757,22 +556,10 @@ class UBBCodeConverter {
   }
 
   private fun reSound(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[sound])(.+?)(\\[/sound])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<EMBED SRC=" + matcher.group(2) + " HIDDEN=TRUE AUTOSTART=TRUE LOOP=TRUE>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
+    val regex = "(\\[sound])(.+?)(\\[/sound])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<EMBED SRC=" + r.groupValues[2] + " HIDDEN=TRUE AUTOSTART=TRUE LOOP=TRUE>"
     }
-
-    return str
   }
 
 }
