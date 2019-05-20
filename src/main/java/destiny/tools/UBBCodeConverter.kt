@@ -23,81 +23,84 @@ class UBBCodeConverter {
   }
 
   fun getAll(s: String): String {
-    var s1 = s
-    s1 = reImg(s1)
-    s1 = reUrl(s1)
-    s1 = reFly(s1)
-    s1 = reEmail(s1)
-    s1 = reBold(s1)
-    s1 = reSlope(s1)
-    s1 = reDownLine(s1)
-    s1 = reMove(s1)
-    s1 = reTxtUrl(s1)
-    s1 = reTxtEmail(s1)
-    s1 = reAlign(s1)
-    s1 = reTxtSize(s1)
-    s1 = reQuote(s1)
-    s1 = reCode(s1)
-    s1 = reSup(s1)
-    s1 = reSub(s1)
-    s1 = reDelLine(s1)
-    s1 = reFliph(s1)
-    s1 = reFlipv(s1)
-    s1 = reShadow(s1)
-    s1 = reGlow(s1)
-    s1 = reBlur(s1)
-    s1 = reSwf(s1)
-    s1 = reRm(s1)
-    s1 = reMp(s1)
-    s1 = reQt(s1)
-    s1 = reSk(s1)
-    s1 = reSound(s1)
-    s1 = reInvert(s1)
-    s1 = reXray(s1)
-    s1 = reLi(s1)
-    s1 = reLi1(s1)
-    s1 = reLi2(s1)
-    return s1
+
+    return reImg(s)
+      .let { reUrl(it) }
+      .let { reFly(it) }
+      .let { reImg(it) }
+      .let { reUrl(it) }
+      .let { reFly(it) }
+      .let { reEmail(it) }
+      .let { reBold(it) }
+      .let { reSlope(it) }
+      .let { reDownLine(it) }
+      .let { reMove(it) }
+      .let { reTxtUrl(it) }
+      .let { reTxtEmail(it) }
+      .let { reAlign(it) }
+      .let { reTxtSize(it) }
+      .let { reQuote(it) }
+      .let { reCode(it) }
+      .let { reSup(it) }
+      .let { reSub(it) }
+      .let { reDelLine(it) }
+      .let { reFliph(it) }
+      .let { reFlipv(it) }
+      .let { reShadow(it) }
+      .let { reGlow(it) }
+      .let { reBlur(it) }
+      .let { reSwf(it) }
+      .let { reRm(it) }
+      .let { reMp(it) }
+      .let { reQt(it) }
+      .let { reSk(it) }
+      .let { reSound(it) }
+      .let { reInvert(it) }
+      .let { reXray(it) }
+      .let { reLi(it) }
+      .let { reLi1(it) }
+      .let { reLi2(it) }
   }
 
   /**
    * 2017-03-23 新增 : 除了 [quote] 以外都處理
    */
   fun getAllExceptQuote(s: String): String {
-    var s1 = s
-    s1 = reImg(s1)
-    s1 = reUrl(s1)
-    s1 = reFly(s1)
-    s1 = reEmail(s1)
-    s1 = reBold(s1)
-    s1 = reSlope(s1)
-    s1 = reDownLine(s1)
-    s1 = reMove(s1)
-    s1 = reTxtUrl(s1)
-    s1 = reTxtEmail(s1)
-    s1 = reAlign(s1)
-    s1 = reTxtSize(s1)
-    s1 = reCode(s1)
-    s1 = reSup(s1)
-    s1 = reSub(s1)
-    s1 = reDelLine(s1)
-    s1 = reFliph(s1)
-    s1 = reFlipv(s1)
-    s1 = reShadow(s1)
-    s1 = reGlow(s1)
-    s1 = reBlur(s1)
-    s1 = reSwf(s1)
-    s1 = reRm(s1)
-    s1 = reMp(s1)
-    s1 = reQt(s1)
-    s1 = reSk(s1)
-    s1 = reSound(s1)
-    s1 = reInvert(s1)
-    s1 = reXray(s1)
-    s1 = reLi(s1)
-    s1 = reLi1(s1)
-    s1 = reLi2(s1)
-    return s1
+    return reImg(s)
+      .let { reUrl(it) }
+      .let { reFly(it) }
+      .let { reImg(it) }
+      .let { reUrl(it) }
+      .let { reFly(it) }
+      .let { reEmail(it) }
+      .let { reBold(it) }
+      .let { reSlope(it) }
+      .let { reDownLine(it) }
+      .let { reMove(it) }
+      .let { reTxtUrl(it) }
+      .let { reTxtEmail(it) }
+      .let { reAlign(it) }
+      .let { reTxtSize(it) }
+      .let { reCode(it) }
+      .let { reSup(it) }
+      .let { reSub(it) }
+      .let { reDelLine(it) }
+      .let { reFliph(it) }
+      .let { reFlipv(it) }
+      .let { reShadow(it) }
+      .let { reGlow(it) }
+      .let { reBlur(it) }
+      .let { reSwf(it) }
+      .let { reRm(it) }
+      .let { reMp(it) }
+      .let { reQt(it) }
+      .let { reSk(it) }
+      .let { reSound(it) }
+      .let { reInvert(it) }
+      .let { reXray(it) }
+      .let { reLi(it) }
+      .let { reLi1(it) }
+      .let { reLi2(it) }
   }
 
 
@@ -121,11 +124,10 @@ class UBBCodeConverter {
     str = s
     val us2 = str1.subSequence(0, str1.length)
     try {
-      val pattern = Pattern.compile("(\\[img\\])(.+?)(\\[\\/img\\])", 2)
+      val pattern = Pattern.compile("(\\[img])(.+?)(\\[/img])", 2)
       val matcher = pattern.matcher(us2)
       result = matcher.find()
       while (result) {
-        //str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<a href=\"" + matcher.group(2) + "\" target=\"_blank\" title=\"開新視窗瀏覽\"><img src=" + matcher.group(2) + " border=0 onload=\"javascript:if(this.w>screen.w-333)this.w=screen.w-333;\" this.alt='點擊查看全圖'\" onmouseover=\"if(this.alt) this.style.cursor='hand';\"></a>");
         str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<img src=" + matcher.group(2) + " border=0>")
         str1 = str
         matcher.find()
@@ -332,22 +334,27 @@ class UBBCodeConverter {
   }
 
   private fun reSlope(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[i])(.+?)(\\[/i])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<i>" + matcher.group(2) + "</i>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
 
-    return str
+    val regex = "(\\[i])(.+?)(\\[/i])".toRegex(option = RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r -> "<i>"+r.groupValues[2]+"</i>"}
+
+
+//    str1 = s
+//    str = s
+//    val us2 = str1.subSequence(0, str1.length)
+//    try {
+//      val pattern = Pattern.compile("(\\[i])(.+?)(\\[/i])", 2)
+//      val matcher = pattern.matcher(us2)
+//      result = matcher.find()
+//      while (result) {
+//        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<i>" + matcher.group(2) + "</i>")
+//        str1 = str
+//        matcher.find()
+//      }
+//    } catch (ignored: Exception) {
+//    }
+//
+//    return str
   }
 
   private fun reDownLine(s: String): String {
@@ -571,22 +578,32 @@ class UBBCodeConverter {
   }
 
   private fun reQuote(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[quote])(.+?)(\\[/quote])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<hr noshade size=1 ><blockquote>" + matcher.group(2) + "</blockquote><hr noshade size=1>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
+//    str1 = s
+//    str = s
+//    val us2 = str1.subSequence(0, str1.length)
 
-    return str
+    return """(\[quote])(.+?)(\[/quote])""".toRegex(option = RegexOption.IGNORE_CASE)
+      .toPattern().matcher(s)
+      ?.takeIf { matcher -> matcher.find() }
+      ?.let { matcher ->
+        replace(s, matcher.group(1) + matcher.group(2) + matcher.group(3), "<hr noshade size=1 ><blockquote>" + matcher.group(2) + "</blockquote><hr noshade size=1>")
+      }?:s
+
+
+
+//    try {
+//      val pattern = Pattern.compile("(\\[quote])(.+?)(\\[/quote])", 2)
+//      val matcher = pattern.matcher(us2)
+//      result = matcher.find()
+//      while (result) {
+//        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3), "<hr noshade size=1 ><blockquote>" + matcher.group(2) + "</blockquote><hr noshade size=1>")
+//        str1 = str
+//        matcher.find()
+//      }
+//    } catch (ignored: Exception) {
+//    }
+//
+//    return str
   }
 
   private fun reCode(s: String): String {

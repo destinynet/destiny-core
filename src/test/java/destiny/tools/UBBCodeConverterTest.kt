@@ -31,7 +31,7 @@ class UBBCodeConverterTest {
     logger.info("s3 : {}", codeConverter.getAll(s3))
     logger.info("s4 : {}", codeConverter.getAll(s4))
     logger.info("email : {}", codeConverter.getAll("""[email]service@google.com[/email]"""))
-    logger.info("italic : {}", codeConverter.getAll("""[i]italic[/i]"""))
+    logger.info("italic : {}", codeConverter.getAll("""[i]italic1[/i] [i]斜體2[/i]"""))
   }
 
 }

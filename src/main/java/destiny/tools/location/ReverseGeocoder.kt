@@ -13,13 +13,5 @@ interface ReverseGeocoder {
 
   fun getNearbyLocation(lat: Double, lng: Double, locale: Locale = Locale.getDefault()): String?
 
-  fun getNearbyLocation(locale: Locale,
-                        ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double,
-                        nw: NorthSouth, latDeg: Int, latMin: Int, latSec: Double): String? {
-
-    val lng = Location.getLongitude(ew, lngDeg, lngMin, lngSec)
-    val lat = Location.getLatitude(nw, latDeg, latMin, latSec)
-    return getNearbyLocation(lat, lng, locale)
-  }
 }
 
