@@ -28,7 +28,9 @@ class PatternContext(val aspectEffective: IAspectEffective,
                 }
               }
               ?.let { unionPoints ->
-                AstroPattern.大三角(unionPoints, starPosMap.getValue(set1.points.first()).sign.element)
+                val score = threeSets.takeIf { sets -> sets.all { it.score != null } }
+                  ?.map { it.score!! }?.average()
+                AstroPattern.大三角(unionPoints, starPosMap.getValue(set1.points.first()).sign.element, score)
               }
           }.toSet()
         } ?: emptySet()
@@ -38,18 +40,33 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   val kite = object : IPatternFactory {
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+
       return grandTrine.getPatterns(starPosMap, cuspDegreeMap)
         .map { it as AstroPattern.大三角 }
         .flatMap { grandTrine ->
+          // 大三角的 每個點 , 都當作風箏的尾巴，去找是否有對沖的點 (亦即：風箏頭)
           grandTrine.points.map { tail ->
-            tail to HoroscopeAspectsCalculatorModern().getPointAspect(tail, starPosMap, aspects = setOf(Aspect.OPPOSITION))
+            tail to HoroscopeAspectsCalculatorModern().getPointAspectAndScore(tail, starPosMap, aspects = setOf(Aspect.OPPOSITION))
           }.filter { (_, oppoMap) ->
             oppoMap.isNotEmpty()
-          }.map { (tail, oppoMap) ->
-            tail to oppoMap.keys
-          }.flatMap { (tail, heads: Set<Point>) ->
-            heads.map { head ->
-              AstroPattern.風箏(head, grandTrine.points.minus(tail), tail)
+          }.flatMap { (tail, oppoMap: Map<Point, Pair<Aspect, Double>>) ->
+            oppoMap.map { (head, aspectAndScore) ->
+              Triple(tail, head, aspectAndScore.second)
+            }.mapNotNull { (tail, head, oppoScore) ->
+              // 每個 head 都需要與 兩翼 SEXTILE
+              grandTrine.points.minus(tail).map { wingPoint ->
+                wingPoint to aspectEffective.isEffectiveAndScore(head, wingPoint, starPosMap, Aspect.SEXTILE)
+              }.takeIf { pairs ->
+                pairs.all { it.second.first }
+              }?.map { (wing, booleanAndScore) ->
+                wing to booleanAndScore.second
+              }?.toMap()
+                ?.let { map: Map<Point, Double> ->
+                  val wings = map.keys
+                  /** 分數 : [AstroPattern.大三角] + 對沖分數 +  head與兩個翅膀 [Aspect.SEXTILE] 的分數 , 四者平均 */
+                  val score = grandTrine.score?.let { setOf(it) }?.plus(oppoScore)?.plus(map.values)?.average()
+                  AstroPattern.風箏(head, wings, tail, score)
+                }
             }
           }
         }.toSet()
@@ -73,7 +90,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             val score: Double? = threeSet.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.average()
             val oppoPoints = threeSet.first { it.aspect == Aspect.OPPOSITION }.points
             val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints).first()
-            AstroPattern.三刑會沖(oppoPoints, squared , score)
+            AstroPattern.三刑會沖(oppoPoints, squared, score)
           }
         }?.toSet() ?: emptySet()
 
@@ -87,59 +104,58 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
 
-      val aspectDataSet = horoAspectsCalculator.getAspectDataSet(starPosMap, Planet.list, twoAspects)
 
-      return aspectDataSet.filter {
-        it.aspect == Aspect.QUINCUNX
-      }.takeIf { it.size >= 2 } // 至少要兩個 QUINCUNX
-        ?.toSet()?.let { dataSet ->
-          Sets.combinations(dataSet, 2).asSequence().map { twoSets ->
-            val (set1, set2) = twoSets.toList().let { it[0] to it[1] }
-            val intersectedPoint = set1.points.intersect(set2.points)
-            intersectedPoint to twoSets
-          }.filter { it.first.isNotEmpty() }
-            .map { (intersected, set) -> intersected.iterator().next() to set }
-            .map { (point, twoSets: Set<HoroscopeAspectData>) ->
-              val (set1, set2) = twoSets.toList().let { it[0] to it[1] }
-              val other1 = set1.getAnotherPoint(point)!!
-              val other2 = set2.getAnotherPoint(point)!!
-
-              point to (other1 to other2)
-            }.filter { (_, others) ->
-              val (other1, other2) = others
-              // 確保 other1 / other2 呈現 60度
-              aspectEffective.isEffective(
-                other1, starPosMap.getValue(other1).lng,
-                other2, starPosMap.getValue(other2).lng, Aspect.SEXTILE)
-            }.map { (point, others) ->
-              AstroPattern.上帝之指(others.toList().toSet(), point)
-            }.toList()
-        }
-        ?.toList()?.toSet() ?: emptySet()
+      return horoAspectsCalculator.getAspectDataSet(starPosMap, Planet.list, setOf(Aspect.QUINCUNX))
+        .takeIf { it.size >= 2 }
+        ?.let { dataSet ->
+          // 任兩個 QUINCUNX ,
+          Sets.combinations(dataSet, 2)
+            .filter { twoSets: Set<HoroscopeAspectData> ->
+              // 確保組合而成的 points 若共有三顆星
+              twoSets.flatMap { it.points }.toSet().size == 3
+            }.map { twoSets: Set<HoroscopeAspectData> ->
+              val (set1: HoroscopeAspectData, set2: HoroscopeAspectData) = twoSets.toList().let { it[0] to it[1] }
+              val intersectedPoint = set1.points.intersect(set2.points)
+              val (other1: Point, other2: Point) = twoSets.flatMap { it.points }.toSet().minus(intersectedPoint).toList().let { it[0] to it[1] }
+              // 確保 另外兩點 形成 60 度
+              val (sextile, sextileScore) = aspectEffective.isEffectiveAndScore(other1, other2, starPosMap, Aspect.SEXTILE)
+              twoSets to (sextile to sextileScore)
+            }.filter { (_, sextileAndScore) -> sextileAndScore.first }
+            .map { (twoSets, sextileScore) ->
+              val score: Double? = twoSets.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.plus(sextileScore.second)?.average()
+              val (set1: HoroscopeAspectData, set2: HoroscopeAspectData) = twoSets.toList().let { it[0] to it[1] }
+              val pointer = set1.points.intersect(set2.points).first()
+              val pointerSign = starPosMap.getValue(pointer).sign
+              val bottoms: Set<Point> = twoSets.flatMap { it.points }.toSet().minus(pointer)
+              AstroPattern.上帝之指(bottoms, pointer, pointerSign, score)
+            }
+        }?.toSet() ?: emptySet()
     }
   }
 
 
   val goldenYod = object : IPatternFactory {
-    val twoAspects = setOf(Aspect.BIQUINTILE, Aspect.QUINTILE) // 144 , 72
 
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return horoAspectsCalculator.getAspectDataSet(starPosMap, aspects = twoAspects)
+      return horoAspectsCalculator.getAspectDataSet(starPosMap, aspects = setOf(Aspect.BIQUINTILE, Aspect.QUINTILE))  // 144 , 72
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
           Sets.combinations(dataSet, 3)
-            .filter { threeSet ->
-              threeSet.flatMap { it.points }.toSet().size == 3
+            .filter { threePairs ->
+              threePairs.flatMap { it.points }.toSet().size == 3
             }
-            .filter { threeSet ->
-              threeSet.filter { it.aspect == Aspect.BIQUINTILE }.size == 2
-                && threeSet.filter { it.aspect == Aspect.QUINTILE }.size == 1
+            .filter { threePairs ->
+              threePairs.filter { it.aspect == Aspect.BIQUINTILE }.size == 2
+                && threePairs.filter { it.aspect == Aspect.QUINTILE }.size == 1
             }
-            .map { threeSet ->
-              val bottoms = threeSet.first { it.aspect == Aspect.QUINTILE }.points
-              val pointer = threeSet.flatMap { it.points }.toSet().minus(bottoms).first()
+            .map { threePairs: Set<HoroscopeAspectData> ->
+
+              val score = threePairs.takeIf { pairs -> pairs.all { it.score != null } }?.map { it.score!! }?.average()
+
+              val bottoms = threePairs.first { it.aspect == Aspect.QUINTILE }.points
+              val pointer = threePairs.flatMap { it.points }.toSet().minus(bottoms).first()
               val pointerSign = starPosMap.getValue(pointer).sign
-              AstroPattern.黃金指(bottoms, pointer, pointerSign)
+              AstroPattern.黃金指(bottoms, pointer, pointerSign, score)
             }
         }?.toSet() ?: emptySet()
     }
@@ -152,7 +168,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return tSquared.getPatterns(starPosMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
         ?.let { dataSets: Set<AstroPattern> ->
-          /** 所有的 [AstroPattern.三刑會沖] , 找出 頂點(squaredPoint) , 比對此頂點是否有對沖點
+          /** 所有的 [AstroPattern.三刑會沖] , 找出 頂點( [AstroPattern.三刑會沖.squaredPoint]) , 比對此頂點是否有對沖點
            * 並且要求，對衝點，與三刑的兩角尖，也要相刑
            * 才能確保比較漂亮的 大十字
            * */
@@ -161,10 +177,16 @@ class PatternContext(val aspectEffective: IAspectEffective,
               aspectsCalculator.getPointAspect(tSquared.squaredPoint, starPosMap, aspects = setOf(Aspect.OPPOSITION)).keys.mapNotNull { oppo: Point ->
 
                 // oppo Point 還必須與 三刑會沖 兩角尖 相刑 , 才能確保比較漂亮的 大十字
-                aspectsCalculator.getPointAspect(oppo, starPosMap, tSquared.oppoPoints, setOf(Aspect.SQUARE))
+                aspectsCalculator.getPointAspectAndScore(oppo, starPosMap, tSquared.oppoPoints, setOf(Aspect.SQUARE))
                   .takeIf { it.size == 2 }
-                  ?.let {
-                    //val quality = starPosMap.getValue(tSquared.squaredPoint).sign.quality
+                  ?.let { twoSquared ->
+                    // 一個 T-Squared 的分數
+                    val tSquaredScore = tSquared.score
+                    // 加上其對衝點 , 與此 T-Squared 兩底點的 squared 分數
+                    val twinSquaredScore: List<Double> = twoSquared.map { it.value.second }
+                    // 三個值 , 平均
+                    val score: Double? = tSquaredScore?.let { twinSquaredScore.plus(it).average() }
+
                     // 仍然有可能，四顆星不在同一種 quality 星座內 , 必須取「最多」者
                     val union4 = tSquared.oppoPoints.union(setOf(tSquared.squaredPoint, oppo))
                     val quality = union4.map { p -> starPosMap.getValue(p).sign.quality to p }
@@ -172,8 +194,9 @@ class PatternContext(val aspectEffective: IAspectEffective,
                       .toSortedMap()
                       .lastKey()
 
-                    AstroPattern.大十字(union4, quality)
+                    AstroPattern.大十字(union4, quality, score)
                   }
+
               }
             }.toSet()
 
@@ -188,20 +211,21 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .takeIf { it.size >= 2 }
         ?.map { pattern -> pattern as AstroPattern.三刑會沖 }
         ?.let { dataSet: List<AstroPattern.三刑會沖> ->
-          Sets.combinations(dataSet.toSet(), 2).filter { twoSets ->
+          Sets.combinations(dataSet.toSet(), 2).filter { twoPatterns ->
             // 先確保 有六顆星
-            twoSets.flatMap { it.points }.toSet().size == 6
-          }.filter { twoSets ->
+            twoPatterns.flatMap { it.points }.toSet().size == 6
+          }.filter { twoPatterns ->
             // 確保兩組 T-Square 的頂點不同
-            twoSets.flatMap { setOf(it.squaredPoint) }.size == 2
-          }.filter { twoSets ->
+            twoPatterns.flatMap { setOf(it.squaredPoint) }.size == 2
+          }.filter { twoPatterns ->
             // 而且此兩個頂點，並未對沖 (否則形成 GrandCross) , 也未相刑 or 合
-            val (p1, p2) = twoSets.flatMap { setOf(it.squaredPoint) }.let { it[0] to it[1] }
+            val (p1, p2) = twoPatterns.flatMap { setOf(it.squaredPoint) }.let { it[0] to it[1] }
             !aspectEffective.isEffective(p1, p2, starPosMap, Aspect.OPPOSITION)
               && !aspectEffective.isEffective(p1, p2, starPosMap, Aspect.SQUARE)
               && !aspectEffective.isEffective(p1, p2, starPosMap, Aspect.CONJUNCTION)
-          }.map { twoSets: Set<AstroPattern.三刑會沖> ->
-            AstroPattern.DoubleT(twoSets)
+          }.map { twoPatterns: Set<AstroPattern.三刑會沖> ->
+            val score: Double? = twoPatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!! }?.average()
+            AstroPattern.DoubleT(twoPatterns, score)
           }
         }?.toSet() ?: emptySet()
     }
@@ -218,21 +242,24 @@ class PatternContext(val aspectEffective: IAspectEffective,
           Sets.combinations(dataSet.toSet(), 2).filter { twoSets ->
             // 先確保 有六顆星
             twoSets.flatMap { it.points }.toSet().size == 6
-          }.filter { twoSets ->
+          }.filter { twoTrines ->
             // 兩組大三角中，每顆星都能在另一組中找到對沖的星
-            val (g1, g2) = twoSets.toList().let { it[0] to it[1] }
+            val (g1, g2) = twoTrines.toList().let { it[0] to it[1] }
             g1.points.all { p ->
               aspectsCalculator.getPointAspect(p, starPosMap, g2.points, aspects = setOf(Aspect.OPPOSITION)).size == 1
             }
-          }.map { twoSets: Set<AstroPattern.大三角> ->
-            AstroPattern.六芒星(twoSets)
+          }.map { twoTrines: Set<AstroPattern.大三角> ->
+
+            val score: Double? = twoTrines.takeIf { trines -> trines.all { it.score != null } }?.map { it.score!! }?.average()
+
+            AstroPattern.六芒星(twoTrines, score)
           }
         }?.toSet() ?: emptySet()
     }
   } // 六芒星
 
 
-  // 直角三角形
+  // 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
   val wedge = object : IPatternFactory {
     // 只比對 180 , 60 , 120 三種度數
     private val threeAspects = setOf(Aspect.OPPOSITION, Aspect.SEXTILE, Aspect.TRINE)
@@ -243,16 +270,19 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
       return dataSet.takeIf { it.size >= 3 }
         ?.let {
-          Sets.combinations(dataSet, 3).filter { threeSets ->
+          Sets.combinations(dataSet, 3).filter { threePairs ->
             // 確保三種交角都有
-            threeSets.map { dataSet -> dataSet.aspect }.containsAll(threeAspects)
-          }.filter { threeSets ->
+            threePairs.map { dataSet -> dataSet.aspect }.containsAll(threeAspects)
+          }.filter { threePairs ->
             // 總共只有三顆星介入
-            threeSets.flatMap { it.points }.toSet().size == 3
-          }.map { threeSets ->
-            val oppoPoints = threeSets.first { it.aspect == Aspect.OPPOSITION }.points
-            val moderator = threeSets.flatMap { it.points }.toSet().minus(oppoPoints).iterator().next()
-            AstroPattern.楔子(oppoPoints, moderator)
+            threePairs.flatMap { it.points }.toSet().size == 3
+          }.map { threePairs ->
+            val score = threePairs.takeIf { pairs -> pairs.all { it.score != null } }?.map { it.score!! }?.average()
+
+            val oppoPoints = threePairs.first { it.aspect == Aspect.OPPOSITION }.points
+            val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints).iterator().next()
+            val moderatorSign = starPosMap.getValue(moderator).sign
+            AstroPattern.楔子(oppoPoints, moderator, moderatorSign, score)
           }.toSet()
         } ?: emptySet()
     }
@@ -267,9 +297,10 @@ class PatternContext(val aspectEffective: IAspectEffective,
         ?.let { patterns ->
           Sets.combinations(patterns, 5)
             .filter { fiveSet -> fiveSet.flatMap { it.points }.toSet().size == 5 }
-            .map { fiveSet ->
-              val fivePoints = fiveSet.flatMap { it.points }.toSet()
-              AstroPattern.五芒星(fivePoints)
+            .map { fivePatterns ->
+              val score: Double? = fivePatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!! }?.average()
+              val fivePoints = fivePatterns.flatMap { it.points }.toSet()
+              AstroPattern.五芒星(fivePoints, score)
             }
         }?.toSet() ?: emptySet()
     }
@@ -279,10 +310,10 @@ class PatternContext(val aspectEffective: IAspectEffective,
   val stelliumSign = object : IPatternFactory {
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return starPosMap.entries.groupBy { (_, pos) -> pos.sign }
-        .filter { (_ , list) -> list.size >= 4 }
-        .map { (sign , list: List<Map.Entry<Point, IPos>>) ->
+        .filter { (_, list) -> list.size >= 4 }
+        .map { (sign, list: List<Map.Entry<Point, IPos>>) ->
           val points = list.map { it.key }.toSet()
-          AstroPattern.聚集星座(points , sign)
+          AstroPattern.聚集星座(points, sign)
         }.toSet()
     }
   }
@@ -290,12 +321,12 @@ class PatternContext(val aspectEffective: IAspectEffective,
   // 群星聚集 某宮位
   val stelliumHouse = object : IPatternFactory {
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return starPosMap.map { (point , pos) -> point to IHoroscopeModel.getHouse(pos.lng , cuspDegreeMap) }
-        .groupBy { (_ , house) -> house}
-        .filter { (_ , list: List<Pair<Point, Int>>) -> list.size >= 4 }
-        .map { (house , list: List<Pair<Point, Int>>) ->
+      return starPosMap.map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lng, cuspDegreeMap) }
+        .groupBy { (_, house) -> house }
+        .filter { (_, list: List<Pair<Point, Int>>) -> list.size >= 4 }
+        .map { (house, list: List<Pair<Point, Int>>) ->
           val points = list.map { it.first }.toSet()
-          AstroPattern.聚集宮位(points , house)
+          AstroPattern.聚集宮位(points, house)
         }.toSet()
     }
   }

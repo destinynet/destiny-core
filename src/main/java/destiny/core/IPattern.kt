@@ -5,4 +5,5 @@ interface IPattern {
   val name: String
 
   val notes: String?
+
 }

@@ -10,6 +10,10 @@ interface IAspectEffective {
 
   fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double>
 
+  fun isEffectiveAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Pair<Boolean , Double> {
+    return isEffectiveAndScore(p1 , posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)
+  }
+
   /**
    * @param p1 Point 1
    * @param deg1 Point 1 於黃道帶上的度數
