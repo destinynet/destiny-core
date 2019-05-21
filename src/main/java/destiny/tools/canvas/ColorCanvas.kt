@@ -205,7 +205,7 @@ open class ColorCanvas : Serializable {
                           width: Int): Array<ColorByte> {
     val bytes: ByteArray = fillingStringToBytes(fill)
 
-    return Array(width * height) { it ->
+    return Array(width * height) {
       val h = it / width
       val w = it % width
       ColorByte(bytes[w % bytes.size], foreColor, backColor, null, null, null)
@@ -241,7 +241,7 @@ open class ColorCanvas : Serializable {
    * @wrap 是否換行 , 如果不換行，後面的字會被切掉
    */
   fun setText(str: String, x: Int, y: Int, wrap: Boolean) {
-    this.setText(str, x, y, wrap)
+    this.setText(str, x, y, wrap , null , null)
   } //setText
 
 
@@ -515,29 +515,23 @@ open class ColorCanvas : Serializable {
 
   private fun buildHtml(list: List<ColorByte>): String {
     val tempSb = StringBuilder()
-    val byteArray = ByteArray(list.size)
-    for (i in list.indices) {
-      val cb = list[i]
-      byteArray[i] = cb.byte
-    } //走訪每個 list 內的 ColorByte
+
+    val byteArray = list.map { it.byte }.toByteArray()
+
     val cb = list[0]
 
     val hasUrl = cb.url != null
 
-    val hasFont: Boolean
-    hasFont = cb.font != null || cb.foreColor != null || cb.getBackColor() != null || cb.title != null
+    val hasFont: Boolean = cb.font != null || cb.foreColor != null || cb.getBackColor() != null || cb.title != null
 
-    //只有網址
     if (hasUrl && !hasFont) {
-      tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">")
-        .append(String(byteArray, charsetBig5)).append("</a>")
-    } else if (!hasUrl && hasFont)
-    //只有字型
-    {
+      //只有網址
+      tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">").append(String(byteArray, charsetBig5)).append("</a>")
+    } else if (!hasUrl && hasFont) {
+      //只有字型
       tempSb.append(buildFontHtml(cb, byteArray))
-    } else if (hasUrl && hasFont)
-    //有網址也有字型
-    {
+    } else if (hasUrl && hasFont) {
+      //有網址也有字型
       tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">")
       tempSb.append(buildFontHtml(cb, byteArray))
       tempSb.append("</a>")
@@ -584,18 +578,16 @@ open class ColorCanvas : Serializable {
    * 省略所有 Color / Font / URL
    * 純粹輸出 byte 內容
    */
-  fun getTextOutput() : String {
-    val sb = StringBuilder()
+  fun getTextOutput(): String {
     val cbs = this.contentWithChildren
-    for (i in 1..height) {
-      val byteArray = ByteArray(width)
-      for (j in 0 until width) {
-        byteArray[j] = cbs[(i - 1) * width + j].byte
-      }
-      sb.append(String(byteArray, 0, width, charsetBig5))
-      sb.append('\n')
+
+    return (1..height).joinToString("\n") { i ->
+      val byteArray = (0 until width).map { j ->
+        cbs[(i - 1) * width + j].byte
+      }.toByteArray()
+      String(byteArray, 0, width, charsetBig5)
     }
-    return sb.toString()
+
   }
 
   /**

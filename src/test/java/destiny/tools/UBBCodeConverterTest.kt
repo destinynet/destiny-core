@@ -30,6 +30,12 @@ class UBBCodeConverterTest {
     logger.info("s2 : {}", codeConverter.getAll(s2))
     logger.info("s3 : {}", codeConverter.getAll(s3))
     logger.info("s4 : {}", codeConverter.getAll(s4))
+
+  }
+
+  @Test
+  fun testOthers() {
+    val codeConverter = UBBCodeConverter()
     logger.info("email : {}", codeConverter.getAll("""[email]service@google.com[/email]"""))
     logger.info("italic : {}", codeConverter.getAll("""[i]italic1[/i] [i]斜體2[/i]"""))
   }

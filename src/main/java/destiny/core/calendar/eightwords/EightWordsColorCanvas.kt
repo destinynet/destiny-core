@@ -44,7 +44,7 @@ class EightWordsColorCanvas(
 
   private val urlBuilder = GoogleMapsUrlBuilder()
 
-  var outputMode = ColorCanvas.OutputMode.HTML
+  var outputMode = OutputMode.HTML
 
   private val reactionUtil: ReactionUtil = ReactionUtil(hiddenStemsImpl)
 
@@ -58,8 +58,8 @@ class EightWordsColorCanvas(
    */
   override fun toString(): String {
     return when (this.outputMode) {
-      ColorCanvas.OutputMode.TEXT -> getTextOutput()
-      ColorCanvas.OutputMode.HTML -> htmlOutput
+      OutputMode.TEXT -> getTextOutput()
+      OutputMode.HTML -> htmlOutput
     }
   } //toString()
 
