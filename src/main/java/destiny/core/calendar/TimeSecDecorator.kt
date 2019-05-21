@@ -5,7 +5,6 @@ package destiny.core.calendar
 
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
@@ -35,30 +34,29 @@ object TimeSecDecorator {
  */
 class TimeSecDecoratorChinese : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+
+  private val minDecorator = TimeMinDecoratorChinese()
 
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
-    val sb = StringBuilder()
 
-    logger.debug("time = {} , era = {}", value, value.toLocalDate().era)
+    return StringBuilder().apply {
 
-    val min = TimeMinDecoratorChinese()
-    sb.append(min.getOutputString(value))
+      append(minDecorator.getOutputString(value))
+      append(' ')
 
-    sb.append(' ')
-    if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
-      sb.append("0")
-    }
-    sb.append(value.get(ChronoField.SECOND_OF_MINUTE))
+      if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
+        append("0")
+      }
+      append(value.get(ChronoField.SECOND_OF_MINUTE))
 
-    if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
-      sb.append(".00")
-    } else {
-      sb.append(".")
-      sb.append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
-    }
-    sb.append("秒")
-    return sb.toString()
+      if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
+        append(".00")
+      } else {
+        append(".")
+        append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
+      }
+      append("秒")
+    }.toString()
   }
 }
 
@@ -66,51 +64,51 @@ class TimeSecDecoratorChinese : Decorator<ChronoLocalDateTime<*>>, Serializable 
 
 class TimeSecDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
+  private val minDecorator = TimeMinDecoratorEnglish()
+
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
-    val sb = StringBuilder()
+    return StringBuilder().apply {
+      append(minDecorator.getOutputString(value))
+      append(":")
 
-    val min = TimeMinDecoratorEnglish()
-    sb.append(min.getOutputString(value))
-    sb.append(":")
+      if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
+        append("0")
+      }
+      append(value.get(ChronoField.SECOND_OF_MINUTE))
 
-    if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
-      sb.append("0")
-    }
-    sb.append(value.get(ChronoField.SECOND_OF_MINUTE))
-
-    if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
-      sb.append(".00")
-    } else {
-      sb.append(".")
-      sb.append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
-    }
-
-    return sb.toString()
+      if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
+        append(".00")
+      } else {
+        append(".")
+        append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
+      }
+    }.toString()
   }
 }
 
 
 class TimeSecDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
+  private val minDecorator = TimeMinDecoratorJapanese()
+
   override fun getOutputString(value: ChronoLocalDateTime<*>): String {
-    val sb = StringBuilder()
-    val min = TimeMinDecoratorJapanese()
-    sb.append(min.getOutputString(value))
 
-    sb.append(' ')
-    if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
-      sb.append("0")
-    }
-    sb.append(value.get(ChronoField.SECOND_OF_MINUTE))
+    return StringBuilder().apply {
+      append(minDecorator.getOutputString(value))
 
-    if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
-      sb.append(".00")
-    } else {
-      sb.append(".")
-      sb.append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
-    }
-    sb.append("秒")
+      append(' ')
+      if (value.get(ChronoField.SECOND_OF_MINUTE) < 10) {
+        append("0")
+      }
+      append(value.get(ChronoField.SECOND_OF_MINUTE))
 
-    return sb.toString()
+      if (value.get(ChronoField.NANO_OF_SECOND) == 0) {
+        append(".00")
+      } else {
+        append(".")
+        append(value.get(ChronoField.NANO_OF_SECOND).toString().substring(0, 2))
+      }
+      append("秒")
+    }.toString()
   }
 }

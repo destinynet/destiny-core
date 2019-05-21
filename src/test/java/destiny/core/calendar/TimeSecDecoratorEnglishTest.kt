@@ -4,7 +4,6 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -14,20 +13,18 @@ import kotlin.test.assertEquals
 
 class TimeSecDecoratorEnglishTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
-
   @Test
   fun testGetOutputString() {
     val decorator = TimeSecDecoratorEnglish()
 
-    var time: LocalDateTime = LocalDateTime.of(2000, 1, 1, 0, 0, 0)
-    logger.info("{} : {}", time, decorator.getOutputString(time))
-    assertEquals("2000AD 01/01 00:00:00.00", decorator.getOutputString(time))
+    decorator.getOutputString(LocalDateTime.of(2000, 1, 1, 0, 0, 0)).also {
+      assertEquals("2000AD 01/01 00:00:00.00", it)
+    }
 
+    decorator.getOutputString(LocalDateTime.of(LocalDate.of(2000, 12, 31).with(IsoEra.BCE), LocalTime.of(23, 59, 59, 999000000))).also {
+      assertEquals("2000BC 12/31 23:59:59.99", it)
+    }
 
-    time = LocalDateTime.of(LocalDate.of(2000, 12, 31).with(IsoEra.BCE), LocalTime.of(23, 59, 59, 999000000))
-    logger.info("{} : {}", time, decorator.getOutputString(time))
-    assertEquals("2000BC 12/31 23:59:59.99", decorator.getOutputString(time))
   }
 
 }

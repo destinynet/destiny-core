@@ -22,7 +22,7 @@ object DateDecorator {
 
   fun getOutputString(date: ChronoLocalDate, locale: Locale): String {
     val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
-    return implMap[bestMatchingLocale]!!.getOutputString(date)
+    return implMap.getValue(bestMatchingLocale).getOutputString(date)
   }
 }
 

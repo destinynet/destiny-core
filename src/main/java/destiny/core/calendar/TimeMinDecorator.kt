@@ -40,71 +40,59 @@ object TimeMinDecorator {
  */
 class TimeMinDecoratorChinese : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
-
-
-  override fun getOutputString(time: ChronoLocalDateTime<*>): String {
-    val sb = StringBuilder()
-
-    logger.debug("time = {} , era = {}", time, time.toLocalDate().era)
-
-    sb.append(DateDecorator.getOutputString(time.toLocalDate() , Locale.TRADITIONAL_CHINESE))
-
-    sb.append("　")
-    sb.append(if (time.get(HOUR_OF_DAY) < 10) "0" else "").append(time.get(HOUR_OF_DAY)).append("時")
-    sb.append(if (time.get(MINUTE_OF_HOUR) < 10) "0" else "").append(time.get(MINUTE_OF_HOUR)).append("分")
-
-    return sb.toString()
+  override fun getOutputString(value: ChronoLocalDateTime<*>): String {
+    return StringBuilder().apply {
+      append(DateDecorator.getOutputString(value.toLocalDate() , Locale.TRADITIONAL_CHINESE))
+      append("　")
+      append(if (value.get(HOUR_OF_DAY) < 10) "0" else "").append(value.get(HOUR_OF_DAY)).append("時")
+      append(if (value.get(MINUTE_OF_HOUR) < 10) "0" else "").append(value.get(MINUTE_OF_HOUR)).append("分")
+    }.toString()
   }
 }
 
 
 class TimeMinDecoratorChina : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
-  override fun getOutputString(time: ChronoLocalDateTime<*>): String {
-    val sb = StringBuilder()
-
-    sb.append(DateDecorator.getOutputString(time.toLocalDate() , Locale.SIMPLIFIED_CHINESE))
-    sb.append("　")
-    sb.append(if (time.get(HOUR_OF_DAY) < 10) "0" else "").append(time.get(HOUR_OF_DAY)).append("时")
-    sb.append(if (time.get(MINUTE_OF_HOUR) < 10) "0" else "").append(time.get(MINUTE_OF_HOUR)).append("分")
-
-    return sb.toString()
+  override fun getOutputString(value: ChronoLocalDateTime<*>): String {
+    return StringBuilder().apply {
+      append(DateDecorator.getOutputString(value.toLocalDate() , Locale.SIMPLIFIED_CHINESE))
+      append("　")
+      append(if (value.get(HOUR_OF_DAY) < 10) "0" else "").append(value.get(HOUR_OF_DAY)).append("时")
+      append(if (value.get(MINUTE_OF_HOUR) < 10) "0" else "").append(value.get(MINUTE_OF_HOUR)).append("分")
+    }.toString()
   }
 }
 
 
 class TimeMinDecoratorEnglish : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
-  override fun getOutputString(time: ChronoLocalDateTime<*>): String {
-    val sb = StringBuilder()
-
-    sb.append(DateDecorator.getOutputString(time.toLocalDate() , Locale.ENGLISH))
-    sb.append(" ")
-
-    sb.append(if (time.get(HOUR_OF_DAY) < 10) "0" else "").append(time.get(HOUR_OF_DAY))
-    sb.append(":")
-    sb.append(if (time.get(MINUTE_OF_HOUR) < 10) "0" else "").append(time.get(MINUTE_OF_HOUR))
-    return sb.toString()
+  override fun getOutputString(value: ChronoLocalDateTime<*>): String {
+    return StringBuilder().apply {
+      append(DateDecorator.getOutputString(value.toLocalDate() , Locale.ENGLISH))
+      append(" ")
+      append(if (value.get(HOUR_OF_DAY) < 10) "0" else "").append(value.get(HOUR_OF_DAY))
+      append(":")
+      append(if (value.get(MINUTE_OF_HOUR) < 10) "0" else "").append(value.get(MINUTE_OF_HOUR))
+    }.toString()
   }
 }
 
 
 class TimeMinDecoratorJapanese : Decorator<ChronoLocalDateTime<*>>, Serializable {
 
-  override fun getOutputString(time: ChronoLocalDateTime<*>): String {
-    val sb = StringBuilder()
-    sb.append("西暦")
-    if (time.toLocalDate().era === IsoEra.BCE)
-      sb.append("前")
-    else
-      sb.append("　")
-    sb.append(AlignTools.alignRight(time.get(YEAR_OF_ERA), 4)).append("年")
-    sb.append(if (time.get(MONTH_OF_YEAR) < 10) "0" else "").append(time.get(MONTH_OF_YEAR)).append("月")
-    sb.append(if (time.get(DAY_OF_MONTH) < 10) "0" else "").append(time.get(DAY_OF_MONTH)).append("日")
-    sb.append("　")
-    sb.append(if (time.get(HOUR_OF_DAY) < 10) "0" else "").append(time.get(HOUR_OF_DAY)).append("時")
-    sb.append(if (time.get(MINUTE_OF_HOUR) < 10) "0" else "").append(time.get(MINUTE_OF_HOUR)).append("分")
-    return sb.toString()
+  override fun getOutputString(value: ChronoLocalDateTime<*>): String {
+    return StringBuilder().apply {
+      append("西暦")
+      if (value.toLocalDate().era === IsoEra.BCE)
+        append("前")
+      else
+        append("　")
+      append(AlignTools.alignRight(value.get(YEAR_OF_ERA), 4)).append("年")
+      append(if (value.get(MONTH_OF_YEAR) < 10) "0" else "").append(value.get(MONTH_OF_YEAR)).append("月")
+      append(if (value.get(DAY_OF_MONTH) < 10) "0" else "").append(value.get(DAY_OF_MONTH)).append("日")
+      append("　")
+      append(if (value.get(HOUR_OF_DAY) < 10) "0" else "").append(value.get(HOUR_OF_DAY)).append("時")
+      append(if (value.get(MINUTE_OF_HOUR) < 10) "0" else "").append(value.get(MINUTE_OF_HOUR)).append("分")
+    }.toString()
   }
 }
