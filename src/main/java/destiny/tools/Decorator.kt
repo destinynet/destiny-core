@@ -8,7 +8,7 @@ import java.util.*
 
 
 fun <T> Map<Locale, Decorator<T>>.getOutputString(value : T, locale : Locale) : String {
-  return this[LocaleTools.getBestMatchingLocale(locale , this.keys) ?: this.keys.first() ]!!.getOutputString(value)
+  return this.getValue(LocaleTools.getBestMatchingLocale(locale , this.keys) ?: this.keys.first()).getOutputString(value)
 }
 
 interface Decorator<in T> {

@@ -4,6 +4,7 @@
 package destiny.astrology
 
 import com.google.common.collect.Sets
+import mu.KotlinLogging
 import java.io.Serializable
 
 class PatternContext(val aspectEffective: IAspectEffective,
@@ -288,6 +289,37 @@ class PatternContext(val aspectEffective: IAspectEffective,
     }
   } // 對衝，逢 Trine / Sextile , 形成 直角三角形
 
+
+  /** [AstroPattern.神秘長方形] */
+  val mysticRectangle = object : IPatternFactory {
+    override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+      return wedge.getPatterns(starPosMap, cuspDegreeMap)
+        .takeIf { it.size >= 2 } // 確保至少兩組 wedge
+        ?.map { it as AstroPattern.楔子 }
+        ?.let { patterns ->
+          Sets.combinations(patterns.toSet() , 2).asSequence().map { twoWedges ->
+            val (wedge1 , wedge2) = twoWedges.toList().let { it[0] to it[1] }
+            // 兩組 wedge 的 moderator 又互相對沖
+            val (moderatorOppo , oppoScore) = aspectEffective.isEffectiveAndScore(wedge1.moderator , wedge2.moderator , starPosMap , Aspect.OPPOSITION)
+
+            val unionPoints = twoWedges.flatMap { it.points }.toSet()
+
+            // 兩組 wedges 只能有四顆星
+            val matched: Boolean = moderatorOppo && unionPoints.size == 4
+            matched to Pair(oppoScore , twoWedges)
+          }.filter { (moderatorOppo , _) -> moderatorOppo }
+            .map { (_ , pair: Pair<Double, Set<AstroPattern.楔子>>) -> pair }
+            .map { (oppoScore , twoWedges) ->
+              val unionPoints = twoWedges.flatMap { it.points }.toSet()
+              // 分數 : 以兩組 wedge 個別分數 , 加上 moderator 對沖分數 , 三者平均
+              val score: Double? = twoWedges.takeIf { pattern -> pattern.all { it.score!= null } }?.map { it.score!! }?.plus(oppoScore)?.average()
+              AstroPattern.神秘長方形(unionPoints, score)
+            }.toSet()
+        }?: emptySet()
+    }
+  } // 神秘長方形
+
+
   // 五芒星 , 144 , 72
   val pentagram = object : IPatternFactory {
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
@@ -313,7 +345,16 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .filter { (_, list) -> list.size >= 4 }
         .map { (sign, list: List<Map.Entry<Point, IPos>>) ->
           val points = list.map { it.key }.toSet()
-          AstroPattern.聚集星座(points, sign)
+          /** 分數算法： 以該星座內 [Aspect.CONJUNCTION] 分數平均 */
+          val score = Sets.combinations(points , 2).map { pair ->
+            val (p1 , p2) = pair.toList().let { it[0] to it[1] }
+            aspectEffective.isEffectiveAndScore(p1 , p2 , starPosMap , Aspect.CONJUNCTION)
+          }
+            //.filter { (effective , _) -> effective } 對於「同一星座內，但是沒有形成合相的雙星」其分數雖然是零分，但是不要過濾
+            .map { (_ , score) -> score }
+            .average()
+
+          AstroPattern.聚集星座(points, sign , score)
         }.toSet()
     }
   }
@@ -326,9 +367,18 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .filter { (_, list: List<Pair<Point, Int>>) -> list.size >= 4 }
         .map { (house, list: List<Pair<Point, Int>>) ->
           val points = list.map { it.first }.toSet()
-          AstroPattern.聚集宮位(points, house)
+          /** 分數算法： 以該宮位內 [Aspect.CONJUNCTION] 分數平均 */
+          val score = Sets.combinations(points , 2).map { pair ->
+            val (p1 , p2) = pair.toList().let { it[0] to it[1] }
+            aspectEffective.isEffectiveAndScore(p1 , p2 , starPosMap , Aspect.CONJUNCTION)
+          }.map { (_, score) -> score }
+            .average()
+          AstroPattern.聚集宮位(points, house , score)
         }.toSet()
     }
   }
 
+  companion object {
+    val logger = KotlinLogging.logger {  }
+  }
 }

@@ -15,29 +15,115 @@ sealed class AstroPattern(override val name: String,
     return "AstroPattern(notes=$notes)"
   }
 
-  data class 大三角(override val points: Set<Point>, val element: Element, override val score: Double?) : AstroPattern("大三角", "$points 在 ${element}向星座 形成大三角")
+  data class 大三角(override val points: Set<Point>, val element: Element, override val score: Double?) : AstroPattern("大三角", "$points 在 ${element}向星座 形成大三角") {
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 大三角) return false
+
+      if (points != other.points) return false
+      if (element != other.element) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = points.hashCode()
+      result = 31 * result + element.hashCode()
+      return result
+    }
+  }
 
   data class 風箏(val head: Point, val wings: Set<Point>, val tail: Point, override val score: Double?) : AstroPattern("風箏", "$head 是風箏頭， $wings 是風箏翼 , $tail 是尾巴") {
     override val points: Set<Point>
       get() = wings.plus(head).plus(tail)
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 風箏) return false
+
+      if (head != other.head) return false
+      if (wings != other.wings) return false
+      if (tail != other.tail) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = head.hashCode()
+      result = 31 * result + wings.hashCode()
+      result = 31 * result + tail.hashCode()
+      return result
+    }
   }
 
   // T-Squared
   data class 三刑會沖(val oppoPoints: Set<Point>, val squaredPoint: Point, override val score: Double?) : AstroPattern("三刑會沖", "$oppoPoints 正沖，兩者均與 $squaredPoint 相刑") {
     override val points: Set<Point>
       get() = oppoPoints.plus(squaredPoint)
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 三刑會沖) return false
+
+      if (oppoPoints != other.oppoPoints) return false
+      if (squaredPoint != other.squaredPoint) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = oppoPoints.hashCode()
+      result = 31 * result + squaredPoint.hashCode()
+      return result
+    }
   }
 
   // 60 , 150 , 150
   data class 上帝之指(val bottoms: Set<Point>, val pointer: Point, val pointerSign: ZodiacSign, override val score: Double?) : AstroPattern("上帝之指", "$bottoms 與 $pointer 形成上帝之指 , 指向 $pointerSign") {
     override val points: Set<Point>
       get() = bottoms.plus(pointer)
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 上帝之指) return false
+
+      if (bottoms != other.bottoms) return false
+      if (pointer != other.pointer) return false
+      if (pointerSign != other.pointerSign) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = bottoms.hashCode()
+      result = 31 * result + pointer.hashCode()
+      result = 31 * result + pointerSign.hashCode()
+      return result
+    }
   }
 
   // 72 , 144 , 144
   data class 黃金指(val bottoms: Set<Point>, val pointer: Point, val pointedSign: ZodiacSign, override val score: Double?) : AstroPattern("黃金指", "$bottoms 與 $pointer 形成 黃金指 , 指向 $pointedSign") {
     override val points: Set<Point>
       get() = bottoms.plus(pointer)
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 黃金指) return false
+
+      if (bottoms != other.bottoms) return false
+      if (pointer != other.pointer) return false
+      if (pointedSign != other.pointedSign) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = bottoms.hashCode()
+      result = 31 * result + pointer.hashCode()
+      result = 31 * result + pointedSign.hashCode()
+      return result
+    }
   }
 
 
@@ -73,6 +159,19 @@ sealed class AstroPattern(override val name: String,
 
     override val points: Set<Point>
       get() = tSquares.flatMap { it.points }.toSet()
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is DoubleT) return false
+
+      if (tSquares != other.tSquares) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return tSquares.hashCode()
+    }
   }
 
   data class 六芒星(val grandTrines: Set<大三角>, override val score: Double?) : AstroPattern("六芒星") {
@@ -86,15 +185,114 @@ sealed class AstroPattern(override val name: String,
           append("形成六芒星")
         }.toString()
       }
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 六芒星) return false
+
+      if (grandTrines != other.grandTrines) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return grandTrines.hashCode()
+    }
   }
 
-  data class 楔子(val oppoPoints: Set<Point>, val moderator: Point, val moderatorSign: ZodiacSign , override val score: Double?) : AstroPattern("楔子", "$oppoPoints 對沖， $moderator 在 $moderatorSign 介入與彼此分別形成 拱 與 六合 , 化解對沖")
+  /**
+   * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
+   */
+  data class 楔子(val oppoPoints: Set<Point>, val moderator: Point, val moderatorSign: ZodiacSign , override val score: Double?) : AstroPattern("楔子", "$oppoPoints 對沖， $moderator 在 $moderatorSign 介入與彼此分別形成 拱 與 六合 , 化解對沖") {
+    override val points: Set<Point>
+      get() = oppoPoints.plus(moderator)
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 楔子) return false
+
+      if (oppoPoints != other.oppoPoints) return false
+      if (moderator != other.moderator) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = oppoPoints.hashCode()
+      result = 31 * result + moderator.hashCode()
+      return result
+    }
+  }
+
+  /**
+   * 兩組 [楔子] 對沖，兩個60度，兩個120度，這也會形成壓力，但是彼此間又可以釋放壓力，非常詭異
+   */
+  data class 神秘長方形(override val points: Set<Point>, override val score: Double?) : AstroPattern("神秘長方形" , "$points 四星 形成 神秘長方形") {
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 神秘長方形) return false
+
+      if (points != other.points) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return points.hashCode()
+    }
+  }
 
   /** 五個 [黃金指] */
-  data class 五芒星(override val points: Set<Point> , override val score: Double?) : AstroPattern("五芒星", "$points 形成 五芒星")
+  data class 五芒星(override val points: Set<Point> , override val score: Double?) : AstroPattern("五芒星", "$points 形成 五芒星") {
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 五芒星) return false
 
-  data class 聚集星座(override val points: Set<Point>, val sign: ZodiacSign) : AstroPattern("聚集星座", "${points.size}星聚集在 $sign : ${points.joinToString(",")}")
-  data class 聚集宮位(override val points: Set<Point>, val house: Int) : AstroPattern("聚集宮位", "${points.size}星聚集在 第${house}宮 : ${points.joinToString(",")}")
+      if (points != other.points) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return points.hashCode()
+    }
+  }
+
+  data class 聚集星座(override val points: Set<Point>, val sign: ZodiacSign, override val score: Double?) : AstroPattern("聚集星座", "${points.size}星聚集在 $sign : ${points.joinToString(",")}") {
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 聚集星座) return false
+
+      if (points != other.points) return false
+      if (sign != other.sign) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = points.hashCode()
+      result = 31 * result + sign.hashCode()
+      return result
+    }
+  }
+
+  data class 聚集宮位(override val points: Set<Point>, val house: Int, override val score: Double) : AstroPattern("聚集宮位", "${points.size}星聚集在 第${house}宮 : ${points.joinToString(",")}") {
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 聚集宮位) return false
+
+      if (points != other.points) return false
+      if (house != other.house) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = points.hashCode()
+      result = 31 * result + house
+      return result
+    }
+  }
 
 }
 
