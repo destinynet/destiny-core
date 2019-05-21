@@ -99,13 +99,9 @@ class PatternContext(val aspectEffective: IAspectEffective,
   } // 三刑會沖
 
 
+  // 上帝之指
   val fingerOfGod = object : IPatternFactory {
-
-    val twoAspects = setOf(Aspect.QUINCUNX, Aspect.SEXTILE) // 150 , 60
-
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-
-
       return horoAspectsCalculator.getAspectDataSet(starPosMap, Planet.list, setOf(Aspect.QUINCUNX))
         .takeIf { it.size >= 2 }
         ?.let { dataSet ->
@@ -132,7 +128,33 @@ class PatternContext(val aspectEffective: IAspectEffective,
             }
         }?.toSet() ?: emptySet()
     }
-  }
+  } // 上帝之指
+
+  // 回力鏢 : YOD + 對沖點
+  val boomerang = object : IPatternFactory {
+    override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+      return fingerOfGod.getPatterns(starPosMap, cuspDegreeMap)
+        .map { it as AstroPattern.上帝之指 }
+        .flatMap { pattern ->
+          aspectsCalculator.getPointAspectAndScore(pattern.pointer, starPosMap, starPosMap.keys, setOf(Aspect.OPPOSITION))
+            .map { (oppoPoint, aspectAndScore) ->
+              val oppoScore = aspectAndScore.second
+              // 對沖點，還必須與兩翼形成30度
+              val bottoms60ScoreMap = pattern.bottoms.map { bottom -> aspectEffective.isEffectiveAndScore(oppoPoint, bottom, starPosMap, Aspect.SEMISEXTILE) }.toMap()
+
+              Triple(oppoPoint, oppoScore, bottoms60ScoreMap)
+            }
+            .filter { (_, _, bottoms60ScoreMap) -> bottoms60ScoreMap.size == 2 }
+            .map { (oppoPoint, oppoScore, _) ->
+              // 分數 : 上帝之指分數 + 對沖分數 + 兩個60度的分數 , 平均
+              //val score: Double? = pattern.score?.let { patternScore -> bottoms60ScoreMap.map { sextileScore -> sextileScore.value }.plus(oppoScore).plus(patternScore).average() }
+              // 分數 : 上帝之指分數 + 對沖分數 平均
+              val score: Double? = pattern.score?.let { patternScore -> setOf(oppoScore).plus(patternScore).average() }
+              AstroPattern.回力鏢(pattern , oppoPoint , score)
+            }
+        }.toSet()
+    }
+  } // 回力鏢 : YOD + 對沖點
 
 
   val goldenYod = object : IPatternFactory {
@@ -297,25 +319,25 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .takeIf { it.size >= 2 } // 確保至少兩組 wedge
         ?.map { it as AstroPattern.楔子 }
         ?.let { patterns ->
-          Sets.combinations(patterns.toSet() , 2).asSequence().map { twoWedges ->
-            val (wedge1 , wedge2) = twoWedges.toList().let { it[0] to it[1] }
+          Sets.combinations(patterns.toSet(), 2).asSequence().map { twoWedges ->
+            val (wedge1, wedge2) = twoWedges.toList().let { it[0] to it[1] }
             // 兩組 wedge 的 moderator 又互相對沖
-            val (moderatorOppo , oppoScore) = aspectEffective.isEffectiveAndScore(wedge1.moderator , wedge2.moderator , starPosMap , Aspect.OPPOSITION)
+            val (moderatorOppo, oppoScore) = aspectEffective.isEffectiveAndScore(wedge1.moderator, wedge2.moderator, starPosMap, Aspect.OPPOSITION)
 
             val unionPoints = twoWedges.flatMap { it.points }.toSet()
 
             // 兩組 wedges 只能有四顆星
             val matched: Boolean = moderatorOppo && unionPoints.size == 4
-            matched to Pair(oppoScore , twoWedges)
-          }.filter { (moderatorOppo , _) -> moderatorOppo }
-            .map { (_ , pair: Pair<Double, Set<AstroPattern.楔子>>) -> pair }
-            .map { (oppoScore , twoWedges) ->
+            matched to Pair(oppoScore, twoWedges)
+          }.filter { (moderatorOppo, _) -> moderatorOppo }
+            .map { (_, pair: Pair<Double, Set<AstroPattern.楔子>>) -> pair }
+            .map { (oppoScore, twoWedges) ->
               val unionPoints = twoWedges.flatMap { it.points }.toSet()
               // 分數 : 以兩組 wedge 個別分數 , 加上 moderator 對沖分數 , 三者平均
-              val score: Double? = twoWedges.takeIf { pattern -> pattern.all { it.score!= null } }?.map { it.score!! }?.plus(oppoScore)?.average()
+              val score: Double? = twoWedges.takeIf { pattern -> pattern.all { it.score != null } }?.map { it.score!! }?.plus(oppoScore)?.average()
               AstroPattern.神秘長方形(unionPoints, score)
             }.toSet()
-        }?: emptySet()
+        } ?: emptySet()
     }
   } // 神秘長方形
 
@@ -346,15 +368,15 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .map { (sign, list: List<Map.Entry<Point, IPos>>) ->
           val points = list.map { it.key }.toSet()
           /** 分數算法： 以該星座內 [Aspect.CONJUNCTION] 分數平均 */
-          val score = Sets.combinations(points , 2).map { pair ->
-            val (p1 , p2) = pair.toList().let { it[0] to it[1] }
-            aspectEffective.isEffectiveAndScore(p1 , p2 , starPosMap , Aspect.CONJUNCTION)
+          val score = Sets.combinations(points, 2).map { pair ->
+            val (p1, p2) = pair.toList().let { it[0] to it[1] }
+            aspectEffective.isEffectiveAndScore(p1, p2, starPosMap, Aspect.CONJUNCTION)
           }
             //.filter { (effective , _) -> effective } 對於「同一星座內，但是沒有形成合相的雙星」其分數雖然是零分，但是不要過濾
-            .map { (_ , score) -> score }
+            .map { (_, score) -> score }
             .average()
 
-          AstroPattern.聚集星座(points, sign , score)
+          AstroPattern.聚集星座(points, sign, score)
         }.toSet()
     }
   }
@@ -368,17 +390,17 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .map { (house, list: List<Pair<Point, Int>>) ->
           val points = list.map { it.first }.toSet()
           /** 分數算法： 以該宮位內 [Aspect.CONJUNCTION] 分數平均 */
-          val score = Sets.combinations(points , 2).map { pair ->
-            val (p1 , p2) = pair.toList().let { it[0] to it[1] }
-            aspectEffective.isEffectiveAndScore(p1 , p2 , starPosMap , Aspect.CONJUNCTION)
+          val score = Sets.combinations(points, 2).map { pair ->
+            val (p1, p2) = pair.toList().let { it[0] to it[1] }
+            aspectEffective.isEffectiveAndScore(p1, p2, starPosMap, Aspect.CONJUNCTION)
           }.map { (_, score) -> score }
             .average()
-          AstroPattern.聚集宮位(points, house , score)
+          AstroPattern.聚集宮位(points, house, score)
         }.toSet()
     }
   }
 
   companion object {
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
   }
 }

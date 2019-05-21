@@ -102,6 +102,27 @@ sealed class AstroPattern(override val name: String,
     }
   }
 
+  data class 回力鏢(val fingerOfGod : 上帝之指, val oppoPoint : Point, override val score: Double?) : AstroPattern("回力鏢" , "${fingerOfGod.points}形成 上帝之指 , 加入 $oppoPoint 形成 回力鏢") {
+    override val points: Set<Point>
+      get() = fingerOfGod.points.plus(oppoPoint)
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 回力鏢) return false
+
+      if (fingerOfGod != other.fingerOfGod) return false
+      if (oppoPoint != other.oppoPoint) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = fingerOfGod.hashCode()
+      result = 31 * result + oppoPoint.hashCode()
+      return result
+    }
+  }
+
   // 72 , 144 , 144
   data class 黃金指(val bottoms: Set<Point>, val pointer: Point, val pointedSign: ZodiacSign, override val score: Double?) : AstroPattern("黃金指", "$bottoms 與 $pointer 形成 黃金指 , 指向 $pointedSign") {
     override val points: Set<Point>
