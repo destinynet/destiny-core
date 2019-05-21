@@ -5,6 +5,9 @@ package destiny.astrology
 
 import com.google.common.collect.Sets
 import mu.KotlinLogging
+import org.apache.commons.math3.ml.clustering.Cluster
+import org.apache.commons.math3.ml.clustering.Clusterable
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer
 import java.io.Serializable
 
 class PatternContext(val aspectEffective: IAspectEffective,
@@ -150,7 +153,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               //val score: Double? = pattern.score?.let { patternScore -> bottoms60ScoreMap.map { sextileScore -> sextileScore.value }.plus(oppoScore).plus(patternScore).average() }
               // 分數 : 上帝之指分數 + 對沖分數 平均
               val score: Double? = pattern.score?.let { patternScore -> setOf(oppoScore).plus(patternScore).average() }
-              AstroPattern.回力鏢(pattern , oppoPoint , score)
+              AstroPattern.回力鏢(pattern, oppoPoint, score)
             }
         }.toSet()
     }
@@ -397,6 +400,51 @@ class PatternContext(val aspectEffective: IAspectEffective,
             .average()
           AstroPattern.聚集宮位(points, house, score)
         }.toSet()
+    }
+  }
+
+  inner class PointCluster(val point: Point, val lngDeg: Double) : Clusterable {
+    override fun getPoint(): DoubleArray {
+      return arrayOf(lngDeg , 0.0).toDoubleArray()
+    }
+  }
+
+  // 星群對峙 : 兩組 3顆星以上的合相星群 彼此對沖
+  val confrontation = object : IPatternFactory {
+
+    override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+      val pointMap = starPosMap.map { (point, pos) -> PointCluster(point, pos.lng) }
+      val cluster = DBSCANClusterer<PointCluster>(6.0, 2)
+      return cluster.cluster(pointMap).let { list: List<Cluster<PointCluster>> ->
+        list
+          .takeIf { clusters -> clusters.size >= 2 }
+          ?.let { clusters ->
+            logger.trace("clusters size >=2 !! : {}" , clusters.size)
+            Sets.combinations(clusters.toSet() , 2).map { twoClusters: Set<Cluster<PointCluster>> ->
+              val (cluster1: Cluster<PointCluster>, cluster2: Cluster<PointCluster>) = twoClusters.toList().let { it[0] to it[1] }
+              val group1 = cluster1.points.map { it.point }
+              val group2 = cluster2.points.map { it.point }
+              logger.trace("group1 = {} , group2 = {}" , group1 , group2)
+              // 兩個群組的中點是否對沖
+              val mid1 = cluster1.points.map { it.lngDeg }.average()
+              val mid2 = cluster2.points.map { it.lngDeg }.average()
+
+              logger.trace("mid1 = {} {} , mid2 = {} {}" , mid1 , ZodiacSign.getSignAndDegree(mid1) , mid2 , ZodiacSign.getSignAndDegree(mid2))
+              val effective = AspectEffectiveModern.isEffective(mid1 , mid2 , Aspect.OPPOSITION , 12.0)
+              Triple(group1 , group2 , effective)
+            }.filter { (_ , _ , effective) -> effective }
+              .map { (group1 , group2 , _) ->
+                // 分數計算 : group1 裡面所有星 , 與 group2 裡面所有星 , 取 對沖 分數 , 過門檻者，加以平均
+                val score = Sets.cartesianProduct(group1.toSet() , group2.toSet()).map {
+                  val (p1, p2) = it[0] to it[1]
+                  aspectEffective.isEffectiveAndScore(p1 , p2 , starPosMap , Aspect.OPPOSITION)
+                }.filter { (effective , _) -> effective }
+                  .map { (_ , score) -> score }
+                  .average()
+                AstroPattern.對峙(setOf(group1.toSet() , group2.toSet()) , score)
+              }
+          }?.toSet()?: emptySet()
+      }
     }
   }
 

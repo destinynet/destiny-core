@@ -102,6 +102,7 @@ sealed class AstroPattern(override val name: String,
     }
   }
 
+  /** [上帝之指] + 對沖點 (與雙翼形成 30度) */
   data class 回力鏢(val fingerOfGod : 上帝之指, val oppoPoint : Point, override val score: Double?) : AstroPattern("回力鏢" , "${fingerOfGod.points}形成 上帝之指 , 加入 $oppoPoint 形成 回力鏢") {
     override val points: Set<Point>
       get() = fingerOfGod.points.plus(oppoPoint)
@@ -312,6 +313,27 @@ sealed class AstroPattern(override val name: String,
       var result = points.hashCode()
       result = 31 * result + house
       return result
+    }
+  }
+
+  /**
+   * 兩組 三顆星以上的合相星群 彼此對沖
+   */
+  data class 對峙(val clusters:Set<Set<Point>>, override val score: Double?) : AstroPattern("星群對峙" , clusters.joinToString("與")+"對峙") {
+    override val points: Set<Point>
+      get() = clusters.flatten().toSet()
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is 對峙) return false
+
+      if (clusters != other.clusters) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return clusters.hashCode()
     }
   }
 
