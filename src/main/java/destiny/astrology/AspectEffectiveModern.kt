@@ -16,9 +16,7 @@ class AspectEffectiveModern(
   /** 「不考慮行星」的交角容許度 */
   var aspectOrbsImpl: IAspectOrbs = AspectOrbsDefaultImpl(),
   /** 「考量行星的」交角容許度實作 */
-  var aspectOrbsPlanetImpl: IAspectOrbsPlanet = AspectOrbsPlanetDefaultImpl(),
-  /** 符合交角的評分，內定從幾分開始算起 */
-  private val defaultThreshold: Double = 0.6
+  var aspectOrbsPlanetImpl: IAspectOrbsPlanet = AspectOrbsPlanetDefaultImpl()
 ) : IAspectEffective, Serializable {
 
 
@@ -39,7 +37,8 @@ class AspectEffectiveModern(
   private fun getOrbAndThresholdScore(p1: Point, p2: Point, aspect: Aspect): Pair<Double,Double> {
     //從「考量行星」的交角容許度實作找起
     return aspectOrbsPlanetImpl.getPlanetAspectOrbAndThreshold(p1, p2, aspect)
-      ?: aspectOrbsImpl.getAspectOrbAndThreshold(aspect) // 再從「不考慮行星」的交角容許度尋找
+    // 再從「不考慮行星」的交角容許度尋找
+      ?: aspectOrbsImpl.getAspectOrbAndThreshold(aspect)
   }
 
   override fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean, Double> {
