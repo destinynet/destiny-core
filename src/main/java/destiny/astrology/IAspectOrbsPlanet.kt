@@ -14,9 +14,19 @@ package destiny.astrology
  *
  */
 interface IAspectOrbsPlanet {
+
+
+  /**
+   * @param aspect  欲取得容許度之交角
+   * @return 交角容許度 , 以及其 threshold
+   */
+  fun getPlanetAspectOrbAndThreshold(p1: Point, p2: Point, aspect: Aspect): Pair<Double,Double>?
+
   /**
    * @param aspect 欲取得容許度之交角
-   * @return 交角容許度，如果傳回 小於零，代表找不到其值
+   * @return 交角容許度
    */
-  fun getPlanetAspectOrb(p1: Point, p2: Point, aspect: Aspect): Double?
+  fun getPlanetAspectOrb(p1: Point, p2: Point, aspect: Aspect): Double? {
+    return getPlanetAspectOrbAndThreshold(p1, p2, aspect)?.first
+  }
 }

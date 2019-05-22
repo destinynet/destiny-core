@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import org.apache.commons.math3.ml.clustering.Cluster
 import org.apache.commons.math3.ml.clustering.Clusterable
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer
+import org.apache.commons.math3.ml.distance.DistanceMeasure
 import java.io.Serializable
 
 class PatternContext(val aspectEffective: IAspectEffective,
@@ -405,7 +406,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   inner class PointCluster(val point: Point, val lngDeg: Double) : Clusterable {
     override fun getPoint(): DoubleArray {
-      return arrayOf(lngDeg , 0.0).toDoubleArray()
+      return arrayOf(lngDeg).toDoubleArray()
     }
   }
 
@@ -414,7 +415,10 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       val pointMap = starPosMap.map { (point, pos) -> PointCluster(point, pos.lng) }
-      val cluster = DBSCANClusterer<PointCluster>(6.0, 2)
+      val cluster = DBSCANClusterer<PointCluster>(6.0, 2
+        , DistanceMeasure { arr1, arr2 -> IHoroscopeModel.getAngle(arr1[0] , arr2[0]) }
+      )
+
       return cluster.cluster(pointMap).let { list: List<Cluster<PointCluster>> ->
         list
           .takeIf { clusters -> clusters.size >= 2 }
@@ -424,16 +428,16 @@ class PatternContext(val aspectEffective: IAspectEffective,
               val (cluster1: Cluster<PointCluster>, cluster2: Cluster<PointCluster>) = twoClusters.toList().let { it[0] to it[1] }
               val group1 = cluster1.points.map { it.point }
               val group2 = cluster2.points.map { it.point }
-              logger.trace("group1 = {} , group2 = {}" , group1 , group2)
+              logger.info("group1 = {} , group2 = {}" , group1 , group2)
               // 兩個群組的中點是否對沖
               val mid1 = cluster1.points.map { it.lngDeg }.average()
               val mid2 = cluster2.points.map { it.lngDeg }.average()
 
-              logger.trace("mid1 = {} {} , mid2 = {} {}" , mid1 , ZodiacSign.getSignAndDegree(mid1) , mid2 , ZodiacSign.getSignAndDegree(mid2))
+              logger.info("mid1 = {} {} , mid2 = {} {}" , mid1 , ZodiacSign.getSignAndDegree(mid1) , mid2 , ZodiacSign.getSignAndDegree(mid2))
               val effective = AspectEffectiveModern.isEffective(mid1 , mid2 , Aspect.OPPOSITION , 12.0)
               Triple(group1 , group2 , effective)
             }.filter { (_ , _ , effective) -> effective }
-              .map { (group1 , group2 , _) ->
+              .mapNotNull { (group1 , group2 , _) ->
                 // 分數計算 : group1 裡面所有星 , 與 group2 裡面所有星 , 取 對沖 分數 , 過門檻者，加以平均
                 val score = Sets.cartesianProduct(group1.toSet() , group2.toSet()).map {
                   val (p1, p2) = it[0] to it[1]
@@ -441,7 +445,18 @@ class PatternContext(val aspectEffective: IAspectEffective,
                 }.filter { (effective , _) -> effective }
                   .map { (_ , score) -> score }
                   .average()
-                AstroPattern.對峙(setOf(group1.toSet() , group2.toSet()) , score)
+
+                if (score.isNaN()) {
+                  // FIXME 在極端狀況下 (群星聚集在黃道零度旁)， 角度取平均，可能不會是 0 的附近，可能會被 360之前的數值給拖累
+                  //  例如 1821-03-26 , 5:55 AM , 就出現這種狀況 ( from painters )
+                  //  group1 = [太陽, 水星, 木星, 冥王星] , 其中 冥王星 357度, 其他三星都是0度左右，一平均起來 mid1 = 93度 ,
+                  //  group2 = [月亮, 天王星, 海王星] 這是正常的 , mid2 = 271
+                  //  就變成與 group2 對沖 , 其實並沒有！
+                  logger.warn("score is NaN !! group1 = {} , group2 = {}" , group1 , group2)
+                  null
+                } else {
+                  AstroPattern.對峙(setOf(group1.toSet() , group2.toSet()) , score)
+                }
               }
           }?.toSet()?: emptySet()
       }

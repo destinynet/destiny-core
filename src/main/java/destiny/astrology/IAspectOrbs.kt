@@ -11,5 +11,9 @@ package destiny.astrology
  */
 interface IAspectOrbs {
 
-  fun getAspectOrb(aspect: Aspect): Double
+  fun getAspectOrbAndThreshold(aspect: Aspect) : Pair<Double , Double>
+
+  fun getAspectOrb(aspect: Aspect): Double {
+    return getAspectOrbAndThreshold(aspect).first
+  }
 }

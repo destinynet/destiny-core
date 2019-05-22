@@ -21,7 +21,10 @@ import kotlin.math.abs
  *
  * @param planetOrbsImpl 星芒交角 , 內定採用 [PointDiameterAlBiruniImpl]
  */
-class AspectEffectiveClassical(val planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl()) : IAspectEffective, Serializable {
+class AspectEffectiveClassical(
+  val planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl() ,
+  /** 符合交角的評分，內定從幾分開始算起 */
+  private val defaultThreshold : Double = 0.6) : IAspectEffective, Serializable {
 
 
   private fun getAngleDiff(deg1: Double , deg2: Double , angle: Double) : Double {
@@ -39,7 +42,7 @@ class AspectEffectiveClassical(val planetOrbsImpl: IPointDiameter = PointDiamete
 
     return (angleDiff <= sumOfRadius).let { value ->
       if (value)
-        true to (0.6 + 0.4 * (sumOfRadius - angleDiff) / sumOfRadius)
+        true to (defaultThreshold + (1-defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius)
       else
         false to 0.0
     }

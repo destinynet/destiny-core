@@ -16,29 +16,31 @@ import java.io.Serializable
 class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, Serializable {
 
   /**
-   * @param aspect 欲取得容許度之交角
-   * @return 交角容許度，如果傳回 小於零，代表找不到其值
+   * 先傳回交角容許度，再傳回門檻分數 (0~1)
    */
-  override fun getPlanetAspectOrb(p1: Point, p2: Point, aspect: Aspect): Double? {
-
-    val key1 = Triple(p1, p2, aspect)
-    val key2 = Triple(p2, p1, aspect)
-
-    return sunMoonOrbsMap[key1] ?: sunMoonOrbsMap[key2]
+  override fun getPlanetAspectOrbAndThreshold(p1: Point, p2: Point, aspect: Aspect): Pair<Double, Double>? {
+    return orbThresholdMap[Pair(setOf(p1 , p2) , aspect)]
   }
 
   companion object {
-    private val sunMoonOrbsMap = mapOf(
-      Triple(Planet.SUN, Planet.MOON, Aspect.CONJUNCTION) to 12.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.OPPOSITION) to 12.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.TRINE) to 8.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SQUARE) to 8.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SEXTILE) to 5.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SEMISQUARE) to 2.5,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SESQUIQUADRATE) to 2.5,
-      Triple(Planet.SUN, Planet.MOON, Aspect.SEMISEXTILE) to 2.0,
-      Triple(Planet.SUN, Planet.MOON, Aspect.QUINCUNX) to 2.5
+
+    /**
+     * 兩星交角，容許度多少，以及門檻從幾分開始算起 (0~1)
+     */
+    private val orbThresholdMap: Map<Pair<Set<Planet>, Aspect>, Pair<Double, Double>> = mapOf(
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.CONJUNCTION) to (12.0 to 0.6),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.OPPOSITION) to (12.0 to 0.6),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.TRINE) to (8.0 to 0.7),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SQUARE) to (8.0 to 0.7),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SEXTILE) to (5.0 to 0.75),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SEMISQUARE) to (2.5 to 0.8),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SESQUIQUADRATE) to (2.5 to 0.8),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SEMISEXTILE) to (2.0 to 0.9),
+      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.QUINCUNX) to (2.5 to 0.9)
     )
+
   }
+
+
 
 }
