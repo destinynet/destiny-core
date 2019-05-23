@@ -19,14 +19,10 @@ data class Pos(override val lng: Double,
                override val lat: Double) : IPos
 
 
-interface IAzimuth {
-  val azimuth: Azimuth
-}
-
 interface IPosWithAzimuth : IPos , IAzimuth
 
 data class PosWithAzimuth(val pos: IPos,
-                          override val azimuth: Azimuth) : IPosWithAzimuth , IPos by pos
+                          val azimuth: IAzimuth) : IPosWithAzimuth , IPos by pos , IAzimuth by azimuth
 
 interface IStarPos : IPos {
   val distance: Double  // in AU
@@ -45,6 +41,6 @@ data class StarPosition(
 
 interface IStarPositionWithAzimuth : IStarPos, IPosWithAzimuth, IAzimuth
 
-data class PositionWithAzimuth(
+data class StarPosWithAzimuth(
   val starPos: IStarPos,
-  override val azimuth: Azimuth) : IStarPositionWithAzimuth, IStarPos by starPos, Serializable
+  val azimuth: Azimuth) : IStarPositionWithAzimuth, IStarPos by starPos, IAzimuth by azimuth, Serializable

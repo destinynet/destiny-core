@@ -5,15 +5,13 @@ package destiny.astrology
 
 import destiny.core.calendar.ILocation
 
-open class PositionHamburgerImpl(hamburger: Hamburger) :
+open class PositionHamburgerImpl(val starPositionImpl: IStarPosition<*> , hamburger: Hamburger) :
   AbstractPositionImpl<Hamburger>(hamburger) {
 
   override fun getPosition(gmtJulDay: Double,
                            loc: ILocation,
                            centric: Centric,
-                           coordinate: Coordinate,
-                           starPositionImpl: IStarPosition<*>,
-                           houseCuspImpl: IHouseCusp): IPos {
-    return starPositionImpl.getPosition(point, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter?:0.0, centric, coordinate, 0.0, 1013.25)
+                           coordinate: Coordinate): IPos {
+    return starPositionImpl.getPosition(point, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter?:0.0, centric, coordinate)
   }
 }

@@ -6,9 +6,10 @@ package destiny.astrology
 import destiny.core.calendar.ILocation
 
 open class PositionRsmiImpl(private val rsmi: Rsmi ,
-                            private val azimuthImpl: IAzimuthCalculator) : AbstractPositionImpl<Rsmi>(rsmi) {
+                            private val azimuthImpl: IAzimuthCalculator,
+                            private val houseCuspImpl: IHouseCusp) : AbstractPositionImpl<Rsmi>(rsmi) {
 
-  override fun getPosition(gmtJulDay: Double, loc: ILocation, centric: Centric, coordinate: Coordinate, starPositionImpl: IStarPosition<*>, houseCuspImpl: IHouseCusp): IPos {
+  override fun getPosition(gmtJulDay: Double, loc: ILocation, centric: Centric, coordinate: Coordinate): IPos {
     return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , HouseSystem.PLACIDUS , coordinate).let { map: Map<Int, Double> ->
       val pos = when(rsmi) {
         Rsmi.RISING -> Pos(map.getValue(1) , 0.0)

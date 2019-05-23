@@ -15,11 +15,11 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IApsisWithAzimuth : IApsis {
 
-  fun getPositionsWithAzimuths(star: Star, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double, pressure: Double): Map<Apsis, PositionWithAzimuth>
+  fun getPositionsWithAzimuths(star: Star, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): Map<Apsis, StarPosWithAzimuth>
 
-  fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double, pressure: Double): PositionWithAzimuth
+  fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth
 
-  fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmt: ChronoLocalDateTime<*>, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double, pressure: Double): PositionWithAzimuth {
+  fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmt: ChronoLocalDateTime<*>, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPositionWithAzimuth(star, apsis, gmtJulDay, coordinate, nodeType, location, temperature, pressure)
   }

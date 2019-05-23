@@ -18,7 +18,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   val grandTrine = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return horoAspectsCalculator.getAspectDataSet(posMap, Planet.list, aspects = setOf(Aspect.TRINE))
+      return horoAspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.TRINE))
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
 
@@ -83,10 +83,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
     val twoAspects = setOf(Aspect.OPPOSITION, Aspect.SQUARE) // 180 , 90
 
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-//      logger.info("posMap : ")
-//      posMap.forEach { (point , pos) ->
-//        logger.info("\t{} : {},{}" , point , pos.lng , pos.lat)
-//      }
+
       return horoAspectsCalculator.getAspectDataSet(posMap, aspects = twoAspects)
         //.filter { pair -> !pair.points.all { it is Rsmi } }  // 過濾四角點互相形成的交角
         .takeIf { it.size >= 3 }
@@ -111,7 +108,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   // 上帝之指
   val fingerOfGod = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return horoAspectsCalculator.getAspectDataSet(posMap, Planet.list, setOf(Aspect.QUINCUNX))
+      return horoAspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.QUINCUNX))
         .takeIf { it.size >= 2 }
         ?.let { dataSet ->
           // 任兩個 QUINCUNX ,

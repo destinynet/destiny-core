@@ -56,11 +56,11 @@ interface IHoroscopeContext {
   }
 
   companion object {
-    val defaultPoints = setOf<Point>(
+    val defaultPoints = setOf(
       *Planet.array,
-      //*Asteroids.array,
-      *Hamburger.array,
-      *FixedStar.array,
+      *Rsmi.array,
+      //*Hamburger.array,
+      //*FixedStar.array,
       LunarNode.NORTH_MEAN,LunarNode.SOUTH_MEAN
       //*LunarNodes.meanArray
     )
@@ -97,9 +97,7 @@ class HoroscopeContext(
 
     val positionMap: Map<Point, IPosWithAzimuth> = (points ?: this.points).map { point ->
       point to pointPosMap[point]?.getPosition(gmtJulDay, loc, finalCentric,
-        finalCoordinate,
-        starPositionWithAzimuthImpl,
-        houseCuspImpl)
+        finalCoordinate)
     }.filter { (_, v) -> v != null }
       .map { (point, pos) -> point to pos!! as IPosWithAzimuth }
       .toMap()
