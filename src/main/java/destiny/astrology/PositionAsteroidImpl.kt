@@ -10,7 +10,8 @@ open class PositionAsteroidImpl internal constructor(asteroid: Asteroid) : Abstr
                            loc: ILocation,
                            centric: Centric,
                            coordinate: Coordinate,
-                           starPositionImpl: IStarPosition<*>): IPos {
+                           starPositionImpl: IStarPosition<*>,
+                           houseCuspImpl: IHouseCusp): IPos {
     return starPositionImpl.getPosition(point, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter?:0.0, centric, coordinate, 0.0, 1013.25)
   }
 }

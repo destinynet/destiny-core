@@ -15,16 +15,18 @@ interface IPosition<out T : Point> {
                   loc: ILocation,
                   centric: Centric,
                   coordinate: Coordinate,
-                  starPositionImpl: IStarPosition<*>): IPos
+                  starPositionImpl: IStarPosition<*>,
+                  houseCuspImpl: IHouseCusp): IPos
 
 
   fun getPosition(lmt: ChronoLocalDateTime<*>,
                   loc: ILocation,
                   centric: Centric,
                   coordinate: Coordinate,
-                  starPositionImpl: IStarPosition<*>): IPos {
+                  starPositionImpl: IStarPosition<*>,
+                  houseCuspImpl: IHouseCusp): IPos {
     val gmtJulDay: Double = TimeTools.getGmtJulDay(lmt, loc)
-    return getPosition(gmtJulDay, loc, centric, coordinate, starPositionImpl)
+    return getPosition(gmtJulDay, loc, centric, coordinate, starPositionImpl, houseCuspImpl)
   }
 
 

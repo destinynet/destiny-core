@@ -96,8 +96,9 @@ class HoroscopeContext(
 
     val positionMap: Map<Point, PositionWithAzimuth> = (points ?: this.points).map { point ->
       point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, finalCentric,
-                                                                 finalCoordinate,
-                                                                 starPositionWithAzimuthImpl)
+        finalCoordinate,
+        starPositionWithAzimuthImpl,
+        houseCuspImpl)
     }.filter { (_, v) -> v != null }
       .map { (point, pos) -> point to pos!! as PositionWithAzimuth }
       .toMap()

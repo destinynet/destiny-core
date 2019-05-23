@@ -12,7 +12,6 @@ import destiny.astrology.Planet.*
 object PositionFunctions {
 
   val posSun: IPosition<*> = object : PositionStarImpl(SUN) {}
-
   private val posMoon: IPosition<*> = object : PositionStarImpl(MOON) {}
   private val posMercury: IPosition<*> = object : PositionStarImpl(MERCURY) {}
   private val posVenus: IPosition<*> = object : PositionStarImpl(VENUS) {}
@@ -32,6 +31,13 @@ object PositionFunctions {
 
   private val posLunarNodes_TRUE = arrayOf(posLunarNorth_TRUE, posLunarSouth_TRUE)
   private val posLunarNodes_MEAN = arrayOf(posLunarNorth_MEAN, posLunarSouth_MEAN)
+
+  private val posRising : IPosition<*> = object : PositionRsmiImpl(Rsmi.RISING) {}
+  private val posSetting : IPosition<*> = object : PositionRsmiImpl(Rsmi.SETTING) {}
+  private val posMeridian : IPosition<*> = object : PositionRsmiImpl(Rsmi.MERIDIAN) {}
+  private val posNadir : IPosition<*> = object : PositionRsmiImpl(Rsmi.NADIR) {}
+
+  val posRsmis = arrayOf(posRising , posSetting , posMeridian , posNadir)
 
 
   private val posCeres: IPosition<*> = object : PositionAsteroidImpl(Asteroid.CERES) {}
@@ -83,6 +89,7 @@ object PositionFunctions {
 
   val sets = setOf(
     *posPlanets,
+    *posRsmis,
     *posAsteroids,
     *posFixedStars,
     *posLunarNodes_TRUE,
