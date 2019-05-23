@@ -5,6 +5,7 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.IHoroscopeModel
+import destiny.astrology.IStarPositionWithAzimuth
 import destiny.astrology.Planet
 import destiny.astrology.Planet.MOON
 import destiny.astrology.Planet.SUN
@@ -14,7 +15,8 @@ class Direct : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return planet.takeIf { it !== SUN && it !== MOON }
-      ?.let { h.getPosition(it) }?.speedLng
+      ?.let { h.getStarPosition(it) }
+      ?.speedLng
       ?.takeIf { it > 0 }
       ?.let { "comment" to arrayOf<Any>(planet) }
   }

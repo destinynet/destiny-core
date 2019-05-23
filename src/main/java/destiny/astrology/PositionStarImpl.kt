@@ -5,7 +5,7 @@ package destiny.astrology
 
 import destiny.core.calendar.ILocation
 
-abstract class PositionStarImpl internal constructor(star: Star) : AbstractPositionImpl<Star>(star) {
+abstract class PositionStarImpl(star: Star) : AbstractPositionImpl<Star>(star) {
 
   override fun getPosition(gmtJulDay: Double,
                            loc: ILocation,

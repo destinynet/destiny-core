@@ -5,7 +5,7 @@ package destiny.astrology
 
 import destiny.core.calendar.ILocation
 
-open class PositionLunarPointImpl internal constructor(lunarPoint: LunarPoint) :
+open class PositionLunarPointImpl(lunarPoint: LunarPoint) :
   AbstractPositionImpl<LunarPoint>(lunarPoint) {
 
   override fun getPosition(gmtJulDay: Double,

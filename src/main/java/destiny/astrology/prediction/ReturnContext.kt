@@ -18,7 +18,7 @@ import java.time.chrono.ChronoLocalDateTime
  */
 class ReturnContext(
   /** 計算星體的介面  */
-  private val starPositionWithAzimuthImpl: IStarPositionWithAzimuth,
+  private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
   private val houseCuspImpl: IHouseCusp,
@@ -30,7 +30,8 @@ class ReturnContext(
   /** 欲計算的目標時間，通常是當下，now，以LMT型態  */
   private val nowLmt: ChronoLocalDateTime<*>,
   /** 現在所處的地點  */
-  private val nowLoc: Location, planet: Planet, orb: Double, converse: Boolean, precession: Boolean) : IDiscrete, Conversable, Serializable {
+  private val nowLoc: Location, planet: Planet, orb: Double, converse: Boolean, precession: Boolean,
+  private val pointPosMap: Map<Point, IPosition<*>>) : IDiscrete, Conversable, Serializable {
 
 
   /** 返照法所採用的行星 , 太陽/太陰 , 或是其他  */
@@ -65,7 +66,7 @@ class ReturnContext(
       val nodeType = NodeType.MEAN
 
       val horoscopeContext = HoroscopeContext(IHoroscopeContext.defaultPoints, houseSystem, coordinate,
-                                              centric, starPositionWithAzimuthImpl, houseCuspImpl)
+                                              centric, starPositionWithAzimuthImpl, houseCuspImpl , pointPosMap)
       return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
     }
 

@@ -5,12 +5,14 @@
 package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.IHoroscopeModel
+import destiny.astrology.IStarPositionWithAzimuth
 import destiny.astrology.Planet
 
 class Retrograde : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
-    return h.getPosition(planet)?.speedLng
+    return h.getStarPosition(planet)
+      ?.speedLng
       ?.takeIf { it < 0 }
       ?.let { "comment" to arrayOf<Any>(planet) }
   }

@@ -10,8 +10,8 @@ class DegreeComparator(private val horoscope: IHoroscopeModel) : Comparator<Poin
 
   override fun compare(p1: Point, p2: Point): Int {
 
-    val pos1: PositionWithAzimuth? = horoscope.getPosition(p1)
-    val pos2: PositionWithAzimuth? = horoscope.getPosition(p2)
+    val pos1: IPos? = horoscope.getPosition(p1)
+    val pos2: IPos? = horoscope.getPosition(p2)
 
     return if (pos1 != null && pos2 != null)
       (pos1.lng - pos2.lng).toInt()

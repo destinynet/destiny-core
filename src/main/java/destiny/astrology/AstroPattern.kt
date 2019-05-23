@@ -341,7 +341,7 @@ sealed class AstroPattern(override val name: String,
 
 interface IPatternFactory : Serializable {
 
-  fun getPatterns(starPosMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern>
+  fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern>
 
 }
 

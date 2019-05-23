@@ -5,7 +5,7 @@ package destiny.astrology
 
 import destiny.core.calendar.ILocation
 
-open class PositionAsteroidImpl internal constructor(asteroid: Asteroid) : AbstractPositionImpl<Asteroid>(asteroid) {
+open class PositionAsteroidImpl(asteroid: Asteroid) : AbstractPositionImpl<Asteroid>(asteroid) {
   override fun getPosition(gmtJulDay: Double,
                            loc: ILocation,
                            centric: Centric,

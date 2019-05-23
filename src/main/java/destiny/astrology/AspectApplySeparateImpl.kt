@@ -6,12 +6,14 @@ package destiny.astrology
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 
+/** 一個星盤當中，兩個星體，是否形成交角。以及即將形成 (APPLYING , 入相位)，還是離開該交角 (SEPARATING , 出相位)  */
 class AspectApplySeparateImpl(
   /** 可以注入現代占星 ( AspectEffectiveModern ) 或是古典占星 ( AspectEffectiveClassical ) 的實作  */
   private val aspectEffectiveImpl: IAspectEffective,
-  private val starPositionWithAzimuthImpl: IStarPositionWithAzimuth,
-  private val houseCuspImpl : IHouseCusp
-                             ) : IAspectApplySeparate, Serializable {
+  private val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
+  private val houseCuspImpl: IHouseCusp,
+  private val pointPosMap: Map<Point, IPosition<*>>
+) : IAspectApplySeparate, Serializable {
 
 
 
@@ -34,7 +36,7 @@ class AspectApplySeparateImpl(
       val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
 
       val hContext : IHoroscopeContext = HoroscopeContext(h.points, h.houseSystem, h.coordinate,
-                                                          h.centric, starPositionWithAzimuthImpl, houseCuspImpl)
+                                                          h.centric, starPositionWithAzimuthImpl, houseCuspImpl , pointPosMap)
       val h2 = hContext.getHoroscope(lmt = oneSecondLater, loc = h.location, place = h.place,
                                      points = IHoroscopeContext.defaultPoints,
                                      houseSystem = null, coordinate = null, centric = null, temperature = h.temperature,

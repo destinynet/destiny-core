@@ -48,6 +48,23 @@ class AspectEffectiveModernTest  {
     assertFalse(modern.isEffective(90.0, 258.0, OPPOSITION))
   }
 
+
+  @Test
+  fun testIsEffectiveAndScore_SUN_RISING() {
+    /** 日月對沖，容許度 12度  , 記錄於 [AspectOrbsPlanetDefaultImpl] 的 map 中 */
+    modern.isEffectiveAndScore(SUN , 0.0 , MOON , 192.0 , OPPOSITION).also {
+      assertEquals(true to 0.6 , it)
+    }
+
+    /** 與東昇點，並不在 [AspectOrbsPlanetDefaultImpl] 的 map 中 , 容許度改為 [AspectOrbsDefaultImpl] 為 11度 */
+    modern.isEffectiveAndScore(SUN , 0.0 , Rsmi.RISING , 192.0 , OPPOSITION).also {
+      assertEquals(false to 0.0 , it)
+    }
+    modern.isEffectiveAndScore(SUN , 0.0 , Rsmi.RISING , 191.0 , OPPOSITION).also {
+      assertEquals(true to 0.6 , it)
+    }
+  }
+
   /**
    * 測試「考量行星」的實作，注入內定的 AspectOrbsPlanetDefaultImpl 實作，該實作只對日月交角有更高的容許度
    */
@@ -78,6 +95,8 @@ class AspectEffectiveModernTest  {
     modern.isEffectiveAndScore(SUN, 0.0, MOON, 193.0, OPPOSITION).also {
       assertEquals(false to 0.0, it)
     }
+
+
 
     // 其他星體的「對沖」容許度，仍為 11度
     assertTrue(modern.isEffective(MOON, 0.0, VENUS, 191.0, OPPOSITION))

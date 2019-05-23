@@ -20,6 +20,7 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
       points
         .filter { it !== point }
         .filter { positionMap.containsKey(it) }
+        .filter { eachPoint -> !(point is Rsmi && eachPoint is Rsmi) }  // 過濾四角點互相形成的交角
         .flatMap { eachPoint ->
           val eachDeg = positionMap.getValue(eachPoint).lng
 

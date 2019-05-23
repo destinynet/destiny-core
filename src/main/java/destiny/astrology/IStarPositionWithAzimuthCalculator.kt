@@ -12,7 +12,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 計算星體位置 + 地平方位角 (限定 Star) , <BR></BR>
  * Swiss Ephemeris 實作為 StarPositionWithAzimuthImpl
  */
-interface IStarPositionWithAzimuth : IStarPosition<IStarPos> {
+interface IStarPositionWithAzimuthCalculator : IStarPosition<IStarPos> {
 
   override fun getPosition(star: Star,
                            gmtJulDay: Double,
@@ -22,7 +22,7 @@ interface IStarPositionWithAzimuth : IStarPosition<IStarPos> {
                            centric: Centric,
                            coordinate: Coordinate,
                            temperature: Double,
-                           pressure: Double): IPositionWithAzimuth
+                           pressure: Double): IStarPositionWithAzimuth
 
   fun getPositionFromGmt(star: Star,
                          gmt: ChronoLocalDateTime<*>,
@@ -30,7 +30,7 @@ interface IStarPositionWithAzimuth : IStarPosition<IStarPos> {
                          centric: Centric,
                          coordinate: Coordinate,
                          temperature: Double,
-                         pressure: Double): IPositionWithAzimuth {
+                         pressure: Double): IStarPositionWithAzimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPosition(star, gmtJulDay, location.lat, location.lng, location.altitudeMeter, centric, coordinate,
       temperature, pressure)
@@ -43,7 +43,7 @@ interface IStarPositionWithAzimuth : IStarPosition<IStarPos> {
                          gmt: ChronoLocalDateTime<*>,
                          location: ILocation,
                          centric: Centric,
-                         coordinate: Coordinate): IPositionWithAzimuth {
+                         coordinate: Coordinate): IStarPositionWithAzimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPosition(star, gmtJulDay, location.lat, location.lng, location.altitudeMeter, centric, coordinate, 0.0, 1013.25)
   }

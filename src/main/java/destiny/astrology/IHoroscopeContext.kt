@@ -72,8 +72,9 @@ class HoroscopeContext(
   override val houseSystem: HouseSystem,
   override val coordinate: Coordinate,
   override val centric: Centric,
-  val starPositionWithAzimuthImpl: IStarPositionWithAzimuth,
-  val houseCuspImpl: IHouseCusp) : IHoroscopeContext, Serializable {
+  val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
+  val houseCuspImpl: IHouseCusp ,
+  private val pointPosMap: Map<Point, IPosition<*>> ) : IHoroscopeContext, Serializable {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -94,13 +95,13 @@ class HoroscopeContext(
     val finalCentric = centric ?: this.centric
     val finalCoordinate = coordinate ?: this.coordinate
 
-    val positionMap: Map<Point, PositionWithAzimuth> = (points ?: this.points).map { point ->
-      point to PositionFunctions.pointPosMap[point]?.getPosition(gmtJulDay, loc, finalCentric,
+    val positionMap: Map<Point, IPosWithAzimuth> = (points ?: this.points).map { point ->
+      point to pointPosMap[point]?.getPosition(gmtJulDay, loc, finalCentric,
         finalCoordinate,
         starPositionWithAzimuthImpl,
         houseCuspImpl)
     }.filter { (_, v) -> v != null }
-      .map { (point, pos) -> point to pos!! as PositionWithAzimuth }
+      .map { (point, pos) -> point to pos!! as IPosWithAzimuth }
       .toMap()
 
 

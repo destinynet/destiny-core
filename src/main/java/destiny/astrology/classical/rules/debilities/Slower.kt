@@ -5,16 +5,19 @@
 package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.IHoroscopeModel
+import destiny.astrology.IStarPositionWithAzimuth
 import destiny.astrology.Planet
 import destiny.astrology.classical.AverageDailyMotionMap
 
 class Slower : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
-    return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf{ dailyDeg ->
-      h.getPosition(planet)?.speedLng?.let { speedLng ->
-        speedLng < dailyDeg
-      }?:false
-    }?.let { "comment" to arrayOf<Any>(planet) }
+    return AverageDailyMotionMap.getAvgDailySpeed(planet)
+      ?.takeIf { dailyDeg ->
+        h.getStarPosition(planet)
+          ?.speedLng?.let { speedLng ->
+          speedLng < dailyDeg
+        } ?: false
+      }?.let { "comment" to arrayOf<Any>(planet) }
   }
 }

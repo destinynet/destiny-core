@@ -51,6 +51,7 @@ class HoroscopeAspectsCalculatorClassical(
       positionMap[point]?.lng?.let { planetDeg ->
 
         points.filter { it !== point }
+          .filter { eachPoint -> !(point is Rsmi && eachPoint is Rsmi) }  // 過濾四角點互相形成的交角
           .flatMap { eachPoint ->
             val eachPlanetDeg = positionMap.getValue(eachPoint).lng
             aspects

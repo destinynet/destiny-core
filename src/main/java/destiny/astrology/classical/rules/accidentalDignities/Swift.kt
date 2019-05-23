@@ -5,6 +5,7 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.IHoroscopeModel
+import destiny.astrology.IStarPositionWithAzimuth
 import destiny.astrology.Planet
 import destiny.astrology.classical.AverageDailyMotionMap
 
@@ -13,9 +14,11 @@ class Swift : AccidentalRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return AverageDailyMotionMap.getAvgDailySpeed(planet)?.takeIf { dailyDeg ->
-      return@takeIf h.getPosition(planet)?.speedLng?.let { speedLng ->
+      h.getStarPosition(planet)
+        ?.speedLng?.let { speedLng ->
         speedLng > dailyDeg
       }?:false
     }?.let { "comment" to arrayOf<Any>(planet) }
+
   }
 }

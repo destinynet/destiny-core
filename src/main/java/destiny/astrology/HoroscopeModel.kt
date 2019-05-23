@@ -40,7 +40,7 @@ interface IHoroscopeModel {
   val pressure: Double?
 
   /** 星體位置表 */
-  val positionMap: Map<Point, PositionWithAzimuth>
+  val positionMap: Map<Point, IPosWithAzimuth>
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
   val cuspDegreeMap: Map<Int, Double>
@@ -92,7 +92,7 @@ interface IHoroscopeModel {
   /**
    * 取得所有行星 [Planet] 的位置
    */
-  val planetPositionWithAzimuth: Map<Planet, PositionWithAzimuth>
+  val planetPositionWithAzimuth: Map<Planet, IPosWithAzimuth>
     get() = positionMap
       .filter { it.key is Planet }
       .mapKeys { it.key as Planet }
@@ -101,7 +101,7 @@ interface IHoroscopeModel {
   /**
    * 取得所有小行星 [Asteroid] 的位置
    */
-  val asteroidPositionWithAzimuth: Map<Asteroid, PositionWithAzimuth>
+  val asteroidPositionWithAzimuth: Map<Asteroid, IPosWithAzimuth>
     get() = positionMap
       .filter { it.key is Asteroid }
       .mapKeys { it.key as Asteroid }
@@ -110,7 +110,7 @@ interface IHoroscopeModel {
   /**
    * 取得八個漢堡學派虛星 [Hamburger] 的位置
    */
-  val hamburgerPositionWithAzimuth: Map<Hamburger, PositionWithAzimuth>
+  val hamburgerPositionWithAzimuth: Map<Hamburger, IPosWithAzimuth>
     get() = positionMap
       .filter { it.key is Hamburger }
       .mapKeys { it.key as Hamburger }
@@ -159,7 +159,7 @@ interface IHoroscopeModel {
 
 
   /** 取得一顆星體 Point / Star 在星盤上的角度  */
-  fun getPositionWithAzimuth(point: Point): PositionWithAzimuth {
+  fun getPositionWithAzimuth(point: Point): IPosWithAzimuth {
     return positionMap.getValue(point)
   }
 
@@ -167,7 +167,7 @@ interface IHoroscopeModel {
   /**
    * 取得一連串星體的位置（含地平方位角）
    */
-  fun getPositionWithAzimuth(stars: List<Star>): Map<Star, PositionWithAzimuth> {
+  fun getPositionWithAzimuth(stars: List<Star>): Map<Star, IPosWithAzimuth> {
     return positionMap
       .filter { (k, _) -> stars.contains(k) }
       .mapKeys { it as Star }
@@ -175,7 +175,7 @@ interface IHoroscopeModel {
   }
 
 
-  fun getPositionWithAzimuth(clazz: Class<out Point>): Map<Point, PositionWithAzimuth> {
+  fun getPositionWithAzimuth(clazz: Class<out Point>): Map<Point, IPosWithAzimuth> {
     return positionMap
       .filter { (k, _) -> k.javaClass == clazz }
       .toMap()
@@ -189,8 +189,12 @@ interface IHoroscopeModel {
   }
 
   /** 取得星體的位置以及地平方位角  */
-  fun getPosition(point: Point): PositionWithAzimuth? {
+  fun getPosition(point: Point): IPosWithAzimuth? {
     return positionMap[point]
+  }
+
+  fun getStarPosition(star : Star) : IStarPositionWithAzimuth? {
+    return positionMap[star]?.takeIf { it is IStarPositionWithAzimuth }?.let { it as IStarPositionWithAzimuth }
   }
 
   /** 取得某星 位於什麼星座  */
@@ -290,7 +294,7 @@ data class HoroscopeModel(
   override val pressure: Double?,
 
   /** 星體位置表 */
-  override val positionMap: Map<Point, PositionWithAzimuth>,
+  override val positionMap: Map<Point, IPosWithAzimuth>,
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
   override val cuspDegreeMap: Map<Int, Double>) : IHoroscopeModel, Serializable
