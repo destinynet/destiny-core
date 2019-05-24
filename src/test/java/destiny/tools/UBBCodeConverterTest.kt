@@ -14,8 +14,6 @@ class UBBCodeConverterTest {
   @Test
   fun reQuote() {
     val codeConverter = UBBCodeConverter()
-    logger.info("{}",codeConverter.replace("sss s1 " , "s1" , "s2"))
-
 
     val s1 = "123 [quote] 內文 [/quote] 456"
     val s2 = "123 \n" + "<br>[quote] 內文 [/quote] \n" + "<br>456"
