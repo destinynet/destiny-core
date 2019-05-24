@@ -4,6 +4,7 @@
 package destiny.astrology
 
 import destiny.core.calendar.TimeTools
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime
 
@@ -109,13 +110,7 @@ interface IBesieged {
 
     val otherPlanets = getPlanetsExcept(planet, classical)
 
-    val searchingAspects = listOf(
-      Aspect.CONJUNCTION, // 0
-      Aspect.SQUARE,      // 90
-      Aspect.OPPOSITION,  // 180
-      Aspect.SEXTILE,     // 60
-      Aspect.TRINE        // 120
-    )
+    val searchingAspects = Aspect.getAngles(Aspect.Importance.HIGH)
 
     val constrainingAspects = searchingAspects.filter {
       if (isOnlyHardAspects) {
@@ -152,7 +147,7 @@ interface IBesieged {
 
   companion object {
 
-    val logger = LoggerFactory.getLogger(IBesieged::class.java)!!
+    val logger = KotlinLogging.logger {  }
   }
 
 }

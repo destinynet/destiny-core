@@ -543,12 +543,14 @@ class ZContext(
 
     // 什麼星，在什麼地支
     val starBranchMap: Map<ZStar, Branch> = stars.map { star ->
-      val branch: Branch =
+      val branch: Branch? =
         HouseFunctions.map[star]?.getBranch(lunarYear, solarYear, monthBranch, finalMonthNumForMonthStars, solarTerms,
                                             lunarDays, hour, 五行局, gender, leapMonth, prevMonthDays, mainBranch,
-                                            this)!!
+                                            this)
       star to branch
-    }.toMap()
+    }.filter { (_ , branch) -> branch != null }
+      .map { (star , branch) -> star to branch!! }
+      .toMap()
 
     logger.debug("stars = {}", stars)
     logger.debug("starBranchMap = {}", starBranchMap)

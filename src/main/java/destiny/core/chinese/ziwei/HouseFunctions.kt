@@ -75,11 +75,12 @@ import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全書
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
 import destiny.core.chinese.ziwei.StarYearFront.*
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 
 object HouseFunctions {
 
-  private val logger = LoggerFactory.getLogger(HouseFunctions::class.java)
+  private val logger = KotlinLogging.logger {  }
 
 
   private val house紫微: IHouse<*> = HouseMainStarImpl(紫微)
