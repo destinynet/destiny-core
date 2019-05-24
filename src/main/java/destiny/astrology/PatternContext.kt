@@ -85,7 +85,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
 
       return horoAspectsCalculator.getAspectDataSet(posMap, aspects = twoAspects)
-        //.filter { pair -> !pair.points.all { it is Rsmi } }  // 過濾四角點互相形成的交角
+        //.filter { pair -> !pair.points.all { it is Axis } }  // 過濾四角點互相形成的交角
         .takeIf { it.size >= 3 }
         ?.let { pairs ->
           Sets.combinations(pairs, 3).filter { threeSet ->

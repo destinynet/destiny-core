@@ -10,21 +10,21 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 
 
-class RsmiTest {
+class AxisTest {
 
   @Test
   fun testString() {
 
-    println(ResourceBundle.getBundle("destiny.astrology.Rsmi", Locale("en" , "US")).getString("Rsmi.RISING"))
-    assertEquals("Rising" , Rsmi.RISING.toString(Locale.ENGLISH))
-    assertEquals("AC" , Rsmi.RISING.getAbbreviation(Locale.ENGLISH))
-    assertEquals("東昇" , Rsmi.RISING.toString(Locale.TRADITIONAL_CHINESE))
-    assertEquals("東昇" , Rsmi.RISING.toString(Locale.TAIWAN))
-    assertEquals("昇" , Rsmi.RISING.getAbbreviation(Locale.TAIWAN))
-    assertEquals("昇" , Rsmi.RISING.abbreviation)
+    println(ResourceBundle.getBundle("destiny.astrology.Axis", Locale("en" , "US")).getString("Axis.RISING"))
+    assertEquals("Rising" , Axis.RISING.toString(Locale.ENGLISH))
+    assertEquals("AC" , Axis.RISING.getAbbreviation(Locale.ENGLISH))
+    assertEquals("東昇" , Axis.RISING.toString(Locale.TRADITIONAL_CHINESE))
+    assertEquals("東昇" , Axis.RISING.toString(Locale.TAIWAN))
+    assertEquals("昇" , Axis.RISING.getAbbreviation(Locale.TAIWAN))
+    assertEquals("昇" , Axis.RISING.abbreviation)
 
 
-    Rsmi.array.forEach { p ->
+    Axis.array.forEach { p ->
       p.toString().also {
         assertNotNull(it)
         println(it + "->" + p.getAbbreviation(Locale.getDefault()))

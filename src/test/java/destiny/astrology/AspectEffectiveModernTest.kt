@@ -57,10 +57,10 @@ class AspectEffectiveModernTest  {
     }
 
     /** 與東昇點，並不在 [AspectOrbsPlanetDefaultImpl] 的 map 中 , 容許度改為 [AspectOrbsDefaultImpl] 為 11度 */
-    modern.isEffectiveAndScore(SUN , 0.0 , Rsmi.RISING , 192.0 , OPPOSITION).also {
+    modern.isEffectiveAndScore(SUN , 0.0 , Axis.RISING , 192.0 , OPPOSITION).also {
       assertEquals(false to 0.0 , it)
     }
-    modern.isEffectiveAndScore(SUN , 0.0 , Rsmi.RISING , 191.0 , OPPOSITION).also {
+    modern.isEffectiveAndScore(SUN , 0.0 , Axis.RISING , 191.0 , OPPOSITION).also {
       assertEquals(true to 0.6 , it)
     }
   }

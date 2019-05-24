@@ -58,7 +58,7 @@ interface IHoroscopeContext {
   companion object {
     val defaultPoints = setOf(
       *Planet.array,
-      *Rsmi.array,
+      *Axis.array,
       //*Hamburger.array,
       //*FixedStar.array,
       LunarNode.NORTH_MEAN,LunarNode.SOUTH_MEAN
@@ -143,7 +143,7 @@ interface IPersonHoroscopeContext : IHoroscopeContext {
                          centric: Centric? = Centric.GEO,
 
                          points: Collection<Point>? = IHoroscopeContext.defaultPoints): IPersonHoroscopeModel {
-    val horoscope = getHoroscope(lmt, loc, place, points, houseSystem, coordinate, centric, 0.0, 1013.25)
+    val horoscope = getHoroscope(lmt, loc, place, points, houseSystem, coordinate, centric)
     return PersonHoroscopeModel(horoscope, gender, name)
   }
 

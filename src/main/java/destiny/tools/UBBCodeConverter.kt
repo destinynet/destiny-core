@@ -10,17 +10,7 @@
 
 package destiny.tools
 
-import java.util.regex.Pattern
-
 class UBBCodeConverter {
-  private var str: String
-  private var str1: String
-  internal var result: Boolean = false
-
-  init {
-    this.str = ""
-    this.str1 = ""
-  }
 
   fun getAll(s: String): String {
 
@@ -44,8 +34,8 @@ class UBBCodeConverter {
       .let { reSup(it) }
       .let { reSub(it) }
       .let { reDelLine(it) }
-      .let { reFliph(it) }
-      .let { reFlipv(it) }
+      .let { reFlipH(it) }
+      .let { reFlipV(it) }
       .let { reShadow(it) }
       .let { reGlow(it) }
       .let { reBlur(it) }
@@ -85,8 +75,8 @@ class UBBCodeConverter {
       .let { reSup(it) }
       .let { reSub(it) }
       .let { reDelLine(it) }
-      .let { reFliph(it) }
-      .let { reFlipv(it) }
+      .let { reFlipH(it) }
+      .let { reFlipV(it) }
       .let { reShadow(it) }
       .let { reGlow(it) }
       .let { reBlur(it) }
@@ -193,12 +183,12 @@ class UBBCodeConverter {
     return s.replace(regex) { r -> "<s>" + r.groupValues[2] + "</s>" }
   }
 
-  private fun reFliph(s: String): String {
+  private fun reFlipH(s: String): String {
     val regex = "(\\[fliph])(.+?)(\\[/fliph])".toRegex(RegexOption.IGNORE_CASE)
     return s.replace(regex) { r -> "<table style=\"filter:fliph\">" + r.groupValues[2] + "</table>" }
   }
 
-  private fun reFlipv(s: String): String {
+  private fun reFlipV(s: String): String {
     val regex = "(\\[flipv])(.+?)(\\[/flipv])".toRegex(RegexOption.IGNORE_CASE)
     return s.replace(regex) { r -> "<table style=\"filter:flipv\">" + r.groupValues[2] + "</table>" }
   }
@@ -220,51 +210,34 @@ class UBBCodeConverter {
   private fun reShadow(s: String): String {
     val regex = "(\\[shadow=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/shadow])".toRegex(RegexOption.IGNORE_CASE)
     return s.replace(regex) { r ->
-      "<table w=" + r.groupValues[2] + " style=\"filter:shadow(color=" +
-        r.groupValues[4] + ", direction=" + r.groupValues[6] + ")\">" + r.groupValues[8] + "</table>"
+      "<table w=" +
+        r.groupValues[2] + " style=\"filter:shadow(color=" +
+        r.groupValues[4] + ", direction=" +
+        r.groupValues[6] + ")\">" +
+        r.groupValues[8] + "</table>"
     }
   }
 
   private fun reGlow(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[glow=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/glow])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5) + matcher.group(6) + matcher
-          .group(7) + matcher.group(8) + matcher.group(9), "<table w=" + matcher.group(2) + " style=\"filter:glow(color=" + matcher
-          .group(4) + ", strength=" + matcher.group(6) + ")\">" + matcher.group(8) + "</table>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
+    val regex = "(\\[glow=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/glow])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<table w=" +
+        r.groupValues[2] + " style=\"filter:glow(color=" +
+        r.groupValues[4] + ", strength=" +
+        r.groupValues[6] + ")\">" +
+        r.groupValues[8] + "</table>"
     }
-
-    return str
   }
 
   private fun reBlur(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[blur=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/blur])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5) + matcher.group(6) + matcher
-          .group(7) + matcher.group(8) + matcher.group(9), "<table w=" + matcher.group(2) + " style=\"filter:blur(Add=0,direction=" + matcher
-          .group(4) + ", strength=" + matcher.group(6) + ")\">" + matcher.group(8) + "</table>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
+    val regex = "(\\[blur=)([0-9]+)([,])([^,]+)([,])([^]]+)(])(.+?)(\\[/blur])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<table w=" +
+        r.groupValues[2] + " style=\"filter:blur(Add=0,direction=" +
+        r.groupValues[4] + ", strength=" +
+        r.groupValues[6] + ")\">" +
+        r.groupValues[8] + "</table>"
     }
-
-    return str
   }
 
   private fun reQuote(s: String): String {
@@ -287,93 +260,55 @@ class UBBCodeConverter {
   }
 
   private fun reSwf(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[swf=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/swf])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5) + matcher.group(6) + matcher
-          .group(7), "<a href=\"" + matcher.group(6) + "\" target=\"_blank\" title=\"全螢幕播放\">全螢幕播放</a><br><OBJECT codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=4,0,2,0 classid=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 w=" + matcher
-          .group(2) + " h=" + matcher.group(4) + "><PARAM NAME=movie VALUE=\"" + matcher.group(6) + "\"><PARAM NAME=quality VALUE=high><embed src=\"" + matcher
-          .group(6) + "\" quality=high pluginspage='<img align=absmiddle src=pic/url.gif border=0><a target=_blank href=http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'>http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'</a> type='application/x-shockwave-flash' w=" + matcher
-          .group(2) + " h=" + matcher.group(4) + ">http://</embed></OBJECT>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
+    val regex = "(\\[swf=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/swf])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<a href=\"" +
+        r.groupValues[6] + "\" target=\"_blank\" title=\"全螢幕播放\">全螢幕播放</a><br><OBJECT codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=4,0,2,0 classId=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 w=" +
+        r.groupValues[2] + " h=" +
+        r.groupValues[4] + "><PARAM NAME=movie VALUE=\"" +
+        r.groupValues[6] + "\"><PARAM NAME=quality VALUE=high><embed src=\"" +
+        r.groupValues[6] + "\" quality=high pluginspage='<img align=absmiddle src=pic/url.gif border=0><a target=_blank href=http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'>http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash'</a> type='application/x-shockwave-flash' w=" +
+        r.groupValues[2] + " h=" +
+        r.groupValues[4] + ">http://</embed></OBJECT>"
     }
-
-    return str
   }
 
   private fun reSk(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[sk=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/sk])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5) + matcher.group(6) + matcher
-          .group(7), "<object classid=clsid:166B1BCA-3F9C-11CF-8075-444553540000 codebase=http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=7,0,2,0 w=" + matcher
-          .group(2) + " h=" + matcher.group(4) + "><param name=src value=" + matcher.group(6) + "><embed src=\\3 pluginspage=http://www.macromedia.com/shockwave/download/ w=" + matcher
-          .group(2) + " h=" + matcher.group(4) + "></embed></object>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
-    }
+    val regex = "(\\[sk=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/sk])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<object classId=clsid:166B1BCA-3F9C-11CF-8075-444553540000 codebase=http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=7,0,2,0 w=" +
+        r.groupValues[2] + " h=" +
+        r.groupValues[4] + "><param name=src value=" +
+        r.groupValues[6] + "><embed src=\\3 pluginspage=http://www.macromedia.com/shockwave/download/ w=" +
+        r.groupValues[2] + " h=" +
+        r.groupValues[4] + "></embed></object>"
 
-    return str
+    }
   }
 
   private fun reRm(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[rm=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/rm])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5) + matcher.group(6) + matcher
-          .group(7), "<OBJECT classid=clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA class=OBJECT id=RAOCX w=" + matcher.group(2) + " h=" + matcher
-          .group(4) + "><PARAM NAME=SRC VALUE=" + matcher.group(6) + "><PARAM NAME=CONSOLE VALUE=Clip1><PARAM NAME=CONTROLS VALUE=imagewindow><PARAM NAME=AUTOSTART VALUE=true></OBJECT><br><OBJECT classid=CLSID:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA h=30 id=video2 w=" + matcher
-          .group(2) + "><PARAM NAME=SRC VALUE=" + matcher.group(6) + "><PARAM NAME=AUTOSTART VALUE=-1><PARAM NAME=CONTROLS VALUE=controlpanel><PARAM NAME=CONSOLE VALUE=Clip1></OBJECT>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
+    val regex = "(\\[rm=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/rm])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<OBJECT classId=clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA class=OBJECT id=RAOCX w=" +
+        r.groupValues[2] + " h="+
+        r.groupValues[4] + "><PARAM NAME=SRC VALUE=" +
+        r.groupValues[6] + "><PARAM NAME=CONSOLE VALUE=Clip1><PARAM NAME=CONTROLS VALUE=imagewindow><PARAM NAME=AUTOSTART VALUE=true></OBJECT><br><OBJECT classId=CLSID:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA h=30 id=video2 w=" +
+        r.groupValues[2] + "><PARAM NAME=SRC VALUE=" +
+        r.groupValues[6] + "><PARAM NAME=AUTOSTART VALUE=-1><PARAM NAME=CONTROLS VALUE=controlpanel><PARAM NAME=CONSOLE VALUE=Clip1></OBJECT>"
     }
-
-    return str
   }
 
   private fun reMp(s: String): String {
-    str1 = s
-    str = s
-    val us2 = str1.subSequence(0, str1.length)
-    try {
-      val pattern = Pattern.compile("(\\[mp=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/mp])", 2)
-      val matcher = pattern.matcher(us2)
-      result = matcher.find()
-      while (result) {
-        str = replace(str1, matcher.group(1) + matcher.group(2) + matcher.group(3) + matcher.group(4) + matcher.group(5) + matcher.group(6) + matcher
-          .group(7), "<object align=middle classid=CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95 class=OBJECT id=MediaPlayer w=" + matcher
-          .group(2) + " h=" + matcher.group(4) + " ><param name=ShowStatusBar value=-1><param name=Filename value=" + matcher
-          .group(6) + "><embed type=application/x-oleobject codebase=http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701 flename=mp src=" + matcher
-          .group(6) + " w=" + matcher.group(2) + " h=" + matcher.group(4) + "></embed></object>")
-        str1 = str
-        matcher.find()
-      }
-    } catch (ignored: Exception) {
+    val regex = "(\\[mp=)([0-9]+)([,])([0-9]+)(])(.+?)(\\[/mp])".toRegex(RegexOption.IGNORE_CASE)
+    return s.replace(regex) { r ->
+      "<object align=middle classId=CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95 class=OBJECT id=MediaPlayer w=" +
+        r.groupValues[2] + " h=" +
+        r.groupValues[4] + " ><param name=ShowStatusBar value=-1><param name=Filename value=" +
+        r.groupValues[6] + "><embed type=application/x-oleobject codebase=http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701 flename=mp src=" +
+        r.groupValues[6] + " w=" +
+        r.groupValues[2] + " h=" +
+        r.groupValues[4] + "></embed></object>"
     }
-
-    return str
   }
 
   private fun reQt(s: String): String {

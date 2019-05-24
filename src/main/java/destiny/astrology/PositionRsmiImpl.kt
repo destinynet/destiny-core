@@ -5,17 +5,17 @@ package destiny.astrology
 
 import destiny.core.calendar.ILocation
 
-open class PositionRsmiImpl(private val rsmi: Rsmi ,
+open class PositionRsmiImpl(private val axis: Axis,
                             private val azimuthImpl: IAzimuthCalculator,
-                            private val houseCuspImpl: IHouseCusp) : AbstractPositionImpl<Rsmi>(rsmi) {
+                            private val houseCuspImpl: IHouseCusp) : AbstractPositionImpl<Axis>(axis) {
 
   override fun getPosition(gmtJulDay: Double, loc: ILocation, centric: Centric, coordinate: Coordinate): IPos {
     return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , HouseSystem.PLACIDUS , coordinate).let { map: Map<Int, Double> ->
-      val pos = when(rsmi) {
-        Rsmi.RISING -> Pos(map.getValue(1) , 0.0)
-        Rsmi.SETTING-> Pos(map.getValue(7) , 0.0)
-        Rsmi.MERIDIAN -> Pos(map.getValue(10) , 0.0)
-        Rsmi.NADIR -> Pos(map.getValue(4) , 0.0)
+      val pos = when(axis) {
+        Axis.RISING -> Pos(map.getValue(1) , 0.0)
+        Axis.SETTING-> Pos(map.getValue(7) , 0.0)
+        Axis.MERIDIAN -> Pos(map.getValue(10) , 0.0)
+        Axis.NADIR -> Pos(map.getValue(4) , 0.0)
       }
 
       val azimuth: Azimuth = when (coordinate) {

@@ -20,9 +20,7 @@ class HoroscopeAspectsCalculator(private val calculator: IHoroscopeAspectsCalcul
                        points: Collection<Point> = positionMap.keys ,
                        aspects : Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)): Set<HoroscopeAspectData> {
 
-    val dataSet = mutableSetOf<HoroscopeAspectData>()
-
-    points.map { point ->
+    return points.map { point ->
       val map: Map<Point, Pair<Aspect,Double>> = calculator.getPointAspectAndScore(point, positionMap, points , aspects)
       logger.trace("與 {} 形成所有交角的 pointAspect Map = {}", point, map)
 
@@ -32,10 +30,8 @@ class HoroscopeAspectsCalculator(private val calculator: IHoroscopeAspectsCalcul
             IHoroscopeModel.getAspectError(positionMap , point, key, aspectAndScore.first)?:0.0 , aspectAndScore.second)
         }.toSet()
 
-    }.flatMapTo(dataSet ) { it }
+    }.flatten()
       .toSet()
-
-    return dataSet
   }
 
   companion object {

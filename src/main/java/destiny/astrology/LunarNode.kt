@@ -49,10 +49,11 @@ sealed class LunarNode(nameKey: String, abbrKey: String, val northSouth: NorthSo
   companion object {
 
     private val inner_values by lazy {
-      arrayOf(LunarNode.NORTH_TRUE, LunarNode.NORTH_MEAN, LunarNode.SOUTH_TRUE, LunarNode.SOUTH_MEAN)
+      arrayOf(NORTH_TRUE, NORTH_MEAN, SOUTH_TRUE, SOUTH_MEAN)
     }
-    val trueArray by lazy { arrayOf(LunarNode.NORTH_TRUE, LunarNode.SOUTH_TRUE) }
-    val meanArray by lazy { arrayOf(LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN) }
+    val trueArray by lazy { arrayOf(NORTH_TRUE, SOUTH_TRUE) }
+    val meanArray by lazy { arrayOf(NORTH_MEAN, SOUTH_MEAN) }
+    val trueList by lazy { listOf(*trueArray) }
     val meanList by lazy { listOf(*meanArray) }
 
     fun of(northSouth: NorthSouth, nodeType: NodeType): LunarNode {

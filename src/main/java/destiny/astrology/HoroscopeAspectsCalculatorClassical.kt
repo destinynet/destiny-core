@@ -5,7 +5,6 @@
 package destiny.astrology
 
 import destiny.astrology.classical.PointDiameterAlBiruniImpl
-import destiny.astrology.classical.PointDiameterLillyImpl
 
 import destiny.astrology.classical.AspectEffectiveClassical
 import destiny.astrology.classical.IPointDiameter
@@ -51,7 +50,8 @@ class HoroscopeAspectsCalculatorClassical(
       positionMap[point]?.lng?.let { planetDeg ->
 
         points.filter { it !== point }
-          .filter { eachPoint -> !(point is Rsmi && eachPoint is Rsmi) }  // 過濾四角點互相形成的交角
+          .filter { eachPoint -> !(point is Axis && eachPoint is Axis) }  // 過濾四角點互相形成的交角
+          .filter { eachPoint -> !(point is LunarNode && eachPoint is LunarNode) } // 過濾南北交點對沖
           .flatMap { eachPoint ->
             val eachPlanetDeg = positionMap.getValue(eachPoint).lng
             aspects
