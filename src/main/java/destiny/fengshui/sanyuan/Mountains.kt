@@ -10,7 +10,7 @@ import destiny.iching.Symbol
 sealed class SealedMnt {
   data class MntBranch(val branch: Branch) : SealedMnt()
   data class MntStem(val stem: Stem) : SealedMnt()
-  data class MntSymbol(val symbol: destiny.iching.Symbol) : SealedMnt()
+  data class MntSymbol(val symbol: Symbol) : SealedMnt()
 }
 
 enum class Mountain(val mnt: SealedMnt, val symbol: Symbol) {

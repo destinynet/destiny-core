@@ -29,7 +29,7 @@ abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
   override fun getEndDegree(t: Mountain): Double {
     return Utils.getNormalizeDegree((t.index + 1) * stepDegree + initDegree)
   }
-  
+
   /**
    * 取得目前這個度數位於哪個山當中
    */
@@ -43,5 +43,5 @@ abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
   }
 
 
-  
+
 }
