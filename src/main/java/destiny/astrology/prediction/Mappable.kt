@@ -1,5 +1,7 @@
 package destiny.astrology.prediction
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -8,12 +10,27 @@ import java.time.chrono.ChronoLocalDateTime
  * 而太陽弧 (Solar Arc) 則不屬於此類。因為其星盤並沒有可對應的日期
  */
 interface Mappable {
+
   /**
    * 取得對應的時間 , 通常是收斂到某日期
-   * @param natalTime 通常是出生時間
-   * @param nowTime   通常是現在時間
+   *
+   * @param natalGmtJulDay 出生時刻
+   * @param nowGmtJulDay 欲查閱的時刻 (generally now)
    * @return 「收斂」到的時間
    */
-  fun getConvergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>): ChronoLocalDateTime<*>
+  fun getConvergentTime(natalGmtJulDay: Double, nowGmtJulDay: Double): Double
+
+  /**
+   * 承上 [ChronoLocalDateTime] 版本
+   */
+  fun getConvergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>,
+                        revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>> = {
+                          JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it)
+                        }): ChronoLocalDateTime<*> {
+    val natalGmtJulDay = TimeTools.getGmtJulDay(natalTime)
+    val nowGmtJulDay = TimeTools.getGmtJulDay(nowTime)
+
+    return revJulDayFunc.invoke(getConvergentTime(natalGmtJulDay, nowGmtJulDay))
+  }
 
 }

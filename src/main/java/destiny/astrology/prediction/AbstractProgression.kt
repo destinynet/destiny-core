@@ -8,6 +8,7 @@ import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.math.absoluteValue
 
 /**
  * Progression 抽象類別，具備 Progression 演算法的 template methods
@@ -23,25 +24,17 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
   protected abstract val denominator: Double
 
 
-  /**
-   * 實作 Mappable
-   * Template Method , 計算 nowTime 相對於 natalTime , 「收斂(converge)」到的時間<br></br>
-   * 不限定是 GMT 或是 LMT , 但兩者要一樣的時區
-   */
-  override fun getConvergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
-    val dur = Duration.between(natalTime, nowTime).abs()
+  override fun getConvergentTime(natalGmtJulDay: Double, nowGmtJulDay: Double): Double {
+    val dur = (natalGmtJulDay - nowGmtJulDay).absoluteValue
 
+    val durDays = dur / numerator * denominator
 
-    val secsDouble = dur.seconds / numerator * denominator
-    val secs = secsDouble.toLong()
-    val nanos = ((secsDouble - secs) * 1000000000).toLong()
-
-    return if (converse)
-      natalTime.minus(secs, ChronoUnit.SECONDS).minus(nanos, ChronoUnit.NANOS)
-    else
-      natalTime.plus(secs, ChronoUnit.SECONDS).plus(nanos, ChronoUnit.NANOS)
+    return if (converse) {
+      natalGmtJulDay - durDays
+    } else {
+      natalGmtJulDay + durDays
+    }
   }
-
 
   /**
    * 實作 LinearIF

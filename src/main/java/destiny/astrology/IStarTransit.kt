@@ -33,11 +33,11 @@ interface IStarTransit {
                                 coordinate: Coordinate,
                                 fromGmt: Double,
                                 forward: Boolean = true,
-                                revJulDayFunc: Function<Double, ChronoLocalDateTime<*>> = Function {
+                                revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>> = {
                                   JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it)
                                 }): ChronoLocalDateTime<*> {
     val gmtJulDay = getNextTransitGmt(star, degree, coordinate, fromGmt, forward)
-    return revJulDayFunc.apply(gmtJulDay)
+    return revJulDayFunc.invoke(gmtJulDay)
   }
 
 }
