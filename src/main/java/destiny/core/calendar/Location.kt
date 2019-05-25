@@ -119,16 +119,16 @@ data class Location(override val lng: Double,
   constructor(eastWest: EastWest,
               lngDeg: Int,
               lngMin: Int,
-              lngSec: Double? = 0.0,
+              lngSec: Double = 0.0,
               northSouth: NorthSouth,
               latDeg: Int,
               latMin: Int,
-              latSec: Double? = 0.0,
+              latSec: Double = 0.0,
               tzid: String?,
               minuteOffset: Int? = null,
               altitudeMeter: Double? = null) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec!! / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec!! / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
+    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
 
@@ -229,7 +229,7 @@ data class Location(override val lng: Double,
 
     fun of(locale: Locale): Location {
       val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
-      val loc = locMap[matchedLocale]!!
+      val loc = locMap.getValue(matchedLocale)
       return Location(loc.lng, loc.lat, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
     }
 

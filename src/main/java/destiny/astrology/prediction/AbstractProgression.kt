@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit
  */
 abstract class AbstractProgression : ILinear, Conversable, Serializable {
   /** 是否逆推，內定是順推  */
-  override var isConverse = false
+  override val converse = false
 
   /** Numerator: 分子 , 假設以 SecondaryProgression (一日一年)來說 , 分子是一年(有幾秒)  */
   protected abstract val numerator: Double
@@ -36,7 +36,7 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
     val secs = secsDouble.toLong()
     val nanos = ((secsDouble - secs) * 1000000000).toLong()
 
-    return if (isConverse)
+    return if (converse)
       natalTime.minus(secs, ChronoUnit.SECONDS).minus(nanos, ChronoUnit.NANOS)
     else
       natalTime.plus(secs, ChronoUnit.SECONDS).plus(nanos, ChronoUnit.NANOS)
@@ -56,7 +56,7 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
     val secs = secDouble.toLong()
     val nanos = ((secDouble - secs) * 1000000000).toLong()
 
-    return if (isConverse) {
+    return if (converse) {
       natalTime.minus(secs, ChronoUnit.SECONDS).minus(nanos, ChronoUnit.NANOS)
     } else {
       natalTime.plus(secs, ChronoUnit.SECONDS).plus(nanos, ChronoUnit.NANOS)
