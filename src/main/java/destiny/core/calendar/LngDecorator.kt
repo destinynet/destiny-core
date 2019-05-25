@@ -42,21 +42,25 @@ class LngDecoratorTaiwan : Decorator<Double> {
 
     return with(StringBuilder()) {
       append(if (lng.eastWest == EastWest.EAST) "東經" else "西經")
-      append("：")
-      append("%03d".format(lng.deg)).append("度")
-      append("%02d".format(lng.min)).append("分")
-
-      val secString = "%02.2f".format(lng.sec).let {
-        // 可能是 "0.00"
-        if (it.length == 4) "0$it"
-        else it
-      }
-      append(secString)
-      append("秒")
+      zh.invoke(this , lng)
     }.toString()
   }
 }
 
+private val zh = {sb : StringBuilder , lng : Lng ->
+  sb.append("：")
+  sb.append("%03d".format(lng.deg)).append("度")
+  sb.append("%02d".format(lng.min)).append("分")
+
+  val secString = "%02.2f".format(lng.sec).let {
+    // 可能是 "0.00"
+    if (it.length == 4) "0$it"
+    else it
+  }
+  sb.append(secString)
+  sb.append("秒")
+  sb
+}
 
 class LngDecoratorChina : Decorator<Double> {
   /**
@@ -68,17 +72,7 @@ class LngDecoratorChina : Decorator<Double> {
 
     return with(StringBuilder()) {
       append(if (lng.eastWest == EastWest.EAST) "东经" else "西经")
-      append("：")
-      append("%03d".format(lng.deg)).append("度")
-      append("%02d".format(lng.min)).append("分")
-
-      val secString = "%02.2f".format(lng.sec).let {
-        // 可能是 "0.00"
-        if (it.length == 4) "0$it"
-        else it
-      }
-      append(secString)
-      append("秒")
+      zh.invoke(this , lng)
     }.toString()
   }
 }

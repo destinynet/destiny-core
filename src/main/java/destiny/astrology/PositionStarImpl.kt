@@ -4,7 +4,6 @@
 package destiny.astrology
 
 import destiny.core.calendar.ILocation
-import mu.KotlinLogging
 
 abstract class PositionStarImpl(val starPositionImpl: IStarPosition<*>, star: Star) : AbstractPositionImpl<Star>(star) {
 

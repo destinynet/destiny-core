@@ -31,6 +31,22 @@ data class Lat(val northSouth: NorthSouth, val deg: Int, val min: Int, val sec: 
   }
 }
 
+
+private val zh = {sb : StringBuilder , lat : Lat ->
+  sb.append("：")
+  sb.append("%02d".format(lat.deg)).append("度")
+  sb.append("%02d".format(lat.min)).append("分")
+
+  val secString = "%02.2f".format(lat.sec).let {
+    // 可能是 "0.00"
+    if (it.length == 4) "0$it"
+    else it
+  }
+  sb.append(secString)
+  sb.append("秒")
+  sb
+}
+
 class LatDecoratorTaiwan : Decorator<Double> {
   /**
    * 北緯：01度00分00.00秒
@@ -41,17 +57,7 @@ class LatDecoratorTaiwan : Decorator<Double> {
 
     return with(StringBuilder()) {
       append(if (lat.northSouth == NorthSouth.NORTH) "北緯" else "南緯")
-      append("：")
-      append("%02d".format(lat.deg)).append("度")
-      append("%02d".format(lat.min)).append("分")
-
-      val secString = "%02.2f".format(lat.sec).let {
-        // 可能是 "0.00"
-        if (it.length == 4) "0$it"
-        else it
-      }
-      append(secString)
-      append("秒")
+      zh.invoke(this , lat)
     }.toString()
   }
 }
@@ -66,17 +72,7 @@ class LatDecoratorChina : Decorator<Double> {
 
     return with(StringBuilder()) {
       append(if (lat.northSouth == NorthSouth.NORTH) "北纬" else "南纬")
-      append("：")
-      append("%02d".format(lat.deg)).append("度")
-      append("%02d".format(lat.min)).append("分")
-
-      val secString = "%02.2f".format(lat.sec).let {
-        // 可能是 "0.00"
-        if (it.length == 4) "0$it"
-        else it
-      }
-      append(secString)
-      append("秒")
+      zh.invoke(this , lat)
     }.toString()
   }
 }
