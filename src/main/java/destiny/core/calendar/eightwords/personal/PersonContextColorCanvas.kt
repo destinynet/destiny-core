@@ -89,11 +89,10 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
       val row = ColorCanvas(1, 24, ChineseStringTools.NULL_CHAR, null, bgColor)
 
-      row.setText(ChineseStringTools.alignRight(startFortune, 6), 1, 1, "green", null,
-                  "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
-      row.setText("→", 1, 9, "green", null, null)
-      row.setText(ChineseStringTools.alignRight(endFortune, 6), 1, 13, "green", null,
-                  "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt))
+      row.setText(ChineseStringTools.alignRight(startFortune, 6), 1, 1, foreColor = "green", backColor = null, title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+      row.setText("→", 1, 9, foreColor = "green", backColor = null, title = null)
+      row.setText(ChineseStringTools.alignRight(endFortune, 6), 1, 13, foreColor = "green", backColor = null,
+        title = "終運時刻：" + timeDecorator.getOutputString(endFortuneLmt))
       row.setText(stemBranch.toString(), 1, 21, "green")
       右方大運直.add(row, i, 1)
     }
@@ -123,13 +122,13 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
         val bgColor = if (selected) "DDD" else null
         val triColumn = ColorCanvas(10, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
 
-        triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1, 1, "green", null,
-                          "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+        triColumn.setText(StringUtils.center(startFortune, 6, ' '), 1, 1, foreColor = "green", backColor = null,
+          title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
         // 加上月
         val monthDay = startFortuneLmt.toLocalDate().let { value ->
           monthFormatter.format(value)
         }
-        triColumn.setText(StringUtils.center(monthDay, 6, ' '), 2, 1, "green", null, null)
+        triColumn.setText(StringUtils.center(monthDay, 6, ' '), 2, 1, foreColor = "green", backColor = null, title = null)
         if (showNaYin) {
           NaYin.getNaYin(stemBranch.stem, stemBranch.branch)?.also { naYin ->
             val name = naYin.name
@@ -182,7 +181,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
           val title = StringUtils.center(startFortune, 6, ' ')
           //val title = ChineseStringTools.replaceToBiggerDigits(startFortune)
           //val title = StringUtils.rightPad(startFortune, 6, ChineseStringTools.NULL_CHAR)
-          triColumnShort.setText(title, 1, 1, "green", null, "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
+          triColumnShort.setText(title, 1, 1, foreColor = "green", backColor = null, title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
 
           val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
           triColumnShort.setText(reaction.getAbbreviation(Locale.TAIWAN) , 2 , 3 , "gray")

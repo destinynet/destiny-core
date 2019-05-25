@@ -33,18 +33,19 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
     model.solarTermsTimePos.prevMajor.also { pair: Pair<SolarTerms, Double> ->
       val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, revJulDayFunc)
       val title = timeDecorator.getOutputString(lmt)
-      setText(pair.first.toString() , 1 , 1 , title = title)
-      setText(monthDayFormatter.format(lmt.toLocalDate()) , 2 , 1 , title=title)
-      setText(pair.first.branch.toString() , 1 , 5 , "white" , "teal" , null)
+      setText(pair.first.toString(), 1, 1, title = title)
+      setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 1, title=title)
+      //setText(pair.first.branch.toString() , 1 , 5 , "white" , "teal" , null)
+      setText(pair.first.branch.toString(), 1, 5, "white", "teal", null, null, false, null)
     }
 
     // 最右邊 節氣
     model.solarTermsTimePos.nextMajor.also { pair ->
       val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, revJulDayFunc)
       val title = timeDecorator.getOutputString(lmt)
-      setText(pair.first.toString(), 1, 63 , title = title)
-      setText(monthDayFormatter.format(lmt.toLocalDate()) , 2 , 63 , title = title)
-      setText(pair.first.branch.toString() , 1 , 67 , "white" , "teal" , null)
+      setText(pair.first.toString(), 1, 63, title = title)
+      setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 63, title = title)
+      setText(pair.first.branch.toString(), 1, 67, "white", "teal", null, null, false, null)
     }
 
     // 中間 星座
@@ -54,8 +55,8 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
       val middle = model.solarTermsTimePos.prevMajor.first.next().toString() + "／" + sign.first.toString()
       val lmt = TimeTools.getLmtFromGmt(centerSign.second, model.location, revJulDayFunc)
       val title = timeDecorator.getOutputString(lmt)
-      setText("$middle→" , 1 , 29 , title = title)
-      setText(monthDayFormatter.format(lmt.toLocalDate()) , 2 , 33 , title = title)
+      setText("$middle→", 1, 29, title = title)
+      setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 33, title = title)
     }
 
     // 中間 節氣(中氣)

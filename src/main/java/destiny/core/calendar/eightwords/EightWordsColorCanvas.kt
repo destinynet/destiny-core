@@ -105,7 +105,7 @@ class EightWordsColorCanvas(
 
       val 地點名稱 = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
       地點名稱.setText("地點：", 1, 1)
-      地點名稱.setText(place, 1, 7, false, null, null, null, url, place)
+      地點名稱.setText(place, 1, 7, null, null, url, place, false, null)
       val minuteOffset = location.minuteOffset ?: TimeTools.getDstSecondOffset(lmt, location).second / 60
 
       minuteOffset.also { it ->
@@ -122,13 +122,13 @@ class EightWordsColorCanvas(
       val 經度 = ColorCanvas(1, 24, ChineseStringTools.NULL_CHAR)
       val lngText = LngDecorator.getOutputString(location.lng, Locale.TAIWAN)
 
-      經度.setText(lngText, 1, 1, false, null, null, null, url, null)
+      經度.setText(lngText, 1, 1, null, null, url, null, false, null)
       cc.add(經度, 4, 1)
 
       val 緯度 = ColorCanvas(1, 22, ChineseStringTools.NULL_CHAR)
       val latText = LatDecorator.getOutputString(location.lat, Locale.TAIWAN)
 
-      緯度.setText("$latText ", 1, 1, false, null, null, null, url, null)
+      緯度.setText("$latText ", 1, 1, null, null, url, null, false, null)
       cc.add(緯度, 4, 25)
 
       var x = 0
@@ -151,19 +151,21 @@ class EightWordsColorCanvas(
       cc.setText("日光節約：", 5, x + 19)
       val isDst = TimeTools.getDstSecondOffset(lmt, location).first
       val dstString = if (isDst) "有" else "無"
-      cc.setText(dstString, 5, x + 29, if (isDst) "FF0000" else "", "", null)
+      cc.setText(dstString, 5, x + 29, foreColor = if (isDst) "FF0000" else "", backColor =  "", title = null)
 
-      cc.setText("子正是：" + context.dayHourImpl.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, null, null,
-                 context.dayHourImpl.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
-      cc.setText("時辰劃分：" + context.dayHourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, null, null,
-                 context.dayHourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+      cc.setText("子正是：" + context.dayHourImpl.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
+        title = context.dayHourImpl.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+      cc.setText("時辰劃分：" + context.dayHourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
+        title = context.dayHourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       val risingLine = 8
       //val 命宮 = model.risingStemBranch
       val 命宮String = model.risingStemBranch.let { sb ->
         sb.toString() + "（" + ZodiacSign.of(sb.branch) + "）"
       }
-      cc.setText("命宮：", risingLine, 1, null, null, "命宮")
-      cc.setText(命宮String, risingLine, 7, "FF0000", null, 命宮String)
+      cc.setText("命宮：", risingLine, 1, foreColor = null, backColor = null, title = "命宮")
+
+
+      cc.setText(命宮String, risingLine, 7, foreColor = "FF0000", backColor =  null, title = 命宮String)
       cc.setText("（" + context.risingSignImpl.getTitle(Locale.TAIWAN) + "）", risingLine, 19)
 
       val linkLine = 9
@@ -171,7 +173,7 @@ class EightWordsColorCanvas(
         cc.setText("命盤連結  ", linkLine, 1)
         val showLinkUrl: String = if (linkUrl.length % 2 == 1) "$linkUrl "
         else linkUrl
-        cc.setText(showLinkUrl, linkLine, 11, false, null, null, null, showLinkUrl, null)
+        cc.setText(showLinkUrl, linkLine, 11, null, null, showLinkUrl, null, false, null)
       }
       return cc
     }
@@ -233,8 +235,8 @@ class EightWordsColorCanvas(
     pillar.setText("柱", 2, 3)
     pillar.setText("：", 3, 3)
 
-    pillar.setText(stemBranch.stem.toString(), 6, 3, "red", null, stemBranch.stem.toString() + pillarName)
-    pillar.setText(stemBranch.branch.toString(), 7, 3, "red", null, stemBranch.toString() + pillarName)
+    pillar.setText(stemBranch.stem.toString(), 6, 3, foreColor = "red", backColor = null, title = stemBranch.stem.toString() + pillarName)
+    pillar.setText(stemBranch.branch.toString(), 7, 3, foreColor = "red", backColor = null, title = stemBranch.toString() + pillarName)
 
     if ("日" != pillarName) {
       val 干對日主 = reactionUtil.getReaction(stemBranch.stem, dayStem).toString()

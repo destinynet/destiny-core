@@ -29,7 +29,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexNameFull) 
     val c = ColorCanvas(12, 74, "　")
     val siteCanvas = ColorCanvas(2, 74, "　")
 
-    siteCanvas.setText("Destiny 命理網", 1, 1, false, null, null, null, "https://destiny.to", "Destiny命理網")
+    siteCanvas.setText("Destiny 命理網", 1, 1, null, null, "https://destiny.to", "Destiny命理網", false, null)
 
     siteCanvas.setText("https://destiny.to  ", 1, 17)
     siteCanvas.setText("梅花易數線上排盤　$metaData", 2, 1)

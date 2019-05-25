@@ -221,44 +221,6 @@ open class ColorCanvas : Serializable {
     }.toByteArray()
   }
 
-  /**
-   * 在第 x row , 第 y column , 開始，寫入 Text 純文字 , 內定不換行（字會被切掉）
-   *
-   * @param str
-   * @param x
-   * @param y
-   */
-  fun setText(str: String, x: Int, y: Int) {
-    this.setText(str, x, y, false)
-  }
-
-  /**
-   * 在第 x row , 第 y column , 開始，寫入 Text 純文字
-   *
-   * @param str
-   * @param x
-   * @param y
-   * @wrap 是否換行 , 如果不換行，後面的字會被切掉
-   */
-  fun setText(str: String, x: Int, y: Int, wrap: Boolean) {
-    this.setText(str, x, y, wrap , null , null)
-  } //setText
-
-
-  /**
-   * 在第 x row , 第 y column , 開始，寫入 Text 純文字 , 有設定前景色
-   */
-  fun setText(str: String, x: Int, y: Int, foreColor: String) {
-    this.setText(str, x, y, false, foreColor)
-  }
-
-  /**
-   * 在第 x row , 第 y column , 開始，寫入 Text , 有設定前景色，背景色，以及 title
-   */
-  fun setText(str: String, x: Int, y: Int, foreColor: String?, backColor: String?, title: String? = null) {
-    this.setText(str, x, y, false, foreColor, backColor, null, null, title)
-  }
-
 
   /**
    * 在第 x row , 第 y column , 開始，寫入 彩色文字
@@ -268,20 +230,20 @@ open class ColorCanvas : Serializable {
    * @param y         column index
    * @param foreColor 前景顏色字串，以 16 進位表示，例如 "FFFFCC"
    * @param backColor 背景顏色字串，以 16 進位表示，例如 "FFFFCC"
-   * @param txtFont      字型，例如： new Font("細明體" , Font.PLAIN , 16)
-   * @param txtUrl       網址物件 , 例如 "http://www.google.com.tw"
+   * @param txtUrl    網址物件 , 例如 "http://www.google.com.tw"
    * @param title     Title
    * @param wrap      是否換行
+   * @param txtFont   字型，例如： new Font("細明體" , Font.PLAIN , 16)
    */
   fun setText(text: String,
               x: Int,
               y: Int,
-              wrap: Boolean = false,
               foreColor: String? = null,
               backColor: String? = null,
-              txtFont: Font? = null,
               txtUrl: String? = null,
-              title: String? = null) {
+              title: String? = null,
+              wrap: Boolean = false,
+              txtFont: Font? = null) {
     var str = text
     var fore = foreColor
     var back = backColor
@@ -477,7 +439,7 @@ open class ColorCanvas : Serializable {
     if (targetLine > this.height
     ) throw RuntimeException("錯誤，欲新加入一行，但是最後一行已經有資料了，無法再往下加一行了")
 
-    this.setText(str, targetLine, 1, wrap, foreColor, backColor, font, null, null)
+    this.setText(str, targetLine, 1, foreColor, backColor, null, null, wrap, font)
   } //addLine
 
   /**
