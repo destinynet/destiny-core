@@ -131,10 +131,20 @@ interface IHoroscopeModel {
     if (index < 1)
       return getHousePoints(index + 12)
     return if (index > 12) getHousePoints(index - 12)
-    else positionMap.filter { (_, v) -> getHouse(v.lng) == index }
+    else positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lng) == index }
       .map { it.key }
   }
 
+  /**
+   * 所有宮位內，的星體列表 , 並且按照黃道度數「由小到大」排序
+   */
+  val houseMap: Map<Int, List<Point>>
+    get() {
+      return (1..12).map { houseIndex ->
+        houseIndex to positionMap.filter { (_ , posWithAzimuth) -> getHouse(posWithAzimuth.lng) == houseIndex }
+          .map { it.key }
+      }.toMap()
+    }
 
   /**
    * 取得第幾宮的宮首落於黃道幾度。

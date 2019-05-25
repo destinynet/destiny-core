@@ -22,7 +22,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
 
-          return Sets.combinations(dataSet, 3).mapNotNull { threeSets ->
+          return Sets.combinations(dataSet, 3).asSequence().mapNotNull { threeSets ->
             val (set1, set2, set3) = threeSets.toList().let { Triple(it[0], it[1], it[2]) }
             set1.points.union(set2.points).union(set3.points)
               .takeIf { unionPoints -> unionPoints.size == 3 }
@@ -85,10 +85,9 @@ class PatternContext(val aspectEffective: IAspectEffective,
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
 
       return horoAspectsCalculator.getAspectDataSet(posMap, aspects = twoAspects)
-        //.filter { pair -> !pair.points.all { it is Axis } }  // 過濾四角點互相形成的交角
         .takeIf { it.size >= 3 }
         ?.let { pairs ->
-          Sets.combinations(pairs, 3).filter { threeSet ->
+          Sets.combinations(pairs, 3).asSequence().filter { threeSet ->
             threeSet.flatMap { it.points }.toSet().size == 3
           }.filter { threeSet ->
             threeSet.filter { it.aspect == Aspect.OPPOSITION }.size == 1
@@ -112,8 +111,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .takeIf { it.size >= 2 }
         ?.let { dataSet ->
           // 任兩個 QUINCUNX ,
-          Sets.combinations(dataSet, 2)
-            .filter { twoSets: Set<HoroscopeAspectData> ->
+          Sets.combinations(dataSet, 2).asSequence().filter { twoSets: Set<HoroscopeAspectData> ->
               // 確保組合而成的 points 若共有三顆星
               twoSets.flatMap { it.points }.toSet().size == 3
             }.map { twoSets: Set<HoroscopeAspectData> ->
@@ -169,8 +167,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return horoAspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.BIQUINTILE, Aspect.QUINTILE))  // 144 , 72
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
-          Sets.combinations(dataSet, 3)
-            .filter { threePairs ->
+          Sets.combinations(dataSet, 3).asSequence().filter { threePairs ->
               threePairs.flatMap { it.points }.toSet().size == 3
             }
             .filter { threePairs ->
@@ -201,7 +198,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
            * 並且要求，對衝點，與三刑的兩角尖，也要相刑
            * 才能確保比較漂亮的 大十字
            * */
-          dataSets.map { it as AstroPattern.三刑會沖 }
+          dataSets.asSequence().map { it as AstroPattern.三刑會沖 }
             .flatMap { tSquared ->
               aspectsCalculator.getPointAspect(tSquared.squaredPoint, posMap, aspects = setOf(Aspect.OPPOSITION)).keys.mapNotNull { oppo: Point ->
 
@@ -225,8 +222,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
                     AstroPattern.大十字(union4, quality, score)
                   }
-
-              }
+              }.asSequence()
             }.toSet()
 
         } ?: emptySet()
@@ -238,9 +234,10 @@ class PatternContext(val aspectEffective: IAspectEffective,
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return tSquared.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
+        ?.asSequence()
         ?.map { pattern -> pattern as AstroPattern.三刑會沖 }
-        ?.let { dataSet: List<AstroPattern.三刑會沖> ->
-          Sets.combinations(dataSet.toSet(), 2).filter { twoPatterns ->
+        ?.let { dataSet: Sequence<AstroPattern.三刑會沖> ->
+          Sets.combinations(dataSet.toSet(), 2).asSequence().filter { twoPatterns ->
             // 先確保 有六顆星
             twoPatterns.flatMap { it.points }.toSet().size == 6
           }.filter { twoPatterns ->
@@ -266,9 +263,10 @@ class PatternContext(val aspectEffective: IAspectEffective,
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return grandTrine.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
+        ?.asSequence()
         ?.map { pattern -> pattern as AstroPattern.大三角 }
         ?.let { dataSet ->
-          Sets.combinations(dataSet.toSet(), 2).filter { twoSets ->
+          Sets.combinations(dataSet.toSet(), 2).asSequence().filter { twoSets ->
             // 先確保 有六顆星
             twoSets.flatMap { it.points }.toSet().size == 6
           }.filter { twoTrines ->
@@ -278,9 +276,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               aspectsCalculator.getPointAspect(p, posMap, g2.points, aspects = setOf(Aspect.OPPOSITION)).size == 1
             }
           }.map { twoTrines: Set<AstroPattern.大三角> ->
-
             val score: Double? = twoTrines.takeIf { trines -> trines.all { it.score != null } }?.map { it.score!! }?.average()
-
             AstroPattern.六芒星(twoTrines, score)
           }
         }?.toSet() ?: emptySet()
@@ -299,7 +295,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
       return dataSet.takeIf { it.size >= 3 }
         ?.let {
-          Sets.combinations(dataSet, 3).filter { threePairs ->
+          Sets.combinations(dataSet, 3).asSequence().filter { threePairs ->
             // 確保三種交角都有
             threePairs.map { dataSet -> dataSet.aspect }.containsAll(threeAspects)
           }.filter { threePairs ->
@@ -323,6 +319,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return wedge.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 } // 確保至少兩組 wedge
+        ?.asSequence()
         ?.map { it as AstroPattern.楔子 }
         ?.let { patterns ->
           Sets.combinations(patterns.toSet(), 2).asSequence().map { twoWedges ->
@@ -355,7 +352,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return goldenYod.getPatterns(posMap, cuspDegreeMap)
         .takeIf { patterns -> patterns.size >= 5 }
         ?.let { patterns ->
-          Sets.combinations(patterns, 5)
+          Sets.combinations(patterns, 5).asSequence()
             .filter { fiveSet -> fiveSet.flatMap { it.points }.toSet().size == 5 }
             .map { fivePatterns ->
               val score: Double? = fivePatterns.takeIf { patterns -> patterns.all { it.score != null } }?.map { it.score!! }?.average()
@@ -366,7 +363,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
     }
   } // 五芒星 (尚未出現範例)
 
-  // 群星聚集 某星座
+  // 群星聚集 某星座 (至少四顆星)
   val stelliumSign = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return posMap.entries.groupBy { (_, pos) -> pos.sign }
@@ -374,7 +371,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .map { (sign, list: List<Map.Entry<Point, IPos>>) ->
           val points = list.map { it.key }.toSet()
           /** 分數算法： 以該星座內 [Aspect.CONJUNCTION] 分數平均 */
-          val score = Sets.combinations(points, 2).map { pair ->
+          val score = Sets.combinations(points, 2).asSequence().map { pair ->
             val (p1, p2) = pair.toList().let { it[0] to it[1] }
             aspectEffective.isEffectiveAndScore(p1, p2, posMap, Aspect.CONJUNCTION)
           }
@@ -387,7 +384,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
     }
   }
 
-  // 群星聚集 某宮位
+  // 群星聚集 某宮位 (至少四顆星)
   val stelliumHouse = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return posMap.map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lng, cuspDegreeMap) }
@@ -396,7 +393,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .map { (house, list: List<Pair<Point, Int>>) ->
           val points = list.map { it.first }.toSet()
           /** 分數算法： 以該宮位內 [Aspect.CONJUNCTION] 分數平均 */
-          val score = Sets.combinations(points, 2).map { pair ->
+          val score = Sets.combinations(points, 2).asSequence().map { pair ->
             val (p1, p2) = pair.toList().let { it[0] to it[1] }
             aspectEffective.isEffectiveAndScore(p1, p2, posMap, Aspect.CONJUNCTION)
           }.map { (_, score) -> score }
@@ -426,16 +423,16 @@ class PatternContext(val aspectEffective: IAspectEffective,
           .takeIf { clusters -> clusters.size >= 2 }
           ?.let { clusters ->
             logger.trace("clusters size >=2 !! : {}" , clusters.size)
-            Sets.combinations(clusters.toSet() , 2).map { twoClusters: Set<Cluster<PointCluster>> ->
+            Sets.combinations(clusters.toSet() , 2).asSequence().map { twoClusters: Set<Cluster<PointCluster>> ->
               val (cluster1: Cluster<PointCluster>, cluster2: Cluster<PointCluster>) = twoClusters.toList().let { it[0] to it[1] }
               val group1 = cluster1.points.map { it.point }
               val group2 = cluster2.points.map { it.point }
-              logger.info("group1 = {} , group2 = {}" , group1 , group2)
+              logger.trace("group1 = {} , group2 = {}" , group1 , group2)
               // 兩個群組的中點是否對沖
               val mid1 = cluster1.points.map { it.lngDeg }.average()
               val mid2 = cluster2.points.map { it.lngDeg }.average()
 
-              logger.info("mid1 = {} {} , mid2 = {} {}" , mid1 , ZodiacSign.getSignAndDegree(mid1) , mid2 , ZodiacSign.getSignAndDegree(mid2))
+              logger.trace("mid1 = {} {} , mid2 = {} {}" , mid1 , ZodiacSign.getSignAndDegree(mid1) , mid2 , ZodiacSign.getSignAndDegree(mid2))
               val effective = AspectEffectiveModern.isEffective(mid1 , mid2 , Aspect.OPPOSITION , 12.0)
               Triple(group1 , group2 , effective)
             }.filter { (_ , _ , effective) -> effective }
@@ -464,6 +461,12 @@ class PatternContext(val aspectEffective: IAspectEffective,
       }
     }
   }
+
+  val patterns: Set<IPatternFactory> = setOf(
+    grandTrine , kite , tSquared , fingerOfGod , boomerang,
+    goldenYod , grandCross , doubleT , hexagon , wedge ,
+    mysticRectangle , pentagram , stelliumSign , stelliumHouse , confrontation
+  )
 
   companion object {
     val logger = KotlinLogging.logger { }

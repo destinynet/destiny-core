@@ -14,7 +14,9 @@ interface IPosition<out T : Point> {
   fun getPosition(gmtJulDay: Double,
                   loc: ILocation,
                   centric: Centric,
-                  coordinate: Coordinate): IPos
+                  coordinate: Coordinate,
+                  temperature: Double = 0.0,
+                  pressure: Double = 1013.25): IPos
 
 
   fun getPosition(lmt: ChronoLocalDateTime<*>,
@@ -22,7 +24,7 @@ interface IPosition<out T : Point> {
                   centric: Centric,
                   coordinate: Coordinate): IPos {
     val gmtJulDay: Double = TimeTools.getGmtJulDay(lmt, loc)
-    return getPosition(gmtJulDay, loc, centric, coordinate)
+    return getPosition(gmtJulDay, loc, centric, coordinate, 0.0, 1013.25)
   }
 
 

@@ -80,7 +80,7 @@ class ClassicalContext(
                                       coordinate: Coordinate?): IClassicalModel {
 
     val h: IPersonHoroscopeModel =
-      personContext.getPersonHoroscope(lmt, loc, place, gender, name, houseSystem, coordinate, centric)
+      personContext.getPersonHoroscope(lmt, loc, place, gender, name)
     val commentMap: Map<Planet, List<String>> = Planet.classicalList.map { planet ->
       val list1 = essentialDignitiesImpl.getComments(planet, h, locale)
       val list2 = accidentalDignitiesImpl.getComments(planet, h, locale)
@@ -102,7 +102,7 @@ class ClassicalContext(
                                   coordinate: Coordinate?): Map<Planet, List<Pair<IRule, String>>> {
 
     val h: IPersonHoroscopeModel =
-      personContext.getPersonHoroscope(lmt, loc, place, gender, name, houseSystem, coordinate, centric)
+      personContext.getPersonHoroscope(lmt, loc, place, gender, name)
 
     val rules1 = essentialDignitiesImpl.rules
     val rules2 = accidentalDignitiesImpl.rules
