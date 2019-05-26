@@ -6,6 +6,13 @@ package destiny.astrology
 import destiny.core.IPattern
 import java.io.Serializable
 
+/**
+ * 某星( or [Point] ) 位於那個星座 , 第幾宮 , 通常用於描述 pattern 的關鍵點
+ */
+data class PointSignHouse(val point: Point,
+                          val sign: ZodiacSign,
+                          val house: Int)
+
 sealed class AstroPattern(override val name: String,
                           override val notes: String? = null,
                           open val points: Set<Point> = emptySet(),
@@ -33,9 +40,9 @@ sealed class AstroPattern(override val name: String,
     }
   }
 
-  data class 風箏(val head: Point, val wings: Set<Point>, val tail: Point, override val score: Double?) : AstroPattern("風箏", "$head 是風箏頭， $wings 是風箏翼 , $tail 是尾巴") {
+  data class 風箏(val head: PointSignHouse, val wings: Set<Point>, val tail: PointSignHouse, override val score: Double?) : AstroPattern("風箏", "${head.point} 是風箏頭， $wings 是風箏翼 , ${tail.point} 是尾巴") {
     override val points: Set<Point>
-      get() = wings.plus(head).plus(tail)
+      get() = wings.plus(head.point).plus(tail.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -57,31 +64,31 @@ sealed class AstroPattern(override val name: String,
   }
 
   // T-Squared
-  data class 三刑會沖(val oppoPoints: Set<Point>, val squaredPoint: Point, override val score: Double?) : AstroPattern("三刑會沖", "$oppoPoints 正沖，兩者均與 $squaredPoint 相刑") {
+  data class 三刑會沖(val oppoPoints: Set<Point>, val squared : PointSignHouse , override val score: Double?) : AstroPattern("三刑會沖", "$oppoPoints 正沖，兩者均與 ${squared.point} 相刑") {
     override val points: Set<Point>
-      get() = oppoPoints.plus(squaredPoint)
+      get() = oppoPoints.plus(squared.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is 三刑會沖) return false
 
       if (oppoPoints != other.oppoPoints) return false
-      if (squaredPoint != other.squaredPoint) return false
+      if (squared != other.squared) return false
 
       return true
     }
 
     override fun hashCode(): Int {
       var result = oppoPoints.hashCode()
-      result = 31 * result + squaredPoint.hashCode()
+      result = 31 * result + squared.hashCode()
       return result
     }
   }
 
   // 60 , 150 , 150
-  data class 上帝之指(val bottoms: Set<Point>, val pointer: Point, val pointerSign: ZodiacSign, override val score: Double?) : AstroPattern("上帝之指", "$bottoms 與 $pointer 形成上帝之指 , 指向 $pointerSign") {
+  data class 上帝之指(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double?) : AstroPattern("上帝之指", "$bottoms 與 ${pointer.point} 形成上帝之指 , 指向 ${pointer.sign}") {
     override val points: Set<Point>
-      get() = bottoms.plus(pointer)
+      get() = bottoms.plus(pointer.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -89,7 +96,6 @@ sealed class AstroPattern(override val name: String,
 
       if (bottoms != other.bottoms) return false
       if (pointer != other.pointer) return false
-      if (pointerSign != other.pointerSign) return false
 
       return true
     }
@@ -97,15 +103,14 @@ sealed class AstroPattern(override val name: String,
     override fun hashCode(): Int {
       var result = bottoms.hashCode()
       result = 31 * result + pointer.hashCode()
-      result = 31 * result + pointerSign.hashCode()
       return result
     }
   }
 
   /** [上帝之指] + 對沖點 (與雙翼形成 30度) */
-  data class 回力鏢(val fingerOfGod : 上帝之指, val oppoPoint : Point, override val score: Double?) : AstroPattern("回力鏢" , "${fingerOfGod.points}形成 上帝之指 , 加入 $oppoPoint 形成 回力鏢") {
+  data class 回力鏢(val fingerOfGod: 上帝之指, val oppoPoint: PointSignHouse, override val score: Double?) : AstroPattern("回力鏢", "${fingerOfGod.points}形成 上帝之指 , 加入 ${oppoPoint.point} 形成 回力鏢") {
     override val points: Set<Point>
-      get() = fingerOfGod.points.plus(oppoPoint)
+      get() = fingerOfGod.points.plus(oppoPoint.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -125,9 +130,9 @@ sealed class AstroPattern(override val name: String,
   }
 
   // 72 , 144 , 144
-  data class 黃金指(val bottoms: Set<Point>, val pointer: Point, val pointedSign: ZodiacSign, override val score: Double?) : AstroPattern("黃金指", "$bottoms 與 $pointer 形成 黃金指 , 指向 $pointedSign") {
+  data class 黃金指(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double?) : AstroPattern("黃金指", "$bottoms 與 ${pointer.point} 形成 黃金指 , 指向 ${pointer.sign}") {
     override val points: Set<Point>
-      get() = bottoms.plus(pointer)
+      get() = bottoms.plus(pointer.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -135,7 +140,6 @@ sealed class AstroPattern(override val name: String,
 
       if (bottoms != other.bottoms) return false
       if (pointer != other.pointer) return false
-      if (pointedSign != other.pointedSign) return false
 
       return true
     }
@@ -143,7 +147,6 @@ sealed class AstroPattern(override val name: String,
     override fun hashCode(): Int {
       var result = bottoms.hashCode()
       result = 31 * result + pointer.hashCode()
-      result = 31 * result + pointedSign.hashCode()
       return result
     }
   }
@@ -167,14 +170,14 @@ sealed class AstroPattern(override val name: String,
     }
   }
 
-  data class DoubleT(val tSquares: Set<三刑會沖> , override val score: Double?) : AstroPattern("DoubleT") {
+  data class DoubleT(val tSquares: Set<三刑會沖>, override val score: Double?) : AstroPattern("DoubleT") {
     override val notes: String?
       get() {
         val (t1, t2) = tSquares.toList().let { it[0] to it[1] }
         return StringBuilder().apply {
-          append(t1.oppoPoints.plus(t1.squaredPoint))
+          append(t1.oppoPoints.plus(t1.squared.point))
           append("與")
-          append(t2.oppoPoints.plus(t2.squaredPoint))
+          append(t2.oppoPoints.plus(t2.squared.point))
           append("形成兩組 三刑會沖")
         }.toString()
       }
@@ -225,9 +228,9 @@ sealed class AstroPattern(override val name: String,
   /**
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
-  data class 楔子(val oppoPoints: Set<Point>, val moderator: Point, val moderatorSign: ZodiacSign , override val score: Double?) : AstroPattern("楔子", "$oppoPoints 對沖， $moderator 在 $moderatorSign 介入與彼此分別形成 拱 與 六合 , 化解對沖") {
+  data class 楔子(val oppoPoints: Set<Point>, val moderator: PointSignHouse, override val score: Double?) : AstroPattern("楔子", "$oppoPoints 對沖， ${moderator.point} 在 ${moderator.sign} 介入與彼此分別形成 拱 與 六合 , 化解對沖") {
     override val points: Set<Point>
-      get() = oppoPoints.plus(moderator)
+      get() = oppoPoints.plus(moderator.point)
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -248,8 +251,9 @@ sealed class AstroPattern(override val name: String,
 
   /**
    * 兩組 [楔子] 對沖，兩個60度，兩個120度，這也會形成壓力，但是彼此間又可以釋放壓力，非常詭異
+   * @param points 總共4顆星
    */
-  data class 神秘長方形(override val points: Set<Point>, override val score: Double?) : AstroPattern("神秘長方形" , "$points 四星 形成 神秘長方形") {
+  data class 神秘長方形(override val points: Set<Point>, override val score: Double?) : AstroPattern("神秘長方形", "$points 四星 形成 神秘長方形") {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is 神秘長方形) return false
@@ -264,8 +268,11 @@ sealed class AstroPattern(override val name: String,
     }
   }
 
-  /** 五個 [黃金指] */
-  data class 五芒星(override val points: Set<Point> , override val score: Double?) : AstroPattern("五芒星", "$points 形成 五芒星") {
+  /**
+   * 五個 [黃金指]
+   * @param points 總共5顆星
+   * */
+  data class 五芒星(override val points: Set<Point>, override val score: Double?) : AstroPattern("五芒星", "$points 形成 五芒星") {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is 五芒星) return false
@@ -319,7 +326,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * 兩組 三顆星以上的合相星群 彼此對沖
    */
-  data class 對峙(val clusters:Set<Set<Point>>, override val score: Double?) : AstroPattern("星群對峙" , clusters.joinToString("與")+"對峙") {
+  data class 對峙(val clusters: Set<Set<Point>>, override val score: Double?) : AstroPattern("星群對峙", clusters.joinToString("與") + "對峙") {
     override val points: Set<Point>
       get() = clusters.flatten().toSet()
 

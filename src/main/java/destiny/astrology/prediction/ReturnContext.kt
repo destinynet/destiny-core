@@ -22,9 +22,6 @@ interface IReturnContext : Conversable, IDiscrete {
   /** 交角 , 通常是 0 , 代表回歸到原始度數  */
   val orb: Double
 
-  /** 是否逆推 , true 代表「是」，逆推！ */
-  override val converse: Boolean
-
   /** 是否消除歲差， false = 不計算歲差  */
   val precession: Boolean
 
@@ -46,7 +43,7 @@ class ReturnContext(
   /** 返照法所採用的行星 , 太陽/太陰 , 或是其他  */
   override val planet: Planet = Planet.SUN,
   /** 是否逆推 , true 代表「是」，逆推！ */
-  override val converse: Boolean,
+  override val converse: Boolean = false,
   /** 交角 , 通常是 0 , 代表回歸到原始度數  */
   override val orb: Double = 0.0,
   /** 是否消除歲差，內定是不計算歲差  */
@@ -81,16 +78,13 @@ class ReturnContext(
     return if (!converse) {
       //順推
       starTransitImpl.getNextTransitGmt(planet, Utils.getNormalizeDegree(natalPlanetDegree + orb), coordinate, nowGmtJulDay, false) //false 代表逆推，往before算
-      //starTransitImpl.getNextTransitGmtDateTime(planet, Utils.getNormalizeDegree(natalPlanetDegree + orb), coordinate, nowGmtJulDay, false)
     } else {
       // converse == true , 逆推
       //從出生時間往前(before)推
       val d = (natalGmtJulDay - nowGmtJulDay).absoluteValue
-      //val d = Duration.between(nowTime, natalTime).abs()
       val beforeNatalGmtJulDay = natalGmtJulDay - d // TimeTools.getGmtJulDay(natalTime.minus(d))
       //要確認最後一個參數，到底是要用 true , 還是 false , 要找相關定義 , 我覺得這裡應該是順推
       starTransitImpl.getNextTransitGmt(planet, Utils.getNormalizeDegree(natalPlanetDegree + orb), coordinate, beforeNatalGmtJulDay, true) //true 代表順推 , 往 after 算
-      //starTransitImpl.getNextTransitGmtDateTime(planet, Utils.getNormalizeDegree(natalPlanetDegree + orb), coordinate, beforeNatalGmtJulDay, true) //true 代表順推 , 往 after 算
     }
   }
 

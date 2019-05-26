@@ -26,7 +26,7 @@ interface IRiseTrans {
    *
    * 根據測試資料 , 美國海軍天文台的計算結果，「似乎」傾向 center = false , refraction = true. 亦即： 計算「邊緣」以及「考量折射」
    *
-   * TODO : 極區 可能無 rise / set 之值
+   * Note : 極區 可能無 rise / set 之值
    */
   fun getGmtTransJulDay(fromGmtJulDay: Double,
                         star: Star,

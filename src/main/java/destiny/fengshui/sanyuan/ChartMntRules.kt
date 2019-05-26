@@ -47,7 +47,7 @@ object ChartMntRules {
   /** 七星打劫 */
   fun robbery(chart: IChartMnt): ChartRule.Robbery? {
     return chart.getMntDirSpec()
-      ?.takeIf { it === destiny.fengshui.sanyuan.MntDirSpec.雙星到向 }
+      ?.takeIf { it === MntDirSpec.雙星到向 }
       ?.takeIf { beneathSameOrigin(chart) == null } // 去除伏吟 6局
       ?.let {
       val set147 = listOf(1, 4, 7)

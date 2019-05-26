@@ -20,13 +20,13 @@ import java.util.function.Function
 interface IStarTransit {
 
   /**
-   * 傳回 GMT 時刻
+   * 傳回 GMT Julian Day 時刻
    */
   fun getNextTransitGmt(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, forward: Boolean = true): Double
 
 
   /**
-   * 傳回 GMT
+   * 傳回 GMT [ChronoLocalDateTime]
    */
   fun getNextTransitGmtDateTime(star: Star,
                                 degree: Double,
