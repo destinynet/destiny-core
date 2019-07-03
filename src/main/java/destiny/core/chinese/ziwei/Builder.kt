@@ -141,7 +141,7 @@ class Builder(
      *  本命 -> 財帛
      */
     stemBranchHouseMap.entries.map { e ->
-      val m = mutableMapOf(FlowType.本命 to stemBranchHouseMap[e.key]!!)
+      val m = mutableMapOf(FlowType.本命 to stemBranchHouseMap.getValue(e.key))
       e.key.branch to m
     }.toMap().toSortedMap().toMap(branchFlowHouseMap)
 
@@ -150,8 +150,8 @@ class Builder(
       val house = e.value
       val stars = branchStarMap[sb.branch]?.toSet() ?: emptySet()
 
-      val fromTo = flowBigMap[sb]!! // 必定不為空
-      val smallRanges = branchSmallRangesMap[sb.branch]!!
+      val fromTo = flowBigMap.getValue(sb) // 必定不為空
+      val smallRanges = branchSmallRangesMap.getValue(sb.branch)
       HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap[sb.branch]!!, flyMap[sb]!!, fromTo.first,
                 fromTo.second, smallRanges)
     }.toSet()
@@ -204,9 +204,9 @@ class Builder(
   fun withFlowBig(flowBig: StemBranch, map: Map<Branch, House>): Builder {
     this.flowBranchMap[FlowType.大限] = flowBig
 
-    map.forEach { branch, _ ->
+    map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m[FlowType.大限] = map[branch]!!
+        m[FlowType.大限] = map.getValue(branch)
         m
       }
     }
@@ -221,9 +221,9 @@ class Builder(
    */
   fun withFlowYear(flowYear: StemBranch, map: Map<Branch, House>): Builder {
     this.flowBranchMap[FlowType.流年] = flowYear
-    map.forEach { branch, _ ->
+    map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m[FlowType.流年] = map[branch]!!
+        m[FlowType.流年] = map.getValue(branch)
         m
       }
     }
@@ -261,7 +261,7 @@ class Builder(
 
       // 接著，以「流年」的 歲前12星，塞入
       StarYearFront.values.map { star ->
-        val b = StarYearFront.starFuncMap[star]!!.invoke(flowYear.branch)
+        val b = StarYearFront.starFuncMap.getValue(star).invoke(flowYear.branch)
         Pair(star, b)
       }.forEach { (star, branch) ->
         houseDataSet
@@ -282,9 +282,9 @@ class Builder(
    */
   fun withFlowMonth(flowMonth: StemBranch, map: Map<Branch, House>): Builder {
     this.flowBranchMap[FlowType.流月] = flowMonth
-    map.forEach { branch, _ ->
+    map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m[FlowType.流月] = map[branch]!!
+        m[FlowType.流月] = map.getValue(branch)
         m
       }
     }
@@ -301,7 +301,7 @@ class Builder(
     this.flowBranchMap[FlowType.流日] = flowDay
     map.forEach { branch, _ ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
-        m[FlowType.流日] = map[branch]!!
+        m[FlowType.流日] = map.getValue(branch)
         m
       }
     }
@@ -316,7 +316,7 @@ class Builder(
    */
   fun withFlowHour(flowHour: StemBranch, map: Map<Branch, House>): Builder {
     this.flowBranchMap[FlowType.流時] = flowHour
-    map.forEach { branch, _ ->
+    map.forEach { (branch, _) ->
       branchFlowHouseMap.computeIfPresent(branch) { branch1, m ->
         m[FlowType.流時] = map[branch]!!
         m

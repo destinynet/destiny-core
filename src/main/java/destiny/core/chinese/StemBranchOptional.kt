@@ -63,22 +63,22 @@ data class StemBranchOptional(
 
     operator fun get(stem: Stem?, branch: Branch?): StemBranchOptional {
 
-      return StemBranchOptional(stem, branch)
-//      return if (stem != null && branch != null) {
-//        val sIndex = Stem.getIndex(stem)
-//        val bIndex = Branch.getIndex(branch)
-//
-//        when (sIndex - bIndex) {
-//          0, -10 -> get(bIndex)
-//          2, -8 -> get(bIndex + 12)
-//          4, -6 -> get(bIndex + 24)
-//          6, -4 -> get(bIndex + 36)
-//          8, -2 -> get(bIndex + 48)
-//          else -> throw AssertionError("Invalid Stem/Branch Combination! $stem & $branch , value = ${sIndex - bIndex}")
-//        }
-//      } else {
-//        StemBranchOptional(stem, branch)
-//      }
+      //return StemBranchOptional(stem, branch)
+      return if (stem != null && branch != null) {
+        val sIndex = Stem.getIndex(stem)
+        val bIndex = Branch.getIndex(branch)
+
+        when (sIndex - bIndex) {
+          0, -10 -> get(bIndex)
+          2, -8 -> get(bIndex + 12)
+          4, -6 -> get(bIndex + 24)
+          6, -4 -> get(bIndex + 36)
+          8, -2 -> get(bIndex + 48)
+          else -> throw AssertionError("Invalid Stem/Branch Combination! $stem & $branch , value = ${sIndex - bIndex}")
+        }
+      } else {
+        StemBranchOptional(stem, branch)
+      }
     }
 
     operator fun get(stemChar: Char, branchChar: Char): StemBranchOptional {

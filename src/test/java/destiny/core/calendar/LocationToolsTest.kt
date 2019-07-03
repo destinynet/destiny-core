@@ -12,18 +12,18 @@ class LocationToolsTest {
   @Test
   fun testEncode2018() {
     LocationTools.run {
-      assertEquals("50.0,100.0", encode2018(Location(100.0, 50.0)))
-      assertEquals("50.456789,100.123456", encode2018(Location(100.123456, 50.456789)))
-      assertEquals("25.03,121.0 Asia/Taipei", encode2018(Location(121.0, 25.03, "Asia/Taipei")))
-      assertEquals("25.03,121.0 Asia/Taipei 480m", encode2018(Location(121.0, 25.03, "Asia/Taipei", 480)))
+      assertEquals("50.0,100.0", encode2018(Location(50.0, 100.0)))
+      assertEquals("50.456789,100.123456", encode2018(Location(50.456789, 100.123456)))
+      assertEquals("25.03,121.0 Asia/Taipei", encode2018(Location(25.03, 121.0, "Asia/Taipei")))
+      assertEquals("25.03,121.0 Asia/Taipei 480m", encode2018(Location(25.03, 121.0, "Asia/Taipei", 480)))
       assertEquals("25.03,121.0 Asia/Taipei 480m 500.0",
-                   encode2018(Location(121.0, 25.03, "Asia/Taipei", 480, 500.0))) // 高度 500米
+                   encode2018(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0))) // 高度 500米
 
-      assertEquals("40.0,73.0", encode2018(Location(73.0, 40.0)))
-      assertEquals("40.0,73.0 America/New_York", encode2018(Location(73.0, 40.0, "America/New_York")))
-      assertEquals("40.0,73.0 America/New_York -300m", encode2018(Location(73.0, 40.0, "America/New_York", -300)))
+      assertEquals("40.0,73.0", encode2018(Location(40.0, 73.0)))
+      assertEquals("40.0,73.0 America/New_York", encode2018(Location(40.0, 73.0, "America/New_York")))
+      assertEquals("40.0,73.0 America/New_York -300m", encode2018(Location(40.0, 73.0, "America/New_York", -300)))
       assertEquals("40.0,73.0 America/New_York -300m 800.0",
-                   encode2018(Location(73.0, 40.0, "America/New_York", -300, 800.0))) // 高度 800米
+                   encode2018(Location(40.0, 73.0, "America/New_York", -300, 800.0))) // 高度 800米
     }
   }
 
@@ -31,19 +31,19 @@ class LocationToolsTest {
   fun testDecode2018() {
     LocationTools.run {
       // 後方 時區、時差、高度 六種排列順序不影響結果
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 Asia/Taipei 480m 500.0"))
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 Asia/Taipei 500.0 480m"))
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 500.0 480m Asia/Taipei"))
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 500.0 Asia/Taipei 480m"))
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 480m 500.0 Asia/Taipei"))
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 480m Asia/Taipei 500.0"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 Asia/Taipei 480m 500.0"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 Asia/Taipei 500.0 480m"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 500.0 480m Asia/Taipei"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 500.0 Asia/Taipei 480m"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 480m 500.0 Asia/Taipei"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 480m Asia/Taipei 500.0"))
 
       // 南緯、西經
-      assertEquals(Location(-121.0, -25.03, "Asia/Taipei", -480, 500.0),
+      assertEquals(Location(-25.03, -121.0, "Asia/Taipei", -480, 500.0),
                    decode("-25.03,-121.0 -480m Asia/Taipei 500.0"))
 
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480), decode("25.03,121.0 Asia/Taipei 480m"))
-      assertEquals(Location(121.0, 25.03), decode("25.03,121.0"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480), decode("25.03,121.0 Asia/Taipei 480m"))
+      assertEquals(Location(25.03, 121.0), decode("25.03,121.0"))
     }
   }
 
@@ -51,24 +51,24 @@ class LocationToolsTest {
   fun testDecode2018_時區_時差() {
     LocationTools.run {
       // 後方 時區、時差 2種排列順序不影響結果
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480), decode("25.03,121.0 Asia/Taipei 480m"))
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei", 480), decode("25.03,121.0 480m Asia/Taipei"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480), decode("25.03,121.0 Asia/Taipei 480m"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480), decode("25.03,121.0 480m Asia/Taipei"))
     }
   }
 
   @Test
   fun testDecode2018_只有時區() {
     LocationTools.run {
-      assertEquals(Location(121.0, 25.03, "Asia/Taipei"), decode("25.03,121.0 Asia/Taipei"))
+      assertEquals(Location(25.03, 121.0, "Asia/Taipei"), decode("25.03,121.0 Asia/Taipei"))
     }
   }
 
   @Test
   fun justTest_隱碼() {
     LocationTools.run {
-      assertEquals(Location(121.0, 25.0, "Asia/Taipei" , 480), decode("25.0,121.0 Asia/Taipei 480m"))
-      assertEquals(Location(121.0, 25.0, "Asia/Taipei" , 480 , 100.0), decode("25.0,121.0 Asia/Taipei 480m 100.0\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F"))
-      assertEquals(Location(121.0, 25.0, "Asia/Taipei" , 480), decode("25.0,121.0 Asia/Taipei 480m\u0005\u0005\u0005\u0005\u0005"))
+      assertEquals(Location(25.0, 121.0, "Asia/Taipei", 480), decode("25.0,121.0 Asia/Taipei 480m"))
+      assertEquals(Location(25.0, 121.0, "Asia/Taipei", 480, 100.0), decode("25.0,121.0 Asia/Taipei 480m 100.0\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F"))
+      assertEquals(Location(25.0, 121.0, "Asia/Taipei", 480), decode("25.0,121.0 Asia/Taipei 480m\u0005\u0005\u0005\u0005\u0005"))
     }
   }
 

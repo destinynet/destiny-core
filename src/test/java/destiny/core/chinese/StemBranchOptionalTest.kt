@@ -74,9 +74,20 @@ class StemBranchOptionalTest {
 
   }
 
+  @Test
+  fun testEquals() {
+    assertEquals(StemBranchOptional["甲子"], StemBranchOptional[甲, 子])
+    assertEquals(StemBranchOptional["甲子"], StemBranchOptional['甲', '子'])
+    assertEquals(StemBranchOptional['甲', '子'], StemBranchOptional[甲, 子])
+    assertEquals(StemBranchOptional[甲, 子], StemBranchOptional[甲, 子])
+
+    assertNotEquals(StemBranchOptional["甲子"], StemBranchOptional['甲', '寅'])
+  }
 
   @Test
   fun testSame() {
+    val v1 = StemBranchOptional["甲子"]
+    val v2 = StemBranchOptional[甲, 子]
     assertSame(StemBranchOptional["甲子"], StemBranchOptional[甲, 子])
     assertSame(StemBranchOptional["甲子"], StemBranchOptional['甲', '子'])
     assertSame(StemBranchOptional['甲', '子'], StemBranchOptional[甲, 子])
@@ -96,6 +107,7 @@ class StemBranchOptionalTest {
 
   @Test
   fun testNext() {
+    assertEquals(StemBranchOptional[乙, 丑], StemBranchOptional[甲, 子].next(1))
     assertSame(StemBranchOptional[乙, 丑], StemBranchOptional[甲, 子].next(1))
   }
 

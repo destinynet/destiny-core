@@ -94,20 +94,20 @@ interface IPlace {
 }
 
 
-data class Location(override val lng: Double,
-                    override val lat: Double,
+data class Location(override val lat: Double,
+                    override val lng: Double,
                     override val tzid: String?,
                     override val minuteOffset: Int?,
                     override val altitudeMeter: Double?) : ILocation, Serializable {
 
-  constructor(lng: Double, lat: Double, tzid: String?, minuteOffset: Int?) :
-    this(lng, lat, tzid, minuteOffset, null)
+  constructor(lat: Double, lng: Double, tzid: String?, minuteOffset: Int?) :
+    this(lat, lng, tzid, minuteOffset, null)
 
-  constructor(lng: Double, lat: Double, tzid: String?) :
-    this(lng, lat, tzid, null)
+  constructor(lat: Double, lng: Double, tzid: String?) :
+    this(lat, lng, tzid, null)
 
-  constructor(lng: Double, lat: Double) :
-    this(lng, lat, null)
+  constructor(lat: Double, lng: Double) :
+    this(lat, lng, null)
 
   /**
    * 最詳盡的 constructor
@@ -127,8 +127,8 @@ data class Location(override val lng: Double,
               tzid: String?,
               minuteOffset: Int? = null,
               altitudeMeter: Double? = null) : this(
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
     (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
 
@@ -143,8 +143,8 @@ data class Location(override val lng: Double,
   constructor(lngDeg: Int, lngMin: Int, lngSec: Double,
               latDeg: Int, latMin: Int, latSec: Double,
               tzid: String) : this(
-    (abs(lngDeg).toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (lngDeg < 0) 0 - it else it },
     (abs(latDeg).toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (latDeg < 0) 0 - it else it },
+    (abs(lngDeg).toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (lngDeg < 0) 0 - it else it },
     tzid, null, null)
 
 
@@ -152,8 +152,8 @@ data class Location(override val lng: Double,
   constructor(eastWest: EastWest, lng: Double,
               northSouth: NorthSouth, lat: Double,
               tzid: String, minuteOffset: Int? = null, altitudeMeter: Double? = null) : this(
-    lng.let { if (eastWest == EastWest.WEST) 0 - it else it },
     lat.let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
+    lng.let { if (eastWest == EastWest.WEST) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
 
@@ -167,9 +167,9 @@ data class Location(override val lng: Double,
       // de_DE , 柏林
       Locale.GERMANY to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
       // en , 紐約 , 40.758899, -73.985131 , 時報廣場
-      Locale.ENGLISH to Location(-73.985131, 40.758899, "America/New_York"),
+      Locale.ENGLISH to Location(40.758899, -73.985131, "America/New_York"),
       // en_US , 紐約
-      Locale.US to Location(-73.985131, 40.758899, "America/New_York"),
+      Locale.US to Location(40.758899, -73.985131, "America/New_York"),
       // en_AU , 雪梨
       Locale("en", "AU") to Location(EastWest.EAST, 151, 12, 40.0, NorthSouth.SOUTH, 33, 51, 36.0, "Australia/Sydney"),
       // en_BW , 波札那 Botswana
@@ -181,7 +181,7 @@ data class Location(override val lng: Double,
       // en_GB , 倫敦
       Locale.UK to Location(EastWest.WEST, 0, 7, NorthSouth.NORTH, 51, 30, "Europe/London"),
       // en_HK , 香港
-      Locale("en", "HK") to Location(114.1735865, 22.2798721, "Asia/Hong_Kong"),
+      Locale("en", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
       // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
       Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, "Europe/Dublin"),
       // en_MY , 馬來西亞 , 吉隆坡
@@ -213,24 +213,24 @@ data class Location(override val lng: Double,
       // ko_KR , 首爾
       Locale.KOREA to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
       // zh , 北京
-      Locale.CHINESE to Location(116.397, 39.9075, "Asia/Harbin"),
+      Locale.CHINESE to Location(39.9075, 116.397, "Asia/Harbin"),
       // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
       Locale.CHINA to Location(EastWest.EAST, 116, 23, NorthSouth.NORTH, 39, 55, "Asia/Shanghai"),
       // zh_HK , 香港
-      Locale("zh", "HK") to Location(114.1735865, 22.2798721, "Asia/Hong_Kong"),
+      Locale("zh", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
       // zh_MO , 澳門
       Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
       // zh_SG , 新加坡
       Locale("zh", "SG") to Location(EastWest.EAST, 103, 51, NorthSouth.NORTH, 1, 17, "Asia/Singapore"),
       // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
-      Locale.TAIWAN to Location(121.517668, 25.039030, "Asia/Taipei")
+      Locale.TAIWAN to Location(25.039030, 121.517668, "Asia/Taipei")
                               )
 
 
     fun of(locale: Locale): Location {
       val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
       val loc = locMap.getValue(matchedLocale)
-      return Location(loc.lng, loc.lat, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
+      return Location(loc.lat, loc.lng, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
     }
 
     fun getLongitude(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {

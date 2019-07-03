@@ -14,7 +14,7 @@ interface IGeocoding {
       val lat = pair.first
       val lng = pair.second
       val tz = timeZoneService.getTimeZoneOrGMT(lng, lat)
-      Location(lng , lat , tz.id)
+      Location(lat, lng, tz.id)
     }
   }
 }

@@ -22,7 +22,7 @@ object LocationTools {
 
   /**
    * 2018-03 格式： (直接帶入 data class [Location] 之值)
-   * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * [lat],[lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   fun encode2018(loc: ILocation): String {
     return StringBuilder().apply {
@@ -81,7 +81,7 @@ object LocationTools {
 
   /**
    * 解碼 2018-03 的 [Location] debugString
-   * [Location.lat],[Location.lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * [lat],[lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   private fun decode2018(string: String): ILocation? {
     val parts: Set<LocationPadding> =
@@ -97,7 +97,7 @@ object LocationTools {
         val altMeter: Double? =
           parts.firstOrNull { padding -> padding is LocationPadding.altMeter }
             ?.let { pad -> pad as LocationPadding.altMeter }?.value
-        Location(it.lng, it.lat, tzid, minuteOffset, altMeter)
+        Location(it.lat, it.lng, tzid, minuteOffset, altMeter)
       }
     } catch (e: Exception) {
       null

@@ -11,18 +11,6 @@ import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.*
 import java.io.Serializable
 
-/**
- * https://medium.com/@JorgeCastilloPr/kotlin-purity-and-function-memoization-b12ab35d70a5
- */
-class Memoize<in T, out R>(val f: (T) -> R) : (T) -> R {
-  private val values = mutableMapOf<T, R>()
-  override fun invoke(x: T): R {
-    return values.getOrPut(x) { f(x) }
-  }
-}
-
-fun <T, R> ((T) -> R).memoize(): (T) -> R = Memoize(this)
-
 fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.prev(4), it.next(4)) }
 fun IPlate.三方(branch: Branch = this.mainHouse.branch) = 拱(branch).plus(branch)
 fun IPlate.三方四正(branch: Branch = this.mainHouse.branch): Set<Branch> = 三方(branch).plus(branch.opposite)
