@@ -11,17 +11,17 @@ interface TimeZoneService {
 
 
   /** 嘗試從經緯度，尋找 TimeZone  */
-  fun getTimeZoneId(lng: Double, lat: Double): String?
+  fun getTimeZoneId(lat: Double, lng: Double): String?
 
   fun getTimeZoneId(latLng : ILatLng) : String ? {
-    return getTimeZoneId(latLng.lng , latLng.lat)
+    return getTimeZoneId(latLng.lat, latLng.lng)
   }
 
-  fun getTimeZone(lng: Double, lat: Double): TimeZone? {
-    return getTimeZoneId(lng , lat)?.let { TimeZone.getTimeZone(it) }
+  fun getTimeZone(lat: Double, lng: Double): TimeZone? {
+    return getTimeZoneId(lat, lng)?.let { TimeZone.getTimeZone(it) }
   }
 
-  fun getTimeZoneOrGMT(lng: Double, lat: Double): TimeZone {
-    return getTimeZoneId(lng , lat)?.let { TimeZone.getTimeZone(it) }?:TimeZone.getTimeZone("GMT")
+  fun getTimeZoneOrGMT(lat: Double, lng: Double): TimeZone {
+    return getTimeZoneId(lat, lng)?.let { TimeZone.getTimeZone(it) }?:TimeZone.getTimeZone("GMT")
   }
 }

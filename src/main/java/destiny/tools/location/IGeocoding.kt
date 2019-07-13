@@ -13,7 +13,7 @@ interface IGeocoding {
     return getLatLng(placeName)?.let { pair ->
       val lat = pair.first
       val lng = pair.second
-      val tz = timeZoneService.getTimeZoneOrGMT(lng, lat)
+      val tz = timeZoneService.getTimeZoneOrGMT(lat, lng)
       Location(lat, lng, tz.id)
     }
   }

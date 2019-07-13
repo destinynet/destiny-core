@@ -28,7 +28,8 @@ data class HouseData(
   private val transFourFlyMap: Set<Triple<ITransFour.Value, ZStar, Branch>>,
 
   /** 大限，從「虛歲」幾歲，到幾歲 */
-  val rangeFromVage: Int, val rangeToVage: Int,
+  val rangeFromVage: Int,
+  val rangeToVage: Int,
 
   /** 六條小限  */
   val smallRanges: List<Int>) : Serializable, Comparable<HouseData> {
