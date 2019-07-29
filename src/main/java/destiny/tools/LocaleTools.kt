@@ -8,7 +8,7 @@ import java.util.*
 object LocaleTools {
   /** 將 string 以 _ 切開，傳回 Locale 物件  */
   fun getLocale(string: String): Locale {
-    val st = StringTokenizer(string, "_")
+    val st = StringTokenizer(string, "_-")
     val lang: String
     val country: String
     val variant: String
