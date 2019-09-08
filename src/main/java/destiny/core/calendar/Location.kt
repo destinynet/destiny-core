@@ -221,7 +221,7 @@ data class Location(override val lat: Double,
       // zh_MO , 澳門
       Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
       // zh_SG , 新加坡
-      Locale("zh", "SG") to Location(EastWest.EAST, 103, 51, NorthSouth.NORTH, 1, 17, "Asia/Singapore"),
+      Locale("zh", "SG") to Location(1.2867926,103.8544739, "Asia/Singapore"),
       // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
       Locale.TAIWAN to Location(25.039030, 121.517668, "Asia/Taipei")
                               )

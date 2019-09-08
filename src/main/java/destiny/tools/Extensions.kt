@@ -36,7 +36,30 @@ suspend fun <T> retryIO(
     try {
       return block()
     } catch (e: IOException) {
-      KotlinLogging.logger { }.warn("IO exception : {}", e)
+      KotlinLogging.logger { }.warn("IO exception : {}", e.message)
+    }
+    delay(currentDelay)
+    currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+  }
+  return block() // last attempt
+}
+
+
+/**
+ * https://stackoverflow.com/a/46890009/298430
+ */
+suspend fun <T> retry(
+  times: Int = Int.MAX_VALUE,
+  initialDelay: Long = 100, // 0.1 second
+  maxDelay: Long = 10000,   // 10 second
+  factor: Double = 2.0,
+  block: suspend () -> T): T {
+  var currentDelay = initialDelay
+  repeat(times - 1) {
+    try {
+      return block()
+    } catch (e: Throwable) {
+      KotlinLogging.logger { }.warn("throwable : {}", e.message)
     }
     delay(currentDelay)
     currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)

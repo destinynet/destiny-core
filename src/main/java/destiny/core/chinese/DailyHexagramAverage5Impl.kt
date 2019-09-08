@@ -11,7 +11,7 @@ import java.util.*
  * 《易緯》 孟喜易 , 六日七分
  * 以節氣的「節」分割（亦即：地支月份），平均分割五份
  * 每卦 （365又1/4）÷　60 = 6又7/80 ==> 6 又 7/80 日
- * 本實作已精確的算法，平均分割「節」至「節」為五等分。
+ * 本實作以精確的算法，平均分割「節」至「節」為五等分。
  */
 class DailyHexagramAverage5Impl(val solarTermsImpl: ISolarTerms) : IDailyHexagram, Serializable {
 

@@ -16,8 +16,8 @@ object StringTools {
     if ("" == s) {
       return ""
     }
-    for (i in 0 until s.length) {
-      current = s[i]
+    for (element in s) {
+      current = element
       if (current.toInt() == 0x9
         || current.toInt() == 0xA
         || current.toInt() == 0xD
