@@ -9,7 +9,6 @@ import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
 import destiny.core.DayNight
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 
 /**
  * Facade Interface of Essential Dignities and Debilities <br></br>
@@ -88,10 +87,10 @@ interface IEssential {
   fun getMutualData(p: Point, map: Map<Point, Double>, dayNight: DayNight?, dignities: Collection<Dignity>) : Set<MutualData> {
     return map.keys.filter { it !== p }
       .flatMap { p2 -> getReceptions(p2 , map , dayNight , dignities)
-        .filter { (dig1 , p1) -> p1 === p }
+        .filter { (_ , p1) -> p1 === p }
         .map { (dig1,p1) -> p1 to dig1 }
         .flatMap { (p1 , dig1) -> getReceptions(p1 , map , dayNight , dignities)
-          .filter { (dig2 , p) -> p === p2 }
+          .filter { (_ , p) -> p === p2 }
           .map { (dig2 , p2) -> MutualData(p1, dig1, p2, dig2) }
         }
       }.toSet()
@@ -101,10 +100,10 @@ interface IEssential {
   fun getMutualDataFromSign(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight?, dignities: Collection<Dignity>) : Set<MutualData> {
     return map.keys.filter { it !== p }
       .flatMap { p2 -> getReceptionsFromSign(p2 , map , dayNight , dignities)
-        .filter { (dig1 , p1) -> p1 === p }
+        .filter { (_ , p1) -> p1 === p }
         .map { (dig1,p1) -> p1 to dig1 }
         .flatMap { (p1 , dig1) -> getReceptionsFromSign(p1 , map , dayNight , dignities)
-          .filter { (dig2 , p) -> p === p2 }
+          .filter { (_ , p) -> p === p2 }
           .map { (dig2 , p2) ->
             MutualData(p1, dig1, p2, dig2) }
         }
@@ -115,11 +114,11 @@ interface IEssential {
   fun getMutualReceptionMap(map: Map<Point, Double>, dayNight: DayNight?, dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys
       .flatMap { p1 -> getReceptions(p1 , map , dayNight , dignities)
-        .filter { (dig2 , p2) -> p2 !== p1 }
+        .filter { (_ , p2) -> p2 !== p1 }
         .map { (dig2 , p2) -> p2 to dig2}
         .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities)
-          .filter { (dig1 , point) -> point === p1 && p1 !== p2 }
-          .map { (dig1 , point) -> MutualData(p1, dig1, p2, dig2) }
+          .filter { (_ , point) -> point === p1 && p1 !== p2 }
+          .map { (dig1 , _) -> MutualData(p1, dig1, p2, dig2) }
         }
     }.toSet()
   }
@@ -128,11 +127,11 @@ interface IEssential {
   fun getMixedReceptionMap(map: Map<Point, Double>, dayNight: DayNight, dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.flatMap { p ->
       getReceptions(p , map , dayNight , dignities)
-        .filter { (dig2 , p2) -> p2 !== p }
+        .filter { (_ , p2) -> p2 !== p }
         .map { (dig2 , p2) -> p2 to dig2}
         .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities.filter { it !== dig2 } )
-          .filter { (dig1 , point) -> point === p && p !== p2 }
-          .map { (dig1 , point) -> MutualData(p, dig1, p2, dig2) }
+          .filter { (_ , point) -> point === p && p !== p2 }
+          .map { (dig1 , _) -> MutualData(p, dig1, p2, dig2) }
         }
     }.toSet()
   }

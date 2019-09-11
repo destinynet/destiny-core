@@ -15,7 +15,7 @@ import destiny.core.chinese.Stem
 abstract class HouseHouseDepYearStemGenderImpl internal constructor(star: ZStar) :
   HouseAbstractImpl<Triple<Branch, Stem, Gender>>(star) {
 
-  override fun getBranch(o: Triple<Branch, Stem, Gender>): Branch {
+  override fun getBranch(t: Triple<Branch, Stem, Gender>): Branch {
     throw RuntimeException("error")
   }
 

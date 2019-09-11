@@ -41,17 +41,17 @@ class PointDegree : Serializable {
   }
 
   override fun toString(): String {
-    return point.toString() + "/" + degree
+    return "$point/$degree"
   }
 
 
-  override fun equals(o: Any?): Boolean {
-    if (this === o)
+  override fun equals(other: Any?): Boolean {
+    if (this === other)
       return true
-    if (o !is PointDegree)
+    if (other !is PointDegree)
       return false
-    val that = o as PointDegree?
-    return java.lang.Double.compare(that!!.degree, degree) == 0 && point == that.point
+    val that = other as PointDegree?
+    return that!!.degree.compareTo(degree) == 0 && point == that.point
   }
 
   override fun hashCode(): Int {

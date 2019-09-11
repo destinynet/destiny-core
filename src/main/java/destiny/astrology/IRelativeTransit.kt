@@ -99,7 +99,7 @@ interface IRelativeTransit {
      */
 
     val realAngles: List<Double> = angles
-      .flatMap { it ->
+      .flatMap {
         if (it != 0.0)
           listOf(it , 360.0-it)
         else
@@ -111,9 +111,8 @@ interface IRelativeTransit {
       getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, isForward)?.let { resultGmtJulDay  ->
         resultGmtJulDay to angle
       }
-    }.filter { it !== null }
-      .map { it -> it!! }
-      .sortedBy { (julDay, angle) -> julDay }
+    }.filterNotNull()
+      .sortedBy { (julDay, _) -> julDay }
       .let {
         return@let if (isForward)
           it.firstOrNull()  // 順推，取第一個（最接近當下）
