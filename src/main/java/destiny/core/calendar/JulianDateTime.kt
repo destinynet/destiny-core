@@ -252,7 +252,7 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
 
 
   override fun toString(): String {
-    return "[JulianDateTime " + "date=" + date + ", time=" + time + ']'.toString()
+    return "[JulianDateTime date=$date, time=$time]"
   }
 
   override fun equals(other: Any?): Boolean {

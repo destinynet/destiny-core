@@ -9,6 +9,7 @@ import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import kotlin.math.abs
 
 /**
  * 與「人」無關的星盤資料
@@ -216,7 +217,7 @@ interface IHoroscopeModel {
 
     fun getHouse(degree: Double , cuspDegreeMap: Map<Int, Double>) : Int {
       return (1..11).firstOrNull { house ->
-        if ((Math.abs(cuspDegreeMap.getValue(house + 1) - cuspDegreeMap.getValue(house)) < 180)) {
+        if ((abs(cuspDegreeMap.getValue(house + 1) - cuspDegreeMap.getValue(house)) < 180)) {
           //沒有切換360度的問題
           cuspDegreeMap.getValue(house) <= degree && degree < cuspDegreeMap.getValue(house + 1)
         } else {
@@ -235,7 +236,7 @@ interface IHoroscopeModel {
       return positionMap[p1]?.let { p1Pos ->
         positionMap[p2]?.let { p2Pos ->
           val angle = getAngle(p1Pos.lng , p2Pos.lng)
-          Math.abs(aspect.degree - angle)
+          abs(aspect.degree - angle)
         }
       }
     }

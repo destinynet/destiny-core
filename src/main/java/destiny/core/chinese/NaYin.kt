@@ -126,14 +126,14 @@ enum class NaYin(override val fiveElement: FiveElement) : IFiveElement , Seriali
 
     fun getNaYin(stem: Stem, branch: Branch): NaYin? {
       return if (stem.index % 2 == branch.index % 2) {
-        NaYin.map[StemBranch[stem, branch]]
+        map[StemBranch[stem, branch]]
       } else
         null
     }
 
     /** 詳情 , 三個字 , 例如「海中金」  */
     fun getDesc(sb: StemBranch, locale: Locale): String {
-      val resourceKey = map[sb]!!.name
+      val resourceKey = map.getValue(sb).name
       return ResourceBundle.getBundle(NaYin::class.java.name, locale).getString(resourceKey)
     }
   }

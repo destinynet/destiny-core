@@ -4,13 +4,13 @@
 package destiny.core.calendar
 
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import org.threeten.extra.chrono.JulianChronology
 import java.io.Serializable
 import java.time.*
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.chrono.IsoChronology
+import kotlin.math.floor
 
 /**
  * 1582-10-04 (含) 之前 , 傳回 [JulianChronology]
@@ -88,21 +88,21 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       u0 = gmtJulDay + 32082.5
 
       if (isGregorian) {
-        u1 = u0 + Math.floor(u0 / 36525.0) - Math.floor(u0 / 146100.0) - 38.0
+        u1 = u0 + floor(u0 / 36525.0) - floor(u0 / 146100.0) - 38.0
         if (gmtJulDay >= 1830691.5) {
           u1 += 1.0
         }
-        u0 = u0 + Math.floor(u1 / 36525.0) - Math.floor(u1 / 146100.0) - 38.0
+        u0 = u0 + floor(u1 / 36525.0) - floor(u1 / 146100.0) - 38.0
       }
-      u2 = Math.floor(u0 + 123.0)
-      u3 = Math.floor((u2 - 122.2) / 365.25)
-      u4 = Math.floor((u2 - Math.floor(365.25 * u3)) / 30.6001)
+      u2 = floor(u0 + 123.0)
+      u3 = floor((u2 - 122.2) / 365.25)
+      u4 = floor((u2 - floor(365.25 * u3)) / 30.6001)
       var month = (u4 - 1.0).toInt()
       if (month > 12) {
         month -= 12
       }
-      val day = (u2 - Math.floor(365.25 * u3) - Math.floor(30.6001 * u4)).toInt()
-      val y = (u3 + Math.floor((u4 - 2.0) / 12.0) - 4800).toInt()
+      val day = (u2 - floor(365.25 * u3) - floor(30.6001 * u4)).toInt()
+      val y = (u3 + floor((u4 - 2.0) / 12.0) - 4800).toInt()
 
       var ad = true
       val year: Int
@@ -114,7 +114,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
         year = y
       }
 
-      val h = (gmtJulDay - Math.floor(gmtJulDay + 0.5) + 0.5) * 24.0
+      val h = (gmtJulDay - floor(gmtJulDay + 0.5) + 0.5) * 24.0
       val hour = h.toInt()
       val minute = (h * 60 - hour * 60).toInt()
       val second = h * 3600 - (hour * 3600).toDouble() - (minute * 60).toDouble()

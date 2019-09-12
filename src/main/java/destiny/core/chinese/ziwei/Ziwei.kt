@@ -174,7 +174,7 @@ interface Ziwei {
       val birthYear = builder.chineseDate.year
       val birthCycle = builder.chineseDate.cycleOrZero
 
-      val (first, second) = bigRangeImpl.getVageRange(builder.branchHouseMap[flowBig]!!, builder.set, birthYear.stem, builder.gender, context.houseSeqImpl)
+      val (first, second) = bigRangeImpl.getVageRange(builder.branchHouseMap.getValue(flowBig), builder.set, birthYear.stem, builder.gender, context.houseSeqImpl)
 
       // 再把虛歲轉換成干支
       return (first .. second).map { vAge ->

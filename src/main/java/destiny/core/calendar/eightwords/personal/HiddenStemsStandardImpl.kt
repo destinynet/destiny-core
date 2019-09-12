@@ -20,7 +20,7 @@ import java.io.Serializable
 class HiddenStemsStandardImpl : IHiddenStems, Serializable {
 
   override fun getHiddenStems(branch: Branch): List<Stem> {
-    return map[branch]!!
+    return map.getValue(branch)
   }
 
   companion object {

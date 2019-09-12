@@ -20,7 +20,7 @@ object TimeSecDecorator {
 
   fun getOutputString(time: ChronoLocalDateTime<*>, locale: Locale): String {
     val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
-    return implMap[bestMatchingLocale]!!.getOutputString(time)
+    return implMap.getValue(bestMatchingLocale).getOutputString(time)
   }
 }
 

@@ -130,11 +130,11 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
 
   /** 取得「空亡」的兩個地支  */
   val empties: Collection<Branch>
-    get() = StemBranch.getEmpties(this)
+    get() = getEmpties(this)
 
   /** 哪一「旬」 */
   val cycle: StemBranchCycle
-    get() = StemBranch.getCycle(this)
+    get() = getCycle(this)
 
 
   override fun toString(): String {
@@ -209,8 +209,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
     }
 
     fun getCycle(sb: StemBranch): StemBranchCycle {
-      val shift = sb.stem.index - sb.branch.index
-      return when (shift) {
+      return when (sb.stem.index - sb.branch.index) {
         0 -> StemBranchCycle.甲子
         2, -10 -> StemBranchCycle.甲戌
         4, -8 -> StemBranchCycle.甲申

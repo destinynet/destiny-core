@@ -53,7 +53,7 @@ object LocaleTools {
     expandedLocales
       .filter { localeStringMap.containsKey(it) }
       .forEach {
-        return localeStringMap[it]!!
+        return localeStringMap.getValue(it)
       }
 
     return null

@@ -100,11 +100,11 @@ interface IPlate : Serializable {
 
   /** 宮位名稱 -> 星體s  */
   val houseStarMap: Map<House, Set<ZStar>>
-    get() = houseDataSet.map { it -> it.house to it.stars }.toMap()
+    get() = houseDataSet.map { it.house to it.stars }.toMap()
 
   /** 本命盤中，此地支的宮位名稱是什麼  */
   val branchHouseMap: Map<Branch, House>
-    get() = branchFlowHouseMap.map { it -> it.key to it.value[FlowType.本命]!! }.toMap()
+    get() = branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
 
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
@@ -112,8 +112,7 @@ interface IPlate : Serializable {
   /** 取得這些星體所在宮位的地支 */
   fun getBranches(vararg stars: ZStar) : List<Branch> {
     return stars.map { star -> starMap[star]?.stemBranch?.branch }
-      .filter { b -> b!= null }
-      .map { b -> b!! }
+      .filterNotNull()
   }
 
   /** 取得每個宮位、詳細資料 , 按照 [命宮 , 兄弟 , 夫妻...] 排序下來  */
@@ -159,28 +158,28 @@ interface IPlate : Serializable {
   fun getMainStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
-      .filter { it is StarMain }
+      .filterIsInstance<StarMain>()
   }
 
   /** 吉星 */
   fun getLuckyStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
-      .filter { it is StarLucky }
+      .filterIsInstance<StarLucky>()
   }
 
   /** 凶星 */
   fun getUnluckyStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
-      .filter { it is StarUnlucky }
+      .filterIsInstance<StarUnlucky>()
   }
 
   /** 雜曜 */
   fun getMinorStarsIn(branch: Branch): List<ZStar> {
     return houseDataSet.filter { it.stemBranch.branch == branch }
       .flatMap { it.stars }
-      .filter { it is StarMinor }
+      .filterIsInstance<StarMinor>()
   }
 
   /** 博士12神煞 */

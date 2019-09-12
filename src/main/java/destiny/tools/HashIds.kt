@@ -3,8 +3,10 @@
  */
 package destiny.tools
 
-import java.util.ArrayList
+import java.util.*
 import java.util.regex.Pattern
+import kotlin.math.ceil
+import kotlin.math.pow
 
 /**
  * Hashids developed to generate short hashes from numbers (like YouTube).
@@ -27,8 +29,7 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
   init {
     this.alphabet = alphabet.unique()
 
-    if (this.alphabet.length < min)
-      throw IllegalArgumentException("Alphabet must contain at least $min unique characters")
+    require(this.alphabet.length >= min) { "Alphabet must contain at least $min unique characters" }
 
     /**
      * seps should contain only characters present in alphabet;
@@ -88,8 +89,7 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
       return ""
 
     for (number in numbers)
-      if (number > 9007199254740992)
-        throw IllegalArgumentException("Number can not be greater than 9007199254740992L")
+      require(number <= 9007199254740992) { "Number can not be greater than 9007199254740992L" }
 
     var numberHashInt = 0
     for (i in numbers.indices)
@@ -239,7 +239,7 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
   }
 
 
-  private fun getCount(length: Int, div: Double): Int = Math.ceil(length.toDouble() / div).toInt()
+  private fun getCount(length: Int, div: Double): Int = ceil(length.toDouble() / div).toInt()
 
   private fun getCount(length: Int, div: Int): Int = getCount(length, div.toDouble())
 
@@ -298,7 +298,7 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
 
     for (i in 0..length) {
       position = alphabet.indexOf(inputArray[i]).toLong()
-      number += (position.toDouble() * Math.pow(alphabet.length.toDouble(), (input.length - i - 1).toDouble())).toLong()
+      number += (position.toDouble() * alphabet.length.toDouble().pow((input.length - i - 1).toDouble())).toLong()
     }
 
     return number

@@ -407,9 +407,9 @@ class TimeTools : Serializable {
      * @return 經度時間
      */
     fun getLongitudeTime(lmt: ChronoLocalDateTime<*>, location: ILocation): ChronoLocalDateTime<*> {
-      val absLng = Math.abs(location.lng)
+      val absLng = abs(location.lng)
       val secondsOffset = getDstSecondOffset(lmt, location).second.toDouble()
-      val zoneSecondOffset = Math.abs(secondsOffset)
+      val zoneSecondOffset = abs(secondsOffset)
       val longitudeSecondOffset = absLng * 4.0 * 60.0 // 經度與GMT的時差 (秒) , 一分鐘四度
 
       return if (location.eastWest === EastWest.EAST) {

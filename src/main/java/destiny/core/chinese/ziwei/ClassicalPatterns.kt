@@ -954,8 +954,7 @@ val p文梁振紀 = object : PatternSingleImpl() {
     val 命宮有昌或曲且處廟旺 = it.getHouseDataOf(it.mainHouse.branch).stars
       .filter { star -> listOf(文昌, 文曲).contains(star) }
       .map { star -> it.starStrengthMap[star] }
-      .filter { value -> value != null }
-      .map { value -> value!! }
+      .filterNotNull()
       .any { value -> value <= 2 }
 
     val 天梁在命且廟旺 = it.starMap[天梁]?.stemBranch?.branch?.takeIf { branch ->

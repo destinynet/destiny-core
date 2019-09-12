@@ -29,7 +29,6 @@ class ZoneOffsetTest {
     val epochZonedGMT = ZonedDateTime.of(epochLMT, ZoneId.of("GMT"))
     val cldt = LocalDateTime.of(1970, 1, 1, 0, 0)
     val sysDefaultZoneId = ZoneId.systemDefault()
-    val GMT = ZoneId.of("GMT")
 
 
     logger.info("sysDefaultZoneId = {}", sysDefaultZoneId)

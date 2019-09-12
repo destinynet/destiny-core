@@ -44,11 +44,11 @@ class TaiXuan : Serializable {
 
 
     operator fun get(stem: Stem): Int {
-      return stemMap[stem]!!
+      return stemMap.getValue(stem)
     }
 
     operator fun get(branch: Branch): Int {
-      return branchMap[branch]!!
+      return branchMap.getValue(branch)
     }
   }
 }

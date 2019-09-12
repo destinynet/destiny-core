@@ -561,6 +561,6 @@ open class ColorCanvas : Serializable {
   }
 
   companion object {
-    val charsetBig5 = Charset.forName("Big5")!!
+    val charsetBig5: Charset = Charset.forName("Big5")
   }
 } //class

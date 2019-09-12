@@ -19,7 +19,7 @@ object LocationDecorator {
   fun getOutputString(location: ILocation, locale: Locale): String {
 
     val bestMatchingLocale = LocaleTools.getBestMatchingLocale(locale, implMap.keys) ?: implMap.keys.first()
-    return implMap[bestMatchingLocale]!!.getOutputString(location)
+    return implMap.getValue(bestMatchingLocale).getOutputString(location)
   }
 
 }

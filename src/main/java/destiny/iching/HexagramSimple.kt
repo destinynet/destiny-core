@@ -5,7 +5,6 @@
 package destiny.iching
 
 import java.io.Serializable
-import java.util.*
 
 class HexagramSimple : Serializable {
   companion object {
@@ -78,7 +77,7 @@ class HexagramSimple : Serializable {
 
     fun getIndex(lines: Array<Boolean>): Int {
       for ((key, value) in map) {
-        if (Arrays.equals(lines, key))
+        if (lines.contentEquals(key))
           return value
       }
       return 0

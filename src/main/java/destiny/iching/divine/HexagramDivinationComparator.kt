@@ -19,13 +19,13 @@ class HexagramDivinationComparator : Comparator<IHexagram>, IHexagramSequence {
    */
   override fun getIndex(hexagram: IHexagram): Int {
     val h = Hexagram.of(hexagram.upperSymbol, hexagram.lowerSymbol)
-    return hexagramIndexMap[h]!!
+    return hexagramIndexMap.getValue(h)
   }
 
   override fun getHexagram(index: Int): IHexagram {
     val i = if (index > 64) index % 64 else if (index <= 0) 64 - (0-index) %64 else index
 
-    return indexHexagramMap[i]!!
+    return indexHexagramMap.getValue(i)
   }
 
   override fun compare(h1: IHexagram, h2: IHexagram): Int {

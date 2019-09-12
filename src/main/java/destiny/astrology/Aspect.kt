@@ -6,6 +6,7 @@ package destiny.astrology
 
 import destiny.tools.ILocaleString
 import java.util.*
+import kotlin.math.abs
 
 /** 交角 , Aspect  */
 enum class Aspect(private val nameKey: String,
@@ -95,7 +96,7 @@ enum class Aspect(private val nameKey: String,
       return if (degree > 180)
         getAspect(360 - degree)
       else
-        values().firstOrNull { aspect -> Math.abs(aspect.degree - degree) <  0.01 }
+        values().firstOrNull { aspect -> abs(aspect.degree - degree) <  0.01 }
     }
 
   }

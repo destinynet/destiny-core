@@ -3,12 +3,12 @@ package destiny.core.chinese.holo
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
-import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.ISeasonalSymbol
 import destiny.iching.Symbol
 import destiny.iching.Symbol.*
 import java.io.Serializable
+import kotlin.math.abs
 
 
 /** 季月，化工 */
@@ -35,7 +35,7 @@ class SeasonalSymbolHoloImpl(val solarTermsImpl: ISolarTerms ,
         solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay).second.second
       }?.takeIf {
         when (endSeasonSymbolSpan) {
-          EndSeasonSymbolSpan.DAYS_18 -> Math.abs(it-gmtJulDay) <= 18
+          EndSeasonSymbolSpan.DAYS_18 -> abs(it-gmtJulDay) <= 18
           EndSeasonSymbolSpan.FULL_MONTH -> true
         }
       }

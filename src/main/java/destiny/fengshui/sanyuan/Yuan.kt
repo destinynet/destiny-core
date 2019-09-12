@@ -27,8 +27,7 @@ enum class Yuan {
           return@let 180 - abs(it) % 180
       } % 180
 
-      val idx = gap180 / 60 + 1
-      return when (idx) {
+      return when (gap180 / 60 + 1) {
         1 -> UP
         2 -> MID
         else -> LOW

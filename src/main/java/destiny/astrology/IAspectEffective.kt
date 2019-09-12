@@ -3,8 +3,6 @@
  */
 package destiny.astrology
 
-import java.util.*
-
 /** 一個星盤當中，兩顆星體，是否形成某交角  */
 interface IAspectEffective {
 
@@ -28,7 +26,7 @@ interface IAspectEffective {
   }
 
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, vararg aspects: Aspect): Boolean {
-    return isEffective(p1, deg1, p2, deg2, Arrays.asList(*aspects))
+    return isEffective(p1, deg1, p2, deg2, listOf(*aspects))
   }
 
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, aspects: Collection<Aspect>): Boolean {

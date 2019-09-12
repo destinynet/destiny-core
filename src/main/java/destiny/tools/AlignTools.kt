@@ -5,6 +5,7 @@
 package destiny.tools
 
 import org.apache.commons.lang3.StringUtils
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 object AlignTools {
@@ -50,8 +51,7 @@ object AlignTools {
    * 前方儘量塞全形空白
    * */
   fun alignRight(value: Int, width: Int , useDoubleSpaceChar:Boolean = false): String {
-    if (value < 0)
-      throw IllegalArgumentException("value $value must large or equal to 0")
+    require(value >= 0) { "value $value must large or equal to 0" }
 
     val valueString = value.toString()
 
@@ -81,7 +81,7 @@ object AlignTools {
     if (value < 0)
       sb.append("前")
 
-    sb.append(Math.abs(value).toString())
+    sb.append(abs(value).toString())
     val valueLength: Int
     valueLength = if (value > 0)
       sb.length

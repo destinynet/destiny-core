@@ -44,6 +44,6 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
   }
 
   private fun getIndex(h: House): Int {
-    return Arrays.asList(*houses).indexOf(h)
+    return listOf(*houses).indexOf(h)
   }
 }

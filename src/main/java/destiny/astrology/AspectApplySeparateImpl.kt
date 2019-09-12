@@ -5,6 +5,7 @@ package destiny.astrology
 
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
+import kotlin.math.abs
 
 /** 一個星盤當中，兩個星體，是否形成交角。以及即將形成 (APPLYING , 入相位)，還是離開該交角 (SEPARATING , 出相位)  */
 class AspectApplySeparateImpl(
@@ -30,7 +31,7 @@ class AspectApplySeparateImpl(
 
     if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect)) {
       val planetsAngle = IHoroscopeModel.getAngle(deg1, deg2)
-      val error = Math.abs(planetsAngle - aspect.degree) //目前與 aspect 的誤差
+      val error = abs(planetsAngle - aspect.degree) //目前與 aspect 的誤差
 
       val lmt = h.lmt //目前時間
       val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
@@ -45,7 +46,7 @@ class AspectApplySeparateImpl(
       val deg1_next = h2.getPositionWithAzimuth(p1).lng
       val deg2_next = h2.getPositionWithAzimuth(p2).lng
       val planetsAngle_next = IHoroscopeModel.getAngle(deg1_next, deg2_next)
-      val error_next = Math.abs(planetsAngle_next - aspect.degree)
+      val error_next = abs(planetsAngle_next - aspect.degree)
 
       //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error_next + " 度");
 

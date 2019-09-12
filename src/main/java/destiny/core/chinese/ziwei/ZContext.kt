@@ -593,7 +593,7 @@ class ZContext(
     // 星體強弱表
     val starStrengthMap: Map<ZStar, Int> = stars
       .map { star ->
-        val strength: Int? = strengthImpl.getStrengthOf(star, starBranchMap[star]!!)
+        val strength: Int? = strengthImpl.getStrengthOf(star, starBranchMap.getValue(star))
         star to strength
       }.filter { it.second != null }
       .map { it.first to it.second!! }

@@ -30,7 +30,7 @@ class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
   )
 
   override fun getStemBranch(general: General): StemBranch {
-    return map[general]!!
+    return map.getValue(general)
   }
 
   /**

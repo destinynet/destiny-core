@@ -6,6 +6,7 @@
 package destiny.fengshui.sanyuan
 
 import destiny.iching.Symbol
+import kotlin.math.abs
 
 
 /**
@@ -19,7 +20,7 @@ class EarthlyCompass : AbstractMountainCompass() {
   /** 此座山 是位於哪一卦中 */
   fun getSymbol(mnt: Mountain): Symbol {
     //詢問此山/向 的中心點度數為：
-    val midMountain: Double = if (Math.abs(getEndDegree(mnt) - getStartDegree(mnt)) > 180)
+    val midMountain: Double = if (abs(getEndDegree(mnt) - getStartDegree(mnt)) > 180)
       0.0
     else
       (getEndDegree(mnt) + getStartDegree(mnt)) / 2

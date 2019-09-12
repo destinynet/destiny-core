@@ -3,9 +3,10 @@
  */
 package destiny.core.calendar
 
-import java.lang.System.out
+import mu.KotlinLogging
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -17,26 +18,34 @@ import kotlin.test.assertEquals
  */
 class LocalDateTime_AsiaTaipei_Test {
 
+  private val logger = KotlinLogging.logger {  }
+
 
   /**
    * 已知：
    * 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
    */
   @Test
-  fun testGetGMTfromLMT() {
-    val gmt: LocalDateTime
-    val lmt: LocalDateTime
+  fun testGetGMT_from_LMT() {
+    val lmt: LocalDateTime = LocalDateTime.of(1974, 3, 31, 23, 59, 59)
+
+    logger.info("lmt = {}" , lmt)
 
     val tz = TimeZone.getTimeZone("Asia/Taipei")
 
     //日光節約時間前一秒
-    lmt = LocalDateTime.of(1974, 3, 31, 23, 59, 59)
+    lmt.atZone(tz.toZoneId()).also { zdt ->
+      logger.info("zdt = {}" , zdt)
 
-    val zdt = lmt.atZone(tz.toZoneId())
+      assertEquals(ZoneOffset.ofHours(8) , zdt.offset)
+      println("zoned gmt = " + zdt.withZoneSameInstant(ZoneId.of("GMT")))
 
-    out.println("lmt = $lmt")
-    out.println("zoned lmt = " + zdt + " , getOffset = " + zdt.offset)
-    out.println("zoned gmt = " + zdt.withZoneSameInstant(ZoneId.of("GMT")))
+      zdt.withZoneSameInstant(ZoneId.of("GMT")).also { gmtZdt: ZonedDateTime ->
+        logger.info("zoned gmt = {}" , gmtZdt)
+        assertEquals(ZonedDateTime.of(1974 , 3, 31 , 15 , 59 , 59 , 0 , ZoneId.of("GMT")) , gmtZdt)
+      }
+    }
+
   }
 
 
@@ -293,11 +302,10 @@ class LocalDateTime_AsiaTaipei_Test {
    */
   @Test
   fun testTaiwan1945() {
-    val lmt: LocalDateTime
+    val lmt: LocalDateTime = LocalDateTime.of(1945, 9, 20, 23, 59, 0)
     var zdt: ZonedDateTime
 
     val tz = TimeZone.getTimeZone("Asia/Taipei")
-    lmt = LocalDateTime.of(1945, 9, 20, 23, 59, 0)
     zdt = lmt.atZone(tz.toZoneId())
 
     do {
