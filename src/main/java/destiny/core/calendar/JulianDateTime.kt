@@ -186,7 +186,7 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
    * see [LocalDateTime.until]
    */
   override fun until(endExclusive: Temporal, unit: TemporalUnit): Long {
-    val end = JulianDateTime.from(endExclusive)
+    val end = from(endExclusive)
     if (unit is ChronoUnit) {
       if (unit.isTimeBased()) {
         // long amount = date.daysUntil(end.date);

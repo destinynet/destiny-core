@@ -21,7 +21,7 @@ import destiny.core.chinese.ziwei.ZStar.Type.*
 /**
  * 乙級星有總共有34顆
  */
-sealed class StarMinor(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar::class.java.name, type) {
+sealed class StarMinor(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.java.name, type) {
 
   object 天官 : StarMinor("天官", 年干) // 吉
   object 天福 : StarMinor("天福", 年干) // 吉

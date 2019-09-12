@@ -36,7 +36,7 @@ sealed class Asteroid(nameKey: String,
 
   companion object {
     val array by lazy {
-      arrayOf(Asteroid.CERES, Asteroid.PALLAS, Asteroid.JUNO, Asteroid.VESTA, Asteroid.CHIRON, Asteroid.PHOLUS)
+      arrayOf(CERES, PALLAS, JUNO, VESTA, CHIRON, PHOLUS)
     }
     val list by lazy { listOf(*array) }
   }

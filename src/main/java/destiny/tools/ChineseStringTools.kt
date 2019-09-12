@@ -35,7 +35,7 @@ object ChineseStringTools {
       8 -> "８"
       9 -> "９"
       0 -> "０"
-      else -> ChineseStringTools.NULL_CHAR
+      else -> NULL_CHAR
     }
   }
 

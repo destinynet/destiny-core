@@ -4,13 +4,13 @@
 package destiny.astrology.classical
 
 import destiny.astrology.*
-import destiny.core.DayNight.DAY
-import destiny.core.DayNight.NIGHT
 import destiny.astrology.Element.*
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
 import destiny.astrology.ZodiacSign.Companion.of
 import destiny.core.DayNight
+import destiny.core.DayNight.DAY
+import destiny.core.DayNight.NIGHT
 import java.io.Serializable
 
 
@@ -45,7 +45,7 @@ class RulerPtolemyImpl : AbstractPtolemy(), IRuler {
 class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
 
   override fun getPoint(sign: ZodiacSign): Planet {
-    return rulerMap[sign.oppositeSign]!!
+    return rulerMap.getValue(sign.oppositeSign)
   }
 
   /** 此行星在哪些星座 陷 (-5), 至少一個，最多兩個 */
@@ -73,7 +73,7 @@ class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 
   /** 取得在此星座得到「Exaltation , 廟 +4」的星體及度數 */
   override fun getPointDegree(sign: ZodiacSign): PointDegree? {
-    return findPoint(sign, exaltDegreeMap)?.let { point -> PointDegree(point, exaltDegreeMap[point]!!) }
+    return findPoint(sign, exaltDegreeMap)?.let { point -> PointDegree(point, exaltDegreeMap.getValue(point)) }
   }
 }
 
@@ -92,7 +92,7 @@ class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
 
   /** 取得在此星座得到 落 (FALL , -4) 的星體及度數 */
   override fun getPointDegree(sign: ZodiacSign): PointDegree? {
-    return findPoint(sign, fallDegreeMap)?.let { point -> PointDegree(point, fallDegreeMap[point]!!) }
+    return findPoint(sign, fallDegreeMap)?.let { point -> PointDegree(point, fallDegreeMap.getValue(point)) }
   }
 }
 

@@ -107,11 +107,11 @@ interface IRelativeTransit {
       }
       .toList()
 
-    return realAngles.map { angle ->
-      getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, isForward)?.let { resultGmtJulDay  ->
+    return realAngles.mapNotNull { angle ->
+      getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, isForward)?.let { resultGmtJulDay ->
         resultGmtJulDay to angle
       }
-    }.filterNotNull()
+    }
       .sortedBy { (julDay, _) -> julDay }
       .let {
         return@let if (isForward)

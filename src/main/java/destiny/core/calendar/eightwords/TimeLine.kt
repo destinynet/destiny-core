@@ -71,7 +71,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
     val toLeftDays = (model.gmtJulDay - model.solarTermsTimePos.prevMajor.second)
     val toRightDays = (model.solarTermsTimePos.nextMajor.second - model.gmtJulDay)
 
-    val leftBlocks = ((toLeftDays / (toLeftDays + toRightDays)) * 30).toInt().let { it ->
+    val leftBlocks = ((toLeftDays / (toLeftDays + toRightDays)) * 30).toInt().let {
       when {
         it <= 2 -> return@let 2
         it >= 28 -> return@let 28

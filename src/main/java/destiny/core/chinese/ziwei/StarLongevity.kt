@@ -11,7 +11,7 @@ import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.IYinYang
 
 /** 長生 12 神煞  */
-sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", ZStar.Type.長生) {
+sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", Type.長生) {
 
   object 長生 : StarLongevity("長生")
   object 沐浴 : StarLongevity("沐浴")

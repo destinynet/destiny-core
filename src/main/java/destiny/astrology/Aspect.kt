@@ -74,7 +74,7 @@ enum class Aspect(private val nameKey: String,
 
     /** 從「英文」的 aspect name 來反找 Aspect , 找不到則傳回 null  */
     fun getAspectFromName(value: String): Aspect? {
-      return values().firstOrNull { it.toString(Locale.ENGLISH).equals(value.trim { it <= ' '}, ignoreCase = true) }
+      return values().firstOrNull { name -> name.toString(Locale.ENGLISH).equals(value.trim { it <= ' '}, ignoreCase = true) }
     }
 
     /**

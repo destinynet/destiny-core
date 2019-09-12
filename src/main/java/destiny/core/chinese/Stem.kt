@@ -84,7 +84,7 @@ enum class Stem : Comparable<Stem>, IFiveElement, IYinYang , ILoop<Stem> {
     }
 
     operator fun get(c: Char): Stem? {
-      return values().firstOrNull { it -> it.name == c.toString() }
+      return values().firstOrNull { it.name == c.toString() }
     }
 
     /** 甲[0] ... 癸[9]  */

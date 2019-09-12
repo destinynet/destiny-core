@@ -46,7 +46,7 @@ object VoidFunctions {
   fun getMappingMountain(m: Mountain, symbol: Symbol): Mountain {
     val tri = getTri(m)
     return Mountain.values().first {
-      it.symbol === symbol && tri === VoidFunctions.getTri(it)
+      it.symbol === symbol && tri === getTri(it)
     }
   }
 

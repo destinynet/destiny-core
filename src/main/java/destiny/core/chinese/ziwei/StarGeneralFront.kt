@@ -23,7 +23,7 @@ import destiny.core.chinese.FiveElement.*
  * 寅午戍年將星午, 申子辰年子將星, 巳酉丑將酉上駐, 亥卯未將卯上停
  * 攀鞍歲驛並息神, 華蓋劫煞災煞輕, 天煞指背咸池續, 月煞亡神次第行
  */
-sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront::class.java.name, ZStar.Type.將前) {
+sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront::class.java.name, Type.將前) {
 
   object 將星 : StarGeneralFront("將星")
   object 攀鞍 : StarGeneralFront("攀鞍")

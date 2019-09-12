@@ -117,7 +117,7 @@ object LocationTools {
             val (lat, lng) = value.split(",").map { it.toDouble() }
             latLng(lat, lng)
           }
-          ZoneId.getAvailableZoneIds().contains(value) -> LocationPadding.tzid(ZoneId.of(value))
+          ZoneId.getAvailableZoneIds().contains(value) -> tzid(ZoneId.of(value))
 
           value.endsWith('m') && value.substring(0, value.length - 1).toIntOrNull() != null ->
             minOffset((value.substring(0, value.length - 1)).toInt())

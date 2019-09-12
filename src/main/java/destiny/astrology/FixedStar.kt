@@ -74,10 +74,10 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
   companion object {
 
     val array by lazy {
-      arrayOf(FixedStar.REGULUS, FixedStar.SPICA, FixedStar.ALGOL, FixedStar.ALDEBARAN, FixedStar.RIGEL,
-              FixedStar.CAPELLA, FixedStar.BETELGEUSE, FixedStar.SIRIUS, FixedStar.CANOPUS, FixedStar.POLLUX,
-              FixedStar.PROCYON, FixedStar.PRAESEPE, FixedStar.ALPHARD, FixedStar.ARCTURUS, FixedStar.ANTARES,
-              FixedStar.VEGA, FixedStar.ALTAIR, FixedStar.FOMALHAUT, FixedStar.DENEB)
+      arrayOf(REGULUS, SPICA, ALGOL, ALDEBARAN, RIGEL,
+              CAPELLA, BETELGEUSE, SIRIUS, CANOPUS, POLLUX,
+              PROCYON, PRAESEPE, ALPHARD, ARCTURUS, ANTARES,
+              VEGA, ALTAIR, FOMALHAUT, DENEB)
     }
     val list by lazy { listOf(*array) }
   }

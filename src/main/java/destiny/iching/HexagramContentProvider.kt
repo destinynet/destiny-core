@@ -7,7 +7,7 @@ import java.util.*
 
 /**
  * 對一個「卦」的註釋
- * 或許可以用 [IHexProvider] 來取代
+ * 或許可以用 [destiny.iching.contentProviders.IHexProvider] 來取代
  *  */
 @Deprecated("")
 interface HexagramContentProvider : Descriptive {

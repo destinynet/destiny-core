@@ -20,12 +20,12 @@ import kotlin.math.abs
 
 class TimeTools : Serializable {
 
-  /**
-   * 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
-   */
-  internal val GREGORIAN_START_INSTANT = -12219292800L
-
   companion object {
+
+    /**
+     * 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
+     */
+    const val GREGORIAN_START_INSTANT = -12219292800L
 
     private val GMT = ZoneId.of("GMT")
 

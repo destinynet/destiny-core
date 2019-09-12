@@ -35,7 +35,7 @@ public class ClassFinder {
 
       directory = new File(url.getFile());
     } catch (NullPointerException x) {
-      throw new ClassNotFoundException(packageName + " (" + directory + ") does not appear to be a valid package");
+      throw new ClassNotFoundException("PackageName" + packageName + " does not appear to be a valid package");
     }
     if (directory.exists() && directory.listFiles() != null) {
       for (File file : directory.listFiles()) {

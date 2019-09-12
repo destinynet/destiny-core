@@ -150,11 +150,6 @@ data class CombinedWithMetaNameDayMonth(
   }
   override val monthBranch = eightWordsNullable.month.branch
 
-  init {
-//    if (eightWordsNullable.day.stem == null || eightWordsNullable.day.branch == null && eightWordsNullable.month.branch == null) {
-//      throw RuntimeException("八字 必須包含 日干支 以及 月支 ")
-//    }
-  }
 }
 
 interface ICombinedWithMetaNameTexts : ICombinedWithMetaName {

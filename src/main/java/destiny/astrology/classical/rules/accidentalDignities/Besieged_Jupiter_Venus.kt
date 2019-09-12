@@ -23,7 +23,7 @@ class Besieged_Jupiter_Venus(
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return planet.takeIf { arrayOf(SUN , MOON , MERCURY , MARS , SATURN).contains(it) }?.takeIf {
       val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
-      besiegedImpl.isBesieged(it , VENUS , JUPITER , gmt , true , false)
+      besiegedImpl.isBesieged(it , VENUS , JUPITER , gmt , classical = true, isOnlyHardAspects = false)
     }?.let { "comment" to arrayOf<Any>(planet , VENUS , JUPITER) }
   }
 }

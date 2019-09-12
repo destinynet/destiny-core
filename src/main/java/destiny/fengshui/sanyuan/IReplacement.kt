@@ -60,7 +60,7 @@ class ReplacementDefaultImpl : IReplacement , Serializable {
                                                  )
 
   override fun getReplacementStar(mnt: Mountain): ReplacementStar {
-    return map[mnt]!!
+    return map.getValue(mnt)
   }
 
 

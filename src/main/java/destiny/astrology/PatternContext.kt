@@ -103,9 +103,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
           }.map { threeSet ->
             val score: Double? = threeSet.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.average()
             val oppoPoints = threeSet.first { it.aspect == Aspect.OPPOSITION }.points
-            val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints).first().let { squaredPoint ->
-              squaredPoint.signHouse(posMap, cuspDegreeMap)
-            }
+            val squared = threeSet.flatMap { it.points }.toSet().minus(oppoPoints).first().signHouse(posMap, cuspDegreeMap)
             AstroPattern.三刑會沖(oppoPoints, squared, score)
           }
         }?.toSet() ?: emptySet()
@@ -203,7 +201,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
       return tSquared.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
         ?.let { dataSets: Set<AstroPattern> ->
-          /** 所有的 [AstroPattern.三刑會沖] , 找出 頂點( [AstroPattern.三刑會沖.squaredPoint]) , 比對此頂點是否有對沖點
+          /** 所有的 [AstroPattern.三刑會沖] , 找出 頂點( [AstroPattern.三刑會沖.squared]) , 比對此頂點是否有對沖點
            * 並且要求，對衝點，與三刑的兩角尖，也要相刑
            * 才能確保比較漂亮的 大十字
            * */

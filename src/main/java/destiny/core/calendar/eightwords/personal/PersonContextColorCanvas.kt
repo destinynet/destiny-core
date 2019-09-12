@@ -30,7 +30,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
   ColorCanvas(36, 70, ChineseStringTools.NULL_CHAR)
 {
 
-  var outputMode = ColorCanvas.OutputMode.HTML
+  var outputMode = OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
     val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.lmt, model.location, model.place)
@@ -113,7 +113,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
         val startFortune: String =
           ageNoteImpls
-            .mapNotNull { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
+            .mapNotNull { it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
             .first()
 
         val stemBranch = fortuneData.stemBranch
@@ -231,8 +231,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
   /** 取得八字命盤  */
   override fun toString(): String {
     return when (outputMode) {
-      ColorCanvas.OutputMode.TEXT -> getTextOutput()
-      ColorCanvas.OutputMode.HTML -> htmlOutput
+      OutputMode.TEXT -> getTextOutput()
+      OutputMode.HTML -> htmlOutput
     }
   }
 

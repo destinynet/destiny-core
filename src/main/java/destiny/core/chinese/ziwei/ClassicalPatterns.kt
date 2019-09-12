@@ -953,8 +953,7 @@ val p文梁振紀 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     val 命宮有昌或曲且處廟旺 = it.getHouseDataOf(it.mainHouse.branch).stars
       .filter { star -> listOf(文昌, 文曲).contains(star) }
-      .map { star -> it.starStrengthMap[star] }
-      .filterNotNull()
+      .mapNotNull { star -> it.starStrengthMap[star] }
       .any { value -> value <= 2 }
 
     val 天梁在命且廟旺 = it.starMap[天梁]?.stemBranch?.branch?.takeIf { branch ->
@@ -1632,7 +1631,7 @@ val p廟星變景 = object : PatternSingleImpl() {
     return setOf(太陰, 天同)
       .firstOrNull { star -> it.starMap[star]?.stemBranch?.branch == it.mainHouse.branch } // 有其中一顆星在命宮
       ?.takeIf { star -> it.starStrengthMap[star] == 1 } // 入廟
-      ?.takeIf { star -> ITransFour.Value.忌 == it.getTransFourValue(star) }
+      ?.takeIf { star -> 忌 == it.getTransFourValue(star) }
       ?.let { 廟星變景 }
   }
 }
@@ -2122,8 +2121,7 @@ val p君子在野 = object : PatternSingleImpl() {
 
     val 閒宮: List<Branch> = listOf(父母, 兄弟, 疾厄, 交友, 夫妻, 子女)
       .map { h -> it.getHouseDataOf(h)?.stemBranch?.branch }
-      .filter { b -> b != null }
-      .map { b -> b!! }
+      .filterNotNull()
 
     return 閒宮.containsAll(it.getBranches(*StarLucky.values)).takeIf { value -> value }?.let { _ ->
       val evils = mutableSetOf<EvilCombo>().apply {

@@ -16,7 +16,6 @@ import destiny.core.chinese.Stem
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
-import java.time.temporal.ChronoField
 import java.time.temporal.ChronoField.*
 import java.util.*
 import kotlin.math.abs
@@ -77,7 +76,7 @@ class EightWordsColorCanvas(
       val timeData = with(StringBuilder()) {
         append("西元：")
 
-        if (lmt.toLocalDate().get(ChronoField.YEAR) <= 0) append("前")
+        if (lmt.toLocalDate().get(YEAR) <= 0) append("前")
         else append(ChineseStringTools.NULL_CHAR)
 
         append(AlignTools.alignRight(lmt.get(YEAR_OF_ERA), 4, true))
@@ -108,7 +107,7 @@ class EightWordsColorCanvas(
       地點名稱.setText(place, 1, 7, null, null, url, place, false, null)
       val minuteOffset = location.minuteOffset ?: TimeTools.getDstSecondOffset(lmt, location).second / 60
 
-      minuteOffset.also { it ->
+      minuteOffset.also {
         val absValue = abs(it)
         if (it >= 0) {
           地點名稱.setText(" GMT時差：" + AlignTools.alignRight(it, 6, true) + "分鐘", 1, 25)

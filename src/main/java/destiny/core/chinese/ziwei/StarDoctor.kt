@@ -17,7 +17,7 @@ import destiny.core.chinese.Stem
  * 每次 function 都要 call [StarLucky.fun祿存]
  *
  */
-sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, ZStar.Type.博士) {
+sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name, Type.博士) {
   object 博士 : StarDoctor("博士")
   object 力士 : StarDoctor("力士")
   object 青龍 : StarDoctor("青龍")

@@ -27,8 +27,8 @@ sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.java.name),
 
   companion object {
     val array by lazy {
-      arrayOf(Hamburger.CUPIDO, Hamburger.HADES, Hamburger.ZEUS, Hamburger.KRONOS, Hamburger.APOLLON, Hamburger.ADMETOS,
-              Hamburger.VULKANUS, Hamburger.POSEIDON)
+      arrayOf(CUPIDO, HADES, ZEUS, KRONOS, APOLLON, ADMETOS,
+              VULKANUS, POSEIDON)
     }
 
     val list by lazy {

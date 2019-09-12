@@ -180,7 +180,9 @@ class Builder(
 
   /** 添加 四化  */
   fun appendTrans4Map(map: Map<Pair<ZStar, FlowType>, ITransFour.Value>): Builder {
-    map.forEach { (star, flowType), value ->
+    map.forEach { (starFlowType, value) ->
+
+      val (star , flowType) = starFlowType
 
       this.transFourMap.computeIfPresent(star) { _, flowTypeValueMap ->
         flowTypeValueMap.putIfAbsent(flowType, value)

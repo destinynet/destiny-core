@@ -308,12 +308,12 @@ class Hashids(var salt: String = "", var length: Int = 0, alphabet: String = "ab
     return "1.0.0"
   }
 
-  fun kotlin.String.unique(): kotlin.String {
+  fun String.unique(): String {
     var unique = ""
     val length = this.length - 1
 
     for (index in 0..length) {
-      val current: kotlin.String = "" + this[index]
+      val current: String = "" + this[index]
 
       if (!unique.contains(current) && current != " ")
         unique += current

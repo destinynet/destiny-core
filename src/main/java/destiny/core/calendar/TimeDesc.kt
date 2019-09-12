@@ -65,7 +65,7 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
     ISolarEclipse.SolarType.TOTAL -> "日全食 " + time.desc()
     ISolarEclipse.SolarType.ANNULAR -> "日環食 " + time.desc()
     ISolarEclipse.SolarType.HYBRID -> "全環食 " + time.desc()
-  }.let { it ->
+  }.let {
     locPlace?.let { lp ->
       it + " 於 " + lp.place
     } ?: it

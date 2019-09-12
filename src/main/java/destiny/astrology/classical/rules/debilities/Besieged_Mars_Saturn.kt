@@ -26,7 +26,7 @@ class Besieged_Mars_Saturn(
       ?.takeIf {
         val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
         //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
-        besiegedImpl.isBesieged(it , MARS , SATURN , gmt , true , true)
+        besiegedImpl.isBesieged(it , MARS , SATURN , gmt , classical = true, isOnlyHardAspects = true)
       }?.let { "comment" to arrayOf<Any>(planet , MARS , SATURN) }
   }
 }

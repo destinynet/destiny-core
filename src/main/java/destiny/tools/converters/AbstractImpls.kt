@@ -41,7 +41,7 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
 }
 
 open class AbstractImpls<T>(override val key: String,
-                            override val defaultImpl: T,
+                            final override val defaultImpl: T,
                             private val defaultImplKey: String) : Serializable, IAbstractImpls<T> {
 
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */

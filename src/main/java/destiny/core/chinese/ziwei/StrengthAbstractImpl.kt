@@ -85,7 +85,7 @@ private val commonTable: Set<Triple<ZStar, Branch, Int>> = setOf(
 
 private val commonStarMap: Map<ZStar, List<Pair<Branch, Int>>> = commonTable
   .groupBy { it.first }
-  .mapValues { it -> it.component2().map { t -> Pair(t.second, t.third) } }
+  .mapValues { it.component2().map { t -> Pair(t.second, t.third) } }
 
 private val commonPairMap: Map<Pair<ZStar, Branch>, Int> = commonTable
   .groupBy { Pair(it.first, it.second) }

@@ -38,7 +38,7 @@ enum class SimpleBranch(override val branch: Branch) : IBranch<SimpleBranch>, IF
   companion object {
 
     operator fun get(b: Branch): SimpleBranch {
-      return SimpleBranch.valueOf(b.name)
+      return valueOf(b.name)
     }
 
     /**
