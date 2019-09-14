@@ -4,6 +4,7 @@
 package destiny.astrology
 
 import org.slf4j.LoggerFactory
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -22,7 +23,7 @@ class LunarApsisTest {
       logger.info("{}", each.toString())
     }
 
-    val set =  LunarApsis.array.map { it.toString() }.toSet()
+    val set =  LunarApsis.array.map { it.toString(Locale.TAIWAN) }.toSet()
     assertTrue(set.contains("遠地點"))
     assertTrue(set.contains("近地點"))
   }

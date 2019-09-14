@@ -21,7 +21,7 @@ class AxisTest {
     assertEquals("東昇" , Axis.RISING.toString(Locale.TRADITIONAL_CHINESE))
     assertEquals("東昇" , Axis.RISING.toString(Locale.TAIWAN))
     assertEquals("昇" , Axis.RISING.getAbbreviation(Locale.TAIWAN))
-    assertEquals("昇" , Axis.RISING.abbreviation)
+    assertEquals("昇" , Axis.RISING.getAbbreviation(Locale.TAIWAN))
 
 
     Axis.array.forEach { p ->

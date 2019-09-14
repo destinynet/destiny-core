@@ -120,18 +120,18 @@ class ZodiacSignTest {
 
   @Test
   fun testToString() {
-    assertEquals("牡羊", ARIES.toString())
-    assertEquals("金牛", TAURUS.toString())
-    assertEquals("雙子", GEMINI.toString())
-    assertEquals("巨蟹", CANCER.toString())
-    assertEquals("獅子", LEO.toString())
-    assertEquals("處女", VIRGO.toString())
-    assertEquals("天秤", LIBRA.toString())
-    assertEquals("天蠍", SCORPIO.toString())
-    assertEquals("射手", SAGITTARIUS.toString())
-    assertEquals("摩羯", CAPRICORN.toString())
-    assertEquals("水瓶", AQUARIUS.toString())
-    assertEquals("雙魚", PISCES.toString())
+    assertEquals("牡羊", ARIES.toString(Locale.TAIWAN))
+    assertEquals("金牛", TAURUS.toString(Locale.TAIWAN))
+    assertEquals("雙子", GEMINI.toString(Locale.TAIWAN))
+    assertEquals("巨蟹", CANCER.toString(Locale.TAIWAN))
+    assertEquals("獅子", LEO.toString(Locale.TAIWAN))
+    assertEquals("處女", VIRGO.toString(Locale.TAIWAN))
+    assertEquals("天秤", LIBRA.toString(Locale.TAIWAN))
+    assertEquals("天蠍", SCORPIO.toString(Locale.TAIWAN))
+    assertEquals("射手", SAGITTARIUS.toString(Locale.TAIWAN))
+    assertEquals("摩羯", CAPRICORN.toString(Locale.TAIWAN))
+    assertEquals("水瓶", AQUARIUS.toString(Locale.TAIWAN))
+    assertEquals("雙魚", PISCES.toString(Locale.TAIWAN))
   }
 
   @Test
@@ -152,18 +152,18 @@ class ZodiacSignTest {
 
   @Test
   fun testGetAbbreviation() {
-    assertEquals("牡", ARIES.abbreviation)
-    assertEquals("牛", TAURUS.abbreviation)
-    assertEquals("孖", GEMINI.abbreviation)
-    assertEquals("蟹", CANCER.abbreviation)
-    assertEquals("獅", LEO.abbreviation)
-    assertEquals("女", VIRGO.abbreviation)
-    assertEquals("秤", LIBRA.abbreviation)
-    assertEquals("蠍", SCORPIO.abbreviation)
-    assertEquals("射", SAGITTARIUS.abbreviation)
-    assertEquals("羯", CAPRICORN.abbreviation)
-    assertEquals("瓶", AQUARIUS.abbreviation)
-    assertEquals("魚", PISCES.abbreviation)
+    assertEquals("牡", ARIES.getAbbreviation(Locale.TAIWAN))
+    assertEquals("牛", TAURUS.getAbbreviation(Locale.TAIWAN))
+    assertEquals("孖", GEMINI.getAbbreviation(Locale.TAIWAN))
+    assertEquals("蟹", CANCER.getAbbreviation(Locale.TAIWAN))
+    assertEquals("獅", LEO.getAbbreviation(Locale.TAIWAN))
+    assertEquals("女", VIRGO.getAbbreviation(Locale.TAIWAN))
+    assertEquals("秤", LIBRA.getAbbreviation(Locale.TAIWAN))
+    assertEquals("蠍", SCORPIO.getAbbreviation(Locale.TAIWAN))
+    assertEquals("射", SAGITTARIUS.getAbbreviation(Locale.TAIWAN))
+    assertEquals("羯", CAPRICORN.getAbbreviation(Locale.TAIWAN))
+    assertEquals("瓶", AQUARIUS.getAbbreviation(Locale.TAIWAN))
+    assertEquals("魚", PISCES.getAbbreviation(Locale.TAIWAN))
   }
 
   @Test

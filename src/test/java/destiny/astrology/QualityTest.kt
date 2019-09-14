@@ -4,9 +4,8 @@
  */
 package destiny.astrology
 
+import java.util.*
 import kotlin.test.Test
-
-import java.util.Locale
 import kotlin.test.assertEquals
 
 
@@ -14,9 +13,9 @@ class QualityTest {
 
   @Test
   fun testToString() {
-    assertEquals("基本", Quality.CARDINAL.toString())
-    assertEquals("固定", Quality.FIXED.toString())
-    assertEquals("變動", Quality.MUTABLE.toString())
+    assertEquals("基本", Quality.CARDINAL.toString(Locale.TAIWAN))
+    assertEquals("固定", Quality.FIXED.toString(Locale.TAIWAN))
+    assertEquals("變動", Quality.MUTABLE.toString(Locale.TAIWAN))
   }
 
   @Test

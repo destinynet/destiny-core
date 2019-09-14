@@ -4,6 +4,7 @@
 package destiny.astrology
 
 import org.slf4j.LoggerFactory
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
@@ -23,7 +24,7 @@ class LunarNodeTest {
     }
 
 
-    val set = LunarNode.meanArray.map { it.toString() }.toSet()
+    val set = LunarNode.meanArray.map { it.toString(Locale.TAIWAN) }.toSet()
     assertTrue(set.contains("北交點"))
     assertTrue(set.contains("南交點"))
   }

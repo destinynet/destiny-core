@@ -12,10 +12,10 @@ import kotlin.test.assertEquals
 class ElementTest {
   @Test
   fun testToString() {
-    assertEquals("火", Element.FIRE.toString())
-    assertEquals("土", Element.EARTH.toString())
-    assertEquals("風", Element.AIR.toString())
-    assertEquals("水", Element.WATER.toString())
+    assertEquals("火", Element.FIRE.toString(Locale.TAIWAN))
+    assertEquals("土", Element.EARTH.toString(Locale.TAIWAN))
+    assertEquals("風", Element.AIR.toString(Locale.TAIWAN))
+    assertEquals("水", Element.WATER.toString(Locale.TAIWAN))
   }
 
   @Test
