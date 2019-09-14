@@ -6,8 +6,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IDayHour
-import destiny.core.calendar.eightwords.IHour
-import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.chinese.Branch
 import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime

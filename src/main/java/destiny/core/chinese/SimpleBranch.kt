@@ -5,8 +5,6 @@
  */
 package destiny.core.chinese
 
-import destiny.iching.Symbol
-
 /** 實作 五行 [IFiveElement] 以及 陰陽 [IYinYang] 以及取得地支順序 getIndex() 的地支  */
 enum class SimpleBranch(override val branch: Branch) : IBranch<SimpleBranch>, IFiveElement, IYinYang {
   子(Branch.子),

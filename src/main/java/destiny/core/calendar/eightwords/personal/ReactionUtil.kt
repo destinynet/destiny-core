@@ -45,7 +45,7 @@ class ReactionUtil(
         Reaction.正財
     }
 
-    if (actor.fiveElement.equals(actee.fiveElement)) {
+    if (actor.fiveElement.isSame(actee.fiveElement)) {
       return if (actor.booleanValue == actee.booleanValue)
         Reaction.比肩
       else

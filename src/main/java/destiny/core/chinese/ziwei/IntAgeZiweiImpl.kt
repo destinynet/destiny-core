@@ -14,7 +14,6 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.LocalTime
 import java.util.*

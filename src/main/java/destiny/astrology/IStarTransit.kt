@@ -6,9 +6,7 @@
 package destiny.astrology
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-
 import java.time.chrono.ChronoLocalDateTime
-import java.util.function.Function
 
 /**
  * 計算某星 Transit 的介面

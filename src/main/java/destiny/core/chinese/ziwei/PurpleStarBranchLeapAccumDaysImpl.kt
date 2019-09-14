@@ -6,7 +6,6 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 
 /**

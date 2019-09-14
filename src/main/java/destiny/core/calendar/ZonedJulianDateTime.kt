@@ -110,7 +110,7 @@ class ZonedJulianDateTime private constructor(
 
 
   override fun until(endExclusive: Temporal, unit: TemporalUnit): Long {
-    var end = ZonedJulianDateTime.from(endExclusive)
+    var end = from(endExclusive)
     if (unit is ChronoUnit) {
       end = end.withZoneSameInstant(zone)
       return if (unit.isDateBased()) {

@@ -14,7 +14,7 @@ import destiny.core.chinese.ziwei.ZStar.Type.*
 /**
  * 六兇星
  */
-sealed class StarUnlucky(nameKey: String, type: ZStar.Type) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", type) {
+sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::class.java.name, nameKey + "_ABBR", type) {
 
   object 擎羊 : StarUnlucky("擎羊", 年干) // 甲
   object 陀羅 : StarUnlucky("陀羅", 年干) // 甲

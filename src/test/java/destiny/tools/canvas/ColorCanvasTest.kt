@@ -39,8 +39,8 @@ class ColorCanvasTest {
     val cc = ColorCanvas(2, 10, " ")
     cc.setText("一二三四五", 1, 1)
     cc.setText("六七八九十", 2, 1)
-    cc.appendLine("許功蓋許功蓋許功蓋", null, null, " ", null, null)
-    cc.appendLine("许功盖许功盖许功盖", null, null, " ", null, null)
+    cc.appendLine("許功蓋許功蓋許功蓋", null, null, " ")
+    cc.appendLine("许功盖许功盖许功盖", null, null, " ")
     println(cc.toString())
   }
 }

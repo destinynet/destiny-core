@@ -66,7 +66,7 @@ enum class FiveElement  : IFiveElement, Serializable {
     get() = this
 
 
-  fun equals(f: IFiveElement): Boolean {
+  fun isSame(f: IFiveElement): Boolean {
     return f.fiveElement == this
   }
 

@@ -19,7 +19,6 @@ import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime

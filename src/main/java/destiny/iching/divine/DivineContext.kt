@@ -269,7 +269,7 @@ class DivineContext(
 
     fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
       return when {
-        外在五行.equals(內在五行) -> Relative.兄弟
+        外在五行.isSame(內在五行) -> Relative.兄弟
         外在五行.isDominatorOf(內在五行) -> Relative.官鬼
         外在五行.isDominatedBy(內在五行) -> Relative.妻財
         外在五行.isProducingTo(內在五行) -> Relative.父母

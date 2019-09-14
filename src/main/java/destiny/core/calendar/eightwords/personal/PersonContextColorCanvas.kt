@@ -167,7 +167,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
           val selected = fortuneData.stemBranch == model.selectedFortuneLarge
           val startFortune: String =
             ageNoteImpls
-              .mapNotNull { it -> it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
+              .mapNotNull { it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
               .first()
           val stemBranch = fortuneData.stemBranch
           val startFortuneLmt =

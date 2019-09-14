@@ -1,9 +1,6 @@
 /** 2009/11/27 下午7:20:26 by smallufo  */
 package destiny.tools.location
 
-import destiny.core.calendar.EastWest
-import destiny.core.calendar.Location
-import destiny.core.calendar.NorthSouth
 import java.util.*
 
 /**

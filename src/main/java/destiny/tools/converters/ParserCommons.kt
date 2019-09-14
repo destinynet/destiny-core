@@ -5,8 +5,6 @@ package destiny.tools.converters
 
 import com.google.common.base.Enums
 import com.google.common.base.Optional
-import destiny.iching.HexagramDefaultComparator
-import org.slf4j.LoggerFactory
 
 object ParserCommons {
 

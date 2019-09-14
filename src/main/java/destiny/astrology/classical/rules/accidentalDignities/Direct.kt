@@ -5,7 +5,6 @@
 package destiny.astrology.classical.rules.accidentalDignities
 
 import destiny.astrology.IHoroscopeModel
-import destiny.astrology.IStarPositionWithAzimuth
 import destiny.astrology.Planet
 import destiny.astrology.Planet.MOON
 import destiny.astrology.Planet.SUN

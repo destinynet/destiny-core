@@ -6,9 +6,6 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
-import destiny.core.chinese.Branch
-import destiny.core.chinese.Stem
-import destiny.core.chinese.StemBranchUtils
 import java.time.chrono.ChronoLocalDateTime
 
 /**

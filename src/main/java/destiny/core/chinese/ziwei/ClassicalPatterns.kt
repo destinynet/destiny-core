@@ -2120,8 +2120,7 @@ val p君子在野 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
 
     val 閒宮: List<Branch> = listOf(父母, 兄弟, 疾厄, 交友, 夫妻, 子女)
-      .map { h -> it.getHouseDataOf(h)?.stemBranch?.branch }
-      .filterNotNull()
+      .mapNotNull { h -> it.getHouseDataOf(h)?.stemBranch?.branch }
 
     return 閒宮.containsAll(it.getBranches(*StarLucky.values)).takeIf { value -> value }?.let { _ ->
       val evils = mutableSetOf<EvilCombo>().apply {

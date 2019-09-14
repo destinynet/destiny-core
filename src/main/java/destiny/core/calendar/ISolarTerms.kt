@@ -6,8 +6,6 @@
 package destiny.core.calendar
 
 
-import destiny.astrology.Coordinate
-import destiny.astrology.Planet
 import java.time.chrono.ChronoLocalDateTime
 
 /**

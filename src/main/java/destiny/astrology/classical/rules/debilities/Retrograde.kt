@@ -5,7 +5,6 @@
 package destiny.astrology.classical.rules.debilities
 
 import destiny.astrology.IHoroscopeModel
-import destiny.astrology.IStarPositionWithAzimuth
 import destiny.astrology.Planet
 
 class Retrograde : DebilityRule() {

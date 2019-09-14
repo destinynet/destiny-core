@@ -22,7 +22,7 @@ object LocationTools {
 
   /**
    * 2018-03 格式： (直接帶入 data class [Location] 之值)
-   * [lat],[lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * lat,lng ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   fun encode2018(loc: ILocation): String {
     return StringBuilder().apply {
@@ -81,7 +81,7 @@ object LocationTools {
 
   /**
    * 解碼 2018-03 的 [Location] debugString
-   * [lat],[lng] ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
+   * lat,lng ([Location.tzid]) ([Location.minuteOffset]m) ([Location.altitudeMeter])
    */
   private fun decode2018(string: String): ILocation? {
     val parts: Set<LocationPadding> =

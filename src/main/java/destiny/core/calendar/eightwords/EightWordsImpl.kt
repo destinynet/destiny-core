@@ -8,7 +8,6 @@ import com.google.common.cache.CacheBuilder
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
-import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.子
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch

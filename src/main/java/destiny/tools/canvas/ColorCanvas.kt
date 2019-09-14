@@ -7,7 +7,6 @@ package destiny.tools.canvas
 
 import java.awt.Font
 import java.io.Serializable
-import java.net.URL
 import java.nio.charset.Charset
 
 /**
@@ -409,7 +408,7 @@ open class ColorCanvas : Serializable {
               foreColor: String? = null,
               backColor: String? = null,
               font: Font? = null,
-              url: URL? = null) {
+              url: String? = null) {
     /**
      * 必須先取出來，第幾行開始為空
      * 演算法：由底層數上來，遇到有字，則停止
@@ -450,7 +449,7 @@ open class ColorCanvas : Serializable {
                  backColor: String?,
                  fill: String,
                  font: Font? = null,
-                 url: URL? = null) {
+                 url: String? = null) {
     val strWidth: Int = str.toByteArray(charsetBig5).size
     //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
 
@@ -460,7 +459,7 @@ open class ColorCanvas : Serializable {
     val additionalRows = strWidth / this.width + 1
 
     val appendedCanvas = ColorCanvas(additionalRows, width, fill, foreColor, backColor)
-    appendedCanvas.addLine(str, true, foreColor, backColor, font, url)
+    appendedCanvas.addLine(str, true, foreColor, backColor, font)
 
     this.height += additionalRows
     content += appendedCanvas.content

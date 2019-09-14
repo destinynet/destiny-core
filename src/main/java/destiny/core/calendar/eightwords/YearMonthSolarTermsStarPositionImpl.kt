@@ -12,9 +12,7 @@ import destiny.astrology.IStarTransit
 import destiny.astrology.Planet
 import destiny.core.calendar.*
 import destiny.core.chinese.*
-import destiny.core.chinese.Stem.*
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import java.util.*
 
 /**

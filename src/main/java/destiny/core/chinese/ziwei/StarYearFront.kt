@@ -8,7 +8,7 @@ import destiny.core.chinese.Branch
 /**
  * 歲前 12 星
  */
-sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::class.java.name, ZStar.Type.歲前) {
+sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::class.java.name, Type.歲前) {
 
   object 歲建 : StarYearFront("歲建")
   object 晦氣 : StarYearFront("晦氣")
