@@ -5,9 +5,8 @@
 package destiny.astrology
 
 import destiny.tools.AlignTools
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
-import java.util.*
 
 /** 存放星體交角的資料結構  */
 data class HoroscopeAspectData(val p1: Point,
@@ -23,13 +22,14 @@ data class HoroscopeAspectData(val p1: Point,
   /** 存放形成交角的兩顆星體  */
   val points = setOf(p1 , p2)
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {  }
 
   init {
-    val set = TreeSet(pointComp).apply {
+    val set = sortedSetOf(pointComp).apply {
       add(p1)
       add(p2)
     }
+
     if (set.size <= 1) {
       logger.warn("twoPoints size = {} , p1 = {} ({}) , p2 = {} ({}) . equals ? {}",
                   set.size, p1, p1.hashCode(), p2, p2.hashCode(), p1 == p2)

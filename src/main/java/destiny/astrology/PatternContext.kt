@@ -14,7 +14,7 @@ import java.io.Serializable
 class PatternContext(val aspectEffective: IAspectEffective,
                      val aspectsCalculator: IHoroscopeAspectsCalculator) : Serializable {
 
-  private val horoAspectsCalculator = HoroscopeAspectsCalculator(aspectsCalculator)
+  //private val horoAspectsCalculator = HoroscopeAspectsCalculator(aspectsCalculator)
 
   private fun Point.signHouse(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>) : PointSignHouse {
     return posMap.getValue(this).let { iPos ->
@@ -26,7 +26,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   val grandTrine = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return horoAspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.TRINE))
+      return aspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.TRINE))
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
 
@@ -92,7 +92,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
 
-      return horoAspectsCalculator.getAspectDataSet(posMap, aspects = twoAspects)
+      return aspectsCalculator.getAspectDataSet(posMap, aspects = twoAspects)
         .takeIf { it.size >= 3 }
         ?.let { pairs ->
           Sets.combinations(pairs, 3).asSequence().filter { threeSet ->
@@ -115,7 +115,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   // 上帝之指
   val fingerOfGod = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return horoAspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.QUINCUNX))
+      return aspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.QUINCUNX))
         .takeIf { it.size >= 2 }
         ?.let { dataSet ->
           // 任兩個 QUINCUNX ,
@@ -171,7 +171,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   val goldenYod = object : IPatternFactory {
 
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return horoAspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.BIQUINTILE, Aspect.QUINTILE))  // 144 , 72
+      return aspectsCalculator.getAspectDataSet(posMap, aspects = setOf(Aspect.BIQUINTILE, Aspect.QUINTILE))  // 144 , 72
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
           Sets.combinations(dataSet, 3).asSequence().filter { threePairs ->
@@ -298,7 +298,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
 
-      val dataSet: Set<HoroscopeAspectData> = horoAspectsCalculator.getAspectDataSet(posMap, aspects = threeAspects)
+      val dataSet: Set<HoroscopeAspectData> = aspectsCalculator.getAspectDataSet(posMap, aspects = threeAspects)
 
       return dataSet.takeIf { it.size >= 3 }
         ?.let {

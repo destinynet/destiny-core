@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import java.io.Serializable
 
 /** 利用 [IHoroscopeAspectsCalculator] , 計算命盤之中，星體所呈現的交角，及其容許度  */
+@Deprecated("")
 class HoroscopeAspectsCalculator(private val calculator: IHoroscopeAspectsCalculator) : Serializable {
 
   /**
