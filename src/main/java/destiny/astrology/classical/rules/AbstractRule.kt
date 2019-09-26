@@ -21,7 +21,7 @@ abstract class AbstractRule protected constructor(
 
   val logger = LoggerFactory.getLogger(javaClass)!!
 
-  private var locale = Locale.getDefault()
+  private val locale: Locale = Locale.getDefault()
 
 
   /** 名稱key  */
@@ -76,11 +76,4 @@ abstract class AbstractRule protected constructor(
   override fun toString(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(nameKey)
   }
-
-
-  fun setLocale(locale: Locale) {
-    this.locale = locale
-  }
-
-
 }

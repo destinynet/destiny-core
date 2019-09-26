@@ -16,9 +16,9 @@ class Term(private val termImpl : ITerm) : EssentialRule() {
     return lngDeg?.let {
       val termPoint =  termImpl.getPoint(lngDeg)
       if (planet === termPoint)
-        return@let "comment" to arrayOf(planet, lngDeg)
+        "comment" to arrayOf(planet, lngDeg)
       else
-        return@let null
+        null
     }
   }
 }

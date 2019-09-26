@@ -18,9 +18,9 @@ class Exaltation(private val essentialImpl: IEssential,
     return h.getZodiacSign(planet)?.let { sign ->
       if (planet === exaltImpl.getPoint(sign)) {
         logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)
-        return@let "commentBasic" to arrayOf(planet, sign)
+        "commentBasic" to arrayOf(planet, sign)
       } else
-        return@let exaltMutualReception(h, planet)
+        exaltMutualReception(h, planet)
     }
   }
 

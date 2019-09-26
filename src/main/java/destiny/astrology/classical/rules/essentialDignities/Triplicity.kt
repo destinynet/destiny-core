@@ -4,11 +4,11 @@
  */
 package destiny.astrology.classical.rules.essentialDignities
 
-import destiny.core.DayNight
 import destiny.astrology.IDayNight
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.ITriplicity
+import destiny.core.DayNight
 
 /** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
 class Triplicity(
@@ -22,9 +22,9 @@ class Triplicity(
       if (dayNight == DayNight.DAY && planet ===  triplicityImpl.getPoint(sign, DayNight.DAY) ||
           dayNight == DayNight.NIGHT && planet === triplicityImpl.getPoint(sign, DayNight.NIGHT) ) {
         logger.debug("{} 位於 {} 為其 {} 之 Triplicity" , planet , sign , dayNight)
-        return@let "comment" to arrayOf(planet, sign, dayNight)
+        "comment" to arrayOf(planet, sign, dayNight)
       } else
-        return@let null
+        null
     }
   }
 }

@@ -29,10 +29,7 @@ class Partile_Conj_Mars_Saturn : DebilityRule() {
         planet != SATURN && IHoroscopeModel.getAngle(planetDeg, saturnDeg) <= 1
       }?.let { "comment" to arrayOf(planet, SATURN, aspect) }
 
-      if (marResult != null)
-        return@let marResult
-      else
-        return@let satResult
+      marResult ?: satResult
     }
   }
 }

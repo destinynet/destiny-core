@@ -37,7 +37,7 @@ class Refrain_from_Venus_Jupiter(private val refranationImpl: IRefranation) : De
             return "comment" to arrayOf(planet , otherPoint , aspect)
           }
         }
-        return@let null
+        null
       }
 
   }

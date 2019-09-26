@@ -30,10 +30,7 @@ class Partile_Oppo_Mars_Saturn : DebilityRule() {
         planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, aspect, 1.0)
       }?.let { "comment" to arrayOf(planet, SATURN, aspect) }
 
-      if (marResult != null)
-        return@let marResult
-      else
-        return@let satResult
+      marResult ?: satResult
     }
   }
 }

@@ -14,7 +14,7 @@ class Face(private val faceImpl : IFace) : EssentialRule() {
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getPosition(planet)?.lng?.takeIf { lngDeg ->
       val facePoint = faceImpl.getPoint(lngDeg)
-      return@takeIf (planet === facePoint)
+      (planet === facePoint)
     }?.let { lngDeg ->
       logger.info("{} 位於其 Chaldean decanate or face : {}", planet, lngDeg)
       "comment" to arrayOf(planet , lngDeg)
