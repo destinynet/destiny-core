@@ -30,10 +30,7 @@ class Partile_Sextile_Jupiter_Venus : AccidentalRule() {
         planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, aspect, 1.0)
       }?.let { "comment" to arrayOf(planet, VENUS, aspect) }
 
-      if (jupResult != null)
-        return@let jupResult
-      else
-        return@let venResult
+      jupResult ?: venResult
     }
   }
 }
