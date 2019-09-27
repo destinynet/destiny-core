@@ -17,65 +17,111 @@ import mu.KotlinLogging
 interface IEssential {
 
   /**
-   * 那一顆星，透過 [Dignity.RULER] 接納了 p
+   * 那一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
    */
-  fun receivingRulerFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
+  fun Point.receivingRulerFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   /** 承上 , double map 版本 */
-  fun receivingRulerFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingRulerFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingRulerFrom(map: Map<Point, Double>): Point? {
+    return this.receivingRulerFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /**
-   * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 p
+   * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 [this]顆星
    */
-  fun receivingExaltFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
+  fun Point.receivingExaltFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   /** 承上 , double map 版本 */
-  fun receivingExaltFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingExaltFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingExaltFrom(map: Map<Point, Double>): Point? {
+    return this.receivingExaltFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
-  /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 p */
-  fun receivingTriplicityFromSignMap(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight): Point?
+  /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星 */
+  fun Point.receivingTriplicityFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight): Point?
 
   /** 承上 , double map 版本 */
-  fun receivingTriplicityFrom(p: Point, map: Map<Point, Double>, dayNight: DayNight): Point? {
-    return receivingTriplicityFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) }, dayNight)
+  fun Point.receivingTriplicityFrom(map: Map<Point, Double>, dayNight: DayNight): Point? {
+    return this.receivingTriplicityFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) }, dayNight)
   }
 
-  /** 那一顆星，透過 [Dignity.TERM] 接納了 p */
-  fun receivingTermFrom(p: Point, map: Map<Point, Double>): Point?
+  /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星 */
+  fun Point.receivingTermFrom(map: Map<Point, Double>): Point?
 
-  /** 哪一顆星，透過 [Dignity.FACE] 接納了 p */
-  fun receivingFaceFrom(p: Point, map: Map<Point, Double>): Point?
+  /** 哪一顆星，透過 [Dignity.FACE] 接納了 [this]顆星 */
+  fun Point.receivingFaceFrom(map: Map<Point, Double>): Point?
 
-  /** 哪一顆星，透過 [Dignity.FALL] 接納了 p */
-  fun receivingFallFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
+  /** 哪一顆星，透過 [Dignity.FALL] 接納了 [this]顆星 */
+  fun Point.receivingFallFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   /** 承上 , double map 版本 */
-  fun receivingFallFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingFallFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingFallFrom(map: Map<Point, Double>): Point? {
+    return this.receivingFallFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
-  /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 p */
-  fun receivingDetrimentFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
+  /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星 */
+  fun Point.receivingDetrimentFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
-  fun receivingDetrimentFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingDetrimentFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingDetrimentFrom(map: Map<Point, Double>): Point? {
+    return this.receivingDetrimentFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
-  /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 */
-  fun getReceptions(p: Point,
+  /**
+   * 此星體 從哪顆星 接收到了此種 [dignity]
+   */
+  fun Point.receiving(dignity: Dignity , map: Map<Point, Double> , dayNight: DayNight? = null) : Point? {
+    return when(dignity) {
+      Dignity.RULER -> this.receivingRulerFrom(map)
+      Dignity.EXALTATION -> this.receivingExaltFrom(map)
+      Dignity.TRIPLICITY -> dayNight?.let { dn -> this.receivingTriplicityFrom(map , dn) }
+      Dignity.TERM -> this.receivingTermFrom(map)
+      Dignity.FACE -> this.receivingFaceFrom(map)
+      Dignity.FALL -> this.receivingFallFrom(map)
+      Dignity.DETRIMENT -> this.receivingDetrimentFrom(map)
+    }
+  }
+
+  /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 (承上 , 只是這是傳回 map )*/
+  fun Point.getReceptions(
                     map: Map<Point, Double>,
-                    dayNight: DayNight?,
-                    dignities: Collection<Dignity>): Map<Dignity, Point>
+                    dayNight: DayNight? = null,
+                    dignities: Collection<Dignity>): Map<Dignity, Point> {
+
+    return Dignity.values().filter { dignities.contains(it) }.map { dignity ->
+      when (dignity) {
+        Dignity.RULER -> Dignity.RULER to this.receivingRulerFrom(map)
+        Dignity.EXALTATION -> Dignity.EXALTATION to this.receivingExaltFrom(map)
+        Dignity.TRIPLICITY -> Dignity.TRIPLICITY to dayNight?.let { this.receivingTriplicityFrom(map, it) }
+        Dignity.TERM -> Dignity.TERM to this.receivingTermFrom(map)
+        Dignity.FACE -> Dignity.FACE to this.receivingFaceFrom(map)
+        Dignity.FALL -> Dignity.FALL to this.receivingFallFrom(map)
+        Dignity.DETRIMENT -> Dignity.DETRIMENT to this.receivingDetrimentFrom(map)
+      }
+    }
+      .filter { (_, point) -> point != null }
+      .map { (k, v) -> k to v!! }
+      .toMap()
+  }
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 , 但是不計算 [Dignity.TERM] 以及 [Dignity.FACE] , 因為這兩者需要度數 */
-  fun getReceptionsFromSign(p: Point,
-                            map: Map<Point, ZodiacSign>,
-                            dayNight: DayNight?,
-                            dignities: Collection<Dignity>): Map<Dignity, Point>
+  fun Point.getReceptionsFromSign(map: Map<Point, ZodiacSign>,
+                                  dayNight: DayNight? = null,
+                                  dignities: Collection<Dignity>): Map<Dignity, Point> {
+    return Dignity.values().filter { dignities.contains(it) }.map { dignity ->
+      when (dignity) {
+        Dignity.RULER -> Dignity.RULER to this.receivingRulerFromSignMap(map)
+        Dignity.EXALTATION -> Dignity.EXALTATION to this.receivingExaltFromSignMap(map)
+        Dignity.TRIPLICITY -> Dignity.TRIPLICITY to dayNight?.let { this.receivingTriplicityFromSignMap(map, it) }
+        Dignity.FALL -> Dignity.FALL to this.receivingFallFromSignMap(map)
+        Dignity.DETRIMENT -> Dignity.DETRIMENT to this.receivingDetrimentFromSignMap(map)
+
+        Dignity.TERM -> Dignity.TERM to null
+        Dignity.FACE -> Dignity.FACE to null
+      }
+    }
+      .filter { (_, point) -> point != null }
+      .map { (k, v) -> k to v!! }
+      .toMap()
+  }
 
   /**
    * 製作出 Reception 表格
@@ -83,9 +129,9 @@ interface IEssential {
    * */
   fun getReceptionMap(map: Map<Point, Double>,
                       dayNight: DayNight,
-                      dignities: Set<Dignity>): Set<Triple<Point, Dignity, Point?>> {
+                      dignities: Collection<Dignity>): Set<Triple<Point, Dignity, Point?>> {
     return map.keys.flatMap { p ->
-      getReceptions(p, map, dayNight, dignities).map { (dignity, point) ->
+      p.getReceptions(map, dayNight, dignities).map { (dignity, point) ->
         Triple(p, dignity, point)
       }
     }.toSet()
@@ -98,11 +144,11 @@ interface IEssential {
                     dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== p }
       .flatMap { p2 ->
-        getReceptions(p2, map, dayNight, dignities)
+        p2.getReceptions(map, dayNight, dignities)
           .filter { (_, p1) -> p1 === p }
           .map { (dig1, p1) -> p1 to dig1 }
           .flatMap { (p1, dig1) ->
-            getReceptions(p1, map, dayNight, dignities)
+            p1.getReceptions(map, dayNight, dignities)
               .filter { (_, p) -> p === p2 }
               .map { (dig2, p2) -> MutualData(p1, dig1, p2, dig2) }
           }
@@ -116,11 +162,11 @@ interface IEssential {
                             dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== p }
       .flatMap { p2 ->
-        getReceptionsFromSign(p2, map, dayNight, dignities)
+        p2.getReceptionsFromSign(map, dayNight, dignities)
           .filter { (_, p1) -> p1 === p }
           .map { (dig1, p1) -> p1 to dig1 }
           .flatMap { (p1, dig1) ->
-            getReceptionsFromSign(p1, map, dayNight, dignities)
+            p1.getReceptionsFromSign(map, dayNight, dignities)
               .filter { (_, p) -> p === p2 }
               .map { (dig2, p2) ->
                 MutualData(p1, dig1, p2, dig2)
@@ -135,11 +181,11 @@ interface IEssential {
                             dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys
       .flatMap { p1 ->
-        getReceptions(p1, map, dayNight, dignities)
+        p1.getReceptions(map, dayNight, dignities)
           .filter { (_, p2) -> p2 !== p1 }
           .map { (dig2, p2) -> p2 to dig2 }
           .flatMap { (p2, dig2) ->
-            getReceptions(p2, map, dayNight, dignities)
+            p2.getReceptions(map, dayNight, dignities)
               .filter { (_, point) -> point === p1 && p1 !== p2 }
               .map { (dig1, _) -> MutualData(p1, dig1, p2, dig2) }
           }
@@ -151,11 +197,11 @@ interface IEssential {
                            dayNight: DayNight,
                            dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.flatMap { p ->
-      getReceptions(p, map, dayNight, dignities)
+      p.getReceptions(map, dayNight, dignities)
         .filter { (_, p2) -> p2 !== p }
         .map { (dig2, p2) -> p2 to dig2 }
         .flatMap { (p2, dig2) ->
-          getReceptions(p2, map, dayNight, dignities.filter { it !== dig2 })
+          p2.getReceptions(map, dayNight, dignities.filter { it !== dig2 })
             .filter { (_, point) -> point === p && p !== p2 }
             .map { (dig1, _) -> MutualData(p, dig1, p2, dig2) }
         }
@@ -196,36 +242,4 @@ interface IEssential {
 
 }
 
-/**
- * p1 以 dig1 的能量招待 (接納) p2 ,
- * p2 以 dig2 的能量招待 (接納) p1
- *
- * p1 「給出」 dig1 的能量到 p2
- * p2 「給出」 dig2 的能量到 p1
- *
- * 另外翻譯為：
- * p1 位於 sign1 , 與 sign1 的 dig2 (p2) 飛至 sign2 , 而 sign2 的 dig1 (p1) 飛至 sign1
- * p1 在 sign1 得到 p2 所提供的 dig2 能量
- * p2 在 sign2 得到 p1 所提供的 dig1 能量
- * */
-data class MutualData(val pairs: Map<Point, Dignity>) {
-  constructor(p1: Point, dig1: Dignity, p2: Point, dig2: Dignity) : this(mutableSetOf(p1 to dig1, p2 to dig2).toMap())
 
-  private val twoPoints: Set<Point> by lazy {
-    pairs.keys
-  }
-
-  fun getAnotherPoint(point : Point) : Point {
-    if (!twoPoints.contains(point))
-      throw RuntimeException(twoPoints.joinToString(",") + " don't contain " + point)
-
-    return twoPoints.first { it != point }
-  }
-
-  fun getDiginityOf(point : Point) : Dignity {
-    if (!twoPoints.contains(point))
-      throw RuntimeException(twoPoints.joinToString(",") + " don't contain " + point)
-
-    return pairs.getValue(point)
-  }
-}

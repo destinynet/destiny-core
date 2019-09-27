@@ -9,6 +9,7 @@ import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
 import destiny.core.DayNight
+import mu.KotlinLogging
 import java.io.Serializable
 
 /** Facade Class of Ptolemy's Table of Essential Dignities and Debilities  */
@@ -23,81 +24,43 @@ class EssentialImpl(private val rulerImpl: IRuler,
 
 
   /**
-   * 那一顆星，透過 [Dignity.RULER] 接納了 p
+   * 那一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
    */
-  override fun receivingRulerFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { it -> rulerImpl.getPoint(it).takeIf { map.containsKey(it) } }
+  override fun Point.receivingRulerFromSignMap(map: Map<Point, ZodiacSign>): Point? {
+    return map[this]?.let { it -> rulerImpl.getPoint(it).takeIf { map.containsKey(it) } }
   }
 
 
   /**
-   * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 p
+   * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 [this]顆星
    */
-  override fun receivingExaltFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { exaltImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
+  override fun Point.receivingExaltFromSignMap(map: Map<Point, ZodiacSign>): Point? {
+    return map[this]?.let { exaltImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
-  /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 p */
-  override fun receivingTriplicityFromSignMap(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight): Point? {
-    return map[p]?.let { triplicityImpl.getPoint(it, dayNight).takeIf { point -> map.containsKey(point) } }
+  /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星 */
+  override fun Point.receivingTriplicityFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight): Point? {
+    return map[this]?.let { triplicityImpl.getPoint(it, dayNight).takeIf { point -> map.containsKey(point) } }
   }
 
-  /** 那一顆星，透過 [Dignity.TERM] 接納了 p */
-  override fun receivingTermFrom(p: Point, map: Map<Point, Double>): Point? {
-    return map[p]?.let { termImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
+  /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星 */
+  override fun Point.receivingTermFrom(map: Map<Point, Double>): Point? {
+    return map[this]?.let { termImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
   }
 
-  /** 哪一顆星，透過 [Dignity.FACE] 接納了 p */
-  override fun receivingFaceFrom(p: Point, map: Map<Point, Double>): Point? {
-    return map[p]?.let { faceImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
+  /** 哪一顆星，透過 [Dignity.FACE] 接納了 [this]顆星 */
+  override fun Point.receivingFaceFrom(map: Map<Point, Double>): Point? {
+    return map[this]?.let { faceImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
   }
 
-  /** 哪一顆星，透過 [Dignity.FALL] 接納了 p */
-  override fun receivingFallFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { fallImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
+  /** 哪一顆星，透過 [Dignity.FALL] 接納了 [this]顆星 */
+  override fun Point.receivingFallFromSignMap(map: Map<Point, ZodiacSign>): Point? {
+    return map[this]?.let { fallImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
   }
 
-  /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 p */
-  override fun receivingDetrimentFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point? {
-    return map[p]?.let { detrimentImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
-  }
-
-
-  /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 */
-  override fun getReceptions(p: Point, map: Map<Point, Double>, dayNight: DayNight?, dignities: Collection<Dignity>): Map<Dignity, Point> {
-    return Dignity.values().filter { dignities.contains(it) }.map { dignity ->
-      return@map when (dignity) {
-        Dignity.RULER -> Dignity.RULER to receivingRulerFrom(p, map)
-        Dignity.EXALTATION -> Dignity.EXALTATION to receivingExaltFrom(p, map)
-        Dignity.TRIPLICITY -> Dignity.TRIPLICITY to dayNight?.let { receivingTriplicityFrom(p, map, it) }
-        Dignity.TERM -> Dignity.TERM to receivingTermFrom(p, map)
-        Dignity.FACE -> Dignity.FACE to receivingFaceFrom(p, map)
-        Dignity.FALL -> Dignity.FALL to receivingFallFrom(p, map)
-        Dignity.DETRIMENT -> Dignity.DETRIMENT to receivingDetrimentFrom(p, map)
-      }
-    }
-      .filter { (_, point) -> point != null }
-      .map { (k, v) -> k to v!! }
-      .toMap()
-  }
-
-  /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 , 但是不計算 [Dignity.TERM] 以及 [Dignity.FACE] , 因為這兩者需要度數 */
-  override fun getReceptionsFromSign(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight?, dignities: Collection<Dignity>): Map<Dignity, Point> {
-    return Dignity.values().filter { dignities.contains(it) }.map { dignity ->
-      return@map when (dignity) {
-        Dignity.RULER -> Dignity.RULER to receivingRulerFromSignMap(p, map)
-        Dignity.EXALTATION -> Dignity.EXALTATION to receivingExaltFromSignMap(p, map)
-        Dignity.TRIPLICITY -> Dignity.TRIPLICITY to dayNight?.let { receivingTriplicityFromSignMap(p, map, it) }
-        Dignity.FALL -> Dignity.FALL to receivingFallFromSignMap(p, map)
-        Dignity.DETRIMENT -> Dignity.DETRIMENT to receivingDetrimentFromSignMap(p, map)
-
-        Dignity.TERM -> Dignity.TERM to null
-        Dignity.FACE -> Dignity.FACE to null
-      }
-    }
-      .filter { (_, point) -> point != null }
-      .map { (k, v) -> k to v!! }
-      .toMap()
+  /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星 */
+  override fun Point.receivingDetrimentFromSignMap(map: Map<Point, ZodiacSign>): Point? {
+    return map[this]?.let { detrimentImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
   /**
@@ -129,26 +92,26 @@ class EssentialImpl(private val rulerImpl: IRuler,
     return h.getZodiacSign(receivee)?.let { receiveeSign ->
       return when (receiver) {
         getPoint(receiveeSign, Dignity.RULER) -> {
-          IEssential.logger.debug("{} 透過 {} 接納 {}", receiver, Dignity.RULER, receivee)
+          logger.debug("{} 透過 {} 接納 {}", receiver, Dignity.RULER, receivee)
           true
         }
         getPoint(receiveeSign, Dignity.EXALTATION) -> {
-          IEssential.logger.debug("{} 透過 {} 接納 {}", receiver, Dignity.EXALTATION, receivee)
+          logger.debug("{} 透過 {} 接納 {}", receiver, Dignity.EXALTATION, receivee)
           true
         }
         triplicityImpl.getPoint(receiveeSign, dayNightDifferentiator.getDayNight(h.lmt, h.location)) -> {
-          IEssential.logger.debug("{} 透過 Triplicity 接納 {}", receiver, receivee)
+          logger.debug("{} 透過 Triplicity 接納 {}", receiver, receivee)
           true
         }
         else -> {
           return h.getPosition(receivee)?.lng?.let { lngDegree ->
             return when (receiver) {
               termImpl.getPoint(lngDegree) -> {
-                IEssential.logger.debug("{} 透過 TERMS 接納 {}", receiver, receivee)
+                logger.debug("{} 透過 TERMS 接納 {}", receiver, receivee)
                 true
               }
               faceImpl.getPoint(lngDegree) -> {
-                IEssential.logger.debug("{} 透過 FACE 接納 {}", receiver, receivee)
+                logger.debug("{} 透過 FACE 接納 {}", receiver, receivee)
                 true
               }
               else -> false
@@ -177,5 +140,9 @@ class EssentialImpl(private val rulerImpl: IRuler,
   override fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean {
     return (p1 === detrimentImpl.getPoint(sign1) || p1 === fallImpl.getPoint(sign1))
         && (p2 === detrimentImpl.getPoint(sign2) || p2 === fallImpl.getPoint(sign2))
+  }
+
+  companion object {
+    private val logger = KotlinLogging.logger {  }
   }
 }

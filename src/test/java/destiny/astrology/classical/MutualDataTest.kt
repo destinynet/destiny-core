@@ -13,6 +13,6 @@ class MutualDataTest {
   fun testEqual() {
     val m1 = MutualData(Planet.SUN, Dignity.RULER, Planet.MARS, Dignity.RULER)
     val m2 = MutualData(Planet.MARS, Dignity.RULER, Planet.SUN, Dignity.RULER)
-    assertEquals(m1 , m2)
+    assertEquals(m1, m2)
   }
 }

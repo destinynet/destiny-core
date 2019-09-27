@@ -27,7 +27,7 @@ class MixedReception(private val essentialImpl: IEssential) : EssentialRule() {
       val sign2 = h.getZodiacSign(p2)!!
       logger.debug("mutualData = {}" , mutualData)
       logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 RULER/EXALT 互容" ,
-              planet , sign1 , mutualData.getDiginityOf(p2) , p2 , sign2 , sign2 , mutualData.getDiginityOf(planet) , planet , sign1)
+              planet , sign1 , mutualData.getDignityOf(p2) , p2 , sign2 , sign2 , mutualData.getDignityOf(planet) , planet , sign1)
       "comment" to arrayOf(planet , sign1 , p2 , sign2)
     }
   }

@@ -10,12 +10,12 @@ import destiny.astrology.ZodiacSign
 import destiny.astrology.ZodiacSign.*
 import destiny.astrology.classical.Dignity.*
 import destiny.core.DayNight
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
+import mu.KotlinLogging
+import kotlin.test.*
 
 class EssentialImplTest {
+
+  val logger = KotlinLogging.logger { }
 
   private val triplicityImpl: ITriplicity = TriplicityWilliamImpl()
 
@@ -53,13 +53,17 @@ class EssentialImplTest {
       MERCURY to SCORPIO,
       VENUS to VIRGO,
       MARS to SAGITTARIUS,
+      JUPITER to VIRGO,
       SATURN to ARIES
     )
 
     val degreeMap = mapOf<Point, Double>(
       SUN to 180 + 25.0,
+      MERCURY to 210 + 1.0,
+      VENUS to 150 + 1.0,
       MARS to 240 + 37.0,
-      JUPITER to 150 + 4.0
+      JUPITER to 150 + 4.0,
+      SATURN to 1.0
     )
 
 
@@ -69,26 +73,120 @@ class EssentialImplTest {
       assertSame(1, it.size)
       assertEquals(MutualData(SUN, EXALTATION, SATURN, EXALTATION), it.first())
     }
-    // 太陽到 辰宮 (金星 為 主人 , RULER) , 金星要招待太陽   , 太陽 +5
-    assertSame(VENUS, essentialImpl.receivingRulerFromSignMap(SUN, signMap))
 
-    // 太陽到 辰宮 (土星 為 主秘 , EXALT) , 土星也要招待太陽 , 太陽 +4
-    assertSame(SATURN, essentialImpl.receivingExaltFromSignMap(SUN, signMap))
 
-    // 太陽 `夜晚` 到辰宮 (水星 為風象星座夜間 三分主 , TRIPLICITY) , 水星也要招待太陽 , 太陽 +3
-    assertSame(MERCURY, essentialImpl.receivingTriplicityFromSignMap(SUN, signMap, DayNight.NIGHT))
 
-    // 太陽於 辰宮 25度 , 該位置 TERM 主人是 火星 , 火星透過 TERM 接納、招待太陽 , 太陽 +2
-    assertSame(MARS, essentialImpl.receivingTermFrom(SUN, degreeMap))
 
-    // 太陽於 辰宮 25度 , 該位置 FACE 主人是 木星 , 木星透過 FACE 接納、招待太陽 , 太陽 +1
-    assertSame(JUPITER, essentialImpl.receivingFaceFrom(SUN, degreeMap))
 
-    // 太陽到 辰宮 (太陽 為 FALL) ,  太陽透過 FALL 接納太陽  , 太陽 -4
-    assertSame(SUN, essentialImpl.receivingFallFromSignMap(SUN, signMap))
+    with(essentialImpl) {
+      assertSame(VENUS, SUN.receivingRulerFromSignMap(signMap))
 
-    // 太陽到 辰宮 (火星 為 DETRIMENT ) , 火星透過 DETRIMENT 接納太陽 , 太陽 -5
-    assertSame(MARS, essentialImpl.receivingDetrimentFromSignMap(SUN, signMap))
+      // 太陽到 辰宮 (金星 為 主人 , RULER) , 金星要招待太陽   , 太陽 +5
+      assertSame(VENUS, SUN.receivingRulerFromSignMap(signMap))
+      assertSame(VENUS, SUN.receiving(RULER, degreeMap))
+
+      // 太陽到 辰宮 (土星 為 主秘 , EXALT) , 土星也要招待太陽 , 太陽 +4
+      assertSame(SATURN, SUN.receivingExaltFromSignMap(signMap))
+      assertSame(SATURN, SUN.receiving(EXALTATION, degreeMap))
+
+      // 太陽 `夜晚` 到辰宮 (水星 為風象星座夜間 三分主 , TRIPLICITY) , 水星也要招待太陽 , 太陽 +3
+      assertSame(MERCURY, SUN.receivingTriplicityFromSignMap(signMap, DayNight.NIGHT))
+      assertSame(MERCURY, SUN.receiving(TRIPLICITY, degreeMap, DayNight.NIGHT))
+
+      // 太陽於 辰宮 25度 , 該位置 TERM 主人是 火星 , 火星透過 TERM 接納、招待太陽 , 太陽 +2
+      assertSame(MARS, SUN.receivingTermFrom(degreeMap))
+      assertSame(MARS, SUN.receiving(TERM, degreeMap))
+
+      // 太陽於 辰宮 25度 , 該位置 FACE 主人是 木星 , 木星透過 FACE 接納、招待太陽 , 太陽 +1
+      assertSame(JUPITER, SUN.receivingFaceFrom(degreeMap))
+      assertSame(JUPITER, SUN.receiving(FACE, degreeMap))
+
+      // 太陽到 辰宮 (太陽 為 FALL) ,  太陽透過 FALL 接納太陽  , 太陽 -4
+      assertSame(SUN, SUN.receivingFallFromSignMap(signMap))
+      assertSame(SUN, SUN.receiving(FALL, degreeMap))
+
+      // 太陽到 辰宮 (火星 為 DETRIMENT ) , 火星透過 DETRIMENT 接納太陽 , 太陽 -5
+      assertSame(MARS, SUN.receivingDetrimentFromSignMap(signMap))
+      assertSame(MARS, SUN.receiving(DETRIMENT, degreeMap))
+    }
+  }
+
+  /**
+   * 整合 map
+   * https://kknews.cc/zh-tw/astrology/6lxgvo3.html
+   * 如：在一張日生盤上，火星落在天秤座3度，則火星被金星接納（5，入廟），也被土星接納（4+3+2=9，旺+三分+界）
+   */
+  @Test
+  fun testReceptionMap1() {
+
+    val signMap = mapOf<Point, ZodiacSign>(
+      MARS to LIBRA,
+      VENUS to ARIES,
+      SATURN to ARIES
+    )
+    val degreeMap = mapOf<Point, Double>(
+      MARS to 180 + 3.0,
+      VENUS to 1.0,
+      SATURN to 1.0
+    )
+
+
+
+    with(essentialImpl) {
+
+      // 廟、旺
+      MARS.getReceptionsFromSign(signMap, null, listOf(RULER, EXALTATION, TRIPLICITY, TERM)).also {
+        assertEquals(VENUS, it[RULER])
+        assertEquals(SATURN, it[EXALTATION])
+      }
+
+      // 三分
+      MARS.receivingTriplicityFrom(degreeMap, DayNight.DAY).also {
+        assertNotNull(it)
+        assertSame(SATURN, it)
+      }
+
+      // 界
+      MARS.receivingTermFrom(degreeMap).also {
+        assertNotNull(it)
+        assertSame(SATURN, it)
+      }
+    }
+
+
+    // 整合 map
+    essentialImpl.getReceptionMap(degreeMap, DayNight.DAY, setOf(RULER, EXALTATION, TRIPLICITY, TERM)).also {
+      // 火星被金星接納（5，入廟）
+      assertTrue { it.contains(Triple(MARS, RULER, VENUS)) }
+      // 也被土星接納（4+3+2=9，旺+三分+界）
+      assertTrue { it.contains(Triple(MARS, EXALTATION, SATURN)) }
+      assertTrue { it.contains(Triple(MARS, TRIPLICITY, SATURN)) }
+      assertTrue { it.contains(Triple(MARS, TERM, SATURN)) }
+
+      logger.debug("{}", it)
+    }
+  }
+
+  /**
+   * 整合 map
+   * 與上相同的頁面 : https://kknews.cc/astrology/6lxgvo3.html
+   * 又如：夜生盤的月亮落在獅子座28度，則它被太陽接納（5，入廟），被木星接納（3，三分），也被火星接納（2+1=3，界+面），但容易理解，月亮被火木的接納程度沒有太陽高。
+   */
+  @Test
+  fun testReceptionMap2() {
+    val degreeMap: Map<Point, Double> = mapOf(
+      MOON to 120 + 28.0,
+      SUN to 1.0,
+      JUPITER to 1.0,
+      MARS to 1.0
+    )
+    essentialImpl.getReceptionMap(degreeMap, DayNight.NIGHT, setOf(RULER, EXALTATION, TRIPLICITY, TERM, FACE)).also {
+      assertTrue { it.contains(Triple(MOON, RULER, SUN)) }
+      assertTrue { it.contains(Triple(MOON, TRIPLICITY, JUPITER)) }
+      assertTrue { it.contains(Triple(MOON, TERM, MARS)) }
+      assertTrue { it.contains(Triple(MOON, FACE, MARS)) }
+      logger.debug("{}", it)
+    }
   }
 
   /**
@@ -219,13 +317,13 @@ class EssentialImplTest {
     essentialImpl.getMutualDataFromSign(SUN, map, DayNight.DAY, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
-      assertEquals(MutualData(SUN , TRIPLICITY , SATURN , TRIPLICITY) , it.first())
+      assertEquals(MutualData(SUN, TRIPLICITY, SATURN, TRIPLICITY), it.first())
     }
     // 土星、白天，成立
     essentialImpl.getMutualDataFromSign(SATURN, map, DayNight.DAY, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
-      assertEquals(MutualData(SATURN , TRIPLICITY , SUN , TRIPLICITY) , it.first())
+      assertEquals(MutualData(SATURN, TRIPLICITY, SUN, TRIPLICITY), it.first())
     }
     // 夜晚不成立
     essentialImpl.getMutualDataFromSign(SUN, map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
@@ -251,13 +349,13 @@ class EssentialImplTest {
     essentialImpl.getMutualDataFromSign(MOON, map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
-      assertEquals(MutualData(MOON , TRIPLICITY , JUPITER , TRIPLICITY) , it.first())
+      assertEquals(MutualData(MOON, TRIPLICITY, JUPITER, TRIPLICITY), it.first())
     }
     // 木星觀點、夜晚互容
     essentialImpl.getMutualDataFromSign(JUPITER, map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
       assertTrue(it.isNotEmpty())
       assertSame(1, it.size)
-      assertEquals(MutualData(JUPITER, TRIPLICITY , MOON , TRIPLICITY) , it.first())
+      assertEquals(MutualData(JUPITER, TRIPLICITY, MOON, TRIPLICITY), it.first())
     }
     // 白天不成立
     essentialImpl.getMutualDataFromSign(MOON, map, DayNight.DAY, setOf(TRIPLICITY)).also {

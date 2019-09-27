@@ -12,10 +12,10 @@ import java.util.*
  */
 enum class Dignity(private val nameKey: String) : ILocaleString {
 
-  /** 旺 (+5) , 守護  */
+  /** 廟 (+5) , 守護  */
   RULER("Dignity.RULER"),
 
-  /** 廟 (+4) , 躍升  */
+  /** 旺 (+4) , 躍升  */
   EXALTATION("Dignity.EXALTATION"),
 
   /** 三分性 (+3) */

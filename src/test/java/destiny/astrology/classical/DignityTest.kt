@@ -13,8 +13,8 @@ import kotlin.test.assertNotSame
 class DignityTest {
   @Test
   fun testDignity() {
-    assertEquals("旺", Dignity.RULER.toString(Locale.TAIWAN))
-    assertEquals("廟", Dignity.EXALTATION.toString(Locale.TAIWAN))
+    assertEquals("廟", Dignity.RULER.toString(Locale.TAIWAN))
+    assertEquals("旺", Dignity.EXALTATION.toString(Locale.TAIWAN))
     assertEquals("陷", Dignity.DETRIMENT.toString(Locale.TAIWAN))
     assertEquals("落", Dignity.FALL.toString(Locale.TAIWAN))
 
