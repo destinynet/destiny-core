@@ -35,11 +35,13 @@ class Ruler(private val essentialImpl: IEssential) : EssentialRule() {
    * 「而且都沒有落陷」 (否則變成互陷)
    */
   private fun rulerMutualReception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
-    return essentialImpl.getMutualData(planet , h.pointDegreeMap , null , setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
-      val sign1 = h.getZodiacSign(planet)!!
-      val p2 = mutualData.getAnotherPoint(planet)
-      val sign2 = h.getZodiacSign(p2)!!
-      "commentReception" to arrayOf(planet , sign1 , p2 , sign2)
+    return with((essentialImpl)) {
+      planet.getMutualData(h.pointDegreeMap , null , setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
+        val sign1 = h.getZodiacSign(planet)!!
+        val p2 = mutualData.getAnotherPoint(planet)
+        val sign2 = h.getZodiacSign(p2)!!
+        "commentReception" to arrayOf(planet , sign1 , p2 , sign2)
+      }
     }
   }
 }

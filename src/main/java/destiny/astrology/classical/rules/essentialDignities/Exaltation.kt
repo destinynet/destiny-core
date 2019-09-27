@@ -30,11 +30,13 @@ class Exaltation(private val essentialImpl: IEssential,
    */
   private fun exaltMutualReception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
 
-    return essentialImpl.getMutualData(planet , h.pointDegreeMap , null , setOf(Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
-      val sign1 = h.getZodiacSign(planet)!!
+    return with(essentialImpl) {
+      planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
+        val sign1 = h.getZodiacSign(planet)!!
 
-      val sign2 = h.getZodiacSign(mutualData.getAnotherPoint(planet))!!
-      "commentReception" to arrayOf(planet , sign1 , mutualData.getAnotherPoint(planet) , sign2)
+        val sign2 = h.getZodiacSign(mutualData.getAnotherPoint(planet))!!
+        "commentReception" to arrayOf(planet, sign1, mutualData.getAnotherPoint(planet), sign2)
+      }
     }
 
   }

@@ -137,15 +137,14 @@ interface IEssential {
     }.toSet()
   }
 
-  /** 查詢 p 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) */
-  fun getMutualData(p: Point,
-                    map: Map<Point, Double>,
+  /** 查詢 [this]此星 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) */
+  fun Point.getMutualData(map: Map<Point, Double>,
                     dayNight: DayNight?,
                     dignities: Collection<Dignity>): Set<MutualData> {
-    return map.keys.filter { it !== p }
+    return map.keys.filter { it !== this }
       .flatMap { p2 ->
         p2.getReceptions(map, dayNight, dignities)
-          .filter { (_, p1) -> p1 === p }
+          .filter { (_, p1) -> p1 === this }
           .map { (dig1, p1) -> p1 to dig1 }
           .flatMap { (p1, dig1) ->
             p1.getReceptions(map, dayNight, dignities)
@@ -156,14 +155,13 @@ interface IEssential {
   }
 
   /** 查詢 p 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) . 只考量星座，故，無法計算 [Dignity.TERM] 或 [Dignity.FALL] */
-  fun getMutualDataFromSign(p: Point,
-                            map: Map<Point, ZodiacSign>,
-                            dayNight: DayNight?,
-                            dignities: Collection<Dignity>): Set<MutualData> {
-    return map.keys.filter { it !== p }
+  fun Point.getMutualDataFromSign(map: Map<Point, ZodiacSign>,
+                                  dayNight: DayNight?,
+                                  dignities: Collection<Dignity>): Set<MutualData> {
+    return map.keys.filter { it !== this }
       .flatMap { p2 ->
         p2.getReceptionsFromSign(map, dayNight, dignities)
-          .filter { (_, p1) -> p1 === p }
+          .filter { (_, p1) -> p1 === this }
           .map { (dig1, p1) -> p1 to dig1 }
           .flatMap { (p1, dig1) ->
             p1.getReceptionsFromSign(map, dayNight, dignities)
@@ -220,14 +218,14 @@ interface IEssential {
   fun getTriplicityPoint(sign: ZodiacSign, dayNight: DayNight): Point
 
 
-  /** receiver 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
-  fun isReceivingFromDebilities(receiver: Point, receivee: Point, h: IHoroscopeModel): Boolean
+  /** [this] 是否 接納 receivee by Essential Debilities (Detriment/Fall)  */
+  fun Point.isReceivingFromDebilities(receivee: Point, h: IHoroscopeModel): Boolean
 
   /**
-   * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
-   * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
+   * [this] 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
+   * 老闆是 [this] , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
    */
-  fun isReceivingFromDignities(receiver: Point, receivee: Point, h: IHoroscopeModel): Boolean
+  fun Point.isReceivingFromDignities(receivee: Point, h: IHoroscopeModel): Boolean
 
 
   /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
