@@ -23,11 +23,12 @@ class MixedReception(private val essentialImpl: IEssential) : EssentialRule() {
   private fun mixedReception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
     return essentialImpl.getMutualData(planet , h.pointDegreeMap , null, setOf(Dignity.RULER , Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
       val sign1 = h.getZodiacSign(planet)!!
-      val sign2 = h.getZodiacSign(mutualData.p2)!!
+      val p2 = mutualData.getAnotherPoint(planet)
+      val sign2 = h.getZodiacSign(p2)!!
       logger.debug("mutualData = {}" , mutualData)
       logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 RULER/EXALT 互容" ,
-              planet , sign1 , mutualData.dig2 , mutualData.p2 , sign2 , sign2 , mutualData.dig1 , mutualData.p1 , sign1)
-      "comment" to arrayOf(planet , sign1 , mutualData.p2 , sign2)
+              planet , sign1 , mutualData.getDiginityOf(p2) , p2 , sign2 , sign2 , mutualData.getDiginityOf(planet) , planet , sign1)
+      "comment" to arrayOf(planet , sign1 , p2 , sign2)
     }
   }
 

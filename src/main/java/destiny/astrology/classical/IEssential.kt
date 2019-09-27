@@ -23,7 +23,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun receivingRulerFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingRulerFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.of(degree) })
+    return receivingRulerFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /**
@@ -33,7 +33,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun receivingExaltFrom(p: Point, map: Map<Point, Double>): Point? {
-    return receivingExaltFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.of(degree) })
+    return receivingExaltFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 p */
@@ -41,14 +41,14 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun receivingTriplicityFrom(p: Point, map: Map<Point, Double>, dayNight: DayNight): Point? {
-    return receivingTriplicityFromSignMap(p, map.mapValues { (_ , degree) -> ZodiacSign.of(degree) }, dayNight)
+    return receivingTriplicityFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) }, dayNight)
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 p */
-  fun receivingTermFrom(p: Point , map: Map<Point , Double>) : Point ?
+  fun receivingTermFrom(p: Point, map: Map<Point, Double>): Point?
 
   /** 哪一顆星，透過 [Dignity.FACE] 接納了 p */
-  fun receivingFaceFrom(p:Point , map: Map<Point, Double>) : Point?
+  fun receivingFaceFrom(p: Point, map: Map<Point, Double>): Point?
 
   /** 哪一顆星，透過 [Dignity.FALL] 接納了 p */
   fun receivingFallFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
@@ -59,79 +59,105 @@ interface IEssential {
   }
 
   /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 p */
-  fun receivingDetrimentFromSignMap(p:Point, map: Map<Point, ZodiacSign>): Point?
+  fun receivingDetrimentFromSignMap(p: Point, map: Map<Point, ZodiacSign>): Point?
 
-  fun receivingDetrimentFrom(p:Point , map: Map<Point, Double>): Point? {
+  fun receivingDetrimentFrom(p: Point, map: Map<Point, Double>): Point? {
     return receivingDetrimentFromSignMap(p, map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 */
-  fun getReceptions(p: Point, map: Map<Point, Double>, dayNight: DayNight?, dignities: Collection<Dignity>): Map<Dignity, Point>
+  fun getReceptions(p: Point,
+                    map: Map<Point, Double>,
+                    dayNight: DayNight?,
+                    dignities: Collection<Dignity>): Map<Dignity, Point>
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 , 但是不計算 [Dignity.TERM] 以及 [Dignity.FACE] , 因為這兩者需要度數 */
-  fun getReceptionsFromSign(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight?, dignities: Collection<Dignity>): Map<Dignity, Point>
+  fun getReceptionsFromSign(p: Point,
+                            map: Map<Point, ZodiacSign>,
+                            dayNight: DayNight?,
+                            dignities: Collection<Dignity>): Map<Dignity, Point>
 
   /**
    * 製作出 Reception 表格
    * 參考 : http://www.skyscript.co.uk/dig6.html
    * */
-  fun getReceptionMap(map: Map<Point, Double>, dayNight: DayNight, dignities: Set<Dignity>): Set<Triple<Point, Dignity, Point?>> {
+  fun getReceptionMap(map: Map<Point, Double>,
+                      dayNight: DayNight,
+                      dignities: Set<Dignity>): Set<Triple<Point, Dignity, Point?>> {
     return map.keys.flatMap { p ->
-      getReceptions(p, map, dayNight , dignities).map { (dignity, point) ->
+      getReceptions(p, map, dayNight, dignities).map { (dignity, point) ->
         Triple(p, dignity, point)
       }
     }.toSet()
   }
 
   /** 查詢 p 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) */
-  fun getMutualData(p: Point, map: Map<Point, Double>, dayNight: DayNight?, dignities: Collection<Dignity>) : Set<MutualData> {
+  fun getMutualData(p: Point,
+                    map: Map<Point, Double>,
+                    dayNight: DayNight?,
+                    dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== p }
-      .flatMap { p2 -> getReceptions(p2 , map , dayNight , dignities)
-        .filter { (_ , p1) -> p1 === p }
-        .map { (dig1,p1) -> p1 to dig1 }
-        .flatMap { (p1 , dig1) -> getReceptions(p1 , map , dayNight , dignities)
-          .filter { (_ , p) -> p === p2 }
-          .map { (dig2 , p2) -> MutualData(p1, dig1, p2, dig2) }
-        }
+      .flatMap { p2 ->
+        getReceptions(p2, map, dayNight, dignities)
+          .filter { (_, p1) -> p1 === p }
+          .map { (dig1, p1) -> p1 to dig1 }
+          .flatMap { (p1, dig1) ->
+            getReceptions(p1, map, dayNight, dignities)
+              .filter { (_, p) -> p === p2 }
+              .map { (dig2, p2) -> MutualData(p1, dig1, p2, dig2) }
+          }
       }.toSet()
   }
 
   /** 查詢 p 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) . 只考量星座，故，無法計算 [Dignity.TERM] 或 [Dignity.FALL] */
-  fun getMutualDataFromSign(p: Point, map: Map<Point, ZodiacSign>, dayNight: DayNight?, dignities: Collection<Dignity>) : Set<MutualData> {
+  fun getMutualDataFromSign(p: Point,
+                            map: Map<Point, ZodiacSign>,
+                            dayNight: DayNight?,
+                            dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== p }
-      .flatMap { p2 -> getReceptionsFromSign(p2 , map , dayNight , dignities)
-        .filter { (_ , p1) -> p1 === p }
-        .map { (dig1,p1) -> p1 to dig1 }
-        .flatMap { (p1 , dig1) -> getReceptionsFromSign(p1 , map , dayNight , dignities)
-          .filter { (_ , p) -> p === p2 }
-          .map { (dig2 , p2) ->
-            MutualData(p1, dig1, p2, dig2) }
-        }
+      .flatMap { p2 ->
+        getReceptionsFromSign(p2, map, dayNight, dignities)
+          .filter { (_, p1) -> p1 === p }
+          .map { (dig1, p1) -> p1 to dig1 }
+          .flatMap { (p1, dig1) ->
+            getReceptionsFromSign(p1, map, dayNight, dignities)
+              .filter { (_, p) -> p === p2 }
+              .map { (dig2, p2) ->
+                MutualData(p1, dig1, p2, dig2)
+              }
+          }
       }.toSet()
   }
 
   /** 所有能量的互容 , 不論相等或是不相等 */
-  fun getMutualReceptionMap(map: Map<Point, Double>, dayNight: DayNight?, dignities: Collection<Dignity>): Set<MutualData> {
+  fun getMutualReceptionMap(map: Map<Point, Double>,
+                            dayNight: DayNight?,
+                            dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys
-      .flatMap { p1 -> getReceptions(p1 , map , dayNight , dignities)
-        .filter { (_ , p2) -> p2 !== p1 }
-        .map { (dig2 , p2) -> p2 to dig2}
-        .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities)
-          .filter { (_ , point) -> point === p1 && p1 !== p2 }
-          .map { (dig1 , _) -> MutualData(p1, dig1, p2, dig2) }
-        }
-    }.toSet()
+      .flatMap { p1 ->
+        getReceptions(p1, map, dayNight, dignities)
+          .filter { (_, p2) -> p2 !== p1 }
+          .map { (dig2, p2) -> p2 to dig2 }
+          .flatMap { (p2, dig2) ->
+            getReceptions(p2, map, dayNight, dignities)
+              .filter { (_, point) -> point === p1 && p1 !== p2 }
+              .map { (dig1, _) -> MutualData(p1, dig1, p2, dig2) }
+          }
+      }.toSet()
   }
 
   /** 能量不相等的互容 */
-  fun getMixedReceptionMap(map: Map<Point, Double>, dayNight: DayNight, dignities: Collection<Dignity>): Set<MutualData> {
+  fun getMixedReceptionMap(map: Map<Point, Double>,
+                           dayNight: DayNight,
+                           dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.flatMap { p ->
-      getReceptions(p , map , dayNight , dignities)
-        .filter { (_ , p2) -> p2 !== p }
-        .map { (dig2 , p2) -> p2 to dig2}
-        .flatMap { (p2 , dig2) -> getReceptions(p2 , map , dayNight , dignities.filter { it !== dig2 } )
-          .filter { (_ , point) -> point === p && p !== p2 }
-          .map { (dig1 , _) -> MutualData(p, dig1, p2, dig2) }
+      getReceptions(p, map, dayNight, dignities)
+        .filter { (_, p2) -> p2 !== p }
+        .map { (dig2, p2) -> p2 to dig2 }
+        .flatMap { (p2, dig2) ->
+          getReceptions(p2, map, dayNight, dignities.filter { it !== dig2 })
+            .filter { (_, point) -> point === p && p !== p2 }
+            .map { (dig1, _) -> MutualData(p, dig1, p2, dig2) }
         }
     }.toSet()
   }
@@ -155,7 +181,7 @@ interface IEssential {
    * receiver 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
    * 老闆是 receiver , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
    */
-  fun isReceivingFromDignities(receiver: Point, receivee: Point, h: IHoroscopeModel) : Boolean
+  fun isReceivingFromDignities(receiver: Point, receivee: Point, h: IHoroscopeModel): Boolean
 
 
   /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
@@ -164,8 +190,8 @@ interface IEssential {
   /** 是否兩顆星都處於不佳的狀態. 如果 兩顆星都處於 [Dignity.DETRIMENT] 或是  [Dignity.FALL] , 則為 true  */
   fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean
 
-   companion object {
-    val logger = KotlinLogging.logger {  }
+  companion object {
+    val logger = KotlinLogging.logger { }
   }
 
 }
@@ -182,4 +208,24 @@ interface IEssential {
  * p1 在 sign1 得到 p2 所提供的 dig2 能量
  * p2 在 sign2 得到 p1 所提供的 dig1 能量
  * */
-data class MutualData(val p1: Point, val dig1: Dignity, val p2: Point, val dig2: Dignity)
+data class MutualData(val pairs: Map<Point, Dignity>) {
+  constructor(p1: Point, dig1: Dignity, p2: Point, dig2: Dignity) : this(mutableSetOf(p1 to dig1, p2 to dig2).toMap())
+
+  private val twoPoints: Set<Point> by lazy {
+    pairs.keys
+  }
+
+  fun getAnotherPoint(point : Point) : Point {
+    if (!twoPoints.contains(point))
+      throw RuntimeException(twoPoints.joinToString(",") + " don't contain " + point)
+
+    return twoPoints.first { it != point }
+  }
+
+  fun getDiginityOf(point : Point) : Dignity {
+    if (!twoPoints.contains(point))
+      throw RuntimeException(twoPoints.joinToString(",") + " don't contain " + point)
+
+    return pairs.getValue(point)
+  }
+}

@@ -8,7 +8,7 @@ import java.util.*
 /**
  * 新版 [Rule]
  */
-abstract class AbstractRuleDescriptor<out T : Rule>(val rule: T) : Descriptive {
+abstract class AbstractRuleDescriptor<out T : IPlanetPattern>(val rule: T) : Descriptive {
 
   val nameKey = rule.javaClass.simpleName!!
 

@@ -11,7 +11,7 @@ import kotlin.test.Test
 
 class RuleTranslatorKtTest {
 
-  fun print(rule: Rule) {
+  fun print(rule: EssentialDignity) {
 
     RuleTranslator.getDescriptor(rule).also {
       println("title(tw) = ${it.getTitle(Locale.TAIWAN)}")
@@ -34,19 +34,19 @@ class RuleTranslatorKtTest {
 
   @Test
   fun testPrint() {
-    val ruler = Rule.Ruler(Planet.SUN, ZodiacSign.ARIES)
+    val ruler = EssentialDignity.Ruler(Planet.SUN, ZodiacSign.ARIES)
     print(ruler)
 
-    val exalt = Rule.Exalt(Planet.JUPITER, ZodiacSign.CAPRICORN)
+    val exalt = EssentialDignity.Exalt(Planet.JUPITER, ZodiacSign.CAPRICORN)
     print(exalt)
 
-    val term = Rule.Term(Planet.JUPITER, 123.456)
+    val term = EssentialDignity.Term(Planet.JUPITER, 123.456)
     print(term)
 
-    val face = Rule.Face(Planet.MARS, 359.9)
+    val face = EssentialDignity.Face(Planet.MARS, 359.9)
     print(face)
 
-    val trip = Rule.Triplicity(Planet.MOON, ZodiacSign.GEMINI, DayNight.NIGHT)
+    val trip = EssentialDignity.Triplicity(Planet.MOON, ZodiacSign.GEMINI, DayNight.NIGHT)
     print(trip)
 
   }

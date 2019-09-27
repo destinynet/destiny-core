@@ -37,8 +37,9 @@ class Ruler(private val essentialImpl: IEssential) : EssentialRule() {
   private fun rulerMutualReception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
     return essentialImpl.getMutualData(planet , h.pointDegreeMap , null , setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
       val sign1 = h.getZodiacSign(planet)!!
-      val sign2 = h.getZodiacSign(mutualData.p2)!!
-      "commentReception" to arrayOf(planet , sign1 , mutualData.p2 , sign2)
+      val p2 = mutualData.getAnotherPoint(planet)
+      val sign2 = h.getZodiacSign(p2)!!
+      "commentReception" to arrayOf(planet , sign1 , p2 , sign2)
     }
   }
 }
