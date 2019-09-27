@@ -17,7 +17,7 @@ import mu.KotlinLogging
 interface IEssential {
 
   /**
-   * 那一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
+   * 哪一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
    */
   fun Point.receivingRulerFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
@@ -227,12 +227,13 @@ interface IEssential {
    */
   fun Point.isReceivingFromDignities(receivee: Point, h: IHoroscopeModel): Boolean
 
-
   /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
   fun isBothInGoodSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean
 
   /** 是否兩顆星都處於不佳的狀態. 如果 兩顆星都處於 [Dignity.DETRIMENT] 或是  [Dignity.FALL] , 則為 true  */
   fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean
+
+
 
   companion object {
     val logger = KotlinLogging.logger { }
