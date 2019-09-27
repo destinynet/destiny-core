@@ -5,6 +5,7 @@ package destiny.astrology.classical.rules
 
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
+import destiny.core.DayNight
 
 abstract class EssentialDignity(override val name: String,
                                 override val notes: String? = null) : IClassicalPattern {
@@ -14,7 +15,7 @@ abstract class EssentialDignity(override val name: String,
 /** A planet in its own sign , or mutual reception with another planet by sign  */
 
 sealed class Ruler(override val planet: Planet) : EssentialDignity(Ruler::class.java.simpleName) {
-  abstract val sign : ZodiacSign
+  abstract val sign: ZodiacSign
 
   data class Basic(override val planet: Planet,
                    override val sign: ZodiacSign,
@@ -39,6 +40,11 @@ sealed class Exaltation(override val planet: Planet,
   data class MutualReception(override val planet: Planet,
                              override val sign: ZodiacSign) : Exaltation(planet)
 }
+
+/** A planet in its own day or night triplicity (not to be confused with the modern triplicities).  */
+data class Triplicity(override val planet: Planet,
+                      val sign: ZodiacSign,
+                      val dayNight: DayNight) : EssentialDignity(Triplicity::class.java.simpleName)
 
 /** A planet in itw own term.  */
 data class Term(override val planet: Planet,
