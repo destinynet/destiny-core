@@ -16,7 +16,7 @@ class MutualTest {
 
   @Test
   fun testName() {
-    val mutualReception = Mutual.Reception.Equal(Planet.SUN , ZodiacSign.ARIES , null , Planet.MARS , ZodiacSign.LEO , null , Dignity.RULER)
+    val mutualReception = Mutual.Reception.Equal(Planet.SUN, ZodiacSign.ARIES, Planet.MARS, ZodiacSign.LEO, Dignity.RULER)
     assertEquals("Equal" , mutualReception.name)
     logger.info("name = {}" , mutualReception.javaClass.name)
   }

@@ -5,10 +5,10 @@ import destiny.astrology.ZodiacSign
 
 interface IMutualData {
 
-  val pairs: Map<Point, Dignity>
+  val dignityMap: Map<Point, Dignity>
 
   val twoPoints: Set<Point>
-    get() = pairs.keys
+    get() = dignityMap.keys
 
   fun getAnotherPoint(point: Point): Point {
     if (!twoPoints.contains(point))
@@ -21,12 +21,18 @@ interface IMutualData {
     if (!twoPoints.contains(point))
       throw RuntimeException(twoPoints.joinToString(",") + " don't contain " + point)
 
-    return pairs.getValue(point)
+    return dignityMap.getValue(point)
   }
+}
+
+interface IMutualDataWithSign : IMutualData {
+
+  /** 什麼星 在 什麼星座 , 此 map size 固定為 2 */
+  val signMap : Map<Point , ZodiacSign>
 
 }
 
-data class MutualData(override val pairs: Map<Point, Dignity>) : IMutualData {
+data class MutualData(override val dignityMap: Map<Point, Dignity>) : IMutualData {
   /**
    * [p1] 以 [dig1] 的能量招待 (接納) [p2] ,
    * [p2] 以 [dig2] 的能量招待 (接納) [p1]
@@ -44,7 +50,7 @@ data class MutualData(override val pairs: Map<Point, Dignity>) : IMutualData {
 
 }
 
-data class MutualDataWithSign(private val set: Set<Triple<Point, ZodiacSign, Dignity>>) : IMutualData {
+data class MutualDataWithSign(private val set: Set<Triple<Point, ZodiacSign, Dignity>>) : IMutualDataWithSign {
 
   /**
    * [p1] 位於 [sign1] , 與 [sign1] 的 [dig2] ([p2]) 飛至 [sign2] , 而 [sign2] 的 [dig1] ([p1]) 飛至 [sign1]
@@ -55,7 +61,10 @@ data class MutualDataWithSign(private val set: Set<Triple<Point, ZodiacSign, Dig
   constructor(p1: Point, sign1: ZodiacSign, dig1: Dignity,
               p2: Point, sign2: ZodiacSign, dig2: Dignity) : this(setOf(Triple(p1, sign1, dig1), Triple(p2, sign2, dig2)))
 
-  override val pairs: Map<Point, Dignity>
+  override val dignityMap: Map<Point, Dignity>
     get() = set.map { triple -> triple.first to triple.third }.toMap()
 
+
+  override val signMap: Map<Point, ZodiacSign>
+    get() = set.map { t -> t.first to t.second }.toMap()
 }

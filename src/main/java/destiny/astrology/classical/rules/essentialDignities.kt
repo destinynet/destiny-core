@@ -7,6 +7,7 @@ import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
 import destiny.core.DayNight
 
+@Deprecated("maybe 用不到")
 abstract class EssentialDignity2(override val name: String,
                                  override val notes: String? = null) : IPlanetPattern {
   override val type: RuleType = RuleType.ESSENTIAL

@@ -4,6 +4,7 @@
 package destiny.astrology.classical.rules
 
 import destiny.astrology.Planet
+import destiny.astrology.classical.IMutualData
 import destiny.core.IPattern
 
 interface IClassicalPattern : IPattern
@@ -13,7 +14,4 @@ interface IPlanetPattern : IClassicalPattern {
   val planet: Planet
 }
 
-interface IMutualPattern : IClassicalPattern {
-  val p1 : Planet
-  val p2 : Planet
-}
+interface IMutualPattern : IClassicalPattern , IMutualData

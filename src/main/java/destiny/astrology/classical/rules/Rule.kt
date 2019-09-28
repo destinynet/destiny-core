@@ -6,6 +6,9 @@ package destiny.astrology.classical.rules
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
 import destiny.astrology.classical.Dignity
+import destiny.astrology.classical.IMutualData
+import destiny.astrology.classical.MutualData
+import destiny.astrology.classical.MutualDataWithSign
 import destiny.core.DayNight
 
 /**
@@ -27,31 +30,40 @@ sealed class EssentialDignity(override val name: String,
 }
 
 /** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */
-sealed class Mutual(override val p1: Planet, val dig1: Dignity, override val p2: Planet, val dig2: Dignity, override val notes: String? = null) : IMutualPattern {
+sealed class Mutual(private val p1: Planet, private val dig1: Dignity,
+                    private val p2: Planet, private val dig2: Dignity,
+                    override val notes: String? = null) : IMutualPattern, IMutualData by MutualData(p1, dig1, p2, dig2) {
 
   override val name: String
     get() = javaClass.simpleName
 
-  /** 好的能量，互相接待 , deg1 , deg2 指的是「黃道帶」上的度數 , 並非是「該星座」的度數 */
-  sealed class Reception(p1: Planet, dig1: Dignity , p2: Planet, dig2: Dignity) : Mutual(p1 , dig1 , p2 , dig2) {
-    class Equal(p1: Planet , sign1: ZodiacSign , deg1: Double?                 , p2 : Planet , sign2: ZodiacSign , deg2: Double? , dignity: Dignity) : Reception(p1 , dignity , p2 , dignity)
-    class Mixed(p1: Planet , sign1: ZodiacSign , deg1: Double? , dig1: Dignity , p2 : Planet , sign2: ZodiacSign , deg2: Double? , dig2: Dignity   ) : Reception(p1 , dig1 , p2 , dig2)
+  /** 好的能量，互相接待 */
+  sealed class Reception(p1: Planet, dig1: Dignity, p2: Planet, dig2: Dignity) : Mutual(p1, dig1, p2, dig2) {
+    class Equal(p1: Planet, sign1: ZodiacSign,
+                p2: Planet, sign2: ZodiacSign, dignity: Dignity) : Reception(p1, dignity, p2, dignity), IMutualData by MutualDataWithSign(p1, sign1, dignity, p2, sign2, dignity)
+
+    class Mixed(p1: Planet, sign1: ZodiacSign, dig1: Dignity,
+                p2: Planet, sign2: ZodiacSign, dig2: Dignity) : Reception(p1, dig1, p2, dig2), IMutualData by MutualDataWithSign(p1, sign1, dig1, p2, sign2, dig2)
   }
 
-  /** 互相踩對方痛腳 , deg1 , deg2 指的是「黃道帶」上的度數 , 並非是「該星座」的度數 */
-  sealed class Exclusive(p1: Planet, dig1: Dignity , p2: Planet, dig2: Dignity) : Mutual(p1 , dig1 , p2 , dig2) {
-    class Equal(p1: Planet , sign1: ZodiacSign , deg1: Double?                 , p2 : Planet , sign2: ZodiacSign , deg2: Double? , dignity: Dignity) : Exclusive(p1 , dignity , p2 , dignity)
-    class Mixed(p1: Planet , sign1: ZodiacSign , deg1: Double? , dig1: Dignity , p2 : Planet , sign2: ZodiacSign , deg2: Double? , dig2: Dignity   ) : Exclusive(p1 , dig1 , p2 , dig2)
+  /** 互相踩對方痛腳 */
+  sealed class Deception(p1: Planet, dig1: Dignity, p2: Planet, dig2: Dignity) : Mutual(p1, dig1, p2, dig2) {
+    class Equal(p1: Planet, sign1: ZodiacSign,
+                p2: Planet, sign2: ZodiacSign, dignity: Dignity) : Deception(p1, dignity, p2, dignity)
+
+    class Mixed(p1: Planet, sign1: ZodiacSign, dig1: Dignity,
+                p2: Planet, sign2: ZodiacSign, dig2: Dignity) : Deception(p1, dig1, p2, dig2)
   }
 }
 
 /**
- * p1 與 p2 透過 dignity 互相接納
+ * p1 與 p2 透過 相同的 [dignity] 互相接納
  * 僅適用於 [Dignity.RULER] , [Dignity.EXALTATION] , [Dignity.TRIPLICITY] , [Dignity.FALL] , [Dignity.DETRIMENT]
  * 剩下的 [Dignity.TERM] 以及 [Dignity.FACE] 需要「度數」，因此不適用
  * */
-sealed class MutualReception(override val p1: Planet, val sign1: ZodiacSign, override val p2: Planet, val sign2: ZodiacSign, val dignity: Dignity,
-                             override val notes: String? = null) : IMutualPattern {
+sealed class MutualReception(val p1: Planet, val sign1: ZodiacSign,
+                             val p2: Planet, val sign2: ZodiacSign,
+                             val dignity: Dignity, override val notes: String? = null) : IMutualPattern, IMutualData by MutualData(p1, dignity, p2, dignity) {
 
   override val name: String = javaClass.simpleName
 
