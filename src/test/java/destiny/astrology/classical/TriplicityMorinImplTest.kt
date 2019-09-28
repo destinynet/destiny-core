@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2017-12-22.
+ * Created by smallufo on 2019-09-28.
  */
 package destiny.astrology.classical
 
@@ -11,9 +11,9 @@ import destiny.core.DayNight.NIGHT
 import kotlin.test.Test
 import kotlin.test.assertSame
 
-class TriplicityWilliamImplTest {
+class TriplicityMorinImplTest {
 
-  val impl: ITriplicity = TriplicityWilliamImpl()
+  val impl: ITriplicity = TriplicityMorinImpl()
 
   @Test
   fun getTriplicityPoint() {
@@ -26,7 +26,7 @@ class TriplicityWilliamImplTest {
 
       // 土象星座
       ZodiacSign.of(EARTH).forEach { sign ->
-        assertSame(VENUS, sign.getTriplicityPoint(DAY))
+        assertSame(MERCURY, sign.getTriplicityPoint(DAY))
       }
 
       // 風象星座
@@ -36,49 +36,48 @@ class TriplicityWilliamImplTest {
 
       // 水象星座
       ZodiacSign.of(WATER).forEach { sign ->
-        assertSame(MARS, sign.getTriplicityPoint(DAY))
+        assertSame(JUPITER, sign.getTriplicityPoint(DAY))
       }
 
       // 夜晚
       // 火象星座
       ZodiacSign.of(FIRE).forEach { sign ->
-        assertSame(JUPITER, sign.getTriplicityPoint(NIGHT))
+        assertSame(MARS, sign.getTriplicityPoint(NIGHT))
       }
 
       // 土象星座
       ZodiacSign.of(EARTH).forEach { sign ->
-        assertSame(MOON, sign.getTriplicityPoint(NIGHT))
+        assertSame(SATURN, sign.getTriplicityPoint(NIGHT))
       }
 
       // 風象星座
       ZodiacSign.of(AIR).forEach { sign ->
-        assertSame(MERCURY, sign.getTriplicityPoint(NIGHT))
+        assertSame(VENUS, sign.getTriplicityPoint(NIGHT))
       }
 
       // 水象星座
       ZodiacSign.of(WATER).forEach { sign ->
-        assertSame(MARS, sign.getTriplicityPoint(NIGHT))
+        assertSame(MOON, sign.getTriplicityPoint(NIGHT))
       }
     }
   }
-
 
   @Test
   fun getPartner() {
     with(impl) {
       // 火象星座
       ZodiacSign.of(FIRE).forEach { sign ->
-        assertSame(null, sign.getPartner())
+        assertSame(JUPITER, sign.getPartner())
       }
 
       // 土象星座
       ZodiacSign.of(EARTH).forEach { sign ->
-        assertSame(null, sign.getPartner())
+        assertSame(VENUS, sign.getPartner())
       }
 
       // 風象星座
       ZodiacSign.of(AIR).forEach { sign ->
-        assertSame(null, sign.getPartner())
+        assertSame(MERCURY, sign.getPartner())
       }
 
       // 水象星座

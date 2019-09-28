@@ -147,6 +147,14 @@ enum class ZodiacSign(private val nameKey: String,
     fun of(branch: Branch): ZodiacSign {
       return map.map { (k, v) -> v to k }.toMap().getValue(branch)
     }
+
+    /**
+     * 找尋 某種 [Element] 星座
+     */
+    fun of(element: Element): Set<ZodiacSign> {
+      return values().filter { it.element == element }.toSet()
+
+    }
   }
 
 }

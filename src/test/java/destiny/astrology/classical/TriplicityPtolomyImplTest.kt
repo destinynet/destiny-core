@@ -1,5 +1,5 @@
 /**
- * Created by smallufo on 2017-12-22.
+ * Created by smallufo on 2019-09-28.
  */
 package destiny.astrology.classical
 
@@ -11,9 +11,9 @@ import destiny.core.DayNight.NIGHT
 import kotlin.test.Test
 import kotlin.test.assertSame
 
-class TriplicityWilliamImplTest {
+class TriplicityPtolomyImplTest {
 
-  val impl: ITriplicity = TriplicityWilliamImpl()
+  val impl: ITriplicity = TriplicityPtolomyImpl()
 
   @Test
   fun getTriplicityPoint() {
@@ -36,7 +36,7 @@ class TriplicityWilliamImplTest {
 
       // 水象星座
       ZodiacSign.of(WATER).forEach { sign ->
-        assertSame(MARS, sign.getTriplicityPoint(DAY))
+        assertSame(VENUS, sign.getTriplicityPoint(DAY))
       }
 
       // 夜晚
@@ -57,28 +57,27 @@ class TriplicityWilliamImplTest {
 
       // 水象星座
       ZodiacSign.of(WATER).forEach { sign ->
-        assertSame(MARS, sign.getTriplicityPoint(NIGHT))
+        assertSame(MOON, sign.getTriplicityPoint(NIGHT))
       }
     }
   }
-
 
   @Test
   fun getPartner() {
     with(impl) {
       // 火象星座
       ZodiacSign.of(FIRE).forEach { sign ->
-        assertSame(null, sign.getPartner())
+        assertSame(MARS, sign.getPartner())
       }
 
       // 土象星座
       ZodiacSign.of(EARTH).forEach { sign ->
-        assertSame(null, sign.getPartner())
+        assertSame(SATURN, sign.getPartner())
       }
 
       // 風象星座
       ZodiacSign.of(AIR).forEach { sign ->
-        assertSame(null, sign.getPartner())
+        assertSame(JUPITER, sign.getPartner())
       }
 
       // 水象星座
