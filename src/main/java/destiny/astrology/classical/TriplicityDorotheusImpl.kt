@@ -3,11 +3,11 @@
  */
 package destiny.astrology.classical
 
-import destiny.core.DayNight
 import destiny.astrology.Element.*
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign
+import destiny.core.DayNight
 import java.io.Serializable
 
 /**
@@ -41,15 +41,15 @@ import java.io.Serializable
 class TriplicityDorotheusImpl : ITriplicity , Serializable {
 
   /** 哪顆星在此星座得到三分相 (+3) */
-  override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Planet {
+  override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Planet {
     return when (dayNight) {
-      DayNight.DAY -> when(sign.element) {
+      DayNight.DAY -> when(this.element) {
         FIRE -> SUN
         EARTH -> VENUS
         AIR -> SATURN
         WATER -> VENUS
       }
-      DayNight.NIGHT -> when(sign.element) {
+      DayNight.NIGHT -> when(this.element) {
         FIRE -> JUPITER
         EARTH -> MOON
         AIR -> MERCURY
@@ -58,8 +58,8 @@ class TriplicityDorotheusImpl : ITriplicity , Serializable {
     }
   }
 
-  override fun getPartner(sign: ZodiacSign): Planet? {
-    return when (sign.element) {
+  override fun ZodiacSign.getPartner(): Planet? {
+    return when (this.element) {
       FIRE -> SATURN
       EARTH -> MARS
       AIR -> JUPITER

@@ -77,28 +77,31 @@ class FacePtolomyImplTest {
  
   @Test
   fun getPointFromSignDegree() {
-    //戌
-    assertSame(impl.getPoint(ARIES, 0.0) , MARS)
-    assertSame(impl.getPoint(ARIES, 9.99) , MARS)
-    assertSame(impl.getPoint(ARIES, 10.0) , SUN)
-    assertSame(impl.getPoint(ARIES, 19.99) , SUN)
-    assertSame(impl.getPoint(ARIES, 20.0) , VENUS)
-    assertSame(impl.getPoint(ARIES, 29.99) , VENUS)
-    //破30
-    assertSame(impl.getPoint(ARIES, 30.0) , MERCURY)
-    assertSame(impl.getPoint(ARIES, 39.99) , MERCURY)
+    with(impl) {
+      //戌
+      assertSame(ARIES.getFacePoint(0.0) , MARS)
+      assertSame(ARIES.getFacePoint(9.99) , MARS)
+      assertSame(ARIES.getFacePoint(10.0) , SUN)
+      assertSame(ARIES.getFacePoint(19.99) , SUN)
+      assertSame(ARIES.getFacePoint(20.0) , VENUS)
+      assertSame(ARIES.getFacePoint(29.99) , VENUS)
+      //破30
+      assertSame(ARIES.getFacePoint(30.0) , MERCURY)
+      assertSame(ARIES.getFacePoint(39.99) , MERCURY)
 
-    //亥
-    assertSame(impl.getPoint(PISCES, 0.0) , SATURN)
-    assertSame(impl.getPoint(PISCES, 9.99) , SATURN)
-    assertSame(impl.getPoint(PISCES, 10.0) , JUPITER)
-    assertSame(impl.getPoint(PISCES, 19.99) , JUPITER)
-    assertSame(impl.getPoint(PISCES, 20.0) , MARS)
-    assertSame(impl.getPoint(PISCES, 29.99) , MARS)
-    //破30 , 回到戌
-    assertSame(impl.getPoint(PISCES, 30.0) , MARS)
-    assertSame(impl.getPoint(PISCES, 39.990) , MARS)
-    assertSame(impl.getPoint(PISCES, 40.0) , SUN)
+      //亥
+      assertSame(PISCES.getFacePoint(0.0) , SATURN)
+      assertSame(PISCES.getFacePoint(9.99) , SATURN)
+      assertSame(PISCES.getFacePoint(10.0) , JUPITER)
+      assertSame(PISCES.getFacePoint(19.99) , JUPITER)
+      assertSame(PISCES.getFacePoint(20.0) , MARS)
+      assertSame(PISCES.getFacePoint(29.99) , MARS)
+      //破30 , 回到戌
+      assertSame(PISCES.getFacePoint(30.0) , MARS)
+      assertSame(PISCES.getFacePoint(39.990) , MARS)
+      assertSame(PISCES.getFacePoint(40.0) , SUN)
+    }
+
   }
   
 }

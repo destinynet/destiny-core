@@ -57,49 +57,54 @@ class TermPtolomyImplTest {
 
   @Test
   fun getPoint_from_sign_and_degree() {
-    //戌
-    assertSame(JUPITER, impl.getPoint(ARIES, 0.0))
-    assertSame(JUPITER, impl.getPoint(ARIES, 5.99))
-    assertSame(VENUS, impl.getPoint(ARIES, 6.0))
-    assertSame(VENUS, impl.getPoint(ARIES, 13.99))
-    assertSame(MERCURY, impl.getPoint(ARIES, 14.0))
-    assertSame(MERCURY, impl.getPoint(ARIES, 20.99))
-    assertSame(MARS, impl.getPoint(ARIES, 21.0))
-    assertSame(MARS, impl.getPoint(ARIES, 25.99))
-    assertSame(SATURN, impl.getPoint(ARIES, 26.0))
-    assertSame(SATURN, impl.getPoint(ARIES, 29.99))
-    //戌 , 破30度，應該進到酉
-    assertSame(VENUS, impl.getPoint(ARIES, 30.0))
-    assertSame(VENUS, impl.getPoint(ARIES, 37.99))
-    //酉
-    assertSame(VENUS, impl.getPoint(TAURUS, 0.0))
-    assertSame(VENUS, impl.getPoint(TAURUS, 7.99))
-    assertSame(MERCURY, impl.getPoint(TAURUS, 8.0))
-    assertSame(MERCURY, impl.getPoint(TAURUS, 14.99))
-    assertSame(JUPITER, impl.getPoint(TAURUS, 15.0))
-    assertSame(JUPITER, impl.getPoint(TAURUS, 21.99))
-    assertSame(SATURN, impl.getPoint(TAURUS, 22.0))
-    assertSame(SATURN, impl.getPoint(TAURUS, 25.99))
-    assertSame(MARS, impl.getPoint(TAURUS, 26.0))
-    assertSame(MARS, impl.getPoint(TAURUS, 29.99))
-    //酉 , 破 30 度 , 應該進到申
-    assertSame(MERCURY, impl.getPoint(TAURUS, 30.0))
-    assertSame(MERCURY, impl.getPoint(TAURUS, 36.99))
+    with(impl) {
+      //戌
+      assertSame(JUPITER, ARIES.getTermPoint(0.0))
+      assertSame(JUPITER, ARIES.getTermPoint(5.99))
+      assertSame(VENUS, ARIES.getTermPoint(6.0))
+      assertSame(VENUS, ARIES.getTermPoint(13.99))
+      assertSame(MERCURY, ARIES.getTermPoint(14.0))
+      assertSame(MERCURY, ARIES.getTermPoint(20.99))
+      assertSame(MARS, ARIES.getTermPoint(21.0))
+      assertSame(MARS, ARIES.getTermPoint(25.99))
+      assertSame(SATURN, ARIES.getTermPoint(26.0))
+      assertSame(SATURN, ARIES.getTermPoint(29.99))
 
-    //亥
-    assertSame(VENUS, impl.getPoint(PISCES, 0.0))
-    assertSame(VENUS, impl.getPoint(PISCES, 7.99))
-    assertSame(JUPITER, impl.getPoint(PISCES, 8.0))
-    assertSame(JUPITER, impl.getPoint(PISCES, 13.99))
-    assertSame(MERCURY, impl.getPoint(PISCES, 14.0))
-    assertSame(MERCURY, impl.getPoint(PISCES, 19.99))
-    assertSame(MARS, impl.getPoint(PISCES, 20.0))
-    assertSame(MARS, impl.getPoint(PISCES, 25.99))
-    assertSame(SATURN, impl.getPoint(PISCES, 26.0))
-    assertSame(SATURN, impl.getPoint(PISCES, 29.99))
-    //破30 , 回到戌
-    assertSame(JUPITER, impl.getPoint(PISCES, 30.0))
-    assertSame(JUPITER, impl.getPoint(PISCES, 35.99))
-    assertSame(VENUS, impl.getPoint(PISCES, 36.0))
+      //戌 , 破30度，應該進到酉
+      assertSame(VENUS, ARIES.getTermPoint(30.0))
+      assertSame(VENUS, ARIES.getTermPoint(37.99))
+      //酉
+      assertSame(VENUS, TAURUS.getTermPoint(0.0))
+      assertSame(VENUS, TAURUS.getTermPoint(7.99))
+      assertSame(MERCURY, TAURUS.getTermPoint(8.0))
+      assertSame(MERCURY, TAURUS.getTermPoint(14.99))
+      assertSame(JUPITER, TAURUS.getTermPoint(15.0))
+      assertSame(JUPITER, TAURUS.getTermPoint(21.99))
+      assertSame(SATURN, TAURUS.getTermPoint(22.0))
+      assertSame(SATURN, TAURUS.getTermPoint(25.99))
+      assertSame(MARS, TAURUS.getTermPoint(26.0))
+      assertSame(MARS, TAURUS.getTermPoint(29.99))
+      //酉 , 破 30 度 , 應該進到申
+      assertSame(MERCURY, TAURUS.getTermPoint(30.0))
+      assertSame(MERCURY, TAURUS.getTermPoint(36.99))
+
+      //亥
+      assertSame(VENUS, PISCES.getTermPoint(0.0))
+      assertSame(VENUS, PISCES.getTermPoint(7.99))
+      assertSame(JUPITER, PISCES.getTermPoint(8.0))
+      assertSame(JUPITER, PISCES.getTermPoint(13.99))
+      assertSame(MERCURY, PISCES.getTermPoint(14.0))
+      assertSame(MERCURY, PISCES.getTermPoint(19.99))
+      assertSame(MARS, PISCES.getTermPoint(20.0))
+      assertSame(MARS, PISCES.getTermPoint(25.99))
+      assertSame(SATURN, PISCES.getTermPoint(26.0))
+      assertSame(SATURN, PISCES.getTermPoint(29.99))
+      //破30 , 回到戌
+      assertSame(JUPITER, PISCES.getTermPoint(30.0))
+      assertSame(JUPITER, PISCES.getTermPoint(35.99))
+      assertSame(VENUS, PISCES.getTermPoint(36.0))
+    }
+
+
   }
 }

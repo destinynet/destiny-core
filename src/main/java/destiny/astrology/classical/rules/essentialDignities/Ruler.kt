@@ -14,7 +14,7 @@ class Ruler(private val essentialImpl: IEssential) : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
-      return if (planet === rulerImpl.getPoint(sign)) {
+      return if (planet === with(rulerImpl) { sign.getRulerPoint() }) {
         logger.debug("{} 位於 {} , 為其 {}", planet, sign, Dignity.RULER)
         "commentBasic" to arrayOf(planet, sign)
       } else {

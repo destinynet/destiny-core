@@ -31,40 +31,45 @@ class MutualDeception(private val essentialImpl: IEssential) : EssentialRule() {
    * 而 sign2 星座的 ruler (planet2) 剛好等於 planet
    */
   private fun rulerMutualDeception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
-    return h.getZodiacSign(planet)?.let { sign1 ->
-      rulerImpl.getPoint(sign1).let { signRuler ->
-        h.getZodiacSign(signRuler)?.let { sign2 ->
-          rulerImpl.getPoint(sign2).takeIf { planet2 ->
-            // 確定 ruler 互容
-            planet === planet2
-          }?.takeIf {
-            // 確認互陷
-            essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
-          }?.let {
-            logger.debug("[comment1] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.RULER, signRuler, sign2, Dignity.RULER)
-            "comment1" to arrayOf(planet, sign1, signRuler, sign2)
+    return with(rulerImpl) {
+      h.getZodiacSign(planet)?.let { sign1 ->
+        sign1.getRulerPoint()?.let { signRuler ->
+          h.getZodiacSign(signRuler)?.let { sign2 ->
+            sign2.getRulerPoint()?.takeIf { planet2 ->
+              // 確定 ruler 互容
+              planet === planet2
+            }?.takeIf {
+              // 確認互陷
+              essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
+            }?.let {
+              logger.debug("[comment1] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.RULER, signRuler, sign2, Dignity.RULER)
+              "comment1" to arrayOf(planet, sign1, signRuler, sign2)
+            }
           }
         }
       }
     }
+
   } // ruler 互陷 或 互落
 
   /**
    * @return Exaltation 的 互陷 或 互落
    */
   private fun exaltationMutualDeception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
-    return h.getZodiacSign(planet)?.let { sign1 ->
-      exaltImpl.getPoint(sign1)?.let { signExalt ->
-        h.getZodiacSign(signExalt)?.let { sign2 ->
-          exaltImpl.getPoint(sign2)?.takeIf { planet2 ->
-            // 確認 Exaltation 互容
-            planet === planet2
-          }?.takeIf {
-            // 確認互陷
-            essentialImpl.isBothInBadSituation(planet , sign1 , signExalt , sign2)
-          }?.let {
-            logger.info("[comment2] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2, Dignity.EXALTATION)
-            "comment2" to arrayOf(planet, sign1, signExalt, sign2)
+    return with(exaltImpl) {
+      h.getZodiacSign(planet)?.let { sign1 ->
+        sign1.getExaltPoint()?.let { signExalt ->
+          h.getZodiacSign(signExalt)?.let { sign2 ->
+            sign2.getExaltPoint()?.takeIf { planet2 ->
+              // 確認 Exaltation 互容
+              planet === planet2
+            }?.takeIf {
+              // 確認互陷
+              essentialImpl.isBothInBadSituation(planet, sign1, signExalt, sign2)
+            }?.let {
+              logger.info("[comment2] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2, Dignity.EXALTATION)
+              "comment2" to arrayOf(planet, sign1, signExalt, sign2)
+            }
           }
         }
       }
@@ -76,22 +81,27 @@ class MutualDeception(private val essentialImpl: IEssential) : EssentialRule() {
    * 「Ruler 到 Detriment , Exaltation 到 Fall 又互容」的互陷
    */
   private fun detrimentExaltationMutualDeception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
-    return h.getZodiacSign(planet)?.let { sign1 ->
-      rulerImpl.getPoint(sign1).let { signRuler ->
-        h.getZodiacSign(signRuler)?.let { sign2 ->
-          exaltImpl.getPoint(sign2)?.takeIf { planet2 ->
-            // 確認互容
-            planet === planet2
-          }?.takeIf {
-            // 確認互陷
-            essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
-          }?.let {
-            logger.debug("[comment3] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.RULER, signRuler, sign2)
-            "comment3" to arrayOf(planet, sign1, signRuler, sign2)
+    return with(rulerImpl) {
+      with(exaltImpl) {
+        h.getZodiacSign(planet)?.let { sign1 ->
+          sign1.getRulerPoint()?.let { signRuler ->
+            h.getZodiacSign(signRuler)?.let { sign2 ->
+              sign2.getExaltPoint()?.takeIf { planet2 ->
+                // 確認互容
+                planet === planet2
+              }?.takeIf {
+                // 確認互陷
+                essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
+              }?.let {
+                logger.debug("[comment3] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.RULER, signRuler, sign2)
+                "comment3" to arrayOf(planet, sign1, signRuler, sign2)
+              }
+            }
           }
         }
       }
     }
+
   }
 
   /**
@@ -99,22 +109,27 @@ class MutualDeception(private val essentialImpl: IEssential) : EssentialRule() {
    * 「Ruler 到 Fall , Exaltation 到 Detriment 又互容」的互陷
    */
   private fun fallExaltationMutualDeception(h: IHoroscopeModel, planet: Planet): Pair<String, Array<Any>>? {
-    return h.getZodiacSign(planet)?.let { sign1 ->
-      exaltImpl.getPoint(sign1)?.let { signExalt ->
-        h.getZodiacSign(signExalt)?.let { sign2 ->
-          rulerImpl.getPoint(sign2).takeIf { planet2 ->
-            // 確認互容
-            planet === planet2
-          }?.takeIf {
-            // 確認互陷
-            essentialImpl.isBothInBadSituation(planet , sign1 , signExalt , sign2)
-          }?.let {
-            logger.debug("[comment4] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
-            "comment4" to arrayOf(planet, sign1, signExalt, sign2)
+    return with(rulerImpl) {
+      with(exaltImpl) {
+        h.getZodiacSign(planet)?.let { sign1 ->
+          sign1.getExaltPoint()?.let { signExalt ->
+            h.getZodiacSign(signExalt)?.let { sign2 ->
+              sign2.getRulerPoint()?.takeIf { planet2 ->
+                // 確認互容
+                planet === planet2
+              }?.takeIf {
+                // 確認互陷
+                essentialImpl.isBothInBadSituation(planet , sign1 , signExalt , sign2)
+              }?.let {
+                logger.debug("[comment4] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
+                "comment4" to arrayOf(planet, sign1, signExalt, sign2)
+              }
+            }
           }
         }
       }
     }
+
   }
 
 

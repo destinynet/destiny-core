@@ -16,7 +16,7 @@ class Exaltation(private val essentialImpl: IEssential,
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)?.let { sign ->
-      if (planet === exaltImpl.getPoint(sign)) {
+      if (planet === with(exaltImpl) { sign.getExaltPoint() }) {
         logger.debug("{} 位於其 {} 的星座 {}", planet, Dignity.EXALTATION, sign)
         "commentBasic" to arrayOf(planet, sign)
       } else

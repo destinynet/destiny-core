@@ -19,7 +19,7 @@ interface RulePredicate<out T : EssentialDignity> {
 class RulerPredicate(private val rulerImpl: IRuler) : RulePredicate<EssentialDignity.Ruler> {
   override fun getRules(p: Planet, h: IHoroscopeModel): List<EssentialDignity.Ruler>? {
     return h.getZodiacSign(p)?.takeIf { sign ->
-      p === rulerImpl.getPoint(sign)
+      p === with(rulerImpl) { sign.getRulerPoint() }
     }?.let { sign ->
       listOf(EssentialDignity.Ruler(p, sign))
     }
@@ -29,7 +29,7 @@ class RulerPredicate(private val rulerImpl: IRuler) : RulePredicate<EssentialDig
 class ExaltPredicate(private val exaltImpl : IExaltation) : RulePredicate<EssentialDignity.Exalt> {
   override fun getRules(p: Planet, h: IHoroscopeModel): List<EssentialDignity.Exalt>? {
     return h.getZodiacSign(p)?.takeIf { sign ->
-      p === exaltImpl.getPoint(sign)
+      p === with(exaltImpl) { sign.getExaltPoint() }
     }?.let { sign ->
       listOf(EssentialDignity.Exalt(p, sign))
     }
@@ -52,8 +52,10 @@ class TriplicityPredicate(private val triplicityImpl : ITriplicity ,
   override fun getRules(p: Planet, h: IHoroscopeModel): List<EssentialDignity.Triplicity>? {
     return h.getZodiacSign(p)?.let { sign ->
       dayNightImpl.getDayNight(h.lmt, h.location).takeIf { dayNight ->
-        (dayNight == DayNight.DAY && p === triplicityImpl.getPoint(sign, DayNight.DAY) ||
-          dayNight == DayNight.NIGHT && p === triplicityImpl.getPoint(sign, DayNight.NIGHT))
+        with(triplicityImpl) {
+          (dayNight == DayNight.DAY && p === sign.getTriplicityPoint(DayNight.DAY) ||
+            dayNight == DayNight.NIGHT && p === sign.getTriplicityPoint(DayNight.NIGHT))
+        }
       }?.let { dayNight ->
         listOf(EssentialDignity.Triplicity(p, sign, dayNight))
       }

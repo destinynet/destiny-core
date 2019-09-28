@@ -27,7 +27,9 @@ class EssentialImpl(private val rulerImpl: IRuler,
    * 哪一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
    */
   override fun Point.receivingRulerFromSignMap(map: Map<Point, ZodiacSign>): Point? {
-    return map[this]?.let { it -> rulerImpl.getPoint(it).takeIf { map.containsKey(it) } }
+    return map[this]?.let { it ->
+      with(rulerImpl) { it.getRulerPoint() }.takeIf { map.containsKey(it) }
+    }
   }
 
 
@@ -35,12 +37,18 @@ class EssentialImpl(private val rulerImpl: IRuler,
    * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 [this]顆星
    */
   override fun Point.receivingExaltFromSignMap(map: Map<Point, ZodiacSign>): Point? {
-    return map[this]?.let { exaltImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
+    return map[this]?.let {
+      with(exaltImpl) {
+        it.getExaltPoint().takeIf { point -> map.containsKey(point) }
+      }
+    }
   }
 
   /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星 */
   override fun Point.receivingTriplicityFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight): Point? {
-    return map[this]?.let { triplicityImpl.getPoint(it, dayNight).takeIf { point -> map.containsKey(point) } }
+    return map[this]?.let {
+      with(triplicityImpl) {it.getTriplicityPoint(dayNight)}.takeIf { point -> map.containsKey(point) }
+    }
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星 */
@@ -55,7 +63,9 @@ class EssentialImpl(private val rulerImpl: IRuler,
 
   /** 哪一顆星，透過 [Dignity.FALL] 接納了 [this]顆星 */
   override fun Point.receivingFallFromSignMap(map: Map<Point, ZodiacSign>): Point? {
-    return map[this]?.let { fallImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
+    return map[this]?.let {
+      with(fallImpl) { it.getFallPoint() }.takeIf { point -> map.containsKey(point) }
+    }
   }
 
   /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星 */
@@ -73,19 +83,20 @@ class EssentialImpl(private val rulerImpl: IRuler,
    */
   override fun getPoint(sign: ZodiacSign, dignity: Dignity): Point? {
     return when (dignity) {
-      Dignity.RULER -> rulerImpl.getPoint(sign)
-      Dignity.EXALTATION -> exaltImpl.getPoint(sign)
-      Dignity.FALL -> fallImpl.getPoint(sign)
+      Dignity.RULER -> with(rulerImpl) { sign.getRulerPoint() }
+      Dignity.EXALTATION -> with(exaltImpl) { sign.getExaltPoint() }
+      Dignity.TRIPLICITY -> null // 需要日夜
+      Dignity.FALL -> with(fallImpl) { sign.getFallPoint() }
       Dignity.DETRIMENT -> with(detrimentImpl) { sign.getDetrimentPoint() }
-      Dignity.FACE -> fallImpl.getPoint(sign)
-      else -> null // TRIPLICITY 需要日夜 , TERM 需要度數
+      Dignity.TERM -> null // 需要度數
+      Dignity.FACE -> null // 需要度數
     }
   }
 
   /** Triplicity of [DayNight.DAY]/[DayNight.NIGHT]  */
   override fun getTriplicityPoint(sign: ZodiacSign, dayNight: DayNight): Point {
 
-    return triplicityImpl.getPoint(sign, dayNight)
+    return with(triplicityImpl) { sign.getTriplicityPoint(dayNight) }
   }
 
   /**
@@ -103,7 +114,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
           logger.debug("{} 透過 {} 接納 {}", this, Dignity.EXALTATION, receivee)
           true
         }
-        triplicityImpl.getPoint(receiveeSign, dayNightDifferentiator.getDayNight(h.lmt, h.location)) -> {
+        with(triplicityImpl) {receiveeSign.getTriplicityPoint(dayNightDifferentiator.getDayNight(h.lmt, h.location))} -> {
           logger.debug("{} 透過 Triplicity 接納 {}", this, receivee)
           true
         }
@@ -136,15 +147,22 @@ class EssentialImpl(private val rulerImpl: IRuler,
 
   /** 如果 兩顆星都處於 [Dignity.RULER] 或是  [Dignity.EXALTATION] , 則為 true  */
   override fun isBothInGoodSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean {
-    return (p1 === rulerImpl.getPoint(sign1) || p1 === exaltImpl.getPoint(sign1))
-        && (p2 === rulerImpl.getPoint(sign2) || p2 === exaltImpl.getPoint(sign2))
+    return with(rulerImpl) {
+      with(exaltImpl) {
+        (p1 === sign1.getRulerPoint() || p1 === sign1.getExaltPoint())
+          && (p2 === sign2.getRulerPoint() || p2 === sign2.getExaltPoint())
+      }
+    }
+
   }
 
   /** 是否兩顆星都處於不佳的狀態. 如果 兩顆星都處於 [Dignity.DETRIMENT] 或是  [Dignity.FALL] , 則為 true  */
   override fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean {
     return with(detrimentImpl) {
-           (p1 === sign1.getDetrimentPoint() || p1 === fallImpl.getPoint(sign1))
-        && (p2 === sign2.getDetrimentPoint() || p2 === fallImpl.getPoint(sign2))
+      with(fallImpl) {
+        (p1 === sign1.getDetrimentPoint() || p1 === sign1.getFallPoint())
+          && (p2 === sign2.getDetrimentPoint() || p2 === sign2.getFallPoint())
+      }
     }
   }
 

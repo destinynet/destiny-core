@@ -18,20 +18,22 @@ class FallPtolemyImplTest {
 
   @Test
   fun getPoint() {
-    assertSame(SATURN, fallImpl.getPoint(ARIES))
-    assertNull(fallImpl.getPoint(TAURUS))
-    assertSame(LunarNode.SOUTH_TRUE, fallImpl.getPoint(GEMINI))
-    //assertSame(LunarNode.SOUTH_MEAN , fallImpl.getDetrimentPoint(GEMINI))
-    assertSame(MARS, fallImpl.getPoint(CANCER))
-    assertNull(fallImpl.getPoint(LEO))
-    assertSame(VENUS, fallImpl.getPoint(VIRGO))
-    assertSame(SUN, fallImpl.getPoint(LIBRA))
-    assertSame(MOON, fallImpl.getPoint(SCORPIO))
-    assertSame(LunarNode.NORTH_TRUE, fallImpl.getPoint(SAGITTARIUS))
-    //assertSame(LunarNode.NORTH_MEAN, fallImpl.getDetrimentPoint(SAGITTARIUS))
-    assertSame(JUPITER, fallImpl.getPoint(CAPRICORN))
-    assertNull(fallImpl.getPoint(AQUARIUS))
-    assertSame(MERCURY, fallImpl.getPoint(PISCES))
+    with(fallImpl) {
+      assertSame(SATURN, ARIES.getFallPoint())
+      assertNull(TAURUS.getFallPoint())
+      assertSame(LunarNode.SOUTH_TRUE, GEMINI.getFallPoint())
+      assertSame(MARS, CANCER.getFallPoint())
+      assertNull(LEO.getFallPoint())
+      assertSame(VENUS, VIRGO.getFallPoint())
+      assertSame(SUN, LIBRA.getFallPoint())
+      assertSame(MOON, SCORPIO.getFallPoint())
+      assertSame(LunarNode.NORTH_TRUE, SAGITTARIUS.getFallPoint())
+      assertSame(JUPITER, CAPRICORN.getFallPoint())
+      assertNull(AQUARIUS.getFallPoint())
+      assertSame(MERCURY, PISCES.getFallPoint())
+      //assertSame(LunarNode.SOUTH_MEAN , fallImpl.getDetrimentPoint(GEMINI))
+      //assertSame(LunarNode.NORTH_MEAN, fallImpl.getDetrimentPoint(SAGITTARIUS))
+    }
   }
 
   @Test

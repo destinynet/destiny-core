@@ -19,20 +19,23 @@ class RulerPtolemyImplTest {
 
   @Test
   fun `不分日夜 取得 RULER 及 Ruling`() {
-    assertSame(MARS, impl.getPoint(ARIES))
-    assertSame(VENUS, impl.getPoint(TAURUS))
-    assertSame(MERCURY, impl.getPoint(GEMINI))
-    assertSame(MOON, impl.getPoint(CANCER))
-    assertSame(SUN, impl.getPoint(LEO))
-    assertSame(MERCURY, impl.getPoint(VIRGO))
-    assertSame(VENUS, impl.getPoint(LIBRA))
-    assertSame(MARS, impl.getPoint(SCORPIO))
-    assertSame(JUPITER, impl.getPoint(SAGITTARIUS))
-    assertSame(SATURN, impl.getPoint(CAPRICORN))
-    assertSame(SATURN, impl.getPoint(AQUARIUS))
-    assertSame(JUPITER, impl.getPoint(PISCES))
 
     with(impl) {
+
+      assertSame(MARS, ARIES.getRulerPoint())
+      assertSame(VENUS, TAURUS.getRulerPoint())
+      assertSame(MERCURY, GEMINI.getRulerPoint())
+      assertSame(MOON, CANCER.getRulerPoint())
+      assertSame(SUN, LEO.getRulerPoint())
+      assertSame(MERCURY, VIRGO.getRulerPoint())
+      assertSame(VENUS, LIBRA.getRulerPoint())
+      assertSame(MARS, SCORPIO.getRulerPoint())
+      assertSame(JUPITER, SAGITTARIUS.getRulerPoint())
+      assertSame(SATURN, CAPRICORN.getRulerPoint())
+      assertSame(SATURN, AQUARIUS.getRulerPoint())
+      assertSame(JUPITER, PISCES.getRulerPoint())
+
+
       assertTrue(SUN.getRulingSigns().contains(LEO))
       assertTrue(MOON.getRulingSigns().contains(CANCER))
       assertTrue(MERCURY.getRulingSigns().contains(VIRGO))

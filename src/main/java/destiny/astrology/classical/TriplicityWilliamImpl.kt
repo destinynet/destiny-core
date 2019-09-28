@@ -29,15 +29,15 @@ import java.io.Serializable
 class TriplicityWilliamImpl : ITriplicity, Serializable {
 
   /** 哪顆星在此星座得到三分相 (+3) */
-  override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Planet {
+  override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Planet {
     return when(dayNight) {
-      DayNight.DAY -> when(sign.element) {
+      DayNight.DAY -> when(this.element) {
         FIRE -> SUN
         EARTH -> VENUS
         AIR -> SATURN
         WATER -> MARS
       }
-      DayNight.NIGHT -> when(sign.element) {
+      DayNight.NIGHT -> when(this.element) {
         FIRE -> JUPITER
         EARTH -> MOON
         AIR -> MERCURY
@@ -50,8 +50,8 @@ class TriplicityWilliamImpl : ITriplicity, Serializable {
    * 共管 , Partner
    * Ptolomy 只有水象星座，由火星共管
    *  */
-  override fun getPartner(sign: ZodiacSign): Point? {
-    return sign.element.takeIf { it === WATER }?.let { MARS }
+  override fun ZodiacSign.getPartner(): Point? {
+    return this.element.takeIf { it === WATER }?.let { MARS }
   }
 
 }

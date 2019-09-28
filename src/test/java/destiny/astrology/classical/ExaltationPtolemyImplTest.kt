@@ -18,21 +18,24 @@ class ExaltationPtolemyImplTest {
 
   @Test
   fun `從星座找尋 EXALT 的星體`() {
-    assertSame(SUN, exaltImpl.getPoint(ARIES))
-    assertSame(MOON, exaltImpl.getPoint(TAURUS))
-    assertSame(LunarNode.NORTH_TRUE, exaltImpl.getPoint(GEMINI))
-//    assertSame(LunarNode.NORTH_MEAN, exaltImpl.getDetrimentPoint(ZodiacSign.GEMINI))
-    assertSame(JUPITER, exaltImpl.getPoint(CANCER))
-    assertNull(exaltImpl.getPoint(LEO))
-    assertSame(MERCURY, exaltImpl.getPoint(VIRGO))
-    assertSame(SATURN, exaltImpl.getPoint(LIBRA))
-    assertNull(exaltImpl.getPoint(SCORPIO))
 
-    assertSame(LunarNode.SOUTH_TRUE, exaltImpl.getPoint(SAGITTARIUS))
-//    assertSame(LunarNode.SOUTH_MEAN, exaltImpl.getDetrimentPoint(SAGITTARIUS))
-    assertSame(MARS, exaltImpl.getPoint(CAPRICORN))
-    assertNull(exaltImpl.getPoint(AQUARIUS))
-    assertSame(VENUS, exaltImpl.getPoint(PISCES))
+    with(exaltImpl) {
+
+      assertSame(SUN, ARIES.getExaltPoint())
+      assertSame(MOON, TAURUS.getExaltPoint())
+      assertSame(LunarNode.NORTH_TRUE, GEMINI.getExaltPoint())
+      assertSame(JUPITER, CANCER.getExaltPoint())
+      assertNull(LEO.getExaltPoint())
+      assertSame(MERCURY, VIRGO.getExaltPoint())
+      assertSame(SATURN, LIBRA.getExaltPoint())
+      assertNull(SCORPIO.getExaltPoint())
+
+      assertSame(LunarNode.SOUTH_TRUE, SAGITTARIUS.getExaltPoint())
+      assertSame(MARS, CAPRICORN.getExaltPoint())
+      assertNull(AQUARIUS.getExaltPoint())
+      assertSame(VENUS, PISCES.getExaltPoint())
+    }
+
   }
 
   @Test

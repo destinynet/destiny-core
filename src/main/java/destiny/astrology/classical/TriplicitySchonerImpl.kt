@@ -30,15 +30,15 @@ import java.io.Serializable
 class TriplicitySchonerImpl : ITriplicity , Serializable {
 
   /** 哪顆星在此星座得到三分相 (+3) */
-  override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Planet {
+  override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Planet {
     return when(dayNight) {
-      DayNight.DAY -> when(sign.element) {
+      DayNight.DAY -> when(this.element) {
         FIRE -> SUN
         EARTH -> MOON
         AIR -> SATURN
         WATER -> VENUS
       }
-      DayNight.NIGHT -> when(sign.element) {
+      DayNight.NIGHT -> when(this.element) {
         FIRE -> JUPITER
         EARTH -> VENUS
         AIR -> MERCURY
@@ -48,8 +48,8 @@ class TriplicitySchonerImpl : ITriplicity , Serializable {
   }
 
   /** 共管 , Partner */
-  override fun getPartner(sign: ZodiacSign): Planet? {
-    return when (sign.element) {
+  override fun ZodiacSign.getPartner(): Planet? {
+    return when (this.element) {
       FIRE -> MARS
       EARTH -> SATURN
       AIR -> JUPITER

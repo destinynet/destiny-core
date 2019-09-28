@@ -12,7 +12,7 @@ class Fall : EssentialRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return h.getZodiacSign(planet)
-      ?.takeIf { sign -> planet === fallImpl.getPoint(sign)}
+      ?.takeIf { sign -> planet === with(fallImpl) { sign.getFallPoint() } }
       ?.let { "comment" to arrayOf(planet , it) }
   }
 }

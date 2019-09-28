@@ -62,8 +62,8 @@ class DetrimentPtolemyImpl : AbstractPtolemy(), IDetriment {
 class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 
   /** 哪顆星體在此星座 擢升 (EXALT , +4) , 必定為 1 or 0 顆星 */
-  override fun getPoint(sign: ZodiacSign): Point? {
-    return findPoint(sign, exaltDegreeMap)
+  override fun ZodiacSign.getExaltPoint(): Point? {
+    return findPoint(this, exaltDegreeMap)
   }
 
   /** 此星體在哪個星座 擢升 (EXALT , +4) , 前者逆函數 , 必定有值 */
@@ -81,8 +81,8 @@ class ExaltationPtolemyImpl : AbstractPtolemy(), IExaltation {
 class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
 
   /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
-  override fun getPoint(sign: ZodiacSign): Point? {
-    return findPoint(sign, fallDegreeMap)
+  override fun ZodiacSign.getFallPoint(): Point? {
+    return findPoint(this, fallDegreeMap)
   }
 
   /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
@@ -116,15 +116,15 @@ class FallPtolemyImpl : AbstractPtolemy(), IFall, Serializable {
 class TriplicityPtolomyImpl : ITriplicity, Serializable {
 
   /** 哪顆星在此星座得到三分相 (+3) */
-  override fun getPoint(sign: ZodiacSign, dayNight: DayNight): Point {
+  override fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Point {
     return when (dayNight) {
-      DAY -> when (sign.element) {
+      DAY -> when (this.element) {
         FIRE -> SUN
         EARTH -> VENUS
         AIR -> SATURN
         WATER -> VENUS
       }
-      NIGHT -> when (sign.element) {
+      NIGHT -> when (this.element) {
         FIRE -> JUPITER
         EARTH -> MOON
         AIR -> MERCURY
@@ -137,8 +137,8 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
    * 共管 , Partner
    * Ptolomy 只有水象星座，由火星共管
    * */
-  override fun getPartner(sign: ZodiacSign): Point? {
-    return when (sign.element) {
+  override fun ZodiacSign.getPartner(): Point? {
+    return when (this.element) {
       FIRE -> MARS
       EARTH -> SATURN
       AIR -> JUPITER
@@ -161,8 +161,8 @@ class TermPtolomyImpl : ITerm, Serializable {
     throw RuntimeException("Cannot find Essential Terms at degree $degree , signIndex = $signIndex")
   }
 
-  override fun getPoint(sign: ZodiacSign, degree: Double): Point {
-    return getPoint(sign.degree + degree)
+  override fun ZodiacSign.getTermPoint(degree: Double): Point {
+    return getPoint(this.degree + degree)
   }
 
   companion object {
@@ -280,8 +280,8 @@ class FacePtolomyImpl : IFace, Serializable {
   }
 
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
-  override fun getPoint(sign: ZodiacSign, degree: Double): Planet {
-    return getPoint(sign.degree + degree)
+  override fun ZodiacSign.getFacePoint(degree: Double): Planet {
+    return getPoint(this.degree + degree)
   }
 
   companion object {

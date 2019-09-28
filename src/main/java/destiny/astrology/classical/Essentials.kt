@@ -13,13 +13,13 @@ import destiny.core.DayNight
 /** Ruler , +5 */
 interface IRuler {
 
-  /** 不分日夜，取得 RULER , 傳回的為 非null值 */
-  fun getPoint(sign: ZodiacSign): Point {
-    return sign.getRulerPoint(null)!!
-  }
+//  /** 不分日夜，取得 RULER , 傳回的為 非null值 */
+//  fun ZodiacSign.getPoint(): Point {
+//    return this.getRulerPoint(null)!!
+//  }
 
   /** @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null) */
-  fun ZodiacSign.getRulerPoint(dayNight: DayNight?): Point?
+  fun ZodiacSign.getRulerPoint(dayNight: DayNight? = null): Point?
 
   /** 不分日夜，取得此行星為哪個星座的主人 , 傳回的為 非null值 . size 固定為 2  */
   fun Planet.getRulingSigns(): Set<ZodiacSign>
@@ -50,7 +50,7 @@ interface IDetriment {
 interface IExaltation {
 
   /** 哪顆星體在此星座 擢升 (EXALT , +4) , 必定為 1 or 0 顆星 */
-  fun getPoint(sign: ZodiacSign): Point?
+  fun ZodiacSign.getExaltPoint(): Point?
 
   /** 此星體在哪個星座 擢升 (EXALT , +4) , 前者逆函數 */
   fun Point.getExaltSign(): ZodiacSign?
@@ -65,7 +65,7 @@ interface IExaltation {
 interface IFall {
 
   /** 哪顆星體在此星座 落 (FALL , -4) , 必定為 1 or 0 顆星 */
-  fun getPoint(sign: ZodiacSign): Point?
+  fun ZodiacSign.getFallPoint(): Point?
 
   /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
   fun Point.getFallingSign(): ZodiacSign?
@@ -79,10 +79,10 @@ interface IFall {
 interface ITriplicity {
 
   /** 哪顆星在此星座得到三分相 (+3) */
-  fun getPoint(sign: ZodiacSign, dayNight: DayNight): Point
+  fun ZodiacSign.getTriplicityPoint(dayNight: DayNight): Point
 
   /** 共管 , Partner */
-  fun getPartner(sign: ZodiacSign) : Point?
+  fun ZodiacSign.getPartner() : Point?
 }
 
 
@@ -93,7 +93,7 @@ interface ITerm {
   fun getPoint(degree: Double): Point
 
   /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30  */
-  fun getPoint(sign: ZodiacSign, degree: Double): Point
+  fun ZodiacSign.getTermPoint(degree: Double): Point
 }
 
 /** Face (十度區 , Decans ) , +1 */
@@ -103,5 +103,5 @@ interface IFace {
   fun getPoint(degree: Double): Point
 
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
-  fun getPoint(sign: ZodiacSign, degree: Double): Point
+  fun ZodiacSign.getFacePoint(degree: Double): Point
 }
