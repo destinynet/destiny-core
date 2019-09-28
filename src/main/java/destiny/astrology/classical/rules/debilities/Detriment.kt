@@ -13,7 +13,7 @@ class Detriment : EssentialRule() {
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
 
     return h.getZodiacSign(planet)
-      ?.takeIf { sign -> planet === detrimentImpl.getPoint(sign) }
+      ?.takeIf { sign -> planet === with(detrimentImpl) { sign.getDetrimentPoint() } }
       ?.let { "comment" to arrayOf(planet , it) }
   }
 }

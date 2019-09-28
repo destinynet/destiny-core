@@ -3,7 +3,10 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.*
+import destiny.astrology.Planet
+import destiny.astrology.Point
+import destiny.astrology.PointDegree
+import destiny.astrology.ZodiacSign
 import destiny.astrology.classical.Dignity.RULER
 import destiny.core.DayNight
 
@@ -12,33 +15,33 @@ interface IRuler {
 
   /** 不分日夜，取得 RULER , 傳回的為 非null值 */
   fun getPoint(sign: ZodiacSign): Point {
-    return getPoint(sign, null)!!
+    return sign.getRulerPoint(null)!!
   }
 
   /** @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null) */
-  fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Point?
+  fun ZodiacSign.getRulerPoint(dayNight: DayNight?): Point?
 
   /** 不分日夜，取得此行星為哪個星座的主人 , 傳回的為 非null值 . size 固定為 2  */
-  fun getSigns(planet: Planet): Set<ZodiacSign>
+  fun Planet.getRulingSigns(): Set<ZodiacSign>
 
   /**
    * 取得此行星在日、夜 是什麼星座的 [RULER]
    * @param dayNight 若為 null 則取得不分日夜的版本(non-null)
    */
-  fun getSign(planet: Planet, dayNight: DayNight): ZodiacSign?
+  fun Planet.getRulingSign(dayNight: DayNight): ZodiacSign?
 }
 
 /** Detriment , -5 */
 interface IDetriment {
 
   /** 在此星座 陷(-5) 的行星為何 */
-  fun getPoint(sign: ZodiacSign): Planet
+  fun ZodiacSign.getDetrimentPoint(): Planet
 
   /** 此行星在哪些星座 陷 (-5) */
-  fun getSigns(planet: Planet): Set<ZodiacSign>
+  fun Planet.getDetrimentSigns(): Set<ZodiacSign>
 
   /** 在此星座 ，區分日夜， 陷(-5) 的行星為何?  (好像沒看過 Detriment 還區分日夜) */
-  fun getPoint(sign: ZodiacSign, dayNight: DayNight?): Planet?
+  fun ZodiacSign.getDetrimentPoint(dayNight: DayNight?): Planet?
 
 }
 
@@ -50,10 +53,10 @@ interface IExaltation {
   fun getPoint(sign: ZodiacSign): Point?
 
   /** 此星體在哪個星座 擢升 (EXALT , +4) , 前者逆函數 */
-  fun getSign(point: Point): ZodiacSign?
+  fun Point.getExaltSign(): ZodiacSign?
 
   /** 取得在此星座得到 擢升 (EXALT , +4) 的星體及度數 */
-  fun getPointDegree(sign: ZodiacSign): PointDegree?
+  fun ZodiacSign.getExaltPointDegree(): PointDegree?
 
 }
 
@@ -65,10 +68,10 @@ interface IFall {
   fun getPoint(sign: ZodiacSign): Point?
 
   /** 此星體在哪個星座 落 (FALL , -4) , 前者逆函數 */
-  fun getSign(point: Point): ZodiacSign?
+  fun Point.getFallingSign(): ZodiacSign?
 
   /** 取得在此星座得到 落 (FALL , -4) 的星體及度數 */
-  fun getPointDegree(sign: ZodiacSign): PointDegree?
+  fun ZodiacSign.getPointDegree(): PointDegree?
 }
 
 

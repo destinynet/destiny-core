@@ -60,7 +60,11 @@ class EssentialImpl(private val rulerImpl: IRuler,
 
   /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星 */
   override fun Point.receivingDetrimentFromSignMap(map: Map<Point, ZodiacSign>): Point? {
-    return map[this]?.let { detrimentImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
+    return map[this]?.let { it: ZodiacSign ->
+      with(detrimentImpl) {
+        it.getDetrimentPoint().takeIf { point -> map.containsKey(point) }
+      }
+    }
   }
 
   /**
@@ -72,7 +76,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
       Dignity.RULER -> rulerImpl.getPoint(sign)
       Dignity.EXALTATION -> exaltImpl.getPoint(sign)
       Dignity.FALL -> fallImpl.getPoint(sign)
-      Dignity.DETRIMENT -> detrimentImpl.getPoint(sign)
+      Dignity.DETRIMENT -> with(detrimentImpl) { sign.getDetrimentPoint() }
       Dignity.FACE -> fallImpl.getPoint(sign)
       else -> null // TRIPLICITY 需要日夜 , TERM 需要度數
     }
@@ -85,8 +89,8 @@ class EssentialImpl(private val rulerImpl: IRuler,
   }
 
   /**
-   * [this] 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
-   * 老闆是 [this] , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
+   * [this] 是否 接納 [receivee] by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
+   * 主人是 [this] , 客人是 [receivee] , 如果客人進入了主人的地盤 ( 廟 / 旺 / 三分 / Terms / Faces ) , 則「主人接納客人」、「客人接收到主人的 Dignity」
    */
   override fun Point.isReceivingFromDignities(receivee: Point, h: IHoroscopeModel): Boolean {
     return h.getZodiacSign(receivee)?.let { receiveeSign ->
@@ -138,8 +142,10 @@ class EssentialImpl(private val rulerImpl: IRuler,
 
   /** 是否兩顆星都處於不佳的狀態. 如果 兩顆星都處於 [Dignity.DETRIMENT] 或是  [Dignity.FALL] , 則為 true  */
   override fun isBothInBadSituation(p1: Point, sign1: ZodiacSign, p2: Point, sign2: ZodiacSign): Boolean {
-    return (p1 === detrimentImpl.getPoint(sign1) || p1 === fallImpl.getPoint(sign1))
-        && (p2 === detrimentImpl.getPoint(sign2) || p2 === fallImpl.getPoint(sign2))
+    return with(detrimentImpl) {
+           (p1 === sign1.getDetrimentPoint() || p1 === fallImpl.getPoint(sign1))
+        && (p2 === sign2.getDetrimentPoint() || p2 === fallImpl.getPoint(sign2))
+    }
   }
 
   companion object {

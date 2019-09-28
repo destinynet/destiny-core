@@ -222,8 +222,8 @@ interface IEssential {
   fun Point.isReceivingFromDebilities(receivee: Point, h: IHoroscopeModel): Boolean
 
   /**
-   * [this] 是否 接納 receivee by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
-   * 老闆是 [this] , 客人是 receivee , 如果客人進入了老闆的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「老闆接納外人」
+   * [this] 是否 接納 [receivee] by Essential Dignities (Ruler/Exaltation/Triplicity/Term/Face) <br></br>
+   * 主人是 [this] , 客人是 [receivee] , 如果客人進入了主人的地盤 ( 旺 / 廟 / 三分 / Terms / Faces ) , 則「主人接納客人」、「客人接收到主人的 Dignity」
    */
   fun Point.isReceivingFromDignities(receivee: Point, h: IHoroscopeModel): Boolean
 

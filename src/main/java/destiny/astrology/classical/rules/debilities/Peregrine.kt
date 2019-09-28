@@ -4,7 +4,10 @@
  */
 package destiny.astrology.classical.rules.debilities
 
-import destiny.astrology.*
+import destiny.astrology.IDayNight
+import destiny.astrology.IHoroscopeModel
+import destiny.astrology.Planet
+import destiny.astrology.ZodiacSign
 import destiny.core.DayNight
 
 /**
@@ -53,7 +56,7 @@ class Peregrine(
       if (
         planet !== rulerImpl.getPoint(sign) &&
         planet !== exaltImpl.getPoint(sign) &&
-        planet !== detrimentImpl.getPoint(sign) &&
+        planet !== with(detrimentImpl) { sign.getDetrimentPoint() } &&
         planet !== fallImpl.getPoint(sign) &&
         planet !== termImpl.getPoint(sign , planetDeg) &&
         planet !== faceImpl.getPoint(planetDeg)) {

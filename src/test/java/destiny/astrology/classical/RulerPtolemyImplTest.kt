@@ -5,7 +5,8 @@ package destiny.astrology.classical
 
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
-import destiny.core.DayNight
+import destiny.core.DayNight.DAY
+import destiny.core.DayNight.NIGHT
 import kotlin.test.Test
 import kotlin.test.assertNull
 import kotlin.test.assertSame
@@ -13,7 +14,7 @@ import kotlin.test.assertTrue
 
 class RulerPtolemyImplTest {
 
-  internal var impl = RulerPtolemyImpl()
+  internal var impl : IRuler = RulerPtolemyImpl()
 
 
   @Test
@@ -31,93 +32,84 @@ class RulerPtolemyImplTest {
     assertSame(SATURN, impl.getPoint(AQUARIUS))
     assertSame(JUPITER, impl.getPoint(PISCES))
 
-    assertTrue(impl.getSigns(SUN).contains(LEO))
-    assertTrue(impl.getSigns(MOON).contains(CANCER))
-    assertTrue(impl.getSigns(MERCURY).contains(VIRGO))
-    assertTrue(impl.getSigns(MERCURY).contains(GEMINI))
-    assertTrue(impl.getSigns(VENUS).contains(LIBRA))
-    assertTrue(impl.getSigns(VENUS).contains(TAURUS))
-    assertTrue(impl.getSigns(MARS).contains(SCORPIO))
-    assertTrue(impl.getSigns(MARS).contains(ARIES))
-    assertTrue(impl.getSigns(JUPITER).contains(SAGITTARIUS))
-    assertTrue(impl.getSigns(JUPITER).contains(PISCES))
-    assertTrue(impl.getSigns(SATURN).contains(CAPRICORN))
-    assertTrue(impl.getSigns(SATURN).contains(AQUARIUS))
+    with(impl) {
+      assertTrue(SUN.getRulingSigns().contains(LEO))
+      assertTrue(MOON.getRulingSigns().contains(CANCER))
+      assertTrue(MERCURY.getRulingSigns().contains(VIRGO))
+      assertTrue(MERCURY.getRulingSigns().contains(GEMINI))
+      assertTrue(VENUS.getRulingSigns().contains(LIBRA))
+      assertTrue(VENUS.getRulingSigns().contains(TAURUS))
+      assertTrue(MARS.getRulingSigns().contains(SCORPIO))
+      assertTrue(MARS.getRulingSigns().contains(ARIES))
+      assertTrue(JUPITER.getRulingSigns().contains(SAGITTARIUS))
+      assertTrue(JUPITER.getRulingSigns().contains(PISCES))
+      assertTrue(SATURN.getRulingSigns().contains(CAPRICORN))
+      assertTrue(SATURN.getRulingSigns().contains(AQUARIUS))
+    }
   }
 
 
   @Test
   fun `區分日夜 取得 RULER 及 Ruling`() {
-    assertSame(MARS, impl.getPoint(ARIES, DayNight.DAY))
-    assertNull(impl.getPoint(ARIES, DayNight.NIGHT)) // 牡羊晚上沒主人
+    with(impl) {
 
-    assertNull(impl.getPoint(TAURUS, DayNight.DAY))  // 金牛白天沒主人
-    assertSame(VENUS, impl.getPoint(TAURUS, DayNight.NIGHT))
+      assertSame(MARS, ARIES.getRulerPoint(DAY))
+      assertNull(ARIES.getRulerPoint(NIGHT)) // 牡羊晚上沒主人
 
-    assertSame(MERCURY, impl.getPoint(GEMINI, DayNight.DAY))
-    assertNull(impl.getPoint(GEMINI, DayNight.NIGHT)) // 雙子晚上沒主人
+      assertNull(TAURUS.getRulerPoint(DAY))  // 金牛白天沒主人
+      assertSame(VENUS, TAURUS.getRulerPoint(NIGHT))
 
-    assertSame(MOON, impl.getPoint(CANCER, DayNight.DAY))   // 巨蟹早晚都是月亮
-    assertSame(MOON, impl.getPoint(CANCER, DayNight.NIGHT))
+      assertSame(MERCURY, GEMINI.getRulerPoint(DAY))
+      assertNull(GEMINI.getRulerPoint(NIGHT)) // 雙子晚上沒主人
 
-    assertSame(SUN, impl.getPoint(LEO, DayNight.DAY))   // 獅子早晚都是太陽
-    assertSame(SUN, impl.getPoint(LEO, DayNight.NIGHT))
+      assertSame(MOON, CANCER.getRulerPoint(DAY))   // 巨蟹早晚都是月亮
+      assertSame(MOON, CANCER.getRulerPoint(NIGHT))
 
-    assertNull(impl.getPoint(VIRGO, DayNight.DAY))       // 處女白天沒主人
-    assertSame(MERCURY, impl.getPoint(VIRGO, DayNight.NIGHT))
+      assertSame(SUN, LEO.getRulerPoint(DAY))   // 獅子早晚都是太陽
+      assertSame(SUN, LEO.getRulerPoint(NIGHT))
 
-    assertSame(VENUS, impl.getPoint(LIBRA, DayNight.DAY))
-    assertNull(impl.getPoint(LIBRA, DayNight.NIGHT))      // 天秤晚上沒主人
+      assertNull(VIRGO.getRulerPoint(DAY))       // 處女白天沒主人
+      assertSame(MERCURY, VIRGO.getRulerPoint(NIGHT))
 
-    assertNull(impl.getPoint(SCORPIO, DayNight.DAY))      // 天蠍白天沒主人
-    assertSame(MARS, impl.getPoint(SCORPIO, DayNight.NIGHT))
+      assertSame(VENUS, LIBRA.getRulerPoint(DAY))
+      assertNull(LIBRA.getRulerPoint(NIGHT))      // 天秤晚上沒主人
 
-    assertSame(JUPITER, impl.getPoint(SAGITTARIUS, DayNight.DAY))
-    assertNull(impl.getPoint(SAGITTARIUS, DayNight.NIGHT))  // 射手晚上沒主人
+      assertNull(SCORPIO.getRulerPoint(DAY))      // 天蠍白天沒主人
+      assertSame(MARS, SCORPIO.getRulerPoint(NIGHT))
 
-    assertNull(impl.getPoint(CAPRICORN, DayNight.DAY))  // 摩羯白天沒主人
-    assertSame(SATURN, impl.getPoint(CAPRICORN, DayNight.NIGHT))
+      assertSame(JUPITER, SAGITTARIUS.getRulerPoint(DAY))
+      assertNull(SAGITTARIUS.getRulerPoint(NIGHT))  // 射手晚上沒主人
 
-    assertSame(SATURN, impl.getPoint(AQUARIUS, DayNight.DAY))
-    assertNull(impl.getPoint(AQUARIUS, DayNight.NIGHT)) // 水瓶晚上沒主人
+      assertNull(CAPRICORN.getRulerPoint(DAY))  // 摩羯白天沒主人
+      assertSame(SATURN, CAPRICORN.getRulerPoint(NIGHT))
 
-    assertNull(impl.getPoint(PISCES, DayNight.DAY))     // 雙魚白天沒主人
-    assertSame(JUPITER, impl.getPoint(PISCES, DayNight.NIGHT))
+      assertSame(SATURN, AQUARIUS.getRulerPoint(DAY))
+      assertNull(AQUARIUS.getRulerPoint(NIGHT)) // 水瓶晚上沒主人
+
+      assertNull(PISCES.getRulerPoint(DAY))     // 雙魚白天沒主人
+      assertSame(JUPITER, PISCES.getRulerPoint(NIGHT))
+
+      assertSame(ARIES, MARS.getRulingSign(DAY))      // 火星 白天掌管 牡羊
+      assertSame(SCORPIO, MARS.getRulingSign(NIGHT))  // 火星 晚上掌管 天蠍
 
 
-    MARS.also {
-      assertSame(ARIES, impl.getSign(it, DayNight.DAY))      // 火星 白天掌管 牡羊
-      assertSame(SCORPIO, impl.getSign(it, DayNight.NIGHT))  // 火星 晚上掌管 天蠍
-    }
+      assertSame(LIBRA, VENUS.getRulingSign(DAY))    // 金星 白天掌管 天秤
+      assertSame(TAURUS, VENUS.getRulingSign(NIGHT)) // 金星 晚上掌管 金牛
 
-    VENUS.also {
-      assertSame(LIBRA, impl.getSign(it, DayNight.DAY))    // 金星 白天掌管 天秤
-      assertSame(TAURUS, impl.getSign(it, DayNight.NIGHT)) // 金星 晚上掌管 金牛
-    }
+      assertSame(GEMINI, MERCURY.getRulingSign(DAY))   // 水星 白天掌管 雙子
+      assertSame(VIRGO, MERCURY.getRulingSign(NIGHT))  // 水星 晚上掌管 處女
 
-    MERCURY.also {
-      assertSame(GEMINI, impl.getSign(it, DayNight.DAY))   // 水星 白天掌管 雙子
-      assertSame(VIRGO, impl.getSign(it, DayNight.NIGHT))  // 水星 晚上掌管 處女
-    }
+      assertSame(CANCER, MOON.getRulingSign(DAY))   // 月亮 白天晚上都掌管 巨蟹
+      assertSame(CANCER, MOON.getRulingSign(NIGHT))
 
-    MOON.also {
-      assertSame(CANCER, impl.getSign(it, DayNight.DAY))   // 月亮 白天晚上都掌管 巨蟹
-      assertSame(CANCER, impl.getSign(it, DayNight.NIGHT))
-    }
+      assertSame(LEO, SUN.getRulingSign(DAY))    // 太陽 白天晚上都掌管 獅子
+      assertSame(LEO, SUN.getRulingSign(NIGHT))
 
-    SUN.also {
-      assertSame(LEO, impl.getSign(it, DayNight.DAY))    // 太陽 白天晚上都掌管 獅子
-      assertSame(LEO, impl.getSign(it, DayNight.NIGHT))
-    }
+      assertSame(SAGITTARIUS, JUPITER.getRulingSign(DAY))  // 木星 白天掌管 射手
+      assertSame(PISCES, JUPITER.getRulingSign(NIGHT))     // 木星 晚上掌管 雙魚
 
-    JUPITER.also {
-      assertSame(SAGITTARIUS, impl.getSign(it, DayNight.DAY))  // 木星 白天掌管 射手
-      assertSame(PISCES, impl.getSign(it, DayNight.NIGHT))     // 木星 晚上掌管 雙魚
-    }
-
-    SATURN.also {
-      assertSame(AQUARIUS, impl.getSign(it, DayNight.DAY))     // 土星 白天掌管 水瓶
-      assertSame(CAPRICORN, impl.getSign(it, DayNight.NIGHT))  // 土星 晚上掌管 摩羯
+      assertSame(AQUARIUS, SATURN.getRulingSign(DAY))     // 土星 白天掌管 水瓶
+      assertSame(CAPRICORN, SATURN.getRulingSign(NIGHT))  // 土星 晚上掌管 摩羯
     }
   }
 }

@@ -14,17 +14,14 @@ interface ICollectionOfLight {
   }
 
   /**
-   * 指定某種「光線蒐集模式」
+   * 查詢此 [planet] 是否有搜集光線
+   * 可以想成 [planet].collectsLightFrom(h , collectType) : List<Planet>?
    *
    * @param collectType 詢問是否符合某種 「光線蒐集模式」 : [CollectType]
    * 傳回的 List<Planet> size 必定 = 2 , 且不為 null
    */
   fun getResult(planet: Planet, h: IHoroscopeModel, collectType: CollectType): List<Planet>?
 
-  /**
-   * 此 [this]星體 是否在此盤中，有收集光線？  若有，則回傳的必為兩顆 [Planet]
-   */
-  fun Planet.collectsLightFrom(h: IHoroscopeModel , collectType: CollectType) : List<Planet>?
 
   /**
    * 「可能」不指定「光線蒐集模式」，若呈現任何一種，就傳回來
