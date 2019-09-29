@@ -5,6 +5,8 @@ import destiny.astrology.ZodiacSign
 
 interface IMutualData {
 
+  //val digMap2 = Map<Point , Pair<Dignity , Dignity?>>
+
   val dignityMap: Map<Point, Dignity>
 
   val twoPoints: Set<Point>

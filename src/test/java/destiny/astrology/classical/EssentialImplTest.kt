@@ -9,7 +9,8 @@ import destiny.astrology.Point
 import destiny.astrology.ZodiacSign
 import destiny.astrology.ZodiacSign.*
 import destiny.astrology.classical.Dignity.*
-import destiny.core.DayNight
+import destiny.core.DayNight.DAY
+import destiny.core.DayNight.NIGHT
 import mu.KotlinLogging
 import kotlin.test.*
 
@@ -27,6 +28,166 @@ class EssentialImplTest {
   private val faceImpl: IFace = FacePtolomyImpl()
   private val dayNightDifferentiator = DayNightSimpleImpl()
   private val essentialImpl: IEssential = EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl, dayNightDifferentiator)
+
+  /**
+   * 測試星體本身的強弱 (純粹 sign map)
+   */
+  @Test
+  fun testGetDignitiesFromSignMap() {
+    with(essentialImpl) {
+
+      // 太陽
+      SUN.also { planet ->
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES), DAY), listOf(EXALTATION, TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES)), listOf(EXALTATION)) // 沒指定日夜 , 就不判定 TRIPLICITY
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO), DAY), listOf(RULER, TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO), NIGHT), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA)), listOf(FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS), DAY), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS), NIGHT), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES)), listOf())
+      } // sun
+
+      // 月亮
+      MOON.also { planet ->
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES)), emptyList())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS)), listOf(EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS), DAY), listOf(EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS), NIGHT), listOf(EXALTATION, TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI)), emptyList())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER), DAY), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER), NIGHT), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO)), emptyList())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO)), emptyList())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO), NIGHT), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA)), emptyList())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO)), listOf(FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES)), listOf())
+      } // moon
+
+      // 水星
+      MERCURY.also { planet ->
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI), DAY), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI), NIGHT), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO)), listOf(RULER, EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO), DAY), listOf(EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO), NIGHT), listOf(RULER, EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA), NIGHT), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS), NIGHT), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES)), listOf(FALL, DETRIMENT))
+      } // mercury
+
+      // 金星
+      VENUS.also { planet ->
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS), DAY), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS), NIGHT), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO)), listOf(FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA), DAY), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA), NIGHT), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES)), listOf(EXALTATION))
+      } // venus
+
+      // 火星
+      MARS.also { planet ->
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES), DAY), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES), NIGHT), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER)), listOf(TRIPLICITY, FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER), DAY), listOf(TRIPLICITY, FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER), NIGHT), listOf(TRIPLICITY, FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO)), listOf(RULER, TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO), DAY), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO), NIGHT), listOf(RULER, TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN)), listOf(EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES)), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES), DAY), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES), NIGHT), listOf(TRIPLICITY))
+      } // mars
+
+      // 木星
+      JUPITER.also { planet ->
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES), DAY), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES), NIGHT), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER)), listOf(EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO), NIGHT), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS), DAY), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS), NIGHT), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN)), listOf(FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES), DAY), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES), NIGHT), listOf(RULER))
+      } // jupiter
+
+      // 土星
+      SATURN.also { planet ->
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to ARIES)), listOf(FALL))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to TAURUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to GEMINI), DAY), listOf(TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CANCER)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LEO)), listOf(DETRIMENT))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to VIRGO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA)), listOf(EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA), DAY), listOf(EXALTATION, TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to LIBRA), NIGHT), listOf(EXALTATION))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SCORPIO)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to SAGITTARIUS)), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN), DAY), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to CAPRICORN), NIGHT), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS)), listOf(RULER))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS), DAY), listOf(RULER, TRIPLICITY))
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to AQUARIUS), NIGHT), listOf())
+        assertEquals(planet.getDignitiesFromSignMap(mapOf(planet to PISCES)), listOf())
+      } // saturn
+    }
+  }
 
   /**
    * 根據此頁資料來測試各種 [Dignity] 的接納
@@ -69,7 +230,7 @@ class EssentialImplTest {
     with(essentialImpl) {
 
       // 太陽 土星 透過 EXALT 互相接納
-      SUN.getMutualDataFromSign(signMap, DayNight.NIGHT, setOf(EXALTATION)).also {
+      SUN.getMutualDataFromSign(signMap, NIGHT, setOf(EXALTATION)).also {
         assertTrue(it.isNotEmpty())
         assertSame(1, it.size)
         assertEquals(MutualData(SUN, EXALTATION, SATURN, EXALTATION), it.first())
@@ -84,8 +245,8 @@ class EssentialImplTest {
       assertSame(SATURN, SUN.receiving(EXALTATION, degreeMap))
 
       // 太陽 `夜晚` 到辰宮 (水星 為風象星座夜間 三分主 , TRIPLICITY) , 水星也要招待太陽 , 太陽 +3
-      assertSame(MERCURY, SUN.receivingTriplicityFromSignMap(signMap, DayNight.NIGHT))
-      assertSame(MERCURY, SUN.receiving(TRIPLICITY, degreeMap, DayNight.NIGHT))
+      assertSame(MERCURY, SUN.receivingTriplicityFromSignMap(signMap, NIGHT))
+      assertSame(MERCURY, SUN.receiving(TRIPLICITY, degreeMap, NIGHT))
 
       // 太陽於 辰宮 25度 , 該位置 TERM 主人是 火星 , 火星透過 TERM 接納、招待太陽 , 太陽 +2
       assertSame(MARS, SUN.receivingTermFrom(degreeMap))
@@ -135,7 +296,7 @@ class EssentialImplTest {
       }
 
       // 三分
-      MARS.receivingTriplicityFrom(degreeMap, DayNight.DAY).also {
+      MARS.receivingTriplicityFrom(degreeMap, DAY).also {
         assertNotNull(it)
         assertSame(SATURN, it)
       }
@@ -149,7 +310,7 @@ class EssentialImplTest {
 
 
     // 整合 map
-    essentialImpl.getReceptionMap(degreeMap, DayNight.DAY, setOf(RULER, EXALTATION, TRIPLICITY, TERM)).also {
+    essentialImpl.getReceptionMap(degreeMap, DAY, setOf(RULER, EXALTATION, TRIPLICITY, TERM)).also {
       // 火星被金星接納（5，入廟）
       assertTrue { it.contains(Triple(MARS, RULER, VENUS)) }
       // 也被土星接納（4+3+2=9，旺+三分+界）
@@ -174,7 +335,7 @@ class EssentialImplTest {
       JUPITER to 1.0,
       MARS to 1.0
     )
-    essentialImpl.getReceptionMap(degreeMap, DayNight.NIGHT, setOf(RULER, EXALTATION, TRIPLICITY, TERM, FACE)).also {
+    essentialImpl.getReceptionMap(degreeMap, NIGHT, setOf(RULER, EXALTATION, TRIPLICITY, TERM, FACE)).also {
       assertTrue { it.contains(Triple(MOON, RULER, SUN)) }
       assertTrue { it.contains(Triple(MOON, TRIPLICITY, JUPITER)) }
       assertTrue { it.contains(Triple(MOON, TERM, MARS)) }
@@ -316,23 +477,23 @@ class EssentialImplTest {
 
     // 太陽、白天，成立
     with(essentialImpl) {
-      SUN.getMutualDataFromSign(map, DayNight.DAY, setOf(TRIPLICITY)).also {
+      SUN.getMutualDataFromSign(map, DAY, setOf(TRIPLICITY)).also {
         assertTrue(it.isNotEmpty())
         assertSame(1, it.size)
         assertEquals(MutualData(SUN, TRIPLICITY, SATURN, TRIPLICITY), it.first())
       }
       // 土星、白天，成立
-      SATURN.getMutualDataFromSign(map, DayNight.DAY, setOf(TRIPLICITY)).also {
+      SATURN.getMutualDataFromSign(map, DAY, setOf(TRIPLICITY)).also {
         assertTrue(it.isNotEmpty())
         assertSame(1, it.size)
         assertEquals(MutualData(SATURN, TRIPLICITY, SUN, TRIPLICITY), it.first())
       }
       // 夜晚不成立
-      SUN.getMutualDataFromSign(map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
+      SUN.getMutualDataFromSign(map, NIGHT, setOf(TRIPLICITY)).also {
         assertTrue(it.isEmpty())
       }
       // 夜晚不成立
-      SATURN.getMutualDataFromSign(map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
+      SATURN.getMutualDataFromSign(map, NIGHT, setOf(TRIPLICITY)).also {
         assertTrue(it.isEmpty())
       }
     }
@@ -353,23 +514,23 @@ class EssentialImplTest {
 
     with((essentialImpl)) {
       // 月亮觀點、夜晚互容
-      MOON.getMutualDataFromSign(map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
+      MOON.getMutualDataFromSign(map, NIGHT, setOf(TRIPLICITY)).also {
         assertTrue(it.isNotEmpty())
         assertSame(1, it.size)
         assertEquals(MutualData(MOON, TRIPLICITY, JUPITER, TRIPLICITY), it.first())
       }
       // 木星觀點、夜晚互容
-      JUPITER.getMutualDataFromSign(map, DayNight.NIGHT, setOf(TRIPLICITY)).also {
+      JUPITER.getMutualDataFromSign(map, NIGHT, setOf(TRIPLICITY)).also {
         assertTrue(it.isNotEmpty())
         assertSame(1, it.size)
         assertEquals(MutualData(JUPITER, TRIPLICITY, MOON, TRIPLICITY), it.first())
       }
       // 白天不成立
-      MOON.getMutualDataFromSign(map, DayNight.DAY, setOf(TRIPLICITY)).also {
+      MOON.getMutualDataFromSign(map, DAY, setOf(TRIPLICITY)).also {
         assertTrue(it.isEmpty())
       }
       // 白天不成立
-      JUPITER.getMutualDataFromSign(map, DayNight.DAY, setOf(TRIPLICITY)).also {
+      JUPITER.getMutualDataFromSign(map, DAY, setOf(TRIPLICITY)).also {
         assertTrue(it.isEmpty())
       }
     }

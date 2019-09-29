@@ -23,6 +23,61 @@ class EssentialImpl(private val rulerImpl: IRuler,
                     private val dayNightDifferentiator: IDayNight) : IEssential, Serializable {
 
 
+  override fun Point.getDignitiesFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight?): List<Dignity> {
+    return map[this]?.let { sign ->
+      mutableSetOf<Dignity>().apply {
+        with(rulerImpl) {
+          if (this@getDignitiesFromSignMap === sign.getRulerPoint(dayNight))
+            add(Dignity.RULER)
+        }
+        with(exaltImpl) {
+          if (this@getDignitiesFromSignMap === sign.getExaltPoint())
+            add(Dignity.EXALTATION)
+        }
+        with(triplicityImpl) {
+          if (dayNight != null) {
+            if (this@getDignitiesFromSignMap === sign.getTriplicityPoint(dayNight)) {
+              add(Dignity.TRIPLICITY)
+            }
+          } else {
+            // 如果沒有傳 DayNight , 但是 DAY / NIGHT 的 Triplicity 都是同一顆星 , 且就是 此 point , 那也算
+            // 例如 托勒密設定下 , 巨蟹座 , 日、夜 的 Triplicity 都是火星 , 以及 , 雙魚座 , 日、夜的 Triplicity 都是火星
+            if (sign.getTriplicityPoint(DayNight.DAY) === sign.getTriplicityPoint(DayNight.NIGHT) && this@getDignitiesFromSignMap === sign.getTriplicityPoint(DayNight.DAY)) {
+              add(Dignity.TRIPLICITY)
+            }
+          }
+        }
+        with(fallImpl) {
+          if (this@getDignitiesFromSignMap === sign.getFallPoint())
+            add(Dignity.FALL)
+        }
+        with(detrimentImpl) {
+          if (this@getDignitiesFromSignMap === sign.getDetrimentPoint())
+            add(Dignity.DETRIMENT)
+        }
+      }.toSortedSet().toList()
+    } ?: emptyList()
+  }
+
+  /**
+   * 承上，完整度數版 (可回傳 [Dignity.TERM] 以及 [Dignity.FACE] )
+   */
+  override fun Point.getDignities(map: Map<Point, Double>, dayNight: DayNight?): List<Dignity> {
+    return map[this]?.let { deg: Double ->
+      val sign = ZodiacSign.of(deg)
+      this.getDignitiesFromSignMap(mapOf(this to sign)).toMutableSet().apply {
+        with(termImpl) {
+          if (this@getDignities === sign.getTermPoint(deg))
+            add(Dignity.TERM)
+          with(faceImpl) {
+            if (this@getDignities === sign.getFacePoint(deg))
+              add(Dignity.FACE)
+          }
+        }
+      }.toSortedSet().toList()
+    } ?: emptyList()
+  }
+
   /**
    * 哪一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
    */
@@ -47,18 +102,18 @@ class EssentialImpl(private val rulerImpl: IRuler,
   /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星 */
   override fun Point.receivingTriplicityFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight): Point? {
     return map[this]?.let {
-      with(triplicityImpl) {it.getTriplicityPoint(dayNight)}.takeIf { point -> map.containsKey(point) }
+      with(triplicityImpl) { it.getTriplicityPoint(dayNight) }.takeIf { point -> map.containsKey(point) }
     }
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星 */
   override fun Point.receivingTermFrom(map: Map<Point, Double>): Point? {
-    return map[this]?.let { termImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
+    return map[this]?.let { termImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
   /** 哪一顆星，透過 [Dignity.FACE] 接納了 [this]顆星 */
   override fun Point.receivingFaceFrom(map: Map<Point, Double>): Point? {
-    return map[this]?.let { faceImpl.getPoint(it).takeIf { point ->  map.containsKey(point) } }
+    return map[this]?.let { faceImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
   /** 哪一顆星，透過 [Dignity.FALL] 接納了 [this]顆星 */
@@ -114,7 +169,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
           logger.debug("{} 透過 {} 接納 {}", this, Dignity.EXALTATION, receivee)
           true
         }
-        with(triplicityImpl) {receiveeSign.getTriplicityPoint(dayNightDifferentiator.getDayNight(h.lmt, h.location))} -> {
+        with(triplicityImpl) { receiveeSign.getTriplicityPoint(dayNightDifferentiator.getDayNight(h.lmt, h.location)) } -> {
           logger.debug("{} 透過 Triplicity 接納 {}", this, receivee)
           true
         }
@@ -167,6 +222,6 @@ class EssentialImpl(private val rulerImpl: IRuler,
   }
 
   companion object {
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
   }
 }

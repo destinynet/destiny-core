@@ -17,6 +17,18 @@ import mu.KotlinLogging
 interface IEssential {
 
   /**
+   * 此顆星，目前在此星盤中的強度 [Dignity] 有哪些 , 可能有多種組合
+   * 例如 太陽 白天 位於 [ZodiacSign.ARIES] , 則為 [Dignity.EXALTATION] 以及 [Dignity.TRIPLICITY] , 若在 20度 , 還要加上 [Dignity.FACE]
+   * 故，回傳為 List , 由強至弱排序
+   */
+  fun Point.getDignitiesFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight? = null) : List<Dignity>
+
+  /**
+   * 承上，完整度數版 (可回傳 [Dignity.TERM] 以及 [Dignity.FACE] )
+   */
+  fun Point.getDignities(map: Map<Point, Double>, dayNight: DayNight? = null) : List<Dignity>
+
+  /**
    * 哪一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
    */
   fun Point.receivingRulerFromSignMap(map: Map<Point, ZodiacSign>): Point?

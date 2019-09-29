@@ -8,9 +8,9 @@ import destiny.tools.ILocaleString
 import java.util.*
 
 /**
- * 行星落入星座的 , 旺 廟 陷 落
+ * 行星落入星座的 , 廟 旺 陷 落
  */
-enum class Dignity(private val nameKey: String) : ILocaleString {
+enum class Dignity(private val nameKey: String) : ILocaleString , Comparator<Dignity> {
 
   /** 廟 (+5) , 守護  */
   RULER("Dignity.RULER"),
@@ -39,6 +39,12 @@ enum class Dignity(private val nameKey: String) : ILocaleString {
 
   override fun toString(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+  }
+
+  override fun compare(o1: Dignity?, o2: Dignity?): Int {
+    return values().let { array ->
+      array.indexOf(o1) - array.indexOf(o2)
+    }
   }
 
   companion object {
