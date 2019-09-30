@@ -5,8 +5,11 @@ import destiny.astrology.ZodiacSign
 
 interface IMutualData {
 
-  //val digMap2 = Map<Point , Pair<Dignity , Dignity?>>
-
+  /**
+   * 意味此 [Point] 放射出哪種能量 ([Dignity]) 給另一顆星
+   * 並不是此 [Point] 本身於此星座的 [Dignity]
+   * 此星於此星座的強弱，靠 [IEssential.getDignities] 取得 , 不寫入此 interface 當中
+   */
   val dignityMap: Map<Point, Dignity>
 
   val twoPoints: Set<Point>

@@ -61,6 +61,7 @@ sealed class Mutual(private val p1: Planet, private val dig1: Dignity,
  * 僅適用於 [Dignity.RULER] , [Dignity.EXALTATION] , [Dignity.TRIPLICITY] , [Dignity.FALL] , [Dignity.DETRIMENT]
  * 剩下的 [Dignity.TERM] 以及 [Dignity.FACE] 需要「度數」，因此不適用
  * */
+@Deprecated("可能用不到")
 sealed class MutualReception(val p1: Planet, val sign1: ZodiacSign,
                              val p2: Planet, val sign2: ZodiacSign,
                              val dignity: Dignity, override val notes: String? = null) : IMutualPattern, IMutualData by MutualData(p1, dignity, p2, dignity) {

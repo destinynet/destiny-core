@@ -30,6 +30,7 @@ interface IEssential {
 
   /**
    * 哪一顆星，透過 [Dignity.RULER] 接納了 [this]顆星
+   * [this]為 guest , 意味：要查出目前 [this]這顆星所在星座的主人 ( [Dignity.RULER] ) 是哪顆星
    */
   fun Point.receivingRulerFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
@@ -39,7 +40,7 @@ interface IEssential {
   }
 
   /**
-   * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 [this]顆星
+   * 哪一顆星，透過 [Dignity.EXALTATION] 接納了 [this]顆星 ( [this]這顆星 為 guest )
    */
   fun Point.receivingExaltFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
@@ -48,7 +49,7 @@ interface IEssential {
     return this.receivingExaltFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
-  /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星 */
+  /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingTriplicityFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight): Point?
 
   /** 承上 , double map 版本 */
@@ -56,13 +57,13 @@ interface IEssential {
     return this.receivingTriplicityFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) }, dayNight)
   }
 
-  /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星 */
+  /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingTermFrom(map: Map<Point, Double>): Point?
 
-  /** 哪一顆星，透過 [Dignity.FACE] 接納了 [this]顆星 */
+  /** 哪一顆星，透過 [Dignity.FACE] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingFaceFrom(map: Map<Point, Double>): Point?
 
-  /** 哪一顆星，透過 [Dignity.FALL] 接納了 [this]顆星 */
+  /** 哪一顆星，透過 [Dignity.FALL] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingFallFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   /** 承上 , double map 版本 */
@@ -70,7 +71,7 @@ interface IEssential {
     return this.receivingFallFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
-  /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星 */
+  /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingDetrimentFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   fun Point.receivingDetrimentFrom(map: Map<Point, Double>): Point? {
@@ -99,6 +100,8 @@ interface IEssential {
                     dignities: Collection<Dignity>): Map<Dignity, Point> {
 
     return Dignity.values().filter { dignities.contains(it) }.map { dignity ->
+
+
       when (dignity) {
         Dignity.RULER -> Dignity.RULER to this.receivingRulerFrom(map)
         Dignity.EXALTATION -> Dignity.EXALTATION to this.receivingExaltFrom(map)
