@@ -2,6 +2,7 @@ package destiny.astrology.classical.rules
 
 import destiny.core.Descriptive
 import destiny.tools.ILocaleString
+import mu.KotlinLogging
 import java.text.MessageFormat
 import java.util.*
 
@@ -12,17 +13,18 @@ abstract class AbstractRuleDescriptor<out T : IPlanetPattern>(val rule: T) : Des
 
   val nameKey = rule.javaClass.simpleName!!
 
-  val resource = with(StringBuilder()) {
-    append("destiny.astrology.classical.Classical")
-//      append(rule.javaClass.`package`.name)
-//      append('.')
-//      append(rule.javaClass.simpleName)
-    }.toString()
+  abstract val resource : String
+
+//  val resource = with(StringBuilder()) {
+//    append("destiny.astrology.classical.Classical")
+//    }.toString()
 
   override fun getTitle(locale: Locale): String {
     return try {
+      logger.trace("try to get nameKey = {} of locale = {} , resource = {}" , nameKey , locale , resource)
       ResourceBundle.getBundle(resource, locale).getString(nameKey)
     } catch (e: Exception) {
+      logger.trace("cannot get from nameKey = {}" , nameKey)
       rule.javaClass.simpleName
     }
   }
@@ -31,6 +33,7 @@ abstract class AbstractRuleDescriptor<out T : IPlanetPattern>(val rule: T) : Des
     return getCommentParameters(locale).let { pair ->
       val commentKey = pair.first
       val commentParameters = pair.second
+      logger.trace("commentKey = {} , commentParameters = {}" , commentKey , commentParameters)
       val pattern = ResourceBundle.getBundle(resource, locale).getString("$nameKey.$commentKey")
       MessageFormat.format(pattern, *getCommentParameters(locale, commentParameters))
     }
@@ -49,4 +52,9 @@ abstract class AbstractRuleDescriptor<out T : IPlanetPattern>(val rule: T) : Des
   }
 
   abstract fun getCommentParameters(locale: Locale): Pair<String , List<Any>>
+
+  companion object {
+    val logger = KotlinLogging.logger {  }
+  }
+
 }

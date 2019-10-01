@@ -6,14 +6,18 @@ package destiny.astrology.classical.rules
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
 import destiny.core.DayNight
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 
 class RuleTranslatorKtTest {
 
-  fun print(rule: EssentialDignity) {
+  val logger = KotlinLogging.logger {  }
+
+  private fun print(rule: EssentialDignity) {
 
     RuleTranslator.getDescriptor(rule).also {
+      logger.info("{} : {}" , it , it.javaClass.name)
       println("title(tw) = ${it.getTitle(Locale.TAIWAN)}")
       println("title(en) = ${it.getTitle(Locale.ENGLISH)}")
       println("title(en_US) = ${it.getTitle(Locale.US)}")
@@ -21,7 +25,8 @@ class RuleTranslatorKtTest {
       println("title(jp) = ${it.getTitle(Locale.JAPANESE)}")
       println("title(fr) = ${it.getTitle(Locale.FRANCE)}")
 
-//      println("\t comment(tw) = ${it.getDescription(Locale.TAIWAN)}")
+      println("\t comment(tw) = ${it.getDescription(Locale.TAIWAN)}")
+
 //      println("\t comment(en   ) = ${it.getDescription(Locale.ENGLISH)}")
 //      println("\t comment(en_US) = ${it.getDescription(Locale.US)}")
 //      println("\t comment(UK   ) = ${it.getDescription(Locale.UK)}") // en_GB
@@ -37,7 +42,7 @@ class RuleTranslatorKtTest {
     val ruler = EssentialDignity.Ruler(Planet.SUN, ZodiacSign.ARIES)
     print(ruler)
 
-    val exalt = EssentialDignity.Exalt(Planet.JUPITER, ZodiacSign.CAPRICORN)
+    val exalt = EssentialDignity.Exaltation(Planet.JUPITER, ZodiacSign.CAPRICORN)
     print(exalt)
 
     val term = EssentialDignity.Term(Planet.JUPITER, 123.456)

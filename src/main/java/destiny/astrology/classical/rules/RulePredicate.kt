@@ -26,12 +26,12 @@ class RulerPredicate(private val rulerImpl: IRuler) : RulePredicate<EssentialDig
   }
 }
 
-class ExaltPredicate(private val exaltImpl : IExaltation) : RulePredicate<EssentialDignity.Exalt> {
-  override fun getRules(p: Planet, h: IHoroscopeModel): List<EssentialDignity.Exalt>? {
+class ExaltPredicate(private val exaltImpl : IExaltation) : RulePredicate<EssentialDignity.Exaltation> {
+  override fun getRules(p: Planet, h: IHoroscopeModel): List<EssentialDignity.Exaltation>? {
     return h.getZodiacSign(p)?.takeIf { sign ->
       p === with(exaltImpl) { sign.getExaltPoint() }
     }?.let { sign ->
-      listOf(EssentialDignity.Exalt(p, sign))
+      listOf(EssentialDignity.Exaltation(p, sign))
     }
   }
 }
