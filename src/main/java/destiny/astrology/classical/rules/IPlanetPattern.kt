@@ -3,6 +3,7 @@
  */
 package destiny.astrology.classical.rules
 
+import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.IMutualData
 import destiny.core.IPattern
@@ -14,4 +15,10 @@ interface IPlanetPattern : IClassicalPattern {
   val planet: Planet
 }
 
-interface IMutualPattern : IClassicalPattern , IMutualData
+
+interface IPlanetPatternFactory {
+
+  fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern?
+}
+
+interface IMutualPattern : IClassicalPattern, IMutualData
