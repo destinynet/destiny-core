@@ -7,7 +7,8 @@ import destiny.astrology.*
 import destiny.astrology.Aspect.CONJUNCTION
 import destiny.astrology.Planet.*
 import destiny.astrology.classical.*
-import destiny.core.DayNight
+import destiny.core.DayNight.DAY
+import destiny.core.DayNight.NIGHT
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.YinYang
 import mu.KotlinLogging
@@ -31,6 +32,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val essentialImpl: IEssential =
     EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl,
       dayNightDifferentiator)
+
+  /** ====================================== for [EssentialDignity] ====================================== */
 
   /**
    * to replace [destiny.astrology.classical.rules.essentialDignities.Ruler]
@@ -75,8 +78,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return h.getZodiacSign(planet)?.let { sign ->
         val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
         with(triplicityImpl) {
-          if (dayNight == DayNight.DAY && planet === sign.getTriplicityPoint(DayNight.DAY) ||
-            dayNight == DayNight.NIGHT && planet === sign.getTriplicityPoint(DayNight.NIGHT)) {
+          if (dayNight == DAY && planet === sign.getTriplicityPoint(DAY) ||
+            dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT)) {
             logger.debug("{} 位於 {} 為其 {} 之 Triplicity", planet, sign, dayNight)
             EssentialDignity.Triplicity(planet, sign, dayNight)
           } else
@@ -161,7 +164,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   } // beneficialMutualReception
 
-  // ================================================================================================================
+  /** ====================================== for [AccidentalDignity] ====================================== */
 
   /**
    * to replace [destiny.astrology.classical.rules.accidentalDignities.House_1_10]
@@ -526,13 +529,13 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return h.getZodiacSign(planet)?.let { sign ->
         h.getHouse(planet)?.let { house ->
           when (dayNight) {
-            DayNight.DAY -> planet.takeIf { arrayOf(SUN, JUPITER, SATURN).contains(it) }
+            DAY -> planet.takeIf { arrayOf(SUN, JUPITER, SATURN).contains(it) }
               ?.takeIf { house >= 7 && sign.booleanValue }
               ?.let {
                 logger.debug("晝星 {} 於白天在地平面上，落入陽性星座 {} , 得時", planet, sign)
                 AccidentalDignity.Hayz(planet, dayNight, YinYang.陽, sign)
               }
-            DayNight.NIGHT -> planet.takeIf { arrayOf(MOON, VENUS, MARS).contains(it) }
+            NIGHT -> planet.takeIf { arrayOf(MOON, VENUS, MARS).contains(it) }
               ?.takeIf { house >= 7 && !sign.booleanValue }
               ?.let {
                 logger.debug("夜星 {} 於夜晚在地平面上，落入陰性星座 {} , 得時", planet, sign)
@@ -620,6 +623,66 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
 
   }
+
+  /** ====================================== for [Debility] ====================================== */
+
+  /**
+   * In Detriment
+   * to replace [destiny.astrology.classical.rules.debilities.Detriment]
+   */
+  val detriment = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getZodiacSign(planet)
+        ?.takeIf { sign -> planet === with(detrimentImpl) { sign.getDetrimentPoint() } }
+        ?.let { Debility.Detriment(planet) }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.debilities.Fall]
+   */
+  val fall = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getZodiacSign(planet)
+        ?.takeIf { sign -> planet === with(fallImpl) { sign.getFallPoint() } }
+        ?.let { Debility.Fall(planet) }
+    }
+  }
+
+  /**
+   * Peregrine : 漂泊、茫游、外出狀態
+   *
+   * to replace [destiny.astrology.classical.rules.debilities.Peregrine]
+   */
+  val peregrine = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      return h.getPosition(planet)?.lng?.let { planetDeg ->
+        h.getZodiacSign(planet)?.let { sign ->
+          val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
+          if (
+            planet !== with(rulerImpl) { sign.getRulerPoint() } &&
+            planet !== with(exaltImpl) { sign.getExaltPoint() } &&
+            planet !== with(detrimentImpl) { sign.getDetrimentPoint() } &&
+            planet !== with(fallImpl) { sign.getFallPoint() } &&
+            planet !== with(termImpl) { sign.getTermPoint(planetDeg) } &&
+            planet !== faceImpl.getPoint(planetDeg)) {
+            with(triplicityImpl) {
+              // 判定日夜 Triplicity
+              if (!(dayNight == DAY && planet === sign.getTriplicityPoint(DAY))
+                && !(dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT) ))
+                Debility.Peregrine(planet)
+              else
+                null
+            }
+          } else {
+            null
+          }
+        }
+      }
+    }
+  }
+
 
   companion object {
     private val logger = KotlinLogging.logger { }
