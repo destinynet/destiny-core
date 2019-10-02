@@ -19,7 +19,6 @@ import destiny.core.DayNight
 sealed class EssentialDignity(override val name: String,
                               override val notes: String? = null) : IPlanetPattern {
 
-
   override val type: RuleType = RuleType.ESSENTIAL
 
   data class Ruler(override val planet: Planet, val sign: ZodiacSign) : EssentialDignity(Ruler::class.java.simpleName)
@@ -31,6 +30,40 @@ sealed class EssentialDignity(override val name: String,
                                        val p2: Point, val dig2: Dignity) :
     EssentialDignity(BeneficialMutualReception::class.java.simpleName), IMutualData by MutualData(planet , dig1 , p2 , dig2)
 }
+
+sealed class AccidentalDignity(override val name: String,
+                               override val notes: String? = null) : IPlanetPattern {
+
+  override val type: RuleType = RuleType.ACCIDENTAL
+
+  data class House_1_10(override val planet: Planet , val house : Int) : AccidentalDignity(House_1_10::class.java.simpleName)
+  data class House_4_7_11(override val planet: Planet, val house: Int) : AccidentalDignity(House_4_7_11::class.java.simpleName)
+  data class House_2_5(override val planet: Planet, val house: Int) : AccidentalDignity(House_2_5::class.java.simpleName)
+  data class House_9(override val planet: Planet) : AccidentalDignity(House_9::class.java.simpleName)
+  data class House_3(override val planet: Planet) : AccidentalDignity(House_3::class.java.simpleName)
+  data class Direct(override val planet: Planet) : AccidentalDignity(Direct::class.java.simpleName)
+  data class Swift(override val planet: Planet) : AccidentalDignity(Swift::class.java.simpleName)
+  data class Oriental(override val planet: Planet) : AccidentalDignity(Oriental::class.java.simpleName)
+  data class Occidental(override val planet: Planet) : AccidentalDignity(Occidental::class.java.simpleName)
+  object Moon_Increase_Light : AccidentalDignity(Moon_Increase_Light::class.java.simpleName) {
+    override val planet: Planet = Planet.MOON
+  }
+  data class Free_Combustion(override val planet: Planet) : AccidentalDignity(Free_Combustion::class.java.simpleName)
+  data class Cazimi(override val planet: Planet) : AccidentalDignity(Cazimi::class.java.simpleName)
+  data class Partile_Conj_Jupiter_Venus(override val planet: Planet , val venusOrJupiter: Planet) : AccidentalDignity(Partile_Conj_Jupiter_Venus::class.java.simpleName)
+  data class Partile_Conj_North_Node(override val planet: Planet) : AccidentalDignity(Partile_Conj_North_Node::class.java.simpleName)
+  data class Partile_Trine_Jupiter_Venus(override val planet: Planet) : AccidentalDignity(Partile_Trine_Jupiter_Venus::class.java.simpleName)
+  data class Partile_Sextile_Jupiter_Venus(override val planet: Planet) : AccidentalDignity(Partile_Sextile_Jupiter_Venus::class.java.simpleName)
+  data class Partile_Conj_Regulus(override val planet: Planet) : AccidentalDignity(Partile_Conj_Regulus::class.java.simpleName)
+  data class Partile_Conj_Spica(override val planet: Planet) : AccidentalDignity(Partile_Conj_Spica::class.java.simpleName)
+  data class JoyHouse(override val planet: Planet) : AccidentalDignity(JoyHouse::class.java.simpleName)
+  data class Hayz(override val planet: Planet) : AccidentalDignity(Hayz::class.java.simpleName)
+  data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity(Besieged_Jupiter_Venus::class.java.simpleName)
+  data class Translation_of_Light(override val planet: Planet) : AccidentalDignity(Translation_of_Light::class.java.simpleName)
+  data class Collection_of_Light(override val planet: Planet) : AccidentalDignity(Collection_of_Light::class.java.simpleName)
+  data class Refrain_from_Mars_Saturn(override val planet: Planet) : AccidentalDignity(Refrain_from_Mars_Saturn::class.java.simpleName)
+}
+
 //
 ///** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */
 //sealed class Mutual(private val p1: Planet, private val dig1: Dignity,
