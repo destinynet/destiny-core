@@ -75,7 +75,7 @@ sealed class Debility(override val name: String,
   data class Detriment(override val planet: Planet) : Debility(Detriment::class.java.simpleName)
   data class Fall(override val planet: Planet) : Debility(Fall::class.java.simpleName)
   data class Peregrine(override val planet: Planet) : Debility(Peregrine::class.java.simpleName)
-  data class House_12(override val planet: Planet , val house: Int) : Debility(House_12::class.java.simpleName)
+  data class House_12(override val planet: Planet) : Debility(House_12::class.java.simpleName)
   data class House_6_8(override val planet: Planet, val house: Int) : Debility(House_6_8::class.java.simpleName)
   data class Retrograde(override val planet: Planet) : Debility(Retrograde::class.java.simpleName)
   data class Slower(override val planet: Planet) : Debility(Slower::class.java.simpleName)

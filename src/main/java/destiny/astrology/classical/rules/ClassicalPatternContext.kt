@@ -670,7 +670,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
             with(triplicityImpl) {
               // 判定日夜 Triplicity
               if (!(dayNight == DAY && planet === sign.getTriplicityPoint(DAY))
-                && !(dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT) ))
+                && !(dayNight == NIGHT && planet === sign.getTriplicityPoint(NIGHT)))
                 Debility.Peregrine(planet)
               else
                 null
@@ -678,6 +678,111 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
           } else {
             null
           }
+        }
+      }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.debilities.House_12]
+   */
+  val house_12 = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getHouse(planet)
+        ?.takeIf { it == 12 }
+        ?.let { Debility.House_12(planet) }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.debilities.House_6_8]
+   */
+  val house_6_8 = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getHouse(planet)
+        ?.takeIf { it == 6 || it == 8 }
+        ?.let { Debility.House_6_8(planet, it) }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.debilities.Retrograde]
+   */
+  val retrograde = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getStarPosition(planet)
+        ?.speedLng
+        ?.takeIf { it < 0 }
+        ?.let { Debility.Retrograde(planet) }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.debilities.Slower]
+   */
+  val slower = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return AverageDailyMotionMap.getAvgDailySpeed(planet)
+        ?.takeIf { dailyDeg ->
+          h.getStarPosition(planet)
+            ?.speedLng?.let { speedLng ->
+            speedLng < dailyDeg
+          } ?: false
+        }?.let { Debility.Slower(planet) }
+    }
+  }
+
+  /**
+   * 火星、木星、或土星，在太陽西方
+   * to replace [destiny.astrology.classical.rules.debilities.Occidental]
+   */
+  val occidental2 = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return arrayOf(MARS, JUPITER, SATURN)
+        .takeIf { it.contains(planet) }
+        ?.let { h.getPosition(planet) }?.lng?.let { planetDegree ->
+        h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
+          IHoroscopeModel.isOccidental(planetDegree, sunDegree)
+        }?.let {
+          Debility.Occidental(planet)
+        }
+      }
+    }
+  }
+
+  /**
+   * Mercury, or Venus oriental to the Sun.
+   * 金星、水星，是否 東出 於 太陽
+   *
+   * to replace [destiny.astrology.classical.rules.debilities.Oriental]
+   */
+  val oriental2 = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return arrayOf(MERCURY, VENUS)
+        .takeIf { it.contains(planet) }
+        ?.let { h.getPosition(planet) }?.lng?.let { planetDegree ->
+        h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
+          IHoroscopeModel.isOriental(planetDegree, sunDegree)
+        }?.let {
+          Debility.Oriental(planet)
+        }
+      }
+    }
+  }
+
+  /**
+   * Moon decreasing in light.
+   * to replace [destiny.astrology.classical.rules.debilities.Moon_Decrease_Light]
+   * */
+  val moonDecreaseLight = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return planet
+        .takeIf { it === MOON }
+        ?.let { h.getPosition(it) }?.lng?.let { moonDegree ->
+        h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
+          IHoroscopeModel.isOriental(moonDegree, sunDegree)
+        }?.let {
+          Debility.Moon_Decrease_Light
         }
       }
     }
