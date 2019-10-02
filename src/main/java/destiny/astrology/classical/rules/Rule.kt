@@ -3,13 +3,12 @@
  */
 package destiny.astrology.classical.rules
 
-import destiny.astrology.Planet
-import destiny.astrology.Point
-import destiny.astrology.ZodiacSign
+import destiny.astrology.*
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IMutualData
 import destiny.astrology.classical.MutualData
 import destiny.core.DayNight
+import destiny.core.chinese.YinYang
 
 /**
  * 行星的 25種狀態
@@ -52,16 +51,16 @@ sealed class AccidentalDignity(override val name: String,
   data class Cazimi(override val planet: Planet) : AccidentalDignity(Cazimi::class.java.simpleName)
   data class Partile_Conj_Jupiter_Venus(override val planet: Planet , val venusOrJupiter: Planet) : AccidentalDignity(Partile_Conj_Jupiter_Venus::class.java.simpleName)
   data class Partile_Conj_North_Node(override val planet: Planet) : AccidentalDignity(Partile_Conj_North_Node::class.java.simpleName)
-  data class Partile_Trine_Jupiter_Venus(override val planet: Planet) : AccidentalDignity(Partile_Trine_Jupiter_Venus::class.java.simpleName)
-  data class Partile_Sextile_Jupiter_Venus(override val planet: Planet) : AccidentalDignity(Partile_Sextile_Jupiter_Venus::class.java.simpleName)
+  data class Partile_Trine_Jupiter_Venus(override val planet: Planet, val venusOrJupiter: Planet) : AccidentalDignity(Partile_Trine_Jupiter_Venus::class.java.simpleName)
+  data class Partile_Sextile_Jupiter_Venus(override val planet: Planet , val venusOrJupiter: Planet) : AccidentalDignity(Partile_Sextile_Jupiter_Venus::class.java.simpleName)
   data class Partile_Conj_Regulus(override val planet: Planet) : AccidentalDignity(Partile_Conj_Regulus::class.java.simpleName)
   data class Partile_Conj_Spica(override val planet: Planet) : AccidentalDignity(Partile_Conj_Spica::class.java.simpleName)
-  data class JoyHouse(override val planet: Planet) : AccidentalDignity(JoyHouse::class.java.simpleName)
-  data class Hayz(override val planet: Planet) : AccidentalDignity(Hayz::class.java.simpleName)
+  data class JoyHouse(override val planet: Planet , val house: Int) : AccidentalDignity(JoyHouse::class.java.simpleName)
+  data class Hayz(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : AccidentalDignity(Hayz::class.java.simpleName)
   data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity(Besieged_Jupiter_Venus::class.java.simpleName)
-  data class Translation_of_Light(override val planet: Planet) : AccidentalDignity(Translation_of_Light::class.java.simpleName)
-  data class Collection_of_Light(override val planet: Planet) : AccidentalDignity(Collection_of_Light::class.java.simpleName)
-  data class Refrain_from_Mars_Saturn(override val planet: Planet) : AccidentalDignity(Refrain_from_Mars_Saturn::class.java.simpleName)
+  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: IAspectApplySeparate.AspectType?) : AccidentalDignity(Translation_of_Light::class.java.simpleName)
+  data class Collection_of_Light(override val planet: Planet, val twoPlanets: List<Planet>, val angle: Double) : AccidentalDignity(Collection_of_Light::class.java.simpleName)
+  data class Refrain_from_Mars_Saturn(override val planet: Planet , val marsOrSaturn : Planet , val aspect: Aspect) : AccidentalDignity(Refrain_from_Mars_Saturn::class.java.simpleName)
 }
 
 //

@@ -3,12 +3,13 @@
  */
 package destiny.astrology.classical.rules
 
-import destiny.astrology.IDayNight
-import destiny.astrology.IHoroscopeModel
-import destiny.astrology.Planet
+import destiny.astrology.*
+import destiny.astrology.Aspect.CONJUNCTION
 import destiny.astrology.Planet.*
 import destiny.astrology.classical.*
 import destiny.core.DayNight
+import destiny.core.calendar.TimeTools
+import destiny.core.chinese.YinYang
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -21,11 +22,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                               private val termImpl: ITerm,
                               private val faceImpl: IFace,
                               private val dayNightDifferentiator: IDayNight,
-                              private val dayNightImpl: IDayNight) : Serializable {
+                              private val dayNightImpl: IDayNight,
+                              private val besiegedImpl: IBesieged,
+                              private val translationOfLightImpl: ITranslationOfLight,
+                              private val collectionOfLightImpl: ICollectionOfLight,
+                              private val refranationImpl: IRefranation) : Serializable {
 
   private val essentialImpl: IEssential =
     EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl,
-                  dayNightDifferentiator)
+      dayNightDifferentiator)
 
   /**
    * to replace [destiny.astrology.classical.rules.essentialDignities.Ruler]
@@ -123,7 +128,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
           val p2 = mutualData.getAnotherPoint(planet)
           EssentialDignity.BeneficialMutualReception(planet, mutualData.getDignityOf(planet), p2,
-                                                     mutualData.getDignityOf(p2))
+            mutualData.getDignityOf(p2))
         }
       }
 
@@ -133,7 +138,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
           val p2 = mutualData.getAnotherPoint(planet)
           val sign2 = h.getZodiacSign(p2)!!
           EssentialDignity.BeneficialMutualReception(planet, mutualData.getDignityOf(planet), p2,
-                                                     mutualData.getDignityOf(p2))
+            mutualData.getDignityOf(p2))
         }
       }
 
@@ -145,10 +150,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
             val sign2 = h.getZodiacSign(p2)!!
             logger.debug("mutualData = {}", mutualData)
             logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 RULER/EXALT 互容",
-                         planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
-                         planet, sign1)
+              planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
+              planet, sign1)
             EssentialDignity.BeneficialMutualReception(planet, mutualData.getDignityOf(planet), p2,
-                                                       mutualData.getDignityOf(p2))
+              mutualData.getDignityOf(p2))
           }
       }
 
@@ -359,9 +364,261 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
           planet !== VENUS && IHoroscopeModel.getAngle(planetDeg, venusDeg) <= 1
         }?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, VENUS) }
 
-        jupResult?:venResult
+        jupResult ?: venResult
       }
     }
+  }
+
+  /**
+   * Partile aspect with Dragon's Head (Moon's North Node).
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Partile_Conj_North_Node]
+   */
+  val partileConjNorthNode = object : IPlanetPatternFactory {
+
+    /** 內定採用 NodeType.MEAN  */
+    var nodeType = NodeType.MEAN
+
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      val planetDeg: Double? = h.getPosition(planet)?.lng
+      val north: LunarNode = LunarNode.of(NorthSouth.NORTH, nodeType)
+      val northDeg: Double? = h.getPosition(north)?.lng
+
+      return if (planetDeg != null && northDeg != null && IHoroscopeModel.getAngle(planetDeg, northDeg) <= 1) {
+        logger.debug("{} 與 {} 形成 {}", planet, north, CONJUNCTION)
+        AccidentalDignity.Partile_Conj_North_Node(planet)
+      } else {
+        null
+      }
+    }
+  }
+
+  /**
+   * Partile trine Jupiter or Venus.
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Partile_Trine_Jupiter_Venus]
+   */
+  val partileTrineJupiterVenus = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      val planetDeg = h.getPosition(planet)?.lng
+      val jupiterDeg = h.getPosition(JUPITER)?.lng
+      val venusDeg = h.getPosition(VENUS)?.lng
+
+      return planetDeg?.let {
+        val jupResult = jupiterDeg?.takeIf {
+          planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, Aspect.TRINE, 1.0)
+        }?.let {
+          AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, JUPITER)
+        }
+
+        val venResult = venusDeg?.takeIf {
+          planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, Aspect.TRINE, 1.0)
+        }?.let {
+          AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, VENUS)
+        }
+
+        jupResult ?: venResult
+      }
+    }
+  }
+
+  /**
+   * Partile aspect Jupiter or Venus.
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Partile_Sextile_Jupiter_Venus]
+   */
+  val partileSextileJupiterVenus = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      val planetDeg = h.getPosition(planet)?.lng
+      val jupiterDeg = h.getPosition(JUPITER)?.lng
+      val venusDeg = h.getPosition(VENUS)?.lng
+
+      return planetDeg?.let {
+        val jupResult = jupiterDeg?.takeIf {
+          planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, Aspect.SEXTILE, 1.0)
+        }?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, JUPITER) }
+
+        val venResult = venusDeg?.takeIf {
+          planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, Aspect.SEXTILE, 1.0)
+        }?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, VENUS) }
+
+        jupResult ?: venResult
+      }
+    }
+  }
+
+  /**
+   * Partile conjunct Cor Leonis (Regulus) at 29deg50' Leo in January 2000.
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Partile_Conj_Regulus]
+   * */
+  val partileConjRegulus = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      val planetDeg: Double? = h.getPosition(planet)?.lng
+      val regulusDeg: Double? = h.getPosition(FixedStar.REGULUS)?.lng
+      return if (planetDeg != null && regulusDeg != null && AspectEffectiveModern.isEffective(planetDeg, regulusDeg, CONJUNCTION, 1.0)) {
+        logger.debug("{} 與 {} 形成 {}", planet, FixedStar.REGULUS, CONJUNCTION)
+        AccidentalDignity.Partile_Conj_Regulus(planet)
+      } else
+        null
+    }
+  }
+
+  /**
+   * Partile conjunct Spica at 23deg50' Libra in January 2000.
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Partile_Conj_Spica]
+   * */
+  val partileConjSpica = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      val planetDeg: Double? = h.getPosition(planet)?.lng
+      val spicaDeg: Double? = h.getPosition(FixedStar.SPICA)?.lng
+
+      return if (planetDeg != null && spicaDeg != null && AspectEffectiveModern.isEffective(planetDeg, spicaDeg, CONJUNCTION, 1.0)) {
+        logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, CONJUNCTION)
+        AccidentalDignity.Partile_Conj_Spica(planet)
+      } else
+        null
+    }
+  }
+
+  /**
+   * 喜樂宮 Joy House.
+   * Mercury in 1st.
+   * Moon in 3rd.
+   * Venus in 5th.
+   * Mars in 6th.
+   * Sun in 9th.
+   * Jupiter in 11th.
+   * Saturn in 12th.
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.JoyHouse]
+   */
+  val joyHouse = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      return h.getHouse(planet)?.let { house ->
+        if (planet === MERCURY && house == 1 ||
+          planet === MOON && house == 3 ||
+          planet === VENUS && house == 5 ||
+          planet === MARS && house == 6 ||
+          planet === SUN && house == 9 ||
+          planet === JUPITER && house == 11 ||
+          planet === SATURN && house == 12) {
+          AccidentalDignity.JoyHouse(planet, house)
+        } else {
+          null
+        }
+      }
+    }
+  }
+
+  /**
+   * 判斷得時 (Hayz) : 白天 , 晝星位於地平面上，落入陽性星座；或是晚上，夜星在地平面上，落入陰性星座
+   * 晝星 : 日 , 木 , 土
+   * 夜星 : 月 , 金 , 火
+   *
+   * 相對於得時的，是「不得時」 [destiny.astrology.classical.rules.debilities.Out_of_Sect]
+   *
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Hayz]
+   */
+  val hayz = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
+
+      return h.getZodiacSign(planet)?.let { sign ->
+        h.getHouse(planet)?.let { house ->
+          when (dayNight) {
+            DayNight.DAY -> planet.takeIf { arrayOf(SUN, JUPITER, SATURN).contains(it) }
+              ?.takeIf { house >= 7 && sign.booleanValue }
+              ?.let {
+                logger.debug("晝星 {} 於白天在地平面上，落入陽性星座 {} , 得時", planet, sign)
+                AccidentalDignity.Hayz(planet, dayNight, YinYang.陽, sign)
+              }
+            DayNight.NIGHT -> planet.takeIf { arrayOf(MOON, VENUS, MARS).contains(it) }
+              ?.takeIf { house >= 7 && !sign.booleanValue }
+              ?.let {
+                logger.debug("夜星 {} 於夜晚在地平面上，落入陰性星座 {} , 得時", planet, sign)
+                AccidentalDignity.Hayz(planet, dayNight, YinYang.陰, sign)
+              }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * 夾輔 : 被金星木星包夾 , 是很幸運的情形
+   * 角度考量 0/60/90/120/180
+   * 中間不能與其他行星形成角度
+   *
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Besieged_Jupiter_Venus]
+   */
+  val besiegedJupiterVenus = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      return planet.takeIf { arrayOf(SUN, MOON, MERCURY, MARS, SATURN).contains(it) }?.takeIf {
+        val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
+        besiegedImpl.isBesieged(it, VENUS, JUPITER, gmt, classical = true, isOnlyHardAspects = false)
+      }?.let { AccidentalDignity.Besieged_Jupiter_Venus(planet) }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Translation_of_Light]
+   */
+  val translationOfLight = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return translationOfLightImpl.getResult(planet, h)
+        ?.let { t ->
+          val deg = h.getAngle(t.first, t.second)
+          // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，相位為 {4} 。 (入相位 or 出相位)
+          // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，未形成相位
+          AccidentalDignity.Translation_of_Light(planet, t.first, t.second, deg, t.third)
+        }
+    }
+  }
+
+  /**
+   * 目前只將「收集好光 (DIGNITIES) 」視為 Collection of Light ，而「蒐集穢光 (DEBILITIES) 」不納入考慮
+   *
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Collection_of_Light]
+   */
+  val collectionOfLight = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return collectionOfLightImpl.getResult(planet, h, ICollectionOfLight.CollectType.DIGNITIES)?.let { twoPlanets ->
+        // {0} 從 {1} 與 {2} 收集光線。 {1} 與 {2} 交角 {3} 度。
+        AccidentalDignity.Collection_of_Light(planet, twoPlanets, h.getAngle(twoPlanets[0], twoPlanets[1]))
+      }
+    }
+  }
+
+  /**
+   * 在與火星或土星形成交角之前，臨陣退縮，代表避免厄運
+   * to replace [destiny.astrology.classical.rules.accidentalDignities.Refrain_from_Mars_Saturn]
+   */
+  val refrainFromMarsSaturn = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return planet.takeIf { it !== MOON && it !== SUN }
+        ?.let {
+
+          val refrainFromMars = planet.takeIf { it !== MARS }?.let { _ ->
+            refranationImpl.getImportantResult(h, planet, MARS)?.let { pair ->
+              val aspect = pair.second
+              logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, MARS, aspect)
+              AccidentalDignity.Refrain_from_Mars_Saturn(planet, MARS, aspect)
+            }
+          }
+
+          val refrainFromSaturn = planet.takeIf { it !== SATURN }?.let { _ ->
+            refranationImpl.getImportantResult(h, planet, SATURN)?.let { pair ->
+              val aspect = pair.second
+              logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
+              AccidentalDignity.Refrain_from_Mars_Saturn(planet, SATURN, aspect)
+            }
+          }
+
+          refrainFromMars ?: refrainFromSaturn
+        }
+    }
+
   }
 
   companion object {

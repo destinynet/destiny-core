@@ -19,6 +19,8 @@ interface ICollectionOfLight {
    *
    * @param collectType 詢問是否符合某種 「光線蒐集模式」 : [CollectType]
    * 傳回的 List<Planet> size 必定 = 2 , 且不為 null
+   *
+   * TODO : 改傳回 Set<Planet>? 或許比較適合
    */
   fun getResult(planet: Planet, h: IHoroscopeModel, collectType: CollectType): List<Planet>?
 
