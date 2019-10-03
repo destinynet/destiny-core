@@ -33,8 +33,8 @@ object RuleTranslator {
   fun getDescriptor(rule: IPlanetPattern): Descriptive {
     return when (rule) {
       is EssentialDignity -> when (rule) {
-        is EssentialDignity.Ruler -> EssentialDignityDescriptor(rule, "commentBasic", listOf(rule.planet, rule.sign))
-        is EssentialDignity.Exaltation -> EssentialDignityDescriptor(rule, "commentBasic", listOf(rule.planet, rule.sign))
+        is EssentialDignity.Ruler -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign))
+        is EssentialDignity.Exaltation -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign))
         is EssentialDignity.Triplicity -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign, rule.dayNight))
         is EssentialDignity.Term -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
         is EssentialDignity.Face -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
