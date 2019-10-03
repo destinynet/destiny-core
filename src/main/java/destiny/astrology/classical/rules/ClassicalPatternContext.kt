@@ -633,9 +633,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   val detriment = object : IPlanetPatternFactory {
     override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
-      return h.getZodiacSign(planet)
-        ?.takeIf { sign -> planet === with(detrimentImpl) { sign.getDetrimentPoint() } }
-        ?.let { Debility.Detriment(planet) }
+      return h.getZodiacSign(planet)?.let { sign ->
+        sign.takeIf { planet === with(detrimentImpl) { sign.getDetrimentPoint() } }
+          ?.let { Debility.Detriment(planet, sign) }
+      }
     }
   }
 
@@ -644,9 +645,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   val fall = object : IPlanetPatternFactory {
     override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
-      return h.getZodiacSign(planet)
-        ?.takeIf { sign -> planet === with(fallImpl) { sign.getFallPoint() } }
-        ?.let { Debility.Fall(planet) }
+      return h.getZodiacSign(planet)?.let { sign ->
+        sign.takeIf { planet === with(fallImpl) { sign.getFallPoint() } }
+        ?.let { Debility.Fall(planet , sign) }
+      }
     }
   }
 
@@ -989,14 +991,14 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
           refranationImpl.getImportantResult(h, planet, VENUS)
         }?.let { (_, aspect) ->
           logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, VENUS, aspect)
-          Debility.Refrain_from_Venus_Jupiter(planet, VENUS)
+          Debility.Refrain_from_Venus_Jupiter(planet, VENUS , aspect)
         }
 
         val refrainFromJupiter = planet.takeIf { it !== JUPITER }?.let {
           refranationImpl.getImportantResult(h , planet , JUPITER)
         }?.let { (_ , aspect) ->
           logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
-          Debility.Refrain_from_Venus_Jupiter(planet, JUPITER)
+          Debility.Refrain_from_Venus_Jupiter(planet, JUPITER , aspect)
         }
 
         refrainFromVenus ?: refrainFromJupiter

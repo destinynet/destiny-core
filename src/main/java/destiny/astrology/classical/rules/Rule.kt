@@ -72,8 +72,8 @@ sealed class Debility(override val name: String,
                       override val notes: String? = null) : IPlanetPattern {
   override val type: RuleType = RuleType.DEBILITY
 
-  data class Detriment(override val planet: Planet) : Debility(Detriment::class.java.simpleName)
-  data class Fall(override val planet: Planet) : Debility(Fall::class.java.simpleName)
+  data class Detriment(override val planet: Planet , val sign: ZodiacSign) : Debility(Detriment::class.java.simpleName)
+  data class Fall(override val planet: Planet , val sign: ZodiacSign) : Debility(Fall::class.java.simpleName)
   data class Peregrine(override val planet: Planet) : Debility(Peregrine::class.java.simpleName)
   data class House_12(override val planet: Planet) : Debility(House_12::class.java.simpleName)
   data class House_6_8(override val planet: Planet, val house: Int) : Debility(House_6_8::class.java.simpleName)
@@ -94,7 +94,7 @@ sealed class Debility(override val name: String,
   data class Partile_Square_Mars_Saturn(override val planet: Planet , val marsOrSaturn: Planet) : Debility(Partile_Square_Mars_Saturn::class.java.simpleName)
   data class Conj_Algol(override val planet: Planet) : Debility(Conj_Algol::class.java.simpleName)
   data class Out_of_Sect(override val planet: Planet , val dayNight: DayNight , val yinYang: YinYang , val sign: ZodiacSign) : Debility(Out_of_Sect::class.java.simpleName)
-  data class Refrain_from_Venus_Jupiter(override val planet: Planet , val venusOrJupiter: Planet) : Debility(Refrain_from_Venus_Jupiter::class.java.simpleName)
+  data class Refrain_from_Venus_Jupiter(override val planet: Planet , val venusOrJupiter: Planet , val aspect: Aspect) : Debility(Refrain_from_Venus_Jupiter::class.java.simpleName)
 }
 //
 ///** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */

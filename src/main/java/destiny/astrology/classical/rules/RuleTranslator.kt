@@ -15,12 +15,18 @@ class EssentialDignityDescriptor(rule: EssentialDignity, val key: String, privat
 
 class AccidentalDignityDescriptor(rule: AccidentalDignity, val key: String, private val parameters: List<Any>) :
   AbstractRuleDescriptor<AccidentalDignity>(rule), Serializable {
-  override val resource: String = "destiny.astrology.classical.rules.accidentalDignities"
+  override val resource: String = "destiny.astrology.classical.rules.accidentalDignities.AccidentalDignities"
   override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
     return key to parameters
   }
 }
 
+class DebilityDescriptor(rule: Debility , val key: String, private val parameters: List<Any>) : AbstractRuleDescriptor<Debility>(rule) , Serializable {
+  override val resource: String = "destiny.astrology.classical.rules.debilities.Debilities"
+  override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
+    return key to parameters
+  }
+}
 
 object RuleTranslator {
 
@@ -69,6 +75,28 @@ object RuleTranslator {
         }
 
         is AccidentalDignity.Refrain_from_Mars_Saturn -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , rule.aspect))
+      }
+      is Debility -> when(rule) {
+        is Debility.Detriment -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.sign))
+        is Debility.Fall -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.sign))
+        is Debility.Peregrine -> DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.House_12 ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.House_6_8 ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
+        is Debility.Retrograde ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Slower ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Occidental ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Oriental ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        Debility.Moon_Decrease_Light ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Combustion ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Sunbeam ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Partile_Conj_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn))
+        is Debility.Partile_Conj_South_Node ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Besieged_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Partile_Oppo_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn))
+        is Debility.Partile_Square_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn))
+        is Debility.Conj_Algol ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
+        is Debility.Out_of_Sect ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.sign))
+        is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , rule.aspect))
       }
       else -> TODO()
     }
