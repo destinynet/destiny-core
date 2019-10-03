@@ -4,7 +4,7 @@
 package destiny.astrology.classical.rules
 
 import destiny.astrology.*
-import destiny.astrology.Aspect.CONJUNCTION
+import destiny.astrology.Aspect.*
 import destiny.astrology.Planet.*
 import destiny.astrology.classical.*
 import destiny.core.DayNight.DAY
@@ -13,6 +13,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.chinese.YinYang
 import mu.KotlinLogging
 import java.io.Serializable
+import java.util.*
 
 
 class ClassicalPatternContext(private val rulerImpl: IRuler,
@@ -517,7 +518,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * 晝星 : 日 , 木 , 土
    * 夜星 : 月 , 金 , 火
    *
-   * 相對於得時的，是「不得時」 [destiny.astrology.classical.rules.debilities.Out_of_Sect]
+   * 相對於得時的，是「不得時」 [outOfSect]
    *
    * to replace [destiny.astrology.classical.rules.accidentalDignities.Hayz]
    */
@@ -788,6 +789,220 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
+  /**
+   * Combust the Sun (between 17' and 8.5 from Sol).
+   * to replace [destiny.astrology.classical.rules.debilities.Combustion]
+   */
+  val combustion = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return planet.takeIf { it !== SUN }
+        ?.takeIf { h.getAngle(planet, SUN) > 17.0 / 60.0 && h.getAngle(planet, SUN) <= 8.5 }
+        ?.let { Debility.Combustion(planet) }
+    }
+  }
+
+  /**
+   * Under the Sunbeams (between 8.5 and 17 from Sol).
+   *
+   * to replace [destiny.astrology.classical.rules.debilities.Sunbeam]
+   * */
+  val sunbeam = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return planet.takeIf { it !== SUN }
+        ?.takeIf { h.getAngle(it, SUN) > 8.5 && h.getAngle(it, SUN) <= 17.0 }
+        ?.let { Debility.Sunbeam(planet) }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.debilities.Partile_Conj_Mars_Saturn]
+   */
+  val partileConjMarsSaturn = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      return h.getPosition(planet)?.lng?.let { planetDeg ->
+        val marsDeg = h.getPosition(MARS)?.lng
+        val saturnDeg = h.getPosition(SATURN)?.lng
+
+        val marResult = marsDeg?.takeIf {
+          planet !== MARS && IHoroscopeModel.getAngle(planetDeg, marsDeg) <= 1
+        }?.let { Debility.Partile_Conj_Mars_Saturn(planet, MARS) }
+
+        val satResult = saturnDeg?.takeIf {
+          planet != SATURN && IHoroscopeModel.getAngle(planetDeg, saturnDeg) <= 1
+        }?.let { Debility.Partile_Conj_Mars_Saturn(planet, SATURN) }
+
+        marResult ?: satResult
+      }
+    }
+  }
+
+
+  /**
+   * Partile conjunction with Dragon's Tail (Moon's South Node).
+   * to replace [destiny.astrology.classical.rules.debilities.Partile_Conj_South_Node]
+   * */
+  val partileConjSouthNode = object : IPlanetPatternFactory {
+    /** 內定採用 NodeType.MEAN  */
+    var nodeType = NodeType.MEAN
+
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      return h.getPosition(planet)?.lng?.let { planetDeg ->
+        val south = LunarNode.of(NorthSouth.SOUTH, nodeType)
+        h.getPosition(south)?.lng?.takeIf { southDeg ->
+          IHoroscopeModel.getAngle(planetDeg, southDeg) <= 1
+        }?.let {
+          Debility.Partile_Conj_South_Node(planet)
+        }
+      }
+    }
+  }
+
+  /**
+   * Besieged between Mars and Saturn.
+   * 被火土夾制，只有日月水金，這四星有可能發生
+   * 前一個角度與火土之一形成 0/90/180 , 後一個角度又與火土另一顆形成 0/90/180
+   * 中間不能與其他行星形成角度
+   * to replace [destiny.astrology.classical.rules.debilities.Besieged_Mars_Saturn]
+   */
+  val besiegedMarsSaturn = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      return planet.takeIf { arrayOf(SUN, MOON, MERCURY, VENUS).contains(it) }
+        ?.takeIf {
+          val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
+          //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
+          besiegedImpl.isBesieged(it, MARS, SATURN, gmt, classical = true, isOnlyHardAspects = true)
+        }?.let {
+          Debility.Besieged_Mars_Saturn(planet)
+        }
+    }
+  }
+
+  /**
+   * Partile opposite Mars or Saturn.
+   * to replace [destiny.astrology.classical.rules.debilities.Partile_Oppo_Mars_Saturn]
+   */
+  val partileOppoMarsSaturn = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getPosition(planet)?.lng?.let { planetDeg ->
+        val marResult = h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
+          planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, OPPOSITION, 1.0)
+        }?.let {
+          Debility.Partile_Oppo_Mars_Saturn(planet, MARS)
+        }
+
+        val satResult = h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
+          planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, OPPOSITION, 1.0)
+        }?.let {
+          Debility.Partile_Oppo_Mars_Saturn(planet, SATURN)
+        }
+
+        marResult ?: satResult
+      }
+    }
+  }
+
+  /**
+   * Partile square Mars or Saturn.
+   * to replace [destiny.astrology.classical.rules.debilities.Partile_Square_Mars_Saturn]
+   * */
+  val partileSquareMarsSaturn = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getPosition(planet)?.lng?.let { planetDeg ->
+        val marResult = h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
+          planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, SQUARE, 1.0)
+        }?.let {
+          Debility.Partile_Square_Mars_Saturn(planet, MARS)
+        }
+
+        val satResult = h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
+          planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, SQUARE, 1.0)
+        }?.let {
+          Debility.Partile_Square_Mars_Saturn(planet, SATURN)
+        }
+
+        marResult ?: satResult
+      }
+    }
+  }
+
+  /**
+   * Within 5 deg of Caput Algol at 26 deg 10' Taurus in January 2000.
+   * to replace [destiny.astrology.classical.rules.debilities.Conj_Algol]
+   * */
+  val conjAlgol = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return h.getPosition(planet)?.lng?.let { planetDeg ->
+        h.getPosition(FixedStar.ALGOL)?.lng?.takeIf { algolDeg ->
+          AspectEffectiveModern.isEffective(planetDeg, algolDeg, CONJUNCTION, 5.0)
+        }?.let { _ ->
+          logger.debug("{} 與 {} 形成 {}", planet, FixedStar.ALGOL, CONJUNCTION)
+          Debility.Conj_Algol(planet)
+        }
+      }
+    }
+  }
+
+  /**
+   * 判斷不得時 (Out of sect) : 白天 , 夜星位於地平面上，落入陽性星座；或是晚上，晝星在地平面上，落入陰性星座
+   * 晝星 : 日 , 木 , 土
+   * 夜星 : 月 , 金 , 火
+   *
+   * 相對於不得時的，是「得時」 [hayz]
+   *
+   * to replace [destiny.astrology.classical.rules.debilities.Out_of_Sect]
+   */
+  val outOfSect = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+
+      return h.getZodiacSign(planet)?.let { sign ->
+        h.getHouse(planet)?.let { house ->
+          val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
+          when (dayNight) {
+            DAY -> if (arrayOf(MOON, VENUS, MARS).contains(planet) && house >= 7 && sign.booleanValue) {
+              logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
+              Debility.Out_of_Sect(planet, dayNight, YinYang.陽, sign)
+            } else {
+              null
+            }
+            NIGHT -> if (arrayOf(SUN, JUPITER, SATURN).contains(planet) && house >= 7 && !sign.booleanValue) {
+              logger.debug("晝星 {} 於夜晚在地平面上，落入陰性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
+              Debility.Out_of_Sect(planet, dayNight, YinYang.陰, sign)
+            } else {
+              null
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * to replace [destiny.astrology.classical.rules.debilities.Refrain_from_Venus_Jupiter]
+   */
+  val refrainFromVenusJupiter = object : IPlanetPatternFactory {
+    override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
+      return planet.takeIf { it !== SUN && it !== MOON }?.let {
+        val refrainFromVenus = planet.takeIf { it !== VENUS }?.let {
+          refranationImpl.getImportantResult(h, planet, VENUS)
+        }?.let { (_, aspect) ->
+          logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, VENUS, aspect)
+          Debility.Refrain_from_Venus_Jupiter(planet, VENUS)
+        }
+
+        val refrainFromJupiter = planet.takeIf { it !== JUPITER }?.let {
+          refranationImpl.getImportantResult(h , planet , JUPITER)
+        }?.let { (_ , aspect) ->
+          logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
+          Debility.Refrain_from_Venus_Jupiter(planet, JUPITER)
+        }
+
+        refrainFromVenus ?: refrainFromJupiter
+      }
+    }
+  }
 
   companion object {
     private val logger = KotlinLogging.logger { }

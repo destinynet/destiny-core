@@ -87,14 +87,14 @@ sealed class Debility(override val name: String,
 
   data class Combustion(override val planet: Planet) : Debility(Combustion::class.java.simpleName)
   data class Sunbeam(override val planet: Planet) : Debility(Sunbeam::class.java.simpleName)
-  data class Partile_Conj_Mars_Saturn(override val planet: Planet) : Debility(Partile_Conj_Mars_Saturn::class.java.simpleName)
+  data class Partile_Conj_Mars_Saturn(override val planet: Planet , val marsOrSaturn: Planet) : Debility(Partile_Conj_Mars_Saturn::class.java.simpleName)
   data class Partile_Conj_South_Node(override val planet: Planet) : Debility(Partile_Conj_South_Node::class.java.simpleName)
   data class Besieged_Mars_Saturn(override val planet: Planet) : Debility(Besieged_Mars_Saturn::class.java.simpleName)
-  data class Partile_Oppo_Mars_Saturn(override val planet: Planet) : Debility(Partile_Oppo_Mars_Saturn::class.java.simpleName)
-  data class Partile_Square_Mars_Saturn(override val planet: Planet) : Debility(Partile_Square_Mars_Saturn::class.java.simpleName)
+  data class Partile_Oppo_Mars_Saturn(override val planet: Planet , val marsOrSaturn: Planet) : Debility(Partile_Oppo_Mars_Saturn::class.java.simpleName)
+  data class Partile_Square_Mars_Saturn(override val planet: Planet , val marsOrSaturn: Planet) : Debility(Partile_Square_Mars_Saturn::class.java.simpleName)
   data class Conj_Algol(override val planet: Planet) : Debility(Conj_Algol::class.java.simpleName)
-  data class Out_of_Sect(override val planet: Planet) : Debility(Out_of_Sect::class.java.simpleName)
-  data class Refrain_from_Venus_Jupiter(override val planet: Planet) : Debility(Refrain_from_Venus_Jupiter::class.java.simpleName)
+  data class Out_of_Sect(override val planet: Planet , val dayNight: DayNight , val yinYang: YinYang , val sign: ZodiacSign) : Debility(Out_of_Sect::class.java.simpleName)
+  data class Refrain_from_Venus_Jupiter(override val planet: Planet , val venusOrJupiter: Planet) : Debility(Refrain_from_Venus_Jupiter::class.java.simpleName)
 }
 //
 ///** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */
