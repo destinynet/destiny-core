@@ -5,6 +5,7 @@ package destiny.astrology.classical.rules
 
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
+import destiny.astrology.classical.Dignity
 import destiny.core.DayNight
 import mu.KotlinLogging
 import java.util.*
@@ -26,8 +27,7 @@ class RuleTranslatorKtTest {
       println("title(fr) = ${it.getTitle(Locale.FRANCE)}")
 
       println("\t comment(tw) = ${it.getDescription(Locale.TAIWAN)}")
-
-//      println("\t comment(en   ) = ${it.getDescription(Locale.ENGLISH)}")
+      println("\t comment(en   ) = ${it.getDescription(Locale.ENGLISH)}")
 //      println("\t comment(en_US) = ${it.getDescription(Locale.US)}")
 //      println("\t comment(UK   ) = ${it.getDescription(Locale.UK)}") // en_GB
 //      println("\t comment(簡) = ${it.getDescription(Locale.SIMPLIFIED_CHINESE)}")
@@ -54,5 +54,7 @@ class RuleTranslatorKtTest {
     val trip = EssentialDignity.Triplicity(Planet.MOON, ZodiacSign.GEMINI, DayNight.NIGHT)
     print(trip)
 
+    val benMutRec = EssentialDignity.BeneficialMutualReception(Planet.SUN , Dignity.EXALTATION , Planet.MARS , Dignity.EXALTATION)
+    print(benMutRec)
   }
 }
