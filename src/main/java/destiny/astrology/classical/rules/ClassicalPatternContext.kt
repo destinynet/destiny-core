@@ -391,7 +391,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
       return if (planetDeg != null && northDeg != null && IHoroscopeModel.getAngle(planetDeg, northDeg) <= 1) {
         logger.debug("{} 與 {} 形成 {}", planet, north, CONJUNCTION)
-        AccidentalDignity.Partile_Conj_North_Node(planet)
+        AccidentalDignity.Partile_Conj_North_Node(planet , north)
       } else {
         null
       }
@@ -571,11 +571,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val translationOfLight = object : IPlanetPatternFactory {
     override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
       return translationOfLightImpl.getResult(planet, h)
-        ?.let { t ->
-          val deg = h.getAngle(t.first, t.second)
+        ?.let { (from, to, aspectType) ->
+          val deg = h.getAngle(from, to)
           // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，相位為 {4} 。 (入相位 or 出相位)
           // {0} 從 {1} 傳遞光線到 {2} ，{1} 與 {2} 交角 {3} 度，未形成相位
-          AccidentalDignity.Translation_of_Light(planet, t.first, t.second, deg, t.third)
+          AccidentalDignity.Translation_of_Light(planet, from, to, deg, aspectType)
         }
     }
   }

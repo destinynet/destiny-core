@@ -51,7 +51,7 @@ sealed class AccidentalDignity(override val name: String,
   data class Free_Combustion(override val planet: Planet) : AccidentalDignity(Free_Combustion::class.java.simpleName)
   data class Cazimi(override val planet: Planet) : AccidentalDignity(Cazimi::class.java.simpleName)
   data class Partile_Conj_Jupiter_Venus(override val planet: Planet, val venusOrJupiter: Planet) : AccidentalDignity(Partile_Conj_Jupiter_Venus::class.java.simpleName)
-  data class Partile_Conj_North_Node(override val planet: Planet) : AccidentalDignity(Partile_Conj_North_Node::class.java.simpleName)
+  data class Partile_Conj_North_Node(override val planet: Planet , val node: LunarNode) : AccidentalDignity(Partile_Conj_North_Node::class.java.simpleName)
   data class Partile_Trine_Jupiter_Venus(override val planet: Planet, val venusOrJupiter: Planet) : AccidentalDignity(Partile_Trine_Jupiter_Venus::class.java.simpleName)
   data class Partile_Sextile_Jupiter_Venus(override val planet: Planet, val venusOrJupiter: Planet) : AccidentalDignity(Partile_Sextile_Jupiter_Venus::class.java.simpleName)
   data class Partile_Conj_Regulus(override val planet: Planet) : AccidentalDignity(Partile_Conj_Regulus::class.java.simpleName)

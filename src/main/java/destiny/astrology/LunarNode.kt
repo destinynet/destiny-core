@@ -6,6 +6,8 @@ package destiny.astrology
 
 import destiny.astrology.NodeType.MEAN
 import destiny.astrology.NodeType.TRUE
+import destiny.tools.ILocaleString
+import java.util.*
 
 sealed class LunarNode(nameKey: String, abbrKey: String, val northSouth: NorthSouth, val nodeType: NodeType) :
   LunarPoint(nameKey, abbrKey, Star::class.java.name), Comparable<LunarNode> {
@@ -44,7 +46,6 @@ sealed class LunarNode(nameKey: String, abbrKey: String, val northSouth: NorthSo
 
     return inner_values.indexOf(this) - inner_values.indexOf(other)
   }
-
 
   companion object {
 

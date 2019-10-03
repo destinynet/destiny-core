@@ -1,5 +1,10 @@
 package destiny.astrology.classical.rules
 
+import destiny.astrology.Aspect.*
+import destiny.astrology.FixedStar
+import destiny.astrology.Planet.JUPITER
+import destiny.astrology.Planet.VENUS
+import destiny.core.DayNight
 import destiny.core.Descriptive
 import java.io.Serializable
 import java.util.*
@@ -53,20 +58,26 @@ object ruleTranslator {
         AccidentalDignity.Moon_Increase_Light -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
         is AccidentalDignity.Free_Combustion -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
         is AccidentalDignity.Cazimi -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Partile_Conj_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter))
-        is AccidentalDignity.Partile_Conj_North_Node -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Partile_Trine_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter))
-        is AccidentalDignity.Partile_Sextile_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter))
-        is AccidentalDignity.Partile_Conj_Regulus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Partile_Conj_Spica -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
+        is AccidentalDignity.Partile_Conj_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , CONJUNCTION))
+        is AccidentalDignity.Partile_Conj_North_Node -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.node , CONJUNCTION))
+        is AccidentalDignity.Partile_Trine_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , TRINE))
+        is AccidentalDignity.Partile_Sextile_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , SEXTILE))
+        is AccidentalDignity.Partile_Conj_Regulus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , FixedStar.REGULUS , CONJUNCTION))
+        is AccidentalDignity.Partile_Conj_Spica -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , FixedStar.SPICA , CONJUNCTION))
         is AccidentalDignity.JoyHouse -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
-        is AccidentalDignity.Hayz -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.sign))
-        is AccidentalDignity.Besieged_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
+        is AccidentalDignity.Hayz -> {
+          if (rule.dayNight == DayNight.DAY) {
+            AccidentalDignityDescriptor(rule , "commentDay" , listOf(rule.planet , rule.sign))
+          } else {
+            AccidentalDignityDescriptor(rule , "commentNight" , listOf(rule.planet , rule.sign))
+          }
+        }
+        is AccidentalDignity.Besieged_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , VENUS , JUPITER))
         is AccidentalDignity.Translation_of_Light -> {
           if (rule.aspect != null)
-            AccidentalDignityDescriptor(rule , "commentAspect" , listOf(rule.planet , rule.from , rule.to , rule.aspect))
+            AccidentalDignityDescriptor(rule , "commentAspect" , listOf(rule.planet , rule.from , rule.to , rule.deg , rule.aspect))
           else
-            AccidentalDignityDescriptor(rule , "commentUnaspect" , listOf(rule.planet , rule.from , rule.to))
+            AccidentalDignityDescriptor(rule , "commentUnaspect" , listOf(rule.planet , rule.from , rule.to , rule.deg))
         }
         is AccidentalDignity.Collection_of_Light -> {
           val p1 = rule.twoPlanets[0]
