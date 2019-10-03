@@ -28,7 +28,7 @@ class DebilityDescriptor(rule: Debility , val key: String, private val parameter
   }
 }
 
-object RuleTranslator {
+object ruleTranslator {
 
   fun getDescriptor(rule: IPlanetPattern): Descriptive {
     return when (rule) {

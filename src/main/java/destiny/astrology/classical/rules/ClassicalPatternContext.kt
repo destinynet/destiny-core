@@ -360,15 +360,16 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       val venusDeg = h.getPosition(VENUS)?.lng
 
       return planetDeg?.let {
-        val jupResult = jupiterDeg?.takeIf {
-          planet !== JUPITER && IHoroscopeModel.getAngle(planetDeg, jupiterDeg) <= 1
-        }?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, JUPITER) }
 
-        val venResult = venusDeg?.takeIf {
-          planet !== VENUS && IHoroscopeModel.getAngle(planetDeg, venusDeg) <= 1
-        }?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, VENUS) }
 
-        jupResult ?: venResult
+        jupiterDeg
+          ?.takeIf { planet !== JUPITER && IHoroscopeModel.getAngle(planetDeg, jupiterDeg) <= 1 }
+          ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, JUPITER) }
+          ?: {
+            venusDeg?.takeIf { planet !== VENUS && IHoroscopeModel.getAngle(planetDeg, venusDeg) <= 1 }
+              ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, VENUS) }
+          }.invoke()
+
       }
     }
   }
@@ -408,19 +409,18 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       val venusDeg = h.getPosition(VENUS)?.lng
 
       return planetDeg?.let {
-        val jupResult = jupiterDeg?.takeIf {
-          planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, Aspect.TRINE, 1.0)
+
+        jupiterDeg?.takeIf {
+          planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, TRINE, 1.0)
         }?.let {
           AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, JUPITER)
-        }
-
-        val venResult = venusDeg?.takeIf {
-          planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, Aspect.TRINE, 1.0)
-        }?.let {
-          AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, VENUS)
-        }
-
-        jupResult ?: venResult
+        }?: {
+          venusDeg?.takeIf {
+            planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, TRINE, 1.0)
+          }?.let {
+            AccidentalDignity.Partile_Trine_Jupiter_Venus(planet, VENUS)
+          }
+        }.invoke()
       }
     }
   }
@@ -436,15 +436,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       val venusDeg = h.getPosition(VENUS)?.lng
 
       return planetDeg?.let {
-        val jupResult = jupiterDeg?.takeIf {
-          planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, Aspect.SEXTILE, 1.0)
-        }?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, JUPITER) }
 
-        val venResult = venusDeg?.takeIf {
-          planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, Aspect.SEXTILE, 1.0)
-        }?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, VENUS) }
-
-        jupResult ?: venResult
+        jupiterDeg
+          ?.takeIf { planet !== JUPITER && AspectEffectiveModern.isEffective(planetDeg, jupiterDeg, SEXTILE, 1.0) }
+          ?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, JUPITER) }
+          ?: {
+            venusDeg
+              ?.takeIf { planet !== VENUS && AspectEffectiveModern.isEffective(planetDeg, venusDeg, SEXTILE, 1.0) }
+              ?.let { AccidentalDignity.Partile_Sextile_Jupiter_Venus(planet, VENUS) }
+          }.invoke()
       }
     }
   }
@@ -603,23 +603,21 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return planet.takeIf { it !== MOON && it !== SUN }
         ?.let {
 
-          val refrainFromMars = planet.takeIf { it !== MARS }?.let { _ ->
+          planet.takeIf { it !== MARS }?.let { _ ->
             refranationImpl.getImportantResult(h, planet, MARS)?.let { pair ->
               val aspect = pair.second
               logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, MARS, aspect)
               AccidentalDignity.Refrain_from_Mars_Saturn(planet, MARS, aspect)
             }
-          }
-
-          val refrainFromSaturn = planet.takeIf { it !== SATURN }?.let { _ ->
-            refranationImpl.getImportantResult(h, planet, SATURN)?.let { pair ->
-              val aspect = pair.second
-              logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
-              AccidentalDignity.Refrain_from_Mars_Saturn(planet, SATURN, aspect)
+          } ?: {
+            planet.takeIf { it !== SATURN }?.let { _ ->
+              refranationImpl.getImportantResult(h, planet, SATURN)?.let { pair ->
+                val aspect = pair.second
+                logger.debug("{} 逃過了與 {} 形成 {} (Refranation)", planet, SATURN, aspect)
+                AccidentalDignity.Refrain_from_Mars_Saturn(planet, SATURN, aspect)
+              }
             }
-          }
-
-          refrainFromMars ?: refrainFromSaturn
+          }.invoke()
         }
     }
 
@@ -826,15 +824,16 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         val marsDeg = h.getPosition(MARS)?.lng
         val saturnDeg = h.getPosition(SATURN)?.lng
 
-        val marResult = marsDeg?.takeIf {
+        marsDeg?.takeIf {
           planet !== MARS && IHoroscopeModel.getAngle(planetDeg, marsDeg) <= 1
-        }?.let { Debility.Partile_Conj_Mars_Saturn(planet, MARS) }
+        }?.let {
+          Debility.Partile_Conj_Mars_Saturn(planet, MARS)
+        }?: {
+          saturnDeg?.takeIf {
+            planet != SATURN && IHoroscopeModel.getAngle(planetDeg, saturnDeg) <= 1
+          }?.let { Debility.Partile_Conj_Mars_Saturn(planet, SATURN) }
+        }.invoke()
 
-        val satResult = saturnDeg?.takeIf {
-          planet != SATURN && IHoroscopeModel.getAngle(planetDeg, saturnDeg) <= 1
-        }?.let { Debility.Partile_Conj_Mars_Saturn(planet, SATURN) }
-
-        marResult ?: satResult
       }
     }
   }
@@ -889,19 +888,18 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val partileOppoMarsSaturn = object : IPlanetPatternFactory {
     override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
       return h.getPosition(planet)?.lng?.let { planetDeg ->
-        val marResult = h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
+
+        h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
           planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, OPPOSITION, 1.0)
         }?.let {
           Debility.Partile_Oppo_Mars_Saturn(planet, MARS)
-        }
-
-        val satResult = h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
-          planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, OPPOSITION, 1.0)
-        }?.let {
-          Debility.Partile_Oppo_Mars_Saturn(planet, SATURN)
-        }
-
-        marResult ?: satResult
+        }?: {
+          h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
+            planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, OPPOSITION, 1.0)
+          }?.let {
+            Debility.Partile_Oppo_Mars_Saturn(planet, SATURN)
+          }
+        }.invoke()
       }
     }
   }
@@ -913,19 +911,19 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val partileSquareMarsSaturn = object : IPlanetPatternFactory {
     override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
       return h.getPosition(planet)?.lng?.let { planetDeg ->
-        val marResult = h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
+
+        h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
           planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, SQUARE, 1.0)
         }?.let {
           Debility.Partile_Square_Mars_Saturn(planet, MARS)
-        }
+        }?: {
+          h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
+            planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, SQUARE, 1.0)
+          }?.let {
+            Debility.Partile_Square_Mars_Saturn(planet, SATURN)
+          }
+        }.invoke()
 
-        val satResult = h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
-          planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, SQUARE, 1.0)
-        }?.let {
-          Debility.Partile_Square_Mars_Saturn(planet, SATURN)
-        }
-
-        marResult ?: satResult
       }
     }
   }
@@ -961,8 +959,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
       return h.getZodiacSign(planet)?.let { sign ->
         h.getHouse(planet)?.let { house ->
-          val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
-          when (dayNight) {
+          when (val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)) {
             DAY -> if (arrayOf(MOON, VENUS, MARS).contains(planet) && house >= 7 && sign.booleanValue) {
               logger.debug("夜星 {} 於白天在地平面上，落入陽性星座 {} , 不得時", planet, sign.toString(Locale.TAIWAN))
               Debility.Out_of_Sect(planet, dayNight, YinYang.陽, sign)
@@ -987,21 +984,21 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val refrainFromVenusJupiter = object : IPlanetPatternFactory {
     override fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern? {
       return planet.takeIf { it !== SUN && it !== MOON }?.let {
-        val refrainFromVenus = planet.takeIf { it !== VENUS }?.let {
+
+        planet.takeIf { it !== VENUS }?.let {
           refranationImpl.getImportantResult(h, planet, VENUS)
         }?.let { (_, aspect) ->
           logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, VENUS, aspect)
           Debility.Refrain_from_Venus_Jupiter(planet, VENUS , aspect)
-        }
+        }?: {
+          planet.takeIf { it !== JUPITER }?.let {
+            refranationImpl.getImportantResult(h , planet , JUPITER)
+          }?.let { (_ , aspect) ->
+            logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
+            Debility.Refrain_from_Venus_Jupiter(planet, JUPITER , aspect)
+          }
+        }.invoke()
 
-        val refrainFromJupiter = planet.takeIf { it !== JUPITER }?.let {
-          refranationImpl.getImportantResult(h , planet , JUPITER)
-        }?.let { (_ , aspect) ->
-          logger.debug("{} 在與 {} 形成 {} 之前，臨陣退縮 (Refranation)", planet, JUPITER, aspect)
-          Debility.Refrain_from_Venus_Jupiter(planet, JUPITER , aspect)
-        }
-
-        refrainFromVenus ?: refrainFromJupiter
       }
     }
   }
