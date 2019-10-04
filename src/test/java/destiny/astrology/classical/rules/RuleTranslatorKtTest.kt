@@ -7,9 +7,12 @@ import destiny.astrology.Aspect
 import destiny.astrology.IAspectApplySeparate
 import destiny.astrology.LunarNode
 import destiny.astrology.Planet.*
-import destiny.astrology.ZodiacSign
+import destiny.astrology.ZodiacSign.*
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.rules.AccidentalDignity.*
+import destiny.astrology.classical.rules.AccidentalDignity.Occidental
+import destiny.astrology.classical.rules.AccidentalDignity.Oriental
+import destiny.astrology.classical.rules.Debility.*
 import destiny.core.DayNight
 import destiny.core.chinese.YinYang
 import mu.KotlinLogging
@@ -30,41 +33,41 @@ class RuleTranslatorKtTest {
 
 
   @Test
-  fun `EssentialDignity test name and description`() {
-    EssentialDignity.Ruler(SUN, ZodiacSign.LEO).also {
+  fun `essentialDignities test name and description`() {
+    EssentialDignity.Ruler(SUN, LEO).also {
       assertEquals("廟 (Ruler)", it.title)
-      assertEquals("太陽 位於 獅子，為其 Ruler。", it.description)
+      assertEquals("太陽 位於 獅子，為其 Ruler", it.description)
     }
 
-    EssentialDignity.Exaltation(SUN, ZodiacSign.ARIES).also {
+    EssentialDignity.Exaltation(SUN, ARIES).also {
       assertEquals("旺 (Exalt)", it.title)
-      assertEquals("太陽 位於 牡羊，為其 Exaltation。", it.description)
+      assertEquals("太陽 位於 牡羊，為其 Exaltation", it.description)
     }
 
-    EssentialDignity.Triplicity(SUN, ZodiacSign.ARIES, DayNight.DAY).also {
+    EssentialDignity.Triplicity(SUN, ARIES, DayNight.DAY).also {
       assertEquals("三分主星 (Triplicity)", it.title)
-      assertEquals("太陽 位於 牡羊，為其 DAY 之 Triplicity。", it.description)
+      assertEquals("太陽 位於 牡羊，為其 DAY 之 Triplicity", it.description)
     }
 
     EssentialDignity.Term(JUPITER, 6.0).also {
       assertEquals("界 (Term)", it.title)
-      assertEquals("木星 位於其 Term ： 6.0 。", it.description)
+      assertEquals("木星 位於其 Term ： 6.0", it.description)
     }
 
     EssentialDignity.Face(SUN, 20.0).also {
       assertEquals("十度區間主星 (Face)", it.title)
-      assertEquals("太陽 位於其 Chaldean decanate or face : 20.0。", it.description)
+      assertEquals("太陽 位於其 Chaldean decanate or face : 20.0", it.description)
     }
 
     EssentialDignity.BeneficialMutualReception(SUN, Dignity.RULER, MARS, Dignity.EXALTATION).also {
       assertEquals("有利互容", it.title)
-      assertEquals("太陽 與 火星 形成 廟旺互容。", it.description)
+      assertEquals("太陽 與 火星 形成 廟旺互容", it.description)
     }
   }
 
 
   @Test
-  fun `AccidentalDignity test name and description`() {
+  fun `accidentalDignities test name and description`() {
     House_1_10(SUN, 1).also {
       assertEquals("位於第一或第十宮", it.title)
       assertEquals("太陽 位於第 1 宮", it.description)
@@ -161,11 +164,11 @@ class RuleTranslatorKtTest {
       assertEquals("水星 位於第 1 宮，為其喜樂宮（Joy House）" , it.description)
     }
 
-    Hayz(SUN , DayNight.DAY , YinYang.陽 , ZodiacSign.ARIES).also {
+    Hayz(SUN , DayNight.DAY , YinYang.陽 , ARIES).also {
       assertEquals("得時" , it.title)
       assertEquals("晝星 太陽 於白天在地平面上，落入陽性星座 牡羊，得時" , it.description)
     }
-    Hayz(MOON, DayNight.NIGHT, YinYang.陰 , ZodiacSign.TAURUS).also {
+    Hayz(MOON, DayNight.NIGHT, YinYang.陰 , TAURUS).also {
       assertEquals("得時" , it.title)
       assertEquals("夜星 月亮 於夜晚在地平面上，落入陰性星座 金牛，得時" , it.description)
     }
@@ -195,6 +198,115 @@ class RuleTranslatorKtTest {
     }
   }
 
+  @Test
+  fun `debilities test name and description`() {
+    Detriment(SUN, AQUARIUS).also {
+      assertEquals("陷 (Detriment)" , it.title)
+      assertEquals("太陽 位於 水瓶，為其 Detriment" , it.description)
+    }
+
+    Fall(SUN , LIBRA).also {
+      assertEquals("落 (Fall)" , it.title)
+      assertEquals("太陽 位於 天秤，為其 Fall" , it.description)
+    }
+
+    Peregrine(MERCURY).also {
+      assertEquals("漂泊" , it.title)
+      assertEquals("水星 處於 漂泊、茫游、外出狀態 (Peregrine)" , it.description)
+    }
+
+    House_12(SUN).also {
+      assertEquals("位於十二宮" , it.title)
+      assertEquals("太陽 位於十二宮 (of the Evil Demon)" , it.description)
+    }
+
+    House_6_8(SUN , 6).also {
+      assertEquals("位於第六或第八宮" , it.title)
+      assertEquals("太陽 位於第 6 宮" , it.description)
+    }
+
+    Retrograde(SATURN).also {
+      assertEquals("逆行" , it.title)
+      assertEquals("土星 逆行" , it.description)
+    }
+
+    Slower(JUPITER).also {
+      assertEquals("慢行" , it.title)
+      assertEquals("木星 每日移動速度比平均值還慢" , it.description)
+    }
+
+    Debility.Occidental(MARS).also {
+      assertEquals("西出" , it.title)
+      assertEquals("火星 在太陽西邊" , it.description)
+    }
+
+    Debility.Oriental(VENUS).also {
+      assertEquals("東出" , it.title)
+      assertEquals("金星 在太陽東邊" , it.description)
+    }
+
+    Moon_Decrease_Light.also {
+      assertEquals("月減光" , it.title)
+      assertEquals("月亮 在太陽東邊（月減光/下弦月）" , it.description)
+    }
+
+    Combustion(MERCURY).also {
+      assertEquals("被太陽焦傷" , it.title)
+      assertEquals("水星 被太陽焦傷 (Combustion) , 17分 到 8.5 度內" , it.description)
+    }
+
+    Sunbeam(MERCURY).also {
+      assertEquals("被太陽曬傷" , it.title)
+      assertEquals("水星 被太陽曬傷 (Sunbeam) , 8.5 到 17 度內" , it.description)
+    }
+
+    Partile_Conj_Mars_Saturn(MERCURY , MARS).also {
+      assertEquals("與火或土合" , it.title)
+      assertEquals("水星 與 火星 形成 partile 合" , it.description)
+    }
+
+    Partile_Conj_South_Node(MERCURY).also {
+      assertEquals("與南交合相" , it.title)
+      assertEquals("水星 與 南交點 形成 partile 合" , it.description)
+    }
+
+    Besieged_Mars_Saturn(MERCURY).also {
+      assertEquals("火土夾制" , it.title)
+      assertEquals("水星 被 火星 及 土星 夾制 (Besieged)" , it.description)
+    }
+
+    Partile_Oppo_Mars_Saturn(MERCURY , MARS).also {
+      assertEquals("與火或土對沖" , it.title)
+      assertEquals("水星 與 火星 形成 partile 沖" , it.description)
+    }
+
+    Partile_Square_Mars_Saturn(MERCURY , MARS).also {
+      assertEquals("與火或土相刑" , it.title)
+      assertEquals("水星 與 火星 形成 partile 刑" , it.description)
+    }
+
+    Conj_Algol(MERCURY).also {
+      assertEquals("與大陵五合相" , it.title)
+      assertEquals("水星 與 大陵五 形成 合" , it.description)
+    }
+
+    Out_of_Sect(SUN , DayNight.NIGHT, YinYang.陰 , TAURUS).also {
+      assertEquals("不得時" , it.title)
+      assertEquals("晝星 太陽 於夜晚在地平面上，落入陰性星座 金牛，不得時" , it.description)
+    }
+    Out_of_Sect(MOON, DayNight.DAY, YinYang.陽 , ARIES).also {
+      assertEquals("不得時" , it.title)
+      assertEquals("夜星 月亮 於白天在地平面上，落入陽性星座 牡羊，不得時" , it.description)
+    }
+
+    Refrain_from_Venus_Jupiter(JUPITER , VENUS , Aspect.TRINE).also {
+      assertEquals("臨陣退縮" , it.title)
+      assertEquals("木星 在與 金星 形成 三合 之前，臨陣退縮 (Refranation)" , it.description)
+    }
+  }
+
+
+
 
   private fun print(rule: EssentialDignity) {
 
@@ -220,10 +332,10 @@ class RuleTranslatorKtTest {
 
   //@Test
   fun testPrint() {
-    val ruler = EssentialDignity.Ruler(SUN, ZodiacSign.ARIES)
+    val ruler = EssentialDignity.Ruler(SUN, ARIES)
     print(ruler)
 
-    val exalt = EssentialDignity.Exaltation(JUPITER, ZodiacSign.CAPRICORN)
+    val exalt = EssentialDignity.Exaltation(JUPITER, CAPRICORN)
     print(exalt)
 
     val term = EssentialDignity.Term(JUPITER, 123.456)
@@ -232,7 +344,7 @@ class RuleTranslatorKtTest {
     val face = EssentialDignity.Face(MARS, 359.9)
     print(face)
 
-    val trip = EssentialDignity.Triplicity(MOON, ZodiacSign.GEMINI, DayNight.NIGHT)
+    val trip = EssentialDignity.Triplicity(MOON, GEMINI, DayNight.NIGHT)
     print(trip)
 
     val benMutRec = EssentialDignity.BeneficialMutualReception(SUN, Dignity.EXALTATION, MARS, Dignity.EXALTATION)

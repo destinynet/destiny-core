@@ -2,8 +2,8 @@ package destiny.astrology.classical.rules
 
 import destiny.astrology.Aspect.*
 import destiny.astrology.FixedStar
-import destiny.astrology.Planet.JUPITER
-import destiny.astrology.Planet.VENUS
+import destiny.astrology.LunarNode
+import destiny.astrology.Planet.*
 import destiny.core.DayNight
 import destiny.core.Descriptive
 import java.io.Serializable
@@ -100,13 +100,19 @@ object ruleTranslator {
         Debility.Moon_Decrease_Light ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
         is Debility.Combustion ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
         is Debility.Sunbeam ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Partile_Conj_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn))
-        is Debility.Partile_Conj_South_Node ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Besieged_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Partile_Oppo_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn))
-        is Debility.Partile_Square_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn))
-        is Debility.Conj_Algol ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Out_of_Sect ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.sign))
+        is Debility.Partile_Conj_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , CONJUNCTION))
+        is Debility.Partile_Conj_South_Node -> DebilityDescriptor(rule, "comment", listOf(rule.planet, LunarNode.SOUTH_MEAN, CONJUNCTION))
+        is Debility.Besieged_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , MARS , SATURN))
+        is Debility.Partile_Oppo_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , OPPOSITION))
+        is Debility.Partile_Square_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , SQUARE))
+        is Debility.Conj_Algol ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , FixedStar.ALGOL , CONJUNCTION))
+        is Debility.Out_of_Sect -> {
+          if (rule.dayNight == DayNight.DAY) {
+            DebilityDescriptor(rule , "commentNight" , listOf(rule.planet , rule.sign))
+          } else {
+            DebilityDescriptor(rule , "commentDay" , listOf(rule.planet , rule.sign))
+          }
+        }
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , rule.aspect))
       }
       else -> TODO()
