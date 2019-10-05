@@ -6,7 +6,7 @@ package destiny.astrology.classical.rules
 import destiny.astrology.*
 import destiny.astrology.classical.Dignity
 import destiny.astrology.classical.IMutualData
-import destiny.astrology.classical.MutualData
+import destiny.astrology.classical.MutualDataWithSign
 import destiny.core.DayNight
 import destiny.core.chinese.YinYang
 
@@ -25,9 +25,10 @@ sealed class EssentialDignity(override val name: String,
   data class Triplicity(override val planet: Planet, val sign: ZodiacSign, val dayNight: DayNight) : EssentialDignity(Triplicity::class.java.simpleName)
   data class Term(override val planet: Planet, val lngDeg: Double) : EssentialDignity(Term::class.java.simpleName)
   data class Face(override val planet: Planet, val lngDeg: Double) : EssentialDignity(Face::class.java.simpleName)
-  data class BeneficialMutualReception(override val planet: Planet, val dig1: Dignity,
-                                       val p2: Point, val dig2: Dignity) :
-    EssentialDignity(BeneficialMutualReception::class.java.simpleName), IMutualData by MutualData(planet, dig1, p2, dig2)
+
+  class BeneficialMutualReception(override val planet: Planet, val sign1: ZodiacSign, val dig1: Dignity,
+                                  val p2: Point, val sign2: ZodiacSign, val dig2: Dignity)
+    : EssentialDignity(BeneficialMutualReception::class.java.simpleName), IMutualData by MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)
 }
 
 sealed class AccidentalDignity(override val name: String,
@@ -65,9 +66,6 @@ sealed class AccidentalDignity(override val name: String,
 }
 
 
-/**
- * to replace [destiny.astrology.classical.rules.debilities.DebilitiesBean]
- */
 sealed class Debility(override val name: String,
                       override val notes: String? = null) : IPlanetPattern {
   override val type: RuleType = RuleType.DEBILITY

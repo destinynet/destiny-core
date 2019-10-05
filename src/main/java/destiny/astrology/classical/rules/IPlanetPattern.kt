@@ -18,7 +18,8 @@ interface IPlanetPattern : IClassicalPattern {
 
 interface IPlanetPatternFactory {
 
-  fun getPattern(planet: Planet, h: IHoroscopeModel): IPlanetPattern?
+  fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern>
+
 }
 
 interface IMutualPattern : IClassicalPattern, IMutualData

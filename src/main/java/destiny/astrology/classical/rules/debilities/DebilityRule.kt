@@ -9,7 +9,7 @@ import destiny.astrology.classical.rules.RuleType
 
 abstract class DebilityRule : AbstractRule(resource, RuleType.DEBILITY) {
   companion object {
-    private const val resource = "destiny.astrology.classical.rules.debilities.Debilities"
+    private const val resource = "destiny.astrology.classical.rules.Debilities"
   }
 
 }

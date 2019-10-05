@@ -14,7 +14,7 @@ abstract class EssentialRule : AbstractRule(resource, RuleType.ESSENTIAL) {
   val rulerImpl : IRuler = RulerPtolemyImpl()
 
   companion object {
-    private const val resource = "destiny.astrology.classical.rules.essentialDignities.EssentialDignities"
+    private const val resource = "destiny.astrology.classical.rules.EssentialDignities"
   }
 
 

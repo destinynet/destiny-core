@@ -59,9 +59,17 @@ class RuleTranslatorKtTest {
       assertEquals("太陽 位於其 Chaldean decanate or face : 20.0", it.description)
     }
 
-    EssentialDignity.BeneficialMutualReception(SUN, Dignity.RULER, MARS, Dignity.EXALTATION).also {
+    EssentialDignity.BeneficialMutualReception(VENUS, CAPRICORN , Dignity.RULER, SATURN, TAURUS , Dignity.RULER).also {
       assertEquals("有利互容", it.title)
-      assertEquals("太陽 與 火星 形成 廟旺互容", it.description)
+      assertEquals("金星 位於 摩羯 , 與其 廟 (土星) 飛至 金牛 , 形成 廟廟互容", it.description)
+    }
+    EssentialDignity.BeneficialMutualReception(VENUS, CAPRICORN , Dignity.EXALTATION, MARS, PISCES , Dignity.EXALTATION).also {
+      assertEquals("有利互容", it.title)
+      assertEquals("金星 位於 摩羯 , 與其 旺 (火星) 飛至 雙魚 , 形成 旺旺互容", it.description)
+    }
+    EssentialDignity.BeneficialMutualReception(MOON, CAPRICORN , Dignity.EXALTATION, SATURN, TAURUS, Dignity.RULER).also {
+      assertEquals("有利互容", it.title)
+      assertEquals("月亮 位於 摩羯 , 與其 廟 (土星) 飛至 金牛 , 形成 旺廟互容", it.description)
     }
   }
 
@@ -347,7 +355,7 @@ class RuleTranslatorKtTest {
     val trip = EssentialDignity.Triplicity(MOON, GEMINI, DayNight.NIGHT)
     print(trip)
 
-    val benMutRec = EssentialDignity.BeneficialMutualReception(SUN, Dignity.EXALTATION, MARS, Dignity.EXALTATION)
-    print(benMutRec)
+//    val benMutRec = EssentialDignity.BeneficialMutualReception(SUN, Dignity.EXALTATION, MARS, Dignity.EXALTATION)
+//    print(benMutRec)
   }
 }

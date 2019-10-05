@@ -8,11 +8,12 @@ import destiny.core.DayNight
 import destiny.core.Descriptive
 import java.io.Serializable
 import java.util.*
+import kotlin.RuntimeException
 
 
 class EssentialDignityDescriptor(rule: EssentialDignity, val key: String, private val parameters: List<Any>) :
   AbstractRuleDescriptor<EssentialDignity>(rule), Serializable {
-  override val resource: String = "destiny.astrology.classical.rules.essentialDignities.EssentialDignities"
+  override val resource: String = "destiny.astrology.classical.rules.EssentialDignities"
   override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
     return key to parameters
   }
@@ -20,14 +21,14 @@ class EssentialDignityDescriptor(rule: EssentialDignity, val key: String, privat
 
 class AccidentalDignityDescriptor(rule: AccidentalDignity, val key: String, private val parameters: List<Any>) :
   AbstractRuleDescriptor<AccidentalDignity>(rule), Serializable {
-  override val resource: String = "destiny.astrology.classical.rules.accidentalDignities.AccidentalDignities"
+  override val resource: String = "destiny.astrology.classical.rules.AccidentalDignities"
   override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
     return key to parameters
   }
 }
 
 class DebilityDescriptor(rule: Debility , val key: String, private val parameters: List<Any>) : AbstractRuleDescriptor<Debility>(rule) , Serializable {
-  override val resource: String = "destiny.astrology.classical.rules.debilities.Debilities"
+  override val resource: String = "destiny.astrology.classical.rules.Debilities"
   override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
     return key to parameters
   }
@@ -43,7 +44,9 @@ object ruleTranslator {
         is EssentialDignity.Triplicity -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign, rule.dayNight))
         is EssentialDignity.Term -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
         is EssentialDignity.Face -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
-        is EssentialDignity.BeneficialMutualReception -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.p2, rule.dig1, rule.dig2))
+        is EssentialDignity.BeneficialMutualReception -> EssentialDignityDescriptor(rule, "comment",
+          listOf(rule.planet, rule.sign1, rule.dig2, rule.p2, rule.sign2, rule.dig1, rule.dig2))
+
       }
       is AccidentalDignity -> when(rule) {
         is AccidentalDignity.House_1_10 -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
@@ -115,7 +118,9 @@ object ruleTranslator {
         }
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , rule.aspect))
       }
-      else -> TODO()
+      else -> {
+        throw RuntimeException("Not Supported : $rule")
+      }
     }
   }
 }

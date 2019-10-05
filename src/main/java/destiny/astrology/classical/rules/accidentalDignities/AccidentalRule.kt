@@ -9,7 +9,7 @@ import destiny.astrology.classical.rules.RuleType
 
 abstract class AccidentalRule : AbstractRule(resource, RuleType.ACCIDENTAL) {
   companion object {
-    private const val resource = "destiny.astrology.classical.rules.accidentalDignities.AccidentalDignities"
+    private const val resource = "destiny.astrology.classical.rules.AccidentalDignities"
   }
 
 }

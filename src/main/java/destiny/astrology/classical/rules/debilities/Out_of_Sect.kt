@@ -14,7 +14,7 @@ import java.util.*
  * 晝星 : 日 , 木 , 土
  * 夜星 : 月 , 金 , 火
  *
- * 相對於不得時的，是「得時」 [destiny.astrology.classical.rules.accidentalDignities.Hayz]
+ * 相對於不得時的，是「得時」 (hayz)
  */
 class Out_of_Sect(
   /** 計算白天黑夜的實作  */
