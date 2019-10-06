@@ -22,8 +22,6 @@ data class HoroscopeAspectData(val p1: Point,
   /** 存放形成交角的兩顆星體  */
   val points = setOf(p1 , p2)
 
-  private val logger = KotlinLogging.logger {  }
-
   init {
     val set = sortedSetOf(pointComp).apply {
       add(p1)
@@ -85,4 +83,7 @@ data class HoroscopeAspectData(val p1: Point,
   }
 
 
+  companion object {
+    val logger = KotlinLogging.logger {}
+  }
 }

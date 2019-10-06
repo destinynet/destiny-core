@@ -2,12 +2,25 @@
  * @author smallufo
  * Created on 2008/1/1 at 上午 9:36:03
  */
-package destiny.astrology.classical.rules.debilities
+package destiny.astrology.classical.rules
 
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
-import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.IEssential
+import destiny.astrology.classical.*
+
+@Deprecated("pending deleted")
+abstract class DebilityRule : AbstractRule(resource, RuleType.DEBILITY) {
+
+
+  val rulerImpl : IRuler = RulerPtolemyImpl()
+  val exaltImpl : IExaltation = ExaltationPtolemyImpl()
+
+  companion object {
+    private const val resource = "destiny.astrology.classical.rules.Debilities"
+  }
+
+}
+
 
 /**
  * 互容的變形，兩星都處與落陷，又互容→互相扯後腿<br></br>
@@ -15,7 +28,7 @@ import destiny.astrology.classical.IEssential
  * 水星在雙魚為 Detriment/Fall , 雙魚的 Ruler 為木星 , 木星到處女為 Detriment
  */
 @Deprecated("似乎不實用")
-class MutualDeception(private val essentialImpl: IEssential) : EssentialRule() {
+class MutualDeception(private val essentialImpl: IEssential) : DebilityRule() {
 
   override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return rulerMutualDeception(h, planet)
