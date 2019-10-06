@@ -11,8 +11,33 @@ import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.text.MessageFormat
 import java.util.*
+import java.util.function.Predicate
 
 
+@Deprecated("pending deleted")
+interface IRule : Predicate<Pair<Planet, IHoroscopeModel>> {
+
+  val name: String
+
+  val type : RuleType
+
+  override fun test(t: Pair<Planet, IHoroscopeModel>): Boolean {
+    return isApplicable(t.first, t.second)
+  }
+
+  fun isApplicable(planet: Planet, h: IHoroscopeModel): Boolean
+
+  fun getName(locale: Locale): String
+
+  /** 取得某 Locale 之下的註解  */
+  fun getComment(planet: Planet, h: IHoroscopeModel, locale: Locale): String?
+
+  fun getComment(planet: Planet, h: IHoroscopeModel): String? {
+    return getComment(planet, h, Locale.getDefault())
+  }
+}
+
+@Deprecated("pending deleted")
 abstract class AbstractRule protected constructor(
   private val resource: String,
   override val type: RuleType) : IRule,

@@ -10,6 +10,12 @@ import destiny.core.IPattern
 
 interface IClassicalPattern : IPattern
 
+enum class RuleType {
+  ESSENTIAL,
+  ACCIDENTAL,
+  DEBILITY
+}
+
 interface IPlanetPattern : IClassicalPattern {
   val type: RuleType
   val planet: Planet

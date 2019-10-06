@@ -5,7 +5,6 @@ package destiny.astrology.classical.rules
 
 import destiny.astrology.*
 import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.IMutualData
 import destiny.astrology.classical.MutualDataWithSign
 import destiny.core.DayNight
 import destiny.core.chinese.YinYang
@@ -26,9 +25,24 @@ sealed class EssentialDignity(override val name: String,
   data class Term(override val planet: Planet, val lngDeg: Double) : EssentialDignity(Term::class.java.simpleName)
   data class Face(override val planet: Planet, val lngDeg: Double) : EssentialDignity(Face::class.java.simpleName)
 
-  class BeneficialMutualReception(override val planet: Planet, val sign1: ZodiacSign, val dig1: Dignity,
-                                  val p2: Point, val sign2: ZodiacSign, val dig2: Dignity)
-    : EssentialDignity(BeneficialMutualReception::class.java.simpleName), IMutualData by MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)
+  data class BeneficialMutualReception(override val planet: Planet, val sign1: ZodiacSign, val dig1: Dignity,
+                                       val p2: Point, val sign2: ZodiacSign, val dig2: Dignity)
+    : EssentialDignity(BeneficialMutualReception::class.java.simpleName) {
+    private val mutualData = MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is BeneficialMutualReception) return false
+
+      if (mutualData != other.mutualData) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return mutualData.hashCode()
+    }
+
+  }
 }
 
 sealed class AccidentalDignity(override val name: String,
