@@ -984,7 +984,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   }
 
   /** DD / FF / DF 互陷 */
-  val maliciousMutualReception = object : IPlanetPatternFactory {
+  val maliciousMutualDeception = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return with(essentialImpl) {
 
@@ -997,7 +997,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
             logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互陷害",
                          planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
                          planet, sign1)
-            Debility.MaliciousMutualReception(planet, sign1, mutualData.getDignityOf(planet),
+            Debility.MaliciousMutualDeception(planet, sign1, mutualData.getDignityOf(planet),
                                               p2, sign2, mutualData.getDignityOf(p2))
           }.toList()
       }
@@ -1013,7 +1013,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
   val debilities: List<IPlanetPatternFactory> = listOf(detriment, fall, peregrine, house_12, house_6_8, retrograde, slower
     , occidentalBad, orientalBad, moonDecreaseLight, combustion, sunbeam, partileConjMarsSaturn, partileConjSouthNode
-    , besiegedMarsSaturn, partileOppoMarsSaturn, partileSquareMarsSaturn, conjAlgol, outOfSect, refrainFromVenusJupiter)
+    , besiegedMarsSaturn, partileOppoMarsSaturn, partileSquareMarsSaturn, conjAlgol, outOfSect, refrainFromVenusJupiter , maliciousMutualDeception)
 
 
   companion object {

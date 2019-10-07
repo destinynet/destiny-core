@@ -107,7 +107,7 @@ object patternTranslator {
           }
         }
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , rule.aspect))
-        is Debility.MaliciousMutualReception -> TODO()
+        is Debility.MaliciousMutualDeception -> DebilityDescriptor(rule, "comment", listOf(rule.planet, rule.sign1, rule.dig2, rule.p2, rule.sign2, rule.dig1, rule.dig2))
       }
       else -> {
         throw RuntimeException("Not Supported : $rule")

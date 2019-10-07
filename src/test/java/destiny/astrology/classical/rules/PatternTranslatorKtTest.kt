@@ -21,7 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class RuleTranslatorKtTest {
+class PatternTranslatorKtTest {
 
   val logger = KotlinLogging.logger { }
 
@@ -310,6 +310,11 @@ class RuleTranslatorKtTest {
     Refrain_from_Venus_Jupiter(JUPITER , VENUS , Aspect.TRINE).also {
       assertEquals("臨陣退縮" , it.title)
       assertEquals("木星 在與 金星 形成 三合 之前，臨陣退縮 (Refranation)" , it.description)
+    }
+
+    MaliciousMutualDeception(MOON, ARIES, Dignity.DETRIMENT, SATURN, CAPRICORN, Dignity.FALL).also {
+      assertEquals("互相陷害", it.title)
+      assertEquals("月亮 位於 牡羊 , 與其 落 (土星) 飛至 摩羯 , 形成 陷落互陷", it.description)
     }
   }
 
