@@ -3,16 +3,18 @@
  */
 package destiny.astrology.classical.rules
 
-import destiny.astrology.Aspect
+import destiny.astrology.Aspect.OPPOSITION
+import destiny.astrology.Aspect.TRINE
 import destiny.astrology.IAspectApplySeparate
 import destiny.astrology.LunarNode
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign.*
-import destiny.astrology.classical.Dignity
+import destiny.astrology.classical.Dignity.*
 import destiny.astrology.classical.rules.AccidentalDignity.*
 import destiny.astrology.classical.rules.AccidentalDignity.Occidental
 import destiny.astrology.classical.rules.AccidentalDignity.Oriental
 import destiny.astrology.classical.rules.Debility.*
+import destiny.astrology.classical.rules.Debility.MutualDeception
 import destiny.core.DayNight
 import destiny.core.chinese.YinYang
 import mu.KotlinLogging
@@ -59,16 +61,16 @@ class PatternTranslatorKtTest {
       assertEquals("太陽 位於其 Chaldean decanate or face : 20.0", it.description)
     }
 
-    EssentialDignity.BeneficialMutualReception(VENUS, CAPRICORN , Dignity.RULER, SATURN, TAURUS , Dignity.RULER).also {
-      assertEquals("有利互容", it.title)
+    EssentialDignity.MutualReception(VENUS, CAPRICORN , RULER, SATURN, TAURUS , RULER).also {
+      assertEquals("互容", it.title)
       assertEquals("金星 位於 摩羯 , 與其 廟 (土星) 飛至 金牛 , 形成 廟廟互容", it.description)
     }
-    EssentialDignity.BeneficialMutualReception(VENUS, CAPRICORN , Dignity.EXALTATION, MARS, PISCES , Dignity.EXALTATION).also {
-      assertEquals("有利互容", it.title)
+    EssentialDignity.MutualReception(VENUS, CAPRICORN , EXALTATION, MARS, PISCES , EXALTATION).also {
+      assertEquals("互容", it.title)
       assertEquals("金星 位於 摩羯 , 與其 旺 (火星) 飛至 雙魚 , 形成 旺旺互容", it.description)
     }
-    EssentialDignity.BeneficialMutualReception(MOON, CAPRICORN , Dignity.EXALTATION, SATURN, TAURUS, Dignity.RULER).also {
-      assertEquals("有利互容", it.title)
+    EssentialDignity.MutualReception(MOON, CAPRICORN , EXALTATION, SATURN, TAURUS, RULER).also {
+      assertEquals("互容", it.title)
       assertEquals("月亮 位於 摩羯 , 與其 廟 (土星) 飛至 金牛 , 形成 旺廟互容", it.description)
     }
   }
@@ -200,7 +202,7 @@ class PatternTranslatorKtTest {
       assertEquals("土星 從 金星 與 木星 收集光線。 金星 與 木星 交角 120.0 度" , it.description)
     }
 
-    Refrain_from_Mars_Saturn(VENUS , MARS , Aspect.OPPOSITION).also {
+    Refrain_from_Mars_Saturn(VENUS , MARS , OPPOSITION).also {
       assertEquals("逃離火土" , it.title)
       assertEquals("金星 逃過了與 火星 形成 沖 (Refranation)" , it.description)
     }
@@ -307,13 +309,13 @@ class PatternTranslatorKtTest {
       assertEquals("夜星 月亮 於白天在地平面上，落入陽性星座 牡羊，不得時" , it.description)
     }
 
-    Refrain_from_Venus_Jupiter(JUPITER , VENUS , Aspect.TRINE).also {
+    Refrain_from_Venus_Jupiter(JUPITER , VENUS , TRINE).also {
       assertEquals("臨陣退縮" , it.title)
       assertEquals("木星 在與 金星 形成 三合 之前，臨陣退縮 (Refranation)" , it.description)
     }
 
-    MaliciousMutualDeception(MOON, ARIES, Dignity.DETRIMENT, SATURN, CAPRICORN, Dignity.FALL).also {
-      assertEquals("互相陷害", it.title)
+    MutualDeception(MOON, ARIES, DETRIMENT, SATURN, CAPRICORN, FALL).also {
+      assertEquals("互陷", it.title)
       assertEquals("月亮 位於 牡羊 , 與其 落 (土星) 飛至 摩羯 , 形成 陷落互陷", it.description)
     }
   }
@@ -360,7 +362,7 @@ class PatternTranslatorKtTest {
     val trip = EssentialDignity.Triplicity(MOON, GEMINI, DayNight.NIGHT)
     print(trip)
 
-//    val benMutRec = EssentialDignity.BeneficialMutualReception(SUN, Dignity.EXALTATION, MARS, Dignity.EXALTATION)
+//    val benMutRec = EssentialDignity.MutualReception(SUN, Dignity.EXALTATION, MARS, Dignity.EXALTATION)
 //    print(benMutRec)
   }
 }

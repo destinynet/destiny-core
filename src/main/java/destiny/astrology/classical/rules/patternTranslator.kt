@@ -34,7 +34,7 @@ object patternTranslator {
         is EssentialDignity.Triplicity -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign, rule.dayNight))
         is EssentialDignity.Term -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
         is EssentialDignity.Face -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
-        is EssentialDignity.BeneficialMutualReception -> EssentialDignityDescriptor(rule, "comment",
+        is EssentialDignity.MutualReception -> EssentialDignityDescriptor(rule, "comment",
           listOf(rule.planet, rule.sign1, rule.dig2, rule.p2, rule.sign2, rule.dig1, rule.dig2))
 
       }
@@ -107,7 +107,7 @@ object patternTranslator {
           }
         }
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , rule.aspect))
-        is Debility.MaliciousMutualDeception -> DebilityDescriptor(rule, "comment", listOf(rule.planet, rule.sign1, rule.dig2, rule.p2, rule.sign2, rule.dig1, rule.dig2))
+        is Debility.MutualDeception -> DebilityDescriptor(rule, "comment", listOf(rule.planet, rule.sign1, rule.dig2, rule.p2, rule.sign2, rule.dig1, rule.dig2))
       }
       else -> {
         throw RuntimeException("Not Supported : $rule")
