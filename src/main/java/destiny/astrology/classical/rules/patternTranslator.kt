@@ -7,34 +7,24 @@ import destiny.astrology.Planet.*
 import destiny.core.DayNight
 import destiny.core.Descriptive
 import java.io.Serializable
-import java.util.*
-import kotlin.RuntimeException
 
 
-class EssentialDignityDescriptor(rule: EssentialDignity, val key: String, private val parameters: List<Any>) :
-  AbstractRuleDescriptor<EssentialDignity>(rule), Serializable {
+class EssentialDignityDescriptor(rule: EssentialDignity, key: String, parameters: List<Any>) :
+  AbstractPlanetPatternDescriptor<EssentialDignity>(rule, key, parameters), Serializable {
   override val resource: String = "destiny.astrology.classical.rules.EssentialDignities"
-  override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
-    return key to parameters
-  }
 }
 
-class AccidentalDignityDescriptor(rule: AccidentalDignity, val key: String, private val parameters: List<Any>) :
-  AbstractRuleDescriptor<AccidentalDignity>(rule), Serializable {
+class AccidentalDignityDescriptor(rule: AccidentalDignity, key: String, parameters: List<Any>) :
+  AbstractPlanetPatternDescriptor<AccidentalDignity>(rule, key, parameters), Serializable {
   override val resource: String = "destiny.astrology.classical.rules.AccidentalDignities"
-  override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
-    return key to parameters
-  }
 }
 
-class DebilityDescriptor(rule: Debility , val key: String, private val parameters: List<Any>) : AbstractRuleDescriptor<Debility>(rule) , Serializable {
+class DebilityDescriptor(rule: Debility , key: String, parameters: List<Any>) : AbstractPlanetPatternDescriptor<Debility>(
+  rule, key, parameters) , Serializable {
   override val resource: String = "destiny.astrology.classical.rules.Debilities"
-  override fun getCommentParameters(locale: Locale): Pair<String, List<Any>> {
-    return key to parameters
-  }
 }
 
-object ruleTranslator {
+object patternTranslator {
 
   fun getDescriptor(rule: IPlanetPattern): Descriptive {
     return when (rule) {
@@ -117,6 +107,7 @@ object ruleTranslator {
           }
         }
         is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , rule.aspect))
+        is Debility.MaliciousMutualReception -> TODO()
       }
       else -> {
         throw RuntimeException("Not Supported : $rule")

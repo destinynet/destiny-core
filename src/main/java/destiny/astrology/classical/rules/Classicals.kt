@@ -6,7 +6,6 @@ package destiny.astrology.classical.rules
 import destiny.astrology.*
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
-import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
@@ -52,7 +51,7 @@ class ClassicalContext(
       val list = factories.flatMap { factory ->
         factory.getPatterns(planet , h)
       }.map { pattern ->
-        pattern to ruleTranslator.getDescriptor(pattern)
+        pattern to patternTranslator.getDescriptor(pattern)
       }.map { (pattern , descriptor) ->
         pattern to descriptor.getDescription(locale)
       }

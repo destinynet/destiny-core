@@ -983,6 +983,27 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     }
   }
 
+  /** DD / FF / DF 互陷 */
+  val maliciousMutualReception = object : IPlanetPatternFactory {
+    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
+      return with(essentialImpl) {
+
+        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.DETRIMENT, Dignity.FALL))
+          .map { mutualData ->
+            val sign1 = h.getZodiacSign(planet)!!
+            val p2 = mutualData.getAnotherPoint(planet)
+            val sign2 = h.getZodiacSign(p2)!!
+            logger.debug("mutualData = {}", mutualData)
+            logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互陷害",
+                         planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
+                         planet, sign1)
+            Debility.MaliciousMutualReception(planet, sign1, mutualData.getDignityOf(planet),
+                                              p2, sign2, mutualData.getDignityOf(p2))
+          }.toList()
+      }
+    }
+  }
+
   val essentialDignities: List<IPlanetPatternFactory> = listOf(ruler, exaltation, triplicity, term, face, beneficialMutualReception)
 
   val accidentalDignities: List<IPlanetPatternFactory> = listOf(house_1_10, house_4_7_11, house_2_5, house_9, house_3, direct, swift

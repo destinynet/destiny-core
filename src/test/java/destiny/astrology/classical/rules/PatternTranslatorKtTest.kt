@@ -26,10 +26,10 @@ class RuleTranslatorKtTest {
   val logger = KotlinLogging.logger { }
 
   private val IPlanetPattern.title: String
-    get() = ruleTranslator.getDescriptor(this).getTitle(Locale.TAIWAN)
+    get() = patternTranslator.getDescriptor(this).getTitle(Locale.TAIWAN)
 
   private val IPlanetPattern.description: String
-    get() = ruleTranslator.getDescriptor(this).getDescription(Locale.TAIWAN)
+    get() = patternTranslator.getDescriptor(this).getDescription(Locale.TAIWAN)
 
 
   @Test
@@ -318,7 +318,7 @@ class RuleTranslatorKtTest {
 
   private fun print(rule: EssentialDignity) {
 
-    ruleTranslator.getDescriptor(rule).also {
+    patternTranslator.getDescriptor(rule).also {
       logger.info("{} : {}", it, it.javaClass.name)
       println("title(tw) = ${it.getTitle(Locale.TAIWAN)}")
       println("title(en) = ${it.getTitle(Locale.ENGLISH)}")

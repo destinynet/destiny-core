@@ -107,6 +107,24 @@ sealed class Debility(override val name: String,
   data class Conj_Algol(override val planet: Planet) : Debility(Conj_Algol::class.java.simpleName)
   data class Out_of_Sect(override val planet: Planet , val dayNight: DayNight , val yinYang: YinYang , val sign: ZodiacSign) : Debility(Out_of_Sect::class.java.simpleName)
   data class Refrain_from_Venus_Jupiter(override val planet: Planet , val venusOrJupiter: Planet , val aspect: Aspect) : Debility(Refrain_from_Venus_Jupiter::class.java.simpleName)
+
+  data class MaliciousMutualReception(override val planet: Planet, val sign1: ZodiacSign, val dig1: Dignity,
+                                       val p2: Point, val sign2: ZodiacSign, val dig2: Dignity) : Debility(MaliciousMutualReception::class.java.simpleName) {
+    private val mutualData = MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (other !is MaliciousMutualReception) return false
+
+      if (mutualData != other.mutualData) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      return mutualData.hashCode()
+    }
+
+  }
 }
 //
 ///** p1 以 dig1 的能量招待 (接納) p2 , p2 以 dig2 的能量招待 (接納) p1 */
