@@ -1,5 +1,6 @@
 package destiny.astrology.classical.rules
 
+import destiny.tools.AbstractPropertyBasedPatternDescriptor
 import destiny.astrology.Aspect.*
 import destiny.astrology.FixedStar
 import destiny.astrology.LunarNode
@@ -8,6 +9,14 @@ import destiny.core.DayNight
 import destiny.core.Descriptive
 import destiny.core.IPatternDescriptor
 import java.io.Serializable
+
+
+/**
+ * 將 [IPlanetPattern] 轉譯成 [Descriptive] , 以利終端顯示
+ */
+abstract class AbstractPlanetPatternDescriptor<out T : IPlanetPattern>(pattern: IPlanetPattern,
+                                                                       commentKey: String,
+                                                                       parameters: List<Any>) : AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters)
 
 
 class EssentialDignityDescriptor(rule: EssentialDignity, key: String, parameters: List<Any>) :

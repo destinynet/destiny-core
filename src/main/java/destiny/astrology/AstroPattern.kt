@@ -27,7 +27,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [GrandTrine] : 大三角
    */
-  data class GrandTrine(override val points: Set<Point>, val element: Element, override val score: Double?) : AstroPattern(GrandTrine::class.java.simpleName, "$points 在 ${element}向星座 形成大三角") {
+  data class GrandTrine(override val points: Set<Point>, val element: Element, override val score: Double? = null) : AstroPattern(GrandTrine::class.java.simpleName, "$points 在 ${element}向星座 形成大三角") {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is GrandTrine) return false
@@ -48,7 +48,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [Kite] : 風箏
    */
-  data class Kite(val head: PointSignHouse, val wings: Set<Point>, val tail: PointSignHouse, override val score: Double?) : AstroPattern(Kite::class.java.simpleName, "${head.point} 是風箏頭， $wings 是風箏翼 , ${tail.point} 是尾巴") {
+  data class Kite(val head: PointSignHouse, val wings: Set<Point>, val tail: PointSignHouse, override val score: Double? = null) : AstroPattern(Kite::class.java.simpleName, "${head.point} 是風箏頭， $wings 是風箏翼 , ${tail.point} 是尾巴") {
     override val points: Set<Point>
       get() = wings.plus(head.point).plus(tail.point)
 
@@ -74,7 +74,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [TSquared] : 三刑會沖
    */
-  data class TSquared(val oppoPoints: Set<Point>, val squared : PointSignHouse, override val score: Double?) : AstroPattern(TSquared::class.java.simpleName, "$oppoPoints 正沖，兩者均與 ${squared.point} 相刑") {
+  data class TSquared(val oppoPoints: Set<Point>, val squared : PointSignHouse, override val score: Double? = null) : AstroPattern(TSquared::class.java.simpleName, "$oppoPoints 正沖，兩者均與 ${squared.point} 相刑") {
     override val points: Set<Point>
       get() = oppoPoints.plus(squared.point)
 
