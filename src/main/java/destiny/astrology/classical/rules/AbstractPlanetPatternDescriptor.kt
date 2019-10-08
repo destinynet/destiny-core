@@ -8,11 +8,13 @@ import java.util.*
 
 /**
  * 將 [IPlanetPattern] 轉譯成 [Descriptive] , 以利終端顯示
+ *
+ * maybe merged with [destiny.astrology.AstroPatternDescriptor]
  */
 abstract class AbstractPlanetPatternDescriptor<out T : IPlanetPattern>(
-  private val rule: IPlanetPattern, val key: String, private val parameters: List<Any>) : Descriptive {
+  private val pattern: IPlanetPattern, val key: String, private val parameters: List<Any>) : Descriptive {
 
-  private val nameKey = rule.javaClass.simpleName!!
+  private val nameKey = pattern.javaClass.simpleName!!
 
   abstract val resource: String
 
@@ -22,7 +24,7 @@ abstract class AbstractPlanetPatternDescriptor<out T : IPlanetPattern>(
       ResourceBundle.getBundle(resource, locale).getString(nameKey)
     } catch (e: Exception) {
       logger.trace("cannot get from nameKey = {}", nameKey)
-      rule.javaClass.simpleName
+      pattern.javaClass.simpleName
     }
   }
 

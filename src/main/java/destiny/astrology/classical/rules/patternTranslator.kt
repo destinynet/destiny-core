@@ -6,6 +6,7 @@ import destiny.astrology.LunarNode
 import destiny.astrology.Planet.*
 import destiny.core.DayNight
 import destiny.core.Descriptive
+import destiny.core.IPatternDescriptor
 import java.io.Serializable
 
 
@@ -24,93 +25,93 @@ class DebilityDescriptor(rule: Debility , key: String, parameters: List<Any>) : 
   override val resource: String = "destiny.astrology.classical.rules.Debilities"
 }
 
-object patternTranslator {
+object patternTranslator : IPatternDescriptor<IPlanetPattern>  {
 
-  fun getDescriptor(rule: IPlanetPattern): Descriptive {
-    return when (rule) {
-      is EssentialDignity -> when (rule) {
-        is EssentialDignity.Ruler -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign))
-        is EssentialDignity.Exaltation -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign))
-        is EssentialDignity.Triplicity -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.sign, rule.dayNight))
-        is EssentialDignity.Term -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
-        is EssentialDignity.Face -> EssentialDignityDescriptor(rule, "comment", listOf(rule.planet, rule.lngDeg))
-        is EssentialDignity.MutualReception -> EssentialDignityDescriptor(rule, "comment",
-          listOf(rule.planet, rule.sign1, rule.dig2, rule.p2, rule.sign2, rule.dig1, rule.dig2))
+  override fun getDescriptor(pattern: IPlanetPattern): Descriptive {
+    return when (pattern) {
+      is EssentialDignity -> when (pattern) {
+        is EssentialDignity.Ruler -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign))
+        is EssentialDignity.Exaltation -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign))
+        is EssentialDignity.Triplicity -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign, pattern.dayNight))
+        is EssentialDignity.Term -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.lngDeg))
+        is EssentialDignity.Face -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.lngDeg))
+        is EssentialDignity.MutualReception -> EssentialDignityDescriptor(pattern, "comment",
+                                                                          listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
 
       }
-      is AccidentalDignity -> when(rule) {
-        is AccidentalDignity.House_1_10 -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
-        is AccidentalDignity.House_4_7_11 -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
-        is AccidentalDignity.House_2_5 -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
-        is AccidentalDignity.House_9 -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.House_3 -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Direct -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Swift -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Oriental -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Occidental -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        AccidentalDignity.Moon_Increase_Light -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Free_Combustion -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Cazimi -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet))
-        is AccidentalDignity.Partile_Conj_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , CONJUNCTION))
-        is AccidentalDignity.Partile_Conj_North_Node -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.node , CONJUNCTION))
-        is AccidentalDignity.Partile_Trine_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , TRINE))
-        is AccidentalDignity.Partile_Sextile_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , SEXTILE))
-        is AccidentalDignity.Partile_Conj_Regulus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , FixedStar.REGULUS , CONJUNCTION))
-        is AccidentalDignity.Partile_Conj_Spica -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , FixedStar.SPICA , CONJUNCTION))
-        is AccidentalDignity.JoyHouse -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
+      is AccidentalDignity -> when(pattern) {
+        is AccidentalDignity.House_1_10 -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.house))
+        is AccidentalDignity.House_4_7_11 -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.house))
+        is AccidentalDignity.House_2_5 -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.house))
+        is AccidentalDignity.House_9 -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.House_3 -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.Direct -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.Swift -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.Oriental -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.Occidental -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        AccidentalDignity.Moon_Increase_Light -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.Free_Combustion -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.Cazimi -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is AccidentalDignity.Partile_Conj_Jupiter_Venus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.venusOrJupiter, CONJUNCTION))
+        is AccidentalDignity.Partile_Conj_North_Node -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.node, CONJUNCTION))
+        is AccidentalDignity.Partile_Trine_Jupiter_Venus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.venusOrJupiter, TRINE))
+        is AccidentalDignity.Partile_Sextile_Jupiter_Venus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.venusOrJupiter, SEXTILE))
+        is AccidentalDignity.Partile_Conj_Regulus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, FixedStar.REGULUS, CONJUNCTION))
+        is AccidentalDignity.Partile_Conj_Spica -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, FixedStar.SPICA, CONJUNCTION))
+        is AccidentalDignity.JoyHouse -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.house))
         is AccidentalDignity.Hayz -> {
-          if (rule.dayNight == DayNight.DAY) {
-            AccidentalDignityDescriptor(rule , "commentDay" , listOf(rule.planet , rule.sign))
+          if (pattern.dayNight == DayNight.DAY) {
+            AccidentalDignityDescriptor(pattern, "commentDay", listOf(pattern.planet, pattern.sign))
           } else {
-            AccidentalDignityDescriptor(rule , "commentNight" , listOf(rule.planet , rule.sign))
+            AccidentalDignityDescriptor(pattern, "commentNight", listOf(pattern.planet, pattern.sign))
           }
         }
-        is AccidentalDignity.Besieged_Jupiter_Venus -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , VENUS , JUPITER))
+        is AccidentalDignity.Besieged_Jupiter_Venus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, VENUS, JUPITER))
         is AccidentalDignity.Translation_of_Light -> {
-          if (rule.aspect != null)
-            AccidentalDignityDescriptor(rule , "commentAspect" , listOf(rule.planet , rule.from , rule.to , rule.deg , rule.aspect))
+          if (pattern.aspect != null)
+            AccidentalDignityDescriptor(pattern, "commentAspect", listOf(pattern.planet, pattern.from, pattern.to, pattern.deg, pattern.aspect))
           else
-            AccidentalDignityDescriptor(rule , "commentUnaspect" , listOf(rule.planet , rule.from , rule.to , rule.deg))
+            AccidentalDignityDescriptor(pattern, "commentUnaspect", listOf(pattern.planet, pattern.from, pattern.to, pattern.deg))
         }
         is AccidentalDignity.Collection_of_Light -> {
-          val p1 = rule.twoPlanets[0]
-          val p2 = rule.twoPlanets[1]
-          AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , p1 , p2 , rule.angle))
+          val p1 = pattern.twoPlanets[0]
+          val p2 = pattern.twoPlanets[1]
+          AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, p1, p2, pattern.angle))
         }
 
-        is AccidentalDignity.Refrain_from_Mars_Saturn -> AccidentalDignityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , rule.aspect))
+        is AccidentalDignity.Refrain_from_Mars_Saturn -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, pattern.aspect))
       }
-      is Debility -> when(rule) {
-        is Debility.Detriment -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.sign))
-        is Debility.Fall -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.sign))
-        is Debility.Peregrine -> DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.House_12 ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.House_6_8 ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.house))
-        is Debility.Retrograde ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Slower ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Occidental ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Oriental ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        Debility.Moon_Decrease_Light ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Combustion ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Sunbeam ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet))
-        is Debility.Partile_Conj_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , CONJUNCTION))
-        is Debility.Partile_Conj_South_Node -> DebilityDescriptor(rule, "comment", listOf(rule.planet, LunarNode.SOUTH_MEAN, CONJUNCTION))
-        is Debility.Besieged_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , MARS , SATURN))
-        is Debility.Partile_Oppo_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , OPPOSITION))
-        is Debility.Partile_Square_Mars_Saturn ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.marsOrSaturn , SQUARE))
-        is Debility.Conj_Algol ->  DebilityDescriptor(rule , "comment" , listOf(rule.planet , FixedStar.ALGOL , CONJUNCTION))
+      is Debility -> when(pattern) {
+        is Debility.Detriment -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign))
+        is Debility.Fall -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign))
+        is Debility.Peregrine -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.House_12 ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.House_6_8 ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.house))
+        is Debility.Retrograde ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.Slower ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.Occidental ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.Oriental ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        Debility.Moon_Decrease_Light ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.Combustion ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.Sunbeam ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet))
+        is Debility.Partile_Conj_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, CONJUNCTION))
+        is Debility.Partile_Conj_South_Node -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, LunarNode.SOUTH_MEAN, CONJUNCTION))
+        is Debility.Besieged_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, MARS, SATURN))
+        is Debility.Partile_Oppo_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, OPPOSITION))
+        is Debility.Partile_Square_Mars_Saturn ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.marsOrSaturn, SQUARE))
+        is Debility.Conj_Algol ->  DebilityDescriptor(pattern, "comment", listOf(pattern.planet, FixedStar.ALGOL, CONJUNCTION))
         is Debility.Out_of_Sect -> {
-          if (rule.dayNight == DayNight.DAY) {
-            DebilityDescriptor(rule , "commentNight" , listOf(rule.planet , rule.sign))
+          if (pattern.dayNight == DayNight.DAY) {
+            DebilityDescriptor(pattern, "commentNight", listOf(pattern.planet, pattern.sign))
           } else {
-            DebilityDescriptor(rule , "commentDay" , listOf(rule.planet , rule.sign))
+            DebilityDescriptor(pattern, "commentDay", listOf(pattern.planet, pattern.sign))
           }
         }
-        is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(rule , "comment" , listOf(rule.planet , rule.venusOrJupiter , rule.aspect))
-        is Debility.MutualDeception -> DebilityDescriptor(rule, "comment", listOf(rule.planet, rule.sign1, rule.dig2, rule.p2, rule.sign2, rule.dig1, rule.dig2))
+        is Debility.Refrain_from_Venus_Jupiter -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.venusOrJupiter, pattern.aspect))
+        is Debility.MutualDeception -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
       }
       else -> {
-        throw RuntimeException("Not Supported : $rule")
+        throw RuntimeException("Not Supported : $pattern")
       }
     }
   }
