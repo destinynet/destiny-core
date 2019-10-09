@@ -13,6 +13,7 @@ class HoroscopeAspectDataTest {
   @Test
   fun testEqual() {
     //測試 equals , 日月對調，必須仍然相等
+
     val data1 = HoroscopeAspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0)
     val data2 = HoroscopeAspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0)
 

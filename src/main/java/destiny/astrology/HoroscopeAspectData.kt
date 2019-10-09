@@ -5,34 +5,22 @@
 package destiny.astrology
 
 import destiny.tools.AlignTools
-import mu.KotlinLogging
 import java.io.Serializable
 
 /** 存放星體交角的資料結構  */
-data class HoroscopeAspectData(val p1: Point,
-                               val p2: Point,
-                               /** 兩星所形成的交角  */
-                               val aspect: Aspect,
-                               /** orb 不列入 equals / hashCode 計算  */
-                               val orb: Double = 0.0 ,
-                               /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-                               val score:Double? = null) : Comparable<HoroscopeAspectData>, Serializable {
-  private val pointComp = PointComparator()
-
+data class HoroscopeAspectData(
   /** 存放形成交角的兩顆星體  */
-  val points = setOf(p1 , p2)
+  val points : Set<Point> ,
+  /** 兩星所形成的交角 */
+  val aspect: Aspect ,
+  /** orb 不列入 equals / hashCode 計算  */
+  private val orb: Double = 0.0 ,
+  /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
+  val score: Double? = null) : Comparable<HoroscopeAspectData> , Serializable {
 
-  init {
-    val set = sortedSetOf(pointComp).apply {
-      add(p1)
-      add(p2)
-    }
-
-    if (set.size <= 1) {
-      logger.warn("twoPoints size = {} , p1 = {} ({}) , p2 = {} ({}) . equals ? {}",
-                  set.size, p1, p1.hashCode(), p2, p2.hashCode(), p1 == p2)
-    }
-  }
+  constructor(p1: Point , p2: Point , aspect: Aspect , orb: Double , score: Double? = null) : this(
+    sortedSetOf(pointComp , p1 , p2) , aspect, orb, score
+  )
 
   override fun toString(): String {
     return "$points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度"
@@ -48,12 +36,15 @@ data class HoroscopeAspectData(val p1: Point,
   }
 
   override fun compareTo(other: HoroscopeAspectData): Int {
-    val it1 = points.iterator()
-    val it2 = other.points.iterator()
-    val thisP0 = it1.next()
-    val thisP1 = it1.next()
-    val thatP0 = it2.next()
-    val thatP1 = it2.next()
+
+    val (thisP0 , thisP1) = points.iterator().let {
+      it.next() to it.next()
+    }
+
+    val (thatP0 , thatP1) = other.points.iterator().let {
+      it.next() to it.next()
+    }
+
 
     return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
       if (thisP1.javaClass.name == thatP1.javaClass.name)
@@ -66,24 +57,30 @@ data class HoroscopeAspectData(val p1: Point,
 
   }
 
+
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is HoroscopeAspectData) return false
 
-    if (aspect != other.aspect) return false
     if (points != other.points) return false
+    if (aspect != other.aspect) return false
+    if (orb != other.orb) return false
+    if (score != other.score) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = aspect.hashCode()
-    result = 31 * result + points.hashCode()
+    var result = points.hashCode()
+    result = 31 * result + aspect.hashCode()
+    result = 31 * result + orb.hashCode()
+    result = 31 * result + (score?.hashCode() ?: 0)
     return result
   }
 
 
   companion object {
-    val logger = KotlinLogging.logger {}
+    val pointComp = PointComparator()
   }
+
 }
