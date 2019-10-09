@@ -3,9 +3,11 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.core.Descriptive
 import destiny.core.IPattern
 import destiny.core.chinese.Branch
 import java.io.Serializable
+import java.util.*
 
 
 interface IPatternContext {
@@ -27,25 +29,37 @@ sealed class Paragraph(open val content: String) : Serializable {
 }
 
 
-interface IPatternDescription {
+/**
+ * 整合 [IPattern] , 以及 [Descriptive]
+ * 另外新增 list of [Paragraph] 作為段落解說
+ */
+interface IPatternParasDescription : IPattern, Descriptive {
   val pattern: IPattern
-  val name: String
-    get() = pattern.name
-  val notes: String?
-    get() = pattern.notes
   val paras: List<Paragraph>
 }
 
 
 interface IPlateDescriptionsFactory {
-  fun getPatternDescriptions(plate: IPlate , pContext: IPatternContext): List<IPatternDescription>
+  fun getPatternDescriptions(plate: IPlate, pContext: IPatternContext): List<IPatternParasDescription>
 
-  fun getDescription(pattern: IPattern): IPatternDescription?
+  fun getDescription(pattern: IPattern): IPatternParasDescription?
 }
 
-data class PatternDescription(
+data class PatternParasDescription(
   override val pattern: IPattern,
-  override val paras: List<Paragraph>) : IPatternDescription, Serializable
+  override val paras: List<Paragraph>) : Serializable, IPatternParasDescription, IPattern by pattern {
+
+  /**
+   * 沒有其他語系，就傳中文的 [IPattern.name] 即可
+   */
+  override fun getTitle(locale: Locale): String {
+    return pattern.name
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return pattern.notes ?: ""
+  }
+}
 
 
 class PatternContext(
