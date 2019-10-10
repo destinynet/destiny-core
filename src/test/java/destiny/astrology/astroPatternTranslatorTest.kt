@@ -126,9 +126,9 @@ class astroPatternTranslatorTest {
       moderator = PointSignHouse(JUPITER , SAGITTARIUS , 2)
          ).also {
       assertEquals("楔子" , it.title)
-      assertEquals("楔子：火星,土星對沖，逢 木星（射手座，第2宮）介入而緩和局勢。" , it.description)
+      assertEquals("楔子：火星,土星 對沖，逢 木星（射手座，第2宮）介入而緩和局勢。" , it.description)
     }.copy(score = 80.0).also {
-      assertEquals("楔子：火星,土星對沖，逢 木星（射手座，第2宮）介入而緩和局勢。分數 80.00。" , it.description)
+      assertEquals("楔子：火星,土星 對沖，逢 木星（射手座，第2宮）介入而緩和局勢。分數 80.00。" , it.description)
     }
 
     MysticRectangle(setOf(SUN , MOON , MARS , JUPITER)).also {

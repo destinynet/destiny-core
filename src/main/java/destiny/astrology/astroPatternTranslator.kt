@@ -29,146 +29,136 @@ object astroPatternTranslator : IPatternDescriptor<AstroPattern> {
   override fun getDescriptor(pattern: AstroPattern): Descriptive {
     return when (pattern) {
       is AstroPattern.GrandTrine -> {
-        val stars = pattern.points.joinToString(",")
+
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(stars, pattern.element, score))
+          AstroPatternDescriptor(pattern, "commentScore", listOf(*pattern.points.toTypedArray(), pattern.element, score))
         } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(stars, pattern.element))
+          AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray(), pattern.element))
         }.invoke()
       }
       is AstroPattern.Kite -> {
-        val wings = pattern.wings.joinToString(",")
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(pattern.head.point, wings, pattern.tail.point, score))
+          AstroPatternDescriptor(pattern, "commentScore", listOf(pattern.head.point, *pattern.wings.toTypedArray(), pattern.tail.point, score))
         } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.head.point, wings, pattern.tail.point))
+          AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.head.point, *pattern.wings.toTypedArray(), pattern.tail.point))
         }.invoke()
       }
       is AstroPattern.TSquared -> {
-        val oppo = pattern.oppoPoints.joinToString(",")
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore",
-                                 listOf(oppo, pattern.squared.sign, pattern.squared.house, pattern.squared.point,
+                                 listOf(*pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point,
                                         score))
         } ?: {
           AstroPatternDescriptor(pattern, "commentBasic",
-                                 listOf(oppo, pattern.squared.sign, pattern.squared.house, pattern.squared.point))
+                                 listOf(*pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point))
         }.invoke()
       }
       is AstroPattern.Yod -> {
-        val bottoms = pattern.bottoms.joinToString(",")
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore",
-                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, bottoms,
+                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray(),
                                         score))
         } ?: {
           AstroPatternDescriptor(pattern, "commentBasic",
-                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, bottoms))
+                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray()))
         }.invoke()
       }
       is AstroPattern.Boomerang -> {
-        val yod = listOf(pattern.yod.pointer.point).plus(pattern.yod.bottoms).joinToString(",")
+        val yod = listOf(pattern.yod.pointer.point).plus(pattern.yod.bottoms).toTypedArray()
+
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore",
-                                 listOf(yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
+                                 listOf(*yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
                                         pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
                                         pattern.oppoPoint.house, score))
         } ?: {
           AstroPatternDescriptor(pattern, "commentBasic",
-                                 listOf(yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
+                                 listOf(*yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
                                         pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
                                         pattern.oppoPoint.house))
         }.invoke()
       }
       is AstroPattern.GoldenYod -> {
-        val bottoms = pattern.bottoms.joinToString(",")
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore",
-                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, bottoms,
-                                        score))
+            listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray(), score))
         } ?: {
           AstroPatternDescriptor(pattern, "commentBasic",
-                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, bottoms))
+            listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray()))
         }.invoke()
       }
       is AstroPattern.GrandCross -> {
-        val points = pattern.points.joinToString(",")
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(points, pattern.quality, score))
+          AstroPatternDescriptor(pattern, "commentScore", listOf(*pattern.points.toTypedArray(), pattern.quality, score))
         } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(points, pattern.quality))
+          AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray(), pattern.quality))
         }.invoke()
       }
       is AstroPattern.DoubleT -> {
         val (group1, group2) = pattern.tSquares.iterator().let { iterator ->
-          val group1 = iterator.next().let { t -> listOf(t.squared.point).plus(t.oppoPoints) }.joinToString(",")
-          val group2 = iterator.next().let { t -> listOf(t.squared.point).plus(t.oppoPoints) }.joinToString(",")
+          val group1 = iterator.next().let { t -> listOf(t.squared.point).plus(t.oppoPoints) }.toTypedArray()
+          val group2 = iterator.next().let { t -> listOf(t.squared.point).plus(t.oppoPoints) }.toTypedArray()
           group1 to group2
         }
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(group1, group2, score))
+          AstroPatternDescriptor(pattern, "commentScore", listOf(*group1, *group2, score))
         } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(group1, group2))
+          AstroPatternDescriptor(pattern, "commentBasic", listOf(*group1, *group2))
         }.invoke()
       }
       is AstroPattern.Hexagon -> {
         val (group1, group2) = pattern.grandTrines.iterator().let { iterator ->
-          val group1 = iterator.next().points.joinToString(",")
-          val group2 = iterator.next().points.joinToString(",")
+          val group1 = iterator.next().points.toTypedArray()
+          val group2 = iterator.next().points.toTypedArray()
           group1 to group2
         }
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(group1, group2, score))
+          AstroPatternDescriptor(pattern, "commentScore", listOf(*group1, *group2, score))
         } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(group1, group2))
+          AstroPatternDescriptor(pattern, "commentBasic", listOf(*group1, *group2))
         }.invoke()
       }
       is AstroPattern.Wedge -> {
-        val oppo = pattern.oppoPoints.joinToString(",")
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern , "commentScore" ,
-                                 listOf(oppo , pattern.moderator.point , pattern.moderator.sign , pattern.moderator.house , score))
+                                 listOf(*pattern.oppoPoints.toTypedArray() , pattern.moderator.point , pattern.moderator.sign , pattern.moderator.house , score))
         }?: {
           AstroPatternDescriptor(pattern , "commentBasic" ,
-                                 listOf(oppo , pattern.moderator.point , pattern.moderator.sign , pattern.moderator.house ))
+                                 listOf(*pattern.oppoPoints.toTypedArray() , pattern.moderator.point , pattern.moderator.sign , pattern.moderator.house ))
         }.invoke()
       }
       is AstroPattern.MysticRectangle -> {
-        val points = pattern.points.joinToString(",")
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern , "commentScore" , listOf(points , score))
+          AstroPatternDescriptor(pattern , "commentScore" , listOf(*pattern.points.toTypedArray() , score))
         }?: {
-          AstroPatternDescriptor(pattern , "commentBasic" , listOf(points))
+          AstroPatternDescriptor(pattern , "commentBasic" , listOf(*pattern.points.toTypedArray()))
         }.invoke()
       }
       is AstroPattern.Pentagram -> {
-        val points = pattern.points.joinToString(",")
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern , "commentScore" , listOf(points , score))
+          AstroPatternDescriptor(pattern , "commentScore" , listOf(*pattern.points.toTypedArray() , score))
         }?: {
-          AstroPatternDescriptor(pattern , "commentBasic" , listOf(points))
+          AstroPatternDescriptor(pattern , "commentBasic" , listOf(*pattern.points.toTypedArray()))
         }.invoke()
       }
       is AstroPattern.StelliumSign -> {
-        val points = pattern.points.joinToString(",")
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(points, pattern.sign, score))
+          AstroPatternDescriptor(pattern, "commentScore", listOf(pattern.points, pattern.sign, score))
         } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(points, pattern.sign))
+          AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.points, pattern.sign))
         }.invoke()
       }
       is AstroPattern.StelliumHouse -> {
-        val points = pattern.points.joinToString(",")
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(points, pattern.house, score))
+          AstroPatternDescriptor(pattern, "commentScore", listOf(pattern.points, pattern.house, score))
         } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(points, pattern.house))
+          AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.points, pattern.house))
         }.invoke()
       }
       is AstroPattern.Confrontation -> {
         val (group1, group2) = pattern.clusters.iterator().let { iterator ->
-          val g1 = iterator.next().joinToString(",")
-          val g2 = iterator.next().joinToString(",")
+          val g1 = iterator.next()
+          val g2 = iterator.next()
           g1 to g2
         }
         pattern.score?.let { score ->

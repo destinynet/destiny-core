@@ -35,7 +35,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
 
   override fun getDescription(locale: Locale): String {
     logger.trace("commentKey = {} , parameters = {}", commentKey, parameters)
-    val pattern = ResourceBundle.getBundle(resource, locale).getString("$nameKey.$commentKey")
+    val pattern: String = ResourceBundle.getBundle(resource, locale).getString("$nameKey.$commentKey")
     return MessageFormat.format(pattern, *getCommentParameters(locale, parameters))
   }
 
@@ -47,6 +47,12 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
         is ILocaleString -> it.toString(locale)
         is Double -> String.format("%.2f", it)
         //is Double -> String.format("%.${1}f", it)
+        is Collection<*> -> it.joinToString(",") { item ->
+          if (item is ILocaleString)
+            item.toString(locale)
+          else
+            item.toString()
+        }
         else -> it
       }
     }.toTypedArray()
