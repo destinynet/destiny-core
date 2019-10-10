@@ -15,7 +15,7 @@ import mu.KotlinLogging
 class AstroPatternDescriptor(pattern: IPattern,
                              commentKey: String,
                              parameters: List<Any>) :
-  AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters) {
+  AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters , "%.2f") {
 
   override val resource = "destiny.astrology.AstroPatterns"
 

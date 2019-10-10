@@ -14,10 +14,13 @@ import java.util.*
  * 利用 properties 檔案，將 [IPattern] 轉換成 [Descriptive]
  * 利用 [IPattern]::class.java.simpleName 作為 nameKey
  * 而 另外帶入 commentKey (常用 "comment") 當作 commentKey
+ *
+ * @param doubleFormat : 用來表示若是 double 值，其輸出的 pattern 為何 (內定為小數點後一位）
  */
 abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
                                                       private val commentKey: String,
-                                                      private val parameters: List<Any>) : Descriptive , Serializable {
+                                                      private val parameters: List<Any>,
+                                                      private val doubleFormat : String? = "%.1f") : Descriptive , Serializable {
 
   private val nameKey = pattern::class.java.simpleName
 
@@ -45,8 +48,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
     return commentParameters.map {
       when (it) {
         is ILocaleString -> it.toString(locale)
-        is Double -> String.format("%.2f", it)
-        //is Double -> String.format("%.${1}f", it)
+        is Double -> String.format( doubleFormat?:"%.1f", it)
         is Collection<*> -> it.joinToString(",") { item ->
           if (item is ILocaleString)
             item.toString(locale)

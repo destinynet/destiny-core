@@ -23,7 +23,12 @@ data class HoroscopeAspectData(
   )
 
   override fun toString(): String {
-    return "$points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度"
+    return StringBuilder("$points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
+      score?.also { score: Double ->
+        val s = (score*100).toString().take(5)
+        append("，得分：$s")
+      }
+    }.toString()
   }
 
 
@@ -56,15 +61,12 @@ data class HoroscopeAspectData(
 
   }
 
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is HoroscopeAspectData) return false
 
     if (points != other.points) return false
     if (aspect != other.aspect) return false
-    if (orb != other.orb) return false
-    if (score != other.score) return false
 
     return true
   }
@@ -72,8 +74,6 @@ data class HoroscopeAspectData(
   override fun hashCode(): Int {
     var result = points.hashCode()
     result = 31 * result + aspect.hashCode()
-    result = 31 * result + orb.hashCode()
-    result = 31 * result + (score?.hashCode() ?: 0)
     return result
   }
 

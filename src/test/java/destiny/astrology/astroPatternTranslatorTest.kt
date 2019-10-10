@@ -26,15 +26,11 @@ class astroPatternTranslatorTest {
   fun getDescriptor() {
     GrandTrine(setOf(SUN, VENUS, MOON), Element.WATER).also {
       assertEquals("大三角", it.title)
-      assertEquals("太陽,金星,月亮 在 水相星座 形成大三角。", it.description)
+      assertEquals("大三角：太陽,金星,月亮 在 水相星座 形成大三角。", it.description)
     }.copy(score = 0.95).also {
-      assertEquals("太陽,金星,月亮 在 水相星座 形成大三角。分數 0.95。", it.description)
+      assertEquals("大三角：太陽,金星,月亮 在 水相星座 形成大三角。分數 0.95。", it.description)
     }
 
-    GrandTrine(setOf(SUN, VENUS, MOON), Element.WATER, 0.95).also {
-      assertEquals("大三角", it.title)
-      assertEquals("太陽,金星,月亮 在 水相星座 形成大三角。分數 0.95。", it.description)
-    }
 
     Kite(head = PointSignHouse(MERCURY, TAURUS, 2),
          wings = setOf(MARS, URANUS),

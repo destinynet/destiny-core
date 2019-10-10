@@ -7,20 +7,7 @@ package destiny.astrology.classical.rules
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.classical.*
-
-@Deprecated("pending deleted")
-abstract class DebilityRule : AbstractRule(resource, RuleType.DEBILITY) {
-
-
-  val rulerImpl : IRuler = RulerPtolemyImpl()
-  val exaltImpl : IExaltation = ExaltationPtolemyImpl()
-
-  companion object {
-    private const val resource = "destiny.astrology.classical.rules.Debilities"
-  }
-
-}
-
+import mu.KotlinLogging
 
 /**
  * 互容的變形，兩星都處與落陷，又互容→互相扯後腿<br></br>
@@ -28,9 +15,12 @@ abstract class DebilityRule : AbstractRule(resource, RuleType.DEBILITY) {
  * 水星在雙魚為 Detriment/Fall , 雙魚的 Ruler 為木星 , 木星到處女為 Detriment
  */
 @Deprecated("似乎不實用")
-class MutualDeception(private val essentialImpl: IEssential) : DebilityRule() {
+class MutualDeception(private val essentialImpl: IEssential) {
 
-  override fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
+  private val rulerImpl : IRuler = RulerPtolemyImpl()
+  private val exaltImpl : IExaltation = ExaltationPtolemyImpl()
+
+  fun getResult(planet: Planet, h: IHoroscopeModel): Pair<String, Array<Any>>? {
     return rulerMutualDeception(h, planet)
       ?: exaltationMutualDeception(h, planet)
       ?: detrimentExaltationMutualDeception(h, planet)
@@ -146,4 +136,7 @@ class MutualDeception(private val essentialImpl: IEssential) : DebilityRule() {
   }
 
 
+  companion object {
+    val logger = KotlinLogging.logger {  }
+  }
 }
