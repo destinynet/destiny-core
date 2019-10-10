@@ -15,8 +15,6 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
 
   private val modern: AspectEffectiveModern = AspectEffectiveModern()
 
-
-
   override fun getPointAspectAndScore(point: Point,
                                       positionMap: Map<Point, IPos>,
                                       points: Collection<Point>,

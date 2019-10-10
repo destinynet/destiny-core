@@ -9,14 +9,7 @@ import destiny.core.calendar.ILocation
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
-interface IClassicalModel : IPersonHoroscopeModel {
-
-  val commentMap: Map<Planet, List<String>>
-
-}
-
 interface IClassicalContext : IPersonHoroscopeContext {
-
 
   fun getPatternAndComments(lmt: ChronoLocalDateTime<*>,
                             loc: ILocation,
