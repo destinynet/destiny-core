@@ -23,7 +23,7 @@ interface IHoroscopeAspectsCalculator : Descriptive {
                              positionMap: Map<Point, IPos>,
                              points: Collection<Point> = positionMap.keys,
                              aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)
-  ): Map<Point, Pair<Aspect, Double>>
+  ): Set<Triple<Point , Aspect , Double>>
 
   /**
    * 取得與 [Point] 形成交角的星體，以及其交角是哪種 ，如果沒形成任何交角，傳回 empty
@@ -34,8 +34,8 @@ interface IHoroscopeAspectsCalculator : Descriptive {
                      aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)
   ): Map<Point, Aspect> {
     return getPointAspectAndScore(point, positionMap, points, aspects)
-      .map { (point, pair) ->
-        point to pair.first
+      .map { (point , aspect , _) ->
+        point to aspect
       }.toMap()
   }
 
@@ -57,16 +57,11 @@ interface IHoroscopeAspectsCalculator : Descriptive {
                        points: Collection<Point> = positionMap.keys,
                        aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)): Set<HoroscopeAspectData> {
 
-    return points.asSequence().map { point ->
-      val map: Map<Point, Pair<Aspect, Double>> = getPointAspectAndScore(point, positionMap, points, aspects)
-      logger.trace("與 {} 形成所有交角的 pointAspect Map = {}", point, map)
-
-      map.filter { (_, aspectAndScore) -> aspects.contains(aspectAndScore.first) }
-        .map { (key, aspectAndScore) ->
-          HoroscopeAspectData(point, key, aspectAndScore.first,
-            IHoroscopeModel.getAspectError(positionMap, point, key, aspectAndScore.first) ?: 0.0, aspectAndScore.second)
+    return points.asSequence().map { p1 ->
+      getPointAspectAndScore(p1, positionMap, points, aspects)
+        .map { (p2 , aspect , score) ->
+          HoroscopeAspectData(p1 , p2 , aspect , IHoroscopeModel.getAspectError(positionMap, p1, p2, aspect) ?: 0.0, score)
         }.toSet()
-
     }.flatten()
       .toSet()
   }

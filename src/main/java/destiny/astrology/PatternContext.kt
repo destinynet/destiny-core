@@ -51,18 +51,17 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   val kite = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-
       return grandTrine.getPatterns(posMap, cuspDegreeMap)
         .map { it as AstroPattern.GrandTrine }
         .flatMap { grandTrine ->
           // 大三角的 每個點 , 都當作風箏的尾巴，去找是否有對沖的點 (亦即：風箏頭)
           grandTrine.points.map { tail ->
             tail to HoroscopeAspectsCalculatorModern().getPointAspectAndScore(tail, posMap, aspects = setOf(Aspect.OPPOSITION))
-          }.filter { (_, oppoMap) ->
-            oppoMap.isNotEmpty()
-          }.flatMap { (tail, oppoMap: Map<Point, Pair<Aspect, Double>>) ->
-            oppoMap.map { (head, aspectAndScore) ->
-              Triple(tail, head, aspectAndScore.second)
+          }.filter { (_, oppoSet) ->
+            oppoSet.isNotEmpty()
+          }.flatMap { (tail, oppoSet: Set<Triple<Point, Aspect, Double>>) ->
+            oppoSet.map { (head, _ , score) ->
+              Triple(tail, head, score)
             }.mapNotNull { (tail, head, oppoScore) ->
               // 每個 head 都需要與 兩翼 SEXTILE
               grandTrine.points.minus(tail).map { wingPoint ->
@@ -146,8 +145,8 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .map { it as AstroPattern.Yod }
         .flatMap { pattern ->
           aspectsCalculator.getPointAspectAndScore(pattern.pointer.point, posMap, posMap.keys, setOf(Aspect.OPPOSITION))
-            .map { (oppoPoint, aspectAndScore) ->
-              val oppoScore = aspectAndScore.second
+            .map { (oppoPoint, _ , oppoScore) ->
+
               // 對沖點，還必須與兩翼形成30度
               val bottoms60ScoreMap = pattern.bottoms.map { bottom -> aspectEffective.isEffectiveAndScore(oppoPoint, bottom, posMap, Aspect.SEMISEXTILE) }.toMap()
 
@@ -208,13 +207,14 @@ class PatternContext(val aspectEffective: IAspectEffective,
               aspectsCalculator.getPointAspect(tSquared.squared.point, posMap, aspects = setOf(Aspect.OPPOSITION)).keys.mapNotNull { oppo: Point ->
 
                 // oppo Point 還必須與 三刑會沖 兩角尖 相刑 , 才能確保比較漂亮的 大十字
+
                 aspectsCalculator.getPointAspectAndScore(oppo, posMap, tSquared.oppoPoints, setOf(Aspect.SQUARE))
                   .takeIf { it.size == 2 }
-                  ?.let { twoSquared ->
+                  ?.let { twoSquared: Set<Triple<Point, Aspect, Double>> ->
                     // 一個 T-Squared 的分數
                     val tSquaredScore = tSquared.score
                     // 加上其對衝點 , 與此 T-Squared 兩底點的 squared 分數
-                    val twinSquaredScore: List<Double> = twoSquared.map { it.value.second }
+                    val twinSquaredScore: List<Double> = twoSquared.map { it.third }
                     // 三個值 , 平均
                     val score: Double? = tSquaredScore?.let { twinSquaredScore.plus(it).average() }
 

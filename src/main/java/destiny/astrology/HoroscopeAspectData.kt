@@ -14,7 +14,7 @@ data class HoroscopeAspectData(
   /** 兩星所形成的交角 */
   val aspect: Aspect ,
   /** orb 不列入 equals / hashCode 計算  */
-  private val orb: Double = 0.0 ,
+  val orb: Double = 0.0 ,
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
   val score: Double? = null) : Comparable<HoroscopeAspectData> , Serializable {
 
@@ -44,7 +44,6 @@ data class HoroscopeAspectData(
     val (thatP0 , thatP1) = other.points.iterator().let {
       it.next() to it.next()
     }
-
 
     return if (thisP0.javaClass.name == thatP0.javaClass.name && thisP0 == thatP0) {
       if (thisP1.javaClass.name == thatP1.javaClass.name)

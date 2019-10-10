@@ -15,7 +15,12 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
 
   private val modern: AspectEffectiveModern = AspectEffectiveModern()
 
-  override fun getPointAspectAndScore(point: Point, positionMap: Map<Point, IPos>, points: Collection<Point>, aspects: Collection<Aspect>): Map<Point, Pair<Aspect, Double>> {
+
+
+  override fun getPointAspectAndScore(point: Point,
+                                      positionMap: Map<Point, IPos>,
+                                      points: Collection<Point>,
+                                      aspects: Collection<Aspect>): Set<Triple<Point, Aspect, Double>> {
     return positionMap[point]?.lng?.let { starDeg ->
       points
         .filter { it !== point }
@@ -24,16 +29,15 @@ class HoroscopeAspectsCalculatorModern : IHoroscopeAspectsCalculator, Serializab
         .filter { eachPoint -> !(point is LunarNode && eachPoint is LunarNode) } // 過濾南北交點對沖
         .flatMap { eachPoint ->
           val eachDeg = positionMap.getValue(eachPoint).lng
-
           aspects.map { eachAspect ->
             eachAspect to modern.isEffectiveAndScore(point, starDeg, eachPoint, eachDeg, eachAspect)
           }.filter { (_, pair: Pair<Boolean, Double>) ->
             pair.first
           }.map { (aspect, pair) ->
-            eachPoint to (aspect to pair.second)
+            Triple(eachPoint , aspect , pair.second)
           }
-        }.toMap()
-    }?: emptyMap()
+        }.toSet()
+    }?: emptySet()
   }
 
   override fun getTitle(locale: Locale): String {
