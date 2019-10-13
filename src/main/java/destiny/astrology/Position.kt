@@ -13,22 +13,46 @@ interface IPos : Serializable {
   /** 黃道什麼星座 , 以及該星座的度數 (0~30) */
   val signDegree: Pair<ZodiacSign, Double>
     get() = ZodiacSign.getSignAndDegree(lng)
+
+  operator fun plus(p: IPos): IPos {
+    return Pos(Utils.getNormalizeDegree(this.lng + p.lng), this.lat + p.lat)
+  }
+
+  operator fun minus(p: IPos): IPos {
+    return Pos(Utils.getNormalizeDegree(this.lng - p.lng), this.lat - p.lat)
+  }
 }
 
 data class Pos(override val lng: Double,
                override val lat: Double) : IPos
 
 
-interface IPosWithAzimuth : IPos , IAzimuth
+interface IPosWithAzimuth : IPos, IAzimuth
 
 data class PosWithAzimuth(val pos: IPos,
-                          val azimuth: IAzimuth) : IPosWithAzimuth , IPos by pos , IAzimuth by azimuth
+                          val azimuth: IAzimuth) : IPosWithAzimuth, IPos by pos, IAzimuth by azimuth
 
 interface IStarPos : IPos {
   val distance: Double  // in AU
   val speedLng: Double  // speed in lng (degree / day)
   val speedLat: Double  // speed in lat (degree / day)
   val speedDistance: Double // speed in distance (AU / day)
+
+  operator fun plus(p: IStarPos): IStarPos {
+    return StarPosition(super.plus(p),
+      this.distance + p.distance,
+      Utils.getNormalizeDegree(this.speedLng + p.speedLng),
+      this.speedLat + p.speedLat,
+      this.speedDistance + p.speedDistance)
+  }
+
+  operator fun minus(p: IStarPos): IStarPos {
+    return StarPosition(super.minus(p),
+      this.distance - p.distance,
+      Utils.getNormalizeDegree(this.speedLng - p.speedLng),
+      this.speedLat - p.speedLat,
+      this.speedDistance - p.speedDistance)
+  }
 }
 
 data class StarPosition(
