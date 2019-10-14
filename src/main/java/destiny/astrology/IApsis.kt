@@ -21,7 +21,11 @@ interface IApsis {
   /**
    * 取得某 Apsis 在某刻 (GMT) 的座標
    */
-  fun getPosition(star: Star, apsis: Apsis, gmt: ChronoLocalDateTime<*>, coordinate: Coordinate, nodeType: NodeType): IStarPos {
+  fun getPosition(star: Star,
+                  apsis: Apsis,
+                  gmt: ChronoLocalDateTime<*>,
+                  coordinate: Coordinate,
+                  nodeType: NodeType): IStarPos {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPosition(star, apsis, gmtJulDay, coordinate, nodeType)
   }

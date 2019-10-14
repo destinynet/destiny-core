@@ -10,9 +10,9 @@ import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * 取得星體的位置。支援 Planet , Asteroid , Hamburger <br></br>
- * Swiss Ephemeris 的實作是 StarPositionImpl <br></br>
- * 原廠還支援 月亮的 Apsis , 但我使用 ApsisIF 來實作
+ * 取得星體的位置。支援 [Planet] , [Asteroid] , [Hamburger]
+ * Swiss Ephemeris 的實作是 [StarPositionImpl]
+ * 原廠還支援 月亮的 Apsis , 但我使用 [IApsis] 來實作
  */
 interface IStarPosition<out T : IStarPos> {
 
