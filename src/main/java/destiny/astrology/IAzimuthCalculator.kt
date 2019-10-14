@@ -14,35 +14,81 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IAzimuthCalculator {
 
-  /** 由黃經 , 黃緯 , 求得地平方位角  */
-  fun getAzimuthFromEcliptic(eclipticPosition: IPos, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double? = 0.0, temperature: Double, pressure: Double): Azimuth
-
-  fun getAzimuthFromEcliptic(eclipticPosition: IPos, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double): Azimuth {
-    return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, geoLng, geoLat, geoAlt, 0.0, 1013.25)
+  fun IPos.getAzimuth(coordinate: Coordinate,
+                      gmtJulDay: Double,
+                      geoLat: Double,
+                      geoLng: Double,
+                      geoAlt: Double? = 0.0,
+                      temperature: Double = 0.0,
+                      pressure: Double = 1013.25): Azimuth {
+    return when (coordinate) {
+      Coordinate.ECLIPTIC -> getAzimuthFromEcliptic(this, gmtJulDay, geoLat, geoLng, geoAlt, temperature, pressure)
+      Coordinate.EQUATORIAL -> getAzimuthFromEquator(this, gmtJulDay, geoLat, geoLng, geoAlt, temperature, pressure)
+      /** TODO : 恆星座標系統 [Coordinate.SIDEREAL] 計算 [Azimuth] */
+      Coordinate.SIDEREAL -> throw RuntimeException("Not Supported")
+    }
   }
 
-  fun getAzimuthFromEcliptic(eclipticPosition: IPos, gmtJulDay: Double, location: ILocation, temperature: Double = 0.0, pressure: Double = 1013.25): Azimuth {
-    return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location.lng, location.lat, location.altitudeMeter, temperature, pressure)
+  fun IPos.getAzimuth(coordinate: Coordinate,
+                      gmtJulDay: Double,
+                      loc: ILocation,
+                      temperature: Double = 0.0,
+                      pressure: Double = 1013.25): Azimuth {
+    return this.getAzimuth(coordinate, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, temperature, pressure)
+  }
+
+  /** [Coordinate.ECLIPTIC] 由黃經 , 黃緯 , 求得地平方位角  */
+  fun getAzimuthFromEcliptic(eclipticPosition: IPos,
+                             gmtJulDay: Double,
+                             geoLat: Double,
+                             geoLng: Double,
+                             geoAlt: Double? = 0.0,
+                             temperature: Double,
+                             pressure: Double): Azimuth
+
+  fun getAzimuthFromEcliptic(eclipticPosition: IPos,
+                             gmtJulDay: Double,
+                             geoLat: Double,
+                             geoLng: Double,
+                             geoAlt: Double): Azimuth {
+    return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, geoLat, geoLng, geoAlt, 0.0, 1013.25)
+  }
+
+  fun getAzimuthFromEcliptic(eclipticPosition: IPos,
+                             gmtJulDay: Double,
+                             location: ILocation,
+                             temperature: Double = 0.0,
+                             pressure: Double = 1013.25): Azimuth {
+    return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location.lat, location.lng, location.altitudeMeter,
+                                  temperature, pressure)
   }
 
   /** 承上 , ChronoLocalDateTime 版本  */
-  fun getAzimuthFromEcliptic(eclipticPosition: IPos, gmt: ChronoLocalDateTime<*>, location: ILocation, temperature: Double, pressure: Double): Azimuth {
+  fun getAzimuthFromEcliptic(eclipticPosition: IPos,
+                             gmt: ChronoLocalDateTime<*>,
+                             location: ILocation,
+                             temperature: Double,
+                             pressure: Double): Azimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location, temperature, pressure)
   }
 
-  /** 由黃經 , 黃緯 , 求得地平方位角  */
-  fun getAzimuthFromEquator(equatorPosition: IPos, gmtJulDay: Double, geoLng: Double, geoLat: Double, geoAlt: Double? = 0.0, temperature: Double, pressure: Double): Azimuth
+  /** [Coordinate.EQUATORIAL] 由赤經 , 赤緯 , 求得地平方位角  */
+  fun getAzimuthFromEquator(equatorPosition: IPos,
+                            gmtJulDay: Double,
+                            geoLat: Double,
+                            geoLng: Double,
+                            geoAlt: Double? = 0.0,
+                            temperature: Double,
+                            pressure: Double): Azimuth
 
-  fun getAzimuthFromEquator(equatorPosition: IPos, gmtJulDay: Double, location: ILocation, temperature: Double = 0.0, pressure: Double = 1013.25): Azimuth {
-    return getAzimuthFromEquator(equatorPosition, gmtJulDay, location.lng, location.lat, location.altitudeMeter, temperature, pressure)
+  fun getAzimuthFromEquator(equatorPosition: IPos,
+                            gmtJulDay: Double,
+                            location: ILocation,
+                            temperature: Double = 0.0,
+                            pressure: Double = 1013.25): Azimuth {
+    return getAzimuthFromEquator(equatorPosition, gmtJulDay, location.lat, location.lng, location.altitudeMeter,
+                                 temperature, pressure)
   }
-
-  /** 承上 , ChronoLocalDateTime 版本  */
-  fun getAzimuthFromEquator(equatorPosition: IPos, gmt: ChronoLocalDateTime<*>, location: ILocation, temperature: Double = 0.0, pressure: Double = 1013.25): Azimuth {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getAzimuthFromEquator(equatorPosition, gmtJulDay, location, temperature, pressure)
-  }
-
 
 }
