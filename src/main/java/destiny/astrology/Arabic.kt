@@ -5,7 +5,10 @@ package destiny.astrology
 
 sealed class Arabic(nameKey:String , abbrKey: String) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<Arabic> {
 
+  /** Part of Fortune */
   object POF : Arabic("Arabic.POF" , "Arabic.POF_ABBR")
+  /** Part of Spirit */
+  object POS : Arabic("Arabic.POS" , "Arabic.POS_ABBR")
 
   override fun compareTo(other: Arabic): Int {
     if (this == other)

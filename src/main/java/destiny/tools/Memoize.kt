@@ -1,7 +1,7 @@
 package destiny.tools
 
 /**
- * https://medium.com/@JorgeCastilloPr/kotlin-purity-and-function-memoization-b12ab35d70a5
+ * https://medium.com/@JorgeCastilloPr/kotlin-purity-and-function-memoization-b12ab35d70a5 (Deleted)
  * http://jorgecastillo.dev/kotlin-purity-and-function-memoization
  */
 class Memoize<in T, out R>(val f: (T) -> R) : (T) -> R {
