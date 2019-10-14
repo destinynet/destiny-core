@@ -3,12 +3,29 @@
  */
 package destiny.astrology
 
-sealed class Arabic(nameKey:String , abbrKey: String) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<Arabic> {
+sealed class Arabic(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<Arabic> {
 
-  /** Part of Fortune */
-  object POF : Arabic("Arabic.POF" , "Arabic.POF_ABBR")
-  /** Part of Spirit */
-  object POS : Arabic("Arabic.POS" , "Arabic.POS_ABBR")
+  /** 幸運點 Part of Fortune */
+  object Fortune : Arabic("Arabic.Fortune", "Arabic.Fortune_ABBR")
+
+  /** 精神點 Part of Spirit */
+  object Spirit : Arabic("Arabic.Spirit", "Arabic.Spirit_ABBR")
+
+  /** 愛情點 Lot of Eros */
+  object Eros : Arabic("Arabic.Eros", "Arabic.Eros_ABBR")
+
+  /** 勝利點 Lot of Victory */
+  object Victory : Arabic("Arabic.Victory", "Arabic.Victory_ABBR")
+
+  /** 必要點 Lot of Necessity */
+  object Necessity : Arabic("Arabic.Necessity", "Arabic.Necessity_ABBR")
+
+  /** 勇氣點 Lot of Courage */
+  object Courage : Arabic("Arabic.Courage", "Arabic.Courage_ABBR")
+
+  /** 復仇點 Lot of Nemesis */
+  object Nemesis : Arabic("Arabic.Nemesis" , "Arabic.Nemesis_ABBR")
+
 
   override fun compareTo(other: Arabic): Int {
     if (this == other)
@@ -19,7 +36,7 @@ sealed class Arabic(nameKey:String , abbrKey: String) : Star(nameKey, abbrKey, S
 
   companion object {
     val array by lazy {
-      arrayOf(POF)
+      arrayOf(Fortune, Spirit, Eros , Victory , Necessity , Courage , Nemesis)
     }
     val list by lazy { listOf(*array) }
   }
