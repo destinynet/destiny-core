@@ -3,6 +3,9 @@
  */
 package destiny.astrology
 
+import destiny.astrology.IAspectApplySeparate.AspectType.APPLYING
+import destiny.astrology.IAspectApplySeparate.AspectType.SEPARATING
+import destiny.tools.firstNotNullResult
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
@@ -29,6 +32,7 @@ class AspectApplySeparateImpl(
     val deg1 = h.getPositionWithAzimuth(p1).lng
     val deg2 = h.getPositionWithAzimuth(p2).lng
 
+
     if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect)) {
       val planetsAngle = IHoroscopeModel.getAngle(deg1, deg2)
       val error = abs(planetsAngle - aspect.degree) //目前與 aspect 的誤差
@@ -36,24 +40,20 @@ class AspectApplySeparateImpl(
       val lmt = h.lmt //目前時間
       val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
 
-      val hContext : IHoroscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosMap,
-        h.points, h.houseSystem, h.coordinate, h.centric)
-      val h2 = hContext.getHoroscope(lmt = oneSecondLater, loc = h.location, place = h.place,
-        points = IHoroscopeContext.defaultPoints)
 
-//      val h2 = horoscopeImpl.getHoroscope(oneSecondLater, h.location, null, h.points, h.houseSystem, h.centric, h.coordinate, h.temperature, h.pressure)
+      val hContext : IHoroscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosMap, h.points, h.houseSystem, h.coordinate, h.centric)
+      val h2 = hContext.getHoroscope(lmt = oneSecondLater, loc = h.location, place = h.place, points = h.points)
 
-      val deg1_next = h2.getPositionWithAzimuth(p1).lng
-      val deg2_next = h2.getPositionWithAzimuth(p2).lng
-      val planetsAngle_next = IHoroscopeModel.getAngle(deg1_next, deg2_next)
-      val error_next = abs(planetsAngle_next - aspect.degree)
 
-      //System.out.println(p1 + " 與 " + p2 + " 形成 " + aspect + " , 誤差 " + error_next + " 度");
+      val deg1Next = h2.getPositionWithAzimuth(p1).lng
+      val deg2Next = h2.getPositionWithAzimuth(p2).lng
+      val planetsAngleNext = IHoroscopeModel.getAngle(deg1Next, deg2Next)
+      val errorNext = abs(planetsAngleNext - aspect.degree)
 
-      return if (error_next <= error)
-        IAspectApplySeparate.AspectType.APPLYING
+      return if (errorNext <= error)
+        APPLYING
       else
-        IAspectApplySeparate.AspectType.SEPARATING
+        SEPARATING
     } else
       return null //這兩顆星沒有形成交角
   }
@@ -62,13 +62,9 @@ class AspectApplySeparateImpl(
                              p1: Point,
                              p2: Point,
                              aspects: Collection<Aspect>): IAspectApplySeparate.AspectType? {
-    var aspectType: IAspectApplySeparate.AspectType? = null
-    for (aspect in aspects) {
-      aspectType = getAspectType(h, p1, p2, aspect)
-      if (aspectType != null)
-        break
+    return aspects.firstNotNullResult { aspect ->
+      getAspectType(h, p1, p2, aspect)
     }
-    return aspectType
   }
 
 }

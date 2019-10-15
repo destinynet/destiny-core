@@ -4,6 +4,7 @@
  */
 package destiny.astrology
 
+import destiny.astrology.Aspect.Importance.*
 import destiny.tools.ILocaleString
 import java.util.*
 import kotlin.math.abs
@@ -15,43 +16,43 @@ enum class Aspect(private val nameKey: String,
                   /** 取得重要度  */
                   internal val importance: Importance) : ILocaleString {
   /** 0 , 合   */
-  CONJUNCTION("Aspect.CONJUNCTION", 0.0, Importance.HIGH),
+  CONJUNCTION("Aspect.CONJUNCTION", 0.0, HIGH),
   /** 30 , 十二分相 , 半六合  */
-  SEMISEXTILE("Aspect.SEMISEXTILE", 30.0, Importance.MEDIUM),
+  SEMISEXTILE("Aspect.SEMISEXTILE", 30.0, MEDIUM),
   /** 36 , 十分相  */
-  DECILE("Aspect.DECILE", 36.0, Importance.LOW),
+  DECILE("Aspect.DECILE", 36.0, LOW),
   /** 40 , 九分相  */
-  NOVILE("Aspect.NOVILE", 40.0, Importance.LOW),
+  NOVILE("Aspect.NOVILE", 40.0, LOW),
   /** 45 , 半刑 , 八分相 , 半四分相  */
-  SEMISQUARE("Aspect.SEMISQUARE", 45.0, Importance.MEDIUM),
+  SEMISQUARE("Aspect.SEMISQUARE", 45.0, MEDIUM),
   /** 51.428 , 七分相  */
-  SEPTILE("Aspect.SEPTILE", 360 / 7.0, Importance.LOW),
+  SEPTILE("Aspect.SEPTILE", 360 / 7.0, LOW),
   /** 60 , 六合  */
-  SEXTILE("Aspect.SEXTILE", 60.0, Importance.HIGH),
+  SEXTILE("Aspect.SEXTILE", 60.0, HIGH),
   /** 72 , 五分相  */
-  QUINTILE("Aspect.QUINTILE", 72.0, Importance.LOW),
+  QUINTILE("Aspect.QUINTILE", 72.0, LOW),
   /** 80 , 倍九分相  */
-  BINOVILE("Aspect.BINOVILE", 80.0, Importance.LOW),
+  BINOVILE("Aspect.BINOVILE", 80.0, LOW),
   /** 90 , 刑  */
-  SQUARE("Aspect.SQUARE", 90.0, Importance.HIGH),
+  SQUARE("Aspect.SQUARE", 90.0, HIGH),
   /** 102.857 , 倍七分相  */
-  BISEPTILE("Aspect.BISEPTILE", 360 * 2 / 7.0, Importance.LOW),
+  BISEPTILE("Aspect.BISEPTILE", 360 * 2 / 7.0, LOW),
   /** 108 , 補五分相  */
-  SESQUIQUINTLE("Aspect.SESQUIQUINTLE", 108.0, Importance.LOW),
+  SESQUIQUINTLE("Aspect.SESQUIQUINTLE", 108.0, LOW),
   /** 120 , 三合 , 拱  */
-  TRINE("Aspect.TRINE", 120.0, Importance.HIGH),
+  TRINE("Aspect.TRINE", 120.0, HIGH),
   /** 135 , 補八分相  */
-  SESQUIQUADRATE("Aspect.SESQUIQUADRATE", 135.0, Importance.MEDIUM),
+  SESQUIQUADRATE("Aspect.SESQUIQUADRATE", 135.0, MEDIUM),
   /** 144 , 倍五分相  */
-  BIQUINTILE("Aspect.BIQUINTILE", 144.0, Importance.LOW),
+  BIQUINTILE("Aspect.BIQUINTILE", 144.0, LOW),
   /** 150 , 補十二分相 , 十二分之五相  */
-  QUINCUNX("Aspect.QUINCUNX", 150.0, Importance.MEDIUM),
+  QUINCUNX("Aspect.QUINCUNX", 150.0, MEDIUM),
   /** 154.285 , 七分之三分相  */
-  TRISEPTILE("Aspect.TRISEPTILE", 360 * 3 / 7.0, Importance.LOW),
+  TRISEPTILE("Aspect.TRISEPTILE", 360 * 3 / 7.0, LOW),
   /** 160 , 九分之四分相  */
-  QUATRONOVILE("Aspect.QUATRONOVILE", 160.0, Importance.LOW),
+  QUATRONOVILE("Aspect.QUATRONOVILE", 160.0, LOW),
   /** 180 , 沖  */
-  OPPOSITION("Aspect.OPPOSITION", 180.0, Importance.HIGH);
+  OPPOSITION("Aspect.OPPOSITION", 180.0, HIGH);
 
   /** 重要度 : HIGH , MEDIUM , LOW  */
   enum class Importance {
