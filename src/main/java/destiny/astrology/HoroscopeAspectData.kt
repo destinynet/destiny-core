@@ -9,7 +9,6 @@ import java.io.Serializable
 
 /**
  * 存放星體交角的資料結構
- * TODO : migrate [IAspectApplySeparate.AspectType.APPLYING] / [IAspectApplySeparate.AspectType.SEPARATING] to fields of this class
  * */
 data class HoroscopeAspectData(
   /** 存放形成交角的兩顆星體  */
@@ -19,10 +18,15 @@ data class HoroscopeAspectData(
   /** orb 不列入 equals / hashCode 計算  */
   val orb: Double = 0.0,
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-  val score: Double? = null) : Comparable<HoroscopeAspectData>, Serializable {
+  val score: Double? = null ,
+  val type : AspectType? = null) : Comparable<HoroscopeAspectData>, Serializable {
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null) : this(
-    sortedSetOf(pointComp, p1, p2), aspect, orb, score
+  enum class AspectType {
+    APPLYING, SEPARATING
+  }
+
+  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null , type: AspectType? = null) : this(
+    sortedSetOf(pointComp, p1, p2), aspect, orb, score , type
   )
 
   override fun toString(): String {
@@ -70,6 +74,7 @@ data class HoroscopeAspectData(
 
     if (points != other.points) return false
     if (aspect != other.aspect) return false
+    if (type != other.type) return false
 
     return true
   }
@@ -77,6 +82,7 @@ data class HoroscopeAspectData(
   override fun hashCode(): Int {
     var result = points.hashCode()
     result = 31 * result + aspect.hashCode()
+    result = 31 * result + (type?.hashCode() ?: 0)
     return result
   }
 
@@ -84,5 +90,6 @@ data class HoroscopeAspectData(
   companion object {
     val pointComp = PointComparator()
   }
+
 
 }

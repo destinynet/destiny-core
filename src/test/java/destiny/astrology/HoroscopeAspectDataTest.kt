@@ -17,6 +17,7 @@ class HoroscopeAspectDataTest {
     val data1 = HoroscopeAspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0)
     val data2 = HoroscopeAspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0)
 
+
     assertEquals(data1, data2)
     assertEquals(MOON, data1.getAnotherPoint(SUN))
     assertEquals(SUN, data1.getAnotherPoint(MOON))
@@ -32,6 +33,22 @@ class HoroscopeAspectDataTest {
     println(data1)
     println(data2)
     println(data3)
+  }
+
+  @Test
+  fun testEqual2() {
+    val data1 = HoroscopeAspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = HoroscopeAspectData.AspectType.APPLYING)
+    val data2 = HoroscopeAspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0 , type = HoroscopeAspectData.AspectType.SEPARATING)
+
+    assertNotEquals(data1 , data2)
+  }
+
+  @Test
+  fun testEqual3() {
+    val data1 = HoroscopeAspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = HoroscopeAspectData.AspectType.APPLYING)
+    val data2 = HoroscopeAspectData(MOON, SUN, Aspect.CONJUNCTION, 2.0 , type = HoroscopeAspectData.AspectType.APPLYING)
+
+    assertEquals(data1 , data2)
   }
 
   @Test
