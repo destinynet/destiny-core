@@ -4,6 +4,7 @@
  */
 package destiny.astrology
 
+import destiny.astrology.Aspect.Importance
 import destiny.core.Descriptive
 import mu.KotlinLogging
 
@@ -15,6 +16,19 @@ import mu.KotlinLogging
  *  */
 interface IHoroscopeAspectsCalculator : Descriptive {
 
+  /** 取得此星盤中，所有的交角資料 */
+  fun getAspectData(h: IHoroscopeModel ,
+                    points : Collection<Point> = h.positionMap.keys,
+                    aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)) : Set<HoroscopeAspectData>
+
+  /**
+   * 取得於此 [Point] 形成交角的資料
+   */
+  fun getAspectData(point: Point,
+                    h: IHoroscopeModel,
+                    points : Collection<Point> = h.positionMap.keys,
+                    aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)) : Set<HoroscopeAspectData>
+
   /**
    * 取得與 [Point] 形成交角的星體，以及其交角是哪種，以及交角緊密度 (0~1)
    * 如果沒形成任何交角，傳回 empty
@@ -22,7 +36,7 @@ interface IHoroscopeAspectsCalculator : Descriptive {
   fun getPointAspectAndScore(point: Point,
                              positionMap: Map<Point, IPos>,
                              points: Collection<Point> = positionMap.keys,
-                             aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)
+                             aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)
   ): Set<Triple<Point , Aspect , Double>>
 
   /**
@@ -31,7 +45,7 @@ interface IHoroscopeAspectsCalculator : Descriptive {
   fun getPointAspect(point: Point,
                      positionMap: Map<Point, IPos>,
                      points: Collection<Point> = positionMap.keys,
-                     aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)
+                     aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)
   ): Map<Point, Aspect> {
     return getPointAspectAndScore(point, positionMap, points, aspects)
       .map { (point , aspect , _) ->
@@ -42,7 +56,7 @@ interface IHoroscopeAspectsCalculator : Descriptive {
 
   fun getPointAspect(point: Point, horoscope: IHoroscopeModel,
                      points: Collection<Point>,
-                     aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)): Map<Point, Aspect> {
+                     aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)): Map<Point, Aspect> {
     return getPointAspect(point, horoscope.positionMap, points, aspects)
   }
 
@@ -55,7 +69,7 @@ interface IHoroscopeAspectsCalculator : Descriptive {
    */
   fun getAspectDataSet(positionMap: Map<Point, IPos>,
                        points: Collection<Point> = positionMap.keys,
-                       aspects: Collection<Aspect> = Aspect.getAngles(Aspect.Importance.HIGH)): Set<HoroscopeAspectData> {
+                       aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)): Set<HoroscopeAspectData> {
 
     return points.asSequence().map { p1 ->
       getPointAspectAndScore(p1, positionMap, points, aspects)

@@ -30,7 +30,8 @@ data class HoroscopeAspectData(
   )
 
   override fun toString(): String {
-    return StringBuilder("$points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
+    val typeString = type?.toString()?.substring(0,1) ?:"?"
+    return StringBuilder("[$typeString] $points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
       score?.also { score: Double ->
         val s = (score * 100).toString().take(5)
         append("，得分：$s")

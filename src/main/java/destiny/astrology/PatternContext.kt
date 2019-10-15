@@ -56,7 +56,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .flatMap { grandTrine ->
           // 大三角的 每個點 , 都當作風箏的尾巴，去找是否有對沖的點 (亦即：風箏頭)
           grandTrine.points.map { tail ->
-            tail to HoroscopeAspectsCalculatorModern().getPointAspectAndScore(tail, posMap, aspects = setOf(Aspect.OPPOSITION))
+            tail to aspectsCalculator.getPointAspectAndScore(tail, posMap, aspects = setOf(Aspect.OPPOSITION))
           }.filter { (_, oppoSet) ->
             oppoSet.isNotEmpty()
           }.flatMap { (tail, oppoSet: Set<Triple<Point, Aspect, Double>>) ->

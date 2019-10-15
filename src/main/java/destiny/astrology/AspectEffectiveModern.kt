@@ -34,23 +34,34 @@ class AspectEffectiveModern(
   }
 
   /** 兩星交角容許度是多少 , 以及過了容許度的起始分數為多少 (0~1) */
-  private fun getOrbAndThresholdScore(p1: Point, p2: Point, aspect: Aspect): Pair<Double,Double> {
+  private fun getOrbAndThresholdScore(p1: Point, p2: Point, aspect: Aspect): Pair<Double, Double> {
     //從「考量行星」的交角容許度實作找起
     return aspectOrbsPlanetImpl.getPlanetAspectOrbAndThreshold(p1, p2, aspect)
     // 再從「不考慮行星」的交角容許度尋找
       ?: aspectOrbsImpl.getAspectOrbAndThreshold(aspect)
   }
 
-  override fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean, Double> {
-    val (orb , threshold) = getOrbAndThresholdScore(p1, p2, aspect)
+  override fun getAspectErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Double, Double>? {
+    val (orb, threshold) = getOrbAndThresholdScore(p1, p2, aspect)
+    val angle = IHoroscopeModel.getAngle(deg1, deg2)
+    val angleDiff = abs(angle - aspect.degree)
+
+    return if (angleDiff <= orb)
+      angleDiff to (threshold + (1 - threshold) * (orb - angleDiff) / orb)
+    else
+      null
+  }
+
+  override fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Triple<Boolean, Double, Double> {
+    val (orb, threshold) = getOrbAndThresholdScore(p1, p2, aspect)
     val angle = IHoroscopeModel.getAngle(deg1, deg2)
     val angleDiff = abs(angle - aspect.degree)
 
     return (angleDiff <= orb).let { value ->
       if (value) {
-        true to (threshold + (1 - threshold) * (orb - angleDiff) / orb)
+        Triple(true, angleDiff, (threshold + (1 - threshold) * (orb - angleDiff) / orb))
       } else {
-        false to 0.0
+        Triple(false, angleDiff, 0.0)
       }
     }
   }

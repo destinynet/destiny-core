@@ -35,10 +35,10 @@ class AspectEffectiveClassicalTest {
     assertFalse(impl.isEffective(SUN, 0.0, MOON, 193.6, OPPOSITION))
 
     impl.isEffectiveAndScore(SUN, 0.0, MOON, 193.5, OPPOSITION).also {
-      assertEquals(Pair(true ,0.6) , it)
+      assertEquals(Pair(true ,0.6) , it.let { t -> t.first to t.third })
     }
     impl.isEffectiveAndScore(SUN, 0.0, MOON, 180.0, OPPOSITION).also {
-      assertEquals(true to 1.0 , it)
+      assertEquals(true to 1.0 , it.let { t -> t.first to t.third })
     }
 
     assertTrue(impl.isEffective(SUN, 340.0, MOON, 113.5, 120.0))

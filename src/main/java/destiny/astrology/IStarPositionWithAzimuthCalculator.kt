@@ -8,20 +8,11 @@ import destiny.core.calendar.ILocation
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * 計算星體位置 + 地平方位角 (限定 Star) , <BR></BR>
+ * 計算星體位置 + 地平方位角 (限定 Star) ,
  * Swiss Ephemeris 實作為 StarPositionWithAzimuthImpl
  */
 interface IStarPositionWithAzimuthCalculator : IStarPosition<IStarPos> {
 
-//  override fun getPosition(star: Star,
-//                           gmtJulDay: Double,
-//                           geoLat: Double,
-//                           geoLng: Double,
-//                           geoAlt: Double?,
-//                           centric: Centric,
-//                           coordinate: Coordinate,
-//                           temperature: Double,
-//                           pressure: Double): IStarPositionWithAzimuth
 
   fun getPositionFromGmt(star: Star,
                          gmt: ChronoLocalDateTime<*>,
@@ -30,11 +21,4 @@ interface IStarPositionWithAzimuthCalculator : IStarPosition<IStarPos> {
                          coordinate: Coordinate,
                          temperature: Double = 0.0,
                          pressure: Double = 1013.25): IStarPositionWithAzimuth
-//  {
-//    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-//    return getPosition(star, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, centric, coordinate,
-//      temperature, pressure)
-//  }
-
-
 }

@@ -22,29 +22,39 @@ import kotlin.math.abs
  * @param planetOrbsImpl 星芒交角 , 內定採用 [PointDiameterAlBiruniImpl]
  */
 class AspectEffectiveClassical(
-  val planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl() ,
+  val planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl(),
   /** 符合交角的評分，內定從幾分開始算起 */
-  private val defaultThreshold : Double = 0.6) : IAspectEffective, Serializable {
+  private val defaultThreshold: Double = 0.6) : IAspectEffective, Serializable {
 
 
-  private fun getAngleDiff(deg1: Double , deg2: Double , angle: Double) : Double {
+  private fun getAngleDiff(deg1: Double, deg2: Double, angle: Double): Double {
     return abs(IHoroscopeModel.getAngle(deg1, deg2) - angle)
   }
 
-  private fun getSumOfRadius(p1: Point , p2: Point) : Double {
+  private fun getSumOfRadius(p1: Point, p2: Point): Double {
     return (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
   }
 
-  override fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Boolean , Double> {
+  override fun getAspectErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Double, Double>? {
+    val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
+    val sumOfRadius = getSumOfRadius(p1, p2)
+
+    return if ((angleDiff <= sumOfRadius))
+      angleDiff to (defaultThreshold + (1 - defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius)
+    else
+      null
+  }
+
+  override fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Triple<Boolean, Double, Double> {
 
     val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
-    val sumOfRadius = getSumOfRadius(p1 , p2)
+    val sumOfRadius = getSumOfRadius(p1, p2)
 
     return (angleDiff <= sumOfRadius).let { value ->
       if (value)
-        true to (defaultThreshold + (1-defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius)
+        Triple(true, angleDiff, (defaultThreshold + (1 - defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius))
       else
-        false to 0.0
+        Triple(false, angleDiff, 0.0)
     }
   }
 
@@ -54,7 +64,7 @@ class AspectEffectiveClassical(
    */
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, angle: Double): Boolean {
     val angleDiff = getAngleDiff(deg1, deg2, angle)
-    val sumOfRadius = getSumOfRadius(p1 , p2)
+    val sumOfRadius = getSumOfRadius(p1, p2)
     return (angleDiff <= sumOfRadius)
   }
 

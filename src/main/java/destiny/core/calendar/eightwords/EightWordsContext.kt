@@ -30,15 +30,16 @@ class EightWordsContext(
   /** 年月 */
   override val yearMonthImpl: IYearMonth,
   /** 日時 */
-  override val dayHourImpl : IDayHour,
+  override val dayHourImpl: IDayHour,
 
   override val risingSignImpl: IRisingSign,
 
   private val starPositionImpl: IStarPosition<*>,
   private val solarTermsImpl: ISolarTerms,
-  private val houseCuspImpl : IHouseCusp,
+  private val houseCuspImpl: IHouseCusp,
   val zodiacSignImpl: IZodiacSign,
-  val riseTransImpl : IRiseTrans) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
+  val riseTransImpl: IRiseTrans,
+  val aspectsCalculator: IHoroscopeAspectsCalculator) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
   private data class CacheKey(val lmt: ChronoLocalDateTime<*>, val location: ILocation, val place: String?)
 
@@ -96,8 +97,7 @@ class EightWordsContext(
 
       val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
 
-      val calculator = HoroscopeAspectsCalculatorModern()
-      val aspectDataSet = calculator.getAspectDataSet(starPosMap)
+      val aspectDataSet = aspectsCalculator.getAspectDataSet(starPosMap)
 
       return EightWordsContextModel(eightWords, lmt, location, place, chineseDate,
         solarTermsTimePos,
