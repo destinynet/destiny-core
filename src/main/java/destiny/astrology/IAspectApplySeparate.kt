@@ -7,13 +7,13 @@ package destiny.astrology
 interface IAspectApplySeparate {
 
   /** 如果不是形成 aspect 交角，會傳回 null  */
-  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspect: Aspect): HoroscopeAspectData.AspectType?
+  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspect: Aspect): AspectData.AspectType?
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect , HoroscopeAspectData.AspectType>?
+  fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect , AspectData.AspectType>?
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): HoroscopeAspectData.AspectType? {
+  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): AspectData.AspectType? {
     return getAspectAndType(h, p1, p2, aspects)?.let { it.second }
   }
 }

@@ -10,27 +10,29 @@ import java.io.Serializable
 /**
  * 存放星體交角的資料結構
  * */
-data class HoroscopeAspectData(
+data class AspectData(
   /** 存放形成交角的兩顆星體  */
   val points: Set<Point>,
   /** 兩星所形成的交角 */
   val aspect: Aspect,
+  val type: AspectType? = null,
   /** orb 不列入 equals / hashCode 計算  */
   val orb: Double = 0.0,
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-  val score: Double? = null ,
-  val type : AspectType? = null) : Comparable<HoroscopeAspectData>, Serializable {
+  val score: Double? = null) : Comparable<AspectData>, Serializable {
 
   enum class AspectType {
     APPLYING, SEPARATING
   }
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null , type: AspectType? = null) : this(
-    sortedSetOf(pointComp, p1, p2), aspect, orb, score , type
-  )
+  constructor(p1: Point, p2: Point, aspect: Aspect, type: AspectType? = null, orb: Double = 0.0, score: Double? = null) :
+    this(sortedSetOf(pointComp, p1, p2), aspect, type, orb, score)
+
+  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null, type: AspectType? = null) :
+    this(sortedSetOf(pointComp, p1, p2), aspect, type, orb, score)
 
   override fun toString(): String {
-    val typeString = type?.toString()?.substring(0,1) ?:"?"
+    val typeString = type?.toString()?.substring(0, 1) ?: "?"
     return StringBuilder("[$typeString] $points $aspect 誤差 ${AlignTools.leftPad(orb.toString(), 4)}度").apply {
       score?.also { score: Double ->
         val s = (score * 100).toString().take(5)
@@ -48,7 +50,7 @@ data class HoroscopeAspectData(
       ?.firstOrNull()
   }
 
-  override fun compareTo(other: HoroscopeAspectData): Int {
+  override fun compareTo(other: AspectData): Int {
 
     val (thisP0, thisP1) = points.iterator().let {
       it.next() to it.next()
@@ -71,7 +73,7 @@ data class HoroscopeAspectData(
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (other !is HoroscopeAspectData) return false
+    if (other !is AspectData) return false
 
     if (points != other.points) return false
     if (aspect != other.aspect) return false

@@ -5,8 +5,9 @@
 package destiny.astrology
 
 import com.google.common.collect.Sets
-import destiny.astrology.HoroscopeAspectData.AspectType.APPLYING
-import destiny.astrology.HoroscopeAspectData.AspectType.SEPARATING
+import destiny.astrology.AspectData.AspectType.APPLYING
+import destiny.astrology.AspectData.AspectType.SEPARATING
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -25,7 +26,7 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
 
   override fun getAspectData(h: IHoroscopeModel,
                              points: Collection<Point>,
-                             aspects: Collection<Aspect>): Set<HoroscopeAspectData> {
+                             aspects: Collection<Aspect>): Set<AspectData> {
     val posMap: Map<Point, IPosWithAzimuth> = h.positionMap
 
     return Sets.combinations(points.toSet(), 2)
@@ -44,20 +45,25 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
             val score = errorAndScore.second
 
             val lmt = h.lmt //目前時間
-            val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
+            val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
             val hContext: IHoroscopeContext =
               HoroscopeContext(starPosWithAzimuth, houseCuspImpl, pointPosFuncMap, h.points, h.houseSystem,
                                h.coordinate, h.centric)
-            val h2 = hContext.getHoroscope(lmt = oneSecondLater, loc = h.location, place = h.place, points = h.points)
+            val h2 = hContext.getHoroscope(lmt = later, loc = h.location, place = h.place, points = h.points)
 
             val deg1Next = h2.getPositionWithAzimuth(p1).lng
             val deg2Next = h2.getPositionWithAzimuth(p2).lng
             val planetsAngleNext = IHoroscopeModel.getAngle(deg1Next, deg2Next)
             val errorNext = abs(planetsAngleNext - aspect.degree)
 
+
+
             val type = if (errorNext <= error) APPLYING else SEPARATING
-            HoroscopeAspectData(p1, p2, aspect, error, score, type)
+
+            logger.debug("[{} , {}] type = {} , error = {} , errorNext = {}" , p1 , p2 , type , error , errorNext)
+
+            AspectData(p1, p2, aspect, error, score, type)
           }
       }.toSet()
   }
@@ -65,7 +71,7 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
   override fun getAspectData(point: Point,
                              h: IHoroscopeModel,
                              points: Collection<Point>,
-                             aspects: Collection<Aspect>): Set<HoroscopeAspectData> {
+                             aspects: Collection<Aspect>): Set<AspectData> {
 
     val positionMap = h.positionMap
     return positionMap[point]?.lng?.let { starDeg ->
@@ -84,12 +90,12 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
               val error = errorAndScore.first
 
               val lmt = h.lmt //目前時間
-              val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
+              val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
               val hContext: IHoroscopeContext =
                 HoroscopeContext(starPosWithAzimuth, houseCuspImpl, pointPosFuncMap, h.points, h.houseSystem,
                                  h.coordinate, h.centric)
-              val h2 = hContext.getHoroscope(lmt = oneSecondLater, loc = h.location, place = h.place, points = h.points)
+              val h2 = hContext.getHoroscope(lmt = later, loc = h.location, place = h.place, points = h.points)
 
               val deg1Next = h2.getPositionWithAzimuth(point).lng
               val deg2Next = h2.getPositionWithAzimuth(eachPoint).lng
@@ -98,7 +104,7 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
 
               val type = if (errorNext <= error) APPLYING else SEPARATING
 
-              HoroscopeAspectData(point, eachPoint, aspect, error, errorAndScore.second, type)
+              AspectData(point, eachPoint, aspect, error, errorAndScore.second, type)
             }
         }.toSet()
     } ?: emptySet()
@@ -136,5 +142,8 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
     return "現代占星術實作"
   }
 
+  companion object {
+    private val logger = KotlinLogging.logger {  }
+  }
 
 }

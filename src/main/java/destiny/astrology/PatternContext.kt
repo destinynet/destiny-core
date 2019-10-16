@@ -117,11 +117,11 @@ class PatternContext(val aspectEffective: IAspectEffective,
         .takeIf { it.size >= 2 }
         ?.let { dataSet ->
           // 任兩個 QUINCUNX ,
-          Sets.combinations(dataSet, 2).asSequence().filter { twoSets: Set<HoroscopeAspectData> ->
+          Sets.combinations(dataSet, 2).asSequence().filter { twoSets: Set<AspectData> ->
             // 確保組合而成的 points 若共有三顆星
             twoSets.flatMap { it.points }.toSet().size == 3
-          }.map { twoSets: Set<HoroscopeAspectData> ->
-            val (set1: HoroscopeAspectData, set2: HoroscopeAspectData) = twoSets.toList().let { it[0] to it[1] }
+          }.map { twoSets: Set<AspectData> ->
+            val (set1: AspectData, set2: AspectData) = twoSets.toList().let { it[0] to it[1] }
             val intersectedPoint = set1.points.intersect(set2.points)
             val (other1: Point, other2: Point) = twoSets.flatMap { it.points }.toSet().minus(intersectedPoint).toList().let { it[0] to it[1] }
             // 確保 另外兩點 形成 60 度
@@ -131,7 +131,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             .map { (twoSets , errorAndScore) -> twoSets to errorAndScore!! }
             .map { (twoSets, errorAndScore) ->
               val score: Double? = twoSets.takeIf { sets -> sets.all { it.score != null } }?.map { it.score!! }?.plus(errorAndScore.second)?.average()
-              val (set1: HoroscopeAspectData, set2: HoroscopeAspectData) = twoSets.toList().let { it[0] to it[1] }
+              val (set1: AspectData, set2: AspectData) = twoSets.toList().let { it[0] to it[1] }
               val pointer = set1.points.intersect(set2.points).first().signHouse(posMap, cuspDegreeMap)
               val bottoms: Set<Point> = twoSets.flatMap { it.points }.toSet().minus(pointer.point)
               AstroPattern.Yod(bottoms, pointer, score)
@@ -182,7 +182,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               threePairs.filter { it.aspect == BIQUINTILE }.size == 2
                 && threePairs.filter { it.aspect == QUINTILE }.size == 1
             }
-            .map { threePairs: Set<HoroscopeAspectData> ->
+            .map { threePairs: Set<AspectData> ->
 
               val score = threePairs.takeIf { pairs -> pairs.all { it.score != null } }?.map { it.score!! }?.average()
 
@@ -300,7 +300,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
 
-      val dataSet: Set<HoroscopeAspectData> = aspectsCalculator.getAspectDataSet(posMap, aspects = threeAspects)
+      val dataSet: Set<AspectData> = aspectsCalculator.getAspectDataSet(posMap, aspects = threeAspects)
 
       return dataSet.takeIf { it.size >= 3 }
         ?.let {

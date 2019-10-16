@@ -65,7 +65,7 @@ interface IEightWordsContextModel {
   val rsmiMap : Map<TransPoint , Double>
 
   /** 星體交角 */
-  val aspectsDataSet: Set<HoroscopeAspectData>
+  val aspectsDataSet: Set<AspectData>
 }
 
 /**
@@ -118,7 +118,7 @@ data class EightWordsContextModel(
   override val rsmiMap : Map<TransPoint , Double>,
 
   /** 星體交角 */
-  override val aspectsDataSet: Set<HoroscopeAspectData>
+  override val aspectsDataSet: Set<AspectData>
 ) : IEightWordsContextModel, Serializable {
 
   /** 是否有日光節約  */

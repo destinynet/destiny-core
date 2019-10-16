@@ -3,8 +3,8 @@
  */
 package destiny.astrology
 
-import destiny.astrology.HoroscopeAspectData.AspectType.APPLYING
-import destiny.astrology.HoroscopeAspectData.AspectType.SEPARATING
+import destiny.astrology.AspectData.AspectType.APPLYING
+import destiny.astrology.AspectData.AspectType.SEPARATING
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
@@ -27,7 +27,7 @@ class AspectApplySeparateImpl(
   override fun getAspectType(h: IHoroscopeModel,
                              p1: Point,
                              p2: Point,
-                             aspect: Aspect): HoroscopeAspectData.AspectType? {
+                             aspect: Aspect): AspectData.AspectType? {
     val deg1 = h.getPositionWithAzimuth(p1).lng
     val deg2 = h.getPositionWithAzimuth(p2).lng
 
@@ -57,7 +57,7 @@ class AspectApplySeparateImpl(
       return null //這兩顆星沒有形成交角
   }
 
-  override fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect, HoroscopeAspectData.AspectType>? {
+  override fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect, AspectData.AspectType>? {
     return aspects.asSequence().map { aspect ->
       aspect to getAspectType(h, p1, p2, aspect)
     }.filter { (_ , type ) ->

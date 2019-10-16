@@ -74,7 +74,7 @@ sealed class AccidentalDignity(override val name: String,
   data class JoyHouse(override val planet: Planet, val house: Int) : AccidentalDignity(JoyHouse::class.java.simpleName)
   data class Hayz(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : AccidentalDignity(Hayz::class.java.simpleName)
   data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity(Besieged_Jupiter_Venus::class.java.simpleName)
-  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: HoroscopeAspectData.AspectType?) : AccidentalDignity(Translation_of_Light::class.java.simpleName)
+  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: AspectData.AspectType?) : AccidentalDignity(Translation_of_Light::class.java.simpleName)
   data class Collection_of_Light(override val planet: Planet, val twoPlanets: List<Planet>, val angle: Double) : AccidentalDignity(Collection_of_Light::class.java.simpleName)
   data class Refrain_from_Mars_Saturn(override val planet: Planet, val marsOrSaturn: Planet, val aspect: Aspect) : AccidentalDignity(Refrain_from_Mars_Saturn::class.java.simpleName)
 }

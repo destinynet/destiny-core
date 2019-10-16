@@ -19,7 +19,7 @@ interface IHoroscopeAspectsCalculator : Descriptive {
   /** 取得此星盤中，所有的交角資料 */
   fun getAspectData(h: IHoroscopeModel ,
                     points : Collection<Point> = h.positionMap.keys,
-                    aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)) : Set<HoroscopeAspectData>
+                    aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)) : Set<AspectData>
 
   /**
    * 取得於此 [Point] 形成交角的資料
@@ -27,7 +27,7 @@ interface IHoroscopeAspectsCalculator : Descriptive {
   fun getAspectData(point: Point,
                     h: IHoroscopeModel,
                     points : Collection<Point> = h.positionMap.keys,
-                    aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)) : Set<HoroscopeAspectData>
+                    aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)) : Set<AspectData>
 
   /**
    * 取得與 [Point] 形成交角的星體，以及其交角是哪種，以及交角緊密度 (0~1)
@@ -69,12 +69,12 @@ interface IHoroscopeAspectsCalculator : Descriptive {
    */
   fun getAspectDataSet(positionMap: Map<Point, IPos>,
                        points: Collection<Point> = positionMap.keys,
-                       aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)): Set<HoroscopeAspectData> {
+                       aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)): Set<AspectData> {
 
     return points.asSequence().map { p1 ->
       getPointAspectAndScore(p1, positionMap, points, aspects)
         .map { (p2 , aspect , score) ->
-          HoroscopeAspectData(p1 , p2 , aspect , IHoroscopeModel.getAspectError(positionMap, p1, p2, aspect) ?: 0.0, score)
+          AspectData(p1 , p2 , aspect , IHoroscopeModel.getAspectError(positionMap, p1, p2, aspect) ?: 0.0, score)
         }.toSet()
     }.flatten()
       .toSet()

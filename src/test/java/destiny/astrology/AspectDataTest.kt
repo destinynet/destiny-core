@@ -8,14 +8,14 @@ import destiny.astrology.Planet.*
 import kotlin.test.*
 
 
-class HoroscopeAspectDataTest {
+class AspectDataTest {
 
   @Test
   fun testEqual() {
     //測試 equals , 日月對調，必須仍然相等
 
-    val data1 = HoroscopeAspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0)
-    val data2 = HoroscopeAspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0)
+    val data1 = AspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0)
+    val data2 = AspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0)
 
 
     assertEquals(data1, data2)
@@ -25,7 +25,7 @@ class HoroscopeAspectDataTest {
     assertEquals(SUN, data2.getAnotherPoint(MOON))
 
 
-    val data3 = HoroscopeAspectData(SUN, MARS, Aspect.CONJUNCTION, 1.0)
+    val data3 = AspectData(SUN, MARS, Aspect.CONJUNCTION, 1.0)
     assertTrue(data1 != data3)
     assertEquals(MARS , data3.getAnotherPoint(SUN))
     assertEquals(SUN , data3.getAnotherPoint(MARS))
@@ -37,24 +37,24 @@ class HoroscopeAspectDataTest {
 
   @Test
   fun testEqual2() {
-    val data1 = HoroscopeAspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = HoroscopeAspectData.AspectType.APPLYING)
-    val data2 = HoroscopeAspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0 , type = HoroscopeAspectData.AspectType.SEPARATING)
+    val data1 = AspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = AspectData.AspectType.APPLYING)
+    val data2 = AspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0 , type = AspectData.AspectType.SEPARATING)
 
     assertNotEquals(data1 , data2)
   }
 
   @Test
   fun testEqual3() {
-    val data1 = HoroscopeAspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = HoroscopeAspectData.AspectType.APPLYING)
-    val data2 = HoroscopeAspectData(MOON, SUN, Aspect.CONJUNCTION, 2.0 , type = HoroscopeAspectData.AspectType.APPLYING)
+    val data1 = AspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = AspectData.AspectType.APPLYING)
+    val data2 = AspectData(MOON, SUN, Aspect.CONJUNCTION, 2.0 , type = AspectData.AspectType.APPLYING)
 
     assertEquals(data1 , data2)
   }
 
   @Test
   fun testSameStar() {
-    val data1 = HoroscopeAspectData(SUN, SUN, Aspect.CONJUNCTION, 1.0)
-    val data2 = HoroscopeAspectData(MOON , MOON, Aspect.CONJUNCTION, 1.0)
+    val data1 = AspectData(SUN, SUN, Aspect.CONJUNCTION, 1.0)
+    val data2 = AspectData(MOON , MOON, Aspect.CONJUNCTION, 1.0)
     assertNotEquals(data1 , data2)
 
     assertNull(data1.getAnotherPoint(SUN))
