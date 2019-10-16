@@ -17,7 +17,6 @@ import kotlin.math.abs
  * （「現代占星」則是各種交角都有不同的容許度）
  * 演算法採用 Template Method design pattern
  * 參考資料 http://www.skyscript.co.uk/aspects.html
- * 未來可以繼承此 Abstract Class , 呼叫資料庫 , 取得個人化的 OrbsMap
  *
  * @param planetOrbsImpl 星芒交角 , 內定採用 [PointDiameterAlBiruniImpl]
  */
@@ -39,7 +38,7 @@ class AspectEffectiveClassical(
     val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
     val sumOfRadius = getSumOfRadius(p1, p2)
 
-    return if ((angleDiff <= sumOfRadius))
+    return if (angleDiff <= sumOfRadius)
       angleDiff to (defaultThreshold + (1 - defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius)
     else
       null
@@ -65,7 +64,7 @@ class AspectEffectiveClassical(
    */
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, vararg angles: Double): Boolean {
     return angles.any {
-      (isEffective(p1, deg1, p2, deg2, it))
+      isEffective(p1, deg1, p2, deg2, it)
     }
   }
 
