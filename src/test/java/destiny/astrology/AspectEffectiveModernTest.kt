@@ -7,10 +7,7 @@ package destiny.astrology
 import destiny.astrology.Aspect.*
 import destiny.astrology.Planet.*
 import mu.KotlinLogging
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 
 class AspectEffectiveModernTest  {
@@ -52,21 +49,24 @@ class AspectEffectiveModernTest  {
   @Test
   fun testIsEffectiveAndScore_SUN_RISING() {
     /** 日月對沖，容許度 12度  , 記錄於 [AspectOrbsPlanetDefaultImpl] 的 map 中 */
-    modern.isEffectiveAndScore(SUN , 0.0 , MOON , 192.0 , OPPOSITION).also {
-      assertEquals(true to 0.6 , it.let { t -> t.first to t.third })
+    modern.getAspectErrorAndScore(SUN , 0.0 , MOON , 192.0 , OPPOSITION).also {
+      assertNotNull(it)
+      assertEquals(0.6 , it.second)
     }
 
     /** 與東昇點，並不在 [AspectOrbsPlanetDefaultImpl] 的 map 中 , 容許度改為 [AspectOrbsDefaultImpl] 為 11度 */
-    modern.isEffectiveAndScore(SUN , 0.0 , Axis.RISING , 192.0 , OPPOSITION).also {
-      assertEquals(false to 0.0 , it.let { t -> t.first to t.third })
+    modern.getAspectErrorAndScore(SUN , 0.0 , Axis.RISING , 192.0 , OPPOSITION).also {
+      assertNull(it)
     }
-    modern.isEffectiveAndScore(SUN , 0.0 , Axis.RISING , 191.0 , OPPOSITION).also {
-      assertEquals(true to 0.6 , it.let { t -> t.first to t.third })
+
+    modern.getAspectErrorAndScore(SUN , 0.0 , Axis.RISING , 191.0 , OPPOSITION).also {
+      assertNotNull(it)
+      assertEquals(0.6 , it.second)
     }
   }
 
   /**
-   * 測試「考量行星」的實作，注入內定的 AspectOrbsPlanetDefaultImpl 實作，該實作只對日月交角有更高的容許度
+   * 測試「考量行星」的實作，注入內定的 [AspectOrbsPlanetDefaultImpl] 實作，該實作只對日月交角有更高的容許度
    */
   @Test
   fun testIsEffective_AspectOrbsPlanetDefaultImpl() {
@@ -86,14 +86,18 @@ class AspectEffectiveModernTest  {
 
     assertFalse(modern.isEffective(SUN, 0.0, MOON, 193.0, OPPOSITION))
 
-    modern.isEffectiveAndScore(SUN , 0.0 , MOON , 192.0 , OPPOSITION).also {
-      assertEquals(true to 0.6 , it.let { t -> t.first to t.third })
+    modern.getAspectErrorAndScore(SUN , 0.0 , MOON , 192.0 , OPPOSITION).also {
+      assertNotNull(it)
+      assertEquals(0.6 , it.second)
     }
-    modern.isEffectiveAndScore(SUN , 0.0 , MOON , 180.0 , OPPOSITION).also {
-      assertEquals(true to 1.0 , it.let { t -> t.first to t.third })
+
+    modern.getAspectErrorAndScore(SUN , 0.0 , MOON , 180.0 , OPPOSITION).also {
+      assertNotNull(it)
+      assertEquals(1.0 , it.second)
     }
-    modern.isEffectiveAndScore(SUN, 0.0, MOON, 193.0, OPPOSITION).also {
-      assertEquals(false to 0.0, it.let { t -> t.first to t.third })
+
+    modern.getAspectErrorAndScore(SUN , 0.0 , MOON , 193.0 , OPPOSITION).also {
+      assertNull(it)
     }
 
 

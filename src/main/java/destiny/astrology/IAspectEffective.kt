@@ -13,16 +13,23 @@ interface IAspectEffective {
    */
   fun getAspectErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect) : Pair<Double , Double>?
 
+  fun getAspectErrorAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect) : Pair<Double , Double>? {
+    return getAspectErrorAndScore(p1 , posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)
+  }
+
+
   /**
    * Triple of (是否形成交角 , error 多少 , 分數幾分)
    */
+  @Deprecated("getAspectErrorAndScore")
   fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Triple<Boolean , Double , Double>
 
-  fun isEffectiveAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Pair<Boolean , Double> {
-    return isEffectiveAndScore(p1 , posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect).let { (effective , _ , score) ->
-      effective to score
-    }
-  }
+//  @Deprecated("getAspectErrorAndScore")
+//  fun isEffectiveAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Pair<Boolean , Double> {
+//    return getAspectErrorAndScore(p1 , posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)?.let { (_ , score) ->
+//      true to score
+//    }?: (false to 0.0)
+//  }
 
   /**
    * @param p1 Point 1
