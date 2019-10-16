@@ -5,6 +5,7 @@
 package destiny.astrology
 
 import com.google.common.collect.Sets
+import destiny.astrology.Aspect.Importance
 import destiny.astrology.HoroscopeAspectData.AspectType.APPLYING
 import destiny.astrology.HoroscopeAspectData.AspectType.SEPARATING
 import destiny.astrology.classical.AspectEffectiveClassical
@@ -43,9 +44,9 @@ class HoroscopeAspectsCalculatorClassical(
 
         aspects
           .asSequence()
-          .filter { Aspect.getAngles(Aspect.Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
+          .filter { Aspect.getAngles(Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
           .map { aspect ->
-            aspect to classical.getAspectErrorAndScore(p1 , posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)
+            aspect to classical.getEffectiveErrorAndScore(p1, posMap.getValue(p1).lng, p2, posMap.getValue(p2).lng, aspect)
           }.filter { (_ , errorAndScore) -> errorAndScore != null }
           .map { (aspect , errorAndScore) -> aspect to errorAndScore!! }
           .map { (aspect, errorAndScore) ->
@@ -84,12 +85,14 @@ class HoroscopeAspectsCalculatorClassical(
             .flatMap { eachPoint ->
               val eachPlanetDeg = h.positionMap.getValue(eachPoint).lng
               aspects
-                .filter { Aspect.getAngles(Aspect.Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
-                .map { aspect -> aspect to classical.isEffectiveAndScore(point, planetDeg, eachPoint, eachPlanetDeg, aspect) }
-                .filter { (_, effectiveErrorScore) -> effectiveErrorScore.first }
-                .map { (aspect, effectiveErrorScore) ->
+                .asSequence()
+                .filter { Aspect.getAngles(Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
+                .map { aspect -> aspect to classical.getEffectiveErrorAndScore(point, planetDeg, eachPoint, eachPlanetDeg, aspect) }
+                .filter { (_ , maybeErrorAndScore) -> maybeErrorAndScore!= null }
+                .map { (aspect , maybeErrorAndScore) -> aspect to maybeErrorAndScore!! }
+                .map { (aspect, errorAndScore) ->
 
-                  val error = effectiveErrorScore.second
+                  val error = errorAndScore.first
 
                   val lmt = h.lmt //目前時間
                   val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
@@ -104,8 +107,9 @@ class HoroscopeAspectsCalculatorClassical(
 
                   val type = if (errorNext <= error) APPLYING else SEPARATING
 
-                  HoroscopeAspectData(point , eachPoint , aspect , effectiveErrorScore.second , effectiveErrorScore.third , type)
+                  HoroscopeAspectData(point , eachPoint , aspect , error , errorAndScore.second , type)
                 }
+                .toList()
             }.toSet()
         }?: emptySet()
       }?: emptySet()
@@ -126,12 +130,15 @@ class HoroscopeAspectsCalculatorClassical(
             .flatMap { eachPoint ->
               val eachPlanetDeg = positionMap.getValue(eachPoint).lng
               aspects
-                .filter { Aspect.getAngles(Aspect.Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
-                .map { aspect -> aspect to classical.isEffectiveAndScore(point, planetDeg, eachPoint, eachPlanetDeg, aspect) }
-                .filter { (_, effectiveErrorScore) -> effectiveErrorScore.first }
-                .map { (aspect, effectiveErrorScore: Triple<Boolean, Double, Double>) ->
-                  Triple(eachPoint , aspect , effectiveErrorScore.third)
+                .asSequence()
+                .filter { Aspect.getAngles(Importance.HIGH).contains(it) } // 只比對 0 , 60 , 90 , 120 , 180 五個度數
+                .map { aspect -> aspect to classical.getEffectiveErrorAndScore(point, planetDeg, eachPoint, eachPlanetDeg, aspect) }
+                .filter { (_ , maybeErrorAndScore) -> maybeErrorAndScore!= null }
+                .map { (aspect , maybeErrorAndScore) -> aspect to maybeErrorAndScore!!.second }
+                .map { (aspect , score) ->
+                  Triple(eachPoint , aspect , score)
                 }
+                .toList()
             }.toSet()
         }?: emptySet()
       }?: emptySet()

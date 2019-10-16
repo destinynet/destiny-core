@@ -67,7 +67,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               // 每個 head 都需要與 兩翼 SEXTILE
 
               grandTrine.points.minus(tail).map { wingPoint ->
-                wingPoint to aspectEffective.getAspectErrorAndScore(head, wingPoint, posMap, SEXTILE)
+                wingPoint to aspectEffective.getEffectiveErrorAndScore(head, wingPoint, posMap, SEXTILE)
               }.takeIf { list ->
                 list.all { (wing , maybeErrorAndScore) -> maybeErrorAndScore!= null }
               }?.map { (wing , maybeErrorAndScore) -> wing to maybeErrorAndScore!!.second }
@@ -125,7 +125,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             val intersectedPoint = set1.points.intersect(set2.points)
             val (other1: Point, other2: Point) = twoSets.flatMap { it.points }.toSet().minus(intersectedPoint).toList().let { it[0] to it[1] }
             // 確保 另外兩點 形成 60 度
-            twoSets to aspectEffective.getAspectErrorAndScore(other1 , other2, posMap , SEXTILE)
+            twoSets to aspectEffective.getEffectiveErrorAndScore(other1, other2, posMap, SEXTILE)
           }
             .filter { (_ , maybeErrorAndScore) -> maybeErrorAndScore != null}
             .map { (twoSets , errorAndScore) -> twoSets to errorAndScore!! }
@@ -151,7 +151,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
               // 對沖點，還必須與兩翼形成30度
               val validScores: Set<Double> = pattern.bottoms.mapNotNull { bottom ->
-                aspectEffective.getAspectErrorAndScore(oppoPoint, bottom, posMap, SEMISEXTILE)?.second
+                aspectEffective.getEffectiveErrorAndScore(oppoPoint, bottom, posMap, SEMISEXTILE)?.second
               }.toSet()
 
               Triple(oppoPoint, oppoScore, validScores)
@@ -339,7 +339,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
             // 兩組 wedges 只能有四顆星
             twoWedges to if (unionPoints.size == 4) {
               // 兩組 wedge 的 moderator 又互相對沖
-              aspectEffective.getAspectErrorAndScore(wedge1.moderator.point, wedge2.moderator.point, posMap, OPPOSITION)?.second
+              aspectEffective.getEffectiveErrorAndScore(wedge1.moderator.point, wedge2.moderator.point, posMap, OPPOSITION)?.second
             } else {
               null
             }
@@ -386,7 +386,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
           val score = Sets.combinations(points, 2).asSequence().map { pair ->
             val (p1, p2) = pair.toList().let { it[0] to it[1] }
             // 對於「同一星座內，但是沒有形成合相的雙星」其分數雖然是零分，但是不要過濾 , 就給 零分
-            aspectEffective.getAspectErrorAndScore(p1 , p2 , posMap , CONJUNCTION)?.second?:0.0
+            aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, CONJUNCTION)?.second?:0.0
           }.average()
 
           AstroPattern.StelliumSign(points, sign, score)
@@ -405,7 +405,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
           /** 分數算法： 以該宮位內 [Aspect.CONJUNCTION] 分數平均 */
           val score = Sets.combinations(points, 2).asSequence().map { pair ->
             val (p1, p2) = pair.toList().let { it[0] to it[1] }
-            aspectEffective.getAspectErrorAndScore(p1, p2, posMap, CONJUNCTION)?.second ?: 0.0
+            aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, CONJUNCTION)?.second ?: 0.0
           }.average()
 
           AstroPattern.StelliumHouse(points, house, score)
@@ -450,7 +450,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
                 // 分數計算 : group1 裡面所有星 , 與 group2 裡面所有星 , 取 對沖 分數 , 過門檻者，加以平均
                 val score = Sets.cartesianProduct(group1.toSet(), group2.toSet()).mapNotNull {
                   val (p1, p2) = it[0] to it[1]
-                  aspectEffective.getAspectErrorAndScore(p1, p2, posMap, OPPOSITION)
+                  aspectEffective.getEffectiveErrorAndScore(p1, p2, posMap, OPPOSITION)
                 }
                   .map { (_, score) -> score }
                   .average()

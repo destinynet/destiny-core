@@ -8,28 +8,18 @@ interface IAspectEffective {
 
   /**
    * 取得這兩星是否形成此有效交角
+   * 如果形成交角 , 則傳回 error(orb) 角度 , 以及評分
    * 若無效，則傳回 null
-   * 若有效，則傳回 pair of (orb , score)
    */
-  fun getAspectErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect) : Pair<Double , Double>?
-
-  fun getAspectErrorAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect) : Pair<Double , Double>? {
-    return getAspectErrorAndScore(p1 , posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)
-  }
-
+  fun getEffectiveErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Double, Double>?
 
   /**
-   * Triple of (是否形成交角 , error 多少 , 分數幾分)
+   * 承上 , 另一種寫法
    */
-  @Deprecated("getAspectErrorAndScore")
-  fun isEffectiveAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Triple<Boolean , Double , Double>
+  fun getEffectiveErrorAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Pair<Double, Double>? {
+    return getEffectiveErrorAndScore(p1, posMap.getValue(p1).lng, p2, posMap.getValue(p2).lng, aspect)
+  }
 
-//  @Deprecated("getAspectErrorAndScore")
-//  fun isEffectiveAndScore(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Pair<Boolean , Double> {
-//    return getAspectErrorAndScore(p1 , posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)?.let { (_ , score) ->
-//      true to score
-//    }?: (false to 0.0)
-//  }
 
   /**
    * @param p1 Point 1
@@ -40,8 +30,8 @@ interface IAspectEffective {
    */
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Boolean
 
-  fun isEffective(p1: Point , p2: Point , posMap: Map<Point, IPos> , aspect: Aspect): Boolean{
-    return isEffective(p1 ,  posMap.getValue(p1).lng , p2 , posMap.getValue(p2).lng , aspect)
+  fun isEffective(p1: Point, p2: Point, posMap: Map<Point, IPos>, aspect: Aspect): Boolean {
+    return isEffective(p1, posMap.getValue(p1).lng, p2, posMap.getValue(p2).lng, aspect)
   }
 
   fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, vararg aspects: Aspect): Boolean {

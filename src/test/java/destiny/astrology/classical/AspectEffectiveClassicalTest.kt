@@ -7,10 +7,7 @@ package destiny.astrology.classical
 import destiny.astrology.Aspect.*
 import destiny.astrology.Planet.*
 import mu.KotlinLogging
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class AspectEffectiveClassicalTest {
 
@@ -34,11 +31,13 @@ class AspectEffectiveClassicalTest {
     assertTrue(impl.isEffective(SUN, 0.0, MOON, 193.5, OPPOSITION))
     assertFalse(impl.isEffective(SUN, 0.0, MOON, 193.6, OPPOSITION))
 
-    impl.isEffectiveAndScore(SUN, 0.0, MOON, 193.5, OPPOSITION).also {
-      assertEquals(Pair(true ,0.6) , it.let { t -> t.first to t.third })
+    impl.getEffectiveErrorAndScore(SUN, 0.0, MOON, 193.5, OPPOSITION).also {
+      assertNotNull(it)
+      assertEquals(0.6 , it.second)
     }
-    impl.isEffectiveAndScore(SUN, 0.0, MOON, 180.0, OPPOSITION).also {
-      assertEquals(true to 1.0 , it.let { t -> t.first to t.third })
+    impl.getEffectiveErrorAndScore(SUN, 0.0, MOON, 180.0, OPPOSITION).also {
+      assertNotNull(it)
+      assertEquals(1.0 , it.second)
     }
 
     assertTrue(impl.isEffective(SUN, 340.0, MOON, 113.5, 120.0))
