@@ -188,7 +188,7 @@ class PatternTranslatorKtTest {
       assertEquals("太陽 被 金星 及 木星 包夾 (善意 Besieged)" , it.description)
     }
 
-    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, AspectData.AspectType.APPLYING).also {
+    Translation_of_Light(SATURN, VENUS, JUPITER, 120.0, AspectData.Type.APPLYING).also {
       assertEquals("傳遞光線" , it.title)
       assertEquals("土星 從 金星 傳遞光線到 木星 ，金星 與 木星 交角 120.0 度，相位為 APPLYING" , it.description)
     }

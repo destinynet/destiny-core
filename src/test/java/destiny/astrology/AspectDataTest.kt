@@ -37,16 +37,16 @@ class AspectDataTest {
 
   @Test
   fun testEqual2() {
-    val data1 = AspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = AspectData.AspectType.APPLYING)
-    val data2 = AspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0 , type = AspectData.AspectType.SEPARATING)
+    val data1 = AspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = AspectData.Type.APPLYING)
+    val data2 = AspectData(MOON, SUN, Aspect.CONJUNCTION, 1.0 , type = AspectData.Type.SEPARATING)
 
     assertNotEquals(data1 , data2)
   }
 
   @Test
   fun testEqual3() {
-    val data1 = AspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = AspectData.AspectType.APPLYING)
-    val data2 = AspectData(MOON, SUN, Aspect.CONJUNCTION, 2.0 , type = AspectData.AspectType.APPLYING)
+    val data1 = AspectData(SUN, MOON, Aspect.CONJUNCTION, 1.0 , type = AspectData.Type.APPLYING)
+    val data2 = AspectData(MOON, SUN, Aspect.CONJUNCTION, 2.0 , type = AspectData.Type.APPLYING)
 
     assertEquals(data1 , data2)
   }

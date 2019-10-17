@@ -5,8 +5,8 @@
 package destiny.astrology
 
 import com.google.common.collect.Sets
-import destiny.astrology.AspectData.AspectType.APPLYING
-import destiny.astrology.AspectData.AspectType.SEPARATING
+import destiny.astrology.AspectData.Type.APPLYING
+import destiny.astrology.AspectData.Type.SEPARATING
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
@@ -49,7 +49,7 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
 
             val hContext: IHoroscopeContext =
               HoroscopeContext(starPosWithAzimuth, houseCuspImpl, pointPosFuncMap, h.points, h.houseSystem,
-                               h.coordinate, h.centric)
+                h.coordinate, h.centric)
             val h2 = hContext.getHoroscope(lmt = later, loc = h.location, place = h.place, points = h.points)
 
             val deg1Next = h2.getPositionWithAzimuth(p1).lng
@@ -58,10 +58,9 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
             val errorNext = abs(planetsAngleNext - aspect.degree)
 
 
-
             val type = if (errorNext <= error) APPLYING else SEPARATING
 
-            logger.debug("[{} , {}] type = {} , error = {} , errorNext = {}" , p1 , p2 , type , error , errorNext)
+            logger.debug("[{} , {}] type = {} , error = {} , errorNext = {}", p1, p2, type, error, errorNext)
 
             AspectData(p1, p2, aspect, error, score, type)
           }
@@ -85,22 +84,26 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
           aspects.map { eachAspect ->
             eachAspect to modern.getEffectiveErrorAndScore(point, starDeg, eachPoint, eachDeg, eachAspect)
           }.filter { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
-            .map { (aspect , maybeErrorAndScore) -> aspect to maybeErrorAndScore!!}
+            .map { (aspect, maybeErrorAndScore) -> aspect to maybeErrorAndScore!! }
             .map { (aspect, errorAndScore) ->
               val error = errorAndScore.first
+
+              logger.trace("{} 與 {} 目前 error = {}", point, eachPoint, error)
 
               val lmt = h.lmt //目前時間
               val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
               val hContext: IHoroscopeContext =
                 HoroscopeContext(starPosWithAzimuth, houseCuspImpl, pointPosFuncMap, h.points, h.houseSystem,
-                                 h.coordinate, h.centric)
+                  h.coordinate, h.centric)
               val h2 = hContext.getHoroscope(lmt = later, loc = h.location, place = h.place, points = h.points)
 
               val deg1Next = h2.getPositionWithAzimuth(point).lng
               val deg2Next = h2.getPositionWithAzimuth(eachPoint).lng
               val planetsAngleNext = IHoroscopeModel.getAngle(deg1Next, deg2Next)
               val errorNext = abs(planetsAngleNext - aspect.degree)
+
+              logger.trace("{} 與 {} 稍後 error = {}", point, eachPoint, errorNext)
 
               val type = if (errorNext <= error) APPLYING else SEPARATING
 
@@ -143,7 +146,7 @@ class HoroscopeAspectsCalculatorModern(private val starPosWithAzimuth: IStarPosi
   }
 
   companion object {
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
   }
 
 }

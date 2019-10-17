@@ -15,20 +15,20 @@ data class AspectData(
   val points: Set<Point>,
   /** 兩星所形成的交角 */
   val aspect: Aspect,
-  val type: AspectType? = null,
+  val type: Type? = null,
   /** orb 不列入 equals / hashCode 計算  */
   val orb: Double = 0.0,
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
   val score: Double? = null) : Comparable<AspectData>, Serializable {
 
-  enum class AspectType {
+  enum class Type {
     APPLYING, SEPARATING
   }
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, type: AspectType? = null, orb: Double = 0.0, score: Double? = null) :
+  constructor(p1: Point, p2: Point, aspect: Aspect, type: Type? = null, orb: Double = 0.0, score: Double? = null) :
     this(sortedSetOf(pointComp, p1, p2), aspect, type, orb, score)
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null, type: AspectType? = null) :
+  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null) :
     this(sortedSetOf(pointComp, p1, p2), aspect, type, orb, score)
 
   override fun toString(): String {

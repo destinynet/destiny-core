@@ -3,8 +3,9 @@
  */
 package destiny.astrology
 
-import destiny.astrology.AspectData.AspectType.APPLYING
-import destiny.astrology.AspectData.AspectType.SEPARATING
+import destiny.astrology.AspectData.Type.APPLYING
+import destiny.astrology.AspectData.Type.SEPARATING
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
@@ -19,7 +20,6 @@ class AspectApplySeparateImpl(
 ) : IAspectApplySeparate, Serializable {
 
 
-
   /**
    * 判斷兩顆星體是否形成某交角 , 如果是的話 , 傳回 入相位或是出相位 ; 如果沒有形成交角 , 傳回 null
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
@@ -27,18 +27,18 @@ class AspectApplySeparateImpl(
   override fun getAspectType(h: IHoroscopeModel,
                              p1: Point,
                              p2: Point,
-                             aspect: Aspect): AspectData.AspectType? {
+                             aspect: Aspect): AspectData.Type? {
     val deg1 = h.getPositionWithAzimuth(p1).lng
     val deg2 = h.getPositionWithAzimuth(p2).lng
 
-    if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect)) {
+    return if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect)) {
       val planetsAngle = IHoroscopeModel.getAngle(deg1, deg2)
       val error = abs(planetsAngle - aspect.degree) //目前與 aspect 的誤差
 
       val lmt = h.lmt //目前時間
       val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
-      val hContext : IHoroscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosMap, h.points, h.houseSystem, h.coordinate, h.centric)
+      val hContext: IHoroscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosMap, h.points, h.houseSystem, h.coordinate, h.centric)
       val h2 = hContext.getHoroscope(lmt = later, loc = h.location, place = h.place, points = h.points)
 
       val deg1Next = h2.getPositionWithAzimuth(p1).lng
@@ -46,22 +46,24 @@ class AspectApplySeparateImpl(
       val planetsAngleNext = IHoroscopeModel.getAngle(deg1Next, deg2Next)
       val errorNext = abs(planetsAngleNext - aspect.degree)
 
-      return if (errorNext <= error)
-        APPLYING
-      else
-        SEPARATING
+
+      if (errorNext <= error) APPLYING else SEPARATING
     } else
-      return null //這兩顆星沒有形成交角
+      null //這兩顆星沒有形成交角
   }
 
-  override fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect, AspectData.AspectType>? {
+  override fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect, AspectData.Type>? {
     return aspects.asSequence().map { aspect ->
       aspect to getAspectType(h, p1, p2, aspect)
-    }.filter { (_ , type ) ->
+    }.filter { (_, type) ->
       type != null
-    }.map { (aspect , type) ->
+    }.map { (aspect, type) ->
       aspect to type!!
     }.firstOrNull()
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger { }
   }
 
 }

@@ -3,7 +3,7 @@
  */
 package destiny.astrology.classical
 
-import destiny.astrology.AspectData.AspectType.APPLYING
+import destiny.astrology.AspectData.Type.APPLYING
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
 import destiny.astrology.Point

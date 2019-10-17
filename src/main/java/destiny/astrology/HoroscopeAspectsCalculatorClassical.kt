@@ -6,8 +6,8 @@ package destiny.astrology
 
 import com.google.common.collect.Sets
 import destiny.astrology.Aspect.Importance
-import destiny.astrology.AspectData.AspectType.APPLYING
-import destiny.astrology.AspectData.AspectType.SEPARATING
+import destiny.astrology.AspectData.Type.APPLYING
+import destiny.astrology.AspectData.Type.SEPARATING
 import destiny.astrology.classical.AspectEffectiveClassical
 import destiny.astrology.classical.IPointDiameter
 import java.io.Serializable
