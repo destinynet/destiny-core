@@ -9,7 +9,7 @@ import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
-/** 一個星盤當中，兩個星體，是否形成交角。以及即將形成 (APPLYING , 入相位)，還是離開該交角 (SEPARATING , 出相位)  */
+/** 一個星盤當中，兩個星體，是否形成交角。以及即將形成 ([APPLYING] , 入相位)，還是離開該交角 ([SEPARATING] , 出相位)  */
 class AspectApplySeparateImpl(
   /** 可以注入現代占星 ( AspectEffectiveModern ) 或是古典占星 ( AspectEffectiveClassical ) 的實作  */
   private val aspectEffectiveImpl: IAspectEffective,
@@ -31,18 +31,15 @@ class AspectApplySeparateImpl(
     val deg1 = h.getPositionWithAzimuth(p1).lng
     val deg2 = h.getPositionWithAzimuth(p2).lng
 
-
     if (aspectEffectiveImpl.isEffective(p1, deg1, p2, deg2, aspect)) {
       val planetsAngle = IHoroscopeModel.getAngle(deg1, deg2)
       val error = abs(planetsAngle - aspect.degree) //目前與 aspect 的誤差
 
       val lmt = h.lmt //目前時間
-      val oneSecondLater = lmt.plus(1, ChronoUnit.SECONDS) // 一秒之後
-
+      val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
       val hContext : IHoroscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosMap, h.points, h.houseSystem, h.coordinate, h.centric)
-      val h2 = hContext.getHoroscope(lmt = oneSecondLater, loc = h.location, place = h.place, points = h.points)
-
+      val h2 = hContext.getHoroscope(lmt = later, loc = h.location, place = h.place, points = h.points)
 
       val deg1Next = h2.getPositionWithAzimuth(p1).lng
       val deg2Next = h2.getPositionWithAzimuth(p2).lng

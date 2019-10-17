@@ -3,8 +3,10 @@
  */
 package destiny.astrology.classical
 
+import destiny.astrology.AspectData.AspectType.APPLYING
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Planet
+import destiny.astrology.Point
 
 interface ICollectionOfLight {
 
@@ -24,6 +26,12 @@ interface ICollectionOfLight {
    */
   fun getResult(planet: Planet, h: IHoroscopeModel, collectType: CollectType): List<Planet>?
 
+  /**
+   * 此 point 是否從 p1 , p2 收集光線
+   * 演算法 : p1 , p2 不能是 [APPLYING]
+   * 而且 p1 , p2 都必須 與 point 形成 [APPLYING]
+   */
+  fun isCollecting(point : Point , h: IHoroscopeModel , p1 : Point , p2 : Point ) : Boolean
 
   /**
    * 「可能」不指定「光線蒐集模式」，若呈現任何一種，就傳回來
