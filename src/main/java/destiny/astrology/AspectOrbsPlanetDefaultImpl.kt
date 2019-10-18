@@ -4,6 +4,9 @@
  */
 package destiny.astrology
 
+import destiny.astrology.Aspect.*
+import destiny.astrology.Planet.MOON
+import destiny.astrology.Planet.SUN
 import java.io.Serializable
 
 /**
@@ -28,15 +31,15 @@ class AspectOrbsPlanetDefaultImpl : IAspectOrbsPlanet, Serializable {
      * 兩星交角，容許度多少，以及門檻從幾分開始算起 (0~1)
      */
     private val orbThresholdMap: Map<Pair<Set<Planet>, Aspect>, Pair<Double, Double>> = mapOf(
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.CONJUNCTION) to (12.0 to 0.6),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.OPPOSITION) to (12.0 to 0.6),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.TRINE) to (8.0 to 0.7),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SQUARE) to (8.0 to 0.7),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SEXTILE) to (5.0 to 0.75),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SEMISQUARE) to (2.5 to 0.8),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SESQUIQUADRATE) to (2.5 to 0.8),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.SEMISEXTILE) to (2.0 to 0.9),
-      Pair(setOf(Planet.SUN , Planet.MOON) , Aspect.QUINCUNX) to (2.5 to 0.9)
+      Pair(setOf(SUN , MOON) , CONJUNCTION) to (12.0 to 0.6),
+      Pair(setOf(SUN , MOON) , OPPOSITION) to (12.0 to 0.6),
+      Pair(setOf(SUN , MOON) , TRINE) to (8.0 to 0.7),
+      Pair(setOf(SUN , MOON) , SQUARE) to (8.0 to 0.7),
+      Pair(setOf(SUN , MOON) , SEXTILE) to (5.0 to 0.75),
+      Pair(setOf(SUN , MOON) , SEMISQUARE) to (2.5 to 0.8),
+      Pair(setOf(SUN , MOON) , SESQUIQUADRATE) to (2.5 to 0.8),
+      Pair(setOf(SUN , MOON) , SEMISEXTILE) to (2.0 to 0.9),
+      Pair(setOf(SUN , MOON) , QUINCUNX) to (2.5 to 0.9)
     )
 
   }

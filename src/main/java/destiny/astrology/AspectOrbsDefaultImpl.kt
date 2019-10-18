@@ -4,9 +4,10 @@
  */
 package destiny.astrology
 
-import java.io.Serializable
+import destiny.astrology.Aspect.*
 import destiny.astrology.Aspect.Importance.HIGH
 import destiny.astrology.Aspect.Importance.MEDIUM
+import java.io.Serializable
 
 /**
  * 「現代占星術」的交角容許度，內定實作
@@ -24,40 +25,40 @@ class AspectOrbsDefaultImpl(private val defaultThreshold : Double = 0.9) : IAspe
 
   override fun getAspectOrb(aspect: Aspect): Double {
     return when (aspect) {
-      Aspect.CONJUNCTION -> 11.0
-      Aspect.SEMISEXTILE -> 1.5 //30
-      Aspect.DECILE -> 1.0 //36
-      Aspect.NOVILE -> 1.0 //40
-      Aspect.SEMISQUARE -> 2.0 //45
-      Aspect.SEPTILE -> 1.5 // 360x1/7
-      Aspect.SEXTILE -> 4.5 //60
-      Aspect.QUINTILE -> 2.0 //72
-      Aspect.BINOVILE -> 1.0 //80
-      Aspect.SQUARE -> 7.5 //90
-      Aspect.BISEPTILE -> 1.5 // 360x2/7
-      Aspect.SESQUIQUINTLE -> 1.5 //108
-      Aspect.TRINE -> 7.5 //120
-      Aspect.SESQUIQUADRATE -> 2.0 //135
-      Aspect.BIQUINTILE -> 2.0 //144
-      Aspect.QUINCUNX -> 2.0 //150
-      Aspect.TRISEPTILE -> 1.5 //360x3/7
-      Aspect.QUATRONOVILE -> 1.0 //160
-      Aspect.OPPOSITION -> 11.0
+      CONJUNCTION -> 11.0
+      SEMISEXTILE -> 1.5 //30
+      DECILE -> 1.0 //36
+      NOVILE -> 1.0 //40
+      SEMISQUARE -> 2.0 //45
+      SEPTILE -> 1.5 // 360x1/7
+      SEXTILE -> 4.5 //60
+      QUINTILE -> 2.0 //72
+      BINOVILE -> 1.0 //80
+      SQUARE -> 7.5 //90
+      BISEPTILE -> 1.5 // 360x2/7
+      SESQUIQUINTLE -> 1.5 //108
+      TRINE -> 7.5 //120
+      SESQUIQUADRATE -> 2.0 //135
+      BIQUINTILE -> 2.0 //144
+      QUINCUNX -> 2.0 //150
+      TRISEPTILE -> 1.5 //360x3/7
+      QUATRONOVILE -> 1.0 //160
+      OPPOSITION -> 11.0
     }
   }
 
   companion object {
 
     val aspectThresholdMap = mapOf(
-      Aspect.CONJUNCTION to  0.6,
-      Aspect.OPPOSITION to  0.6,
-      Aspect.TRINE to 0.7,
-      Aspect.SQUARE to 0.7,
-      Aspect.SEXTILE to 0.75,
-      Aspect.SEMISQUARE to 0.75,
-      Aspect.SESQUIQUADRATE to 0.8,
-      Aspect.SEMISEXTILE to 0.9,
-      Aspect.QUINCUNX to 0.9
+      CONJUNCTION to  0.6,
+      OPPOSITION to  0.6,
+      TRINE to 0.7,
+      SQUARE to 0.7,
+      SEXTILE to 0.75,
+      SEMISQUARE to 0.75,
+      SESQUIQUADRATE to 0.8,
+      SEMISEXTILE to 0.9,
+      QUINCUNX to 0.9
     )
 
 

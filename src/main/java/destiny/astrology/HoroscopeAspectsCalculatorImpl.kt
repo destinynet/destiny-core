@@ -19,11 +19,11 @@ class HoroscopeAspectsCalculatorImpl(
 ) : IHoroscopeAspectsCalculator, Serializable {
 
 
-  private val aspectDataFun = { twoPoints: Set<Point>, aspects: Collection<Aspect>, h: IHoroscopeModel ->
+  private fun aspectDataFun(twoPoints: Set<Point>, aspects: Collection<Aspect>, h: IHoroscopeModel): AspectData? {
 
     val posMap = h.positionMap
 
-    twoPoints
+    return twoPoints
       .takeIf { it.size == 2 } // 確保裡面只有兩個 Point
       ?.takeIf { set -> posMap.keys.containsAll(set) }
       ?.takeIf { set -> !set.all { it is Axis } } // 過濾四角點互相形成的交角
@@ -35,8 +35,7 @@ class HoroscopeAspectsCalculatorImpl(
           .intersect(aspectEffectiveImpl.applicableAspects)
           .asSequence()
           .map { aspect ->
-            aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, posMap.getValue(p1).lng, p2,
-              posMap.getValue(p2).lng, aspect)
+            aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, posMap.getValue(p1).lng, p2, posMap.getValue(p2).lng, aspect)
           }.firstOrNull { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
           ?.let { (aspect, maybeErrorAndScore) -> aspect to maybeErrorAndScore!! }
           ?.let { (aspect, errorAndScore) ->
@@ -69,7 +68,7 @@ class HoroscopeAspectsCalculatorImpl(
                              aspects: Collection<Aspect>): Set<AspectData> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
-      .mapNotNull { aspectDataFun.invoke(it, aspects, h) }
+      .mapNotNull { aspectDataFun(it, aspects, h) }
       .toSet()
   }
 
@@ -81,7 +80,7 @@ class HoroscopeAspectsCalculatorImpl(
     return points
       .asSequence()
       .map { eachPoint -> setOf(point, eachPoint) }
-      .mapNotNull { twoPoints -> aspectDataFun.invoke(twoPoints, aspects, h) }
+      .mapNotNull { twoPoints -> aspectDataFun(twoPoints, aspects, h) }
       .toSet()
   }
 
@@ -97,9 +96,11 @@ class HoroscopeAspectsCalculatorImpl(
         .filter { eachPoint -> !(point is LunarNode && eachPoint is LunarNode) } // 過濾南北交點對沖
         .flatMap { eachPoint ->
           val eachDeg = positionMap.getValue(eachPoint).lng
-          aspects.map { eachAspect ->
-            eachAspect to aspectEffectiveImpl.getEffectiveErrorAndScore(point, starDeg, eachPoint, eachDeg, eachAspect)
-          }
+          aspects
+            .intersect(aspectEffectiveImpl.applicableAspects)
+            .map { eachAspect ->
+              eachAspect to aspectEffectiveImpl.getEffectiveErrorAndScore(point, starDeg, eachPoint, eachDeg, eachAspect)
+            }
             .filter { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
             .map { (aspect, maybeErrorAndScore) -> aspect to maybeErrorAndScore!!.second }
             .map { (aspect, score) ->

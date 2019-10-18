@@ -23,11 +23,14 @@ class AspectApplySeparateImpl(
   /**
    * 判斷兩顆星體是否形成某交角 , 如果是的話 , 傳回 入相位或是出相位 ; 如果沒有形成交角 , 傳回 null
    * 計算方式：這兩顆星的交角，與 Aspect 的誤差，是否越來越少
+   *
+   * ready deprecation for [HoroscopeAspectsCalculatorImpl.aspectDataFun]
    */
   override fun getAspectType(h: IHoroscopeModel,
                              p1: Point,
                              p2: Point,
                              aspect: Aspect): AspectData.Type? {
+
     val deg1 = h.getPositionWithAzimuth(p1).lng
     val deg2 = h.getPositionWithAzimuth(p2).lng
 
@@ -50,16 +53,6 @@ class AspectApplySeparateImpl(
       if (errorNext <= error) APPLYING else SEPARATING
     } else
       null //這兩顆星沒有形成交角
-  }
-
-  override fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect, AspectData.Type>? {
-    return aspects.asSequence().map { aspect ->
-      aspect to getAspectType(h, p1, p2, aspect)
-    }.filter { (_, type) ->
-      type != null
-    }.map { (aspect, type) ->
-      aspect to type!!
-    }.firstOrNull()
   }
 
   companion object {
