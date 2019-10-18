@@ -19,6 +19,8 @@ class AspectEffectiveModern(
   var aspectOrbsPlanetImpl: IAspectOrbsPlanet = AspectOrbsPlanetDefaultImpl()
 ) : IAspectEffective, Serializable {
 
+  override val applicableAspects: Collection<Aspect> = Aspect.values().toList()
+
 
   /** 直接比對度數是否形成交角，不考慮星體  */
   fun isEffective(deg1: Double, deg2: Double, aspect: Aspect): Boolean {

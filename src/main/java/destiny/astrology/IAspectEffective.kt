@@ -6,6 +6,8 @@ package destiny.astrology
 /** 一個星盤當中，兩顆星體，是否形成某交角  */
 interface IAspectEffective {
 
+  val applicableAspects : Collection<Aspect>
+
   /**
    * 取得這兩星是否形成此有效交角
    * 如果形成交角 , 則傳回 error(orb) 角度 , 以及評分

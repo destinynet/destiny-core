@@ -5,6 +5,7 @@
 package destiny.astrology.classical
 
 import destiny.astrology.Aspect
+import destiny.astrology.Aspect.Importance
 import destiny.astrology.IAspectEffective
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Point
@@ -24,6 +25,7 @@ class AspectEffectiveClassical(
   /** 符合交角的評分，內定從幾分開始算起 */
   private val defaultThreshold: Double = 0.6) : IAspectEffective, Serializable {
 
+  override val applicableAspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)
 
   private fun getAngleDiff(deg1: Double, deg2: Double, angle: Double): Double {
     return abs(IHoroscopeModel.getAngle(deg1, deg2) - angle)

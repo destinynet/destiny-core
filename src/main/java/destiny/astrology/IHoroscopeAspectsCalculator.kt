@@ -5,16 +5,12 @@
 package destiny.astrology
 
 import destiny.astrology.Aspect.Importance
-import destiny.core.Descriptive
 import mu.KotlinLogging
 
 /**
  * 計算一張命盤 ( Horoscope ) 中，的交角列表
- * 分為古典 [HoroscopeAspectsCalculatorClassical]
- * 以及西洋 [HoroscopeAspectsCalculatorModern] 實作
- *
- *  */
-interface IHoroscopeAspectsCalculator : Descriptive {
+ */
+interface IHoroscopeAspectsCalculator  {
 
   /** 取得此星盤中，所有的交角資料 */
   fun getAspectData(h: IHoroscopeModel ,
