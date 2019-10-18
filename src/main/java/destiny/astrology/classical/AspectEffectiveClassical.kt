@@ -12,7 +12,6 @@ import java.io.Serializable
 import kotlin.math.abs
 
 /**
- * <pre>
  * 「古典占星」的交角判定，古典占星只計算「星體光芒的容許度」與「交角」是否有效，並沒有考慮交角的類型。
  * （「現代占星」則是各種交角都有不同的容許度）
  * 演算法採用 Template Method design pattern

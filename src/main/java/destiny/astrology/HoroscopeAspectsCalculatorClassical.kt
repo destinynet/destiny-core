@@ -9,7 +9,6 @@ import destiny.astrology.Aspect.Importance
 import destiny.astrology.AspectData.Type.APPLYING
 import destiny.astrology.AspectData.Type.SEPARATING
 import destiny.astrology.classical.AspectEffectiveClassical
-import destiny.astrology.classical.IPointDiameter
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -30,7 +29,7 @@ class HoroscopeAspectsCalculatorClassical(
   private val houseCuspImpl : IHouseCusp,
   private val pointPosFuncMap: Map<Point, IPosition<*>>) : IHoroscopeAspectsCalculator, Serializable {
 
-  val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl
+  //val planetOrbsImpl: IPointDiameter = classical.planetOrbsImpl
 
   override fun getAspectData(h: IHoroscopeModel, points: Collection<Point>, aspects: Collection<Aspect>): Set<AspectData> {
 
