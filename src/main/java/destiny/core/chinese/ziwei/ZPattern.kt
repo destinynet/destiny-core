@@ -32,7 +32,7 @@ fun IPlate.空劫(): List<Branch> = this.getBranches(地空, 地劫)
 
 fun IPlate.六惡星(): Set<Branch> = this.羊陀().plus(this.火鈴()).plus(this.空劫()).toSet()
 
-fun IPlate.三方四正無六惡星(branch: Branch = this.mainHouse.branch) : Boolean {
+fun IPlate.三方四正無六惡星(branch: Branch = this.mainHouse.branch): Boolean {
   return this
     .takeIf { it.三方四正(branch).intersect(it.六惡星()).isEmpty() }
     ?.let { true }
@@ -91,13 +91,13 @@ enum class Route {
  * 某星 在 某宮位
  */
 interface IStarHousePattern : IPattern {
-  val orStars : Set<ZStar>
-  val house : House
+  val orStars: Set<ZStar>
+  val house: House
 
   override val name: String
-    get() = (orStars.joinToString("或") { it.toString() }+"在"+house).let {
+    get() = (orStars.joinToString("或") { it.toString() } + "在" + house).let {
       if (!it.endsWith("宮"))
-        it+"宮"
+        it + "宮"
       else
         it
     }
@@ -105,10 +105,7 @@ interface IStarHousePattern : IPattern {
 
 data class StarHousePattern(
   override val orStars: Set<ZStar>,
-  override val house: House) : IStarHousePattern , Serializable {
-  override val notes: String?
-    get() = null
-}
+  override val house: House) : IStarHousePattern, Serializable
 
 
 /** ============================================================================= */
@@ -117,9 +114,9 @@ data class StarHousePattern(
  * A星(與B星）坐X或Y地支 於 Z宮位
  */
 interface IStarsBranchesHousePattern : IPattern {
-  val stars : Set<ZStar>
-  val branches : Set<Branch>
-  val house : House
+  val stars: Set<ZStar>
+  val branches: Set<Branch>
+  val house: House
 
   override val name: String
     get() = {
@@ -135,7 +132,7 @@ interface IStarsBranchesHousePattern : IPattern {
       sb.append(" 於 ")
       sb.append(house.toString().let {
         if (!it.endsWith("宮"))
-          it+"宮"
+          it + "宮"
         else
           it
       })
@@ -143,15 +140,13 @@ interface IStarsBranchesHousePattern : IPattern {
     }.invoke()
 }
 
-data class StarBranchHousePattern (
+data class StarBranchHousePattern(
   val andStars: Set<ZStar>,
   val orBranches: Set<Branch>,
   override val house: House
-  ) : IStarsBranchesHousePattern , Serializable {
+) : IStarsBranchesHousePattern, Serializable {
   override val stars: Set<ZStar>
     get() = andStars
   override val branches: Set<Branch>
     get() = orBranches
-  override val notes: String?
-    get() = null
 }

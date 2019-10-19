@@ -163,12 +163,12 @@ class ChartMntRulesTest {
   @Test
   fun 全局合十() {
     ChartMntContext.getChartMnt(7, Mountain.子).also {
-      assertEquals(ChartRule.合十(MntDir.山), ChartMntRules.match10(it))
+      assertEquals(ChartPattern.合十(MntDir.山), ChartMntRules.match10(it))
     }
 
     // 另一範例： 七運，午山子向 , 向盤合十
     ChartMntContext.getChartMnt(7, Mountain.午).also {
-      assertEquals(ChartRule.合十(MntDir.向), ChartMntRules.match10(it))
+      assertEquals(ChartPattern.合十(MntDir.向), ChartMntRules.match10(it))
     }
 
     // 印出全部 (共24局)
@@ -203,7 +203,7 @@ class ChartMntRulesTest {
   fun 全局伏吟_元旦盤() {
 
     ChartMntContext.getChartMnt(7, Mountain.庚).also {
-      assertEquals(ChartRule.伏吟元旦盤(MntDir.向), ChartMntRules.beneathSameOrigin(it))
+      assertEquals(ChartPattern.伏吟元旦盤(MntDir.向), ChartMntRules.beneathSameOrigin(it))
     }
 
     // 印出全部 (共24局)
@@ -236,7 +236,7 @@ class ChartMntRulesTest {
   fun 全局反吟() {
 
     ChartMntContext.getChartMnt(7, Mountain.卯).also {
-      assertEquals(ChartRule.反吟(MntDir.山), ChartMntRules.reversed(it))
+      assertEquals(ChartPattern.反吟(MntDir.山), ChartMntRules.reversed(it))
     }
 
     // 印出全部 (共24局)
@@ -274,7 +274,7 @@ class ChartMntRulesTest {
   @Test
   fun 單宮合十() {
     ChartMntContext.getChartMnt(8, Mountain.卯).also {
-      assertEquals(BlockRule.合十(MntDir.山), ChartMntRules.match10(it.getChartBlockFromSymbol(Symbol.震)))
+      assertEquals(BlockPattern.合十(MntDir.山), ChartMntRules.match10(it.getChartBlockFromSymbol(Symbol.震)))
     }
   }
 
@@ -286,7 +286,7 @@ class ChartMntRulesTest {
   ６１　１５　８３
   巽六　離二　坤四
   　　　　　　　　
-  ７２　５９　３７ <-- 7 即為 兌宮洛書數， [BlockRule.伏吟元旦盤]
+  ７２　５９　３７ <-- 7 即為 兌宮洛書數， [BlockPattern.伏吟元旦盤]
   震五　中七　兌九
   　　　　　　　　
   ２６　９４　４８
@@ -296,7 +296,7 @@ class ChartMntRulesTest {
   @Test
   fun 單宮伏吟元旦盤() {
     ChartMntContext.getChartMnt(7, Mountain.卯).also {
-      assertEquals(BlockRule.伏吟元旦盤(MntDir.向), ChartMntRules.beneathSameOrigin(it.getChartBlockFromSymbol(Symbol.兌)))
+      assertEquals(BlockPattern.伏吟元旦盤(MntDir.向), ChartMntRules.beneathSameOrigin(it.getChartBlockFromSymbol(Symbol.兌)))
     }
   }
 
@@ -304,7 +304,7 @@ class ChartMntRulesTest {
   /**
    * 七運，卯山酉向
 
-  |--山盤 伏吟天盤 [BlockRule.伏吟天盤]
+  |--山盤 伏吟天盤 [BlockPattern.伏吟天盤]
   V
   ６１　１５　８３
   巽六　離二　坤四
@@ -313,24 +313,24 @@ class ChartMntRulesTest {
   震五　中七　兌九
   　　　　　　　　
   ２６　９４　４８
-  艮一　坎三　乾八  <-- 向盤 伏吟天盤 [BlockRule.伏吟天盤]
+  艮一　坎三　乾八  <-- 向盤 伏吟天盤 [BlockPattern.伏吟天盤]
 
    */
   @Test
   fun 單宮伏吟天盤() {
     ChartMntContext.getChartMnt(7, Mountain.卯).also {
-      assertEquals(BlockRule.伏吟天盤(MntDir.向), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.乾)))
-      assertEquals(BlockRule.伏吟天盤(MntDir.山), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.巽)))
+      assertEquals(BlockPattern.伏吟天盤(MntDir.向), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.乾)))
+      assertEquals(BlockPattern.伏吟天盤(MntDir.山), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.巽)))
     }
 
     // 另一範例 : 一運之艮山坤向，艮方向星與運星伏吟，發生 於 坐向二宮。
     ChartMntContext.getChartMnt(1, Mountain.艮).also {
-      assertEquals(BlockRule.伏吟天盤(MntDir.向), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.艮)))
+      assertEquals(BlockPattern.伏吟天盤(MntDir.向), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.艮)))
     }
 
     // 另一範例 : 二運之子山午向，震宮之山星與運星伏吟，發生於非坐向二宮。
     ChartMntContext.getChartMnt(2, Mountain.子).also {
-      assertEquals(BlockRule.伏吟天盤(MntDir.山), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.震)))
+      assertEquals(BlockPattern.伏吟天盤(MntDir.山), ChartMntRules.beneathSameSky(it.getChartBlockFromSymbol(Symbol.震)))
     }
   }
 
@@ -352,19 +352,19 @@ class ChartMntRulesTest {
   @Test
   fun `單宮反吟(元旦盤)`() {
     ChartMntContext.getChartMnt(8, Mountain.卯).also {
-      assertEquals(BlockRule.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.離)))
+      assertEquals(BlockPattern.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.離)))
     }
 
     // 另一範例： 艮山坤向： 五運 山方山星 與 向方向星 犯反吟
     ChartMntContext.getChartMnt(5, Mountain.艮).also {
-      assertEquals(BlockRule.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.艮)))
-      assertEquals(BlockRule.反吟元旦盤(MntDir.向), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.坤)))
+      assertEquals(BlockPattern.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.艮)))
+      assertEquals(BlockPattern.反吟元旦盤(MntDir.向), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.坤)))
     }
 
     // 另一範例： 申山寅向： 五運 山方向星 與 向方山星 犯反吟
     ChartMntContext.getChartMnt(5, Mountain.申).also {
-      assertEquals(BlockRule.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.坤)))
-      assertEquals(BlockRule.反吟元旦盤(MntDir.向), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.艮)))
+      assertEquals(BlockPattern.反吟元旦盤(MntDir.山), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.坤)))
+      assertEquals(BlockPattern.反吟元旦盤(MntDir.向), ChartMntRules.reversed(it.getChartBlockFromSymbol(Symbol.艮)))
     }
   }
 }

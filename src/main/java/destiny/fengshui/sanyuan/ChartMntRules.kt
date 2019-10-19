@@ -9,8 +9,8 @@ import kotlin.math.abs
 
 object ChartMntRules {
 
-  fun getChartRules(chart: IChartMnt) : List<ChartRule> {
-    val list: List<(chart: IChartMnt) -> ChartRule?> = listOf(
+  fun getChartRules(chart: IChartMnt) : List<ChartPattern> {
+    val list: List<(chart: IChartMnt) -> ChartPattern?> = listOf(
       this::match10 ,
       this::beneathSameOrigin ,
       this::reversed,
@@ -26,26 +26,26 @@ object ChartMntRules {
   }
 
   /**
-   * [ChartRule.八純卦]
+   * [ChartPattern.八純卦]
    * 「八純卦」在玄空風水中，屬大凶之局，指的是在玄空九個宮位中，山飛星與向飛星全部相同，
    * 八純卦屬大凶之格局，會有剩孤家一人、妻離子散的情形，家破人亡之情形，
    * 建議遇到此大凶格局的房屋，不要選擇居住於此房屋，
    * 其實此格局只有在五運屋(坐東南朝西北)或(坐西北朝東南)有兼向時才會發生。
    * 此局凶暴不宜，且無化解之法，因此避之方為上策。
    */
-  fun pure(chart: IChartMnt): ChartRule.八純卦? {
+  fun pure(chart: IChartMnt): ChartPattern.八純卦? {
     return chart.blocks.all { block ->
       block.mnt == block.dir
     }.let {
       if (it)
-        return@let ChartRule.八純卦
+        return@let ChartPattern.八純卦
       else
         return@let null
     }
   }
 
   /** 七星打劫 */
-  fun robbery(chart: IChartMnt): ChartRule.Robbery? {
+  fun robbery(chart: IChartMnt): ChartPattern.七星打劫? {
     return chart.getMntDirSpec()
       ?.takeIf { it === MntDirSpec.雙星到向 }
       ?.takeIf { beneathSameOrigin(chart) == null } // 去除伏吟 6局
@@ -72,11 +72,11 @@ object ChartMntRules {
       return@let when {
         離宮ints.containsAll(set) -> {
           val map = 離乾震.map { symbol -> symbol to chart.getChartBlockFromSymbol(symbol).dir }.toMap()
-          ChartRule.Robbery(Symbol.離, map)
+          ChartPattern.七星打劫(Symbol.離, map)
         }
         坎宮ints.containsAll(set) -> {
           val map = 坎兌巽.map { symbol -> symbol to chart.getChartBlockFromSymbol(symbol).dir }.toMap()
-          ChartRule.Robbery(Symbol.坎, map)
+          ChartPattern.七星打劫(Symbol.坎, map)
         }
         else -> null
       }
@@ -100,7 +100,7 @@ object ChartMntRules {
    * 若排吉龍吉得此局，形巒配合，運內亦許發吉，但運退後即主大敗其財；
    * 若排凶龍，形巒相背，則必主人財二絕。
    */
-  fun contTriplet(chart: IChartMnt): ChartRule.連珠三般卦? {
+  fun contTriplet(chart: IChartMnt): ChartPattern.連珠三般卦? {
     fun distance(v1: Int, v2: Int): Int {
       return abs(v1 - v2).let { abs ->
         return@let when {
@@ -118,7 +118,7 @@ object ChartMntRules {
           && distance(block.mnt, block.dir) <= 2
       }
     }.let {
-      if (it) ChartRule.連珠三般卦 else null
+      if (it) ChartPattern.連珠三般卦 else null
     }
   }
 
@@ -132,7 +132,7 @@ object ChartMntRules {
    * 但需要注意的是，「父母三般卦」必是 [MntDirSpec.上山下水] 的格局
    * 因此，在「父母三般卦」局中，向星的當令星所在方位必須有水加持，才能使吉運生效，否則有可能出現由吉變凶的情況。
    */
-  fun parentTriplet(chart: IChartMnt): ChartRule.父母三般卦? {
+  fun parentTriplet(chart: IChartMnt): ChartPattern.父母三般卦? {
     val set1 = setOf(1, 4, 7)
     val set2 = setOf(2, 5, 8)
     val set3 = setOf(3, 6, 9)
@@ -143,7 +143,7 @@ object ChartMntRules {
       }
       blockNums.containsAll(set1) || blockNums.containsAll(set2) || blockNums.containsAll(set3)
     }.let {
-      if (it) ChartRule.父母三般卦 else null
+      if (it) ChartPattern.父母三般卦 else null
     }
   }
 
@@ -162,10 +162,10 @@ object ChartMntRules {
   ９５　７７　２３
   艮一　坎三　乾八
    *  */
-  fun match10(chart: IChartMnt): ChartRule.合十? {
+  fun match10(chart: IChartMnt): ChartPattern.合十? {
     return when {
-      chart.blocks.all { block -> block.period + block.mnt == 10 } -> ChartRule.合十(MntDir.山)
-      chart.blocks.all { block -> block.period + block.dir == 10 } -> ChartRule.合十(MntDir.向)
+      chart.blocks.all { block -> block.period + block.mnt == 10 } -> ChartPattern.合十(MntDir.山)
+      chart.blocks.all { block -> block.period + block.dir == 10 } -> ChartPattern.合十(MntDir.向)
       else -> null
     }
   }
@@ -187,13 +187,13 @@ object ChartMntRules {
   ３８　５１　１６
   艮一　坎三　乾八
    * */
-  fun beneathSameOrigin(chart: IChartMnt): ChartRule.伏吟元旦盤? {
+  fun beneathSameOrigin(chart: IChartMnt): ChartPattern.伏吟元旦盤? {
     return when {
       chart.blocks.all { block -> SymbolAcquired.getSymbolNullable(block.mnt) == block.symbol } ->
-        ChartRule.伏吟元旦盤(MntDir.山)
+        ChartPattern.伏吟元旦盤(MntDir.山)
       chart.blocks.all { block ->
         SymbolAcquired.getSymbolNullable(block.dir) == block.symbol
-      } -> ChartRule.伏吟元旦盤(
+      } -> ChartPattern.伏吟元旦盤(
         MntDir.向)
       else -> null
     }
@@ -218,13 +218,13 @@ object ChartMntRules {
    TODO : 另一種反吟 : 山飛星與向飛星對角合十，亦是為「反吟」的格局
    詳見 http://www.grand-tao.org/wap/xuanzheninfo.php?id=15
    * */
-  fun reversed(chart: IChartMnt): ChartRule.反吟? {
+  fun reversed(chart: IChartMnt): ChartPattern.反吟? {
     return chart.getCenterBlock().let { cb ->
       val block巽 = chart.getChartBlockFromSymbol(Symbol.巽)
       if (cb.mnt == 5 && block巽.mnt == 6)
-        ChartRule.反吟(MntDir.山)
+        ChartPattern.反吟(MntDir.山)
       else if (cb.dir == 5 && block巽.dir == 6)
-        ChartRule.反吟(MntDir.向)
+        ChartPattern.反吟(MntDir.向)
       else
         null
     }
@@ -236,11 +236,11 @@ object ChartMntRules {
   /**
    * 單宮合十
    */
-  fun match10(chartBlock: ChartBlock): BlockRule.合十? {
+  fun match10(chartBlock: ChartBlock): BlockPattern.合十? {
     return chartBlock.period.let {
       when {
-        it + chartBlock.mnt == 10 -> BlockRule.合十(MntDir.山)
-        it + chartBlock.dir == 10 -> BlockRule.合十(MntDir.向)
+        it + chartBlock.mnt == 10 -> BlockPattern.合十(MntDir.山)
+        it + chartBlock.dir == 10 -> BlockPattern.合十(MntDir.向)
         else -> null
       }
     }
@@ -264,11 +264,11 @@ object ChartMntRules {
   艮一　坎三　乾八  <-- 向盤 伏吟 (這裡不討論) , 由 [beneathSameSky] 實作
 
    */
-  fun beneathSameOrigin(chartBlock: ChartBlock): BlockRule.伏吟元旦盤? {
+  fun beneathSameOrigin(chartBlock: ChartBlock): BlockPattern.伏吟元旦盤? {
     return chartBlock.let {
       return@let when {
-        SymbolAcquired.getSymbol(it.mnt) === it.symbol -> BlockRule.伏吟元旦盤(MntDir.山)
-        SymbolAcquired.getSymbol(it.dir) === it.symbol -> BlockRule.伏吟元旦盤(MntDir.向)
+        SymbolAcquired.getSymbol(it.mnt) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.山)
+        SymbolAcquired.getSymbol(it.dir) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.向)
         else -> null
       }
     }
@@ -292,11 +292,11 @@ object ChartMntRules {
   艮一　坎三　乾八  <-- 向盤 伏吟
 
    * */
-  fun beneathSameSky(chartBlock: ChartBlock): BlockRule.伏吟天盤? {
+  fun beneathSameSky(chartBlock: ChartBlock): BlockPattern.伏吟天盤? {
     return chartBlock.let {
       return@let when {
-        it.period == it.mnt -> BlockRule.伏吟天盤(MntDir.山)
-        it.period == it.dir -> BlockRule.伏吟天盤(MntDir.向)
+        it.period == it.mnt -> BlockPattern.伏吟天盤(MntDir.山)
+        it.period == it.dir -> BlockPattern.伏吟天盤(MntDir.向)
         else -> null
       }
     }
@@ -320,11 +320,11 @@ object ChartMntRules {
   ９７　２５　７９
   艮二　坎四　乾九
    */
-  fun reversed(block: ChartBlock): BlockRule.反吟元旦盤? {
+  fun reversed(block: ChartBlock): BlockPattern.反吟元旦盤? {
     return block.symbol?.let { symbol ->
       when {
-        (SymbolAcquired.getIndex(symbol) + block.mnt) == 10 -> BlockRule.反吟元旦盤(MntDir.山)
-        (SymbolAcquired.getIndex(symbol) + block.dir) == 10 -> BlockRule.反吟元旦盤(MntDir.向)
+        (SymbolAcquired.getIndex(symbol) + block.mnt) == 10 -> BlockPattern.反吟元旦盤(MntDir.山)
+        (SymbolAcquired.getIndex(symbol) + block.dir) == 10 -> BlockPattern.反吟元旦盤(MntDir.向)
         else -> null
       }
     }

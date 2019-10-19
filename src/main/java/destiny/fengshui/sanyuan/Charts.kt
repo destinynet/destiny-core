@@ -79,7 +79,7 @@ interface IChartMnt : IPeriod {
   } // 城門訣
 
   /** 七星打劫 */
-  fun getRobbery() : ChartRule.Robbery? {
+  fun getRobbery() : ChartPattern.七星打劫? {
     return ChartMntRules.robbery(this)
   } // 七星打劫
 }

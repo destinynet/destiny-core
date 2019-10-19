@@ -15,19 +15,13 @@ data class PointSignHouse(val point: Point,
                           val sign: ZodiacSign,
                           val house: Int)
 
-sealed class AstroPattern(override val name: String,
-                          override val notes: String? = null,
-                          open val points: Set<Point> = emptySet(),
+sealed class AstroPattern(open val points: Set<Point> = emptySet(),
                           open val score: Double? = null) : IPattern, Serializable {
-
-  override fun toString(): String {
-    return "AstroPattern(notes=$notes)"
-  }
 
   /**
    * [GrandTrine] : 大三角
    */
-  data class GrandTrine(override val points: Set<Point>, val element: Element, override val score: Double? = null) : AstroPattern(GrandTrine::class.java.simpleName, "$points 在 ${element}向星座 形成大三角") {
+  data class GrandTrine(override val points: Set<Point>, val element: Element, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is GrandTrine) return false
@@ -48,7 +42,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [Kite] : 風箏
    */
-  data class Kite(val head: PointSignHouse, val wings: Set<Point>, val tail: PointSignHouse, override val score: Double? = null) : AstroPattern(Kite::class.java.simpleName, "${head.point} 是風箏頭， $wings 是風箏翼 , ${tail.point} 是尾巴") {
+  data class Kite(val head: PointSignHouse, val wings: Set<Point>, val tail: PointSignHouse, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = wings.plus(head.point).plus(tail.point)
 
@@ -74,7 +68,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [TSquared] : 三刑會沖
    */
-  data class TSquared(val oppoPoints: Set<Point>, val squared: PointSignHouse, override val score: Double? = null) : AstroPattern(TSquared::class.java.simpleName, "$oppoPoints 正沖，兩者均與 ${squared.point} 相刑") {
+  data class TSquared(val oppoPoints: Set<Point>, val squared: PointSignHouse, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = oppoPoints.plus(squared.point)
 
@@ -99,7 +93,7 @@ sealed class AstroPattern(override val name: String,
    * [Yod] : 上帝之指 , Finger of God
    * 60 , 150 , 150
    * */
-  data class Yod(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern(Yod::class.java.simpleName, "$bottoms 與 ${pointer.point} 形成上帝之指 , 指向 ${pointer.sign}") {
+  data class Yod(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = bottoms.plus(pointer.point)
 
@@ -124,7 +118,7 @@ sealed class AstroPattern(override val name: String,
    * [Boomerang] : 回力鏢
    * [Yod] + 對沖點 (與雙翼形成 30度)
    * */
-  data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Double? = null) : AstroPattern(Boomerang::class.java.simpleName, "${yod.points}形成 Yod , 加入 ${oppoPoint.point} 形成 回力鏢") {
+  data class Boomerang(val yod: Yod, val oppoPoint: PointSignHouse, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = yod.points.plus(oppoPoint.point)
 
@@ -148,7 +142,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [GoldenYod] : 黃金指 72 , 144 , 144
    * */
-  data class GoldenYod(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern(GoldenYod::class.java.simpleName, "$bottoms 與 ${pointer.point} 形成 黃金指 , 指向 ${pointer.sign}") {
+  data class GoldenYod(val bottoms: Set<Point>, val pointer: PointSignHouse, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = bottoms.plus(pointer.point)
 
@@ -173,7 +167,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [GrandCross] : 大十字
    */
-  data class GrandCross(override val points: Set<Point>, val quality: Quality, override val score: Double? = null) : AstroPattern(GrandCross::class.java.simpleName, "$points 在 ${quality}宮形成大十字") {
+  data class GrandCross(override val points: Set<Point>, val quality: Quality, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is GrandCross) return false
@@ -194,7 +188,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [DoubleT] : 兩組 三刑會沖 (但未形成 [GrandCross]大十字 )
    */
-  data class DoubleT(val tSquares: Set<TSquared>, override val score: Double? = null) : AstroPattern(DoubleT::class.java.simpleName) {
+  data class DoubleT(val tSquares: Set<TSquared>, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = tSquares.flatMap { it.points }.toSet()
 
@@ -215,7 +209,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [Hexagon] : 六芒星 (兩組 [GrandTrine]大三角 , 彼此交角60度 )
    */
-  data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Double? = null) : AstroPattern(Hexagon::class.java.simpleName) {
+  data class Hexagon(val grandTrines: Set<GrandTrine>, override val score: Double? = null) : AstroPattern() {
     override val notes: String?
       get() {
         val (g1, g2) = grandTrines.toList().let { it[0] to it[1] }
@@ -245,7 +239,7 @@ sealed class AstroPattern(override val name: String,
    * [Wedge] : 楔子
    * 180 沖 , 逢 第三顆星 , 以 60/120 介入，緩和局勢
    */
-  data class Wedge(val oppoPoints: Set<Point>, val moderator: PointSignHouse, override val score: Double? = null) : AstroPattern(Wedge::class.java.simpleName, "$oppoPoints 對沖， ${moderator.point} 在 ${moderator.sign} 介入與彼此分別形成 拱 與 六合 , 化解對沖") {
+  data class Wedge(val oppoPoints: Set<Point>, val moderator: PointSignHouse, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = oppoPoints.plus(moderator.point)
 
@@ -271,7 +265,7 @@ sealed class AstroPattern(override val name: String,
    * 兩組 [Wedge] 對沖，兩個60度，兩個120度，這也會形成壓力，但是彼此間又可以釋放壓力，非常詭異
    * @param points 總共4顆星
    */
-  data class MysticRectangle(override val points: Set<Point>, override val score: Double? = null) : AstroPattern(MysticRectangle::class.java.simpleName, "$points 四星 形成 神秘長方形") {
+  data class MysticRectangle(override val points: Set<Point>, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is MysticRectangle) return false
@@ -290,7 +284,7 @@ sealed class AstroPattern(override val name: String,
    * [Pentagram] : 五芒星 五個 [GoldenYod]
    * @param points 總共5顆星
    * */
-  data class Pentagram(override val points: Set<Point>, override val score: Double? = null) : AstroPattern(Pentagram::class.java.simpleName, "$points 形成 五芒星") {
+  data class Pentagram(override val points: Set<Point>, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is Pentagram) return false
@@ -308,7 +302,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [StelliumSign] : 聚集星座 (至少四顆星)
    */
-  data class StelliumSign(override val points: Set<Point>, val sign: ZodiacSign, override val score: Double? = null) : AstroPattern(StelliumSign::class.java.simpleName, "${points.size}星聚集在 $sign : ${points.joinToString(",")}") {
+  data class StelliumSign(override val points: Set<Point>, val sign: ZodiacSign, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumSign) return false
@@ -329,7 +323,7 @@ sealed class AstroPattern(override val name: String,
   /**
    * [StelliumHouse] : 聚集宮位 (至少四顆星)
    */
-  data class StelliumHouse(override val points: Set<Point>, val house: Int, override val score: Double? = null) : AstroPattern(StelliumHouse::class.java.simpleName, "${points.size}星聚集在 第${house}宮 : ${points.joinToString(",")}") {
+  data class StelliumHouse(override val points: Set<Point>, val house: Int, override val score: Double? = null) : AstroPattern() {
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is StelliumHouse) return false
@@ -351,7 +345,7 @@ sealed class AstroPattern(override val name: String,
    * [Confrontation] 對峙
    * 兩組 三顆星以上的合相星群 彼此對沖
    */
-  data class Confrontation(val clusters: Set<Set<Point>>, override val score: Double? = null) : AstroPattern(Confrontation::class.java.simpleName, clusters.joinToString("與") + "對峙") {
+  data class Confrontation(val clusters: Set<Set<Point>>, override val score: Double? = null) : AstroPattern() {
     override val points: Set<Point>
       get() = clusters.flatten().toSet()
 
