@@ -34,4 +34,6 @@ abstract class Star : Point {
   internal constructor(nameKey: String, abbrKey: String?, resource: String) : super(nameKey, resource, abbrKey)
 
   internal constructor(nameKey: String, resource: String) : super(nameKey, resource)
+
+  internal constructor(nameKey: String, abbrKey: String?, resource: String, unicode: Char) : super(nameKey, resource, abbrKey , unicode)
 }

@@ -24,31 +24,32 @@ enum class ZodiacSign(private val nameKey: String,
                       /** 陰陽  */
                       private val yinYang: Boolean,
                       /** 黃道起始度數  */
-                      val degree: Int) : ILocaleString, IYinYang , ILoop<ZodiacSign> {
+                      val degree: Int,
+                      val unicode: Char) : ILocaleString, IYinYang , ILoop<ZodiacSign> {
   /** Aries 戌/牡羊  */
-  ARIES("ZodiacSign.ARIES", "ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0),
+  ARIES("ZodiacSign.ARIES", "ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0 , '♈'),
   /** Taurus 酉/金牛  */
-  TAURUS("ZodiacSign.TAURUS", "ZodiacSign.TAURUS_ABBR", EARTH, FIXED, false, 30),
+  TAURUS("ZodiacSign.TAURUS", "ZodiacSign.TAURUS_ABBR", EARTH, FIXED, false, 30, '♉'),
   /** Gemini 申/雙子  */
-  GEMINI("ZodiacSign.GEMINI", "ZodiacSign.GEMINI_ABBR", AIR, MUTABLE, true, 60),
+  GEMINI("ZodiacSign.GEMINI", "ZodiacSign.GEMINI_ABBR", AIR, MUTABLE, true, 60, '♊'),
   /** Cancer 未/巨蟹  */
-  CANCER("ZodiacSign.CANCER", "ZodiacSign.CANCER_ABBR", WATER, CARDINAL, false, 90),
+  CANCER("ZodiacSign.CANCER", "ZodiacSign.CANCER_ABBR", WATER, CARDINAL, false, 90, '♋'),
   /** Leo 午/獅子  */
-  LEO("ZodiacSign.LEO", "ZodiacSign.LEO_ABBR", FIRE, FIXED, true, 120),
+  LEO("ZodiacSign.LEO", "ZodiacSign.LEO_ABBR", FIRE, FIXED, true, 120, '♌'),
   /** Virgo 巳/處女  */
-  VIRGO("ZodiacSign.VIRGO", "ZodiacSign.VIRGO_ABBR", EARTH, MUTABLE, false, 150),
+  VIRGO("ZodiacSign.VIRGO", "ZodiacSign.VIRGO_ABBR", EARTH, MUTABLE, false, 150, '♍'),
   /** Libra 辰/天秤  */
-  LIBRA("ZodiacSign.LIBRA", "ZodiacSign.LIBRA_ABBR", AIR, CARDINAL, true, 180),
+  LIBRA("ZodiacSign.LIBRA", "ZodiacSign.LIBRA_ABBR", AIR, CARDINAL, true, 180, '♎'),
   /** Scorpio 卯/天蠍  */
-  SCORPIO("ZodiacSign.SCORPIO", "ZodiacSign.SCORPIO_ABBR", WATER, FIXED, false, 210),
+  SCORPIO("ZodiacSign.SCORPIO", "ZodiacSign.SCORPIO_ABBR", WATER, FIXED, false, 210, '♏'),
   /** Sagittarius 寅/射手  */
-  SAGITTARIUS("ZodiacSign.SAGITTARIUS", "ZodiacSign.SAGITTARIUS_ABBR", FIRE, MUTABLE, true, 240),
+  SAGITTARIUS("ZodiacSign.SAGITTARIUS", "ZodiacSign.SAGITTARIUS_ABBR", FIRE, MUTABLE, true, 240, '♐'),
   /** Capricorn 丑/摩羯  */
-  CAPRICORN("ZodiacSign.CAPRICORN", "ZodiacSign.CAPRICORN_ABBR", EARTH, CARDINAL, false, 270),
+  CAPRICORN("ZodiacSign.CAPRICORN", "ZodiacSign.CAPRICORN_ABBR", EARTH, CARDINAL, false, 270, '♑'),
   /** Aquarius 子/水瓶  */
-  AQUARIUS("ZodiacSign.AQUARIUS", "ZodiacSign.AQUARIUS_ABBR", AIR, FIXED, true, 300),
+  AQUARIUS("ZodiacSign.AQUARIUS", "ZodiacSign.AQUARIUS_ABBR", AIR, FIXED, true, 300, '♒'),
   /** Pisces 亥/雙魚  */
-  PISCES("ZodiacSign.PISCES", "ZodiacSign.PISCES_ABBR", WATER, MUTABLE, false, 330);
+  PISCES("ZodiacSign.PISCES", "ZodiacSign.PISCES_ABBR", WATER, MUTABLE, false, 330, '♓');
 
   /** 縮寫  */
   val abbreviation: String
