@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
 class HoroscopeAspectsCalculatorImpl(
-  private val aspectEffectiveImpl: IAspectEffective,
+  val aspectEffectiveImpl: IAspectEffective,
   private val starPosWithAzimuth: IStarPositionWithAzimuthCalculator,
   private val houseCuspImpl: IHouseCusp,
   private val pointPosFuncMap: Map<Point, IPosition<*>>

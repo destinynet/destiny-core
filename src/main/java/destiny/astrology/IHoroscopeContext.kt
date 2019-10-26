@@ -29,14 +29,14 @@ interface IHoroscopeContext {
   fun getHoroscope(gmtJulDay: Double,
                    loc: ILocation,
                    place: String?,
-                   points: Collection<Point>? = defaultPoints): IHoroscopeModel
+                   points: Collection<Point>? = null): IHoroscopeModel
 
 
   /** 最完整 , [ChronoLocalDateTime] 版本 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>,
                    loc: ILocation,
                    place: String?,
-                   points: Collection<Point>? = defaultPoints): IHoroscopeModel {
+                   points: Collection<Point>? = null): IHoroscopeModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getHoroscope(gmtJulDay, loc, place, points)
   }
@@ -44,16 +44,17 @@ interface IHoroscopeContext {
 
   /** 最精簡 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation): IHoroscopeModel {
-    return getHoroscope(lmt, loc, null, defaultPoints)
+    return getHoroscope(lmt, loc, null, null)
   }
 
   companion object {
+
     val defaultPoints = setOf(
       *Planet.array,
       *Axis.array,
       //*Hamburger.array,
       //*FixedStar.array,
-      LunarNode.NORTH_MEAN,LunarNode.SOUTH_MEAN
+      LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN
       //*LunarNodes.meanArray
     )
   }
@@ -97,8 +98,8 @@ class HoroscopeContext(
     }.toMap()
 
     return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate,
-                          centric, temperature, pressure, positionMap,
-                          cuspDegreeMap)
+      centric, temperature, pressure, positionMap,
+      cuspDegreeMap)
   }
 
 
