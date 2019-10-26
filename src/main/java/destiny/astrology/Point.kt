@@ -40,7 +40,7 @@ abstract class Point(
   private val resource: String,
   /** 縮寫key , 為了輸出美觀所用 , 限定兩個 bytes , 例如 : 日(SU) , 月(MO) , 冥(PL) , 升(No) , 強(So) , 穀 , 灶 ... */
   private val abbrKey: String? = null,
-  open val unicode: Char? = null) : Serializable, ILocaleString {
+  val unicode: Char? = null) : Serializable, ILocaleString {
 
   /** 名稱  */
   private val name: String by lazy {

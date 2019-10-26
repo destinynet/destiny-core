@@ -29,11 +29,7 @@ package destiny.astrology
  *
  *</pre>
  */
-abstract class Star : Point {
+abstract class Star(nameKey: String, abbrKey: String?, resource: String, unicode: Char? = null) : Point(nameKey, resource, abbrKey, unicode) {
 
-  internal constructor(nameKey: String, abbrKey: String?, resource: String) : super(nameKey, resource, abbrKey)
-
-  internal constructor(nameKey: String, resource: String) : super(nameKey, resource)
-
-  internal constructor(nameKey: String, abbrKey: String?, resource: String, unicode: Char) : super(nameKey, resource, abbrKey , unicode)
+  internal constructor(nameKey: String, resource: String) : this(nameKey, null, resource, null)
 }

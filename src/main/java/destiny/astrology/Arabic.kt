@@ -3,10 +3,10 @@
  */
 package destiny.astrology
 
-sealed class Arabic(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<Arabic> {
+sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : Star(nameKey, abbrKey, Star::class.java.name, unicode), Comparable<Arabic> {
 
   /** 幸運點 Part of Fortune */
-  object Fortune : Arabic("Arabic.Fortune", "Arabic.Fortune_ABBR")
+  object Fortune : Arabic("Arabic.Fortune", "Arabic.Fortune_ABBR" , '⊗')
 
   /** 精神點 Part of Spirit */
   object Spirit : Arabic("Arabic.Spirit", "Arabic.Spirit_ABBR")
@@ -24,7 +24,7 @@ sealed class Arabic(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, S
   object Courage : Arabic("Arabic.Courage", "Arabic.Courage_ABBR")
 
   /** 復仇點 Lot of Nemesis */
-  object Nemesis : Arabic("Arabic.Nemesis" , "Arabic.Nemesis_ABBR")
+  object Nemesis : Arabic("Arabic.Nemesis", "Arabic.Nemesis_ABBR")
 
 
   override fun compareTo(other: Arabic): Int {
@@ -36,7 +36,7 @@ sealed class Arabic(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, S
 
   companion object {
     val array by lazy {
-      arrayOf(Fortune, Spirit, Eros , Victory , Necessity , Courage , Nemesis)
+      arrayOf(Fortune, Spirit, Eros, Victory, Necessity, Courage, Nemesis)
     }
     val list by lazy { listOf(*array) }
   }

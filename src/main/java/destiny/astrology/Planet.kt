@@ -5,9 +5,9 @@ package destiny.astrology
 
 import java.util.*
 
-sealed class Planet(val nameKey: String,
-                    val abbrKey: String,
-                    override val unicode: Char) : Star(nameKey, abbrKey, Star::class.java.name) , Comparable<Planet> {
+sealed class Planet(nameKey: String,
+                    abbrKey: String,
+                    unicode: Char) : Star(nameKey, abbrKey, Star::class.java.name , unicode) , Comparable<Planet> {
 
   object SUN     : Planet("Planet.SUN"    , "Planet.SUN_ABBR" , '☉')
   object MOON    : Planet("Planet.MOON", "Planet.MOON_ABBR", '☽')

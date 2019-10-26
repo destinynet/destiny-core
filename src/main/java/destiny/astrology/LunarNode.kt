@@ -7,11 +7,12 @@ package destiny.astrology
 import destiny.astrology.NodeType.MEAN
 import destiny.astrology.NodeType.TRUE
 
-sealed class LunarNode(nameKey: String, abbrKey: String,
+sealed class LunarNode(nameKey: String,
+                       abbrKey: String,
                        val northSouth: NorthSouth,
                        val nodeType: NodeType,
-                       override val unicode: Char) :
-  LunarPoint(nameKey, abbrKey, Star::class.java.name), Comparable<LunarNode> {
+                       unicode: Char) :
+  LunarPoint(nameKey, abbrKey, Star::class.java.name , unicode), Comparable<LunarNode> {
 
   /**
    * 真實北交點，計算方法，以下兩者結果相同

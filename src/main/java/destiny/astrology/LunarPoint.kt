@@ -19,7 +19,7 @@ package destiny.astrology
  * North/South   PERIGEE (近)/APOGEE (遠)
 </pre> *
  */
-abstract class LunarPoint
+abstract class LunarPoint(nameKey: String, abbrKey: String, resource: String, unicode: Char? = null) : Star(nameKey, abbrKey, resource, unicode)
 /*
    * [WARN] 2017-04-08 : parent class 不應 reference 到 sub-class 的 field , class loading 可能會出現問題
    * 參考搜尋字串： referencing subclass from superclass initializer might lead to class loading deadlock
@@ -31,4 +31,4 @@ abstract class LunarPoint
     LunarApsis.PERIGEE_MEAN , LunarApsis.PERIGEE_OSCU   //近地點
    };
    */
-internal constructor(nameKey: String, abbrKey: String, resource: String) : Star(nameKey, abbrKey, resource)
+//internal constructor(nameKey: String, abbrKey: String, resource: String, unicode: Char? = null) : Star(nameKey, abbrKey, resource, unicode)
