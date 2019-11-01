@@ -9,21 +9,18 @@ object LocaleTools {
   /** 將 string 以 _ 切開，傳回 Locale 物件  */
   fun getLocale(string: String): Locale {
     val st = StringTokenizer(string, "_-")
-    val lang: String
-    val country: String
-    val variant: String
 
-    lang = st.nextToken()
+    val lang = st.nextToken().substringBefore('#')
 
-    if (st.hasMoreTokens())
-      country = st.nextToken()
+    val country = if (st.hasMoreTokens())
+      st.nextToken().substringBefore('#')
     else
-      return Locale(lang)
+      ""
 
-    if (st.hasMoreTokens())
-      variant = st.nextToken()
+    val variant = if (st.hasMoreTokens())
+      st.nextToken().substringBefore('#')
     else
-      return Locale(lang, country)
+      ""
 
     return Locale(lang, country, variant)
   }

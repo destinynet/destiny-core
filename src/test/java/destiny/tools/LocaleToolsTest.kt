@@ -10,8 +10,16 @@ class LocaleToolsTest {
 
   @Test
   fun getLocale() {
+    assertEquals(Locale("zh"), LocaleTools.getLocale("zh"))
+    assertEquals(Locale("zh"), LocaleTools.getLocale("ZH"))
+    assertEquals(Locale("zh"), LocaleTools.getLocale("ZH#TAIWAN"))
+
     assertEquals(Locale.TAIWAN, LocaleTools.getLocale("zh_TW"))
+    assertEquals(Locale.TAIWAN, LocaleTools.getLocale("zh_TW#TAIPEI"))
     assertEquals(Locale.CHINA, LocaleTools.getLocale("zh_CN"))
+
+    assertEquals(Locale("zh" , "TW" , "TAIPEI"), LocaleTools.getLocale("zh_TW_TAIPEI"))
+    assertEquals(Locale("zh" , "TW" , "TAIPEI"), LocaleTools.getLocale("zh_TW_TAIPEI#ABC"))
   }
 
   @Test

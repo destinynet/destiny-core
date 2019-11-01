@@ -6,6 +6,8 @@ package destiny.tools
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import java.io.IOException
+import java.io.PrintWriter
+import java.io.StringWriter
 
 inline fun <T, R : Any> Iterable<T>.firstNotNullResult(transform: (T) -> R?): R? {
   for (element in this) {
@@ -66,3 +68,10 @@ suspend fun <T> retry(
   }
   return block() // last attempt
 }
+
+val Throwable.stackTraceString: String
+  get() {
+    val stringWriter = StringWriter()
+    this.printStackTrace(PrintWriter(stringWriter , true))
+    return stringWriter.toString()
+  }
