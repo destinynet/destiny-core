@@ -8,7 +8,8 @@ package destiny.tools
 interface UrlShorter {
 
   /**
-   * 傳入 longUrl , 如果發生網路問題，丟出 IOException , 如果無法 parse 或是其他問題，傳回 Optional.empty
+   * 傳入 longUrl , 如果發生網路問題，丟出 IOException , 如果無法 parse 或是其他問題，傳回 null
    */
   fun getShortUrl(longUrl: String): String?
 }
+

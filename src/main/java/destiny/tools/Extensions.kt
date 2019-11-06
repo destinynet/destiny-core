@@ -23,6 +23,7 @@ inline fun <T, R : Any> Sequence<T>.firstNotNullResult(crossinline transform: (T
     .firstOrNull()
 }
 
+private val logger = KotlinLogging.logger { }
 
 /**
  * https://stackoverflow.com/a/46890009/298430
@@ -38,7 +39,7 @@ suspend fun <T> retryIO(
     try {
       return block()
     } catch (e: IOException) {
-      KotlinLogging.logger { }.warn("IO exception : {}", e.message)
+      logger.warn("IO exception : {}", e.stackTraceString)
     }
     delay(currentDelay)
     currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
@@ -72,6 +73,6 @@ suspend fun <T> retry(
 val Throwable.stackTraceString: String
   get() {
     val stringWriter = StringWriter()
-    this.printStackTrace(PrintWriter(stringWriter , true))
+    this.printStackTrace(PrintWriter(stringWriter, true))
     return stringWriter.toString()
   }

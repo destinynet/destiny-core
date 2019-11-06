@@ -11,7 +11,7 @@ class ExtensionsKtTest {
   @Test
   fun firstNotNullResult() {
     val list = listOf(null, 'A', 'B')
-    assertEquals('A', list.firstNotNullResult { it -> it })
-    assertEquals('a', list.firstNotNullResult { it -> it?.toLowerCase() })
+    assertEquals('A', list.firstNotNullResult { it })
+    assertEquals('a', list.firstNotNullResult { it?.toLowerCase() })
   }
 }
