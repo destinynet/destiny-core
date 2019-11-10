@@ -3,8 +3,8 @@
  */
 package destiny.tools
 
+import mu.KotlinLogging
 import org.junit.Assert.assertEquals
-import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -12,7 +12,7 @@ import kotlin.test.Test
 
 class ZoneOffsetTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {  }
 
   @Test
   fun testOf_8H() {
