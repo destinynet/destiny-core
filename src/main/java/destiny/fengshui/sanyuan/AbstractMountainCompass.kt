@@ -4,8 +4,9 @@
 package destiny.fengshui.sanyuan
 
 import destiny.astrology.Utils
+import destiny.fengshui.ICompass
 
-abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
+abstract class AbstractMountainCompass : ICompass<Mountain> {
 
   /**
    * 取得 "子" 山的起始度數 (地盤正針得傳回 352.5 度)
@@ -13,8 +14,7 @@ abstract class AbstractMountainCompass : AbstractCompass<Mountain>() {
    */
   abstract override val initDegree: Double
 
-  override val stepDegree: Double
-    get() = 15.0
+  override val stepDegree: Double = 15.0
 
   /**
    * 取得某個山的起始度數

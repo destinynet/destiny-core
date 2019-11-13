@@ -5,7 +5,9 @@
  */
 package destiny.fengshui.sanyuan
 
-abstract class AbstractSymbol<T> : AbstractCompass<T>() {
+import destiny.fengshui.ICompass
+
+abstract class AbstractSymbol<T> : ICompass<T> {
 
   override val initDegree: Double
     get() = 337.5
