@@ -1,14 +1,16 @@
 <configuration>
+  <property name="defaultPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %class{15}.%M - %msg%n"/>
+
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %class{15}.%M - %msg%n</pattern>
+      <pattern>${defaultPattern}</pattern>
     </encoder>
   </appender>
 
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${user.home}/logs/core.log</file>
     <encoder>
-      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{15} - %msg%n</pattern>
+      <pattern>${defaultPattern}</pattern>
     </encoder>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
