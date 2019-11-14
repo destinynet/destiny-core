@@ -11,6 +11,18 @@ import java.io.Serializable
 
 interface IMountainYinYang {
   fun getYinYang(m: Mountain): Boolean
+
+  /** 陽山 */
+  val yangMountains: Set<Mountain>
+    get() {
+      return Mountain.values().filter { m -> getYinYang(m) }.toSet()
+    }
+
+  /** 陰山 */
+  val yinMountains: Set<Mountain>
+    get() {
+      return Mountain.values().filter { m -> !getYinYang(m) }.toSet()
+    }
 }
 
 /**
