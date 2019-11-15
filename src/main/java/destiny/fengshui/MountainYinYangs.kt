@@ -26,7 +26,8 @@ interface IMountainYinYang {
 }
 
 /**
- * 玄空派
+ * 玄空派三元派 ,
+ * 三元盤的二十四山陰陽是依據天地人三元龍來確定的
  *
  * 甲庚丙壬、乾坤艮巽、寅申巳亥12山，均屬陽
  * 辰戌丑未、乙辛丁癸、子午卯酉12山，均屬陰
@@ -45,6 +46,14 @@ interface IMountainYinYang {
  * 戌－－內藏辛、丁、戊，已知辛丁屬陰，故戌屬陰。
  * 丑－－內藏癸、辛、己，已知癸辛屬陰，故丑屬陰。
  * 未－－內藏丁、乙、己，己知丁乙屬陰，故未屬陰。
+ *
+ * 天元龍——陽：乾、艮、巽、坤，陰：子、午、卯、酉。
+ * 地元龍——陽：甲、庚、壬、丙，陰：辰、戌、丑、未。
+ * 人元龍——陽：寅、申、巳、亥，陰：乙、丁、辛、癸。
+ *
+ * 原文網址：https://kknews.cc/geomantic/jm5z686.html
+ *
+ * 參考圖檔 https://imgur.com/QiNaMbL
  *
  * */
 class MountainYinYangEmptyImpl : IMountainYinYang, Serializable {
@@ -84,6 +93,13 @@ class MountainYinYangSanYuanImpl : IMountainYinYang, Serializable {
 
 /**
  * 三合派
+ *
+ * 三合盤的二十四山的陰陽則是依據先天八卦與洛書的關係，以及納甲之說和後天八卦四正卦的三合而制定的
+ *
+ * 壬、癸、寅、午、戌、申、子、辰此八山為陽
+ * 甲、乙為陽
+ * 巽、辛、丁、巳、酉、丑此六山為陰
+ * 艮、丙、庚、亥、卯、未此六山為陰
  */
 class MountainYinYangTrilogyImpl : IMountainYinYang, Serializable {
   override fun getYinYang(m: Mountain): Boolean {
