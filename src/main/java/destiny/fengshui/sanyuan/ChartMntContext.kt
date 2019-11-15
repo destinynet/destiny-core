@@ -4,6 +4,7 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
+import destiny.fengshui.MountainYinYangEmptyImpl
 import destiny.fengshui.sanyuan.FlyingStar.symbolPeriods
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired

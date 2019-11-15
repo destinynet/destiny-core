@@ -1,24 +1,24 @@
 /**
  * Created by smallufo on 2018-03-03.
  */
-package destiny.fengshui.sanyuan
+package destiny.fengshui
 
+import destiny.fengshui.sanyuan.Mountain
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-
-class MountainYinYangEmptyImplTest {
+class MountainYinYangSanYuanImplTest {
 
   @Test
   fun getYinYang() {
-    MountainYinYangEmptyImpl().run {
+    MountainYinYangSanYuanImpl().run {
       assertTrue(getYinYang(Mountain.壬))
       assertFalse(getYinYang(Mountain.子))
       assertFalse(getYinYang(Mountain.癸))
 
       assertFalse(getYinYang(Mountain.丑))
-      assertTrue(getYinYang(Mountain.艮))
+      assertFalse(getYinYang(Mountain.艮))
       assertTrue(getYinYang(Mountain.寅))
 
       assertTrue(getYinYang(Mountain.甲))
@@ -26,7 +26,7 @@ class MountainYinYangEmptyImplTest {
       assertFalse(getYinYang(Mountain.乙))
 
       assertFalse(getYinYang(Mountain.辰))
-      assertTrue(getYinYang(Mountain.巽))
+      assertFalse(getYinYang(Mountain.巽))
       assertTrue(getYinYang(Mountain.巳))
 
       assertTrue(getYinYang(Mountain.丙))
@@ -34,7 +34,7 @@ class MountainYinYangEmptyImplTest {
       assertFalse(getYinYang(Mountain.丁))
 
       assertFalse(getYinYang(Mountain.未))
-      assertTrue(getYinYang(Mountain.坤))
+      assertFalse(getYinYang(Mountain.坤))
       assertTrue(getYinYang(Mountain.申))
 
       assertTrue(getYinYang(Mountain.庚))
@@ -42,7 +42,7 @@ class MountainYinYangEmptyImplTest {
       assertFalse(getYinYang(Mountain.辛))
 
       assertFalse(getYinYang(Mountain.戌))
-      assertTrue(getYinYang(Mountain.乾))
+      assertFalse(getYinYang(Mountain.乾))
       assertTrue(getYinYang(Mountain.亥))
     }
   }

@@ -1,11 +1,13 @@
 /**
  * Created by smallufo on 2018-03-03.
  */
-package destiny.fengshui.sanyuan
+package destiny.fengshui
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement
+import destiny.fengshui.sanyuan.Mountain
+import destiny.fengshui.sanyuan.SealedMnt
 import destiny.iching.Symbol
 import java.io.Serializable
 
@@ -21,7 +23,7 @@ interface IMountainYinYang {
   /** 陰山 */
   val yinMountains: Set<Mountain>
     get() {
-      return Mountain.values().filter { m -> !getYinYang(m) }.toSet()
+      return Mountain.values().subtract(yangMountains)
     }
 }
 

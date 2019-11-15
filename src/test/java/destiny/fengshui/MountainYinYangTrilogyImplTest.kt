@@ -1,8 +1,9 @@
 /**
  * Created by smallufo on 2018-03-03.
  */
-package destiny.fengshui.sanyuan
+package destiny.fengshui
 
+import destiny.fengshui.sanyuan.Mountain
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
