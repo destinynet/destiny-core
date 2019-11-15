@@ -4,6 +4,9 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.chinese.Branch
+import destiny.fengshui.EarthlyCompass
+import destiny.fengshui.Mountain
+import destiny.fengshui.SealedMnt
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 import kotlin.math.abs
@@ -51,7 +54,7 @@ object VoidFunctions {
   }
 
   /** 城門訣 , 傳回 正城門、副城門 */
-  fun getGates(m:Mountain) : Map<Gate , Mountain> {
+  fun getGates(m: Mountain) : Map<Gate , Mountain> {
     // 先取出「向」兩旁的卦
     val 地盤 = EarthlyCompass()
     val dirSymbol: Symbol = 地盤.getSymbol(m.opposite)

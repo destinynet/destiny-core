@@ -3,10 +3,11 @@
  * @date 2002/9/23
  * @time 下午 07:30:40
  */
-package destiny.fengshui.sanyuan
+package destiny.fengshui
 
 import destiny.astrology.Utils
 import destiny.iching.Symbol
+import destiny.iching.Symbol.*
 import java.io.Serializable
 
 /**
@@ -18,7 +19,8 @@ class AcquiredSymbolCompass : AbstractSymbol<Symbol>(), Serializable {
    * 取得某個卦的起始度數
    */
   override fun getStartDegree(t: Symbol): Double {
-    return Utils.getNormalizeDegree(symbolList.indexOf(t) * stepDegree + initDegree)
+    return Utils.getNormalizeDegree(
+      symbolList.indexOf(t) * stepDegree + initDegree)
   }
 
 
@@ -39,6 +41,6 @@ class AcquiredSymbolCompass : AbstractSymbol<Symbol>(), Serializable {
   }
 
   companion object {
-    private val symbolList = listOf(Symbol.坎, Symbol.艮, Symbol.震, Symbol.巽, Symbol.離, Symbol.坤, Symbol.兌, Symbol.乾)
+    private val symbolList = listOf(坎, 艮, 震, 巽, 離, 坤, 兌, 乾)
   }
 }

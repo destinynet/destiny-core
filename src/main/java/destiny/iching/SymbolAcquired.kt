@@ -23,13 +23,14 @@ import java.util.*
 class SymbolAcquired internal constructor() : Comparator<Symbol> {
 
   override fun compare(s1: Symbol, s2: Symbol): Int {
-    return 後天八卦List.indexOf(s1) - 後天八卦List.indexOf(s2)
+    return acquiredList.indexOf(s1) - acquiredList.indexOf(s2)
   }
 
   companion object {
-    private val 後天八卦 = arrayOf(坎, 坤, 震, 巽, 乾, 兌, 艮, 離)
+    /** 後天八卦 */
+    private val acquired = arrayOf(坎, 坤, 震, 巽, 乾, 兌, 艮, 離)
 
-    private val 後天八卦List = listOf(*後天八卦)
+    private val acquiredList = listOf(*acquired)
 
     /**
      * 取得後天八卦的卦序
@@ -45,7 +46,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
      *
      */
     fun getIndex(s: Symbol): Int {
-      var tempIndex = 後天八卦List.indexOf(s) + 1
+      var tempIndex = acquiredList.indexOf(s) + 1
       if (tempIndex >= 5)
         tempIndex++
       return tempIndex
@@ -77,7 +78,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
         return null
       else if (index > 5)
         i--
-      return 後天八卦[i - 1]
+      return acquired[i - 1]
     }
 
     /**
@@ -96,8 +97,8 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
       return when {
         reminder == 5 -> null
         reminder == 0 -> 離
-        reminder > 5 -> 後天八卦[reminder-2]
-        else -> 後天八卦[reminder-1]
+        reminder > 5 -> acquired[reminder-2]
+        else -> acquired[reminder-1]
       }
     }
 

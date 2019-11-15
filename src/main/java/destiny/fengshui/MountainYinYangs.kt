@@ -6,8 +6,6 @@ package destiny.fengshui
 import destiny.core.chinese.Branch
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement
-import destiny.fengshui.sanyuan.Mountain
-import destiny.fengshui.sanyuan.SealedMnt
 import destiny.iching.Symbol
 import java.io.Serializable
 

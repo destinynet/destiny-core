@@ -3,6 +3,7 @@
  */
 package destiny.fengshui.sanyuan
 
+import destiny.fengshui.Mountain
 import java.io.Serializable
 
 data class ReplacementStar(val period: Int, val enabled: Boolean) : Serializable

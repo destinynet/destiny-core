@@ -4,6 +4,8 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
+import destiny.fengshui.EarthlyCompass
+import destiny.fengshui.Mountain
 import destiny.fengshui.MountainYinYangEmptyImpl
 import destiny.fengshui.sanyuan.FlyingStar.symbolPeriods
 import destiny.iching.Symbol
@@ -46,8 +48,8 @@ object ChartMntContext {
 
 
   /** 取得 [IChartMntPresenter] 的實作 [ChartMntPresenter] */
-  fun getChartPresenter(period: Int ,
-                        mnt : Mountain ,
+  fun getChartPresenter(period: Int,
+                        mnt : Mountain,
                         view: Symbol,
                         replacementImpl: IReplacement? = null) : IChartMntPresenter {
     val blocks : List<ChartBlock> = getChartMnt(period, mnt, replacementImpl).blocks

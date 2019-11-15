@@ -3,6 +3,7 @@
  */
 package destiny.fengshui.sanyuan
 
+import destiny.fengshui.Mountain
 import destiny.iching.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,17 +17,20 @@ class ChartMntContextTest {
   fun test城門訣() {
     // 四運 , 子山午向 , 四運子山午向的向方兩旁，均有城門可取。此兩旁的城門，正好補救了午向沒有旺星到向之不足。
     ChartMntContext.getChartMnt(4, Mountain.子).getGates().also {
-      assertEquals(mapOf(Gate.正城門 to Pair(Mountain.巽, true), Gate.副城門 to Pair(Mountain.坤, true)), it)
+      assertEquals(mapOf(Gate.正城門 to Pair(Mountain.巽, true), Gate.副城門 to Pair(
+        Mountain.坤, true)), it)
     }
 
     // 七運 , 酉山卯向 , 只有正城門可取；副城門不可取
     ChartMntContext.getChartMnt(7, Mountain.酉).getGates().also {
-      assertEquals(mapOf(Gate.正城門 to Pair(Mountain.艮, true), Gate.副城門 to Pair(Mountain.巽, false)), it)
+      assertEquals(mapOf(Gate.正城門 to Pair(Mountain.艮, true), Gate.副城門 to Pair(
+        Mountain.巽, false)), it)
     }
 
     // 一運 , 午山子向 , 正副皆不可取
     ChartMntContext.getChartMnt(1, Mountain.午).getGates().also {
-      assertEquals(mapOf(Gate.正城門 to Pair(Mountain.乾, false), Gate.副城門 to Pair(Mountain.艮, false)), it)
+      assertEquals(mapOf(Gate.正城門 to Pair(Mountain.乾, false), Gate.副城門 to Pair(
+        Mountain.艮, false)), it)
     }
   }
 

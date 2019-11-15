@@ -4,6 +4,7 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
+import destiny.fengshui.Mountain
 import destiny.iching.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals

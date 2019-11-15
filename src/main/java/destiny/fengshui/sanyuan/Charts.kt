@@ -4,6 +4,8 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
+import destiny.fengshui.EarthlyCompass
+import destiny.fengshui.Mountain
 import destiny.fengshui.MountainYinYangEmptyImpl
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
@@ -57,7 +59,7 @@ interface IChartMnt : IPeriod {
 
 
   /** 城門訣 , 傳回 正城門、副城門 ， 以及各自在此運是否 enabled */
-  fun getGates(): Map<Gate , Pair<Mountain , Boolean>> {
+  fun getGates(): Map<Gate , Pair<Mountain, Boolean>> {
 
     val gateMap: Map<Gate, Mountain> = VoidFunctions.getGates(mnt)
 

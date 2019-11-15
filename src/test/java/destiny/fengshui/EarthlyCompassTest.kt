@@ -3,7 +3,7 @@
  * @date 2002/9/23
  * @time 上午 11:21:27
  */
-package destiny.fengshui.sanyuan
+package destiny.fengshui
 
 import org.junit.Assert.assertEquals
 import kotlin.test.Test

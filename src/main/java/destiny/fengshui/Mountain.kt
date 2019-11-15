@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2018-02-25.
  */
-package destiny.fengshui.sanyuan
+package destiny.fengshui
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
@@ -48,9 +48,9 @@ enum class Mountain(val mnt: SealedMnt, val symbol: Symbol) {
   壬(SealedMnt.MntStem(Stem.壬), Symbol.坎);
 
   /** 0 ~ 23 */
-  val index: Int
-    get() = values().indexOf(this)
-
+  val index: Int by lazy {
+     values().indexOf(this)
+  }
 
   val opposite: Mountain
     get() {

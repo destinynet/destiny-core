@@ -1,10 +1,10 @@
 /**
  * Created by smallufo on 2018-02-25.
  */
-package destiny.fengshui.sanyuan
+package destiny.fengshui
 
 import destiny.astrology.Utils
-import destiny.fengshui.ICompass
+import destiny.iching.Symbol
 
 abstract class AbstractMountainCompass : ICompass<Mountain> {
 
@@ -43,5 +43,15 @@ abstract class AbstractMountainCompass : ICompass<Mountain> {
   }
 
 
+  /** 此座山 中心點度數 */
+  fun getSymbolCenter(mnt: Mountain): Double {
+    return (getEndDegree(mnt) to getStartDegree(mnt)).let { (start , end) ->
+      if ((end - start) > 180)
+        0.0
+      else
+        (start + end) / 2
+    }
+  }
 
+  abstract fun getSymbol(mnt: Mountain): Symbol
 }
