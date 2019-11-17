@@ -7,21 +7,21 @@
     </encoder>
   </appender>
 
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${user.home}/logs/core.log</file>
-    <encoder>
-      <pattern>${defaultPattern}</pattern>
-    </encoder>
+  <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <!--<file>${user.home}/logs/core.log</file>-->
+    <!--<encoder>-->
+      <!--<pattern>${defaultPattern}</pattern>-->
+    <!--</encoder>-->
 
-    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>core.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-      <fileNamePattern>${user.home}/logs/core-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-      <maxFileSize>10MB</maxFileSize>
-    </rollingPolicy>
-  </appender>
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+      <!--<fileNamePattern>core.%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+      <!--<fileNamePattern>${user.home}/logs/core-%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+      <!--<maxFileSize>10MB</maxFileSize>-->
+    <!--</rollingPolicy>-->
+  <!--</appender>-->
 
   <root level="info">
-    <appender-ref ref="FILE"/>
+    <!--<appender-ref ref="FILE"/>-->
     <appender-ref ref="STDOUT"/>
   </root>
 </configuration>
