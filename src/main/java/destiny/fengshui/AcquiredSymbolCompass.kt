@@ -5,9 +5,9 @@
  */
 package destiny.fengshui
 
-import destiny.astrology.Utils
 import destiny.iching.Symbol
 import destiny.iching.Symbol.*
+import destiny.tools.circleUtils
 import java.io.Serializable
 
 /**
@@ -19,7 +19,7 @@ class AcquiredSymbolCompass : AbstractSymbol<Symbol>(), Serializable {
    * 取得某個卦的起始度數
    */
   override fun getStartDegree(t: Symbol): Double {
-    return Utils.getNormalizeDegree(
+    return circleUtils.getNormalizeDegree(
       symbolList.indexOf(t) * stepDegree + initDegree)
   }
 
@@ -28,15 +28,17 @@ class AcquiredSymbolCompass : AbstractSymbol<Symbol>(), Serializable {
    * 取得某個卦的結束度數
    */
   override fun getEndDegree(t: Symbol): Double {
-    return Utils.getNormalizeDegree((symbolList.indexOf(t) + 1) * stepDegree + initDegree)
+    return circleUtils.getNormalizeDegree((symbolList.indexOf(t) + 1) * stepDegree + initDegree)
   }
+
 
   /**
    * 取得目前這個度數位於哪個卦當中
    */
-  fun getSymbol(degree: Double): Symbol {
-    var index = ((degree + 360 - initDegree) / stepDegree).toInt()
-    if (index >= 8) index -= 8
+  override fun get(degree: Double): Symbol {
+    val index = with(circleUtils) {
+      (degree.aheadOf(initDegree) / stepDegree).toInt()
+    }
     return symbolList[index]
   }
 

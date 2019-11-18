@@ -8,7 +8,7 @@ package destiny.core.calendar
 import destiny.astrology.*
 import destiny.astrology.Coordinate.ECLIPTIC
 import destiny.astrology.Planet.SUN
-import destiny.astrology.Utils.getNormalizeDegree
+import destiny.tools.circleUtils.getNormalizeDegree
 import java.io.Serializable
 
 /**

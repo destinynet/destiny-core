@@ -21,23 +21,7 @@ class EarthlyCompass : AbstractMountainCompass() {
   /** 此座山 是位於哪一卦中 */
   override fun getSymbol(mnt: Mountain): Symbol {
     return getSymbolCenter(mnt).let { deg ->
-      acquiredSymbolCompass.getSymbol(deg)
-    }
-  }
-}
-
-/**
- * 天盤 (比地盤 順時針轉 7.5 度)
- */
-class HeavenlyCompass : AbstractMountainCompass() {
-
-  override val initDegree: Double
-    get() = 0.0
-
-  /** 此座山 是位於哪一卦中 */
-  override fun getSymbol(mnt: Mountain): Symbol {
-    return getSymbolCenter(mnt).let { deg ->
-      acquiredSymbolCompass.getSymbol(deg)
+      acquiredSymbolCompass.get(deg)
     }
   }
 }
@@ -52,7 +36,24 @@ class HumanCompass : AbstractMountainCompass() {
   /** 此座山 是位於哪一卦中 */
   override fun getSymbol(mnt: Mountain): Symbol {
     return getSymbolCenter(mnt).let { deg ->
-      acquiredSymbolCompass.getSymbol(deg)
+      acquiredSymbolCompass.get(deg)
+    }
+  }
+}
+
+
+/**
+ * 天盤 (比地盤 順時針轉 7.5 度)
+ */
+class HeavenlyCompass : AbstractMountainCompass() {
+
+  override val initDegree: Double
+    get() = 0.0
+
+  /** 此座山 是位於哪一卦中 */
+  override fun getSymbol(mnt: Mountain): Symbol {
+    return getSymbolCenter(mnt).let { deg ->
+      acquiredSymbolCompass.get(deg)
     }
   }
 }

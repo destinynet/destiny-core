@@ -11,7 +11,7 @@ import java.io.Serializable
 /**
  * 先天64卦羅盤 , for 伏羲先天六十四卦天圓地方圖 [destiny.iching.congenital]
  */
-class HexagramCongenitalCompass : ICompass<IHexagram> , Serializable {
+class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
 
   override val initDegree: Double = 0.0
 
@@ -25,6 +25,16 @@ class HexagramCongenitalCompass : ICompass<IHexagram> , Serializable {
 
   override fun getEndDegree(t: IHexagram): Double {
     return getStartDegree(t) + stepDegree
+  }
+
+  /**
+   * 此度 是在哪個卦中
+   */
+  override fun get(degree: Double): IHexagram {
+    val steps : Int = (degree / stepDegree).toInt()
+    return with(congenital.circle) {
+      Hexagram.復.next(steps)
+    }
   }
 
 

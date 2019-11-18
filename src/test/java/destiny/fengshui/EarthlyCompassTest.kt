@@ -37,15 +37,21 @@ class EarthlyCompassTest {
 
 
     //359度是屬於 (子)
-    assertSame(Mountain.子, compass.getMnt(359.0))
+    assertSame(Mountain.子, compass.get(359.0))
     //  0度是屬於 (子)
-    assertSame(Mountain.子, compass.getMnt(0.0))
+    assertSame(Mountain.子, compass.get(0.0))
     //  9度是屬於 (癸)
-    assertSame(Mountain.癸, compass.getMnt(9.0))
+    assertSame(Mountain.癸, compass.get(9.0))
     //128度是屬於 (巽)
-    assertSame(Mountain.巽, compass.getMnt(128.0))
+    assertSame(Mountain.巽, compass.get(128.0))
     //325度是屬於 (亥)
-    assertSame(Mountain.亥, compass.getMnt(325.0))
+    assertSame(Mountain.亥, compass.get(325.0))
+
+    assertSame(Mountain.午 , compass.get(180.0))
+    assertSame(Mountain.午 , compass.get(180.0 - 7.5))
+    assertSame(Mountain.午 , compass.get(180.0 + 7.4999))
+
+    assertSame(Mountain.丁 , compass.get(180.0 + 7.5))
 
   }
 }

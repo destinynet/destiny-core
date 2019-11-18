@@ -12,6 +12,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.IYinYang
 import destiny.tools.ArrayTools
 import destiny.tools.ILocaleString
+import destiny.tools.circleUtils
 import java.util.*
 
 /** 黃道十二宮  */
@@ -122,13 +123,13 @@ enum class ZodiacSign(private val nameKey: String,
 
     /** 取得黃道帶上的某度，屬於哪個星座  */
     fun of(degree: Double): ZodiacSign {
-      val index = (Utils.getNormalizeDegree(degree) / 30).toInt()
+      val index = (circleUtils.getNormalizeDegree(degree) / 30).toInt()
       return values()[index]
     }
 
     /** 此黃道帶的度數，等於什麼星座幾度  */
     fun getSignAndDegree(degree: Double): Pair<ZodiacSign, Double> {
-      val index = (Utils.getNormalizeDegree(degree) / 30).toInt()
+      val index = (circleUtils.getNormalizeDegree(degree) / 30).toInt()
       val sign = values()[index]
       val deg = degree % 30
       return Pair(sign, deg)

@@ -117,7 +117,7 @@ data class ChartDegree(override val period: Int,
                        override val blocks: List<ChartBlock>) : IChartDegree, Serializable {
 
   override val mnt: Mountain
-    get() = EarthlyCompass().getMnt(degree)
+    get() = EarthlyCompass().get(degree)
 }
 
 /**

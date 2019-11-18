@@ -46,4 +46,27 @@ class HexagramCongenitalCompassTest {
       assertEquals(360.0, it)
     }
   }
+
+  @Test
+  fun testGetHexagramFromDegree() {
+    val step = 5.625
+
+    assertEquals(Hexagram.復, compass.get(0.0))
+    assertEquals(Hexagram.復, compass.get(step - 0.01))
+
+    assertEquals(Hexagram.頤, compass.get(step))
+
+    assertEquals(Hexagram.臨, compass.get(90.0))
+
+    assertEquals(Hexagram.乾, compass.get(180.0 - step))
+    assertEquals(Hexagram.乾, compass.get(180.0 - 0.01))
+
+    assertEquals(Hexagram.姤, compass.get(180.0))
+
+
+    assertEquals(Hexagram.復, compass.get(360.0))
+    assertEquals(Hexagram.坤, compass.get(360 - 0.1))
+    assertEquals(Hexagram.坤, compass.get(360 - step))
+    assertEquals(Hexagram.剝, compass.get(360 - step - 0.01))
+  }
 }

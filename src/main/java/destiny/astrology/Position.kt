@@ -1,5 +1,6 @@
 package destiny.astrology
 
+import destiny.tools.circleUtils
 import java.io.Serializable
 
 interface IPos : Serializable {
@@ -15,11 +16,11 @@ interface IPos : Serializable {
     get() = ZodiacSign.getSignAndDegree(lng)
 
   operator fun plus(p: IPos): IPos {
-    return Pos(Utils.getNormalizeDegree(this.lng + p.lng), this.lat + p.lat)
+    return Pos(circleUtils.getNormalizeDegree(this.lng + p.lng), this.lat + p.lat)
   }
 
   operator fun minus(p: IPos): IPos {
-    return Pos(Utils.getNormalizeDegree(this.lng - p.lng), this.lat - p.lat)
+    return Pos(circleUtils.getNormalizeDegree(this.lng - p.lng), this.lat - p.lat)
   }
 }
 
@@ -41,7 +42,7 @@ interface IStarPos : IPos {
   operator fun plus(p: IStarPos): IStarPos {
     return StarPosition(super.plus(p),
       this.distance + p.distance,
-      Utils.getNormalizeDegree(this.speedLng + p.speedLng),
+      circleUtils.getNormalizeDegree(this.speedLng + p.speedLng),
       this.speedLat + p.speedLat,
       this.speedDistance + p.speedDistance)
   }
@@ -49,7 +50,7 @@ interface IStarPos : IPos {
   operator fun minus(p: IStarPos): IStarPos {
     return StarPosition(super.minus(p),
       this.distance - p.distance,
-      Utils.getNormalizeDegree(this.speedLng - p.speedLng),
+      circleUtils.getNormalizeDegree(this.speedLng - p.speedLng),
       this.speedLat - p.speedLat,
       this.speedDistance - p.speedDistance)
   }

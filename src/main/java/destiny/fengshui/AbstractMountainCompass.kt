@@ -3,8 +3,8 @@
  */
 package destiny.fengshui
 
-import destiny.astrology.Utils
 import destiny.iching.Symbol
+import destiny.tools.circleUtils
 
 abstract class AbstractMountainCompass : ICompass<Mountain> {
 
@@ -20,28 +20,15 @@ abstract class AbstractMountainCompass : ICompass<Mountain> {
    * 取得某個山的起始度數
    */
   override fun getStartDegree(t: Mountain): Double {
-    return Utils.getNormalizeDegree(t.index * stepDegree + initDegree)
+    return circleUtils.getNormalizeDegree(t.index * stepDegree + initDegree)
   }
 
   /**
    * 取得某個山的結束度數
    */
   override fun getEndDegree(t: Mountain): Double {
-    return Utils.getNormalizeDegree((t.index + 1) * stepDegree + initDegree)
+    return circleUtils.getNormalizeDegree((t.index + 1) * stepDegree + initDegree)
   }
-
-  /**
-   * 取得目前這個度數位於哪個山當中
-   */
-  fun getMnt(degree: Double): Mountain {
-    var index = ((degree + 360 - initDegree) / stepDegree).toInt()
-    if (index >= 24)
-      index -= 24
-    else if (index < 0)
-      index += 24
-    return Mountain.values()[index]
-  }
-
 
   /** 此座山 中心點度數 */
   fun getSymbolCenter(mnt: Mountain): Double {
@@ -51,6 +38,16 @@ abstract class AbstractMountainCompass : ICompass<Mountain> {
       else
         (start + end) / 2
     }
+  }
+
+  /**
+   * 取得目前這個度數位於哪個山當中
+   */
+  override fun get(degree: Double): Mountain {
+    val index = with(circleUtils) {
+      (degree.aheadOf(initDegree) / stepDegree).toInt()
+    }
+    return Mountain.values()[index]
   }
 
   abstract fun getSymbol(mnt: Mountain): Symbol

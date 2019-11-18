@@ -13,5 +13,4 @@ abstract class AbstractSymbol<T> : ICompass<T> {
   override val stepDegree: Double
     get() = 45.0
 
-
 }

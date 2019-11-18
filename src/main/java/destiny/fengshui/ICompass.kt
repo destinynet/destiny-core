@@ -30,4 +30,8 @@ interface ICompass<T> : Serializable {
    */
   fun getEndDegree(t : T): Double
 
+  /**
+   * 此度數 是什麼元素
+   */
+  fun get(degree: Double) : T
 }
