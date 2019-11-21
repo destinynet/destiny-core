@@ -1,7 +1,5 @@
 /**
- * @author smallufo
- * @date 2002/9/23
- * @time 下午 07:30:40
+ * Created by smallufo on 2019-11-21.
  */
 package destiny.fengshui
 
@@ -11,9 +9,9 @@ import destiny.tools.circleUtils
 import java.io.Serializable
 
 /**
- * 後天八卦於羅盤上的位置
+ * 先天八卦於羅盤上的位置
  */
-class AcquiredSymbolCompass : AbstractSymbolCompass(), Serializable {
+class CongenitalSymbolCompass : AbstractSymbolCompass(), Serializable {
 
   /**
    * 取得某個卦的起始度數
@@ -42,7 +40,9 @@ class AcquiredSymbolCompass : AbstractSymbolCompass(), Serializable {
     return symbolList[index]
   }
 
+
   companion object {
-    private val symbolList = listOf(坎, 艮, 震, 巽, 離, 坤, 兌, 乾)
+    private val symbolList = listOf(坤, 震, 離, 兌, 乾 , 巽, 坎, 艮)
   }
+
 }

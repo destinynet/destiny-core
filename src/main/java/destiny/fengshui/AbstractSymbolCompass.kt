@@ -5,7 +5,9 @@
  */
 package destiny.fengshui
 
-abstract class AbstractSymbol<T> : ICompass<T> {
+import destiny.iching.Symbol
+
+abstract class AbstractSymbolCompass : ICompass<Symbol> {
 
   override val initDegree: Double
     get() = 337.5
