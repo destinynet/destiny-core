@@ -51,7 +51,7 @@ class YearMonthSunSignImpl(
 
     return if (solarTerms.major) {
       // 單數 : 立春 、 驚蟄 ...
-      StemBranchUnconstrained[originalMonth.stem, originalMonth.branch]!!.previous
+      StemBranchUnconstrained[originalMonth.stem, originalMonth.branch]!!.prev
     } else {
       StemBranchUnconstrained[originalMonth.stem, originalMonth.branch]!!
     }

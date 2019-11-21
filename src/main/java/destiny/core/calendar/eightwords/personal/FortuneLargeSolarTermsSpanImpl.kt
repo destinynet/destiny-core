@@ -245,7 +245,7 @@ class FortuneLargeSolarTermsSpanImpl(
       logger.debug("大運逆行")
       var index = -1
       while (abs(getTargetSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan) < diffSeconds) {
-        resultStemBranch = resultStemBranch.previous
+        resultStemBranch = resultStemBranch.prev
         index--
       }
       resultStemBranch

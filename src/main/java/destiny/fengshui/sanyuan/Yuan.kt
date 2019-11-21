@@ -22,9 +22,9 @@ enum class Yuan {
     fun getYuan(year: Int): Yuan {
       val gap180 = (year - 1864).let {
         if (it >= 0)
-          return@let it
+          it
         else
-          return@let 180 - abs(it) % 180
+          180 - abs(it) % 180
       } % 180
 
       return when (gap180 / 60 + 1) {

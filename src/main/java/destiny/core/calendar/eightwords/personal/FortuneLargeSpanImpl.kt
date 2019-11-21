@@ -253,7 +253,7 @@ class FortuneLargeSpanImpl(
       while (abs(getTargetMajorSolarTermsSeconds(gmtJulDay, gender, index) * fortuneMonthSpan) < diffSeconds) {
         //        resultStemBranch = resultStemBranch.previous
         resultStemBranch =
-          if (eightWords.month is StemBranchUnconstrained) resultStemBranch.prev(2) else resultStemBranch.previous
+          if (eightWords.month is StemBranchUnconstrained) resultStemBranch.prev(2) else resultStemBranch.prev
         index--
       }
       return resultStemBranch

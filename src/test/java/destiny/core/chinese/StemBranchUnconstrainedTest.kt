@@ -23,8 +23,8 @@ class StemBranchUnconstrainedTest {
 
   @Test
   fun testPrev() {
-    assertSame(StemBranchUnconstrained.甲亥 , StemBranchUnconstrained.甲子.previous ) // 0 -> 119
-    assertSame(StemBranchUnconstrained.甲子 , StemBranchUnconstrained.乙子.previous ) // 1 -> 0
+    assertSame(StemBranchUnconstrained.甲亥 , StemBranchUnconstrained.甲子.prev ) // 0 -> 119
+    assertSame(StemBranchUnconstrained.甲子 , StemBranchUnconstrained.乙子.prev ) // 1 -> 0
   }
 
   @Test

@@ -218,9 +218,9 @@ class StemBranchTest {
   @Test
   fun testGetPrevious() {
     var sb = 甲子
-    assertSame(sb.previous, StemBranch["癸亥"])
+    assertSame(sb.prev, StemBranch["癸亥"])
 
     sb = StemBranch["乙丑"]
-    assertSame(sb.previous, 甲子)
+    assertSame(sb.prev, 甲子)
   }
 }

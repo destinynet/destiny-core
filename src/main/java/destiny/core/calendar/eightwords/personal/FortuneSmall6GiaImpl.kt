@@ -34,19 +34,19 @@ class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
     var sb = when (eightWords.day.cycle) {
-      StemBranchCycle.甲子 -> if (gender == Gender.男) StemBranch.丙寅.previous else StemBranch.壬申.next
-      StemBranchCycle.甲戌 -> if (gender == Gender.男) StemBranch.丙子.previous else StemBranch.壬午.next
-      StemBranchCycle.甲申 -> if (gender == Gender.男) StemBranch.丙戌.previous else StemBranch.壬辰.next
-      StemBranchCycle.甲午 -> if (gender == Gender.男) StemBranch.丙申.previous else StemBranch.壬寅.next
-      StemBranchCycle.甲辰 -> if (gender == Gender.男) StemBranch.丙午.previous else StemBranch.壬子.next
-      StemBranchCycle.甲寅 -> if (gender == Gender.男) StemBranch.丙辰.previous else StemBranch.壬戌.next
+      StemBranchCycle.甲子 -> if (gender == Gender.男) StemBranch.丙寅.prev else StemBranch.壬申.next
+      StemBranchCycle.甲戌 -> if (gender == Gender.男) StemBranch.丙子.prev else StemBranch.壬午.next
+      StemBranchCycle.甲申 -> if (gender == Gender.男) StemBranch.丙戌.prev else StemBranch.壬辰.next
+      StemBranchCycle.甲午 -> if (gender == Gender.男) StemBranch.丙申.prev else StemBranch.壬寅.next
+      StemBranchCycle.甲辰 -> if (gender == Gender.男) StemBranch.丙午.prev else StemBranch.壬子.next
+      StemBranchCycle.甲寅 -> if (gender == Gender.男) StemBranch.丙辰.prev else StemBranch.壬戌.next
     }
 
     return intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , count).map { (age , pair) ->
       val (from , to) = pair
       val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
       val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
-      sb = if (gender == Gender.男) sb.next else sb.previous
+      sb = if (gender == Gender.男) sb.next else sb.prev
       FortuneData(sb , from , to , age , age+1 , startFortuneAgeNotes , endFortuneAgeNotes)
     }.toList()
   }

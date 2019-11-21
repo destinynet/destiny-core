@@ -23,13 +23,13 @@ class FortuneSmallStarImpl(private val intAgeImpl: IIntAge ,
                                   gender: Gender,
                                   count: Int): List<FortuneData> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt , location)
-    var sb = if (gender == Gender.男) StemBranch.丙寅.previous else StemBranch.壬申.next
+    var sb = if (gender == Gender.男) StemBranch.丙寅.prev else StemBranch.壬申.next
 
     return intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , count).map { (age , pair) ->
       val (from , to) = pair
       val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
       val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
-      sb = if (gender == Gender.男) sb.next else sb.previous
+      sb = if (gender == Gender.男) sb.next else sb.prev
       FortuneData(sb , from , to , age , age+1 , startFortuneAgeNotes , endFortuneAgeNotes)
     }.toList()
   }

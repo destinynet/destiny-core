@@ -14,6 +14,6 @@ interface ILoop<T> {
   val next: T
     get() = next(1)
 
-  val previous: T
+  val prev: T
     get() = prev(1)
 }

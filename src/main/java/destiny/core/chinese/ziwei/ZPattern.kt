@@ -15,7 +15,7 @@ fun IPlate.拱(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let
 fun IPlate.三方(branch: Branch = this.mainHouse.branch) = 拱(branch).plus(branch)
 fun IPlate.三方四正(branch: Branch = this.mainHouse.branch): Set<Branch> = 三方(branch).plus(branch.opposite)
 
-fun IPlate.neighbors(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.previous, it.next) }
+fun IPlate.neighbors(branch: Branch = this.mainHouse.branch): Set<Branch> = branch.let { setOf(it.prev, it.next) }
 
 
 fun IPlate.日月(): List<Branch> = this.getBranches(太陽, 太陰)

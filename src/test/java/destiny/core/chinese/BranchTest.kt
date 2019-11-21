@@ -41,6 +41,10 @@ class BranchTest {
 
   @Test
   fun testNext() {
+
+    assertSame(丑, 子.next)
+    assertSame(子, 亥.next)
+
     assertSame(子, 子.next(0))
     assertSame(丑, 子.next(1))
     assertSame(亥, 子.next(11))
@@ -56,6 +60,8 @@ class BranchTest {
 
   @Test
   fun testPrev() {
+    assertSame(亥 , 子.prev)
+
     assertSame(子, 子.prev(0))
     assertSame(亥, 子.prev(1))
     assertSame(丑, 子.prev(11))
@@ -162,7 +168,7 @@ class BranchTest {
     val array = arrayOf(午, 酉, 子, 卯)
     Arrays.sort(array)
     val expected = arrayOf(子, 卯, 午, 酉)
-    assertTrue(Arrays.equals(expected, array))
+    assertTrue(expected.contentEquals(array))
   }
 
   @Test

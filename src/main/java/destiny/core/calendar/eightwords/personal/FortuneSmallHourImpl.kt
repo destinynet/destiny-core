@@ -54,7 +54,7 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
                               forward: Boolean): List<FortuneData> {
     var sb = eightWords.hour
     return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, count).map { (age, pair) ->
-      sb = if (forward) sb.next as StemBranch else sb.previous as StemBranch
+      sb = if (forward) sb.next as StemBranch else sb.prev as StemBranch
       val (from, to) = pair
       val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
       val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
@@ -83,7 +83,7 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
       val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
       val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
 
-      sb = if (forward) sb.next as StemBranch else sb.previous as StemBranch
+      sb = if (forward) sb.next as StemBranch else sb.prev as StemBranch
       age += 1
       FortuneData(sb, from, to, age, age + 1, startFortuneAgeNotes, endFortuneAgeNotes)
     }.takeWhile { age <= count }

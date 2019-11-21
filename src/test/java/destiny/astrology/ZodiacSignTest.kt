@@ -23,7 +23,7 @@ class ZodiacSignTest {
 
   @Test
   fun testLoop() {
-    assertSame(PISCES, ARIES.previous)
+    assertSame(PISCES, ARIES.prev)
     assertSame(PISCES, ARIES.prev(1))
     assertSame(PISCES, ARIES.prev(13))
     assertSame(PISCES, ARIES.next(-1))

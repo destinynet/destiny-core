@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 
 class ChartMntContextTest {
 
-  val replaceImpl = ReplacementDefaultImpl()
+  private val replaceImpl = ReplacementDefaultImpl()
 
   @Test
   fun test城門訣() {

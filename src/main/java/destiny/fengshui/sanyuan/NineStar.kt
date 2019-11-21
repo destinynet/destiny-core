@@ -23,7 +23,7 @@ enum class NineStar(val period: Int) {
   companion object {
 
     /** 透過數字，反查九星 */
-    fun getStar(period: Int) : NineStar {
+    fun getStar(period: Int): NineStar {
       return values().first { it.period == period }
     }
   }
