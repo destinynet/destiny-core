@@ -7,6 +7,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
+import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalTime
@@ -16,6 +17,20 @@ import java.time.temporal.ChronoField
 interface IYuan {
 
   fun getYuan(lmt: ChronoLocalDateTime<*>, loc: ILocation): Yuan
+
+
+  companion object {
+    /** 年紫白入中 */
+    fun getCenter(yuan: Yuan , year: StemBranch) : Int {
+      val steps = year.getAheadOf(StemBranch.甲子)
+      return when(yuan) {
+        Yuan.UP -> FlyingStar.getValue(1 , steps , true)
+        Yuan.MID-> FlyingStar.getValue(4 , steps , true)
+        Yuan.LOW-> FlyingStar.getValue(7 , steps , true)
+      }
+    }
+  }
+
 }
 
 class YuanImpl(val solarTermsImpl: ISolarTerms) : IYuan, Serializable {
@@ -42,4 +57,5 @@ class YuanImpl(val solarTermsImpl: ISolarTerms) : IYuan, Serializable {
       }
     }
   }
+
 }

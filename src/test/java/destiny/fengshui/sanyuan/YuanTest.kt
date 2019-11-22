@@ -3,10 +3,19 @@
  */
 package destiny.fengshui.sanyuan
 
+import destiny.core.chinese.StemBranch
 import kotlin.test.Test
 import kotlin.test.assertSame
 
 class YuanTest {
+
+  @Test
+  fun testCenter() {
+    assertSame(1 , IYuan.getCenter(Yuan.LOW , StemBranch.己卯))
+    assertSame(5 , IYuan.getCenter(Yuan.LOW , StemBranch.乙亥))
+    assertSame(8 , IYuan.getCenter(Yuan.LOW , StemBranch.己亥)) // 2019
+  }
+
 
   @Test
   fun testYuan() {
