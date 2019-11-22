@@ -71,6 +71,35 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
                                 StemBranchOptional.empty(),
                                 StemBranchOptional.empty())
     }
+
+    fun EightWordsNullable.getIntList(): List<Int> {
+      return listOf(
+        year.stem?.indexFromOne ?: 0,
+        year.branch?.indexFromOne ?: 0,
+        month.stem?.indexFromOne ?: 0,
+        month.branch?.indexFromOne ?: 0,
+        day.stem?.indexFromOne ?: 0,
+        day.branch?.indexFromOne ?: 0,
+        hour.stem?.indexFromOne ?: 0,
+        hour.branch?.indexFromOne ?: 0)
+    }
+
+    fun getFromIntList(list: List<Int>): EightWordsNullable {
+      assert(list.size == 8)
+      val yearStem = if (list[0] == 0) null else Stem[list[0] - 1]
+      val yearBranch = if (list[1] == 0) null else Branch[list[1] - 1]
+      val monthStem = if (list[2] == 0) null else Stem[list[2] - 1]
+      val monthBranch = if (list[3] == 0) null else Branch[list[3] - 1]
+      val dayStem = if (list[4] == 0) null else Stem[list[4] - 1]
+      val dayBranch = if (list[5] == 0) null else Branch[list[5] - 1]
+      val hourStem = if (list[6] == 0) null else Stem[list[6] - 1]
+      val hourBranch = if (list[7] == 0) null else Branch[list[7] - 1]
+      return EightWordsNullable(
+        StemBranchOptional[yearStem, yearBranch],
+        StemBranchOptional[monthStem, monthBranch],
+        StemBranchOptional[dayStem, dayBranch],
+        StemBranchOptional[hourStem, hourBranch])
+    }
   }
 }
 
@@ -112,5 +141,20 @@ data class EightWords(override val year: StemBranch,
       hour.stem + day.stem + month.stem + year.stem
       + "\n" +
       hour.branch + day.branch + month.branch + year.branch)
+  }
+
+  companion object {
+    fun EightWords.getIntList(): List<Int> {
+      return listOf(
+        year.stem.indexFromOne,
+        year.branch.indexFromOne,
+        month.stem.indexFromOne,
+        month.branch.indexFromOne,
+        day.stem.indexFromOne,
+        day.branch.indexFromOne,
+        hour.stem.indexFromOne,
+        hour.branch.indexFromOne
+                   )
+    }
   }
 }
