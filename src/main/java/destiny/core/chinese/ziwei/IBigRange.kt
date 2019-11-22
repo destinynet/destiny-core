@@ -8,7 +8,7 @@ import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 
 /** 起大限  */
@@ -34,7 +34,7 @@ interface IBigRange : Descriptive {
     return map.entries.map { entry ->
       val sb = Ziwei.getStemBranchOf(entry.key, stemOf寅)
       sb to entry.value
-    }.sortedBy { (_ , pair) -> pair.first  }.toMap()
+    }.sortedBy { (_, pair) -> pair.first }.toMap()
   }
 
 
@@ -53,6 +53,6 @@ interface IBigRange : Descriptive {
 
   companion object {
 
-    val logger = LoggerFactory.getLogger(IBigRange::class.java)!!
+    val logger = KotlinLogging.logger { }
   }
 }

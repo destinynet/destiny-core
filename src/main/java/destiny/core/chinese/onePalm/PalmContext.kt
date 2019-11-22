@@ -10,9 +10,11 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IRisingSign
+import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -122,6 +124,6 @@ class PalmContext(override val positiveImpl: IPositive,
   }
 
   companion object {
-    val logger = LoggerFactory.getLogger(PalmContext::class.java)!!
+    val logger = KotlinLogging.logger { }
   }
 }

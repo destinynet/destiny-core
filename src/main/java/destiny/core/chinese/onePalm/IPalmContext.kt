@@ -7,16 +7,17 @@ import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime
 
 interface IPalmContext {
 
-  val positiveImpl : IPositive
-  val dayHourImpl : IDayHour
-//  val hourImpl : IHour
+  val positiveImpl: IPositive
+  val dayHourImpl: IDayHour
+  //  val hourImpl : IHour
 //  val midnightImpl : IMidnight
-  val monthAlgo : IFinalMonthNumber.MonthAlgo
+  val monthAlgo: IFinalMonthNumber.MonthAlgo
   val trueRisingSign: Boolean
   val changeDayAfterZi: Boolean
   val clockwiseHouse: Boolean
@@ -42,7 +43,7 @@ interface IPalmContext {
 
     val finalMonthNum =
       IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, monthBranch, dayNum,
-                                            monthAlgo)
+        monthAlgo)
 
     // 年上起月
     val month: Branch = yearBranch.next((finalMonthNum - 1) * positive)
@@ -80,7 +81,7 @@ interface IPalmContext {
 
     val finalMonthNum =
       IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, monthBranch, dayNum,
-                                            monthAlgo)
+        monthAlgo)
 
     logger.trace("yearBranch = {}", yearBranch)
 
@@ -109,7 +110,7 @@ interface IPalmContext {
                                leap: Boolean,
                                monthNum: Int,
                                dayNum: Int,
-                               hourBranch: Branch) : IPalmModel
+                               hourBranch: Branch): IPalmModel
 
 
   /**
@@ -125,10 +126,11 @@ interface IPalmContext {
     return trueRising?.let { rising ->
       // 以上升星座 rising 作為預先計算的命宮
       getPalmWithMainBranch(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
-                            chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, rising, monthBranch, monthAlgo,
-                            clockwiseHouse)
-    } ?: getPalmWithoutMainBranch(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
-                                  chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, monthBranch, monthAlgo, clockwiseHouse)
+        chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, rising, monthBranch, monthAlgo,
+        clockwiseHouse)
+    }
+      ?: getPalmWithoutMainBranch(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
+        chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, monthBranch, monthAlgo, clockwiseHouse)
   }
 
   /**
@@ -150,11 +152,11 @@ interface IPalmContext {
                       name: String?): IPalmMetaModelDesc
 
   /** 計算 [IBirthDataNamePlace] */
-  fun getPalm(data: IBirthDataNamePlace) : IPalmMetaModel {
-    return getPalm(data.gender , data.time , data.location , data.place , data.name)
+  fun getPalm(data: IBirthDataNamePlace): IPalmMetaModel {
+    return getPalm(data.gender, data.time, data.location, data.place, data.name)
   }
 
   companion object {
-    val logger = LoggerFactory.getLogger(IPalmContext::class.java)!!
+    val logger = KotlinLogging.logger { }
   }
 }

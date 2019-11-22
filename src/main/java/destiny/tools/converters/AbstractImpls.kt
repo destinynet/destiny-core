@@ -5,7 +5,7 @@ package destiny.tools.converters
 
 import com.google.common.collect.HashBiMap
 import destiny.core.Descriptive
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 
 /**
@@ -47,7 +47,7 @@ open class AbstractImpls<T>(override val key: String,
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()
 
-  private val logger = LoggerFactory.getLogger(javaClass)!!
+  private val logger = KotlinLogging.logger {  }
 
   init {
     addImpl(defaultImpl, defaultImplKey)
@@ -65,7 +65,7 @@ open class AbstractImpls<T>(override val key: String,
     return implValueMap[t] ?: {
       logger.warn("cannot get value from {} . implValueMap = {}. returning default : {}",
                   t, implValueMap, defaultImpl)
-      implValueMap[defaultImpl]!!
+      implValueMap.getValue(defaultImpl)
     }.invoke()
   }
 

@@ -152,7 +152,7 @@ class Builder(
 
       val fromTo = flowBigMap.getValue(sb) // 必定不為空
       val smallRanges = branchSmallRangesMap.getValue(sb.branch)
-      HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap[sb.branch]!!, flyMap.getValue(sb), fromTo.first,
+      HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
                 fromTo.second, smallRanges)
     }.toSet()
 

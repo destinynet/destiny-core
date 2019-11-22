@@ -479,7 +479,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
         } + 1
         Triple(holoHexagram, lineIndex, if (lineIndex > 0) acquiredLines[lineIndex - 1] else null)
       }.takeIf { (_, lineIndex) -> lineIndex > 0 }
-      )?.let { (hex, lineIndex, line) ->
+      )?.let { (hex, lineIndex, line: HoloLine?) ->
       // 大運的干支 , 指的是 先後天卦，走到哪一爻, 該爻的納甲
       val stemBranch = settings.getStemBranch(hex, lineIndex)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()

@@ -10,13 +10,10 @@ import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.time.format.DateTimeFormatter
 
 class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseStringTools.NULL_CHAR) {
-
-  private val timeDecorator = TimeSecDecoratorChinese()
-  private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
 
   init {
     val centerSign: Pair<ZodiacSign, Double> =
@@ -109,7 +106,9 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
   } // init
 
   companion object {
-    private val logger = LoggerFactory.getLogger(TimeLine::class.java)!!
+    private val logger = KotlinLogging.logger { }
+    private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
+    private val timeDecorator = TimeSecDecoratorChinese()
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 

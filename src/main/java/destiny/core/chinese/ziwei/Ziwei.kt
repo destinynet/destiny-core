@@ -14,7 +14,6 @@ import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*
 import destiny.core.chinese.ziwei.StarUnlucky.火星
 import destiny.core.chinese.ziwei.StarUnlucky.鈴星
-import org.slf4j.LoggerFactory
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 
@@ -23,8 +22,6 @@ import java.time.chrono.ChronoLocalDate
 interface Ziwei {
 
   companion object {
-
-    private val logger = LoggerFactory.getLogger(Ziwei::class.java)!!
 
     /**
      * 命宮 : (月數 , 時支) -> 地支

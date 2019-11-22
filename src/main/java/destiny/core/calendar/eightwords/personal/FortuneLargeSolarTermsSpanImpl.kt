@@ -154,8 +154,8 @@ class FortuneLargeSolarTermsSpanImpl(
           } else {
             //之前計算過
             logger.debug("順推 cache.get({}) hit", i)
-            targetGmtJulDay = hashMap[i]
-            stepGmtJulDay = targetGmtJulDay!! + 1
+            targetGmtJulDay = hashMap.getValue(i)
+            stepGmtJulDay = targetGmtJulDay + 1
           }
 
           stepSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay).next()
@@ -184,8 +184,8 @@ class FortuneLargeSolarTermsSpanImpl(
           } else {
             //之前計算過
             logger.debug("逆推 cache.get({}) hit", i)
-            targetGmtJulDay = hashMap[i]
-            stepGmtJulDay = targetGmtJulDay!! - 1
+            targetGmtJulDay = hashMap.getValue(i)
+            stepGmtJulDay = targetGmtJulDay - 1
           }
 
           stepSolarTerms = solarTermsImpl.getSolarTermsFromGMT(stepGmtJulDay)

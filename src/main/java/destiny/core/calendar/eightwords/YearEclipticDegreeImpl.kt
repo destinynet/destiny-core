@@ -11,7 +11,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.StemBranch
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
@@ -107,6 +107,6 @@ open class YearEclipticDegreeImpl(
 
   companion object {
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
-    val logger = LoggerFactory.getLogger(YearEclipticDegreeImpl::class.java)!!
+    val logger = KotlinLogging.logger { }
   }
 }

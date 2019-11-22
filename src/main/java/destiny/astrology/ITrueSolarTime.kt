@@ -7,6 +7,7 @@ package destiny.astrology
 
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
@@ -48,7 +49,7 @@ interface ITrueSolarTime {
   }
 
   companion object {
-    val logger = LoggerFactory.getLogger(ITrueSolarTime::class.java)!!
+    val logger = KotlinLogging.logger {  }
   }
 
 }

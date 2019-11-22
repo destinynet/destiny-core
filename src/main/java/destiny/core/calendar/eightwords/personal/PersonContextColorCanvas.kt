@@ -13,8 +13,8 @@ import destiny.core.calendar.eightwords.TimeLine
 import destiny.core.chinese.NaYin
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
+import mu.KotlinLogging
 import org.apache.commons.lang3.StringUtils
-import org.slf4j.LoggerFactory
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -237,7 +237,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
   }
 
   companion object {
-    private val logger = LoggerFactory.getLogger(PersonContextColorCanvas::class.java)!!
+    private val logger = KotlinLogging.logger { }
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 

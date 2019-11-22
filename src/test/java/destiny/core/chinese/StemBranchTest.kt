@@ -125,9 +125,30 @@ class StemBranchTest {
   }
 
   @Test
+  fun testPlusMinus() {
+    assertSame(StemBranch["乙丑"], 甲子 + 1)
+    assertSame(StemBranch["癸亥"], 甲子 + 59)
+    assertSame(StemBranch["甲子"], 甲子 + 60)
+    assertSame(StemBranch["甲子"], 甲子 + 120)
+
+    assertSame(StemBranch["癸亥"], 甲子 - 1)
+    assertSame(StemBranch["乙丑"], 甲子 - 59)
+    assertSame(StemBranch["甲子"], 甲子 - 60)
+    assertSame(StemBranch["甲子"], 甲子 - 120)
+
+    assertSame(StemBranch["甲子"], 癸亥 + 1)
+    assertSame(StemBranch["癸亥"], 癸亥 + 60)
+
+    assertSame(StemBranch["壬戌"], 癸亥 - 1)
+    assertSame(StemBranch["甲子"], 癸亥 - 59)
+  }
+
+  @Test
   fun testNext() {
     assertSame(甲子, 甲子.next(0))
     assertSame(StemBranch["乙丑"], 甲子.next(1))
+    assertSame(StemBranch["乙丑"], 甲子.prev(-1))
+    assertSame(StemBranch["癸亥"], 甲子.next(-1))
     assertSame(StemBranch["癸亥"], 甲子.next(59))
     assertSame(甲子, 甲子.next(60))
     assertSame(甲子, 甲子.next(600))
@@ -201,7 +222,7 @@ class StemBranchTest {
     val SBArray1 = arrayOf(StemBranch[10], StemBranch[甲, 午], StemBranch[50], StemBranch['甲', '子'], StemBranch[20])
     val expected =
       arrayOf(StemBranch['甲', '子'], StemBranch['甲', '戌'], StemBranch['甲', '申'], StemBranch['甲', '午'],
-              StemBranch['甲', '寅'])
+        StemBranch['甲', '寅'])
     Arrays.sort(SBArray1)
     assertTrue(Arrays.equals(expected, SBArray1))
   }

@@ -16,4 +16,12 @@ interface ILoop<T> {
 
   val prev: T
     get() = prev(1)
+
+  operator fun plus(value: Int): T {
+    return this.next(value)
+  }
+
+  operator fun minus(value: Int) : T {
+    return this.prev(value)
+  }
 }
