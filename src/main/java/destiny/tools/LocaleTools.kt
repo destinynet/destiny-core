@@ -66,7 +66,7 @@ object LocaleTools {
     return getString(localeStringMap , locale)?: {
       val bestMatchingLocale = getBestMatchingLocale(locale , localeStringMap.keys)
       bestMatchingLocale?.let {
-        return@let localeStringMap[bestMatchingLocale]
+        localeStringMap[bestMatchingLocale]
       }?:localeStringMap.values.first()
     }.invoke()
 

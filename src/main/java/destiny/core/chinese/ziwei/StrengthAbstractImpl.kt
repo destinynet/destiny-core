@@ -97,9 +97,7 @@ abstract class StrengthAbstractImpl : IStrength, Serializable {
   /** 取得一個星體，在 12 個宮位的廟旺表  */
   override fun getMapOf(star: ZStar): Map<Branch, Int> {
     // 先從特殊實作層找起
-    return getImplMapOf(star).let {
-      return@let it ?: emptyMap()
-    }.toMutableMap().apply {
+    return (getImplMapOf(star) ?: emptyMap()).toMutableMap().apply {
       // 再與 commonTable 整合
       commonStarMap[star]?.forEach { (branch, intValue) ->
         this.putIfAbsent(branch, intValue)

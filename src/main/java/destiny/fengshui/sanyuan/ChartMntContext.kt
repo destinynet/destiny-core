@@ -66,9 +66,9 @@ object ChartMntContext {
 
     val defaultStart = (period + symbolPeriods.indexOf(symbol)).let {
       if (it > 9)
-        return@let it - 9
+        it - 9
       else
-        return@let it
+        it
     }
 
     val 原始配卦: Symbol? = SymbolAcquired.getSymbolNullable(defaultStart)

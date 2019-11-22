@@ -42,7 +42,7 @@ interface IRelativeTransit {
   fun getPeriodRelativeTransitGmtJulDays(transitStar: Star, relativeStar: Star, fromJulDay: Double, toJulDay: Double, angle: Double): List<Double> {
 
     return generateSequence(getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true)) {
-      getRelativeTransit(transitStar, relativeStar, angle, it+0.000001, true)
+      getRelativeTransit(transitStar, relativeStar, angle, it + 0.000001, true)
     }.takeWhile { it < toJulDay }
       .toList()
   }
@@ -101,7 +101,7 @@ interface IRelativeTransit {
     val realAngles: List<Double> = angles
       .flatMap {
         if (it != 0.0)
-          listOf(it , 360.0-it)
+          listOf(it, 360.0 - it)
         else
           listOf(it)
       }
@@ -114,16 +114,16 @@ interface IRelativeTransit {
     }
       .sortedBy { (julDay, _) -> julDay }
       .let {
-        return@let if (isForward)
+        if (isForward)
           it.firstOrNull()  // 順推，取第一個（最接近當下）
         else
           it.lastOrNull()   // 逆推，取最後一個（最接近當下）
       }?.let { (julDay, angle) ->
-      return@let if (angle > 180)
-        julDay to 360 - angle
-      else
-        julDay to angle
-    }
+        if (angle > 180)
+          julDay to 360 - angle
+        else
+          julDay to angle
+      }
 
   }
 

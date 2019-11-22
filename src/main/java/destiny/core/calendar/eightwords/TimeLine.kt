@@ -20,8 +20,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
 
   init {
     val centerSign: Pair<ZodiacSign, Double> =
-      if (model.solarTermsTimePos.firstHalf)
-      {
+      if (model.solarTermsTimePos.firstHalf) {
         // 時刻 在 前半節氣
         model.nextSolarSign
       } else {
@@ -34,7 +33,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
       val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, revJulDayFunc)
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString(), 1, 1, title = title)
-      setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 1, title=title)
+      setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 1, title = title)
       //setText(pair.first.branch.toString() , 1 , 5 , "white" , "teal" , null)
       setText(pair.first.branch.toString(), 1, 5, "white", "teal", null, null, false, null)
     }
@@ -73,8 +72,8 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
 
     val leftBlocks = ((toLeftDays / (toLeftDays + toRightDays)) * 30).toInt().let {
       when {
-        it <= 2 -> return@let 2
-        it >= 28 -> return@let 28
+        it <= 2 -> 2
+        it >= 28 -> 28
         else -> it
       }
     }
@@ -104,8 +103,8 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
       left to right
     }.invoke()
 
-    setText(leftDaysString, 4, starIndex - leftDaysString.length * 2 , "gray")
-    setText(rightDaysString, 4, starIndex + 2 , "gray")
+    setText(leftDaysString, 4, starIndex - leftDaysString.length * 2, "gray")
+    setText(rightDaysString, 4, starIndex + 2, "gray")
 
   } // init
 

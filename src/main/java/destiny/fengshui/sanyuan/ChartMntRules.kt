@@ -38,9 +38,9 @@ object ChartMntRules {
       block.mnt == block.dir
     }.let {
       if (it)
-        return@let ChartPattern.八純卦
+        ChartPattern.八純卦
       else
-        return@let null
+        null
     }
   }
 
@@ -69,7 +69,7 @@ object ChartMntRules {
         .map { chartBlock -> chartBlock.dir }
         .toSet()
 
-      return@let when {
+      when {
         離宮ints.containsAll(set) -> {
           val map = 離乾震.map { symbol -> symbol to chart.getChartBlockFromSymbol(symbol).dir }.toMap()
           ChartPattern.七星打劫(Symbol.離, map)
@@ -103,7 +103,7 @@ object ChartMntRules {
   fun contTriplet(chart: IChartMnt): ChartPattern.連珠三般卦? {
     fun distance(v1: Int, v2: Int): Int {
       return abs(v1 - v2).let { abs ->
-        return@let when {
+        when {
           abs <= 6 -> abs
           abs == 8 -> 1 // 1 & 9
           else -> 2 // 7(1,8 or 2,9)
@@ -266,7 +266,7 @@ object ChartMntRules {
    */
   fun beneathSameOrigin(chartBlock: ChartBlock): BlockPattern.伏吟元旦盤? {
     return chartBlock.let {
-      return@let when {
+      when {
         SymbolAcquired.getSymbol(it.mnt) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.山)
         SymbolAcquired.getSymbol(it.dir) === it.symbol -> BlockPattern.伏吟元旦盤(MntDir.向)
         else -> null
@@ -294,7 +294,7 @@ object ChartMntRules {
    * */
   fun beneathSameSky(chartBlock: ChartBlock): BlockPattern.伏吟天盤? {
     return chartBlock.let {
-      return@let when {
+      when {
         it.period == it.mnt -> BlockPattern.伏吟天盤(MntDir.山)
         it.period == it.dir -> BlockPattern.伏吟天盤(MntDir.向)
         else -> null
