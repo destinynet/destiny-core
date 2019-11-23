@@ -3,7 +3,11 @@
  */
 package destiny.fengshui.sanyuan
 
+import destiny.core.calendar.SolarTerms.小雪
+import destiny.core.calendar.SolarTerms.立春
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.StemBranch.乙丑
+import destiny.core.chinese.StemBranch.癸酉
 import destiny.fengshui.sanyuan.NineStar.*
 import destiny.iching.Symbol.*
 import kotlin.test.Test
@@ -97,4 +101,65 @@ class NineStarToolsTest {
     }
   }
 
+
+  /**
+   * 日紫白飛星到方
+   */
+  @Test
+  fun testGetDayStar() {
+    // 2019-11-24 乙亥月 , 乙丑日 , 參考 http://www.laohuangli.net/jiugongfeixing/2019/2019-11-24.html
+    assertSame(貪狼 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 坎))
+    assertSame(巨門 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 坤))
+    assertSame(祿存 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 震))
+    assertSame(文曲 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 巽))
+    //assertSame(廉貞 ,  NineStarTools.getDayStar(小雪 , StemBranch.乙丑 , null))
+    assertSame(武曲 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 乾))
+    assertSame(破軍 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 兌))
+    assertSame(左輔 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 艮))
+    assertSame(右弼 ,  NineStarTools.getDayStar(小雪 , 乙丑 , 離))
+
+    // 2019-2-5 丙寅月 , 癸酉日 , 參考 http://www.laohuangli.net/jiugongfeixing/2019/2019-2-5.html
+    //assertSame(貪狼 ,  NineStarTools.getDayStar(立春 , 癸酉 ))
+    assertSame(巨門 ,  NineStarTools.getDayStar(立春 , 癸酉 , 乾))
+    assertSame(祿存 ,  NineStarTools.getDayStar(立春 , 癸酉 , 兌))
+    assertSame(文曲 ,  NineStarTools.getDayStar(立春 , 癸酉 , 艮))
+    assertSame(武曲 ,  NineStarTools.getDayStar(立春 , 癸酉 , 坎))
+    assertSame(破軍 ,  NineStarTools.getDayStar(立春 , 癸酉 , 坤))
+    assertSame(左輔 ,  NineStarTools.getDayStar(立春 , 癸酉 , 震))
+    assertSame(右弼 ,  NineStarTools.getDayStar(立春 , 癸酉 , 巽))
+  }
+
+  /**
+   * 時紫白飛星到方
+   * test data : 2019-11-24 12:30 , 己亥年 , 乙亥月 , 乙丑日 , 午時
+   * 參考資料 http://www.laohuangli.net/jiugongfeixing/2019/2019-11-24.html
+   */
+  @Test
+  fun testGetHourStar_夏至後冬至前() {
+    assertSame(文曲 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 坎))
+    assertSame(武曲 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 艮))
+    assertSame(巨門 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 震))
+    assertSame(貪狼 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 巽))
+    assertSame(廉貞 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 離))
+    assertSame(祿存 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 坤))
+    assertSame(破軍 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 兌))
+    assertSame(左輔 , NineStarTools.getHourStar(241.0 , 丑 , 午 , 乾))
+  }
+
+  /**
+   * 時紫白飛星到方
+   * test data : 2019-2-5 12:30 , 己亥年 , 丙寅月 , 癸酉日 , 午時
+   * 參考資料 http://www.laohuangli.net/jiugongfeixing/2019/2019-2-5.html
+   */
+  @Test
+  fun testGetHourStar_冬至後夏至前() {
+    assertSame(祿存 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 坎))
+    assertSame(貪狼 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 艮))
+    assertSame(廉貞 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 震))
+    assertSame(武曲 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 巽))
+    assertSame(巨門 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 離))
+    assertSame(文曲 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 坤))
+    assertSame(右弼 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 兌))
+    assertSame(左輔 , NineStarTools.getHourStar(316.0 , 酉 , 午 , 乾))
+  }
 }

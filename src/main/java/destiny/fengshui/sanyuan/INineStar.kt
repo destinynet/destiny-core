@@ -8,11 +8,16 @@ import destiny.iching.Symbol
 import java.time.chrono.ChronoLocalDateTime
 
 
+/**
+ * 九星飛佈 年月日時
+ */
 interface INineStar {
 
   enum class Scale {
     YEAR ,
-    MONTH
+    MONTH ,
+    DAY ,
+    HOUR
   }
 
   /** 此時 ([lmt]) 此地 ([loc]) 此方位 ([symbol]) 的年、月、日、時 九星 */
