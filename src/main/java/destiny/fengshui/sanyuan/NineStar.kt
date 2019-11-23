@@ -3,28 +3,43 @@
  */
 package destiny.fengshui.sanyuan
 
+import destiny.core.ILoop
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 
-enum class NineStar(val period: Int) {
-  貪狼(1), // 坎
-  巨門(2), // 坤
-  祿存(3), // 震
-  文曲(4), // 巽
-  廉貞(5),
-  武曲(6), // 乾
-  破軍(7), // 兌
-  左輔(8), // 艮
-  右弼(9); // 離
+enum class NineStar(val period: Int) : ILoop<NineStar> {
+  貪狼(1), // 一白水星 , 坎
+  巨門(2), // 二黑土星 , 坤
+  祿存(3), // 三碧木星 , 震
+  文曲(4), // 四綠木星 , 巽
+  廉貞(5), // 五黃土星
+  武曲(6), // 六白金星 , 乾
+  破軍(7), // 七赤金星 , 兌
+  左輔(8), // 八白土星 , 艮
+  右弼(9); // 九紫火星 , 離
 
   /** 取得對應的八卦 */
   val symbol: Symbol? = SymbolAcquired.getSymbolNullable(period)
 
+  override fun next(n: Int): NineStar {
+    return (this.period + n).toStar()
+  }
+
   companion object {
 
     /** 透過數字，反查九星 */
-    fun getStar(period: Int): NineStar {
-      return values().first { it.period == period }
+    fun Int.toStar(): NineStar {
+      return of(this)
     }
+
+    fun of(period: Int): NineStar {
+      return if (period in 1..9) {
+        values().first { it.period == period }
+      } else {
+        val newPeriod = (period % 9).let { r -> if (r == 0) 9 else r }.let { v -> if (v < 1) v + 9 else v }
+        of(newPeriod)
+      }
+    }
+
   }
 }
