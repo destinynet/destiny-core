@@ -3,18 +3,19 @@
  */
 package destiny.fengshui.sanyuan
 
-import destiny.core.calendar.SolarTerms.小雪
-import destiny.core.calendar.SolarTerms.立春
+import destiny.core.calendar.SolarTerms.*
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.StemBranch.乙丑
-import destiny.core.chinese.StemBranch.癸酉
+import destiny.core.chinese.StemBranch.*
 import destiny.fengshui.sanyuan.NineStar.*
 import destiny.iching.Symbol.*
+import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertSame
 
 
 class NineStarToolsTest {
+
+  private val logger = KotlinLogging.logger {  }
 
 
   /**
@@ -127,6 +128,9 @@ class NineStarToolsTest {
     assertSame(破軍 ,  NineStarTools.getDayStar(立春 , 癸酉 , 坤))
     assertSame(左輔 ,  NineStarTools.getDayStar(立春 , 癸酉 , 震))
     assertSame(右弼 ,  NineStarTools.getDayStar(立春 , 癸酉 , 巽))
+
+    // 2017-11-8 8:00 辰時 , 丁酉年 , 辛亥月 , 己亥日 , 戊辰時 , 參考 https://play.google.com/store/apps/details?id=com.amtbfate.CalendarZibai&hl=zh_TW
+    logger.info("center = {}" , NineStarTools.getCenterStar(立冬 , 己亥))
   }
 
   /**

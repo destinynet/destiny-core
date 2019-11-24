@@ -121,7 +121,13 @@ object NineStarTools {
   fun getDayStar(solarTerms: SolarTerms, day: StemBranch, symbol: Symbol): NineStar {
     val center = getCenterStar(solarTerms, day)
     val steps: Int = FlyingStar.symbolPeriods.indexOf(symbol)
-    return NineStar.of(center.period + steps)
+    return if (solarTerms.zodiacDegree >= 270 || solarTerms.zodiacDegree < 90) {
+      // 冬至後 to 夏至前
+      NineStar.of(center.period + steps)
+    } else {
+      // 夏至後 to 冬至前
+      NineStar.of(center.period - steps)
+    }
   }
 
   /**
@@ -129,9 +135,7 @@ object NineStarTools {
    */
   fun getDayStar(zodiacDegree: Double, day: StemBranch, symbol: Symbol): NineStar {
     val solarTerms = SolarTerms.getFromDegree(zodiacDegree)
-    val center = getCenterStar(solarTerms, day)
-    val steps: Int = FlyingStar.symbolPeriods.indexOf(symbol)
-    return NineStar.of(center.period + steps)
+    return getDayStar(solarTerms, day, symbol)
   }
 
   /** 承上 , 傳回 map */
