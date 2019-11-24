@@ -71,8 +71,9 @@ class MountainYinYangEmptyImpl : IMountainYinYang, Serializable {
 
 
 /**
- * 三元盤
+ * 三元盤 (少用)
  * 與 玄空派 [MountainYinYangEmptyImpl] 的差別只有 [Symbol] 四卦
+ * 通常直接用 [MountainYinYangEmptyImpl]
  * 玄空派 認為 乾、坤、艮、巽 ==> 陽
  * 三元派 認為 乾、坤、艮、巽 ==> 陰
  *

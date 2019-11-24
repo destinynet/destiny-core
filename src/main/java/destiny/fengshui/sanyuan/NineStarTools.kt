@@ -124,8 +124,26 @@ object NineStarTools {
     return NineStar.of(center.period + steps)
   }
 
+  /**
+   * 日紫白飛星到方
+   */
+  fun getDayStar(zodiacDegree: Double, day: StemBranch, symbol: Symbol): NineStar {
+    val solarTerms = SolarTerms.getFromDegree(zodiacDegree)
+    val center = getCenterStar(solarTerms, day)
+    val steps: Int = FlyingStar.symbolPeriods.indexOf(symbol)
+    return NineStar.of(center.period + steps)
+  }
+
   /** 承上 , 傳回 map */
   fun getDayStarMap(solarTerms: SolarTerms, day: StemBranch): Map<Symbol, NineStar> {
+    return Symbol.values().map { symbol ->
+      symbol to getDayStar(solarTerms, day, symbol)
+    }.toMap()
+  }
+
+  /** 承上 , 傳回 map */
+  fun getDayStarMap(zodiacDegree: Double, day: StemBranch): Map<Symbol, NineStar> {
+    val solarTerms = SolarTerms.getFromDegree(zodiacDegree)
     return Symbol.values().map { symbol ->
       symbol to getDayStar(solarTerms, day, symbol)
     }.toMap()
