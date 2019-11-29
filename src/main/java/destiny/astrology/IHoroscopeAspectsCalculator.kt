@@ -78,8 +78,6 @@ interface IHoroscopeAspectsCalculator  {
       .toSet()
   }
 
-  /** ======================== 原有 [IAspectApplySeparate] ======================== */
-
   /**
    * 一個星盤當中，兩個星體，是否形成交角。以及即將形成 ([APPLYING] , 入相位)，還是離開該交角 ([SEPARATING] , 出相位)
    * 如果不是形成 aspect 交角，會傳回 null

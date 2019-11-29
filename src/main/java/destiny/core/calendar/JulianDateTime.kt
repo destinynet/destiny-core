@@ -18,30 +18,22 @@ class JulianDateTime private constructor(private val date: JulianDate, private v
   ChronoLocalDateTime<JulianDate> {
 
   /** 一定為正值  */
-  val yearOfEra: Int
-    get() = date.get(YEAR_OF_ERA)
+  val yearOfEra: Int = date.get(YEAR_OF_ERA)
 
   /** 與 [LocalDate.year] 一樣，都為 proleptic year . 西元元年=1 , 西元前一年=0  */
-  val year: Int
-    get() = date.get(YEAR)
+  val year: Int = date.get(YEAR)
 
-  val month: Int
-    get() = date.get(MONTH_OF_YEAR)
+  val month: Int = date.get(MONTH_OF_YEAR)
 
-  val dayOfMonth: Int
-    get() = date.get(DAY_OF_MONTH)
+  val dayOfMonth: Int = date.get(DAY_OF_MONTH)
 
-  val hour: Int
-    get() = time.hour
+  val hour: Int  = time.hour
 
-  val minute: Int
-    get() = time.minute
+  val minute: Int = time.minute
 
-  val second: Int
-    get() = time.second
+  val second: Int = time.second
 
-  val nano: Int
-    get() = time.nano
+  val nano: Int = time.nano
 
   override fun toLocalDate(): JulianDate {
     return date
