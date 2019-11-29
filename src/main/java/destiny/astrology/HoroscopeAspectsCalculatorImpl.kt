@@ -19,9 +19,9 @@ class HoroscopeAspectsCalculatorImpl(
 ) : IHoroscopeAspectsCalculator, Serializable {
 
 
-  private fun aspectDataFun(twoPoints: Set<Point>, aspects: Collection<Aspect>, h: IHoroscopeModel): AspectData? {
+  private fun IHoroscopeModel.getAspectData(twoPoints: Set<Point>, aspects: Collection<Aspect>): AspectData? {
 
-    val posMap = h.positionMap
+    val posMap = this.positionMap
 
     return twoPoints
       .takeIf { it.size == 2 } // 確保裡面只有兩個 Point
@@ -42,13 +42,13 @@ class HoroscopeAspectsCalculatorImpl(
             val error = errorAndScore.first
             val score = errorAndScore.second
 
-            val lmt = h.lmt //目前時間
+            val lmt = this.lmt //目前時間
             val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
             val hContext: IHoroscopeContext =
-              HoroscopeContext(starPosWithAzimuth, houseCuspImpl, pointPosFuncMap, h.points, h.houseSystem,
-                h.coordinate, h.centric)
-            val h2 = hContext.getHoroscope(lmt = later, loc = h.location, place = h.place, points = h.points)
+              HoroscopeContext(starPosWithAzimuth, houseCuspImpl, pointPosFuncMap, this.points, this.houseSystem,
+                this.coordinate, this.centric)
+            val h2 = hContext.getHoroscope(lmt = later, loc = this.location, place = this.place, points = this.points)
 
             val deg1Next = h2.getPositionWithAzimuth(p1).lng
             val deg2Next = h2.getPositionWithAzimuth(p2).lng
@@ -63,12 +63,10 @@ class HoroscopeAspectsCalculatorImpl(
   }
 
   /** 針對整體 */
-  override fun getAspectData(h: IHoroscopeModel,
-                             points: Collection<Point>,
-                             aspects: Collection<Aspect>): Set<AspectData> {
+  override fun IHoroscopeModel.getAspectData(points: Collection<Point>, aspects: Collection<Aspect>): Set<AspectData> {
     return Sets.combinations(points.toSet(), 2)
       .asSequence()
-      .mapNotNull { aspectDataFun(it, aspects, h) }
+      .mapNotNull { this.getAspectData(it, aspects) }
       .toSet()
   }
 
@@ -80,7 +78,7 @@ class HoroscopeAspectsCalculatorImpl(
     return points
       .asSequence()
       .map { eachPoint -> setOf(point, eachPoint) }
-      .mapNotNull { twoPoints -> aspectDataFun(twoPoints, aspects, h) }
+      .mapNotNull { twoPoints -> h.getAspectData(twoPoints, aspects) }
       .toSet()
   }
 

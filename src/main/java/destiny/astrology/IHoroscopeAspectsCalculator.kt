@@ -15,12 +15,12 @@ import mu.KotlinLogging
 interface IHoroscopeAspectsCalculator  {
 
   /** 取得此星盤中，所有的交角資料 */
-  fun getAspectData(h: IHoroscopeModel ,
-                    points : Collection<Point> = h.positionMap.keys,
+  fun IHoroscopeModel.getAspectData(
+                    points : Collection<Point> = this.positionMap.keys,
                     aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)) : Set<AspectData>
 
   /**
-   * 取得於此 [Point] 形成交角的資料
+   * 取得於此 [Point] , 在此星盤 [h] 中 , 形成交角的資料
    */
   fun getAspectData(point: Point,
                     h: IHoroscopeModel,
@@ -52,10 +52,10 @@ interface IHoroscopeAspectsCalculator  {
   }
 
 
-  fun getPointAspect(point: Point, horoscope: IHoroscopeModel,
+  fun IHoroscopeModel.getPointAspect(point: Point,
                      points: Collection<Point>,
                      aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)): Map<Point, Aspect> {
-    return getPointAspect(point, horoscope.positionMap, points, aspects)
+    return getPointAspect(point, this.positionMap, points, aspects)
   }
 
 
@@ -82,14 +82,15 @@ interface IHoroscopeAspectsCalculator  {
    * 一個星盤當中，兩個星體，是否形成交角。以及即將形成 ([APPLYING] , 入相位)，還是離開該交角 ([SEPARATING] , 出相位)
    * 如果不是形成 aspect 交角，會傳回 null
    * */
-  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspect: Aspect): AspectData.Type? {
-    return getAspectData(h , setOf(p1 , p2) , setOf(aspect)).firstOrNull()?.type
+  fun IHoroscopeModel.getAspectType(p1: Point, p2: Point, aspect: Aspect): AspectData.Type? {
+    return this.getAspectData(setOf(p1 , p2) , setOf(aspect)).firstOrNull()?.type
+    //return getAspectData(this , setOf(p1 , p2) , setOf(aspect)).firstOrNull()?.type
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun getAspectAndType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect , AspectData.Type>? {
+  fun IHoroscopeModel.getAspectAndType(p1: Point, p2: Point, aspects: Collection<Aspect>): Pair<Aspect , AspectData.Type>? {
     return aspects.asSequence().map { aspect ->
-      aspect to getAspectType(h, p1, p2, aspect)
+      aspect to this.getAspectType(p1, p2, aspect)
     }.filter { (_, type) ->
       type != null
     }.map { (aspect, type) ->
@@ -98,8 +99,8 @@ interface IHoroscopeAspectsCalculator  {
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
-  fun getAspectType(h: IHoroscopeModel, p1: Point, p2: Point, aspects: Collection<Aspect>): AspectData.Type? {
-    return getAspectAndType(h, p1, p2, aspects)?.second
+  fun IHoroscopeModel.getAspectType(p1: Point, p2: Point, aspects: Collection<Aspect>): AspectData.Type? {
+    return getAspectAndType(p1, p2, aspects)?.second
   }
 
   companion object {
