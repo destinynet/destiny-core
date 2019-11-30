@@ -76,3 +76,22 @@ val Throwable.stackTraceString: String
     this.printStackTrace(PrintWriter(stringWriter, true))
     return stringWriter.toString()
   }
+
+
+inline fun<T> measureTimeMillisPair(function: () -> T): Pair<T, Long> {
+  val startTime = System.currentTimeMillis()
+  val result: T = function.invoke()
+  val endTime = System.currentTimeMillis()
+
+  return Pair(result, endTime - startTime)
+}
+
+inline fun <T> measureTimeMillis(loggingFunction: (Long) -> Unit,
+                                 function: () -> T): T {
+
+  val startTime = System.currentTimeMillis()
+  val result: T = function.invoke()
+  loggingFunction.invoke(System.currentTimeMillis() - startTime)
+
+  return result
+}
