@@ -6,10 +6,21 @@ package destiny.core.chinese.ziwei
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun House.asLocaleString() = object : ILocaleString {
+  private val resource = House::class.java.name
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.value)
+  }
+}
+
+fun House.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * 十二宮位 (遷移 or 相貌)
  */
-enum class House constructor(private val value: String) : ILocaleString {
+enum class House constructor(val value: String) {
   命宮("命宮"),
   兄弟("兄弟"),
   夫妻("夫妻"),
@@ -27,10 +38,6 @@ enum class House constructor(private val value: String) : ILocaleString {
   父母("父母"), // 父母宮（又名相貌宮） , 但太乙派，把「父母」以及「相貌」拆成兩個宮
 
   相貌("相貌");
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(House::class.java.name, locale).getString(value)
-  }
 
   fun next(n: Int, seq: IHouseSeq): House {
     return seq.next(this, n)

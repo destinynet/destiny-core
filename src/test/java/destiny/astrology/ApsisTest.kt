@@ -6,10 +6,20 @@ package destiny.astrology
 
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 
 class ApsisTest {
+  @Test
+  fun testLocaleString() {
+    assertEquals("近點" , Apsis.PERIHELION.toString(Locale.TAIWAN))
+    assertEquals("遠點" , Apsis.APHELION.toString(Locale.TAIWAN))
+
+    assertEquals("近点" , Apsis.PERIHELION.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("远点" , Apsis.APHELION.toString(Locale.SIMPLIFIED_CHINESE))
+  }
+
   @Test
   fun testApsis() {
     for (each in Apsis.values()) {

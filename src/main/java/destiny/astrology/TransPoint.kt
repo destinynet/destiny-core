@@ -8,10 +8,21 @@ package destiny.astrology
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun TransPoint.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Star"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun TransPoint.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * 四個角點，天底、東昇點、天頂、西落
  */
-enum class TransPoint(private val nameKey: String) : ILocaleString {
+enum class TransPoint(val nameKey: String) {
 
   /** 東昇  */
   RISING("TransPoint.RISING"),
@@ -21,19 +32,4 @@ enum class TransPoint(private val nameKey: String) : ILocaleString {
   SETTING("TransPoint.SETTING"),
   /** 天底  */
   NADIR("TransPoint.NADIR");
-
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.Star"
-  }
-
-
 }

@@ -15,8 +15,21 @@ import destiny.tools.ILocaleString
 import destiny.tools.circleUtils
 import java.util.*
 
+
+fun ZodiacSign.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Sign"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun ZodiacSign.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
+
 /** 黃道十二宮  */
-enum class ZodiacSign(private val nameKey: String,
+enum class ZodiacSign(val nameKey: String,
                       private val abbrKey: String,
                       /** 四正 (火/土/風/水)  */
                       val element: Element,
@@ -26,9 +39,9 @@ enum class ZodiacSign(private val nameKey: String,
                       private val yinYang: Boolean,
                       /** 黃道起始度數  */
                       val degree: Int,
-                      val unicode: Char) : ILocaleString, IYinYang , ILoop<ZodiacSign> {
+                      val unicode: Char) : IYinYang, ILoop<ZodiacSign> {
   /** Aries 戌/牡羊  */
-  ARIES("ZodiacSign.ARIES", "ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0 , '♈'),
+  ARIES("ZodiacSign.ARIES", "ZodiacSign.ARIES_ABBR", FIRE, CARDINAL, true, 0, '♈'),
   /** Taurus 酉/金牛  */
   TAURUS("ZodiacSign.TAURUS", "ZodiacSign.TAURUS_ABBR", EARTH, FIXED, false, 30, '♉'),
   /** Gemini 申/雙子  */
@@ -76,9 +89,9 @@ enum class ZodiacSign(private val nameKey: String,
     return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
   }
 
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
+//  override fun toString(locale: Locale): String {
+//    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+//  }
 
   fun getAbbreviation(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(abbrKey)
@@ -96,18 +109,18 @@ enum class ZodiacSign(private val nameKey: String,
     private const val resource = "destiny.astrology.Sign"
 
     private val map = mapOf(
-      ARIES       to 戌,
-      TAURUS      to 酉,
-      GEMINI      to 申,
-      CANCER      to 未,
-      LEO         to 午,
-      VIRGO       to 巳,
-      LIBRA       to 辰,
-      SCORPIO     to 卯,
+      ARIES to 戌,
+      TAURUS to 酉,
+      GEMINI to 申,
+      CANCER to 未,
+      LEO to 午,
+      VIRGO to 巳,
+      LIBRA to 辰,
+      SCORPIO to 卯,
       SAGITTARIUS to 寅,
-      CAPRICORN   to 丑,
-      AQUARIUS    to 子,
-      PISCES      to 亥
+      CAPRICORN to 丑,
+      AQUARIUS to 子,
+      PISCES to 亥
     )
 
     /**
@@ -117,8 +130,8 @@ enum class ZodiacSign(private val nameKey: String,
      * ...
      * 11 : 雙魚
      */
-    operator fun get(index:Int) : ZodiacSign {
-      return ArrayTools[values() , index]
+    operator fun get(index: Int): ZodiacSign {
+      return ArrayTools[values(), index]
     }
 
     /** 取得黃道帶上的某度，屬於哪個星座  */

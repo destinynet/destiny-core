@@ -8,20 +8,23 @@ import destiny.core.Descriptive
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun HemisphereBy.asLocaleString() = object : ILocaleString {
+  private val resource = EightWords::class.java.name
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun HemisphereBy.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /** 界定南北半球的方法 , 赤道 還是 赤緯  */
-enum class HemisphereBy(private val nameKey: String) : ILocaleString , Descriptive {
+enum class HemisphereBy(val nameKey: String) : Descriptive {
   /** 赤道  */
   EQUATOR("HemisphereBy.EQUATOR"),
   /** 赤緯  */
   DECLINATION("HemisphereBy.DECLINATION");
-
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
 
   override fun getTitle(locale: Locale): String {
     return toString(locale)
@@ -29,10 +32,5 @@ enum class HemisphereBy(private val nameKey: String) : ILocaleString , Descripti
 
   override fun getDescription(locale: Locale): String {
     return getTitle(locale)
-  }
-
-  companion object {
-
-    private val resource = EightWords::class.java.name
   }
 }

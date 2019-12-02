@@ -7,10 +7,22 @@ package destiny.astrology
 import destiny.tools.ILocaleString
 import java.util.*
 
+
+fun Element.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Sign"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun Element.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * 四大元素 : 火 Fire , 土 Earth , 風 Air , 水 Water
  */
-enum class Element(private val nameKey: String) : ILocaleString {
+enum class Element(val nameKey: String)  {
   /** 火  */
   FIRE("Element.FIRE"),
   /** 土  */
@@ -19,19 +31,4 @@ enum class Element(private val nameKey: String) : ILocaleString {
   AIR("Element.AIR"),
   /** 水  */
   WATER("Element.WATER");
-
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.Sign"
-  }
-
-
 }

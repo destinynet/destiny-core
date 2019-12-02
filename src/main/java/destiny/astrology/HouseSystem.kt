@@ -7,10 +7,21 @@ package destiny.astrology
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun HouseSystem.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Astrology"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun HouseSystem.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * 分宮法 , Zodiac House Systems
  */
-enum class HouseSystem(private val nameKey: String) : ILocaleString {
+enum class HouseSystem(val nameKey: String) {
 
   PLACIDUS("HouseSystem.PLACIDUS"),
   KOCH("HouseSystem.KOCH"),
@@ -32,17 +43,17 @@ enum class HouseSystem(private val nameKey: String) : ILocaleString {
   MERIDIAN("HouseSystem.MERIDIAN")
   ;
 
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.Astrology"
-  }
+//  override fun toString(): String {
+//    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
+//  }
+//
+//  override fun toString(locale: Locale): String {
+//    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+//  }
+//
+//  companion object {
+//
+//    private const val resource = "destiny.astrology.Astrology"
+//  }
 
 }

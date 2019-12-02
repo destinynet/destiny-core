@@ -8,11 +8,22 @@ package destiny.astrology
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun Coordinate.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Astrology"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun Coordinate.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * Zodiac selection <br></br>
  * 黃道(ECLIPTIC) / 赤道(TROPICAL) / 恆星(SIDEREAL) 座標系 參數
  */
-enum class Coordinate(private val nameKey: String) : ILocaleString {
+enum class Coordinate(val nameKey: String) {
 
   /** 黃道座標系  */
   ECLIPTIC("Coordinate.ECLIPTIC"),
@@ -20,18 +31,4 @@ enum class Coordinate(private val nameKey: String) : ILocaleString {
   EQUATORIAL("Coordinate.EQUATORIAL"),
   /** 恆星座標系  */
   SIDEREAL("Coordinate.SIDEREAL");
-
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.Astrology"
-  }
-
 }

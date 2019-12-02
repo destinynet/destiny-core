@@ -7,11 +7,22 @@ package destiny.astrology
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun Ayanamsa.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Astrology"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun Ayanamsa.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * Ayanamsha is a Sanskrit word and is to be pronounced with the third "a" long, so: "Ayana-amsha".
  * "ayana" means "precession" and "amsha" means "component".
  */
-enum class Ayanamsa(private val nameKey: String) : ILocaleString {
+enum class Ayanamsa(val nameKey: String) {
   FAGAN_BRADLEY("Ayana.FAGAN_BRADLEY"),
   LAHIRI("Ayana.LAHIRI"),
   DELUCE("Ayana.DELUCE"),
@@ -33,17 +44,4 @@ enum class Ayanamsa(private val nameKey: String) : ILocaleString {
   J2000("Ayana.J2000"),
   J1900("Ayana.J1900"),
   B1950("Ayana.B1950");
-
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.Astrology"
-  }
 }

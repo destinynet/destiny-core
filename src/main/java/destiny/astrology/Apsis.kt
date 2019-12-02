@@ -7,10 +7,21 @@ package destiny.astrology
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun Apsis.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Star"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun Apsis.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * 橢圓軌道的四個點：近點（Perihelion/Perigee）、遠點（Aphelion/Apogee），上升點（Ascending/North Node），下降點（Descending/South Node）
  */
-enum class Apsis(private val nameKey: String) : ILocaleString {
+enum class Apsis(val nameKey: String) {
   /** 近點  */
   PERIHELION("Apsis.PERIHELION"),
   /** 遠點  */
@@ -19,17 +30,4 @@ enum class Apsis(private val nameKey: String) : ILocaleString {
   ASCENDING("Apsis.ASCENDING"),
   /** 南交點/下降點  */
   DESCENDING("Apsis.DESCENDING");
-
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.Star"
-  }
 }

@@ -6,8 +6,6 @@ package destiny.tools
 
 object circleUtils {
 
-
-
   /** 將度數 normalize 到 0(含)~360(不含) 的區間  */
   fun Double.normalize() : Double {
     return when {

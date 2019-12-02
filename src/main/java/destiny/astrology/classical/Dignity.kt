@@ -4,13 +4,27 @@
  */
 package destiny.astrology.classical
 
+import destiny.core.calendar.eightwords.EightWords
+import destiny.core.calendar.eightwords.asLocaleString
+import destiny.core.calendar.eightwords.toString
 import destiny.tools.ILocaleString
 import java.util.*
+
+fun Dignity.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.classical.Classical"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun Dignity.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
 
 /**
  * 行星落入星座的 , 廟 旺 陷 落
  */
-enum class Dignity(private val nameKey: String) : ILocaleString , Comparator<Dignity> {
+enum class Dignity(val nameKey: String) : Comparator<Dignity> {
 
   /** 廟 (+5) , 守護  */
   RULER("Dignity.RULER"),
@@ -33,22 +47,9 @@ enum class Dignity(private val nameKey: String) : ILocaleString , Comparator<Dig
   /** 陷 (-5)  */
   DETRIMENT("Dignity.DETRIMENT");
 
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
   override fun compare(o1: Dignity?, o2: Dignity?): Int {
     return values().let { array ->
       array.indexOf(o1) - array.indexOf(o2)
     }
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.classical.Classical"
   }
 }

@@ -17,6 +17,8 @@ class CentricTest {
     assertEquals("日心", Centric.HELIO.toString(Locale.TAIWAN))
     assertEquals("質心", Centric.BARY.toString(Locale.TAIWAN))
 
+    assertEquals("TopoCentric", Centric.TOPO.toString(Locale.ENGLISH))
+
     for (each in Centric.values()) {
       assertNotNull(each.toString())
       assertNotSame('!', each.toString()[0])

@@ -11,6 +11,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 
 class DignityTest {
+
   @Test
   fun testDignity() {
     assertEquals("廟", Dignity.RULER.toString(Locale.TAIWAN))
@@ -18,10 +19,14 @@ class DignityTest {
     assertEquals("陷", Dignity.DETRIMENT.toString(Locale.TAIWAN))
     assertEquals("落", Dignity.FALL.toString(Locale.TAIWAN))
 
+    assertEquals("庙", Dignity.RULER.toString(Locale.SIMPLIFIED_CHINESE))
+
     assertEquals("Ruler", Dignity.RULER.toString(Locale.US))
     assertEquals("Exaltation", Dignity.EXALTATION.toString(Locale.US))
     assertEquals("Detriment", Dignity.DETRIMENT.toString(Locale.US))
     assertEquals("Fall", Dignity.FALL.toString(Locale.US))
+
+    assertEquals("RULER", Dignity.RULER.toString())
 
     for (each in Dignity.values()) {
       assertNotNull(each.toString())

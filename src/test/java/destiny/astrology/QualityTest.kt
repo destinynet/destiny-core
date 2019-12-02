@@ -13,9 +13,9 @@ class QualityTest {
 
   @Test
   fun testToString() {
-    assertEquals("基本", Quality.CARDINAL.toString(Locale.TAIWAN))
-    assertEquals("固定", Quality.FIXED.toString(Locale.TAIWAN))
-    assertEquals("變動", Quality.MUTABLE.toString(Locale.TAIWAN))
+    assertEquals("CARDINAL", Quality.CARDINAL.toString())
+    assertEquals("FIXED", Quality.FIXED.toString())
+    assertEquals("MUTABLE", Quality.MUTABLE.toString())
   }
 
   @Test

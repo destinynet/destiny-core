@@ -7,10 +7,21 @@ package destiny.astrology
 import destiny.tools.ILocaleString
 import java.util.*
 
+fun Quality.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Sign"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun Quality.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /**
  * 基本 Cardinal , 固定 Fixed , 變動 Mutable
  */
-enum class Quality(private val nameKey: String) : ILocaleString {
+enum class Quality(val nameKey: String) {
 
   /** 基本 : 辰戌丑未 */
   CARDINAL("Quality.CARDINAL"),
@@ -20,18 +31,4 @@ enum class Quality(private val nameKey: String) : ILocaleString {
 
   /** 變動 : 寅巳申亥 */
   MUTABLE("Quality.MUTABLE");
-
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
-  companion object {
-
-    private const val resource = "destiny.astrology.Sign"
-  }
-
 }

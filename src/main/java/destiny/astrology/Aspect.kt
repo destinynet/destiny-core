@@ -9,12 +9,23 @@ import destiny.tools.ILocaleString
 import java.util.*
 import kotlin.math.abs
 
+fun Aspect.asLocaleString() = object : ILocaleString {
+  private val resource = "destiny.astrology.Astrology"
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun Aspect.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
 /** 交角 , Aspect  */
-enum class Aspect(private val nameKey: String,
+enum class Aspect(val nameKey: String,
                   /** 取得度數  */
                   val degree: Double,
                   /** 取得重要度  */
-                  internal val importance: Importance) : ILocaleString {
+                  internal val importance: Importance) {
   /** 0 , 合   */
   CONJUNCTION("Aspect.CONJUNCTION", 0.0, HIGH),
   /** 30 , 十二分相 , 半六合  */
@@ -59,17 +70,7 @@ enum class Aspect(private val nameKey: String,
     HIGH, MEDIUM, LOW
   }
 
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
   companion object {
-
-    private const val resource = "destiny.astrology.Astrology"
 
     private val importanceAngles: Map<Importance, List<Aspect>> = values().groupBy { it.importance }
 
