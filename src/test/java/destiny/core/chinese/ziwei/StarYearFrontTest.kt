@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.toString
 import destiny.core.chinese.Branch.*
 import org.slf4j.LoggerFactory
 import java.util.*

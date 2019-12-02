@@ -42,18 +42,4 @@ enum class HouseSystem(val nameKey: String) {
    *  */
   MERIDIAN("HouseSystem.MERIDIAN")
   ;
-
-//  override fun toString(): String {
-//    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-//  }
-//
-//  override fun toString(locale: Locale): String {
-//    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-//  }
-//
-//  companion object {
-//
-//    private const val resource = "destiny.astrology.Astrology"
-//  }
-
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.toString
 import destiny.core.Gender.女
 import destiny.core.Gender.男
 import destiny.core.chinese.Branch.*
@@ -28,6 +29,7 @@ class StarLongevityTest {
   fun testToString() {
     for (star in StarLongevity.values) {
       assertNotNull(star.toString())
+
       assertNotNull(star.toString(Locale.TAIWAN))
       assertNotNull(star.toString(Locale.CHINA))
       logger.info("tw = {}({}) , cn = {}({})",

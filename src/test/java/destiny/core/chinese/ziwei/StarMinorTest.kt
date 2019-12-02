@@ -37,6 +37,7 @@ import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
+import destiny.astrology.toString
 
 class StarMinorTest {
 
