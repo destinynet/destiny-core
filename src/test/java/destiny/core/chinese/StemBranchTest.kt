@@ -219,12 +219,12 @@ class StemBranchTest {
 
   @Test
   fun testSorting() {
-    val SBArray1 = arrayOf(StemBranch[10], StemBranch[甲, 午], StemBranch[50], StemBranch['甲', '子'], StemBranch[20])
+    val array1 = arrayOf(StemBranch[10], StemBranch[甲, 午], StemBranch[50], StemBranch['甲', '子'], StemBranch[20])
     val expected =
       arrayOf(StemBranch['甲', '子'], StemBranch['甲', '戌'], StemBranch['甲', '申'], StemBranch['甲', '午'],
         StemBranch['甲', '寅'])
-    Arrays.sort(SBArray1)
-    assertTrue(Arrays.equals(expected, SBArray1))
+    Arrays.sort(array1)
+    assertTrue(expected.contentEquals(array1))
   }
 
   @Test

@@ -16,18 +16,35 @@ import destiny.core.chinese.ziwei.StarLongevity.Companion.fun沐浴
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun胎
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun長生
 import destiny.core.chinese.ziwei.StarLongevity.Companion.fun養
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
 class StarLongevityTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testToString() {
+    assertEquals("長生", StarLongevity.長生.toString(Locale.TAIWAN))
+    assertEquals("长生", StarLongevity.長生.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("長生", StarLongevity.長生.toString(Locale.ENGLISH))
+  }
+
+  @Test
+  fun testAbbr() {
+    assertEquals("生", StarLongevity.長生.getAbbreviation(Locale.TAIWAN))
+    assertEquals("生", StarLongevity.長生.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
+
+    assertEquals("養", StarLongevity.養.getAbbreviation(Locale.TAIWAN))
+    assertEquals("养", StarLongevity.養.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
+  }
+
+  @Test
+  fun testToStrings() {
     for (star in StarLongevity.values) {
       assertNotNull(star.toString())
 

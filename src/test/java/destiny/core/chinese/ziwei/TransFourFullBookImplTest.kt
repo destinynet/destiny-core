@@ -7,6 +7,7 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.右弼
 import destiny.core.chinese.ziwei.StarMain.*
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.test.Test
@@ -17,7 +18,7 @@ class TransFourFullBookImplTest {
 
   internal var impl: ITransFour = TransFourFullBookImpl()
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testTitle() {

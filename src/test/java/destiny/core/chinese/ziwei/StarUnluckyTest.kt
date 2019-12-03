@@ -4,6 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.astrology.getAbbreviation
+import destiny.astrology.toString
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun地劫
@@ -12,19 +13,33 @@ import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun擎羊
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun火星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
-import destiny.astrology.toString
 
 class StarUnluckyTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testToString() {
+    assertEquals("鈴星" , StarUnlucky.鈴星.toString(Locale.TAIWAN))
+    assertEquals("铃星" , StarUnlucky.鈴星.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("鈴星" , StarUnlucky.鈴星.toString(Locale.ENGLISH))
+  }
+
+  @Test
+  fun testAbbr() {
+    assertEquals("鈴" , StarUnlucky.鈴星.getAbbreviation(Locale.TAIWAN))
+    assertEquals("铃" , StarUnlucky.鈴星.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("鈴" , StarUnlucky.鈴星.getAbbreviation(Locale.ENGLISH))
+  }
+
+  @Test
+  fun testToStrings() {
     for (star in StarUnlucky.values) {
       assertNotNull(star.toString())
       assertNotNull(star.toString(Locale.TAIWAN))

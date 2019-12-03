@@ -8,18 +8,34 @@ import destiny.astrology.toString
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.impls.TianyiZiweiBookImpl
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 
 class StarLuckyTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testToString() {
+    assertEquals("左輔", StarLucky.左輔.toString(Locale.TAIWAN))
+    assertEquals("左辅", StarLucky.左輔.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("左輔", StarLucky.左輔.toString(Locale.ENGLISH))
+  }
+
+  @Test
+  fun testAbbr() {
+    assertEquals("輔", StarLucky.左輔.getAbbreviation(Locale.TAIWAN))
+    assertEquals("辅", StarLucky.左輔.getAbbreviation(Locale.SIMPLIFIED_CHINESE))
+  }
+
+
+
+  @Test
+  fun testToStrings() {
     for (star in StarLucky.values) {
       assertNotNull(star.toString())
       assertNotNull(star.toString(Locale.TAIWAN))

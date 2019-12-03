@@ -12,6 +12,7 @@ import destiny.core.chinese.Branch.子
 import destiny.core.chinese.ziwei.StarMinor.三台
 import destiny.core.chinese.ziwei.StarMinor.天巫
 import destiny.core.chinese.ziwei.StarUnlucky.地劫
+import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -19,7 +20,7 @@ import kotlin.test.assertSame
 
 class StrengthMiddleImplTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   internal var impl: IStrength = StrengthMiddleImpl()
 

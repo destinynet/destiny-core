@@ -1,7 +1,7 @@
 /** 2009/10/20 下午10:53:51 by smallufo  */
 package destiny.tools
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.time.ZoneId
 import java.time.format.TextStyle
 import java.time.zone.ZoneRulesException
@@ -13,7 +13,7 @@ import kotlin.test.assertNotNull
 
 class TimeZoneTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {  }
 
   @Test
   fun testTimeZone() {
@@ -121,38 +121,42 @@ class TimeZoneTest {
   @Test
   fun testSingapore() {
     val tz = TimeZone.getTimeZone("Asia/Singapore")
-    println(tz)
+    logger.info("tz of singapore = {}" , tz)
 
     var cal: GregorianCalendar
 
     cal = GregorianCalendar(1981, 12 - 1, 31, 23, 0)
-    println("(1) 1981/12/31  23:00 : DST ? " + tz.inDaylightTime(cal.time) + ", " + tz.getOffset(
-      cal.timeInMillis) + " , date = " + cal.time + " , millis = " + cal.timeInMillis)
+    logger.info("(1) 1981/12/31  23:00 : DST ? {} , offset={} , date = {} , millis = {}" ,
+      tz.inDaylightTime(cal.time) , tz.getOffset(cal.timeInMillis) , cal.time , cal.timeInMillis)
+
 
     cal = GregorianCalendar(1981, 12 - 1, 31, 23, 59)
-    println("(2) 1981/12/31  23:59 : DST ? " + tz.inDaylightTime(cal.time) + ", " + tz.getOffset(
-      cal.timeInMillis) + " , date = " + cal.time + " , millis = " + cal.timeInMillis)
+    logger.info("(2) 1981/12/31  23:59 : DST ? {} , offset={} , date = {} , millis = {}" ,
+      tz.inDaylightTime(cal.time) , tz.getOffset(cal.timeInMillis) , cal.time , cal.timeInMillis)
+
 
     cal = GregorianCalendar(1982, 1 - 1, 1, 0, 0)
-    println("(3) 1982/01/01  00:00 : DST ? " + tz.inDaylightTime(cal.time) + ", " + tz.getOffset(
-      cal.timeInMillis) + " , date = " + cal.time + " , millis = " + cal.timeInMillis)
+    logger.info("(3) 1982/01/01  00:00 : DST ? {} , offset={} , date = {} , millis = {}" ,
+      tz.inDaylightTime(cal.time) , tz.getOffset(cal.timeInMillis) , cal.time , cal.timeInMillis)
+
 
     cal = GregorianCalendar(1982, 1 - 1, 1, 0, 29, 59)
-    println("(4) 1982/01/01  00:29 : DST ? " + tz.inDaylightTime(cal.time) + ", " + tz.getOffset(
-      cal.timeInMillis) + " , date = " + cal.time + " , millis = " + cal.timeInMillis)
+    logger.info("(4) 1982/01/01  00:29 : DST ? {} , offset={} , date = {} , millis = {}" ,
+      tz.inDaylightTime(cal.time) , tz.getOffset(cal.timeInMillis) , cal.time , cal.timeInMillis)
+
 
     cal = GregorianCalendar(1982, 1 - 1, 1, 0, 30, 0)
-    println("(5) 1982/01/01  00:30 : DST ? " + tz.inDaylightTime(cal.time) + ", " + tz.getOffset(
-      cal.timeInMillis) + " , date = " + cal.time + " , millis = " + cal.timeInMillis)
+    logger.info("(5) 1982/01/01  00:30 : DST ? {} , offset={} , date = {} , millis = {}" ,
+      tz.inDaylightTime(cal.time) , tz.getOffset(cal.timeInMillis) , cal.time , cal.timeInMillis)
 
 
     cal = GregorianCalendar()
     cal.timeZone = TimeZone.getTimeZone("Asia/Singapore")
     cal.timeInMillis = 378664200000L
-    println(cal.time)
+    logger.info("{}" , cal.time)
 
     cal.timeInMillis = 378664200000L - 1000
-    println(cal.time)
+    logger.info("{}" , cal.time)
 
 
   }

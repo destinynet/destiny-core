@@ -6,7 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarMain.太陽
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNull
@@ -15,7 +15,8 @@ import kotlin.test.assertSame
 class TransFourZiyunImplTest {
 
   internal var impl: ITransFour = TransFourZiyunImpl()
-  private val logger = LoggerFactory.getLogger(javaClass)
+
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testTitle() {

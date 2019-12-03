@@ -5,9 +5,7 @@
 package destiny.astrology
 
 import destiny.tools.ILocaleString
-
 import java.io.Serializable
-import java.io.UnsupportedEncodingException
 import java.util.*
 
 fun Point.asLocaleString() = object : ILocaleString {
@@ -23,18 +21,17 @@ fun Point.toString(locale: Locale): String {
 /** 取得縮寫 , 如果沒有傳入縮寫，則把 name 取前兩個 bytes  */
 fun Point.getAbbreviation(locale: Locale): String {
   /** 處理縮寫 */
-  fun getAbbr(locale: Locale?, value: String): String {
-    return if (locale != null && locale.language == "zh" && locale.country == "TW") {
-      val byteArray: ByteArray
-      val arr = ByteArray(2)
-      try {
-        byteArray = String(value.toCharArray()).toByteArray(charset("Big5"))
-
-        System.arraycopy(byteArray, 0, arr, 0, 2)
-      } catch (ignored: UnsupportedEncodingException) {
-      }
-
-      String(arr)
+  fun getAbbr(locale: Locale, value: String): String {
+    return if (locale.language == "zh") {
+      value.substring(0,1)
+//      val byteArray: ByteArray
+//      val arr = ByteArray(2)
+//      try {
+//        byteArray = String(value.toCharArray()).toByteArray(charset("Big5"))
+//        System.arraycopy(byteArray, 0, arr, 0, 2)
+//      } catch (ignored: UnsupportedEncodingException) {
+//      }
+//      String(arr)
     } else {
       value.substring(0, 2)
     }
@@ -90,7 +87,7 @@ abstract class Point(
     return ResourceBundle.getBundle(resource, locale).getString(nameKey)
   }
 
-  /** toString 直接取名稱  */
+//  /** toString 直接取名稱  */
   override fun toString(): String {
     return name
   }

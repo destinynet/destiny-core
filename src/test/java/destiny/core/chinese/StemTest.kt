@@ -6,6 +6,7 @@
 package destiny.core.chinese
 
 import destiny.core.chinese.Stem.*
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,6 +15,8 @@ import kotlin.test.assertTrue
 
 
 class StemTest {
+
+  val logger = KotlinLogging.logger { }
 
   @Test
   fun testGetAheadOf() {
@@ -73,12 +76,21 @@ class StemTest {
 
 
   @Test
-  fun testSorting() {
-    val HSArray = arrayOf(丁, 癸, 甲, 戊, 辛)
+  fun testSorting1() {
+    val array = arrayOf(丁, 癸, 甲, 戊, 辛)
     val expected = arrayOf(甲, 丁, 戊, 辛, 癸)
 
-    Arrays.sort(HSArray)
-    assertTrue(Arrays.equals(expected, HSArray))
+    Arrays.sort(array)
+    assertTrue(expected.contentEquals(array))
+  }
+
+
+  @Test
+  fun testSorting2() {
+    val stems = arrayOf(丁, 癸, 甲, 戊, 辛)
+
+    stems.sort()
+    assertEquals(listOf(甲, 丁, 戊, 辛, 癸), stems.toList())
   }
 
   @Test
@@ -118,79 +130,63 @@ class StemTest {
 
   @Test
   fun testHeavenlyStems() {
-    assertEquals(甲, Stem.get('甲'))
-    assertSame(甲, Stem.get('甲'))
+    assertEquals(甲, Stem['甲'])
+    assertSame(甲, Stem['甲'])
 
 
-    assertSame(甲, Stem.get(-20))
-    assertSame(甲, Stem.get(-10))
-    assertSame(乙, Stem.get(-9))
-    assertSame(壬, Stem.get(-2))
-    assertSame(癸, Stem.get(-1))
-    assertSame(甲, Stem.get(0))
-    assertSame(乙, Stem.get(1))
-    assertSame(丙, Stem.get(2))
-    assertSame(丁, Stem.get(3))
-    assertSame(戊, Stem.get(4))
-    assertSame(己, Stem.get(5))
-    assertSame(庚, Stem.get(6))
-    assertSame(辛, Stem.get(7))
-    assertSame(壬, Stem.get(8))
-    assertSame(癸, Stem.get(9))
-    assertSame(甲, Stem.get(10))
-    assertSame(甲, Stem.get(20))
+    assertSame(甲, Stem[-20])
+    assertSame(甲, Stem[-10])
+    assertSame(乙, Stem[-9])
+    assertSame(壬, Stem[-2])
+    assertSame(癸, Stem[-1])
+    assertSame(甲, Stem[0])
+    assertSame(乙, Stem[1])
+    assertSame(丙, Stem[2])
+    assertSame(丁, Stem[3])
+    assertSame(戊, Stem[4])
+    assertSame(己, Stem[5])
+    assertSame(庚, Stem[6])
+    assertSame(辛, Stem[7])
+    assertSame(壬, Stem[8])
+    assertSame(癸, Stem[9])
+    assertSame(甲, Stem[10])
+    assertSame(甲, Stem[20])
 
 
-    assertEquals(癸, Stem.get('癸'))
-    assertSame(癸, Stem.get('癸'))
-    assertEquals(癸, Stem.get(9))
-    assertEquals(癸, Stem.get(19))
-    assertEquals(癸, Stem.get(-1))
-    assertEquals(癸, Stem.get(-11))
+    assertEquals(癸, Stem['癸'])
+    assertSame(癸, Stem['癸'])
+    assertEquals(癸, Stem[9])
+    assertEquals(癸, Stem[19])
+    assertEquals(癸, Stem[-1])
+    assertEquals(癸, Stem[-11])
   }
 
   @Test
   fun testGetHeavenlyStems() {
-    assertSame(甲, Stem.get(FiveElement.木, true))
-    assertSame(乙, Stem.get(FiveElement.木, false))
-    assertSame(丙, Stem.get(FiveElement.火, true))
-    assertSame(丁, Stem.get(FiveElement.火, false))
-    assertSame(戊, Stem.get(FiveElement.土, true))
-    assertSame(己, Stem.get(FiveElement.土, false))
-    assertSame(庚, Stem.get(FiveElement.金, true))
-    assertSame(辛, Stem.get(FiveElement.金, false))
-    assertSame(壬, Stem.get(FiveElement.水, true))
-    assertSame(癸, Stem.get(FiveElement.水, false))
+    assertSame(甲, Stem[FiveElement.木, true])
+    assertSame(乙, Stem[FiveElement.木, false])
+    assertSame(丙, Stem[FiveElement.火, true])
+    assertSame(丁, Stem[FiveElement.火, false])
+    assertSame(戊, Stem[FiveElement.土, true])
+    assertSame(己, Stem[FiveElement.土, false])
+    assertSame(庚, Stem[FiveElement.金, true])
+    assertSame(辛, Stem[FiveElement.金, false])
+    assertSame(壬, Stem[FiveElement.水, true])
+    assertSame(癸, Stem[FiveElement.水, false])
   }
 
-  @Test
-  fun testSort() {
-    val HSArray = arrayOf(丁, 癸, 甲, 戊, 辛)
-    println("排序前:")
-
-    for (aHSArray1 in HSArray) {
-      print(aHSArray1.toString() + "\t")
-    }
-
-    Arrays.sort(HSArray)
-
-    println("\n排序後")
-    for (aHSArray in HSArray) {
-      print(aHSArray.toString() + "\t")
-    }
-  }
 
   @Test
-  fun _testHashCode() {
-    println(甲.hashCode())
-    println(乙.hashCode())
-    println(丙.hashCode())
-    println(丁.hashCode())
-    println(戊.hashCode())
-    println(己.hashCode())
-    println(庚.hashCode())
-    println(辛.hashCode())
-    println(壬.hashCode())
-    println(癸.hashCode())
+  fun testHashCode() {
+    logger.info("{}", 甲.hashCode())
+    logger.info("{}", 乙.hashCode())
+    logger.info("{}", 丙.hashCode())
+    logger.info("{}", 丁.hashCode())
+    logger.info("{}", 戊.hashCode())
+    logger.info("{}", 己.hashCode())
+    logger.info("{}", 庚.hashCode())
+    logger.info("{}", 辛.hashCode())
+    logger.info("{}", 壬.hashCode())
+    logger.info("{}", 癸.hashCode())
   }
 }

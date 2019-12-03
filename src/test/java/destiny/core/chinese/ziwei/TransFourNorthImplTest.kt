@@ -8,7 +8,7 @@ import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.右弼
 import destiny.core.chinese.ziwei.StarLucky.左輔
 import destiny.core.chinese.ziwei.StarMain.*
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNull
@@ -18,7 +18,7 @@ class TransFourNorthImplTest {
 
   internal var impl: ITransFour = TransFourNorthImpl()
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testTitle() {

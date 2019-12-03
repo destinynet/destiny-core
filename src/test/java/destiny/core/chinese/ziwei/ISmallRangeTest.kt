@@ -6,12 +6,12 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.酉
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import kotlin.test.Test
 
 class ISmallRangeTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun getRanges() {

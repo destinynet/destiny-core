@@ -3,23 +3,32 @@
  */
 package destiny.astrology
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 
 class LunarNodeTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {  }
 
   @Test
   fun testToString() {
+    assertEquals("北交點" , LunarNode.NORTH_MEAN.toString(Locale.TAIWAN))
+    assertEquals("北交點" , LunarNode.NORTH_TRUE.toString(Locale.TAIWAN))
+
+    assertEquals("北交点" , LunarNode.NORTH_MEAN.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("北交点" , LunarNode.NORTH_TRUE.toString(Locale.SIMPLIFIED_CHINESE))
+
+    assertEquals("North" , LunarNode.NORTH_MEAN.toString(Locale.ENGLISH))
+    assertEquals("North" , LunarNode.NORTH_TRUE.toString(Locale.ENGLISH))
+
+    assertEquals("北交點" , LunarNode.NORTH_MEAN.toString())
+
     for (each in LunarNode.meanArray) {
-      assertNotNull(each)
-      assertNotNull(each.toString())
+      assertNotNull(each.toString(Locale.TAIWAN))
+      assertNotNull(each.toString(Locale.SIMPLIFIED_CHINESE))
+      assertNotNull(each.toString(Locale.ENGLISH))
       logger.info("{}", each.toString())
     }
 

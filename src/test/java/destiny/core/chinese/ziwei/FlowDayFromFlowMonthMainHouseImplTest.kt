@@ -5,15 +5,15 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.丑
 import destiny.core.chinese.Branch.子
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertSame
-import org.junit.Test
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class FlowDayFromFlowMonthMainHouseImplTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   internal var impl: IFlowDay = FlowDayFromFlowMonthMainHouseImpl()
 
@@ -41,8 +41,6 @@ class FlowDayFromFlowMonthMainHouseImplTest {
    */
   @Test
   fun testFlowDay() {
-
-
     assertSame(丑, impl.getFlowDay(子, 14, 子))
   }
 }

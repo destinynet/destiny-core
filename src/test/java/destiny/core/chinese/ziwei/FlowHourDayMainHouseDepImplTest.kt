@@ -3,14 +3,14 @@
  */
 package destiny.core.chinese.ziwei
 
-import org.junit.Assert.assertNotNull
-import org.junit.Test
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNotNull
 
 class FlowHourDayMainHouseDepImplTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   internal var impl: IFlowHour = FlowHourDayMainHouseDepImpl()
 

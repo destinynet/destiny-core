@@ -4,6 +4,8 @@
 package destiny.core.chinese.ziwei
 
 import destiny.astrology.Point
+import destiny.astrology.toString
+import java.util.*
 
 /**
  * 紫微斗數的諸星
@@ -64,7 +66,7 @@ abstract class ZStar : Point, Comparable<ZStar>  {
     return if (typeCompare != 0)
       typeCompare
     else {
-      this.toString().compareTo(other.toString())
+      this.toString(Locale.TAIWAN).compareTo(other.toString(Locale.TAIWAN))
     }
   }
 

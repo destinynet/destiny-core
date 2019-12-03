@@ -174,22 +174,22 @@ class BranchTest {
   @Test
   fun testEarthlyBranches() {
     assertEquals("子", 子.toString())
-    assertEquals(子, Branch.get('子'))
-    assertSame(子, Branch.get('子'))
-    assertEquals(子, Branch.get(0))
-    assertSame(子, Branch.get(0))
-    assertSame(子, Branch.get(12))
-    assertSame(子, Branch.get(-12))
-    assertSame(子, Branch.get(-24))
+    assertEquals(子, Branch['子'])
+    assertSame(子, Branch['子'])
+    assertEquals(子, Branch[0])
+    assertSame(子, Branch[0])
+    assertSame(子, Branch[12])
+    assertSame(子, Branch[-12])
+    assertSame(子, Branch[-24])
 
     assertEquals("亥", 亥.toString())
-    assertEquals(亥, Branch.get('亥'))
-    assertSame(亥, Branch.get('亥'))
-    assertEquals(亥, Branch.get(11))
-    assertSame(亥, Branch.get(11))
-    assertSame(亥, Branch.get(23))
-    assertSame(亥, Branch.get(-1))
-    assertSame(亥, Branch.get(-13))
+    assertEquals(亥, Branch['亥'])
+    assertSame(亥, Branch['亥'])
+    assertEquals(亥, Branch[11])
+    assertSame(亥, Branch[11])
+    assertSame(亥, Branch[23])
+    assertSame(亥, Branch[-1])
+    assertSame(亥, Branch[-13])
 
   }
 }

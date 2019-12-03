@@ -5,14 +5,14 @@
 package destiny.core.calendar
 
 import destiny.tools.location.TimeZoneUtils
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class LocationTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun `沒帶入 tzid , 但有帶入 minuteOffset , 將會反查 tzid 找出相符合的 tzid`() {
@@ -20,7 +20,7 @@ class LocationTest {
     assertEquals("CTT" , loc.timeZone.id)
     /** 定義於 [java.time.ZoneId.SHORT_IDS] */
     assertEquals("Asia/Shanghai" , loc.zoneId.id)
-    println(loc.timeZone)
+    logger.info("{}" , loc.timeZone)
     assertEquals(480 , loc.finalMinuteOffset)
   }
 
@@ -29,7 +29,7 @@ class LocationTest {
     val loc = Location(25.0, 121.0, "Asia/Taipei", 540, null)
     assertEquals("Asia/Taipei" , loc.timeZone.id)
     assertEquals("Asia/Taipei" , loc.zoneId.id)
-    println(loc.timeZone)
+    logger.info("{}" , loc.timeZone)
     assertEquals(540 , loc.finalMinuteOffset)
   }
 
@@ -55,9 +55,9 @@ class LocationTest {
     var expected: Location
 
     actual = Location(-12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    println("actual = $actual")
+    logger.info("actual = {}" , actual)
     expected = Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id )
-    println("expected = $expected")
+    logger.info("expected = {}" , expected)
     assertEquals(expected, actual)
 
     actual = Location(12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)

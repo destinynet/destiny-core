@@ -3,6 +3,7 @@
  */
 package destiny.astrology
 
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,6 +12,8 @@ import kotlin.test.assertNotSame
 
 
 class AxisTest {
+
+  private val logger = KotlinLogging.logger {  }
 
   @Test
   fun testString() {
@@ -27,14 +30,14 @@ class AxisTest {
     Axis.array.forEach { p ->
       p.toString().also {
         assertNotNull(it)
-        println(it + "->" + p.getAbbreviation(Locale.getDefault()))
+        logger.info("{} 縮寫 (default locale) -> {}", it, p.getAbbreviation(Locale.getDefault()))
         assertNotSame('!', it[0])
       }
 
 
       p.toString(Locale.ENGLISH).also {
         assertNotNull(it)
-        println(it + "->" + p.getAbbreviation(Locale.ENGLISH))
+        logger.info("{} abbreviation (ENGLISH) -> {}", it, p.getAbbreviation(Locale.getDefault()))
         assertNotSame('!', it[0])
       }
     }

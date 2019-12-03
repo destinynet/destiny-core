@@ -4,14 +4,14 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.*
-import org.junit.Assert.assertNotNull
-import org.junit.Test
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNotNull
 
 class FlowMonthYearMainHouseDepImplTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   internal var impl: IFlowMonth = FlowMonthYearMainHouseDepImpl()
 

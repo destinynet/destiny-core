@@ -3,6 +3,9 @@
  */
 package destiny.tools
 
+import destiny.astrology.*
+import destiny.astrology.classical.Dignity
+import destiny.astrology.classical.toString
 import destiny.core.Descriptive
 import destiny.core.IPattern
 import mu.KotlinLogging
@@ -45,19 +48,22 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
   /** 設定註解參數 , 檢查參數是否是 [ILocaleString] , 如果是的話 , 就轉為適當的 locale
    * ex : {0} 位於第 {1} 宮 , 就要處理 {0} {1} , 填入 commentParameters  */
   private fun getCommentParameters(locale: Locale, commentParameters: List<Any>): Array<Any> {
-    return commentParameters.map {
-      when (it) {
+
+    fun objectToString(it : Any) : String {
+      return when(it) {
         is ILocaleString -> it.toString(locale)
         is Double -> String.format( doubleFormat?:"%.1f", it)
-        is Collection<*> -> it.joinToString(",") { item ->
-          if (item is ILocaleString)
-            item.toString(locale)
-          else
-            item.toString()
-        }
-        else -> it
+        is Point -> it.toString(locale)
+        is Element -> it.toString(locale)
+        is Quality -> it.toString(locale)
+        is Aspect -> it.toString(locale)
+        is Dignity -> it.toString(locale)
+        is Collection<*> -> it.joinToString(",") { item -> objectToString(item?:"")  }
+        else -> it.toString()
       }
-    }.toTypedArray()
+    }
+
+    return commentParameters.map { objectToString(it) }.toTypedArray()
   }
 
 

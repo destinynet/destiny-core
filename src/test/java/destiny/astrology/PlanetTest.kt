@@ -62,14 +62,9 @@ class PlanetTest {
   @Test
   fun testPlanets() {
 
-    for (planet in Planet.classicalArray) {
-      assertNotNull(planet)
-      assertNotNull(planet.toString())
-    }
-
     for (planet in Planet.array) {
       assertNotNull(planet)
-      assertNotNull(planet.toString())
+      assertNotNull(planet.toString(Locale.TAIWAN))
     }
 
     val points = setOf<Point>(*Planet.array, *FixedStar.array) as Collection<Point>

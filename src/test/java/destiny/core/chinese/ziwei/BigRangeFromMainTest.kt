@@ -9,7 +9,7 @@ import destiny.core.chinese.YinYang
 import destiny.core.chinese.YinYang.陰
 import destiny.core.chinese.YinYang.陽
 import destiny.core.chinese.ziwei.House.*
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,7 +17,7 @@ import kotlin.test.assertNotNull
 
 class BigRangeFromMainTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   internal var impl: IBigRange = BigRangeFromMain()
   private var seq: IHouseSeq = HouseSeqDefaultImpl()

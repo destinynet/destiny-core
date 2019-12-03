@@ -1,8 +1,12 @@
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.getAbbreviation
+import destiny.astrology.toString
 import destiny.core.chinese.Branch
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
+import java.util.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 /**
@@ -10,7 +14,8 @@ import kotlin.test.assertNotEquals
  */
 class ZStarTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {  }
+
 
   @Test
   fun shouldNotEqual() {

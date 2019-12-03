@@ -4,15 +4,15 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch.*
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertSame
-import org.junit.Test
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class FlowMonthDefaultImplTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   internal var impl: IFlowMonth = FlowMonthDefaultImpl()
 
@@ -36,9 +36,7 @@ class FlowMonthDefaultImplTest {
    * 餘依此類推，未宮為二月、申宮為三月．．．戌宮即為九月命宮。
    */
   @Test
-  @Throws(Exception::class)
   fun getFlowMonth1() {
-
     assertSame(戌, impl.getFlowMonth(酉, 戌, 8, 子))
   }
 
@@ -57,7 +55,6 @@ class FlowMonthDefaultImplTest {
    * 此日買中六合彩中齊六個字,發了一筆橫財。
    */
   @Test
-  @Throws(Exception::class)
   fun testFlowMonth2() {
     // 午年斗君在子 , 寅月（一月），走0 步，所以流月命宮還是在子
     assertSame(子, impl.getFlowMonth(午, 寅, 11, 辰))

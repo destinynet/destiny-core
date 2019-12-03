@@ -3,8 +3,7 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
-import java.lang.System.out
+import mu.KotlinLogging
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -20,20 +19,20 @@ import kotlin.test.assertSame
 
 class LocalDateTimeTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun testParse2() {
     val t = "2019-04-02T18:04:37.628251"
-    logger.info("parsed = {}" , LocalDateTime.parse(t))
+    logger.info("parsed = {}", LocalDateTime.parse(t))
   }
 
   @Test
   fun testParse() {
     // trump : 1946-06-14T12:30
     val trump = "1946-06-14T12:30"
-    logger.info("parsed 1 {} = {}" , trump , LocalDateTime.parse(trump))
-    logger.info("parsed 2 {} = {}" , trump , LocalDateTime.parse(trump) , DateTimeFormatter.ISO_DATE_TIME)
+    logger.info("parsed 1 {} = {}", trump, LocalDateTime.parse(trump))
+    logger.info("parsed 2 {} = {}", trump, LocalDateTime.parse(trump), DateTimeFormatter.ISO_DATE_TIME)
   }
 
   @Test
@@ -135,7 +134,7 @@ class LocalDateTimeTest {
     for (i in 1..6) {
       ldt = ldt.minusDays(1)
       logger.info("{} : era = {} , year = {} , year_of_era = {}",
-                  ldt, ldt.toLocalDate().era, ldt.year, ldt.get(YEAR_OF_ERA))
+        ldt, ldt.toLocalDate().era, ldt.year, ldt.get(YEAR_OF_ERA))
     }
   }
 
@@ -155,7 +154,7 @@ class LocalDateTimeTest {
   @Test
   fun testEpochSecond() {
     val ldt = LocalDateTime.of(1970, 1, 1, 0, 0)
-    out.println("ldt = $ldt")
+    logger.info("ldt = {}", ldt)
     assertEquals(0, ldt.atZone(ZoneId.of("GMT")).toEpochSecond())
     assertEquals((-60 * 60 * 8).toLong(), ldt.atZone(ZoneId.of("Asia/Taipei")).toEpochSecond())
 
@@ -164,9 +163,8 @@ class LocalDateTimeTest {
 
   @Test
   fun testEra() {
-    var localDate: LocalDate
 
-    localDate = LocalDate.of(1, 1, 1)
+    var localDate: LocalDate = LocalDate.of(1, 1, 1)
     assertSame(IsoEra.CE, localDate.era)
 
     localDate = localDate.minus(1, ChronoUnit.DAYS)

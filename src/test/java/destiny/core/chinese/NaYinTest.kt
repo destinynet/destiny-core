@@ -3,19 +3,22 @@
  */
 package destiny.core.chinese
 
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class NaYinTest {
 
+  private val logger = KotlinLogging.logger {  }
+
   @Test
   fun testNaYin() {
-    for (sb in StemBranch.iterable()) {
-      assertNotNull(sb)
+    StemBranch.values().forEach { sb ->
       assertNotNull(NaYin.getFiveElement(sb))
       assertNotNull(NaYin.getDesc(sb, Locale.TAIWAN))
-      println(sb.toString() + " : " + NaYin.getDesc(sb, Locale.TAIWAN) + " , 簡體 : " + NaYin.getDesc(sb , Locale.SIMPLIFIED_CHINESE) + " , 五行 : " + NaYin.getFiveElement(sb))
+      logger.info("{} : {} , 簡體 : {} , 五行 : {}" ,
+        sb.toString() , NaYin.getDesc(sb , Locale.TAIWAN) , NaYin.getDesc(sb , Locale.SIMPLIFIED_CHINESE) , NaYin.getFiveElement(sb))
     }
   }
 }

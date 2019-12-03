@@ -3,6 +3,8 @@
  */
 package destiny.core.chinese
 
+import destiny.core.chinese.Branch.*
+import destiny.core.chinese.Stem.*
 import java.io.Serializable
 
 /**
@@ -15,31 +17,31 @@ class TaiXuan : Serializable {
   companion object {
 
     private val stemMap = mapOf(
-      Stem.甲 to 9,
-      Stem.乙 to 8,
-      Stem.丙 to 7,
-      Stem.丁 to 6,
-      Stem.戊 to 5,
-      Stem.己 to 9,
-      Stem.庚 to 8,
-      Stem.辛 to 7,
-      Stem.壬 to 6,
-      Stem.癸 to 5
+      甲 to 9,
+      乙 to 8,
+      丙 to 7,
+      丁 to 6,
+      戊 to 5,
+      己 to 9,
+      庚 to 8,
+      辛 to 7,
+      壬 to 6,
+      癸 to 5
     )
 
     private val branchMap = mapOf(
-      Branch.子 to 9,
-      Branch.丑 to 8,
-      Branch.寅 to 7,
-      Branch.卯 to 6,
-      Branch.辰 to 5,
-      Branch.巳 to 4,
-      Branch.午 to 9,
-      Branch.未 to 8,
-      Branch.申 to 7,
-      Branch.酉 to 6,
-      Branch.戌 to 5,
-      Branch.亥 to 4
+      子 to 9,
+      丑 to 8,
+      寅 to 7,
+      卯 to 6,
+      辰 to 5,
+      巳 to 4,
+      午 to 9,
+      未 to 8,
+      申 to 7,
+      酉 to 6,
+      戌 to 5,
+      亥 to 4
     )
 
 
