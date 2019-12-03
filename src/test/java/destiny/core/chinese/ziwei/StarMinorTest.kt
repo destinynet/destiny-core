@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.getAbbreviation
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.丁
 import destiny.core.chinese.StemBranch.己酉

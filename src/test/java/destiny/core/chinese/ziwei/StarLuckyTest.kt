@@ -3,6 +3,8 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.getAbbreviation
+import destiny.astrology.toString
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.impls.TianyiZiweiBookImpl
@@ -11,7 +13,6 @@ import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
-import destiny.astrology.toString
 
 class StarLuckyTest {
 

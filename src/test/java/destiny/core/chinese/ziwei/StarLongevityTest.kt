@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.getAbbreviation
 import destiny.astrology.toString
 import destiny.core.Gender.女
 import destiny.core.Gender.男
