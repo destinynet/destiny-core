@@ -58,6 +58,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
         is Quality -> it.toString(locale)
         is Aspect -> it.toString(locale)
         is Dignity -> it.toString(locale)
+        is ZodiacSign -> it.toString(locale)
         is Collection<*> -> it.joinToString(",") { item -> objectToString(item?:"")  }
         else -> it.toString()
       }
