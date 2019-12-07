@@ -9,9 +9,9 @@ import java.util.*
 interface ITimeZone {
 
   /** 從經緯度查詢 timezone  */
-  fun getTimeZoneId(lat: Double, lng: Double): String?
+  suspend fun getTimeZoneId(lat: Double, lng: Double): String?
 
-  fun getTimeZone(lat: Double, lng: Double): TimeZone? {
+  suspend fun getTimeZone(lat: Double, lng: Double): TimeZone? {
     return getTimeZoneId(lat, lng)?.let { TimeZone.getTimeZone(it) }
   }
 }
