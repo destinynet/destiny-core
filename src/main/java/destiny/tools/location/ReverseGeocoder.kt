@@ -8,7 +8,7 @@ import java.util.*
  */
 interface ReverseGeocoder {
 
-  fun getNearbyLocation(lat: Double, lng: Double, locale: Locale = Locale.getDefault()): String?
+  suspend fun getNearbyLocation(lat: Double, lng: Double, locale: Locale = Locale.getDefault()): String?
 
 }
 
