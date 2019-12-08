@@ -4,6 +4,8 @@
  */
 package destiny.tools
 
+import kotlinx.coroutines.runBlocking
+
 interface ImageHosting {
 
   class HostingException : Exception {
@@ -18,7 +20,14 @@ interface ImageHosting {
    * @param format , 圖檔格式 , "png" / "gif" / "jpg" ...
    */
   @Throws(HostingException::class)
-  fun upload(data:ByteArray , format:String) : String
+  suspend fun upload(data:ByteArray , format:String) : String
+
+  @Throws(HostingException::class)
+  fun blockingUpload(data:ByteArray , format:String) : String {
+    return runBlocking {
+      upload(data, format)
+    }
+  }
 
 
   /**
@@ -26,7 +35,7 @@ interface ImageHosting {
    */
   @Throws(HostingException::class)
   fun uploadAndWrapImgCode(data: ByteArray, format: String): String {
-    val link = upload(data , format)
+    val link = blockingUpload(data , format)
     return "[IMG]$link[/IMG]"
   }
 }
