@@ -35,10 +35,10 @@ class LocationTest {
 
   @Test
   fun testNorthSouth() {
-    assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('N'))
-    assertSame(NorthSouth.NORTH, NorthSouth.getNorthSouth('n'))
-    assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('S'))
-    assertSame(NorthSouth.SOUTH, NorthSouth.getNorthSouth('s'))
+    assertSame(NorthSouth.NORTH, NorthSouth.of('N'))
+    assertSame(NorthSouth.NORTH, NorthSouth.of('n'))
+    assertSame(NorthSouth.SOUTH, NorthSouth.of('S'))
+    assertSame(NorthSouth.SOUTH, NorthSouth.of('s'))
   }
 
   @Test

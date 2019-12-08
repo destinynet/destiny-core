@@ -50,12 +50,10 @@ class PlanetTest {
     assertEquals("Sun", Planet.SUN.toString(Locale.ENGLISH))
     assertEquals("太陽", Planet.SUN.toString())
 
-    assertEquals("太陽", Planet.SUN.getName(Locale.TAIWAN))
-    assertEquals("太阳", Planet.SUN.getName(Locale.SIMPLIFIED_CHINESE))
     assertEquals("日", Planet.SUN.getAbbreviation(Locale.TAIWAN))
 
     val locale = Locale.ENGLISH
-    assertEquals("Sun", Planet.SUN.getName(locale))
+    assertEquals("Sun", Planet.SUN.toString(locale))
     assertEquals("Su", Planet.SUN.getAbbreviation(locale))
   }
 

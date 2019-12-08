@@ -5,8 +5,10 @@ package destiny.core.chinese
 
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.StemBranch.*
+import destiny.tools.ILocaleString
 import java.io.Serializable
 import java.util.*
+
 
 /**
  * 納音五行
@@ -53,7 +55,7 @@ enum class NaYin(override val fiveElement: FiveElement) : IFiveElement , Seriali
 
   companion object {
 
-    private val map = mapOf(
+    val map = mapOf(
       甲子 to 海中金,
       乙丑 to 海中金,
       丙寅 to 爐中火,

@@ -36,7 +36,7 @@ sealed class Planet(nameKey: String,
 
     fun fromString(value: String): Planet? {
       return array.firstOrNull {
-        it.getName(Locale.ENGLISH).equals(value, ignoreCase = true)
+        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
       }
     }
   }

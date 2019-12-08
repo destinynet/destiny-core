@@ -3,24 +3,25 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.ILocaleString
 import java.util.*
 
-enum class NorthSouth(private val nameKey: String) {
+fun NorthSouth.asLocaleString() = object : ILocaleString {
+  val resource = NorthSouth::class.java.name
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun NorthSouth.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
+enum class NorthSouth(val nameKey: String) {
   NORTH("Location.NORTH"), SOUTH("Location.SOUTH");
 
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
   companion object {
-
-    private val resource = NorthSouth::class.java.name
-
-    fun getNorthSouth(c: Char): NorthSouth {
+    fun of(c: Char): NorthSouth {
       if (c == 'N' || c == 'n')
         return NORTH
       if (c == 'S' || c == 's')
