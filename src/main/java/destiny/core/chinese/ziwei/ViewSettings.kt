@@ -41,7 +41,7 @@ data class ViewSettings(
 
   ) : Serializable {
   /** 宮干四化「自化」 顯示選項  */
-  enum class SelfTransFour : Descriptive {
+  enum class SelfTransFour  {
 
     /** 不顯示  */
     SELF_TRANS_FOUR_NONE,
@@ -52,29 +52,29 @@ data class ViewSettings(
     /** 箭頭朝外  */
     SELF_TRANS_FOUR_ARROW;
 
-    override fun getTitle(locale: Locale): String {
-      return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
-    }
-
-    override fun getDescription(locale: Locale): String {
-      return getTitle(locale)
-    }
+//    override fun getTitle(locale: Locale): String {
+//      return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
+//    }
+//
+//    override fun getDescription(locale: Locale): String {
+//      return getTitle(locale)
+//    }
   }
 
   /** 宮干四化「化入對宮」的顯示選項  */
-  enum class OppoTransFour : Descriptive {
+  enum class OppoTransFour {
     /** 不顯示  */
     OPPO_TRANS_FOUR_NONE,
 
     /** 朝內(對宮) 箭頭  */
     OPPO_TRANS_FOUR_ARROW;
 
-    override fun getTitle(locale: Locale): String {
-      return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
-    }
-
-    override fun getDescription(locale: Locale): String {
-      return getTitle(locale)
-    }
+//    override fun getTitle(locale: Locale): String {
+//      return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
+//    }
+//
+//    override fun getDescription(locale: Locale): String {
+//      return getTitle(locale)
+//    }
   }
 } // data class ViewSettings
