@@ -11,12 +11,14 @@ import kotlin.test.assertEquals
 
 class TimeToolsLongitudeTimeTest {
 
+  val asiaTaipei = "Asia/Taipei"
+
 
   /** 東經121度30分 , 應該加六分鐘  */
   @Test
   fun testGetLocalTimeEast1() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(EastWest.EAST, 121, 30, 0.0, NorthSouth.NORTH, 25, 3, 0.0, "Asia/Taipei")
+    val location = Location(EastWest.EAST, 121, 30, 0.0, NorthSouth.NORTH, 25, 3, 0.0, asiaTaipei)
 
     val expected = LocalDateTime.of(2007, 3, 14, 0, 6, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
@@ -26,7 +28,7 @@ class TimeToolsLongitudeTimeTest {
   @Test
   fun testGetLocalTimeEast2() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(EastWest.EAST, 130, 0, 0.0, NorthSouth.NORTH, 25, 3, 0.0, "Asia/Taipei")
+    val location = Location(EastWest.EAST, 130, 0, 0.0, NorthSouth.NORTH, 25, 3, 0.0, asiaTaipei)
 
     val expected = LocalDateTime.of(2007, 3, 14, 0, 40, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
@@ -36,7 +38,7 @@ class TimeToolsLongitudeTimeTest {
   @Test
   fun testGetLocalTimeEast3() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(EastWest.EAST, 115.5, NorthSouth.NORTH, 25.0, "Asia/Taipei")
+    val location = Location(EastWest.EAST, 115.5, NorthSouth.NORTH, 25.0, asiaTaipei)
     val expected = LocalDateTime.of(2007, 3, 13, 23, 42, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
   }
@@ -45,7 +47,7 @@ class TimeToolsLongitudeTimeTest {
   @Test
   fun testGetLocalTimeEast4() {
     val lmt = LocalDateTime.of(2007, 3, 14, 0, 0, 0)
-    val location = Location(EastWest.EAST, 110.0, NorthSouth.NORTH, 25.0, "Asia/Taipei")
+    val location = Location(EastWest.EAST, 110.0, NorthSouth.NORTH, 25.0, asiaTaipei)
     val expected = LocalDateTime.of(2007, 3, 13, 23, 20, 0)
     assertEquals(expected, TimeTools.getLongitudeTime(lmt, location))
   }

@@ -6,7 +6,7 @@ package destiny.core.calendar
 import destiny.core.calendar.TimeTools.Companion.getDstSecondOffset
 import destiny.core.calendar.TimeTools.Companion.getGmtJulDay
 import destiny.core.calendar.TimeTools.Companion.getLmtFromGmt
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
 import java.time.*
@@ -19,7 +19,9 @@ import kotlin.test.assertEquals
 
 class TimeToolsTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val asiaTaipeiZoneId = ZoneId.of("Asia/Taipei")
+
+  private val logger = KotlinLogging.logger {  }
 
   /**
    * 美東 DST 時刻
@@ -162,31 +164,31 @@ class TimeToolsTest {
   @Test
   fun testGetGmtFromLmt_1974_DST() {
     var lmt: ChronoLocalDateTime<*>
-    val zoneId = ZoneId.of("Asia/Taipei")
+
 
     // 日光節約時間前一秒
     lmt = LocalDateTime.of(1974, 3, 31, 23, 59, 59)
     // 相差八小時
-    assertEquals(LocalDateTime.of(1974, 3, 31, 15, 59, 59), TimeTools.getGmtFromLmt(lmt, zoneId))
+    assertEquals(LocalDateTime.of(1974, 3, 31, 15, 59, 59), TimeTools.getGmtFromLmt(lmt, asiaTaipeiZoneId))
 
     //加上一秒
     lmt = LocalDateTime.of(1974, 4, 1, 0, 0, 0)
-    assertEquals(LocalDateTime.of(1974, 3, 31, 16, 0, 0), TimeTools.getGmtFromLmt(lmt, zoneId))
+    assertEquals(LocalDateTime.of(1974, 3, 31, 16, 0, 0), TimeTools.getGmtFromLmt(lmt, asiaTaipeiZoneId))
 
     //真正日光節約時間，開始於 1:00AM , 時差變為 GMT+9
     lmt = LocalDateTime.of(1974, 4, 1, 1, 0, 0)
-    assertEquals(LocalDateTime.of(1974, 3, 31, 16, 0, 0), TimeTools.getGmtFromLmt(lmt, zoneId)) //真正銜接到「日光節約時間」前一秒
+    assertEquals(LocalDateTime.of(1974, 3, 31, 16, 0, 0), TimeTools.getGmtFromLmt(lmt, asiaTaipeiZoneId)) //真正銜接到「日光節約時間」前一秒
 
     // 日光節約時間 , 結束前一秒 , 仍是 GMT+9
     lmt = LocalDateTime.of(1974, 9, 30, 23, 59, 59)
-    assertEquals(LocalDateTime.of(1974, 9, 30, 14, 59, 59), TimeTools.getGmtFromLmt(lmt, zoneId))
+    assertEquals(LocalDateTime.of(1974, 9, 30, 14, 59, 59), TimeTools.getGmtFromLmt(lmt, asiaTaipeiZoneId))
 
     lmt = getLmtFromGmt(LocalDateTime.of(1974, 9, 30, 14, 0, 0), Location.of(Locale.TAIWAN))
     System.err.println(lmt) //推估當時可能過了兩次 23:00-24:00 的時間，以調節和 GMT 的時差
 
     // 結束日光節約時間 , 調回 GMT+8
     lmt = LocalDateTime.of(1974, 10, 1, 0, 0, 0)
-    assertEquals(LocalDateTime.of(1974, 9, 30, 16, 0, 0), TimeTools.getGmtFromLmt(lmt, zoneId))
+    assertEquals(LocalDateTime.of(1974, 9, 30, 16, 0, 0), TimeTools.getGmtFromLmt(lmt, asiaTaipeiZoneId))
   }
 
   /**
@@ -430,18 +432,17 @@ class TimeToolsTest {
    */
   @Test
   fun test_ZonedOffset_to_ZonedDateTime_Taiwan() {
-    val asiaTaipei = ZoneId.of("Asia/Taipei")
 
     // 2017-09-30 12:00中午
     var lmt = LocalDateTime.of(2017, 9, 30, 12, 0)
     logger.info("若此時間位於 UTC : {}", OffsetDateTime.of(lmt, ZoneOffset.UTC))
 
-    var zdt = OffsetDateTime.of(lmt, ZoneOffset.ofHours(1)).atZoneSameInstant(asiaTaipei)
+    var zdt = OffsetDateTime.of(lmt, ZoneOffset.ofHours(1)).atZoneSameInstant(asiaTaipeiZoneId)
     logger.info("若此時間位於 UTC+1h , 則台北時間應該+7小時 : {}", zdt)
     assertEquals(lmt.plusHours(7), zdt.toLocalDateTime())
 
 
-    zdt = OffsetDateTime.of(lmt, ZoneOffset.ofHours(2)).atZoneSameInstant(asiaTaipei)
+    zdt = OffsetDateTime.of(lmt, ZoneOffset.ofHours(2)).atZoneSameInstant(asiaTaipeiZoneId)
     logger.info("若此時間位於 UTC+2h , 則台北時間應該+6小時 : {}", zdt)
     assertEquals(lmt.plusHours(6), zdt.toLocalDateTime())
 
@@ -451,11 +452,11 @@ class TimeToolsTest {
     assertEquals(LocalDateTime.of(1975, 7, 1, 12, 0),
       OffsetDateTime.of(lmt, ZoneOffset.UTC).toLocalDateTime()) // 轉到 GMT , 再取 LMT , 應該相等
 
-    zdt = OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(asiaTaipei)
+    zdt = OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(asiaTaipeiZoneId)
     logger.info("若此時間位於 UTC , 則台北時間 , 本來應該+8小時 , 但台北撥快一小時，所以應該要 +9h: {}", zdt)
     assertEquals(lmt.plusHours(9), zdt.toLocalDateTime())
 
-    zdt = OffsetDateTime.of(lmt, ZoneOffset.ofHours(1)).atZoneSameInstant(asiaTaipei)
+    zdt = OffsetDateTime.of(lmt, ZoneOffset.ofHours(1)).atZoneSameInstant(asiaTaipeiZoneId)
     logger.info("若此時間位於 UTC+1h , 則台北時間 , 本來應該+7小時 , 但台北撥快一小時，所以應該要 +8h: {}", zdt)
     assertEquals(lmt.plusHours(8), zdt.toLocalDateTime())
 
@@ -472,7 +473,7 @@ class TimeToolsTest {
 
     logger.info("offsetDateTime = {}", OffsetDateTime.of(lmt, ZoneOffset.UTC))
     logger.info("offsetDateTime = {}",
-      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(ZoneId.of("Asia/Taipei")))
+      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(asiaTaipeiZoneId))
 
     // 上海 was at UTC+08:05:43 , 比 GMT 快了 8h , 5m , 43s
     logger.info("offsetDateTime = {}",
@@ -482,7 +483,7 @@ class TimeToolsTest {
       OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(ZoneId.of("Asia/Hong_Kong")))
 
     var zdt: ChronoZonedDateTime<*> =
-      TimeTools.getGmtFromZonedDateTime(lmt.atOffset(ZoneOffset.ofHours(8)).atZoneSameInstant(ZoneId.of("Asia/Taipei")))
+      TimeTools.getGmtFromZonedDateTime(lmt.atOffset(ZoneOffset.ofHours(8)).atZoneSameInstant(asiaTaipeiZoneId))
     // 確認傳回的是 GMT 時區
     assertEquals(ZoneId.of("GMT"), zdt.zone)
     // GMT 為清晨 0點

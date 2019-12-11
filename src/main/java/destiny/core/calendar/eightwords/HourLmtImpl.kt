@@ -61,68 +61,20 @@ class HourLmtImpl : IHour, Serializable {
 
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
 
-    when (eb.index) {
-      0 //欲求下一個子時時刻
-      -> return if (lmt.get(HOUR_OF_DAY) >= 23)
+    return when (eb) {
+      //欲求下一個子時時刻
+      Branch.子 -> if (lmt.get(HOUR_OF_DAY) >= 23)
         lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 23)
       else
         lmtAtHourStart.with(HOUR_OF_DAY, 23)
-      1 //欲求下一個丑時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 1)
-        lmtAtHourStart.with(HOUR_OF_DAY, 1)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 1)
-      2 //欲求下一個寅時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 3)
-        lmtAtHourStart.with(HOUR_OF_DAY, 3)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 3)
-      3 //欲求下一個卯時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 5)
-        lmtAtHourStart.with(HOUR_OF_DAY, 5)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 5)
-      4 //欲求下一個辰時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 7)
-        lmtAtHourStart.with(HOUR_OF_DAY, 7)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 7)
-      5 //欲求下一個巳時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 9)
-        lmtAtHourStart.with(HOUR_OF_DAY, 9)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 9)
-      6 //欲求下一個午時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 11)
-        lmtAtHourStart.with(HOUR_OF_DAY, 11)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 11)
-      7 //欲求下一個未時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 13)
-        lmtAtHourStart.with(HOUR_OF_DAY, 13)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 13)
-      8 //欲求下一個申時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 15)
-        lmtAtHourStart.with(HOUR_OF_DAY, 15)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 15)
-      9 //欲求下一個酉時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 17)
-        lmtAtHourStart.with(HOUR_OF_DAY, 17)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 17)
-      10 //欲求下一個戌時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 19)
-        lmtAtHourStart.with(HOUR_OF_DAY, 19)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 19)
-      11 //欲求下一個亥時的時刻
-      -> return if (lmt.get(HOUR_OF_DAY) < 21)
-        lmtAtHourStart.with(HOUR_OF_DAY, 21)
-      else
-        lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, 21)
-      else -> throw RuntimeException("Cannot get next start time of $eb , LMT = $lmt")
+
+      else -> {
+        val hourStart = eb.index * 2 -1
+        if (lmt.get(HOUR_OF_DAY) < hourStart)
+          lmtAtHourStart.with(HOUR_OF_DAY, hourStart.toLong())
+        else
+          lmtAtHourStart.plus(1, DAYS).with(HOUR_OF_DAY, hourStart.toLong())
+      }
     }
   }
 
@@ -146,66 +98,20 @@ class HourLmtImpl : IHour, Serializable {
 
     val hourOfDay = lmt.get(HOUR_OF_DAY)
     val yesterdayHourStart = lmtAtHourStart.minus(1, DAYS)
-    return when (eb) {
+
+    return when(eb) {
       Branch.子 -> if (hourOfDay < 23)
         yesterdayHourStart.with(HOUR_OF_DAY, 23)
       else
         lmtAtHourStart.with(HOUR_OF_DAY, 23)
 
-      Branch.丑 -> if (hourOfDay < 1)
-        yesterdayHourStart.with(HOUR_OF_DAY, 1)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 1)
-
-      Branch.寅 -> if (hourOfDay < 3)
-        yesterdayHourStart.with(HOUR_OF_DAY, 3)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 3)
-
-      Branch.卯 -> if (hourOfDay < 5)
-        yesterdayHourStart.with(HOUR_OF_DAY, 5)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 5)
-
-      Branch.辰 -> if (hourOfDay < 7)
-        yesterdayHourStart.with(HOUR_OF_DAY, 7)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 7)
-
-      Branch.巳 -> if (hourOfDay < 9)
-        yesterdayHourStart.with(HOUR_OF_DAY, 9)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 9)
-
-      Branch.午 -> if (hourOfDay < 11)
-        yesterdayHourStart.with(HOUR_OF_DAY, 11)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 11)
-
-      Branch.未 -> if (hourOfDay < 13)
-        yesterdayHourStart.with(HOUR_OF_DAY, 13)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 13)
-
-      Branch.申 -> if (hourOfDay < 15)
-        yesterdayHourStart.with(HOUR_OF_DAY, 15)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 15)
-
-      Branch.酉 -> if (hourOfDay < 17)
-        yesterdayHourStart.with(HOUR_OF_DAY, 17)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 17)
-
-      Branch.戌 -> if (hourOfDay < 19)
-        yesterdayHourStart.with(HOUR_OF_DAY, 19)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 19)
-
-      Branch.亥 -> if (hourOfDay < 21)
-        yesterdayHourStart.with(HOUR_OF_DAY, 21)
-      else
-        lmtAtHourStart.with(HOUR_OF_DAY, 21)
+      else -> {
+        val hourStart = eb.index * 2 - 1
+        if (hourOfDay < hourStart)
+          yesterdayHourStart.with(HOUR_OF_DAY, hourStart.toLong())
+        else
+          lmtAtHourStart.with(HOUR_OF_DAY, hourStart.toLong())
+      }
     }
   }
 
