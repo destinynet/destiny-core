@@ -7,22 +7,23 @@ import java.util.*
 
 object LocaleTools {
   /** 將 string 以 _ 切開，傳回 Locale 物件  */
-  fun getLocale(string: String): Locale {
-    val st = StringTokenizer(string, "_-")
+  fun getLocale(string: String): Locale? {
+    return StringTokenizer(string, "_-")
+      .takeIf { it.countTokens() > 0 }
+      ?.let { st ->
+        val lang = st.nextToken().substringBefore('#')
 
-    val lang = st.nextToken().substringBefore('#')
+        val country = if (st.hasMoreTokens())
+          st.nextToken().substringBefore('#')
+        else
+          ""
 
-    val country = if (st.hasMoreTokens())
-      st.nextToken().substringBefore('#')
-    else
-      ""
-
-    val variant = if (st.hasMoreTokens())
-      st.nextToken().substringBefore('#')
-    else
-      ""
-
-    return Locale(lang, country, variant)
+        val variant = if (st.hasMoreTokens())
+          st.nextToken().substringBefore('#')
+        else
+          ""
+        Locale(lang, country, variant)
+      }
   }
 
   /**
@@ -63,11 +64,11 @@ object LocaleTools {
    *
    */
   fun getStringOrDefault(localeStringMap: Map<Locale, String>, locale: Locale): String {
-    return getString(localeStringMap , locale)?: {
-      val bestMatchingLocale = getBestMatchingLocale(locale , localeStringMap.keys)
+    return getString(localeStringMap, locale) ?: {
+      val bestMatchingLocale = getBestMatchingLocale(locale, localeStringMap.keys)
       bestMatchingLocale?.let {
         localeStringMap[bestMatchingLocale]
-      }?:localeStringMap.values.first()
+      } ?: localeStringMap.values.first()
     }.invoke()
 
   }
@@ -127,7 +128,7 @@ object LocaleTools {
 
     val defaultLocale = Locale.getDefault()
 
-    return getBestMatchingLocale(locale , locales)?: getBestMatchingLocale(defaultLocale , locales)
+    return getBestMatchingLocale(locale, locales) ?: getBestMatchingLocale(defaultLocale, locales)
 
   }
 

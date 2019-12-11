@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Descriptive
 import destiny.core.calendar.eightwords.Direction
+import destiny.tools.ILocaleString
 import java.io.Serializable
 import java.util.*
 
@@ -62,3 +63,23 @@ data class ViewSettings(
     OPPO_TRANS_FOUR_ARROW;
   }
 } // data class ViewSettings
+
+fun ViewSettings.SelfTransFour.asLocaleString() = object : ILocaleString {
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
+  }
+}
+
+fun ViewSettings.SelfTransFour.toString(locale: Locale) : String {
+  return this.asLocaleString().toString(locale)
+}
+
+fun ViewSettings.OppoTransFour.asLocaleString() = object : ILocaleString {
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
+  }
+}
+
+fun ViewSettings.OppoTransFour.toString(locale: Locale) : String {
+  return this.asLocaleString().toString(locale)
+}

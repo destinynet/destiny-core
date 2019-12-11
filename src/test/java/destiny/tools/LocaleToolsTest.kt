@@ -3,13 +3,19 @@
  */
 package destiny.tools
 
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.*
 
 class LocaleToolsTest {
 
+  val logger = KotlinLogging.logger {  }
+
   @Test
   fun getLocale() {
+
+    assertNull(LocaleTools.getLocale(""))
+
     assertEquals(Locale("zh"), LocaleTools.getLocale("zh"))
     assertEquals(Locale("zh"), LocaleTools.getLocale("ZH"))
     assertEquals(Locale("zh"), LocaleTools.getLocale("ZH#TAIWAN"))
