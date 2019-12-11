@@ -25,7 +25,7 @@ class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClock
     return if (dayNight == DayNight.DAY) Clockwise.CLOCKWISE else Clockwise.COUNTER
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "晝順夜逆"
   }
 

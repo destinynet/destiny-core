@@ -14,7 +14,7 @@ class PositiveGenderImpl : IPositive, Serializable {
     return gender === Gender.男
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "男順女逆"
   }
 

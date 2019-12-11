@@ -52,7 +52,7 @@ data class PatternParasDescription(
   /**
    * 沒有其他語系，就傳中文的 [IPattern.name] 即可
    */
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return pattern.name
   }
 

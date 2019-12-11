@@ -152,9 +152,9 @@ class EightWordsColorCanvas(
       val dstString = if (isDst) "有" else "無"
       cc.setText(dstString, 5, x + 29, foreColor = if (isDst) "FF0000" else "", backColor =  "", title = null)
 
-      cc.setText("子正是：" + context.dayHourImpl.midnightImpl.getTitle(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
+      cc.setText("子正是：" + context.dayHourImpl.midnightImpl.toString(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
         title = context.dayHourImpl.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
-      cc.setText("時辰劃分：" + context.dayHourImpl.getTitle(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
+      cc.setText("時辰劃分：" + context.dayHourImpl.toString(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
         title = context.dayHourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       val risingLine = 8
       //val 命宮 = model.risingStemBranch
@@ -165,7 +165,7 @@ class EightWordsColorCanvas(
 
 
       cc.setText(命宮String, risingLine, 7, foreColor = "FF0000", backColor =  null, title = 命宮String)
-      cc.setText("（" + context.risingSignImpl.getTitle(Locale.TAIWAN) + "）", risingLine, 19)
+      cc.setText("（" + context.risingSignImpl.toString(Locale.TAIWAN) + "）", risingLine, 19)
 
       val linkLine = 9
       if (linkUrl != null) {

@@ -28,7 +28,7 @@ class PatternTranslatorKtTest {
   val logger = KotlinLogging.logger { }
 
   private val IPlanetPattern.title: String
-    get() = patternTranslator.getDescriptor(this).getTitle(Locale.TAIWAN)
+    get() = patternTranslator.getDescriptor(this).toString(Locale.TAIWAN)
 
   private val IPlanetPattern.description: String
     get() = patternTranslator.getDescriptor(this).getDescription(Locale.TAIWAN)

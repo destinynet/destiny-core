@@ -25,7 +25,7 @@ interface IMonthlyHexagram : Descriptive {
  * 此為黃道「中氣」正切演算法，亦是 太陽星座劃分法
  */
 class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "黃道「中氣」切割法"
   }
 
@@ -81,7 +81,7 @@ class MonthlyHexagramSignImpl : IMonthlyHexagram, Serializable {
  * 意味：以節氣的「節」，也是地支月份 來劃分
  */
 class MonthlyHexagramBranchImpl : IMonthlyHexagram , Serializable {
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "黃道「節」切分法"
   }
 

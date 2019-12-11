@@ -204,21 +204,20 @@ class TimeToolsTest {
    */
   @Test
   fun testOffset() {
-    val zoneId = ZoneId.of("Asia/Taipei")
     // 日光節約前一秒
     val beforeDST = LocalDateTime.of(1974, 3, 31, 23, 59)
 
-    var totalSeconds = zoneId.rules.getOffset(beforeDST.atZone(zoneId).toInstant()).totalSeconds
+    var totalSeconds = asiaTaipeiZoneId.rules.getOffset(beforeDST.atZone(asiaTaipeiZoneId).toInstant()).totalSeconds
     assertEquals((60 * 60 * 8).toLong(), totalSeconds.toLong())
-    assertEquals(beforeDST.atZone(zoneId).offset.totalSeconds.toLong(), totalSeconds.toLong())
-    assertEquals((60 * 60 * 8).toLong(), TimeTools.getSecondsOffset(beforeDST, zoneId).toLong())
+    assertEquals(beforeDST.atZone(asiaTaipeiZoneId).offset.totalSeconds.toLong(), totalSeconds.toLong())
+    assertEquals((60 * 60 * 8).toLong(), TimeTools.getSecondsOffset(beforeDST, asiaTaipeiZoneId).toLong())
 
     // 日光節約後一秒
     val startDST = LocalDateTime.of(1974, 4, 1, 0, 0, 1)
-    totalSeconds = zoneId.rules.getOffset(startDST.atZone(zoneId).toInstant()).totalSeconds
+    totalSeconds = asiaTaipeiZoneId.rules.getOffset(startDST.atZone(asiaTaipeiZoneId).toInstant()).totalSeconds
     assertEquals((60 * 60 * 9).toLong(), totalSeconds.toLong())
-    assertEquals(startDST.atZone(zoneId).offset.totalSeconds.toLong(), totalSeconds.toLong())
-    assertEquals((60 * 60 * 9).toLong(), TimeTools.getSecondsOffset(startDST, zoneId).toLong())
+    assertEquals(startDST.atZone(asiaTaipeiZoneId).offset.totalSeconds.toLong(), totalSeconds.toLong())
+    assertEquals((60 * 60 * 9).toLong(), TimeTools.getSecondsOffset(startDST, asiaTaipeiZoneId).toLong())
   }
 
 
@@ -419,7 +418,7 @@ class TimeToolsTest {
   fun getGmtFromZonedDateTime() {
     // 2017-09-30 , 14:00 , 台灣
     val lmt = LocalDateTime.of(2017, 9, 30, 14, 0)
-    val zdt = TimeTools.getGmtFromZonedDateTime(lmt.atZone(ZoneId.of("Asia/Taipei")))
+    val zdt = TimeTools.getGmtFromZonedDateTime(lmt.atZone(asiaTaipeiZoneId))
     // 確認傳回的是 GMT 時區
     assertEquals(ZoneId.of("GMT"), zdt.zone)
     // GMT 為清晨 6點

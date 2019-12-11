@@ -36,7 +36,7 @@ interface ITianyi : Descriptive {
     return getFirstTianyi(day.stem, dayNight)
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(javaClass.name, locale).getString("title")
     } catch (e: MissingResourceException) {

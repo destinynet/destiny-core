@@ -116,7 +116,7 @@ abstract class StrengthAbstractImpl : IStrength, Serializable {
   /** 取得「某顆星」於 12地支的廟旺表  */
   internal abstract fun getImplMapOf(star: ZStar): Map<Branch, Int>?
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(StrengthAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
@@ -125,6 +125,6 @@ abstract class StrengthAbstractImpl : IStrength, Serializable {
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 }

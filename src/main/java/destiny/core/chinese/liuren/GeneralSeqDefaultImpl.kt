@@ -10,7 +10,7 @@ import java.util.*
 
 class GeneralSeqDefaultImpl : IGeneralSeq, Serializable {
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "內定順序"
   }
 

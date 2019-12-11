@@ -37,7 +37,7 @@ class FortuneLargeTradImpl(
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 

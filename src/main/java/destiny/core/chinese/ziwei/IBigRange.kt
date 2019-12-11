@@ -38,7 +38,7 @@ interface IBigRange : Descriptive {
   }
 
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(IBigRange::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
@@ -48,7 +48,7 @@ interface IBigRange : Descriptive {
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 
   companion object {

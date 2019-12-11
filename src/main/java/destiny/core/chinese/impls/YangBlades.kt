@@ -14,7 +14,7 @@ class YangBladeNextBlissImpl : IYangBlade, Descriptive , Serializable {
     return Characters.getBliss(stem).next(1)
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "「祿」的下一位"
   }
 
@@ -50,7 +50,7 @@ class YangBladeRobCashImpl : IYangBlade, Descriptive , Serializable {
     }
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "劫財"
   }
 

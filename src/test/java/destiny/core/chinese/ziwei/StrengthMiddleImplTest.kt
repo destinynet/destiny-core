@@ -4,7 +4,6 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
-import org.slf4j.LoggerFactory
 
 import java.util.Locale
 
@@ -26,9 +25,9 @@ class StrengthMiddleImplTest {
 
   @Test
   fun testTitle() {
-    assertNotNull(impl.getTitle(Locale.TAIWAN))
-    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE))
-    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.CHINA))
+    assertNotNull(impl.toString(Locale.TAIWAN))
+    assertNotNull(impl.toString(Locale.SIMPLIFIED_CHINESE))
+    logger.info("title tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.CHINA))
   }
 
 

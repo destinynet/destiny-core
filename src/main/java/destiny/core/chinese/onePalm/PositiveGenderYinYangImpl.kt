@@ -20,7 +20,7 @@ class PositiveGenderYinYangImpl : IPositive, Serializable {
     return gender === Gender.男 && yearBranch.index % 2 == 0 || gender === Gender.女 && yearBranch.index % 2 == 1
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "陽男陰女順；陰男陽女逆"
   }
 

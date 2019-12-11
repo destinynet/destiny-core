@@ -16,12 +16,12 @@ class TianyiZiweiBookImplTest {
 
   @Test
   fun getTitle() {
-    assertNotNull(impl.getTitle(Locale.TAIWAN))
-    assertNotNull(impl.getTitle(Locale.SIMPLIFIED_CHINESE))
+    assertNotNull(impl.toString(Locale.TAIWAN))
+    assertNotNull(impl.toString(Locale.SIMPLIFIED_CHINESE))
     assertNotNull(impl.getDescription(Locale.TAIWAN))
     assertNotNull(impl.getDescription(Locale.SIMPLIFIED_CHINESE))
 
-    logger.info("tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.SIMPLIFIED_CHINESE))
+    logger.info("tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.SIMPLIFIED_CHINESE))
     logger.info("tw = {} , cn = {}", impl.getDescription(Locale.TAIWAN), impl.getDescription(Locale.SIMPLIFIED_CHINESE))
   }
 

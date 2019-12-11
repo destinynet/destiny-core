@@ -14,7 +14,9 @@ interface IRetrograde {
     RETROGRADE_TO_DIRECT    // 逆轉順
   }
 
-  /** 下次停滯的時間為何時 (GMT)  */
+  /**
+   * 下次停滯的時間為何時 (GMT)
+   */
   fun getNextStationary(star: Star, fromGmt: Double, isForward: Boolean): Double
 
   /**

@@ -239,12 +239,22 @@ interface IZiweiContext {
   }
 }
 
+fun YearType.asLocaleString() = object : ILocaleString {
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
+  }
+}
+
+fun YearType.toString(locale: Locale) : String {
+  return this.asLocaleString().toString(locale)
+}
+
 /** 年系星系  */
 enum class YearType : Descriptive {
   YEAR_LUNAR, // 初一為界
   YEAR_SOLAR; // 立春為界
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
     } catch (e: MissingResourceException) {
@@ -253,7 +263,7 @@ enum class YearType : Descriptive {
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 }
 
@@ -278,7 +288,7 @@ enum class FireBell : Descriptive {
   /** [StarUnlucky.fun火星_全書] , [StarUnlucky.fun鈴星_全書] : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮  */
   FIREBELL_BOOK;
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
     } catch (e: MissingResourceException) {
@@ -287,7 +297,7 @@ enum class FireBell : Descriptive {
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 }
 
@@ -588,7 +598,7 @@ class ZContext(
         notesBuilders.add(Pair("solar_year", arrayOf<Any>(solarYear, lunarYear)))
       }
     }
-    logger.debug("transFourImpl = {} , title = {}" , transFourImpl.javaClass.simpleName , transFourImpl.getTitle(Locale.getDefault()))
+    logger.debug("transFourImpl = {} , title = {}" , transFourImpl.javaClass.simpleName , transFourImpl.toString(Locale.getDefault()))
     logger.debug("trans4Map = {}" , trans4Map)
 
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)

@@ -82,7 +82,7 @@ abstract class Point(
     ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
   }
 
-//  /** toString 直接取名稱  */
+  /** toString 直接取名稱  */
   override fun toString(): String {
     return name
   }

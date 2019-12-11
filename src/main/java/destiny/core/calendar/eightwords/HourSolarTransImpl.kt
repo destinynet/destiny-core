@@ -256,7 +256,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
   }
 
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return name
   }
 

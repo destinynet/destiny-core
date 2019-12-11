@@ -38,7 +38,7 @@ class SettingsTsangShan : AbstractSettings() {
       艮 to listOf(寅, 子, 戌, 申, 午, 辰),
       坤 to listOf(未, 酉, 亥, 丑, 卯, 巳))
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "藏山雷學之藏山卜"
   }
 

@@ -15,11 +15,11 @@ enum class FortuneOutput : Descriptive {
   民國,
   實歲;
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return ResourceBundle.getBundle(FortuneOutput::class.java.name, locale).getString(name)
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 }

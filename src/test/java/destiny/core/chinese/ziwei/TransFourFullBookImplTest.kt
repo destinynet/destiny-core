@@ -8,7 +8,6 @@ import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.core.chinese.ziwei.StarLucky.右弼
 import destiny.core.chinese.ziwei.StarMain.*
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNull
@@ -22,7 +21,7 @@ class TransFourFullBookImplTest {
 
   @Test
   fun testTitle() {
-    logger.info("title tw = {} , cn = {}", impl.getTitle(Locale.TAIWAN), impl.getTitle(Locale.CHINA))
+    logger.info("title tw = {} , cn = {}", impl.toString(Locale.TAIWAN), impl.toString(Locale.CHINA))
   }
 
   @Test

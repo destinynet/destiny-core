@@ -29,7 +29,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
 
   abstract val resource: String
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       logger.trace("try to get nameKey = {} of locale = {} , resource = {}", nameKey, locale, resource)
       ResourceBundle.getBundle(resource, locale).getString(nameKey)

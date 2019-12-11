@@ -4,12 +4,10 @@
  */
 package destiny.core
 
+import destiny.tools.ILocaleString
 import java.util.*
 
-interface Descriptive {
-
-  /** 取得名稱  */
-  fun getTitle(locale: Locale): String
+interface Descriptive : ILocaleString {
 
   /** 詳細描述  */
   fun getDescription(locale: Locale): String

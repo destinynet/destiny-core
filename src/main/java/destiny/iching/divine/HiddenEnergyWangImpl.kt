@@ -17,7 +17,7 @@ import java.util.*
 /** 伏神系統，王洪緒之《卜筮正宗》 , 大多數會是 null  */
 class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return NAME
   }
 

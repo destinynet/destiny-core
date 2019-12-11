@@ -4,7 +4,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.Descriptive
 import destiny.tools.ILocaleString
 import java.util.*
 
@@ -20,17 +19,10 @@ fun HemisphereBy.toString(locale: Locale): String {
 }
 
 /** 界定南北半球的方法 , 赤道 還是 赤緯  */
-enum class HemisphereBy(val nameKey: String) : Descriptive {
+enum class HemisphereBy(val nameKey: String) {
   /** 赤道  */
   EQUATOR("HemisphereBy.EQUATOR"),
   /** 赤緯  */
   DECLINATION("HemisphereBy.DECLINATION");
 
-  override fun getTitle(locale: Locale): String {
-    return toString(locale)
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
-  }
 }

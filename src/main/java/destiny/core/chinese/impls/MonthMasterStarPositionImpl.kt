@@ -13,7 +13,7 @@ import java.util.*
 
 class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>) : IMonthMaster, Serializable {
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "星體觀測（過中氣）"
   }
 

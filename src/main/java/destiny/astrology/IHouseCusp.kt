@@ -69,12 +69,12 @@ interface IHouseCusp : IRisingSign {
     return getHouseCusp(index, gmtJulDay, location, houseSystem, coordinate)
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "真實星體觀測"
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 
 }

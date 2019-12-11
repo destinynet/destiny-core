@@ -26,7 +26,7 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
     return if (steps >= 0) steps else steps + 12
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(HouseSeqAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
@@ -36,7 +36,7 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 
   private operator fun get(index: Int): House {

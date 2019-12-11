@@ -16,7 +16,7 @@ class astroPatternTranslatorTest {
   val logger = KotlinLogging.logger {}
 
   private val AstroPattern.title: String
-    get() = astroPatternTranslator.getDescriptor(this).getTitle(Locale.TAIWAN)
+    get() = astroPatternTranslator.getDescriptor(this).toString(Locale.TAIWAN)
 
   private val AstroPattern.description: String
     get() = astroPatternTranslator.getDescriptor(this).getDescription(Locale.TAIWAN)
@@ -171,11 +171,11 @@ class astroPatternTranslatorTest {
     val pattern = GrandTrine(setOf(SUN, VENUS, MOON), Element.WATER, null)
 
     astroPatternTranslator.getDescriptor(pattern).also { d ->
-      logger.info("title ({})= {}", Locale.TAIWAN, d.getTitle(Locale.TAIWAN))
-      logger.info("title ({})= {}", Locale.SIMPLIFIED_CHINESE, d.getTitle(Locale.SIMPLIFIED_CHINESE))
-      logger.info("title ({})= {}", Locale.ENGLISH, d.getTitle(Locale.ENGLISH))
-      logger.info("title ({})= {}", Locale.FRANCE, d.getTitle(Locale.FRANCE))
-      logger.info("title ({})= {}", Locale.JAPANESE, d.getTitle(Locale.JAPANESE))
+      logger.info("title ({})= {}", Locale.TAIWAN, d.toString(Locale.TAIWAN))
+      logger.info("title ({})= {}", Locale.SIMPLIFIED_CHINESE, d.toString(Locale.SIMPLIFIED_CHINESE))
+      logger.info("title ({})= {}", Locale.ENGLISH, d.toString(Locale.ENGLISH))
+      logger.info("title ({})= {}", Locale.FRANCE, d.toString(Locale.FRANCE))
+      logger.info("title ({})= {}", Locale.JAPANESE, d.toString(Locale.JAPANESE))
     }
 
 

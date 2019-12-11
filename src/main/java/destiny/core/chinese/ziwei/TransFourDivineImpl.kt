@@ -19,7 +19,7 @@ class TransFourDivineImpl : TransFourAbstractImpl() {
     get() = dataTable
 
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "占驗門"
   }
 

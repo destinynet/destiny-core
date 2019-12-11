@@ -31,7 +31,7 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Seria
   }
 
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "前半天後半天"
   }
 

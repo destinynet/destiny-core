@@ -28,7 +28,7 @@ interface IFlowMonth : Descriptive {
    */
   fun getFlowMonth(flowYear: Branch, flowMonth: Branch, birthMonth: Int, birthHour: Branch): Branch
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(IFlowMonth::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
@@ -38,6 +38,6 @@ interface IFlowMonth : Descriptive {
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 }

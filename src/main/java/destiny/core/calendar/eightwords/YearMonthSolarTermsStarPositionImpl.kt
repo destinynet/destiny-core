@@ -32,7 +32,7 @@ class YearMonthSolarTermsStarPositionImpl(
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
   YearEclipticDegreeImpl(changeYearDegree, starPositionImpl), IYearMonth {
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return name
   }
 

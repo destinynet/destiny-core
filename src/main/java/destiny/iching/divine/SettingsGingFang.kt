@@ -37,7 +37,7 @@ class SettingsGingFang : AbstractSettings() {
       艮 to listOf(辰, 午, 申, 戌, 子, 寅),
       坤 to listOf(未, 巳, 卯, 丑, 亥, 酉))
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "京房易之納甲法"
   }
 

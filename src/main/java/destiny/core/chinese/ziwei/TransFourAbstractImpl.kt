@@ -43,7 +43,7 @@ abstract class TransFourAbstractImpl : ITransFour, Serializable {
       .first()
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(TransFourAbstractImpl::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {

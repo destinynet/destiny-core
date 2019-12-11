@@ -21,7 +21,7 @@ class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
     return getAgeNote(startAndEnd.first)
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(javaClass.name, locale).getString("name")
     } catch (e: MissingResourceException) {
@@ -32,7 +32,7 @@ class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
 
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 
   override fun equals(other: Any?): Boolean {

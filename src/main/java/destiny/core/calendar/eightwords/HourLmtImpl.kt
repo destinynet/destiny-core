@@ -118,7 +118,7 @@ class HourLmtImpl : IHour, Serializable {
   /**
    * LMT 要實作
    */
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return name
   }
 

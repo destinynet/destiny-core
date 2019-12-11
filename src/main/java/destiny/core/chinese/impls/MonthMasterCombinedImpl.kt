@@ -13,7 +13,7 @@ import java.util.*
 
 class MonthMasterCombinedImpl(val yearMonthImpl: IYearMonth) : IMonthMaster, Serializable {
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "月支六合（過節）"
   }
 

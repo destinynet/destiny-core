@@ -55,7 +55,7 @@ class HourHouseImpl(val houseCuspImpl : IHouseCusp,
     TODO("not implemented")
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "占星 分宮法"
   }
 

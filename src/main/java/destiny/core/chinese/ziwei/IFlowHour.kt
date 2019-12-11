@@ -16,7 +16,7 @@ interface IFlowHour : Descriptive {
    */
   fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(IFlowHour::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
@@ -26,7 +26,7 @@ interface IFlowHour : Descriptive {
   }
 
   override fun getDescription(locale: Locale): String {
-    return getTitle(locale)
+    return toString(locale)
   }
 
 

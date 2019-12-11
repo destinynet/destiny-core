@@ -252,7 +252,7 @@ class FortuneLargeSolarTermsSpanImpl(
     }
   } // 逆推大運
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "「節」＋「氣（星座）」過運"
   }
 

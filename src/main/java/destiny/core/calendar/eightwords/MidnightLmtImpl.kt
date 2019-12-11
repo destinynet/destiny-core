@@ -43,7 +43,7 @@ class MidnightLmtImpl : IMidnight, Serializable {
       .with(NANO_OF_SECOND, 0)
   }
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "以地方平均時（ LMT）夜半零時來判定"
   }
 

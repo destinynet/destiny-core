@@ -10,7 +10,7 @@ import java.util.*
 
 class GeneralZhaoSeqImpl : IGeneralSeq, Serializable {
 
-  override fun getTitle(locale: Locale): String {
+  override fun toString(locale: Locale): String {
     return "趙氏六壬"
   }
 

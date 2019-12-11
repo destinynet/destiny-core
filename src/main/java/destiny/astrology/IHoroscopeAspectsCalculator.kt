@@ -84,7 +84,6 @@ interface IHoroscopeAspectsCalculator  {
    * */
   fun IHoroscopeModel.getAspectType(p1: Point, p2: Point, aspect: Aspect): AspectData.Type? {
     return this.getAspectData(setOf(p1 , p2) , setOf(aspect)).firstOrNull()?.type
-    //return getAspectData(this , setOf(p1 , p2) , setOf(aspect)).firstOrNull()?.type
   }
 
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
