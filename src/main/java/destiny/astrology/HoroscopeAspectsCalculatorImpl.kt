@@ -108,9 +108,4 @@ class HoroscopeAspectsCalculatorImpl(
     } ?: emptySet()
   }
 
-
-  companion object {
-    private val logger = KotlinLogging.logger { }
-  }
-
 }

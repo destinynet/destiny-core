@@ -15,7 +15,7 @@ import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 import destiny.iching.Symbol.*
 import destiny.iching.divine.ISettingsOfStemBranch
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -222,7 +222,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
       val dutyDaysMap = dailyHexagramService.getDutyDays(hex, startOfYear - 0.01, true)
       val hexSolid = hexSolidImpl.getHexagram(hex)
-      LifeHoloHexagram(lines, stemBranches, dutyDaysMap , hexSolid)
+      LifeHoloHexagram(lines, stemBranches, dutyDaysMap, hexSolid)
     }
 
     val yinYang: IYinYang = threeKings?.let { algo ->
@@ -242,7 +242,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
       val dutyDaysMap = dailyHexagramService.getDutyDays(hex, startOfYear - 0.01, true)
       val hexSolid = hexSolidImpl.getHexagram(hex)
-      LifeHoloHexagram(lines, stemBranches, dutyDaysMap , hexSolid)
+      LifeHoloHexagram(lines, stemBranches, dutyDaysMap, hexSolid)
     }
 
 
@@ -288,7 +288,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val monthlyHexagram: Hexagram = monthlyHexagramImpl.getHexagram(solarTermsPos.solarTerms).first
 
     // 當下值日卦列表
-    val dailyHexagramMap: Map<IDailyHexagram, Hexagram> = dailyHexagramService.getHexagramMap(gmtJulDay).map { (k , v) ->
+    val dailyHexagramMap: Map<IDailyHexagram, Hexagram> = dailyHexagramService.getHexagramMap(gmtJulDay).map { (k, v) ->
       k to v.first
     }.toMap()
 
@@ -416,11 +416,11 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     val diffDays: Int = viewSB.getAheadOf(startSB) + 1 // 沒有第零日 , 「節」當日也算第一日
     logger.debug("從 {} 到 {} , diffDays = {}", startSB, viewSB, diffDays)
 
-    val (dayHex , dayYuanTang) = generateSequence(monthHexagram to confine(monthYuanTang + 1)) {
+    val (dayHex, dayYuanTang) = generateSequence(monthHexagram to confine(monthYuanTang + 1)) {
       Pair(Hexagram.of(monthHexagram), confine(it.second + 1))
     }.flatMap { pair ->
       logger.debug("pair = {}", pair)
-      generateSequence(switch(pair.first , pair.second).first to 1) {
+      generateSequence(switch(pair.first, pair.second).first to 1) {
         it.first to confine(it.second + 1)
       }.take(6)
     }.take(diffDays).last()
@@ -429,22 +429,22 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
     val hourImpl = eightWordsImpl.dayHourImpl.hourImpl
 
-    val start = if (dayImpl.changeDayAfterZi)  {
-      hourImpl.getGmtPrevStartOf(viewGmt , loc , 子)
+    val start = if (dayImpl.changeDayAfterZi) {
+      hourImpl.getGmtPrevStartOf(viewGmt, loc, 子)
     } else {
-      dayImpl.midnightImpl.getPrevMidnight(viewGmt , loc)
+      dayImpl.midnightImpl.getPrevMidnight(viewGmt, loc)
     }
     val end = if (dayImpl.changeDayAfterZi) {
-      hourImpl.getGmtNextStartOf(viewGmt , loc , 子)
+      hourImpl.getGmtNextStartOf(viewGmt, loc, 子)
     } else {
-      dayImpl.midnightImpl.getNextMidnight(viewGmt , loc)
+      dayImpl.midnightImpl.getNextMidnight(viewGmt, loc)
     }
 
-    val holoHex = HoloHexagram(IHoloHexagram.Scale.DAY , dayHex , dayYuanTang , stemBranches,  start , end)
+    val holoHex = HoloHexagram(IHoloHexagram.Scale.DAY, dayHex, dayYuanTang, stemBranches, start, end)
 
-    val daySb = dayImpl.getDay(viewGmt , loc)
+    val daySb = dayImpl.getDay(viewGmt, loc)
 
-    return HoloHexagramWithStemBranch(holoHex , daySb)
+    return HoloHexagramWithStemBranch(holoHex, daySb)
   } // 流日
 
   /** 傳回 本命先後天卦、以及此 gmt 時刻 的大運、流年、流月 等資訊 */
@@ -508,8 +508,8 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
 
     // 流日
     val dailyHexagram: IHoloHexagramWithStemBranch? = monthlyHexagram?.let { monthly ->
-      getDailyHexagram(monthly , monthly.yuanTang , gmt , loc).also {
-        logger.debug("流日 , start = {}" , it.start)
+      getDailyHexagram(monthly, monthly.yuanTang, gmt, loc).also {
+        logger.debug("流日 , start = {}", it.start)
       }
     }
 
@@ -583,7 +583,6 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
   }
 
   companion object {
-    private val logger = LoggerFactory.getLogger(HoloContext::class.java)
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val logger = KotlinLogging.logger { }
   }
 }

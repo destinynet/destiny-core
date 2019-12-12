@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.Descriptive
 import destiny.core.calendar.eightwords.Direction
 import destiny.tools.ILocaleString
 import java.io.Serializable

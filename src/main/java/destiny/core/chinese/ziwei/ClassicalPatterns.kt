@@ -255,9 +255,9 @@ val p善蔭朝綱 = object : PatternSingleImpl() {
  */
 val p機月同梁 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
-    val 四星: List<Branch> = it.getBranches(天機, 太陰, 天同, 天梁)
+    val fourStars: List<Branch> = it.getBranches(天機, 太陰, 天同, 天梁)
 
-    return if (it.三方四正().containsAll(四星))
+    return if (it.三方四正().containsAll(fourStars))
       機月同梁
     else
       null

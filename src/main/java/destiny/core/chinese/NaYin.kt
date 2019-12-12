@@ -5,7 +5,6 @@ package destiny.core.chinese
 
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.StemBranch.*
-import destiny.tools.ILocaleString
 import java.io.Serializable
 import java.util.*
 

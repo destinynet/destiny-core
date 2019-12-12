@@ -13,7 +13,6 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
-import mu.KotlinLogging
 import java.io.Serializable
 import java.time.LocalTime
 import java.util.*
@@ -114,7 +113,6 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
 
 
   companion object {
-    private val logger = KotlinLogging.logger {  }
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

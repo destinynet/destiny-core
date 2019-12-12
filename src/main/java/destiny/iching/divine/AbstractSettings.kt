@@ -17,20 +17,20 @@ abstract class AbstractSettings : ISettingsOfStemBranch, Serializable {
   protected abstract val symbolBranchMap: Map<Symbol, List<Branch>>
 
   override fun getStemBranch(hexagram: IHexagram, lineIndex: Int): StemBranch {
-    val 天干: Stem
-    val 地支: Branch
+    val stem: Stem
+    val branch: Branch
 
     if ((1..3).contains(lineIndex)) {
       //下卦天干
-      天干 = symbolStemMap.getValue(hexagram.lowerSymbol)[lineIndex-1]
-      地支 = symbolBranchMap.getValue(hexagram.lowerSymbol)[lineIndex-1]
+      stem = symbolStemMap.getValue(hexagram.lowerSymbol)[lineIndex-1]
+      branch = symbolBranchMap.getValue(hexagram.lowerSymbol)[lineIndex-1]
     } else {
       //上卦天干
-      天干 = symbolStemMap.getValue(hexagram.upperSymbol)[lineIndex-1]
-      地支 = symbolBranchMap.getValue(hexagram.upperSymbol)[lineIndex-1]
+      stem = symbolStemMap.getValue(hexagram.upperSymbol)[lineIndex-1]
+      branch = symbolBranchMap.getValue(hexagram.upperSymbol)[lineIndex-1]
     } //上卦天干
 
-    return StemBranch[天干, 地支]
+    return StemBranch[stem, branch]
   }
 
 }

@@ -102,15 +102,6 @@ class HoroscopeContext(
       cuspDegreeMap)
   }
 
-
-  companion object {
-    val defaultPoints = setOf<Point>(
-      *Planet.array,
-      *Asteroid.array,
-      *Hamburger.array,
-      *FixedStar.array,
-      *LunarNode.meanArray)
-  }
 }
 
 /**

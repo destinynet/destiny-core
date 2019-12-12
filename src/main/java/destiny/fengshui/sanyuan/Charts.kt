@@ -41,9 +41,10 @@ interface IChartMnt : IPeriod {
 
   /** 取得 四種 山向格局 (or null if 替星) */
   fun getMntDirSpec() : MntDirSpec? {
-    val 地盤 = EarthlyCompass()
-    val mntBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt))
-    val dirBlock: ChartBlock = getChartBlockFromSymbol(地盤.getSymbol(mnt.opposite))
+    // 地盤
+    val compass = EarthlyCompass()
+    val mntBlock: ChartBlock = getChartBlockFromSymbol(compass.getSymbol(mnt))
+    val dirBlock: ChartBlock = getChartBlockFromSymbol(compass.getSymbol(mnt.opposite))
 
     return if (mntBlock.mnt == period && dirBlock.dir == period)
       MntDirSpec.到山到向
@@ -63,17 +64,19 @@ interface IChartMnt : IPeriod {
 
     val gateMap: Map<Gate, Mountain> = VoidFunctions.getGates(mnt)
 
-    val 地盤 = EarthlyCompass()
-    val 玄空陰陽 = MountainYinYangEmptyImpl()
+    // 地盤
+    val compass = EarthlyCompass()
+    // 玄空陰陽
+    val yyImpl = MountainYinYangEmptyImpl()
     return gateMap.mapValues { (_,m) ->
-      val symbol = 地盤.getSymbol(m)
+      val symbol = compass.getSymbol(m)
       val start: Int = getChartBlockFromSymbol(symbol).period
 
       val mappingMountain = SymbolAcquired.getSymbol(start)?.let {
         VoidFunctions.getMappingMountain(m,it)
       }?:m
 
-      val reversed = !玄空陰陽.getYinYang(mappingMountain)
+      val reversed = !yyImpl.getYinYang(mappingMountain)
 
       val steps = FlyingStar.symbolPeriods.indexOf(symbol)
       val finalValue: Int = FlyingStar.getValue(start , steps , reversed)

@@ -294,9 +294,9 @@ object ChartMntRules {
    * */
   fun beneathSameSky(chartBlock: ChartBlock): BlockPattern.伏吟天盤? {
     return chartBlock.let {
-      when {
-        it.period == it.mnt -> BlockPattern.伏吟天盤(MntDir.山)
-        it.period == it.dir -> BlockPattern.伏吟天盤(MntDir.向)
+      when (it.period) {
+        it.mnt -> BlockPattern.伏吟天盤(MntDir.山)
+        it.dir -> BlockPattern.伏吟天盤(MntDir.向)
         else -> null
       }
     }

@@ -57,14 +57,15 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
     var index = (lmtJulDay - 11) % 60
 
 
-    val 下個子初時刻 = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, revJulDayFunc)
+    // 下個子初時刻
+    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, revJulDayFunc)
 
 
     // 下個子正時刻
     val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, revJulDayFunc).let {
-      val dur = Duration.between(下個子初時刻, it).abs()
+      val dur = Duration.between(nextZiStart, it).abs()
       if (dur.toMinutes() <= 1) {
-        logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}" , 下個子初時刻 , it , dur.seconds) // DST 結束前一天，可能會出錯
+        logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}" , nextZiStart , it , dur.seconds) // DST 結束前一天，可能會出錯
         it.plus(1 , ChronoUnit.HOURS)
       } else {
         it
@@ -74,12 +75,12 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
 
     if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
       //子正，在 LMT 零時之前
-      index = getIndex(index, nextMidnightLmt, lmt, hourImpl, location, changeDayAfterZi, 下個子初時刻)
+      index = getIndex(index, nextMidnightLmt, lmt, hourImpl, location, changeDayAfterZi, nextZiStart)
     } else {
       //子正，在 LMT 零時之後（含）
       if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
         // lmt 落於當地 零時 到 子正的這段期間
-        if (TimeTools.isBefore(下個子初時刻, nextMidnightLmt)) {
+        if (TimeTools.isBefore(nextZiStart, nextMidnightLmt)) {
           // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
           index--
         } else {
@@ -91,8 +92,8 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
       } else {
         // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
         if (changeDayAfterZi
-          && lmt.get(ChronoField.DAY_OF_MONTH) != 下個子初時刻.get(ChronoField.DAY_OF_MONTH)
-          && 下個子初時刻.get(ChronoField.HOUR_OF_DAY) >= 12)
+          && lmt.get(ChronoField.DAY_OF_MONTH) != nextZiStart.get(ChronoField.DAY_OF_MONTH)
+          && nextZiStart.get(ChronoField.HOUR_OF_DAY) >= 12)
         // lmt 落於 子初之後 , 零時之前 , 而子初又是在零時之前（hour >=12 , 過濾掉極西的狀況)
           index++
       }
@@ -106,14 +107,18 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
   override fun getDayRange(gmtJulDay: Double, location: ILocation): Pair<Double, Double> {
     return if (changeDayAfterZi) {
       // 子初換日
-      val 上個子初 = hourImpl.getGmtPrevStartOf(gmtJulDay , location , Branch.子)
-      val 下個子初 = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子)
-      上個子初 to 下個子初
+      // 上個子初
+      val prevZiStart = hourImpl.getGmtPrevStartOf(gmtJulDay , location , Branch.子)
+      // 下個子初
+      val nextZiStart = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子)
+      prevZiStart to nextZiStart
     } else {
       // 子正換日
-      val 上個子正 = midnightImpl.getPrevMidnight(gmtJulDay , location)
-      val 下個子正 = midnightImpl.getNextMidnight(gmtJulDay , location)
-      上個子正 to 下個子正
+      // 上個子正
+      val prevZiCenter = midnightImpl.getPrevMidnight(gmtJulDay , location)
+      // 下個子正
+      val nextZiCenter = midnightImpl.getNextMidnight(gmtJulDay , location)
+      prevZiCenter to nextZiCenter
     }
   }
 

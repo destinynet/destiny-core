@@ -7,7 +7,6 @@ package destiny.astrology
 import destiny.astrology.Aspect.Importance
 import destiny.astrology.AspectData.Type.APPLYING
 import destiny.astrology.AspectData.Type.SEPARATING
-import mu.KotlinLogging
 
 /**
  * 計算一張命盤 ( Horoscope ) 中，的交角列表
@@ -100,10 +99,6 @@ interface IHoroscopeAspectsCalculator  {
   /** 此兩顆星是否與這些交角形成任何交角，如果有，是入相位還是出相位。如果沒有，則傳回 null  */
   fun IHoroscopeModel.getAspectType(p1: Point, p2: Point, aspects: Collection<Aspect>): AspectData.Type? {
     return getAspectAndType(p1, p2, aspects)?.second
-  }
-
-  companion object {
-    private val logger = KotlinLogging.logger { }
   }
 
 }

@@ -5,7 +5,10 @@ package destiny.core.chinese.ziwei
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import destiny.core.*
+import destiny.core.DayNight
+import destiny.core.Gender
+import destiny.core.IIntAge
+import destiny.core.IntAgeNote
 import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
@@ -155,10 +158,11 @@ interface IZiweiContext {
 
   /** 計算 流年盤  */
   fun getFlowYear(builder: Builder, flowBig: StemBranch, flowYear: StemBranch): Builder {
-    val 流年命宮 = flowYearImpl.getFlowYear(flowYear.branch, builder.birthMonthNum, builder.birthHour)
+    // 流年命宮
+    val yearlyMain = flowYearImpl.getFlowYear(flowYear.branch, builder.birthMonthNum, builder.birthHour)
 
     val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(流年命宮)
+      val steps = branch.getAheadOf(yearlyMain)
       val house = houseSeqImpl.prev(House.命宮, steps)
       branch to house
     }.toMap()
@@ -173,10 +177,11 @@ interface IZiweiContext {
 
   /** 計算 流月盤  */
   fun getFlowMonth(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch): Builder {
-    val 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    // 流月命宮
+    val monthlyMain = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
     val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(流月命宮)
+      val steps = branch.getAheadOf(monthlyMain)
       val house = houseSeqImpl.prev(House.命宮, steps)
       branch to house
     }.toMap()
@@ -196,11 +201,13 @@ interface IZiweiContext {
                  flowMonth: StemBranch,
                  flowDay: StemBranch,
                  flowDayNum: Int): Builder {
-    val 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    // 流月命宮
+    val monthlyMain = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
-    val 流日命宮 = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, 流月命宮)
+    // 流日命宮
+    val dailyMain = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
     val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(流日命宮)
+      val steps = branch.getAheadOf(dailyMain)
       val house = houseSeqImpl.prev(House.命宮, steps)
       branch to house
     }.toMap()
@@ -220,12 +227,15 @@ interface IZiweiContext {
                   flowDay: StemBranch,
                   flowDayNum: Int,
                   flowHour: StemBranch): Builder {
-    val 流月命宮 = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
-    val 流日命宮 = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, 流月命宮)
-    val 流時命宮 = flowHourImpl.getFlowHour(flowHour.branch, 流日命宮)
+    // 流月命宮
+    val monthlyMain = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    // 流日命宮
+    val dailyMain = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
+    // 流時命宮
+    val hourlyMain = flowHourImpl.getFlowHour(flowHour.branch, dailyMain)
 
     val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(流時命宮)
+      val steps = branch.getAheadOf(hourlyMain)
       val house = houseSeqImpl.prev(House.命宮, steps)
       branch to house
     }.toMap()
@@ -250,21 +260,9 @@ fun YearType.toString(locale: Locale) : String {
 }
 
 /** 年系星系  */
-enum class YearType : Descriptive {
+enum class YearType  {
   YEAR_LUNAR, // 初一為界
   YEAR_SOLAR; // 立春為界
-
-  override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
-    } catch (e: MissingResourceException) {
-      name
-    }
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }
 
 
@@ -281,24 +279,12 @@ fun FireBell.toString(locale : Locale) : String {
   return this.asLocaleString().toString(locale)
 }
 
-enum class FireBell : Descriptive {
+enum class FireBell {
   /** [StarUnlucky.fun火星_全集] , [StarUnlucky.fun鈴星_全集] : (年支、時支) -> 地支 (福耕老師論點) */
   FIREBELL_COLLECT,
 
   /** [StarUnlucky.fun火星_全書] , [StarUnlucky.fun鈴星_全書] : 年支 -> 地支 . 中州派 : 火鈴的排法按中州派僅以生年支算落宮，不按生時算落宮  */
   FIREBELL_BOOK;
-
-  override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
-    } catch (e: MissingResourceException) {
-      name
-    }
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }
 
 /** 天馬，要用 年馬 還是 月馬 */

@@ -4,9 +4,6 @@
  */
 package destiny.astrology.classical
 
-import destiny.core.calendar.eightwords.EightWords
-import destiny.core.calendar.eightwords.asLocaleString
-import destiny.core.calendar.eightwords.toString
 import destiny.tools.ILocaleString
 import java.util.*
 

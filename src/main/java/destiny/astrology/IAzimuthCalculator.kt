@@ -43,16 +43,8 @@ interface IAzimuthCalculator {
                              geoLat: Double,
                              geoLng: Double,
                              geoAlt: Double? = 0.0,
-                             temperature: Double,
-                             pressure: Double): Azimuth
-
-  fun getAzimuthFromEcliptic(eclipticPosition: IPos,
-                             gmtJulDay: Double,
-                             geoLat: Double,
-                             geoLng: Double,
-                             geoAlt: Double): Azimuth {
-    return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, geoLat, geoLng, geoAlt, 0.0, 1013.25)
-  }
+                             temperature: Double = 0.0,
+                             pressure: Double = 1013.25): Azimuth
 
   fun getAzimuthFromEcliptic(eclipticPosition: IPos,
                              gmtJulDay: Double,
@@ -67,8 +59,8 @@ interface IAzimuthCalculator {
   fun getAzimuthFromEcliptic(eclipticPosition: IPos,
                              gmt: ChronoLocalDateTime<*>,
                              location: ILocation,
-                             temperature: Double,
-                             pressure: Double): Azimuth {
+                             temperature: Double = 0.0,
+                             pressure: Double = 1013.25): Azimuth {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location, temperature, pressure)
   }
@@ -79,8 +71,8 @@ interface IAzimuthCalculator {
                             geoLat: Double,
                             geoLng: Double,
                             geoAlt: Double? = 0.0,
-                            temperature: Double,
-                            pressure: Double): Azimuth
+                            temperature: Double = 0.0,
+                            pressure: Double = 1013.25): Azimuth
 
   fun getAzimuthFromEquator(equatorPosition: IPos,
                             gmtJulDay: Double,

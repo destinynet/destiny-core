@@ -8,7 +8,6 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import java.time.chrono.ChronoLocalDateTime
 
 interface IPalmContext {
