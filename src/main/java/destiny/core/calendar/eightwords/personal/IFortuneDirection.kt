@@ -15,13 +15,11 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IFortuneDirection {
 
+  /** 大運是否順行  */
   fun isForward(gmtJulDay : Double , loc : ILocation , gender: Gender) : Boolean
 
   fun isForward(lmt: ChronoLocalDateTime<*> , loc: ILocation , gender: Gender) : Boolean {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return isForward(gmtJulDay , loc, gender)
   }
-
-  /** 大運是否順行  */
-//  fun isForward(gender : Gender, eightWords: EightWords): Boolean
 }

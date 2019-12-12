@@ -25,10 +25,6 @@ data class StemBranchOptional(
   val index: Int?
     get() = getIndex(this)
 
-//  init {
-//    check(stem, branch)
-//  }
-
   fun next(n: Int): StemBranchOptional? {
     val index = getIndex(this)
 
@@ -63,7 +59,6 @@ data class StemBranchOptional(
 
     operator fun get(stem: Stem?, branch: Branch?): StemBranchOptional {
 
-      //return StemBranchOptional(stem, branch)
       return if (stem != null && branch != null) {
         val sIndex = Stem.getIndex(stem)
         val bIndex = Branch.getIndex(branch)
@@ -103,14 +98,6 @@ data class StemBranchOptional(
       }
       return null
     }
-
-//    private fun check(stem: Stem?, branch: Branch?) {
-//      if (stem != null && branch != null) {
-//        require(stem.booleanValue == SimpleBranch.getBooleanValue(branch)) {
-//          "Stem/Branch combination illegal ! $stem cannot be combined with $branch"
-//        }
-//      }
-//    }
 
     operator fun iterator(): Iterator<StemBranchOptional> {
       return ARRAY.iterator()

@@ -175,12 +175,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
           val bgColor = if (selected) "DDD" else null
           val triColumnShort = ColorCanvas(5, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
-          //triColumnShort.setText(i.toString()+"/"+j.toString()+":"+dataList.indexOf(fortuneData) , 1 , 1)
 
-          //val title = AlignTools.leftPad(startFortune, 6 , ChineseStringTools.NULL_CHAR.get(0))
           val title = StringUtils.center(startFortune, 6, ' ')
-          //val title = ChineseStringTools.replaceToBiggerDigits(startFortune)
-          //val title = StringUtils.rightPad(startFortune, 6, ChineseStringTools.NULL_CHAR)
           triColumnShort.setText(title, 1, 1, foreColor = "green", backColor = null, title = "起運時刻：" + timeDecorator.getOutputString(startFortuneLmt))
 
           val reaction = reactionsUtil.getReaction(stemBranch.stem, eightWords.day.stem)
@@ -195,7 +191,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
           }
           //triColumnShort.setText("XX" , 5 , 3 , "gray")
           val (x, y) = ((j - 1) * 5 + 1) to ((i - 1) * 8 + 1)
-          //println("i = $i , j = $j , x = $x , y = $y")
           下方大運橫.add(triColumnShort, x, y)
         } // 1~2
       } // 1~ (18/2=9)
@@ -207,23 +202,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     setText("大運（虛歲）", 10, 55)
     add(右方大運直, 11, 47)
     add(下方大運橫, 22, 1)
-
-//    val 節氣 = ColorCanvas(2, width, ChineseStringTools.NULL_CHAR)
-//    val prevMajorSolarTerms: Pair<SolarTerms, Double> = model.prevMajorSolarTerms
-//    val nextMajorSolarTerms: Pair<SolarTerms, Double> = model.nextMajorSolarTerms
-//
-//    val prevMajorSolarTermsTime = TimeTools.getLmtFromGmt(prevMajorSolarTerms.second, model.location, revJulDayFunc)
-//
-//    節氣.setText(prevMajorSolarTerms.first.toString(), 1, 1)
-//    節氣.setText("：", 1, 5)
-//    節氣.setText(this.timeDecorator.getOutputString(prevMajorSolarTermsTime), 1, 7)
-//
-//    val nextMajorSolarTermsTime = TimeTools.getLmtFromGmt(nextMajorSolarTerms.second, model.location, revJulDayFunc)
-//    節氣.setText(nextMajorSolarTerms.first.toString(), 2, 1)
-//    節氣.setText("：", 2, 5)
-//    節氣.setText(this.timeDecorator.getOutputString(nextMajorSolarTermsTime), 2, 7)
-//
-//    add(節氣, 32, 1)
 
     add(TimeLine(model) , 32 , 1)
   }

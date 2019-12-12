@@ -126,7 +126,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
    */
   private fun getIndex(sb: StemBranch): Int {
     return values().indexOf(sb)
-  } //getIndex()
+  }
 
   /** 取得「空亡」的兩個地支  */
   val empties: Collection<Branch>
@@ -198,7 +198,7 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
      */
     private fun getIndex(sb: StemBranch): Int {
       return values().indexOf(sb)
-    } //getIndex()
+    }
 
     operator fun iterator(): Iterator<StemBranch> {
       return values().iterator()

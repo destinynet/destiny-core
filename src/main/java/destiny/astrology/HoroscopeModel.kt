@@ -123,7 +123,7 @@ interface IHoroscopeModel {
    */
   fun getHouse(degree: Double): Int {
     return Companion.getHouse(degree, cuspDegreeMap)
-  } //getHouse()
+  }
 
   /**
    * 取得第幾宮內的星星列表 , 1 <= index <=12 , 並且按照黃道度數「由小到大」排序

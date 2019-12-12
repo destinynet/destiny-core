@@ -23,7 +23,7 @@ enum class FiveElement  : IFiveElement, Serializable {
         金 -> 水
         水 -> 木
       }
-    } //produceTo()
+    }
 
   /** 取得哪個五行生此五行 （生木者為水）  */
   val producer: FiveElement
@@ -48,7 +48,7 @@ enum class FiveElement  : IFiveElement, Serializable {
         金 -> 木
         水 -> 火
       }
-    } //beatTo()
+    }
 
   /** 取得此五行被哪個五行剋 （木被金剋）  */
   val dominator: FiveElement
@@ -60,7 +60,7 @@ enum class FiveElement  : IFiveElement, Serializable {
         金 -> 火
         水 -> 土
       }
-    } //beatenBy()
+    }
 
   override val fiveElement: FiveElement
     get() = this
