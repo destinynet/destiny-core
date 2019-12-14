@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
-import destiny.core.calendar.Location
+import destiny.core.calendar.locationOf
 import destiny.core.chinese.Branch.*
 import java.time.LocalDateTime
 import java.util.*
@@ -17,7 +17,7 @@ class HourLmtImplTest {
   fun testLmtNextStartOf() {
     val hourImpl = HourLmtImpl()
 
-    val loc = Location.of(Locale.TAIWAN)
+    val loc = locationOf(Locale.TAIWAN)
 
     LocalDateTime.of(2017, 2, 12, 22, 59, 0).also {
       // 子時前一秒
@@ -59,7 +59,7 @@ class HourLmtImplTest {
   @Test
   fun testLmtPrevStartOf() {
     val hourImpl = HourLmtImpl()
-    val loc = Location.of(Locale.TAIWAN)
+    val loc = locationOf(Locale.TAIWAN)
 
     LocalDateTime.of(2019, 4, 23, 23, 0, 1).also {
       // 子時後一秒

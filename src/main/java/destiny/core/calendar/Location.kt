@@ -94,6 +94,8 @@ interface IPlace {
 }
 
 
+
+
 data class Location(override val lat: Double,
                     override val lng: Double,
                     override val tzid: String?,
@@ -159,80 +161,6 @@ data class Location(override val lat: Double,
 
   companion object {
 
-
-
-    private val locMap = mapOf(
-      // de , 柏林
-      Locale.GERMAN to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
-      // de_DE , 柏林
-      Locale.GERMANY to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
-      // en , 紐約 , 40.758899, -73.985131 , 時報廣場
-      Locale.ENGLISH to Location(40.758899, -73.985131, "America/New_York"),
-      // en_US , 紐約
-      Locale.US to Location(40.758899, -73.985131, "America/New_York"),
-      // en_AU , 雪梨
-      Locale("en", "AU") to Location(EastWest.EAST, 151, 12, 40.0, NorthSouth.SOUTH, 33, 51, 36.0, "Australia/Sydney"),
-      // en_BW , 波札那 Botswana
-      Locale("en", "BW") to Location(EastWest.EAST, 25, 55, NorthSouth.SOUTH, 24, 40, "Africa/Gaborone"),
-      // en_CA , 多倫多
-      Locale.CANADA to Location(EastWest.WEST, 79, 24, NorthSouth.NORTH, 43, 40, "America/Toronto"),
-      // en_DK , 丹麥 哥本哈根 Copenhagen
-      Locale("en", "DK") to Location(EastWest.EAST, 12, 34, NorthSouth.NORTH, 55, 43, "Europe/Copenhagen"),
-      // en_GB , 倫敦
-      Locale.UK to Location(EastWest.WEST, 0, 7, NorthSouth.NORTH, 51, 30, "Europe/London"),
-      // en_HK , 香港
-      Locale("en", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
-      // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
-      Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, "Europe/Dublin"),
-      // en_MY , 馬來西亞 , 吉隆坡
-      Locale("en", "MY") to Location(EastWest.EAST, 101, 42, NorthSouth.NORTH, 3, 8, "Asia/Kuala_Lumpur"),
-      // en_NZ , 紐西蘭 , 奧克蘭 Auckland (最大城市)
-      Locale("en", "NZ") to Location(EastWest.EAST, 174, 45, NorthSouth.SOUTH, 36, 52, "Pacific/Auckland"),
-      // en_PH , 菲律賓 , 馬尼拉
-      Locale("en", "PH") to Location(EastWest.EAST, 121, 0, NorthSouth.NORTH, 14, 35, "Asia/Manila"),
-      // en_SG , 新加坡
-      Locale("en", "SG") to Location(EastWest.EAST, 103, 51, NorthSouth.NORTH, 1, 17, "Asia/Singapore"),
-      // en_ZA , 南非 , 約翰尼斯堡
-      Locale("en", "ZA") to Location(EastWest.EAST, 27, 54, NorthSouth.SOUTH, 26, 8, "Africa/Johannesburg"),
-      // en_ZW , 辛巴威 , 哈拉雷
-      Locale("en", "ZW") to Location(EastWest.EAST, 31, 3, NorthSouth.SOUTH, 17, 50, "Africa/Harare"),
-      // fr , 巴黎
-      Locale.FRENCH to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
-      // fr_FR , 巴黎
-      Locale.FRANCE to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
-      // it , 羅馬
-      Locale.ITALIAN to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
-      // it_IT , 羅馬
-      Locale.ITALY to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
-      // ja , 東京
-      Locale.JAPANESE to Location(EastWest.EAST, 139, 46, 0.0, NorthSouth.NORTH, 35, 40, 50.0, "Asia/Tokyo"),
-      // ja_JP , 東京
-      Locale.JAPAN to Location(EastWest.EAST, 139, 45, NorthSouth.NORTH, 35, 40, "Asia/Tokyo"),
-      // ko , 首爾
-      Locale.KOREAN to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
-      // ko_KR , 首爾
-      Locale.KOREA to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
-      // zh , 北京
-      Locale.CHINESE to Location(39.9075, 116.397, "Asia/Harbin"),
-      // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
-      Locale.CHINA to Location(EastWest.EAST, 116, 23, NorthSouth.NORTH, 39, 55, "Asia/Shanghai"),
-      // zh_HK , 香港
-      Locale("zh", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
-      // zh_MO , 澳門
-      Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
-      // zh_SG , 新加坡
-      Locale("zh", "SG") to Location(1.2867926,103.8544739, "Asia/Singapore"),
-      // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
-      Locale.TAIWAN to Location(25.039030, 121.517668, "Asia/Taipei")
-                              )
-
-
-    fun of(locale: Locale): Location {
-      val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
-      val loc = locMap.getValue(matchedLocale)
-      return Location(loc.lat, loc.lng, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
-    }
-
     fun getLongitude(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
       return (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let {
         if (ew == EastWest.WEST)
@@ -275,3 +203,80 @@ data class LocationPlace(val location: ILocation, override val place: String) : 
     return toString(Locale.getDefault())
   }
 }
+
+/**
+ * to replace [Location.of]
+ */
+fun locationOf(locale: Locale): Location {
+  val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
+  val loc = locMap.getValue(matchedLocale)
+  return Location(loc.lat, loc.lng, loc.tzid, loc.minuteOffset, loc.altitudeMeter)
+}
+
+
+val locMap = mapOf(
+  // de , 柏林
+  Locale.GERMAN to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
+  // de_DE , 柏林
+  Locale.GERMANY to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
+  // en , 紐約 , 40.758899, -73.985131 , 時報廣場
+  Locale.ENGLISH to Location(40.758899, -73.985131, "America/New_York"),
+  // en_US , 紐約
+  Locale.US to Location(40.758899, -73.985131, "America/New_York"),
+  // en_AU , 雪梨
+  Locale("en", "AU") to Location(EastWest.EAST, 151, 12, 40.0, NorthSouth.SOUTH, 33, 51, 36.0, "Australia/Sydney"),
+  // en_BW , 波札那 Botswana
+  Locale("en", "BW") to Location(EastWest.EAST, 25, 55, NorthSouth.SOUTH, 24, 40, "Africa/Gaborone"),
+  // en_CA , 多倫多
+  Locale.CANADA to Location(EastWest.WEST, 79, 24, NorthSouth.NORTH, 43, 40, "America/Toronto"),
+  // en_DK , 丹麥 哥本哈根 Copenhagen
+  Locale("en", "DK") to Location(EastWest.EAST, 12, 34, NorthSouth.NORTH, 55, 43, "Europe/Copenhagen"),
+  // en_GB , 倫敦
+  Locale.UK to Location(EastWest.WEST, 0, 7, NorthSouth.NORTH, 51, 30, "Europe/London"),
+  // en_HK , 香港
+  Locale("en", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
+  // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
+  Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, "Europe/Dublin"),
+  // en_MY , 馬來西亞 , 吉隆坡
+  Locale("en", "MY") to Location(EastWest.EAST, 101, 42, NorthSouth.NORTH, 3, 8, "Asia/Kuala_Lumpur"),
+  // en_NZ , 紐西蘭 , 奧克蘭 Auckland (最大城市)
+  Locale("en", "NZ") to Location(EastWest.EAST, 174, 45, NorthSouth.SOUTH, 36, 52, "Pacific/Auckland"),
+  // en_PH , 菲律賓 , 馬尼拉
+  Locale("en", "PH") to Location(EastWest.EAST, 121, 0, NorthSouth.NORTH, 14, 35, "Asia/Manila"),
+  // en_SG , 新加坡
+  Locale("en", "SG") to Location(EastWest.EAST, 103, 51, NorthSouth.NORTH, 1, 17, "Asia/Singapore"),
+  // en_ZA , 南非 , 約翰尼斯堡
+  Locale("en", "ZA") to Location(EastWest.EAST, 27, 54, NorthSouth.SOUTH, 26, 8, "Africa/Johannesburg"),
+  // en_ZW , 辛巴威 , 哈拉雷
+  Locale("en", "ZW") to Location(EastWest.EAST, 31, 3, NorthSouth.SOUTH, 17, 50, "Africa/Harare"),
+  // fr , 巴黎
+  Locale.FRENCH to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
+  // fr_FR , 巴黎
+  Locale.FRANCE to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
+  // it , 羅馬
+  Locale.ITALIAN to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
+  // it_IT , 羅馬
+  Locale.ITALY to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
+  // ja , 東京
+  Locale.JAPANESE to Location(EastWest.EAST, 139, 46, 0.0, NorthSouth.NORTH, 35, 40, 50.0, "Asia/Tokyo"),
+  // ja_JP , 東京
+  Locale.JAPAN to Location(EastWest.EAST, 139, 45, NorthSouth.NORTH, 35, 40, "Asia/Tokyo"),
+  // ko , 首爾
+  Locale.KOREAN to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
+  // ko_KR , 首爾
+  Locale.KOREA to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
+  // zh , 北京
+  Locale.CHINESE to Location(39.9075, 116.397, "Asia/Harbin"),
+  // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
+  Locale.CHINA to Location(EastWest.EAST, 116, 23, NorthSouth.NORTH, 39, 55, "Asia/Shanghai"),
+  // zh_HK , 香港
+  Locale("zh", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
+  // zh_MO , 澳門
+  Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
+  // zh_SG , 新加坡
+  Locale("zh", "SG") to Location(1.2867926,103.8544739, "Asia/Singapore"),
+  // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E
+  Locale.TAIWAN to Location(25.039030, 121.517668, "Asia/Taipei")
+)
+
+

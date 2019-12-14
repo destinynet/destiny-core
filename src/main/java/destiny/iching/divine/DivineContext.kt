@@ -76,7 +76,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
                       question: String?,
                       approach: DivineApproach?,
                       lmt: ChronoLocalDateTime<*>?,
-                      loc: ILocation = Location.of(Locale.TAIWAN),
+                      loc: ILocation = locationOf(Locale.TAIWAN),
 
                       place: String? = null,
                       locale: Locale = Locale.TAIWAN): ICombinedFull

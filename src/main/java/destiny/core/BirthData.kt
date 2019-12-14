@@ -7,6 +7,7 @@ package destiny.core
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.locationOf
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
@@ -38,7 +39,7 @@ data class TimeLocMutable(
 
   companion object {
     fun withDefault(): ITimeLoc {
-      return TimeLoc(LocalDateTime.now(), Location.of(Locale.getDefault()))
+      return TimeLoc(LocalDateTime.now(), locationOf(Locale.getDefault()))
     }
   }
 }

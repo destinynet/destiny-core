@@ -8,6 +8,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.calendar.eightwords.IEightWordsNullableFactory
+import destiny.core.calendar.locationOf
 import destiny.core.chinese.Branch
 import destiny.core.chinese.SixAnimal
 import destiny.core.chinese.StemBranch
@@ -178,7 +179,7 @@ data class DivineMeta(
   override val question: String?,
   override val approach: DivineApproach?,
   override val gmtJulDay: Double? = null,
-  override val loc: ILocation? = Location.of(Locale.TAIWAN),
+  override val loc: ILocation? = locationOf(Locale.TAIWAN),
   override val place: String?,
   override val decoratedDate: String?,
   override val decoratedDateTime: String?,

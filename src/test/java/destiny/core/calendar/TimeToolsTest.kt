@@ -17,6 +17,7 @@ import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+
 class TimeToolsTest {
 
   private val asiaTaipeiZoneId = ZoneId.of("Asia/Taipei")
@@ -30,7 +31,9 @@ class TimeToolsTest {
   @Test
   fun testNewYorkDST() {
     val lmt = LocalDateTime.of(1946, 6, 14, 12, 30)
-    val loc = Location.of(Locale.US)
+
+    val loc = locationOf(Locale.US)
+
     logger.info("loc = {}" , loc)
 
     val gmtJulDay = TimeTools.getGmtJulDay(lmt , loc)
@@ -183,7 +186,7 @@ class TimeToolsTest {
     lmt = LocalDateTime.of(1974, 9, 30, 23, 59, 59)
     assertEquals(LocalDateTime.of(1974, 9, 30, 14, 59, 59), TimeTools.getGmtFromLmt(lmt, asiaTaipeiZoneId))
 
-    lmt = getLmtFromGmt(LocalDateTime.of(1974, 9, 30, 14, 0, 0), Location.of(Locale.TAIWAN))
+    lmt = getLmtFromGmt(LocalDateTime.of(1974, 9, 30, 14, 0, 0), locationOf(Locale.TAIWAN))
     System.err.println(lmt) //推估當時可能過了兩次 23:00-24:00 的時間，以調節和 GMT 的時差
 
     // 結束日光節約時間 , 調回 GMT+8
@@ -268,7 +271,7 @@ class TimeToolsTest {
    */
   @Test
   fun getDstSecondOffset_Taiwan() {
-    val loc = Location.of(Locale.TAIWAN)
+    val loc = locationOf(Locale.TAIWAN)
 
     // 民國41年（西元1952年）	日光節約時間	3月1日至10月31日
     var year = 1952

@@ -16,6 +16,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
+import destiny.core.calendar.locationOf
 import destiny.core.chinese.Branch
 import destiny.core.chinese.ITianyi
 import destiny.core.chinese.Stem
@@ -633,7 +634,7 @@ class ZContext(
       if (chineseDateImpl != null && intAgeImpl != null) {
         val gmt = chineseDateImpl.getYangDate(chineseDate).atTime(LocalTime.NOON)
         val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-        intAgeImpl.getRangesMap(gender, gmtJulDay, Location.of(Locale.UK), 1, 130) // 參數沒有 loc 資訊，時間傳回 GMT , 就以 UK 作為地點
+        intAgeImpl.getRangesMap(gender, gmtJulDay, locationOf(Locale.UK), 1, 130) // 參數沒有 loc 資訊，時間傳回 GMT , 就以 UK 作為地點
       } else {
         null
       }

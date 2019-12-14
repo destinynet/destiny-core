@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 
 class ZoneOffsetTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {  }
 
   @Test
   fun testZone() {

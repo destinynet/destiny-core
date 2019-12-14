@@ -14,12 +14,12 @@ class GoogleMapsUrlBuilderTest {
   @Test
   fun getUrl() {
     val builder = GoogleMapsUrlBuilder()
-    val location = Location.of(Locale.TAIWAN)
+    val location = locationOf(Locale.TAIWAN)
     val s = builder.getUrl(location.lat, location.lng)
     logger.info("{}", s)
 
-    logger.info("{}", builder.getUrl(Location.of(Locale("zh" , "HK"))))
-    logger.info("{}", builder.getUrl(Location.of(Locale.US)))
+    logger.info("{}", builder.getUrl(locationOf(Locale("zh" , "HK"))))
+    logger.info("{}", builder.getUrl(locationOf(Locale.US)))
   }
 
 }

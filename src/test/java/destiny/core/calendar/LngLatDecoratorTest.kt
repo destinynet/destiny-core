@@ -12,7 +12,7 @@ class LngLatDecoratorTest {
   @Test
   fun getOutputString() {
 
-    val loc = Location.of(Locale.TAIWAN)
+    val loc = locationOf(Locale.TAIWAN)
     assertEquals("東經：121度31分03.60秒, 北緯：25度02分20.51秒" , LngLatDecorator.getOutputString(loc , Locale.TAIWAN))
     assertEquals("東經：121度31分03.60秒, 北緯：25度02分20.51秒" , LngLatDecorator.getOutputString(loc , Locale.JAPANESE))
     assertEquals("東經：121度31分03.60秒, 北緯：25度02分20.51秒" , LngLatDecorator.getOutputString(loc , Locale.JAPAN))
