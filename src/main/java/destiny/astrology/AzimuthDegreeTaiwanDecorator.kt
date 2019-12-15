@@ -12,14 +12,14 @@ import destiny.tools.Decorator
  */
 class AzimuthDegreeTaiwanDecorator : Decorator<Double> {
   override fun getOutputString(value: Double): String {
-    if (value <= 0.5 || value >= 359.5)
-      return "正北方"
+    return if (value <= 0.5 || value >= 359.5)
+      "正北方"
     else if (value in 89.5..90.5)
-      return "正東方"
+      "正東方"
     else if (value in 179.5..180.5)
-      return "正南方"
+      "正南方"
     else if (value in 269.5..270.5)
-      return "正西方"
+      "正西方"
     else {
       val sb = StringBuilder()
       if (value <= 45)
@@ -39,7 +39,7 @@ class AzimuthDegreeTaiwanDecorator : Decorator<Double> {
       else
         sb.append("北偏西").append((360 - value).toString().substring(0, 4))
       sb.append("度")
-      return sb.toString()
+      sb.toString()
     }
   }
 

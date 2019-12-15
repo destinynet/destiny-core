@@ -22,6 +22,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
    * [GrandTrine] : 大三角
    */
   data class GrandTrine(override val points: Set<Point>, val element: Element, override val score: Double? = null) : AstroPattern() {
+
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
       if (other !is GrandTrine) return false

@@ -18,19 +18,10 @@ import destiny.astrology.Constants
  */
 class ProgressionTertiary : AbstractProgression() {
 
-  /** 一月有幾秒  */
-  private var monthSeconds = Constants.SIDEREAL_MONTH
-
-  /** 一日有幾秒  */
-  private var daySeconds = Constants.SIDEREAL_DAY
-
-
   /** TP (一日一月) , 分子是 一月  */
-  override val numerator: Double
-    get() = monthSeconds
+  override val numerator: Double = Constants.SIDEREAL_MONTH
 
   /** TP (一日一月) , 分母是 一日  */
-  override val denominator: Double
-    get() = daySeconds
+  override val denominator: Double = Constants.SIDEREAL_DAY
 
 }

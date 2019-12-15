@@ -4,7 +4,7 @@
 package destiny.core.calendar
 
 import destiny.tools.StringTools
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.*
 import java.time.chrono.ChronoLocalDate
@@ -30,7 +30,7 @@ class TimeTools : Serializable {
     private val GMT = ZoneId.of("GMT")
 
 
-    private val logger = LoggerFactory.getLogger(TimeTools::class.java)
+    private val logger = KotlinLogging.logger {  }
 
 
     /**
@@ -158,12 +158,11 @@ class TimeTools : Serializable {
      * http://stackoverflow.com/a/41683097/298430
      */
     fun getGmtFromLmt(lmt: ChronoLocalDateTime<*>, timeZone: TimeZone): ChronoLocalDateTime<*> {
-      var zoneId = ZoneId.of("Asia/Taipei") // 若無法 parse , 則採用 Asia/Taipei
-      try {
-        zoneId = ZoneId.of(timeZone.id)
+      val zoneId = try {
+        ZoneId.of(timeZone.id)
       } catch (ignored: ZoneRulesException) {
+        ZoneId.of("Asia/Taipei") // 若無法 parse , 則採用 Asia/Taipei
       }
-
       return getGmtFromLmt(lmt, zoneId)
     }
 
@@ -221,8 +220,6 @@ class TimeTools : Serializable {
      */
     private fun getSecondsOffset(lmt: ChronoLocalDateTime<*>, tz: TimeZone): Int {
       return getSecondsOffset(lmt, tz.toZoneId())
-      //    ZoneOffset offset = lmt.atZone(tz.toZoneId()).getOffset();
-      //    return offset.getTotalSeconds();
     }
 
     /**

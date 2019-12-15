@@ -27,8 +27,6 @@ object LocationDecorator {
 
 class LocationDecoratorTaiwan : Decorator<ILocation> {
 
-  internal var formatter = DecimalFormat("00.00")
-
   override fun getOutputString(value: ILocation): String {
 
     val sb = StringBuilder()
@@ -49,8 +47,6 @@ class LocationDecoratorTaiwan : Decorator<ILocation> {
 
 class LocationDecoratorChina : Decorator<ILocation> {
 
-  internal var formatter = DecimalFormat("00.00")
-
   override fun getOutputString(value: ILocation): String {
     val sb = StringBuilder()
     sb.append(LngLatDecorator.getOutputString(value, Locale.CHINA))
@@ -69,8 +65,6 @@ class LocationDecoratorChina : Decorator<ILocation> {
 
 
 class LocationDecoratorEnglish : Decorator<ILocation> {
-
-  internal var formatter = DecimalFormat("00.00")
 
   override fun getOutputString(value: ILocation): String {
     val sb = StringBuilder()

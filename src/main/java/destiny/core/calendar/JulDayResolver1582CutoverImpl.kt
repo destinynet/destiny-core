@@ -73,11 +73,8 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
      * 之後，傳回 [LocalDateTime]
      */
     fun getLocalDateTimeStatic(gmtJulDay: Double): ChronoLocalDateTime<*> {
-      var isGregorian = false
 
-      if (gmtJulDay >= GREGORIAN_START_JULIAN_DAY) {
-        isGregorian = true
-      }
+      val isGregorian = gmtJulDay >= GREGORIAN_START_JULIAN_DAY
 
       var u0: Double
       var u1: Double
@@ -186,8 +183,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
               }
           }
       }
-      val ldt: ChronoLocalDateTime<*>
-      ldt = if (gregorian)
+      val ldt: ChronoLocalDateTime<*> = if (gregorian)
         LocalDateTime.of(prolepticYear, month, day, hour, minute, pair.first, pair.second)
       else
         JulianDateTime.of(prolepticYear, month, day, hour, minute, pair.first, pair.second)

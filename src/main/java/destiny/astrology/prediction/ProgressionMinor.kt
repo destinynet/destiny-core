@@ -12,19 +12,11 @@ import destiny.astrology.Constants
 </pre> *
  */
 class ProgressionMinor : AbstractProgression() {
-  /** 一年有幾秒  */
-  private var yearSeconds = Constants.SIDEREAL_YEAR
-
-  /** 一月有幾秒  */
-  private var monthSeconds = Constants.SIDEREAL_MONTH
 
   /** MP (一月一年) , 分子是 一年  */
-  override val numerator: Double
-    get() = this.yearSeconds
-
+  override val numerator: Double = Constants.SIDEREAL_YEAR
 
   /** MP (一月一年) , 分母是 一月  */
-  override val denominator: Double
-    get() = this.monthSeconds
+  override val denominator: Double = Constants.SIDEREAL_MONTH
 
 }
