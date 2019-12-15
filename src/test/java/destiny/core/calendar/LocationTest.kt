@@ -5,14 +5,28 @@
 package destiny.core.calendar
 
 import destiny.tools.location.TimeZoneUtils
+import kotlinx.serialization.json.Json
 import mu.KotlinLogging
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
+
 
 class LocationTest {
 
   private val logger = KotlinLogging.logger { }
+
+  @Test
+  fun testJson() {
+    val loc = locationOf(Locale.TAIWAN)
+    Json.stringify(Location.serializer(), loc).also {
+      assertTrue(it.isNotEmpty())
+      logger.info("json = {}" , it)
+    }
+  }
+
 
   @Test
   fun `沒帶入 tzid , 但有帶入 minuteOffset , 將會反查 tzid 找出相符合的 tzid`() {
