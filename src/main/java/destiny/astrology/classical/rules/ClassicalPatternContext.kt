@@ -31,7 +31,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
   private val essentialImpl: IEssential =
     EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl,
-      dayNightImpl)
+                  dayNightImpl)
 
   /**
    * ====================================== for [EssentialDignity] ======================================
@@ -123,63 +123,63 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return with(essentialImpl) {
-        planet.getMutualData(h.pointDegreeMap , null , setOf(Dignity.RULER , Dignity.EXALTATION))
+        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.RULER, Dignity.EXALTATION))
           .map { mutualData ->
             val sign1 = h.getZodiacSign(planet)!!
             val p2 = mutualData.getAnotherPoint(planet)
             val sign2 = h.getZodiacSign(p2)!!
             logger.debug("mutualData = {}", mutualData)
             logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 互容",
-              planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
-              planet, sign1)
-            EssentialDignity.MutualReception(planet , sign1 , mutualData.getDignityOf(planet) ,
-              p2 , sign2 , mutualData.getDignityOf(p2))
+                         planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
+                         planet, sign1)
+            EssentialDignity.MutualReception(planet, sign1, mutualData.getDignityOf(planet),
+                                             p2, sign2, mutualData.getDignityOf(p2))
           }.toList()
       }
 
 
-//      val rulerMutual = with((essentialImpl)) {
-//        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
-//          val p2 = mutualData.getAnotherPoint(planet)
-//          val sign1 = h.getZodiacSign(planet)!!
-//          val sign2 = h.getZodiacSign(p2)!!
-//          EssentialDignity.MutualReception(planet, sign1, mutualData.getDignityOf(planet),
-//            p2, sign2, mutualData.getDignityOf(p2))
-//        }
-//      }
-//
-//      val exaltMutual = with(essentialImpl) {
-//        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
-//          val sign1 = h.getZodiacSign(planet)!!
-//          val p2 = mutualData.getAnotherPoint(planet)
-//          val sign2 = h.getZodiacSign(p2)!!
-//          EssentialDignity.MutualReception(planet, sign1, mutualData.getDignityOf(planet),
-//            p2, sign2, mutualData.getDignityOf(p2))
-//        }
-//      }
-//
-//      val mixedMutual = with(essentialImpl) {
-//        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.RULER, Dignity.EXALTATION)).firstOrNull()
-//          ?.takeIf { mutualData ->
-//            val p2 = mutualData.getAnotherPoint(planet)
-//            val dig1 = mutualData.getDignityOf(planet)
-//            val dig2 = mutualData.getDignityOf(p2)
-//            dig1 !== dig2
-//          }
-//          ?.let { mutualData ->
-//            val sign1 = h.getZodiacSign(planet)!!
-//            val p2 = mutualData.getAnotherPoint(planet)
-//            val sign2 = h.getZodiacSign(p2)!!
-//            logger.debug("mutualData = {}", mutualData)
-//            logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 RULER/EXALT 互容",
-//              planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
-//              planet, sign1)
-//            EssentialDignity.MutualReception(planet, sign1, mutualData.getDignityOf(planet),
-//              p2, sign2, mutualData.getDignityOf(p2))
-//          }
-//      }
-//
-//      return listOfNotNull(rulerMutual, exaltMutual, mixedMutual)
+      //      val rulerMutual = with((essentialImpl)) {
+      //        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.RULER)).firstOrNull()?.let { mutualData ->
+      //          val p2 = mutualData.getAnotherPoint(planet)
+      //          val sign1 = h.getZodiacSign(planet)!!
+      //          val sign2 = h.getZodiacSign(p2)!!
+      //          EssentialDignity.MutualReception(planet, sign1, mutualData.getDignityOf(planet),
+      //            p2, sign2, mutualData.getDignityOf(p2))
+      //        }
+      //      }
+      //
+      //      val exaltMutual = with(essentialImpl) {
+      //        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.EXALTATION)).firstOrNull()?.let { mutualData ->
+      //          val sign1 = h.getZodiacSign(planet)!!
+      //          val p2 = mutualData.getAnotherPoint(planet)
+      //          val sign2 = h.getZodiacSign(p2)!!
+      //          EssentialDignity.MutualReception(planet, sign1, mutualData.getDignityOf(planet),
+      //            p2, sign2, mutualData.getDignityOf(p2))
+      //        }
+      //      }
+      //
+      //      val mixedMutual = with(essentialImpl) {
+      //        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.RULER, Dignity.EXALTATION)).firstOrNull()
+      //          ?.takeIf { mutualData ->
+      //            val p2 = mutualData.getAnotherPoint(planet)
+      //            val dig1 = mutualData.getDignityOf(planet)
+      //            val dig2 = mutualData.getDignityOf(p2)
+      //            dig1 !== dig2
+      //          }
+      //          ?.let { mutualData ->
+      //            val sign1 = h.getZodiacSign(planet)!!
+      //            val p2 = mutualData.getAnotherPoint(planet)
+      //            val sign2 = h.getZodiacSign(p2)!!
+      //            logger.debug("mutualData = {}", mutualData)
+      //            logger.debug("{} 位於 {} , 與其 {}({}) 飛至 {} . 而 {} 的 {}({}) 飛至 {} , 形成 RULER/EXALT 互容",
+      //              planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
+      //              planet, sign1)
+      //            EssentialDignity.MutualReception(planet, sign1, mutualData.getDignityOf(planet),
+      //              p2, sign2, mutualData.getDignityOf(p2))
+      //          }
+      //      }
+      //
+      //      return listOfNotNull(rulerMutual, exaltMutual, mixedMutual)
     }
   } // beneficialMutualReception
 
@@ -392,9 +392,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   val partileConjNorthNode = object : IPlanetPatternFactory {
 
+    /** 內定採用 [NodeType.MEAN] */
+    val north = LunarNode.of(NorthSouth.NORTH, NodeType.MEAN)
+
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      /** 內定採用 [NodeType.MEAN] */
-      val north: LunarNode = LunarNode.of(NorthSouth.NORTH, NodeType.MEAN)
       return h.getPosition(planet)?.lng?.let { planetDeg ->
         h.getPosition(north)?.lng?.takeIf { northDeg ->
           IHoroscopeModel.getAngle(planetDeg, northDeg) <= 1
@@ -839,18 +840,19 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
   val partileConjSouthNode = object : IPlanetPatternFactory {
 
-    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
+    /** 內定採用 NodeType.MEAN  */
+    val south = LunarNode.of(NorthSouth.SOUTH, NodeType.MEAN)
 
+    override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return h.getPosition(planet)?.lng?.let { planetDeg ->
-        /** 內定採用 NodeType.MEAN  */
-        val south = LunarNode.of(NorthSouth.SOUTH, NodeType.MEAN)
-        h.getPositiFortuneLargeSpanImplon(south)?.lng?.takeIf { southDeg ->
+        h.getPosition(south)?.lng?.takeIf { southDeg ->
           IHoroscopeModel.getAngle(planetDeg, southDeg) <= 1
         }?.let {
+          logger.debug("{} 與 {} 形成 {}", planet, south, CONJUNCTION)
           Debility.Partile_Conj_South_Node(planet)
         }
       }
-        .let { pattern -> listOf(pattern) } ?: emptyList()
+        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
@@ -1011,22 +1013,28 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
                          planet, sign1, mutualData.getDignityOf(p2), p2, sign2, sign2, mutualData.getDignityOf(planet),
                          planet, sign1)
             Debility.MutualDeception(planet, sign1, mutualData.getDignityOf(planet),
-                                              p2, sign2, mutualData.getDignityOf(p2))
+                                     p2, sign2, mutualData.getDignityOf(p2))
           }.toList()
       }
     }
   }
 
-  val essentialDignities: List<IPlanetPatternFactory> = listOf(ruler, exaltation, triplicity, term, face, beneficialMutualReception)
+  val essentialDignities: List<IPlanetPatternFactory> =
+    listOf(ruler, exaltation, triplicity, term, face, beneficialMutualReception)
 
-  val accidentalDignities: List<IPlanetPatternFactory> = listOf(house_1_10, house_4_7_11, house_2_5, house_9, house_3, direct, swift
-    , orientalGood, occidentalGood, moonIncreaseLight, freeCombustion, cazimi, partileConjJupiterVenus
-    , partileConjNorthNode, partileTrineJupiterVenus, partileSextileJupiterVenus, partileConjRegulus
-    , partileConjSpica, joyHouse, hayz, besiegedJupiterVenus, translationOfLight, collectionOfLight, refrainFromMarsSaturn)
+  val accidentalDignities: List<IPlanetPatternFactory> =
+    listOf(house_1_10, house_4_7_11, house_2_5, house_9, house_3, direct, swift
+           , orientalGood, occidentalGood, moonIncreaseLight, freeCombustion, cazimi, partileConjJupiterVenus
+           , partileConjNorthNode, partileTrineJupiterVenus, partileSextileJupiterVenus, partileConjRegulus
+           , partileConjSpica, joyHouse, hayz, besiegedJupiterVenus, translationOfLight, collectionOfLight,
+           refrainFromMarsSaturn)
 
-  val debilities: List<IPlanetPatternFactory> = listOf(detriment, fall, peregrine, house_12, house_6_8, retrograde, slower
-    , occidentalBad, orientalBad, moonDecreaseLight, combustion, sunbeam, partileConjMarsSaturn, partileConjSouthNode
-    , besiegedMarsSaturn, partileOppoMarsSaturn, partileSquareMarsSaturn, conjAlgol, outOfSect, refrainFromVenusJupiter , mutualDeception)
+  val debilities: List<IPlanetPatternFactory> =
+    listOf(detriment, fall, peregrine, house_12, house_6_8, retrograde, slower
+           , occidentalBad, orientalBad, moonDecreaseLight, combustion, sunbeam, partileConjMarsSaturn,
+           partileConjSouthNode
+           , besiegedMarsSaturn, partileOppoMarsSaturn, partileSquareMarsSaturn, conjAlgol, outOfSect,
+           refrainFromVenusJupiter, mutualDeception)
 
 
   companion object {

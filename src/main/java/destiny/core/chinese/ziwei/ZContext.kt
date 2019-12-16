@@ -9,7 +9,6 @@ import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IntAgeNote
-import destiny.core.calendar.Location
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
@@ -592,18 +591,18 @@ class ZContext(
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
     val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> =
       branchHouseMap.keys.map { sb: StemBranch ->
-        val m = mutableSetOf<Triple<ITransFour.Value, ZStar, Branch>>()
-        ITransFour.Value.values().map { value: ITransFour.Value ->
+
+        val set = ITransFour.Value.values().map { value ->
           val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
-          if (starBranchMap[flyStar] == null) {
-            // TODO 通常不會有空宮 , 這裡就不做事
-            logger.debug("cannot find flyStar[{} ({})] from starBranchMap : ", flyStar, flyStar.javaClass.name)
-            starBranchMap.forEach { (star, branch) -> logger.debug("\t{}->{}", star, branch) }
-          } else {
-            m.add(Triple(value, flyStar, starBranchMap.getValue(flyStar)))
-          }
-        }
-        sb to m
+          value to flyStar
+        }.filter { (_ , flyStar) ->
+          starBranchMap[flyStar] != null
+        }.map { (value , flyStar) ->
+          Triple(value, flyStar, starBranchMap.getValue(flyStar))
+        }.toSet()
+
+        sb to set
+
       }.toMap()
 
 
