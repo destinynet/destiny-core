@@ -392,9 +392,11 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   val partileConjNorthNode = object : IPlanetPatternFactory {
 
+    /** 內定採用 [NodeType.MEAN] */
+    val north: LunarNode = LunarNode.of(NorthSouth.NORTH, NodeType.MEAN)
+
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      /** 內定採用 [NodeType.MEAN] */
-      val north: LunarNode = LunarNode.of(NorthSouth.NORTH, NodeType.MEAN)
+
       return h.getPosition(planet)?.lng?.let { planetDeg ->
         h.getPosition(north)?.lng?.takeIf { northDeg ->
           IHoroscopeModel.getAngle(planetDeg, northDeg) <= 1
@@ -839,18 +841,21 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
   val partileConjSouthNode = object : IPlanetPatternFactory {
 
+    /** 內定採用 [NodeType.MEAN]  */
+    val south = LunarNode.of(NorthSouth.SOUTH, NodeType.MEAN)
+
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return h.getPosition(planet)?.lng?.let { planetDeg ->
-        /** 內定採用 NodeType.MEAN  */
-        val south = LunarNode.of(NorthSouth.SOUTH, NodeType.MEAN)
-        h.getPositiFortuneLargeSpanImplon(south)?.lng?.takeIf { southDeg ->
+
+        h.getPosition(south)?.lng?.takeIf { southDeg ->
           IHoroscopeModel.getAngle(planetDeg, southDeg) <= 1
         }?.let {
+          logger.debug("{} 與 {} 形成 {}", planet, south, CONJUNCTION)
           Debility.Partile_Conj_South_Node(planet)
         }
       }
-        .let { pattern -> listOf(pattern) } ?: emptyList()
+        ?.let { pattern -> listOf(pattern) } ?: emptyList()
     }
   }
 
