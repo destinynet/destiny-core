@@ -66,7 +66,7 @@ class Builder(
   private val starStrengthMap: Map<ZStar, Int>,
 
   /** 每個地支宮位，所代表的大限，「虛歲」從何時、到何時  */
-  private val flowBigMap: Map<StemBranch, Pair<Int, Int>>, branchSmallRangesMap: Map<Branch, List<Int>>,
+  val flowBigMap: Map<StemBranch, Pair<Int, Int>>, branchSmallRangesMap: Map<Branch, List<Int>>,
 
   /** 宮干四化  */
   private val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>>,
