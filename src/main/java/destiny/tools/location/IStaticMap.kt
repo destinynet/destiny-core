@@ -22,7 +22,8 @@ interface IStaticMap {
    * @param center 緯度、經度
    * */
   suspend fun getImage(center: ILatLng,
-                       width: Int = 600, height: Int = 600,
+                       width: Int = 640, height: Int = 640,
+                       zoom : Int = 15,
                        mapType: MapType = MapType.roadmap,
                        locale: Locale = Locale.getDefault() ,
                        markers : List<Marker> = emptyList()): ByteArray
