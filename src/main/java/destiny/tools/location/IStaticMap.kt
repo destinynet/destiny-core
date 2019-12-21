@@ -20,11 +20,13 @@ interface IStaticMap {
   /**
    * return PNG byte array
    * @param center 緯度、經度
+   * @param scale 1,2 or 4
    * */
   suspend fun getImage(center: ILatLng,
                        width: Int = 640, height: Int = 640,
                        zoom : Int = 15,
                        mapType: MapType = MapType.roadmap,
+                       scale: Int = 1,
                        locale: Locale = Locale.getDefault() ,
                        markers : List<Marker> = emptyList()): ByteArray
 }
