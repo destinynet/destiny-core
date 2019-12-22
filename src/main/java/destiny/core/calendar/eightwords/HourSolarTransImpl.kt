@@ -17,12 +17,10 @@ import java.io.Serializable
 import java.util.*
 
 /**
- * <PRE>
  * 時辰的劃分實作
  * 利用太陽過天底 到天頂之間，劃分十二等份
  * 再從太陽過天頂到天底，平均劃分十二等份
  * 依此來切割 12 時辰
-</PRE> *
  */
 class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
                          private val star : Star = Planet.SUN) : IHour, Serializable {

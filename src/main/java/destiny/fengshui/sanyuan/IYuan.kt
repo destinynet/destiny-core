@@ -8,6 +8,8 @@ import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.StemBranch
+import kotlinx.serialization.*
+import kotlinx.serialization.internal.StringDescriptor
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalTime

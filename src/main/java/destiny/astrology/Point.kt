@@ -69,6 +69,7 @@ fun Point.getAbbreviation(locale: Locale): String {
  *                   North/South   PERIGEE (近)/APOGEE (遠)
  *
  */
+@kotlinx.serialization.Serializable
 abstract class Point(
   /** 名稱key , nameKey 相等，則此 Point 視為 equals!  */
   val nameKey: String,

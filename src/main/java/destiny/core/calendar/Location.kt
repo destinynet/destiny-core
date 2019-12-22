@@ -202,9 +202,6 @@ data class LocationPlace(val location: ILocation, override val place: String) : 
   }
 }
 
-/**
- * to replace [Location.of]
- */
 fun locationOf(locale: Locale): Location {
   val matchedLocale = LocaleTools.getBestMatchingLocale(locale, locMap.keys) ?: Locale.getDefault()
   val loc = locMap.getValue(matchedLocale)
