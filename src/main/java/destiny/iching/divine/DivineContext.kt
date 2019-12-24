@@ -9,7 +9,6 @@ import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.chinese.*
 import destiny.iching.*
 import destiny.iching.contentProviders.*
-import kotlinx.serialization.ContextualSerialization
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -86,6 +85,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
 
 @kotlinx.serialization.Serializable
 class DivineContext(
+//  @Polymorphic
   override val 納甲系統: ISettingsOfStemBranch,
   override val 伏神系統: IHiddenEnergy,
   override val tianyiImpl: ITianyi,
@@ -96,8 +96,7 @@ class DivineContext(
   override val hexImageImpl: IHexagramImage,
   override val hexJudgement: IHexJudgement) : ICombinedFullContext, Serializable {
 
-  @ContextualSerialization
-  val comparator = HexagramDivinationComparator()
+
 
   /** 單一卦象 ,（不含任何文字）的排卦結果 [SingleHexagram] */
   override fun getSingleHexagram(hexagram: IHexagram): ISingleHexagram {
