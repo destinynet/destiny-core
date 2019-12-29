@@ -83,9 +83,7 @@ interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
 
 }
 
-@kotlinx.serialization.Serializable
 class DivineContext(
-//  @Polymorphic
   override val 納甲系統: ISettingsOfStemBranch,
   override val 伏神系統: IHiddenEnergy,
   override val tianyiImpl: ITianyi,
