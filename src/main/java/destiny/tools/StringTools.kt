@@ -5,10 +5,10 @@ package destiny.tools
 
 object StringTools {
 
-  // https://stackoverflow.com/a/11020944/298430
   /**
    * 清除看不到的字元
    * 以及移除前後空白
+   * https://stackoverflow.com/a/11020944/298430
    */
   fun clean(s: String): String {
     val out = StringBuilder()
