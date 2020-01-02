@@ -4,19 +4,20 @@
 package destiny.core.chinese
 
 import destiny.core.Gender
-import destiny.core.Gender.*
+import destiny.core.Gender.女
+import destiny.core.Gender.男
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.Symbol
 import java.io.Serializable
 
-interface IYuanGander {
+interface IYuanGender {
   /**
    * @param yinYang 陽男、陽女、陰男、 or 陰女
    */
   fun getSymbol(gender: Gender, yuan: Yuan, yinYang: IYinYang) : Symbol
 }
 
-class YuanGenderImpl : IYuanGander, Serializable {
+class YuanGenderImpl : IYuanGender, Serializable {
   override fun getSymbol(gender: Gender, yuan: Yuan, yinYang: IYinYang) : Symbol {
     return when (yuan) {
       Yuan.UP -> when (gender) {

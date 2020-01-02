@@ -25,7 +25,7 @@ import java.time.chrono.ChronoLocalDateTime
 class HoloContext(val eightWordsImpl: IEightWordsFactory,
                   val yuanImpl: IYuan,
                   val numberize: INumberize,
-                  val yuanGenderImpl: IYuanGander,
+                  val yuanGenderImpl: IYuanGender,
                   val zodiacSignImpl: IZodiacSign,
                   val yearSplitterImpl: IYearSplitterBySign,
                   val seasonalSymbolImpl: ISeasonalSymbol,
