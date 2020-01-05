@@ -3,16 +3,12 @@
  */
 package destiny.fengshui
 
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.locationOf
-import java.time.LocalDateTime
-import java.time.chrono.ChronoLocalDateTime
-import java.util.*
+import destiny.core.ITimeLoc
+import destiny.core.TimeLoc
 
 
 data class CompassData(
-  val time: ChronoLocalDateTime<*> = LocalDateTime.now(),
-  val loc: ILocation = locationOf(Locale.TAIWAN),
+  val timeLoc : TimeLoc,
   val width: Int = 640,
   val rotate: Double = 180.0,
   val zoom: Int = 15,
@@ -20,4 +16,4 @@ data class CompassData(
   val opaque: Float = 0.4f,
   // 放大倍數 1,2 or 4
   val scale: Int = 1
-)
+) : ITimeLoc by timeLoc
