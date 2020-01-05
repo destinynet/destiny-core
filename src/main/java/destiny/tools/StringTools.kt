@@ -3,6 +3,8 @@
  */
 package destiny.tools
 
+import java.net.URLDecoder
+
 object StringTools {
 
   /**
@@ -31,4 +33,16 @@ object StringTools {
     return out.toString().replace("\\s".toRegex(), " ").trim()
   }
 
+
+  /**
+   * 不斷 url decode 到不能 decode 為止
+   * 必須把 空白字元 與 "+" 視為相等
+   */
+  fun String.decodeToFinalUrl() : String {
+    val s = URLDecoder.decode(this, "UTF-8").replace(" ", "+")
+    return if (s == this)
+      s
+    else
+      s.decodeToFinalUrl()
+  }
 }
