@@ -7,8 +7,9 @@ import destiny.core.ITimeLoc
 import destiny.core.TimeLoc
 
 
-data class CompassData(
+data class CompassMapOverlayModel(
   val timeLoc : TimeLoc,
+  val place : String? = null,
   val width: Int = 640,
   val rotate: Double = 180.0,
   val zoom: Int = 15,
