@@ -11,7 +11,7 @@ class HexagramTest {
 
   @Test
   fun testUnicode() {
-    Hexagram.values().forEach { h ->
+    values().forEach { h ->
       assertNotNull(h.unicode)
       println("$h = ${h.unicode}")
     }
@@ -19,14 +19,14 @@ class HexagramTest {
 
   @Test
   fun testCongenitalOpposition() {
-    assertSame(剝 , 夬.congenitalOpposition)
-    assertSame(夬 , 剝.congenitalOpposition)
+    assertSame(剝, 夬.congenitalOpposition)
+    assertSame(夬, 剝.congenitalOpposition)
 
-    assertSame(渙 , 豐.congenitalOpposition)
-    assertSame(豐 , 渙.congenitalOpposition)
+    assertSame(渙, 豐.congenitalOpposition)
+    assertSame(豐, 渙.congenitalOpposition)
 
-    assertSame(姤 , 復.congenitalOpposition)
-    assertSame(復 , 姤.congenitalOpposition)
+    assertSame(姤, 復.congenitalOpposition)
+    assertSame(復, 姤.congenitalOpposition)
 
   }
 
@@ -49,59 +49,59 @@ class HexagramTest {
 
   @Test
   fun testGetUpperLowerSymbol() {
-    assertSame(Symbol.離 , 大有.upperSymbol)
-    assertSame(Symbol.乾 , 大有.lowerSymbol)
+    assertSame(Symbol.離, 大有.upperSymbol)
+    assertSame(Symbol.乾, 大有.lowerSymbol)
 
-    assertSame(Symbol.震 , 歸妹.upperSymbol)
-    assertSame(Symbol.兌 , 歸妹.lowerSymbol)
+    assertSame(Symbol.震, 歸妹.upperSymbol)
+    assertSame(Symbol.兌, 歸妹.lowerSymbol)
 
-    assertSame(Symbol.坎 , 既濟.upperSymbol)
-    assertSame(Symbol.離 , 既濟.lowerSymbol)
+    assertSame(Symbol.坎, 既濟.upperSymbol)
+    assertSame(Symbol.離, 既濟.lowerSymbol)
   }
 
   @Test
   fun testBinaryCode() {
-    assertEquals("111111" , 乾.binaryCode)
-    assertEquals("000000" , 坤.binaryCode)
-    assertEquals("100010" , 屯.binaryCode)
-    assertEquals("010001" , 蒙.binaryCode)
-    assertEquals("010101" , 未濟.binaryCode)
-    assertEquals("101010" , 既濟.binaryCode)
+    assertEquals("111111", 乾.binaryCode)
+    assertEquals("000000", 坤.binaryCode)
+    assertEquals("100010", 屯.binaryCode)
+    assertEquals("010001", 蒙.binaryCode)
+    assertEquals("010101", 未濟.binaryCode)
+    assertEquals("101010", 既濟.binaryCode)
   }
 
   @Test
   fun testGetTuple() {
-    var list: List<Int>
-    var pair: Pair<IHexagram, IHexagram>
-    list = listOf(7, 7, 7, 7, 7, 7)
-    pair = Hexagram.getHexagrams(list)
-    assertEquals(乾, pair.first)
-    assertEquals(乾, pair.second)
 
-    list = listOf(9, 9, 9, 9, 9, 9)
-    pair = Hexagram.getHexagrams(list)
-    assertEquals(乾, pair.first)
-    assertEquals(坤, pair.second)
+    Hexagram.getHexagrams(listOf(7, 7, 7, 7, 7, 7)).also { pair ->
+      assertEquals(乾, pair.first)
+      assertEquals(乾, pair.second)
+    }
 
-    list = listOf(9, 9, 9, 6, 6, 6)
-    pair = Hexagram.getHexagrams(list)
-    assertEquals(泰, pair.first)
-    assertEquals(否, pair.second)
+    Hexagram.getHexagrams(listOf(9, 9, 9, 9, 9, 9)).also { pair ->
+      assertEquals(乾, pair.first)
+      assertEquals(坤, pair.second)
+    }
 
-    list = listOf(6, 6, 6, 9, 9, 9)
-    pair = Hexagram.getHexagrams(list)
-    assertEquals(否, pair.first)
-    assertEquals(泰, pair.second)
+    Hexagram.getHexagrams(listOf(9, 9, 9, 6, 6, 6)).also { pair ->
+      assertEquals(泰, pair.first)
+      assertEquals(否, pair.second)
+    }
 
-    list = listOf(6, 9, 6, 9, 6, 9)
-    pair = Hexagram.getHexagrams(list)
-    assertEquals(未濟, pair.first)
-    assertEquals(既濟, pair.second)
+    Hexagram.getHexagrams(listOf(6, 6, 6, 9, 9, 9)).also { pair ->
+      assertEquals(否, pair.first)
+      assertEquals(泰, pair.second)
+    }
 
-    list = listOf(9, 6, 9, 6, 9, 6)
-    pair = Hexagram.getHexagrams(list)
-    assertEquals(既濟, pair.first)
-    assertEquals(未濟, pair.second)
+    Hexagram.getHexagrams(listOf(6, 9, 6, 9, 6, 9)).also { pair ->
+      assertEquals(未濟, pair.first)
+      assertEquals(既濟, pair.second)
+    }
+
+    Hexagram.getHexagrams(listOf(9, 6, 9, 6, 9, 6)).also { pair ->
+      assertEquals(既濟, pair.first)
+      assertEquals(未濟, pair.second)
+    }
+
   }
 
   @Test
@@ -152,8 +152,8 @@ class HexagramTest {
     assertEquals(臨, Hexagram.of(坤.getTargetYinYangs(1, 2)))
     assertEquals(泰, Hexagram.of(坤.getTargetYinYangs(1, 2, 3)))
     assertEquals(大壯, Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4)))
-    assertEquals(夬,  Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4, 5)))
-    assertEquals(乾,  Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
+    assertEquals(夬, Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4, 5)))
+    assertEquals(乾, Hexagram.of(坤.getTargetYinYangs(1, 2, 3, 4, 5, 6)))
   }
 
   /** 測試互卦  */

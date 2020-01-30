@@ -5,7 +5,6 @@
 package destiny.core
 
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.locationOf
 import java.io.Serializable

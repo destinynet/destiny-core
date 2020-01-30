@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 
 class TimeToolsLongitudeTimeTest {
 
-  val asiaTaipei = "Asia/Taipei"
+  private val asiaTaipei = "Asia/Taipei"
 
 
   /** 東經121度30分 , 應該加六分鐘  */

@@ -4,7 +4,6 @@
 package destiny.fengshui.sanyuan
 
 import destiny.fengshui.sanyuan.NineStar.*
-import destiny.iching.Symbol.*
 import kotlin.test.Test
 import kotlin.test.assertSame
 

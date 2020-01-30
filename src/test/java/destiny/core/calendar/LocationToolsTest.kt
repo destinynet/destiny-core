@@ -79,24 +79,19 @@ class LocationToolsTest {
   @Test
   fun testLocationFromDebugString_format2012() {
     var location: ILocation
-    var expected: ILocation
 
     location = LocationTools.decode("+1213012.44+25 312.44 12.3456 Asia/Taipei")
-    expected = Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, "Asia/Taipei", null, 12.3456)
-    assertEquals(expected, location)
+    assertEquals(Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, "Asia/Taipei", null, 12.3456), location)
 
     //強制設定 minuteOffset = 0
     location = LocationTools.decode(LocationTools.encode2012(location) + " 0")
-    expected = Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, "Asia/Taipei", 0, 12.3456)
-    assertEquals(expected, location)
+    assertEquals(Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, "Asia/Taipei", 0, 12.3456), location)
 
     location = LocationTools.decode("+1213012.34+25 312.34 12.3456 Asia/Taipei 60")
-    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", 60, 12.3456)
-    assertEquals(expected, location)
+    assertEquals(Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", 60, 12.3456), location)
 
     location = LocationTools.decode("+1213012.34+25 312.34 12.3456 Asia/Taipei -480")
-    expected = Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", -480, 12.3456)
-    assertEquals(expected, location)
+    assertEquals(Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", -480, 12.3456), location)
   }
 
 

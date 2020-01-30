@@ -13,7 +13,7 @@ import kotlin.test.Test
 class SimpleBranchTest {
   @Test
   fun testGet() {
-    assertSame(SimpleBranch.子, SimpleBranch[Branch.子])
+    assertSame(子, SimpleBranch[Branch.子])
   }
 
   @Test

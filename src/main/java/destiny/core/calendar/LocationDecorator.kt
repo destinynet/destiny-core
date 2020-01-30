@@ -6,7 +6,6 @@ package destiny.core.calendar
 
 import destiny.tools.Decorator
 import destiny.tools.LocaleTools
-import java.text.DecimalFormat
 import java.util.*
 
 object LocationDecorator {

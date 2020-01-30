@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 class ChartMntRulesTest {
 
-  val replaceImpl = ReplacementDefaultImpl()
+  private val replaceImpl = ReplacementDefaultImpl()
 
   @Test
   fun 八純卦() {

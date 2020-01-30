@@ -26,7 +26,7 @@ interface INineStar {
     // ================ 年 ================
 
     /** 年紫白入中 */
-    fun getYearCenter(yuan: Yuan, year: StemBranch): Int {
+    private fun getYearCenter(yuan: Yuan, year: StemBranch): Int {
       val steps = year.getAheadOf(StemBranch.甲子)
       return when (yuan) {
         Yuan.UP -> FlyingStar.getValue(1, steps, true)
@@ -59,7 +59,7 @@ interface INineStar {
     }
 
     /** 年紫白方位 : 元 + 年干支 + [Symbol] 方位 */
-    fun getYearStar(yuan: Yuan, year: StemBranch, symbol: Symbol): NineStar {
+    private fun getYearStar(yuan: Yuan, year: StemBranch, symbol: Symbol): NineStar {
       val center = getYearCenterStar(yuan, year)
       return getYearStar(center, symbol)
     }
@@ -183,7 +183,7 @@ interface INineStar {
     /**
      * 時紫白飛星到方
      */
-    fun getHourStar(zodiacDegree: Double, day: Branch, hour: Branch, symbol: Symbol): NineStar {
+    private fun getHourStar(zodiacDegree: Double, day: Branch, hour: Branch, symbol: Symbol): NineStar {
       val center = getHourCenterStar(zodiacDegree, day, hour)
       val steps: Int = FlyingStar.symbolPeriods.indexOf(symbol)
       return if (zodiacDegree >= 270 || zodiacDegree < 90) {

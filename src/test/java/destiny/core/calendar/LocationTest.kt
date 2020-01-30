@@ -25,10 +25,10 @@ class LocationTest {
     val loc = locationOf(Locale.TAIWAN)
     Json.stringify(Location.serializer(), loc).also {
       assertTrue(it.isNotEmpty())
-      logger.info("json = {}" , it)
+      logger.info("json = {}", it)
       assertTrue(it.contains(""""tzid":"Asia/Taipei""""))
-      Json.parse(Location.serializer() , it).also { parsed ->
-        logger.info("parsed = {}" , parsed)
+      Json.parse(Location.serializer(), it).also { parsed ->
+        logger.info("parsed = {}", parsed)
         assertEquals(loc, parsed)
       }
     }
@@ -38,20 +38,20 @@ class LocationTest {
   @Test
   fun `沒帶入 tzid , 但有帶入 minuteOffset , 將會反查 tzid 找出相符合的 tzid`() {
     val loc = Location(25.0, 121.0, null, 480, null)
-    assertEquals("CTT" , loc.timeZone.id)
+    assertEquals("CTT", loc.timeZone.id)
     /** 定義於 [java.time.ZoneId.SHORT_IDS] */
-    assertEquals("Asia/Shanghai" , loc.zoneId.id)
-    logger.info("{}" , loc.timeZone)
-    assertEquals(480 , loc.finalMinuteOffset)
+    assertEquals("Asia/Shanghai", loc.zoneId.id)
+    logger.info("{}", loc.timeZone)
+    assertEquals(480, loc.finalMinuteOffset)
   }
 
   @Test
   fun `有帶入 tzid , 但帶入非平時的 minuteOffset`() {
     val loc = Location(25.0, 121.0, "Asia/Taipei", 540, null)
-    assertEquals("Asia/Taipei" , loc.timeZone.id)
-    assertEquals("Asia/Taipei" , loc.zoneId.id)
-    logger.info("{}" , loc.timeZone)
-    assertEquals(540 , loc.finalMinuteOffset)
+    assertEquals("Asia/Taipei", loc.timeZone.id)
+    assertEquals("Asia/Taipei", loc.zoneId.id)
+    logger.info("{}", loc.timeZone)
+    assertEquals(540, loc.finalMinuteOffset)
   }
 
   @Test
@@ -75,26 +75,22 @@ class LocationTest {
     var actual: Location
     var expected: Location
 
-    actual = Location(-12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    logger.info("actual = {}" , actual)
-    expected = Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id )
-    logger.info("expected = {}" , expected)
-    assertEquals(expected, actual)
+    assertEquals(
+      Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
+      Location(-12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
 
-    actual = Location(12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    expected = Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    assertEquals(expected, actual)
+    assertEquals(
+      Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
+      Location(12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
 
+    assertEquals(
+      Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
+      Location(-12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
 
-    actual = Location(-12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    expected = Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    assertEquals(expected, actual)
-
-    actual = Location(12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    expected = Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id)
-    assertEquals(expected, actual)
+    assertEquals(
+      Location(EastWest.EAST, 12, 23, 45.0, NorthSouth.NORTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
+      Location(12, 23, 45.0, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))
   }
-
 
 
   @Test

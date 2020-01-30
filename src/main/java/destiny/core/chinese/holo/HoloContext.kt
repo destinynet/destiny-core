@@ -23,18 +23,18 @@ import java.time.chrono.ChronoLocalDateTime
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
 class HoloContext(val eightWordsImpl: IEightWordsFactory,
-                  val yuanImpl: IYuan,
-                  val numberize: INumberize,
-                  val yuanGenderImpl: IYuanGender,
-                  val zodiacSignImpl: IZodiacSign,
-                  val yearSplitterImpl: IYearSplitterBySign,
-                  val seasonalSymbolImpl: ISeasonalSymbol,
+                  private val yuanImpl: IYuan,
+                  private val numberize: INumberize,
+                  private val yuanGenderImpl: IYuanGender,
+                  private val zodiacSignImpl: IZodiacSign,
+                  private val yearSplitterImpl: IYearSplitterBySign,
+                  private val seasonalSymbolImpl: ISeasonalSymbol,
                   val solarTermsImpl: ISolarTerms,
                   val settings: ISettingsOfStemBranch,
                   private val hexSolidImpl: IHexSolid,
                   val goldenKeyProvider: IGoldenKeyProvider,
                   override val monthlyHexagramImpl: IMonthlyHexagram = MonthlyHexagramSignImpl.instance,
-                  val dailyHexagramService: IDailyHexagramService,
+                  private val dailyHexagramService: IDailyHexagramService,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
                   override val hexChange: IHoloContext.HexChange = IHoloContext.HexChange.DST
 ) : IHoloContext, Serializable {
@@ -53,7 +53,7 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
   }
 
   /** @param line 第幾爻變換 (1~6) */
-  fun switch(hex: IHexagram, line: Int): Pair<Hexagram, Int> {
+  private fun switch(hex: IHexagram, line: Int): Pair<Hexagram, Int> {
     val confinedLine = confine(line)
     return Hexagram.of(hex.getTargetYinYangs(confinedLine)) to confinedLine
   }

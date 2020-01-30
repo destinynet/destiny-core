@@ -16,7 +16,7 @@ class StemBranchTest {
   /** 兩種甲子目前不相等，未來要如何改，再想想 */
   @Test
   fun testEqualWithStemBranchOptional() {
-    val a: IStemBranchOptional = StemBranch.甲子
+    val a: IStemBranchOptional = 甲子
     val b: IStemBranchOptional = StemBranchOptional[甲, 子]
     assertNotEquals(a, b)
   }
@@ -51,8 +51,8 @@ class StemBranchTest {
 
   @Test
   fun testIndex() {
-    assertSame(0, StemBranch.甲子.index)
-    assertSame(59, StemBranch.癸亥.index)
+    assertSame(0, 甲子.index)
+    assertSame(59, 癸亥.index)
   }
 
   @Test
@@ -119,9 +119,9 @@ class StemBranchTest {
     assertSame(1, 甲子.getAheadOf(StemBranch["癸亥"]))
     assertSame(59, 甲子.getAheadOf(StemBranch["乙丑"]))
 
-    assertSame(0, StemBranch.get("癸亥").getAheadOf(StemBranch.get("癸亥")))
-    assertSame(1, StemBranch.get("癸亥").getAheadOf(StemBranch.get("壬戌")))
-    assertSame(59, StemBranch.get("癸亥").getAheadOf(甲子))
+    assertSame(0, StemBranch["癸亥"].getAheadOf(StemBranch["癸亥"]))
+    assertSame(1, StemBranch["癸亥"].getAheadOf(StemBranch["壬戌"]))
+    assertSame(59, StemBranch["癸亥"].getAheadOf(甲子))
   }
 
   @Test

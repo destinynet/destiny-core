@@ -5,7 +5,6 @@ package destiny.iching.divine
 
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.calendar.eightwords.IEightWordsNullableFactory
 import destiny.core.calendar.locationOf

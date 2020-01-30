@@ -17,18 +17,18 @@ class GeneralSeqDefaultImplTest {
 
     val liuren = GeneralStemBranchLiuren()
 
-    assertSame(貴人, General.get(丑, liuren))
-    assertSame(螣蛇, General.get(巳, liuren))
-    assertSame(朱雀, General.get(午, liuren))
-    assertSame(六合, General.get(卯, liuren))
-    assertSame(勾陳, General.get(辰, liuren))
-    assertSame(青龍, General.get(寅, liuren))
-    assertSame(天空, General.get(戌, liuren))
-    assertSame(白虎, General.get(申, liuren))
-    assertSame(太常, General.get(未, liuren))
-    assertSame(玄武, General.get(亥, liuren))
-    assertSame(太陰, General.get(酉, liuren))
-    assertSame(天后, General.get(子, liuren))
+    assertSame(貴人, General[丑, liuren])
+    assertSame(螣蛇, General[巳, liuren])
+    assertSame(朱雀, General[午, liuren])
+    assertSame(六合, General[卯, liuren])
+    assertSame(勾陳, General[辰, liuren])
+    assertSame(青龍, General[寅, liuren])
+    assertSame(天空, General[戌, liuren])
+    assertSame(白虎, General[申, liuren])
+    assertSame(太常, General[未, liuren])
+    assertSame(玄武, General[亥, liuren])
+    assertSame(太陰, General[酉, liuren])
+    assertSame(天后, General[子, liuren])
   }
 
   @Test

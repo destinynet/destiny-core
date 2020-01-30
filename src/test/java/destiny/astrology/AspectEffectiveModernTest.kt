@@ -6,15 +6,12 @@ package destiny.astrology
 
 import destiny.astrology.Aspect.*
 import destiny.astrology.Planet.*
-import mu.KotlinLogging
 import kotlin.test.*
 
 
 class AspectEffectiveModernTest  {
 
   private val modern: AspectEffectiveModern = AspectEffectiveModern()
-
-  private val logger = KotlinLogging.logger {  }
 
   /** 測試「不考量行星」，注入內定的 AspectOrbsDefaultImpl 實作  */
   @Test

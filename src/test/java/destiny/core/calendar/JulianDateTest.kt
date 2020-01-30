@@ -25,7 +25,7 @@ class JulianDateTest {
    * 蘇軾 1037年1月8日 , 農曆 宋仁宗景祐三年十二月十九日
    */
   @Test
-  fun `蘇軾`() {
+  fun 蘇軾() {
     val jd = JulianDate.of(1037 , 1 , 8)
     val gd = LocalDate.from(jd) // 1037-01-14
     logger.info("gd = {}" , gd)

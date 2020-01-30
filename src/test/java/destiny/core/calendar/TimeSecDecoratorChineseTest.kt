@@ -5,7 +5,6 @@
 package destiny.core.calendar
 
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory
 import org.threeten.extra.chrono.JulianEra
 import java.time.LocalDate
 import java.time.LocalDateTime

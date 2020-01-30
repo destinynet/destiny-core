@@ -28,7 +28,7 @@ class PalmContext(override val positiveImpl: IPositive,
                   override val changeDayAfterZi: Boolean,
                   override val trueRisingSign: Boolean,
                   override val clockwiseHouse: Boolean,
-                  val branchDescImpl: IBranchDesc) : IPalmContext, Serializable {
+                  private val branchDescImpl: IBranchDesc) : IPalmContext, Serializable {
 
   /** 沒帶入節氣資料 , 內定把月份計算採用 [IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15] 的演算法  */
   override fun getPalmWithoutSolarTerms(gender: Gender,

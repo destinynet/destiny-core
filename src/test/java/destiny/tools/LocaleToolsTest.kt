@@ -62,7 +62,7 @@ class LocaleToolsTest {
   }
 
   @Test
-  fun `語言符合`() {
+  fun 語言符合() {
     val locales = listOf(
       Locale("zh", "TW", "AAA"),
       Locale("zh", "TW", "BBB"),
@@ -164,13 +164,9 @@ class LocaleToolsTest {
       Locale("zh" ,"CN" ) to "父亲"
     )
 
-    LocaleTools.getStringOrDefault(langMap , Locale("zh" , "TW")).let {
-      assertTrue { it in arrayOf("父親" , "阿爸") }
-    }
+    assertTrue { LocaleTools.getStringOrDefault(langMap , Locale("zh" , "TW")) in arrayOf("父親", "阿爸") }
 
-    LocaleTools.getStringOrDefault(langMap , Locale("zh")).let {
-      assertTrue { it in arrayOf("父親" , "阿爸" , "父亲") }
-    }
+    assertTrue { LocaleTools.getStringOrDefault(langMap , Locale("zh")) in arrayOf("父親", "阿爸", "父亲") }
 
     assertEquals("父親" , LocaleTools.getStringOrDefault(langMap , Locale("zh" , "TW" , "general")))
     assertEquals("阿爸" , LocaleTools.getStringOrDefault(langMap , Locale("zh" , "TW" , "taiwan")))

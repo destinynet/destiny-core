@@ -15,10 +15,10 @@ class ZodiacSignTest {
 
   @Test
   fun testIndex() {
-    assertSame(PISCES, ZodiacSign.get(-1))
-    assertSame(ARIES , ZodiacSign.get(0))
-    assertSame(PISCES, ZodiacSign.get(11))
-    assertSame(ARIES, ZodiacSign.get(12))
+    assertSame(PISCES, ZodiacSign[-1])
+    assertSame(ARIES, ZodiacSign[0])
+    assertSame(PISCES, ZodiacSign[11])
+    assertSame(ARIES, ZodiacSign[12])
   }
 
   @Test

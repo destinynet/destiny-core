@@ -6,7 +6,6 @@ package destiny.astrology
 import com.google.common.collect.Sets
 import destiny.astrology.AspectData.Type.APPLYING
 import destiny.astrology.AspectData.Type.SEPARATING
-import mu.KotlinLogging
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
