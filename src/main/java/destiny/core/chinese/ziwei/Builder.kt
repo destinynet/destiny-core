@@ -11,7 +11,7 @@ import destiny.core.calendar.eightwords.personal.IPersonContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.text.MessageFormat
 import java.time.chrono.ChronoLocalDateTime
@@ -105,8 +105,6 @@ class Builder(
 
   /** 八字命盤  */
   private var personModel: IPersonContextModel? = null
-
-  private val logger = LoggerFactory.getLogger(javaClass)
 
   /** 註解 builder  */
   private val notesBuilder = mutableListOf<Pair<String, Array<Any>>>()
@@ -371,5 +369,8 @@ class Builder(
     }
   }
 
+  companion object {
+    private val logger = KotlinLogging.logger { }
+  }
 
 } // class Builder

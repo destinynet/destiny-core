@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.threeten.extra.chrono.JulianDate
 import java.time.*
 import java.time.temporal.ChronoUnit
@@ -31,7 +31,7 @@ class TimeToolsYear1582Test {
    */
   private val firstDayOfGregorian = 2299160.5
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   private val d1G = LocalDateTime.of(1582, 10, 13, 0, 0)
   private val d2G = LocalDateTime.of(1582, 10, 14, 0, 0)

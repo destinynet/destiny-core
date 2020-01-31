@@ -48,7 +48,6 @@ class PlanetTest {
     assertEquals("太陽", Planet.SUN.toString(Locale.TAIWAN))
     assertEquals("太阳", Planet.SUN.toString(Locale.SIMPLIFIED_CHINESE))
     assertEquals("Sun", Planet.SUN.toString(Locale.ENGLISH))
-    assertEquals("太陽", Planet.SUN.toString())
 
     assertEquals("日", Planet.SUN.getAbbreviation(Locale.TAIWAN))
 

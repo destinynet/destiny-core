@@ -3,8 +3,8 @@
  */
 package destiny.core.calendar
 
+import mu.KotlinLogging
 import org.junit.Assert.assertEquals
-import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -16,7 +16,7 @@ import kotlin.test.assertTrue
 
 class InstantTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   /**
    * 日本時間比台灣快一小時

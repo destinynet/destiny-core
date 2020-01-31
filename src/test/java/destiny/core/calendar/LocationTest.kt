@@ -72,9 +72,6 @@ class LocationTest {
 
   @Test
   fun testLocation() {
-    var actual: Location
-    var expected: Location
-
     assertEquals(
       Location(EastWest.WEST, 12, 23, 45.0, NorthSouth.SOUTH, 23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id),
       Location(-12, 23, 45.0, -23, 34, 56.0, TimeZoneUtils.getTimeZone(120).id))

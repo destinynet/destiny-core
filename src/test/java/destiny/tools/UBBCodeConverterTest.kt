@@ -3,13 +3,13 @@
  */
 package destiny.tools
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class UBBCodeConverterTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun reQuote() {

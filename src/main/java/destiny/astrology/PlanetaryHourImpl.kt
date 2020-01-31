@@ -9,6 +9,7 @@ import destiny.core.DayNight
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
+import mu.KotlinLogging
 import org.apache.commons.lang3.ArrayUtils
 import org.slf4j.LoggerFactory
 import java.io.Serializable
@@ -28,9 +29,6 @@ private val seqDay = intArrayOf(6, 7, 1, 2, 3, 4, 5)
  * 晝夜、分別劃分 12等分
  */
 class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour, Serializable {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
-
 
   override fun getPlanetaryHour(gmtJulDay: Double, loc: Location): PlanetaryHour {
 
@@ -150,6 +148,7 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
   }
 
   companion object {
+    private val logger = KotlinLogging.logger { }
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

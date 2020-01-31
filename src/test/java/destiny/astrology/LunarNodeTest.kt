@@ -23,8 +23,6 @@ class LunarNodeTest {
     assertEquals("North" , LunarNode.NORTH_MEAN.toString(Locale.ENGLISH))
     assertEquals("North" , LunarNode.NORTH_TRUE.toString(Locale.ENGLISH))
 
-    assertEquals("北交點" , LunarNode.NORTH_MEAN.toString())
-
     for (each in LunarNode.meanArray) {
       assertNotNull(each.toString(Locale.TAIWAN))
       assertNotNull(each.toString(Locale.SIMPLIFIED_CHINESE))

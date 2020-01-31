@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDate
 import java.time.temporal.ChronoField.YEAR
@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
  */
 class JulianDateTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   /**
    * 蘇軾 1037年1月8日 , 農曆 宋仁宗景祐三年十二月十九日

@@ -3,13 +3,13 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 
 class GregorianCalendarTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   /**
    * 西元 1582年， 10-04 的隔天，變為 10-15

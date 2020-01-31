@@ -7,7 +7,7 @@ import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -52,11 +52,8 @@ interface IHoroscopeContext {
     val defaultPoints = setOf(
       *Planet.array,
       *Axis.array,
-      //*Hamburger.array,
-      //*FixedStar.array,
       LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN
-      //*LunarNodes.meanArray
-    )
+                             )
   }
 }
 
@@ -70,9 +67,6 @@ class HoroscopeContext(
   override val centric: Centric = Centric.GEO,
   override val temperature: Double = 0.0,
   override val pressure: Double = 1013.25) : IHoroscopeContext, Serializable {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
-
 
   /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
   override fun getHoroscope(gmtJulDay: Double,
@@ -89,8 +83,7 @@ class HoroscopeContext(
 
 
     // [0] ~ [12] , 只有 [1] 到 [12] 有值
-    val cusps =
-      houseCuspImpl.getHouseCusps(gmtJulDay, loc, houseSystem, coordinate)
+    val cusps = houseCuspImpl.getHouseCusps(gmtJulDay, loc, houseSystem, coordinate)
     logger.debug("cusps = {}", cusps)
 
     val cuspDegreeMap = (1 until cusps.size).map {
@@ -98,8 +91,12 @@ class HoroscopeContext(
     }.toMap()
 
     return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate,
-      centric, temperature, pressure, positionMap,
-      cuspDegreeMap)
+                          centric, temperature, pressure, positionMap,
+                          cuspDegreeMap)
+  }
+
+  companion object {
+    private val logger = KotlinLogging.logger { }
   }
 
 }
@@ -124,4 +121,5 @@ interface IPersonHoroscopeContext : IHoroscopeContext {
   }
 }
 
-class PersonHoroscopeContext(private val horoContext: IHoroscopeContext) : IPersonHoroscopeContext, IHoroscopeContext by horoContext
+class PersonHoroscopeContext(private val horoContext: IHoroscopeContext) : IPersonHoroscopeContext,
+  IHoroscopeContext by horoContext

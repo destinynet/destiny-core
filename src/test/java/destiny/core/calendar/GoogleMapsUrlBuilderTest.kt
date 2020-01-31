@@ -3,13 +3,13 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 
 class GoogleMapsUrlBuilderTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   @Test
   fun getUrl() {
@@ -18,7 +18,7 @@ class GoogleMapsUrlBuilderTest {
     val s = builder.getUrl(location.lat, location.lng)
     logger.info("{}", s)
 
-    logger.info("{}", builder.getUrl(locationOf(Locale("zh" , "HK"))))
+    logger.info("{}", builder.getUrl(locationOf(Locale("zh", "HK"))))
     logger.info("{}", builder.getUrl(locationOf(Locale.US)))
   }
 

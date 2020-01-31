@@ -4,13 +4,11 @@
 package destiny.core.chinese.ziwei
 
 import destiny.tools.ArrayTools
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*
 
 abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
 
   override fun next(from: House, n: Int): House {
     return get(getIndex(from) + n)
@@ -45,5 +43,9 @@ abstract class HouseSeqAbstractImpl : IHouseSeq, Serializable {
 
   private fun getIndex(h: House): Int {
     return listOf(*houses).indexOf(h)
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger { }
   }
 }

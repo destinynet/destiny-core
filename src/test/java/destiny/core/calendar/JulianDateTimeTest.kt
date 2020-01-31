@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar
 
-import org.slf4j.LoggerFactory
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -12,8 +11,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class JulianDateTimeTest {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
 
   /**
    * 1970-01-01 0:00 GMT ,  epoch sec = 0

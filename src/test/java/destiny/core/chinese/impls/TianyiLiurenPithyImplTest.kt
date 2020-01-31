@@ -3,14 +3,14 @@
  */
 package destiny.core.chinese.impls
 
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class TianyiLiurenPithyImplTest {
 
-  private val logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger { }
 
   private val impl = TianyiLiurenPithyImpl()
 
