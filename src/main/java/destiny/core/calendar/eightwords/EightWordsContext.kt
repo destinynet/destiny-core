@@ -37,7 +37,7 @@ class EightWordsContext(
   private val starPositionImpl: IStarPosition<*>,
   private val solarTermsImpl: ISolarTerms,
   private val houseCuspImpl: IHouseCusp,
-  private val zodiacSignImpl: IZodiacSign,
+  val zodiacSignImpl: IZodiacSign,
   val riseTransImpl: IRiseTrans,
   val aspectsCalculator: IHoroscopeAspectsCalculator) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
