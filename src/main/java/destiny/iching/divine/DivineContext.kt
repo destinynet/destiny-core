@@ -17,6 +17,7 @@ import java.util.*
 interface ISingleHexagramContext {
   val 納甲系統: ISettingsOfStemBranch
   val 伏神系統: IHiddenEnergy
+
   /** 單一卦象 ,（不含任何文字）的排卦結果 [SingleHexagram] */
   fun getSingleHexagram(hexagram: IHexagram): ISingleHexagram
 }
@@ -33,7 +34,7 @@ interface ICombinedWithMetaContext : ISingleHexagramWithNameContext {
   fun getCombinedWithMeta(src: IHexagram,
                           dst: IHexagram,
                           locale: Locale = Locale.TAIWAN
-                         ): ICombinedWithMeta
+  ): ICombinedWithMeta
 }
 
 
@@ -57,7 +58,7 @@ interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
                                       dst: IHexagram,
                                       eightWordsNullable: IEightWordsNullable,
                                       locale: Locale = Locale.TAIWAN
-                                     ): ICombinedWithMetaNameDayMonth
+  ): ICombinedWithMetaNameDayMonth
 }
 
 
@@ -65,7 +66,7 @@ interface ICombinedWithMetaNameDayMonthContext : ICombinedWithMetaNameContext {
 interface ICombinedFullContext : ICombinedWithMetaNameDayMonthContext {
   val hexExpressionImpl: IHexagramExpression
   val hexImageImpl: IHexagramImage
-  val hexJudgement : IHexJudgement
+  val hexJudgement: IHexJudgement
 
   /** 完整易卦排盤 , 包含時間、地點、八字(可能不完整)、卦辭爻辭、神煞 等資料 */
   fun getCombinedFull(src: IHexagram,
@@ -95,7 +96,6 @@ class DivineContext(
   override val hexJudgement: IHexJudgement) : ICombinedFullContext, Serializable {
 
 
-
   /** 單一卦象 ,（不含任何文字）的排卦結果 [SingleHexagram] */
   override fun getSingleHexagram(hexagram: IHexagram): ISingleHexagram {
 
@@ -109,7 +109,7 @@ class DivineContext(
 //
 //    val 本宮: Symbol = Hexagram.of(宮位 * 8 + 1, comparator).upperSymbol
 
-    val (本宮 , 宮序) = getSymbolAndIndex(hexagram)
+    val (本宮, 宮序) = getSymbolAndIndex(hexagram)
 
 
     val (世爻, 應爻) = get世爻應爻(宮序)
@@ -176,7 +176,7 @@ class DivineContext(
                                                dst: IHexagram,
                                                eightWordsNullable: IEightWordsNullable,
                                                locale: Locale
-                                              ): ICombinedWithMetaNameDayMonth {
+  ): ICombinedWithMetaNameDayMonth {
 
     val day: StemBranch? = eightWordsNullable.day.let {
       if (it.stem != null && it.branch != null)
@@ -190,12 +190,12 @@ class DivineContext(
     val combinedWithMetaName = getCombinedWithMetaName(src, dst, locale)
 
     // 神煞
-    val 空亡: Set<Branch>? = day?.empties?.toSet()
+    val 空亡: Set<Branch> = day?.empties?.toSet() ?: emptySet()
     val 驛馬: Branch? = day?.branch?.let { Characters.getHorse(it) }
     val 桃花: Branch? = day?.branch?.let { Characters.getPeach(it) }
-    val 貴人: Set<Branch>? = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() }
+    val 貴人: Set<Branch> = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() } ?: emptySet()
     val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
-    val 六獸: List<SixAnimal>? = day?.let { SixAnimals.getSixAnimals(it.stem) }
+    val 六獸: List<SixAnimal> = day?.let { SixAnimals.getSixAnimals(it.stem) } ?: emptyList()
 
     return CombinedWithMetaNameDayMonth(combinedWithMetaName, eightWordsNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
   }
@@ -212,18 +212,18 @@ class DivineContext(
                                loc: ILocation,
                                place: String?,
                                locale: Locale
-                              ): ICombinedFull {
+  ): ICombinedFull {
 
     val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWordsNullable, locale)
     val gmtJulDay: Double? = lmt?.let { TimeTools.getGmtJulDay(it, loc) }
 
-    logger.debug("eightWordsNullable = {}" , eightWordsNullable)
+    logger.debug("eightWordsNullable = {}", eightWordsNullable)
     val decoratedDate = lmt?.let { DateDecorator.getOutputString(it.toLocalDate(), Locale.TAIWAN) }
     val decoratedDateTime = lmt?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
 
     val meta = Meta(combinedWithMetaNameDayMonth.納甲系統, combinedWithMetaNameDayMonth.伏神系統)
     val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
-                                decoratedDate, decoratedDateTime, meta, null)
+      decoratedDate, decoratedDateTime, meta, null)
 
     val textContext: IHexagramProvider<IHexagramText> =
       HexagramTextContext(nameFullImpl, nameShortImpl, hexExpressionImpl, hexImageImpl, hexJudgement)
@@ -249,12 +249,12 @@ class DivineContext(
 
   companion object {
 
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
 
     val comparator = HexagramDivinationComparator()
 
     /** 取得此卦 是哪個本宮的第幾卦 (1~8) */
-    fun getSymbolAndIndex(hexagram: IHexagram) : Pair<Symbol , Int> {
+    fun getSymbolAndIndex(hexagram: IHexagram): Pair<Symbol, Int> {
       val 京房易卦卦序 = comparator.getIndex(hexagram)
 
       /* 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */

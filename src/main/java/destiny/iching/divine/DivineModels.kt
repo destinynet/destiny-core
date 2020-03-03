@@ -39,11 +39,14 @@ data class Combined(override val src: IHexagram,
 /** 單一卦象，卦名、世爻應爻、六親等資訊 */
 interface ISingleHexagram : IHexagram {
   val hexagram: IHexagram
+
   /** 本宮 , 此卦 是八卦哪一宮 */
   val symbol: Symbol
   val 宮序: Int
+
   /** 1~6 */
   val 世爻: Int
+
   /** 1~6 */
   val 應爻: Int
   val 納甲: List<StemBranch>
@@ -120,12 +123,23 @@ interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNull
   val day: StemBranch?
   val monthBranch: Branch?
 
-  val 空亡: Set<Branch>?
-  val 驛馬: Branch?
-  val 桃花: Branch?
-  val 貴人: Set<Branch>?
-  val 羊刃: Branch?
-  val 六獸: List<SixAnimal>?
+  /** 空亡 */
+  val voids: Set<Branch>
+
+  /** 驛馬 */
+  val horse: Branch?
+
+  /** 桃花 */
+  val flower: Branch?
+
+  /** 貴人 */
+  val tianyis: Set<Branch>
+
+  /** 羊刃 */
+  val yangBlade: Branch?
+
+  /** 六獸 */
+  val sixAnimals: List<SixAnimal>
 }
 
 /** 「可能」具備「日干支」「月令」 , 或許可以排出六獸 [SixAnimal] 以及神煞 ,
@@ -133,17 +147,28 @@ interface ICombinedWithMetaNameDayMonth : ICombinedWithMetaName, IEightWordsNull
 data class CombinedWithMetaNameDayMonth(
   private val combinedWithMetaName: ICombinedWithMetaName,
   override val eightWordsNullable: IEightWordsNullable,
-  override val 空亡: Set<Branch>?,
-  override val 驛馬: Branch?,
-  override val 桃花: Branch?,
-  override val 貴人: Set<Branch>?,
-  override val 羊刃: Branch?,
-  override val 六獸: List<SixAnimal>?) :
+  /** 空亡 */
+  override val voids: Set<Branch>,
+
+  /** 驛馬 */
+  override val horse: Branch?,
+
+  /** 桃花 */
+  override val flower: Branch?,
+
+  /** 貴人 */
+  override val tianyis: Set<Branch>,
+
+  /** 羊刃 */
+  override val yangBlade: Branch?,
+
+  /** 六獸 */
+  override val sixAnimals: List<SixAnimal>) :
   ICombinedWithMetaNameDayMonth,
   ICombinedWithMetaName by combinedWithMetaName, Serializable {
 
   override val day = eightWordsNullable.day.let {
-    if (it.stem!= null && it.branch != null)
+    if (it.stem != null && it.branch != null)
       StemBranch[it.stem!!, it.branch!!]
     else
       null
@@ -167,8 +192,9 @@ interface IDivineMeta : IMeta {
   val gmtJulDay: Double?
   val loc: ILocation?
   val place: String?
+
   /** 已經 format 的時間 */
-  val decoratedDate : String?
+  val decoratedDate: String?
   val decoratedDateTime: String?
 }
 
