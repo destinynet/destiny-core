@@ -10,6 +10,37 @@ import kotlin.test.*
 class HexagramTest {
 
   @Test
+  fun testGetMotivatedLines() {
+    assertTrue(乾.getMotivatedLines(乾).isEmpty())
+    assertEquals(setOf(1), 乾.getMotivatedLines(姤))
+    assertEquals(setOf(2), 乾.getMotivatedLines(同人))
+    assertEquals(setOf(3), 乾.getMotivatedLines(履))
+    assertEquals(setOf(4), 乾.getMotivatedLines(小畜))
+    assertEquals(setOf(5), 乾.getMotivatedLines(大有))
+    assertEquals(setOf(6), 乾.getMotivatedLines(夬))
+
+    assertEquals(setOf(1, 2), 乾.getMotivatedLines(遯))
+    assertEquals(setOf(2, 3), 乾.getMotivatedLines(無妄))
+    assertEquals(setOf(3, 4), 乾.getMotivatedLines(中孚))
+    assertEquals(setOf(4, 5), 乾.getMotivatedLines(大畜))
+    assertEquals(setOf(5, 6), 乾.getMotivatedLines(大壯))
+
+    assertEquals(setOf(1, 2, 3), 乾.getMotivatedLines(否))
+    assertEquals(setOf(2, 3, 4), 乾.getMotivatedLines(益))
+    assertEquals(setOf(3, 4, 5), 乾.getMotivatedLines(損))
+    assertEquals(setOf(4, 5, 6), 乾.getMotivatedLines(泰))
+
+    assertEquals(setOf(1, 2, 3, 4), 乾.getMotivatedLines(觀))
+    assertEquals(setOf(2, 3, 4, 5), 乾.getMotivatedLines(頤))
+    assertEquals(setOf(3, 4, 5, 6), 乾.getMotivatedLines(臨))
+
+    assertEquals(setOf(1, 2, 3, 4, 5), 乾.getMotivatedLines(剝))
+    assertEquals(setOf(2, 3, 4, 5, 6), 乾.getMotivatedLines(復))
+
+    assertEquals(setOf(1, 2, 3, 4, 5, 6), 乾.getMotivatedLines(坤))
+  }
+
+  @Test
   fun testUnicode() {
     values().forEach { h ->
       assertNotNull(h.unicode)
