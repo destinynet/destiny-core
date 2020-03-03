@@ -15,17 +15,17 @@ import java.io.Serializable
  * @param hexagram 本卦
  * @param motivate 動爻
  */
-class MumeContext(
+data class MumeContext(
   val hexagram: IHexagram,
+
   /** 動爻 , 1~6  */
   val motivate: Int) : Serializable {
 
   /**
    * @return 變卦
    */
-  val targetHexagram: IHexagram
-    get() = Hexagram.of(hexagram.getTargetYinYangs(motivate))
-
-
+  val targetHexagram: IHexagram by lazy {
+    Hexagram.of(hexagram.getTargetYinYangs(motivate))
+  }
 
 }
