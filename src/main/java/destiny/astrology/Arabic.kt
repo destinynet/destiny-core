@@ -5,7 +5,7 @@ package destiny.astrology
 
 sealed class Arabic(nameKey: String, abbrKey: String, unicode: Char? = null) : Star(nameKey, abbrKey, Star::class.java.name, unicode), Comparable<Arabic> {
 
-  /** 幸運點 Part of Fortune */
+  /** 福點 (幸運點) Part of Fortune */
   object Fortune : Arabic("Arabic.Fortune", "Arabic.Fortune_ABBR" , '⊗')
 
   /** 精神點 Part of Spirit */

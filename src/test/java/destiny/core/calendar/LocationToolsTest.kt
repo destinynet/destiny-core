@@ -112,6 +112,11 @@ class LocationToolsTest {
       Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, null,
                -1000.0)
     assertEquals("+1213012.44+25 312.44 -1000.0 Etc/GMT+1", LocationTools.encode2012(location))
+
+    location =
+      Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, 120,
+        -1000.0)
+    assertEquals("+1213012.44+25 312.44 -1000.0 Etc/GMT+1 120", LocationTools.encode2012(location))
   }
 
 }

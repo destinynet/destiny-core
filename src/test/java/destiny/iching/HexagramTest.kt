@@ -139,7 +139,6 @@ class HexagramTest {
   fun testGetHexagramLine() {
     val src = 乾
     assertSame(姤, Hexagram.of(src.getTargetYinYangs(1)))
-    //assertSame(Hexagram.姤, src.getHexagram(1))
   }
 
   @Test
