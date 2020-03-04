@@ -29,23 +29,23 @@ sealed class StarYearFront(nameKey: String) : ZStar(nameKey, StarYearFront::clas
 
     private val list by lazy { listOf(*values) }
 
-    private val func = { 年支: Branch, 星: ZStar ->
-      val steps = list.indexOf(星)
-      年支.next(steps)
+    private val func = { yearBranch: Branch, star: ZStar ->
+      val steps = list.indexOf(star)
+      yearBranch.next(steps)
     }
 
-    val fun歲建 = { 年支: Branch -> func.invoke(年支, 歲建) }
-    val fun晦氣 = { 年支: Branch -> func.invoke(年支, 晦氣) }
-    val fun喪門 = { 年支: Branch -> func.invoke(年支, 喪門) }
-    val fun貫索 = { 年支: Branch -> func.invoke(年支, 貫索) }
-    val fun官符 = { 年支: Branch -> func.invoke(年支, 官符) }
-    val fun小耗 = { 年支: Branch -> func.invoke(年支, 小耗) }
-    val fun歲破 = { 年支: Branch -> func.invoke(年支, 歲破) }
-    val fun龍德 = { 年支: Branch -> func.invoke(年支, 龍德) }
-    val fun白虎 = { 年支: Branch -> func.invoke(年支, 白虎) }
-    val fun天德 = { 年支: Branch -> func.invoke(年支, 天德) }
-    val fun吊客 = { 年支: Branch -> func.invoke(年支, 吊客) }
-    val fun病符 = { 年支: Branch -> func.invoke(年支, 病符) }
+    val fun歲建 = { yearBranch: Branch -> func.invoke(yearBranch, 歲建) }
+    val fun晦氣 = { yearBranch: Branch -> func.invoke(yearBranch, 晦氣) }
+    val fun喪門 = { yearBranch: Branch -> func.invoke(yearBranch, 喪門) }
+    val fun貫索 = { yearBranch: Branch -> func.invoke(yearBranch, 貫索) }
+    val fun官符 = { yearBranch: Branch -> func.invoke(yearBranch, 官符) }
+    val fun小耗 = { yearBranch: Branch -> func.invoke(yearBranch, 小耗) }
+    val fun歲破 = { yearBranch: Branch -> func.invoke(yearBranch, 歲破) }
+    val fun龍德 = { yearBranch: Branch -> func.invoke(yearBranch, 龍德) }
+    val fun白虎 = { yearBranch: Branch -> func.invoke(yearBranch, 白虎) }
+    val fun天德 = { yearBranch: Branch -> func.invoke(yearBranch, 天德) }
+    val fun吊客 = { yearBranch: Branch -> func.invoke(yearBranch, 吊客) }
+    val fun病符 = { yearBranch: Branch -> func.invoke(yearBranch, 病符) }
 
     val starFuncMap: Map<StarYearFront, Function1<Branch, Branch>> by lazy {
       mapOf(

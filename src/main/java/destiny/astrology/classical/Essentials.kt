@@ -13,11 +13,6 @@ import destiny.core.DayNight
 /** Ruler , +5 */
 interface IRuler {
 
-//  /** 不分日夜，取得 RULER , 傳回的為 非null值 */
-//  fun ZodiacSign.getPoint(): Point {
-//    return this.getRulerPoint(null)!!
-//  }
-
   /** @param dayNight 若有傳值，取得「日夜區分版本」的 [RULER] (nullable), 否則取得一般版本的 [RULER] (非null) */
   fun ZodiacSign.getRulerPoint(dayNight: DayNight? = null): Point?
 

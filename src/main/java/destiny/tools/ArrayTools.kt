@@ -5,12 +5,12 @@ package destiny.tools
 
 object ArrayTools {
 
-  operator fun <T> get(ARRAY: Array<T>, index: Int): T {
-    val length = ARRAY.size
+  operator fun <T> get(array: Array<T>, index: Int): T {
+    val length = array.size
     return when {
-      index < 0 -> get(ARRAY, index + length)
-      index >= length -> get(ARRAY, index % length)
-      else -> ARRAY[index]
+      index < 0 -> get(array, index + length)
+      index >= length -> get(array, index % length)
+      else -> array[index]
     }
   }
 }
