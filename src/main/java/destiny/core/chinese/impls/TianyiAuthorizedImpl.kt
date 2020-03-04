@@ -8,11 +8,10 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
+import destiny.core.chinese.Stem.*
 import java.io.Serializable
 
 class TianyiAuthorizedImpl : ITianyi, Serializable {
-
-
 
   /**
    * 《協紀辨方書》 《蠡海集》
@@ -36,22 +35,20 @@ class TianyiAuthorizedImpl : ITianyi, Serializable {
    * 　　　　　丙豬丁雞辛遇馬，壬蛇癸兔屬陰方。
    */
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
-    when (stem) {
-      Stem.甲 -> return if (yinYang.booleanValue) 未 else 丑
-      Stem.戊, Stem.庚 -> return if (yinYang.booleanValue) 丑 else 未
+    return when (stem) {
+      甲 -> if (yinYang.booleanValue) 未 else 丑
+      戊, 庚 -> if (yinYang.booleanValue) 丑 else 未
 
-      Stem.乙 -> return if (yinYang.booleanValue) 申 else 子
-      Stem.己 -> return if (yinYang.booleanValue) 子 else 申
+      乙 -> if (yinYang.booleanValue) 申 else 子
+      己 -> if (yinYang.booleanValue) 子 else 申
 
-      Stem.丙 -> return if (yinYang.booleanValue) 酉 else 亥
-      Stem.丁 -> return if (yinYang.booleanValue) 亥 else 酉
+      丙 -> if (yinYang.booleanValue) 酉 else 亥
+      丁 -> if (yinYang.booleanValue) 亥 else 酉
 
-      Stem.壬 -> return if (yinYang.booleanValue) 卯 else 巳
-      Stem.癸 -> return if (yinYang.booleanValue) 巳 else 卯
+      壬 -> if (yinYang.booleanValue) 卯 else 巳
+      癸 -> if (yinYang.booleanValue) 巳 else 卯
 
-      Stem.辛 -> return if (yinYang.booleanValue) 寅 else 午
-
-      else -> throw AssertionError("$stem at $yinYang")
+      辛 -> if (yinYang.booleanValue) 寅 else 午
     }
   }
 

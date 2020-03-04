@@ -38,18 +38,17 @@ sealed class StarDoctor(nameKey: String) : ZStar(nameKey, ZStar::class.java.name
     // 年干、性別、步數
     private val branchGender2Branch = { tuple3: Triple<Stem, Gender, Int> ->
       val yearStem = tuple3.first
-      val 祿存地支 = StarLucky.fun祿存.invoke(yearStem)
+      // 祿存地支
+      val branch = StarLucky.fun祿存.invoke(yearStem)
       val gender = tuple3.second
       val steps = tuple3.third
 
-      //println("yearStem = $yearStem , 祿存地支 = $祿存地支 , gender = $gender , steps = $steps")
-
       if (yearStem.booleanValue && gender === Gender.男 || !yearStem.booleanValue && gender === Gender.女) {
         // 陽男 陰女 順行
-        祿存地支.next(steps - 1)
+        branch.next(steps - 1)
       } else {
         // 陰男 陽女 逆行
-        祿存地支.prev(steps - 1)
+        branch.prev(steps - 1)
       }
     }
 

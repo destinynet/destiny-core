@@ -11,7 +11,10 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.HourLmtImpl
+import destiny.core.calendar.eightwords.HourSolarTransImpl
+import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IYearMonth
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -23,22 +26,22 @@ interface IZiweiModernContext : IZiweiContext {
 
   val chineseDateImpl: IChineseDate
 
-  val solarTermsImpl : ISolarTerms
+  val solarTermsImpl: ISolarTerms
 
-  val yearMonthImpl : IYearMonth
+  val yearMonthImpl: IYearMonth
 
-  val dayHourImpl : IDayHour
+  val dayHourImpl: IDayHour
 
-  val dayNightImpl : IDayNight
+  val dayNightImpl: IDayNight
 
-  val relativeTransitImpl : IRelativeTransit
+  val relativeTransitImpl: IRelativeTransit
 
   /** 輸入現代化的資料，計算本命盤  */
   fun getModernPlate(lmt: ChronoLocalDateTime<*>,
                      location: ILocation,
                      place: String?,
                      gender: Gender,
-                     name: String?=null): Builder
+                     name: String? = null): Builder
 }
 
 class ZModernContext(
@@ -49,18 +52,18 @@ class ZModernContext(
   override val dayHourImpl: IDayHour,
   override val dayNightImpl: IDayNight,
   override val relativeTransitImpl: IRelativeTransit
-) : IZiweiModernContext, IZiweiContext by context, Serializable {
+                    ) : IZiweiModernContext, IZiweiContext by context, Serializable {
 
 
-  private val intAgeZiweiImpl : IIntAge by lazy {
-    IntAgeZiweiImpl(chineseDateImpl , relativeTransitImpl)
+  private val intAgeZiweiImpl: IIntAge by lazy {
+    IntAgeZiweiImpl(chineseDateImpl, relativeTransitImpl)
   }
 
   override fun getModernPlate(lmt: ChronoLocalDateTime<*>,
                               location: ILocation,
                               place: String?,
                               gender: Gender,
-                              name: String?) : Builder {
+                              name: String?): Builder {
 
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
@@ -111,11 +114,11 @@ class ZModernContext(
 
     val dayNight = dayNightImpl.getDayNight(lmt, location)
 
-    // 虛歲時刻 (gmt Julian day)
+    // 虛歲時刻 , gmt Julian Day
     val vageMap = intAgeZiweiImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, location), location, 1, 130)
 
-    return getBirthPlate(Pair(命宮地支, 身宮地支) , finalMonthNumForMainStars , cycle , yinYear , solarYear , lunarMonth
-                  , cDate.isLeapMonth , monthBranch , solarTerms , lunarDays , hour , dayNight , gender , vageMap)
+    return getBirthPlate(Pair(命宮地支, 身宮地支), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
+                         , cDate.isLeapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap)
       .withLocalDateTime(lmt)
       .withLocation(location)
       .appendNotesBuilders(notesBuilders).apply {
@@ -124,7 +127,7 @@ class ZModernContext(
   }
 
   companion object {
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
   }
 
 }

@@ -13,9 +13,11 @@ class LngLatDecoratorTest {
   fun getOutputString() {
 
     val loc = locationOf(Locale.TAIWAN)
-    assertEquals("東經：121度31分03.60秒, 北緯：25度02分20.51秒" , LngLatDecorator.getOutputString(loc , Locale.TAIWAN))
-    assertEquals("東經：121度31分03.60秒, 北緯：25度02分20.51秒" , LngLatDecorator.getOutputString(loc , Locale.JAPANESE))
-    assertEquals("東經：121度31分03.60秒, 北緯：25度02分20.51秒" , LngLatDecorator.getOutputString(loc , Locale.JAPAN))
+
+    val expected = "東經：121度31分03.60秒, 北緯：25度02分20.51秒"
+    assertEquals(expected , LngLatDecorator.getOutputString(loc , Locale.TAIWAN))
+    assertEquals(expected , LngLatDecorator.getOutputString(loc , Locale.JAPANESE))
+    assertEquals(expected , LngLatDecorator.getOutputString(loc , Locale.JAPAN))
 
     assertEquals("东经：121度31分03.60秒, 北纬：25度02分20.51秒" , LngLatDecorator.getOutputString(loc , Locale.SIMPLIFIED_CHINESE))
     assertEquals("121°31'03.60\"E, 25°02'20.508\"N" , LngLatDecorator.getOutputString(loc , Locale.ENGLISH))

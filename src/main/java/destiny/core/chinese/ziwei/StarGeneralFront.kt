@@ -44,35 +44,36 @@ sealed class StarGeneralFront(nameKey: String) : ZStar(nameKey, StarGeneralFront
 
     private val list by lazy { arrayOf(*values) }
 
-    private val funFiveElement = { 五行: FiveElement ->
-      when (五行) {
+    private val funFiveElement = { fiveElement: FiveElement ->
+      when (fiveElement) {
         火 -> 午
         木 -> 卯
         水 -> 子
         金 -> 酉
-        else -> throw AssertionError("Error : $五行")
+        else -> throw AssertionError("Error : $fiveElement")
       }
     }
 
-    private val funYearBranch = { 年支: Branch, 星: StarGeneralFront ->
-      val 五行 = BranchTools.trilogy(年支)
+    private val funYearBranch = { yearBranch: Branch, star: StarGeneralFront ->
+      // 五行
+      val fiveElement = BranchTools.trilogy(yearBranch)
       // 第一個 (將星)
-      val head = funFiveElement.invoke(五行)
-      val steps = list.indexOf(星)
+      val head = funFiveElement.invoke(fiveElement)
+      val steps = list.indexOf(star)
       head.next(steps)
     }
 
-    val fun將星 = { 年支: Branch -> funYearBranch.invoke(年支, 將星) }
-    val fun攀鞍 = { 年支: Branch -> funYearBranch.invoke(年支, 攀鞍) }
-    private val fun歲馹 = { 年支: Branch -> funYearBranch.invoke(年支, 歲馹) }
-    private val fun息神 = { 年支: Branch -> funYearBranch.invoke(年支, 息神) }
-    private val fun華蓋 = { 年支: Branch -> funYearBranch.invoke(年支, 華蓋) }
-    private val fun劫煞 = { 年支: Branch -> funYearBranch.invoke(年支, 劫煞) }
-    private val fun災煞 = { 年支: Branch -> funYearBranch.invoke(年支, 災煞) }
-    private val fun天煞 = { 年支: Branch -> funYearBranch.invoke(年支, 天煞) }
-    private val fun指背 = { 年支: Branch -> funYearBranch.invoke(年支, 指背) }
-    private val fun咸池 = { 年支: Branch -> funYearBranch.invoke(年支, 咸池) }
-    private val fun月煞 = { 年支: Branch -> funYearBranch.invoke(年支, 月煞) }
+    val fun將星 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 將星) }
+    val fun攀鞍 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 攀鞍) }
+    private val fun歲馹 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 歲馹) }
+    private val fun息神 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 息神) }
+    private val fun華蓋 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 華蓋) }
+    private val fun劫煞 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 劫煞) }
+    private val fun災煞 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 災煞) }
+    private val fun天煞 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 天煞) }
+    private val fun指背 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 指背) }
+    private val fun咸池 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 咸池) }
+    private val fun月煞 = { yearBranch: Branch -> funYearBranch.invoke(yearBranch, 月煞) }
     val fun亡神 = { 年支: Branch -> funYearBranch.invoke(年支, 亡神) }
 
     val starFuncMap: Map<StarGeneralFront, Function1<Branch, Branch>> by lazy {

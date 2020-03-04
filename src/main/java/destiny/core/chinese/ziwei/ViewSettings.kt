@@ -61,7 +61,7 @@ data class ViewSettings(
     /** 朝內(對宮) 箭頭  */
     OPPO_TRANS_FOUR_ARROW;
   }
-} // data class ViewSettings
+}
 
 fun ViewSettings.SelfTransFour.asLocaleString() = object : ILocaleString {
   override fun toString(locale: Locale): String {

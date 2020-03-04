@@ -14,10 +14,9 @@ interface IPalmContext {
 
   val positiveImpl: IPositive
   val dayHourImpl: IDayHour
-  //  val hourImpl : IHour
-//  val midnightImpl : IMidnight
   val monthAlgo: IFinalMonthNumber.MonthAlgo
   val trueRisingSign: Boolean
+  @Deprecated("")
   val changeDayAfterZi: Boolean
   val clockwiseHouse: Boolean
 
@@ -150,7 +149,9 @@ interface IPalmContext {
                       place: String?,
                       name: String?): IPalmMetaModelDesc
 
-  /** 計算 [IBirthDataNamePlace] */
+  /**
+   * 計算 [IBirthDataNamePlace]
+   **/
   fun getPalm(data: IBirthDataNamePlace): IPalmMetaModel {
     return getPalm(data.gender, data.time, data.location, data.place, data.name)
   }

@@ -33,8 +33,8 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
 
     private val list by lazy { arrayOf(*values) }
 
-    private val func = { 五行: FiveElement ->
-      when (五行) {
+    private val func = { fiveElement: FiveElement ->
+      when (fiveElement) {
         水 -> 申
         木 -> 亥
         金 -> 巳
@@ -43,12 +43,12 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
       }
     }
 
-    private val mainFunc = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang, 星體: StarLongevity ->
+    private val mainFunc = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang, star: StarLongevity ->
       // 第一個（長生）
-      val head = func.invoke(五行)
+      val head = func.invoke(fiveElement)
 
-      val steps = list.indexOf(星體)
-      if (gender === Gender.男 && 陰陽.booleanValue || gender === Gender.女 && !陰陽.booleanValue) {
+      val steps = list.indexOf(star)
+      if (gender === Gender.男 && yinYang.booleanValue || gender === Gender.女 && !yinYang.booleanValue) {
         // 陽男 陰女 順行
         head.next(steps)
       } else {
@@ -57,19 +57,19 @@ sealed class StarLongevity(nameKey: String) : ZStar(nameKey, ZStar::class.java.n
       }
     }
 
-    val fun長生 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 長生) }
-    val fun沐浴 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 沐浴) }
-    val fun冠帶 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 冠帶) }
-    val fun臨官 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 臨官) }
-    val fun帝旺 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 帝旺) }
+    val fun長生 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 長生) }
+    val fun沐浴 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 沐浴) }
+    val fun冠帶 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 冠帶) }
+    val fun臨官 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 臨官) }
+    val fun帝旺 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 帝旺) }
 
-    val fun衰 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 衰) }
-    val fun病 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 病) }
-    val fun死 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 死) }
-    val fun墓 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 墓) }
-    val fun絕 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 絕) }
-    val fun胎 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 胎) }
-    val fun養 = { 五行: FiveElement, gender: Gender, 陰陽: IYinYang -> mainFunc.invoke(五行, gender, 陰陽, 養) }
+    val fun衰 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 衰) }
+    val fun病 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 病) }
+    val fun死 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 死) }
+    val fun墓 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 墓) }
+    val fun絕 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 絕) }
+    val fun胎 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 胎) }
+    val fun養 = { fiveElement: FiveElement, gender: Gender, yinYang: IYinYang -> mainFunc.invoke(fiveElement, gender, yinYang, 養) }
 
     val starFuncMap: Map<StarLongevity, Function3<FiveElement, Gender, IYinYang, Branch>> by lazy {
       mapOf(
