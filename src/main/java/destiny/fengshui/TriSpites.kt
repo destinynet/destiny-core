@@ -29,8 +29,9 @@ object TriSpites {
     val hexagram = Hexagram.of(symbol, symbol)
     return (1..6).filter {
       val sb: StemBranch = settings.getStemBranch(hexagram, it)
-      val 外在五行 = SimpleBranch.getFiveElement(sb.branch)
-      DivineContext.getRelative(外在五行, symbol.fiveElement) === Relative.官鬼
+      // 外在五行
+      val outerFiveElement = SimpleBranch.getFiveElement(sb.branch)
+      DivineContext.getRelative(outerFiveElement, symbol.fiveElement) === Relative.官鬼
     }.map { settings.getStemBranch(hexagram, it).branch }
   }
 

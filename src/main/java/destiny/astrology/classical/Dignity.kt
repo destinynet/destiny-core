@@ -29,19 +29,19 @@ enum class Dignity(val nameKey: String) : Comparator<Dignity> {
   /** 旺 (+4) , 躍升  */
   EXALTATION("Dignity.EXALTATION"),
 
-  /** 三分性 (+3) */
+  /** 三分性 (+3) , 三分主星 */
   TRIPLICITY("Dignity.TRIPLICITY"),
 
-  /** 界 (+2) */
+  /** 界 (+2) , 六度守護 */
   TERM("Dignity.TERM"),
 
-  /** 面 (+1) */
+  /** 面 (+1) , 十度守護 */
   FACE("Dignity.FACE"),
 
-  /** 落 (-4)  */
+  /** 落 (-4) , 失利 , 某派認為此情形比 [DETRIMENT] 更糟 */
   FALL("Dignity.FALL"),
 
-  /** 陷 (-5)  */
+  /** 陷 (-5) , 自己守護星座的對立面 */
   DETRIMENT("Dignity.DETRIMENT");
 
   override fun compare(o1: Dignity?, o2: Dignity?): Int {

@@ -71,18 +71,19 @@ object ChartMntContext {
         it
     }
 
-    val 原始配卦: Symbol? = SymbolAcquired.getSymbolNullable(defaultStart)
-    val reversed = isReversed(原始配卦, mountain)
+    // 原始配卦
+    val srcSymbol: Symbol? = SymbolAcquired.getSymbolNullable(defaultStart)
+    val reversed = isReversed(srcSymbol, mountain)
 
     if (replacementImpl == null) {
       // 不用替星
       return Pair(defaultStart, reversed)
     } else {
       // 用替星
-      return if (原始配卦 == null) {
+      return if (srcSymbol == null) {
         Pair(defaultStart, reversed)
       } else {
-        val mnt = VoidFunctions.getMappingMountain(mountain, 原始配卦)
+        val mnt = VoidFunctions.getMappingMountain(mountain, srcSymbol)
         val repStar: ReplacementStar = replacementImpl.getReplacementStar(mnt)
         if (!repStar.enabled) {
           Pair(defaultStart, reversed)
@@ -95,8 +96,11 @@ object ChartMntContext {
   }
 
 
-  private fun isReversed(原始卦: Symbol?, m: Mountain): Boolean {
-    return if (原始卦 == null) {
+  private fun isReversed(
+    /** 原始卦 */
+    sourceSymbol: Symbol?,
+    m: Mountain): Boolean {
+    return if (sourceSymbol == null) {
       /**
        * 當五黃如中時，因為五黃本身沒有山向，五黃是中宮戊己土，那麼，
        * 五入中的順飛還是逆飛則是由五所在的宮位的山向的陰陽，性質決定。
@@ -104,7 +108,7 @@ object ChartMntContext {
        */
       !玄空陰陽.getYinYang(m)
     } else {
-      !玄空陰陽.getYinYang(VoidFunctions.getMappingMountain(m, 原始卦))
+      !玄空陰陽.getYinYang(VoidFunctions.getMappingMountain(m, sourceSymbol))
     }
   }
 

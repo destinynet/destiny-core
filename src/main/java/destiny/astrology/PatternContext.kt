@@ -188,7 +188,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
               val bottoms = threePairs.first { it.aspect == QUINTILE }.points
               val pointer = threePairs.flatMap { it.points }.toSet().minus(bottoms).first()
-              // val pointerSign = posMap.getValue(pointer).sign
+
               AstroPattern.GoldenYod(bottoms, pointer.signHouse(posMap, cuspDegreeMap), score)
             }
         }?.toSet() ?: emptySet()
@@ -315,7 +315,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
             val oppoPoints = threePairs.first { it.aspect == OPPOSITION }.points
             val moderator = threePairs.flatMap { it.points }.toSet().minus(oppoPoints).iterator().next()
-            // val moderatorSign = posMap.getValue(moderator).sign
+
             AstroPattern.Wedge(oppoPoints, moderator.signHouse(posMap, cuspDegreeMap), score)
           }.toSet()
         } ?: emptySet()

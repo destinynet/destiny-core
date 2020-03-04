@@ -267,14 +267,14 @@ class DivineContext(
       return 本宮 to 宮序
     }
 
-    fun getRelative(外在五行: FiveElement, 內在五行: FiveElement): Relative {
+    fun getRelative(outer: FiveElement, inner: FiveElement): Relative {
       return when {
-        外在五行.isSame(內在五行) -> Relative.兄弟
-        外在五行.isDominatorOf(內在五行) -> Relative.官鬼
-        外在五行.isDominatedBy(內在五行) -> Relative.妻財
-        外在五行.isProducingTo(內在五行) -> Relative.父母
-        外在五行.isProducedBy(內在五行) -> Relative.子孫
-        else -> throw RuntimeException("$外在五行 and $內在五行")
+        outer.isSame(inner) -> Relative.兄弟
+        outer.isDominatorOf(inner) -> Relative.官鬼
+        outer.isDominatedBy(inner) -> Relative.妻財
+        outer.isProducingTo(inner) -> Relative.父母
+        outer.isProducedBy(inner) -> Relative.子孫
+        else -> throw RuntimeException("$outer and $inner")
       }
     }
 

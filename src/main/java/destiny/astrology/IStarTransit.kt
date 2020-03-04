@@ -13,7 +13,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 某星下次（或上次）行進到黃道/恆星 帶上某一點的時間 , 赤道座標系不支援!
  * SwissEph 內定實作是 StarTransitImpl
  *
- * TODO : 計算星體 Transit 到黃道某點的時間，僅限於 Planet , Asteroid , Moon's Node
+ * 計算星體 Transit 到黃道某點的時間，僅限於 [Planet] , [Asteroid] , Moon's [LunarNode]
  */
 interface IStarTransit {
 

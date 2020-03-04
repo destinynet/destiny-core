@@ -6,6 +6,7 @@ package destiny.astrology.eclipse
 /** 日食、月食 的最上層 抽象 class  */
 interface IEclipse {
   val begin: Double
+
   /** 不論是 全食、偏食、還是環食，都會有「最大值」  */
   val max: Double
   val end: Double
@@ -56,9 +57,8 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
   data class SolarEclipsePartial(
     override val begin: Double,
     override val max: Double,
-    override val end: Double) : AbstractSolarEclipse() , ISolarEclipsePartial {
-    override val solarType: ISolarEclipse.SolarType
-      get() = ISolarEclipse.SolarType.PARTIAL
+    override val end: Double) : AbstractSolarEclipse(), ISolarEclipsePartial {
+    override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.PARTIAL
   }
 
   /** 日全食 , 為 偏食 的一種 , 內定「無中線」 */
@@ -66,8 +66,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
     private val partial: SolarEclipsePartial,
     override val totalBegin: Double,
     override val totalEnd: Double) : AbstractSolarEclipse(), ISolarEclipse by partial, ISolarEclipseTotal {
-    override val solarType: ISolarEclipse.SolarType
-      get() = ISolarEclipse.SolarType.TOTAL
+    override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.TOTAL
   }
 
   /** 日全食 , 有中線 */
@@ -75,8 +74,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
     private val total: SolarEclipseTotal,
     override val centerBegin: Double,
     override val centerEnd: Double) : AbstractSolarEclipse(), ISolarEclipseTotal by total, IEclipseCenter {
-    override val solarType: ISolarEclipse.SolarType
-      get() = ISolarEclipse.SolarType.TOTAL
+    override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.TOTAL
   }
 
   /** 日環食 , 為 全食 的一種 , 內定是「無中線」 */
@@ -85,8 +83,7 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
     // NOTE : swisseph 尚未實作 annular Begin/End 之值， 都會傳回 0.0
     override val annularBegin: Double,
     override val annularEnd: Double) : AbstractSolarEclipse(), ISolarEclipseTotal by total, ISolarEclipseAnnular {
-    override val solarType: ISolarEclipse.SolarType
-      get() = ISolarEclipse.SolarType.ANNULAR
+    override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.ANNULAR
   }
 
   /** 日環食 , 有中線 */
@@ -94,21 +91,25 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
     private val annular: SolarEclipseAnnular,
     override val centerBegin: Double,
     override val centerEnd: Double) : AbstractSolarEclipse(), ISolarEclipseAnnular by annular, IEclipseCenter {
-    override val solarType: ISolarEclipse.SolarType
-      get() = ISolarEclipse.SolarType.ANNULAR
+    override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.ANNULAR
   }
 
   /** 混合型 , 全環食 , 非常罕見 */
   data class SolarEclipseHybrid(private val annularCentered: SolarEclipseAnnularCentered) : AbstractSolarEclipse(),
-    ISolarEclipseAnnular by annularCentered, IEclipseCenter by annularCentered , ISolarEclipseHybrid {
-    override val solarType: ISolarEclipse.SolarType
-      get() = ISolarEclipse.SolarType.HYBRID
+    ISolarEclipseAnnular by annularCentered, IEclipseCenter by annularCentered, ISolarEclipseHybrid {
+    override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.HYBRID
   }
 
 }
 
 
-/** =============================================================== */
+/** ===============================================================
+ * 月食示意圖
+ * https://www.photopills.com/sites/default/files/articles/moon-eclipse/eclipse-moon-phases-en.jpg
+ * 備份 https://imgur.com/2JLJNsO
+ *
+ * 簡介 https://www.photopills.com/articles/lunar-eclipse-photography-guide
+ **/
 
 
 /** 月食 */
@@ -128,15 +129,15 @@ interface ILunarEclipse : IEclipse {
     PENUMBRA  // 半影月食
   }
 
-  val lunarType : LunarType
+  val lunarType: LunarType
 }
 
 /** 月偏食 */
 interface ILunarEclipsePartial : ILunarEclipse {
-  /** 月亮最先碰觸地球本影 (U1)  */
+  /** 月亮最先碰觸地球本影 (U1) , 此時月亮剛接觸 Umbra */
   val partialBegin: Double
 
-  /** 月亮完全離開地球本影 (U4)  */
+  /** 月亮完全離開地球本影 (U4) , 此時月亮剛離開 Umbra  */
   val partialEnd: Double
 }
 
@@ -156,9 +157,7 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
     override val begin: Double,
     override val max: Double,
     override val end: Double) : AbstractLunarEclipse() {
-    override val lunarType: ILunarEclipse.LunarType
-      get() = ILunarEclipse.LunarType.PENUMBRA
-
+    override val lunarType: ILunarEclipse.LunarType = ILunarEclipse.LunarType.PENUMBRA
   }
 
   /** 月偏食 */
@@ -166,9 +165,7 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
     private val penumbra: LunarEclipsePenumbra,
     override val partialBegin: Double,
     override val partialEnd: Double) : AbstractLunarEclipse(), ILunarEclipse by penumbra, ILunarEclipsePartial {
-    override val lunarType: ILunarEclipse.LunarType
-      get() = ILunarEclipse.LunarType.PARTIAL
-
+    override val lunarType: ILunarEclipse.LunarType = ILunarEclipse.LunarType.PARTIAL
   }
 
   /** 月全食 */
@@ -176,8 +173,7 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
     private val partial: LunarEclipsePartial,
     override val totalBegin: Double,
     override val totalEnd: Double) : AbstractLunarEclipse(), ILunarEclipsePartial by partial, ILunarEclipseTotal {
-    override val lunarType: ILunarEclipse.LunarType
-      get() = ILunarEclipse.LunarType.TOTAL
+    override val lunarType: ILunarEclipse.LunarType = ILunarEclipse.LunarType.TOTAL
   }
 
 }
