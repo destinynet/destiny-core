@@ -14,14 +14,11 @@ class HamburgerTest {
   @Test
   fun testHamburger() {
 
-    //println(HamMap.map)
-
-
     Hamburger.array.forEach {
       assertNotNull(it)
     }
     assertEquals("Zeus", Hamburger.ZEUS.toString(Locale("zh", "TW")))
-    //assertEquals("Ze", Hamburger.ZEUS.getAbbreviation(locale))
+    //assertEquals("Ze", Hamburger.ZEUS.getAbbreviation(Locale("zh", "TW")))
 
     val locale = Locale("en")
     assertEquals("Zeus", Hamburger.ZEUS.toString(locale))

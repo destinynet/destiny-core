@@ -190,6 +190,7 @@ class EssentialImplTest {
   }
 
   /**
+   * 測試各種 Dignity 的接納
    * 根據此頁資料來測試各種 [Dignity] 的接納
    * http://www.skyscript.co.uk/dig6.html
    *
@@ -208,7 +209,7 @@ class EssentialImplTest {
    * 太陽到 辰宮 (火星 為 DETRIMENT ) , 火星透過 DETRIMENT 接納太陽 , 太陽 -5
    */
   @Test
-  fun `測試各種 Dignity 的接納`() {
+  fun testDignitiesReception() {
     val signMap = mapOf<Point, ZodiacSign>(
       SUN to LIBRA,
       MERCURY to SCORPIO,

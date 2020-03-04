@@ -185,19 +185,23 @@ class DivineContext(
         null
     }
 
-    //val day: StemBranch = eightWordsNullable.day.let { StemBranch[it.stem!!, it.branch!!] }
-
     val combinedWithMetaName = getCombinedWithMetaName(src, dst, locale)
 
     // 神煞
-    val 空亡: Set<Branch> = day?.empties?.toSet() ?: emptySet()
-    val 驛馬: Branch? = day?.branch?.let { Characters.getHorse(it) }
-    val 桃花: Branch? = day?.branch?.let { Characters.getPeach(it) }
-    val 貴人: Set<Branch> = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() } ?: emptySet()
-    val 羊刃: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
-    val 六獸: List<SixAnimal> = day?.let { SixAnimals.getSixAnimals(it.stem) } ?: emptyList()
+    // 空亡
+    val voids: Set<Branch> = day?.empties?.toSet() ?: emptySet()
+    // 驛馬
+    val horse: Branch? = day?.branch?.let { Characters.getHorse(it) }
+    // 桃花
+    val flower: Branch? = day?.branch?.let { Characters.getPeach(it) }
+    // 貴人
+    val tianyis: Set<Branch> = day?.stem?.let { tianyiImpl.getTianyis(it).toSet() } ?: emptySet()
+    // 羊刃
+    val yangBlade: Branch? = day?.stem?.let { yangBladeImpl.getYangBlade(it) }
+    // 六獸
+    val sixAnimals: List<SixAnimal> = day?.let { SixAnimals.getSixAnimals(it.stem) } ?: emptyList()
 
-    return CombinedWithMetaNameDayMonth(combinedWithMetaName, eightWordsNullable, 空亡, 驛馬, 桃花, 貴人, 羊刃, 六獸)
+    return CombinedWithMetaNameDayMonth(combinedWithMetaName, eightWordsNullable, voids, horse, flower, tianyis, yangBlade, sixAnimals)
   }
 
 
@@ -257,14 +261,15 @@ class DivineContext(
     fun getSymbolAndIndex(hexagram: IHexagram): Pair<Symbol, Int> {
       val 京房易卦卦序 = comparator.getIndex(hexagram)
 
-      /* 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */
-      val 宮位 = (京房易卦卦序 - 1) / 8
+      /* 宮位 : 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */
+      val symbol = (京房易卦卦序 - 1) / 8
 
-      // 1~8
-      val 宮序 = 京房易卦卦序 - 宮位 * 8
+      // 宮序 : 1~8
+      val index = 京房易卦卦序 - symbol * 8
 
-      val 本宮: Symbol = Hexagram.of(宮位 * 8 + 1, comparator).upperSymbol
-      return 本宮 to 宮序
+      // 本宮
+      val srcSymbol: Symbol = Hexagram.of(symbol * 8 + 1, comparator).upperSymbol
+      return srcSymbol to index
     }
 
     fun getRelative(outer: FiveElement, inner: FiveElement): Relative {
