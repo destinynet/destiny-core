@@ -16,8 +16,6 @@ interface IPalmContext {
   val dayHourImpl: IDayHour
   val monthAlgo: IFinalMonthNumber.MonthAlgo
   val trueRisingSign: Boolean
-  @Deprecated("")
-  val changeDayAfterZi: Boolean
   val clockwiseHouse: Boolean
 
 

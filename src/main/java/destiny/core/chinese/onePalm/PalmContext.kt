@@ -25,7 +25,6 @@ class PalmContext(override val positiveImpl: IPositive,
                   val risingSignImpl: IRisingSign,
                   val yearMonthImpl: IYearMonth,
                   override val monthAlgo: IFinalMonthNumber.MonthAlgo,
-                  override val changeDayAfterZi: Boolean,
                   override val trueRisingSign: Boolean,
                   override val clockwiseHouse: Boolean,
                   private val branchDescImpl: IBranchDesc) : IPalmContext, Serializable {

@@ -51,7 +51,6 @@ open class ColorCanvas : Serializable {
       } else {
         //有 children
 
-        //var result: Array<ColorByte>? = null
         for (child in children) {
           val childContent = child.canvasCanvas.content
           for (j in childContent.indices) {
@@ -205,7 +204,6 @@ open class ColorCanvas : Serializable {
     val bytes: ByteArray = fillingStringToBytes(fill)
 
     return Array(width * height) {
-      val h = it / width
       val w = it % width
       ColorByte(bytes[w % bytes.size], foreColor, backColor, null, null, null)
     }
@@ -325,7 +323,7 @@ open class ColorCanvas : Serializable {
         break
       }
     }
-  } //setText()
+  }
 
 
   /**
@@ -532,7 +530,7 @@ open class ColorCanvas : Serializable {
     sb.append(String(byteArray, charsetBig5))
     sb.append("</span>")
     return sb
-  } //buildFontHtml()
+  }
 
 
   /**

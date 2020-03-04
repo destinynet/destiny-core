@@ -21,7 +21,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexNameFull) 
 
   lateinit var mumeContext: MumeContext
   var metaData: String? = null
-  var dateInfo = "" //日期/時間/地點經緯度 等資料
+  private var dateInfo = "" //日期/時間/地點經緯度 等資料
   lateinit var eightWords: IEightWords
 
 
@@ -38,17 +38,18 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexNameFull) 
     dateCanvas.setText(dateInfo, 1, 1)
     c.add(dateCanvas, 3, 1)
 
-    val 八字Canvas = ColorCanvas(3, 8, "　")
-    八字Canvas.setText("時日月年", 1, 1)
-    八字Canvas.setText(eightWords.hour.stem.toString(), 2, 1) //時干
-    八字Canvas.setText(eightWords.hour.branch.toString(), 3, 1) //時支
-    八字Canvas.setText(eightWords.day.stem.toString(), 2, 3) //日干
-    八字Canvas.setText(eightWords.day.branch.toString(), 3, 3) //日支
-    八字Canvas.setText(eightWords.month.stem.toString(), 2, 5) //月干
-    八字Canvas.setText(eightWords.month.branch.toString(), 3, 5) //月支
-    八字Canvas.setText(eightWords.year.stem.toString(), 2, 7) //年干
-    八字Canvas.setText(eightWords.year.branch.toString(), 3, 7) //年支
-    c.add(八字Canvas, 1, 51)
+    // 八字Canvas
+    val ewCanvas = ColorCanvas(3, 8, "　")
+    ewCanvas.setText("時日月年", 1, 1)
+    ewCanvas.setText(eightWords.hour.stem.toString(), 2, 1) //時干
+    ewCanvas.setText(eightWords.hour.branch.toString(), 3, 1) //時支
+    ewCanvas.setText(eightWords.day.stem.toString(), 2, 3) //日干
+    ewCanvas.setText(eightWords.day.branch.toString(), 3, 3) //日支
+    ewCanvas.setText(eightWords.month.stem.toString(), 2, 5) //月干
+    ewCanvas.setText(eightWords.month.branch.toString(), 3, 5) //月支
+    ewCanvas.setText(eightWords.year.stem.toString(), 2, 7) //年干
+    ewCanvas.setText(eightWords.year.branch.toString(), 3, 7) //年支
+    c.add(ewCanvas, 1, 51)
 
     //純粹五個卦 , 不包含時間等其他資訊
     val mainCanvas = ColorCanvas(8, 74, "　")
@@ -68,36 +69,47 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexNameFull) 
       mainCanvas.setText("體卦", 7, 1)
     }
 
-    val 本卦canvas = ColorCanvas(8, 12, "　")
-    本卦canvas.setText("【本　卦】", 1, 1)
-
-    本卦canvas.add(getColorCanvas(mumeContext.hexagram), 2, 1)
-    mainCanvas.add(本卦canvas, 1, 5)
+    // 本卦canvas
+    val srcCanvas = ColorCanvas(8, 12, "　").apply {
+      setText("【本　卦】", 1, 1)
+      add(getColorCanvas(mumeContext.hexagram), 2, 1)
+    }
+    mainCanvas.add(srcCanvas, 1, 5)
 
     //變爻
-    if (mumeContext.hexagram.getBoolean(mumeContext.motivate)
-    ) mainCanvas.setText("◎", 9 - mumeContext.motivate, 17)
-    else mainCanvas.setText("〤", 9 - mumeContext.motivate, 17)
+    if (mumeContext.hexagram.getBoolean(mumeContext.motivate))
+      mainCanvas.setText("◎", 9 - mumeContext.motivate, 17)
+    else
+      mainCanvas.setText("〤", 9 - mumeContext.motivate, 17)
 
-    val 變卦Canvas = ColorCanvas(8, 12, "　")
-    變卦Canvas.setText("【變　卦】", 1, 1)
-    變卦Canvas.add(getColorCanvas(mumeContext.targetHexagram), 2, 1)
-    mainCanvas.add(變卦Canvas, 1, 21)
+    // 變卦Canvas
+    val dstCanvas = ColorCanvas(8, 12, "　").apply {
+      setText("【變　卦】", 1, 1)
+      add(getColorCanvas(mumeContext.targetHexagram), 2, 1)
+    }
+    mainCanvas.add(dstCanvas, 1, 21)
 
-    val 互卦Canvas = ColorCanvas(8, 12, "　")
-    互卦Canvas.setText("【互　卦】", 1, 1)
-    互卦Canvas.add(getColorCanvas(mumeContext.hexagram.middleSpanHexagram), 2, 1)
-    mainCanvas.add(互卦Canvas, 1, 35)
+    // 互卦Canvas
+    val middleSpanCanvas = ColorCanvas(8, 12, "　").apply {
+      setText("【互　卦】", 1, 1)
+      add(getColorCanvas(mumeContext.hexagram.middleSpanHexagram), 2, 1)
+    }
+    mainCanvas.add(middleSpanCanvas, 1, 35)
 
-    val 錯卦Canvas = ColorCanvas(8, 12, "　")
-    錯卦Canvas.setText("【錯　卦】", 1, 1)
-    錯卦Canvas.add(getColorCanvas(mumeContext.hexagram.interlacedHexagram), 2, 1)
-    mainCanvas.add(錯卦Canvas, 1, 49)
+    // 錯卦Canvas
+    val interlacedCanvas = ColorCanvas(8, 12, "　").apply {
+      setText("【錯　卦】", 1, 1)
+      add(getColorCanvas(mumeContext.hexagram.interlacedHexagram), 2, 1)
+    }
+    mainCanvas.add(interlacedCanvas, 1, 49)
 
-    val 綜卦Canvas = ColorCanvas(8, 12, "　")
-    綜卦Canvas.setText("【綜　卦】", 1, 1)
-    綜卦Canvas.add(getColorCanvas(mumeContext.hexagram.reversedHexagram), 2, 1)
-    mainCanvas.add(綜卦Canvas, 1, 63)
+    // 綜卦Canvas
+    val reversedCanvas = ColorCanvas(8, 12, "　").apply {
+      setText("【綜　卦】", 1, 1)
+      add(getColorCanvas(mumeContext.hexagram.reversedHexagram), 2, 1)
+    }
+
+    mainCanvas.add(reversedCanvas, 1, 63)
 
     c.add(mainCanvas, 5, 1)
     return c.htmlOutput
@@ -108,9 +120,11 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexNameFull) 
 
     val name = hexagramNameFull.getHexagram(hexagram, Locale.TRADITIONAL_CHINESE)
     //卦名
-    if (name.length == 4
-    ) cc.setText(" $name ", 1, 1)
-    else cc.setText(name, 1, 3)
+    if (name.length == 4)
+      cc.setText(" $name ", 1, 1)
+    else
+      cc.setText(name, 1, 3)
+
     cc.add(getColorCanvas(hexagram.upperSymbol), 2, 1)
     cc.add(getColorCanvas(hexagram.lowerSymbol), 5, 1)
     return cc

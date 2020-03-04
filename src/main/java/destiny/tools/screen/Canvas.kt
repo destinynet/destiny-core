@@ -42,7 +42,6 @@ class Canvas(private val width: Int, val height: Int) : Serializable {
       content[i] = c.toByte()
     }
   }
-  //public byte[] getContent() { return this.content; }
 
   /**
    * 新增子 Canvas
@@ -62,7 +61,7 @@ class Canvas(private val width: Int, val height: Int) : Serializable {
     for (i in b.indices) {
       content[(y - 1) * width + x + i - 1] = b[i]
     }
-  } //setText();
+  }
 
   /**
    * 設定橫向字元
@@ -92,7 +91,7 @@ class Canvas(private val width: Int, val height: Int) : Serializable {
       result = this.content
     } //else
     return result
-  } //getByte()
+  }
 
   override fun toString(): String {
     val sb = StringBuilder()
@@ -102,5 +101,5 @@ class Canvas(private val width: Int, val height: Int) : Serializable {
       sb.append('\n')
     }
     return sb.toString()
-  } //toString()
+  }
 }
