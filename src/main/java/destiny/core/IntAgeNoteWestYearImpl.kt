@@ -8,12 +8,11 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.util.*
-import java.util.function.Function
 
 class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
 
   override fun getAgeNote(gmtJulDay: Double): String? {
-    val start = revJulDayFunc.apply(gmtJulDay)
+    val start = revJulDayFunc.invoke(gmtJulDay)
     return start.get(ChronoField.YEAR_OF_ERA).toString()
   }
 
@@ -47,7 +46,6 @@ class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
 
 
   companion object {
-
-    private val revJulDayFunc = Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc: (Double) -> ChronoLocalDateTime<*> = { it:Double  -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

@@ -8,13 +8,16 @@ import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.util.*
-import java.util.function.Function
 
 /** 民國紀年  */
 class IntAgeNoteMinguoYearImpl : IntAgeNote, Serializable {
 
+  /**
+   * 民國元年前，不輸出
+   * 民國元年後，輸出 "民1" , "民109" 這樣的字串
+   */
   override fun getAgeNote(gmtJulDay: Double): String? {
-    val start = revJulDayFunc.apply(gmtJulDay)
+    val start = revJulDayFunc.invoke(gmtJulDay)
     val westYear = start.get(ChronoField.YEAR_OF_ERA)
     return if (westYear >= 1912) {
       "民" + (westYear - 1911)
@@ -40,19 +43,7 @@ class IntAgeNoteMinguoYearImpl : IntAgeNote, Serializable {
     return toString(locale)
   }
 
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is IntAgeNoteMinguoYearImpl) return false
-    return true
-  }
-
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
-
-
   companion object {
-
-    private val revJulDayFunc = Function<Double, ChronoLocalDateTime<*>> { JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val revJulDayFunc: (Double) -> ChronoLocalDateTime<*> = { it:Double  -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

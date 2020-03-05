@@ -56,8 +56,10 @@ object VoidFunctions {
   /** 城門訣 , 傳回 正城門、副城門 */
   fun getGates(m: Mountain) : Map<Gate , Mountain> {
     // 先取出「向」兩旁的卦
-    val 地盤 = EarthlyCompass()
-    val dirSymbol: Symbol = 地盤.getSymbol(m.opposite)
+
+    // 地盤
+    val earthlyCompass = EarthlyCompass()
+    val dirSymbol: Symbol = earthlyCompass.getSymbol(m.opposite)
 
     /*
     取出 「向」卦，順逆兩卦，相對應（天元、人元、地元龍）的兩個山
@@ -75,7 +77,7 @@ object VoidFunctions {
 
     // 正城門
     val mntPrimary = mountains.first {
-      val mntSymbol: Symbol = 地盤.getSymbol(it)
+      val mntSymbol: Symbol = earthlyCompass.getSymbol(it)
       abs(SymbolAcquired.getIndex(mntSymbol) - SymbolAcquired.getIndex(dirSymbol)) == 5
     }
     // 副城門
