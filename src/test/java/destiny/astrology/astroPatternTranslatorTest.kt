@@ -10,6 +10,7 @@ import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class astroPatternTranslatorTest {
 
@@ -171,14 +172,12 @@ class astroPatternTranslatorTest {
     val pattern = GrandTrine(setOf(SUN, VENUS, MOON), Element.WATER, null)
 
     astroPatternTranslator.getDescriptor(pattern).also { d ->
-      logger.info("title ({})= {}", Locale.TAIWAN, d.toString(Locale.TAIWAN))
-      logger.info("title ({})= {}", Locale.SIMPLIFIED_CHINESE, d.toString(Locale.SIMPLIFIED_CHINESE))
-      logger.info("title ({})= {}", Locale.ENGLISH, d.toString(Locale.ENGLISH))
-      logger.info("title ({})= {}", Locale.FRANCE, d.toString(Locale.FRANCE))
-      logger.info("title ({})= {}", Locale.JAPANESE, d.toString(Locale.JAPANESE))
+      assertEquals("大三角" , d.toString(Locale.TAIWAN))
+      assertEquals("大三角" , d.toString(Locale.SIMPLIFIED_CHINESE))
+      assertEquals("GrandTrine" , d.toString(Locale.ENGLISH))
+      assertEquals("GrandTrine" , d.toString(Locale.FRANCE))
+      assertEquals("GrandTrine" , d.toString(Locale.JAPANESE))
     }
-
-
   }
 
 }
