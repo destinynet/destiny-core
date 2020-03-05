@@ -58,7 +58,18 @@ class HexagramTest {
 
     assertSame(姤, 復.congenitalOpposition)
     assertSame(復, 姤.congenitalOpposition)
+  }
 
+  @Test
+  fun testAcquiredOpposition() {
+    assertSame(恆, 夬.acquiredOpposition)
+    assertSame(謙, 剝.acquiredOpposition)
+
+    assertSame(困, 豐.acquiredOpposition)
+    assertSame(同人, 渙.acquiredOpposition)
+
+    assertSame(損, 復.acquiredOpposition)
+    assertSame(小畜, 姤.acquiredOpposition)
   }
 
   @Test

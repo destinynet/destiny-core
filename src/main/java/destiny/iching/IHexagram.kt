@@ -61,7 +61,6 @@ interface IHexagram {
    * 第 line 爻動的話，變卦的陰陽是什麼
    * @param lines [1~6]
    */
-  @JvmDefault
   fun getTargetYinYangs(vararg lines: Int): List<Boolean> {
     return yinYangs.mapIndexed { index, yy -> if (lines.contains(index + 1)) !yy.booleanValue else yy.booleanValue }
   }
