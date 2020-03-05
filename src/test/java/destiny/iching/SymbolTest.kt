@@ -97,4 +97,42 @@ class SymbolTest {
     assertSame(土, 艮.fiveElement)
     assertSame(土, 坤.fiveElement)
   }
+
+  @Test
+  fun testGetName() {
+    assertEquals("乾" , 乾.getName())
+    assertEquals("兌" , 兌.getName())
+    assertEquals("離" , 離.getName())
+    assertEquals("震" , 震.getName())
+    assertEquals("巽" , 巽.getName())
+    assertEquals("坎" , 坎.getName())
+    assertEquals("艮" , 艮.getName())
+    assertEquals("坤" , 坤.getName())
+  }
+
+
+  @Test
+  fun testToAcquired() {
+    assertSame(離 , 乾.toAcquired())
+    assertSame(巽 , 兌.toAcquired())
+    assertSame(震 , 離.toAcquired())
+    assertSame(艮 , 震.toAcquired())
+    assertSame(坤 , 巽.toAcquired())
+    assertSame(兌 , 坎.toAcquired())
+    assertSame(乾 , 艮.toAcquired())
+    assertSame(坎 , 坤.toAcquired())
+  }
+
+  @Test
+  fun testToCongenital() {
+    assertSame(艮 , 乾.toCongenital())
+    assertSame(坎 , 兌.toCongenital())
+    assertSame(乾 , 離.toCongenital())
+    assertSame(離 , 震.toCongenital())
+    assertSame(兌 , 巽.toCongenital())
+    assertSame(坤 , 坎.toCongenital())
+    assertSame(震 , 艮.toCongenital())
+    assertSame(巽 , 坤.toCongenital())
+  }
+
 }

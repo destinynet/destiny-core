@@ -51,4 +51,17 @@ class SymbolCongenitalTest {
     assertSame(艮, SymbolCongenital.getSymbol(15))
     assertSame(坤, SymbolCongenital.getSymbol(16))
   }
+
+  @Test
+  fun getClockwiseSymbol() {
+    assertSame(巽, SymbolCongenital.getClockwiseSymbol(乾))
+    assertSame(乾, SymbolCongenital.getClockwiseSymbol(兌))
+    assertSame(兌, SymbolCongenital.getClockwiseSymbol(離))
+    assertSame(離, SymbolCongenital.getClockwiseSymbol(震))
+    assertSame(坎, SymbolCongenital.getClockwiseSymbol(巽))
+    assertSame(艮, SymbolCongenital.getClockwiseSymbol(坎))
+    assertSame(坤, SymbolCongenital.getClockwiseSymbol(艮))
+    assertSame(震, SymbolCongenital.getClockwiseSymbol(坤))
+  }
+
 }

@@ -8,6 +8,7 @@ import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 
 class SymbolAcquiredTest {
 
@@ -46,6 +47,17 @@ class SymbolAcquiredTest {
     assertEquals(兌, SymbolAcquired.getSymbolNullable(7))
     assertEquals(艮, SymbolAcquired.getSymbolNullable(8))
     assertEquals(離, SymbolAcquired.getSymbolNullable(9))
+  }
 
+  @Test
+  fun getOppositeSymbol() {
+    assertSame(離 , SymbolAcquired.getOppositeSymbol(坎))
+    assertSame(艮 , SymbolAcquired.getOppositeSymbol(坤))
+    assertSame(兌 , SymbolAcquired.getOppositeSymbol(震))
+    assertSame(乾 , SymbolAcquired.getOppositeSymbol(巽))
+    assertSame(巽 , SymbolAcquired.getOppositeSymbol(乾))
+    assertSame(震 , SymbolAcquired.getOppositeSymbol(兌))
+    assertSame(坤 , SymbolAcquired.getOppositeSymbol(艮))
+    assertSame(坎 , SymbolAcquired.getOppositeSymbol(離))
   }
 }
