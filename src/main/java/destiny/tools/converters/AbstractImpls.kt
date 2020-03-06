@@ -13,6 +13,7 @@ import java.io.Serializable
  */
 interface IContextMap<T> {
   fun getMap(context: T): Map<String, String>
+  fun getMapFilterDefault(context:T) : Map<String, String> = getMap(context)
   fun getContext(map: Map<String, String>): T?
 }
 
