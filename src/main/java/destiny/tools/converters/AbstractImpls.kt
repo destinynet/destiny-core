@@ -13,8 +13,15 @@ import java.io.Serializable
  */
 interface IContextMap<T> {
   fun getMap(context: T): Map<String, String>
-  fun getMapFilterDefault(context:T) : Map<String, String> = getMap(context)
+  fun getMapFilterDefault(context: T): Map<String, String> = getMap(context)
   fun getContext(map: Map<String, String>): T?
+
+  fun <K> MutableMap<String, String>.putAllExceptDefault(ctxMap: IContextMap<K>,
+                                                         defaultValue: K, value: K) {
+    if (value != defaultValue) {
+      putAll(ctxMap.getMap(value))
+    }
+  }
 }
 
 interface IContextMapWithDefault<T> : IContextMap<T> {
@@ -26,10 +33,10 @@ interface MapConverter<T> : IContextMap<T> {
 }
 
 interface MapConverterWithDefault<T> : MapConverter<T> {
-  val defaultImpl : T
+  val defaultImpl: T
 
   fun getContextWithDefault(map: Map<String, String>): T {
-    return getContext(map) ?:defaultImpl
+    return getContext(map) ?: defaultImpl
   }
 }
 
@@ -48,7 +55,7 @@ open class AbstractImpls<T>(override val key: String,
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()
 
-  private val logger = KotlinLogging.logger {  }
+  private val logger = KotlinLogging.logger { }
 
   init {
     addImpl(defaultImpl, defaultImplKey)
