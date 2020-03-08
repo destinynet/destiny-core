@@ -13,11 +13,11 @@ import java.io.Serializable
  */
 interface IContextMap<T> {
   fun getMap(context: T): Map<String, String>
-  fun getMapFilterDefault(context: T): Map<String, String> = getMap(context)
+  fun getMapExceptDefault(context: T): Map<String, String> = getMap(context)
   fun getContext(map: Map<String, String>): T?
 
-  fun <K> MutableMap<String, String>.putAllExceptDefault(ctxMap: IContextMap<K>,
-                                                         defaultValue: K, value: K) {
+  fun <T> MutableMap<String, String>.putAllExceptDefault(ctxMap: IContextMap<T>,
+                                                         defaultValue: T, value: T) {
     if (value != defaultValue) {
       putAll(ctxMap.getMap(value))
     }
@@ -46,6 +46,14 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   fun getImpl(implKey: String): T
   fun getStringValue(t: T): String
   fun getStringValue(t: () -> T): String
+
+  override fun getMapExceptDefault(context: T): Map<String, String> {
+    return if (context != defaultImpl) {
+      getMap(context)
+    } else {
+      emptyMap()
+    }
+  }
 }
 
 open class AbstractImpls<T>(override val key: String,
