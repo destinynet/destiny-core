@@ -7,14 +7,16 @@ import destiny.core.DayNight
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
+import destiny.tools.Impl
 import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.util.*
 
-class DayNightSimpleImpl : IDayNight , Serializable {
+@Impl(value = DayNightSimpleImpl.VALUE)
+class DayNightSimpleImpl : IDayNight, Serializable {
 
   override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {
-    val lmt = TimeTools.getLmtFromGmt(revJulDayFunc.invoke(gmtJulDay) , location)
+    val lmt = TimeTools.getLmtFromGmt(revJulDayFunc.invoke(gmtJulDay), location)
     val hour = lmt.get(ChronoField.HOUR_OF_DAY)
     return if (hour in 6..17)
       DayNight.DAY
@@ -42,6 +44,7 @@ class DayNightSimpleImpl : IDayNight , Serializable {
 
 
   companion object {
+    const val VALUE: String = "simple"
     private val revJulDayFunc = { value: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(value) }
   }
 

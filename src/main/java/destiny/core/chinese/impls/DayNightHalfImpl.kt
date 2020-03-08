@@ -9,17 +9,20 @@ import destiny.astrology.Planet
 import destiny.astrology.TransPoint
 import destiny.core.DayNight
 import destiny.core.calendar.ILocation
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
+
+@Impl(value = DayNightHalfImpl.VALUE)
 class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Serializable {
 
   // TODO : 極區內可能不適用
   override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {
     val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location,
-                                                             discCenter = false, refraction = true)!!
+      discCenter = false, refraction = true)!!
     val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location,
-                                                          discCenter = false, refraction = true)!!
+      discCenter = false, refraction = true)!!
 
     return if (nextNadirJulDay > nextMeridianJulDay) {
       //子正到午正（上半天）
@@ -54,5 +57,8 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Seria
     return riseTransImpl.hashCode()
   }
 
+  companion object {
+    const val VALUE: String = "half"
+  }
 
 }
