@@ -10,11 +10,13 @@ import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
 
 /** 伏神系統，王洪緒之《卜筮正宗》 , 大多數會是 null  */
+@Impl(value = HiddenEnergyWangImpl.VALUE , default = true)
 class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
   override fun toString(locale: Locale): String {
@@ -26,13 +28,14 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
   }
 
   override fun getStemBranch(hexagram: IHexagram, settings: ISettingsOfStemBranch, lineIndex: Int): StemBranch? {
+    val comparator = HexagramDivinationComparator()
 
     /* 首先查詢目前這個 hexagram 的首宮是哪個卦 */
-    val comparator = HexagramDivinationComparator()
-    val 京房易卦卦序 = comparator.getIndex(hexagram)
+    // 京房易卦卦序
+    val hexagramIndex = comparator.getIndex(hexagram)
 
     /* 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */
-    val 宮位 = (京房易卦卦序 - 1) / 8
+    val 宮位 = (hexagramIndex - 1) / 8
     /* 1:本宮卦             (乾為天)
      * 2:初爻變    ，一世卦 (天風姤)
      * 3:二爻變    ，二世卦 (天山遯)
@@ -74,7 +77,7 @@ class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
 
   companion object {
-
+    const val VALUE = "wang"
     private const val NAME = "王洪緒之《卜筮正宗》"
   }
 }

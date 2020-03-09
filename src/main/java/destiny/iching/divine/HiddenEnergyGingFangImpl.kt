@@ -8,12 +8,14 @@ package destiny.iching.divine
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
 /**
  * 伏神系統，京房之《京房易卦》 , 一定不會傳回 null
  */
+@Impl(value = HiddenEnergyGingFangImpl.VALUE)
 class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
 
   override fun toString(locale: Locale): String {
@@ -28,11 +30,12 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
     val comparator = HexagramDivinationComparator()
 
     /* 1 <= 卦序 <= 64 */
-    val 京房易卦卦序 = comparator.getIndex(hexagram)
+    // 京房易卦卦序
+    val hexagramIndex = comparator.getIndex(hexagram)
     //System.out.println("京房易卦卦序:"+ 京房易卦卦序);
 
     /* 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */
-    val 宮位 = (京房易卦卦序 - 1) / 8
+    val 宮位 = (hexagramIndex - 1) / 8
     //System.out.println("宮位:" + 宮位);
 
     /* 1:本宮卦             (乾為天)
@@ -44,7 +47,7 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
      * 7:四爻再變  ，遊魂卦 (火地晉)
      * 0:下三爻再變，歸魂卦 (火天大有)
      */
-    val 宮序 = 京房易卦卦序 - 宮位 * 8
+    val 宮序 = hexagramIndex - 宮位 * 8
     //System.out.println("宮序:" + 宮序);
 
     val 首宮卦 = Hexagram.of(宮位 * 8 + 1, comparator)
@@ -104,6 +107,7 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
   }
 
   companion object {
+    const val VALUE = "gf"
     private const val NAME = "京房之《京房易卦》"
   }
 }

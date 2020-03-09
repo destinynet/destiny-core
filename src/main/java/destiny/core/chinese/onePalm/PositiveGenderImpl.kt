@@ -5,9 +5,11 @@ package destiny.core.chinese.onePalm
 
 import destiny.core.Gender
 import destiny.core.chinese.Branch
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
+@Impl(value = PositiveGenderImpl.VALUE , default = true)
 class PositiveGenderImpl : IPositive, Serializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {
@@ -32,4 +34,7 @@ class PositiveGenderImpl : IPositive, Serializable {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "gen"
+  }
 }

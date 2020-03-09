@@ -5,6 +5,7 @@ package destiny.core.chinese.onePalm
 
 import destiny.core.Gender
 import destiny.core.chinese.Branch
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
@@ -14,6 +15,7 @@ import java.util.*
  * 陽：民國年個位數為奇數。 (地支陽)
  * 陰：民國年個位數為偶數。 (地支陰)
  */
+@Impl(value = PositiveGenderYinYangImpl.VALUE)
 class PositiveGenderYinYangImpl : IPositive, Serializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {
@@ -38,4 +40,7 @@ class PositiveGenderYinYangImpl : IPositive, Serializable {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "gyy"
+  }
 }
