@@ -11,8 +11,10 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.iching.Symbol
 import destiny.iching.Symbol.*
+import destiny.tools.Impl
 import java.util.*
 
+@Impl(value = SettingsGingFang.VALUE , default = true)
 class SettingsGingFang : AbstractSettings() {
 
   override val symbolStemMap: Map<Symbol, List<Stem>>
@@ -55,5 +57,8 @@ class SettingsGingFang : AbstractSettings() {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "gf"
+  }
 
 }

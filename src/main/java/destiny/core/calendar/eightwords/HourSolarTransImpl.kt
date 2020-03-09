@@ -12,6 +12,7 @@ import destiny.astrology.TransPoint
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.tools.Impl
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*
@@ -22,6 +23,7 @@ import java.util.*
  * 再從太陽過天頂到天底，平均劃分十二等份
  * 依此來切割 12 時辰
  */
+@Impl(value = HourSolarTransImpl.VALUE , default = true)
 class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
                          private val star : Star = Planet.SUN) : IHour, Serializable {
 
@@ -286,6 +288,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans ,
 
 
   companion object {
+    const val VALUE = "solar"
     const val name = "真太陽時"
     val logger = KotlinLogging.logger {}
   }

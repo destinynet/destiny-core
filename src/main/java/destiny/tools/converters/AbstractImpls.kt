@@ -58,11 +58,41 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   }
 }
 
-open class AbstractImpls<T>(override val key: String,
-                            final override val defaultImpl: T,
-                            private val defaultImplKey: String) : Serializable, IAbstractImpls<T> {
+private val <T : Any> Array<T>.findDefaultImplAndStringValue: Pair<T, String>
+  get() {
+    return this.map { t: T ->
+        val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
+        t to impl
+      }.filter { (_, impl) -> impl != null }
+      .map { (t, impl) -> t to impl!! }
+      .filter { (_, impl) -> impl.default }
+      .map { (t, impl) -> t to impl.value }
+      .first()
+  }
+
+private val <T : Any> Array<T>.findNonDefaultImplAndKey: Map<T, String>
+  get() {
+    return this.map { t: T ->
+        val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
+        t to impl
+      }.filter { (_, impl) -> impl != null }
+      .map { (t, impl) -> t to impl!! }
+      .filter { (_, impl) -> !impl.default }
+      .map { (t, impl) -> t to impl.value }
+      .toMap()
+  }
+
+open class AbstractImpls<T : Any>(override val key: String,
+                                  final override val defaultImpl: T,
+                                  private val defaultImplKey: String) : Serializable, IAbstractImpls<T> {
 
   constructor(key: String, pair: Pair<T, String>) : this(key, pair.first, pair.second)
+
+//  constructor(key: String, vararg impls: T) : this(key, impls.findDefaultImplAndStringValue) {
+//    impls.findNonDefaultImplAndKey.forEach { (impl, string) ->
+//      addImpl(impl, string)
+//    }
+//  }
 
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()
@@ -84,7 +114,7 @@ open class AbstractImpls<T>(override val key: String,
   override fun getStringValue(t: T): String {
     return implValueMap[t] ?: {
       logger.warn("cannot get value from {} . implValueMap = {}. returning default : {}",
-        t, implValueMap, defaultImpl)
+                  t, implValueMap, defaultImpl)
       implValueMap.getValue(defaultImpl)
     }.invoke()
   }
@@ -113,30 +143,6 @@ open class AbstractImpls<T>(override val key: String,
 
 interface IDescriptiveImpls<T : Descriptive> : IAbstractImpls<T>
 
-
-private val <T : Any> Array<T>.findDefaultImplAndStringValue: Pair<T, String>
-  get() {
-    return this.map { t: T ->
-        val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
-        t to impl
-      }.filter { (_, impl) -> impl != null }
-      .map { (t, impl) -> t to impl!! }
-      .filter { (_, impl) -> impl.default }
-      .map { (t, impl) -> t to impl.value }
-      .first()
-  }
-
-private val <T : Any> Array<T>.findNonDefaultImplAndKey: Map<T, String>
-  get() {
-    return this.map { t: T ->
-        val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
-        t to impl
-      }.filter { (_, impl) -> impl != null }
-      .map { (t, impl) -> t to impl!! }
-      .filter { (_, impl) -> !impl.default }
-      .map { (t, impl) -> t to impl.value }
-      .toMap()
-  }
 
 open class DescriptiveImpls<T : Descriptive>(
   key: String,
