@@ -19,7 +19,6 @@ import java.util.*
  *
  * 實作方法： 繼承 [YearMonthSolarTermsStarPositionImpl] , 並覆寫其 getMonth 之值
  */
-@Impl(value = YearMonthSunSignImpl.VALUE)
 class YearMonthSunSignImpl(
   starPositionImpl: IStarPosition<*>,
   private val ymSolarTermsStarPositionImpl: YearMonthSolarTermsStarPositionImpl,
@@ -80,7 +79,6 @@ class YearMonthSunSignImpl(
   }
 
   companion object {
-    const val VALUE = "sign"
     const val name = "120柱月令"
   }
 

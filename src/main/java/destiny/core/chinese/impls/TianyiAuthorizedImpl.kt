@@ -9,8 +9,10 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.Impl
 import java.io.Serializable
 
+@Impl(value = TianyiAuthorizedImpl.VALUE)
 class TianyiAuthorizedImpl : ITianyi, Serializable {
 
   /**
@@ -62,5 +64,8 @@ class TianyiAuthorizedImpl : ITianyi, Serializable {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "authorized"
+  }
 
 }

@@ -88,11 +88,11 @@ open class AbstractImpls<T : Any>(override val key: String,
 
   constructor(key: String, pair: Pair<T, String>) : this(key, pair.first, pair.second)
 
-//  constructor(key: String, vararg impls: T) : this(key, impls.findDefaultImplAndStringValue) {
-//    impls.findNonDefaultImplAndKey.forEach { (impl, string) ->
-//      addImpl(impl, string)
-//    }
-//  }
+  constructor(key: String, vararg impls: T) : this(key, impls.findDefaultImplAndStringValue) {
+    impls.findNonDefaultImplAndKey.forEach { (impl, string) ->
+      addImpl(impl, string)
+    }
+  }
 
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()

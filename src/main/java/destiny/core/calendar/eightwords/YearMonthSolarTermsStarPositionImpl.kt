@@ -24,7 +24,6 @@ import java.util.*
  *
  * 具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  */
-@Impl(value = YearMonthSolarTermsStarPositionImpl.VALUE, default = true)
 class YearMonthSolarTermsStarPositionImpl(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
@@ -166,7 +165,6 @@ class YearMonthSolarTermsStarPositionImpl(
   }
 
   companion object {
-    const val VALUE = "default"
     const val name = "傳統年月"
     val logger = KotlinLogging.logger { }
   }

@@ -9,6 +9,7 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.Impl
 import java.io.Serializable
 
 /**
@@ -30,6 +31,7 @@ import java.io.Serializable
  * 六辛日旦治勝光（午），暮治功曹（寅）；
  * 壬癸日旦治太乙（巳），暮治太沖（卯）
  */
+@Impl(value = TianyiLiurenPithyImpl.VALUE)
 class TianyiLiurenPithyImpl : ITianyi, Serializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
@@ -56,5 +58,8 @@ class TianyiLiurenPithyImpl : ITianyi, Serializable {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "liurenPithy"
+  }
 
 }

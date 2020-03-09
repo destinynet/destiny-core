@@ -8,6 +8,7 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.Impl
 import java.io.Serializable
 
 
@@ -24,6 +25,7 @@ import java.io.Serializable
  * 前一字為晝貴，後一字為夜貴。
  * 前述天乙貴人歌訣係明代先賢根據「劉基」所留傳而著述
  */
+@Impl(value = TianyiLiuBowenImpl.VALUE)
 class TianyiLiuBowenImpl : ITianyi, Serializable {
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
@@ -47,6 +49,10 @@ class TianyiLiuBowenImpl : ITianyi, Serializable {
 
   override fun hashCode(): Int {
     return javaClass.hashCode()
+  }
+
+  companion object {
+    const val VALUE = "liuBowen"
   }
 
 
