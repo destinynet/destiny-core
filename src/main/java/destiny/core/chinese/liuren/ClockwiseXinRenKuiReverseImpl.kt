@@ -10,6 +10,7 @@ import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Clockwise
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.Stem.*
+import destiny.tools.Impl
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -19,6 +20,7 @@ import java.util.*
  * 甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順
  * XinRenKui Reverse
  */
+@Impl(value = ClockwiseXinRenKuiReverseImpl.VALUE, default = true)
 class ClockwiseXinRenKuiReverseImpl(
   private val dayHourImpl: IDayHour,
   private val differentiator: IDayNight) : IClockwise, Serializable {
@@ -39,5 +41,9 @@ class ClockwiseXinRenKuiReverseImpl(
 
   override fun getDescription(locale: Locale): String {
     return "甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順"
+  }
+
+  companion object {
+    const val VALUE = "xrkR"
   }
 }

@@ -8,6 +8,7 @@ import destiny.astrology.IDayNight
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Clockwise
 import destiny.core.chinese.IClockwise
+import destiny.tools.Impl
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -18,6 +19,7 @@ import java.util.*
  * Clockwise Day Clockwise / Night Counter
  * dayNightFixedImpl
  */
+@Impl(value = ClockwiseDayNightFixedImpl.VALUE)
 class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClockwise, Serializable {
 
   override fun getClockwise(lmt: ChronoLocalDateTime<*>, loc: ILocation): Clockwise {
@@ -31,5 +33,9 @@ class ClockwiseDayNightFixedImpl(private val differentiator: IDayNight) : IClock
 
   override fun getDescription(locale: Locale): String {
     return "固定為晝順夜逆"
+  }
+
+  companion object {
+    const val VALUE = "dayNightFixed"
   }
 }

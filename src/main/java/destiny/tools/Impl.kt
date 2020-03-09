@@ -3,5 +3,7 @@
  */
 package destiny.tools
 
+
 @Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class Impl(val value: String, val default: Boolean = false)
