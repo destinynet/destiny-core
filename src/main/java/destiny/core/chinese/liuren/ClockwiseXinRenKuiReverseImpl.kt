@@ -12,6 +12,7 @@ import destiny.core.chinese.IClockwise
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains.Pithy.KEY_CLOCKWISE
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
@@ -21,7 +22,7 @@ import java.util.*
  * 甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順
  * XinRenKui Reverse
  */
-@Impl([Domain("clockwise", ClockwiseXinRenKuiReverseImpl.VALUE, default = true)])
+@Impl([Domain(KEY_CLOCKWISE, ClockwiseXinRenKuiReverseImpl.VALUE, default = true)])
 class ClockwiseXinRenKuiReverseImpl(
   private val dayHourImpl: IDayHour,
   private val differentiator: IDayNight) : IClockwise, Serializable {

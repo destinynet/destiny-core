@@ -11,6 +11,10 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
+import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
+import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI
 import java.io.Serializable
 
 /**
@@ -33,9 +37,9 @@ import java.io.Serializable
  * 壬癸日旦治太乙（巳），暮治太沖（卯）
  */
 @Impl([
-        Domain("lp_tianyi", TianyiLiurenPithyImpl.VALUE, true),
-        Domain("zTianyi", TianyiLiurenPithyImpl.VALUE),
-        Domain("id_tianyi", TianyiLiurenPithyImpl.VALUE)
+        Domain(KEY_LIUREN_PITHY_TIANYI, TianyiLiurenPithyImpl.VALUE, true),
+        Domain(KEY_TIANYI, TianyiLiurenPithyImpl.VALUE),
+        Domain(KEY_DIVINE_TIANYI, TianyiLiurenPithyImpl.VALUE)
       ])
 class TianyiLiurenPithyImpl : ITianyi, Serializable {
 

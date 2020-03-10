@@ -11,12 +11,16 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
+import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
+import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI
 import java.io.Serializable
 
 @Impl([
-        Domain("lp_tianyi" , TianyiAuthorizedImpl.VALUE),
-        Domain("zTianyi" , TianyiAuthorizedImpl.VALUE),
-        Domain("id_tianyi" , TianyiAuthorizedImpl.VALUE , default = true)
+        Domain(KEY_LIUREN_PITHY_TIANYI , TianyiAuthorizedImpl.VALUE),
+        Domain(KEY_TIANYI , TianyiAuthorizedImpl.VALUE),
+        Domain(KEY_DIVINE_TIANYI , TianyiAuthorizedImpl.VALUE , default = true)
       ])
 class TianyiAuthorizedImpl : ITianyi, Serializable {
 

@@ -10,13 +10,15 @@ import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HIDDEN_ENERGY
 import java.io.Serializable
 import java.util.*
 
 /**
  * 伏神系統，京房之《京房易卦》 , 一定不會傳回 null
  */
-@Impl([Domain("hiddenEnergy", HiddenEnergyGingFangImpl.VALUE)])
+@Impl([Domain(KEY_DIVINE_HIDDEN_ENERGY, HiddenEnergyGingFangImpl.VALUE)])
 class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
 
   override fun toString(locale: Locale): String {

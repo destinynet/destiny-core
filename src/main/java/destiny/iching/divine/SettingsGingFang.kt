@@ -13,9 +13,11 @@ import destiny.iching.Symbol
 import destiny.iching.Symbol.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HEXSETTINGS
 import java.util.*
 
-@Impl([Domain("hexSet", SettingsGingFang.VALUE, default = true)])
+@Impl([Domain(KEY_DIVINE_HEXSETTINGS, SettingsGingFang.VALUE, default = true)])
 class SettingsGingFang : AbstractSettings() {
 
   override val symbolStemMap: Map<Symbol, List<Stem>>

@@ -7,10 +7,12 @@ import destiny.core.chinese.liuren.General.*
 import destiny.tools.ArrayTools
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains.Pithy.KEY_GENERAL_SEQ
 import java.io.Serializable
 import java.util.*
 
-@Impl([Domain("generalSeq", GeneralSeqDefaultImpl.VALUE, default = true)])
+
+@Impl([Domain(KEY_GENERAL_SEQ, GeneralSeqDefaultImpl.VALUE, default = true)])
 class GeneralSeqDefaultImpl : IGeneralSeq, Serializable {
 
   override fun toString(locale: Locale): String {

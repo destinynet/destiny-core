@@ -7,6 +7,8 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Ziwei.KEY_TRANS_FOUR
 import java.util.*
 
 /**
@@ -14,7 +16,7 @@ import java.util.*
  * facebook https://www.facebook.com/profile.php?id=100000155929301
  * 文件 https://www.facebook.com/groups/402420733203833/permalink/2127829883996234/
  */
-@Impl([Domain("transFour", TransFourChenBiDongImpl.VALUE)])
+@Impl([Domain(KEY_TRANS_FOUR, TransFourChenBiDongImpl.VALUE)])
 class TransFourChenBiDongImpl : TransFourAbstractImpl() {
 
   override val table

@@ -11,6 +11,10 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
+import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
+import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI
 import java.io.Serializable
 
 /**
@@ -22,9 +26,9 @@ import java.io.Serializable
  * 如甲戊日日占應用牛字，便從天盤丑上起貴人，是為陽貴。甲戊日夜占，應用羊字，便從天盤未上起貴人，是為陰貴……”。
  */
 @Impl([
-      Domain("lp_tianyi" , TianyiOceanImpl.VALUE),
-      Domain("zTianyi" , TianyiOceanImpl.VALUE),
-      Domain("id_tianyi" , TianyiOceanImpl.VALUE)
+      Domain(KEY_LIUREN_PITHY_TIANYI , TianyiOceanImpl.VALUE),
+      Domain(KEY_TIANYI , TianyiOceanImpl.VALUE),
+      Domain(KEY_DIVINE_TIANYI, TianyiOceanImpl.VALUE)
       ])
 class TianyiOceanImpl : ITianyi, Serializable {
 

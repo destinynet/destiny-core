@@ -7,11 +7,12 @@ import destiny.core.chinese.liuren.General.*
 import destiny.tools.ArrayTools
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains.Pithy.KEY_GENERAL_SEQ
 import java.io.Serializable
 import java.util.*
 
-@Impl([Domain("generalSeq", GeneralZhaoSeqImpl.VALUE)])
-class GeneralZhaoSeqImpl : IGeneralSeq, Serializable {
+@Impl([Domain(KEY_GENERAL_SEQ, GeneralSeqZhaoImpl.VALUE)])
+class GeneralSeqZhaoImpl : IGeneralSeq, Serializable {
 
   override fun toString(locale: Locale): String {
     return "趙氏六壬"

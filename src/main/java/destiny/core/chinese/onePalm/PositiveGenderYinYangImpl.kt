@@ -7,6 +7,7 @@ import destiny.core.Gender
 import destiny.core.chinese.Branch
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains.Palm.KEY_POSITIVE_IMPL
 import java.io.Serializable
 import java.util.*
 
@@ -16,7 +17,7 @@ import java.util.*
  * 陽：民國年個位數為奇數。 (地支陽)
  * 陰：民國年個位數為偶數。 (地支陰)
  */
-@Impl([Domain("posImpl" , PositiveGenderYinYangImpl.VALUE)])
+@Impl([Domain(KEY_POSITIVE_IMPL , PositiveGenderYinYangImpl.VALUE)])
 class PositiveGenderYinYangImpl : IPositive, Serializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {

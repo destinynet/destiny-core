@@ -12,12 +12,13 @@ import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HIDDEN_ENERGY
 import java.io.Serializable
 import java.util.*
 
 
 /** 伏神系統，王洪緒之《卜筮正宗》 , 大多數會是 null  */
-@Impl([Domain("hiddenEnergy" , HiddenEnergyWangImpl.VALUE , default = true)])
+@Impl([Domain(KEY_DIVINE_HIDDEN_ENERGY , HiddenEnergyWangImpl.VALUE , default = true)])
 class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
   override fun toString(locale: Locale): String {

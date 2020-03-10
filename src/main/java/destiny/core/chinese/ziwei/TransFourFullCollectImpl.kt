@@ -7,6 +7,8 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Ziwei.KEY_TRANS_FOUR
 import java.util.*
 
 /**
@@ -24,7 +26,7 @@ import java.util.*
  * 根本沒有南派和北派之說，更不要說爾後陸續出現的透派、四化派，甚至是中洲派等的派別。
  */
 
-@Impl([Domain("transFour", TransFourFullCollectImpl.VALUE)])
+@Impl([Domain(KEY_TRANS_FOUR, TransFourFullCollectImpl.VALUE)])
 class TransFourFullCollectImpl : TransFourAbstractImpl() {
 
   override val table

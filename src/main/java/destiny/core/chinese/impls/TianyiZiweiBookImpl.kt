@@ -11,6 +11,10 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
+import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
+import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI
 import java.io.Serializable
 
 /**
@@ -22,9 +26,9 @@ import java.io.Serializable
  * 截圖 http://imgur.com/1rmn11a
  */
 @Impl([
-        Domain("lp_tianyi", TianyiZiweiBookImpl.VALUE),
-        Domain("zTianyi", TianyiZiweiBookImpl.VALUE , default = true),
-        Domain("id_tianyi", TianyiZiweiBookImpl.VALUE)
+        Domain(KEY_LIUREN_PITHY_TIANYI, TianyiZiweiBookImpl.VALUE),
+        Domain(KEY_TIANYI, TianyiZiweiBookImpl.VALUE , default = true),
+        Domain(KEY_DIVINE_TIANYI, TianyiZiweiBookImpl.VALUE)
       ])
 class TianyiZiweiBookImpl : ITianyi, Serializable {
 

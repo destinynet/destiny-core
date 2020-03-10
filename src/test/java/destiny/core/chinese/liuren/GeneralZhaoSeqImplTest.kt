@@ -9,7 +9,7 @@ import kotlin.test.assertSame
 
 class GeneralZhaoSeqImplTest {
 
-  private val seqZhao = GeneralZhaoSeqImpl()
+  private val seqZhao = GeneralSeqZhaoImpl()
 
   @Test
   operator fun next() {

@@ -59,7 +59,7 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   }
 }
 
-private fun <T : Any> Array<T>.findDefaultImplAndStringValue(domainKey: String): Pair<T, String> {
+fun <T : Any> Array<T>.findDefaultImplAndStringValue(domainKey: String): Pair<T, String> {
 
   return this.map { t: T ->
       val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl

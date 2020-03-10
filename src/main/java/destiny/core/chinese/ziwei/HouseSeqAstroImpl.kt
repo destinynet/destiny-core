@@ -6,8 +6,10 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.ziwei.House.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Ziwei.KEY_HOUSE_SEQ
 
-@Impl([Domain("houseSeq", HouseSeqAstroImpl.VALUE)])
+@Impl([Domain(KEY_HOUSE_SEQ, HouseSeqAstroImpl.VALUE)])
 class HouseSeqAstroImpl : HouseSeqAbstractImpl() {
 
   override val houses: Array<House>

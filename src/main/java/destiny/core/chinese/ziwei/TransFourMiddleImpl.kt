@@ -7,12 +7,14 @@ import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Ziwei.KEY_TRANS_FOUR
 import java.util.*
 
 /**
  * 中州派(王亭之)
  */
-@Impl([Domain("transFour", TransFourMiddleImpl.VALUE)])
+@Impl([Domain(KEY_TRANS_FOUR, TransFourMiddleImpl.VALUE)])
 class TransFourMiddleImpl : TransFourAbstractImpl() {
 
   override val table
