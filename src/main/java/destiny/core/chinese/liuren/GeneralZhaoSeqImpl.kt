@@ -5,9 +5,12 @@ package destiny.core.chinese.liuren
 
 import destiny.core.chinese.liuren.General.*
 import destiny.tools.ArrayTools
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
+@Impl([Domain("generalSeq", GeneralZhaoSeqImpl.VALUE)])
 class GeneralZhaoSeqImpl : IGeneralSeq, Serializable {
 
   override fun toString(locale: Locale): String {
@@ -23,6 +26,8 @@ class GeneralZhaoSeqImpl : IGeneralSeq, Serializable {
   }
 
   companion object {
+
+    const val VALUE = "zhao"
 
     private val ARRAY = arrayOf(貴人, 青龍, 六合, 勾陳, 螣蛇, 朱雀, 太常, 白虎, 太陰, 天空, 玄武, 天后)
 

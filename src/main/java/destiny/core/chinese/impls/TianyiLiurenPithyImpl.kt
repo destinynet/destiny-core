@@ -32,7 +32,6 @@ import java.io.Serializable
  * 六辛日旦治勝光（午），暮治功曹（寅）；
  * 壬癸日旦治太乙（巳），暮治太沖（卯）
  */
-//@Impl(value = TianyiLiurenPithyImpl.VALUE)
 @Impl([
         Domain("lp_tianyi", TianyiLiurenPithyImpl.VALUE, true),
         Domain("zTianyi", TianyiLiurenPithyImpl.VALUE),
