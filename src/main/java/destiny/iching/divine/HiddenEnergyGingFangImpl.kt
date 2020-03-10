@@ -8,6 +8,7 @@ package destiny.iching.divine
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
@@ -15,7 +16,7 @@ import java.util.*
 /**
  * 伏神系統，京房之《京房易卦》 , 一定不會傳回 null
  */
-@Impl(value = HiddenEnergyGingFangImpl.VALUE)
+@Impl([Domain("hiddenEnergy", HiddenEnergyGingFangImpl.VALUE)])
 class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
 
   override fun toString(locale: Locale): String {

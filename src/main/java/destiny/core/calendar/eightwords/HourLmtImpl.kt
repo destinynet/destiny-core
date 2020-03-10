@@ -9,6 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -19,7 +20,7 @@ import java.util.*
 /**
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
  */
-@Impl(value = HourLmtImpl.VALUE)
+@Impl([Domain("hour" , HourLmtImpl.VALUE)])
 class HourLmtImpl : IHour, Serializable {
 
   override fun getHour(gmtJulDay: Double, location: ILocation): Branch {

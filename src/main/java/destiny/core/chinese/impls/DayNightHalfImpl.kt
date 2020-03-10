@@ -9,12 +9,13 @@ import destiny.astrology.Planet
 import destiny.astrology.TransPoint
 import destiny.core.DayNight
 import destiny.core.calendar.ILocation
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
 
-@Impl(value = DayNightHalfImpl.VALUE)
+@Impl([Domain("dnd" , DayNightHalfImpl.VALUE)])
 class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Serializable {
 
   // TODO : 極區內可能不適用

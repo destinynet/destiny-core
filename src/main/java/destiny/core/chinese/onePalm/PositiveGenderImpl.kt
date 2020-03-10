@@ -5,11 +5,12 @@ package destiny.core.chinese.onePalm
 
 import destiny.core.Gender
 import destiny.core.chinese.Branch
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
-@Impl(value = PositiveGenderImpl.VALUE , default = true)
+@Impl([Domain("posImpl" , PositiveGenderImpl.VALUE , default = true)])
 class PositiveGenderImpl : IPositive, Serializable {
 
   override fun isPositive(gender: Gender, yearBranch: Branch): Boolean {

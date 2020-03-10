@@ -11,10 +11,11 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.iching.Symbol
 import destiny.iching.Symbol.*
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.util.*
 
-@Impl(value = SettingsGingFangReverseChien.VALUE)
+@Impl([Domain("hexSet", SettingsGingFangReverseChien.VALUE)])
 class SettingsGingFangReverseChien : AbstractSettings() {
 
   override val symbolStemMap: Map<Symbol, List<Stem>>

@@ -9,6 +9,7 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 
@@ -20,7 +21,11 @@ import java.io.Serializable
  * 並釋說：“日用上一字，夜用下一字。
  * 如甲戊日日占應用牛字，便從天盤丑上起貴人，是為陽貴。甲戊日夜占，應用羊字，便從天盤未上起貴人，是為陰貴……”。
  */
-@Impl(value = TianyiOceanImpl.VALUE)
+@Impl([
+      Domain("lp_tianyi" , TianyiOceanImpl.VALUE),
+      Domain("zTianyi" , TianyiOceanImpl.VALUE),
+      Domain("id_tianyi" , TianyiOceanImpl.VALUE)
+      ])
 class TianyiOceanImpl : ITianyi, Serializable {
 
 

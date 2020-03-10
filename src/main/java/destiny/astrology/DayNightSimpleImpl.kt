@@ -7,12 +7,13 @@ import destiny.core.DayNight
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 import java.time.temporal.ChronoField
 import java.util.*
 
-@Impl(value = DayNightSimpleImpl.VALUE)
+@Impl([Domain("dnd" , DayNightSimpleImpl.VALUE)])
 class DayNightSimpleImpl : IDayNight, Serializable {
 
   override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {

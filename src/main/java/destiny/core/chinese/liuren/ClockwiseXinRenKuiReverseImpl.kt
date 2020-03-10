@@ -3,13 +3,14 @@
  */
 package destiny.core.chinese.liuren
 
-import destiny.core.DayNight
 import destiny.astrology.IDayNight
+import destiny.core.DayNight
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Clockwise
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.Stem.*
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -20,7 +21,7 @@ import java.util.*
  * 甲乙丙丁戊己庚 皆為晝順夜逆； 辛壬癸 為晝逆夜順
  * XinRenKui Reverse
  */
-@Impl(value = ClockwiseXinRenKuiReverseImpl.VALUE, default = true)
+@Impl([Domain("clockwise", ClockwiseXinRenKuiReverseImpl.VALUE, default = true)])
 class ClockwiseXinRenKuiReverseImpl(
   private val dayHourImpl: IDayHour,
   private val differentiator: IDayNight) : IClockwise, Serializable {

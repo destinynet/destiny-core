@@ -11,11 +11,12 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.iching.Symbol
 import destiny.iching.Symbol.*
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.util.*
 
 
-@Impl(value = SettingsTsangShan.VALUE)
+@Impl([Domain("hexSet" , SettingsTsangShan.VALUE)])
 class SettingsTsangShan : AbstractSettings() {
 
   override val symbolStemMap: Map<Symbol, List<Stem>>

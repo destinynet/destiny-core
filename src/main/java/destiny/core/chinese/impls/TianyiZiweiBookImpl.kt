@@ -9,6 +9,7 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 
@@ -20,7 +21,11 @@ import java.io.Serializable
  *
  * 截圖 http://imgur.com/1rmn11a
  */
-@Impl(value = TianyiZiweiBookImpl.VALUE)
+@Impl([
+        Domain("lp_tianyi", TianyiZiweiBookImpl.VALUE),
+        Domain("zTianyi", TianyiZiweiBookImpl.VALUE , default = true),
+        Domain("id_tianyi", TianyiZiweiBookImpl.VALUE)
+      ])
 class TianyiZiweiBookImpl : ITianyi, Serializable {
 
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {

@@ -10,13 +10,14 @@ import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
 
 /** 伏神系統，王洪緒之《卜筮正宗》 , 大多數會是 null  */
-@Impl(value = HiddenEnergyWangImpl.VALUE , default = true)
+@Impl([Domain("hiddenEnergy" , HiddenEnergyWangImpl.VALUE , default = true)])
 class HiddenEnergyWangImpl : IHiddenEnergy, Serializable {
 
   override fun toString(locale: Locale): String {

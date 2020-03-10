@@ -9,10 +9,15 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 
-@Impl(value = TianyiAuthorizedImpl.VALUE)
+@Impl([
+        Domain("lp_tianyi" , TianyiAuthorizedImpl.VALUE),
+        Domain("zTianyi" , TianyiAuthorizedImpl.VALUE),
+        Domain("id_tianyi" , TianyiAuthorizedImpl.VALUE , default = true)
+      ])
 class TianyiAuthorizedImpl : ITianyi, Serializable {
 
   /**

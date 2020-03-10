@@ -10,4 +10,5 @@ import destiny.core.chinese.Branch
 interface IPositive : Descriptive {
 
   fun isPositive(gender: Gender, yearBranch: Branch): Boolean
+
 }

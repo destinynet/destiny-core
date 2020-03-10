@@ -5,6 +5,7 @@ package destiny.tools.converters
 
 import com.google.common.collect.HashBiMap
 import destiny.core.Descriptive
+import destiny.tools.Domain
 import destiny.tools.Impl
 import mu.KotlinLogging
 import java.io.Serializable
@@ -58,29 +59,38 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   }
 }
 
-private val <T : Any> Array<T>.findDefaultImplAndStringValue: Pair<T, String>
-  get() {
-    return this.map { t: T ->
-        val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
-        t to impl
-      }.filter { (_, impl) -> impl != null }
-      .map { (t, impl) -> t to impl!! }
-      .filter { (_, impl) -> impl.default }
-      .map { (t, impl) -> t to impl.value }
-      .first()
-  }
+private fun <T : Any> Array<T>.findDefaultImplAndStringValue(domainKey: String): Pair<T, String> {
 
-private val <T : Any> Array<T>.findNonDefaultImplAndKey: Map<T, String>
-  get() {
-    return this.map { t: T ->
-        val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
-        t to impl
-      }.filter { (_, impl) -> impl != null }
-      .map { (t, impl) -> t to impl!! }
-      .filter { (_, impl) -> !impl.default }
-      .map { (t, impl) -> t to impl.value }
-      .toMap()
-  }
+  return this.map { t: T ->
+      val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
+      t to impl
+    }.filter { (_, impl) -> impl != null }
+    .map { (t, impl) -> t to impl!! }
+    .map { (t, impl) ->
+      val domain: Domain? = impl.value.firstOrNull { domain -> domain.key == domainKey && domain.default }
+      t to domain
+    }
+    .filter { (_, domain) -> domain != null }
+    .map { (t, domain) -> t to domain!!.value }
+    .first()
+}
+
+
+private fun <T : Any> Array<T>.findNonDefaultImplAndKey(domainKey: String): Map<T, String> {
+  return this.map { t: T ->
+      val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
+      t to impl
+    }.filter { (_, impl) -> impl != null }
+    .map { (t, impl) -> t to impl!! }
+    .map { (t, impl) ->
+      val domain: Domain? = impl.value.firstOrNull { domain -> domain.key == domainKey && !domain.default }
+      t to domain
+    }
+    .filter { (_, domain) -> domain != null }
+    .map { (t, domain) -> t to domain!!.value }
+    .toMap()
+}
+
 
 open class AbstractImpls<T : Any>(override val key: String,
                                   final override val defaultImpl: T,
@@ -88,8 +98,8 @@ open class AbstractImpls<T : Any>(override val key: String,
 
   constructor(key: String, pair: Pair<T, String>) : this(key, pair.first, pair.second)
 
-  constructor(key: String, vararg impls: T) : this(key, impls.findDefaultImplAndStringValue) {
-    impls.findNonDefaultImplAndKey.forEach { (impl, string) ->
+  constructor(key: String, vararg impls: T) : this(key, impls.findDefaultImplAndStringValue(key)) {
+    impls.findNonDefaultImplAndKey(key).forEach { (impl, string) ->
       addImpl(impl, string)
     }
   }
@@ -152,8 +162,8 @@ open class DescriptiveImpls<T : Descriptive>(
 
   constructor(key: String, pair: Pair<T, String>) : this(key, pair.first, pair.second)
 
-  constructor(key: String, vararg impls: T) : this(key, impls.findDefaultImplAndStringValue) {
-    impls.findNonDefaultImplAndKey.forEach { (impl, string) ->
+  constructor(key: String, vararg impls: T) : this(key, impls.findDefaultImplAndStringValue(key)) {
+    impls.findNonDefaultImplAndKey(key).forEach { (impl, string) ->
       addImpl(impl, string)
     }
   }

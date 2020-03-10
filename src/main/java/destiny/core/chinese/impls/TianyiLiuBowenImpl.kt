@@ -8,6 +8,7 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
+import destiny.tools.Domain
 import destiny.tools.Impl
 import java.io.Serializable
 
@@ -25,8 +26,12 @@ import java.io.Serializable
  * 前一字為晝貴，後一字為夜貴。
  * 前述天乙貴人歌訣係明代先賢根據「劉基」所留傳而著述
  */
-@Impl(value = TianyiLiuBowenImpl.VALUE)
+@Impl([
+      Domain("lp_tianyi" , TianyiLiuBowenImpl.VALUE),
+      Domain("id_tianyi" , TianyiLiuBowenImpl.VALUE)
+      ])
 class TianyiLiuBowenImpl : ITianyi, Serializable {
+
   override fun getFirstTianyi(stem: Stem, yinYang: IYinYang): Branch {
     return when (stem) {
       甲, 戊, 庚 -> if (yinYang.booleanValue) Branch.丑 else Branch.未
