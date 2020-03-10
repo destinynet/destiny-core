@@ -5,14 +5,15 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.util.*
 
 /**
  * 占驗門
  * http://mestrong1978.pixnet.net/blog/post/96901556-紫微斗數-簡述
  */
-
-
+@Impl([Domain("transFour" , TransFourDivineImpl.VALUE)])
 class TransFourDivineImpl : TransFourAbstractImpl() {
 
   override val table
@@ -94,5 +95,7 @@ class TransFourDivineImpl : TransFourAbstractImpl() {
       , Triple(癸, 科, StarMain.太陰)
       , Triple(癸, 忌, StarMain.貪狼)
     )
+
+    const val VALUE = "divine"
   }
 }

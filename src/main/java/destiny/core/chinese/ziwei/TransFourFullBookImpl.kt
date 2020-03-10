@@ -5,11 +5,14 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.util.*
 
 /**
  * 紫微斗數全書、閩派、南派
  */
+@Impl([Domain("transFour", TransFourFullBookImpl.VALUE, default = true)])
 class TransFourFullBookImpl : TransFourAbstractImpl() {
 
   override val table
@@ -83,7 +86,8 @@ class TransFourFullBookImpl : TransFourAbstractImpl() {
       , Triple(癸, 權, StarMain.巨門)
       , Triple(癸, 科, StarMain.太陰)
       , Triple(癸, 忌, StarMain.貪狼)
-
     )
+
+    const val VALUE = "book"
   }
 }

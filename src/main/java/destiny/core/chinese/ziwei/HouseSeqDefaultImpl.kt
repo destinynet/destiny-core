@@ -4,8 +4,11 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.ziwei.House.*
+import destiny.tools.Domain
+import destiny.tools.Impl
 
 /** 南派  */
+@Impl([Domain("houseSeq", HouseSeqDefaultImpl.VALUE, default = true)])
 class HouseSeqDefaultImpl : HouseSeqAbstractImpl() {
 
   override val houses: Array<House>
@@ -23,9 +26,8 @@ class HouseSeqDefaultImpl : HouseSeqAbstractImpl() {
   }
 
   companion object {
+    const val VALUE = "default"
     private val ARRAY = arrayOf(命宮, 兄弟, 夫妻, 子女, 財帛, 疾厄, 遷移, 交友, 官祿, 田宅, 福德, 父母)
   }
-
-
 
 }

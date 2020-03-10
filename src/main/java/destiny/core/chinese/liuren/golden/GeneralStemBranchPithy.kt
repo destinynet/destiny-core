@@ -9,12 +9,15 @@ import destiny.core.chinese.StemBranch.*
 import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.General.*
 import destiny.core.chinese.liuren.IGeneralStemBranch
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
 /**
  * 金口訣：壬子玄武 癸亥天后
  */
+@Impl([Domain("gsb", GeneralStemBranchPithy.VALUE, default = true)])
 class GeneralStemBranchPithy : IGeneralStemBranch, Serializable {
 
   private val map = mapOf(
@@ -53,5 +56,7 @@ class GeneralStemBranchPithy : IGeneralStemBranch, Serializable {
     return "壬子玄武 癸亥天后"
   }
 
-  companion object
+  companion object {
+    const val VALUE = "pithy"
+  }
 }

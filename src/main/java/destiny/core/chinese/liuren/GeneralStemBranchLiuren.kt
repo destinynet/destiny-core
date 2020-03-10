@@ -6,26 +6,29 @@ package destiny.core.chinese.liuren
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.liuren.General.*
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.io.Serializable
 import java.util.*
 
 /**
  * 大六壬：壬子天后 癸亥玄武
  */
+@Impl([Domain("gsb", GeneralStemBranchLiuren.VALUE)])
 class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
 
   private val map = mapOf(
-    貴人 to StemBranch.己丑 ,
-    螣蛇 to StemBranch.丁巳 ,
-    朱雀 to StemBranch.丙午 ,
-    六合 to StemBranch.乙卯 ,
-    勾陳 to StemBranch.戊辰 ,
-    青龍 to StemBranch.甲寅 ,
-    天空 to StemBranch.戊戌 ,
-    白虎 to StemBranch.庚申 ,
-    太常 to StemBranch.己未 ,
-    玄武 to StemBranch.癸亥 ,
-    太陰 to StemBranch.辛酉 ,
+    貴人 to StemBranch.己丑,
+    螣蛇 to StemBranch.丁巳,
+    朱雀 to StemBranch.丙午,
+    六合 to StemBranch.乙卯,
+    勾陳 to StemBranch.戊辰,
+    青龍 to StemBranch.甲寅,
+    天空 to StemBranch.戊戌,
+    白虎 to StemBranch.庚申,
+    太常 to StemBranch.己未,
+    玄武 to StemBranch.癸亥,
+    太陰 to StemBranch.辛酉,
     天后 to StemBranch.壬子
   )
 
@@ -50,4 +53,7 @@ class GeneralStemBranchLiuren : IGeneralStemBranch, Serializable {
     return "壬子天后 癸亥玄武"
   }
 
+  companion object {
+    const val VALUE = "liuren"
+  }
 }

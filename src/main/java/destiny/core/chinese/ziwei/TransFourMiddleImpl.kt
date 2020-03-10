@@ -5,13 +5,14 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.util.*
 
 /**
  * 中州派(王亭之)
  */
-
-
+@Impl([Domain("transFour", TransFourMiddleImpl.VALUE)])
 class TransFourMiddleImpl : TransFourAbstractImpl() {
 
   override val table
@@ -86,5 +87,7 @@ class TransFourMiddleImpl : TransFourAbstractImpl() {
       , Triple(癸, 科, StarMain.太陰)
       , Triple(癸, 忌, StarMain.貪狼)
     )
+
+    const val VALUE = "middle"
   }
 }

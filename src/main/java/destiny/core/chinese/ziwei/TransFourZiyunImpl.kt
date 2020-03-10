@@ -5,13 +5,14 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.util.*
 
 /**
  * 紫雲派 ==> 改「全集」派
  */
-
-
+@Impl([Domain("transFour" , TransFourZiyunImpl.VALUE)])
 class TransFourZiyunImpl : TransFourAbstractImpl() {
 
   override val table
@@ -87,5 +88,7 @@ class TransFourZiyunImpl : TransFourAbstractImpl() {
       , Triple(癸, 科, StarMain.太陽)  // 唯一與「全集」不同之處
       , Triple(癸, 忌, StarMain.貪狼)
     )
+
+    const val VALUE = "ziyun"
   }
 }

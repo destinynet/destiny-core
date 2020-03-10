@@ -5,6 +5,8 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.ITransFour.Value.*
+import destiny.tools.Domain
+import destiny.tools.Impl
 import java.util.*
 
 /**
@@ -12,6 +14,7 @@ import java.util.*
  * facebook https://www.facebook.com/profile.php?id=100000155929301
  * 文件 https://www.facebook.com/groups/402420733203833/permalink/2127829883996234/
  */
+@Impl([Domain("transFour", TransFourChenBiDongImpl.VALUE)])
 class TransFourChenBiDongImpl : TransFourAbstractImpl() {
 
   override val table
@@ -85,10 +88,9 @@ class TransFourChenBiDongImpl : TransFourAbstractImpl() {
       , Triple(癸, 權, StarMain.天梁)
       , Triple(癸, 科, StarMain.太陰)
       , Triple(癸, 忌, StarMain.貪狼)
-
     )
+
+    const val VALUE = "chenBiDong"
   }
-
-
 
 }
