@@ -4,10 +4,7 @@ import destiny.astrology.IDayNight
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.calendar.eightwords.IRisingSign
-import destiny.core.chinese.IClockwise
-import destiny.core.chinese.IMonthlyHexagram
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.IYangBlade
+import destiny.core.chinese.*
 import destiny.core.chinese.liuren.IGeneralSeq
 import destiny.core.chinese.liuren.IGeneralStemBranch
 import destiny.core.chinese.onePalm.IPositive
@@ -31,6 +28,7 @@ object Domains {
 
   /** 時辰切割 [IHour] */
   const val KEY_HOUR = "hour"
+
 
   /** 易卦 */
   object Divine {

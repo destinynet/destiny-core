@@ -59,12 +59,6 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   }
 }
 
-fun List<Annotation>.findDefaultImplAndStringValue(): Impl? {
-  return this.firstOrNull { it is Impl } as? Impl
-}
-fun Impl.findDomain(domainKey: String): Domain? {
-  return this.value.firstOrNull { domain -> domain.key == domainKey && domain.default }
-}
 
 fun <T : Any> Array<T>.findDefaultImplAndStringValue(domainKey: String): Pair<T, String> {
 
