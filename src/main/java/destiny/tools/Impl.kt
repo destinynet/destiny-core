@@ -5,6 +5,6 @@ package destiny.tools
 
 annotation class Domain(val key: String, val value: String, val default: Boolean = false)
 
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS , AnnotationTarget.FIELD , AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Impl(val value: Array<Domain> = [])
