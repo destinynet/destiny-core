@@ -18,6 +18,8 @@ import destiny.iching.divine.ISettingsOfStemBranch
  */
 object Domains {
 
+  const val KEY_MIDNIGHT = "mn"
+
   /** 易卦 */
   object Divine {
 

@@ -10,6 +10,7 @@ import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
@@ -19,7 +20,7 @@ import java.util.*
 /**
  * 純粹以地方平均時（手錶時間）來判定
  */
-@Impl([Domain("mn", MidnightLmtImpl.VALUE)])
+@Impl([Domain(Domains.KEY_MIDNIGHT, MidnightLmtImpl.VALUE)])
 class MidnightLmtImpl : IMidnight, Serializable {
 
   override fun getNextMidnight(gmtJulDay: Double, loc: ILocation): Double {
