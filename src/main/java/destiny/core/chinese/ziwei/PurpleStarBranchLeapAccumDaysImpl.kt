@@ -5,6 +5,9 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -15,6 +18,7 @@ import java.io.Serializable
  *
  * 參考此表格 :  http://imgur.com/87sHQOq
  */
+@Impl([Domain(Domains.Ziwei.KEY_PURPLE_BRANCH, PurpleStarBranchLeapAccumDaysImpl.VALUE)])
 class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch, Serializable {
 
   /**
@@ -86,6 +90,7 @@ class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch, Serializable {
 
 
   companion object {
+    const val VALUE = "accumDays"
     private val logger = KotlinLogging.logger { }
     private val woodMap = mapOf(
       31 to 寅,

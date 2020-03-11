@@ -11,11 +11,12 @@ import destiny.core.DayNight
 import destiny.core.calendar.ILocation
 import destiny.tools.Domain
 import destiny.tools.Impl
+import destiny.tools.converters.Domains.KEY_DAY_NIGHT
 import java.io.Serializable
 import java.util.*
 
 
-@Impl([Domain("dnd" , DayNightHalfImpl.VALUE)])
+@Impl([Domain(KEY_DAY_NIGHT, DayNightHalfImpl.VALUE)])
 class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Serializable {
 
   // TODO : 極區內可能不適用

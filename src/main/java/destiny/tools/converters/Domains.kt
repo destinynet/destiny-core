@@ -1,5 +1,9 @@
 package destiny.tools.converters
 
+import destiny.astrology.IDayNight
+import destiny.core.calendar.eightwords.IHour
+import destiny.core.calendar.eightwords.IMidnight
+import destiny.core.calendar.eightwords.IRisingSign
 import destiny.core.chinese.IClockwise
 import destiny.core.chinese.IMonthlyHexagram
 import destiny.core.chinese.ITianyi
@@ -8,6 +12,7 @@ import destiny.core.chinese.liuren.IGeneralSeq
 import destiny.core.chinese.liuren.IGeneralStemBranch
 import destiny.core.chinese.onePalm.IPositive
 import destiny.core.chinese.ziwei.IHouseSeq
+import destiny.core.chinese.ziwei.IPurpleStarBranch
 import destiny.core.chinese.ziwei.IStrength
 import destiny.core.chinese.ziwei.ITransFour
 import destiny.iching.divine.IHiddenEnergy
@@ -18,7 +23,17 @@ import destiny.iching.divine.ISettingsOfStemBranch
  */
 object Domains {
 
+  /** 子正 的實作 [IMidnight]  */
   const val KEY_MIDNIGHT = "mn"
+
+  /** 命宮（上升星座）的實作 [IRisingSign] */
+  const val KEY_RISING_SIGN = "rs"
+
+  /** 晝夜區分 [IDayNight] */
+  const val KEY_DAY_NIGHT = "dnd"
+
+  /** 時辰切割 [IHour] */
+  const val KEY_HOUR = "hour"
 
   /** 易卦 */
   object Divine {
@@ -42,6 +57,9 @@ object Domains {
 
   /** 紫微 */
   object Ziwei {
+
+    /** 紫微星，閏月該如何處理 [IPurpleStarBranch] */
+    const val KEY_PURPLE_BRANCH = "purpleBranch"
 
     /** 宮位名字、順序 [IHouseSeq] */
     const val KEY_HOUSE_SEQ = "houseSeq"
