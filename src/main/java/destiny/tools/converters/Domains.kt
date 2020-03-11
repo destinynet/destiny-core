@@ -11,10 +11,7 @@ import destiny.core.chinese.IYangBlade
 import destiny.core.chinese.liuren.IGeneralSeq
 import destiny.core.chinese.liuren.IGeneralStemBranch
 import destiny.core.chinese.onePalm.IPositive
-import destiny.core.chinese.ziwei.IHouseSeq
-import destiny.core.chinese.ziwei.IPurpleStarBranch
-import destiny.core.chinese.ziwei.IStrength
-import destiny.core.chinese.ziwei.ITransFour
+import destiny.core.chinese.ziwei.*
 import destiny.iching.divine.IHiddenEnergy
 import destiny.iching.divine.ISettingsOfStemBranch
 
@@ -72,6 +69,21 @@ object Domains {
 
     /** 星體強弱 [IStrength] */
     const val KEY_STRENGTH = "strength"
+
+    /** 紫微流年 [IFlowYear] */
+    const val KEY_FLOW_YEAR = "flowYear"
+
+    /** 紫微流月 [IFlowMonth] */
+    const val KEY_FLOW_MONTH = "flowMonth"
+
+    /** 紫微流日 [IFlowDay] */
+    const val KEY_FLOW_DAY = "flowDay"
+
+    /** 紫微流時 [IFlowHour] */
+    const val KEY_FLOW_HOUR = "flowHour"
+
+    /** 紫微起大運 [IBigRange] */
+    const val KEY_BIG_RANGE = "bigRange"
   }
 
   /** 金口訣 */

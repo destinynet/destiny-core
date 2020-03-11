@@ -6,6 +6,10 @@ package destiny.core.chinese.ziwei
 import destiny.core.Gender
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.ziwei.House.命宮
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Ziwei.KEY_BIG_RANGE
 import java.io.Serializable
 
 /**
@@ -18,6 +22,7 @@ import java.io.Serializable
  * 順行的話，就是命、父、福順時針而行。
  * 逆行就是命、兄、夫逆時針而行。
  */
+@Impl([Domain(KEY_BIG_RANGE, BigRangeFromMain.VALUE, default = true)])
 class BigRangeFromMain : IBigRange, Serializable {
 
   override fun getVageRange(house: House, set: Int, yinYang: IYinYang, gender: Gender, houseSeqImpl: IHouseSeq): Pair<Int, Int> {
@@ -48,5 +53,8 @@ class BigRangeFromMain : IBigRange, Serializable {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "fromMain"
+  }
 
 }

@@ -4,6 +4,10 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Ziwei.KEY_FLOW_DAY
 
 import java.io.Serializable
 
@@ -12,6 +16,7 @@ import java.io.Serializable
  *
  * 說明頁面 : https://519843.blogspot.tw/2017/03/blog-post_29.html
  */
+@Impl([Domain(KEY_FLOW_DAY, FlowDayBranchImpl.VALUE)])
 class FlowDayBranchImpl : IFlowDay, Serializable {
 
   override fun getFlowDay(flowDayBranch: Branch, flowDayNum: Int, flowMonthMainHouse: Branch): Branch {
@@ -28,5 +33,7 @@ class FlowDayBranchImpl : IFlowDay, Serializable {
     return javaClass.hashCode()
   }
 
-
+  companion object {
+    const val VALUE = "fixed"
+  }
 }

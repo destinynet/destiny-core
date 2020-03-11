@@ -14,7 +14,6 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import destiny.tools.converters.Domains.KEY_HOUR
 import mu.KotlinLogging
 import java.io.Serializable

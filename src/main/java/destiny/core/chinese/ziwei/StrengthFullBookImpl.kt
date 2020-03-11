@@ -12,7 +12,6 @@ import destiny.core.chinese.ziwei.StarUnlucky.火星
 import destiny.core.chinese.ziwei.StarUnlucky.鈴星
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import destiny.tools.converters.Domains.Ziwei.KEY_STRENGTH
 
 /**

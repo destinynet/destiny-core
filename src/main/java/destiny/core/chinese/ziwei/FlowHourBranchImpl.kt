@@ -4,6 +4,10 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains
+import destiny.tools.converters.Domains.Ziwei.KEY_FLOW_HOUR
 
 import java.io.Serializable
 
@@ -13,6 +17,7 @@ import java.io.Serializable
  *
  * 固定以該時辰當作命宮
  */
+@Impl([Domain(KEY_FLOW_HOUR, FlowHourBranchImpl.VALUE)])
 class FlowHourBranchImpl : IFlowHour, Serializable {
 
   override fun getFlowHour(hour: Branch, flowDayMainHour: Branch): Branch {
@@ -29,5 +34,8 @@ class FlowHourBranchImpl : IFlowHour, Serializable {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "fixed"
+  }
 
 }

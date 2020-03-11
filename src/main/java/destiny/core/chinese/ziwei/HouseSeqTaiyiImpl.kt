@@ -6,7 +6,6 @@ package destiny.core.chinese.ziwei
 import destiny.core.chinese.ziwei.House.*
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import destiny.tools.converters.Domains.Ziwei.KEY_HOUSE_SEQ
 
 /**

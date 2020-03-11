@@ -11,7 +11,6 @@ import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI
 import destiny.tools.converters.Domains.Pithy.KEY_LIUREN_PITHY_TIANYI
 import destiny.tools.converters.Domains.Ziwei.KEY_TIANYI

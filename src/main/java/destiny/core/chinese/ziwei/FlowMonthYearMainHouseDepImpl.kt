@@ -4,6 +4,9 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains.Ziwei.KEY_FLOW_MONTH
 
 import java.io.Serializable
 
@@ -13,6 +16,7 @@ import java.io.Serializable
  *
  * 文件 http://imgur.com/5dLNytD
  */
+@Impl([Domain(KEY_FLOW_MONTH, FlowMonthYearMainHouseDepImpl.VALUE)])
 class FlowMonthYearMainHouseDepImpl : IFlowMonth, Serializable {
 
   /**
@@ -32,5 +36,8 @@ class FlowMonthYearMainHouseDepImpl : IFlowMonth, Serializable {
     return javaClass.hashCode()
   }
 
+  companion object {
+    const val VALUE = "yearDep"
+  }
 
 }

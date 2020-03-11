@@ -10,7 +10,6 @@ import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_HIDDEN_ENERGY
 import java.io.Serializable
 import java.util.*

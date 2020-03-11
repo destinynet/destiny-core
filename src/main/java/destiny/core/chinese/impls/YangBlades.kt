@@ -9,7 +9,6 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_YANG_BLADE
 import java.io.Serializable
 import java.util.*
