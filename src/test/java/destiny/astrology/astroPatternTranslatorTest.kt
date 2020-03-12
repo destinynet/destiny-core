@@ -174,9 +174,9 @@ class astroPatternTranslatorTest {
     astroPatternTranslator.getDescriptor(pattern).also { d ->
       assertEquals("大三角" , d.toString(Locale.TAIWAN))
       assertEquals("大三角" , d.toString(Locale.SIMPLIFIED_CHINESE))
-      assertEquals("GrandTrine" , d.toString(Locale.ENGLISH))
-      assertEquals("GrandTrine" , d.toString(Locale.FRANCE))
-      assertEquals("GrandTrine" , d.toString(Locale.JAPANESE))
+      assertEquals("大三角" , d.toString(Locale.ENGLISH))
+      assertEquals("大三角" , d.toString(Locale.FRANCE))
+      assertEquals("大三角" , d.toString(Locale.JAPANESE))
     }
   }
 

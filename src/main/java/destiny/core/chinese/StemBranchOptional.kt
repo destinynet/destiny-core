@@ -69,7 +69,7 @@ data class StemBranchOptional(
           4, -6 -> get(bIndex + 24)
           6, -4 -> get(bIndex + 36)
           8, -2 -> get(bIndex + 48)
-          else -> throw AssertionError("Invalid Stem/Branch Combination! $stem & $branch , value = ${sIndex - bIndex}")
+          else -> StemBranchOptional(stem, branch)
         }
       } else {
         StemBranchOptional(stem, branch)

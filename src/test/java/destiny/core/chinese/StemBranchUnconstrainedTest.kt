@@ -4,6 +4,7 @@
 package destiny.core.chinese
 
 import kotlin.test.Test
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 
@@ -40,5 +41,6 @@ class StemBranchUnconstrainedTest {
   fun testToStemBranch() {
     assertSame(StemBranch.甲子 , StemBranchUnconstrained.甲子.toStemBranch())
     assertSame(StemBranch.癸亥 , StemBranchUnconstrained.癸亥.toStemBranch())
+    assertNull(StemBranchUnconstrained.甲丑.toStemBranch())
   }
 }

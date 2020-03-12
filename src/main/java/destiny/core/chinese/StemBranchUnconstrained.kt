@@ -13,8 +13,7 @@ import destiny.tools.ArrayTools
  * 120柱干支組合，沒有 陰陽限制
  */
 enum class StemBranchUnconstrained(override val stem: Stem,
-                                   override val branch: Branch) :
-  IStemBranchOptional, ILoop<IStemBranch>, IStemBranch {
+                                   override val branch: Branch) : IStemBranch {
   甲子(甲, 子),
   乙子(乙, 子),
   乙丑(乙, 丑),
