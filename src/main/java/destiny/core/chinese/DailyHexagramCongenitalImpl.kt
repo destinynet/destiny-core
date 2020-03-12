@@ -7,8 +7,8 @@ import destiny.astrology.*
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
-import destiny.iching.congenital.circle.next
 import destiny.iching.congenital.circle.aheadOf
+import destiny.iching.congenital.circle.next
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*

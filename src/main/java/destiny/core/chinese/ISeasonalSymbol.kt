@@ -3,10 +3,12 @@
  */
 package destiny.core.chinese
 
-import destiny.core.calendar.*
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms
+import destiny.core.calendar.TimeTools
 import destiny.iching.Symbol
 import java.io.Serializable
-import java.lang.RuntimeException
 import java.time.chrono.ChronoLocalDateTime
 
 /**

@@ -5,10 +5,10 @@ package destiny.core.chinese.impls
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.core.chinese.Stem
-import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ITianyi
 import destiny.core.chinese.IYinYang
+import destiny.core.chinese.Stem
+import destiny.core.chinese.Stem.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_DIVINE_TIANYI

@@ -1,7 +1,7 @@
 package destiny.tools
 
 import java.io.Serializable
-import java.util.Optional
+import java.util.*
 
 interface AbstractDao<T> {
 

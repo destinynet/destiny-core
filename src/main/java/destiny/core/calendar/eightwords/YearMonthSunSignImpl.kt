@@ -8,7 +8,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
-import destiny.tools.Impl
 import java.util.*
 
 /**

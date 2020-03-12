@@ -1,6 +1,7 @@
 package destiny.core
 
-import destiny.core.Gender.*
+import destiny.core.Gender.女
+import destiny.core.Gender.男
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

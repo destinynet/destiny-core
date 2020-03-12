@@ -6,7 +6,8 @@ package destiny.core.chinese.ziwei
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime

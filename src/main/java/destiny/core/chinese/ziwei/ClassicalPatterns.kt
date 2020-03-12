@@ -13,7 +13,8 @@ import destiny.core.chinese.trine
 import destiny.core.chinese.ziwei.ClassicalPattern.*
 import destiny.core.chinese.ziwei.House.*
 import destiny.core.chinese.ziwei.IClassicalPattern.PatternType
-import destiny.core.chinese.ziwei.IClassicalPattern.PatternType.*
+import destiny.core.chinese.ziwei.IClassicalPattern.PatternType.EVIL
+import destiny.core.chinese.ziwei.IClassicalPattern.PatternType.GOOD
 import destiny.core.chinese.ziwei.ITransFour.Value.忌
 import destiny.core.chinese.ziwei.StarLucky.*
 import destiny.core.chinese.ziwei.StarMain.*

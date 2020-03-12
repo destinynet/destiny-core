@@ -3,11 +3,11 @@
  */
 package destiny.astrology.classical
 
-import destiny.core.DayNight
 import destiny.astrology.Element.*
 import destiny.astrology.Planet
 import destiny.astrology.Planet.*
 import destiny.astrology.ZodiacSign
+import destiny.core.DayNight
 import java.io.Serializable
 
 /**

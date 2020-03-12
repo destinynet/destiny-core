@@ -3,7 +3,10 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.astrology.*
+import destiny.astrology.Centric
+import destiny.astrology.Coordinate
+import destiny.astrology.IStarPosition
+import destiny.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthMaster

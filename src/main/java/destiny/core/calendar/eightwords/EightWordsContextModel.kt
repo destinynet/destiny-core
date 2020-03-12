@@ -4,7 +4,9 @@
 package destiny.core.calendar.eightwords
 
 import destiny.astrology.*
-import destiny.core.calendar.*
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.SolarTermsTimePos
+import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch

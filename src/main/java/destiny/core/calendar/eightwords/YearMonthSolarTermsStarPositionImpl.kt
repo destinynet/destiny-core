@@ -12,7 +12,6 @@ import destiny.astrology.IStarTransit
 import destiny.astrology.Planet
 import destiny.core.calendar.*
 import destiny.core.chinese.*
-import destiny.tools.Impl
 import mu.KotlinLogging
 import java.util.*
 

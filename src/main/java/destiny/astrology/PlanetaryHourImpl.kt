@@ -11,7 +11,6 @@ import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
 import org.apache.commons.lang3.ArrayUtils
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.time.temporal.ChronoField
 

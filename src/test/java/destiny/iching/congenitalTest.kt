@@ -3,18 +3,18 @@
  */
 package destiny.iching
 
-import mu.KotlinLogging
-import kotlin.test.Test
-import kotlin.test.assertSame
+import destiny.iching.congenital.circle.aheadOf
+import destiny.iching.congenital.circle.behindOf
+import destiny.iching.congenital.circle.next
+import destiny.iching.congenital.circle.prev
 import destiny.iching.congenital.table.tableNext
 import destiny.iching.congenital.table.tablePrev
 import destiny.iching.congenital.toHexagram
 import destiny.iching.congenital.toInt
-import destiny.iching.congenital.circle.next
-import destiny.iching.congenital.circle.prev
-import destiny.iching.congenital.circle.aheadOf
-import destiny.iching.congenital.circle.behindOf
+import mu.KotlinLogging
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 
 class congenitalTest {

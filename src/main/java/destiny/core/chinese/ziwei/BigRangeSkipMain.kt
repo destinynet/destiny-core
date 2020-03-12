@@ -8,7 +8,6 @@ import destiny.core.chinese.IYinYang
 import destiny.core.chinese.ziwei.House.命宮
 import destiny.tools.Domain
 import destiny.tools.Impl
-import destiny.tools.converters.Domains
 import destiny.tools.converters.Domains.Ziwei.KEY_BIG_RANGE
 import java.io.Serializable
 

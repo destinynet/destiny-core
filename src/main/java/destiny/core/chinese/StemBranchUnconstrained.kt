@@ -3,7 +3,6 @@
  */
 package destiny.core.chinese
 
-import destiny.core.ILoop
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.tools.ArrayTools

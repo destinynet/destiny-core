@@ -8,9 +8,9 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
+import destiny.iching.IHexData
 import destiny.iching.IHexagram
 import destiny.iching.IHexagramText
-import destiny.iching.IHexData
 import destiny.iching.contentProviders.IHexProvider
 import java.io.Serializable
 

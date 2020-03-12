@@ -3,12 +3,14 @@ package destiny.core.chinese.holo
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.chinese.*
+import destiny.core.chinese.Branch
+import destiny.core.chinese.IMonthlyHexagram
+import destiny.core.chinese.IYinYang
+import destiny.core.chinese.Stem
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
-import java.lang.RuntimeException
 import java.time.chrono.ChronoLocalDateTime
 
 interface IHoloContext {

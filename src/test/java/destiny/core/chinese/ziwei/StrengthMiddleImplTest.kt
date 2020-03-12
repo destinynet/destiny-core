@@ -4,14 +4,12 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.Branch
-
-import java.util.Locale
-
 import destiny.core.chinese.Branch.子
 import destiny.core.chinese.ziwei.StarMinor.三台
 import destiny.core.chinese.ziwei.StarMinor.天巫
 import destiny.core.chinese.ziwei.StarUnlucky.地劫
 import mu.KotlinLogging
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
