@@ -21,7 +21,7 @@ class MumeContextColorCanvasWrapper(private val hexagramNameFull: IHexNameFull) 
 
   lateinit var mumeContext: MumeContext
   var metaData: String? = null
-  private var dateInfo = "" //日期/時間/地點經緯度 等資料
+  var dateInfo = "" //日期/時間/地點經緯度 等資料
   lateinit var eightWords: IEightWords
 
 
