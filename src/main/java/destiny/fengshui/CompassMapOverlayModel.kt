@@ -53,7 +53,13 @@ data class CompassMapOverlayModel(
   override val scale: Int = 1,
   /** 內定為道路圖 */
   override val mapType: IStaticMap.MapType = IStaticMap.MapType.roadmap
-) : ITimeLoc by timeLoc, ICompassMapOverlayModel
+) : ITimeLoc by timeLoc, ICompassMapOverlayModel {
+
+  constructor(model: ICompassMapOverlayModel) : this(
+    model.timeLoc, model.place, model.width,
+    model.rotate, model.zoom, model.opaque,
+    model.scale, model.mapType)
+}
 
 interface ICompassPointsMapOverlayModel : ICompassMapOverlayModel {
   /** 要繪製的行星 */
