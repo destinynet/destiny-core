@@ -144,6 +144,14 @@ object TimeTools {
   }
 
   /**
+   * 直接用秒差來反推 GMT 時刻 , 忽略（不知）tzid 等訊息
+   */
+  fun getGmtFromLmt(lmt: ChronoLocalDateTime<*>, secondOffset: Int): ChronoLocalDateTime<*> {
+    val zfs = ZoneOffset.ofTotalSeconds(secondOffset)
+    return getGmtFromLmt(lmt, zfs)
+  }
+
+  /**
    * LMT (with TimeZone) to GMT
    *
    * ZoneId.of(string) 可能會出現 ZoneRulesException

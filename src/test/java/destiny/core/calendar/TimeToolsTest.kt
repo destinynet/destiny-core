@@ -19,7 +19,22 @@ class TimeToolsTest {
 
   private val asiaTaipeiZoneId = ZoneId.of("Asia/Taipei")
 
-  private val logger = KotlinLogging.logger {  }
+  private val logger = KotlinLogging.logger { }
+
+  @Test
+  fun testGetGmtFromLmtBySecondOffset() {
+    val secondOffset = 60 * 60 * 8 // 8HR
+
+    // normal date
+    assertEquals(LocalDateTime.of(2020, 3, 23, 16, 0), TimeTools.getGmtFromLmt(LocalDateTime.of(2020, 3, 24, 0, 0), secondOffset))
+
+    // 已知 Asia/Taipei 民國63年至64年（西元1974-1975年）    日光節約時間    4月1日至9月30日
+    // DST 前一小時 , 正常
+    assertEquals(LocalDateTime.of(1974, 3, 31, 15, 0), TimeTools.getGmtFromLmt(LocalDateTime.of(1974, 3, 31, 23, 0), secondOffset))
+    // 台灣 DST 後 , 仍然以八小時去減 , 因為 secondOffset 優先權高於 time zone , 且此 function 並未帶入 time zone 訊息
+    assertEquals(LocalDateTime.of(1974, 3, 31, 17, 0), TimeTools.getGmtFromLmt(LocalDateTime.of(1974, 4, 1, 1, 0), secondOffset))
+    assertEquals(LocalDateTime.of(1974, 4, 1, 1, 0), TimeTools.getGmtFromLmt(LocalDateTime.of(1974, 4, 1, 9, 0), secondOffset))
+  }
 
   /**
    * 美東 DST 時刻
@@ -31,14 +46,14 @@ class TimeToolsTest {
 
     val loc = locationOf(Locale.US)
 
-    logger.info("loc = {}" , loc)
+    logger.info("loc = {}", loc)
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt , loc)
-    logger.info("gmtJulDay = {}" , gmtJulDay)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    logger.info("gmtJulDay = {}", gmtJulDay)
 
-    TimeTools.getLmtFromGmt(gmtJulDay , loc , JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic).also { lmt2 ->
-      logger.info("LMT from gmtJulDay = {}" , lmt2)
-      assertEquals(lmt , lmt2)
+    TimeTools.getLmtFromGmt(gmtJulDay, loc, JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic).also { lmt2 ->
+      logger.info("LMT from gmtJulDay = {}", lmt2)
+      assertEquals(lmt, lmt2)
     }
   }
 
