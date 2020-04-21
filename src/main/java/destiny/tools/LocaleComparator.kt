@@ -1,12 +1,12 @@
-package destiny.tools
-
-
-import java.io.Serializable
-import java.util.*
-
 /**
  * Created by smallufo on 2016-02-22.
  */
+package destiny.tools
+
+import java.io.Serializable
+import java.util.*
+import kotlin.Comparator
+
 class LocaleComparator(private val locale: Locale) : Comparator<Locale>, Serializable {
 
   override fun compare(locale1: Locale, locale2: Locale): Int {
