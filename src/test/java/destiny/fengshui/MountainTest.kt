@@ -3,14 +3,19 @@
  */
 package destiny.fengshui
 
+import mu.KotlinLogging
 import kotlin.test.Test
 
 class MountainTest {
 
+  val logger = KotlinLogging.logger {  }
+
   @Test
   fun opposite() {
     Mountain.values().forEach { mnt ->
-      println("mnt = $mnt , index = ${mnt.index} , oppo = ${mnt.opposite}" )
+      logger.trace {
+        """mnt = $mnt , index = ${mnt.index} , oppo = ${mnt.opposite}"""
+      }
     }
   }
 }
