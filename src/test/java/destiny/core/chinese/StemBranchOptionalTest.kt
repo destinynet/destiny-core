@@ -86,8 +86,6 @@ class StemBranchOptionalTest {
 
   @Test
   fun testSame() {
-    val v1 = StemBranchOptional["甲子"]
-    val v2 = StemBranchOptional[甲, 子]
     assertSame(StemBranchOptional["甲子"], StemBranchOptional[甲, 子])
     assertSame(StemBranchOptional["甲子"], StemBranchOptional['甲', '子'])
     assertSame(StemBranchOptional['甲', '子'], StemBranchOptional[甲, 子])
