@@ -8,6 +8,8 @@ import mu.KotlinLogging
 import java.io.IOException
 import java.io.PrintWriter
 import java.io.StringWriter
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 inline fun <T, R : Any> Iterable<T>.firstNotNullResult(transform: (T) -> R?): R? {
   for (element in this) {
@@ -78,20 +80,11 @@ val Throwable.stackTraceString: String
   }
 
 
-inline fun<T> measureTimeMillisPair(function: () -> T): Pair<T, Long> {
-  val startTime = System.currentTimeMillis()
-  val result: T = function.invoke()
-  val endTime = System.currentTimeMillis()
+@ExperimentalTime
+inline fun <T> measureTimed(durationFun : (kotlin.time.Duration) -> Unit, function : () -> T) : T {
 
-  return Pair(result, endTime - startTime)
-}
+  val (result , duration) = measureTimedValue(function)
 
-inline fun <T> measureTimeMillis(loggingFunction: (Long) -> Unit,
-                                 function: () -> T): T {
-
-  val startTime = System.currentTimeMillis()
-  val result: T = function.invoke()
-  loggingFunction.invoke(System.currentTimeMillis() - startTime)
-
+  durationFun.invoke(duration)
   return result
 }

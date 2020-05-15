@@ -6,6 +6,7 @@ package destiny.tools
 import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.ExperimentalTime
 
 
 class ChainSlowTest {
@@ -47,10 +48,11 @@ class ChainSlowTest {
     assertEquals(expected, impl.chain(map))
   }
 
+  @ExperimentalTime
   @Test
   fun measure() {
-    measureTimeMillis({ t ->
-      logger.info("$impl takes {} millis", t)
+    measureTimed({ t ->
+      logger.info("$impl takes {}", t)
     })
     {
       val map = (0..99).flatMap { i ->
