@@ -23,33 +23,3 @@ interface IClassicalContext : IPersonHoroscopeContext {
 
 }
 
-class ClassicalContext(
-  private val classicalPatternContext: ClassicalPatternContext,
-  private val personContext: IPersonHoroscopeContext
-) : IClassicalContext, IPersonHoroscopeContext by personContext {
-
-
-
-  override fun getPatternAndComments(lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?, gender: Gender, name: String?, locale: Locale, houseSystem: HouseSystem?, centric: Centric?, coordinate: Coordinate?):
-    Map<Planet, List<Pair<IPlanetPattern, String>>> {
-    val h: IPersonHoroscopeModel =
-      personContext.getPersonHoroscope(lmt, loc, place, gender, name)
-
-
-    val factories: List<IPlanetPatternFactory> = classicalPatternContext.let {
-      it.essentialDignities.plus(it.accidentalDignities).plus(it.debilities)
-    }
-
-    return Planet.classicalList.map { planet ->
-      val list = factories.flatMap { factory ->
-        factory.getPatterns(planet , h)
-      }.map { pattern ->
-        pattern to patternTranslator.getDescriptor(pattern)
-      }.map { (pattern , descriptor) ->
-        pattern to descriptor.getDescription(locale)
-      }
-
-      planet to list
-    }.toMap()
-  }
-}
