@@ -8,7 +8,6 @@ import destiny.core.IIntAge
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.EightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.core.chinese.IStemBranch
@@ -17,7 +16,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 class PersonContext(
 
-  val eightWordsContext: EightWordsContext,
+  val eightWordsContext: IEightWordsContext,
 
   /** 歲數實作  */
   val intAgeImpl: IIntAge,
