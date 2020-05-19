@@ -20,3 +20,14 @@ interface IEightWordsFactory {
     return getEightWords(gmtJulDay, loc)
   }
 }
+
+/**
+ * 將八字計算拆成 年月 / 日時 兩個介面
+ */
+interface IEightWordsStandardFactory : IEightWordsFactory {
+  /** 換年, 以及月支計算的實作 */
+  val yearMonthImpl: IYearMonth
+
+  /** 日、時 的實作 */
+  val dayHourImpl: IDayHour
+}

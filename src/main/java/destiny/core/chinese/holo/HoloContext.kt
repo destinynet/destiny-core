@@ -5,9 +5,8 @@ import destiny.astrology.Planet
 import destiny.core.BirthDataNamePlace
 import destiny.core.Gender
 import destiny.core.calendar.*
-import destiny.core.calendar.eightwords.EightWordsImpl
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.calendar.eightwords.IEightWordsFactory
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.fengshui.sanyuan.IYuan
@@ -22,7 +21,7 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
-class HoloContext(val eightWordsImpl: IEightWordsFactory,
+class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
                   val yuanImpl: IYuan,
                   val numberize: INumberize,
                   val yuanGenderImpl: IYuanGender,
@@ -410,7 +409,8 @@ class HoloContext(val eightWordsImpl: IEightWordsFactory,
     // 計算此時刻，處於何節氣中 , 開始為何時
     val (solarTerms, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
 
-    val dayImpl = (eightWordsImpl as EightWordsImpl).dayHourImpl
+
+    val dayImpl = eightWordsImpl.dayHourImpl
     val startSB = dayImpl.getDay(startGmt, loc)
     val viewSB = dayImpl.getDay(viewGmt, loc)
     val diffDays: Int = viewSB.getAheadOf(startSB) + 1 // 沒有第零日 , 「節」當日也算第一日
