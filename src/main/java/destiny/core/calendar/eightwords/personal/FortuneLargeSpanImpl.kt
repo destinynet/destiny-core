@@ -294,6 +294,6 @@ class FortuneLargeSpanImpl(
     private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(1, TimeUnit.MINUTES)
-      .build<Pair<Double, Gender>, MutableMap<Int, Double>>()
+      .build()
   }
 }
