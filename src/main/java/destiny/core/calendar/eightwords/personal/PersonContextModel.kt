@@ -9,7 +9,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.IEightWordsContext
 import destiny.core.calendar.eightwords.IEightWordsContextModel
-import destiny.core.calendar.eightwords.IEightWordsFactory
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -55,7 +55,7 @@ interface IFortuneMonthSpan {
 /** 推算 大運 演算法 */
 interface IPersonFortuneLarge : Descriptive {
 
-  val eightWordsImpl: IEightWordsFactory
+  val eightWordsImpl: IEightWordsStandardFactory
 
   /** 歲數註解實作  */
   val ageNoteImpls: List<IntAgeNote>
@@ -112,6 +112,9 @@ interface IPersonContext : IEightWordsContext {
   fun getPersonContextModel(data: BirthDataNamePlace): IPersonContextModel {
     return getPersonContextModel(data.time, data.location, data.place, data.gender, data.name)
   }
+
+  /** 歲數實作  */
+  val intAgeImpl: IIntAge
 
   /** 大運 的實作 */
   val fortuneLargeImpl : IPersonFortuneLarge

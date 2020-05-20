@@ -16,7 +16,7 @@ import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.calendar.eightwords.IEightWordsFactory
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import mu.KotlinLogging
@@ -36,7 +36,7 @@ import kotlin.math.abs
  * 演算法與 [FortuneLargeSpanImpl] 類似
  */
 class FortuneLargeSolarTermsSpanImpl(
-  override val eightWordsImpl: IEightWordsFactory,
+  override val eightWordsImpl: IEightWordsStandardFactory,
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
   private val fortuneDirectionImpl: IFortuneDirection,
   /** 歲數實作  */

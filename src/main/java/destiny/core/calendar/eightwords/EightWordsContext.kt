@@ -38,7 +38,6 @@ class EightWordsContext(
   private val solarTermsImpl: ISolarTerms,
   private val houseCuspImpl: IHouseCusp,
   val zodiacSignImpl: IZodiacSign,
-  val riseTransImpl: IRiseTrans,
   val aspectsCalculator: IHoroscopeAspectsCalculator) : IEightWordsContext, IEightWordsFactory by eightWordsImpl, Serializable {
 
   private data class CacheKey(val lmt: ChronoLocalDateTime<*>, val location: ILocation, val place: String?)

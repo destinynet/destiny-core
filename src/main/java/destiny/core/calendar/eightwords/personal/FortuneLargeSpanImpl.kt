@@ -15,7 +15,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.IEightWordsFactory
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import mu.KotlinLogging
@@ -29,7 +29,7 @@ import kotlin.math.abs
 
 /** 標準 , 以「出生時刻，到『節』，的固定倍數法」 (內定 120.0倍) 求得大運 . 內定 一柱十年 */
 class FortuneLargeSpanImpl(
-  override val eightWordsImpl: IEightWordsFactory,
+  override val eightWordsImpl: IEightWordsStandardFactory,
   private val solarTermsImpl: ISolarTerms,
   /** 大運的順逆，內定採用『陽男陰女順排；陰男陽女逆排』的演算法  */
   private val fortuneDirectionImpl: IFortuneDirection,
