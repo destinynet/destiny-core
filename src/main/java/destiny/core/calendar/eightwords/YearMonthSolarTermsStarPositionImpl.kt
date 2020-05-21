@@ -148,6 +148,7 @@ class YearMonthSolarTermsStarPositionImpl(
 
     if (southernHemisphereOpposition != other.southernHemisphereOpposition) return false
     if (hemisphereBy != other.hemisphereBy) return false
+    if (changeYearDegree != other.changeYearDegree) return false
 
     return true
   }
@@ -155,6 +156,7 @@ class YearMonthSolarTermsStarPositionImpl(
   override fun hashCode(): Int {
     var result = southernHemisphereOpposition.hashCode()
     result = 31 * result + hemisphereBy.hashCode()
+    result = 31 * result + changeYearDegree.hashCode()
     return result
   }
 
