@@ -75,8 +75,6 @@ interface IEightWordsContextModel {
  */
 interface IEightWordsContext : IEightWordsStandardFactory {
   val chineseDateImpl: IChineseDate
-  override val yearMonthImpl: IYearMonth
-  override val dayHourImpl: IDayHour
   val risingSignImpl: IRisingSign
 
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
