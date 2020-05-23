@@ -14,6 +14,9 @@ import java.time.chrono.ChronoLocalDateTime
 /** 取得年干支的介面  */
 interface IYear {
 
+  /** 換年的度數 , 通常是立春點 (315) 換年 , 另一個值通常為 270 (冬至) */
+  val changeYearDegree: Double
+
   fun getYear(gmtJulDay: Double, loc: ILocation): StemBranch
 
   /**
@@ -57,4 +60,4 @@ interface IMonth {
 /**
  * 年月應該要一起考慮，所以設計這個 Interface
  */
-interface IYearMonth : IYear, IMonth , Descriptive
+interface IYearMonth : IYear, IMonth, Descriptive
