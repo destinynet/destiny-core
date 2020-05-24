@@ -80,7 +80,6 @@ interface IEightWordsContext : IEightWordsStandardFactory {
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                 location: ILocation,
                                 place: String?): IEightWordsContextModel
-
 }
 
 
