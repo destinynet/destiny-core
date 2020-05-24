@@ -55,6 +55,7 @@ class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
     if (this === other) return true
     if (other !is FortuneSmall6GiaImpl) return false
 
+    if (eightWordsImpl != other.eightWordsImpl) return false
     if (intAgeImpl != other.intAgeImpl) return false
     if (ageNoteImpls != other.ageNoteImpls) return false
 
@@ -62,7 +63,8 @@ class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
   }
 
   override fun hashCode(): Int {
-    var result = intAgeImpl.hashCode()
+    var result = eightWordsImpl.hashCode()
+    result = 31 * result + intAgeImpl.hashCode()
     result = 31 * result + ageNoteImpls.hashCode()
     return result
   }

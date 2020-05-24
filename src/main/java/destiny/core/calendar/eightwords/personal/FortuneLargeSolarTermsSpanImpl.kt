@@ -264,8 +264,11 @@ class FortuneLargeSolarTermsSpanImpl(
     if (this === other) return true
     if (other !is FortuneLargeSolarTermsSpanImpl) return false
 
+    if (eightWordsImpl != other.eightWordsImpl) return false
     if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
     if (intAgeImpl != other.intAgeImpl) return false
+    if (solarTermsImpl != other.solarTermsImpl) return false
+    if (starTransitImpl != other.starTransitImpl) return false
     if (fortuneMonthSpan != other.fortuneMonthSpan) return false
     if (ageNoteImpls != other.ageNoteImpls) return false
 
@@ -273,8 +276,11 @@ class FortuneLargeSolarTermsSpanImpl(
   }
 
   override fun hashCode(): Int {
-    var result = fortuneDirectionImpl.hashCode()
+    var result = eightWordsImpl.hashCode()
+    result = 31 * result + fortuneDirectionImpl.hashCode()
     result = 31 * result + intAgeImpl.hashCode()
+    result = 31 * result + solarTermsImpl.hashCode()
+    result = 31 * result + starTransitImpl.hashCode()
     result = 31 * result + fortuneMonthSpan.hashCode()
     result = 31 * result + ageNoteImpls.hashCode()
     return result

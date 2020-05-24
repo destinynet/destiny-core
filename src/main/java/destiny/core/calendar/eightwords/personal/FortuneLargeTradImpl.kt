@@ -44,4 +44,22 @@ class FortuneLargeTradImpl(
   override fun getDescription(locale: Locale): String {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FortuneLargeTradImpl) return false
+
+    if (eightWordsImpl != other.eightWordsImpl) return false
+    if (ageNoteImpls != other.ageNoteImpls) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = eightWordsImpl.hashCode()
+    result = 31 * result + ageNoteImpls.hashCode()
+    return result
+  }
+
+
 }

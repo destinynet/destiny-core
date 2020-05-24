@@ -40,7 +40,8 @@ class FortuneLargeSpanImpl(
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
   override val fortuneMonthSpan: Double = 120.0,
   /** 歲數註解實作  */
-  override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
+  override val ageNoteImpls: List<IntAgeNote>
+) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
 
   private fun getAgeMap(toAge: Int,
                         gmtJulDay: Double,
@@ -99,7 +100,7 @@ class FortuneLargeSpanImpl(
       }
       i++
       FortuneData(sb, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
-                  startFortuneAgeNotes, endFortuneAgeNotes)
+        startFortuneAgeNotes, endFortuneAgeNotes)
     }.takeWhile { i <= count + 1 }
       .toList()
 
@@ -148,7 +149,7 @@ class FortuneLargeSpanImpl(
             logger.debug("順推 cache.get({}) miss", i)
             //沒有計算過
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepMajorSolarTerms.zodiacDegree.toDouble(),
-                                                                Coordinate.ECLIPTIC, stepGmtJulDay, true)
+              Coordinate.ECLIPTIC, stepGmtJulDay, true)
             //以隔天計算現在節氣
             stepGmtJulDay = targetGmtJulDay + 1
 
@@ -179,7 +180,7 @@ class FortuneLargeSpanImpl(
             //沒有計算過
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepMajorSolarTerms.zodiacDegree.toDouble(),
-                                                                Coordinate.ECLIPTIC, stepGmtJulDay, false)
+              Coordinate.ECLIPTIC, stepGmtJulDay, false)
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1
             hashMap[i] = targetGmtJulDay
@@ -272,8 +273,11 @@ class FortuneLargeSpanImpl(
     if (this === other) return true
     if (other !is FortuneLargeSpanImpl) return false
 
+    if (eightWordsImpl != other.eightWordsImpl) return false
+    if (solarTermsImpl != other.solarTermsImpl) return false
     if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
     if (intAgeImpl != other.intAgeImpl) return false
+    if (starTransitImpl != other.starTransitImpl) return false
     if (fortuneMonthSpan != other.fortuneMonthSpan) return false
     if (ageNoteImpls != other.ageNoteImpls) return false
 
@@ -281,8 +285,11 @@ class FortuneLargeSpanImpl(
   }
 
   override fun hashCode(): Int {
-    var result = fortuneDirectionImpl.hashCode()
+    var result = eightWordsImpl.hashCode()
+    result = 31 * result + solarTermsImpl.hashCode()
+    result = 31 * result + fortuneDirectionImpl.hashCode()
     result = 31 * result + intAgeImpl.hashCode()
+    result = 31 * result + starTransitImpl.hashCode()
     result = 31 * result + fortuneMonthSpan.hashCode()
     result = 31 * result + ageNoteImpls.hashCode()
     return result
@@ -290,7 +297,7 @@ class FortuneLargeSpanImpl(
 
 
   companion object {
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
     private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(1, TimeUnit.MINUTES)
