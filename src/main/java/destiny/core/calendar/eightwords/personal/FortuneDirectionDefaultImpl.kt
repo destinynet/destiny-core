@@ -21,4 +21,19 @@ class FortuneDirectionDefaultImpl(val eightWordsImpl : IEightWordsFactory) : IFo
     return gender === Gender.男 && eightWords.year.stem.booleanValue
       || gender === Gender.女 && !eightWords.year.stem.booleanValue
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is FortuneDirectionDefaultImpl) return false
+
+    if (eightWordsImpl != other.eightWordsImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return eightWordsImpl.hashCode()
+  }
+
+
 }
