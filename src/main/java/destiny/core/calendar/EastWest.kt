@@ -3,23 +3,24 @@
  */
 package destiny.core.calendar
 
+import destiny.tools.ILocaleString
 import java.util.*
 
-enum class EastWest(private val nameKey: String) {
+fun EastWest.asLocaleString() = object : ILocaleString {
+  val resource = EastWest::class.java.name
+  override fun toString(locale: Locale): String {
+    return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
+  }
+}
+
+fun EastWest.toString(locale: Locale): String {
+  return this.asLocaleString().toString(locale)
+}
+
+enum class EastWest(val nameKey: String) {
   EAST("Location.EAST"), WEST("Location.WEST");
 
-  override fun toString(): String {
-    return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
-  }
-
-  fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-  }
-
   companion object {
-
-    private val resource = EastWest::class.java.name
-
     fun getEastWest(c: Char): EastWest {
       if (c == 'E' || c == 'e')
         return EAST

@@ -8,7 +8,6 @@ import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class NorthSouthTest {
 
   val logger = KotlinLogging.logger {  }
@@ -25,6 +24,5 @@ class NorthSouthTest {
     assertEquals("South" , NorthSouth.SOUTH.toString(Locale.ENGLISH))
 
     logger.info("NORTH of {} = {}" , Locale.FRANCE , NorthSouth.NORTH.toString(Locale.FRANCE))
-
   }
 }
