@@ -12,6 +12,7 @@ import kotlin.math.abs
 
 /** 純粹經緯度座標，沒有時區 [TimeZone] [ZoneId] 或是 時差 (minuteOffset) 等資訊 */
 interface ILatLng {
+
   val lng: Double
   val lat: Double
 
