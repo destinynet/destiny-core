@@ -11,10 +11,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.calendar.eightwords.HourLmtImpl
-import destiny.core.calendar.eightwords.HourSolarTransImpl
-import destiny.core.calendar.eightwords.IDayHour
-import destiny.core.calendar.eightwords.IYearMonth
+import destiny.core.calendar.eightwords.*
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -22,15 +19,13 @@ import java.time.chrono.ChronoLocalDateTime
 /**
  * 具備現代資訊（經緯度、時區）的紫微 Context
  */
-interface IZiweiModernContext : IZiweiContext {
+interface IZiweiModernContext : IZiweiContext, IEightWordsStandardFactory {
 
   val chineseDateImpl: IChineseDate
 
-  val solarTermsImpl: ISolarTerms
 
-  val yearMonthImpl: IYearMonth
-
-  val dayHourImpl: IDayHour
+  override val yearMonthImpl: IYearMonth
+  override val dayHourImpl: IDayHour
 
   val dayNightImpl: IDayNight
 
@@ -47,12 +42,10 @@ interface IZiweiModernContext : IZiweiContext {
 class ZModernContext(
   val context: IZiweiContext,
   override val chineseDateImpl: IChineseDate,
-  override val solarTermsImpl: ISolarTerms,
-  override val yearMonthImpl: IYearMonth,
-  override val dayHourImpl: IDayHour,
+  private val solarTermsImpl: ISolarTerms,
+  val ewImpl: IEightWordsStandardFactory,
   override val dayNightImpl: IDayNight,
-  override val relativeTransitImpl: IRelativeTransit
-                    ) : IZiweiModernContext, IZiweiContext by context, Serializable {
+  override val relativeTransitImpl: IRelativeTransit) : IZiweiModernContext, IZiweiContext by context, IEightWordsStandardFactory by ewImpl, Serializable {
 
 
   private val intAgeZiweiImpl: IIntAge by lazy {
@@ -118,13 +111,39 @@ class ZModernContext(
     val vageMap = intAgeZiweiImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, location), location, 1, 130)
 
     return getBirthPlate(Pair(命宮地支, 身宮地支), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
-                         , cDate.isLeapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap)
+      , cDate.isLeapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap)
       .withLocalDateTime(lmt)
       .withLocation(location)
+      .apply {
+        name?.also {
+          withName(it)
+        }
+      }
       .appendNotesBuilders(notesBuilders).apply {
         place?.also { withPlace(it) }
       }
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is ZModernContext) return false
+
+    if (context != other.context) return false
+    if (chineseDateImpl != other.chineseDateImpl) return false
+    if (ewImpl != other.ewImpl) return false
+    if (dayNightImpl != other.dayNightImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = context.hashCode()
+    result = 31 * result + chineseDateImpl.hashCode()
+    result = 31 * result + ewImpl.hashCode()
+    result = 31 * result + dayNightImpl.hashCode()
+    return result
+  }
+
 
   companion object {
     val logger = KotlinLogging.logger { }

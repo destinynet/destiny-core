@@ -61,7 +61,7 @@ data class BirthData(
 }
 
 /** 承上 , mutable 版本 */
-interface IBirthDataMutable : IBirthData {
+interface IBirthDataMutable : IBirthData , ITimeLocMutable {
   override var time: ChronoLocalDateTime<*>
   override var location: ILocation
   override var gender: Gender
