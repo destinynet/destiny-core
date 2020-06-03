@@ -52,4 +52,26 @@ class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
 
     return Triple(mainHouse, bodyHouse , finalMonthNumForMainStars)
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is MainBodyHouseTradImpl) return false
+
+    if (yearMonthImpl != other.yearMonthImpl) return false
+    if (dayHourImpl != other.dayHourImpl) return false
+    if (chineseDateImpl != other.chineseDateImpl) return false
+    if (mainStarsAlgo != other.mainStarsAlgo) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = yearMonthImpl.hashCode()
+    result = 31 * result + dayHourImpl.hashCode()
+    result = 31 * result + chineseDateImpl.hashCode()
+    result = 31 * result + (mainStarsAlgo?.hashCode() ?: 0)
+    return result
+  }
+
+
 }

@@ -646,6 +646,65 @@ class ZContext(
       .appendTrans4Map(trans4Map)
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is ZContext) return false
+
+    if (stars != other.stars) return false
+    if (mainBodyHouseImpl != other.mainBodyHouseImpl) return false
+    if (purpleBranchImpl != other.purpleBranchImpl) return false
+    if (mainStarsAlgo != other.mainStarsAlgo) return false
+    if (monthStarsAlgo != other.monthStarsAlgo) return false
+    if (yearType != other.yearType) return false
+    if (houseSeqImpl != other.houseSeqImpl) return false
+    if (prevMonthDaysImpl != other.prevMonthDaysImpl) return false
+    if (tianyiImpl != other.tianyiImpl) return false
+    if (fireBell != other.fireBell) return false
+    if (skyHorse != other.skyHorse) return false
+    if (hurtAngel != other.hurtAngel) return false
+    if (transFourImpl != other.transFourImpl) return false
+    if (strengthImpl != other.strengthImpl) return false
+    if (flowYearImpl != other.flowYearImpl) return false
+    if (flowMonthImpl != other.flowMonthImpl) return false
+    if (flowDayImpl != other.flowDayImpl) return false
+    if (flowHourImpl != other.flowHourImpl) return false
+    if (ageNoteImpls != other.ageNoteImpls) return false
+    if (bigRangeImpl != other.bigRangeImpl) return false
+    if (redBeauty != other.redBeauty) return false
+    if (chineseDateImpl != other.chineseDateImpl) return false
+    if (intAgeImpl != other.intAgeImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = stars.hashCode()
+    result = 31 * result + mainBodyHouseImpl.hashCode()
+    result = 31 * result + purpleBranchImpl.hashCode()
+    result = 31 * result + (mainStarsAlgo?.hashCode() ?: 0)
+    result = 31 * result + monthStarsAlgo.hashCode()
+    result = 31 * result + yearType.hashCode()
+    result = 31 * result + houseSeqImpl.hashCode()
+    result = 31 * result + prevMonthDaysImpl.hashCode()
+    result = 31 * result + tianyiImpl.hashCode()
+    result = 31 * result + fireBell.hashCode()
+    result = 31 * result + skyHorse.hashCode()
+    result = 31 * result + hurtAngel.hashCode()
+    result = 31 * result + transFourImpl.hashCode()
+    result = 31 * result + strengthImpl.hashCode()
+    result = 31 * result + flowYearImpl.hashCode()
+    result = 31 * result + flowMonthImpl.hashCode()
+    result = 31 * result + flowDayImpl.hashCode()
+    result = 31 * result + flowHourImpl.hashCode()
+    result = 31 * result + ageNoteImpls.hashCode()
+    result = 31 * result + bigRangeImpl.hashCode()
+    result = 31 * result + redBeauty.hashCode()
+    result = 31 * result + (chineseDateImpl?.hashCode() ?: 0)
+    result = 31 * result + (intAgeImpl?.hashCode() ?: 0)
+    return result
+  }
+
+
   companion object {
     val logger = KotlinLogging.logger {  }
   }

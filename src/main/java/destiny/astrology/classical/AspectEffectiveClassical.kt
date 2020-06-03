@@ -74,4 +74,23 @@ class AspectEffectiveClassical(
     return isEffective(p1, deg1, p2, deg2, aspect.degree)
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is AspectEffectiveClassical) return false
+
+    if (planetOrbsImpl != other.planetOrbsImpl) return false
+    if (defaultThreshold != other.defaultThreshold) return false
+    if (applicableAspects != other.applicableAspects) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = planetOrbsImpl.hashCode()
+    result = 31 * result + defaultThreshold.hashCode()
+    result = 31 * result + applicableAspects.hashCode()
+    return result
+  }
+
+
 }

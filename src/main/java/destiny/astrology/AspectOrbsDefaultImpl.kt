@@ -47,6 +47,20 @@ class AspectOrbsDefaultImpl(private val defaultThreshold : Double = 0.9) : IAspe
     }
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is AspectOrbsDefaultImpl) return false
+
+    if (defaultThreshold != other.defaultThreshold) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return defaultThreshold.hashCode()
+  }
+
+
   companion object {
 
     val aspectThresholdMap = mapOf(

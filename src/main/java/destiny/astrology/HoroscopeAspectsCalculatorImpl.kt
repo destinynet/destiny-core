@@ -107,4 +107,25 @@ class HoroscopeAspectsCalculatorImpl(
     } ?: emptySet()
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is HoroscopeAspectsCalculatorImpl) return false
+
+    if (aspectEffectiveImpl != other.aspectEffectiveImpl) return false
+    if (starPosWithAzimuth != other.starPosWithAzimuth) return false
+    if (houseCuspImpl != other.houseCuspImpl) return false
+    if (pointPosFuncMap != other.pointPosFuncMap) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = aspectEffectiveImpl.hashCode()
+    result = 31 * result + starPosWithAzimuth.hashCode()
+    result = 31 * result + houseCuspImpl.hashCode()
+    result = 31 * result + pointPosFuncMap.hashCode()
+    return result
+  }
+
+
 }

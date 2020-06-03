@@ -43,6 +43,17 @@ class IntAgeNoteMinguoYearImpl : IntAgeNote, Serializable {
     return toString(locale)
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is IntAgeNoteMinguoYearImpl) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return javaClass.hashCode()
+  }
+
+
   companion object {
     private val revJulDayFunc: (Double) -> ChronoLocalDateTime<*> = { it:Double  -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
