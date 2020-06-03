@@ -18,7 +18,8 @@ data class ViewSettings(
   /** 是否顯示小限  */
   val showSmallRange: Boolean = false,
 
-  /** 是否顯示八字盤  */
+
+  /** TODO : 是否顯示八字盤 , 應該與 [direction] 整合 */
   val showEightWords: Boolean = true,
 
   /** 八字排盤，右至左 or 左至右 */
