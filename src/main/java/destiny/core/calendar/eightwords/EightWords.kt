@@ -85,7 +85,7 @@ data class EightWordsNullable(override val year: IStemBranchOptional,
     }
 
     fun getFromIntList(list: List<Int>): EightWordsNullable {
-      assert(list.size == 8)
+      require(list.size == 8)
       val yearStem = if (list[0] == 0) null else Stem[list[0] - 1]
       val yearBranch = if (list[1] == 0) null else Branch[list[1] - 1]
       val monthStem = if (list[2] == 0) null else Stem[list[2] - 1]
