@@ -9,7 +9,7 @@ import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
 import destiny.iching.Symbol
 import destiny.iching.SymbolPositions
-import destiny.iching.divine.DivineContext
+import destiny.iching.divine.DivineTraditionalContext
 import destiny.iching.divine.ISettingsOfStemBranch
 import destiny.iching.divine.Relative
 import destiny.iching.divine.SettingsGingFang
@@ -31,7 +31,7 @@ object TriSpites {
       val sb: StemBranch = settings.getStemBranch(hexagram, it)
       // 外在五行
       val outerFiveElement = SimpleBranch.getFiveElement(sb.branch)
-      DivineContext.getRelative(outerFiveElement, symbol.fiveElement) === Relative.官鬼
+      DivineTraditionalContext.getRelative(outerFiveElement, symbol.fiveElement) === Relative.官鬼
     }.map { settings.getStemBranch(hexagram, it).branch }
   }
 
