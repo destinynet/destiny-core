@@ -407,8 +407,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
   override fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: Double, loc: ILocation): IHoloHexagramWithStemBranch {
 
     // 計算此時刻，處於何節氣中 , 開始為何時
-    val (solarTerms, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
-
+    val (_, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
 
     val dayImpl = eightWordsImpl.dayHourImpl
     val startSB = dayImpl.getDay(startGmt, loc)
