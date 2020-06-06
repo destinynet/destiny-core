@@ -10,24 +10,22 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.calendar.eightwords.IRisingSign
-import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 
-class PalmContext(override val positiveImpl: IPositive,
+class PalmContext(val ewImpl: IEightWordsStandardFactory,
+                  override val positiveImpl: IPositive,
                   val chineseDateImpl: IChineseDate,
-                  override val dayHourImpl : IDayHour,
                   val risingSignImpl: IRisingSign,
-                  val yearMonthImpl: IYearMonth,
                   override val monthAlgo: IFinalMonthNumber.MonthAlgo,
                   override val trueRisingSign: Boolean,
                   override val clockwiseHouse: Boolean,
-                  val branchDescImpl: IBranchDesc) : IPalmContext, Serializable {
+                  val branchDescImpl: IBranchDesc) : IPalmContext, IEightWordsStandardFactory by ewImpl, Serializable {
 
   /** 沒帶入節氣資料 , 內定把月份計算採用 [IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15] 的演算法  */
   override fun getPalmWithoutSolarTerms(gender: Gender,
@@ -76,8 +74,8 @@ class PalmContext(override val positiveImpl: IPositive,
                        place: String?,
                        name: String?): IPalmMetaModel {
 
-    val cDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
-    val hourBranch = dayHourImpl.getHour(lmt, loc)
+    val cDate = chineseDateImpl.getChineseDate(lmt, loc, ewImpl.dayHourImpl)
+    val hourBranch = ewImpl.dayHourImpl.getHour(lmt, loc)
     val chineseDateHour = ChineseDateHour(cDate, hourBranch)
 
     val trueRising: Branch? = if (trueRisingSign) {
@@ -88,7 +86,7 @@ class PalmContext(override val positiveImpl: IPositive,
     }
 
     // 節氣的月支
-    val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
+    val monthBranch = ewImpl.yearMonthImpl.getMonth(lmt, loc).branch
     val palm = getPalm(gender, chineseDateHour, trueRising, monthBranch)
 
     return PalmMetaModel(palm, lmt, loc, place, name, chineseDateHour)

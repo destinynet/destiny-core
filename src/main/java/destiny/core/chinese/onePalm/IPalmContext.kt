@@ -5,19 +5,17 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.Branch
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 
-interface IPalmContext {
 
+interface IPalmContext : IEightWordsStandardFactory {
   val positiveImpl: IPositive
-  val dayHourImpl: IDayHour
   val monthAlgo: IFinalMonthNumber.MonthAlgo
   val trueRisingSign: Boolean
   val clockwiseHouse: Boolean
-
 
   /**
    * 本命盤，已經預先計算命宮
