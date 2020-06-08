@@ -9,7 +9,7 @@ import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWords
-import destiny.core.calendar.eightwords.IEightWordsFactory
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.*
 import destiny.core.chinese.liuren.General
 import destiny.core.chinese.liuren.IGeneralSeq
@@ -43,7 +43,7 @@ interface IPithyContext {
 }
 
 class PithyContext(
-  val eightWordsImpl: IEightWordsFactory,
+  val eightWordsImpl: IEightWordsStandardFactory,
   val monthMasterImpl: IMonthMaster,
 
   val clockwiseImpl: IClockwise,
