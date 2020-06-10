@@ -5,11 +5,12 @@
 package destiny.iching
 
 import destiny.core.chinese.IYinYang
+import java.io.Serializable
 
 /**
  * 一個最基本的「卦」的資料，只有 取得 各爻陰陽 getLine(int index) / 取得六爻陰陽 getLines()  / 上卦 getUpperSymbol() / 下卦 getLowerSymbol() / 等介面
  */
-interface IHexagram {
+interface IHexagram : Serializable {
 
   /** 取得全部的 [IYinYang] 值 */
   val yinYangs: List<IYinYang>
