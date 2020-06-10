@@ -71,7 +71,8 @@ class EightWordsColorCanvas(
       val location = model.location
       val cc = ColorCanvas(9, 52, ChineseStringTools.NULL_CHAR)
 
-      val 西元資訊 = ColorCanvas(1, 36, ChineseStringTools.NULL_CHAR)
+      // 西元資訊
+      val yearCanvas = ColorCanvas(1, 36, ChineseStringTools.NULL_CHAR)
 
       val timeData = with(StringBuilder()) {
         append("西元：")
@@ -93,8 +94,8 @@ class EightWordsColorCanvas(
         append("秒")
       }
 
-      西元資訊.setText(timeData.toString(), 1, 1)
-      cc.add(西元資訊, 1, 1)
+      yearCanvas.setText(timeData.toString(), 1, 1)
+      cc.add(yearCanvas, 1, 1)
 
 
       val chineseDate = model.chineseDate
@@ -102,33 +103,36 @@ class EightWordsColorCanvas(
 
       val url = urlBuilder.getUrl(location)
 
-      val 地點名稱 = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
-      地點名稱.setText("地點：", 1, 1)
-      地點名稱.setText(place, 1, 7, null, null, url, place, false, null)
+      // 地點名稱
+      val placeCanvas = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
+      placeCanvas.setText("地點：", 1, 1)
+      placeCanvas.setText(place, 1, 7, null, null, url, place, false, null)
       val minuteOffset = location.minuteOffset ?: TimeTools.getDstSecondOffset(lmt, location).second / 60
 
       minuteOffset.also {
         val absValue = abs(it)
         if (it >= 0) {
-          地點名稱.setText(" GMT時差：" + AlignTools.alignRight(it, 6, true) + "分鐘", 1, 25)
+          placeCanvas.setText(" GMT時差：" + AlignTools.alignRight(it, 6, true) + "分鐘", 1, 25)
         } else {
-          地點名稱.setText(" GMT時差：前" + AlignTools.alignRight(absValue, 4, true) + "分鐘", 1, 25)
+          placeCanvas.setText(" GMT時差：前" + AlignTools.alignRight(absValue, 4, true) + "分鐘", 1, 25)
         }
       }
-      cc.add(地點名稱, 3, 1)
+      cc.add(placeCanvas, 3, 1)
 
 
-      val 經度 = ColorCanvas(1, 24, ChineseStringTools.NULL_CHAR)
+      // 經度
+      val lngCanvas = ColorCanvas(1, 24, ChineseStringTools.NULL_CHAR)
       val lngText = LngDecorator.getOutputString(location.lng, Locale.TAIWAN)
 
-      經度.setText(lngText, 1, 1, null, null, url, null, false, null)
-      cc.add(經度, 4, 1)
+      lngCanvas.setText(lngText, 1, 1, null, null, url, null, false, null)
+      cc.add(lngCanvas, 4, 1)
 
-      val 緯度 = ColorCanvas(1, 22, ChineseStringTools.NULL_CHAR)
+      // 緯度
+      val latCanvas = ColorCanvas(1, 22, ChineseStringTools.NULL_CHAR)
       val latText = LatDecorator.getOutputString(location.lat, Locale.TAIWAN)
 
-      緯度.setText("$latText ", 1, 1, null, null, url, null, false, null)
-      cc.add(緯度, 4, 25)
+      latCanvas.setText("$latText ", 1, 1, null, null, url, null, false, null)
+      cc.add(latCanvas, 4, 25)
 
       var x = 0
       if (context.yearMonthImpl is YearMonthSunSignImpl) {
@@ -157,14 +161,14 @@ class EightWordsColorCanvas(
       cc.setText("時辰劃分：" + context.dayHourImpl.toString(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
         title = context.dayHourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
       val risingLine = 8
-      //val 命宮 = model.risingStemBranch
-      val 命宮String = model.risingStemBranch.let { sb ->
+      // 命宮
+      val mainHouse = model.risingStemBranch.let { sb ->
         sb.toString() + "（" + ZodiacSign.of(sb.branch) + "）"
       }
       cc.setText("命宮：", risingLine, 1, foreColor = null, backColor = null, title = "命宮")
 
 
-      cc.setText(命宮String, risingLine, 7, foreColor = "FF0000", backColor =  null, title = 命宮String)
+      cc.setText(mainHouse, risingLine, 7, foreColor = "FF0000", backColor =  null, title = mainHouse)
       cc.setText("（" + context.risingSignImpl.toString(Locale.TAIWAN) + "）", risingLine, 19)
 
       val linkLine = 9
@@ -238,9 +242,10 @@ class EightWordsColorCanvas(
     pillar.setText(stemBranch.branch.toString(), 7, 3, foreColor = "red", backColor = null, title = stemBranch.toString() + pillarName)
 
     if ("日" != pillarName) {
-      val 干對日主 = reactionUtil.getReaction(stemBranch.stem, dayStem).toString()
-      pillar.setText(干對日主.substring(0, 1), 4, 3, "gray")
-      pillar.setText(干對日主.substring(1, 2), 5, 3, "gray")
+      // 干對日主
+      val stemAgainstDay: String = reactionUtil.getReaction(stemBranch.stem, dayStem).toString()
+      pillar.setText(stemAgainstDay.substring(0, 1), 4, 3, "gray")
+      pillar.setText(stemAgainstDay.substring(1, 2), 5, 3, "gray")
     }
 
     if (showNaYin) {
@@ -252,12 +257,14 @@ class EightWordsColorCanvas(
       }
     }
 
-    pillar.add(地支藏干(stemBranch.branch, dayStem), 8, 1)
+    // 地支藏干
+    pillar.add(getHiddenStemsCanvas(stemBranch.branch, dayStem), 8, 1)
     return pillar
   }
 
 
-  fun 地支藏干(地支: Branch, 天干: Stem): ColorCanvas {
+  /** 地支藏干 */
+  fun getHiddenStemsCanvas(地支: Branch, 天干: Stem): ColorCanvas {
     val reactionsUtil = ReactionUtil(this.hiddenStemsImpl)
     val resultCanvas = ColorCanvas(3, 6, ChineseStringTools.NULL_CHAR)
     val reactions = reactionsUtil.getReactions(地支, 天干)

@@ -143,7 +143,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
         triColumn.setText(reaction.toString().substring(1, 2), 4, 3, "gray")
         triColumn.setText(stemBranch.stem.toString(), 5, 3, "red")
         triColumn.setText(stemBranch.branch.toString(), 6, 3, "red")
-        triColumn.add(ewContextColorCanvas.地支藏干(stemBranch.branch, eightWords.day.stem), 7, 1)
+        triColumn.add(ewContextColorCanvas.getHiddenStemsCanvas(stemBranch.branch, eightWords.day.stem), 7, 1)
 
         下方大運橫.add(triColumn, 1, (i - 1) * 8 + 1)
       } // 1~9

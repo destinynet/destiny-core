@@ -48,7 +48,7 @@ class YearMonthSolarTermsStarPositionImpl(
    * @return 取得月干支
    */
   override fun getMonth(gmtJulDay: Double, location: ILocation): IStemBranch {
-    val result月支: Branch
+    val resultMonthBranch: Branch
     //先算出太陽在黃經上的度數
 
     // 目前的節氣
@@ -57,7 +57,9 @@ class YearMonthSolarTermsStarPositionImpl(
     var monthIndex = SolarTerms.getIndex(solarTerms) / 2 + 2
     if (monthIndex >= 12)
       monthIndex -= 12
-    val 月支 = Branch[monthIndex]
+
+    // 月支
+    val monthBranch = Branch[monthIndex]
 
     if (southernHemisphereOpposition) {
       /**
@@ -65,10 +67,10 @@ class YearMonthSolarTermsStarPositionImpl(
        */
       if (hemisphereBy == HemisphereBy.EQUATOR) {
         //如果是依據赤道來區分南北半球
-        result月支 = if (location.northSouth == NorthSouth.SOUTH)
+        resultMonthBranch = if (location.northSouth == NorthSouth.SOUTH)
           Branch[monthIndex + 6]
         else
-          月支
+          monthBranch
       } else {
         /**
          * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
@@ -77,10 +79,10 @@ class YearMonthSolarTermsStarPositionImpl(
 
         if (solarEquatorialDegree >= 0) {
           //如果太陽在赤北緯
-          result月支 = if (location.northSouth == NorthSouth.NORTH) {
+          resultMonthBranch = if (location.northSouth == NorthSouth.NORTH) {
             //地點在北半球
             if (location.lat >= solarEquatorialDegree)
-              月支
+              monthBranch
             else
               Branch[monthIndex + 6] //所在地緯度低於 太陽赤緯，取對沖月份
           } else {
@@ -89,23 +91,24 @@ class YearMonthSolarTermsStarPositionImpl(
           }
         } else {
           //太陽在赤南緯
-          result月支 = if (location.northSouth == NorthSouth.SOUTH) {
+          resultMonthBranch = if (location.northSouth == NorthSouth.SOUTH) {
             //地點在南半球
             if (location.lat <= solarEquatorialDegree)
               Branch[monthIndex + 6] //所在地緯度高於 太陽赤南緯，真正的南半球
             else
-              月支 //雖在南半球，但緯度低於太陽赤南緯，視為北半球
+              monthBranch //雖在南半球，但緯度低於太陽赤南緯，視為北半球
           } else {
             //地點在北半球，月支不變
-            月支
+            monthBranch
           }
         }
       }
     } else
-      result月支 = 月支
+      resultMonthBranch = monthBranch
 
-    val 年干 = getYear(gmtJulDay, location).stem
-    return StemBranch[getMonthStem(gmtJulDay, 年干, result月支), result月支]
+    // 年干
+    val yearStem = getYear(gmtJulDay, location).stem
+    return StemBranch[getMonthStem(gmtJulDay, yearStem, resultMonthBranch), resultMonthBranch]
   }
 
   /**
@@ -119,9 +122,10 @@ class YearMonthSolarTermsStarPositionImpl(
    * 甲寅之上好追求。
    *
    */
-  private fun getMonthStem(gmtJulDay: Double, 年干: Stem, 月支: Branch): Stem {
+  private fun getMonthStem(gmtJulDay: Double, yearStem: Stem, monthBranch: Branch): Stem {
 
-    var 月干: Stem = StemBranchUtils.getMonthStem(年干, 月支)
+    // 月干
+    var monthStem: Stem = StemBranchUtils.getMonthStem(yearStem, monthBranch)
 
     if (changeYearDegree != 315.0) {
 
@@ -131,15 +135,15 @@ class YearMonthSolarTermsStarPositionImpl(
         logger.debug("換年點在立春前 , changeYearDegree < 315 , value = {}", changeYearDegree)
         if (sunDegree > changeYearDegree && 315 > sunDegree) {
           // t <---立春---- LMT -----換年點
-          月干 = Stem[月干.index - 2]
+          monthStem = Stem[monthStem.index - 2]
         }
       } else if (changeYearDegree > 315) {
         //換年點在立春後 , 還沒測試
         if (sunDegree > 315 && changeYearDegree > sunDegree)
-          月干 = Stem[月干.index + 2]
+          monthStem = Stem[monthStem.index + 2]
       }
     }
-    return 月干
+    return monthStem
   }
 
   override fun equals(other: Any?): Boolean {
