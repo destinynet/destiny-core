@@ -109,7 +109,7 @@ interface IPersonContext : IEightWordsContext {
                             gender: Gender,
                             name: String? = null): IPersonContextModel
 
-  fun getPersonContextModel(data: BirthDataNamePlace): IPersonContextModel {
+  fun getPersonContextModel(data: IBirthDataNamePlace): IPersonContextModel {
     return getPersonContextModel(data.time, data.location, data.place, data.gender, data.name)
   }
 

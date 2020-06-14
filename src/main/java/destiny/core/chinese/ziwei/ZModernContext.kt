@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.astrology.IDayNight
 import destiny.astrology.IRelativeTransit
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.IIntAge
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
@@ -37,6 +38,10 @@ interface IZiweiModernContext : IZiweiContext, IEightWordsStandardFactory {
                      place: String?,
                      gender: Gender,
                      name: String? = null): Builder
+
+  fun getModernPlate(model: IBirthDataNamePlace): Builder {
+    return getModernPlate(model.time , model.location , model.place , model.gender , model.name)
+  }
 }
 
 class ZModernContext(
