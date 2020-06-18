@@ -22,7 +22,8 @@ interface IContextMap<T> {
   fun <T> MutableMap<String, String>.putAllExceptDefault(ctxMap: IContextMap<T>,
                                                          defaultValue: T, value: T) {
     if (value != defaultValue) {
-      putAll(ctxMap.getMap(value))
+      putAll(ctxMap.getMapExceptDefault(value))
+      //putAll(ctxMap.getMap(value))
     }
   }
 }
