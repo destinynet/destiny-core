@@ -4,10 +4,11 @@
  */
 package destiny.core.calendar
 
+import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 /** 某class 具有 Time 的資料結構  */
-interface ITime {
+interface ITime : Serializable {
 
   val time: ChronoLocalDateTime<*>
 }
