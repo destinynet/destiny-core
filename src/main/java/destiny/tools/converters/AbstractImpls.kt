@@ -39,6 +39,13 @@ interface MapConverter<T> : IContextMap<T> {
 interface MapConverterWithDefault<T> : MapConverter<T> {
   val defaultImpl: T
 
+  override fun getMapExceptDefault(context: T): Map<String, String> {
+    return if (defaultImpl == context)
+      emptyMap()
+    else
+      getMap(context)
+  }
+
   fun getContextWithDefault(map: Map<String, String>): T {
     return getContext(map) ?: defaultImpl
   }
@@ -51,13 +58,13 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   fun getStringValue(t: T): String
   fun getStringValue(t: () -> T): String
 
-  override fun getMapExceptDefault(context: T): Map<String, String> {
-    return if (context != defaultImpl) {
-      getMap(context)
-    } else {
-      emptyMap()
-    }
-  }
+//  override fun getMapExceptDefault(context: T): Map<String, String> {
+//    return if (context != defaultImpl) {
+//      getMap(context)
+//    } else {
+//      emptyMap()
+//    }
+//  }
 }
 
 
