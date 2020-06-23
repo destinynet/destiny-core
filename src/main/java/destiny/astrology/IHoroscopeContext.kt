@@ -41,11 +41,17 @@ interface IHoroscopeContext {
     return getHoroscope(gmtJulDay, loc, place, points)
   }
 
+  fun getHoroscope(bdnp: IBirthDataNamePlace , points: Collection<Point>? = null) : IHoroscopeModel {
+    return getHoroscope(bdnp.time , bdnp.location , bdnp.place , points)
+
+  }
 
   /** 最精簡 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation): IHoroscopeModel {
     return getHoroscope(lmt, loc, null, null)
   }
+
+
 
   companion object {
 
@@ -94,6 +100,31 @@ class HoroscopeContext(
                           centric, temperature, pressure, positionMap,
                           cuspDegreeMap)
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is HoroscopeContext) return false
+
+    if (points != other.points) return false
+    if (houseSystem != other.houseSystem) return false
+    if (coordinate != other.coordinate) return false
+    if (centric != other.centric) return false
+    if (temperature != other.temperature) return false
+    if (pressure != other.pressure) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = points.hashCode()
+    result = 31 * result + houseSystem.hashCode()
+    result = 31 * result + coordinate.hashCode()
+    result = 31 * result + centric.hashCode()
+    result = 31 * result + temperature.hashCode()
+    result = 31 * result + pressure.hashCode()
+    return result
+  }
+
 
   companion object {
     private val logger = KotlinLogging.logger { }
