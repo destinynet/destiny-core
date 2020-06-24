@@ -1,6 +1,7 @@
 package destiny.core.chinese.holo
 
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
@@ -43,6 +44,10 @@ interface IHoloContext {
 
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
   fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender , name:String? = null , place:String? = null) : IHolo
+
+  fun getHolo(bdnp: IBirthDataNamePlace) : IHolo {
+    return getHolo(bdnp.time , bdnp.location , bdnp.gender , bdnp.name , bdnp.place)
+  }
 
 
   /**
