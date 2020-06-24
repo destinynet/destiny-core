@@ -14,12 +14,8 @@ import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
-interface IPersonContextModel : IEightWordsContextModel {
-  /** 性別 */
-  val gender: Gender
-
-  /** 名稱 */
-  val name: String?
+/** 八字 (包含 人 的資料) */
+interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 
   /** 總共要輸出的大運  */
   val fortuneDataLarges: List<FortuneData>

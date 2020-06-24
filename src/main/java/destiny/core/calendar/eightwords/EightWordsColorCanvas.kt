@@ -67,7 +67,7 @@ class EightWordsColorCanvas(
    */
   val metaDataColorCanvas: ColorCanvas
     get() {
-      val lmt = model.lmt
+      val lmt = model.time
       val location = model.location
       val cc = ColorCanvas(9, 52, ChineseStringTools.NULL_CHAR)
 

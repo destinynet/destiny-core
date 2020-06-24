@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.astrology.*
+import destiny.core.ITimeLoc
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.TimeTools
@@ -23,20 +24,13 @@ data class PositionWithBranch(
 
 
 /** 純粹八字（不含「人」的資料） */
-interface IEightWordsContextModel {
+interface IEightWordsContextModel : ITimeLoc {
   val eightWords: IEightWords
-
-  val lmt: ChronoLocalDateTime<*>
-
-  val location: ILocation
 
   /** 是否有日光節約  */
   val dst: Boolean
 
   val gmtMinuteOffset: Int
-
-  val gmtJulDay
-    get() = TimeTools.getGmtJulDay(lmt, location)
 
   /** 地點名稱  */
   val place: String?
@@ -89,7 +83,7 @@ interface IEightWordsContext : IEightWordsStandardFactory {
  */
 data class EightWordsContextModel(
   override val eightWords: IEightWords,
-  override val lmt: ChronoLocalDateTime<*>,
+  override val time: ChronoLocalDateTime<*>,
   override val location: ILocation,
   /** 地點名稱  */
   override val place: String?,
@@ -126,7 +120,7 @@ data class EightWordsContextModel(
   override val gmtMinuteOffset: Int
 
   init {
-    val (first, second) = TimeTools.getDstSecondOffset(lmt, location)
+    val (first, second) = TimeTools.getDstSecondOffset(time, location)
     this.dst = first
     this.gmtMinuteOffset = second / 60
   }

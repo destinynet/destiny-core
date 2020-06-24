@@ -33,7 +33,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
   var outputMode = OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
-    val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.lmt, model.location, model.place)
+    val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.time, model.location, model.place)
     EightWordsColorCanvas(m, personContext, model.place ?: "", hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
 
