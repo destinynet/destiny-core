@@ -57,14 +57,6 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   fun getImpl(implKey: String): T
   fun getStringValue(t: T): String
   fun getStringValue(t: () -> T): String
-
-//  override fun getMapExceptDefault(context: T): Map<String, String> {
-//    return if (context != defaultImpl) {
-//      getMap(context)
-//    } else {
-//      emptyMap()
-//    }
-//  }
 }
 
 

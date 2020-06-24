@@ -120,6 +120,29 @@ class PalmContext(val ewImpl: IEightWordsStandardFactory,
     return PalmModelDesc(houseDescriptions, hourPoem, hourContent)
   }
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is PalmContext) return false
+
+    if (positiveImpl != other.positiveImpl) return false
+    if (risingSignImpl != other.risingSignImpl) return false
+    if (monthAlgo != other.monthAlgo) return false
+    if (trueRisingSign != other.trueRisingSign) return false
+    if (clockwiseHouse != other.clockwiseHouse) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = positiveImpl.hashCode()
+    result = 31 * result + risingSignImpl.hashCode()
+    result = 31 * result + monthAlgo.hashCode()
+    result = 31 * result + trueRisingSign.hashCode()
+    result = 31 * result + clockwiseHouse.hashCode()
+    return result
+  }
+
+
   companion object {
     val logger = KotlinLogging.logger { }
   }
