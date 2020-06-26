@@ -152,9 +152,6 @@ data class Holo(
   override val monthlyHexagram: Hexagram,
   override val dailyHexagramMap: Map<IDailyHexagram, Hexagram>,
   override val goldenKey: GoldenKey? ,
-  override val summaries: List<String>) : IHolo, IBirthDataNamePlace by birthData {
-
-
-}
+  override val summaries: List<String>) : IHolo, IBirthDataNamePlace by birthData
 
 
