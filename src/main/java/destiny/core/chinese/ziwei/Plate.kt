@@ -25,7 +25,7 @@ interface IPlate : Serializable {
   val localDateTime: ChronoLocalDateTime<*>?
 
   /** 出生年的干支 (可能是節氣、也可能是陰曆) */
-  val year : StemBranch
+  val year: StemBranch
 
   /** 出生地點  */
   val location: ILocation?
@@ -34,7 +34,7 @@ interface IPlate : Serializable {
   val place: String?
 
   /** 日、夜？ */
-  val dayNight : DayNight
+  val dayNight: DayNight
 
   /** 性別  */
   val gender: Gender
@@ -81,36 +81,38 @@ interface IPlate : Serializable {
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
   val vageMap: Map<Int, Pair<Double, Double>>?
 
+  val summaries: List<String>
+
 
   // =========== 以上 ↑↑ fields for overridden ↑↑ ===========
 
   /** 宮位名稱 -> 宮位資料  */
   val houseMap: Map<House, HouseData>
-    get() = houseDataSet.toList().map { hd -> hd.house to hd }.toMap()
+  //get() = houseDataSet.toList().map { hd -> hd.house to hd }.toMap()
 
   /** 星體 -> 宮位資料  */
   val starMap: Map<ZStar, HouseData>
-    get() = houseDataSet
-      .flatMap { hd -> hd.stars.map { star -> star to hd } }
-      .toMap()
+//    get() = houseDataSet
+//      .flatMap { hd -> hd.stars.map { star -> star to hd } }
+//      .toMap()
 
   /** 宮位地支 -> 星體s  */
   val branchStarMap: Map<Branch, Collection<ZStar>>
-    get() = houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
+//    get() = houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
 
   /** 宮位名稱 -> 星體s  */
   val houseStarMap: Map<House, Set<ZStar>>
-    get() = houseDataSet.map { it.house to it.stars }.toMap()
+//    get() = houseDataSet.map { it.house to it.stars }.toMap()
 
   /** 本命盤中，此地支的宮位名稱是什麼  */
   val branchHouseMap: Map<Branch, House>
-    get() = branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
+//    get() = branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
 
 
   // =========== 以上 ↑↑ functions ↑↑ ===========
 
   /** 取得這些星體所在宮位的地支 */
-  fun getBranches(vararg stars: ZStar) : List<Branch> {
+  fun getBranches(vararg stars: ZStar): List<Branch> {
     return stars.mapNotNull { star -> starMap[star]?.stemBranch?.branch }
   }
 
@@ -139,16 +141,16 @@ interface IPlate : Serializable {
   }
 
   /** 取得此星，的四化值 (maybe null) */
-  fun getTransFourValue(star: ZStar , type: FlowType = FlowType.本命): ITransFour.Value? {
+  fun getTransFourValue(star: ZStar, type: FlowType = FlowType.本命): ITransFour.Value? {
     return tranFours[star]?.let { m -> m[type] }
   }
 
   /**
    * 取得此四化星，在哪一宮位
    * */
-  fun getTransFourHouseOf(value : ITransFour.Value , type: FlowType = FlowType.本命) : HouseData {
+  fun getTransFourHouseOf(value: ITransFour.Value, type: FlowType = FlowType.本命): HouseData {
     val star = tranFours.entries.first { (_, map) ->
-      map.any { (t,v) -> t == type && v == value }
+      map.any { (t, v) -> t == type && v == value }
     }.key
     return getHouseDataOf(star)!!
   }
@@ -223,7 +225,7 @@ data class Plate(
   override val localDateTime: ChronoLocalDateTime<*>?,
 
   /** 出生年的干支 (可能是節氣、也可能是陰曆) */
-  override val year : StemBranch,
+  override val year: StemBranch,
 
   /** 出生地點  */
   override val location: ILocation?,
@@ -277,4 +279,35 @@ data class Plate(
   override val notes: List<String>,
 
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
-  override val vageMap: Map<Int, Pair<Double, Double>>?) : IPlate, Serializable
+  override val vageMap: Map<Int, Pair<Double, Double>>?,
+
+  override val summaries: List<String>) : IPlate, Serializable {
+
+
+  /** 宮位名稱 -> 宮位資料  */
+  override val houseMap: Map<House, HouseData> by lazy {
+    houseDataSet.toList().map { hd -> hd.house to hd }.toMap()
+  }
+
+  /** 星體 -> 宮位資料  */
+  override val starMap: Map<ZStar, HouseData> by lazy {
+    houseDataSet
+      .flatMap { hd -> hd.stars.map { star -> star to hd } }
+      .toMap()
+  }
+
+  /** 宮位地支 -> 星體s  */
+  override val branchStarMap: Map<Branch, Collection<ZStar>> by lazy {
+    houseDataSet.groupBy { it.stemBranch.branch }.mapValues { it.value.flatMap { hData -> hData.stars } }
+  }
+
+  /** 宮位名稱 -> 星體s  */
+  override val houseStarMap: Map<House, Set<ZStar>> by lazy {
+    houseDataSet.map { it.house to it.stars }.toMap()
+  }
+
+  /** 本命盤中，此地支的宮位名稱是什麼  */
+  override val branchHouseMap: Map<Branch, House> by lazy {
+    branchFlowHouseMap.map { it.key to it.value.getValue(FlowType.本命) }.toMap()
+  }
+}

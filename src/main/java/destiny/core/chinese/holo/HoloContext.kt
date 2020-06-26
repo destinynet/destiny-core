@@ -13,6 +13,7 @@ import destiny.fengshui.sanyuan.IYuan
 import destiny.fengshui.sanyuan.Yuan
 import destiny.iching.*
 import destiny.iching.Symbol.*
+import destiny.iching.contentProviders.IHexNameFull
 import destiny.iching.divine.ISettingsOfStemBranch
 import mu.KotlinLogging
 import java.io.Serializable
@@ -34,6 +35,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
                   val goldenKeyProvider: IGoldenKeyProvider,
                   override val monthlyHexagramImpl: IMonthlyHexagram = MonthlyHexagramSignImpl.instance,
                   val dailyHexagramService: IDailyHexagramService,
+                  val nameFullImpl: IHexNameFull,
                   override val threeKings: IHoloContext.ThreeKingsAlgo? = IHoloContext.ThreeKingsAlgo.HALF_YEAR,
                   override val hexChange: IHoloContext.HexChange = IHoloContext.HexChange.DST
 ) : IHoloContext, Serializable {
@@ -294,6 +296,26 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
     // 金鎖銀匙歌 參評歌訣
     val goldenKey = goldenKeyProvider.getBaseGoldenKey(NaYin.getFiveElement(ew.year), ew.day.branch, ew.hour.branch, gender)
 
+
+    val summaries: List<String> = run {
+      val line1 = StringBuilder().apply {
+        append("天數")
+        append(heavenNumber)
+        append("，地數")
+        append(earthNumber)
+      }.toString()
+
+      val line2 = StringBuilder().apply {
+        append("先天卦：")
+        append(nameFullImpl.getHexagram(Hexagram.of(hexagramCongenital)))
+        append("，後天卦：")
+        append(nameFullImpl.getHexagram(Hexagram.of(hexagramAcquired)))
+      }.toString()
+
+      listOf(line1, line2)
+    }
+
+
     return Holo(birthData, ew, gender, yuan, solarTermsPos,
       heavenNumber, heavenSymbol,
       earthNumber, earthSymbol,
@@ -303,7 +325,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
       seasonalSymbols, seasonlessSymbols,
       seasonalHexagram, monthlyHexagram,
       dailyHexagramMap,
-      goldenKey)
+      goldenKey , summaries)
   } // getHolo(inner)
 
   /**

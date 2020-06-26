@@ -126,6 +126,8 @@ interface IHolo : IBirthDataNamePlace {
 
   /** 金鎖銀匙 參評歌訣 */
   val goldenKey : GoldenKey?
+
+  val summaries : List<String>
 }
 
 data class Holo(
@@ -149,6 +151,10 @@ data class Holo(
   override val seasonalHexagram: Pair<Hexagram, Int>,
   override val monthlyHexagram: Hexagram,
   override val dailyHexagramMap: Map<IDailyHexagram, Hexagram>,
-  override val goldenKey: GoldenKey?) : IHolo, IBirthDataNamePlace by birthData
+  override val goldenKey: GoldenKey? ,
+  override val summaries: List<String>) : IHolo, IBirthDataNamePlace by birthData {
+
+
+}
 
 

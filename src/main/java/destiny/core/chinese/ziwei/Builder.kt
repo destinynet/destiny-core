@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
+import destiny.astrology.toString
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
@@ -10,6 +11,7 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.personal.IPersonContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
+import destiny.core.chinese.NaYin
 import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
 import java.io.Serializable
@@ -48,7 +50,7 @@ class Builder(
   /** 五行  */
   private val fiveElement: FiveElement,
   /** 五行第幾局  */
-  val set: Int,
+  val state: Int,
   /**
    *
    * 干支 -> 宮位 的對照表
@@ -152,7 +154,7 @@ class Builder(
       val fromTo = flowBigMap.getValue(sb) // 必定不為空
       val smallRanges = branchSmallRangesMap.getValue(sb.branch)
       HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
-                fromTo.second, smallRanges)
+        fromTo.second, smallRanges)
     }.toSet()
 
   } // builder init
@@ -181,7 +183,7 @@ class Builder(
   fun appendTrans4Map(map: Map<Pair<ZStar, FlowType>, ITransFour.Value>): Builder {
     map.forEach { (starFlowType, value) ->
 
-      val (star , flowType) = starFlowType
+      val (star, flowType) = starFlowType
 
       this.transFourMap.computeIfPresent(star) { _, flowTypeValueMap ->
         flowTypeValueMap.putIfAbsent(flowType, value)
@@ -357,11 +359,44 @@ class Builder(
   }
 
   fun build(): IPlate {
-    val plate =
-      Plate(name, chineseDate, localDateTime, year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
-            bodyStar,
-            fiveElement, set, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
-            vageMap)
+
+    val summaries: List<String> = run {
+
+      val starMap = houseDataSet
+        .flatMap { hd -> hd.stars.map { star -> star to hd } }
+        .toMap()
+
+      val locale = Locale.TAIWAN
+      val line1 = StringBuilder().apply {
+        append("命宮在")
+        append(mainHouse.branch).append(",")
+
+        append(StarMain.紫微.toString(Locale.getDefault())).append("在")
+        starMap[StarMain.紫微]?.also { 紫微house: HouseData ->
+          append(紫微house.stemBranch.branch)
+          append("(").append(紫微house.house).append("宮)")
+        }
+      }.toString()
+
+      val line2 = StringBuilder().apply {
+        val 納音 = NaYin.getDesc(mainHouse, locale)
+        append(納音 + " " + fiveElement.toString() + state + "局")
+      }.toString()
+
+
+      val line3 = StringBuilder().apply {
+        append("命主：")
+        append(mainStar.toString(locale))
+        append("，")
+        append("身主：")
+        append(bodyStar.toString(locale))
+      }.toString()
+      listOf(line1, line2, line3)
+    }
+
+    val plate = Plate(name, chineseDate, localDateTime, year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
+      bodyStar, fiveElement, state, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
+      vageMap, summaries)
     return if (personModel == null) {
       plate
     } else {
