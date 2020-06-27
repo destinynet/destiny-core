@@ -5,12 +5,11 @@ package destiny.fengshui
 
 import destiny.astrology.Planet
 import destiny.core.ITimeLoc
-import destiny.core.TimeLoc
 import destiny.tools.location.IStaticMap
 import java.io.Serializable
 
 interface ICompassMapOverlayModel : ITimeLoc, Serializable {
-  val timeLoc: TimeLoc
+  val timeLoc: ITimeLoc
   val place: String?
 
   val width: Int
@@ -36,7 +35,7 @@ interface ICompassMapOverlayModel : ITimeLoc, Serializable {
 }
 
 data class CompassMapOverlayModel(
-  override val timeLoc: TimeLoc,
+  override val timeLoc: ITimeLoc,
   override val place: String? = null,
   override val width: Int = 640,
   /** 北方朝上 */
