@@ -1,5 +1,8 @@
 package destiny.core
 
+import destiny.iching.ISymbolOrder
+import destiny.iching.Symbol
+
 /** 3x3 Grid */
 enum class TriGrid {
   B,   // 底
@@ -25,5 +28,18 @@ enum class TriGrid {
       R -> RB
       RB -> B
     }
+  }
+
+  companion object {
+
+    fun getGridMap(view: Symbol , symbolOrder : ISymbolOrder): Map<TriGrid, Symbol?> {
+
+      val grids: List<TriGrid> = generateSequence(B) { it.clockWise()!! }.take(8).toList()
+      val chartBlocks: List<Symbol?> =
+        generateSequence(view) { symbolOrder.getClockwiseSymbol(it) }.take(8)
+          .toList()
+
+      return grids.zip(chartBlocks).plusElement(Pair(C, null)).toMap()
+    } // getGridMap
   }
 }

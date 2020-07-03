@@ -26,7 +26,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
     return acquiredList.indexOf(s1) - acquiredList.indexOf(s2)
   }
 
-  companion object {
+  companion object : ISymbolOrder {
     /** 後天八卦 */
     private val acquired = arrayOf(坎, 坤, 震, 巽, 乾, 兌, 艮, 離)
 
@@ -105,7 +105,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
     /**
      * 以順時針方向取得一卦
      */
-    fun getClockwiseSymbol(s: Symbol): Symbol {
+    override fun getClockwiseSymbol(s: Symbol): Symbol {
       return when (s) {
         坎 -> 艮
         坤 -> 兌
@@ -121,7 +121,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
     /**
      * 逆時針
      */
-    fun getCounterClockwiseSymbol(s: Symbol) : Symbol {
+    override fun getCounterClockwiseSymbol(s: Symbol) : Symbol {
       return when(s) {
         巽 -> 震
         震 -> 艮
@@ -137,7 +137,7 @@ class SymbolAcquired internal constructor() : Comparator<Symbol> {
     /**
      * 取得對沖之卦
      */
-    fun getOppositeSymbol(s: Symbol): Symbol {
+    override fun getOppositeSymbol(s: Symbol): Symbol {
       return when (s) {
         坎 -> 離
         坤 -> 艮

@@ -36,17 +36,6 @@ object ChartMntContext {
   } // getChartMnt
 
 
-  private fun getGridMap(view: Symbol): Map<TriGrid, Symbol?> {
-
-    val grids: List<TriGrid> = generateSequence(TriGrid.B) { it.clockWise()!! }.take(8).toList()
-    val chartBlocks: List<Symbol?> =
-      generateSequence(view) { SymbolAcquired.getClockwiseSymbol(it) }.take(8)
-        .toList()
-
-    return grids.zip(chartBlocks).plusElement(Pair(TriGrid.C, null)).toMap()
-  } // getGridMap
-
-
   /** 取得 [IChartMntPresenter] 的實作 [ChartMntPresenter] */
   fun getChartPresenter(period: Int,
                         mnt : Mountain,
@@ -54,7 +43,7 @@ object ChartMntContext {
                         replacementImpl: IReplacement? = null) : IChartMntPresenter {
     val blocks : List<ChartBlock> = getChartMnt(period, mnt, replacementImpl).blocks
     val useReplacement = replacementImpl != null
-    return ChartMntPresenter(period, mnt, view, useReplacement, blocks, getGridMap(view))
+    return ChartMntPresenter(period, mnt, view, useReplacement, blocks, TriGrid.getGridMap(view , SymbolAcquired))
   }
 
 

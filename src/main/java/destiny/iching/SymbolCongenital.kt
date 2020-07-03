@@ -25,7 +25,7 @@ class SymbolCongenital internal constructor() : Comparator<Symbol> {
     return congenitals.indexOf(s1) - congenitals.indexOf(s2)
   }
 
-  companion object {
+  companion object : ISymbolOrder {
     /** 先天八卦 */
     private val congenitals = arrayOf(乾, 兌, 離, 震, 巽, 坎, 艮, 坤)
 
@@ -50,13 +50,13 @@ class SymbolCongenital internal constructor() : Comparator<Symbol> {
       var remainder = index % 8
       if (remainder == 0)
         remainder = 8
-      return congenitals[remainder-1]
+      return congenitals[remainder - 1]
     }
 
     /**
      * 以順時針方向取得一卦
      */
-    fun getClockwiseSymbol(s: Symbol): Symbol {
+    override fun getClockwiseSymbol(s: Symbol): Symbol {
       return when (s) {
         乾 -> 巽
         兌 -> 乾
@@ -70,9 +70,25 @@ class SymbolCongenital internal constructor() : Comparator<Symbol> {
     }
 
     /**
+     * 逆時針
+     */
+    override fun getCounterClockwiseSymbol(s: Symbol): Symbol {
+      return when (s) {
+        乾 -> 兌
+        兌 -> 離
+        離 -> 震
+        震 -> 坤
+        巽 -> 乾
+        坎 -> 巽
+        艮 -> 坎
+        坤 -> 艮
+      }
+    }
+
+    /**
      * 對沖的卦
      */
-    fun getOppositeSymbol(s: Symbol): Symbol {
+    override fun getOppositeSymbol(s: Symbol): Symbol {
       return when (s) {
         乾 -> 坤
         兌 -> 艮
