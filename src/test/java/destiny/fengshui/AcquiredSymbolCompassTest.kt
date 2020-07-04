@@ -12,10 +12,10 @@ import kotlin.test.assertSame
 
 class AcquiredSymbolCompassTest {
 
+  val compass = AcquiredSymbolCompass()
+
   @Test
   fun testAcquiredSymbolCompass() {
-    val compass = AcquiredSymbolCompass()
-
     assertEquals(337.5, compass.getStartDegree(坎))
     assertEquals(22.5, compass.getStartDegree(艮))
 
@@ -27,5 +27,19 @@ class AcquiredSymbolCompassTest {
     assertSame(坎, compass.get(345.0))
     assertSame(坎, compass.get(359.0))
 
+
+  }
+
+  @Test
+  fun testCenter() {
+    assertEquals(0.0 , compass.getCenterDegree(坎))
+    assertEquals(45.0 , compass.getCenterDegree(艮))
+    assertEquals(90.0 , compass.getCenterDegree(震))
+    assertEquals(135.0 , compass.getCenterDegree(巽))
+
+    assertEquals(180.0 , compass.getCenterDegree(離))
+    assertEquals(225.0 , compass.getCenterDegree(坤))
+    assertEquals(270.0 , compass.getCenterDegree(兌))
+    assertEquals(315.0 , compass.getCenterDegree(乾))
   }
 }
