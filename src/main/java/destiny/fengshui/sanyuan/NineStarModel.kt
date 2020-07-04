@@ -4,6 +4,7 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.TriGrid
+import destiny.core.chinese.IStemBranch
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 import java.io.Serializable
@@ -16,6 +17,7 @@ enum class Scale {
 }
 
 data class NineStarModel(
+  val stemBranch: IStemBranch,
   val scale: Scale,
   val center: NineStar,
   val map: Map<Symbol, NineStar>) : Serializable

@@ -50,8 +50,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
     return result
   }
 
-  override fun getDay(lmt: ChronoLocalDateTime<*>,
-                      location: ILocation): StemBranch {
+  override fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation): StemBranch {
     // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
     val lmtJulDay = (TimeTools.getGmtJulDay(lmt) + 0.5).toInt()
     var index = (lmtJulDay - 11) % 60

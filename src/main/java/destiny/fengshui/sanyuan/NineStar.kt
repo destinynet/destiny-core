@@ -4,19 +4,21 @@
 package destiny.fengshui.sanyuan
 
 import destiny.core.ILoop
+import destiny.core.chinese.FiveElement
+import destiny.core.chinese.FiveElement.*
 import destiny.iching.Symbol
 import destiny.iching.SymbolAcquired
 
-enum class NineStar(val period: Int) : ILoop<NineStar> {
-  貪狼(1), // 一白水星 , 坎
-  巨門(2), // 二黑土星 , 坤
-  祿存(3), // 三碧木星 , 震
-  文曲(4), // 四綠木星 , 巽
-  廉貞(5), // 五黃土星
-  武曲(6), // 六白金星 , 乾
-  破軍(7), // 七赤金星 , 兌
-  左輔(8), // 八白土星 , 艮
-  右弼(9); // 九紫火星 , 離
+enum class NineStar(val period: Int , val color : Char , val fiveElement: FiveElement) : ILoop<NineStar> {
+  貪狼(1 , '白' , 水), // 一白水星 , 坎
+  巨門(2 , '黑' , 土), // 二黑土星 , 坤
+  祿存(3 , '碧' , 木), // 三碧木星 , 震
+  文曲(4 , '綠' , 木), // 四綠木星 , 巽
+  廉貞(5 , '黃' , 土), // 五黃土星
+  武曲(6 , '白' , 金), // 六白金星 , 乾
+  破軍(7 , '赤' , 金), // 七赤金星 , 兌
+  左輔(8 , '白' , 土), // 八白土星 , 艮
+  右弼(9 , '紫' , 火); // 九紫火星 , 離
 
   /** 取得對應的八卦 */
   val symbol: Symbol? = SymbolAcquired.getSymbolNullable(period)
