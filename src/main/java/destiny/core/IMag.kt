@@ -8,9 +8,12 @@ package destiny.core
  */
 data class Mag(val declination: Double,
                val dipAngle: Double,
+               val northIntensity: Double,
                val eastIntensity: Double,
-               val horizontalIntensity: Double)
+               val verticalIntensity: Double,
+               val horizontalIntensity: Double
+)
 
 interface IMag {
-  fun getMag(lat: Double, lng: Double)
+  fun getMag(lat: Double, lng: Double , alt:Double = 0.0)  : Mag
 }
