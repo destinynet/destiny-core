@@ -9,6 +9,14 @@ import destiny.tools.location.IStaticMap
 import java.io.Serializable
 
 interface ICompassMapOverlayModel : ITimeLoc, Serializable {
+
+  enum class NorthType {
+    /** 正北 */
+    TRUE,
+    /** 磁北 */
+    MAGNETIC
+  }
+
   val timeLoc: ITimeLoc
   val place: String?
 
@@ -16,6 +24,12 @@ interface ICompassMapOverlayModel : ITimeLoc, Serializable {
 
   /** 北方朝上 */
   val rotate: Double
+
+  /** 地磁偏角 */
+  val magDeclination : Double
+
+  /** 正北 or 磁北 */
+  val northType : NorthType
 
   /**
    * 14 : 城鎮
@@ -40,6 +54,13 @@ data class CompassMapOverlayModel(
   override val width: Int = 640,
   /** 北方朝上 */
   override val rotate: Double = 0.0,
+
+  /** 地磁偏角 */
+  override val magDeclination: Double,
+
+  /** 正北 or 磁北 */
+  override val northType: ICompassMapOverlayModel.NorthType = ICompassMapOverlayModel.NorthType.TRUE,
+
   /**
    * 14 : 城鎮
    * 16 : 街道
@@ -56,7 +77,7 @@ data class CompassMapOverlayModel(
 
   constructor(model: ICompassMapOverlayModel) : this(
     model.timeLoc, model.place, model.width,
-    model.rotate, model.zoom, model.opaque,
+    model.rotate, model.magDeclination, model.northType, model.zoom, model.opaque,
     model.scale, model.mapType)
 }
 

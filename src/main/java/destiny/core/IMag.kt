@@ -3,6 +3,8 @@
  */
 package destiny.core
 
+import java.time.LocalDate
+
 /**
  * 地磁資訊
  */
@@ -15,5 +17,5 @@ data class Mag(val declination: Double,
 )
 
 interface IMag {
-  fun getMag(lat: Double, lng: Double , alt:Double = 0.0)  : Mag
+  fun getMag(lat: Double, lng: Double, alt: Double = 0.0, date: LocalDate): Mag
 }
