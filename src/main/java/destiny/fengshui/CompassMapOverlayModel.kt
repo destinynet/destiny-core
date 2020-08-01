@@ -31,6 +31,9 @@ interface ICompassMapOverlayModel : ITimeLoc, Serializable {
   /** 正北 or 磁北 */
   val northType : NorthType
 
+  val finalRotate: Double
+    get() = if (northType == NorthType.TRUE) rotate else rotate + magDeclination
+
   /**
    * 14 : 城鎮
    * 16 : 街道
