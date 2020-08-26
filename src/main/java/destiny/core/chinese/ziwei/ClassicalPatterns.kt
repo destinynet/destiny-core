@@ -1147,7 +1147,7 @@ val p坐貴向貴 = object : PatternSingleImpl() {
 val p廉貞文武 = object : PatternSingleImpl() {
   override fun getSingle(it: IPlate, pContext: IPatternContext): IPattern? {
     return it.mainHouse
-      .takeIf { branch -> it.starMap[廉貞]?.stemBranch?.branch == branch }  // 廉貞坐命
+      .takeIf { sb -> it.starMap[廉貞]?.stemBranch?.branch == sb.branch }  // 廉貞坐命
       ?.takeIf { _ -> it.starMap[武曲]?.house == 官祿 }          // 武曲官祿
       ?.takeIf { _ -> it.昌曲().intersect(it.三方四正()).isNotEmpty() } // 三方四正有昌或曲
       ?.let { 廉貞文武 }

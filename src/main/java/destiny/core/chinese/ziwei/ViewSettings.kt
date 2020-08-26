@@ -13,7 +13,7 @@ data class ViewSettings(
   val selfTransFour: SelfTransFour = SelfTransFour.SELF_TRANS_FOUR_TEXT,
 
   /** 宮干四化「化入對宮」的顯示選項  */
-  val oppoTransFour: OppoTransFour = OppoTransFour.OPPO_TRANS_FOUR_ARROW,
+  val oppoTransFour: OppoTransFour = OppoTransFour.OPPO_TRANS_FOUR_ARROW_TO,
 
   /** 是否顯示小限  */
   val showSmallRange: Boolean = false,
@@ -59,8 +59,12 @@ data class ViewSettings(
     /** 不顯示  */
     OPPO_TRANS_FOUR_NONE,
 
-    /** 朝內(對宮) 箭頭  */
-    OPPO_TRANS_FOUR_ARROW;
+    /** 朝內(對宮) 箭頭 , 四化星靠近本宮 */
+    OPPO_TRANS_FOUR_ARROW_FROM,
+
+    /** 朝內(對宮) 箭頭 , 四化星靠近對宮 */
+    OPPO_TRANS_FOUR_ARROW_TO
+
   }
 }
 
