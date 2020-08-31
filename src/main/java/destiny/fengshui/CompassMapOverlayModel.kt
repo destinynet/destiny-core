@@ -5,17 +5,10 @@ package destiny.fengshui
 
 import destiny.astrology.Planet
 import destiny.core.ITimeLoc
-import destiny.tools.location.IStaticMap
+import destiny.tools.location.MapType
 import java.io.Serializable
 
 interface ICompassMapOverlayModel : ITimeLoc, Serializable {
-
-  enum class NorthType {
-    /** 正北 */
-    TRUE,
-    /** 磁北 */
-    MAGNETIC
-  }
 
   val timeLoc: ITimeLoc
   val place: String?
@@ -48,7 +41,7 @@ interface ICompassMapOverlayModel : ITimeLoc, Serializable {
   val scale: Int
 
   /** 內定為道路圖 */
-  val mapType: IStaticMap.MapType
+  val mapType: MapType
 }
 
 data class CompassMapOverlayModel(
@@ -62,7 +55,7 @@ data class CompassMapOverlayModel(
   override val magDeclination: Double,
 
   /** 正北 or 磁北 */
-  override val northType: ICompassMapOverlayModel.NorthType = ICompassMapOverlayModel.NorthType.TRUE,
+  override val northType: NorthType = NorthType.TRUE,
 
   /**
    * 14 : 城鎮
@@ -75,7 +68,7 @@ data class CompassMapOverlayModel(
   /** 放大倍數 1,2 or 4 */
   override val scale: Int = 1,
   /** 內定為道路圖 */
-  override val mapType: IStaticMap.MapType = IStaticMap.MapType.roadmap
+  override val mapType: MapType = MapType.roadmap
 ) : ITimeLoc by timeLoc, ICompassMapOverlayModel {
 
   constructor(model: ICompassMapOverlayModel) : this(

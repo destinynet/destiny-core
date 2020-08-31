@@ -9,10 +9,6 @@ import java.util.*
 
 interface IStaticMap {
 
-  enum class MapType {
-    roadmap, satellite, hybrid, terrain
-  }
-
   data class Marker(val latLng: ILatLng,
                     val color: Color = Color.decode("#EA4335"),
                     val label: Char? = null)
@@ -27,6 +23,6 @@ interface IStaticMap {
                        zoom : Int = 15,
                        mapType: MapType = MapType.roadmap,
                        scale: Int = 1,
-                       locale: Locale = Locale.getDefault() ,
+                       locale: Locale = Locale.getDefault(),
                        markers : List<Marker> = emptyList()): ByteArray
 }

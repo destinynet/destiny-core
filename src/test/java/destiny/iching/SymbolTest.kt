@@ -7,7 +7,6 @@ package destiny.iching
 import destiny.core.DayNight.DAY
 import destiny.core.DayNight.NIGHT
 import destiny.core.chinese.FiveElement.*
-import destiny.core.chinese.IYinYang
 import destiny.iching.Symbol.*
 import java.util.*
 import kotlin.test.Test
@@ -76,14 +75,14 @@ class SymbolTest {
 
   @Test
   fun testGetSymbolFromIYinYang() {
-    assertSame(乾, Symbol.getSymbol(arrayOf<IYinYang>(DAY, DAY, DAY)))
-    assertSame(兌, Symbol.getSymbol(arrayOf<IYinYang>(DAY, DAY, NIGHT)))
-    assertSame(離, Symbol.getSymbol(arrayOf<IYinYang>(DAY, NIGHT, DAY)))
-    assertSame(震, Symbol.getSymbol(arrayOf<IYinYang>(DAY, NIGHT, NIGHT)))
-    assertSame(巽, Symbol.getSymbol(arrayOf<IYinYang>(NIGHT, DAY, DAY)))
-    assertSame(坎, Symbol.getSymbol(arrayOf<IYinYang>(NIGHT, DAY, NIGHT)))
-    assertSame(艮, Symbol.getSymbol(arrayOf<IYinYang>(NIGHT, NIGHT, DAY)))
-    assertSame(坤, Symbol.getSymbol(arrayOf<IYinYang>(NIGHT, NIGHT, NIGHT)))
+    assertSame(乾, Symbol.getSymbol(arrayOf(DAY, DAY, DAY)))
+    assertSame(兌, Symbol.getSymbol(arrayOf(DAY, DAY, NIGHT)))
+    assertSame(離, Symbol.getSymbol(arrayOf(DAY, NIGHT, DAY)))
+    assertSame(震, Symbol.getSymbol(arrayOf(DAY, NIGHT, NIGHT)))
+    assertSame(巽, Symbol.getSymbol(arrayOf(NIGHT, DAY, DAY)))
+    assertSame(坎, Symbol.getSymbol(arrayOf(NIGHT, DAY, NIGHT)))
+    assertSame(艮, Symbol.getSymbol(arrayOf(NIGHT, NIGHT, DAY)))
+    assertSame(坤, Symbol.getSymbol(arrayOf(NIGHT, NIGHT, NIGHT)))
   }
 
   @Test
