@@ -44,7 +44,6 @@ interface ICompassMapOverlayModel : ITimeLoc, Serializable {
   val mapType: MapType
 }
 
-@kotlinx.serialization.Serializable
 data class CompassMapOverlayModel(
   override val timeLoc: ITimeLoc,
   override val place: String? = null,

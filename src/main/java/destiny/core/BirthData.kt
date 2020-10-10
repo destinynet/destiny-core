@@ -7,7 +7,6 @@ package destiny.core
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.locationOf
-import kotlinx.serialization.SerialName
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDateTime
@@ -24,8 +23,6 @@ interface ITimeLoc : Serializable {
     }
 }
 
-@kotlinx.serialization.Serializable
-@SerialName("TimeLoc")
 data class TimeLoc(
   override val time: ChronoLocalDateTime<*>,
   override val location: ILocation) : ITimeLoc
