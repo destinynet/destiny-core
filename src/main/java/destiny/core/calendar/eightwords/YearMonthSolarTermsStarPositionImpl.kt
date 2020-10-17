@@ -175,19 +175,3 @@ class YearMonthSolarTermsStarPositionImpl(
   }
 
 }
-
-/** 內定 節氣大運 法 */
-class YearMonthSolarTermsStarPositionImplBuilder {
-  /** 換年的度數 , 通常是立春點 (315) 換年 , 另一個常見的設定是 270.0 (冬至) */
-  var changeYearDegree = 315.0
-  var southernHemisphereOpposition: Boolean = false
-  var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
-
-  fun build(starPositionImpl: IStarPosition<*>, starTransitImpl: IStarTransit): YearMonthSolarTermsStarPositionImpl {
-    return YearMonthSolarTermsStarPositionImpl(starPositionImpl, starTransitImpl, changeYearDegree,
-      southernHemisphereOpposition, hemisphereBy)
-  }
-}
-
-fun yearMonthSolarTermsStarPositionImpl(starPositionImpl: IStarPosition<*>, starTransitImpl: IStarTransit, block: YearMonthSolarTermsStarPositionImplBuilder.() -> Unit = {}) =
-  YearMonthSolarTermsStarPositionImplBuilder().apply(block).build(starPositionImpl, starTransitImpl)
