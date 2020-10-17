@@ -80,6 +80,4 @@ class YearMonthSunSignImpl(
   companion object {
     const val name = "120柱月令"
   }
-
-
 }

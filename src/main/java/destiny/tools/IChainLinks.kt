@@ -11,12 +11,6 @@ import java.util.function.Supplier
 import java.util.stream.Collector
 import java.util.stream.Collectors
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableMap
-import kotlin.collections.Set
-import kotlin.collections.asSequence
-import kotlin.collections.getOrDefault
 import kotlin.collections.set
 
 interface IChainLinks {
@@ -39,7 +33,7 @@ object ChainSlow : IChainLinks {
       .filter { from: T -> !map.containsValue(from) }
       .map { from: T ->
         generateSequence(from) { k: T ->
-          map.getOrDefault(k, null)
+          map[k]
         }.toList()
       }.toSet()
   }
