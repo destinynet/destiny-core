@@ -36,4 +36,6 @@ class FortuneDirectionDefaultImpl(val eightWordsImpl : IEightWordsFactory) : IFo
   }
 
 
+
+
 }
