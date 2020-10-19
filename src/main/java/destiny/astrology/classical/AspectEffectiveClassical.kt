@@ -91,6 +91,15 @@ class AspectEffectiveClassical(
     result = 31 * result + applicableAspects.hashCode()
     return result
   }
-
-
 }
+
+/**
+ * builder for 古典占星 [AspectEffectiveClassical] 交角容許度
+ */
+class AspectEffectiveClassicalBuilder {
+  var planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl()
+  fun build(): AspectEffectiveClassical = AspectEffectiveClassical(planetOrbsImpl)
+}
+
+fun aspectEffectiveClassical(block: AspectEffectiveClassicalBuilder.() -> Unit = {}): AspectEffectiveClassical =
+  AspectEffectiveClassicalBuilder().apply(block).build()

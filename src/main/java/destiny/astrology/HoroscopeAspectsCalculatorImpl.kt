@@ -126,6 +126,6 @@ class HoroscopeAspectsCalculatorImpl(
     result = 31 * result + pointPosFuncMap.hashCode()
     return result
   }
-
-
 }
+
+

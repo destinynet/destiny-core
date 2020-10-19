@@ -89,6 +89,29 @@ class AspectEffectiveModern(
       return abs(angle - aspect.degree) <= orb
     }
   }
+}
 
 
+
+/**
+ * builder for 現代占星 [AspectEffectiveModern] 交角容許度
+ */
+class AspectEffectiveModernBuilder {
+  /** 「不考慮行星」的交角容許度 */
+  var aspectOrbsImpl: IAspectOrbs = AspectOrbsDefaultImpl()
+
+  /** 「考量行星的」交角容許度實作 */
+  var aspectOrbsPlanetImpl: IAspectOrbsPlanet = AspectOrbsPlanetDefaultImpl()
+
+  operator fun invoke(block: AspectEffectiveModernBuilder.() -> Unit = {}): AspectEffectiveModern {
+    block.invoke(this)
+    return AspectEffectiveModern(aspectOrbsImpl, aspectOrbsPlanetImpl)
+  }
+}
+
+fun aspectEffectiveModern(block: AspectEffectiveModernBuilder.() -> Unit = {}): AspectEffectiveModern {
+  val builder = AspectEffectiveModernBuilder()
+  return builder {
+    block()
+  }
 }
