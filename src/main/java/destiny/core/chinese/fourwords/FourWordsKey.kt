@@ -1,5 +1,5 @@
 /** 2009/10/12 上午3:27:09 by smallufo  */
-package destiny.core.calendar.eightwords.fourwords
+package destiny.core.chinese.fourwords
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem

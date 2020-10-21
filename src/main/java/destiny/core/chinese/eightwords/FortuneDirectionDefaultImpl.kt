@@ -3,7 +3,7 @@
  * @date 2005/5/17
  * @time 上午 07:49:08
  */
-package destiny.core.calendar.eightwords.personal
+package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
 import destiny.core.calendar.ILocation

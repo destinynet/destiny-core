@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.core.calendar.eightwords.personal.IPersonContextModel
+import destiny.core.chinese.eightwords.IPersonContextModel
 import java.io.Serializable
 
 /**

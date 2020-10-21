@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2014-11-30.
  */
-package destiny.core.calendar.eightwords.personal
+package destiny.core.chinese.eightwords
 
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable

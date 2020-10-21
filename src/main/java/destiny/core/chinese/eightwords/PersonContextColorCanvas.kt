@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2014-11-30.
  */
-package destiny.core.calendar.eightwords.personal
+package destiny.core.chinese.eightwords
 
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeSecDecoratorChinese

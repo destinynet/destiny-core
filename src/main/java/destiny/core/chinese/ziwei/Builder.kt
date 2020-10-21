@@ -8,7 +8,7 @@ import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.personal.IPersonContextModel
+import destiny.core.chinese.eightwords.IPersonContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.NaYin

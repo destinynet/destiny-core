@@ -7,8 +7,8 @@ package destiny.core.calendar.eightwords
 import destiny.astrology.Planet
 import destiny.astrology.ZodiacSign
 import destiny.core.calendar.*
-import destiny.core.calendar.eightwords.personal.IHiddenStems
-import destiny.core.calendar.eightwords.personal.ReactionUtil
+import destiny.core.chinese.eightwords.IHiddenStems
+import destiny.core.chinese.eightwords.ReactionUtil
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.NaYin

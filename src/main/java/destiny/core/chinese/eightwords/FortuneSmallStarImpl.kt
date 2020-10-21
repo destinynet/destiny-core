@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2018-04-28.
  */
-package destiny.core.calendar.eightwords.personal
+package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
 import destiny.core.IIntAge
