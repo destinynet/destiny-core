@@ -11,17 +11,6 @@ import kotlin.test.*
 
 class AspectEffectiveModernTest  {
 
-  @Test
-  fun testEquality() {
-    val impl1 = AspectEffectiveModern()
-    val impl2 = AspectEffectiveModern(AspectOrbsDefaultImpl(0.9) , AspectOrbsPlanetDefaultImpl())
-    assertEquals(impl1 , impl2)
-
-    val impl3 = AspectEffectiveModern(AspectOrbsDefaultImpl(0.8) , AspectOrbsPlanetDefaultImpl())
-    assertNotEquals(impl1 , impl3)
-  }
-
-
   /** 測試「不考量行星」，注入內定的 AspectOrbsDefaultImpl 實作  */
   @Test
   fun testIsEffective_AspectOrbsDefaultImpl() {

@@ -92,7 +92,6 @@ class AspectEffectiveModern(
 }
 
 
-
 /**
  * builder for 現代占星 [AspectEffectiveModern] 交角容許度
  */
@@ -107,11 +106,14 @@ class AspectEffectiveModernBuilder {
     block.invoke(this)
     return AspectEffectiveModern(aspectOrbsImpl, aspectOrbsPlanetImpl)
   }
-}
 
-fun aspectEffectiveModern(block: AspectEffectiveModernBuilder.() -> Unit = {}): AspectEffectiveModern {
-  val builder = AspectEffectiveModernBuilder()
-  return builder {
-    block()
+  companion object {
+    fun aspectEffectiveModern(block: AspectEffectiveModernBuilder.() -> Unit = {}): AspectEffectiveModern {
+      val builder = AspectEffectiveModernBuilder()
+      return builder {
+        block()
+      }
+    }
   }
 }
+

@@ -9,9 +9,9 @@ import destiny.astrology.AspectData.Type.APPLYING
 import destiny.astrology.AspectData.Type.SEPARATING
 
 /**
- * 計算一張命盤 ( Horoscope ) 中，的交角列表
+ * 計算一張命盤 [IHoroscopeModel] 中，的交角列表
  */
-interface IHoroscopeAspectsCalculator  {
+interface IAspectsCalculator  {
 
   /** 取得此星盤中，所有的交角資料 */
   fun IHoroscopeModel.getAspectData(

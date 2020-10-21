@@ -10,12 +10,12 @@ import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
-class HoroscopeAspectsCalculatorImpl(
+class AspectsCalculatorImpl(
   val aspectEffectiveImpl: IAspectEffective,
   private val starPosWithAzimuth: IStarPositionWithAzimuthCalculator,
   private val houseCuspImpl: IHouseCusp,
   private val pointPosFuncMap: Map<Point, IPosition<*>>
-) : IHoroscopeAspectsCalculator, Serializable {
+) : IAspectsCalculator, Serializable {
 
 
   private fun IHoroscopeModel.getAspectData(twoPoints: Set<Point>, aspects: Collection<Aspect>): AspectData? {
@@ -109,7 +109,7 @@ class HoroscopeAspectsCalculatorImpl(
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (other !is HoroscopeAspectsCalculatorImpl) return false
+    if (other !is AspectsCalculatorImpl) return false
 
     if (aspectEffectiveImpl != other.aspectEffectiveImpl) return false
     if (starPosWithAzimuth != other.starPosWithAzimuth) return false

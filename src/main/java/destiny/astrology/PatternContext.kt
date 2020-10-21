@@ -13,7 +13,7 @@ import org.apache.commons.math3.ml.distance.DistanceMeasure
 import java.io.Serializable
 
 class PatternContext(val aspectEffective: IAspectEffective,
-                     val aspectsCalculator: IHoroscopeAspectsCalculator) : Serializable {
+                     val aspectsCalculator: IAspectsCalculator) : Serializable {
 
   private fun Point.signHouse(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): PointSignHouse {
     return posMap.getValue(this).let { iPos ->

@@ -25,7 +25,7 @@ class PointDiameterLillyImpl : IPointDiameter, Serializable {
   }
 
   override fun getDiameter(point: Point): Double {
-    return planetOrbsMap[point]?:2.0
+    return planetOrbsMap[point] ?: 2.0
   }
 
   override fun equals(other: Any?): Boolean {
@@ -37,7 +37,6 @@ class PointDiameterLillyImpl : IPointDiameter, Serializable {
   override fun hashCode(): Int {
     return javaClass.hashCode()
   }
-
 
   companion object {
     private val planetOrbsMap = mapOf(

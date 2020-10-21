@@ -9,6 +9,7 @@ import destiny.astrology.Aspect.Importance
 import destiny.astrology.IAspectEffective
 import destiny.astrology.IHoroscopeModel
 import destiny.astrology.Point
+import destiny.tools.DestinyMarker
 import java.io.Serializable
 import kotlin.math.abs
 
@@ -96,10 +97,21 @@ class AspectEffectiveClassical(
 /**
  * builder for 古典占星 [AspectEffectiveClassical] 交角容許度
  */
+@DestinyMarker
 class AspectEffectiveClassicalBuilder {
   var planetOrbsImpl: IPointDiameter = PointDiameterAlBiruniImpl()
-  fun build(): AspectEffectiveClassical = AspectEffectiveClassical(planetOrbsImpl)
-}
+  var defaultThreshold: Double = 0.6
+  operator fun invoke(block: AspectEffectiveClassicalBuilder.() -> Unit = {}): AspectEffectiveClassical {
+    block.invoke(this)
+    return AspectEffectiveClassical(planetOrbsImpl, defaultThreshold)
+  }
 
-fun aspectEffectiveClassical(block: AspectEffectiveClassicalBuilder.() -> Unit = {}): AspectEffectiveClassical =
-  AspectEffectiveClassicalBuilder().apply(block).build()
+  companion object {
+    fun aspectEffectiveClassical(block: AspectEffectiveClassicalBuilder.() -> Unit = {}): AspectEffectiveClassical {
+      val builder = AspectEffectiveClassicalBuilder()
+      return builder {
+        block()
+      }
+    }
+  }
+}
