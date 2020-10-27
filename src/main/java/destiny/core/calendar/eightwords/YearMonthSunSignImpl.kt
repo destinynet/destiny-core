@@ -16,21 +16,18 @@ import java.util.*
  * 若是出生之時，太陽位於「節、氣」的「前半段」 , 例如：「立春 到 雨水 之間」 或是 「立夏 到 小滿 之間」
  * 則，地支退一位 , 意味： 地支以星座區分（氣 與 氣之間劃分）
  *
- * 實作方法： 繼承 [YearMonthSolarTermsStarPositionImpl] , 並覆寫其 getMonth 之值
+ * 實作方法： 包含 [YearMonthSolarTermsStarPositionImpl] , 並覆寫其 getMonth 之值
  */
-class YearMonthSunSignImpl(
-  starPositionImpl: IStarPosition<*>,
-  private val ymSolarTermsStarPositionImpl: YearMonthSolarTermsStarPositionImpl,
-  /** 換年的度數 , 通常是立春點 (315) 換年 */
-  changeYearDegree: Double = 315.0,
+class YearMonthSunSignImpl(starPositionImpl: IStarPosition<*>,
+                           private val ymSolarTermsStarPositionImpl: YearMonthSolarTermsStarPositionImpl) :
+  YearEclipticDegreeImpl(ymSolarTermsStarPositionImpl.changeYearDegree, starPositionImpl), IYearMonth {
 
-  override val southernHemisphereOpposition: Boolean = false,
-  override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR)
-  : YearEclipticDegreeImpl(changeYearDegree, starPositionImpl), IYearMonth {
+  override val southernHemisphereOpposition: Boolean = ymSolarTermsStarPositionImpl.southernHemisphereOpposition
+
+  override val hemisphereBy: HemisphereBy = ymSolarTermsStarPositionImpl.hemisphereBy
 
   val solarTermsImpl: ISolarTerms by lazy {
     ymSolarTermsStarPositionImpl.solarTermsImpl
-    //SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
   }
 
   override fun toString(locale: Locale): String {
