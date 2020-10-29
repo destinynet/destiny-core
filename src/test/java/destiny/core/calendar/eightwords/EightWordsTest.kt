@@ -5,8 +5,10 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.chinese.StemBranch
-import org.junit.Assert.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
 
 class EightWordsTest {
 

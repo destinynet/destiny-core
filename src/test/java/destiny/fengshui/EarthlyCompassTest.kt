@@ -5,8 +5,8 @@
  */
 package destiny.fengshui
 
-import org.junit.Assert.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class EarthlyCompassTest {
@@ -16,24 +16,24 @@ class EarthlyCompassTest {
     val compass = EarthlyCompass()
 
     //子山開始度數 (352.5)
-    assertEquals(352.5, compass.getStartDegree(Mountain.子), 0.0)
-    assertEquals(7.5, compass.getEndDegree(Mountain.子), 0.0)
+    assertEquals(352.5, compass.getStartDegree(Mountain.子))
+    assertEquals(7.5, compass.getEndDegree(Mountain.子))
 
     //卯山開始度數 ( 82.5)
-    assertEquals(82.5, compass.getStartDegree(Mountain.卯), 0.0)
-    assertEquals(97.5, compass.getEndDegree(Mountain.卯), 0.0)
+    assertEquals(82.5, compass.getStartDegree(Mountain.卯))
+    assertEquals(97.5, compass.getEndDegree(Mountain.卯))
 
     //癸山開始度數 (  7.5)
-    assertEquals(7.5, compass.getStartDegree(Mountain.癸), 0.0)
-    assertEquals(22.5, compass.getEndDegree(Mountain.癸), 0.0)
+    assertEquals(7.5, compass.getStartDegree(Mountain.癸))
+    assertEquals(22.5, compass.getEndDegree(Mountain.癸))
 
     //午山開始度數 (172.5)
-    assertEquals(172.5, compass.getStartDegree(Mountain.午), 0.0)
-    assertEquals(187.5, compass.getEndDegree(Mountain.午), 0.0)
+    assertEquals(172.5, compass.getStartDegree(Mountain.午))
+    assertEquals(187.5, compass.getEndDegree(Mountain.午))
 
     //乾山開始度數 (307.5)
-    assertEquals(307.5, compass.getStartDegree(Mountain.乾), 0.0)
-    assertEquals(322.5, compass.getEndDegree(Mountain.乾), 0.0)
+    assertEquals(307.5, compass.getStartDegree(Mountain.乾))
+    assertEquals(322.5, compass.getEndDegree(Mountain.乾))
 
 
     //359度是屬於 (子)

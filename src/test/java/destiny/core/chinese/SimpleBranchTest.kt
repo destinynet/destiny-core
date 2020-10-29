@@ -7,8 +7,8 @@ package destiny.core.chinese
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.SimpleBranch.*
 import destiny.core.chinese.SimpleBranch.Companion.getFiveElement
-import org.junit.Assert.assertSame
 import kotlin.test.Test
+import kotlin.test.assertSame
 
 class SimpleBranchTest {
   @Test

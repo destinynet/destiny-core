@@ -3,8 +3,8 @@ package destiny.core.calendar.eightwords
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.StemBranchOptional
-import org.junit.Assert.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class EightWordsNullableTest {
 

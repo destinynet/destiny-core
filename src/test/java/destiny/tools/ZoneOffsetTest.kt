@@ -4,11 +4,11 @@
 package destiny.tools
 
 import mu.KotlinLogging
-import org.junit.Assert.assertEquals
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ZoneOffsetTest {
 
