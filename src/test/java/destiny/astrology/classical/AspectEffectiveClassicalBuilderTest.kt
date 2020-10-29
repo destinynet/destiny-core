@@ -7,6 +7,7 @@ import destiny.astrology.classical.AspectEffectiveClassicalBuilder.Companion.asp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 
 class AspectEffectiveClassicalBuilderTest {
@@ -23,11 +24,15 @@ class AspectEffectiveClassicalBuilderTest {
 
   @Test
   fun notEquals_by_planetOrbsImpl() {
-    val impl1 = aspectEffectiveClassical { }
+    val impl1 = aspectEffectiveClassical {
+      planetOrbsImpl = PointDiameterAlBiruniImpl()
+    }
     val impl2 = aspectEffectiveClassical {
       planetOrbsImpl = PointDiameterLillyImpl()
     }
     assertNotEquals(impl1, impl2)
+    assertTrue(impl1.planetOrbsImpl is PointDiameterAlBiruniImpl)
+    assertTrue(impl2.planetOrbsImpl is PointDiameterLillyImpl)
   }
 
   @Test
