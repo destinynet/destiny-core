@@ -11,18 +11,12 @@ import java.io.StringWriter
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-inline fun <T, R : Any> Iterable<T>.firstNotNullResult(transform: (T) -> R?): R? {
-  for (element in this) {
-    val result = transform(element)
-    if (result != null) return result
-  }
-  return null
+inline fun <T, R : Any> Iterable<T>.firstNotNullResult(crossinline transform: (T) -> R?): R? {
+  return this.asSequence().firstNotNullResult(transform)
 }
 
 inline fun <T, R : Any> Sequence<T>.firstNotNullResult(crossinline transform: (T) -> R?): R? {
-  return this.map { transform(it) }
-    .filterNotNull()
-    .firstOrNull()
+  return this.mapNotNull { transform(it) }.firstOrNull()
 }
 
 private val logger = KotlinLogging.logger { }
