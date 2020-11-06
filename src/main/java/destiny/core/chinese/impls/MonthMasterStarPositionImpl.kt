@@ -28,4 +28,16 @@ class MonthMasterStarPositionImpl(private val starPositionImpl: IStarPosition<*>
     val pos = starPositionImpl.getPosition(Planet.SUN, lmt, location, Centric.GEO, Coordinate.ECLIPTIC)
     return pos.sign.branch
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is MonthMasterStarPositionImpl) return false
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return MonthMasterStarPositionImpl::class.java.hashCode()
+  }
+
+
 }

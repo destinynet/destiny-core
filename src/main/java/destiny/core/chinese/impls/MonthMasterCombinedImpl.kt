@@ -26,4 +26,19 @@ class MonthMasterCombinedImpl(val yearMonthImpl: IYearMonth) : IMonthMaster, Ser
     val monthBranch = yearMonthImpl.getMonth(lmt, location).branch
     return monthBranch.combined
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is MonthMasterCombinedImpl) return false
+
+    if (yearMonthImpl != other.yearMonthImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return yearMonthImpl.hashCode()
+  }
+
+
 }
