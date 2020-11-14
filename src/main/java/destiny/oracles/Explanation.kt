@@ -1,3 +1,5 @@
 package destiny.oracles
 
-data class Explanation(val domain: String, val result: String)
+import java.io.Serializable
+
+data class Explanation(val domain: String, val result: String) : Serializable
