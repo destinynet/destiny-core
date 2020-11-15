@@ -3,7 +3,7 @@
  */
 package destiny.oracles.phrom
 
-import destiny.oracles.Explanation
+import destiny.oracles.Verdict
 import java.io.Serializable
 
 /** 四面佛三十籤 */
@@ -16,7 +16,7 @@ data class Phrom(
 
   val poems: List<String>,
 
-  val explanations: Set<Explanation>
+  val verdicts: Set<Verdict>
 ) : Serializable {
 
   enum class Level { 上, 中, 下 }

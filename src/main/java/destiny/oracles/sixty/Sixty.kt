@@ -7,7 +7,7 @@ package destiny.oracles.sixty
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
 import destiny.iching.Hexagram
-import destiny.oracles.Explanation
+import destiny.oracles.Verdict
 import java.io.Serializable
 
 
@@ -44,7 +44,7 @@ data class Sixty(
   /** 故事  */
   val stories: List<String>,
 
-  val explanations: Set<Explanation> = emptySet()
+  val verdicts: Set<Verdict> = emptySet()
 
 ) : Serializable
 
