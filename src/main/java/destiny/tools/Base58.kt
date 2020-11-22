@@ -14,13 +14,13 @@ class Base58 : Serializable {
     private val BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".toCharArray()
 
     fun numberToAlpha(number: Long): String {
-      var number = number
+      var n = number
       val buffer = CharArray(20)
       var index = 0
       do {
-        buffer[index++] = BASE58_CHARS[(number % BASE58_CHARS.size).toInt()]
-        number /= BASE58_CHARS.size
-      } while (number > 0)
+        buffer[index++] = BASE58_CHARS[(n % BASE58_CHARS.size).toInt()]
+        n /= BASE58_CHARS.size
+      } while (n > 0)
       return String(buffer, 0, index)
     }
 
