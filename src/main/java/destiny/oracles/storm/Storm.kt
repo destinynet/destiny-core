@@ -4,6 +4,7 @@
 package destiny.oracles.storm
 
 import destiny.core.chinese.Stem
+import destiny.oracles.Verdict
 import java.io.Serializable
 
 
@@ -16,7 +17,7 @@ data class Storm(val index: Int,
                  /** 釋義 */
                  val poemExplain: String,
                  /** 聖意 , 三字一組，共八組，24 字 */
-                 val verdicts: List<String>,
+                 val edicts: List<String>,
                  /** 解曰 */
                  val meaning: String,
                  /** 解籤 , advice */
@@ -24,13 +25,15 @@ data class Storm(val index: Int,
                  /** 故事 */
                  val stories: Set<String>,
                  /** 東坡解 , 八句話 , 每句 4 字 */
-                 val dongPo: List<String> ,
+                 val dongPo: List<String>,
                  /** 碧仙註 , 五言絕句 or 七言絕句 */
-                 val greenNote : List<String>) : Serializable {
+                 val greenNote: List<String>,
+                 /** 斷曰 */
+                 val verdicts: Set<Verdict>) : Serializable {
   init {
     require(stems.size == 2)
     require(poem.size == 4)
-    require(verdicts.size == 8)
+    require(edicts.size == 8)
     require(dongPo.size == 8)
     require(greenNote.size == 4)
 
