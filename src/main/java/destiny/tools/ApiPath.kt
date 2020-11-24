@@ -30,6 +30,9 @@ object ApiPath {
 
       /** 觀音靈籤 */
       const val guanyinClause = "/oracles/GuanyinClause"
+
+      /** 雷雨師籤 */
+      const val stormClause = "/oracles/StormClause"
     }
 
     /** 易經 */
