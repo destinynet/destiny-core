@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.chinese.StemBranch
 import destiny.tools.StringTools
 import mu.KotlinLogging
 import java.time.*
@@ -240,6 +241,16 @@ object TimeTools {
   }
 
   // ======================================== misc methods ========================================
+
+  /** 西元年份 to 甲子 (不考慮節氣 / 初一) */
+  fun Int.yearToStemBranch() : StemBranch {
+    val index = if (this > 0)
+      (this - 1984) % 60
+    else
+      (1 - this - 1984) % 60
+
+    return StemBranch[index]
+  }
 
   /**
    * @return 確認 later 是否真的 after prior 的時刻

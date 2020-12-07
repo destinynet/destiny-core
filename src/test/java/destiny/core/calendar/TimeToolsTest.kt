@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar
 
+import destiny.core.calendar.TimeTools.yearToStemBranch
+import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
@@ -13,6 +15,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 
 class TimeToolsTest {
@@ -517,5 +520,10 @@ class TimeToolsTest {
     assertEquals(2299160.5, TimeTools.getJulDay(zdt))
   }
 
+  @Test
+  fun testYearToStemBranch() {
+    assertSame(StemBranch.甲子 , 1984.yearToStemBranch())
+    assertSame(StemBranch.癸亥 , 1983.yearToStemBranch())
+  }
 
 }
