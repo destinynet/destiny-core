@@ -12,6 +12,7 @@ import destiny.core.chinese.Branch
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
+import java.time.temporal.ChronoUnit
 
 /** 時辰的分界點實作 , SwissEph 的實作是 [HourSolarTransImpl]  */
 interface IHour : Descriptive {
@@ -72,7 +73,11 @@ interface IHour : Descriptive {
     val lmtStart = day.atTime(LocalTime.MIDNIGHT)
 
     return Branch.values().map { b ->
-      val lmt: ChronoLocalDateTime<*> = getLmtNextStartOf(lmtStart, location, b, revJulDayFunc)
+      val lmt = if (b == Branch.子) {
+        getLmtNextStartOf(lmtStart.minus(2 , ChronoUnit.HOURS), location, b, revJulDayFunc)
+      } else {
+        getLmtNextStartOf(lmtStart, location, b, revJulDayFunc)
+      }
       b to lmt
     }.toList().sortedBy { (_, lmt) -> lmt }.toMap()
   }
