@@ -6,12 +6,55 @@ package destiny.core.calendar.eightwords
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.locationOf
 import destiny.core.chinese.Branch.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HourLmtImplTest {
+
+  @Test
+  fun testGetDailyBranchStartMap() {
+    val hourImpl = HourLmtImpl()
+    val loc = locationOf(Locale.TAIWAN)
+
+    hourImpl.getDailyBranchStartMap(LocalDate.of(2020, 12, 24), loc, revJulDayFunc).also { map ->
+      assertEquals(LocalDateTime.of(2020, 12, 23, 23, 0), map[子])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 1, 0),  map[丑])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 3, 0),  map[寅])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 5, 0),  map[卯])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 7, 0),  map[辰])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 9, 0),  map[巳])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 11, 0), map[午])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 13, 0), map[未])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 15, 0), map[申])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 17, 0), map[酉])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 19, 0), map[戌])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 21, 0), map[亥])
+    }
+  }
+
+  @Test
+  fun testGetDailyBranchMiddleMap() {
+    val hourImpl = HourLmtImpl()
+    val loc = locationOf(Locale.TAIWAN)
+
+    hourImpl.getDailyBranchMiddleMap(LocalDate.of(2020, 12, 24), loc, revJulDayFunc).also { map ->
+      assertEquals(LocalDateTime.of(2020, 12, 24, 0, 0), map[子])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 2, 0), map[丑])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 4, 0), map[寅])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 6, 0), map[卯])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 8, 0), map[辰])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 10, 0), map[巳])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 12, 0), map[午])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 14, 0), map[未])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 16, 0), map[申])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 18, 0), map[酉])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 20, 0), map[戌])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 22, 0), map[亥])
+    }
+  }
 
   @Test
   fun testLmtNextStartOf() {

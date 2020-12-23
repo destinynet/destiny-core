@@ -26,7 +26,7 @@ import java.util.*
  * 依此來切割 12 時辰
  */
 @Impl([Domain(KEY_HOUR, HourSolarTransImpl.VALUE, default = true)])
-open class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
+class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
                               private val star: Star = Planet.SUN) : IHour, Serializable {
 
   private var atmosphericPressure = 1013.25

@@ -9,6 +9,7 @@ import destiny.core.Descriptive
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
+import java.time.Duration
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
@@ -67,9 +68,9 @@ interface IHour : Descriptive {
   }
 
   /**
-   * accessory function , 傳回當地，一日內的時辰切割
+   * accessory function , 傳回當地，一日內的時辰「開始」時刻
    */
-  fun getDailyMap(day: ChronoLocalDate, location: ILocation, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Map<Branch, ChronoLocalDateTime<*>> {
+  fun getDailyBranchStartMap(day: ChronoLocalDate, location: ILocation, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Map<Branch, ChronoLocalDateTime<*>> {
     val lmtStart = day.atTime(LocalTime.MIDNIGHT)
 
     return Branch.values().map { b ->
@@ -79,6 +80,25 @@ interface IHour : Descriptive {
         getLmtNextStartOf(lmtStart, location, b, revJulDayFunc)
       }
       b to lmt
-    }.toList().sortedBy { (_, lmt) -> lmt }.toMap()
+    }.sortedBy { (_, lmt) -> lmt }.toMap()
+  }
+
+  /**
+   * accessory function , 傳回當地，一日內的時辰「中間」時刻
+   */
+  fun getDailyBranchMiddleMap(day: ChronoLocalDate, location: ILocation, revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): Map<Branch, ChronoLocalDateTime<*>> {
+
+    val startTimeMap = getDailyBranchStartMap(day, location, revJulDayFunc)
+
+    return startTimeMap.map { (branch , startTime) ->
+      val endTime = if (branch != Branch.亥) {
+        startTimeMap[branch.next]
+      } else {
+        val start: ChronoLocalDateTime<*> = startTimeMap[branch] ?: error("")
+        getLmtNextStartOf(start ,location , Branch.子 , revJulDayFunc)
+      }
+      branch to startTime.plus(Duration.between(startTime , endTime).dividedBy(2))
+    }.sortedBy { (_, lmt) -> lmt }.toMap()
+
   }
 }
