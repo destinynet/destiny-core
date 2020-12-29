@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.eightwords
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.astrology.Coordinate
 import destiny.astrology.IStarTransit
 import destiny.astrology.Planet
@@ -298,7 +298,7 @@ class FortuneLargeSpanImpl(
 
   companion object {
     private val logger = KotlinLogging.logger { }
-    private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
+    private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = Caffeine.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(1, TimeUnit.MINUTES)
       .build()

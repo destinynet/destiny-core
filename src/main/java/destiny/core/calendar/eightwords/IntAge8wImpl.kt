@@ -3,8 +3,8 @@
  */
 package destiny.core.calendar.eightwords
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.calendar.ILocation
@@ -27,7 +27,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
                               val toAge: Int)
 
 
-  private val cache : Cache<CacheKey , List<Pair<Double, Double>>> = CacheBuilder.newBuilder()
+  private val cache : Cache<CacheKey, List<Pair<Double, Double>>> = Caffeine.newBuilder()
     .maximumSize(100)
     //.expireAfterWrite(5 , TimeUnit.SECONDS)
     .expireAfterAccess(10 , TimeUnit.SECONDS)
@@ -66,7 +66,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
       return getRangesInner(result, toAge - fromAge)
     }
 
-    return cache.get(key) {innerGetList()}
+    return cache.get(key) {innerGetList()}!!
 
   }
 

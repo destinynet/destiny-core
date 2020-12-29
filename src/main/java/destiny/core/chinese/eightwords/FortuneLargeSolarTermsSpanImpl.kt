@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.eightwords
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.astrology.Coordinate
 import destiny.astrology.IStarTransit
 import destiny.astrology.Planet
@@ -292,7 +292,7 @@ class FortuneLargeSolarTermsSpanImpl(
     
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
 
-    private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = CacheBuilder.newBuilder()
+    private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = Caffeine.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(1, TimeUnit.MINUTES)
       .build()
