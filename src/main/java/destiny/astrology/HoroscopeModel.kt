@@ -4,6 +4,7 @@
 package destiny.astrology
 
 import destiny.core.Gender
+import destiny.core.ITimeLoc
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
@@ -15,12 +16,7 @@ import kotlin.math.abs
  * 與「人」無關的星盤資料
  * 沒有性別 [destiny.core.Gender]
  */
-interface IHoroscopeModel {
-
-  /** GMT's Julian Day */
-  val gmtJulDay: Double
-
-  val location: ILocation
+interface IHoroscopeModel : ITimeLoc {
 
   /** 地名 */
   val place: String?
@@ -308,7 +304,15 @@ data class HoroscopeModel(
   override val positionMap: Map<Point, IPosWithAzimuth>,
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
-  override val cuspDegreeMap: Map<Int, Double>) : IHoroscopeModel, Serializable
+  override val cuspDegreeMap: Map<Int, Double>) : IHoroscopeModel, Serializable {
+
+  override val time: ChronoLocalDateTime<*>
+    get() = TimeTools.getLmtFromGmt(gmtJulDay , location) {
+      JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(
+        it
+      )
+    }
+}
 
 /**
  * 與「人」綁定的星盤資料

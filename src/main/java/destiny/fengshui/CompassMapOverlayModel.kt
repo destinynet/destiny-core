@@ -5,13 +5,13 @@ package destiny.fengshui
 
 import destiny.astrology.Planet
 import destiny.core.ITimeLoc
+import destiny.core.TimeLoc
+import destiny.core.calendar.ILocation
 import destiny.tools.location.MapType
 import java.io.Serializable
+import java.time.chrono.ChronoLocalDateTime
 
-interface ICompassMapOverlayModel : ITimeLoc, Serializable {
-
-  val timeLoc: ITimeLoc
-  val place: String?
+interface ICompassMapOverlayModel : ICompassMapsModel, Serializable {
 
   val width: Int
 
@@ -19,10 +19,7 @@ interface ICompassMapOverlayModel : ITimeLoc, Serializable {
   val rotate: Double
 
   /** 地磁偏角 */
-  val magDeclination : Double
-
-  /** 正北 or 磁北 */
-  val northType : NorthType
+  val magDeclination: Double
 
   val finalRotate: Double
     get() = if (northType == NorthType.TRUE) rotate else rotate + magDeclination
@@ -40,23 +37,18 @@ interface ICompassMapOverlayModel : ITimeLoc, Serializable {
   /** 放大倍數 1,2 or 4 (Pay-As-You-Go 不支援 4) */
   val scale: Int
 
-  /** 內定為道路圖 */
-  val mapType: MapType
 }
 
 data class CompassMapOverlayModel(
-  override val timeLoc: ITimeLoc,
-  override val place: String? = null,
+  val embedded: ICompassMapsModel,
+
   override val width: Int = 640,
+
   /** 北方朝上 */
   override val rotate: Double = 0.0,
 
   /** 地磁偏角 */
   override val magDeclination: Double,
-
-  /** 正北 or 磁北 */
-  override val northType: NorthType = NorthType.TRUE,
-
   /**
    * 14 : 城鎮
    * 16 : 街道
@@ -66,15 +58,14 @@ data class CompassMapOverlayModel(
   /** 不透明度 , 0.0 最透明 */
   override val opaque: Float = 0.4f,
   /** 放大倍數 1,2 or 4 */
-  override val scale: Int = 1,
-  /** 內定為道路圖 */
-  override val mapType: MapType = MapType.roadmap
-) : ITimeLoc by timeLoc, ICompassMapOverlayModel {
+  override val scale: Int = 1
+) : ICompassMapsModel by embedded, ICompassMapOverlayModel {
 
-  constructor(model: ICompassMapOverlayModel) : this(
-    model.timeLoc, model.place, model.width,
-    model.rotate, model.magDeclination, model.northType, model.zoom, model.opaque,
-    model.scale, model.mapType)
+  constructor(time: ChronoLocalDateTime<*>, location: ILocation, place: String? = null, northType: NorthType = NorthType.TRUE, mapType: MapType = MapType.roadmap,
+              width: Int = 640, rotate: Double = 0.0, magDeclination: Double,
+              zoom: Int = 16, opaque: Float = 0.4f, scale: Int = 1) : this(
+    CompassMapsModel(TimeLoc(time, location) , place, northType, mapType) , width, rotate, magDeclination, zoom, opaque, scale
+  )
 }
 
 interface ICompassPointsMapOverlayModel : ICompassMapOverlayModel {
@@ -82,6 +73,8 @@ interface ICompassPointsMapOverlayModel : ICompassMapOverlayModel {
   val planets: Set<Planet>
 }
 
-data class CompassPointsMapOverlayModel(val embedded: ICompassMapOverlayModel,
-                                        override val planets: Set<Planet> = emptySet()) :
+data class CompassPointsMapOverlayModel(
+  val embedded: ICompassMapOverlayModel,
+  override val planets: Set<Planet> = emptySet()
+) :
   ICompassPointsMapOverlayModel, ICompassMapOverlayModel by embedded
