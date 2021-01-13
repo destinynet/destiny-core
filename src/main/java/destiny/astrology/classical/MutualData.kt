@@ -16,15 +16,17 @@ interface IMutualData {
     get() = dignityMap.keys
 
   fun getAnotherPoint(point: Point): Point {
-    if (!twoPoints.contains(point))
-      throw RuntimeException(twoPoints.joinToString(",") + " don't contain " + point)
+    require(twoPoints.contains(point)) {
+      twoPoints.joinToString(",") + " don't contain " + point
+    }
 
     return twoPoints.first { it != point }
   }
 
   fun getDignityOf(point: Point): Dignity {
-    if (!twoPoints.contains(point))
-      throw RuntimeException(twoPoints.joinToString(",") + " don't contain " + point)
+    require(twoPoints.contains(point)) {
+      twoPoints.joinToString(",") + " don't contain " + point
+    }
 
     return dignityMap.getValue(point)
   }

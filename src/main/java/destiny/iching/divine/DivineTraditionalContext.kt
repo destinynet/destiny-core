@@ -75,7 +75,7 @@ class DivineTraditionalContext(override val 納甲系統: ISettingsOfStemBranch,
     6 -> Pair(5, 2)
     7 -> Pair(4, 1)
     8 -> Pair(3, 6)
-    else -> throw RuntimeException("impossible")
+    else -> throw IllegalArgumentException("impossible")
   }
 
 

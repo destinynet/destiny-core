@@ -34,11 +34,9 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
     /* 1 <= 卦序 <= 64 */
     // 京房易卦卦序
     val hexagramIndex = comparator.getIndex(hexagram)
-    //System.out.println("京房易卦卦序:"+ 京房易卦卦序);
 
     /* 0乾 , 1兌 , 2離 , 3震 , 4巽 , 5坎 , 6艮 , 7坤 */
     val 宮位 = (hexagramIndex - 1) / 8
-    //System.out.println("宮位:" + 宮位);
 
     /* 1:本宮卦             (乾為天)
      * 2:初爻變    ，一世卦 (天風姤)
@@ -93,7 +91,7 @@ class HiddenEnergyGingFangImpl : IHiddenEnergy, Serializable {
         } else {
           settings.getStemBranch(首宮卦, lineIndex)
         }
-      else -> throw RuntimeException("impossible")
+      else -> throw IllegalStateException("impossible")
     }
 
   }

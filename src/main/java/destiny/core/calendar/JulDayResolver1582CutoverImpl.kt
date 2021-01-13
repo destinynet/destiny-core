@@ -176,7 +176,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
               when {
                 day <= 4 -> false
                 day >= 15 -> true
-                else -> throw RuntimeException("Error Date : $prolepticYear/$month/$day")
+                else -> throw IllegalArgumentException("Error Date : $prolepticYear/$month/$day")
               }
           }
       }

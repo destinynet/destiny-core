@@ -40,9 +40,10 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
 
 
   override fun getPlanetaryHours(fromGmt: Double, toGmt: Double, loc: Location): List<PlanetaryHour> {
-    if (fromGmt >= toGmt) {
-      throw RuntimeException("fromGmt : $fromGmt larger than or equal to toGmt : $toGmt")
+    require(fromGmt < toGmt) {
+      "fromGmt : $fromGmt larger than or equal to toGmt : $toGmt"
     }
+
 
     fun fromGmtToPlanetaryHour(gmt:Double) : PlanetaryHour {
       val r : HourIndexOfDay = getHourIndexOfDay(gmt, loc)
@@ -108,22 +109,21 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
 
   private fun getHourIndexOfHalfDay(from: Double, to: Double, gmtJulDay: Double): HourIndexOfHalfDay {
 
-    if (gmtJulDay < from || gmtJulDay > to) {
-      // gmtJulDay 一定要在 from 與 to 的範圍內
-      throw RuntimeException("gmtJulDay $gmtJulDay not between $from and $to")
-    } else {
-      val avgHour = (to - from) / 12.0
-
-      // TODO : 這裡應該有更 functional 的解法！
-      for (i in 1..11) {
-        val stepFrom = from + avgHour * (i - 1)
-        val stepTo = from + avgHour * i
-        if (gmtJulDay >= stepFrom && gmtJulDay < stepTo) {
-          return HourIndexOfHalfDay(stepFrom , stepTo , i)
-        }
-      }
-      return HourIndexOfHalfDay(from + avgHour * 11, to, 12)
+    require(gmtJulDay >= from && gmtJulDay <= to) {
+      "gmtJulDay $gmtJulDay not between $from and $to"
     }
+
+    val avgHour = (to - from) / 12.0
+
+    // TODO : 這裡應該有更 functional 的解法！
+    for (i in 1..11) {
+      val stepFrom = from + avgHour * (i - 1)
+      val stepTo = from + avgHour * i
+      if (gmtJulDay >= stepFrom && gmtJulDay < stepTo) {
+        return HourIndexOfHalfDay(stepFrom , stepTo , i)
+      }
+    }
+    return HourIndexOfHalfDay(from + avgHour * 11, to, 12)
   } // getHourIndexOfHalfDay , return 1 to 12
 
 

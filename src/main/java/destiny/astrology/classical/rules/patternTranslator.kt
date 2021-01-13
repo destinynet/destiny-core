@@ -121,7 +121,7 @@ object patternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is Debility.MutualDeception -> DebilityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
       }
       else -> {
-        throw RuntimeException("Not Supported : $pattern")
+        throw IllegalArgumentException("Not Supported : $pattern")
       }
     }
   }

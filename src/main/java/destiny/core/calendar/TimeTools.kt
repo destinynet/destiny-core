@@ -394,8 +394,8 @@ object TimeTools {
    * @return proleptic year , 線性的 year : 西元前1年:0 , 西元前2年:-1 ...
    */
   fun getNormalizedYear(ad: Boolean, yearOfEra: Int): Int {
-    if (yearOfEra <= 0) {
-      throw RuntimeException("year $yearOfEra must > 0")
+    require(yearOfEra > 0) {
+      "year $yearOfEra must > 0"
     }
     return if (!ad)
       -(yearOfEra - 1)

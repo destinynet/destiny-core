@@ -10,7 +10,7 @@ import destiny.tools.ArrayTools
 /**
  * non-nullable && unConstrained
  */
-interface IStemBranch : IStemBranchOptional , ILoop<IStemBranch> {
+interface IStemBranch : IStemBranchOptional, ILoop<IStemBranch> {
   override val stem: Stem
   override val branch: Branch
 }
@@ -152,8 +152,10 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
     }
 
     operator fun get(stem: Stem, branch: Branch): StemBranch {
-      if (Stem.getIndex(stem) % 2 != Branch.getIndex(branch) % 2)
-        throw RuntimeException("Stem/Branch combination illegal ! $stem cannot be combined with $branch")
+
+      require(Stem.getIndex(stem) % 2 == Branch.getIndex(branch) % 2) {
+        "Stem/Branch combination illegal ! $stem cannot be combined with $branch"
+      }
 
       val sIndex = Stem.getIndex(stem)
       val bIndex = Branch.getIndex(branch)
@@ -171,18 +173,20 @@ enum class StemBranch(override val stem: Stem, override val branch: Branch) : IS
 
       val stem = Stem[stemChar]
       val branch = Branch[branchChar]
-      return if (stem != null && branch != null) {
-        StemBranch[stem, branch]
-      } else {
-        throw RuntimeException("Cannot get StemBranch($stemChar , $branchChar)")
+
+      require(stem != null && branch != null) {
+        "Cannot get StemBranch($stemChar , $branchChar)"
       }
+
+      return StemBranch[stem, branch]
     }
 
     operator fun get(stemBranch: String): StemBranch {
-      return if (stemBranch.length != 2)
-        throw RuntimeException("The length of $stemBranch must equal to 2 !")
-      else
-        get(stemBranch[0], stemBranch[1])
+      require(stemBranch.length == 2) {
+        "The length of $stemBranch must equal to 2 !"
+      }
+
+      return get(stemBranch[0], stemBranch[1])
     }
 
     /** 強制將 [IStemBranchOptional] downcast 成 [StemBranch] , 可能會拋出 NPE ! */

@@ -5,10 +5,13 @@ package destiny.core.calendar
 
 import destiny.tools.AlignTools
 import destiny.tools.location.TimeZoneUtils
+import mu.KotlinLogging
 import java.time.ZoneId
 import java.util.*
 
 object LocationTools {
+
+  private val logger = KotlinLogging.logger {  }
 
   private fun String.localTrim() =
     this
@@ -73,9 +76,7 @@ object LocationTools {
 
   fun decode(s: String): ILocation {
     return s.localTrim().let {
-      decode2018(it) ?: {
-        decode2012(it)
-      }.invoke()
+      decode2018(it) ?: decode2012(it) ?: throw IllegalArgumentException("cannot decode $s")
     }
   }
 
@@ -132,73 +133,81 @@ object LocationTools {
   /**
    * decode 2012-03 格式
    */
-  private fun decode2012(s: String): ILocation {
-    val eastWest: EastWest
+  private fun decode2012(s: String): ILocation? {
     val ew = s[0]
-    eastWest = when (ew) {
+
+    return when (ew) {
       '+' -> EastWest.EAST
       '-' -> EastWest.WEST
-      else -> throw RuntimeException("EW not correct : $ew")
-    }
-
-    val lngDeg = (s.substring(1, 4).trim { it <= ' ' }).toInt()
-    val lngMin = (s.substring(4, 6).trim { it <= ' ' }).toInt()
-    val lngSec = (s.substring(6, 11).trim { it <= ' ' }).toDouble()
-
-    val northSouth: NorthSouth
-    val ns = s[11]
-    northSouth = when (ns) {
-      '+' -> NorthSouth.NORTH
-      '-' -> NorthSouth.SOUTH
-      else -> throw RuntimeException("ns not correct : $ns")
-    }
-
-    val latDeg = (s.substring(12, 14).trim { it <= ' ' }).toInt()
-    val latMin = (s.substring(14, 16).trim { it <= ' ' }).toInt()
-    val latSec = (s.substring(16, 21).trim { it <= ' ' }).toDouble()
-
-    //包含了 高度以及時區
-    val altitudeAndTimezone = s.substring(21)
-    //System.out.println("altitudeAndTimezone = '" + altitudeAndTimezone+"'");
-
-    var st = StringTokenizer(altitudeAndTimezone, " ")
-    val firstToken = st.nextToken()
-    // 2012/3 之後 , restToken 可能還會 append minuteOffset
-    val restTokens = altitudeAndTimezone.substring(altitudeAndTimezone.indexOf(firstToken) + firstToken.length + 1)
-      .trim { it <= ' ' }
-    //System.out.println("firstToken = '" + firstToken + "' , rest = '" + restTokens+"'");
-
-    var altitudeMeter: Double?
-    var tzid: String
-    var minuteOffset: Int? = null
-    //檢查 restTokens 是否能轉為 double，如果能的話，代表是舊款 , 否則就是新款
-    try {
-      altitudeMeter = restTokens.toDouble()
-      //parse 成功，代表舊款
-      tzid = if (firstToken[0] == '+')
-        TimeZoneUtils.getTimeZone(firstToken.substring(1).toInt()).id
-      else
-        TimeZoneUtils.getTimeZone(firstToken.toInt()).id
-    } catch (e: NumberFormatException) {
-      //新款
-      //println("新款 , firstToken = $firstToken")
-      altitudeMeter = if ("null" == firstToken) {
+      else -> {
+        logger.error { "EW not correct : $ew" }
         null
-      } else {
-        firstToken.toDouble()
       }
+    }?.let { eastWest ->
+      val ns = s[11]
+      when (ns) {
+        '+' -> NorthSouth.NORTH
+        '-' -> NorthSouth.SOUTH
+        else -> {
+          logger.error { "ns not correct : $ns" }
+          null
+        }
+      }?.let { northSouth ->
+        val lngDeg = (s.substring(1, 4).trim { it <= ' ' }).toInt()
+        val lngMin = (s.substring(4, 6).trim { it <= ' ' }).toInt()
+        val lngSec = (s.substring(6, 11).trim { it <= ' ' }).toDouble()
 
-      st = StringTokenizer(restTokens, " ")
-      if (st.countTokens() == 1)
-        tzid = restTokens
-      else {
-        // 2012/3 格式 : timeZone 之後，還附加 minuteOffset
-        tzid = st.nextToken()
-        minuteOffset = st.nextToken().toInt()
+        val latDeg = (s.substring(12, 14).trim { it <= ' ' }).toInt()
+        val latMin = (s.substring(14, 16).trim { it <= ' ' }).toInt()
+        val latSec = (s.substring(16, 21).trim { it <= ' ' }).toDouble()
+
+
+        //包含了 高度以及時區
+        val altitudeAndTimezone = s.substring(21)
+
+        var st = StringTokenizer(altitudeAndTimezone, " ")
+        val firstToken = st.nextToken()
+        // 2012/3 之後 , restToken 可能還會 append minuteOffset
+        val restTokens = altitudeAndTimezone.substring(altitudeAndTimezone.indexOf(firstToken) + firstToken.length + 1)
+          .trim { it <= ' ' }
+
+
+        var altitudeMeter: Double?
+        var tzid: String
+        var minuteOffset: Int? = null
+        //檢查 restTokens 是否能轉為 double，如果能的話，代表是舊款 , 否則就是新款
+        try {
+          altitudeMeter = restTokens.toDouble()
+          //parse 成功，代表舊款
+          tzid = if (firstToken[0] == '+')
+            TimeZoneUtils.getTimeZone(firstToken.substring(1).toInt()).id
+          else
+            TimeZoneUtils.getTimeZone(firstToken.toInt()).id
+        } catch (e: NumberFormatException) {
+          //新款
+          //println("新款 , firstToken = $firstToken")
+          altitudeMeter = if ("null" == firstToken) {
+            null
+          } else {
+            firstToken.toDouble()
+          }
+
+          st = StringTokenizer(restTokens, " ")
+          if (st.countTokens() == 1)
+            tzid = restTokens
+          else {
+            // 2012/3 格式 : timeZone 之後，還附加 minuteOffset
+            tzid = st.nextToken()
+            minuteOffset = st.nextToken().toInt()
+          }
+        }
+
+        Location(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, tzid, minuteOffset, altitudeMeter)
       }
     }
 
-    return Location(eastWest, lngDeg, lngMin, lngSec, northSouth, latDeg, latMin, latSec, tzid, minuteOffset,
-                    altitudeMeter)
+
   } // fromDebugString
+
+
 }

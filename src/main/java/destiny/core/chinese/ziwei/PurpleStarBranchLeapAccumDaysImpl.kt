@@ -28,9 +28,9 @@ class PurpleStarBranchLeapAccumDaysImpl : IPurpleStarBranch, Serializable {
    * @param prevMonthDays 前一月有幾日
    */
   override fun getBranchOfPurpleStar(state: Int, day: Int, leap: Boolean, prevMonthDays: Int): Branch {
-    if (day + prevMonthDays <= 30) {
+    require(day + prevMonthDays > 30) {
       logger.error("日數 = {} , 加上前一個月的天數 {}  , 小於 30 日，不適用此 「日數累加推算紫微」演算法", day, prevMonthDays)
-      throw RuntimeException("Error : 局數 = $state , day = $day , 閏月 = $leap , 前一個月日數 = $prevMonthDays")
+      "Error : 局數 = $state , day = $day , 閏月 = $leap , 前一個月日數 = $prevMonthDays"
     }
 
     return if (!leap) {

@@ -46,7 +46,7 @@ class HourLmtImpl : IHour, Serializable {
       19, 20 -> return 戌
       21, 22 -> return 亥
     }
-    throw RuntimeException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
+    throw IllegalArgumentException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
   }
 
   override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {

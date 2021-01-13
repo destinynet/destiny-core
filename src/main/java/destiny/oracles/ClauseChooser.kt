@@ -16,10 +16,11 @@ object ClauseChooser {
    * 演算法 : 直接求餘數即可
    */
   fun <T> choose(digits: List<Int>, oracle: IOracle<T>): Pair<Int, T> {
-    digits
-      .asSequence()
-      .filter { it < 0 || it > 9 }
-      .forEach { throw RuntimeException(digits[it].toString() + " must be larger or equal to 0 , and smaller or equal to 9 !") }
+
+    require(digits.all { it in 0..9 }) {
+      "Some tokens inside $digits is out of 0..9"
+    }
+
 
     //開始計算 digits 的值
     var sum = 0

@@ -40,15 +40,15 @@ interface IHexagram : Serializable {
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
   fun getBoolean(lineIndex: Int): Boolean {
     require(lineIndex in 1..6) { "lineIndex out of range , 1 <= lineIndex <= 6 : $lineIndex" }
-    when (lineIndex) {
-      1 -> return lowerSymbol.getBooleanValue(1)
-      2 -> return lowerSymbol.getBooleanValue(2)
-      3 -> return lowerSymbol.getBooleanValue(3)
-      4 -> return upperSymbol.getBooleanValue(1)
-      5 -> return upperSymbol.getBooleanValue(2)
-      6 -> return upperSymbol.getBooleanValue(3)
+    return when (lineIndex) {
+      1 -> lowerSymbol.getBooleanValue(1)
+      2 -> lowerSymbol.getBooleanValue(2)
+      3 -> lowerSymbol.getBooleanValue(3)
+      4 -> upperSymbol.getBooleanValue(1)
+      5 -> upperSymbol.getBooleanValue(2)
+      6 -> upperSymbol.getBooleanValue(3)
+      else -> throw IllegalStateException("error")
     }
-    throw RuntimeException("index out of range , 1 <= index <= 6 : $lineIndex")
   }
 
   /** 取得第幾爻的陰陽 , 為了方便起見，index 為 1 至 6  */
@@ -87,20 +87,23 @@ interface IHexagram : Serializable {
     get() = Hexagram.ofYinYangs(
       listOf(
         yinYangs[1], yinYangs[2], yinYangs[3],
-        yinYangs[2], yinYangs[3], yinYangs[4])
+        yinYangs[2], yinYangs[3], yinYangs[4]
+      )
     )
 
   /**
    * 錯卦 , 一卦六爻全變 , 交錯之意 , 故取名 Interlaced Hexagram
    */
   val interlacedHexagram: IHexagram
-    get() = Hexagram.of(booleanArrayOf(
-      !yinYangs[0].booleanValue,
-      !yinYangs[1].booleanValue,
-      !yinYangs[2].booleanValue,
-      !yinYangs[3].booleanValue,
-      !yinYangs[4].booleanValue,
-      !yinYangs[5].booleanValue)
+    get() = Hexagram.of(
+      booleanArrayOf(
+        !yinYangs[0].booleanValue,
+        !yinYangs[1].booleanValue,
+        !yinYangs[2].booleanValue,
+        !yinYangs[3].booleanValue,
+        !yinYangs[4].booleanValue,
+        !yinYangs[5].booleanValue
+      )
     )
 
   /**

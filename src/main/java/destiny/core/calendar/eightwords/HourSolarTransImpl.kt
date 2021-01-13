@@ -149,7 +149,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
         resultGmt = when {
           丑to午.contains(eb) -> nextNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)
           未to亥.contains(eb) -> nextNextMeridian + oneUnit4 * ((eb.index - 7) * 2 + 1)
-          else -> throw RuntimeException("Runtime Exception : 沒有子時的情況") //沒有子時的情況
+          else -> throw IllegalStateException("沒有子時的情況") //沒有子時的情況
         }
       }
 

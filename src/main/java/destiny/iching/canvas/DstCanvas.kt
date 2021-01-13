@@ -38,7 +38,7 @@ class DstCanvas(val combined: ICombinedWithMetaName) : ColorCanvas(9, 24, Chines
         7 -> "遊魂卦"
         0 -> "歸魂卦"
         8 -> "歸魂卦"
-        else -> throw RuntimeException("變卦宮序 : ${combined.dstModel.宮序}")
+        else -> throw IllegalStateException("變卦宮序 : ${combined.dstModel.宮序}")
       }
       setText(name, 1, 5)
       setText("：", 1, 11)

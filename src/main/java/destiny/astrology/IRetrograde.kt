@@ -42,8 +42,8 @@ interface IRetrograde {
    * 列出一段時間內，某星體的順逆過程
    */
   fun getPeriodStationary(star: Star, fromGmt: Double, toGmt: Double, starPositionImpl: IStarPosition<*>): List<Pair<Double, StationaryType>> {
-    if (fromGmt >= toGmt) {
-      throw RuntimeException("toGmt ($toGmt) >= fromGmt($fromGmt)")
+    require(fromGmt < toGmt) {
+      "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
 
     return generateSequence (getNextStationary(star, fromGmt, true, starPositionImpl)) {

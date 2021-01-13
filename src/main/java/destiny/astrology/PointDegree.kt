@@ -15,10 +15,11 @@ data class PointDegree(val point: Point, val degree: Double) : Serializable {
   val zodiacSign: ZodiacSign
     get() = ZodiacSign.of(degree)
 
-  /** 此星體在某星座幾度 , deg 必須小於 30 , 否則丟出 RuntimeException  */
+  /** 此星體在某星座幾度 , deg 必須小於 30 */
   constructor(s: Point, sign: ZodiacSign, deg: Double) : this(s, sign.degree + deg) {
-    if (deg < 0 || deg >= 30)
-      throw RuntimeException("deg must between 0(inclusive) and 30(exclusive). ")
+    require(deg >= 0 && deg < 30) {
+      "deg must between 0(inclusive) and 30(exclusive). : $deg "
+    }
   }
 
   /** 取得此度數對於此星座，是幾度  */

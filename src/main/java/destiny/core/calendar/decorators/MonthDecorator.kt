@@ -30,7 +30,7 @@ class MonthDecoratorChinese : Decorator<Int>, Serializable {
       10 -> "十月"
       11 -> "十一月"
       12 -> "十二月"
-      else -> throw RuntimeException("impossible")
+      else -> throw IllegalArgumentException("impossible")
     }
   }
 }
@@ -51,7 +51,7 @@ class MonthDecoratorEnglish : Decorator<Int>, Serializable {
       10 -> "October"
       11 -> "November"
       12 -> "December"
-      else -> throw RuntimeException("impossible")
+      else -> throw IllegalArgumentException("impossible")
     }
   }
 

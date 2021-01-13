@@ -52,7 +52,7 @@ class HexagramPlateCanvas(hex: ISingleHexagramWithName) : ColorCanvas(9, 32, Chi
         7 -> "遊魂卦"
         0 -> "歸魂卦"
         8 -> "歸魂卦"
-        else -> throw RuntimeException("本卦宮序 : ${hex.宮序}")
+        else -> throw IllegalArgumentException("本卦宮序 : ${hex.宮序}")
       }
       setText(name, 1, 5)
       setText("：", 1, 11)

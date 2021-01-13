@@ -45,7 +45,7 @@ class SeasonalSymbolChineseImpl(val solarTermsImpl: ISolarTerms) : ISeasonalSymb
             Branch.辰 -> Symbol.巽
             Branch.未 -> Symbol.坤
             Branch.戌 -> Symbol.乾
-            else -> throw RuntimeException("impossible : $branch")
+            else -> throw IllegalArgumentException("impossible : $branch")
           }
         }
       }

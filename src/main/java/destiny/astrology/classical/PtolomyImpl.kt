@@ -155,11 +155,12 @@ class TermPtolomyImpl : ITerm, Serializable {
   override fun getPoint(degree: Double): Point {
     val normalizedDegree = circleUtils.getNormalizeDegree(degree)
     val signIndex = normalizedDegree.toInt() / 30
-    (0..4)
+
+    return (0..4)
       .map { termPointDegrees[signIndex * 5 + it] }
       .filter { normalizedDegree < it.degree }
-      .forEach { return it.point }
-    throw RuntimeException("Cannot find Essential Terms at degree $degree , signIndex = $signIndex")
+      .map { it.point }
+      .firstOrNull() ?: throw IllegalStateException("Cannot find Essential Terms at degree $degree , signIndex = $signIndex")
   }
 
   override fun ZodiacSign.getTermPoint(degree: Double): Point {

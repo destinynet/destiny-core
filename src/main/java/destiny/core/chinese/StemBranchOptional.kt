@@ -81,10 +81,10 @@ data class StemBranchOptional(
     }
 
     operator fun get(stemBranch: String): StemBranchOptional {
-      return if (stemBranch.length != 2)
-        throw RuntimeException("The length of $stemBranch must equal to 2 !")
-      else
-        get(stemBranch[0], stemBranch[1])
+      require(stemBranch.length == 1) {
+        "The length of $stemBranch must equal to 2 !"
+      }
+      return get(stemBranch[0], stemBranch[1])
     }
 
     operator fun get(sb: StemBranch): StemBranchOptional {
