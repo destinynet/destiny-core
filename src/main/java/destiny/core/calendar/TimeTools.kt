@@ -285,7 +285,7 @@ object TimeTools {
   /**
    * 解碼
    */
-  fun decode(s: String): ChronoLocalDateTime<*> {
+  fun decode(s: String): ChronoLocalDateTime<*>? {
     val trimmed = StringTools.clean(s)
     logger.trace("clean '{}' => '{}' ", s, trimmed)
     return when {

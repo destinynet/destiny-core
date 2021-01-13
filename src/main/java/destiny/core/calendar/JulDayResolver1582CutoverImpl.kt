@@ -141,26 +141,23 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
      * 0123456789A1234567
      * +YYYYMMDDHHMMSS.SS
      */
-    fun fromDebugString(s: String): ChronoLocalDateTime<*> {
-      val ad: Boolean
-      val plusMinus = s[0]
-      ad = when (plusMinus) {
+    fun fromDebugString(s: String): ChronoLocalDateTime<*>? {
+      return when (s[0]) {
         '+' -> true
         '-' -> false
         else -> {
           logger.error("Cannot decode debugString : {}" , s)
-          throw RuntimeException("AD not correct : $plusMinus")
+          null
         }
+      }?.let { ad ->
+        val yearOfEra = s.substring(1, 5).trim { it <= ' ' }.toInt()
+        val month = s.substring(5, 7).trim { it <= ' ' }.toInt()
+        val day = s.substring(7, 9).trim { it <= ' ' }.toInt()
+        val hour = s.substring(9, 11).trim { it <= ' ' }.toInt()
+        val minute = s.substring(11, 13).trim { it <= ' ' }.toInt()
+        val second = s.substring(13).toDouble()
+        of(ad, yearOfEra, month, day, hour, minute, second).first
       }
-
-      val yearOfEra = s.substring(1, 5).trim { it <= ' ' }.toInt()
-      val month = s.substring(5, 7).trim { it <= ' ' }.toInt()
-      val day = s.substring(7, 9).trim { it <= ' ' }.toInt()
-      val hour = s.substring(9, 11).trim { it <= ' ' }.toInt()
-      val minute = s.substring(11, 13).trim { it <= ' ' }.toInt()
-      val second = s.substring(13).toDouble()
-
-      return of(ad, yearOfEra, month, day, hour, minute, second).first
     }
 
     fun of(ad: Boolean, yearOfEra: Int, month: Int, day: Int, hour: Int, minute: Int, second: Double): Pair<ChronoLocalDateTime<*>, Boolean> {
