@@ -81,7 +81,7 @@ data class StemBranchOptional(
     }
 
     operator fun get(stemBranch: String): StemBranchOptional {
-      require(stemBranch.length == 1) {
+      require(stemBranch.length == 2) {
         "The length of $stemBranch must equal to 2 !"
       }
       return get(stemBranch[0], stemBranch[1])
