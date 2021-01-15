@@ -4,7 +4,6 @@
 package destiny.fengshui
 
 import destiny.astrology.Planet
-import destiny.core.ITimeLoc
 import destiny.core.TimeLoc
 import destiny.core.calendar.ILocation
 import destiny.tools.location.MapType

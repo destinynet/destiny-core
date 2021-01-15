@@ -75,12 +75,8 @@ import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全書
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun鈴星_全集
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun陀羅
 import destiny.core.chinese.ziwei.StarYearFront.*
-import mu.KotlinLogging
 
 object HouseFunctions {
-
-  private val logger = KotlinLogging.logger {  }
-
 
   private val house紫微: IHouse<*> = HouseMainStarImpl(紫微)
 
@@ -691,8 +687,5 @@ object HouseFunctions {
   val map : Map<ZStar , IHouse<*>> = iHouseSet.map {
     Pair(it.star,it)
   }.toMap()
-
-//  val map: Map<ZStar, IHouse<*>> = iHouseSet.stream()
-//    .collect<Map<ZStar, IHouse<*>>, Any>(Collectors.toMap<IHouse, ZStar, IHouse>(Function<IHouse, ZStar> { it.getStar() }) { iHouse -> iHouse })
 
 }
