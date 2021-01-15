@@ -106,7 +106,7 @@ class ZModernContext(
       val hour2 = HourLmtImpl().getHour(lmt, location)
       if (hour != hour2) {
         // 如果真太陽時與LMT時間不一致，出現提醒
-        notesBuilders.add(Pair("true_solar_time", arrayOf<Any>(hour, hour2)))
+        notesBuilders.add(Pair("true_solar_time", arrayOf(hour, hour2)))
       }
     }
 

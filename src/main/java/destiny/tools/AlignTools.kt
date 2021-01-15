@@ -82,8 +82,7 @@ object AlignTools {
       sb.append("前")
 
     sb.append(abs(value).toString())
-    val valueLength: Int
-    valueLength = if (value > 0)
+    val valueLength: Int = if (value > 0)
       sb.length
     else
       sb.length + 1 // 加上一個「前」 的 2-bytes

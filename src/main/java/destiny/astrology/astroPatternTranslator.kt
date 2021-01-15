@@ -12,10 +12,12 @@ import mu.KotlinLogging
 /**
  * maybe merged with [destiny.astrology.classical.rules.AbstractPlanetPatternDescriptor]
  */
-class AstroPatternDescriptor(pattern: IPattern,
-                             commentKey: String,
-                             parameters: List<Any>) :
-  AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters , "%.2f") {
+class AstroPatternDescriptor(
+  pattern: IPattern,
+  commentKey: String,
+  parameters: List<Any>
+) :
+  AbstractPropertyBasedPatternDescriptor(pattern, commentKey, parameters, "%.2f") {
 
   override val resource = "destiny.astrology.AstroPatterns"
 
@@ -31,68 +33,100 @@ object astroPatternTranslator : IPatternDescriptor<AstroPattern> {
       is AstroPattern.GrandTrine -> {
 
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(*pattern.points.toTypedArray(), pattern.element, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray(), pattern.element))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern,
+            "commentScore",
+            listOf(*pattern.points.toTypedArray(), pattern.element, score)
+          )
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray(), pattern.element))
       }
       is AstroPattern.Kite -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(pattern.head.point, *pattern.wings.toTypedArray(), pattern.tail.point, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.head.point, *pattern.wings.toTypedArray(), pattern.tail.point))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern,
+            "commentScore",
+            listOf(pattern.head.point, *pattern.wings.toTypedArray(), pattern.tail.point, score)
+          )
+        } ?: AstroPatternDescriptor(
+          pattern,
+          "commentBasic",
+          listOf(pattern.head.point, *pattern.wings.toTypedArray(), pattern.tail.point)
+        )
       }
       is AstroPattern.TSquared -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore",
-                                 listOf(*pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point,
-                                        score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic",
-                                 listOf(*pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern, "commentScore",
+            listOf(
+              *pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point,
+              score
+            )
+          )
+        } ?: AstroPatternDescriptor(
+          pattern, "commentBasic",
+          listOf(*pattern.oppoPoints.toTypedArray(), pattern.squared.sign, pattern.squared.house, pattern.squared.point)
+        )
       }
       is AstroPattern.Yod -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore",
-                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray(),
-                                        score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic",
-                                 listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray()))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern, "commentScore",
+            listOf(
+              pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray(),
+              score
+            )
+          )
+        } ?: AstroPatternDescriptor(
+          pattern, "commentBasic",
+          listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray())
+        )
       }
       is AstroPattern.Boomerang -> {
         val yod = listOf(pattern.yod.pointer.point).plus(pattern.yod.bottoms).toTypedArray()
 
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore",
-                                 listOf(*yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
-                                        pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
-                                        pattern.oppoPoint.house, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic",
-                                 listOf(*yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
-                                        pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
-                                        pattern.oppoPoint.house))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern, "commentScore",
+            listOf(
+              *yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
+              pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
+              pattern.oppoPoint.house, score
+            )
+          )
+        } ?: AstroPatternDescriptor(
+          pattern, "commentBasic",
+          listOf(
+            *yod, pattern.yod.pointer.point, pattern.yod.pointer.sign,
+            pattern.yod.pointer.house, pattern.oppoPoint.point, pattern.oppoPoint.sign,
+            pattern.oppoPoint.house
+          )
+        )
       }
       is AstroPattern.GoldenYod -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore",
-            listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray(), score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic",
-            listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray()))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern, "commentScore",
+            listOf(
+              pattern.pointer.point,
+              pattern.pointer.sign,
+              pattern.pointer.house,
+              *pattern.bottoms.toTypedArray(),
+              score
+            )
+          )
+        } ?: AstroPatternDescriptor(
+          pattern, "commentBasic",
+          listOf(pattern.pointer.point, pattern.pointer.sign, pattern.pointer.house, *pattern.bottoms.toTypedArray())
+        )
       }
       is AstroPattern.GrandCross -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern, "commentScore", listOf(*pattern.points.toTypedArray(), pattern.quality, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray(), pattern.quality))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern,
+            "commentScore",
+            listOf(*pattern.points.toTypedArray(), pattern.quality, score)
+          )
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray(), pattern.quality))
       }
       is AstroPattern.DoubleT -> {
         val (group1, group2) = pattern.tSquares.iterator().let { iterator ->
@@ -102,9 +136,7 @@ object astroPatternTranslator : IPatternDescriptor<AstroPattern> {
         }
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore", listOf(*group1, *group2, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(*group1, *group2))
-        }.invoke()
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(*group1, *group2))
       }
       is AstroPattern.Hexagon -> {
         val (group1, group2) = pattern.grandTrines.iterator().let { iterator ->
@@ -114,46 +146,49 @@ object astroPatternTranslator : IPatternDescriptor<AstroPattern> {
         }
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore", listOf(*group1, *group2, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(*group1, *group2))
-        }.invoke()
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(*group1, *group2))
       }
       is AstroPattern.Wedge -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern , "commentScore" ,
-                                 listOf(*pattern.oppoPoints.toTypedArray() , pattern.moderator.point , pattern.moderator.sign , pattern.moderator.house , score))
-        }?: {
-          AstroPatternDescriptor(pattern , "commentBasic" ,
-                                 listOf(*pattern.oppoPoints.toTypedArray() , pattern.moderator.point , pattern.moderator.sign , pattern.moderator.house ))
-        }.invoke()
+          AstroPatternDescriptor(
+            pattern, "commentScore",
+            listOf(
+              *pattern.oppoPoints.toTypedArray(),
+              pattern.moderator.point,
+              pattern.moderator.sign,
+              pattern.moderator.house,
+              score
+            )
+          )
+        } ?: AstroPatternDescriptor(
+          pattern, "commentBasic",
+          listOf(
+            *pattern.oppoPoints.toTypedArray(),
+            pattern.moderator.point,
+            pattern.moderator.sign,
+            pattern.moderator.house
+          )
+        )
       }
       is AstroPattern.MysticRectangle -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern , "commentScore" , listOf(*pattern.points.toTypedArray() , score))
-        }?: {
-          AstroPatternDescriptor(pattern , "commentBasic" , listOf(*pattern.points.toTypedArray()))
-        }.invoke()
+          AstroPatternDescriptor(pattern, "commentScore", listOf(*pattern.points.toTypedArray(), score))
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray()))
       }
       is AstroPattern.Pentagram -> {
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern , "commentScore" , listOf(*pattern.points.toTypedArray() , score))
-        }?: {
-          AstroPatternDescriptor(pattern , "commentBasic" , listOf(*pattern.points.toTypedArray()))
-        }.invoke()
+          AstroPatternDescriptor(pattern, "commentScore", listOf(*pattern.points.toTypedArray(), score))
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(*pattern.points.toTypedArray()))
       }
       is AstroPattern.StelliumSign -> {
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore", listOf(pattern.points, pattern.sign, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.points, pattern.sign))
-        }.invoke()
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.points, pattern.sign))
       }
       is AstroPattern.StelliumHouse -> {
         pattern.score?.let { score ->
           AstroPatternDescriptor(pattern, "commentScore", listOf(pattern.points, pattern.house, score))
-        } ?: {
-          AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.points, pattern.house))
-        }.invoke()
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(pattern.points, pattern.house))
       }
       is AstroPattern.Confrontation -> {
         val (group1, group2) = pattern.clusters.iterator().let { iterator ->
@@ -162,10 +197,8 @@ object astroPatternTranslator : IPatternDescriptor<AstroPattern> {
           g1 to g2
         }
         pattern.score?.let { score ->
-          AstroPatternDescriptor(pattern , "commentScore" , listOf(group1 , group2 , score))
-        }?: {
-          AstroPatternDescriptor(pattern , "commentBasic" , listOf(group1 , group2))
-        }.invoke()
+          AstroPatternDescriptor(pattern, "commentScore", listOf(group1, group2, score))
+        } ?: AstroPatternDescriptor(pattern, "commentBasic", listOf(group1, group2))
       }
     }
   }

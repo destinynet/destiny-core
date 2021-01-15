@@ -89,10 +89,10 @@ data class HoloLine(val yinYang: IYinYang,
 
 
   override val start: Double
-    get() = hexagrams.minBy { it.start }!!.start
+    get() = hexagrams.minByOrNull { it.start }!!.start
 
   override val endExclusive: Double
-    get() = hexagrams.maxBy { it.endExclusive }!!.endExclusive
+    get() = hexagrams.maxByOrNull { it.endExclusive }!!.endExclusive
 }
 
 
@@ -125,9 +125,9 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
 
   override val yuanTang: Int = lines.indexOfFirst { it.yuanTang } + 1
 
-  override val start: Double = lines.minBy { it.start }!!.start
+  override val start: Double = lines.minByOrNull { it.start }!!.start
 
-  override val endExclusive: Double = lines.maxBy { it.endExclusive }!!.endExclusive
+  override val endExclusive: Double = lines.maxByOrNull { it.endExclusive }!!.endExclusive
 
 }
 

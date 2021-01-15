@@ -57,8 +57,7 @@ interface Ziwei {
       // 五行
       val fiveElement = NaYin.getFiveElement(mainHouse)
       // 第幾局
-      val state: Int
-      state = when (fiveElement) {
+      val state: Int = when (fiveElement) {
         水 -> 2
         土 -> 5
         木 -> 3
@@ -176,8 +175,7 @@ interface Ziwei {
       // 再把虛歲轉換成干支
       return (first .. second).map { vAge ->
         val sb = birthYear.next(vAge - 1) // 虛歲 (vAge) 轉換為年 , 要減一 . 虛歲
-        val cycle: Int
-        cycle = if (sb.index >= birthYear.index) {
+        val cycle: Int = if (sb.index >= birthYear.index) {
           birthCycle + (vAge - 1) / 60
         } else {
           birthCycle + (vAge - 1) / 60 + 1

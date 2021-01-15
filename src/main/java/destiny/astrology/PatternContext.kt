@@ -9,7 +9,6 @@ import mu.KotlinLogging
 import org.apache.commons.math3.ml.clustering.Cluster
 import org.apache.commons.math3.ml.clustering.Clusterable
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer
-import org.apache.commons.math3.ml.distance.DistanceMeasure
 import java.io.Serializable
 
 class PatternContext(val aspectEffective: IAspectEffective,
@@ -50,7 +49,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   } // 大三角
 
 
-  val kite = object : IPatternFactory {
+  private val kite = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return grandTrine.getPatterns(posMap, cuspDegreeMap)
         .map { it as AstroPattern.GrandTrine }
@@ -196,7 +195,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   }
 
 
-  val grandCross = object : IPatternFactory {
+  private val grandCross = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
 
       return tSquared.getPatterns(posMap, cuspDegreeMap)
@@ -268,7 +267,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
 
   // 六芒星
-  val hexagon = object : IPatternFactory {
+  private val hexagon = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return grandTrine.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
@@ -324,7 +323,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
 
   /** [AstroPattern.MysticRectangle] 神秘長方形 */
-  val mysticRectangle = object : IPatternFactory {
+  private val mysticRectangle = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return wedge.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 } // 確保至少兩組 wedge
@@ -375,7 +374,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   } // 五芒星 (尚未出現範例)
 
   // 群星聚集 某星座 (至少四顆星)
-  val stelliumSign = object : IPatternFactory {
+  private val stelliumSign = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return posMap.entries.groupBy { (_, pos) -> pos.sign }
         .filter { (_, list) -> list.size >= 4 }
@@ -395,7 +394,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   }
 
   // 群星聚集 某宮位 (至少四顆星)
-  val stelliumHouse = object : IPatternFactory {
+  private val stelliumHouse = object : IPatternFactory {
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       return posMap.map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lng, cuspDegreeMap) }
         .groupBy { (_, house) -> house }
@@ -420,12 +419,12 @@ class PatternContext(val aspectEffective: IAspectEffective,
   }
 
   // 星群對峙 : 兩組 3顆星以上的合相星群 彼此對沖
-  val confrontation = object : IPatternFactory {
+  private val confrontation = object : IPatternFactory {
 
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       val pointMap = posMap.map { (point, pos) -> PointCluster(point, pos.lng) }
       val cluster = DBSCANClusterer<PointCluster>(6.0, 2
-        , DistanceMeasure { arr1, arr2 -> IHoroscopeModel.getAngle(arr1[0], arr2[0]) }
+        , { arr1, arr2 -> IHoroscopeModel.getAngle(arr1[0], arr2[0]) }
       )
 
       return cluster.cluster(pointMap).let { list: List<Cluster<PointCluster>> ->

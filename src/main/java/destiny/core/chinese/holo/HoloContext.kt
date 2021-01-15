@@ -237,7 +237,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
     // 後天命卦 , 以及六爻大運、流年 等資訊
     val hexagramAcquired: ILifeHoloHexagram = getHexagramAcquired(hexagramCongenital, hexagramCongenital.yuanTang, yinYang).let { (hex, yuanTang) ->
       // 先天卦的最後一爻
-      val congMaxLine: HoloLine = hexagramCongenital.lines.maxBy { it.endExclusive }!!
+      val congMaxLine: HoloLine = hexagramCongenital.lines.maxByOrNull { it.endExclusive }!!
 
       val lines: List<HoloLine> = getHoloHexagramAndAgeList(hex, yuanTang, congMaxLine.endExclusive, congMaxLine.hexagrams.last().stemBranch.next)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
@@ -337,7 +337,6 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
     val springStart = yearHexagram.start
     return SolarTerms.values()
       .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
-      .asSequence()
       .foldIndexed(mutableListOf()) { indexFrom0, list, solarTerms ->
         val lastOddHex: IHoloHexagramWithStemBranch = if (list.isEmpty()) yearHexagram else {
           if (list.size % 2 == 1)
@@ -384,7 +383,6 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
 
     val list: List<Pair<IHexagram, Int>> = SolarTerms.values()
       .filter { it.major }  // 只要「節」即可 , 共取出 12 節 , from 立春 to 小寒
-      .asSequence()
       .foldIndexed(mutableListOf<Pair<IHexagram, Int>>()) { indexFrom0, list, _ ->
         val lastOddHex: Pair<IHexagram, Int> = if (list.isEmpty()) yearHexagram to yearYuanTang else {
           if (list.size % 2 == 1)
@@ -502,8 +500,8 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
       // 大運的干支 , 指的是 先後天卦，走到哪一爻, 該爻的納甲
       val stemBranch = settings.getStemBranch(hex, lineIndex)
       val stemBranches = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-      val start = line!!.hexagrams.minBy { it.start }!!.start
-      val end = line.hexagrams.maxBy { it.endExclusive }!!.endExclusive
+      val start = line!!.hexagrams.minByOrNull { it.start }!!.start
+      val end = line.hexagrams.maxByOrNull { it.endExclusive }!!.endExclusive
       val holoHex = HoloHexagram(IHoloHexagram.Scale.MAJOR, hex, lineIndex, stemBranches, start, end)
       HoloHexagramWithStemBranch(holoHex, stemBranch)
     }

@@ -48,7 +48,7 @@ class TriplicitySchonerImpl : ITriplicity , Serializable {
   }
 
   /** 共管 , Partner */
-  override fun ZodiacSign.getPartner(): Planet? {
+  override fun ZodiacSign.getPartner(): Planet {
     return when (this.element) {
       FIRE -> MARS
       EARTH -> SATURN

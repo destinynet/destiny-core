@@ -108,7 +108,7 @@ interface IChineseDate : Descriptive {
      * 西元年份 轉成 cycle , 例如 1984 為 cycle=78 的 甲子年
      * 甲子循環 起始於 西元前2637年 , year = -2636
      * */
-    const val EPOCH = -2637
+    private const val EPOCH = -2637
 
     fun getCycleOfYear(year : Int) : Int {
       val years = year - EPOCH

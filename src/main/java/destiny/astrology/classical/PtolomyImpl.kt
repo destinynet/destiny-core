@@ -138,7 +138,7 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
    * 共管 , Partner
    * Ptolomy 只有水象星座，由火星共管
    * */
-  override fun ZodiacSign.getPartner(): Point? {
+  override fun ZodiacSign.getPartner(): Point {
     return when (this.element) {
       FIRE -> MARS
       EARTH -> SATURN

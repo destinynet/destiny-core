@@ -53,8 +53,7 @@ class PurpleStarBranchDefaultImpl : IPurpleStarBranch, Serializable {
     // 差數
     val diff = multiple * set - day
 
-    val steps: Int
-    steps = if (diff % 2 == 1) {
+    val steps: Int = if (diff % 2 == 1) {
       // 奇數
       multiple - diff
     } else {

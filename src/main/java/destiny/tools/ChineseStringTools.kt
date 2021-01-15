@@ -33,7 +33,7 @@ object ChineseStringTools {
   /**
    * 轉換成全形數字
    */
-  fun digitToFull(digit: Int): String {
+  private fun digitToFull(digit: Int): String {
     return when (digit) {
       1 -> "１"
       2 -> "２"

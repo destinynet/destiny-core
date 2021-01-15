@@ -64,12 +64,12 @@ object LocaleTools {
    *
    */
   fun getStringOrDefault(localeStringMap: Map<Locale, String>, locale: Locale): String {
-    return getString(localeStringMap, locale) ?: {
+    return getString(localeStringMap, locale) ?: run {
       val bestMatchingLocale = getBestMatchingLocale(locale, localeStringMap.keys)
       bestMatchingLocale?.let {
         localeStringMap[bestMatchingLocale]
       } ?: localeStringMap.values.first()
-    }.invoke()
+    }
 
   }
 

@@ -78,9 +78,6 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
 
       var u0: Double
       var u1: Double
-      val u2: Double
-      val u3: Double
-      val u4: Double
 
       u0 = gmtJulDay + 32082.5
 
@@ -91,9 +88,9 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
         }
         u0 = u0 + floor(u1 / 36525.0) - floor(u1 / 146100.0) - 38.0
       }
-      u2 = floor(u0 + 123.0)
-      u3 = floor((u2 - 122.2) / 365.25)
-      u4 = floor((u2 - floor(365.25 * u3)) / 30.6001)
+      val u2: Double = floor(u0 + 123.0)
+      val u3: Double = floor((u2 - 122.2) / 365.25)
+      val u4: Double = floor((u2 - floor(365.25 * u3)) / 30.6001)
       var month = (u4 - 1.0).toInt()
       if (month > 12) {
         month -= 12
@@ -163,9 +160,8 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
     fun of(ad: Boolean, yearOfEra: Int, month: Int, day: Int, hour: Int, minute: Int, second: Double): Pair<ChronoLocalDateTime<*>, Boolean> {
       val prolepticYear = TimeTools.getNormalizedYear(ad, yearOfEra)
 
-      val gregorian: Boolean
       val pair = TimeTools.splitSecond(second)
-      gregorian = when {
+      val gregorian: Boolean = when {
         prolepticYear < 1582 -> false
         prolepticYear > 1582 -> true
         else -> // prolepticYear == 1582

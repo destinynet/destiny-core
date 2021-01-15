@@ -119,15 +119,13 @@ interface IStarsBranchesHousePattern : IPattern {
   val house: House
 
   override val name: String
-    get() = {
+    get() {
       val sb = StringBuilder()
       sb.append(stars.joinToString("與"))
-
       if (stars.size == 1)
         sb.append(" 獨坐 ")
       else
         sb.append(" 坐 ")
-
       sb.append(branches.joinToString("或"))
       sb.append(" 於 ")
       sb.append(house.toString().let {
@@ -136,8 +134,8 @@ interface IStarsBranchesHousePattern : IPattern {
         else
           it
       })
-      sb.toString()
-    }.invoke()
+      return sb.toString()
+    }
 }
 
 data class StarBranchHousePattern(

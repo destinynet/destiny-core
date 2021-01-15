@@ -60,7 +60,7 @@ interface IZiweiContext {
   val fireBell: FireBell
 
   /** 天馬 */
-  val skyHorse : SkyHorse
+  val skyHorse: SkyHorse
 
   /** 天使天傷 */
   val hurtAngel: HurtAngel
@@ -105,21 +105,26 @@ interface IZiweiContext {
    * @param lunarDays          陰曆日期
    * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
    */
-  fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?,
-                    preFinalMonthNumForMainStars: Int?,
-                    cycle: Int,
-                    lunarYear: StemBranch,
-                    solarYear: StemBranch,
-                    lunarMonth: Int,
-                    leapMonth: Boolean,
-                    monthBranch: Branch,
-                    solarTerms: SolarTerms,
-                    lunarDays: Int,
-                    hour: Branch,
-                    dayNight: DayNight = (if (listOf(Branch.卯, Branch.辰, Branch.巳,
-                                                     Branch.午, Branch.未, Branch.申).contains(hour)) DayNight.DAY else DayNight.NIGHT),
-                    gender: Gender,
-                    optionalVageMap: Map<Int, Pair<Double, Double>>? = null): Builder
+  fun getBirthPlate(
+    mainAndBody: Pair<Branch, Branch>?,
+    preFinalMonthNumForMainStars: Int?,
+    cycle: Int,
+    lunarYear: StemBranch,
+    solarYear: StemBranch,
+    lunarMonth: Int,
+    leapMonth: Boolean,
+    monthBranch: Branch,
+    solarTerms: SolarTerms,
+    lunarDays: Int,
+    hour: Branch,
+    dayNight: DayNight = (if (listOf(
+        Branch.卯, Branch.辰, Branch.巳,
+        Branch.午, Branch.未, Branch.申
+      ).contains(hour)
+    ) DayNight.DAY else DayNight.NIGHT),
+    gender: Gender,
+    optionalVageMap: Map<Int, Pair<Double, Double>>? = null
+  ): Builder
 
   /**
    * @param stars     取得這些星體
@@ -127,9 +132,11 @@ interface IZiweiContext {
    * @param flowStem  天干為
    * @return 傳回四化 (若有的話)
    */
-  fun getTrans4Map(stars: Collection<ZStar>,
-                   flowType: FlowType,
-                   flowStem: Stem): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
+  fun getTrans4Map(
+    stars: Collection<ZStar>,
+    flowType: FlowType,
+    flowStem: Stem
+  ): Map<Pair<ZStar, FlowType>, ITransFour.Value> {
     return stars.map { star ->
       val key = star to flowType
       val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
@@ -178,7 +185,8 @@ interface IZiweiContext {
   /** 計算 流月盤  */
   fun getFlowMonth(builder: Builder, flowBig: StemBranch, flowYear: StemBranch, flowMonth: StemBranch): Builder {
     // 流月命宮
-    val monthlyMain = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    val monthlyMain =
+      flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
     val branchHouseMap = Branch.values().map { branch ->
       val steps = branch.getAheadOf(monthlyMain)
@@ -195,14 +203,17 @@ interface IZiweiContext {
   }
 
   /** 計算 流日盤  */
-  fun getFlowDay(builder: Builder,
-                 flowBig: StemBranch,
-                 flowYear: StemBranch,
-                 flowMonth: StemBranch,
-                 flowDay: StemBranch,
-                 flowDayNum: Int): Builder {
+  fun getFlowDay(
+    builder: Builder,
+    flowBig: StemBranch,
+    flowYear: StemBranch,
+    flowMonth: StemBranch,
+    flowDay: StemBranch,
+    flowDayNum: Int
+  ): Builder {
     // 流月命宮
-    val monthlyMain = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    val monthlyMain =
+      flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
     // 流日命宮
     val dailyMain = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
@@ -220,15 +231,18 @@ interface IZiweiContext {
   }
 
   /** 流時盤  */
-  fun getFlowHour(builder: Builder,
-                  flowBig: StemBranch,
-                  flowYear: StemBranch,
-                  flowMonth: StemBranch,
-                  flowDay: StemBranch,
-                  flowDayNum: Int,
-                  flowHour: StemBranch): Builder {
+  fun getFlowHour(
+    builder: Builder,
+    flowBig: StemBranch,
+    flowYear: StemBranch,
+    flowMonth: StemBranch,
+    flowDay: StemBranch,
+    flowDayNum: Int,
+    flowHour: StemBranch
+  ): Builder {
     // 流月命宮
-    val monthlyMain = flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
+    val monthlyMain =
+      flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
     // 流日命宮
     val dailyMain = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
     // 流時命宮
@@ -255,16 +269,15 @@ fun YearType.asLocaleString() = object : ILocaleString {
   }
 }
 
-fun YearType.toString(locale: Locale) : String {
+fun YearType.toString(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 
 /** 年系星系  */
-enum class YearType  {
+enum class YearType {
   YEAR_LUNAR, // 初一為界
   YEAR_SOLAR; // 立春為界
 }
-
 
 
 /** [StarUnlucky.火星] ,  [StarUnlucky.鈴星] 設定  */
@@ -275,7 +288,7 @@ fun FireBell.asLocaleString() = object : ILocaleString {
   }
 }
 
-fun FireBell.toString(locale : Locale) : String {
+fun FireBell.toString(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 
@@ -290,20 +303,20 @@ enum class FireBell {
 /** 天馬，要用 年馬 還是 月馬 */
 
 enum class SkyHorse {
-  YEAR ,
+  YEAR,
   MONTH;
 }
 
 fun SkyHorse.asLocaleString() = object : ILocaleString {
   override fun toString(locale: Locale): String {
-    return when(this@asLocaleString) {
+    return when (this@asLocaleString) {
       SkyHorse.YEAR -> "年馬"
       SkyHorse.MONTH -> "月馬"
     }
   }
 }
 
-fun SkyHorse.toString(locale: Locale) : String {
+fun SkyHorse.toString(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 
@@ -315,7 +328,7 @@ fun HurtAngel.asLocaleString() = object : ILocaleString {
   }
 }
 
-fun HurtAngel.toString(locale: Locale) : String {
+fun HurtAngel.toString(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 
@@ -335,7 +348,7 @@ fun RedBeauty.asLocaleString() = object : ILocaleString {
   }
 }
 
-fun RedBeauty.toString(locale: Locale) : String {
+fun RedBeauty.toString(locale: Locale): String {
   return this.asLocaleString().toString(locale)
 }
 
@@ -423,7 +436,8 @@ class ZContext(
   private val chineseDateImpl: IChineseDate? = null,
 
   /** 虛歲實作 */
-  private val intAgeImpl: IIntAge? = null) : IZiweiContext, Serializable {
+  private val intAgeImpl: IIntAge? = null
+) : IZiweiContext, Serializable {
 
   /**
    * 本命盤
@@ -437,20 +451,22 @@ class ZContext(
    * @param lunarDays          陰曆日期
    * @param optionalVageMap    預先計算好的虛歲時刻(GMT from / to)
    */
-  override fun getBirthPlate(mainAndBody: Pair<Branch, Branch>?,
-                             preFinalMonthNumForMainStars: Int?,
-                             cycle: Int,
-                             lunarYear: StemBranch,
-                             solarYear: StemBranch,
-                             lunarMonth: Int,
-                             leapMonth: Boolean,
-                             monthBranch: Branch,
-                             solarTerms: SolarTerms,
-                             lunarDays: Int,
-                             hour: Branch,
-                             dayNight: DayNight,
-                             gender: Gender,
-                             optionalVageMap: Map<Int, Pair<Double, Double>>?): Builder {
+  override fun getBirthPlate(
+    mainAndBody: Pair<Branch, Branch>?,
+    preFinalMonthNumForMainStars: Int?,
+    cycle: Int,
+    lunarYear: StemBranch,
+    solarYear: StemBranch,
+    lunarMonth: Int,
+    leapMonth: Boolean,
+    monthBranch: Branch,
+    solarTerms: SolarTerms,
+    lunarDays: Int,
+    hour: Branch,
+    dayNight: DayNight,
+    gender: Gender,
+    optionalVageMap: Map<Int, Pair<Double, Double>>?
+  ): Builder {
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
 
@@ -468,8 +484,10 @@ class ZContext(
      *    紫微星的算法，有依據「五行局數」. 而「五行局數」來自命宮. 若命宮採用上升星座，就與「月數」「節氣」無關。
      * */
     val finalMonthNumForMainStars: Int =
-      preFinalMonthNumForMainStars ?: IFinalMonthNumber.getFinalMonthNumber(lunarMonth, leapMonth, monthBranch,
-                                                                            lunarDays, mainStarsAlgo)
+      preFinalMonthNumForMainStars ?: IFinalMonthNumber.getFinalMonthNumber(
+        lunarMonth, leapMonth, monthBranch,
+        lunarDays, mainStarsAlgo
+      )
 
     // 最終要計算的「月份」數字 , for 月系星
     val finalMonthNumForMonthStars =
@@ -481,33 +499,50 @@ class ZContext(
     if (mainBodyHouseImpl is MainBodyHouseTradImpl   // 如果主星是以傳統方式計算
       && lunarMonth != finalMonthNumForMainStars             // 而且最終月份數不一樣
     ) {
-      logger.warn("命身宮設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", mainStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
-                  finalMonthNumForMainStars)
+      logger.warn(
+        "命身宮設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", mainStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
+        finalMonthNumForMainStars
+      )
       when {
         MonthAlgo.MONTH_SOLAR_TERMS === mainStarsAlgo -> // 命身宮用節氣計算，故用 {0}月={1} 而非 {2}{3}月
-          notesBuilders.add(Pair("mainStarsAlgo_month_solar_terms",
-                                 arrayOf(monthBranch, finalMonthNumForMainStars, if (leapMonth) "閏" else "",
-                                         lunarMonth)))
+          notesBuilders.add(
+            Pair(
+              "mainStarsAlgo_month_solar_terms",
+              arrayOf(
+                monthBranch, finalMonthNumForMainStars, if (leapMonth) "閏" else "",
+                lunarMonth
+              )
+            )
+          )
         MonthAlgo.MONTH_LEAP_NEXT === mainStarsAlgo -> // 命身宮於閏{0}月視為下月={1}
-          notesBuilders.add(Pair("mainStarsAlgo_month_leap_next", arrayOf<Any>(lunarMonth, finalMonthNumForMainStars)))
+          notesBuilders.add(Pair("mainStarsAlgo_month_leap_next", arrayOf(lunarMonth, finalMonthNumForMainStars)))
         MonthAlgo.MONTH_LEAP_SPLIT15 === mainStarsAlgo -> // 命身宮於閏月月中切割,故用{0}月
-          notesBuilders.add(Pair("mainStarsAlgo_month_leap_split15", arrayOf<Any>(finalMonthNumForMainStars)))
+          notesBuilders.add(Pair("mainStarsAlgo_month_leap_split15", arrayOf(finalMonthNumForMainStars)))
       }
     }
 
     if (lunarMonth != finalMonthNumForMonthStars) {
-      logger.warn("月系星的設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", monthStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
-                  finalMonthNumForMonthStars)
+      logger.warn(
+        "月系星的設定為 : {} , 造成原本月份為 {}{}月，以月數 {} 取代之", monthStarsAlgo, if (leapMonth) "閏" else "", lunarMonth,
+        finalMonthNumForMonthStars
+      )
       when {
         MonthAlgo.MONTH_SOLAR_TERMS === monthStarsAlgo -> // 月系星以節氣計算，故月用 {0}={1} 而非 {2}
-          notesBuilders.add(Pair("monthStarsAlgo_solar_month",
-                                 arrayOf(monthBranch, finalMonthNumForMonthStars, if (leapMonth) "閏" else "",
-                                         lunarMonth)))
+          notesBuilders.add(
+            Pair(
+              "monthStarsAlgo_solar_month",
+              arrayOf(
+                monthBranch, finalMonthNumForMonthStars, if (leapMonth) "閏" else "",
+                lunarMonth
+              )
+            )
+          )
         MonthAlgo.MONTH_LEAP_NEXT === monthStarsAlgo -> // 月系星於閏{0}月視為下月{1}
           notesBuilders.add(
-            Pair("monthStarsAlgo_month_leap_next", arrayOf<Any>(lunarMonth, finalMonthNumForMonthStars)))
+            Pair("monthStarsAlgo_month_leap_next", arrayOf(lunarMonth, finalMonthNumForMonthStars))
+          )
         MonthAlgo.MONTH_LEAP_SPLIT15 === monthStarsAlgo -> // 月系星於閏月月中切割,故用{0}月
-          notesBuilders.add(Pair("monthStarsAlgo_month_leap_split15", arrayOf<Any>(finalMonthNumForMonthStars)))
+          notesBuilders.add(Pair("monthStarsAlgo_month_leap_split15", arrayOf(finalMonthNumForMonthStars)))
       }
     }
 
@@ -551,7 +586,7 @@ class ZContext(
     }.toMap()
 
     // 地支 <-> 宮位 的 雙向 mapping
-    val branchHouseBiMap: BiMap<Branch, House> = HashBiMap.create<Branch, House>()
+    val branchHouseBiMap: BiMap<Branch, House> = HashBiMap.create()
     branchHouseMap.forEach { (sb, house) -> branchHouseBiMap[sb.branch] = house }
 
     // 為了某些流派閏月的考量 , 須在此求出「上個月」有幾天 , 才能求出紫微星
@@ -560,12 +595,14 @@ class ZContext(
     // 什麼星，在什麼地支
     val starBranchMap: Map<ZStar, Branch> = stars.map { star ->
       val branch: Branch? =
-        HouseFunctions.map[star]?.getBranch(lunarYear, solarYear, monthBranch, finalMonthNumForMonthStars, solarTerms,
-                                            lunarDays, hour, 五行局, gender, leapMonth, prevMonthDays, mainBranch,
-                                            this)
+        HouseFunctions.map[star]?.getBranch(
+          lunarYear, solarYear, monthBranch, finalMonthNumForMonthStars, solarTerms,
+          lunarDays, hour, 五行局, gender, leapMonth, prevMonthDays, mainBranch,
+          this
+        )
       star to branch
-    }.filter { (_ , branch) -> branch != null }
-      .map { (star , branch) -> star to branch!! }
+    }.filter { (_, branch) -> branch != null }
+      .map { (star, branch) -> star to branch!! }
       .toMap()
 
     logger.debug("stars = {}", stars)
@@ -581,11 +618,15 @@ class ZContext(
       if (lunarYear !== solarYear) {
         // 如果年 與 陰曆年不同
         // solar_year=年系星立春為界，故年用 {0} 而非 {1}
-        notesBuilders.add(Pair("solar_year", arrayOf<Any>(solarYear, lunarYear)))
+        notesBuilders.add(Pair("solar_year", arrayOf(solarYear, lunarYear)))
       }
     }
-    logger.debug("transFourImpl = {} , title = {}" , transFourImpl.javaClass.simpleName , transFourImpl.toString(Locale.getDefault()))
-    logger.debug("trans4Map = {}" , trans4Map)
+    logger.debug(
+      "transFourImpl = {} , title = {}",
+      transFourImpl.javaClass.simpleName,
+      transFourImpl.toString(Locale.getDefault())
+    )
+    logger.debug("trans4Map = {}", trans4Map)
 
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
@@ -595,9 +636,9 @@ class ZContext(
         val set = ITransFour.Value.values().map { value ->
           val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
           value to flyStar
-        }.filter { (_ , flyStar) ->
+        }.filter { (_, flyStar) ->
           starBranchMap[flyStar] != null
-        }.map { (value , flyStar) ->
+        }.map { (value, flyStar) ->
           Triple(value, flyStar, starBranchMap.getValue(flyStar))
         }.toSet()
 
@@ -629,19 +670,20 @@ class ZContext(
      * 歲數 map , 2018-06-03 改 optional . 因為不想在 core 內 , depend on ChineseDateCalendricaImpl
      * 不然就得開發另一套非常簡易的 [IIntAge] 在此使用
      */
-    val vageMap: Map<Int, Pair<Double, Double>>? = optionalVageMap ?: {
-      if (chineseDateImpl != null && intAgeImpl != null) {
+    val vageMap: Map<Int, Pair<Double, Double>>? =
+      optionalVageMap ?: if (chineseDateImpl != null && intAgeImpl != null) {
         val gmt = chineseDateImpl.getYangDate(chineseDate).atTime(LocalTime.NOON)
         val gmtJulDay = TimeTools.getGmtJulDay(gmt)
         intAgeImpl.getRangesMap(gender, gmtJulDay, locationOf(Locale.UK), 1, 130) // 參數沒有 loc 資訊，時間傳回 GMT , 就以 UK 作為地點
       } else {
         null
       }
-    }.invoke()
 
-    return Builder(this, chineseDate, gender, year , finalMonthNumForMonthStars, hour, dayNight , mainHouse, bodyHouse, mainStar,
-                   bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
-                   branchSmallRangesMap, flyMap, vageMap)
+    return Builder(
+      this, chineseDate, gender, year, finalMonthNumForMonthStars, hour, dayNight, mainHouse, bodyHouse, mainStar,
+      bodyStar, 五行, 五行局, branchHouseMap, starBranchMap, starStrengthMap, flowBigVageMap,
+      branchSmallRangesMap, flyMap, vageMap
+    )
       .appendNotesBuilders(notesBuilders)
       .appendTrans4Map(trans4Map)
   }
@@ -706,7 +748,7 @@ class ZContext(
 
 
   companion object {
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
   }
 
 } // ZContext

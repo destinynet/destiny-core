@@ -49,7 +49,7 @@ class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
    * 取得某時刻之後 (或之前)，出現此卦的 時間點範圍
    * @param forward true : 順查 , false : 逆查
    */
-  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean): Pair<Double, Double>? {
+  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean): Pair<Double, Double> {
 
     // 現在是什麼卦 , 以及此卦的起迄時刻
     val (hex, timeRange: Pair<Double, Double>) = getHexagram(gmtJulDay)

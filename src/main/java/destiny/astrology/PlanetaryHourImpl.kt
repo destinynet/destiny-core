@@ -109,7 +109,7 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
 
   private fun getHourIndexOfHalfDay(from: Double, to: Double, gmtJulDay: Double): HourIndexOfHalfDay {
 
-    require(gmtJulDay >= from && gmtJulDay <= to) {
+    require(gmtJulDay in from..to) {
       "gmtJulDay $gmtJulDay not between $from and $to"
     }
 

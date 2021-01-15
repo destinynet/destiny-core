@@ -80,25 +80,23 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
     val starIndex = 3 + leftBlocks * 2
     setText("★", 3, starIndex, "red")
 
-    val (leftDaysString, rightDaysString) = {
-      val left = toLeftDays.toInt().let { leftDays ->
-        (ChineseStringTools.toBiggerDigits(leftDays) + "日").let {
-          if (leftDays > 3) {
-            "←$it"
-          } else
-            it
-        }
+    val left = toLeftDays.toInt().let { leftDays ->
+      (ChineseStringTools.toBiggerDigits(leftDays) + "日").let {
+        if (leftDays > 3) {
+          "←$it"
+        } else
+          it
       }
-      val right = toRightDays.toInt().let { rightDays ->
-        ChineseStringTools.toBiggerDigits(rightDays) + "日".let {
-          if (rightDays > 1) {
-            "$it→"
-          } else
-            it
-        }
+    }
+    val right = toRightDays.toInt().let { rightDays ->
+      ChineseStringTools.toBiggerDigits(rightDays) + "日".let {
+        if (rightDays > 1) {
+          "$it→"
+        } else
+          it
       }
-      left to right
-    }.invoke()
+    }
+    val (leftDaysString, rightDaysString) = left to right
 
     setText(leftDaysString, 4, starIndex - leftDaysString.length * 2, "gray")
     setText(rightDaysString, 4, starIndex + 2, "gray")

@@ -11,7 +11,7 @@ import java.util.*
 
 class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
 
-  override fun getAgeNote(gmtJulDay: Double): String? {
+  override fun getAgeNote(gmtJulDay: Double): String {
     val start = revJulDayFunc.invoke(gmtJulDay)
     return start.get(ChronoField.YEAR_OF_ERA).toString()
   }

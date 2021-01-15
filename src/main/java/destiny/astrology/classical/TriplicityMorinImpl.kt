@@ -63,7 +63,7 @@ class TriplicityMorinImpl : ITriplicity, Serializable {
   }
 
   /** 共管 , Partner */
-  override fun ZodiacSign.getPartner(): Planet? {
+  override fun ZodiacSign.getPartner(): Planet {
     return when(this.element) {
       FIRE -> JUPITER
       EARTH -> VENUS

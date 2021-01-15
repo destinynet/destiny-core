@@ -5,6 +5,7 @@ package destiny.iching.canvas
 
 import destiny.core.chinese.SimpleBranch
 import destiny.iching.divine.ISingleHexagramWithName
+import destiny.iching.divine.Relative
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 
@@ -66,8 +67,8 @@ class HexagramPlateCanvas(hex: ISingleHexagramWithName) : ColorCanvas(9, 32, Chi
         .asSequence()
         .filter { hex.伏神六親[it - 1] != null }
         .forEach { i ->
-          hex.伏神六親[i - 1]?.also {
-            setText(it.toString(), 8 - i, 1)
+          hex.伏神六親[i - 1]?.also { rel: Relative ->
+            setText(rel.toString(), 8 - i, 1)
             setText(ChineseStringTools.NULL_CHAR, 8 - i, 5)
             hex.伏神納甲[i - 1]!!.also {
               setText(it.stem.toString(), 8 - i, 7)
