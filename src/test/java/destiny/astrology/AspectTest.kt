@@ -57,7 +57,7 @@ class AspectTest {
     assertEquals("BiNovile", Aspect.BINOVILE.toString(locale))
     assertEquals("Square", Aspect.SQUARE.toString(locale))
     assertEquals("BiSeptile", Aspect.BISEPTILE.toString(locale))
-    assertEquals("SesquiQuintle", Aspect.SESQUIQUINTLE.toString(locale))
+    assertEquals("SesquiQuintile", Aspect.SESQUIQUINTLE.toString(locale))
     assertEquals("Trine", Aspect.TRINE.toString(locale))
     assertEquals("SesquiQuadrate", Aspect.SESQUIQUADRATE.toString(locale))
     assertEquals("BiQuintile", Aspect.BIQUINTILE.toString(locale))

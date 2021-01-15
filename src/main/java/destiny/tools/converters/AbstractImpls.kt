@@ -59,15 +59,16 @@ interface IAbstractImpls<T> : MapConverterWithDefault<T> {
   fun getStringValue(t: () -> T): String
 }
 
+private fun <T : Any> Array<T>.getImpls(domainKey: String): List<Pair<T, Impl>> {
+  return this.map { t: T ->
+    val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
+    t to impl
+  }.filter { (_, impl) -> impl != null }
+    .map { (t, impl) -> t to impl!! }
+}
 
 fun <T : Any> Array<T>.findDefaultImplAndStringValue(domainKey: String): Pair<T, String> {
-
-  return this.map { t: T ->
-
-      val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
-      t to impl
-    }.filter { (_, impl) -> impl != null }
-    .map { (t, impl) -> t to impl!! }
+  return this.getImpls(domainKey)
     .map { (t, impl) ->
       val domain: Domain? = impl.value.firstOrNull { domain -> domain.key == domainKey && domain.default }
       t to domain
@@ -79,11 +80,7 @@ fun <T : Any> Array<T>.findDefaultImplAndStringValue(domainKey: String): Pair<T,
 
 
 private fun <T : Any> Array<T>.findNonDefaultImplAndKey(domainKey: String): Map<T, String> {
-  return this.map { t: T ->
-      val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
-      t to impl
-    }.filter { (_, impl) -> impl != null }
-    .map { (t, impl) -> t to impl!! }
+  return this.getImpls(domainKey)
     .map { (t, impl) ->
       val domain: Domain? = impl.value.firstOrNull { domain -> domain.key == domainKey && !domain.default }
       t to domain
