@@ -16,7 +16,7 @@ class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
     return start.get(ChronoField.YEAR_OF_ERA).toString()
   }
 
-  override fun getAgeNote(startAndEnd: Pair<Double, Double>): String? {
+  override fun getAgeNote(startAndEnd: Pair<Double, Double>): String {
     return getAgeNote(startAndEnd.first)
   }
 

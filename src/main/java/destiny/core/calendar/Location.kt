@@ -126,10 +126,12 @@ data class Location(override val lat: Double,
               latSec: Double = 0.0,
               tzid: String?,
               minuteOffset: Int? = null,
-              altitudeMeter: Double? = null) : this(
-    (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
-    (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let { if (eastWest == EastWest.WEST) 0 - it else it },
-    tzid, minuteOffset, altitudeMeter)
+              altitudeMeter: Double? = null) : this(getLat(northSouth, latDeg, latMin, latSec),
+    getLng(eastWest, lngDeg, lngMin, lngSec),
+    tzid,
+    minuteOffset,
+    altitudeMeter
+  )
 
 
   /** 大家比較常用的，只有「度、分」。省略「秒」以及「高度」 */
@@ -159,7 +161,7 @@ data class Location(override val lat: Double,
 
   companion object {
 
-    fun getLongitude(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
+    fun getLng(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
       return (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let {
         if (ew == EastWest.WEST)
           0 - it
@@ -168,7 +170,7 @@ data class Location(override val lat: Double,
       }
     }
 
-    fun getLatitude(nw: NorthSouth, latDeg: Int, latMin: Int, latSec: Double): Double {
+    fun getLat(nw: NorthSouth, latDeg: Int, latMin: Int, latSec: Double): Double {
       return (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let {
         if (nw == NorthSouth.SOUTH)
           0 - it

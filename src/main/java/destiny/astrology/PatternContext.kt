@@ -423,9 +423,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
     override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
       val pointMap = posMap.map { (point, pos) -> PointCluster(point, pos.lng) }
-      val cluster = DBSCANClusterer<PointCluster>(6.0, 2
-        , { arr1, arr2 -> IHoroscopeModel.getAngle(arr1[0], arr2[0]) }
-      )
+      val cluster = DBSCANClusterer<PointCluster>(6.0, 2) { arr1, arr2 -> IHoroscopeModel.getAngle(arr1[0], arr2[0]) }
 
       return cluster.cluster(pointMap).let { list: List<Cluster<PointCluster>> ->
         list
