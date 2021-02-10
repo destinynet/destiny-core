@@ -64,7 +64,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
    */
   override fun Point.getDignities(map: Map<Point, Double>, dayNight: DayNight?): List<Dignity> {
     return map[this]?.let { deg: Double ->
-      val sign = destiny.core.astrology.ZodiacSign.of(deg)
+      val sign = ZodiacSign.of(deg)
       this.getDignitiesFromSignMap(mapOf(this to sign)).toMutableSet().apply {
         with(termImpl) {
           if (this@getDignities === sign.getTermPoint(deg))

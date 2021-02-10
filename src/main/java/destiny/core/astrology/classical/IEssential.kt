@@ -36,7 +36,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun Point.receivingRulerFrom(map: Map<Point, Double>): Point? {
-    return this.receivingRulerFromSignMap(map.mapValues { (_, degree) -> destiny.core.astrology.ZodiacSign.of(degree) })
+    return this.receivingRulerFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /**
@@ -46,7 +46,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun Point.receivingExaltFrom(map: Map<Point, Double>): Point? {
-    return this.receivingExaltFromSignMap(map.mapValues { (_, degree) -> destiny.core.astrology.ZodiacSign.of(degree) })
+    return this.receivingExaltFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
@@ -54,7 +54,7 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun Point.receivingTriplicityFrom(map: Map<Point, Double>, dayNight: DayNight): Point? {
-    return this.receivingTriplicityFromSignMap(map.mapValues { (_, degree) -> destiny.core.astrology.ZodiacSign.of(degree) }, dayNight)
+    return this.receivingTriplicityFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) }, dayNight)
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
@@ -68,14 +68,14 @@ interface IEssential {
 
   /** 承上 , double map 版本 */
   fun Point.receivingFallFrom(map: Map<Point, Double>): Point? {
-    return this.receivingFallFromSignMap(map.mapValues { (_, degree) -> destiny.core.astrology.ZodiacSign.of(degree) })
+    return this.receivingFallFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingDetrimentFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   fun Point.receivingDetrimentFrom(map: Map<Point, Double>): Point? {
-    return this.receivingDetrimentFromSignMap(map.mapValues { (_, degree) -> destiny.core.astrology.ZodiacSign.of(degree) })
+    return this.receivingDetrimentFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
   }
 
   /**

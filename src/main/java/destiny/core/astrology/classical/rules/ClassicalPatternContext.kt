@@ -124,7 +124,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return with(essentialImpl) {
-        planet.getMutualData(h.pointDegreeMap , null , setOf(destiny.core.astrology.classical.Dignity.RULER , destiny.core.astrology.classical.Dignity.EXALTATION))
+        planet.getMutualData(h.pointDegreeMap , null , setOf(Dignity.RULER , Dignity.EXALTATION))
           .map { mutualData ->
             val sign1 = h.getZodiacSign(planet)!!
             val p2 = mutualData.getAnotherPoint(planet)
@@ -1005,7 +1005,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return with(essentialImpl) {
 
-        planet.getMutualData(h.pointDegreeMap, null, setOf(destiny.core.astrology.classical.Dignity.DETRIMENT, destiny.core.astrology.classical.Dignity.FALL))
+        planet.getMutualData(h.pointDegreeMap, null, setOf(Dignity.DETRIMENT, Dignity.FALL))
           .map { mutualData ->
             val sign1 = h.getZodiacSign(planet)!!
             val p2 = mutualData.getAnotherPoint(planet)

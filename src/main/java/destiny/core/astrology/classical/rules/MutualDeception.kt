@@ -46,7 +46,7 @@ class MutualDeception(private val essentialImpl: IEssential) {
               // 確認互陷
               essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
             }?.let {
-              logger.debug("[comment1] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, destiny.core.astrology.classical.Dignity.RULER, signRuler, sign2, destiny.core.astrology.classical.Dignity.RULER)
+              logger.debug("[comment1] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.RULER, signRuler, sign2, Dignity.RULER)
               "comment1" to arrayOf(planet, sign1, signRuler, sign2)
             }
           }
@@ -71,7 +71,7 @@ class MutualDeception(private val essentialImpl: IEssential) {
               // 確認互陷
               essentialImpl.isBothInBadSituation(planet, sign1, signExalt, sign2)
             }?.let {
-              logger.info("[comment2] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, destiny.core.astrology.classical.Dignity.EXALTATION, signExalt, sign2, destiny.core.astrology.classical.Dignity.EXALTATION)
+              logger.info("[comment2] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 {} 互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2, Dignity.EXALTATION)
               "comment2" to arrayOf(planet, sign1, signExalt, sign2)
             }
           }
@@ -97,7 +97,7 @@ class MutualDeception(private val essentialImpl: IEssential) {
                 // 確認互陷
                 essentialImpl.isBothInBadSituation(planet , sign1 , signRuler , sign2)
               }?.let {
-                logger.debug("[comment3] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, destiny.core.astrology.classical.Dignity.RULER, signRuler, sign2)
+                logger.debug("[comment3] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.RULER, signRuler, sign2)
                 "comment3" to arrayOf(planet, sign1, signRuler, sign2)
               }
             }
@@ -125,7 +125,7 @@ class MutualDeception(private val essentialImpl: IEssential) {
                 // 確認互陷
                 essentialImpl.isBothInBadSituation(planet , sign1 , signExalt , sign2)
               }?.let {
-                logger.debug("[comment4] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, destiny.core.astrology.classical.Dignity.EXALTATION, signExalt, sign2)
+                logger.debug("[comment4] {} 位於 {} , 與其 {} {} 飛至 {} , 形成 廟旺互陷", planet, sign1, Dignity.EXALTATION, signExalt, sign2)
                 "comment4" to arrayOf(planet, sign1, signExalt, sign2)
               }
             }
