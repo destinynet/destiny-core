@@ -5,12 +5,12 @@ package destiny.core.chinese.eightwords
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import destiny.astrology.Coordinate
-import destiny.astrology.IStarTransit
-import destiny.astrology.Planet
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IntAgeNote
+import destiny.core.astrology.Coordinate
+import destiny.core.astrology.IStarTransit
+import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
@@ -142,7 +142,8 @@ class FortuneLargeSolarTermsSpanImpl(
             logger.debug("順推 cache.get({}) miss", i)
 
             //沒有計算過
-            targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
+            targetGmtJulDay = starTransitImpl.getNextTransitGmt(
+              Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, true)
 
             logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
@@ -174,7 +175,8 @@ class FortuneLargeSolarTermsSpanImpl(
             logger.debug("逆推 cache.get({}) miss", i)
             //沒有計算過
 
-            targetGmtJulDay = starTransitImpl.getNextTransitGmt(Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
+            targetGmtJulDay = starTransitImpl.getNextTransitGmt(
+              Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
                                                                 Coordinate.ECLIPTIC, stepGmtJulDay, false)
             logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
             //以前一天計算現在節氣

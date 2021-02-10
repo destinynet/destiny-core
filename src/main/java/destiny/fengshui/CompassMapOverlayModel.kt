@@ -3,8 +3,8 @@
  */
 package destiny.fengshui
 
-import destiny.astrology.Planet
 import destiny.core.TimeLoc
+import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.tools.location.MapType
 import java.io.Serializable

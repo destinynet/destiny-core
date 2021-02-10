@@ -3,11 +3,11 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.IDayNight
-import destiny.astrology.IRelativeTransit
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.IIntAge
+import destiny.core.astrology.IDayNight
+import destiny.core.astrology.IRelativeTransit
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools

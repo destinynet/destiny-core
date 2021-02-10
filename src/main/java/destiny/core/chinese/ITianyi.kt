@@ -3,9 +3,9 @@
  */
 package destiny.core.chinese
 
-import destiny.astrology.IDayNight
 import destiny.core.DayNight
 import destiny.core.Descriptive
+import destiny.core.astrology.IDayNight
 import destiny.core.calendar.Location
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IHour

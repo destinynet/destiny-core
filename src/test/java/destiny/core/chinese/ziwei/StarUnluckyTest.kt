@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.getAbbreviation
-import destiny.astrology.toString
+import destiny.core.astrology.getAbbreviation
+import destiny.core.astrology.toString
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.Stem.*
 import destiny.core.chinese.ziwei.StarUnlucky.Companion.fun地劫

@@ -3,10 +3,10 @@
  */
 package destiny.core.chinese.liuren.golden
 
-import destiny.astrology.IDayNight
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
+import destiny.core.astrology.IDayNight
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory

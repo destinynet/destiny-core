@@ -3,11 +3,11 @@
  */
 package destiny.core.chinese.impls
 
-import destiny.astrology.IDayNight
-import destiny.astrology.IRiseTrans
-import destiny.astrology.Planet
-import destiny.astrology.TransPoint
 import destiny.core.DayNight
+import destiny.core.astrology.IDayNight
+import destiny.core.astrology.IRiseTrans
+import destiny.core.astrology.Planet
+import destiny.core.astrology.TransPoint
 import destiny.core.calendar.ILocation
 import destiny.tools.Domain
 import destiny.tools.Impl

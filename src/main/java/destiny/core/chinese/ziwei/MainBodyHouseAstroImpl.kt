@@ -3,7 +3,8 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.*
+import destiny.core.astrology.*
+import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IRisingSign
 import destiny.core.chinese.Branch

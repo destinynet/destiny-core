@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.ZodiacSign
+import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeSecDecoratorChinese

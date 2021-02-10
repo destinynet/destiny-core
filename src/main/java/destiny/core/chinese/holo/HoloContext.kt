@@ -1,9 +1,9 @@
 package destiny.core.chinese.holo
 
-import destiny.astrology.IZodiacSign
-import destiny.astrology.Planet
 import destiny.core.BirthDataNamePlace
 import destiny.core.Gender
+import destiny.core.astrology.IZodiacSign
+import destiny.core.astrology.Planet
 import destiny.core.calendar.*
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory

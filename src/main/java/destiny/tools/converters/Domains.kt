@@ -1,6 +1,6 @@
 package destiny.tools.converters
 
-import destiny.astrology.IDayNight
+import destiny.core.astrology.IDayNight
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.calendar.eightwords.IRisingSign

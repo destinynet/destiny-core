@@ -3,9 +3,9 @@
  */
 package destiny.core.chinese.onePalm
 
-import destiny.astrology.Coordinate
-import destiny.astrology.HouseSystem
 import destiny.core.Gender
+import destiny.core.astrology.Coordinate
+import destiny.core.astrology.HouseSystem
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.calendar.chinese.IChineseDate

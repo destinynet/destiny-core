@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.getAbbreviation
-import destiny.astrology.toString
+import destiny.core.astrology.getAbbreviation
+import destiny.core.astrology.toString
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.Test

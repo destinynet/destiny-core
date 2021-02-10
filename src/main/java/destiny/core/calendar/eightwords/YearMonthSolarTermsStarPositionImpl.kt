@@ -4,12 +4,12 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.Centric.GEO
-import destiny.astrology.Coordinate.ECLIPTIC
-import destiny.astrology.Coordinate.EQUATORIAL
-import destiny.astrology.IStarPosition
-import destiny.astrology.IStarTransit
-import destiny.astrology.Planet
+import destiny.core.astrology.Centric.GEO
+import destiny.core.astrology.Coordinate.ECLIPTIC
+import destiny.core.astrology.Coordinate.EQUATORIAL
+import destiny.core.astrology.IStarPosition
+import destiny.core.astrology.IStarTransit
+import destiny.core.astrology.Planet
 import destiny.core.calendar.*
 import destiny.core.chinese.*
 import mu.KotlinLogging

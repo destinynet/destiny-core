@@ -4,15 +4,15 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.Planet
-import destiny.astrology.ZodiacSign
+import destiny.core.astrology.Planet
+import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.*
-import destiny.core.chinese.eightwords.IHiddenStems
-import destiny.core.chinese.eightwords.ReactionUtil
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.NaYin
 import destiny.core.chinese.Stem
+import destiny.core.chinese.eightwords.IHiddenStems
+import destiny.core.chinese.eightwords.ReactionUtil
 import destiny.tools.AlignTools
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas

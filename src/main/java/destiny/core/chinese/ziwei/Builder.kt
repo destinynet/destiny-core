@@ -3,16 +3,16 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.toString
 import destiny.core.DayNight
 import destiny.core.Gender
+import destiny.core.astrology.toString
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.chinese.eightwords.IPersonContextModel
 import destiny.core.chinese.Branch
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.NaYin
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.eightwords.IPersonContextModel
 import mu.KotlinLogging
 import java.io.Serializable
 import java.text.MessageFormat

@@ -3,8 +3,8 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.*
 import destiny.core.ITimeLoc
+import destiny.core.astrology.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.TimeTools
@@ -58,7 +58,7 @@ interface IEightWordsContextModel : ITimeLoc {
   val houseMap: Map<Int, Double>
 
   /** 四至點 的 黃道度數 */
-  val rsmiMap : Map<TransPoint , Double>
+  val rsmiMap : Map<TransPoint, Double>
 
   /** 星體交角 */
   val aspectsDataSet: Set<AspectData>
@@ -108,7 +108,7 @@ data class EightWordsContextModel(
   override val houseMap: Map<Int, Double>,
 
   /** 四至點 的黃道度數 */
-  override val rsmiMap : Map<TransPoint , Double>,
+  override val rsmiMap : Map<TransPoint, Double>,
 
   /** 星體交角 */
   override val aspectsDataSet: Set<AspectData>

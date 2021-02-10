@@ -3,11 +3,11 @@
  */
 package destiny.tools
 
-import destiny.astrology.*
-import destiny.astrology.classical.Dignity
-import destiny.astrology.classical.toString
 import destiny.core.Descriptive
 import destiny.core.IPattern
+import destiny.core.astrology.*
+import destiny.core.astrology.classical.Dignity
+import destiny.core.astrology.classical.toString
 import mu.KotlinLogging
 import java.io.Serializable
 import java.text.MessageFormat
@@ -35,7 +35,7 @@ abstract class AbstractPropertyBasedPatternDescriptor(val pattern: IPattern,
       ResourceBundle.getBundle(resource, locale).getString(nameKey)
     } catch (e: Exception) {
       logger.trace("cannot get from nameKey = {}", nameKey)
-      pattern.javaClass.simpleName
+      pattern::class.simpleName!!
     }
   }
 

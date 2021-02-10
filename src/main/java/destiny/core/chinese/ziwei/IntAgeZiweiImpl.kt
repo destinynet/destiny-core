@@ -3,10 +3,10 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.IRelativeTransit
-import destiny.astrology.Planet
 import destiny.core.Gender
 import destiny.core.IIntAge
+import destiny.core.astrology.IRelativeTransit
+import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
@@ -16,7 +16,6 @@ import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.LocalTime
 import java.util.*
-
 
 /**
  * 紫微斗數虛歲

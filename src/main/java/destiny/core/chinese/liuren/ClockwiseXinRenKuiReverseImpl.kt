@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.liuren
 
-import destiny.astrology.IDayNight
 import destiny.core.DayNight
+import destiny.core.astrology.IDayNight
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Clockwise

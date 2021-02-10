@@ -3,10 +3,10 @@
  */
 package destiny.core.chinese
 
-import destiny.astrology.IZodiacSign
-import destiny.astrology.Planet
-import destiny.astrology.ZodiacSign
-import destiny.astrology.ZodiacSign.*
+import destiny.core.astrology.IZodiacSign
+import destiny.core.astrology.Planet
+import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.ZodiacSign.*
 import destiny.core.calendar.ILocation
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime

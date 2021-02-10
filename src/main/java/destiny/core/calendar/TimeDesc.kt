@@ -3,10 +3,10 @@
  */
 package destiny.core.calendar
 
-import destiny.astrology.Point
-import destiny.astrology.TransPoint
-import destiny.astrology.eclipse.ILunarEclipse
-import destiny.astrology.eclipse.ISolarEclipse
+import destiny.core.astrology.Point
+import destiny.core.astrology.TransPoint
+import destiny.core.astrology.eclipse.ILunarEclipse
+import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.chinese.Branch
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -46,7 +46,8 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
   data class TypeTransPoint(override val lmt: LocalDateTime,
                             override val desc: String,
                             val point: Point,
-                            val tp: TransPoint) : TimeDesc(lmt, desc)
+                            val tp: TransPoint
+  ) : TimeDesc(lmt, desc)
 
   /** 節氣 */
   data class TypeSolarTerms(override val lmt: LocalDateTime, override val desc: String, val solarTerms: SolarTerms) :

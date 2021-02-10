@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese
 
-import destiny.astrology.*
+import destiny.core.astrology.*
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.Symbol

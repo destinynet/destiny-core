@@ -3,7 +3,8 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.*
+import destiny.core.astrology.*
+import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import mu.KotlinLogging

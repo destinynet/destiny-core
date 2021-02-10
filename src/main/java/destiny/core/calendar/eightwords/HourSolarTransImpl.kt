@@ -5,10 +5,10 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.IRiseTrans
-import destiny.astrology.Planet
-import destiny.astrology.Star
-import destiny.astrology.TransPoint
+import destiny.core.astrology.IRiseTrans
+import destiny.core.astrology.Planet
+import destiny.core.astrology.Star
+import destiny.core.astrology.TransPoint
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*

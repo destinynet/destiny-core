@@ -5,11 +5,11 @@
  */
 package destiny.core.calendar
 
-import destiny.astrology.Centric
-import destiny.astrology.Coordinate.ECLIPTIC
-import destiny.astrology.IStarPosition
-import destiny.astrology.IStarTransit
-import destiny.astrology.Planet.SUN
+import destiny.core.astrology.Centric
+import destiny.core.astrology.Coordinate.ECLIPTIC
+import destiny.core.astrology.IStarPosition
+import destiny.core.astrology.IStarTransit
+import destiny.core.astrology.Planet.SUN
 import destiny.tools.circleUtils.getNormalizeDegree
 import java.io.Serializable
 

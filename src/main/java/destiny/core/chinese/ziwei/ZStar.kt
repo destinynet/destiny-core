@@ -3,8 +3,8 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.astrology.Point
-import destiny.astrology.toString
+import destiny.core.astrology.Point
+import destiny.core.astrology.toString
 import java.util.*
 
 /**

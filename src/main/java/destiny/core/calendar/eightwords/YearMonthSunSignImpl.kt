@@ -3,7 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.IStarPosition
+import destiny.core.astrology.IStarPosition
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.chinese.IStemBranch

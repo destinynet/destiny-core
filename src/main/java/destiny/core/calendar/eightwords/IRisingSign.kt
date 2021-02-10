@@ -3,10 +3,10 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.astrology.Coordinate
-import destiny.astrology.HouseSystem
-import destiny.astrology.ZodiacSign
 import destiny.core.Descriptive
+import destiny.core.astrology.Coordinate
+import destiny.core.astrology.HouseSystem
+import destiny.core.astrology.ZodiacSign
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
