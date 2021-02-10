@@ -8,7 +8,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.IMonthlyHexagram
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
-import destiny.fengshui.sanyuan.Yuan
+import destiny.core.fengshui.sanyuan.Yuan
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.Symbol

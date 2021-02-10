@@ -9,8 +9,8 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.fengshui.sanyuan.IYuan
-import destiny.fengshui.sanyuan.Yuan
+import destiny.core.fengshui.sanyuan.IYuan
+import destiny.core.fengshui.sanyuan.Yuan
 import destiny.iching.*
 import destiny.iching.Symbol.*
 import destiny.iching.contentProviders.IHexNameFull

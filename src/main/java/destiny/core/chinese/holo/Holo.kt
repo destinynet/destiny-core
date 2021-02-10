@@ -10,7 +10,7 @@ import destiny.core.calendar.SolarTerms.*
 import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
-import destiny.fengshui.sanyuan.Yuan
+import destiny.core.fengshui.sanyuan.Yuan
 import destiny.iching.Hexagram
 import destiny.iching.IHexagram
 import destiny.iching.Symbol
@@ -151,7 +151,7 @@ data class Holo(
   override val seasonalHexagram: Pair<Hexagram, Int>,
   override val monthlyHexagram: Hexagram,
   override val dailyHexagramMap: Map<IDailyHexagram, Hexagram>,
-  override val goldenKey: GoldenKey? ,
+  override val goldenKey: GoldenKey?,
   override val summaries: List<String>) : IHolo, IBirthDataNamePlace by birthData
 
 
