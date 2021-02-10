@@ -4,11 +4,11 @@
 package destiny.core.chinese
 
 import destiny.core.astrology.*
-import destiny.iching.Hexagram
-import destiny.iching.IHexagram
-import destiny.iching.Symbol
-import destiny.iching.congenital.circle.aheadOf
-import destiny.iching.congenital.circle.next
+import destiny.core.iching.Hexagram
+import destiny.core.iching.IHexagram
+import destiny.core.iching.Symbol
+import destiny.core.iching.congenital.circle.aheadOf
+import destiny.core.iching.congenital.circle.next
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*

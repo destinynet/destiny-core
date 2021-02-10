@@ -3,8 +3,8 @@
  */
 package destiny.core.fengshui
 
-import destiny.iching.Symbol
-import destiny.iching.Symbol.*
+import destiny.core.iching.Symbol
+import destiny.core.iching.Symbol.*
 import destiny.tools.circleUtils
 import java.io.Serializable
 

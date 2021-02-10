@@ -70,7 +70,7 @@ data class ViewSettings(
 
 fun ViewSettings.SelfTransFour.asLocaleString() = object : ILocaleString {
   override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
+    return ResourceBundle.getBundle(ViewSettings::class.qualifiedName!!, locale).getString(name)
   }
 }
 
@@ -80,7 +80,7 @@ fun ViewSettings.SelfTransFour.toString(locale: Locale) : String {
 
 fun ViewSettings.OppoTransFour.asLocaleString() = object : ILocaleString {
   override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(ViewSettings::class.java.name, locale).getString(name)
+    return ResourceBundle.getBundle(ViewSettings::class.qualifiedName!!, locale).getString(name)
   }
 }
 

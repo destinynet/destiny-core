@@ -6,7 +6,7 @@ package destiny.core.fengshui
 import destiny.core.chinese.Branch
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 import java.io.Serializable
 
 interface IMountainYinYang {

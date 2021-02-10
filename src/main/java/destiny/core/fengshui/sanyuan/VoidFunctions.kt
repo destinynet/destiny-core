@@ -7,8 +7,8 @@ import destiny.core.chinese.Branch
 import destiny.core.fengshui.EarthlyCompass
 import destiny.core.fengshui.Mountain
 import destiny.core.fengshui.SealedMnt
-import destiny.iching.Symbol
-import destiny.iching.SymbolAcquired
+import destiny.core.iching.Symbol
+import destiny.core.iching.SymbolAcquired
 import kotlin.math.abs
 
 /** 「玄空」所使用的 functions */

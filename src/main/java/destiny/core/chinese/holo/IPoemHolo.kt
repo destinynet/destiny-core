@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.holo
 
-import destiny.iching.IHexagramText
+import destiny.core.iching.IHexagramText
 
 
 /**

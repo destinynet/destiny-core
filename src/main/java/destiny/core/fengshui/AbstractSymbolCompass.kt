@@ -5,7 +5,7 @@
  */
 package destiny.core.fengshui
 
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 
 abstract class AbstractSymbolCompass : ICompass<Symbol> {
 

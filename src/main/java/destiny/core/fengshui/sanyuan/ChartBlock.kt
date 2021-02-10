@@ -5,7 +5,7 @@
  */
 package destiny.core.fengshui.sanyuan
 
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 
 import java.io.Serializable
 

@@ -5,9 +5,9 @@ package destiny.core.chinese
 
 import destiny.core.Descriptive
 import destiny.core.chinese.Branch.*
-import destiny.iching.Hexagram
-import destiny.iching.Hexagram.*
-import destiny.iching.IHexagram
+import destiny.core.iching.Hexagram
+import destiny.core.iching.Hexagram.*
+import destiny.core.iching.IHexagram
 import java.io.Serializable
 
 

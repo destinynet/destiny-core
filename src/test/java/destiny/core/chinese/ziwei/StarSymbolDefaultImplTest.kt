@@ -4,7 +4,7 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.chinese.ziwei.StarMain.*
-import destiny.iching.Symbol.*
+import destiny.core.iching.Symbol.*
 import kotlin.test.Test
 import kotlin.test.assertSame
 

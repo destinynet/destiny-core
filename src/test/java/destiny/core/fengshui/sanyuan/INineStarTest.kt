@@ -7,7 +7,7 @@ import destiny.core.calendar.SolarTerms.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch.*
 import destiny.core.fengshui.sanyuan.NineStar.*
-import destiny.iching.Symbol.*
+import destiny.core.iching.Symbol.*
 import kotlin.test.Test
 import kotlin.test.assertSame
 

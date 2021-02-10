@@ -3,7 +3,7 @@
  */
 package destiny.core.fengshui
 
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 import destiny.tools.circleUtils
 
 abstract class AbstractMountainCompass : ICompass<Mountain> {

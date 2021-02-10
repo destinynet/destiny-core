@@ -3,8 +3,8 @@
  */
 package destiny.core.fengshui.sanyuan
 
-import destiny.iching.Symbol
-import destiny.iching.SymbolAcquired
+import destiny.core.iching.Symbol
+import destiny.core.iching.SymbolAcquired
 import kotlin.math.abs
 
 object ChartMntRules {

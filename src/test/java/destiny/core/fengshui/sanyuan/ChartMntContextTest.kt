@@ -4,7 +4,7 @@
 package destiny.core.fengshui.sanyuan
 
 import destiny.core.fengshui.Mountain
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

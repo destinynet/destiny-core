@@ -5,8 +5,8 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.ISeasonalSymbol
-import destiny.iching.Symbol
-import destiny.iching.Symbol.*
+import destiny.core.iching.Symbol
+import destiny.core.iching.Symbol.*
 import java.io.Serializable
 import kotlin.math.abs
 

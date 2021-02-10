@@ -5,7 +5,7 @@
  */
 package destiny.core.fengshui
 
-import destiny.iching.Symbol.*
+import destiny.core.iching.Symbol.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame

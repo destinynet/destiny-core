@@ -5,7 +5,7 @@ package destiny.core.fengshui
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 
 sealed class SealedMnt {
   data class MntBranch(val branch: Branch) : SealedMnt()

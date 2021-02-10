@@ -4,8 +4,8 @@
 package destiny.core.fengshui
 
 import destiny.core.chinese.Branch
-import destiny.iching.Symbol
-import destiny.iching.divine.SettingsGingFang
+import destiny.core.iching.Symbol
+import destiny.core.iching.divine.SettingsGingFang
 import kotlin.test.Test
 import kotlin.test.assertSame
 import kotlin.test.assertTrue

@@ -9,9 +9,9 @@ import destiny.core.chinese.IMonthlyHexagram
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.Stem
 import destiny.core.fengshui.sanyuan.Yuan
-import destiny.iching.Hexagram
-import destiny.iching.IHexagram
-import destiny.iching.Symbol
+import destiny.core.iching.Hexagram
+import destiny.core.iching.IHexagram
+import destiny.core.iching.Symbol
 import java.time.chrono.ChronoLocalDateTime
 
 interface IHoloContext {

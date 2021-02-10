@@ -11,10 +11,10 @@ import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.fengshui.sanyuan.IYuan
 import destiny.core.fengshui.sanyuan.Yuan
-import destiny.iching.*
-import destiny.iching.Symbol.*
-import destiny.iching.contentProviders.IHexNameFull
-import destiny.iching.divine.ISettingsOfStemBranch
+import destiny.core.iching.*
+import destiny.core.iching.Symbol.*
+import destiny.core.iching.contentProviders.IHexNameFull
+import destiny.core.iching.divine.ISettingsOfStemBranch
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime

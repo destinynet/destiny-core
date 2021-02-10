@@ -7,12 +7,12 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * 取得某時刻，得令的卦象 [destiny.iching.Symbol]
+ * 取得某時刻，得令的卦象 [destiny.core.iching.Symbol]
  */
 interface ISeasonalSymbol {
   fun getSeasonalSymbol(gmtJulDay: Double): Set<Symbol>

@@ -2,8 +2,8 @@ package destiny.core.chinese
 
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
-import destiny.iching.Hexagram
-import destiny.iching.IHexagram
+import destiny.core.iching.Hexagram
+import destiny.core.iching.IHexagram
 import java.io.Serializable
 import java.util.*
 

@@ -3,7 +3,7 @@
  */
 package destiny.core.fengshui
 
-import destiny.iching.Hexagram
+import destiny.core.iching.Hexagram
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

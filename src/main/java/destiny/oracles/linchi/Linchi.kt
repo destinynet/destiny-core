@@ -4,7 +4,7 @@
  */
 package destiny.oracles.linchi
 
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 
 import java.io.Serializable
 

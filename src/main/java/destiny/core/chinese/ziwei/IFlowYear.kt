@@ -14,7 +14,7 @@ interface IFlowYear : Descriptive {
 
   override fun toString(locale: Locale): String {
     return try {
-      ResourceBundle.getBundle(IFlowYear::class.java.name, locale).getString(javaClass.simpleName)
+      ResourceBundle.getBundle(IFlowYear::class.qualifiedName!!, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
       javaClass.simpleName
     }

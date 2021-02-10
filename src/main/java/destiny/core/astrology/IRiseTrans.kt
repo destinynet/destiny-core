@@ -13,7 +13,6 @@ import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 計算星體對地球表面某點的 東昇、天頂、西落、天底的時刻
- * SwissEph 的實作，是 destiny.astrology.swissephImpl.RiseTransImpl
  */
 interface IRiseTrans {
 

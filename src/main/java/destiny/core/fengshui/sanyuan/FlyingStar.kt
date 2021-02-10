@@ -1,7 +1,7 @@
 package destiny.core.fengshui.sanyuan
 
-import destiny.iching.Symbol
-import destiny.iching.Symbol.*
+import destiny.core.iching.Symbol
+import destiny.core.iching.Symbol.*
 
 /** 九宮飛星 , 卦序推演 */
 object FlyingStar {

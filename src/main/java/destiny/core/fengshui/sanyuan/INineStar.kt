@@ -11,7 +11,7 @@ import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch
 import destiny.core.fengshui.sanyuan.NineStar.*
 import destiny.core.fengshui.sanyuan.NineStar.Companion.toStar
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 import java.time.chrono.ChronoLocalDateTime
 
 

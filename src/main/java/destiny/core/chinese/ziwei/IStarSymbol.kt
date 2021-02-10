@@ -3,9 +3,9 @@
  */
 package destiny.core.chinese.ziwei
 
-import destiny.iching.Symbol
-import destiny.iching.SymbolAcquired
-import destiny.iching.SymbolCongenital
+import destiny.core.iching.Symbol
+import destiny.core.iching.SymbolAcquired
+import destiny.core.iching.SymbolCongenital
 
 /**
  * 紫微斗數配卦

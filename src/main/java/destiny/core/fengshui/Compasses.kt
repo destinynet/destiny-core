@@ -5,7 +5,7 @@
  */
 package destiny.core.fengshui
 
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 
 /** 後天八卦盤 */
 val acquiredSymbolCompass = AcquiredSymbolCompass()

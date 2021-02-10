@@ -3,7 +3,7 @@
  */
 package destiny.core.fengshui.sanyuan
 
-import destiny.iching.Symbol
+import destiny.core.iching.Symbol
 import mu.KotlinLogging
 import kotlin.test.Test
 import kotlin.test.assertEquals

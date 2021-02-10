@@ -27,7 +27,7 @@ interface IFlowDay : Descriptive {
 
   override fun toString(locale: Locale): String {
     return try {
-      ResourceBundle.getBundle(IFlowDay::class.java.name, locale).getString(javaClass.simpleName)
+      ResourceBundle.getBundle(IFlowDay::class.qualifiedName!!, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
       javaClass.simpleName
     }

@@ -6,8 +6,8 @@ package destiny.core.chinese.holo
 import destiny.core.Gender
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.NaYin
-import destiny.iching.IHexagramText
-import destiny.iching.contentProviders.IHexagramProvider
+import destiny.core.iching.IHexagramText
+import destiny.core.iching.contentProviders.IHexagramProvider
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*

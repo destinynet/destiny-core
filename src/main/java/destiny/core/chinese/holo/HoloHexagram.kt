@@ -7,11 +7,11 @@ import destiny.core.chinese.IDailyHexagram
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.IYinYang
 import destiny.core.chinese.StemBranch
-import destiny.iching.Hexagram
-import destiny.iching.IHexData
-import destiny.iching.IHexagram
-import destiny.iching.IHexagramText
-import destiny.iching.contentProviders.IHexProvider
+import destiny.core.iching.Hexagram
+import destiny.core.iching.IHexData
+import destiny.core.iching.IHexagram
+import destiny.core.iching.IHexagramText
+import destiny.core.iching.contentProviders.IHexProvider
 import java.io.Serializable
 
 

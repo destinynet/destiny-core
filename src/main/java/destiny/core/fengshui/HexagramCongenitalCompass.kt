@@ -3,13 +3,13 @@
  */
 package destiny.core.fengshui
 
-import destiny.iching.Hexagram
-import destiny.iching.IHexagram
-import destiny.iching.congenital
+import destiny.core.iching.Hexagram
+import destiny.core.iching.IHexagram
+import destiny.core.iching.congenital
 import java.io.Serializable
 
 /**
- * 先天64卦羅盤 , for 伏羲先天六十四卦天圓地方圖 [destiny.iching.congenital]
+ * 先天64卦羅盤 , for 伏羲先天六十四卦天圓地方圖 [destiny.core.iching.congenital]
  */
 class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
 

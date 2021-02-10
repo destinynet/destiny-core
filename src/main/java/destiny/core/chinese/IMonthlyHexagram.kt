@@ -7,8 +7,8 @@ import destiny.core.Descriptive
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
 import destiny.core.chinese.Branch.*
-import destiny.iching.Hexagram
-import destiny.iching.Hexagram.*
+import destiny.core.iching.Hexagram
+import destiny.core.iching.Hexagram.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Divine.KEY_MONTH_HEX_IMPL

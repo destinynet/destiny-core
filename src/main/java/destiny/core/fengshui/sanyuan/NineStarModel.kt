@@ -5,8 +5,8 @@ package destiny.core.fengshui.sanyuan
 
 import destiny.core.TriGrid
 import destiny.core.chinese.IStemBranch
-import destiny.iching.Symbol
-import destiny.iching.SymbolAcquired
+import destiny.core.iching.Symbol
+import destiny.core.iching.SymbolAcquired
 import java.io.Serializable
 
 enum class Scale {

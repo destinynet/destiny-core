@@ -12,8 +12,8 @@ import destiny.core.chinese.liuren.IGeneralSeq
 import destiny.core.chinese.liuren.IGeneralStemBranch
 import destiny.core.chinese.onePalm.IPositive
 import destiny.core.chinese.ziwei.*
-import destiny.iching.divine.IHiddenEnergy
-import destiny.iching.divine.ISettingsOfStemBranch
+import destiny.core.iching.divine.IHiddenEnergy
+import destiny.core.iching.divine.ISettingsOfStemBranch
 
 /**
  * Created by smallufo on 2020-03-11.

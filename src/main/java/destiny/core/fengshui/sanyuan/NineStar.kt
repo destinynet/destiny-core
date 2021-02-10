@@ -6,8 +6,8 @@ package destiny.core.fengshui.sanyuan
 import destiny.core.ILoop
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.FiveElement.*
-import destiny.iching.Symbol
-import destiny.iching.SymbolAcquired
+import destiny.core.iching.Symbol
+import destiny.core.iching.SymbolAcquired
 
 enum class NineStar(val period: Int , val color : Char , val fiveElement: FiveElement) : ILoop<NineStar> {
   貪狼(1 , '白' , 水), // 一白水星 , 坎

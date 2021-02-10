@@ -6,7 +6,7 @@ package destiny.oracles.sixty
 
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
-import destiny.iching.Hexagram
+import destiny.core.iching.Hexagram
 import destiny.oracles.Verdict
 import java.io.Serializable
 

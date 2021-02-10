@@ -1,7 +1,7 @@
 package destiny.core
 
-import destiny.iching.ISymbolOrder
-import destiny.iching.Symbol
+import destiny.core.iching.ISymbolOrder
+import destiny.core.iching.Symbol
 
 /** 3x3 Grid */
 enum class TriGrid {

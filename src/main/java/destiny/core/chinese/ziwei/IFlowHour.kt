@@ -18,7 +18,7 @@ interface IFlowHour : Descriptive {
 
   override fun toString(locale: Locale): String {
     return try {
-      ResourceBundle.getBundle(IFlowHour::class.java.name, locale).getString(javaClass.simpleName)
+      ResourceBundle.getBundle(IFlowHour::class.qualifiedName!!, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
       javaClass.simpleName
     }
@@ -28,7 +28,5 @@ interface IFlowHour : Descriptive {
   override fun getDescription(locale: Locale): String {
     return toString(locale)
   }
-
-
 
 }

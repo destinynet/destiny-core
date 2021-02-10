@@ -6,13 +6,13 @@ package destiny.core.fengshui
 import destiny.core.chinese.Branch
 import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.StemBranch
-import destiny.iching.Hexagram
-import destiny.iching.Symbol
-import destiny.iching.SymbolPositions
-import destiny.iching.divine.DivineTraditionalContext
-import destiny.iching.divine.ISettingsOfStemBranch
-import destiny.iching.divine.Relative
-import destiny.iching.divine.SettingsGingFang
+import destiny.core.iching.Hexagram
+import destiny.core.iching.Symbol
+import destiny.core.iching.SymbolPositions
+import destiny.core.iching.divine.DivineTraditionalContext
+import destiny.core.iching.divine.ISettingsOfStemBranch
+import destiny.core.iching.divine.Relative
+import destiny.core.iching.divine.SettingsGingFang
 
 /** spite : 惡意 、 刁難 */
 enum class SpiteType {

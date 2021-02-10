@@ -11,9 +11,9 @@ import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
 import destiny.core.fengshui.sanyuan.Yuan
-import destiny.iching.Hexagram
-import destiny.iching.IHexagram
-import destiny.iching.Symbol
+import destiny.core.iching.Hexagram
+import destiny.core.iching.IHexagram
+import destiny.core.iching.Symbol
 import java.io.Serializable
 
 /**

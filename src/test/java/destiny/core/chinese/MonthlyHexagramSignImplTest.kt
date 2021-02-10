@@ -4,7 +4,7 @@
 package destiny.core.chinese
 
 import destiny.core.calendar.SolarTerms.*
-import destiny.iching.Hexagram
+import destiny.core.iching.Hexagram
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
