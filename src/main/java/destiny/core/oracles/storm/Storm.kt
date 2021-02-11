@@ -1,10 +1,10 @@
 /**
  * Created by smallufo on 2020-11-23.
  */
-package destiny.oracles.storm
+package destiny.core.oracles.storm
 
 import destiny.core.chinese.Stem
-import destiny.oracles.Verdict
+import destiny.core.oracles.Verdict
 import java.io.Serializable
 
 

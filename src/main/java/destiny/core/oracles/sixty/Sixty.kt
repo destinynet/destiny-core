@@ -2,12 +2,12 @@
  * @author smallufo
  * Created on 2008/4/29 at 上午 5:40:13
  */
-package destiny.oracles.sixty
+package destiny.core.oracles.sixty
 
 import destiny.core.chinese.FiveElement
 import destiny.core.chinese.StemBranch
 import destiny.core.iching.Hexagram
-import destiny.oracles.Verdict
+import destiny.core.oracles.Verdict
 import java.io.Serializable
 
 

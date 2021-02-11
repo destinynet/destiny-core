@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2010/9/13 at 上午2:39:23
  */
-package destiny.oracles.linchi
+package destiny.core.oracles.linchi
 
 import destiny.core.iching.Symbol
 

@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2008/4/28 at 上午 2:51:36
  */
-package destiny.oracles
+package destiny.core.oracles
 
 import destiny.tools.random.RandomService
 import kotlin.math.abs

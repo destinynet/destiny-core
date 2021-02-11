@@ -1,9 +1,9 @@
 /**
  * Created by smallufo on 2020-11-10.
  */
-package destiny.oracles.phrom
+package destiny.core.oracles.phrom
 
-import destiny.oracles.Verdict
+import destiny.core.oracles.Verdict
 import java.io.Serializable
 
 /** 四面佛三十籤 */

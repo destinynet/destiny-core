@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2008/4/28 at 上午 1:51:37
  */
-package destiny.oracles
+package destiny.core.oracles
 
 import kotlin.reflect.KClass
 

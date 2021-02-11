@@ -1,9 +1,9 @@
 /**
  * Created by smallufo on 2020-11-16.
  */
-package destiny.oracles.guanyin
+package destiny.core.oracles.guanyin
 
-import destiny.oracles.Verdict
+import destiny.core.oracles.Verdict
 import java.io.Serializable
 
 

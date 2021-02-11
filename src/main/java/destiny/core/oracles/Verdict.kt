@@ -1,4 +1,4 @@
-package destiny.oracles
+package destiny.core.oracles
 
 import java.io.Serializable
 

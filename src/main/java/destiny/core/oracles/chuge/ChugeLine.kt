@@ -2,7 +2,7 @@
  * @author smallufo
  * Created on 2007/3/10 at 上午 4:50:49
  */
-package destiny.oracles.chuge
+package destiny.core.oracles.chuge
 
 import java.io.Serializable
 
