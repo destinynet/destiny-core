@@ -27,7 +27,7 @@ class DayNightSimpleImpl : IDayNight, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return "最基本的區分法"
+    return "固定晝夜六點為界"
   }
 
   override fun getDescription(locale: Locale): String {

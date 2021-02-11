@@ -151,7 +151,7 @@ class HourLmtImpl : IHour, Serializable {
 
   companion object {
     const val VALUE = "lmt"
-    const val name = "以地方平均時（ LMT）來區隔"
+    const val name = "以地方平均時（LMT）來區隔"
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
