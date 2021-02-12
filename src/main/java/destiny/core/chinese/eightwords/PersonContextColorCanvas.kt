@@ -37,13 +37,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     EightWordsColorCanvas(m, personContext, model.place ?: "", hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
 
-
-  private val timeDecorator = TimeSecDecoratorChinese()
-
-  private val monthFormatter = DateTimeFormatter.ofPattern("MM月")
-  private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
-
-
   init {
     val metaDataColorCanvas = ewContextColorCanvas.metaDataColorCanvas
     add(metaDataColorCanvas, 1, 1) // 國曆 農曆 經度 緯度 短網址 等 MetaData
@@ -216,6 +209,9 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
 
   companion object {
     private val logger = KotlinLogging.logger { }
+    private val monthFormatter = DateTimeFormatter.ofPattern("MM月")
+    private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
+    private val timeDecorator = TimeSecDecoratorChinese()
     private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
