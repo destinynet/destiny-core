@@ -8,7 +8,6 @@ import destiny.core.IIntAge
 import destiny.core.IntAgeNote
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.chinese.StemBranch
@@ -60,34 +59,6 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
       val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
       FortuneData(sb, from, to, age, age + 1, startFortuneAgeNotes, endFortuneAgeNotes)
     }.toList()
-  }
-
-
-
-  /** 另一個實作法 : 不斷呼叫 [IIntAge.getRange] , 比較沒有效率 (因底層無 cache)
-   * 經測試 , 算 60柱，花費 4.2 sec
-   * 而 [implByRangesMap] 只要花 0.4 sec
-   *  */
-  private fun implBySequence(gmtJulDay: Double,
-                             eightWords: EightWords,
-                             gender: Gender,
-                             location: ILocation,
-                             count: Int,
-                             forward: Boolean): List<FortuneData> {
-    var age = 0
-    var sb = eightWords.hour
-    return generateSequence {
-      // 出生當時，就是一歲
-      val (from, to) = intAgeImpl.getRange(gender, gmtJulDay, location, age + 1)
-      /** 附加上 西元、民國 之類的註記 */
-      val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
-      val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
-
-      sb = if (forward) sb.next as StemBranch else sb.prev as StemBranch
-      age += 1
-      FortuneData(sb, from, to, age, age + 1, startFortuneAgeNotes, endFortuneAgeNotes)
-    }.takeWhile { age <= count }
-      .toList()
   }
 
   override fun equals(other: Any?): Boolean {

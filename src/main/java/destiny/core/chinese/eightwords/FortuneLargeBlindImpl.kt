@@ -40,22 +40,22 @@ class FortuneLargeBlindImpl(
                                   location: ILocation,
                                   gender: Gender,
                                   count: Int): List<FortuneData> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
                              location: ILocation,
                              gender: Gender,
                              targetGmt: ChronoLocalDateTime<*>): IStemBranch {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   override fun toString(locale: Locale): String {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   override fun getDescription(locale: Locale): String {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   override fun equals(other: Any?): Boolean {

@@ -12,6 +12,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
+import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -51,13 +52,21 @@ interface IPithyModel {
   val johnson: StemBranch
     get() {
       val steps = direction.getAheadOf(eightWords.hour.branch)
-      //println("地分 " + direction + " 領先時辰 " + eightWords.hourBranch + "  " + steps + " 步")
+      logger.trace {
+        "地分 " + direction + " 領先時辰 " + eightWords.hour.branch + "  " + steps + " 步"
+      }
       val branch = monthSign.next(steps)
 
       val stem = StemBranchUtils.getHourStem(eightWords.day.stem, monthSign.next(steps))
-      //println("月將 = $monthSign , 加上 $steps 步 , 將神地支 = $branch , 天干為 $stem")
+      logger.trace {
+        "月將 = $monthSign , 加上 $steps 步 , 將神地支 = $branch , 天干為 $stem"
+      }
       return StemBranch[stem, branch]
     }
+
+  companion object {
+    private val logger = KotlinLogging.logger { }
+  }
 }
 
 
@@ -80,23 +89,21 @@ data class Pithy(
   override val dayNight: DayNight,
 
   /** 貴神  */
-  override val benefactor: StemBranch) : IPithyModel, Serializable
+  override val benefactor: StemBranch
+) : IPithyModel, Serializable
 
 
 /**
  * 添加了性別、詳細時間
  */
-interface IPithyModernModel : IPithyModel , IBirthData {
-//  val gender: Gender
-//  val time: ChronoLocalDateTime<*>
-//  val location: ILocation
-}
+interface IPithyModernModel : IPithyModel, IBirthData
 
 data class PithyModernModel(
   private val pithy: IPithyModel,
   override val gender: Gender,
   override val time: ChronoLocalDateTime<*>,
-  override val location: ILocation) : IPithyModernModel, IPithyModel by pithy, Serializable
+  override val location: ILocation
+) : IPithyModernModel, IPithyModel by pithy, Serializable
 
 
 /**
@@ -120,4 +127,4 @@ data class PithyDetailModel(
   override val place: String?,
   override val question: String?,
   override val method: IPithyDetailModel.Method
-                           ) : IPithyDetailModel, IPithyModernModel by pithyModernModel, Serializable
+) : IPithyDetailModel, IPithyModernModel by pithyModernModel, Serializable

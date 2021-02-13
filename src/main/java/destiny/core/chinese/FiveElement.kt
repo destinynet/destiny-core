@@ -35,7 +35,7 @@ enum class FiveElement  : IFiveElement, Serializable {
         金 -> 土
         水 -> 金
       }
-    } //producedBy()
+    }
 
 
   /** 取得此五行所剋之五行 （木剋土）  */

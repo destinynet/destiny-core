@@ -326,7 +326,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
       seasonalHexagram, monthlyHexagram,
       dailyHexagramMap,
       goldenKey , summaries)
-  } // getHolo(inner)
+  }
 
   /**
    * 列出當年 12 個月的流月卦象

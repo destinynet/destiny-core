@@ -76,7 +76,6 @@ interface ICombinedWithMeta : ICombined, IMeta {
   val srcModel: ISingleHexagram
   val dstModel: ISingleHexagram
   val 變卦對於本卦的六親: List<Relative>
-  //val meta: Meta
 }
 
 data class CombinedWithMeta(
@@ -231,5 +230,4 @@ data class CombinedFull(
     get() = divineMeta.納甲系統
   override val 伏神系統
     get() = divineMeta.伏神系統
-  //override val eightWordsNullable = eightWordsNullable
 }

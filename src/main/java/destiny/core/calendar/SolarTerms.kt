@@ -131,7 +131,7 @@ enum class SolarTerms constructor(val zodiacDegree: Int) {
         else
           currentSolarTerms.previous()
       }
-    } // getNextMajorSolarTerms()
+    }
   }
 
 }

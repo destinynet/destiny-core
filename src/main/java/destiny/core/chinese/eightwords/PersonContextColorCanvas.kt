@@ -57,7 +57,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     val 右方大運直 = ColorCanvas(9, 24, ChineseStringTools.NULL_CHAR)
     val 下方大運橫 = ColorCanvas(10, 70, ChineseStringTools.NULL_CHAR)
 
-    val dataList = model.fortuneDataLarges.toMutableList() // ArrayList(model.fortuneDataLarges)
+    val dataList = model.fortuneDataLarges.toMutableList()
     logger.debug("dataList size = {}", dataList.size)
 
     // 右方大運直 (限定9柱)

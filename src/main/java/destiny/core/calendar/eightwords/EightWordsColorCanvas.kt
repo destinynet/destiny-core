@@ -60,7 +60,7 @@ class EightWordsColorCanvas(
       OutputMode.TEXT -> getTextOutput()
       OutputMode.HTML -> htmlOutput
     }
-  } //toString()
+  }
 
   /**
    * 取得 MetaData (國曆 農曆 經度 緯度 等資料)

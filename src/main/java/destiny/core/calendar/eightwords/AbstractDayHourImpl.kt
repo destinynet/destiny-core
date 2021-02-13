@@ -27,20 +27,23 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
     return getDay(lmt, location)
   } // GMT 版本
 
+  /**
+   * @param nextZi 下個子初時刻
+   */
   private fun getIndex(index: Int,
                        nextMidnightLmt: ChronoLocalDateTime<*>,
                        lmt: ChronoLocalDateTime<*>,
                        hourImpl: IHour,
                        location: ILocation,
                        changeDayAfterZi: Boolean,
-                       下個子初時刻: ChronoLocalDateTime<*>): Int {
+                       nextZi: ChronoLocalDateTime<*>): Int {
     var result = index
     //子正，在 LMT 零時之前
     if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
       // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
       val midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, location, Branch.子, revJulDayFunc)
 
-      if (changeDayAfterZi && 下個子初時刻.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
+      if (changeDayAfterZi && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
         result++
       }
     } else {

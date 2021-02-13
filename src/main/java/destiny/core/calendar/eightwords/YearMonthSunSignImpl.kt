@@ -41,7 +41,6 @@ class YearMonthSunSignImpl(starPositionImpl: IStarPosition<*>,
   override fun getMonth(gmtJulDay: Double, location: ILocation): IStemBranch {
     // 原始 月干支
     val originalMonth = ymSolarTermsStarPositionImpl.getMonth(gmtJulDay, location)
-    //val originalMonth = super.getMonth(gmtJulDay, location)
 
     // 目前的節氣
     val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)

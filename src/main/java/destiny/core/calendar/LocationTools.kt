@@ -88,16 +88,16 @@ object LocationTools {
     val parts: Set<LocationPadding> =
       string.splitToSequence(" ").map { LocationPadding.getPadding(it) }.filterNotNull().toSet()
     return try {
-      (parts.firstOrNull { it is LocationPadding.latLng } as LocationPadding.latLng).let {
+      (parts.firstOrNull { it is LocationPadding.LatLng } as LocationPadding.LatLng).let {
         val tzid: String? =
-          parts.firstOrNull { padding -> padding is LocationPadding.tzid }?.let { pad -> pad as LocationPadding.tzid }
+          parts.firstOrNull { padding -> padding is LocationPadding.Tzid }?.let { pad -> pad as LocationPadding.Tzid }
             ?.value?.id
         val minuteOffset: Int? =
-          parts.firstOrNull { padding -> padding is LocationPadding.minOffset }
-            ?.let { pad -> pad as LocationPadding.minOffset }?.value
+          parts.firstOrNull { padding -> padding is LocationPadding.MinOffset }
+            ?.let { pad -> pad as LocationPadding.MinOffset }?.value
         val altMeter: Double? =
-          parts.firstOrNull { padding -> padding is LocationPadding.altMeter }
-            ?.let { pad -> pad as LocationPadding.altMeter }?.value
+          parts.firstOrNull { padding -> padding is LocationPadding.AltMeter }
+            ?.let { pad -> pad as LocationPadding.AltMeter }?.value
         Location(it.lat, it.lng, tzid, minuteOffset, altMeter)
       }
     } catch (e: Exception) {
@@ -106,24 +106,24 @@ object LocationTools {
   }
 
   private sealed class LocationPadding {
-    data class latLng(val lat: Double, val lng: Double) : LocationPadding()
-    data class tzid(val value: ZoneId) : LocationPadding()
-    data class minOffset(val value: Int) : LocationPadding()
-    data class altMeter(val value: Double) : LocationPadding()
+    data class LatLng(val lat: Double, val lng: Double) : LocationPadding()
+    data class Tzid(val value: ZoneId) : LocationPadding()
+    data class MinOffset(val value: Int) : LocationPadding()
+    data class AltMeter(val value: Double) : LocationPadding()
 
     companion object {
       fun getPadding(value: String): LocationPadding? {
         return when {
           value.contains(",") -> {
             val (lat, lng) = value.split(",").map { it.toDouble() }
-            latLng(lat, lng)
+            LatLng(lat, lng)
           }
-          ZoneId.getAvailableZoneIds().contains(value) -> tzid(ZoneId.of(value))
+          ZoneId.getAvailableZoneIds().contains(value) -> Tzid(ZoneId.of(value))
 
           value.endsWith('m') && value.substring(0, value.length - 1).toIntOrNull() != null ->
-            minOffset((value.substring(0, value.length - 1)).toInt())
+            MinOffset((value.substring(0, value.length - 1)).toInt())
 
-          value.toDoubleOrNull() != null -> altMeter(value.toDouble())
+          value.toDoubleOrNull() != null -> AltMeter(value.toDouble())
           else -> null
         }
       }

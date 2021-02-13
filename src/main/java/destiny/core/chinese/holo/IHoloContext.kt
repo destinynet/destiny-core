@@ -19,6 +19,7 @@ interface IHoloContext {
   enum class ThreeKingsAlgo {
     /** 前半年(冬至 to 夏至) 為 陽 , 後半年(夏至 to 冬至) 為 陰 */
     HALF_YEAR,
+
     /** 月令地支 的陰陽 */
     MONTH_BRANCH
   }
@@ -33,20 +34,26 @@ interface IHoloContext {
    * 流年、流月 爻變 , 取本卦，還是，變卦
    */
   enum class HexChange {
-    SRC ,
+    SRC,
     DST   // 書上所推衍，感覺是變卦
   }
 
-  val hexChange : HexChange
+  val hexChange: HexChange
 
   /** 12消息卦，兩種設定 , 中氣切分，還是「節」切分  */
-  val monthlyHexagramImpl : IMonthlyHexagram
+  val monthlyHexagramImpl: IMonthlyHexagram
 
   /** 取得 先天卦、後天卦 , 元氣、化工 等資訊 */
-  fun getHolo(lmt: ChronoLocalDateTime<*>, loc:ILocation, gender: Gender , name:String? = null , place:String? = null) : IHolo
+  fun getHolo(
+    lmt: ChronoLocalDateTime<*>,
+    loc: ILocation,
+    gender: Gender,
+    name: String? = null,
+    place: String? = null
+  ): IHolo
 
-  fun getHolo(bdnp: IBirthDataNamePlace) : IHolo {
-    return getHolo(bdnp.time , bdnp.location , bdnp.gender , bdnp.name , bdnp.place)
+  fun getHolo(bdnp: IBirthDataNamePlace): IHolo {
+    return getHolo(bdnp.time, bdnp.location, bdnp.gender, bdnp.name, bdnp.place)
   }
 
 
@@ -62,7 +69,12 @@ interface IHoloContext {
    * @param yearHexagram 該年卦象
    * @param yearYuanTang 該年元堂
    */
-  fun getMonthlyHexagram(yearStem : Stem, yearHexagram : IHexagram, yearYuanTang : Int, gmt: Double) : IHoloHexagramWithStemBranch
+  fun getMonthlyHexagram(
+    yearStem: Stem,
+    yearHexagram: IHexagram,
+    yearYuanTang: Int,
+    gmt: Double
+  ): IHoloHexagramWithStemBranch
 
   /**
    * 取得當下時刻的流日卦象
@@ -70,10 +82,22 @@ interface IHoloContext {
    * @param monthYuanTang 流月元堂 (index start from 1)
    * @param viewGmt 當下的 GMT 時刻
    */
-  fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: Double, loc: ILocation): IHoloHexagramWithStemBranch
+  fun getDailyHexagram(
+    monthHexagram: IHexagram,
+    monthYuanTang: Int,
+    viewGmt: Double,
+    loc: ILocation
+  ): IHoloHexagramWithStemBranch
 
   /** 除了傳回 本命先後天卦，另外傳回 以及此 gmt 時刻 的大運、流年、流月 等資訊 */
-  fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: Double, name: String? = null, place: String? = null) : Pair<IHolo , List<IHoloHexagram>>
+  fun getHoloWithTime(
+    lmt: ChronoLocalDateTime<*>,
+    loc: ILocation,
+    gender: Gender,
+    gmt: Double,
+    name: String? = null,
+    place: String? = null
+  ): Pair<IHolo, List<IHoloHexagram>>
 
   /** 天數 */
   fun getHeavenNumber(ew: IEightWords): Int
@@ -100,7 +124,6 @@ interface IHoloContext {
       Hexagram.of(earthSymbol, heavenSymbol)
     }
   }
-
 
 
   /**
@@ -148,17 +171,13 @@ interface IHoloContext {
           in Branch.子..Branch.丑 -> yangSeq.take(hour.index + 1).last()
           else -> yinSeq.take(hour.index - 1).last()
         }
-        2 -> when (hour) {
+        2, 4 -> when (hour) {
           in Branch.子..Branch.卯 -> yangSeq.take(hour.index + 1).last()
           else -> yinSeq.take(hour.index + 1).last()
         }
         3 -> when (hour) {
           in Branch.子..Branch.巳 -> yangSeq.take(hour.index + 1).last()
           else -> throw RuntimeException("error")
-        }
-        4 -> when (hour) {
-          in Branch.子..Branch.卯 -> yangSeq.take(hour.index + 1).last()
-          else -> yinSeq.take(hour.index + 1).last()
         }
         5 -> when (hour) {
           in Branch.子..Branch.辰 -> yangSeq.take(hour.index + 1).last()
@@ -206,17 +225,13 @@ interface IHoloContext {
           in Branch.午..Branch.未 -> yinSeq.first()
           else -> yangSeq.take(hour.index - 7).last()
         }
-        2 -> when (hour) {
+        2, 4 -> when (hour) {
           in Branch.午..Branch.酉 -> yinSeq.take(hour.index - 5).last()
           else -> yangSeq.take(hour.index - 9).last()
         }
         3 -> when (hour) {
           in Branch.午..Branch.亥 -> yinSeq.take(hour.index - 5).last()
           else -> throw RuntimeException("error")
-        }
-        4 -> when (hour) {
-          in Branch.午..Branch.酉 -> yinSeq.take(hour.index - 5).last()
-          else -> yangSeq.take(hour.index - 9).last()
         }
         5 -> when (hour) {
           in Branch.午..Branch.戌 -> yinSeq.take(hour.index - 5).last()
@@ -246,7 +261,12 @@ interface IHoloContext {
   }
 
   /** 先天卦 (with 元堂 : 1~6) */
-  fun getHexagramCongenital(ew: IEightWords, gender: Gender, yuan: Yuan, yearHalfYinYang: IYinYang): Pair<Hexagram, Int> {
+  fun getHexagramCongenital(
+    ew: IEightWords,
+    gender: Gender,
+    yuan: Yuan,
+    yearHalfYinYang: IYinYang
+  ): Pair<Hexagram, Int> {
     if (yearHalfYinYang.booleanValue) {
       require(!(Branch.未..Branch.亥).contains(ew.month.branch)) {
         "前半年，月支 ${ew.month.branch} 不可以出現在 未~亥 當中"
@@ -311,8 +331,6 @@ interface IHoloContext {
       }
     }
   } // 後天卦
-
-
 
 
   companion object {

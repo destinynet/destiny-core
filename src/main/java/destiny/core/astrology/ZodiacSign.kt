@@ -89,10 +89,6 @@ enum class ZodiacSign(val nameKey: String,
     return ResourceBundle.getBundle(resource, Locale.getDefault()).getString(nameKey)
   }
 
-//  override fun toString(locale: Locale): String {
-//    return ResourceBundle.getBundle(resource, locale).getString(nameKey)
-//  }
-
   fun getAbbreviation(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(abbrKey)
   }
