@@ -1,5 +1,5 @@
 /**
- * Created by kevin.huang on 2019-10-18.
+ * Created by smallufo on 2019-10-18.
  */
 package destiny.core.astrology
 
