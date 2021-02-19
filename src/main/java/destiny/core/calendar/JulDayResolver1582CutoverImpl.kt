@@ -143,7 +143,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
         '+' -> true
         '-' -> false
         else -> {
-          logger.error("Cannot decode debugString : {}" , s)
+          logger.warn("Cannot decode debugString : {}" , s)
           null
         }
       }?.let { ad ->
