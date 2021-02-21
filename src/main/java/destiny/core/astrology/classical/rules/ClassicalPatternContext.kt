@@ -5,6 +5,7 @@ package destiny.core.astrology.classical.rules
 
 import destiny.core.DayNight.DAY
 import destiny.core.DayNight.NIGHT
+import destiny.core.News
 import destiny.core.astrology.*
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
@@ -394,7 +395,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val partileConjNorthNode = object : IPlanetPatternFactory {
 
     /** 內定採用 [NodeType.MEAN] */
-    val north: LunarNode = LunarNode.of(NorthSouth.NORTH, NodeType.MEAN)
+    val north: LunarNode = LunarNode.of(News.NorthSouth.NORTH, NodeType.MEAN)
 
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
@@ -841,7 +842,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val partileConjSouthNode = object : IPlanetPatternFactory {
 
     /** 內定採用 [NodeType.MEAN]  */
-    val south = LunarNode.of(NorthSouth.SOUTH, NodeType.MEAN)
+    val south = LunarNode.of(News.NorthSouth.SOUTH, NodeType.MEAN)
 
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 

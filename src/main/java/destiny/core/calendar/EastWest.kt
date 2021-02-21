@@ -7,7 +7,7 @@ import destiny.tools.ILocaleString
 import java.util.*
 
 fun EastWest.asLocaleString() = object : ILocaleString {
-  val resource = EastWest::class.java.name
+  val resource = EastWest::class.qualifiedName!!
   override fun toString(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
   }

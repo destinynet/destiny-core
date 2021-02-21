@@ -4,12 +4,15 @@
  */
 package destiny.core.astrology
 
+import destiny.core.News
+import destiny.core.News.NorthSouth.NORTH
+import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.NodeType.MEAN
 import destiny.core.astrology.NodeType.TRUE
 
 sealed class LunarNode(nameKey: String,
                        abbrKey: String,
-                       val northSouth: NorthSouth,
+                       val northSouth: News.NorthSouth,
                        val nodeType: NodeType,
                        unicode: Char) :
   LunarPoint(nameKey, abbrKey, Star::class.java.name , unicode), Comparable<LunarNode> {
@@ -19,28 +22,28 @@ sealed class LunarNode(nameKey: String,
    * ApsisImpl.getPosition(Planet.MOON , Apsis.ASCENDING , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
    * StarPositionImpl.getPosition(LunarNode.NORTH_TRUE, gmt);
    */
-  object NORTH_TRUE : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NorthSouth.NORTH, TRUE, '☊')
+  object NORTH_TRUE : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NORTH, TRUE, '☊')
 
   /**
    * 平均北交點，計算方法，以下兩者結果相同
    * ApsisImpl.getPosition(Planet.MOON , Apsis.ASCENDING , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarNode.NORTH_MEAN, gmt);
    */
-  object NORTH_MEAN : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NorthSouth.NORTH, MEAN, '☊')
+  object NORTH_MEAN : LunarNode("LunarNode.NORTH", "LunarNode.NORTH_ABBR", NORTH, MEAN, '☊')
 
   /**
    * 真實南交點，計算方法，以下兩者結果相同
    * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENDING , gmt, Coordinate.ECLIPTIC , NodeType.TRUE);
    * StarPositionImpl.getPosition(LunarNode.SOUTH_TRUE, gmt);
    */
-  object SOUTH_TRUE : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", NorthSouth.SOUTH, TRUE, '☋')
+  object SOUTH_TRUE : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", SOUTH, TRUE, '☋')
 
   /**
    * 平均南交點，計算方法，以下兩者結果相同
    * ApsisImpl.getPosition(Planet.MOON , Apsis.DESCENDING , gmt, Coordinate.ECLIPTIC , NodeType.MEAN);
    * StarPositionImpl.getPosition(LunarNode.SOUTH_MEAN, gmt);
    */
-  object SOUTH_MEAN : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", NorthSouth.SOUTH, MEAN, '☋')
+  object SOUTH_MEAN : LunarNode("LunarNode.SOUTH", "LunarNode.SOUTH_ABBR", SOUTH, MEAN, '☋')
 
   override fun compareTo(other: LunarNode): Int {
     if (this == other)
@@ -59,7 +62,7 @@ sealed class LunarNode(nameKey: String,
     val trueList by lazy { listOf(*trueArray) }
     val meanList by lazy { listOf(*meanArray) }
 
-    fun of(northSouth: NorthSouth, nodeType: NodeType): LunarNode {
+    fun of(northSouth: News.NorthSouth, nodeType: NodeType): LunarNode {
       return inner_values.first {
         it.northSouth == northSouth && it.nodeType === nodeType
       }

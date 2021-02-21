@@ -7,7 +7,7 @@ import destiny.tools.ILocaleString
 import java.util.*
 
 fun NorthSouth.asLocaleString() = object : ILocaleString {
-  val resource = NorthSouth::class.java.name
+  val resource = NorthSouth::class.qualifiedName!!
   override fun toString(locale: Locale): String {
     return ResourceBundle.getBundle(resource, locale).getString(this@asLocaleString.nameKey)
   }

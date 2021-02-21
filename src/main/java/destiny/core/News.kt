@@ -42,20 +42,35 @@ sealed class News {
   }
 }
 
+
+/**
+ * 北緯 / 南緯
+ */
 fun News.NorthSouth.toCoordinateString(locale: Locale): String {
   val nameKey = when (this) {
     is News.NorthSouth.NORTH -> "NORTH.Coordinate"
     is News.NorthSouth.SOUTH -> "SOUTH.Coordinate"
   }
-  val resource = News::class.simpleName!!
+  val resource = News::class.qualifiedName!!
   return ResourceBundle.getBundle(resource, locale).getString(nameKey)
 }
 
+
+/**
+ * 東經 / 西經
+ */
 fun News.EastWest.toCoordinateString(locale: Locale): String {
   val nameKey = when (this) {
     is News.EastWest.EAST -> "EAST.Coordinate"
     is News.EastWest.WEST -> "WEST.Coordinate"
   }
-  val resource = News::class.simpleName!!
+  val resource = News::class.qualifiedName!!
+  return ResourceBundle.getBundle(resource, locale).getString(nameKey)
+}
+
+/** 東 / 西 / 南 / 北 */
+fun News.toString(locale: Locale): String {
+  val nameKey = this::class.simpleName!!
+  val resource = News::class.qualifiedName!!
   return ResourceBundle.getBundle(resource, locale).getString(nameKey)
 }

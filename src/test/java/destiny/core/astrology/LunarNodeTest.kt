@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.News
 import mu.KotlinLogging
 import java.util.*
 import kotlin.test.*
@@ -38,10 +39,10 @@ class LunarNodeTest {
 
   @Test
   fun testEquals() {
-    assertSame(LunarNode.NORTH_MEAN, LunarNode.of(NorthSouth.NORTH, NodeType.MEAN))
-    assertSame(LunarNode.NORTH_TRUE, LunarNode.of(NorthSouth.NORTH, NodeType.TRUE))
+    assertSame(LunarNode.NORTH_MEAN, LunarNode.of(News.NorthSouth.NORTH, NodeType.MEAN))
+    assertSame(LunarNode.NORTH_TRUE, LunarNode.of(News.NorthSouth.NORTH, NodeType.TRUE))
 
-    assertSame(LunarNode.SOUTH_MEAN, LunarNode.of(NorthSouth.SOUTH, NodeType.MEAN))
-    assertSame(LunarNode.SOUTH_TRUE, LunarNode.of(NorthSouth.SOUTH, NodeType.TRUE))
+    assertSame(LunarNode.SOUTH_MEAN, LunarNode.of(News.NorthSouth.SOUTH, NodeType.MEAN))
+    assertSame(LunarNode.SOUTH_TRUE, LunarNode.of(News.NorthSouth.SOUTH, NodeType.TRUE))
   }
 }
