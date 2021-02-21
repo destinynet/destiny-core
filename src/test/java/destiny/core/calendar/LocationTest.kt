@@ -4,6 +4,9 @@
  */
 package destiny.core.calendar
 
+import destiny.core.News
+import destiny.core.News.EastWest
+import destiny.core.News.NorthSouth
 import destiny.tools.location.TimeZoneUtils
 import mu.KotlinLogging
 import kotlin.test.Test
@@ -87,7 +90,7 @@ class LocationTest {
 
   @Test
   fun testLocationEastWestDoubleNorthSouthDoubleInt() {
-    val location = Location(EastWest.EAST, 121.51, NorthSouth.NORTH, 25.33, "Asia/Taipei")
+    val location = Location(News.EastWest.EAST, 121.51, News.NorthSouth.NORTH, 25.33, "Asia/Taipei")
     assertEquals(121, location.lngDeg.toLong())
     assertEquals(30, location.lngMin.toLong())
     assertEquals(36.0, location.lngSec)

@@ -3,6 +3,11 @@
  */
 package destiny.core.calendar
 
+import destiny.core.News
+import destiny.core.News.EastWest.EAST
+import destiny.core.News.EastWest.WEST
+import destiny.core.News.NorthSouth.NORTH
+import destiny.core.News.NorthSouth.SOUTH
 import destiny.tools.LocaleTools
 import destiny.tools.location.TimeZoneUtils
 import java.io.Serializable
@@ -16,12 +21,12 @@ interface ILatLng {
   val lng: Double
   val lat: Double
 
-  val eastWest: EastWest
+  val eastWest: News.EastWest
     get() =
       if (lng >= 0)
-        EastWest.EAST
+        EAST
       else
-        EastWest.WEST
+        WEST
 
   val lngDeg: Int
     get() = abs(lng).toInt()
@@ -32,12 +37,12 @@ interface ILatLng {
   val lngSec: Double
     get() = abs(lng) * 3600 - (lngDeg * 3600).toDouble() - (lngMin * 60).toDouble()
 
-  val northSouth: NorthSouth
+  val northSouth: News.NorthSouth
     get() =
       if (lat >= 0)
-        NorthSouth.NORTH
+        NORTH
       else
-        NorthSouth.SOUTH
+        SOUTH
 
 
   val latDeg: Int
@@ -116,17 +121,18 @@ data class Location(override val lat: Double,
    * 012345678901234567890123456789012345678901234567890
    * +DDDMMSSSSS+DDMMSSSSS Alt~ TimeZone~ [minuteOffset]
    * */
-  constructor(eastWest: EastWest,
-              lngDeg: Int,
-              lngMin: Int,
-              lngSec: Double = 0.0,
-              northSouth: NorthSouth,
-              latDeg: Int,
-              latMin: Int,
-              latSec: Double = 0.0,
-              tzid: String?,
-              minuteOffset: Int? = null,
-              altitudeMeter: Double? = null) : this(getLat(northSouth, latDeg, latMin, latSec),
+  constructor(
+    eastWest: News.EastWest,
+    lngDeg: Int,
+    lngMin: Int,
+    lngSec: Double = 0.0,
+    northSouth: News.NorthSouth,
+    latDeg: Int,
+    latMin: Int,
+    latSec: Double = 0.0,
+    tzid: String?,
+    minuteOffset: Int? = null,
+    altitudeMeter: Double? = null) : this(getLat(northSouth, latDeg, latMin, latSec),
     getLng(eastWest, lngDeg, lngMin, lngSec),
     tzid,
     minuteOffset,
@@ -135,8 +141,8 @@ data class Location(override val lat: Double,
 
 
   /** 大家比較常用的，只有「度、分」。省略「秒」以及「高度」 */
-  constructor(eastWest: EastWest, lngDeg: Int, lngMin: Int,
-              northSouth: NorthSouth, latDeg: Int, latMin: Int,
+  constructor(eastWest: News.EastWest, lngDeg: Int, lngMin: Int,
+              northSouth: News.NorthSouth, latDeg: Int, latMin: Int,
               tzid: String) :
     this(eastWest, lngDeg, lngMin, 0.0, northSouth, latDeg, latMin, 0.0, tzid)
 
@@ -151,28 +157,28 @@ data class Location(override val lat: Double,
 
 
   /** 較省略的 constructor , 度數以 double 取代 */
-  constructor(eastWest: EastWest, lng: Double,
-              northSouth: NorthSouth, lat: Double,
+  constructor(eastWest: News.EastWest, lng: Double,
+              northSouth: News.NorthSouth, lat: Double,
               tzid: String, minuteOffset: Int? = null, altitudeMeter: Double? = null) : this(
-    lat.let { if (northSouth == NorthSouth.SOUTH) 0 - it else it },
-    lng.let { if (eastWest == EastWest.WEST) 0 - it else it },
+    lat.let { if (northSouth == SOUTH) 0 - it else it },
+    lng.let { if (eastWest == WEST) 0 - it else it },
     tzid, minuteOffset, altitudeMeter)
 
 
   companion object {
 
-    fun getLng(ew: EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
+    fun getLng(ew: News.EastWest, lngDeg: Int, lngMin: Int, lngSec: Double): Double {
       return (lngDeg.toDouble() + lngMin.toDouble() / 60.0 + lngSec / 3600.0).let {
-        if (ew == EastWest.WEST)
+        if (ew == WEST)
           0 - it
         else
           it
       }
     }
 
-    fun getLat(nw: NorthSouth, latDeg: Int, latMin: Int, latSec: Double): Double {
+    fun getLat(nw: News.NorthSouth, latDeg: Int, latMin: Int, latSec: Double): Double {
       return (latDeg.toDouble() + latMin.toDouble() / 60.0 + latSec / 3600.0).let {
-        if (nw == NorthSouth.SOUTH)
+        if (nw == SOUTH)
           0 - it
         else
           it
@@ -213,63 +219,63 @@ fun locationOf(locale: Locale): Location {
 
 val locMap = mapOf(
   // de , 柏林
-  Locale.GERMAN to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
+  Locale.GERMAN to Location(EAST, 13, 24, NORTH, 52, 31, "Europe/Berlin"),
   // de_DE , 柏林
-  Locale.GERMANY to Location(EastWest.EAST, 13, 24, NorthSouth.NORTH, 52, 31, "Europe/Berlin"),
+  Locale.GERMANY to Location(EAST, 13, 24, NORTH, 52, 31, "Europe/Berlin"),
   // en , 紐約 , 40.758899, -73.985131 , 時報廣場
   Locale.ENGLISH to Location(40.758899, -73.985131, "America/New_York"),
   // en_US , 紐約
   Locale.US to Location(40.758899, -73.985131, "America/New_York"),
   // en_AU , 雪梨
-  Locale("en", "AU") to Location(EastWest.EAST, 151, 12, 40.0, NorthSouth.SOUTH, 33, 51, 36.0, "Australia/Sydney"),
+  Locale("en", "AU") to Location(EAST, 151, 12, 40.0, SOUTH, 33, 51, 36.0, "Australia/Sydney"),
   // en_BW , 波札那 Botswana
-  Locale("en", "BW") to Location(EastWest.EAST, 25, 55, NorthSouth.SOUTH, 24, 40, "Africa/Gaborone"),
+  Locale("en", "BW") to Location(EAST, 25, 55, SOUTH, 24, 40, "Africa/Gaborone"),
   // en_CA , 多倫多
-  Locale.CANADA to Location(EastWest.WEST, 79, 24, NorthSouth.NORTH, 43, 40, "America/Toronto"),
+  Locale.CANADA to Location(WEST, 79, 24, NORTH, 43, 40, "America/Toronto"),
   // en_DK , 丹麥 哥本哈根 Copenhagen
-  Locale("en", "DK") to Location(EastWest.EAST, 12, 34, NorthSouth.NORTH, 55, 43, "Europe/Copenhagen"),
+  Locale("en", "DK") to Location(EAST, 12, 34, NORTH, 55, 43, "Europe/Copenhagen"),
   // en_GB , 倫敦
-  Locale.UK to Location(EastWest.WEST, 0, 7, NorthSouth.NORTH, 51, 30, "Europe/London"),
+  Locale.UK to Location(WEST, 0, 7, NORTH, 51, 30, "Europe/London"),
   // en_HK , 香港
   Locale("en", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
   // en_IE , 愛爾蘭 Ireland , 都柏林 Dublin
-  Locale("en", "IE") to Location(EastWest.WEST, 6.2592, NorthSouth.NORTH, 53.3472, "Europe/Dublin"),
+  Locale("en", "IE") to Location(WEST, 6.2592, NORTH, 53.3472, "Europe/Dublin"),
   // en_MY , 馬來西亞 , 吉隆坡
-  Locale("en", "MY") to Location(EastWest.EAST, 101, 42, NorthSouth.NORTH, 3, 8, "Asia/Kuala_Lumpur"),
+  Locale("en", "MY") to Location(EAST, 101, 42, NORTH, 3, 8, "Asia/Kuala_Lumpur"),
   // en_NZ , 紐西蘭 , 奧克蘭 Auckland (最大城市)
-  Locale("en", "NZ") to Location(EastWest.EAST, 174, 45, NorthSouth.SOUTH, 36, 52, "Pacific/Auckland"),
+  Locale("en", "NZ") to Location(EAST, 174, 45, SOUTH, 36, 52, "Pacific/Auckland"),
   // en_PH , 菲律賓 , 馬尼拉
-  Locale("en", "PH") to Location(EastWest.EAST, 121, 0, NorthSouth.NORTH, 14, 35, "Asia/Manila"),
+  Locale("en", "PH") to Location(EAST, 121, 0, NORTH, 14, 35, "Asia/Manila"),
   // en_SG , 新加坡
-  Locale("en", "SG") to Location(EastWest.EAST, 103, 51, NorthSouth.NORTH, 1, 17, "Asia/Singapore"),
+  Locale("en", "SG") to Location(EAST, 103, 51, NORTH, 1, 17, "Asia/Singapore"),
   // en_ZA , 南非 , 約翰尼斯堡
-  Locale("en", "ZA") to Location(EastWest.EAST, 27, 54, NorthSouth.SOUTH, 26, 8, "Africa/Johannesburg"),
+  Locale("en", "ZA") to Location(EAST, 27, 54, SOUTH, 26, 8, "Africa/Johannesburg"),
   // en_ZW , 辛巴威 , 哈拉雷
-  Locale("en", "ZW") to Location(EastWest.EAST, 31, 3, NorthSouth.SOUTH, 17, 50, "Africa/Harare"),
+  Locale("en", "ZW") to Location(EAST, 31, 3, SOUTH, 17, 50, "Africa/Harare"),
   // fr , 巴黎
-  Locale.FRENCH to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
+  Locale.FRENCH to Location(EAST, 2, 20, NORTH, 48, 52, "Europe/Paris"),
   // fr_FR , 巴黎
-  Locale.FRANCE to Location(EastWest.EAST, 2, 20, NorthSouth.NORTH, 48, 52, "Europe/Paris"),
+  Locale.FRANCE to Location(EAST, 2, 20, NORTH, 48, 52, "Europe/Paris"),
   // it , 羅馬
-  Locale.ITALIAN to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
+  Locale.ITALIAN to Location(EAST, 12, 29, NORTH, 41, 54, "Europe/Rome"),
   // it_IT , 羅馬
-  Locale.ITALY to Location(EastWest.EAST, 12, 29, NorthSouth.NORTH, 41, 54, "Europe/Rome"),
+  Locale.ITALY to Location(EAST, 12, 29, NORTH, 41, 54, "Europe/Rome"),
   // ja , 東京
-  Locale.JAPANESE to Location(EastWest.EAST, 139, 46, 0.0, NorthSouth.NORTH, 35, 40, 50.0, "Asia/Tokyo"),
+  Locale.JAPANESE to Location(EAST, 139, 46, 0.0, NORTH, 35, 40, 50.0, "Asia/Tokyo"),
   // ja_JP , 東京
-  Locale.JAPAN to Location(EastWest.EAST, 139, 45, NorthSouth.NORTH, 35, 40, "Asia/Tokyo"),
+  Locale.JAPAN to Location(EAST, 139, 45, NORTH, 35, 40, "Asia/Tokyo"),
   // ko , 首爾
-  Locale.KOREAN to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
+  Locale.KOREAN to Location(EAST, 127, 0, NORTH, 37, 32, "Asia/Seoul"),
   // ko_KR , 首爾
-  Locale.KOREA to Location(EastWest.EAST, 127, 0, NorthSouth.NORTH, 37, 32, "Asia/Seoul"),
+  Locale.KOREA to Location(EAST, 127, 0, NORTH, 37, 32, "Asia/Seoul"),
   // zh , 北京
   Locale.CHINESE to Location(39.9075, 116.397, "Asia/Harbin"),
   // zh_CN , PRC == CHINA == SIMPLIFIED_CHINESE , 北京
-  Locale.CHINA to Location(EastWest.EAST, 116, 23, NorthSouth.NORTH, 39, 55, "Asia/Shanghai"),
+  Locale.CHINA to Location(EAST, 116, 23, NORTH, 39, 55, "Asia/Shanghai"),
   // zh_HK , 香港
   Locale("zh", "HK") to Location(22.2798721, 114.1735865, "Asia/Hong_Kong"),
   // zh_MO , 澳門
-  Locale("zh", "MO") to Location(EastWest.EAST, 113, 35, NorthSouth.NORTH, 22, 14, "Asia/Macao"),
+  Locale("zh", "MO") to Location(EAST, 113, 35, NORTH, 22, 14, "Asia/Macao"),
   // zh_SG , 新加坡
   Locale("zh", "SG") to Location(1.2867926,103.8544739, "Asia/Singapore"),
   // zh_TW , TAIWAN == TRADITIONAL_CHINESE , 台北市 景福門 (25.039059 , 121.517675) ==> 25°02'20.5"N 121°31'03.6"E

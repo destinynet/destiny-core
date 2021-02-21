@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.News
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import java.util.*
@@ -18,10 +19,10 @@ object LngDecorator {
   }
 }
 
-data class Lng(val eastWest: EastWest, val deg: Int, val min: Int, val sec: Double) {
+data class Lng(val eastWest: News.EastWest, val deg: Int, val min: Int, val sec: Double) {
   companion object {
     fun of(value: Double): Lng {
-      val eastWest = if (value >= 0) EastWest.EAST else EastWest.WEST
+      val eastWest = if (value >= 0) News.EastWest.EAST else News.EastWest.WEST
 
       val deg = value.absoluteValue.toInt()
       val min = ((value.absoluteValue - deg) * 60).toInt()
@@ -41,7 +42,7 @@ class LngDecoratorTaiwan : Decorator<Double> {
     val lng = Lng.of(value)
 
     return with(StringBuilder()) {
-      append(if (lng.eastWest == EastWest.EAST) "東經" else "西經")
+      append(if (lng.eastWest == News.EastWest.EAST) "東經" else "西經")
       zh.invoke(this , lng)
     }.toString()
   }
@@ -71,7 +72,7 @@ class LngDecoratorChina : Decorator<Double> {
     val lng = Lng.of(value)
 
     return with(StringBuilder()) {
-      append(if (lng.eastWest == EastWest.EAST) "东经" else "西经")
+      append(if (lng.eastWest == News.EastWest.EAST) "东经" else "西经")
       zh.invoke(this , lng)
     }.toString()
   }
@@ -97,7 +98,7 @@ class LngDecoratorEnglish : Decorator<Double> {
         else it
       }
       append(secString).append("\"")
-      append(if (lng.eastWest == EastWest.EAST) "E" else "W")
+      append(if (lng.eastWest == News.EastWest.EAST) "E" else "W")
     }.toString()
   }
 

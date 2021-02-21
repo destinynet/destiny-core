@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.News.EastWest.EAST
 import destiny.core.chinese.StemBranch
 import destiny.tools.StringTools
 import mu.KotlinLogging
@@ -423,7 +424,7 @@ object TimeTools {
     val zoneSecondOffset = abs(secondsOffset)
     val longitudeSecondOffset = absLng * 4.0 * 60.0 // 經度與GMT的時差 (秒) , 一分鐘四度
 
-    return if (location.eastWest === EastWest.EAST) {
+    return if (location.eastWest === EAST) {
       val seconds = longitudeSecondOffset - zoneSecondOffset
       val (first, second) = splitSecond(seconds)
       lmt.plus(first.toLong(), ChronoUnit.SECONDS).plus(second.toLong(), ChronoUnit.NANOS)

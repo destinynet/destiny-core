@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar
 
+import destiny.core.News.EastWest.EAST
+import destiny.core.News.NorthSouth.*
 import destiny.tools.location.TimeZoneUtils
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,14 +18,18 @@ class LocationToolsTest {
       assertEquals("50.456789,100.123456", encode2018(Location(50.456789, 100.123456)))
       assertEquals("25.03,121.0 Asia/Taipei", encode2018(Location(25.03, 121.0, "Asia/Taipei")))
       assertEquals("25.03,121.0 Asia/Taipei 480m", encode2018(Location(25.03, 121.0, "Asia/Taipei", 480)))
-      assertEquals("25.03,121.0 Asia/Taipei 480m 500.0",
-                   encode2018(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0))) // 高度 500米
+      assertEquals(
+        "25.03,121.0 Asia/Taipei 480m 500.0",
+        encode2018(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0))
+      ) // 高度 500米
 
       assertEquals("40.0,73.0", encode2018(Location(40.0, 73.0)))
       assertEquals("40.0,73.0 America/New_York", encode2018(Location(40.0, 73.0, "America/New_York")))
       assertEquals("40.0,73.0 America/New_York -300m", encode2018(Location(40.0, 73.0, "America/New_York", -300)))
-      assertEquals("40.0,73.0 America/New_York -300m 800.0",
-                   encode2018(Location(40.0, 73.0, "America/New_York", -300, 800.0))) // 高度 800米
+      assertEquals(
+        "40.0,73.0 America/New_York -300m 800.0",
+        encode2018(Location(40.0, 73.0, "America/New_York", -300, 800.0))
+      ) // 高度 800米
     }
   }
 
@@ -39,8 +45,10 @@ class LocationToolsTest {
       assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480, 500.0), decode("25.03,121.0 480m Asia/Taipei 500.0"))
 
       // 南緯、西經
-      assertEquals(Location(-25.03, -121.0, "Asia/Taipei", -480, 500.0),
-                   decode("-25.03,-121.0 -480m Asia/Taipei 500.0"))
+      assertEquals(
+        Location(-25.03, -121.0, "Asia/Taipei", -480, 500.0),
+        decode("-25.03,-121.0 -480m Asia/Taipei 500.0")
+      )
 
       assertEquals(Location(25.03, 121.0, "Asia/Taipei", 480), decode("25.03,121.0 Asia/Taipei 480m"))
       assertEquals(Location(25.03, 121.0), decode("25.03,121.0"))
@@ -67,8 +75,14 @@ class LocationToolsTest {
   fun justTest_隱碼() {
     LocationTools.run {
       assertEquals(Location(25.0, 121.0, "Asia/Taipei", 480), decode("25.0,121.0 Asia/Taipei 480m"))
-      assertEquals(Location(25.0, 121.0, "Asia/Taipei", 480, 100.0), decode("25.0,121.0 Asia/Taipei 480m 100.0\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F"))
-      assertEquals(Location(25.0, 121.0, "Asia/Taipei", 480), decode("25.0,121.0 Asia/Taipei 480m\u0005\u0005\u0005\u0005\u0005"))
+      assertEquals(
+        Location(25.0, 121.0, "Asia/Taipei", 480, 100.0),
+        decode("25.0,121.0 Asia/Taipei 480m 100.0\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F\u000F")
+      )
+      assertEquals(
+        Location(25.0, 121.0, "Asia/Taipei", 480),
+        decode("25.0,121.0 Asia/Taipei 480m\u0005\u0005\u0005\u0005\u0005")
+      )
     }
   }
 
@@ -81,41 +95,32 @@ class LocationToolsTest {
     var location: ILocation
 
     location = LocationTools.decode("+1213012.44+25 312.44 12.3456 Asia/Taipei")
-    assertEquals(Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, "Asia/Taipei", null, 12.3456), location)
+    assertEquals(Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, "Asia/Taipei", null, 12.3456), location)
 
     //強制設定 minuteOffset = 0
     location = LocationTools.decode(LocationTools.encode2012(location) + " 0")
-    assertEquals(Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, "Asia/Taipei", 0, 12.3456), location)
+    assertEquals(Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, "Asia/Taipei", 0, 12.3456), location)
 
     location = LocationTools.decode("+1213012.34+25 312.34 12.3456 Asia/Taipei 60")
-    assertEquals(Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", 60, 12.3456), location)
+    assertEquals(Location(EAST, 121, 30, 12.34, NORTH, 25, 3, 12.34, "Asia/Taipei", 60, 12.3456), location)
 
     location = LocationTools.decode("+1213012.34+25 312.34 12.3456 Asia/Taipei -480")
-    assertEquals(Location(EastWest.EAST, 121, 30, 12.34, NorthSouth.NORTH, 25, 3, 12.34, "Asia/Taipei", -480, 12.3456), location)
+    assertEquals(Location(EAST, 121, 30, 12.34, NORTH, 25, 3, 12.34, "Asia/Taipei", -480, 12.3456), location)
   }
 
 
   @Test
   fun testEncode2012() {
-    var location: Location
-    location =
-      Location(EastWest.EAST, 120, 30, 12.50, NorthSouth.NORTH, 25, 3, 12.30, TimeZoneUtils.getTimeZone(480).id, null,
-               12.3456)
+    var location = Location(EAST, 120, 30, 12.50, NORTH, 25, 3, 12.30, TimeZoneUtils.getTimeZone(480).id, null, 12.3456)
     assertEquals("+12030 12.5+25 312.30 12.3456 CTT", LocationTools.encode2012(location))
 
-    location =
-      Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, null,
-               0.0)
+    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, null, 0.0)
     assertEquals("+1213012.44+25 312.44 0.0 Etc/GMT+1", LocationTools.encode2012(location))
 
-    location =
-      Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, null,
-               -1000.0)
+    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, null, -1000.0)
     assertEquals("+1213012.44+25 312.44 -1000.0 Etc/GMT+1", LocationTools.encode2012(location))
 
-    location =
-      Location(EastWest.EAST, 121, 30, 12.44, NorthSouth.NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, 120,
-        -1000.0)
+    location = Location(EAST, 121, 30, 12.44, NORTH, 25, 3, 12.44, TimeZoneUtils.getTimeZone(-60).id, 120, -1000.0)
     assertEquals("+1213012.44+25 312.44 -1000.0 Etc/GMT+1 120", LocationTools.encode2012(location))
   }
 

@@ -3,6 +3,8 @@
  */
 package destiny.core.calendar
 
+import destiny.core.News
+import destiny.core.News.NorthSouth.NORTH
 import destiny.tools.Decorator
 import destiny.tools.getOutputString
 import java.util.*
@@ -18,10 +20,10 @@ object LatDecorator {
   }
 }
 
-data class Lat(val northSouth: NorthSouth, val deg: Int, val min: Int, val sec: Double) {
+data class Lat(val northSouth: News.NorthSouth, val deg: Int, val min: Int, val sec: Double) {
   companion object {
     fun of(value: Double): Lat {
-      val northSouth = if (value >= 0) NorthSouth.NORTH else NorthSouth.SOUTH
+      val northSouth = if (value >= 0) NORTH else News.NorthSouth.SOUTH
 
       val deg = value.absoluteValue.toInt()
       val min = ((value.absoluteValue - deg) * 60).toInt()
@@ -56,7 +58,7 @@ class LatDecoratorTaiwan : Decorator<Double> {
     val lat = Lat.of(value)
 
     return with(StringBuilder()) {
-      append(if (lat.northSouth == NorthSouth.NORTH) "北緯" else "南緯")
+      append(if (lat.northSouth == NORTH) "北緯" else "南緯")
       zh.invoke(this , lat)
     }.toString()
   }
@@ -71,7 +73,7 @@ class LatDecoratorChina : Decorator<Double> {
     val lat = Lat.of(value)
 
     return with(StringBuilder()) {
-      append(if (lat.northSouth == NorthSouth.NORTH) "北纬" else "南纬")
+      append(if (lat.northSouth == NORTH) "北纬" else "南纬")
       zh.invoke(this , lat)
     }.toString()
   }
@@ -97,7 +99,7 @@ class LatDecoratorEnglish : Decorator<Double> {
         else it
       }
       append(secString).append("\"")
-      append(if (lat.northSouth == NorthSouth.NORTH) "N" else "S")
+      append(if (lat.northSouth == NORTH) "N" else "S")
     }.toString()
   }
 

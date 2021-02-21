@@ -12,12 +12,12 @@ sealed class News {
     object NORTH : NorthSouth()
     object SOUTH : NorthSouth()
     companion object {
-      fun of(c: Char): NorthSouth {
+      fun of(c: Char): NorthSouth? {
         if (c == 'N' || c == 'n')
           return NORTH
         if (c == 'S' || c == 's')
           return SOUTH
-        throw IllegalArgumentException("char '$c' only accepts 'N' , 'n' , 'S' , or 's'. ")
+        return null
       }
     }
   }
@@ -27,18 +27,24 @@ sealed class News {
     object WEST : EastWest()
 
     companion object {
-      fun of(c: Char): EastWest {
+      fun of(c: Char): EastWest? {
         if (c == 'E' || c == 'e')
           return EAST
         if (c == 'W' || c == 'w')
           return WEST
-        throw IllegalArgumentException("char '$c' only accepts 'E' , 'e' , 'W' , or 'w'. ")
+        return null
       }
     }
   }
 
   override fun toString(): String {
     return this::class.simpleName!!
+  }
+
+  companion object {
+    fun of(c: Char): News? {
+      return NorthSouth.of(c) ?: EastWest.of(c)
+    }
   }
 }
 

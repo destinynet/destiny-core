@@ -4,9 +4,13 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.News
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacSign
-import destiny.core.calendar.*
+import destiny.core.calendar.GoogleMapsUrlBuilder
+import destiny.core.calendar.LatDecorator
+import destiny.core.calendar.LngDecorator
+import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.NaYin
@@ -143,7 +147,7 @@ class EightWordsColorCanvas(
       }
 
       cc.setText("換日：" + if (context.dayHourImpl.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
-      if (location.northSouth == NorthSouth.SOUTH) {
+      if (location.northSouth == News.NorthSouth.SOUTH) {
         val yearMonthImpl = context.yearMonthImpl
         if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {
           cc.setText("南半球", 5, x + 35, "FF0000")

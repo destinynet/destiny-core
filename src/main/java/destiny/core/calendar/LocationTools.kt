@@ -3,6 +3,9 @@
  */
 package destiny.core.calendar
 
+import destiny.core.News.EastWest
+import destiny.core.News.NorthSouth.NORTH
+import destiny.core.News.NorthSouth.SOUTH
 import destiny.tools.AlignTools
 import destiny.tools.location.TimeZoneUtils
 import mu.KotlinLogging
@@ -58,7 +61,7 @@ object LocationTools {
         append(AlignTools.leftPad(lngMin.toString(), 2, ' '))
         append(AlignTools.alignRight(lngSec, 5, ' '))
 
-        append(if (northSouth == NorthSouth.NORTH) '+' else '-')
+        append(if (northSouth == NORTH) '+' else '-')
         append(AlignTools.leftPad(latDeg.toString(), 2, ' '))
         append(AlignTools.leftPad(latMin.toString(), 2, ' '))
         append(AlignTools.alignRight(latSec, 5, ' '))
@@ -146,8 +149,8 @@ object LocationTools {
     }?.let { eastWest ->
       val ns = s[11]
       when (ns) {
-        '+' -> NorthSouth.NORTH
-        '-' -> NorthSouth.SOUTH
+        '+' -> NORTH
+        '-' -> SOUTH
         else -> {
           logger.error { "ns not correct : $ns" }
           null

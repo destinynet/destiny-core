@@ -4,13 +4,18 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.News.NorthSouth.NORTH
+import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.Centric.GEO
 import destiny.core.astrology.Coordinate.ECLIPTIC
 import destiny.core.astrology.Coordinate.EQUATORIAL
 import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
-import destiny.core.calendar.*
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.SolarTerms
+import destiny.core.calendar.SolarTermsImpl
 import destiny.core.chinese.*
 import mu.KotlinLogging
 import java.util.*
@@ -67,7 +72,7 @@ class YearMonthSolarTermsStarPositionImpl(
        */
       if (hemisphereBy == HemisphereBy.EQUATOR) {
         //如果是依據赤道來區分南北半球
-        resultMonthBranch = if (location.northSouth == NorthSouth.SOUTH)
+        resultMonthBranch = if (location.northSouth == SOUTH)
           Branch[monthIndex + 6]
         else
           monthBranch
@@ -79,7 +84,7 @@ class YearMonthSolarTermsStarPositionImpl(
 
         if (solarEquatorialDegree >= 0) {
           //如果太陽在赤北緯
-          resultMonthBranch = if (location.northSouth == NorthSouth.NORTH) {
+          resultMonthBranch = if (location.northSouth == NORTH) {
             //地點在北半球
             if (location.lat >= solarEquatorialDegree)
               monthBranch
@@ -91,7 +96,7 @@ class YearMonthSolarTermsStarPositionImpl(
           }
         } else {
           //太陽在赤南緯
-          resultMonthBranch = if (location.northSouth == NorthSouth.SOUTH) {
+          resultMonthBranch = if (location.northSouth == SOUTH) {
             //地點在南半球
             if (location.lat <= solarEquatorialDegree)
               Branch[monthIndex + 6] //所在地緯度高於 太陽赤南緯，真正的南半球
