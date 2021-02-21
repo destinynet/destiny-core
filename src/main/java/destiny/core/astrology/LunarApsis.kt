@@ -15,7 +15,7 @@ enum class MeanOscu {
 
 sealed class LunarApsis(nameKey: String, abbrKey: String,
                         /** 只會用到 PERIHELION , APHELION  */
-                        val apsis: Apsis, val meanOscu: MeanOscu) : LunarPoint(nameKey, abbrKey, Star::class.java.name), Comparable<LunarApsis> {
+                        val apsis: Apsis, val meanOscu: MeanOscu) : LunarPoint(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<LunarApsis> {
 
   /**
    * 平均遠地點 , 月孛 , 水之餘 , Black Moon , Lilith，計算方法，以下兩者結果相同 :

@@ -5,7 +5,7 @@
 package destiny.core.astrology
 
 /** 恆星  */
-sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.java.name), Comparable<FixedStar> {
+sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<FixedStar> {
   /** Algol 大陵五  */
   object ALGOL : FixedStar("Fixed.ALGOL", "Fixed.ALGOL_ABBR")
 

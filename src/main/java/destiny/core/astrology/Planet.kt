@@ -7,7 +7,7 @@ import java.util.*
 
 sealed class Planet(nameKey: String,
                     abbrKey: String,
-                    unicode: Char) : Star(nameKey, abbrKey, Star::class.java.name , unicode) , Comparable<Planet> {
+                    unicode: Char) : Star(nameKey, abbrKey, Star::class.qualifiedName!! , unicode) , Comparable<Planet> {
 
   object SUN     : Planet("Planet.SUN"    , "Planet.SUN_ABBR" , '☉')
   object MOON    : Planet("Planet.MOON", "Planet.MOON_ABBR", '☽')

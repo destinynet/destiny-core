@@ -59,10 +59,10 @@ class LocationTest {
 
   @Test
   fun testEastWest() {
-    assertSame(EastWest.EAST, EastWest.getEastWest('E'))
-    assertSame(EastWest.EAST, EastWest.getEastWest('e'))
-    assertSame(EastWest.WEST, EastWest.getEastWest('W'))
-    assertSame(EastWest.WEST, EastWest.getEastWest('w'))
+    assertSame(EastWest.EAST, EastWest.of('E'))
+    assertSame(EastWest.EAST, EastWest.of('e'))
+    assertSame(EastWest.WEST, EastWest.of('W'))
+    assertSame(EastWest.WEST, EastWest.of('w'))
   }
 
   @Test

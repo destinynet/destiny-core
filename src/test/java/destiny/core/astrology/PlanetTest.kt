@@ -5,7 +5,6 @@
 package destiny.core.astrology
 
 
-import destiny.core.astrology.Planet
 import java.util.*
 import kotlin.test.*
 

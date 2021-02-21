@@ -21,7 +21,7 @@ enum class EastWest(val nameKey: String) {
   EAST("Location.EAST"), WEST("Location.WEST");
 
   companion object {
-    fun getEastWest(c: Char): EastWest {
+    fun of(c: Char): EastWest {
       if (c == 'E' || c == 'e')
         return EAST
       if (c == 'W' || c == 'w')

@@ -6,7 +6,7 @@ package destiny.core.astrology
 
 
 /** 漢堡學派 Uranian Astrology  */
-sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.java.name), Comparable<Hamburger> {
+sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.qualifiedName!!), Comparable<Hamburger> {
 
   object CUPIDO   : Hamburger("Hamburger.CUPIDO")
   object HADES    : Hamburger("Hamburger.HADES")
