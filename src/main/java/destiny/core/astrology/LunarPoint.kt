@@ -8,13 +8,13 @@ package destiny.core.astrology
 /**
  * 代表黃白道的交點，以及近遠點 , 繼承圖如下：
  * <pre>
- *       LunarPoint(Abstract)
+ *       LunarPoint (Abstract)
  *              日月交點
  *              |
  *              |
  *     +--------+--------+
  *     |                 |
- * LunarNode         LunarApsis
+ * [LunarNode]       [LunarApsis]
  * [TRUE/MEAN]       [MEAN/OSCU]
  * North/South   PERIGEE (近)/APOGEE (遠)
 </pre> *
