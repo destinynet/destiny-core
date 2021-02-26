@@ -3,10 +3,11 @@
  */
 package destiny.core
 
+import java.io.Serializable
 import java.util.*
 
 
-sealed class News {
+sealed class News : Serializable {
 
   sealed class NorthSouth : News() {
     object NORTH : NorthSouth()

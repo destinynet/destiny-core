@@ -6,6 +6,8 @@ package destiny.core.fengshui.sanyuan
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
+import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch
@@ -19,6 +21,10 @@ import java.time.chrono.ChronoLocalDateTime
  * 九星飛佈 年月日時
  */
 interface INineStar {
+
+  val yearMonthImpl: IYearMonth
+
+  val dayHourImpl : IDayHour
 
   fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): List<NineStarModel>
 
