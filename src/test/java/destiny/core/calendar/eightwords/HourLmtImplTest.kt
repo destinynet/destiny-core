@@ -13,19 +13,18 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HourLmtImplTest {
+  private val hourImpl = HourLmtImpl()
+  val loc = locationOf(Locale.TAIWAN)
 
   @Test
   fun testGetDailyBranchStartMap() {
-    val hourImpl = HourLmtImpl()
-    val loc = locationOf(Locale.TAIWAN)
-
     hourImpl.getDailyBranchStartMap(LocalDate.of(2020, 12, 24), loc, revJulDayFunc).also { map ->
       assertEquals(LocalDateTime.of(2020, 12, 23, 23, 0), map[子])
-      assertEquals(LocalDateTime.of(2020, 12, 24, 1, 0),  map[丑])
-      assertEquals(LocalDateTime.of(2020, 12, 24, 3, 0),  map[寅])
-      assertEquals(LocalDateTime.of(2020, 12, 24, 5, 0),  map[卯])
-      assertEquals(LocalDateTime.of(2020, 12, 24, 7, 0),  map[辰])
-      assertEquals(LocalDateTime.of(2020, 12, 24, 9, 0),  map[巳])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 1, 0), map[丑])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 3, 0), map[寅])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 5, 0), map[卯])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 7, 0), map[辰])
+      assertEquals(LocalDateTime.of(2020, 12, 24, 9, 0), map[巳])
       assertEquals(LocalDateTime.of(2020, 12, 24, 11, 0), map[午])
       assertEquals(LocalDateTime.of(2020, 12, 24, 13, 0), map[未])
       assertEquals(LocalDateTime.of(2020, 12, 24, 15, 0), map[申])
@@ -37,9 +36,6 @@ class HourLmtImplTest {
 
   @Test
   fun testGetDailyBranchMiddleMap() {
-    val hourImpl = HourLmtImpl()
-    val loc = locationOf(Locale.TAIWAN)
-
     hourImpl.getDailyBranchMiddleMap(LocalDate.of(2020, 12, 24), loc, revJulDayFunc).also { map ->
       assertEquals(LocalDateTime.of(2020, 12, 24, 0, 0), map[子])
       assertEquals(LocalDateTime.of(2020, 12, 24, 2, 0), map[丑])
@@ -58,10 +54,6 @@ class HourLmtImplTest {
 
   @Test
   fun testLmtNextStartOf() {
-    val hourImpl = HourLmtImpl()
-
-    val loc = locationOf(Locale.TAIWAN)
-
     LocalDateTime.of(2017, 2, 12, 22, 59, 0).also {
       // 子時前一秒
       assertEquals(LocalDateTime.of(2017, 2, 12, 23, 0, 0), hourImpl.getLmtNextStartOf(it, loc, 子, revJulDayFunc))
@@ -101,9 +93,6 @@ class HourLmtImplTest {
    */
   @Test
   fun testLmtPrevStartOf() {
-    val hourImpl = HourLmtImpl()
-    val loc = locationOf(Locale.TAIWAN)
-
     LocalDateTime.of(2019, 4, 23, 23, 0, 1).also {
       // 子時後一秒
       assertEquals(LocalDateTime.of(2019, 4, 23, 23, 0, 0), hourImpl.getLmtPrevStartOf(it, loc, 子, revJulDayFunc))
@@ -152,7 +141,100 @@ class HourLmtImplTest {
       assertEquals(LocalDateTime.of(2019, 4, 23, 19, 0, 0), hourImpl.getLmtPrevStartOf(it, loc, 戌, revJulDayFunc))
       assertEquals(LocalDateTime.of(2019, 4, 23, 21, 0, 0), hourImpl.getLmtPrevStartOf(it, loc, 亥, revJulDayFunc))
     }
+  }
 
+  @Test
+  fun testGetLmtNextMiddleOf_子時前亥時() {
+    assertEquals(LocalDateTime.of(2021, 2, 26, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 23, 0, 0), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 26, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 23, 59, 59), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 26, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 0, 0, 0), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 26, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 0, 59, 59), loc, false, revJulDayFunc))
+  }
+
+  @Test
+  fun testGetLmtNextMiddleOf_亥時後子時() {
+    assertEquals(LocalDateTime.of(2021, 2, 27, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 21, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 21, 59, 59), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 22, 0, 0), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 22, 59, 59), loc, true, revJulDayFunc))
+  }
+
+  @Test
+  fun testGetLmtNextMiddleOf_順推() {
+    assertEquals(LocalDateTime.of(2021, 2, 27, 2, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 23, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 2, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 0, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 4, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 1, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 4, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 2, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 6, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 3, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 6, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 4, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 8, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 5, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 8, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 6, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 10, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 7, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 10, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 8, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 12, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 9, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 12, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 10, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 14, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 11, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 14, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 12, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 16, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 13, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 16, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 14, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 18, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 15, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 18, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 16, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 20, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 17, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 20, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 18, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 19, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 20, 59, 59), loc, true, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 28, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 21, 0, 1), loc, true, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 28, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 22, 59, 59), loc, true, revJulDayFunc))
+  }
+
+  @Test
+  fun testGetLmtNextMiddleOf_逆推() {
+    assertEquals(LocalDateTime.of(2021, 2, 26, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 26, 23, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 26, 22, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 0, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 1, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 0, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 2, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 2, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 3, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 2, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 4, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 4, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 5, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 4, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 6, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 6, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 7, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 6, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 8, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 8, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 9, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 8, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 10, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 10, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 11, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 10, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 12, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 12, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 13, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 12, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 14, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 14, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 15, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 14, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 16, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 16, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 17, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 16, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 18, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 18, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 19, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 18, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 20, 59, 59), loc, false, revJulDayFunc))
+
+    assertEquals(LocalDateTime.of(2021, 2, 27, 20, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 21, 0, 1), loc, false, revJulDayFunc))
+    assertEquals(LocalDateTime.of(2021, 2, 27, 20, 0), hourImpl.getLmtNextMiddleOf(LocalDateTime.of(2021, 2, 27, 22, 59, 59), loc, false, revJulDayFunc))
   }
 
   companion object {

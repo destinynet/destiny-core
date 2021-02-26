@@ -16,6 +16,7 @@ import destiny.tools.converters.Domains.KEY_HOUR
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField.*
+import java.time.temporal.ChronoUnit
 import java.time.temporal.ChronoUnit.DAYS
 import java.util.*
 
@@ -62,10 +63,12 @@ class HourLmtImpl : IHour, Serializable {
   /**
    * 要實作，不然會有一些 round-off 的問題
    */
-  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>,
-                                 location: ILocation,
-                                 eb: Branch,
-                                 revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  override fun getLmtNextStartOf(
+    lmt: ChronoLocalDateTime<*>,
+    location: ILocation,
+    eb: Branch,
+    revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>
+  ): ChronoLocalDateTime<*> {
 
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
 
@@ -101,10 +104,12 @@ class HourLmtImpl : IHour, Serializable {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>,
-                                 location: ILocation,
-                                 eb: Branch,
-                                 revJulDayFunc: (Double) -> ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
+  override fun getLmtPrevStartOf(
+    lmt: ChronoLocalDateTime<*>,
+    location: ILocation,
+    eb: Branch,
+    revJulDayFunc: (Double) -> ChronoLocalDateTime<*>
+  ): ChronoLocalDateTime<*> {
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
 
     val hourOfDay = lmt.get(HOUR_OF_DAY)
@@ -125,6 +130,16 @@ class HourLmtImpl : IHour, Serializable {
       }
     }
   }
+
+  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, location: ILocation, next: Boolean, revJulDayFunc: (Double) -> ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
+    val currentHour = getHour(lmt, location)
+    return if (next) {
+      getLmtNextStartOf(lmt, location, currentHour.next, revJulDayFunc).plus(1, ChronoUnit.HOURS)
+    } else {
+      getLmtPrevStartOf(lmt, location, currentHour.prev, revJulDayFunc).plus(1, ChronoUnit.HOURS)
+    }
+  }
+
 
   /**
    * LMT 要實作

@@ -9,6 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
 import mu.KotlinLogging
 import java.io.Serializable
+import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 /**
@@ -24,21 +25,20 @@ import java.util.*
  *
  * 所以，計算方法，黃道上任一點，找出最近的 House Cusp , 就可得知其時辰
  */
-class HourHouseImpl(val houseCuspImpl : IHouseCusp,
+class HourHouseImpl(val houseCuspImpl: IHouseCusp,
                     val starPositionImpl: IStarPosition<*>,
-                    val star : Star = Planet.SUN,
-                    val houseSystem: HouseSystem = HouseSystem.MERIDIAN
-                    ) : IHour, Serializable {
+                    val star: Star = Planet.SUN,
+                    val houseSystem: HouseSystem = HouseSystem.MERIDIAN) : IHour, Serializable {
 
   override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
 
-    val lng = starPositionImpl.getPosition(star , gmtJulDay , location , Centric.GEO , Coordinate.ECLIPTIC).lng
-    logger.trace("lng = {}" , lng)
+    val lng = starPositionImpl.getPosition(star, gmtJulDay, location, Centric.GEO, Coordinate.ECLIPTIC).lng
+    logger.trace("lng = {}", lng)
 
-    val houseMap = houseCuspImpl.getHouseCuspMap(gmtJulDay , location , houseSystem , Coordinate.ECLIPTIC)
-    val houseIndex = findNearestHouseCusp(houseMap , lng)
+    val houseMap = houseCuspImpl.getHouseCuspMap(gmtJulDay, location, houseSystem, Coordinate.ECLIPTIC)
+    val houseIndex = findNearestHouseCusp(houseMap, lng)
 
-    logger.trace("nearest house = {}" , houseIndex)
+    logger.trace("nearest house = {}", houseIndex)
     return houseToBranch(houseIndex)
   }
 
@@ -56,6 +56,14 @@ class HourHouseImpl(val houseCuspImpl : IHouseCusp,
     TODO("not implemented")
   }
 
+
+  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>,
+                                  location: ILocation,
+                                  next: Boolean,
+                                  revJulDayFunc: (Double) -> ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
+    TODO("Not yet implemented")
+  }
+
   override fun toString(locale: Locale): String {
     return "占星 分宮法"
   }
@@ -65,19 +73,19 @@ class HourHouseImpl(val houseCuspImpl : IHouseCusp,
   }
 
   companion object {
-    val logger = KotlinLogging.logger {  }
+    val logger = KotlinLogging.logger { }
 
-    fun findNearestHouseCusp(houseMap : Map<Int, Double>, degree:Double): Int {
-      return houseMap.map { (houseIndex , cuspDegree) ->
-        houseIndex to IHoroscopeModel.getAngle(cuspDegree , degree)
+    fun findNearestHouseCusp(houseMap: Map<Int, Double>, degree: Double): Int {
+      return houseMap.map { (houseIndex, cuspDegree) ->
+        houseIndex to IHoroscopeModel.getAngle(cuspDegree, degree)
       }
-        .filter { (_ , angle) -> angle < 40 } // 只過濾 angle < 40 , 加快後面 sort 速度
+        .filter { (_, angle) -> angle < 40 } // 只過濾 angle < 40 , 加快後面 sort 速度
         .sortedBy { it.second }
         .first().first
     }
 
-    fun houseToBranch(house: Int) : Branch {
-      return when(house) {
+    fun houseToBranch(house: Int): Branch {
+      return when (house) {
         1 -> Branch.卯
         2 -> Branch.寅
 
