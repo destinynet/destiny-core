@@ -119,11 +119,11 @@ interface IPalmContext : IEightWordsStandardFactory {
 
     return trueRising?.let { rising ->
       // 以上升星座 rising 作為預先計算的命宮
-      getPalmWithMainBranch(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
+      getPalmWithMainBranch(gender, chineseDateHour.year.branch, chineseDateHour.leapMonth, chineseDateHour.month,
         chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, rising, monthBranch, monthAlgo,
         clockwiseHouse)
     }
-      ?: getPalmWithoutMainBranch(gender, chineseDateHour.year.branch, chineseDateHour.isLeapMonth, chineseDateHour.month,
+      ?: getPalmWithoutMainBranch(gender, chineseDateHour.year.branch, chineseDateHour.leapMonth, chineseDateHour.month,
         chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl, monthBranch, monthAlgo, clockwiseHouse)
   }
 

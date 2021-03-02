@@ -52,7 +52,7 @@ interface IChineseDate : Descriptive {
   fun getYangDate(cycle: Int, year: StemBranch, leap: Boolean, month: Int, day: Int): ChronoLocalDate
 
   fun getYangDate(cdate: ChineseDate): ChronoLocalDate {
-    return getYangDate(cdate.cycleOrZero, cdate.year, cdate.isLeapMonth, cdate.month, cdate.day)
+    return getYangDate(cdate.cycleOrZero, cdate.year, cdate.leapMonth, cdate.month, cdate.day)
   }
 
 
@@ -85,7 +85,7 @@ interface IChineseDate : Descriptive {
     var date = ChineseDate(cycle, year, 1, false, 1)
 
     while (date.year === year) {
-      list.add(Pair(date.month, date.isLeapMonth))
+      list.add(Pair(date.month, date.leapMonth))
       date = nextMonthStart(date)
     }
     return list

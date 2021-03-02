@@ -45,7 +45,7 @@ class MainBodyHouseTradImpl(val yearMonthImpl: IYearMonth,
     val hour = dayHourImpl.getHour(lmt, loc)
 
     // 最終要計算的「月份」數字 , for 主星
-    val finalMonthNumForMainStars = IFinalMonthNumber.getFinalMonthNumber(lunarMonth, cDate.isLeapMonth, monthBranch, days, mainStarsAlgo)
+    val finalMonthNumForMainStars = IFinalMonthNumber.getFinalMonthNumber(lunarMonth, cDate.leapMonth, monthBranch, days, mainStarsAlgo)
 
     val mainHouse = Ziwei.getMainHouseBranch(finalMonthNumForMainStars, hour)
     val bodyHouse = Ziwei.getBodyHouseBranch(finalMonthNumForMainStars, hour)

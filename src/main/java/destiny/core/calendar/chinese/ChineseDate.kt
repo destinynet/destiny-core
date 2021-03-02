@@ -7,9 +7,7 @@ package destiny.core.calendar.chinese
 
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
-import destiny.tools.ChineseStringTools
 import destiny.tools.ChineseStringTools.digitToChinese
-
 import java.io.Serializable
 
 /**
@@ -19,12 +17,16 @@ import java.io.Serializable
 interface IChineseDateModel {
   /** 第幾輪  */
   val cycle: Int?
+
   /** 年干支  */
   val year: StemBranch
+
   /** 月  */
   val month: Int
-  /** 是否是潤月  */
-  val isLeapMonth: Boolean
+
+  /** 是否是閏月  */
+  val leapMonth: Boolean
+
   /** 日  */
   val day: Int
 
@@ -39,18 +41,6 @@ interface IChineseDateModel {
     get() = -2636 + (cycleOrZero - 1) * 60 + year.index
 
   companion object {
-    /**
-     * 月份數字，轉換成中文表示
-     */
-    fun monthToChinese(month: Int): String {
-      return when {
-        month < 10 -> digitToChinese(month)
-        month == 10 -> "十"
-        month == 11 -> "十一"
-        month == 12 -> "十二"
-        else -> throw IllegalArgumentException("no such month")
-      }
-    }
 
     val lunarMonthMap = mapOf(
       1 to "㊣",
@@ -67,45 +57,13 @@ interface IChineseDateModel {
       12 to "㋋",
     )
 
-    val dateStringMap = mapOf(
-      1  to "初一",
-      2  to "初二",
-      3  to "初三",
-      4  to "初四",
-      5  to "初五",
-      6  to "初六",
-      7  to "初七",
-      8  to "初八",
-      9  to "初九",
-      10 to "初十",
-      11 to "十一",
-      12 to "十二",
-      13 to "十三",
-      14 to "十四",
-      15 to "十五",
-      16 to "十六",
-      17 to "十七",
-      18 to "十八",
-      19 to "十九",
-      20 to "廿十",
-      21 to "廿一",
-      22 to "廿二",
-      23 to "廿三",
-      24 to "廿四",
-      25 to "廿五",
-      26 to "廿六",
-      27 to "廿七",
-      28 to "廿八",
-      29 to "廿九",
-      30 to "三十",
-      31 to "卅一",
-    )
   }
 }
 
 interface IChineseDateHourModel : IChineseDateModel {
   val hourBranch: Branch
 }
+
 
 data class ChineseDate(
   /** 第幾輪  */
@@ -115,33 +73,50 @@ data class ChineseDate(
   /** 月  */
   override val month: Int,
   /** 是否是潤月  */
-  override val isLeapMonth: Boolean,
+  override val leapMonth: Boolean,
   /** 日  */
-  override val day: Int) : IChineseDateModel, Serializable {
+  override val day: Int) : IChineseDateModel, Serializable
 
-  override fun toString(): String {
-    return year.toString() + "年" + (if (isLeapMonth) "閏" else "") + toChinese(month) + "月" + toChinese(day) + "日"
-  }
-
-  companion object {
-
-    fun toChinese(num: Int): String {
-      return when {
-        num < 10 -> digitToChinese(num)
-        num == 10 -> "十"
-        num in 11..19 -> "十" + digitToChinese(num - 10)
-        num == 20 -> "二十"
-        num in 21..29 -> "二十" + digitToChinese(num - 20)
-        else -> "三十"
-      }
-    }
-
-    private fun digitToChinese(digit: Int): String {
-      return ChineseStringTools.digitToChinese(digit)
+fun Int.toChineseMonthString(): String {
+  return buildString {
+    when (val value = this@toChineseMonthString) {
+      1 -> append("正月")
+      in 2..9 -> append(digitToChinese(value)).append("月")
+      10 -> append("十月")
+      in 11..12 -> append("十").append(digitToChinese(value - 10)).append("月")
+      else -> throw IllegalArgumentException("No such month : $value")
     }
   }
 }
 
+fun Int.toChineseDayString(appendDay : Boolean = false): String {
+  return buildString {
+    val value = this@toChineseDayString
+    when (value) {
+      in 1..9 -> append("初").append(digitToChinese(value))
+      10 -> append("初十")
+      in 11..19 -> append("十").append(digitToChinese(value - 10))
+      20 -> append("二十")
+      in 21..29 -> append("廿").append(digitToChinese(value - 20))
+      30 -> append("三十")
+      else -> throw IllegalArgumentException("No such day : $value")
+    }
+    if (appendDay && value > 10)
+      append("日")
+  }
+}
+
+fun ChineseDate.display(appendDay: Boolean = false): String {
+  return buildString {
+    append(year)
+    append("年")
+    if (leapMonth)
+      append("閏")
+
+    append(month.toChineseMonthString())
+    append(day.toChineseDayString(appendDay))
+  }
+}
 
 /**
  * 農曆日期＋時辰(地支)的表示法
