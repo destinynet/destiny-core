@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.fail
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ChineseDateKtTest {
@@ -25,14 +25,14 @@ internal class ChineseDateKtTest {
     assertEquals("十二月", 12.toChineseMonthString())
     try {
       0.toChineseMonthString()
-    } catch (e: Exception) {
-      assertTrue(e is IllegalArgumentException)
+      fail()
+    } catch (e: IllegalArgumentException) {
       assertEquals("No such month : 0" , e.message)
     }
     try {
       13.toChineseMonthString()
-    } catch (e: Exception) {
-      assertTrue(e is IllegalArgumentException)
+      fail()
+    } catch (e: IllegalArgumentException) {
       assertEquals("No such month : 13" , e.message)
     }
   }
@@ -49,14 +49,14 @@ internal class ChineseDateKtTest {
     assertEquals("三十", 30.toChineseDayString())
     try {
       0.toChineseDayString()
-    } catch (e: Exception) {
-      assertTrue(e is IllegalArgumentException)
+      fail()
+    } catch (e: IllegalArgumentException) {
       assertEquals("No such day : 0" , e.message)
     }
     try {
       31.toChineseDayString()
-    } catch (e: Exception) {
-      assertTrue(e is IllegalArgumentException)
+      fail()
+    } catch (e: IllegalArgumentException) {
       assertEquals("No such day : 31" , e.message)
     }
   }
@@ -73,14 +73,14 @@ internal class ChineseDateKtTest {
     assertEquals("三十日", 30.toChineseDayString(true))
     try {
       0.toChineseDayString()
-    } catch (e: Exception) {
-      assertTrue(e is IllegalArgumentException)
+      fail()
+    } catch (e: IllegalArgumentException) {
       assertEquals("No such day : 0" , e.message)
     }
     try {
       31.toChineseDayString()
-    } catch (e: Exception) {
-      assertTrue(e is IllegalArgumentException)
+      fail()
+    } catch (e: IllegalArgumentException) {
       assertEquals("No such day : 31" , e.message)
     }
   }
