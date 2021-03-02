@@ -8,7 +8,7 @@ object ChineseStringTools {
   const val NULL_CHAR = "　" //空白字元，使用全形的空白, 在 toString() 時使用
 
   /**
-   * 轉換成中文數字
+   * 「單一數字」轉換成中文數字
    */
   fun digitToChinese(digit: Int): String {
     return when (digit) {
@@ -61,12 +61,11 @@ object ChineseStringTools {
   }
 
   /** 搜尋字串中的數字，並且替換成全型 */
-  fun replaceToBiggerDigits(value : String) : String {
-    return value.toCharArray().joinToString("") { c : Char ->
-      if (c.isDigit()){
+  fun replaceToBiggerDigits(value: String): String {
+    return value.toCharArray().joinToString("") { c: Char ->
+      if (c.isDigit()) {
         digitToFull(c.toString().toInt())
-      }
-      else
+      } else
         c.toString()
     }
   }
@@ -75,12 +74,12 @@ object ChineseStringTools {
    * @param value 確保每個字都是全型中文字
    */
   fun alignRight(value: String, width: Int): String {
-    val valueLength = value.length*2
+    val valueLength = value.length * 2
     return if (valueLength == width)
       value
     else {
-      val doubleByteSpaces = (width - valueLength)/2
-      NULL_CHAR.repeat(doubleByteSpaces)+ value
+      val doubleByteSpaces = (width - valueLength) / 2
+      NULL_CHAR.repeat(doubleByteSpaces) + value
     }
   }
 }
