@@ -6,8 +6,8 @@ package destiny.core.astrology
 import destiny.core.astrology.CStar.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDay
+import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement.*
-import destiny.core.chinese.SimpleBranch
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.DayOfWeek
@@ -29,7 +29,8 @@ class DailyCStarTableImpl(private val dayImpl: IDay) : IDailyCStar, Serializable
     val noon = date.atTime(12, 0)
     val day: StemBranch = dayImpl.getDay(noon, loc)
     val week: DayOfWeek = date.dayOfWeek
-    val fiveElement = SimpleBranch.getFiveElement(day.branch)
+
+    val fiveElement = BranchTools.trilogy(day.branch)
     return map[fiveElement]!![week.value - 1]
   }
 
