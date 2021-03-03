@@ -4,9 +4,10 @@
  */
 package destiny.core.chinese
 
+import destiny.core.News
 import java.io.Serializable
 
-enum class FiveElement  : IFiveElement, Serializable {
+enum class FiveElement : IFiveElement, Serializable {
   木,
   火,
   土,
@@ -93,4 +94,14 @@ enum class FiveElement  : IFiveElement, Serializable {
     return f.fiveElement.dominateOver == this
   }
 
+  companion object {
+    fun of(news: News): FiveElement {
+      return when (news) {
+        News.EastWest.EAST -> 木
+        News.NorthSouth.SOUTH -> 火
+        News.EastWest.WEST -> 金
+        News.NorthSouth.NORTH -> 水
+      }
+    }
+  }
 }

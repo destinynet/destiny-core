@@ -14,10 +14,21 @@ internal class LunarStationTest {
   fun testName() {
     LunarStation::class.nestedClasses.map { k ->
       k.objectInstance as LunarStation
-    }.forEach { cStar ->
-      assertTrue(cStar.toString(Locale.TAIWAN).length == 1)
-      assertTrue(cStar.toString(Locale.SIMPLIFIED_CHINESE).length == 1)
-      assertNotNull(cStar.toString(Locale.ENGLISH))
+    }.forEach { station ->
+      assertTrue(station.toString(Locale.TAIWAN).length == 1)
+      assertTrue(station.toString(Locale.SIMPLIFIED_CHINESE).length == 1)
+      assertNotNull(station.toString(Locale.ENGLISH))
+    }
+  }
+
+  @Test
+  fun testAnimal() {
+    LunarStation::class.nestedClasses.map { k ->
+      k.objectInstance as LunarStation
+    }.forEach { station ->
+      assertTrue(station.animal(Locale.TAIWAN).length == 1)
+      assertTrue(station.animal(Locale.SIMPLIFIED_CHINESE).length == 1)
+      assertNotNull(station.animal(Locale.ENGLISH))
     }
   }
 }

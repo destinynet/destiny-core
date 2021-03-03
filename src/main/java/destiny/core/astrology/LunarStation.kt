@@ -8,6 +8,7 @@ import destiny.core.News.EastWest.EAST
 import destiny.core.News.EastWest.WEST
 import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
+import java.util.*
 
 /** 二十八宿 */
 sealed class LunarStation(val news: News,
@@ -44,4 +45,8 @@ sealed class LunarStation(val news: News,
   object 翼 : LunarStation(SOUTH, "翼")
   object 軫 : LunarStation(SOUTH, "軫")
 
+}
+
+fun LunarStation.animal(locale: Locale) : String {
+  return ResourceBundle.getBundle(resource, locale).getString("$nameKey.animal")
 }

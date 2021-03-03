@@ -15,7 +15,7 @@ import java.time.LocalDate
 
 
 /** 二十八星宿值日 */
-interface IDailyStation {
+interface ILunarDailyStation {
 
   fun getDailyStar(date: LocalDate, loc: ILocation): LunarStation
 }
@@ -23,7 +23,7 @@ interface IDailyStation {
 /**
  * 查表法，按照「星期幾」實作28星宿值日
  */
-class DailyStationWeekImpl(private val dayImpl: IDay) : IDailyStation, Serializable {
+class LunarDailyStationByWeek(private val dayImpl: IDay) : ILunarDailyStation, Serializable {
 
   override fun getDailyStar(date: LocalDate, loc: ILocation): LunarStation {
     val noon = date.atTime(12, 0)
