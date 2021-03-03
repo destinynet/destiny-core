@@ -3,7 +3,7 @@
  */
 package destiny.core.astrology
 
-import destiny.core.astrology.CStar.*
+import destiny.core.astrology.LunarStation.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDay
 import destiny.core.chinese.BranchTools
@@ -15,17 +15,17 @@ import java.time.LocalDate
 
 
 /** 二十八星宿值日 */
-interface IDailyCStar {
+interface IDailyStation {
 
-  fun getDailyStar(date: LocalDate, loc: ILocation): CStar
+  fun getDailyStar(date: LocalDate, loc: ILocation): LunarStation
 }
 
 /**
- * 查表法實作28星宿值日
+ * 查表法，按照「星期幾」實作28星宿值日
  */
-class DailyCStarTableImpl(private val dayImpl: IDay) : IDailyCStar, Serializable {
+class DailyStationWeekImpl(private val dayImpl: IDay) : IDailyStation, Serializable {
 
-  override fun getDailyStar(date: LocalDate, loc: ILocation): CStar {
+  override fun getDailyStar(date: LocalDate, loc: ILocation): LunarStation {
     val noon = date.atTime(12, 0)
     val day: StemBranch = dayImpl.getDay(noon, loc)
     val week: DayOfWeek = date.dayOfWeek
@@ -35,7 +35,7 @@ class DailyCStarTableImpl(private val dayImpl: IDay) : IDailyCStar, Serializable
   }
 
   companion object {
-    val map = mapOf(
+    private val map = mapOf(
       // 星期1 ~ 星期日
       水 to listOf(畢, 翼, 箕, 奎, 鬼, 氐, 虛),
       木 to listOf(張, 尾, 壁, 井, 亢, 女, 昴),

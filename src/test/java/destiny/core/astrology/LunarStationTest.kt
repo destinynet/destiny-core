@@ -8,12 +8,12 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-internal class CStarTest {
+internal class LunarStationTest {
 
   @Test
   fun testName() {
-    CStar::class.nestedClasses.map { k ->
-      k.objectInstance as CStar
+    LunarStation::class.nestedClasses.map { k ->
+      k.objectInstance as LunarStation
     }.forEach { cStar ->
       assertTrue(cStar.toString(Locale.TAIWAN).length == 1)
       assertTrue(cStar.toString(Locale.SIMPLIFIED_CHINESE).length == 1)
