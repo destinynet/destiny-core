@@ -11,6 +11,7 @@ import destiny.core.calendar.GoogleMapsUrlBuilder
 import destiny.core.calendar.LatDecorator
 import destiny.core.calendar.LngDecorator
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.chinese.display
 import destiny.core.chinese.Branch
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.NaYin
@@ -103,7 +104,7 @@ class EightWordsColorCanvas(
 
 
       val chineseDate = model.chineseDate
-      cc.setText("農曆：(" + chineseDate.cycleOrZero + "循環)" + chineseDate, 2, 1)
+      cc.setText("農曆：(" + chineseDate.cycleOrZero + "循環)" + chineseDate.display(true), 2, 1)
 
       val url = urlBuilder.getUrl(location)
 
