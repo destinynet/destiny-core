@@ -16,10 +16,10 @@ import java.io.Serializable
 /**
  * 節氣實作
  */
-class SolarTermsImpl(
-  private val starTransitImpl: IStarTransit,
-  private val starPositionImpl: IStarPosition<*>
-                    ) : ISolarTerms, Serializable {
+class SolarTermsImpl(private val starTransitImpl: IStarTransit,
+                     private val starPositionImpl: IStarPosition<*>,
+                     private val julDayResolver: JulDayResolver
+) : ISolarTerms, Serializable {
 
 
   /**
@@ -55,7 +55,7 @@ class SolarTermsImpl(
     while (fromGmt < toGmt) {
       val solarTermsTime: SolarTermsTime
 
-      val fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(SUN, nextZodiacDegree, ECLIPTIC, fromGmt, true)
+      val fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(SUN, nextZodiacDegree, ECLIPTIC, fromGmt, true, julDayResolver)
       fromGmt = TimeTools.getGmtJulDay(fromGmtTime)
 
       if (fromGmt > toGmt)

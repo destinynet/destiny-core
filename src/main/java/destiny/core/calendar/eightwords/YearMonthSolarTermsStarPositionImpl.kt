@@ -27,7 +27,7 @@ import java.util.*
  */
 class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPosition<*>,
                                           private val starTransitImpl: IStarTransit,
-                                          julDayResolver: JulDayResolver,
+                                          private val julDayResolver: JulDayResolver,
                                           /** 換年的度數 , 通常是立春點 (315) 換年  , 另一個值通常為 270 (冬至) */
                                           changeYearDegree: Double = 315.0,
                                           override val southernHemisphereOpposition: Boolean = false,
@@ -43,7 +43,7 @@ class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPos
   }
 
   val solarTermsImpl: ISolarTerms by lazy {
-    SolarTermsImpl(this.starTransitImpl, this.starPositionImpl)
+    SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
   }
 
   /**

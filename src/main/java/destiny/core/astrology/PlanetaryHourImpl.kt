@@ -21,7 +21,7 @@ import java.time.temporal.ChronoField
  *
  * 晝夜、分別劃分 12等分
  */
-class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans ,
+class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
                         private val julDayResolver: JulDayResolver) : IPlanetaryHour, Serializable {
 
   override fun getPlanetaryHour(gmtJulDay: Double, loc: Location): PlanetaryHour {
@@ -80,12 +80,7 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans ,
       val prevSetting = riseTransImpl.getGmtTransJulDay(nearPrevMeridian, SUN, SETTING, loc)!!
 
       halfDayIndex = getHourIndexOfHalfDay(prevSetting, nextRising, gmtJulDay).let {
-        HourIndexOfDay(
-          it.hourStart,
-          it.hourEnd,
-          it.hourIndex,
-          dayNight
-        )
+        HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
       }
     } else {
       // 目前是白天
@@ -96,12 +91,7 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans ,
       val prevRising = riseTransImpl.getGmtTransJulDay(nearPrevMidNight, SUN, RISING, loc)!!
 
       halfDayIndex = getHourIndexOfHalfDay(prevRising, nextSetting, gmtJulDay).let {
-        HourIndexOfDay(
-          it.hourStart,
-          it.hourEnd,
-          it.hourIndex,
-          dayNight
-        )
+        HourIndexOfDay(it.hourStart, it.hourEnd, it.hourIndex, dayNight)
       }
     }
 

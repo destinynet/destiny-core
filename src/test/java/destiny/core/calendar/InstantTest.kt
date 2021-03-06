@@ -18,6 +18,8 @@ class InstantTest {
 
   private val logger = KotlinLogging.logger { }
 
+  private val julDayResolver = JulDayResolver1582CutoverImpl()
+
   /**
    * 日本時間比台灣快一小時
    * 因此，雖然 LDT 不一樣，但是轉換成 Instant 之後，卻都是相同的
@@ -59,8 +61,10 @@ class InstantTest {
     logger.info("減去一秒 , instant2 = {} ", instant2)
 
 
-    logger.info("Greg 前一秒 : {}",
-                TimeSecDecorator.getOutputString(instant2.atZone(ZoneId.of("GMT")).toLocalDateTime(), Locale.TAIWAN))
+    logger.info(
+      "Greg 前一秒 : {}",
+      TimeSecDecorator.getOutputString(instant2.atZone(ZoneId.of("GMT")).toLocalDateTime(), Locale.TAIWAN)
+    )
 
     assertEquals(LocalDateTime.of(1582, 10, 14, 23, 59, 59).toEpochSecond(ZoneOffset.UTC), instant2.epochSecond)
   }
@@ -122,8 +126,7 @@ class InstantTest {
 
     // Gregorian Cal 開始的 instant ，轉換到 LocalDateTime
     var instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT)
-    val resolver = JulDayResolver1582CutoverImpl()
-    var dateTime = TimeTools.getLocalDateTime(instant, resolver)
+    var dateTime = TimeTools.getLocalDateTime(instant, julDayResolver)
     logger.info("dateTime , class = {} , value = {}", dateTime.javaClass, dateTime)
     assertTrue(dateTime is LocalDateTime)
     assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), dateTime)
@@ -131,8 +134,7 @@ class InstantTest {
     // Gregorian Cal 前一秒，變成 Julian Day 1582-10-4 23:59:59
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT - 1)
 
-    val func = {it:Instant -> resolver.getLocalDateTimeFromInstant(it) }
-    dateTime = TimeTools.getLocalDateTime(instant, func)
+    dateTime = TimeTools.getLocalDateTime(instant, julDayResolver)
 
     logger.info("dateTime , class = {} , value = {}", dateTime.javaClass, dateTime)
     assertTrue(dateTime is JulianDateTime)

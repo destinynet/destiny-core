@@ -5,7 +5,7 @@
  */
 package destiny.core.astrology
 
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -31,11 +31,9 @@ interface IStarTransit {
                                 coordinate: Coordinate,
                                 fromGmt: Double,
                                 forward: Boolean = true,
-                                revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>> = {
-                                  JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it)
-                                }): ChronoLocalDateTime<*> {
+                                julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     val gmtJulDay = getNextTransitGmt(star, degree, coordinate, fromGmt, forward)
-    return revJulDayFunc.invoke(gmtJulDay)
+    return julDayResolver.getLocalDateTime(gmtJulDay)
   }
 
 }
