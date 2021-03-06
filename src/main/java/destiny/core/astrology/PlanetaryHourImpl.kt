@@ -6,7 +6,7 @@ package destiny.core.astrology
 import destiny.core.DayNight
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.TransPoint.*
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
@@ -21,7 +21,8 @@ import java.time.temporal.ChronoField
  *
  * 晝夜、分別劃分 12等分
  */
-class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour, Serializable {
+class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans ,
+                        private val julDayResolver: JulDayResolver) : IPlanetaryHour, Serializable {
 
   override fun getPlanetaryHour(gmtJulDay: Double, loc: Location): PlanetaryHour {
 
@@ -139,7 +140,7 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
 
 
   private fun getPlanet(hourIndexOfDay: Int, gmtJulDay: Double, loc: Location): Planet {
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     // 1:星期一 , 2:星期二 ... , 6:星期六 , 7:星期日
     val dayOfWeek = lmt.get(ChronoField.DAY_OF_WEEK)
@@ -165,7 +166,5 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans) : IPlanetaryHour,
 
     /** 日期順序 */
     private val seqDay = intArrayOf(6, 7, 1, 2, 3, 4, 5)
-
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 }

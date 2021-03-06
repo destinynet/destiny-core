@@ -24,7 +24,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
    */
   override fun getDay(gmtJulDay: Double, location: ILocation): StemBranch {
 
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, location, revJulDayFunc)
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, location, julDayResolver)
 
     return getDay(lmt, location)
   } // GMT 版本

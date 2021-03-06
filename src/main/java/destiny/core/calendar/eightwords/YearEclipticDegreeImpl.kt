@@ -8,7 +8,7 @@ import destiny.core.astrology.Coordinate
 import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
@@ -23,10 +23,11 @@ import java.time.temporal.ChronoUnit
 open class YearEclipticDegreeImpl(
   /** 換年的度數 , 通常是立春點 (315) 換年 */
   override val changeYearDegree: Double = 315.0,
-  private val starPositionImpl: IStarPosition<*>) : IYear, Serializable {
+  private val starPositionImpl: IStarPosition<*> ,
+  private val julDayResolver: JulDayResolver) : IYear, Serializable {
 
   override fun getYear(gmtJulDay: Double, loc: ILocation): StemBranch {
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val resultStemBranch: StemBranch
     //西元 1984 年為 甲子年
@@ -106,7 +107,6 @@ open class YearEclipticDegreeImpl(
 
 
   companion object {
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
     val logger = KotlinLogging.logger { }
   }
 }

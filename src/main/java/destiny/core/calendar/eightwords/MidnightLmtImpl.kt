@@ -6,7 +6,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.Domain
 import destiny.tools.Impl
@@ -21,10 +21,10 @@ import java.util.*
  * 純粹以地方平均時（手錶時間）來判定
  */
 @Impl([Domain(Domains.KEY_MIDNIGHT, MidnightLmtImpl.VALUE)])
-class MidnightLmtImpl : IMidnight, Serializable {
+class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, Serializable {
 
   override fun getNextMidnight(gmtJulDay: Double, loc: ILocation): Double {
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, revJulDayFunc)
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val resultLmt = lmt.plus(1, ChronoUnit.DAYS)
       .with(HOUR_OF_DAY, 0)
@@ -68,7 +68,6 @@ class MidnightLmtImpl : IMidnight, Serializable {
 
   companion object {
     const val VALUE: String = "lmt"
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }

@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.ZodiacSign
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
@@ -13,7 +13,8 @@ import destiny.tools.canvas.ColorCanvas
 import mu.KotlinLogging
 import java.time.format.DateTimeFormatter
 
-class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseStringTools.NULL_CHAR) {
+class TimeLine(val model: IEightWordsContextModel,
+               private val julDayResolver: JulDayResolver) : ColorCanvas(5, 70, ChineseStringTools.NULL_CHAR) {
 
   init {
     val centerSign: Pair<ZodiacSign, Double> =
@@ -27,7 +28,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
 
     // 最左邊 節氣
     model.solarTermsTimePos.prevMajor.also { pair: Pair<SolarTerms, Double> ->
-      val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, revJulDayFunc)
+      val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, julDayResolver)
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString(), 1, 1, title = title)
       setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 1, title = title)
@@ -37,7 +38,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
 
     // 最右邊 節氣
     model.solarTermsTimePos.nextMajor.also { pair ->
-      val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, revJulDayFunc)
+      val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, julDayResolver)
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString(), 1, 63, title = title)
       setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 63, title = title)
@@ -49,7 +50,7 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
     centerSign.also { sign ->
 
       val middle = model.solarTermsTimePos.prevMajor.first.next().toString() + "／" + sign.first.toString()
-      val lmt = TimeTools.getLmtFromGmt(centerSign.second, model.location, revJulDayFunc)
+      val lmt = TimeTools.getLmtFromGmt(centerSign.second, model.location, julDayResolver)
       val title = timeDecorator.getOutputString(lmt)
       setText("$middle→", 1, 29, title = title)
       setText(monthDayFormatter.format(lmt.toLocalDate()), 2, 33, title = title)
@@ -107,7 +108,6 @@ class TimeLine(val model: IEightWordsContextModel) : ColorCanvas(5, 70, ChineseS
     private val logger = KotlinLogging.logger { }
     private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
     private val timeDecorator = TimeSecDecoratorChinese()
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }

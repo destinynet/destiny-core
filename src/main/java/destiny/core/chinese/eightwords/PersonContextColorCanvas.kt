@@ -3,7 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.Direction
@@ -25,14 +25,15 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
                                private val hiddenStemsImpl: IHiddenStems,
                                private val linkUrl: String?,
                                private val direction: Direction,
+                               julDayResolver: JulDayResolver,
                                /** 是否顯示納音 */
                                private val showNaYin: Boolean = false) :
-  ColorCanvas(36, 70, ChineseStringTools.NULL_CHAR)
-{
+  ColorCanvas(36, 70, ChineseStringTools.NULL_CHAR) {
 
   var outputMode = OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
+
     val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.time, model.location, model.place)
     EightWordsColorCanvas(m, personContext, model.place ?: "", hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
@@ -75,8 +76,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
       val stemBranch = fortuneData.stemBranch
 
 
-      val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
-      val endFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.endFortuneGmtJulDay, model.location, revJulDayFunc)
+      val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
+      val endFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.endFortuneGmtJulDay, model.location, julDayResolver)
 
       val bgColor = if (selected) "CCC" else null
 
@@ -110,7 +111,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
             .first()
 
         val stemBranch = fortuneData.stemBranch
-        val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
+        val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
 
         val bgColor = if (selected) "DDD" else null
         val triColumn = ColorCanvas(10, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
@@ -163,8 +164,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
               .mapNotNull { it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
               .first()
           val stemBranch = fortuneData.stemBranch
-          val startFortuneLmt =
-            TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, revJulDayFunc)
+          val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
 
           val bgColor = if (selected) "DDD" else null
           val triColumnShort = ColorCanvas(5, 6, ChineseStringTools.NULL_CHAR, null, bgColor)
@@ -196,7 +196,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     add(右方大運直, 11, 47)
     add(下方大運橫, 22, 1)
 
-    add(TimeLine(model) , 32 , 1)
+    add(TimeLine(model, julDayResolver) , 32 , 1)
   }
 
   /** 取得八字命盤  */
@@ -212,7 +212,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
     private val monthFormatter = DateTimeFormatter.ofPattern("MM月")
     private val monthDayFormatter = DateTimeFormatter.ofPattern("MMdd")
     private val timeDecorator = TimeSecDecoratorChinese()
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }

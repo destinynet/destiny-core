@@ -15,10 +15,12 @@ import kotlin.test.assertEquals
 
 class MidnightLmtImplTest {
 
+  private val julDayResolver = JulDayResolver1582CutoverImpl()
+
   @Test
   fun testGetNextMidnight() {
 
-    val impl = MidnightLmtImpl()
+    val impl = MidnightLmtImpl(julDayResolver)
     val location = Location(News.EastWest.EAST, 121, 0, 0.0, News.NorthSouth.NORTH, 25, 0, 0.0, "Asia/Taipei")
     var expected: ChronoLocalDateTime<*>
     var actual: ChronoLocalDateTime<*>

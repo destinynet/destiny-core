@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.astrology.IStarPosition
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import java.util.*
@@ -19,8 +20,9 @@ import java.util.*
  * 實作方法： 包含 [YearMonthSolarTermsStarPositionImpl] , 並覆寫其 getMonth 之值
  */
 class YearMonthSunSignImpl(starPositionImpl: IStarPosition<*>,
+                           julDayResolver: JulDayResolver,
                            private val ymSolarTermsStarPositionImpl: YearMonthSolarTermsStarPositionImpl) :
-  YearEclipticDegreeImpl(ymSolarTermsStarPositionImpl.changeYearDegree, starPositionImpl), IYearMonth {
+  YearEclipticDegreeImpl(ymSolarTermsStarPositionImpl.changeYearDegree, starPositionImpl, julDayResolver), IYearMonth {
 
   override val southernHemisphereOpposition: Boolean = ymSolarTermsStarPositionImpl.southernHemisphereOpposition
 

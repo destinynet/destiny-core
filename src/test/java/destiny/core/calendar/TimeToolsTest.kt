@@ -54,7 +54,8 @@ class TimeToolsTest {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     logger.info("gmtJulDay = {}", gmtJulDay)
 
-    TimeTools.getLmtFromGmt(gmtJulDay, loc, JulDayResolver1582CutoverImpl.Companion::getLocalDateTimeStatic).also { lmt2 ->
+
+    TimeTools.getLmtFromGmt(gmtJulDay, loc, JulDayResolver1582CutoverImpl()).also { lmt2 ->
       logger.info("LMT from gmtJulDay = {}", lmt2)
       assertEquals(lmt, lmt2)
     }

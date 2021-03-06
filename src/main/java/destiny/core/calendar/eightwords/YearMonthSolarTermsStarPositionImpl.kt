@@ -12,10 +12,7 @@ import destiny.core.astrology.Coordinate.EQUATORIAL
 import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.ISolarTerms
-import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.SolarTermsImpl
+import destiny.core.calendar.*
 import destiny.core.chinese.*
 import mu.KotlinLogging
 import java.util.*
@@ -28,14 +25,14 @@ import java.util.*
  *
  * 具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  */
-class YearMonthSolarTermsStarPositionImpl(
-  private val starPositionImpl: IStarPosition<*>,
-  private val starTransitImpl: IStarTransit,
-  /** 換年的度數 , 通常是立春點 (315) 換年  , 另一個值通常為 270 (冬至) */
-  changeYearDegree: Double = 315.0,
-  override val southernHemisphereOpposition: Boolean = false,
-  override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
-  YearEclipticDegreeImpl(changeYearDegree, starPositionImpl), IYearMonth {
+class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPosition<*>,
+                                          private val starTransitImpl: IStarTransit,
+                                          julDayResolver: JulDayResolver,
+                                          /** 換年的度數 , 通常是立春點 (315) 換年  , 另一個值通常為 270 (冬至) */
+                                          changeYearDegree: Double = 315.0,
+                                          override val southernHemisphereOpposition: Boolean = false,
+                                          override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
+  YearEclipticDegreeImpl(changeYearDegree, starPositionImpl, julDayResolver), IYearMonth {
 
   override fun toString(locale: Locale): String {
     return name

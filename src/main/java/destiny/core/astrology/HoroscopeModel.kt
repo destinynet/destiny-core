@@ -307,11 +307,7 @@ data class HoroscopeModel(
   override val cuspDegreeMap: Map<Int, Double>) : IHoroscopeModel, Serializable {
 
   override val time: ChronoLocalDateTime<*>
-    get() = TimeTools.getLmtFromGmt(gmtJulDay , location) {
-      JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(
-        it
-      )
-    }
+    get() = TimeTools.getLmtFromGmt(gmtJulDay, location, JulDayResolver1582CutoverImpl())
 }
 
 /**
