@@ -10,6 +10,7 @@ import destiny.core.astrology.IDayNight
 import destiny.core.astrology.IRelativeTransit
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.*
@@ -50,7 +51,8 @@ class ZModernContext(
   private val solarTermsImpl: ISolarTerms,
   val ewImpl: IEightWordsStandardFactory,
   override val dayNightImpl: IDayNight,
-  override val relativeTransitImpl: IRelativeTransit) : IZiweiModernContext, IZiweiContext by context, IEightWordsStandardFactory by ewImpl, Serializable {
+  override val relativeTransitImpl: IRelativeTransit,
+  val julDayResolver: JulDayResolver) : IZiweiModernContext, IZiweiContext by context, IEightWordsStandardFactory by ewImpl, Serializable {
 
 
   private val intAgeZiweiImpl: IIntAge by lazy {
@@ -103,7 +105,7 @@ class ZModernContext(
 
     if (dayHourImpl.hourImpl is HourSolarTransImpl) {
       // 如果是真太陽時
-      val hour2 = HourLmtImpl().getHour(lmt, location)
+      val hour2 = HourLmtImpl(julDayResolver).getHour(lmt, location)
       if (hour != hour2) {
         // 如果真太陽時與LMT時間不一致，出現提醒
         notesBuilders.add(Pair("true_solar_time", arrayOf(hour, hour2)))

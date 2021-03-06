@@ -3,9 +3,12 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.JulDayResolver
+
 class DayHourLmtImpl(override val changeDayAfterZi: Boolean,
                      override val midnightImpl: IMidnight,
-                     hourImpl: HourLmtImpl) : AbstractDayHourImpl(hourImpl) {
+                     hourImpl: HourLmtImpl,
+                     julDayResolver: JulDayResolver) : AbstractDayHourImpl(hourImpl, julDayResolver) {
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

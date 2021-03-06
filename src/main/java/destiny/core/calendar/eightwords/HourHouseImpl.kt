@@ -6,6 +6,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.astrology.*
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
 import mu.KotlinLogging
 import java.io.Serializable
@@ -60,7 +61,7 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   next: Boolean,
-                                  revJulDayFunc: (Double) -> ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
+                                  julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     TODO("Not yet implemented")
   }
 

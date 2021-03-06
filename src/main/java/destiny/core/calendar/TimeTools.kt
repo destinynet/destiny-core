@@ -69,7 +69,7 @@ object TimeTools {
    * @param instant 將 (GMT) instant 轉換為（GMT）的日期
    */
   fun getLocalDateTime(instant: Instant, resolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val func2 = { it: Instant -> resolver.getLocalDateTime(it) }
+    val func2 = { it: Instant -> resolver.getLocalDateTimeFromInstant(it) }
     return getLocalDateTime(instant, func2)
   }
 

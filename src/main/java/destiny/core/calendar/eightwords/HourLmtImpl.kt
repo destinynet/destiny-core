@@ -6,6 +6,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
@@ -24,10 +25,10 @@ import java.util.*
  * 最簡單 , 以當地平均時間來區隔時辰 , 兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時
  */
 @Impl([Domain(KEY_HOUR, HourLmtImpl.VALUE)])
-class HourLmtImpl : IHour, Serializable {
+class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
 
   override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
-    val gmt = revJulDayFunc.invoke(gmtJulDay)
+    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmtHour = TimeTools.getLmtFromGmt(gmt, location).get(HOUR_OF_DAY)
     return getHour(lmtHour)
   }
@@ -52,9 +53,9 @@ class HourLmtImpl : IHour, Serializable {
 
   override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
 
-    val gmt = revJulDayFunc.invoke(gmtJulDay)
+    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmt = TimeTools.getLmtFromGmt(gmt, location)
-    val lmtResult = getLmtNextStartOf(lmt, location, eb, revJulDayFunc)
+    val lmtResult = getLmtNextStartOf(lmt, location, eb, julDayResolver)
     val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
     return TimeTools.getGmtJulDay(gmtResult)
   }
@@ -67,7 +68,7 @@ class HourLmtImpl : IHour, Serializable {
     lmt: ChronoLocalDateTime<*>,
     location: ILocation,
     eb: Branch,
-    revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>
+    julDayResolver: JulDayResolver
   ): ChronoLocalDateTime<*> {
 
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
@@ -94,9 +95,9 @@ class HourLmtImpl : IHour, Serializable {
    * 取得「前一個」此地支的開始時刻
    */
   override fun getGmtPrevStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
-    val gmt = revJulDayFunc.invoke(gmtJulDay)
+    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmt = TimeTools.getLmtFromGmt(gmt, location)
-    val lmtResult = getLmtPrevStartOf(lmt, location, eb, revJulDayFunc)
+    val lmtResult = getLmtPrevStartOf(lmt, location, eb, julDayResolver)
     val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
     return TimeTools.getGmtJulDay(gmtResult)
   }
@@ -108,7 +109,7 @@ class HourLmtImpl : IHour, Serializable {
     lmt: ChronoLocalDateTime<*>,
     location: ILocation,
     eb: Branch,
-    revJulDayFunc: (Double) -> ChronoLocalDateTime<*>
+    julDayResolver: JulDayResolver
   ): ChronoLocalDateTime<*> {
     val lmtAtHourStart = lmt.with(MINUTE_OF_HOUR, 0).with(SECOND_OF_MINUTE, 0).with(NANO_OF_SECOND, 0)
 
@@ -131,12 +132,12 @@ class HourLmtImpl : IHour, Serializable {
     }
   }
 
-  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, location: ILocation, next: Boolean, revJulDayFunc: (Double) -> ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
+  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, location: ILocation, next: Boolean, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     val currentHour = getHour(lmt, location)
     return if (next) {
-      getLmtNextStartOf(lmt, location, currentHour.next, revJulDayFunc).plus(1, ChronoUnit.HOURS)
+      getLmtNextStartOf(lmt, location, currentHour.next, julDayResolver).plus(1, ChronoUnit.HOURS)
     } else {
-      getLmtPrevStartOf(lmt, location, currentHour.prev, revJulDayFunc).plus(1, ChronoUnit.HOURS)
+      getLmtPrevStartOf(lmt, location, currentHour.prev, julDayResolver).plus(1, ChronoUnit.HOURS)
     }
   }
 

@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
@@ -15,7 +16,8 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 
-abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IHour by hourImpl , Serializable {
+abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
+                                   val julDayResolver: JulDayResolver) : IDayHour , IHour by hourImpl , Serializable {
 
   /**
    * Note : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
@@ -41,7 +43,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
     //子正，在 LMT 零時之前
     if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
       // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-      val midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, location, Branch.子, revJulDayFunc)
+      val midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, location, Branch.子, julDayResolver)
 
       if (changeDayAfterZi && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
         result++
@@ -59,8 +61,9 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour) : IDayHour , IH
     var index = (lmtJulDay - 11) % 60
 
 
+
     // 下個子初時刻
-    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, revJulDayFunc)
+    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, julDayResolver)
 
 
     // 下個子正時刻

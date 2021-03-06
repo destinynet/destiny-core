@@ -131,7 +131,7 @@ class InstantTest {
     // Gregorian Cal 前一秒，變成 Julian Day 1582-10-4 23:59:59
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT - 1)
 
-    val func = {it:Instant -> resolver.getLocalDateTime(it) }
+    val func = {it:Instant -> resolver.getLocalDateTimeFromInstant(it) }
     dateTime = TimeTools.getLocalDateTime(instant, func)
 
     logger.info("dateTime , class = {} , value = {}", dateTime.javaClass, dateTime)

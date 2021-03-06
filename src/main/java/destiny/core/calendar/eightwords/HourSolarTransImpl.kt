@@ -10,6 +10,7 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.Star
 import destiny.core.astrology.TransPoint
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.tools.Domain
@@ -339,7 +340,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   next: Boolean,
-                                  revJulDayFunc: (Double) -> ChronoLocalDateTime<*>): ChronoLocalDateTime<*> {
+                                  julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     val currentBranch = getHour(lmt, location)
 
     val (targetDate , targetBranch) = lmt.toLocalDate().let { localDate ->
@@ -351,7 +352,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
         localDate to ( if (next) currentBranch.next else currentBranch.prev )
     }
 
-    return getDailyBranchMiddleMap(targetDate , location , revJulDayFunc)[targetBranch]!!
+    return getDailyBranchMiddleMap(targetDate , location , julDayResolver)[targetBranch]!!
   }
 
 
