@@ -13,7 +13,6 @@ import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
@@ -93,8 +92,10 @@ class FortuneLargeSolarTermsSpanImpl(
         .let { if (forward) it.next(i) else it.prev(i) }
       //val sb: StemBranch = eightWords.month.let { if (forward) it.next(i) else it.prev(i) }
       i++
-      FortuneData(sbu, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
-                  startFortuneAgeNotes, endFortuneAgeNotes)
+      FortuneData(
+        sbu, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
+        startFortuneAgeNotes, endFortuneAgeNotes
+      )
     }.takeWhile { i <= count + 1 }
       .toList()
   }
@@ -144,9 +145,10 @@ class FortuneLargeSolarTermsSpanImpl(
             //沒有計算過
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
               Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
-                                                                Coordinate.ECLIPTIC, stepGmtJulDay, true)
+              Coordinate.ECLIPTIC, stepGmtJulDay, true
+            )
 
-            logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
+            logger.debug("[順] 計算 {} 日期 = {}", stepSolarTerms, targetGmtJulDay)
             //以隔天計算現在節氣
             stepGmtJulDay = targetGmtJulDay + 1
 
@@ -177,8 +179,9 @@ class FortuneLargeSolarTermsSpanImpl(
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
               Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
-                                                                Coordinate.ECLIPTIC, stepGmtJulDay, false)
-            logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, revJulDayFunc.invoke(targetGmtJulDay))
+              Coordinate.ECLIPTIC, stepGmtJulDay, false
+            )
+            logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, targetGmtJulDay)
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1
             hashMap[i] = targetGmtJulDay
@@ -291,8 +294,6 @@ class FortuneLargeSolarTermsSpanImpl(
 
   companion object {
     private val logger = KotlinLogging.logger {}
-    
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
 
     private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = Caffeine.newBuilder()
       .maximumSize(100)

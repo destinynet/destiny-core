@@ -7,7 +7,6 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
@@ -168,7 +167,6 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
   companion object {
     const val VALUE = "lmt"
     const val name = "以地方平均時（LMT）來區隔"
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }

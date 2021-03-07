@@ -11,12 +11,13 @@ import destiny.core.astrology.Point
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.classical.Dignity.*
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import mu.KotlinLogging
 import kotlin.test.*
 
 class EssentialImplTest {
 
-  val logger = KotlinLogging.logger { }
+  private val logger = KotlinLogging.logger { }
 
   private val triplicityImpl: ITriplicity = TriplicityWilliamImpl()
 
@@ -26,7 +27,7 @@ class EssentialImplTest {
   private val fallImpl: IFall = FallPtolemyImpl()
   private val termImpl: ITerm = TermPtolomyImpl()
   private val faceImpl: IFace = FacePtolomyImpl()
-  private val dayNightDifferentiator = DayNightSimpleImpl()
+  private val dayNightDifferentiator = DayNightSimpleImpl(JulDayResolver1582CutoverImpl())
   private val essentialImpl: IEssential = EssentialImpl(rulerImpl, exaltImpl, fallImpl, detrimentImpl, triplicityImpl, termImpl, faceImpl, dayNightDifferentiator)
 
   /**

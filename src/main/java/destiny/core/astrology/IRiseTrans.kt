@@ -6,6 +6,7 @@
 package destiny.core.astrology
 
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
@@ -44,15 +45,17 @@ interface IRiseTrans {
                   star: Star,
                   point: TransPoint,
                   location: ILocation,
-                  revJulDayFunc: (Double) -> ChronoLocalDateTime<*>,
+                  julDayResolver: JulDayResolver,
                   discCenter: Boolean = false,
                   refraction: Boolean = true,
                   atmosphericTemperature: Double = 0.0,
                   atmosphericPressure: Double = 1013.25): ChronoLocalDateTime<*>? {
     val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
 
-    return getGmtTransJulDay(fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,
-      atmosphericPressure)?.let(revJulDayFunc)
+    return getGmtTransJulDay(
+      fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,
+      atmosphericPressure
+    )?.let { julDayResolver.getLocalDateTime(it) }
   }
 
   /**
@@ -62,15 +65,16 @@ interface IRiseTrans {
                   star: Star,
                   point: TransPoint,
                   location: ILocation,
-                  revJulDayFunc: (Double) -> ChronoLocalDateTime<*>,
+                  julDayResolver: JulDayResolver,
                   discCenter: Boolean = false,
                   refraction: Boolean = true,
                   atmosphericTemperature: Double = 0.0,
                   atmosphericPressure: Double = 1013.25): ChronoLocalDateTime<*>? {
     val fromGmtTime = TimeTools.getGmtFromLmt(fromLmtTime, location)
 
-    return getGmtTrans(fromGmtTime, star, point, location, revJulDayFunc, discCenter, refraction,
-      atmosphericTemperature, atmosphericPressure)?.let{TimeTools.getLmtFromGmt(it , location)}
+    return getGmtTrans(fromGmtTime, star, point, location, julDayResolver, discCenter, refraction,
+      atmosphericTemperature, atmosphericPressure)
+      ?.let { TimeTools.getLmtFromGmt(it, location) }
   }
 
 

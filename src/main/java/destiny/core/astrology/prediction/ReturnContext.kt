@@ -7,7 +7,7 @@ package destiny.core.astrology.prediction
 import destiny.core.astrology.*
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.circleUtils
 import mu.KotlinLogging
@@ -54,12 +54,13 @@ class ReturnContext(
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
   private val houseCuspImpl: IHouseCusp,
-  private val pointPosFuncMap: Map<Point, IPosition<*>>) : IReturnContext, Serializable {
+  private val pointPosFuncMap: Map<Point, IPosition<*>> ,
+  private val julDayResolver: JulDayResolver) : IReturnContext, Serializable {
 
 
   override fun getReturnHoroscope(natalGmtJulDay: Double, natalLoc: ILocation, nowGmtJulDay: Double, nowLoc: ILocation): IHoroscopeModel {
     val convergentGmtJulDay: Double = getConvergentTime(natalGmtJulDay, nowGmtJulDay)
-    val convergentGmt = revJulDayFunc.invoke(convergentGmtJulDay)
+    val convergentGmt = julDayResolver.getLocalDateTime(convergentGmtJulDay)
 
     val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
 
@@ -91,7 +92,6 @@ class ReturnContext(
 
   companion object {
     val logger = KotlinLogging.logger { }
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
   }
 
 }

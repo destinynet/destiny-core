@@ -3,6 +3,7 @@
  */
 package destiny.core
 
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,7 +11,7 @@ import kotlin.test.assertNull
 
 class IntAgeNoteMinguoYearImplTest {
 
-  val impl = IntAgeNoteMinguoYearImpl()
+  val impl = IntAgeNoteMinguoYearImpl(JulDayResolver1582CutoverImpl())
 
   @Test
   fun testAgeNote() {
