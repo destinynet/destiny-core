@@ -3,16 +3,15 @@
  */
 package destiny.core
 
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import java.io.Serializable
-import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.util.*
 
-class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
+class IntAgeNoteWestYearImpl(val julDayResolver: JulDayResolver) : IntAgeNote, Serializable {
 
   override fun getAgeNote(gmtJulDay: Double): String {
-    val start = revJulDayFunc.invoke(gmtJulDay)
+    val start = julDayResolver.getLocalDateTime(gmtJulDay)
     return start.get(ChronoField.YEAR_OF_ERA).toString()
   }
 
@@ -26,9 +25,7 @@ class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
     } catch (e: MissingResourceException) {
       javaClass.simpleName
     }
-
   }
-
 
   override fun getDescription(locale: Locale): String {
     return toString(locale)
@@ -44,8 +41,4 @@ class IntAgeNoteWestYearImpl : IntAgeNote, Serializable {
     return javaClass.hashCode()
   }
 
-
-  companion object {
-    private val revJulDayFunc: (Double) -> ChronoLocalDateTime<*> = { it:Double  -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
-  }
 }

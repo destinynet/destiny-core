@@ -19,7 +19,7 @@ import kotlin.test.assertTrue
 
 class JulDayResolver1582CutoverImplTest {
 
-  private val revJulDayFunc = {it:Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+  private val julDayResolver = JulDayResolver1582CutoverImpl()
 
   @Test
   fun testFromDebugString() {
@@ -112,7 +112,7 @@ class JulDayResolver1582CutoverImplTest {
     var localDate: ChronoLocalDate
     var localTime: LocalTime
 
-    var dateTime: ChronoLocalDateTime<*> = revJulDayFunc.invoke(firstDay)
+    var dateTime: ChronoLocalDateTime<*> = julDayResolver.getLocalDateTime(firstDay)
     localDate = dateTime.toLocalDate()
     localTime = dateTime.toLocalTime()
     assertTrue(localDate is JulianDate)
@@ -121,7 +121,7 @@ class JulDayResolver1582CutoverImplTest {
     assertEquals(LocalTime.MIDNIGHT, localTime)
 
     // 往前一天，變成 「西元前」一年，12/31
-    dateTime = revJulDayFunc.invoke(firstDay - 1)
+    dateTime = julDayResolver.getLocalDateTime(firstDay - 1)
     localDate = dateTime.toLocalDate()
     localTime = dateTime.toLocalTime()
     assertTrue(localDate is JulianDate)

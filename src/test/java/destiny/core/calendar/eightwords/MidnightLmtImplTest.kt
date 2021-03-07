@@ -26,19 +26,13 @@ class MidnightLmtImplTest {
     var actual: ChronoLocalDateTime<*>
 
     var lmt = LocalDateTime.of(2004, 12, 6, 14, 10, 0)
-    actual = impl.getNextMidnight(lmt, location, revJulDayFunc)
+    actual = impl.getNextMidnight(lmt, location, julDayResolver)
     expected = LocalDateTime.of(2004, 12, 7, 0, 0, 0)
     assertEquals(expected, actual)
 
     lmt = LocalDateTime.of(2004, 12, 31, 0, 0, 0)
-    actual = impl.getNextMidnight(lmt, location, revJulDayFunc)
+    actual = impl.getNextMidnight(lmt, location, julDayResolver)
     expected = LocalDateTime.of(2005, 1, 1, 0, 0, 0)
     assertEquals(expected, actual)
   }
-
-  companion object {
-
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
-  }
-
 }

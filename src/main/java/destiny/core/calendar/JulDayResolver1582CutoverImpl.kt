@@ -25,7 +25,6 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
   }
 
   override fun getLocalDateTimeFromInstant(gmtInstant: Instant): ChronoLocalDateTime<*> {
-
     return getLocalDateTimeStatic(gmtInstant)
   }
 

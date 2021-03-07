@@ -8,7 +8,7 @@ import destiny.core.IIntAge
 import destiny.core.astrology.IRelativeTransit
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
@@ -23,7 +23,8 @@ import java.util.*
  * 「一歲」終止於「順推」的「陰曆一月一日」
  */
 class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
-                      private val relativeTransitImpl: IRelativeTransit) : IIntAge, Serializable {
+                      private val relativeTransitImpl: IRelativeTransit,
+                      private val julDayResolver: JulDayResolver) : IIntAge, Serializable {
 
 
 
@@ -45,7 +46,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
 
 
   private fun getNextYearSunMoonConj(gmtJulDay: Double): Double {
-    val dateTime = revJulDayFunc.invoke(gmtJulDay)
+    val dateTime = julDayResolver.getLocalDateTime(gmtJulDay)
 
     // 陰曆日期
     val chineseDate = chineseDateImpl.getChineseDate(dateTime.toLocalDate())
@@ -110,8 +111,4 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
     return relativeTransitImpl.hashCode()
   }
 
-
-  companion object {
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
-  }
 }

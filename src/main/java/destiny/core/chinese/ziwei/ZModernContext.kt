@@ -56,7 +56,7 @@ class ZModernContext(
 
 
   private val intAgeZiweiImpl: IIntAge by lazy {
-    IntAgeZiweiImpl(chineseDateImpl, relativeTransitImpl)
+    IntAgeZiweiImpl(chineseDateImpl, relativeTransitImpl, julDayResolver)
   }
 
   override fun getModernPlate(lmt: ChronoLocalDateTime<*>,

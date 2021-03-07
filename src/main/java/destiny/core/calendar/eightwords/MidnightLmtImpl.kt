@@ -38,7 +38,7 @@ class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, S
 
   override fun getNextMidnight(lmt: ChronoLocalDateTime<*>,
                                loc: ILocation,
-                               revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+                               julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     return lmt
       .plus(1, ChronoUnit.DAYS)
       .with(HOUR_OF_DAY, 0)

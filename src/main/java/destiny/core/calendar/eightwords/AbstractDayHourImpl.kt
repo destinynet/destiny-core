@@ -5,7 +5,6 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
@@ -67,7 +66,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
 
 
     // 下個子正時刻
-    val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, revJulDayFunc).let {
+    val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, julDayResolver).let {
       val dur = Duration.between(nextZiStart, it).abs()
       if (dur.toMinutes() <= 1) {
         logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}" , nextZiStart , it , dur.seconds) // DST 結束前一天，可能會出錯
@@ -129,10 +128,6 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
 
 
   companion object {
-
     private val logger = KotlinLogging.logger {}
-
-    private val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
-
   }
 }

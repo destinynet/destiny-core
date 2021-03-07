@@ -60,7 +60,7 @@ interface IHoroscopeModel : ITimeLoc {
    * @return 取得 GMT 時刻
    */
   val gmt: ChronoLocalDateTime<*>
-    get() = revJulDayFunc.invoke(gmtJulDay)
+    get() = julDayResolver.getLocalDateTime(gmtJulDay)
 
   /**
    * 承上 , 取得 GMT , 但帶入自訂的 reverse Julian Day converter
@@ -270,7 +270,7 @@ interface IHoroscopeModel : ITimeLoc {
         from > to && from - to < 180
     }
 
-    val revJulDayFunc = { it: Double -> JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it) }
+    private val julDayResolver = JulDayResolver1582CutoverImpl()
   } // companion
 
 } // interface

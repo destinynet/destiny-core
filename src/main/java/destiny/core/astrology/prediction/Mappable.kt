@@ -1,5 +1,6 @@
 package destiny.core.astrology.prediction
 
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
@@ -24,13 +25,11 @@ interface Mappable {
    * 承上 [ChronoLocalDateTime] 版本
    */
   fun getConvergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>,
-                        revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>> = {
-                          JulDayResolver1582CutoverImpl.getLocalDateTimeStatic(it)
-                        }): ChronoLocalDateTime<*> {
+                        julDayResolver: JulDayResolver = JulDayResolver1582CutoverImpl()): ChronoLocalDateTime<*> {
     val natalGmtJulDay = TimeTools.getGmtJulDay(natalTime)
     val nowGmtJulDay = TimeTools.getGmtJulDay(nowTime)
 
-    return revJulDayFunc.invoke(getConvergentTime(natalGmtJulDay, nowGmtJulDay))
+    return julDayResolver.getLocalDateTime(getConvergentTime(natalGmtJulDay, nowGmtJulDay))
   }
 
 }
