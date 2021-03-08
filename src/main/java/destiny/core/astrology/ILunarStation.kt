@@ -18,7 +18,20 @@ import java.time.LocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 
-/** 二十八星宿值年 */
+/**
+ * 二十八星宿值年
+ *
+ * 《協紀辨方》二十八宿分配六十甲子：
+ * 一元甲子起虛，
+ * 二元甲子起奎，
+ * 三元甲子起畢，
+ * 四元起鬼，
+ * 五元起翼，
+ * 六元起氐，
+ * 七元起箕，
+ *
+ * 凡四百二十日而週，共得甲子七次，故曰七元。
+ * */
 interface ILunarStationYearly {
   fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
 }
@@ -69,6 +82,70 @@ class LunarStationYearlyByLunarYear(val chineseDateImpl: IChineseDate,
   }
 }
 
+/** 二十八星宿 值月 */
+interface ILunarStationMonthly {
+  fun getMonthlyStation(yearStation : LunarStation , monthNumber : Int): LunarStation
+}
+
+
+/**
+ * 月禽
+ * 會得年禽月易求，太陽需用角為頭，太陰室宿火尋馬(火星值?)，金心土胃水騎牛，木星直年參星是，次第推求順數週。
+ */
+class LunarStationMonthly1 : ILunarStationMonthly , Serializable {
+
+  override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
+    return getFirstMonth(yearStation.planet).next(monthNumber-1)
+  }
+
+  companion object {
+    private fun getFirstMonth(year : Planet) : LunarStation {
+      return when(year) {
+        Planet.SUN -> 角
+        Planet.MOON -> 室
+        Planet.MARS -> 星
+        Planet.VENUS -> 心
+        Planet.SATURN -> 胃
+        Planet.MERCURY -> 牛
+        Planet.JUPITER -> 參
+        else -> throw IllegalArgumentException("No such pair")
+      }
+    }
+  }
+}
+
+/**
+ * 月禽
+ * 太陽值年，正月是室。
+ * 太陰值年，正月起星。
+ * 火星值年，正月起牛。
+ * 水星值年，正月起參。
+ * 木星值年，正月起心。
+ * 金星值年，正月起胃。
+ * 土星值年，正月起角。
+ */
+class LunarStationMonthly2 : ILunarStationMonthly , Serializable {
+
+  override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
+    return getFirstMonth(yearStation.planet).next(monthNumber-1)
+  }
+
+  companion object {
+    private fun getFirstMonth(year : Planet) : LunarStation {
+      return when(year) {
+        Planet.SUN -> 室
+        Planet.MOON -> 星
+        Planet.MARS -> 牛
+        Planet.MERCURY -> 參
+        Planet.JUPITER -> 心
+        Planet.SATURN -> 胃
+        Planet.VENUS -> 角
+        else -> throw IllegalArgumentException("No such pair")
+      }
+    }
+  }
+}
+
 /** 二十八星宿值日 */
 interface ILunarStationDaily {
 
@@ -94,7 +171,7 @@ class LunarStationDailyByWeek(private val dayImpl: IDay) : ILunarStationDaily, S
       // 星期1 ~ 星期日
       水 to listOf(畢, 翼, 箕, 奎, 鬼, 氐, 虛),
       木 to listOf(張, 尾, 壁, 井, 亢, 女, 昴),
-      火 to listOf(心, 室, 参, 角, 牛, 胃, 星),
+      火 to listOf(心, 室, 參, 角, 牛, 胃, 星),
       金 to listOf(危, 觜, 軫, 斗, 婁, 柳, 房),
     )
   }
