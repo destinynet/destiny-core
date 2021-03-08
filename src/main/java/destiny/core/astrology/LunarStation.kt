@@ -3,16 +3,18 @@
  */
 package destiny.core.astrology
 
+import destiny.core.ILoop
 import destiny.core.News
 import destiny.core.News.EastWest.EAST
 import destiny.core.News.EastWest.WEST
 import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
+import destiny.tools.ArrayTools
 import java.util.*
 
 /** 二十八宿 */
 sealed class LunarStation(val news: News,
-                          nameKey: String) : Star(nameKey, LunarStation::class.java.name) {
+                          nameKey: String) : Star(nameKey, LunarStation::class.java.name), ILoop<LunarStation> {
   object 角 : LunarStation(EAST, "角")
   object 亢 : LunarStation(EAST, "亢")
   object 氐 : LunarStation(EAST, "氐")
@@ -45,8 +47,24 @@ sealed class LunarStation(val news: News,
   object 翼 : LunarStation(SOUTH, "翼")
   object 軫 : LunarStation(SOUTH, "軫")
 
+  override fun next(n: Int): LunarStation {
+    val thisIndex = values.indexOf(this)
+    return get(thisIndex + n)
+  }
+
+  companion object {
+    operator fun get(index: Int): LunarStation {
+      return ArrayTools[values.toTypedArray(), index]
+    }
+
+    val values: List<LunarStation> by lazy {
+      LunarStation::class.sealedSubclasses.map { k ->
+        k.objectInstance as LunarStation
+      }
+    }
+  }
 }
 
-fun LunarStation.animal(locale: Locale) : String {
+fun LunarStation.animal(locale: Locale): String {
   return ResourceBundle.getBundle(resource, locale).getString("$nameKey.animal")
 }

@@ -6,13 +6,35 @@ package destiny.core.astrology
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 internal class LunarStationTest {
 
   @Test
+  fun testLoop() {
+    assertSame(LunarStation.亢, LunarStation.角.next)
+    assertSame(LunarStation.軫, LunarStation.角.prev)
+
+    assertSame(LunarStation.亢, LunarStation.角.next(1))
+    assertSame(LunarStation.軫, LunarStation.角.prev(1))
+
+    assertSame(LunarStation.角, LunarStation.軫.next)
+    assertSame(LunarStation.翼, LunarStation.軫.prev)
+
+    assertSame(LunarStation.角, LunarStation.軫.next(1))
+    assertSame(LunarStation.翼, LunarStation.軫.prev(1))
+
+    assertSame(LunarStation.角, LunarStation.角.next(28))
+    assertSame(LunarStation.角, LunarStation.角.prev(28))
+    assertSame(LunarStation.軫, LunarStation.軫.next(28))
+    assertSame(LunarStation.軫, LunarStation.軫.prev(28))
+  }
+
+  @Test
   fun testName() {
-    LunarStation::class.nestedClasses.map { k ->
+
+    LunarStation::class.sealedSubclasses.map { k ->
       k.objectInstance as LunarStation
     }.forEach { station ->
       assertTrue(station.toString(Locale.TAIWAN).length == 1)
@@ -23,7 +45,7 @@ internal class LunarStationTest {
 
   @Test
   fun testAnimal() {
-    LunarStation::class.nestedClasses.map { k ->
+    LunarStation::class.sealedSubclasses.map { k ->
       k.objectInstance as LunarStation
     }.forEach { station ->
       assertTrue(station.animal(Locale.TAIWAN).length == 1)
