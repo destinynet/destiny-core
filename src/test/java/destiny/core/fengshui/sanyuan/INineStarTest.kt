@@ -11,7 +11,28 @@ import destiny.core.iching.Symbol.*
 import kotlin.test.Test
 import kotlin.test.assertSame
 
-class INineStarTest  {
+class INineStarTest {
+
+  /**
+   * 明清之後甲子年
+   *
+   * 明孝宗弘治17年(1504 甲子年)起，上元一運
+   * 明世宗嘉靖43年(1564 甲子年)起，中元四運
+   * 明熹宗天啟四年(1624 甲子年)起，下元七運
+   *
+   * 清聖祖康熙23年(1684 甲子年)起，上元一運
+   * 清    乾隆九年(1744 甲子年)起，中元四運
+   * 清    家慶九年(1804 甲子年)起，下元七運
+   *
+   * 清    同治三年(1864 甲子年)起，上元一運
+   *       民國13年(1924 甲子年)起，中元四運
+   */
+  @Test
+  fun testMingChinDynasty() {
+    assertSame(1, INineStar.getYearCenterStar(Yuan.UP, 甲子).period)
+    assertSame(4, INineStar.getYearCenterStar(Yuan.MID, 甲子).period)
+    assertSame(7, INineStar.getYearCenterStar(Yuan.LOW, 甲子).period)
+  }
 
   /**
    * 年紫白方位 (年星到方)
@@ -38,7 +59,6 @@ class INineStarTest  {
   }
 
 
-
   /** 月紫白入中 */
   @Test
   fun testGetCenterStar() {
@@ -54,9 +74,6 @@ class INineStarTest  {
     assertSame(巨門, INineStar.getMonthCenterStar(寅, 寅)) // 1
     assertSame(右弼, INineStar.getMonthCenterStar(寅, 丑)) // 12
   }
-
-
-
 
 
   /**
@@ -101,9 +118,6 @@ class INineStarTest  {
       assertSame(左輔, INineStar.getMonthStar(year, month, 巽))
     }
   }
-
-
-
 
 
   /**

@@ -84,23 +84,33 @@ class LunarStationYearlyByLunarYear(val chineseDateImpl: IChineseDate,
 
 /** 二十八星宿 值月 */
 interface ILunarStationMonthly {
-  fun getMonthlyStation(yearStation : LunarStation , monthNumber : Int): LunarStation
+  fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation
+
+  fun getMonthlyStation(lmt: ChronoLocalDateTime<*> , loc: ILocation , yearImpl : ILunarStationYearly): LunarStation {
+    val yearStation: LunarStation = yearImpl.getYearlyStation(lmt, loc)
+
+    TODO()
+  }
 }
 
 
 /**
- * 月禽
- * 會得年禽月易求，太陽需用角為頭，太陰室宿火尋馬(火星值?)，金心土胃水騎牛，木星直年參星是，次第推求順數週。
+ * 月禽 , 《鰲頭通書》、《參籌秘書》、《八門禽遁》
+ *
+ * A : 會得年禽月易求，太陽需用角為頭，太陰室宿火尋馬(火星值?)，金心土胃水騎牛，木星直年參星是，次第推求順數週。
+ * B : 會得年星月易求，日角月宿火星遊，水牛木參正月起，金心土胃順行周。
+ *
+ * A 與 B 兩歌訣其實是同一套算法
  */
-class LunarStationMonthly1 : ILunarStationMonthly , Serializable {
+class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
-    return getFirstMonth(yearStation.planet).next(monthNumber-1)
+    return getFirstMonth(yearStation.planet).next(monthNumber - 1)
   }
 
   companion object {
-    private fun getFirstMonth(year : Planet) : LunarStation {
-      return when(year) {
+    private fun getFirstMonth(year: Planet): LunarStation {
+      return when (year) {
         Planet.SUN -> 角
         Planet.MOON -> 室
         Planet.MARS -> 星
@@ -115,7 +125,10 @@ class LunarStationMonthly1 : ILunarStationMonthly , Serializable {
 }
 
 /**
- * 月禽
+ * 月禽 , 《禽星易見》、《剋擇講義》
+ *
+ * 「日室月星火年牛，水參木心正月求，金胃土角建寅位，年起月宿例訣頭」
+ *
  * 太陽值年，正月是室。
  * 太陰值年，正月起星。
  * 火星值年，正月起牛。
@@ -124,15 +137,15 @@ class LunarStationMonthly1 : ILunarStationMonthly , Serializable {
  * 金星值年，正月起胃。
  * 土星值年，正月起角。
  */
-class LunarStationMonthly2 : ILunarStationMonthly , Serializable {
+class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
-    return getFirstMonth(yearStation.planet).next(monthNumber-1)
+    return getFirstMonth(yearStation.planet).next(monthNumber - 1)
   }
 
   companion object {
-    private fun getFirstMonth(year : Planet) : LunarStation {
-      return when(year) {
+    private fun getFirstMonth(year: Planet): LunarStation {
+      return when (year) {
         Planet.SUN -> 室
         Planet.MOON -> 星
         Planet.MARS -> 牛
