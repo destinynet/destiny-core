@@ -5,10 +5,13 @@ package destiny.core.astrology
 
 import destiny.core.astrology.ILunarStationYearly.YearShift
 import destiny.core.astrology.LunarStation.*
+import destiny.core.astrology.Planet.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
+import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IDay
 import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IMonth
 import destiny.core.calendar.eightwords.IYear
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement.*
@@ -61,15 +64,15 @@ interface ILunarStationYearly {
  * @param yearType 立春 [YearType.YEAR_SOLAR] 換年 或是 陰曆初一 [YearType.YEAR_LUNAR] 換年
  * */
 class LunarStationYearlyImpl(val yearType: YearType,
-                             val yearShift: ILunarStationYearly.YearShift,
+                             val yearShift: YearShift,
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
                              val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
   override fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
     val shift = when (yearShift) {
-      ILunarStationYearly.YearShift.DEFAULT -> 15
-      ILunarStationYearly.YearShift.METHOD2 -> 23
+      YearShift.DEFAULT -> 15
+      YearShift.METHOD2 -> 23
     }
 
     val index = ((lmt.get(ChronoField.YEAR) + shift) % 28).let { r ->
@@ -107,25 +110,26 @@ class LunarStationYearlyImpl(val yearType: YearType,
 /** 二十八星宿 值月 */
 interface ILunarStationMonthly {
 
-  enum class LunarType {
-    /**
-     * 《鰲頭通書》、《參籌秘書》、《八門禽遁》
-     */
-    AO_HEAD,
-
-    /**
-     * 月禽 , 《禽星易見》、《剋擇講義》
-     * 「日室月星火年牛，水參木心正月求，金胃土角建寅位，年起月宿例訣頭」
-     */
-    ANIMAL_EXPLAINED
-  }
-
   fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation
 
-  fun getMonthlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation, yearImpl: ILunarStationYearly): LunarStation {
+  fun getMonthlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation,
+                        monthAlgo: IFinalMonthNumber.MonthAlgo,
+                        yearImpl: ILunarStationYearly,
+                        dayHourImpl: IDayHour,
+                        chineseDateImpl: IChineseDate,
+                        monthImpl: IMonth): LunarStation {
     val yearStation: LunarStation = yearImpl.getYearlyStation(lmt, loc)
 
-    TODO()
+    val monthBranch = monthImpl.getMonth(lmt, loc).branch
+    val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
+    val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
+      chineseDate.month,
+      chineseDate.leapMonth,
+      monthBranch,
+      chineseDate.day,
+      monthAlgo
+    )
+    return getMonthlyStation(yearStation, monthNumber)
   }
 }
 
@@ -138,7 +142,7 @@ interface ILunarStationMonthly {
  *
  * A 與 B 兩歌訣其實是同一套算法
  */
-@Impl([Domain(KEY_MONTH , LunarStationMonthlyAoHead.VALUE , true)])
+@Impl([Domain(KEY_MONTH, LunarStationMonthlyAoHead.VALUE, true)])
 class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
@@ -148,16 +152,17 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
   companion object {
     private fun getFirstMonth(year: Planet): LunarStation {
       return when (year) {
-        Planet.SUN -> 角
-        Planet.MOON -> 室
-        Planet.MARS -> 星
-        Planet.VENUS -> 心
-        Planet.SATURN -> 胃
-        Planet.MERCURY -> 牛
-        Planet.JUPITER -> 參
+        SUN -> 角
+        MOON -> 室
+        MARS -> 星
+        VENUS -> 心
+        SATURN -> 胃
+        MERCURY -> 牛
+        JUPITER -> 參
         else -> throw IllegalArgumentException("No such pair")
       }
     }
+
     const val VALUE = "AO_HEAD"
   }
 }
@@ -175,7 +180,7 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
  * 金星值年，正月起胃。
  * 土星值年，正月起角。
  */
-@Impl([Domain(KEY_MONTH , LunarStationMonthlyAnimalExplained.VALUE , false)])
+@Impl([Domain(KEY_MONTH, LunarStationMonthlyAnimalExplained.VALUE, false)])
 class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
@@ -185,16 +190,17 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
   companion object {
     private fun getFirstMonth(year: Planet): LunarStation {
       return when (year) {
-        Planet.SUN -> 室
-        Planet.MOON -> 星
-        Planet.MARS -> 牛
-        Planet.MERCURY -> 參
-        Planet.JUPITER -> 心
-        Planet.SATURN -> 胃
-        Planet.VENUS -> 角
+        SUN -> 室
+        MOON -> 星
+        MARS -> 牛
+        MERCURY -> 參
+        JUPITER -> 心
+        VENUS -> 胃
+        SATURN -> 角
         else -> throw IllegalArgumentException("No such pair")
       }
     }
+
     const val VALUE = "ANIMAL_EXPLAINED"
   }
 }
