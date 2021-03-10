@@ -9,7 +9,7 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
-import destiny.core.fengshui.sanyuan.IYuan
+import destiny.core.fengshui.sanyuan.ISanYuan
 import destiny.core.fengshui.sanyuan.Yuan
 import destiny.core.iching.*
 import destiny.core.iching.Symbol.*
@@ -23,7 +23,7 @@ import java.time.chrono.ChronoLocalDateTime
  * @param threeKings : 是否考量三至尊卦 : [Hexagram.蹇] [Hexagram.坎] [Hexagram.屯]
  */
 class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
-                  val yuanImpl: IYuan,
+                  val sanYuanImpl: ISanYuan,
                   val numberize: INumberize,
                   val yuanGenderImpl: IYuanGender,
                   val zodiacSignImpl: IZodiacSign,
@@ -199,7 +199,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
 
   /** 先天卦 + 後天卦 */
   override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?): IHolo {
-    val yuan = yuanImpl.getYuan(lmt, loc)
+    val yuan = sanYuanImpl.getYuan(lmt, loc)
 
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     val ew: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
