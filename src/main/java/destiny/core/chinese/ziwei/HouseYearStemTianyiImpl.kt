@@ -5,10 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
-import destiny.core.chinese.Branch
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.Stem
-import destiny.core.chinese.StemBranch
+import destiny.core.chinese.*
 
 /**
  * (年干,天乙貴人設定) -> 地支

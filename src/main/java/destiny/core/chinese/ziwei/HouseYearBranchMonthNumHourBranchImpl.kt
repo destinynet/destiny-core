@@ -7,6 +7,7 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.YearType
 
 /** (年支、月數、時支) -> 地支
  *

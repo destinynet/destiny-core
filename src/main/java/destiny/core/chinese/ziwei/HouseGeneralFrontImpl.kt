@@ -5,6 +5,7 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.YearType
 
 /**
  * 用以計算 年支系星 : [StarGeneralFront] 將前12星

@@ -7,6 +7,7 @@ import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.YearType
 
 /**
  * 年干支 ，用於旬空兩顆星

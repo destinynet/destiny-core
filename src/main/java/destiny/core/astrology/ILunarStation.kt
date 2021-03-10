@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.ILunarStationYearly.YearShift
 import destiny.core.astrology.LunarStation.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
@@ -12,6 +13,10 @@ import destiny.core.calendar.eightwords.IYear
 import destiny.core.chinese.BranchTools
 import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.YearType
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains.LunarStation.KEY_MONTH
 import java.io.Serializable
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -21,34 +26,74 @@ import java.time.temporal.ChronoField
 /**
  * 二十八星宿值年
  *
- * 《協紀辨方》二十八宿分配六十甲子：
- * 一元甲子起虛，
- * 二元甲子起奎，
- * 三元甲子起畢，
- * 四元起鬼，
- * 五元起翼，
- * 六元起氐，
- * 七元起箕，
  *
- * 凡四百二十日而週，共得甲子七次，故曰七元。
+ * [YearShift.METHOD2]
+ * 年禽還有一種推法，基本定位為
+ * 公元964年為六元甲子，
+ * 公元1144年為七元甲子，
+ * 公元1324年為一元甲子，
+ * 公元1504年為二元上元甲子，
+ * 1684年為三元上元甲子，
+ * 1864年為四元上元甲子，
+ * 按此推法，
+ * 則1864年為甲子虛，
+ * 1924年為中元甲子奎，
+ * 1984年為下元甲子畢。
+ * 按二十八宿次序順推即可。按此法則
+ * 2008年為奎木狼，
+ * 2009年為婁金狗，
+ * 2010年為胃土雉，
+ * 依次類推。
  * */
 interface ILunarStationYearly {
+
+  enum class YearShift {
+    DEFAULT,
+    METHOD2
+  }
+
   fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
 }
 
 
-/** 二十八星宿 值年 , 節氣 劃分 */
-class LunarStationYearlyBySolarTerms(private val yearImpl: IYear) : ILunarStationYearly, Serializable {
+/**
+ * 二十八星宿 值年
+ * @param yearType 立春 [YearType.YEAR_SOLAR] 換年 或是 陰曆初一 [YearType.YEAR_LUNAR] 換年
+ * */
+class LunarStationYearlyImpl(val yearType: YearType,
+                             val yearShift: ILunarStationYearly.YearShift,
+                             private val yearImpl: IYear,
+                             val chineseDateImpl: IChineseDate,
+                             val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
   override fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
-    val index = ((lmt.get(ChronoField.YEAR) + 15) % 28).let { r ->
+
+    val shift = when (yearShift) {
+      ILunarStationYearly.YearShift.DEFAULT -> 15
+      ILunarStationYearly.YearShift.METHOD2 -> 23
+    }
+
+    val index = ((lmt.get(ChronoField.YEAR) + shift) % 28).let { r ->
       if (r == 0)
         27
       else
         r - 1
     }
-    val yearSb: StemBranch = yearImpl.getYear(lmt, loc)
-    // 以七月再算一次 年干支
-    val yearSb2: StemBranch = yearImpl.getYear(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc)
+
+    val (yearSb, yearSb2) = if (yearType == YearType.YEAR_SOLAR) {
+      // 節氣立春換年
+      val yearSb: StemBranch = yearImpl.getYear(lmt, loc)
+      // 以七月再算一次 年干支
+      val yearSb2: StemBranch = yearImpl.getYear(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc)
+      yearSb to yearSb2
+    } else {
+      // 陰曆初一換年
+      val yearSb = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl).year
+      // 以七月再算一次 年干支
+      val yearSb2: StemBranch =
+        chineseDateImpl.getChineseDate(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc, dayHourImpl).year
+      yearSb to yearSb2
+    }
+
     return LunarStation.values[index].let {
       if (yearSb == yearSb2)
         it
@@ -58,35 +103,26 @@ class LunarStationYearlyBySolarTerms(private val yearImpl: IYear) : ILunarStatio
   }
 }
 
-/** 二十八星宿 值年 , 農曆 劃分 */
-class LunarStationYearlyByLunarYear(val chineseDateImpl: IChineseDate,
-                                    val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
-  override fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
-    val index = ((lmt.get(ChronoField.YEAR) + 15) % 28).let { r ->
-      if (r == 0)
-        27
-      else
-        r - 1
-    }
-    val yearSb = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl).year
-    // 以七月再算一次 年干支
-    val yearSb2: StemBranch =
-      chineseDateImpl.getChineseDate(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc, dayHourImpl).year
-
-    return LunarStation.values[index].let {
-      if (yearSb == yearSb2)
-        it
-      else
-        it.prev
-    }
-  }
-}
 
 /** 二十八星宿 值月 */
 interface ILunarStationMonthly {
+
+  enum class LunarType {
+    /**
+     * 《鰲頭通書》、《參籌秘書》、《八門禽遁》
+     */
+    AO_HEAD,
+
+    /**
+     * 月禽 , 《禽星易見》、《剋擇講義》
+     * 「日室月星火年牛，水參木心正月求，金胃土角建寅位，年起月宿例訣頭」
+     */
+    ANIMAL_EXPLAINED
+  }
+
   fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation
 
-  fun getMonthlyStation(lmt: ChronoLocalDateTime<*> , loc: ILocation , yearImpl : ILunarStationYearly): LunarStation {
+  fun getMonthlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation, yearImpl: ILunarStationYearly): LunarStation {
     val yearStation: LunarStation = yearImpl.getYearlyStation(lmt, loc)
 
     TODO()
@@ -102,6 +138,7 @@ interface ILunarStationMonthly {
  *
  * A 與 B 兩歌訣其實是同一套算法
  */
+@Impl([Domain(KEY_MONTH , LunarStationMonthlyAoHead.VALUE , true)])
 class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
@@ -121,6 +158,7 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
         else -> throw IllegalArgumentException("No such pair")
       }
     }
+    const val VALUE = "AO_HEAD"
   }
 }
 
@@ -137,6 +175,7 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
  * 金星值年，正月起胃。
  * 土星值年，正月起角。
  */
+@Impl([Domain(KEY_MONTH , LunarStationMonthlyAnimalExplained.VALUE , false)])
 class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
@@ -156,10 +195,25 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
         else -> throw IllegalArgumentException("No such pair")
       }
     }
+    const val VALUE = "ANIMAL_EXPLAINED"
   }
 }
 
-/** 二十八星宿值日 */
+/**
+ * 二十八星宿值日
+ *
+ * 《協紀辨方》二十八宿分配六十甲子：
+ * 一元甲子起虛，
+ * 二元甲子起奎，
+ * 三元甲子起畢，
+ * 四元起鬼，
+ * 五元起翼，
+ * 六元起氐，
+ * 七元起箕，
+ *
+ * 凡四百二十日而週，共得甲子七次，故曰七元。
+ *
+ * */
 interface ILunarStationDaily {
 
   fun getDailyStation(date: LocalDate, loc: ILocation): LunarStation

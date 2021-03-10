@@ -16,10 +16,7 @@ import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.calendar.locationOf
-import destiny.core.chinese.Branch
-import destiny.core.chinese.ITianyi
-import destiny.core.chinese.Stem
-import destiny.core.chinese.StemBranch
+import destiny.core.chinese.*
 import destiny.tools.ILocaleString
 import mu.KotlinLogging
 import java.io.Serializable
@@ -261,22 +258,6 @@ interface IZiweiContext {
       .withFlowHour(flowHour, branchHouseMap)
       .appendTrans4Map(trans4Map)
   }
-}
-
-fun YearType.asLocaleString() = object : ILocaleString {
-  override fun toString(locale: Locale): String {
-    return ResourceBundle.getBundle(IZiweiContext::class.java.name, locale).getString(name)
-  }
-}
-
-fun YearType.toString(locale: Locale): String {
-  return this.asLocaleString().toString(locale)
-}
-
-/** 年系星系  */
-enum class YearType {
-  YEAR_LUNAR, // 初一為界
-  YEAR_SOLAR; // 立春為界
 }
 
 

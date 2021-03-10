@@ -8,6 +8,7 @@ import destiny.core.calendar.SolarTerms
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.YearType
 
 /**
  * 年干 系星

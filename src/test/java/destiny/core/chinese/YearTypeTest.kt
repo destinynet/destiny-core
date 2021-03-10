@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2019-12-13.
  */
-package destiny.core.chinese.ziwei
+package destiny.core.chinese
 
 import java.util.*
 import kotlin.test.Test

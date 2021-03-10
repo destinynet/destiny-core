@@ -5,10 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.Gender
 import destiny.core.calendar.SolarTerms
-import destiny.core.chinese.Branch
-import destiny.core.chinese.FiveElement
-import destiny.core.chinese.IYinYang
-import destiny.core.chinese.StemBranch
+import destiny.core.chinese.*
 
 /**
  * 長生 12 神煞

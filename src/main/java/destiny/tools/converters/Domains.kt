@@ -109,4 +109,10 @@ object Domains {
     /** 一掌經：順逆算法 [IPositive] */
     const val KEY_POSITIVE_IMPL = "posImpl"
   }
+
+  /** 二十八星宿 */
+  object LunarStation {
+
+    const val KEY_MONTH = "lsMonth"
+  }
 }
