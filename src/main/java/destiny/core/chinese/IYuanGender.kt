@@ -6,7 +6,7 @@ package destiny.core.chinese
 import destiny.core.Gender
 import destiny.core.Gender.女
 import destiny.core.Gender.男
-import destiny.core.fengshui.sanyuan.Yuan
+import destiny.core.calendar.chinese.Yuan
 import destiny.core.iching.Symbol
 import java.io.Serializable
 

@@ -5,12 +5,12 @@ import destiny.core.Gender
 import destiny.core.astrology.IZodiacSign
 import destiny.core.astrology.Planet
 import destiny.core.calendar.*
+import destiny.core.calendar.chinese.Yuan
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import destiny.core.fengshui.sanyuan.ISanYuan
-import destiny.core.fengshui.sanyuan.Yuan
 import destiny.core.iching.*
 import destiny.core.iching.Symbol.*
 import destiny.core.iching.contentProviders.IHexNameFull

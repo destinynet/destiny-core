@@ -4,6 +4,7 @@
 package destiny.core.fengshui.sanyuan
 
 import destiny.core.calendar.SolarTerms.*
+import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch.*
 import destiny.core.fengshui.sanyuan.NineStar.*

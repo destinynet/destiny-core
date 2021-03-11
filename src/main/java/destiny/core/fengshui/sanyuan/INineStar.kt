@@ -6,6 +6,7 @@ package destiny.core.fengshui.sanyuan
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
+import destiny.core.calendar.chinese.Yuan
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch

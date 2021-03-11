@@ -65,6 +65,8 @@ sealed class LunarStation(val news: News,
       }
     }
   }
+
+
 }
 
 fun LunarStation.animal(locale: Locale): String {

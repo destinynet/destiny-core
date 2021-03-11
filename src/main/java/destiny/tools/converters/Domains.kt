@@ -114,5 +114,7 @@ object Domains {
   object LunarStation {
 
     const val KEY_MONTH = "lsMonth"
+
+    const val KEY_HOUR = "lsHour"
   }
 }

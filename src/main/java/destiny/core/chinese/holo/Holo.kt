@@ -8,9 +8,9 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
 import destiny.core.calendar.SolarTermsTimePos
+import destiny.core.calendar.chinese.Yuan
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.*
-import destiny.core.fengshui.sanyuan.Yuan
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol

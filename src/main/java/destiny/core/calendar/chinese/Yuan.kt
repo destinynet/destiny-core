@@ -1,7 +1,7 @@
 /**
  * Created by smallufo on 2015-05-13.
  */
-package destiny.core.fengshui.sanyuan
+package destiny.core.calendar.chinese
 
 enum class Yuan {
   UP,  // 上元

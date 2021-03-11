@@ -3,6 +3,7 @@
  */
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.calendar.chinese.Yuan
 import destiny.core.chinese.StemBranch
 import kotlin.test.Test
 import kotlin.test.assertSame
