@@ -29,6 +29,11 @@ internal class LunarStationTest {
     assertSame(LunarStation.角, LunarStation.角.prev(28))
     assertSame(LunarStation.軫, LunarStation.軫.next(28))
     assertSame(LunarStation.軫, LunarStation.軫.prev(28))
+
+    assertSame(LunarStation.角, LunarStation.角.next(2800))
+    assertSame(LunarStation.角, LunarStation.角.prev(2800))
+    assertSame(LunarStation.軫, LunarStation.軫.next(2800))
+    assertSame(LunarStation.軫, LunarStation.軫.prev(2800))
   }
 
   @Test

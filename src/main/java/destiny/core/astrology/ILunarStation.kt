@@ -16,8 +16,6 @@ import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.calendar.eightwords.IMonth
 import destiny.core.calendar.eightwords.IYear
 import destiny.core.chinese.Branch
-import destiny.core.chinese.BranchTools
-import destiny.core.chinese.FiveElement.*
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
 import destiny.tools.Domain
@@ -26,8 +24,6 @@ import destiny.tools.converters.Domains.LunarStation.KEY_HOUR
 import destiny.tools.converters.Domains.LunarStation.KEY_MONTH
 import java.io.Serializable
 import java.time.Duration
-import java.time.LocalTime
-import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 
@@ -229,8 +225,6 @@ interface ILunarStationDaily {
 
   fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<LunarStation, Int>
 
-  fun getDailyStation(date: ChronoLocalDate, loc: ILocation): Pair<LunarStation, Int>
-
 }
 
 /**
@@ -313,44 +307,9 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
   }
 
 
-  override fun getDailyStation(date: ChronoLocalDate, loc: ILocation): Pair<LunarStation, Int> {
-
-
-    val noon = date.atTime(LocalTime.NOON)
-    val day: StemBranch = dayHourImpl.getDay(noon, loc)
-
-    // 1 ~ 7
-    val dayOfWeek = date.get(ChronoField.DAY_OF_WEEK)
-
-    val fiveElement = BranchTools.trilogy(day.branch)
-    val lunarStation = map[fiveElement]!![dayOfWeek - 1]
-
-    val yuan = lunarStation.prev(day.getAheadOf(StemBranch.甲子)).let { head: LunarStation ->
-      when (head) {
-        虛 -> 1
-        奎 -> 2
-        畢 -> 3
-        鬼 -> 4
-        翼 -> 5
-        氐 -> 6
-        箕 -> 7
-        else -> throw IllegalArgumentException("impossible")
-      }
-    }
-    return lunarStation to yuan
-  }
-
   companion object {
     /** 陽曆 , 西元 1993年 10月 10日 一元一將 甲子日 中午 , julDay = 2451791 , [虛] 值日 */
-    const val epoch: Int = 2449271
-
-    private val map = mapOf(
-      // 星期1 ~ 星期日
-      水 to listOf(畢, 翼, 箕, 奎, 鬼, 氐, 虛),
-      木 to listOf(張, 尾, 壁, 井, 亢, 女, 昴),
-      火 to listOf(心, 室, 參, 角, 牛, 胃, 星),
-      金 to listOf(危, 觜, 軫, 斗, 婁, 柳, 房),
-    )
+    private const val epoch: Int = 2449271
   }
 }
 
@@ -363,6 +322,8 @@ interface ILunarStationHourly {
 }
 
 /**
+ * 時禽 ， 連續排列
+ *
  * 《禽星易見》：
  * 七曜禽星會者稀，
  * 日虛月鬼火從箕，
@@ -381,18 +342,65 @@ interface ILunarStationHourly {
  * 六元甲子的星期天的子時是 [奎] 木狼，
  * 七元甲子的星期天的子時是 [翼] 火蛇。
  */
-@Impl([Domain(KEY_HOUR, LunarStationHourlyYuanImpl.VALUE, true)])
-class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
-                                 private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
+@Impl([Domain(KEY_HOUR, LunarStationHourlyContinuedImpl.VALUE, true)])
+class LunarStationHourlyContinuedImpl(private val dailyImpl: ILunarStationDaily,
+                                      private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
 
   override fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
-    val (dayStation, dayYuan) = dailyImpl.getDailyStation(lmt.toLocalDate(), loc)
+
+    val daySb: StemBranch = dayHourImpl.getDay(lmt, loc)
+
+    val (_, dayYuan) = dailyImpl.getDailyStation(lmt, loc)
 
     val hourBranch: Branch = dayHourImpl.getHour(lmt, loc)
-    TODO("Not yet implemented")
+
+    val hourSteps = (dayYuan - 1) * 60 * 12 +
+      daySb.getAheadOf(StemBranch.甲子) * 12 +
+      hourBranch.getAheadOf(Branch.子)
+    return 虛.next(hourSteps)
   }
 
   companion object {
-    const val VALUE = "YUAN"
+    const val VALUE = "CONTINUED"
+  }
+}
+
+/**
+ * 時禽 ， 固定排列 , 不分七元。 此法簡便易排，民間禽書常用此法。
+ *
+ * (日) 日宿子時起 [虛] 日鼠，
+ * (一) 月宿子時起 [鬼] 金羊，
+ * (二) 火宿子時起 [箕] 水豹，
+ * (三) 水宿子時起 [畢] 月烏，
+ * (四) 木宿子時起 [氐] 土貉，
+ * (五) 金宿子時起 [奎] 木狼，
+ * (六) 土宿子時起 [翼] 火蛇。
+ */
+@Impl([Domain(KEY_HOUR, LunarStationHourlyFixedImpl.VALUE)])
+class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
+                                  private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
+
+  override fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
+
+    val (dayStation, _) = dailyImpl.getDailyStation(lmt, loc)
+
+    val start = when (dayStation.planet) {
+      SUN -> 虛
+      MOON -> 鬼
+      MARS -> 箕
+      MERCURY -> 畢
+      JUPITER -> 氐
+      VENUS -> 奎
+      SATURN -> 翼
+      else -> throw IllegalArgumentException("Impossible")
+    }
+
+    val hourSteps = dayHourImpl.getHour(lmt, loc).getAheadOf(Branch.子)
+    return start.next(hourSteps)
+  }
+
+
+  companion object {
+    const val VALUE = "FIXED"
   }
 }
