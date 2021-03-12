@@ -29,6 +29,7 @@ import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
+import kotlin.math.abs
 
 /**
  * 二十八星宿值年
@@ -245,11 +246,21 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     val hourSb: Branch = dayHourImpl.getHour(lmt, loc)
     val nextMidnight = midnightImpl.getNextMidnight(lmt, loc, julDayResolver)
 
+    val ziStart: ChronoLocalDateTime<*> =
+      dayHourImpl.getDailyBranchStartMap(lmt.toLocalDate(), loc, julDayResolver)[Branch.子]!!
+
+    val secDiff = abs(nextMidnight.atZone(loc.zoneId).toEpochSecond() - ziStart.atZone(loc.zoneId).toEpochSecond())
+
+    val threeHourSeconds = 60 * 60 * 3
+
     val noon = lmt.with(ChronoField.HOUR_OF_DAY, 12)
       .with(ChronoField.MINUTE_OF_HOUR, 0)
       .with(ChronoField.SECOND_OF_MINUTE, 0)
     val noonJulDay = TimeTools.getGmtJulDay(noon).toInt().let {
-      if (hourSb == Branch.子 && lmt.get(ChronoField.HOUR_OF_DAY) > 12) {
+      if (hourSb == Branch.子
+        && lmt.get(ChronoField.HOUR_OF_DAY) > 12
+        && secDiff < threeHourSeconds
+      ) {
         it + 1
       } else
         it
