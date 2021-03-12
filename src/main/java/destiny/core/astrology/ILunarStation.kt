@@ -25,11 +25,11 @@ import destiny.tools.Impl
 import destiny.tools.converters.Domains.LunarStation.KEY_HOUR
 import destiny.tools.converters.Domains.LunarStation.KEY_MONTH
 import java.io.Serializable
+import java.time.Duration
 import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
-import kotlin.math.abs
 
 /**
  * 二十八星宿值年
@@ -241,29 +241,58 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
                             private val julDayResolver: JulDayResolver) : ILunarStationDaily, Serializable {
 
 
+  /**
+   * 下個子初 與 下個子正 的差距 , 取絕對值
+   */
+  private fun getNextZiMidnightDuration(lmt: ChronoLocalDateTime<*>, loc: ILocation): Duration {
+    val nextMidnight = midnightImpl.getNextMidnight(lmt, loc, julDayResolver)
+    val nextZiStart = dayHourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
+    return Duration.between(nextZiStart, nextMidnight).abs()
+  }
+
   override fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<LunarStation, Int> {
 
     val hourSb: Branch = dayHourImpl.getHour(lmt, loc)
-    val nextMidnight = midnightImpl.getNextMidnight(lmt, loc, julDayResolver)
-
-    val ziStart: ChronoLocalDateTime<*> =
-      dayHourImpl.getDailyBranchStartMap(lmt.toLocalDate(), loc, julDayResolver)[Branch.子]!!
-
-    val secDiff = abs(nextMidnight.atZone(loc.zoneId).toEpochSecond() - ziStart.atZone(loc.zoneId).toEpochSecond())
-
-    val threeHourSeconds = 60 * 60 * 3
 
     val noon = lmt.with(ChronoField.HOUR_OF_DAY, 12)
       .with(ChronoField.MINUTE_OF_HOUR, 0)
       .with(ChronoField.SECOND_OF_MINUTE, 0)
     val noonJulDay = TimeTools.getGmtJulDay(noon).toInt().let {
-      if (hourSb == Branch.子
-        && lmt.get(ChronoField.HOUR_OF_DAY) > 12
-        && secDiff < threeHourSeconds
-      ) {
-        it + 1
-      } else
+
+      if (hourSb == Branch.子) {
+        if (lmt.get(ChronoField.HOUR_OF_DAY) > 12) {
+          // 24 時之前
+          if (dayHourImpl.changeDayAfterZi) {
+            // 子初換日
+            it + 1
+          } else {
+            // 子正換日
+            getNextZiMidnightDuration(lmt, loc).toHours().let { hourDiff ->
+              if (hourDiff > 12)
+                it
+              else
+                it + 1
+            }
+          }
+        } else {
+          // 0時之後
+          if (dayHourImpl.changeDayAfterZi) {
+            // 子初換日
+            it
+          } else {
+            // 子正換日
+            getNextZiMidnightDuration(lmt, loc).toHours().let { hourDiff ->
+              if (hourDiff > 12)
+                it - 1
+              else
+                it
+            }
+          }
+        }
+      } else {
+        // 其他時辰
         it
+      }
     }
 
     /** 陽曆 , 西元 1993年 10月 10日 一元一將 甲子日 中午 , julDay = 2451791 , [虛] 值日 */
