@@ -3,18 +3,12 @@
  */
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.Scale
 import destiny.core.TriGrid
 import destiny.core.chinese.IStemBranch
 import destiny.core.iching.Symbol
 import destiny.core.iching.SymbolAcquired
 import java.io.Serializable
-
-enum class Scale {
-  YEAR,
-  MONTH,
-  DAY,
-  HOUR
-}
 
 data class NineStarModel(
   val stemBranch: IStemBranch,

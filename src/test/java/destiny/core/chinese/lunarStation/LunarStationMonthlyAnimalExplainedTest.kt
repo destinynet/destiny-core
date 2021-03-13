@@ -1,7 +1,4 @@
-/**
- * Created by smallufo on 2021-03-11.
- */
-package destiny.core.astrology
+package destiny.core.chinese.lunarStation
 
 import destiny.core.astrology.LunarStation.*
 import kotlin.test.Test

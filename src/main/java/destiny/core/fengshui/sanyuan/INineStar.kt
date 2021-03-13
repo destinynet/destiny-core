@@ -3,6 +3,7 @@
  */
 package destiny.core.fengshui.sanyuan
 
+import destiny.core.Scale
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
