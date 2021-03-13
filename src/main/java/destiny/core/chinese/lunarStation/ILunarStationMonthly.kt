@@ -53,6 +53,9 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
 /**
  * 月禽 , 《禽星易見》、《剋擇講義》
  *
+ * 《禽星易見》 : 明 池本理
+ * 《剋擇講義》 : 清 洪潮和
+ *
  * 「日室月星火年牛，水參木心正月求，金胃土角建寅位，年起月宿例訣頭」
  *
  * 太陽值年，正月是室。

@@ -6,7 +6,6 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IDayHour
-import destiny.core.calendar.eightwords.IMidnight
 import destiny.core.chinese.Branch
 import java.io.Serializable
 import java.time.Duration
@@ -39,7 +38,6 @@ interface ILunarStationDaily {
  * 日禽 實作
  */
 class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
-                            private val midnightImpl: IMidnight,
                             private val julDayResolver: JulDayResolver) : ILunarStationDaily, Serializable {
 
 
@@ -47,7 +45,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
    * 下個子初 與 下個子正 的差距 , 取絕對值
    */
   private fun getNextZiMidnightDuration(lmt: ChronoLocalDateTime<*>, loc: ILocation): Duration {
-    val nextMidnight = midnightImpl.getNextMidnight(lmt, loc, julDayResolver)
+    val nextMidnight = dayHourImpl.midnightImpl.getNextMidnight(lmt, loc, julDayResolver)
     val nextZiStart = dayHourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
     return Duration.between(nextZiStart, nextMidnight).abs()
   }
