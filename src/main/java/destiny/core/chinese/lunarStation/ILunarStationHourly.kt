@@ -3,10 +3,10 @@ package destiny.core.chinese.lunarStation
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
 import destiny.core.astrology.Planet
+import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
-import destiny.core.chinese.StemBranch
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains
@@ -22,7 +22,9 @@ interface ILunarStationHourly {
 }
 
 /**
- * 時禽 ， 連續排列
+ * 以「元」之首為定義
+ *
+ * 每「元」的最後一個時辰，與次元第一個時辰 是不連續的！
  *
  * 《禽星易見》：
  * 七曜禽星會者稀，
@@ -42,29 +44,40 @@ interface ILunarStationHourly {
  * 六元甲子的星期天的子時是 [奎] 木狼，
  * 七元甲子的星期天的子時是 [翼] 火蛇。
  */
-@Impl([Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyContinuedImpl.VALUE, true)])
-class LunarStationHourlyContinuedImpl(private val dailyImpl: ILunarStationDaily,
-                                      private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
+@Impl([Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyYuanImpl.VALUE, true)])
+class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
+                                 private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
 
   override fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
-    val daySb: StemBranch = dayHourImpl.getDay(lmt, loc)
-
-    val (_, dayYuan) = dailyImpl.getDailyStation(lmt, loc)
+    val (dayStation, dayYuan) = dailyImpl.getDailyStation(lmt, loc)
+    val dayPlanet = dayStation.planet
 
     val hourBranch: Branch = dayHourImpl.getHour(lmt, loc)
 
-    val hourSteps = (dayYuan - 1) * 60 * 12 +
-      daySb.getAheadOf(StemBranch.甲子) * 12 +
-      hourBranch.getAheadOf(Branch.子)
-    return 虛.next(hourSteps)
+    // 該元 週日子時
+    val sundayHourStart = yuanSundayHourStartMap[dayYuan]!!
+    val hourSteps = dayPlanet.aheadOf(Planet.SUN) * 12 + hourBranch.getAheadOf(Branch.子)
+
+    sundayHourStart.next(hourSteps)
+
+    return sundayHourStart.next(hourSteps)
   }
 
   companion object {
-    const val VALUE = "CONTINUED"
+    const val VALUE = "YUAN"
+
+    private val yuanSundayHourStartMap = mapOf(
+      1 to 虛,
+      2 to 鬼,
+      3 to 箕,
+      4 to 畢,
+      5 to 氐,
+      6 to 奎,
+      7 to 翼,
+    )
   }
 }
-
 
 
 /**

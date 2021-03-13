@@ -8,5 +8,6 @@ import java.time.chrono.ChronoLocalDateTime
 interface ILunarStationContext {
 
 
-  fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation>
+  fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation,
+                scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR)): Map<Scale, LunarStation>
 }

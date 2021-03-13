@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 
+import destiny.core.astrology.Planet.Companion.aheadOf
 import java.util.*
 import kotlin.test.*
 
@@ -81,4 +82,37 @@ class PlanetTest {
     assertTrue(Planet.NEPTUNE < Planet.PLUTO)
   }
 
+  @Test
+  fun testAheadOf() {
+    assertEquals(0, Planet.SUN.aheadOf(Planet.SUN))
+    assertEquals(1, Planet.MOON.aheadOf(Planet.SUN))
+    assertEquals(2, Planet.MARS.aheadOf(Planet.SUN))
+    assertEquals(3, Planet.MERCURY.aheadOf(Planet.SUN))
+    assertEquals(4, Planet.JUPITER.aheadOf(Planet.SUN))
+    assertEquals(5, Planet.VENUS.aheadOf(Planet.SUN))
+    assertEquals(6, Planet.SATURN.aheadOf(Planet.SUN))
+
+    assertEquals(0, Planet.SATURN.aheadOf(Planet.SATURN))
+    assertEquals(1, Planet.SUN.aheadOf(Planet.SATURN))
+    assertEquals(2, Planet.MOON.aheadOf(Planet.SATURN))
+    assertEquals(3, Planet.MARS.aheadOf(Planet.SATURN))
+    assertEquals(4, Planet.MERCURY.aheadOf(Planet.SATURN))
+    assertEquals(5, Planet.JUPITER.aheadOf(Planet.SATURN))
+    assertEquals(6, Planet.VENUS.aheadOf(Planet.SATURN))
+
+    try {
+      assertEquals(6, Planet.PLUTO.aheadOf(Planet.SATURN))
+      fail()
+    } catch (ignored : IllegalArgumentException) {
+      assertTrue(true)
+    }
+
+    try {
+      assertEquals(6, Planet.SATURN.aheadOf(Planet.PLUTO))
+      fail()
+    } catch (ignored : IllegalArgumentException) {
+      assertTrue(true)
+    }
+
+  }
 }

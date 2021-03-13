@@ -34,6 +34,23 @@ sealed class Planet(nameKey: String,
     val array by lazy { arrayOf(*classicalArray, URANUS, NEPTUNE, PLUTO) }
     val list by lazy { listOf(*array) }
 
+    private val weekPlanets by lazy {
+      arrayOf(SUN, MOON, MARS, MERCURY, JUPITER, VENUS, SATURN)
+    }
+
+    fun Planet.aheadOf(planet: Planet): Int {
+      require(weekPlanets.contains(this))
+      require(weekPlanets.contains(planet))
+      return (this.weekIndex() - planet.weekIndex()).let {
+        if (it < 0)
+          it + 7
+        else
+          it
+      }
+    }
+
+    private fun Planet.weekIndex() = weekPlanets.indexOf(this)
+
     fun fromString(value: String): Planet? {
       return array.firstOrNull {
         it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)

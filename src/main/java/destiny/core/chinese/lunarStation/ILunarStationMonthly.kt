@@ -18,12 +18,22 @@ interface ILunarStationMonthly {
 
 
 /**
+ *
  * 月禽 , 《鰲頭通書》、《參籌秘書》、《八門禽遁》
+ *
+ * 《鰲頭通書》 : 明 熊宗立 (1409-1482) :
+ *    《鰲頭通書》的完成，溯自明朝成化、弘治間的日師熊宗立(福建建陽人，號道軒，居鰲峰)所著的《通書大全》。
+ *    曾孫秉懋(月濤)增補，命名《鰲頭通書》，梓行於世，五十餘年後原版燬於兵火。
+ *    一七八六年(清乾隆五十一年)秋，其後裔啟燦(叔明)予以重梓發行。
+ *
+ * 《參籌秘書》 : 明 汪三益
+ *
+ * 《八門禽遁》 : 明 劉基(?)
  *
  * A : 會得年禽月易求，太陽需用角為頭，太陰室宿火尋馬(火星值?)，金心土胃水騎牛，木星直年參星是，次第推求順數週。
  * B : 會得年星月易求，日角月宿火星遊，水牛木參正月起，金心土胃順行周。
  *
- * A 與 B 兩歌訣其實是同一套算法
+ * A(參籌秘書) 與 B 兩歌訣其實是同一套算法
  */
 @Impl([Domain(Domains.LunarStation.KEY_MONTH, LunarStationMonthlyAoHead.VALUE, true)])
 class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
