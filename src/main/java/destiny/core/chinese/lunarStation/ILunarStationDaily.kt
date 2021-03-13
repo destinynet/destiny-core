@@ -1,6 +1,7 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.astrology.LunarStation
+import destiny.core.astrology.LunarStation.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -16,13 +17,13 @@ import java.time.temporal.ChronoField
  * 二十八星宿值日
  *
  * 《協紀辨方》二十八宿分配六十甲子：
- * 一元甲子起虛，
- * 二元甲子起奎，
- * 三元甲子起畢，
- * 四元起鬼，
- * 五元起翼，
- * 六元起氐，
- * 七元起箕，
+ * 一元甲子起 [虛]，
+ * 二元甲子起 [奎]，
+ * 三元甲子起 [畢]，
+ * 四元起 [鬼]，
+ * 五元起 [翼]，
+ * 六元起 [氐]，
+ * 七元起 [箕]，
  *
  * 凡四百二十日而週，共得甲子七次，故曰七元。
  *

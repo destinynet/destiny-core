@@ -50,15 +50,15 @@ interface ILunarStationYearly {
  * @param yearType 立春 [YearType.YEAR_SOLAR] 換年 或是 陰曆初一 [YearType.YEAR_LUNAR] 換年
  * */
 class LunarStationYearlyImpl(val yearType: YearType,
-                             val yearShift: ILunarStationYearly.YearShift,
+                             val yearShift: YearShift,
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
                              val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
   override fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
     val shift = when (yearShift) {
-      ILunarStationYearly.YearShift.DEFAULT -> 15
-      ILunarStationYearly.YearShift.METHOD2 -> 23
+      YearShift.DEFAULT -> 15
+      YearShift.METHOD2 -> 23
     }
 
     val index = ((lmt.get(ChronoField.YEAR) + shift) % 28).let { r ->

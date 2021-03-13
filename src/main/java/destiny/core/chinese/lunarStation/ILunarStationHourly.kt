@@ -57,7 +57,7 @@ class LunarStationHourlyContinuedImpl(private val dailyImpl: ILunarStationDaily,
     val hourSteps = (dayYuan - 1) * 60 * 12 +
       daySb.getAheadOf(StemBranch.甲子) * 12 +
       hourBranch.getAheadOf(Branch.子)
-    return LunarStation.虛.next(hourSteps)
+    return 虛.next(hourSteps)
   }
 
   companion object {

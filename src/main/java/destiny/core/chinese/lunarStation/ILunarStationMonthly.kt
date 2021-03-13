@@ -1,7 +1,9 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.astrology.LunarStation
+import destiny.core.astrology.LunarStation.*
 import destiny.core.astrology.Planet
+import destiny.core.astrology.Planet.*
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains
@@ -33,13 +35,13 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
   companion object {
     private fun getFirstMonth(year: Planet): LunarStation {
       return when (year) {
-        Planet.SUN -> LunarStation.角
-        Planet.MOON -> LunarStation.室
-        Planet.MARS -> LunarStation.星
-        Planet.VENUS -> LunarStation.心
-        Planet.SATURN -> LunarStation.胃
-        Planet.MERCURY -> LunarStation.牛
-        Planet.JUPITER -> LunarStation.參
+        SUN -> 角
+        MOON -> 室
+        MARS -> 星
+        VENUS -> 心
+        SATURN -> 胃
+        MERCURY -> 牛
+        JUPITER -> 參
         else -> throw IllegalArgumentException("No such pair")
       }
     }
@@ -71,13 +73,13 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
   companion object {
     private fun getFirstMonth(year: Planet): LunarStation {
       return when (year) {
-        Planet.SUN -> LunarStation.室
-        Planet.MOON -> LunarStation.星
-        Planet.MARS -> LunarStation.牛
-        Planet.MERCURY -> LunarStation.參
-        Planet.JUPITER -> LunarStation.心
-        Planet.VENUS -> LunarStation.胃
-        Planet.SATURN -> LunarStation.角
+        SUN -> 室
+        MOON -> 星
+        MARS -> 牛
+        MERCURY -> 參
+        JUPITER -> 心
+        VENUS -> 胃
+        SATURN -> 角
         else -> throw IllegalArgumentException("No such pair")
       }
     }
