@@ -12,7 +12,6 @@ import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.Planet.*
 import destiny.core.chinese.Animal
 import destiny.tools.ArrayTools
-import java.util.*
 
 /** 二十八宿 */
 sealed class LunarStation(val news: News,
@@ -67,10 +66,5 @@ sealed class LunarStation(val news: News,
       }
     }
   }
-
-
 }
 
-fun LunarStation.animal(locale: Locale): String {
-  return ResourceBundle.getBundle(resource, locale).getString("$nameKey.animal")
-}

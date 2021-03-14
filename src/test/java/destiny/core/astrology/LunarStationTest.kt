@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.LunarStation.*
+import destiny.core.chinese.toString
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -13,27 +15,27 @@ internal class LunarStationTest {
 
   @Test
   fun testLoop() {
-    assertSame(LunarStation.亢, LunarStation.角.next)
-    assertSame(LunarStation.軫, LunarStation.角.prev)
+    assertSame(亢, 角.next)
+    assertSame(軫, 角.prev)
 
-    assertSame(LunarStation.亢, LunarStation.角.next(1))
-    assertSame(LunarStation.軫, LunarStation.角.prev(1))
+    assertSame(亢, 角.next(1))
+    assertSame(軫, 角.prev(1))
 
-    assertSame(LunarStation.角, LunarStation.軫.next)
-    assertSame(LunarStation.翼, LunarStation.軫.prev)
+    assertSame(角, 軫.next)
+    assertSame(翼, 軫.prev)
 
-    assertSame(LunarStation.角, LunarStation.軫.next(1))
-    assertSame(LunarStation.翼, LunarStation.軫.prev(1))
+    assertSame(角, 軫.next(1))
+    assertSame(翼, 軫.prev(1))
 
-    assertSame(LunarStation.角, LunarStation.角.next(28))
-    assertSame(LunarStation.角, LunarStation.角.prev(28))
-    assertSame(LunarStation.軫, LunarStation.軫.next(28))
-    assertSame(LunarStation.軫, LunarStation.軫.prev(28))
+    assertSame(角, 角.next(28))
+    assertSame(角, 角.prev(28))
+    assertSame(軫, 軫.next(28))
+    assertSame(軫, 軫.prev(28))
 
-    assertSame(LunarStation.角, LunarStation.角.next(2800))
-    assertSame(LunarStation.角, LunarStation.角.prev(2800))
-    assertSame(LunarStation.軫, LunarStation.軫.next(2800))
-    assertSame(LunarStation.軫, LunarStation.軫.prev(2800))
+    assertSame(角, 角.next(2800))
+    assertSame(角, 角.prev(2800))
+    assertSame(軫, 軫.next(2800))
+    assertSame(軫, 軫.prev(2800))
   }
 
   @Test
@@ -53,9 +55,9 @@ internal class LunarStationTest {
     LunarStation::class.sealedSubclasses.map { k ->
       k.objectInstance as LunarStation
     }.forEach { station ->
-      assertTrue(station.animal(Locale.TAIWAN).length == 1)
-      assertTrue(station.animal(Locale.SIMPLIFIED_CHINESE).length == 1)
-      assertNotNull(station.animal(Locale.ENGLISH))
+      assertTrue(station.animal.toString(Locale.TAIWAN).length == 1)
+      assertTrue(station.animal.toString(Locale.SIMPLIFIED_CHINESE).length == 1)
+      assertNotNull(station.animal.toString(Locale.ENGLISH))
     }
   }
 }
