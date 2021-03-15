@@ -36,10 +36,14 @@ import java.time.temporal.ChronoField
  * */
 interface ILunarStationYearly {
 
+  val yearType : YearType
+
   enum class YearShift {
     DEFAULT,
     METHOD2
   }
+
+  val yearShift : YearShift
 
   fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
 }
@@ -49,8 +53,8 @@ interface ILunarStationYearly {
  * 二十八星宿 值年
  * @param yearType 立春 [YearType.YEAR_SOLAR] 換年 或是 陰曆初一 [YearType.YEAR_LUNAR] 換年
  * */
-class LunarStationYearlyImpl(val yearType: YearType,
-                             val yearShift: YearShift,
+class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOLAR,
+                             override val yearShift: YearShift = YearShift.DEFAULT,
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
                              val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
@@ -90,4 +94,28 @@ class LunarStationYearlyImpl(val yearType: YearType,
         it.prev
     }
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is LunarStationYearlyImpl) return false
+
+    if (yearType != other.yearType) return false
+    if (yearShift != other.yearShift) return false
+    if (yearImpl != other.yearImpl) return false
+    if (chineseDateImpl != other.chineseDateImpl) return false
+    if (dayHourImpl != other.dayHourImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = yearType.hashCode()
+    result = 31 * result + yearShift.hashCode()
+    result = 31 * result + yearImpl.hashCode()
+    result = 31 * result + chineseDateImpl.hashCode()
+    result = 31 * result + dayHourImpl.hashCode()
+    return result
+  }
+
+
 }

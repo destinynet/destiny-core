@@ -1,8 +1,9 @@
 package destiny.core.chinese.lunarStation
 
+import destiny.core.Descriptive
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
-import destiny.core.astrology.Planet
+import destiny.core.astrology.Planet.*
 import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IDayHour
@@ -12,11 +13,12 @@ import destiny.tools.Impl
 import destiny.tools.converters.Domains
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 
 /**
  * 時禽
  */
-interface ILunarStationHourly {
+interface ILunarStationHourly : Descriptive {
 
   fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
 }
@@ -62,12 +64,33 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
 
     // 該元 週日子時
     val sundayHourStart = yuanSundayHourStartMap[dayYuan]!!
-    val hourSteps = dayPlanet.aheadOf(Planet.SUN) * 12 + hourBranch.getAheadOf(Branch.子)
+    val hourSteps = dayPlanet.aheadOf(SUN) * 12 + hourBranch.getAheadOf(Branch.子)
 
     sundayHourStart.next(hourSteps)
 
     return sundayHourStart.next(hourSteps)
   }
+
+  override fun toString(locale: Locale): String {
+    return "《禽星易見》"
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is LunarStationHourlyYuanImpl) return false
+
+    if (dailyImpl != other.dailyImpl) return false
+    if (dayHourImpl != other.dayHourImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = dailyImpl.hashCode()
+    result = 31 * result + dayHourImpl.hashCode()
+    return result
+  }
+
 
   companion object {
     const val VALUE = "YUAN"
@@ -110,18 +133,38 @@ class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
     val (dayStation, _) = dailyImpl.getDailyStation(lmt, loc)
 
     val start = when (dayStation.planet) {
-      Planet.SUN -> 虛
-      Planet.MOON -> 鬼
-      Planet.MARS -> 箕
-      Planet.MERCURY -> 畢
-      Planet.JUPITER -> 氐
-      Planet.VENUS -> 奎
-      Planet.SATURN -> 翼
+      SUN -> 虛
+      MOON -> 鬼
+      MARS -> 箕
+      MERCURY -> 畢
+      JUPITER -> 氐
+      VENUS -> 奎
+      SATURN -> 翼
       else -> throw IllegalArgumentException("Impossible")
     }
 
     val hourSteps = dayHourImpl.getHour(lmt, loc).getAheadOf(Branch.子)
     return start.next(hourSteps)
+  }
+
+  override fun toString(locale: Locale): String {
+    return "《剋擇講義》"
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is LunarStationHourlyFixedImpl) return false
+
+    if (dailyImpl != other.dailyImpl) return false
+    if (dayHourImpl != other.dayHourImpl) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = dailyImpl.hashCode()
+    result = 31 * result + dayHourImpl.hashCode()
+    return result
   }
 
 

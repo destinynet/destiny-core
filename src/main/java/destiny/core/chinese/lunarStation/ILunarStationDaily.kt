@@ -107,9 +107,25 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     val yuan = (sevenYuanReminder / 60) + 1
 
 
-    val lunarStation = LunarStation.虛.next(sevenYuanReminder)
+    val lunarStation = 虛.next(sevenYuanReminder)
 
     return lunarStation to yuan
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is LunarStationDailyImpl) return false
+
+    if (dayHourImpl != other.dayHourImpl) return false
+    if (julDayResolver != other.julDayResolver) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = dayHourImpl.hashCode()
+    result = 31 * result + julDayResolver.hashCode()
+    return result
   }
 
 

@@ -53,10 +53,6 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
     return "《鰲頭通書》"
   }
 
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
-
   companion object {
     private fun getFirstMonth(year: Planet): LunarStation {
       return when (year) {
@@ -107,11 +103,6 @@ class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
   override fun toString(locale: Locale): String {
     return "《剋擇講義》"
   }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
-
 
   companion object {
     private fun getFirstMonth(year: Planet): LunarStation {
