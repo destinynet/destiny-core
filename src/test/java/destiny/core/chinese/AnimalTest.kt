@@ -3,8 +3,7 @@
  */
 package destiny.core.chinese
 
-import destiny.core.chinese.Animal.values
-import destiny.core.chinese.Animal.貓
+import destiny.core.chinese.Animal.*
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -25,5 +24,9 @@ internal class AnimalTest {
     assertEquals("貓" , 貓.toString(Locale.TAIWAN))
     assertEquals("猫" , 貓.toString(Locale.SIMPLIFIED_CHINESE))
     assertEquals("Cat" , 貓.toString(Locale.ENGLISH))
+
+    assertEquals("犺" , 犺.toString(Locale.TAIWAN))
+    assertEquals("犺" , 犺.toString(Locale.SIMPLIFIED_CHINESE))
+    assertEquals("Kang" , 犺.toString(Locale.ENGLISH))
   }
 }
