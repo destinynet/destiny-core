@@ -44,7 +44,12 @@ interface ILunarStationHourly {
  * 六元甲子的星期天的子時是 [奎] 木狼，
  * 七元甲子的星期天的子時是 [翼] 火蛇。
  */
-@Impl([Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyYuanImpl.VALUE, true)])
+@Impl(
+  [
+    Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyYuanImpl.VALUE, true),
+    Domain(Domains.LunarStation.KEY_HOUR_SELECTION, LunarStationHourlyYuanImpl.VALUE)
+  ]
+)
 class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
                                  private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
 
@@ -91,7 +96,12 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
  * (五) 金宿子時起 [奎] 木狼，
  * (六) 土宿子時起 [翼] 火蛇。
  */
-@Impl([Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyFixedImpl.VALUE)])
+@Impl(
+  [
+    Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyFixedImpl.VALUE),
+    Domain(Domains.LunarStation.KEY_HOUR_SELECTION, LunarStationHourlyFixedImpl.VALUE, true)
+  ]
+)
 class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
                                   private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
 

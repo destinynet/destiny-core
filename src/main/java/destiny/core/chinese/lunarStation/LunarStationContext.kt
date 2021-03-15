@@ -10,6 +10,17 @@ import destiny.core.calendar.eightwords.IMonth
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
+
+/**
+ * 二十八宿 Context
+ */
+interface ILunarStationContext {
+
+  fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation,
+                scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR)): Map<Scale, LunarStation>
+}
+
+
 class LunarStationContext(private val yearlyImpl: ILunarStationYearly,
                           private val monthlyImpl: ILunarStationMonthly,
                           private val dailyImpl: ILunarStationDaily,

@@ -1,5 +1,6 @@
 package destiny.core.chinese.lunarStation
 
+import destiny.core.Descriptive
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.*
 import destiny.core.astrology.Planet
@@ -8,9 +9,10 @@ import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains
 import java.io.Serializable
+import java.util.*
 
 /** 二十八星宿 值月 */
-interface ILunarStationMonthly {
+interface ILunarStationMonthly : Descriptive {
 
   fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation
 
@@ -35,11 +37,24 @@ interface ILunarStationMonthly {
  *
  * A(參籌秘書) 與 B 兩歌訣其實是同一套算法
  */
-@Impl([Domain(Domains.LunarStation.KEY_MONTH, LunarStationMonthlyAoHead.VALUE, true)])
+@Impl(
+  [
+    Domain(Domains.LunarStation.KEY_MONTH, LunarStationMonthlyAoHead.VALUE, true),
+    Domain(Domains.LunarStation.KEY_MONTH_SELECTION, LunarStationMonthlyAoHead.VALUE)
+  ]
+)
 class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)
+  }
+
+  override fun toString(locale: Locale): String {
+    return "《鰲頭通書》"
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return toString(locale)
   }
 
   companion object {
@@ -76,12 +91,27 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
  * 金星值年，正月起胃。
  * 土星值年，正月起角。
  */
-@Impl([Domain(Domains.LunarStation.KEY_MONTH, LunarStationMonthlyAnimalExplained.VALUE, false)])
+@Impl(
+  [
+    Domain(Domains.LunarStation.KEY_MONTH, LunarStationMonthlyAnimalExplained.VALUE, false),
+    Domain(Domains.LunarStation.KEY_MONTH_SELECTION, LunarStationMonthlyAnimalExplained.VALUE, true)
+  ]
+)
 class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
 
   override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)
   }
+
+
+  override fun toString(locale: Locale): String {
+    return "《剋擇講義》"
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return toString(locale)
+  }
+
 
   companion object {
     private fun getFirstMonth(year: Planet): LunarStation {
