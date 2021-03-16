@@ -18,6 +18,10 @@ interface IContextMap<T> {
   fun getMap(context: T): Map<String, String>
   fun getMapExceptDefault(context: T): Map<String, String> = getMap(context)
   fun getContext(map: Map<String, String>): T?
+}
+
+interface IContextMapWithDefault<T> : IContextMap<T> {
+  override fun getContext(map: Map<String, String>): T
 
   fun <T> MutableMap<String, String>.putAllExceptDefault(ctxMap: IContextMap<T>,
                                                          defaultValue: T, value: T) {
@@ -28,9 +32,6 @@ interface IContextMap<T> {
   }
 }
 
-interface IContextMapWithDefault<T> : IContextMap<T> {
-  override fun getContext(map: Map<String, String>): T
-}
 
 interface MapConverter<T> : IContextMap<T> {
   val key: String
