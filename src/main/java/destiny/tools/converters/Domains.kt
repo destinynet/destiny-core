@@ -114,13 +114,16 @@ object Domains {
   object LunarStation {
 
     /** 月禽 */
-    const val KEY_MONTH = "lsMonth"
-    /** 月禽 擇日通書 常用版本 */
-    const val KEY_MONTH_SELECTION = "lsMonthSel"
+    object MonthImpl {
+      const val KEY_GENERAL = "lsM"
+      const val KEY_SELECT = "lsM_sel"
+    }
 
     /** 時禽 */
-    const val KEY_HOUR = "lsHour"
-    /** 時禽 擇日通書 常用版本 */
-    const val KEY_HOUR_SELECTION = "lsHourSel"
+    object HourImpl {
+      const val KEY_GENERAL = "lsH"
+      const val KEY_SELECT = "lsH_Sel"
+    }
+
   }
 }

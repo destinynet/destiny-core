@@ -39,8 +39,8 @@ interface ILunarStationMonthly : Descriptive {
  */
 @Impl(
   [
-    Domain(Domains.LunarStation.KEY_MONTH, LunarStationMonthlyAoHead.VALUE, true),
-    Domain(Domains.LunarStation.KEY_MONTH_SELECTION, LunarStationMonthlyAoHead.VALUE)
+    Domain(Domains.LunarStation.MonthImpl.KEY_GENERAL, LunarStationMonthlyAoHead.VALUE, true),
+    Domain(Domains.LunarStation.MonthImpl.KEY_SELECT, LunarStationMonthlyAoHead.VALUE)
   ]
 )
 class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
@@ -89,8 +89,8 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
  */
 @Impl(
   [
-    Domain(Domains.LunarStation.KEY_MONTH, LunarStationMonthlyAnimalExplained.VALUE, false),
-    Domain(Domains.LunarStation.KEY_MONTH_SELECTION, LunarStationMonthlyAnimalExplained.VALUE, true)
+    Domain(Domains.LunarStation.MonthImpl.KEY_GENERAL, LunarStationMonthlyAnimalExplained.VALUE),
+    Domain(Domains.LunarStation.MonthImpl.KEY_SELECT, LunarStationMonthlyAnimalExplained.VALUE, true)
   ]
 )
 class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {

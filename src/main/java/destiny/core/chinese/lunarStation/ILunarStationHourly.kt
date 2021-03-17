@@ -48,8 +48,8 @@ interface ILunarStationHourly : Descriptive {
  */
 @Impl(
   [
-    Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyYuanImpl.VALUE, true),
-    Domain(Domains.LunarStation.KEY_HOUR_SELECTION, LunarStationHourlyYuanImpl.VALUE)
+    Domain(Domains.LunarStation.HourImpl.KEY_GENERAL, LunarStationHourlyYuanImpl.VALUE, true),
+    Domain(Domains.LunarStation.HourImpl.KEY_SELECT, LunarStationHourlyYuanImpl.VALUE)
   ]
 )
 class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
@@ -121,8 +121,8 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
  */
 @Impl(
   [
-    Domain(Domains.LunarStation.KEY_HOUR, LunarStationHourlyFixedImpl.VALUE),
-    Domain(Domains.LunarStation.KEY_HOUR_SELECTION, LunarStationHourlyFixedImpl.VALUE, true)
+    Domain(Domains.LunarStation.HourImpl.KEY_GENERAL, LunarStationHourlyFixedImpl.VALUE),
+    Domain(Domains.LunarStation.HourImpl.KEY_SELECT, LunarStationHourlyFixedImpl.VALUE, true)
   ]
 )
 class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
