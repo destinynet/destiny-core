@@ -11,10 +11,13 @@ import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.Planet.VENUS
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
+import destiny.core.chinese.StemBranch
+import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.isDayFoeForYear
 import java.io.Serializable
-import java.time.chrono.ChronoLocalDate
+import java.time.chrono.ChronoLocalDateTime
 
 
 /**
@@ -22,7 +25,7 @@ import java.time.chrono.ChronoLocalDate
  */
 interface IHiddenVenusFoe {
 
-  fun getHiddenVenusFoe(lmt: ChronoLocalDate, loc: ILocation): Set<Scale>
+  fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Scale>
 
   companion object {
 
@@ -110,8 +113,20 @@ interface IHiddenVenusFoe {
  * 《禽書》云：凡選用時若天干帶壬癸，更直氐房心虛室奎婁昴觜鬼柳參此十二宿者，則截其路而不能濟也。此時縱得奇門，亦主阻滯，切不可用，此兵家之大忌。
  *
  */
-class HiddenVenusFoeAnimalStar : IHiddenVenusFoe, Serializable {
-  override fun getHiddenVenusFoe(lmt: ChronoLocalDate, loc: ILocation): Set<Scale> {
-    TODO("Not yet implemented")
+class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
+                               private val dailyImpl: ILunarStationDaily,
+                               private val dayHourImpl: IDayHour) : IHiddenVenusFoe, Serializable {
+
+  @OptIn(ExperimentalStdlibApi::class)
+  override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Scale> {
+    val yearlyStation = yearlyImpl.getYearlyStation(lmt, loc)
+    val daySb: StemBranch = dayHourImpl.getDay(lmt, loc)
+    val dailyStation = dailyImpl.getDailyStation(lmt, loc).first
+
+    return buildSet {
+      if (isDayFoeForYear(yearlyStation.planet, daySb.branch, dailyStation)) {
+        add(Scale.YEAR)
+      }
+    }
   }
 }
