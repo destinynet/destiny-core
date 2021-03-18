@@ -45,8 +45,7 @@ internal class IHiddenVenusFoeTest {
 
     Triple(JUPITER, 午, LunarStation.角),
 
-    //Triple(VENUS, 丑, LunarStation.斗), // 鍾義明 書籍錯誤！ (其內容應該抄自 《選擇求真》)
-    Triple(VENUS, 丑, LunarStation.牛),
+    Triple(VENUS, 丑, LunarStation.斗),
     Triple(VENUS, 申, LunarStation.鬼),
 
     Triple(SATURN, 卯, LunarStation.女),
@@ -58,7 +57,6 @@ internal class IHiddenVenusFoeTest {
   fun hiddenVenusFoe(triple: Triple<Planet, Branch, LunarStation>) {
 
     val (yearPlanet, dayBranch, dayStation) = triple
-    println("testing $yearPlanet , $dayBranch , $dayStation")
     assertTrue(IHiddenVenusFoe.isDayFoeForYear(yearPlanet, dayBranch, dayStation))
   }
 }
