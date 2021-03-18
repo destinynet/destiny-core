@@ -7,6 +7,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
+import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
@@ -29,8 +30,15 @@ import java.time.temporal.ChronoField
  * */
 interface ILunarStationDaily {
 
-  fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<LunarStation, Int>
+  /** 日禽 , 幾元 , 幾將 */
+  fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<LunarStation, Int, Int>
 
+
+  companion object {
+    fun getLeader(yuan: Int, general: Int): LunarStation {
+      return 虛.next((yuan - 1) * 60 + (general - 1) * 15)
+    }
+  }
 }
 
 
@@ -50,7 +58,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     return Duration.between(nextZiStart, nextMidnight).abs()
   }
 
-  override fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Pair<LunarStation, Int> {
+  override fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<LunarStation, Int, Int> {
 
     val hourSb: Branch = dayHourImpl.getHour(lmt, loc)
 
@@ -96,7 +104,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     }
 
     /** 陽曆 , 西元 1993年 10月 10日 一元一將 甲子日 中午 , julDay = 2451791 , [虛] 值日 */
-
+    // 0 .. 419
     val sevenYuanReminder = (noonJulDay - epoch).rem(420).let {
       if (it < 0)
         it + 420
@@ -104,12 +112,16 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
         it
     }
 
-    val yuan = (sevenYuanReminder / 60) + 1
-
-
+    // 日禽
     val lunarStation = 虛.next(sevenYuanReminder)
 
-    return lunarStation to yuan
+    // 元
+    val yuan = (sevenYuanReminder / 60) + 1
+
+    // 將
+    val general = (dayHourImpl.getDay(lmt, loc).getAheadOf(StemBranch.甲子) / 15) + 1
+
+    return Triple(lunarStation, yuan, general)
   }
 
   override fun equals(other: Any?): Boolean {
