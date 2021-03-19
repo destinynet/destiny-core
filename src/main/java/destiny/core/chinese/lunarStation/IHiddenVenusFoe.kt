@@ -11,11 +11,17 @@ import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.Planet.VENUS
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.chinese.IChineseDate
+import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.StemBranch
+import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.isDayFoeForDay
 import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.isDayFoeForYear
+import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.isHourFoeForHour
+import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.monthFoeMap
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -25,7 +31,10 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IHiddenVenusFoe {
 
-  fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Scale>
+  /**
+   * @return Pair<Scale,Scale> 前者代表「此時刻的什麼時段」 , 犯了 後者的 暗金伏斷煞
+   */
+  fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Pair<Scale, Scale>>
 
   companion object {
 
@@ -57,33 +66,6 @@ interface IHiddenVenusFoe {
         .toSet()
     }
 
-    /**
-     * 伏斷者，即子日時逢虛，丑日時逢斗是也，此為惡宮。
-     * 詩曰：『
-     *    子虛丑斗寅嫌室，
-     *    卯女辰箕巳泊房。
-     *    午角未張申忌鬼，
-     *    酉觜戌胃亥壁當。
-     *  』
-     * 此伏斷之惡極凶，只宜出兵截路把隘。
-     */
-    val foeMap: Map<Branch, LunarStation> by lazy {
-      mapOf(
-        子 to 虛,
-        丑 to 斗,
-        寅 to 室,
-        卯 to 女,
-        辰 to 箕,
-        巳 to 房,
-        午 to 角,
-        未 to 張,
-        申 to 鬼,
-        酉 to 觜,
-        戌 to 胃,
-        亥 to 壁
-      )
-    }
-
 
     /**
      * 此日是否犯了此年的「暗金伏斷」
@@ -97,6 +79,63 @@ interface IHiddenVenusFoe {
      */
     fun isDayFoeForYear(yearPlanet: Planet, dayBranch: Branch, dayStation: LunarStation): Boolean {
       return (getYearHiddenVenus(yearPlanet).contains(dayBranch) && foeMap[dayBranch] == dayStation)
+    }
+
+    /**
+     * 月禽伏斷
+     * 關於四月 ，鍾義明 書中寫 [壁] , 但是根據 「太陰行度法歌」 , 四從 [畢] , 誰對誰誤 暫時不詳
+     * 八月也不一致
+     * 正室、二奎、三胃、四壁(畢？)、五井、六柳、七張、八軫 (翼?)、九角、十房、十一箕、十二牛
+     *
+     * 【約太陰行度法歌】
+     * 欲識太陽行度時，正月之節起子危，
+     * 一日出行十三度，五日兩富次第移。
+     * 二奎三胃四從畢，五井六柳張居七，
+     * 八月翼宿以為初，龍角季秋任遊歷，
+     * 十月房宿作元辰，建子箕星細尋覓，
+     * 丑月牽牛切要知，周天之度無差式，
+     * 此是太陰行度方，人命身宮從此得。
+     */
+    val monthFoeMap: Map<Int, LunarStation> by lazy {
+      mapOf(
+        1 to 室, 2 to 奎, 3 to 胃, 4 to 壁,
+        5 to 井, 6 to 柳, 7 to 張, 8 to 軫,
+        9 to 角, 10 to 房, 11 to 箕, 12 to 牛
+      )
+    }
+
+    /**
+     * 七元伏斷 日
+     * 此日是否犯了 日禽 的 暗金伏斷
+     * */
+    fun isDayFoeForDay(dailyStation: LunarStation, dayBranch: Branch): Boolean {
+      return (foeMap[dayBranch] == dailyStation)
+    }
+
+    /**
+     * 暗金伏斷時
+     * 太陽子酉寅，太陰午一日。火宿丑卯戌，金申木亥辰。水未土來巳，伏斷寅時真。
+     */
+    fun isHourFoeForHour(hourlyStation: LunarStation, hourBranch: Branch): Boolean {
+      return (foeMap[hourBranch] == hourlyStation)
+    }
+
+    /**
+     * 伏斷者，即子日時逢虛，丑日時逢斗是也，此為惡宮。
+     * 詩曰：『
+     *    子虛丑斗寅嫌室，
+     *    卯女辰箕巳泊房。
+     *    午角未張申忌鬼，
+     *    酉觜戌胃亥壁當。
+     *  』
+     * 此伏斷之惡極凶，只宜出兵截路把隘。
+     */
+    private val foeMap: Map<Branch, LunarStation> by lazy {
+      mapOf(
+        子 to 虛, 丑 to 斗, 寅 to 室, 卯 to 女,
+        辰 to 箕, 巳 to 房, 午 to 角, 未 to 張,
+        申 to 鬼, 酉 to 觜, 戌 to 胃, 亥 to 壁
+      )
     }
   }
 }
@@ -114,18 +153,52 @@ interface IHiddenVenusFoe {
  *
  */
 class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
+                               private val monthlyImpl: ILunarStationMonthly,
                                private val dailyImpl: ILunarStationDaily,
-                               private val dayHourImpl: IDayHour) : IHiddenVenusFoe, Serializable {
+                               private val hourlyImpl: ILunarStationHourly,
+                               val yearMonthImpl: IYearMonth,
+                               private val chineseDateImpl: IChineseDate,
+                               private val dayHourImpl: IDayHour,
+                               val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS) :
+  IHiddenVenusFoe, Serializable {
 
   @OptIn(ExperimentalStdlibApi::class)
-  override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Scale> {
+  override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Pair<Scale, Scale>> {
     val yearlyStation = yearlyImpl.getYearlyStation(lmt, loc)
+    val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
+    val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
+    val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
+      chineseDate.month,
+      chineseDate.leapMonth,
+      monthBranch,
+      chineseDate.day,
+      monthAlgo
+    )
+    val monthlyStation = monthlyImpl.getMonthlyStation(yearlyStation, monthNumber)
     val daySb: StemBranch = dayHourImpl.getDay(lmt, loc)
     val dailyStation = dailyImpl.getDailyStation(lmt, loc).first
+    val hourlyStation = hourlyImpl.getHourlyStation(lmt, loc)
+    val hourBranch = dayHourImpl.getHour(lmt, loc)
 
     return buildSet {
+      // 年
       if (isDayFoeForYear(yearlyStation.planet, daySb.branch, dailyStation)) {
-        add(Scale.YEAR)
+        add(Scale.DAY to Scale.YEAR)
+      }
+
+      // 月
+      if (monthFoeMap[monthNumber] == monthlyStation) {
+        add(Scale.MONTH to Scale.MONTH)
+      }
+
+      // 日
+      if (isDayFoeForDay(dailyStation, daySb.branch)) {
+        add(Scale.DAY to Scale.DAY)
+      }
+
+      // 時
+      if (isHourFoeForHour(hourlyStation, hourBranch)) {
+        add(Scale.HOUR to Scale.HOUR)
       }
     }
   }

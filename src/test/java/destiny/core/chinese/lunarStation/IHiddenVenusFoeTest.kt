@@ -4,6 +4,7 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.astrology.LunarStation
+import destiny.core.astrology.LunarStation.*
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Planet.*
 import destiny.core.chinese.Branch
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -32,24 +34,24 @@ internal class IHiddenVenusFoeTest {
 
 
   fun hiddenVenusFoe() = Stream.of(
-    Triple(SUN, 巳, LunarStation.房),
+    Triple(SUN, 巳, 房),
 
-    Triple(MOON, 子, LunarStation.虛),
-    Triple(MOON, 未, LunarStation.張),
+    Triple(MOON, 子, 虛),
+    Triple(MOON, 未, 張),
 
-    Triple(MARS, 酉, LunarStation.觜),
-    Triple(MARS, 寅, LunarStation.室),
+    Triple(MARS, 酉, 觜),
+    Triple(MARS, 寅, 室),
 
-    Triple(MERCURY, 辰, LunarStation.箕),
-    Triple(MERCURY, 亥, LunarStation.壁),
+    Triple(MERCURY, 辰, 箕),
+    Triple(MERCURY, 亥, 壁),
 
-    Triple(JUPITER, 午, LunarStation.角),
+    Triple(JUPITER, 午, 角),
 
-    Triple(VENUS, 丑, LunarStation.斗),
-    Triple(VENUS, 申, LunarStation.鬼),
+    Triple(VENUS, 丑, 斗),
+    Triple(VENUS, 申, 鬼),
 
-    Triple(SATURN, 卯, LunarStation.女),
-    Triple(SATURN, 戌, LunarStation.胃)
+    Triple(SATURN, 卯, 女),
+    Triple(SATURN, 戌, 胃)
   )
 
   @ParameterizedTest
@@ -58,5 +60,39 @@ internal class IHiddenVenusFoeTest {
 
     val (yearPlanet, dayBranch, dayStation) = triple
     assertTrue(IHiddenVenusFoe.isDayFoeForYear(yearPlanet, dayBranch, dayStation))
+  }
+
+
+  @Test
+  fun dayFoeForDayAndHour() {
+    val included = mapOf(
+      子 to 虛,
+      丑 to 斗,
+      寅 to 室,
+      卯 to 女,
+      辰 to 箕,
+      巳 to 房,
+      午 to 角,
+      未 to 張,
+      申 to 鬼,
+      酉 to 觜,
+      戌 to 胃,
+      亥 to 壁
+    )
+
+    val excluded = Branch.values().flatMap { b -> LunarStation.values.map { b to it } }
+      .filter { (branch , station) -> included[branch] != station }
+      .toList()
+
+
+    included.forEach { (b,s) ->
+      assertTrue(IHiddenVenusFoe.isDayFoeForDay(s, b))
+      assertTrue(IHiddenVenusFoe.isHourFoeForHour(s, b))
+    }
+
+    excluded.forEach { (b,s) ->
+      assertFalse(IHiddenVenusFoe.isDayFoeForDay(s, b))
+      assertFalse(IHiddenVenusFoe.isHourFoeForHour(s, b))
+    }
   }
 }

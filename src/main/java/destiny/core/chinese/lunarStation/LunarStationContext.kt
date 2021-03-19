@@ -37,7 +37,7 @@ class LunarStationContext(val yearlyImpl: ILunarStationYearly,
       when (scale) {
         Scale.YEAR -> Scale.YEAR to yearlyImpl.getYearlyStation(lmt, loc)
         Scale.MONTH -> {
-          val yearStation: LunarStation = yearlyImpl.getYearlyStation(lmt, loc)
+          val yearlyStation: LunarStation = yearlyImpl.getYearlyStation(lmt, loc)
           val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
           val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
@@ -47,7 +47,7 @@ class LunarStationContext(val yearlyImpl: ILunarStationYearly,
             chineseDate.day,
             monthAlgo
           )
-          Scale.MONTH to monthlyImpl.getMonthlyStation(yearStation, monthNumber)
+          Scale.MONTH to monthlyImpl.getMonthlyStation(yearlyStation, monthNumber)
         }
         Scale.DAY -> Scale.DAY to dailyImpl.getDailyStation(lmt, loc).first
         Scale.HOUR -> Scale.HOUR to hourlyImpl.getHourlyStation(lmt, loc)

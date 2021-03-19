@@ -107,7 +107,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
 
     /** 陽曆 , 西元 1993年 10月 10日 一元一將 甲子日 中午 , julDay = 2451791 , [虛] 值日 */
     // 0 .. 419
-    val sevenYuanReminder = (noonJulDay - epoch).rem(420).let {
+    val index420 = ((noonJulDay - epoch) % 420).let {
       if (it < 0)
         it + 420
       else
@@ -115,10 +115,10 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     }
 
     // 日禽
-    val lunarStation = 虛.next(sevenYuanReminder)
+    val lunarStation = 虛.next(index420)
 
     // 元
-    val yuan = (sevenYuanReminder / 60) + 1
+    val yuan = (index420 / 60) + 1
 
     // 將
     val general = (dayHourImpl.getDay(lmt, loc).getAheadOf(StemBranch.甲子) / 15) + 1
