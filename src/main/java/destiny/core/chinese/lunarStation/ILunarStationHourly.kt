@@ -21,6 +21,79 @@ import java.util.*
 interface ILunarStationHourly : Descriptive {
 
   fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
+
+  companion object {
+    /**
+     * 翻禽 ( 他將 )
+     * 週時支上起將星，順行逐位向時禽。尋得時禽權且逆，回卓時上覓他人。
+     * 順數一週逆一轉，週數兩轉兩番禽。時師若不加進將，枉死千年亦不靈。
+     */
+    fun getOpponent(dayIndex: DayIndex, hourStation: LunarStation): LunarStation {
+      val leader = dayIndex.leader()
+
+      val steps = hourStation.getAheadOf(leader)
+      return leader.next(steps).next(steps)
+    }
+
+    /**
+     * 倒將 (我正將)
+     * @param opponent 翻禽
+     */
+    fun getReversed(hourStation: LunarStation, opponent: LunarStation): LunarStation {
+      val steps = opponent.getAheadOf(hourStation)
+      return hourStation.next(steps).next(steps)
+    }
+
+    /**
+     * 倒將 (我正將)
+     */
+    fun getReversed(dayIndex: DayIndex, hourStation: LunarStation): LunarStation {
+      // 先求出 翻禽
+      val opponent = getOpponent(dayIndex, hourStation)
+      return getReversed(hourStation, opponent)
+    }
+
+    /**
+     * 活曜 (我本身) , method 1
+     * 陽畢陰尾金牛頭，木虛水氐火奎流，土翼常將寅上轉，此是翻禽活曜頭。
+     */
+    fun getLive1(hourStation: LunarStation, hourBranch : Branch) : LunarStation {
+      val start = when(hourStation.planet) {
+        SUN -> 畢
+        MOON -> 尾
+        VENUS -> 牛
+        JUPITER -> 虛
+        MERCURY -> 氐
+        MARS -> 奎
+        SATURN -> 翼
+        else -> throw IllegalArgumentException("impossible")
+      }
+      val step1 = hourStation.getAheadOf(start)
+      val step2 = hourBranch.getAheadOf(Branch.寅.prev(step1))
+      return start.next(step1).next(step2)
+    }
+
+    /**
+     * 活曜 (我本身) , method 2
+     * 陽畢陰尾金牛頭，木虛水氐火奎流，土箕常將寅上轉，此是翻禽活曜頭。
+     * 此詩訣土宿時從箕水豹起
+     */
+    fun getLive2(hourStation: LunarStation, hourBranch : Branch) : LunarStation {
+      val start = when(hourStation.planet) {
+        SUN -> 畢
+        MOON -> 尾
+        VENUS -> 牛
+        JUPITER -> 虛
+        MERCURY -> 氐
+        MARS -> 奎
+        SATURN -> 箕
+        else -> throw IllegalArgumentException("impossible")
+      }
+      val step1 = hourStation.getAheadOf(start)
+      val step2 = hourBranch.getAheadOf(Branch.寅.prev(step1))
+      return start.next(step1).next(step2)
+    }
+  }
 }
 
 /**
@@ -57,7 +130,7 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
 
   override fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
-    val (dayStation, dayYuan) = dailyImpl.getDailyStation(lmt, loc)
+    val (dayStation, dayYuan) = dailyImpl.getDailyStation(lmt, loc).let { it.daily() to it.yuan() }
     val dayPlanet = dayStation.planet
 
     val hourBranch: Branch = dayHourImpl.getHour(lmt, loc)
@@ -130,7 +203,7 @@ class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
 
   override fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
-    val (dayStation, _) = dailyImpl.getDailyStation(lmt, loc)
+    val dayStation = dailyImpl.getDailyStation(lmt, loc).daily()
 
     val start = when (dayStation.planet) {
       SUN -> 虛

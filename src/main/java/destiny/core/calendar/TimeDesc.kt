@@ -45,9 +45,7 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
   data class TypeHour(override val lmt: LocalDateTime,
                       val b: Branch,
                       val lunarStation: LunarStation,
-                      override val descs: List<String>) : TimeDesc(lmt, descs) {
-    constructor(lmt: LocalDateTime, b: Branch, desc: String) : this(lmt , b, LunarStation.虛 , listOf(desc))
-  }
+                      override val descs: List<String>) : TimeDesc(lmt, descs)
 
 
   /** 日、月 四個至點 */

@@ -7,7 +7,6 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.chinese.Branch
-import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
@@ -31,7 +30,7 @@ import java.time.temporal.ChronoField
 interface ILunarStationDaily {
 
   /** 日禽 , 幾元 , 幾將 */
-  fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<LunarStation, Int, Int>
+  fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): DayIndex
 
 
   companion object {
@@ -60,7 +59,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     return Duration.between(nextZiStart, nextMidnight).abs()
   }
 
-  override fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): Triple<LunarStation, Int, Int> {
+  override fun getDailyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): DayIndex {
 
     val hourSb: Branch = dayHourImpl.getHour(lmt, loc)
 
@@ -113,17 +112,18 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
       else
         it
     }
+    return DayIndex(index420)
 
-    // 日禽
-    val lunarStation = 虛.next(index420)
-
-    // 元
-    val yuan = (index420 / 60) + 1
-
-    // 將
-    val general = (dayHourImpl.getDay(lmt, loc).getAheadOf(StemBranch.甲子) / 15) + 1
-
-    return Triple(lunarStation, yuan, general)
+//    // 日禽
+//    val lunarStation = 虛.next(index420)
+//
+//    // 元
+//    val yuan = (index420 / 60) + 1
+//
+//    // 將
+//    val general = (dayHourImpl.getDay(lmt, loc).getAheadOf(StemBranch.甲子) / 15) + 1
+//
+//    return Triple(lunarStation, yuan, general)
   }
 
   override fun equals(other: Any?): Boolean {

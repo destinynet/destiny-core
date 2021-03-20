@@ -56,7 +56,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
           )
           Scale.MONTH to monthlyImpl.getMonthlyStation(yearlyStation, monthNumber)
         }
-        Scale.DAY -> Scale.DAY to dailyImpl.getDailyStation(lmt, loc).first
+        Scale.DAY -> Scale.DAY to dailyImpl.getDailyStation(lmt, loc).daily()
         Scale.HOUR -> Scale.HOUR to hourlyImpl.getHourlyStation(lmt, loc)
       }
     }.toMap()

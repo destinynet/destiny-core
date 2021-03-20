@@ -176,7 +176,7 @@ class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
     )
     val monthlyStation = monthlyImpl.getMonthlyStation(yearlyStation, monthNumber)
     val daySb: StemBranch = dayHourImpl.getDay(lmt, loc)
-    val dailyStation = dailyImpl.getDailyStation(lmt, loc).first
+    val dailyStation = dailyImpl.getDailyStation(lmt, loc).daily()
     val hourlyStation = hourlyImpl.getHourlyStation(lmt, loc)
     val hourBranch = dayHourImpl.getHour(lmt, loc)
 

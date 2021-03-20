@@ -6,15 +6,22 @@ package destiny.core.astrology
 import destiny.core.astrology.LunarStation.*
 import destiny.core.chinese.toString
 import java.util.*
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 internal class LunarStationTest {
 
   @Test
   fun testLoop() {
+    assertEquals(0 , 角.getAheadOf(角))
+    assertEquals(1 , 亢.getAheadOf(角))
+    assertEquals(2 , 氐.getAheadOf(角))
+    assertEquals(27 , 軫.getAheadOf(角))
+
+    assertEquals(0 , 軫.getAheadOf(軫))
+    assertEquals(1 , 角.getAheadOf(軫))
+    assertEquals(2 , 亢.getAheadOf(軫))
+    assertEquals(27 , 翼.getAheadOf(軫))
+
     assertSame(亢, 角.next)
     assertSame(軫, 角.prev)
 
