@@ -11,7 +11,9 @@ import destiny.core.News.NorthSouth.NORTH
 import destiny.core.News.NorthSouth.SOUTH
 import destiny.core.astrology.Planet.*
 import destiny.core.chinese.Animal
+import destiny.core.chinese.toString
 import destiny.tools.ArrayTools
+import java.util.*
 
 /** 二十八宿 */
 sealed class LunarStation(val news: News,
@@ -49,6 +51,11 @@ sealed class LunarStation(val news: News,
   object 張 : LunarStation(SOUTH, "張", Animal.鹿, MOON)
   object 翼 : LunarStation(SOUTH, "翼", Animal.蛇, MARS)
   object 軫 : LunarStation(SOUTH, "軫", Animal.蚓, MERCURY)
+
+  /** 角木蛟 , 亢金龍 ... 這樣的完整名稱 :  星 + 行星星曜 + 動物 , 共三字元 */
+  fun getFullName(locale: Locale) : String {
+    return "${this.toString(locale)}${this.planet.getAbbreviation(locale)}${this.animal.toString(locale)}"
+  }
 
   override fun next(n: Int): LunarStation {
     val thisIndex = values.indexOf(this)

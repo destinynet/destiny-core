@@ -28,7 +28,9 @@ enum class EclipseTime {
 
 
 sealed class TimeDesc(open val lmt: LocalDateTime,
-                      open val desc: String) : Serializable, Comparable<TimeDesc> {
+                      open val descs: List<String>) : Serializable, Comparable<TimeDesc> {
+
+  constructor(lmt: LocalDateTime, desc: String) : this(lmt, listOf(desc))
 
   override fun compareTo(other: TimeDesc): Int {
     return when {
@@ -39,23 +41,23 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
   }
 
   /** 時辰開始 */
-  data class TypeHour(override val lmt: LocalDateTime, override val desc: String, val b: Branch) : TimeDesc(lmt, desc)
+  data class TypeHour(val b: Branch, override val lmt: LocalDateTime, override val descs: List<String>) : TimeDesc(lmt, descs) {
+    constructor(b: Branch, lmt: LocalDateTime, desc: String) : this(b, lmt, listOf(desc))
+  }
 
 
   /** 日、月 四個至點 */
   data class TypeTransPoint(override val lmt: LocalDateTime,
-                            override val desc: String,
+                            val desc: String,
                             val point: Point,
-                            val tp: TransPoint
-  ) : TimeDesc(lmt, desc)
+                            val tp: TransPoint) : TimeDesc(lmt, listOf(desc))
 
   /** 節氣 */
-  data class TypeSolarTerms(override val lmt: LocalDateTime, override val desc: String, val solarTerms: SolarTerms) :
-    TimeDesc(lmt, desc)
+  data class TypeSolarTerms(override val lmt: LocalDateTime, val desc: String, val solarTerms: SolarTerms) :
+    TimeDesc(lmt, listOf(desc))
 
   /** 日月交角 */
-  data class TypeSunMoon(override val lmt: LocalDateTime, override val desc: String, val degree: Int) :
-    TimeDesc(lmt, desc)
+  data class TypeSunMoon(override val lmt: LocalDateTime, val desc: String, val degree: Int) : TimeDesc(lmt, listOf(desc))
 
   /** 日食 */
   data class TypeSolarEclipse(override val lmt: LocalDateTime,

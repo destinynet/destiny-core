@@ -16,15 +16,22 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface ILunarStationContext {
 
+  val yearlyImpl: ILunarStationYearly
+  val monthlyImpl: ILunarStationMonthly
+  val dailyImpl: ILunarStationDaily
+  val hourlyImpl: ILunarStationHourly
+
   fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                 scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR)): Map<Scale, LunarStation>
+
+
 }
 
 
-class LunarStationContext(val yearlyImpl: ILunarStationYearly,
-                          val monthlyImpl: ILunarStationMonthly,
-                          val dailyImpl: ILunarStationDaily,
-                          val hourlyImpl: ILunarStationHourly,
+class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
+                          override val monthlyImpl: ILunarStationMonthly,
+                          override val dailyImpl: ILunarStationDaily,
+                          override val hourlyImpl: ILunarStationHourly,
 
                           val yearMonthImpl: IYearMonth,
                           val dayHourImpl: IDayHour,
