@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.astrology.LunarStation
 import destiny.core.astrology.Point
 import destiny.core.astrology.TransPoint
 import destiny.core.astrology.eclipse.ILunarEclipse
@@ -41,8 +42,11 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
   }
 
   /** 時辰開始 */
-  data class TypeHour(val b: Branch, override val lmt: LocalDateTime, override val descs: List<String>) : TimeDesc(lmt, descs) {
-    constructor(b: Branch, lmt: LocalDateTime, desc: String) : this(b, lmt, listOf(desc))
+  data class TypeHour(override val lmt: LocalDateTime,
+                      val b: Branch,
+                      val lunarStation: LunarStation,
+                      override val descs: List<String>) : TimeDesc(lmt, descs) {
+    constructor(lmt: LocalDateTime, b: Branch, desc: String) : this(lmt , b, LunarStation.虛 , listOf(desc))
   }
 
 
