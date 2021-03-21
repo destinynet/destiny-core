@@ -99,8 +99,18 @@ internal class ILunarStationHourlyTest {
    * 月鹿就是此時的活曜。
    */
   @Test
-  fun testLive1Sample() {
+  fun testLive1Sample1() {
     assertSame(張, ILunarStationHourly.getLive1(婁, Branch.巳))
+  }
+
+  /**
+   * 鍾義明《擇日精萃》 , page 575
+   *
+   * 民國83年農曆10月11日 午時 (陽曆 1994/11/13 )
+   */
+  @Test
+  fun testLive1Sample2() {
+    assertSame(危, ILunarStationHourly.getLive1(心, Branch.午))
   }
 
   /**

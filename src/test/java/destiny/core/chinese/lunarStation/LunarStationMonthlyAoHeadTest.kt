@@ -21,10 +21,10 @@ internal class LunarStationMonthlyAoHeadTest {
   @Test
   fun testMonth() {
     val impl = LunarStationMonthlyAoHead()
-    assertSame(牛 , impl.getMonthlyStation(箕 , 1))
-    assertSame(女 , impl.getMonthlyStation(箕 , 2))
-    assertSame(虛 , impl.getMonthlyStation(箕 , 3))
-    assertSame(危 , impl.getMonthlyStation(箕 , 4))
-    assertSame(室 , impl.getMonthlyStation(箕 , 5))
+    assertSame(牛 , impl.getMonthly(箕 , 1))
+    assertSame(女 , impl.getMonthly(箕 , 2))
+    assertSame(虛 , impl.getMonthly(箕 , 3))
+    assertSame(危 , impl.getMonthly(箕 , 4))
+    assertSame(室 , impl.getMonthly(箕 , 5))
   }
 }

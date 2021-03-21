@@ -14,7 +14,7 @@ import java.util.*
 /** 二十八星宿 值月 */
 interface ILunarStationMonthly : Descriptive {
 
-  fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation
+  fun getMonthly(yearStation: LunarStation, monthNumber: Int): LunarStation
 
 }
 
@@ -45,7 +45,7 @@ interface ILunarStationMonthly : Descriptive {
 )
 class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
 
-  override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
+  override fun getMonthly(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)
   }
 
@@ -95,7 +95,7 @@ class LunarStationMonthlyAoHead : ILunarStationMonthly, Serializable {
 )
 class LunarStationMonthlyAnimalExplained : ILunarStationMonthly, Serializable {
 
-  override fun getMonthlyStation(yearStation: LunarStation, monthNumber: Int): LunarStation {
+  override fun getMonthly(yearStation: LunarStation, monthNumber: Int): LunarStation {
     return getFirstMonth(yearStation.planet).next(monthNumber - 1)
   }
 

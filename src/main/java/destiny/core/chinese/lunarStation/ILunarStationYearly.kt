@@ -1,6 +1,5 @@
 package destiny.core.chinese.lunarStation
 
-import destiny.core.astrology.LunarStation
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.IDayHour
@@ -16,7 +15,7 @@ import java.time.temporal.ChronoField
  * 二十八星宿值年
  *
  *
- * [YearShift.METHOD2]
+ * [YearShift.EPOCH_1864]
  * 年禽還有一種推法，基本定位為
  * 公元964年為六元甲子，
  * 公元1144年為七元甲子，
@@ -40,12 +39,14 @@ interface ILunarStationYearly {
 
   enum class YearShift {
     DEFAULT,
-    METHOD2
+    EPOCH_1864
   }
 
   val yearShift : YearShift
 
-  fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
+  fun getYearly(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex
+
+
 }
 
 
@@ -58,19 +59,14 @@ class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOL
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
                              val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
-  override fun getYearlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
+  override fun getYearly(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex {
 
-    val shift = when (yearShift) {
-      YearShift.DEFAULT -> 15
-      YearShift.METHOD2 -> 23
+    val epoch = when(yearShift) {
+      YearShift.DEFAULT -> 1564
+      YearShift.EPOCH_1864 -> 1864
     }
 
-    val index = ((lmt.get(ChronoField.YEAR) + shift) % 28).let { r ->
-      if (r == 0)
-        27
-      else
-        r - 1
-    }
+    val diffValue = lmt.get(ChronoField.YEAR) - epoch
 
     val (yearSb, yearSb2) = if (yearType == YearType.YEAR_SOLAR) {
       // 節氣立春換年
@@ -87,12 +83,20 @@ class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOL
       yearSb to yearSb2
     }
 
-    return LunarStation.values[index].let {
-      if (yearSb == yearSb2)
-        it
+
+    val value = (if (yearSb == yearSb2)
+      diffValue
+    else
+      diffValue - 1).let {
+      it % 420
+    }.let {
+      if (it < 0)
+        it + 420
       else
-        it.prev
+        it
     }
+
+    return YearIndex(value, epoch)
   }
 
   override fun equals(other: Any?): Boolean {

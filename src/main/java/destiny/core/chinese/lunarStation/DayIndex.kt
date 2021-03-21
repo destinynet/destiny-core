@@ -27,5 +27,5 @@ inline class DayIndex(val value: Int) {
   fun leader(): LunarStation = 虛.next((yuan() - 1) * 60 + (leaderIndex() - 1) * 15)
 
   /** 日禽 */
-  fun daily(): LunarStation = 虛.next(value)
+  fun station(): LunarStation = 虛.next(value)
 }

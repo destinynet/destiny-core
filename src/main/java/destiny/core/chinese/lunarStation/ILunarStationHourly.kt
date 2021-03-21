@@ -20,7 +20,7 @@ import java.util.*
  */
 interface ILunarStationHourly : Descriptive {
 
-  fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
+  fun getHourly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation
 
   companion object {
     /**
@@ -55,7 +55,9 @@ interface ILunarStationHourly : Descriptive {
 
     /**
      * 活曜 (我本身) , method 1
-     * 陽畢陰尾金牛頭，木虛水氐火奎流，土翼常將寅上轉，此是翻禽活曜頭。
+     * A : 陽畢陰尾金牛頭，木虛水氐火奎流，土翼常將寅上轉，此是翻禽活曜頭。
+     * B : 日畢月尾火奎牛，水氐木虛金尋牛，土曜還從翼上起，活曜加寅逆推求。
+     * A 與 B 講的是同一套算法。
      */
     fun getLive1(hourStation: LunarStation, hourBranch : Branch) : LunarStation {
       val start = when(hourStation.planet) {
@@ -128,9 +130,9 @@ interface ILunarStationHourly : Descriptive {
 class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
                                  private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
 
-  override fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
+  override fun getHourly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
-    val (dayStation, dayYuan) = dailyImpl.getDailyStation(lmt, loc).let { it.daily() to it.yuan() }
+    val (dayStation, dayYuan) = dailyImpl.getDaily(lmt, loc).let { it.station() to it.yuan() }
     val dayPlanet = dayStation.planet
 
     val hourBranch: Branch = dayHourImpl.getHour(lmt, loc)
@@ -201,9 +203,9 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
 class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
                                   private val dayHourImpl: IDayHour) : ILunarStationHourly, Serializable {
 
-  override fun getHourlyStation(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
+  override fun getHourly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
-    val dayStation = dailyImpl.getDailyStation(lmt, loc).daily()
+    val dayStation = dailyImpl.getDaily(lmt, loc).station()
 
     val start = when (dayStation.planet) {
       SUN -> 虛
