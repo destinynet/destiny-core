@@ -1,5 +1,6 @@
 package destiny.core.chinese.lunarStation
 
+import destiny.core.astrology.LunarStation
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.eightwords.IDayHour
@@ -44,8 +45,11 @@ interface ILunarStationYearly {
 
   val yearShift : YearShift
 
-  fun getYearly(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex
+  fun getYearlyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex
 
+  fun getYearly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
+    return getYearlyIndex(lmt, loc).station
+  }
 
 }
 
@@ -59,7 +63,7 @@ class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOL
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
                              val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
-  override fun getYearly(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex {
+  override fun getYearlyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex {
 
     val epoch = when(yearShift) {
       YearShift.DEFAULT -> 1564

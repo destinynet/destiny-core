@@ -164,7 +164,7 @@ class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
 
   @OptIn(ExperimentalStdlibApi::class)
   override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Pair<Scale, Scale>> {
-    val yearIndex = yearlyImpl.getYearly(lmt, loc)
+    val yearly = yearlyImpl.getYearly(lmt, loc)
     val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
     val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
     val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
@@ -174,15 +174,15 @@ class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
       chineseDate.day,
       monthAlgo
     )
-    val monthlyStation = monthlyImpl.getMonthly(yearIndex.station, monthNumber)
+    val monthlyStation = monthlyImpl.getMonthly(yearly, monthNumber)
     val daySb: StemBranch = dayHourImpl.getDay(lmt, loc)
-    val dailyStation = dailyImpl.getDaily(lmt, loc).station()
+    val dailyStation = dailyImpl.getDaily(lmt, loc)
     val hourlyStation = hourlyImpl.getHourly(lmt, loc)
     val hourBranch = dayHourImpl.getHour(lmt, loc)
 
     return buildSet {
       // 年
-      if (isDayFoeForYear(yearIndex.station.planet, daySb.branch, dailyStation)) {
+      if (isDayFoeForYear(yearly.planet, daySb.branch, dailyStation)) {
         add(Scale.DAY to Scale.YEAR)
       }
 

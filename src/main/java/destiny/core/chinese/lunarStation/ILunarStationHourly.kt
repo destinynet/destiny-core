@@ -132,7 +132,7 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
 
   override fun getHourly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
-    val (dayStation, dayYuan) = dailyImpl.getDaily(lmt, loc).let { it.station() to it.yuan() }
+    val (dayStation, dayYuan) = dailyImpl.getDailyIndex(lmt, loc).let { it.station() to it.yuan() }
     val dayPlanet = dayStation.planet
 
     val hourBranch: Branch = dayHourImpl.getHour(lmt, loc)
@@ -205,7 +205,7 @@ class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
 
   override fun getHourly(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
 
-    val dayStation = dailyImpl.getDaily(lmt, loc).station()
+    val dayStation = dailyImpl.getDaily(lmt, loc)
 
     val start = when (dayStation.planet) {
       SUN -> 虛

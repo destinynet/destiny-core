@@ -42,9 +42,9 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
   override fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
     return scales.map { scale ->
       when (scale) {
-        Scale.YEAR -> Scale.YEAR to yearlyImpl.getYearly(lmt, loc).station
+        Scale.YEAR -> Scale.YEAR to yearlyImpl.getYearly(lmt, loc)
         Scale.MONTH -> {
-          val yearlyStation: LunarStation = yearlyImpl.getYearly(lmt, loc).station
+          val yearlyStation: LunarStation = yearlyImpl.getYearly(lmt, loc)
           val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
           val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
@@ -56,7 +56,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
           )
           Scale.MONTH to monthlyImpl.getMonthly(yearlyStation, monthNumber)
         }
-        Scale.DAY -> Scale.DAY to dailyImpl.getDaily(lmt, loc).station()
+        Scale.DAY -> Scale.DAY to dailyImpl.getDaily(lmt, loc)
         Scale.HOUR -> Scale.HOUR to hourlyImpl.getHourly(lmt, loc)
       }
     }.toMap()

@@ -30,8 +30,11 @@ import java.time.temporal.ChronoField
 interface ILunarStationDaily {
 
   /** 日禽 , 幾元 , 幾將 */
-  fun getDaily(lmt: ChronoLocalDateTime<*>, loc: ILocation): DayIndex
+  fun getDailyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): DayIndex
 
+  fun getDaily(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
+    return getDailyIndex(lmt, loc).station()
+  }
 
   companion object {
     fun getLeader(yuan: Int, general: Int): LunarStation {
@@ -59,7 +62,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     return Duration.between(nextZiStart, nextMidnight).abs()
   }
 
-  override fun getDaily(lmt: ChronoLocalDateTime<*>, loc: ILocation): DayIndex {
+  override fun getDailyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): DayIndex {
 
     val hourSb: Branch = dayHourImpl.getHour(lmt, loc)
 
