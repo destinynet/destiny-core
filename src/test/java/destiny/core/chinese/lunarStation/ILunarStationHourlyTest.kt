@@ -99,8 +99,8 @@ internal class ILunarStationHourlyTest {
    * 月鹿就是此時的活曜。
    */
   @Test
-  fun testLive1Sample1() {
-    assertSame(張, ILunarStationHourly.getLive1(婁, Branch.巳))
+  fun testSelf1Sample1() {
+    assertSame(張, ILunarStationHourly.getSelf1(婁, Branch.巳))
   }
 
   /**
@@ -109,8 +109,8 @@ internal class ILunarStationHourlyTest {
    * 民國83年農曆10月11日 午時 (陽曆 1994/11/13 )
    */
   @Test
-  fun testLive1Sample2() {
-    assertSame(危, ILunarStationHourly.getLive1(心, Branch.午))
+  fun testSelf1Sample2() {
+    assertSame(危, ILunarStationHourly.getSelf1(心, Branch.午))
   }
 
   /**
@@ -125,7 +125,7 @@ internal class ILunarStationHourlyTest {
    * 活曜為斗木獬。（注意此處使用的時禽是不分七元的起法）
    */
   @Test
-  fun testLive2Sample() {
-    assertSame(斗, ILunarStationHourly.getLive2(房, Branch.巳))
+  fun testSelf2Sample() {
+    assertSame(斗, ILunarStationHourly.getSelf2(房, Branch.巳))
   }
 }

@@ -59,7 +59,7 @@ interface ILunarStationHourly : Descriptive {
      * B : 日畢月尾火奎牛，水氐木虛金尋牛，土曜還從翼上起，活曜加寅逆推求。
      * A 與 B 講的是同一套算法。
      */
-    fun getLive1(hourStation: LunarStation, hourBranch : Branch) : LunarStation {
+    fun getSelf1(hourStation: LunarStation, hourBranch : Branch) : LunarStation {
       val start = when(hourStation.planet) {
         SUN -> 畢
         MOON -> 尾
@@ -80,7 +80,7 @@ interface ILunarStationHourly : Descriptive {
      * 陽畢陰尾金牛頭，木虛水氐火奎流，土箕常將寅上轉，此是翻禽活曜頭。
      * 此詩訣土宿時從箕水豹起
      */
-    fun getLive2(hourStation: LunarStation, hourBranch : Branch) : LunarStation {
+    fun getSelf2(hourStation: LunarStation, hourBranch : Branch) : LunarStation {
       val start = when(hourStation.planet) {
         SUN -> 畢
         MOON -> 尾
