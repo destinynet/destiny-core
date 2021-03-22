@@ -17,14 +17,12 @@ interface ILunarStationContextModel {
 
   /** 翻禽（彼禽） */
   val oppo: LunarStation
-  val oppoHouseMap: Map<Branch, OppoHouse>
-    get() {
-      oppo.planet.let {  }
-      return emptyMap()
-    }
 
   /** 活曜（我禽） */
   val self: LunarStation
+
+  val oppoHouseMap: Map<Branch, OppoHouse>
+  val selfHouseMap: Map<Branch, SelfHouse>
 
   /** 暗金伏斷 */
   val hiddenVenusFoe: Set<Pair<Scale, Scale>>
@@ -38,4 +36,6 @@ data class ContextModel(override val year: LunarStation,
                         override val hour: LunarStation,
                         override val oppo: LunarStation,
                         override val self: LunarStation,
+                        override val oppoHouseMap: Map<Branch, OppoHouse>,
+                        override val selfHouseMap: Map<Branch, SelfHouse>,
                         override val hiddenVenusFoe: Set<Pair<Scale, Scale>>) : ILunarStationContextModel, Serializable
