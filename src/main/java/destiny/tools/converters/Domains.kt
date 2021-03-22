@@ -125,5 +125,6 @@ object Domains {
       const val KEY_SELECT = "lsH_Sel"
     }
 
+    const val KEY_HIDDEN_VENUS_FOE = "lsHvf"
   }
 }

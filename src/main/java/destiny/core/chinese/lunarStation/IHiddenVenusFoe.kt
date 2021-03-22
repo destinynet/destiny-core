@@ -22,6 +22,9 @@ import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.isDayFoeForDa
 import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.isDayFoeForYear
 import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.isHourFoeForHour
 import destiny.core.chinese.lunarStation.IHiddenVenusFoe.Companion.monthFoeMap
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -152,6 +155,11 @@ interface IHiddenVenusFoe {
  * 《禽書》云：凡選用時若天干帶壬癸，更直氐房心虛室奎婁昴觜鬼柳參此十二宿者，則截其路而不能濟也。此時縱得奇門，亦主阻滯，切不可用，此兵家之大忌。
  *
  */
+@Impl(
+  [
+    Domain(Domains.LunarStation.KEY_HIDDEN_VENUS_FOE, HiddenVenusFoeAnimalStar.VALUE, true)
+  ]
+)
 class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
                                private val monthlyImpl: ILunarStationMonthly,
                                private val dailyImpl: ILunarStationDaily,
@@ -201,5 +209,9 @@ class HiddenVenusFoeAnimalStar(private val yearlyImpl: ILunarStationYearly,
         add(Scale.HOUR to Scale.HOUR)
       }
     }
+  }
+
+  companion object {
+    const val VALUE = "animalStar"
   }
 }
