@@ -12,26 +12,26 @@ class circleUtilsTest {
   @Test
   fun testGetNormalizeDegree() {
     //測試大於零的度數
-    assertTrue(circleUtils.getNormalizeDegree(0.0) == 0.0)
-    assertTrue(circleUtils.getNormalizeDegree(359.0) == 359.0)
-    assertTrue(circleUtils.getNormalizeDegree(360.0) == 0.0)
-    assertTrue(circleUtils.getNormalizeDegree(361.0) == 1.0)
-    assertTrue(circleUtils.getNormalizeDegree(720.0) == 0.0)
-    assertTrue(circleUtils.getNormalizeDegree(721.0) == 1.0)
+    assertTrue(CircleTools.getNormalizeDegree(0.0) == 0.0)
+    assertTrue(CircleTools.getNormalizeDegree(359.0) == 359.0)
+    assertTrue(CircleTools.getNormalizeDegree(360.0) == 0.0)
+    assertTrue(CircleTools.getNormalizeDegree(361.0) == 1.0)
+    assertTrue(CircleTools.getNormalizeDegree(720.0) == 0.0)
+    assertTrue(CircleTools.getNormalizeDegree(721.0) == 1.0)
 
     //測試小於零的度數
-    assertTrue(circleUtils.getNormalizeDegree(-1.0) == 359.0)
-    assertTrue(circleUtils.getNormalizeDegree(-359.0) == 1.0)
-    assertTrue(circleUtils.getNormalizeDegree(-360.0) == 0.0)
-    assertTrue(circleUtils.getNormalizeDegree(-361.0) == 359.0)
-    assertTrue(circleUtils.getNormalizeDegree(-719.0) == 1.0)
-    assertTrue(circleUtils.getNormalizeDegree(-720.0) == 0.0)
-    assertTrue(circleUtils.getNormalizeDegree(-721.0) == 359.0)
+    assertTrue(CircleTools.getNormalizeDegree(-1.0) == 359.0)
+    assertTrue(CircleTools.getNormalizeDegree(-359.0) == 1.0)
+    assertTrue(CircleTools.getNormalizeDegree(-360.0) == 0.0)
+    assertTrue(CircleTools.getNormalizeDegree(-361.0) == 359.0)
+    assertTrue(CircleTools.getNormalizeDegree(-719.0) == 1.0)
+    assertTrue(CircleTools.getNormalizeDegree(-720.0) == 0.0)
+    assertTrue(CircleTools.getNormalizeDegree(-721.0) == 359.0)
   }
 
   @Test
   fun testAheadOf() {
-    with(circleUtils) {
+    with(CircleTools) {
       assertEquals(1.0 , 1.0.aheadOf(0.0) )
       assertEquals(180.0 , 180.0.aheadOf(0.0) )
       assertEquals(181.0 , 181.0.aheadOf(0.0) )

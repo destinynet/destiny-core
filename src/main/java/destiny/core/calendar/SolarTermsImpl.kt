@@ -10,7 +10,7 @@ import destiny.core.astrology.Coordinate.ECLIPTIC
 import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet.SUN
-import destiny.tools.circleUtils.getNormalizeDegree
+import destiny.tools.CircleTools.getNormalizeDegree
 import java.io.Serializable
 
 /**

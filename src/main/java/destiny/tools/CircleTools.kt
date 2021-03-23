@@ -4,7 +4,9 @@
  */
 package destiny.tools
 
-object circleUtils {
+import kotlin.math.abs
+
+object CircleTools {
 
   /** 將度數 normalize 到 0(含)~360(不含) 的區間  */
   private fun Double.normalize() : Double {
@@ -18,6 +20,18 @@ object circleUtils {
   /** 將度數 normalize 到 0(含)~360(不含) 的區間  */
   fun getNormalizeDegree(degree: Double): Double {
     return degree.normalize()
+  }
+
+  /** 中間度數 */
+  fun getCenterDegree(from: Double, to: Double): Double {
+    return getNormalizeDegree((from + to) / 2).let { c ->
+      // 避免右方的 0 度 flip 到左方
+      if (abs(from - to) >= 180) {
+        getNormalizeDegree(c - 180)
+      } else {
+        c
+      }
+    }
   }
 
   /**

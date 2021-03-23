@@ -11,7 +11,7 @@ import destiny.core.astrology.Element.*
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.ZodiacSign.Companion.of
-import destiny.tools.circleUtils
+import destiny.tools.CircleTools
 import java.io.Serializable
 
 
@@ -153,7 +153,7 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
 class TermPtolomyImpl : ITerm, Serializable {
 
   override fun getPoint(degree: Double): Point {
-    val normalizedDegree = circleUtils.getNormalizeDegree(degree)
+    val normalizedDegree = CircleTools.getNormalizeDegree(degree)
     val signIndex = normalizedDegree.toInt() / 30
 
     return (0..4)
@@ -277,7 +277,7 @@ class FacePtolomyImpl : IFace, Serializable {
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
   override fun getPoint(degree: Double): Planet {
-    val index = (circleUtils.getNormalizeDegree(degree) / 10).toInt()
+    val index = (CircleTools.getNormalizeDegree(degree) / 10).toInt()
     return faceStarList[index]
   }
 
@@ -463,7 +463,7 @@ abstract class AbstractPtolemy : Serializable {
 
     /** Fall Degree Map , 即為 Exalt 對沖的度數 */
     internal val fallDegreeMap: Map<Point, Double> = exaltDegreeMap
-      .mapValues { (_, deg) -> circleUtils.getNormalizeDegree(deg + 180) }
+      .mapValues { (_, deg) -> CircleTools.getNormalizeDegree(deg + 180) }
       .toMap()
 
     /** 承上，儲存的是星座 */

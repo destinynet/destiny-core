@@ -4,7 +4,7 @@
 package destiny.core.fengshui
 
 import destiny.core.iching.Symbol
-import destiny.tools.circleUtils
+import destiny.tools.CircleTools
 
 abstract class AbstractMountainCompass : ICompass<Mountain> {
 
@@ -20,14 +20,14 @@ abstract class AbstractMountainCompass : ICompass<Mountain> {
    * 取得某個山的起始度數
    */
   override fun getStartDegree(t: Mountain): Double {
-    return circleUtils.getNormalizeDegree(t.index * stepDegree + initDegree)
+    return CircleTools.getNormalizeDegree(t.index * stepDegree + initDegree)
   }
 
   /**
    * 取得某個山的結束度數
    */
   override fun getEndDegree(t: Mountain): Double {
-    return circleUtils.getNormalizeDegree((t.index + 1) * stepDegree + initDegree)
+    return CircleTools.getNormalizeDegree((t.index + 1) * stepDegree + initDegree)
   }
 
   /** 此座山 中心點度數 */
@@ -44,7 +44,7 @@ abstract class AbstractMountainCompass : ICompass<Mountain> {
    * 取得目前這個度數位於哪個山當中
    */
   override fun get(degree: Double): Mountain {
-    val index = with(circleUtils) {
+    val index = with(CircleTools) {
       (degree.aheadOf(initDegree) / stepDegree).toInt()
     }
     return Mountain.values()[index]
