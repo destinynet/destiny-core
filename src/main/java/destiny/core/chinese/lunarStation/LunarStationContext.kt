@@ -1,13 +1,13 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.Scale
+import destiny.core.Scale.*
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
-import destiny.core.calendar.eightwords.IDayHour
-import destiny.core.calendar.eightwords.IYearMonth
+import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.Branch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -24,7 +24,10 @@ interface ILunarStationContext {
   val hourlyImpl: ILunarStationHourly
 
   fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation,
-                scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR)): Map<Scale, LunarStation>
+                scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
+
+
+  fun getModel(lmt: ChronoLocalDateTime<*> , loc: ILocation) : ILunarStationContextModel
 
   companion object {
 
@@ -73,8 +76,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
                           override val dailyImpl: ILunarStationDaily,
                           override val hourlyImpl: ILunarStationHourly,
 
-                          val yearMonthImpl: IYearMonth,
-                          val dayHourImpl: IDayHour,
+                          val eightWordsImpl : IEightWordsStandardFactory,
                           private val chineseDateImpl: IChineseDate,
                           val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
 ) : ILunarStationContext, Serializable {
@@ -82,11 +84,11 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
   override fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
     return scales.map { scale ->
       when (scale) {
-        Scale.YEAR -> Scale.YEAR to yearlyImpl.getYearly(lmt, loc)
-        Scale.MONTH -> {
+        YEAR -> YEAR to yearlyImpl.getYearly(lmt, loc)
+        MONTH -> {
           val yearlyStation: LunarStation = yearlyImpl.getYearly(lmt, loc)
-          val monthBranch = yearMonthImpl.getMonth(lmt, loc).branch
-          val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl)
+          val monthBranch = eightWordsImpl.yearMonthImpl.getMonth(lmt, loc).branch
+          val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, eightWordsImpl.dayHourImpl)
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
             chineseDate.month,
             chineseDate.leapMonth,
@@ -94,12 +96,31 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
             chineseDate.day,
             monthAlgo
           )
-          Scale.MONTH to monthlyImpl.getMonthly(yearlyStation, monthNumber)
+          MONTH to monthlyImpl.getMonthly(yearlyStation, monthNumber)
         }
-        Scale.DAY -> Scale.DAY to dailyImpl.getDaily(lmt, loc)
-        Scale.HOUR -> Scale.HOUR to hourlyImpl.getHourly(lmt, loc)
+        DAY -> DAY to dailyImpl.getDaily(lmt, loc)
+        HOUR -> HOUR to hourlyImpl.getHourly(lmt, loc)
       }
     }.toMap()
+  }
+
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): ILunarStationContextModel {
+    val eightWords = eightWordsImpl.getEightWords(lmt, loc)
+    val models = getModels(lmt, loc)
+
+    val dayIndex = dailyImpl.getDailyIndex(lmt, loc)
+    val hourStation = hourlyImpl.getHourly(lmt, loc)
+    val oppo = ILunarStationHourly.getOpponent(dayIndex, hourStation)
+    val self = ILunarStationHourly.getSelf1(hourStation, eightWords.hour.branch)
+
+    val oppoHouseMap = ILunarStationContext.getOppoHouseMap(oppo)
+    val selfHouseMap = ILunarStationContext.getSelfHouseMap(self)
+
+
+    return ContextModel(eightWords ,
+      models[YEAR]!! , models[MONTH]!! , dayIndex.station() , hourStation ,
+      oppo , self , oppoHouseMap , selfHouseMap , emptySet()
+    )
   }
 
   override fun equals(other: Any?): Boolean {
@@ -110,8 +131,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
     if (monthlyImpl != other.monthlyImpl) return false
     if (dailyImpl != other.dailyImpl) return false
     if (hourlyImpl != other.hourlyImpl) return false
-    if (yearMonthImpl != other.yearMonthImpl) return false
-    if (dayHourImpl != other.dayHourImpl) return false
+    if (eightWordsImpl != other.eightWordsImpl) return false
     if (chineseDateImpl != other.chineseDateImpl) return false
     if (monthAlgo != other.monthAlgo) return false
 
@@ -123,8 +143,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
     result = 31 * result + monthlyImpl.hashCode()
     result = 31 * result + dailyImpl.hashCode()
     result = 31 * result + hourlyImpl.hashCode()
-    result = 31 * result + yearMonthImpl.hashCode()
-    result = 31 * result + dayHourImpl.hashCode()
+    result = 31 * result + eightWordsImpl.hashCode()
     result = 31 * result + chineseDateImpl.hashCode()
     result = 31 * result + monthAlgo.hashCode()
     return result

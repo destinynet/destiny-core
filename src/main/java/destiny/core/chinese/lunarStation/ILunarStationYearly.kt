@@ -7,7 +7,7 @@ import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYear
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
-import destiny.core.chinese.lunarStation.ILunarStationYearly.YearShift
+import destiny.core.chinese.lunarStation.ILunarStationYearly.YearEpoch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
@@ -16,7 +16,7 @@ import java.time.temporal.ChronoField
  * 二十八星宿值年
  *
  *
- * [YearShift.EPOCH_1864]
+ * [YearEpoch.EPOCH_1864]
  * 年禽還有一種推法，基本定位為
  * 公元964年為六元甲子，
  * 公元1144年為七元甲子，
@@ -38,12 +38,12 @@ interface ILunarStationYearly {
 
   val yearType : YearType
 
-  enum class YearShift {
+  enum class YearEpoch {
     DEFAULT,
     EPOCH_1864
   }
 
-  val yearShift : YearShift
+  val yearEpoch : YearEpoch
 
   fun getYearlyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex
 
@@ -59,15 +59,15 @@ interface ILunarStationYearly {
  * @param yearType 立春 [YearType.YEAR_SOLAR] 換年 或是 陰曆初一 [YearType.YEAR_LUNAR] 換年
  * */
 class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOLAR,
-                             override val yearShift: YearShift = YearShift.DEFAULT,
+                             override val yearEpoch: YearEpoch = YearEpoch.DEFAULT,
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
                              val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
   override fun getYearlyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex {
 
-    val epoch = when(yearShift) {
-      YearShift.DEFAULT -> 1564
-      YearShift.EPOCH_1864 -> 1864
+    val epoch = when(yearEpoch) {
+      YearEpoch.DEFAULT -> 1564
+      YearEpoch.EPOCH_1864 -> 1864
     }
 
     val diffValue = lmt.get(ChronoField.YEAR) - epoch
@@ -108,7 +108,7 @@ class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOL
     if (other !is LunarStationYearlyImpl) return false
 
     if (yearType != other.yearType) return false
-    if (yearShift != other.yearShift) return false
+    if (yearEpoch != other.yearEpoch) return false
     if (yearImpl != other.yearImpl) return false
     if (chineseDateImpl != other.chineseDateImpl) return false
     if (dayHourImpl != other.dayHourImpl) return false
@@ -118,7 +118,7 @@ class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOL
 
   override fun hashCode(): Int {
     var result = yearType.hashCode()
-    result = 31 * result + yearShift.hashCode()
+    result = 31 * result + yearEpoch.hashCode()
     result = 31 * result + yearImpl.hashCode()
     result = 31 * result + chineseDateImpl.hashCode()
     result = 31 * result + dayHourImpl.hashCode()

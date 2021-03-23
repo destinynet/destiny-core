@@ -5,11 +5,14 @@ package destiny.core.chinese.lunarStation
 
 import destiny.core.Scale
 import destiny.core.astrology.LunarStation
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.chinese.Branch
 import java.io.Serializable
 
 
 interface ILunarStationContextModel {
+  val eightwords: IEightWords
+
   val year: LunarStation
   val month: LunarStation
   val day: LunarStation
@@ -30,7 +33,8 @@ interface ILunarStationContextModel {
 
 }
 
-data class ContextModel(override val year: LunarStation,
+data class ContextModel(override val eightwords: IEightWords,
+                        override val year: LunarStation,
                         override val month: LunarStation,
                         override val day: LunarStation,
                         override val hour: LunarStation,
