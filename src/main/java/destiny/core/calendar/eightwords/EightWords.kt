@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Scale
 import destiny.core.chinese.*
 import destiny.tools.ChineseStringTools
 import java.io.Serializable
@@ -19,6 +20,15 @@ interface IEightWordsNullable {
   /** 取得四柱  */
   val stemBranches: List<IStemBranchOptional>
     get() = listOf(year, month, day, hour)
+
+  fun get(scale: Scale): IStemBranchOptional {
+    return when(scale) {
+      Scale.YEAR -> year
+      Scale.MONTH -> month
+      Scale.DAY -> day
+      Scale.HOUR -> hour
+    }
+  }
 }
 
 interface IEightWords : IEightWordsNullable, IEightWordsNullableFactory {
