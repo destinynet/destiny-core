@@ -18,6 +18,15 @@ interface ILunarStationContextModel {
   val day: LunarStation
   val hour: LunarStation
 
+  fun getStation(scale: Scale) : LunarStation {
+    return when(scale) {
+      Scale.YEAR -> year
+      Scale.MONTH -> month
+      Scale.DAY -> day
+      Scale.HOUR -> hour
+    }
+  }
+
   /** 翻禽（彼禽） */
   val oppo: LunarStation
 
