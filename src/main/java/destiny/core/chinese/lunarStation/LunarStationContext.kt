@@ -53,7 +53,7 @@ interface ILunarStationContext {
     }
 
     /** 彼禽 */
-    fun getOppoHouse(oppo : LunarStation , hourBranch : Branch): OppoHouse {
+    fun getOppoHouse(oppo: LunarStation, hourBranch: Branch): OppoHouse {
       return startBranch(oppo.planet).let { b ->
         val steps = hourBranch.getAheadOf(b)
         OppoHouse.山.next(steps)
@@ -61,17 +61,16 @@ interface ILunarStationContext {
     }
 
     /** 彼禽 外圈 */
-    fun getOppoHouseMap(oppo: LunarStation): Map<Branch, OppoHouse> {
-      //val startPair = startBranch(oppo.planet) to OppoHouse.山
+    val oppoHouseMap: Map<Branch, OppoHouse> by lazy {
       val startPair = Branch.子 to OppoHouse.湯火
-      return generateSequence(startPair) { (branch, oppoHouse) ->
+      generateSequence(startPair) { (branch, oppoHouse) ->
         branch.next to oppoHouse.next
       }.take(12)
         .toMap()
     }
 
     /** 我禽 */
-    fun getSelfHouse(self : LunarStation , hourBranch : Branch): SelfHouse {
+    fun getSelfHouse(self: LunarStation, hourBranch: Branch): SelfHouse {
       return startBranch(self.planet).let { b ->
         val steps = hourBranch.getAheadOf(b)
         SelfHouse.山.next(steps)
@@ -79,10 +78,9 @@ interface ILunarStationContext {
     }
 
     /** 我禽 內圈 */
-    fun getSelfHouseMap(self: LunarStation): Map<Branch, SelfHouse> {
-      //val startPair = startBranch(self.planet) to SelfHouse.山
+    val selfHouseMap: Map<Branch, SelfHouse> by lazy {
       val startPair = Branch.子 to SelfHouse.湖
-      return generateSequence(startPair) { (branch, selfHouse) ->
+      generateSequence(startPair) { (branch, selfHouse) ->
         branch.next to selfHouse.next
       }.take(12)
         .toMap()
@@ -133,21 +131,13 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
     val oppo = ILunarStationHourly.getOpponent(dayIndex, hourStation)
     val self = ILunarStationHourly.getSelf1(hourStation, eightWords.hour.branch)
 
-    val oppoBranch = ILunarStationContext.startBranch(oppo.planet).next(eightWords.hour.branch.getAheadOf(Branch.子))
-    val selfBranch = ILunarStationContext.startBranch(self.planet).next(eightWords.hour.branch.getAheadOf(Branch.子))
-
-    val oppoHouse = ILunarStationContext.getOppoHouse(oppo , eightWords.hour.branch)
-    val selfHouse = ILunarStationContext.getSelfHouse(self , eightWords.hour.branch)
-
-
-    val oppoHouseMap = ILunarStationContext.getOppoHouseMap(oppo)
-    val selfHouseMap = ILunarStationContext.getSelfHouseMap(self)
-
+    val oppoHouse = ILunarStationContext.getOppoHouse(oppo, eightWords.hour.branch)
+    val selfHouse = ILunarStationContext.getSelfHouse(self, eightWords.hour.branch)
 
     return ContextModel(
       eightWords,
       models[YEAR]!!, models[MONTH]!!, dayIndex.station(), hourStation,
-      oppo, oppoBranch , self, selfBranch , oppoHouseMap, selfHouseMap, emptySet()
+      oppo, oppoHouse, self, selfHouse, emptySet()
     )
   }
 
