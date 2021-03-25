@@ -43,7 +43,7 @@ class HexagramPlateCanvas(hex: ISingleHexagramWithName) : ColorCanvas(9, 32, Chi
 
     val 本卦描述 = ColorCanvas(1, 20).apply {
       setText(hex.symbol.toString() + hex.symbol.fiveElement.toString(), 1, 1)
-      val name = when (hex.宮序) {
+      val name = when (hex.symbolSteps) {
         1 -> "本宮卦"
         2 -> "一世卦"
         3 -> "二世卦"
@@ -53,7 +53,7 @@ class HexagramPlateCanvas(hex: ISingleHexagramWithName) : ColorCanvas(9, 32, Chi
         7 -> "遊魂卦"
         0 -> "歸魂卦"
         8 -> "歸魂卦"
-        else -> throw IllegalArgumentException("本卦宮序 : ${hex.宮序}")
+        else -> throw IllegalArgumentException("本卦宮序 : ${hex.symbolSteps}")
       }
       setText(name, 1, 5)
       setText("：", 1, 11)
@@ -84,8 +84,8 @@ class HexagramPlateCanvas(hex: ISingleHexagramWithName) : ColorCanvas(9, 32, Chi
     val 本卦世應 = ColorCanvas(6, 2).apply {
       for (i in 6 downTo 1) {
         when (i) {
-          hex.世爻 -> setText("世", 7 - i, 1, "green", null, null, null, false, null)
-          hex.應爻 -> setText("應", 7 - i, 1, "green", null, null, null, false, null)
+          hex.self -> setText("世", 7 - i, 1, "green", null, null, null, false, null)
+          hex.oppo -> setText("應", 7 - i, 1, "green", null, null, null, false, null)
           else -> setText(ChineseStringTools.NULL_CHAR, 7 - i, 1)
         }
       }
@@ -93,7 +93,7 @@ class HexagramPlateCanvas(hex: ISingleHexagramWithName) : ColorCanvas(9, 32, Chi
 
     val 本卦六親 = ColorCanvas(6, 4).apply {
       for (i in 6 downTo 1) {
-        setText(hex.六親[i - 1].toString(), 7 - i, 1)
+        setText(hex.relatives[i - 1].toString(), 7 - i, 1)
       }
     }
 

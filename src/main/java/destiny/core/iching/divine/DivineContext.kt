@@ -69,7 +69,7 @@ class DivineContext(
     val decoratedDate = lmt?.let { DateDecorator.getOutputString(it.toLocalDate(), Locale.TAIWAN) }
     val decoratedDateTime = lmt?.let { TimeSecDecorator.getOutputString(it, Locale.TAIWAN) }
 
-    val meta = Meta(combinedWithMetaNameDayMonth.納甲系統, combinedWithMetaNameDayMonth.伏神系統)
+    val meta = Meta(combinedWithMetaNameDayMonth.settings, combinedWithMetaNameDayMonth.hiddenEnergy)
     val divineMeta = DivineMeta(gender, question, approach, gmtJulDay, loc, place,
       decoratedDate, decoratedDateTime, meta, null)
 

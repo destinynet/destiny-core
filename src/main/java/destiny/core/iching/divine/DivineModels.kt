@@ -21,12 +21,12 @@ interface ICombined : Serializable {
 }
 
 interface IMeta : Serializable {
-  val 納甲系統: ISettingsOfStemBranch
-  val 伏神系統: IHiddenEnergy
+  val settings: ISettingsOfStemBranch
+  val hiddenEnergy: IHiddenEnergy
 }
 
-data class Meta(override val 納甲系統: ISettingsOfStemBranch,
-                override val 伏神系統: IHiddenEnergy) : IMeta, Serializable
+data class Meta(override val settings: ISettingsOfStemBranch,
+                override val hiddenEnergy: IHiddenEnergy) : IMeta, Serializable
 
 
 /**
@@ -42,15 +42,17 @@ interface ISingleHexagram : IHexagram {
 
   /** 本宮 , 此卦 是八卦哪一宮 */
   val symbol: Symbol
-  val 宮序: Int
+  /** 宮序 */
+  val symbolSteps: Int
 
-  /** 1~6 */
-  val 世爻: Int
+  /** 世爻 , 1~6 */
+  val self: Int
 
-  /** 1~6 */
-  val 應爻: Int
+  /** 應爻 , 1~6 */
+  val oppo: Int
   val 納甲: List<StemBranch>
-  val 六親: List<Relative>
+  /** 六親 */
+  val relatives: List<Relative>
   val 伏神納甲: List<StemBranch?>
   val 伏神六親: List<Relative?>
 }
@@ -60,13 +62,14 @@ data class SingleHexagram(
   override val hexagram: IHexagram,
   /** 本宮 , 此卦 是八卦哪一宮 */
   override val symbol: Symbol,
-  override val 宮序: Int,
-  /** 1~6 */
-  override val 世爻: Int,
-  /** 1~6 */
-  override val 應爻: Int,
+  override val symbolSteps: Int,
+  /** 世爻 , 1~6 */
+  override val self: Int,
+  /** 應爻 , 1~6 */
+  override val oppo: Int,
   override val 納甲: List<StemBranch>,
-  override val 六親: List<Relative>,
+  /** 六親 */
+  override val relatives: List<Relative>,
   override val 伏神納甲: List<StemBranch?>,
   override val 伏神六親: List<Relative?>) : ISingleHexagram, IHexagram by hexagram, Serializable
 
@@ -226,8 +229,8 @@ data class CombinedFull(
   ICombinedWithMetaNameTexts,
   Serializable {
 
-  override val 納甲系統
-    get() = divineMeta.納甲系統
-  override val 伏神系統
-    get() = divineMeta.伏神系統
+  override val settings
+    get() = divineMeta.settings
+  override val hiddenEnergy
+    get() = divineMeta.hiddenEnergy
 }

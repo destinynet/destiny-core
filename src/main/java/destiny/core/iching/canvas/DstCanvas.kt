@@ -28,7 +28,7 @@ class DstCanvas(val combined: ICombinedWithMetaName) : ColorCanvas(9, 24, Chines
 
     val 變卦描述 = ColorCanvas(1, 20, ChineseStringTools.NULL_CHAR).apply {
       setText(combined.dstModel.symbol.toString() + combined.dstModel.symbol.fiveElement.toString(), 1, 1)
-      val name = when (combined.dstModel.宮序) {
+      val name = when (combined.dstModel.symbolSteps) {
         1 -> "變宮卦"
         2 -> "一世卦"
         3 -> "二世卦"
@@ -38,7 +38,7 @@ class DstCanvas(val combined: ICombinedWithMetaName) : ColorCanvas(9, 24, Chines
         7 -> "遊魂卦"
         0 -> "歸魂卦"
         8 -> "歸魂卦"
-        else -> throw IllegalStateException("變卦宮序 : ${combined.dstModel.宮序}")
+        else -> throw IllegalStateException("變卦宮序 : ${combined.dstModel.symbolSteps}")
       }
       setText(name, 1, 5)
       setText("：", 1, 11)
@@ -67,8 +67,8 @@ class DstCanvas(val combined: ICombinedWithMetaName) : ColorCanvas(9, 24, Chines
     val 變卦世應 = ColorCanvas(6, 2).apply {
       for (i in 6 downTo 1) {
         when (i) {
-          combined.dstModel.世爻 -> setText("世", 7 - i, 1, "green", null, null, null, false, null)
-          combined.dstModel.應爻 -> setText("應", 7 - i, 1, "green", null, null, null, false, null)
+          combined.dstModel.self -> setText("世", 7 - i, 1, "green", null, null, null, false, null)
+          combined.dstModel.oppo -> setText("應", 7 - i, 1, "green", null, null, null, false, null)
           else -> setText(ChineseStringTools.NULL_CHAR, 7 - i, 1)
         }
       }
@@ -76,7 +76,7 @@ class DstCanvas(val combined: ICombinedWithMetaName) : ColorCanvas(9, 24, Chines
 
     val 變卦六親 = ColorCanvas(6, 4).apply {
       for (i in 6 downTo 1) {
-        setText(combined.dstModel.六親[i - 1].toString(), 7 - i, 1)
+        setText(combined.dstModel.relatives[i - 1].toString(), 7 - i, 1)
       }
     }
 

@@ -1,5 +1,7 @@
 package destiny.core.chinese.lunarStation
 
+import destiny.core.Gender
+import destiny.core.ITimeLoc
 import destiny.core.Scale
 import destiny.core.Scale.*
 import destiny.core.astrology.LunarStation
@@ -9,12 +11,13 @@ import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.Branch
+import destiny.tools.random.RandomService
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 
 /**
- * 二十八宿 Context
+ * 二十八宿 禽星占卜 Context
  */
 interface ILunarStationContext {
 
@@ -27,7 +30,7 @@ interface ILunarStationContext {
                 scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
 
 
-  fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): ILunarStationContextModel
+  fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel
 
   companion object {
 
@@ -89,6 +92,9 @@ interface ILunarStationContext {
 }
 
 
+/**
+ * 禽星占卜 Context
+ */
 class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
                           override val monthlyImpl: ILunarStationMonthly,
                           override val dailyImpl: ILunarStationDaily,
@@ -122,7 +128,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
     }.toMap()
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): ILunarStationContextModel {
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel {
     val eightWords = eightWordsImpl.getEightWords(lmt, loc)
     val models = getModels(lmt, loc)
 
@@ -166,6 +172,31 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
     result = 31 * result + monthAlgo.hashCode()
     return result
   }
+}
 
+interface ILunarStationModernContext : ILunarStationContext {
+
+  fun getModernModel(timeLoc: ITimeLoc,
+                     place: String?,
+                     gender: Gender,
+                     method: IModernContextModel.Method,
+                     description: String?): IModernContextModel
+}
+
+
+/**
+ * 禽星占卜 Modern Context
+ */
+class LunarStationModernContext(private val ctx: ILunarStationContext,
+                                private val randomService: RandomService) : ILunarStationModernContext,
+  ILunarStationContext by ctx, Serializable {
+
+  override fun getModernModel(timeLoc: ITimeLoc,
+                              place: String?,
+                              gender: Gender,
+                              method: IModernContextModel.Method,
+                              description: String?): IModernContextModel {
+    TODO("Not yet implemented")
+  }
 
 }
