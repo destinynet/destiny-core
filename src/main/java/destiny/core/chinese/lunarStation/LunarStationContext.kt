@@ -1,18 +1,24 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.Gender
-import destiny.core.ITimeLoc
 import destiny.core.Scale
 import destiny.core.Scale.*
+import destiny.core.TimeLoc
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.Branch
+import destiny.core.chinese.lunarStation.IModernContextModel.Method
 import destiny.tools.random.RandomService
 import java.io.Serializable
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 
 
@@ -176,10 +182,11 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
 
 interface ILunarStationModernContext : ILunarStationContext {
 
-  fun getModernModel(timeLoc: ITimeLoc,
+  fun getModernModel(loc: ILocation,
                      place: String?,
                      gender: Gender,
-                     method: IModernContextModel.Method,
+                     method: Method,
+                     specifiedTime : ChronoLocalDateTime<*>?,
                      description: String?): IModernContextModel
 }
 
@@ -188,15 +195,34 @@ interface ILunarStationModernContext : ILunarStationContext {
  * 禽星占卜 Modern Context
  */
 class LunarStationModernContext(private val ctx: ILunarStationContext,
-                                private val randomService: RandomService) : ILunarStationModernContext,
+                                private val randomService: RandomService,
+                                private val julDayResolver: JulDayResolver) : ILunarStationModernContext,
   ILunarStationContext by ctx, Serializable {
 
-  override fun getModernModel(timeLoc: ITimeLoc,
+  override fun getModernModel(loc : ILocation,
                               place: String?,
                               gender: Gender,
-                              method: IModernContextModel.Method,
+                              method: Method,
+                              specifiedTime : ChronoLocalDateTime<*>?,
                               description: String?): IModernContextModel {
-    TODO("Not yet implemented")
+
+    val created = LocalDateTime.now()
+    val hourBranch = randomService.randomEnum(Branch::class.java)
+
+    val time: ChronoLocalDateTime<out ChronoLocalDate> = when(method) {
+      Method.NOW -> created
+      Method.RANDOM_HOUR -> (ctx as LunarStationContext).eightWordsImpl.dayHourImpl.getDailyBranchMiddleMap(created.toLocalDate() , loc , julDayResolver)[hourBranch]!!
+      Method.SPECIFIED -> specifiedTime?: throw IllegalArgumentException("specifiedTime is null ")
+      Method.RANDOM_TIME -> {
+        val prev30Years = Instant.now().minus(Duration.ofDays(30 * 365)).epochSecond
+        val next30Years = Instant.now().plus(Duration.ofDays(30 * 365)).epochSecond
+        Instant.ofEpochSecond(randomService.getLong(prev30Years , next30Years)).atZone(loc.zoneId).toLocalDateTime()
+      }
+    }
+
+    val contextModel: IContextModel = ctx.getModel(time , loc)
+
+    return ModernContextModel(contextModel , gender , created , TimeLoc(time , loc) , place , method , description)
   }
 
 }
