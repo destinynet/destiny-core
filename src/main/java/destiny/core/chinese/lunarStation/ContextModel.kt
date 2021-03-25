@@ -29,9 +29,13 @@ interface ILunarStationContextModel {
 
   /** 翻禽（彼禽） */
   val oppo: LunarStation
+  /** 翻禽（彼禽）所在地支 */
+  val oppoBranch : Branch
 
   /** 活曜（我禽） */
   val self: LunarStation
+  /** 活曜（我禽）所在地支 */
+  val selfBranch : Branch
 
   val oppoHouseMap: Map<Branch, OppoHouse>
   val selfHouseMap: Map<Branch, SelfHouse>
@@ -48,7 +52,9 @@ data class ContextModel(override val eightwords: IEightWords,
                         override val day: LunarStation,
                         override val hour: LunarStation,
                         override val oppo: LunarStation,
+                        override val oppoBranch : Branch,
                         override val self: LunarStation,
+                        override val selfBranch: Branch,
                         override val oppoHouseMap: Map<Branch, OppoHouse>,
                         override val selfHouseMap: Map<Branch, SelfHouse>,
                         override val hiddenVenusFoe: Set<Pair<Scale, Scale>>) : ILunarStationContextModel, Serializable
