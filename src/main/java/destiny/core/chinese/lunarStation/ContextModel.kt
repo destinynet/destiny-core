@@ -82,7 +82,7 @@ interface IModernContextModel : IContextModel {
 
   val method: Method
 
-  val description: String?
+  val question: String?
 }
 
 data class ModernContextModel(val contextModel: IContextModel,
@@ -91,5 +91,5 @@ data class ModernContextModel(val contextModel: IContextModel,
                               override val timeLoc: ITimeLoc,
                               override val place: String?,
                               override val method: IModernContextModel.Method,
-                              override val description: String?) : IModernContextModel, IContextModel by contextModel
+                              override val question: String?) : IModernContextModel, IContextModel by contextModel
 
