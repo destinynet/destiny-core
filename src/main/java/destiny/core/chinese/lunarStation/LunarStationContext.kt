@@ -186,8 +186,8 @@ interface ILunarStationModernContext : ILunarStationContext {
                      place: String?,
                      gender: Gender,
                      method: Method,
-                     specifiedTime : ChronoLocalDateTime<*>?,
-                     description: String?): IModernContextModel
+                     specifiedTime : ChronoLocalDateTime<*>? = null,
+                     description: String? = null): IModernContextModel
 }
 
 
