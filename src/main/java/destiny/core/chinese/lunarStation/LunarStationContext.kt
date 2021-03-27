@@ -10,6 +10,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.eightwords.IEightWordsFactory
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.IModernContextModel.Method
@@ -31,6 +32,9 @@ interface ILunarStationContext {
   val monthlyImpl: ILunarStationMonthly
   val dailyImpl: ILunarStationDaily
   val hourlyImpl: ILunarStationHourly
+
+  val eightWordsImpl: IEightWordsFactory
+  val monthAlgo: IFinalMonthNumber.MonthAlgo
 
   fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation,
                 scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
@@ -106,9 +110,9 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
                           override val dailyImpl: ILunarStationDaily,
                           override val hourlyImpl: ILunarStationHourly,
 
-                          val eightWordsImpl: IEightWordsStandardFactory,
-                          private val chineseDateImpl: IChineseDate,
-                          val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
+                          override val eightWordsImpl: IEightWordsStandardFactory,
+                          val chineseDateImpl: IChineseDate,
+                          override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
 ) : ILunarStationContext, Serializable {
 
   override fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
@@ -194,9 +198,9 @@ interface ILunarStationModernContext : ILunarStationContext {
 /**
  * 禽星占卜 Modern Context
  */
-class LunarStationModernContext(private val ctx: ILunarStationContext,
-                                private val randomService: RandomService,
-                                private val julDayResolver: JulDayResolver) : ILunarStationModernContext,
+class LunarStationModernContext(val ctx: ILunarStationContext,
+                                val randomService: RandomService,
+                                val julDayResolver: JulDayResolver) : ILunarStationModernContext,
   ILunarStationContext by ctx, Serializable {
 
   override fun getModernModel(loc : ILocation,
@@ -224,5 +228,24 @@ class LunarStationModernContext(private val ctx: ILunarStationContext,
 
     return ModernContextModel(contextModel , gender , created , TimeLoc(time , loc) , place , method , description)
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is LunarStationModernContext) return false
+
+    if (ctx != other.ctx) return false
+    if (randomService != other.randomService) return false
+    if (julDayResolver != other.julDayResolver) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = ctx.hashCode()
+    result = 31 * result + randomService.hashCode()
+    result = 31 * result + julDayResolver.hashCode()
+    return result
+  }
+
 
 }
