@@ -7,43 +7,18 @@ import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYear
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
-import destiny.core.chinese.lunarStation.ILunarStationYearly.YearEpoch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 
 /**
  * 二十八星宿值年
- *
- *
- * [YearEpoch.EPOCH_1864]
- * 年禽還有一種推法，基本定位為
- * 公元964年為六元甲子，
- * 公元1144年為七元甲子，
- * 公元1324年為一元甲子，
- * 公元1504年為二元上元甲子，
- * 1684年為三元上元甲子，
- * 1864年為四元上元甲子，
- * 按此推法，
- * 則1864年為甲子虛，
- * 1924年為中元甲子奎，
- * 1984年為下元甲子畢。
- * 按二十八宿次序順推即可。按此法則
- * 2008年為奎木狼，
- * 2009年為婁金狗，
- * 2010年為胃土雉，
- * 依次類推。
- * */
+ **/
 interface ILunarStationYearly {
 
-  val yearType : YearType
+  val yearType: YearType
 
-  enum class YearEpoch {
-    DEFAULT,
-    EPOCH_1864
-  }
-
-  val yearEpoch : YearEpoch
+  val yearEpoch: YearEpoch
 
   fun getYearlyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex
 
@@ -59,14 +34,14 @@ interface ILunarStationYearly {
  * @param yearType 立春 [YearType.YEAR_SOLAR] 換年 或是 陰曆初一 [YearType.YEAR_LUNAR] 換年
  * */
 class LunarStationYearlyImpl(override val yearType: YearType = YearType.YEAR_SOLAR,
-                             override val yearEpoch: YearEpoch = YearEpoch.DEFAULT,
+                             override val yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
                              private val yearImpl: IYear,
                              val chineseDateImpl: IChineseDate,
                              val dayHourImpl: IDayHour) : ILunarStationYearly, Serializable {
   override fun getYearlyIndex(lmt: ChronoLocalDateTime<*>, loc: ILocation): YearIndex {
 
-    val epoch = when(yearEpoch) {
-      YearEpoch.DEFAULT -> 1564
+    val epoch = when (yearEpoch) {
+      YearEpoch.EPOCH_1564 -> 1564
       YearEpoch.EPOCH_1864 -> 1864
     }
 

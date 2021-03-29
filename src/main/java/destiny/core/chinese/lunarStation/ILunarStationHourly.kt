@@ -147,7 +147,7 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
   }
 
   override fun toString(locale: Locale): String {
-    return "《禽星易見》"
+    return NAME
   }
 
   override fun equals(other: Any?): Boolean {
@@ -168,6 +168,7 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
 
 
   companion object {
+    const val NAME = "《禽星易見》"
     const val VALUE = "YUAN"
 
     private val yuanSundayHourStartMap = mapOf(
@@ -223,7 +224,7 @@ class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
   }
 
   override fun toString(locale: Locale): String {
-    return "《剋擇講義》"
+    return NAME
   }
 
   override fun equals(other: Any?): Boolean {
@@ -244,6 +245,7 @@ class LunarStationHourlyFixedImpl(private val dailyImpl: ILunarStationDaily,
 
 
   companion object {
+    const val NAME = "《剋擇講義》"
     const val VALUE = "FIXED"
   }
 }
