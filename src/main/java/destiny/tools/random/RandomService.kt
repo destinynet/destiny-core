@@ -4,6 +4,9 @@
  */
 package destiny.tools.random
 
+import java.time.*
+import java.time.temporal.ChronoUnit
+
 interface RandomService {
 
   /**
@@ -17,10 +20,10 @@ interface RandomService {
     return getIntegers(count, min, max).toList()
   }
 
-  fun getLongs(count: Int, min: Long, max: Long): LongArray
+  fun getLongs(count: Int, minInclusive: Long, maxInclusive: Long): LongArray
 
-  fun getLong(min: Long, max: Long): Long {
-    return getLongs(1, min, max)[0]
+  fun getLong(minInclusive: Long, maxInclusive: Long): Long {
+    return getLongs(1, minInclusive, maxInclusive)[0]
   }
 
   fun <T : Enum<*>> randomEnum(clazz: Class<T>): T {
@@ -30,4 +33,16 @@ interface RandomService {
   }
 
   fun getYinYangs(count: Int): BooleanArray
+
+  fun getRandomTime(fromEpochSecond: Long, toEpochSecond: Long, zoneId: ZoneId): LocalDateTime {
+    return Instant.ofEpochSecond(getLong(fromEpochSecond, toEpochSecond)).atZone(zoneId).toLocalDateTime()
+  }
+
+  fun getRandomTime(from: LocalDate, to: LocalDate): LocalDateTime {
+    val days = ChronoUnit.DAYS.between(from, to)
+
+    val randomDays = getLong(0, days)
+    val randomSecs = getLong(0, 86400 - 1)
+    return from.plusDays(randomDays).atTime(LocalTime.MIDNIGHT).plusSeconds(randomSecs)
+  }
 }

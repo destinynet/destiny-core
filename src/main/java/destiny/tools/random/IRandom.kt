@@ -21,7 +21,7 @@ interface IRandom {
     return getIntegers(count, min, max).toList()
   }
 
-  fun getLongs(count: Int, min: Long, max: Long): LongArray
+  fun getLongs(count: Int, minInclusive: Long, maxInclusive: Long): LongArray
 
   fun <T : Enum<*>> randomEnum(clazz: Class<T>): T {
     val length = clazz.enumConstants.size

@@ -16,8 +16,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.IModernContextModel.Method
 import destiny.tools.random.RandomService
 import java.io.Serializable
-import java.time.Duration
-import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
@@ -182,6 +181,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
     result = 31 * result + monthAlgo.hashCode()
     return result
   }
+
 }
 
 interface ILunarStationModernContext : ILunarStationContext {
@@ -190,7 +190,7 @@ interface ILunarStationModernContext : ILunarStationContext {
                      place: String?,
                      gender: Gender,
                      method: Method,
-                     specifiedTime : ChronoLocalDateTime<*>? = null,
+                     specifiedTime: ChronoLocalDateTime<*>? = null,
                      description: String? = null): IModernContextModel
 }
 
@@ -203,30 +203,32 @@ class LunarStationModernContext(val ctx: ILunarStationContext,
                                 val julDayResolver: JulDayResolver) : ILunarStationModernContext,
   ILunarStationContext by ctx, Serializable {
 
-  override fun getModernModel(loc : ILocation,
+  override fun getModernModel(loc: ILocation,
                               place: String?,
                               gender: Gender,
                               method: Method,
-                              specifiedTime : ChronoLocalDateTime<*>?,
+                              specifiedTime: ChronoLocalDateTime<*>?,
                               description: String?): IModernContextModel {
 
     val created = LocalDateTime.now()
     val hourBranch = randomService.randomEnum(Branch::class.java)
 
-    val time: ChronoLocalDateTime<out ChronoLocalDate> = when(method) {
-      Method.NOW -> created
-      Method.RANDOM_HOUR -> (ctx as LunarStationContext).eightWordsImpl.dayHourImpl.getDailyBranchMiddleMap(created.toLocalDate() , loc , julDayResolver)[hourBranch]!!
-      Method.SPECIFIED -> specifiedTime?: throw IllegalArgumentException("specifiedTime is null ")
-      Method.RANDOM_TIME -> {
-        val prev30Years = Instant.now().minus(Duration.ofDays(30 * 365)).epochSecond
-        val next30Years = Instant.now().plus(Duration.ofDays(30 * 365)).epochSecond
-        Instant.ofEpochSecond(randomService.getLong(prev30Years , next30Years)).atZone(loc.zoneId).toLocalDateTime()
+    val time: ChronoLocalDateTime<out ChronoLocalDate> = specifiedTime
+      ?: when (method) {
+        Method.NOW -> created
+        Method.RANDOM_HOUR -> (ctx as LunarStationContext).eightWordsImpl.dayHourImpl.getDailyBranchMiddleMap(
+          created.toLocalDate(),
+          loc,
+          julDayResolver
+        )[hourBranch]!!
+        Method.SPECIFIED -> specifiedTime ?: throw IllegalArgumentException("specifiedTime is null ")
+        Method.RANDOM_TIME -> randomService.getRandomTime(LocalDate.now().minusYears(60), LocalDate.now())
+
       }
-    }
 
-    val contextModel: IContextModel = ctx.getModel(time , loc)
+    val contextModel: IContextModel = ctx.getModel(time, loc)
 
-    return ModernContextModel(contextModel , gender , created , TimeLoc(time , loc) , place , method , description)
+    return ModernContextModel(contextModel, gender, created, TimeLoc(time, loc), place, method, description)
   }
 
   override fun equals(other: Any?): Boolean {
