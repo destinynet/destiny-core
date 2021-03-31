@@ -1,6 +1,7 @@
 package destiny.core.chinese.lunarStation
 
 import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.Scale
 import destiny.core.Scale.*
 import destiny.core.TimeLoc
@@ -192,6 +193,10 @@ interface ILunarStationModernContext : ILunarStationContext {
                      method: Method,
                      specifiedTime: ChronoLocalDateTime<*>? = null,
                      description: String? = null): IModernContextModel
+
+  fun getModernModel(bdnp: IBirthDataNamePlace): IModernContextModel {
+    return getModernModel(bdnp.location , bdnp.place , bdnp.gender , Method.SPECIFIED , bdnp.time , bdnp.name)
+  }
 }
 
 
