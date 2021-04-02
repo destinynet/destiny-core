@@ -36,8 +36,8 @@ interface ILunarStationContext {
   val eightWordsImpl: IEightWordsFactory
   val monthAlgo: IFinalMonthNumber.MonthAlgo
 
-  fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation,
-                scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
+  fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation,
+                  scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
 
 
   fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel
@@ -115,7 +115,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
                           override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
 ) : ILunarStationContext, Serializable {
 
-  override fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
+  override fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
     return scales.map { scale ->
       when (scale) {
         YEAR -> YEAR to yearlyImpl.getYearly(lmt, loc)
@@ -140,7 +140,7 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel {
     val eightWords = eightWordsImpl.getEightWords(lmt, loc)
-    val models = getModels(lmt, loc)
+    val models = getScaleMap(lmt, loc)
 
     val dayIndex = dailyImpl.getDailyIndex(lmt, loc)
     val hourStation = hourlyImpl.getHourly(lmt, loc)
@@ -156,6 +156,8 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
       oppo, oppoHouse, self, selfHouse, emptySet()
     )
   }
+
+
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
