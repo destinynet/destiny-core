@@ -3,8 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
-import destiny.core.Gender
-import destiny.core.ITimeLoc
+import destiny.core.IBirthDataNamePlace
 import destiny.core.Scale
 import destiny.core.astrology.LunarStation
 import destiny.core.calendar.eightwords.IEightWords
@@ -57,15 +56,9 @@ data class ContextModel(override val eightwords: IEightWords,
                         override val selfHouse: SelfHouse,
                         override val hiddenVenusFoe: Set<Pair<Scale, Scale>>) : IContextModel, Serializable
 
-interface IModernContextModel : IContextModel {
-
-  val gender: Gender
+interface IModernContextModel : IContextModel , IBirthDataNamePlace {
 
   val created: LocalDateTime
-
-  val timeLoc: ITimeLoc
-
-  val place: String?
 
   enum class Method {
     /** 當下時間 [created] 排盤 */
@@ -87,10 +80,8 @@ interface IModernContextModel : IContextModel {
 }
 
 data class ModernContextModel(val contextModel: IContextModel,
-                              override val gender: Gender,
+                              val bdnp : IBirthDataNamePlace,
                               override val created: LocalDateTime,
-                              override val timeLoc: ITimeLoc,
-                              override val place: String?,
                               override val method: IModernContextModel.Method,
-                              override val question: String?) : IModernContextModel, IContextModel by contextModel
+                              override val question: String?) : IModernContextModel, IContextModel by contextModel , IBirthDataNamePlace by bdnp
 

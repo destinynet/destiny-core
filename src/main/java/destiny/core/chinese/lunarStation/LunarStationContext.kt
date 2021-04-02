@@ -1,10 +1,7 @@
 package destiny.core.chinese.lunarStation
 
-import destiny.core.Gender
-import destiny.core.IBirthDataNamePlace
-import destiny.core.Scale
+import destiny.core.*
 import destiny.core.Scale.*
-import destiny.core.TimeLoc
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
@@ -235,7 +232,10 @@ class LunarStationModernContext(val ctx: ILunarStationContext,
 
     val contextModel: IContextModel = ctx.getModel(time, loc)
 
-    return ModernContextModel(contextModel, gender, created, TimeLoc(time, loc), place, method, description)
+    val bd = BirthData(TimeLoc(time, loc), gender)
+    val bdnp: IBirthDataNamePlace = BirthDataNamePlace(bd , name = null , place)
+
+    return ModernContextModel(contextModel, bdnp, created, method, description)
   }
 
   override fun equals(other: Any?): Boolean {
