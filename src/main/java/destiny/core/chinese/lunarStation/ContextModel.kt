@@ -28,6 +28,9 @@ interface IContextModel : Serializable {
     }
   }
 
+  /** [DayIndex] */
+  val dayIndex: DayIndex
+
   /** 翻禽（彼禽） */
   val oppo: LunarStation
 
@@ -50,6 +53,7 @@ data class ContextModel(override val eightwords: IEightWords,
                         override val month: LunarStation,
                         override val day: LunarStation,
                         override val hour: LunarStation,
+                        override val dayIndex: DayIndex,
                         override val oppo: LunarStation,
                         override val oppoHouse: OppoHouse,
                         override val self: LunarStation,

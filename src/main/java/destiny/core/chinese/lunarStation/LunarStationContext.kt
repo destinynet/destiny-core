@@ -33,8 +33,10 @@ interface ILunarStationContext {
   val eightWordsImpl: IEightWordsFactory
   val monthAlgo: IFinalMonthNumber.MonthAlgo
 
-  fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation,
-                  scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
+  fun getScaleMap(
+    lmt: ChronoLocalDateTime<*>, loc: ILocation,
+    scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)
+  ): Map<Scale, LunarStation>
 
 
   fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel
@@ -102,14 +104,15 @@ interface ILunarStationContext {
 /**
  * 禽星占卜 Context
  */
-class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
-                          override val monthlyImpl: ILunarStationMonthly,
-                          override val dailyImpl: ILunarStationDaily,
-                          override val hourlyImpl: ILunarStationHourly,
+class LunarStationContext(
+  override val yearlyImpl: ILunarStationYearly,
+  override val monthlyImpl: ILunarStationMonthly,
+  override val dailyImpl: ILunarStationDaily,
+  override val hourlyImpl: ILunarStationHourly,
 
-                          override val eightWordsImpl: IEightWordsStandardFactory,
-                          val chineseDateImpl: IChineseDate,
-                          override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
+  override val eightWordsImpl: IEightWordsStandardFactory,
+  val chineseDateImpl: IChineseDate,
+  override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
 ) : ILunarStationContext, Serializable {
 
   override fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
@@ -149,11 +152,10 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
 
     return ContextModel(
       eightWords,
-      models[YEAR]!!, models[MONTH]!!, dayIndex.station(), hourStation,
+      models[YEAR]!!, models[MONTH]!!, dayIndex.station(), hourStation, dayIndex,
       oppo, oppoHouse, self, selfHouse, emptySet()
     )
   }
-
 
 
   override fun equals(other: Any?): Boolean {
@@ -186,15 +188,17 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
 
 interface ILunarStationModernContext : ILunarStationContext {
 
-  fun getModernModel(loc: ILocation,
-                     place: String?,
-                     gender: Gender,
-                     method: Method,
-                     specifiedTime: ChronoLocalDateTime<*>? = null,
-                     description: String? = null): IModernContextModel
+  fun getModernModel(
+    loc: ILocation,
+    place: String?,
+    gender: Gender,
+    method: Method,
+    specifiedTime: ChronoLocalDateTime<*>? = null,
+    description: String? = null
+  ): IModernContextModel
 
   fun getModernModel(bdnp: IBirthDataNamePlace): IModernContextModel {
-    return getModernModel(bdnp.location , bdnp.place , bdnp.gender , Method.SPECIFIED , bdnp.time , bdnp.name)
+    return getModernModel(bdnp.location, bdnp.place, bdnp.gender, Method.SPECIFIED, bdnp.time, bdnp.name)
   }
 }
 
@@ -202,17 +206,21 @@ interface ILunarStationModernContext : ILunarStationContext {
 /**
  * 禽星占卜 Modern Context
  */
-class LunarStationModernContext(val ctx: ILunarStationContext,
-                                val randomService: RandomService,
-                                val julDayResolver: JulDayResolver) : ILunarStationModernContext,
+class LunarStationModernContext(
+  val ctx: ILunarStationContext,
+  val randomService: RandomService,
+  val julDayResolver: JulDayResolver
+) : ILunarStationModernContext,
   ILunarStationContext by ctx, Serializable {
 
-  override fun getModernModel(loc: ILocation,
-                              place: String?,
-                              gender: Gender,
-                              method: Method,
-                              specifiedTime: ChronoLocalDateTime<*>?,
-                              description: String?): IModernContextModel {
+  override fun getModernModel(
+    loc: ILocation,
+    place: String?,
+    gender: Gender,
+    method: Method,
+    specifiedTime: ChronoLocalDateTime<*>?,
+    description: String?
+  ): IModernContextModel {
 
     val created = LocalDateTime.now()
     val hourBranch = randomService.randomEnum(Branch::class.java)
@@ -233,7 +241,7 @@ class LunarStationModernContext(val ctx: ILunarStationContext,
     val contextModel: IContextModel = ctx.getModel(time, loc)
 
     val bd = BirthData(TimeLoc(time, loc), gender)
-    val bdnp: IBirthDataNamePlace = BirthDataNamePlace(bd , name = null , place)
+    val bdnp: IBirthDataNamePlace = BirthDataNamePlace(bd, name = null, place)
 
     return ModernContextModel(contextModel, bdnp, created, method, description)
   }
