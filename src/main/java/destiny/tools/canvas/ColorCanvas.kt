@@ -93,9 +93,7 @@ open class ColorCanvas : Serializable {
       var precursor = 0
       //存放目前的結果
       val sb = StringBuilder()
-      sb.append("<div style=\"")
-      sb.append("white-space: pre; ")
-      sb.append("\">")
+      sb.append("""<div style="white-space: pre;">""")
 
       /**
        * 之前做法：會在這裡塞一行
@@ -249,7 +247,7 @@ open class ColorCanvas : Serializable {
     var index = (x - 1) * width + (y - 1)
     var strWidth = 0
     //以 big5 編碼取出 bytes , 一個中文字佔兩個 bytes , 剛好就是英文字母的兩倍 , 可以拿來當作字元寬度
-    strWidth = str.toByteArray(charset("Big5")).size
+    strWidth = str.toByteArray(charsetBig5).size
 
     if (wrap) {
       //如果要換行 , 就檢查是否太長
@@ -277,7 +275,7 @@ open class ColorCanvas : Serializable {
     val strChars = str.toCharArray() //取得傳入字串的 char array
 
     for (strChar in strChars) {
-      val bytes = strChar.toString().toByteArray(charset("Big5"))
+      val bytes = strChar.toString().toByteArray(charsetBig5)
       val indexLine = index / this.width + 1
       var precursorLine = 0
 
@@ -485,36 +483,34 @@ open class ColorCanvas : Serializable {
 
     if (hasUrl && !hasFont) {
       //只有網址
-      tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">").append(String(byteArray, charsetBig5)).append("</a>")
+      tempSb.append("""<a href="${cb.url}" target="_blank">${String(byteArray, charsetBig5)}</a>""")
     } else if (!hasUrl && hasFont) {
       //只有字型
       tempSb.append(buildFontHtml(cb, byteArray))
     } else if (hasUrl && hasFont) {
       //有網址也有字型
-      tempSb.append("<a href=\"").append(cb.url).append("\" target=\"_blank\">")
-      tempSb.append(buildFontHtml(cb, byteArray))
-      tempSb.append("</a>")
+      tempSb.append("""<a href="${cb.url}" target="_blank">${buildFontHtml(cb, byteArray)}</a>""")
     } else {
       //沒有網址，也沒有字型變化
-      tempSb.append(String(byteArray, Charset.forName("Big5")))
+      tempSb.append(String(byteArray, charsetBig5))
     }
     return tempSb.toString()
   }
 
   private fun buildFontHtml(cb: ColorByte, byteArray: ByteArray): StringBuffer {
     val sb = StringBuffer()
-    sb.append("<span ")
-    sb.append("style=\"")
+    sb.append("""<span style=" """)
+
     //    sb.append("white-space: pre; ");
 
     if (cb.foreColor != null) {
-      sb.append("color:").append(cb.foreColor).append("; ")
+      sb.append("color:${cb.foreColor}; ").append(cb.foreColor).append("; ")
     }
     if (cb.getBackColor() != null) {
-      sb.append("background-color:").append(cb.getBackColor()).append("; ")
+      sb.append("background-color:${cb.getBackColor()}; ")
     }
     if (cb.font != null) {
-      sb.append("font-family:").append(cb.font.family).append("; ")
+      sb.append("font-family:${cb.font.family}; ")
     }
 
     sb.append("\"")
