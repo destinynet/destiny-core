@@ -113,10 +113,21 @@ class LunarStationContext(
   override val eightWordsImpl: IEightWordsStandardFactory,
   val chineseDateImpl: IChineseDate,
   override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
-) : ILunarStationContext, Serializable {
+) : ILunarStationContext , IHiddenVenusFoe , Serializable {
+
+
+  /** 暗金伏斷 */
+  override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Pair<Scale, Scale>> {
+    val impl = HiddenVenusFoeAnimalStar(
+      yearlyImpl, monthlyImpl, dailyImpl, hourlyImpl,
+      eightWordsImpl.yearMonthImpl, chineseDateImpl, eightWordsImpl.dayHourImpl,
+      monthAlgo
+    )
+    return impl.getHiddenVenusFoe(lmt, loc)
+  }
 
   override fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
-    return scales.map { scale ->
+    return scales.associate { scale ->
       when (scale) {
         YEAR -> YEAR to yearlyImpl.getYearly(lmt, loc)
         MONTH -> {
@@ -135,7 +146,7 @@ class LunarStationContext(
         DAY -> DAY to dailyImpl.getDaily(lmt, loc)
         HOUR -> HOUR to hourlyImpl.getHourly(lmt, loc)
       }
-    }.toMap()
+    }
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel {
@@ -150,10 +161,12 @@ class LunarStationContext(
     val oppoHouse = ILunarStationContext.getOppoHouse(oppo, eightWords.hour.branch)
     val selfHouse = ILunarStationContext.getSelfHouse(self, eightWords.hour.branch)
 
+    val hiddenVenusFoe: Set<Pair<Scale, Scale>> = getHiddenVenusFoe(lmt, loc)
+
     return ContextModel(
       eightWords,
       models[YEAR]!!, models[MONTH]!!, dayIndex.station(), hourStation, dayIndex,
-      oppo, oppoHouse, self, selfHouse, emptySet()
+      oppo, oppoHouse, self, selfHouse, hiddenVenusFoe
     )
   }
 
