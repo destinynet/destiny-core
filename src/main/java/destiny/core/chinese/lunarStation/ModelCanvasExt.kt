@@ -21,6 +21,40 @@ object ModelCanvasExt {
     ) ?: Locale.TRADITIONAL_CHINESE
   }
 
+  fun IContextModel.getDigestCanvasNormal(desiredLocale: Locale): ColorCanvas {
+    return if (this.hiddenVenusFoes.isEmpty()) {
+      getDigestCanvasCore(desiredLocale)
+    } else {
+      // 5 x 14
+      val core = getDigestCanvasCore(desiredLocale)
+      // N x 36
+      val hiddenFoe = getHiddenFoeCanvas(desiredLocale)
+      ColorCanvas(core.height + hiddenFoe.height, maxOf(core.width, hiddenFoe.width)).apply {
+        add(core , 1 , 1)
+        add(hiddenFoe , 6 , 1)
+      }
+    }
+  }
+
+  /** 暗金伏斷 canvas */
+  fun IContextModel.getHiddenFoeCanvas(desiredLocale: Locale): ColorCanvas {
+    val locale = getLocale(desiredLocale)
+    val canvases: List<ColorCanvas> = this.hiddenVenusFoes.map { (from, to) ->
+      ColorCanvas(1, 36, ChineseStringTools.NULL_CHAR).apply {
+        // "日禽昴日雞　犯　月禽心月狐　暗金伏斷"
+        setText("""${from.toChineseChar()}禽${this@getHiddenFoeCanvas.getStation(from).getFullName(locale)}""", 1, 1)
+        setText("犯", 1, 13)
+        setText("""${to.toChineseChar()}禽${this@getHiddenFoeCanvas.getStation(to).getFullName(locale)}""", 1, 17)
+        setText("暗金伏斷", 1, 29)
+      }
+    }
+    return ColorCanvas(canvases.size, 36, ChineseStringTools.NULL_CHAR).apply {
+      canvases.forEachIndexed { index, cc ->
+        add(cc, index + 1, 1)
+      }
+    }
+  }
+
   /**
    * 四課三傳 , 正常版 , 高度為5 , 寬度 14
    * 　初：昴日雞　
@@ -29,7 +63,7 @@ object ModelCanvasExt {
    * 危　角　心　昴
    * 心　昴　亢　參
    * */
-  fun IContextModel.getDigestCanvasNormal(desiredLocale: Locale): ColorCanvas {
+  private fun IContextModel.getDigestCanvasCore(desiredLocale: Locale): ColorCanvas {
     val locale = getLocale(desiredLocale)
 
     return ColorCanvas(5, 14, ChineseStringTools.NULL_CHAR).apply {

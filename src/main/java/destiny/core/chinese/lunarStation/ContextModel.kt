@@ -44,7 +44,7 @@ interface IContextModel : Serializable {
   val selfHouse: SelfHouse
 
   /** 暗金伏斷 */
-  val hiddenVenusFoe: Set<Pair<Scale, Scale>>
+  val hiddenVenusFoes: Set<Pair<Scale, Scale>>
 
 }
 
@@ -58,7 +58,7 @@ data class ContextModel(override val eightwords: IEightWords,
                         override val oppoHouse: OppoHouse,
                         override val self: LunarStation,
                         override val selfHouse: SelfHouse,
-                        override val hiddenVenusFoe: Set<Pair<Scale, Scale>>) : IContextModel, Serializable
+                        override val hiddenVenusFoes: Set<Pair<Scale, Scale>>) : IContextModel, Serializable
 
 interface IModernContextModel : IContextModel , IBirthDataNamePlace {
 
