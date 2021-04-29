@@ -1,14 +1,19 @@
-package destiny.core.chinese.lunarStation
-
-import destiny.core.astrology.toString
-import destiny.tools.ChineseStringTools
-import destiny.tools.LocaleTools
-import destiny.tools.canvas.ColorCanvas
-import java.util.*
-
 /**
  * Created by smallufo on 2021-04-02.
  */
+package destiny.core.chinese.lunarStation
+
+import destiny.core.astrology.LunarStation
+import destiny.core.astrology.getAbbreviation
+import destiny.core.astrology.toString
+import destiny.core.calendar.eightwords.Direction
+import destiny.core.chinese.toString
+import destiny.tools.ChineseStringTools
+import destiny.tools.LocaleTools
+import destiny.tools.canvas.ColorCanvas
+import destiny.tools.mutableStackOf
+import java.util.*
+
 object ModelCanvasExt {
 
   private fun getLocale(desiredLocale: Locale): Locale {
@@ -21,17 +26,18 @@ object ModelCanvasExt {
     ) ?: Locale.TRADITIONAL_CHINESE
   }
 
-  fun IContextModel.getDigestCanvasNormal(desiredLocale: Locale): ColorCanvas {
+  fun IContextModel.getDigestCanvasNormal(desiredLocale: Locale,
+                                          viewSettings: ViewSettings = ViewSettings()): ColorCanvas {
     return if (this.hiddenVenusFoes.isEmpty()) {
-      getDigestCanvasCore(desiredLocale)
+      getDigestCanvasCore(desiredLocale, viewSettings)
     } else {
-      // 5 x 14
-      val core = getDigestCanvasCore(desiredLocale)
+      // 6 x 16
+      val core = getDigestCanvasCore(desiredLocale, viewSettings)
       // N x 36
       val hiddenFoe = getHiddenFoeCanvas(desiredLocale)
       ColorCanvas(core.height + hiddenFoe.height, maxOf(core.width, hiddenFoe.width)).apply {
-        add(core , 1 , 1)
-        add(hiddenFoe , 6 , 1)
+        add(core, 1, 1)
+        add(hiddenFoe, 7, 1)
       }
     }
   }
@@ -56,49 +62,85 @@ object ModelCanvasExt {
   }
 
   /**
-   * 四課三傳 , 正常版 , 高度為5 , 寬度 14
-   * 　初：昴日雞　
-   * 　中：心月狐　
-   * 　末：角木蛟　
-   * 危　角　心　昴
-   * 心　昴　亢　參
+   * 四課三傳 , 正常版 , 高度為6 , 寬度 30
+   *
+   * 　　　初（日）：昴日雞　　　　
+   * 　　　中（時）：心月狐　　　　
+   * 　　　末（翻）：角木蛟　　　　
+   * 危月燕　角木蛟　心月狐　昴日雞
+   * 心月狐　昴日雞　亢金龍　參水猿
+   * 時　　　日　　　月　　　年　　
+   *
    * */
-  private fun IContextModel.getDigestCanvasCore(desiredLocale: Locale): ColorCanvas {
+  private fun IContextModel.getDigestCanvasCore(desiredLocale: Locale = Locale.TAIWAN,
+                                                viewSettings: ViewSettings): ColorCanvas {
     val locale = getLocale(desiredLocale)
 
-    return ColorCanvas(5, 14, ChineseStringTools.NULL_CHAR).apply {
+    val gray = "#666666"
+
+    fun ColorCanvas.outputLunarStation(ls: LunarStation, x: Int, y: Int) {
+      setText(ls.toString(locale), x + 1, y)
+      setText(ls.planet.getAbbreviation(locale), x + 1, y + 2, gray)
+      setText(ls.animal.toString(locale), x + 1, y + 4, gray)
+    }
+
+    return ColorCanvas(6, 30, ChineseStringTools.NULL_CHAR).apply {
       // 初傳：日禽
-      setText("初：" + day.getFullName(locale), 1, 3)
+      setText("初（日）：" + day.getFullName(locale), 1, 7)
       // 中傳：時禽
-      setText("中：" + hour.getFullName(locale), 2, 3)
+      setText("中（時）：" + hour.getFullName(locale), 2, 7)
       // 末傳：翻禽
-      setText("末：" + oppo.getFullName(locale), 3, 3)
-      4.also { x ->
+      setText("末（翻）：" + oppo.getFullName(locale), 3, 7)
+      4.let { x ->
+        val stack = when (viewSettings.direction) {
+          Direction.R2L -> mutableStackOf(year, month, day, hour)
+          Direction.L2R -> mutableStackOf(hour, day, month, year)
+        }
         1.let { y ->
           // 左上：活曜
           setText(self.toString(locale), x, y, "green")
-          // 左下：時禽
-          setText(hour.toString(locale), x + 1, y)
-          y + 4
+          setText(self.planet.getAbbreviation(locale), x, y + 2, gray)
+          setText(self.animal.toString(locale), x, y + 4, gray)
+          // 左下：時/年 禽
+          outputLunarStation(stack.pop(), x, y)
+          y + 8
         }.let { y ->
           // 左中上：翻禽
           setText(oppo.toString(locale), x, y, "red")
-          // 左中下：日禽
-          setText(day.toString(locale), x + 1, y)
-          y + 4
+          setText(oppo.planet.getAbbreviation(locale), x, y + 2, gray)
+          setText(oppo.animal.toString(locale), x, y + 4, gray)
+          // 左中下：日/月 禽
+          outputLunarStation(stack.pop(), x, y)
+          y + 8
         }.let { y ->
           // 右中上：時禽
           setText(hour.toString(locale), x, y)
-          // 右中下：月禽
-          setText(month.toString(locale), x + 1, y)
-          y + 4
+          setText(hour.planet.getAbbreviation(locale), x, y + 2, gray)
+          setText(hour.animal.toString(locale), x, y + 4, gray)
+
+          // 右中下：月/日 禽
+          outputLunarStation(stack.pop(), x, y)
+          y + 8
         }.let { y ->
           // 右上：日禽
           setText(day.toString(locale), x, y)
-          // 右下：年禽
-          setText(year.toString(locale), x + 1, y)
+          setText(day.planet.getAbbreviation(locale), x, y + 2, gray)
+          setText(day.animal.toString(locale), x, y + 4, gray)
+          // 右下：年/時 禽
+          outputLunarStation(stack.pop(), x, y)
         }
+        x
       }
+        .let { x -> x + 2 }
+        .let { x ->
+          1.also { y ->
+            val txt = when (viewSettings.direction) {
+              Direction.R2L -> "時　　　日　　　月　　　年"
+              Direction.L2R -> "年　　　月　　　日　　　時"
+            }
+            setText(txt, x, y, gray)
+          }
+        }
     }
   }
 
