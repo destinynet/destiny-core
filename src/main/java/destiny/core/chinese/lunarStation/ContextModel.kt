@@ -43,6 +43,9 @@ interface IContextModel : Serializable {
   /** 活曜（我禽）所在宮位 */
   val selfHouse: SelfHouse
 
+  /** 倒將 (我正將) */
+  val reversed : LunarStation
+
   /** 暗金伏斷 */
   val hiddenVenusFoes: Set<Pair<Scale, Scale>>
 
@@ -58,6 +61,7 @@ data class ContextModel(override val eightwords: IEightWords,
                         override val oppoHouse: OppoHouse,
                         override val self: LunarStation,
                         override val selfHouse: SelfHouse,
+                        override val reversed: LunarStation,
                         override val hiddenVenusFoes: Set<Pair<Scale, Scale>>) : IContextModel, Serializable
 
 interface IModernContextModel : IContextModel , IBirthDataNamePlace {

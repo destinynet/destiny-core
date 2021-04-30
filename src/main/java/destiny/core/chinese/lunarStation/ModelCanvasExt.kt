@@ -79,12 +79,12 @@ object ModelCanvasExt {
     val gray = "#666666"
 
     fun ColorCanvas.outputLunarStation(ls: LunarStation, x: Int, y: Int) {
-      setText(ls.toString(locale), x + 1, y)
-      setText(ls.planet.getAbbreviation(locale), x + 1, y + 2, gray)
-      setText(ls.animal.toString(locale), x + 1, y + 4, gray)
+      setText(ls.toString(locale), x, y)
+      setText(ls.planet.getAbbreviation(locale), x, y + 2, gray)
+      setText(ls.animal.toString(locale), x, y + 4, gray)
     }
 
-    return ColorCanvas(6, 30, ChineseStringTools.NULL_CHAR).apply {
+    return ColorCanvas(7, 30, ChineseStringTools.NULL_CHAR).apply {
       // 初傳：日禽
       setText("初（日）：" + day.getFullName(locale), 1, 7)
       // 中傳：時禽
@@ -98,40 +98,44 @@ object ModelCanvasExt {
         }
         1.let { y ->
           // 左上：活曜
-          setText(self.toString(locale), x, y, "green")
-          setText(self.planet.getAbbreviation(locale), x, y + 2, gray)
-          setText(self.animal.toString(locale), x, y + 4, gray)
+          setText("活曜", x, y, "green")
+          setText(self.toString(locale), x + 1, y, "green")
+          setText(self.planet.getAbbreviation(locale), x + 1, y + 2, gray)
+          setText(self.animal.toString(locale), x + 1, y + 4, gray)
           // 左下：時/年 禽
-          outputLunarStation(stack.pop(), x, y)
+          outputLunarStation(stack.pop(), x + 2, y)
           y + 8
         }.let { y ->
           // 左中上：翻禽
-          setText(oppo.toString(locale), x, y, "red")
-          setText(oppo.planet.getAbbreviation(locale), x, y + 2, gray)
-          setText(oppo.animal.toString(locale), x, y + 4, gray)
+          setText("翻禽", x, y, "red")
+          setText(oppo.toString(locale), x + 1, y, "red")
+          setText(oppo.planet.getAbbreviation(locale), x + 1, y + 2, gray)
+          setText(oppo.animal.toString(locale), x + 1, y + 4, gray)
           // 左中下：日/月 禽
-          outputLunarStation(stack.pop(), x, y)
+          outputLunarStation(stack.pop(), x + 2, y)
           y + 8
         }.let { y ->
-          // 右中上：時禽
-          setText(hour.toString(locale), x, y)
-          setText(hour.planet.getAbbreviation(locale), x, y + 2, gray)
-          setText(hour.animal.toString(locale), x, y + 4, gray)
+          // 右中上：倒將
+          setText("倒將", x, y)
+          setText(reversed.toString(locale), x + 1, y)
+          setText(reversed.planet.getAbbreviation(locale), x + 1, y + 2, gray)
+          setText(reversed.animal.toString(locale), x + 1, y + 4, gray)
 
           // 右中下：月/日 禽
-          outputLunarStation(stack.pop(), x, y)
+          outputLunarStation(stack.pop(), x + 2, y)
           y + 8
         }.let { y ->
-          // 右上：日禽
-          setText(day.toString(locale), x, y)
-          setText(day.planet.getAbbreviation(locale), x, y + 2, gray)
-          setText(day.animal.toString(locale), x, y + 4, gray)
+          // 右上：(日)將星
+          setText("日將", x, y)
+          setText(dayIndex.leader().toString(locale), x + 1, y)
+          setText(dayIndex.leader().planet.getAbbreviation(locale), x + 1, y + 2, gray)
+          setText(dayIndex.leader().animal.toString(locale), x + 1, y + 4, gray)
           // 右下：年/時 禽
-          outputLunarStation(stack.pop(), x, y)
+          outputLunarStation(stack.pop(), x + 2, y)
         }
         x
       }
-        .let { x -> x + 2 }
+        .let { x -> x + 3 }
         .let { x ->
           1.also { y ->
             val txt = when (viewSettings.direction) {

@@ -161,12 +161,13 @@ class LunarStationContext(
     val oppoHouse = ILunarStationContext.getOppoHouse(oppo, eightWords.hour.branch)
     val selfHouse = ILunarStationContext.getSelfHouse(self, eightWords.hour.branch)
 
+    val reversed = ILunarStationHourly.getReversed(dayIndex, hourStation)
     val hiddenVenusFoe: Set<Pair<Scale, Scale>> = getHiddenVenusFoe(lmt, loc)
 
     return ContextModel(
       eightWords,
       models[YEAR]!!, models[MONTH]!!, dayIndex.station(), hourStation, dayIndex,
-      oppo, oppoHouse, self, selfHouse, hiddenVenusFoe
+      oppo, oppoHouse, self, selfHouse, reversed, hiddenVenusFoe
     )
   }
 
