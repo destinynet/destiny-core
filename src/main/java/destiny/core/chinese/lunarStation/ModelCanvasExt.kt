@@ -31,13 +31,13 @@ object ModelCanvasExt {
     return if (this.hiddenVenusFoes.isEmpty()) {
       getDigestCanvasCore(desiredLocale, viewSettings)
     } else {
-      // 6 x 16
+      // 7 x 16
       val core = getDigestCanvasCore(desiredLocale, viewSettings)
       // N x 36
       val hiddenFoe = getHiddenFoeCanvas(desiredLocale)
       ColorCanvas(core.height + hiddenFoe.height, maxOf(core.width, hiddenFoe.width)).apply {
         add(core, 1, 1)
-        add(hiddenFoe, 7, 1)
+        add(hiddenFoe, 8, 1)
       }
     }
   }
@@ -62,11 +62,12 @@ object ModelCanvasExt {
   }
 
   /**
-   * 四課三傳 , 正常版 , 高度為6 , 寬度 30
+   * 四課三傳 , 正常版 , 高度為7 , 寬度 30
    *
    * 　　　初（日）：昴日雞　　　　
    * 　　　中（時）：心月狐　　　　
    * 　　　末（翻）：角木蛟　　　　
+   * 活曜　　翻禽　　倒將　　日將　
    * 危月燕　角木蛟　心月狐　昴日雞
    * 心月狐　昴日雞　亢金龍　參水猿
    * 時　　　日　　　月　　　年　　
