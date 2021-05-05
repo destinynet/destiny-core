@@ -137,10 +137,10 @@ interface IHoroscopeModel : ITimeLoc {
    */
   val houseMap: Map<Int, List<Point>>
     get() {
-      return (1..12).map { houseIndex ->
-        houseIndex to positionMap.filter { (_ , posWithAzimuth) -> getHouse(posWithAzimuth.lng) == houseIndex }
+      return (1..12).associateWith { houseIndex ->
+        positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lng) == houseIndex }
           .map { it.key }
-      }.toMap()
+      }
     }
 
   /**

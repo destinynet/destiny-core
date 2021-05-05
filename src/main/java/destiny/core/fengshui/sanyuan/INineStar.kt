@@ -26,7 +26,7 @@ interface INineStar {
 
   val yearMonthImpl: IYearMonth
 
-  val dayHourImpl : IDayHour
+  val dayHourImpl: IDayHour
 
   fun getModels(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): List<NineStarModel>
 
@@ -61,9 +61,9 @@ interface INineStar {
      * 承上，傳回各方位的到方星 map
      */
     fun getYearStarMap(center: NineStar): Map<Symbol, NineStar> {
-      return Symbol.values().map { symbol ->
+      return Symbol.values().associate { symbol ->
         symbol to getYearStar(center, symbol)
-      }.toMap()
+      }
     }
 
     /** 年紫白方位 : 元 + 年干支 + [Symbol] 方位 */
@@ -76,9 +76,9 @@ interface INineStar {
      * 承上 , 傳回 map
      */
     fun getYearStarMap(yuan: Yuan, year: StemBranch): Map<Symbol, NineStar> {
-      return Symbol.values().map { symbol ->
+      return Symbol.values().associate { symbol ->
         symbol to getYearStar(yuan, year, symbol)
-      }.toMap()
+      }
     }
 
     // ================ 月 ================
@@ -111,10 +111,10 @@ interface INineStar {
     }
 
     /** 承上 , 傳回 map */
-    fun getMonthStarMap(year: Branch, month: Branch) : Map<Symbol , NineStar> {
-      return Symbol.values().map { symbol ->
+    fun getMonthStarMap(year: Branch, month: Branch): Map<Symbol, NineStar> {
+      return Symbol.values().associate { symbol ->
         symbol to getMonthStar(year, month, symbol)
-      }.toMap()
+      }
     }
 
     // ================ 日 ================
@@ -160,9 +160,9 @@ interface INineStar {
     /** 承上 , 傳回 map */
     fun getDayStarMap(zodiacDegree: Double, day: StemBranch): Map<Symbol, NineStar> {
       val solarTerms = SolarTerms.getFromDegree(zodiacDegree)
-      return Symbol.values().map { symbol ->
+      return Symbol.values().associate { symbol ->
         symbol to getDayStar(solarTerms, day, symbol)
-      }.toMap()
+      }
     }
 
     // ================ 時 ================
@@ -205,9 +205,9 @@ interface INineStar {
 
     /** 承上 , 傳回 map */
     fun getHourStarMap(zodiacDegree: Double, day: Branch, hour: Branch): Map<Symbol, NineStar> {
-      return Symbol.values().map { symbol ->
+      return Symbol.values().associate { symbol ->
         symbol to getHourStar(zodiacDegree, day, hour, symbol)
-      }.toMap()
+      }
     }
 
   } // companion

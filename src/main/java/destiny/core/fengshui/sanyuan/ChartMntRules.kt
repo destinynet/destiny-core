@@ -71,11 +71,11 @@ object ChartMntRules {
 
       when {
         離宮ints.containsAll(set) -> {
-          val map = 離乾震.map { symbol -> symbol to chart.getChartBlockFromSymbol(symbol).dir }.toMap()
+          val map = 離乾震.associateWith { symbol -> chart.getChartBlockFromSymbol(symbol).dir }
           ChartPattern.七星打劫(Symbol.離, map)
         }
         坎宮ints.containsAll(set) -> {
-          val map = 坎兌巽.map { symbol -> symbol to chart.getChartBlockFromSymbol(symbol).dir }.toMap()
+          val map = 坎兌巽.associateWith { symbol -> chart.getChartBlockFromSymbol(symbol).dir }
           ChartPattern.七星打劫(Symbol.坎, map)
         }
         else -> null

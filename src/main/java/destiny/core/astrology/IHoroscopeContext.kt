@@ -83,18 +83,16 @@ class HoroscopeContext(
 
     val positionMap: Map<Point, IPosWithAzimuth> = (points ?: this.points).map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, centric, coordinate, temperature, pressure)
-    }.filter { (_, v) -> v != null }
-      .map { (point, pos) -> point to pos!! as IPosWithAzimuth }
-      .toMap()
+    }.filter { (_, v) -> v != null }.associate { (point, pos) -> point to pos!! as IPosWithAzimuth }
 
 
     // [0] ~ [12] , 只有 [1] 到 [12] 有值
     val cusps = houseCuspImpl.getHouseCusps(gmtJulDay, loc, houseSystem, coordinate)
     logger.debug("cusps = {}", cusps)
 
-    val cuspDegreeMap = (1 until cusps.size).map {
-      it to cusps[it]
-    }.toMap()
+    val cuspDegreeMap = (1 until cusps.size).associateWith {
+      cusps[it]
+    }
 
     return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate,
                           centric, temperature, pressure, positionMap,
@@ -152,5 +150,4 @@ interface IPersonHoroscopeContext : IHoroscopeContext {
   }
 }
 
-class PersonHoroscopeContext(private val horoContext: IHoroscopeContext) : IPersonHoroscopeContext,
-  IHoroscopeContext by horoContext
+class PersonHoroscopeContext(private val horoContext: IHoroscopeContext) : IPersonHoroscopeContext, IHoroscopeContext by horoContext

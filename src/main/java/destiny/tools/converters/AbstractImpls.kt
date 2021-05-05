@@ -86,9 +86,7 @@ private fun <T : Any> Array<T>.findNonDefaultImplAndKey(domainKey: String): Map<
       val domain: Domain? = impl.value.firstOrNull { domain -> domain.key == domainKey && !domain.default }
       t to domain
     }
-    .filter { (_, domain) -> domain != null }
-    .map { (t, domain) -> t to domain!!.value }
-    .toMap()
+    .filter { (_, domain) -> domain != null }.associate { (t, domain) -> t to domain!!.value }
 }
 
 

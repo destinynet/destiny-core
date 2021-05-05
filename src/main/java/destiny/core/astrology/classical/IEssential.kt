@@ -112,9 +112,7 @@ interface IEssential {
         Dignity.DETRIMENT -> Dignity.DETRIMENT to this.receivingDetrimentFrom(map)
       }
     }
-      .filter { (_, point) -> point != null }
-      .map { (k, v) -> k to v!! }
-      .toMap()
+      .filter { (_, point) -> point != null }.associate { (k, v) -> k to v!! }
   }
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 , 但是不計算 [Dignity.TERM] 以及 [Dignity.FACE] , 因為這兩者需要度數 */
@@ -133,9 +131,7 @@ interface IEssential {
         Dignity.FACE -> Dignity.FACE to null
       }
     }
-      .filter { (_, point) -> point != null }
-      .map { (k, v) -> k to v!! }
-      .toMap()
+      .filter { (_, point) -> point != null }.associate { (k, v) -> k to v!! }
   }
 
   /**

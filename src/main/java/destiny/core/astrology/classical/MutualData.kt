@@ -66,13 +66,12 @@ data class MutualDataWithSign(private val set: Set<Triple<Point, ZodiacSign, Dig
    * [p2] 在 [sign2] 得到 [p1] 所提供的 [dig1] 能量
    */
   constructor(p1: Point, sign1: ZodiacSign, dig1: Dignity,
-              p2: Point, sign2: ZodiacSign, dig2: Dignity
-  ) : this(setOf(Triple(p1, sign1, dig1), Triple(p2, sign2, dig2)))
+              p2: Point, sign2: ZodiacSign, dig2: Dignity) : this(setOf(Triple(p1, sign1, dig1), Triple(p2, sign2, dig2)))
 
   override val dignityMap: Map<Point, Dignity>
-    get() = set.map { triple -> triple.first to triple.third }.toMap()
+    get() = set.associate { triple -> triple.first to triple.third }
 
 
   override val signMap: Map<Point, ZodiacSign>
-    get() = set.map { t -> t.first to t.second }.toMap()
+    get() = set.associate { t -> t.first to t.second }
 }

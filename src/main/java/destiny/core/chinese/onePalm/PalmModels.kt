@@ -160,11 +160,7 @@ data class PalmModel(
    * @return 取得哪些宮位有「柱」坐落其中，列出來
    */
   override val nonEmptyPillars: Map<Branch, Collection<IPalmModel.Pillar>>
-    get() =
-      Branch.values()
-        .filter { pillarMap.values.contains(it) }
-        .map { branch -> branch to pillarMap.filter { (_, v) -> v === branch }.keys }
-        .toMap()
+    get() = Branch.values().filter { pillarMap.values.contains(it) }.associateWith { branch -> pillarMap.filter { (_, v) -> v === branch }.keys }
 
   /**
    * 取得在某一地支宮位，包含了哪些「柱」 (年/月/日/時)
@@ -182,13 +178,11 @@ interface IPalmMetaModel : IPalmModel {
   val chineseDateHour: ChineseDateHour
 }
 
-data class HouseDescription(
-  val branch: Branch,
+data class HouseDescription(val branch: Branch,
   val dao: String,
   val star: String,
   val intro: String,
-  val map: Map<IPalmModel.Pillar, String>
-                           ) : Serializable
+  val map: Map<IPalmModel.Pillar, String>) : Serializable
 
 /** 一則 [IPalmModel] 的文字解釋 */
 interface IPalmModelDesc {

@@ -447,13 +447,10 @@ abstract class AbstractPtolemy : Serializable {
      * (土星, DAY) ==> 水瓶
      */
     internal val rulingDayNightMap: Map<Pair<Planet, DayNight>, ZodiacSign> =
-      rulerDayNightMap
-        .entries
-        .map { (sign_to_DN, planet) -> planet to sign_to_DN }
+      rulerDayNightMap.entries.map { (sign_to_DN, planet) -> planet to sign_to_DN }
         .groupBy { (planet, _) -> planet }
         .flatMap { (_, sign_to_DN) -> sign_to_DN }
-        .map { (planet, sign_to_DN) -> (planet to sign_to_DN.second) to sign_to_DN.first }
-        .toMap()
+        .associate { (planet, sign_to_DN) -> (planet to sign_to_DN.second) to sign_to_DN.first }
 
 
     /** 承上，儲存的是星座值 */

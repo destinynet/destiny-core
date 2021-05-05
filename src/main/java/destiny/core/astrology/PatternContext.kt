@@ -68,9 +68,8 @@ class PatternContext(val aspectEffective: IAspectEffective,
               grandTrine.points.minus(tail).map { wingPoint ->
                 wingPoint to aspectEffective.getEffectiveErrorAndScore(head, wingPoint, posMap, SEXTILE)
               }.takeIf { list ->
-                list.all { (wing , maybeErrorAndScore) -> maybeErrorAndScore!= null }
-              }?.map { (wing , maybeErrorAndScore) -> wing to maybeErrorAndScore!!.second }
-                ?.toMap()
+                list.all { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
+              }?.associate { (wing, maybeErrorAndScore) -> wing to maybeErrorAndScore!!.second }
                 ?.let { map: Map<Point, Double> ->
                   val wings = map.keys
                   /** 分數 : [AstroPattern.GrandTrine] + 對沖分數 +  head與兩個翅膀 [Aspect.SEXTILE] 的分數 , 四者平均 */

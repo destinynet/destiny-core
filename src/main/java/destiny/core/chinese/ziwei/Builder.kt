@@ -128,9 +128,10 @@ class Builder(
       starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { entry -> entry.key } }
 
     // 哪個地支 裡面 有哪些星體 (可能會有空宮 , 若星體很少的話)
-    val branchStarMap: Map<Branch, List<ZStar>?> = Branch.values().map { branch ->
-      branch to branchStarsMap[branch] // 可能為 null (空宮) , 故，不加 !!
-    }.toMap().toSortedMap()
+    val branchStarMap: Map<Branch, List<ZStar>?> = // 可能為 null (空宮) , 故，不加 !!
+      Branch.values().associate { branch ->
+        branch to branchStarsMap[branch] // 可能為 null (空宮) , 故，不加 !!
+      }.toSortedMap()
 
 
     /**
@@ -141,10 +142,10 @@ class Builder(
      * (丑) :
      *  本命 -> 財帛
      */
-    stemBranchHouseMap.entries.map { e ->
+    stemBranchHouseMap.entries.associate { e ->
       val m = mutableMapOf(FlowType.本命 to stemBranchHouseMap.getValue(e.key))
       e.key.branch to m
-    }.toMap().toSortedMap().toMap(branchFlowHouseMap)
+    }.toSortedMap().toMap(branchFlowHouseMap)
 
     houseDataSet = stemBranchHouseMap.entries.map { e ->
       val sb = e.key

@@ -681,8 +681,6 @@ object HouseFunctions {
     ,house歲前_歲建, house歲前_晦氣, house歲前_喪門, house歲前_貫索, house歲前_官符, house歲前_小耗, house歲前_歲破, house歲前_龍德, house歲前_白虎, house歲前_天德, house歲前_吊客, house歲前_病符
                                                )
 
-  val map : Map<ZStar , IHouse<*>> = iHouseSet.map {
-    Pair(it.star,it)
-  }.toMap()
+  val map : Map<ZStar , IHouse<*>> = iHouseSet.associateBy { it.star }
 
 }

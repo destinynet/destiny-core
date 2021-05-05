@@ -41,7 +41,7 @@ interface ILunarStationHourly : Descriptive {
      */
     fun getReversed(hourStation: LunarStation, opponent: LunarStation): LunarStation {
       val steps = opponent.getAheadOf(hourStation)
-      return hourStation.next(steps).next(steps)
+      return opponent.next(steps)
     }
 
     /**

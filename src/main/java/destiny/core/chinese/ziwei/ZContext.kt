@@ -138,20 +138,21 @@ interface IZiweiContext {
       val key = star to flowType
       val value: ITransFour.Value? = transFourImpl.getValueOf(star, flowStem)
       key to value
-    }.filter { it.second != null }
-      .map { it.first to it.second!! }
-      .toMap()
+    }
+      .filter { it.second != null }
+      .associate { it.first to it.second!! }
   }
 
   /** 計算 大限盤  */
   fun getFlowBig(builder: Builder, flowBig: StemBranch): Builder {
     // 在此大限中，每個地支，對應到哪個宮位
 
-    val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(flowBig.branch)
-      val house = houseSeqImpl.prev(House.命宮, steps)
-      branch to house
-    }.toMap()
+    val branchHouseMap = Branch.values()
+      .associate { branch ->
+        val steps = branch.getAheadOf(flowBig.branch)
+        val house = houseSeqImpl.prev(House.命宮, steps)
+        branch to house
+      }
 
     // 大限四化
     val trans4Map = getTrans4Map(stars, FlowType.大限, flowBig.stem)
@@ -165,11 +166,12 @@ interface IZiweiContext {
     // 流年命宮
     val yearlyMain = flowYearImpl.getFlowYear(flowYear.branch, builder.birthMonthNum, builder.birthHour)
 
-    val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(yearlyMain)
-      val house = houseSeqImpl.prev(House.命宮, steps)
-      branch to house
-    }.toMap()
+    val branchHouseMap = Branch.values()
+      .associate { branch ->
+        val steps = branch.getAheadOf(yearlyMain)
+        val house = houseSeqImpl.prev(House.命宮, steps)
+        branch to house
+      }
 
     // 流年四化
     val trans4Map = getTrans4Map(stars, FlowType.流年, flowYear.stem)
@@ -185,11 +187,12 @@ interface IZiweiContext {
     val monthlyMain =
       flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
-    val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(monthlyMain)
-      val house = houseSeqImpl.prev(House.命宮, steps)
-      branch to house
-    }.toMap()
+    val branchHouseMap = Branch.values()
+      .associate { branch ->
+        val steps = branch.getAheadOf(monthlyMain)
+        val house = houseSeqImpl.prev(House.命宮, steps)
+        branch to house
+      }
 
     // 流月四化
     val trans4Map = getTrans4Map(stars, FlowType.流月, flowMonth.stem)
@@ -214,11 +217,12 @@ interface IZiweiContext {
 
     // 流日命宮
     val dailyMain = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
-    val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(dailyMain)
-      val house = houseSeqImpl.prev(House.命宮, steps)
-      branch to house
-    }.toMap()
+    val branchHouseMap = Branch.values()
+      .associate { branch ->
+        val steps = branch.getAheadOf(dailyMain)
+        val house = houseSeqImpl.prev(House.命宮, steps)
+        branch to house
+      }
 
     // 流日四化
     val trans4Map = getTrans4Map(stars, FlowType.流日, flowDay.stem)
@@ -245,11 +249,12 @@ interface IZiweiContext {
     // 流時命宮
     val hourlyMain = flowHourImpl.getFlowHour(flowHour.branch, dailyMain)
 
-    val branchHouseMap = Branch.values().map { branch ->
-      val steps = branch.getAheadOf(hourlyMain)
-      val house = houseSeqImpl.prev(House.命宮, steps)
-      branch to house
-    }.toMap()
+    val branchHouseMap = Branch.values()
+      .associate { branch ->
+        val steps = branch.getAheadOf(hourlyMain)
+        val house = houseSeqImpl.prev(House.命宮, steps)
+        branch to house
+      }
 
     // 流時四化
     val trans4Map = getTrans4Map(stars, FlowType.流時, flowHour.stem)
@@ -559,12 +564,13 @@ class ZContext(
     val (五行, 五行局) = Ziwei.getMainDesc(mainHouse)
 
     // 干支 -> 宮位 的 mapping
-    val branchHouseMap: Map<StemBranch, House> = houseSeqImpl.houses.map { house ->
-      // 要計算的宮位，比命宮，超前幾步
-      val steps = houseSeqImpl.getAheadOf(house, House.命宮)
-      val sb = Ziwei.getStemBranchOf(mainHouse.branch.prev(steps), stemOf寅)
-      sb to house
-    }.toMap()
+    val branchHouseMap: Map<StemBranch, House> = // 要計算的宮位，比命宮，超前幾步
+      houseSeqImpl.houses.associateBy { house ->
+        // 要計算的宮位，比命宮，超前幾步
+        val steps = houseSeqImpl.getAheadOf(house, House.命宮)
+        val sb = Ziwei.getStemBranchOf(mainHouse.branch.prev(steps), stemOf寅)
+        sb
+      }
 
     // 地支 <-> 宮位 的 雙向 mapping
     val branchHouseBiMap: BiMap<Branch, House> = HashBiMap.create()
@@ -575,16 +581,25 @@ class ZContext(
 
     // 什麼星，在什麼地支
     val starBranchMap: Map<ZStar, Branch> = stars.map { star ->
-      val branch: Branch? =
-        HouseFunctions.map[star]?.getBranch(
-          lunarYear, solarYear, monthBranch, finalMonthNumForMonthStars, solarTerms,
-          lunarDays, hour, 五行局, gender, leapMonth, prevMonthDays, mainBranch,
-          this
-        )
+      val branch: Branch? = HouseFunctions.map[star]?.getBranch(
+        lunarYear,
+        solarYear,
+        monthBranch,
+        finalMonthNumForMonthStars,
+        solarTerms,
+        lunarDays,
+        hour,
+        五行局,
+        gender,
+        leapMonth,
+        prevMonthDays,
+        mainBranch,
+        this
+      )
       star to branch
-    }.filter { (_, branch) -> branch != null }
-      .map { (star, branch) -> star to branch!! }
-      .toMap()
+    }
+      .filter { (_, branch) -> branch != null }
+      .associate { (star, branch) -> star to branch!! }
 
     logger.debug("stars = {}", stars)
     logger.debug("starBranchMap = {}", starBranchMap)
@@ -611,31 +626,30 @@ class ZContext(
 
     // 宮干四化 : 此宮位，因為什麼星，各飛入哪個宮位(地支)
     // 參考 : http://www.fate123.com.tw/fate-teaching/fate-lesson-5.2.asp
-    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> =
-      branchHouseMap.keys.map { sb: StemBranch ->
+    val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>> = branchHouseMap.keys.associateWith { sb: StemBranch ->
 
-        val set = ITransFour.Value.values().map { value ->
+      ITransFour.Value.values()
+        .map { value ->
           val flyStar: ZStar = transFourImpl.getStarOf(sb.stem, value)
           value to flyStar
-        }.filter { (_, flyStar) ->
+        }
+        .filter { (_, flyStar) ->
           starBranchMap[flyStar] != null
-        }.map { (value, flyStar) ->
+        }
+        .map { (value, flyStar) ->
           Triple(value, flyStar, starBranchMap.getValue(flyStar))
-        }.toSet()
-
-        sb to set
-
-      }.toMap()
+        }
+        .toSet()
+    }
 
 
     // 星體強弱表
-    val starStrengthMap: Map<ZStar, Int> = stars
-      .map { star ->
-        val strength: Int? = strengthImpl.getStrengthOf(star, starBranchMap.getValue(star))
-        star to strength
-      }.filter { it.second != null }
-      .map { it.first to it.second!! }
-      .toMap()
+    val starStrengthMap: Map<ZStar, Int> = stars.map { star ->
+      val strength: Int? = strengthImpl.getStrengthOf(star, starBranchMap.getValue(star))
+      star to strength
+    }
+      .filter { it.second != null }
+      .associate { it.first to it.second!! }
 
     val chineseDate = ChineseDate(cycle, lunarYear, lunarMonth, leapMonth, lunarDays)
 
@@ -643,9 +657,10 @@ class ZContext(
     val flowBigVageMap = bigRangeImpl.getSortedFlowBigVageMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
 
     // 小限 mapping
-    val branchSmallRangesMap: Map<Branch, List<Int>> = Branch.values().map { branch ->
-      branch to ISmallRange.getRanges(branch, lunarYear.branch, gender)
-    }.toMap()
+    val branchSmallRangesMap: Map<Branch, List<Int>> = Branch.values()
+      .associate { branch ->
+        branch to ISmallRange.getRanges(branch, lunarYear.branch, gender)
+      }
 
     /**
      * 歲數 map , 2018-06-03 改 optional . 因為不想在 core 內 , depend on ChineseDateCalendricaImpl

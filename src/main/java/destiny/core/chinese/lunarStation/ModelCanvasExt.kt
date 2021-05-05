@@ -126,8 +126,8 @@ object ModelCanvasExt {
           outputLunarStation(stack.pop(), x + 2, y)
           y + 8
         }.let { y ->
-          // 右上：(日)將星
-          setText("日將", x, y)
+          // 右上：(日)氣將
+          setText("氣將", x, y)
           setText(dayIndex.leader().toString(locale), x + 1, y)
           setText(dayIndex.leader().planet.getAbbreviation(locale), x + 1, y + 2, gray)
           setText(dayIndex.leader().animal.toString(locale), x + 1, y + 4, gray)

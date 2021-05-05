@@ -286,7 +286,7 @@ data class Plate(
 
   /** 宮位名稱 -> 宮位資料  */
   override val houseMap: Map<House, HouseData> by lazy {
-    houseDataSet.toList().map { hd -> hd.house to hd }.toMap()
+    houseDataSet.toList().associateBy { hd -> hd.house }
   }
 
   /** 星體 -> 宮位資料  */
@@ -303,7 +303,7 @@ data class Plate(
 
   /** 宮位名稱 -> 星體s  */
   override val houseStarMap: Map<House, Set<ZStar>> by lazy {
-    houseDataSet.map { it.house to it.stars }.toMap()
+    houseDataSet.associate { it.house to it.stars }
   }
 
   /** 本命盤中，此地支的宮位名稱是什麼  */

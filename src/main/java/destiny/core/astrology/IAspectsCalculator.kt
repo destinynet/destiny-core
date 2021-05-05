@@ -44,10 +44,9 @@ interface IAspectsCalculator  {
                      points: Collection<Point> = positionMap.keys,
                      aspects: Collection<Aspect> = Aspect.getAngles(Importance.HIGH)
   ): Map<Point, Aspect> {
-    return getPointAspectAndScore(point, positionMap, points, aspects)
-      .map { (point , aspect , _) ->
-        point to aspect
-      }.toMap()
+    return getPointAspectAndScore(point, positionMap, points, aspects).associate { (point, aspect, _) ->
+      point to aspect
+    }
   }
 
 

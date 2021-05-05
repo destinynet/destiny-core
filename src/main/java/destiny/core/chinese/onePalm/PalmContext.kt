@@ -58,8 +58,7 @@ class PalmContext(val ewImpl: IEightWordsStandardFactory,
     val steps = Branch.卯.getAheadOf(hourBranch)
     val main = hour.next(steps * positive)
 
-    val houseMap = (0..11).map { i -> if (clockwiseHouse) main.next(i) else main.prev(i) }
-      .zip(IPalmModel.House.values()).toMap()
+    val houseMap = (0..11).map { i -> if (clockwiseHouse) main.next(i) else main.prev(i) }.zip(IPalmModel.House.values()).toMap()
 
     return PalmModel(gender, yearBranch, month, day, hour, houseMap)
   }
@@ -68,11 +67,7 @@ class PalmContext(val ewImpl: IEightWordsStandardFactory,
   /**
    * 本命盤：最完整的計算方式 , 包含時分秒、經緯度、時區
    */
-  override fun getPalm(gender: Gender,
-                       lmt: ChronoLocalDateTime<*>,
-                       loc: ILocation,
-                       place: String?,
-                       name: String?): IPalmMetaModel {
+  override fun getPalm(gender: Gender, lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?, name: String?): IPalmMetaModel {
 
     val cDate = chineseDateImpl.getChineseDate(lmt, loc, ewImpl.dayHourImpl)
     val hourBranch = ewImpl.dayHourImpl.getHour(lmt, loc)
@@ -92,11 +87,7 @@ class PalmContext(val ewImpl: IEightWordsStandardFactory,
     return PalmMetaModel(palm, lmt, loc, place, name, chineseDateHour)
   }
 
-  override fun getPalmWithDesc(gender: Gender,
-                               lmt: ChronoLocalDateTime<*>,
-                               loc: ILocation,
-                               place: String?,
-                               name: String?): IPalmMetaModelDesc {
+  override fun getPalmWithDesc(gender: Gender, lmt: ChronoLocalDateTime<*>, loc: ILocation, place: String?, name: String?): IPalmMetaModelDesc {
     val palmMetaModel: IPalmMetaModel = getPalm(gender, lmt, loc, place, name)
     val palmModelDesc: IPalmModelDesc = getPalmModelDesc(palmMetaModel)
     return PalmMetaModelDesc(palmMetaModel, palmModelDesc)
@@ -107,9 +98,9 @@ class PalmContext(val ewImpl: IEightWordsStandardFactory,
       val dao = IPalmModel.getDao(branch)
       val star = IPalmModel.getStar(branch)
       val houseIntro = branchDescImpl.getHouseIntro(branch)
-      val map = palmModel.getPillars(branch).map { pillar ->
-        pillar to branchDescImpl.getContent(pillar, branch)
-      }.toMap()
+      val map = palmModel.getPillars(branch).associateWith { pillar ->
+        branchDescImpl.getContent(pillar, branch)
+      }
       HouseDescription(branch, dao, star, houseIntro, map)
     }.toList()
 

@@ -70,9 +70,9 @@ interface IDailyHexagramService {
 class DailyHexagramService(val impls: Set<IDailyHexagram>) : IDailyHexagramService, Serializable {
 
   override fun getHexagramMap(gmtJulDay: Double): Map<IDailyHexagram, Pair<Hexagram, Pair<Double, Double>>> {
-    return impls.map {
-      it to it.getHexagram(gmtJulDay)
-    }.toMap()
+    return impls.associateWith {
+      it.getHexagram(gmtJulDay)
+    }
   }
 
   override fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean): Map<IDailyHexagram, Pair<Double, Double>> {
@@ -80,8 +80,7 @@ class DailyHexagramService(val impls: Set<IDailyHexagram>) : IDailyHexagramServi
       it to it.getDutyDays(hexagram, gmtJulDay, forward)
     }.filter {
       it.second != null
-    }.map { it.first to it.second!! }
-      .toMap()
+    }.associate { it.first to it.second!! }
   }
 
 }

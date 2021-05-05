@@ -544,10 +544,10 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
   }
 
   override fun getHeavenNumber(ew: IEightWords): Int {
-    return ew.stemBranches.map { sb ->
+    return ew.stemBranches.sumOf { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isOdd() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isOdd() }.sum()
-    }.sum()
+    }
   }
 
   /** 天數 -> 卦 */
@@ -574,10 +574,10 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
   }
 
   override fun getEarthNumber(ew: IEightWords): Int {
-    return ew.stemBranches.map { sb ->
+    return ew.stemBranches.sumOf { sb ->
       (numberize.getNumber(sb.stem).takeIf { it.isEven() } ?: 0) +
         numberize.getNumber(sb.branch).filter { it.isEven() }.sum()
-    }.sum()
+    }
   }
 
   /** 地數 -> 卦 */

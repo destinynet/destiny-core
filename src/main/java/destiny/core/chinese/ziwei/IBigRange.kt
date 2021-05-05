@@ -19,10 +19,10 @@ interface IBigRange : Descriptive {
 
   /** 計算每個地支 的 大限 起訖 虛歲  */
   fun getFlowBigVageMap(branchHouseMap: Map<Branch, House>, set: Int, birthYear: StemBranch, gender: Gender, houseSeq: IHouseSeq): Map<Branch, Pair<Int, Int>> {
-    return Branch.values().map { branch ->
+    return Branch.values().associate { branch ->
       val pair = getVageRange(branchHouseMap.getValue(branch), set, birthYear.stem, gender, houseSeq)
       branch to pair
-    }.toMap()
+    }
   }
 
   /** 承上 , 計算每個地支的 大限 起訖 「虛歲」時刻，並且按照先後順序排列 (年齡 小 -> 大)  */
