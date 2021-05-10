@@ -21,10 +21,10 @@ interface IContextModel : Serializable {
 
   fun getStation(scale: Scale): LunarStation {
     return when (scale) {
-      Scale.YEAR -> year
+      Scale.YEAR  -> year
       Scale.MONTH -> month
-      Scale.DAY -> day
-      Scale.HOUR -> hour
+      Scale.DAY   -> day
+      Scale.HOUR  -> hour
     }
   }
 
@@ -44,7 +44,7 @@ interface IContextModel : Serializable {
   val selfHouse: SelfHouse
 
   /** 倒將 (我正將) */
-  val reversed : LunarStation
+  val reversed: LunarStation
 
   /** 暗金伏斷 */
   val hiddenVenusFoes: Set<Pair<Scale, Scale>>
@@ -64,7 +64,7 @@ data class ContextModel(override val eightwords: IEightWords,
                         override val reversed: LunarStation,
                         override val hiddenVenusFoes: Set<Pair<Scale, Scale>>) : IContextModel, Serializable
 
-interface IModernContextModel : IContextModel , IBirthDataNamePlace {
+interface IModernContextModel : IContextModel, IBirthDataNamePlace {
 
   val created: LocalDateTime
 
@@ -88,8 +88,8 @@ interface IModernContextModel : IContextModel , IBirthDataNamePlace {
 }
 
 data class ModernContextModel(val contextModel: IContextModel,
-                              val bdnp : IBirthDataNamePlace,
+                              val bdnp: IBirthDataNamePlace,
                               override val created: LocalDateTime,
                               override val method: IModernContextModel.Method,
-                              override val question: String?) : IModernContextModel, IContextModel by contextModel , IBirthDataNamePlace by bdnp
+                              override val question: String?) : IModernContextModel, IContextModel by contextModel, IBirthDataNamePlace by bdnp
 

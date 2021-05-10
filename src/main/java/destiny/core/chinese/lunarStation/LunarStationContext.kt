@@ -33,10 +33,7 @@ interface ILunarStationContext {
   val eightWordsImpl: IEightWordsFactory
   val monthAlgo: IFinalMonthNumber.MonthAlgo
 
-  fun getScaleMap(
-    lmt: ChronoLocalDateTime<*>, loc: ILocation,
-    scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)
-  ): Map<Scale, LunarStation>
+  fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale> = listOf(YEAR, MONTH, DAY, HOUR)): Map<Scale, LunarStation>
 
 
   fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel
@@ -54,13 +51,13 @@ interface ILunarStationContext {
      */
     fun startBranch(planet: Planet): Branch {
       return when (planet) {
-        Planet.SUN -> Branch.午
-        Planet.MOON -> Branch.未
-        Planet.MARS -> Branch.寅
+        Planet.SUN                    -> Branch.午
+        Planet.MOON                   -> Branch.未
+        Planet.MARS                   -> Branch.寅
         Planet.MERCURY, Planet.SATURN -> Branch.申
-        Planet.JUPITER -> Branch.亥
-        Planet.VENUS -> Branch.巳
-        else -> throw IllegalArgumentException()
+        Planet.JUPITER                -> Branch.亥
+        Planet.VENUS                  -> Branch.巳
+        else                          -> throw IllegalArgumentException()
       }
     }
 
@@ -104,24 +101,22 @@ interface ILunarStationContext {
 /**
  * 禽星占卜 Context
  */
-class LunarStationContext(
-  override val yearlyImpl: ILunarStationYearly,
-  override val monthlyImpl: ILunarStationMonthly,
-  override val dailyImpl: ILunarStationDaily,
-  override val hourlyImpl: ILunarStationHourly,
+class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
+                          override val monthlyImpl: ILunarStationMonthly,
+                          override val dailyImpl: ILunarStationDaily,
+                          override val hourlyImpl: ILunarStationHourly,
 
-  override val eightWordsImpl: IEightWordsStandardFactory,
-  val chineseDateImpl: IChineseDate,
-  override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
-) : ILunarStationContext , IHiddenVenusFoe , Serializable {
+                          override val eightWordsImpl: IEightWordsStandardFactory,
+                          val chineseDateImpl: IChineseDate,
+                          override val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS) : ILunarStationContext,
+                                                                                                                                 IHiddenVenusFoe,
+                                                                                                                                 Serializable {
 
 
   /** 暗金伏斷 */
   override fun getHiddenVenusFoe(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Pair<Scale, Scale>> {
     val impl = HiddenVenusFoeAnimalStar(
-      yearlyImpl, monthlyImpl, dailyImpl, hourlyImpl,
-      eightWordsImpl.yearMonthImpl, chineseDateImpl, eightWordsImpl.dayHourImpl,
-      monthAlgo
+      yearlyImpl, monthlyImpl, dailyImpl, hourlyImpl, eightWordsImpl.yearMonthImpl, chineseDateImpl, eightWordsImpl.dayHourImpl, monthAlgo
     )
     return impl.getHiddenVenusFoe(lmt, loc)
   }
@@ -129,22 +124,18 @@ class LunarStationContext(
   override fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, scales: List<Scale>): Map<Scale, LunarStation> {
     return scales.associate { scale ->
       when (scale) {
-        YEAR -> YEAR to yearlyImpl.getYearly(lmt, loc)
+        YEAR  -> YEAR to yearlyImpl.getYearly(lmt, loc)
         MONTH -> {
           val yearlyStation: LunarStation = yearlyImpl.getYearly(lmt, loc)
           val monthBranch = eightWordsImpl.yearMonthImpl.getMonth(lmt, loc).branch
           val chineseDate = chineseDateImpl.getChineseDate(lmt, loc, eightWordsImpl.dayHourImpl)
           val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
-            chineseDate.month,
-            chineseDate.leapMonth,
-            monthBranch,
-            chineseDate.day,
-            monthAlgo
+            chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, monthAlgo
           )
           MONTH to monthlyImpl.getMonthly(yearlyStation, monthNumber)
         }
-        DAY -> DAY to dailyImpl.getDaily(lmt, loc)
-        HOUR -> HOUR to hourlyImpl.getHourly(lmt, loc)
+        DAY   -> DAY to dailyImpl.getDaily(lmt, loc)
+        HOUR  -> HOUR to hourlyImpl.getHourly(lmt, loc)
       }
     }
   }
@@ -166,8 +157,17 @@ class LunarStationContext(
 
     return ContextModel(
       eightWords,
-      models[YEAR]!!, models[MONTH]!!, dayIndex.station(), hourStation, dayIndex,
-      oppo, oppoHouse, self, selfHouse, reversed, hiddenVenusFoe
+      models[YEAR]!!,
+      models[MONTH]!!,
+      dayIndex.station(),
+      hourStation,
+      dayIndex,
+      oppo,
+      oppoHouse,
+      self,
+      selfHouse,
+      reversed,
+      hiddenVenusFoe
     )
   }
 
@@ -202,14 +202,12 @@ class LunarStationContext(
 
 interface ILunarStationModernContext : ILunarStationContext {
 
-  fun getModernModel(
-    loc: ILocation,
-    place: String?,
-    gender: Gender,
-    method: Method,
-    specifiedTime: ChronoLocalDateTime<*>? = null,
-    description: String? = null
-  ): IModernContextModel
+  fun getModernModel(loc: ILocation,
+                     place: String?,
+                     gender: Gender,
+                     method: Method,
+                     specifiedTime: ChronoLocalDateTime<*>? = null,
+                     description: String? = null): IModernContextModel
 
   fun getModernModel(bdnp: IBirthDataNamePlace): IModernContextModel {
     return getModernModel(bdnp.location, bdnp.place, bdnp.gender, Method.SPECIFIED, bdnp.time, bdnp.name)
@@ -220,37 +218,31 @@ interface ILunarStationModernContext : ILunarStationContext {
 /**
  * 禽星占卜 Modern Context
  */
-class LunarStationModernContext(
-  val ctx: ILunarStationContext,
-  val randomService: RandomService,
-  val julDayResolver: JulDayResolver
-) : ILunarStationModernContext,
-  ILunarStationContext by ctx, Serializable {
+class LunarStationModernContext(val ctx: ILunarStationContext, val randomService: RandomService, val julDayResolver: JulDayResolver) :
+  ILunarStationModernContext, ILunarStationContext by ctx, Serializable {
 
-  override fun getModernModel(
-    loc: ILocation,
-    place: String?,
-    gender: Gender,
-    method: Method,
-    specifiedTime: ChronoLocalDateTime<*>?,
-    description: String?
-  ): IModernContextModel {
+  override fun getModernModel(loc: ILocation,
+                              place: String?,
+                              gender: Gender,
+                              method: Method,
+                              specifiedTime: ChronoLocalDateTime<*>?,
+                              description: String?): IModernContextModel {
 
     val created = LocalDateTime.now()
     val hourBranch = randomService.randomEnum(Branch::class.java)
 
-    val time: ChronoLocalDateTime<out ChronoLocalDate> = specifiedTime
-      ?: when (method) {
-        Method.NOW -> created
-        Method.RANDOM_HOUR -> (ctx as LunarStationContext).eightWordsImpl.dayHourImpl.getDailyBranchMiddleMap(
-          created.toLocalDate(),
-          loc,
-          julDayResolver
-        )[hourBranch]!!
-        Method.SPECIFIED -> specifiedTime ?: throw IllegalArgumentException("specifiedTime is null ")
-        Method.RANDOM_TIME -> randomService.getRandomTime(LocalDate.now().minusYears(60), LocalDate.now())
+    val time: ChronoLocalDateTime<out ChronoLocalDate> = specifiedTime ?: when (method) {
+      Method.NOW         -> created
+      Method.RANDOM_HOUR -> (ctx as LunarStationContext).eightWordsImpl.dayHourImpl.getDailyBranchMiddleMap(
+        created.toLocalDate(), loc, julDayResolver
+      )[hourBranch]!!
+      Method.SPECIFIED   -> specifiedTime ?: throw IllegalArgumentException("specifiedTime is null ")
+      Method.RANDOM_TIME -> randomService.getRandomTime(
+        LocalDate.now()
+          .minusYears(60), LocalDate.now()
+      )
 
-      }
+    }
 
     val contextModel: IContextModel = ctx.getModel(time, loc)
 
