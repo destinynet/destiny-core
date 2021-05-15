@@ -13,7 +13,8 @@ interface IClassicalPattern : IPattern
 enum class RuleType {
   ESSENTIAL,
   ACCIDENTAL,
-  DEBILITY
+  DEBILITY,
+  MISC
 }
 
 interface IPlanetPattern : IClassicalPattern {

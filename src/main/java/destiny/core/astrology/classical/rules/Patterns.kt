@@ -5,10 +5,10 @@ package destiny.core.astrology.classical.rules
 
 import destiny.core.DayNight
 import destiny.core.astrology.*
-import destiny.core.astrology.Planet
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.chinese.YinYang
+import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 行星的 25種狀態
@@ -25,9 +25,12 @@ sealed class EssentialDignity : IPlanetPattern {
   data class Term(override val planet: Planet, val lngDeg: Double) : EssentialDignity()
   data class Face(override val planet: Planet, val lngDeg: Double) : EssentialDignity()
 
-  data class MutualReception(override val planet: Planet, val sign1: ZodiacSign, val dig1: Dignity,
-                             val p2: Point, val sign2: ZodiacSign, val dig2: Dignity
-  ) : EssentialDignity() {
+  data class MutualReception(override val planet: Planet,
+                             val sign1: ZodiacSign,
+                             val dig1: Dignity,
+                             val p2: Point,
+                             val sign2: ZodiacSign,
+                             val dig2: Dignity) : EssentialDignity() {
     private val mutualData = MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -73,7 +76,9 @@ sealed class AccidentalDignity : IPlanetPattern {
   data class JoyHouse(override val planet: Planet, val house: Int) : AccidentalDignity()
   data class Hayz(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : AccidentalDignity()
   data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity()
-  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: AspectData.Type?) : AccidentalDignity()
+  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: AspectData.Type?) :
+    AccidentalDignity()
+
   data class Collection_of_Light(override val planet: Planet, val twoPlanets: List<Planet>, val angle: Double) : AccidentalDignity()
   data class Refrain_from_Mars_Saturn(override val planet: Planet, val marsOrSaturn: Planet, val aspect: Aspect) : AccidentalDignity()
 }
@@ -106,9 +111,12 @@ sealed class Debility : IPlanetPattern {
   data class Out_of_Sect(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : Debility()
   data class Refrain_from_Venus_Jupiter(override val planet: Planet, val venusOrJupiter: Planet, val aspect: Aspect) : Debility()
 
-  data class MutualDeception(override val planet: Planet, val sign1: ZodiacSign, val dig1: Dignity,
-                             val p2: Point, val sign2: ZodiacSign, val dig2: Dignity
-  ) : Debility() {
+  data class MutualDeception(override val planet: Planet,
+                             val sign1: ZodiacSign,
+                             val dig1: Dignity,
+                             val p2: Point,
+                             val sign2: ZodiacSign,
+                             val dig2: Dignity) : Debility() {
     private val mutualData = MutualDataWithSign(planet, sign1, dig1, p2, sign2, dig2)
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
@@ -124,4 +132,10 @@ sealed class Debility : IPlanetPattern {
     }
 
   }
+}
+
+sealed class Misc : IPlanetPattern {
+  override val type: RuleType = RuleType.MISC
+
+  data class VoidCourse(override val planet: Planet , val untilGmt : ChronoLocalDateTime<*>) : Misc()
 }

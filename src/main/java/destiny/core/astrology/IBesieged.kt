@@ -8,12 +8,10 @@ import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 
 /**
- * <pre>
  * 計算此顆星被哪兩顆星包夾
  * 這裡的「包夾」，是中性字眼。代表此星，先前與A星形成交角，後與B星形成交角
  * 也就是說，任何星在任何時候都處於「被包夾」狀態
- * 至於被包夾的好壞，要看星性以及更進一步的交角 Apply / Separate 決定
-</pre> *
+ * 至於被包夾的好壞，要看星性以及更進一步的交角 [AspectData.Type.APPLYING] / [AspectData.Type.SEPARATING] 決定
  */
 interface IBesieged {
 
@@ -23,12 +21,21 @@ interface IBesieged {
    * @param gmtJulDay GMT 時間
    * @param otherPlanets 其他行星
    * @param angles 欲計算的交角角度
-   * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者 . 傳回的 List[Planet] 必定 size = 2
-   * TODO : 目前的交角都只考慮「perfect」準確交角（一般行星三分容許度，日月17分），並未考慮容許度（即 applying），未來要改進
+   * @return 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
-  fun getBesiegingPlanetsByAngleDegrees(planet: Planet, gmtJulDay: Double,
-                                        otherPlanets: Collection<Planet>,
-                                        angles: Collection<Double>): Triple<List<Planet>, Aspect?, Aspect?>
+  fun getBesiegingPlanetsByDegrees(planet: Planet,
+                                   gmtJulDay: Double,
+                                   otherPlanets: Collection<Planet>,
+                                   angles: Collection<Double>): Pair<IAngleData? , IAngleData?>
+
+  fun getBesiegingPlanetsByAspects(planet: Planet,
+                                   gmtJulDay: Double,
+                                   otherPlanets: Collection<Planet>,
+                                   aspects: Collection<Aspect>): Pair<AspectData?, AspectData?> {
+    return getBesiegingPlanetsByDegrees(planet, gmtJulDay, otherPlanets, aspects.map { it.degree }).let { (prior, after) ->
+      prior?.toAspectData() to after?.toAspectData()
+    }
+  }
 
 
   /**
@@ -38,81 +45,88 @@ interface IBesieged {
    * @param searchingAspects 欲計算的交角
    * @return 兩顆行星 , 前者為「之前」形成交角者。後者為「之後」形成交角者 ,  傳回的 List[Planet] 必定 size = 2
    */
+  @Deprecated("")
   fun getBesiegingPlanets(planet: Planet, gmtJulDay: Double,
                           otherPlanets: Collection<Planet>,
                           searchingAspects: Collection<Aspect>): Triple<List<Planet>, Aspect?, Aspect?> {
-    val angles = searchingAspects.map { it.degree }
-    return getBesiegingPlanetsByAngleDegrees(planet, gmtJulDay, otherPlanets, angles)
+
+    return getBesiegingPlanetsByAspects(planet, gmtJulDay, otherPlanets, searchingAspects).let { (prior , after) ->
+      val p1 = prior?.points?.first { otherPlanets.contains(it) } as Planet
+      val p2 = after?.points?.first { otherPlanets.contains(it) } as Planet
+
+      Triple(listOf(p1 , p2) , prior.aspect , after.aspect)
+    }
   }
 
   /**
    * 角度皆為 0/60/90/120/180
    * @param planet 計算此顆星 被哪兩顆行星 包夾
    * @param gmtJulDay GMT 時間
-   * @param isClassical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
+   * @param classicalPlanets 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
    * @return 第一顆星是「之前」形成交角的星 ; 第二顆星是「之後」會形成交角的星
    */
-  fun getBesiegingPlanets(planet: Planet, gmtJulDay: Double, isClassical: Boolean): List<Planet> {
+  fun getBesiegingPlanets(planet: Planet, gmtJulDay: Double, classicalPlanets: Boolean): List<Planet> {
 
-    val otherPlanets = getPlanetsExcept(planet, isClassical)
+    val otherPlanets = getPlanetsExcept(planet, classicalPlanets)
 
     val majorAspects = Aspect.getAngles(Aspect.Importance.HIGH)
     val mediumAspects = Aspect.getAngles(Aspect.Importance.MEDIUM)
 
     val searchingAspects = majorAspects.let {
-      if (isClassical)
+      if (classicalPlanets)
         it
       else {
         it + mediumAspects
       }
     }
 
-    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects).first
+    return getBesiegingPlanetsByAspects(planet , gmtJulDay , otherPlanets , searchingAspects).let { (prior , after) ->
+      val p1 = prior!!.points.first { otherPlanets.contains(it) } as Planet
+      val p2 = after!!.points.first { otherPlanets.contains(it) } as Planet
+      listOf(p1 , p2)
+    }
+
   }
 
   // 承上 , gmt 版本
-  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, isClassical: Boolean): List<Planet> {
-    return getBesiegingPlanets(planet, TimeTools.getGmtJulDay(gmt), isClassical)
+  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean): List<Planet> {
+    return getBesiegingPlanets(planet, TimeTools.getGmtJulDay(gmt), classical)
   }
-
-
-  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>,
-                          otherPlanets: Collection<Planet>,
-                          searchingAspects: Collection<Aspect>): Triple<List<Planet>, Aspect?, Aspect?> {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects)
-  }
-
 
   /**
    * 傳回的 List[Planet] 必定 size = 2
-   * @param classical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
+   * @param classicalPlanets 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
    */
-  fun getBesiegingPlanets(planet: Planet, gmtJulDay: Double, classical: Boolean, aspects: Collection<Aspect>): List<Planet> {
-    val otherPlanets = getPlanetsExcept(planet, classical)
-    return getBesiegingPlanets(planet, gmtJulDay, otherPlanets, aspects).first
+  fun getBesiegingPlanets(planet: Planet, gmtJulDay: Double, classicalPlanets: Boolean, aspects: Collection<Aspect>): List<Planet> {
+    val otherPlanets = getPlanetsExcept(planet, classicalPlanets)
+
+    return getBesiegingPlanetsByAspects(planet, gmtJulDay, otherPlanets, aspects).let { (prior , after) ->
+      val p1 = prior?.points?.first { otherPlanets.contains(it) } as Planet
+      val p2 = after?.points?.first { otherPlanets.contains(it) } as Planet
+      listOf(p1 , p2)
+    }
   }
 
   // 承上 , gmt 版本
-  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean, aspects: Collection<Aspect>): List<Planet> {
+  fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classicalPlanets: Boolean, aspects: Collection<Aspect>): List<Planet> {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getBesiegingPlanets(planet, gmtJulDay, classical, aspects)
+    return getBesiegingPlanets(planet, gmtJulDay, classicalPlanets, aspects)
   }
 
   /**
    * @param planet 此 planet 是否被 p1 , p2 所包夾
-   * @param classical 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
-   * @param isOnlyHardAspects 是否只計算 「艱難交角」 : 0/90/180 ; 如果「false」的話，連 60/120 也算進去
+   * @param classicalPlanets 是否只計算古典占星學派。如果「是」的話，則不考慮三王星
+   * @param onlyHardAspects 是否只計算 「艱難交角」 : 0/90/180 ; 如果「false」的話，連 60/120 也算進去
    * @return 是否被包夾
    */
-  fun isBesieged(planet: Planet, p1: Planet, p2: Planet, gmt: ChronoLocalDateTime<*>, classical: Boolean, isOnlyHardAspects: Boolean): Boolean {
+  fun isBesieged(planet: Planet, p1: Planet, p2: Planet, gmt: ChronoLocalDateTime<*>, classicalPlanets: Boolean, onlyHardAspects: Boolean): Boolean {
 
-    val otherPlanets = getPlanetsExcept(planet, classical)
+    val otherPlanets = getPlanetsExcept(planet, classicalPlanets)
 
     val searchingAspects = Aspect.getAngles(Aspect.Importance.HIGH)
 
     val constrainingAspects = searchingAspects.filter {
-      if (isOnlyHardAspects) {
+      if (onlyHardAspects) {
         //只考量「硬」角度，所以 移除和諧的角度 (60/120)
         !arrayOf(Aspect.SEXTILE, Aspect.TRINE).contains(it)
       } else
@@ -120,13 +134,15 @@ interface IBesieged {
     }
 
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    val (besiegingPlanets, aspectPrior, aspectAfter) = getBesiegingPlanets(planet, gmtJulDay, otherPlanets, searchingAspects)
+
+    val (besiegingPlanets, aspectPrior, aspectAfter) = getBesiegingPlanetsByAspects(planet , gmtJulDay , otherPlanets , searchingAspects).let { (prior , after) ->
+      val planet1 = prior?.points?.first { otherPlanets.contains(it) } as Planet
+      val planet2 = after?.points?.first { otherPlanets.contains(it) } as Planet
+      Triple(listOf(planet1, planet2), prior.aspect, after.aspect)
+    }
 
     logger.debug("包夾 {} 的是 {}({}) 以及 {}({})", planet, besiegingPlanets[0], aspectPrior, besiegingPlanets[1], aspectAfter)
-    return if (besiegingPlanets.contains(p1)
-      && besiegingPlanets.contains(p2)
-      && aspectPrior != null
-      && aspectAfter != null) {
+    return if (besiegingPlanets.contains(p1) && besiegingPlanets.contains(p2)) {
       constrainingAspects.contains(aspectPrior) && constrainingAspects.contains(aspectAfter)
     } else false
   }

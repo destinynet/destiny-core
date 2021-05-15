@@ -128,7 +128,7 @@ interface IRelativeTransit {
                                          relativeStar: Star,
                                          fromGmtJulDay: Double,
                                          angles: Collection<Double>,
-                                         isForward: Boolean): Pair<Double, Double>? {
+                                         forward: Boolean): Pair<Double, Double>? {
     /**
      * 相交 270 度也算 90 度
      * 相交 240 度也是 120 度
@@ -145,13 +145,13 @@ interface IRelativeTransit {
       .toList()
 
     return realAngles.mapNotNull { angle ->
-      getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, isForward)?.let { resultGmtJulDay ->
+      getRelativeTransit(transitStar, relativeStar, angle, fromGmtJulDay, forward)?.let { resultGmtJulDay ->
         resultGmtJulDay to angle
       }
     }
       .sortedBy { (julDay, _) -> julDay }
       .let {
-        if (isForward)
+        if (forward)
           it.firstOrNull()  // 順推，取第一個（最接近當下）
         else
           it.lastOrNull()   // 逆推，取最後一個（最接近當下）

@@ -575,7 +575,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
       return planet.takeIf { arrayOf(SUN, MOON, MERCURY, MARS, SATURN).contains(it) }?.takeIf {
         val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
-        besiegedImpl.isBesieged(it, VENUS, JUPITER, gmt, classical = true, isOnlyHardAspects = false)
+        besiegedImpl.isBesieged(it, VENUS, JUPITER, gmt, classicalPlanets = true, onlyHardAspects = false)
       }?.let {
         AccidentalDignity.Besieged_Jupiter_Venus(planet)
       }
@@ -872,7 +872,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         ?.takeIf {
           val gmt = TimeTools.getGmtFromLmt(h.lmt, h.location)
           //火土夾制，只考量「硬」角度 , 所以最後一個參數設成 true
-          besiegedImpl.isBesieged(it, MARS, SATURN, gmt, classical = true, isOnlyHardAspects = true)
+          besiegedImpl.isBesieged(it, MARS, SATURN, gmt, classicalPlanets = true, onlyHardAspects = true)
         }?.let {
           Debility.Besieged_Mars_Saturn(planet)
         }

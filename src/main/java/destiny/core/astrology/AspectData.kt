@@ -7,6 +7,20 @@ package destiny.core.astrology
 import destiny.tools.AlignTools
 import java.io.Serializable
 
+
+interface IAspectData : IAngleData {
+
+  /** 兩星所形成的交角 */
+  val aspect: Aspect
+  val type: AspectData.Type?
+
+  /** orb 不列入 equals / hashCode 計算  */
+  val orb: Double
+
+  /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
+  val score: Double?
+}
+
 /**
  * 存放星體交角的資料結構
  * */
@@ -20,6 +34,8 @@ data class AspectData(
   val orb: Double = 0.0,
   /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
   val score: Double? = null) : Comparable<AspectData>, Serializable {
+
+
 
   enum class Type {
     APPLYING, SEPARATING
