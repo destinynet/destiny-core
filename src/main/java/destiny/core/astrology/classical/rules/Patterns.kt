@@ -136,6 +136,10 @@ sealed class Debility : IPlanetPattern {
 sealed class Misc : IPlanetPattern {
   override val type: RuleType = RuleType.MISC
 
-  /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [fromAspectData] , 後一個準確交角資訊為 [toAspectData]  */
-  data class VoidCourse(override val planet: Planet , val fromAspectData : IAspectData , val toAspectData : IAspectData) : Misc()
+  /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
+   * */
+  data class VoidCourse(override val planet: Planet,
+                        val beginGmt : Double, val beginDegree : Double,
+                        val endGmt : Double, val endDegree : Double,
+                        val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc()
 }
