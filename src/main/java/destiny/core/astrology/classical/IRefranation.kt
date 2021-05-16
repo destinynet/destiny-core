@@ -26,7 +26,7 @@ interface IRefranation {
 
   /** 取得重要交角 [Aspect.Importance.HIGH] 的結果 */
   fun getImportantResult(horoscope: IHoroscopeModel, planet: Planet, otherPoint: Point): Pair<Point, Aspect>? {
-    return getResult(horoscope, planet, otherPoint, Aspect.getAngles(Aspect.Importance.HIGH))
+    return getResult(horoscope, planet, otherPoint, Aspect.getAspects(Aspect.Importance.HIGH))
   }
 
 }

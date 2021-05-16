@@ -69,27 +69,27 @@ class AspectTest {
 
   @Test
   fun testGetAngles() {
-    assertTrue(Aspect.getAngles(Aspect.Importance.HIGH).contains(Aspect.CONJUNCTION))
-    assertTrue(Aspect.getAngles(Aspect.Importance.HIGH).contains(Aspect.SEXTILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.HIGH).contains(Aspect.SQUARE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.HIGH).contains(Aspect.TRINE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.HIGH).contains(Aspect.OPPOSITION))
+    assertTrue(Aspect.getAspects(Aspect.Importance.HIGH).contains(Aspect.CONJUNCTION))
+    assertTrue(Aspect.getAspects(Aspect.Importance.HIGH).contains(Aspect.SEXTILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.HIGH).contains(Aspect.SQUARE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.HIGH).contains(Aspect.TRINE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.HIGH).contains(Aspect.OPPOSITION))
 
-    assertTrue(Aspect.getAngles(Aspect.Importance.MEDIUM).contains(Aspect.SEMISEXTILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.MEDIUM).contains(Aspect.SEMISQUARE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.MEDIUM).contains(Aspect.SESQUIQUADRATE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.MEDIUM).contains(Aspect.QUINCUNX))
+    assertTrue(Aspect.getAspects(Aspect.Importance.MEDIUM).contains(Aspect.SEMISEXTILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.MEDIUM).contains(Aspect.SEMISQUARE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.MEDIUM).contains(Aspect.SESQUIQUADRATE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.MEDIUM).contains(Aspect.QUINCUNX))
 
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.DECILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.NOVILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.SEPTILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.QUINTILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.BINOVILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.BISEPTILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.SESQUIQUINTLE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.BIQUINTILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.TRISEPTILE))
-    assertTrue(Aspect.getAngles(Aspect.Importance.LOW).contains(Aspect.QUATRONOVILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.DECILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.NOVILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.SEPTILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.QUINTILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.BINOVILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.BISEPTILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.SESQUIQUINTLE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.BIQUINTILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.TRISEPTILE))
+    assertTrue(Aspect.getAspects(Aspect.Importance.LOW).contains(Aspect.QUATRONOVILE))
   }
 
   @Test

@@ -4,8 +4,8 @@
 package destiny.core.astrology
 
 import com.google.common.collect.Sets
-import destiny.core.astrology.AspectData.Type.APPLYING
-import destiny.core.astrology.AspectData.Type.SEPARATING
+import destiny.core.astrology.IAspectData.Type.APPLYING
+import destiny.core.astrology.IAspectData.Type.SEPARATING
 import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
@@ -55,7 +55,7 @@ class AspectsCalculatorImpl(
             val errorNext = abs(planetsAngleNext - aspect.degree)
 
             val type = if (errorNext <= error) APPLYING else SEPARATING
-            AspectData(p1, p2, aspect, error, score, type)
+            AspectData(p1, p2, aspect, error, score, type , this.gmtJulDay)
           }
       }
 

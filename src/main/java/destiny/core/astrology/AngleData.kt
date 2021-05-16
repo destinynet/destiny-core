@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import java.io.Serializable
+import kotlin.math.abs
 
 interface IAngleData {
   /** 兩顆星體  */
@@ -13,11 +14,11 @@ interface IAngleData {
   val angle: Double
 
   /** 何時 */
-  val gmtJulDay : Double
+  val gmtJulDay : Double?
 
   fun toAspectData(): AspectData? {
     return Aspect.getAspect(angle)?.let { aspect ->
-      AspectData(points , aspect )
+      AspectData(this, null, abs(aspect.degree - angle))
     }
   }
 }
@@ -31,8 +32,7 @@ data class AngleData(
   /** 交角幾度 */
   override val angle: Double ,
   /** 何時發生 */
-  override val gmtJulDay: Double) : IAngleData , Serializable {
-
+  override val gmtJulDay: Double?) : IAngleData , Serializable {
 
   constructor(p1: Point, p2: Point, angle: Double, gmtJulDay: Double) : this(sortedSetOf(pointComp, p1, p2), angle, gmtJulDay)
 

@@ -82,8 +82,12 @@ enum class Aspect(val nameKey: String,
     /**
      * 取得某類重要度 (高/中/低) 的角度列表
      */
-    fun getAngles(importance: Importance): List<Aspect> {
+    fun getAspects(importance: Importance): List<Aspect> {
       return importanceAngles.getValue(importance)
+    }
+
+    fun getAngles(importance: Importance): List<Double> {
+      return getAspects(importance).map { it.degree }
     }
 
 

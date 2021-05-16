@@ -8,7 +8,6 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
 import destiny.core.chinese.YinYang
-import java.time.chrono.ChronoLocalDateTime
 
 /**
  * 行星的 25種狀態
@@ -76,7 +75,7 @@ sealed class AccidentalDignity : IPlanetPattern {
   data class JoyHouse(override val planet: Planet, val house: Int) : AccidentalDignity()
   data class Hayz(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : AccidentalDignity()
   data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity()
-  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: AspectData.Type?) :
+  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: IAspectData.Type?) :
     AccidentalDignity()
 
   data class Collection_of_Light(override val planet: Planet, val twoPlanets: List<Planet>, val angle: Double) : AccidentalDignity()
@@ -137,5 +136,6 @@ sealed class Debility : IPlanetPattern {
 sealed class Misc : IPlanetPattern {
   override val type: RuleType = RuleType.MISC
 
-  data class VoidCourse(override val planet: Planet , val untilGmt : ChronoLocalDateTime<*>) : Misc()
+  /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [fromAspectData] , 後一個準確交角資訊為 [toAspectData]  */
+  data class VoidCourse(override val planet: Planet , val fromAspectData : IAspectData , val toAspectData : IAspectData) : Misc()
 }
