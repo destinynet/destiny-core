@@ -5,6 +5,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
+import mu.KotlinLogging
 import java.io.Serializable
 
 
@@ -16,9 +17,36 @@ interface IVoidCourse {
 /**
  * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
  */
-class VoidCourseHellenistic(private val relativeTransit: IRelativeTransit) : IVoidCourse, Serializable {
+class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
+                            private val starPositionImpl: IStarPosition<*>) : IVoidCourse, Serializable {
   override fun getVoidCourse(h: IHoroscopeModel, planet: Planet): Misc.VoidCourse? {
-    TODO("Not yet implemented")
+
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, h.gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+      .let { (prior, after) ->
+        prior!! to after!!
+      }.let { (exactAspectPrior, exactAspectAfter) ->
+        val p1 = exactAspectPrior.points.first { it != planet } as Planet
+        val p2 = exactAspectAfter.points.first { it != planet } as Planet
+
+        val pos1: IPos = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, h.location)
+        val pos2: IPos = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location)
+        val posPlanet: IPos = h.positionMap[planet]!!
+
+        planet.takeIf {
+          IHoroscopeModel.getAngle(pos1.lng , pos2.lng) > 30
+        }?.let {
+          logger.trace { """
+            ${planet}目前在 ${posPlanet.lng} 度.
+            之前運行到 ${pos1.lng} 時，曾與 $p1 形成 ${exactAspectPrior.aspect} , 
+            之後運行到 ${pos2.lng} 時，將與 $p2 形成 ${exactAspectAfter.aspect} ,
+            橫跨共 ${IHoroscopeModel.getAngle(pos1.lng , pos2.lng)} 度 , 超過 30度。
+          """.trimIndent() }
+          Misc.VoidCourse(planet , exactAspectPrior.gmtJulDay!! , exactAspectPrior.angle , exactAspectAfter.gmtJulDay!! , exactAspectAfter.angle , exactAspectPrior , exactAspectAfter)
+        }
+      }
+  }
+  companion object {
+    val logger = KotlinLogging.logger {  }
   }
 }
 

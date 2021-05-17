@@ -38,7 +38,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
       .lastOrNull() // 取最大值 (最接近 gmtJulDay)
 
 
-    logger.debug("之前形成度數 : {}", priorAngleData)
+    logger.trace("之前形成度數 : {}", priorAngleData)
 
 
     /**
@@ -46,12 +46,12 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
      */
     val afterAngleData = otherPlanets.asSequence()
       .filter { it !== planet }
-      .let { seqOfPlanets ->
-        if (priorAngleData != null)
-          seqOfPlanets.filter { other -> other !== priorAngleData.points.first { it != planet } } // 將之前形成交角的行星，移除之後搜尋的範圍中（只有月亮有此情形）
-        else
-          seqOfPlanets
-      }
+//      .let { seqOfPlanets ->
+//        if (priorAngleData != null)
+//          seqOfPlanets.filter { other -> other !== priorAngleData.points.first { it != planet } } // 將之前形成交角的行星，移除之後搜尋的範圍中（只有月亮有此情形）
+//        else
+//          seqOfPlanets
+//      }
       .map { eachOther ->
         relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, eachOther, gmtJulDay, angles, true)
           ?.let { (gmt, angle) ->
@@ -63,7 +63,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
       .firstOrNull()  // 取最小值 (最接近 gmtJulDay)
 
 
-    logger.debug("之後形成度數 : {}", afterAngleData)
+    logger.trace("之後形成度數 : {}", afterAngleData)
 
     return priorAngleData to afterAngleData
   }
