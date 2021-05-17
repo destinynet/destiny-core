@@ -38,7 +38,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
       .lastOrNull() // 取最大值 (最接近 gmtJulDay)
 
 
-    logger.trace("之前形成度數 : {}", priorAngleData)
+    logger.debug("之前形成度數 : {}", priorAngleData)
 
 
     /**
@@ -63,7 +63,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
       .firstOrNull()  // 取最小值 (最接近 gmtJulDay)
 
 
-    logger.trace("之後形成度數 : {}", afterAngleData)
+    logger.debug("之後形成度數 : {}", afterAngleData)
 
     return priorAngleData to afterAngleData
   }
