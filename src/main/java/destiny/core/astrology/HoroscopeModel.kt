@@ -249,27 +249,6 @@ interface IHoroscopeModel : ITimeLoc {
       }
     }
 
-
-    /**
-     * @return 計算 from 是否在 to 的東邊 (度數小，為東邊) , true 就是東邊 , false 就是西邊(含對沖/合相)
-     */
-    fun isOriental(from: Double, to: Double): Boolean {
-      return if (from < to && to - from < 180)
-        true
-      else
-        from > to && from - to > 180
-    }
-
-    /**
-     * @return 計算 from 是否在 to 的西邊 (度數大，為西邊) , true 就是西邊 , false 就是東邊(含對沖/合相)
-     */
-    fun isOccidental(from: Double, to: Double): Boolean {
-      return if (from < to && to - from > 180)
-        true
-      else
-        from > to && from - to < 180
-    }
-
     private val julDayResolver = JulDayResolver1582CutoverImpl()
   } // companion
 

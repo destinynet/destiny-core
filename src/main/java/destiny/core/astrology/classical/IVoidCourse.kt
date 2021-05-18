@@ -5,7 +5,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
-import destiny.tools.CircleTools
+import destiny.tools.CircleTools.normalize
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -29,20 +29,21 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
         val p1 = exactAspectPrior.points.first { it != planet } as Planet
         val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
-        val pos1: IPos = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, h.location)
-        val pos2: IPos = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location)
+        val pos1 = ZodiacDegree(starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, h.location).lng)
+        val pos2 = ZodiacDegree(starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location).lng)
         val posPlanet: IPos = h.positionMap[planet]!!
 
         planet.takeIf {
-          IHoroscopeModel.getAngle(pos1.lng , pos2.lng) > 30
+          pos1.getAngle(pos2) > 30
         }?.let {
           logger.trace { """
             ${planet}目前在 ${posPlanet.lng} 度.
-            之前運行到 ${pos1.lng} 時，曾與 $p1 形成 ${exactAspectPrior.aspect} , 
-            之後運行到 ${pos2.lng} 時，將與 $p2 形成 ${exactAspectAfter.aspect} ,
-            橫跨共 ${IHoroscopeModel.getAngle(pos1.lng , pos2.lng)} 度 , 超過 30度。
+            之前運行到 ${pos1.value} 時，曾與 $p1 形成 ${exactAspectPrior.aspect} , 
+            之後運行到 ${pos2.value} 時，將與 $p2 形成 ${exactAspectAfter.aspect} ,
+            橫跨共 ${pos1.getAngle(pos2)} 度 , 超過 30度。
           """.trimIndent() }
-          Misc.VoidCourse(planet , exactAspectPrior.gmtJulDay!! , exactAspectPrior.angle , exactAspectAfter.gmtJulDay!! , exactAspectAfter.angle , exactAspectPrior , exactAspectAfter)
+
+          Misc.VoidCourse(planet , exactAspectPrior.gmtJulDay!! , pos1 , exactAspectAfter.gmtJulDay!! , pos2 , exactAspectPrior , exactAspectAfter)
         }
       }
   }
@@ -80,9 +81,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
         val p1 = exactAspectPrior.points.first { it != planet } as Planet
         val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
-        //val pos1: IPos = starPositionImpl.getPosition(p1, exactAspectPrior.gmtJulDay!!, h.location)
-        //val pos2: IPos = starPositionImpl.getPosition(p2, exactAspectAfter.gmtJulDay!!, h.location)
-        val posPlanet: IPos = h.positionMap[planet]!!
+        val posPlanet = ZodiacDegree(h.positionMap[planet]!!.lng)
 
         val planetExactPosPrior = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, h.location)
         val planetExactPosAfter = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location)
@@ -90,32 +89,32 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 
         val combinedMoiety =  (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
 
-        val beginDegree = CircleTools.getNormalizeDegree(planetExactPosPrior.lng + 6/60.0)
-        val endDegree = CircleTools.getNormalizeDegree(planetExactPosAfter.lng - combinedMoiety)
+        val beginDegree = ZodiacDegree((planetExactPosPrior.lng + 6/60.0).normalize())
+        val endDegree = ZodiacDegree((planetExactPosAfter.lng - combinedMoiety).normalize())
 
         planet.takeIf {
           val angle1 = IHoroscopeModel.getAngle(planetExactPosPrior.lng, planetExactPosAfter.lng)
-          val angle2 = IHoroscopeModel.getAngle(beginDegree, endDegree)
+          val angle2 = beginDegree.getAngle(endDegree)
           logger.trace { "angle1 = $angle1 , angle2 = $angle2" }
           angle1 > angle2
         }?.takeIf {
-          IHoroscopeModel.isOccidental(posPlanet.lng, beginDegree)
+          posPlanet.isOccidental(beginDegree)
         }?.takeIf {
-          IHoroscopeModel.isOriental(posPlanet.lng, endDegree)
+          posPlanet.isOriental(endDegree)
         }?.let {
           logger.trace {
             """$planet 之前曾與 $p1 形成 ${exactAspectPrior.aspect} , 發生於黃道 ${planetExactPosPrior.lng} , 星座 = ${ZodiacSign.getSignAndDegree(planetExactPosPrior.lng)}
               |加上 6 分之後 , 
-              |VOC 開始於 黃道 $beginDegree , 星座 = ${ZodiacSign.getSignAndDegree(beginDegree)}
-              |$planet 目前位於黃道 ${posPlanet.lng} , 星座 = ${ZodiacSign.getSignAndDegree(posPlanet.lng)}
-              |VOC 結束於 黃道 $endDegree , 星座 = ${ZodiacSign.getSignAndDegree(endDegree)}
+              |VOC 開始於 黃道 $beginDegree , 星座 = ${beginDegree.getZodiacSign()}
+              |$planet 目前位於黃道 ${posPlanet.value} , 星座 = ${posPlanet.getZodiacSign()}
+              |VOC 結束於 黃道 $endDegree , 星座 = ${endDegree.getZodiacSign()}
               |加上 $combinedMoiety 度之後
               |$planet 之後將與 $p2 形成 ${exactAspectAfter.aspect} , 發生於黃道 ${planetExactPosAfter.lng} , 星座 = ${ZodiacSign.getSignAndDegree(planetExactPosAfter.lng)}
             """.trimMargin()
           }
 
-          val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree, h.coordinate, h.gmtJulDay, false)
-          val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree, h.coordinate, h.gmtJulDay, true)
+          val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree.value, h.coordinate, h.gmtJulDay, false)
+          val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree.value, h.coordinate, h.gmtJulDay, true)
           Misc.VoidCourse(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
         }
       }
@@ -153,9 +152,9 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
           // 計算進入下一個星座的時間
           val nextSign = posPlanet.sign.next
           val beginGmt = exactAspectPrior.gmtJulDay!!
-          val beginDegree = starPositionImpl.getPosition(planet, beginGmt, h.location).lng
+          val beginDegree = ZodiacDegree(starPositionImpl.getPosition(planet, beginGmt, h.location).lng)
           val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toDouble(), Coordinate.ECLIPTIC, h.gmtJulDay, true)
-          val endDegree = nextSign.degree.toDouble()
+          val endDegree = ZodiacDegree(nextSign.degree.toDouble())
           Misc.VoidCourse(
             planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter
           )

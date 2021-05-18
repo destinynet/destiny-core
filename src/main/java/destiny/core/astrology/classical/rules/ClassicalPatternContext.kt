@@ -289,9 +289,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return arrayOf(MARS, JUPITER, SATURN)
         .takeIf { it.contains(planet) }
         ?.let { h.getPosition(planet) }?.lng
+        ?.let { ZodiacDegree(it) }
         ?.let { planetDegree ->
           h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-            IHoroscopeModel.isOriental(planetDegree, sunDegree)
+            planetDegree.isOriental(ZodiacDegree(sunDegree))
           }
         }?.let {
           AccidentalDignity.Oriental(planet)
@@ -309,7 +310,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return planet.takeIf { it === MERCURY || it === VENUS }
         ?.let { it -> h.getPosition(it) }?.lng?.let { planetDeg ->
         h.getPosition(SUN)?.lng?.takeIf { sunDeg ->
-          IHoroscopeModel.isOccidental(planetDeg, sunDeg)
+          ZodiacDegree(planetDeg).isOccidental(ZodiacDegree(sunDeg))
         }?.let {
           AccidentalDignity.Occidental(planet)
         }
@@ -324,15 +325,13 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val moonIncreaseLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return planet.takeIf { it === MOON }
-        ?.let { h.getPosition(it) }?.lng?.let { moonDeg ->
-        h.getPosition(SUN)?.lng?.takeIf { sunDeg ->
-          IHoroscopeModel.isOccidental(moonDeg, sunDeg)
-        }?.let {
-          AccidentalDignity.Moon_Increase_Light
-        }
-      }
-        ?.let { pattern -> listOf(pattern) } ?: emptyList()
+      return planet.takeIf { it === MOON }?.let { h.getPosition(it) }?.lng?.let { moonDeg ->
+          h.getPosition(SUN)?.lng?.takeIf { sunDeg ->
+            ZodiacDegree(moonDeg).isOccidental(ZodiacDegree(sunDeg))
+          }?.let {
+            AccidentalDignity.Moon_Increase_Light
+          }
+        }?.let { pattern -> listOf(pattern) } ?: emptyList()
 
     }
   }
@@ -741,7 +740,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
         .takeIf { it.contains(planet) }
         ?.let { h.getPosition(planet) }?.lng?.let { planetDegree ->
         h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-          IHoroscopeModel.isOccidental(planetDegree, sunDegree)
+          ZodiacDegree(planetDegree).isOccidental(ZodiacDegree(sunDegree))
         }?.let {
           Debility.Occidental(planet)
         }
@@ -759,9 +758,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return arrayOf(MERCURY, VENUS)
         .takeIf { it.contains(planet) }
-        ?.let { h.getPosition(planet) }?.lng?.let { planetDegree ->
+        ?.let { h.getPosition(planet) }?.lng?.let {ZodiacDegree(it)}?.let { planetDegree ->
         h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-          IHoroscopeModel.isOriental(planetDegree, sunDegree)
+          planetDegree.isOriental(ZodiacDegree(sunDegree))
         }?.let {
           Debility.Oriental(planet)
         }
@@ -777,9 +776,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet
         .takeIf { it === MOON }
-        ?.let { h.getPosition(it) }?.lng?.let { moonDegree ->
+        ?.let { h.getPosition(it) }?.lng?.let {ZodiacDegree(it)}?.let { moonDegree ->
         h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-          IHoroscopeModel.isOriental(moonDegree, sunDegree)
+          moonDegree.isOriental(ZodiacDegree(sunDegree))
         }?.let {
           Debility.Moon_Decrease_Light
         }
