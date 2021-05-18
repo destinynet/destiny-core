@@ -5,6 +5,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc
+import destiny.tools.CircleTools
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -60,12 +61,69 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
  * this is a correct interpretation of what Lilly meant, and thus that there is a third definition of void of course,
  * while others do not agree that this is a correct interpretation of the text,
  * and thus they believe that there are only two potential definitions.
+ *
+ * 月亮先後被兩星 (p1,p2) 包夾，
+ * 月亮先離開與 p1交角+6分之後 , VOC 開始
+ * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
  */
-class VoidCourseWilliamLilly() : IVoidCourse, Serializable {
+class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
+                             private val starPositionImpl: IStarPosition<*>,
+                             private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
+
+  private val pointDiameter: IPointDiameter = PointDiameterLillyImpl()
+
   override fun getVoidCourse(h: IHoroscopeModel, planet: Planet): Misc.VoidCourse? {
-    TODO("Not yet implemented")
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, h.gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+      .let { (prior, after) ->
+        prior!! to after!!
+      }.let { (exactAspectPrior, exactAspectAfter) ->
+        val p1 = exactAspectPrior.points.first { it != planet } as Planet
+        val p2 = exactAspectAfter.points.first { it != planet } as Planet
+
+        //val pos1: IPos = starPositionImpl.getPosition(p1, exactAspectPrior.gmtJulDay!!, h.location)
+        //val pos2: IPos = starPositionImpl.getPosition(p2, exactAspectAfter.gmtJulDay!!, h.location)
+        val posPlanet: IPos = h.positionMap[planet]!!
+
+        val planetExactPosPrior = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, h.location)
+        val planetExactPosAfter = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location)
+
+
+        val combinedMoiety =  (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
+
+        val beginDegree = CircleTools.getNormalizeDegree(planetExactPosPrior.lng + 6/60.0)
+        val endDegree = CircleTools.getNormalizeDegree(planetExactPosAfter.lng - combinedMoiety)
+
+        planet.takeIf {
+          val angle1 = IHoroscopeModel.getAngle(planetExactPosPrior.lng, planetExactPosAfter.lng)
+          val angle2 = IHoroscopeModel.getAngle(beginDegree, endDegree)
+          logger.trace { "angle1 = $angle1 , angle2 = $angle2" }
+          angle1 > angle2
+        }?.takeIf {
+          IHoroscopeModel.isOccidental(posPlanet.lng, beginDegree)
+        }?.takeIf {
+          IHoroscopeModel.isOriental(posPlanet.lng, endDegree)
+        }?.let {
+          logger.trace {
+            """$planet 之前曾與 $p1 形成 ${exactAspectPrior.aspect} , 發生於黃道 ${planetExactPosPrior.lng} , 星座 = ${ZodiacSign.getSignAndDegree(planetExactPosPrior.lng)}
+              |加上 6 分之後 , 
+              |VOC 開始於 黃道 $beginDegree , 星座 = ${ZodiacSign.getSignAndDegree(beginDegree)}
+              |$planet 目前位於黃道 ${posPlanet.lng} , 星座 = ${ZodiacSign.getSignAndDegree(posPlanet.lng)}
+              |VOC 結束於 黃道 $endDegree , 星座 = ${ZodiacSign.getSignAndDegree(endDegree)}
+              |加上 $combinedMoiety 度之後
+              |$planet 之後將與 $p2 形成 ${exactAspectAfter.aspect} , 發生於黃道 ${planetExactPosAfter.lng} , 星座 = ${ZodiacSign.getSignAndDegree(planetExactPosAfter.lng)}
+            """.trimMargin()
+          }
+
+          val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree, h.coordinate, h.gmtJulDay, false)
+          val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree, h.coordinate, h.gmtJulDay, true)
+          Misc.VoidCourse(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
+        }
+      }
   }
 
+  companion object {
+    val logger = KotlinLogging.logger {  }
+  }
 }
 
 /**

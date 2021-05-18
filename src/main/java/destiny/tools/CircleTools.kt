@@ -9,11 +9,11 @@ import kotlin.math.abs
 object CircleTools {
 
   /** 將度數 normalize 到 0(含)~360(不含) 的區間  */
-  private fun Double.normalize() : Double {
+  fun Double.normalize(): Double {
     return when {
       this >= 360 -> this % 360
-      this < 0 -> (360 - (0 - this) % 360) % 360
-      else -> this
+      this < 0    -> (360 - (0 - this) % 360) % 360
+      else        -> this
     }
   }
 
@@ -41,7 +41,7 @@ object CircleTools {
    * 359.aheadOf(0) = 359
    * 0.aheadOf(359) = 1
    */
-  fun Double.aheadOf(degree: Double) : Double {
+  fun Double.aheadOf(degree: Double): Double {
     return (this.normalize() - degree.normalize()).let { value ->
       if (value < 0) {
         (value + 360)
