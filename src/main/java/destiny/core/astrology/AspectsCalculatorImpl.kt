@@ -49,9 +49,9 @@ class AspectsCalculatorImpl(
                 this.coordinate, this.centric)
             val h2 = hContext.getHoroscope(lmt = later, loc = this.location, place = this.place, points = this.points)
 
-            val deg1Next = h2.getPositionWithAzimuth(p1).lng
-            val deg2Next = h2.getPositionWithAzimuth(p2).lng
-            val planetsAngleNext = IHoroscopeModel.getAngle(deg1Next, deg2Next)
+            val deg1Next = h2.getPositionWithAzimuth(p1).lngDeg
+            val deg2Next = h2.getPositionWithAzimuth(p2).lngDeg
+            val planetsAngleNext = deg1Next.getAngle(deg2Next)
             val errorNext = abs(planetsAngleNext - aspect.degree)
 
             val type = if (errorNext <= error) APPLYING else SEPARATING

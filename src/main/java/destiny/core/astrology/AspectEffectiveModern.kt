@@ -24,7 +24,7 @@ class AspectEffectiveModern(
 
   /** 直接比對度數是否形成交角，不考慮星體  */
   fun isEffective(deg1: Double, deg2: Double, aspect: Aspect): Boolean {
-    val angle = IHoroscopeModel.getAngle(deg1, deg2)
+    val angle = ZodiacDegree.getAngle(deg1, deg2)
     return abs(angle - aspect.degree) <= aspectOrbsImpl.getAspectOrb(aspect)
   }
 
@@ -45,7 +45,7 @@ class AspectEffectiveModern(
 
   override fun getEffectiveErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Double, Double>? {
     val (orb, threshold) = getOrbAndThresholdScore(p1, p2, aspect)
-    val angle = IHoroscopeModel.getAngle(deg1, deg2)
+    val angle = ZodiacDegree.getAngle(deg1, deg2)
     val angleDiff = abs(angle - aspect.degree)
 
     return if (angleDiff <= orb)
@@ -57,7 +57,7 @@ class AspectEffectiveModern(
   /** 有些版本有考慮星體，例如：太陽月亮的交角，會有較高的容許度  */
   override fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Boolean {
     val orb = getOrb(p1, p2, aspect)
-    val angle = IHoroscopeModel.getAngle(deg1, deg2)
+    val angle = ZodiacDegree.getAngle(deg1, deg2)
     val angleDiff = abs(angle - aspect.degree)
 
     return (angleDiff <= orb)
@@ -85,7 +85,7 @@ class AspectEffectiveModern(
   companion object {
 
     fun isEffective(deg1: Double, deg2: Double, aspect: Aspect, orb: Double): Boolean {
-      val angle = IHoroscopeModel.getAngle(deg1, deg2)
+      val angle = ZodiacDegree.getAngle(deg1, deg2)
       return abs(angle - aspect.degree) <= orb
     }
   }

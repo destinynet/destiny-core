@@ -6,14 +6,15 @@ import java.io.Serializable
 interface IPos : Serializable {
   val lng: Double
   val lat: Double
+  val lngDeg : ZodiacDegree
 
   /** 黃道什麼星座 */
   val sign: ZodiacSign
-    get() = ZodiacSign.of(lng)
+    get() = lngDeg.sign
 
   /** 黃道什麼星座 , 以及該星座的度數 (0~30) */
   val signDegree: Pair<ZodiacSign, Double>
-    get() = ZodiacSign.getSignAndDegree(lng)
+    get() = lngDeg.signDegree
 
   operator fun plus(p: IPos): IPos {
     return Pos(CircleTools.getNormalizeDegree(this.lng + p.lng), this.lat + p.lat)
@@ -25,7 +26,8 @@ interface IPos : Serializable {
 }
 
 data class Pos(override val lng: Double,
-               override val lat: Double) : IPos
+               override val lat: Double,
+               override val lngDeg: ZodiacDegree = ZodiacDegree(lng)) : IPos
 
 
 interface IPosWithAzimuth : IPos, IAzimuth

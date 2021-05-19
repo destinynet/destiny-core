@@ -161,7 +161,7 @@ interface IHoroscopeModel : ITimeLoc {
    * 取得單一 Horoscope 中 , 任兩顆星的交角
    */
   fun getAngle(fromPoint: Point, toPoint: Point): Double {
-    return getAngle(positionMap.getValue(fromPoint).lng, positionMap.getValue(toPoint).lng)
+    return positionMap.getValue(fromPoint).lngDeg.getAngle(positionMap.getValue(toPoint).lngDeg)
   }
 
 
@@ -231,21 +231,9 @@ interface IHoroscopeModel : ITimeLoc {
     fun getAspectError(positionMap: Map<Point, IPos> , p1:Point , p2:Point , aspect: Aspect) : Double? {
       return positionMap[p1]?.let { p1Pos ->
         positionMap[p2]?.let { p2Pos ->
-          val angle = getAngle(p1Pos.lng , p2Pos.lng)
+          val angle = p1Pos.lngDeg.getAngle(p2Pos.lngDeg)
           abs(aspect.degree - angle)
         }
-      }
-    }
-
-    /**
-     * @return 計算黃道帶上兩個度數的交角 , 其值必定小於等於 180度
-     */
-    fun getAngle(from: Double, to: Double): Double {
-      return when {
-        from - to >= 180 -> 360 - from + to
-        from - to >= 0 -> from - to
-        from - to >= -180 -> to - from
-        else -> from + 360 - to  // (from - to < -180)
       }
     }
 

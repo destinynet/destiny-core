@@ -4,7 +4,6 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.*
-import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
@@ -77,8 +76,8 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
     val logger = KotlinLogging.logger { }
 
     fun findNearestHouseCusp(houseMap: Map<Int, Double>, degree: Double): Int {
-      return houseMap.map { (houseIndex, cuspDegree) ->
-        houseIndex to IHoroscopeModel.getAngle(cuspDegree, degree)
+      return houseMap.map { (houseIndex, cuspDegree: Double) ->
+        houseIndex to ZodiacDegree.getAngle(cuspDegree, degree)
       }
         .filter { (_, angle) -> angle < 40 } // 只過濾 angle < 40 , 加快後面 sort 速度
         .sortedBy { it.second }

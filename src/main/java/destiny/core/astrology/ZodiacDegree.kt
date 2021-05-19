@@ -6,24 +6,21 @@ package destiny.core.astrology
 import destiny.tools.CircleTools.aheadOf
 import destiny.tools.CircleTools.normalize
 
-
+/** 黃道帶度數 */
 inline class ZodiacDegree(val value: Double) {
 
-  fun getZodiacSign() : ZodiacSign {
-    return ZodiacSign.of(value)
-  }
+  val sign: ZodiacSign
+    get() = ZodiacSign.of(value)
 
-  fun getSignAndDegree() : Pair<ZodiacSign, Double> {
-    return getZodiacSign() to value % 30
-  }
+  val signDegree: Pair<ZodiacSign, Double>
+    get() = sign to value % 30
 
   fun getAngle(to : ZodiacDegree) : Double {
-    return when {
-      value - to.value >= 180 -> 360 - value + to.value
-      value - to.value >= 0 -> value - to.value
-      value - to.value >= -180 -> to.value - value
-      else -> value + 360 - to.value  // (from - to < -180)
-    }
+    return Companion.getAngle(this.value , to.value)
+  }
+
+  fun getAngle(to : Double) : Double {
+    return Companion.getAngle(this.value , to)
   }
 
   /**
@@ -67,7 +64,36 @@ inline class ZodiacDegree(val value: Double) {
     }
   }
 
-  operator fun plus(other: ZodiacDegree): Double {
-    return value + other.value
+  operator fun plus(other: ZodiacDegree): ZodiacDegree {
+    return ZodiacDegree((value + other.value).normalize())
+  }
+
+  operator fun plus(other: Int): ZodiacDegree {
+    return ZodiacDegree((value + other).normalize())
+  }
+
+  operator fun minus(other: ZodiacDegree): ZodiacDegree {
+    return ZodiacDegree((value - other.value).normalize())
+  }
+
+  operator fun minus(other: Int): ZodiacDegree {
+    return ZodiacDegree((value - other).normalize())
+  }
+
+
+
+
+  companion object {
+    /**
+     * @return 計算黃道帶上兩個度數的交角 , 其值必定小於等於 180度
+     */
+    fun getAngle(from: Double, to: Double): Double {
+      return when {
+        from - to >= 180 -> 360 - from + to
+        from - to >= 0 -> from - to
+        from - to >= -180 -> to - from
+        else -> from + 360 - to  // (from - to < -180)
+      }
+    }
   }
 }

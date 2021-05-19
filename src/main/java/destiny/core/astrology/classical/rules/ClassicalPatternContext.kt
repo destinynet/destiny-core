@@ -288,11 +288,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
       return arrayOf(MARS, JUPITER, SATURN)
         .takeIf { it.contains(planet) }
-        ?.let { h.getPosition(planet) }?.lng
-        ?.let { ZodiacDegree(it) }
+        ?.let { h.getPosition(planet) }?.lngDeg
         ?.let { planetDegree ->
-          h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-            planetDegree.isOriental(ZodiacDegree(sunDegree))
+          h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+            planetDegree.isOriental(sunDegree)
           }
         }?.let {
           AccidentalDignity.Oriental(planet)
@@ -308,9 +307,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
       return planet.takeIf { it === MERCURY || it === VENUS }
-        ?.let { it -> h.getPosition(it) }?.lng?.let { planetDeg ->
-        h.getPosition(SUN)?.lng?.takeIf { sunDeg ->
-          ZodiacDegree(planetDeg).isOccidental(ZodiacDegree(sunDeg))
+        ?.let { it -> h.getPosition(it) }?.lngDeg?.let { planetDeg ->
+        h.getPosition(SUN)?.lngDeg?.takeIf { sunDeg ->
+          planetDeg.isOccidental(sunDeg)
         }?.let {
           AccidentalDignity.Occidental(planet)
         }
@@ -369,16 +368,16 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
   private val partileConjJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      val planetDeg = h.getPosition(planet)?.lng
-      val jupiterDeg = h.getPosition(JUPITER)?.lng
-      val venusDeg = h.getPosition(VENUS)?.lng
+      val planetDeg = h.getPosition(planet)?.lngDeg
+      val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
+      val venusDeg = h.getPosition(VENUS)?.lngDeg
 
       return planetDeg?.let {
 
         jupiterDeg
-          ?.takeIf { planet !== JUPITER && IHoroscopeModel.getAngle(planetDeg, jupiterDeg) <= 1 }
+          ?.takeIf { planet !== JUPITER && planetDeg.getAngle(jupiterDeg) <= 1 }
           ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, JUPITER) }
-          ?: venusDeg?.takeIf { planet !== VENUS && IHoroscopeModel.getAngle(planetDeg, venusDeg) <= 1 }
+          ?: venusDeg?.takeIf { planet !== VENUS && planetDeg.getAngle(venusDeg) <= 1 }
             ?.let { AccidentalDignity.Partile_Conj_Jupiter_Venus(planet, VENUS) }
 
 
@@ -397,9 +396,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
-        h.getPosition(north)?.lng?.takeIf { northDeg ->
-          IHoroscopeModel.getAngle(planetDeg, northDeg) <= 1
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+        h.getPosition(north)?.lngDeg?.takeIf { northDeg ->
+          planetDeg.getAngle(northDeg) <= 1
         }?.let {
           logger.debug("{} 與 {} 形成 {}", planet, north, CONJUNCTION)
           AccidentalDignity.Partile_Conj_North_Node(planet, north)
@@ -759,8 +758,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
       return arrayOf(MERCURY, VENUS)
         .takeIf { it.contains(planet) }
         ?.let { h.getPosition(planet) }?.lng?.let {ZodiacDegree(it)}?.let { planetDegree ->
-        h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-          planetDegree.isOriental(ZodiacDegree(sunDegree))
+        h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+          planetDegree.isOriental(sunDegree)
         }?.let {
           Debility.Oriental(planet)
         }
@@ -776,9 +775,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return planet
         .takeIf { it === MOON }
-        ?.let { h.getPosition(it) }?.lng?.let {ZodiacDegree(it)}?.let { moonDegree ->
-        h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-          moonDegree.isOriental(ZodiacDegree(sunDegree))
+        ?.let { h.getPosition(it) }?.lngDeg?.let { moonDegree ->
+        h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+          moonDegree.isOriental(sunDegree)
         }?.let {
           Debility.Moon_Decrease_Light
         }
@@ -814,16 +813,16 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val partileConjMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
-        val marsDeg = h.getPosition(MARS)?.lng
-        val saturnDeg = h.getPosition(SATURN)?.lng
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+        val marsDeg = h.getPosition(MARS)?.lngDeg
+        val saturnDeg = h.getPosition(SATURN)?.lngDeg
 
         val conjMars = marsDeg?.takeIf {
-          planet !== MARS && IHoroscopeModel.getAngle(planetDeg, marsDeg) <= 1
+          planet !== MARS && planetDeg.getAngle(marsDeg) <= 1
         }?.let { Debility.Partile_Conj_Mars_Saturn(planet, MARS) }
 
         val conjSat = saturnDeg?.takeIf {
-          planet != SATURN && IHoroscopeModel.getAngle(planetDeg, saturnDeg) <= 1
+          planet != SATURN && planetDeg.getAngle(saturnDeg) <= 1
         }?.let { Debility.Partile_Conj_Mars_Saturn(planet, SATURN) }
 
         listOfNotNull(conjMars, conjSat)
@@ -843,10 +842,10 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
-        h.getPosition(south)?.lng?.takeIf { southDeg ->
-          IHoroscopeModel.getAngle(planetDeg, southDeg) <= 1
+        h.getPosition(south)?.lngDeg?.takeIf { southDeg ->
+          planetDeg.getAngle(southDeg) <= 1
         }?.let {
           logger.debug("{} 與 {} 形成 {}", planet, south, CONJUNCTION)
           Debility.Partile_Conj_South_Node(planet)

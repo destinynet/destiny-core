@@ -7,8 +7,8 @@ package destiny.core.astrology.classical
 import destiny.core.astrology.Aspect
 import destiny.core.astrology.Aspect.Importance
 import destiny.core.astrology.IAspectEffective
-import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Point
+import destiny.core.astrology.ZodiacDegree
 import destiny.tools.DestinyMarker
 import java.io.Serializable
 import kotlin.math.abs
@@ -29,7 +29,7 @@ class AspectEffectiveClassical(
   override val applicableAspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)
 
   private fun getAngleDiff(deg1: Double, deg2: Double, angle: Double): Double {
-    return abs(IHoroscopeModel.getAngle(deg1, deg2) - angle)
+    return abs(ZodiacDegree.getAngle(deg1, deg2) - angle)
   }
 
   private fun getSumOfRadius(p1: Point, p2: Point): Double {
