@@ -9,6 +9,7 @@ import destiny.core.astrology.Aspect.Importance
 import destiny.core.astrology.IAspectEffective
 import destiny.core.astrology.Point
 import destiny.core.astrology.ZodiacDegree
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.DestinyMarker
 import java.io.Serializable
 import kotlin.math.abs
@@ -28,50 +29,41 @@ class AspectEffectiveClassical(
 
   override val applicableAspects: Collection<Aspect> = Aspect.getAspects(Importance.HIGH)
 
-  private fun getAngleDiff(deg1: Double, deg2: Double, angle: Double): Double {
-    return abs(ZodiacDegree.getAngle(deg1, deg2) - angle)
+  private fun getAngleDiff(deg1: ZodiacDegree, deg2: ZodiacDegree, angle: Double): Double {
+    return abs(deg1.getAngle(deg2) - angle)
   }
 
   private fun getSumOfRadius(p1: Point, p2: Point): Double {
     return (planetOrbsImpl.getDiameter(p1) + planetOrbsImpl.getDiameter(p2)) / 2
   }
 
-  override fun getEffectiveErrorAndScore(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Pair<Double, Double>? {
+  override fun getEffectiveErrorAndScore(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Pair<Double, Double>? {
     val angleDiff = getAngleDiff(deg1, deg2, aspect.degree)
     val sumOfRadius = getSumOfRadius(p1, p2)
 
-    return if (angleDiff <= sumOfRadius)
-      angleDiff to (defaultThreshold + (1 - defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius)
-    else
-      null
+    return angleDiff
+      .takeIf { it <= sumOfRadius }
+      ?.let { it to (defaultThreshold + (1 - defaultThreshold) * (sumOfRadius - angleDiff) / sumOfRadius) }
   }
-
 
   /**
    * classical 交角不談容許度 (orb)
    */
-  fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, angle: Double): Boolean {
+  fun isEffective(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, angle: Double): Boolean {
     val angleDiff = getAngleDiff(deg1, deg2, angle)
     val sumOfRadius = getSumOfRadius(p1, p2)
     return (angleDiff <= sumOfRadius)
   }
 
   /**
-   * @param p1 Point 1
-   * @param deg1 Point 1 於黃道上的度數
-   * @param p2 Point 2
-   * @param deg2 Point 2 於黃道上的度數
-   * @param angles 判定的角度，例如 [0,60,90,120,180]
-   * @return 兩顆星是否形成有效交角
+   * classical 交角不談容許度 (orb)
    */
-  fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, vararg angles: Double): Boolean {
-    return angles.any {
-      isEffective(p1, deg1, p2, deg2, it)
-    }
+  fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, angle: Double): Boolean {
+    return isEffective(p1 , deg1.toZodiacDegree() , p2 , deg2.toZodiacDegree(), angle)
   }
 
   /** 兩星體是否形成有效交角  */
-  override fun isEffective(p1: Point, deg1: Double, p2: Point, deg2: Double, aspect: Aspect): Boolean {
+  override fun isEffective(p1: Point, deg1: ZodiacDegree, p2: Point, deg2: ZodiacDegree, aspect: Aspect): Boolean {
     return isEffective(p1, deg1, p2, deg2, aspect.degree)
   }
 

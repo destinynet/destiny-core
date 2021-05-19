@@ -16,11 +16,11 @@ inline class ZodiacDegree private constructor(val value: Double) {
     get() = sign to value % 30
 
   fun getAngle(to : ZodiacDegree) : Double {
-    return Companion.getAngle(this.value , to.value)
+    return Companion.getAngle(this.value, to.value)
   }
 
   fun getAngle(to : Double) : Double {
-    return Companion.getAngle(this.value , to)
+    return Companion.getAngle(this.value, to)
   }
 
   /**
@@ -72,11 +72,19 @@ inline class ZodiacDegree private constructor(val value: Double) {
     return (value + other).toZodiacDegree()
   }
 
+  operator fun plus(other: Double): ZodiacDegree {
+    return (value + other).toZodiacDegree()
+  }
+
   operator fun minus(other: ZodiacDegree): ZodiacDegree {
     return (value - other.value).toZodiacDegree()
   }
 
   operator fun minus(other: Int): ZodiacDegree {
+    return (value - other).toZodiacDegree()
+  }
+
+  operator fun minus(other: Double): ZodiacDegree {
     return (value - other).toZodiacDegree()
   }
 

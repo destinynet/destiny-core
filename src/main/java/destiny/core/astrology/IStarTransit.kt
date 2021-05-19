@@ -20,14 +20,14 @@ interface IStarTransit {
   /**
    * 傳回 GMT Julian Day 時刻
    */
-  fun getNextTransitGmt(star: Star, degree: Double, coordinate: Coordinate, fromGmt: Double, forward: Boolean = true): Double
+  fun getNextTransitGmt(star: Star, degree: ZodiacDegree, coordinate: Coordinate, fromGmt: Double, forward: Boolean = true): Double
 
 
   /**
    * 傳回 GMT [ChronoLocalDateTime]
    */
   fun getNextTransitGmtDateTime(star: Star,
-                                degree: Double,
+                                degree: ZodiacDegree,
                                 coordinate: Coordinate,
                                 fromGmt: Double,
                                 forward: Boolean = true,

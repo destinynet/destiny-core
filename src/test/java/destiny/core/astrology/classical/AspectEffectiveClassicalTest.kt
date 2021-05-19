@@ -6,6 +6,7 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import mu.KotlinLogging
 import kotlin.test.*
 
@@ -41,14 +42,15 @@ class AspectEffectiveClassicalTest {
     assertTrue(impl.isEffective(SUN, 0.0, MOON, 193.5, OPPOSITION))
     assertFalse(impl.isEffective(SUN, 0.0, MOON, 193.6, OPPOSITION))
 
-    impl.getEffectiveErrorAndScore(SUN, 0.0, MOON, 193.5, OPPOSITION).also {
+    impl.getEffectiveErrorAndScore(SUN, 0.toZodiacDegree(), MOON, 193.5.toZodiacDegree(), OPPOSITION).also {
       assertNotNull(it)
       assertEquals(0.6, it.second)
     }
-    impl.getEffectiveErrorAndScore(SUN, 0.0, MOON, 180.0, OPPOSITION).also {
+    impl.getEffectiveErrorAndScore(SUN, 0.toZodiacDegree(), MOON, 180.toZodiacDegree(), OPPOSITION).also {
       assertNotNull(it)
       assertEquals(1.0, it.second)
     }
+
 
     assertTrue(impl.isEffective(SUN, 340.0, MOON, 113.5, 120.0))
     assertFalse(impl.isEffective(SUN, 340.0, MOON, 113.6, 120.0))

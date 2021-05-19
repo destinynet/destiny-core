@@ -7,6 +7,7 @@ package destiny.core.astrology.classical
 import destiny.core.DayNight
 import destiny.core.astrology.IHoroscopeModel
 import destiny.core.astrology.Point
+import destiny.core.astrology.ZodiacDegree
 import destiny.core.astrology.ZodiacSign
 import mu.KotlinLogging
 
@@ -35,8 +36,8 @@ interface IEssential {
   fun Point.receivingRulerFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   /** 承上 , double map 版本 */
-  fun Point.receivingRulerFrom(map: Map<Point, Double>): Point? {
-    return this.receivingRulerFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingRulerFrom(map: Map<Point, ZodiacDegree>): Point? {
+    return this.receivingRulerFromSignMap(map.mapValues { (_, degree) -> degree.sign })
   }
 
   /**
@@ -45,43 +46,43 @@ interface IEssential {
   fun Point.receivingExaltFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   /** 承上 , double map 版本 */
-  fun Point.receivingExaltFrom(map: Map<Point, Double>): Point? {
-    return this.receivingExaltFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingExaltFrom(map: Map<Point, ZodiacDegree>): Point? {
+    return this.receivingExaltFromSignMap(map.mapValues { (_, degree) -> degree.sign })
   }
 
   /** 哪一顆星，透過 [Dignity.TRIPLICITY] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingTriplicityFromSignMap(map: Map<Point, ZodiacSign>, dayNight: DayNight): Point?
 
   /** 承上 , double map 版本 */
-  fun Point.receivingTriplicityFrom(map: Map<Point, Double>, dayNight: DayNight): Point? {
-    return this.receivingTriplicityFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) }, dayNight)
+  fun Point.receivingTriplicityFrom(map: Map<Point, ZodiacDegree>, dayNight: DayNight): Point? {
+    return this.receivingTriplicityFromSignMap(map.mapValues { (_, degree) -> degree.sign }, dayNight)
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
-  fun Point.receivingTermFrom(map: Map<Point, Double>): Point?
+  fun Point.receivingTermFrom(map: Map<Point, ZodiacDegree>): Point?
 
   /** 哪一顆星，透過 [Dignity.FACE] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
-  fun Point.receivingFaceFrom(map: Map<Point, Double>): Point?
+  fun Point.receivingFaceFrom(map: Map<Point, ZodiacDegree>): Point?
 
   /** 哪一顆星，透過 [Dignity.FALL] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingFallFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
   /** 承上 , double map 版本 */
-  fun Point.receivingFallFrom(map: Map<Point, Double>): Point? {
-    return this.receivingFallFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingFallFrom(map: Map<Point, ZodiacDegree>): Point? {
+    return this.receivingFallFromSignMap(map.mapValues { (_, degree) -> degree.sign })
   }
 
   /** 哪一顆星，透過 [Dignity.DETRIMENT] 接納了 [this]顆星  ( [this]這顆星 為 guest ) */
   fun Point.receivingDetrimentFromSignMap(map: Map<Point, ZodiacSign>): Point?
 
-  fun Point.receivingDetrimentFrom(map: Map<Point, Double>): Point? {
-    return this.receivingDetrimentFromSignMap(map.mapValues { (_, degree) -> ZodiacSign.of(degree) })
+  fun Point.receivingDetrimentFrom(map: Map<Point, ZodiacDegree>): Point? {
+    return this.receivingDetrimentFromSignMap(map.mapValues { (_, degree) -> degree.sign })
   }
 
   /**
    * 此星體 從哪顆星 接收到了此種 [dignity]
    */
-  fun Point.receiving(dignity: Dignity, map: Map<Point, Double>, dayNight: DayNight? = null) : Point? {
+  fun Point.receiving(dignity: Dignity, map: Map<Point, ZodiacDegree>, dayNight: DayNight? = null) : Point? {
     return when(dignity) {
       Dignity.RULER -> this.receivingRulerFrom(map)
       Dignity.EXALTATION -> this.receivingExaltFrom(map)
@@ -95,7 +96,7 @@ interface IEssential {
 
   /** 取得此顆星，各從哪些星體，接受哪種 [Dignity] 的招待 (承上 , 只是這是傳回 map )*/
   fun Point.getReceptions(
-    map: Map<Point, Double>,
+    map: Map<Point, ZodiacDegree>,
     dayNight: DayNight? = null,
     dignities: Collection<Dignity>): Map<Dignity, Point> {
 
@@ -138,7 +139,7 @@ interface IEssential {
    * 製作出 Reception 表格
    * 參考 : http://www.skyscript.co.uk/dig6.html
    * */
-  fun getReceptionMap(map: Map<Point, Double>,
+  fun getReceptionMap(map: Map<Point, ZodiacDegree>,
                       dayNight: DayNight,
                       dignities: Collection<Dignity>): Set<Triple<Point, Dignity, Point?>> {
     return map.keys.flatMap { p ->
@@ -149,7 +150,7 @@ interface IEssential {
   }
 
   /** 查詢 [this]此星 在此星盤中 , 是否有與其他任何星，互相接納 (不論 Dignity 是否相等) */
-  fun Point.getMutualData(map: Map<Point, Double>,
+  fun Point.getMutualData(map: Map<Point, ZodiacDegree>,
                           dayNight: DayNight?,
                           dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.filter { it !== this }
@@ -185,7 +186,7 @@ interface IEssential {
   }
 
   /** 所有能量的互容 , 不論相等或是不相等 */
-  fun getMutualReceptionMap(map: Map<Point, Double>,
+  fun getMutualReceptionMap(map: Map<Point, ZodiacDegree>,
                             dayNight: DayNight?,
                             dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys
@@ -202,7 +203,7 @@ interface IEssential {
   }
 
   /** 能量不相等的互容 */
-  fun getMixedReceptionMap(map: Map<Point, Double>,
+  fun getMixedReceptionMap(map: Map<Point, ZodiacDegree>,
                            dayNight: DayNight,
                            dignities: Collection<Dignity>): Set<MutualData> {
     return map.keys.flatMap { p ->

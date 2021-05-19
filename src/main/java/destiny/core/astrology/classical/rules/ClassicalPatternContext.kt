@@ -9,7 +9,6 @@ import destiny.core.News
 import destiny.core.astrology.*
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
-import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.*
 import destiny.core.chinese.YinYang
 import mu.KotlinLogging
@@ -95,7 +94,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
   val term = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lng?.takeIf { lngDeg ->
+      return h.getPosition(planet)?.lngDeg?.takeIf { lngDeg ->
         (planet === termImpl.getPoint(lngDeg))
       }?.let { lngDeg ->
         EssentialDignity.Term(planet, lngDeg)
@@ -109,7 +108,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
   val face = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lng?.takeIf { lngDeg ->
+      return h.getPosition(planet)?.lngDeg?.takeIf { lngDeg ->
         (planet === faceImpl.getPoint(lngDeg))
       }?.let { lngDeg ->
         EssentialDignity.Face(planet, lngDeg)
@@ -325,9 +324,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val moonIncreaseLight = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return planet.takeIf { it === MOON }?.let { h.getPosition(it) }?.lng?.let { moonDeg ->
-          h.getPosition(SUN)?.lng?.takeIf { sunDeg ->
-            moonDeg.toZodiacDegree().isOccidental(sunDeg.toZodiacDegree())
+      return planet.takeIf { it === MOON }?.let { h.getPosition(it) }?.lngDeg?.let { moonDeg ->
+          h.getPosition(SUN)?.lngDeg?.takeIf { sunDeg ->
+            moonDeg.isOccidental(sunDeg)
           }?.let {
             AccidentalDignity.Moon_Increase_Light
           }
@@ -415,9 +414,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   private val partileTrineJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      val planetDeg = h.getPosition(planet)?.lng
-      val jupiterDeg = h.getPosition(JUPITER)?.lng
-      val venusDeg = h.getPosition(VENUS)?.lng
+      val planetDeg = h.getPosition(planet)?.lngDeg
+      val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
+      val venusDeg = h.getPosition(VENUS)?.lngDeg
 
 
       return planetDeg?.let {
@@ -445,9 +444,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   private val partileSextileJupiterVenus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      val planetDeg = h.getPosition(planet)?.lng
-      val jupiterDeg = h.getPosition(JUPITER)?.lng
-      val venusDeg = h.getPosition(VENUS)?.lng
+      val planetDeg = h.getPosition(planet)?.lngDeg
+      val jupiterDeg = h.getPosition(JUPITER)?.lngDeg
+      val venusDeg = h.getPosition(VENUS)?.lngDeg
 
       return planetDeg?.let {
 
@@ -470,8 +469,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val partileConjRegulus = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
-        h.getPosition(FixedStar.REGULUS)?.lng?.takeIf { regulusDeg ->
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+        h.getPosition(FixedStar.REGULUS)?.lngDeg?.takeIf { regulusDeg ->
           AspectEffectiveModern.isEffective(planetDeg, regulusDeg, CONJUNCTION, 1.0)
         }?.let {
           AccidentalDignity.Partile_Conj_Regulus(planet)
@@ -487,8 +486,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   private val partileConjSpica = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
-        h.getPosition(FixedStar.SPICA)?.lng?.takeIf { spicaDeg ->
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+        h.getPosition(FixedStar.SPICA)?.lngDeg?.takeIf { spicaDeg ->
           AspectEffectiveModern.isEffective(planetDeg, spicaDeg, CONJUNCTION, 1.0)
         }?.let {
           logger.debug("{} 與 {} 形成 {}", planet, FixedStar.SPICA, CONJUNCTION)
@@ -665,7 +664,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
   val peregrine = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
 
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
         val dayNight = dayNightImpl.getDayNight(h.lmt, h.location)
         h.getZodiacSign(planet)?.takeIf { sign ->
 
@@ -673,7 +672,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
             planet !== with(exaltImpl) { sign.getExaltPoint() } &&
             planet !== with(detrimentImpl) { sign.getDetrimentPoint() } &&
             planet !== with(fallImpl) { sign.getFallPoint() } &&
-            planet !== with(termImpl) { sign.getTermPoint(planetDeg) } &&
+            planet !== with(termImpl) { sign.getTermPoint(planetDeg.value) } &&
             planet !== faceImpl.getPoint(planetDeg)
         }?.takeIf { sign ->
           with(triplicityImpl) {
@@ -881,15 +880,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    */
   private val partileOppoMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
-        val oppoMars = h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
+        val oppoMars = h.getPosition(MARS)?.lngDeg?.takeIf { marsDeg ->
           planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, OPPOSITION, 1.0)
         }?.let {
           Debility.Partile_Oppo_Mars_Saturn(planet, MARS)
         }
 
-        val oppoSat = h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
+        val oppoSat = h.getPosition(SATURN)?.lngDeg?.takeIf { saturnDeg ->
           planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, OPPOSITION, 1.0)
         }?.let {
           Debility.Partile_Oppo_Mars_Saturn(planet, SATURN)
@@ -905,15 +904,15 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
   private val partileSquareMarsSaturn = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
 
-        val squareMars = h.getPosition(MARS)?.lng?.takeIf { marsDeg ->
+        val squareMars = h.getPosition(MARS)?.lngDeg?.takeIf { marsDeg ->
           planet !== MARS && AspectEffectiveModern.isEffective(planetDeg, marsDeg, SQUARE, 1.0)
         }?.let {
           Debility.Partile_Square_Mars_Saturn(planet, MARS)
         }
 
-        val squareSat = h.getPosition(SATURN)?.lng?.takeIf { saturnDeg ->
+        val squareSat = h.getPosition(SATURN)?.lngDeg?.takeIf { saturnDeg ->
           planet != SATURN && AspectEffectiveModern.isEffective(planetDeg, saturnDeg, SQUARE, 1.0)
         }?.let {
           Debility.Partile_Square_Mars_Saturn(planet, SATURN)
@@ -929,8 +928,8 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
    * */
   private val conjAlgol = object : IPlanetPatternFactory {
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
-      return h.getPosition(planet)?.lng?.let { planetDeg ->
-        h.getPosition(FixedStar.ALGOL)?.lng?.takeIf { algolDeg ->
+      return h.getPosition(planet)?.lngDeg?.let { planetDeg ->
+        h.getPosition(FixedStar.ALGOL)?.lngDeg?.takeIf { algolDeg ->
           AspectEffectiveModern.isEffective(planetDeg, algolDeg, CONJUNCTION, 5.0)
         }?.let { _ ->
           logger.debug("{} 與 {} 形成 {}", planet, FixedStar.ALGOL, CONJUNCTION)

@@ -34,7 +34,7 @@ class AspectsCalculatorImpl(
           .intersect(aspectEffectiveImpl.applicableAspects)
           .asSequence()
           .map { aspect ->
-            aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, posMap.getValue(p1).lng, p2, posMap.getValue(p2).lng, aspect)
+            aspect to aspectEffectiveImpl.getEffectiveErrorAndScore(p1, posMap.getValue(p1).lngDeg, p2, posMap.getValue(p2).lngDeg, aspect)
           }.firstOrNull { (_, maybeErrorAndScore) -> maybeErrorAndScore != null }
           ?.let { (aspect, maybeErrorAndScore) -> aspect to maybeErrorAndScore!! }
           ?.let { (aspect, errorAndScore) ->
@@ -85,14 +85,14 @@ class AspectsCalculatorImpl(
                                       positionMap: Map<Point, IPos>,
                                       points: Collection<Point>,
                                       aspects: Collection<Aspect>): Set<Triple<Point, Aspect, Double>> {
-    return positionMap[point]?.lng?.let { starDeg ->
+    return positionMap[point]?.lngDeg?.let { starDeg ->
       points
         .filter { it !== point }
         .filter { positionMap.containsKey(it) }
         .filter { eachPoint -> !(point is Axis && eachPoint is Axis) }  // 過濾四角點互相形成的交角
         .filter { eachPoint -> !(point is LunarNode && eachPoint is LunarNode) } // 過濾南北交點對沖
         .flatMap { eachPoint ->
-          val eachDeg = positionMap.getValue(eachPoint).lng
+          val eachDeg = positionMap.getValue(eachPoint).lngDeg
           aspects
             .intersect(aspectEffectiveImpl.applicableAspects)
             .map { eachAspect ->

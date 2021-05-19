@@ -10,12 +10,12 @@ open class PositionRsmiImpl(private val axis: Axis,
                             private val houseCuspImpl: IHouseCusp) : AbstractPositionImpl<Axis>(axis) {
 
   override fun getPosition(gmtJulDay: Double, loc: ILocation, centric: Centric, coordinate: Coordinate, temperature: Double, pressure: Double): IPos {
-    return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , HouseSystem.PLACIDUS , coordinate).let { map: Map<Int, Double> ->
+    return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , HouseSystem.PLACIDUS , coordinate).let { map: Map<Int, ZodiacDegree> ->
       val pos = when(axis) {
-        Axis.RISING -> Pos(map.getValue(1) , 0.0)
-        Axis.SETTING-> Pos(map.getValue(7) , 0.0)
-        Axis.MERIDIAN -> Pos(map.getValue(10) , 0.0)
-        Axis.NADIR -> Pos(map.getValue(4) , 0.0)
+        Axis.RISING -> Pos(map.getValue(1).value , 0.0)
+        Axis.SETTING-> Pos(map.getValue(7).value , 0.0)
+        Axis.MERIDIAN -> Pos(map.getValue(10).value , 0.0)
+        Axis.NADIR -> Pos(map.getValue(4).value , 0.0)
       }
 
       val azimuth: Azimuth = when (coordinate) {

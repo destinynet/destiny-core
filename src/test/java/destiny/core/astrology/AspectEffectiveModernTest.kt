@@ -9,7 +9,7 @@ import destiny.core.astrology.Planet.*
 import kotlin.test.*
 
 
-class AspectEffectiveModernTest  {
+class AspectEffectiveModernTest {
 
   /** 測試「不考量行星」，注入內定的 AspectOrbsDefaultImpl 實作  */
   @Test
@@ -48,7 +48,7 @@ class AspectEffectiveModernTest  {
       /** 日月對沖，容許度 12度  , 記錄於 [AspectOrbsPlanetDefaultImpl] 的 map 中 */
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 192.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(0.6 , it.second)
+        assertEquals(0.6, it.second)
       }
 
       /** 與東昇點，並不在 [AspectOrbsPlanetDefaultImpl] 的 map 中 , 容許度改為 [AspectOrbsDefaultImpl] 為 11度 */
@@ -58,7 +58,7 @@ class AspectEffectiveModernTest  {
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, Axis.RISING, 191.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(0.6 , it.second)
+        assertEquals(0.6, it.second)
       }
     }
   }
@@ -86,18 +86,17 @@ class AspectEffectiveModernTest  {
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 192.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(0.6 , it.second)
+        assertEquals(0.6, it.second)
       }
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 180.0, OPPOSITION).also {
         assertNotNull(it)
-        assertEquals(1.0 , it.second)
+        assertEquals(1.0, it.second)
       }
 
       modern.getEffectiveErrorAndScore(SUN, 0.0, MOON, 193.0, OPPOSITION).also {
         assertNull(it)
       }
-
 
 
       // 其他星體的「對沖」容許度，仍為 11度

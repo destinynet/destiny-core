@@ -4,7 +4,6 @@
 package destiny.core.chinese.ziwei
 
 import destiny.core.astrology.*
-import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IRisingSign
 import destiny.core.chinese.Branch
@@ -27,7 +26,7 @@ class MainBodyHouseAstroImpl(private val risingSignImpl: IRisingSign,
     val mainHouse = risingSignImpl.getRisingSign(lmt, loc, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC).branch
     val moonPos = starPositionImpl.getPosition(Planet.MOON, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
 
-    val zodiacSign = ZodiacSign.of(moonPos.lng)
+    val zodiacSign = moonPos.lngDeg.sign
 
     val bodyHouse = zodiacSign.branch
 

@@ -9,6 +9,7 @@ import destiny.core.DayNight.NIGHT
 import destiny.core.astrology.*
 import destiny.core.astrology.Element.*
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.ZodiacSign.Companion.of
 import destiny.tools.CircleTools
@@ -152,19 +153,18 @@ class TriplicityPtolomyImpl : ITriplicity, Serializable {
 
 class TermPtolomyImpl : ITerm, Serializable {
 
-  override fun getPoint(degree: Double): Point {
-    val normalizedDegree = CircleTools.getNormalizeDegree(degree)
-    val signIndex = normalizedDegree.toInt() / 30
+  override fun getPoint(degree: ZodiacDegree): Point {
+    val signIndex = degree.value.toInt() / 30
 
     return (0..4)
       .map { termPointDegrees[signIndex * 5 + it] }
-      .filter { normalizedDegree < it.degree }
+      .filter { degree.value < it.degree }
       .map { it.point }
       .firstOrNull() ?: throw IllegalStateException("Cannot find Essential Terms at degree $degree , signIndex = $signIndex")
   }
 
   override fun ZodiacSign.getTermPoint(degree: Double): Point {
-    return getPoint(this.degree + degree)
+    return getPoint((this.degree + degree).toZodiacDegree())
   }
 
   companion object {
@@ -276,14 +276,14 @@ class TermPtolomyImpl : ITerm, Serializable {
 class FacePtolomyImpl : IFace, Serializable {
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
-  override fun getPoint(degree: Double): Planet {
-    val index = (CircleTools.getNormalizeDegree(degree) / 10).toInt()
+  override fun getPoint(degree: ZodiacDegree): Planet {
+    val index = (degree.value / 10).toInt()
     return faceStarList[index]
   }
 
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
   override fun ZodiacSign.getFacePoint(degree: Double): Planet {
-    return getPoint(this.degree + degree)
+    return getPoint((this.degree + degree).toZodiacDegree())
   }
 
   companion object {

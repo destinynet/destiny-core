@@ -368,7 +368,7 @@ sealed class AstroPattern(open val points: Set<Point> = emptySet(),
 
 interface IPatternFactory : Serializable {
 
-  fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern>
+  fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern>
 
 }
 

@@ -11,6 +11,7 @@ import destiny.core.IntAgeNote
 import destiny.core.astrology.Coordinate
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
@@ -144,7 +145,7 @@ class FortuneLargeSolarTermsSpanImpl(
 
             //沒有計算過
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
-              Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
+              Planet.SUN, stepSolarTerms.zodiacDegree.toZodiacDegree(),
               Coordinate.ECLIPTIC, stepGmtJulDay, true
             )
 
@@ -178,7 +179,7 @@ class FortuneLargeSolarTermsSpanImpl(
             //沒有計算過
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
-              Planet.SUN, stepSolarTerms.zodiacDegree.toDouble(),
+              Planet.SUN, stepSolarTerms.zodiacDegree.toZodiacDegree(),
               Coordinate.ECLIPTIC, stepGmtJulDay, false
             )
             logger.debug("[逆] 計算 {} 日期 = {}", stepSolarTerms, targetGmtJulDay)

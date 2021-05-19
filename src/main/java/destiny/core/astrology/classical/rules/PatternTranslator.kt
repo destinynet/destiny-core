@@ -43,8 +43,8 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         is EssentialDignity.Ruler -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign))
         is EssentialDignity.Exaltation -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign))
         is EssentialDignity.Triplicity -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.sign, pattern.dayNight))
-        is EssentialDignity.Term -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.lngDeg))
-        is EssentialDignity.Face -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.lngDeg))
+        is EssentialDignity.Term -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.lngDeg.value))
+        is EssentialDignity.Face -> EssentialDignityDescriptor(pattern, "comment", listOf(pattern.planet, pattern.lngDeg.value))
         is EssentialDignity.MutualReception -> EssentialDignityDescriptor(pattern, "comment",
                                                                           listOf(pattern.planet, pattern.sign1, pattern.dig2, pattern.p2, pattern.sign2, pattern.dig1, pattern.dig2))
 
@@ -78,10 +78,10 @@ object PatternTranslator : IPatternDescriptor<IPlanetPattern>  {
         }
         is AccidentalDignity.Besieged_Jupiter_Venus -> AccidentalDignityDescriptor(pattern, "comment", listOf(pattern.planet, VENUS, JUPITER))
         is AccidentalDignity.Translation_of_Light -> {
-          if (pattern.aspect != null)
-            AccidentalDignityDescriptor(pattern, "commentAspect", listOf(pattern.planet, pattern.from, pattern.to, pattern.deg, pattern.aspect))
+          if (pattern.aspectType != null)
+            AccidentalDignityDescriptor(pattern, "commentAspect", listOf(pattern.planet, pattern.from, pattern.to, pattern.angle, pattern.aspectType))
           else
-            AccidentalDignityDescriptor(pattern, "commentUnaspect", listOf(pattern.planet, pattern.from, pattern.to, pattern.deg))
+            AccidentalDignityDescriptor(pattern, "commentUnaspect", listOf(pattern.planet, pattern.from, pattern.to, pattern.angle))
         }
         is AccidentalDignity.Collection_of_Light -> {
           val p1 = pattern.twoPlanets[0]

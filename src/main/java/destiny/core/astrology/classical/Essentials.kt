@@ -4,10 +4,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.DayNight
-import destiny.core.astrology.Planet
-import destiny.core.astrology.Point
-import destiny.core.astrology.PointDegree
-import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity.RULER
 
 /** Ruler , +5 */
@@ -85,7 +82,7 @@ interface ITriplicity {
 interface ITerm {
 
   /** 取得黃道帶上的某點，其 Terms 是哪顆星 , 0<=degree<360  */
-  fun getPoint(degree: Double): Point
+  fun getPoint(degree: ZodiacDegree): Point
 
   /** 取得某星座某度，其 Terms 是哪顆星 , 0<=degree<30  */
   fun ZodiacSign.getTermPoint(degree: Double): Point
@@ -95,7 +92,7 @@ interface ITerm {
 interface IFace {
 
   /** 取得黃道帶上的某點，其 Face 是哪顆星 , 0<=degree<360  */
-  fun getPoint(degree: Double): Point
+  fun getPoint(degree: ZodiacDegree): Point
 
   /** 取得某星座某度，其 Face 是哪顆星 , 0<=degree<30  */
   fun ZodiacSign.getFacePoint(degree: Double): Point

@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import com.google.common.collect.Sets
 import destiny.core.astrology.Aspect.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import mu.KotlinLogging
 import org.apache.commons.math3.ml.clustering.Cluster
 import org.apache.commons.math3.ml.clustering.Clusterable
@@ -14,16 +15,16 @@ import java.io.Serializable
 class PatternContext(val aspectEffective: IAspectEffective,
                      val aspectsCalculator: IAspectsCalculator) : Serializable {
 
-  private fun Point.signHouse(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): PointSignHouse {
+  private fun Point.signHouse(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): PointSignHouse {
     return posMap.getValue(this).let { iPos ->
       val sign: ZodiacSign = iPos.sign
-      val house: Int = IHoroscopeModel.getHouse(iPos.lng, cuspDegreeMap)
+      val house: Int = IHoroscopeModel.getHouse(iPos.lngDeg, cuspDegreeMap)
       PointSignHouse(this, sign, house)
     }
   }
 
   val grandTrine = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return aspectsCalculator.getAspectDataSet(posMap, aspects = setOf(TRINE))
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
@@ -35,7 +36,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
               ?.takeIf { unionPoints ->
                 Sets.combinations(unionPoints, 2).all { twoPoint ->
                   val (p1, p2) = twoPoint.toList().let { it[0] to it[1] }
-                  aspectEffective.isEffective(p1, posMap.getValue(p1).lng, p2, posMap.getValue(p2).lng, TRINE)
+                  aspectEffective.isEffective(p1, posMap.getValue(p1).lngDeg, p2, posMap.getValue(p2).lngDeg, TRINE)
                 }
               }
               ?.let { unionPoints ->
@@ -50,7 +51,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
 
   private val kite = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return grandTrine.getPatterns(posMap, cuspDegreeMap)
         .map { it as AstroPattern.GrandTrine }
         .flatMap { grandTrine ->
@@ -86,7 +87,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   val tSquared = object : IPatternFactory {
     val twoAspects = setOf(OPPOSITION, SQUARE) // 180 , 90
 
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
 
       return aspectsCalculator.getAspectDataSet(posMap, aspects = twoAspects)
         .takeIf { it.size >= 3 }
@@ -110,7 +111,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   // 上帝之指
   val yod = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return aspectsCalculator.getAspectDataSet(posMap, aspects = setOf(QUINCUNX))
         .takeIf { it.size >= 2 }
         ?.let { dataSet ->
@@ -140,7 +141,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   // 回力鏢 : YOD + 對沖點
   val boomerang = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return yod.getPatterns(posMap, cuspDegreeMap)
         .map { it as AstroPattern.Yod }
         .flatMap { pattern ->
@@ -169,7 +170,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   val goldenYod = object : IPatternFactory {
 
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return aspectsCalculator.getAspectDataSet(posMap, aspects = setOf(BIQUINTILE, QUINTILE))  // 144 , 72
         .takeIf { it.size >= 3 }
         ?.let { dataSet ->
@@ -195,7 +196,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
 
   private val grandCross = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
 
       return tSquared.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
@@ -238,7 +239,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
 
   val doubleT = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return tSquared.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
         ?.asSequence()
@@ -267,7 +268,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   // 六芒星
   private val hexagon = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return grandTrine.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 }
         ?.asSequence()
@@ -296,7 +297,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
     // 只比對 180 , 60 , 120 三種度數
     private val threeAspects = setOf(OPPOSITION, SEXTILE, TRINE)
 
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
 
       val dataSet: Set<AspectData> = aspectsCalculator.getAspectDataSet(posMap, aspects = threeAspects)
 
@@ -323,7 +324,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   /** [AstroPattern.MysticRectangle] 神秘長方形 */
   private val mysticRectangle = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return wedge.getPatterns(posMap, cuspDegreeMap)
         .takeIf { it.size >= 2 } // 確保至少兩組 wedge
         ?.asSequence()
@@ -356,7 +357,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   // 五芒星 , 144 , 72
   val pentagram = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
 
       return goldenYod.getPatterns(posMap, cuspDegreeMap)
         .takeIf { patterns -> patterns.size >= 5 }
@@ -374,7 +375,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   // 群星聚集 某星座 (至少四顆星)
   private val stelliumSign = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       return posMap.entries.groupBy { (_, pos) -> pos.sign }
         .filter { (_, list) -> list.size >= 4 }
         .map { (sign, list: List<Map.Entry<Point, IPos>>) ->
@@ -394,8 +395,8 @@ class PatternContext(val aspectEffective: IAspectEffective,
 
   // 群星聚集 某宮位 (至少四顆星)
   private val stelliumHouse = object : IPatternFactory {
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
-      return posMap.map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lng, cuspDegreeMap) }
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
+      return posMap.map { (point, pos) -> point to IHoroscopeModel.getHouse(pos.lngDeg, cuspDegreeMap) }
         .groupBy { (_, house) -> house }
         .filter { (_, list: List<Pair<Point, Int>>) -> list.size >= 4 }
         .map { (house, list: List<Pair<Point, Int>>) ->
@@ -420,7 +421,7 @@ class PatternContext(val aspectEffective: IAspectEffective,
   // 星群對峙 : 兩組 3顆星以上的合相星群 彼此對沖
   private val confrontation = object : IPatternFactory {
 
-    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, Double>): Set<AstroPattern> {
+    override fun getPatterns(posMap: Map<Point, IPos>, cuspDegreeMap: Map<Int, ZodiacDegree>): Set<AstroPattern> {
       val pointMap = posMap.map { (point, pos) -> PointCluster(point, pos.lng) }
       val cluster = DBSCANClusterer<PointCluster>(6.0, 2) { arr1, arr2 -> ZodiacDegree.getAngle(arr1[0], arr2[0]) }
 
@@ -435,13 +436,10 @@ class PatternContext(val aspectEffective: IAspectEffective,
               val group2 = cluster2.points.map { it.point }
               logger.trace("group1 = {} , group2 = {}", group1, group2)
               // 兩個群組的中點是否對沖
-              val mid1 = cluster1.points.map { it.lngDeg }.average()
-              val mid2 = cluster2.points.map { it.lngDeg }.average()
+              val mid1 = cluster1.points.map { it.lngDeg }.average().toZodiacDegree()
+              val mid2 = cluster2.points.map { it.lngDeg }.average().toZodiacDegree()
 
-              logger.trace("mid1 = {} {} , mid2 = {} {}", mid1,
-                ZodiacSign.getSignAndDegree(mid1), mid2,
-                ZodiacSign.getSignAndDegree(mid2)
-              )
+              logger.trace("mid1 = {} {} , mid2 = {} {}", mid1, mid1.signDegree, mid2, mid2.signDegree)
               val effective = AspectEffectiveModern.isEffective(mid1, mid2, OPPOSITION, 12.0)
               Triple(group1, group2, effective)
             }.filter { (_, _, effective) -> effective }

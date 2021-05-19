@@ -37,7 +37,7 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
           pos1.getAngle(pos2) > 30
         }?.let {
           logger.trace { """
-            ${planet}目前在 ${posPlanet.lng} 度.
+            ${planet}目前在 ${posPlanet.lngDeg.value} 度.
             之前運行到 ${pos1.value} 時，曾與 $p1 形成 ${exactAspectPrior.aspect} , 
             之後運行到 ${pos2.value} 時，將與 $p2 形成 ${exactAspectAfter.aspect} ,
             橫跨共 ${pos1.getAngle(pos2)} 度 , 超過 30度。
@@ -87,10 +87,10 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
         val planetExactPosAfter = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location)
 
 
-        val combinedMoiety =  (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
+        val combinedMoiety = (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
 
-        val beginDegree = (planetExactPosPrior.lng + 6 / 60.0).toZodiacDegree()
-        val endDegree = (planetExactPosAfter.lng - combinedMoiety).toZodiacDegree()
+        val beginDegree = planetExactPosPrior.lngDeg + 6 / 60.0
+        val endDegree = planetExactPosAfter.lngDeg - combinedMoiety
 
         planet.takeIf {
           val angle1 = planetExactPosPrior.lngDeg.getAngle(planetExactPosAfter.lngDeg)
@@ -113,8 +113,8 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
             """.trimMargin()
           }
 
-          val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree.value, h.coordinate, h.gmtJulDay, false)
-          val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree.value, h.coordinate, h.gmtJulDay, true)
+          val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree, h.coordinate, h.gmtJulDay, false)
+          val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree, h.coordinate, h.gmtJulDay, true)
           Misc.VoidCourse(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
         }
       }
@@ -153,7 +153,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
           val nextSign = posPlanet.sign.next
           val beginGmt = exactAspectPrior.gmtJulDay!!
           val beginDegree = starPositionImpl.getPosition(planet, beginGmt, h.location).lngDeg
-          val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toDouble(), Coordinate.ECLIPTIC, h.gmtJulDay, true)
+          val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toZodiacDegree(), Coordinate.ECLIPTIC, h.gmtJulDay, true)
           val endDegree = nextSign.degree.toZodiacDegree()
           Misc.VoidCourse(
             planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter

@@ -45,8 +45,8 @@ open class YearEclipticDegreeImpl(
       lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
 
 
-    val solarLongitude = starPositionImpl.getPosition(Planet.SUN, gmt, Centric.GEO, Coordinate.ECLIPTIC).lng
-    if (solarLongitude < 180)
+    val solarLngDeg = starPositionImpl.getPosition(Planet.SUN, gmt, Centric.GEO, Coordinate.ECLIPTIC).lng
+    if (solarLngDeg < 180)
     //立春(0)過後，到秋分之間(180)，確定不會換年
       resultStemBranch = StemBranch[index]
     else {
@@ -63,9 +63,9 @@ open class YearEclipticDegreeImpl(
         starPositionImpl.getPosition(Planet.SUN, startOfYear, Centric.GEO, Coordinate.ECLIPTIC).lng
 
       if (changeYearDegree >= degreeOfStartOfYear) {
-        resultStemBranch = if (solarLongitude >= changeYearDegree)
+        resultStemBranch = if (solarLngDeg >= changeYearDegree)
           StemBranch[index]
-        else if (changeYearDegree > solarLongitude && solarLongitude >= degreeOfStartOfYear) {
+        else if (changeYearDegree > solarLngDeg && solarLngDeg >= degreeOfStartOfYear) {
           val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
           if (TimeTools.isBefore(tempTime, startOfYear))
             StemBranch[index - 1]
@@ -75,14 +75,14 @@ open class YearEclipticDegreeImpl(
           StemBranch[index]
       } else {
         // degreeOfStartOfYear > changeYearDegree >= 秋分 (180)
-        resultStemBranch = if (solarLongitude >= degreeOfStartOfYear) {
+        resultStemBranch = if (solarLngDeg >= degreeOfStartOfYear) {
           val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
           if (TimeTools.isBefore(tempTime, startOfYear))
             StemBranch[index]
           else
             StemBranch[index + 1]
         } else {
-          if (solarLongitude >= changeYearDegree)
+          if (solarLngDeg >= changeYearDegree)
             StemBranch[index + 1]
           else
             StemBranch[index]

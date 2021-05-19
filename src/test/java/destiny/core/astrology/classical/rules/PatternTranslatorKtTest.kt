@@ -9,6 +9,7 @@ import destiny.core.astrology.Aspect.TRINE
 import destiny.core.astrology.IAspectData
 import destiny.core.astrology.LunarNode
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.classical.Dignity.*
 import destiny.core.astrology.classical.rules.AccidentalDignity.*
@@ -51,12 +52,12 @@ class PatternTranslatorKtTest {
       assertEquals("太陽 位於 牡羊，為其 DAY 之 Triplicity", it.description)
     }
 
-    EssentialDignity.Term(JUPITER, 6.0).also {
+    EssentialDignity.Term(JUPITER, 6.toZodiacDegree()).also {
       assertEquals("界 (Term)", it.title)
       assertEquals("木星 位於其 Term ： 6.0", it.description)
     }
 
-    EssentialDignity.Face(SUN, 20.0).also {
+    EssentialDignity.Face(SUN, 20.toZodiacDegree()).also {
       assertEquals("十度區間主星 (Face)", it.title)
       assertEquals("太陽 位於其 Chaldean decanate or face : 20.0", it.description)
     }

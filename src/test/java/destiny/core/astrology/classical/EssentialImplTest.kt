@@ -8,6 +8,8 @@ import destiny.core.DayNight.NIGHT
 import destiny.core.astrology.DayNightSimpleImpl
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.Point
+import destiny.core.astrology.ZodiacDegree
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.classical.Dignity.*
@@ -220,13 +222,13 @@ class EssentialImplTest {
       SATURN to ARIES
     )
 
-    val degreeMap = mapOf<Point, Double>(
-      SUN to 180 + 25.0,
-      MERCURY to 210 + 1.0,
-      VENUS to 150 + 1.0,
-      MARS to 240 + 37.0,
-      JUPITER to 150 + 4.0,
-      SATURN to 1.0
+    val degreeMap = mapOf<Point, ZodiacDegree>(
+      SUN to (180 + 25.0).toZodiacDegree(),
+      MERCURY to (210 + 1.0).toZodiacDegree(),
+      VENUS to (150 + 1.0).toZodiacDegree(),
+      MARS to (240 + 37.0).toZodiacDegree(),
+      JUPITER to (150 + 4.0).toZodiacDegree(),
+      SATURN to (1.0).toZodiacDegree()
     )
 
     with(essentialImpl) {
@@ -281,10 +283,10 @@ class EssentialImplTest {
       VENUS to ARIES,
       SATURN to ARIES
     )
-    val degreeMap = mapOf<Point, Double>(
-      MARS to 180 + 3.0,
-      VENUS to 1.0,
-      SATURN to 1.0
+    val degreeMap = mapOf<Point, ZodiacDegree>(
+      MARS to (180 + 3.0).toZodiacDegree(),
+      VENUS to 1.toZodiacDegree(),
+      SATURN to 1.toZodiacDegree()
     )
 
 
@@ -331,11 +333,11 @@ class EssentialImplTest {
    */
   @Test
   fun testReceptionMap2() {
-    val degreeMap: Map<Point, Double> = mapOf(
-      MOON to 120 + 28.0,
-      SUN to 1.0,
-      JUPITER to 1.0,
-      MARS to 1.0
+    val degreeMap: Map<Point, ZodiacDegree> = mapOf(
+      MOON to (120 + 28.0).toZodiacDegree(),
+      SUN to 1.toZodiacDegree(),
+      JUPITER to 1.toZodiacDegree(),
+      MARS to 1.toZodiacDegree()
     )
     essentialImpl.getReceptionMap(degreeMap, NIGHT, setOf(RULER, EXALTATION, TRIPLICITY, TERM, FACE)).also {
       assertTrue { it.contains(Triple(MOON, RULER, SUN)) }

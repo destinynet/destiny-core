@@ -4,6 +4,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
 import kotlin.test.Test
 import kotlin.test.assertSame
@@ -15,44 +16,44 @@ class TermPtolomyImplTest {
   @Test
   fun getPoint_from_degree() {
     //戌
-    assertSame(JUPITER, impl.getPoint(0.0))
-    assertSame(JUPITER, impl.getPoint(5.99))
-    assertSame(VENUS, impl.getPoint(6.0))
-    assertSame(MERCURY, impl.getPoint(14.0))
-    assertSame(MARS, impl.getPoint(21.0))
-    assertSame(SATURN, impl.getPoint(26.0))
+    assertSame(JUPITER, impl.getPoint(0.0.toZodiacDegree()))
+    assertSame(JUPITER, impl.getPoint(5.99.toZodiacDegree()))
+    assertSame(VENUS, impl.getPoint(6.0.toZodiacDegree()))
+    assertSame(MERCURY, impl.getPoint(14.0.toZodiacDegree()))
+    assertSame(MARS, impl.getPoint(21.0.toZodiacDegree()))
+    assertSame(SATURN, impl.getPoint(26.0.toZodiacDegree()))
     //酉
-    assertSame(VENUS, impl.getPoint(30.0))
-    assertSame(VENUS, impl.getPoint(37.99))
-    assertSame(MARS, impl.getPoint(56.0))
+    assertSame(VENUS, impl.getPoint(30.0.toZodiacDegree()))
+    assertSame(VENUS, impl.getPoint(37.99.toZodiacDegree()))
+    assertSame(MARS, impl.getPoint(56.0.toZodiacDegree()))
     //申
-    assertSame(MERCURY, impl.getPoint(60.0))
-    assertSame(VENUS, impl.getPoint(80.99))
+    assertSame(MERCURY, impl.getPoint(60.0.toZodiacDegree()))
+    assertSame(VENUS, impl.getPoint(80.99.toZodiacDegree()))
 
     //亥
-    assertSame(VENUS, impl.getPoint(330.0))
-    assertSame(JUPITER, impl.getPoint(338.0))
-    assertSame(MERCURY, impl.getPoint(344.0))
-    assertSame(MARS, impl.getPoint(350.0))
-    assertSame(MARS, impl.getPoint(355.99))
-    assertSame(SATURN, impl.getPoint(356.0))
-    assertSame(SATURN, impl.getPoint(359.99))
+    assertSame(VENUS, impl.getPoint(330.0.toZodiacDegree()))
+    assertSame(JUPITER, impl.getPoint(338.0.toZodiacDegree()))
+    assertSame(MERCURY, impl.getPoint(344.0.toZodiacDegree()))
+    assertSame(MARS, impl.getPoint(350.0.toZodiacDegree()))
+    assertSame(MARS, impl.getPoint(355.99.toZodiacDegree()))
+    assertSame(SATURN, impl.getPoint(356.0.toZodiacDegree()))
+    assertSame(SATURN, impl.getPoint(359.99.toZodiacDegree()))
     //破 360度 , 回到 戌
-    assertSame(JUPITER, impl.getPoint(360.0))
-    assertSame(JUPITER, impl.getPoint(365.99))
-    assertSame(SATURN, impl.getPoint(386.0))
+    assertSame(JUPITER, impl.getPoint(360.0.toZodiacDegree()))
+    assertSame(JUPITER, impl.getPoint(365.99.toZodiacDegree()))
+    assertSame(SATURN, impl.getPoint(386.0.toZodiacDegree()))
     //酉
-    assertSame(VENUS, impl.getPoint(390.0))
+    assertSame(VENUS, impl.getPoint(390.0.toZodiacDegree()))
     //破720 , 回到 戌
-    assertSame(JUPITER, impl.getPoint(720.0))
-    assertSame(JUPITER, impl.getPoint(725.99))
+    assertSame(JUPITER, impl.getPoint(720.0.toZodiacDegree()))
+    assertSame(JUPITER, impl.getPoint(725.99.toZodiacDegree()))
 
     //度數小於0 , 往前推到亥
-    assertSame(SATURN, impl.getPoint(-0.001))
+    assertSame(SATURN, impl.getPoint((-0.001).toZodiacDegree()))
     // -30 , 仍是亥
-    assertSame(VENUS, impl.getPoint(-30.0))
+    assertSame(VENUS, impl.getPoint((-30.0).toZodiacDegree()))
     //-359 , 戌宮
-    assertSame(JUPITER, impl.getPoint(-359.0))
+    assertSame(JUPITER, impl.getPoint((-359.0).toZodiacDegree()))
   }
 
   @Test

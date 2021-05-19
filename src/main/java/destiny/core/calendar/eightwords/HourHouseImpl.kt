@@ -32,7 +32,7 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
 
   override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
 
-    val lng = starPositionImpl.getPosition(star, gmtJulDay, location, Centric.GEO, Coordinate.ECLIPTIC).lng
+    val lng = starPositionImpl.getPosition(star, gmtJulDay, location, Centric.GEO, Coordinate.ECLIPTIC).lngDeg
     logger.trace("lng = {}", lng)
 
     val houseMap = houseCuspImpl.getHouseCuspMap(gmtJulDay, location, houseSystem, Coordinate.ECLIPTIC)
@@ -75,9 +75,9 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
   companion object {
     val logger = KotlinLogging.logger { }
 
-    fun findNearestHouseCusp(houseMap: Map<Int, Double>, degree: Double): Int {
-      return houseMap.map { (houseIndex, cuspDegree: Double) ->
-        houseIndex to ZodiacDegree.getAngle(cuspDegree, degree)
+    fun findNearestHouseCusp(houseMap: Map<Int, ZodiacDegree>, degree: ZodiacDegree): Int {
+      return houseMap.map { (houseIndex, cuspDegree: ZodiacDegree) ->
+        houseIndex to cuspDegree.getAngle(degree)
       }
         .filter { (_, angle) -> angle < 40 } // 只過濾 angle < 40 , 加快後面 sort 速度
         .sortedBy { it.second }

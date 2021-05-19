@@ -94,36 +94,4 @@ class ZodiacDegreeTest {
     assertEquals(350.0.toZodiacDegree(), 10.0.toZodiacDegree() - 20)
   }
 
-
-//  @Test
-//  fun testAheadOf() {
-//    assertEquals(1.0, ZodiacDegree(1.0).aheadOf(ZodiacDegree(0.0)))
-//    assertEquals(180.0, ZodiacDegree(180.0).aheadOf(ZodiacDegree(0.0)))
-//    assertEquals(181.0, ZodiacDegree(181.0).aheadOf(ZodiacDegree(0.0)))
-//    assertEquals(1.0, ZodiacDegree(0.0).aheadOf(ZodiacDegree(359.0)))
-//    assertEquals(180.0, ZodiacDegree(180.0).aheadOf(ZodiacDegree(360.0)))
-//    assertEquals(180.0, ZodiacDegree(360.0).aheadOf(ZodiacDegree(180.0)))
-//    assertEquals(180.0, ZodiacDegree(270.0).aheadOf(ZodiacDegree(90.0)))
-//    assertEquals(180.0, ZodiacDegree(90.0).aheadOf(ZodiacDegree(270.0)))
-//  }
-
-//  @Test
-//  fun testNormalize() {
-//    //測試大於零的度數
-//    assertEquals(ZodiacDegree(0.0).normalize(), ZodiacDegree(0.0))
-//    assertEquals(ZodiacDegree(359.0).normalize(), ZodiacDegree(359.0))
-//    assertEquals(ZodiacDegree(360.0).normalize(), ZodiacDegree(0.0))
-//    assertEquals(ZodiacDegree(361.0).normalize(), ZodiacDegree(1.0))
-//    assertEquals(ZodiacDegree(720.0).normalize(), ZodiacDegree(0.0))
-//    assertEquals(ZodiacDegree(721.0).normalize(), ZodiacDegree(1.0))
-//
-//    //測試小於零的度數
-//    assertEquals(ZodiacDegree(-1.0).normalize(), ZodiacDegree(359.0))
-//    assertEquals(ZodiacDegree(-359.0).normalize(), ZodiacDegree(1.0))
-//    assertEquals(ZodiacDegree(-360.0).normalize(), ZodiacDegree(0.0))
-//    assertEquals(ZodiacDegree(-361.0).normalize(), ZodiacDegree(359.0))
-//    assertEquals(ZodiacDegree(-719.0).normalize(), ZodiacDegree(1.0))
-//    assertEquals(ZodiacDegree(-720.0).normalize(), ZodiacDegree(0.0))
-//    assertEquals(ZodiacDegree(-721.0).normalize(), ZodiacDegree(359.0))
-//  }
 }

@@ -5,10 +5,7 @@
 package destiny.core.astrology.classical
 
 import destiny.core.DayNight
-import destiny.core.astrology.IDayNight
-import destiny.core.astrology.IHoroscopeModel
-import destiny.core.astrology.Point
-import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.*
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -107,12 +104,12 @@ class EssentialImpl(private val rulerImpl: IRuler,
   }
 
   /** 那一顆星，透過 [Dignity.TERM] 接納了 [this]顆星 */
-  override fun Point.receivingTermFrom(map: Map<Point, Double>): Point? {
+  override fun Point.receivingTermFrom(map: Map<Point, ZodiacDegree>): Point? {
     return map[this]?.let { termImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
   /** 哪一顆星，透過 [Dignity.FACE] 接納了 [this]顆星 */
-  override fun Point.receivingFaceFrom(map: Map<Point, Double>): Point? {
+  override fun Point.receivingFaceFrom(map: Map<Point, ZodiacDegree>): Point? {
     return map[this]?.let { faceImpl.getPoint(it).takeIf { point -> map.containsKey(point) } }
   }
 
@@ -174,7 +171,7 @@ class EssentialImpl(private val rulerImpl: IRuler,
           true
         }
         else -> {
-          return h.getPosition(receivee)?.lng?.let { lngDegree ->
+          return h.getPosition(receivee)?.lngDeg?.let { lngDegree ->
             return when (this) {
               termImpl.getPoint(lngDegree) -> {
                 logger.debug("{} 透過 TERMS 接納 {}", this, receivee)

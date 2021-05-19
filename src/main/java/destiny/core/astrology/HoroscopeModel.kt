@@ -40,21 +40,21 @@ interface IHoroscopeModel : ITimeLoc {
   val positionMap: Map<Point, IPosWithAzimuth>
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
-  val cuspDegreeMap: Map<Int, Double>
+  val cuspDegreeMap: Map<Int, ZodiacDegree>
 
   // ==================================== 以下為 推導值 ====================================
 
   /**
    * 星體於黃經的度數
    */
-  val pointDegreeMap: Map<Point, Double>
-    get() = positionMap.mapValues { (_, posWithAzimuth) -> posWithAzimuth.lng }
+  val pointDegreeMap: Map<Point, ZodiacDegree>
+    get() = positionMap.mapValues { (_, posWithAzimuth) -> posWithAzimuth.lngDeg }
 
   /**
    * 星體於黃道上的星座
    */
   val pointSignMap: Map<Point, ZodiacSign>
-    get() = pointDegreeMap.mapValues { (_, lngDeg) -> ZodiacSign.of(lngDeg) }
+    get() = pointDegreeMap.mapValues { (_, lngDeg) -> lngDeg.sign }
 
   /**
    * @return 取得 GMT 時刻
@@ -117,8 +117,8 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 黃道幾度，落於第幾宮 ( 1 <= house <= 12 )
    */
-  fun getHouse(degree: Double): Int {
-    return Companion.getHouse(degree, cuspDegreeMap)
+  fun getHouse(zodiacDegree: ZodiacDegree): Int {
+    return Companion.getHouse(zodiacDegree, cuspDegreeMap)
   }
 
   /**
@@ -128,7 +128,7 @@ interface IHoroscopeModel : ITimeLoc {
     if (index < 1)
       return getHousePoints(index + 12)
     return if (index > 12) getHousePoints(index - 12)
-    else positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lng) == index }
+    else positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) == index }
       .map { it.key }
   }
 
@@ -138,7 +138,7 @@ interface IHoroscopeModel : ITimeLoc {
   val houseMap: Map<Int, List<Point>>
     get() {
       return (1..12).associateWith { houseIndex ->
-        positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lng) == houseIndex }
+        positionMap.filter { (_, posWithAzimuth) -> getHouse(posWithAzimuth.lngDeg) == houseIndex }
           .map { it.key }
       }
     }
@@ -148,7 +148,7 @@ interface IHoroscopeModel : ITimeLoc {
    *
    * @param cusp 1 <= cusp <= 12
    */
-  fun getCuspDegree(cusp: Int): Double {
+  fun getCuspDegree(cusp: Int): ZodiacDegree {
     if (cusp > 12)
       return getCuspDegree(cusp - 12)
     else if (cusp < 1)
@@ -192,7 +192,7 @@ interface IHoroscopeModel : ITimeLoc {
    * @param point 取得此星體在第幾宮
    */
   fun getHouse(point: Point): Int? {
-    return positionMap[point]?.let { pos -> getHouse(pos.lng) }
+    return positionMap[point]?.let { pos -> getHouse(pos.lngDeg) }
   }
 
   /** 取得星體的位置以及地平方位角  */
@@ -206,20 +206,20 @@ interface IHoroscopeModel : ITimeLoc {
 
   /** 取得某星 位於什麼星座  */
   fun getZodiacSign(point: Point): ZodiacSign? {
-    return getPosition(point)?.let { pos -> ZodiacSign.of(pos.lng) }
+    return getPosition(point)?.lngDeg?.sign
   }
 
   companion object {
 
-    fun getHouse(degree: Double , cuspDegreeMap: Map<Int, Double>) : Int {
+    fun getHouse(degree: ZodiacDegree , cuspDegreeMap: Map<Int, ZodiacDegree>) : Int {
       return (1..11).firstOrNull { house ->
-        if ((abs(cuspDegreeMap.getValue(house + 1) - cuspDegreeMap.getValue(house)) < 180)) {
+        if ((abs(cuspDegreeMap.getValue(house + 1).value - cuspDegreeMap.getValue(house).value) < 180)) {
           //沒有切換360度的問題
-          cuspDegreeMap.getValue(house) <= degree && degree < cuspDegreeMap.getValue(house + 1)
+          cuspDegreeMap.getValue(house).value <= degree.value && degree.value < cuspDegreeMap.getValue(house + 1).value
         } else {
           //切換360度
-          cuspDegreeMap.getValue(house) <= degree && degree < cuspDegreeMap.getValue(house + 1) + 360 ||
-            cuspDegreeMap.getValue(house) <= degree + 360 && degree < cuspDegreeMap.getValue(house + 1)
+          cuspDegreeMap.getValue(house).value <= degree.value && degree.value < cuspDegreeMap.getValue(house + 1).value + 360 ||
+            cuspDegreeMap.getValue(house).value <= degree.value + 360 && degree.value < cuspDegreeMap.getValue(house + 1).value
         }
       } ?:12
     }
@@ -271,7 +271,7 @@ data class HoroscopeModel(
   override val positionMap: Map<Point, IPosWithAzimuth>,
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
-  override val cuspDegreeMap: Map<Int, Double>) : IHoroscopeModel, Serializable {
+  override val cuspDegreeMap: Map<Int, ZodiacDegree>) : IHoroscopeModel, Serializable {
 
   override val time: ChronoLocalDateTime<*>
     get() = TimeTools.getLmtFromGmt(gmtJulDay, location, JulDayResolver1582CutoverImpl())

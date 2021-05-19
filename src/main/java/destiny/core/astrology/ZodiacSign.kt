@@ -138,10 +138,7 @@ enum class ZodiacSign(val nameKey: String,
 
     /** 此黃道帶的度數，等於什麼星座幾度  */
     fun getSignAndDegree(degree: Double): Pair<ZodiacSign, Double> {
-      val index = (CircleTools.getNormalizeDegree(degree) / 30).toInt()
-      val sign = values()[index]
-      val deg = degree % 30
-      return Pair(sign, deg)
+      return of(degree) to degree % 30
     }
 
     private fun normalize(value: Int): Int {

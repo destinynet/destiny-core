@@ -21,8 +21,8 @@ sealed class EssentialDignity : IPlanetPattern {
   data class Ruler(override val planet: Planet, val sign: ZodiacSign) : EssentialDignity()
   data class Exaltation(override val planet: Planet, val sign: ZodiacSign) : EssentialDignity()
   data class Triplicity(override val planet: Planet, val sign: ZodiacSign, val dayNight: DayNight) : EssentialDignity()
-  data class Term(override val planet: Planet, val lngDeg: Double) : EssentialDignity()
-  data class Face(override val planet: Planet, val lngDeg: Double) : EssentialDignity()
+  data class Term(override val planet: Planet, val lngDeg: ZodiacDegree) : EssentialDignity()
+  data class Face(override val planet: Planet, val lngDeg: ZodiacDegree) : EssentialDignity()
 
   data class MutualReception(override val planet: Planet,
                              val sign1: ZodiacSign,
@@ -75,7 +75,7 @@ sealed class AccidentalDignity : IPlanetPattern {
   data class JoyHouse(override val planet: Planet, val house: Int) : AccidentalDignity()
   data class Hayz(override val planet: Planet, val dayNight: DayNight, val yinYang: YinYang, val sign: ZodiacSign) : AccidentalDignity()
   data class Besieged_Jupiter_Venus(override val planet: Planet) : AccidentalDignity()
-  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val deg: Double, val aspect: IAspectData.Type?) :
+  data class Translation_of_Light(override val planet: Planet, val from: Planet, val to: Planet, val angle: Double, val aspectType: IAspectData.Type?) :
     AccidentalDignity()
 
   data class Collection_of_Light(override val planet: Planet, val twoPlanets: List<Planet>, val angle: Double) : AccidentalDignity()

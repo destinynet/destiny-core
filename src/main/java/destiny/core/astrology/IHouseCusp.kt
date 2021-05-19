@@ -17,19 +17,19 @@ import java.util.*
 interface IHouseCusp : IRisingSign {
 
   /**
-   * 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 length=13 的 array , array[0] 不使用, array[1] 為第 1 宮 , ... , array[12] 為第 12 宮
+   * 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 length=13 的 list , list[0] 不使用, list[1] 為第 1 宮 , ... , list[12] 為第 12 宮
    */
-  fun getHouseCusps(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): DoubleArray
+  fun getHouseCusps(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): List<ZodiacDegree>
 
   /**
    * 承上， 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 Map , key 為 1~12 , value 為 [Coordinate] 度數 (default 黃道)
    */
-  fun getHouseCuspMap(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , Double> {
+  fun getHouseCuspMap(gmtJulDay: Double, loc: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , ZodiacDegree> {
     return getHouseCusps(gmtJulDay, loc, houseSystem, coordinate)
       .drop(1)
-      .mapIndexed { index, d ->
+      .mapIndexed { index, zodiacDegree ->
         val houseIndex = index+1
-        houseIndex to d
+        houseIndex to zodiacDegree
       }.toMap()
   }
 
@@ -37,8 +37,8 @@ interface IHouseCusp : IRisingSign {
    * 取得所有宮（1~12）的宮首，是什麼星座 , 以及宮首在該星座的度數
    */
   fun getHouseSignsAndDegrees(gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate = Coordinate.ECLIPTIC): Map<Int , Pair<ZodiacSign , Double>> {
-    return getHouseCuspMap(gmtJulDay, location, houseSystem, coordinate).map { (houseIndex , degree) ->
-      houseIndex to ZodiacSign.getSignAndDegree(degree)
+    return getHouseCuspMap(gmtJulDay, location, houseSystem, coordinate).map { (houseIndex , zodiacDegree) ->
+      houseIndex to zodiacDegree.signDegree
     }.toMap()
   }
 
@@ -62,9 +62,9 @@ interface IHouseCusp : IRisingSign {
   /**
    * 取得第 index 宮的宮首在黃道幾度 , 為 1-based , 1 <= index <=12
    */
-  fun getHouseCusp(index: Int, gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): Double
+  fun getHouseCusp(index: Int, gmtJulDay: Double, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacDegree
 
-  fun getHouseCusp(index: Int, lmt: ChronoLocalDateTime<*>, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): Double {
+  fun getHouseCusp(index: Int, lmt: ChronoLocalDateTime<*>, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacDegree {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     return getHouseCusp(index, gmtJulDay, location, houseSystem, coordinate)
   }

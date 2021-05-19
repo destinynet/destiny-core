@@ -55,10 +55,10 @@ interface IEightWordsContextModel : ITimeLoc {
   val risingStemBranch: StemBranch
 
   /** 12地盤時辰 宮首 的黃道度數 */
-  val houseMap: Map<Int, Double>
+  val houseMap: Map<Int, ZodiacDegree>
 
   /** 四至點 的 黃道度數 */
-  val rsmiMap : Map<TransPoint, Double>
+  val rsmiMap : Map<TransPoint, ZodiacDegree>
 
   /** 星體交角 */
   val aspectsDataSet: Set<AspectData>
@@ -105,10 +105,10 @@ data class EightWordsContextModel(
   override val risingStemBranch: StemBranch,
 
   /** 12地盤時辰 宮首 的黃道度數 */
-  override val houseMap: Map<Int, Double>,
+  override val houseMap: Map<Int, ZodiacDegree>,
 
   /** 四至點 的黃道度數 */
-  override val rsmiMap : Map<TransPoint, Double>,
+  override val rsmiMap : Map<TransPoint, ZodiacDegree>,
 
   /** 星體交角 */
   override val aspectsDataSet: Set<AspectData>

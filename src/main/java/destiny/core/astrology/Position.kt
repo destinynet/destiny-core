@@ -1,13 +1,15 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import destiny.tools.CircleTools
+import destiny.tools.CircleTools.normalize
 import java.io.Serializable
 
 interface IPos : Serializable {
   val lng: Double
   val lat: Double
+
   val lngDeg : ZodiacDegree
+    get() = lng.toZodiacDegree()
 
   /** 黃道什麼星座 */
   val sign: ZodiacSign
@@ -18,23 +20,20 @@ interface IPos : Serializable {
     get() = lngDeg.signDegree
 
   operator fun plus(p: IPos): IPos {
-    return Pos(CircleTools.getNormalizeDegree(this.lng + p.lng), this.lat + p.lat)
+    return Pos((this.lngDeg + p.lngDeg).value, this.lat + p.lat)
   }
 
   operator fun minus(p: IPos): IPos {
-    return Pos(CircleTools.getNormalizeDegree(this.lng - p.lng), this.lat - p.lat)
+    return Pos((this.lngDeg - p.lngDeg).value, this.lat - p.lat)
   }
 }
 
-data class Pos(override val lng: Double,
-               override val lat: Double,
-               override val lngDeg: ZodiacDegree = lng.toZodiacDegree()) : IPos
+data class Pos(override val lng: Double, override val lat: Double) : IPos
 
 
 interface IPosWithAzimuth : IPos, IAzimuth
 
-data class PosWithAzimuth(val pos: IPos,
-                          val azimuth: IAzimuth) : IPosWithAzimuth, IPos by pos, IAzimuth by azimuth
+data class PosWithAzimuth(val pos: IPos, val azimuth: IAzimuth) : IPosWithAzimuth, IPos by pos, IAzimuth by azimuth
 
 interface IStarPos : IPos {
   val distance: Double  // in AU
@@ -43,29 +42,31 @@ interface IStarPos : IPos {
   val speedDistance: Double // speed in distance (AU / day)
 
   operator fun plus(p: IStarPos): IStarPos {
-    return StarPosition(super.plus(p),
+    return StarPosition(
+      super.plus(p),
       this.distance + p.distance,
-      CircleTools.getNormalizeDegree(this.speedLng + p.speedLng),
+      (this.speedLng + p.speedLng).normalize(),
       this.speedLat + p.speedLat,
-      this.speedDistance + p.speedDistance)
+      this.speedDistance + p.speedDistance
+    )
   }
 
   operator fun minus(p: IStarPos): IStarPos {
-    return StarPosition(super.minus(p),
+    return StarPosition(
+      super.minus(p),
       this.distance - p.distance,
-      CircleTools.getNormalizeDegree(this.speedLng - p.speedLng),
+      (this.speedLng - p.speedLng).normalize(),
       this.speedLat - p.speedLat,
-      this.speedDistance - p.speedDistance)
+      this.speedDistance - p.speedDistance
+    )
   }
 }
 
-data class StarPosition(
-  val pos: IPos,
-  override val distance: Double,
-  override val speedLng: Double,
-  override val speedLat: Double,
-  override val speedDistance: Double
-) : IStarPos, IPos by pos
+data class StarPosition(val pos: IPos,
+                        override val distance: Double,
+                        override val speedLng: Double,
+                        override val speedLat: Double,
+                        override val speedDistance: Double) : IStarPos, IPos by pos
 
 interface IStarPositionWithAzimuth : IStarPos, IPosWithAzimuth, IAzimuth
 
