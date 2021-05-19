@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -30,7 +31,7 @@ class ZodiacDegreeTest {
   @MethodSource("oriental")
   fun testOriental(row: Pair<Double, Double>) {
     val (from, to) = row
-    assertTrue(ZodiacDegree(from).isOriental(ZodiacDegree(to)))
+    assertTrue(from.toZodiacDegree().isOriental(to.toZodiacDegree()))
   }
 
   /** 西出 , 度數大 */
@@ -48,7 +49,7 @@ class ZodiacDegreeTest {
   @MethodSource("occidental")
   fun testOccidental(row: Pair<Double, Double>) {
     val (from, to) = row
-    assertTrue(ZodiacDegree(from).isOccidental(ZodiacDegree(to)))
+    assertTrue(from.toZodiacDegree().isOccidental(to.toZodiacDegree()))
   }
 
   @Test
@@ -81,16 +82,16 @@ class ZodiacDegreeTest {
 
   @Test
   fun testPlusInt() {
-    assertEquals(ZodiacDegree(10.0), ZodiacDegree(0.0) + 10)
-    assertEquals(ZodiacDegree(0.0), ZodiacDegree(350.0) + 10)
-    assertEquals(ZodiacDegree(10.0), ZodiacDegree(350.0) + 20)
+    assertEquals(10.0.toZodiacDegree(), 0.0.toZodiacDegree() + 10)
+    assertEquals(0.0.toZodiacDegree(), 350.0.toZodiacDegree() + 10)
+    assertEquals(10.0.toZodiacDegree(), 350.0.toZodiacDegree() + 20)
   }
 
   @Test
   fun testMinusInt() {
-    assertEquals(ZodiacDegree(350.0), ZodiacDegree(0.0) - 10)
-    assertEquals(ZodiacDegree(0.0), ZodiacDegree(10.0) - 10)
-    assertEquals(ZodiacDegree(350.0), ZodiacDegree(10.0) - 20)
+    assertEquals(350.0.toZodiacDegree(), 0.0.toZodiacDegree() - 10)
+    assertEquals(0.0.toZodiacDegree(), 10.0.toZodiacDegree() - 10)
+    assertEquals(350.0.toZodiacDegree(), 10.0.toZodiacDegree() - 20)
   }
 
 

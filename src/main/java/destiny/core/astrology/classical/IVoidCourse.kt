@@ -4,8 +4,8 @@
 package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.rules.Misc
-import destiny.tools.CircleTools.normalize
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -89,8 +89,8 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 
         val combinedMoiety =  (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
 
-        val beginDegree = ZodiacDegree((planetExactPosPrior.lng + 6/60.0).normalize())
-        val endDegree = ZodiacDegree((planetExactPosAfter.lng - combinedMoiety).normalize())
+        val beginDegree = (planetExactPosPrior.lng + 6 / 60.0).toZodiacDegree()
+        val endDegree = (planetExactPosAfter.lng - combinedMoiety).toZodiacDegree()
 
         planet.takeIf {
           val angle1 = planetExactPosPrior.lngDeg.getAngle(planetExactPosAfter.lngDeg)
@@ -154,7 +154,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
           val beginGmt = exactAspectPrior.gmtJulDay!!
           val beginDegree = starPositionImpl.getPosition(planet, beginGmt, h.location).lngDeg
           val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toDouble(), Coordinate.ECLIPTIC, h.gmtJulDay, true)
-          val endDegree = ZodiacDegree(nextSign.degree.toDouble())
+          val endDegree = nextSign.degree.toZodiacDegree()
           Misc.VoidCourse(
             planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter
           )

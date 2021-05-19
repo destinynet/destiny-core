@@ -1,5 +1,6 @@
 package destiny.core.astrology
 
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.tools.CircleTools
 import java.io.Serializable
 
@@ -27,7 +28,7 @@ interface IPos : Serializable {
 
 data class Pos(override val lng: Double,
                override val lat: Double,
-               override val lngDeg: ZodiacDegree = ZodiacDegree(lng)) : IPos
+               override val lngDeg: ZodiacDegree = lng.toZodiacDegree()) : IPos
 
 
 interface IPosWithAzimuth : IPos, IAzimuth

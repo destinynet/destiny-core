@@ -7,7 +7,7 @@ import destiny.tools.CircleTools.aheadOf
 import destiny.tools.CircleTools.normalize
 
 /** 黃道帶度數 */
-inline class ZodiacDegree(val value: Double) {
+inline class ZodiacDegree private constructor(val value: Double) {
 
   val sign: ZodiacSign
     get() = ZodiacSign.of(value)
@@ -65,25 +65,32 @@ inline class ZodiacDegree(val value: Double) {
   }
 
   operator fun plus(other: ZodiacDegree): ZodiacDegree {
-    return ZodiacDegree((value + other.value).normalize())
+    return (value + other.value).toZodiacDegree()
   }
 
   operator fun plus(other: Int): ZodiacDegree {
-    return ZodiacDegree((value + other).normalize())
+    return (value + other).toZodiacDegree()
   }
 
   operator fun minus(other: ZodiacDegree): ZodiacDegree {
-    return ZodiacDegree((value - other.value).normalize())
+    return (value - other.value).toZodiacDegree()
   }
 
   operator fun minus(other: Int): ZodiacDegree {
-    return ZodiacDegree((value - other).normalize())
+    return (value - other).toZodiacDegree()
   }
 
 
-
-
   companion object {
+
+    fun Double.toZodiacDegree() : ZodiacDegree {
+      return ZodiacDegree(this.normalize())
+    }
+
+    fun Int.toZodiacDegree() : ZodiacDegree {
+      return ZodiacDegree(this.toDouble().normalize())
+    }
+
     /**
      * @return 計算黃道帶上兩個度數的交角 , 其值必定小於等於 180度
      */

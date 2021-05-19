@@ -9,6 +9,7 @@ import destiny.core.News
 import destiny.core.astrology.*
 import destiny.core.astrology.Aspect.*
 import destiny.core.astrology.Planet.*
+import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.*
 import destiny.core.chinese.YinYang
 import mu.KotlinLogging
@@ -326,7 +327,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
 
       return planet.takeIf { it === MOON }?.let { h.getPosition(it) }?.lng?.let { moonDeg ->
           h.getPosition(SUN)?.lng?.takeIf { sunDeg ->
-            ZodiacDegree(moonDeg).isOccidental(ZodiacDegree(sunDeg))
+            moonDeg.toZodiacDegree().isOccidental(sunDeg.toZodiacDegree())
           }?.let {
             AccidentalDignity.Moon_Increase_Light
           }
@@ -737,9 +738,9 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return arrayOf(MARS, JUPITER, SATURN)
         .takeIf { it.contains(planet) }
-        ?.let { h.getPosition(planet) }?.lng?.let { planetDegree ->
-        h.getPosition(SUN)?.lng?.takeIf { sunDegree ->
-          ZodiacDegree(planetDegree).isOccidental(ZodiacDegree(sunDegree))
+        ?.let { h.getPosition(planet) }?.lngDeg?.let { planetDegree ->
+        h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
+          planetDegree.isOccidental(sunDegree)
         }?.let {
           Debility.Occidental(planet)
         }
@@ -757,7 +758,7 @@ class ClassicalPatternContext(private val rulerImpl: IRuler,
     override fun getPatterns(planet: Planet, h: IHoroscopeModel): List<IPlanetPattern> {
       return arrayOf(MERCURY, VENUS)
         .takeIf { it.contains(planet) }
-        ?.let { h.getPosition(planet) }?.lng?.let {ZodiacDegree(it)}?.let { planetDegree ->
+        ?.let { h.getPosition(planet) }?.lngDeg?.let { planetDegree ->
         h.getPosition(SUN)?.lngDeg?.takeIf { sunDegree ->
           planetDegree.isOriental(sunDegree)
         }?.let {
