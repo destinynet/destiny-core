@@ -5,6 +5,7 @@ package destiny.core.fengshui
 
 import destiny.core.iching.Symbol
 import destiny.tools.CircleTools
+import destiny.tools.CircleTools.normalize
 
 abstract class AbstractMountainCompass : ICompass<Mountain> {
 
@@ -20,14 +21,14 @@ abstract class AbstractMountainCompass : ICompass<Mountain> {
    * 取得某個山的起始度數
    */
   override fun getStartDegree(t: Mountain): Double {
-    return CircleTools.getNormalizeDegree(t.index * stepDegree + initDegree)
+    return (t.index * stepDegree + initDegree).normalize()
   }
 
   /**
    * 取得某個山的結束度數
    */
   override fun getEndDegree(t: Mountain): Double {
-    return CircleTools.getNormalizeDegree((t.index + 1) * stepDegree + initDegree)
+    return ((t.index + 1) * stepDegree + initDegree).normalize()
   }
 
   /** 此座山 中心點度數 */

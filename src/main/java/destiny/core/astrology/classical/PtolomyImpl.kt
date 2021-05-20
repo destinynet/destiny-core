@@ -12,7 +12,7 @@ import destiny.core.astrology.Planet.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.ZodiacSign.*
 import destiny.core.astrology.ZodiacSign.Companion.of
-import destiny.tools.CircleTools
+import destiny.tools.CircleTools.normalize
 import java.io.Serializable
 
 
@@ -460,7 +460,7 @@ abstract class AbstractPtolemy : Serializable {
 
     /** Fall Degree Map , 即為 Exalt 對沖的度數 */
     internal val fallDegreeMap: Map<Point, Double> = exaltDegreeMap
-      .mapValues { (_, deg) -> CircleTools.getNormalizeDegree(deg + 180) }
+      .mapValues { (_, deg) -> (deg + 180).normalize() }
       .toMap()
 
     /** 承上，儲存的是星座 */

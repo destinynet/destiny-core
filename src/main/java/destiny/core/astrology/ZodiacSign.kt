@@ -11,7 +11,7 @@ import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
 import destiny.core.chinese.IYinYang
 import destiny.tools.ArrayTools
-import destiny.tools.CircleTools
+import destiny.tools.CircleTools.normalize
 import destiny.tools.ILocaleString
 import java.util.*
 
@@ -132,7 +132,7 @@ enum class ZodiacSign(val nameKey: String,
 
     /** 取得黃道帶上的某度，屬於哪個星座  */
     fun of(degree: Double): ZodiacSign {
-      val index = (CircleTools.getNormalizeDegree(degree) / 30).toInt()
+      val index = (degree.normalize() / 30).toInt()
       return values()[index]
     }
 
