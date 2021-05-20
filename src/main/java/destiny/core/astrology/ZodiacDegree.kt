@@ -15,6 +15,9 @@ inline class ZodiacDegree private constructor(val value: Double) {
   val signDegree: Pair<ZodiacSign, Double>
     get() = sign to value % 30
 
+  val min: Int
+    get() = ((value - value.toInt()) * 60).toInt()
+
   fun getAngle(to : ZodiacDegree) : Double {
     return Companion.getAngle(this.value, to.value)
   }
