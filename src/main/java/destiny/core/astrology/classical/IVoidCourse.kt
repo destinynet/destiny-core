@@ -6,13 +6,70 @@ package destiny.core.astrology.classical
 import destiny.core.astrology.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import mu.KotlinLogging
 import java.io.Serializable
+import kotlin.math.min
 
 
 interface IVoidCourse {
 
   fun getVoidCourse(h: IHoroscopeModel, planet: Planet = Planet.MOON): Misc.VoidCourse?
+
+  fun getVoidCourses(
+    fromGmt: Double,
+    toGmt: Double,
+    loc: ILocation,
+    horoscopeContext: IHoroscopeContext,
+    besiegedImpl: IBesieged,
+    relativeTransitImpl : IRelativeTransit,
+    planet: Planet = Planet.MOON
+  ): List<Misc.VoidCourse> {
+
+    val planets = Planet.classicalList
+    val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
+
+    fun getNextVoc(gmt : Double): Misc.VoidCourse {
+      val nextAspectData = relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)!!
+
+      logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
+
+      val nextTime = nextAspectData.gmtJulDay!! + 0.01
+      logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
+      val h2 = horoscopeContext.getHoroscope(nextTime, loc, null, planets)
+
+      return getVoidCourse(h2, planet) ?: getNextVoc(nextTime)
+    }
+
+    fun getVoc(gmt: Double) : Misc.VoidCourse {
+      val h = horoscopeContext.getHoroscope(gmt, loc, null, planets)
+
+      val gmtVoc: Misc.VoidCourse? = getVoidCourse(h, planet)
+
+      return if (gmtVoc == null) {
+        logger.trace { "沒有 VOC : ${julDayResolver.getLocalDateTime(gmt)} " }
+
+        getNextVoc(gmt)
+      } else {
+        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.beginGmt.let { julDayResolver.getLocalDateTime(it) }}" }
+        gmtVoc
+      }
+    }
+
+    return generateSequence(getVoc(fromGmt)) {
+      val newGmt = min(it.endGmt , it.exactAspectAfter.gmtJulDay!!) + 0.01
+      if (newGmt < toGmt) {
+        getVoc(newGmt)
+      } else
+        null
+    }.toList()
+  }
+
+  companion object {
+    val logger = KotlinLogging.logger {  }
+    val julDayResolver = JulDayResolver1582CutoverImpl()
+  }
 }
 
 /**
@@ -140,13 +197,13 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
-        val p2 = exactAspectAfter.points.first { it != planet } as Planet
+        //val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
-        val pos2 = starPositionImpl.getPosition(p2, exactAspectAfter.gmtJulDay!!, h.location).lngDeg
+        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location).lngDeg
         val posPlanet = h.positionMap[planet]!!.lngDeg
 
         planet.takeIf {
-          // 此星與 p2 ，並未在同一個星座
+          // 此星與 此星運行到 與 p2 形成交角時 (此星的)位置 ，並未在同一個星座
           posPlanet.sign != pos2.sign
         }?.let {
           // 計算進入下一個星座的時間

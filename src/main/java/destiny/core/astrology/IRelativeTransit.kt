@@ -178,4 +178,21 @@ interface IRelativeTransit {
     return getNearestRelativeTransitGmtJulDay(transitStar, relativeStar, gmtJulDay, angles, isForward)
   }
 
+  fun getNearestRelativeTransitGmtJulDay(transitStar: Star , relativeStars: Collection<Star> , fromGmtJulDay: Double , aspects : Collection<Aspect> , forward: Boolean): AspectData? {
+
+    return if (forward) {
+      relativeStars.filter { it != transitStar }.mapNotNull { eachOther ->
+        getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }, true)
+          ?.let { (gmt , deg) -> Triple(eachOther , gmt, deg) }
+      }.map { (other , gmt , deg) -> AspectData(transitStar, other , Aspect.getAspect(deg)!! , 0.0 , 0.0 , null , gmt) }
+        .minByOrNull { it.gmtJulDay!! }
+    } else {
+      relativeStars.filter { it != transitStar }.mapNotNull { eachOther ->
+        getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }, true)
+          ?.let { (gmt , deg) -> Triple(eachOther , gmt, deg) }
+      }.map { (other , gmt , deg) -> AspectData(transitStar, other , Aspect.getAspect(deg)!! , 0.0 , 0.0 , null , gmt) }
+        .maxByOrNull { it.gmtJulDay!! }
+    }
+  }
+
 }

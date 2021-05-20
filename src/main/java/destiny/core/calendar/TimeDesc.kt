@@ -6,6 +6,7 @@ package destiny.core.calendar
 import destiny.core.astrology.LunarStation
 import destiny.core.astrology.Point
 import destiny.core.astrology.TransPoint
+import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.eclipse.ILunarEclipse
 import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.chinese.Branch
@@ -55,11 +56,14 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
                             val tp: TransPoint) : TimeDesc(lmt, listOf(desc))
 
   /** 節氣 */
-  data class TypeSolarTerms(override val lmt: LocalDateTime, val desc: String, val solarTerms: SolarTerms) :
-    TimeDesc(lmt, listOf(desc))
+  data class TypeSolarTerms(override val lmt: LocalDateTime,
+                            val desc: String,
+                            val solarTerms: SolarTerms) : TimeDesc(lmt, listOf(desc))
 
   /** 日月交角 */
-  data class TypeSunMoon(override val lmt: LocalDateTime, val desc: String, val degree: Int) : TimeDesc(lmt, listOf(desc))
+  data class TypeSunMoon(override val lmt: LocalDateTime,
+                         val desc: String,
+                         val degree: Int) : TimeDesc(lmt, listOf(desc))
 
   /** 日食 */
   data class TypeSolarEclipse(override val lmt: LocalDateTime,
@@ -84,6 +88,25 @@ sealed class TimeDesc(open val lmt: LocalDateTime,
     ILunarEclipse.LunarType.TOTAL -> "月全食 " + time.desc()
     ILunarEclipse.LunarType.PENUMBRA -> "半影月食 " + time.desc()
   })
+
+
+  sealed class VoidMoon(override val lmt: LocalDateTime , desc: String) : TimeDesc(lmt , desc) {
+
+    /** 月空亡開始 */
+    data class Begin(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
+      TimeTools.getLmtFromGmt(voidCourse.beginGmt, loc, julDayResolver) as LocalDateTime, "月空亡開始"
+    )
+
+    /** 月空亡結束 */
+    data class End(val voidCourse: Misc.VoidCourse, val loc: ILocation) : VoidMoon(
+      TimeTools.getLmtFromGmt(voidCourse.beginGmt, loc, julDayResolver) as LocalDateTime, "月空亡結束"
+    )
+  }
+
+
+  companion object {
+    val julDayResolver = JulDayResolver1582CutoverImpl()
+  }
 }
 
 
