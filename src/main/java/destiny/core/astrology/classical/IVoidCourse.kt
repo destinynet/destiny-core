@@ -22,8 +22,7 @@ interface IVoidCourse {
     toGmt: Double,
     loc: ILocation,
     horoscopeContext: IHoroscopeContext,
-    besiegedImpl: IBesieged,
-    relativeTransitImpl : IRelativeTransit,
+    relativeTransitImpl: IRelativeTransit,
     planet: Planet = Planet.MOON
   ): List<Misc.VoidCourse> {
 
@@ -197,7 +196,6 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
-        //val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
         val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location).lngDeg
         val posPlanet = h.positionMap[planet]!!.lngDeg
