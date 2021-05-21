@@ -8,12 +8,15 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
+import destiny.tools.Domain
+import destiny.tools.Impl
+import destiny.tools.converters.Domains
 import mu.KotlinLogging
 import java.io.Serializable
 import kotlin.math.min
 
 
-interface IVoidCourse {
+sealed interface IVoidCourse {
 
   fun getVoidCourse(h: IHoroscopeModel, planet: Planet = Planet.MOON): Misc.VoidCourse?
 
@@ -29,19 +32,22 @@ interface IVoidCourse {
     val planets = Planet.classicalList
     val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
 
-    fun getNextVoc(gmt : Double): Misc.VoidCourse {
-      val nextAspectData = relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)!!
+    fun getNextVoc(gmt : Double): Misc.VoidCourse? {
 
-      logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
+      return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)!!
+        .takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
+        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! > fromGmt }
+        ?.let { nextAspectData ->
+          logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
 
-      val nextTime = nextAspectData.gmtJulDay!! + 0.01
-      logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
-      val h2 = horoscopeContext.getHoroscope(nextTime, loc, null, planets)
-
-      return getVoidCourse(h2, planet) ?: getNextVoc(nextTime)
+          val nextTime = nextAspectData.gmtJulDay!! + 0.01
+          logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
+          val h2 = horoscopeContext.getHoroscope(nextTime, loc, null, planets)
+          getVoidCourse(h2, planet) ?: getNextVoc(nextTime)
+        }
     }
 
-    fun getVoc(gmt: Double) : Misc.VoidCourse {
+    fun getVoc(gmt: Double) : Misc.VoidCourse? {
       val h = horoscopeContext.getHoroscope(gmt, loc, null, planets)
 
       val gmtVoc: Misc.VoidCourse? = getVoidCourse(h, planet)
@@ -49,7 +55,9 @@ interface IVoidCourse {
       return if (gmtVoc == null) {
         logger.trace { "沒有 VOC : ${julDayResolver.getLocalDateTime(gmt)} " }
 
-        getNextVoc(gmt)
+        getNextVoc(gmt)?.takeIf { nextVoc ->
+          nextVoc.beginGmt < toGmt
+        }
       } else {
         logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.beginGmt.let { julDayResolver.getLocalDateTime(it) }}" }
         gmtVoc
@@ -59,7 +67,7 @@ interface IVoidCourse {
     return generateSequence(getVoc(fromGmt)) {
       val newGmt = min(it.endGmt , it.exactAspectAfter.gmtJulDay!!) + 0.01
       if (newGmt < toGmt) {
-        getVoc(newGmt).takeIf { voc -> voc.beginGmt < toGmt }
+        getVoc(newGmt)?.takeIf { voc -> voc.beginGmt < toGmt }
       } else
         null
     }.toList()
@@ -74,6 +82,7 @@ interface IVoidCourse {
 /**
  * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
  */
+@Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseHellenistic.VALUE)])
 class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
                             private val starPositionImpl: IStarPosition<*>) : IVoidCourse, Serializable {
   override fun getVoidCourse(h: IHoroscopeModel, planet: Planet): Misc.VoidCourse? {
@@ -105,6 +114,7 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
   }
   companion object {
     val logger = KotlinLogging.logger {  }
+    const val VALUE = "Hellenistic"
   }
 }
 
@@ -123,6 +133,7 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
  * 月亮先離開與 p1交角+6分之後 , VOC 開始
  * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
  */
+@Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseWilliamLilly.VALUE)])
 class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
                              private val starPositionImpl: IStarPosition<*>,
                              private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
@@ -178,6 +189,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 
   companion object {
     val logger = KotlinLogging.logger {  }
+    const val VALUE = "WilliamLilly"
   }
 }
 
@@ -187,6 +199,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  *
  * 月亮(或其他)剛離開與其他星體的「準確」交角，直到進入下一個星座時，都還沒與其他星體形成準確交角
  */
+@Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseMedieval.VALUE , default = true)])
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,
                          private val starPositionImpl: IStarPosition<*>,
                          private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
@@ -215,5 +228,9 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
           )
         }
       }
+  }
+
+  companion object {
+    const val VALUE = "Medieval"
   }
 }

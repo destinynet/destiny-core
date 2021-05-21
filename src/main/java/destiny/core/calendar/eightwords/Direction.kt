@@ -16,8 +16,4 @@ enum class Direction : Descriptive {
       R2L -> "右至左"
     }
   }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }

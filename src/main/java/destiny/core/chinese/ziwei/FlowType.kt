@@ -17,8 +17,4 @@ enum class FlowType : Descriptive {
       name
     }
   }
-
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }

@@ -21,10 +21,6 @@ class PointDiameterAlBiruniImpl : IPointDiameter, Serializable {
     return "Al-Biruni"
   }
 
-  override fun getDescription(locale: Locale): String {
-    return "Al-Biruni"
-  }
-
   override fun getDiameter(point: Point): Double {
     return planetOrbsMap[point] ?: 2.0
   }

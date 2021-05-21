@@ -19,7 +19,4 @@ enum class FortuneOutput : Descriptive {
     return ResourceBundle.getBundle(FortuneOutput::class.java.name, locale).getString(name)
   }
 
-  override fun getDescription(locale: Locale): String {
-    return toString(locale)
-  }
 }

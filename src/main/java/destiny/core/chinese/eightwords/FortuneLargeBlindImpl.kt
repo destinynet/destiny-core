@@ -54,10 +54,6 @@ class FortuneLargeBlindImpl(
     TODO("not implemented")
   }
 
-  override fun getDescription(locale: Locale): String {
-    TODO("not implemented")
-  }
-
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is FortuneLargeBlindImpl) return false

@@ -127,4 +127,11 @@ object Domains {
 
     const val KEY_HIDDEN_VENUS_FOE = "lsHvf"
   }
+
+  /** 占星相關 */
+  object Astrology {
+
+    /** 空亡 */
+    const val KEY_VOC = "voc"
+  }
 }

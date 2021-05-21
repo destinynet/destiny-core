@@ -20,10 +20,6 @@ class PointDiameterLillyImpl : IPointDiameter, Serializable {
     return "William Lilly"
   }
 
-  override fun getDescription(locale: Locale): String {
-    return "William Lilly"
-  }
-
   override fun getDiameter(point: Point): Double {
     return planetOrbsMap[point] ?: 2.0
   }
