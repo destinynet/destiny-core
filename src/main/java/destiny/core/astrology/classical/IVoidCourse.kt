@@ -59,7 +59,7 @@ interface IVoidCourse {
     return generateSequence(getVoc(fromGmt)) {
       val newGmt = min(it.endGmt , it.exactAspectAfter.gmtJulDay!!) + 0.01
       if (newGmt < toGmt) {
-        getVoc(newGmt)
+        getVoc(newGmt).takeIf { voc -> voc.beginGmt < toGmt }
       } else
         null
     }.toList()

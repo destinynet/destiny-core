@@ -16,7 +16,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 沒有性別 [destiny.core.Gender]
  *
  */
-interface IHoroscopeContext {
+interface IHoroscopeContext : Serializable {
 
   val houseSystem: HouseSystem
   val coordinate: Coordinate
