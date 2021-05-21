@@ -31,7 +31,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
                       val reverseGeocodingService: ReverseGeocodingService,
                       val julDayResolver: JulDayResolver,
                       val lunarStationContextFolk: ILunarStationContext,
-                      val voidCourseMedieval: IVoidCourse,
+                      val voidCourseImpl: IVoidCourse,
                       val horoContext: IHoroscopeContext) : IDailyReport, Serializable {
 
   private fun getList(lmtStart: ChronoLocalDateTime<*>,
@@ -150,7 +150,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     }
 
     // 月亮空亡
-    voidCourseMedieval.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, horoContext, relativeTransitImpl, Planet.MOON).forEach { voc ->
+    voidCourseImpl.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, horoContext, relativeTransitImpl, Planet.MOON).forEach { voc ->
       if (voc.beginGmt > fromGmtJulDay) {
         set.add(TimeDesc.VoidMoon.Begin(voc, loc))
       }
@@ -181,7 +181,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     if (reverseGeocodingService != other.reverseGeocodingService) return false
     if (julDayResolver != other.julDayResolver) return false
     if (lunarStationContextFolk != other.lunarStationContextFolk) return false
-    if (voidCourseMedieval != other.voidCourseMedieval) return false
+    if (voidCourseImpl != other.voidCourseImpl) return false
     if (horoContext != other.horoContext) return false
 
     return true
@@ -196,7 +196,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     result = 31 * result + reverseGeocodingService.hashCode()
     result = 31 * result + julDayResolver.hashCode()
     result = 31 * result + lunarStationContextFolk.hashCode()
-    result = 31 * result + voidCourseMedieval.hashCode()
+    result = 31 * result + voidCourseImpl.hashCode()
     result = 31 * result + horoContext.hashCode()
     return result
   }
