@@ -30,7 +30,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
                       val eclipseImpl: IEclipseFactory,
                       val reverseGeocodingService: ReverseGeocodingService,
                       val julDayResolver: JulDayResolver,
-                      val lunarStationContextFolk: ILunarStationContext,
+                      val lunarStationContext: ILunarStationContext,
                       val voidCourseImpl: IVoidCourse,
                       val horoContext: IHoroscopeContext) : IDailyReport, Serializable {
 
@@ -48,7 +48,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     // 每個時辰的 時禽
     val hourLunarStationMap = hourSolarTransImpl.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, julDayResolver)
       .map { (b, middleLmt) ->
-        b to lunarStationContextFolk.hourlyImpl.getHourly(middleLmt, loc)
+        b to lunarStationContext.hourlyImpl.getHourly(middleLmt, loc)
       }.toMap()
 
     // 12地支
@@ -180,7 +180,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     if (eclipseImpl != other.eclipseImpl) return false
     if (reverseGeocodingService != other.reverseGeocodingService) return false
     if (julDayResolver != other.julDayResolver) return false
-    if (lunarStationContextFolk != other.lunarStationContextFolk) return false
+    if (lunarStationContext != other.lunarStationContext) return false
     if (voidCourseImpl != other.voidCourseImpl) return false
     if (horoContext != other.horoContext) return false
 
@@ -195,7 +195,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     result = 31 * result + eclipseImpl.hashCode()
     result = 31 * result + reverseGeocodingService.hashCode()
     result = 31 * result + julDayResolver.hashCode()
-    result = 31 * result + lunarStationContextFolk.hashCode()
+    result = 31 * result + lunarStationContext.hashCode()
     result = 31 * result + voidCourseImpl.hashCode()
     result = 31 * result + horoContext.hashCode()
     return result

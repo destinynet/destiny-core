@@ -14,7 +14,7 @@ import java.io.Serializable
 /**
  * Context 與 Map<String , String> 互換
  */
-interface IContextMap<T> {
+interface IContextMap<T> : Serializable {
   fun getMap(context: T): Map<String, String>
   fun getMapExceptDefault(context: T): Map<String, String> = getMap(context)
   fun getContext(map: Map<String, String>): T?
@@ -105,8 +105,6 @@ open class AbstractImpls<T : Any>(override val key: String,
   /** T 的實作者有哪些 , 及其 參數的 value 為何  */
   private val implValueMap = HashBiMap.create<T, String>()
 
-  private val logger = KotlinLogging.logger { }
-
   init {
     addImpl(defaultImpl, defaultImplKey)
   }
@@ -148,6 +146,10 @@ open class AbstractImpls<T : Any>(override val key: String,
   override fun getImpl(implKey: String): T {
     val t = implValueMap.inverse()[implKey]
     return t ?: defaultImpl
+  }
+
+  companion object {
+    private val logger = KotlinLogging.logger { }
   }
 }
 

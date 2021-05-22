@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology.classical
 
+import destiny.core.Descriptive
 import destiny.core.astrology.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.rules.Misc
@@ -13,10 +14,11 @@ import destiny.tools.Impl
 import destiny.tools.converters.Domains
 import mu.KotlinLogging
 import java.io.Serializable
+import java.util.*
 import kotlin.math.min
 
 
-sealed interface IVoidCourse {
+sealed interface IVoidCourse : Descriptive {
 
   fun getVoidCourse(h: IHoroscopeModel, planet: Planet = Planet.MOON): Misc.VoidCourse?
 
@@ -71,6 +73,15 @@ sealed interface IVoidCourse {
       } else
         null
     }.toList()
+  }
+
+  override fun toString(locale: Locale): String {
+    return try {
+      ResourceBundle.getBundle(IVoidCourse::class.java.name, locale).getString(javaClass.simpleName)
+    } catch (e: MissingResourceException) {
+      logger.info { "missing resource : $locale , 傳回 simple name : ${javaClass.simpleName}" }
+      javaClass.simpleName
+    }
   }
 
   companion object {
