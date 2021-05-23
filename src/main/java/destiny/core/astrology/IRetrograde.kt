@@ -17,14 +17,14 @@ interface IRetrograde {
   /**
    * 下次停滯的時間為何時 (GMT)
    */
-  fun getNextStationary(star: Star, fromGmt: Double, isForward: Boolean): Double
+  fun getNextStationary(star: Star, fromGmt: Double, forward: Boolean): Double
 
   /**
    * 承上，不僅計算下次（或上次）的停滯時間
    * 另外計算，該次停滯，是準備「順轉逆」，或是「逆轉順」
    */
-  fun getNextStationary(star: Star, fromGmt: Double, isForward: Boolean, starPositionImpl: IStarPosition<*>): Pair<Double, StationaryType> {
-    val nextStationary = getNextStationary(star, fromGmt, isForward)
+  fun getNextStationary(star: Star, fromGmt: Double, forward: Boolean, starPositionImpl: IStarPosition<*>): Pair<Double, StationaryType> {
+    val nextStationary = getNextStationary(star, fromGmt, forward)
     // 分別取 滯留前、後 來比對
     val prior = nextStationary - 1 / 1440.0
     val after = nextStationary + 1 / 1440.0

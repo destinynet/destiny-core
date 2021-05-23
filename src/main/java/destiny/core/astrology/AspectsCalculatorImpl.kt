@@ -40,13 +40,15 @@ class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
             val lmt = this.lmt //目前時間
             val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
-            val deg1Next = pointPosFuncMap[p1]!!.getPosition(later, location).lngDeg
-            val deg2Next = pointPosFuncMap[p2]!!.getPosition(later, location).lngDeg
-            val planetsAngleNext = deg1Next.getAngle(deg2Next)
-            val errorNext = abs(planetsAngleNext - aspect.degree)
+            pointPosFuncMap[p1]?.getPosition(later, location)?.lngDeg?.let { deg1Next->
+              pointPosFuncMap[p2]?.getPosition(later, location)?.lngDeg?.let { deg2Next ->
+                val planetsAngleNext = deg1Next.getAngle(deg2Next)
+                val errorNext = abs(planetsAngleNext - aspect.degree)
 
-            val type = if (errorNext <= error) APPLYING else SEPARATING
-            AspectData(p1, p2, aspect, error, score, type , this.gmtJulDay)
+                val type = if (errorNext <= error) APPLYING else SEPARATING
+                AspectData(p1, p2, aspect, error, score, type , this.gmtJulDay)
+              }
+            }
           }
       }
 
