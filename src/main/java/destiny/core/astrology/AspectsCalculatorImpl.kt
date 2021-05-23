@@ -10,12 +10,8 @@ import java.io.Serializable
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
-class AspectsCalculatorImpl(
-  val aspectEffectiveImpl: IAspectEffective,
-  private val starPosWithAzimuth: IStarPositionWithAzimuthCalculator,
-  private val houseCuspImpl: IHouseCusp,
-  private val pointPosFuncMap: Map<Point, IPosition<*>>
-) : IAspectsCalculator, Serializable {
+class AspectsCalculatorImpl(val aspectEffectiveImpl: IAspectEffective,
+                            private val pointPosFuncMap: Map<Point, IPosition<*>>) : IAspectsCalculator, Serializable {
 
 
   private fun IHoroscopeModel.getAspectData(twoPoints: Set<Point>, aspects: Collection<Aspect>): AspectData? {
@@ -44,13 +40,8 @@ class AspectsCalculatorImpl(
             val lmt = this.lmt //目前時間
             val later = lmt.plus(1, ChronoUnit.SECONDS) // 一段時間後
 
-            val hContext: IHoroscopeContext =
-              HoroscopeContext(starPosWithAzimuth, houseCuspImpl, pointPosFuncMap, this.points, this.houseSystem,
-                this.coordinate, this.centric)
-            val h2 = hContext.getHoroscope(lmt = later, loc = this.location, place = this.place, points = this.points)
-
-            val deg1Next = h2.getPositionWithAzimuth(p1).lngDeg
-            val deg2Next = h2.getPositionWithAzimuth(p2).lngDeg
+            val deg1Next = pointPosFuncMap[p1]!!.getPosition(later, location).lngDeg
+            val deg2Next = pointPosFuncMap[p2]!!.getPosition(later, location).lngDeg
             val planetsAngleNext = deg1Next.getAngle(deg2Next)
             val errorNext = abs(planetsAngleNext - aspect.degree)
 
@@ -112,8 +103,6 @@ class AspectsCalculatorImpl(
     if (other !is AspectsCalculatorImpl) return false
 
     if (aspectEffectiveImpl != other.aspectEffectiveImpl) return false
-    if (starPosWithAzimuth != other.starPosWithAzimuth) return false
-    if (houseCuspImpl != other.houseCuspImpl) return false
     if (pointPosFuncMap != other.pointPosFuncMap) return false
 
     return true
@@ -121,8 +110,6 @@ class AspectsCalculatorImpl(
 
   override fun hashCode(): Int {
     var result = aspectEffectiveImpl.hashCode()
-    result = 31 * result + starPosWithAzimuth.hashCode()
-    result = 31 * result + houseCuspImpl.hashCode()
     result = 31 * result + pointPosFuncMap.hashCode()
     return result
   }

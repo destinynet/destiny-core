@@ -5,6 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.Gender
 import destiny.core.ITimeLoc
+import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
@@ -41,6 +42,9 @@ interface IHoroscopeModel : ITimeLoc {
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
   val cuspDegreeMap: Map<Int, ZodiacDegree>
+
+  /** 行星空亡表 */
+  val vocMap: Map<Planet, Misc.VoidCourse>
 
   // ==================================== 以下為 推導值 ====================================
 
@@ -271,7 +275,10 @@ data class HoroscopeModel(
   override val positionMap: Map<Point, IPosWithAzimuth>,
 
   /** 地盤 12宮 (1~12) , 每宮宮首在黃道幾度*/
-  override val cuspDegreeMap: Map<Int, ZodiacDegree>) : IHoroscopeModel, Serializable {
+  override val cuspDegreeMap: Map<Int, ZodiacDegree> ,
+
+  /** 行星空亡表 */
+  override val vocMap: Map<Planet, Misc.VoidCourse>) : IHoroscopeModel, Serializable {
 
   override val time: ChronoLocalDateTime<*>
     get() = TimeTools.getLmtFromGmt(gmtJulDay, location, JulDayResolver1582CutoverImpl())

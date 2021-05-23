@@ -75,6 +75,13 @@ sealed interface IVoidCourse : Descriptive {
     }.toList()
   }
 
+  fun getVocMap(gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>> , points: Collection<Point>): Map<Planet, Misc.VoidCourse> {
+    return points.filterIsInstance<Planet>()
+      .map { planet -> planet to getVoidCourse(gmtJulDay, loc, pointPosFuncMap, planet) }
+      .filter { (_, voc) -> voc != null }
+      .associate { (planet, voc) -> planet to voc!! }
+  }
+
   override fun toString(locale: Locale): String {
     return try {
       ResourceBundle.getBundle(IVoidCourse::class.java.name, locale).getString(javaClass.simpleName)

@@ -5,6 +5,7 @@
 package destiny.core.astrology.prediction
 
 import destiny.core.astrology.*
+import destiny.core.astrology.classical.IVoidCourse
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -52,8 +53,10 @@ class ReturnContext(
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
   private val houseCuspImpl: IHouseCusp,
-  private val pointPosFuncMap: Map<Point, IPosition<*>> ,
-  private val julDayResolver: JulDayResolver) : IReturnContext, Serializable {
+  private val pointPosFuncMap: Map<Point, IPosition<*>>,
+  private val voidCourseImpl: IVoidCourse,
+  private val julDayResolver: JulDayResolver
+) : IReturnContext, Serializable {
 
 
   override fun getReturnHoroscope(natalGmtJulDay: Double, natalLoc: ILocation, nowGmtJulDay: Double, nowLoc: ILocation): IHoroscopeModel {
@@ -62,7 +65,7 @@ class ReturnContext(
 
     val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
 
-    val horoscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosFuncMap, IHoroscopeContext.defaultPoints)
+    val horoscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosFuncMap, IHoroscopeContext.defaultPoints, voidCourseImpl)
     return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
 
   }

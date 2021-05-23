@@ -5,6 +5,8 @@ package destiny.core.astrology
 
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
+import destiny.core.astrology.classical.IVoidCourse
+import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
@@ -24,32 +26,33 @@ interface IHoroscopeContext : Serializable {
   val centric: Centric
   val temperature: Double
   val pressure: Double
+  val voidCourseImpl: IVoidCourse
 
 
   /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
   fun getHoroscope(gmtJulDay: Double,
                    loc: ILocation,
                    place: String?,
-                   points: Collection<Point>? = null): IHoroscopeModel
+                   points: Collection<Point>): IHoroscopeModel
 
 
-  /** 最完整 , [ChronoLocalDateTime] 版本 */
+  /** 承上 , [ChronoLocalDateTime] 版本 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>,
                    loc: ILocation,
                    place: String?,
-                   points: Collection<Point>? = null): IHoroscopeModel {
+                   points: Collection<Point> = defaultPoints): IHoroscopeModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getHoroscope(gmtJulDay, loc, place, points)
   }
 
-  fun getHoroscope(bdnp: IBirthDataNamePlace , points: Collection<Point>? = null) : IHoroscopeModel {
+  fun getHoroscope(bdnp: IBirthDataNamePlace , points: Collection<Point> = defaultPoints) : IHoroscopeModel {
     return getHoroscope(bdnp.time , bdnp.location , bdnp.place , points)
 
   }
 
   /** 最精簡 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation): IHoroscopeModel {
-    return getHoroscope(lmt, loc, null, null)
+    return getHoroscope(lmt, loc, null, defaultPoints)
   }
 
 
@@ -59,8 +62,7 @@ interface IHoroscopeContext : Serializable {
     val defaultPoints = setOf(
       *Planet.array,
       *Axis.array,
-      LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN
-                             )
+      LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN)
   }
 }
 
@@ -69,6 +71,7 @@ class HoroscopeContext(
   val houseCuspImpl: IHouseCusp,
   override val pointPosFuncMap: Map<Point, IPosition<*>>,
   val points: Collection<Point> = pointPosFuncMap.keys,
+  override val voidCourseImpl: IVoidCourse,
   override val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
   override val coordinate: Coordinate = Coordinate.ECLIPTIC,
   override val centric: Centric = Centric.GEO,
@@ -79,10 +82,10 @@ class HoroscopeContext(
   override fun getHoroscope(gmtJulDay: Double,
                             loc: ILocation,
                             place: String?,
-                            points: Collection<Point>?): IHoroscopeModel {
+                            points: Collection<Point>): IHoroscopeModel {
 
 
-    val positionMap: Map<Point, IPosWithAzimuth> = (points ?: this.points).map { point ->
+    val positionMap: Map<Point, IPosWithAzimuth> = points.map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, centric, coordinate, temperature, pressure)
     }.filter { (_, v) -> v != null }.associate { (point, pos) -> point to pos!! as IPosWithAzimuth }
 
@@ -95,9 +98,10 @@ class HoroscopeContext(
       cusps[it]
     }
 
-    return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate,
-                          centric, temperature, pressure, positionMap,
-                          cuspDegreeMap)
+    // 行星空亡表
+    val vocMap: Map<Planet, Misc.VoidCourse> = voidCourseImpl.getVocMap(gmtJulDay, loc, pointPosFuncMap, points)
+
+    return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate, centric, temperature, pressure, positionMap, cuspDegreeMap, vocMap)
   }
 
   override fun equals(other: Any?): Boolean {
@@ -141,7 +145,7 @@ interface IPersonHoroscopeContext : IHoroscopeContext {
                          place: String?,
                          gender: Gender,
                          name: String?,
-                         points: Collection<Point>? = IHoroscopeContext.defaultPoints): IPersonHoroscopeModel {
+                         points: Collection<Point> = IHoroscopeContext.defaultPoints): IPersonHoroscopeModel {
     val horoscope = getHoroscope(lmt, loc, place, points)
     return PersonHoroscopeModel(horoscope, gender, name)
   }
