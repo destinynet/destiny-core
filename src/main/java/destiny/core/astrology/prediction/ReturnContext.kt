@@ -76,14 +76,14 @@ class ReturnContext(
     //再從現在的時刻，往前(prior , before) 推 , 取得 planet 與 natal planet 呈現 orb 的時刻
     return if (!converse) {
       //順推
-      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), coordinate, nowGmtJulDay, false) //false 代表逆推，往before算
+      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), nowGmtJulDay, false, coordinate) //false 代表逆推，往before算
     } else {
       // converse == true , 逆推
       //從出生時間往前(before)推
       val d = (natalGmtJulDay - nowGmtJulDay).absoluteValue
       val beforeNatalGmtJulDay = natalGmtJulDay - d // TimeTools.getGmtJulDay(natalTime.minus(d))
       //要確認最後一個參數，到底是要用 true , 還是 false , 要找相關定義 , 我覺得這裡應該是順推
-      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), coordinate, beforeNatalGmtJulDay, true) //true 代表順推 , 往 after 算
+      starTransitImpl.getNextTransitGmt(planet, (natalPlanetDegree + orb), beforeNatalGmtJulDay, true, coordinate) //true 代表順推 , 往 after 算
     }
   }
 

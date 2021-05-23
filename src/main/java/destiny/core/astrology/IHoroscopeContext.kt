@@ -18,6 +18,7 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IHoroscopeContext : Serializable {
 
+  val pointPosFuncMap: Map<Point, IPosition<*>>
   val houseSystem: HouseSystem
   val coordinate: Coordinate
   val centric: Centric
@@ -66,7 +67,7 @@ interface IHoroscopeContext : Serializable {
 class HoroscopeContext(
   val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
   val houseCuspImpl: IHouseCusp,
-  private val pointPosFuncMap: Map<Point, IPosition<*>>,
+  override val pointPosFuncMap: Map<Point, IPosition<*>>,
   val points: Collection<Point> = pointPosFuncMap.keys,
   override val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
   override val coordinate: Coordinate = Coordinate.ECLIPTIC,

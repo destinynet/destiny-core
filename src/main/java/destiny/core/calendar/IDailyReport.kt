@@ -32,6 +32,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
                       val julDayResolver: JulDayResolver,
                       val lunarStationContext: ILunarStationContext,
                       val voidCourseImpl: IVoidCourse,
+                      val pointPosFuncMap: Map<Point, IPosition<*>>,
                       val horoContext: IHoroscopeContext) : IDailyReport, Serializable {
 
   private fun getList(lmtStart: ChronoLocalDateTime<*>,
@@ -150,7 +151,9 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     }
 
     // 月亮空亡
-    voidCourseImpl.getVoidCourses(fromGmtJulDay, toGmtJulDay, loc, horoContext, relativeTransitImpl, Planet.MOON).forEach { voc ->
+    voidCourseImpl.getVoidCourses(
+      fromGmtJulDay, toGmtJulDay, loc, pointPosFuncMap, relativeTransitImpl, planet = Planet.MOON
+    ).forEach { voc ->
       if (voc.beginGmt > fromGmtJulDay) {
         set.add(TimeDesc.VoidMoon.Begin(voc, loc))
       }

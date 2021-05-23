@@ -20,14 +20,17 @@ import kotlin.math.min
 
 sealed interface IVoidCourse : Descriptive {
 
-  fun getVoidCourse(h: IHoroscopeModel, planet: Planet = Planet.MOON): Misc.VoidCourse?
+  fun getVoidCourse(
+    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet = Planet.MOON, centric: Centric = Centric.GEO
+  ): Misc.VoidCourse?
 
   fun getVoidCourses(
     fromGmt: Double,
     toGmt: Double,
     loc: ILocation,
-    horoscopeContext: IHoroscopeContext,
+    pointPosFuncMap: Map<Point, IPosition<*>>,
     relativeTransitImpl: IRelativeTransit,
+    centric: Centric = Centric.GEO,
     planet: Planet = Planet.MOON
   ): List<Misc.VoidCourse> {
 
@@ -36,23 +39,20 @@ sealed interface IVoidCourse : Descriptive {
 
     fun getNextVoc(gmt : Double): Misc.VoidCourse? {
 
-      return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)!!
-        .takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
+      return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)
+        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
         ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! > fromGmt }
         ?.let { nextAspectData ->
           logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
 
           val nextTime = nextAspectData.gmtJulDay!! + 0.01
           logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
-          val h2 = horoscopeContext.getHoroscope(nextTime, loc, null, planets)
-          getVoidCourse(h2, planet) ?: getNextVoc(nextTime)
+          getVoidCourse(nextTime, loc, pointPosFuncMap, planet, centric) ?: getNextVoc(nextTime)
         }
     }
 
     fun getVoc(gmt: Double) : Misc.VoidCourse? {
-      val h = horoscopeContext.getHoroscope(gmt, loc, null, planets)
-
-      val gmtVoc: Misc.VoidCourse? = getVoidCourse(h, planet)
+      val gmtVoc: Misc.VoidCourse? = getVoidCourse(gmt, loc, pointPosFuncMap, planet, centric)
 
       return if (gmtVoc == null) {
         logger.trace { "沒有 VOC : ${julDayResolver.getLocalDateTime(gmt)} " }
@@ -79,7 +79,7 @@ sealed interface IVoidCourse : Descriptive {
     return try {
       ResourceBundle.getBundle(IVoidCourse::class.java.name, locale).getString(javaClass.simpleName)
     } catch (e: MissingResourceException) {
-      logger.info { "missing resource : $locale , 傳回 simple name : ${javaClass.simpleName}" }
+      logger.trace { "missing resource : $locale , 傳回 simple name : ${javaClass.simpleName}" }
       javaClass.simpleName
     }
   }
@@ -96,30 +96,34 @@ sealed interface IVoidCourse : Descriptive {
 @Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseHellenistic.VALUE)])
 class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
                             private val starPositionImpl: IStarPosition<*>) : IVoidCourse, Serializable {
-  override fun getVoidCourse(h: IHoroscopeModel, planet: Planet): Misc.VoidCourse? {
+  override fun getVoidCourse(
+    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
+  ): Misc.VoidCourse? {
 
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, h.gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
         val p1 = exactAspectPrior.points.first { it != planet } as Planet
         val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
-        val pos1 = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, h.location).lngDeg
-        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location).lngDeg
-        val posPlanet: IPos = h.positionMap[planet]!!
+        val pos1 = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, loc).lngDeg
+        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, loc).lngDeg
 
-        planet.takeIf {
-          pos1.getAngle(pos2) > 30
-        }?.let {
-          logger.trace { """
-            ${planet}目前在 ${posPlanet.lngDeg.value} 度.
+        pointPosFuncMap[planet]?.getPosition(gmtJulDay, loc, centric)?.lngDeg?.let { planetDeg: ZodiacDegree ->
+          planet.takeIf {
+            pos1.getAngle(pos2) > 30
+          }?.let {
+            logger.trace {
+              """
+            ${planet}目前在 ${planetDeg.value} 度.
             之前運行到 ${pos1.value} 時，曾與 $p1 形成 ${exactAspectPrior.aspect} , 
             之後運行到 ${pos2.value} 時，將與 $p2 形成 ${exactAspectAfter.aspect} ,
             橫跨共 ${pos1.getAngle(pos2)} 度 , 超過 30度。
-          """.trimIndent() }
-
-          Misc.VoidCourse(planet , exactAspectPrior.gmtJulDay!! , pos1 , exactAspectAfter.gmtJulDay!! , pos2 , exactAspectPrior , exactAspectAfter)
+          """.trimIndent()
+            }
+            Misc.VoidCourse(planet, exactAspectPrior.gmtJulDay!!, pos1, exactAspectAfter.gmtJulDay!!, pos2, exactAspectPrior, exactAspectAfter)
+          }
         }
       }
   }
@@ -151,49 +155,51 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 
   private val pointDiameter: IPointDiameter = PointDiameterLillyImpl()
 
-  override fun getVoidCourse(h: IHoroscopeModel, planet: Planet): Misc.VoidCourse? {
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, h.gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+  override fun getVoidCourse(
+    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
+  ): Misc.VoidCourse? {
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
         val p1 = exactAspectPrior.points.first { it != planet } as Planet
         val p2 = exactAspectAfter.points.first { it != planet } as Planet
 
-        val posPlanet = h.positionMap[planet]!!.lngDeg
 
-        val planetExactPosPrior = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, h.location)
-        val planetExactPosAfter = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location)
+        pointPosFuncMap[planet]?.getPosition(gmtJulDay, loc, centric)?.lngDeg?.let { planetDeg: ZodiacDegree ->
+          val planetExactPosPrior = starPositionImpl.getPosition(planet, exactAspectPrior.gmtJulDay!!, loc)
+          val planetExactPosAfter = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, loc)
 
+          val combinedMoiety = (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
 
-        val combinedMoiety = (pointDiameter.getDiameter(planet) + pointDiameter.getDiameter(p2)) / 2
+          val beginDegree = planetExactPosPrior.lngDeg + 6 / 60.0
+          val endDegree = planetExactPosAfter.lngDeg - combinedMoiety
 
-        val beginDegree = planetExactPosPrior.lngDeg + 6 / 60.0
-        val endDegree = planetExactPosAfter.lngDeg - combinedMoiety
-
-        planet.takeIf {
-          val angle1 = planetExactPosPrior.lngDeg.getAngle(planetExactPosAfter.lngDeg)
-          val angle2 = beginDegree.getAngle(endDegree)
-          logger.trace { "angle1 = $angle1 , angle2 = $angle2" }
-          angle1 > angle2
-        }?.takeIf {
-          posPlanet.isOccidental(beginDegree)
-        }?.takeIf {
-          posPlanet.isOriental(endDegree)
-        }?.let {
-          logger.trace {
-            """$planet 之前曾與 $p1 形成 ${exactAspectPrior.aspect} , 發生於黃道 ${planetExactPosPrior.lng} , 星座 = ${planetExactPosPrior.lngDeg.signDegree}
+          planet.takeIf {
+            val angle1 = planetExactPosPrior.lngDeg.getAngle(planetExactPosAfter.lngDeg)
+            val angle2 = beginDegree.getAngle(endDegree)
+            logger.trace { "angle1 = $angle1 , angle2 = $angle2" }
+            angle1 > angle2
+          }?.takeIf {
+            planetDeg.isOccidental(beginDegree)
+          }?.takeIf {
+            planetDeg.isOriental(endDegree)
+          }?.let {
+            logger.trace {
+              """$planet 之前曾與 $p1 形成 ${exactAspectPrior.aspect} , 發生於黃道 ${planetExactPosPrior.lng} , 星座 = ${planetExactPosPrior.lngDeg.signDegree}
               |加上 6 分之後 , 
               |VOC 開始於 黃道 $beginDegree , 星座 = ${beginDegree.sign}
-              |$planet 目前位於黃道 ${posPlanet.value} , 星座 = ${posPlanet.sign}
+              |$planet 目前位於黃道 ${planetDeg.value} , 星座 = ${planetDeg.sign}
               |VOC 結束於 黃道 $endDegree , 星座 = ${endDegree.sign}
               |加上 $combinedMoiety 度之後
               |$planet 之後將與 $p2 形成 ${exactAspectAfter.aspect} , 發生於黃道 ${planetExactPosAfter.lng} , 星座 = ${planetExactPosAfter.lngDeg.signDegree}
             """.trimMargin()
-          }
+            }
 
-          val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree, h.coordinate, h.gmtJulDay, false)
-          val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree, h.coordinate, h.gmtJulDay, true)
-          Misc.VoidCourse(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
+            val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree, gmtJulDay, false)
+            val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree, gmtJulDay, true)
+            Misc.VoidCourse(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
+          }
         }
       }
   }
@@ -214,29 +220,32 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,
                          private val starPositionImpl: IStarPosition<*>,
                          private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
-  override fun getVoidCourse(h: IHoroscopeModel, planet: Planet): Misc.VoidCourse? {
+  override fun getVoidCourse(
+    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
+  ): Misc.VoidCourse? {
 
-    return besiegedImpl.getBesiegingPlanetsByAspects(planet, h.gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
+    return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
       .let { (prior, after) ->
         prior!! to after!!
       }.let { (exactAspectPrior, exactAspectAfter) ->
 
-        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, h.location).lngDeg
-        val posPlanet = h.positionMap[planet]!!.lngDeg
+        val pos2 = starPositionImpl.getPosition(planet, exactAspectAfter.gmtJulDay!!, loc).lngDeg
 
-        planet.takeIf {
-          // 此星與 此星運行到 與 p2 形成交角時 (此星的)位置 ，並未在同一個星座
-          posPlanet.sign != pos2.sign
-        }?.let {
-          // 計算進入下一個星座的時間
-          val nextSign = posPlanet.sign.next
-          val beginGmt = exactAspectPrior.gmtJulDay!!
-          val beginDegree = starPositionImpl.getPosition(planet, beginGmt, h.location).lngDeg
-          val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toZodiacDegree(), Coordinate.ECLIPTIC, h.gmtJulDay, true)
-          val endDegree = nextSign.degree.toZodiacDegree()
-          Misc.VoidCourse(
-            planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter
-          )
+        pointPosFuncMap[planet]?.getPosition(gmtJulDay, loc, centric)?.lngDeg?.let { planetDeg: ZodiacDegree ->
+          planet.takeIf {
+            // 此星與 此星運行到 與 p2 形成交角時 (此星的)位置 ，並未在同一個星座
+            planetDeg.sign != pos2.sign
+          }?.let {
+            // 計算進入下一個星座的時間
+            val nextSign = planetDeg.sign.next
+            val beginGmt = exactAspectPrior.gmtJulDay!!
+            val beginDegree = starPositionImpl.getPosition(planet, beginGmt, loc).lngDeg
+            val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toZodiacDegree(), gmtJulDay, true)
+            val endDegree = nextSign.degree.toZodiacDegree()
+            Misc.VoidCourse(
+              planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter
+            )
+          }
         }
       }
   }

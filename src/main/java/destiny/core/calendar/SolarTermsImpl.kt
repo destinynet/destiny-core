@@ -73,7 +73,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    */
   override fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, forward: Boolean): Double {
     val zodiacDegree = solarTerms.zodiacDegree
-    return starTransitImpl.getNextTransitGmt(SUN, solarTerms.zodiacDegree.toZodiacDegree(), ECLIPTIC, fromGmtJulDay, forward)
+    return starTransitImpl.getNextTransitGmt(SUN, solarTerms.zodiacDegree.toZodiacDegree(), fromGmtJulDay, forward, ECLIPTIC)
   }
 
   /**
@@ -87,12 +87,16 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
       if (pair.first.first.major) {
         // 前半段
         val nextMajorSolarTerms = pair.second.first.next()
-        val nextMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(SUN, nextMajorSolarTerms.zodiacDegree.toZodiacDegree(), ECLIPTIC, gmtJulDay, true)
+        val nextMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(
+          SUN, nextMajorSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, true, ECLIPTIC
+        )
         pair.first to (nextMajorSolarTerms to nextMajorSolarTermsTime)
       } else {
         // 後半段
         val prevMajorSolarTerms = pair.first.first.previous()
-        val prevMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(SUN, prevMajorSolarTerms.zodiacDegree.toZodiacDegree(), ECLIPTIC, gmtJulDay, false)
+        val prevMajorSolarTermsTime = starTransitImpl.getNextTransitGmt(
+          SUN, prevMajorSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC
+        )
         (prevMajorSolarTerms to prevMajorSolarTermsTime) to pair.second
       }
     }
@@ -105,9 +109,9 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    */
   override fun getSolarTermsBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
     val prevSolarTerms = getSolarTermsFromGMT(gmtJulDay)
-    val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), ECLIPTIC, gmtJulDay, false)
+    val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC)
     val nextSolarTerms = prevSolarTerms.next()
-    val nextGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, nextSolarTerms.zodiacDegree.toZodiacDegree(), ECLIPTIC, gmtJulDay, true)
+    val nextGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, nextSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, true, ECLIPTIC)
     return Pair(prevSolarTerms to prevGmtJulDay , nextSolarTerms to nextGmtJulDay)
   }
 
@@ -121,14 +125,14 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
 
 
         val endSolarTerms = middle.first.next()
-        val nextGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, endSolarTerms.zodiacDegree.toZodiacDegree(), ECLIPTIC, gmtJulDay, true)
+        val nextGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, endSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, true, ECLIPTIC)
 
         SolarTermsTimePos(gmtJulDay , pair.first , middle , (endSolarTerms to nextGmtJulDay))
       } else {
         // 後半段
 
         val prevSolarTerms = pair.first.first.previous()
-        val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), ECLIPTIC, gmtJulDay, false)
+        val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC)
 
         SolarTermsTimePos(gmtJulDay , (prevSolarTerms to prevGmtJulDay) , pair.first , pair.second)
       }

@@ -150,8 +150,8 @@ class FortuneLargeSpanImpl(
             logger.debug("順推 cache.get({}) miss", i)
             //沒有計算過
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
-              Planet.SUN, stepMajorSolarTerms.zodiacDegree.toZodiacDegree(),
-              Coordinate.ECLIPTIC, stepGmtJulDay, true)
+              Planet.SUN, stepMajorSolarTerms.zodiacDegree.toZodiacDegree(), stepGmtJulDay, true, Coordinate.ECLIPTIC
+            )
             //以隔天計算現在節氣
             stepGmtJulDay = targetGmtJulDay + 1
 
@@ -182,8 +182,8 @@ class FortuneLargeSpanImpl(
             //沒有計算過
 
             targetGmtJulDay = starTransitImpl.getNextTransitGmt(
-              Planet.SUN, stepMajorSolarTerms.zodiacDegree.toZodiacDegree(),
-              Coordinate.ECLIPTIC, stepGmtJulDay, false)
+              Planet.SUN, stepMajorSolarTerms.zodiacDegree.toZodiacDegree(), stepGmtJulDay, false, Coordinate.ECLIPTIC
+            )
             //以前一天計算現在節氣
             stepGmtJulDay = targetGmtJulDay - 1
             hashMap[i] = targetGmtJulDay

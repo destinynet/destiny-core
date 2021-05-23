@@ -20,7 +20,7 @@ interface IStarTransit {
   /**
    * 傳回 GMT Julian Day 時刻
    */
-  fun getNextTransitGmt(star: Star, degree: ZodiacDegree, coordinate: Coordinate, fromGmt: Double, forward: Boolean = true): Double
+  fun getNextTransitGmt(star: Star, degree: ZodiacDegree, fromGmt: Double, forward: Boolean = true, coordinate: Coordinate = Coordinate.ECLIPTIC): Double
 
 
   /**
@@ -32,7 +32,7 @@ interface IStarTransit {
                                 fromGmt: Double,
                                 forward: Boolean = true,
                                 julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = getNextTransitGmt(star, degree, coordinate, fromGmt, forward)
+    val gmtJulDay = getNextTransitGmt(star, degree, fromGmt, forward, coordinate)
     return julDayResolver.getLocalDateTime(gmtJulDay)
   }
 
