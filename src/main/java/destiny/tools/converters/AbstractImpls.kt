@@ -17,6 +17,13 @@ import java.io.Serializable
 interface IContextMap<T> : Serializable {
   fun getMap(context: T): Map<String, String>
   fun getMapExceptDefault(context: T): Map<String, String> = getMap(context)
+  fun getMapExceptDefault(context: T, defaultContextProvider: () -> T): Map<String, String> {
+    val ctxMap = getMap(context)
+    val defMap = getMap(defaultContextProvider.invoke())
+    val map1 = ctxMap.filter { (k,v) -> defMap[k] == null || defMap[k] != v }
+    val map2 = defMap.filter { (k, _) -> ctxMap[k] == null }
+    return map1.plus(map2)
+  }
   fun getContext(map: Map<String, String>): T?
 }
 
@@ -25,10 +32,10 @@ interface IContextMapWithDefault<T> : IContextMap<T> {
 
   fun <T> MutableMap<String, String>.putAllExceptDefault(ctxMap: IContextMap<T>,
                                                          defaultValue: T, value: T) {
-    if (value != defaultValue) {
-      putAll(ctxMap.getMapExceptDefault(value))
-      //putAll(ctxMap.getMap(value))
-    }
+    putAll(ctxMap.getMapExceptDefault(value) {defaultValue})
+//    if (value != defaultValue) {
+//      putAll(ctxMap.getMapExceptDefault(value))
+//    }
   }
 }
 
