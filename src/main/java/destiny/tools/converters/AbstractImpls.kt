@@ -20,6 +20,7 @@ interface IContextMap<T> : Serializable {
   fun getMapExceptDefault(context: T, defaultContextProvider: () -> T): Map<String, String> {
     val ctxMap = getMap(context)
     val defMap = getMap(defaultContextProvider.invoke())
+
     val map1 = ctxMap.filter { (k,v) -> defMap[k] == null || defMap[k] != v }
     val map2 = defMap.filter { (k, _) -> ctxMap[k] == null }
     return map1.plus(map2)
