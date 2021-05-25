@@ -16,28 +16,21 @@ import java.io.Serializable
  */
 interface IContextMap<T> : Serializable {
   fun getMap(context: T): Map<String, String>
-  fun getMapExceptDefault(context: T): Map<String, String> = getMap(context)
+
   fun getMapExceptDefault(context: T, defaultContextProvider: () -> T): Map<String, String> {
     val ctxMap = getMap(context)
     val defMap = getMap(defaultContextProvider.invoke())
 
-    val map1 = ctxMap.filter { (k,v) -> defMap[k] == null || defMap[k] != v }
+    val map1 = ctxMap.filter { (k, v) -> defMap[k] == null || defMap[k] != v }
     val map2 = defMap.filter { (k, _) -> ctxMap[k] == null }
     return map1.plus(map2)
   }
+
   fun getContext(map: Map<String, String>): T?
 }
 
 interface IContextMapWithDefault<T> : IContextMap<T> {
   override fun getContext(map: Map<String, String>): T
-
-  fun <T> MutableMap<String, String>.putAllExceptDefault(ctxMap: IContextMap<T>,
-                                                         defaultValue: T, value: T) {
-    putAll(ctxMap.getMapExceptDefault(value) {defaultValue})
-//    if (value != defaultValue) {
-//      putAll(ctxMap.getMapExceptDefault(value))
-//    }
-  }
 }
 
 
@@ -47,13 +40,6 @@ interface MapConverter<T> : IContextMap<T> {
 
 interface MapConverterWithDefault<T> : MapConverter<T> {
   val defaultImpl: T
-
-  override fun getMapExceptDefault(context: T): Map<String, String> {
-    return if (defaultImpl == context)
-      emptyMap()
-    else
-      getMap(context)
-  }
 
   fun getContextWithDefault(map: Map<String, String>): T {
     return getContext(map) ?: defaultImpl
@@ -72,35 +58,28 @@ private fun <T : Any> Array<T>.getImpls(domainKey: String): List<Pair<T, Impl>> 
   return this.map { t: T ->
     val impl: Impl? = t::class.annotations.firstOrNull { it is Impl } as? Impl
     t to impl
-  }.filter { (_, impl) -> impl != null }
-    .map { (t, impl) -> t to impl!! }
+  }.filter { (_, impl) -> impl != null }.map { (t, impl) -> t to impl!! }
 }
 
 fun <T : Any> Array<T>.findDefaultImplAndStringValue(domainKey: String): Pair<T, String> {
-  return this.getImpls(domainKey)
-    .map { (t, impl) ->
+  return this.getImpls(domainKey).map { (t, impl) ->
       val domain: Domain? = impl.value.firstOrNull { domain -> domain.key == domainKey && domain.default }
       t to domain
-    }
-    .filter { (_, domain) -> domain != null }
-    .map { (t, domain) -> t to domain!!.value }
-    .first()
+    }.filter { (_, domain) -> domain != null }.map { (t, domain) -> t to domain!!.value }.first()
 }
 
 
 private fun <T : Any> Array<T>.findNonDefaultImplAndKey(domainKey: String): Map<T, String> {
-  return this.getImpls(domainKey)
-    .map { (t, impl) ->
+  return this.getImpls(domainKey).map { (t, impl) ->
       val domain: Domain? = impl.value.firstOrNull { domain -> domain.key == domainKey && !domain.default }
       t to domain
-    }
-    .filter { (_, domain) -> domain != null }.associate { (t, domain) -> t to domain!!.value }
+    }.filter { (_, domain) -> domain != null }.associate { (t, domain) -> t to domain!!.value }
 }
 
 
-open class AbstractImpls<T : Any>(override val key: String,
-                                  final override val defaultImpl: T,
-                                  private val defaultImplKey: String) : Serializable, IAbstractImpls<T> {
+open class AbstractImpls<T : Any>(
+  override val key: String, final override val defaultImpl: T, private val defaultImplKey: String
+) : Serializable, IAbstractImpls<T> {
 
   constructor(key: String, pair: Pair<T, String>) : this(key, pair.first, pair.second)
 
@@ -128,8 +107,7 @@ open class AbstractImpls<T : Any>(override val key: String,
   override fun getStringValue(t: T): String {
     return implValueMap[t] ?: run {
       logger.warn(
-        "cannot get value from {} . implValueMap = {}. returning default : {}",
-        t, implValueMap, defaultImpl
+        "cannot get value from {} . implValueMap = {}. returning default : {}", t, implValueMap, defaultImpl
       )
       implValueMap.getValue(defaultImpl)
     }
@@ -165,10 +143,8 @@ interface IDescriptiveImpls<T : Descriptive> : IAbstractImpls<T>
 
 
 open class DescriptiveImpls<T : Descriptive>(
-  key: String,
-  defaultImpl: T,
-  defaultImplKey: String) : AbstractImpls<T>(key, defaultImpl to defaultImplKey),
-  IDescriptiveImpls<T> {
+  key: String, defaultImpl: T, defaultImplKey: String
+) : AbstractImpls<T>(key, defaultImpl to defaultImplKey), IDescriptiveImpls<T> {
 
   constructor(key: String, pair: Pair<T, String>) : this(key, pair.first, pair.second)
 
