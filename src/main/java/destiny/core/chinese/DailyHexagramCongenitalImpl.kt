@@ -8,8 +8,8 @@ import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
-import destiny.core.iching.congenital.circle.aheadOf
-import destiny.core.iching.congenital.circle.next
+import destiny.core.iching.congenital.Circle.aheadOf
+import destiny.core.iching.congenital.Circle.next
 import mu.KotlinLogging
 import java.io.Serializable
 import java.util.*

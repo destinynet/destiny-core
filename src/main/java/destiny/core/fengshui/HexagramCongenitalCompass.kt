@@ -18,7 +18,7 @@ class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
   override val stepDegree: Double = 5.625 // 360 / 64.0
 
   override fun getStartDegree(t: IHexagram): Double {
-    return with(congenital.circle) {
+    return with(congenital.Circle) {
       t.aheadOf(Hexagram.復) * stepDegree
     }
   }
@@ -32,7 +32,7 @@ class HexagramCongenitalCompass : ICompass<IHexagram>, Serializable {
    */
   override fun get(degree: Double): IHexagram {
     val steps : Int = (degree / stepDegree).toInt()
-    return with(congenital.circle) {
+    return with(congenital.Circle) {
       Hexagram.復.next(steps)
     }
   }

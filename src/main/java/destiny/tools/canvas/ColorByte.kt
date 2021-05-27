@@ -9,6 +9,7 @@ package destiny.tools.canvas
 
 import java.awt.Font
 import java.io.Serializable
+import java.util.*
 
 
 internal class ColorByte(val byte: Byte, val font: Font?, val url: String?, val title: String?) : Serializable {
@@ -18,7 +19,7 @@ internal class ColorByte(val byte: Byte, val font: Font?, val url: String?, val 
 
   private var backColor: String? = null //背景色
 
-  constructor(bgChar: Char) : this(bgChar.toByte(), null, null, null, null, null)
+  constructor(bgChar: Char) : this(bgChar.code.toByte(), null, null, null, null, null)
 
   constructor(b: Byte, foreColor: String?, backColor: String?, font: Font?, url: String?, title: String?) : this(
     b,
@@ -70,7 +71,7 @@ internal class ColorByte(val byte: Byte, val font: Font?, val url: String?, val 
       }
       //loop 6 bytes
       if (isRGB) {
-        finalColor = color.toUpperCase()
+        finalColor = color.uppercase(Locale.getDefault())
         if (start == 0)
           finalColor = "#$finalColor"
       } else

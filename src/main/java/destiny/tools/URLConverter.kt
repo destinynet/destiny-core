@@ -6,6 +6,7 @@ package destiny.tools
 
 import org.apache.commons.lang3.StringUtils
 import java.io.Serializable
+import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -35,7 +36,7 @@ class URLConverter : Serializable {
       }
 
       // TODO: add more top domains
-      if (StringUtils.indexOfAny(href.toLowerCase(), ".com", ".net", ".org", ".to", ".tw", ".ly", ".cc", ".us" , ".pro" , ".gl") != -1) {
+      if (StringUtils.indexOfAny(href.lowercase(Locale.getDefault()), ".com", ".net", ".org", ".to", ".tw", ".ly", ".cc", ".us", ".pro", ".gl") != -1) {
         if (!StringUtils.startsWithIgnoreCase(href , "http://") && !StringUtils.startsWithIgnoreCase(href , "https://")) {
           m.appendReplacement(result, "<a href=\"http://$href\" target=\"_blank\">$href</a>")
         } else

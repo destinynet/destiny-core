@@ -21,9 +21,9 @@ interface IContextMap<T> : Serializable {
     val ctxMap = getMap(context)
     val defMap = getMap(defaultContextProvider.invoke())
 
-    val map1 = ctxMap.filter { (k, v) -> defMap[k] == null || defMap[k] != v }
-    val map2 = defMap.filter { (k, _) -> ctxMap[k] == null }
-    return map1.plus(map2)
+    val ctxWithoutDefMap = ctxMap.filter { (k, v) -> defMap[k] == null || defMap[k] != v }
+    val defWithoutCtxMap = defMap.filter { (k, _) -> ctxMap[k] == null }
+    return ctxWithoutDefMap.plus(defWithoutCtxMap)
   }
 
   fun getContext(map: Map<String, String>): T?

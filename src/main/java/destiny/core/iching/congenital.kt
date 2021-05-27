@@ -42,7 +42,7 @@ object congenital {
   /**
    * 方圖
    */
-  object table {
+  object Table {
     private fun next1(hex: IHexagram): Hexagram {
       return (hex.toInt() - 1).let {
         if (it == -1)
@@ -144,7 +144,7 @@ object congenital {
    * 「圓圖」
    * 時序、圓圖 的角度、觀點
    */
-  object circle {
+  object Circle {
     /**
      * 此卦在「時序上」領先另一個卦 幾步
      * 例如

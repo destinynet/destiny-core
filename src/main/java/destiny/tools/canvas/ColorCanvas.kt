@@ -292,7 +292,7 @@ open class ColorCanvas : Serializable {
         //先求出，目前 index 到行尾，要塞入幾個空白鍵（中文字為 1 個）
         val spaces = width - index % this.width
         for (j in index until index + spaces) {
-          content[j] = ColorByte(' '.toByte(), fore, back, font, url, title)
+          content[j] = ColorByte(' '.code.toByte(), fore, back, font, url, title)
         } //填空白
         index += spaces
       }

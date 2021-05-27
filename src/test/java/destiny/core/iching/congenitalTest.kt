@@ -3,12 +3,12 @@
  */
 package destiny.core.iching
 
-import destiny.core.iching.congenital.circle.aheadOf
-import destiny.core.iching.congenital.circle.behindOf
-import destiny.core.iching.congenital.circle.next
-import destiny.core.iching.congenital.circle.prev
-import destiny.core.iching.congenital.table.tableNext
-import destiny.core.iching.congenital.table.tablePrev
+import destiny.core.iching.congenital.Circle.aheadOf
+import destiny.core.iching.congenital.Circle.behindOf
+import destiny.core.iching.congenital.Circle.next
+import destiny.core.iching.congenital.Circle.prev
+import destiny.core.iching.congenital.Table.tableNext
+import destiny.core.iching.congenital.Table.tablePrev
 import destiny.core.iching.congenital.toHexagram
 import destiny.core.iching.congenital.toInt
 import mu.KotlinLogging

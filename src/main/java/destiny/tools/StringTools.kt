@@ -20,12 +20,12 @@ object StringTools {
     }
     for (element in s) {
       current = element
-      if (current.toInt() == 0x9
-        || current.toInt() == 0xA
-        || current.toInt() == 0xD
-        || current.toInt() in 0x20..0xD7FF
-        || current.toInt() in 0xE000..0xFFFD
-        || current.toInt() in 0x10000..0x10FFFF) {
+      if (current.code == 0x9
+        || current.code == 0xA
+        || current.code == 0xD
+        || current.code in 0x20..0xD7FF
+        || current.code in 0xE000..0xFFFD
+        || current.code in 0x10000..0x10FFFF) {
         out.append(current)
       }
 

@@ -27,19 +27,19 @@ class Canvas(private val width: Int, val height: Int) : Serializable {
       return if (children.size == 0)
          width * height
       else {
-        width * height + children.sumBy { it.canvas.size }
+        width * height + children.sumOf { it.canvas.size }
       }
     }
 
   init {
     for (i in content.indices) {
-      content[i] = ' '.toByte()
+      content[i] = ' '.code.toByte()
     }
   }
 
   fun setBackground(c: Char) {
     for (i in content.indices) {
-      content[i] = c.toByte()
+      content[i] = c.code.toByte()
     }
   }
 
