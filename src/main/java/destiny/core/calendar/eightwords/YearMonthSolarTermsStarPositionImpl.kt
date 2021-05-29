@@ -173,6 +173,7 @@ class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPos
 
   companion object {
     const val name = "傳統年月"
+    const val VALUE = "default"
     val logger = KotlinLogging.logger { }
   }
 

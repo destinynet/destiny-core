@@ -77,5 +77,6 @@ class YearMonthSunSignImpl(starPositionImpl: IStarPosition<*>,
 
   companion object {
     const val name = "120柱月令"
+    const val VALUE = "sign"
   }
 }

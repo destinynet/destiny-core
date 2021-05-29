@@ -26,4 +26,8 @@ class DayHourSolarTransImpl(override val changeDayAfterZi: Boolean,
     result = 31 * result + midnightImpl.hashCode()
     return result
   }
+
+  companion object {
+    const val VALUE = "default"
+  }
 }
