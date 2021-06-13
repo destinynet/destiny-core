@@ -529,28 +529,34 @@ open class ColorCanvas : Serializable {
   }
 
 
+
+  fun getTextOutput(): String {
+    return monoOutput
+  }
+
   /**
+   * 單色 monochrome output
    * 省略所有 Color / Font / URL
    * 純粹輸出 byte 內容
-   */
-  fun getTextOutput(): String {
-    val cbs = this.contentWithChildren
+   * */
+  val monoOutput: String
+    get() {
+      val cbs = this.contentWithChildren
 
-    return (1..height).joinToString("\n") { i ->
-      val byteArray = (0 until width).map { j ->
-        cbs[(i - 1) * width + j].byte
-      }.toByteArray()
-      String(byteArray, 0, width, charsetBig5)
+      return (1..height).joinToString("\n") { i ->
+        val byteArray = (0 until width).map { j ->
+          cbs[(i - 1) * width + j].byte
+        }.toByteArray()
+        String(byteArray, 0, width, charsetBig5)
+      }
     }
-
-  }
 
   /**
    * 省略所有 Color / Font / URL
    * 純粹輸出 byte 內容
    */
   override fun toString(): String {
-    return getTextOutput()
+    return monoOutput
   }
 
   companion object {
