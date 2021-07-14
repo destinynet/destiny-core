@@ -21,6 +21,9 @@ interface ILatLng {
   val lng: Double
   val lat: Double
 
+  val latLng
+    get() = lat to lng
+
   val eastWest: News.EastWest
     get() =
       if (lng >= 0)
