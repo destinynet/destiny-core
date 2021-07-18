@@ -118,7 +118,7 @@ sealed class StarUnlucky(nameKey: String, type: Type) : ZStar(nameKey, ZStar::cl
     }
 
     /** 地劫 : 時支 -> 地支  */
-    val fun地劫 = { hour : Branch -> Branch[hour.index - 1] }
+    val fun地劫 = { hour : Branch -> hour.prev }
 
     /** 地空 : 時支 -> 地支  */
     val fun地空 = { hour : Branch -> Branch[11 - hour.index] }

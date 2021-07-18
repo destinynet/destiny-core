@@ -17,6 +17,7 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.chinese.IFinalMonthNumber.MonthAlgo
 import destiny.core.calendar.locationOf
 import destiny.core.chinese.*
+import destiny.core.chinese.Branch.*
 import destiny.tools.ILocaleString
 import mu.KotlinLogging
 import java.io.Serializable
@@ -114,11 +115,7 @@ interface IZiweiContext {
     solarTerms: SolarTerms,
     lunarDays: Int,
     hour: Branch,
-    dayNight: DayNight = (if (listOf(
-        Branch.卯, Branch.辰, Branch.巳,
-        Branch.午, Branch.未, Branch.申
-      ).contains(hour)
-    ) DayNight.DAY else DayNight.NIGHT),
+    dayNight: DayNight = (if (listOf(卯, 辰, 巳, 午, 未, 申).contains(hour)) DayNight.DAY else DayNight.NIGHT),
     gender: Gender,
     optionalVageMap: Map<Int, Pair<Double, Double>>? = null
   ): Builder
@@ -147,7 +144,7 @@ interface IZiweiContext {
   fun getFlowBig(builder: Builder, flowBig: StemBranch): Builder {
     // 在此大限中，每個地支，對應到哪個宮位
 
-    val branchHouseMap = Branch.values()
+    val branchHouseMap = values()
       .associate { branch ->
         val steps = branch.getAheadOf(flowBig.branch)
         val house = houseSeqImpl.prev(House.命宮, steps)
@@ -166,7 +163,7 @@ interface IZiweiContext {
     // 流年命宮
     val yearlyMain = flowYearImpl.getFlowYear(flowYear.branch, builder.birthMonthNum, builder.birthHour)
 
-    val branchHouseMap = Branch.values()
+    val branchHouseMap = values()
       .associate { branch ->
         val steps = branch.getAheadOf(yearlyMain)
         val house = houseSeqImpl.prev(House.命宮, steps)
@@ -187,7 +184,7 @@ interface IZiweiContext {
     val monthlyMain =
       flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
-    val branchHouseMap = Branch.values()
+    val branchHouseMap = values()
       .associate { branch ->
         val steps = branch.getAheadOf(monthlyMain)
         val house = houseSeqImpl.prev(House.命宮, steps)
@@ -217,7 +214,7 @@ interface IZiweiContext {
 
     // 流日命宮
     val dailyMain = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
-    val branchHouseMap = Branch.values()
+    val branchHouseMap = values()
       .associate { branch ->
         val steps = branch.getAheadOf(dailyMain)
         val house = houseSeqImpl.prev(House.命宮, steps)
@@ -249,7 +246,7 @@ interface IZiweiContext {
     // 流時命宮
     val hourlyMain = flowHourImpl.getFlowHour(flowHour.branch, dailyMain)
 
-    val branchHouseMap = Branch.values()
+    val branchHouseMap = values()
       .associate { branch ->
         val steps = branch.getAheadOf(hourlyMain)
         val house = houseSeqImpl.prev(House.命宮, steps)
@@ -657,7 +654,7 @@ class ZContext(
     val flowBigVageMap = bigRangeImpl.getSortedFlowBigVageMap(branchHouseBiMap, 五行局, lunarYear, gender, houseSeqImpl)
 
     // 小限 mapping
-    val branchSmallRangesMap: Map<Branch, List<Int>> = Branch.values()
+    val branchSmallRangesMap: Map<Branch, List<Int>> = values()
       .associate { branch ->
         branch to ISmallRange.getRanges(branch, lunarYear.branch, gender)
       }
