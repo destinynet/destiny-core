@@ -14,12 +14,27 @@ import kotlinx.datetime.toKotlinInstant
 /** Julian Day of 1970-01-01 */
 const val EPOCH_JULIAN_DAY = 2440587.5
 
-fun julDayToInstant(gmtJulDay: Double): Instant {
-  return ((gmtJulDay - EPOCH_JULIAN_DAY) * 86400L).let { secDouble ->
-    val second = secDouble.toLong()
-    val nano = ((secDouble - second) * 1_000_000_000).toInt()
-    Instant.fromEpochSeconds(second, nano)
+/** 1970-01-01 距離 Julian Day 幾秒 */
+const val EPOCH_SECONDS = (2440587.5 * 86400L).toLong()
+
+/** 承上，幾 milliSeconds */
+const val EPOCH_MILLI_SECONDS = EPOCH_SECONDS * 1000L
+
+@JvmInline
+value class GmtJulDay(val value: Double) {
+
+  fun toInstant() : Instant {
+    return ((value - EPOCH_JULIAN_DAY) * 86400L).let { secDouble ->
+      val second = secDouble.toLong()
+      val nano = ((secDouble - second) * 1_000_000_000).toInt()
+      Instant.fromEpochSeconds(second, nano)
+    }
   }
+}
+
+fun Instant.toGmtJulDay() : GmtJulDay {
+  val millis = this.toEpochMilliseconds()
+  return GmtJulDay((millis + EPOCH_MILLI_SECONDS) / (86400 * 1000).toDouble())
 }
 
 fun interface IJulDayResolver : (Instant) -> LocalDateTime {

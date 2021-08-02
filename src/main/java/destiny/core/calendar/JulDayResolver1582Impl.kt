@@ -16,6 +16,10 @@ class JulDayResolver1582Impl : IJulDayResolver {
     return if (ms >= IJulDayResolver.GREGORIAN_START_EPOCH_MILLISECONDS) {
       instant.toLocalDateTime(TimeZone.UTC)
     } else {
+      val isGregorian = false
+
+
+
       TODO()
     }
   }

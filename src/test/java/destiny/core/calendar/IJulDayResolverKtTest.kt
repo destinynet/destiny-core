@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import kotlinx.datetime.Instant
 import mu.KotlinLogging
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,7 +16,7 @@ internal class IJulDayResolverKtTest {
 
   val logger = KotlinLogging.logger { }
 
-  private fun julDayToInstant() = Stream.of(
+  private fun testData() = Stream.of(
     2440587.5 to "1970-01-01T00:00:00Z",
     2433282.5 to "1950-01-01T00:00:00Z",
     2400000.0 to "1858-11-16T12:00:00Z",
@@ -26,9 +27,18 @@ internal class IJulDayResolverKtTest {
   )
 
   @ParameterizedTest
-  @MethodSource("julDayToInstant")
+  @MethodSource("testData")
   fun julDayToInstant(pair: Pair<Double, String>) {
     val (jd, instantString) = pair
-    assertEquals(instantString, julDayToInstant(jd).toString())
+
+    assertEquals(instantString, GmtJulDay(jd).toInstant().toString())
+  }
+
+  @ParameterizedTest
+  @MethodSource("testData")
+  fun instantToJulDay(pair: Pair<Double, String>) {
+    val (jd, instantString) = pair
+    val instant = Instant.parse(instantString)
+    assertEquals(jd , instant.toGmtJulDay().value)
   }
 }

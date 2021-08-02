@@ -8,7 +8,8 @@ import destiny.tools.CircleTools.normalize
 import java.io.Serializable
 
 /** 黃道帶度數 */
-inline class ZodiacDegree private constructor(val value: Double) : Serializable {
+@JvmInline
+value class ZodiacDegree private constructor(val value: Double) : Serializable {
 
   val sign: ZodiacSign
     get() = ZodiacSign.of(value)

@@ -8,7 +8,8 @@ import destiny.core.astrology.LunarStation.虛
 import destiny.core.chinese.StemBranch
 
 /** 0 .. 419 */
-inline class DayIndex(val value: Int) {
+@JvmInline
+value class DayIndex(val value: Int) {
 
   constructor(yuan: Int, day: StemBranch) : this((yuan - 1) * 60 + day.getAheadOf(StemBranch.甲子))
 
