@@ -112,9 +112,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       val minute = (h * 60 - hour * 60).toInt()
       val second = h * 3600 - (hour * 3600).toDouble() - (minute * 60).toDouble()
 
-      val pair = TimeTools.splitSecond(second)
-      val secsInt = pair.first
-      val nanoInt = pair.second
+      val (secsInt, nanoInt) = TimeTools.splitSecond(second)
 
       val localTime = LocalTime.of(hour, minute, secsInt, nanoInt)
 
