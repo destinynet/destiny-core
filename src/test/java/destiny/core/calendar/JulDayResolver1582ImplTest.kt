@@ -19,18 +19,19 @@ internal class JulDayResolver1582ImplTest {
 
   val logger = KotlinLogging.logger { }
 
-  private fun testInvoke() = Stream.of(
+  private fun testData() = Stream.of(
     GREGORIAN_START_EPOCH_SECONDS to "1582-10-15T00:00",
+    (GREGORIAN_START_EPOCH_SECONDS - 86400) to "1582-10-04T00:00",
     0 to "1970-01-01T00:00"
   )
 
   @ParameterizedTest
-  @MethodSource("testInvoke")
+  @MethodSource("testData")
   fun testInvoke(pair: Pair<Long, String>) {
 
     val (epochSeconds, ldtString) = pair
 
     val instant = Instant.fromEpochSeconds(epochSeconds)
-    assertEquals(ldtString, impl.invoke(instant).toString())
+    assertEquals(ldtString, impl.invoke(instant).first.toString())
   }
 }
