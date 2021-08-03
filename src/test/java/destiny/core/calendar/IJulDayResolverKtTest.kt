@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import kotlinx.datetime.Instant
 import mu.KotlinLogging
 import org.junit.jupiter.api.TestInstance
@@ -32,6 +33,7 @@ internal class IJulDayResolverKtTest {
     val (jd, instantString) = pair
 
     assertEquals(instantString, GmtJulDay(jd).toInstant().toString())
+    assertEquals(instantString, jd.toGmtJulDay().toInstant().toString())
   }
 
   @ParameterizedTest
@@ -39,6 +41,6 @@ internal class IJulDayResolverKtTest {
   fun instantToJulDay(pair: Pair<Double, String>) {
     val (jd, instantString) = pair
     val instant = Instant.parse(instantString)
-    assertEquals(jd , instant.toGmtJulDay().value)
+    assertEquals(jd.toGmtJulDay(), instant.toGmtJulDay())
   }
 }

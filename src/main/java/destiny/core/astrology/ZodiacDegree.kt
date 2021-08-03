@@ -96,11 +96,7 @@ value class ZodiacDegree private constructor(val value: Double) : Serializable {
 
   companion object {
 
-    fun Double.toZodiacDegree() : ZodiacDegree {
-      return ZodiacDegree(this.normalize())
-    }
-
-    fun Int.toZodiacDegree() : ZodiacDegree {
+    fun Number.toZodiacDegree() : ZodiacDegree {
       return ZodiacDegree(this.toDouble().normalize())
     }
 

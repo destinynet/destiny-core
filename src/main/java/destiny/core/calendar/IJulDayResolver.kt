@@ -21,6 +21,12 @@ value class GmtJulDay(val value: Double) {
     }
   }
 
+  companion object {
+    fun Number.toGmtJulDay() : GmtJulDay {
+      return GmtJulDay(this.toDouble())
+    }
+  }
+
 }
 
 fun Instant.toGmtJulDay(): GmtJulDay {

@@ -20,9 +20,10 @@ import kotlin.math.floor
 class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
 
 
-  override fun getLocalDateTime(gmtJulDay: Double): ChronoLocalDateTime<*> {
-    return getLocalDateTimeStatic(gmtJulDay)
+  override fun getLocalDateTime(gmtJulDay: GmtJulDay): ChronoLocalDateTime<*> {
+    return getLocalDateTimeStatic(gmtJulDay.value)
   }
+
 
   override fun getLocalDateTimeFromInstant(gmtInstant: Instant): ChronoLocalDateTime<*> {
     return getLocalDateTimeStatic(gmtInstant)
