@@ -11,7 +11,7 @@ import kotlinx.datetime.toKotlinInstant
 
 
 @JvmInline
-value class GmtJulDay(val value: Double) {
+value class GmtJulDay(val value: Double) : Comparable<GmtJulDay> {
 
   fun toInstant(): Instant {
     return ((value - Constants.UnixEpoch.JULIAN_DAY) * SECONDS_OF_DAY).let { secDouble ->
@@ -22,9 +22,15 @@ value class GmtJulDay(val value: Double) {
   }
 
   companion object {
-    fun Number.toGmtJulDay() : GmtJulDay {
+    fun Number.toGmtJulDay(): GmtJulDay {
       return GmtJulDay(this.toDouble())
     }
+  }
+
+  override fun compareTo(other: GmtJulDay): Int {
+    return if (value == other.value)
+      0
+    else if (value - other.value < 0) -1 else 1
   }
 
 }
