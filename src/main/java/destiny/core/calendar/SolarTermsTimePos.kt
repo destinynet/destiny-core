@@ -1,5 +1,6 @@
 package destiny.core.calendar
 
+import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import java.io.Serializable
 import kotlin.math.abs
 import kotlin.math.absoluteValue
@@ -37,12 +38,12 @@ data class SolarTermsTimePos(
 
   /** 距離「節」的開始有幾秒 */
   val toPrevMajorSeconds : Double by lazy {
-    (gmtJulDay - prevMajor.second) * 86400
+    (gmtJulDay - prevMajor.second) * SECONDS_OF_DAY
   }
 
   /** 距離「節」的節數有幾秒 */
   val toNextMajorSeconds : Double by lazy {
-    (nextMajor.second - gmtJulDay) * 86400
+    (nextMajor.second - gmtJulDay) * SECONDS_OF_DAY
   }
 
   /** 距離「中氣」有幾秒 , 這裡採用絕對值，必須配合 [firstHalf] 或是 [secondHalf] 才能知道是在「中氣」之前還是之後 */

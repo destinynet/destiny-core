@@ -12,6 +12,7 @@ import destiny.core.astrology.Coordinate
 import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
@@ -76,8 +77,8 @@ class FortuneLargeSolarTermsSpanImpl(
       val endFortuneSeconds = getTargetSolarTermsSeconds(gmtJulDay, gender, (i + 1) * if (forward) 1 else -1)
 
       // 將距離秒數乘上倍數 (ex : 120) , 就可以得知 該大運的起點時刻
-      val startFortuneGmtJulDay = gmtJulDay + abs(startFortuneSeconds) * fortuneMonthSpan / 86400.0
-      val endFortuneGmtJulDay = gmtJulDay + abs(endFortuneSeconds) * fortuneMonthSpan / 86400.0
+      val startFortuneGmtJulDay = gmtJulDay + abs(startFortuneSeconds) * fortuneMonthSpan / SECONDS_OF_DAY.toDouble()
+      val endFortuneGmtJulDay = gmtJulDay + abs(endFortuneSeconds) * fortuneMonthSpan / SECONDS_OF_DAY.toDouble()
 
       /** 該大運起點 , 歲數為何 . 歲數的定義則由 [IIntAge] 處理 */
       val startFortuneAge = getAge(startFortuneGmtJulDay, ageMap) ?: 0
@@ -203,7 +204,7 @@ class FortuneLargeSolarTermsSpanImpl(
     // 同義於 Duration.between(gmt , targetGmtJulDay)
     val durDays = targetGmtJulDay!! - gmtJulDay
     logger.debug("targetGmtJulDay {} - gmtJulDay {} : durDays = {} ", targetGmtJulDay, gmtJulDay, durDays)
-    return durDays * 86400
+    return durDays * SECONDS_OF_DAY
   } // getTargetSolarTermsSeconds
 
   /**

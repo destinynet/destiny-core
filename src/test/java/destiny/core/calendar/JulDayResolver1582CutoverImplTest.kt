@@ -23,12 +23,12 @@ class JulDayResolver1582CutoverImplTest {
 
   @Test
   fun testFromDebugString() {
-    assertEquals(LocalDateTime.of(2018, 4, 17, 18, 19, 30) , JulDayResolver1582CutoverImpl.fromDebugString("+20180417181930.0"))
-    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 5) , JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 4 5.0"))
-    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 5 , 123_000_000) , JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 4 5.123"))
-    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59) , JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 459.0"))
-    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59) , JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.0"))
-    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4,59, 155_000_000) , JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.155"))
+    assertEquals(LocalDateTime.of(2018, 4, 17, 18, 19, 30), JulDayResolver1582CutoverImpl.fromDebugString("+20180417181930.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 5), JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 4 5.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 5, 123_000_000), JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 4 5.123"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 59), JulDayResolver1582CutoverImpl.fromDebugString("+2018 1 2 3 459.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 59), JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.0"))
+    assertEquals(LocalDateTime.of(2018, 1, 2, 3, 4, 59, 155_000_000), JulDayResolver1582CutoverImpl.fromDebugString("+20180102030459.155"))
 
     // Greg 開始
     val gregStart = LocalDateTime.of(1582, 10, 15, 0, 0)
@@ -55,7 +55,7 @@ class JulDayResolver1582CutoverImplTest {
   fun julDay2DateTime_JulGreg_cutover() {
 
     // Gregorian 第一天 : 1582-10-15 , julDay = 2299160.5
-    val firstDayOfGregorian = 2299160.5
+    val firstDayOfGregorian = Constants.CutOver1582.JULIAN_DAY
 
     var localDate: ChronoLocalDate
     var localTime: LocalTime
@@ -80,7 +80,7 @@ class JulDayResolver1582CutoverImplTest {
       assertEquals(JulianDate.of(1582, 10, 4), localDate)
       assertEquals(LocalTime.MIDNIGHT, localTime)
     }
-      }
+  }
 
 
   /**
@@ -107,7 +107,7 @@ class JulDayResolver1582CutoverImplTest {
   fun julDay2DateTime_year1() {
 
     // 西元元年 , 一月一號 , 凌晨零時
-    val firstDay = 1721423.5
+    val firstDay = Constants.JulianYear1.JULIAN_DAY
 
     var localDate: ChronoLocalDate
     var localTime: LocalTime

@@ -110,20 +110,24 @@ class TimeToolsTest {
   @Test
   fun testEncodeOld() {
     assertEquals("+20180417181930.0", TimeTools.encodeOld(LocalDateTime.of(2018, 4, 17, 18, 19, 30)))
-    assertEquals("+20180417181930.123",
-      TimeTools.encodeOld(LocalDateTime.of(2018, 4, 17, 18, 19, 30).withNano(123_000_000)))
+    assertEquals(
+      "+20180417181930.123",
+      TimeTools.encodeOld(LocalDateTime.of(2018, 4, 17, 18, 19, 30).withNano(123_000_000))
+    )
     // 一月二日 三點四分 五.xx 秒
-    assertEquals("+20180102030405.123",
-      TimeTools.encodeOld(LocalDateTime.of(2018, 1, 2, 3, 4, 5).withNano(123_000_000)))
+    assertEquals(
+      "+20180102030405.123",
+      TimeTools.encodeOld(LocalDateTime.of(2018, 1, 2, 3, 4, 5).withNano(123_000_000))
+    )
   }
 
 
   /**
-   * epoch (1970-01-01 0:00) 為 2440587.5
+   * epoch (1970-01-01 0:00)
    */
   @Test
   fun test1970Epoch() {
-    assertEquals(2440587.5, TimeTools.getGmtJulDay(LocalDateTime.of(1970, 1, 1, 0, 0)))
+    assertEquals(Constants.UnixEpoch.JULIAN_DAY, TimeTools.getGmtJulDay(LocalDateTime.of(1970, 1, 1, 0, 0)))
   }
 
   /**
@@ -467,8 +471,10 @@ class TimeToolsTest {
 
     // 1975-04-01 到 1975-10-01 , Asia/Taipei 施行日光節約時間
     lmt = LocalDateTime.of(1975, 7, 1, 12, 0)  // 先取 GMT , 七月一日，中午
-    assertEquals(LocalDateTime.of(1975, 7, 1, 12, 0),
-      OffsetDateTime.of(lmt, ZoneOffset.UTC).toLocalDateTime()) // 轉到 GMT , 再取 LMT , 應該相等
+    assertEquals(
+      LocalDateTime.of(1975, 7, 1, 12, 0),
+      OffsetDateTime.of(lmt, ZoneOffset.UTC).toLocalDateTime()
+    ) // 轉到 GMT , 再取 LMT , 應該相等
 
     zdt = OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(asiaTaipeiZoneId)
     logger.info("若此時間位於 UTC , 則台北時間 , 本來應該+8小時 , 但台北撥快一小時，所以應該要 +9h: {}", zdt)
@@ -490,15 +496,21 @@ class TimeToolsTest {
     var lmt = LocalDateTime.of(1582, 10, 15, 8, 0)
 
     logger.info("offsetDateTime = {}", OffsetDateTime.of(lmt, ZoneOffset.UTC))
-    logger.info("offsetDateTime = {}",
-      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(asiaTaipeiZoneId))
+    logger.info(
+      "offsetDateTime = {}",
+      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(asiaTaipeiZoneId)
+    )
 
     // 上海 was at UTC+08:05:43 , 比 GMT 快了 8h , 5m , 43s
-    logger.info("offsetDateTime = {}",
-      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(ZoneId.of("Asia/Shanghai")))
+    logger.info(
+      "offsetDateTime = {}",
+      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(ZoneId.of("Asia/Shanghai"))
+    )
     // 香港 was at UTC+07:36:42
-    logger.info("offsetDateTime = {}",
-      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(ZoneId.of("Asia/Hong_Kong")))
+    logger.info(
+      "offsetDateTime = {}",
+      OffsetDateTime.of(lmt, ZoneOffset.UTC).atZoneSameInstant(ZoneId.of("Asia/Hong_Kong"))
+    )
 
     var zdt: ChronoZonedDateTime<*> =
       TimeTools.getGmtFromZonedDateTime(lmt.atOffset(ZoneOffset.ofHours(8)).atZoneSameInstant(asiaTaipeiZoneId))
@@ -506,7 +518,7 @@ class TimeToolsTest {
     assertEquals(ZoneId.of("GMT"), zdt.zone)
     // GMT 為清晨 0點
     assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), zdt.toLocalDateTime())
-    assertEquals(2299160.5, TimeTools.getJulDay(zdt))
+    assertEquals(Constants.CutOver1582.JULIAN_DAY, TimeTools.getJulDay(zdt))
 
 
     // 1582-10-15 , 9:00 , 日本
@@ -518,13 +530,13 @@ class TimeToolsTest {
     // GMT 為清晨 0點
     logger.info("gmt = {}", zdt)
     assertEquals(LocalDateTime.of(1582, 10, 15, 0, 0), zdt.toLocalDateTime())
-    assertEquals(2299160.5, TimeTools.getJulDay(zdt))
+    assertEquals(Constants.CutOver1582.JULIAN_DAY, TimeTools.getJulDay(zdt))
   }
 
   @Test
   fun testYearToStemBranch() {
-    assertSame(StemBranch.甲子 , 1984.yearToStemBranch())
-    assertSame(StemBranch.癸亥 , 1983.yearToStemBranch())
+    assertSame(StemBranch.甲子, 1984.yearToStemBranch())
+    assertSame(StemBranch.癸亥, 1983.yearToStemBranch())
   }
 
 }

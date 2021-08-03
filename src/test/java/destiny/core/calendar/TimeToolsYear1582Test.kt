@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar
 
-import mu.KotlinLogging
 import org.threeten.extra.chrono.JulianDate
 import java.time.*
 import java.time.temporal.ChronoUnit
@@ -27,11 +26,9 @@ import kotlin.test.assertTrue
 class TimeToolsYear1582Test {
 
   /**
-   * Gregorian 第一天 : 1582-10-15 , julDay = 2299160.5
+   * Gregorian 第一天 : 1582-10-15
    */
-  private val firstDayOfGregorian = 2299160.5
-
-  private val logger = KotlinLogging.logger { }
+  private val firstDayOfGregorian = Constants.CutOver1582.JULIAN_DAY
 
   private val d1G = LocalDateTime.of(1582, 10, 13, 0, 0)
   private val d2G = LocalDateTime.of(1582, 10, 14, 0, 0)
@@ -120,10 +117,10 @@ class TimeToolsYear1582Test {
    */
   @Test
   fun testEpochSecondEquals() {
-    assertEquals(GREGORIAN_START_INSTANT - 60 * 60 * 24 * 2, d1J.toInstant(ZoneOffset.UTC).epochSecond)
-    assertEquals(GREGORIAN_START_INSTANT - 60 * 60 * 24, d2J.toInstant(ZoneOffset.UTC).epochSecond)
-    assertEquals(GREGORIAN_START_INSTANT, d3J.toInstant(ZoneOffset.UTC).epochSecond)
-    assertEquals(GREGORIAN_START_INSTANT + 60 * 60 * 24, d4J.toInstant(ZoneOffset.UTC).epochSecond)
+    assertEquals(Constants.CutOver1582.FROM_UNIXEPOCH_SECONDS - 60 * 60 * 24 * 2, d1J.toInstant(ZoneOffset.UTC).epochSecond)
+    assertEquals(Constants.CutOver1582.FROM_UNIXEPOCH_SECONDS - 60 * 60 * 24, d2J.toInstant(ZoneOffset.UTC).epochSecond)
+    assertEquals(Constants.CutOver1582.FROM_UNIXEPOCH_SECONDS, d3J.toInstant(ZoneOffset.UTC).epochSecond)
+    assertEquals(Constants.CutOver1582.FROM_UNIXEPOCH_SECONDS + 60 * 60 * 24, d4J.toInstant(ZoneOffset.UTC).epochSecond)
   }
 
   /**
@@ -215,13 +212,5 @@ class TimeToolsYear1582Test {
     assertTrue(TimeTools.isBefore(d1G, d2J))
     assertTrue(TimeTools.isBefore(d2G, d3J))
     assertTrue(TimeTools.isBefore(d3G, d4J))
-  }
-
-  companion object {
-
-    /**
-     * 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
-     */
-    private const val GREGORIAN_START_INSTANT = -12219292800L
   }
 }

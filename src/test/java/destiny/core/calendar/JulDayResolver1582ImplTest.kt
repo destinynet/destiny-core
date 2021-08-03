@@ -3,7 +3,9 @@
  */
 package destiny.core.calendar
 
-import destiny.core.calendar.IJulDayResolver.Companion.GREGORIAN_START_EPOCH_SECONDS
+import destiny.core.calendar.Constants.CutOver1582
+import destiny.core.calendar.Constants.JulianYear1
+import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import kotlinx.datetime.Instant
 import mu.KotlinLogging
 import org.junit.jupiter.api.TestInstance
@@ -20,9 +22,11 @@ internal class JulDayResolver1582ImplTest {
   val logger = KotlinLogging.logger { }
 
   private fun testData() = Stream.of(
-    GREGORIAN_START_EPOCH_SECONDS to "1582-10-15T00:00",
-    (GREGORIAN_START_EPOCH_SECONDS - 86400) to "1582-10-04T00:00",
-    0 to "1970-01-01T00:00"
+    CutOver1582.FROM_UNIXEPOCH_SECONDS to "1582-10-15T00:00",
+    (CutOver1582.FROM_UNIXEPOCH_SECONDS - SECONDS_OF_DAY) to "1582-10-04T00:00",
+    0 to "1970-01-01T00:00",
+    JulianYear1.FROM_UNIXEPOCH_DAYS * SECONDS_OF_DAY to "0001-01-01T00:00",     // 西元元年一月一日
+    (JulianYear1.FROM_UNIXEPOCH_DAYS - 1) * SECONDS_OF_DAY to "0000-12-31T00:00", // 西元前一年12月31日
   )
 
   @ParameterizedTest

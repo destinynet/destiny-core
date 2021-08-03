@@ -147,7 +147,7 @@ class InstantTest {
     /**
      * 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
      */
-    private const val GREGORIAN_START_INSTANT = -12219292800L
+    private const val GREGORIAN_START_INSTANT = Constants.CutOver1582.FROM_UNIXEPOCH_SECONDS
   }
 
 }

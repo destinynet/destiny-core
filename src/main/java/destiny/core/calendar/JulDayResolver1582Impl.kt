@@ -1,5 +1,6 @@
 package destiny.core.calendar
 
+import destiny.core.calendar.Constants.CutOver1582.FROM_UNIXEPOCH_MILLI_SECONDS
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -11,7 +12,7 @@ class JulDayResolver1582Impl : IJulDayResolver {
   override fun invoke(instant: Instant): Pair<LocalDateTime, CalType> {
 
     val ms = instant.toEpochMilliseconds()
-    return if (ms >= IJulDayResolver.GREGORIAN_START_EPOCH_MILLISECONDS) {
+    return if (ms >= FROM_UNIXEPOCH_MILLI_SECONDS) {
       instant.toLocalDateTime(TimeZone.UTC) to CalType.GREGORIAN
     } else {
       val gmtJulDay = instant.toGmtJulDay()

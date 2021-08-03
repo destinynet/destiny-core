@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.core.DayNight
 import destiny.core.astrology.Planet.*
 import destiny.core.astrology.TransPoint.*
+import destiny.core.calendar.Constants.SECONDS_OF_DAY
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
@@ -46,7 +47,7 @@ class PlanetaryHourImpl(private val riseTransImpl: IRiseTrans,
     }
 
     return generateSequence(fromGmtToPlanetaryHour(fromGmt)) {
-      fromGmtToPlanetaryHour(it.hourEnd + (1 / 86400.0))
+      fromGmtToPlanetaryHour(it.hourEnd + (1 / SECONDS_OF_DAY.toDouble()))
     }.takeWhile { it.hourStart < toGmt }
       .toList()
 

@@ -32,16 +32,6 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
 
     private val GMT = ZoneId.of("GMT")
 
-    /**
-     * Julian Calendar    終止於西元 1582-10-04 , 該日的 Julian Day 是 2299159.5
-     * Gregorian Calendar 開始於西元 1582-10-15 , 該日的 Julian Day 是 2299160.5
-     */
-    private const val GREGORIAN_START_JULIAN_DAY = 2299160.5
-
-    /**
-     * 承上， 西元 1582-10-15 0:0 的 instant 「秒數」為 -12219292800L  (from 1970-01-01 逆推)
-     */
-    private const val GREGORIAN_START_INSTANT = -12219292800000L
 
     private val logger = KotlinLogging.logger {  }
 
@@ -51,7 +41,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
     fun getLocalDateTimeStatic(gmtInstant: Instant): ChronoLocalDateTime<*> {
       val epochMilli = gmtInstant.toEpochMilli()
       logger.trace("epochMilli = {}", epochMilli)
-      val isGregorian = epochMilli >= GREGORIAN_START_INSTANT
+      val isGregorian = epochMilli >= Constants.CutOver1582.FROM_UNIXEPOCH_MILLI_SECONDS
       return if (isGregorian)
         gmtInstant.atZone(GMT).toLocalDateTime()
       else {
@@ -73,7 +63,7 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
      */
     fun getLocalDateTimeStatic(gmtJulDay: Double): ChronoLocalDateTime<*> {
 
-      val isGregorian = gmtJulDay >= GREGORIAN_START_JULIAN_DAY
+      val isGregorian = gmtJulDay >= Constants.CutOver1582.JULIAN_DAY
 
       var u0: Double
       var u1: Double

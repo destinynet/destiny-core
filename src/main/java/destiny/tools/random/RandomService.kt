@@ -4,6 +4,7 @@
  */
 package destiny.tools.random
 
+import destiny.core.calendar.Constants
 import java.time.*
 import java.time.temporal.ChronoUnit
 
@@ -42,7 +43,7 @@ interface RandomService {
     val days = ChronoUnit.DAYS.between(from, to)
 
     val randomDays = getLong(0, days)
-    val randomSecs = getLong(0, 86400 - 1)
+    val randomSecs = getLong(0, Constants.SECONDS_OF_DAY - 1)
     return from.plusDays(randomDays).atTime(LocalTime.MIDNIGHT).plusSeconds(randomSecs)
   }
 }
