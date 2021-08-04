@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -23,7 +24,7 @@ import java.util.*
 @Impl([Domain(Domains.KEY_MIDNIGHT, MidnightLmtImpl.VALUE)])
 class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, Serializable {
 
-  override fun getNextMidnight(gmtJulDay: Double, loc: ILocation): Double {
+  override fun getNextMidnight(gmtJulDay: GmtJulDay, loc: ILocation): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val resultLmt = lmt.plus(1, ChronoUnit.DAYS)
@@ -32,7 +33,7 @@ class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, S
       .with(SECOND_OF_MINUTE, 0)
       .with(NANO_OF_SECOND, 0)
     val resultGmt = TimeTools.getGmtFromLmt(resultLmt, loc)
-    return TimeTools.getGmtJulDay(resultGmt)
+    return TimeTools.getGmtJulDay2(resultGmt)
   }
 
 

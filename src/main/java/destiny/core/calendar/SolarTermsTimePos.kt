@@ -7,16 +7,16 @@ import kotlin.math.absoluteValue
 
 data class SolarTermsTimePos(
   /** 目前時刻 */
-  val gmtJulDay : Double,
+  val gmtJulDay : GmtJulDay,
 
   /** 前一個（也是目前）的「節」, 及其 GMT JulDay */
-  val prevMajor: Pair<SolarTerms, Double>,
+  val prevMajor: Pair<SolarTerms, GmtJulDay>,
 
   /** 下一個「中氣」，及其 GMT JulDay */
-  val middle: Pair<SolarTerms, Double>,
+  val middle: Pair<SolarTerms, GmtJulDay>,
 
   /** 下一個「節」， 及其 GMT JulDay */
-  val nextMajor: Pair<SolarTerms, Double>) : Serializable {
+  val nextMajor: Pair<SolarTerms, GmtJulDay>) : Serializable {
 
   /** 前半部 (節 to 中氣) */
   val firstHalf : Boolean by lazy {

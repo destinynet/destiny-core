@@ -5,6 +5,7 @@
 package destiny.core.astrology
 
 import destiny.core.astrology.IAspectData.Type
+import destiny.core.calendar.GmtJulDay
 import destiny.tools.AlignTools
 import java.io.Serializable
 import kotlin.math.abs
@@ -53,7 +54,8 @@ data class AspectData(private val angleData: IAngleData,
     /** orb 不列入 equals / hashCode 計算  */
     orb: Double = 0.0,
     /** 交角緊密度評分 , nullable or (0~1) , 不列入 equals / hashCode 計算 */
-    score: Double? = null, gmtJulDay: Double?) : this(AngleData(points, aspect.degree, gmtJulDay), type, orb, score)
+    score: Double? = null,
+    gmtJulDay: GmtJulDay?) : this(AngleData(points, aspect.degree, gmtJulDay), type, orb, score)
 
 
 
@@ -70,7 +72,7 @@ data class AspectData(private val angleData: IAngleData,
 
   constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double = 0.0) : this(p1, p2, aspect, null, orb, null)
 
-  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: Double?) : this(
+  constructor(p1: Point, p2: Point, aspect: Aspect, orb: Double, score: Double? = null, type: Type? = null, gmtJulDay: GmtJulDay?) : this(
     sortedSetOf(
       pointComp, p1, p2
     ), aspect, type, orb, score, gmtJulDay

@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.holo
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.IDailyHexagram
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.IYinYang
@@ -15,7 +16,7 @@ import destiny.core.iching.contentProviders.IHexProvider
 import java.io.Serializable
 
 
-interface IHoloHexagram : IHexagram, TimeRange<Double>, Serializable {
+interface IHoloHexagram : IHexagram, TimeRange<GmtJulDay>, Serializable {
 
   enum class Scale {
     LIFE,    // 半輩子，意味： 先天卦 or 後天卦
@@ -34,10 +35,10 @@ interface IHoloHexagram : IHexagram, TimeRange<Double>, Serializable {
   val stemBranches: List<StemBranch>
 
   /** start of GMT JulianDay */
-  override val start: Double
+  override val start: GmtJulDay
 
   /** end of GMT JulianDay */
-  override val endExclusive: Double
+  override val endExclusive: GmtJulDay
 
 }
 
@@ -46,8 +47,8 @@ data class HoloHexagram(
   val hexagram: IHexagram,
   override val yuanTang: Int,
   override val stemBranches: List<StemBranch>,
-  override val start: Double,
-  override val endExclusive: Double) : IHoloHexagram, IHexagram by hexagram, Serializable {
+  override val start: GmtJulDay,
+  override val endExclusive: GmtJulDay) : IHoloHexagram, IHexagram by hexagram, Serializable {
 
   override fun toString(): String {
     return "$${Hexagram.of(hexagram)} 之 $yuanTang"
@@ -85,13 +86,13 @@ data class HoloLine(val yinYang: IYinYang,
                      * 流月的爻，可以變化出 30 個流日卦象
                      * 流日的爻，可以變化出 12 個流時卦象
                      * */
-                    val hexagrams: List<IHoloHexagramWithStemBranch>) : IYinYang by yinYang, TimeRange<Double> {
+                    val hexagrams: List<IHoloHexagramWithStemBranch>) : IYinYang by yinYang, TimeRange<GmtJulDay> {
 
 
-  override val start: Double
+  override val start: GmtJulDay
     get() = hexagrams.minByOrNull { it.start }!!.start
 
-  override val endExclusive: Double
+  override val endExclusive: GmtJulDay
     get() = hexagrams.maxByOrNull { it.endExclusive }!!.endExclusive
 }
 
@@ -101,7 +102,7 @@ interface ILifeHoloHexagram : IHoloHexagram {
   val lines: List<HoloLine>
 
   /** 值日卦 map : 此卦，在不同的卦氣系統內，「今年」值日的範圍為何 */
-  val dutyDaysMap : Map<IDailyHexagram, Pair<Double , Double>>
+  val dutyDaysMap : Map<IDailyHexagram, Pair<GmtJulDay , GmtJulDay>>
 
   /** 六十四卦立體 , 卦體吉凶立論 */
   val solid : String
@@ -110,7 +111,7 @@ interface ILifeHoloHexagram : IHoloHexagram {
 /** 先天卦 or 後天卦 */
 data class LifeHoloHexagram(override val lines: List<HoloLine>,
                             override val stemBranches: List<StemBranch>,
-                            override val dutyDaysMap: Map<IDailyHexagram, Pair<Double, Double>>,
+                            override val dutyDaysMap: Map<IDailyHexagram, Pair<GmtJulDay, GmtJulDay>>,
                             override val solid: String) : ILifeHoloHexagram {
 
   init {
@@ -125,9 +126,9 @@ data class LifeHoloHexagram(override val lines: List<HoloLine>,
 
   override val yuanTang: Int = lines.indexOfFirst { it.yuanTang } + 1
 
-  override val start: Double = lines.minByOrNull { it.start }!!.start
+  override val start: GmtJulDay = lines.minByOrNull { it.start }!!.start
 
-  override val endExclusive: Double = lines.maxByOrNull { it.endExclusive }!!.endExclusive
+  override val endExclusive: GmtJulDay = lines.maxByOrNull { it.endExclusive }!!.endExclusive
 
 }
 

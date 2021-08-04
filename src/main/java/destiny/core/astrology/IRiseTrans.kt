@@ -5,10 +5,7 @@
  */
 package destiny.core.astrology
 
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.Location
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 
@@ -28,14 +25,14 @@ interface IRiseTrans {
    *
    * Note : 極區 可能無 rise / set 之值
    */
-  fun getGmtTransJulDay(fromGmtJulDay: Double,
+  fun getGmtTransJulDay(fromGmtJulDay: GmtJulDay,
                         star: Star,
                         point: TransPoint,
                         location: ILocation,
                         discCenter: Boolean = false,
                         refraction: Boolean = true,
                         atmosphericTemperature: Double = 0.0,
-                        atmosphericPressure: Double = 1013.25): Double?
+                        atmosphericPressure: Double = 1013.25): GmtJulDay?
 
 
   /**
@@ -50,7 +47,7 @@ interface IRiseTrans {
                   refraction: Boolean = true,
                   atmosphericTemperature: Double = 0.0,
                   atmosphericPressure: Double = 1013.25): ChronoLocalDateTime<*>? {
-    val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
+    val fromGmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
 
     return getGmtTransJulDay(
       fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,
@@ -89,9 +86,9 @@ interface IRiseTrans {
                                       discCenter: Boolean = false,
                                       refraction: Boolean = true,
                                       atmosphericTemperature: Double = 0.0,
-                                      atmosphericPressure: Double = 1013.25): List<Double> {
-    val fromGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(fromLmtTime, location))
-    val toGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(toLmtTime, location))
+                                      atmosphericPressure: Double = 1013.25): List<GmtJulDay> {
+    val fromGmtJulDay = TimeTools.getGmtJulDay2(TimeTools.getGmtFromLmt(fromLmtTime, location))
+    val toGmtJulDay = TimeTools.getGmtJulDay2(TimeTools.getGmtFromLmt(toLmtTime, location))
 
     return generateSequence(
       getGmtTransJulDay(fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,
@@ -128,7 +125,7 @@ interface IRiseTrans {
     return getPeriodStarRiseTransGmtJulDay(fromLmtTime, toLmtTime, star, point, location, discCenter,
       refraction, atmosphericTemperature, atmosphericPressure)
       .map { gmtJulDay ->
-        val gmt = revJulDayFunc.invoke(gmtJulDay)
+        val gmt = revJulDayFunc.invoke(gmtJulDay.value)
         TimeTools.getLmtFromGmt(gmt, location)
       }.toList()
   }

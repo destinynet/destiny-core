@@ -4,6 +4,7 @@
  */
 package destiny.core
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.locationOf
@@ -17,9 +18,9 @@ interface ITimeLoc : Serializable {
   val time: ChronoLocalDateTime<*>
   val location: ILocation
 
-  val gmtJulDay: Double
+  val gmtJulDay: GmtJulDay
     get() {
-      return TimeTools.getGmtJulDay(time, location)
+      return TimeTools.getGmtJulDay2(time, location)
     }
 }
 

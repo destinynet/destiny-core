@@ -3,6 +3,7 @@
  */
 package destiny.core
 
+import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import java.util.*
 import kotlin.test.Test
@@ -15,7 +16,7 @@ class IntAgeNoteWestYearImplTest {
   @Test
   fun testAgeNote() {
     // 2019-12-31 12:00
-    val dec31Noon2019 = 2458849.0
+    val dec31Noon2019 = 2458849.0.toGmtJulDay()
     impl.getAgeNote(dec31Noon2019).also { assertEquals("2019" , it) }
     impl.getAgeNote(dec31Noon2019+0.499).also { assertEquals("2019" , it) }
     // 2020-01-01 0:00

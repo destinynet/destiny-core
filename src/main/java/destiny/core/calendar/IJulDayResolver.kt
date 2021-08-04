@@ -33,6 +33,18 @@ value class GmtJulDay(val value: Double) : Comparable<GmtJulDay> {
     else if (value - other.value < 0) -1 else 1
   }
 
+  operator fun minus(amount: Number): GmtJulDay {
+    return (value - amount.toDouble()).toGmtJulDay()
+  }
+
+  operator fun plus(amount: Number): GmtJulDay {
+    return (value + amount.toDouble()).toGmtJulDay()
+  }
+
+  operator fun minus(gmtJulDay: GmtJulDay): Double {
+    return value - gmtJulDay.value
+  }
+
 }
 
 fun Instant.toGmtJulDay(): GmtJulDay {

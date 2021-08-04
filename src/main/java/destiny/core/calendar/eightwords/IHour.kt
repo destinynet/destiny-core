@@ -6,6 +6,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.Descriptive
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -19,7 +20,7 @@ import java.time.temporal.ChronoUnit
 /** 時辰的分界點實作 , SwissEph 的實作是 [HourSolarTransImpl]  */
 interface IHour : Descriptive {
 
-  fun getHour(gmtJulDay: Double, location: ILocation): Branch
+  fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch
 
 
   /**
@@ -28,7 +29,7 @@ interface IHour : Descriptive {
    * @return 時辰（只有地支）
    */
   fun getHour(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
     return getHour(gmtJulDay, location)
   }
 
@@ -38,7 +39,7 @@ interface IHour : Descriptive {
    * @param eb 下一個地支
    * @return 下一個地支的開始時刻
    */
-  fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double
+  fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay
 
 
   /**
@@ -51,7 +52,7 @@ interface IHour : Descriptive {
                         location: ILocation,
                         eb: Branch,
                         julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
     val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, location, eb)
 
     val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
@@ -61,13 +62,13 @@ interface IHour : Descriptive {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  fun getGmtPrevStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double
+  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay
 
   fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>,
                         location: ILocation,
                         eb: Branch,
                         julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
     val resultGmtJulDay = getGmtPrevStartOf(gmtJulDay, location, eb)
 
     val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)

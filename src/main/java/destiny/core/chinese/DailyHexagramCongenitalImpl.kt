@@ -5,6 +5,7 @@ package destiny.core.chinese
 
 import destiny.core.astrology.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
+import destiny.core.calendar.GmtJulDay
 import destiny.core.iching.Hexagram
 import destiny.core.iching.IHexagram
 import destiny.core.iching.Symbol
@@ -21,7 +22,7 @@ import java.util.*
 class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
                                   private val starPosImpl: IStarPosition<*>) : IDailyHexagram, Serializable {
 
-  override fun getHexagram(gmtJulDay: Double): Pair<Hexagram, Pair<Double, Double>> {
+  override fun getHexagram(gmtJulDay: GmtJulDay): Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>> {
     val lng = starPosImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
     // 冬至點為起點 , 計算太陽領先冬至點 幾度
     val aheadDegrees = (lng - 270).let {
@@ -50,10 +51,10 @@ class DailyHexagramCongenitalImpl(val starTransitImpl: IStarTransit,
    * 取得某時刻之後 (或之前)，出現此卦的 時間點範圍
    * @param forward true : 順查 , false : 逆查
    */
-  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean): Pair<Double, Double> {
+  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: GmtJulDay, forward: Boolean): Pair<GmtJulDay, GmtJulDay> {
 
     // 現在是什麼卦 , 以及此卦的起迄時刻
-    val (hex, timeRange: Pair<Double, Double>) = getHexagram(gmtJulDay)
+    val (hex, timeRange: Pair<GmtJulDay, GmtJulDay>) = getHexagram(gmtJulDay)
     val degreeRange = getDegreeRange(hex)
 
     val targetHex = Hexagram.of(hexagram)

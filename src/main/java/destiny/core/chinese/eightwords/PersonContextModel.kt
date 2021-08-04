@@ -4,6 +4,7 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.*
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
@@ -24,7 +25,7 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
   val fortuneDataSmalls: List<FortuneData>
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
-  val ageMap: Map<Int, Pair<Double, Double>>
+  val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>
 
   /**
    * 由 GMT 反推月大運
@@ -33,7 +34,7 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
    * @return 月大運干支
    */
   fun getStemBranchOfFortuneMonth(targetGmt: ChronoLocalDateTime<*>): IStemBranch? {
-    val gmtJulDay = TimeTools.getGmtJulDay(targetGmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(targetGmt)
 
     return if (gmtJulDay < fortuneDataLarges[0].startFortuneGmtJulDay)
       eightWords.month // 還未上運 ，傳回 月干支
@@ -140,7 +141,7 @@ data class PersonContextModel(
   override val fortuneDataSmalls: List<FortuneData>,
 
   /** 歲數(可能是虛歲)，每歲的起訖時刻  */
-  override val ageMap: Map<Int, Pair<Double, Double>>) : IPersonContextModel,
+  override val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>) : IPersonContextModel,
   IEightWordsContextModel by eightWordsContextModel, Serializable
 
 /** 除了「人」的資料，還包括「排盤當下的時間」，會標註當下行運、流年 */

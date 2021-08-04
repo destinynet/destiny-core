@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
 import kotlin.math.abs
 
@@ -14,7 +15,7 @@ interface IAngleData {
   val angle: Double
 
   /** 何時 */
-  val gmtJulDay : Double?
+  val gmtJulDay : GmtJulDay?
 
   fun toAspectData(): AspectData? {
     return Aspect.getAspect(angle)?.let { aspect ->
@@ -32,9 +33,9 @@ data class AngleData(
   /** 交角幾度 */
   override val angle: Double ,
   /** 何時發生 */
-  override val gmtJulDay: Double?) : IAngleData , Serializable {
+  override val gmtJulDay: GmtJulDay?) : IAngleData , Serializable {
 
-  constructor(p1: Point, p2: Point, angle: Double, gmtJulDay: Double) : this(sortedSetOf(pointComp, p1, p2), angle, gmtJulDay)
+  constructor(p1: Point, p2: Point, angle: Double, gmtJulDay: GmtJulDay) : this(sortedSetOf(pointComp, p1, p2), angle, gmtJulDay)
 
   companion object {
     val pointComp = PointComparator()

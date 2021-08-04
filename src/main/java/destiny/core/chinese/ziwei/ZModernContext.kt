@@ -115,7 +115,7 @@ class ZModernContext(
     val dayNight = dayNightImpl.getDayNight(lmt, location)
 
     // 虛歲時刻 , gmt Julian Day
-    val vageMap = intAgeZiweiImpl.getRangesMap(gender, TimeTools.getGmtJulDay(lmt, location), location, 1, 130)
+    val vageMap = intAgeZiweiImpl.getRangesMap(gender, TimeTools.getGmtJulDay2(lmt, location), location, 1, 130)
 
     return getBirthPlate(Pair(命宮地支, 身宮地支), finalMonthNumForMainStars, cycle, yinYear, solarYear, lunarMonth
       , cDate.leapMonth, monthBranch, solarTerms, lunarDays, hour, dayNight, gender, vageMap)

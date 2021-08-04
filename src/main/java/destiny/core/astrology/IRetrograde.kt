@@ -3,6 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
+
 /**
  * 計算星體在黃道帶上 逆行 / Stationary (停滯) 的介面，目前 SwissEph 的實作只支援 Planet , Asteroid , Moon's Node (只有 True Node。 Mean 不會逆行！)
  * SwissEph 內定實作是 RetrogradeImpl
@@ -17,13 +19,13 @@ interface IRetrograde {
   /**
    * 下次停滯的時間為何時 (GMT)
    */
-  fun getNextStationary(star: Star, fromGmt: Double, forward: Boolean): Double
+  fun getNextStationary(star: Star, fromGmt: GmtJulDay, forward: Boolean): GmtJulDay
 
   /**
    * 承上，不僅計算下次（或上次）的停滯時間
    * 另外計算，該次停滯，是準備「順轉逆」，或是「逆轉順」
    */
-  fun getNextStationary(star: Star, fromGmt: Double, forward: Boolean, starPositionImpl: IStarPosition<*>): Pair<Double, StationaryType> {
+  fun getNextStationary(star: Star, fromGmt: GmtJulDay, forward: Boolean, starPositionImpl: IStarPosition<*>): Pair<GmtJulDay, StationaryType> {
     val nextStationary = getNextStationary(star, fromGmt, forward)
     // 分別取 滯留前、後 來比對
     val prior = nextStationary - 1 / 1440.0
@@ -41,7 +43,7 @@ interface IRetrograde {
   /**
    * 列出一段時間內，某星體的順逆過程
    */
-  fun getPeriodStationary(star: Star, fromGmt: Double, toGmt: Double, starPositionImpl: IStarPosition<*>): List<Pair<Double, StationaryType>> {
+  fun getPeriodStationary(star: Star, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Pair<GmtJulDay, StationaryType>> {
     require(fromGmt < toGmt) {
       "toGmt ($toGmt) should >= fromGmt($fromGmt)"
     }
@@ -55,7 +57,7 @@ interface IRetrograde {
   /**
    * 取得一段時間內，這些星體的順逆過程，按照時間排序
    */
-  fun getPeriodStationary(stars: Collection<Star>, fromGmt: Double, toGmt: Double, starPositionImpl: IStarPosition<*>): List<Triple<Double, Star, StationaryType>> {
+  fun getPeriodStationary(stars: Collection<Star>, fromGmt: GmtJulDay, toGmt: GmtJulDay, starPositionImpl: IStarPosition<*>): List<Triple<GmtJulDay, Star, StationaryType>> {
     return stars.flatMap { star ->
       getPeriodStationary(star , fromGmt , toGmt , starPositionImpl)
         .map { (gmt , type) -> Triple(gmt , star , type) }

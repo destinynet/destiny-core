@@ -6,6 +6,8 @@
 package destiny.core.calendar
 
 
+import destiny.core.calendar.Constants.SECONDS_OF_DAY
+import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -14,12 +16,12 @@ import java.time.chrono.ChronoLocalDateTime
 interface ISolarTerms {
 
   /** 計算某時刻當下的節氣  */
-  fun getSolarTermsFromGMT(gmtJulDay: Double): SolarTerms
+  fun getSolarTermsFromGMT(gmtJulDay: GmtJulDay): SolarTerms
 
   /** 承上， ChronoLocalDateTime 版本  */
   fun getSolarTermsFromGMT(gmt: ChronoLocalDateTime<*>): SolarTerms {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getSolarTermsFromGMT(gmtJulDay)
+    return getSolarTermsFromGMT(gmtJulDay.toGmtJulDay())
   }
 
   /**
@@ -33,14 +35,14 @@ interface ISolarTerms {
   /**
    * @return 計算，從 某時刻開始，的下一個（或上一個）節氣的時間點為何
    */
-  fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, forward: Boolean): Double
+  fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: GmtJulDay, forward: Boolean): GmtJulDay
 
 
   /**
    * 計算從某時(fromGmtTime) 到某時(toGmtTime) 之間的節氣 , in GMT
    * @return List <SolarTermsTime>
    */
-  fun getPeriodSolarTermsGMTs(fromGmt: Double, toGmt: Double): List<SolarTermsTime>
+  fun getPeriodSolarTermsGMTs(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsTime>
 
 
   /**
@@ -48,7 +50,7 @@ interface ISolarTerms {
    */
   fun getPeriodSolarTermsGMTs(fromGmtTime: ChronoLocalDateTime<*>,
                               toGmtTime: ChronoLocalDateTime<*>): List<SolarTermsTime> {
-    return getPeriodSolarTermsGMTs(TimeTools.getGmtJulDay(fromGmtTime), TimeTools.getGmtJulDay(toGmtTime))
+    return getPeriodSolarTermsGMTs(TimeTools.getGmtJulDay2(fromGmtTime), TimeTools.getGmtJulDay2(toGmtTime))
   }
 
   /**
@@ -60,8 +62,8 @@ interface ISolarTerms {
   fun getPeriodSolarTermsLMTs(fromLmt: ChronoLocalDateTime<*>,
                               toLmt: ChronoLocalDateTime<*>,
                               location: ILocation): List<SolarTermsTime> {
-    val fromGmt = TimeTools.getGmtJulDay(fromLmt, location)
-    val toGmt = TimeTools.getGmtJulDay(toLmt, location)
+    val fromGmt = TimeTools.getGmtJulDay2(fromLmt, location)
+    val toGmt = TimeTools.getGmtJulDay2(toLmt, location)
 
     return getPeriodSolarTermsGMTs(fromGmt, toGmt).map { stt ->
       val gmt = stt.time
@@ -75,17 +77,17 @@ interface ISolarTerms {
    * 上一個 節/氣 是什麼，其 GMT JulDay 為何
    * 下一個 節/氣 是什麼，其 GMT JulDay 為何
    */
-  fun getSolarTermsBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+  fun getSolarTermsBetween(gmtJulDay: GmtJulDay): Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>>
 
   /**
    * 計算此時刻的...
    * 上一個「節」是什麼，其 GMT JulDay 為何
    * 下一個「節」是什麼，其 GMT JulDay 為何
    */
-  fun getMajorSolarTermsGmtBetween(gmtJulDay: Double) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>>
+  fun getMajorSolarTermsGmtBetween(gmtJulDay: GmtJulDay) : Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>>
 
-  fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+  fun getMajorSolarTermsGmtBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>> {
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
     return getMajorSolarTermsGmtBetween(gmtJulDay)
   }
 
@@ -93,14 +95,14 @@ interface ISolarTerms {
    * 計算此時刻，距離上一個「節」有幾秒，距離下一個「節」又有幾秒
    */
   fun getMajorSolarTermsBetween(lmt: ChronoLocalDateTime<*> , location: ILocation) : Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
     val (prevPair , nextPair) = getMajorSolarTermsGmtBetween(lmt, location)
-    val dur1 = (gmtJulDay - prevPair.second) * 60 * 60 * 24
-    val dur2 = (nextPair.second - gmtJulDay) * 60 * 60 * 24
+    val dur1 = (gmtJulDay - prevPair.second.value).value * SECONDS_OF_DAY
+    val dur2 = (nextPair.second.value - gmtJulDay.value) * SECONDS_OF_DAY
     return Pair(Pair(prevPair.first , dur1) , Pair(nextPair.first , dur2))
   }
 
 
   /** 取得目前時刻與 兩個主要「節」、一個「氣」的相對位置 */
-  fun getSolarTermsPosition(gmtJulDay: Double) : SolarTermsTimePos
+  fun getSolarTermsPosition(gmtJulDay: GmtJulDay) : SolarTermsTimePos
 }

@@ -3,11 +3,11 @@
  */
 package destiny.core.chinese
 
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.ISolarTerms
-import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
+import destiny.core.chinese.Branch.*
+import destiny.core.chinese.FiveElement.*
 import destiny.core.iching.Symbol
+import destiny.core.iching.Symbol.*
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -15,10 +15,10 @@ import java.time.chrono.ChronoLocalDateTime
  * 取得某時刻，得令的卦象 [destiny.core.iching.Symbol]
  */
 interface ISeasonalSymbol {
-  fun getSeasonalSymbol(gmtJulDay: Double): Set<Symbol>
+  fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol>
 
   fun getSeasonalSymbol(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Symbol> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
     return getSeasonalSymbol(gmtJulDay)
   }
 }
@@ -28,23 +28,23 @@ interface ISeasonalSymbol {
  */
 class SeasonalSymbolChineseImpl(val solarTermsImpl: ISolarTerms) : ISeasonalSymbol, Serializable {
 
-  override fun getSeasonalSymbol(gmtJulDay: Double): Set<Symbol> {
+  override fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol> {
     val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 
     val branch = solarTerms.branch
 
     return SimpleBranch[branch].let { simpleBranch ->
       when (simpleBranch.fiveElement) {
-        FiveElement.水 -> Symbol.坎
-        FiveElement.木 -> Symbol.震
-        FiveElement.火 -> Symbol.離
-        FiveElement.金 -> Symbol.兌
-        FiveElement.土 -> {
+        水 -> 坎
+        木 -> 震
+        火 -> 離
+        金 -> 兌
+        土 -> {
           when (branch) {
-            Branch.丑 -> Symbol.艮
-            Branch.辰 -> Symbol.巽
-            Branch.未 -> Symbol.坤
-            Branch.戌 -> Symbol.乾
+            丑 -> 艮
+            辰 -> 巽
+            未 -> 坤
+            戌 -> 乾
             else -> throw IllegalArgumentException("impossible : $branch")
           }
         }

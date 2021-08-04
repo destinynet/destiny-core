@@ -7,6 +7,7 @@ import destiny.core.DayNight
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.Dignity
 import destiny.core.astrology.classical.MutualDataWithSign
+import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.YinYang
 
 /**
@@ -139,7 +140,7 @@ sealed class Misc : IPlanetPattern {
   /** 此星體 (mostly [Planet.MOON]) 目前處於空亡狀態 , 前一個準確交角資訊為 [exactAspectPrior] , 後一個準確交角資訊為 [exactAspectAfter]
    * */
   data class VoidCourse(override val planet: Planet,
-                        val beginGmt : Double, val beginDegree : ZodiacDegree,
-                        val endGmt : Double, val endDegree : ZodiacDegree,
+                        val beginGmt : GmtJulDay, val beginDegree : ZodiacDegree,
+                        val endGmt : GmtJulDay, val endDegree : ZodiacDegree,
                         val exactAspectPrior: IAspectData, val exactAspectAfter: IAspectData) : Misc()
 }

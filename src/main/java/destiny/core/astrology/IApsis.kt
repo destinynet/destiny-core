@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.TimeTools
 
 import java.time.chrono.ChronoLocalDateTime
@@ -14,9 +15,9 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IApsis {
   /** 取得全部 Apsis (近點,遠點,北交,南交) 在某刻 (GMT) 的座標 , 通常 Star 會帶入 [Planet.MOON] */
-  fun getPositions(star: Star, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType): Map<Apsis, IStarPos>
+  fun getPositions(star: Star, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType): Map<Apsis, IStarPos>
 
-  fun getPosition(star: Star, apsis: Apsis, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType): IStarPos
+  fun getPosition(star: Star, apsis: Apsis, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType): IStarPos
 
   /**
    * 取得某 Apsis 在某刻 (GMT) 的座標
@@ -26,7 +27,7 @@ interface IApsis {
                   gmt: ChronoLocalDateTime<*>,
                   coordinate: Coordinate,
                   nodeType: NodeType): IStarPos {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
     return getPosition(star, apsis, gmtJulDay, coordinate, nodeType)
   }
 

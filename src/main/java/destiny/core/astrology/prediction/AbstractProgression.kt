@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology.prediction
 
+import destiny.core.calendar.GmtJulDay
 import java.io.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
@@ -24,7 +25,7 @@ abstract class AbstractProgression : ILinear, Conversable, Serializable {
   protected abstract val denominator: Double
 
 
-  override fun getConvergentTime(natalGmtJulDay: Double, nowGmtJulDay: Double): Double {
+  override fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
     val dur = (natalGmtJulDay - nowGmtJulDay).absoluteValue
 
     val durDays = dur / numerator * denominator

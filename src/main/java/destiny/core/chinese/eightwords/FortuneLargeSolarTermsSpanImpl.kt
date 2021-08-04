@@ -13,6 +13,7 @@ import destiny.core.astrology.IStarTransit
 import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.TimeTools
@@ -50,9 +51,9 @@ class FortuneLargeSolarTermsSpanImpl(
   override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
 
   private fun getAgeMap(toAge: Int,
-                        gmtJulDay: Double,
+                        gmtJulDay: GmtJulDay,
                         gender: Gender,
-                        location: ILocation): Map<Int, Pair<Double, Double>> {
+                        location: ILocation): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
     return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, toAge)
   }
 
@@ -64,9 +65,9 @@ class FortuneLargeSolarTermsSpanImpl(
                                   count: Int): List<FortuneData> {
     val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, location)
     val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
 
-    val ageMap: Map<Int, Pair<Double, Double>> = getAgeMap(120, gmtJulDay, gender, location)
+    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, location)
 
     //下個大運的干支
     var i = 1
@@ -81,8 +82,8 @@ class FortuneLargeSolarTermsSpanImpl(
       val endFortuneGmtJulDay = gmtJulDay + abs(endFortuneSeconds) * fortuneMonthSpan / SECONDS_OF_DAY.toDouble()
 
       /** 該大運起點 , 歲數為何 . 歲數的定義則由 [IIntAge] 處理 */
-      val startFortuneAge = getAge(startFortuneGmtJulDay, ageMap) ?: 0
-      val endFortuneAge = getAge(endFortuneGmtJulDay, ageMap) ?: 0
+      val startFortuneAge: Int = getAge(startFortuneGmtJulDay, ageMap) ?: 0
+      val endFortuneAge: Int = getAge(endFortuneGmtJulDay, ageMap) ?: 0
 
       /** 附加上 西元、民國 之類的註記 */
       val startFortuneAgeNotes: List<String> =
@@ -108,7 +109,7 @@ class FortuneLargeSolarTermsSpanImpl(
    *
    * @return 如果 index 為正，則傳回正值; 如果 index 為負，則傳回負值
    */
-  private fun getTargetSolarTermsSeconds(gmtJulDay: Double, gender: Gender, index: Int): Double {
+  private fun getTargetSolarTermsSeconds(gmtJulDay: GmtJulDay, gender: Gender, index: Int): Double {
     require(index != 0) { "index cannot be 0 !" }
 
     val reverse = index < 0
@@ -120,14 +121,14 @@ class FortuneLargeSolarTermsSpanImpl(
 
     var i: Int = if (!reverse) 1 else -1
 
-    var hashMap: MutableMap<Int, Double>? = cache.getIfPresent(Pair(gmtJulDay, gender))
+    var hashMap: MutableMap<Int, GmtJulDay>? = cache.getIfPresent(Pair(gmtJulDay, gender))
 
     if (hashMap == null) {
       hashMap = LinkedHashMap()
       cache.put(Pair(gmtJulDay, gender), hashMap)
     }
 
-    var targetGmtJulDay: Double? = null
+    var targetGmtJulDay: GmtJulDay? = null
     if (hashMap.containsKey(index)) {
       targetGmtJulDay = hashMap[index]
       logger.debug("from map , index = {} , targetGmtJulDay exists , value = {}", index, targetGmtJulDay)
@@ -211,7 +212,7 @@ class FortuneLargeSolarTermsSpanImpl(
    * @return 在此 gmtJulDay 時刻，座落於歲數的哪一歲當中
    * 可能歲數超出範圍之後，或是根本在出生之前，就會傳回 empty
    */
-  private fun getAge(gmtJulDay: Double, ageMap: Map<Int, Pair<Double, Double>>): Int? {
+  private fun getAge(gmtJulDay: GmtJulDay, ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>): Int? {
     return ageMap.entries.firstOrNull { (_, pair) -> gmtJulDay > pair.first && pair.second > gmtJulDay }?.key
   }
 
@@ -223,7 +224,7 @@ class FortuneLargeSolarTermsSpanImpl(
                              location: ILocation,
                              gender: Gender,
                              targetGmt: ChronoLocalDateTime<*>): IStemBranch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
 
     require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
@@ -295,7 +296,7 @@ class FortuneLargeSolarTermsSpanImpl(
   companion object {
     private val logger = KotlinLogging.logger {}
 
-    private val cache: Cache<Pair<Double, Gender>, MutableMap<Int, Double>> = Caffeine.newBuilder()
+    private val cache: Cache<Pair<GmtJulDay, Gender>, MutableMap<Int, GmtJulDay>> = Caffeine.newBuilder()
       .maximumSize(100)
       .expireAfterAccess(1, TimeUnit.MINUTES)
       .build()

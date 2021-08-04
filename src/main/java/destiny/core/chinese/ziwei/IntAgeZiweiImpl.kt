@@ -7,6 +7,7 @@ import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.astrology.IRelativeTransit
 import destiny.core.astrology.Planet
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -15,7 +16,6 @@ import destiny.core.calendar.chinese.IChineseDate
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.LocalTime
-import java.util.*
 
 /**
  * 紫微斗數虛歲
@@ -28,13 +28,13 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
 
 
 
-  override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
+  override fun getRange(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, age: Int): Pair<GmtJulDay, GmtJulDay> {
 
     val age1 = Pair(gmtJulDay, getNextYearSunMoonConj(gmtJulDay))
     return getRangeInner(age1, age)
   }
 
-  private fun getRangeInner(prevResult: Pair<Double, Double>, count: Int): Pair<Double, Double> {
+  private fun getRangeInner(prevResult: Pair<GmtJulDay, GmtJulDay>, count: Int): Pair<GmtJulDay, GmtJulDay> {
     return if (count == 1) {
       prevResult
     } else {
@@ -45,7 +45,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
   }
 
 
-  private fun getNextYearSunMoonConj(gmtJulDay: Double): Double {
+  private fun getNextYearSunMoonConj(gmtJulDay: GmtJulDay): GmtJulDay {
     val dateTime = julDayResolver.getLocalDateTime(gmtJulDay)
 
     // 陰曆日期
@@ -56,7 +56,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
     // 利用「隔年、陰曆、一月二日、中午」作為「逆推」日月合朔的時間點
     val next1YearJan2Time = chineseDateImpl.getYangDate(next1YearJan2).atTime(LocalTime.NOON)
 
-    val next1YearJan2Gmt = TimeTools.getGmtJulDay(next1YearJan2Time)
+    val next1YearJan2Gmt = TimeTools.getGmtJulDay2(next1YearJan2Time)
     val value = relativeTransitImpl.getRelativeTransit(Planet.MOON, Planet.SUN, 0.0, next1YearJan2Gmt, false)
     if (value != null)
       return value
@@ -74,17 +74,17 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
     }
   }
 
-  override fun getRanges(gender: Gender, gmtJulDay: Double, loc: ILocation, fromAge: Int, toAge: Int): List<Pair<Double, Double>> {
+  override fun getRanges(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, fromAge: Int, toAge: Int): List<Pair<GmtJulDay, GmtJulDay>> {
     if (fromAge > toAge) {
       throw RuntimeException("fromAge must be <= toAge")
     }
     val from = getRange(gender, gmtJulDay, loc, fromAge)
-    val result = ArrayList<Pair<Double, Double>>(toAge - fromAge + 1)
+    val result = ArrayList<Pair<GmtJulDay, GmtJulDay>>(toAge - fromAge + 1)
     result.add(from)
     return getRangesInner(result, toAge - fromAge)
   }
 
-  private fun getRangesInner(prevResults: MutableList<Pair<Double, Double>>, count: Int): List<Pair<Double, Double>> {
+  private fun getRangesInner(prevResults: MutableList<Pair<GmtJulDay, GmtJulDay>>, count: Int): List<Pair<GmtJulDay, GmtJulDay>> {
     return if (count == 0) {
       prevResults
     } else {

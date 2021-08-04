@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -21,7 +22,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
   /**
    * Note : 2017-10-27 : gmtJulDay 版本不方便計算，很 buggy , 改以呼叫 LMT 版本來實作
    */
-  override fun getDay(gmtJulDay: Double, location: ILocation): StemBranch {
+  override fun getDay(gmtJulDay: GmtJulDay, location: ILocation): StemBranch {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, location, julDayResolver)
 
@@ -108,7 +109,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
   /**
    * 取得 GMT 此時刻，在此地 的一日，從何時，到何時 (gmt)
    */
-  override fun getDayRange(gmtJulDay: Double, location: ILocation): Pair<Double, Double> {
+  override fun getDayRange(gmtJulDay: GmtJulDay, location: ILocation): Pair<GmtJulDay, GmtJulDay> {
     return if (changeDayAfterZi) {
       // 子初換日
       // 上個子初

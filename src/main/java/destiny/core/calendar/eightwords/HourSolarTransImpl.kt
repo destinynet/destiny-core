@@ -9,6 +9,7 @@ import destiny.core.astrology.IRiseTrans
 import destiny.core.astrology.Planet
 import destiny.core.astrology.Star
 import destiny.core.astrology.TransPoint
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.Branch
@@ -45,7 +46,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     this.refraction = hasRefraction
   }
 
-  override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
+  override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
 
     val nextMeridian =
       riseTransImpl.getGmtTransJulDay(
@@ -114,8 +115,8 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
   /**
    * 取得「下一個」此地支的開始時刻
    */
-  override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
-    val resultGmt: Double
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
+    val resultGmt: GmtJulDay
     // 下個午正
     val nextMeridian =
       riseTransImpl.getGmtTransJulDay(
@@ -219,7 +220,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getGmtPrevStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
     // 下個午正
     val nextMeridian =
       riseTransImpl.getGmtTransJulDay(

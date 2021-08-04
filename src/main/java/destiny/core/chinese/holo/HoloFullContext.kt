@@ -4,6 +4,7 @@
 package destiny.core.chinese.holo
 
 import destiny.core.Gender
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.NaYin
 import destiny.core.iching.IHexagramText
@@ -47,7 +48,7 @@ class HoloFullContext(
 
 
 
-  override fun getHoloWithTimeFull(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: Double, name: String?, place: String?): Pair<IPoemHolo, List<HoloFullHexagram>> {
+  override fun getHoloWithTimeFull(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String?, place: String?): Pair<IPoemHolo, List<HoloFullHexagram>> {
 
     val locale = Locale.TAIWAN
 

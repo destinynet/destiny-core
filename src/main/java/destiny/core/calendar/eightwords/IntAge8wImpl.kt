@@ -7,6 +7,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import destiny.core.Gender
 import destiny.core.IIntAge
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms.立春
@@ -21,25 +22,25 @@ import java.util.concurrent.TimeUnit
 class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializable {
 
   private data class CacheKey(val gender: Gender,
-                              val gmtJulDay: Double,
+                              val gmtJulDay: GmtJulDay,
                               val loc: ILocation,
                               val fromAge: Int,
                               val toAge: Int)
 
 
-  private val cache : Cache<CacheKey, List<Pair<Double, Double>>> = Caffeine.newBuilder()
+  private val cache : Cache<CacheKey, List<Pair<GmtJulDay, GmtJulDay>>> = Caffeine.newBuilder()
     .maximumSize(100)
     //.expireAfterWrite(5 , TimeUnit.SECONDS)
     .expireAfterAccess(10 , TimeUnit.SECONDS)
     .build()
 
-  override fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double> {
-    val age1 = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))
+  override fun getRange(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, age: Int): Pair<GmtJulDay, GmtJulDay> {
+    val age1: Pair<GmtJulDay, GmtJulDay> = Pair(gmtJulDay, solarTermsImpl.getSolarTermsTime(立春, gmtJulDay, true))
 
     return getRangeInner(age1, age)
   }
 
-  private fun getRangeInner(prevResult: Pair<Double, Double>, count: Int): Pair<Double, Double> {
+  private fun getRangeInner(prevResult: Pair<GmtJulDay, GmtJulDay>, count: Int): Pair<GmtJulDay, GmtJulDay> {
     return if (count == 1) {
       prevResult
     } else {
@@ -51,18 +52,18 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
   }
 
   override fun getRanges(gender: Gender,
-                         gmtJulDay: Double,
+                         gmtJulDay: GmtJulDay,
                          loc: ILocation,
                          fromAge: Int,
-                         toAge: Int): List<Pair<Double, Double>> {
+                         toAge: Int): List<Pair<GmtJulDay, GmtJulDay>> {
     require(fromAge <= toAge) { "fromAge($fromAge) must be <= toAge($toAge)" }
 
     val key = CacheKey(gender, gmtJulDay, loc, fromAge, toAge)
 
 
-    fun innerGetList() : List<Pair<Double, Double>> {
+    fun innerGetList() : List<Pair<GmtJulDay, GmtJulDay>> {
       val from = getRange(gender, gmtJulDay, loc, fromAge)
-      val result = mutableListOf<Pair<Double, Double>>().apply { add(from) }
+      val result = mutableListOf<Pair<GmtJulDay, GmtJulDay>>().apply { add(from) }
       return getRangesInner(result, toAge - fromAge)
     }
 
@@ -70,7 +71,7 @@ class IntAge8wImpl(private val solarTermsImpl: ISolarTerms) : IIntAge, Serializa
 
   }
 
-  private fun getRangesInner(prevResults: MutableList<Pair<Double, Double>>, count: Int): List<Pair<Double, Double>> {
+  private fun getRangesInner(prevResults: MutableList<Pair<GmtJulDay, GmtJulDay>>, count: Int): List<Pair<GmtJulDay, GmtJulDay>> {
     return if (count == 0) {
       prevResults
     } else {

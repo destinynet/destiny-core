@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.Location
 
 import java.io.Serializable
@@ -13,10 +14,10 @@ import java.io.Serializable
  */
 data class PlanetaryHour(
   /** GMT julDay  */
-  val hourStart: Double,
+  val hourStart: GmtJulDay,
 
   /** GMT julDay  */
-  val hourEnd: Double,
+  val hourEnd: GmtJulDay,
 
   /** 此時刻，是白天，還是黑夜  */
   val dayNight: DayNight,

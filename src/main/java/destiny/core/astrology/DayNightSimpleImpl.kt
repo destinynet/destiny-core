@@ -4,6 +4,7 @@
 package destiny.core.astrology
 
 import destiny.core.DayNight
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -17,7 +18,7 @@ import java.util.*
 @Impl([Domain(KEY_DAY_NIGHT, DayNightSimpleImpl.VALUE)])
 class DayNightSimpleImpl(val julDayResolver: JulDayResolver) : IDayNight, Serializable {
 
-  override fun getDayNight(gmtJulDay: Double, location: ILocation): DayNight {
+  override fun getDayNight(gmtJulDay: GmtJulDay, location: ILocation): DayNight {
 
     val lmt = TimeTools.getLmtFromGmt(julDayResolver.getLocalDateTime(gmtJulDay), location)
     val hour = lmt.get(ChronoField.HOUR_OF_DAY)

@@ -22,7 +22,7 @@ interface JulDayResolver {
   /** 從 gmt instant 轉為 GMT Time  */
   fun getLocalDateTimeFromInstant(gmtInstant: Instant): ChronoLocalDateTime<*>
 
-  fun getDateAndTime(gmtJulDay: Double): Pair<ChronoLocalDate, LocalTime> {
+  fun getDateAndTime(gmtJulDay: GmtJulDay): Pair<ChronoLocalDate, LocalTime> {
     val dateTime = getLocalDateTime(gmtJulDay)
     return Pair(dateTime.toLocalDate(), dateTime.toLocalTime())
   }

@@ -4,6 +4,7 @@
 package destiny.core.calendar
 
 import destiny.core.News.EastWest.EAST
+import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.chinese.StemBranch
 import destiny.tools.StringTools
 import mu.KotlinLogging
@@ -75,6 +76,11 @@ object TimeTools {
     return getJulDay(gmtInstant)
   }
 
+  fun getGmtJulDay2(gmt: ChronoLocalDateTime<*>): GmtJulDay {
+    val gmtInstant = gmt.toInstant(ZoneOffset.UTC)
+    return getJulDay(gmtInstant).toGmtJulDay()
+  }
+
 
   /**
    * 承上， date + time 拆開來的版本
@@ -95,6 +101,10 @@ object TimeTools {
   fun getGmtJulDay(lmt: ChronoLocalDateTime<*>, loc: ILocation): Double {
     val gmt = getGmtFromLmt(lmt, loc)
     return getGmtJulDay(gmt)
+  }
+  fun getGmtJulDay2(lmt: ChronoLocalDateTime<*>, loc: ILocation): GmtJulDay {
+    val gmt = getGmtFromLmt(lmt, loc)
+    return getGmtJulDay(gmt).toGmtJulDay()
   }
 
   fun getGmtJulDay(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): Double {
@@ -176,6 +186,13 @@ object TimeTools {
   }
 
   fun getLmtFromGmt(gmtJulDay: Double,
+                    location: ILocation,
+                    julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
+    return getLmtFromGmt(gmt, location)
+  }
+
+  fun getLmtFromGmt(gmtJulDay: GmtJulDay,
                     location: ILocation,
                     julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)

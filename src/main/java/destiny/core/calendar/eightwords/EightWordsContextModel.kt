@@ -5,6 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.ITimeLoc
 import destiny.core.astrology.*
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.TimeTools
@@ -43,10 +44,10 @@ interface IEightWordsContextModel : ITimeLoc {
 
 
   /** 上一個(目前)星座 , 以及 GMT Jul Day */
-  val prevSolarSign: Pair<ZodiacSign, Double>
+  val prevSolarSign: Pair<ZodiacSign, GmtJulDay>
 
   /** 下一個星座 , 以及 GMT Jul Day */
-  val nextSolarSign: Pair<ZodiacSign, Double>
+  val nextSolarSign: Pair<ZodiacSign, GmtJulDay>
 
   /** 星體位置表 */
   val starPosMap: Map<Point, PositionWithBranch>
@@ -93,10 +94,10 @@ data class EightWordsContextModel(
   override val solarTermsTimePos: SolarTermsTimePos,
 
   /** 上一個(目前)星座 , 以及 GMT Jul Day */
-  override val prevSolarSign: Pair<ZodiacSign, Double>,
+  override val prevSolarSign: Pair<ZodiacSign, GmtJulDay>,
 
   /** 下一個星座 , 以及 GMT Jul Day */
-  override val nextSolarSign: Pair<ZodiacSign, Double>,
+  override val nextSolarSign: Pair<ZodiacSign, GmtJulDay>,
 
   /** 星體位置表 */
   override val starPosMap: Map<Point, PositionWithBranch>,

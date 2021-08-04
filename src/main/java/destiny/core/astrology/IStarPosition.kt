@@ -5,6 +5,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
@@ -19,11 +20,11 @@ interface IStarPosition<out T : IStarPos> {
   /** 設定觀測地點，對於 [Centric.TOPO] 有用 . 2017-07-03 註記 : 此 method 無法移除 */
   fun setLocation(location: ILocation)
 
-  fun getPosition(star: Star, gmtJulDay: Double, centric: Centric, coordinate: Coordinate): T
+  fun getPosition(star: Star, gmtJulDay: GmtJulDay, centric: Centric, coordinate: Coordinate): T
 
   /** 同樣是求 Position , 但多傳入地點、溫度、壓力 等資料 , 在此直接 discard 掉  */
   fun getPosition(star: Star,
-                  gmtJulDay: Double,
+                  gmtJulDay: GmtJulDay,
                   geoLat: Double,
                   geoLng: Double,
                   geoAlt: Double? = 0.0,
@@ -35,7 +36,7 @@ interface IStarPosition<out T : IStarPos> {
   }
 
 
-  fun getPosition(star: Star, gmtJulDay: Double, loc: ILocation, centric: Centric = Centric.GEO, coordinate: Coordinate = Coordinate.ECLIPTIC): T {
+  fun getPosition(star: Star, gmtJulDay: GmtJulDay, loc: ILocation, centric: Centric = Centric.GEO, coordinate: Coordinate = Coordinate.ECLIPTIC): T {
     return getPosition(star, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, centric, coordinate, 0.0, 1013.25)
   }
 
@@ -43,7 +44,7 @@ interface IStarPosition<out T : IStarPos> {
    * @param gmt GMT 的 Gregorian 時刻
    */
   fun getPosition(star: Star, gmt: ChronoLocalDateTime<*>, centric: Centric, coordinate: Coordinate): T {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
     return getPosition(star, gmtJulDay, centric, coordinate)
   }
 
@@ -58,7 +59,7 @@ interface IStarPosition<out T : IStarPos> {
                   loc: ILocation,
                   temperature: Double,
                   pressure: Double): IPos {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
     return getPosition(star, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, centric, coordinate,
       temperature, pressure)
   }

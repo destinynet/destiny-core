@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
@@ -15,7 +16,7 @@ import java.time.chrono.ChronoLocalDateTime
 interface IAzimuthCalculator {
 
   fun IPos.getAzimuth(coordinate: Coordinate,
-                      gmtJulDay: Double,
+                      gmtJulDay: GmtJulDay,
                       geoLat: Double,
                       geoLng: Double,
                       geoAlt: Double? = 0.0,
@@ -30,7 +31,7 @@ interface IAzimuthCalculator {
   }
 
   fun IPos.getAzimuth(coordinate: Coordinate,
-                      gmtJulDay: Double,
+                      gmtJulDay: GmtJulDay,
                       loc: ILocation,
                       temperature: Double = 0.0,
                       pressure: Double = 1013.25): Azimuth {
@@ -39,7 +40,7 @@ interface IAzimuthCalculator {
 
   /** [Coordinate.ECLIPTIC] 由黃經 , 黃緯 , 求得地平方位角  */
   fun getAzimuthFromEcliptic(eclipticPosition: IPos,
-                             gmtJulDay: Double,
+                             gmtJulDay: GmtJulDay,
                              geoLat: Double,
                              geoLng: Double,
                              geoAlt: Double? = 0.0,
@@ -47,7 +48,7 @@ interface IAzimuthCalculator {
                              pressure: Double = 1013.25): Azimuth
 
   fun getAzimuthFromEcliptic(eclipticPosition: IPos,
-                             gmtJulDay: Double,
+                             gmtJulDay: GmtJulDay,
                              location: ILocation,
                              temperature: Double = 0.0,
                              pressure: Double = 1013.25): Azimuth {
@@ -61,13 +62,13 @@ interface IAzimuthCalculator {
                              location: ILocation,
                              temperature: Double = 0.0,
                              pressure: Double = 1013.25): Azimuth {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
     return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location, temperature, pressure)
   }
 
   /** [Coordinate.EQUATORIAL] 由赤經 , 赤緯 , 求得地平方位角  */
   fun getAzimuthFromEquator(equatorPosition: IPos,
-                            gmtJulDay: Double,
+                            gmtJulDay: GmtJulDay,
                             geoLat: Double,
                             geoLng: Double,
                             geoAlt: Double? = 0.0,
@@ -75,7 +76,7 @@ interface IAzimuthCalculator {
                             pressure: Double = 1013.25): Azimuth
 
   fun getAzimuthFromEquator(equatorPosition: IPos,
-                            gmtJulDay: Double,
+                            gmtJulDay: GmtJulDay,
                             location: ILocation,
                             temperature: Double = 0.0,
                             pressure: Double = 1013.25): Azimuth {

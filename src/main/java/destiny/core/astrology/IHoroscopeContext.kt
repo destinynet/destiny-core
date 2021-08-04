@@ -7,6 +7,7 @@ import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.IVoidCourse
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
@@ -30,7 +31,7 @@ interface IHoroscopeContext : Serializable {
 
 
   /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
-  fun getHoroscope(gmtJulDay: Double,
+  fun getHoroscope(gmtJulDay: GmtJulDay,
                    loc: ILocation,
                    place: String?,
                    points: Collection<Point>): IHoroscopeModel
@@ -41,7 +42,7 @@ interface IHoroscopeContext : Serializable {
                    loc: ILocation,
                    place: String?,
                    points: Collection<Point> = defaultPoints): IHoroscopeModel {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
     return getHoroscope(gmtJulDay, loc, place, points)
   }
 
@@ -79,7 +80,7 @@ class HoroscopeContext(
   override val pressure: Double = 1013.25) : IHoroscopeContext, Serializable {
 
   /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
-  override fun getHoroscope(gmtJulDay: Double,
+  override fun getHoroscope(gmtJulDay: GmtJulDay,
                             loc: ILocation,
                             place: String?,
                             points: Collection<Point>): IHoroscopeModel {

@@ -6,6 +6,7 @@ package destiny.core.chinese.eightwords
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IntAgeNote
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IEightWords
@@ -39,13 +40,13 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
 
     val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
 
     return implByRangesMap(gmtJulDay, eightWords, gender, location, count, forward)
   }
 
   /** 內定實作法 : 透過 [IIntAge.getRangesMap] 取得歲數 map , 套上干支 */
-  private fun implByRangesMap(gmtJulDay: Double,
+  private fun implByRangesMap(gmtJulDay: GmtJulDay,
                               eightWords: IEightWords,
                               gender: Gender,
                               location: ILocation,

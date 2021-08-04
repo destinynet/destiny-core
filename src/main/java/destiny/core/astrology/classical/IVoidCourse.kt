@@ -7,6 +7,8 @@ import destiny.core.Descriptive
 import destiny.core.astrology.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.tools.Domain
@@ -21,12 +23,12 @@ import kotlin.math.min
 sealed interface IVoidCourse : Descriptive {
 
   fun getVoidCourse(
-    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet = Planet.MOON, centric: Centric = Centric.GEO
+    gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet = Planet.MOON, centric: Centric = Centric.GEO
   ): Misc.VoidCourse?
 
   fun getVoidCourses(
-    fromGmt: Double,
-    toGmt: Double,
+    fromGmt: GmtJulDay,
+    toGmt: GmtJulDay,
     loc: ILocation,
     pointPosFuncMap: Map<Point, IPosition<*>>,
     relativeTransitImpl: IRelativeTransit,
@@ -37,7 +39,7 @@ sealed interface IVoidCourse : Descriptive {
     val planets = Planet.classicalList
     val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
 
-    fun getNextVoc(gmt : Double): Misc.VoidCourse? {
+    fun getNextVoc(gmt : GmtJulDay): Misc.VoidCourse? {
 
       return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(planet, planets, gmt, aspects, true)
         ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
@@ -45,13 +47,13 @@ sealed interface IVoidCourse : Descriptive {
         ?.let { nextAspectData ->
           logger.trace { "接下來將在 ${julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
 
-          val nextTime = nextAspectData.gmtJulDay!! + 0.01
+          val nextTime: GmtJulDay = nextAspectData.gmtJulDay!! + 0.01
           logger.trace { "推進計算時刻 ${julDayResolver.getLocalDateTime(nextTime)}" }
           getVoidCourse(nextTime, loc, pointPosFuncMap, planet, centric) ?: getNextVoc(nextTime)
         }
     }
 
-    fun getVoc(gmt: Double) : Misc.VoidCourse? {
+    fun getVoc(gmt: GmtJulDay) : Misc.VoidCourse? {
       val gmtVoc: Misc.VoidCourse? = getVoidCourse(gmt, loc, pointPosFuncMap, planet, centric)
 
       return if (gmtVoc == null) {
@@ -67,7 +69,7 @@ sealed interface IVoidCourse : Descriptive {
     }
 
     return generateSequence(getVoc(fromGmt)) {
-      val newGmt = min(it.endGmt , it.exactAspectAfter.gmtJulDay!!) + 0.01
+      val newGmt = (min(it.endGmt.value , it.exactAspectAfter.gmtJulDay!!.value) + 0.01).toGmtJulDay()
       if (newGmt < toGmt) {
         getVoc(newGmt)?.takeIf { voc -> voc.beginGmt < toGmt }
       } else
@@ -75,7 +77,7 @@ sealed interface IVoidCourse : Descriptive {
     }.toList()
   }
 
-  fun getVocMap(gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>> , points: Collection<Point>): Map<Planet, Misc.VoidCourse> {
+  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>> , points: Collection<Point>): Map<Planet, Misc.VoidCourse> {
     return points.filterIsInstance<Planet>()
       .map { planet -> planet to getVoidCourse(gmtJulDay, loc, pointPosFuncMap, planet) }
       .filter { (_, voc) -> voc != null }
@@ -104,7 +106,7 @@ sealed interface IVoidCourse : Descriptive {
 class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
                             private val starPositionImpl: IStarPosition<*>) : IVoidCourse, Serializable {
   override fun getVoidCourse(
-    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
+    gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
   ): Misc.VoidCourse? {
 
     return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
@@ -163,7 +165,7 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
   private val pointDiameter: IPointDiameter = PointDiameterLillyImpl()
 
   override fun getVoidCourse(
-    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
+    gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
   ): Misc.VoidCourse? {
     return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
       .let { (prior, after) ->
@@ -228,7 +230,7 @@ class VoidCourseMedieval(private val besiegedImpl: IBesieged,
                          private val starPositionImpl: IStarPosition<*>,
                          private val starTransitImpl: IStarTransit) : IVoidCourse, Serializable {
   override fun getVoidCourse(
-    gmtJulDay: Double, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
+    gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet, centric: Centric
   ): Misc.VoidCourse? {
 
     return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))

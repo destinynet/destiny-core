@@ -3,10 +3,7 @@
  */
 package destiny.core
 
-import destiny.core.calendar.ILocation
-import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.Location
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -26,10 +23,10 @@ interface IIntAge {
    * 此時刻出生的某人，在第幾歲時，範圍為何
    * @return 前者為 prior GMT 時刻，後者為 later GMT 時刻
    * */
-  fun getRange(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int): Pair<Double, Double>
+  fun getRange(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, age: Int): Pair<GmtJulDay, GmtJulDay>
 
   /** 承上 , 傳回 [ChronoLocalDateTime] 版本 */
-  fun getRangeTime(gender: Gender, gmtJulDay: Double, loc: ILocation, age: Int,
+  fun getRangeTime(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, age: Int,
                    julDayResolver: JulDayResolver): Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>> {
     return getRange(gender, gmtJulDay, loc, age).let { pair ->
       Pair(julDayResolver.getLocalDateTime(pair.first), julDayResolver.getLocalDateTime(pair.second))
@@ -37,17 +34,17 @@ interface IIntAge {
   }
 
   /** 列出 fromAge 到 toAge 的結果 */
-  fun getRanges(gender: Gender, gmtJulDay: Double, loc: ILocation, fromAge: Int, toAge: Int): List<Pair<Double, Double>>
+  fun getRanges(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, fromAge: Int, toAge: Int): List<Pair<GmtJulDay, GmtJulDay>>
 
   /** 承上 , 列出 fromAge 到 toAge 的結果 (GMT) , 傳回 Map[Age , Pair[from , to]] */
-  fun getRangesMap(gender: Gender, gmtJulDay: Double, loc: ILocation, fromAge: Int, toAge: Int): Map<Int, Pair<Double, Double>> {
+  fun getRangesMap(gender: Gender, gmtJulDay: GmtJulDay, loc: ILocation, fromAge: Int, toAge: Int): Map<Int, Pair<GmtJulDay, GmtJulDay>> {
     val list = getRanges(gender, gmtJulDay, loc, fromAge, toAge)
 
     return (fromAge .. toAge).zip(list).toMap()
   }
 
   /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Pair[from , to]] , 傳回的是 {@link ChronoLocalDateTime} , GMT 時刻 */
-  fun getRangesGmtMap(gender: Gender, gmtJulDay: Double, loc: Location, fromAge: Int, toAge: Int,
+  fun getRangesGmtMap(gender: Gender, gmtJulDay: GmtJulDay, loc: Location, fromAge: Int, toAge: Int,
                       julDayResolver: JulDayResolver): Map<Int, Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>>> {
     return getRangesMap(gender, gmtJulDay, loc, fromAge, toAge)
       .mapValues { entry ->
@@ -58,7 +55,7 @@ interface IIntAge {
   }
 
   /** 承上 , 列出 fromAge 到 toAge 的結果 , 傳回 Map[Age , Pair[from , to]] , 傳回的是 {@link ChronoLocalDateTime} , LMT 時刻 */
-  fun getRangesLmtMap(gender: Gender, gmtJulDay: Double, loc: Location, fromAge: Int, toAge: Int,
+  fun getRangesLmtMap(gender: Gender, gmtJulDay: GmtJulDay, loc: Location, fromAge: Int, toAge: Int,
                       julDayResolver: JulDayResolver): Map<Int, Pair<ChronoLocalDateTime<*>, ChronoLocalDateTime<*>>> {
     return getRangesMap(gender, gmtJulDay, loc, fromAge, toAge)
       .mapValues { entry ->

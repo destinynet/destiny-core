@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
@@ -24,12 +25,12 @@ interface IBesieged {
    * @return 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
   fun getBesiegingPlanetsByDegrees(planet: Planet,
-                                   gmtJulDay: Double,
+                                   gmtJulDay: GmtJulDay,
                                    otherPlanets: Collection<Planet>,
                                    angles: Collection<Double>): Pair<IAngleData? , IAngleData?>
 
   fun getBesiegingPlanetsByAspects(planet: Planet,
-                                   gmtJulDay: Double,
+                                   gmtJulDay: GmtJulDay,
                                    otherPlanets: Collection<Planet>,
                                    aspects: Collection<Aspect>): Pair<IAspectData?, IAspectData?> {
     return getBesiegingPlanetsByDegrees(planet, gmtJulDay, otherPlanets, aspects.map { it.degree }).let { (prior, after) ->
@@ -43,7 +44,7 @@ interface IBesieged {
    * @return 傳回的 List[Planet] 必定 size = 2
    */
   fun getBesiegingPlanets(planet: Planet,
-                          gmtJulDay: Double,
+                          gmtJulDay: GmtJulDay,
                           classicalPlanets: Boolean = true,
                           aspects: Collection<Aspect> = Aspect.getAspects(Aspect.Importance.HIGH)): List<Planet> {
     val otherPlanets = getPlanetsExcept(planet, classicalPlanets)
@@ -57,7 +58,7 @@ interface IBesieged {
 
   // 承上 , gmt 版本
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classicalPlanets: Boolean, aspects: Collection<Aspect>): List<Planet> {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
     return getBesiegingPlanets(planet, gmtJulDay, classicalPlanets, aspects)
   }
 
@@ -67,7 +68,7 @@ interface IBesieged {
    * @param onlyHardAspects 是否只計算 「艱難交角」 : 0/90/180 ; 如果「false」的話，連 60/120 也算進去
    * @return 是否被包夾
    */
-  fun isBesieged(planet: Planet, p1: Planet, p2: Planet, gmtJulDay: Double, classicalPlanets: Boolean, onlyHardAspects: Boolean): Boolean {
+  fun isBesieged(planet: Planet, p1: Planet, p2: Planet, gmtJulDay: GmtJulDay, classicalPlanets: Boolean, onlyHardAspects: Boolean): Boolean {
 
     val otherPlanets = getPlanetsExcept(planet, classicalPlanets)
 

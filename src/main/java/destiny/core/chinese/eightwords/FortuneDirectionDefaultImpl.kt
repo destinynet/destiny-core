@@ -6,6 +6,7 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWordsFactory
 import java.io.Serializable
@@ -13,9 +14,9 @@ import java.io.Serializable
 /**
  * 大運的順逆，內定演算法：陽男陰女順行；陰男陽女逆行
  */
-class FortuneDirectionDefaultImpl(val eightWordsImpl : IEightWordsFactory) : IFortuneDirection, Serializable {
+class FortuneDirectionDefaultImpl(val eightWordsImpl: IEightWordsFactory) : IFortuneDirection, Serializable {
 
-  override fun isForward(gmtJulDay: Double, loc: ILocation , gender: Gender): Boolean {
+  override fun isForward(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender): Boolean {
     val eightWords = eightWordsImpl.getEightWords(gmtJulDay, loc)
 
     return gender === Gender.男 && eightWords.year.stem.booleanValue
@@ -34,8 +35,6 @@ class FortuneDirectionDefaultImpl(val eightWordsImpl : IEightWordsFactory) : IFo
   override fun hashCode(): Int {
     return eightWordsImpl.hashCode()
   }
-
-
 
 
 }

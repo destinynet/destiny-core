@@ -4,6 +4,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 
@@ -15,12 +16,12 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IApsisWithAzimuth : IApsis {
 
-  fun getPositionsWithAzimuths(star: Star, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): Map<Apsis, StarPosWithAzimuth>
+  fun getPositionsWithAzimuths(star: Star, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): Map<Apsis, StarPosWithAzimuth>
 
-  fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmtJulDay: Double, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth
+  fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth
 
   fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmt: ChronoLocalDateTime<*>, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth {
-    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
     return getPositionWithAzimuth(star, apsis, gmtJulDay, coordinate, nodeType, location, temperature, pressure)
   }
 }

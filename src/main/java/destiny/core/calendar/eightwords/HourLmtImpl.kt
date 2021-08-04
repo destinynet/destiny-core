@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -26,7 +27,7 @@ import java.util.*
 @Impl([Domain(KEY_HOUR, HourLmtImpl.VALUE)])
 class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
 
-  override fun getHour(gmtJulDay: Double, location: ILocation): Branch {
+  override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmtHour = TimeTools.getLmtFromGmt(gmt, location).get(HOUR_OF_DAY)
     return getHour(lmtHour)
@@ -50,13 +51,13 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     throw IllegalArgumentException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
   }
 
-  override fun getGmtNextStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
 
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmt = TimeTools.getLmtFromGmt(gmt, location)
     val lmtResult = getLmtNextStartOf(lmt, location, eb, julDayResolver)
     val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
-    return TimeTools.getGmtJulDay(gmtResult)
+    return TimeTools.getGmtJulDay2(gmtResult)
   }
 
 
@@ -93,12 +94,12 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getGmtPrevStartOf(gmtJulDay: Double, location: ILocation, eb: Branch): Double {
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
     val lmt = TimeTools.getLmtFromGmt(gmt, location)
     val lmtResult = getLmtPrevStartOf(lmt, location, eb, julDayResolver)
     val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
-    return TimeTools.getGmtJulDay(gmtResult)
+    return TimeTools.getGmtJulDay2(gmtResult)
   }
 
   /**

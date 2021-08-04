@@ -3,6 +3,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import mu.KotlinLogging
 import java.io.Serializable
 
@@ -18,7 +19,7 @@ class BesiegedImpl(private val relativeTransitImpl: IRelativeTransit) : IBesiege
    * @return 前者為「之前」形成交角者。後者為「之後」形成交角者
    */
   override fun getBesiegingPlanetsByDegrees(planet: Planet,
-                                            gmtJulDay: Double,
+                                            gmtJulDay: GmtJulDay,
                                             otherPlanets: Collection<Planet>,
                                             angles: Collection<Double>): Pair<IAngleData?, IAngleData?> {
 

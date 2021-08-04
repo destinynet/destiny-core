@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 
@@ -11,9 +12,9 @@ data class FortuneData(
   /** 大運干支  */
   val stemBranch: IStemBranch,
   /** 起運時刻  */
-  val startFortuneGmtJulDay: Double,
+  val startFortuneGmtJulDay: GmtJulDay,
   /** 終運時刻  */
-  val endFortuneGmtJulDay: Double,
+  val endFortuneGmtJulDay: GmtJulDay,
   /** 起運歲數 (可能是虛歲、或是實歲)  */
   val startFortuneAge: Int,
   /** 終運歲數 (可能是虛歲、或是實歲)  */

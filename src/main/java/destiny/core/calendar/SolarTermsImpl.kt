@@ -29,7 +29,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    * 2. 比對此度數 , 將此度數除以 15 取整數
    * 3. 將以上的值代入 SolarTerms 即是答案
    */
-  override fun getSolarTermsFromGMT(gmtJulDay: Double): SolarTerms {
+  override fun getSolarTermsFromGMT(gmtJulDay: GmtJulDay): SolarTerms {
     // Step 1: Calculate the Longitude of SUN
     val sp = starPositionImpl.getPosition(SUN, gmtJulDay, Centric.GEO, ECLIPTIC)
     // Step 2
@@ -44,21 +44,21 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    *
    * @return List <SolarTermsTime>
   </SolarTermsTime> */
-  override fun getPeriodSolarTermsGMTs(fromGmt: Double, toGmt: Double): List<SolarTermsTime> {
-    var fromGmt = fromGmt
+  override fun getPeriodSolarTermsGMTs(fromGmt: GmtJulDay, toGmt: GmtJulDay): List<SolarTermsTime> {
     var nowST = getSolarTermsFromGMT(fromGmt)
+    var fromGmtValue = fromGmt
 
     var nextZodiacDegree = nowST.zodiacDegree.toZodiacDegree() + 15
 
     val resultList = mutableListOf<SolarTermsTime>()
 
-    while (fromGmt < toGmt) {
+    while (fromGmtValue < toGmt) {
       val solarTermsTime: SolarTermsTime
 
-      val fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(SUN, nextZodiacDegree, ECLIPTIC, fromGmt, true, julDayResolver)
-      fromGmt = TimeTools.getGmtJulDay(fromGmtTime)
+      val fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(SUN, nextZodiacDegree, ECLIPTIC, fromGmtValue, true, julDayResolver)
+      fromGmtValue = TimeTools.getGmtJulDay2(fromGmtTime)
 
-      if (fromGmt > toGmt)
+      if (fromGmtValue > toGmt)
         break
       nowST = nowST.next()
       solarTermsTime = SolarTermsTime(nowST, fromGmtTime)
@@ -71,7 +71,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
   /**
    * @return 計算，從 某時刻開始，的下一個（或上一個）節氣的時間點為何
    */
-  override fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: Double, forward: Boolean): Double {
+  override fun getSolarTermsTime(solarTerms: SolarTerms, fromGmtJulDay: GmtJulDay, forward: Boolean): GmtJulDay {
     val zodiacDegree = solarTerms.zodiacDegree
     return starTransitImpl.getNextTransitGmt(SUN, solarTerms.zodiacDegree.toZodiacDegree(), fromGmtJulDay, forward, ECLIPTIC)
   }
@@ -81,7 +81,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    * 上一個「節」是什麼，其 GMT JulDay 為何
    * 下一個「節」是什麼，其 GMT JulDay 為何
    */
-  override fun getMajorSolarTermsGmtBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+  override fun getMajorSolarTermsGmtBetween(gmtJulDay: GmtJulDay): Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>> {
 
     return getSolarTermsBetween(gmtJulDay).let { pair ->
       if (pair.first.first.major) {
@@ -107,7 +107,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
    * 上一個 節/氣 是什麼，其 GMT JulDay 為何
    * 下一個 節/氣 是什麼，其 GMT JulDay 為何
    */
-  override fun getSolarTermsBetween(gmtJulDay: Double): Pair<Pair<SolarTerms, Double>, Pair<SolarTerms, Double>> {
+  override fun getSolarTermsBetween(gmtJulDay: GmtJulDay): Pair<Pair<SolarTerms, GmtJulDay>, Pair<SolarTerms, GmtJulDay>> {
     val prevSolarTerms = getSolarTermsFromGMT(gmtJulDay)
     val prevGmtJulDay = starTransitImpl.getNextTransitGmt(SUN, prevSolarTerms.zodiacDegree.toZodiacDegree(), gmtJulDay, false, ECLIPTIC)
     val nextSolarTerms = prevSolarTerms.next()
@@ -116,7 +116,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
   }
 
   /** 取得目前時刻與 兩個主要「節」、一個「氣」的相對位置 */
-  override fun getSolarTermsPosition(gmtJulDay: Double): SolarTermsTimePos {
+  override fun getSolarTermsPosition(gmtJulDay: GmtJulDay): SolarTermsTimePos {
 
     return getSolarTermsBetween(gmtJulDay).let { pair ->
       if (pair.first.first.major) {

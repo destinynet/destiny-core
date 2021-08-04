@@ -1,5 +1,6 @@
 package destiny.core.chinese
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.iching.Hexagram
@@ -15,22 +16,22 @@ import java.util.*
  */
 class DailyHexagramAverage5Impl(val solarTermsImpl: ISolarTerms) : IDailyHexagram, Serializable {
 
-  override fun getHexagram(gmtJulDay: Double): Pair<Hexagram, Pair<Double, Double>> {
+  override fun getHexagram(gmtJulDay: GmtJulDay): Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>> {
     val majorBetween = solarTermsImpl.getMajorSolarTermsGmtBetween(gmtJulDay)
 
-    val avgGap = (majorBetween.second.second - majorBetween.first.second) / 5
+    val avgGap: Double = (majorBetween.second.second - majorBetween.first.second) / 5
 
     // 0~4
     val index: Int = ((gmtJulDay - majorBetween.first.second) / avgGap).toInt()
 
     val hex: Hexagram = branchHexagramsMap.getValue(majorBetween.first.first.branch)[index]
 
-    return hex to majorBetween.first.second.let { init ->
-      init + avgGap * index to init + avgGap * (index + 1)
+    return hex to majorBetween.first.second.let { init: GmtJulDay ->
+      (init + avgGap * index) to (init + avgGap * (index + 1))
     }
   }
 
-  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean): Pair<Double, Double>? {
+  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: GmtJulDay, forward: Boolean): Pair<GmtJulDay, GmtJulDay>? {
     val hex = Hexagram.of(hexagram)
     return branchHexagramsMap.filterValues { list -> list.contains(hex) }.entries.firstOrNull()?.let { (branch, list) ->
       val majorSolarTerms = SolarTerms.of(branch).first()

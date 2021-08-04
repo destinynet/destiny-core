@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.core.Gender
 import destiny.core.ITimeLoc
 import destiny.core.astrology.classical.rules.Misc
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver1582CutoverImpl
 import destiny.core.calendar.TimeTools
@@ -69,7 +70,7 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 承上 , 取得 GMT , 但帶入自訂的 reverse Julian Day converter
    */
-  fun getGmt(revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  fun getGmt(revJulDayFunc: Function1<GmtJulDay, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
     return revJulDayFunc.invoke(gmtJulDay)
   }
 
@@ -83,7 +84,7 @@ interface IHoroscopeModel : ITimeLoc {
   /**
    * 承上 , 取得 LMT , 但帶入自訂的 reverse Julian Day converter
    */
-  fun getLmt(revJulDayFunc: Function1<Double, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
+  fun getLmt(revJulDayFunc: Function1<GmtJulDay, ChronoLocalDateTime<*>>): ChronoLocalDateTime<*> {
     return TimeTools.getGmtFromLmt(getGmt(revJulDayFunc), location)
   }
 
@@ -249,7 +250,7 @@ interface IHoroscopeModel : ITimeLoc {
 data class HoroscopeModel(
 
   /** GMT's Julian Day */
-  override val gmtJulDay: Double,
+  override val gmtJulDay: GmtJulDay,
 
   override val location: ILocation,
 

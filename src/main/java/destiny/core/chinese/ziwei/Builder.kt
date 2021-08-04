@@ -6,6 +6,7 @@ package destiny.core.chinese.ziwei
 import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.astrology.toString
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.Branch
@@ -74,7 +75,7 @@ class Builder(
   private val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>>,
 
   /** 歲數 (暫定虛歲），每歲的起訖時分 (in GMT)  */
-  private val vageMap: Map<Int, Pair<Double, Double>>?) : Serializable {
+  private val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?) : Serializable {
 
   /** 名稱  */
   private var name: String? = null

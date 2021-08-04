@@ -4,6 +4,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
@@ -13,10 +14,10 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IEightWordsFactory {
 
-  fun getEightWords(gmtJulDay: Double, loc: ILocation): IEightWords
+  fun getEightWords(gmtJulDay: GmtJulDay, loc: ILocation): IEightWords
 
   fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: ILocation): IEightWords {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
     return getEightWords(gmtJulDay, loc)
   }
 }

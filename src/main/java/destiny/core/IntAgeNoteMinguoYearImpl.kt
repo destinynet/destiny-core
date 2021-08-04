@@ -3,6 +3,7 @@
  */
 package destiny.core
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.JulDayResolver
 import java.io.Serializable
 import java.time.temporal.ChronoField
@@ -15,7 +16,7 @@ class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IntAgeNote,
    * 民國元年前，不輸出
    * 民國元年後，輸出 "民1" , "民109" 這樣的字串
    */
-  override fun getAgeNote(gmtJulDay: Double): String? {
+  override fun getAgeNote(gmtJulDay: GmtJulDay): String? {
     val start = julDayResolver.getLocalDateTime(gmtJulDay)
     val westYear = start.get(ChronoField.YEAR_OF_ERA)
     return if (westYear >= 1912) {
@@ -25,7 +26,7 @@ class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IntAgeNote,
     }
   }
 
-  override fun getAgeNote(startAndEnd: Pair<Double, Double>): String? {
+  override fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String? {
     return getAgeNote(startAndEnd.first)
   }
 

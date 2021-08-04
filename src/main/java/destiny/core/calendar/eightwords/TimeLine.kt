@@ -4,10 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.ZodiacSign
-import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.SolarTerms
-import destiny.core.calendar.TimeSecDecoratorChinese
-import destiny.core.calendar.TimeTools
+import destiny.core.calendar.*
 import destiny.tools.ChineseStringTools
 import destiny.tools.canvas.ColorCanvas
 import mu.KotlinLogging
@@ -17,7 +14,7 @@ class TimeLine(val model: IEightWordsContextModel,
                private val julDayResolver: JulDayResolver) : ColorCanvas(5, 70, ChineseStringTools.NULL_CHAR) {
 
   init {
-    val centerSign: Pair<ZodiacSign, Double> =
+    val centerSign: Pair<ZodiacSign, GmtJulDay> =
       if (model.solarTermsTimePos.firstHalf) {
         // 時刻 在 前半節氣
         model.nextSolarSign
@@ -27,7 +24,7 @@ class TimeLine(val model: IEightWordsContextModel,
       }
 
     // 最左邊 節氣
-    model.solarTermsTimePos.prevMajor.also { pair: Pair<SolarTerms, Double> ->
+    model.solarTermsTimePos.prevMajor.also { pair: Pair<SolarTerms, GmtJulDay> ->
       val lmt = TimeTools.getLmtFromGmt(pair.second, model.location, julDayResolver)
       val title = timeDecorator.getOutputString(lmt)
       setText(pair.first.toString(), 1, 1, title = title)

@@ -3,6 +3,8 @@
  */
 package destiny.core
 
+import destiny.core.calendar.GmtJulDay
+
 /**
  * 將 [IIntAge] 計算出來的結果 Pair[GMT , GMT] 附註年份
  * 例如，西元年份、或是民國年份、或是中國歷史紀元
@@ -10,10 +12,10 @@ package destiny.core
 interface IntAgeNote : Descriptive {
 
   /** 此時刻的註記 ( 通常只註記「西元XX年」 )  */
-  fun getAgeNote(gmtJulDay: Double): String?
+  fun getAgeNote(gmtJulDay: GmtJulDay): String?
 
   /**
    * @param startAndEnd [from GMT, to GMT] 時刻
    */
-  fun getAgeNote(startAndEnd: Pair<Double, Double>): String?
+  fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String?
 }

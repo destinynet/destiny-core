@@ -120,6 +120,10 @@ class JulDayResolver1582CutoverImpl : JulDayResolver, Serializable {
       val dateTime = getLocalDateTimeStatic(gmtJulDay)
       return Pair(dateTime.toLocalDate(), dateTime.toLocalTime())
     }
+    fun getDateTime(gmtJulDay: GmtJulDay): Pair<ChronoLocalDate, LocalTime> {
+      val dateTime = getLocalDateTimeStatic(gmtJulDay.value)
+      return Pair(dateTime.toLocalDate(), dateTime.toLocalTime())
+    }
 
     /**
      * 利用一個字串 's' 來建立整個時間 , 格式如下：

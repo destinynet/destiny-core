@@ -2,6 +2,7 @@ package destiny.core.chinese.holo
 
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.Yuan
 import destiny.core.calendar.eightwords.IEightWords
@@ -73,7 +74,7 @@ interface IHoloContext {
     yearStem: Stem,
     yearHexagram: IHexagram,
     yearYuanTang: Int,
-    gmt: Double
+    gmt: GmtJulDay
   ): IHoloHexagramWithStemBranch
 
   /**
@@ -85,7 +86,7 @@ interface IHoloContext {
   fun getDailyHexagram(
     monthHexagram: IHexagram,
     monthYuanTang: Int,
-    viewGmt: Double,
+    viewGmt: GmtJulDay,
     loc: ILocation
   ): IHoloHexagramWithStemBranch
 
@@ -94,7 +95,7 @@ interface IHoloContext {
     lmt: ChronoLocalDateTime<*>,
     loc: ILocation,
     gender: Gender,
-    gmt: Double,
+    gmt: GmtJulDay,
     name: String? = null,
     place: String? = null
   ): Pair<IHolo, List<IHoloHexagram>>

@@ -5,6 +5,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.StemBranch
 import java.time.chrono.ChronoLocalDateTime
@@ -23,7 +24,7 @@ interface IDay {
    * @param location 當地地點
    * @return 日辰干支
    */
-  fun getDay(gmtJulDay: Double, location: ILocation): StemBranch
+  fun getDay(gmtJulDay: GmtJulDay, location: ILocation): StemBranch
 
 
   /**
@@ -36,5 +37,5 @@ interface IDay {
   /**
    * 取得 GMT 此時刻，在此地 的一日，從何時，到何時 (gmt)
    */
-  fun getDayRange(gmtJulDay: Double , location: ILocation) : Pair<Double , Double>
+  fun getDayRange(gmtJulDay: GmtJulDay , location: ILocation) : Pair<GmtJulDay , GmtJulDay>
 }

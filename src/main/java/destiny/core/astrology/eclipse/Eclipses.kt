@@ -3,13 +3,15 @@
  */
 package destiny.core.astrology.eclipse
 
+import destiny.core.calendar.GmtJulDay
+
 /** 日食、月食 的最上層 抽象 class  */
 interface IEclipse {
-  val begin: Double
+  val begin: GmtJulDay
 
   /** 不論是 全食、偏食、還是環食，都會有「最大值」  */
-  val max: Double
-  val end: Double
+  val max: GmtJulDay
+  val end: GmtJulDay
 }
 
 /** 日食 */
@@ -30,14 +32,14 @@ interface ISolarEclipsePartial : ISolarEclipse
 
 /** 日全食 */
 interface ISolarEclipseTotal : ISolarEclipsePartial {
-  val totalBegin: Double
-  val totalEnd: Double
+  val totalBegin: GmtJulDay
+  val totalEnd: GmtJulDay
 }
 
 /** 日環食 , 為 , 日全食 的一種 */
 interface ISolarEclipseAnnular : ISolarEclipseTotal {
-  val annularBegin: Double
-  val annularEnd: Double
+  val annularBegin: GmtJulDay
+  val annularEnd: GmtJulDay
 }
 
 /** 混合型 , 全環食 , 非常罕見 */
@@ -46,8 +48,8 @@ interface ISolarEclipseHybrid : ISolarEclipseAnnular
 
 /** 中線 ， 開始與結束  */
 interface IEclipseCenter {
-  val centerBegin: Double
-  val centerEnd: Double
+  val centerBegin: GmtJulDay
+  val centerEnd: GmtJulDay
 }
 
 /** 日食 的集合 */
@@ -55,25 +57,25 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
 
   /** 日偏食 */
   data class SolarEclipsePartial(
-    override val begin: Double,
-    override val max: Double,
-    override val end: Double) : AbstractSolarEclipse(), ISolarEclipsePartial {
+    override val begin: GmtJulDay,
+    override val max: GmtJulDay,
+    override val end: GmtJulDay) : AbstractSolarEclipse(), ISolarEclipsePartial {
     override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.PARTIAL
   }
 
   /** 日全食 , 為 偏食 的一種 , 內定「無中線」 */
   data class SolarEclipseTotal(
     private val partial: SolarEclipsePartial,
-    override val totalBegin: Double,
-    override val totalEnd: Double) : AbstractSolarEclipse(), ISolarEclipse by partial, ISolarEclipseTotal {
+    override val totalBegin: GmtJulDay,
+    override val totalEnd: GmtJulDay) : AbstractSolarEclipse(), ISolarEclipse by partial, ISolarEclipseTotal {
     override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.TOTAL
   }
 
   /** 日全食 , 有中線 */
   data class SolarEclipseTotalCentered(
     private val total: SolarEclipseTotal,
-    override val centerBegin: Double,
-    override val centerEnd: Double) : AbstractSolarEclipse(), ISolarEclipseTotal by total, IEclipseCenter {
+    override val centerBegin: GmtJulDay,
+    override val centerEnd: GmtJulDay) : AbstractSolarEclipse(), ISolarEclipseTotal by total, IEclipseCenter {
     override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.TOTAL
   }
 
@@ -81,16 +83,16 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
   data class SolarEclipseAnnular(
     private val total: SolarEclipseTotal,
     // NOTE : swisseph 尚未實作 annular Begin/End 之值， 都會傳回 0.0
-    override val annularBegin: Double,
-    override val annularEnd: Double) : AbstractSolarEclipse(), ISolarEclipseTotal by total, ISolarEclipseAnnular {
+    override val annularBegin: GmtJulDay,
+    override val annularEnd: GmtJulDay) : AbstractSolarEclipse(), ISolarEclipseTotal by total, ISolarEclipseAnnular {
     override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.ANNULAR
   }
 
   /** 日環食 , 有中線 */
   data class SolarEclipseAnnularCentered(
     private val annular: SolarEclipseAnnular,
-    override val centerBegin: Double,
-    override val centerEnd: Double) : AbstractSolarEclipse(), ISolarEclipseAnnular by annular, IEclipseCenter {
+    override val centerBegin: GmtJulDay,
+    override val centerEnd: GmtJulDay) : AbstractSolarEclipse(), ISolarEclipseAnnular by annular, IEclipseCenter {
     override val solarType: ISolarEclipse.SolarType = ISolarEclipse.SolarType.ANNULAR
   }
 
@@ -115,12 +117,12 @@ sealed class AbstractSolarEclipse : ISolarEclipse {
 /** 月食 */
 interface ILunarEclipse : IEclipse {
   /** 半影開始 (P1) , 最早 , 可視為整個 eclipse 的 begin  */
-  val penumbraBegin: Double
+  val penumbraBegin: GmtJulDay
     get() = begin
 
 
   /** 半影結束 (P4) , 最遲 , 可視為整個 eclipse 的 end    */
-  val penumbraEnd: Double
+  val penumbraEnd: GmtJulDay
     get() = end
 
   enum class LunarType {
@@ -154,9 +156,9 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
 
   /** 半影月食 */
   data class LunarEclipsePenumbra(
-    override val begin: Double,
-    override val max: Double,
-    override val end: Double) : AbstractLunarEclipse() {
+    override val begin: GmtJulDay,
+    override val max: GmtJulDay,
+    override val end: GmtJulDay) : AbstractLunarEclipse() {
     override val lunarType: ILunarEclipse.LunarType = ILunarEclipse.LunarType.PENUMBRA
   }
 

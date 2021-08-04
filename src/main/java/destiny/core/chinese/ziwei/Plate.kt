@@ -5,6 +5,7 @@ package destiny.core.chinese.ziwei
 
 import destiny.core.DayNight
 import destiny.core.Gender
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.chinese.Branch
@@ -79,7 +80,7 @@ interface IPlate : Serializable {
   val notes: List<String>
 
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
-  val vageMap: Map<Int, Pair<Double, Double>>?
+  val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?
 
   val summaries: List<String>
 
@@ -279,7 +280,7 @@ data class Plate(
   override val notes: List<String>,
 
   /** 虛歲，每歲的起訖時分 (fromGmt , toGmt)  */
-  override val vageMap: Map<Int, Pair<Double, Double>>?,
+  override val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?,
 
   override val summaries: List<String>) : IPlate, Serializable {
 

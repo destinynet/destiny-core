@@ -64,7 +64,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
    * @param yuanTangIndexFrom1 元堂 (1~6)
    * @return Holo卦象 以及 出生之後每個立春的GMT時刻(亦即：原歲數截止時刻 & 新歲數開始時刻 ）
    */
-  fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: Double, initStemBranch: IStemBranch): List<HoloLine> {
+  fun getHoloHexagramAndAgeList(hex: Hexagram, yuanTangIndexFrom1: Int, initGmtJulDay: GmtJulDay, initStemBranch: IStemBranch): List<HoloLine> {
     return generateSequence { hex.yinYangs }
       .flatten()
       .drop(yuanTangIndexFrom1 - 1) // 從「元堂」爻開始
@@ -201,7 +201,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
   override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?): IHolo {
     val yuan = sanYuanImpl.getYuan(lmt, loc)
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
     val ew: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
 
     // 天數
@@ -350,17 +350,17 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
         val (hex, yuanTang, start) = if (indexFrom0 % 2 == 0) {
           // 單月 (立春 ...)
           val (hex, yuanTang) = switch(lastOddHex, lastOddHex.yuanTang + 1)
-          val start: Double = if (list.isEmpty()) springStart else list.last().endExclusive
+          val start: GmtJulDay = if (list.isEmpty()) springStart else list.last().endExclusive
           Triple(hex, yuanTang, start)
         } else {
           // 雙月 (驚蟄 ...)
           val (hex, yuanTang) = switch(lastHex, lastHex.yuanTang + 3)
-          val start: Double = list.last().endExclusive
+          val start: GmtJulDay = list.last().endExclusive
           Triple(hex, yuanTang, start)
         }
 
         val stemBranches: List<StemBranch> = (1..6).map { settings.getStemBranch(hex, it) }.toList()
-        val end: Double = solarTermsImpl.getSolarTermsTime(solarTerms.next().next(), start, true)
+        val end: GmtJulDay = solarTermsImpl.getSolarTermsTime(solarTerms.next().next(), start, true)
         val holoHex = HoloHexagram(IHoloHexagram.Scale.MONTH, hex, yuanTang, stemBranches, start, end)
         // 五虎遁年起月訣
         val monthStem = StemBranchUtils.getMonthStem(yearHexagram.stemBranch.stem, solarTerms.branch)
@@ -376,7 +376,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
    * @param yearHexagram 該年卦象
    * @param yearYuanTang 該年元堂
    */
-  override fun getMonthlyHexagram(yearStem: Stem, yearHexagram: IHexagram, yearYuanTang: Int, gmt: Double): IHoloHexagramWithStemBranch {
+  override fun getMonthlyHexagram(yearStem: Stem, yearHexagram: IHexagram, yearYuanTang: Int, gmt: GmtJulDay): IHoloHexagramWithStemBranch {
     val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmt)
 
     val monthNum = solarTerms.branch.getAheadOf(寅) + 1 // 1~12
@@ -424,7 +424,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
    * @param monthYuanTang 流月元堂 (index start from 1)
    * @param viewGmt 當下的 GMT 時刻
    */
-  override fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: Double, loc: ILocation): IHoloHexagramWithStemBranch {
+  override fun getDailyHexagram(monthHexagram: IHexagram, monthYuanTang: Int, viewGmt: GmtJulDay, loc: ILocation): IHoloHexagramWithStemBranch {
 
     // 計算此時刻，處於何節氣中 , 開始為何時
     val (_, startGmt) = solarTermsImpl.getMajorSolarTermsGmtBetween(viewGmt).first
@@ -448,12 +448,12 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
 
     val hourImpl = eightWordsImpl.dayHourImpl.hourImpl
 
-    val start = if (dayImpl.changeDayAfterZi) {
+    val start: GmtJulDay = if (dayImpl.changeDayAfterZi) {
       hourImpl.getGmtPrevStartOf(viewGmt, loc, 子)
     } else {
       dayImpl.midnightImpl.getPrevMidnight(viewGmt, loc)
     }
-    val end = if (dayImpl.changeDayAfterZi) {
+    val end: GmtJulDay = if (dayImpl.changeDayAfterZi) {
       hourImpl.getGmtNextStartOf(viewGmt, loc, 子)
     } else {
       dayImpl.midnightImpl.getNextMidnight(viewGmt, loc)
@@ -467,7 +467,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
   } // 流日
 
   /** 傳回 本命先後天卦、以及此 gmt 時刻 的大運、流年、流月 等資訊 */
-  override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: Double, name: String?, place: String?): Pair<IHolo, List<IHoloHexagram>> {
+  override fun getHoloWithTime(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, gmt: GmtJulDay, name: String?, place: String?): Pair<IHolo, List<IHoloHexagram>> {
 
     val holo = getHolo(lmt, loc, gender, name, place)
     val congenitalLines: List<HoloLine> = holo.hexagramCongenital.lines

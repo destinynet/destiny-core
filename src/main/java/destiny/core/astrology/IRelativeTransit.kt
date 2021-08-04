@@ -5,6 +5,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -29,8 +30,8 @@ interface IRelativeTransit {
   fun getRelativeTransit(transitStar: Star,
                          relativeStar: Star,
                          angle: Double,
-                         gmtJulDay: Double,
-                         isForward: Boolean): Double?
+                         gmtJulDay: GmtJulDay,
+                         isForward: Boolean): GmtJulDay?
 
   fun getRelativeTransit(transitStar: Star,
                          relativeStar: Star,
@@ -38,7 +39,7 @@ interface IRelativeTransit {
                          fromGmt: ChronoLocalDateTime<*>,
                          isForward: Boolean,
                          julDayResolver: JulDayResolver): ChronoLocalDateTime<*>? {
-    val gmtJulDay = TimeTools.getGmtJulDay(fromGmt)
+    val gmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
 
     return getRelativeTransit(
       transitStar, relativeStar, angle, gmtJulDay, isForward
@@ -52,9 +53,9 @@ interface IRelativeTransit {
    */
   fun getPeriodRelativeTransitGmtJulDays(transitStar: Star,
                                          relativeStar: Star,
-                                         fromJulDay: Double,
-                                         toJulDay: Double,
-                                         angle: Double): List<Double> {
+                                         fromJulDay: GmtJulDay,
+                                         toJulDay: GmtJulDay,
+                                         angle: Double): List<GmtJulDay> {
 
     return generateSequence(getRelativeTransit(transitStar, relativeStar, angle, fromJulDay, true)) {
       getRelativeTransit(transitStar, relativeStar, angle, it + 0.000001, true)
@@ -69,8 +70,8 @@ interface IRelativeTransit {
    */
   fun getPeriodRelativeTransitGMTs(transitStar: Star,
                                    relativeStar: Star,
-                                   fromJulDay: Double,
-                                   toJulDay: Double,
+                                   fromJulDay: GmtJulDay,
+                                   toJulDay: GmtJulDay,
                                    angle: Double,
                                    julDayResolver: JulDayResolver): List<ChronoLocalDateTime<*>> {
     return getPeriodRelativeTransitGmtJulDays(transitStar, relativeStar, fromJulDay, toJulDay, angle)
@@ -85,8 +86,8 @@ interface IRelativeTransit {
                                    toGmt: ChronoLocalDateTime<*>,
                                    angle: Double,
                                    julDayResolver: JulDayResolver): List<ChronoLocalDateTime<*>> {
-    val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
-    val toGmtJulDay = TimeTools.getGmtJulDay(toGmt)
+    val fromGmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
+    val toGmtJulDay = TimeTools.getGmtJulDay2(toGmt)
     return getPeriodRelativeTransitGMTs(transitStar, relativeStar, fromGmtJulDay, toGmtJulDay, angle, julDayResolver)
   }
 
@@ -105,8 +106,8 @@ interface IRelativeTransit {
     return getPeriodRelativeTransitGmtJulDays(
       transitStar,
       relativeStar,
-      TimeTools.getGmtJulDay(fromGmt),
-      TimeTools.getGmtJulDay(toGmt),
+      TimeTools.getGmtJulDay2(fromGmt),
+      TimeTools.getGmtJulDay2(toGmt),
       angle
     )
       .map { gmtJulDay ->
@@ -126,9 +127,9 @@ interface IRelativeTransit {
    */
   fun getNearestRelativeTransitGmtJulDay(transitStar: Star,
                                          relativeStar: Star,
-                                         fromGmtJulDay: Double,
+                                         fromGmtJulDay: GmtJulDay,
                                          angles: Collection<Double>,
-                                         forward: Boolean): Pair<Double, Double>? {
+                                         forward: Boolean): Pair<GmtJulDay, Double>? {
     /**
      * 相交 270 度也算 90 度
      * 相交 240 度也是 120 度
@@ -173,15 +174,15 @@ interface IRelativeTransit {
                                          relativeStar: Star,
                                          fromGmt: ChronoLocalDateTime<*>,
                                          angles: Collection<Double>,
-                                         isForward: Boolean): Pair<Double, Double>? {
-    val gmtJulDay = TimeTools.getGmtJulDay(fromGmt)
+                                         isForward: Boolean): Pair<GmtJulDay, Double>? {
+    val gmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
     return getNearestRelativeTransitGmtJulDay(transitStar, relativeStar, gmtJulDay, angles, isForward)
   }
 
   /**
    * 找尋下一個與 [transitStar] 形成交角的資料
    */
-  fun getNearestRelativeTransitGmtJulDay(transitStar: Star , relativeStars: Collection<Star> , fromGmtJulDay: Double , aspects : Collection<Aspect> , forward: Boolean): IAspectData? {
+  fun getNearestRelativeTransitGmtJulDay(transitStar: Star, relativeStars: Collection<Star>, fromGmtJulDay: GmtJulDay, aspects : Collection<Aspect>, forward: Boolean): IAspectData? {
 
     return relativeStars.filter { it != transitStar }.mapNotNull { eachOther ->
       getNearestRelativeTransitGmtJulDay(transitStar, eachOther, fromGmtJulDay, aspects.map { it.degree }, forward)

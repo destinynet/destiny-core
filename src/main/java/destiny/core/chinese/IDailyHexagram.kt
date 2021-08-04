@@ -4,6 +4,7 @@
 package destiny.core.chinese
 
 import destiny.core.Descriptive
+import destiny.core.calendar.GmtJulDay
 import destiny.core.chinese.Branch.*
 import destiny.core.iching.Hexagram
 import destiny.core.iching.Hexagram.*
@@ -44,13 +45,13 @@ interface IDailyHexagram : Descriptive {
   /**
    * 取得當下的值日卦，起迄時刻的 gmt julDay 為何
    */
-  fun getHexagram(gmtJulDay: Double): Pair<Hexagram, Pair<Double, Double>>
+  fun getHexagram(gmtJulDay: GmtJulDay): Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>>
 
   /**
    * 取得某時刻之後 (或之前)，出現此卦的 時間點範圍
    * @param forward true : 順查 , false : 逆查
    */
-  fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean = true): Pair<Double, Double>?
+  fun getDutyDays(hexagram: IHexagram, gmtJulDay: GmtJulDay, forward: Boolean = true): Pair<GmtJulDay, GmtJulDay>?
 }
 
 interface IDailyHexagramService {
@@ -58,24 +59,24 @@ interface IDailyHexagramService {
   /**
    * 取得當下的值日卦，起迄時刻的 gmt julDay 為何
    */
-  fun getHexagramMap(gmtJulDay: Double) : Map<IDailyHexagram , Pair<Hexagram , Pair<Double , Double>>>
+  fun getHexagramMap(gmtJulDay: GmtJulDay) : Map<IDailyHexagram , Pair<Hexagram , Pair<GmtJulDay , GmtJulDay>>>
 
   /**
    * 取得從此時刻之後（或之前）， 在不同的值日系統下， 遇到此卦的值日時刻，是從何時到何時
    */
-  fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean = true): Map<IDailyHexagram, Pair<Double, Double>>
+  fun getDutyDays(hexagram: IHexagram, gmtJulDay: GmtJulDay, forward: Boolean = true): Map<IDailyHexagram, Pair<GmtJulDay, GmtJulDay>>
 }
 
 
 class DailyHexagramService(val impls: Set<IDailyHexagram>) : IDailyHexagramService, Serializable {
 
-  override fun getHexagramMap(gmtJulDay: Double): Map<IDailyHexagram, Pair<Hexagram, Pair<Double, Double>>> {
+  override fun getHexagramMap(gmtJulDay: GmtJulDay): Map<IDailyHexagram, Pair<Hexagram, Pair<GmtJulDay, GmtJulDay>>> {
     return impls.associateWith {
       it.getHexagram(gmtJulDay)
     }
   }
 
-  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: Double, forward: Boolean): Map<IDailyHexagram, Pair<Double, Double>> {
+  override fun getDutyDays(hexagram: IHexagram, gmtJulDay: GmtJulDay, forward: Boolean): Map<IDailyHexagram, Pair<GmtJulDay, GmtJulDay>> {
     return impls.map {
       it to it.getDutyDays(hexagram, gmtJulDay, forward)
     }.filter {

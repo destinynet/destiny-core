@@ -7,6 +7,7 @@ import destiny.core.astrology.Centric
 import destiny.core.astrology.Coordinate
 import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.Planet
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -26,7 +27,7 @@ open class YearEclipticDegreeImpl(
   private val starPositionImpl: IStarPosition<*> ,
   private val julDayResolver: JulDayResolver) : IYear, Serializable {
 
-  override fun getYear(gmtJulDay: Double, loc: ILocation): StemBranch {
+  override fun getYear(gmtJulDay: GmtJulDay, loc: ILocation): StemBranch {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val resultStemBranch: StemBranch

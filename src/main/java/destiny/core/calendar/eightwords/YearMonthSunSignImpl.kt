@@ -4,6 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.IStarPosition
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.JulDayResolver
@@ -40,7 +41,7 @@ class YearMonthSunSignImpl(starPositionImpl: IStarPosition<*>,
     return "以節氣加星座 劃分月令：節氣的「節」與「氣」之間，屬於上一個星座，天干不變，地支退一位"
   }
 
-  override fun getMonth(gmtJulDay: Double, location: ILocation): IStemBranch {
+  override fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch {
     // 原始 月干支
     val originalMonth = ymSolarTermsStarPositionImpl.getMonth(gmtJulDay, location)
 

@@ -49,7 +49,7 @@ class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPos
   /**
    * @return 取得月干支
    */
-  override fun getMonth(gmtJulDay: Double, location: ILocation): IStemBranch {
+  override fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch {
     val resultMonthBranch: Branch
     //先算出太陽在黃經上的度數
 
@@ -124,7 +124,7 @@ class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPos
    * 甲寅之上好追求。
    *
    */
-  private fun getMonthStem(gmtJulDay: Double, yearStem: Stem, monthBranch: Branch): Stem {
+  private fun getMonthStem(gmtJulDay: GmtJulDay, yearStem: Stem, monthBranch: Branch): Stem {
 
     // 月干
     var monthStem: Stem = StemBranchUtils.getMonthStem(yearStem, monthBranch)

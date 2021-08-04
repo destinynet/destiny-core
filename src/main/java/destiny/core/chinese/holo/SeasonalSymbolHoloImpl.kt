@@ -1,5 +1,6 @@
 package destiny.core.chinese.holo
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ISolarTerms
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.SolarTerms.*
@@ -26,7 +27,7 @@ enum class EndSeasonSymbolSpan {
  */
 class SeasonalSymbolHoloImpl(val solarTermsImpl: ISolarTerms ,
                              private val endSeasonSymbolSpan: EndSeasonSymbolSpan) : ISeasonalSymbol, Serializable {
-  override fun getSeasonalSymbol(gmtJulDay: Double): Set<Symbol> {
+  override fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol> {
 
     val solarTerms: SolarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 

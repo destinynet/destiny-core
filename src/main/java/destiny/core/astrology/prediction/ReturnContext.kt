@@ -6,6 +6,7 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.IVoidCourse
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
@@ -25,11 +26,11 @@ interface IReturnContext : Conversable, IDiscrete {
   val precession: Boolean
 
   /** 對外主要的 method , 取得 return 盤  */
-  fun getReturnHoroscope(natalGmtJulDay: Double, natalLoc: ILocation, nowGmtJulDay: Double, nowLoc: ILocation): IHoroscopeModel
+  fun getReturnHoroscope(natalGmtJulDay: GmtJulDay, natalLoc: ILocation, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel
 
   fun getReturnHoroscope(natalLmt: ChronoLocalDateTime<*>, natalLoc: ILocation, nowLmt: ChronoLocalDateTime<*>, nowLoc: ILocation): IHoroscopeModel {
-    val natalGmtJulDay = TimeTools.getGmtJulDay(natalLmt , natalLoc)
-    val nowGmtJulDay = TimeTools.getGmtJulDay(nowLmt , nowLoc)
+    val natalGmtJulDay = TimeTools.getGmtJulDay2(natalLmt , natalLoc)
+    val nowGmtJulDay = TimeTools.getGmtJulDay2(nowLmt , nowLoc)
     return getReturnHoroscope(natalGmtJulDay , natalLoc ,  nowGmtJulDay , nowLoc)
   }
 }
@@ -59,8 +60,8 @@ class ReturnContext(
 ) : IReturnContext, Serializable {
 
 
-  override fun getReturnHoroscope(natalGmtJulDay: Double, natalLoc: ILocation, nowGmtJulDay: Double, nowLoc: ILocation): IHoroscopeModel {
-    val convergentGmtJulDay: Double = getConvergentTime(natalGmtJulDay, nowGmtJulDay)
+  override fun getReturnHoroscope(natalGmtJulDay: GmtJulDay, natalLoc: ILocation, nowGmtJulDay: GmtJulDay, nowLoc: ILocation): IHoroscopeModel {
+    val convergentGmtJulDay = getConvergentTime(natalGmtJulDay, nowGmtJulDay)
     val convergentGmt = julDayResolver.getLocalDateTime(convergentGmtJulDay)
 
     val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
@@ -71,7 +72,7 @@ class ReturnContext(
   }
 
 
-  override fun getConvergentTime(natalGmtJulDay: Double, nowGmtJulDay: Double): Double {
+  override fun getConvergentTime(natalGmtJulDay: GmtJulDay, nowGmtJulDay: GmtJulDay): GmtJulDay {
     val coordinate = if (precession) Coordinate.SIDEREAL else Coordinate.ECLIPTIC
     //先計算出生盤中，該星體的黃道位置
     val natalPlanetDegree: ZodiacDegree = starPositionWithAzimuthImpl.getPosition(planet, natalGmtJulDay, Centric.GEO, coordinate).lngDeg

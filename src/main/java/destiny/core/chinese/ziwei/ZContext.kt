@@ -9,6 +9,7 @@ import destiny.core.DayNight
 import destiny.core.Gender
 import destiny.core.IIntAge
 import destiny.core.IntAgeNote
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.SolarTerms
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
@@ -117,7 +118,7 @@ interface IZiweiContext {
     hour: Branch,
     dayNight: DayNight = (if (listOf(卯, 辰, 巳, 午, 未, 申).contains(hour)) DayNight.DAY else DayNight.NIGHT),
     gender: Gender,
-    optionalVageMap: Map<Int, Pair<Double, Double>>? = null
+    optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? = null
   ): Builder
 
   /**
@@ -448,7 +449,7 @@ class ZContext(
     hour: Branch,
     dayNight: DayNight,
     gender: Gender,
-    optionalVageMap: Map<Int, Pair<Double, Double>>?
+    optionalVageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?
   ): Builder {
     // 排盤之中所產生的註解 , Pair<KEY , parameters>
     val notesBuilders = mutableListOf<Pair<String, Array<Any>>>()
@@ -663,10 +664,10 @@ class ZContext(
      * 歲數 map , 2018-06-03 改 optional . 因為不想在 core 內 , depend on ChineseDateCalendricaImpl
      * 不然就得開發另一套非常簡易的 [IIntAge] 在此使用
      */
-    val vageMap: Map<Int, Pair<Double, Double>>? =
+    val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? =
       optionalVageMap ?: if (chineseDateImpl != null && intAgeImpl != null) {
         val gmt = chineseDateImpl.getYangDate(chineseDate).atTime(LocalTime.NOON)
-        val gmtJulDay = TimeTools.getGmtJulDay(gmt)
+        val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
         intAgeImpl.getRangesMap(gender, gmtJulDay, locationOf(Locale.UK), 1, 130) // 參數沒有 loc 資訊，時間傳回 GMT , 就以 UK 作為地點
       } else {
         null

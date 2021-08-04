@@ -3,12 +3,13 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 
 open class PositionLunarPointImpl(val starPositionImpl: IStarPosition<*>, lunarPoint: LunarPoint) :
   AbstractPositionImpl<LunarPoint>(lunarPoint) {
 
-  override fun getPosition(gmtJulDay: Double,
+  override fun getPosition(gmtJulDay: GmtJulDay,
                            loc: ILocation,
                            centric: Centric,
                            coordinate: Coordinate,
