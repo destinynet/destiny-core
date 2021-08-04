@@ -15,10 +15,6 @@ interface JulDayResolver {
 
   fun getLocalDateTime(gmtJulDay: GmtJulDay): ChronoLocalDateTime<*>
 
-  fun getLocalDateTime(gmtJulDay: Double): ChronoLocalDateTime<*> {
-    return getLocalDateTime(GmtJulDay(gmtJulDay))
-  }
-
   /** 從 gmt instant 轉為 GMT Time  */
   fun getLocalDateTimeFromInstant(gmtInstant: Instant): ChronoLocalDateTime<*>
 

@@ -27,7 +27,7 @@ object TimeTools {
   private val logger = KotlinLogging.logger { }
 
   /**
-   * ======================================== GMT [Instant] -> julian day [Double] ========================================
+   * ======================================== GMT [Instant] -> julian day [GmtJulDay] ========================================
    */
 
   /**
@@ -38,7 +38,7 @@ object TimeTools {
     val zdt = instant.atZone(GMT)
     val halfAddedJulDay = zdt.getLong(JULIAN_DAY)
     val localTime = zdt.toLocalTime()
-    return getGmtJulDay(halfAddedJulDay, localTime).toGmtJulDay()
+    return getGmtJulDay(halfAddedJulDay, localTime)
   }
 
 
@@ -59,7 +59,7 @@ object TimeTools {
   }
 
   /**
-   * ======================================== GMT [ChronoLocalDateTime] -> julian day [Double] ========================================
+   * ======================================== GMT [ChronoLocalDateTime] -> julian day [GmtJulDay] ========================================
    */
 
   /**
@@ -86,7 +86,7 @@ object TimeTools {
 
 
   /**
-   * ======================================== LMT [ChronoLocalDateTime] -> julian day [Double] ========================================
+   * ======================================== LMT [ChronoLocalDateTime] -> julian day [GmtJulDay] ========================================
    */
 
 
@@ -172,12 +172,6 @@ object TimeTools {
     }
   }
 
-  fun getLmtFromGmt(gmtJulDay: Double,
-                    location: ILocation,
-                    julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
-    return getLmtFromGmt(gmt, location)
-  }
 
   fun getLmtFromGmt(gmtJulDay: GmtJulDay,
                     location: ILocation,
@@ -392,14 +386,14 @@ object TimeTools {
       yearOfEra
   }
 
-  private fun getGmtJulDay(halfAddedJulDay: Long, localTime: LocalTime): Double {
+  private fun getGmtJulDay(halfAddedJulDay: Long, localTime: LocalTime): GmtJulDay {
     val hour = localTime.hour
     val min = localTime.minute
     val sec = localTime.second
     val nano = localTime.nano
     val dayValue = hour / 24.0 + min / 1440.0 + sec / 86400.0 + nano / (1_000_000_000.0 * 86400)
 
-    return halfAddedJulDay - 0.5 + dayValue
+    return (halfAddedJulDay - 0.5 + dayValue).toGmtJulDay()
   }
 
   /**

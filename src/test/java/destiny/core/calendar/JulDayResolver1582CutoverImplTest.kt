@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar
 
+import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import org.threeten.extra.chrono.JulianDate
 import org.threeten.extra.chrono.JulianEra
 import java.time.LocalDate
@@ -107,7 +108,7 @@ class JulDayResolver1582CutoverImplTest {
   fun julDay2DateTime_year1() {
 
     // 西元元年 , 一月一號 , 凌晨零時
-    val firstDay = Constants.JulianYear1.JULIAN_DAY
+    val firstDay = Constants.JulianYear1.JULIAN_DAY.toGmtJulDay()
 
     var localDate: ChronoLocalDate
     var localTime: LocalTime

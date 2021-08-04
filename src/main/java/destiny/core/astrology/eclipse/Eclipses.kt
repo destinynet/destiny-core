@@ -137,19 +137,19 @@ interface ILunarEclipse : IEclipse {
 /** 月偏食 */
 interface ILunarEclipsePartial : ILunarEclipse {
   /** 月亮最先碰觸地球本影 (U1) , 此時月亮剛接觸 Umbra */
-  val partialBegin: Double
+  val partialBegin: GmtJulDay
 
   /** 月亮完全離開地球本影 (U4) , 此時月亮剛離開 Umbra  */
-  val partialEnd: Double
+  val partialEnd: GmtJulDay
 }
 
 /** 月全食 */
 interface ILunarEclipseTotal : ILunarEclipsePartial {
   /** 月亮全部進入地球本影 剛開始 (U2)  */
-  val totalBegin: Double
+  val totalBegin: GmtJulDay
 
   /** 月亮全部進入地球本影 剛結束 (U3)  */
-  val totalEnd: Double
+  val totalEnd: GmtJulDay
 }
 
 sealed class AbstractLunarEclipse : ILunarEclipse {
@@ -165,16 +165,16 @@ sealed class AbstractLunarEclipse : ILunarEclipse {
   /** 月偏食 */
   data class LunarEclipsePartial(
     private val penumbra: LunarEclipsePenumbra,
-    override val partialBegin: Double,
-    override val partialEnd: Double) : AbstractLunarEclipse(), ILunarEclipse by penumbra, ILunarEclipsePartial {
+    override val partialBegin: GmtJulDay,
+    override val partialEnd: GmtJulDay) : AbstractLunarEclipse(), ILunarEclipse by penumbra, ILunarEclipsePartial {
     override val lunarType: ILunarEclipse.LunarType = ILunarEclipse.LunarType.PARTIAL
   }
 
   /** 月全食 */
   data class LunarEclipseTotal(
     private val partial: LunarEclipsePartial,
-    override val totalBegin: Double,
-    override val totalEnd: Double) : AbstractLunarEclipse(), ILunarEclipsePartial by partial, ILunarEclipseTotal {
+    override val totalBegin: GmtJulDay,
+    override val totalEnd: GmtJulDay) : AbstractLunarEclipse(), ILunarEclipsePartial by partial, ILunarEclipseTotal {
     override val lunarType: ILunarEclipse.LunarType = ILunarEclipse.LunarType.TOTAL
   }
 
