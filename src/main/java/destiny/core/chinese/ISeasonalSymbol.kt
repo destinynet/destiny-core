@@ -18,7 +18,7 @@ interface ISeasonalSymbol {
   fun getSeasonalSymbol(gmtJulDay: GmtJulDay): Set<Symbol>
 
   fun getSeasonalSymbol(lmt: ChronoLocalDateTime<*>, loc: ILocation): Set<Symbol> {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getSeasonalSymbol(gmtJulDay)
   }
 }

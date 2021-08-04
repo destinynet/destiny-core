@@ -71,10 +71,10 @@ class SanYuanImpl(val solarTermsImpl: ISolarTerms) : ISanYuan, Serializable {
       ISanYuan.getYuan(prolepticYear)
     } else {
       // 每 60年交會，要特別計算 立春
-      val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+      val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
       val startOfYear = gmt.with(LocalDate.of(prolepticYear, 1, 1))
         .with(LocalTime.of(0, 0))
-      val startOfYearGmtJulDay = TimeTools.getGmtJulDay2(startOfYear)
+      val startOfYearGmtJulDay = TimeTools.getGmtJulDay(startOfYear)
       // 立春JD
       val julDayOfSpring = solarTermsImpl.getSolarTermsTime(SolarTerms.立春, startOfYearGmtJulDay, true)
       if (gmtJulDay >= julDayOfSpring) {

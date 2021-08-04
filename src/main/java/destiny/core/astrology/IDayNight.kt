@@ -20,6 +20,6 @@ interface IDayNight : Descriptive {
 
   fun getDayNight(lmt: ChronoLocalDateTime<*>, location: ILocation): DayNight {
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
-    return getDayNight(TimeTools.getGmtJulDay2(gmt), location)
+    return getDayNight(TimeTools.getGmtJulDay(gmt), location)
   }
 }

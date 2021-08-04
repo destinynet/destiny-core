@@ -27,7 +27,7 @@ interface IApsis {
                   gmt: ChronoLocalDateTime<*>,
                   coordinate: Coordinate,
                   nodeType: NodeType): IStarPos {
-    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPosition(star, apsis, gmtJulDay, coordinate, nodeType)
   }
 

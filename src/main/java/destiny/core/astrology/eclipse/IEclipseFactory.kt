@@ -38,7 +38,7 @@ interface IEclipseFactory {
   /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 全部 種類的日食 */
   fun getRangeSolarEclipses(fromGmt: ChronoLocalDateTime<*>,
                             toGmt: ChronoLocalDateTime<*>): List<AbstractSolarEclipse> {
-    return getRangeSolarEclipses(TimeTools.getGmtJulDay2(fromGmt), TimeTools.getGmtJulDay2(toGmt))
+    return getRangeSolarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt))
   }
 
   /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 單一種類的日食 */
@@ -46,7 +46,7 @@ interface IEclipseFactory {
                             toGmt: ChronoLocalDateTime<*>,
                             type: ISolarEclipse.SolarType
   ): List<AbstractSolarEclipse> {
-    return getRangeSolarEclipses(TimeTools.getGmtJulDay2(fromGmt), TimeTools.getGmtJulDay2(toGmt), listOf(type))
+    return getRangeSolarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt), listOf(type))
   }
 
   // ================================== 月食 ==================================
@@ -70,7 +70,7 @@ interface IEclipseFactory {
   /** 承上 , [ChronoLocalDateTime] 版本 , 搜尋 全部 種類的月食  */
   fun getRangeLunarEclipses(fromGmt: ChronoLocalDateTime<*>,
                             toGmt: ChronoLocalDateTime<*>): List<AbstractLunarEclipse> {
-    return getRangeLunarEclipses(TimeTools.getGmtJulDay2(fromGmt), TimeTools.getGmtJulDay2(toGmt))
+    return getRangeLunarEclipses(TimeTools.getGmtJulDay(fromGmt), TimeTools.getGmtJulDay(toGmt))
   }
 
   // ================================== 日食觀測 ==================================
@@ -102,7 +102,7 @@ interface IEclipseFactory {
                                       lat: Double,
                                       lng: Double,
                                       alt: Double): ISolarEclipseObservation? {
-    return getSolarEclipseObservationAtLoc(TimeTools.getGmtJulDay2(gmt), lat, lng, alt)
+    return getSolarEclipseObservationAtLoc(TimeTools.getGmtJulDay(gmt), lat, lng, alt)
   }
 
 

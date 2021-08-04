@@ -66,7 +66,7 @@ interface IHouseCusp : IRisingSign {
   fun getHouseCusp(index: Int, gmtJulDay: GmtJulDay, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacDegree
 
   fun getHouseCusp(index: Int, lmt: ChronoLocalDateTime<*>, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacDegree {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     return getHouseCusp(index, gmtJulDay, location, houseSystem, coordinate)
   }
 

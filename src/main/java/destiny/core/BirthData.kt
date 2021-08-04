@@ -20,7 +20,7 @@ interface ITimeLoc : Serializable {
 
   val gmtJulDay: GmtJulDay
     get() {
-      return TimeTools.getGmtJulDay2(time, location)
+      return TimeTools.getGmtJulDay(time, location)
     }
 }
 

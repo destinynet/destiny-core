@@ -667,7 +667,7 @@ class ZContext(
     val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>? =
       optionalVageMap ?: if (chineseDateImpl != null && intAgeImpl != null) {
         val gmt = chineseDateImpl.getYangDate(chineseDate).atTime(LocalTime.NOON)
-        val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
+        val gmtJulDay = TimeTools.getGmtJulDay(gmt)
         intAgeImpl.getRangesMap(gender, gmtJulDay, locationOf(Locale.UK), 1, 130) // 參數沒有 loc 資訊，時間傳回 GMT , 就以 UK 作為地點
       } else {
         null

@@ -27,8 +27,8 @@ interface Mappable {
    */
   fun getConvergentTime(natalTime: ChronoLocalDateTime<*>, nowTime: ChronoLocalDateTime<*>,
                         julDayResolver: JulDayResolver = JulDayResolver1582CutoverImpl()): ChronoLocalDateTime<*> {
-    val natalGmtJulDay = TimeTools.getGmtJulDay2(natalTime)
-    val nowGmtJulDay = TimeTools.getGmtJulDay2(nowTime)
+    val natalGmtJulDay = TimeTools.getGmtJulDay(natalTime)
+    val nowGmtJulDay = TimeTools.getGmtJulDay(nowTime)
 
     return julDayResolver.getLocalDateTime(getConvergentTime(natalGmtJulDay, nowGmtJulDay))
   }

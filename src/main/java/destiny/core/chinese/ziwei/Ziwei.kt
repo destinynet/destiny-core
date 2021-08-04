@@ -209,7 +209,7 @@ interface Ziwei {
         val yinDate = ChineseDate(cycle, flowYear, flowMonth, leap, i)
 
         val yangDate = chineseDateImpl.getYangDate(yinDate)
-        val lmtJulDay = (TimeTools.getGmtJulDay(yangDate.atTime(LocalTime.MIDNIGHT)) + 0.5).toInt()
+        val lmtJulDay = (TimeTools.getGmtJulDay(yangDate.atTime(LocalTime.MIDNIGHT)).value + 0.5).toInt()
         val index = (lmtJulDay - 11) % 60
         val sb = StemBranch[index]
         list.add(Triple(yinDate, yangDate, sb))

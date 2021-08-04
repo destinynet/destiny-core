@@ -31,7 +31,7 @@ class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
                                   location: ILocation,
                                   gender: Gender,
                                   count: Int): List<FortuneData> {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
     var sb = when (eightWords.day.cycle) {
       StemBranchCycle.甲子 -> if (gender == Gender.男) StemBranch.丙寅.prev else StemBranch.壬申.next

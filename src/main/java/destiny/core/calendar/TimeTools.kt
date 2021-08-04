@@ -33,12 +33,12 @@ object TimeTools {
   /**
    * @param instant 從 「GMT」定義的 [Instant] 轉換成 Julian Day
    */
-  fun getJulDay(instant: Instant): Double {
+  fun getJulDay(instant: Instant): GmtJulDay {
     // 先取得「被加上 0.5 的」 julian day
     val zdt = instant.atZone(GMT)
     val halfAddedJulDay = zdt.getLong(JULIAN_DAY)
     val localTime = zdt.toLocalTime()
-    return getGmtJulDay(halfAddedJulDay, localTime)
+    return getGmtJulDay(halfAddedJulDay, localTime).toGmtJulDay()
   }
 
 
@@ -46,7 +46,7 @@ object TimeTools {
    * 從「帶有 Zone」的時間，查詢當下的 julDay
    * 必須先轉為 GMT
    */
-  fun getJulDay(zdt: ChronoZonedDateTime<*>): Double {
+  fun getJulDay(zdt: ChronoZonedDateTime<*>): GmtJulDay {
     val gmt = zdt.withZoneSameInstant(GMT)
     return getGmtJulDay(gmt.toLocalDateTime())
   }
@@ -71,21 +71,16 @@ object TimeTools {
    * | ISO date          |  Julian Day Number | Astronomical Julian Day |
    * | 1970-01-01T00:00  |         2,440,588  |         2,440,587.5     |
    */
-  fun getGmtJulDay(gmt: ChronoLocalDateTime<*>): Double {
+  fun getGmtJulDay(gmt: ChronoLocalDateTime<*>): GmtJulDay {
     val gmtInstant = gmt.toInstant(ZoneOffset.UTC)
     return getJulDay(gmtInstant)
-  }
-
-  fun getGmtJulDay2(gmt: ChronoLocalDateTime<*>): GmtJulDay {
-    val gmtInstant = gmt.toInstant(ZoneOffset.UTC)
-    return getJulDay(gmtInstant).toGmtJulDay()
   }
 
 
   /**
    * 承上， date + time 拆開來的版本
    */
-  fun getGmtJulDay(date: ChronoLocalDate, localTime: LocalTime): Double {
+  fun getGmtJulDay(date: ChronoLocalDate, localTime: LocalTime): GmtJulDay {
     return getGmtJulDay(date.atTime(localTime))
   }
 
@@ -98,19 +93,11 @@ object TimeTools {
   /**
    * 直接從 LMT 傳回 gmt 的 jul day
    */
-  fun getGmtJulDay(lmt: ChronoLocalDateTime<*>, loc: ILocation): Double {
+  fun getGmtJulDay(lmt: ChronoLocalDateTime<*>, loc: ILocation): GmtJulDay {
     val gmt = getGmtFromLmt(lmt, loc)
     return getGmtJulDay(gmt)
-  }
-  fun getGmtJulDay2(lmt: ChronoLocalDateTime<*>, loc: ILocation): GmtJulDay {
-    val gmt = getGmtFromLmt(lmt, loc)
-    return getGmtJulDay(gmt).toGmtJulDay()
   }
 
-  fun getGmtJulDay(lmt: ChronoLocalDateTime<*>, zoneId: ZoneId): Double {
-    val gmt = getGmtFromLmt(lmt, zoneId)
-    return getGmtJulDay(gmt)
-  }
 
 
   // ======================================== LMT -> GMT ========================================

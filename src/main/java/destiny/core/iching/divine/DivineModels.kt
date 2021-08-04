@@ -4,6 +4,7 @@
 package destiny.core.iching.divine
 
 import destiny.core.Gender
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWordsNullable
 import destiny.core.calendar.eightwords.IEightWordsNullableFactory
@@ -191,7 +192,7 @@ interface IDivineMeta : IMeta {
   val gender: Gender?
   val question: String?
   val approach: DivineApproach?
-  val gmtJulDay: Double?
+  val gmtJulDay: GmtJulDay?
   val loc: ILocation?
   val place: String?
 
@@ -205,7 +206,7 @@ data class DivineMeta(
   override val gender: Gender?,
   override val question: String?,
   override val approach: DivineApproach?,
-  override val gmtJulDay: Double? = null,
+  override val gmtJulDay: GmtJulDay? = null,
   override val loc: ILocation? = locationOf(Locale.TAIWAN),
   override val place: String?,
   override val decoratedDate: String?,

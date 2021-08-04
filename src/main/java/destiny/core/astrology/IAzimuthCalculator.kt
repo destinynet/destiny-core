@@ -62,7 +62,7 @@ interface IAzimuthCalculator {
                              location: ILocation,
                              temperature: Double = 0.0,
                              pressure: Double = 1013.25): Azimuth {
-    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getAzimuthFromEcliptic(eclipticPosition, gmtJulDay, location, temperature, pressure)
   }
 

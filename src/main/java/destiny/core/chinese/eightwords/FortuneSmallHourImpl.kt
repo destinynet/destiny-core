@@ -40,7 +40,7 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
 
     val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     return implByRangesMap(gmtJulDay, eightWords, gender, location, count, forward)
   }

@@ -102,8 +102,8 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     set.addAll(listSolarTerms)
     set.addAll(listSunMoonAngle)
 
-    val fromGmtJulDay = TimeTools.getGmtJulDay2(lmtStart, loc)
-    val toGmtJulDay = TimeTools.getGmtJulDay2(lmtEnd, loc)
+    val fromGmtJulDay = TimeTools.getGmtJulDay(lmtStart, loc)
+    val toGmtJulDay = TimeTools.getGmtJulDay(lmtEnd, loc)
 
     // 日食
     eclipseImpl.getNextSolarEclipse(fromGmtJulDay, true, ISolarEclipse.SolarType.values().toList()).also { eclipse ->

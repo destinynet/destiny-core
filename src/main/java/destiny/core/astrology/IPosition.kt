@@ -24,7 +24,7 @@ interface IPosition<out T : Point> {
                   loc: ILocation,
                   centric: Centric = Centric.GEO,
                   coordinate: Coordinate = Coordinate.ECLIPTIC): IPos {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getPosition(gmtJulDay, loc, centric, coordinate, 0.0, 1013.25)
   }
 

@@ -33,7 +33,7 @@ class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, S
       .with(SECOND_OF_MINUTE, 0)
       .with(NANO_OF_SECOND, 0)
     val resultGmt = TimeTools.getGmtFromLmt(resultLmt, loc)
-    return TimeTools.getGmtJulDay2(resultGmt)
+    return TimeTools.getGmtJulDay(resultGmt)
   }
 
 

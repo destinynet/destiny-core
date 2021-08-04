@@ -57,7 +57,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     val lmt = TimeTools.getLmtFromGmt(gmt, location)
     val lmtResult = getLmtNextStartOf(lmt, location, eb, julDayResolver)
     val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
-    return TimeTools.getGmtJulDay2(gmtResult)
+    return TimeTools.getGmtJulDay(gmtResult)
   }
 
 
@@ -99,7 +99,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     val lmt = TimeTools.getLmtFromGmt(gmt, location)
     val lmtResult = getLmtPrevStartOf(lmt, location, eb, julDayResolver)
     val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
-    return TimeTools.getGmtJulDay2(gmtResult)
+    return TimeTools.getGmtJulDay(gmtResult)
   }
 
   /**

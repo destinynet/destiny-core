@@ -69,7 +69,7 @@ class LunarStationDailyImpl(private val dayHourImpl: IDayHour,
     val noon = lmt.with(ChronoField.HOUR_OF_DAY, 12)
       .with(ChronoField.MINUTE_OF_HOUR, 0)
       .with(ChronoField.SECOND_OF_MINUTE, 0)
-    val noonJulDay = TimeTools.getGmtJulDay(noon).toInt().let {
+    val noonJulDay = TimeTools.getGmtJulDay(noon).value.toInt().let {
 
       if (hourSb == Branch.子) {
         if (lmt.get(ChronoField.HOUR_OF_DAY) > 12) {

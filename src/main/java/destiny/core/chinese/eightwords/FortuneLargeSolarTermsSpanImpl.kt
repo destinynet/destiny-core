@@ -65,7 +65,7 @@ class FortuneLargeSolarTermsSpanImpl(
                                   count: Int): List<FortuneData> {
     val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, location)
     val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, location)
 
@@ -224,7 +224,7 @@ class FortuneLargeSolarTermsSpanImpl(
                              location: ILocation,
                              gender: Gender,
                              targetGmt: ChronoLocalDateTime<*>): IStemBranch {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
 
     require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }

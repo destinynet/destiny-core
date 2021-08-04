@@ -85,25 +85,25 @@ class InstantTest {
     var instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT)
     var halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
-    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5, TimeTools.getJulDay(instant))        // jul day + 0
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5, TimeTools.getJulDay(instant).value)        // jul day + 0
 
     // 當天 6:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 6)
     halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
-    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.25, TimeTools.getJulDay(instant))  // jul day + 0.25
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.25, TimeTools.getJulDay(instant).value)  // jul day + 0.25
 
     // 當天中午 12:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 12)
     halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
-    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.5, TimeTools.getJulDay(instant))   // jul day + 0.5
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.5, TimeTools.getJulDay(instant).value)   // jul day + 0.5
 
     // 當天下午 18:00
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + 60 * 60 * 18)
     halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF, halfAddedJulDay)
-    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.75, TimeTools.getJulDay(instant))   // jul day + 0.75
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 0.75, TimeTools.getJulDay(instant).value)   // jul day + 0.75
 
     // 當天下午 23:59
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + (60 * 60 * 23).toLong() + (60 * 59).toLong() + 59)
@@ -114,7 +114,7 @@ class InstantTest {
     instant = Instant.ofEpochSecond(GREGORIAN_START_INSTANT + (60 * 60 * 23).toLong() + (60 * 59).toLong() + 60)
     halfAddedJulDay = instant.atZone(ZoneId.of("GMT")).getLong(JULIAN_DAY)
     assertEquals(REAL_JUL_DAY_PLUS_HALF + 1, halfAddedJulDay)
-    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 1, TimeTools.getJulDay(instant))   // jul day + 1
+    assertEquals(REAL_JUL_DAY_PLUS_HALF - 0.5 + 1, TimeTools.getJulDay(instant).value)   // jul day + 1
   }
 
   /**

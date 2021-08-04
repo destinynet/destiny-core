@@ -17,7 +17,7 @@ interface IEightWordsFactory {
   fun getEightWords(gmtJulDay: GmtJulDay, loc: ILocation): IEightWords
 
   fun getEightWords(lmt: ChronoLocalDateTime<*>, loc: ILocation): IEightWords {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getEightWords(gmtJulDay, loc)
   }
 }

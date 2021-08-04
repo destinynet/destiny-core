@@ -44,7 +44,7 @@ interface IStarPosition<out T : IStarPos> {
    * @param gmt GMT 的 Gregorian 時刻
    */
   fun getPosition(star: Star, gmt: ChronoLocalDateTime<*>, centric: Centric, coordinate: Coordinate): T {
-    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPosition(star, gmtJulDay, centric, coordinate)
   }
 
@@ -59,7 +59,7 @@ interface IStarPosition<out T : IStarPos> {
                   loc: ILocation,
                   temperature: Double,
                   pressure: Double): IPos {
-    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPosition(star, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, centric, coordinate,
       temperature, pressure)
   }

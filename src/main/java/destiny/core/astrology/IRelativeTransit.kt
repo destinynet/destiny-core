@@ -39,7 +39,7 @@ interface IRelativeTransit {
                          fromGmt: ChronoLocalDateTime<*>,
                          isForward: Boolean,
                          julDayResolver: JulDayResolver): ChronoLocalDateTime<*>? {
-    val gmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(fromGmt)
 
     return getRelativeTransit(
       transitStar, relativeStar, angle, gmtJulDay, isForward
@@ -86,8 +86,8 @@ interface IRelativeTransit {
                                    toGmt: ChronoLocalDateTime<*>,
                                    angle: Double,
                                    julDayResolver: JulDayResolver): List<ChronoLocalDateTime<*>> {
-    val fromGmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
-    val toGmtJulDay = TimeTools.getGmtJulDay2(toGmt)
+    val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
+    val toGmtJulDay = TimeTools.getGmtJulDay(toGmt)
     return getPeriodRelativeTransitGMTs(transitStar, relativeStar, fromGmtJulDay, toGmtJulDay, angle, julDayResolver)
   }
 
@@ -106,8 +106,8 @@ interface IRelativeTransit {
     return getPeriodRelativeTransitGmtJulDays(
       transitStar,
       relativeStar,
-      TimeTools.getGmtJulDay2(fromGmt),
-      TimeTools.getGmtJulDay2(toGmt),
+      TimeTools.getGmtJulDay(fromGmt),
+      TimeTools.getGmtJulDay(toGmt),
       angle
     )
       .map { gmtJulDay ->
@@ -175,7 +175,7 @@ interface IRelativeTransit {
                                          fromGmt: ChronoLocalDateTime<*>,
                                          angles: Collection<Double>,
                                          isForward: Boolean): Pair<GmtJulDay, Double>? {
-    val gmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(fromGmt)
     return getNearestRelativeTransitGmtJulDay(transitStar, relativeStar, gmtJulDay, angles, isForward)
   }
 

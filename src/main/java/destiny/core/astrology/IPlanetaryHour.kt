@@ -23,15 +23,15 @@ interface IPlanetaryHour {
   fun getPlanetaryHour(gmtJulDay: GmtJulDay, loc: Location): PlanetaryHour
 
   fun getPlanetaryHour(lmt: ChronoLocalDateTime<*>, loc: Location): Planet {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getPlanetaryHour(gmtJulDay, loc).planet
   }
 
   fun getPlanetaryHours(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: Location): List<PlanetaryHour>
 
   fun getPlanetaryHours(fromLmt: ChronoLocalDateTime<*>, toLmt: ChronoLocalDateTime<*>, loc: Location): List<PlanetaryHour> {
-    val fromGmt = TimeTools.getGmtJulDay2(fromLmt, loc)
-    val toGmt = TimeTools.getGmtJulDay2(toLmt, loc)
+    val fromGmt = TimeTools.getGmtJulDay(fromLmt, loc)
+    val toGmt = TimeTools.getGmtJulDay(toLmt, loc)
     return getPlanetaryHours(fromGmt, toGmt, loc)
   }
 }

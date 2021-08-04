@@ -201,7 +201,7 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
   override fun getHolo(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?): IHolo {
     val yuan = sanYuanImpl.getYuan(lmt, loc)
 
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     val ew: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
 
     // 天數

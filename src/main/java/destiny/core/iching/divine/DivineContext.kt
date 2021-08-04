@@ -63,7 +63,7 @@ class DivineContext(
   ): ICombinedFull {
 
     val combinedWithMetaNameDayMonth = getCombinedWithMetaNameDayMonth(src, dst, eightWordsNullable, locale)
-    val gmtJulDay: Double? = lmt?.let { TimeTools.getGmtJulDay(it, loc) }
+    val gmtJulDay: GmtJulDay? = lmt?.let { TimeTools.getGmtJulDay(it, loc) }
 
     logger.debug("eightWordsNullable = {}", eightWordsNullable)
     val decoratedDate = lmt?.let { DateDecorator.getOutputString(it.toLocalDate(), Locale.TAIWAN) }

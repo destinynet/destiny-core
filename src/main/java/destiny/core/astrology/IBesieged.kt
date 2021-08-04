@@ -58,7 +58,7 @@ interface IBesieged {
 
   // 承上 , gmt 版本
   fun getBesiegingPlanets(planet: Planet, gmt: ChronoLocalDateTime<*>, classicalPlanets: Boolean, aspects: Collection<Aspect>): List<Planet> {
-    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getBesiegingPlanets(planet, gmtJulDay, classicalPlanets, aspects)
   }
 

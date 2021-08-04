@@ -72,23 +72,23 @@ class TimeToolsYear1582Test {
     assertEquals(TimeTools.getGmtJulDay(d3J), TimeTools.getGmtJulDay(d3G))
     assertEquals(TimeTools.getGmtJulDay(d4J), TimeTools.getGmtJulDay(d4G))
 
-    assertEquals(firstDayOfGregorian - 2, TimeTools.getGmtJulDay(d1J))
-    assertEquals(firstDayOfGregorian - 1, TimeTools.getGmtJulDay(d2J))
-    assertEquals(firstDayOfGregorian, TimeTools.getGmtJulDay(d3J))  // cutover 開始
-    assertEquals(firstDayOfGregorian + 1, TimeTools.getGmtJulDay(d4J))
+    assertEquals(firstDayOfGregorian - 2, TimeTools.getGmtJulDay(d1J).value)
+    assertEquals(firstDayOfGregorian - 1, TimeTools.getGmtJulDay(d2J).value)
+    assertEquals(firstDayOfGregorian, TimeTools.getGmtJulDay(d3J).value)  // cutover 開始
+    assertEquals(firstDayOfGregorian + 1, TimeTools.getGmtJulDay(d4J).value)
 
-    assertEquals(firstDayOfGregorian - 2, TimeTools.getGmtJulDay(d1G))
-    assertEquals(firstDayOfGregorian - 1, TimeTools.getGmtJulDay(d2G))
-    assertEquals(firstDayOfGregorian, TimeTools.getGmtJulDay(d3G))  // cutover 開始
-    assertEquals(firstDayOfGregorian + 1, TimeTools.getGmtJulDay(d4G))
+    assertEquals(firstDayOfGregorian - 2, TimeTools.getGmtJulDay(d1G).value)
+    assertEquals(firstDayOfGregorian - 1, TimeTools.getGmtJulDay(d2G).value)
+    assertEquals(firstDayOfGregorian, TimeTools.getGmtJulDay(d3G).value)  // cutover 開始
+    assertEquals(firstDayOfGregorian + 1, TimeTools.getGmtJulDay(d4G).value)
 
 
 
-    assertEquals(firstDayOfGregorian + 0.5, TimeTools.getGmtJulDay(d3J.plus(12, ChronoUnit.HOURS)))  // cutover 開始 + 12小時
-    assertEquals(firstDayOfGregorian + 0.5, TimeTools.getGmtJulDay(d3G.plus(12, ChronoUnit.HOURS)))  // cutover 開始 + 12小時
+    assertEquals(firstDayOfGregorian + 0.5, TimeTools.getGmtJulDay(d3J.plus(12, ChronoUnit.HOURS)).value)  // cutover 開始 + 12小時
+    assertEquals(firstDayOfGregorian + 0.5, TimeTools.getGmtJulDay(d3G.plus(12, ChronoUnit.HOURS)).value)  // cutover 開始 + 12小時
 
-    assertEquals(firstDayOfGregorian - 0.25, TimeTools.getGmtJulDay(d3J.minus(6, ChronoUnit.HOURS))) // cutover 開始 - 6小時
-    assertEquals(firstDayOfGregorian - 0.25, TimeTools.getGmtJulDay(d3G.minus(6, ChronoUnit.HOURS))) // cutover 開始 - 6小時
+    assertEquals(firstDayOfGregorian - 0.25, TimeTools.getGmtJulDay(d3J.minus(6, ChronoUnit.HOURS)).value) // cutover 開始 - 6小時
+    assertEquals(firstDayOfGregorian - 0.25, TimeTools.getGmtJulDay(d3G.minus(6, ChronoUnit.HOURS)).value) // cutover 開始 - 6小時
   }
 
   /**
@@ -96,8 +96,8 @@ class TimeToolsYear1582Test {
    */
   @Test
   fun dateTime2JulDay() {
-    assertEquals(firstDayOfGregorian, TimeTools.getGmtJulDay(LocalDate.of(1582, 10, 15), LocalTime.MIDNIGHT))
-    assertEquals(firstDayOfGregorian - 1, TimeTools.getGmtJulDay(JulianDate.of(1582, 10, 4), LocalTime.MIDNIGHT))
+    assertEquals(firstDayOfGregorian, TimeTools.getGmtJulDay(LocalDate.of(1582, 10, 15), LocalTime.MIDNIGHT).value)
+    assertEquals(firstDayOfGregorian - 1, TimeTools.getGmtJulDay(JulianDate.of(1582, 10, 4), LocalTime.MIDNIGHT).value)
   }
 
 

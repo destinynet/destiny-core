@@ -58,7 +58,7 @@ class FortuneLargeSpanImpl(
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
 
     val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, location)
 
@@ -225,7 +225,7 @@ class FortuneLargeSpanImpl(
                              gender: Gender,
                              targetGmt: ChronoLocalDateTime<*>): IStemBranch {
 
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val gmt = TimeTools.getGmtFromLmt(lmt, location)
 
 

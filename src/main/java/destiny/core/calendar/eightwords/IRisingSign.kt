@@ -24,7 +24,7 @@ interface IRisingSign : Descriptive {
    * 但是 [HouseSystem.VEHLOW_EQUAL] 的確會影響上升星座！
    */
   fun getRisingSign(lmt: ChronoLocalDateTime<*>, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacSign {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     return getRisingSign(gmtJulDay, location, houseSystem, coordinate)
   }
 

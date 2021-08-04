@@ -56,7 +56,7 @@ class IntAgeZiweiImpl(private val chineseDateImpl: IChineseDate,
     // 利用「隔年、陰曆、一月二日、中午」作為「逆推」日月合朔的時間點
     val next1YearJan2Time = chineseDateImpl.getYangDate(next1YearJan2).atTime(LocalTime.NOON)
 
-    val next1YearJan2Gmt = TimeTools.getGmtJulDay2(next1YearJan2Time)
+    val next1YearJan2Gmt = TimeTools.getGmtJulDay(next1YearJan2Time)
     val value = relativeTransitImpl.getRelativeTransit(Planet.MOON, Planet.SUN, 0.0, next1YearJan2Gmt, false)
     if (value != null)
       return value

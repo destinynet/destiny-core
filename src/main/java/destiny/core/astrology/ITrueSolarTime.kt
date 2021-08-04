@@ -5,6 +5,7 @@
  */
 package destiny.core.astrology
 
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.Location
 import destiny.core.calendar.TimeTools
 import mu.KotlinLogging
@@ -23,7 +24,7 @@ interface ITrueSolarTime {
    * 均時差 = 真太陽時 - LMT
    * 真太陽時 = LMT + 均時差
    */
-  fun getEquationSecs(gmtJulDay: Double): Double
+  fun getEquationSecs(gmtJulDay: GmtJulDay): Double
 
   fun getEquationSecs(gmtTime: ChronoLocalDateTime<*>): Double {
     val gmtJulDay = TimeTools.getGmtJulDay(gmtTime)

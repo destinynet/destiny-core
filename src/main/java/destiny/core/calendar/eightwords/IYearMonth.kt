@@ -27,7 +27,7 @@ interface IYear {
    * @return 年干支（天干地支皆傳回）
    */
   fun getYear(lmt: ChronoLocalDateTime<*>, loc: ILocation): StemBranch {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getYear(gmtJulDay, loc)
   }
 
@@ -51,7 +51,7 @@ interface IMonth {
   fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch
 
   fun getMonth(lmt: ChronoLocalDateTime<*>, loc: ILocation): IStemBranch {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getMonth(gmtJulDay, loc)
   }
 

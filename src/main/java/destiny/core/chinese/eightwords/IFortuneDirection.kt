@@ -20,7 +20,7 @@ interface IFortuneDirection {
   fun isForward(gmtJulDay : GmtJulDay, loc : ILocation, gender: Gender) : Boolean
 
   fun isForward(lmt: ChronoLocalDateTime<*> , loc: ILocation , gender: Gender) : Boolean {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return isForward(gmtJulDay , loc, gender)
   }
 }

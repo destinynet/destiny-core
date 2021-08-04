@@ -56,7 +56,7 @@ class SolarTermsImpl(private val starTransitImpl: IStarTransit,
       val solarTermsTime: SolarTermsTime
 
       val fromGmtTime = starTransitImpl.getNextTransitGmtDateTime(SUN, nextZodiacDegree, ECLIPTIC, fromGmtValue, true, julDayResolver)
-      fromGmtValue = TimeTools.getGmtJulDay2(fromGmtTime)
+      fromGmtValue = TimeTools.getGmtJulDay(fromGmtTime)
 
       if (fromGmtValue > toGmt)
         break

@@ -29,7 +29,7 @@ interface IHour : Descriptive {
    * @return 時辰（只有地支）
    */
   fun getHour(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     return getHour(gmtJulDay, location)
   }
 
@@ -52,7 +52,7 @@ interface IHour : Descriptive {
                         location: ILocation,
                         eb: Branch,
                         julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, location, eb)
 
     val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
@@ -68,7 +68,7 @@ interface IHour : Descriptive {
                         location: ILocation,
                         eb: Branch,
                         julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val resultGmtJulDay = getGmtPrevStartOf(gmtJulDay, location, eb)
 
     val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)

@@ -42,7 +42,7 @@ interface IHoroscopeContext : Serializable {
                    loc: ILocation,
                    place: String?,
                    points: Collection<Point> = defaultPoints): IHoroscopeModel {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt, loc)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getHoroscope(gmtJulDay, loc, place, points)
   }
 

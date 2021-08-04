@@ -34,7 +34,7 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
    * @return 月大運干支
    */
   fun getStemBranchOfFortuneMonth(targetGmt: ChronoLocalDateTime<*>): IStemBranch? {
-    val gmtJulDay = TimeTools.getGmtJulDay2(targetGmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(targetGmt)
 
     return if (gmtJulDay < fortuneDataLarges[0].startFortuneGmtJulDay)
       eightWords.month // 還未上運 ，傳回 月干支

@@ -47,7 +47,7 @@ interface IRiseTrans {
                   refraction: Boolean = true,
                   atmosphericTemperature: Double = 0.0,
                   atmosphericPressure: Double = 1013.25): ChronoLocalDateTime<*>? {
-    val fromGmtJulDay = TimeTools.getGmtJulDay2(fromGmt)
+    val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
 
     return getGmtTransJulDay(
       fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,
@@ -87,8 +87,8 @@ interface IRiseTrans {
                                       refraction: Boolean = true,
                                       atmosphericTemperature: Double = 0.0,
                                       atmosphericPressure: Double = 1013.25): List<GmtJulDay> {
-    val fromGmtJulDay = TimeTools.getGmtJulDay2(TimeTools.getGmtFromLmt(fromLmtTime, location))
-    val toGmtJulDay = TimeTools.getGmtJulDay2(TimeTools.getGmtFromLmt(toLmtTime, location))
+    val fromGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(fromLmtTime, location))
+    val toGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(toLmtTime, location))
 
     return generateSequence(
       getGmtTransJulDay(fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,

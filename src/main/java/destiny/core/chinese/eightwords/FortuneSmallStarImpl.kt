@@ -22,7 +22,7 @@ class FortuneSmallStarImpl(private val intAgeImpl: IIntAge ,
                                   location: ILocation,
                                   gender: Gender,
                                   count: Int): List<FortuneData> {
-    val gmtJulDay = TimeTools.getGmtJulDay2(lmt , location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     var sb = if (gender == Gender.男) StemBranch.丙寅.prev else StemBranch.壬申.next
 
     return intAgeImpl.getRangesMap(gender , gmtJulDay , location , 1 , count).map { (age , pair) ->

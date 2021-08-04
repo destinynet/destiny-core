@@ -21,7 +21,7 @@ interface IApsisWithAzimuth : IApsis {
   fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth
 
   fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmt: ChronoLocalDateTime<*>, coordinate: Coordinate, nodeType: NodeType, location: Location, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth {
-    val gmtJulDay = TimeTools.getGmtJulDay2(gmt)
+    val gmtJulDay = TimeTools.getGmtJulDay(gmt)
     return getPositionWithAzimuth(star, apsis, gmtJulDay, coordinate, nodeType, location, temperature, pressure)
   }
 }
