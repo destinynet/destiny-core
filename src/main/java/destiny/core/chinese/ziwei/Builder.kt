@@ -75,7 +75,8 @@ class Builder(
   private val flyMap: Map<StemBranch, Set<Triple<ITransFour.Value, ZStar, Branch>>>,
 
   /** 歲數 (暫定虛歲），每歲的起訖時分 (in GMT)  */
-  private val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?) : Serializable {
+  private val vageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>?
+) : Serializable {
 
   /** 名稱  */
   private var name: String? = null
@@ -155,8 +156,10 @@ class Builder(
 
       val fromTo = flowBigMap.getValue(sb) // 必定不為空
       val smallRanges = branchSmallRangesMap.getValue(sb.branch)
-      HouseData(house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
-        fromTo.second, smallRanges)
+      HouseData(
+        house, sb, stars.toMutableSet(), branchFlowHouseMap.getValue(sb.branch), flyMap.getValue(sb), fromTo.first,
+        fromTo.second, smallRanges
+      )
     }.toSet()
 
   } // builder init
@@ -396,9 +399,11 @@ class Builder(
       listOf(line1, line2, line3)
     }
 
-    val plate = Plate(name, chineseDate, localDateTime, year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
+    val plate = Plate(
+      name, chineseDate, localDateTime, year, location, place, dayNight, gender, mainHouse, bodyHouse, mainStar,
       bodyStar, fiveElement, state, houseDataSet, transFourMap, branchFlowHouseMap, flowBranchMap, starStrengthMap, notes,
-      vageMap, summaries)
+      vageMap, summaries
+    )
     return if (personModel == null) {
       plate
     } else {

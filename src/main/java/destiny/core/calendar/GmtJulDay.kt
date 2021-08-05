@@ -1,9 +1,10 @@
 package destiny.core.calendar
 
 import kotlinx.datetime.Instant
+import java.io.Serializable
 
 @JvmInline
-value class GmtJulDay(val value: Double) : Comparable<GmtJulDay> {
+value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, Serializable {
 
   companion object {
     fun Number.toGmtJulDay(): GmtJulDay {

@@ -37,5 +37,9 @@ interface IDay {
   /**
    * 取得 GMT 此時刻，在此地 的一日，從何時，到何時 (gmt)
    */
-  fun getDayRange(gmtJulDay: GmtJulDay , location: ILocation) : Pair<GmtJulDay , GmtJulDay>
+  fun getDayRange(gmtJulDay: GmtJulDay, location: ILocation): Pair<GmtJulDay, GmtJulDay>
 }
+
+
+
+
