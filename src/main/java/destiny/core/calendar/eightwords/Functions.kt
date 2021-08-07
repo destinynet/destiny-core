@@ -17,12 +17,12 @@ import java.time.temporal.ChronoUnit
 val logger = KotlinLogging.logger { }
 
 
-val getDayAsLmt = { lmt: ChronoLocalDateTime<*>,
-                    location: ILocation,
-                    hourImpl: IHour,
-                    midnightImpl: IMidnight,
-                    changeDayAfterZi: Boolean,
-                    julDayResolver: JulDayResolver ->
+fun getDay(lmt: ChronoLocalDateTime<*>,
+           location: ILocation,
+           hourImpl: IHour,
+           midnightImpl: IMidnight,
+           changeDayAfterZi: Boolean,
+           julDayResolver: JulDayResolver): StemBranch {
 
   // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
   val lmtJulDay = (TimeTools.getGmtJulDay(lmt).value + 0.5).toInt()
@@ -69,16 +69,16 @@ val getDayAsLmt = { lmt: ChronoLocalDateTime<*>,
         index++
     }
   }
-  StemBranch[index]
+  return StemBranch[index]
 }
 
-private val getIndex = { index: Int, nextMidnightLmt: ChronoLocalDateTime<*>,
-                         lmt: ChronoLocalDateTime<*>,
-                         hourImpl: IHour,
-                         location: ILocation,
-                         changeDayAfterZi: Boolean,
-                         nextZi: ChronoLocalDateTime<*>,
-                         julDayResolver: JulDayResolver ->
+private fun getIndex(index: Int, nextMidnightLmt: ChronoLocalDateTime<*>,
+                     lmt: ChronoLocalDateTime<*>,
+                     hourImpl: IHour,
+                     location: ILocation,
+                     changeDayAfterZi: Boolean,
+                     nextZi: ChronoLocalDateTime<*>,
+                     julDayResolver: JulDayResolver): Int {
 
   var result = index
   //子正，在 LMT 零時之前
@@ -93,5 +93,5 @@ private val getIndex = { index: Int, nextMidnightLmt: ChronoLocalDateTime<*>,
     // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
     result++
   }
-  result
+  return result
 }

@@ -21,23 +21,16 @@ class DayFeature(
   private val dayProcessor: IDayProcessor
 ) : Feature<DayConfig, IDayProcessor, StemBranch> {
 
-  private var cfg = defaultConfig
-
   override val key: String = "day"
 
-  override fun prepare(block: DayConfig.() -> Unit): IDayProcessor {
-    cfg = defaultConfig.apply(block)
-
-    return dayProcessor
-  }
-
-  override fun IDayProcessor.getModel(gmtJulDay: GmtJulDay, loc: ILocation): StemBranch {
+  override fun IDayProcessor.getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: DayConfig.() -> Unit): StemBranch {
+    val cfg = defaultConfig.apply(block)
     return this.getDayModel(gmtJulDay, loc, cfg)
   }
 }
 
 
-class DayHourSolarTransProcessor(
+class DayHourProcessor(
   val hourImpl: IHour,
   val midnightImpl: IMidnight,
   val julDayResolver: JulDayResolver
@@ -52,7 +45,7 @@ class DayHourSolarTransProcessor(
 
   private fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation, changeDayAfterZi: Boolean): StemBranch {
 
-    return getDayAsLmt(lmt, location, hourImpl, midnightImpl, changeDayAfterZi, julDayResolver)
+    return getDay(lmt, location, hourImpl, midnightImpl, changeDayAfterZi, julDayResolver)
   } // LMT 版本
 
   companion object {

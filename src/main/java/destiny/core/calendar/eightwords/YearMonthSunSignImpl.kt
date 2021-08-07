@@ -3,11 +3,9 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.IStarPosition
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.ISolarTerms
-import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import java.util.*
@@ -20,10 +18,8 @@ import java.util.*
  *
  * 實作方法： 包含 [YearMonthSolarTermsStarPositionImpl] , 並覆寫其 getMonth 之值
  */
-class YearMonthSunSignImpl(starPositionImpl: IStarPosition<*>,
-                           julDayResolver: JulDayResolver,
-                           private val ymSolarTermsStarPositionImpl: YearMonthSolarTermsStarPositionImpl) :
-  YearEclipticDegreeImpl(ymSolarTermsStarPositionImpl.changeYearDegree, starPositionImpl, julDayResolver), IYearMonth {
+class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSolarTermsStarPositionImpl) :
+  IYearMonth, IYear by ymSolarTermsStarPositionImpl {
 
   override val southernHemisphereOpposition: Boolean = ymSolarTermsStarPositionImpl.southernHemisphereOpposition
 
@@ -59,22 +55,16 @@ class YearMonthSunSignImpl(starPositionImpl: IStarPosition<*>,
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is YearMonthSunSignImpl) return false
-    if (!super.equals(other)) return false
 
     if (ymSolarTermsStarPositionImpl != other.ymSolarTermsStarPositionImpl) return false
-    if (southernHemisphereOpposition != other.southernHemisphereOpposition) return false
-    if (hemisphereBy != other.hemisphereBy) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = super.hashCode()
-    result = 31 * result + ymSolarTermsStarPositionImpl.hashCode()
-    result = 31 * result + southernHemisphereOpposition.hashCode()
-    result = 31 * result + hemisphereBy.hashCode()
-    return result
+    return ymSolarTermsStarPositionImpl.hashCode()
   }
+
 
   companion object {
     const val name = "120柱月令"

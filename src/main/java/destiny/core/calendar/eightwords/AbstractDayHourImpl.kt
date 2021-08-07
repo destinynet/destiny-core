@@ -28,7 +28,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
 
   override fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation): StemBranch {
 
-    return getDayAsLmt(lmt, location, hourImpl, midnightImpl, changeDayAfterZi, julDayResolver)
+    return getDay(lmt, location, hourImpl, midnightImpl, changeDayAfterZi, julDayResolver)
   } // LMT 版本
 
   /**

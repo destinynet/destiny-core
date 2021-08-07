@@ -21,11 +21,15 @@ import java.time.temporal.ChronoUnit
 /**
  * 依據太陽在黃道帶 (Ecliptic) 的度數 (Degree) 來切割年份
  */
-open class YearEclipticDegreeImpl(
+class YearEclipticDegreeImpl(
   /** 換年的度數 , 通常是立春點 (315) 換年 */
   override val changeYearDegree: Double = 315.0,
-  private val starPositionImpl: IStarPosition<*> ,
-  private val julDayResolver: JulDayResolver) : IYear, Serializable {
+  private val starPositionImpl: IStarPosition<*>,
+  private val julDayResolver: JulDayResolver) : IYear , Serializable {
+
+  init {
+    require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
+  }
 
   override fun getYear(gmtJulDay: GmtJulDay, loc: ILocation): StemBranch {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)

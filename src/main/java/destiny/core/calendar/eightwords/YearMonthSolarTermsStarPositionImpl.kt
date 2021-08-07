@@ -25,14 +25,12 @@ import java.util.*
  *
  * 具備設定 南北半球月令是否對沖﹑界定南北半球的方法（赤道/赤緯度數）
  */
-class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPosition<*>,
+class YearMonthSolarTermsStarPositionImpl(private val yearImpl: IYear,
+                                          private val starPositionImpl: IStarPosition<*>,
                                           private val starTransitImpl: IStarTransit,
                                           private val julDayResolver: JulDayResolver,
-                                          /** 換年的度數 , 通常是立春點 (315) 換年  , 另一個值通常為 270 (冬至) */
-                                          changeYearDegree: Double = 315.0,
                                           override val southernHemisphereOpposition: Boolean = false,
-                                          override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) :
-  YearEclipticDegreeImpl(changeYearDegree, starPositionImpl, julDayResolver), IYearMonth {
+                                          override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR) : IYearMonth , IYear by yearImpl{
 
   override fun toString(locale: Locale): String {
     return name
@@ -167,9 +165,7 @@ class YearMonthSolarTermsStarPositionImpl(private val starPositionImpl: IStarPos
   }
 
 
-  init {
-    require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
-  }
+
 
   companion object {
     const val name = "傳統年月"
