@@ -16,25 +16,16 @@ import destiny.tools.Feature
  */
 class YearConfig(var changeYearDegree: Double = 315.0)
 
-interface IYearProcessor {
-  fun getYearModel(gmtJulDay: GmtJulDay, location: ILocation, yearConfig: YearConfig): StemBranch
-}
-
-class YearFeature(private val defaultConfig: YearConfig) : Feature<YearConfig, IYearProcessor, StemBranch> {
+class YearFeature(private val defaultConfig: YearConfig,
+                  private val starPositionImpl: IStarPosition<*> ,
+                  private val julDayResolver: JulDayResolver) : Feature<YearConfig, StemBranch> {
 
   override val key: String = "year"
 
-  override fun IYearProcessor.getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: YearConfig.() -> Unit): StemBranch {
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: YearConfig.() -> Unit): StemBranch {
     val cfg = defaultConfig.apply(block)
-    return this.getYearModel(gmtJulDay, loc, cfg)
+    val yearEclipticDegreeImpl = YearEclipticDegreeImpl(cfg.changeYearDegree , starPositionImpl, julDayResolver)
+    return yearEclipticDegreeImpl.getYear(gmtJulDay, loc)
   }
 }
 
-class YearProcessorImpl(private val starPositionImpl: IStarPosition<*> ,
-                        private val julDayResolver: JulDayResolver) : IYearProcessor {
-
-  override fun getYearModel(gmtJulDay: GmtJulDay, location: ILocation, yearConfig: YearConfig): StemBranch {
-    val yearEclipticDegreeImpl = YearEclipticDegreeImpl(yearConfig.changeYearDegree , starPositionImpl, julDayResolver)
-    return yearEclipticDegreeImpl.getYear(gmtJulDay, location)
-  }
-}
