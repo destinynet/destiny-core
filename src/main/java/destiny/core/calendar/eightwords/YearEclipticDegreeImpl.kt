@@ -3,19 +3,13 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.Centric
-import destiny.core.astrology.Coordinate
 import destiny.core.astrology.IStarPosition
-import destiny.core.astrology.Planet
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
-import destiny.core.calendar.TimeTools
 import destiny.core.chinese.StemBranch
 import mu.KotlinLogging
 import java.io.Serializable
-import java.time.temporal.ChronoField
-import java.time.temporal.ChronoUnit
 
 
 /**
@@ -28,73 +22,12 @@ class YearEclipticDegreeImpl(
   private val julDayResolver: JulDayResolver) : IYear , Serializable {
 
   init {
-    require(changeYearDegree > 180) { "Cannot set changeYearDegree smaller than 180 " }
+    require(changeYearDegree > 180 && changeYearDegree < 360) { "changeYearDegree should between 180 and 360" }
   }
 
   override fun getYear(gmtJulDay: GmtJulDay, loc: ILocation): StemBranch {
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
-    val resultStemBranch: StemBranch
-    //西元 1984 年為 甲子年
-    val index = if (lmt.get(ChronoField.YEAR) > 0)
-      (lmt.get(ChronoField.YEAR) - 1984) % 60
-    else
-      (1 - lmt.get(ChronoField.YEAR) - 1984) % 60
-
-    val gmtSecondsOffset = TimeTools.getDstSecondOffset(lmt, loc).second.toDouble()
-
-    val gmtSecondsOffsetInt = gmtSecondsOffset.toInt()
-    val gmtNanoOffset = ((gmtSecondsOffset - gmtSecondsOffsetInt) * 1000000000).toInt()
-
-    val gmt =
-      lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
-
-
-    val solarLngDeg = starPositionImpl.getPosition(Planet.SUN, gmt, Centric.GEO, Coordinate.ECLIPTIC).lng
-    if (solarLngDeg < 180)
-    //立春(0)過後，到秋分之間(180)，確定不會換年
-      resultStemBranch = StemBranch[index]
-    else {
-      // 360 > solarLongitude >= 180
-
-      //取得 lmt 當年 1/1 凌晨零分的度數
-      val startOfYear = lmt
-        .with(ChronoField.DAY_OF_YEAR, 1)
-        .with(ChronoField.HOUR_OF_DAY, 0)
-        .with(ChronoField.MINUTE_OF_HOUR, 0)
-        .minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS)
-
-      val degreeOfStartOfYear =
-        starPositionImpl.getPosition(Planet.SUN, startOfYear, Centric.GEO, Coordinate.ECLIPTIC).lng
-
-      if (changeYearDegree >= degreeOfStartOfYear) {
-        resultStemBranch = if (solarLngDeg >= changeYearDegree)
-          StemBranch[index]
-        else if (changeYearDegree > solarLngDeg && solarLngDeg >= degreeOfStartOfYear) {
-          val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
-          if (TimeTools.isBefore(tempTime, startOfYear))
-            StemBranch[index - 1]
-          else
-            StemBranch[index]
-        } else
-          StemBranch[index]
-      } else {
-        // degreeOfStartOfYear > changeYearDegree >= 秋分 (180)
-        resultStemBranch = if (solarLngDeg >= degreeOfStartOfYear) {
-          val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
-          if (TimeTools.isBefore(tempTime, startOfYear))
-            StemBranch[index]
-          else
-            StemBranch[index + 1]
-        } else {
-          if (solarLngDeg >= changeYearDegree)
-            StemBranch[index + 1]
-          else
-            StemBranch[index]
-        }
-      }
-    }
-    return resultStemBranch
+    return getYear(gmtJulDay, loc, changeYearDegree, julDayResolver, starPositionImpl)
   }
 
   override fun equals(other: Any?): Boolean {

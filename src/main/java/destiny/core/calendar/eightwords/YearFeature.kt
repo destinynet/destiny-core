@@ -9,23 +9,35 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
 import destiny.tools.Feature
+import kotlinx.serialization.Serializable
 
 /**
  * 315.0 : 立春
  * 270.0 : 冬至
  */
-class YearConfig(var changeYearDegree: Double = 315.0)
+@Serializable
+class YearConfig {
+  var changeYearDegree: Double = 315.0
+    set(value) {
+      require(value > 180 && value < 360) { "changeYearDegree should between 180 and 360" }
+      field = value
+    }
 
-class YearFeature(private val defaultConfig: YearConfig,
-                  private val starPositionImpl: IStarPosition<*> ,
-                  private val julDayResolver: JulDayResolver) : Feature<YearConfig, StemBranch> {
+  init {
+    this.changeYearDegree = changeYearDegree
+  }
+
+}
+
+class YearFeature(
+  private val starPositionImpl: IStarPosition<*>,
+  private val julDayResolver: JulDayResolver
+) : Feature<YearConfig, StemBranch> {
 
   override val key: String = "year"
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: YearConfig.() -> Unit): StemBranch {
-    val cfg = defaultConfig.apply(block)
-    val yearEclipticDegreeImpl = YearEclipticDegreeImpl(cfg.changeYearDegree , starPositionImpl, julDayResolver)
-    return yearEclipticDegreeImpl.getYear(gmtJulDay, loc)
+    val cfg = YearConfig().apply(block)
+    return getYear(gmtJulDay, loc, cfg.changeYearDegree, julDayResolver, starPositionImpl)
   }
 }
-

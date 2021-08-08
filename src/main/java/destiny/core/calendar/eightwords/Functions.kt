@@ -19,6 +19,185 @@ import java.time.temporal.ChronoUnit
 val logger = KotlinLogging.logger { }
 
 
+fun getYear(gmtJulDay: GmtJulDay, loc: ILocation , changeYearDegree : Double , julDayResolver: JulDayResolver , starPositionImpl : IStarPosition<*>): StemBranch {
+  val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+
+  val resultStemBranch: StemBranch
+  //西元 1984 年為 甲子年
+  val index = if (lmt.get(ChronoField.YEAR) > 0)
+    (lmt.get(ChronoField.YEAR) - 1984) % 60
+  else
+    (1 - lmt.get(ChronoField.YEAR) - 1984) % 60
+
+  val gmtSecondsOffset = TimeTools.getDstSecondOffset(lmt, loc).second.toDouble()
+
+  val gmtSecondsOffsetInt = gmtSecondsOffset.toInt()
+  val gmtNanoOffset = ((gmtSecondsOffset - gmtSecondsOffsetInt) * 1000000000).toInt()
+
+  val gmt =
+    lmt.minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS).minus(gmtNanoOffset.toLong(), ChronoUnit.NANOS)
+
+
+  val solarLngDeg = starPositionImpl.getPosition(Planet.SUN, gmt, Centric.GEO, Coordinate.ECLIPTIC).lng
+  if (solarLngDeg < 180)
+  //立春(0)過後，到秋分之間(180)，確定不會換年
+    resultStemBranch = StemBranch[index]
+  else {
+    // 360 > solarLongitude >= 180
+
+    //取得 lmt 當年 1/1 凌晨零分的度數
+    val startOfYear = lmt
+      .with(ChronoField.DAY_OF_YEAR, 1)
+      .with(ChronoField.HOUR_OF_DAY, 0)
+      .with(ChronoField.MINUTE_OF_HOUR, 0)
+      .minus(gmtSecondsOffsetInt.toLong(), ChronoUnit.SECONDS)
+
+    val degreeOfStartOfYear =
+      starPositionImpl.getPosition(Planet.SUN, startOfYear, Centric.GEO, Coordinate.ECLIPTIC).lng
+
+    if (changeYearDegree >= degreeOfStartOfYear) {
+      resultStemBranch = if (solarLngDeg >= changeYearDegree)
+        StemBranch[index]
+      else if (changeYearDegree > solarLngDeg && solarLngDeg >= degreeOfStartOfYear) {
+        val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
+        if (TimeTools.isBefore(tempTime, startOfYear))
+          StemBranch[index - 1]
+        else
+          StemBranch[index]
+      } else
+        StemBranch[index]
+    } else {
+      // degreeOfStartOfYear > changeYearDegree >= 秋分 (180)
+      resultStemBranch = if (solarLngDeg >= degreeOfStartOfYear) {
+        val tempTime = gmt.minus((180 * 24 * 60 * 60).toLong(), ChronoUnit.SECONDS)
+        if (TimeTools.isBefore(tempTime, startOfYear))
+          StemBranch[index]
+        else
+          StemBranch[index + 1]
+      } else {
+        if (solarLngDeg >= changeYearDegree)
+          StemBranch[index + 1]
+        else
+          StemBranch[index]
+      }
+    }
+  }
+  return resultStemBranch
+}
+
+
+fun getMonth(
+  gmtJulDay: GmtJulDay,
+  location: ILocation,
+  solarTermsImpl: ISolarTerms,
+  starPositionImpl: IStarPosition<*>,
+  southernHemisphereOpposition: Boolean,
+  hemisphereBy: HemisphereBy,
+  changeYearDegree: Double,
+  julDayResolver: JulDayResolver
+): IStemBranch {
+
+  val resultMonthBranch: Branch
+  //先算出太陽在黃經上的度數
+
+  // 目前的節氣
+  val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
+
+  val monthIndex = (SolarTerms.getIndex(solarTerms) / 2 + 2).let {
+    if (it >= 12)
+      it - 12
+    else
+      it
+  }
+
+  // 月支
+  val monthBranch = Branch[monthIndex]
+
+  if (southernHemisphereOpposition) {
+    /**
+     * 解決南半球月支正沖的問題
+     */
+    if (hemisphereBy == HemisphereBy.EQUATOR) {
+      //如果是依據赤道來區分南北半球
+      resultMonthBranch = if (location.northSouth == News.NorthSouth.SOUTH)
+        Branch[monthIndex + 6]
+      else
+        monthBranch
+    } else {
+      /**
+       * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
+       */
+      val solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.EQUATORIAL).lat
+
+      if (solarEquatorialDegree >= 0) {
+        //如果太陽在赤北緯
+        resultMonthBranch = if (location.northSouth == News.NorthSouth.NORTH) {
+          //地點在北半球
+          if (location.lat >= solarEquatorialDegree)
+            monthBranch
+          else
+            Branch[monthIndex + 6] //所在地緯度低於 太陽赤緯，取對沖月份
+        } else {
+          //地點在南半球 , 取正沖
+          Branch[monthIndex + 6]
+        }
+      } else {
+        //太陽在赤南緯
+        resultMonthBranch = if (location.northSouth == News.NorthSouth.SOUTH) {
+          //地點在南半球
+          if (location.lat <= solarEquatorialDegree)
+            Branch[monthIndex + 6] //所在地緯度高於 太陽赤南緯，真正的南半球
+          else
+            monthBranch //雖在南半球，但緯度低於太陽赤南緯，視為北半球
+        } else {
+          //地點在北半球，月支不變
+          monthBranch
+        }
+      }
+    }
+  } else
+    resultMonthBranch = monthBranch
+
+  // 年干
+  val yearStem = getYear(gmtJulDay, location, changeYearDegree , julDayResolver , starPositionImpl).stem
+  return StemBranch[getMonthStem(gmtJulDay, yearStem, resultMonthBranch, changeYearDegree, starPositionImpl), resultMonthBranch]
+}
+
+/**
+ * 五虎遁月 取得月干
+ *
+ * 甲己之年丙作首
+ * 乙庚之歲戊為頭
+ * 丙辛之歲由庚上
+ * 丁壬壬位順行流
+ * 若言戊癸何方發
+ * 甲寅之上好追求。
+ *
+ */
+private fun getMonthStem(gmtJulDay: GmtJulDay, yearStem: Stem, monthBranch: Branch , changeYearDegree: Double , starPositionImpl: IStarPosition<*>): Stem {
+
+  // 月干
+  var monthStem: Stem = StemBranchUtils.getMonthStem(yearStem, monthBranch)
+
+  if (changeYearDegree != 315.0) {
+
+    val sunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
+
+    if (changeYearDegree < 315) {
+      logger.debug("換年點在立春前 , changeYearDegree < 315 , value = {}", changeYearDegree)
+      if (sunDegree > changeYearDegree && 315 > sunDegree) {
+        // t <---立春---- LMT -----換年點
+        monthStem = Stem[monthStem.index - 2]
+      }
+    } else if (changeYearDegree > 315) {
+      //換年點在立春後 , 還沒測試
+      if (sunDegree > 315 && changeYearDegree > sunDegree)
+        monthStem = Stem[monthStem.index + 2]
+    }
+  }
+  return monthStem
+}
+
 fun getDay(
   lmt: ChronoLocalDateTime<*>,
   location: ILocation,
@@ -100,115 +279,4 @@ private fun getIndex(
     result++
   }
   return result
-}
-
-
-fun getMonth(
-  gmtJulDay: GmtJulDay,
-  location: ILocation,
-  southernHemisphereOpposition: Boolean,
-  hemisphereBy: HemisphereBy,
-  solarTermsImpl: ISolarTerms,
-  starPositionImpl: IStarPosition<*>,
-  yearImpl: IYear
-): IStemBranch {
-  val resultMonthBranch: Branch
-  //先算出太陽在黃經上的度數
-
-  // 目前的節氣
-  val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
-
-  val monthIndex = (SolarTerms.getIndex(solarTerms) / 2 + 2).let {
-    if (it >= 12)
-      it - 12
-    else
-      it
-  }
-
-  // 月支
-  val monthBranch = Branch[monthIndex]
-
-  if (southernHemisphereOpposition) {
-    /**
-     * 解決南半球月支正沖的問題
-     */
-    if (hemisphereBy == HemisphereBy.EQUATOR) {
-      //如果是依據赤道來區分南北半球
-      resultMonthBranch = if (location.northSouth == News.NorthSouth.SOUTH)
-        Branch[monthIndex + 6]
-      else
-        monthBranch
-    } else {
-      /**
-       * 如果 hemisphereBy == DECLINATION (赤緯) , 就必須計算 太陽在「赤緯」的度數
-       */
-      val solarEquatorialDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.EQUATORIAL).lat
-
-      if (solarEquatorialDegree >= 0) {
-        //如果太陽在赤北緯
-        resultMonthBranch = if (location.northSouth == News.NorthSouth.NORTH) {
-          //地點在北半球
-          if (location.lat >= solarEquatorialDegree)
-            monthBranch
-          else
-            Branch[monthIndex + 6] //所在地緯度低於 太陽赤緯，取對沖月份
-        } else {
-          //地點在南半球 , 取正沖
-          Branch[monthIndex + 6]
-        }
-      } else {
-        //太陽在赤南緯
-        resultMonthBranch = if (location.northSouth == News.NorthSouth.SOUTH) {
-          //地點在南半球
-          if (location.lat <= solarEquatorialDegree)
-            Branch[monthIndex + 6] //所在地緯度高於 太陽赤南緯，真正的南半球
-          else
-            monthBranch //雖在南半球，但緯度低於太陽赤南緯，視為北半球
-        } else {
-          //地點在北半球，月支不變
-          monthBranch
-        }
-      }
-    }
-  } else
-    resultMonthBranch = monthBranch
-
-  // 年干
-  val yearStem = yearImpl.getYear(gmtJulDay, location).stem
-  return StemBranch[getMonthStem(gmtJulDay, yearStem, resultMonthBranch , yearImpl.changeYearDegree , starPositionImpl), resultMonthBranch]
-}
-
-/**
- * 五虎遁月 取得月干
- *
- * 甲己之年丙作首
- * 乙庚之歲戊為頭
- * 丙辛之歲由庚上
- * 丁壬壬位順行流
- * 若言戊癸何方發
- * 甲寅之上好追求。
- *
- */
-private fun getMonthStem(gmtJulDay: GmtJulDay, yearStem: Stem, monthBranch: Branch , changeYearDegree : Double , starPositionImpl: IStarPosition<*>): Stem {
-
-  // 月干
-  var monthStem: Stem = StemBranchUtils.getMonthStem(yearStem, monthBranch)
-
-  if (changeYearDegree != 315.0) {
-
-    val sunDegree = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lng
-
-    if (changeYearDegree < 315) {
-      logger.debug("換年點在立春前 , changeYearDegree < 315 , value = {}", changeYearDegree)
-      if (sunDegree > changeYearDegree && 315 > sunDegree) {
-        // t <---立春---- LMT -----換年點
-        monthStem = Stem[monthStem.index - 2]
-      }
-    } else if (changeYearDegree > 315) {
-      //換年點在立春後 , 還沒測試
-      if (sunDegree > 315 && changeYearDegree > sunDegree)
-        monthStem = Stem[monthStem.index + 2]
-    }
-  }
-  return monthStem
 }

@@ -28,6 +28,9 @@ class YearMonthSolarTermsStarPositionImpl(
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 ) : IYearMonth, IYear by yearImpl {
 
+  override val impl: MonthConfig.Impl
+    get() = MonthConfig.Impl.SolarTerms
+
   override fun toString(locale: Locale): String {
     return name
   }
@@ -45,8 +48,10 @@ class YearMonthSolarTermsStarPositionImpl(
    */
   override fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch {
 
-    return getMonth(gmtJulDay, location, southernHemisphereOpposition, hemisphereBy, solarTermsImpl, starPositionImpl, yearImpl)
+    return getMonth(gmtJulDay, location, solarTermsImpl, starPositionImpl, southernHemisphereOpposition, hemisphereBy, changeYearDegree, julDayResolver)
+
   }
+
 
 
   override fun equals(other: Any?): Boolean {
@@ -71,7 +76,7 @@ class YearMonthSolarTermsStarPositionImpl(
   companion object {
     const val name = "傳統年月"
     const val VALUE = "default"
-    val logger = KotlinLogging.logger { }
+    private val logger = KotlinLogging.logger { }
   }
 
 }
