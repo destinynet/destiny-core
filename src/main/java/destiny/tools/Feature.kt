@@ -13,9 +13,14 @@ interface Feature<out Config : Any, Model : Any> {
 
   val key: String
 
+  val defaultConfig : Config
+
   fun  getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config): Model
 
-  fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: Config.() -> Unit = {}): Model
+  fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: Config.() -> Unit = {}): Model {
+    val config = defaultConfig.apply(block)
+    return getModel(gmtJulDay, loc, config)
+  }
 
   fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, block: Config.() -> Unit = {}): Model {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)

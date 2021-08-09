@@ -17,16 +17,11 @@ class DayFeature(
 
   override val key: String = "day"
 
+  override val defaultConfig: DayConfig = DayConfig()
+
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayConfig): StemBranch {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getDay(lmt, loc, hourImpl, midnightImpl, config.changeDayAfterZi, julDayResolver)
-  }
-
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: DayConfig.() -> Unit): StemBranch {
-    val config = DayConfig().apply(block)
-    return getModel(gmtJulDay, loc, config)
-//    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-//    return getDay(lmt, loc, hourImpl, midnightImpl, config.changeDayAfterZi, julDayResolver)
   }
 }
 

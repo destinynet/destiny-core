@@ -44,6 +44,9 @@ class MonthFeature(
 ) : Feature<MonthConfig, IStemBranch> {
   override val key: String = "month"
 
+  override val defaultConfig: MonthConfig = MonthConfig()
+
+
   val solarTermsImpl: ISolarTerms by lazy {
     SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
   }
@@ -66,12 +69,6 @@ class MonthFeature(
         }
       }
     }
-  }
-
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: MonthConfig.() -> Unit): IStemBranch {
-    val config = MonthConfig().apply(block)
-
-    return getModel(gmtJulDay, loc, config)
   }
 
 }
