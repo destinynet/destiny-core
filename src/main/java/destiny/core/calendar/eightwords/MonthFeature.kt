@@ -48,13 +48,11 @@ class MonthFeature(
     SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
   }
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: MonthConfig.() -> Unit): IStemBranch {
-    val cfg = MonthConfig().apply(block)
-
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthConfig): IStemBranch {
     // 原始 月干支
-    val originalMonth = getMonth(gmtJulDay, loc, solarTermsImpl, starPositionImpl, cfg.southernHemisphereOpposition, cfg.hemisphereBy, cfg.yearConfig.changeYearDegree, julDayResolver)
+    val originalMonth = getMonth(gmtJulDay, loc, solarTermsImpl, starPositionImpl, config.southernHemisphereOpposition, config.hemisphereBy, config.yearConfig.changeYearDegree, julDayResolver)
 
-    return when(cfg.impl) {
+    return when(config.impl) {
       MonthConfig.Impl.SolarTerms -> originalMonth
       MonthConfig.Impl.SunSign -> {
         // 目前的節氣
@@ -68,6 +66,12 @@ class MonthFeature(
         }
       }
     }
-
   }
+
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: MonthConfig.() -> Unit): IStemBranch {
+    val config = MonthConfig().apply(block)
+
+    return getModel(gmtJulDay, loc, config)
+  }
+
 }
