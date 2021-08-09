@@ -25,9 +25,6 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
 
   override val hemisphereBy: HemisphereBy = ymSolarTermsStarPositionImpl.hemisphereBy
 
-  override val impl: MonthConfig.Impl
-    get() = MonthConfig.Impl.SunSign
-
   val solarTermsImpl: ISolarTerms by lazy {
     ymSolarTermsStarPositionImpl.solarTermsImpl
   }

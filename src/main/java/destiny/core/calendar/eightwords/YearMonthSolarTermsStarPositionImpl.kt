@@ -28,9 +28,6 @@ class YearMonthSolarTermsStarPositionImpl(
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 ) : IYearMonth, IYear by yearImpl {
 
-  override val impl: MonthConfig.Impl
-    get() = MonthConfig.Impl.SolarTerms
-
   override fun toString(locale: Locale): String {
     return name
   }

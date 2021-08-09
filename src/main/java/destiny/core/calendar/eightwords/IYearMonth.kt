@@ -48,8 +48,6 @@ interface IMonth {
    */
   val hemisphereBy: HemisphereBy
 
-  val impl : MonthConfig.Impl
-
   fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch
 
   fun getMonth(lmt: ChronoLocalDateTime<*>, loc: ILocation): IStemBranch {
