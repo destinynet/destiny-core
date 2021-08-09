@@ -7,6 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class MonthConfigTest {
@@ -37,5 +38,20 @@ internal class MonthConfigTest {
     }.also { denseFormat ->
       denseFormat.encodeToString(config).also(assertion)
     }
+  }
+
+  @Test
+  fun testInvokeConfigFun() {
+    val config = monthConfig {
+      yearConfig {
+        changeYearDegree = 270.0
+      }
+      southernHemisphereOpposition = true
+      hemisphereBy = HemisphereBy.DECLINATION
+    }
+
+    assertEquals(270.0, config.yearConfig.changeYearDegree)
+    assertEquals(true , config.southernHemisphereOpposition)
+    assertEquals(HemisphereBy.DECLINATION , config.hemisphereBy)
   }
 }

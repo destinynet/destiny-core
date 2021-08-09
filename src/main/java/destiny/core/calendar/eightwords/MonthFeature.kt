@@ -8,6 +8,7 @@ import destiny.core.astrology.IStarTransit
 import destiny.core.calendar.*
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
+import destiny.tools.Builder
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
@@ -15,7 +16,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MonthConfig(
 
-  var yearConfig: YearConfig = YearConfig(),
+  var yearConfig: YearConfig = yearConfig(),
 
   /** 南半球月令是否對沖  */
   var southernHemisphereOpposition: Boolean = false,
@@ -37,6 +38,35 @@ data class MonthConfig(
   }
 }
 
+class MonthConfigBuilder : Builder<MonthConfig> {
+
+  var yearConfig : YearConfig = YearConfig()
+  fun yearConfig(block :YearConfigBuilder.() -> Unit = {}) {
+    this.yearConfig = YearConfigBuilder().apply(block).build()
+  }
+
+  /** 南半球月令是否對沖  */
+  var southernHemisphereOpposition: Boolean = false
+  /**
+   * 南半球的判定方法
+   * 依據 赤道 [HemisphereBy.EQUATOR] , 還是 赤緯 [HemisphereBy.DECLINATION] 來界定南北半球
+   * 舉例，夏至時，太陽在北回歸線，北回歸線過嘉義，則此時，嘉義以南是否算南半球？
+   */
+  var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
+
+  var impl: MonthConfig.Impl = MonthConfig.Impl.SolarTerms
+
+  override fun build() : MonthConfig {
+    return MonthConfig(yearConfig , southernHemisphereOpposition, hemisphereBy, impl)
+  }
+}
+
+fun monthConfig(block : MonthConfigBuilder.() -> Unit = {}) : MonthConfig {
+  return MonthConfigBuilder().apply(block).build()
+}
+
+
+
 class MonthFeature(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
@@ -45,6 +75,8 @@ class MonthFeature(
   override val key: String = "month"
 
   override val defaultConfig: MonthConfig = MonthConfig()
+
+  override val builder: Builder<MonthConfig> = MonthConfigBuilder()
 
 
   val solarTermsImpl: ISolarTerms by lazy {

@@ -10,7 +10,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
-import destiny.core.chinese.Branch.*
+import destiny.core.chinese.Branch.子
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.KEY_HOUR
@@ -28,27 +28,7 @@ import java.util.*
 class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
 
   override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
-    val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
-    val lmtHour = TimeTools.getLmtFromGmt(gmt, location).get(HOUR_OF_DAY)
-    return getHour(lmtHour)
-  }
-
-  private fun getHour(lmtHour: Int): Branch {
-    when (lmtHour) {
-      23, 0 -> return 子
-      1, 2 -> return 丑
-      3, 4 -> return 寅
-      5, 6 -> return 卯
-      7, 8 -> return 辰
-      9, 10 -> return 巳
-      11, 12 -> return 午
-      13, 14 -> return 未
-      15, 16 -> return 申
-      17, 18 -> return 酉
-      19, 20 -> return 戌
-      21, 22 -> return 亥
-    }
-    throw IllegalArgumentException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
+    return getHourLmtByGmtJulDay(gmtJulDay, location, julDayResolver)
   }
 
   override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {

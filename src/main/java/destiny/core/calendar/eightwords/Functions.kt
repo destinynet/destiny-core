@@ -4,10 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.News
-import destiny.core.astrology.Centric
-import destiny.core.astrology.Coordinate
-import destiny.core.astrology.IStarPosition
-import destiny.core.astrology.Planet
+import destiny.core.astrology.*
 import destiny.core.calendar.*
 import destiny.core.chinese.*
 import mu.KotlinLogging
@@ -19,7 +16,13 @@ import java.time.temporal.ChronoUnit
 val logger = KotlinLogging.logger { }
 
 
-fun getYear(gmtJulDay: GmtJulDay, loc: ILocation , changeYearDegree : Double , julDayResolver: JulDayResolver , starPositionImpl : IStarPosition<*>): StemBranch {
+fun getYear(
+  gmtJulDay: GmtJulDay,
+  loc: ILocation,
+  changeYearDegree: Double,
+  julDayResolver: JulDayResolver,
+  starPositionImpl: IStarPosition<*>
+): StemBranch {
   val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
   val resultStemBranch: StemBranch
@@ -159,7 +162,7 @@ fun getMonth(
     resultMonthBranch = monthBranch
 
   // 年干
-  val yearStem = getYear(gmtJulDay, location, changeYearDegree , julDayResolver , starPositionImpl).stem
+  val yearStem = getYear(gmtJulDay, location, changeYearDegree, julDayResolver, starPositionImpl).stem
   return StemBranch[getMonthStem(gmtJulDay, yearStem, resultMonthBranch, changeYearDegree, starPositionImpl), resultMonthBranch]
 }
 
@@ -174,7 +177,13 @@ fun getMonth(
  * 甲寅之上好追求。
  *
  */
-private fun getMonthStem(gmtJulDay: GmtJulDay, yearStem: Stem, monthBranch: Branch , changeYearDegree: Double , starPositionImpl: IStarPosition<*>): Stem {
+private fun getMonthStem(
+  gmtJulDay: GmtJulDay,
+  yearStem: Stem,
+  monthBranch: Branch,
+  changeYearDegree: Double,
+  starPositionImpl: IStarPosition<*>
+): Stem {
 
   // 月干
   var monthStem: Stem = StemBranchUtils.getMonthStem(yearStem, monthBranch)
@@ -279,4 +288,90 @@ private fun getIndex(
     result++
   }
   return result
+}
+
+
+/** 真太陽時辰 */
+fun getHourTst(gmtJulDay: GmtJulDay, location: ILocation, riseTransImpl: IRiseTrans,
+               atmosphericPressure: Double = 1013.25,
+               atmosphericTemperature: Double = 0.0,
+               discCenter: Boolean = true,
+               refraction: Boolean = true): Branch {
+
+  val nextMeridian =
+    riseTransImpl.getGmtTransJulDay(
+      gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, discCenter, refraction,
+      atmosphericTemperature, atmosphericPressure
+    )!!
+  val nextNadir =
+    riseTransImpl.getGmtTransJulDay(
+      gmtJulDay, Planet.SUN, TransPoint.NADIR, location, discCenter, refraction,
+      atmosphericTemperature, atmosphericPressure
+    )!!
+
+  return if (nextNadir > nextMeridian) {
+    //子正到午正（上半天）
+    val thirteenHoursAgo = gmtJulDay - 13 / 24.0
+    val previousNadirGmt =
+      riseTransImpl.getGmtTransJulDay(
+        thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, location, discCenter,
+        refraction, atmosphericTemperature, atmosphericPressure
+      )!!
+
+    logger.debug("gmtJulDay = {}", gmtJulDay)
+
+    val diffDays = nextMeridian - previousNadirGmt // 從子正到午正，總共幾秒
+    val oneUnitDays = diffDays / 12.0
+    logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
+    when {
+      gmtJulDay < previousNadirGmt + oneUnitDays -> Branch.子
+      gmtJulDay < previousNadirGmt + oneUnitDays * 3 -> Branch.丑
+      gmtJulDay < previousNadirGmt + oneUnitDays * 5 -> Branch.寅
+      gmtJulDay < previousNadirGmt + oneUnitDays * 7 -> Branch.卯
+      gmtJulDay < previousNadirGmt + oneUnitDays * 9 -> Branch.辰
+      gmtJulDay < previousNadirGmt + oneUnitDays * 11 -> Branch.巳
+      else -> Branch.午
+    }
+  } else {
+    //午正到子正（下半天）
+    val thirteenHoursAgo = gmtJulDay - 13 / 24.0
+    val previousMeridian =
+      riseTransImpl.getGmtTransJulDay(
+        thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, discCenter,
+        refraction, atmosphericTemperature, atmosphericPressure
+      )!!
+
+    val diffDays = nextNadir - previousMeridian
+    val oneUnitDays = diffDays / 12.0
+
+    when {
+      gmtJulDay < previousMeridian + oneUnitDays -> Branch.午
+      gmtJulDay < previousMeridian + oneUnitDays * 3 -> Branch.未
+      gmtJulDay < previousMeridian + oneUnitDays * 5 -> Branch.申
+      gmtJulDay < previousMeridian + oneUnitDays * 7 -> Branch.酉
+      gmtJulDay < previousMeridian + oneUnitDays * 9 -> Branch.戌
+      gmtJulDay < previousMeridian + oneUnitDays * 11 -> Branch.亥
+      else -> Branch.子
+    }
+  }
+}
+
+fun getHourLmtByGmtJulDay(gmtJulDay: GmtJulDay, location: ILocation, julDayResolver: JulDayResolver): Branch {
+  val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
+
+  return when (val lmtHour: Int = TimeTools.getLmtFromGmt(gmt, location).get(ChronoField.HOUR_OF_DAY)) {
+    23, 0  -> Branch.子
+    1, 2   -> Branch.丑
+    3, 4   -> Branch.寅
+    5, 6   -> Branch.卯
+    7, 8   -> Branch.辰
+    9, 10  -> Branch.巳
+    11, 12 -> Branch.午
+    13, 14 -> Branch.未
+    15, 16 -> Branch.申
+    17, 18 -> Branch.酉
+    19, 20 -> Branch.戌
+    21, 22 -> Branch.亥
+    else   -> throw IllegalArgumentException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
+  }
 }

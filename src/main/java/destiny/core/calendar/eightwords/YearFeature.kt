@@ -8,6 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
+import destiny.tools.Builder
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
@@ -16,33 +17,34 @@ import kotlinx.serialization.Serializable
  * 270.0 : 冬至
  */
 @Serializable
-class YearConfig {
-
-//  init {
-//    require(changeYearDegree > 180 && changeYearDegree < 360)
-//    { "degree should between 180 and 360" }
-//  }
-
-  var changeYearDegree: Double = 315.0
-    set(value) {
-      require(value > 180 && value < 360) { "changeYearDegree should between 180 and 360" }
-      field = value
-    }
+class YearConfig(val changeYearDegree: Double = 315.0) {
 
   init {
-    this.changeYearDegree = changeYearDegree
+    require(changeYearDegree > 180 && changeYearDegree < 360)
+    { "degree should between 180 and 360" }
   }
+
+//  var changeYearDegree: Double = 315.0
+//    set(value) {
+//      require(value > 180 && value < 360) { "changeYearDegree should between 180 and 360" }
+//      field = value
+//    }
+//
+//  init {
+//    this.changeYearDegree = changeYearDegree
+//  }
 }
 
-class YearConfigBuilder {
+class YearConfigBuilder : Builder<YearConfig> {
   var changeYearDegree = 315.0
+
+  override fun build() : YearConfig {
+    return YearConfig(changeYearDegree)
+  }
 }
 
-fun YearConfig(block: YearConfigBuilder.() -> Unit = {}): YearConfig {
-  val builder = YearConfigBuilder().apply(block)
-  return YearConfig().apply {
-    changeYearDegree = builder.changeYearDegree
-  }
+fun yearConfig(block: YearConfigBuilder.() -> Unit = {}): YearConfig {
+  return YearConfigBuilder().apply(block).build()
 }
 
 class YearFeature(
@@ -53,6 +55,9 @@ class YearFeature(
   override val key: String = "year"
 
   override val defaultConfig: YearConfig = YearConfig()
+
+  override val builder: Builder<YearConfig> = YearConfigBuilder()
+
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: YearConfig): StemBranch {
     return getYear(gmtJulDay, loc, config.changeYearDegree, julDayResolver, starPositionImpl)
