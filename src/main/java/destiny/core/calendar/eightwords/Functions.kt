@@ -356,10 +356,9 @@ fun getHourTst(gmtJulDay: GmtJulDay, location: ILocation, riseTransImpl: IRiseTr
   }
 }
 
-fun getHourLmtByGmtJulDay(gmtJulDay: GmtJulDay, location: ILocation, julDayResolver: JulDayResolver): Branch {
-  val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
 
-  return when (val lmtHour: Int = TimeTools.getLmtFromGmt(gmt, location).get(ChronoField.HOUR_OF_DAY)) {
+fun getHourLmtByLmt(lmt: ChronoLocalDateTime<*>) : Branch {
+  return when(val lmtHour = lmt.get(ChronoField.HOUR_OF_DAY)) {
     23, 0  -> Branch.子
     1, 2   -> Branch.丑
     3, 4   -> Branch.寅
@@ -375,3 +374,11 @@ fun getHourLmtByGmtJulDay(gmtJulDay: GmtJulDay, location: ILocation, julDayResol
     else   -> throw IllegalArgumentException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
   }
 }
+
+fun getHourLmtByGmtJulDay(gmtJulDay: GmtJulDay, location: ILocation, julDayResolver: JulDayResolver): Branch {
+  val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
+
+  val lmt = TimeTools.getLmtFromGmt(gmt, location)
+  return getHourLmtByLmt(lmt)
+}
+

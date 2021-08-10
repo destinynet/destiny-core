@@ -31,6 +31,10 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     return getHourLmtByGmtJulDay(gmtJulDay, location, julDayResolver)
   }
 
+  override fun getHour(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
+    return getHourLmtByLmt(lmt)
+  }
+
   override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
 
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)

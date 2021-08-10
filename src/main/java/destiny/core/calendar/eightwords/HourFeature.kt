@@ -7,9 +7,11 @@ import destiny.core.astrology.IRiseTrans
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.tools.Builder
 import destiny.tools.Feature
+import java.time.chrono.ChronoLocalDateTime
 
 
 data class HourConfig(
@@ -58,4 +60,17 @@ class HourFeature(private val riseTransImpl: IRiseTrans ,
       }
     }
   }
+
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourConfig): Branch {
+    return when(config.impl) {
+      HourConfig.Impl.TST -> {
+        val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+        getHourTst(gmtJulDay, loc, riseTransImpl)
+      }
+      HourConfig.Impl.LMT -> {
+        getHourLmtByLmt(lmt)
+      }
+    }
+  }
+
 }
