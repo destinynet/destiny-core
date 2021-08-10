@@ -6,21 +6,35 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import kotlinx.serialization.Serializable
 
-class DayConfig(val changeDayAfterZi: Boolean = true)
+@Serializable
+data class DayConfig(val changeDayAfterZi: Boolean = true)
 
-class DayConfigBuilder : Builder<DayConfig> {
-  var changeDayAfterZi: Boolean = true
+
+interface IDayConfigBuilder {
+  var changeDayAfterZi: Boolean
+}
+
+@DestinyMarker
+class DayConfigBuilder : Builder<DayConfig>  , IDayConfigBuilder{
+
+  override var changeDayAfterZi: Boolean = true
 
   override fun build() : DayConfig {
     return DayConfig(changeDayAfterZi)
   }
+
+  companion object {
+    fun dayConfig(block : DayConfigBuilder.() -> Unit = {}): DayConfig {
+      return DayConfigBuilder().apply(block).build()
+    }
+  }
 }
 
-fun dayConfig(block : DayConfigBuilder.() -> Unit = {}): DayConfig {
-  return DayConfigBuilder().apply(block).build()
-}
+
 
 
 class DayFeature(

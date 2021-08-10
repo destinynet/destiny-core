@@ -9,6 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
@@ -17,35 +18,39 @@ import kotlinx.serialization.Serializable
  * 270.0 : 冬至
  */
 @Serializable
-class YearConfig(val changeYearDegree: Double = 315.0) {
+data class YearConfig(val changeYearDegree: Double = 315.0) {
 
   init {
     require(changeYearDegree > 180 && changeYearDegree < 360)
     { "degree should between 180 and 360" }
   }
-
-//  var changeYearDegree: Double = 315.0
-//    set(value) {
-//      require(value > 180 && value < 360) { "changeYearDegree should between 180 and 360" }
-//      field = value
-//    }
-//
-//  init {
-//    this.changeYearDegree = changeYearDegree
-//  }
 }
 
-class YearConfigBuilder : Builder<YearConfig> {
-  var changeYearDegree = 315.0
+interface IYearConfigBuilder {
 
-  override fun build() : YearConfig {
+  var changeYearDegree : Double
+
+}
+
+@DestinyMarker
+open class YearConfigBuilder : Builder<YearConfig> , IYearConfigBuilder {
+
+  override var changeYearDegree = 315.0
+
+  override fun build(): YearConfig {
     return YearConfig(changeYearDegree)
+  }
+
+  companion object {
+    fun yearConfig(block: YearConfigBuilder.() -> Unit = {}): YearConfig {
+      return YearConfigBuilder().apply(block).build()
+    }
   }
 }
 
-fun yearConfig(block: YearConfigBuilder.() -> Unit = {}): YearConfig {
-  return YearConfigBuilder().apply(block).build()
-}
+//fun yearConfig(block: YearConfigBuilder.() -> Unit = {}): YearConfig {
+//  return YearConfigBuilder().apply(block).build()
+//}
 
 class YearFeature(
   private val starPositionImpl: IStarPosition<*>,

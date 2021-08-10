@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -14,44 +15,49 @@ internal class MonthConfigTest {
 
   val logger = KotlinLogging.logger { }
 
+  private val configByConstruction = MonthConfig(
+    YearConfig(270.0),
+    southernHemisphereOpposition = true,
+    hemisphereBy = HemisphereBy.DECLINATION,
+    impl = MonthConfig.Impl.SunSign
+  )
+
+  private val configByFunction = monthConfig {
+    yearConfig {
+      changeYearDegree = 270.0
+    }
+    southernHemisphereOpposition = true
+    hemisphereBy = HemisphereBy.DECLINATION
+    monthImpl = MonthConfig.Impl.SunSign
+  }
+
+  @Test
+  fun testEquals() {
+    assertEquals(configByConstruction, configByFunction)
+  }
+
   @Test
   fun testSerialize() {
-    val config = MonthConfig()
-
     val assertion = { raw: String ->
       logger.info { raw }
-      assertTrue(raw.contains(""""southernHemisphereOpposition":\s*false""".toRegex()))
-      assertTrue(raw.contains(""""hemisphereBy":\s*"EQUATOR""".toRegex()))
-      assertTrue(raw.contains(""""impl":\s*"SolarTerms""".toRegex()))
+      assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
+      assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
+      assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
+      assertTrue(raw.contains(""""impl":\s*"SunSign""".toRegex()))
     }
 
     Json {
       encodeDefaults = true
       prettyPrint = true
     }.also { prettyFormat ->
-      prettyFormat.encodeToString(config).also(assertion)
+      prettyFormat.encodeToString(configByConstruction).also(assertion)
     }
 
     Json {
       encodeDefaults = true
       prettyPrint = false
     }.also { denseFormat ->
-      denseFormat.encodeToString(config).also(assertion)
+      denseFormat.encodeToString(configByFunction).also(assertion)
     }
-  }
-
-  @Test
-  fun testInvokeConfigFun() {
-    val config = monthConfig {
-      yearConfig {
-        changeYearDegree = 270.0
-      }
-      southernHemisphereOpposition = true
-      hemisphereBy = HemisphereBy.DECLINATION
-    }
-
-    assertEquals(270.0, config.yearConfig.changeYearDegree)
-    assertEquals(true , config.southernHemisphereOpposition)
-    assertEquals(HemisphereBy.DECLINATION , config.hemisphereBy)
   }
 }

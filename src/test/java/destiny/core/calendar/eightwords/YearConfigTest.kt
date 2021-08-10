@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource

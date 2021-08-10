@@ -10,10 +10,13 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 
+@Serializable
 data class HourConfig(
   val dayConfig: DayConfig = DayConfig(),
   val impl: Impl = Impl.TST
@@ -24,25 +27,41 @@ data class HourConfig(
   }
 }
 
-class HourConfigBuilder : Builder<HourConfig> {
+interface IHourConfigBuilder : IDayConfigBuilder {
+
+  fun dayConfig(block: IDayConfigBuilder.() -> Unit)
+
+  var hourImpl: HourConfig.Impl
+}
+
+@DestinyMarker
+class HourConfigBuilder(private val dayConfigBuilder: DayConfigBuilder = DayConfigBuilder()) : Builder<HourConfig>, IHourConfigBuilder,
+                                                                                               IDayConfigBuilder by dayConfigBuilder {
   var dayConfig = DayConfig()
-  fun dayConfig(block: DayConfigBuilder.() -> Unit = {}) {
-    this.dayConfig = DayConfigBuilder().apply(block).build()
+
+  override fun dayConfig(block: IDayConfigBuilder.() -> Unit) {
+    this.dayConfig = dayConfigBuilder.apply(block).build()
   }
 
-  var impl = HourConfig.Impl.TST
+  override var hourImpl = HourConfig.Impl.TST
 
   override fun build(): HourConfig {
-    return HourConfig(dayConfig, impl)
+    return HourConfig(dayConfig, hourImpl)
+  }
+
+  companion object {
+    fun hourConfig(block: HourConfigBuilder.() -> Unit = {}): HourConfig {
+      return HourConfigBuilder().apply(block).build()
+    }
   }
 }
 
-fun hourConfig(block: HourConfigBuilder.() -> Unit = {}): HourConfig {
-  return HourConfigBuilder().apply(block).build()
-}
 
-class HourFeature(private val riseTransImpl: IRiseTrans ,
-                  private val julDayResolver: JulDayResolver) : Feature<HourConfig, Branch> {
+
+class HourFeature(
+  private val riseTransImpl: IRiseTrans,
+  private val julDayResolver: JulDayResolver
+) : Feature<HourConfig, Branch> {
 
   override val key: String = "hour"
 
@@ -51,7 +70,7 @@ class HourFeature(private val riseTransImpl: IRiseTrans ,
   override val builder: Builder<HourConfig> = HourConfigBuilder()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HourConfig): Branch {
-    return when(config.impl) {
+    return when (config.impl) {
       HourConfig.Impl.TST -> {
         getHourTst(gmtJulDay, loc, riseTransImpl)
       }
@@ -62,7 +81,7 @@ class HourFeature(private val riseTransImpl: IRiseTrans ,
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourConfig): Branch {
-    return when(config.impl) {
+    return when (config.impl) {
       HourConfig.Impl.TST -> {
         val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
         getHourTst(gmtJulDay, loc, riseTransImpl)
