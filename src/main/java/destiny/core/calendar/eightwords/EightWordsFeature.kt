@@ -5,6 +5,10 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
+import destiny.core.chinese.Branch
+import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -51,7 +55,13 @@ class EightWordsConfigBuilder(private val monthConfigBuilder : MonthConfigBuilde
   }
 }
 
-class EightWordsFeature : Feature<EightWordsConfig , EightWords>{
+class EightWordsFeature(private val yearFeature: YearFeature,
+                        private val monthFeature: MonthFeature ,
+                        private val dayFeature : DayFeature,
+                        private val hourFeature: HourFeature ,
+                        // FIXME : remove dayHourImpl
+                        private val dayHourImpl : IDayHour,
+                        private val julDayResolver: JulDayResolver) : Feature<EightWordsConfig , EightWords> {
   override val key: String = "eightWords"
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()
@@ -59,6 +69,11 @@ class EightWordsFeature : Feature<EightWordsConfig , EightWords>{
   override val builder: Builder<EightWordsConfig> = EightWordsConfigBuilder()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): EightWords {
-    TODO("Not yet implemented")
+    val year: StemBranch = yearFeature.getModel(gmtJulDay, loc, config.monthConfig.yearConfig)
+    val month: IStemBranch = monthFeature.getModel(gmtJulDay, loc, config.monthConfig)
+    val day: StemBranch = dayFeature.getModel(gmtJulDay, loc, config.hourConfig.dayConfig)
+    val hourBranch: Branch = hourFeature.getModel(gmtJulDay, loc, config.hourConfig)
+
+    return getEightWordsByGmt(gmtJulDay, loc, year, month, day, hourBranch, dayHourImpl, config.hourConfig.dayConfig.changeDayAfterZi, julDayResolver)
   }
 }
