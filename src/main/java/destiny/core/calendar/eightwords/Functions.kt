@@ -207,10 +207,22 @@ private fun getMonthStem(
   return monthStem
 }
 
+fun getHourImpl(impl : HourConfig.Impl , riseTransImpl : IRiseTrans , julDayResolver: JulDayResolver) : IHour {
+  return when(impl) {
+    HourConfig.Impl.TST -> {
+      HourSolarTransImpl(riseTransImpl)
+    }
+    HourConfig.Impl.LMT -> {
+      HourLmtImpl(julDayResolver)
+    }
+  }
+}
+
 fun getDay(
   lmt: ChronoLocalDateTime<*>,
   location: ILocation,
   hourImpl: IHour,
+
   midnightImpl: IMidnight,
   changeDayAfterZi: Boolean,
   julDayResolver: JulDayResolver
@@ -292,11 +304,11 @@ private fun getIndex(
 
 
 /** 真太陽時辰 */
-fun getHourTst(gmtJulDay: GmtJulDay, location: ILocation, riseTransImpl: IRiseTrans,
-               atmosphericPressure: Double = 1013.25,
-               atmosphericTemperature: Double = 0.0,
-               discCenter: Boolean = true,
-               refraction: Boolean = true): Branch {
+fun getHourBranchByTst(gmtJulDay: GmtJulDay, location: ILocation, riseTransImpl: IRiseTrans,
+                       atmosphericPressure: Double = 1013.25,
+                       atmosphericTemperature: Double = 0.0,
+                       discCenter: Boolean = true,
+                       refraction: Boolean = true): Branch {
 
   val nextMeridian =
     riseTransImpl.getGmtTransJulDay(
@@ -357,7 +369,7 @@ fun getHourTst(gmtJulDay: GmtJulDay, location: ILocation, riseTransImpl: IRiseTr
 }
 
 
-fun getHourLmtByLmt(lmt: ChronoLocalDateTime<*>) : Branch {
+fun getHourBranchByLmt(lmt: ChronoLocalDateTime<*>) : Branch {
   return when(val lmtHour = lmt.get(ChronoField.HOUR_OF_DAY)) {
     23, 0  -> Branch.子
     1, 2   -> Branch.丑
@@ -379,26 +391,23 @@ fun getHourLmtByGmtJulDay(gmtJulDay: GmtJulDay, location: ILocation, julDayResol
   val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
 
   val lmt = TimeTools.getLmtFromGmt(gmt, location)
-  return getHourLmtByLmt(lmt)
+  return getHourBranchByLmt(lmt)
 }
 
 
-fun getEightWordsByGmt(
-  gmtJulDay: GmtJulDay,
-  loc: ILocation,
-  year: StemBranch,
-  month: IStemBranch,
-  day: StemBranch,
-  hourBranch: Branch,
-  dayHourImpl : IDayHour,
-  cdaz : Boolean,
-  julDayResolver: JulDayResolver
-): EightWords {
-  logger.trace("[GMT] getEightWords ...")
-  // 臨時日干
-  val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-  val nextZi = dayHourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
+fun getHourStemByGmt(gmtJulDay: GmtJulDay,
+                     loc: ILocation,
+                     day : StemBranch,
+                     cdaz : Boolean,
+                     hourBranch : Branch,
+                     dayHourImpl : IDayHour,
+                     julDayResolver: JulDayResolver , hourImpl : IHour) : Stem {
 
+  logger.trace("[GMT] get HourStem by GMT ...")
+  val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+  val nextZi = hourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
+
+  // 臨時日干
   val tempDayStem = day.stem.let {
     // 如果「子正」才換日
     if (!cdaz) {
@@ -420,8 +429,6 @@ fun getEightWordsByGmt(
     else
       it
   }
-
   // 時干
-  val hourStem: Stem = StemBranchUtils.getHourStem(tempDayStem, hourBranch)
-  return EightWords(year, month, day, StemBranch[hourStem, hourBranch])
+  return StemBranchUtils.getHourStem(tempDayStem, hourBranch)
 }

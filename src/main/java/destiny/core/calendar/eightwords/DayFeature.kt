@@ -1,5 +1,6 @@
 package destiny.core.calendar.eightwords
 
+import destiny.core.astrology.IRiseTrans
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -37,9 +38,11 @@ class DayConfigBuilder : Builder<DayConfig>  , IDayConfigBuilder{
 
 
 
+@Deprecated("")
 class DayFeature(
-  val hourImpl: IHour,
+  val hourImpl : IHour,
   val midnightImpl: IMidnight,
+  val riseTransImpl : IRiseTrans,
   val julDayResolver: JulDayResolver
 ) : Feature<DayConfig, StemBranch> {
 
