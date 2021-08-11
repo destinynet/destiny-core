@@ -396,24 +396,31 @@ fun getEightWordsByGmt(
 ): EightWords {
   logger.trace("[GMT] getEightWords ...")
   // 臨時日干
-  var tempDayStem = day.stem
   val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
   val nextZi = dayHourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
-  // 如果「子正」才換日
-  if (!cdaz) {
-    /**
-     * <pre>
-     * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
-     * 第一： LMT 零時 > 子正 > LMT > 子初 ,（即下圖之 LMT1)
-     * 第二： 子正 > LMT > LMT 零時 (> 子初) , （即下圖之 LMT3)
-     *
-     * 子末(通常1)  LMT4    子正      LMT3       0|24     LMT2        子正    LMT1    子初（通常23)
-     * |------------------|--------------------|--------------------|------------------|
-    </pre> *
-     */
-    if (day !== dayHourImpl.getDay(nextZi, loc))
-      tempDayStem = tempDayStem.next
+
+  val tempDayStem = day.stem.let {
+    // 如果「子正」才換日
+    if (!cdaz) {
+      /**
+       * <pre>
+       * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
+       * 第一： LMT 零時 > 子正 > LMT > 子初 ,（即下圖之 LMT1)
+       * 第二： 子正 > LMT > LMT 零時 (> 子初) , （即下圖之 LMT3)
+       *
+       * 子末(通常1)  LMT4    子正      LMT3       0|24     LMT2        子正    LMT1    子初（通常23)
+       * |------------------|--------------------|--------------------|------------------|
+      </pre> *
+       */
+      if (day !== dayHourImpl.getDay(nextZi, loc))
+        it.next
+      else
+        it
+    }
+    else
+      it
   }
+
   // 時干
   val hourStem: Stem = StemBranchUtils.getHourStem(tempDayStem, hourBranch)
   return EightWords(year, month, day, StemBranch[hourStem, hourBranch])

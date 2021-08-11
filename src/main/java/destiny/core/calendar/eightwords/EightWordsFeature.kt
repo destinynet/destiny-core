@@ -32,13 +32,13 @@ class EightWordsConfigBuilder(private val monthConfigBuilder : MonthConfigBuilde
                                                                                                         IMonthConfigBuilder by monthConfigBuilder ,
                                                                                                         IHourConfigBuilder by hourConfigBuilder
 {
-  var monthConfig: MonthConfig = MonthConfig()
+  private var monthConfig: MonthConfig = MonthConfig()
 
   override fun monthConfig(block: IMonthConfigBuilder.() -> Unit) {
     this.monthConfig = monthConfigBuilder.apply(block).build()
   }
 
-  var hourConfig: HourConfig = HourConfig()
+  private var hourConfig: HourConfig = HourConfig()
 
   override fun hourConfig(block: HourConfigBuilder.() -> Unit) {
     this.hourConfig = hourConfigBuilder.apply(block).build()

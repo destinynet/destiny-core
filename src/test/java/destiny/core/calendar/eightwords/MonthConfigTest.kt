@@ -4,7 +4,6 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import kotlin.test.Test
@@ -15,7 +14,7 @@ internal class MonthConfigTest {
 
   val logger = KotlinLogging.logger { }
 
-  private val configByConstruction = MonthConfig(
+  private val configByConstructor = MonthConfig(
     YearConfig(270.0),
     southernHemisphereOpposition = true,
     hemisphereBy = HemisphereBy.DECLINATION,
@@ -33,7 +32,7 @@ internal class MonthConfigTest {
 
   @Test
   fun testEquals() {
-    assertEquals(configByConstruction, configByFunction)
+    assertEquals(configByConstructor, configByFunction)
   }
 
   @Test
@@ -49,15 +48,15 @@ internal class MonthConfigTest {
     Json {
       encodeDefaults = true
       prettyPrint = true
-    }.also { prettyFormat ->
-      prettyFormat.encodeToString(configByConstruction).also(assertion)
+    }.also { format ->
+      assertAndCompareDecoded(format, configByConstructor , assertion)
     }
 
     Json {
       encodeDefaults = true
       prettyPrint = false
-    }.also { denseFormat ->
-      denseFormat.encodeToString(configByFunction).also(assertion)
+    }.also { format ->
+      assertAndCompareDecoded(format, configByFunction , assertion)
     }
   }
 }

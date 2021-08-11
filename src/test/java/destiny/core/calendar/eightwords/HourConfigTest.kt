@@ -4,7 +4,6 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.eightwords.HourConfigBuilder.Companion.hourConfig
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import kotlin.test.Test
@@ -31,8 +30,11 @@ internal class HourConfigTest {
     assertEquals(configByConstructor, configByFunction)
   }
 
+
+
   @Test
   fun testSerialize() {
+
     val assertion = { raw: String ->
       logger.info { raw }
       assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
@@ -42,15 +44,15 @@ internal class HourConfigTest {
     Json {
       encodeDefaults = true
       prettyPrint = true
-    }.also { prettyFormat ->
-      prettyFormat.encodeToString(configByConstructor).also(assertion)
+    }.also { format: Json ->
+      assertAndCompareDecoded(format, configByConstructor , assertion)
     }
 
     Json {
       encodeDefaults = true
       prettyPrint = false
-    }.also { prettyFormat ->
-      prettyFormat.encodeToString(configByFunction).also(assertion)
+    }.also { format ->
+      assertAndCompareDecoded(format, configByFunction , assertion)
     }
   }
 }

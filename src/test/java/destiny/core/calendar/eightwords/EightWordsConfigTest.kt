@@ -4,7 +4,6 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder.Companion.ewConfig
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import kotlin.test.Test
@@ -67,15 +66,15 @@ internal class EightWordsConfigTest {
     Json {
       encodeDefaults = true
       prettyPrint = true
-    }.also { prettyFormat ->
-      prettyFormat.encodeToString(configByConstructor).also(assertion)
+    }.also { format ->
+      assertAndCompareDecoded(format, configByConstructor , assertion)
     }
 
     Json {
       encodeDefaults = true
       prettyPrint = false
-    }.also { prettyFormat ->
-      prettyFormat.encodeToString(configByFunction).also(assertion)
+    }.also { format ->
+      assertAndCompareDecoded(format, configByFunction , assertion)
     }
   }
 }
