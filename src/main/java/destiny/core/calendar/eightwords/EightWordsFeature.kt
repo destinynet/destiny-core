@@ -15,28 +15,27 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EightWordsConfig(
-  val monthConfig: MonthConfig = MonthConfig(),
-  val hourConfig: HourConfig = HourConfig()
+  val yearMonthConfig: YearMonthConfig = YearMonthConfig(),
+  val dayHourConfig: DayHourConfig = DayHourConfig()
 )
 
 @DestinyMarker
 class EightWordsConfigBuilder(private val monthConfigBuilder : MonthConfigBuilder = MonthConfigBuilder(),
-                              private val hourConfigBuilder: HourConfigBuilder = HourConfigBuilder()) : Builder<EightWordsConfig>
-{
-  private var monthConfig: MonthConfig = MonthConfig()
+                              private val hourConfigBuilder: HourConfigBuilder = HourConfigBuilder()) : Builder<EightWordsConfig> {
+  private var yearMonthConfig: YearMonthConfig = YearMonthConfig()
 
   fun monthConfig(block: MonthConfigBuilder.() -> Unit) {
-    this.monthConfig = monthConfigBuilder.apply(block).build()
+    this.yearMonthConfig = monthConfigBuilder.apply(block).build()
   }
 
-  private var hourConfig: HourConfig = HourConfig()
+  private var dayHourConfig: DayHourConfig = DayHourConfig()
 
   fun hourConfig(block: HourConfigBuilder.() -> Unit) {
-    this.hourConfig = hourConfigBuilder.apply(block).build()
+    this.dayHourConfig = hourConfigBuilder.apply(block).build()
   }
 
   override fun build(): EightWordsConfig {
-    return EightWordsConfig(monthConfig, hourConfig)
+    return EightWordsConfig(yearMonthConfig, dayHourConfig)
   }
 
   companion object {
@@ -56,8 +55,8 @@ class EightWordsFeature(private val yearFeature: YearFeature,
   override val builder: Builder<EightWordsConfig> = EightWordsConfigBuilder()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): EightWords {
-    val year: StemBranch = yearFeature.getModel(gmtJulDay, loc, config.monthConfig.yearConfig)
-    val month: IStemBranch = monthFeature.getModel(gmtJulDay, loc, config.monthConfig)
+    val year: StemBranch = yearFeature.getModel(gmtJulDay, loc, config.yearMonthConfig.yearConfig)
+    val month: IStemBranch = monthFeature.getModel(gmtJulDay, loc, config.yearMonthConfig)
 
     val (day, hour) = dayHourFeature.getModel(gmtJulDay, loc)
 

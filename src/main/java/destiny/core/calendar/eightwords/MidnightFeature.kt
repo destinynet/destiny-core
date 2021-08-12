@@ -17,19 +17,19 @@ import java.time.temporal.ChronoUnit
 
 
 class MidnightFeature(private val riseTransImpl: IRiseTrans,
-                      private val julDayResolver: JulDayResolver) : Feature<HourConfig, GmtJulDay> {
+                      private val julDayResolver: JulDayResolver) : Feature<DayHourConfig, GmtJulDay> {
 
   override val key: String = "midnight"
 
-  override val defaultConfig: HourConfig = HourConfig()
+  override val defaultConfig: DayHourConfig = DayHourConfig()
 
-  override val builder: Builder<HourConfig> = HourConfigBuilder()
+  override val builder: Builder<DayHourConfig> = HourConfigBuilder()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HourConfig): GmtJulDay {
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): GmtJulDay {
 
     return when(config.impl) {
-      HourConfig.Impl.TST -> riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc)!!
-      HourConfig.Impl.LMT -> {
+      DayHourConfig.Impl.TST -> riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc)!!
+      DayHourConfig.Impl.LMT -> {
         val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
         val resultLmt = lmt.plus(1, ChronoUnit.DAYS)

@@ -14,15 +14,15 @@ internal class EightWordsConfigTest {
   val logger = KotlinLogging.logger { }
 
   private val configByConstructor: EightWordsConfig = EightWordsConfig(
-    monthConfig = MonthConfig(
+    yearMonthConfig = YearMonthConfig(
       YearConfig(270.0),
       southernHemisphereOpposition = true,
       hemisphereBy = HemisphereBy.DECLINATION,
-      impl = MonthConfig.Impl.SunSign
+      impl = YearMonthConfig.Impl.SunSign
     ),
-    hourConfig = HourConfig(
+    dayHourConfig = DayHourConfig(
       DayConfig(changeDayAfterZi = false),
-      impl = HourConfig.Impl.LMT
+      impl = DayHourConfig.Impl.LMT
     )
   )
 
@@ -33,14 +33,14 @@ internal class EightWordsConfigTest {
       }
       southernHemisphereOpposition = true
       hemisphereBy = HemisphereBy.DECLINATION
-      monthImpl = MonthConfig.Impl.SunSign
+      monthImpl = YearMonthConfig.Impl.SunSign
     }
 
     hourConfig {
       dayConfig {
         changeDayAfterZi = false
       }
-      hourImpl = HourConfig.Impl.LMT
+      hourImpl = DayHourConfig.Impl.LMT
     }
   }
 

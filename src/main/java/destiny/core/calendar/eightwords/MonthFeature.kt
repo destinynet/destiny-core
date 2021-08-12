@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class MonthConfig(
+data class YearMonthConfig(
 
   val yearConfig: YearConfig = YearConfigBuilder.yearConfig(),
 
@@ -40,8 +40,7 @@ data class MonthConfig(
 }
 
 @DestinyMarker
-class MonthConfigBuilder(private val yearConfigBuilder: YearConfigBuilder = YearConfigBuilder()) : Builder<MonthConfig>
-{
+class MonthConfigBuilder(private val yearConfigBuilder: YearConfigBuilder = YearConfigBuilder()) : Builder<YearMonthConfig> {
 
   var yearConfig: YearConfig = YearConfig()
 
@@ -60,14 +59,14 @@ class MonthConfigBuilder(private val yearConfigBuilder: YearConfigBuilder = Year
    */
   var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 
-  var monthImpl: MonthConfig.Impl = MonthConfig.Impl.SolarTerms
+  var monthImpl: YearMonthConfig.Impl = YearMonthConfig.Impl.SolarTerms
 
-  override fun build(): MonthConfig {
-    return MonthConfig(yearConfig, southernHemisphereOpposition, hemisphereBy, monthImpl)
+  override fun build(): YearMonthConfig {
+    return YearMonthConfig(yearConfig, southernHemisphereOpposition, hemisphereBy, monthImpl)
   }
 
   companion object {
-    fun monthConfig(block: MonthConfigBuilder.() -> Unit = {}): MonthConfig {
+    fun monthConfig(block: MonthConfigBuilder.() -> Unit = {}): YearMonthConfig {
       return MonthConfigBuilder().apply(block).build()
     }
   }
@@ -78,19 +77,19 @@ class MonthFeature(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
   private val julDayResolver: JulDayResolver
-) : Feature<MonthConfig, IStemBranch> {
+) : Feature<YearMonthConfig, IStemBranch> {
   override val key: String = "month"
 
-  override val defaultConfig: MonthConfig = MonthConfig()
+  override val defaultConfig: YearMonthConfig = YearMonthConfig()
 
-  override val builder: Builder<MonthConfig> = MonthConfigBuilder()
+  override val builder: Builder<YearMonthConfig> = MonthConfigBuilder()
 
 
   val solarTermsImpl: ISolarTerms by lazy {
     SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
   }
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthConfig): IStemBranch {
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: YearMonthConfig): IStemBranch {
     // 原始 月干支
     val originalMonth = getMonth(
       gmtJulDay,
@@ -104,8 +103,8 @@ class MonthFeature(
     )
 
     return when (config.impl) {
-      MonthConfig.Impl.SolarTerms -> originalMonth
-      MonthConfig.Impl.SunSign    -> {
+      YearMonthConfig.Impl.SolarTerms -> originalMonth
+      YearMonthConfig.Impl.SunSign    -> {
         // 目前的節氣
         val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 

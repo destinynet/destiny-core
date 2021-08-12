@@ -10,15 +10,15 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-internal class MonthConfigTest {
+internal class YearMonthConfigTest {
 
   val logger = KotlinLogging.logger { }
 
-  private val configByConstructor = MonthConfig(
+  private val configByConstructor = YearMonthConfig(
     YearConfig(270.0),
     southernHemisphereOpposition = true,
     hemisphereBy = HemisphereBy.DECLINATION,
-    impl = MonthConfig.Impl.SunSign
+    impl = YearMonthConfig.Impl.SunSign
   )
 
   private val configByFunction = monthConfig {
@@ -27,7 +27,7 @@ internal class MonthConfigTest {
     }
     southernHemisphereOpposition = true
     hemisphereBy = HemisphereBy.DECLINATION
-    monthImpl = MonthConfig.Impl.SunSign
+    monthImpl = YearMonthConfig.Impl.SunSign
   }
 
   @Test

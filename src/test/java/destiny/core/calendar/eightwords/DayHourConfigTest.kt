@@ -10,19 +10,19 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-internal class HourConfigTest {
+internal class DayHourConfigTest {
   val logger = KotlinLogging.logger { }
 
-  private val configByConstructor: HourConfig = HourConfig(
+  private val configByConstructor: DayHourConfig = DayHourConfig(
     DayConfig(changeDayAfterZi = false),
-    impl = HourConfig.Impl.LMT
+    impl = DayHourConfig.Impl.LMT
   )
 
   private val configByFunction = hourConfig {
     dayConfig {
       changeDayAfterZi = false
     }
-    hourImpl = HourConfig.Impl.LMT
+    hourImpl = DayHourConfig.Impl.LMT
   }
 
   @Test
