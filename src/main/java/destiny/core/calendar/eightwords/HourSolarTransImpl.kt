@@ -48,7 +48,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
 
   override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
 
-    return getHourBranchByTst(gmtJulDay, location, riseTransImpl, atmosphericPressure, atmosphericTemperature, discCenter, refraction)
+    return Tst.getHourBranch(gmtJulDay, location, riseTransImpl, atmosphericPressure, atmosphericTemperature, discCenter, refraction)
   }
 
   // 午前

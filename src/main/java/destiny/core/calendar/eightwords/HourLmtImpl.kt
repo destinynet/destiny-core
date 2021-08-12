@@ -28,11 +28,11 @@ import java.util.*
 class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
 
   override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
-    return getHourLmtByGmtJulDay(gmtJulDay, location, julDayResolver)
+    return Lmt.getHourBranch(gmtJulDay, location, julDayResolver)
   }
 
   override fun getHour(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
-    return getHourBranchByLmt(lmt)
+    return Lmt.getHourBranch(lmt)
   }
 
   override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {

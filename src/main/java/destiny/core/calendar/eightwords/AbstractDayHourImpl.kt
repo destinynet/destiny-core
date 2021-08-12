@@ -10,7 +10,9 @@ import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
+import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
+import java.time.temporal.ChronoUnit
 
 abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
                                    val julDayResolver: JulDayResolver) : IDayHour , IHour by hourImpl , Serializable {
@@ -27,6 +29,21 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
 
 
   override fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation): StemBranch {
+
+    // 下個子初時刻
+    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, julDayResolver)
+
+    // 下個子正時刻
+    val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, julDayResolver).let {
+      val dur = Duration.between(nextZiStart, it).abs()
+      if (dur.toMinutes() <= 1) {
+        logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}", nextZiStart, it, dur.seconds) // DST 結束前一天，可能會出錯
+        it.plus(1, ChronoUnit.HOURS)
+      } else {
+        it
+      }
+    }
+
     return getDay(lmt, location, hourImpl, midnightImpl, changeDayAfterZi, julDayResolver)
   } // LMT 版本
 

@@ -35,6 +35,9 @@ class DayHourFeature(
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
 
+    // 下個子正時刻
+    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(gmtJulDay, loc, config) , loc, julDayResolver)
+
     val day: StemBranch = getDay(lmt, loc, hourImpl, midnightImpl, config.dayConfig.changeDayAfterZi, julDayResolver)
 
     val hourBranch = getHourBranch(config.impl , lmt, loc)
@@ -47,6 +50,10 @@ class DayHourFeature(
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourConfig): Pair<StemBranch, StemBranch> {
 
     val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
+
+    // 下個子正時刻
+    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config) , loc, julDayResolver)
+
     val day: StemBranch = getDay(lmt, loc, hourImpl, midnightImpl, config.dayConfig.changeDayAfterZi, julDayResolver)
 
     val hourBranch = getHourBranch(config.impl , lmt, loc)
@@ -60,10 +67,10 @@ class DayHourFeature(
     return when (impl) {
       HourConfig.Impl.TST -> {
         val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-        getHourBranchByTst(gmtJulDay, loc, riseTransImpl)
+        Tst.getHourBranch(gmtJulDay, loc, riseTransImpl)
       }
       HourConfig.Impl.LMT -> {
-        getHourBranchByLmt(lmt)
+        Lmt.getHourBranch(lmt)
       }
     }
   }

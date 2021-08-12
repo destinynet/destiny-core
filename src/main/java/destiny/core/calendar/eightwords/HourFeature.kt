@@ -72,10 +72,10 @@ class HourFeature(
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HourConfig): Branch {
     return when (config.impl) {
       HourConfig.Impl.TST -> {
-        getHourBranchByTst(gmtJulDay, loc, riseTransImpl)
+        Tst.getHourBranch(gmtJulDay, loc, riseTransImpl)
       }
       HourConfig.Impl.LMT -> {
-        getHourLmtByGmtJulDay(gmtJulDay, loc, julDayResolver)
+        Lmt.getHourBranch(gmtJulDay, loc, julDayResolver)
       }
     }
   }
@@ -84,10 +84,10 @@ class HourFeature(
     return when (config.impl) {
       HourConfig.Impl.TST -> {
         val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-        getHourBranchByTst(gmtJulDay, loc, riseTransImpl)
+        Tst.getHourBranch(gmtJulDay, loc, riseTransImpl)
       }
       HourConfig.Impl.LMT -> {
-        getHourBranchByLmt(lmt)
+        Lmt.getHourBranch(lmt)
       }
     }
   }
