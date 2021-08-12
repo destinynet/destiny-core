@@ -14,13 +14,14 @@ internal class DayHourConfigTest {
   val logger = KotlinLogging.logger { }
 
   private val configByConstructor: DayHourConfig = DayHourConfig(
-    DayConfig(changeDayAfterZi = false),
+    DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
     impl = DayHourConfig.Impl.LMT
   )
 
   private val configByFunction = hourConfig {
     dayConfig {
       changeDayAfterZi = false
+      midnight = DayConfig.MidnightImpl.CLOCK0
     }
     hourImpl = DayHourConfig.Impl.LMT
   }
@@ -38,6 +39,7 @@ internal class DayHourConfigTest {
     val assertion = { raw: String ->
       logger.info { raw }
       assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
+      assertTrue(raw.contains(""""midnight":\s*"CLOCK0""".toRegex()))
       assertTrue(raw.contains(""""impl":\s*"LMT""".toRegex()))
     }
 

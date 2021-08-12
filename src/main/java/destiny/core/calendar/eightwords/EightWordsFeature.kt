@@ -58,7 +58,7 @@ class EightWordsFeature(private val yearFeature: YearFeature,
     val year: StemBranch = yearFeature.getModel(gmtJulDay, loc, config.yearMonthConfig.yearConfig)
     val month: IStemBranch = monthFeature.getModel(gmtJulDay, loc, config.yearMonthConfig)
 
-    val (day, hour) = dayHourFeature.getModel(gmtJulDay, loc)
+    val (day, hour) = dayHourFeature.getModel(gmtJulDay, loc, config.dayHourConfig)
 
     return EightWords(year, month, day, hour)
   }

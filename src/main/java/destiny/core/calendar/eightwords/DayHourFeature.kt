@@ -22,15 +22,23 @@ import java.time.temporal.ChronoUnit
 
 
 @Serializable
-data class DayConfig(val changeDayAfterZi: Boolean = true)
+data class DayConfig(val changeDayAfterZi: Boolean = true ,
+                     val midnight : MidnightImpl = MidnightImpl.NADIR) {
+  enum class MidnightImpl {
+    CLOCK0, // 當地時間手錶零時
+    NADIR   // 太陽劃過天底(子午線)
+  }
+}
 
 @DestinyMarker
 class DayConfigBuilder : Builder<DayConfig> {
 
   var changeDayAfterZi: Boolean = true
 
+  var midnight : DayConfig.MidnightImpl = DayConfig.MidnightImpl.NADIR
+
   override fun build() : DayConfig {
-    return DayConfig(changeDayAfterZi)
+    return DayConfig(changeDayAfterZi, midnight)
   }
 
   companion object {
@@ -51,6 +59,7 @@ data class DayHourConfig(
     LMT
   }
 }
+
 
 @DestinyMarker
 class HourConfigBuilder(private val dayConfigBuilder: DayConfigBuilder = DayConfigBuilder()) : Builder<DayHourConfig> {
@@ -88,12 +97,14 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
+    logger.trace { "[GMT] hourImpl = $hourImpl" }
+
     // 下個子初時刻
     val nextZiStart = hourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
 
     // 下個子正時刻
     val nextMidnightLmt =
-      TimeTools.getLmtFromGmt(midnightFeature.getModel(gmtJulDay, loc, config), loc, julDayResolver)
+      TimeTools.getLmtFromGmt(midnightFeature.getModel(gmtJulDay, loc, config.dayConfig), loc, julDayResolver)
         .let { dstSwitchCheck.invoke(it, nextZiStart) }
 
     val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
@@ -108,12 +119,13 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
 
     val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
+    logger.trace { "[LMT] hourImpl = $hourImpl" }
 
     // 下個子初時刻
     val nextZiStart = hourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
 
     // 下個子正時刻
-    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config) , loc, julDayResolver)
+    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig) , loc, julDayResolver)
       .let { dstSwitchCheck.invoke(it, nextZiStart) }
 
     val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
