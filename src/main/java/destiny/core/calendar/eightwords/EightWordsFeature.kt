@@ -19,16 +19,9 @@ data class EightWordsConfig(
   val hourConfig: HourConfig = HourConfig()
 )
 
-interface IEightWordsBuilder : IMonthConfigBuilder , IHourConfigBuilder {
-  //fun monthConfig(block: IMonthConfigBuilder.() -> Unit = {})
-  //fun hourConfig(block: HourConfigBuilder.() -> Unit = {})
-}
-
 @DestinyMarker
 class EightWordsConfigBuilder(private val monthConfigBuilder : MonthConfigBuilder = MonthConfigBuilder(),
-                              private val hourConfigBuilder: HourConfigBuilder = HourConfigBuilder()) : Builder<EightWordsConfig> ,IEightWordsBuilder,
-                                                                                                        IMonthConfigBuilder by monthConfigBuilder ,
-                                                                                                        IHourConfigBuilder by hourConfigBuilder
+                              private val hourConfigBuilder: HourConfigBuilder = HourConfigBuilder()) : Builder<EightWordsConfig>
 {
   private var monthConfig: MonthConfig = MonthConfig()
 

@@ -26,16 +26,10 @@ data class YearConfig(val changeYearDegree: Double = 315.0) {
   }
 }
 
-interface IYearConfigBuilder {
-
-  var changeYearDegree : Double
-
-}
-
 @DestinyMarker
-open class YearConfigBuilder : Builder<YearConfig> , IYearConfigBuilder {
+class YearConfigBuilder : Builder<YearConfig> {
 
-  override var changeYearDegree = 315.0
+  var changeYearDegree = 315.0
 
   override fun build(): YearConfig {
     return YearConfig(changeYearDegree)
@@ -47,10 +41,6 @@ open class YearConfigBuilder : Builder<YearConfig> , IYearConfigBuilder {
     }
   }
 }
-
-//fun yearConfig(block: YearConfigBuilder.() -> Unit = {}): YearConfig {
-//  return YearConfigBuilder().apply(block).build()
-//}
 
 class YearFeature(
   private val starPositionImpl: IStarPosition<*>,

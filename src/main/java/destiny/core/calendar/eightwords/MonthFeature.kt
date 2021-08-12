@@ -39,40 +39,28 @@ data class MonthConfig(
   }
 }
 
-interface IMonthConfigBuilder : IYearConfigBuilder {
-
-  fun yearConfig(block : IYearConfigBuilder.() -> Unit = {})
-
-  var southernHemisphereOpposition: Boolean
-
-  var hemisphereBy: HemisphereBy
-
-  var monthImpl: MonthConfig.Impl
-
-}
-
 @DestinyMarker
-class MonthConfigBuilder(private val yearConfigBuilder: YearConfigBuilder = YearConfigBuilder()) : Builder<MonthConfig>, IMonthConfigBuilder,
-                                                                                                   IYearConfigBuilder by yearConfigBuilder {
+class MonthConfigBuilder(private val yearConfigBuilder: YearConfigBuilder = YearConfigBuilder()) : Builder<MonthConfig>
+{
 
   var yearConfig: YearConfig = YearConfig()
 
-  override fun yearConfig(block: IYearConfigBuilder.() -> Unit) {
+  fun yearConfig(block: YearConfigBuilder.() -> Unit) {
 
     this.yearConfig = yearConfigBuilder.apply(block).build()
   }
 
   /** 南半球月令是否對沖  */
-  override var southernHemisphereOpposition: Boolean = false
+  var southernHemisphereOpposition: Boolean = false
 
   /**
    * 南半球的判定方法
    * 依據 赤道 [HemisphereBy.EQUATOR] , 還是 赤緯 [HemisphereBy.DECLINATION] 來界定南北半球
    * 舉例，夏至時，太陽在北回歸線，北回歸線過嘉義，則此時，嘉義以南是否算南半球？
    */
-  override var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
+  var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 
-  override var monthImpl: MonthConfig.Impl = MonthConfig.Impl.SolarTerms
+  var monthImpl: MonthConfig.Impl = MonthConfig.Impl.SolarTerms
 
   override fun build(): MonthConfig {
     return MonthConfig(yearConfig, southernHemisphereOpposition, hemisphereBy, monthImpl)

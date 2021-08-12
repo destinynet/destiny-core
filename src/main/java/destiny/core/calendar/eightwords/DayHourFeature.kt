@@ -13,17 +13,70 @@ import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import destiny.tools.Feature
+import kotlinx.serialization.Serializable
 import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 
 
-class DayHourFeature(
-  private val midnightFeature: MidnightFeature,
-  private val riseTransImpl: IRiseTrans,
-  private val julDayResolver: JulDayResolver
-) : Feature<HourConfig, Pair<StemBranch, StemBranch>> {
+@Serializable
+data class DayConfig(val changeDayAfterZi: Boolean = true)
+
+@DestinyMarker
+class DayConfigBuilder : Builder<DayConfig> {
+
+  var changeDayAfterZi: Boolean = true
+
+  override fun build() : DayConfig {
+    return DayConfig(changeDayAfterZi)
+  }
+
+  companion object {
+    fun dayConfig(block : DayConfigBuilder.() -> Unit = {}): DayConfig {
+      return DayConfigBuilder().apply(block).build()
+    }
+  }
+}
+
+
+@Serializable
+data class HourConfig(
+  val dayConfig: DayConfig = DayConfig(),
+  val impl: Impl = Impl.TST
+) {
+  enum class Impl {
+    TST,
+    LMT
+  }
+}
+
+@DestinyMarker
+class HourConfigBuilder(private val dayConfigBuilder: DayConfigBuilder = DayConfigBuilder()) : Builder<HourConfig> {
+  var dayConfig = DayConfig()
+
+  fun dayConfig(block: DayConfigBuilder.() -> Unit) {
+    this.dayConfig = dayConfigBuilder.apply(block).build()
+  }
+
+  var hourImpl = HourConfig.Impl.TST
+
+  override fun build(): HourConfig {
+    return HourConfig(dayConfig, hourImpl)
+  }
+
+  companion object {
+    fun hourConfig(block: HourConfigBuilder.() -> Unit = {}): HourConfig {
+      return HourConfigBuilder().apply(block).build()
+    }
+  }
+}
+
+
+class DayHourFeature(private val midnightFeature: MidnightFeature,
+                     private val riseTransImpl: IRiseTrans,
+                     private val julDayResolver: JulDayResolver) : Feature<HourConfig, Pair<StemBranch, StemBranch>> {
 
   override val key: String = "dayHour"
 

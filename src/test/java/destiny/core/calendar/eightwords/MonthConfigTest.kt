@@ -28,9 +28,6 @@ internal class MonthConfigTest {
     southernHemisphereOpposition = true
     hemisphereBy = HemisphereBy.DECLINATION
     monthImpl = MonthConfig.Impl.SunSign
-
-    // FIXME : 不可以這樣
-    changeYearDegree = 270.0
   }
 
   @Test
