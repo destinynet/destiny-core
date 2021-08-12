@@ -29,7 +29,7 @@ data class HourConfig(
 
 interface IHourConfigBuilder : IDayConfigBuilder {
 
-  fun dayConfig(block: IDayConfigBuilder.() -> Unit)
+  fun dayConfig(block: DayConfigBuilder.() -> Unit)
 
   var hourImpl: HourConfig.Impl
 }
@@ -39,7 +39,7 @@ class HourConfigBuilder(private val dayConfigBuilder: DayConfigBuilder = DayConf
                                                                                                IDayConfigBuilder by dayConfigBuilder {
   var dayConfig = DayConfig()
 
-  override fun dayConfig(block: IDayConfigBuilder.() -> Unit) {
+  override fun dayConfig(block: DayConfigBuilder.() -> Unit) {
     this.dayConfig = dayConfigBuilder.apply(block).build()
   }
 

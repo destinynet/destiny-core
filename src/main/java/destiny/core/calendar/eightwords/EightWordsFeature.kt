@@ -20,8 +20,8 @@ data class EightWordsConfig(
 )
 
 interface IEightWordsBuilder : IMonthConfigBuilder , IHourConfigBuilder {
-  fun monthConfig(block: IMonthConfigBuilder.() -> Unit = {})
-  fun hourConfig(block: HourConfigBuilder.() -> Unit = {})
+  //fun monthConfig(block: IMonthConfigBuilder.() -> Unit = {})
+  //fun hourConfig(block: HourConfigBuilder.() -> Unit = {})
 }
 
 @DestinyMarker
@@ -32,13 +32,13 @@ class EightWordsConfigBuilder(private val monthConfigBuilder : MonthConfigBuilde
 {
   private var monthConfig: MonthConfig = MonthConfig()
 
-  override fun monthConfig(block: IMonthConfigBuilder.() -> Unit) {
+  fun monthConfig(block: MonthConfigBuilder.() -> Unit) {
     this.monthConfig = monthConfigBuilder.apply(block).build()
   }
 
   private var hourConfig: HourConfig = HourConfig()
 
-  override fun hourConfig(block: HourConfigBuilder.() -> Unit) {
+  fun hourConfig(block: HourConfigBuilder.() -> Unit) {
     this.hourConfig = hourConfigBuilder.apply(block).build()
   }
 

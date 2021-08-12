@@ -14,12 +14,13 @@ import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
 import destiny.tools.Builder
 import destiny.tools.Feature
+import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
+import java.time.temporal.ChronoUnit
 
 
 class DayHourFeature(
   private val midnightFeature: MidnightFeature,
-  private val midnightImpl: IMidnight,
   private val riseTransImpl: IRiseTrans,
   private val julDayResolver: JulDayResolver
 ) : Feature<HourConfig, Pair<StemBranch, StemBranch>> {
@@ -34,14 +35,18 @@ class DayHourFeature(
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
+    // 下個子初時刻
+    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
 
     // 下個子正時刻
-    val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(gmtJulDay, loc, config) , loc, julDayResolver)
+    val nextMidnightLmt =
+      TimeTools.getLmtFromGmt(midnightFeature.getModel(gmtJulDay, loc, config), loc, julDayResolver)
+        .let { dstSwitchCheck.invoke(it, nextZiStart) }
 
-    val day: StemBranch = getDay(lmt, loc, hourImpl, midnightImpl, config.dayConfig.changeDayAfterZi, julDayResolver)
+    val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
 
     val hourBranch = getHourBranch(config.impl , lmt, loc)
-    val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, midnightImpl, julDayResolver)
+    val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
 
     val hour = StemBranch[hourStem, hourBranch]
     return day to hour
@@ -51,13 +56,17 @@ class DayHourFeature(
 
     val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
 
+    // 下個子初時刻
+    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
+
     // 下個子正時刻
     val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config) , loc, julDayResolver)
+      .let { dstSwitchCheck.invoke(it, nextZiStart) }
 
-    val day: StemBranch = getDay(lmt, loc, hourImpl, midnightImpl, config.dayConfig.changeDayAfterZi, julDayResolver)
+    val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
 
     val hourBranch = getHourBranch(config.impl , lmt, loc)
-    val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, midnightImpl, julDayResolver)
+    val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
 
     val hour = StemBranch[hourStem, hourBranch]
     return day to hour
@@ -75,6 +84,16 @@ class DayHourFeature(
     }
   }
 
+  private val dstSwitchCheck = { nextMn : ChronoLocalDateTime<*> , nextZiStart : ChronoLocalDateTime<*> ->
+    val dur = Duration.between(nextZiStart, nextMn).abs()
+    if (dur.toMinutes() <= 1) {
+      logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}", nextZiStart, nextMn, dur.seconds) // DST 結束前一天，可能會出錯
+      nextMn.plus(1, ChronoUnit.HOURS)
+    } else {
+      nextMn
+    }
+  }
+
   private fun getHourStem(
     hourImpl: IHour,
     lmt: ChronoLocalDateTime<*>,
@@ -82,7 +101,8 @@ class DayHourFeature(
     day: StemBranch,
     hourBranch: Branch,
     cdaz: Boolean,
-    midnightImpl: IMidnight,
+    nextZiStart: ChronoLocalDateTime<*>,
+    nextMidnightLmt : ChronoLocalDateTime<*>,
     julDayResolver: JulDayResolver
   ): Stem {
     val nextZi: ChronoLocalDateTime<*> = hourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
@@ -101,7 +121,7 @@ class DayHourFeature(
         </pre> *
          */
 
-        if (day !== getDay(nextZi, loc, hourImpl, midnightImpl, cdaz, julDayResolver))
+        if (day !== getDay(nextZi, loc, hourImpl, nextZiStart, nextMidnightLmt, cdaz, julDayResolver))
           it.next
         else
           it

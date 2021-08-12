@@ -31,7 +31,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
   override fun getDay(lmt: ChronoLocalDateTime<*>, location: ILocation): StemBranch {
 
     // 下個子初時刻
-    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, julDayResolver)
+    val nextZiStart: ChronoLocalDateTime<*> = hourImpl.getLmtNextStartOf(lmt, location, Branch.子, julDayResolver)
 
     // 下個子正時刻
     val nextMidnightLmt = midnightImpl.getNextMidnight(lmt, location, julDayResolver).let {
@@ -44,7 +44,7 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
       }
     }
 
-    return getDay(lmt, location, hourImpl, midnightImpl, changeDayAfterZi, julDayResolver)
+    return getDay(lmt, location, hourImpl, nextZiStart, nextMidnightLmt, changeDayAfterZi, julDayResolver)
   } // LMT 版本
 
   /**

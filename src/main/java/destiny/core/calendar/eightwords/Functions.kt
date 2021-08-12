@@ -9,7 +9,6 @@ import destiny.core.calendar.*
 import destiny.core.chinese.*
 import destiny.core.chinese.Branch.*
 import mu.KotlinLogging
-import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
@@ -223,7 +222,10 @@ fun getDay(
   lmt: ChronoLocalDateTime<*>,
   location: ILocation,
   hourImpl: IHour,
-  midnightImpl: IMidnight,
+  // 下個子初時刻
+  nextZiStart: ChronoLocalDateTime<*>,
+  // 下個子正時刻
+  nextMidnightLmt: ChronoLocalDateTime<*>,
   changeDayAfterZi: Boolean,
   julDayResolver: JulDayResolver
 ): StemBranch {
@@ -232,19 +234,6 @@ fun getDay(
   val lmtJulDay = (TimeTools.getGmtJulDay(lmt).value + 0.5).toInt()
   var index = (lmtJulDay - 11) % 60
 
-  // 下個子初時刻
-  val nextZiStart = hourImpl.getLmtNextStartOf(lmt, location, 子, julDayResolver)
-
-  // 下個子正時刻
-  val nextMidnightLmt: ChronoLocalDateTime<*> = midnightImpl.getNextMidnight(lmt, location, julDayResolver).let {
-    val dur = Duration.between(nextZiStart, it).abs()
-    if (dur.toMinutes() <= 1) {
-      logger.warn("子初子正 幾乎重疊！ 可能是 DST 切換. 下個子初 = {} , 下個子正 = {} . 相隔秒 = {}", nextZiStart, it, dur.seconds) // DST 結束前一天，可能會出錯
-      it.plus(1, ChronoUnit.HOURS)
-    } else {
-      it
-    }
-  }
 
 
   if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
