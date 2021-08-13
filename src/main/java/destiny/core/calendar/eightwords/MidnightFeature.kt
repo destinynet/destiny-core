@@ -10,7 +10,6 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.tools.Builder
 import destiny.tools.Feature
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
@@ -22,8 +21,6 @@ class MidnightFeature(private val riseTransImpl: IRiseTrans,
   override val key: String = "midnight"
 
   override val defaultConfig: DayConfig = DayConfig()
-
-  override val builder: Builder<DayConfig> = DayConfigBuilder()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayConfig): GmtJulDay {
 

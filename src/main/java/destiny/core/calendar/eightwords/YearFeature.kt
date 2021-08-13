@@ -51,9 +51,6 @@ class YearFeature(
 
   override val defaultConfig: YearConfig = YearConfig()
 
-  override val builder: Builder<YearConfig> = YearConfigBuilder()
-
-
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: YearConfig): StemBranch {
     return getYear(gmtJulDay, loc, config.changeYearDegree, julDayResolver, starPositionImpl)
   }

@@ -52,8 +52,6 @@ class EightWordsFeature(private val yearFeature: YearFeature,
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()
 
-  override val builder: Builder<EightWordsConfig> = EightWordsConfigBuilder()
-
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): EightWords {
     val year: StemBranch = yearFeature.getModel(gmtJulDay, loc, config.yearMonthConfig.yearConfig)
     val month: IStemBranch = monthFeature.getModel(gmtJulDay, loc, config.yearMonthConfig)

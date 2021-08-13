@@ -28,9 +28,9 @@ data class YearMonthConfig(
    */
   val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR,
 
-  val impl: Impl = Impl.SolarTerms
+  val moonImpl: MoonImpl = MoonImpl.SolarTerms
 ) {
-  enum class Impl {
+  enum class MoonImpl {
     /** 標準, 節氣劃分月令 */
     SolarTerms,
 
@@ -59,7 +59,7 @@ class MonthConfigBuilder(private val yearConfigBuilder: YearConfigBuilder = Year
    */
   var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 
-  var monthImpl: YearMonthConfig.Impl = YearMonthConfig.Impl.SolarTerms
+  var monthImpl: YearMonthConfig.MoonImpl = YearMonthConfig.MoonImpl.SolarTerms
 
   override fun build(): YearMonthConfig {
     return YearMonthConfig(yearConfig, southernHemisphereOpposition, hemisphereBy, monthImpl)
@@ -82,9 +82,6 @@ class MonthFeature(
 
   override val defaultConfig: YearMonthConfig = YearMonthConfig()
 
-  override val builder: Builder<YearMonthConfig> = MonthConfigBuilder()
-
-
   val solarTermsImpl: ISolarTerms by lazy {
     SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
   }
@@ -102,9 +99,9 @@ class MonthFeature(
       julDayResolver
     )
 
-    return when (config.impl) {
-      YearMonthConfig.Impl.SolarTerms -> originalMonth
-      YearMonthConfig.Impl.SunSign    -> {
+    return when (config.moonImpl) {
+      YearMonthConfig.MoonImpl.SolarTerms -> originalMonth
+      YearMonthConfig.MoonImpl.SunSign    -> {
         // 目前的節氣
         val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 

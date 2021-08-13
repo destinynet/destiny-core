@@ -18,7 +18,7 @@ internal class YearMonthConfigTest {
     YearConfig(270.0),
     southernHemisphereOpposition = true,
     hemisphereBy = HemisphereBy.DECLINATION,
-    impl = YearMonthConfig.Impl.SunSign
+    moonImpl = YearMonthConfig.MoonImpl.SunSign
   )
 
   private val configByFunction = monthConfig {
@@ -27,7 +27,7 @@ internal class YearMonthConfigTest {
     }
     southernHemisphereOpposition = true
     hemisphereBy = HemisphereBy.DECLINATION
-    monthImpl = YearMonthConfig.Impl.SunSign
+    monthImpl = YearMonthConfig.MoonImpl.SunSign
   }
 
   @Test
@@ -42,7 +42,7 @@ internal class YearMonthConfigTest {
       assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
       assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
       assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
-      assertTrue(raw.contains(""""impl":\s*"SunSign""".toRegex()))
+      assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
     }
 
     Json {

@@ -207,12 +207,12 @@ private fun getMonthStem(
   return monthStem
 }
 
-fun getHourImpl(impl : DayHourConfig.Impl, riseTransImpl : IRiseTrans, julDayResolver: JulDayResolver) : IHour {
-  return when(impl) {
-    DayHourConfig.Impl.TST -> {
+fun getHourImpl(hourImpl : DayHourConfig.HourImpl, riseTransImpl : IRiseTrans, julDayResolver: JulDayResolver) : IHour {
+  return when(hourImpl) {
+    DayHourConfig.HourImpl.TST -> {
       HourSolarTransImpl(riseTransImpl)
     }
-    DayHourConfig.Impl.LMT -> {
+    DayHourConfig.HourImpl.LMT -> {
       HourLmtImpl(julDayResolver)
     }
   }

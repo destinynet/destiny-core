@@ -20,8 +20,6 @@ interface Feature<out Config : Any, Model : Any> {
 
   val defaultConfig: Config
 
-  val builder : Builder<@UnsafeVariance Config>
-
   fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config = defaultConfig): Model
 
   fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: @UnsafeVariance Config = defaultConfig): Model {

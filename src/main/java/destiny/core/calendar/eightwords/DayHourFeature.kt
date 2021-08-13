@@ -52,9 +52,9 @@ class DayConfigBuilder : Builder<DayConfig> {
 @Serializable
 data class DayHourConfig(
   val dayConfig: DayConfig = DayConfig(),
-  val impl: Impl = Impl.TST
+  val hourImpl: HourImpl = HourImpl.TST
 ) {
-  enum class Impl {
+  enum class HourImpl {
     TST,
     LMT
   }
@@ -69,7 +69,7 @@ class HourConfigBuilder(private val dayConfigBuilder: DayConfigBuilder = DayConf
     this.dayConfig = dayConfigBuilder.apply(block).build()
   }
 
-  var hourImpl = DayHourConfig.Impl.TST
+  var hourImpl = DayHourConfig.HourImpl.TST
 
   override fun build(): DayHourConfig {
     return DayHourConfig(dayConfig, hourImpl)
@@ -91,12 +91,10 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
 
   override val defaultConfig: DayHourConfig = DayHourConfig()
 
-  override val builder: Builder<DayHourConfig> = HourConfigBuilder()
-
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
+    val hourImpl = getHourImpl(config.hourImpl, riseTransImpl, julDayResolver)
     logger.trace { "[GMT] hourImpl = $hourImpl" }
 
     // 下個子初時刻
@@ -109,7 +107,7 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
 
     val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
 
-    val hourBranch = getHourBranch(config.impl , lmt, loc)
+    val hourBranch = getHourBranch(config.hourImpl, lmt, loc)
     val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
 
     val hour = StemBranch[hourStem, hourBranch]
@@ -118,7 +116,7 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
 
-    val hourImpl = getHourImpl(config.impl, riseTransImpl, julDayResolver)
+    val hourImpl = getHourImpl(config.hourImpl, riseTransImpl, julDayResolver)
     logger.trace { "[LMT] hourImpl = $hourImpl" }
 
     // 下個子初時刻
@@ -130,20 +128,20 @@ class DayHourFeature(private val midnightFeature: MidnightFeature,
 
     val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
 
-    val hourBranch = getHourBranch(config.impl , lmt, loc)
+    val hourBranch = getHourBranch(config.hourImpl, lmt, loc)
     val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
 
     val hour = StemBranch[hourStem, hourBranch]
     return day to hour
   }
 
-  private fun getHourBranch(impl : DayHourConfig.Impl, lmt: ChronoLocalDateTime<*>, loc: ILocation): Branch {
-    return when (impl) {
-      DayHourConfig.Impl.TST -> {
+  private fun getHourBranch(hourImpl : DayHourConfig.HourImpl, lmt: ChronoLocalDateTime<*>, loc: ILocation): Branch {
+    return when (hourImpl) {
+      DayHourConfig.HourImpl.TST -> {
         val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
         Tst.getHourBranch(gmtJulDay, loc, riseTransImpl)
       }
-      DayHourConfig.Impl.LMT -> {
+      DayHourConfig.HourImpl.LMT -> {
         Lmt.getHourBranch(lmt)
       }
     }

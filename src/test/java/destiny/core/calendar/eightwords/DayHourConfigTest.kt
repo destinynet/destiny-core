@@ -15,7 +15,7 @@ internal class DayHourConfigTest {
 
   private val configByConstructor: DayHourConfig = DayHourConfig(
     DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
-    impl = DayHourConfig.Impl.LMT
+    hourImpl = DayHourConfig.HourImpl.LMT
   )
 
   private val configByFunction = hourConfig {
@@ -23,7 +23,7 @@ internal class DayHourConfigTest {
       changeDayAfterZi = false
       midnight = DayConfig.MidnightImpl.CLOCK0
     }
-    hourImpl = DayHourConfig.Impl.LMT
+    hourImpl = DayHourConfig.HourImpl.LMT
   }
 
   @Test
@@ -40,7 +40,7 @@ internal class DayHourConfigTest {
       logger.info { raw }
       assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
       assertTrue(raw.contains(""""midnight":\s*"CLOCK0""".toRegex()))
-      assertTrue(raw.contains(""""impl":\s*"LMT""".toRegex()))
+      assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
     }
 
     Json {
