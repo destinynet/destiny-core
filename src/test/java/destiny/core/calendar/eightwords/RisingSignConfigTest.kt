@@ -20,7 +20,6 @@ internal class RisingSignConfigTest {
   )
 
   private val configByFunction = risingSign {
-
     tradChinese {
       hourImpl = DayHourConfig.HourImpl.LMT
     }

@@ -83,7 +83,7 @@ class HourConfigBuilder(private val dayConfigBuilder: DayConfigBuilder = DayConf
 }
 
 
-class DayHourFeature(private val midnightFeature: MidnightFeature,
+class DayHourFeature(val midnightFeature: MidnightFeature,
                      private val riseTransImpl: IRiseTrans,
                      private val julDayResolver: JulDayResolver) : Feature<DayHourConfig, Pair<StemBranch, StemBranch>> {
 

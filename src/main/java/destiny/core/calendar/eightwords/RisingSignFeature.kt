@@ -46,7 +46,7 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
     }
   }
 
-  var houseCuspConfig: HouseCuspConfig = HouseCuspConfig()
+  private var houseCuspConfig: HouseCuspConfig = HouseCuspConfig()
   fun houseCusp(block: HouseCuspConfigBuilder.() -> Unit = {}) {
     houseCuspConfig = HouseCuspConfigBuilder().apply(block).build()
     impl = RisingSignConfig.Impl.HouseCusp
@@ -62,7 +62,7 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
     }
   }
 
-  var tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()
+  private var tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()
   fun tradChinese(block: TradChineseRisingSignConfigBuilder.() -> Unit = {}) {
     tradChineseRisingSignConfig = TradChineseRisingSignConfigBuilder().apply(block).build()
     impl = RisingSignConfig.Impl.TradChinese

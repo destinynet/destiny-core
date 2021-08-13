@@ -15,6 +15,7 @@ import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 
 
+/** 取得下一個子正的時刻 */
 class MidnightFeature(private val riseTransImpl: IRiseTrans,
                       private val julDayResolver: JulDayResolver) : Feature<DayConfig, GmtJulDay> {
 

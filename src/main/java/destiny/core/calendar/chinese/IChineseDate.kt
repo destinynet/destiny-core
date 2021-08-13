@@ -7,14 +7,15 @@ package destiny.core.calendar.chinese
 import destiny.core.Descriptive
 import destiny.core.calendar.CalType
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.StemBranch
 import org.threeten.extra.chrono.JulianDate
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
-import java.util.*
 
 /**
  * 從 Time(LMT) / Location 取得 ChineseDate
@@ -39,6 +40,8 @@ interface IChineseDate : Descriptive {
                           localDate.get(ChronoField.DAY_OF_MONTH))
   }
 
+  fun getChineseDate(lmt: ChronoLocalDateTime<*>, loc: ILocation, day: StemBranch, hour: StemBranch, midnightFeature: MidnightFeature, cdaz: Boolean , julDayResolver: JulDayResolver): ChineseDate
+
   /**
    * 最完整的「陽曆轉陰曆」演算法
    * 必須另外帶入 地點、日干支紀算法、時辰劃分法、子正計算方式、是否子初換日 5個參數
@@ -46,6 +49,8 @@ interface IChineseDate : Descriptive {
   fun getChineseDate(lmt: ChronoLocalDateTime<*>,
                      location: ILocation,
                      dayHourImpl: IDayHour): ChineseDate
+
+
 
 
   // =============== 陰曆轉陽曆 ===============
@@ -101,6 +106,8 @@ interface IChineseDate : Descriptive {
     val monthEnd = minusDays(nextMonthStart, 1)
     return monthEnd.day
   }
+
+
 
   companion object {
 
