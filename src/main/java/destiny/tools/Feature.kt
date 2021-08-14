@@ -14,7 +14,7 @@ interface Builder<Model> {
   fun build() : Model
 }
 
-interface Feature<out Config : Any, Model : Any> {
+interface Feature<out Config : Any, Model : Any?> {
 
   val key: String
 
