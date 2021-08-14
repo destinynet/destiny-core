@@ -3,25 +3,23 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
-import kotlinx.serialization.json.Json
-import mu.KotlinLogging
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
-internal class YearMonthConfigTest {
+internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
 
-  val logger = KotlinLogging.logger { }
+  override val serializer: KSerializer<YearMonthConfig> = YearMonthConfig.serializer()
 
-  private val configByConstructor = YearMonthConfig(
+  override val configByConstructor = YearMonthConfig(
     YearConfig(270.0),
     southernHemisphereOpposition = true,
     hemisphereBy = HemisphereBy.DECLINATION,
     moonImpl = YearMonthConfig.MoonImpl.SunSign
   )
 
-  private val configByFunction = monthConfig {
+  override val configByFunction = monthConfig {
     yearConfig {
       changeYearDegree = 270.0
     }
@@ -30,33 +28,12 @@ internal class YearMonthConfigTest {
     monthImpl = YearMonthConfig.MoonImpl.SunSign
   }
 
-  @Test
-  fun testEquals() {
-    assertEquals(configByConstructor, configByFunction)
+  override val assertion = { raw: String ->
+    logger.info { raw }
+    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
+    assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
+    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
+    assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
   }
 
-  @Test
-  fun testSerialize() {
-    val assertion = { raw: String ->
-      logger.info { raw }
-      assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
-      assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-      assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
-      assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
-    }
-
-    Json {
-      encodeDefaults = true
-      prettyPrint = true
-    }.also { format ->
-      assertAndCompareDecoded(format, configByConstructor , assertion)
-    }
-
-    Json {
-      encodeDefaults = true
-      prettyPrint = false
-    }.also { format ->
-      assertAndCompareDecoded(format, configByFunction , assertion)
-    }
-  }
 }

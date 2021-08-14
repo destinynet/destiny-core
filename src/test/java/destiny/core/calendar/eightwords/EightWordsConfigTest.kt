@@ -3,17 +3,16 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder.Companion.ewConfig
-import kotlinx.serialization.json.Json
-import mu.KotlinLogging
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
-internal class EightWordsConfigTest {
-  val logger = KotlinLogging.logger { }
+internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
 
-  private val configByConstructor: EightWordsConfig = EightWordsConfig(
+  override val serializer: KSerializer<EightWordsConfig> =  EightWordsConfig.serializer()
+
+  override val configByConstructor: EightWordsConfig = EightWordsConfig(
     yearMonthConfig = YearMonthConfig(
       YearConfig(270.0),
       southernHemisphereOpposition = true,
@@ -26,7 +25,7 @@ internal class EightWordsConfigTest {
     )
   )
 
-  private val configByFunction: EightWordsConfig = ewConfig {
+  override val configByFunction: EightWordsConfig = ewConfig {
     monthConfig {
       yearConfig {
         changeYearDegree = 270.0
@@ -44,37 +43,14 @@ internal class EightWordsConfigTest {
     }
   }
 
-  @Test
-  fun testEquals() {
-    assertEquals(configByConstructor, configByFunction)
-  }
+  override val assertion = { raw: String ->
+    logger.info { raw }
+    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
+    assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
+    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
+    assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
 
-
-  @Test
-  fun testSerialize() {
-    val assertion = { raw: String ->
-      logger.info { raw }
-      assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
-      assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-      assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
-      assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
-
-      assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-      assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
-    }
-
-    Json {
-      encodeDefaults = true
-      prettyPrint = true
-    }.also { format ->
-      assertAndCompareDecoded(format, configByConstructor , assertion)
-    }
-
-    Json {
-      encodeDefaults = true
-      prettyPrint = false
-    }.also { format ->
-      assertAndCompareDecoded(format, configByFunction , assertion)
-    }
+    assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
+    assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
   }
 }

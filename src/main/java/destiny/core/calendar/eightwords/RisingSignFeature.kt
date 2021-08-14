@@ -3,11 +3,10 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.Coordinate
-import destiny.core.astrology.HouseSystem
-import destiny.core.astrology.ZodiacSign
+import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.chinese.Branch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -15,7 +14,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RisingSignConfig(
-  val houseCuspConfig: HouseCuspConfig = HouseCuspConfig(),
+  val houseConfig: HouseConfig = HouseConfig(),
   val tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig(),
   val impl: Impl = Impl.HouseCusp
 ) {
@@ -30,25 +29,10 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
 
   var impl: RisingSignConfig.Impl = RisingSignConfig.Impl.HouseCusp
 
-  @DestinyMarker
-  class HouseCuspConfigBuilder : Builder<HouseCuspConfig> {
-    var houseSystem: HouseSystem = HouseSystem.PLACIDUS
-    var coordinate: Coordinate = Coordinate.ECLIPTIC
 
-    override fun build(): HouseCuspConfig {
-      return HouseCuspConfig(houseSystem, coordinate)
-    }
-
-    companion object {
-      fun houseCusp(block: HouseCuspConfigBuilder.() -> Unit = {}): HouseCuspConfig {
-        return HouseCuspConfigBuilder().apply(block).build()
-      }
-    }
-  }
-
-  private var houseCuspConfig: HouseCuspConfig = HouseCuspConfig()
-  fun houseCusp(block: HouseCuspConfigBuilder.() -> Unit = {}) {
-    houseCuspConfig = HouseCuspConfigBuilder().apply(block).build()
+  private var houseConfig: HouseConfig = HouseConfig()
+  fun houseCusp(block: HouseConfigBuilder.() -> Unit = {}) {
+    houseConfig = HouseConfigBuilder().apply(block).build()
     impl = RisingSignConfig.Impl.HouseCusp
   }
 
@@ -69,7 +53,7 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
   }
 
   override fun build(): RisingSignConfig {
-    return RisingSignConfig(houseCuspConfig, tradChineseRisingSignConfig, impl)
+    return RisingSignConfig(houseConfig, tradChineseRisingSignConfig, impl)
   }
 
   companion object {
@@ -84,13 +68,55 @@ class RisingSignFeature(
   private val houseCuspFeature: HouseCuspFeature,
   private val tradChineseRisingSignFeature: TradChineseRisingSignFeature
 ) : Feature<RisingSignConfig, ZodiacSign> {
+
+
+  class HouseCuspFeature(private val houseCuspImpl: IHouseCusp) : Feature<HouseConfig, ZodiacSign> {
+
+    override val key: String = "houseCusp"
+
+    override val defaultConfig: HouseConfig = HouseConfig()
+
+    override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HouseConfig): ZodiacSign {
+      return houseCuspImpl.getRisingSign(gmtJulDay, loc, config.houseSystem, config.coordinate)
+    }
+  }
+
+  class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*>,
+                                     private val dayHourFeature: DayHourFeature) : Feature<TradChineseRisingSignConfig , ZodiacSign> {
+    override val key: String = "tradChinese"
+
+    override val defaultConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()
+
+    override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: TradChineseRisingSignConfig): ZodiacSign {
+      // 太陽星座
+      val sunSign = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lngDeg.sign
+
+      // 時支
+      val hour = dayHourFeature.getModel(gmtJulDay, loc , DayHourConfig(hourImpl = config.hourImpl)).second.branch
+
+      val gap = (hour.index - sunSign.branch.index).let {
+        if (it < 0 )
+          it + 12
+        else
+          it
+      }
+
+      val target = (Branch.卯.index - gap)
+
+      val resultEB = Branch[target]
+
+      return ZodiacSign.of(resultEB)
+    }
+  }
+
+
   override val key: String = "risingSign"
 
   override val defaultConfig: RisingSignConfig = RisingSignConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: RisingSignConfig): ZodiacSign {
     return when (config.impl) {
-      RisingSignConfig.Impl.HouseCusp   -> houseCuspFeature.getModel(gmtJulDay, loc, config.houseCuspConfig)
+      RisingSignConfig.Impl.HouseCusp   -> houseCuspFeature.getModel(gmtJulDay, loc, config.houseConfig)
       RisingSignConfig.Impl.TradChinese -> tradChineseRisingSignFeature.getModel(gmtJulDay, loc, config.tradChineseRisingSignConfig)
     }
   }

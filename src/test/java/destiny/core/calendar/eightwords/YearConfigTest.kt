@@ -3,26 +3,29 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.AbstractConfigTest
 import destiny.core.calendar.eightwords.YearConfigBuilder.Companion.yearConfig
-import org.junit.jupiter.api.TestInstance
+import kotlinx.serialization.KSerializer
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class YearConfigTest {
+internal class YearConfigTest : AbstractConfigTest<YearConfig>() {
 
-  @Test
-  fun testInvokeConfigFun() {
-    val config: YearConfig = yearConfig {
-      changeYearDegree = 270.0
-    }
+  override val serializer: KSerializer<YearConfig> = YearConfig.serializer()
 
-    assertEquals(270.0, config.changeYearDegree)
+  override val configByConstructor: YearConfig = YearConfig(270.0)
+
+  override val configByFunction: YearConfig = yearConfig {
+    changeYearDegree = 270.0
+  }
+
+
+  override val assertion = { raw: String ->
+    logger.info { raw }
+    assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
   }
 
   /**
