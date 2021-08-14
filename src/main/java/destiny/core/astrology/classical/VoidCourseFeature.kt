@@ -6,10 +6,13 @@ package destiny.core.astrology.classical
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.rules.Misc.VoidCourse
 import destiny.core.calendar.GmtJulDay
+import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.Builder
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import mu.KotlinLogging
+import kotlin.math.min
 
 
 @Serializable
@@ -45,6 +48,9 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
                         private val starPositionImpl: IStarPosition<*>,
                         private val starTransitImpl: IStarTransit,
                         private val pointPosFuncMap: Map<Point, IPosition<*>>) : Feature<VoidCourseConfig , VoidCourse?>{
+
+  private val logger = KotlinLogging.logger { }
+  
   override val key: String = "voidCourse"
 
   override val defaultConfig: VoidCourseConfig = VoidCourseConfig()
@@ -56,5 +62,62 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
       VoidCourseConfig.VoidCourseImpl.WilliamLilly -> VoidCourseWilliamLilly(besiegedImpl, starPositionImpl, starTransitImpl)
     }
     return voidCourseImpl.getVoidCourse(gmtJulDay , loc, pointPosFuncMap , config.planet , config.centric)
+  }
+
+  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<Point> , config: VoidCourseConfig): Map<Planet, VoidCourse> {
+    return points.filterIsInstance<Planet>()
+      .map { planet -> planet to getModel(gmtJulDay, loc, config.copy(planet = planet)) }
+      .filter { (_, voc) -> voc != null }
+      .associate { (planet, voc) -> planet to voc!! }
+  }
+
+  fun getVoidCourses(
+    fromGmt: GmtJulDay,
+    toGmt: GmtJulDay,
+    loc: ILocation,
+    relativeTransitImpl: IRelativeTransit,
+    config: VoidCourseConfig
+  ): List<VoidCourse> {
+
+    val planets = Planet.classicalList
+    val aspects = Aspect.getAspects(Aspect.Importance.HIGH)
+
+    fun getNextVoc(gmt : GmtJulDay): VoidCourse? {
+
+      return relativeTransitImpl.getNearestRelativeTransitGmtJulDay(config.planet, planets, gmt, aspects, true)
+        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! < toGmt }
+        ?.takeIf { nextAspectData -> nextAspectData.gmtJulDay!! > fromGmt }
+        ?.let { nextAspectData ->
+          logger.trace { "接下來將在 ${IVoidCourse.julDayResolver.getLocalDateTime(nextAspectData.gmtJulDay!!)} 與 ${nextAspectData.points} 形成 ${nextAspectData.aspect}" }
+
+          val nextTime: GmtJulDay = nextAspectData.gmtJulDay!! + 0.01
+          logger.trace { "推進計算時刻 ${IVoidCourse.julDayResolver.getLocalDateTime(nextTime)}" }
+          getModel(nextTime , loc , config)?:getNextVoc(nextTime)
+          //getVoidCourse(nextTime, loc, pointPosFuncMap, planet, centric) ?: getNextVoc(nextTime)
+        }
+    }
+
+    fun getVoc(gmt: GmtJulDay , config: VoidCourseConfig) : VoidCourse? {
+      val gmtVoc: VoidCourse? = getModel(gmt, loc , config)
+
+      return if (gmtVoc == null) {
+        logger.trace { "沒有 VOC : ${IVoidCourse.julDayResolver.getLocalDateTime(gmt)} " }
+
+        getNextVoc(gmt)?.takeIf { nextVoc ->
+          nextVoc.beginGmt < toGmt
+        }
+      } else {
+        logger.trace { "免進下一步，直接得到 VOC , 開始於 ${gmtVoc.beginGmt.let { IVoidCourse.julDayResolver.getLocalDateTime(it) }}" }
+        gmtVoc
+      }
+    }
+
+    return generateSequence(getVoc(fromGmt , config)) {
+      val newGmt = (min(it.endGmt.value, it.exactAspectAfter.gmtJulDay!!.value) + 0.01).toGmtJulDay()
+      if (newGmt < toGmt) {
+        getVoc(newGmt, config)?.takeIf { voc -> voc.beginGmt < toGmt }
+      } else
+        null
+    }.toList()
   }
 }
