@@ -4,6 +4,8 @@
  */
 package destiny.core.astrology
 
+import java.util.*
+
 sealed class Asteroid(nameKey: String,
                       abbrKey: String,
                       val index: Int ,
@@ -40,5 +42,11 @@ sealed class Asteroid(nameKey: String,
       arrayOf(CERES, PALLAS, JUNO, VESTA, CHIRON, PHOLUS)
     }
     val list by lazy { listOf(*array) }
+
+    fun fromString(value : String) : Asteroid? {
+      return array.firstOrNull {
+        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+      }
+    }
   }
 }

@@ -62,5 +62,9 @@ sealed class LunarApsis(nameKey: String, abbrKey: String,
 
   companion object {
     val array by lazy { arrayOf(APOGEE_MEAN, APOGEE_OSCU, PERIGEE_MEAN, PERIGEE_OSCU) }
+
+    fun fromString(value : String) : LunarApsis? {
+      return array.firstOrNull { it::class.simpleName == value }
+    }
   }
 }

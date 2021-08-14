@@ -8,6 +8,11 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import java.time.chrono.ChronoLocalDateTime
 
+data class ZodiacSignModel(
+  val current: Pair<ZodiacSign, GmtJulDay>,
+  val next: Pair<ZodiacSign, GmtJulDay>
+)
+
 interface IZodiacSign {
 
   /**
@@ -15,15 +20,15 @@ interface IZodiacSign {
    * 畫過 之前(目前)的星座 於何時
    * 即將到未來的星座 於何時
    */
-  fun getSignsBetween(star: Star, gmtJulDay: GmtJulDay): Pair<Pair<ZodiacSign, GmtJulDay>, Pair<ZodiacSign, GmtJulDay>>
+  fun getSignsBetween(star: Star, gmtJulDay: GmtJulDay): ZodiacSignModel
 
-  fun getSign(star: Star , gmtJulDay: GmtJulDay) : ZodiacSign {
-    return getSignsBetween(star , gmtJulDay).first.first
+  fun getSign(star: Star, gmtJulDay: GmtJulDay): ZodiacSign {
+    return getSignsBetween(star, gmtJulDay).current.first
   }
 
-  fun getSignsBetween(star: Star, lmt : ChronoLocalDateTime<*> , location : ILocation): Pair<Pair<ZodiacSign, GmtJulDay>, Pair<ZodiacSign, GmtJulDay>> {
+  fun getSignsBetween(star: Star, lmt: ChronoLocalDateTime<*>, location: ILocation): ZodiacSignModel {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    return getSignsBetween(star , gmtJulDay)
+    return getSignsBetween(star, gmtJulDay)
   }
 }
 

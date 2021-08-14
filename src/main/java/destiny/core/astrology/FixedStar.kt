@@ -4,6 +4,8 @@
  */
 package destiny.core.astrology
 
+import java.util.*
+
 /** 恆星  */
 sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey, Star::class.qualifiedName!!), Comparable<FixedStar> {
   /** Algol 大陵五  */
@@ -80,5 +82,11 @@ sealed class FixedStar(nameKey: String, abbrKey: String) : Star(nameKey, abbrKey
               VEGA, ALTAIR, FOMALHAUT, DENEB)
     }
     val list by lazy { listOf(*array) }
+
+    fun fromString(value : String) : FixedStar? {
+      return array.firstOrNull {
+        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+      }
+    }
   }
 }

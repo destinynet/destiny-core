@@ -4,6 +4,8 @@
  */
 package destiny.core.astrology
 
+import java.util.*
+
 
 /** 漢堡學派 Uranian Astrology  */
 sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.qualifiedName!!), Comparable<Hamburger> {
@@ -33,6 +35,12 @@ sealed class Hamburger (nameKey: String) : Star(nameKey, Star::class.qualifiedNa
 
     val list by lazy {
       listOf(*array)
+    }
+
+    fun fromString(value : String) : Hamburger? {
+      return array.firstOrNull {
+        it.toString(Locale.ENGLISH).equals(value, ignoreCase = true)
+      }
     }
 
   }

@@ -13,6 +13,11 @@ import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class TradChineseRisingSignConfig(
+  val hourImpl: DayHourConfig.HourImpl = DayHourConfig.HourImpl.TST
+)
+
+@Serializable
 data class RisingSignConfig(
   val houseConfig: HouseConfig = HouseConfig(),
   val tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig(),

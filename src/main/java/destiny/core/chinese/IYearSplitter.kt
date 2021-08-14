@@ -35,7 +35,7 @@ class YearSplitterSignImpl(private val zodiacSignImpl: IZodiacSign) : IYearSplit
   }
 
   override fun getYinYang(lmt: ChronoLocalDateTime<*>, location: ILocation): YinYang {
-    val sign = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location).first.first
+    val sign = zodiacSignImpl.getSignsBetween(Planet.SUN, lmt, location).current.first
     return getYinYang(sign)
   }
 
