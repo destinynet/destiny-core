@@ -95,24 +95,7 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    val hourImpl = getHourImpl(config.hourImpl, riseTransImpl, julDayResolver)
-    logger.trace { "[GMT] hourImpl = $hourImpl" }
-
-    // 下個子初時刻
-    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, loc, Branch.子, julDayResolver)
-
-    // 下個子正時刻
-    val nextMidnightLmt =
-      TimeTools.getLmtFromGmt(midnightFeature.getModel(gmtJulDay, loc, config.dayConfig), loc, julDayResolver)
-        .let { dstSwitchCheck.invoke(it, nextZiStart) }
-
-    val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
-
-    val hourBranch = getHourBranch(config.hourImpl, lmt, loc)
-    val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
-
-    val hour = StemBranch[hourStem, hourBranch]
-    return day to hour
+    return getModel(lmt, loc, config)
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {

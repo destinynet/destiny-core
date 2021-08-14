@@ -11,6 +11,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.tools.Feature
+import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 
@@ -24,12 +25,17 @@ class MidnightFeature(private val riseTransImpl: IRiseTrans,
   override val defaultConfig: DayConfig = DayConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayConfig): GmtJulDay {
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
+    return getModel(lmt, loc, config)
+  }
 
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayConfig): GmtJulDay {
     return when (config.midnight) {
-      DayConfig.MidnightImpl.NADIR  -> riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc)!!
+      DayConfig.MidnightImpl.NADIR  -> {
+        val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+        riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc)!!
+      }
       DayConfig.MidnightImpl.CLOCK0 -> {
-        val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-
         val resultLmt = lmt.plus(1, ChronoUnit.DAYS)
           .with(ChronoField.HOUR_OF_DAY, 0)
           .with(ChronoField.MINUTE_OF_HOUR, 0)

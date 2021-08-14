@@ -12,6 +12,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import java.time.chrono.ChronoLocalDateTime
 
 
 @Serializable
@@ -19,7 +20,7 @@ data class EightWordsContextConfig(
   val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
   val risingSignConfig: RisingSignConfig = RisingSignConfig(),
   val zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig(),
-  val houseConfig : HouseConfig = HouseConfig(),
+  val houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN , Coordinate.ECLIPTIC),
   val place : String? = null
 )
 
@@ -76,14 +77,17 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
 
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
+    return getModel(lmt, loc, config)
+  }
 
-    val eightWords = eightWordsFeature.getModel(gmtJulDay, loc, config.eightWordsConfig)
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
+    val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
 
-    val chineseDate = chineseDateFeature.getModel(gmtJulDay, loc , config.eightWordsConfig.dayHourConfig)
+    val chineseDate = chineseDateFeature.getModel(lmt, loc , config.eightWordsConfig.dayHourConfig)
 
     // 命宮地支
-    val risingBranch = risingSignFeature.getModel(gmtJulDay, loc, config.risingSignConfig).branch
+    val risingBranch = risingSignFeature.getModel(lmt, loc, config.risingSignConfig).branch
     // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
     val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
     val risingSign = StemBranch[risingStem , risingBranch]
@@ -96,7 +100,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
       val pos: IPos = starPositionImpl.getPosition(p as Star, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
 
       val hourImpl = HourHouseImpl(houseCuspImpl, starPositionImpl, p)
-      val hourBranch = hourImpl.getHour(gmtJulDay, loc)
+      val hourBranch = hourImpl.getHour(lmt, loc)
 
       val hourStem = StemBranchUtils.getHourStem(dayStem, hourBranch)
       val hour = StemBranch[hourStem, hourBranch]
@@ -104,10 +108,10 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
     }
 
 
-    val houseMap = houseCuspMapFeature.getModel(gmtJulDay, loc, config.houseConfig)
+    val houseMap = houseCuspMapFeature.getModel(lmt, loc, config.houseConfig)
 
     // 四個至點的黃道度數
-    val rsmiMap: Map<TransPoint, ZodiacDegree> = houseCuspMapFeature.getModel(gmtJulDay, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
+    val rsmiMap: Map<TransPoint, ZodiacDegree> = houseCuspMapFeature.getModel(lmt, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
       mapOf(
         TransPoint.RISING to map[1]!!,
         TransPoint.NADIR to map[4]!!,
@@ -117,8 +121,8 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
     }
 
 
-    val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(gmtJulDay, loc)
-    val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(gmtJulDay)
+    val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
+    val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(TimeTools.getGmtJulDay(lmt , loc))
     val aspectDataSet = aspectsCalculator.getAspectDataSet(starPosMap)
 
     return EightWordsContextModel(

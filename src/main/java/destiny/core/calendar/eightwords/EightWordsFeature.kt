@@ -5,12 +5,15 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import java.time.chrono.ChronoLocalDateTime
 
 
 @Serializable
@@ -45,17 +48,24 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 }
 
 class EightWordsFeature(private val yearFeature: YearFeature,
-                        private val monthFeature: MonthFeature ,
-                        private val dayHourFeature: DayHourFeature) : Feature<EightWordsConfig , EightWords> {
+                        private val monthFeature: MonthFeature,
+                        private val dayHourFeature: DayHourFeature,
+                        private val julDayResolver: JulDayResolver) : Feature<EightWordsConfig , EightWords> {
   override val key: String = "eightWords"
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): EightWords {
-    val year: StemBranch = yearFeature.getModel(gmtJulDay, loc, config.yearMonthConfig.yearConfig)
-    val month: IStemBranch = monthFeature.getModel(gmtJulDay, loc, config.yearMonthConfig)
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
+    return getModel(lmt, loc, config)
+  }
 
-    val (day, hour) = dayHourFeature.getModel(gmtJulDay, loc, config.dayHourConfig)
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsConfig): EightWords {
+
+    val year: StemBranch = yearFeature.getModel(lmt, loc, config.yearMonthConfig.yearConfig)
+    val month: IStemBranch = monthFeature.getModel(lmt, loc, config.yearMonthConfig)
+
+    val (day, hour) = dayHourFeature.getModel(lmt, loc, config.dayHourConfig)
 
     return EightWords(year, month, day, hour)
   }
