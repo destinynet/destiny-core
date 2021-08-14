@@ -62,11 +62,12 @@ data class DayHourConfig(
 
 
 @DestinyMarker
-class HourConfigBuilder(private val dayConfigBuilder: DayConfigBuilder = DayConfigBuilder()) : Builder<DayHourConfig> {
+class HourConfigBuilder : Builder<DayHourConfig> {
+
   var dayConfig = DayConfig()
 
-  fun dayConfig(block: DayConfigBuilder.() -> Unit) {
-    this.dayConfig = dayConfigBuilder.apply(block).build()
+  fun day(block: DayConfigBuilder.() -> Unit) {
+    this.dayConfig = DayConfigBuilder.dayConfig(block)
   }
 
   var hourImpl = DayHourConfig.HourImpl.TST

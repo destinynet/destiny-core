@@ -34,10 +34,9 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
 
   var impl: RisingSignConfig.Impl = RisingSignConfig.Impl.HouseCusp
 
-
   private var houseConfig: HouseConfig = HouseConfig()
   fun houseCusp(block: HouseConfigBuilder.() -> Unit = {}) {
-    houseConfig = HouseConfigBuilder().apply(block).build()
+    houseConfig = HouseConfigBuilder.houseCusp(block)
     impl = RisingSignConfig.Impl.HouseCusp
   }
 

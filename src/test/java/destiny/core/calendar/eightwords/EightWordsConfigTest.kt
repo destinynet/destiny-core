@@ -20,14 +20,14 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
       moonImpl = YearMonthConfig.MoonImpl.SunSign
     ),
     dayHourConfig = DayHourConfig(
-      DayConfig(changeDayAfterZi = false),
+      DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
       hourImpl = DayHourConfig.HourImpl.LMT
     )
   )
 
   override val configByFunction: EightWordsConfig = ewConfig {
-    monthConfig {
-      yearConfig {
+    yearMonth {
+      year {
         changeYearDegree = 270.0
       }
       southernHemisphereOpposition = true
@@ -35,9 +35,10 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
       monthImpl = YearMonthConfig.MoonImpl.SunSign
     }
 
-    hourConfig {
-      dayConfig {
+    dayHour {
+      day {
         changeDayAfterZi = false
+        midnight = DayConfig.MidnightImpl.CLOCK0
       }
       hourImpl = DayHourConfig.HourImpl.LMT
     }
@@ -51,6 +52,7 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
     assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
 
     assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
+    assertTrue(raw.contains(""""midnight":\s*"CLOCK0""".toRegex()))
     assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
   }
 }

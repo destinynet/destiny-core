@@ -40,13 +40,12 @@ data class YearMonthConfig(
 }
 
 @DestinyMarker
-class MonthConfigBuilder(private val yearConfigBuilder: YearConfigBuilder = YearConfigBuilder()) : Builder<YearMonthConfig> {
+class MonthConfigBuilder : Builder<YearMonthConfig> {
 
   var yearConfig: YearConfig = YearConfig()
 
-  fun yearConfig(block: YearConfigBuilder.() -> Unit) {
-
-    this.yearConfig = yearConfigBuilder.apply(block).build()
+  fun year(block: YearConfigBuilder.() -> Unit) {
+    this.yearConfig = YearConfigBuilder.yearConfig(block)
   }
 
   /** 南半球月令是否對沖  */

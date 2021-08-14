@@ -18,7 +18,7 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
   )
 
   override val configByFunction = hourConfig {
-    dayConfig {
+    day {
       changeDayAfterZi = false
       midnight = DayConfig.MidnightImpl.CLOCK0
     }

@@ -20,18 +20,17 @@ data class EightWordsConfig(
 )
 
 @DestinyMarker
-class EightWordsConfigBuilder(private val monthConfigBuilder : MonthConfigBuilder = MonthConfigBuilder(),
-                              private val hourConfigBuilder: HourConfigBuilder = HourConfigBuilder()) : Builder<EightWordsConfig> {
+class EightWordsConfigBuilder : Builder<EightWordsConfig> {
   private var yearMonthConfig: YearMonthConfig = YearMonthConfig()
 
-  fun monthConfig(block: MonthConfigBuilder.() -> Unit) {
-    this.yearMonthConfig = monthConfigBuilder.apply(block).build()
+  fun yearMonth(block: MonthConfigBuilder.() -> Unit) {
+    this.yearMonthConfig = MonthConfigBuilder.monthConfig(block)
   }
 
   private var dayHourConfig: DayHourConfig = DayHourConfig()
 
-  fun hourConfig(block: HourConfigBuilder.() -> Unit) {
-    this.dayHourConfig = hourConfigBuilder.apply(block).build()
+  fun dayHour(block: HourConfigBuilder.() -> Unit) {
+    this.dayHourConfig = HourConfigBuilder.hourConfig(block)
   }
 
   override fun build(): EightWordsConfig {

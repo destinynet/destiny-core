@@ -20,7 +20,7 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
   )
 
   override val configByFunction = monthConfig {
-    yearConfig {
+    year {
       changeYearDegree = 270.0
     }
     southernHemisphereOpposition = true
