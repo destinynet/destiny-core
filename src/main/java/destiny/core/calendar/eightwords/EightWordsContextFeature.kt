@@ -62,7 +62,7 @@ class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
 class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val chineseDateFeature: ChineseDateFeature,
                                private val risingSignFeature: RisingSignFeature,
-                               private val houseCuspMapFeature: HouseCuspMapFeature,
+                               private val houseCuspFeature: HouseCuspFeature,
                                private val zodiacSignFeature: ZodiacSignFeature,
                                private val starPositionImpl: IStarPosition<*>,
                                private val houseCuspImpl: IHouseCusp,
@@ -108,10 +108,10 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
     }
 
 
-    val houseMap = houseCuspMapFeature.getModel(lmt, loc, config.houseConfig)
+    val houseMap = houseCuspFeature.getModel(lmt, loc, config.houseConfig)
 
     // 四個至點的黃道度數
-    val rsmiMap: Map<TransPoint, ZodiacDegree> = houseCuspMapFeature.getModel(lmt, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
+    val rsmiMap: Map<TransPoint, ZodiacDegree> = houseCuspFeature.getModel(lmt, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
       mapOf(
         TransPoint.RISING to map[1]!!,
         TransPoint.NADIR to map[4]!!,

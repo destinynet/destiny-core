@@ -73,18 +73,6 @@ class RisingSignFeature(
   private val tradChineseRisingSignFeature: TradChineseRisingSignFeature
 ) : Feature<RisingSignConfig, ZodiacSign> {
 
-
-  class HouseCuspFeature(private val houseCuspImpl: IHouseCusp) : Feature<HouseConfig, ZodiacSign> {
-
-    override val key: String = "houseCusp"
-
-    override val defaultConfig: HouseConfig = HouseConfig()
-
-    override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HouseConfig): ZodiacSign {
-      return houseCuspImpl.getRisingSign(gmtJulDay, loc, config.houseSystem, config.coordinate)
-    }
-  }
-
   class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*>,
                                      private val dayHourFeature: DayHourFeature) : Feature<TradChineseRisingSignConfig , ZodiacSign> {
     override val key: String = "tradChinese"
@@ -120,7 +108,7 @@ class RisingSignFeature(
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: RisingSignConfig): ZodiacSign {
     return when (config.impl) {
-      RisingSignConfig.Impl.HouseCusp   -> houseCuspFeature.getModel(gmtJulDay, loc, config.houseConfig)
+      RisingSignConfig.Impl.HouseCusp   -> houseCuspFeature.getRisingSign(gmtJulDay, loc, config.houseConfig)
       RisingSignConfig.Impl.TradChinese -> tradChineseRisingSignFeature.getModel(gmtJulDay, loc, config.tradChineseRisingSignConfig)
     }
   }
