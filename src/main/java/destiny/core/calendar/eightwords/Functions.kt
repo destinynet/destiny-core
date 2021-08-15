@@ -385,7 +385,7 @@ object Lmt {
       17, 18 -> 酉
       19, 20 -> 戌
       21, 22 -> 亥
-      else   -> throw IllegalArgumentException("HourLmtImpl : Cannot find EarthlyBranches for this LMT : $lmtHour")
+      else   -> throw IllegalArgumentException("Cannot find EarthlyBranches for this LMT : $lmtHour")
     }
   }
 }
