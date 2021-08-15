@@ -17,12 +17,12 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
       YearMonthConfig(YearConfig(270.0), true , HemisphereBy.DECLINATION ,YearMonthConfig.MoonImpl.SunSign),
       DayHourConfig(
         DayConfig(changeDayAfterZi = false , DayConfig.MidnightImpl.CLOCK0),
-        DayHourConfig.HourImpl.LMT
+        HourBranchConfig(HourBranchConfig.HourImpl.LMT)
       )
     ),
     RisingSignConfig(
       HouseConfig(HouseSystem.EQUAL , Coordinate.SIDEREAL),
-      TradChineseRisingSignConfig(DayHourConfig.HourImpl.LMT),
+      TradChineseRisingSignConfig(HourBranchConfig.HourImpl.LMT),
       RisingSignConfig.Impl.TradChinese
     ),
     ZodiacSignConfig(Planet.SUN),
@@ -46,7 +46,9 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
           changeDayAfterZi = false
           midnight = DayConfig.MidnightImpl.CLOCK0
         }
-        hourImpl = DayHourConfig.HourImpl.LMT
+        hourBranch {
+          hourImpl = HourBranchConfig.HourImpl.LMT
+        }
       }
     }
     risingSign {
@@ -55,7 +57,7 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
         coordinate = Coordinate.SIDEREAL
       }
       tradChinese {
-        hourImpl = DayHourConfig.HourImpl.LMT
+        hourImpl = HourBranchConfig.HourImpl.LMT
       }
     }
     zodiacSign {

@@ -32,8 +32,8 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 
   private var dayHourConfig: DayHourConfig = DayHourConfig()
 
-  fun dayHour(block: HourConfigBuilder.() -> Unit) {
-    this.dayHourConfig = HourConfigBuilder.hourConfig(block)
+  fun dayHour(block: DayHourConfigBuilder.() -> Unit) {
+    this.dayHourConfig = DayHourConfigBuilder.dayHour(block)
   }
 
   override fun build(): EightWordsConfig {

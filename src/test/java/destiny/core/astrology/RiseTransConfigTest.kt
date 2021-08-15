@@ -14,17 +14,21 @@ internal class RiseTransConfigTest : AbstractConfigTest<RiseTransConfig>() {
 
   override val configByConstructor: RiseTransConfig = RiseTransConfig(Planet.MOON,
                                                                       TransPoint.MERIDIAN,
-                                                                      discCenter = true,
-                                                                      refraction = false,
-                                                                      temperature = 23.0,
-                                                                      pressure = 1000.0)
+                                                                      TransConfig(
+                                                                        discCenter = true,
+                                                                        refraction = false,
+                                                                        temperature = 23.0,
+                                                                        pressure = 1000.0
+                                                                      ))
   override val configByFunction: RiseTransConfig = riseTrans {
     star = Planet.MOON
     transPoint = TransPoint.MERIDIAN
-    discCenter = true
-    refraction = false
-    temperature = 23.0
-    pressure = 1000.0
+    trans {
+      discCenter = true
+      refraction = false
+      temperature = 23.0
+      pressure = 1000.0
+    }
   }
 
   override val assertion: (String) -> Unit = {raw ->

@@ -14,23 +14,21 @@ import kotlinx.serialization.Serializable
 data class RiseTransConfig(@Serializable(with = PointSerializer::class)
                            val star: Star = Planet.SUN,
                            val transPoint: TransPoint = TransPoint.RISING,
-                           val discCenter: Boolean = false,
-                           val refraction: Boolean = true,
-                           val temperature: Double = 0.0,
-                           val pressure: Double = 1013.25)
+                           val transConfig: TransConfig = TransConfig())
 
 @DestinyMarker
 class RiseTransConfigBuilder : Builder<RiseTransConfig> {
 
   var star: Star = Planet.SUN
   var transPoint: TransPoint = TransPoint.RISING
-  var discCenter: Boolean = false
-  var refraction: Boolean = true
-  var temperature: Double = 0.0
-  var pressure: Double = 1013.25
+
+  var transConfig: TransConfig = TransConfig()
+  fun trans(block: TransConfigBuilder.() -> Unit) {
+    transConfig = TransConfigBuilder.trans(block)
+  }
 
   override fun build(): RiseTransConfig {
-    return RiseTransConfig(star, transPoint, discCenter, refraction, temperature, pressure)
+    return RiseTransConfig(star, transPoint, transConfig)
   }
 
   companion object {
@@ -50,6 +48,7 @@ class RiseTransFeature(val impl : IRiseTrans) : Feature<RiseTransConfig, GmtJulD
   override val defaultConfig: RiseTransConfig = RiseTransConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: RiseTransConfig): GmtJulDay? {
-    return impl.getGmtTransJulDay(gmtJulDay , config.star , config.transPoint , loc , config.discCenter , config.refraction , config.temperature , config.pressure)
+    return impl.getGmtTransJulDay(gmtJulDay , config.star , config.transPoint , loc , config.transConfig.discCenter , config.transConfig.refraction , config.transConfig.temperature , config.transConfig.pressure)
   }
+
 }

@@ -15,13 +15,13 @@ internal class RisingSignConfigTest : AbstractConfigTest<RisingSignConfig>() {
 
   override val configByConstructor = RisingSignConfig(
     HouseConfig(),
-    TradChineseRisingSignConfig(DayHourConfig.HourImpl.LMT),
+    TradChineseRisingSignConfig(HourBranchConfig.HourImpl.LMT),
     RisingSignConfig.Impl.TradChinese
   )
 
   override val configByFunction = risingSign {
     tradChinese {
-      hourImpl = DayHourConfig.HourImpl.LMT
+      hourImpl = HourBranchConfig.HourImpl.LMT
     }
   }
 

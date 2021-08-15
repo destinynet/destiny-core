@@ -49,20 +49,16 @@ class DayConfigBuilder : Builder<DayConfig> {
 }
 
 
+
 @Serializable
 data class DayHourConfig(
   val dayConfig: DayConfig = DayConfig(),
-  val hourImpl: HourImpl = HourImpl.TST
-) {
-  enum class HourImpl {
-    TST,
-    LMT
-  }
-}
+  val hourBranchConfig: HourBranchConfig = HourBranchConfig()
+)
 
 
 @DestinyMarker
-class HourConfigBuilder : Builder<DayHourConfig> {
+class DayHourConfigBuilder : Builder<DayHourConfig> {
 
   var dayConfig = DayConfig()
 
@@ -70,21 +66,25 @@ class HourConfigBuilder : Builder<DayHourConfig> {
     this.dayConfig = DayConfigBuilder.dayConfig(block)
   }
 
-  var hourImpl = DayHourConfig.HourImpl.TST
+  var hourBranchConfig: HourBranchConfig = HourBranchConfig()
+  fun hourBranch(block : HourBranchConfigBuilder.() -> Unit = {}) {
+    hourBranchConfig = HourBranchConfigBuilder.hourBranch(block)
+  }
 
   override fun build(): DayHourConfig {
-    return DayHourConfig(dayConfig, hourImpl)
+    return DayHourConfig(dayConfig, hourBranchConfig)
   }
 
   companion object {
-    fun hourConfig(block: HourConfigBuilder.() -> Unit = {}): DayHourConfig {
-      return HourConfigBuilder().apply(block).build()
+    fun dayHour(block: DayHourConfigBuilder.() -> Unit = {}): DayHourConfig {
+      return DayHourConfigBuilder().apply(block).build()
     }
   }
 }
 
 
 class DayHourFeature(val midnightFeature: MidnightFeature,
+                     private val hourBranchFeature: HourBranchFeature,
                      private val riseTransImpl: IRiseTrans,
                      private val julDayResolver: JulDayResolver) : Feature<DayHourConfig, Pair<StemBranch, StemBranch>> {
 
@@ -100,7 +100,7 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
 
-    val hourImpl = getHourImpl(config.hourImpl, riseTransImpl, julDayResolver)
+    val hourImpl = getHourImpl(config.hourBranchConfig.hourImpl , riseTransImpl, julDayResolver)
     logger.trace { "[LMT] hourImpl = $hourImpl" }
 
     // 下個子初時刻
@@ -112,24 +112,27 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
 
     val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
 
-    val hourBranch = getHourBranch(config.hourImpl, lmt, loc)
+    val hourBranch = hourBranchFeature.getModel(lmt, loc, config.hourBranchConfig)
+
+    //val hourBranch = getHourBranch(config.hourImpl, lmt, loc)
     val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
 
     val hour = StemBranch[hourStem, hourBranch]
     return day to hour
   }
 
-  private fun getHourBranch(hourImpl : DayHourConfig.HourImpl, lmt: ChronoLocalDateTime<*>, loc: ILocation): Branch {
-    return when (hourImpl) {
-      DayHourConfig.HourImpl.TST -> {
-        val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-        Tst.getHourBranch(gmtJulDay, loc, riseTransImpl)
-      }
-      DayHourConfig.HourImpl.LMT -> {
-        Lmt.getHourBranch(lmt)
-      }
-    }
-  }
+//  private fun getHourBranch(hourImpl : DayHourConfig.HourImpl, lmt: ChronoLocalDateTime<*>, loc: ILocation): Branch {
+//    return when (hourImpl) {
+//      DayHourConfig.HourImpl.TST -> {
+//        // TODO : RiseTransFeature
+//        val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+//        Tst.getHourBranch(gmtJulDay, loc, riseTransImpl)
+//      }
+//      DayHourConfig.HourImpl.LMT -> {
+//        Lmt.getHourBranch(lmt)
+//      }
+//    }
+//  }
 
   private val dstSwitchCheck = { nextMn : ChronoLocalDateTime<*> , nextZiStart : ChronoLocalDateTime<*> ->
     val dur = Duration.between(nextZiStart, nextMn).abs()

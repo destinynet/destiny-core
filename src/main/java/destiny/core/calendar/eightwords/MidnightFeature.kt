@@ -3,8 +3,9 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.IRiseTrans
 import destiny.core.astrology.Planet
+import destiny.core.astrology.RiseTransConfig
+import destiny.core.astrology.RiseTransFeature
 import destiny.core.astrology.TransPoint
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -17,7 +18,7 @@ import java.time.temporal.ChronoUnit
 
 
 /** 取得下一個子正的時刻 */
-class MidnightFeature(private val riseTransImpl: IRiseTrans,
+class MidnightFeature(private val riseTransFeature: RiseTransFeature,
                       private val julDayResolver: JulDayResolver) : Feature<DayConfig, GmtJulDay> {
 
   override val key: String = "midnight"
@@ -33,7 +34,7 @@ class MidnightFeature(private val riseTransImpl: IRiseTrans,
     return when (config.midnight) {
       DayConfig.MidnightImpl.NADIR  -> {
         val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-        riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc)!!
+        riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR))!!
       }
       DayConfig.MidnightImpl.CLOCK0 -> {
         val resultLmt = lmt.plus(1, ChronoUnit.DAYS)

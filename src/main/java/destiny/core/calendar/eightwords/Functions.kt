@@ -207,12 +207,12 @@ private fun getMonthStem(
   return monthStem
 }
 
-fun getHourImpl(hourImpl : DayHourConfig.HourImpl, riseTransImpl : IRiseTrans, julDayResolver: JulDayResolver) : IHour {
+fun getHourImpl(hourImpl : HourBranchConfig.HourImpl, riseTransImpl : IRiseTrans, julDayResolver: JulDayResolver) : IHour {
   return when(hourImpl) {
-    DayHourConfig.HourImpl.TST -> {
+    HourBranchConfig.HourImpl.TST -> {
       HourSolarTransImpl(riseTransImpl)
     }
-    DayHourConfig.HourImpl.LMT -> {
+    HourBranchConfig.HourImpl.LMT -> {
       HourLmtImpl(julDayResolver)
     }
   }
@@ -295,6 +295,8 @@ private fun getIndex(
 
 /** 真太陽時 */
 object Tst {
+
+
 
   fun getHourBranch(gmtJulDay: GmtJulDay, location: ILocation, riseTransImpl: IRiseTrans,
                     atmosphericPressure: Double = 1013.25,

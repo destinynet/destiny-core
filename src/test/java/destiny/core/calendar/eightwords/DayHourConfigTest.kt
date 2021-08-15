@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.eightwords.HourConfigBuilder.Companion.hourConfig
+import destiny.core.calendar.eightwords.DayHourConfigBuilder.Companion.dayHour
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
@@ -14,15 +14,17 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
 
   override val configByConstructor: DayHourConfig = DayHourConfig(
     DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
-    hourImpl = DayHourConfig.HourImpl.LMT
+    HourBranchConfig(HourBranchConfig.HourImpl.LMT)
   )
 
-  override val configByFunction = hourConfig {
+  override val configByFunction = dayHour {
     day {
       changeDayAfterZi = false
       midnight = DayConfig.MidnightImpl.CLOCK0
     }
-    hourImpl = DayHourConfig.HourImpl.LMT
+    hourBranch {
+      hourImpl = HourBranchConfig.HourImpl.LMT
+    }
   }
 
   override val assertion = { raw: String ->

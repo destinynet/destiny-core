@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TradChineseRisingSignConfig(
-  val hourImpl: DayHourConfig.HourImpl = DayHourConfig.HourImpl.TST
+  val hourImpl: HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.TST
 )
 
 @Serializable
@@ -43,7 +43,7 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
   @DestinyMarker
   class TradChineseRisingSignConfigBuilder : Builder<TradChineseRisingSignConfig> {
 
-    var hourImpl : DayHourConfig.HourImpl = DayHourConfig.HourImpl.TST
+    var hourImpl : HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.TST
 
     override fun build(): TradChineseRisingSignConfig {
       return TradChineseRisingSignConfig(hourImpl)
@@ -84,7 +84,8 @@ class RisingSignFeature(
       val sunSign = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lngDeg.sign
 
       // 時支
-      val hour = dayHourFeature.getModel(gmtJulDay, loc , DayHourConfig(hourImpl = config.hourImpl)).second.branch
+
+      val hour = dayHourFeature.getModel(gmtJulDay, loc, DayHourConfig(hourBranchConfig = HourBranchConfig(hourImpl = config.hourImpl))).second.branch
 
       val gap = (hour.index - sunSign.branch.index).let {
         if (it < 0 )
