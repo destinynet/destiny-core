@@ -114,25 +114,11 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
 
     val hourBranch = hourBranchFeature.getModel(lmt, loc, config.hourBranchConfig)
 
-    //val hourBranch = getHourBranch(config.hourImpl, lmt, loc)
     val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
 
     val hour = StemBranch[hourStem, hourBranch]
     return day to hour
   }
-
-//  private fun getHourBranch(hourImpl : DayHourConfig.HourImpl, lmt: ChronoLocalDateTime<*>, loc: ILocation): Branch {
-//    return when (hourImpl) {
-//      DayHourConfig.HourImpl.TST -> {
-//        // TODO : RiseTransFeature
-//        val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-//        Tst.getHourBranch(gmtJulDay, loc, riseTransImpl)
-//      }
-//      DayHourConfig.HourImpl.LMT -> {
-//        Lmt.getHourBranch(lmt)
-//      }
-//    }
-//  }
 
   private val dstSwitchCheck = { nextMn : ChronoLocalDateTime<*> , nextZiStart : ChronoLocalDateTime<*> ->
     val dur = Duration.between(nextZiStart, nextMn).abs()
