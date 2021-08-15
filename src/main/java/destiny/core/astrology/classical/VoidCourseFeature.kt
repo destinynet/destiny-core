@@ -19,7 +19,7 @@ import kotlin.math.min
 data class VoidCourseConfig(@Serializable(with = PointSerializer::class)
                             val planet: Planet = Planet.MOON,
                             val centric: Centric = Centric.GEO,
-                            val impl: VoidCourseImpl = VoidCourseImpl.Medieval) {
+                            val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval) {
   enum class VoidCourseImpl {
     Hellenistic,
     Medieval,
@@ -56,7 +56,7 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
   override val defaultConfig: VoidCourseConfig = VoidCourseConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: VoidCourseConfig): VoidCourse? {
-    val voidCourseImpl = when(config.impl) {
+    val voidCourseImpl = when(config.vocImpl) {
       VoidCourseConfig.VoidCourseImpl.Hellenistic -> VoidCourseHellenistic(besiegedImpl, starPositionImpl)
       VoidCourseConfig.VoidCourseImpl.Medieval -> VoidCourseMedieval(besiegedImpl, starPositionImpl, starTransitImpl)
       VoidCourseConfig.VoidCourseImpl.WilliamLilly -> VoidCourseWilliamLilly(besiegedImpl, starPositionImpl, starTransitImpl)

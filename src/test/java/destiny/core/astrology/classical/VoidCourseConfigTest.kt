@@ -25,6 +25,6 @@ internal class VoidCourseConfigTest : AbstractConfigTest<VoidCourseConfig>() {
     logger.info { raw }
     assertTrue(raw.contains(""""planet":\s*"Planet.VENUS""".toRegex()))
     assertTrue(raw.contains(""""centric":\s*"TOPO""".toRegex()))
-    assertTrue(raw.contains(""""impl":\s*"WilliamLilly""".toRegex()))
+    assertTrue(raw.contains(""""vocImpl":\s*"WilliamLilly""".toRegex()))
   }
 }
