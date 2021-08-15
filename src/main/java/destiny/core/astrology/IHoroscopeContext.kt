@@ -91,13 +91,8 @@ class HoroscopeContext(
     }.filter { (_, v) -> v != null }.associate { (point, pos) -> point to pos!! as IPosWithAzimuth }
 
 
-    // [0] ~ [12] , 只有 [1] 到 [12] 有值
-    val cusps = houseCuspImpl.getHouseCusps(gmtJulDay, loc, houseSystem, coordinate)
-    logger.debug("cusps = {}", cusps)
-
-    val cuspDegreeMap = (1 until cusps.size).associateWith {
-      cusps[it]
-    }
+    // [1] 到 [12] 宮首黃道度數
+    val cuspDegreeMap: Map<Int, ZodiacDegree> = houseCuspImpl.getHouseCuspMap(gmtJulDay, loc, houseSystem, coordinate)
 
     // 行星空亡表
     val vocMap: Map<Planet, Misc.VoidCourse> = voidCourseImpl.getVocMap(gmtJulDay, loc, pointPosFuncMap, points)

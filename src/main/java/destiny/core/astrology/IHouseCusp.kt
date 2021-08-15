@@ -6,9 +6,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
-import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IRisingSign
-import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 /**
@@ -57,17 +55,6 @@ interface IHouseCusp : IRisingSign {
   /** 取得「上升星座」 (分宮法/HouseSystem  或許不需要)  */
   override fun getRisingSign(gmtJulDay: GmtJulDay, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacSign {
     return getHouseSigns(gmtJulDay, location, houseSystem, coordinate).getValue(1)
-  }
-
-
-  /**
-   * 取得第 index 宮的宮首在黃道幾度 , 為 1-based , 1 <= index <=12
-   */
-  fun getHouseCusp(index: Int, gmtJulDay: GmtJulDay, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacDegree
-
-  fun getHouseCusp(index: Int, lmt: ChronoLocalDateTime<*>, location: ILocation, houseSystem: HouseSystem, coordinate: Coordinate): ZodiacDegree {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    return getHouseCusp(index, gmtJulDay, location, houseSystem, coordinate)
   }
 
   override fun toString(locale: Locale): String {
