@@ -13,10 +13,10 @@ import destiny.core.calendar.ILocation
  */
 interface IApsisWithAzimuth : IApsis {
 
-  fun getPositionsWithAzimuths(star: Star, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType, loc: ILocation, temperature: Double = 0.0, pressure: Double = 1013.25): Map<Apsis, StarPosWithAzimuth>
+  fun getPositionsWithAzimuths(gmtJulDay: GmtJulDay, loc: ILocation, config: ApsisAzimuthConfig): Map<Apsis, StarPosWithAzimuth>
 
-  fun getPositionWithAzimuth(star: Star, apsis: Apsis, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType, loc: ILocation, temperature: Double = 0.0, pressure: Double = 1013.25): StarPosWithAzimuth {
-    val map = getPositionsWithAzimuths(star, gmtJulDay, coordinate, nodeType, loc, temperature, pressure)
+  fun getPositionWithAzimuth(gmtJulDay: GmtJulDay, loc: ILocation, apsis: Apsis, config: ApsisAzimuthConfig): StarPosWithAzimuth {
+    val map = getPositionsWithAzimuths(gmtJulDay, loc, config)
     return map[apsis] ?: throw RuntimeException("Cannot found StarPositionWithAzimuth of the Apsis : $apsis")
   }
 
