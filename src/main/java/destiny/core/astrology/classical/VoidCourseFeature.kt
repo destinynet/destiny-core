@@ -59,9 +59,9 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: VoidCourseConfig): VoidCourse? {
     val voidCourseImpl: Voc = when(config.vocImpl) {
-      VoidCourseConfig.VoidCourseImpl.Hellenistic -> VocHellenistic()//  VoidCourseHellenistic(besiegedImpl, starPositionImpl)
-      VoidCourseConfig.VoidCourseImpl.Medieval -> VocMedieval() // VoidCourseMedieval(besiegedImpl, starPositionImpl, starTransitImpl)
-      VoidCourseConfig.VoidCourseImpl.WilliamLilly -> VocWilliamWilly() //VoidCourseWilliamLilly(besiegedImpl, starPositionImpl, starTransitImpl)
+      VoidCourseConfig.VoidCourseImpl.Hellenistic -> VocHellenistic()
+      VoidCourseConfig.VoidCourseImpl.Medieval -> VocMedieval()
+      VoidCourseConfig.VoidCourseImpl.WilliamLilly -> VocWilliamWilly()
     }
     return voidCourseImpl.getVoidCourse(gmtJulDay, loc, config.planet, config.centric)
   }
