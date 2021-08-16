@@ -10,7 +10,6 @@ import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
-import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -131,12 +130,6 @@ class HoroscopeContext(
     result = 31 * result + pressure.hashCode()
     return result
   }
-
-
-  companion object {
-    private val logger = KotlinLogging.logger { }
-  }
-
 }
 
 /**

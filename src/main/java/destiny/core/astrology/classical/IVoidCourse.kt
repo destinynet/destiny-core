@@ -23,7 +23,8 @@ import kotlin.math.min
 sealed interface IVoidCourse : Descriptive {
 
   fun getVoidCourse(
-    gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>, planet: Planet = Planet.MOON, centric: Centric = Centric.GEO
+    gmtJulDay: GmtJulDay, loc: ILocation, pointPosFuncMap: Map<Point, IPosition<*>>,
+    planet: Planet = Planet.MOON, centric: Centric = Centric.GEO
   ): Misc.VoidCourse?
 
   fun getVoidCourses(
@@ -101,6 +102,8 @@ sealed interface IVoidCourse : Descriptive {
 
 /**
  * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
+ *
+ * may be replaced with [VoidCourseFeature.VocHellenistic]
  */
 @Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseHellenistic.VALUE)])
 class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
@@ -156,6 +159,8 @@ class VoidCourseHellenistic(private val besiegedImpl: IBesieged,
  * 月亮先後被兩星 (p1,p2) 包夾，
  * 月亮先離開與 p1交角+6分之後 , VOC 開始
  * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
+ *
+ * may be replaced with [VoidCourseFeature.VocWilliamWilly]
  */
 @Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseWilliamLilly.VALUE)])
 class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
@@ -224,6 +229,8 @@ class VoidCourseWilliamLilly(private val besiegedImpl: IBesieged,
  * until it moves into the following sign of the zodiac.
  *
  * 月亮(或其他)剛離開與其他星體的「準確」交角，直到進入下一個星座時，都還沒與其他星體形成準確交角
+ *
+ * may be replaced with [VoidCourseFeature.VocMedieval]
  */
 @Impl([Domain(Domains.Astrology.KEY_VOC, VoidCourseMedieval.VALUE , default = true)])
 class VoidCourseMedieval(private val besiegedImpl: IBesieged,
