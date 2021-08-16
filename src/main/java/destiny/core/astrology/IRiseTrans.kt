@@ -29,11 +29,7 @@ interface IRiseTrans {
                         star: Star,
                         point: TransPoint,
                         location: ILocation,
-                        discCenter: Boolean = false,
-                        refraction: Boolean = true,
-                        atmosphericTemperature: Double = 0.0,
-                        atmosphericPressure: Double = 1013.25): GmtJulDay?
-
+                        transConfig: TransConfig = TransConfig()): GmtJulDay?
 
   /**
    * 來源、目標時間都是 GMT
@@ -42,35 +38,20 @@ interface IRiseTrans {
                   star: Star,
                   point: TransPoint,
                   location: ILocation,
-                  julDayResolver: JulDayResolver,
-                  discCenter: Boolean = false,
-                  refraction: Boolean = true,
-                  atmosphericTemperature: Double = 0.0,
-                  atmosphericPressure: Double = 1013.25): ChronoLocalDateTime<*>? {
+                  julDayResolver: JulDayResolver,transConfig: TransConfig): ChronoLocalDateTime<*>? {
     val fromGmtJulDay = TimeTools.getGmtJulDay(fromGmt)
 
-    return getGmtTransJulDay(
-      fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,
-      atmosphericPressure
-    )?.let { julDayResolver.getLocalDateTime(it) }
+    return getGmtTransJulDay(fromGmtJulDay, star, point, location, transConfig)?.let { julDayResolver.getLocalDateTime(it) }
   }
 
   /**
    * 來源、目標時間都是 LMT
    */
-  fun getLmtTrans(fromLmtTime: ChronoLocalDateTime<*>,
-                  star: Star,
-                  point: TransPoint,
-                  location: ILocation,
-                  julDayResolver: JulDayResolver,
-                  discCenter: Boolean = false,
-                  refraction: Boolean = true,
-                  atmosphericTemperature: Double = 0.0,
-                  atmosphericPressure: Double = 1013.25): ChronoLocalDateTime<*>? {
+  fun getLmtTrans(fromLmtTime: ChronoLocalDateTime<*>, star: Star, point: TransPoint, location: ILocation,
+                  julDayResolver: JulDayResolver,transConfig: TransConfig = TransConfig()): ChronoLocalDateTime<*>? {
     val fromGmtTime = TimeTools.getGmtFromLmt(fromLmtTime, location)
 
-    return getGmtTrans(fromGmtTime, star, point, location, julDayResolver, discCenter, refraction,
-      atmosphericTemperature, atmosphericPressure)
+    return getGmtTrans(fromGmtTime, star, point, location, julDayResolver, transConfig)
       ?.let { TimeTools.getLmtFromGmt(it, location) }
   }
 
@@ -83,18 +64,12 @@ interface IRiseTrans {
                                       star: Star,
                                       point: TransPoint,
                                       location: Location,
-                                      discCenter: Boolean = false,
-                                      refraction: Boolean = true,
-                                      atmosphericTemperature: Double = 0.0,
-                                      atmosphericPressure: Double = 1013.25): List<GmtJulDay> {
+                                      transConfig: TransConfig): List<GmtJulDay> {
     val fromGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(fromLmtTime, location))
     val toGmtJulDay = TimeTools.getGmtJulDay(TimeTools.getGmtFromLmt(toLmtTime, location))
 
-    return generateSequence(
-      getGmtTransJulDay(fromGmtJulDay, star, point, location, discCenter, refraction, atmosphericTemperature,
-                        atmosphericPressure)) {
-      getGmtTransJulDay(it + 0.01, star, point, location, discCenter, refraction, atmosphericTemperature,
-                        atmosphericPressure)
+    return generateSequence(getGmtTransJulDay(fromGmtJulDay, star, point, location,transConfig)) {
+      getGmtTransJulDay(it + 0.01, star, point, location, transConfig)
     }.takeWhile { it < toGmtJulDay }
       .toList()
   }
@@ -118,12 +93,8 @@ interface IRiseTrans {
                                  point: TransPoint,
                                  location: Location,
                                  revJulDayFunc: (Double) -> ChronoLocalDateTime<*>,
-                                 discCenter: Boolean = false,
-                                 refraction: Boolean = true,
-                                 atmosphericTemperature: Double = 0.0,
-                                 atmosphericPressure: Double = 1013.25): List<ChronoLocalDateTime<*>> {
-    return getPeriodStarRiseTransGmtJulDay(fromLmtTime, toLmtTime, star, point, location, discCenter,
-      refraction, atmosphericTemperature, atmosphericPressure)
+                                 transConfig: TransConfig = TransConfig()): List<ChronoLocalDateTime<*>> {
+    return getPeriodStarRiseTransGmtJulDay(fromLmtTime, toLmtTime, star, point, location, transConfig)
       .map { gmtJulDay ->
         val gmt = revJulDayFunc.invoke(gmtJulDay.value)
         TimeTools.getLmtFromGmt(gmt, location)

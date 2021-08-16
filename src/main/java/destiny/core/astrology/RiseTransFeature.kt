@@ -48,7 +48,7 @@ class RiseTransFeature(val impl : IRiseTrans) : Feature<RiseTransConfig, GmtJulD
   override val defaultConfig: RiseTransConfig = RiseTransConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: RiseTransConfig): GmtJulDay? {
-    return impl.getGmtTransJulDay(gmtJulDay , config.star , config.transPoint , loc , config.transConfig.discCenter , config.transConfig.refraction , config.transConfig.temperature , config.transConfig.pressure)
+    return impl.getGmtTransJulDay(gmtJulDay , config.star , config.transPoint , loc , config.transConfig)
   }
 
 }

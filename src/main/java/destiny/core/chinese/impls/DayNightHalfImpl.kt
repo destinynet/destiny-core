@@ -4,10 +4,7 @@
 package destiny.core.chinese.impls
 
 import destiny.core.DayNight
-import destiny.core.astrology.IDayNight
-import destiny.core.astrology.IRiseTrans
-import destiny.core.astrology.Planet
-import destiny.core.astrology.TransPoint
+import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.tools.Domain
@@ -22,10 +19,9 @@ class DayNightHalfImpl(private val riseTransImpl: IRiseTrans) : IDayNight, Seria
 
   // TODO : 極區內可能不適用
   override fun getDayNight(gmtJulDay: GmtJulDay, location: ILocation): DayNight {
-    val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location,
-      discCenter = false, refraction = true)!!
-    val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location,
-      discCenter = false, refraction = true)!!
+    val transConfig = TransConfig()
+    val nextMeridianJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, transConfig)!!
+    val nextNadirJulDay = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
 
     return if (nextNadirJulDay > nextMeridianJulDay) {
       //子正到午正（上半天）
