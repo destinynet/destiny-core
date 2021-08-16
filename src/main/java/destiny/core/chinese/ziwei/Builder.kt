@@ -130,9 +130,10 @@ class Builder(
       starBranchMap.entries.groupBy { it.value }.mapValues { it.value.map { entry -> entry.key } }
 
     // 哪個地支 裡面 有哪些星體 (可能會有空宮 , 若星體很少的話)
-    val branchStarMap: Map<Branch, List<ZStar>?> = // 可能為 null (空宮) , 故，不加 !!
-      Branch.values().associate { branch ->
-        branch to branchStarsMap[branch] // 可能為 null (空宮) , 故，不加 !!
+    val branchStarMap: Map<Branch, List<ZStar>?> =
+      Branch.values().associateWith {
+        // 可能為 null (空宮)
+        branch -> branchStarsMap[branch]
       }.toSortedMap()
 
 

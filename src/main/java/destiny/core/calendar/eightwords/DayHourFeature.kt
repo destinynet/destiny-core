@@ -60,7 +60,7 @@ data class DayHourConfig(
 @DestinyMarker
 class DayHourConfigBuilder : Builder<DayHourConfig> {
 
-  var dayConfig = DayConfig()
+  private var dayConfig = DayConfig()
 
   fun day(block: DayConfigBuilder.() -> Unit) {
     this.dayConfig = DayConfigBuilder.dayConfig(block)

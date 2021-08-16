@@ -145,12 +145,10 @@ interface IZiweiContext {
   fun getFlowBig(builder: Builder, flowBig: StemBranch): Builder {
     // 在此大限中，每個地支，對應到哪個宮位
 
-    val branchHouseMap = values()
-      .associate { branch ->
-        val steps = branch.getAheadOf(flowBig.branch)
-        val house = houseSeqImpl.prev(House.命宮, steps)
-        branch to house
-      }
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(flowBig.branch)
+      houseSeqImpl.prev(House.命宮, steps)
+    }
 
     // 大限四化
     val trans4Map = getTrans4Map(stars, FlowType.大限, flowBig.stem)
@@ -164,12 +162,10 @@ interface IZiweiContext {
     // 流年命宮
     val yearlyMain = flowYearImpl.getFlowYear(flowYear.branch, builder.birthMonthNum, builder.birthHour)
 
-    val branchHouseMap = values()
-      .associate { branch ->
-        val steps = branch.getAheadOf(yearlyMain)
-        val house = houseSeqImpl.prev(House.命宮, steps)
-        branch to house
-      }
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(yearlyMain)
+      houseSeqImpl.prev(House.命宮, steps)
+    }
 
     // 流年四化
     val trans4Map = getTrans4Map(stars, FlowType.流年, flowYear.stem)
@@ -185,12 +181,10 @@ interface IZiweiContext {
     val monthlyMain =
       flowMonthImpl.getFlowMonth(flowYear.branch, flowMonth.branch, builder.birthMonthNum, builder.birthHour)
 
-    val branchHouseMap = values()
-      .associate { branch ->
-        val steps = branch.getAheadOf(monthlyMain)
-        val house = houseSeqImpl.prev(House.命宮, steps)
-        branch to house
-      }
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(monthlyMain)
+      houseSeqImpl.prev(House.命宮, steps)
+    }
 
     // 流月四化
     val trans4Map = getTrans4Map(stars, FlowType.流月, flowMonth.stem)
@@ -215,12 +209,10 @@ interface IZiweiContext {
 
     // 流日命宮
     val dailyMain = flowDayImpl.getFlowDay(flowDay.branch, flowDayNum, monthlyMain)
-    val branchHouseMap = values()
-      .associate { branch ->
-        val steps = branch.getAheadOf(dailyMain)
-        val house = houseSeqImpl.prev(House.命宮, steps)
-        branch to house
-      }
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(dailyMain)
+      houseSeqImpl.prev(House.命宮, steps)
+    }
 
     // 流日四化
     val trans4Map = getTrans4Map(stars, FlowType.流日, flowDay.stem)
@@ -247,12 +239,10 @@ interface IZiweiContext {
     // 流時命宮
     val hourlyMain = flowHourImpl.getFlowHour(flowHour.branch, dailyMain)
 
-    val branchHouseMap = values()
-      .associate { branch ->
-        val steps = branch.getAheadOf(hourlyMain)
-        val house = houseSeqImpl.prev(House.命宮, steps)
-        branch to house
-      }
+    val branchHouseMap = values().associateWith { branch ->
+      val steps = branch.getAheadOf(hourlyMain)
+      houseSeqImpl.prev(House.命宮, steps)
+    }
 
     // 流時四化
     val trans4Map = getTrans4Map(stars, FlowType.流時, flowHour.stem)
@@ -656,8 +646,8 @@ class ZContext(
 
     // 小限 mapping
     val branchSmallRangesMap: Map<Branch, List<Int>> = values()
-      .associate { branch ->
-        branch to ISmallRange.getRanges(branch, lunarYear.branch, gender)
+      .associateWith { branch ->
+        ISmallRange.getRanges(branch, lunarYear.branch, gender)
       }
 
     /**

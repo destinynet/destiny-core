@@ -77,7 +77,7 @@ interface ILocation : ILatLng {
     get() = minuteOffset != null
 
   val finalMinuteOffset: Int
-    get() = minuteOffset ?: TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000)
+    get() = minuteOffset ?: (TimeZone.getTimeZone(tzid).rawOffset / (60 * 1000))
 
   /** 高度（公尺） */
   val altitudeMeter: Double?

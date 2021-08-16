@@ -9,6 +9,7 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IDayHour
 import destiny.core.calendar.eightwords.IYearMonth
 import destiny.core.chinese.Branch
+import destiny.core.chinese.YearType
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 

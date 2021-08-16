@@ -26,17 +26,17 @@ data class EightWordsContextConfig(
 
 @DestinyMarker
 class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
-  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
+  private var eightWordsConfig: EightWordsConfig = EightWordsConfig()
   fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
     this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
   }
 
-  var risingSignConfig: RisingSignConfig = RisingSignConfig()
+  private var risingSignConfig: RisingSignConfig = RisingSignConfig()
   fun risingSign(block : RisingSignConfigBuilder.() -> Unit = {}) {
     this.risingSignConfig = RisingSignConfigBuilder.risingSign(block)
   }
 
-  var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig()
+  private var zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig()
   fun zodiacSign(block : ZodiacSignBuilder.() -> Unit = {}) {
     this.zodiacSignConfig = ZodiacSignBuilder.zodiacSign(block)
   }

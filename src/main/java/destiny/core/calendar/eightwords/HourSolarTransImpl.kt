@@ -64,11 +64,9 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
 
     val resultGmt: GmtJulDay
     // 下個午正
-    val nextMeridian =
-      riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, transConfig)!!
+    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, transConfig)!!
     // 下個子正
-    val nextNadir =
-      riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
+    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
 
     val currentEb: Branch = getHour(gmtJulDay, location) // 取得目前在哪個時辰之中
 
@@ -76,9 +74,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
       // 目前時刻 位於子正到午正（上半天）
       val twelveHoursAgo = gmtJulDay - 0.5
       // 上一個子正
-      val previousNadir =
-        riseTransImpl.getGmtTransJulDay(twelveHoursAgo, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
-
+      val previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
 
       val oneUnit1 = (nextMeridian - previousNadir) / 12.0 // 單位為 day , 左半部
       val oneUnit2 = (nextNadir - nextMeridian) / 12.0  // 右半部
@@ -93,12 +89,11 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
         }
       } else {
         // 欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰 : ex 目前是寅時，要計算「下一個丑時」 ==> 算的是明天的丑時
-        val nextNextMeridian =
-          riseTransImpl.getGmtTransJulDay(nextNadir, Planet.SUN, TransPoint.MERIDIAN, location, transConfig)!!
+        val nextNextMeridian = riseTransImpl.getGmtTransJulDay(nextNadir, Planet.SUN, TransPoint.MERIDIAN, location, transConfig)!!
         val oneUnit3 = (nextNextMeridian - nextNadir) / 12.0
-        val nextNextNadir =
-          riseTransImpl.getGmtTransJulDay(nextNextMeridian, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
+        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridian, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
         val oneUnit4 = (nextNextNadir - nextNextMeridian) / 12.0
+
         resultGmt = when {
           丑to午.contains(eb) -> nextNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)
           未to亥.contains(eb) -> nextNextMeridian + oneUnit4 * ((eb.index - 7) * 2 + 1)

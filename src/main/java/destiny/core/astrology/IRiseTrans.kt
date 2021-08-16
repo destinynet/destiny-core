@@ -17,10 +17,6 @@ interface IRiseTrans {
   /**
    * 來源、目標時間都是 GMT
    *
-   * @param atmosphericTemperature 攝氏溫度
-   * @param atmosphericPressure    壓力 , 例如 1013.25
-   *
-   *
    * 根據測試資料 , 美國海軍天文台的計算結果，「似乎」傾向 center = false , refraction = true. 亦即： 計算「邊緣」以及「考量折射」
    *
    * Note : 極區 可能無 rise / set 之值
@@ -81,10 +77,8 @@ interface IRiseTrans {
    * @param star 星體
    * @param point 接觸點 : RISING , MERIDIAN , SETTING , NADIR
    * @param location 地點
-   * @param atmosphericTemperature 溫度
-   * @param atmosphericPressure 大氣壓力
-   * @param discCenter 是否是星體中心（只影響 日、月），通常設為 false
-   * @param refraction 是否考量濛氣差 , 通常設為 true
+   * [TransConfig.discCenter] 是否是星體中心（只影響 日、月），通常設為 false
+   * [TransConfig.refraction] 是否考量濛氣差 , 通常設為 true
    * @return List <Time> in LMT
    * */
   fun getPeriodStarRiseTransTime(fromLmtTime: ChronoLocalDateTime<*>,

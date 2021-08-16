@@ -8,9 +8,9 @@ import java.io.Serializable
 
 class GoogleMapsUrlBuilder : LocationUrlBuilder, Serializable {
 
-  // http://maps.google.com/maps?&z=10&q=25.039059+121.517675&ll=25.039059+121.517675
+  // https://www.google.com/maps?&z=10&q=25.039059+121.517675&ll=25.039059+121.517675
   override fun getUrl(lat: Double, lng: Double): String {
-    return String.format("http://maps.google.com/maps?&z=10&q=%f+%f&ll=%f+%f&z=14", lat, lng, lat, lng)
+    return String.format("https://www.google.com/maps?&z=10&q=%f+%f&ll=%f+%f&z=14", lat, lng, lat, lng)
   }
 
 }

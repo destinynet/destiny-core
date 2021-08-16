@@ -42,7 +42,7 @@ data class YearMonthConfig(
 @DestinyMarker
 class MonthConfigBuilder : Builder<YearMonthConfig> {
 
-  var yearConfig: YearConfig = YearConfig()
+  private var yearConfig: YearConfig = YearConfig()
 
   fun year(block: YearConfigBuilder.() -> Unit) {
     this.yearConfig = YearConfigBuilder.yearConfig(block)
