@@ -25,9 +25,7 @@ interface IStarPosition<out T : IStarPos> {
   /** 同樣是求 Position , 但多傳入地點、溫度、壓力 等資料 , 在此直接 discard 掉  */
   fun getPosition(star: Star,
                   gmtJulDay: GmtJulDay,
-                  geoLat: Double,
-                  geoLng: Double,
-                  geoAlt: Double? = 0.0,
+                  loc: ILocation,
                   centric: Centric = Centric.GEO,
                   coordinate: Coordinate = Coordinate.ECLIPTIC,
                   temperature: Double = 0.0,
@@ -37,7 +35,7 @@ interface IStarPosition<out T : IStarPos> {
 
 
   fun getPosition(star: Star, gmtJulDay: GmtJulDay, loc: ILocation, centric: Centric = Centric.GEO, coordinate: Coordinate = Coordinate.ECLIPTIC): T {
-    return getPosition(star, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, centric, coordinate, 0.0, 1013.25)
+    return getPosition(star, gmtJulDay, loc, centric, coordinate, 0.0, 1013.25)
   }
 
   /**
@@ -60,8 +58,7 @@ interface IStarPosition<out T : IStarPos> {
                   temperature: Double,
                   pressure: Double): IPos {
     val gmtJulDay = TimeTools.getGmtJulDay(gmt)
-    return getPosition(star, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter, centric, coordinate,
-      temperature, pressure)
+    return getPosition(star, gmtJulDay, loc, centric, coordinate, temperature, pressure)
   }
 
 

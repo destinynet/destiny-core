@@ -15,9 +15,4 @@ interface IApsisWithAzimuth : IApsis {
 
   fun getPositionsWithAzimuths(gmtJulDay: GmtJulDay, loc: ILocation, config: ApsisAzimuthConfig): Map<Apsis, StarPosWithAzimuth>
 
-  fun getPositionWithAzimuth(gmtJulDay: GmtJulDay, loc: ILocation, apsis: Apsis, config: ApsisAzimuthConfig): StarPosWithAzimuth {
-    val map = getPositionsWithAzimuths(gmtJulDay, loc, config)
-    return map[apsis] ?: throw RuntimeException("Cannot found StarPositionWithAzimuth of the Apsis : $apsis")
-  }
-
 }

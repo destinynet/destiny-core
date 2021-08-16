@@ -68,18 +68,6 @@ class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
     // 行星空亡表
     val vocMap: Map<Planet, Misc.VoidCourse> = voidCourseFeature.getVocMap(gmtJulDay, loc, config.points, VoidCourseConfig(vocImpl = config.vocImpl))
 
-    return HoroscopeModel(
-      gmtJulDay,
-      loc,
-      config.place,
-      config.houseSystem,
-      config.coordinate,
-      config.centric,
-      config.temperature,
-      config.pressure,
-      positionMap,
-      cuspDegreeMap,
-      vocMap
-    )
+    return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap)
   }
 }

@@ -13,6 +13,6 @@ open class PositionAsteroidImpl(val starPositionImpl: IStarPosition<*>, asteroid
                            coordinate: Coordinate,
                            temperature: Double,
                            pressure: Double): IPos {
-    return starPositionImpl.getPosition(point, gmtJulDay, loc.lat, loc.lng, loc.altitudeMeter?:0.0, centric, coordinate , temperature, pressure)
+    return starPositionImpl.getPosition(point, gmtJulDay, loc, centric, coordinate , temperature, pressure)
   }
 }

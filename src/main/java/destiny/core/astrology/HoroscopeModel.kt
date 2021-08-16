@@ -254,23 +254,8 @@ data class HoroscopeModel(
 
   override val location: ILocation,
 
-  /** 地名 */
-  override val place: String?,
+  val config: HoroscopeConfig,
 
-  /** 分宮法  */
-  override val houseSystem: HouseSystem,
-
-  /** 座標系統  */
-  override val coordinate: Coordinate,
-
-  /** 中心系統  */
-  override val centric: Centric,
-
-  /** 溫度  */
-  override val temperature: Double?,
-
-  /** 壓力  */
-  override val pressure: Double?,
 
   /** 星體位置表 */
   override val positionMap: Map<Point, IPosWithAzimuth>,
@@ -283,6 +268,25 @@ data class HoroscopeModel(
 
   override val time: ChronoLocalDateTime<*>
     get() = TimeTools.getLmtFromGmt(gmtJulDay, location, JulDayResolver1582CutoverImpl())
+
+  /** 地名 */
+  override val place: String? = config.place
+
+  /** 分宮法  */
+  override val houseSystem: HouseSystem = config.houseSystem
+
+  /** 座標系統  */
+  override val coordinate: Coordinate = config.coordinate
+
+  /** 中心系統  */
+  override val centric: Centric = config.centric
+
+  /** 溫度  */
+  override val temperature: Double = config.temperature
+
+  /** 壓力  */
+  override val pressure: Double = config.pressure
+
 }
 
 /**

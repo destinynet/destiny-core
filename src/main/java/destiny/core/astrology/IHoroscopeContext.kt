@@ -5,7 +5,7 @@ package destiny.core.astrology
 
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
-import destiny.core.astrology.classical.IVoidCourse
+import destiny.core.astrology.classical.*
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -97,7 +97,15 @@ class HoroscopeContext(
     // 行星空亡表
     val vocMap: Map<Planet, Misc.VoidCourse> = voidCourseImpl.getVocMap(gmtJulDay, loc, pointPosFuncMap, points)
 
-    return HoroscopeModel(gmtJulDay, loc, place, houseSystem, coordinate, centric, temperature, pressure, positionMap, cuspDegreeMap, vocMap)
+    val vocImpl = when(voidCourseImpl) {
+      is VoidCourseHellenistic -> VoidCourseConfig.VoidCourseImpl.Hellenistic
+      is VoidCourseMedieval -> VoidCourseConfig.VoidCourseImpl.Medieval
+      is VoidCourseWilliamLilly -> VoidCourseConfig.VoidCourseImpl.WilliamLilly
+    }
+
+    val config = HoroscopeConfig(points.toSet(), houseSystem, coordinate, centric, temperature, pressure, vocImpl, place)
+
+    return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap)
   }
 
   override fun equals(other: Any?): Boolean {

@@ -46,7 +46,7 @@ class AzimuthFeature(val starPositionImpl: IStarPosition<IStarPos>,
   override val defaultConfig: AzimuthConfig = AzimuthConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: AzimuthConfig): StarPosWithAzimuth {
-    val pos: IStarPos = starPositionImpl.getPosition(config.star, gmtJulDay, loc.lat, loc.lng, config.geoAlt, Centric.GEO, config.coordinate, config.temperature, config.pressure)
+    val pos: IStarPos = starPositionImpl.getPosition(config.star, gmtJulDay, loc, Centric.GEO, config.coordinate, config.temperature, config.pressure)
     val azimuth = with(azimuthImpl) {
       pos.getAzimuth(config.coordinate, gmtJulDay, loc, config.temperature, config.pressure)
     }
