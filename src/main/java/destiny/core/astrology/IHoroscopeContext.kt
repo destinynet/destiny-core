@@ -28,31 +28,18 @@ interface IHoroscopeContext : Serializable {
   val pressure: Double
   val voidCourseImpl: IVoidCourse
 
-
   /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
-  fun getHoroscope(gmtJulDay: GmtJulDay,
-                   loc: ILocation,
-                   place: String?,
-                   points: Collection<Point>): IHoroscopeModel
-
-
-  /** 承上 , [ChronoLocalDateTime] 版本 */
-  fun getHoroscope(lmt: ChronoLocalDateTime<*>,
-                   loc: ILocation,
-                   place: String?,
-                   points: Collection<Point> = defaultPoints): IHoroscopeModel {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getHoroscope(gmtJulDay, loc, place, points)
-  }
+  fun getHoroscope(gmtJulDay: GmtJulDay, loc: ILocation, place: String?, points: Collection<Point>): IHoroscopeModel
 
   fun getHoroscope(bdnp: IBirthDataNamePlace , points: Collection<Point> = defaultPoints) : IHoroscopeModel {
-    return getHoroscope(bdnp.time , bdnp.location , bdnp.place , points)
-
+    val gmtJulDay = TimeTools.getGmtJulDay(bdnp.time, bdnp.location)
+    return getHoroscope(gmtJulDay , bdnp.location , bdnp.place , points)
   }
 
   /** 最精簡 */
   fun getHoroscope(lmt: ChronoLocalDateTime<*>, loc: ILocation): IHoroscopeModel {
-    return getHoroscope(lmt, loc, null, defaultPoints)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    return getHoroscope(gmtJulDay, loc, null, defaultPoints)
   }
 
 
@@ -114,7 +101,8 @@ interface IPersonHoroscopeContext : IHoroscopeContext {
                          gender: Gender,
                          name: String?,
                          points: Collection<Point> = IHoroscopeContext.defaultPoints): IPersonHoroscopeModel {
-    val horoscope = getHoroscope(lmt, loc, place, points)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val horoscope = getHoroscope(gmtJulDay, loc, place, points)
     return PersonHoroscopeModel(horoscope, gender, name)
   }
 
