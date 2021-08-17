@@ -5,8 +5,8 @@ package destiny.core.astrology
 
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
-import destiny.core.astrology.classical.*
-import destiny.core.astrology.classical.rules.Misc
+import destiny.core.astrology.classical.IVoidCourse
+import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
@@ -58,25 +58,25 @@ interface IHoroscopeContext : Serializable {
 
 
   companion object {
-
-    val defaultPoints = setOf(
-      *Planet.array,
-      *Axis.array,
-      LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN)
+    val defaultPoints = setOf(*Planet.array, *Axis.array, LunarNode.NORTH_MEAN, LunarNode.SOUTH_MEAN)
   }
 }
 
 class HoroscopeContext(
   val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
   val houseCuspImpl: IHouseCusp,
+  val besiegedImpl: IBesieged,
+  val starTransit: IStarTransit,
   override val pointPosFuncMap: Map<Point, IPosition<*>>,
-  val points: Collection<Point> = pointPosFuncMap.keys,
   override val voidCourseImpl: IVoidCourse,
-  override val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
-  override val coordinate: Coordinate = Coordinate.ECLIPTIC,
-  override val centric: Centric = Centric.GEO,
-  override val temperature: Double = 0.0,
-  override val pressure: Double = 1013.25) : IHoroscopeContext, Serializable {
+  private val config : HoroscopeConfig) : IHoroscopeContext, Serializable {
+
+  override val centric: Centric = config.centric
+  override val coordinate: Coordinate = config.coordinate
+  override val houseSystem: HouseSystem = config.houseSystem
+  override val pressure: Double = config.pressure
+  override val temperature: Double = config.temperature
+
 
   /** 最完整，會覆蓋 [HoroscopeContext] 的參數 */
   override fun getHoroscope(gmtJulDay: GmtJulDay,
@@ -84,51 +84,22 @@ class HoroscopeContext(
                             place: String?,
                             points: Collection<Point>): IHoroscopeModel {
 
-
-    val positionMap: Map<Point, IPosWithAzimuth> = points.map { point ->
-      point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, centric, coordinate, temperature, pressure)
-    }.filter { (_, v) -> v != null }.associate { (point, pos) -> point to pos!! as IPosWithAzimuth }
-
-
-    // [1] 到 [12] 宮首黃道度數
-    val cuspDegreeMap: Map<Int, ZodiacDegree> = houseCuspImpl.getHouseCuspMap(gmtJulDay, loc, houseSystem, coordinate)
-
-    // 行星空亡表
-    val vocMap: Map<Planet, Misc.VoidCourse> = voidCourseImpl.getVocMap(gmtJulDay, loc, pointPosFuncMap, points)
-
-    val vocImpl = when(voidCourseImpl) {
-      is VoidCourseHellenistic -> VoidCourseConfig.VoidCourseImpl.Hellenistic
-      is VoidCourseMedieval -> VoidCourseConfig.VoidCourseImpl.Medieval
-      is VoidCourseWilliamLilly -> VoidCourseConfig.VoidCourseImpl.WilliamLilly
-    }
-
-    val config = HoroscopeConfig(points.toSet(), houseSystem, coordinate, centric, temperature, pressure, vocImpl, place)
-
-    return HoroscopeModel(gmtJulDay, loc, config, positionMap, cuspDegreeMap, vocMap)
+    val houseCuspFeature = HouseCuspFeature(houseCuspImpl)
+    val voidCourseFeature = VoidCourseFeature(besiegedImpl, starPositionWithAzimuthImpl, starTransit, pointPosFuncMap)
+    val horoscopeFeature = HoroscopeFeature(pointPosFuncMap, houseCuspFeature, voidCourseFeature)
+    return horoscopeFeature.getModel(gmtJulDay, loc, config.copy(points = points.toSet()))
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is HoroscopeContext) return false
 
-    if (points != other.points) return false
-    if (houseSystem != other.houseSystem) return false
-    if (coordinate != other.coordinate) return false
-    if (centric != other.centric) return false
-    if (temperature != other.temperature) return false
-    if (pressure != other.pressure) return false
-
+    if (config != other.config) return false
     return true
   }
 
   override fun hashCode(): Int {
-    var result = points.hashCode()
-    result = 31 * result + houseSystem.hashCode()
-    result = 31 * result + coordinate.hashCode()
-    result = 31 * result + centric.hashCode()
-    result = 31 * result + temperature.hashCode()
-    result = 31 * result + pressure.hashCode()
-    return result
+    return config.hashCode()
   }
 }
 

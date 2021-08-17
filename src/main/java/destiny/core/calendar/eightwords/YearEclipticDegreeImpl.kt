@@ -26,8 +26,8 @@ class YearEclipticDegreeImpl(
   }
 
   override fun getYear(gmtJulDay: GmtJulDay, loc: ILocation): StemBranch {
-
-    return getYear(gmtJulDay, loc, changeYearDegree, julDayResolver, starPositionImpl)
+    val feature = YearFeature(starPositionImpl, julDayResolver)
+    return feature.getModel(gmtJulDay, loc, YearConfig(changeYearDegree))
   }
 
   override fun equals(other: Any?): Boolean {

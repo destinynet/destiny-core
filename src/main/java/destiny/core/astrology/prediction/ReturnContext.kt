@@ -6,6 +6,7 @@ package destiny.core.astrology.prediction
 
 import destiny.core.astrology.*
 import destiny.core.astrology.classical.IVoidCourse
+import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -56,6 +57,7 @@ class ReturnContext(
   private val houseCuspImpl: IHouseCusp,
   private val pointPosFuncMap: Map<Point, IPosition<*>>,
   private val voidCourseImpl: IVoidCourse,
+  private val besiegedImpl: IBesieged,
   private val julDayResolver: JulDayResolver
 ) : IReturnContext, Serializable {
 
@@ -64,9 +66,14 @@ class ReturnContext(
     val convergentGmtJulDay = getConvergentTime(natalGmtJulDay, nowGmtJulDay)
     val convergentGmt = julDayResolver.getLocalDateTime(convergentGmtJulDay)
 
+
     val convergentLmt = TimeTools.getLmtFromGmt(convergentGmt, nowLoc)
 
-    val horoscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, pointPosFuncMap, IHoroscopeContext.defaultPoints, voidCourseImpl)
+
+
+    val config = HoroscopeConfig(IHoroscopeContext.defaultPoints, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC, Centric.GEO, 0.0, 1013.25, VoidCourseConfig.VoidCourseImpl.Medieval)
+
+    val horoscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, besiegedImpl, starTransitImpl, pointPosFuncMap, voidCourseImpl, config)
     return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
 
   }
