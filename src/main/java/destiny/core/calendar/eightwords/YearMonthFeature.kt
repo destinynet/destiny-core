@@ -15,10 +15,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class YearMonthConfig(
-
-  val yearConfig: YearConfig = YearConfigBuilder.yearConfig(),
-
+data class MonthConfig(
   /** 南半球月令是否對沖  */
   val southernHemisphereOpposition: Boolean = false,
   /**
@@ -39,14 +36,7 @@ data class YearMonthConfig(
   }
 }
 
-@DestinyMarker
-class MonthConfigBuilder : Builder<YearMonthConfig> {
-
-  private var yearConfig: YearConfig = YearConfig()
-
-  fun year(block: YearConfigBuilder.() -> Unit) {
-    this.yearConfig = YearConfigBuilder.yearConfig(block)
-  }
+class MonthConfigBuilder : Builder<MonthConfig> {
 
   /** 南半球月令是否對沖  */
   var southernHemisphereOpposition: Boolean = false
@@ -58,21 +48,53 @@ class MonthConfigBuilder : Builder<YearMonthConfig> {
    */
   var hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
 
-  var monthImpl: YearMonthConfig.MoonImpl = YearMonthConfig.MoonImpl.SolarTerms
+  var monthImpl: MonthConfig.MoonImpl = MonthConfig.MoonImpl.SolarTerms
 
-  override fun build(): YearMonthConfig {
-    return YearMonthConfig(yearConfig, southernHemisphereOpposition, hemisphereBy, monthImpl)
+  override fun build(): MonthConfig {
+    return MonthConfig(southernHemisphereOpposition, hemisphereBy, monthImpl)
   }
 
   companion object {
-    fun monthConfig(block: MonthConfigBuilder.() -> Unit = {}): YearMonthConfig {
+    fun monthConfig(block: MonthConfigBuilder.() -> Unit = {}): MonthConfig {
       return MonthConfigBuilder().apply(block).build()
     }
   }
 }
 
+@Serializable
+data class YearMonthConfig(
+  val yearConfig: YearConfig = YearConfig(),
+  val monthConfig: MonthConfig = MonthConfig()
+)
 
-class MonthFeature(
+@DestinyMarker
+class YearMonthConfigBuilder : Builder<YearMonthConfig> {
+
+  private var yearConfig: YearConfig = YearConfig()
+
+  fun year(block: YearConfigBuilder.() -> Unit) {
+    this.yearConfig = YearConfigBuilder.yearConfig(block)
+  }
+
+  private var monthConfig: MonthConfig = MonthConfig()
+
+  fun month(block: MonthConfigBuilder.() -> Unit) {
+    this.monthConfig = MonthConfigBuilder.monthConfig(block)
+  }
+
+  override fun build(): YearMonthConfig {
+    return YearMonthConfig(yearConfig, monthConfig)
+  }
+
+  companion object {
+    fun yearMonthConfig(block: YearMonthConfigBuilder.() -> Unit = {}): YearMonthConfig {
+      return YearMonthConfigBuilder().apply(block).build()
+    }
+  }
+}
+
+
+class YearMonthFeature(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
   private val julDayResolver: JulDayResolver
@@ -92,15 +114,15 @@ class MonthFeature(
       loc,
       solarTermsImpl,
       starPositionImpl,
-      config.southernHemisphereOpposition,
-      config.hemisphereBy,
+      config.monthConfig.southernHemisphereOpposition,
+      config.monthConfig.hemisphereBy,
       config.yearConfig.changeYearDegree,
       julDayResolver
     )
 
-    return when (config.moonImpl) {
-      YearMonthConfig.MoonImpl.SolarTerms -> originalMonth
-      YearMonthConfig.MoonImpl.SunSign    -> {
+    return when (config.monthConfig.moonImpl) {
+      MonthConfig.MoonImpl.SolarTerms -> originalMonth
+      MonthConfig.MoonImpl.SunSign    -> {
         // 目前的節氣
         val solarTerms = solarTermsImpl.getSolarTermsFromGMT(gmtJulDay)
 

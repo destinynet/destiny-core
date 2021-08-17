@@ -42,7 +42,7 @@ class HourBranchConfigBuilder : Builder<HourBranchConfig> {
   }
 
   companion object {
-    fun hourBranch(block : HourBranchConfigBuilder.() -> Unit = {}) : HourBranchConfig {
+    fun hourBranchConfig(block : HourBranchConfigBuilder.() -> Unit = {}) : HourBranchConfig {
       return HourBranchConfigBuilder().apply(block).build()
     }
   }

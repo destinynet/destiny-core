@@ -14,7 +14,10 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
 
   override val configByConstructor: EightWordsContextConfig = EightWordsContextConfig(
     EightWordsConfig(
-      YearMonthConfig(YearConfig(270.0), true , HemisphereBy.DECLINATION ,YearMonthConfig.MoonImpl.SunSign),
+      YearMonthConfig(
+        YearConfig(270.0),
+        MonthConfig(true , HemisphereBy.DECLINATION ,MonthConfig.MoonImpl.SunSign)
+      ),
       DayHourConfig(
         DayConfig(changeDayAfterZi = false , DayConfig.MidnightImpl.CLOCK0),
         HourBranchConfig(HourBranchConfig.HourImpl.LMT)
@@ -36,9 +39,11 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
         year {
           changeYearDegree = 270.0
         }
-        southernHemisphereOpposition = true
-        hemisphereBy = HemisphereBy.DECLINATION
-        monthImpl = YearMonthConfig.MoonImpl.SunSign
+        month {
+          southernHemisphereOpposition = true
+          hemisphereBy = HemisphereBy.DECLINATION
+          monthImpl = MonthConfig.MoonImpl.SunSign
+        }
       }
 
       dayHour {

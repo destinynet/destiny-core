@@ -5,7 +5,7 @@ package destiny.core.calendar.eightwords
 
 import destiny.core.AbstractConfigTest
 import destiny.core.astrology.TransConfig
-import destiny.core.calendar.eightwords.HourBranchConfigBuilder.Companion.hourBranch
+import destiny.core.calendar.eightwords.HourBranchConfigBuilder.Companion.hourBranchConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
@@ -18,7 +18,7 @@ internal class HourBranchConfigTest : AbstractConfigTest<HourBranchConfig>() {
                                                                                                                     pressure = 1000.0)
   )
 
-  override val configByFunction: HourBranchConfig = hourBranch {
+  override val configByFunction: HourBranchConfig = hourBranchConfig {
     tst {
       discCenter = true
       refraction = false

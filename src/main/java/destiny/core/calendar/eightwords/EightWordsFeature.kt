@@ -26,8 +26,8 @@ data class EightWordsConfig(
 class EightWordsConfigBuilder : Builder<EightWordsConfig> {
   private var yearMonthConfig: YearMonthConfig = YearMonthConfig()
 
-  fun yearMonth(block: MonthConfigBuilder.() -> Unit) {
-    this.yearMonthConfig = MonthConfigBuilder.monthConfig(block)
+  fun yearMonth(block: YearMonthConfigBuilder.() -> Unit) {
+    this.yearMonthConfig = YearMonthConfigBuilder.yearMonthConfig(block)
   }
 
   private var dayHourConfig: DayHourConfig = DayHourConfig()
@@ -48,7 +48,7 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 }
 
 class EightWordsFeature(private val yearFeature: YearFeature,
-                        private val monthFeature: MonthFeature,
+                        private val yearMonthFeature: YearMonthFeature,
                         private val dayHourFeature: DayHourFeature,
                         private val julDayResolver: JulDayResolver) : Feature<EightWordsConfig , EightWords> {
   override val key: String = "eightWords"
@@ -63,7 +63,7 @@ class EightWordsFeature(private val yearFeature: YearFeature,
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsConfig): EightWords {
 
     val year: StemBranch = yearFeature.getModel(lmt, loc, config.yearMonthConfig.yearConfig)
-    val month: IStemBranch = monthFeature.getModel(lmt, loc, config.yearMonthConfig)
+    val month: IStemBranch = yearMonthFeature.getModel(lmt, loc, config.yearMonthConfig)
 
     val (day, hour) = dayHourFeature.getModel(lmt, loc, config.dayHourConfig)
 

@@ -4,7 +4,7 @@
 package destiny.core.calendar.eightwords
 
 import destiny.core.AbstractConfigTest
-import destiny.core.calendar.eightwords.MonthConfigBuilder.Companion.monthConfig
+import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
@@ -14,18 +14,22 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
 
   override val configByConstructor = YearMonthConfig(
     YearConfig(270.0),
-    southernHemisphereOpposition = true,
-    hemisphereBy = HemisphereBy.DECLINATION,
-    moonImpl = YearMonthConfig.MoonImpl.SunSign
+    MonthConfig(
+      southernHemisphereOpposition = true,
+      hemisphereBy = HemisphereBy.DECLINATION,
+      moonImpl = MonthConfig.MoonImpl.SunSign
+    )
   )
 
-  override val configByFunction = monthConfig {
+  override val configByFunction = yearMonthConfig {
     year {
       changeYearDegree = 270.0
     }
-    southernHemisphereOpposition = true
-    hemisphereBy = HemisphereBy.DECLINATION
-    monthImpl = YearMonthConfig.MoonImpl.SunSign
+    month {
+      southernHemisphereOpposition = true
+      hemisphereBy = HemisphereBy.DECLINATION
+      monthImpl = MonthConfig.MoonImpl.SunSign
+    }
   }
 
   override val assertion = { raw: String ->

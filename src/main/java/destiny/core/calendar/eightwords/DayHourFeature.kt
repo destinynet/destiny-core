@@ -68,7 +68,7 @@ class DayHourConfigBuilder : Builder<DayHourConfig> {
 
   var hourBranchConfig: HourBranchConfig = HourBranchConfig()
   fun hourBranch(block : HourBranchConfigBuilder.() -> Unit = {}) {
-    hourBranchConfig = HourBranchConfigBuilder.hourBranch(block)
+    hourBranchConfig = HourBranchConfigBuilder.hourBranchConfig(block)
   }
 
   override fun build(): DayHourConfig {

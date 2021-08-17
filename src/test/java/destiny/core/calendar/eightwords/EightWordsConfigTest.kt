@@ -15,9 +15,11 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
   override val configByConstructor: EightWordsConfig = EightWordsConfig(
     yearMonthConfig = YearMonthConfig(
       YearConfig(270.0),
-      southernHemisphereOpposition = true,
-      hemisphereBy = HemisphereBy.DECLINATION,
-      moonImpl = YearMonthConfig.MoonImpl.SunSign
+      MonthConfig(
+        southernHemisphereOpposition = true,
+        hemisphereBy = HemisphereBy.DECLINATION,
+        moonImpl = MonthConfig.MoonImpl.SunSign
+      )
     ),
     dayHourConfig = DayHourConfig(
       DayConfig(changeDayAfterZi = false , midnight = DayConfig.MidnightImpl.CLOCK0),
@@ -30,9 +32,11 @@ internal class EightWordsConfigTest : AbstractConfigTest<EightWordsConfig>() {
       year {
         changeYearDegree = 270.0
       }
-      southernHemisphereOpposition = true
-      hemisphereBy = HemisphereBy.DECLINATION
-      monthImpl = YearMonthConfig.MoonImpl.SunSign
+      month {
+        southernHemisphereOpposition = true
+        hemisphereBy = HemisphereBy.DECLINATION
+        monthImpl = MonthConfig.MoonImpl.SunSign
+      }
     }
 
     dayHour {
