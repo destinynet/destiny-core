@@ -76,18 +76,17 @@ internal class EightWordsContextConfigTest : AbstractConfigTest<EightWordsContex
   }
 
   override val assertion = { raw: String ->
-    logger.info { raw }
     assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
-    assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
+    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
+    assertTrue(raw.contains(""""moonImpl":\s*"SunSign"""".toRegex()))
 
     assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
+    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
+    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
 
     assertTrue(raw.contains(""""tradChineseRisingSignConfig""".toRegex()))
 
-    assertTrue(raw.contains(""""place":\s*"台北市""".toRegex()))
+    assertTrue(raw.contains(""""place":\s*"台北市"""".toRegex()))
   }
 }

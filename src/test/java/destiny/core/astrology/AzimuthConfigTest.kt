@@ -21,7 +21,6 @@ internal class AzimuthConfigTest : AbstractConfigTest<AzimuthConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    logger.info { raw }
     assertTrue(raw.contains(""""star":\s*"Planet.MOON"""".toRegex()))
     assertTrue(raw.contains(""""coordinate":\s*"SIDEREAL"""".toRegex()))
     assertTrue(raw.contains(""""geoAlt":\s*100.0""".toRegex()))

@@ -33,7 +33,6 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
   }
 
   override val assertion = { raw: String ->
-    logger.info { raw }
     assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
     assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))

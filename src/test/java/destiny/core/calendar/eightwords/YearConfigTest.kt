@@ -22,9 +22,7 @@ internal class YearConfigTest : AbstractConfigTest<YearConfig>() {
     changeYearDegree = 270.0
   }
 
-
   override val assertion = { raw: String ->
-    logger.info { raw }
     assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
   }
 

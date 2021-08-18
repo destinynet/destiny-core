@@ -35,7 +35,6 @@ internal class HoroscopeConfigTest : AbstractConfigTest<HoroscopeConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    logger.info { raw }
     assertTrue(raw.contains("Planet.MOON"))
     assertTrue(raw.contains("Asteroid.CERES"))
     assertTrue(raw.contains("Fixed.ALGOL"))

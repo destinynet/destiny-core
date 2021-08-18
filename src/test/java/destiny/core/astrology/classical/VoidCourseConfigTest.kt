@@ -22,9 +22,8 @@ internal class VoidCourseConfigTest : AbstractConfigTest<VoidCourseConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    logger.info { raw }
-    assertTrue(raw.contains(""""planet":\s*"Planet.VENUS""".toRegex()))
-    assertTrue(raw.contains(""""centric":\s*"TOPO""".toRegex()))
-    assertTrue(raw.contains(""""vocImpl":\s*"WilliamLilly""".toRegex()))
+    assertTrue(raw.contains(""""planet":\s*"Planet.VENUS"""".toRegex()))
+    assertTrue(raw.contains(""""centric":\s*"TOPO"""".toRegex()))
+    assertTrue(raw.contains(""""vocImpl":\s*"WilliamLilly"""".toRegex()))
   }
 }

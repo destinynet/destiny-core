@@ -20,8 +20,7 @@ internal class HouseConfigTest : AbstractConfigTest<HouseConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
-    logger.info { raw }
-    assertTrue(raw.contains(""""houseSystem":\s*"EQUAL""".toRegex()))
-    assertTrue(raw.contains(""""coordinate":\s*"SIDEREAL""".toRegex()))
+    assertTrue(raw.contains(""""houseSystem":\s*"EQUAL"""".toRegex()))
+    assertTrue(raw.contains(""""coordinate":\s*"SIDEREAL"""".toRegex()))
   }
 }

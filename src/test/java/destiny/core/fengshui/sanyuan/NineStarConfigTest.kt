@@ -58,16 +58,15 @@ internal class NineStarConfigTest : AbstractConfigTest<NineStarConfig>() {
     }
   }
   override val assertion: (String) -> Unit = { raw: String ->
-    logger.info { raw }
     assertTrue { raw.contains("YEAR") }
     assertTrue { raw.contains("DAY") }
     assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
-    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION""".toRegex()))
-    assertTrue(raw.contains(""""moonImpl":\s*"SunSign""".toRegex()))
+    assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
+    assertTrue(raw.contains(""""moonImpl":\s*"SunSign"""".toRegex()))
 
     assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
+    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
+    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
   }
 }

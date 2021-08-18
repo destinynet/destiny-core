@@ -32,9 +32,8 @@ internal class RiseTransConfigTest : AbstractConfigTest<RiseTransConfig>() {
   }
 
   override val assertion: (String) -> Unit = {raw ->
-    logger.info { raw }
-    assertTrue(raw.contains(""""star":\s*"Planet.MOON""".toRegex()))
-    assertTrue(raw.contains(""""transPoint":\s*"MERIDIAN""".toRegex()))
+    assertTrue(raw.contains(""""star":\s*"Planet.MOON"""".toRegex()))
+    assertTrue(raw.contains(""""transPoint":\s*"MERIDIAN"""".toRegex()))
     assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
     assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))
     assertTrue(raw.contains(""""temperature":\s*23.0""".toRegex()))

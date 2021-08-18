@@ -28,7 +28,6 @@ internal class HourBranchConfigTest : AbstractConfigTest<HourBranchConfig>() {
   }
 
   override val assertion: (String) -> Unit = {raw ->
-    logger.info { raw }
     assertTrue(raw.contains(""""hourImpl":\s*"TST"""".toRegex()))
     assertTrue(raw.contains(""""discCenter":\s*true""".toRegex()))
     assertTrue(raw.contains(""""refraction":\s*false""".toRegex()))

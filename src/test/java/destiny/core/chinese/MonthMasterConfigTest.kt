@@ -29,7 +29,6 @@ internal class MonthMasterConfigTest : AbstractConfigTest<MonthMasterConfig>() {
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    logger.info { raw }
     assertTrue(raw.contains(""""impl":\s*"Combined"""".toRegex()))
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
     assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))

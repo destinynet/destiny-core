@@ -18,8 +18,7 @@ internal class ZodiacSignConfigTest : AbstractConfigTest<ZodiacSignConfig>() {
   }
 
   override val assertion: (String) -> Unit = {raw : String ->
-    logger.info { raw }
-    assertTrue(raw.contains(""""star":\s*"Planet.MOON""".toRegex()))
+    assertTrue(raw.contains(""""star":\s*"Planet.MOON"""".toRegex()))
   }
 
 }

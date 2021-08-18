@@ -7,13 +7,17 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import mu.KotlinLogging
 import kotlin.test.assertEquals
+
+val logger = KotlinLogging.logger { }
 
 inline fun <T> assertAndCompareDecoded(format: Json, config: T, assertion: (String) -> Unit, serializer: KSerializer<T>) {
   val raw = format.encodeToString(serializer, config)
+  logger.info { raw }
   assertion(raw)
   val decoded: T = format.decodeFromString(serializer, raw)
-  assertEquals(config , decoded)
+  assertEquals(config, decoded)
 }
 
 inline fun <reified T> assertAndCompareDecoded(format: Json, config: T, assertion: (String) -> Unit) {

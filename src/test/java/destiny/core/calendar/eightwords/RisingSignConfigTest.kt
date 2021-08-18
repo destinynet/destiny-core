@@ -26,9 +26,8 @@ internal class RisingSignConfigTest : AbstractConfigTest<RisingSignConfig>() {
   }
 
   override val assertion = { raw: String ->
-    logger.info { raw }
     assertTrue(raw.contains(""""tradChineseRisingSignConfig""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
+    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
   }
 
 }

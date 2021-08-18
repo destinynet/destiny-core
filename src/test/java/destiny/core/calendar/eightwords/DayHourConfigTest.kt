@@ -28,9 +28,8 @@ internal class DayHourConfigTest : AbstractConfigTest<DayHourConfig>() {
   }
 
   override val assertion = { raw: String ->
-    logger.info { raw }
     assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
-    assertTrue(raw.contains(""""midnight":\s*"CLOCK0""".toRegex()))
-    assertTrue(raw.contains(""""hourImpl":\s*"LMT""".toRegex()))
+    assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
+    assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))
   }
 }
