@@ -5,22 +5,39 @@ package destiny.core.astrology
 
 import destiny.core.astrology.LunarStation.*
 import destiny.core.chinese.toString
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import mu.KotlinLogging
 import java.util.*
 import kotlin.test.*
 
 internal class LunarStationTest {
 
+  private val logger = KotlinLogging.logger { }
+
+  @Test
+  fun testSerialize() {
+    LunarStation.values.forEach { ls ->
+      Json.encodeToString(ls).also { raw ->
+        logger.trace { "$ls = $raw" }
+        val decoded = Json.decodeFromString<LunarStation>(raw)
+        assertSame(ls, decoded)
+      }
+    }
+  }
+
   @Test
   fun testLoop() {
-    assertEquals(0 , 角.getAheadOf(角))
-    assertEquals(1 , 亢.getAheadOf(角))
-    assertEquals(2 , 氐.getAheadOf(角))
-    assertEquals(27 , 軫.getAheadOf(角))
+    assertEquals(0, 角.getAheadOf(角))
+    assertEquals(1, 亢.getAheadOf(角))
+    assertEquals(2, 氐.getAheadOf(角))
+    assertEquals(27, 軫.getAheadOf(角))
 
-    assertEquals(0 , 軫.getAheadOf(軫))
-    assertEquals(1 , 角.getAheadOf(軫))
-    assertEquals(2 , 亢.getAheadOf(軫))
-    assertEquals(27 , 翼.getAheadOf(軫))
+    assertEquals(0, 軫.getAheadOf(軫))
+    assertEquals(1, 角.getAheadOf(軫))
+    assertEquals(2, 亢.getAheadOf(軫))
+    assertEquals(27, 翼.getAheadOf(軫))
 
     assertSame(亢, 角.next)
     assertSame(軫, 角.prev)

@@ -51,6 +51,7 @@ interface IContextModel : Serializable {
 
 }
 
+@kotlinx.serialization.Serializable
 data class ContextModel(override val eightwords: IEightWords,
                         override val year: LunarStation,
                         override val month: LunarStation,

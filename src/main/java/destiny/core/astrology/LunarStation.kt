@@ -13,9 +13,11 @@ import destiny.core.astrology.Planet.*
 import destiny.core.chinese.Animal
 import destiny.core.chinese.toString
 import destiny.tools.ArrayTools
+import kotlinx.serialization.Serializable
 import java.util.*
 
 /** 二十八宿 */
+@Serializable(with = LunarStationSerializer::class)
 sealed class LunarStation(val news: News,
                           nameKey: String,
                           val animal: Animal,
