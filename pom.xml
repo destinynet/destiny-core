@@ -7,7 +7,6 @@
     <groupId>destiny</groupId>
     <artifactId>destiny-parent</artifactId>
     <version>0.0.1</version>
-    <relativePath>../destiny-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>destiny-core</artifactId>
