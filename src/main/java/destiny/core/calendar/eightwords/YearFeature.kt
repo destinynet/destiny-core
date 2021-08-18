@@ -42,10 +42,8 @@ class YearConfigBuilder : Builder<YearConfig> {
   }
 }
 
-class YearFeature(
-  private val starPositionImpl: IStarPosition<*>,
-  private val julDayResolver: JulDayResolver
-) : Feature<YearConfig, StemBranch> {
+class YearFeature(private val starPositionImpl: IStarPosition<*>,
+                  private val julDayResolver: JulDayResolver) : Feature<YearConfig, StemBranch> {
 
   override val key: String = "year"
 

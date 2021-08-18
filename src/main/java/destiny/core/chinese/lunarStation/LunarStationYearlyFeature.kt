@@ -7,8 +7,9 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.chinese.IChineseDate
-import destiny.core.calendar.eightwords.IDayHour
+import destiny.core.calendar.chinese.ChineseDateFeature
+import destiny.core.calendar.eightwords.DayHourConfig
+import destiny.core.calendar.eightwords.DayHourConfigBuilder
 import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
@@ -21,15 +22,22 @@ import java.time.temporal.ChronoField
 
 @Serializable
 data class YearlyConfig(val yearType: YearType = YearType.YEAR_SOLAR,
-                        val yearEpoch: YearEpoch = YearEpoch.EPOCH_1564)
+                        val yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
+                        val dayHourConfig: DayHourConfig = DayHourConfig()
+)
 
 @DestinyMarker
 class YearlyConfigBuilder : Builder<YearlyConfig> {
   var yearType: YearType = YearType.YEAR_SOLAR
   var yearEpoch: YearEpoch = YearEpoch.EPOCH_1564
 
+  var dayHourConfig: DayHourConfig = DayHourConfig()
+  fun dayConfig(block: DayHourConfigBuilder.() -> Unit = {}) {
+    dayHourConfig = DayHourConfigBuilder.dayHour(block)
+  }
+
   override fun build(): YearlyConfig {
-    return YearlyConfig(yearType, yearEpoch)
+    return YearlyConfig(yearType, yearEpoch, dayHourConfig)
   }
 
   companion object {
@@ -40,8 +48,7 @@ class YearlyConfigBuilder : Builder<YearlyConfig> {
 }
 
 class LunarStationYearlyFeature(private val yearFeature: YearFeature,
-                                private val chineseDateImpl: IChineseDate,
-                                private val dayHourImpl: IDayHour,
+                                private val chineseDateFeature: ChineseDateFeature,
                                 private val julDayResolver: JulDayResolver) : Feature<YearlyConfig, YearIndex> {
   override val key: String = "lsYearly"
 
@@ -67,10 +74,9 @@ class LunarStationYearlyFeature(private val yearFeature: YearFeature,
       yearSb to yearSb2
     } else {
       // 陰曆初一換年
-      val yearSb = chineseDateImpl.getChineseDate(lmt, loc, dayHourImpl).year
+      val yearSb = chineseDateFeature.getModel(lmt, loc, config.dayHourConfig).year
       // 以七月再算一次 年干支
-      val yearSb2: StemBranch =
-        chineseDateImpl.getChineseDate(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc, dayHourImpl).year
+      val yearSb2: StemBranch = chineseDateFeature.getModel(lmt.with(ChronoField.MONTH_OF_YEAR, 7), loc, config.dayHourConfig).year
       yearSb to yearSb2
     }
 

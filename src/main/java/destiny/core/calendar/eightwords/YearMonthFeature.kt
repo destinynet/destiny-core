@@ -93,7 +93,9 @@ class YearMonthConfigBuilder : Builder<YearMonthConfig> {
   }
 }
 
-
+/**
+ * 月干支
+ */
 class YearMonthFeature(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
