@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApsisAzimuthConfig(@Serializable(with = PointSerializer::class)
-                              val star: Star = Planet.SUN,
+                              val star: Star = Planet.MOON,
                               val coordinate: Coordinate = Coordinate.ECLIPTIC,
                               val nodeType: NodeType = NodeType.MEAN,
                               val temperature: Double = 0.0,
@@ -20,7 +20,7 @@ data class ApsisAzimuthConfig(@Serializable(with = PointSerializer::class)
 
 @DestinyMarker
 class ApsisAzimuthConfigBuilder : Builder<ApsisAzimuthConfig> {
-  var star: Star = Planet.SUN
+  var star: Star = Planet.MOON
   var coordinate: Coordinate = Coordinate.ECLIPTIC
   var nodeType: NodeType = NodeType.MEAN
   var temperature: Double = 0.0
@@ -37,12 +37,23 @@ class ApsisAzimuthConfigBuilder : Builder<ApsisAzimuthConfig> {
   }
 }
 
-class ApsisAzimuthFeature(private val impl: IApsisWithAzimuth) : Feature<ApsisAzimuthConfig, Map<Apsis, StarPosWithAzimuth>> {
+class ApsisAzimuthFeature(private val apsisImpl: IApsis,
+                          private val azimuthImpl: IAzimuthCalculator) : Feature<ApsisAzimuthConfig, Map<Apsis, StarPosWithAzimuth>> {
   override val key: String = "apsisAzimuth"
 
   override val defaultConfig: ApsisAzimuthConfig = ApsisAzimuthConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: ApsisAzimuthConfig): Map<Apsis, StarPosWithAzimuth> {
-    return impl.getPositionsWithAzimuths(gmtJulDay, loc, config)
+    val positionMap: Map<Apsis, IStarPos> = apsisImpl.getPositions(config.star, gmtJulDay, config.coordinate, config.nodeType)
+
+    return positionMap.keys.associateWith { apsis ->
+      val pos = positionMap.getValue(apsis)
+      val azimuth: Azimuth = when (config.coordinate) {
+        Coordinate.ECLIPTIC   -> azimuthImpl.getAzimuthFromEcliptic(pos, gmtJulDay, loc, config.temperature, config.pressure)
+        Coordinate.EQUATORIAL -> azimuthImpl.getAzimuthFromEquator(pos, gmtJulDay, loc, config.temperature, config.pressure)
+        else                  -> throw RuntimeException("No such coordinate : ${config.coordinate}")
+      }
+      StarPosWithAzimuth(pos, azimuth)
+    }
   }
 }

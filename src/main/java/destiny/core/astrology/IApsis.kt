@@ -17,7 +17,10 @@ interface IApsis {
   /** 取得全部 Apsis (近點,遠點,北交,南交) 在某刻 (GMT) 的座標 , 通常 Star 會帶入 [Planet.MOON] */
   fun getPositions(star: Star, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType): Map<Apsis, IStarPos>
 
-  fun getPosition(star: Star, apsis: Apsis, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType): IStarPos
+  fun getPosition(star: Star, apsis: Apsis, gmtJulDay: GmtJulDay, coordinate: Coordinate, nodeType: NodeType): IStarPos {
+    val resultMap: Map<Apsis, IStarPos> = getPositions(star, gmtJulDay, coordinate, nodeType)
+    return resultMap.getValue(apsis)
+  }
 
   /**
    * 取得某 Apsis 在某刻 (GMT) 的座標

@@ -12,14 +12,14 @@ internal class ApsisAzimuthConfigTest : AbstractConfigTest<ApsisAzimuthConfig>()
 
   override val serializer: KSerializer<ApsisAzimuthConfig> = ApsisAzimuthConfig.serializer()
 
-  override val configByConstructor: ApsisAzimuthConfig = ApsisAzimuthConfig(Planet.MOON,
+  override val configByConstructor: ApsisAzimuthConfig = ApsisAzimuthConfig(Planet.VENUS,
                                                                             Coordinate.SIDEREAL,
                                                                             NodeType.TRUE,
                                                                             temperature = 23.5,
                                                                             pressure = 1000.0)
 
   override val configByFunction: ApsisAzimuthConfig = apsisAzimuth {
-    star = Planet.MOON
+    star = Planet.VENUS
     coordinate = Coordinate.SIDEREAL
     nodeType = NodeType.TRUE
     temperature = 23.5
@@ -27,7 +27,7 @@ internal class ApsisAzimuthConfigTest : AbstractConfigTest<ApsisAzimuthConfig>()
   }
 
   override val assertion: (String) -> Unit = { raw ->
-    assertTrue(raw.contains(""""star":\s*"Planet.MOON"""".toRegex()))
+    assertTrue(raw.contains(""""star":\s*"Planet.VENUS"""".toRegex()))
     assertTrue(raw.contains(""""coordinate":\s*"SIDEREAL"""".toRegex()))
     assertTrue(raw.contains(""""nodeType":\s*"TRUE"""".toRegex()))
     assertTrue(raw.contains(""""temperature":\s*23.5""".toRegex()))
