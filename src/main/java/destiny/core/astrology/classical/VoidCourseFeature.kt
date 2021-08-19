@@ -5,7 +5,6 @@ package destiny.core.astrology.classical
 
 import destiny.core.astrology.*
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
-import destiny.core.astrology.classical.rules.Misc
 import destiny.core.astrology.classical.rules.Misc.VoidCourse
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
@@ -127,6 +126,7 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
   }
 
   private sealed interface Voc {
+    val impl : VoidCourseConfig.VoidCourseImpl
     fun getVoidCourse(gmtJulDay: GmtJulDay, loc: ILocation, planet: Planet = Planet.MOON, centric: Centric = Centric.GEO): VoidCourse?
   }
 
@@ -134,6 +134,9 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
    * The Moon does not complete an exact Ptolemaic aspect with any planet within the next 30 degrees.
    */
   private inner class VocHellenistic : Voc {
+
+    override val impl: VoidCourseConfig.VoidCourseImpl = VoidCourseConfig.VoidCourseImpl.Hellenistic
+
     override fun getVoidCourse(gmtJulDay: GmtJulDay, loc: ILocation, planet: Planet, centric: Centric): VoidCourse? {
 
       return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
@@ -172,6 +175,9 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
    * 月亮(或其他)剛離開與其他星體的「準確」交角，直到進入下一個星座時，都還沒與其他星體形成準確交角
    */
   private inner class VocMedieval : Voc {
+
+    override val impl: VoidCourseConfig.VoidCourseImpl = VoidCourseConfig.VoidCourseImpl.Medieval
+
     override fun getVoidCourse(gmtJulDay: GmtJulDay, loc: ILocation, planet: Planet, centric: Centric): VoidCourse? {
       return besiegedImpl.getBesiegingPlanetsByAspects(planet, gmtJulDay, Planet.classicalList, Aspect.getAspects(Aspect.Importance.HIGH))
         .let { (prior, after) ->
@@ -191,7 +197,7 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
               val beginDegree = starPositionImpl.getPosition(planet, beginGmt, loc).lngDeg
               val endGmt = starTransitImpl.getNextTransitGmt(planet, nextSign.degree.toZodiacDegree(), gmtJulDay, true)
               val endDegree = nextSign.degree.toZodiacDegree()
-              Misc.VoidCourse(
+              VoidCourse(
                 planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter
               )
             }
@@ -216,6 +222,9 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
    * 直到碰到 p2 - (月半徑/2 + p2半徑/2) 點，就會進入 p2 交角勢力範圍 , VOC 結束
    */
   private inner class VocWilliamWilly : Voc {
+
+    override val impl: VoidCourseConfig.VoidCourseImpl = VoidCourseConfig.VoidCourseImpl.WilliamLilly
+
     private val pointDiameter: IPointDiameter = PointDiameterLillyImpl()
 
     override fun getVoidCourse(gmtJulDay: GmtJulDay, loc: ILocation, planet: Planet, centric: Centric): VoidCourse? {
@@ -259,7 +268,7 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
 
               val beginGmt = starTransitImpl.getNextTransitGmt(planet, beginDegree, gmtJulDay, false)
               val endGmt = starTransitImpl.getNextTransitGmt(planet, endDegree, gmtJulDay, true)
-              Misc.VoidCourse(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
+              VoidCourse(planet, beginGmt, beginDegree, endGmt, endDegree, exactAspectPrior, exactAspectAfter)
             }
           }
         }

@@ -29,7 +29,7 @@ data class DayNightConfig(val impl : DayNightImpl = DayNightImpl.StarPos ,
 @DestinyMarker
 class DayNightConfigBuilder : Builder<DayNightConfig> {
 
-  var impl : DayNightConfig.DayNightImpl = DayNightConfig.DayNightImpl.StarPos
+  var impl : DayNightConfig.DayNightImpl = DayNightImpl.StarPos
 
   var transConfig: TransConfig = TransConfig()
 
@@ -57,7 +57,7 @@ class DayNightFeature(private val riseTransFeature: RiseTransFeature ,
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayNightConfig): DayNight {
     return when (config.impl) {
-      DayNightConfig.DayNightImpl.StarPos -> {
+      DayNightImpl.StarPos -> {
         // 太陽升起至落下，為晝；太陽落下至昇起，為夜
         val nextSetting = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.SETTING, config.transConfig))!!
         val nextRising = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.RISING, config.transConfig))!!
@@ -67,7 +67,7 @@ class DayNightFeature(private val riseTransFeature: RiseTransFeature ,
           DayNight.DAY
         }
       }
-      DayNightConfig.DayNightImpl.Half    -> {
+      DayNightImpl.Half    -> {
         val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, config.transConfig))!!
         val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, config.transConfig))!!
         if (nextNadir > nextMeridian) {
@@ -78,7 +78,7 @@ class DayNightFeature(private val riseTransFeature: RiseTransFeature ,
           DayNight.NIGHT
         }
       }
-      DayNightConfig.DayNightImpl.Simple  -> {
+      DayNightImpl.Simple  -> {
         val lmt = TimeTools.getLmtFromGmt(julDayResolver.getLocalDateTime(gmtJulDay), loc)
         val hour = lmt.get(ChronoField.HOUR_OF_DAY)
         if (hour in 6..17)

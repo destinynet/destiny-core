@@ -31,7 +31,7 @@ data class MonthMasterConfig(val impl: Impl = Impl.SunSign ,
 
 @DestinyMarker
 class MonthMasterConfigBuilder : Builder<MonthMasterConfig> {
-  var impl: MonthMasterConfig.Impl = MonthMasterConfig.Impl.SunSign
+  var impl: MonthMasterConfig.Impl = Impl.SunSign
 
   var monthConfig: MonthConfig = MonthConfig()
   fun month(block: MonthConfigBuilder.() -> Unit = {}) {
@@ -57,8 +57,8 @@ class MonthMasterFeature(private val starPositionImpl: IStarPosition<*>,
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthMasterConfig): Branch {
     return when (config.impl) {
-      MonthMasterConfig.Impl.SunSign  -> starPositionImpl.getPosition(Planet.SUN, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC).sign.branch
-      MonthMasterConfig.Impl.Combined -> yearMonthFeature.getModel(gmtJulDay, loc, YearMonthConfig(monthConfig = config.monthConfig)).branch.combined
+      Impl.SunSign  -> starPositionImpl.getPosition(Planet.SUN, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC).sign.branch
+      Impl.Combined -> yearMonthFeature.getModel(gmtJulDay, loc, YearMonthConfig(monthConfig = config.monthConfig)).branch.combined
     }
   }
 }

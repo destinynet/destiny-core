@@ -50,7 +50,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
    */
   override fun getLmtNextStartOf(
     lmt: ChronoLocalDateTime<*>,
-    location: ILocation,
+    loc: ILocation,
     eb: Branch,
     julDayResolver: JulDayResolver
   ): ChronoLocalDateTime<*> {

@@ -44,19 +44,16 @@ interface IHour : Descriptive {
 
   /**
    * @param lmt 傳入當地手錶時間
-   * @param location 當地的經緯度等資料
+   * @param loc 當地的經緯度等資料
    * @param eb 欲求之下一個地支開始時刻
    * @return 回傳 LMT 時刻
    */
-  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>,
-                        location: ILocation,
-                        eb: Branch,
-                        julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, location, eb)
+  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, loc, eb)
 
     val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
-    return TimeTools.getLmtFromGmt(resultGmt, location)
+    return TimeTools.getLmtFromGmt(resultGmt, loc)
   }
 
   /**

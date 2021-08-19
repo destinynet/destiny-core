@@ -57,6 +57,8 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
 
   /**
    * 取得「下一個」此地支的開始時刻
+   *
+   * to be replaced with [DayHourFeature.NextBranchHourStartTST.getGmtNextStartOf]
    */
   override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
 
