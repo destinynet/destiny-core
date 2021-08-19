@@ -207,17 +207,6 @@ private fun getMonthStem(
   return monthStem
 }
 
-fun getHourImpl(hourImpl : HourBranchConfig.HourImpl, riseTransImpl : IRiseTrans, julDayResolver: JulDayResolver) : IHour {
-  return when(hourImpl) {
-    HourBranchConfig.HourImpl.TST -> {
-      HourSolarTransImpl(riseTransImpl)
-    }
-    HourBranchConfig.HourImpl.LMT -> {
-      HourLmtImpl(julDayResolver)
-    }
-  }
-}
-
 fun getDay(
   lmt: ChronoLocalDateTime<*>,
   location: ILocation,
@@ -233,8 +222,6 @@ fun getDay(
   // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
   val lmtJulDay = (TimeTools.getGmtJulDay(lmt).value + 0.5).toInt()
   var index = (lmtJulDay - 11) % 60
-
-
 
   if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
     //子正，在 LMT 零時之前
@@ -266,10 +253,11 @@ fun getDay(
 }
 
 private fun getIndex(
-  index: Int, nextMidnightLmt: ChronoLocalDateTime<*>,
+  index: Int,
+  nextMidnightLmt: ChronoLocalDateTime<*>,
   lmt: ChronoLocalDateTime<*>,
   hourImpl: IHour,
-  location: ILocation,
+  loc: ILocation,
   changeDayAfterZi: Boolean,
   nextZi: ChronoLocalDateTime<*>,
   julDayResolver: JulDayResolver
@@ -279,7 +267,7 @@ private fun getIndex(
   //子正，在 LMT 零時之前
   if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
     // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
-    val midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, location, 子, julDayResolver)
+    val midnightNextZi = hourImpl.getLmtNextStartOf(nextMidnightLmt, loc, 子, julDayResolver)
 
     if (changeDayAfterZi && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
       result++
@@ -290,7 +278,6 @@ private fun getIndex(
   }
   return result
 }
-
 
 
 /** 真太陽時 */

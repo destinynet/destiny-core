@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.IRiseTrans
 import destiny.core.astrology.Planet.SUN
 import destiny.core.astrology.RiseTransConfig
 import destiny.core.astrology.RiseTransFeature
@@ -94,7 +93,6 @@ class DayHourConfigBuilder : Builder<DayHourConfig> {
 class DayHourFeature(val midnightFeature: MidnightFeature,
                      private val hourBranchFeature: HourBranchFeature,
                      private val riseTransFeature: RiseTransFeature,
-                     private val riseTransImpl: IRiseTrans,
                      private val julDayResolver: JulDayResolver) : Feature<DayHourConfig, Pair<StemBranch, StemBranch>> {
 
   override val key: String = "dayHour"
@@ -109,21 +107,18 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
 
-    val hourImpl = getHourImpl(config.hourBranchConfig.hourImpl , riseTransImpl, julDayResolver)
-    logger.trace { "[LMT] hourImpl = $hourImpl" }
-
     // 下個子初時刻
-    val nextZiStart = hourImpl.getLmtNextStartOf(lmt, loc, 子, julDayResolver)
+    val nextZiStart = getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
     // 下個子正時刻
     val nextMidnightLmt = TimeTools.getLmtFromGmt(midnightFeature.getModel(lmt, loc, config.dayConfig) , loc, julDayResolver)
       .let { dstSwitchCheck.invoke(it, nextZiStart) }
 
-    val day: StemBranch = getDay(lmt, loc, hourImpl, nextZiStart, nextMidnightLmt, config.dayConfig.changeDayAfterZi, julDayResolver)
+    val day: StemBranch = this.getDay(lmt, loc, nextZiStart, nextMidnightLmt, config)
 
     val hourBranch = hourBranchFeature.getModel(lmt, loc, config.hourBranchConfig)
 
-    val hourStem = getHourStem(hourImpl, lmt, loc, day, hourBranch, config.dayConfig.changeDayAfterZi, nextZiStart, nextMidnightLmt, julDayResolver)
+    val hourStem = getHourStem(lmt, loc, day, hourBranch, nextZiStart, nextMidnightLmt, config)
 
     val hour = StemBranch[hourStem, hourBranch]
     return day to hour
@@ -437,21 +432,20 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
   }
 
   private fun getHourStem(
-    hourImpl: IHour,
     lmt: ChronoLocalDateTime<*>,
     loc: ILocation,
     day: StemBranch,
     hourBranch: Branch,
-    cdaz: Boolean,
     nextZiStart: ChronoLocalDateTime<*>,
-    nextMidnightLmt : ChronoLocalDateTime<*>,
-    julDayResolver: JulDayResolver
+    nextMidnightLmt: ChronoLocalDateTime<*>,
+    config: DayHourConfig
   ): Stem {
-    val nextZi: ChronoLocalDateTime<*> = hourImpl.getLmtNextStartOf(lmt, loc, 子, julDayResolver)
+
+    val nextZi = getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)
 
     val tempDayStem = day.stem.let {
       // 如果「子正」才換日
-      if (!cdaz) {
+      if (!config.dayConfig.changeDayAfterZi) {
         /**
          * <pre>
          * 而且 LMT 的八字日柱 不同於 下一個子初的八字日柱 發生情況有兩種：
@@ -463,7 +457,7 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
         </pre> *
          */
 
-        if (day !== getDay(nextZi, loc, hourImpl, nextZiStart, nextMidnightLmt, cdaz, julDayResolver))
+        if (day !== this.getDay(nextZi, loc, nextZiStart, nextMidnightLmt, config))
           it.next
         else
           it
@@ -472,5 +466,76 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
     }
     // 時干
     return StemBranchUtils.getHourStem(tempDayStem, hourBranch)
+  }
+
+
+  private fun getDay(
+    lmt: ChronoLocalDateTime<*>, loc: ILocation,
+    // 下個子初時刻
+    nextZiStart: ChronoLocalDateTime<*>,
+    // 下個子正時刻
+    nextMidnightLmt: ChronoLocalDateTime<*>,
+    config: DayHourConfig
+  ): StemBranch {
+
+    val changeDayAfterZi = config.dayConfig.changeDayAfterZi
+
+    // 這是很特別的作法，將 lmt 當作 GMT 取 JulDay
+    val lmtJulDay = (TimeTools.getGmtJulDay(lmt).value + 0.5).toInt()
+    var index = (lmtJulDay - 11) % 60
+
+    if (nextMidnightLmt.get(ChronoField.HOUR_OF_DAY) >= 12) {
+      //子正，在 LMT 零時之前
+      index = this.getIndex(index, nextMidnightLmt, lmt, loc, nextZiStart, config)
+    } else {
+      //子正，在 LMT 零時之後（含）
+      if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
+        // lmt 落於當地 零時 到 子正的這段期間
+        if (TimeTools.isBefore(nextZiStart, nextMidnightLmt)) {
+          // lmt 落於零時到子初之間 (這代表當地地點「極西」) , 此時一定還沒換日
+          index--
+        } else {
+          // lmt 落於子初到子正之間
+          if (!changeDayAfterZi)
+          //如果子正才換日
+            index--
+        }
+      } else {
+        // lmt 落於前一個子正之後，到當天24時為止 (範圍最大的一塊「餅」)
+        if (changeDayAfterZi
+          && lmt.get(ChronoField.DAY_OF_MONTH) != nextZiStart.get(ChronoField.DAY_OF_MONTH)
+          && nextZiStart.get(ChronoField.HOUR_OF_DAY) >= 12
+        )
+        // lmt 落於 子初之後 , 零時之前 , 而子初又是在零時之前（hour >=12 , 過濾掉極西的狀況)
+          index++
+      }
+    }
+    return StemBranch[index]
+  }
+
+  private fun getIndex(
+    index: Int,
+    nextMidnightLmt: ChronoLocalDateTime<*>,
+    lmt: ChronoLocalDateTime<*>,
+    loc: ILocation,
+    nextZi: ChronoLocalDateTime<*>,
+    config: DayHourConfig
+  ): Int {
+
+    var result = index
+    //子正，在 LMT 零時之前
+    if (nextMidnightLmt.get(ChronoField.DAY_OF_MONTH) == lmt.get(ChronoField.DAY_OF_MONTH)) {
+      // lmt 落於 當日零時之後，子正之前（餅最大的那一塊）
+
+      val midnightNextZi = getLmtNextStartOf(nextMidnightLmt, loc, 子, config.hourBranchConfig)
+
+      if (config.dayConfig.changeDayAfterZi && nextZi.get(ChronoField.DAY_OF_MONTH) == midnightNextZi.get(ChronoField.DAY_OF_MONTH)) {
+        result++
+      }
+    } else {
+      // lmt 落於 子正之後，到 24 時之間 (其 nextMidnight 其實是明日的子正) , 則不論是否早子時換日，都一定換日
+      result++
+    }
+    return result
   }
 }
