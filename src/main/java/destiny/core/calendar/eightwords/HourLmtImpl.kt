@@ -78,11 +78,11 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
-    val lmt = TimeTools.getLmtFromGmt(gmt, location)
-    val lmtResult = getLmtPrevStartOf(lmt, location, eb, julDayResolver)
-    val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
+    val lmt = TimeTools.getLmtFromGmt(gmt, loc)
+    val lmtResult = getLmtPrevStartOf(lmt, loc, eb, julDayResolver)
+    val gmtResult = TimeTools.getGmtFromLmt(lmtResult, loc)
     return TimeTools.getGmtJulDay(gmtResult)
   }
 
@@ -91,7 +91,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
    */
   override fun getLmtPrevStartOf(
     lmt: ChronoLocalDateTime<*>,
-    location: ILocation,
+    loc: ILocation,
     eb: Branch,
     julDayResolver: JulDayResolver
   ): ChronoLocalDateTime<*> {

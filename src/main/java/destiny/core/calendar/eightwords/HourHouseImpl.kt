@@ -53,7 +53,7 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
     TODO("not implemented")
   }
 

@@ -296,17 +296,14 @@ private fun getIndex(
 /** 真太陽時 */
 object Tst {
 
-
-
-  fun getHourBranch(gmtJulDay: GmtJulDay, location: ILocation, riseTransImpl: IRiseTrans, transConfig: TransConfig): Branch {
-
-    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, location, transConfig)!!
-    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
+  fun getHourBranch(gmtJulDay: GmtJulDay, loc: ILocation, riseTransFeature: RiseTransFeature, transConfig: TransConfig): Branch {
+    val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
+    val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
     return if (nextNadir > nextMeridian) {
       //子正到午正（上半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-      val previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, location, transConfig)!!
+      val previousNadirGmt = riseTransFeature.getModel(thirteenHoursAgo, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
       logger.debug("gmtJulDay = {}", gmtJulDay)
 
@@ -325,7 +322,52 @@ object Tst {
     } else {
       //午正到子正（下半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, location, transConfig)!!
+      val previousMeridian = riseTransFeature.getModel(thirteenHoursAgo, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN))!!
+
+      val diffDays = nextNadir - previousMeridian
+      val oneUnitDays = diffDays / 12.0
+
+      when {
+        gmtJulDay < previousMeridian + oneUnitDays -> 午
+        gmtJulDay < previousMeridian + oneUnitDays * 3 -> 未
+        gmtJulDay < previousMeridian + oneUnitDays * 5 -> 申
+        gmtJulDay < previousMeridian + oneUnitDays * 7 -> 酉
+        gmtJulDay < previousMeridian + oneUnitDays * 9 -> 戌
+        gmtJulDay < previousMeridian + oneUnitDays * 11 -> 亥
+        else -> 子
+      }
+    }
+  }
+
+
+  fun getHourBranch(gmtJulDay: GmtJulDay, loc: ILocation, riseTransImpl: IRiseTrans, transConfig: TransConfig): Branch {
+
+    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
+    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+
+    return if (nextNadir > nextMeridian) {
+      //子正到午正（上半天）
+      val thirteenHoursAgo = gmtJulDay - 13 / 24.0
+      val previousNadirGmt = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+
+      logger.debug("gmtJulDay = {}", gmtJulDay)
+
+      val diffDays = nextMeridian - previousNadirGmt // 從子正到午正，總共幾秒
+      val oneUnitDays = diffDays / 12.0
+      logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
+      when {
+        gmtJulDay < previousNadirGmt + oneUnitDays -> 子
+        gmtJulDay < previousNadirGmt + oneUnitDays * 3 -> 丑
+        gmtJulDay < previousNadirGmt + oneUnitDays * 5 -> 寅
+        gmtJulDay < previousNadirGmt + oneUnitDays * 7 -> 卯
+        gmtJulDay < previousNadirGmt + oneUnitDays * 9 -> 辰
+        gmtJulDay < previousNadirGmt + oneUnitDays * 11 -> 巳
+        else -> 午
+      }
+    } else {
+      //午正到子正（下半天）
+      val thirteenHoursAgo = gmtJulDay - 13 / 24.0
+      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
 
       val diffDays = nextNadir - previousMeridian
       val oneUnitDays = diffDays / 12.0
