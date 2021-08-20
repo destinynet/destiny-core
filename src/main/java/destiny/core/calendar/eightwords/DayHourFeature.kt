@@ -154,9 +154,7 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
   /**
    * accessory function , 傳回當地，一日內的時辰「開始」時刻
    */
-  fun getDailyBranchStartMap(day: ChronoLocalDate,
-                             loc: ILocation,
-                             config: HourBranchConfig): Map<Branch, ChronoLocalDateTime<*>> {
+  fun getDailyBranchStartMap(day: ChronoLocalDate, loc: ILocation, config: HourBranchConfig): Map<Branch, ChronoLocalDateTime<*>> {
     val lmtStart = day.atTime(LocalTime.MIDNIGHT)
 
     return Branch.values().map { b ->
@@ -172,18 +170,15 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
   /**
    * accessory function , 傳回當地，一日內的時辰「中間」時刻
    */
-  fun getDailyBranchMiddleMap(day: ChronoLocalDate,
-                              location: ILocation,
-                              config: HourBranchConfig): Map<Branch, ChronoLocalDateTime<*>> {
-
-    val startTimeMap = getDailyBranchStartMap(day, location, config)
+  fun getDailyBranchMiddleMap(day: ChronoLocalDate, loc: ILocation, config: HourBranchConfig = HourBranchConfig()): Map<Branch, ChronoLocalDateTime<*>> {
+    val startTimeMap = getDailyBranchStartMap(day, loc, config)
 
     return startTimeMap.map { (branch, startTime) ->
       val endTime = if (branch != 亥) {
         startTimeMap[branch.next]
       } else {
         val start: ChronoLocalDateTime<*> = startTimeMap[branch] ?: error("")
-        getLmtNextStartOf(start, location, 子, config)
+        getLmtNextStartOf(start, loc, 子, config)
       }
       branch to startTime.plus(Duration.between(startTime, endTime).dividedBy(2))
     }.sortedBy { (_, lmt) -> lmt }.toMap()
@@ -193,7 +188,8 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
    * 從目前的時刻，取得下一個（或上一個）時辰中點的 LMT 時刻為何
    * @param next true = 下一個時辰 , false = 上一個時辰
    */
-  fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean = true, hourBranchConfig: HourBranchConfig): ChronoLocalDateTime<*> {
+  fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean = true,
+                         hourBranchConfig: HourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*> {
     val impl: IBranchHourStart = when(hourBranchConfig.hourImpl) {
       HourBranchConfig.HourImpl.TST -> BranchHourStartTST()
       HourBranchConfig.HourImpl.LMT -> BranchHourStartLMT()
@@ -202,7 +198,7 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
   }
 
 
-  private sealed interface IBranchHourStart {
+  sealed interface IBranchHourStart {
     val hourBranchImpl: HourBranchConfig.HourImpl
 
     /**
@@ -223,6 +219,7 @@ class DayHourFeature(val midnightFeature: MidnightFeature,
      * @param next true = 下一個時辰 , false = 上一個時辰
      */
     fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean = true, hourBranchConfig: HourBranchConfig): ChronoLocalDateTime<*>
+
   }
 
   private inner class BranchHourStartTST : IBranchHourStart {

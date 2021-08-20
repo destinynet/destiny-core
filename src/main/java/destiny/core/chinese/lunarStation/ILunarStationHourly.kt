@@ -171,7 +171,7 @@ class LunarStationHourlyYuanImpl(private val dailyImpl: ILunarStationDaily,
     const val NAME = "《禽星易見》"
     const val VALUE = "YUAN"
 
-    private val yuanSundayHourStartMap = mapOf(
+    val yuanSundayHourStartMap = mapOf(
       1 to 虛,
       2 to 鬼,
       3 to 箕,
