@@ -15,62 +15,12 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.EightWords
-import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.tools.Builder
-import destiny.tools.DestinyMarker
 import destiny.tools.Feature
-import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
-
-@Serializable
-data class HiddenVenusFoeConfig(val yearlyConfig: YearlyConfig = YearlyConfig() ,
-                                val monthlyConfig: MonthlyConfig = MonthlyConfig(),
-                                val hourlyConfig: HourlyConfig = HourlyConfig(),
-                                val ewConfig: EightWordsConfig = EightWordsConfig(),
-                                val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS)
-
-@DestinyMarker
-class HiddenVenusFoeConfigBuilder : Builder<HiddenVenusFoeConfig> {
-
-  var yearlyConfig: YearlyConfig = YearlyConfig()
-  fun yearly(block: YearlyConfigBuilder.() -> Unit = {}) {
-    this.yearlyConfig = YearlyConfigBuilder.yearly(block)
-  }
-
-  var monthlyConfig: MonthlyConfig = MonthlyConfig()
-  fun monthly(block: MonthlyConfigBuilder.() -> Unit = {}) {
-    this.monthlyConfig = MonthlyConfigBuilder.monthly(block)
-  }
-
-  var hourlyConfig: HourlyConfig = HourlyConfig()
-  fun hourly(block: HourlyConfigBuilder.() -> Unit = {}) {
-    this.hourlyConfig = HourlyConfigBuilder.hourly(block)
-  }
-
-  var ewConfig: EightWordsConfig = EightWordsConfig()
-  fun ewConfig(block: EightWordsConfigBuilder.() -> Unit = {}) {
-    ewConfig = EightWordsConfigBuilder().apply(block).build()
-  }
-
-  var monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS
-
-  override fun build(): HiddenVenusFoeConfig {
-    return HiddenVenusFoeConfig(yearlyConfig, monthlyConfig, hourlyConfig, ewConfig, monthAlgo)
-  }
-
-  companion object {
-
-    fun hiddenVenusFoe(block: HiddenVenusFoeConfigBuilder.() -> Unit = {}): HiddenVenusFoeConfig {
-      return HiddenVenusFoeConfigBuilder().apply(block).build()
-    }
-  }
-
-}
 
 /**
  * 暗金伏斷
@@ -81,22 +31,22 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
                             private val hourlyFeature: LunarStationHourlyFeature,
                             private val eightWordsFeature : EightWordsFeature,
                             private val chineseDateFeature: ChineseDateFeature,
-                            private val julDayResolver: JulDayResolver) : Feature<HiddenVenusFoeConfig, Set<Pair<Scale, Scale>>> {
+                            private val julDayResolver: JulDayResolver) : Feature<LunarStationConfig, Set<Pair<Scale, Scale>>> {
 
   override val key: String = "hiddenVenusFoe"
 
-  override val defaultConfig: HiddenVenusFoeConfig = HiddenVenusFoeConfig()
+  override val defaultConfig: LunarStationConfig = LunarStationConfig()
 
   /**
    * @return Pair<Scale,Scale> 前者代表「此時刻的什麼時段」 , 犯了 後者的 暗金伏斷煞
    */
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HiddenVenusFoeConfig): Set<Pair<Scale, Scale>> {
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HiddenVenusFoeConfig): Set<Pair<Scale, Scale>> {
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
     val yearly = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
     val ew: EightWords = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
     val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)

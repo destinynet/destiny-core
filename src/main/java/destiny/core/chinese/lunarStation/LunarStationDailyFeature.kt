@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.lunarStation
 
+import destiny.core.astrology.LunarStation
 import destiny.core.astrology.LunarStation.虛
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -112,5 +113,11 @@ class LunarStationDailyFeature(private val dayHourFeature: DayHourFeature,
   companion object {
     /** 陽曆 , 西元 1993年 10月 10日 一元一將 甲子日 中午 , julDay = 2451791 , [虛] 值日 */
     private const val epoch: Int = 2449271
+
+    fun getLeader(yuan: Int, general: Int): LunarStation {
+      require(yuan in 1..7)
+      require(general in 1..4)
+      return 虛.next((yuan - 1) * 60 + (general - 1) * 15)
+    }
   }
 }

@@ -6,21 +6,21 @@ package destiny.core.chinese.lunarStation
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.chinese.YearType
-import destiny.core.chinese.lunarStation.HiddenVenusFoeConfigBuilder.Companion.hiddenVenusFoe
+import destiny.core.chinese.lunarStation.LunarStationConfigBuilder.Companion.lunarStation
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
-internal class HiddenVenusFoeConfigTest : AbstractConfigTest<HiddenVenusFoeConfig>() {
+internal class LunarStationConfigTest : AbstractConfigTest<LunarStationConfig>() {
 
-  override val serializer: KSerializer<HiddenVenusFoeConfig> = HiddenVenusFoeConfig.serializer()
+  override val serializer: KSerializer<LunarStationConfig> = LunarStationConfig.serializer()
 
-  override val configByConstructor: HiddenVenusFoeConfig = HiddenVenusFoeConfig(
+  override val configByConstructor: LunarStationConfig = LunarStationConfig(
     yearlyConfig = YearlyConfig(yearType = YearType.YEAR_LUNAR),
     monthlyConfig = MonthlyConfig(MonthlyConfig.Impl.AnimalExplained),
     monthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS
   )
 
-  override val configByFunction: HiddenVenusFoeConfig = hiddenVenusFoe {
+  override val configByFunction: LunarStationConfig = lunarStation {
     yearly {
       yearType = YearType.YEAR_LUNAR
     }
@@ -35,4 +35,5 @@ internal class HiddenVenusFoeConfigTest : AbstractConfigTest<HiddenVenusFoeConfi
     assertTrue(raw.contains(""""impl":\s*"AnimalExplained"""".toRegex()))
     assertTrue(raw.contains(""""monthAlgo":\s*"MONTH_FIXED_THIS"""".toRegex()))
   }
+
 }

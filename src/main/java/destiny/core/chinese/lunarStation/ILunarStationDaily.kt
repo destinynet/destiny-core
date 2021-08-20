@@ -35,14 +35,6 @@ interface ILunarStationDaily {
   fun getDaily(lmt: ChronoLocalDateTime<*>, loc: ILocation): LunarStation {
     return getDailyIndex(lmt, loc).station()
   }
-
-  companion object {
-    fun getLeader(yuan: Int, general: Int): LunarStation {
-      require(yuan in 1..7)
-      require(general in 1..4)
-      return 虛.next((yuan - 1) * 60 + (general - 1) * 15)
-    }
-  }
 }
 
 

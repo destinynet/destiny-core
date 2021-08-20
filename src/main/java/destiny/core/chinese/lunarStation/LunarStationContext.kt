@@ -3,7 +3,6 @@ package destiny.core.chinese.lunarStation
 import destiny.core.*
 import destiny.core.Scale.*
 import destiny.core.astrology.LunarStation
-import destiny.core.astrology.Planet
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.chinese.IChineseDate
@@ -38,68 +37,12 @@ interface ILunarStationContext {
 
   fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation): IContextModel
 
-  companion object {
-
-    /**
-     * 禽星鎖泊：
-     *
-     * 山水田園井，刀天草岸風；
-     * 火月周流轉，七曜長生宮。
-     * 日午月未上，水土俱申中；
-     * 木亥火寅地，金生與巳同。
-     * 彼禽算外圈，我禽算內圈。
-     */
-    fun startBranch(planet: Planet): Branch {
-      return when (planet) {
-        Planet.SUN                    -> Branch.午
-        Planet.MOON                   -> Branch.未
-        Planet.MARS                   -> Branch.寅
-        Planet.MERCURY, Planet.SATURN -> Branch.申
-        Planet.JUPITER                -> Branch.亥
-        Planet.VENUS                  -> Branch.巳
-        else                          -> throw IllegalArgumentException()
-      }
-    }
-
-    /** 彼禽 */
-    fun getOppoHouse(oppo: LunarStation, hourBranch: Branch): OppoHouse {
-      return startBranch(oppo.planet).let { b ->
-        val steps = hourBranch.getAheadOf(b)
-        OppoHouse.山.next(steps)
-      }
-    }
-
-    /** 彼禽 外圈 */
-    val oppoHouseMap: Map<Branch, OppoHouse> by lazy {
-      val startPair = Branch.子 to OppoHouse.湯火
-      generateSequence(startPair) { (branch, oppoHouse) ->
-        branch.next to oppoHouse.next
-      }.take(12)
-        .toMap()
-    }
-
-    /** 我禽 */
-    fun getSelfHouse(self: LunarStation, hourBranch: Branch): SelfHouse {
-      return startBranch(self.planet).let { b ->
-        val steps = hourBranch.getAheadOf(b)
-        SelfHouse.山.next(steps)
-      }
-    }
-
-    /** 我禽 內圈 */
-    val selfHouseMap: Map<Branch, SelfHouse> by lazy {
-      val startPair = Branch.子 to SelfHouse.湖
-      generateSequence(startPair) { (branch, selfHouse) ->
-        branch.next to selfHouse.next
-      }.take(12)
-        .toMap()
-    }
-  }
 }
 
 
 /**
  * 禽星占卜 Context
+ * Deprecated for [LunarStationFeature]
  */
 class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
                           override val monthlyImpl: ILunarStationMonthly,
@@ -146,13 +89,13 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
 
     val dayIndex = dailyImpl.getDailyIndex(lmt, loc)
     val hourStation = hourlyImpl.getHourly(lmt, loc)
-    val oppo = ILunarStationHourly.getOpponent(dayIndex, hourStation)
-    val self = ILunarStationHourly.getSelf1(hourStation, eightWords.hour.branch)
+    val oppo = LunarStationHourlyFeature.getOpponent(dayIndex, hourStation)
+    val self = LunarStationHourlyFeature.getSelf1(hourStation, eightWords.hour.branch)
 
-    val oppoHouse = ILunarStationContext.getOppoHouse(oppo, eightWords.hour.branch)
-    val selfHouse = ILunarStationContext.getSelfHouse(self, eightWords.hour.branch)
+    val oppoHouse = LunarStationFeature.getOppoHouse(oppo, eightWords.hour.branch)
+    val selfHouse = LunarStationFeature.getSelfHouse(self, eightWords.hour.branch)
 
-    val reversed = ILunarStationHourly.getReversed(dayIndex, hourStation)
+    val reversed = LunarStationHourlyFeature.getReversed(dayIndex, hourStation)
     val hiddenVenusFoe: Set<Pair<Scale, Scale>> = getHiddenVenusFoe(lmt, loc)
 
     return ContextModel(
