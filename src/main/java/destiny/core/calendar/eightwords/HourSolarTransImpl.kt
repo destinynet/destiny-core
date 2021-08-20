@@ -232,7 +232,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
                                   location: ILocation,
                                   next: Boolean,
                                   julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val currentBranch = getHour(lmt, location)
+    val currentBranch: Branch = getHour(lmt, location)
 
     val (targetDate , targetBranch) = lmt.toLocalDate().let { localDate ->
       if (currentBranch == 子 && !next)

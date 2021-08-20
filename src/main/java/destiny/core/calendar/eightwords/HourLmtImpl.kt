@@ -117,7 +117,7 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
   }
 
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, location: ILocation, next: Boolean, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val currentHour = getHour(lmt, location)
+    val currentHour: Branch = getHour(lmt, location)
     return if (next) {
       getLmtNextStartOf(lmt, location, currentHour.next, julDayResolver).plus(1, ChronoUnit.HOURS)
     } else {
