@@ -11,6 +11,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IDayHourFeature
 import destiny.core.chinese.Branch
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import destiny.tools.random.RandomService
 import kotlinx.serialization.Serializable
@@ -25,6 +26,7 @@ data class LunarStationModernConfig(val lunarStationConfig: LunarStationConfig =
                                     val specifiedGmtJulDay: GmtJulDay? = null ,
                                     val description: String? = null)
 
+@DestinyMarker
 class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
   var lunarStationConfig: LunarStationConfig = LunarStationConfig()
   fun lunarStationConfig(block: LunarStationConfigBuilder.() -> Unit = {}) {
@@ -46,7 +48,7 @@ class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
   }
 }
 
-class LunarStationModernFeature(private val lunarStationFeature: LunarStationFeature,
+class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFeature,
                                 private val dayHourFeature: IDayHourFeature,
                                 private val randomService: RandomService,
                                 private val julDayResolver: JulDayResolver) : PersonFeature<LunarStationModernConfig, IModernContextModel> {
@@ -82,5 +84,4 @@ class LunarStationModernFeature(private val lunarStationFeature: LunarStationFea
     val bdnp: IBirthDataNamePlace = BirthDataNamePlace(bd, name = null, place)
     return ModernContextModel(contextModel, bdnp, created, config.method, config.description)
   }
-
 }

@@ -34,6 +34,11 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
 
   fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config = defaultConfig): Model
 
+  fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config = defaultConfig): Model {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    return getModel(gmtJulDay, loc, gender, name, place, config)
+  }
+
   fun getModel(bdnp: IBirthDataNamePlace, config: @UnsafeVariance Config = defaultConfig): Model {
     return getModel(bdnp.gmtJulDay, bdnp.location, bdnp.gender, bdnp.name, bdnp.place, config)
   }
