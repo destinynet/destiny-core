@@ -62,7 +62,7 @@ class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
 class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val chineseDateFeature: ChineseDateFeature,
                                private val risingSignFeature: RisingSignFeature,
-                               private val houseCuspFeature: HouseCuspFeature,
+                               private val houseCuspFeature: IHouseCuspFeature,
                                private val zodiacSignFeature: ZodiacSignFeature,
                                private val starPositionImpl: IStarPosition<*>,
                                private val houseCuspImpl: IHouseCusp,

@@ -49,7 +49,7 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 
 class EightWordsFeature(private val yearFeature: YearFeature,
                         private val yearMonthFeature: YearMonthFeature,
-                        private val dayHourFeature: DayHourFeature,
+                        private val dayHourFeature: IDayHourFeature,
                         private val julDayResolver: JulDayResolver) : Feature<EightWordsConfig , EightWords> {
   override val key: String = "eightWords"
 

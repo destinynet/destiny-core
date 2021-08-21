@@ -74,7 +74,7 @@ class RisingSignFeature(
 ) : Feature<RisingSignConfig, ZodiacSign> {
 
   class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*>,
-                                     private val dayHourFeature: DayHourFeature) : Feature<TradChineseRisingSignConfig , ZodiacSign> {
+                                     private val dayHourFeature: IDayHourFeature) : Feature<TradChineseRisingSignConfig , ZodiacSign> {
     override val key: String = "tradChinese"
 
     override val defaultConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()

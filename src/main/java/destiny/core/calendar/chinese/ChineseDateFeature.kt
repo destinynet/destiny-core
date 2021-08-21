@@ -8,13 +8,15 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.DayHourFeature
+import destiny.core.calendar.eightwords.IDayHourFeature
+import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.StemBranch
 import destiny.tools.Feature
 
 
-class ChineseDateFeature(private val chineseDateImpl : IChineseDate ,
-                         private val dayHourFeature: DayHourFeature,
+class ChineseDateFeature(private val chineseDateImpl : IChineseDate,
+                         private val dayHourFeature: IDayHourFeature,
+                         private val midnightFeature: MidnightFeature,
                          private val julDayResolver: JulDayResolver) : Feature<DayHourConfig , ChineseDate> {
   override val key: String = "chineseDate"
 
@@ -26,6 +28,6 @@ class ChineseDateFeature(private val chineseDateImpl : IChineseDate ,
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
-    return chineseDateImpl.getChineseDate(lmt, loc, day, hour, dayHourFeature.midnightFeature, config.dayConfig.changeDayAfterZi, julDayResolver)
+    return chineseDateImpl.getChineseDate(lmt, loc, day, hour, midnightFeature, config.dayConfig.changeDayAfterZi, julDayResolver)
   }
 }

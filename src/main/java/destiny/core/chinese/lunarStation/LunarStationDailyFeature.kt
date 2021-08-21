@@ -10,7 +10,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.DayHourConfig
-import destiny.core.calendar.eightwords.DayHourFeature
+import destiny.core.calendar.eightwords.IDayHourFeature
 import destiny.core.calendar.eightwords.MidnightFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.StemBranch
@@ -23,7 +23,7 @@ import java.time.temporal.ChronoField
 /**
  * 日禽 實作
  */
-class LunarStationDailyFeature(private val dayHourFeature: DayHourFeature,
+class LunarStationDailyFeature(private val dayHourFeature: IDayHourFeature,
                                private val midnightFeature: MidnightFeature,
                                private val julDayResolver: JulDayResolver) : Feature<DayHourConfig, DayIndex> {
 

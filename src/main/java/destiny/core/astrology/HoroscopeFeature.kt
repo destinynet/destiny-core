@@ -3,8 +3,8 @@
  */
 package destiny.core.astrology
 
+import destiny.core.astrology.classical.IVoidCourseFeature
 import destiny.core.astrology.classical.VoidCourseConfig
-import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -49,8 +49,8 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 }
 
 class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
-                       private val houseCuspFeature: HouseCuspFeature,
-                       private val voidCourseFeature: VoidCourseFeature) : Feature<HoroscopeConfig, IHoroscopeModel> {
+                       private val houseCuspFeature: IHouseCuspFeature,
+                       private val voidCourseFeature: IVoidCourseFeature) : Feature<HoroscopeConfig, IHoroscopeModel> {
   override val key: String = "horoscope"
 
   override val defaultConfig: HoroscopeConfig = HoroscopeConfig()

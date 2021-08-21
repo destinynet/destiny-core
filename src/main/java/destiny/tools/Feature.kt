@@ -3,6 +3,8 @@
  */
 package destiny.tools
 
+import destiny.core.Gender
+import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
@@ -11,7 +13,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 interface Builder<Model> {
 
-  fun build() : Model
+  fun build(): Model
 }
 
 interface Feature<out Config : Any, Model : Any?> {
@@ -26,16 +28,17 @@ interface Feature<out Config : Any, Model : Any?> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     return getModel(gmtJulDay, loc, config)
   }
+}
 
-//  fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, block: Config.() -> Unit = {}): Model {
-//    val config = defaultConfig.apply(block)
-//    return getModel(gmtJulDay, loc, config)
-//  }
+interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
 
-//  fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, block: Config.() -> Unit = {}): Model {
-//    val config = defaultConfig.apply(block)
-//    return getModel(lmt, loc, config)
-//  }
+  fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: @UnsafeVariance Config = defaultConfig): Model
 
+  fun getModel(bdnp: IBirthDataNamePlace, config: @UnsafeVariance Config = defaultConfig): Model {
+    return getModel(bdnp.gmtJulDay, bdnp.location, bdnp.gender, bdnp.name, bdnp.place, config)
+  }
 
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config): Model {
+    return getModel(gmtJulDay, loc, Gender.男, null, null, config)
+  }
 }

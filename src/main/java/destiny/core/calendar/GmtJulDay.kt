@@ -4,6 +4,7 @@ import kotlinx.datetime.Instant
 import java.io.Serializable
 
 @JvmInline
+@kotlinx.serialization.Serializable(with = GmtJulDaySerializer::class)
 value class GmtJulDay(val value: Double) : Comparable<GmtJulDay>, Serializable {
 
   companion object {
