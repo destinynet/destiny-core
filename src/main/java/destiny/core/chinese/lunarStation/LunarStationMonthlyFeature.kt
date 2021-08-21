@@ -45,9 +45,14 @@ class MonthlyConfigBuilder : Builder<MonthlyConfig> {
   }
 }
 
+interface ILunarStationMonthlyFeature : Feature<MonthlyConfig, LunarStation> {
+
+  fun getMonthly(yearStation: LunarStation, monthNumber: Int, impl: MonthlyConfig.Impl): LunarStation
+}
+
 class LunarStationMonthlyFeature(private val yearlyFeature: LunarStationYearlyFeature,
                                  private val monthFeature: YearMonthFeature,
-                                 private val chineseDateFeature : ChineseDateFeature) : Feature<MonthlyConfig, LunarStation> {
+                                 private val chineseDateFeature : ChineseDateFeature) : ILunarStationMonthlyFeature {
   override val key: String = "lsMonthly"
 
   override val defaultConfig: MonthlyConfig = MonthlyConfig()
@@ -64,7 +69,7 @@ class LunarStationMonthlyFeature(private val yearlyFeature: LunarStationYearlyFe
     return getFirthMonth(yearStation, config.impl).next(monthNumber - 1)
   }
 
-  fun getMonthly(yearStation: LunarStation, monthNumber: Int, impl: MonthlyConfig.Impl): LunarStation {
+  override fun getMonthly(yearStation: LunarStation, monthNumber: Int, impl: MonthlyConfig.Impl): LunarStation {
     return getFirthMonth(yearStation, impl).next(monthNumber - 1)
   }
 

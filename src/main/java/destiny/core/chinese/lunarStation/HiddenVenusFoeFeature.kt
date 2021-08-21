@@ -26,7 +26,7 @@ import java.time.chrono.ChronoLocalDateTime
  * 暗金伏斷
  */
 class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature,
-                            private val monthlyFeature: LunarStationMonthlyFeature,
+                            private val monthlyFeature: ILunarStationMonthlyFeature,
                             private val dailyFeature: LunarStationDailyFeature,
                             private val hourlyFeature: LunarStationHourlyFeature,
                             private val eightWordsFeature : EightWordsFeature,

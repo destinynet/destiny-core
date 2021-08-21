@@ -48,6 +48,8 @@ class HourlyConfigBuilder : Builder<HourlyConfig> {
   }
 }
 
+
+
 class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeature,
                                 private val dayHourFeature : DayHourFeature) : Feature<HourlyConfig, LunarStation> {
   override val key: String = "lsHourly"

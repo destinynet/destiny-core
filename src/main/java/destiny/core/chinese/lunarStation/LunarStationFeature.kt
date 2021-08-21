@@ -16,6 +16,8 @@ import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.Branch
+import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getOppoHouse
+import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getSelfHouse
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -68,84 +70,15 @@ class LunarStationConfigBuilder : Builder<LunarStationConfig> {
 
 }
 
+
 /**
- * 禽星排盤
+ * 禽星排盤 interface
  */
-class LunarStationFeature(private val yearlyFeature: LunarStationYearlyFeature,
-                          private val monthlyFeature: LunarStationMonthlyFeature,
-                          private val dailyFeature: LunarStationDailyFeature,
-                          private val hourlyFeature: LunarStationHourlyFeature,
-                          private val eightWordsFeature : EightWordsFeature,
-                          private val chineseDateFeature: ChineseDateFeature,
-                          private val hiddenVenusFoeFeature: HiddenVenusFoeFeature,
-                          private val julDayResolver: JulDayResolver) : Feature<LunarStationConfig, ContextModel> {
-  override val key: String = "lunarStation"
-
-  override val defaultConfig: LunarStationConfig = LunarStationConfig()
-
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): ContextModel {
-    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    return getModel(lmt, loc, config)
-  }
-
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): ContextModel {
-
-    val ew = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
-    val models = getScaleMap(lmt, loc, config, listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR))
-
-    val dayIndex = dailyFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
-    val hourStation = hourlyFeature.getModel(lmt, loc, config.hourlyConfig)
-
-    val oppo = LunarStationHourlyFeature.getOpponent(dayIndex, hourStation)
-    val self = LunarStationHourlyFeature.getSelf1(hourStation, ew.hour.branch)
-
-    val oppoHouse = getOppoHouse(oppo, ew.hour.branch)
-    val selfHouse = getSelfHouse(self, ew.hour.branch)
-
-    val reversed = LunarStationHourlyFeature.getReversed(dayIndex, hourStation)
-
-    val hiddenVenusFoe: Set<Pair<Scale, Scale>> = hiddenVenusFoeFeature.getModel(lmt, loc, config)
-
-    return ContextModel(
-      ew,
-      models[Scale.YEAR]!!,
-      models[Scale.MONTH]!!,
-      dayIndex.station(),
-      hourStation,
-      dayIndex,
-      oppo,
-      oppoHouse,
-      self,
-      selfHouse,
-      reversed,
-      hiddenVenusFoe
-    )
-  }
-
-
+interface ILunarStationFeature : Feature<LunarStationConfig, ContextModel> {
   fun getScaleMap(
-    lmt: ChronoLocalDateTime<*>,
-    loc: ILocation,
-    config: LunarStationConfig,
+    lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig,
     scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR)
-  ): Map<Scale, LunarStation> {
-    return scales.associate { scale ->
-      when (scale) {
-        Scale.YEAR  -> Scale.YEAR to yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
-        Scale.MONTH -> {
-          val yearlyStation: LunarStation = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
-          val monthBranch = eightWordsFeature.getModel(lmt, loc, config.ewConfig).month.branch
-          val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
-          val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
-            chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthAlgo
-          )
-          Scale.MONTH to monthlyFeature.getMonthly(yearlyStation, monthNumber, config.monthlyConfig.impl)
-        }
-        Scale.DAY   -> Scale.DAY to dailyFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig).station()
-        Scale.HOUR  -> Scale.HOUR to hourlyFeature.getModel(lmt, loc, config.hourlyConfig)
-      }
-    }
-  }
+  ): Map<Scale, LunarStation>
 
   companion object {
     /**
@@ -203,4 +136,79 @@ class LunarStationFeature(private val yearlyFeature: LunarStationYearlyFeature,
         .toMap()
     }
   }
+}
+
+/**
+ * 禽星排盤
+ */
+class LunarStationFeature(private val yearlyFeature: LunarStationYearlyFeature,
+                          private val monthlyFeature: ILunarStationMonthlyFeature,
+                          private val dailyFeature: LunarStationDailyFeature,
+                          private val hourlyFeature: LunarStationHourlyFeature,
+                          private val eightWordsFeature : EightWordsFeature,
+                          private val chineseDateFeature: ChineseDateFeature,
+                          private val hiddenVenusFoeFeature: HiddenVenusFoeFeature,
+                          private val julDayResolver: JulDayResolver) : ILunarStationFeature {
+  override val key: String = "lunarStation"
+
+  override val defaultConfig: LunarStationConfig = LunarStationConfig()
+
+  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): ContextModel {
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+    return getModel(lmt, loc, config)
+  }
+
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): ContextModel {
+
+    val ew = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
+    val models = getScaleMap(lmt, loc, config, listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR))
+
+    val dayIndex = dailyFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
+    val hourStation = hourlyFeature.getModel(lmt, loc, config.hourlyConfig)
+
+    val oppo = LunarStationHourlyFeature.getOpponent(dayIndex, hourStation)
+    val self = LunarStationHourlyFeature.getSelf1(hourStation, ew.hour.branch)
+
+    val oppoHouse = getOppoHouse(oppo, ew.hour.branch)
+    val selfHouse = getSelfHouse(self, ew.hour.branch)
+
+    val reversed = LunarStationHourlyFeature.getReversed(dayIndex, hourStation)
+
+    val hiddenVenusFoe: Set<Pair<Scale, Scale>> = hiddenVenusFoeFeature.getModel(lmt, loc, config)
+
+    return ContextModel(
+      ew,
+      models[Scale.YEAR]!!,
+      models[Scale.MONTH]!!,
+      dayIndex.station(),
+      hourStation,
+      dayIndex,
+      oppo,
+      oppoHouse,
+      self,
+      selfHouse,
+      reversed,
+      hiddenVenusFoe
+    )
+  }
+
+  override fun getScaleMap(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig, scales: List<Scale>): Map<Scale, LunarStation> {
+    return scales.associate { scale ->
+      when (scale) {
+        Scale.YEAR  -> Scale.YEAR to yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
+        Scale.MONTH -> {
+          val yearlyStation: LunarStation = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
+          val monthBranch = eightWordsFeature.getModel(lmt, loc, config.ewConfig).month.branch
+          val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)
+          val monthNumber = IFinalMonthNumber.getFinalMonthNumber(
+            chineseDate.month, chineseDate.leapMonth, monthBranch, chineseDate.day, config.monthAlgo
+          )
+          Scale.MONTH to monthlyFeature.getMonthly(yearlyStation, monthNumber, config.monthlyConfig.impl)
+        }
+        Scale.DAY   -> Scale.DAY to dailyFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig).station()
+        Scale.HOUR  -> Scale.HOUR to hourlyFeature.getModel(lmt, loc, config.hourlyConfig)
+      }
+    }
+  }
+
 }

@@ -45,10 +45,31 @@ class VoidCourseConfigBuilder : Builder<VoidCourseConfig> {
 
 }
 
+/**
+ * 星體空亡 interface
+ */
+interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
+
+  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<Point> , config: VoidCourseConfig): Map<Planet, VoidCourse> {
+    return points.filterIsInstance<Planet>()
+      .map { planet ->
+
+        planet to getModel(gmtJulDay, loc, config.copy(planet = planet))
+      }
+      .filter { (_, voc) -> voc != null }
+      .associate { (planet, voc) -> planet to voc!! }
+  }
+
+  fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourse>
+}
+
+/**
+ * 星體空亡
+ */
 class VoidCourseFeature(private val besiegedImpl: IBesieged,
                         private val starPositionImpl: IStarPosition<*>,
                         private val starTransitImpl: IStarTransit,
-                        private val pointPosFuncMap: Map<Point, IPosition<*>>) : Feature<VoidCourseConfig , VoidCourse?>{
+                        private val pointPosFuncMap: Map<Point, IPosition<*>>) : IVoidCourseFeature {
 
   private val logger = KotlinLogging.logger { }
 
@@ -65,23 +86,7 @@ class VoidCourseFeature(private val besiegedImpl: IBesieged,
     return voidCourseImpl.getVoidCourse(gmtJulDay, loc, config.planet, config.centric)
   }
 
-  fun getVocMap(gmtJulDay: GmtJulDay, loc: ILocation , points: Collection<Point> , config: VoidCourseConfig): Map<Planet, VoidCourse> {
-    return points.filterIsInstance<Planet>()
-      .map { planet ->
-
-        planet to getModel(gmtJulDay, loc, config.copy(planet = planet))
-      }
-      .filter { (_, voc) -> voc != null }
-      .associate { (planet, voc) -> planet to voc!! }
-  }
-
-  fun getVoidCourses(
-    fromGmt: GmtJulDay,
-    toGmt: GmtJulDay,
-    loc: ILocation,
-    relativeTransitImpl: IRelativeTransit,
-    config: VoidCourseConfig
-  ): List<VoidCourse> {
+  override fun getVoidCourses(fromGmt: GmtJulDay, toGmt: GmtJulDay, loc: ILocation, relativeTransitImpl: IRelativeTransit, config: VoidCourseConfig): List<VoidCourse> {
 
     val planets = Planet.classicalList
     val aspects = Aspect.getAspects(Aspect.Importance.HIGH)

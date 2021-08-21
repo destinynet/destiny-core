@@ -69,7 +69,7 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
 
 
 class RisingSignFeature(
-  private val houseCuspFeature: HouseCuspFeature,
+  private val houseCuspFeature: IHouseCuspFeature,
   private val tradChineseRisingSignFeature: TradChineseRisingSignFeature
 ) : Feature<RisingSignConfig, ZodiacSign> {
 

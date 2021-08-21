@@ -92,8 +92,8 @@ class LunarStationContext(override val yearlyImpl: ILunarStationYearly,
     val oppo = LunarStationHourlyFeature.getOpponent(dayIndex, hourStation)
     val self = LunarStationHourlyFeature.getSelf1(hourStation, eightWords.hour.branch)
 
-    val oppoHouse = LunarStationFeature.getOppoHouse(oppo, eightWords.hour.branch)
-    val selfHouse = LunarStationFeature.getSelfHouse(self, eightWords.hour.branch)
+    val oppoHouse = ILunarStationFeature.getOppoHouse(oppo, eightWords.hour.branch)
+    val selfHouse = ILunarStationFeature.getSelfHouse(self, eightWords.hour.branch)
 
     val reversed = LunarStationHourlyFeature.getReversed(dayIndex, hourStation)
     val hiddenVenusFoe: Set<Pair<Scale, Scale>> = getHiddenVenusFoe(lmt, loc)
