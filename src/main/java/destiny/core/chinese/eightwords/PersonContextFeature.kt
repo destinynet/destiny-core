@@ -57,9 +57,9 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
   }
 }
 
-class PersonFeature(private val eightWordsContextFeature: EightWordsContextFeature,
-                    private val intAgeImpl: IIntAge,
-                    private val julDayResolver: JulDayResolver) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
+class PersonContextFeature(private val eightWordsContextFeature: EightWordsContextFeature,
+                           private val intAgeImpl: IIntAge,
+                           private val julDayResolver: JulDayResolver) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
   override val key: String = "ewPerson"
 
   override val defaultConfig: EightWordsPersonConfig = EightWordsPersonConfig()

@@ -19,3 +19,8 @@ interface IntAgeNote : Descriptive {
    */
   fun getAgeNote(startAndEnd: Pair<GmtJulDay, GmtJulDay>): String?
 }
+
+enum class IntAgeNoteImpl {
+  WestYear,
+  Minguo
+}
