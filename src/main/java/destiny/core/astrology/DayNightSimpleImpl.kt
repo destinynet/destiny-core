@@ -18,9 +18,9 @@ import java.util.*
 @Impl([Domain(KEY_DAY_NIGHT, DayNightSimpleImpl.VALUE)])
 class DayNightSimpleImpl(val julDayResolver: JulDayResolver) : IDayNight, Serializable {
 
-  override fun getDayNight(gmtJulDay: GmtJulDay, location: ILocation): DayNight {
+  override fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig): DayNight {
 
-    val lmt = TimeTools.getLmtFromGmt(julDayResolver.getLocalDateTime(gmtJulDay), location)
+    val lmt = TimeTools.getLmtFromGmt(julDayResolver.getLocalDateTime(gmtJulDay), loc)
     val hour = lmt.get(ChronoField.HOUR_OF_DAY)
     return if (hour in 6..17)
       DayNight.DAY

@@ -16,10 +16,10 @@ import java.time.chrono.ChronoLocalDateTime
  */
 interface IDayNight : Descriptive {
 
-  fun getDayNight(gmtJulDay: GmtJulDay, location: ILocation): DayNight
+  fun getDayNight(gmtJulDay: GmtJulDay, loc: ILocation, transConfig: TransConfig = TransConfig(discCenter = false, refraction = true)): DayNight
 
-  fun getDayNight(lmt: ChronoLocalDateTime<*>, location: ILocation): DayNight {
-    val gmt = TimeTools.getGmtFromLmt(lmt, location)
-    return getDayNight(TimeTools.getGmtJulDay(gmt), location)
+  fun getDayNight(lmt: ChronoLocalDateTime<*>, loc: ILocation, transConfig: TransConfig = TransConfig(discCenter = false, refraction = true)): DayNight {
+    val gmt = TimeTools.getGmtFromLmt(lmt, loc)
+    return getDayNight(TimeTools.getGmtJulDay(gmt), loc, transConfig)
   }
 }
