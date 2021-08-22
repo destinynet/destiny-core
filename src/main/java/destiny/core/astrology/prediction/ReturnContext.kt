@@ -74,7 +74,7 @@ class ReturnContext(
 
     val config = HoroscopeConfig(IHoroscopeContext.defaultPoints, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC, Centric.GEO, 0.0, 1013.25, VoidCourseConfig.VoidCourseImpl.Medieval)
 
-    val horoscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, besiegedImpl, starTransitImpl, vocMap, pointPosFuncMap, voidCourseImpl, config)
+    val horoscopeContext = HoroscopeContext(houseCuspImpl, vocMap, pointPosFuncMap, voidCourseImpl, config)
     return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
 
   }

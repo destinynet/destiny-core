@@ -50,15 +50,11 @@ interface IHoroscopeContext : Serializable {
   }
 }
 
-class HoroscopeContext(
-  val starPositionWithAzimuthImpl: IStarPositionWithAzimuthCalculator,
-  val houseCuspImpl: IHouseCusp,
-  val besiegedImpl: IBesieged,
-  val starTransit: IStarTransit,
-  private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
-  override val pointPosFuncMap: Map<Point, IPosition<*>>,
-  override val voidCourseImpl: IVoidCourse,
-  private val config : HoroscopeConfig) : IHoroscopeContext, Serializable {
+class HoroscopeContext(val houseCuspImpl: IHouseCusp,
+                       private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
+                       override val pointPosFuncMap: Map<Point, IPosition<*>>,
+                       override val voidCourseImpl: IVoidCourse,
+                       private val config: HoroscopeConfig) : IHoroscopeContext, Serializable {
 
   override val centric: Centric = config.centric
   override val coordinate: Coordinate = config.coordinate
