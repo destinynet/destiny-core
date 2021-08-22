@@ -55,6 +55,7 @@ class ReturnContext(
   /** 計算星體到黃道幾度的時刻，的介面  */
   private var starTransitImpl: IStarTransit,
   private val houseCuspImpl: IHouseCusp,
+  private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
   private val pointPosFuncMap: Map<Point, IPosition<*>>,
   private val voidCourseImpl: IVoidCourse,
   private val besiegedImpl: IBesieged,
@@ -73,7 +74,7 @@ class ReturnContext(
 
     val config = HoroscopeConfig(IHoroscopeContext.defaultPoints, HouseSystem.PLACIDUS, Coordinate.ECLIPTIC, Centric.GEO, 0.0, 1013.25, VoidCourseConfig.VoidCourseImpl.Medieval)
 
-    val horoscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, besiegedImpl, starTransitImpl, pointPosFuncMap, voidCourseImpl, config)
+    val horoscopeContext = HoroscopeContext(starPositionWithAzimuthImpl, houseCuspImpl, besiegedImpl, starTransitImpl, vocMap, pointPosFuncMap, voidCourseImpl, config)
     return horoscopeContext.getHoroscope(convergentLmt, nowLoc)
 
   }

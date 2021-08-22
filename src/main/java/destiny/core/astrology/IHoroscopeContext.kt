@@ -6,6 +6,7 @@ package destiny.core.astrology
 import destiny.core.Gender
 import destiny.core.IBirthDataNamePlace
 import destiny.core.astrology.classical.IVoidCourse
+import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.VoidCourseFeature
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -54,6 +55,7 @@ class HoroscopeContext(
   val houseCuspImpl: IHouseCusp,
   val besiegedImpl: IBesieged,
   val starTransit: IStarTransit,
+  private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
   override val pointPosFuncMap: Map<Point, IPosition<*>>,
   override val voidCourseImpl: IVoidCourse,
   private val config : HoroscopeConfig) : IHoroscopeContext, Serializable {
@@ -72,7 +74,7 @@ class HoroscopeContext(
                             points: Collection<Point>): IHoroscopeModel {
 
     val houseCuspFeature = HouseCuspFeature(houseCuspImpl)
-    val voidCourseFeature = VoidCourseFeature(besiegedImpl, starPositionWithAzimuthImpl, starTransit, pointPosFuncMap)
+    val voidCourseFeature = VoidCourseFeature(vocMap, pointPosFuncMap)
     val horoscopeFeature = HoroscopeFeature(pointPosFuncMap, houseCuspFeature, voidCourseFeature)
     return horoscopeFeature.getModel(gmtJulDay, loc, config.copy(points = points.toSet()))
   }
