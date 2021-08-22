@@ -81,16 +81,13 @@ interface IPersonFortuneLarge : Descriptive {
 /** 推算小運 */
 interface IPersonFortuneSmall {
 
-  val ageNoteImpls: List<IntAgeNote>
+  //val ageNoteImpls: List<IntAgeNote>
 
   /**
    * 順推小運
    * 取得幾條小運
    */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
-                         location: ILocation,
-                         gender: Gender,
-                         count: Int): List<FortuneData>
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, location: ILocation, gender: Gender, count: Int, ageNoteImpls: List<IntAgeNote>): List<FortuneData>
 }
 
 /**

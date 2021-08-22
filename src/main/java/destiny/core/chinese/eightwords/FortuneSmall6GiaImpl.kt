@@ -24,13 +24,13 @@ import java.time.chrono.ChronoLocalDateTime
  * 甲辰旬 男起丙午 女起壬子
  * 甲寅旬 男起丙辰 女起壬戌
  */
-class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
-                           private val intAgeImpl: IIntAge,
-                           override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneSmall, Serializable {
+class FortuneSmall6GiaImpl(private val eightWordsImpl: IEightWordsFactory,
+                           private val intAgeImpl: IIntAge) : IPersonFortuneSmall, Serializable {
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   gender: Gender,
-                                  count: Int): List<FortuneData> {
+                                  count: Int,
+                                  ageNoteImpls: List<IntAgeNote>): List<FortuneData> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
     var sb = when (eightWords.day.cycle) {
@@ -57,7 +57,6 @@ class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
 
     if (eightWordsImpl != other.eightWordsImpl) return false
     if (intAgeImpl != other.intAgeImpl) return false
-    if (ageNoteImpls != other.ageNoteImpls) return false
 
     return true
   }
@@ -65,7 +64,6 @@ class FortuneSmall6GiaImpl(private val eightWordsImpl : IEightWordsFactory,
   override fun hashCode(): Int {
     var result = eightWordsImpl.hashCode()
     result = 31 * result + intAgeImpl.hashCode()
-    result = 31 * result + ageNoteImpls.hashCode()
     return result
   }
 

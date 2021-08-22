@@ -3,14 +3,15 @@
  */
 package destiny.core.chinese.eightwords
 
-import destiny.core.*
+import destiny.core.Gender
+import destiny.core.IntAgeImpl
+import destiny.core.IntAgeNote
+import destiny.core.IntAgeNoteImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsConfig
-import destiny.core.calendar.eightwords.EightWordsFeature
-import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
@@ -52,11 +53,9 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
   }
 }
 
-class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
-                          private val fortuneDirectionImpl: IFortuneDirection,
-                          private val intAgeImpl: IIntAge,
-                          private val julDayResolver: JulDayResolver,
-                          private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>) : PersonFeature<FortuneSmallConfig, List<FortuneData>> {
+class FortuneSmallFeature(private val julDayResolver: JulDayResolver,
+                          private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
+                          private val fortuneSmallImplMap: Map<FortuneSmallConfig.Impl, IPersonFortuneSmall>) : PersonFeature<FortuneSmallConfig, List<FortuneData>> {
   override val key: String = "fortuneSmall"
 
   override val defaultConfig: FortuneSmallConfig = FortuneSmallConfig()
@@ -70,47 +69,7 @@ class FortuneSmallFeature(private val eightWordsFeature: EightWordsFeature,
       ageNoteImplMap[impl]!!
     }.toList()
 
-    return when (config.impl) {
-      FortuneSmallConfig.Impl.Hour -> {
-        /**
-         * 以時柱推算小運 , 由 醉醒子 提出
-         * 陽男陰女順推 , 反之逆推
-         *
-         * 如：一九九八（戊寅）年戊午月戊寅日壬子時生男，
-         * 陽年男命，八字小運的推排以時辰干支 壬子為起點 順行推排，
-         * 一歲小運：癸丑；
-         * 二歲小運：甲寅；
-         * 三歲小運：乙卯；
-         * 四歲小運：丙辰...
-         */
-        val forward = fortuneDirectionImpl.isForward(lmt, loc, gender)
-        val ew = eightWordsFeature.getModel(gmtJulDay, loc, config.eightWordsConfig)
-
-        var sb: StemBranch = ew.hour
-
-        intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, config.count).map { (age, pair) ->
-          sb = if (forward) sb.next as StemBranch else sb.prev as StemBranch
-          val (from, to) = pair
-          val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
-          val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
-          FortuneData(sb, from, to, age, age + 1, startFortuneAgeNotes, endFortuneAgeNotes)
-        }.toList()
-      }
-      FortuneSmallConfig.Impl.Star -> {
-        /**
-         * 《星學大成》記載的推排方法：
-         * 八字小運推算不分陰命陽命，一律以男子一歲時從丙寅起順數，女子一歲時從壬申起逆數。
-         */
-        var sb = if (gender == Gender.男) StemBranch.丙寅.prev else StemBranch.壬申.next
-        intAgeImpl.getRangesMap(gender , gmtJulDay , loc , 1 , config.count).map { (age , pair) ->
-          val (from , to) = pair
-          val startFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(from) }.toList()
-          val endFortuneAgeNotes: List<String> = ageNoteImpls.mapNotNull { impl -> impl.getAgeNote(to) }.toList()
-          sb = if (gender == Gender.男) sb.next else sb.prev
-          FortuneData(sb , from , to , age , age+1 , startFortuneAgeNotes , endFortuneAgeNotes)
-        }.toList()
-      }
-    }
+    return fortuneSmallImplMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, config.count, ageNoteImpls)
   }
 
 }

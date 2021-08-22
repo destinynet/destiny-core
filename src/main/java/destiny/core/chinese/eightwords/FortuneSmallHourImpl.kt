@@ -29,20 +29,19 @@ import java.time.chrono.ChronoLocalDateTime
 class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
                            private val fortuneDirectionImpl: IFortuneDirection,
                            /** 歲數實作  */
-                           private val intAgeImpl: IIntAge,
-                           override val ageNoteImpls: List<IntAgeNote>
-                          ) : IPersonFortuneSmall, Serializable {
+                           private val intAgeImpl: IIntAge) : IPersonFortuneSmall, Serializable {
 
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
                                   location: ILocation,
                                   gender: Gender,
-                                  count: Int): List<FortuneData> {
+                                  count: Int,
+                                  ageNoteImpls: List<IntAgeNote>): List<FortuneData> {
 
     val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
     val eightWords = eightWordsImpl.getEightWords(lmt, location)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
 
-    return implByRangesMap(gmtJulDay, eightWords, gender, location, count, forward)
+    return implByRangesMap(gmtJulDay, eightWords, gender, location, count, forward, ageNoteImpls)
   }
 
   /** 內定實作法 : 透過 [IIntAge.getRangesMap] 取得歲數 map , 套上干支 */
@@ -51,7 +50,8 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
                               gender: Gender,
                               location: ILocation,
                               count: Int,
-                              forward: Boolean): List<FortuneData> {
+                              forward: Boolean,
+                              ageNoteImpls: List<IntAgeNote>): List<FortuneData> {
     var sb = eightWords.hour
     return intAgeImpl.getRangesMap(gender, gmtJulDay, location, 1, count).map { (age, pair) ->
       sb = if (forward) sb.next as StemBranch else sb.prev as StemBranch
@@ -69,7 +69,6 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
     if (eightWordsImpl != other.eightWordsImpl) return false
     if (fortuneDirectionImpl != other.fortuneDirectionImpl) return false
     if (intAgeImpl != other.intAgeImpl) return false
-    if (ageNoteImpls != other.ageNoteImpls) return false
 
     return true
   }
@@ -78,7 +77,6 @@ class FortuneSmallHourImpl(private val eightWordsImpl: IEightWordsFactory,
     var result = eightWordsImpl.hashCode()
     result = 31 * result + fortuneDirectionImpl.hashCode()
     result = 31 * result + intAgeImpl.hashCode()
-    result = 31 * result + ageNoteImpls.hashCode()
     return result
   }
 
