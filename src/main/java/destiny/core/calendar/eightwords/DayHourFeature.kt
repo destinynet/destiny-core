@@ -32,7 +32,7 @@ import java.time.temporal.ChronoUnit
 
 @Serializable
 data class DayConfig(val changeDayAfterZi: Boolean = true ,
-                     val midnight : MidnightImpl = MidnightImpl.NADIR) {
+                     val midnight: MidnightImpl = MidnightImpl.NADIR) {
   enum class MidnightImpl {
     CLOCK0, // 當地時間手錶零時
     NADIR   // 太陽劃過天底(子午線)

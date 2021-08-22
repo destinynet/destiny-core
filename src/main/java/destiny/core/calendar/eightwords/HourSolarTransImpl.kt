@@ -30,22 +30,17 @@ import java.util.*
 class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
                          private val star: Star = Planet.SUN) : IHour, Serializable {
 
-  private var atmosphericPressure = 1013.25
-  private var atmosphericTemperature = 0.0
-  private var discCenter = true
-  private var refraction = true
+  private var transConfig = TransConfig(discCenter = true, refraction = true, temperature = 0.0, pressure = 1013.25)
 
   fun setDiscCenter(isDiscCenter: Boolean) {
-    this.discCenter = isDiscCenter
+    transConfig = transConfig.copy(discCenter= isDiscCenter)
   }
 
   fun setHasRefraction(hasRefraction: Boolean) {
-    this.refraction = hasRefraction
+    transConfig = transConfig.copy(refraction = hasRefraction)
   }
 
   override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
-
-    val transConfig = TransConfig(discCenter, refraction, atmosphericTemperature, atmosphericPressure)
     return Tst.getHourBranch(gmtJulDay, location, riseTransImpl, transConfig)
   }
 
@@ -61,8 +56,6 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
    * to be replaced with [DayHourFeature.BranchHourStartTST.getGmtNextStartOf]
    */
   override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
-
-    val transConfig = TransConfig(discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
     val resultGmt: GmtJulDay
     // 下個午正
@@ -141,7 +134,6 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
    * 取得「前一個」此地支的開始時刻
    */
   override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
-    val transConfig = TransConfig(discCenter, refraction, atmosphericTemperature, atmosphericPressure)
 
     // 下個午正
     val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
@@ -260,21 +252,13 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     if (other !is HourSolarTransImpl) return false
 
     if (star != other.star) return false
-    if (atmosphericPressure != other.atmosphericPressure) return false
-    if (atmosphericTemperature != other.atmosphericTemperature) return false
-    if (discCenter != other.discCenter) return false
-    if (refraction != other.refraction) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = star.hashCode()
-    result = 31 * result + atmosphericPressure.hashCode()
-    result = 31 * result + atmosphericTemperature.hashCode()
-    result = 31 * result + discCenter.hashCode()
-    result = 31 * result + refraction.hashCode()
-    return result
+
+    return star.hashCode()
   }
 
 
