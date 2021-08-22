@@ -4,6 +4,7 @@
 package destiny.tools
 
 import mu.KotlinLogging
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.ExperimentalTime
@@ -50,6 +51,7 @@ class ChainSlowTest {
 
   @ExperimentalTime
   @Test
+  @Ignore
   fun measure() {
     measureTimed({ t ->
       logger.info("$impl takes {}", t)
