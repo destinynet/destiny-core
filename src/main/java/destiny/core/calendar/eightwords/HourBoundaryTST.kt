@@ -6,6 +6,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
+import destiny.core.chinese.Branch.*
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -14,10 +15,10 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
                       private val julDayResolver: JulDayResolver) : IHourBoundary {
 
   // 午前
-  private val 丑to午 = listOf(Branch.丑, Branch.寅, Branch.卯, Branch.辰, Branch.巳, Branch.午)
+  private val 丑to午 = listOf(丑, 寅, 卯, 辰, 巳, 午)
 
   // 午後 (不含子)
-  private val 未to亥 = listOf(Branch.未, Branch.申, Branch.酉, Branch.戌, Branch.亥)
+  private val 未to亥 = listOf(未, 申, 酉, 戌, 亥)
 
   override val hourBranchImpl: HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.TST
 
@@ -40,7 +41,7 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
       val oneUnit1 = (nextMeridian - previousNadir) / 12.0 // 單位為 day , 左半部
       val oneUnit2 = (nextNadir - nextMeridian) / 12.0  // 右半部
 
-      if (eb.index > currentEb.index || eb == Branch.子) {
+      if (eb.index > currentEb.index || eb == 子) {
         //代表現在所處的時辰，未超過欲求的時辰
         resultGmt = when {
           丑to午.contains(eb) -> previousNadir + oneUnit1 * ((eb.index - 1) * 2 + 1)
@@ -71,7 +72,7 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
       val oneUnit2 = (nextNadir - previousMeridian) / 12.0 //從 下一個子正 到 上一個午正，總共幾秒
 
       if (currentEb.index in 6..11 &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
-        (eb.index >= 6 && eb.index > currentEb.index || eb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
+        (eb.index >= 6 && eb.index > currentEb.index || eb == 子) //而且現在所處的時辰，未超過欲求的時辰
       ) {
         resultGmt = when {
           未to亥.contains(eb) -> previousMeridian + oneUnit2 * ((eb.index - 7) * 2 + 1)
@@ -128,7 +129,7 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
 
       val prevPrevNadir = riseTransFeature.getModel(prevMeridian - 0.75, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
-      return if (eb.index > currentEb.index || eb == Branch.子) {
+      return if (eb.index > currentEb.index || eb == 子) {
         // 目前時辰，小於欲求的時辰 ==> 算的是昨天的時辰
         // ex : 目前是丑時，要計算「上一個寅時」 , 丑 < 寅
         // ex : 目前是丑時，要計算「上一個酉時」 , 丑 < 酉
@@ -149,7 +150,7 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
         val oneUnit4 = (previousNadir - prevMeridian) / 12.0
         when {
           丑to午.contains(eb) -> previousNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)  // ex : 目前寅時 , 計算「上一個丑時」
-          eb == Branch.子    -> prevMeridian + oneUnit4 * 11  // ex : 目前寅時 , 計算「上一個子時」
+          eb == 子    -> prevMeridian + oneUnit4 * 11  // ex : 目前寅時 , 計算「上一個子時」
           else              -> throw RuntimeException("error")
         }
       }
@@ -167,13 +168,13 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
 
       val oneUnit3 = (prevMeridian - previousNadir) / 12.0
 
-      return if (currentEb.index >= eb.index || currentEb == Branch.子) {
+      return if (currentEb.index >= eb.index || currentEb == 子) {
         val oneUnit4 = (nextNadir - prevMeridian) / 12.0
         when {
           未to亥.contains(eb) -> prevMeridian + oneUnit4 * ((eb.index - 7) * 2 + 1)
           丑to午.contains(eb) -> previousNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)
           else -> {
-            if (currentEb == Branch.子)
+            if (currentEb == 子)
               prevMeridian + oneUnit4 * 11
             else
               prevPrevMeridian + (previousNadir - prevPrevMeridian) / 12.0 * 11
@@ -204,10 +205,10 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
     val currentBranch: Branch = hourBranchFeature.getModel(lmt, loc, hourBranchConfig)
 
     val (targetDate , targetBranch) = lmt.toLocalDate().let { localDate ->
-      if (currentBranch == Branch.子 && !next)
-        localDate.minus(1, ChronoUnit.DAYS) to Branch.亥
-      else if (currentBranch == Branch.亥 && next)
-        localDate.plus(1, ChronoUnit.DAYS) to Branch.子
+      if (currentBranch == 子 && !next)
+        localDate.minus(1, ChronoUnit.DAYS) to 亥
+      else if (currentBranch == 亥 && next)
+        localDate.plus(1, ChronoUnit.DAYS) to 子
       else
         localDate to ( if (next) currentBranch.next else currentBranch.prev )
     }

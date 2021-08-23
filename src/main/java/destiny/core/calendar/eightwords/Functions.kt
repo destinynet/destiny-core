@@ -298,11 +298,11 @@ object Tst {
       val oneUnitDays = diffDays / 12.0
       logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
       when {
-        gmtJulDay < previousNadirGmt + oneUnitDays -> 子
-        gmtJulDay < previousNadirGmt + oneUnitDays * 3 -> 丑
-        gmtJulDay < previousNadirGmt + oneUnitDays * 5 -> 寅
-        gmtJulDay < previousNadirGmt + oneUnitDays * 7 -> 卯
-        gmtJulDay < previousNadirGmt + oneUnitDays * 9 -> 辰
+        gmtJulDay < previousNadirGmt + oneUnitDays      -> 子
+        gmtJulDay < previousNadirGmt + oneUnitDays * 3  -> 丑
+        gmtJulDay < previousNadirGmt + oneUnitDays * 5  -> 寅
+        gmtJulDay < previousNadirGmt + oneUnitDays * 7  -> 卯
+        gmtJulDay < previousNadirGmt + oneUnitDays * 9  -> 辰
         gmtJulDay < previousNadirGmt + oneUnitDays * 11 -> 巳
         else -> 午
       }
@@ -315,11 +315,11 @@ object Tst {
       val oneUnitDays = diffDays / 12.0
 
       when {
-        gmtJulDay < previousMeridian + oneUnitDays -> 午
-        gmtJulDay < previousMeridian + oneUnitDays * 3 -> 未
-        gmtJulDay < previousMeridian + oneUnitDays * 5 -> 申
-        gmtJulDay < previousMeridian + oneUnitDays * 7 -> 酉
-        gmtJulDay < previousMeridian + oneUnitDays * 9 -> 戌
+        gmtJulDay < previousMeridian + oneUnitDays      -> 午
+        gmtJulDay < previousMeridian + oneUnitDays * 3  -> 未
+        gmtJulDay < previousMeridian + oneUnitDays * 5  -> 申
+        gmtJulDay < previousMeridian + oneUnitDays * 7  -> 酉
+        gmtJulDay < previousMeridian + oneUnitDays * 9  -> 戌
         gmtJulDay < previousMeridian + oneUnitDays * 11 -> 亥
         else -> 子
       }
@@ -343,11 +343,11 @@ object Tst {
       val oneUnitDays = diffDays / 12.0
       logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
       when {
-        gmtJulDay < previousNadirGmt + oneUnitDays -> 子
-        gmtJulDay < previousNadirGmt + oneUnitDays * 3 -> 丑
-        gmtJulDay < previousNadirGmt + oneUnitDays * 5 -> 寅
-        gmtJulDay < previousNadirGmt + oneUnitDays * 7 -> 卯
-        gmtJulDay < previousNadirGmt + oneUnitDays * 9 -> 辰
+        gmtJulDay < previousNadirGmt + oneUnitDays      -> 子
+        gmtJulDay < previousNadirGmt + oneUnitDays * 3  -> 丑
+        gmtJulDay < previousNadirGmt + oneUnitDays * 5  -> 寅
+        gmtJulDay < previousNadirGmt + oneUnitDays * 7  -> 卯
+        gmtJulDay < previousNadirGmt + oneUnitDays * 9  -> 辰
         gmtJulDay < previousNadirGmt + oneUnitDays * 11 -> 巳
         else -> 午
       }
@@ -360,11 +360,11 @@ object Tst {
       val oneUnitDays = diffDays / 12.0
 
       when {
-        gmtJulDay < previousMeridian + oneUnitDays -> 午
-        gmtJulDay < previousMeridian + oneUnitDays * 3 -> 未
-        gmtJulDay < previousMeridian + oneUnitDays * 5 -> 申
-        gmtJulDay < previousMeridian + oneUnitDays * 7 -> 酉
-        gmtJulDay < previousMeridian + oneUnitDays * 9 -> 戌
+        gmtJulDay < previousMeridian + oneUnitDays      -> 午
+        gmtJulDay < previousMeridian + oneUnitDays * 3  -> 未
+        gmtJulDay < previousMeridian + oneUnitDays * 5  -> 申
+        gmtJulDay < previousMeridian + oneUnitDays * 7  -> 酉
+        gmtJulDay < previousMeridian + oneUnitDays * 9  -> 戌
         gmtJulDay < previousMeridian + oneUnitDays * 11 -> 亥
         else -> 子
       }

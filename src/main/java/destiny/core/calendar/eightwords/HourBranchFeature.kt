@@ -9,6 +9,7 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
+import destiny.core.chinese.Branch.*
 import destiny.tools.Builder
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
@@ -80,13 +81,13 @@ class HourBranchFeature(private val riseTransFeature: RiseTransFeature ,
           val oneUnitDays = diffDays / 12.0
           logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
           when {
-            gmtJulDay < previousNadirGmt + oneUnitDays      -> Branch.子
-            gmtJulDay < previousNadirGmt + oneUnitDays * 3  -> Branch.丑
-            gmtJulDay < previousNadirGmt + oneUnitDays * 5  -> Branch.寅
-            gmtJulDay < previousNadirGmt + oneUnitDays * 7  -> Branch.卯
-            gmtJulDay < previousNadirGmt + oneUnitDays * 9  -> Branch.辰
-            gmtJulDay < previousNadirGmt + oneUnitDays * 11 -> Branch.巳
-            else                                            -> Branch.午
+            gmtJulDay < previousNadirGmt + oneUnitDays      -> 子
+            gmtJulDay < previousNadirGmt + oneUnitDays * 3  -> 丑
+            gmtJulDay < previousNadirGmt + oneUnitDays * 5  -> 寅
+            gmtJulDay < previousNadirGmt + oneUnitDays * 7  -> 卯
+            gmtJulDay < previousNadirGmt + oneUnitDays * 9  -> 辰
+            gmtJulDay < previousNadirGmt + oneUnitDays * 11 -> 巳
+            else                                            -> 午
           }
         } else {
           //午正到子正（下半天）
@@ -98,13 +99,13 @@ class HourBranchFeature(private val riseTransFeature: RiseTransFeature ,
           val oneUnitDays = diffDays / 12.0
 
           when {
-            gmtJulDay < previousMeridian + oneUnitDays      -> Branch.午
-            gmtJulDay < previousMeridian + oneUnitDays * 3  -> Branch.未
-            gmtJulDay < previousMeridian + oneUnitDays * 5  -> Branch.申
-            gmtJulDay < previousMeridian + oneUnitDays * 7  -> Branch.酉
-            gmtJulDay < previousMeridian + oneUnitDays * 9  -> Branch.戌
-            gmtJulDay < previousMeridian + oneUnitDays * 11 -> Branch.亥
-            else                                            -> Branch.子
+            gmtJulDay < previousMeridian + oneUnitDays      -> 午
+            gmtJulDay < previousMeridian + oneUnitDays * 3  -> 未
+            gmtJulDay < previousMeridian + oneUnitDays * 5  -> 申
+            gmtJulDay < previousMeridian + oneUnitDays * 7  -> 酉
+            gmtJulDay < previousMeridian + oneUnitDays * 9  -> 戌
+            gmtJulDay < previousMeridian + oneUnitDays * 11 -> 亥
+            else                                            -> 子
           }
         }
       }
