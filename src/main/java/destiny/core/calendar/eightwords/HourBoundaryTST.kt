@@ -1,81 +1,46 @@
-/*
- * @author smallufo
- * @date 2004/12/10
- * @time 下午 03:53:08
- */
 package destiny.core.calendar.eightwords
 
 import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
-import destiny.core.chinese.Branch.*
-import destiny.tools.Domain
-import destiny.tools.Impl
-import destiny.tools.converters.Domains.KEY_HOUR
-import mu.KotlinLogging
-import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
 
-/**
- * 時辰的劃分實作
- * 利用太陽過天底 到天頂之間，劃分十二等份
- * 再從太陽過天頂到天底，平均劃分十二等份
- * 依此來切割 12 時辰
- */
-@Impl([Domain(KEY_HOUR, HourSolarTransImpl.VALUE, default = true)])
-class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
-                         private val star: Star = Planet.SUN) : IHour, Serializable {
-
-  private var transConfig = TransConfig(discCenter = true, refraction = true, temperature = 0.0, pressure = 1013.25)
-
-  fun setDiscCenter(isDiscCenter: Boolean) {
-    transConfig = transConfig.copy(discCenter= isDiscCenter)
-  }
-
-  fun setHasRefraction(hasRefraction: Boolean) {
-    transConfig = transConfig.copy(refraction = hasRefraction)
-  }
-
-  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation): Branch {
-    return Tst.getHourBranch(gmtJulDay, loc, riseTransImpl, transConfig)
-  }
+class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
+                      private val hourBranchFeature: HourBranchFeature,
+                      private val julDayResolver: JulDayResolver) : IHourBoundary {
 
   // 午前
-  private val 丑to午 = listOf(丑, 寅, 卯, 辰, 巳, 午)
+  private val 丑to午 = listOf(Branch.丑, Branch.寅, Branch.卯, Branch.辰, Branch.巳, Branch.午)
 
   // 午後 (不含子)
-  private val 未to亥 = listOf(未, 申, 酉, 戌, 亥)
+  private val 未to亥 = listOf(Branch.未, Branch.申, Branch.酉, Branch.戌, Branch.亥)
 
-  /**
-   * 取得「下一個」此地支的開始時刻
-   *
-   * to be replaced with [HourBoundaryTST.getGmtNextStartOf]
-   */
-  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
+  override val hourBranchImpl: HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.TST
+
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, transConfig: TransConfig): GmtJulDay {
 
     val resultGmt: GmtJulDay
     // 下個午正
-    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
+    val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
     // 下個子正
-    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+    val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
-    val currentEb: Branch = getHour(gmtJulDay, loc) // 取得目前在哪個時辰之中
+    val currentEb: Branch = Tst.getHourBranch(gmtJulDay, loc, riseTransFeature, transConfig) // 取得目前在哪個時辰之中
 
     if (nextNadir > nextMeridian) {
       // 目前時刻 位於子正到午正（上半天）
       val twelveHoursAgo = gmtJulDay - 0.5
       // 上一個子正
-      val previousNadir = riseTransImpl.getGmtTransJulDay(twelveHoursAgo, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+      val previousNadir = riseTransFeature.getModel(twelveHoursAgo, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
       val oneUnit1 = (nextMeridian - previousNadir) / 12.0 // 單位為 day , 左半部
       val oneUnit2 = (nextNadir - nextMeridian) / 12.0  // 右半部
 
-
-      if (eb.index > currentEb.index || eb == 子) {
+      if (eb.index > currentEb.index || eb == Branch.子) {
         //代表現在所處的時辰，未超過欲求的時辰
         resultGmt = when {
           丑to午.contains(eb) -> previousNadir + oneUnit1 * ((eb.index - 1) * 2 + 1)
@@ -84,9 +49,9 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
         }
       } else {
         // 欲求的時辰，早於現在所處的時辰 ==> 代表算的是明天的時辰 : ex 目前是寅時，要計算「下一個丑時」 ==> 算的是明天的丑時
-        val nextNextMeridian = riseTransImpl.getGmtTransJulDay(nextNadir, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
+        val nextNextMeridian = riseTransFeature.getModel(nextNadir, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
         val oneUnit3 = (nextNextMeridian - nextNadir) / 12.0
-        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextNextMeridian, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+        val nextNextNadir = riseTransFeature.getModel(nextNextMeridian, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
         val oneUnit4 = (nextNextNadir - nextNextMeridian) / 12.0
 
         resultGmt = when {
@@ -100,13 +65,13 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
       // 目前時刻 位於 午正到子正（下半天）
       val thirteenHoursAgo = gmtJulDay - 13 / 24.0
       // 上一個午正
-      val previousMeridian = riseTransImpl.getGmtTransJulDay(thirteenHoursAgo, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
+      val previousMeridian = riseTransFeature.getModel(thirteenHoursAgo, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
 
       val oneUnit1 = (nextMeridian - nextNadir) / 12.0 //從 下一個子正 到 下一個午正，總共幾天
       val oneUnit2 = (nextNadir - previousMeridian) / 12.0 //從 下一個子正 到 上一個午正，總共幾秒
 
       if (currentEb.index in 6..11 &&  //如果現在時辰在晚子時之前 : 午6 ~ 亥11
-        (eb.index >= 6 && eb.index > currentEb.index || eb == 子) //而且現在所處的時辰，未超過欲求的時辰
+        (eb.index >= 6 && eb.index > currentEb.index || eb == Branch.子) //而且現在所處的時辰，未超過欲求的時辰
       ) {
         resultGmt = when {
           未to亥.contains(eb) -> previousMeridian + oneUnit2 * ((eb.index - 7) * 2 + 1)
@@ -116,7 +81,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
       } else {
         // 欲求的時辰，早於現在所處的時辰
         val oneUnit3 = (nextMeridian - nextNadir) / 12.0
-        val nextNextNadir = riseTransImpl.getGmtTransJulDay(nextMeridian, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+        val nextNextNadir = riseTransFeature.getModel(nextMeridian, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
         val oneUnit4 = (nextNextNadir - nextMeridian) / 12.0
         resultGmt = when {
           未to亥.contains(eb) -> nextMeridian + oneUnit4 * ((eb.index - 7) * 2 + 1)
@@ -129,18 +94,24 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     return resultGmt
   }
 
+  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, transConfig: TransConfig): ChronoLocalDateTime<*> {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
 
-  /**
-   * 取得「前一個」此地支的開始時刻
-   */
-  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
+    val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, loc, eb, transConfig)
+
+    val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
+    return TimeTools.getLmtFromGmt(resultGmt, loc)
+  }
+
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, transConfig: TransConfig): GmtJulDay {
 
     // 下個午正
-    val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
-    // 下個子正
-    val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
 
-    val currentEb: Branch = getHour(gmtJulDay, loc) // 取得目前在哪個時辰之中
+    val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
+    // 下個子正
+    val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
+
+    val currentEb: Branch = Tst.getHourBranch(gmtJulDay, loc, riseTransFeature, transConfig) // 取得目前在哪個時辰之中
 
     logger.debug("目前是 {}時 , 要計算「上一個{}時」", currentEb, eb)
 
@@ -148,15 +119,16 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
       // 目前時刻 位於子正到午正（上半天）
 
       // 上一個子正
-      val previousNadir = riseTransImpl.getGmtTransJulDay(nextMeridian - 0.75, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+      val previousNadir = riseTransFeature.getModel(nextMeridian - 0.75, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
       //上一個午正 : 用「上一個子正」減去 0.75 (約早上六點) , 使其必定能夠算出「上一個午正」
-      val prevMeridian = riseTransImpl.getGmtTransJulDay(previousNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
+      val prevMeridian = riseTransFeature.getModel(previousNadir - 0.75, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
 
       // 上、上一個子正： 用「上一個午正」減去 0.75 (約晚上六點) , 使其必定能算出「上上一個子正」
-      val prevPrevNadir = riseTransImpl.getGmtTransJulDay(prevMeridian - 0.75, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
 
-      return if (eb.index > currentEb.index || eb == 子) {
+      val prevPrevNadir = riseTransFeature.getModel(prevMeridian - 0.75, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
+
+      return if (eb.index > currentEb.index || eb == Branch.子) {
         // 目前時辰，小於欲求的時辰 ==> 算的是昨天的時辰
         // ex : 目前是丑時，要計算「上一個寅時」 , 丑 < 寅
         // ex : 目前是丑時，要計算「上一個酉時」 , 丑 < 酉
@@ -177,31 +149,31 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
         val oneUnit4 = (previousNadir - prevMeridian) / 12.0
         when {
           丑to午.contains(eb) -> previousNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)  // ex : 目前寅時 , 計算「上一個丑時」
-          eb == 子 -> prevMeridian + oneUnit4 * 11  // ex : 目前寅時 , 計算「上一個子時」
-          else -> throw RuntimeException("error")
+          eb == Branch.子    -> prevMeridian + oneUnit4 * 11  // ex : 目前寅時 , 計算「上一個子時」
+          else              -> throw RuntimeException("error")
         }
       }
     } else {
       // 目前時刻 位於 午正到子正（下半天）
 
       // 上一個午正
-      val prevMeridian = riseTransImpl.getGmtTransJulDay(nextNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
+      val prevMeridian = riseTransFeature.getModel(nextNadir - 0.75, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
 
       // 上一個子正
-      val previousNadir = riseTransImpl.getGmtTransJulDay(prevMeridian - 0.75, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
+      val previousNadir = riseTransFeature.getModel(prevMeridian - 0.75, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
       // 上、上一個午正 : 用「上一個子正」減去 0.75 (約上午六點), 必定能算出「上上一個午正」
-      val prevPrevMeridian = riseTransImpl.getGmtTransJulDay(previousNadir - 0.75, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
+      val prevPrevMeridian = riseTransFeature.getModel(previousNadir - 0.75, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
 
       val oneUnit3 = (prevMeridian - previousNadir) / 12.0
 
-      return if (currentEb.index >= eb.index || currentEb == 子) {
+      return if (currentEb.index >= eb.index || currentEb == Branch.子) {
         val oneUnit4 = (nextNadir - prevMeridian) / 12.0
         when {
           未to亥.contains(eb) -> prevMeridian + oneUnit4 * ((eb.index - 7) * 2 + 1)
           丑to午.contains(eb) -> previousNadir + oneUnit3 * ((eb.index - 1) * 2 + 1)
           else -> {
-            if (currentEb == 子)
+            if (currentEb == Branch.子)
               prevMeridian + oneUnit4 * 11
             else
               prevPrevMeridian + (previousNadir - prevPrevMeridian) / 12.0 * 11
@@ -220,52 +192,26 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     }
   }
 
-  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>,
-                                  loc: ILocation,
-                                  next: Boolean,
-                                  julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val currentBranch: Branch = getHour(lmt, loc)
+  override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, transConfig: TransConfig): ChronoLocalDateTime<*> {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val resultGmtJulDay = getGmtPrevStartOf(gmtJulDay, loc, eb, transConfig)
+
+    val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
+    return TimeTools.getLmtFromGmt(resultGmt, loc)
+  }
+
+  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, hourBranchConfig: HourBranchConfig): ChronoLocalDateTime<*> {
+    val currentBranch: Branch = hourBranchFeature.getModel(lmt, loc, hourBranchConfig)
 
     val (targetDate , targetBranch) = lmt.toLocalDate().let { localDate ->
-      if (currentBranch == 子 && !next)
-        localDate.minus(1, ChronoUnit.DAYS) to 亥
-      else if (currentBranch == 亥 && next)
-        localDate.plus(1 , ChronoUnit.DAYS) to 子
+      if (currentBranch == Branch.子 && !next)
+        localDate.minus(1, ChronoUnit.DAYS) to Branch.亥
+      else if (currentBranch == Branch.亥 && next)
+        localDate.plus(1, ChronoUnit.DAYS) to Branch.子
       else
         localDate to ( if (next) currentBranch.next else currentBranch.prev )
     }
 
-    return getDailyBranchMiddleMap(targetDate, loc, julDayResolver)[targetBranch]!!
+    return getDailyBranchMiddleMap(targetDate , loc , hourBranchConfig)[targetBranch]!!
   }
-
-
-  override fun toString(locale: Locale): String {
-    return name
-  }
-
-  override fun getDescription(locale: Locale): String {
-    return "利用太陽過天底 到天頂之間，劃分十二等份，再從太陽過天頂到天底，平均劃分十二等份，依此來切割 12 時辰"
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is HourSolarTransImpl) return false
-
-    if (star != other.star) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-
-    return star.hashCode()
-  }
-
-
-  companion object {
-    const val VALUE = "solar"
-    const val name = "真太陽時"
-    private val logger = KotlinLogging.logger {}
-  }
-
 }

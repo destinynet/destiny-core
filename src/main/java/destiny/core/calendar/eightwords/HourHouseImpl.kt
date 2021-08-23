@@ -31,12 +31,12 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
                     val star: Star = Planet.SUN,
                     val houseSystem: HouseSystem = HouseSystem.MERIDIAN) : IHour, Serializable {
 
-  override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
+  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation): Branch {
 
-    val lng = starPositionImpl.getPosition(star, gmtJulDay, location, Centric.GEO, Coordinate.ECLIPTIC).lngDeg
+    val lng = starPositionImpl.getPosition(star, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC).lngDeg
     logger.trace("lng = {}", lng)
 
-    val houseMap = houseCuspImpl.getHouseCuspMap(gmtJulDay, location, houseSystem, Coordinate.ECLIPTIC)
+    val houseMap = houseCuspImpl.getHouseCuspMap(gmtJulDay, loc, houseSystem, Coordinate.ECLIPTIC)
     val houseIndex = findNearestHouseCusp(houseMap, lng)
 
     logger.trace("nearest house = {}", houseIndex)
@@ -46,7 +46,7 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
   /**
    * 取得「下一個」此地支的開始時刻
    */
-  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
     TODO("not implemented")
   }
 
@@ -59,7 +59,7 @@ class HourHouseImpl(val houseCuspImpl: IHouseCusp,
 
 
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>,
-                                  location: ILocation,
+                                  loc: ILocation,
                                   next: Boolean,
                                   julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
     TODO("Not yet implemented")

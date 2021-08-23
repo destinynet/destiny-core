@@ -27,20 +27,20 @@ import java.util.*
 @Impl([Domain(KEY_HOUR, HourLmtImpl.VALUE)])
 class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
 
-  override fun getHour(gmtJulDay: GmtJulDay, location: ILocation): Branch {
-    return Lmt.getHourBranch(gmtJulDay, location, julDayResolver)
+  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation): Branch {
+    return Lmt.getHourBranch(gmtJulDay, loc, julDayResolver)
   }
 
-  override fun getHour(lmt: ChronoLocalDateTime<*>, location: ILocation): Branch {
+  override fun getHour(lmt: ChronoLocalDateTime<*>, loc: ILocation): Branch {
     return Lmt.getHourBranch(lmt)
   }
 
-  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, location: ILocation, eb: Branch): GmtJulDay {
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
 
     val gmt = julDayResolver.getLocalDateTime(gmtJulDay)
-    val lmt = TimeTools.getLmtFromGmt(gmt, location)
-    val lmtResult = getLmtNextStartOf(lmt, location, eb, julDayResolver)
-    val gmtResult = TimeTools.getGmtFromLmt(lmtResult, location)
+    val lmt = TimeTools.getLmtFromGmt(gmt, loc)
+    val lmtResult = getLmtNextStartOf(lmt, loc, eb, julDayResolver)
+    val gmtResult = TimeTools.getGmtFromLmt(lmtResult, loc)
     return TimeTools.getGmtJulDay(gmtResult)
   }
 
@@ -116,12 +116,12 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     }
   }
 
-  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, location: ILocation, next: Boolean, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val currentHour: Branch = getHour(lmt, location)
+  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+    val currentHour: Branch = getHour(lmt, loc)
     return if (next) {
-      getLmtNextStartOf(lmt, location, currentHour.next, julDayResolver).plus(1, ChronoUnit.HOURS)
+      getLmtNextStartOf(lmt, loc, currentHour.next, julDayResolver).plus(1, ChronoUnit.HOURS)
     } else {
-      getLmtPrevStartOf(lmt, location, currentHour.prev, julDayResolver).plus(1, ChronoUnit.HOURS)
+      getLmtPrevStartOf(lmt, loc, currentHour.prev, julDayResolver).plus(1, ChronoUnit.HOURS)
     }
   }
 
