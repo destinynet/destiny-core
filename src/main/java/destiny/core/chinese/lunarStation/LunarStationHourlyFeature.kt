@@ -9,6 +9,8 @@ import destiny.core.astrology.Planet.*
 import destiny.core.astrology.Planet.Companion.aheadOf
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.DayHourConfigBuilder
 import destiny.core.calendar.eightwords.IDayHourFeature
@@ -17,6 +19,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class HourlyConfig(val impl: Impl = Impl.Yuan,
@@ -51,12 +54,22 @@ class HourlyConfigBuilder : Builder<HourlyConfig> {
 
 
 class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeature,
-                                private val dayHourFeature : IDayHourFeature) : Feature<HourlyConfig, LunarStation> {
+                                private val dayHourFeature: IDayHourFeature,
+                                private val julDayResolver: JulDayResolver,
+                                private val implMap: Map<HourlyConfig.Impl, ILunarStationHourly>) : Feature<HourlyConfig, LunarStation> {
   override val key: String = "lsHourly"
 
   override val defaultConfig: HourlyConfig = HourlyConfig()
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HourlyConfig): LunarStation {
+
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+    return getModel(lmt, loc, config)
+  }
+
+  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourlyConfig): LunarStation {
+    //return implMap[config.impl]!!.getHourly(lmt, loc)
+
     return when (config.impl) {
       HourlyConfig.Impl.Yuan  -> {
         /**
@@ -82,11 +95,11 @@ class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeatu
          * 六元甲子的星期天的子時是 [奎] 木狼，
          * 七元甲子的星期天的子時是 [翼] 火蛇。
          */
-        val (dayStation, dayYuan) = dailyFeature.getModel(gmtJulDay, loc, config.dayHourConfig).let { it.station() to it.yuan() }
+        val (dayStation, dayYuan) = dailyFeature.getModel(lmt, loc, config.dayHourConfig).let { it.station() to it.yuan() }
 
         val dayPlanet = dayStation.planet
 
-        val hourBranch: Branch = dayHourFeature.getModel(gmtJulDay, loc, config.dayHourConfig).second.branch
+        val hourBranch: Branch = dayHourFeature.getModel(lmt, loc, config.dayHourConfig).second.branch
 
         // 該元 週日子時
         val sundayHourStart = LunarStationHourlyYuanImpl.yuanSundayHourStartMap[dayYuan]!!
@@ -107,7 +120,7 @@ class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeatu
          * (五) 金宿子時起 [奎] 木狼，
          * (六) 土宿子時起 [翼] 火蛇。
          */
-        val dayStation = dailyFeature.getModel(gmtJulDay, loc, config.dayHourConfig).station()
+        val dayStation = dailyFeature.getModel(lmt, loc, config.dayHourConfig).station()
 
         val start = when (dayStation.planet) {
           SUN     -> 虛
@@ -120,7 +133,7 @@ class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeatu
           else    -> throw IllegalArgumentException("Impossible")
         }
 
-        val hourSteps = dayHourFeature.getModel(gmtJulDay, loc, config.dayHourConfig).second.branch.getAheadOf(Branch.子)
+        val hourSteps = dayHourFeature.getModel(lmt, loc, config.dayHourConfig).second.branch.getAheadOf(Branch.子)
         start.next(hourSteps)
       }
     }

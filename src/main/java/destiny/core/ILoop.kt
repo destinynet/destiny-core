@@ -13,7 +13,7 @@ interface ILoop<T> {
 
   fun <T : ILoop<T>> getAheadOf(t: T): Int {
     return generateSequence(t as ILoop<T> to 0) {
-      ((it.first.next as ILoop<T>) to it.second + 1)
+      (it.first.next as ILoop<T>) to it.second + 1
     }
       .filter { (tt, _) -> tt == this }
       .first().second
