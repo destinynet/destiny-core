@@ -150,6 +150,7 @@ interface IDayHourFeature :  Feature<DayHourConfig, Pair<StemBranch, StemBranch>
 class DayHourFeature(private val midnightFeature: MidnightFeature,
                      private val hourBranchFeature: HourBranchFeature,
                      private val riseTransFeature: RiseTransFeature,
+                     private val hourImplMap: Map<HourBranchConfig.HourImpl, IHour>,
                      private val julDayResolver: JulDayResolver) : IDayHourFeature {
 
   override val key: String = "dayHour"

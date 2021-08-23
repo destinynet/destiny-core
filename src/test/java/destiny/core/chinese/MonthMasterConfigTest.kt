@@ -15,7 +15,7 @@ internal class MonthMasterConfigTest : AbstractConfigTest<MonthMasterConfig>() {
   override val serializer: KSerializer<MonthMasterConfig> = MonthMasterConfig.serializer()
 
   override val configByConstructor: MonthMasterConfig = MonthMasterConfig(
-    MonthMasterConfig.Impl.Combined, MonthConfig(true, HemisphereBy.DECLINATION, MonthConfig.MoonImpl.SunSign)
+    MonthMasterConfig.Impl.Combined, MonthConfig(true, HemisphereBy.DECLINATION, MonthConfig.MonthImpl.SunSign)
   )
 
   override val configByFunction: MonthMasterConfig = monthMaster {
@@ -24,7 +24,7 @@ internal class MonthMasterConfigTest : AbstractConfigTest<MonthMasterConfig>() {
     month {
       southernHemisphereOpposition = true
       hemisphereBy = HemisphereBy.DECLINATION
-      monthImpl = MonthConfig.MoonImpl.SunSign
+      monthImpl = MonthConfig.MonthImpl.SunSign
     }
   }
 
@@ -32,6 +32,6 @@ internal class MonthMasterConfigTest : AbstractConfigTest<MonthMasterConfig>() {
     assertTrue(raw.contains(""""impl":\s*"Combined"""".toRegex()))
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
     assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""moonImpl":\s*"SunSign"""".toRegex()))
+    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
   }
 }

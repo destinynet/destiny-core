@@ -19,7 +19,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       EightWordsConfig(
         YearMonthConfig(
           YearConfig(270.0),
-          MonthConfig(true , HemisphereBy.DECLINATION ,MonthConfig.MoonImpl.SunSign)
+          MonthConfig(true , HemisphereBy.DECLINATION ,MonthConfig.MonthImpl.SunSign)
         ),
         DayHourConfig(
           DayConfig(changeDayAfterZi = false , DayConfig.MidnightImpl.CLOCK0),
@@ -49,7 +49,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
           month {
             southernHemisphereOpposition = true
             hemisphereBy = HemisphereBy.DECLINATION
-            monthImpl = MonthConfig.MoonImpl.SunSign
+            monthImpl = MonthConfig.MonthImpl.SunSign
           }
         }
 
@@ -90,7 +90,7 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
     assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""moonImpl":\s*"SunSign"""".toRegex()))
+    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
     assertTrue(raw.contains(""""changeDayAfterZi":\s*false""".toRegex()))
     assertTrue(raw.contains(""""midnight":\s*"CLOCK0"""".toRegex()))
     assertTrue(raw.contains(""""hourImpl":\s*"LMT"""".toRegex()))

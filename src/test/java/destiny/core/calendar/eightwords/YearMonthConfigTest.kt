@@ -17,7 +17,7 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
     MonthConfig(
       southernHemisphereOpposition = true,
       hemisphereBy = HemisphereBy.DECLINATION,
-      moonImpl = MonthConfig.MoonImpl.SunSign
+      monthImpl = MonthConfig.MonthImpl.SunSign
     )
   )
 
@@ -28,7 +28,7 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
     month {
       southernHemisphereOpposition = true
       hemisphereBy = HemisphereBy.DECLINATION
-      monthImpl = MonthConfig.MoonImpl.SunSign
+      monthImpl = MonthConfig.MonthImpl.SunSign
     }
   }
 
@@ -36,7 +36,7 @@ internal class YearMonthConfigTest : AbstractConfigTest<YearMonthConfig>() {
     assertTrue(raw.contains(""""changeYearDegree":\s*270.0""".toRegex()))
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
     assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""moonImpl":\s*"SunSign"""".toRegex()))
+    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
   }
 
 }

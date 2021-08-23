@@ -15,18 +15,18 @@ class MonthConfigTest : AbstractConfigTest<MonthConfig>() {
   override val configByConstructor: MonthConfig = MonthConfig(
     southernHemisphereOpposition = true,
     hemisphereBy = HemisphereBy.DECLINATION,
-    moonImpl = MonthConfig.MoonImpl.SunSign
+    monthImpl = MonthConfig.MonthImpl.SunSign
   )
 
   override val configByFunction: MonthConfig = monthConfig {
     southernHemisphereOpposition = true
     hemisphereBy = HemisphereBy.DECLINATION
-    monthImpl = MonthConfig.MoonImpl.SunSign
+    monthImpl = MonthConfig.MonthImpl.SunSign
   }
 
   override val assertion: (String) -> Unit = { raw: String ->
     assertTrue(raw.contains(""""southernHemisphereOpposition":\s*true""".toRegex()))
     assertTrue(raw.contains(""""hemisphereBy":\s*"DECLINATION"""".toRegex()))
-    assertTrue(raw.contains(""""moonImpl":\s*"SunSign"""".toRegex()))
+    assertTrue(raw.contains(""""monthImpl":\s*"SunSign"""".toRegex()))
   }
 }
