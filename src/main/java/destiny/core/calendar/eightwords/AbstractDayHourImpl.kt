@@ -54,9 +54,9 @@ abstract class AbstractDayHourImpl(override val hourImpl: IHour ,
     return if (changeDayAfterZi) {
       // 子初換日
       // 上個子初
-      val prevZiStart = hourImpl.getGmtPrevStartOf(gmtJulDay , location , Branch.子)
+      val prevZiStart = hourImpl.getGmtPrevStartOf(gmtJulDay , location , Branch.子, HourBranchConfig())
       // 下個子初
-      val nextZiStart = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子)
+      val nextZiStart = hourImpl.getGmtNextStartOf(gmtJulDay , location , Branch.子, HourBranchConfig())
       prevZiStart to nextZiStart
     } else {
       // 子正換日

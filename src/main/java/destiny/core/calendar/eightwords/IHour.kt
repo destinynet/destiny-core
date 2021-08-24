@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit
 /** 時辰的分界點實作 , SwissEph 的實作是 [HourSolarTransImpl]  */
 interface IHour : Descriptive {
 
-  fun getHour(gmtJulDay: GmtJulDay, loc: ILocation): Branch
+  fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch
 
 
   /**
@@ -28,9 +28,9 @@ interface IHour : Descriptive {
    * @param loc 當地的經緯度等資料
    * @return 時辰（只有地支）
    */
-  fun getHour(lmt: ChronoLocalDateTime<*>, loc: ILocation): Branch {
+  fun getHour(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourBranchConfig = HourBranchConfig()): Branch {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getHour(gmtJulDay, loc)
+    return getHour(gmtJulDay, loc, config)
   }
 
   /**
@@ -39,7 +39,7 @@ interface IHour : Descriptive {
    * @param eb 下一個地支
    * @return 下一個地支的開始時刻
    */
-  fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay
+  fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay
 
 
   /**
@@ -48,9 +48,9 @@ interface IHour : Descriptive {
    * @param eb 欲求之下一個地支開始時刻
    * @return 回傳 LMT 時刻
    */
-  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, loc, eb)
+    val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, loc, eb, config)
 
     val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
     return TimeTools.getLmtFromGmt(resultGmt, loc)
@@ -59,11 +59,11 @@ interface IHour : Descriptive {
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay
+  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay
 
-  fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
+  fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    val resultGmtJulDay = getGmtPrevStartOf(gmtJulDay, loc, eb)
+    val resultGmtJulDay = getGmtPrevStartOf(gmtJulDay, loc, eb, config)
 
     val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
     return TimeTools.getLmtFromGmt(resultGmt, loc)
@@ -72,14 +72,14 @@ interface IHour : Descriptive {
   /**
    * accessory function , 傳回當地，一日內的時辰「開始」時刻
    */
-  fun getDailyBranchStartMap(day: ChronoLocalDate, loc: ILocation, julDayResolver: JulDayResolver): Map<Branch, ChronoLocalDateTime<*>> {
+  fun getDailyBranchStartMap(day: ChronoLocalDate, loc: ILocation, julDayResolver: JulDayResolver, config: HourBranchConfig): Map<Branch, ChronoLocalDateTime<*>> {
     val lmtStart = day.atTime(LocalTime.MIDNIGHT)
 
     return Branch.values().map { b ->
       val lmt = if (b == Branch.子) {
-        getLmtNextStartOf(lmtStart.minus(2, ChronoUnit.HOURS), loc, b, julDayResolver)
+        getLmtNextStartOf(lmtStart.minus(2, ChronoUnit.HOURS), loc, b, julDayResolver, config)
       } else {
-        getLmtNextStartOf(lmtStart, loc, b, julDayResolver)
+        getLmtNextStartOf(lmtStart, loc, b, julDayResolver, config)
       }
       b to lmt
     }.sortedBy { (_, lmt) -> lmt }.toMap()
@@ -88,16 +88,16 @@ interface IHour : Descriptive {
   /**
    * accessory function , 傳回當地，一日內的時辰「中間」時刻
    */
-  fun getDailyBranchMiddleMap(day: ChronoLocalDate, loc: ILocation, resolver: JulDayResolver): Map<Branch, ChronoLocalDateTime<*>> {
+  fun getDailyBranchMiddleMap(day: ChronoLocalDate, loc: ILocation, resolver: JulDayResolver, config: HourBranchConfig): Map<Branch, ChronoLocalDateTime<*>> {
 
-    val startTimeMap = getDailyBranchStartMap(day, loc, resolver)
+    val startTimeMap = getDailyBranchStartMap(day, loc, resolver, config)
 
     return startTimeMap.map { (branch, startTime) ->
       val endTime = if (branch != Branch.亥) {
         startTimeMap[branch.next]
       } else {
         val start: ChronoLocalDateTime<*> = startTimeMap[branch] ?: error("")
-        getLmtNextStartOf(start, loc, Branch.子, resolver)
+        getLmtNextStartOf(start, loc, Branch.子, resolver, config)
       }
       branch to startTime.plus(Duration.between(startTime, endTime).dividedBy(2))
     }.sortedBy { (_, lmt) -> lmt }.toMap()
@@ -107,5 +107,5 @@ interface IHour : Descriptive {
    * 從目前的時刻，取得下一個（或上一個）時辰中點的 LMT 時刻為何
    * @param next true = 下一個時辰 , false = 上一個時辰
    */
-  fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean = true, julDayResolver: JulDayResolver): ChronoLocalDateTime<*>
+  fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean = true, julDayResolver: JulDayResolver, config: HourBranchConfig = HourBranchConfig()): ChronoLocalDateTime<*>
 }

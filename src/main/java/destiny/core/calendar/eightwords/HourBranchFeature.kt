@@ -3,7 +3,6 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.RiseTransFeature
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.TransConfigBuilder
 import destiny.core.calendar.GmtJulDay
@@ -125,8 +124,7 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
 }
 
 
-class HourBranchFeature(private val riseTransFeature: RiseTransFeature ,
-                        private val hourBoundaryImplMap: Map<HourBranchConfig.HourImpl, IHourBoundary>,
+class HourBranchFeature(private val hourImplMap: Map<HourBranchConfig.HourImpl, IHour>,
                         val julDayResolver: JulDayResolver) : IHourBranchFeature {
   override val key: String = "hourBranch"
 
@@ -138,24 +136,19 @@ class HourBranchFeature(private val riseTransFeature: RiseTransFeature ,
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourBranchConfig): Branch {
-
-    return when (config.hourImpl) {
-      HourBranchConfig.HourImpl.TST -> Tst.getHourBranch(lmt, loc, riseTransFeature, config.transConfig)
-      HourBranchConfig.HourImpl.LMT -> Lmt.getHourBranch(lmt)
-
-    }
+    return hourImplMap[config.hourImpl]!!.getHour(lmt, loc, config)
   }
 
   override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourBoundaryImplMap[config.hourImpl]!!.getLmtNextStartOf(lmt, loc, eb, julDayResolver, config.transConfig)
+    return hourImplMap[config.hourImpl]!!.getLmtNextStartOf(lmt, loc, eb, julDayResolver, config)
   }
 
   override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourBoundaryImplMap[config.hourImpl]!!.getLmtPrevStartOf(lmt, loc, eb, julDayResolver, config.transConfig)
+    return hourImplMap[config.hourImpl]!!.getLmtPrevStartOf(lmt, loc, eb, julDayResolver, config)
   }
 
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourBoundaryImplMap[config.hourImpl]!!.getLmtNextMiddleOf(lmt, loc, next, config)
+    return hourImplMap[config.hourImpl]!!.getLmtNextMiddleOf(lmt, loc, next, julDayResolver, config)
   }
 
 

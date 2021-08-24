@@ -6,6 +6,7 @@ import destiny.core.astrology.IZodiacSign
 import destiny.core.astrology.Planet
 import destiny.core.calendar.*
 import destiny.core.calendar.chinese.Yuan
+import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.*
@@ -449,12 +450,12 @@ class HoloContext(val eightWordsImpl: IEightWordsStandardFactory,
     val hourImpl = eightWordsImpl.dayHourImpl.hourImpl
 
     val start: GmtJulDay = if (dayImpl.changeDayAfterZi) {
-      hourImpl.getGmtPrevStartOf(viewGmt, loc, 子)
+      hourImpl.getGmtPrevStartOf(viewGmt, loc, 子, HourBranchConfig())
     } else {
       dayImpl.midnightImpl.getPrevMidnight(viewGmt, loc)
     }
     val end: GmtJulDay = if (dayImpl.changeDayAfterZi) {
-      hourImpl.getGmtNextStartOf(viewGmt, loc, 子)
+      hourImpl.getGmtNextStartOf(viewGmt, loc, 子, HourBranchConfig())
     } else {
       dayImpl.midnightImpl.getNextMidnight(viewGmt, loc)
     }

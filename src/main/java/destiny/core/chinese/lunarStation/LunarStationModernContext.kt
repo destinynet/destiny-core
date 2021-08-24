@@ -3,6 +3,7 @@ package destiny.core.chinese.lunarStation
 import destiny.core.*
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
+import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.chinese.Branch
 import destiny.tools.random.RandomService
 import java.io.Serializable
@@ -44,7 +45,7 @@ class LunarStationModernContext(val ctx: ILunarStationContext, val randomService
     val time: ChronoLocalDateTime<out ChronoLocalDate> = specifiedTime ?: when (method) {
       IModernContextModel.Method.NOW         -> created
       IModernContextModel.Method.RANDOM_HOUR -> (ctx as LunarStationContext).eightWordsImpl.dayHourImpl.getDailyBranchMiddleMap(
-        created.toLocalDate(), loc, julDayResolver
+        created.toLocalDate(), loc, julDayResolver, HourBranchConfig()
       )[hourBranch]!!
       IModernContextModel.Method.SPECIFIED   -> specifiedTime ?: throw IllegalArgumentException("specifiedTime is null ")
       IModernContextModel.Method.RANDOM_TIME -> randomService.getRandomTime(

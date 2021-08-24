@@ -7,6 +7,7 @@ import destiny.core.astrology.*
 import destiny.core.astrology.classical.IVoidCourse
 import destiny.core.astrology.eclipse.IEclipseFactory
 import destiny.core.astrology.eclipse.ISolarEclipse
+import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.ILunarStationContext
@@ -42,12 +43,12 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     val set = TreeSet<TimeDesc>()
 
     // 每個時辰開始時刻 (子初可能是前一晚）
-    val hourStartMap = hourSolarTransImpl.getDailyBranchStartMap(lmtStart.toLocalDate() , loc , julDayResolver)
+    val hourStartMap = hourSolarTransImpl.getDailyBranchStartMap(lmtStart.toLocalDate() , loc , julDayResolver, HourBranchConfig())
       .mapValues { (_,v) -> v as LocalDateTime }
 
 
     // 每個時辰的 時禽
-    val hourLunarStationMap = hourSolarTransImpl.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, julDayResolver)
+    val hourLunarStationMap = hourSolarTransImpl.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, julDayResolver, HourBranchConfig())
       .map { (b, middleLmt) ->
         b to lunarStationContext.hourlyImpl.getHourly(middleLmt, loc)
       }.toMap()

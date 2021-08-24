@@ -40,8 +40,8 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     transConfig = transConfig.copy(refraction = hasRefraction)
   }
 
-  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation): Branch {
-    return Tst.getHourBranch(gmtJulDay, loc, riseTransImpl, transConfig)
+  override fun getHour(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch {
+    return Tst.getHourBranch(gmtJulDay, loc, riseTransImpl, config.transConfig.copy(discCenter = transConfig.discCenter, refraction = transConfig.refraction))
   }
 
   // 午前
@@ -53,9 +53,8 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
   /**
    * 取得「下一個」此地支的開始時刻
    *
-   * to be replaced with [HourBoundaryTST.getGmtNextStartOf]
    */
-  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
+  override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay {
 
     val resultGmt: GmtJulDay
     // 下個午正
@@ -63,7 +62,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
     // 下個子正
     val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
 
-    val currentEb: Branch = getHour(gmtJulDay, loc) // 取得目前在哪個時辰之中
+    val currentEb: Branch = getHour(gmtJulDay, loc, config) // 取得目前在哪個時辰之中
 
     if (nextNadir > nextMeridian) {
       // 目前時刻 位於子正到午正（上半天）
@@ -133,14 +132,14 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
   /**
    * 取得「前一個」此地支的開始時刻
    */
-  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch): GmtJulDay {
+  override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, config: HourBranchConfig): GmtJulDay {
 
     // 下個午正
     val nextMeridian = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.MERIDIAN, loc, transConfig)!!
     // 下個子正
     val nextNadir = riseTransImpl.getGmtTransJulDay(gmtJulDay, Planet.SUN, TransPoint.NADIR, loc, transConfig)!!
 
-    val currentEb: Branch = getHour(gmtJulDay, loc) // 取得目前在哪個時辰之中
+    val currentEb: Branch = getHour(gmtJulDay, loc, config) // 取得目前在哪個時辰之中
 
     logger.debug("目前是 {}時 , 要計算「上一個{}時」", currentEb, eb)
 
@@ -223,8 +222,9 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>,
                                   loc: ILocation,
                                   next: Boolean,
-                                  julDayResolver: JulDayResolver): ChronoLocalDateTime<*> {
-    val currentBranch: Branch = getHour(lmt, loc)
+                                  julDayResolver: JulDayResolver,
+                                  config: HourBranchConfig): ChronoLocalDateTime<*> {
+    val currentBranch: Branch = getHour(lmt, loc, config)
 
     val (targetDate , targetBranch) = lmt.toLocalDate().let { localDate ->
       if (currentBranch == 子 && !next)
@@ -235,7 +235,7 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
         localDate to ( if (next) currentBranch.next else currentBranch.prev )
     }
 
-    return getDailyBranchMiddleMap(targetDate, loc, julDayResolver)[targetBranch]!!
+    return getDailyBranchMiddleMap(targetDate, loc, julDayResolver, config)[targetBranch]!!
   }
 
 
