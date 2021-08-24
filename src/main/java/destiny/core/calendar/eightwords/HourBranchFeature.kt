@@ -147,11 +147,11 @@ class HourBranchFeature(private val riseTransFeature: RiseTransFeature ,
   }
 
   override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourBoundaryImplMap[config.hourImpl]!!.getLmtNextStartOf(lmt, loc, eb, config.transConfig)
+    return hourBoundaryImplMap[config.hourImpl]!!.getLmtNextStartOf(lmt, loc, eb, julDayResolver, config.transConfig)
   }
 
   override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
-    return hourBoundaryImplMap[config.hourImpl]!!.getLmtPrevStartOf(lmt, loc, eb, config.transConfig)
+    return hourBoundaryImplMap[config.hourImpl]!!.getLmtPrevStartOf(lmt, loc, eb, julDayResolver, config.transConfig)
   }
 
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, config: HourBranchConfig): ChronoLocalDateTime<*> {

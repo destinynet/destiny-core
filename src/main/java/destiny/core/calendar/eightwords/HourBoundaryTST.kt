@@ -97,15 +97,6 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
     return resultGmt
   }
 
-  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, transConfig: TransConfig): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-
-    val resultGmtJulDay = getGmtNextStartOf(gmtJulDay, loc, eb, transConfig)
-
-    val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
-    return TimeTools.getLmtFromGmt(resultGmt, loc)
-  }
-
   override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, transConfig: TransConfig): GmtJulDay {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
@@ -195,14 +186,6 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
     }
   }
 
-  override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, transConfig: TransConfig): ChronoLocalDateTime<*> {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    val resultGmtJulDay = getGmtPrevStartOf(gmtJulDay, loc, eb, transConfig)
-
-    val resultGmt = julDayResolver.getLocalDateTime(resultGmtJulDay)
-    return TimeTools.getLmtFromGmt(resultGmt, loc)
-  }
-
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, hourBranchConfig: HourBranchConfig): ChronoLocalDateTime<*> {
 
     val currentBranch: Branch = Tst.getHourBranch(lmt, loc, riseTransFeature, hourBranchConfig.transConfig)
@@ -216,6 +199,6 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
         localDate to ( if (next) currentBranch.next else currentBranch.prev )
     }
 
-    return getDailyBranchMiddleMap(targetDate , loc , hourBranchConfig)[targetBranch]!!
+    return getDailyBranchMiddleMap(targetDate , loc , julDayResolver, hourBranchConfig)[targetBranch]!!
   }
 }
