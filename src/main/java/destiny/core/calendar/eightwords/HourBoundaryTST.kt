@@ -11,7 +11,6 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
 
 class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
-                      private val hourBranchFeature: HourBranchFeature,
                       private val julDayResolver: JulDayResolver) : IHourBoundary {
 
   // 午前
@@ -24,13 +23,16 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
 
   override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, transConfig: TransConfig): GmtJulDay {
 
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+
     val resultGmt: GmtJulDay
     // 下個午正
     val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
     // 下個子正
     val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
-    val currentEb: Branch = Tst.getHourBranch(gmtJulDay, loc, riseTransFeature, transConfig) // 取得目前在哪個時辰之中
+    val currentEb = Tst.getHourBranch(lmt, loc, riseTransFeature, transConfig)  // 取得目前在哪個時辰之中
+    //val currentEb: Branch = Tst.getHourBranch(gmtJulDay, loc, riseTransFeature, transConfig)
 
     if (nextNadir > nextMeridian) {
       // 目前時刻 位於子正到午正（上半天）
@@ -105,14 +107,14 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
   }
 
   override fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, transConfig: TransConfig): GmtJulDay {
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     // 下個午正
-
     val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.MERIDIAN, transConfig))!!
     // 下個子正
     val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN, TransPoint.NADIR, transConfig))!!
 
-    val currentEb: Branch = Tst.getHourBranch(gmtJulDay, loc, riseTransFeature, transConfig) // 取得目前在哪個時辰之中
+    val currentEb: Branch = Tst.getHourBranch(lmt, loc, riseTransFeature, transConfig) // 取得目前在哪個時辰之中
 
     logger.debug("目前是 {}時 , 要計算「上一個{}時」", currentEb, eb)
 
@@ -202,7 +204,8 @@ class HourBoundaryTST(private val riseTransFeature: RiseTransFeature,
   }
 
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, hourBranchConfig: HourBranchConfig): ChronoLocalDateTime<*> {
-    val currentBranch: Branch = hourBranchFeature.getModel(lmt, loc, hourBranchConfig)
+
+    val currentBranch: Branch = Tst.getHourBranch(lmt, loc, riseTransFeature, hourBranchConfig.transConfig)
 
     val (targetDate , targetBranch) = lmt.toLocalDate().let { localDate ->
       if (currentBranch == 子 && !next)

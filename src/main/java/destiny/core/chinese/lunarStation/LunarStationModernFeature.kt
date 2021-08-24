@@ -8,7 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.IDayHourFeature
+import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -49,7 +49,7 @@ class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
 }
 
 class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFeature,
-                                private val dayHourFeature: IDayHourFeature,
+                                private val hourBranchFeature: IHourBranchFeature,
                                 private val randomService: RandomService,
                                 private val julDayResolver: JulDayResolver) : PersonFeature<LunarStationModernConfig, IModernContextModel> {
 
@@ -67,7 +67,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
 
     val time: ChronoLocalDateTime<out ChronoLocalDate> = specifiedTime ?: when(config.method) {
       IModernContextModel.Method.NOW         -> created
-      IModernContextModel.Method.RANDOM_HOUR -> dayHourFeature.getDailyBranchMiddleMap(
+      IModernContextModel.Method.RANDOM_HOUR -> hourBranchFeature.getDailyBranchMiddleMap(
         created.toLocalDate(),
         loc,
         config.lunarStationConfig.ewConfig.dayHourConfig.hourBranchConfig

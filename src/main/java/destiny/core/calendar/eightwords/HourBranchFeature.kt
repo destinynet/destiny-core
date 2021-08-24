@@ -3,17 +3,24 @@
  */
 package destiny.core.calendar.eightwords
 
-import destiny.core.astrology.*
+import destiny.core.astrology.RiseTransFeature
+import destiny.core.astrology.TransConfig
+import destiny.core.astrology.TransConfigBuilder
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
-import destiny.core.chinese.Branch.*
+import destiny.core.chinese.Branch.亥
+import destiny.core.chinese.Branch.子
 import destiny.tools.Builder
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import java.time.Duration
+import java.time.LocalTime
+import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
+import java.time.temporal.ChronoUnit
 
 
 /** 時辰切割 */
@@ -49,8 +56,78 @@ class HourBranchConfigBuilder : Builder<HourBranchConfig> {
   }
 }
 
+
+interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
+  /**
+   * 取得下一個地支的開始時刻
+   */
+  fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver, config: HourBranchConfig): GmtJulDay {
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+    val resultLmt: ChronoLocalDateTime<*> = getLmtNextStartOf(lmt, loc, eb, config)
+    return TimeTools.getGmtJulDay(resultLmt, loc)
+  }
+
+
+  fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*>
+
+  /**
+   * 取得「前一個」此地支的開始時刻
+   */
+  fun getGmtPrevStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, julDayResolver: JulDayResolver,config: HourBranchConfig): GmtJulDay {
+    val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
+    val resultLmt: ChronoLocalDateTime<*> = getLmtPrevStartOf(lmt, loc, eb, config)
+    return TimeTools.getGmtJulDay(resultLmt, loc)
+  }
+
+  fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*>
+
+
+  /**
+   * 從目前的時刻，取得下一個（或上一個）時辰中點的 LMT 時刻為何
+   * @param next true = 下一個時辰 , false = 上一個時辰
+   */
+  fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean = true, config: HourBranchConfig): ChronoLocalDateTime<*>
+
+
+  /**
+   * accessory function , 傳回當地，一日內的時辰「開始」時刻
+   */
+  fun getDailyBranchStartMap(day: ChronoLocalDate, loc: ILocation, config: HourBranchConfig): Map<Branch, ChronoLocalDateTime<*>> {
+    val lmtStart = day.atTime(LocalTime.MIDNIGHT)
+
+    return Branch.values().map { b ->
+      val lmt = if (b == 子) {
+        getLmtNextStartOf(lmtStart.minus(2, ChronoUnit.HOURS), loc, b, config)
+      } else {
+        getLmtNextStartOf(lmtStart, loc, b, config)
+      }
+      b to lmt
+    }.sortedBy { (_, lmt) -> lmt }.toMap()
+  }
+
+  /**
+   * accessory function , 傳回當地，一日內的時辰「中間」時刻
+   */
+  fun getDailyBranchMiddleMap(day: ChronoLocalDate, loc: ILocation, config: HourBranchConfig = HourBranchConfig()): Map<Branch, ChronoLocalDateTime<*>> {
+    val startTimeMap = getDailyBranchStartMap(day, loc, config)
+
+    return startTimeMap.map { (branch, startTime) ->
+      val endTime = if (branch != 亥) {
+        startTimeMap[branch.next]
+      } else {
+        val start: ChronoLocalDateTime<*> = startTimeMap[branch] ?: error("")
+        getLmtNextStartOf(start, loc, 子, config)
+      }
+      branch to startTime.plus(Duration.between(startTime, endTime).dividedBy(2))
+    }.sortedBy { (_, lmt) -> lmt }.toMap()
+  }
+
+}
+
+
 class HourBranchFeature(private val riseTransFeature: RiseTransFeature ,
-                        val julDayResolver: JulDayResolver) : Feature<HourBranchConfig , Branch>{
+                        private val hourBoundaryImplMap: Map<HourBranchConfig.HourImpl, IHourBoundary>,
+                        val julDayResolver: JulDayResolver) : IHourBranchFeature {
   override val key: String = "hourBranch"
 
   override val defaultConfig: HourBranchConfig = HourBranchConfig()
@@ -61,56 +138,25 @@ class HourBranchFeature(private val riseTransFeature: RiseTransFeature ,
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: HourBranchConfig): Branch {
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+
     return when (config.hourImpl) {
-      HourBranchConfig.HourImpl.TST -> {
-        /** 真太陽時 的時辰 */
-        val nextMeridian = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN , TransPoint.MERIDIAN , config.transConfig))!!
-        val nextNadir = riseTransFeature.getModel(gmtJulDay, loc, RiseTransConfig(Planet.SUN , TransPoint.NADIR , config.transConfig))!!
-
-
-        if (nextNadir > nextMeridian) {
-          //子正到午正（上半天）
-          val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-
-          val previousNadirGmt = riseTransFeature.getModel(thirteenHoursAgo, loc, RiseTransConfig(Planet.SUN , TransPoint.NADIR , config.transConfig))!!
-
-          logger.debug("gmtJulDay = {}", gmtJulDay)
-
-          val diffDays = nextMeridian - previousNadirGmt // 從子正到午正，總共幾秒
-          val oneUnitDays = diffDays / 12.0
-          logger.debug("diffDays = {} , oneUnitDays = {}", diffDays, oneUnitDays)
-          when {
-            gmtJulDay < previousNadirGmt + oneUnitDays      -> 子
-            gmtJulDay < previousNadirGmt + oneUnitDays * 3  -> 丑
-            gmtJulDay < previousNadirGmt + oneUnitDays * 5  -> 寅
-            gmtJulDay < previousNadirGmt + oneUnitDays * 7  -> 卯
-            gmtJulDay < previousNadirGmt + oneUnitDays * 9  -> 辰
-            gmtJulDay < previousNadirGmt + oneUnitDays * 11 -> 巳
-            else                                            -> 午
-          }
-        } else {
-          //午正到子正（下半天）
-          val thirteenHoursAgo = gmtJulDay - 13 / 24.0
-
-          val previousMeridian = riseTransFeature.getModel(thirteenHoursAgo, loc, RiseTransConfig(Planet.SUN , TransPoint.MERIDIAN , config.transConfig))!!
-
-          val diffDays = nextNadir - previousMeridian
-          val oneUnitDays = diffDays / 12.0
-
-          when {
-            gmtJulDay < previousMeridian + oneUnitDays      -> 午
-            gmtJulDay < previousMeridian + oneUnitDays * 3  -> 未
-            gmtJulDay < previousMeridian + oneUnitDays * 5  -> 申
-            gmtJulDay < previousMeridian + oneUnitDays * 7  -> 酉
-            gmtJulDay < previousMeridian + oneUnitDays * 9  -> 戌
-            gmtJulDay < previousMeridian + oneUnitDays * 11 -> 亥
-            else                                            -> 子
-          }
-        }
-      }
+      HourBranchConfig.HourImpl.TST -> Tst.getHourBranch(lmt, loc, riseTransFeature, config.transConfig)
       HourBranchConfig.HourImpl.LMT -> Lmt.getHourBranch(lmt)
 
     }
   }
+
+  override fun getLmtNextStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
+    return hourBoundaryImplMap[config.hourImpl]!!.getLmtNextStartOf(lmt, loc, eb, config.transConfig)
+  }
+
+  override fun getLmtPrevStartOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, eb: Branch, config: HourBranchConfig): ChronoLocalDateTime<*> {
+    return hourBoundaryImplMap[config.hourImpl]!!.getLmtPrevStartOf(lmt, loc, eb, config.transConfig)
+  }
+
+  override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, config: HourBranchConfig): ChronoLocalDateTime<*> {
+    return hourBoundaryImplMap[config.hourImpl]!!.getLmtNextMiddleOf(lmt, loc, next, config)
+  }
+
+
 }

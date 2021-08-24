@@ -10,8 +10,7 @@ import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 
-class HourBoundaryLMT(private val hourBranchFeature: HourBranchFeature,
-                      private val julDayResolver: JulDayResolver) : IHourBoundary {
+class HourBoundaryLMT(private val julDayResolver: JulDayResolver) : IHourBoundary {
   override val hourBranchImpl: HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.LMT
 
   override fun getGmtNextStartOf(gmtJulDay: GmtJulDay, loc: ILocation, eb: Branch, transConfig: TransConfig): GmtJulDay {
@@ -73,7 +72,8 @@ class HourBoundaryLMT(private val hourBranchFeature: HourBranchFeature,
   }
 
   override fun getLmtNextMiddleOf(lmt: ChronoLocalDateTime<*>, loc: ILocation, next: Boolean, hourBranchConfig: HourBranchConfig): ChronoLocalDateTime<*> {
-    val currentHour: Branch = hourBranchFeature.getModel(lmt, loc, hourBranchConfig)
+
+    val currentHour: Branch = Lmt.getHourBranch(lmt)
     return if (next) {
       getLmtNextStartOf(lmt, loc, currentHour.next, hourBranchConfig.transConfig).plus(1, ChronoUnit.HOURS)
     } else {
