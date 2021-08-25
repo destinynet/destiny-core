@@ -16,7 +16,7 @@ data class ApsisAzimuthConfig(@Serializable(with = PointSerializer::class)
                               val coordinate: Coordinate = Coordinate.ECLIPTIC,
                               val nodeType: NodeType = NodeType.MEAN,
                               val temperature: Double = 0.0,
-                              val pressure: Double = 1013.25)
+                              val pressure: Double = 1013.25) : java.io.Serializable
 
 @DestinyMarker
 class ApsisAzimuthConfigBuilder : Builder<ApsisAzimuthConfig> {

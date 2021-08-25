@@ -20,7 +20,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class NineStarConfig(val scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR),
-                          val ewConfig: EightWordsConfig = EightWordsConfig())
+                          val ewConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable
 
 class NineStarConfigBuilder : Builder<NineStarConfig> {
 

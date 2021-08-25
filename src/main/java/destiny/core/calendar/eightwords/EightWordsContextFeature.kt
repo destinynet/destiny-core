@@ -22,7 +22,7 @@ data class EightWordsContextConfig(
   val zodiacSignConfig: ZodiacSignConfig = ZodiacSignConfig(),
   val houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN , Coordinate.ECLIPTIC),
   val place : String? = null
-)
+): java.io.Serializable
 
 @DestinyMarker
 class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {

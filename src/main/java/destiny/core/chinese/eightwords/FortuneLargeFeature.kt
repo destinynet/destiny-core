@@ -7,7 +7,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 
 data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
-                              val span : Double = 120.0) {
+                              val span : Double = 120.0): java.io.Serializable {
   enum class Impl {
     DefaultSpan,    // default
     SolarTermsSpan  // 節氣星座過運法

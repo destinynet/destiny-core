@@ -26,7 +26,7 @@ data class MonthConfig(
   val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR,
 
   val monthImpl: MonthImpl = MonthImpl.SolarTerms
-) {
+): java.io.Serializable {
   enum class MonthImpl {
     /** 標準, 節氣劃分月令 */
     SolarTerms,
@@ -65,7 +65,7 @@ class MonthConfigBuilder : Builder<MonthConfig> {
 data class YearMonthConfig(
   val yearConfig: YearConfig = YearConfig(),
   val monthConfig: MonthConfig = MonthConfig()
-)
+): java.io.Serializable
 
 @DestinyMarker
 class YearMonthConfigBuilder : Builder<YearMonthConfig> {

@@ -8,6 +8,7 @@ import destiny.core.IBirthDataNamePlace
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
+import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 
@@ -16,7 +17,7 @@ interface Builder<Model> {
   fun build(): Model
 }
 
-interface Feature<out Config : Any, Model : Any?> {
+interface Feature<out Config : Any, Model : Any?> : Serializable {
 
   val key: String
 

@@ -26,7 +26,7 @@ class YearMonthSolarTermsStarPositionImpl(
   private val julDayResolver: JulDayResolver,
   override val southernHemisphereOpposition: Boolean = false,
   override val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR
-) : IYearMonth, IYear by yearImpl {
+) : IYearMonth, IYear by yearImpl{
 
   override fun toString(locale: Locale): String {
     return name

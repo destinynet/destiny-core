@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class TransConfig(val discCenter: Boolean = false,
                        val refraction: Boolean = true,
                        val temperature: Double = 0.0,
-                       val pressure: Double = 1013.25)
+                       val pressure: Double = 1013.25): java.io.Serializable
 
 class TransConfigBuilder : Builder<TransConfig> {
 

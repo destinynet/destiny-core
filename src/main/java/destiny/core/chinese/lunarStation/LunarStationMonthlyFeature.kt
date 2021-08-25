@@ -21,7 +21,7 @@ data class MonthlyConfig(val impl: Impl = Impl.AoHead,
                          val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS,
                          val yearlyConfig: YearlyConfig = YearlyConfig(),
                          val yearMonthConfig: YearMonthConfig = YearMonthConfig(),
-                         val dayHourConfig: DayHourConfig = DayHourConfig()) {
+                         val dayHourConfig: DayHourConfig = DayHourConfig()): java.io.Serializable {
   enum class Impl {
     AoHead,           // 《鰲頭通書》
     AnimalExplained   // 《剋擇講義》

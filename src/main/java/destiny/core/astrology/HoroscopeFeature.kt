@@ -24,7 +24,7 @@ data class HoroscopeConfig(
   val pressure: Double = 1013.25,
   val vocImpl: VoidCourseConfig.VoidCourseImpl = VoidCourseConfig.VoidCourseImpl.Medieval,
   val place: String? = null
-)
+): java.io.Serializable
 
 @DestinyMarker
 class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {

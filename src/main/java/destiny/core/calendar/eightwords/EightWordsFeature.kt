@@ -20,7 +20,7 @@ import java.time.chrono.ChronoLocalDateTime
 data class EightWordsConfig(
   val yearMonthConfig: YearMonthConfig = YearMonthConfig(),
   val dayHourConfig: DayHourConfig = DayHourConfig()
-)
+): java.io.Serializable
 
 @DestinyMarker
 class EightWordsConfigBuilder : Builder<EightWordsConfig> {

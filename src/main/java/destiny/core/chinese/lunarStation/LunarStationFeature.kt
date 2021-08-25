@@ -30,7 +30,7 @@ data class LunarStationConfig(val yearlyConfig: YearlyConfig = YearlyConfig(),
                               val monthlyConfig: MonthlyConfig = MonthlyConfig(),
                               val hourlyConfig: HourlyConfig = HourlyConfig(),
                               val ewConfig: EightWordsConfig = EightWordsConfig(),
-                              val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS)
+                              val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS): java.io.Serializable
 
 @DestinyMarker
 class LunarStationConfigBuilder : Builder<LunarStationConfig> {

@@ -24,7 +24,7 @@ import java.time.chrono.ChronoLocalDateTime
 data class LunarStationModernConfig(val lunarStationConfig: LunarStationConfig = LunarStationConfig(),
                                     val method: IModernContextModel.Method = IModernContextModel.Method.NOW,
                                     val specifiedGmtJulDay: GmtJulDay? = null ,
-                                    val description: String? = null)
+                                    val description: String? = null): java.io.Serializable
 
 @DestinyMarker
 class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {

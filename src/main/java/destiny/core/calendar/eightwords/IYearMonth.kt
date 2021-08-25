@@ -10,10 +10,11 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
+import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
 /** 取得年干支的介面  */
-interface IYear {
+interface IYear : Serializable {
 
   /** 換年的度數 , 通常是立春點 (315) 換年 , 另一個值通常為 270 (冬至) */
   val changeYearDegree: Double
@@ -36,7 +37,7 @@ interface IYear {
 /**
  * 取得月干支的介面
  */
-interface IMonth {
+interface IMonth : Serializable {
 
   /** 南半球月令是否對沖  */
   val southernHemisphereOpposition: Boolean

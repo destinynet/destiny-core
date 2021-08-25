@@ -19,7 +19,7 @@ import kotlin.math.min
 data class VoidCourseConfig(@Serializable(with = PointSerializer::class)
                             val planet: Planet = Planet.MOON,
                             val centric: Centric = Centric.GEO,
-                            val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval) {
+                            val vocImpl: VoidCourseImpl = VoidCourseImpl.Medieval): java.io.Serializable{
   enum class VoidCourseImpl {
     Hellenistic,
     Medieval,
@@ -67,9 +67,7 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
  */
 class VoidCourseFeature(private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
                         private val pointPosFuncMap: Map<Point, IPosition<*>>) : IVoidCourseFeature {
-
-  private val logger = KotlinLogging.logger { }
-
+  
   override val key: String = "voidCourse"
 
   override val defaultConfig: VoidCourseConfig = VoidCourseConfig()
@@ -120,6 +118,10 @@ class VoidCourseFeature(private val vocMap: Map<VoidCourseConfig.VoidCourseImpl,
       } else
         null
     }.toList()
+  }
+
+  companion object {
+    private val logger = KotlinLogging.logger { }
   }
 
 }

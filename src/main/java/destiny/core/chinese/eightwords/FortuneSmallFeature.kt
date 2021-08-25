@@ -24,7 +24,7 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
                               val count: Int = 120,
                               val intAgeImpl : IntAgeImpl = IntAgeImpl.EightWords,
                               val intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo),
-                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()) {
+                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
   enum class Impl {
     Hour,   // 以時柱推算小運
     Star,   // 《星學大成》

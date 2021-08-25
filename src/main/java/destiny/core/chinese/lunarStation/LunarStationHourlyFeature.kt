@@ -23,7 +23,7 @@ import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class HourlyConfig(val impl: Impl = Impl.Yuan,
-                        val dayHourConfig: DayHourConfig = DayHourConfig()) {
+                        val dayHourConfig: DayHourConfig = DayHourConfig()): java.io.Serializable {
 
   enum class Impl {
     Yuan,   // 《禽星易見》

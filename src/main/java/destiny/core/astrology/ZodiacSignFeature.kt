@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ZodiacSignConfig(@Serializable(with = PointSerializer::class)
-                            val star: Star = Planet.SUN)
+                            val star: Star = Planet.SUN): java.io.Serializable
 
 class ZodiacSignBuilder : Builder<ZodiacSignConfig> {
 

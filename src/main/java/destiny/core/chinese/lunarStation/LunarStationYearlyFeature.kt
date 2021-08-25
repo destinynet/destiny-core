@@ -23,8 +23,7 @@ import java.time.temporal.ChronoField
 @Serializable
 data class YearlyConfig(val yearType: YearType = YearType.YEAR_SOLAR,
                         val yearEpoch: YearEpoch = YearEpoch.EPOCH_1564,
-                        val dayHourConfig: DayHourConfig = DayHourConfig()
-)
+                        val dayHourConfig: DayHourConfig = DayHourConfig()): java.io.Serializable
 
 @DestinyMarker
 class YearlyConfigBuilder : Builder<YearlyConfig> {

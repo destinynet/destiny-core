@@ -15,14 +15,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TradChineseRisingSignConfig(
   val hourImpl: HourBranchConfig.HourImpl = HourBranchConfig.HourImpl.TST
-)
+): java.io.Serializable
 
 @Serializable
 data class RisingSignConfig(
   val houseConfig: HouseConfig = HouseConfig(),
   val tradChineseRisingSignConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig(),
   val impl: Impl = Impl.HouseCusp
-) {
+): java.io.Serializable {
   enum class Impl {
     HouseCusp,
     TradChinese

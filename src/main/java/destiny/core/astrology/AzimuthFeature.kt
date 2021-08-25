@@ -16,7 +16,7 @@ data class AzimuthConfig(@Serializable(with = PointSerializer::class)
                          val coordinate: Coordinate = Coordinate.ECLIPTIC,
                          val geoAlt: Double = 0.0,
                          val temperature: Double = 0.0,
-                         val pressure: Double = 1013.25)
+                         val pressure: Double = 1013.25): java.io.Serializable
 
 @DestinyMarker
 class AzimuthConfigBuilder : Builder<AzimuthConfig> {

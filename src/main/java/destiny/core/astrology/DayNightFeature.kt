@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DayNightConfig(val impl : DayNightImpl = DayNightImpl.StarPos ,
                           /** for [DayNightImpl.StarPos] and [DayNightImpl.Half] */
-                          val transConfig: TransConfig = TransConfig()) {
+                          val transConfig: TransConfig = TransConfig()): java.io.Serializable {
   enum class DayNightImpl {
     StarPos,  // 日升日落 : 太陽升起至落下，為晝；太陽落下至昇起，為夜
     Half,     // 前半天後半天 : 夜半子正至午正（前半天）為晝；中午至半夜（後半天）為夜 (極區內可能不適用)

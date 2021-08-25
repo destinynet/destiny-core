@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 data class RiseTransConfig(@Serializable(with = PointSerializer::class)
                            val star: Star = Planet.SUN,
                            val transPoint: TransPoint = TransPoint.RISING,
-                           val transConfig: TransConfig = TransConfig())
+                           val transConfig: TransConfig = TransConfig()): java.io.Serializable
 
 @DestinyMarker
 class RiseTransConfigBuilder : Builder<RiseTransConfig> {

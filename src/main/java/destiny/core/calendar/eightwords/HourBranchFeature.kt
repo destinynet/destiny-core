@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit
 /** 時辰切割 */
 @Serializable
 data class HourBranchConfig(val hourImpl : HourImpl = HourImpl.TST,
-                            val transConfig: TransConfig = TransConfig()) {
+                            val transConfig: TransConfig = TransConfig()): java.io.Serializable {
   enum class HourImpl {
     TST,
     LMT

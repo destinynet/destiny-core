@@ -24,7 +24,7 @@ import java.time.temporal.ChronoUnit
 
 @Serializable
 data class DayConfig(val changeDayAfterZi: Boolean = true ,
-                     val midnight: MidnightImpl = MidnightImpl.NADIR) {
+                     val midnight: MidnightImpl = MidnightImpl.NADIR): java.io.Serializable {
   enum class MidnightImpl {
     CLOCK0, // 當地時間手錶零時
     NADIR   // 太陽劃過天底(子午線)
@@ -55,7 +55,7 @@ class DayConfigBuilder : Builder<DayConfig> {
 data class DayHourConfig(
   val dayConfig: DayConfig = DayConfig(),
   val hourBranchConfig: HourBranchConfig = HourBranchConfig()
-)
+): java.io.Serializable
 
 
 @DestinyMarker

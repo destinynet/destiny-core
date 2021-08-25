@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class HouseConfig(
   val houseSystem: HouseSystem = HouseSystem.PLACIDUS,
   val coordinate: Coordinate = Coordinate.ECLIPTIC
-)
+): java.io.Serializable
 
 @DestinyMarker
 class HouseConfigBuilder : Builder<HouseConfig> {

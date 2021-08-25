@@ -21,7 +21,7 @@ import java.time.chrono.ChronoLocalDateTime
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
                                   val fortuneLargeImpl: FortuneLarge = FortuneLarge.Trad,
-                                  val fortuneSmallImpl: FortuneSmall = FortuneSmall.Hour) {
+                                  val fortuneSmallImpl: FortuneSmall = FortuneSmall.Hour): java.io.Serializable {
 
   enum class FortuneLarge {
     Trad,
