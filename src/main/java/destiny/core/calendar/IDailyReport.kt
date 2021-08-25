@@ -10,7 +10,8 @@ import destiny.core.astrology.eclipse.ISolarEclipse
 import destiny.core.calendar.eightwords.HourBranchConfig
 import destiny.core.calendar.eightwords.IHour
 import destiny.core.chinese.Branch
-import destiny.core.chinese.lunarStation.ILunarStationContext
+import destiny.core.chinese.lunarStation.HourlyConfig
+import destiny.core.chinese.lunarStation.LunarStationHourlyFeature
 import destiny.tools.location.ReverseGeocodingService
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -24,17 +25,19 @@ interface IDailyReport {
   fun getList(lmt: ChronoLocalDateTime<*>, loc: ILocation, locale: Locale): List<TimeDesc>
 }
 
-class DailyReportImpl(val hourSolarTransImpl: IHour,
-                      val riseTransImpl: IRiseTrans,
-                      val relativeTransitImpl: IRelativeTransit,
-                      val solarTermsImpl: ISolarTerms,
-                      val eclipseImpl: IEclipseFactory,
-                      val reverseGeocodingService: ReverseGeocodingService,
-                      val julDayResolver: JulDayResolver,
-                      val lunarStationContext: ILunarStationContext,
-                      val voidCourseImpl: IVoidCourse,
-                      val pointPosFuncMap: Map<Point, IPosition<*>>,
-                      val horoContext: IHoroscopeContext) : IDailyReport, Serializable {
+class DailyReportImpl(
+  val hourSolarTransImpl: IHour,
+  val riseTransImpl: IRiseTrans,
+  val relativeTransitImpl: IRelativeTransit,
+  val solarTermsImpl: ISolarTerms,
+  val eclipseImpl: IEclipseFactory,
+  val reverseGeocodingService: ReverseGeocodingService,
+  val julDayResolver: JulDayResolver,
+  private val lunarStationHourlyFeature: LunarStationHourlyFeature,
+  val voidCourseImpl: IVoidCourse,
+  val pointPosFuncMap: Map<Point, IPosition<*>>,
+  val horoContext: IHoroscopeContext
+) : IDailyReport, Serializable {
 
   private fun getList(lmtStart: ChronoLocalDateTime<*>,
                       lmtEnd: ChronoLocalDateTime<*>,
@@ -50,7 +53,7 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     // 每個時辰的 時禽
     val hourLunarStationMap = hourSolarTransImpl.getDailyBranchMiddleMap(lmtStart.toLocalDate(), loc, julDayResolver, HourBranchConfig())
       .map { (b, middleLmt) ->
-        b to lunarStationContext.hourlyImpl.getHourly(middleLmt, loc)
+        b to lunarStationHourlyFeature.getModel(middleLmt, loc, HourlyConfig(impl = HourlyConfig.Impl.Fixed))
       }.toMap()
 
     // 12地支
@@ -184,7 +187,6 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     if (eclipseImpl != other.eclipseImpl) return false
     if (reverseGeocodingService != other.reverseGeocodingService) return false
     if (julDayResolver != other.julDayResolver) return false
-    if (lunarStationContext != other.lunarStationContext) return false
     if (voidCourseImpl != other.voidCourseImpl) return false
     if (horoContext != other.horoContext) return false
 
@@ -199,7 +201,6 @@ class DailyReportImpl(val hourSolarTransImpl: IHour,
     result = 31 * result + eclipseImpl.hashCode()
     result = 31 * result + reverseGeocodingService.hashCode()
     result = 31 * result + julDayResolver.hashCode()
-    result = 31 * result + lunarStationContext.hashCode()
     result = 31 * result + voidCourseImpl.hashCode()
     result = 31 * result + horoContext.hashCode()
     return result
