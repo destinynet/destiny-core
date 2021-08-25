@@ -35,8 +35,8 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       HouseConfig(HouseSystem.EQUAL, Coordinate.SIDEREAL),
       "台北市"
     ),
-    fortuneLargeImpl = EightWordsPersonConfig.FortuneLarge.Span,
-    fortuneSmallImpl = EightWordsPersonConfig.FortuneSmall.Star
+    //fortuneLargeImpl = EightWordsPersonConfig.FortuneLarge.Span,
+    //fortuneSmallImpl = EightWordsPersonConfig.FortuneSmall.Star
   )
 
   override val configByFunction: EightWordsPersonConfig = ewPersonConfig {
@@ -82,8 +82,8 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       place = "台北市"
     }
 
-    fortuneLargeImpl = EightWordsPersonConfig.FortuneLarge.Span
-    fortuneSmallImpl = EightWordsPersonConfig.FortuneSmall.Star
+    //fortuneLargeImpl = EightWordsPersonConfig.FortuneLarge.Span
+    //fortuneSmallImpl = EightWordsPersonConfig.FortuneSmall.Star
   }
 
   override val assertion: (String) -> Unit = { raw ->

@@ -37,7 +37,7 @@ class FortuneLargeBlindImpl(
 
 
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
-                                  location: ILocation,
+                                  loc: ILocation,
                                   gender: Gender,
                                   count: Int): List<FortuneData> {
     TODO("not implemented")

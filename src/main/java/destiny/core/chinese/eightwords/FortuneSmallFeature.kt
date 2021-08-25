@@ -28,6 +28,7 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
   enum class Impl {
     Hour,   // 以時柱推算小運
     Star,   // 《星學大成》
+    SixGia, // 六甲起行年法
   }
 }
 

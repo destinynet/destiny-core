@@ -49,6 +49,7 @@ interface IPersonContextModel : IEightWordsContextModel , IBirthDataNamePlace  {
 interface IFortuneMonthSpan {
   val fortuneMonthSpan : Double
 }
+
 /** 推算 大運 演算法 */
 interface IPersonFortuneLarge : Descriptive {
 
@@ -60,10 +61,7 @@ interface IPersonFortuneLarge : Descriptive {
   /**
    * 順推大運
    * 取得該命盤的幾條大運 */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
-                         location: ILocation,
-                         gender: Gender,
-                         count: Int): List<FortuneData>
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData>
 
   /**
    * 逆推大運

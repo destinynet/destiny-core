@@ -51,16 +51,16 @@ class FortuneLargeSpanImpl(
 
   /** 順推大運 , 取得該命盤的幾條大運 */
   override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
-                                  location: ILocation,
+                                  loc: ILocation,
                                   gender: Gender,
                                   count: Int): List<FortuneData> {
 
-    val eightWords = eightWordsImpl.getEightWords(lmt, location)
+    val eightWords = eightWordsImpl.getEightWords(lmt, loc)
 
-    val forward = fortuneDirectionImpl.isForward(lmt, location, gender)
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
+    val forward = fortuneDirectionImpl.isForward(lmt, loc, gender)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
 
-    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, location)
+    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
 
 
     //下個大運的干支

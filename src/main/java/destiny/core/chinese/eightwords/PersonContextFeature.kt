@@ -20,19 +20,10 @@ import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
-                                  val fortuneLargeImpl: FortuneLarge = FortuneLarge.Trad,
-                                  val fortuneSmallImpl: FortuneSmall = FortuneSmall.Hour): java.io.Serializable {
+                                  val fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig(),
+                                  val fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()): java.io.Serializable {
 
-  enum class FortuneLarge {
-    Trad,
-    Span, // 節氣星座過運法
-  }
 
-  enum class FortuneSmall {
-    Hour,   // 以時柱推算小運
-    Star,   // 《星學大成》
-    SixGia, // 六甲起行年法
-  }
 }
 
 @DestinyMarker
@@ -43,11 +34,12 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
     ewContextConfig = EightWordsContextConfigBuilder.ewContext(block)
   }
 
-  var fortuneLargeImpl: EightWordsPersonConfig.FortuneLarge = EightWordsPersonConfig.FortuneLarge.Span
-  var fortuneSmallImpl: EightWordsPersonConfig.FortuneSmall = EightWordsPersonConfig.FortuneSmall.Hour
+  var fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig()
+
+  var fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()
 
   override fun build(): EightWordsPersonConfig {
-    return EightWordsPersonConfig(ewContextConfig, fortuneLargeImpl, fortuneSmallImpl)
+    return EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig)
   }
 
   companion object {
@@ -76,10 +68,12 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
 
     // 9 or 18 條大運
-    val n = when(config.fortuneLargeImpl) {
-      EightWordsPersonConfig.FortuneLarge.Trad -> 9
-      EightWordsPersonConfig.FortuneLarge.Span -> 18
-    }
+//    val n = when(config.fortuneLargeImpl) {
+//      EightWordsPersonConfig.FortuneLarge.Trad -> 9
+//      EightWordsPersonConfig.FortuneLarge.Span -> 18
+//    }
+
+
 
     TODO("FortuneLargeFeature and FortuneSmallFeature")
   }
