@@ -31,7 +31,7 @@ class FortuneLargeTradImpl(
   }
 
   override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
-                             location: ILocation,
+                             loc: ILocation,
                              gender: Gender,
                              targetGmt: ChronoLocalDateTime<*>): IStemBranch {
     TODO("not implemented")

@@ -221,21 +221,21 @@ class FortuneLargeSpanImpl(
    * 逆推大運
    */
   override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
-                             location: ILocation,
+                             loc: ILocation,
                              gender: Gender,
                              targetGmt: ChronoLocalDateTime<*>): IStemBranch {
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, location)
-    val gmt = TimeTools.getGmtFromLmt(lmt, location)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    val gmt = TimeTools.getGmtFromLmt(lmt, loc)
 
 
     require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
 
-    val eightWords = eightWordsImpl.getEightWords(lmt, location)
+    val eightWords = eightWordsImpl.getEightWords(lmt, loc)
     var resultStemBranch = eightWords.month
 
     // 大運是否順行
-    val fortuneForward = fortuneDirectionImpl.isForward(lmt, location, gender)
+    val fortuneForward = fortuneDirectionImpl.isForward(lmt, loc, gender)
 
     val dur = Duration.between(targetGmt, gmt).abs()
     val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0

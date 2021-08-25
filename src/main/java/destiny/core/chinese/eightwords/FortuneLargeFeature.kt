@@ -8,10 +8,12 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.chinese.IStemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
+import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
@@ -39,8 +41,19 @@ class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
   }
 }
 
+interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneData>> {
+  /**
+   * 逆推大運
+   * 由 GMT 反推月大運
+   * @param lmt 出生時刻 LMT
+   * @param fromGmtJulDay 計算此時刻是屬於哪條月大運當中
+   * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
+   * */
+  fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch
+}
+
 class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
-                          private val julDayResolver: JulDayResolver) : PersonFeature<FortuneLargeConfig , List<FortuneData>> {
+                          private val julDayResolver: JulDayResolver) : IFortuneLargeFeature {
   override val key: String = "fortuneLargeFeature"
 
   override val defaultConfig: FortuneLargeConfig = FortuneLargeConfig()
@@ -54,5 +67,9 @@ class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPe
     }
 
     return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count)
+  }
+
+  override fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {
+    return implMap[config.impl]!!.getStemBranch(lmt, loc, gender, julDayResolver.getLocalDateTime(fromGmtJulDay))
   }
 }
