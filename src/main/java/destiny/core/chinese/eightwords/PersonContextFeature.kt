@@ -12,6 +12,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsContextConfig
 import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsContextFeature
+import destiny.core.calendar.eightwords.IEightWordsContextModel
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
@@ -70,7 +71,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
-    val ewModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig)
+    val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig.copy(place = place))
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     // 1到120歲 , 每歲的開始、以及結束
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
