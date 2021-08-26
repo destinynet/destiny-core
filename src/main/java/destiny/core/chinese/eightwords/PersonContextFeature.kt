@@ -35,8 +35,14 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
   }
 
   var fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig()
+  fun fortuneLarge(block: FortuneLargeConfigBuilder.() -> Unit = {}) {
+    this.fortuneLargeConfig = FortuneLargeConfigBuilder.fortuneLarge(block)
+  }
 
   var fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()
+  fun fortuneSmall(block: FortuneSmallConfigBuilder.() -> Unit = {}) {
+    this.fortuneSmallConfig = FortuneSmallConfigBuilder.fortuneSmall(block)
+  }
 
   override fun build(): EightWordsPersonConfig {
     return EightWordsPersonConfig(ewContextConfig, fortuneLargeConfig, fortuneSmallConfig)
@@ -51,6 +57,8 @@ class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
 
 class PersonContextFeature(private val eightWordsContextFeature: EightWordsContextFeature,
                            private val intAgeImpl: IIntAge,
+                           private val fortuneLargeFeature: IFortuneLargeFeature,
+                           private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
   override val key: String = "ewPerson"
 
@@ -67,14 +75,9 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     // 1到120歲 , 每歲的開始、以及結束
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
 
-    // 9 or 18 條大運
-//    val n = when(config.fortuneLargeImpl) {
-//      EightWordsPersonConfig.FortuneLarge.Trad -> 9
-//      EightWordsPersonConfig.FortuneLarge.Span -> 18
-//    }
+    val larges: List<FortuneData> = fortuneLargeFeature.getModel(lmt, loc, gender, name, place, config.fortuneLargeConfig)
+    val smalls: List<FortuneData> = fortuneSmallFeature.getModel(lmt, loc, gender, name, place, config.fortuneSmallConfig)
 
-
-
-    TODO("FortuneLargeFeature and FortuneSmallFeature")
+    return PersonContextModel(ewModel, gender, name, larges, smalls, ageMap)
   }
 }

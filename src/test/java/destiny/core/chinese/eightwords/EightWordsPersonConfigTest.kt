@@ -4,6 +4,7 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.AbstractConfigTest
+import destiny.core.IntAgeNoteImpl
 import destiny.core.astrology.*
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
@@ -35,8 +36,8 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       HouseConfig(HouseSystem.EQUAL, Coordinate.SIDEREAL),
       "台北市"
     ),
-    //fortuneLargeImpl = EightWordsPersonConfig.FortuneLarge.Span,
-    //fortuneSmallImpl = EightWordsPersonConfig.FortuneSmall.Star
+    fortuneLargeConfig = FortuneLargeConfig(FortuneLargeConfig.Impl.SolarTermsSpan, 90.0),
+    fortuneSmallConfig = FortuneSmallConfig(FortuneSmallConfig.Impl.SixGia, 90, intAgeNotes = listOf(IntAgeNoteImpl.Minguo))
   )
 
   override val configByFunction: EightWordsPersonConfig = ewPersonConfig {
@@ -81,9 +82,15 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
       }
       place = "台北市"
     }
-
-    //fortuneLargeImpl = EightWordsPersonConfig.FortuneLarge.Span
-    //fortuneSmallImpl = EightWordsPersonConfig.FortuneSmall.Star
+    fortuneLarge {
+      impl = FortuneLargeConfig.Impl.SolarTermsSpan
+      span = 90.0
+    }
+    fortuneSmall {
+      impl = FortuneSmallConfig.Impl.SixGia
+      count = 90
+      intAgeNotes(listOf(IntAgeNoteImpl.Minguo))
+    }
   }
 
   override val assertion: (String) -> Unit = { raw ->
@@ -97,8 +104,13 @@ internal class EightWordsPersonConfigTest : AbstractConfigTest<EightWordsPersonC
     assertTrue(raw.contains(""""tradChineseRisingSignConfig""".toRegex()))
     assertTrue(raw.contains(""""place":\s*"台北市"""".toRegex()))
 
-    assertTrue(raw.contains(""""fortuneLargeImpl":\s*"Span"""".toRegex()))
-    assertTrue(raw.contains(""""fortuneSmallImpl":\s*"Star"""".toRegex()))
+    assertTrue(raw.contains(""""impl":\s*"SolarTermsSpan"""".toRegex()))
+    assertTrue(raw.contains(""""span":\s*90.0""".toRegex()))
+
+
+    assertTrue(raw.contains(""""impl":\s*"SixGia"""".toRegex()))
+    assertTrue(raw.contains(""""count":\s*90""".toRegex()))
+    assertTrue(raw.contains("""\[\s*"Minguo"\s*]""".toRegex()))
 
 
   }

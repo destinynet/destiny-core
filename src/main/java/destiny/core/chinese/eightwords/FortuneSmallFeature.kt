@@ -4,7 +4,6 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
-import destiny.core.IntAgeImpl
 import destiny.core.IntAgeNote
 import destiny.core.IntAgeNoteImpl
 import destiny.core.calendar.GmtJulDay
@@ -22,7 +21,6 @@ import kotlinx.serialization.Serializable
 data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
                               /** 取得幾條小運 */
                               val count: Int = 120,
-                              val intAgeImpl : IntAgeImpl = IntAgeImpl.EightWords,
                               val intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
   enum class Impl {
@@ -36,7 +34,6 @@ data class FortuneSmallConfig(val impl: Impl = Impl.Hour,
 class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
   var impl: FortuneSmallConfig.Impl = FortuneSmallConfig.Impl.Hour
   var count: Int = 120
-  var intAgeImpl: IntAgeImpl = IntAgeImpl.EightWords
 
   var intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo)
   fun intAgeNotes(impls: List<IntAgeNoteImpl>) {
@@ -44,7 +41,7 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
   }
 
   override fun build(): FortuneSmallConfig {
-    return FortuneSmallConfig(impl, count, intAgeImpl, intAgeNotes)
+    return FortuneSmallConfig(impl, count, intAgeNotes)
   }
 
   companion object {
