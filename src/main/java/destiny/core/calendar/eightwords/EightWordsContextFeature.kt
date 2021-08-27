@@ -41,7 +41,7 @@ class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
     this.zodiacSignConfig = ZodiacSignBuilder.zodiacSign(block)
   }
 
-  var houseConfig : HouseConfig = HouseConfig()
+  var houseConfig : HouseConfig = HouseConfig(HouseSystem.MERIDIAN , Coordinate.ECLIPTIC)
   fun house(block: HouseConfigBuilder.() -> Unit = {}) {
     this.houseConfig = HouseConfigBuilder.houseCusp(block)
   }
