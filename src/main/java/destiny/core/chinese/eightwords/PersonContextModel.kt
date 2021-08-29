@@ -8,9 +8,7 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
-import destiny.core.calendar.eightwords.IEightWordsContext
-import destiny.core.calendar.eightwords.IEightWordsContextModel
-import destiny.core.calendar.eightwords.IEightWordsStandardFactory
+import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -58,10 +56,10 @@ interface IPersonFortuneLarge : Descriptive {
   /** 歲數註解實作  */
   val ageNoteImpls: List<IntAgeNote>
 
-  /**
-   * 順推大運
-   * 取得該命盤的幾條大運 */
+  /** 順推大運 , 取得該命盤的幾條大運 */
   fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData>
+  /** 順推大運 , 承上 , 利用 [EightWordsFeature] */
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData>
 
   /**
    * 逆推大運
@@ -70,6 +68,8 @@ interface IPersonFortuneLarge : Descriptive {
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
   fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch
+  /** 逆推大運 , 承上 , 利用 [EightWordsFeature] */
+  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): IStemBranch
 
   fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
@@ -162,6 +162,7 @@ data class PersonPresentModel(
 
 interface IPersonPresentContext : IPersonContext {
 
+  @Deprecated("")
   fun getPersonPresentModel(lmt: ChronoLocalDateTime<*>,
                             location: ILocation,
                             place: String?,
@@ -169,6 +170,7 @@ interface IPersonPresentContext : IPersonContext {
                             name: String?,
                             viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel
 
+  @Deprecated("")
   fun getPersonPresentModel(data: IBirthDataNamePlace,
                             viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
     return getPersonPresentModel(data.time, data.location, data.place, data.gender, data.name, viewGmt)

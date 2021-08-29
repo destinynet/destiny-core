@@ -14,6 +14,9 @@ import destiny.core.astrology.Planet
 import destiny.core.astrology.ZodiacDegree.Companion.toZodiacDegree
 import destiny.core.calendar.*
 import destiny.core.calendar.Constants.SECONDS_OF_DAY
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
@@ -49,19 +52,31 @@ class FortuneLargeSpanImpl(
   }
 
   /** 順推大運 , 取得該命盤的幾條大運 */
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
-                                  loc: ILocation,
-                                  gender: Gender,
-                                  count: Int): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData> {
 
-    val eightWords = eightWordsImpl.getEightWords(lmt, loc)
+    val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
 
     val forward = fortuneDirectionImpl.isForward(lmt, loc, gender)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
 
+    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count)
 
+  }
+
+
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
+    val eightWords: IEightWords = eightWordsFeature.getModel(lmt, loc, config)
+    val forward = fortuneDirectionImpl.isForward(lmt, loc, gender)
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+
+    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
+
+    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count)
+  }
+
+  private fun getFortuneDataList(eightWords: IEightWords, forward: Boolean , gmtJulDay: GmtJulDay, gender: Gender, ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>, count: Int): List<FortuneData> {
     //下個大運的干支
     var i = 1
     return generateSequence {
@@ -98,12 +113,10 @@ class FortuneLargeSpanImpl(
       }
       i++
       FortuneData(sb, startFortuneGmtJulDay, endFortuneGmtJulDay, startFortuneAge, endFortuneAge,
-        startFortuneAgeNotes, endFortuneAgeNotes)
+                  startFortuneAgeNotes, endFortuneAgeNotes)
     }.takeWhile { i <= count + 1 }
       .toList()
-
   }
-
 
   /**
    * 距離下 index 個「節」有幾秒 , 如果 index 為負，代表計算之前的「節」。 index 不能等於 0
@@ -222,15 +235,41 @@ class FortuneLargeSpanImpl(
    */
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
     val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
-
     require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
 
     val eightWords = eightWordsImpl.getEightWords(gmtJulDay, loc)
-    var resultStemBranch = eightWords.month
+
+    return getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay)
+  }
+
+  override fun getStemBranch(
+    gmtJulDay: GmtJulDay,
+    loc: ILocation,
+    gender: Gender,
+    targetGmt: ChronoLocalDateTime<*>,
+    eightWordsFeature: EightWordsFeature,
+    config: EightWordsConfig
+  ): IStemBranch {
+    val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
+    require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
+
+    val eightWords = eightWordsFeature.getModel(gmtJulDay, loc, config)
+
+    return getStemBranch(gmtJulDay, loc, eightWords, gender, targetGmtJulDay)
+  }
+
+  private fun getStemBranch(
+    gmtJulDay: GmtJulDay,
+    loc: ILocation,
+    eightWords: IEightWords,
+    gender: Gender,
+    targetGmtJulDay: GmtJulDay
+  ): IStemBranch {
 
     // 大運是否順行
-
     val fortuneForward = fortuneDirectionImpl.isForward(gmtJulDay, loc, gender)
+
+    var resultStemBranch = eightWords.month
 
     val diffSeconds = (targetGmtJulDay - gmtJulDay) * SECONDS_OF_DAY
 
@@ -255,7 +294,6 @@ class FortuneLargeSpanImpl(
       return resultStemBranch
     }
   }
-
 
   override fun toString(locale: Locale): String {
     return "傳統「節」過運"

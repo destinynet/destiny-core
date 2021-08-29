@@ -8,6 +8,9 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsConfigBuilder
+import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.IStemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
@@ -17,7 +20,8 @@ import java.time.chrono.ChronoLocalDateTime
 
 @Serializable
 data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
-                              val span : Double = 120.0): java.io.Serializable {
+                              val span : Double = 120.0,
+                              val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
   enum class Impl {
     DefaultSpan,    // 傳統、標準大運 (每柱十年)
     SolarTermsSpan  // 節氣星座過運法 (每柱五年)
@@ -28,10 +32,17 @@ data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
 class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
 
   var impl: FortuneLargeConfig.Impl = FortuneLargeConfig.Impl.DefaultSpan
+
   var span : Double = 120.0
 
+  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
+  fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
+    this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
+  }
+
+
   override fun build(): FortuneLargeConfig {
-    return FortuneLargeConfig(impl, span)
+    return FortuneLargeConfig(impl, span, eightWordsConfig)
   }
 
   companion object {
@@ -45,11 +56,9 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
   /**
    * 逆推大運
    * 由 GMT 反推月大運
-   * @param lmt 出生時刻 LMT
    * @param fromGmtJulDay 計算此時刻是屬於哪條月大運當中
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
-
   fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch
 
   fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {
@@ -58,7 +67,8 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
   }
 }
 
-class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
+class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
+                          private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
                           private val julDayResolver: JulDayResolver) : IFortuneLargeFeature {
   override val key: String = "fortuneLargeFeature"
 
@@ -72,10 +82,10 @@ class FortuneLargeFeature(private val implMap : Map<FortuneLargeConfig.Impl, IPe
       FortuneLargeConfig.Impl.SolarTermsSpan -> 18
     }
 
-    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count)
+    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, eightWordsFeature, config.eightWordsConfig)
   }
 
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {
-    return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(fromGmtJulDay))
+    return implMap[config.impl]!!.getStemBranch(gmtJulDay, loc, gender, julDayResolver.getLocalDateTime(fromGmtJulDay), eightWordsFeature, config.eightWordsConfig)
   }
 }

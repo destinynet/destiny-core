@@ -7,6 +7,8 @@ import destiny.core.Gender
 import destiny.core.IntAgeNote
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import java.io.Serializable
@@ -36,15 +38,19 @@ class FortuneLargeBlindImpl(
   override val eightWordsImpl: IEightWordsStandardFactory,
   override val ageNoteImpls: List<IntAgeNote>) : IPersonFortuneLarge, Serializable {
 
-
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>,
-                                  loc: ILocation,
-                                  gender: Gender,
-                                  count: Int): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData> {
     TODO("not implemented")
   }
 
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
+    TODO("Not yet implemented")
+  }
+
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+    TODO("Not yet implemented")
+  }
+
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): IStemBranch {
     TODO("Not yet implemented")
   }
 
