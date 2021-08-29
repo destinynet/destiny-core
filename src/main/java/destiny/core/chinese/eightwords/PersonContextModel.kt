@@ -69,7 +69,12 @@ interface IPersonFortuneLarge : Descriptive {
    * @param targetGmt 目標時刻為此時， 計算此時刻是屬於哪條月大運當中
    * 實際會與 [IPersonContextModel.getStemBranchOfFortuneMonth] 結果相同
    * */
-  fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch
+  fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch
+
+  fun getStemBranch(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    return getStemBranch(gmtJulDay, loc, gender, targetGmt)
+  }
 }
 
 

@@ -5,6 +5,7 @@ package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
 import destiny.core.IntAgeNote
+import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
@@ -30,12 +31,10 @@ class FortuneLargeTradImpl(
     TODO("not implemented")
   }
 
-  override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
-                             loc: ILocation,
-                             gender: Gender,
-                             targetGmt: ChronoLocalDateTime<*>): IStemBranch {
-    TODO("not implemented")
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+    TODO("Not yet implemented")
   }
+
 
   override fun toString(locale: Locale): String {
     TODO("not implemented")

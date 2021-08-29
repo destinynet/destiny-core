@@ -19,7 +19,6 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import mu.KotlinLogging
 import java.io.Serializable
-import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -217,28 +216,23 @@ class FortuneLargeSpanImpl(
     return ageMap.entries.firstOrNull { (age, pair) -> gmtJulDay > pair.first && pair.second > gmtJulDay }?.key
   }
 
+
   /**
    * 逆推大運
    */
-  override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
-                             loc: ILocation,
-                             gender: Gender,
-                             targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+    val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    val gmt = TimeTools.getGmtFromLmt(lmt, loc)
+    require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
 
-
-    require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
-
-    val eightWords = eightWordsImpl.getEightWords(lmt, loc)
+    val eightWords = eightWordsImpl.getEightWords(gmtJulDay, loc)
     var resultStemBranch = eightWords.month
 
     // 大運是否順行
-    val fortuneForward = fortuneDirectionImpl.isForward(lmt, loc, gender)
 
-    val dur = Duration.between(targetGmt, gmt).abs()
-    val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0
+    val fortuneForward = fortuneDirectionImpl.isForward(gmtJulDay, loc, gender)
+
+    val diffSeconds = (targetGmtJulDay - gmtJulDay) * SECONDS_OF_DAY
 
     if (fortuneForward) {
       logger.debug("大運順行")
@@ -261,6 +255,7 @@ class FortuneLargeSpanImpl(
       return resultStemBranch
     }
   }
+
 
   override fun toString(locale: Locale): String {
     return "傳統「節」過運"

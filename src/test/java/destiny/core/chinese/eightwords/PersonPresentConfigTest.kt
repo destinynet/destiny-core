@@ -6,7 +6,7 @@ package destiny.core.chinese.eightwords
 import destiny.core.AbstractConfigTest
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.eightwords.*
-import destiny.core.chinese.eightwords.PersonPresentConfigBuilder.Companion.personPresent
+import destiny.core.chinese.eightwords.PersonPresentConfigBuilder.Companion.ewPersonPresent
 import kotlinx.serialization.KSerializer
 import kotlin.test.assertTrue
 
@@ -28,8 +28,8 @@ internal class PersonPresentConfigTest : AbstractConfigTest<PersonPresentConfig>
     viewGmt = GmtJulDay(0.0)
   )
 
-  override val configByFunction: PersonPresentConfig = personPresent {
-    personContextConfig {
+  override val configByFunction: PersonPresentConfig = ewPersonPresent {
+    ewPersonContext {
       ewContextConfig {
         ewConfig {
           yearMonth {

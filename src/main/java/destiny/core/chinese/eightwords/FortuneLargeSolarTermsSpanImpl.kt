@@ -23,7 +23,6 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
 import mu.KotlinLogging
 import java.io.Serializable
-import java.time.Duration
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -216,28 +215,21 @@ class FortuneLargeSolarTermsSpanImpl(
     return ageMap.entries.firstOrNull { (_, pair) -> gmtJulDay > pair.first && pair.second > gmtJulDay }?.key
   }
 
-
   /**
    * 逆推大運 , 求，未來某時刻，的大運干支為何
    */
-  override fun getStemBranch(lmt: ChronoLocalDateTime<*>,
-                             loc: ILocation,
-                             gender: Gender,
-                             targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+  override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, targetGmt: ChronoLocalDateTime<*>): IStemBranch {
+    val targetGmtJulDay = TimeTools.getGmtJulDay(targetGmt)
 
-    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    val gmt = TimeTools.getGmtFromLmt(lmt, loc)
+    require(targetGmtJulDay > gmtJulDay) { "targetGmt $targetGmt must be after birth's time : $gmtJulDay" }
 
-    require(targetGmt.isAfter(gmt)) { "targetGmt $targetGmt must be after birth's time : $gmt" }
-
-    val eightWords: IEightWords = eightWordsImpl.getEightWords(lmt, loc)
+    val eightWords: IEightWords = eightWordsImpl.getEightWords(gmtJulDay, loc)
     var resultStemBranch: IStemBranch = eightWords.month.let { StemBranchUnconstrained[it.stem, it.branch]!! }
 
     // 大運是否順行
-    val fortuneForward = fortuneDirectionImpl.isForward(lmt, loc, gender)
+    val fortuneForward = fortuneDirectionImpl.isForward(gmtJulDay, loc, gender)
 
-    val dur = Duration.between(targetGmt, gmt).abs()
-    val diffSeconds = dur.seconds + dur.nano / 1_000_000_000.0
+    val diffSeconds = (targetGmtJulDay - gmtJulDay) * SECONDS_OF_DAY
 
     return if (fortuneForward) {
       logger.debug("大運順行")
@@ -257,7 +249,7 @@ class FortuneLargeSolarTermsSpanImpl(
       }
       resultStemBranch
     }
-  } // 逆推大運
+  }
 
   override fun toString(locale: Locale): String {
     return "「節」＋「氣（星座）」過運"
