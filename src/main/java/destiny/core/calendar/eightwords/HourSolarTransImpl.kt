@@ -240,11 +240,11 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
 
 
   override fun toString(locale: Locale): String {
-    return name
+    return HourBranchConfig.HourImpl.TST.toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "利用太陽過天底 到天頂之間，劃分十二等份，再從太陽過天頂到天底，平均劃分十二等份，依此來切割 12 時辰"
+    return HourBranchConfig.HourImpl.TST.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {
@@ -264,7 +264,6 @@ class HourSolarTransImpl(private val riseTransImpl: IRiseTrans,
 
   companion object {
     const val VALUE = "solar"
-    const val name = "真太陽時"
     private val logger = KotlinLogging.logger {}
   }
 

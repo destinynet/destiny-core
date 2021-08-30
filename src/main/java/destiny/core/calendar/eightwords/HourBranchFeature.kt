@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Descriptive
 import destiny.core.astrology.TransConfig
 import destiny.core.astrology.TransConfigBuilder
 import destiny.core.calendar.GmtJulDay
@@ -20,6 +21,7 @@ import java.time.LocalTime
 import java.time.chrono.ChronoLocalDate
 import java.time.chrono.ChronoLocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 
 /** 時辰切割 */
@@ -30,6 +32,30 @@ data class HourBranchConfig(val hourImpl : HourImpl = HourImpl.TST,
     TST,
     LMT
   }
+}
+
+fun HourBranchConfig.HourImpl.asDescriptive() = object : Descriptive {
+  override fun toString(locale: Locale): String {
+    return when(this@asDescriptive) {
+      HourBranchConfig.HourImpl.TST -> "真太陽時"
+      HourBranchConfig.HourImpl.LMT -> "以地方平均時（LMT）來區隔"
+    }
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return when(this@asDescriptive) {
+      HourBranchConfig.HourImpl.TST -> "利用太陽過天底 到天頂之間，劃分十二等份，再從太陽過天頂到天底，平均劃分十二等份，依此來切割 12 時辰"
+      HourBranchConfig.HourImpl.LMT -> "兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時"
+    }
+  }
+}
+
+fun HourBranchConfig.HourImpl.toString(locale: Locale): String {
+  return this.asDescriptive().toString(locale)
+}
+
+fun HourBranchConfig.HourImpl.getDescription(locale: Locale): String {
+  return this.asDescriptive().getDescription(locale)
 }
 
 class HourBranchConfigBuilder : Builder<HourBranchConfig> {

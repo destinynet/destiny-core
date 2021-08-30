@@ -49,11 +49,11 @@ class MidnightLmtImpl(private val julDayResolver: JulDayResolver) : IMidnight, S
   }
 
   override fun toString(locale: Locale): String {
-    return "以地方平均時（LMT）夜半零時來判定"
+    return DayConfig.MidnightImpl.CLOCK0.toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "晚上零時就是子正，不校正經度差以及真太陽時"
+    return DayConfig.MidnightImpl.CLOCK0.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

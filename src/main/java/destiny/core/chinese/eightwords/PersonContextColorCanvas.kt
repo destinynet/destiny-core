@@ -18,7 +18,8 @@ import org.apache.commons.lang3.StringUtils
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class PersonContextColorCanvas(private val personContext: IPersonContext,
+class PersonContextColorCanvas(private val config: PersonPresentConfig,
+                               private val personContext: IPersonContext,
                                /** 預先儲存已經計算好的結果  */
                                private val model: IPersonPresentModel,
                                /** 地支藏干的實作，內定採用標準設定  */
@@ -35,7 +36,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
 
     val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.time, model.location, model.place)
-    EightWordsColorCanvas(m, personContext, model.place ?: "", hiddenStemsImpl, linkUrl, direction, showNaYin)
+    EightWordsColorCanvas(m, config.personContextConfig.eightwordsContextConfig, model.place ?: "", hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
 
   init {
@@ -96,8 +97,6 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
       dataList.reverse()
     }
 
-    val ageNoteImpls = personContext.fortuneLargeImpl.ageNoteImpls
-
     // 下方大運橫
     if (dataList.size == 9) {
       // 完整九條大運 , 每條 height=10 , width = 6
@@ -105,10 +104,7 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
         val fortuneData = dataList[i - 1]
         val selected = fortuneData.stemBranch == model.selectedFortuneLarge
 
-        val startFortune: String =
-          ageNoteImpls
-            .mapNotNull { it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
-            .first()
+        val startFortune = fortuneData.startFortuneAgeNotes.firstOrNull()?:""
 
         val stemBranch = fortuneData.stemBranch
         val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
@@ -159,10 +155,8 @@ class PersonContextColorCanvas(private val personContext: IPersonContext,
           val fortuneData = dataList[index]
 
           val selected = fortuneData.stemBranch == model.selectedFortuneLarge
-          val startFortune: String =
-            ageNoteImpls
-              .mapNotNull { it.getAgeNote(fortuneData.startFortuneGmtJulDay) }
-              .first()
+
+          val startFortune = fortuneData.startFortuneAgeNotes.firstOrNull() ?: ""
           val stemBranch = fortuneData.stemBranch
           val startFortuneLmt = TimeTools.getLmtFromGmt(fortuneData.startFortuneGmtJulDay, model.location, julDayResolver)
 

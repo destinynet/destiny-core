@@ -32,7 +32,7 @@ class EightWordsColorCanvas(
 
   private val model: IEightWordsContextModel,
 
-  private val context: IEightWordsContext,
+  private val config: EightWordsContextConfig,
 
   /** 地點的名稱  */
   private val place: String,
@@ -140,19 +140,23 @@ class EightWordsColorCanvas(
       cc.add(latCanvas, 4, 25)
 
       var x = 0
-      if (context.yearMonthImpl is YearMonthSunSignImpl) {
+
+      if (config.eightWordsConfig.yearMonthConfig.monthConfig.monthImpl == MonthConfig.MonthImpl.SunSign) {
         val monthDesc =
           ChineseStringTools.toBiggerDigits(120) + "月柱法" + "（" + model.starPosMap.getValue(Planet.SUN).sign + "）"
         cc.setText(monthDesc, 5, 1, "FF0000")
         x += 22
       }
 
-      cc.setText("換日：" + if (context.dayHourImpl.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
+
+      cc.setText("換日：" + if (config.eightWordsConfig.dayHourConfig.dayConfig.changeDayAfterZi) "子初換日" else "子正換日", 5, x + 1)
       if (location.northSouth == News.NorthSouth.SOUTH) {
-        val yearMonthImpl = context.yearMonthImpl
-        if (yearMonthImpl is YearMonthSolarTermsStarPositionImpl) {
-          cc.setText("南半球", 5, x + 35, "FF0000")
-          cc.setText("月令：" + if (yearMonthImpl.southernHemisphereOpposition) "對沖" else "不對沖", 5, x + 41)
+
+        config.eightWordsConfig.yearMonthConfig.monthConfig.run {
+          if (monthImpl==MonthConfig.MonthImpl.SolarTerms) {
+            cc.setText("南半球", 5, x + 35, "FF0000")
+            cc.setText("月令：" + if (southernHemisphereOpposition) "對沖" else "不對沖", 5, x + 41)
+          }
         }
       }
 
@@ -161,10 +165,13 @@ class EightWordsColorCanvas(
       val dstString = if (isDst) "有" else "無"
       cc.setText(dstString, 5, x + 29, foreColor = if (isDst) "FF0000" else "", backColor =  "", title = null)
 
-      cc.setText("子正是：" + context.dayHourImpl.midnightImpl.toString(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
-        title = context.dayHourImpl.midnightImpl.getDescription(Locale.TRADITIONAL_CHINESE))
-      cc.setText("時辰劃分：" + context.dayHourImpl.toString(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
-        title = context.dayHourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+
+      cc.setText("子正是：" + config.eightWordsConfig.dayHourConfig.dayConfig.midnight.toString(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
+        title = config.eightWordsConfig.dayHourConfig.dayConfig.midnight.getDescription(Locale.TRADITIONAL_CHINESE))
+
+      cc.setText("時辰劃分：" + config.eightWordsConfig.dayHourConfig.hourBranchConfig.hourImpl.toString(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
+        title = config.eightWordsConfig.dayHourConfig.hourBranchConfig.hourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+
       val risingLine = 8
       // 命宮
       val mainHouse = model.risingStemBranch.let { sb ->
@@ -172,9 +179,8 @@ class EightWordsColorCanvas(
       }
       cc.setText("命宮：", risingLine, 1, foreColor = null, backColor = null, title = "命宮")
 
-
       cc.setText(mainHouse, risingLine, 7, foreColor = "FF0000", backColor =  null, title = mainHouse)
-      cc.setText("（" + context.risingSignImpl.toString(Locale.TAIWAN) + "）", risingLine, 19)
+      cc.setText("（" + config.risingSignConfig.impl.toString(Locale.TAIWAN) + "）", risingLine, 19)
 
       val linkLine = 9
       if (linkUrl != null) {
@@ -284,3 +290,7 @@ class EightWordsColorCanvas(
 
 
 }
+
+//private fun DayConfig.MidnightImpl.toString(locale: Locale) {
+//  TODO("Not yet implemented")
+//}

@@ -127,17 +127,13 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     }
   }
 
-
-  /**
-   * LMT 要實作
-   */
   override fun toString(locale: Locale): String {
-    return name
+    return HourBranchConfig.HourImpl.LMT.toString(locale)
   }
 
 
   override fun getDescription(locale: Locale): String {
-    return "兩小時一個時辰 , 23-1 為子時 , 1-3 為丑時 ... 依此類推 , 每個時辰固定 2 小時"
+    return HourBranchConfig.HourImpl.LMT.getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {
@@ -150,10 +146,8 @@ class HourLmtImpl(val julDayResolver: JulDayResolver) : IHour, Serializable {
     return javaClass.hashCode()
   }
 
-
   companion object {
     const val VALUE = "lmt"
-    const val name = "以地方平均時（LMT）來區隔"
   }
 
 }

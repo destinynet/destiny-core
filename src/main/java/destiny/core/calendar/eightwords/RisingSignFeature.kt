@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Descriptive
 import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -11,6 +12,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import java.util.*
 
 @Serializable
 data class TradChineseRisingSignConfig(
@@ -28,6 +30,20 @@ data class RisingSignConfig(
     TradChinese
   }
 }
+
+fun RisingSignConfig.Impl.asDescriptive() = object : Descriptive {
+  override fun toString(locale: Locale): String {
+    return when (this@asDescriptive) {
+      RisingSignConfig.Impl.HouseCusp   -> "真實星體觀測"
+      RisingSignConfig.Impl.TradChinese -> "傳統推命宮法"
+    }
+  }
+}
+
+fun RisingSignConfig.Impl.toString(locale: Locale): String {
+  return this.asDescriptive().toString(locale)
+}
+
 
 @DestinyMarker
 class RisingSignConfigBuilder : Builder<RisingSignConfig> {
