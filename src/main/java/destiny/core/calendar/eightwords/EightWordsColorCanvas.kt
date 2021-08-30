@@ -166,11 +166,19 @@ class EightWordsColorCanvas(
       cc.setText(dstString, 5, x + 29, foreColor = if (isDst) "FF0000" else "", backColor =  "", title = null)
 
 
-      cc.setText("子正是：" + config.eightWordsConfig.dayHourConfig.dayConfig.midnight.toString(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
-        title = config.eightWordsConfig.dayHourConfig.dayConfig.midnight.getDescription(Locale.TRADITIONAL_CHINESE))
+      config.eightWordsConfig.dayHourConfig.dayConfig.midnight.run {
+        cc.setText(
+          "子正是：" + toString(Locale.TRADITIONAL_CHINESE), 6, 1, foreColor = null, backColor = null,
+          title = getDescription(Locale.TRADITIONAL_CHINESE)
+        )
+      }
 
-      cc.setText("時辰劃分：" + config.eightWordsConfig.dayHourConfig.hourBranchConfig.hourImpl.toString(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
-        title = config.eightWordsConfig.dayHourConfig.hourBranchConfig.hourImpl.getDescription(Locale.TRADITIONAL_CHINESE))
+      config.eightWordsConfig.dayHourConfig.hourBranchConfig.hourImpl.run {
+        cc.setText(
+          "時辰劃分：" + toString(Locale.TRADITIONAL_CHINESE), 7, 1, foreColor = null, backColor = null,
+          title = getDescription(Locale.TRADITIONAL_CHINESE)
+        )
+      }
 
       val risingLine = 8
       // 命宮
@@ -287,10 +295,4 @@ class EightWordsColorCanvas(
     }
     return resultCanvas
   }
-
-
 }
-
-//private fun DayConfig.MidnightImpl.toString(locale: Locale) {
-//  TODO("Not yet implemented")
-//}
