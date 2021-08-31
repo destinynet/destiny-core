@@ -11,6 +11,7 @@ import destiny.core.calendar.SolarTermsTimePos
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.IChineseDate
+import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder.Companion.ewContext
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -77,6 +78,18 @@ interface IEightWordsContext : IEightWordsStandardFactory {
                                 location: ILocation,
                                 place: String?): IEightWordsContextModel
 
+  val ewContextConfig: EightWordsContextConfig
+    get() {
+      return ewContext {
+        eightWordsConfig = ewConfig
+        risingSign {
+          impl = when(this@IEightWordsContext.risingSignImpl) {
+            is IHouseCusp -> RisingSignConfig.Impl.HouseCusp
+            else          -> RisingSignConfig.Impl.TradChinese
+          }
+        }
+      }
+    }
 
 }
 

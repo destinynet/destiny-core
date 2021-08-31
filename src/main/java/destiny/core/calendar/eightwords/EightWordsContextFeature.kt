@@ -26,12 +26,12 @@ data class EightWordsContextConfig(
 
 @DestinyMarker
 class EightWordsContextConfigBuilder : Builder<EightWordsContextConfig> {
-  private var eightWordsConfig: EightWordsConfig = EightWordsConfig()
+  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
   fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
     this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
   }
 
-  private var risingSignConfig: RisingSignConfig = RisingSignConfig()
+  var risingSignConfig: RisingSignConfig = RisingSignConfig()
   fun risingSign(block : RisingSignConfigBuilder.() -> Unit = {}) {
     this.risingSignConfig = RisingSignConfigBuilder.risingSign(block)
   }

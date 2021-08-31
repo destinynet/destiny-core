@@ -10,6 +10,8 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
+import destiny.core.chinese.eightwords.PersonPresentConfigBuilder.Companion.ewPersonPresent
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -115,6 +117,28 @@ interface IPersonContext : IEightWordsContext {
 
   /** 小運 的實作 */
   val fortuneSmallImpl : IPersonFortuneSmall
+
+  val personContextConfig: EightWordsPersonConfig
+    get() {
+      return ewPersonConfig {
+        ewContextConfig = super.ewContextConfig
+        fortuneLarge {
+          impl = when(this@IPersonContext.fortuneLargeImpl) {
+            is FortuneLargeSpanImpl -> FortuneLargeConfig.Impl.DefaultSpan
+            is FortuneLargeSolarTermsSpanImpl -> FortuneLargeConfig.Impl.SolarTermsSpan
+            else -> throw IllegalArgumentException("not supported")
+          }
+        }
+        fortuneSmall {
+          impl = when(this@IPersonContext.fortuneSmallImpl) {
+            is FortuneSmallHourImpl -> FortuneSmallConfig.Impl.Hour
+            is FortuneSmallStarImpl -> FortuneSmallConfig.Impl.Star
+            is FortuneSmall6GiaImpl -> FortuneSmallConfig.Impl.SixGia
+            else -> throw IllegalArgumentException("not supported")
+          }
+        }
+      }
+    }
 }
 
 /**
@@ -174,5 +198,12 @@ interface IPersonPresentContext : IPersonContext {
   fun getPersonPresentModel(data: IBirthDataNamePlace,
                             viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
     return getPersonPresentModel(data.time, data.location, data.place, data.gender, data.name, viewGmt)
+  }
+
+  fun personPresentConfig(viewGmt : GmtJulDay): PersonPresentConfig {
+    return ewPersonPresent {
+      personContextConfig = super.personContextConfig
+      this.viewGmt = viewGmt
+    }
   }
 }

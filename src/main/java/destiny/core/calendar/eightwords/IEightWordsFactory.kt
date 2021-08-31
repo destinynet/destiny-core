@@ -33,7 +33,7 @@ interface IEightWordsStandardFactory : IEightWordsFactory {
   /** 日、時 的實作 */
   val dayHourImpl: IDayHour
 
-  val config: EightWordsConfig
+  val ewConfig: EightWordsConfig
     get() {
       return ewConfig {
         yearMonthConfig = yearMonthImpl.config
