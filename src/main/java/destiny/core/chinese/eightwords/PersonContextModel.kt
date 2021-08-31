@@ -194,12 +194,6 @@ interface IPersonPresentContext : IPersonContext {
                             name: String?,
                             viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel
 
-  @Deprecated("")
-  fun getPersonPresentModel(data: IBirthDataNamePlace,
-                            viewGmt: ChronoLocalDateTime<*>): IPersonPresentModel {
-    return getPersonPresentModel(data.time, data.location, data.place, data.gender, data.name, viewGmt)
-  }
-
   fun personPresentConfig(viewGmt : GmtJulDay): PersonPresentConfig {
     return ewPersonPresent {
       personContextConfig = super.personContextConfig
