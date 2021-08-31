@@ -8,6 +8,7 @@ import destiny.core.Descriptive
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.eightwords.YearMonthConfigBuilder.Companion.yearMonthConfig
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import java.io.Serializable
@@ -62,4 +63,22 @@ interface IMonth : Serializable {
 /**
  * 年月應該要一起考慮，所以設計這個 Interface
  */
-interface IYearMonth : IYear, IMonth, Descriptive
+interface IYearMonth : IYear, IMonth, Descriptive {
+  val config: YearMonthConfig
+    get() {
+      return yearMonthConfig {
+        year {
+          changeYearDegree = this@IYearMonth.changeYearDegree
+        }
+        month {
+          southernHemisphereOpposition = this@IYearMonth.southernHemisphereOpposition
+          hemisphereBy = this@IYearMonth.hemisphereBy
+          monthImpl = when (this@IYearMonth) {
+            is YearMonthSolarTermsStarPositionImpl -> MonthConfig.MonthImpl.SolarTerms
+            is YearMonthSunSignImpl                -> MonthConfig.MonthImpl.SunSign
+            else                                   -> error("no month")
+          }
+        }
+      }
+    }
+}

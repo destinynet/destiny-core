@@ -36,7 +36,7 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
 
     val m: IEightWordsContextModel = personContext.getEightWordsContextModel(model.time, model.location, model.place)
-    EightWordsColorCanvas(m, config.personContextConfig.eightwordsContextConfig, model.place ?: "", hiddenStemsImpl, linkUrl, direction, showNaYin)
+    EightWordsColorCanvas(m, config.personContextConfig.eightwordsContextConfig, hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
 
   init {

@@ -34,17 +34,16 @@ class EightWordsColorCanvas(
 
   private val config: EightWordsContextConfig,
 
-  /** 地點的名稱  */
-  private val place: String,
-
   /** 地支藏干的實作，內定採用標準設定  */
   private val hiddenStemsImpl: IHiddenStems,
+
   /** 網址連結  */
   private val linkUrl: String?,
   /** 輸出方向，由左至右，還是由右至左  */
   private val direction: Direction,
   /** 是否顯示納音 */
-  private val showNaYin: Boolean = false) : ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR) {
+  private val showNaYin: Boolean = false
+) : ColorCanvas(20, 52, ChineseStringTools.NULL_CHAR) {
 
   private val urlBuilder = GoogleMapsUrlBuilder()
 
@@ -111,7 +110,7 @@ class EightWordsColorCanvas(
       // 地點名稱
       val placeCanvas = ColorCanvas(1, 44, ChineseStringTools.NULL_CHAR)
       placeCanvas.setText("地點：", 1, 1)
-      placeCanvas.setText(place, 1, 7, null, null, url, place, false, null)
+      placeCanvas.setText(config.place?:"", 1, 7, null, null, url, config.place, false, null)
       val minuteOffset = location.minuteOffset ?: (TimeTools.getDstSecondOffset(lmt, location).second / 60)
 
       minuteOffset.also {

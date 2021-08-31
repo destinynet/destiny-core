@@ -72,9 +72,12 @@ interface IEightWordsContext : IEightWordsStandardFactory {
   val chineseDateImpl: IChineseDate
   val risingSignImpl: IRisingSign
 
+  @Deprecated("EightWordsContextFeature")
   fun getEightWordsContextModel(lmt: ChronoLocalDateTime<*>,
                                 location: ILocation,
                                 place: String?): IEightWordsContextModel
+
+
 }
 
 

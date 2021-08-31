@@ -7,6 +7,7 @@ package destiny.core.calendar.eightwords
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.TimeTools
+import destiny.core.calendar.eightwords.EightWordsConfigBuilder.Companion.ewConfig
 import java.time.chrono.ChronoLocalDateTime
 
 /**
@@ -31,4 +32,12 @@ interface IEightWordsStandardFactory : IEightWordsFactory {
 
   /** 日、時 的實作 */
   val dayHourImpl: IDayHour
+
+  val config: EightWordsConfig
+    get() {
+      return ewConfig {
+        yearMonthConfig = yearMonthImpl.config
+        dayHourConfig = dayHourImpl.config
+      }
+    }
 }

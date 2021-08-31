@@ -24,13 +24,13 @@ data class EightWordsConfig(
 
 @DestinyMarker
 class EightWordsConfigBuilder : Builder<EightWordsConfig> {
-  private var yearMonthConfig: YearMonthConfig = YearMonthConfig()
+  var yearMonthConfig: YearMonthConfig = YearMonthConfig()
 
   fun yearMonth(block: YearMonthConfigBuilder.() -> Unit) {
     this.yearMonthConfig = YearMonthConfigBuilder.yearMonthConfig(block)
   }
 
-  private var dayHourConfig: DayHourConfig = DayHourConfig()
+  var dayHourConfig: DayHourConfig = DayHourConfig()
 
   fun dayHour(block: DayHourConfigBuilder.() -> Unit) {
     this.dayHourConfig = DayHourConfigBuilder.dayHour(block)
