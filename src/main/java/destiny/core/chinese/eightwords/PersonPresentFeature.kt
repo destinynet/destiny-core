@@ -8,7 +8,9 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.chinese.ChineseDateFeature
+import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
@@ -43,6 +45,7 @@ class PersonPresentConfigBuilder : Builder<PersonPresentConfig> {
 
 class PersonPresentFeature(private val personContextFeature: PersonContextFeature,
                            private val personLargeFeature: IFortuneLargeFeature,
+                           private val yearFeature: YearFeature,
                            private val chineseDateFeature: ChineseDateFeature,
                            private val julDayResolver: JulDayResolver) : PersonFeature<PersonPresentConfig , IPersonPresentModel> {
   override val key: String = "personPresent"
@@ -59,6 +62,16 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
     // 目前所處的大運
     val selectedFortuneLarge: IStemBranch = personLargeFeature.getStemBranch(gmtJulDay, loc, gender, config.viewGmt, config.personContextConfig.fortuneLargeConfig)
 
-    return PersonPresentModel(pcm, viewGmtTime, viewChineseDate, selectedFortuneLarge)
+    // 選定的十年流年
+    val selectedFortuneLargeYears: List<StemBranch> = pcm.fortuneDataLarges.firstOrNull { it.stemBranch == selectedFortuneLarge }?.let { fortuneData ->
+      generateSequence(yearFeature.getModel(fortuneData.startFortuneGmtJulDay, loc)) {
+        it.next(1)
+      }.take(10).toList()
+    }?: emptyList()
+
+    // 當年流年
+    val presentYear: StemBranch = yearFeature.getModel(viewGmtTime, loc)
+
+    return PersonPresentModel(pcm, viewGmtTime, viewChineseDate, selectedFortuneLarge, selectedFortuneLargeYears, presentYear)
   }
 }

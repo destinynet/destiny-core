@@ -24,7 +24,7 @@ import destiny.tools.canvas.ColorCanvas
  * 丙  乙  甲  癸  壬  辛  庚  己  戊  丁
  * 午  巳  辰  卯  寅  丑  子  亥  戌  酉
  */
-class PersonContextSimpleEventCanvas(personContext: IPersonContext, model: IPersonPresentModel, direction: Direction) :
+class PersonContextSimpleEventCanvas(model: IPersonPresentModel, direction: Direction) :
   ColorCanvas(10, 40, ChineseStringTools.NULL_CHAR) {
 
   init {
@@ -32,7 +32,7 @@ class PersonContextSimpleEventCanvas(personContext: IPersonContext, model: IPers
     add(coreCanvas, 1, 1)
 
     // 九條大運
-    val fortuneDataList: List<FortuneData> = personContext.fortuneLargeImpl.getFortuneDataList(model.time, model.location, model.gender, 9)
+    val fortuneDataList: List<FortuneData> = model.fortuneDataLarges
 
     // 選定的大運
     val selectedFortuneLarge: IStemBranch = model.selectedFortuneLarge
@@ -53,33 +53,31 @@ class PersonContextSimpleEventCanvas(personContext: IPersonContext, model: IPers
     }
 
 
-    fortuneDataList.firstOrNull { it.stemBranch == selectedFortuneLarge }?.also { fortuneData ->
-      setText("流年：", 8, 1, "gray")
 
-      val presentYear: StemBranch = personContext.yearMonthImpl.getYear(model.viewGmt, model.location)
+    setText("流年：", 8, 1, "gray")
 
+    // 當年流年
+    val presentYear: StemBranch = model.presentYear
 
-      // 十年流年
-      val years = generateSequence(personContext.yearMonthImpl.getYear(fortuneData.startFortuneGmtJulDay, model.location)) {
-        it.next(1)
-      }.take(10).toList().let {
-        if (direction === Direction.R2L)
-          it.reversed()
-        else
-          it
-      }
-
-      years.map { yearSb ->
-        ColorCanvas(2, 4).apply {
-          val foreColor = if (yearSb != presentYear) null else "white"
-          val bgColor = if (yearSb != presentYear) null else "RED"
-          setText(yearSb.stem.name, 1, 3, foreColor, bgColor)
-          setText(yearSb.branch.name, 2, 3, foreColor, bgColor)
-        }
-      }.forEachIndexed { index, colorCanvas ->
-        add(colorCanvas, 9, index * 4 + 1)
-      }
+    // 十年流年
+    val years: List<StemBranch> = model.selectedFortuneLargeYears.let {
+      if (direction === Direction.R2L)
+        it.reversed()
+      else
+        it
     }
+
+    years.map { yearSb ->
+      ColorCanvas(2, 4).apply {
+        val foreColor = if (yearSb != presentYear) null else "white"
+        val bgColor = if (yearSb != presentYear) null else "RED"
+        setText(yearSb.stem.name, 1, 3, foreColor, bgColor)
+        setText(yearSb.branch.name, 2, 3, foreColor, bgColor)
+      }
+    }.forEachIndexed { index, colorCanvas ->
+      add(colorCanvas, 9, index * 4 + 1)
+    }
+
 
   }
 

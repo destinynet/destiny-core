@@ -10,6 +10,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.eightwords.*
 import destiny.core.chinese.IStemBranch
+import destiny.core.chinese.StemBranch
 import destiny.core.chinese.eightwords.PersonConfigBuilder.Companion.ewPersonConfig
 import destiny.core.chinese.eightwords.PersonPresentConfigBuilder.Companion.ewPersonPresent
 import java.io.Serializable
@@ -175,13 +176,21 @@ interface IPersonPresentModel : IPersonContextModel {
   /** 目前所處於的大運 */
   val selectedFortuneLarge: IStemBranch
 
+  /** 承上 , 十年流年 */
+  val selectedFortuneLargeYears: List<StemBranch>
+
+  /** 當年流年 */
+  val presentYear: StemBranch
+
 }
 
 data class PersonPresentModel(
   private val personContextModel: IPersonContextModel,
   override val viewGmt: ChronoLocalDateTime<*>,
   override val viewChineseDate: ChineseDate,
-  override val selectedFortuneLarge: IStemBranch) :
+  override val selectedFortuneLarge: IStemBranch,
+  override val selectedFortuneLargeYears: List<StemBranch>,
+  override val presentYear: StemBranch) :
   IPersonPresentModel, IPersonContextModel by personContextModel, Serializable
 
 interface IPersonPresentContext : IPersonContext {
