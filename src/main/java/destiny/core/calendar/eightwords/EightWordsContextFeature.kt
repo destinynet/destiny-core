@@ -12,7 +12,9 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
+import javax.cache.Cache
 
 
 @Serializable
@@ -68,7 +70,10 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val houseCuspImpl: IHouseCusp,
                                private val solarTermsImpl: ISolarTerms,
                                private val aspectsCalculator: IAspectsCalculator,
-                               private val julDayResolver: JulDayResolver) : Feature<EightWordsContextConfig , IEightWordsContextModel> {
+                               private val julDayResolver: JulDayResolver,
+                               private val ewContextFeatureCache : Cache<CacheKey, IEightWordsContextModel>) : Feature<EightWordsContextConfig , IEightWordsContextModel> {
+
+  data class CacheKey(val lmt: ChronoLocalDateTime<*>, val loc: ILocation, val config: EightWordsContextConfig) : java.io.Serializable
 
   override val key: String = "ewContext"
 
@@ -82,63 +87,82 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
   }
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
-    val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
 
-    val chineseDate = chineseDateFeature.getModel(lmt, loc , config.eightWordsConfig.dayHourConfig)
+    val cacheKey = CacheKey(lmt, loc, config)
+    logger.trace { "cacheKey hash = ${cacheKey.hashCode()}" }
 
-    // 命宮地支
-    val risingBranch = risingSignFeature.getModel(lmt, loc, config.risingSignConfig).branch
-    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-    val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
-    val risingSign = StemBranch[risingStem , risingBranch]
+    return ewContextFeatureCache.get(cacheKey)?.also {
+      logger.trace { "cache hit" }
+    }?:run {
+      logger.trace { "cache miss" }
+      val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
 
-    // 日干
-    val dayStem = eightWords.day.stem
-    // 五星 + 南北交點
-    val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.meanArray)
-    val starPosMap: Map<Point, PositionWithBranch> = stars.associateWith { p: Point ->
-      val pos: IPos = starPositionImpl.getPosition(p as Star, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
+      val chineseDate = chineseDateFeature.getModel(lmt, loc , config.eightWordsConfig.dayHourConfig)
 
-      val hourImpl = HourHouseImpl(houseCuspImpl, starPositionImpl, p)
-      val hourBranch = hourImpl.getHour(lmt, loc)
+      // 命宮地支
+      val risingBranch = risingSignFeature.getModel(lmt, loc, config.risingSignConfig).branch
+      // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
+      val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
+      val risingSign = StemBranch[risingStem , risingBranch]
 
-      val hourStem = StemBranchUtils.getHourStem(dayStem, hourBranch)
-      val hour = StemBranch[hourStem, hourBranch]
-      PositionWithBranch(pos, hour)
+      // 日干
+      val dayStem = eightWords.day.stem
+      // 五星 + 南北交點
+      val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.meanArray)
+      val starPosMap: Map<Point, PositionWithBranch> = stars.associateWith { p: Point ->
+        val pos: IPos = starPositionImpl.getPosition(p as Star, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
+
+        val hourImpl = HourHouseImpl(houseCuspImpl, starPositionImpl, p)
+        val hourBranch = hourImpl.getHour(lmt, loc)
+
+        val hourStem = StemBranchUtils.getHourStem(dayStem, hourBranch)
+        val hour = StemBranch[hourStem, hourBranch]
+        PositionWithBranch(pos, hour)
+      }
+
+
+      val houseMap = houseCuspFeature.getModel(lmt, loc, config.houseConfig)
+
+      // 四個至點的黃道度數
+      val rsmiMap: Map<TransPoint, ZodiacDegree> = houseCuspFeature.getModel(lmt, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
+        mapOf(
+          TransPoint.RISING to map[1]!!,
+          TransPoint.NADIR to map[4]!!,
+          TransPoint.SETTING to map[7]!!,
+          TransPoint.MERIDIAN to map[10]!!,
+        )
+      }
+
+
+      val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
+      val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(TimeTools.getGmtJulDay(lmt , loc))
+      val aspectDataSet = aspectsCalculator.getAspectDataSet(starPosMap)
+
+      EightWordsContextModel(
+        eightWords,
+        lmt,
+        loc,
+        config.place,
+        chineseDate,
+        solarTermsTimePos,
+        prevSolarSign,
+        nextSolarSign,
+        starPosMap,
+        risingSign,
+        houseMap,
+        rsmiMap,
+        aspectDataSet
+      ).also { model ->
+        logger.trace { "Insert cacheKey${cacheKey.hashCode()} to model" }
+        ewContextFeatureCache.put(cacheKey, model)
+      }
     }
 
 
-    val houseMap = houseCuspFeature.getModel(lmt, loc, config.houseConfig)
+  }
 
-    // 四個至點的黃道度數
-    val rsmiMap: Map<TransPoint, ZodiacDegree> = houseCuspFeature.getModel(lmt, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
-      mapOf(
-        TransPoint.RISING to map[1]!!,
-        TransPoint.NADIR to map[4]!!,
-        TransPoint.SETTING to map[7]!!,
-        TransPoint.MERIDIAN to map[10]!!,
-      )
-    }
-
-
-    val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
-    val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(TimeTools.getGmtJulDay(lmt , loc))
-    val aspectDataSet = aspectsCalculator.getAspectDataSet(starPosMap)
-
-    return EightWordsContextModel(
-      eightWords,
-      lmt,
-      loc,
-      config.place,
-      chineseDate,
-      solarTermsTimePos,
-      prevSolarSign,
-      nextSolarSign,
-      starPosMap,
-      risingSign,
-      houseMap,
-      rsmiMap,
-      aspectDataSet
-    )
+  companion object {
+    private val logger = KotlinLogging.logger {  }
+    const val CACHE_EIGHTWORDS_FEATURE_MODEL = "ewContextFeatureCache"
   }
 }
