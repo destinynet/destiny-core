@@ -163,6 +163,6 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   companion object {
     private val logger = KotlinLogging.logger {  }
-    const val CACHE_EIGHTWORDS_FEATURE_MODEL = "ewContextFeatureCache"
+    const val CACHE_EIGHTWORDS_CONTEXT_FEATURE = "ewContextFeatureCache"
   }
 }
