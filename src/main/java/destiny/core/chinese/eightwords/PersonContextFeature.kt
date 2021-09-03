@@ -63,7 +63,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val fortuneLargeFeature: IFortuneLargeFeature,
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
-                           private val ewPersonFeatureCache: Cache<CacheKey, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
+                           private val ewPersonFeatureCache: Cache<PersonFeature.LmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
 
   data class CacheKey(
     val lmt: ChronoLocalDateTime<*>,
@@ -78,34 +78,25 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
 
   override val defaultConfig: EightWordsPersonConfig = EightWordsPersonConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
+  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    return getModel(lmt, loc, gender, name, place, config)
+    return getPersonModel(lmt, loc, gender, name, place, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
+  override val lmtPersonCache: Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+    get() = ewPersonFeatureCache as Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
 
-    val cacheKey = CacheKey(lmt, loc, gender, name, place, config)
-    logger.trace { "cacheKey hash = ${cacheKey.hashCode()}" }
+  override fun getPersonModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
 
-    return ewPersonFeatureCache.get(cacheKey)?.also {
-      logger.trace { "cache hit" }
-    }?:run {
-      logger.trace { "cache miss" }
+    val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig.copy(place = place))
+    val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
+    // 1到120歲 , 每歲的開始、以及結束
+    val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
 
-      val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig.copy(place = place))
-      val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-      // 1到120歲 , 每歲的開始、以及結束
-      val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = intAgeImpl.getRangesMap(gender, gmtJulDay, loc, 1, 120)
+    val larges: List<FortuneData> = fortuneLargeFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneLargeConfig)
+    val smalls: List<FortuneData> = fortuneSmallFeature.getPersonModel(lmt, loc, gender, name, place, config.fortuneSmallConfig)
 
-      val larges: List<FortuneData> = fortuneLargeFeature.getModel(lmt, loc, gender, name, place, config.fortuneLargeConfig)
-      val smalls: List<FortuneData> = fortuneSmallFeature.getModel(lmt, loc, gender, name, place, config.fortuneSmallConfig)
-
-      PersonContextModel(ewModel, gender, name, larges, smalls, ageMap).also { model ->
-        logger.trace { "Insert cacheKey${cacheKey.hashCode()} to model" }
-        ewPersonFeatureCache.put(cacheKey, model)
-      }
-    }
+    return PersonContextModel(ewModel, gender, name, larges, smalls, ageMap)
   }
 
   companion object {

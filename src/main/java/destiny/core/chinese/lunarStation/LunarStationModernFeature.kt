@@ -57,7 +57,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
 
   override val defaultConfig: LunarStationModernConfig = LunarStationModernConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
+  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
     val created = LocalDateTime.now()
     val hourBranch = randomService.randomEnum(Branch::class.java)
 

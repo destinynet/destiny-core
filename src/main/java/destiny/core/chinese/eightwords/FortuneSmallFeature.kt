@@ -58,7 +58,7 @@ class FortuneSmallFeature(private val julDayResolver: JulDayResolver,
 
   override val defaultConfig: FortuneSmallConfig = FortuneSmallConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneSmallConfig): List<FortuneData> {
+  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneSmallConfig): List<FortuneData> {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 

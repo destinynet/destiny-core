@@ -74,7 +74,7 @@ class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
 
   override val defaultConfig: FortuneLargeConfig = FortuneLargeConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneLargeConfig): List<FortuneData> {
+  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneLargeConfig): List<FortuneData> {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val count = when (config.impl) {

@@ -71,7 +71,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val solarTermsImpl: ISolarTerms,
                                private val aspectsCalculator: IAspectsCalculator,
                                private val julDayResolver: JulDayResolver,
-                               private val ewContextFeatureCache : Cache<CacheKey, IEightWordsContextModel>) : Feature<EightWordsContextConfig , IEightWordsContextModel> {
+                               private val ewContextFeatureCache : Cache<Feature.LmtCacheKey<*>, IEightWordsContextModel>) : Feature<EightWordsContextConfig , IEightWordsContextModel> {
 
   data class CacheKey(val lmt: ChronoLocalDateTime<*>, val loc: ILocation, val config: EightWordsContextConfig) : java.io.Serializable
 
@@ -79,6 +79,8 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   override val defaultConfig: EightWordsContextConfig = EightWordsContextConfig()
 
+  override val lmtCache: Cache<Feature.LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
+    get() = ewContextFeatureCache as Cache<Feature.LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
 
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
 
@@ -88,43 +90,38 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
 
-    val cacheKey = CacheKey(lmt, loc, config)
-    logger.trace { "cacheKey hash = ${cacheKey.hashCode()}" }
 
-    return ewContextFeatureCache.get(cacheKey)?.also {
-      logger.trace { "cache hit" }
-    }?:run {
-      logger.trace { "cache miss" }
-      val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
+    val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)
 
-      val chineseDate = chineseDateFeature.getModel(lmt, loc , config.eightWordsConfig.dayHourConfig)
+    val chineseDate = chineseDateFeature.getModel(lmt, loc, config.eightWordsConfig.dayHourConfig)
 
-      // 命宮地支
-      val risingBranch = risingSignFeature.getModel(lmt, loc, config.risingSignConfig).branch
-      // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
-      val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
-      val risingSign = StemBranch[risingStem , risingBranch]
+    // 命宮地支
+    val risingBranch = risingSignFeature.getModel(lmt, loc, config.risingSignConfig).branch
+    // 命宮天干：利用「五虎遁」起月 => 年干 + 命宮地支（當作月份），算出命宮的天干
+    val risingStem = StemBranchUtils.getMonthStem(eightWords.year.stem, risingBranch)
+    val risingSign = StemBranch[risingStem, risingBranch]
 
-      // 日干
-      val dayStem = eightWords.day.stem
-      // 五星 + 南北交點
-      val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.meanArray)
-      val starPosMap: Map<Point, PositionWithBranch> = stars.associateWith { p: Point ->
-        val pos: IPos = starPositionImpl.getPosition(p as Star, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
+    // 日干
+    val dayStem = eightWords.day.stem
+    // 五星 + 南北交點
+    val stars: List<Star> = listOf(*Planet.classicalArray, *LunarNode.meanArray)
+    val starPosMap: Map<Point, PositionWithBranch> = stars.associateWith { p: Point ->
+      val pos: IPos = starPositionImpl.getPosition(p as Star, lmt, loc, Centric.GEO, Coordinate.ECLIPTIC)
 
-        val hourImpl = HourHouseImpl(houseCuspImpl, starPositionImpl, p)
-        val hourBranch = hourImpl.getHour(lmt, loc)
+      val hourImpl = HourHouseImpl(houseCuspImpl, starPositionImpl, p)
+      val hourBranch = hourImpl.getHour(lmt, loc)
 
-        val hourStem = StemBranchUtils.getHourStem(dayStem, hourBranch)
-        val hour = StemBranch[hourStem, hourBranch]
-        PositionWithBranch(pos, hour)
-      }
+      val hourStem = StemBranchUtils.getHourStem(dayStem, hourBranch)
+      val hour = StemBranch[hourStem, hourBranch]
+      PositionWithBranch(pos, hour)
+    }
 
 
-      val houseMap = houseCuspFeature.getModel(lmt, loc, config.houseConfig)
+    val houseMap = houseCuspFeature.getModel(lmt, loc, config.houseConfig)
 
-      // 四個至點的黃道度數
-      val rsmiMap: Map<TransPoint, ZodiacDegree> = houseCuspFeature.getModel(lmt, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
+    // 四個至點的黃道度數
+    val rsmiMap: Map<TransPoint, ZodiacDegree> =
+      houseCuspFeature.getModel(lmt, loc, HouseConfig(HouseSystem.PLACIDUS, Coordinate.ECLIPTIC)).let { map ->
         mapOf(
           TransPoint.RISING to map[1]!!,
           TransPoint.NADIR to map[4]!!,
@@ -134,29 +131,26 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
       }
 
 
-      val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
-      val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(TimeTools.getGmtJulDay(lmt , loc))
-      val aspectDataSet = aspectsCalculator.getAspectDataSet(starPosMap)
+    val (prevSolarSign, nextSolarSign) = zodiacSignFeature.getModel(lmt, loc)
+    val solarTermsTimePos = solarTermsImpl.getSolarTermsPosition(TimeTools.getGmtJulDay(lmt, loc))
+    val aspectDataSet = aspectsCalculator.getAspectDataSet(starPosMap)
 
-      EightWordsContextModel(
-        eightWords,
-        lmt,
-        loc,
-        config.place,
-        chineseDate,
-        solarTermsTimePos,
-        prevSolarSign,
-        nextSolarSign,
-        starPosMap,
-        risingSign,
-        houseMap,
-        rsmiMap,
-        aspectDataSet
-      ).also { model ->
-        logger.trace { "Insert cacheKey${cacheKey.hashCode()} to model" }
-        ewContextFeatureCache.put(cacheKey, model)
-      }
-    }
+    return EightWordsContextModel(
+      eightWords,
+      lmt,
+      loc,
+      config.place,
+      chineseDate,
+      solarTermsTimePos,
+      prevSolarSign,
+      nextSolarSign,
+      starPosMap,
+      risingSign,
+      houseMap,
+      rsmiMap,
+      aspectDataSet
+    )
+
 
 
   }

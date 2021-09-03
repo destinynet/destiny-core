@@ -52,13 +52,13 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
 
   override val defaultConfig: PersonPresentConfig = PersonPresentConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {
+  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {
 
     val viewGmtTime = julDayResolver.getLocalDateTime(config.viewGmt)
 
     val viewChineseDate = chineseDateFeature.getModel(config.viewGmt, loc)
 
-    val pcm: IPersonContextModel = personContextFeature.getModel(gmtJulDay, loc, gender, name, place, config.personContextConfig)
+    val pcm: IPersonContextModel = personContextFeature.getPersonModel(gmtJulDay, loc, gender, name, place, config.personContextConfig)
     // 目前所處的大運
     val selectedFortuneLarge: IStemBranch = personLargeFeature.getStemBranch(gmtJulDay, loc, gender, config.viewGmt, config.personContextConfig.fortuneLargeConfig)
 
