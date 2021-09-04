@@ -24,10 +24,7 @@ import javax.cache.Cache
 @Serializable
 data class EightWordsPersonConfig(val eightwordsContextConfig: EightWordsContextConfig = EightWordsContextConfig(),
                                   val fortuneLargeConfig: FortuneLargeConfig = FortuneLargeConfig(),
-                                  val fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()): java.io.Serializable {
-
-
-}
+                                  val fortuneSmallConfig: FortuneSmallConfig = FortuneSmallConfig()): java.io.Serializable
 
 @DestinyMarker
 class PersonConfigBuilder : Builder<EightWordsPersonConfig> {
@@ -63,7 +60,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val fortuneLargeFeature: IFortuneLargeFeature,
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
-                           private val ewPersonFeatureCache: Cache<PersonFeature.LmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
+                           private val ewPersonFeatureCache: Cache<PersonFeature.ILmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
 
   data class CacheKey(
     val lmt: ChronoLocalDateTime<*>,
@@ -82,6 +79,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getPersonModel(lmt, loc, gender, name, place, config)
   }
+
 
   override val lmtPersonCache: Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
     get() = ewPersonFeatureCache as Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>

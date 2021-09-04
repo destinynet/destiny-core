@@ -23,9 +23,15 @@ interface Feature<out Config : Any, Model : Any?> : Serializable {
 
   val defaultConfig: Config
 
-  data class GmtCacheKey<Config>(val gmtJulDay: GmtJulDay, val loc: ILocation, val config: Config)
+  interface IGmtCacheKey<Config> {
+    val gmtJulDay: GmtJulDay
+    val loc: ILocation
+    val config: Config
+  }
 
-  val gmtCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
+  data class GmtCacheKey<Config>(override val gmtJulDay: GmtJulDay, override val loc: ILocation, override val config: Config) : IGmtCacheKey<Config>
+
+  val gmtCache: Cache<IGmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   fun getCachedModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config = defaultConfig): Model {
@@ -41,7 +47,13 @@ interface Feature<out Config : Any, Model : Any?> : Serializable {
 
   fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config = defaultConfig): Model
 
-  data class LmtCacheKey<Config>(val lmt: ChronoLocalDateTime<*>, val loc: ILocation, val config: Config)
+  interface ILmtCacheKey<T> {
+    val lmt: ChronoLocalDateTime<*>
+    val loc: ILocation
+    val config: T
+  }
+
+  data class LmtCacheKey<Config>(override val lmt: ChronoLocalDateTime<*>, override val loc: ILocation, override val config: Config) : ILmtCacheKey<Config>
 
   val lmtCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -50,11 +62,11 @@ interface Feature<out Config : Any, Model : Any?> : Serializable {
     return lmtCache?.let { cache ->
       val cacheKey = LmtCacheKey(lmt, loc, config)
       cache[cacheKey]?.also {
-        logger.info { "cache hit" }
+        logger.trace { "cache hit" }
       } ?: run {
-        logger.info { "cache miss" }
+        logger.trace { "cache miss" }
         getModel(lmt, loc, config)?.also { model: Model ->
-          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
+          logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
           cache.put(cacheKey, model)
         }
       }

@@ -11,10 +11,20 @@ import javax.cache.Cache
 
 interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
 
-  data class GmtCacheKey<Config>(val gmtJulDay: GmtJulDay, val loc: ILocation, val gender: Gender, val name: String?, val place: String?, val config: Config)
+  interface IGmtCacheKey<Config> : Feature.IGmtCacheKey<Config> {
+    val gender: Gender
+    val name: String?
+    val place: String?
+  }
 
-  val gmtPersonCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
-    get() = null
+  class GmtCacheKey<Config>(
+    override val gmtJulDay: GmtJulDay,
+    override val loc: ILocation,
+    override val gender: Gender,
+    override val name: String?,
+    override val place: String?,
+    override val config: Config
+  ) : IGmtCacheKey<Config>
 
 
   fun getPersonCacheModel(gmtJulDay: GmtJulDay,
@@ -23,14 +33,14 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
                           name: String?,
                           place: String?,
                           config: @UnsafeVariance Config = defaultConfig): Model {
-    return gmtPersonCache?.let { cache ->
+    return gmtCache?.let { cache ->
       val cacheKey = GmtCacheKey(gmtJulDay, loc, gender, name, place, config)
       cache[cacheKey]?.also {
-        logger.info { "cache hit" }
+        logger.trace { "cache hit" }
       }?: run {
-        logger.info { "cache miss" }
+        logger.trace { "cache miss" }
         getPersonModel(gmtJulDay, loc, gender, name, place, config)?.also { model: Model ->
-          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
+          logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
           cache.put(cacheKey, model)
         }
       }
@@ -44,7 +54,20 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
                      place: String?,
                      config: @UnsafeVariance Config = defaultConfig): Model
 
-  data class LmtCacheKey<Config>(val lmt: ChronoLocalDateTime<*>, val loc: ILocation, val gender: Gender, val name: String?, val place: String?, val config: Config)
+  interface ILmtCacheKey<Config> : Feature.ILmtCacheKey<Config> {
+    val gender: Gender
+    val name: String?
+    val place: String?
+  }
+
+  data class LmtCacheKey<Config>(
+    override val lmt: ChronoLocalDateTime<*>,
+    override val loc: ILocation,
+    override val gender: Gender,
+    override val name: String?,
+    override val place: String?,
+    override val config: Config
+  ) : ILmtCacheKey<Config>
 
   val lmtPersonCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -58,11 +81,11 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
     return lmtPersonCache?.let { cache ->
       val cacheKey = LmtCacheKey(lmt, loc, gender, name, place, config)
       cache[cacheKey]?.also {
-        logger.info { "cache hit" }
+        logger.trace { "cache hit" }
       }?: run {
-        logger.info { "cache miss" }
+        logger.trace { "cache miss" }
         getPersonModel(lmt, loc, gender, name, place, config)?.also { model: Model ->
-          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
+          logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
           cache.put(cacheKey, model)
         }
       }
