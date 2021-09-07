@@ -62,7 +62,7 @@ interface IPersonFortuneLarge : Descriptive {
   /** 順推大運 , 取得該命盤的幾條大運 */
   fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int): List<FortuneData>
   /** 順推大運 , 承上 , 利用 [EightWordsFeature] */
-  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData>
+  fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, span: Double, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData>
 
   /**
    * 逆推大運

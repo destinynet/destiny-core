@@ -25,6 +25,6 @@ internal class FortuneSmallConfigTest : AbstractConfigTest<FortuneSmallConfig>()
   override val assertion: (String) -> Unit = { raw ->
     assertTrue(raw.contains(""""impl":\s*"Star"""".toRegex()))
     assertTrue(raw.contains(""""count":\s*90""".toRegex()))
-    assertTrue(raw.contains("""\[\s*"Minguo"\s*]""".toRegex()))
+    assertTrue(raw.contains(""""intAgeNotes":\s*\[\s*"Minguo"\s*]""".toRegex()))
   }
 }

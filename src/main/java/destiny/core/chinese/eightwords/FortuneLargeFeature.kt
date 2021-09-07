@@ -4,6 +4,8 @@
 package destiny.core.chinese.eightwords
 
 import destiny.core.Gender
+import destiny.core.IntAgeNote
+import destiny.core.IntAgeNoteImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
@@ -21,6 +23,7 @@ import java.time.chrono.ChronoLocalDateTime
 @Serializable
 data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
                               val span : Double = 120.0,
+                              val intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo),
                               val eightWordsConfig: EightWordsConfig = EightWordsConfig()): java.io.Serializable {
   enum class Impl {
     DefaultSpan,    // 傳統、標準大運 (每柱十年)
@@ -35,6 +38,11 @@ class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
 
   var span : Double = 120.0
 
+  var intAgeNotes: List<IntAgeNoteImpl> = listOf(IntAgeNoteImpl.WestYear, IntAgeNoteImpl.Minguo)
+  fun intAgeNotes(impls: List<IntAgeNoteImpl>) {
+    intAgeNotes = impls
+  }
+
   var eightWordsConfig: EightWordsConfig = EightWordsConfig()
   fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
     this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
@@ -42,7 +50,7 @@ class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {
 
 
   override fun build(): FortuneLargeConfig {
-    return FortuneLargeConfig(impl, span, eightWordsConfig)
+    return FortuneLargeConfig(impl, span, intAgeNotes, eightWordsConfig)
   }
 
   companion object {
@@ -69,6 +77,7 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
 
 class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
                           private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
+                          private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
                           private val julDayResolver: JulDayResolver) : IFortuneLargeFeature {
   override val key: String = "fortuneLargeFeature"
 
@@ -82,7 +91,11 @@ class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
       FortuneLargeConfig.Impl.SolarTermsSpan -> 18
     }
 
-    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, eightWordsFeature, config.eightWordsConfig)
+    val ageNoteImpls: List<IntAgeNote> = config.intAgeNotes.map { impl: IntAgeNoteImpl ->
+      ageNoteImplMap[impl]!!
+    }.toList()
+
+    return implMap[config.impl]!!.getFortuneDataList(lmt, loc, gender, count, config.span, ageNoteImpls, eightWordsFeature, config.eightWordsConfig)
   }
 
   override fun getStemBranch(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, fromGmtJulDay: GmtJulDay, config: FortuneLargeConfig): IStemBranch {

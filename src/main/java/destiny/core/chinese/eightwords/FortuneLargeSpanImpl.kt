@@ -39,8 +39,10 @@ class FortuneLargeSpanImpl(
   /** 星體運行到某點的介面  */
   private val starTransitImpl: IStarTransit,
   /** 運 :「月」的 span 倍數，內定 120，即：一個月干支 擴展(乘以)120 倍，變成十年  */
+  @Deprecated("use method parameter")
   override val fortuneMonthSpan: Double = 120.0,
   /** 歲數註解實作  */
+  @Deprecated("use method parameter")
   override val ageNoteImpls: List<IntAgeNote>
 ) : IPersonFortuneLarge, IFortuneMonthSpan, Serializable {
 
@@ -61,22 +63,21 @@ class FortuneLargeSpanImpl(
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
 
-    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count)
-
+    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count, fortuneMonthSpan, ageNoteImpls)
   }
 
 
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, span: Double, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
     val eightWords: IEightWords = eightWordsFeature.getModel(lmt, loc, config)
     val forward = fortuneDirectionImpl.isForward(lmt, loc, gender)
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
 
     val ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>> = getAgeMap(120, gmtJulDay, gender, loc)
 
-    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count)
+    return getFortuneDataList(eightWords, forward, gmtJulDay, gender, ageMap, count, span, ageNoteImpls)
   }
 
-  private fun getFortuneDataList(eightWords: IEightWords, forward: Boolean , gmtJulDay: GmtJulDay, gender: Gender, ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>, count: Int): List<FortuneData> {
+  private fun getFortuneDataList(eightWords: IEightWords, forward: Boolean , gmtJulDay: GmtJulDay, gender: Gender, ageMap: Map<Int, Pair<GmtJulDay, GmtJulDay>>, count: Int, fortuneMonthSpan: Double, ageNoteImpls: List<IntAgeNote>): List<FortuneData> {
     //下個大運的干支
     var i = 1
     return generateSequence {

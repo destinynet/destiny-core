@@ -30,7 +30,7 @@ class FortuneLargeTradImpl(
     TODO("not implemented")
   }
 
-  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
+  override fun getFortuneDataList(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, count: Int, span: Double, ageNoteImpls: List<IntAgeNote>, eightWordsFeature: EightWordsFeature, config: EightWordsConfig): List<FortuneData> {
     TODO("Not yet implemented")
   }
 
