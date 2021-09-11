@@ -30,11 +30,11 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
   }
 
   override fun toString(locale: Locale): String {
-    return name
+    return MonthConfig.MonthImpl.SunSign.toString(Locale.TAIWAN)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "以節氣加星座 劃分月令：節氣的「節」與「氣」之間，屬於上一個星座，天干不變，地支退一位"
+    return MonthConfig.MonthImpl.SunSign.getDescription(locale)
   }
 
   override fun getMonth(gmtJulDay: GmtJulDay, location: ILocation): IStemBranch {
@@ -67,7 +67,6 @@ class YearMonthSunSignImpl(private val ymSolarTermsStarPositionImpl: YearMonthSo
 
 
   companion object {
-    const val name = "120柱月令"
     const val VALUE = "sign"
   }
 }

@@ -3,6 +3,7 @@
  */
 package destiny.core.calendar.eightwords
 
+import destiny.core.Descriptive
 import destiny.core.astrology.IStarPosition
 import destiny.core.astrology.IStarTransit
 import destiny.core.calendar.*
@@ -12,6 +13,7 @@ import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
+import java.util.*
 
 
 @Serializable
@@ -26,7 +28,7 @@ data class MonthConfig(
   val hemisphereBy: HemisphereBy = HemisphereBy.EQUATOR,
 
   val monthImpl: MonthImpl = MonthImpl.SolarTerms
-): java.io.Serializable {
+) : java.io.Serializable {
   enum class MonthImpl {
     /** 標準, 節氣劃分月令 */
     SolarTerms,
@@ -34,6 +36,30 @@ data class MonthConfig(
     /** 120柱月令 */
     SunSign
   }
+}
+
+fun MonthConfig.MonthImpl.asDescriptive() = object : Descriptive {
+  override fun toString(locale: Locale): String {
+    return when (this@asDescriptive) {
+      MonthConfig.MonthImpl.SolarTerms -> "傳統年月"
+      MonthConfig.MonthImpl.SunSign    -> "120柱月令"
+    }
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return when (this@asDescriptive) {
+      MonthConfig.MonthImpl.SolarTerms -> "以「節氣」的「節」來切割月份"
+      MonthConfig.MonthImpl.SunSign    -> "以節氣加星座 劃分月令：節氣的「節」與「氣」之間，屬於上一個星座，天干不變，地支退一位"
+    }
+  }
+}
+
+fun MonthConfig.MonthImpl.toString(locale: Locale): String {
+  return this.asDescriptive().toString(locale)
+}
+
+fun MonthConfig.MonthImpl.getDescription(locale: Locale): String {
+  return this.asDescriptive().getDescription(locale)
 }
 
 class MonthConfigBuilder : Builder<MonthConfig> {
@@ -65,7 +91,7 @@ class MonthConfigBuilder : Builder<MonthConfig> {
 data class YearMonthConfig(
   val yearConfig: YearConfig = YearConfig(),
   val monthConfig: MonthConfig = MonthConfig()
-): java.io.Serializable
+) : java.io.Serializable
 
 @DestinyMarker
 class YearMonthConfigBuilder : Builder<YearMonthConfig> {
@@ -96,9 +122,11 @@ class YearMonthConfigBuilder : Builder<YearMonthConfig> {
 /**
  * 月干支
  */
-class YearMonthFeature(private val starPositionImpl: IStarPosition<*>,
-                       private val starTransitImpl: IStarTransit,
-                       private val julDayResolver: JulDayResolver) : Feature<YearMonthConfig, IStemBranch> {
+class YearMonthFeature(
+  private val starPositionImpl: IStarPosition<*>,
+  private val starTransitImpl: IStarTransit,
+  private val julDayResolver: JulDayResolver
+) : Feature<YearMonthConfig, IStemBranch> {
   override val key: String = "month"
 
   override val defaultConfig: YearMonthConfig = YearMonthConfig()

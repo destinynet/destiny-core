@@ -60,6 +60,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val fortuneLargeFeature: IFortuneLargeFeature,
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
+                           @Transient
                            private val ewPersonFeatureCache: Cache<PersonFeature.ILmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
 
   data class CacheKey(

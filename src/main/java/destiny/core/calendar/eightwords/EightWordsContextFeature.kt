@@ -71,6 +71,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val solarTermsImpl: ISolarTerms,
                                private val aspectsCalculator: IAspectsCalculator,
                                private val julDayResolver: JulDayResolver,
+                               @Transient
                                private val ewContextFeatureCache : Cache<Feature.LmtCacheKey<*>, IEightWordsContextModel>) : Feature<EightWordsContextConfig , IEightWordsContextModel> {
 
   data class CacheKey(val lmt: ChronoLocalDateTime<*>, val loc: ILocation, val config: EightWordsContextConfig) : java.io.Serializable

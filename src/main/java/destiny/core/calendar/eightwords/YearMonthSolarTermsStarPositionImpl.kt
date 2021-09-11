@@ -29,11 +29,11 @@ class YearMonthSolarTermsStarPositionImpl(
 ) : IYearMonth, IYear by yearImpl{
 
   override fun toString(locale: Locale): String {
-    return name
+    return MonthConfig.MonthImpl.SolarTerms.toString(Locale.TAIWAN)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "以「節氣」的「節」來切割月份"
+    return MonthConfig.MonthImpl.SolarTerms.getDescription(locale)
   }
 
   val solarTermsImpl: ISolarTerms by lazy {
@@ -71,7 +71,6 @@ class YearMonthSolarTermsStarPositionImpl(
 
 
   companion object {
-    const val name = "傳統年月"
     const val VALUE = "default"
     private val logger = KotlinLogging.logger { }
   }
