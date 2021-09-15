@@ -31,12 +31,7 @@ class IntAgeNoteMinguoYearImpl(val julDayResolver: JulDayResolver) : IntAgeNote,
   }
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(javaClass.name, locale).getString("name")
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
-
+    return IntAgeNoteImpl.Minguo.toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {

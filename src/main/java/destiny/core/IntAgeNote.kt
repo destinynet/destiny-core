@@ -4,6 +4,7 @@
 package destiny.core
 
 import destiny.core.calendar.GmtJulDay
+import java.util.*
 
 /**
  * 將 [IIntAge] 計算出來的結果 Pair[GMT , GMT] 附註年份
@@ -23,4 +24,18 @@ interface IntAgeNote : Descriptive {
 enum class IntAgeNoteImpl {
   WestYear,
   Minguo
+}
+
+fun IntAgeNoteImpl.asDescriptive() = object : Descriptive {
+  override fun toString(locale: Locale): String {
+    return try {
+      ResourceBundle.getBundle(this@asDescriptive.javaClass.name, locale).getString("${name}.name")
+    } catch (e: MissingResourceException) {
+      javaClass.simpleName
+    }
+  }
+}
+
+fun IntAgeNoteImpl.toString(locale: Locale): String {
+  return this.asDescriptive().toString(locale)
 }

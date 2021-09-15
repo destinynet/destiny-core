@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.eightwords
 
+import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.IntAgeNote
 import destiny.core.IntAgeNoteImpl
@@ -19,6 +20,7 @@ import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 
 @Serializable
 data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
@@ -30,6 +32,25 @@ data class FortuneLargeConfig(val impl: Impl = Impl.DefaultSpan,
     SolarTermsSpan  // 節氣星座過運法 (每柱五年)
   }
 }
+
+fun FortuneLargeConfig.Impl.asDescriptive() = object : Descriptive {
+  override fun toString(locale: Locale): String {
+    return when(this@asDescriptive) {
+      FortuneLargeConfig.Impl.DefaultSpan -> "傳統「節」過運"
+      FortuneLargeConfig.Impl.SolarTermsSpan -> "「節」＋「氣（星座）」過運"
+    }
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return when(this@asDescriptive) {
+      FortuneLargeConfig.Impl.DefaultSpan -> "太陽過黃道節氣的「節」來劃分大運，傳統此法一柱約十年。"
+      FortuneLargeConfig.Impl.SolarTermsSpan -> "除了傳統法，額外考量「星座」（意即：中氣）過運。通常一柱大運為五年。"
+    }
+  }
+}
+
+
+
 
 @DestinyMarker
 class FortuneLargeConfigBuilder : Builder<FortuneLargeConfig> {

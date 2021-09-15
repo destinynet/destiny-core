@@ -20,6 +20,7 @@ import destiny.core.calendar.eightwords.IEightWords
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
+import destiny.core.chinese.eightwords.FortuneLargeConfig.Impl.DefaultSpan
 import mu.KotlinLogging
 import java.io.Serializable
 import java.time.chrono.ChronoLocalDateTime
@@ -297,11 +298,11 @@ class FortuneLargeSpanImpl(
   }
 
   override fun toString(locale: Locale): String {
-    return "傳統「節」過運"
+    return DefaultSpan.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "太陽過黃道節氣的「節」來劃分大運，傳統此法一柱約十年"
+    return DefaultSpan.asDescriptive().getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

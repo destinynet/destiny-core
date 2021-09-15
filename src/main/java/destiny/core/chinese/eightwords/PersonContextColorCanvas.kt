@@ -32,8 +32,9 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
   var outputMode = OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
-    val m: IEightWordsContextModel = eightWordsContextFeature.getModel(model.time, model.location, EightWordsContextConfig(place = model.place))
-    EightWordsColorCanvas(m, config.personContextConfig.eightwordsContextConfig, hiddenStemsImpl, linkUrl, direction, showNaYin)
+//    val m: IEightWordsContextModel =
+//      eightWordsContextFeature.getModel(model.time, model.location, config.personContextConfig.eightwordsContextConfig.copy(place = model.place))
+    EightWordsColorCanvas(model, config.personContextConfig.eightwordsContextConfig, hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
 
   init {

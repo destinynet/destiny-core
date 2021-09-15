@@ -40,8 +40,10 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
     intAgeNotes = impls
   }
 
+  var eightWordsConfig : EightWordsConfig = EightWordsConfig()
+
   override fun build(): FortuneSmallConfig {
-    return FortuneSmallConfig(impl, count, intAgeNotes)
+    return FortuneSmallConfig(impl, count, intAgeNotes, eightWordsConfig)
   }
 
   companion object {

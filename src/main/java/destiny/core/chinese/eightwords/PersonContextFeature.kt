@@ -63,15 +63,6 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            @Transient
                            private val ewPersonFeatureCache: Cache<PersonFeature.ILmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
 
-  data class CacheKey(
-    val lmt: ChronoLocalDateTime<*>,
-    val loc: ILocation,
-    val gender: Gender,
-    val name: String?,
-    val place: String?,
-    val config: EightWordsPersonConfig
-  ) : java.io.Serializable
-
   override val key: String = "ewPerson"
 
   override val defaultConfig: EightWordsPersonConfig = EightWordsPersonConfig()
@@ -82,8 +73,8 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
   }
 
 
-  override val lmtPersonCache: Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
-    get() = ewPersonFeatureCache as Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+  override val lmtPersonCache: Cache<PersonFeature.ILmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+    get() = ewPersonFeatureCache as Cache<PersonFeature.ILmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
 
   override fun getPersonModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
 

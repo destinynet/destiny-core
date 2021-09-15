@@ -21,11 +21,7 @@ class IntAgeNoteWestYearImpl(val julDayResolver: JulDayResolver) : IntAgeNote, S
   }
 
   override fun toString(locale: Locale): String {
-    return try {
-      ResourceBundle.getBundle(javaClass.name, locale).getString("name")
-    } catch (e: MissingResourceException) {
-      javaClass.simpleName
-    }
+    return IntAgeNoteImpl.WestYear.toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {

@@ -13,8 +13,10 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
+import destiny.tools.Feature
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
+import javax.cache.Cache
 
 @Serializable
 data class PersonPresentConfig(val personContextConfig: EightWordsPersonConfig = EightWordsPersonConfig(),
@@ -47,10 +49,16 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
                            private val personLargeFeature: IFortuneLargeFeature,
                            private val yearFeature: YearFeature,
                            private val chineseDateFeature: ChineseDateFeature,
-                           private val julDayResolver: JulDayResolver) : PersonFeature<PersonPresentConfig , IPersonPresentModel> {
+                           private val julDayResolver: JulDayResolver,
+                           @Transient
+                           private val ewPersonPresentFeatureCache: Cache<Feature.IGmtCacheKey<*>, IPersonPresentModel>) : PersonFeature<PersonPresentConfig , IPersonPresentModel> {
+
   override val key: String = "personPresent"
 
   override val defaultConfig: PersonPresentConfig = PersonPresentConfig()
+
+  override val gmtCache: Cache<Feature.IGmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
+    get() = ewPersonPresentFeatureCache as Cache<Feature.IGmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
 
   override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {
 
@@ -58,7 +66,7 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
 
     val viewChineseDate = chineseDateFeature.getModel(config.viewGmt, loc)
 
-    val pcm: IPersonContextModel = personContextFeature.getPersonModel(gmtJulDay, loc, gender, name, place, config.personContextConfig)
+    val pcm: IPersonContextModel = personContextFeature.getPersonCacheModel(gmtJulDay, loc, gender, name, place, config.personContextConfig)
     // 目前所處的大運
     val selectedFortuneLarge: IStemBranch = personLargeFeature.getStemBranch(gmtJulDay, loc, gender, config.viewGmt, config.personContextConfig.fortuneLargeConfig)
 
@@ -73,5 +81,9 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
     val presentYear: StemBranch = yearFeature.getModel(viewGmtTime, loc)
 
     return PersonPresentModel(pcm, viewGmtTime, viewChineseDate, selectedFortuneLarge, selectedFortuneLargeYears, presentYear)
+  }
+
+  companion object {
+    const val CACHE_EIGHTWORDS_PERSON_PRESENT_FEATURE = "ewPersonPresentFeatureCache"
   }
 }
