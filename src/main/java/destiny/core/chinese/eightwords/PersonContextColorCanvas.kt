@@ -6,10 +6,11 @@ package destiny.core.chinese.eightwords
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeSecDecoratorChinese
 import destiny.core.calendar.TimeTools
-import destiny.core.calendar.eightwords.*
+import destiny.core.calendar.eightwords.Direction
+import destiny.core.calendar.eightwords.EightWordsColorCanvas
+import destiny.core.calendar.eightwords.TimeLine
 import destiny.core.chinese.NaYin
 import destiny.tools.ChineseStringTools
-import destiny.tools.Feature
 import destiny.tools.canvas.ColorCanvas
 import mu.KotlinLogging
 import org.apache.commons.lang3.StringUtils
@@ -17,7 +18,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class PersonContextColorCanvas(private val config: PersonPresentConfig,
-                               private val eightWordsContextFeature: Feature<EightWordsContextConfig, IEightWordsContextModel>,
                                /** 預先儲存已經計算好的結果  */
                                private val model: IPersonPresentModel,
                                /** 地支藏干的實作，內定採用標準設定  */
@@ -26,14 +26,11 @@ class PersonContextColorCanvas(private val config: PersonPresentConfig,
                                private val direction: Direction,
                                julDayResolver: JulDayResolver,
                                /** 是否顯示納音 */
-                               private val showNaYin: Boolean = false) :
-  ColorCanvas(36, 70, ChineseStringTools.NULL_CHAR) {
+                               private val showNaYin: Boolean = false) : ColorCanvas(36, 70, ChineseStringTools.NULL_CHAR) {
 
   var outputMode = OutputMode.HTML
 
   private val ewContextColorCanvas: EightWordsColorCanvas by lazy {
-//    val m: IEightWordsContextModel =
-//      eightWordsContextFeature.getModel(model.time, model.location, config.personContextConfig.eightwordsContextConfig.copy(place = model.place))
     EightWordsColorCanvas(model, config.personContextConfig.eightwordsContextConfig, hiddenStemsImpl, linkUrl, direction, showNaYin)
   }
 
