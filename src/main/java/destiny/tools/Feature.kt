@@ -23,15 +23,12 @@ interface Feature<out Config : Any, Model : Any?> : Serializable {
 
   val defaultConfig: Config
 
-  interface IGmtCacheKey<Config> {
-    val gmtJulDay: GmtJulDay
-    val loc: ILocation
-    val config: Config
-  }
+  data class GmtCacheKey<Config>(
+    val gmtJulDay: GmtJulDay,
+    val loc: ILocation,
+    val config: Config)
 
-  data class GmtCacheKey<Config>(override val gmtJulDay: GmtJulDay, override val loc: ILocation, override val config: Config) : IGmtCacheKey<Config>
-
-  val gmtCache: Cache<IGmtCacheKey<@UnsafeVariance Config>, Model>?
+  val gmtCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   fun getCachedModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config = defaultConfig): Model {
@@ -47,13 +44,11 @@ interface Feature<out Config : Any, Model : Any?> : Serializable {
 
   fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config = defaultConfig): Model
 
-  interface ILmtCacheKey<T> {
-    val lmt: ChronoLocalDateTime<*>
-    val loc: ILocation
-    val config: T
-  }
-
-  data class LmtCacheKey<Config>(override val lmt: ChronoLocalDateTime<*>, override val loc: ILocation, override val config: Config) : ILmtCacheKey<Config>
+  data class LmtCacheKey<Config>(
+    val lmt: ChronoLocalDateTime<*>,
+    val loc: ILocation,
+    val config: Config
+  )
 
   val lmtCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -64,9 +59,9 @@ interface Feature<out Config : Any, Model : Any?> : Serializable {
       cache[cacheKey]?.also {
         logger.trace { "cache hit" }
       } ?: run {
-        logger.trace { "cache miss" }
+        logger.info { "cache miss" }
         getModel(lmt, loc, config)?.also { model: Model ->
-          logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
+          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
           cache.put(cacheKey, model)
         }
       }
@@ -75,7 +70,7 @@ interface Feature<out Config : Any, Model : Any?> : Serializable {
 
   fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: @UnsafeVariance Config = defaultConfig): Model {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
-    return getModel(gmtJulDay, loc, config)
+    return getCachedModel(gmtJulDay, loc, config)
   }
 
   companion object {

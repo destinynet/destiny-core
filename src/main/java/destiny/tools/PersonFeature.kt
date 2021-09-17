@@ -11,21 +11,17 @@ import javax.cache.Cache
 
 interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
 
-  interface IGmtCacheKey<Config> : Feature.IGmtCacheKey<Config> {
-    val gender: Gender
-    val name: String?
-    val place: String?
-  }
-
   data class GmtCacheKey<Config>(
-    override val gmtJulDay: GmtJulDay,
-    override val loc: ILocation,
-    override val gender: Gender,
-    override val name: String?,
-    override val place: String?,
-    override val config: Config
-  ) : IGmtCacheKey<Config>
+    val gmtJulDay: GmtJulDay,
+    val loc: ILocation,
+    val gender: Gender,
+    val name: String?,
+    val place: String?,
+    val config: Config
+  )
 
+  val gmtPersonCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
+    get() = null
 
   fun getPersonCacheModel(gmtJulDay: GmtJulDay,
                           loc: ILocation,
@@ -33,7 +29,7 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
                           name: String?,
                           place: String?,
                           config: @UnsafeVariance Config = defaultConfig): Model {
-    return gmtCache?.let { cache ->
+    return gmtPersonCache?.let { cache ->
       val cacheKey = GmtCacheKey(gmtJulDay, loc, gender, name, place, config)
       cache[cacheKey]?.also {
         logger.trace { "cache hit" }
@@ -54,22 +50,16 @@ interface PersonFeature<out Config : Any, Model> : Feature<Config, Model> {
                      place: String?,
                      config: @UnsafeVariance Config = defaultConfig): Model
 
-  interface ILmtCacheKey<Config> : Feature.ILmtCacheKey<Config> {
-    val gender: Gender
-    val name: String?
-    val place: String?
-  }
-
   data class LmtCacheKey<Config>(
-    override val lmt: ChronoLocalDateTime<*>,
-    override val loc: ILocation,
-    override val gender: Gender,
-    override val name: String?,
-    override val place: String?,
-    override val config: Config
-  ) : ILmtCacheKey<Config>
+    val lmt: ChronoLocalDateTime<*>,
+    val loc: ILocation,
+    val gender: Gender,
+    val name: String?,
+    val place: String?,
+    val config: Config
+  )
 
-  val lmtPersonCache: Cache<ILmtCacheKey<@UnsafeVariance Config>, Model>?
+  val lmtPersonCache: Cache<LmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
 
   fun getPersonCacheModel(lmt: ChronoLocalDateTime<*>,

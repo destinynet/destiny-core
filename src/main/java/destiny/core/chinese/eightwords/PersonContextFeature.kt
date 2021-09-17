@@ -61,7 +61,7 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
                            @Transient
-                           private val ewPersonFeatureCache: Cache<PersonFeature.ILmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
+                           private val ewPersonFeatureCache: Cache<PersonFeature.LmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
 
   override val key: String = "ewPerson"
 
@@ -69,12 +69,12 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
 
   override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    return getPersonModel(lmt, loc, gender, name, place, config)
+    return getPersonCacheModel(lmt, loc, gender, name, place, config)
   }
 
 
-  override val lmtPersonCache: Cache<PersonFeature.ILmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
-    get() = ewPersonFeatureCache as Cache<PersonFeature.ILmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+  override val lmtPersonCache: Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+    get() = ewPersonFeatureCache as Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
 
   override fun getPersonModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
 

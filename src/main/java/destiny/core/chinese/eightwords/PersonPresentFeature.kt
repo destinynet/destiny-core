@@ -13,7 +13,6 @@ import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
@@ -51,14 +50,14 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
                            private val chineseDateFeature: ChineseDateFeature,
                            private val julDayResolver: JulDayResolver,
                            @Transient
-                           private val ewPersonPresentFeatureCache: Cache<Feature.IGmtCacheKey<*>, IPersonPresentModel>) : PersonFeature<PersonPresentConfig , IPersonPresentModel> {
+                           private val ewPersonPresentFeatureCache: Cache<PersonFeature.GmtCacheKey<*>, IPersonPresentModel>) : PersonFeature<PersonPresentConfig , IPersonPresentModel> {
 
   override val key: String = "personPresent"
 
   override val defaultConfig: PersonPresentConfig = PersonPresentConfig()
 
-  override val gmtCache: Cache<Feature.IGmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
-    get() = ewPersonPresentFeatureCache as Cache<Feature.IGmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
+  override val gmtPersonCache: Cache<PersonFeature.GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>?
+    get() = ewPersonPresentFeatureCache as Cache<PersonFeature.GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
 
   override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {
 
