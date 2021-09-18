@@ -9,6 +9,7 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -49,18 +50,18 @@ class EightWordsConfigBuilder : Builder<EightWordsConfig> {
 
 class EightWordsFeature(private val yearFeature: YearFeature,
                         private val yearMonthFeature: YearMonthFeature,
-                        private val dayHourFeature: IDayHourFeature,
-                        private val julDayResolver: JulDayResolver) : Feature<EightWordsConfig , EightWords> {
+                        private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
+                        private val julDayResolver: JulDayResolver) : AbstractCachedFeature<EightWordsConfig, EightWords>() {
   override val key: String = "eightWords"
 
   override val defaultConfig: EightWordsConfig = EightWordsConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): EightWords {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsConfig): EightWords {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsConfig): EightWords {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsConfig): EightWords {
 
     val year: StemBranch = yearFeature.getModel(lmt, loc, config.yearMonthConfig.yearConfig)
     val month: IStemBranch = yearMonthFeature.getModel(lmt, loc, config.yearMonthConfig)

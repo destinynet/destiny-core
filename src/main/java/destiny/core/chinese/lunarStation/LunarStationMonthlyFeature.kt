@@ -11,6 +11,7 @@ import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.YearMonthConfig
 import destiny.core.calendar.eightwords.YearMonthFeature
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -30,6 +31,7 @@ data class MonthlyConfig(val impl: Impl = Impl.AoHead,
 
 @DestinyMarker
 class MonthlyConfigBuilder : Builder<MonthlyConfig> {
+
   var impl: MonthlyConfig.Impl = MonthlyConfig.Impl.AoHead
 
   override fun build(): MonthlyConfig {
@@ -51,12 +53,13 @@ interface ILunarStationMonthlyFeature : Feature<MonthlyConfig, LunarStation> {
 class LunarStationMonthlyFeature(private val yearlyFeature: LunarStationYearlyFeature,
                                  private val monthFeature: YearMonthFeature,
                                  private val chineseDateFeature: ChineseDateFeature,
-                                 private val lunarStationImplMap: Map<MonthlyConfig.Impl, ILunarStationMonthly>) : ILunarStationMonthlyFeature {
+                                 private val lunarStationImplMap: Map<MonthlyConfig.Impl, ILunarStationMonthly>) : ILunarStationMonthlyFeature,
+                                                                                                                   AbstractCachedFeature<MonthlyConfig, LunarStation>() {
   override val key: String = "lsMonthly"
 
   override val defaultConfig: MonthlyConfig = MonthlyConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthlyConfig): LunarStation {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthlyConfig): LunarStation {
     val yearStation = yearlyFeature.getModel(gmtJulDay, loc, config.yearlyConfig).station
 
     val chineseDate = chineseDateFeature.getModel(gmtJulDay, loc, config.dayHourConfig)

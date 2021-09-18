@@ -11,9 +11,9 @@ import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranch
+import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import javax.cache.Cache
 
@@ -50,22 +50,22 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
                            private val chineseDateFeature: ChineseDateFeature,
                            private val julDayResolver: JulDayResolver,
                            @Transient
-                           private val ewPersonPresentFeatureCache: Cache<PersonFeature.GmtCacheKey<*>, IPersonPresentModel>) : PersonFeature<PersonPresentConfig , IPersonPresentModel> {
+                           private val ewPersonPresentFeatureCache: Cache<GmtCacheKey<*>, IPersonPresentModel>) : AbstractCachedPersonFeature<PersonPresentConfig , IPersonPresentModel>() {
 
   override val key: String = "personPresent"
 
   override val defaultConfig: PersonPresentConfig = PersonPresentConfig()
 
-  override val gmtPersonCache: Cache<PersonFeature.GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>?
-    get() = ewPersonPresentFeatureCache as Cache<PersonFeature.GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
+  override val gmtPersonCache: Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>?
+    get() = ewPersonPresentFeatureCache as Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
 
-  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {
 
     val viewGmtTime = julDayResolver.getLocalDateTime(config.viewGmt)
 
     val viewChineseDate = chineseDateFeature.getModel(config.viewGmt, loc)
 
-    val pcm: IPersonContextModel = personContextFeature.getPersonCacheModel(gmtJulDay, loc, gender, name, place, config.personContextConfig)
+    val pcm: IPersonContextModel = personContextFeature.getPersonModel(gmtJulDay, loc, gender, name, place, config.personContextConfig)
     // 目前所處的大運
     val selectedFortuneLarge: IStemBranch = personLargeFeature.getStemBranch(gmtJulDay, loc, gender, config.viewGmt, config.personContextConfig.fortuneLargeConfig)
 

@@ -8,9 +8,9 @@ import destiny.core.astrology.classical.VoidCourseConfig
 import destiny.core.astrology.classical.rules.Misc
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 
@@ -50,12 +50,12 @@ class HoroscopeConfigBuilder : Builder<HoroscopeConfig> {
 
 class HoroscopeFeature(private val pointPosFuncMap: Map<Point, IPosition<*>> ,
                        private val houseCuspFeature: IHouseCuspFeature,
-                       private val voidCourseFeature: IVoidCourseFeature) : Feature<HoroscopeConfig, IHoroscopeModel> {
+                       private val voidCourseFeature: IVoidCourseFeature) : AbstractCachedFeature<HoroscopeConfig, IHoroscopeModel>() {
   override val key: String = "horoscope"
 
   override val defaultConfig: HoroscopeConfig = HoroscopeConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HoroscopeConfig): IHoroscopeModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: HoroscopeConfig): IHoroscopeModel {
 
     val positionMap: Map<Point, IPosWithAzimuth> = config.points.map { point ->
       point to pointPosFuncMap[point]?.getPosition(gmtJulDay, loc, config.centric, config.coordinate, config.temperature, config.pressure)

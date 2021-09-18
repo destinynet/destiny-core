@@ -14,9 +14,9 @@ import destiny.core.calendar.eightwords.MonthConfigBuilder
 import destiny.core.calendar.eightwords.YearMonthConfig
 import destiny.core.calendar.eightwords.YearMonthFeature
 import destiny.core.chinese.MonthMasterConfig.Impl
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -50,12 +50,12 @@ class MonthMasterConfigBuilder : Builder<MonthMasterConfig> {
 }
 
 class MonthMasterFeature(private val starPositionImpl: IStarPosition<*>,
-                         private val yearMonthFeature: YearMonthFeature) : Feature<MonthMasterConfig, Branch> {
+                         private val yearMonthFeature: YearMonthFeature) : AbstractCachedFeature<MonthMasterConfig, Branch>() {
   override val key: String = "monthMaster"
 
   override val defaultConfig: MonthMasterConfig = MonthMasterConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthMasterConfig): Branch {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: MonthMasterConfig): Branch {
     return when (config.impl) {
       Impl.SunSign  -> starPositionImpl.getPosition(Planet.SUN, gmtJulDay, loc, Centric.GEO, Coordinate.ECLIPTIC).sign.branch
       Impl.Combined -> yearMonthFeature.getModel(gmtJulDay, loc, YearMonthConfig(monthConfig = config.monthConfig)).branch.combined

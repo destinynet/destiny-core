@@ -15,6 +15,7 @@ import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.IStemBranch
+import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
@@ -99,12 +100,12 @@ interface IFortuneLargeFeature : PersonFeature<FortuneLargeConfig, List<FortuneD
 class FortuneLargeFeature(private val eightWordsFeature: EightWordsFeature,
                           private val implMap : Map<FortuneLargeConfig.Impl, IPersonFortuneLarge>,
                           private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
-                          private val julDayResolver: JulDayResolver) : IFortuneLargeFeature {
+                          private val julDayResolver: JulDayResolver) : IFortuneLargeFeature, AbstractCachedPersonFeature<FortuneLargeConfig, List<FortuneData>>() {
   override val key: String = "fortuneLargeFeature"
 
   override val defaultConfig: FortuneLargeConfig = FortuneLargeConfig()
 
-  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneLargeConfig): List<FortuneData> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneLargeConfig): List<FortuneData> {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 
     val count = when (config.impl) {

@@ -18,7 +18,7 @@ import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.*
-import destiny.tools.Feature
+import destiny.tools.AbstractCachedFeature
 import java.time.chrono.ChronoLocalDateTime
 
 
@@ -31,7 +31,7 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
                             private val hourlyFeature: LunarStationHourlyFeature,
                             private val eightWordsFeature : EightWordsFeature,
                             private val chineseDateFeature: ChineseDateFeature,
-                            private val julDayResolver: JulDayResolver) : Feature<LunarStationConfig, Set<Pair<Scale, Scale>>> {
+                            private val julDayResolver: JulDayResolver) : AbstractCachedFeature<LunarStationConfig, Set<Pair<Scale, Scale>>>() {
 
   override val key: String = "hiddenVenusFoe"
 
@@ -40,13 +40,13 @@ class HiddenVenusFoeFeature(private val yearlyFeature: LunarStationYearlyFeature
   /**
    * @return Pair<Scale,Scale> 前者代表「此時刻的什麼時段」 , 犯了 後者的 暗金伏斷煞
    */
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): Set<Pair<Scale, Scale>> {
     val yearly = yearlyFeature.getModel(lmt, loc, config.yearlyConfig).station
     val ew: EightWords = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
     val chineseDate = chineseDateFeature.getModel(lmt, loc, config.ewConfig.dayHourConfig)

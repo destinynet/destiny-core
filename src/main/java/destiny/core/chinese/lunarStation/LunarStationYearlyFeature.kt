@@ -13,9 +13,9 @@ import destiny.core.calendar.eightwords.DayHourConfigBuilder
 import destiny.core.calendar.eightwords.YearFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.YearType
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.time.temporal.ChronoField
 
@@ -48,12 +48,12 @@ class YearlyConfigBuilder : Builder<YearlyConfig> {
 
 class LunarStationYearlyFeature(private val yearFeature: YearFeature,
                                 private val chineseDateFeature: ChineseDateFeature,
-                                private val julDayResolver: JulDayResolver) : Feature<YearlyConfig, YearIndex> {
+                                private val julDayResolver: JulDayResolver) : AbstractCachedFeature<YearlyConfig, YearIndex>() {
   override val key: String = "lsYearly"
 
   override val defaultConfig: YearlyConfig = YearlyConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: YearlyConfig): YearIndex {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: YearlyConfig): YearIndex {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 

@@ -8,6 +8,7 @@ import destiny.core.astrology.classical.rules.Misc.VoidCourse
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.GmtJulDay.Companion.toGmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
@@ -66,13 +67,13 @@ interface IVoidCourseFeature : Feature<VoidCourseConfig , VoidCourse?> {
  * 星體空亡
  */
 class VoidCourseFeature(private val vocMap: Map<VoidCourseConfig.VoidCourseImpl, IVoidCourse>,
-                        private val pointPosFuncMap: Map<Point, IPosition<*>>) : IVoidCourseFeature {
+                        private val pointPosFuncMap: Map<Point, IPosition<*>>) : IVoidCourseFeature , AbstractCachedFeature<VoidCourseConfig , VoidCourse?>() {
   
   override val key: String = "voidCourse"
 
   override val defaultConfig: VoidCourseConfig = VoidCourseConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: VoidCourseConfig): VoidCourse? {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: VoidCourseConfig): VoidCourse? {
 
     return vocMap[config.vocImpl]!!.getVoidCourse(gmtJulDay, loc, pointPosFuncMap, config.planet, config.centric)
   }

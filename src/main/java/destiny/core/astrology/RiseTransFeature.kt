@@ -5,9 +5,9 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -41,13 +41,13 @@ class RiseTransConfigBuilder : Builder<RiseTransConfig> {
 /**
  * 計算星體對地球表面某點的 東昇、天頂、西落、天底的時刻
  */
-class RiseTransFeature(val impl : IRiseTrans) : Feature<RiseTransConfig, GmtJulDay?> {
+class RiseTransFeature(val impl : IRiseTrans) : AbstractCachedFeature<RiseTransConfig, GmtJulDay?>() {
 
   override val key: String = "riseTrans"
 
   override val defaultConfig: RiseTransConfig = RiseTransConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: RiseTransConfig): GmtJulDay? {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: RiseTransConfig): GmtJulDay? {
     return impl.getGmtTransJulDay(gmtJulDay , config.star , config.transPoint , loc , config.transConfig)
   }
 

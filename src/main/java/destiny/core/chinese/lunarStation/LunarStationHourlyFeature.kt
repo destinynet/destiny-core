@@ -13,8 +13,8 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.DayHourConfig
 import destiny.core.calendar.eightwords.DayHourConfigBuilder
-import destiny.core.calendar.eightwords.IDayHourFeature
 import destiny.core.chinese.Branch
+import destiny.core.chinese.StemBranch
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -54,7 +54,7 @@ class HourlyConfigBuilder : Builder<HourlyConfig> {
 
 
 class LunarStationHourlyFeature(private val dailyFeature: LunarStationDailyFeature,
-                                private val dayHourFeature: IDayHourFeature,
+                                private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>,
                                 private val julDayResolver: JulDayResolver,
                                 private val implMap: Map<HourlyConfig.Impl, ILunarStationHourly>) : Feature<HourlyConfig, LunarStation> {
   override val key: String = "lsHourly"

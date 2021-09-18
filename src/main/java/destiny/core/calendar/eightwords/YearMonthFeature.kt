@@ -9,9 +9,9 @@ import destiny.core.astrology.IStarTransit
 import destiny.core.calendar.*
 import destiny.core.chinese.IStemBranch
 import destiny.core.chinese.StemBranchUnconstrained
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -126,7 +126,7 @@ class YearMonthFeature(
   private val starPositionImpl: IStarPosition<*>,
   private val starTransitImpl: IStarTransit,
   private val julDayResolver: JulDayResolver
-) : Feature<YearMonthConfig, IStemBranch> {
+) : AbstractCachedFeature<YearMonthConfig, IStemBranch>() {
   override val key: String = "month"
 
   override val defaultConfig: YearMonthConfig = YearMonthConfig()
@@ -135,7 +135,7 @@ class YearMonthFeature(
     SolarTermsImpl(starTransitImpl, starPositionImpl, julDayResolver)
   }
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: YearMonthConfig): IStemBranch {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: YearMonthConfig): IStemBranch {
     // 原始 月干支
     val originalMonth = getMonth(
       gmtJulDay,

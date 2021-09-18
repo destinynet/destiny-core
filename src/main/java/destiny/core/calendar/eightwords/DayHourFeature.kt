@@ -13,6 +13,7 @@ import destiny.core.chinese.Branch.子
 import destiny.core.chinese.Stem
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -111,23 +112,22 @@ class DayHourConfigBuilder : Builder<DayHourConfig> {
 }
 
 
-interface IDayHourFeature :  Feature<DayHourConfig, Pair<StemBranch, StemBranch>>
+interface IDayHourFeature : Feature<DayHourConfig, Pair<StemBranch, StemBranch>>
 
 class DayHourFeature(private val midnightFeature: MidnightFeature,
                      private val hourBranchFeature: IHourBranchFeature,
-                     private val julDayResolver: JulDayResolver) : IDayHourFeature {
+                     private val julDayResolver: JulDayResolver) : AbstractCachedFeature<DayHourConfig, Pair<StemBranch, StemBranch>>() {
 
   override val key: String = "dayHour"
 
   override val defaultConfig: DayHourConfig = DayHourConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
-
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: DayHourConfig): Pair<StemBranch, StemBranch> {
 
     // 下個子初時刻
     val nextZiStart = hourBranchFeature.getLmtNextStartOf(lmt, loc, 子, config.hourBranchConfig)

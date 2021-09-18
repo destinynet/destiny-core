@@ -8,9 +8,9 @@ import destiny.core.calendar.*
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.chinese.StemBranch
 import destiny.core.chinese.StemBranchUtils
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
@@ -72,7 +72,7 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
                                private val aspectsCalculator: IAspectsCalculator,
                                private val julDayResolver: JulDayResolver,
                                @Transient
-                               private val ewContextFeatureCache : Cache<Feature.LmtCacheKey<*>, IEightWordsContextModel>) : Feature<EightWordsContextConfig , IEightWordsContextModel> {
+                               private val ewContextFeatureCache : Cache<LmtCacheKey<*>, IEightWordsContextModel>) : AbstractCachedFeature<EightWordsContextConfig , IEightWordsContextModel>() {
 
   data class CacheKey(val lmt: ChronoLocalDateTime<*>, val loc: ILocation, val config: EightWordsContextConfig) : java.io.Serializable
 
@@ -80,16 +80,16 @@ class EightWordsContextFeature(private val eightWordsFeature: EightWordsFeature,
 
   override val defaultConfig: EightWordsContextConfig = EightWordsContextConfig()
 
-  override val lmtCache: Cache<Feature.LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
-    get() = ewContextFeatureCache as Cache<Feature.LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
+  override val lmtCache: Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
+    get() = ewContextFeatureCache as Cache<LmtCacheKey<EightWordsContextConfig>, IEightWordsContextModel>
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc , julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: EightWordsContextConfig): IEightWordsContextModel {
 
 
     val eightWords = eightWordsFeature.getModel(lmt, loc, config.eightWordsConfig)

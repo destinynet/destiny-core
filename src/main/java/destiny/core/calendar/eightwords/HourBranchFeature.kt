@@ -13,6 +13,7 @@ import destiny.core.calendar.TimeTools
 import destiny.core.chinese.Branch
 import destiny.core.chinese.Branch.亥
 import destiny.core.chinese.Branch.子
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
@@ -151,12 +152,12 @@ interface IHourBranchFeature : Feature<HourBranchConfig, Branch> {
 
 
 class HourBranchFeature(private val hourImplMap: Map<HourBranchConfig.HourImpl, IHour>,
-                        val julDayResolver: JulDayResolver) : IHourBranchFeature {
+                        val julDayResolver: JulDayResolver) : IHourBranchFeature, AbstractCachedFeature<HourBranchConfig, Branch>() {
   override val key: String = "hourBranch"
 
   override val defaultConfig: HourBranchConfig = HourBranchConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: HourBranchConfig): Branch {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }

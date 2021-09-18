@@ -11,9 +11,9 @@ import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 
 
@@ -55,12 +55,12 @@ class FortuneSmallConfigBuilder : Builder<FortuneSmallConfig> {
 
 class FortuneSmallFeature(private val julDayResolver: JulDayResolver,
                           private val ageNoteImplMap: Map<IntAgeNoteImpl , IntAgeNote>,
-                          private val fortuneSmallImplMap: Map<FortuneSmallConfig.Impl, IPersonFortuneSmall>) : PersonFeature<FortuneSmallConfig, List<FortuneData>> {
+                          private val fortuneSmallImplMap: Map<FortuneSmallConfig.Impl, IPersonFortuneSmall>) : AbstractCachedPersonFeature<FortuneSmallConfig, List<FortuneData>>() {
   override val key: String = "fortuneSmall"
 
   override val defaultConfig: FortuneSmallConfig = FortuneSmallConfig()
 
-  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneSmallConfig): List<FortuneData> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: FortuneSmallConfig): List<FortuneData> {
 
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
 

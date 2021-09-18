@@ -2,6 +2,7 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Feature
 
 interface IHouseCuspFeature : Feature<HouseConfig, Map<Int, ZodiacDegree>> {
@@ -31,7 +32,7 @@ interface IHouseCuspFeature : Feature<HouseConfig, Map<Int, ZodiacDegree>> {
   }
 }
 
-class HouseCuspFeature(private val houseCuspImpl : IHouseCusp) : IHouseCuspFeature {
+class HouseCuspFeature(private val houseCuspImpl : IHouseCusp) : IHouseCuspFeature, AbstractCachedFeature<HouseConfig, Map<Int, ZodiacDegree>>() {
 
   override val key: String = "houseCusp"
 
@@ -40,7 +41,7 @@ class HouseCuspFeature(private val houseCuspImpl : IHouseCusp) : IHouseCuspFeatu
   /**
    * 取得所有宮 (1~12) 的宮首在黃道幾度 , 傳回一個 Map , key 為 1~12 , value 為 [Coordinate] 度數 (default 黃道)
    */
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: HouseConfig): Map<Int, ZodiacDegree> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: HouseConfig): Map<Int, ZodiacDegree> {
     return houseCuspImpl.getHouseCuspMap(gmtJulDay , loc , config.houseSystem , config.coordinate)
   }
 }

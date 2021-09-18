@@ -8,9 +8,9 @@ import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.calendar.JulDayResolver
 import destiny.core.chinese.StemBranch
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 /**
@@ -43,13 +43,13 @@ class YearConfigBuilder : Builder<YearConfig> {
 }
 
 class YearFeature(private val starPositionImpl: IStarPosition<*>,
-                  private val julDayResolver: JulDayResolver) : Feature<YearConfig, StemBranch> {
+                  private val julDayResolver: JulDayResolver) : AbstractCachedFeature<YearConfig, StemBranch>() {
 
   override val key: String = "year"
 
   override val defaultConfig: YearConfig = YearConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: YearConfig): StemBranch {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: YearConfig): StemBranch {
     return getYear(gmtJulDay, loc, config.changeYearDegree, julDayResolver, starPositionImpl)
   }
 }

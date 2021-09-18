@@ -5,9 +5,9 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -38,12 +38,12 @@ class ApsisAzimuthConfigBuilder : Builder<ApsisAzimuthConfig> {
 }
 
 class ApsisAzimuthFeature(private val apsisImpl: IApsis,
-                          private val azimuthImpl: IAzimuthCalculator) : Feature<ApsisAzimuthConfig, Map<Apsis, StarPosWithAzimuth>> {
+                          private val azimuthImpl: IAzimuthCalculator) : AbstractCachedFeature<ApsisAzimuthConfig, Map<Apsis, StarPosWithAzimuth>>() {
   override val key: String = "apsisAzimuth"
 
   override val defaultConfig: ApsisAzimuthConfig = ApsisAzimuthConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: ApsisAzimuthConfig): Map<Apsis, StarPosWithAzimuth> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: ApsisAzimuthConfig): Map<Apsis, StarPosWithAzimuth> {
     val positionMap: Map<Apsis, IStarPos> = apsisImpl.getPositions(config.star, gmtJulDay, config.coordinate, config.nodeType)
 
     return positionMap.keys.associateWith { apsis ->

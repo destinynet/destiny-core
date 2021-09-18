@@ -13,9 +13,9 @@ import destiny.core.calendar.eightwords.EightWordsContextConfig
 import destiny.core.calendar.eightwords.EightWordsContextConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsContextFeature
 import destiny.core.calendar.eightwords.IEightWordsContextModel
+import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
@@ -61,22 +61,22 @@ class PersonContextFeature(private val eightWordsContextFeature: EightWordsConte
                            private val fortuneSmallFeature: FortuneSmallFeature,
                            private val julDayResolver: JulDayResolver,
                            @Transient
-                           private val ewPersonFeatureCache: Cache<PersonFeature.LmtCacheKey<*>, IPersonContextModel>) : PersonFeature<EightWordsPersonConfig, IPersonContextModel> {
+                           private val ewPersonFeatureCache: Cache<LmtCacheKey<*>, IPersonContextModel>) : AbstractCachedPersonFeature<EightWordsPersonConfig, IPersonContextModel>() {
 
   override val key: String = "ewPerson"
 
   override val defaultConfig: EightWordsPersonConfig = EightWordsPersonConfig()
 
-  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
-    return getPersonCacheModel(lmt, loc, gender, name, place, config)
+    return getPersonModel(lmt, loc, gender, name, place, config)
   }
 
 
-  override val lmtPersonCache: Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
-    get() = ewPersonFeatureCache as Cache<PersonFeature.LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+  override val lmtPersonCache: Cache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
+    get() = ewPersonFeatureCache as Cache<LmtCacheKey<EightWordsPersonConfig>, IPersonContextModel>
 
-  override fun getPersonModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, gender: Gender, name: String?, place: String?, config: EightWordsPersonConfig): IPersonContextModel {
 
     val ewModel: IEightWordsContextModel = eightWordsContextFeature.getModel(lmt, loc, config.eightwordsContextConfig.copy(place = place))
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)

@@ -10,9 +10,9 @@ import destiny.core.calendar.JulDayResolver
 import destiny.core.calendar.TimeTools
 import destiny.core.calendar.eightwords.IHourBranchFeature
 import destiny.core.chinese.Branch
+import destiny.tools.AbstractCachedPersonFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.PersonFeature
 import destiny.tools.random.RandomService
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
@@ -51,13 +51,13 @@ class LunarStationModernConfigBuilder : Builder<LunarStationModernConfig> {
 class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFeature,
                                 private val hourBranchFeature: IHourBranchFeature,
                                 private val randomService: RandomService,
-                                private val julDayResolver: JulDayResolver) : PersonFeature<LunarStationModernConfig, IModernContextModel> {
+                                private val julDayResolver: JulDayResolver) : AbstractCachedPersonFeature<LunarStationModernConfig, IModernContextModel>() {
 
   override val key: String = "lunarStationModern"
 
   override val defaultConfig: LunarStationModernConfig = LunarStationModernConfig()
 
-  override fun getPersonModel(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: LunarStationModernConfig): IModernContextModel {
     val created = LocalDateTime.now()
     val hourBranch = randomService.randomEnum(Branch::class.java)
 
@@ -84,4 +84,7 @@ class LunarStationModernFeature(private val lunarStationFeature: ILunarStationFe
     val bdnp: IBirthDataNamePlace = BirthDataNamePlace(bd, name = null, place)
     return ModernContextModel(contextModel, bdnp, created, config.method, config.description)
   }
+
+
+
 }

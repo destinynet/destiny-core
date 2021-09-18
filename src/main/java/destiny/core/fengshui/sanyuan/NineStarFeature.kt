@@ -13,8 +13,8 @@ import destiny.core.calendar.eightwords.EightWords
 import destiny.core.calendar.eightwords.EightWordsConfig
 import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsFeature
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
 
@@ -50,17 +50,17 @@ class NineStarConfigBuilder : Builder<NineStarConfig> {
 class NineStarFeature(private val sanYuanImpl: ISanYuan,
                       private val ewFeature : EightWordsFeature,
                       private val starPositionImpl: IStarPosition<IStarPos>,
-                      private val julDayResolver: JulDayResolver) : Feature<NineStarConfig, List<NineStarModel>> {
+                      private val julDayResolver: JulDayResolver) : AbstractCachedFeature<NineStarConfig, List<NineStarModel>>() {
   override val key: String = "nineStar"
 
   override val defaultConfig: NineStarConfig = NineStarConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: NineStarConfig): List<NineStarModel> {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: NineStarConfig): List<NineStarModel> {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: NineStarConfig): List<NineStarModel> {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: NineStarConfig): List<NineStarModel> {
     val gmtJulDay = TimeTools.getGmtJulDay(lmt, loc)
     val yuan = sanYuanImpl.getYuan(lmt, loc)
     val eightWords: EightWords = ewFeature.getModel(lmt, loc, config.ewConfig)

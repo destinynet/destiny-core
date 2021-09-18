@@ -7,9 +7,9 @@ import destiny.core.DayNight
 import destiny.core.astrology.DayNightConfig.DayNightImpl
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -45,13 +45,13 @@ class DayNightConfigBuilder : Builder<DayNightConfig> {
   }
 }
 
-class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : Feature<DayNightConfig, DayNight> {
+class DayNightFeature(private val dayNightImplMap: Map<DayNightImpl, IDayNight>) : AbstractCachedFeature<DayNightConfig, DayNight>() {
 
   override val key: String = "dayNight"
 
   override val defaultConfig: DayNightConfig = DayNightConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: DayNightConfig): DayNight {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: DayNightConfig): DayNight {
 
     return dayNightImplMap[config.impl]!!.getDayNight(gmtJulDay, loc, config.transConfig)
   }

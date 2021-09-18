@@ -18,6 +18,7 @@ import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.chinese.Branch
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getOppoHouse
 import destiny.core.chinese.lunarStation.ILunarStationFeature.Companion.getSelfHouse
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -74,7 +75,8 @@ class LunarStationConfigBuilder : Builder<LunarStationConfig> {
 /**
  * 禽星排盤 interface
  */
-interface ILunarStationFeature : Feature<LunarStationConfig, ContextModel> {
+interface ILunarStationFeature : Feature<LunarStationConfig, ContextModel>{
+
   fun getScaleMap(
     lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig,
     scales: List<Scale> = listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR)
@@ -148,17 +150,17 @@ class LunarStationFeature(private val yearlyFeature: LunarStationYearlyFeature,
                           private val eightWordsFeature : EightWordsFeature,
                           private val chineseDateFeature: ChineseDateFeature,
                           private val hiddenVenusFoeFeature: HiddenVenusFoeFeature,
-                          private val julDayResolver: JulDayResolver) : ILunarStationFeature {
+                          private val julDayResolver: JulDayResolver) : ILunarStationFeature, AbstractCachedFeature<LunarStationConfig, ContextModel>() {
   override val key: String = "lunarStation"
 
   override val defaultConfig: LunarStationConfig = LunarStationConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): ContextModel {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: LunarStationConfig): ContextModel {
     val lmt = TimeTools.getLmtFromGmt(gmtJulDay, loc, julDayResolver)
     return getModel(lmt, loc, config)
   }
 
-  override fun getModel(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): ContextModel {
+  override fun calculate(lmt: ChronoLocalDateTime<*>, loc: ILocation, config: LunarStationConfig): ContextModel {
 
     val ew = eightWordsFeature.getModel(lmt, loc, config.ewConfig)
     val models = getScaleMap(lmt, loc, config, listOf(Scale.YEAR, Scale.MONTH, Scale.DAY, Scale.HOUR))

@@ -8,6 +8,8 @@ import destiny.core.astrology.*
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
 import destiny.core.chinese.Branch
+import destiny.core.chinese.StemBranch
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
 import destiny.tools.Feature
@@ -87,15 +89,15 @@ class RisingSignConfigBuilder : Builder<RisingSignConfig> {
 class RisingSignFeature(
   private val houseCuspFeature: IHouseCuspFeature,
   private val tradChineseRisingSignFeature: TradChineseRisingSignFeature
-) : Feature<RisingSignConfig, ZodiacSign> {
+) : AbstractCachedFeature<RisingSignConfig, ZodiacSign>() {
 
   class TradChineseRisingSignFeature(private val starPositionImpl: IStarPosition<*>,
-                                     private val dayHourFeature: IDayHourFeature) : Feature<TradChineseRisingSignConfig , ZodiacSign> {
+                                     private val dayHourFeature: Feature<DayHourConfig, Pair<StemBranch, StemBranch>>) : AbstractCachedFeature<TradChineseRisingSignConfig, ZodiacSign>() {
     override val key: String = "tradChinese"
 
     override val defaultConfig: TradChineseRisingSignConfig = TradChineseRisingSignConfig()
 
-    override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: TradChineseRisingSignConfig): ZodiacSign {
+    override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: TradChineseRisingSignConfig): ZodiacSign {
       // 太陽星座
       val sunSign = starPositionImpl.getPosition(Planet.SUN, gmtJulDay, Centric.GEO, Coordinate.ECLIPTIC).lngDeg.sign
 
@@ -123,7 +125,7 @@ class RisingSignFeature(
 
   override val defaultConfig: RisingSignConfig = RisingSignConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: RisingSignConfig): ZodiacSign {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: RisingSignConfig): ZodiacSign {
     return when (config.impl) {
       RisingSignConfig.Impl.HouseCusp   -> houseCuspFeature.getRisingSign(gmtJulDay, loc, config.houseConfig)
       RisingSignConfig.Impl.TradChinese -> tradChineseRisingSignFeature.getModel(gmtJulDay, loc, config.tradChineseRisingSignConfig)

@@ -5,9 +5,9 @@ package destiny.core.astrology
 
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
+import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
 import destiny.tools.DestinyMarker
-import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -40,12 +40,12 @@ class AzimuthConfigBuilder : Builder<AzimuthConfig> {
 
 
 class AzimuthFeature(val starPositionImpl: IStarPosition<IStarPos>,
-                     val azimuthImpl: IAzimuthCalculator) : Feature<AzimuthConfig, StarPosWithAzimuth> {
+                     val azimuthImpl: IAzimuthCalculator) : AbstractCachedFeature<AzimuthConfig, StarPosWithAzimuth>() {
   override val key: String = "azimuth"
 
   override val defaultConfig: AzimuthConfig = AzimuthConfig()
 
-  override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: AzimuthConfig): StarPosWithAzimuth {
+  override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, config: AzimuthConfig): StarPosWithAzimuth {
     val pos: IStarPos = starPositionImpl.getPosition(config.star, gmtJulDay, loc, Centric.GEO, config.coordinate, config.temperature, config.pressure)
     val azimuth = with(azimuthImpl) {
       pos.getAzimuth(config.coordinate, gmtJulDay, loc, config.temperature, config.pressure)
