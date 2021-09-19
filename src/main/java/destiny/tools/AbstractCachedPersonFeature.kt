@@ -30,11 +30,11 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     return gmtPersonCache?.let { cache ->
       val cacheKey = GmtCacheKey(gmtJulDay, loc, gender, name, place, config)
       cache[cacheKey]?.also {
-        logger.trace { "cache hit" }
+        logger.info { "GMT cache hit" }
       }?: run {
-        logger.info { "cache miss" }
+        logger.info { "GMT cache miss" }
         calculate(gmtJulDay, loc, gender, name, place, config)?.also { model: Model ->
-          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
+          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into GMT cache." }
           cache.put(cacheKey, model)
         }
       }
@@ -59,11 +59,11 @@ abstract class AbstractCachedPersonFeature<out Config : Any, Model> : PersonFeat
     return lmtPersonCache?.let { cache ->
       val cacheKey = LmtCacheKey(lmt, loc, gender, name, place, config)
       cache[cacheKey]?.also {
-        logger.trace { "cache hit" }
+        logger.trace { "LMT cache hit" }
       }?: run {
-        logger.info { "cache miss" }
+        logger.trace { "LMT cache miss" }
         calculate(lmt, loc, gender, name, place, config)?.also { model: Model ->
-          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
+          logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into LMT cache" }
           cache.put(cacheKey, model)
         }
       }

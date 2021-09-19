@@ -56,7 +56,7 @@ class PersonPresentFeature(private val personContextFeature: PersonContextFeatur
 
   override val defaultConfig: PersonPresentConfig = PersonPresentConfig()
 
-  override val gmtPersonCache: Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>?
+  override val gmtPersonCache: Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
     get() = ewPersonPresentFeatureCache as Cache<GmtCacheKey<PersonPresentConfig>, IPersonPresentModel>
 
   override fun calculate(gmtJulDay: GmtJulDay, loc: ILocation, gender: Gender, name: String?, place: String?, config: PersonPresentConfig): IPersonPresentModel {

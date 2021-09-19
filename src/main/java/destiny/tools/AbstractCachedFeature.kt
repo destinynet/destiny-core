@@ -16,7 +16,8 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
   data class GmtCacheKey<Config>(
     val gmtJulDay: GmtJulDay,
     val loc: ILocation,
-    val config: Config)
+    val config: Config
+  )
 
   open val gmtCache: Cache<GmtCacheKey<@UnsafeVariance Config>, Model>?
     get() = null
@@ -24,8 +25,12 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
   override fun getModel(gmtJulDay: GmtJulDay, loc: ILocation, config: @UnsafeVariance Config): Model {
     return gmtCache?.let { cache ->
       val cacheKey = GmtCacheKey(gmtJulDay, loc, config)
-      cache[cacheKey] ?: run {
+      cache[cacheKey]?.also {
+        logger.trace { "GMT cache hit" }
+      } ?: run {
+        logger.trace { "GMT cache miss" }
         calculate(gmtJulDay, loc, config).also { model: Model ->
+          logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into GMT cache" }
           cache.put(cacheKey, model)
         }
       }
@@ -48,11 +53,11 @@ abstract class AbstractCachedFeature<out Config : Any, Model : Any?> : Feature<C
     return lmtCache?.let { cache ->
       val cacheKey = LmtCacheKey(lmt, loc, config)
       cache[cacheKey]?.also {
-        logger.trace { "cache hit" }
+        logger.trace { "LMT cache hit" }
       } ?: run {
-        logger.info { "cache miss" }
+        logger.trace { "LMT cache miss" }
         calculate(lmt, loc, config)?.also { model: Model ->
-          logger.info { "put ${model!!::class.simpleName}(${model.hashCode()}) into cache" }
+          logger.trace { "put ${model!!::class.simpleName}(${model.hashCode()}) into LMT cache" }
           cache.put(cacheKey, model)
         }
       }
