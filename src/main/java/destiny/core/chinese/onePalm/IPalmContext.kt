@@ -17,19 +17,6 @@ interface IPalmContext : IEightWordsStandardFactory {
   val trueRisingSign: Boolean
   val clockwiseHouse: Boolean
 
-  private fun monthDayHour(gender: Gender, yearBranch:Branch, leap: Boolean, monthNum: Int, monthBranch: Branch, dayNum: Int, hourBranch: Branch, positiveImpl: IPositive) : Triple<Branch,Branch,Branch> {
-    val positive = if (positiveImpl.isPositive(gender, yearBranch)) 1 else -1
-    val finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, monthBranch, dayNum, monthAlgo)
-    // 年上起月
-    val month: Branch = yearBranch.next((finalMonthNum - 1) * positive)
-    // 月上起日
-    val day: Branch = month.next((dayNum - 1) * positive)
-    // 日上起時
-    val hour: Branch = day.next(hourBranch.index * positive)
-    return Triple(month, day, hour)
-  }
-
-
   /** 沒帶入節氣資料 */
   fun getPalmWithoutSolarTerms(gender: Gender, yearBranch: Branch, leap: Boolean, monthNum: Int, dayNum: Int, hourBranch: Branch, monthAlgo: IFinalMonthNumber.MonthAlgo): IPalmModel
 
@@ -44,9 +31,25 @@ interface IPalmContext : IEightWordsStandardFactory {
               trueRising: Branch?,
               monthBranch: Branch): IPalmModel {
 
-    val (month, day, hour) = monthDayHour(gender, chineseDateHour.year.branch, chineseDateHour.leapMonth, chineseDateHour.month,
-                                          monthBranch, chineseDateHour.day, chineseDateHour.hourBranch, positiveImpl)
     val positive = positiveImpl.isPositive(gender, chineseDateHour.year.branch)
+    val positiveValue = if (positive) 1 else -1
+
+
+    val finalMonthNum = if (monthAlgo === IFinalMonthNumber.MonthAlgo.MONTH_SOLAR_TERMS) {
+      // 節氣計算月份盤
+       IFinalMonthNumber.getFinalMonthNumber(chineseDateHour.month, chineseDateHour.leapMonth, monthBranch, chineseDateHour.day, monthAlgo)
+    } else {
+      // 陰曆計算月份
+      IFinalMonthNumber.getFinalMonthNumber(chineseDateHour.month, chineseDateHour.leapMonth, chineseDateHour.day, monthAlgo)
+    }
+
+    // 年上起月
+    val month: Branch = chineseDateHour.year.branch.next((finalMonthNum - 1) * positiveValue)
+    // 月上起日
+    val day: Branch = month.next((chineseDateHour.day - 1) * positiveValue)
+    // 日上起時
+    val hour: Branch = day.next(chineseDateHour.hourBranch.index * positiveValue)
+
 
     val main: Branch = if (trueRisingSign) {
       trueRising!!
