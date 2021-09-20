@@ -44,10 +44,19 @@ interface IFinalMonthNumber {
      * @return 取得最終要計算的「月份」數字
      */
     fun getFinalMonthNumber(monthNum: Int, leapMonth: Boolean, monthBranch: Branch, days: Int, monthAlgorithm: MonthAlgo?): Int {
-      if (monthAlgorithm == MONTH_SOLAR_TERMS) {
+      return if (monthAlgorithm == MONTH_SOLAR_TERMS) {
         // 節氣盤的話，直接傳回 月支 數(相對於「寅」)
-        return monthBranch.getAheadOf(寅) + 1 // 別忘了 +1
+        monthBranch.getAheadOf(寅) + 1 // 別忘了 +1
       } else {
+        getFinalMonthNumber(monthNum, leapMonth, days, monthAlgorithm)
+      }
+    }
+
+    /** 承上， 不支援節氣的計算法 */
+    fun getFinalMonthNumber(monthNum: Int, leapMonth: Boolean, days: Int, monthAlgorithm: MonthAlgo?): Int {
+      if (monthAlgorithm == MONTH_SOLAR_TERMS)
+        throw IllegalArgumentException("$MONTH_SOLAR_TERMS not accepted in this function.")
+      else {
         var finalMonthNum = monthNum // 內定為本月
         if (leapMonth) {
           // 若是閏月

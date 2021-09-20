@@ -27,21 +27,14 @@ class PalmContext(val ewImpl: IEightWordsStandardFactory,
                   override val clockwiseHouse: Boolean,
                   val branchDescImpl: IBranchDesc) : IPalmContext, IEightWordsStandardFactory by ewImpl, Serializable {
 
-  /** 沒帶入節氣資料 , 內定把月份計算採用 [IFinalMonthNumber.MonthAlgo.MONTH_LEAP_SPLIT15] 的演算法  */
-  override fun getPalmWithoutSolarTerms(gender: Gender,
-                                        yearBranch: Branch,
-                                        leap: Boolean,
-                                        monthNum: Int,
-                                        dayNum: Int,
-                                        hourBranch: Branch): IPalmModel {
+  /** 沒帶入節氣資料 */
+  override fun getPalmWithoutSolarTerms(gender: Gender, yearBranch: Branch, leap: Boolean, monthNum: Int, dayNum: Int, hourBranch: Branch, monthAlgo: IFinalMonthNumber.MonthAlgo): IPalmModel {
+
     val positive = if (positiveImpl.isPositive(gender, yearBranch)) 1 else -1
 
     logger.trace("positive = {}", positive)
 
-    var finalMonthNum = monthNum
-    if (leap && dayNum > 15)
-    // 若為閏月，15日以後算下個月
-      finalMonthNum++
+    val finalMonthNum = IFinalMonthNumber.getFinalMonthNumber(monthNum, leap, dayNum, monthAlgo)
 
     logger.trace("yearBranch = {}", yearBranch)
 

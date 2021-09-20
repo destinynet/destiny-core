@@ -100,6 +100,8 @@ class PalmFeature(private val eightWordsFeature: EightWordsFeature,
     // 上升星座
     val trueRising: Branch = risingSignFeature.getModel(lmt, loc).branch
 
+
+
     // 命宮
     val main: Branch = when (config.trueRisingSign) {
       true -> trueRising
