@@ -3,6 +3,7 @@
  */
 package destiny.core.chinese.onePalm
 
+import destiny.core.Descriptive
 import destiny.core.Gender
 import destiny.core.calendar.GmtJulDay
 import destiny.core.calendar.ILocation
@@ -12,6 +13,8 @@ import destiny.core.calendar.chinese.ChineseDate
 import destiny.core.calendar.chinese.ChineseDateFeature
 import destiny.core.calendar.chinese.ChineseDateHour
 import destiny.core.calendar.chinese.IFinalMonthNumber
+import destiny.core.calendar.eightwords.EightWordsConfig
+import destiny.core.calendar.eightwords.EightWordsConfigBuilder
 import destiny.core.calendar.eightwords.EightWordsFeature
 import destiny.core.calendar.eightwords.RisingSignFeature
 import destiny.core.chinese.Branch
@@ -21,9 +24,11 @@ import destiny.tools.DestinyMarker
 import destiny.tools.PersonFeature
 import kotlinx.serialization.Serializable
 import java.time.chrono.ChronoLocalDateTime
+import java.util.*
 
 @Serializable
 data class PalmConfig(
+  val eightWordsConfig: EightWordsConfig = EightWordsConfig(),
   val positiveImpl: PositiveImpl = PositiveImpl.Gender,
   val monthAlgo: IFinalMonthNumber.MonthAlgo = IFinalMonthNumber.MonthAlgo.MONTH_FIXED_THIS,
   val trueRisingSign: Boolean = false,
@@ -36,8 +41,31 @@ data class PalmConfig(
   }
 }
 
+fun PalmConfig.PositiveImpl.asDescriptive() : Descriptive = object : Descriptive{
+  override fun toString(locale: Locale): String {
+    return when(this@asDescriptive) {
+      PalmConfig.PositiveImpl.Gender -> "男順女逆"
+      PalmConfig.PositiveImpl.GenderYinYang -> "陽男陰女順；陰男陽女逆"
+    }
+  }
+
+  override fun getDescription(locale: Locale): String {
+    return when(this@asDescriptive) {
+      PalmConfig.PositiveImpl.Gender -> "固定男順女逆"
+      PalmConfig.PositiveImpl.GenderYinYang -> "陽男陰女順；陰男陽女逆。"
+    }
+  }
+}
+
+
 @DestinyMarker
 class PalmConfigBuilder : Builder<PalmConfig> {
+
+  var eightWordsConfig: EightWordsConfig = EightWordsConfig()
+
+  fun ewConfig(block : EightWordsConfigBuilder.() -> Unit = {}) {
+    this.eightWordsConfig = EightWordsConfigBuilder.ewConfig(block)
+  }
 
   var positiveImpl: PalmConfig.PositiveImpl = PalmConfig.PositiveImpl.Gender
 
@@ -48,7 +76,7 @@ class PalmConfigBuilder : Builder<PalmConfig> {
   var clockwiseHouse: Boolean = true
 
   override fun build(): PalmConfig {
-    return PalmConfig(positiveImpl, monthAlgo, trueRisingSign, clockwiseHouse)
+    return PalmConfig(eightWordsConfig, positiveImpl, monthAlgo, trueRisingSign, clockwiseHouse)
   }
 
   companion object {

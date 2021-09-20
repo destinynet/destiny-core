@@ -19,11 +19,11 @@ class PositiveGenderImpl : IPositive, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return "男順女逆"
+    return PalmConfig.PositiveImpl.Gender.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "固定男順女逆"
+    return PalmConfig.PositiveImpl.Gender.asDescriptive().getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

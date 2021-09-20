@@ -7,6 +7,7 @@ import destiny.core.calendar.chinese.IChineseDateHourModel
 import destiny.core.calendar.chinese.IFinalMonthNumber
 import destiny.core.calendar.eightwords.IEightWordsStandardFactory
 import destiny.core.chinese.Branch
+import destiny.core.chinese.onePalm.PalmConfigBuilder.Companion.palmConfig
 import mu.KotlinLogging
 import java.time.chrono.ChronoLocalDateTime
 
@@ -16,6 +17,18 @@ interface IPalmContext : IEightWordsStandardFactory {
   val monthAlgo: IFinalMonthNumber.MonthAlgo
   val trueRisingSign: Boolean
   val clockwiseHouse: Boolean
+
+  // for migration
+  val palmConfig: PalmConfig
+    get() {
+      return palmConfig {
+        eightWordsConfig = ewConfig
+        positiveImpl = if (this@IPalmContext.positiveImpl is PositiveGenderImpl) PalmConfig.PositiveImpl.Gender else PalmConfig.PositiveImpl.GenderYinYang
+        monthAlgo = this@IPalmContext.monthAlgo
+        trueRisingSign = this@IPalmContext.trueRisingSign
+        clockwiseHouse = this@IPalmContext.clockwiseHouse
+      }
+    }
 
   /** 沒帶入節氣資料 */
   fun getPalmWithoutSolarTerms(gender: Gender, yearBranch: Branch, leap: Boolean, monthNum: Int, dayNum: Int, hourBranch: Branch, monthAlgo: IFinalMonthNumber.MonthAlgo): IPalmModel

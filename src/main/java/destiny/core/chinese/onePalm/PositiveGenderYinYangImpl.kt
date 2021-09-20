@@ -5,6 +5,7 @@ package destiny.core.chinese.onePalm
 
 import destiny.core.Gender
 import destiny.core.chinese.Branch
+import destiny.core.chinese.onePalm.PalmConfig.PositiveImpl.GenderYinYang
 import destiny.tools.Domain
 import destiny.tools.Impl
 import destiny.tools.converters.Domains.Palm.KEY_POSITIVE_IMPL
@@ -25,11 +26,11 @@ class PositiveGenderYinYangImpl : IPositive, Serializable {
   }
 
   override fun toString(locale: Locale): String {
-    return "陽男陰女順；陰男陽女逆"
+    return GenderYinYang.asDescriptive().toString(locale)
   }
 
   override fun getDescription(locale: Locale): String {
-    return "陽男陰女順；陰男陽女逆。"
+    return GenderYinYang.asDescriptive().getDescription(locale)
   }
 
   override fun equals(other: Any?): Boolean {

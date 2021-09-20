@@ -15,6 +15,7 @@ import destiny.core.chinese.Branch.亥
 import destiny.core.chinese.Branch.子
 import destiny.tools.AbstractCachedFeature
 import destiny.tools.Builder
+import destiny.tools.DestinyMarker
 import destiny.tools.Feature
 import kotlinx.serialization.Serializable
 import java.time.Duration
@@ -59,6 +60,7 @@ fun HourBranchConfig.HourImpl.getDescription(locale: Locale): String {
   return this.asDescriptive().getDescription(locale)
 }
 
+@DestinyMarker
 class HourBranchConfigBuilder : Builder<HourBranchConfig> {
 
   var hourImpl = HourBranchConfig.HourImpl.TST
